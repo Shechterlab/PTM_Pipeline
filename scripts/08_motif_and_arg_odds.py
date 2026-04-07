@@ -229,7 +229,16 @@ def main() -> None:
     )
     if selected_aa:
         matrix = heatmap_df[heatmap_df['amino_acid'].isin(selected_aa)].pivot(index='amino_acid', columns='relative_position', values='log2_odds_ratio').fillna(0.0)
-        fig2, ax2 = plt.subplots(figsize=(10.5, 5.5))
+        p_matrix = heatmap_df[heatmap_df['amino_acid'].isin(selected_aa)].pivot(index='amino_acid', columns='relative_position', values='p_value')
+        p_matrix = p_matrix.reindex(index=matrix.index, columns=matrix.columns)
+        p_floor = np.nextafter(0.0, 1.0)
+        neglog10_p = -np.log10(p_matrix.fillna(1.0).clip(lower=p_floor))
+
+        fig2, (ax2, ax2b) = plt.subplots(
+            ncols=2,
+            figsize=(15.0, 5.5),
+            gridspec_kw={'width_ratios': [1.0, 1.0]},
+        )
         im = ax2.imshow(matrix.to_numpy(), aspect='auto', cmap='coolwarm', vmin=-3, vmax=3)
         ax2.set_yticks(range(len(matrix.index)))
         ax2.set_yticklabels(matrix.index)
@@ -237,7 +246,31 @@ def main() -> None:
         ax2.set_xticklabels(matrix.columns)
         ax2.set_xlabel('Position relative to methyl-Arg')
         ax2.set_title('Positional amino-acid enrichment around methylarginines')
+        for row_idx, aa in enumerate(matrix.index):
+            for col_idx, rel in enumerate(matrix.columns):
+                pval = p_matrix.loc[aa, rel]
+                if pd.isna(pval):
+                    continue
+                if pval < 1e-20:
+                    mark = '***'
+                elif pval < 1e-5:
+                    mark = '**'
+                elif pval < 0.05:
+                    mark = '*'
+                else:
+                    mark = ''
+                if mark:
+                    ax2.text(col_idx, row_idx, mark, ha='center', va='center', fontsize=7, color='black')
         fig2.colorbar(im, ax=ax2, label='log2(OR)')
+
+        im_p = ax2b.imshow(neglog10_p.to_numpy(), aspect='auto', cmap='viridis')
+        ax2b.set_yticks(range(len(neglog10_p.index)))
+        ax2b.set_yticklabels(neglog10_p.index)
+        ax2b.set_xticks(range(len(neglog10_p.columns)))
+        ax2b.set_xticklabels(neglog10_p.columns)
+        ax2b.set_xlabel('Position relative to methyl-Arg')
+        ax2b.set_title('Positional Fisher exact significance')
+        fig2.colorbar(im_p, ax=ax2b, label='-log10(p)')
         fig2.tight_layout()
         save_figure(fig2, outdir / 'arg_methyl_positional_enrichment_heatmap')
 

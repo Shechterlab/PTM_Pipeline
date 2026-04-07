@@ -93,6 +93,10 @@ run_step "motif enrichment and Arg odds" python "$BASE_DIR/scripts/08_motif_and_
   --integrated-sites "$BASE_DIR/results/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
   --canonical-fasta "$BASE_DIR/data/context/uniprot_human_reviewed_canonical.fasta" \
   --outdir "$BASE_DIR/results/motif_arg_odds"
+run_step "methyl-Arg clustering" python "$BASE_DIR/scripts/10_methyl_arg_clustering.py" \
+  --integrated-sites "$BASE_DIR/results/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
+  --canonical-fasta "$BASE_DIR/data/context/uniprot_human_reviewed_canonical.fasta" \
+  --outdir "$BASE_DIR/results/methyl_arg_clustering"
 
 if [[ -f "$BASE_DIR/data/context/mobidb_human_reviewed_disorder_intervals.tsv" ]]; then
   run_step "annotate disorder context" python "$BASE_DIR/scripts/06_annotate_disorder_context.py" \
