@@ -42,6 +42,8 @@ python scripts/04_example_figures.py --integrated-sites results/integrated/human
 python scripts/08_motif_and_arg_odds.py --integrated-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/motif_arg_odds
 # Sliding-distance clustering analysis with a within-protein permutation null
 python scripts/10_methyl_arg_clustering.py --integrated-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/methyl_arg_clustering
+# Cross-PTM clustering comparison using the same sliding-distance / permutation framework
+python scripts/11_compare_ptm_clustering.py --base-master data/base/human_ptm_master.tsv --integrated-arg-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/ptm_clustering
 # If you stage disorder intervals (for example MobiDB-derived intervals) as canonical accession/start/end rows:
 python scripts/06_annotate_disorder_context.py --sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --disorder-intervals data/context/mobidb_human_reviewed_disorder_intervals.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/disorder_context
 # Stage InterPro only for remapped canonical proteins once remapping is done
@@ -99,6 +101,7 @@ PTM_ENV_PREFIX=/path/to/conda/env sbatch hpc/slurm_run_integration.sh "$PWD"
 - If you use `PTM_INTERPRO_MODE=api`, the main Slurm runner stages InterPro intervals with the per-accession InterPro API instead of the bulk file. Tune with `PTM_INTERPRO_API_WORKERS`, `PTM_INTERPRO_API_PAGE_SIZE`, `PTM_INTERPRO_API_TIMEOUT`, and `PTM_INTERPRO_API_RETRIES`.
 - Disorder inputs are expected as a staged canonical-interval table with at least `canonical_UniProtAC`, `fragment_start`, and `fragment_end`. The current repo does not yet include a downloader for MobiDB, so that file must be staged separately.
 - `scripts/10_methyl_arg_clustering.py` models methyl-site proximity as a sliding empirical CDF, `P(nearest methyl-Arg <= X)`, and a local-density curve, `mean other methyl-Args within X`, against a within-protein randomization null. The `3/5/10/20/50 aa` outputs are just checkpoint summaries of that full curve.
+- `scripts/11_compare_ptm_clustering.py` applies the same sliding-distance framework across PTM classes and reports both raw nearest-neighbor curves and null-adjusted enrichment curves. It defaults to 100 permutations for runtime reasons; increase that on HPC if you want finer empirical p-value resolution.
 - Maron Table S5 currently defaults to excluding `Larsen`-matched references. Override `--exclude-pattern` if you want a different sensitivity run.
 - Do not use `Rme1` vs `Rme2` as a primary split for the integrated mass-spec-driven union. Source-provided state labels are retained only as auxiliary provenance.
 - Domain context and disorder context should remain separate layers. The domain-context script classifies sites as `in_domain`, `boundary`, `inter_domain_linker`, or `distal` relative to InterPro intervals and does not merge those labels with IDR annotations.

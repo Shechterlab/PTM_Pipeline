@@ -97,6 +97,11 @@ run_step "methyl-Arg clustering" python "$BASE_DIR/scripts/10_methyl_arg_cluster
   --integrated-sites "$BASE_DIR/results/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
   --canonical-fasta "$BASE_DIR/data/context/uniprot_human_reviewed_canonical.fasta" \
   --outdir "$BASE_DIR/results/methyl_arg_clustering"
+run_step "cross-PTM clustering" python "$BASE_DIR/scripts/11_compare_ptm_clustering.py" \
+  --base-master "$BASE_DIR/data/base/human_ptm_master.tsv" \
+  --integrated-arg-sites "$BASE_DIR/results/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
+  --canonical-fasta "$BASE_DIR/data/context/uniprot_human_reviewed_canonical.fasta" \
+  --outdir "$BASE_DIR/results/ptm_clustering"
 
 if [[ -f "$BASE_DIR/data/context/mobidb_human_reviewed_disorder_intervals.tsv" ]]; then
   run_step "annotate disorder context" python "$BASE_DIR/scripts/06_annotate_disorder_context.py" \
