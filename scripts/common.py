@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 from collections import defaultdict
 from pathlib import Path
@@ -8,6 +9,7 @@ from typing import Iterable
 
 import numpy as np
 import pandas as pd
+from scipy.stats import fisher_exact
 
 
 def save_table(df: pd.DataFrame, path: str | Path) -> None:
@@ -17,6 +19,13 @@ def save_table(df: pd.DataFrame, path: str | Path) -> None:
         df.to_csv(path, sep='\t', index=False)
     else:
         df.to_csv(path, index=False)
+
+
+def save_figure(fig, path_prefix: str | Path, dpi: int = 300) -> None:
+    path_prefix = Path(path_prefix)
+    path_prefix.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(path_prefix.with_suffix('.png'), dpi=dpi)
+    fig.savefig(path_prefix.with_suffix('.pdf'))
 
 
 def load_json(path: str | Path) -> dict:
@@ -72,8 +81,10 @@ def fisher_like_enrichment(target: pd.Series, universe: pd.Series) -> pd.DataFra
             'background_count': c,
             'background_fraction': c / universe_n if universe_n else np.nan,
             'odds_ratio': orr,
+            'p_value': float(fisher_exact([[a, b], [c, d]], alternative='two-sided').pvalue),
         })
-    return pd.DataFrame(rows).sort_values(['odds_ratio', 'target_count'], ascending=[False, False])
+    out = pd.DataFrame(rows)
+    return out.sort_values(['odds_ratio', 'target_count'], ascending=[False, False])
 
 
 def normalize_accession(acc: str) -> str:
@@ -272,3 +283,61 @@ def consensus_or_mixed(values: Iterable[str], default: str = '') -> str:
     if len(uniq) == 1:
         return uniq[0]
     return 'mixed'
+
+
+def sequence_window(sequence: str, position: int, flank: int, pad: str = '_') -> str:
+    seq = clean_aa_sequence(sequence)
+    if not seq or position < 1:
+        return ''
+    left = max(0, position - flank - 1)
+    right = min(len(seq), position + flank)
+    window = seq[left:right]
+    missing_left = flank - (position - 1 - left)
+    missing_right = flank - (right - position)
+    return (pad * missing_left) + window + (pad * missing_right)
+
+
+def residue_background_from_sequences(
+    sequences: dict[str, str],
+    residue: str,
+    accessions: Iterable[str] | None = None,
+    flank: int = 0,
+) -> pd.DataFrame:
+    residue = str(residue).upper()
+    selected = set(accessions) if accessions is not None else None
+    rows = []
+    for acc, sequence in sequences.items():
+        if selected is not None and acc not in selected:
+            continue
+        seq = clean_aa_sequence(sequence)
+        for idx, aa in enumerate(seq, start=1):
+            if aa != residue:
+                continue
+            row = {
+                'canonical_UniProtAC': acc,
+                'position': idx,
+                'residue': residue,
+                'site': f'{residue}{idx}',
+                'site_key': f'{acc}:{residue}{idx}',
+            }
+            if flank > 0:
+                row[f'window_{2 * flank + 1}'] = sequence_window(seq, idx, flank=flank)
+            rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def canonical_site_table(
+    df: pd.DataFrame,
+    accession_col: str = 'canonical_UniProtAC',
+    position_col: str = 'corrected_position',
+    residue_col: str = 'residue',
+) -> pd.DataFrame:
+    out = df.copy()
+    out[accession_col] = out[accession_col].astype(str).map(canonicalize_uniprot_accession)
+    out[position_col] = pd.to_numeric(out[position_col], errors='coerce')
+    out = out[out[position_col].notna()].copy()
+    out[position_col] = out[position_col].astype(int)
+    out[residue_col] = out[residue_col].astype(str).str.upper().str[:1]
+    out['site'] = out[residue_col] + out[position_col].astype(str)
+    out['site_key'] = out[accession_col] + ':' + out['site']
+    return out

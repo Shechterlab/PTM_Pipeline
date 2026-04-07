@@ -9,3 +9,18 @@ results/*
 
 data/context/*
 !data/context/.gitkeep
+
+# Large staged source files should stay local / HPC-staged, not in Git
+data/external/*.xlsx
+data/external/*.json
+data/external/*.gz
+data/external/*.zip
+data/external/*.pdf
+
+# Cluster logs and local transfer scratch
+slurm-*.out
+slurm-*.err
+
+# Optional local envs / editor noise
+.conda/
+.DS_Store

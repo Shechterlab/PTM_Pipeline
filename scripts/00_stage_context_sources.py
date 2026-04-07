@@ -14,6 +14,7 @@ from typing import Iterator, TextIO
 import pandas as pd
 import requests
 
+from common import canonicalize_uniprot_accession
 
 UNIPROT_QUERY = '(proteome:UP000005640) AND (reviewed:true)'
 UNIPROT_FASTA_URL = 'https://rest.uniprot.org/uniprotkb/stream'
@@ -39,7 +40,7 @@ def parse_accessions_from_tsv(path: Path) -> list[str]:
     df = pd.read_csv(path, sep='\t')
     if 'Entry' not in df.columns:
         raise ValueError(f'expected UniProt metadata TSV with Entry column: {path}')
-    accessions = df['Entry'].dropna().astype(str).str.strip()
+    accessions = df['Entry'].dropna().astype(str).str.strip().map(canonicalize_uniprot_accession)
     return sorted(set(acc for acc in accessions if acc))
 
 
@@ -54,7 +55,7 @@ def load_accessions(path: Path) -> list[str]:
             return sorted(set(line for line in lines if line and not line.startswith('#')))
         for column in ['canonical_UniProtAC', 'substrate_UniProtAC', 'Entry', 'accession']:
             if column in df.columns:
-                accessions = df[column].dropna().astype(str).str.strip()
+                accessions = df[column].dropna().astype(str).str.strip().map(canonicalize_uniprot_accession)
                 return sorted(set(acc for acc in accessions if acc))
         raise ValueError(f'no accession column found in {path}')
     if path.suffix.lower() in {'.fa', '.fasta'}:
@@ -65,14 +66,14 @@ def load_accessions(path: Path) -> list[str]:
             header = line[1:].strip()
             parts = header.split('|')
             if len(parts) >= 2:
-                accessions.append(parts[1].strip())
+                accessions.append(canonicalize_uniprot_accession(parts[1].strip()))
         return sorted(set(acc for acc in accessions if acc))
     raise ValueError(f'unsupported accession source: {path}')
 
 
 def load_protein_lengths(path: Path) -> dict[str, int]:
     df = pd.read_csv(path, sep='\t', usecols=['Entry', 'Length'])
-    df['Entry'] = df['Entry'].astype(str).str.strip()
+    df['Entry'] = df['Entry'].astype(str).str.strip().map(canonicalize_uniprot_accession)
     df['Length'] = pd.to_numeric(df['Length'], errors='coerce')
     df = df[df['Entry'] != '']
     df = df[df['Length'].notna()].copy()
@@ -260,7 +261,7 @@ def build_rows_from_bulk(
             parts = raw_line.rstrip('\n').split('\t')
             if len(parts) < 6:
                 continue
-            accession = parts[0].strip().upper()
+            accession = canonicalize_uniprot_accession(parts[0].strip())
             if accession < min_target:
                 continue
             if accession > max_target:
@@ -344,7 +345,7 @@ def build_rows_from_bulk_pandas(
         if progress_every and lines_scanned % progress_every < len(chunk):
             print(f'scanned {lines_scanned:,} protein2ipr rows; kept {len(rows):,}')
 
-        chunk['canonical_UniProtAC'] = chunk['canonical_UniProtAC'].astype(str).str.strip().str.upper()
+        chunk['canonical_UniProtAC'] = chunk['canonical_UniProtAC'].astype(str).str.strip().map(canonicalize_uniprot_accession)
         filtered = chunk[chunk['canonical_UniProtAC'].isin(accession_set)].copy()
         if filtered.empty:
             continue

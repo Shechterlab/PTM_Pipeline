@@ -54,6 +54,20 @@ def choose_interval(intervals: pd.DataFrame, position: int) -> tuple[pd.Series |
     return best, int(best['distance']), str(best['side']), 0
 
 
+def is_inter_domain_linker(intervals: pd.DataFrame, position: int) -> bool:
+    if len(intervals) < 2:
+        return False
+    ordered = intervals[['fragment_start', 'fragment_end']].sort_values(['fragment_start', 'fragment_end']).drop_duplicates()
+    previous_end = None
+    for row in ordered.itertuples(index=False):
+        start = int(row.fragment_start)
+        end = int(row.fragment_end)
+        if previous_end is not None and previous_end < position < start:
+            return True
+        previous_end = max(previous_end or end, end)
+    return False
+
+
 def classify_row(row: pd.Series, intervals_by_accession: dict[str, pd.DataFrame], accession_col: str, position_col: str, boundary_window: int) -> dict:
     accession = str(row.get(accession_col, '') or '').strip()
     position_raw = row.get(position_col, '')
@@ -113,6 +127,8 @@ def classify_row(row: pd.Series, intervals_by_accession: dict[str, pd.DataFrame]
         context_class = 'in_domain'
     elif distance <= boundary_window:
         context_class = 'boundary'
+    elif is_inter_domain_linker(intervals, position):
+        context_class = 'inter_domain_linker'
     else:
         context_class = 'distal'
 

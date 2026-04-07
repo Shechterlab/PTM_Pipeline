@@ -3,10 +3,10 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
 
-from common import canonicalize_uniprot_accession, classify_by_patterns, fisher_like_enrichment, load_json, save_table
+from common import canonicalize_uniprot_accession, classify_by_patterns, fisher_like_enrichment, load_json, save_figure, save_table
 
 
 def main() -> None:
@@ -51,8 +51,7 @@ def main() -> None:
     for y, v, n in zip(pb['category'], pb['odds_ratio'], pb['target_count']):
         ax.text(v, y, f'  n={n}, OR={v:.1f}', va='center', fontsize=9)
     fig.tight_layout()
-    fig.savefig(outdir / 'arg_methyl_functional_class_broad_enrichment.png', dpi=300)
-    fig.savefig(outdir / 'arg_methyl_functional_class_broad_enrichment.svg')
+    save_figure(fig, outdir / 'arg_methyl_functional_class_broad_enrichment')
 
     ps = sub[sub['target_count'] >= 5].head(12).sort_values('odds_ratio')
     fig2, ax2 = plt.subplots(figsize=(8.9, 6.3))
@@ -63,8 +62,7 @@ def main() -> None:
     for y, v, n in zip(ps['category'], ps['odds_ratio'], ps['target_count']):
         ax2.text(v, y, f'  n={n}, OR={v:.1f}', va='center', fontsize=9)
     fig2.tight_layout()
-    fig2.savefig(outdir / 'arg_methyl_functional_class_subclass_enrichment.png', dpi=300)
-    fig2.savefig(outdir / 'arg_methyl_functional_class_subclass_enrichment.svg')
+    save_figure(fig2, outdir / 'arg_methyl_functional_class_subclass_enrichment')
 
 
 if __name__ == '__main__':

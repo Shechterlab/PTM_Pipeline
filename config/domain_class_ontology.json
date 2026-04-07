@@ -1,0 +1,17 @@
+{
+  "domain_classes": [
+    {"label": "RRM / KH RNA-binding", "patterns": ["rrm", "rna recognition motif", "\\bkh\\b", "kh domain", "k homology"]},
+    {"label": "Sm / Lsm", "patterns": ["\\blsm\\b", "\\bsm\\b", "snrnp sm", "sm-like"]},
+    {"label": "RNA helicase", "patterns": ["helicase", "dead-box", "dexd", "deah", "ski2"]},
+    {"label": "dsRNA-binding", "patterns": ["double-stranded rna-binding", "dsrbd", "dsrna"]},
+    {"label": "RNA-associated zinc finger", "patterns": ["ccch", "cchc", "ranbp2-type zinc finger", "zf"]},
+    {"label": "Chromatin reader", "patterns": ["tudor", "pwwp", "chromodomain", "bromodomain", "mbt", "\\bphd\\b", "plant homeodomain"]},
+    {"label": "Chromatin catalytic / remodeler", "patterns": ["methyltransferase", "acetyltransferase", "deacetylase", "demethylase", "remodel", "snf2", "helicase atp-binding"]},
+    {"label": "DNA-binding", "patterns": ["homeobox", "dna-binding", "winged helix", "forkhead", "bzip", "bhlh", "hlh", "hmg-box", "zinc finger, c2h2"]},
+    {"label": "Protein-protein repeat / scaffold", "patterns": ["wd40", "wd repeat", "ankyrin", "armadillo", "heat repeat", "tpr", "leucine-rich repeat", "sel1-like"]},
+    {"label": "Catalytic enzyme domain", "patterns": ["kinase", "phosphatase", "transferase", "hydrolase", "peptidase", "synthetase", "ligase", "oxidoreductase"]},
+    {"label": "Ribosome / RNP structural", "patterns": ["ribosomal", "ribonucleoprotein", "nucleocapsid", "translation initiation factor"]},
+    {"label": "Repeat / superfamily", "patterns": ["repeat", "homologous superfamily"]},
+    {"label": "Other domain", "patterns": [".+"]}
+  ]
+}

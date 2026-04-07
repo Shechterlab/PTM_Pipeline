@@ -6,7 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from common import save_table
+from common import save_figure, save_table
 
 
 def protein_label(row: pd.Series) -> str:
@@ -36,8 +36,7 @@ def main() -> None:
     ax.set_title('Integrated arg-methylome confidence tiers')
     ax.tick_params(axis='x', rotation=18)
     fig.tight_layout()
-    fig.savefig(outdir / 'arg_methyl_confidence_tiers.png', dpi=300)
-    fig.savefig(outdir / 'arg_methyl_confidence_tiers.svg')
+    save_figure(fig, outdir / 'arg_methyl_confidence_tiers')
 
     support = pd.DataFrame({
         'support_type': ['Exact >=2', 'Fuzzy >=2'],
@@ -51,8 +50,7 @@ def main() -> None:
     for i, value in enumerate(support['site_count']):
         ax2.text(i, value, str(value), ha='center', va='bottom')
     fig2.tight_layout()
-    fig2.savefig(outdir / 'arg_methyl_support_exact_vs_fuzzy.png', dpi=300)
-    fig2.savefig(outdir / 'arg_methyl_support_exact_vs_fuzzy.svg')
+    save_figure(fig2, outdir / 'arg_methyl_support_exact_vs_fuzzy')
 
     protein_counts = df.groupby(
         ['substrate_UniProtAC', 'canonical_UniProtAC', 'substrate_genename', 'accession_is_isoform', 'needs_sequence_remap', 'canonical_counting_status'],
@@ -73,8 +71,7 @@ def main() -> None:
     ax3.set_ylabel('Protein')
     ax3.set_title('Top proteins by accession-level arg-methyl site count')
     fig3.tight_layout()
-    fig3.savefig(outdir / 'arg_methyl_top_proteins_accession_level.png', dpi=300)
-    fig3.savefig(outdir / 'arg_methyl_top_proteins_accession_level.svg')
+    save_figure(fig3, outdir / 'arg_methyl_top_proteins_accession_level')
 
 
 if __name__ == '__main__':

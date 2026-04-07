@@ -1,2 +1,22 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Normalize text files to LF across platforms.
+* text=auto eol=lf
+
+# Explicit text types used in this repo.
+*.py text eol=lf
+*.sh text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.tsv text eol=lf
+*.csv text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.svg text eol=lf
+
+# Binary assets and archives should not be line-normalized.
+*.xlsx binary
+*.xls binary
+*.gz binary
+*.zip binary
+*.pdf binary
+*.png binary
