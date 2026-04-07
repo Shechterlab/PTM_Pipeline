@@ -1,0 +1,58 @@
+# PTM pipeline v4
+
+This package integrates the existing public human PTM master table with methylarginine-specific external resources.
+
+Clean mental model:
+- Raw sources: Maron Table S5, ProMetheusDB `mmc2.xlsx`, and the repo-local `human_ptm_master.tsv`
+- Intermediate convenience layer: `human_ptm_master.tsv` is a synthetic public PTM background table, not a single ground-truth export
+- Final integration layer: accession-level methylarginine union with per-site provenance, confidence tiers, canonical-accession audit fields, and state annotations when present
+
+Included source parsers:
+- Maron Table S5 Excel parser with optional Larsen exclusion
+- ProMetheusDB supplementary `mmc2.xlsx` parser (`RK-methylsites` sheet)
+- dbPTM static download helper and a parser preview for the methylation export
+
+Key integration logic:
+- Preserves exact site support across source families
+- Adds fuzzy support clustering within the same UniProt accession and residue, default tolerance ±2 aa
+- Assigns confidence tiers rather than using a hard `>=2 exact-match` filter alone
+- Preserves original accession alongside a naive canonicalized accession audit field
+- Preserves source-provided methyl-state labels as provenance fields, but these are not intended to drive primary downstream splits
+- Supports staged canonical FASTA and InterPro interval downloads for post-remap domain-context annotation
+
+## Expected inputs
+Place or symlink these files:
+- `data/base/human_ptm_master.tsv` (existing iPTMnet/UniProt-based master)
+- `data/external/Table_S5_Compiled_Methylarginine_Data.xlsx`
+- `data/external/mmc2.xlsx`
+
+## Local run order
+```bash
+python scripts/01_parse_maron_s5.py --input data/external/Table_S5_Compiled_Methylarginine_Data.xlsx --outdir results/parsed_maron
+python scripts/01_parse_prometheus_mmc2.py --input data/external/mmc2.xlsx --outdir results/parsed_prometheus
+# Stage canonical FASTA and UniProt metadata for remapping
+python scripts/00_stage_context_sources.py --outdir data/context --skip-interpro
+# Remap all source rows onto canonical reviewed coordinates
+python scripts/02_remap_arg_methyl_to_canonical.py --base-master data/base/human_ptm_master.tsv --maron results/parsed_maron/maron_s5_arg_methyl_sites.tsv --prometheus results/parsed_prometheus/prometheus_mmc2_arg_methyl_sites.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --uniprot-metadata data/context/uniprot_human_reviewed_canonical_metadata.tsv --outdir results/remapped
+# Integrate on remapped canonical positions
+python scripts/02_integrate_arg_methyl_sources.py --premerged-remapped results/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv --outdir results/integrated
+python scripts/03_functional_class_enrichment.py --base-master data/base/human_ptm_master.tsv --integrated-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --ontology config/functional_ontology.json --outdir results/functional_class_union
+python scripts/04_example_figures.py --integrated-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --outdir results/example_figures
+# Stage InterPro only for remapped canonical proteins once remapping is done
+python scripts/00_stage_context_sources.py --outdir data/context --accessions results/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv --interpro-source bulk --interpro-protein2ipr data/context/protein2ipr.dat.gz --bulk-parser pandas
+# After canonical remapping adds corrected positions, annotate domain context separately from disorder context
+python scripts/05_annotate_domain_context.py --sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --interpro-intervals data/context/interpro_human_reviewed_domain_like_intervals.tsv --position-col corrected_position --outdir results/domain_context
+```
+
+## HPC
+Use `hpc/slurm_run_integration.sh`.
+
+## Notes
+- `mmc2.xlsx` is the site-level ProMetheusDB supplement to include. `mmc3.xlsx` contains enrichment/cluster summaries and is not used as a primary site source.
+- `human_ptm_master.tsv` is a repo-local integration/background table. Treat it as a convenience layer for coverage, not as a standalone authoritative source database.
+- Current integration outputs are canonical-site based once you run the remap step. The remapper writes per-row diagnostics so unresolved source rows can be audited separately.
+- For large InterPro staging runs, prefer the official download files `protein2ipr.dat.gz` and `entry.list`. If `protein2ipr.dat.gz` is staged locally, the script uses chunked pandas filtering and does not rely on file ordering.
+- Maron Table S5 currently defaults to excluding `Larsen`-matched references. Override `--exclude-pattern` if you want a different sensitivity run.
+- Do not use `Rme1` vs `Rme2` as a primary split for the integrated mass-spec-driven union. Source-provided state labels are retained only as auxiliary provenance.
+- Domain context and disorder context should remain separate layers. The domain-context script classifies sites as `in_domain`, `boundary`, or `distal` relative to InterPro intervals and does not merge those labels with IDR annotations.
+- The dbPTM downloader script is separated from analysis so static files can be staged first.

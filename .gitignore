@@ -1,0 +1,11 @@
+.codex/
+
+scripts/__pycache__/
+*.pyc
+*.pyo
+
+results/*
+!results/.gitkeep
+
+data/context/*
+!data/context/.gitkeep

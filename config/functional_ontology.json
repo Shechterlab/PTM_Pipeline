@@ -1,0 +1,24 @@
+{
+  "broad_classes": [
+    {"label": "RNA-binding / RNP", "patterns": ["rna binding", "ribonucle", "splice", "snrnp", "lsm", "sm protein", "rrm", "kh domain", "paraspeck", "nucleol", "stress granule", "rna helicase", "dead-box", "hnrnp", "ribonucleoprote"]},
+    {"label": "Chromatin / transcription", "patterns": ["chromatin", "histone", "nucleosome", "transcription", "polymerase", "epigen", "dna-binding", "dna binding", "bromodomain", "pwwp", "tudor", "paf1", "mediator", "writer", "reader", "remodel"]},
+    {"label": "DNA repair / genome maintenance", "patterns": ["dna repair", "double-strand", "homologous recombination", "genome integrity", "replication", "fork", "damage response", "helicase"]},
+    {"label": "Translation / ribosome / biogenesis", "patterns": ["ribosom", "translation", "trna", "rrna", "ribosome biogenesis", "sno", "nucleolar"]},
+    {"label": "Signaling / enzyme", "patterns": ["kinase", "phosphatase", "gtpase", "atpase", "metabolic", "enzyme", "cataly"]},
+    {"label": "Cytoskeleton / trafficking / membrane", "patterns": ["actin", "microtub", "myosin", "dynein", "kinesin", "vesicle", "membrane", "golgi", "endosome", "mitochond"]}
+  ],
+  "subclasses": [
+    {"label": "Spliceosome / splicing factors", "patterns": ["splice", "snrnp", "prpf", "sf3", "u2af", "sr protein", "serine/arginine-rich", "sm protein", "lsm"]},
+    {"label": "RNA helicases", "patterns": ["helicase", "dead-box", "ddx", "dhx", "ski2"]},
+    {"label": "Ribosome biogenesis / nucleolar RNP", "patterns": ["ribosome biogenesis", "nucleolar", "sno", "rrna processing", "ribosomal RNA", "fibrillarin", "nop", "dyskerin"]},
+    {"label": "Paraspeckle / granule factors", "patterns": ["paraspeck", "stress granule", "fused in sarcoma", "fmr1", "hnrnp", "rbm14", "sfpq", "nono", "tardbp", "tls"]},
+    {"label": "Sm/Lsm snRNP core", "patterns": ["sm protein", "lsm", "snrnp"]},
+    {"label": "RRM / KH RNA-binding proteins", "patterns": ["rrm", "kh domain", "rna recognition motif", "quaking", "igf2bp", "khsrp"]},
+    {"label": "Chromatin readers", "patterns": ["reader", "tudor", "pwwp", "chromodomain", "bromodomain", "mbt", "wd repeat", "plant homeodomain", "phd"]},
+    {"label": "Chromatin writers / erasers / remodelers", "patterns": ["methyltransferase", "acetyltransferase", "deacetylase", "demethylase", "remodel", "swi/snf", "histone acetyl", "histone deacetyl"]},
+    {"label": "Transcription / mediator / polymerase", "patterns": ["transcription", "mediator", "rna polymerase", "elongation", "transcription factor", "coactivator", "corepressor"]},
+    {"label": "DNA repair / DDR", "patterns": ["dna repair", "damage response", "brca", "53bp", "rad51", "mre11", "atm", "atr", "replication fork"]},
+    {"label": "Translation / ribosomal proteins", "patterns": ["ribosomal protein", "translation", "trna", "elongation factor", "initiation factor"]},
+    {"label": "Other / unclassified", "patterns": ["a^"]}
+  ]
+}
