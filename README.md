@@ -45,7 +45,27 @@ python scripts/05_annotate_domain_context.py --sites results/integrated/human_ar
 ```
 
 ## HPC
-Use `hpc/slurm_run_integration.sh`.
+Create a dedicated environment instead of using the shared base env:
+```bash
+bash hpc/create_ptm_env.sh envs/ptm_pipeline_hpc.yml ptm_pipeline
+```
+
+Stage InterPro locally if you want domain-context outputs:
+```bash
+curl -L -o data/context/protein2ipr.dat.gz https://ftp.ebi.ac.uk/pub/databases/interpro/current_release/protein2ipr.dat.gz
+```
+
+Then submit:
+```bash
+sbatch hpc/slurm_run_integration.sh "$PWD"
+```
+
+If your HPC env uses a different Conda env name or prefix:
+```bash
+PTM_ENV_NAME=my_env sbatch hpc/slurm_run_integration.sh "$PWD"
+# or
+PTM_ENV_PREFIX=/path/to/conda/env sbatch hpc/slurm_run_integration.sh "$PWD"
+```
 
 ## Notes
 - `mmc2.xlsx` is the site-level ProMetheusDB supplement to include. `mmc3.xlsx` contains enrichment/cluster summaries and is not used as a primary site source.
@@ -56,3 +76,4 @@ Use `hpc/slurm_run_integration.sh`.
 - Do not use `Rme1` vs `Rme2` as a primary split for the integrated mass-spec-driven union. Source-provided state labels are retained only as auxiliary provenance.
 - Domain context and disorder context should remain separate layers. The domain-context script classifies sites as `in_domain`, `boundary`, or `distal` relative to InterPro intervals and does not merge those labels with IDR annotations.
 - The dbPTM downloader script is separated from analysis so static files can be staged first.
+- The Einstein HPC `WARNING: overwriting environment variables set in the machine` message during Conda activation is not the failure. The real failure is NumPy/Pandas/Matplotlib binary incompatibility in the shared base env, which is why the pipeline should run in a dedicated Conda environment.

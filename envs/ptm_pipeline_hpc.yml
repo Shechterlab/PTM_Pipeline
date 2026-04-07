@@ -1,0 +1,9 @@
+name: ptm_pipeline
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pandas=2.2.*
+  - matplotlib=3.8.*
+  - openpyxl=3.1.*
+  - requests=2.32.*
