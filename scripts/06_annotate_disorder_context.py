@@ -10,6 +10,7 @@ import pandas as pd
 from common import (
     canonical_site_table,
     fisher_like_enrichment,
+    format_p_value,
     parse_fasta,
     residue_background_from_sequences,
     save_figure,
@@ -177,10 +178,13 @@ def main() -> None:
         compare = pd.read_csv(outdir / 'idr_enrichment_vs_arginines_in_methylated_proteins.tsv', sep='\t')
         compare = compare[compare['category'].isin(['disordered', 'disorder_boundary', 'ordered'])].sort_values('odds_ratio')
         fig2, ax2 = plt.subplots(figsize=(7.4, 4.8))
-        ax2.barh(compare['category'], compare['odds_ratio'])
-        ax2.set_xlabel('Odds ratio vs arginines in methylated proteins')
+        ax2.barh(compare['category'], compare['log2_odds_ratio'])
+        ax2.axvline(0, color='black', linewidth=0.8)
+        ax2.set_xlabel('log2(OR) vs arginines in methylated proteins')
         ax2.set_ylabel('Disorder class')
         ax2.set_title('Methylarginine enrichment by disorder context')
+        for y, v, n, p in zip(compare['category'], compare['log2_odds_ratio'], compare['target_count'], compare['p_value']):
+            ax2.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
         fig2.tight_layout()
         save_figure(fig2, outdir / 'arg_methyl_idr_enrichment')
 

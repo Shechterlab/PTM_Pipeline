@@ -10,9 +10,16 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator, TextIO
+from urllib.error import HTTPError
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+from urllib.request import Request, urlopen
 
 import pandas as pd
-import requests
+
+try:
+    import requests
+except ImportError:  # pragma: no cover - optional dependency for HPC portability
+    requests = None
 
 from common import canonicalize_uniprot_accession
 
@@ -26,14 +33,56 @@ DEFAULT_DOMAIN_TYPES = ('domain', 'homologous_superfamily', 'repeat')
 HEADERS = {'User-Agent': 'PTM-pipeline-context-stager/1.0'}
 
 
+def build_url(url: str, params: dict[str, str] | None = None) -> str:
+    if not params:
+        return url
+    parts = list(urlsplit(url))
+    query = dict(parse_qsl(parts[3], keep_blank_values=True))
+    query.update({key: value for key, value in params.items() if value is not None})
+    parts[3] = urlencode(query)
+    return urlunsplit(parts)
+
+
+@contextmanager
+def http_open(url: str, params: dict[str, str] | None = None, timeout: int = 300):
+    if requests is not None:
+        with requests.get(url, params=params, stream=True, timeout=timeout, headers=HEADERS) as response:
+            response.raise_for_status()
+            yield response
+        return
+
+    request = Request(build_url(url, params), headers=HEADERS)
+    with urlopen(request, timeout=timeout) as response:
+        yield response
+
+
+def iter_response_chunks(response, chunk_size: int) -> Iterator[bytes]:
+    if requests is not None and hasattr(response, 'iter_content'):
+        for chunk in response.iter_content(chunk_size=chunk_size):
+            if chunk:
+                yield chunk
+        return
+
+    while True:
+        chunk = response.read(chunk_size)
+        if not chunk:
+            break
+        yield chunk
+
+
+def fetch_json(url: str, params: dict[str, str] | None = None, timeout: int = 300) -> dict:
+    with http_open(url, params=params, timeout=timeout) as response:
+        if requests is not None and hasattr(response, 'json'):
+            return response.json()
+        return json.loads(response.read().decode('utf-8'))
+
+
 def download_file(url: str, params: dict[str, str], dest: Path, timeout: int = 300) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
-    with requests.get(url, params=params, stream=True, timeout=timeout, headers=HEADERS) as response:
-        response.raise_for_status()
+    with http_open(url, params=params, timeout=timeout) as response:
         with open(dest, 'wb') as fh:
-            for chunk in response.iter_content(chunk_size=1024 * 1024):
-                if chunk:
-                    fh.write(chunk)
+            for chunk in iter_response_chunks(response, chunk_size=1024 * 1024):
+                fh.write(chunk)
 
 
 def parse_accessions_from_tsv(path: Path) -> list[str]:
@@ -99,14 +148,14 @@ def infer_member_database_source(member_accession: str) -> str:
 def open_text_stream(source: str | Path, timeout: int = 300) -> Iterator[TextIO]:
     source_text = str(source)
     if source_text.startswith(('http://', 'https://')):
-        with requests.get(source_text, stream=True, timeout=timeout, headers=HEADERS) as response:
-            response.raise_for_status()
+        with http_open(source_text, timeout=timeout) as response:
+            raw_handle = response.raw if requests is not None and hasattr(response, 'raw') else response
             if source_text.endswith('.gz'):
-                with gzip.GzipFile(fileobj=response.raw) as gz_fh:
+                with gzip.GzipFile(fileobj=raw_handle) as gz_fh:
                     with io.TextIOWrapper(gz_fh, encoding='utf-8') as text_fh:
                         yield text_fh
             else:
-                with io.TextIOWrapper(response.raw, encoding='utf-8') as text_fh:
+                with io.TextIOWrapper(raw_handle, encoding='utf-8') as text_fh:
                     yield text_fh
         return
 
@@ -136,17 +185,17 @@ def fetch_interpro_payload(accession: str, cache_dir: Path, page_size: int, forc
             first_page = True
             results = []
             while next_url:
-                with requests.get(next_url, params=params if first_page else None, timeout=timeout, headers=HEADERS) as response:
-                    response.raise_for_status()
-                    payload = response.json()
+                payload = fetch_json(next_url, params=params if first_page else None, timeout=timeout)
                 count = int(payload.get('count', 0) or 0)
                 results.extend(payload.get('results', []))
                 next_url = payload.get('next')
                 first_page = False
                 params = None
             break
-        except requests.HTTPError as exc:
-            status_code = exc.response.status_code if exc.response is not None else None
+        except HTTPError as exc:
+            status_code = getattr(exc, 'code', None)
+            if status_code is None and getattr(exc, 'response', None) is not None:
+                status_code = exc.response.status_code
             if status_code == 404:
                 count = 0
                 results = []

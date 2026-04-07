@@ -11,6 +11,8 @@ from scipy.stats import fisher_exact
 
 from common import (
     canonical_site_table,
+    format_p_value,
+    log2_odds_ratio,
     parse_fasta,
     residue_background_from_sequences,
     save_figure,
@@ -64,6 +66,7 @@ def motif_enrichment(target: pd.DataFrame, background: pd.DataFrame, motif_colum
             'background_count': c,
             'background_fraction': c / len(background) if len(background) else np.nan,
             'odds_ratio': odds_ratio(a, b, c, d),
+            'log2_odds_ratio': log2_odds_ratio(odds_ratio(a, b, c, d)),
             'p_value': float(fisher_exact([[a, b], [c, d]], alternative='two-sided').pvalue),
             'background_model': background_label,
         })
@@ -163,6 +166,19 @@ def main() -> None:
         ),
         axis=1,
     )
+    protein_counts['log2_odds_ratio'] = protein_counts['odds_ratio'].map(log2_odds_ratio)
+    protein_counts['p_value'] = protein_counts.apply(
+        lambda row: float(
+            fisher_exact(
+                [
+                    [int(row['methyl_site_count']), max(int(row['arginine_count']) - int(row['methyl_site_count']), 0)],
+                    [int(row['other_methyl']), max(int(row['other_arg']) - int(row['other_methyl']), 0)],
+                ],
+                alternative='two-sided',
+            ).pvalue
+        ),
+        axis=1,
+    )
     protein_counts = protein_counts[(protein_counts['arginine_count'] >= args.min_arg_count) & (protein_counts['methyl_site_count'] >= args.min_site_count)].copy()
     protein_counts['label'] = protein_counts.apply(top_protein_label, axis=1)
     protein_counts = protein_counts.sort_values(['odds_ratio', 'methyl_site_count'], ascending=[False, False])
@@ -177,6 +193,8 @@ def main() -> None:
             'context': column.replace('motif_', ''),
             'site_count': a,
             'odds_ratio': odds_ratio(a, b, c, d),
+            'log2_odds_ratio': log2_odds_ratio(odds_ratio(a, b, c, d)),
+            'p_value': float(fisher_exact([[a, b], [c, d]], alternative='two-sided').pvalue),
             'background_model': 'arginines_in_methylated_proteins',
         })
     per_proteome_context = pd.DataFrame(context_rows).sort_values('odds_ratio', ascending=False)
@@ -192,10 +210,13 @@ def main() -> None:
 
     plot_motif = motif_vs_methyl_proteins.head(12).sort_values('odds_ratio')
     fig, ax = plt.subplots(figsize=(9.0, 6.0))
-    ax.barh(plot_motif['motif_family'], plot_motif['odds_ratio'])
-    ax.set_xlabel('Odds ratio vs arginines in methylated proteins')
+    ax.barh(plot_motif['motif_family'], plot_motif['log2_odds_ratio'])
+    ax.axvline(0, color='black', linewidth=0.8)
+    ax.set_xlabel('log2(OR) vs arginines in methylated proteins')
     ax.set_ylabel('Motif family')
     ax.set_title('Methylarginine motif-family enrichment')
+    for y, v, n, p in zip(plot_motif['motif_family'], plot_motif['log2_odds_ratio'], plot_motif['target_count'], plot_motif['p_value']):
+        ax.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=8.5)
     fig.tight_layout()
     save_figure(fig, outdir / 'arg_methyl_motif_family_enrichment')
 
@@ -222,10 +243,13 @@ def main() -> None:
 
     top_or = protein_counts.head(20).sort_values('odds_ratio')
     fig3, ax3 = plt.subplots(figsize=(10.0, 7.0))
-    ax3.barh(top_or['label'], top_or['odds_ratio'])
-    ax3.set_xlabel('Arg-normalized odds ratio')
+    ax3.barh(top_or['label'], top_or['log2_odds_ratio'])
+    ax3.axvline(0, color='black', linewidth=0.8)
+    ax3.set_xlabel('log2 Arg-normalized odds ratio')
     ax3.set_ylabel('Protein')
     ax3.set_title('Top proteins by methylarginine Arg odds ratio')
+    for y, v, n, p in zip(top_or['label'], top_or['log2_odds_ratio'], top_or['methyl_site_count'], top_or['p_value']):
+        ax3.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=8)
     fig3.tight_layout()
     save_figure(fig3, outdir / 'top_proteins_by_arg_odds_ratio')
 

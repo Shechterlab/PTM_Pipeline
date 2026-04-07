@@ -6,7 +6,15 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from common import canonicalize_uniprot_accession, classify_by_patterns, fisher_like_enrichment, load_json, save_figure, save_table
+from common import (
+    canonicalize_uniprot_accession,
+    classify_by_patterns,
+    fisher_like_enrichment,
+    format_p_value,
+    load_json,
+    save_figure,
+    save_table,
+)
 
 
 def main() -> None:
@@ -44,23 +52,25 @@ def main() -> None:
 
     pb = broad[broad['target_count'] >= 10].head(10).sort_values('odds_ratio')
     fig, ax = plt.subplots(figsize=(8.5, 5.8))
-    ax.barh(pb['category'], pb['odds_ratio'])
-    ax.set_xlabel('Odds ratio vs all PTM proteins')
+    ax.barh(pb['category'], pb['log2_odds_ratio'])
+    ax.axvline(0, color='black', linewidth=0.8)
+    ax.set_xlabel('log2(OR) vs all PTM proteins')
     ax.set_ylabel('Broad class')
     ax.set_title('Integrated arg-methylome: broad functional-class enrichment')
-    for y, v, n in zip(pb['category'], pb['odds_ratio'], pb['target_count']):
-        ax.text(v, y, f'  n={n}, OR={v:.1f}', va='center', fontsize=9)
+    for y, v, n, p in zip(pb['category'], pb['log2_odds_ratio'], pb['target_count'], pb['p_value']):
+        ax.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
     fig.tight_layout()
     save_figure(fig, outdir / 'arg_methyl_functional_class_broad_enrichment')
 
     ps = sub[sub['target_count'] >= 5].head(12).sort_values('odds_ratio')
     fig2, ax2 = plt.subplots(figsize=(8.9, 6.3))
-    ax2.barh(ps['category'], ps['odds_ratio'])
-    ax2.set_xlabel('Odds ratio vs all PTM proteins')
+    ax2.barh(ps['category'], ps['log2_odds_ratio'])
+    ax2.axvline(0, color='black', linewidth=0.8)
+    ax2.set_xlabel('log2(OR) vs all PTM proteins')
     ax2.set_ylabel('Subclass')
     ax2.set_title('Integrated arg-methylome: review-grade subclass enrichment')
-    for y, v, n in zip(ps['category'], ps['odds_ratio'], ps['target_count']):
-        ax2.text(v, y, f'  n={n}, OR={v:.1f}', va='center', fontsize=9)
+    for y, v, n, p in zip(ps['category'], ps['log2_odds_ratio'], ps['target_count'], ps['p_value']):
+        ax2.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
     fig2.tight_layout()
     save_figure(fig2, outdir / 'arg_methyl_functional_class_subclass_enrichment')
 

@@ -7,7 +7,16 @@
 #SBATCH --mem=32G
 #SBATCH -t 12:00:00
 
-. /gs/gsfs0/hpc01/rhel8/apps/conda3/bin/activate
+CONDA_BASE=/gs/gsfs0/hpc01/rhel8/apps/conda3
+CONDA_EXE="$CONDA_BASE/bin/conda"
+
+if [ -x "$CONDA_EXE" ]; then
+  eval "$("$CONDA_EXE" shell.bash hook)"
+  CONDA_HOOK_STATUS=$?
+else
+  . "$CONDA_BASE/bin/activate"
+  CONDA_HOOK_STATUS=$?
+fi
 
 ENV_NAME=${PTM_ENV_NAME:-ptm_pipeline}
 ENV_PREFIX=${PTM_ENV_PREFIX:-}
@@ -27,6 +36,11 @@ run_step() {
     exit "$status"
   fi
 }
+
+if [ "$CONDA_HOOK_STATUS" -ne 0 ]; then
+  echo "[ptm_interpro_api] failed to initialize Conda shell hook"
+  exit "$CONDA_HOOK_STATUS"
+fi
 
 if [ -n "$ENV_PREFIX" ]; then
   conda activate "$ENV_PREFIX"
@@ -80,4 +94,3 @@ run_step "summarize domain enrichment" python "$BASE_DIR/scripts/07_summarize_do
   --interpro-intervals "$BASE_DIR/data/context/interpro_human_reviewed_domain_like_intervals.tsv" \
   --canonical-fasta "$BASE_DIR/data/context/uniprot_human_reviewed_canonical.fasta" \
   --outdir "$BASE_DIR/results/domain_context"
-

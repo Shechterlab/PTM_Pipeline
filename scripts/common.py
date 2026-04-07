@@ -61,6 +61,24 @@ def classify_by_patterns(text: str, blocks: list[dict], default: str = 'Other / 
     return default
 
 
+def log2_odds_ratio(value: float) -> float:
+    value = float(value)
+    if value <= 0 or math.isnan(value):
+        return math.nan
+    return math.log2(value)
+
+
+def format_p_value(value) -> str:
+    if pd.isna(value):
+        return 'NA'
+    value = float(value)
+    if value == 0.0:
+        return '0'
+    if value < 1e-3:
+        return f'{value:.1e}'
+    return f'{value:.3f}'
+
+
 def fisher_like_enrichment(target: pd.Series, universe: pd.Series) -> pd.DataFrame:
     target = target.fillna('Other / unclassified')
     universe = universe.fillna('Other / unclassified')
@@ -81,6 +99,7 @@ def fisher_like_enrichment(target: pd.Series, universe: pd.Series) -> pd.DataFra
             'background_count': c,
             'background_fraction': c / universe_n if universe_n else np.nan,
             'odds_ratio': orr,
+            'log2_odds_ratio': log2_odds_ratio(orr),
             'p_value': float(fisher_exact([[a, b], [c, d]], alternative='two-sided').pvalue),
         })
     out = pd.DataFrame(rows)

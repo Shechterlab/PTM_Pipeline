@@ -7,7 +7,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from common import canonicalize_uniprot_accession, fisher_like_enrichment, parse_fasta, residue_background_from_sequences, save_figure, save_table
+from common import (
+    canonicalize_uniprot_accession,
+    fisher_like_enrichment,
+    format_p_value,
+    parse_fasta,
+    residue_background_from_sequences,
+    save_figure,
+    save_table,
+)
 
 
 DEFAULT_PTM_GROUPS = [
@@ -220,11 +228,14 @@ def main() -> None:
             if not plot_df.empty:
                 plot_df = plot_df.sort_values('odds_ratio', ascending=False)
                 fig_idr, ax_idr = plt.subplots(figsize=(8.8, 5.2))
-                ax_idr.bar(plot_df['ptm_group'], plot_df['odds_ratio'])
-                ax_idr.set_ylabel('IDR odds ratio vs target-residue proteome background')
+                ax_idr.bar(plot_df['ptm_group'], plot_df['log2_odds_ratio'])
+                ax_idr.axhline(0, color='black', linewidth=0.8)
+                ax_idr.set_ylabel('log2(OR) for IDR vs target-residue proteome background')
                 ax_idr.set_xlabel('PTM class')
                 ax_idr.set_title('Cross-PTM IDR enrichment')
                 ax_idr.tick_params(axis='x', rotation=25)
+                for x, v, p in zip(plot_df['ptm_group'], plot_df['log2_odds_ratio'], plot_df['p_value']):
+                    ax_idr.text(x, v, f'p={format_p_value(p)}', ha='center', va='bottom' if v >= 0 else 'top', fontsize=8, rotation=90)
                 fig_idr.tight_layout()
                 save_figure(fig_idr, Path(args.outdir) / 'cross_ptm_idr_binary_comparison')
 
@@ -255,11 +266,15 @@ def main() -> None:
                 (comparison['category'].isin(['disordered', 'disorder_boundary', 'ordered']))
             ].copy()
             if not plot_df.empty:
-                pivot = plot_df.pivot(index='ptm_group', columns='category', values='odds_ratio').fillna(1.0)
+                pivot = plot_df.pivot(index='ptm_group', columns='category', values='log2_odds_ratio').fillna(0.0)
                 fig, ax = plt.subplots(figsize=(9.5, 5.5))
                 for category in pivot.columns:
                     ax.plot(pivot.index, pivot[category], marker='o', label=category)
-                ax.set_ylabel('Odds ratio vs target-residue proteome background')
+                    category_df = plot_df[plot_df['category'] == category]
+                    for _, row in category_df.iterrows():
+                        ax.text(row['ptm_group'], row['log2_odds_ratio'], f" p={format_p_value(row['p_value'])}", fontsize=7, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
+                ax.axhline(0, color='black', linewidth=0.8)
+                ax.set_ylabel('log2(OR) vs target-residue proteome background')
                 ax.set_xlabel('PTM class')
                 ax.set_title('Cross-PTM disorder-context comparison')
                 ax.tick_params(axis='x', rotation=25)
@@ -273,11 +288,15 @@ def main() -> None:
                 (comparison['category'].isin(['in_domain', 'boundary', 'distal']))
             ].copy()
             if not plot_df.empty:
-                pivot = plot_df.pivot(index='ptm_group', columns='category', values='odds_ratio').fillna(1.0)
+                pivot = plot_df.pivot(index='ptm_group', columns='category', values='log2_odds_ratio').fillna(0.0)
                 fig2, ax2 = plt.subplots(figsize=(9.5, 5.5))
                 for category in pivot.columns:
                     ax2.plot(pivot.index, pivot[category], marker='o', label=category)
-                ax2.set_ylabel('Odds ratio vs target-residue proteome background')
+                    category_df = plot_df[plot_df['category'] == category]
+                    for _, row in category_df.iterrows():
+                        ax2.text(row['ptm_group'], row['log2_odds_ratio'], f" p={format_p_value(row['p_value'])}", fontsize=7, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
+                ax2.axhline(0, color='black', linewidth=0.8)
+                ax2.set_ylabel('log2(OR) vs target-residue proteome background')
                 ax2.set_xlabel('PTM class')
                 ax2.set_title('Cross-PTM domain-context comparison')
                 ax2.tick_params(axis='x', rotation=25)
