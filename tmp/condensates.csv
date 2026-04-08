@@ -1,0 +1,3 @@
+id,functional_type,confidence_score,is_experimental
+CD1,driver,0.95,TRUE
+CD2,member,0.8,FALSE

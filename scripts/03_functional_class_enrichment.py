@@ -57,8 +57,8 @@ def main() -> None:
     ax.set_xlabel('log2(OR) vs all PTM proteins')
     ax.set_ylabel('Broad class')
     ax.set_title('Integrated arg-methylome: broad functional-class enrichment')
-    for y, v, n, p in zip(pb['category'], pb['log2_odds_ratio'], pb['target_count'], pb['p_value']):
-        ax.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+    for y, v, n, q in zip(pb['category'], pb['log2_odds_ratio'], pb['target_count'], pb['q_value_bh']):
+        ax.text(v, y, f'  n={n}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
     fig.tight_layout()
     save_figure(fig, outdir / 'arg_methyl_functional_class_broad_enrichment')
 
@@ -69,8 +69,8 @@ def main() -> None:
     ax2.set_xlabel('log2(OR) vs all PTM proteins')
     ax2.set_ylabel('Subclass')
     ax2.set_title('Integrated arg-methylome: review-grade subclass enrichment')
-    for y, v, n, p in zip(ps['category'], ps['log2_odds_ratio'], ps['target_count'], ps['p_value']):
-        ax2.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+    for y, v, n, q in zip(ps['category'], ps['log2_odds_ratio'], ps['target_count'], ps['q_value_bh']):
+        ax2.text(v, y, f'  n={n}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
     fig2.tight_layout()
     save_figure(fig2, outdir / 'arg_methyl_functional_class_subclass_enrichment')
 

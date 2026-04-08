@@ -177,8 +177,8 @@ def main() -> None:
     ax.set_xlabel('log2(OR) vs arginines in methylated proteins')
     ax.set_ylabel('Domain context')
     ax.set_title('Methylarginine enrichment by domain context')
-    for y, v, n, p in zip(plot_context['category'], plot_context['log2_odds_ratio'], plot_context['target_count'], plot_context['p_value']):
-        ax.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+    for y, v, n, q in zip(plot_context['category'], plot_context['log2_odds_ratio'], plot_context['target_count'], plot_context['q_value_bh']):
+        ax.text(v, y, f'  n={n}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
     fig.tight_layout()
     save_figure(fig, outdir / 'arg_methyl_domain_context_enrichment')
 
@@ -189,8 +189,8 @@ def main() -> None:
     ax2.set_xlabel('log2(OR) vs arginines in methylated proteins')
     ax2.set_ylabel('Nearest domain class')
     ax2.set_title('Nearest domain-class enrichment around methylarginines')
-    for y, v, n, p in zip(plot_domain['category'], plot_domain['log2_odds_ratio'], plot_domain['target_count'], plot_domain['p_value']):
-        ax2.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+    for y, v, n, q in zip(plot_domain['category'], plot_domain['log2_odds_ratio'], plot_domain['target_count'], plot_domain['q_value_bh']):
+        ax2.text(v, y, f'  n={n}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
     fig2.tight_layout()
     save_figure(fig2, outdir / 'arg_methyl_nearest_domain_class_enrichment')
 

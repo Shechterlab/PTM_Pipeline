@@ -149,6 +149,7 @@ def main() -> None:
     ap.add_argument('--base-master')
     ap.add_argument('--maron')
     ap.add_argument('--prometheus')
+    ap.add_argument('--dbptm', default='')
     ap.add_argument('--premerged-remapped', default='')
     ap.add_argument('--outdir', default='results/integrated')
     ap.add_argument('--fuzzy-tolerance', type=int, default=2)
@@ -180,8 +181,12 @@ def main() -> None:
         prom = pd.read_csv(args.prometheus, sep='\t', low_memory=False)
 
         frames = [prepare_source_frame(df) for df in [base, maron, prom]]
+        if args.dbptm:
+            dbptm = pd.read_csv(args.dbptm, sep='	', low_memory=False)
+            frames.append(prepare_source_frame(dbptm))
         keep_cols = sorted(set().union(*(frame.columns for frame in frames)))
         all_sites = pd.concat([frame.reindex(columns=keep_cols) for frame in frames], ignore_index=True, sort=False)
+        all_sites['source_position_original'] = pd.to_numeric(all_sites['position'], errors='coerce')
         all_sites['integration_accession'] = all_sites['substrate_UniProtAC']
         all_sites['source_accessions_original'] = all_sites['substrate_UniProtAC'].astype(str)
 

@@ -183,8 +183,8 @@ def main() -> None:
         ax2.set_xlabel('log2(OR) vs arginines in methylated proteins')
         ax2.set_ylabel('Disorder class')
         ax2.set_title('Methylarginine enrichment by disorder context')
-        for y, v, n, p in zip(compare['category'], compare['log2_odds_ratio'], compare['target_count'], compare['p_value']):
-            ax2.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+        for y, v, n, q in zip(compare['category'], compare['log2_odds_ratio'], compare['target_count'], compare['q_value_bh']):
+            ax2.text(v, y, f'  n={n}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
         fig2.tight_layout()
         save_figure(fig2, outdir / 'arg_methyl_idr_enrichment')
 

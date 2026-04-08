@@ -1,0 +1,3 @@
+canonical_UniProtAC	is_condensate	is_experimental	confidence_score	condensate_role
+P12345	True	True	0.95	driver
+Q99999	True	False	0.8	member

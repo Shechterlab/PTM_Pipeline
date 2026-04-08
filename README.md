@@ -10,13 +10,14 @@ Clean mental model:
 Included source parsers:
 - Maron Table S5 Excel parser with optional Larsen exclusion
 - ProMetheusDB supplementary `mmc2.xlsx` parser (`RK-methylsites` sheet)
-- dbPTM static download helper and a parser preview for the methylation export
+- Optional dbPTM experimental methylation parser for extending the methylarginine union when a dbPTM export is staged
 
 Key integration logic:
-- Preserves exact site support across source families
+- Preserves exact site support across source families, with corrected source-family labeling for UniProt / IEDB / iPTMnet provenance
 - Adds fuzzy support clustering within the same UniProt accession and residue, default tolerance ±2 aa
-- Assigns confidence tiers rather than using a hard `>=2 exact-match` filter alone
+- Assigns cross-resource recurrence tiers rather than treating multi-resource overlap as fully independent replication
 - Preserves original accession alongside a naive canonicalized accession audit field
+- Includes a source-union audit module that summarizes exact overlaps, source combinations, and review-ready descriptive figures for the full methylarginine union
 - Preserves source-provided methyl-state labels as provenance fields, but these are not intended to drive primary downstream splits
 - Supports staged canonical FASTA and InterPro interval downloads for post-remap domain-context annotation
 - Supports staged disorder interval inputs for IDR/boundary enrichment and cross-PTM context comparison
@@ -26,17 +27,26 @@ Place or symlink these files:
 - `data/base/human_ptm_master.tsv` (existing iPTMnet/UniProt-based master)
 - `data/external/Table_S5_Compiled_Methylarginine_Data.xlsx`
 - `data/external/mmc2.xlsx`
+- Optional: a dbPTM methylation export compatible with `scripts/01_parse_dbptm_methylation.py`
+- For condensate analysis, place raw CD-CODE downloads in `data/external/cd_code/`:
+  - `proteins_202603181653.csv`
+  - `protein2cdcode_v2.2.tsv`
+  - `condensates_202603181647.csv`
 
 ## Local run order
 ```bash
 python scripts/01_parse_maron_s5.py --input data/external/Table_S5_Compiled_Methylarginine_Data.xlsx --outdir results/parsed_maron
 python scripts/01_parse_prometheus_mmc2.py --input data/external/mmc2.xlsx --outdir results/parsed_prometheus
+# Optional if you stage a dbPTM experimental methylation export
+python scripts/01_parse_dbptm_methylation.py --input data/external/dbptm_methylation.tsv.gz --outdir results/parsed_dbptm
 # Stage canonical FASTA and UniProt metadata for remapping
 python scripts/00_stage_context_sources.py --outdir data/context --skip-interpro
 # Remap all source rows onto canonical reviewed coordinates
-python scripts/02_remap_arg_methyl_to_canonical.py --base-master data/base/human_ptm_master.tsv --maron results/parsed_maron/maron_s5_arg_methyl_sites.tsv --prometheus results/parsed_prometheus/prometheus_mmc2_arg_methyl_sites.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --uniprot-metadata data/context/uniprot_human_reviewed_canonical_metadata.tsv --outdir results/remapped
+python scripts/02_remap_arg_methyl_to_canonical.py --base-master data/base/human_ptm_master.tsv --maron results/parsed_maron/maron_s5_arg_methyl_sites.tsv --prometheus results/parsed_prometheus/prometheus_mmc2_arg_methyl_sites.tsv --dbptm results/parsed_dbptm/dbptm_arg_methyl_sites.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --uniprot-metadata data/context/uniprot_human_reviewed_canonical_metadata.tsv --outdir results/remapped
 # Integrate on remapped canonical positions
 python scripts/02_integrate_arg_methyl_sources.py --premerged-remapped results/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv --outdir results/integrated
+# Or integrate directly without remapping, optionally adding dbPTM if staged
+python scripts/02_integrate_arg_methyl_sources.py --base-master data/base/human_ptm_master.tsv --maron results/parsed_maron/maron_s5_arg_methyl_sites.tsv --prometheus results/parsed_prometheus/prometheus_mmc2_arg_methyl_sites.tsv --dbptm results/parsed_dbptm/dbptm_arg_methyl_sites.tsv --outdir results/integrated_direct
 python scripts/03_functional_class_enrichment.py --base-master data/base/human_ptm_master.tsv --integrated-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --ontology config/functional_ontology.json --outdir results/functional_class_union
 python scripts/04_example_figures.py --integrated-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --outdir results/example_figures
 python scripts/08_motif_and_arg_odds.py --integrated-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/motif_arg_odds
@@ -44,6 +54,18 @@ python scripts/08_motif_and_arg_odds.py --integrated-sites results/integrated/hu
 python scripts/10_methyl_arg_clustering.py --integrated-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/methyl_arg_clustering
 # Cross-PTM clustering comparison using the same sliding-distance / permutation framework
 python scripts/11_compare_ptm_clustering.py --base-master data/base/human_ptm_master.tsv --integrated-arg-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/ptm_clustering
+# Directed methyl-Arg neighbor enrichment against homotypic and heterotypic PTM classes
+python scripts/12_cross_ptm_neighbor_enrichment.py --base-master data/base/human_ptm_master.tsv --integrated-arg-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --disorder-intervals data/context/mobidb_human_reviewed_disorder_intervals.tsv --outdir results/cross_ptm_neighbors
+# You can also point the condensate module directly at raw CD-CODE downloads if you do not want a separate staging step
+python scripts/13_condensate_ptm_enrichment.py --base-master data/base/human_ptm_master.tsv --integrated-arg-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --cdcode-proteins data/external/cd_code/proteins_202603181653.csv --cdcode-protein-map data/external/cd_code/protein2cdcode_v2.2.tsv --cdcode-condensates data/external/cd_code/condensates_202603181647.csv --disorder-intervals data/context/mobidb_human_reviewed_disorder_intervals.tsv --outdir results/condensate_enrichment
+# Stage raw CD-CODE downloads into the protein table expected by the condensate module
+python scripts/00_stage_cd_code_condensates.py --cdcode-proteins data/external/cd_code/proteins_202603181653.csv --cdcode-protein-map data/external/cd_code/protein2cdcode_v2.2.tsv --cdcode-condensates data/external/cd_code/condensates_202603181647.csv --out data/context/cd_code_condensate_proteins.tsv
+# Protein-level condensate enrichment from either the staged table or the raw CD-CODE trio
+python scripts/13_condensate_ptm_enrichment.py --base-master data/base/human_ptm_master.tsv --integrated-arg-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --condensate-proteins data/context/cd_code_condensate_proteins.tsv --disorder-intervals data/context/mobidb_human_reviewed_disorder_intervals.tsv --outdir results/condensate_enrichment
+# Review-grade union-source audit and figure set
+python scripts/14_union_source_audit_and_review_figures.py --all-rows results/integrated_direct/human_arg_methyl_union_all_rows.tsv --dedup-sites results/integrated_direct/human_arg_methyl_union_dedup_by_site.tsv --outdir results/review_audit
+# Synthetic smoke test for the repaired clustering / neighbor / condensate modules
+python scripts/99_smoke_test_pipeline.py
 # If you stage disorder intervals (for example MobiDB-derived intervals) as canonical accession/start/end rows:
 python scripts/06_annotate_disorder_context.py --sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --disorder-intervals data/context/mobidb_human_reviewed_disorder_intervals.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/disorder_context
 # Stage InterPro only for remapped canonical proteins once remapping is done
@@ -71,9 +93,19 @@ Stage InterPro locally if you want domain-context outputs:
 curl -L -o data/context/protein2ipr.dat.gz https://ftp.ebi.ac.uk/pub/databases/interpro/current_release/protein2ipr.dat.gz
 ```
 
-Then submit:
+Then submit the main HPC workflow:
 ```bash
 sbatch hpc/slurm_run_integration.sh "$PWD"
+```
+
+That main Slurm runner now also does the following automatically:
+- runs cross-PTM neighbor enrichment,
+- writes the union-source review audit and figure set,
+- stages and runs condensate enrichment automatically if either `data/context/cd_code_condensate_proteins.tsv` already exists or the raw CD-CODE files are present in `data/external/cd_code/`.
+
+If you want condensate analysis as a dedicated separate job, use:
+```bash
+sbatch hpc/slurm_run_condensate.sh "$PWD"
 ```
 
 If the bulk `protein2ipr.dat.gz` route is unreliable on your cluster, use the InterPro API path instead:
@@ -108,3 +140,27 @@ PTM_ENV_PREFIX=/path/to/conda/env sbatch hpc/slurm_run_integration.sh "$PWD"
 - Figure-producing scripts now emit PDF and PNG outputs.
 - The dbPTM downloader script is separated from analysis so static files can be staged first.
 - The Einstein HPC `WARNING: overwriting environment variables set in the machine` message during Conda activation is not the failure. The real failure is NumPy/Pandas/Matplotlib binary incompatibility in the shared base env, which is why the pipeline should run in a dedicated Conda environment.
+
+- `scripts/12_cross_ptm_neighbor_enrichment.py` adds a directed methyl-Arg neighbor framework. It reports nearest-neighbor and local-burden curves for methyl-Arg relative to another methyl-Arg or another PTM class, against both a matched non-methyl Arg background and a within-protein permutation null.
+- `scripts/00_stage_cd_code_condensates.py` converts raw CD-CODE downloads into `data/context/cd_code_condensate_proteins.tsv`. Put the downloaded raw files in `data/external/cd_code/` and either stage them first or pass them directly to the condensate module.
+- `scripts/13_condensate_ptm_enrichment.py` tests whether PTM-bearing proteins are enriched among condensate-associated proteins from a staged CD-CODE-style export or directly from the raw CD-CODE trio. It reports both unadjusted enrichment and an adjusted logistic model including protein length, candidate-residue count, disorder fraction, and a simple low-complexity fraction.
+- The central enrichment helper now treats the second argument as an inclusive universe and removes target rows from the background before building Fisher tables. This affects functional-class, disorder, domain, and cross-PTM context enrichment outputs.
+- The direct `02_integrate_arg_methyl_sources.py` path now works again without the remap intermediate, although canonical remapping remains the preferred review-grade route.
+
+
+### Condensate HPC controls
+The main integration Slurm script and the dedicated condensate Slurm script both avoid `set -u` and respect the Einstein Conda activation quirks.
+
+Useful environment overrides:
+```bash
+# Force condensate analysis on or off inside the main integration job
+PTM_RUN_CONDENSATE=1 sbatch hpc/slurm_run_integration.sh "$PWD"
+PTM_RUN_CONDENSATE=0 sbatch hpc/slurm_run_integration.sh "$PWD"
+
+# Run experimental-only condensates or impose a confidence threshold
+PTM_CONDENSATE_EXPERIMENTAL_ONLY=1 sbatch hpc/slurm_run_condensate.sh "$PWD"
+PTM_CONDENSATE_MIN_CONFIDENCE=0.8 sbatch hpc/slurm_run_condensate.sh "$PWD"
+
+# Override raw CD-CODE locations if you keep them somewhere else
+PTM_CDCODE_DIR=/path/to/cd_code sbatch hpc/slurm_run_condensate.sh "$PWD"
+```

@@ -21,6 +21,9 @@ from clustering_utils import (
 
 
 def validate_sites(sites: pd.DataFrame, sequences: dict[str, str]) -> pd.DataFrame:
+    sites = sites.copy()
+    if 'residue' not in sites.columns:
+        sites['residue'] = 'R'
     out = canonical_site_table(sites, accession_col='canonical_UniProtAC', position_col='corrected_position', residue_col='residue')
     out = out[out['residue'] == 'R'].copy()
     out = out[out['canonical_UniProtAC'].isin(sequences)].copy()
@@ -77,8 +80,8 @@ def main() -> None:
     )
 
     permutations = permutation_summary(
-        arg_positions_by_acc=arg_positions_by_acc,
-        methyl_counts_by_acc=methyl_counts_by_acc,
+        candidate_positions_by_acc=arg_positions_by_acc,
+        site_counts_by_acc=methyl_counts_by_acc,
         max_distance=args.max_distance,
         permutations=args.permutations,
         seed=args.seed,
@@ -156,9 +159,9 @@ def main() -> None:
         label_col = 'gene' if 'gene' in top_dense.columns else 'canonical_UniProtAC'
         labels = top_dense[label_col].fillna(top_dense['canonical_UniProtAC']).astype(str)
         window = max(args.checkpoints)
-        density_col = f'max_methyl_sites_in_{window}aa_window'
+        density_col = f'max_sites_in_{window}aa_window'
         fig3, ax3 = plt.subplots(figsize=(10.0, 7.0))
-        top_dense = top_dense.sort_values([density_col, 'methyl_site_count'], ascending=[True, True])
+        top_dense = top_dense.sort_values([density_col, 'site_count'], ascending=[True, True])
         ax3.barh(labels.loc[top_dense.index], top_dense[density_col])
         ax3.set_xlabel(f'Max methyl sites in {window} aa window')
         ax3.set_ylabel('Protein')
