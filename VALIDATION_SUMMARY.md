@@ -1,15 +1,22 @@
 # Validation summary
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 This package was reworked for review-focused analyses and then revalidated after the final patch set.
 =======
 This package was re-audited after the first repair pass.
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+This package was reworked for review-focused analyses and then revalidated after the final patch set.
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
 
 ## What was validated
 
 ### Static validation
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
 - `python -m py_compile scripts/*.py` completed successfully.
 - `bash -n hpc/slurm_run_integration.sh` completed successfully.
 - `bash -n hpc/slurm_run_condensate.sh` completed successfully.
@@ -65,6 +72,7 @@ These counts reflect the current annotation rule set on the bundled data and are
 - Removal of confidence-tier logic from the code path and main workflow
 - Larsen included by default for the main total-union run
 - HPC workflow updated to avoid `set -u`, support InterPro-aware functional annotation, and keep cross-PTM neighbors optional
+<<<<<<< HEAD
 =======
 - `python -m py_compile scripts/*.py` completed successfully after the final patch set.
 
@@ -111,3 +119,5 @@ Using the bundled base master, Maron S5, and ProMetheus mmc2 inputs:
 - Optional dbPTM ingestion path for expanding the methylarginine union
 - Review-grade union audit figure module
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1

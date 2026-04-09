@@ -9,17 +9,23 @@ from clustering_utils import nearest_distances_to_other
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
 def write_tsv(df: pd.DataFrame, path: Path) -> None:
     df.to_csv(path, sep='\t', index=False)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
 def main() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp = Path(tmpdir)
@@ -29,6 +35,9 @@ def main() -> None:
         fasta = tmp / 'mini.fasta'
         fasta.write_text(
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
             '>sp|P1|FUS_HUMAN\nMGRGGGRGGPRGGGFGGDRGGYGGSRGGGPA\n'
             '>sp|P2|DDX3X_HUMAN\nMARRGTPQDSAARRGGKDVVTRRGAAPG\n'
             '>sp|P3|RBMX_HUMAN\nMRGGRSPPPGGRGGRDDDRGGRAAAPGG\n'
@@ -66,6 +75,7 @@ def main() -> None:
             {'canonical_UniProtAC': 'P2', 'interpro_accession': 'IPR0002', 'interpro_name': 'DEAD-box helicase', 'interpro_type': 'domain', 'member_database_accessions': 'DDX', 'fragment_start': 1, 'fragment_end': 12},
             {'canonical_UniProtAC': 'P3', 'interpro_accession': 'IPR0003', 'interpro_name': 'RNA recognition motif', 'interpro_type': 'domain', 'member_database_accessions': 'RRM', 'fragment_start': 1, 'fragment_end': 8},
             {'canonical_UniProtAC': 'P4', 'interpro_accession': 'IPR0004', 'interpro_name': 'SET chromatin methyltransferase domain', 'interpro_type': 'domain', 'member_database_accessions': 'SET', 'fragment_start': 10, 'fragment_end': 22},
+<<<<<<< HEAD
 =======
             '>sp|P1|PROT1\nMARRRRSTYKRRR\n'
             '>sp|P2|PROT2\nAKRSTYKKRRSTY\n'
@@ -94,6 +104,8 @@ def main() -> None:
             {'canonical_UniProtAC': 'P1', 'fragment_start': 2, 'fragment_end': 6},
             {'canonical_UniProtAC': 'P3', 'fragment_start': 1, 'fragment_end': 5},
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
         ])
 
         write_tsv(base, tmp / 'base.tsv')
@@ -101,16 +113,24 @@ def main() -> None:
         write_tsv(condensate, tmp / 'condensate.tsv')
         write_tsv(disorder, tmp / 'disorder.tsv')
 <<<<<<< HEAD
+<<<<<<< HEAD
         write_tsv(interpro, tmp / 'interpro.tsv')
         (tmp / 'empty_interpro.tsv').write_text('')
 =======
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+        write_tsv(interpro, tmp / 'interpro.tsv')
+        (tmp / 'empty_interpro.tsv').write_text('')
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
 
         assert nearest_distances_to_other([3, 5], [3, 5], exclude_self=True).tolist() == [2.0, 2.0]
 
         import subprocess
         subprocess.run([
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
             'python', str(scripts / '03_functional_class_enrichment.py'),
             '--base-master', str(tmp / 'base.tsv'),
             '--integrated-sites', str(tmp / 'integrated.tsv'),
@@ -146,8 +166,11 @@ def main() -> None:
             '--min-site-count', '1',
         ], check=True, cwd=repo)
         subprocess.run([
+<<<<<<< HEAD
 =======
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
             'python', str(scripts / '10_methyl_arg_clustering.py'),
             '--integrated-sites', str(tmp / 'integrated.tsv'),
             '--canonical-fasta', str(fasta),
@@ -157,6 +180,7 @@ def main() -> None:
             '--progress-every', '0',
         ], check=True, cwd=repo)
         subprocess.run([
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             'python', str(scripts / '12_cross_ptm_neighbor_enrichment.py'),
@@ -172,6 +196,8 @@ def main() -> None:
         ], check=True, cwd=repo)
         subprocess.run([
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
             'python', str(scripts / '13_condensate_ptm_enrichment.py'),
             '--base-master', str(tmp / 'base.tsv'),
             '--integrated-arg-sites', str(tmp / 'integrated.tsv'),
@@ -183,6 +209,9 @@ def main() -> None:
 
         required = [
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
             tmp / 'functional' / 'arg_methyl_functional_multilabel_enrichment.tsv',
             tmp / 'domain_annot' / 'sites_with_domain_context.tsv',
             tmp / 'domain_empty' / 'sites_with_domain_context.tsv',
@@ -190,10 +219,13 @@ def main() -> None:
             tmp / 'motif' / 'exclusive_motif_family_enrichment_vs_matched_nonmethyl_arginines.tsv',
             tmp / 'motif' / 'motif_feature_model.tsv',
             tmp / 'clustering' / 'nearest_neighbor_curve_vs_null.tsv',
+<<<<<<< HEAD
 =======
             tmp / 'clustering' / 'nearest_neighbor_curve_vs_null.tsv',
             tmp / 'neighbors' / 'cross_ptm_neighbor_curves.tsv',
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
             tmp / 'condensate_out' / 'condensate_ptm_adjusted_logistic_models.tsv',
         ]
         for path in required:

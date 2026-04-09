@@ -359,12 +359,16 @@ def main() -> None:
     save_table(edge_dist, outdir / 'domain_edge_distance_distribution_vs_matched_control.tsv')
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
     plot_bar_enrichment(context_enrichment, outdir / 'arg_methyl_domain_context_enrichment')
     plot_domain_class(domain_class_enrichment, outdir / 'arg_methyl_nearest_domain_class_enrichment')
     plot_edge_curve(edge_curve, outdir / 'arg_methyl_domain_edge_proximity_curve')
     plot_matched_ratio(matched_context, outdir / 'arg_methyl_domain_context_matched_control_shift', 'Matched-control domain-context shift', 'Observed / matched-control fraction')
     plot_matched_ratio(matched_domain_class, outdir / 'arg_methyl_domain_class_matched_control_shift', 'Matched-control nearest-domain-class shift', 'Observed / matched-control fraction')
     plot_edge_distance_distribution(edge_dist, outdir / 'arg_methyl_domain_edge_distance_distribution')
+<<<<<<< HEAD
 =======
     plot_context = context_enrichment[context_enrichment['category'].isin(['in_domain', 'boundary', 'inter_domain_linker', 'distal'])].sort_values('odds_ratio')
     fig, ax = plt.subplots(figsize=(8.0, 5.0))
@@ -390,6 +394,8 @@ def main() -> None:
     fig2.tight_layout()
     save_figure(fig2, outdir / 'arg_methyl_nearest_domain_class_enrichment')
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
 
     print({
         'annotated_sites': len(annotated_sites),

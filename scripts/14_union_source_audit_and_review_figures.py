@@ -72,9 +72,12 @@ def main() -> None:
     source_counts = source_counts.merge(protein_counts, how='left', on='source_family')
     support = dedup['source_family_count_exact'].value_counts().rename_axis('source_family_count_exact').reset_index(name='site_count')
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     confidence = dedup['confidence_tier'].value_counts().rename_axis('confidence_tier').reset_index(name='site_count') if 'confidence_tier' in dedup.columns else pd.DataFrame()
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
     top_proteins = dedup.groupby('substrate_UniProtAC').size().rename('site_count').reset_index().sort_values('site_count', ascending=False).head(25)
 
     outdir = Path(args.outdir)
@@ -85,10 +88,13 @@ def main() -> None:
     save_table(support, outdir / 'site_support_distribution.tsv')
     save_table(top_proteins, outdir / 'top_proteins_by_union_site_count.tsv')
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     if not confidence.empty:
         save_table(confidence, outdir / 'confidence_tier_distribution.tsv')
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
 
     fig1, ax1 = plt.subplots(figsize=(8.8, 5.2))
     plot_combo = combo.head(12).sort_values(['source_family_count', 'site_count'])
@@ -110,6 +116,7 @@ def main() -> None:
     save_figure(fig2, outdir / 'site_support_distribution')
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
     if not confidence.empty:
@@ -121,6 +128,9 @@ def main() -> None:
         fig3.tight_layout()
         save_figure(fig3, outdir / 'confidence_tier_distribution')
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
 
     print({
         'all_rows': int(len(all_rows)),

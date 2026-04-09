@@ -189,6 +189,7 @@ def main() -> None:
     target = protein_meta[protein_meta['is_arg_methyl_protein']].copy()
     universe_total = len(protein_meta)
     target_total = len(target)
+<<<<<<< HEAD
 
     enrichment_rows = []
     panel_map = {block['label']: block.get('panel', 'all') for block in categories}
@@ -201,6 +202,20 @@ def main() -> None:
     enrichment_df = add_bh_q_values(pd.DataFrame(enrichment_rows), p_col='p_value', q_col='q_value_bh')
     enrichment_df = enrichment_df.sort_values(['panel', 'q_value_bh', 'odds_ratio', 'target_count'], ascending=[True, True, False, False])
 
+=======
+
+    enrichment_rows = []
+    panel_map = {block['label']: block.get('panel', 'all') for block in categories}
+    panel_map['Other / unclassified'] = 'other'
+    panel_map['Any RNA-centric label'] = 'summary'
+    for category in category_cols:
+        enrichment = compute_binary_enrichment(target[category].fillna(False).astype(bool), protein_meta[category].fillna(False).astype(bool), category, target_total, universe_total)
+        enrichment['panel'] = panel_map.get(category, 'all')
+        enrichment_rows.append(enrichment)
+    enrichment_df = add_bh_q_values(pd.DataFrame(enrichment_rows), p_col='p_value', q_col='q_value_bh')
+    enrichment_df = enrichment_df.sort_values(['panel', 'q_value_bh', 'odds_ratio', 'target_count'], ascending=[True, True, False, False])
+
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
     counts = long_membership.merge(protein_meta[['canonical_UniProtAC', 'is_arg_methyl_protein']], how='left', on='canonical_UniProtAC')
     counts_summary = counts.groupby(['functional_category', 'panel', 'is_arg_methyl_protein'], as_index=False).size().rename(columns={'size': 'protein_count'})
     coverage = pd.DataFrame([
@@ -223,6 +238,9 @@ def main() -> None:
     save_table(coverage, outdir / 'functional_multilabel_annotation_coverage.tsv')
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
     plot_panel(
         enrichment_df[enrichment_df['panel'].isin(['rna_centric', 'summary'])].copy(),
         title='Integrated arg-methylome: RNA-centric multi-label enrichment',
@@ -236,6 +254,7 @@ def main() -> None:
         outpath=outdir / 'arg_methyl_functional_multilabel_non_rna_enrichment',
     )
     plot_membership_distribution(protein_meta, outdir / 'functional_multilabel_membership_distribution')
+<<<<<<< HEAD
 =======
     pb = broad[broad['target_count'] >= 10].head(10).sort_values('odds_ratio')
     fig, ax = plt.subplots(figsize=(8.5, 5.8))
@@ -261,6 +280,8 @@ def main() -> None:
     fig2.tight_layout()
     save_figure(fig2, outdir / 'arg_methyl_functional_class_subclass_enrichment')
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
 
 
 if __name__ == '__main__':

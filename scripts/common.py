@@ -325,6 +325,7 @@ def build_fuzzy_clusters(df: pd.DataFrame, tolerance: int = 2) -> pd.DataFrame:
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 def confidence_tier(row: pd.Series) -> str:
     exact = int(row.get('source_family_count_exact', 1) or 1)
@@ -338,6 +339,8 @@ def confidence_tier(row: pd.Series) -> str:
         return 'Tier 2 curated/specialized single-source'
     return 'Tier 3 integrative single-source'
 >>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
+=======
+>>>>>>> 4fbe8b2dc495fcf875e4e868ffb2aca4033251f1
 
 
 def summarize_sources(values: Iterable[str]) -> str:
