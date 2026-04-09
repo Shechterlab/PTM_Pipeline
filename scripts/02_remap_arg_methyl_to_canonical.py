@@ -116,24 +116,24 @@ def build_anchors(row: pd.Series) -> list[dict]:
     return anchors
 
 
-def fallback_position(row: pd.Series, canonical_sequences: dict[str, str]) -> tuple[int | None, str]:
+def fallback_position(row: pd.Series, canonical_sequences: dict[str, str]) -> tuple[int | None, str, str]:
     current_acc = normalize_accession(row.get('substrate_UniProtAC', ''))
     canonical_acc = canonicalize_uniprot_accession(row.get('canonical_UniProtAC', current_acc))
     pos = int(row.get('position', 0))
     if current_acc in canonical_sequences:
         seq = canonical_sequences[current_acc]
         if 1 <= pos <= len(seq) and seq[pos - 1] == 'R':
-            return pos, 'same_accession_position_verified'
+            return pos, 'same_accession_position_verified', current_acc
     if canonical_acc in canonical_sequences and not bool(row.get('accession_is_isoform', False)):
         seq = canonical_sequences[canonical_acc]
         if 1 <= pos <= len(seq) and seq[pos - 1] == 'R':
-            return pos, 'canonical_position_fallback'
-    return None, 'unresolved_no_anchor'
+            return pos, 'canonical_position_fallback', canonical_acc
+    return None, 'unresolved_no_anchor', ''
 
 
-def resolve_hit(row: pd.Series, hits: list[dict], canonical_acc: str) -> tuple[int | None, str, str, str, int]:
+def resolve_hit(row: pd.Series, hits: list[dict], canonical_acc: str) -> tuple[int | None, str, str, str, int, str]:
     if not hits:
-        return None, 'unresolved_no_hit', '', '', 0
+        return None, 'unresolved_no_hit', '', '', 0, ''
 
     positions_by_acc: dict[str, set[int]] = defaultdict(set)
     for hit in hits:
@@ -143,12 +143,12 @@ def resolve_hit(row: pd.Series, hits: list[dict], canonical_acc: str) -> tuple[i
         position = sorted(positions_by_acc[canonical_acc])[0]
         supporting = [hit for hit in hits if hit['matched_accession'] == canonical_acc and hit['matched_position'] == position]
         best = sorted(supporting, key=lambda h: (h['priority'], len(h['anchor_sequence'])))[0]
-        return position, 'sequence_unique_canonical', best['anchor_type'], best['anchor_sequence'], len(hits)
+        return position, 'sequence_unique_canonical', best['anchor_type'], best['anchor_sequence'], len(hits), canonical_acc
 
     unique_positions = sorted(set(hit['matched_position'] for hit in hits))
     if len(unique_positions) == 1 and len(set(hit['matched_accession'] for hit in hits)) == 1:
         best = sorted(hits, key=lambda h: (h['priority'], len(h['anchor_sequence'])))[0]
-        return unique_positions[0], 'sequence_unique_candidate', best['anchor_type'], best['anchor_sequence'], len(hits)
+        return unique_positions[0], 'sequence_unique_candidate', best['anchor_type'], best['anchor_sequence'], len(hits), best['matched_accession']
 
     current_position = int(row.get('position', 0))
     closest = sorted(
@@ -168,9 +168,9 @@ def resolve_hit(row: pd.Series, hits: list[dict], canonical_acc: str) -> tuple[i
             and hit['matched_accession'] == best['matched_accession']
         ]
         if len(set(hit['matched_position'] for hit in tied)) == 1 and abs(best['matched_position'] - current_position) <= 25:
-            return best['matched_position'], 'sequence_closest_supported', best['anchor_type'], best['anchor_sequence'], len(hits)
+            return best['matched_position'], 'sequence_closest_supported', best['anchor_type'], best['anchor_sequence'], len(hits), best['matched_accession']
 
-    return None, 'unresolved_ambiguous_hit', '', '', len(hits)
+    return None, 'unresolved_ambiguous_hit', '', '', len(hits), ''
 
 
 def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dict[str, list[str]]) -> dict:
@@ -192,17 +192,18 @@ def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dic
                         'priority': 0 if anchor['anchor_type'] == 'annotated_peptide' else 1,
                     })
 
-    corrected_position, remap_status, anchor_type, anchor_sequence, hit_count = resolve_hit(row, hits, canonical_acc)
+    corrected_position, remap_status, anchor_type, anchor_sequence, hit_count, corrected_accession = resolve_hit(row, hits, canonical_acc)
     if corrected_position is None:
-        corrected_position, fallback_status = fallback_position(row, canonical_sequences)
+        corrected_position, fallback_status, fallback_accession = fallback_position(row, canonical_sequences)
         if corrected_position is not None:
             remap_status = fallback_status
             anchor_type = 'position_only'
             anchor_sequence = ''
+            corrected_accession = fallback_accession
         elif remap_status == 'unresolved_no_hit':
             remap_status = fallback_status
 
-    corrected_accession = canonical_acc if corrected_position is not None and canonical_acc else ''
+    corrected_accession = corrected_accession if corrected_position is not None else ''
     corrected_site = f'R{corrected_position}' if corrected_position is not None else ''
     remapped = corrected_position is not None
     return {
@@ -228,6 +229,7 @@ def main() -> None:
     ap.add_argument('--base-master', required=True)
     ap.add_argument('--maron', required=True)
     ap.add_argument('--prometheus', required=True)
+    ap.add_argument('--dbptm', default='')
     ap.add_argument('--canonical-fasta', required=True)
     ap.add_argument('--uniprot-metadata', required=True)
     ap.add_argument('--outdir', default='results/remapped')
@@ -246,6 +248,9 @@ def main() -> None:
         prepare_frame(maron, 'maron_s5'),
         prepare_frame(prom, 'prometheus_mmc2'),
     ]
+    if args.dbptm:
+        dbptm = pd.read_csv(args.dbptm, sep='	', low_memory=False)
+        frames.append(prepare_frame(dbptm, 'dbptm'))
     all_rows = pd.concat(frames, ignore_index=True, sort=False)
     all_rows['canonical_UniProtAC'] = all_rows['canonical_UniProtAC'].astype(str).map(canonicalize_uniprot_accession)
 

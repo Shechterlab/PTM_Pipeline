@@ -1,0 +1,62 @@
+# Validation summary
+
+This package was reworked for review-focused analyses and then revalidated after the final patch set.
+
+## What was validated
+
+### Static validation
+- `python -m py_compile scripts/*.py` completed successfully.
+- `bash -n hpc/slurm_run_integration.sh` completed successfully.
+- `bash -n hpc/slurm_run_condensate.sh` completed successfully.
+
+### Synthetic smoke validation
+- `python -u scripts/99_smoke_test_pipeline.py` completed successfully.
+- The smoke harness exercises:
+  - `03_functional_class_enrichment.py`
+  - `05_annotate_domain_context.py`
+  - `07_summarize_domain_enrichment.py`
+  - `08_motif_and_arg_odds.py`
+  - `10_methyl_arg_clustering.py`
+  - `13_condensate_ptm_enrichment.py`
+- The smoke harness explicitly checks the empty-InterPro edge case and the matched-control domain workflow.
+
+### Separate synthetic validation
+- `12_cross_ptm_neighbor_enrichment.py` was validated separately on a synthetic dataset and completed successfully.
+
+### Actual bundled-data validation
+Using the bundled base master, Maron S5, and ProMetheus mmc2 inputs:
+- `01_parse_maron_s5.py` completed successfully with Larsen included (`--exclude-pattern ''`).
+- `01_parse_prometheus_mmc2.py` completed successfully.
+- `02_integrate_arg_methyl_sources.py` direct integration path completed successfully.
+- `03_functional_class_enrichment.py` completed successfully on the integrated union.
+- `14_union_source_audit_and_review_figures.py` completed successfully on the integrated union.
+
+## Actual bundled-data integration summary (Larsen included)
+- union source rows: 28,960
+- deduplicated methyl-Arg sites: 15,645
+- deduplicated proteins: 5,331
+- naive canonical accessions: 5,314
+- exact multi-source sites: 1,483
+- fuzzy multi-source sites: 1,677
+- state-annotated sites: 1,303
+- source rows needing sequence remap in direct mode: 40
+
+## Actual bundled-data functional summary (current multi-label run)
+- arg-methyl union proteins: 4,200
+- arg-methyl proteins with any RNA-centric label: 500
+- arg-methyl proteins currently unclassified: 2,410
+- all-PTM proteins with any RNA-centric label: 784
+- all-PTM proteins currently unclassified: 8,803
+
+These counts reflect the current annotation rule set on the bundled data and are expected to improve further when InterPro-derived terms are supplied to the functional annotator.
+
+## Major changes validated in this pass
+- Matched same-protein non-methyl-Arg controls for motif and domain analyses
+- Exclusive motif-family assignment for main motif summaries
+- De novo centered k-mer enrichment and a motif/context feature model
+- Shrinkage-adjusted protein prioritization replacing raw odds-ratio ranking
+- Multi-label RNA-centric functional annotation replacing exclusive class assignment
+- Domain-adjacency and domain-edge analyses with matched non-methyl-Arg controls
+- Removal of confidence-tier logic from the code path and main workflow
+- Larsen included by default for the main total-union run
+- HPC workflow updated to avoid `set -u`, support InterPro-aware functional annotation, and keep cross-PTM neighbors optional

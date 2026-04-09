@@ -18,7 +18,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--input', required=True)
     ap.add_argument('--outdir', default='results/parsed_maron')
-    ap.add_argument('--exclude-pattern', default='Larsen')
+    ap.add_argument('--exclude-pattern', default='')
     args = ap.parse_args()
 
     df = pd.read_excel(args.input, sheet_name=0)
@@ -56,6 +56,7 @@ def main() -> None:
         'rows': len(out),
         'proteins': out['substrate_UniProtAC'].nunique(),
         'unique_sites': out['site_key'].nunique(),
+        'exclude_pattern': args.exclude_pattern,
     }])
     save_table(summary, outdir / 'summary.tsv')
     print(summary.to_dict(orient='records')[0])
