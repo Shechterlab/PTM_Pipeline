@@ -24,19 +24,9 @@ def main() -> None:
     ap.add_argument('--outdir', default='results/example_figures')
     args = ap.parse_args()
 
-    df = pd.read_csv(args.integrated_sites, sep='\t', low_memory=False)
+    df = pd.read_csv(args.integrated_sites, sep='	', low_memory=False)
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
-
-    tier = df['confidence_tier'].value_counts().rename_axis('confidence_tier').reset_index(name='site_count')
-    save_table(tier, outdir / 'confidence_tiers.tsv')
-    fig, ax = plt.subplots(figsize=(8.4, 4.8))
-    ax.bar(tier['confidence_tier'], tier['site_count'])
-    ax.set_ylabel('Deduplicated sites')
-    ax.set_title('Integrated arg-methylome confidence tiers')
-    ax.tick_params(axis='x', rotation=18)
-    fig.tight_layout()
-    save_figure(fig, outdir / 'arg_methyl_confidence_tiers')
 
     support = pd.DataFrame({
         'support_type': ['Exact >=2', 'Fuzzy >=2'],

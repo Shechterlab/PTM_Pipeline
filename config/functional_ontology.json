@@ -1,24 +1,512 @@
 {
   "broad_classes": [
-    {"label": "RNA-binding / RNP", "patterns": ["rna binding", "ribonucle", "splice", "snrnp", "lsm", "sm protein", "rrm", "kh domain", "paraspeck", "nucleol", "stress granule", "rna helicase", "dead-box", "hnrnp", "ribonucleoprote"]},
-    {"label": "Chromatin / transcription", "patterns": ["chromatin", "histone", "nucleosome", "transcription", "polymerase", "epigen", "dna-binding", "dna binding", "bromodomain", "pwwp", "tudor", "paf1", "mediator", "writer", "reader", "remodel"]},
-    {"label": "DNA repair / genome maintenance", "patterns": ["dna repair", "double-strand", "homologous recombination", "genome integrity", "replication", "fork", "damage response", "helicase"]},
-    {"label": "Translation / ribosome / biogenesis", "patterns": ["ribosom", "translation", "trna", "rrna", "ribosome biogenesis", "sno", "nucleolar"]},
-    {"label": "Signaling / enzyme", "patterns": ["kinase", "phosphatase", "gtpase", "atpase", "metabolic", "enzyme", "cataly"]},
-    {"label": "Cytoskeleton / trafficking / membrane", "patterns": ["actin", "microtub", "myosin", "dynein", "kinesin", "vesicle", "membrane", "golgi", "endosome", "mitochond"]}
+    {
+      "label": "RNA-binding / RNP",
+      "patterns": [
+        "rna binding",
+        "ribonucle",
+        "splice",
+        "snrnp",
+        "lsm",
+        "sm protein",
+        "rrm",
+        "kh domain",
+        "paraspeck",
+        "nucleol",
+        "stress granule",
+        "rna helicase",
+        "dead-box",
+        "hnrnp",
+        "ribonucleoprote"
+      ]
+    },
+    {
+      "label": "Chromatin / transcription",
+      "patterns": [
+        "chromatin",
+        "histone",
+        "nucleosome",
+        "transcription",
+        "polymerase",
+        "epigen",
+        "dna-binding",
+        "dna binding",
+        "bromodomain",
+        "pwwp",
+        "tudor",
+        "paf1",
+        "mediator",
+        "writer",
+        "reader",
+        "remodel"
+      ]
+    },
+    {
+      "label": "DNA repair / genome maintenance",
+      "patterns": [
+        "dna repair",
+        "double-strand",
+        "homologous recombination",
+        "genome integrity",
+        "replication",
+        "fork",
+        "damage response",
+        "helicase"
+      ]
+    },
+    {
+      "label": "Translation / ribosome / biogenesis",
+      "patterns": [
+        "ribosom",
+        "translation",
+        "trna",
+        "rrna",
+        "ribosome biogenesis",
+        "sno",
+        "nucleolar"
+      ]
+    },
+    {
+      "label": "Signaling / enzyme",
+      "patterns": [
+        "kinase",
+        "phosphatase",
+        "gtpase",
+        "atpase",
+        "metabolic",
+        "enzyme",
+        "cataly"
+      ]
+    },
+    {
+      "label": "Cytoskeleton / trafficking / membrane",
+      "patterns": [
+        "actin",
+        "microtub",
+        "myosin",
+        "dynein",
+        "kinesin",
+        "vesicle",
+        "membrane",
+        "golgi",
+        "endosome",
+        "mitochond"
+      ]
+    }
   ],
   "subclasses": [
-    {"label": "Spliceosome / splicing factors", "patterns": ["splice", "snrnp", "prpf", "sf3", "u2af", "sr protein", "serine/arginine-rich", "sm protein", "lsm"]},
-    {"label": "RNA helicases", "patterns": ["helicase", "dead-box", "ddx", "dhx", "ski2"]},
-    {"label": "Ribosome biogenesis / nucleolar RNP", "patterns": ["ribosome biogenesis", "nucleolar", "sno", "rrna processing", "ribosomal RNA", "fibrillarin", "nop", "dyskerin"]},
-    {"label": "Paraspeckle / granule factors", "patterns": ["paraspeck", "stress granule", "fused in sarcoma", "fmr1", "hnrnp", "rbm14", "sfpq", "nono", "tardbp", "tls"]},
-    {"label": "Sm/Lsm snRNP core", "patterns": ["sm protein", "lsm", "snrnp"]},
-    {"label": "RRM / KH RNA-binding proteins", "patterns": ["rrm", "kh domain", "rna recognition motif", "quaking", "igf2bp", "khsrp"]},
-    {"label": "Chromatin readers", "patterns": ["reader", "tudor", "pwwp", "chromodomain", "bromodomain", "mbt", "wd repeat", "plant homeodomain", "phd"]},
-    {"label": "Chromatin writers / erasers / remodelers", "patterns": ["methyltransferase", "acetyltransferase", "deacetylase", "demethylase", "remodel", "swi/snf", "histone acetyl", "histone deacetyl"]},
-    {"label": "Transcription / mediator / polymerase", "patterns": ["transcription", "mediator", "rna polymerase", "elongation", "transcription factor", "coactivator", "corepressor"]},
-    {"label": "DNA repair / DDR", "patterns": ["dna repair", "damage response", "brca", "53bp", "rad51", "mre11", "atm", "atr", "replication fork"]},
-    {"label": "Translation / ribosomal proteins", "patterns": ["ribosomal protein", "translation", "trna", "elongation factor", "initiation factor"]},
-    {"label": "Other / unclassified", "patterns": ["a^"]}
+    {
+      "label": "Spliceosome / splicing factors",
+      "patterns": [
+        "splice",
+        "snrnp",
+        "prpf",
+        "sf3",
+        "u2af",
+        "sr protein",
+        "serine/arginine-rich",
+        "sm protein",
+        "lsm"
+      ]
+    },
+    {
+      "label": "RNA helicases",
+      "patterns": [
+        "helicase",
+        "dead-box",
+        "ddx",
+        "dhx",
+        "ski2"
+      ]
+    },
+    {
+      "label": "Ribosome biogenesis / nucleolar RNP",
+      "patterns": [
+        "ribosome biogenesis",
+        "nucleolar",
+        "sno",
+        "rrna processing",
+        "ribosomal RNA",
+        "fibrillarin",
+        "nop",
+        "dyskerin"
+      ]
+    },
+    {
+      "label": "Paraspeckle / granule factors",
+      "patterns": [
+        "paraspeck",
+        "stress granule",
+        "fused in sarcoma",
+        "fmr1",
+        "hnrnp",
+        "rbm14",
+        "sfpq",
+        "nono",
+        "tardbp",
+        "tls"
+      ]
+    },
+    {
+      "label": "Sm/Lsm snRNP core",
+      "patterns": [
+        "sm protein",
+        "lsm",
+        "snrnp"
+      ]
+    },
+    {
+      "label": "RRM / KH RNA-binding proteins",
+      "patterns": [
+        "rrm",
+        "kh domain",
+        "rna recognition motif",
+        "quaking",
+        "igf2bp",
+        "khsrp"
+      ]
+    },
+    {
+      "label": "Chromatin readers",
+      "patterns": [
+        "reader",
+        "tudor",
+        "pwwp",
+        "chromodomain",
+        "bromodomain",
+        "mbt",
+        "wd repeat",
+        "plant homeodomain",
+        "phd"
+      ]
+    },
+    {
+      "label": "Chromatin writers / erasers / remodelers",
+      "patterns": [
+        "methyltransferase",
+        "acetyltransferase",
+        "deacetylase",
+        "demethylase",
+        "remodel",
+        "swi/snf",
+        "histone acetyl",
+        "histone deacetyl"
+      ]
+    },
+    {
+      "label": "Transcription / mediator / polymerase",
+      "patterns": [
+        "transcription",
+        "mediator",
+        "rna polymerase",
+        "elongation",
+        "transcription factor",
+        "coactivator",
+        "corepressor"
+      ]
+    },
+    {
+      "label": "DNA repair / DDR",
+      "patterns": [
+        "dna repair",
+        "damage response",
+        "brca",
+        "53bp",
+        "rad51",
+        "mre11",
+        "atm",
+        "atr",
+        "replication fork"
+      ]
+    },
+    {
+      "label": "Translation / ribosomal proteins",
+      "patterns": [
+        "ribosomal protein",
+        "translation",
+        "trna",
+        "elongation factor",
+        "initiation factor"
+      ]
+    },
+    {
+      "label": "Other / unclassified",
+      "patterns": [
+        "a^"
+      ]
+    }
+  ],
+  "multi_label_categories": [
+    {
+      "label": "General RNA-binding / RNP",
+      "panel": "rna_centric",
+      "patterns": [
+        "rna binding",
+        "rna-binding",
+        "ribonucle",
+        "\\brbm\\d*\\b",
+        "\\bhnrnp",
+        "\\brnp\\b",
+        "\\brbmxl",
+        "\\bpcbp\\d*\\b"
+      ]
+    },
+    {
+      "label": "RRM / KH RNA-binding proteins",
+      "panel": "rna_centric",
+      "patterns": [
+        "rna recognition motif",
+        "\\brrm\\b",
+        "kh domain",
+        "k homology",
+        "\\bkh\\b",
+        "quaking",
+        "igf2bp",
+        "khsrp",
+        "\\bqki\\b"
+      ]
+    },
+    {
+      "label": "hnRNP / RG-rich RBPs",
+      "panel": "rna_centric",
+      "patterns": [
+        "hnrnp",
+        "heterogeneous nuclear ribonucleoprotein",
+        "rg-rich",
+        "rgg",
+        "rg motif",
+        "fused in sarcoma",
+        "\\bfus\\b",
+        "ewsr1",
+        "taf15",
+        "\\brbm\\d+\\b",
+        "\\bprrc2"
+      ]
+    },
+    {
+      "label": "Spliceosome / splicing factors",
+      "panel": "rna_centric",
+      "patterns": [
+        "splice",
+        "snrnp",
+        "prpf",
+        "sf3",
+        "u2af",
+        "serine/arginine-rich",
+        "\\blsm\\b",
+        "sm protein",
+        "\\bsnrp",
+        "\\bsrsf\\d+\\b",
+        "\\brbmx\\b"
+      ]
+    },
+    {
+      "label": "RNA helicases / remodeling ATPases",
+      "panel": "rna_centric",
+      "patterns": [
+        "rna helicase",
+        "helicase",
+        "dead-box",
+        "\\bddx\\d+\\b",
+        "\\bdhx\\d+\\b",
+        "deah",
+        "dexd",
+        "ski2"
+      ]
+    },
+    {
+      "label": "mRNA processing / export / 3-prime end",
+      "panel": "rna_centric",
+      "patterns": [
+        "mrna processing",
+        "mrna export",
+        "cleavage and polyadenylation",
+        "polyadenyl",
+        "pcf11",
+        "thoc",
+        "alyref",
+        "exportin",
+        "nxf1",
+        "cpsf",
+        "cstf",
+        "cfim",
+        "cleavage factor",
+        "3-prime end"
+      ]
+    },
+    {
+      "label": "RNA surveillance / decay / exosome",
+      "panel": "rna_centric",
+      "patterns": [
+        "exosome",
+        "nonsense-mediated decay",
+        "upf\\d",
+        "ski complex",
+        "rna decay",
+        "deadenyl",
+        "decapping",
+        "dcp\\d",
+        "xrn\\d",
+        "lsm1-7"
+      ]
+    },
+    {
+      "label": "Ribosome biogenesis / nucleolar RNP",
+      "panel": "rna_centric",
+      "patterns": [
+        "ribosome biogenesis",
+        "nucleolar",
+        "\\bsno",
+        "rrna processing",
+        "ribosomal rna",
+        "fibrillarin",
+        "\\bnop\\d*\\b",
+        "dyskerin",
+        "nucleophosmin",
+        "gar1",
+        "ncl\\b"
+      ]
+    },
+    {
+      "label": "Translation / ribosome / initiation factors",
+      "panel": "rna_centric",
+      "patterns": [
+        "ribosomal protein",
+        "translation",
+        "elongation factor",
+        "initiation factor",
+        "\\beif\\d",
+        "\\beef\\d",
+        "trna synthetase",
+        "rps\\d",
+        "rpl\\d"
+      ]
+    },
+    {
+      "label": "Stress granule / paraspeckle / P-body factors",
+      "panel": "rna_centric",
+      "patterns": [
+        "stress granule",
+        "paraspeck",
+        "p-body",
+        "processing body",
+        "\\bnono\\b",
+        "\\bsfpq\\b",
+        "\\brbm14\\b",
+        "tardbp",
+        "fmr1",
+        "g3bp\\d",
+        "tia1",
+        "tiar",
+        "phase separation",
+        "condensate"
+      ]
+    },
+    {
+      "label": "Chromatin / transcription regulators",
+      "panel": "non_rna",
+      "patterns": [
+        "chromatin",
+        "histone",
+        "nucleosome",
+        "transcription",
+        "polymerase",
+        "mediator",
+        "epigen",
+        "bromodomain",
+        "pwwp",
+        "tudor",
+        "reader",
+        "writer",
+        "remodel",
+        "mll",
+        "kmt2",
+        "cbx\\d"
+      ]
+    },
+    {
+      "label": "DNA repair / genome maintenance",
+      "panel": "non_rna",
+      "patterns": [
+        "dna repair",
+        "damage response",
+        "double-strand",
+        "homologous recombination",
+        "replication",
+        "fork",
+        "brca",
+        "53bp",
+        "rad51",
+        "mre11",
+        "atm",
+        "atr",
+        "fanconi",
+        "genome maintenance"
+      ]
+    },
+    {
+      "label": "Ubiquitin / proteostasis",
+      "panel": "non_rna",
+      "patterns": [
+        "ubiquitin",
+        "proteasome",
+        "sumo",
+        "autophagy",
+        "chaperone",
+        "heat shock",
+        "protein quality control",
+        "ubiquitin ligase",
+        "deubiquitin"
+      ]
+    },
+    {
+      "label": "Cytoskeleton / trafficking / membrane",
+      "panel": "non_rna",
+      "patterns": [
+        "actin",
+        "microtub",
+        "myosin",
+        "dynein",
+        "kinesin",
+        "vesicle",
+        "membrane",
+        "golgi",
+        "endosome",
+        "mitochond",
+        "coatomer",
+        "clathrin"
+      ]
+    },
+    {
+      "label": "Signaling / catalytic enzymes",
+      "panel": "non_rna",
+      "patterns": [
+        "kinase",
+        "phosphatase",
+        "gtpase",
+        "atpase",
+        "metabolic",
+        "enzyme",
+        "cataly",
+        "transferase",
+        "hydrolase",
+        "ligase"
+      ]
+    },
+    {
+      "label": "Organelle / metabolism / other enzymes",
+      "panel": "non_rna",
+      "patterns": [
+        "mitochond",
+        "peroxis",
+        "lysosom",
+        "golgi",
+        "endoplasmic reticulum",
+        "metabolism",
+        "oxidoreductase",
+        "synthetase",
+        "dehydrogenase"
+      ]
+    }
   ]
 }

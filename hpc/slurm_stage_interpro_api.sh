@@ -83,14 +83,18 @@ run_step "stage InterPro intervals via API" python "$BASE_DIR/scripts/00_stage_c
   --timeout "$INTERPRO_API_TIMEOUT" \
   --retries "$INTERPRO_API_RETRIES"
 
-run_step "annotate domain context" python "$BASE_DIR/scripts/05_annotate_domain_context.py" \
-  --sites "$SITES_FILE" \
-  --interpro-intervals "$BASE_DIR/data/context/interpro_human_reviewed_domain_like_intervals.tsv" \
-  --position-col corrected_position \
-  --outdir "$BASE_DIR/results/domain_context"
+if [[ -s "$BASE_DIR/data/context/interpro_human_reviewed_domain_like_intervals.tsv" ]]; then
+  run_step "annotate domain context" python "$BASE_DIR/scripts/05_annotate_domain_context.py" \
+    --sites "$SITES_FILE" \
+    --interpro-intervals "$BASE_DIR/data/context/interpro_human_reviewed_domain_like_intervals.tsv" \
+    --position-col corrected_position \
+    --outdir "$BASE_DIR/results/domain_context"
 
-run_step "summarize domain enrichment" python "$BASE_DIR/scripts/07_summarize_domain_enrichment.py" \
-  --annotated-sites "$BASE_DIR/results/domain_context/sites_with_domain_context.tsv" \
-  --interpro-intervals "$BASE_DIR/data/context/interpro_human_reviewed_domain_like_intervals.tsv" \
-  --canonical-fasta "$BASE_DIR/data/context/uniprot_human_reviewed_canonical.fasta" \
-  --outdir "$BASE_DIR/results/domain_context"
+  run_step "summarize domain enrichment" python "$BASE_DIR/scripts/07_summarize_domain_enrichment.py" \
+    --annotated-sites "$BASE_DIR/results/domain_context/sites_with_domain_context.tsv" \
+    --interpro-intervals "$BASE_DIR/data/context/interpro_human_reviewed_domain_like_intervals.tsv" \
+    --canonical-fasta "$BASE_DIR/data/context/uniprot_human_reviewed_canonical.fasta" \
+    --outdir "$BASE_DIR/results/domain_context"
+else
+  echo "[ptm_interpro_api] no non-empty InterPro domain interval file was produced"
+fi

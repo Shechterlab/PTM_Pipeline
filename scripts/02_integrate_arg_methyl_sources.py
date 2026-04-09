@@ -9,7 +9,6 @@ import pandas as pd
 from common import (
     accession_is_isoform,
     canonicalize_uniprot_accession,
-    confidence_tier,
     consensus_or_mixed,
     normalize_accession,
     normalize_arg_methyl_state,
@@ -149,6 +148,7 @@ def main() -> None:
     ap.add_argument('--base-master')
     ap.add_argument('--maron')
     ap.add_argument('--prometheus')
+    ap.add_argument('--dbptm', default='')
     ap.add_argument('--premerged-remapped', default='')
     ap.add_argument('--outdir', default='results/integrated')
     ap.add_argument('--fuzzy-tolerance', type=int, default=2)
@@ -180,8 +180,12 @@ def main() -> None:
         prom = pd.read_csv(args.prometheus, sep='\t', low_memory=False)
 
         frames = [prepare_source_frame(df) for df in [base, maron, prom]]
+        if args.dbptm:
+            dbptm = pd.read_csv(args.dbptm, sep='	', low_memory=False)
+            frames.append(prepare_source_frame(dbptm))
         keep_cols = sorted(set().union(*(frame.columns for frame in frames)))
         all_sites = pd.concat([frame.reindex(columns=keep_cols) for frame in frames], ignore_index=True, sort=False)
+        all_sites['source_position_original'] = pd.to_numeric(all_sites['position'], errors='coerce')
         all_sites['integration_accession'] = all_sites['substrate_UniProtAC']
         all_sites['source_accessions_original'] = all_sites['substrate_UniProtAC'].astype(str)
 
@@ -242,7 +246,6 @@ def main() -> None:
         exact['source_family_count_exact']
     ).astype(int)
     exact['source_families_fuzzy'] = exact['source_families_fuzzy'].fillna(exact['source_families_exact'])
-    exact['confidence_tier'] = exact.apply(confidence_tier, axis=1)
     exact['support_any_ge_2'] = exact['source_family_count_fuzzy'] >= 2
     exact['support_exact_ge_2'] = exact['source_family_count_exact'] >= 2
 
@@ -267,8 +270,6 @@ def main() -> None:
     save_table(exact[exact['support_exact_ge_2']].copy(), outdir / 'human_arg_methyl_support_ge_2_exact.tsv')
     save_table(accession_audit, outdir / 'accession_canonicalization_audit.tsv')
 
-    support = exact['confidence_tier'].value_counts().rename_axis('confidence_tier').reset_index(name='site_count')
-    save_table(support, outdir / 'confidence_tier_counts.tsv')
     overlap = exact[['source_family_count_exact', 'source_family_count_fuzzy']].value_counts().rename_axis(
         ['source_family_count_exact', 'source_family_count_fuzzy']
     ).reset_index(name='site_count')

@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 import pandas as pd
-
+from pandas.errors import EmptyDataError
 
 TYPE_PRIORITY = {
     'domain': 0,
@@ -14,8 +14,40 @@ TYPE_PRIORITY = {
 }
 
 
+EMPTY_INTERVAL_COLUMNS = [
+    'canonical_UniProtAC', 'protein_length', 'interpro_accession', 'interpro_name', 'interpro_type',
+    'interpro_source_database', 'member_database_sources', 'member_database_accessions',
+    'fragment_start', 'fragment_end', 'fragment_status', 'location_index', 'fragment_index',
+    'location_representative', 'location_model', 'location_score', 'domain_track_default',
+    'interpro_interval_source',
+]
+
+
 def interval_priority(interpro_type: str) -> int:
     return TYPE_PRIORITY.get(str(interpro_type), 9)
+
+
+def load_intervals(path: str) -> pd.DataFrame:
+    try:
+        intervals = pd.read_csv(path, sep='	', low_memory=False)
+    except EmptyDataError:
+        intervals = pd.DataFrame(columns=EMPTY_INTERVAL_COLUMNS)
+    if intervals.empty:
+        return pd.DataFrame(columns=EMPTY_INTERVAL_COLUMNS)
+    required = {'canonical_UniProtAC', 'fragment_start', 'fragment_end'}
+    if not required.issubset(intervals.columns):
+        return pd.DataFrame(columns=EMPTY_INTERVAL_COLUMNS)
+    for col in ['interpro_accession', 'interpro_name', 'interpro_type', 'member_database_sources', 'member_database_accessions']:
+        if col not in intervals.columns:
+            intervals[col] = ''
+    intervals['fragment_start'] = pd.to_numeric(intervals['fragment_start'], errors='coerce')
+    intervals['fragment_end'] = pd.to_numeric(intervals['fragment_end'], errors='coerce')
+    intervals = intervals[intervals['fragment_start'].notna() & intervals['fragment_end'].notna()].copy()
+    if intervals.empty:
+        return pd.DataFrame(columns=EMPTY_INTERVAL_COLUMNS)
+    intervals['fragment_start'] = intervals['fragment_start'].astype(int)
+    intervals['fragment_end'] = intervals['fragment_end'].astype(int)
+    return intervals
 
 
 def edge_distance(position: int, start: int, end: int) -> tuple[int, str]:
@@ -159,22 +191,16 @@ def main() -> None:
     ap.add_argument('--include-types', nargs='*', default=[])
     args = ap.parse_args()
 
-    sites = pd.read_csv(args.sites, sep='\t', low_memory=False)
-    intervals = pd.read_csv(args.interpro_intervals, sep='\t', low_memory=False)
-    if args.include_types:
+    sites = pd.read_csv(args.sites, sep='	', low_memory=False)
+    intervals = load_intervals(args.interpro_intervals)
+    if args.include_types and not intervals.empty:
         wanted = set(args.include_types)
         intervals = intervals[intervals['interpro_type'].astype(str).isin(wanted)].copy()
-
-    intervals['fragment_start'] = pd.to_numeric(intervals['fragment_start'], errors='coerce')
-    intervals['fragment_end'] = pd.to_numeric(intervals['fragment_end'], errors='coerce')
-    intervals = intervals[intervals['fragment_start'].notna() & intervals['fragment_end'].notna()].copy()
-    intervals['fragment_start'] = intervals['fragment_start'].astype(int)
-    intervals['fragment_end'] = intervals['fragment_end'].astype(int)
 
     intervals_by_accession = {
         accession: group.sort_values(['fragment_start', 'fragment_end', 'interpro_accession']).reset_index(drop=True)
         for accession, group in intervals.groupby('canonical_UniProtAC')
-    }
+    } if not intervals.empty else {}
 
     annotations = sites.apply(
         lambda row: pd.Series(
@@ -195,14 +221,15 @@ def main() -> None:
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     annotated_path = outdir / 'sites_with_domain_context.tsv'
-    annotated.to_csv(annotated_path, sep='\t', index=False)
+    annotated.to_csv(annotated_path, sep='	', index=False)
 
     summary = annotated['domain_context_class'].value_counts(dropna=False).rename_axis('domain_context_class').reset_index(name='site_count')
     summary['boundary_window'] = args.boundary_window
-    summary.to_csv(outdir / 'domain_context_summary.tsv', sep='\t', index=False)
+    summary.to_csv(outdir / 'domain_context_summary.tsv', sep='	', index=False)
     print({
         'annotated_sites': len(annotated),
         'sites_with_domain_annotation': int(annotated['has_domain_annotation'].fillna(False).sum()),
+        'interpro_rows_loaded': int(len(intervals)),
         'output': str(annotated_path),
     })
 

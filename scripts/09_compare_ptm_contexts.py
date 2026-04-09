@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 
 from common import (
+    add_bh_q_values,
     canonicalize_uniprot_accession,
     fisher_like_enrichment,
     format_p_value,
@@ -222,6 +223,7 @@ def main() -> None:
             binary_rows.append(enrich)
         if binary_rows:
             binary = pd.concat(binary_rows, ignore_index=True)
+            binary = add_bh_q_values(binary, p_col='p_value', q_col='global_q_value_bh')
             save_table(binary, Path(args.outdir) / 'ptm_idr_binary_comparison.tsv')
 
             plot_df = binary[binary['category'] == 'IDR'].copy()
@@ -234,8 +236,8 @@ def main() -> None:
                 ax_idr.set_xlabel('PTM class')
                 ax_idr.set_title('Cross-PTM IDR enrichment')
                 ax_idr.tick_params(axis='x', rotation=25)
-                for x, v, p in zip(plot_df['ptm_group'], plot_df['log2_odds_ratio'], plot_df['p_value']):
-                    ax_idr.text(x, v, f'p={format_p_value(p)}', ha='center', va='bottom' if v >= 0 else 'top', fontsize=8, rotation=90)
+                for x, v, q in zip(plot_df['ptm_group'], plot_df['log2_odds_ratio'], plot_df['global_q_value_bh']):
+                    ax_idr.text(x, v, f'q={format_p_value(q)}', ha='center', va='bottom' if v >= 0 else 'top', fontsize=8, rotation=90)
                 fig_idr.tight_layout()
                 save_figure(fig_idr, Path(args.outdir) / 'cross_ptm_idr_binary_comparison')
 
@@ -257,6 +259,7 @@ def main() -> None:
     save_table(ptm_sites, outdir / 'ptm_sites_with_contexts.tsv')
     if rows:
         comparison = pd.concat(rows, ignore_index=True)
+        comparison = add_bh_q_values(comparison, p_col='p_value', q_col='global_q_value_bh')
         save_table(comparison, outdir / 'ptm_context_comparison.tsv')
         save_table(pd.DataFrame(backgrounds), outdir / 'ptm_context_backgrounds.tsv')
 
@@ -272,7 +275,7 @@ def main() -> None:
                     ax.plot(pivot.index, pivot[category], marker='o', label=category)
                     category_df = plot_df[plot_df['category'] == category]
                     for _, row in category_df.iterrows():
-                        ax.text(row['ptm_group'], row['log2_odds_ratio'], f" p={format_p_value(row['p_value'])}", fontsize=7, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
+                        ax.text(row['ptm_group'], row['log2_odds_ratio'], f" q={format_p_value(row['global_q_value_bh'])}", fontsize=7, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
                 ax.axhline(0, color='black', linewidth=0.8)
                 ax.set_ylabel('log2(OR) vs target-residue proteome background')
                 ax.set_xlabel('PTM class')
@@ -294,7 +297,7 @@ def main() -> None:
                     ax2.plot(pivot.index, pivot[category], marker='o', label=category)
                     category_df = plot_df[plot_df['category'] == category]
                     for _, row in category_df.iterrows():
-                        ax2.text(row['ptm_group'], row['log2_odds_ratio'], f" p={format_p_value(row['p_value'])}", fontsize=7, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
+                        ax2.text(row['ptm_group'], row['log2_odds_ratio'], f" q={format_p_value(row['global_q_value_bh'])}", fontsize=7, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
                 ax2.axhline(0, color='black', linewidth=0.8)
                 ax2.set_ylabel('log2(OR) vs target-residue proteome background')
                 ax2.set_xlabel('PTM class')

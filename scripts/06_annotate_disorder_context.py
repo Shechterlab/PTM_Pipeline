@@ -166,14 +166,7 @@ def main() -> None:
             outdir / 'idr_enrichment_vs_arginines_in_methylated_proteins.tsv',
         )
 
-        tier_rows = []
-        if 'confidence_tier' in annotated_sites.columns:
-            for tier, group in annotated_sites.groupby('confidence_tier'):
-                enriched = fisher_like_enrichment(group['disorder_context_class'], methyl_protein_arg['disorder_context_class'])
-                enriched['confidence_tier'] = tier
-                tier_rows.append(enriched)
-        if tier_rows:
-            save_table(pd.concat(tier_rows, ignore_index=True), outdir / 'idr_enrichment_by_confidence_tier.tsv')
+
 
         compare = pd.read_csv(outdir / 'idr_enrichment_vs_arginines_in_methylated_proteins.tsv', sep='\t')
         compare = compare[compare['category'].isin(['disordered', 'disorder_boundary', 'ordered'])].sort_values('odds_ratio')
@@ -183,8 +176,8 @@ def main() -> None:
         ax2.set_xlabel('log2(OR) vs arginines in methylated proteins')
         ax2.set_ylabel('Disorder class')
         ax2.set_title('Methylarginine enrichment by disorder context')
-        for y, v, n, p in zip(compare['category'], compare['log2_odds_ratio'], compare['target_count'], compare['p_value']):
-            ax2.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+        for y, v, n, q in zip(compare['category'], compare['log2_odds_ratio'], compare['target_count'], compare['q_value_bh']):
+            ax2.text(v, y, f'  n={n}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
         fig2.tight_layout()
         save_figure(fig2, outdir / 'arg_methyl_idr_enrichment')
 
