@@ -358,12 +358,38 @@ def main() -> None:
     save_table(edge_curve, outdir / 'domain_edge_distance_cumulative_vs_matched_control.tsv')
     save_table(edge_dist, outdir / 'domain_edge_distance_distribution_vs_matched_control.tsv')
 
+<<<<<<< HEAD
     plot_bar_enrichment(context_enrichment, outdir / 'arg_methyl_domain_context_enrichment')
     plot_domain_class(domain_class_enrichment, outdir / 'arg_methyl_nearest_domain_class_enrichment')
     plot_edge_curve(edge_curve, outdir / 'arg_methyl_domain_edge_proximity_curve')
     plot_matched_ratio(matched_context, outdir / 'arg_methyl_domain_context_matched_control_shift', 'Matched-control domain-context shift', 'Observed / matched-control fraction')
     plot_matched_ratio(matched_domain_class, outdir / 'arg_methyl_domain_class_matched_control_shift', 'Matched-control nearest-domain-class shift', 'Observed / matched-control fraction')
     plot_edge_distance_distribution(edge_dist, outdir / 'arg_methyl_domain_edge_distance_distribution')
+=======
+    plot_context = context_enrichment[context_enrichment['category'].isin(['in_domain', 'boundary', 'inter_domain_linker', 'distal'])].sort_values('odds_ratio')
+    fig, ax = plt.subplots(figsize=(8.0, 5.0))
+    ax.barh(plot_context['category'], plot_context['log2_odds_ratio'])
+    ax.axvline(0, color='black', linewidth=0.8)
+    ax.set_xlabel('log2(OR) vs arginines in methylated proteins')
+    ax.set_ylabel('Domain context')
+    ax.set_title('Methylarginine enrichment by domain context')
+    for y, v, n, q in zip(plot_context['category'], plot_context['log2_odds_ratio'], plot_context['target_count'], plot_context['q_value_bh']):
+        ax.text(v, y, f'  n={n}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+    fig.tight_layout()
+    save_figure(fig, outdir / 'arg_methyl_domain_context_enrichment')
+
+    plot_domain = domain_class_enrichment[domain_class_enrichment['target_count'] >= 20].head(12).sort_values('odds_ratio')
+    fig2, ax2 = plt.subplots(figsize=(9.0, 6.0))
+    ax2.barh(plot_domain['category'], plot_domain['log2_odds_ratio'])
+    ax2.axvline(0, color='black', linewidth=0.8)
+    ax2.set_xlabel('log2(OR) vs arginines in methylated proteins')
+    ax2.set_ylabel('Nearest domain class')
+    ax2.set_title('Nearest domain-class enrichment around methylarginines')
+    for y, v, n, q in zip(plot_domain['category'], plot_domain['log2_odds_ratio'], plot_domain['target_count'], plot_domain['q_value_bh']):
+        ax2.text(v, y, f'  n={n}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+    fig2.tight_layout()
+    save_figure(fig2, outdir / 'arg_methyl_nearest_domain_class_enrichment')
+>>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
 
     print({
         'annotated_sites': len(annotated_sites),

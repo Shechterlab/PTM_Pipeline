@@ -222,6 +222,7 @@ def main() -> None:
     save_table(counts_summary, outdir / 'functional_multilabel_category_counts.tsv')
     save_table(coverage, outdir / 'functional_multilabel_annotation_coverage.tsv')
 
+<<<<<<< HEAD
     plot_panel(
         enrichment_df[enrichment_df['panel'].isin(['rna_centric', 'summary'])].copy(),
         title='Integrated arg-methylome: RNA-centric multi-label enrichment',
@@ -235,6 +236,31 @@ def main() -> None:
         outpath=outdir / 'arg_methyl_functional_multilabel_non_rna_enrichment',
     )
     plot_membership_distribution(protein_meta, outdir / 'functional_multilabel_membership_distribution')
+=======
+    pb = broad[broad['target_count'] >= 10].head(10).sort_values('odds_ratio')
+    fig, ax = plt.subplots(figsize=(8.5, 5.8))
+    ax.barh(pb['category'], pb['log2_odds_ratio'])
+    ax.axvline(0, color='black', linewidth=0.8)
+    ax.set_xlabel('log2(OR) vs all PTM proteins')
+    ax.set_ylabel('Broad class')
+    ax.set_title('Integrated arg-methylome: broad functional-class enrichment')
+    for y, v, n, q in zip(pb['category'], pb['log2_odds_ratio'], pb['target_count'], pb['q_value_bh']):
+        ax.text(v, y, f'  n={n}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+    fig.tight_layout()
+    save_figure(fig, outdir / 'arg_methyl_functional_class_broad_enrichment')
+
+    ps = sub[sub['target_count'] >= 5].head(12).sort_values('odds_ratio')
+    fig2, ax2 = plt.subplots(figsize=(8.9, 6.3))
+    ax2.barh(ps['category'], ps['log2_odds_ratio'])
+    ax2.axvline(0, color='black', linewidth=0.8)
+    ax2.set_xlabel('log2(OR) vs all PTM proteins')
+    ax2.set_ylabel('Subclass')
+    ax2.set_title('Integrated arg-methylome: review-grade subclass enrichment')
+    for y, v, n, q in zip(ps['category'], ps['log2_odds_ratio'], ps['target_count'], ps['q_value_bh']):
+        ax2.text(v, y, f'  n={n}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+    fig2.tight_layout()
+    save_figure(fig2, outdir / 'arg_methyl_functional_class_subclass_enrichment')
+>>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
 
 
 if __name__ == '__main__':

@@ -324,6 +324,20 @@ def build_fuzzy_clusters(df: pd.DataFrame, tolerance: int = 2) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+<<<<<<< HEAD
+=======
+def confidence_tier(row: pd.Series) -> str:
+    exact = int(row.get('source_family_count_exact', 1) or 1)
+    fuzzy = int(row.get('source_family_count_fuzzy', 1) or 1)
+    fams = set(str(row.get('source_families_exact', '')).split(';')) if row.get('source_families_exact', '') else set()
+    if exact >= 2:
+        return 'Tier 1 exact cross-resource recurrence'
+    if fuzzy >= 2:
+        return 'Tier 1b fuzzy cross-resource recurrence'
+    if {'UniProt', 'Maron2021', 'ProMetheusDB', 'IEDB'} & fams:
+        return 'Tier 2 curated/specialized single-source'
+    return 'Tier 3 integrative single-source'
+>>>>>>> 2c1a8ff7d8603628918f8ffc773cdcc98c903bff
 
 
 def summarize_sources(values: Iterable[str]) -> str:
