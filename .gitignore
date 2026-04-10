@@ -4,11 +4,16 @@ scripts/__pycache__/
 *.pyc
 *.pyo
 
+PTM_data/
+PTM_results/
+
+# Legacy in-repo layout stubs
+data/*
+!data/.gitkeep
+!data/README.md
 results/*
 !results/.gitkeep
-
-data/context/*
-!data/context/.gitkeep
+!results/README.md
 
 # Large staged source files should stay local / HPC-staged, not in Git
 data/external/*.xlsx

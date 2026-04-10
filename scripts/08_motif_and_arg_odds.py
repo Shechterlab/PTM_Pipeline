@@ -7,9 +7,10 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.stats import fisher_exact
+from scipy.stats import binomtest, fisher_exact
 
 from common import (
+    add_q_values,
     canonical_site_table,
     format_p_value,
     log2_odds_ratio,
@@ -70,7 +71,7 @@ def motif_enrichment(target: pd.DataFrame, background: pd.DataFrame, motif_colum
             'p_value': float(fisher_exact([[a, b], [c, d]], alternative='two-sided').pvalue),
             'background_model': background_label,
         })
-    out = pd.DataFrame(rows)
+    out = add_q_values(pd.DataFrame(rows))
     return out.sort_values(['odds_ratio', 'target_count'], ascending=[False, False])
 
 
@@ -100,7 +101,7 @@ def positional_enrichment(target_windows: pd.Series, background_windows: pd.Seri
                 'p_value': float(fisher_exact([[a, b], [c, d]], alternative='two-sided').pvalue),
             })
     out = pd.DataFrame(rows)
-    return out
+    return add_q_values(out)
 
 
 def top_protein_label(row: pd.Series) -> str:
@@ -120,6 +121,7 @@ def main() -> None:
     ap.add_argument('--window-flank-wide', type=int, default=15)
     ap.add_argument('--min-arg-count', type=int, default=10)
     ap.add_argument('--min-site-count', type=int, default=2)
+    ap.add_argument('--shrinkage-prior-strength', type=float, default=200.0)
     args = ap.parse_args()
 
     sites = pd.read_csv(args.integrated_sites, sep='\t', low_memory=False)
@@ -179,9 +181,29 @@ def main() -> None:
         ),
         axis=1,
     )
+    protein_counts = add_q_values(protein_counts)
+    global_rate = total_methyl / total_arg if total_arg else np.nan
+    alpha0 = global_rate * args.shrinkage_prior_strength if pd.notna(global_rate) else np.nan
+    beta0 = (1 - global_rate) * args.shrinkage_prior_strength if pd.notna(global_rate) else np.nan
+    protein_counts['expected_global_rate'] = global_rate
+    protein_counts['posterior_rate'] = (
+        protein_counts['methyl_site_count'] + alpha0
+    ) / (
+        protein_counts['arginine_count'] + alpha0 + beta0
+    )
+    protein_counts['shrinkage_log2_enrichment'] = protein_counts['posterior_rate'].map(
+        lambda x: log2_odds_ratio(x / global_rate) if pd.notna(x) and global_rate > 0 else np.nan
+    )
+    protein_counts['binom_p_value'] = protein_counts.apply(
+        lambda row: float(binomtest(int(row['methyl_site_count']), int(row['arginine_count']), global_rate, alternative='two-sided').pvalue)
+        if pd.notna(global_rate) and int(row['arginine_count']) > 0 else np.nan,
+        axis=1,
+    )
+    protein_counts = add_q_values(protein_counts, p_col='binom_p_value', out_col='binom_q_value')
+    protein_counts['protein_length'] = protein_counts['canonical_UniProtAC'].map(lambda acc: len(sequences.get(acc, '')))
     protein_counts = protein_counts[(protein_counts['arginine_count'] >= args.min_arg_count) & (protein_counts['methyl_site_count'] >= args.min_site_count)].copy()
     protein_counts['label'] = protein_counts.apply(top_protein_label, axis=1)
-    protein_counts = protein_counts.sort_values(['odds_ratio', 'methyl_site_count'], ascending=[False, False])
+    protein_counts = protein_counts.sort_values(['shrinkage_log2_enrichment', 'methyl_site_count'], ascending=[False, False])
 
     context_rows = []
     for column in motif_columns:
@@ -197,7 +219,7 @@ def main() -> None:
             'p_value': float(fisher_exact([[a, b], [c, d]], alternative='two-sided').pvalue),
             'background_model': 'arginines_in_methylated_proteins',
         })
-    per_proteome_context = pd.DataFrame(context_rows).sort_values('odds_ratio', ascending=False)
+    per_proteome_context = add_q_values(pd.DataFrame(context_rows)).sort_values('odds_ratio', ascending=False)
 
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
@@ -206,6 +228,7 @@ def main() -> None:
     save_table(motif_vs_proteome, outdir / 'motif_family_enrichment_vs_all_proteome_arginines.tsv')
     save_table(positional, outdir / 'positional_amino_acid_enrichment.tsv')
     save_table(protein_counts, outdir / 'per_protein_arg_odds.tsv')
+    save_table(protein_counts, outdir / 'per_protein_shrinkage_prioritization.tsv')
     save_table(per_proteome_context, outdir / 'per_proteome_arg_context_odds.tsv')
 
     plot_motif = motif_vs_methyl_proteins.head(12).sort_values('odds_ratio')
@@ -215,8 +238,8 @@ def main() -> None:
     ax.set_xlabel('log2(OR) vs arginines in methylated proteins')
     ax.set_ylabel('Motif family')
     ax.set_title('Methylarginine motif-family enrichment')
-    for y, v, n, p in zip(plot_motif['motif_family'], plot_motif['log2_odds_ratio'], plot_motif['target_count'], plot_motif['p_value']):
-        ax.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=8.5)
+    for y, v, n, p, q in zip(plot_motif['motif_family'], plot_motif['log2_odds_ratio'], plot_motif['target_count'], plot_motif['p_value'], plot_motif['q_value']):
+        ax.text(v, y, f'  n={n}, p={format_p_value(p)}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=8.5)
     fig.tight_layout()
     save_figure(fig, outdir / 'arg_methyl_motif_family_enrichment')
 
@@ -274,25 +297,45 @@ def main() -> None:
         fig2.tight_layout()
         save_figure(fig2, outdir / 'arg_methyl_positional_enrichment_heatmap')
 
-    top_or = protein_counts.head(20).sort_values('odds_ratio')
+    top_shrunk = protein_counts.head(20).sort_values('shrinkage_log2_enrichment')
     fig3, ax3 = plt.subplots(figsize=(10.0, 7.0))
-    ax3.barh(top_or['label'], top_or['log2_odds_ratio'])
+    ax3.barh(top_shrunk['label'], top_shrunk['shrinkage_log2_enrichment'])
     ax3.axvline(0, color='black', linewidth=0.8)
-    ax3.set_xlabel('log2 Arg-normalized odds ratio')
+    ax3.set_xlabel('log2 shrinkage-adjusted enrichment')
     ax3.set_ylabel('Protein')
-    ax3.set_title('Top proteins by methylarginine Arg odds ratio')
-    for y, v, n, p in zip(top_or['label'], top_or['log2_odds_ratio'], top_or['methyl_site_count'], top_or['p_value']):
-        ax3.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=8)
+    ax3.set_title('Top proteins by shrinkage-adjusted methylarginine enrichment')
+    for y, v, n, p, q in zip(top_shrunk['label'], top_shrunk['shrinkage_log2_enrichment'], top_shrunk['methyl_site_count'], top_shrunk['binom_p_value'], top_shrunk['binom_q_value']):
+        ax3.text(v, y, f'  n={n}, p={format_p_value(p)}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=7.8)
     fig3.tight_layout()
-    save_figure(fig3, outdir / 'top_proteins_by_arg_odds_ratio')
+    save_figure(fig3, outdir / 'top_proteins_by_shrinkage_score')
 
     fig4, ax4 = plt.subplots(figsize=(7.0, 5.2))
-    ax4.scatter(protein_counts['methyl_site_count'], np.log2(protein_counts['odds_ratio']), alpha=0.55)
+    ax4.scatter(protein_counts['methyl_site_count'], protein_counts['shrinkage_log2_enrichment'], alpha=0.55)
     ax4.set_xlabel('Methylarginine site count')
-    ax4.set_ylabel('log2 Arg odds ratio')
-    ax4.set_title('Protein-level methylarginine burden and Arg enrichment')
+    ax4.set_ylabel('log2 shrinkage-adjusted enrichment')
+    ax4.set_title('Protein-level methylarginine burden and shrinkage score')
     fig4.tight_layout()
-    save_figure(fig4, outdir / 'protein_site_count_vs_arg_odds_ratio')
+    save_figure(fig4, outdir / 'protein_site_count_vs_shrinkage_score')
+
+    top_or = protein_counts.head(20).sort_values('odds_ratio')
+    fig5, ax5 = plt.subplots(figsize=(10.0, 7.0))
+    ax5.barh(top_or['label'], top_or['log2_odds_ratio'])
+    ax5.axvline(0, color='black', linewidth=0.8)
+    ax5.set_xlabel('log2 Arg-normalized odds ratio')
+    ax5.set_ylabel('Protein')
+    ax5.set_title('Top proteins by raw Arg odds ratio')
+    for y, v, n, p, q in zip(top_or['label'], top_or['log2_odds_ratio'], top_or['methyl_site_count'], top_or['p_value'], top_or['q_value']):
+        ax5.text(v, y, f'  n={n}, p={format_p_value(p)}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=7.8)
+    fig5.tight_layout()
+    save_figure(fig5, outdir / 'top_proteins_by_arg_odds_ratio')
+
+    fig6, ax6 = plt.subplots(figsize=(7.0, 5.2))
+    ax6.scatter(protein_counts['methyl_site_count'], np.log2(protein_counts['odds_ratio']), alpha=0.55)
+    ax6.set_xlabel('Methylarginine site count')
+    ax6.set_ylabel('log2 Arg odds ratio')
+    ax6.set_title('Protein-level methylarginine burden and Arg enrichment')
+    fig6.tight_layout()
+    save_figure(fig6, outdir / 'protein_site_count_vs_arg_odds_ratio')
 
     print({
         'methyl_sites': len(sites),

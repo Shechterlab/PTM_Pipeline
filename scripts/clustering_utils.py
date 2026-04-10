@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections import defaultdict
+
 import numpy as np
 import pandas as pd
 
@@ -8,6 +10,72 @@ def residue_positions(sequence: str, residues: set[str] | list[str] | tuple[str,
     seq = str(sequence).strip().upper()
     residue_set = {str(residue).upper() for residue in residues}
     return np.array([idx for idx, aa in enumerate(seq, start=1) if aa in residue_set], dtype=int)
+
+
+def normalize_disorder_intervals(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    rename_map = {}
+    for source, target in [
+        ('accession', 'canonical_UniProtAC'),
+        ('Entry', 'canonical_UniProtAC'),
+        ('start', 'fragment_start'),
+        ('end', 'fragment_end'),
+    ]:
+        if source in out.columns and target not in out.columns:
+            rename_map[source] = target
+    out = out.rename(columns=rename_map)
+    required = ['canonical_UniProtAC', 'fragment_start', 'fragment_end']
+    missing = [col for col in required if col not in out.columns]
+    if missing:
+        raise ValueError(f'missing disorder interval columns: {missing}')
+    out['canonical_UniProtAC'] = out['canonical_UniProtAC'].astype(str).str.strip()
+    out['fragment_start'] = pd.to_numeric(out['fragment_start'], errors='coerce')
+    out['fragment_end'] = pd.to_numeric(out['fragment_end'], errors='coerce')
+    out = out[out['fragment_start'].notna() & out['fragment_end'].notna()].copy()
+    out['fragment_start'] = out['fragment_start'].astype(int)
+    out['fragment_end'] = out['fragment_end'].astype(int)
+    return out.sort_values(['canonical_UniProtAC', 'fragment_start', 'fragment_end']).reset_index(drop=True)
+
+
+def merge_intervals(intervals: pd.DataFrame) -> pd.DataFrame:
+    if intervals.empty:
+        return pd.DataFrame(columns=['fragment_start', 'fragment_end'])
+    merged = []
+    current_start = None
+    current_end = None
+    for row in intervals[['fragment_start', 'fragment_end']].sort_values(['fragment_start', 'fragment_end']).itertuples(index=False):
+        start = int(row.fragment_start)
+        end = int(row.fragment_end)
+        if current_start is None:
+            current_start, current_end = start, end
+            continue
+        if start <= current_end + 1:
+            current_end = max(current_end, end)
+        else:
+            merged.append({'fragment_start': current_start, 'fragment_end': current_end})
+            current_start, current_end = start, end
+    if current_start is not None:
+        merged.append({'fragment_start': current_start, 'fragment_end': current_end})
+    return pd.DataFrame(merged)
+
+
+def merged_intervals_by_accession(intervals: pd.DataFrame) -> dict[str, pd.DataFrame]:
+    return {
+        accession: merge_intervals(group)
+        for accession, group in intervals.groupby('canonical_UniProtAC')
+    }
+
+
+def position_is_in_idr(positions: np.ndarray, intervals: pd.DataFrame) -> np.ndarray:
+    positions = np.asarray(positions, dtype=int)
+    is_in = np.zeros(len(positions), dtype=bool)
+    if intervals.empty or len(positions) == 0:
+        return is_in
+    starts = intervals['fragment_start'].to_numpy(dtype=int)
+    ends = intervals['fragment_end'].to_numpy(dtype=int)
+    for start, end in zip(starts, ends):
+        is_in |= (positions >= start) & (positions <= end)
+    return is_in
 
 
 def nearest_neighbor_distances(positions: np.ndarray) -> np.ndarray:
@@ -113,6 +181,28 @@ def sample_positions(
     return sampled
 
 
+def sample_positions_grouped(
+    candidate_positions_by_key: dict[tuple[str, str], np.ndarray],
+    site_counts_by_key: dict[tuple[str, str], int],
+    rng: np.random.Generator,
+) -> dict[str, np.ndarray]:
+    sampled = defaultdict(list)
+    for key, site_count in site_counts_by_key.items():
+        accession, _label = key
+        candidate_positions = candidate_positions_by_key.get(key, np.array([], dtype=int))
+        if site_count <= 0 or len(candidate_positions) == 0:
+            continue
+        if site_count >= len(candidate_positions):
+            sampled_positions = np.sort(candidate_positions.copy())
+        else:
+            sampled_positions = np.sort(rng.choice(candidate_positions, size=site_count, replace=False))
+        sampled[accession].extend(int(value) for value in sampled_positions.tolist())
+    return {
+        accession: np.sort(np.array(values, dtype=int))
+        for accession, values in sampled.items()
+    }
+
+
 def permutation_summary(
     candidate_positions_by_acc: dict[str, np.ndarray],
     site_counts_by_acc: dict[str, int],
@@ -125,6 +215,33 @@ def permutation_summary(
     rows = []
     for iteration in range(1, permutations + 1):
         sampled = sample_positions(candidate_positions_by_acc, site_counts_by_acc, rng)
+        nearest_hist, ordered_pair_hist, _ = histograms_from_positions(sampled, max_distance=max_distance)
+        total_sites = int(sum(len(values) for values in sampled.values()))
+        summary = summarize_curve_from_histograms(
+            nearest_hist=nearest_hist,
+            ordered_pair_hist=ordered_pair_hist,
+            total_sites=total_sites,
+            max_distance=max_distance,
+        )
+        summary['permutation'] = iteration
+        rows.append(summary)
+        if progress_every and iteration % progress_every == 0:
+            print(f'completed {iteration} / {permutations} clustering permutations')
+    return pd.concat(rows, ignore_index=True)
+
+
+def permutation_summary_grouped(
+    candidate_positions_by_key: dict[tuple[str, str], np.ndarray],
+    site_counts_by_key: dict[tuple[str, str], int],
+    max_distance: int,
+    permutations: int,
+    seed: int,
+    progress_every: int,
+) -> pd.DataFrame:
+    rng = np.random.default_rng(seed)
+    rows = []
+    for iteration in range(1, permutations + 1):
+        sampled = sample_positions_grouped(candidate_positions_by_key, site_counts_by_key, rng)
         nearest_hist, ordered_pair_hist, _ = histograms_from_positions(sampled, max_distance=max_distance)
         total_sites = int(sum(len(values) for values in sampled.values()))
         summary = summarize_curve_from_histograms(

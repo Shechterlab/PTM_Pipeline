@@ -79,6 +79,38 @@ def format_p_value(value) -> str:
     return f'{value:.3f}'
 
 
+def benjamini_hochberg(p_values: Iterable[float]) -> np.ndarray:
+    p = np.asarray(list(p_values), dtype=float)
+    out = np.full(p.shape, np.nan, dtype=float)
+    valid = np.isfinite(p)
+    if not valid.any():
+        return out
+    pv = p[valid]
+    order = np.argsort(pv)
+    ranked = pv[order]
+    n = len(ranked)
+    adjusted = np.empty(n, dtype=float)
+    cumulative = 1.0
+    for i in range(n - 1, -1, -1):
+        rank = i + 1
+        bh = ranked[i] * n / rank
+        cumulative = min(cumulative, bh)
+        adjusted[i] = min(cumulative, 1.0)
+    restored = np.empty(n, dtype=float)
+    restored[order] = adjusted
+    out[valid] = restored
+    return out
+
+
+def add_q_values(df: pd.DataFrame, p_col: str = 'p_value', out_col: str = 'q_value') -> pd.DataFrame:
+    out = df.copy()
+    if p_col not in out.columns:
+        out[out_col] = np.nan
+        return out
+    out[out_col] = benjamini_hochberg(out[p_col].astype(float).to_numpy())
+    return out
+
+
 def fisher_like_enrichment(target: pd.Series, universe: pd.Series) -> pd.DataFrame:
     target = target.fillna('Other / unclassified')
     universe = universe.fillna('Other / unclassified')
@@ -102,7 +134,7 @@ def fisher_like_enrichment(target: pd.Series, universe: pd.Series) -> pd.DataFra
             'log2_odds_ratio': log2_odds_ratio(orr),
             'p_value': float(fisher_exact([[a, b], [c, d]], alternative='two-sided').pvalue),
         })
-    out = pd.DataFrame(rows)
+    out = add_q_values(pd.DataFrame(rows))
     return out.sort_values(['odds_ratio', 'target_count'], ascending=[False, False])
 
 
@@ -276,19 +308,6 @@ def build_fuzzy_clusters(df: pd.DataFrame, tolerance: int = 2) -> pd.DataFrame:
                 'rows_in_cluster': len(sub),
             })
     return pd.DataFrame(rows)
-
-
-def confidence_tier(row: pd.Series) -> str:
-    exact = int(row.get('source_family_count_exact', 1) or 1)
-    fuzzy = int(row.get('source_family_count_fuzzy', 1) or 1)
-    fams = set(str(row.get('source_families_exact', '')).split(';')) if row.get('source_families_exact', '') else set()
-    if exact >= 2:
-        return 'Tier 1 exact multi-source'
-    if fuzzy >= 2:
-        return 'Tier 1b fuzzy multi-source'
-    if 'UniProt' in fams or 'Maron2021' in fams or 'ProMetheusDB' in fams:
-        return 'Tier 2 curated/specialized single-source'
-    return 'Tier 3 integrative single-source'
 
 
 def summarize_sources(values: Iterable[str]) -> str:

@@ -13,7 +13,11 @@ from clustering_utils import (
     aggregate_null_curve,
     checkpoint_summary,
     histograms_from_positions,
+    merged_intervals_by_accession,
+    normalize_disorder_intervals,
     permutation_summary,
+    permutation_summary_grouped,
+    position_is_in_idr,
     protein_density_summary,
     residue_positions,
     summarize_curve_from_histograms,
@@ -34,6 +38,16 @@ def validate_sites(sites: pd.DataFrame, sequences: dict[str, str]) -> pd.DataFra
     return out.drop_duplicates(['canonical_UniProtAC', 'corrected_position']).reset_index(drop=True)
 
 
+def annotate_idr_binary(df: pd.DataFrame, intervals_by_acc: dict[str, pd.DataFrame]) -> pd.DataFrame:
+    out = df.copy()
+    out['idr_binary_class'] = 'non_IDR'
+    for accession, idx in out.groupby('canonical_UniProtAC').groups.items():
+        positions = out.loc[idx, 'corrected_position'].to_numpy(dtype=int)
+        flags = position_is_in_idr(positions, intervals_by_acc.get(accession, pd.DataFrame(columns=['fragment_start', 'fragment_end'])))
+        out.loc[idx, 'idr_binary_class'] = np.where(flags, 'IDR', 'non_IDR')
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--integrated-sites', required=True)
@@ -44,19 +58,61 @@ def main() -> None:
     ap.add_argument('--seed', type=int, default=42)
     ap.add_argument('--progress-every', type=int, default=25)
     ap.add_argument('--checkpoints', nargs='*', type=int, default=[3, 5, 10, 20, 50])
+    ap.add_argument('--disorder-intervals', default='')
+    ap.add_argument('--null-match-disorder', action='store_true')
+    ap.add_argument('--restrict-context', choices=['all', 'IDR', 'non_IDR'], default='all')
     args = ap.parse_args()
 
     sites = pd.read_csv(args.integrated_sites, sep='\t', low_memory=False)
     sequences = parse_fasta(args.canonical_fasta)
     sites = validate_sites(sites, sequences=sequences)
 
+    intervals_by_acc = None
+    if args.disorder_intervals:
+        disorder = normalize_disorder_intervals(pd.read_csv(args.disorder_intervals, sep='\t', low_memory=False))
+        intervals_by_acc = merged_intervals_by_accession(disorder)
+        sites = annotate_idr_binary(sites, intervals_by_acc)
+        if args.restrict_context != 'all':
+            sites = sites[sites['idr_binary_class'] == args.restrict_context].copy()
+    elif args.null_match_disorder or args.restrict_context != 'all':
+        raise ValueError('--disorder-intervals is required for --null-match-disorder or --restrict-context')
+
     methylated_proteins = sorted(set(sites['canonical_UniProtAC'].astype(str)))
-    arg_positions_by_acc = {
-        accession: residue_positions(sequences[accession], {'R'})
-        for accession in methylated_proteins
-        if accession in sequences
-    }
+    arg_positions_by_acc = {}
+    arg_positions_by_key = {}
+    for accession in methylated_proteins:
+        if accession not in sequences:
+            continue
+        positions = residue_positions(sequences[accession], {'R'})
+        if intervals_by_acc is None:
+            if len(positions):
+                arg_positions_by_acc[accession] = positions
+            continue
+        flags = position_is_in_idr(positions, intervals_by_acc.get(accession, pd.DataFrame(columns=['fragment_start', 'fragment_end'])))
+        if args.restrict_context == 'IDR':
+            subset = positions[flags]
+            if len(subset):
+                arg_positions_by_acc[accession] = subset
+                arg_positions_by_key[(accession, 'IDR')] = subset
+        elif args.restrict_context == 'non_IDR':
+            subset = positions[~flags]
+            if len(subset):
+                arg_positions_by_acc[accession] = subset
+                arg_positions_by_key[(accession, 'non_IDR')] = subset
+        else:
+            if len(positions):
+                arg_positions_by_acc[accession] = positions
+            idr = positions[flags]
+            non_idr = positions[~flags]
+            if len(idr):
+                arg_positions_by_key[(accession, 'IDR')] = idr
+            if len(non_idr):
+                arg_positions_by_key[(accession, 'non_IDR')] = non_idr
     methyl_counts_by_acc = sites.groupby('canonical_UniProtAC').size().to_dict()
+    methyl_counts_by_key = {
+        (str(accession), str(label)): int(count)
+        for (accession, label), count in sites.groupby(['canonical_UniProtAC', 'idr_binary_class']).size().to_dict().items()
+    } if intervals_by_acc is not None else {}
     observed_positions_by_acc = {
         accession: np.sort(group['corrected_position'].to_numpy(dtype=int))
         for accession, group in sites.groupby('canonical_UniProtAC')
@@ -76,14 +132,24 @@ def main() -> None:
         max_distance=args.max_distance,
     )
 
-    permutations = permutation_summary(
-        arg_positions_by_acc=arg_positions_by_acc,
-        methyl_counts_by_acc=methyl_counts_by_acc,
-        max_distance=args.max_distance,
-        permutations=args.permutations,
-        seed=args.seed,
-        progress_every=args.progress_every,
-    )
+    if args.null_match_disorder and intervals_by_acc is not None:
+        permutations = permutation_summary_grouped(
+            candidate_positions_by_key=arg_positions_by_key,
+            site_counts_by_key=methyl_counts_by_key,
+            max_distance=args.max_distance,
+            permutations=args.permutations,
+            seed=args.seed,
+            progress_every=args.progress_every,
+        )
+    else:
+        permutations = permutation_summary(
+            candidate_positions_by_acc=arg_positions_by_acc,
+            site_counts_by_acc=methyl_counts_by_acc,
+            max_distance=args.max_distance,
+            permutations=args.permutations,
+            seed=args.seed,
+            progress_every=args.progress_every,
+        )
     null_curve = aggregate_null_curve(permutations)
     curve = observed_curve.merge(null_curve, how='left', on='distance_aa')
     curve = add_empirical_p_values(curve, permutation_df=permutations)
@@ -91,8 +157,14 @@ def main() -> None:
     curve['ratio_prob_neighbor_within_x_vs_null'] = curve['prob_neighbor_within_x'] / curve['null_mean_prob_neighbor_within_x'].replace(0, np.nan)
     curve['delta_other_methyl_args_within_x_vs_null'] = curve['mean_other_methyl_args_within_x'] - curve['null_mean_other_methyl_args_within_x']
     curve['ratio_other_methyl_args_within_x_vs_null'] = curve['mean_other_methyl_args_within_x'] / curve['null_mean_other_methyl_args_within_x'].replace(0, np.nan)
+    curve['restrict_context'] = args.restrict_context
+    curve['null_match_disorder'] = bool(args.null_match_disorder and intervals_by_acc is not None)
 
     protein_summary = protein_density_summary(observed_positions_by_acc, windows=args.checkpoints)
+    rename_map = {'site_count': 'methyl_site_count'}
+    for window in args.checkpoints:
+        rename_map[f'max_sites_in_{window}aa_window'] = f'max_methyl_sites_in_{window}aa_window'
+    protein_summary = protein_summary.rename(columns=rename_map)
     if 'substrate_genename' in sites.columns:
         gene_map = (
             sites[['canonical_UniProtAC', 'substrate_genename']]
@@ -102,7 +174,7 @@ def main() -> None:
         protein_summary = protein_summary.merge(gene_map, how='left', on='canonical_UniProtAC')
 
     per_site = per_site.merge(
-        sites[['canonical_UniProtAC', 'corrected_position', 'substrate_genename', 'confidence_tier']].drop_duplicates(
+        sites[['canonical_UniProtAC', 'corrected_position', 'substrate_genename', 'source_family_count_exact', 'source_family_count_fuzzy']].drop_duplicates(
             ['canonical_UniProtAC', 'corrected_position']
         ),
         how='left',

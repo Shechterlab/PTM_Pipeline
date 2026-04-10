@@ -5,6 +5,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas as pd
+from scipy.stats import mannwhitneyu
 
 from common import (
     classify_by_patterns,
@@ -106,19 +107,23 @@ def classify_residue(intervals_by_acc: dict[str, pd.DataFrame], accession: str, 
 
 
 def annotate_background(background: pd.DataFrame, intervals_by_acc: dict[str, pd.DataFrame], boundary_window: int, ontology: dict) -> pd.DataFrame:
-    annotations = background.apply(
-        lambda row: pd.Series(
-            classify_residue(
-                intervals_by_acc=intervals_by_acc,
-                accession=str(row['canonical_UniProtAC']),
-                position=int(row['position']),
-                boundary_window=boundary_window,
-                ontology=ontology,
+    out = background.copy()
+    annotation_rows: list[pd.DataFrame] = []
+    for accession, group in out.groupby('canonical_UniProtAC', sort=False):
+        rows = []
+        for row in group.itertuples():
+            rows.append(
+                classify_residue(
+                    intervals_by_acc=intervals_by_acc,
+                    accession=str(accession),
+                    position=int(row.position),
+                    boundary_window=boundary_window,
+                    ontology=ontology,
+                )
             )
-        ),
-        axis=1,
-    )
-    return pd.concat([background, annotations], axis=1)
+        annotation_rows.append(pd.DataFrame(rows, index=group.index))
+    annotations = pd.concat(annotation_rows, axis=0).sort_index() if annotation_rows else pd.DataFrame(index=out.index)
+    return pd.concat([out, annotations], axis=1)
 
 
 def main() -> None:
@@ -131,8 +136,15 @@ def main() -> None:
     ap.add_argument('--outdir', default='results/domain_context')
     args = ap.parse_args()
 
-    annotated_sites = pd.read_csv(args.annotated_sites, sep='\t', low_memory=False)
-    intervals = pd.read_csv(args.interpro_intervals, sep='\t', low_memory=False)
+    annotated_path = Path(args.annotated_sites)
+    interpro_path = Path(args.interpro_intervals)
+    if not annotated_path.exists() or annotated_path.stat().st_size == 0:
+        raise ValueError(f'annotated domain-context table is missing or empty: {annotated_path}')
+    if not interpro_path.exists() or interpro_path.stat().st_size == 0:
+        raise ValueError(f'InterPro interval table is missing or empty: {interpro_path}')
+
+    annotated_sites = pd.read_csv(annotated_path, sep='\t', low_memory=False)
+    intervals = pd.read_csv(interpro_path, sep='\t', low_memory=False)
     intervals['fragment_start'] = pd.to_numeric(intervals['fragment_start'], errors='coerce')
     intervals['fragment_end'] = pd.to_numeric(intervals['fragment_end'], errors='coerce')
     intervals = intervals[intervals['fragment_start'].notna() & intervals['fragment_end'].notna()].copy()
@@ -152,6 +164,8 @@ def main() -> None:
     proteome_arg = residue_background_from_sequences(sequences, residue='R')
     methylated_proteins = sorted(set(annotated_sites['canonical_UniProtAC'].dropna().astype(str)))
     methyl_protein_arg = proteome_arg[proteome_arg['canonical_UniProtAC'].isin(methylated_proteins)].copy()
+    methyl_site_keys = set(annotated_sites['site_key'].astype(str))
+    methyl_protein_arg = methyl_protein_arg[~methyl_protein_arg['site_key'].isin(methyl_site_keys)].copy()
     methyl_protein_arg = annotate_background(methyl_protein_arg, intervals_by_acc, args.boundary_window, ontology)
 
     context_enrichment = fisher_like_enrichment(
@@ -163,12 +177,24 @@ def main() -> None:
         methyl_protein_arg['nearest_domain_class'],
     )
     edge_summary = annotated_sites[['nearest_domain_edge_distance', 'domain_context_class']].copy()
+    observed_edge = annotated_sites['nearest_domain_edge_distance'].dropna().astype(float)
+    background_edge = methyl_protein_arg['nearest_domain_edge_distance'].dropna().astype(float)
+    edge_comparison = pd.DataFrame([{
+        'observed_n': len(observed_edge),
+        'background_n': len(background_edge),
+        'observed_median': observed_edge.median() if not observed_edge.empty else pd.NA,
+        'background_median': background_edge.median() if not background_edge.empty else pd.NA,
+        'mannwhitney_u_p_value': float(mannwhitneyu(observed_edge, background_edge, alternative='two-sided').pvalue)
+        if not observed_edge.empty and not background_edge.empty else pd.NA,
+    }])
 
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     save_table(context_enrichment, outdir / 'domain_context_enrichment.tsv')
     save_table(domain_class_enrichment, outdir / 'domain_class_enrichment.tsv')
     save_table(edge_summary, outdir / 'domain_edge_distance_summary.tsv')
+    save_table(edge_comparison, outdir / 'domain_edge_distance_comparison.tsv')
+    save_table(methyl_protein_arg, outdir / 'same_protein_nonmethyl_arginine_domain_background.tsv')
 
     plot_context = context_enrichment[context_enrichment['category'].isin(['in_domain', 'boundary', 'inter_domain_linker', 'distal'])].sort_values('odds_ratio')
     fig, ax = plt.subplots(figsize=(8.0, 5.0))
@@ -177,8 +203,8 @@ def main() -> None:
     ax.set_xlabel('log2(OR) vs arginines in methylated proteins')
     ax.set_ylabel('Domain context')
     ax.set_title('Methylarginine enrichment by domain context')
-    for y, v, n, p in zip(plot_context['category'], plot_context['log2_odds_ratio'], plot_context['target_count'], plot_context['p_value']):
-        ax.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+    for y, v, n, p, q in zip(plot_context['category'], plot_context['log2_odds_ratio'], plot_context['target_count'], plot_context['p_value'], plot_context['q_value']):
+        ax.text(v, y, f'  n={n}, p={format_p_value(p)}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
     fig.tight_layout()
     save_figure(fig, outdir / 'arg_methyl_domain_context_enrichment')
 
@@ -189,8 +215,8 @@ def main() -> None:
     ax2.set_xlabel('log2(OR) vs arginines in methylated proteins')
     ax2.set_ylabel('Nearest domain class')
     ax2.set_title('Nearest domain-class enrichment around methylarginines')
-    for y, v, n, p in zip(plot_domain['category'], plot_domain['log2_odds_ratio'], plot_domain['target_count'], plot_domain['p_value']):
-        ax2.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+    for y, v, n, p, q in zip(plot_domain['category'], plot_domain['log2_odds_ratio'], plot_domain['target_count'], plot_domain['p_value'], plot_domain['q_value']):
+        ax2.text(v, y, f'  n={n}, p={format_p_value(p)}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
     fig2.tight_layout()
     save_figure(fig2, outdir / 'arg_methyl_nearest_domain_class_enrichment')
 

@@ -97,6 +97,9 @@ def annotate_frame(df: pd.DataFrame, intervals_by_acc: dict[str, pd.DataFrame], 
 
     out['disorder_context_boundary_window'] = boundary_window
     out['disorder_context_layer'] = 'disorder_context'
+    out['idr_binary_class'] = pd.NA
+    out.loc[out['disorder_context_class'] == 'disordered', 'idr_binary_class'] = 'IDR'
+    out.loc[out['disorder_context_class'].isin(['ordered', 'disorder_boundary']), 'idr_binary_class'] = 'non_IDR'
     return out
 
 
@@ -155,38 +158,50 @@ def main() -> None:
             position_col='corrected_position',
             boundary_window=args.boundary_window,
         )
+        methyl_site_keys = set(annotated_sites['site_key'].astype(str))
+        proteome_arg = proteome_arg[~proteome_arg['site_key'].isin(methyl_site_keys)].copy()
         methylated_proteins = sorted(set(annotated_sites['canonical_UniProtAC'].dropna().astype(str)))
         methyl_protein_arg = proteome_arg[proteome_arg['canonical_UniProtAC'].isin(methylated_proteins)].copy()
-        save_table(
-            fisher_like_enrichment(annotated_sites['disorder_context_class'], proteome_arg['disorder_context_class']),
-            outdir / 'idr_enrichment_vs_all_arginines.tsv',
+        enrich_all = fisher_like_enrichment(annotated_sites['disorder_context_class'], proteome_arg['disorder_context_class'])
+        enrich_same = fisher_like_enrichment(annotated_sites['disorder_context_class'], methyl_protein_arg['disorder_context_class'])
+        binary_all = fisher_like_enrichment(
+            annotated_sites[annotated_sites['idr_binary_class'].notna()]['idr_binary_class'],
+            proteome_arg[proteome_arg['idr_binary_class'].notna()]['idr_binary_class'],
         )
-        save_table(
-            fisher_like_enrichment(annotated_sites['disorder_context_class'], methyl_protein_arg['disorder_context_class']),
-            outdir / 'idr_enrichment_vs_arginines_in_methylated_proteins.tsv',
+        binary_same = fisher_like_enrichment(
+            annotated_sites[annotated_sites['idr_binary_class'].notna()]['idr_binary_class'],
+            methyl_protein_arg[methyl_protein_arg['idr_binary_class'].notna()]['idr_binary_class'],
         )
+        save_table(enrich_all, outdir / 'idr_enrichment_vs_all_arginines.tsv')
+        save_table(enrich_same, outdir / 'idr_enrichment_vs_arginines_in_methylated_proteins.tsv')
+        save_table(binary_all, outdir / 'idr_binary_enrichment_vs_all_arginines.tsv')
+        save_table(binary_same, outdir / 'idr_binary_enrichment_vs_arginines_in_methylated_proteins.tsv')
 
-        tier_rows = []
-        if 'confidence_tier' in annotated_sites.columns:
-            for tier, group in annotated_sites.groupby('confidence_tier'):
-                enriched = fisher_like_enrichment(group['disorder_context_class'], methyl_protein_arg['disorder_context_class'])
-                enriched['confidence_tier'] = tier
-                tier_rows.append(enriched)
-        if tier_rows:
-            save_table(pd.concat(tier_rows, ignore_index=True), outdir / 'idr_enrichment_by_confidence_tier.tsv')
-
-        compare = pd.read_csv(outdir / 'idr_enrichment_vs_arginines_in_methylated_proteins.tsv', sep='\t')
-        compare = compare[compare['category'].isin(['disordered', 'disorder_boundary', 'ordered'])].sort_values('odds_ratio')
+        compare = enrich_all[enrich_all['category'].isin(['disordered', 'disorder_boundary', 'ordered'])].sort_values('odds_ratio')
         fig2, ax2 = plt.subplots(figsize=(7.4, 4.8))
         ax2.barh(compare['category'], compare['log2_odds_ratio'])
         ax2.axvline(0, color='black', linewidth=0.8)
-        ax2.set_xlabel('log2(OR) vs arginines in methylated proteins')
+        ax2.set_xlabel('log2(OR) vs all proteome arginines')
         ax2.set_ylabel('Disorder class')
-        ax2.set_title('Methylarginine enrichment by disorder context')
-        for y, v, n, p in zip(compare['category'], compare['log2_odds_ratio'], compare['target_count'], compare['p_value']):
-            ax2.text(v, y, f'  n={n}, p={format_p_value(p)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+        ax2.set_title('Methylarginine disorder-context enrichment')
+        for y, v, n, p, q in zip(compare['category'], compare['log2_odds_ratio'], compare['target_count'], compare['p_value'], compare['q_value']):
+            ax2.text(v, y, f'  n={n}, p={format_p_value(p)}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
         fig2.tight_layout()
-        save_figure(fig2, outdir / 'arg_methyl_idr_enrichment')
+        save_figure(fig2, outdir / 'arg_methyl_idr_context_enrichment')
+
+        binary_plot = binary_all[binary_all['category'] == 'IDR'].copy()
+        if not binary_plot.empty:
+            fig3, ax3 = plt.subplots(figsize=(4.8, 4.8))
+            ax3.bar(['IDR'], binary_plot['log2_odds_ratio'])
+            ax3.axhline(0, color='black', linewidth=0.8)
+            ax3.set_ylabel('log2(OR) vs all proteome arginines')
+            ax3.set_title('Methylarginine IDR enrichment')
+            value = float(binary_plot['log2_odds_ratio'].iloc[0])
+            pval = float(binary_plot['p_value'].iloc[0])
+            qval = float(binary_plot['q_value'].iloc[0])
+            ax3.text(0, value, f"p={format_p_value(pval)}\nq={format_p_value(qval)}", ha='center', va='bottom' if value >= 0 else 'top')
+            fig3.tight_layout()
+            save_figure(fig3, outdir / 'arg_methyl_idr_binary_enrichment')
 
     print({
         'annotated_sites': len(annotated_sites),

@@ -1,110 +1,170 @@
-# PTM pipeline v4
+# PTM Pipeline
 
-This package integrates the existing public human PTM master table with methylarginine-specific external resources.
+Residue-centric integration and downstream analysis for the human methylarginine union, with canonical remapping, provenance retention, disorder/domain context, motif enrichment, protein prioritization, and supplemental cross-PTM comparisons.
 
-Clean mental model:
-- Raw sources: Maron Table S5, ProMetheusDB `mmc2.xlsx`, and the repo-local `human_ptm_master.tsv`
-- Intermediate convenience layer: `human_ptm_master.tsv` is a synthetic public PTM background table, not a single ground-truth export
-- Final integration layer: accession-level methylarginine union with per-site provenance, confidence tiers, canonical-accession audit fields, and state annotations when present
+## Current design
+- Default analysis universe: the full remapped methylarginine union
+- Source support: retained as metadata/QC (`exact` and `fuzzy` multi-source support), not as a headline confidence-tier framework
+- Maron defaults: Larsen included by default; exclusion is a sensitivity analysis via `--exclude-pattern`
+- Functional annotation: multi-label, RNA-centric protein annotation
+- Protein prioritization: shrinkage-adjusted per-protein methyl-Arg enrichment, with raw Arg odds ratios kept as supplemental
+- Statistics: Fisher exact p-values from SciPy, plus BH q-values for test families that are interpreted together
+- Domain and disorder are separate annotation layers
 
-Included source parsers:
-- Maron Table S5 Excel parser with optional Larsen exclusion
-- ProMetheusDB supplementary `mmc2.xlsx` parser (`RK-methylsites` sheet)
-- dbPTM static download helper and a parser preview for the methylation export
+## Clean layout
+The code repo should stay code-only. Staged data and outputs live outside the tracked source tree and are resolved through [`hpc/ptm_env.sh`](/mnt/m/Codex/PTM_pipeline/hpc/ptm_env.sh).
 
-Key integration logic:
-- Preserves exact site support across source families
-- Adds fuzzy support clustering within the same UniProt accession and residue, default tolerance ±2 aa
-- Assigns confidence tiers rather than using a hard `>=2 exact-match` filter alone
-- Preserves original accession alongside a naive canonicalized accession audit field
-- Preserves source-provided methyl-state labels as provenance fields, but these are not intended to drive primary downstream splits
-- Supports staged canonical FASTA and InterPro interval downloads for post-remap domain-context annotation
-- Supports staged disorder interval inputs for IDR/boundary enrichment and cross-PTM context comparison
+Local layout in this workspace:
+- code: `/mnt/m/Codex/PTM_pipeline`
+- staged data: `/mnt/m/Codex/PTM_pipeline/PTM_data`
+- outputs: `/mnt/m/Codex/PTM_pipeline/PTM_results`
 
-## Expected inputs
-Place or symlink these files:
-- `data/base/human_ptm_master.tsv` (existing iPTMnet/UniProt-based master)
-- `data/external/Table_S5_Compiled_Methylarginine_Data.xlsx`
-- `data/external/mmc2.xlsx`
+Einstein target layout:
+- project root: `/gs/gsfs0/home/dshecht1/projects/2026-04_ArgReview`
+- code repo: `PTM_Pipeline_code`
+- staged data: `PTM_data`
+- outputs: `PTM_results`
 
-## Local run order
+## Required staged inputs
+- `PTM_data/base/human_ptm_master.tsv`
+- `PTM_data/external/Table_S5_Compiled_Methylarginine_Data.xlsx`
+- `PTM_data/external/mmc2.xlsx`
+
+Optional staged inputs:
+- `PTM_data/context/protein2ipr.dat.gz`
+- `PTM_data/context/mobidb_human_reviewed_disorder_intervals.tsv`
+- `PTM_data/condensates/cdcode_staged_membership.tsv`
+
+## Main local run
+All paths below are derived from [`hpc/ptm_env.sh`](/mnt/m/Codex/PTM_pipeline/hpc/ptm_env.sh).
+
 ```bash
-python scripts/01_parse_maron_s5.py --input data/external/Table_S5_Compiled_Methylarginine_Data.xlsx --outdir results/parsed_maron
-python scripts/01_parse_prometheus_mmc2.py --input data/external/mmc2.xlsx --outdir results/parsed_prometheus
-# Stage canonical FASTA and UniProt metadata for remapping
-python scripts/00_stage_context_sources.py --outdir data/context --skip-interpro
-# Remap all source rows onto canonical reviewed coordinates
-python scripts/02_remap_arg_methyl_to_canonical.py --base-master data/base/human_ptm_master.tsv --maron results/parsed_maron/maron_s5_arg_methyl_sites.tsv --prometheus results/parsed_prometheus/prometheus_mmc2_arg_methyl_sites.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --uniprot-metadata data/context/uniprot_human_reviewed_canonical_metadata.tsv --outdir results/remapped
-# Integrate on remapped canonical positions
-python scripts/02_integrate_arg_methyl_sources.py --premerged-remapped results/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv --outdir results/integrated
-python scripts/03_functional_class_enrichment.py --base-master data/base/human_ptm_master.tsv --integrated-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --ontology config/functional_ontology.json --outdir results/functional_class_union
-python scripts/04_example_figures.py --integrated-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --outdir results/example_figures
-python scripts/08_motif_and_arg_odds.py --integrated-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/motif_arg_odds
-# Sliding-distance clustering analysis with a within-protein permutation null
-python scripts/10_methyl_arg_clustering.py --integrated-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/methyl_arg_clustering
-# Cross-PTM clustering comparison using the same sliding-distance / permutation framework
-python scripts/11_compare_ptm_clustering.py --base-master data/base/human_ptm_master.tsv --integrated-arg-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/ptm_clustering
-# If you stage disorder intervals (for example MobiDB-derived intervals) as canonical accession/start/end rows:
-python scripts/06_annotate_disorder_context.py --sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --disorder-intervals data/context/mobidb_human_reviewed_disorder_intervals.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/disorder_context
-# Stage InterPro only for remapped canonical proteins once remapping is done
-python scripts/00_stage_context_sources.py --outdir data/context --accessions results/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv --interpro-source bulk --interpro-protein2ipr data/context/protein2ipr.dat.gz --bulk-parser pandas
-# After canonical remapping adds corrected positions, annotate domain context separately from disorder context
-python scripts/05_annotate_domain_context.py --sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --interpro-intervals data/context/interpro_human_reviewed_domain_like_intervals.tsv --position-col corrected_position --outdir results/domain_context
-python scripts/07_summarize_domain_enrichment.py --annotated-sites results/domain_context/sites_with_domain_context.tsv --interpro-intervals data/context/interpro_human_reviewed_domain_like_intervals.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --outdir results/domain_context
-# Cross-PTM context comparison once disorder and/or domain intervals are available
-python scripts/09_compare_ptm_contexts.py --base-master data/base/human_ptm_master.tsv --integrated-arg-sites results/integrated/human_arg_methyl_union_dedup_by_site.tsv --canonical-fasta data/context/uniprot_human_reviewed_canonical.fasta --disorder-intervals data/context/mobidb_human_reviewed_disorder_intervals.tsv --interpro-intervals data/context/interpro_human_reviewed_domain_like_intervals.tsv --outdir results/ptm_compare
+. hpc/ptm_env.sh
+export HOME=/tmp/ptm_home
+export XDG_CACHE_HOME=/tmp/ptm_cache
+export MPLCONFIGDIR=/tmp/mpl_ptm
+mkdir -p "$HOME" "$XDG_CACHE_HOME" "$MPLCONFIGDIR"
+
+python3 scripts/01_parse_maron_s5.py \
+  --input "$PTM_MARON_XLSX" \
+  --outdir "$PTM_RESULTS_ROOT/parsed_maron"
+
+python3 scripts/01_parse_prometheus_mmc2.py \
+  --input "$PTM_PROMETHEUS_MMC2" \
+  --outdir "$PTM_RESULTS_ROOT/parsed_prometheus"
+
+python3 scripts/02_remap_arg_methyl_to_canonical.py \
+  --base-master "$PTM_MASTER_TSV" \
+  --maron "$PTM_RESULTS_ROOT/parsed_maron/maron_s5_arg_methyl_sites.tsv" \
+  --prometheus "$PTM_RESULTS_ROOT/parsed_prometheus/prometheus_mmc2_arg_methyl_sites.tsv" \
+  --canonical-fasta "$PTM_CANONICAL_FASTA" \
+  --uniprot-metadata "$PTM_UNIPROT_METADATA" \
+  --outdir "$PTM_RESULTS_ROOT/remapped"
+
+python3 scripts/02_integrate_arg_methyl_sources.py \
+  --premerged-remapped "$PTM_RESULTS_ROOT/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv" \
+  --outdir "$PTM_RESULTS_ROOT/integrated"
+
+python3 scripts/03_functional_class_enrichment.py \
+  --base-master "$PTM_MASTER_TSV" \
+  --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
+  --ontology "$PTM_CODE_ROOT/config/functional_ontology.json" \
+  --outdir "$PTM_RESULTS_ROOT/functional_class_union"
+
+python3 scripts/04_example_figures.py \
+  --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
+  --outdir "$PTM_RESULTS_ROOT/example_figures"
+
+python3 scripts/08_motif_and_arg_odds.py \
+  --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
+  --canonical-fasta "$PTM_CANONICAL_FASTA" \
+  --outdir "$PTM_RESULTS_ROOT/motif_arg_odds"
+
+python3 scripts/06_annotate_disorder_context.py \
+  --sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
+  --disorder-intervals "$PTM_MOBIDB_INTERVALS" \
+  --canonical-fasta "$PTM_CANONICAL_FASTA" \
+  --outdir "$PTM_RESULTS_ROOT/disorder_context"
+
+python3 scripts/05_annotate_domain_context.py \
+  --sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
+  --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
+  --position-col corrected_position \
+  --outdir "$PTM_RESULTS_ROOT/domain_context"
+
+python3 scripts/07_summarize_domain_enrichment.py \
+  --annotated-sites "$PTM_RESULTS_ROOT/domain_context/sites_with_domain_context.tsv" \
+  --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
+  --canonical-fasta "$PTM_CANONICAL_FASTA" \
+  --outdir "$PTM_RESULTS_ROOT/domain_context"
+
+python3 scripts/09_compare_ptm_contexts.py \
+  --base-master "$PTM_MASTER_TSV" \
+  --integrated-arg-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
+  --canonical-fasta "$PTM_CANONICAL_FASTA" \
+  --disorder-intervals "$PTM_MOBIDB_INTERVALS" \
+  --outdir "$PTM_RESULTS_ROOT/ptm_compare"
+```
+
+Supplemental clustering:
+```bash
+python3 scripts/10_methyl_arg_clustering.py \
+  --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
+  --canonical-fasta "$PTM_CANONICAL_FASTA" \
+  --disorder-intervals "$PTM_MOBIDB_INTERVALS" \
+  --null-match-disorder \
+  --outdir "$PTM_RESULTS_ROOT/methyl_arg_clustering" \
+  --permutations 500
+
+python3 scripts/11_compare_ptm_clustering.py \
+  --base-master "$PTM_MASTER_TSV" \
+  --integrated-arg-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
+  --canonical-fasta "$PTM_CANONICAL_FASTA" \
+  --disorder-intervals "$PTM_MOBIDB_INTERVALS" \
+  --null-match-disorder \
+  --outdir "$PTM_RESULTS_ROOT/ptm_clustering" \
+  --permutations 200
 ```
 
 ## HPC
-Create a dedicated environment instead of using the shared base env:
+Create or clone a dedicated environment, then submit the main runner:
+
 ```bash
 bash hpc/create_ptm_env.sh envs/ptm_pipeline_hpc.yml ptm_pipeline
-```
-
-The helper defaults to `conda env create`, not `mamba`, because some shared HPC installs hang under `mamba`. If you want to force `mamba`:
-```bash
-PTM_ENV_SOLVER=mamba bash hpc/create_ptm_env.sh envs/ptm_pipeline_hpc.yml ptm_pipeline
-```
-
-Stage InterPro locally if you want domain-context outputs:
-```bash
-curl -L -o data/context/protein2ipr.dat.gz https://ftp.ebi.ac.uk/pub/databases/interpro/current_release/protein2ipr.dat.gz
-```
-
-Then submit:
-```bash
 sbatch hpc/slurm_run_integration.sh "$PWD"
 ```
 
-If the bulk `protein2ipr.dat.gz` route is unreliable on your cluster, use the InterPro API path instead:
+The Slurm runner:
+- sources [`hpc/ptm_env.sh`](/mnt/m/Codex/PTM_pipeline/hpc/ptm_env.sh)
+- avoids `set -u`
+- guards empty critical variables and empty staged files
+- checks the repo for merge-conflict markers before running
+- defaults clustering permutations to `100000` for final HPC runs
+
+Useful overrides:
 ```bash
-PTM_INTERPRO_MODE=api PTM_INTERPRO_API_WORKERS=8 sbatch hpc/slurm_run_integration.sh "$PWD"
+PTM_INTERPRO_MODE=api sbatch hpc/slurm_run_integration.sh "$PWD"
+PTM_CLUSTER_RESTRICT_CONTEXT=IDR PTM_CROSS_PTM_CLUSTER_RESTRICT_CONTEXT=IDR sbatch hpc/slurm_run_integration.sh "$PWD"
+PTM_MARON_EXCLUDE_PATTERN=Larsen sbatch hpc/slurm_run_integration.sh "$PWD"
 ```
 
-Or stage InterPro/domain context as a separate HPC job after remapping/integration:
+Separate condensate job:
 ```bash
-sbatch hpc/slurm_stage_interpro_api.sh "$PWD"
+sbatch hpc/slurm_run_condensate.sh "$PWD"
 ```
 
-If your HPC env uses a different Conda env name or prefix:
-```bash
-PTM_ENV_NAME=my_env sbatch hpc/slurm_run_integration.sh "$PWD"
-# or
-PTM_ENV_PREFIX=/path/to/conda/env sbatch hpc/slurm_run_integration.sh "$PWD"
-```
+## Output highlights
+- `PTM_results/integrated/`: remapped union, support/QC summaries, accession audit
+- `PTM_results/functional_class_union/`: multi-label broad/subclass enrichment
+- `PTM_results/motif_arg_odds/`: motif-family enrichment, positional enrichment, shrinkage-based protein prioritization
+- `PTM_results/disorder_context/`: site-level disorder annotation and binary IDR enrichment
+- `PTM_results/domain_context/`: site-level domain placement and domain-class enrichment
+- `PTM_results/ptm_compare/`: cross-PTM IDR/context comparison
+- `PTM_results/methyl_arg_clustering/`, `PTM_results/ptm_clustering/`: supplemental local-density/clustering outputs
 
 ## Notes
-- `mmc2.xlsx` is the site-level ProMetheusDB supplement to include. `mmc3.xlsx` contains enrichment/cluster summaries and is not used as a primary site source.
-- `human_ptm_master.tsv` is a repo-local integration/background table. Treat it as a convenience layer for coverage, not as a standalone authoritative source database.
-- Current integration outputs are canonical-site based once you run the remap step. The remapper writes per-row diagnostics so unresolved source rows can be audited separately.
-- For large InterPro staging runs, prefer the official download files `protein2ipr.dat.gz` and `entry.list`. If `protein2ipr.dat.gz` is staged locally, the script uses chunked pandas filtering and does not rely on file ordering.
-- If you use `PTM_INTERPRO_MODE=api`, the main Slurm runner stages InterPro intervals with the per-accession InterPro API instead of the bulk file. Tune with `PTM_INTERPRO_API_WORKERS`, `PTM_INTERPRO_API_PAGE_SIZE`, `PTM_INTERPRO_API_TIMEOUT`, and `PTM_INTERPRO_API_RETRIES`.
-- Disorder inputs are expected as a staged canonical-interval table with at least `canonical_UniProtAC`, `fragment_start`, and `fragment_end`. The current repo does not yet include a downloader for MobiDB, so that file must be staged separately.
-- `scripts/10_methyl_arg_clustering.py` models methyl-site proximity as a sliding empirical CDF, `P(nearest methyl-Arg <= X)`, and a local-density curve, `mean other methyl-Args within X`, against a within-protein randomization null. The `3/5/10/20/50 aa` outputs are just checkpoint summaries of that full curve.
-- `scripts/11_compare_ptm_clustering.py` applies the same sliding-distance framework across PTM classes and reports both raw nearest-neighbor curves and null-adjusted enrichment curves. It defaults to 100 permutations for runtime reasons; increase that on HPC if you want finer empirical p-value resolution.
-- Maron Table S5 currently defaults to excluding `Larsen`-matched references. Override `--exclude-pattern` if you want a different sensitivity run.
-- Do not use `Rme1` vs `Rme2` as a primary split for the integrated mass-spec-driven union. Source-provided state labels are retained only as auxiliary provenance.
-- Domain context and disorder context should remain separate layers. The domain-context script classifies sites as `in_domain`, `boundary`, `inter_domain_linker`, or `distal` relative to InterPro intervals and does not merge those labels with IDR annotations.
-- Figure-producing scripts now emit PDF and PNG outputs.
-- The dbPTM downloader script is separated from analysis so static files can be staged first.
-- The Einstein HPC `WARNING: overwriting environment variables set in the machine` message during Conda activation is not the failure. The real failure is NumPy/Pandas/Matplotlib binary incompatibility in the shared base env, which is why the pipeline should run in a dedicated Conda environment.
+- `mmc2.xlsx` is the site-level ProMetheusDB methylation supplement to include. `mmc3.xlsx` is not used as a primary site source.
+- `human_ptm_master.tsv` is a convenience background/integration layer, not a ground-truth database export.
+- Do not use `Rme1` vs `Rme2` as a primary split for the integrated union.
+- Cross-PTM nearest-neighbor analyses are supplemental. The primary structural/context story is disorder plus domain adjacency.
+- Figure scripts emit both PDF and PNG.

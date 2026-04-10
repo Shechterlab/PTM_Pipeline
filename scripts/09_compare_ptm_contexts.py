@@ -192,6 +192,8 @@ def main() -> None:
 
     rows = []
     backgrounds = []
+    disorder_bg_cache: dict[tuple[str, ...], pd.DataFrame] = {}
+    domain_bg_cache: dict[tuple[str, ...], pd.DataFrame] = {}
 
     if args.disorder_intervals:
         disorder = normalize_intervals(pd.read_csv(args.disorder_intervals, sep='\t', low_memory=False))
@@ -199,9 +201,14 @@ def main() -> None:
         ptm_sites = add_binary_idr_label(ptm_sites)
         for ptm_group, group in ptm_sites.groupby('ptm_group'):
             residues = sorted(set(group['residue'].astype(str)))
-            bg = make_context_background(sequences, residues)
-            bg = annotate_disorder(bg, disorder, boundary_window=args.boundary_window)
-            bg = add_binary_idr_label(bg)
+            residue_key = tuple(residues)
+            if residue_key not in disorder_bg_cache:
+                bg = make_context_background(sequences, residues)
+                bg = annotate_disorder(bg, disorder, boundary_window=args.boundary_window)
+                bg = add_binary_idr_label(bg)
+                disorder_bg_cache[residue_key] = bg
+            bg = disorder_bg_cache[residue_key].copy()
+            bg = bg[~bg['site_key'].isin(set(group['site_key'].astype(str)))].copy()
             enrich = fisher_like_enrichment(group['disorder_context_class'], bg['disorder_context_class'])
             enrich['ptm_group'] = ptm_group
             enrich['context_layer'] = 'disorder'
@@ -211,9 +218,14 @@ def main() -> None:
         binary_rows = []
         for ptm_group, group in ptm_sites.groupby('ptm_group'):
             residues = sorted(set(group['residue'].astype(str)))
-            bg = make_context_background(sequences, residues)
-            bg = annotate_disorder(bg, disorder, boundary_window=args.boundary_window)
-            bg = add_binary_idr_label(bg)
+            residue_key = tuple(residues)
+            if residue_key not in disorder_bg_cache:
+                bg = make_context_background(sequences, residues)
+                bg = annotate_disorder(bg, disorder, boundary_window=args.boundary_window)
+                bg = add_binary_idr_label(bg)
+                disorder_bg_cache[residue_key] = bg
+            bg = disorder_bg_cache[residue_key].copy()
+            bg = bg[~bg['site_key'].isin(set(group['site_key'].astype(str)))].copy()
             group_binary = group[group['idr_binary_class'].notna()].copy()
             bg_binary = bg[bg['idr_binary_class'].notna()].copy()
             enrich = fisher_like_enrichment(group_binary['idr_binary_class'], bg_binary['idr_binary_class'])
@@ -234,8 +246,8 @@ def main() -> None:
                 ax_idr.set_xlabel('PTM class')
                 ax_idr.set_title('Cross-PTM IDR enrichment')
                 ax_idr.tick_params(axis='x', rotation=25)
-                for x, v, p in zip(plot_df['ptm_group'], plot_df['log2_odds_ratio'], plot_df['p_value']):
-                    ax_idr.text(x, v, f'p={format_p_value(p)}', ha='center', va='bottom' if v >= 0 else 'top', fontsize=8, rotation=90)
+                for x, v, p, q in zip(plot_df['ptm_group'], plot_df['log2_odds_ratio'], plot_df['p_value'], plot_df['q_value']):
+                    ax_idr.text(x, v, f'p={format_p_value(p)}\nq={format_p_value(q)}', ha='center', va='bottom' if v >= 0 else 'top', fontsize=7.5, rotation=90)
                 fig_idr.tight_layout()
                 save_figure(fig_idr, Path(args.outdir) / 'cross_ptm_idr_binary_comparison')
 
@@ -244,8 +256,13 @@ def main() -> None:
         ptm_sites = annotate_domain(ptm_sites, interpro, boundary_window=args.boundary_window)
         for ptm_group, group in ptm_sites.groupby('ptm_group'):
             residues = sorted(set(group['residue'].astype(str)))
-            bg = make_context_background(sequences, residues)
-            bg = annotate_domain(bg, interpro, boundary_window=args.boundary_window)
+            residue_key = tuple(residues)
+            if residue_key not in domain_bg_cache:
+                bg = make_context_background(sequences, residues)
+                bg = annotate_domain(bg, interpro, boundary_window=args.boundary_window)
+                domain_bg_cache[residue_key] = bg
+            bg = domain_bg_cache[residue_key].copy()
+            bg = bg[~bg['site_key'].isin(set(group['site_key'].astype(str)))].copy()
             enrich = fisher_like_enrichment(group['domain_context_class'], bg['domain_context_class'])
             enrich['ptm_group'] = ptm_group
             enrich['context_layer'] = 'domain'
@@ -272,7 +289,7 @@ def main() -> None:
                     ax.plot(pivot.index, pivot[category], marker='o', label=category)
                     category_df = plot_df[plot_df['category'] == category]
                     for _, row in category_df.iterrows():
-                        ax.text(row['ptm_group'], row['log2_odds_ratio'], f" p={format_p_value(row['p_value'])}", fontsize=7, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
+                        ax.text(row['ptm_group'], row['log2_odds_ratio'], f" p={format_p_value(row['p_value'])}, q={format_p_value(row['q_value'])}", fontsize=6.5, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
                 ax.axhline(0, color='black', linewidth=0.8)
                 ax.set_ylabel('log2(OR) vs target-residue proteome background')
                 ax.set_xlabel('PTM class')
@@ -294,7 +311,7 @@ def main() -> None:
                     ax2.plot(pivot.index, pivot[category], marker='o', label=category)
                     category_df = plot_df[plot_df['category'] == category]
                     for _, row in category_df.iterrows():
-                        ax2.text(row['ptm_group'], row['log2_odds_ratio'], f" p={format_p_value(row['p_value'])}", fontsize=7, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
+                        ax2.text(row['ptm_group'], row['log2_odds_ratio'], f" p={format_p_value(row['p_value'])}, q={format_p_value(row['q_value'])}", fontsize=6.5, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
                 ax2.axhline(0, color='black', linewidth=0.8)
                 ax2.set_ylabel('log2(OR) vs target-residue proteome background')
                 ax2.set_xlabel('PTM class')

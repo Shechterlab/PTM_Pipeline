@@ -7,15 +7,15 @@
 #SBATCH --mem=32G
 #SBATCH -t 12:00:00
 
+set -eo pipefail
+
 CONDA_BASE=/gs/gsfs0/hpc01/rhel8/apps/conda3
 CONDA_EXE="$CONDA_BASE/bin/conda"
 
 if [ -x "$CONDA_EXE" ]; then
   eval "$("$CONDA_EXE" shell.bash hook)"
-  CONDA_HOOK_STATUS=$?
 else
   . "$CONDA_BASE/bin/activate"
-  CONDA_HOOK_STATUS=$?
 fi
 
 ENV_NAME=${PTM_ENV_NAME:-ptm_pipeline}
@@ -37,45 +37,34 @@ run_step() {
   fi
 }
 
-if [ "$CONDA_HOOK_STATUS" -ne 0 ]; then
-  echo "[ptm_interpro_api] failed to initialize Conda shell hook"
-  exit "$CONDA_HOOK_STATUS"
-fi
-
 if [ -n "$ENV_PREFIX" ]; then
   conda activate "$ENV_PREFIX"
-  ACTIVATE_STATUS=$?
 else
   conda activate "$ENV_NAME"
-  ACTIVATE_STATUS=$?
-fi
-
-if [ "$ACTIVATE_STATUS" -ne 0 ]; then
-  echo "[ptm_interpro_api] failed to activate Conda environment"
-  exit "$ACTIVATE_STATUS"
 fi
 
 BASE_DIR=${1:-$PWD}
+. "$BASE_DIR/hpc/ptm_env.sh"
+
 export MPLCONFIGDIR="${TMPDIR:-/tmp}/matplotlib-${SLURM_JOB_ID:-manual}"
-mkdir -p "$MPLCONFIGDIR"
-mkdir -p "$BASE_DIR/data/context"
-mkdir -p "$BASE_DIR/results/domain_context"
+mkdir -p "$MPLCONFIGDIR" "$PTM_CONTEXT_ROOT" "$PTM_RESULTS_ROOT/domain_context"
 
-ACCESSIONS_FILE=${PTM_INTERPRO_ACCESSIONS_FILE:-$BASE_DIR/results/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv}
-SITES_FILE=${PTM_INTERPRO_SITES_FILE:-$BASE_DIR/results/integrated/human_arg_methyl_union_dedup_by_site.tsv}
+ACCESSIONS_FILE=${PTM_INTERPRO_ACCESSIONS_FILE:-$PTM_RESULTS_ROOT/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv}
+SITES_FILE=${PTM_INTERPRO_SITES_FILE:-$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv}
 
-if [[ ! -f "$ACCESSIONS_FILE" ]]; then
+if [[ ! -f "$ACCESSIONS_FILE" || ! -s "$ACCESSIONS_FILE" ]]; then
   echo "[ptm_interpro_api] missing accessions file: $ACCESSIONS_FILE"
   exit 1
 fi
 
-if [[ ! -f "$SITES_FILE" ]]; then
+if [[ ! -f "$SITES_FILE" || ! -s "$SITES_FILE" ]]; then
   echo "[ptm_interpro_api] missing integrated sites file: $SITES_FILE"
   exit 1
 fi
 
-run_step "stage InterPro intervals via API" python "$BASE_DIR/scripts/00_stage_context_sources.py" \
-  --outdir "$BASE_DIR/data/context" \
+run_step "repo hygiene guard" bash "$PTM_CODE_ROOT/hpc/check_repo_hygiene.sh" "$PTM_CODE_ROOT"
+run_step "stage InterPro intervals via API" python "$PTM_CODE_ROOT/scripts/00_stage_context_sources.py" \
+  --outdir "$PTM_CONTEXT_ROOT" \
   --accessions "$ACCESSIONS_FILE" \
   --interpro-source api \
   --workers "$INTERPRO_API_WORKERS" \
@@ -83,14 +72,14 @@ run_step "stage InterPro intervals via API" python "$BASE_DIR/scripts/00_stage_c
   --timeout "$INTERPRO_API_TIMEOUT" \
   --retries "$INTERPRO_API_RETRIES"
 
-run_step "annotate domain context" python "$BASE_DIR/scripts/05_annotate_domain_context.py" \
+run_step "annotate domain context" python "$PTM_CODE_ROOT/scripts/05_annotate_domain_context.py" \
   --sites "$SITES_FILE" \
-  --interpro-intervals "$BASE_DIR/data/context/interpro_human_reviewed_domain_like_intervals.tsv" \
+  --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
   --position-col corrected_position \
-  --outdir "$BASE_DIR/results/domain_context"
+  --outdir "$PTM_RESULTS_ROOT/domain_context"
 
-run_step "summarize domain enrichment" python "$BASE_DIR/scripts/07_summarize_domain_enrichment.py" \
-  --annotated-sites "$BASE_DIR/results/domain_context/sites_with_domain_context.tsv" \
-  --interpro-intervals "$BASE_DIR/data/context/interpro_human_reviewed_domain_like_intervals.tsv" \
-  --canonical-fasta "$BASE_DIR/data/context/uniprot_human_reviewed_canonical.fasta" \
-  --outdir "$BASE_DIR/results/domain_context"
+run_step "summarize domain enrichment" python "$PTM_CODE_ROOT/scripts/07_summarize_domain_enrichment.py" \
+  --annotated-sites "$PTM_RESULTS_ROOT/domain_context/sites_with_domain_context.tsv" \
+  --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
+  --canonical-fasta "$PTM_CANONICAL_FASTA" \
+  --outdir "$PTM_RESULTS_ROOT/domain_context"

@@ -159,8 +159,15 @@ def main() -> None:
     ap.add_argument('--include-types', nargs='*', default=[])
     args = ap.parse_args()
 
-    sites = pd.read_csv(args.sites, sep='\t', low_memory=False)
-    intervals = pd.read_csv(args.interpro_intervals, sep='\t', low_memory=False)
+    sites_path = Path(args.sites)
+    interpro_path = Path(args.interpro_intervals)
+    if not sites_path.exists() or sites_path.stat().st_size == 0:
+        raise ValueError(f'site table is missing or empty: {sites_path}')
+    if not interpro_path.exists() or interpro_path.stat().st_size == 0:
+        raise ValueError(f'InterPro interval table is missing or empty: {interpro_path}')
+
+    sites = pd.read_csv(sites_path, sep='\t', low_memory=False)
+    intervals = pd.read_csv(interpro_path, sep='\t', low_memory=False)
     if args.include_types:
         wanted = set(args.include_types)
         intervals = intervals[intervals['interpro_type'].astype(str).isin(wanted)].copy()

@@ -28,15 +28,23 @@ def main() -> None:
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
 
-    tier = df['confidence_tier'].value_counts().rename_axis('confidence_tier').reset_index(name='site_count')
-    save_table(tier, outdir / 'confidence_tiers.tsv')
+    support_dist = (
+        df['source_family_count_exact']
+        .fillna(1)
+        .astype(int)
+        .value_counts()
+        .rename_axis('source_family_count_exact')
+        .reset_index(name='site_count')
+        .sort_values('source_family_count_exact')
+    )
+    save_table(support_dist, outdir / 'source_family_support_distribution.tsv')
     fig, ax = plt.subplots(figsize=(8.4, 4.8))
-    ax.bar(tier['confidence_tier'], tier['site_count'])
+    ax.bar(support_dist['source_family_count_exact'].astype(str), support_dist['site_count'])
     ax.set_ylabel('Deduplicated sites')
-    ax.set_title('Integrated arg-methylome confidence tiers')
-    ax.tick_params(axis='x', rotation=18)
+    ax.set_xlabel('Exact source-family support count')
+    ax.set_title('Integrated arg-methylome source-support distribution')
     fig.tight_layout()
-    save_figure(fig, outdir / 'arg_methyl_confidence_tiers')
+    save_figure(fig, outdir / 'arg_methyl_source_support_distribution')
 
     support = pd.DataFrame({
         'support_type': ['Exact >=2', 'Fuzzy >=2'],

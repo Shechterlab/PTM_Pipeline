@@ -9,7 +9,6 @@ import pandas as pd
 from common import (
     accession_is_isoform,
     canonicalize_uniprot_accession,
-    confidence_tier,
     consensus_or_mixed,
     normalize_accession,
     normalize_arg_methyl_state,
@@ -242,7 +241,6 @@ def main() -> None:
         exact['source_family_count_exact']
     ).astype(int)
     exact['source_families_fuzzy'] = exact['source_families_fuzzy'].fillna(exact['source_families_exact'])
-    exact['confidence_tier'] = exact.apply(confidence_tier, axis=1)
     exact['support_any_ge_2'] = exact['source_family_count_fuzzy'] >= 2
     exact['support_exact_ge_2'] = exact['source_family_count_exact'] >= 2
 
@@ -267,12 +265,16 @@ def main() -> None:
     save_table(exact[exact['support_exact_ge_2']].copy(), outdir / 'human_arg_methyl_support_ge_2_exact.tsv')
     save_table(accession_audit, outdir / 'accession_canonicalization_audit.tsv')
 
-    support = exact['confidence_tier'].value_counts().rename_axis('confidence_tier').reset_index(name='site_count')
-    save_table(support, outdir / 'confidence_tier_counts.tsv')
     overlap = exact[['source_family_count_exact', 'source_family_count_fuzzy']].value_counts().rename_axis(
         ['source_family_count_exact', 'source_family_count_fuzzy']
     ).reset_index(name='site_count')
     save_table(overlap, outdir / 'support_exact_vs_fuzzy.tsv')
+    support_qc = pd.DataFrame([
+        {'support_metric': 'exact_multi_source', 'site_count': int(exact['support_exact_ge_2'].sum())},
+        {'support_metric': 'fuzzy_multi_source', 'site_count': int(exact['support_any_ge_2'].sum())},
+        {'support_metric': 'single_source', 'site_count': int((~exact['support_any_ge_2']).sum())},
+    ])
+    save_table(support_qc, outdir / 'support_qc_summary.tsv')
 
     summary = pd.DataFrame([{
         'rows_union_all': len(all_sites),
