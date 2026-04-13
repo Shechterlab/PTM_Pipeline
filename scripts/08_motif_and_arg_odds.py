@@ -10,7 +10,11 @@ import pandas as pd
 from scipy.stats import binomtest, fisher_exact
 
 from common import (
+    BREWER_COLORS,
     add_q_values,
+    annotate_barh,
+    apply_paper_style,
+    balanced_category_subset,
     canonical_site_table,
     format_p_value,
     log2_odds_ratio,
@@ -19,10 +23,15 @@ from common import (
     save_figure,
     save_table,
     sequence_window,
+    set_symmetric_xlim,
+    signed_bar_colors,
+    style_axis,
 )
 
 
 HYDROPHOBIC = set('AILMFWVY')
+HEATMAP_ORDER = ['G', 'A', 'P', 'D', 'E', 'R', 'Y', 'F', 'W', 'L', 'I', 'V', 'M', 'C', 'K', 'Q', 'N', 'S', 'T', 'H']
+FOCUS_HEATMAP_ORDER = ['G', 'A', 'P', 'D', 'E', 'R']
 
 
 def residue_at(window: str, relative_position: int) -> str:
@@ -44,6 +53,10 @@ def family_flags(window: str) -> dict[str, bool]:
         'motif_RXR': residue_at(window, -2) == 'R' or residue_at(window, 2) == 'R',
         'motif_CARM1_proline_rich': 'P' in neighborhood,
         'motif_CARM1_hydrophobic_proline': ('P' in neighborhood) and any(aa in HYDROPHOBIC for aa in near3),
+        'motif_DR': residue_at(window, -1) == 'D',
+        'motif_RD': residue_at(window, 1) == 'D',
+        'motif_ER': residue_at(window, -1) == 'E',
+        'motif_RE': residue_at(window, 1) == 'E',
         'motif_PRMT5_acidic_DR_like': residue_at(window, -1) in {'D', 'E'} or residue_at(window, 1) in {'D', 'E'},
         'motif_PRMT5_acidic_within2': any(residue_at(window, i) in {'D', 'E'} for i in [-2, -1, 1, 2]),
     }
@@ -112,6 +125,32 @@ def top_protein_label(row: pd.Series) -> str:
     return accession
 
 
+def selected_heatmap_rows(heatmap_df: pd.DataFrame, limit: int = 20) -> list[str]:
+    observed = set(heatmap_df['amino_acid'].astype(str))
+    ordered = [aa for aa in HEATMAP_ORDER if aa in observed]
+    if len(ordered) >= limit:
+        return ordered[:limit]
+    remaining = (
+        heatmap_df[~heatmap_df['amino_acid'].isin(ordered)]
+        .assign(abs_effect=lambda x: x['log2_odds_ratio'].abs())
+        .groupby('amino_acid')['abs_effect']
+        .max()
+        .sort_values(ascending=False)
+        .index.tolist()
+    )
+    return (ordered + remaining)[:limit]
+
+
+def build_heatmap_matrices(heatmap_df: pd.DataFrame, selected_aa: list[str]) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    matrix = heatmap_df[heatmap_df['amino_acid'].isin(selected_aa)].pivot(index='amino_acid', columns='relative_position', values='log2_odds_ratio').fillna(0.0)
+    matrix = matrix.reindex(index=[aa for aa in selected_aa if aa in matrix.index])
+    p_matrix = heatmap_df[heatmap_df['amino_acid'].isin(selected_aa)].pivot(index='amino_acid', columns='relative_position', values='p_value')
+    p_matrix = p_matrix.reindex(index=matrix.index, columns=matrix.columns)
+    p_floor = np.nextafter(0.0, 1.0)
+    neglog10_p = -np.log10(p_matrix.fillna(1.0).clip(lower=p_floor)).clip(upper=50)
+    return matrix, p_matrix, neglog10_p
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--integrated-sites', required=True)
@@ -127,6 +166,7 @@ def main() -> None:
     sites = pd.read_csv(args.integrated_sites, sep='\t', low_memory=False)
     sites = canonical_site_table(sites, accession_col='canonical_UniProtAC', position_col='corrected_position')
     sequences = parse_fasta(args.canonical_fasta)
+    apply_paper_style()
 
     sites = sites[sites['canonical_UniProtAC'].isin(sequences)].copy()
     sites['window_15'] = sites.apply(lambda row: sequence_window(sequences.get(row['canonical_UniProtAC'], ''), int(row['corrected_position']), args.window_flank), axis=1)
@@ -231,38 +271,41 @@ def main() -> None:
     save_table(protein_counts, outdir / 'per_protein_shrinkage_prioritization.tsv')
     save_table(per_proteome_context, outdir / 'per_proteome_arg_context_odds.tsv')
 
-    plot_motif = motif_vs_methyl_proteins.head(12).sort_values('odds_ratio')
+    plot_motif = motif_vs_methyl_proteins.sort_values('log2_odds_ratio')
     fig, ax = plt.subplots(figsize=(9.0, 6.0))
-    ax.barh(plot_motif['motif_family'], plot_motif['log2_odds_ratio'])
-    ax.axvline(0, color='black', linewidth=0.8)
+    ax.barh(
+        plot_motif['motif_family'],
+        plot_motif['log2_odds_ratio'],
+        color=signed_bar_colors(plot_motif['log2_odds_ratio'], positive=BREWER_COLORS['green'], negative=BREWER_COLORS['purple']),
+        edgecolor='white',
+        linewidth=0.8,
+    )
+    style_axis(ax, zero='x')
     ax.set_xlabel('log2(OR) vs arginines in methylated proteins')
     ax.set_ylabel('Motif family')
     ax.set_title('Methylarginine motif-family enrichment')
-    for y, v, n, p, q in zip(plot_motif['motif_family'], plot_motif['log2_odds_ratio'], plot_motif['target_count'], plot_motif['p_value'], plot_motif['q_value']):
-        ax.text(v, y, f'  n={n}, p={format_p_value(p)}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=8.5)
+    set_symmetric_xlim(ax, plot_motif['log2_odds_ratio'], annotation_pad_ratio=0.4, center_on_zero=False)
+    annotate_barh(
+        ax,
+        plot_motif['motif_family'],
+        plot_motif['log2_odds_ratio'],
+        [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(plot_motif['target_count'], plot_motif['p_value'], plot_motif['q_value'])],
+        fontsize=8.0,
+    )
     fig.tight_layout()
     save_figure(fig, outdir / 'arg_methyl_motif_family_enrichment')
 
     heatmap_df = positional.copy()
-    selected_aa = (
-        heatmap_df.groupby('amino_acid')['target_count'].sum()
-        .sort_values(ascending=False)
-        .head(12)
-        .index.tolist()
-    )
+    selected_aa = selected_heatmap_rows(heatmap_df, limit=20)
     if selected_aa:
-        matrix = heatmap_df[heatmap_df['amino_acid'].isin(selected_aa)].pivot(index='amino_acid', columns='relative_position', values='log2_odds_ratio').fillna(0.0)
-        p_matrix = heatmap_df[heatmap_df['amino_acid'].isin(selected_aa)].pivot(index='amino_acid', columns='relative_position', values='p_value')
-        p_matrix = p_matrix.reindex(index=matrix.index, columns=matrix.columns)
-        p_floor = np.nextafter(0.0, 1.0)
-        neglog10_p = -np.log10(p_matrix.fillna(1.0).clip(lower=p_floor))
+        matrix, p_matrix, neglog10_p = build_heatmap_matrices(heatmap_df, selected_aa)
 
         fig2, (ax2, ax2b) = plt.subplots(
             ncols=2,
-            figsize=(15.0, 5.5),
+            figsize=(15.0, 7.8),
             gridspec_kw={'width_ratios': [1.0, 1.0]},
         )
-        im = ax2.imshow(matrix.to_numpy(), aspect='auto', cmap='coolwarm', vmin=-3, vmax=3)
+        im = ax2.imshow(matrix.to_numpy(), aspect='auto', cmap='RdBu_r', vmin=-3, vmax=3)
         ax2.set_yticks(range(len(matrix.index)))
         ax2.set_yticklabels(matrix.index)
         ax2.set_xticks(range(len(matrix.columns)))
@@ -286,51 +329,165 @@ def main() -> None:
                     ax2.text(col_idx, row_idx, mark, ha='center', va='center', fontsize=7, color='black')
         fig2.colorbar(im, ax=ax2, label='log2(OR)')
 
-        im_p = ax2b.imshow(neglog10_p.to_numpy(), aspect='auto', cmap='viridis')
+        im_p = ax2b.imshow(neglog10_p.to_numpy(), aspect='auto', cmap='YlGnBu', vmin=0, vmax=50)
         ax2b.set_yticks(range(len(neglog10_p.index)))
         ax2b.set_yticklabels(neglog10_p.index)
         ax2b.set_xticks(range(len(neglog10_p.columns)))
         ax2b.set_xticklabels(neglog10_p.columns)
         ax2b.set_xlabel('Position relative to methyl-Arg')
         ax2b.set_title('Positional Fisher exact significance')
-        fig2.colorbar(im_p, ax=ax2b, label='-log10(p)')
+        fig2.colorbar(im_p, ax=ax2b, label='-log10(p), capped at 50')
         fig2.tight_layout()
         save_figure(fig2, outdir / 'arg_methyl_positional_enrichment_heatmap')
 
+        focus_aa = [aa for aa in FOCUS_HEATMAP_ORDER if aa in set(heatmap_df['amino_acid'].astype(str))]
+        if focus_aa:
+            focus_matrix, focus_p, _ = build_heatmap_matrices(heatmap_df, focus_aa)
+            fig2_focus, ax2_focus = plt.subplots(figsize=(8.2, 3.8))
+            im_focus = ax2_focus.imshow(focus_matrix.to_numpy(), aspect='auto', cmap='RdBu_r', vmin=-3, vmax=3)
+            ax2_focus.set_yticks(range(len(focus_matrix.index)))
+            ax2_focus.set_yticklabels(focus_matrix.index)
+            ax2_focus.set_xticks(range(len(focus_matrix.columns)))
+            ax2_focus.set_xticklabels(focus_matrix.columns)
+            ax2_focus.set_xlabel('Position relative to methyl-Arg')
+            ax2_focus.set_title('Focused positional enrichment around methylarginines')
+            for row_idx, aa in enumerate(focus_matrix.index):
+                for col_idx, rel in enumerate(focus_matrix.columns):
+                    pval = focus_p.loc[aa, rel]
+                    if pd.isna(pval):
+                        continue
+                    if pval < 1e-20:
+                        mark = '***'
+                    elif pval < 1e-5:
+                        mark = '**'
+                    elif pval < 0.05:
+                        mark = '*'
+                    else:
+                        mark = ''
+                    if mark:
+                        ax2_focus.text(col_idx, row_idx, mark, ha='center', va='center', fontsize=7, color='black')
+            fig2_focus.colorbar(im_focus, ax=ax2_focus, label='log2(OR)')
+            fig2_focus.tight_layout()
+            save_figure(fig2_focus, outdir / 'arg_methyl_positional_enrichment_focus')
+
+        acidic_focus = positional[
+            positional['amino_acid'].isin(['D', 'E']) & positional['relative_position'].isin([-2, -1, 1, 2])
+        ].copy()
+        acidic_focus['position_label'] = acidic_focus['relative_position'].map({-2: '-2', -1: '-1', 1: '+1', 2: '+2'})
+        save_table(acidic_focus.sort_values(['amino_acid', 'relative_position']), outdir / 'acidic_context_focus.tsv')
+        fig2b, ax2c = plt.subplots(figsize=(6.4, 4.6))
+        width = 0.38
+        positions = np.arange(4)
+        d_rows = acidic_focus[acidic_focus['amino_acid'] == 'D'].sort_values('relative_position')
+        e_rows = acidic_focus[acidic_focus['amino_acid'] == 'E'].sort_values('relative_position')
+        ax2c.bar(positions - width / 2, d_rows['log2_odds_ratio'], width=width, color=BREWER_COLORS['orange'], label='Asp (D)', edgecolor='white', linewidth=0.8)
+        ax2c.bar(positions + width / 2, e_rows['log2_odds_ratio'], width=width, color=BREWER_COLORS['blue'], label='Glu (E)', edgecolor='white', linewidth=0.8)
+        style_axis(ax2c, zero='y', grid_axis='y')
+        ax2c.set_xticks(positions)
+        ax2c.set_xticklabels(['-2', '-1', '+1', '+2'])
+        ax2c.set_xlabel('Position relative to methyl-Arg')
+        ax2c.set_ylabel('log2(OR) vs same-protein non-methyl Arg')
+        ax2c.set_title('Localized acidic asymmetry near methylarginines')
+        ax2c.legend(frameon=False, loc='upper right')
+        for shift, rows in [(-width / 2, d_rows), (width / 2, e_rows)]:
+            for idx, row in enumerate(rows.itertuples(index=False)):
+                ax2c.text(
+                    positions[idx] + shift,
+                    float(row.log2_odds_ratio),
+                    f"p={format_p_value(row.p_value)}",
+                    ha='center',
+                    va='bottom' if float(row.log2_odds_ratio) >= 0 else 'top',
+                    fontsize=7.2,
+                    color=BREWER_COLORS['dark_gray'],
+                )
+        fig2b.tight_layout()
+        save_figure(fig2b, outdir / 'arg_methyl_acidic_asymmetry')
+
     top_shrunk = protein_counts.head(20).sort_values('shrinkage_log2_enrichment')
     fig3, ax3 = plt.subplots(figsize=(10.0, 7.0))
-    ax3.barh(top_shrunk['label'], top_shrunk['shrinkage_log2_enrichment'])
-    ax3.axvline(0, color='black', linewidth=0.8)
+    ax3.barh(
+        top_shrunk['label'],
+        top_shrunk['shrinkage_log2_enrichment'],
+        color=signed_bar_colors(top_shrunk['shrinkage_log2_enrichment'], positive=BREWER_COLORS['green'], negative=BREWER_COLORS['purple']),
+        edgecolor='white',
+        linewidth=0.8,
+    )
+    style_axis(ax3, zero='x')
     ax3.set_xlabel('log2 shrinkage-adjusted enrichment')
     ax3.set_ylabel('Protein')
     ax3.set_title('Top proteins by shrinkage-adjusted methylarginine enrichment')
-    for y, v, n, p, q in zip(top_shrunk['label'], top_shrunk['shrinkage_log2_enrichment'], top_shrunk['methyl_site_count'], top_shrunk['binom_p_value'], top_shrunk['binom_q_value']):
-        ax3.text(v, y, f'  n={n}, p={format_p_value(p)}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=7.8)
+    set_symmetric_xlim(ax3, top_shrunk['shrinkage_log2_enrichment'], annotation_pad_ratio=0.42, center_on_zero=False)
+    annotate_barh(
+        ax3,
+        top_shrunk['label'],
+        top_shrunk['shrinkage_log2_enrichment'],
+        [f'sites={n}, q={format_p_value(q)}' for n, q in zip(top_shrunk['methyl_site_count'], top_shrunk['binom_q_value'])],
+        fontsize=7.6,
+    )
     fig3.tight_layout()
     save_figure(fig3, outdir / 'top_proteins_by_shrinkage_score')
 
     fig4, ax4 = plt.subplots(figsize=(7.0, 5.2))
-    ax4.scatter(protein_counts['methyl_site_count'], protein_counts['shrinkage_log2_enrichment'], alpha=0.55)
+    ax4.scatter(
+        protein_counts['methyl_site_count'],
+        protein_counts['shrinkage_log2_enrichment'],
+        alpha=0.6,
+        s=46,
+        color=BREWER_COLORS['blue'],
+        edgecolor='white',
+        linewidth=0.4,
+    )
+    style_axis(ax4, grid_axis='both')
     ax4.set_xlabel('Methylarginine site count')
     ax4.set_ylabel('log2 shrinkage-adjusted enrichment')
     ax4.set_title('Protein-level methylarginine burden and shrinkage score')
+    label_points = protein_counts.nlargest(10, 'shrinkage_log2_enrichment')
+    for row in label_points.itertuples(index=False):
+        ax4.text(
+            float(row.methyl_site_count) + 0.45,
+            float(row.shrinkage_log2_enrichment) + 0.03,
+            str(row.label).split(' (')[0],
+            fontsize=7.3,
+            color=BREWER_COLORS['dark_gray'],
+        )
     fig4.tight_layout()
     save_figure(fig4, outdir / 'protein_site_count_vs_shrinkage_score')
 
     top_or = protein_counts.head(20).sort_values('odds_ratio')
     fig5, ax5 = plt.subplots(figsize=(10.0, 7.0))
-    ax5.barh(top_or['label'], top_or['log2_odds_ratio'])
-    ax5.axvline(0, color='black', linewidth=0.8)
+    ax5.barh(
+        top_or['label'],
+        top_or['log2_odds_ratio'],
+        color=signed_bar_colors(top_or['log2_odds_ratio'], positive=BREWER_COLORS['green'], negative=BREWER_COLORS['purple']),
+        edgecolor='white',
+        linewidth=0.8,
+    )
+    style_axis(ax5, zero='x')
     ax5.set_xlabel('log2 Arg-normalized odds ratio')
     ax5.set_ylabel('Protein')
     ax5.set_title('Top proteins by raw Arg odds ratio')
-    for y, v, n, p, q in zip(top_or['label'], top_or['log2_odds_ratio'], top_or['methyl_site_count'], top_or['p_value'], top_or['q_value']):
-        ax5.text(v, y, f'  n={n}, p={format_p_value(p)}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=7.8)
+    set_symmetric_xlim(ax5, top_or['log2_odds_ratio'], annotation_pad_ratio=0.42, center_on_zero=False)
+    annotate_barh(
+        ax5,
+        top_or['label'],
+        top_or['log2_odds_ratio'],
+        [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(top_or['methyl_site_count'], top_or['p_value'], top_or['q_value'])],
+        fontsize=7.6,
+    )
     fig5.tight_layout()
     save_figure(fig5, outdir / 'top_proteins_by_arg_odds_ratio')
 
     fig6, ax6 = plt.subplots(figsize=(7.0, 5.2))
-    ax6.scatter(protein_counts['methyl_site_count'], np.log2(protein_counts['odds_ratio']), alpha=0.55)
+    ax6.scatter(
+        protein_counts['methyl_site_count'],
+        np.log2(protein_counts['odds_ratio']),
+        alpha=0.6,
+        s=46,
+        color=BREWER_COLORS['purple'],
+        edgecolor='white',
+        linewidth=0.4,
+    )
+    style_axis(ax6, grid_axis='both')
     ax6.set_xlabel('Methylarginine site count')
     ax6.set_ylabel('log2 Arg odds ratio')
     ax6.set_title('Protein-level methylarginine burden and Arg enrichment')

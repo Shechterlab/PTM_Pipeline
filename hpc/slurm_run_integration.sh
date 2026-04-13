@@ -105,7 +105,10 @@ run_step "integrate remapped sites" python "$PTM_CODE_ROOT/scripts/02_integrate_
 run_step "functional enrichment" python "$PTM_CODE_ROOT/scripts/03_functional_class_enrichment.py" \
   --base-master "$PTM_MASTER_TSV" \
   --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
+  --uniprot-metadata "$PTM_UNIPROT_METADATA" \
+  --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
   --ontology "$PTM_CODE_ROOT/config/functional_ontology.json" \
+  --domain-ontology "$PTM_CODE_ROOT/config/domain_class_ontology.json" \
   --outdir "$PTM_RESULTS_ROOT/functional_class_union"
 
 run_step "example figures" python "$PTM_CODE_ROOT/scripts/04_example_figures.py" \
@@ -181,6 +184,7 @@ if [[ -f "$PTM_INTERPRO_DOMAIN_INTERVALS" && -s "$PTM_INTERPRO_DOMAIN_INTERVALS"
     --annotated-sites "$PTM_RESULTS_ROOT/domain_context/sites_with_domain_context.tsv" \
     --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
     --canonical-fasta "$PTM_CANONICAL_FASTA" \
+    --ontology "$PTM_CODE_ROOT/config/domain_class_ontology.json" \
     --outdir "$PTM_RESULTS_ROOT/domain_context"
 else
   echo "[ptm_pipeline] skipping domain-context annotation: $PTM_INTERPRO_DOMAIN_INTERVALS missing or empty"
@@ -203,8 +207,38 @@ if [[ ( -f "$PTM_MOBIDB_INTERVALS" && -s "$PTM_MOBIDB_INTERVALS" ) || ( -f "$PTM
 fi
 
 if [[ -f "$PTM_CDCODE_STAGED" && -s "$PTM_CDCODE_STAGED" ]]; then
-  run_step "condensate enrichment" python "$PTM_CODE_ROOT/scripts/12_condensate_enrichment.py" \
-    --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-    --staged-membership "$PTM_CDCODE_STAGED" \
+  COND_ARGS=(
+    --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv"
+    --staged-membership "$PTM_CDCODE_STAGED"
     --outdir "$PTM_RESULTS_ROOT/condensates"
+  )
+  if [[ -f "$PTM_CDCODE_PROTEINS" && -s "$PTM_CDCODE_PROTEINS" ]]; then
+    COND_ARGS+=(--proteins-table "$PTM_CDCODE_PROTEINS")
+  fi
+  if [[ -f "$PTM_CDCODE_CONDENSATES" && -s "$PTM_CDCODE_CONDENSATES" ]]; then
+    COND_ARGS+=(--condensates-table "$PTM_CDCODE_CONDENSATES")
+  fi
+  run_step "condensate enrichment" python "$PTM_CODE_ROOT/scripts/12_condensate_enrichment.py" \
+    "${COND_ARGS[@]}"
+  if [[ -f "$PTM_RESULTS_ROOT/functional_class_union/protein_functional_labels.tsv" ]]; then
+    run_step "assembly membership clustering" python "$PTM_CODE_ROOT/scripts/15_assembly_membership_clustering.py" \
+      --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
+      --condensate-enrichment "$PTM_RESULTS_ROOT/condensates/condensate_enrichment.tsv" \
+      --condensate-membership "$PTM_RESULTS_ROOT/condensates/condensate_membership.tsv" \
+      --functional-labels "$PTM_RESULTS_ROOT/functional_class_union/protein_functional_labels.tsv" \
+      --outdir "$PTM_RESULTS_ROOT/assembly_clustering"
+  fi
+fi
+
+if command -v Rscript >/dev/null 2>&1 && [[ -f "$PTM_RESULTS_ROOT/functional_class_union/protein_functional_labels.tsv" ]]; then
+  export HOME="${TMPDIR:-/tmp}/ptm_r_home_${SLURM_JOB_ID:-manual}"
+  export XDG_CACHE_HOME="${TMPDIR:-/tmp}/ptm_r_cache_${SLURM_JOB_ID:-manual}"
+  mkdir -p "$HOME" "$XDG_CACHE_HOME"
+  run_step "clusterProfiler GO enrichment" Rscript "$PTM_CODE_ROOT/scripts/13_clusterprofiler_residual_go.R" \
+    --labels "$PTM_RESULTS_ROOT/functional_class_union/protein_functional_labels.tsv" \
+    --outdir "$PTM_RESULTS_ROOT/functional_class_union/clusterprofiler_go" \
+    --include_all_methyl true
+  run_step "disease enrichment" Rscript "$PTM_CODE_ROOT/scripts/14_disease_enrichment.R" \
+    --labels "$PTM_RESULTS_ROOT/functional_class_union/protein_functional_labels.tsv" \
+    --outdir "$PTM_RESULTS_ROOT/functional_class_union/disease_enrichment"
 fi

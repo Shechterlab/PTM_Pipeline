@@ -1,10 +1,10 @@
 {
   "domain_classes": [
     {"label": "RRM / KH RNA-binding", "patterns": ["rrm", "rna recognition motif", "\\bkh\\b", "kh domain", "k homology"]},
-    {"label": "Sm / Lsm", "patterns": ["\\blsm\\b", "\\bsm\\b", "snrnp sm", "sm-like"]},
+    {"label": "Sm / Lsm", "patterns": ["\\blsm\\d*\\b", "sm-like", "snrnp sm", "sm fold"]},
     {"label": "RNA helicase", "patterns": ["helicase", "dead-box", "dexd", "deah", "ski2"]},
     {"label": "dsRNA-binding", "patterns": ["double-stranded rna-binding", "dsrbd", "dsrna"]},
-    {"label": "RNA-associated zinc finger", "patterns": ["ccch", "cchc", "ranbp2-type zinc finger", "zf"]},
+    {"label": "RNA-associated zinc finger", "patterns": ["ccch", "cchc", "ranbp2-type zinc finger", "zinc finger ccch", "zinc finger cchc", "zinc knuckle"]},
     {"label": "Chromatin reader", "patterns": ["tudor", "pwwp", "chromodomain", "bromodomain", "mbt", "\\bphd\\b", "plant homeodomain"]},
     {"label": "Chromatin catalytic / remodeler", "patterns": ["methyltransferase", "acetyltransferase", "deacetylase", "demethylase", "remodel", "snf2", "helicase atp-binding"]},
     {"label": "DNA-binding", "patterns": ["homeobox", "dna-binding", "winged helix", "forkhead", "bzip", "bhlh", "hlh", "hmg-box", "zinc finger, c2h2"]},

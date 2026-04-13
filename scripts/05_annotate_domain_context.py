@@ -156,7 +156,7 @@ def main() -> None:
     ap.add_argument('--accession-col', default='canonical_UniProtAC')
     ap.add_argument('--position-col', default='corrected_position')
     ap.add_argument('--boundary-window', type=int, default=20)
-    ap.add_argument('--include-types', nargs='*', default=[])
+    ap.add_argument('--include-types', nargs='*', default=['domain', 'repeat'])
     args = ap.parse_args()
 
     sites_path = Path(args.sites)
@@ -198,6 +198,7 @@ def main() -> None:
     annotated = pd.concat([sites, annotations], axis=1)
     annotated['domain_context_boundary_window'] = args.boundary_window
     annotated['domain_context_layer'] = 'InterPro_domain_context'
+    annotated['domain_context_include_types'] = ';'.join(args.include_types) if args.include_types else 'all'
 
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
@@ -206,6 +207,7 @@ def main() -> None:
 
     summary = annotated['domain_context_class'].value_counts(dropna=False).rename_axis('domain_context_class').reset_index(name='site_count')
     summary['boundary_window'] = args.boundary_window
+    summary['include_types'] = ';'.join(args.include_types) if args.include_types else 'all'
     summary.to_csv(outdir / 'domain_context_summary.tsv', sep='\t', index=False)
     print({
         'annotated_sites': len(annotated),

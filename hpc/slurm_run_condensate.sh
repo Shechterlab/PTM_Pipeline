@@ -36,7 +36,15 @@ if [[ ! -f "$PTM_CDCODE_STAGED" || ! -s "$PTM_CDCODE_STAGED" ]]; then
 fi
 
 bash "$PTM_CODE_ROOT/hpc/check_repo_hygiene.sh" "$PTM_CODE_ROOT"
-python "$PTM_CODE_ROOT/scripts/12_condensate_enrichment.py" \
-  --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-  --staged-membership "$PTM_CDCODE_STAGED" \
+COND_ARGS=(
+  --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv"
+  --staged-membership "$PTM_CDCODE_STAGED"
   --outdir "$PTM_RESULTS_ROOT/condensates"
+)
+if [[ -f "$PTM_CDCODE_PROTEINS" && -s "$PTM_CDCODE_PROTEINS" ]]; then
+  COND_ARGS+=(--proteins-table "$PTM_CDCODE_PROTEINS")
+fi
+if [[ -f "$PTM_CDCODE_CONDENSATES" && -s "$PTM_CDCODE_CONDENSATES" ]]; then
+  COND_ARGS+=(--condensates-table "$PTM_CDCODE_CONDENSATES")
+fi
+python "$PTM_CODE_ROOT/scripts/12_condensate_enrichment.py" "${COND_ARGS[@]}"

@@ -4,18 +4,28 @@ import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
-from scipy.stats import mannwhitneyu
+from scipy.stats import fisher_exact, mannwhitneyu
 
 from common import (
+    BREWER_COLORS,
+    add_q_values,
+    annotate_barh,
+    apply_paper_style,
+    balanced_category_subset,
     classify_by_patterns,
     fisher_like_enrichment,
     format_p_value,
     load_json,
+    log2_odds_ratio,
     parse_fasta,
     residue_background_from_sequences,
     save_figure,
     save_table,
+    set_symmetric_xlim,
+    signed_bar_colors,
+    style_axis,
 )
 
 
@@ -25,6 +35,14 @@ TYPE_PRIORITY = {
     'homologous_superfamily': 2,
     'family': 3,
 }
+
+DOMAIN_EDGE_BIN_ORDER = [
+    'Domain edge <=5 aa',
+    'Domain edge 6-10 aa',
+    'Domain edge 11-20 aa',
+    'Domain edge 21-40 aa',
+    'Domain-distal >40 aa',
+]
 
 
 def interval_priority(interpro_type: str) -> int:
@@ -126,13 +144,71 @@ def annotate_background(background: pd.DataFrame, intervals_by_acc: dict[str, pd
     return pd.concat([out, annotations], axis=1)
 
 
+def domain_context_label(label: str) -> str:
+    return {
+        'in_domain': 'In domain/repeat',
+        'boundary': 'Near domain edge (<=20 aa)',
+        'inter_domain_linker': 'Inter-domain linker',
+        'distal': 'Domain-distal',
+        'no_domain_annotation': 'No annotated domain/repeat',
+    }.get(str(label), str(label))
+
+
+def domain_class_label(label: str) -> str:
+    return {
+        'No domain annotation': 'No annotated domain/repeat',
+    }.get(str(label), str(label))
+
+
+def domain_edge_bin(distance) -> str | pd.NA:
+    if pd.isna(distance):
+        return pd.NA
+    distance = float(distance)
+    if distance <= 5:
+        return DOMAIN_EDGE_BIN_ORDER[0]
+    if distance <= 10:
+        return DOMAIN_EDGE_BIN_ORDER[1]
+    if distance <= 20:
+        return DOMAIN_EDGE_BIN_ORDER[2]
+    if distance <= 40:
+        return DOMAIN_EDGE_BIN_ORDER[3]
+    return DOMAIN_EDGE_BIN_ORDER[4]
+
+
+def cumulative_edge_curve(target_dist: pd.Series, background_dist: pd.Series, max_distance: int = 40) -> pd.DataFrame:
+    target = target_dist.dropna().astype(float)
+    background = background_dist.dropna().astype(float)
+    rows = []
+    for threshold in range(1, max_distance + 1):
+        a = int((target <= threshold).sum())
+        b = int(len(target) - a)
+        c = int((background <= threshold).sum())
+        d = int(len(background) - c)
+        odds = ((a + 0.5) * (d + 0.5)) / ((b + 0.5) * (c + 0.5)) if (b + 0.5) * (c + 0.5) > 0 else np.nan
+        rows.append({
+            'distance_aa': threshold,
+            'target_within_distance': a,
+            'target_total': len(target),
+            'background_within_distance': c,
+            'background_total': len(background),
+            'target_fraction_within_distance': a / len(target) if len(target) else np.nan,
+            'background_fraction_within_distance': c / len(background) if len(background) else np.nan,
+            'odds_ratio': odds,
+            'log2_odds_ratio': log2_odds_ratio(odds) if pd.notna(odds) else np.nan,
+            'p_value': float(fisher_exact([[a, b], [c, d]], alternative='two-sided').pvalue),
+        })
+    return add_q_values(pd.DataFrame(rows))
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--annotated-sites', required=True)
     ap.add_argument('--interpro-intervals', required=True)
-    ap.add_argument('--canonical-fasta', required=True)
+    ap.add_argument('--canonical-fasta', default='')
+    ap.add_argument('--background-table', default='')
     ap.add_argument('--ontology', default='config/domain_class_ontology.json')
     ap.add_argument('--boundary-window', type=int, default=20)
+    ap.add_argument('--include-types', nargs='*', default=['domain', 'repeat'])
     ap.add_argument('--outdir', default='results/domain_context')
     args = ap.parse_args()
 
@@ -145,9 +221,13 @@ def main() -> None:
 
     annotated_sites = pd.read_csv(annotated_path, sep='\t', low_memory=False)
     intervals = pd.read_csv(interpro_path, sep='\t', low_memory=False)
+    apply_paper_style()
     intervals['fragment_start'] = pd.to_numeric(intervals['fragment_start'], errors='coerce')
     intervals['fragment_end'] = pd.to_numeric(intervals['fragment_end'], errors='coerce')
     intervals = intervals[intervals['fragment_start'].notna() & intervals['fragment_end'].notna()].copy()
+    if args.include_types:
+        wanted = set(args.include_types)
+        intervals = intervals[intervals['interpro_type'].astype(str).isin(wanted)].copy()
     intervals['fragment_start'] = intervals['fragment_start'].astype(int)
     intervals['fragment_end'] = intervals['fragment_end'].astype(int)
     intervals_by_acc = {
@@ -159,14 +239,40 @@ def main() -> None:
     if 'nearest_domain_class' not in annotated_sites.columns:
         class_text = annotated_sites.fillna('').astype(str)[['nearest_interpro_name', 'nearest_interpro_type', 'nearest_member_database_accessions']].agg(' '.join, axis=1)
         annotated_sites['nearest_domain_class'] = class_text.map(lambda x: classify_by_patterns(x, ontology['domain_classes'], default='Other domain'))
+    annotated_sites.loc[~annotated_sites['has_domain_annotation'].fillna(False), 'nearest_domain_class'] = 'No domain annotation'
+    annotated_sites['domain_edge_bin'] = pd.NA
+    annotated_domain_edge_mask = (
+        annotated_sites['has_domain_annotation'].fillna(False) &
+        annotated_sites['domain_context_class'].isin(['boundary', 'inter_domain_linker', 'distal']) &
+        annotated_sites['nearest_domain_edge_distance'].notna()
+    )
+    annotated_sites.loc[annotated_domain_edge_mask, 'domain_edge_bin'] = (
+        annotated_sites.loc[annotated_domain_edge_mask, 'nearest_domain_edge_distance'].map(domain_edge_bin)
+    )
 
-    sequences = parse_fasta(args.canonical_fasta)
-    proteome_arg = residue_background_from_sequences(sequences, residue='R')
-    methylated_proteins = sorted(set(annotated_sites['canonical_UniProtAC'].dropna().astype(str)))
-    methyl_protein_arg = proteome_arg[proteome_arg['canonical_UniProtAC'].isin(methylated_proteins)].copy()
-    methyl_site_keys = set(annotated_sites['site_key'].astype(str))
-    methyl_protein_arg = methyl_protein_arg[~methyl_protein_arg['site_key'].isin(methyl_site_keys)].copy()
-    methyl_protein_arg = annotate_background(methyl_protein_arg, intervals_by_acc, args.boundary_window, ontology)
+    if args.background_table:
+        background_path = Path(args.background_table)
+        if not background_path.exists() or background_path.stat().st_size == 0:
+            raise ValueError(f'background domain-context table is missing or empty: {background_path}')
+        methyl_protein_arg = pd.read_csv(background_path, sep='\t', low_memory=False)
+    else:
+        if not args.canonical_fasta:
+            raise ValueError('--canonical-fasta is required when --background-table is not provided')
+        sequences = parse_fasta(args.canonical_fasta)
+        proteome_arg = residue_background_from_sequences(sequences, residue='R')
+        methylated_proteins = sorted(set(annotated_sites['canonical_UniProtAC'].dropna().astype(str)))
+        methyl_protein_arg = proteome_arg[proteome_arg['canonical_UniProtAC'].isin(methylated_proteins)].copy()
+        methyl_site_keys = set(annotated_sites['site_key'].astype(str))
+        methyl_protein_arg = methyl_protein_arg[~methyl_protein_arg['site_key'].isin(methyl_site_keys)].copy()
+        methyl_protein_arg = annotate_background(methyl_protein_arg, intervals_by_acc, args.boundary_window, ontology)
+    methyl_protein_arg['domain_edge_bin'] = pd.NA
+    background_domain_edge_mask = (
+        methyl_protein_arg['domain_context_class'].isin(['boundary', 'inter_domain_linker', 'distal']) &
+        methyl_protein_arg['nearest_domain_edge_distance'].notna()
+    )
+    methyl_protein_arg.loc[background_domain_edge_mask, 'domain_edge_bin'] = (
+        methyl_protein_arg.loc[background_domain_edge_mask, 'nearest_domain_edge_distance'].map(domain_edge_bin)
+    )
 
     context_enrichment = fisher_like_enrichment(
         annotated_sites['domain_context_class'],
@@ -187,38 +293,186 @@ def main() -> None:
         'mannwhitney_u_p_value': float(mannwhitneyu(observed_edge, background_edge, alternative='two-sided').pvalue)
         if not observed_edge.empty and not background_edge.empty else pd.NA,
     }])
+    edge_bin_enrichment = fisher_like_enrichment(
+        annotated_sites[annotated_sites['domain_edge_bin'].notna()]['domain_edge_bin'],
+        methyl_protein_arg[methyl_protein_arg['domain_edge_bin'].notna()]['domain_edge_bin'],
+    )
+    edge_curve = cumulative_edge_curve(
+        annotated_sites.loc[annotated_domain_edge_mask, 'nearest_domain_edge_distance'],
+        methyl_protein_arg.loc[background_domain_edge_mask, 'nearest_domain_edge_distance'],
+        max_distance=40,
+    )
 
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
+    save_table(annotated_sites, outdir / 'sites_with_domain_context.tsv')
     save_table(context_enrichment, outdir / 'domain_context_enrichment.tsv')
     save_table(domain_class_enrichment, outdir / 'domain_class_enrichment.tsv')
     save_table(edge_summary, outdir / 'domain_edge_distance_summary.tsv')
     save_table(edge_comparison, outdir / 'domain_edge_distance_comparison.tsv')
+    save_table(edge_bin_enrichment, outdir / 'domain_edge_bin_enrichment.tsv')
+    save_table(edge_curve, outdir / 'domain_edge_cumulative_enrichment.tsv')
     save_table(methyl_protein_arg, outdir / 'same_protein_nonmethyl_arginine_domain_background.tsv')
+    save_table(
+        pd.DataFrame([{
+            'include_types': ';'.join(args.include_types) if args.include_types else 'all',
+            'boundary_window': args.boundary_window,
+            'annotated_sites': len(annotated_sites),
+            'background_residues': len(methyl_protein_arg),
+        }]),
+        outdir / 'domain_analysis_qc.tsv',
+    )
 
-    plot_context = context_enrichment[context_enrichment['category'].isin(['in_domain', 'boundary', 'inter_domain_linker', 'distal'])].sort_values('odds_ratio')
-    fig, ax = plt.subplots(figsize=(8.0, 5.0))
-    ax.barh(plot_context['category'], plot_context['log2_odds_ratio'])
-    ax.axvline(0, color='black', linewidth=0.8)
+    plot_context = context_enrichment[
+        context_enrichment['category'].isin(['in_domain', 'boundary', 'inter_domain_linker', 'distal', 'no_domain_annotation'])
+    ].sort_values('log2_odds_ratio').copy()
+    plot_context['display_category'] = plot_context['category'].map(domain_context_label)
+    fig, ax = plt.subplots(figsize=(8.4, 5.2))
+    context_palette = {
+        'in_domain': BREWER_COLORS['blue'],
+        'boundary': BREWER_COLORS['teal'],
+        'inter_domain_linker': BREWER_COLORS['purple'],
+        'distal': BREWER_COLORS['orange'],
+        'no_domain_annotation': BREWER_COLORS['mid_gray'],
+    }
+    ax.barh(
+        plot_context['display_category'],
+        plot_context['log2_odds_ratio'],
+        color=[context_palette.get(cat, BREWER_COLORS['mid_gray']) for cat in plot_context['category']],
+        edgecolor='white',
+        linewidth=0.8,
+    )
+    style_axis(ax, zero='x')
     ax.set_xlabel('log2(OR) vs arginines in methylated proteins')
     ax.set_ylabel('Domain context')
     ax.set_title('Methylarginine enrichment by domain context')
-    for y, v, n, p, q in zip(plot_context['category'], plot_context['log2_odds_ratio'], plot_context['target_count'], plot_context['p_value'], plot_context['q_value']):
-        ax.text(v, y, f'  n={n}, p={format_p_value(p)}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+    set_symmetric_xlim(ax, plot_context['log2_odds_ratio'], annotation_pad_ratio=0.75, center_on_zero=False)
+    annotate_barh(
+        ax,
+        plot_context['display_category'],
+        plot_context['log2_odds_ratio'],
+        [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(plot_context['target_count'], plot_context['p_value'], plot_context['q_value'])],
+        fontsize=8.2,
+    )
+    fig.text(
+        0.99,
+        0.01,
+        'Site-level counts using strict InterPro domain/repeat intervals.',
+        ha='right',
+        va='bottom',
+        fontsize=8,
+        color=BREWER_COLORS['dark_gray'],
+    )
     fig.tight_layout()
     save_figure(fig, outdir / 'arg_methyl_domain_context_enrichment')
 
-    plot_domain = domain_class_enrichment[domain_class_enrichment['target_count'] >= 20].head(12).sort_values('odds_ratio')
-    fig2, ax2 = plt.subplots(figsize=(9.0, 6.0))
-    ax2.barh(plot_domain['category'], plot_domain['log2_odds_ratio'])
-    ax2.axvline(0, color='black', linewidth=0.8)
+    plot_domain = balanced_category_subset(
+        domain_class_enrichment,
+        min_count=20,
+        top_positive=7,
+        top_negative=5,
+        always_include=[],
+    )
+    plot_domain = plot_domain[~plot_domain['category'].isin({'Other domain', 'No domain annotation'})].copy()
+    colors = signed_bar_colors(plot_domain['log2_odds_ratio'], positive=BREWER_COLORS['green'], negative=BREWER_COLORS['lavender'])
+    colors = [BREWER_COLORS['mid_gray'] if cat in {'Other domain', 'No domain annotation'} else color for cat, color in zip(plot_domain['category'], colors)]
+    fig2, ax2 = plt.subplots(figsize=(9.4, 6.2))
+    plot_domain['display_category'] = plot_domain['category'].map(domain_class_label)
+    ax2.barh(plot_domain['display_category'], plot_domain['log2_odds_ratio'], color=colors, edgecolor='white', linewidth=0.8)
+    style_axis(ax2, zero='x')
     ax2.set_xlabel('log2(OR) vs arginines in methylated proteins')
     ax2.set_ylabel('Nearest domain class')
     ax2.set_title('Nearest domain-class enrichment around methylarginines')
-    for y, v, n, p, q in zip(plot_domain['category'], plot_domain['log2_odds_ratio'], plot_domain['target_count'], plot_domain['p_value'], plot_domain['q_value']):
-        ax2.text(v, y, f'  n={n}, p={format_p_value(p)}, q={format_p_value(q)}', va='center', ha='left' if v >= 0 else 'right', fontsize=9)
+    set_symmetric_xlim(ax2, plot_domain['log2_odds_ratio'], annotation_pad_ratio=0.82, center_on_zero=False)
+    annotate_barh(
+        ax2,
+        plot_domain['display_category'],
+        plot_domain['log2_odds_ratio'],
+        [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(plot_domain['target_count'], plot_domain['p_value'], plot_domain['q_value'])],
+        fontsize=7.7,
+    )
+    fig2.text(
+        0.99,
+        0.01,
+        'Site-level counts; selected enriched/depleted nearest-domain classes.',
+        ha='right',
+        va='bottom',
+        fontsize=8,
+        color=BREWER_COLORS['dark_gray'],
+    )
     fig2.tight_layout()
     save_figure(fig2, outdir / 'arg_methyl_nearest_domain_class_enrichment')
+
+    edge_plot = edge_bin_enrichment.copy()
+    edge_plot['category'] = pd.Categorical(edge_plot['category'], categories=DOMAIN_EDGE_BIN_ORDER, ordered=True)
+    edge_plot = edge_plot.sort_values('category').copy()
+    edge_palette = {
+        'Domain edge <=5 aa': BREWER_COLORS['teal'],
+        'Domain edge 6-10 aa': BREWER_COLORS['light_green'],
+        'Domain edge 11-20 aa': BREWER_COLORS['green'],
+        'Domain edge 21-40 aa': BREWER_COLORS['gold'],
+        'Domain-distal >40 aa': BREWER_COLORS['orange'],
+    }
+    fig3, ax3 = plt.subplots(figsize=(8.8, 5.4))
+    ax3.barh(
+        edge_plot['category'].astype(str),
+        edge_plot['log2_odds_ratio'],
+        color=[edge_palette.get(cat, BREWER_COLORS['mid_gray']) for cat in edge_plot['category'].astype(str)],
+        edgecolor='white',
+        linewidth=0.8,
+    )
+    style_axis(ax3, zero='x')
+    ax3.set_xlabel('log2(OR) vs same-protein non-methyl arginines outside domains')
+    ax3.set_ylabel('Nearest domain-edge distance')
+    ax3.set_title('Methylarginine proximity to domain edges')
+    set_symmetric_xlim(ax3, edge_plot['log2_odds_ratio'], annotation_pad_ratio=0.62, center_on_zero=False)
+    annotate_barh(
+        ax3,
+        edge_plot['category'].astype(str),
+        edge_plot['log2_odds_ratio'],
+        [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(edge_plot['target_count'], edge_plot['p_value'], edge_plot['q_value'])],
+        fontsize=8.0,
+    )
+    fig3.text(
+        0.99,
+        0.01,
+        'Out-of-domain methylarginines only; compared with non-methyl arginines from the same methylated proteins.',
+        ha='right',
+        va='bottom',
+        fontsize=8,
+        color=BREWER_COLORS['dark_gray'],
+    )
+    fig3.tight_layout()
+    save_figure(fig3, outdir / 'arg_methyl_domain_edge_bin_enrichment')
+
+    fig4, ax4 = plt.subplots(figsize=(8.8, 4.8))
+    ax4.plot(edge_curve['distance_aa'], edge_curve['log2_odds_ratio'], color=BREWER_COLORS['green'], linewidth=2.2)
+    sig = edge_curve[edge_curve['q_value'] <= 0.05]
+    if not sig.empty:
+        ax4.scatter(sig['distance_aa'], sig['log2_odds_ratio'], color=BREWER_COLORS['orange'], s=18, zorder=3)
+    style_axis(ax4, zero='y')
+    ax4.set_xlabel('Distance from nearest domain edge (<= X aa)')
+    ax4.set_ylabel('log2(OR) vs same-protein non-methyl arginines')
+    ax4.set_title('Cumulative enrichment near domain edges')
+    ax4.set_xlim(1, 40)
+    for checkpoint in [5, 10, 20, 40]:
+        row = edge_curve.loc[edge_curve['distance_aa'] == checkpoint]
+        if row.empty:
+            continue
+        row = row.iloc[0]
+        ax4.axvline(checkpoint, color=BREWER_COLORS['light_gray'], linestyle='--', linewidth=0.8)
+        ax4.text(checkpoint, row['log2_odds_ratio'], f' {checkpoint}', fontsize=8, va='bottom', color=BREWER_COLORS['dark_gray'])
+    fig4.text(
+        0.99,
+        0.01,
+        'Uses out-of-domain sites with domain annotation only; points mark q<=0.05.',
+        ha='right',
+        va='bottom',
+        fontsize=8,
+        color=BREWER_COLORS['dark_gray'],
+    )
+    fig4.tight_layout()
+    save_figure(fig4, outdir / 'arg_methyl_domain_edge_cumulative_enrichment')
 
     print({
         'annotated_sites': len(annotated_sites),

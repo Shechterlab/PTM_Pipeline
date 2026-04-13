@@ -8,6 +8,9 @@ import numpy as np
 import pandas as pd
 
 from common import (
+    BREWER_COLORS,
+    annotate_barh,
+    apply_paper_style,
     canonicalize_uniprot_accession,
     fisher_like_enrichment,
     format_p_value,
@@ -15,6 +18,9 @@ from common import (
     residue_background_from_sequences,
     save_figure,
     save_table,
+    set_symmetric_xlim,
+    signed_bar_colors,
+    style_axis,
 )
 
 
@@ -179,16 +185,27 @@ def main() -> None:
     ap.add_argument('--interpro-intervals', default='')
     ap.add_argument('--boundary-window', type=int, default=20)
     ap.add_argument('--ptm-groups', nargs='*', default=list(DEFAULT_PTM_GROUPS))
+    ap.add_argument('--make-detailed-context-plots', action='store_true')
     ap.add_argument('--outdir', default='results/ptm_compare')
     args = ap.parse_args()
 
     sequences = parse_fasta(args.canonical_fasta)
     master = pd.read_csv(args.base_master, sep='\t', low_memory=False)
     arg_sites = pd.read_csv(args.integrated_arg_sites, sep='\t', low_memory=False)
+    apply_paper_style()
 
     ptm_sites = normalize_master_sites(master, sequences=sequences, ptm_groups=[g for g in args.ptm_groups if g != 'Arg methylation'])
     arg_sites = normalize_arg_methyl_sites(arg_sites)
     ptm_sites = pd.concat([ptm_sites, arg_sites], ignore_index=True, sort=False)
+    input_qc = (
+        ptm_sites.groupby('ptm_group', dropna=False)
+        .agg(
+            site_count=('site_key', 'nunique'),
+            protein_count=('canonical_UniProtAC', 'nunique'),
+            residues=('residue', lambda s: ';'.join(sorted(set(s.astype(str))))),
+        )
+        .reset_index()
+    )
 
     rows = []
     backgrounds = []
@@ -216,6 +233,7 @@ def main() -> None:
             backgrounds.append({'ptm_group': ptm_group, 'context_layer': 'disorder', 'background_residues': len(bg)})
 
         binary_rows = []
+        binary_counts = []
         for ptm_group, group in ptm_sites.groupby('ptm_group'):
             residues = sorted(set(group['residue'].astype(str)))
             residue_key = tuple(residues)
@@ -232,24 +250,87 @@ def main() -> None:
             enrich['ptm_group'] = ptm_group
             enrich['comparison'] = 'binary_idr_vs_non_idr'
             binary_rows.append(enrich)
+            binary_counts.append({
+                'ptm_group': ptm_group,
+                'classified_site_count': len(group_binary),
+                'idr_site_count': int((group_binary['idr_binary_class'] == 'IDR').sum()),
+                'background_classified_site_count': len(bg_binary),
+                'background_idr_site_count': int((bg_binary['idr_binary_class'] == 'IDR').sum()),
+            })
         if binary_rows:
             binary = pd.concat(binary_rows, ignore_index=True)
             save_table(binary, Path(args.outdir) / 'ptm_idr_binary_comparison.tsv')
+            save_table(pd.DataFrame(binary_counts), Path(args.outdir) / 'ptm_idr_binary_counts.tsv')
 
             plot_df = binary[binary['category'] == 'IDR'].copy()
             if not plot_df.empty:
-                plot_df = plot_df.sort_values('odds_ratio', ascending=False)
-                fig_idr, ax_idr = plt.subplots(figsize=(8.8, 5.2))
-                ax_idr.bar(plot_df['ptm_group'], plot_df['log2_odds_ratio'])
-                ax_idr.axhline(0, color='black', linewidth=0.8)
-                ax_idr.set_ylabel('log2(OR) for IDR vs target-residue proteome background')
-                ax_idr.set_xlabel('PTM class')
+                plot_df = plot_df.merge(pd.DataFrame(binary_counts), on='ptm_group', how='left')
+                plot_df['observed_idr_fraction_pct'] = 100.0 * plot_df['idr_site_count'] / plot_df['classified_site_count']
+                plot_df['background_idr_fraction_pct'] = 100.0 * plot_df['background_idr_site_count'] / plot_df['background_classified_site_count']
+                plot_df = plot_df.sort_values('log2_odds_ratio')
+
+                fig_idr, ax_idr = plt.subplots(figsize=(9.2, 5.6))
+                colors = signed_bar_colors(
+                    plot_df['log2_odds_ratio'],
+                    positive=BREWER_COLORS['orange'],
+                    negative=BREWER_COLORS['blue'],
+                )
+                ax_idr.barh(plot_df['ptm_group'], plot_df['log2_odds_ratio'], color=colors, edgecolor='white', linewidth=0.8)
+                style_axis(ax_idr, zero='x')
+                ax_idr.set_xlabel('log2(OR) for IDR vs target-residue proteome background')
+                ax_idr.set_ylabel('PTM class')
                 ax_idr.set_title('Cross-PTM IDR enrichment')
-                ax_idr.tick_params(axis='x', rotation=25)
-                for x, v, p, q in zip(plot_df['ptm_group'], plot_df['log2_odds_ratio'], plot_df['p_value'], plot_df['q_value']):
-                    ax_idr.text(x, v, f'p={format_p_value(p)}\nq={format_p_value(q)}', ha='center', va='bottom' if v >= 0 else 'top', fontsize=7.5, rotation=90)
+                set_symmetric_xlim(ax_idr, plot_df['log2_odds_ratio'], annotation_pad_ratio=0.78, center_on_zero=False)
+                annotate_barh(
+                    ax_idr,
+                    plot_df['ptm_group'],
+                    plot_df['log2_odds_ratio'],
+                    [
+                        f"IDR {n}/{t} ({frac:.1f}%), p={format_p_value(p)}, q={format_p_value(q)}"
+                        for n, t, frac, p, q in zip(
+                            plot_df['idr_site_count'],
+                            plot_df['classified_site_count'],
+                            plot_df['observed_idr_fraction_pct'],
+                            plot_df['p_value'],
+                            plot_df['q_value'],
+                        )
+                    ],
+                    fontsize=7.8,
+                )
                 fig_idr.tight_layout()
                 save_figure(fig_idr, Path(args.outdir) / 'cross_ptm_idr_binary_comparison')
+
+                fig_frac, ax_frac = plt.subplots(figsize=(9.2, 5.6))
+                ax_frac.barh(
+                    plot_df['ptm_group'],
+                    plot_df['observed_idr_fraction_pct'],
+                    color=BREWER_COLORS['orange'],
+                    edgecolor='white',
+                    linewidth=0.8,
+                )
+                ax_frac.scatter(
+                    plot_df['background_idr_fraction_pct'],
+                    plot_df['ptm_group'],
+                    color=BREWER_COLORS['dark_gray'],
+                    marker='D',
+                    s=28,
+                    zorder=3,
+                    label='Target-residue proteome background',
+                )
+                style_axis(ax_frac, grid_axis='x')
+                ax_frac.set_xlabel('% of classified sites in IDRs')
+                ax_frac.set_ylabel('PTM class')
+                ax_frac.set_title('Cross-PTM IDR site burden')
+                ax_frac.legend(loc='lower right', frameon=False)
+                annotate_barh(
+                    ax_frac,
+                    plot_df['ptm_group'],
+                    plot_df['observed_idr_fraction_pct'],
+                    [f'{n}/{t}' for n, t in zip(plot_df['idr_site_count'], plot_df['classified_site_count'])],
+                    fontsize=7.8,
+                )
+                fig_frac.tight_layout()
+                save_figure(fig_frac, Path(args.outdir) / 'cross_ptm_idr_site_fraction')
 
     if args.interpro_intervals:
         interpro = normalize_intervals(pd.read_csv(args.interpro_intervals, sep='\t', low_memory=False))
@@ -272,12 +353,13 @@ def main() -> None:
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     save_table(ptm_sites, outdir / 'ptm_sites_with_contexts.tsv')
+    save_table(input_qc, outdir / 'ptm_input_qc.tsv')
     if rows:
         comparison = pd.concat(rows, ignore_index=True)
         save_table(comparison, outdir / 'ptm_context_comparison.tsv')
         save_table(pd.DataFrame(backgrounds), outdir / 'ptm_context_backgrounds.tsv')
 
-        if (comparison['context_layer'] == 'disorder').any():
+        if args.make_detailed_context_plots and (comparison['context_layer'] == 'disorder').any():
             plot_df = comparison[
                 (comparison['context_layer'] == 'disorder') &
                 (comparison['category'].isin(['disordered', 'disorder_boundary', 'ordered']))
@@ -299,7 +381,7 @@ def main() -> None:
                 fig.tight_layout()
                 save_figure(fig, outdir / 'cross_ptm_disorder_context_comparison')
 
-        if (comparison['context_layer'] == 'domain').any():
+        if args.make_detailed_context_plots and (comparison['context_layer'] == 'domain').any():
             plot_df = comparison[
                 (comparison['context_layer'] == 'domain') &
                 (comparison['category'].isin(['in_domain', 'boundary', 'distal']))

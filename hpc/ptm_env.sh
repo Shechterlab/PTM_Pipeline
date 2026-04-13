@@ -39,7 +39,9 @@ PTM_MOBIDB_INTERVALS=${PTM_MOBIDB_INTERVALS:-$PTM_CONTEXT_ROOT/mobidb_human_revi
 PTM_INTERPRO_BULK=${PTM_INTERPRO_BULK:-$PTM_CONTEXT_ROOT/protein2ipr.dat.gz}
 PTM_INTERPRO_ALL_INTERVALS=${PTM_INTERPRO_ALL_INTERVALS:-$PTM_CONTEXT_ROOT/interpro_human_reviewed_all_entry_intervals.tsv}
 PTM_INTERPRO_DOMAIN_INTERVALS=${PTM_INTERPRO_DOMAIN_INTERVALS:-$PTM_CONTEXT_ROOT/interpro_human_reviewed_domain_like_intervals.tsv}
-PTM_CDCODE_STAGED=${PTM_CDCODE_STAGED:-$PTM_DATA_ROOT/condensates/cdcode_staged_membership.tsv}
+PTM_CDCODE_STAGED=${PTM_CDCODE_STAGED:-$(ptm_choose_default_root "$PTM_DATA_ROOT/condensates/cdcode_staged_membership.tsv" "$PTM_DATA_ROOT/condensates/protein2cdcode_v2.2.tsv" "$PTM_DATA_ROOT/condensates/cdcode_staged_membership.tsv")}
+PTM_CDCODE_PROTEINS=${PTM_CDCODE_PROTEINS:-$(ptm_choose_default_root "$PTM_DATA_ROOT/condensates/proteins_202603181653.csv" "" "$PTM_DATA_ROOT/condensates/proteins_202603181653.csv")}
+PTM_CDCODE_CONDENSATES=${PTM_CDCODE_CONDENSATES:-$(ptm_choose_default_root "$PTM_DATA_ROOT/condensates/condensates_202603181647.csv" "" "$PTM_DATA_ROOT/condensates/condensates_202603181647.csv")}
 
 if [ -z "$PTM_CODE_ROOT" ] || [ -z "$PTM_DATA_ROOT" ] || [ -z "$PTM_RESULTS_ROOT" ]; then
   echo "[ptm_env] PTM_CODE_ROOT, PTM_DATA_ROOT, and PTM_RESULTS_ROOT must not be empty"
@@ -66,6 +68,8 @@ export PTM_INTERPRO_BULK
 export PTM_INTERPRO_ALL_INTERVALS
 export PTM_INTERPRO_DOMAIN_INTERVALS
 export PTM_CDCODE_STAGED
+export PTM_CDCODE_PROTEINS
+export PTM_CDCODE_CONDENSATES
 
 if [ "${PTM_DEBUG_PATHS:-0}" = "1" ]; then
   echo "[ptm_env] PTM_CODE_ROOT=$PTM_CODE_ROOT"

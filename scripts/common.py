@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import re
 from collections import defaultdict
 from pathlib import Path
@@ -10,6 +11,26 @@ from typing import Iterable
 import numpy as np
 import pandas as pd
 from scipy.stats import fisher_exact
+
+
+BREWER_COLORS = {
+    'blue': '#377eb8',
+    'orange': '#d95f02',
+    'green': '#1b9e77',
+    'purple': '#7570b3',
+    'magenta': '#e7298a',
+    'brown': '#a6761d',
+    'red': '#e41a1c',
+    'teal': '#66c2a5',
+    'salmon': '#fc8d62',
+    'lavender': '#8da0cb',
+    'light_green': '#a6d854',
+    'gold': '#ffd92f',
+    'gray': '#6b6b6b',
+    'light_gray': '#d9d9d9',
+    'mid_gray': '#bdbdbd',
+    'dark_gray': '#4d4d4d',
+}
 
 
 def save_table(df: pd.DataFrame, path: str | Path) -> None:
@@ -24,8 +45,121 @@ def save_table(df: pd.DataFrame, path: str | Path) -> None:
 def save_figure(fig, path_prefix: str | Path, dpi: int = 300) -> None:
     path_prefix = Path(path_prefix)
     path_prefix.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(path_prefix.with_suffix('.png'), dpi=dpi)
-    fig.savefig(path_prefix.with_suffix('.pdf'))
+    fig.savefig(path_prefix.with_suffix('.png'), dpi=dpi, bbox_inches='tight', facecolor='white')
+    if str(os.environ.get('PTM_SKIP_PDF', '')).lower() in {'1', 'true', 'yes'}:
+        return
+    try:
+        fig.savefig(path_prefix.with_suffix('.pdf'), bbox_inches='tight', facecolor='white')
+    except PermissionError:
+        # Some mounted-drive files can remain externally locked; keep the PNG/TSV outputs fresh.
+        pass
+
+
+def apply_paper_style() -> None:
+    import matplotlib as mpl
+
+    mpl.rcParams.update({
+        'font.family': 'sans-serif',
+        'font.sans-serif': ['Arial', 'Liberation Sans', 'DejaVu Sans', 'Helvetica', 'sans-serif'],
+        'pdf.fonttype': 42,
+        'ps.fonttype': 42,
+        'axes.titlesize': 14,
+        'axes.titleweight': 'regular',
+        'axes.labelsize': 11.5,
+        'axes.linewidth': 0.9,
+        'axes.spines.top': False,
+        'axes.spines.right': False,
+        'xtick.labelsize': 10.5,
+        'ytick.labelsize': 10.5,
+        'xtick.major.width': 0.8,
+        'ytick.major.width': 0.8,
+        'legend.fontsize': 10,
+        'figure.facecolor': 'white',
+        'axes.facecolor': 'white',
+        'savefig.facecolor': 'white',
+    })
+
+
+def style_axis(ax, zero: str | None = None, grid_axis: str = 'x') -> None:
+    ax.grid(axis=grid_axis, color=BREWER_COLORS['light_gray'], linestyle=':', linewidth=0.8)
+    ax.set_axisbelow(True)
+    if zero == 'x':
+        ax.axvline(0, color=BREWER_COLORS['dark_gray'], linewidth=0.9)
+    elif zero == 'y':
+        ax.axhline(0, color=BREWER_COLORS['dark_gray'], linewidth=0.9)
+
+
+def signed_bar_colors(values: Iterable[float], positive: str | None = None, negative: str | None = None, neutral: str | None = None) -> list[str]:
+    positive = positive or BREWER_COLORS['orange']
+    negative = negative or BREWER_COLORS['blue']
+    neutral = neutral or BREWER_COLORS['mid_gray']
+    out = []
+    for value in values:
+        if pd.isna(value):
+            out.append(neutral)
+        elif float(value) > 0:
+            out.append(positive)
+        elif float(value) < 0:
+            out.append(negative)
+        else:
+            out.append(neutral)
+    return out
+
+
+def set_symmetric_xlim(ax, values: Iterable[float], annotation_pad_ratio: float = 0.32, center_on_zero: bool = False) -> None:
+    numeric = pd.Series(list(values), dtype='float').replace([np.inf, -np.inf], np.nan).dropna()
+    if numeric.empty:
+        return
+    vmin = float(numeric.min())
+    vmax = float(numeric.max())
+    if center_on_zero:
+        extent = max(abs(vmin), abs(vmax))
+        extent = extent if extent > 0 else 1.0
+        pad = extent * annotation_pad_ratio
+        ax.set_xlim(-(extent + pad), extent + pad)
+    else:
+        span = max(vmax - vmin, 1.0)
+        pad = span * annotation_pad_ratio
+        ax.set_xlim(vmin - pad, vmax + pad)
+
+
+def annotate_barh(ax, y_values: Iterable, x_values: Iterable[float], labels: Iterable[str], fontsize: float = 8.0, color: str | None = None) -> None:
+    color = color or BREWER_COLORS['dark_gray']
+    xmin, xmax = ax.get_xlim()
+    span = max(xmax - xmin, 1.0)
+    offset = span * 0.02
+    for y, x, label in zip(y_values, x_values, labels):
+        if pd.isna(x):
+            continue
+        x = float(x)
+        if x >= 0:
+            xpos = x + offset
+            ha = 'left'
+        else:
+            xpos = x - offset
+            ha = 'right'
+        ax.text(xpos, y, str(label), va='center', ha=ha, fontsize=fontsize, color=color, clip_on=False)
+
+
+def balanced_category_subset(
+    df: pd.DataFrame,
+    value_col: str = 'log2_odds_ratio',
+    count_col: str = 'target_count',
+    min_count: int = 0,
+    top_positive: int = 6,
+    top_negative: int = 4,
+    always_include: Iterable[str] | None = None,
+) -> pd.DataFrame:
+    plot_df = df.copy()
+    if count_col in plot_df.columns:
+        plot_df = plot_df[plot_df[count_col] >= min_count].copy()
+    pos = plot_df[plot_df[value_col] >= 0].sort_values(value_col, ascending=False).head(top_positive)
+    neg = plot_df[plot_df[value_col] < 0].sort_values(value_col, ascending=True).head(top_negative)
+    frames = [pos, neg]
+    if always_include:
+        frames.append(plot_df[plot_df['category'].isin(set(always_include))])
+    out = pd.concat(frames, ignore_index=True).drop_duplicates(subset=['category'])
+    return out.sort_values(value_col).reset_index(drop=True)
 
 
 def load_json(path: str | Path) -> dict:
