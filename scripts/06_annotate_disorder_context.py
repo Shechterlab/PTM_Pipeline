@@ -83,6 +83,8 @@ def classify_positions(intervals: pd.DataFrame, positions: np.ndarray, boundary_
     ordered = (~in_interval) & (min_distance > boundary_window)
     classes[ordered] = 'ordered'
     distances[ordered] = min_distance[ordered]
+    # If any intervals exist for this protein, all queried positions are classifiable
+    # as disordered, boundary-adjacent, or ordered relative to that annotation layer.
     has_annotation[:] = True
     return classes, distances, has_annotation
 
@@ -182,19 +184,22 @@ def annotate_frame(df: pd.DataFrame, intervals_by_acc: dict[str, pd.DataFrame], 
     if valid_mask.any():
         valid = out.loc[valid_mask, [accession_col, position_col]].copy()
         valid[position_col] = valid[position_col].astype(int)
-        for accession, idx in valid.groupby(accession_col).groups.items():
-            positions = valid.loc[idx, position_col].to_numpy(dtype=int)
+        for accession, group in valid.groupby(accession_col, sort=False):
+            positions = group[position_col].to_numpy(dtype=int)
             intervals = intervals_by_acc.get(accession, pd.DataFrame())
             classes, distances, has_annotation = classify_positions(intervals, positions, boundary_window)
-            out.loc[idx, 'disorder_context_class'] = classes
-            out.loc[idx, 'nearest_disorder_edge_distance'] = distances
-            out.loc[idx, 'has_disorder_annotation'] = has_annotation & (classes != 'no_disorder_annotation')
+            out.loc[group.index, 'disorder_context_class'] = classes
+            out.loc[group.index, 'nearest_disorder_edge_distance'] = distances
+            out.loc[group.index, 'has_disorder_annotation'] = has_annotation & (classes != 'no_disorder_annotation')
 
     out['disorder_context_boundary_window'] = boundary_window
     out['disorder_context_layer'] = 'disorder_context'
     out['idr_binary_class'] = pd.NA
     out.loc[out['disorder_context_class'] == 'disordered', 'idr_binary_class'] = 'IDR'
     out.loc[out['disorder_context_class'].isin(['ordered', 'disorder_boundary']), 'idr_binary_class'] = 'non_IDR'
+    out['idr_proximal_binary_class'] = pd.NA
+    out.loc[out['disorder_context_class'].isin(['disordered', 'disorder_boundary']), 'idr_proximal_binary_class'] = 'IDR_proximal'
+    out.loc[out['disorder_context_class'] == 'ordered', 'idr_proximal_binary_class'] = 'ordered_distal'
     out['idr_edge_bin'] = pd.NA
     disordered_mask = out['disorder_context_class'] == 'disordered'
     out.loc[disordered_mask, 'idr_edge_bin'] = out.loc[disordered_mask, 'nearest_disorder_edge_distance'].map(idr_edge_bin)
@@ -282,10 +287,34 @@ def main() -> None:
             annotated_sites[annotated_sites['idr_binary_class'].notna()]['idr_binary_class'],
             methyl_protein_arg[methyl_protein_arg['idr_binary_class'].notna()]['idr_binary_class'],
         )
+        proximal_binary_all = fisher_like_enrichment(
+            annotated_sites[annotated_sites['idr_proximal_binary_class'].notna()]['idr_proximal_binary_class'],
+            proteome_arg[proteome_arg['idr_proximal_binary_class'].notna()]['idr_proximal_binary_class'],
+        )
+        proximal_binary_same = fisher_like_enrichment(
+            annotated_sites[annotated_sites['idr_proximal_binary_class'].notna()]['idr_proximal_binary_class'],
+            methyl_protein_arg[methyl_protein_arg['idr_proximal_binary_class'].notna()]['idr_proximal_binary_class'],
+        )
         save_table(enrich_all, outdir / 'idr_enrichment_vs_all_arginines.tsv')
         save_table(enrich_same, outdir / 'idr_enrichment_vs_arginines_in_methylated_proteins.tsv')
         save_table(binary_all, outdir / 'idr_binary_enrichment_vs_all_arginines.tsv')
         save_table(binary_same, outdir / 'idr_binary_enrichment_vs_arginines_in_methylated_proteins.tsv')
+        save_table(proximal_binary_all, outdir / 'idr_proximal_binary_enrichment_vs_all_arginines.tsv')
+        save_table(proximal_binary_same, outdir / 'idr_proximal_binary_enrichment_vs_arginines_in_methylated_proteins.tsv')
+        summary_rows = []
+        for label, series in [
+            ('strict_IDR', annotated_sites['idr_binary_class']),
+            ('IDR_proximal', annotated_sites['idr_proximal_binary_class']),
+        ]:
+            valid = series.dropna()
+            positive = 'IDR' if label == 'strict_IDR' else 'IDR_proximal'
+            summary_rows.append({
+                'metric': label,
+                'classified_site_count': int(len(valid)),
+                'positive_site_count': int((valid == positive).sum()),
+                'positive_fraction': float((valid == positive).mean()) if len(valid) else np.nan,
+            })
+        save_table(pd.DataFrame(summary_rows), outdir / 'idr_binary_summary.tsv')
 
         edge_bin_all = fisher_like_enrichment(
             annotated_sites[annotated_sites['idr_edge_bin'].notna()]['idr_edge_bin'],
@@ -326,7 +355,7 @@ def main() -> None:
         style_axis(ax2, zero='x')
         ax2.set_xlabel('log2(OR) vs all proteome arginines')
         ax2.set_ylabel('Disorder class')
-        ax2.set_title('Methylarginine disorder-context enrichment')
+        ax2.set_title('Global methylarginine disorder-context enrichment')
         set_symmetric_xlim(ax2, compare['log2_odds_ratio'], annotation_pad_ratio=0.52, center_on_zero=False)
         annotate_barh(
             ax2,
@@ -334,6 +363,15 @@ def main() -> None:
             compare['log2_odds_ratio'],
             [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(compare['target_count'], compare['p_value'], compare['q_value'])],
             fontsize=8.3,
+        )
+        fig2.text(
+            0.99,
+            0.01,
+            'Global class-level ORs; within-IDR edge bins are shown separately and use only disordered residues.',
+            ha='right',
+            va='bottom',
+            fontsize=8,
+            color=BREWER_COLORS['dark_gray'],
         )
         fig2.tight_layout()
         save_figure(fig2, outdir / 'arg_methyl_idr_context_enrichment')
@@ -351,6 +389,31 @@ def main() -> None:
             ax3.text(0, value, f"p={format_p_value(pval)}\nq={format_p_value(qval)}", ha='center', va='bottom' if value >= 0 else 'top')
             fig3.tight_layout()
             save_figure(fig3, outdir / 'arg_methyl_idr_binary_enrichment')
+
+        proximal_plot = proximal_binary_all[proximal_binary_all['category'] == 'IDR_proximal'].copy()
+        if not proximal_plot.empty:
+            fig3b, ax3b = plt.subplots(figsize=(5.8, 4.8))
+            display_label = 'Disordered or outside-IDR edge (<=20 aa)'
+            ax3b.bar([display_label], proximal_plot['log2_odds_ratio'], color=BREWER_COLORS['teal'], edgecolor='white', linewidth=0.8)
+            style_axis(ax3b, zero='y', grid_axis='y')
+            ax3b.set_ylabel('log2(OR) vs all proteome arginines')
+            ax3b.set_title('Methylarginine enrichment in IDR-proximal sequence')
+            value = float(proximal_plot['log2_odds_ratio'].iloc[0])
+            pval = float(proximal_plot['p_value'].iloc[0])
+            qval = float(proximal_plot['q_value'].iloc[0])
+            ax3b.text(0, value, f"p={format_p_value(pval)}\nq={format_p_value(qval)}", ha='center', va='bottom' if value >= 0 else 'top')
+            ax3b.tick_params(axis='x', rotation=15)
+            fig3b.text(
+                0.99,
+                0.01,
+                'IDR-proximal = inside an IDR or <=20 aa outside an IDR edge.',
+                ha='right',
+                va='bottom',
+                fontsize=8,
+                color=BREWER_COLORS['dark_gray'],
+            )
+            fig3b.tight_layout()
+            save_figure(fig3b, outdir / 'arg_methyl_idr_proximal_binary_enrichment')
 
         edge_plot = edge_bin_same.sort_values('log2_odds_ratio')
         edge_palette = {
@@ -370,7 +433,7 @@ def main() -> None:
         )
         style_axis(ax4, zero='x')
         ax4.set_xlabel('log2(OR) vs disordered arginines in methylated proteins')
-        ax4.set_ylabel('IDR edge-distance bin')
+        ax4.set_ylabel('Within-IDR edge-distance bin')
         ax4.set_title('Methylarginine localization within IDRs')
         set_symmetric_xlim(ax4, edge_plot['log2_odds_ratio'], annotation_pad_ratio=0.5, center_on_zero=False)
         annotate_barh(
@@ -389,7 +452,7 @@ def main() -> None:
         if not sig.empty:
             ax5.scatter(sig['distance_aa'], sig['log2_odds_ratio'], color=BREWER_COLORS['purple'], s=18, zorder=3)
         style_axis(ax5, zero='y', grid_axis='both')
-        ax5.set_xlabel('Distance from nearest IDR edge (<= X aa)')
+        ax5.set_xlabel('Within-IDR distance from nearest edge (<= X aa)')
         ax5.set_ylabel('log2(OR) vs disordered arginines in methylated proteins')
         ax5.set_title('Cumulative enrichment within IDRs by edge distance')
         ax5.set_xlim(1, 40)
@@ -403,7 +466,7 @@ def main() -> None:
         fig5.text(
             0.99,
             0.01,
-            'Disordered sites only; points mark q<=0.05.',
+            'Disordered sites only; cumulative curve shown for positions within 40 aa of an IDR edge.',
             ha='right',
             va='bottom',
             fontsize=8,
@@ -418,7 +481,7 @@ def main() -> None:
         if not sig_roll.empty:
             ax6.scatter(sig_roll['window_center_aa'], sig_roll['log2_odds_ratio'], color=BREWER_COLORS['purple'], s=18, zorder=3)
         style_axis(ax6, zero='y', grid_axis='both')
-        ax6.set_xlabel('Distance from nearest IDR edge (rolling 5-aa window)')
+        ax6.set_xlabel('Within-IDR distance from nearest edge (rolling 5-aa window)')
         ax6.set_ylabel('log2(OR) vs disordered arginines in methylated proteins')
         ax6.set_title('Rolling enrichment within IDRs by edge distance')
         ax6.set_xlim(3, 38)

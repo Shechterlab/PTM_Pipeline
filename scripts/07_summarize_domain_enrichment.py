@@ -44,6 +44,12 @@ DOMAIN_EDGE_BIN_ORDER = [
     'Domain-distal >40 aa',
 ]
 
+DOMAIN_EDGE_BIN_COMPACT_ORDER = [
+    'Domain edge <=20 aa',
+    'Domain edge 21-40 aa',
+    'Domain-distal >40 aa',
+]
+
 
 def interval_priority(interpro_type: str) -> int:
     return TYPE_PRIORITY.get(str(interpro_type), 9)
@@ -175,6 +181,89 @@ def domain_edge_bin(distance) -> str | pd.NA:
     return DOMAIN_EDGE_BIN_ORDER[4]
 
 
+def domain_edge_bin_compact(distance) -> str | pd.NA:
+    if pd.isna(distance):
+        return pd.NA
+    distance = float(distance)
+    if distance <= 20:
+        return DOMAIN_EDGE_BIN_COMPACT_ORDER[0]
+    if distance <= 40:
+        return DOMAIN_EDGE_BIN_COMPACT_ORDER[1]
+    return DOMAIN_EDGE_BIN_COMPACT_ORDER[2]
+
+
+def normalize_disorder_intervals(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    rename_map = {}
+    for source, target in [
+        ('accession', 'canonical_UniProtAC'),
+        ('Entry', 'canonical_UniProtAC'),
+        ('start', 'fragment_start'),
+        ('end', 'fragment_end'),
+    ]:
+        if source in out.columns and target not in out.columns:
+            rename_map[source] = target
+    out = out.rename(columns=rename_map)
+    required = ['canonical_UniProtAC', 'fragment_start', 'fragment_end']
+    missing = [col for col in required if col not in out.columns]
+    if missing:
+        raise ValueError(f'missing disorder interval columns: {missing}')
+    out['canonical_UniProtAC'] = out['canonical_UniProtAC'].astype(str).str.strip()
+    out['fragment_start'] = pd.to_numeric(out['fragment_start'], errors='coerce')
+    out['fragment_end'] = pd.to_numeric(out['fragment_end'], errors='coerce')
+    out = out[out['fragment_start'].notna() & out['fragment_end'].notna()].copy()
+    out['fragment_start'] = out['fragment_start'].astype(int)
+    out['fragment_end'] = out['fragment_end'].astype(int)
+    return out.sort_values(['canonical_UniProtAC', 'fragment_start', 'fragment_end']).reset_index(drop=True)
+
+
+def classify_disorder_positions(intervals: pd.DataFrame, positions: np.ndarray, boundary_window: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    n = len(positions)
+    classes = np.full(n, 'no_disorder_annotation', dtype=object)
+    distances = np.full(n, np.nan, dtype=float)
+    has_annotation = np.zeros(n, dtype=bool)
+    if intervals.empty or n == 0:
+        return classes, distances, has_annotation
+    starts = intervals['fragment_start'].to_numpy(dtype=int)
+    ends = intervals['fragment_end'].to_numpy(dtype=int)
+    min_distance = np.full(n, np.iinfo(np.int32).max, dtype=int)
+    in_interval = np.zeros(n, dtype=bool)
+    for start, end in zip(starts, ends):
+        overlap = (positions >= start) & (positions <= end)
+        in_interval |= overlap
+        dist = np.where(
+            positions < start,
+            start - positions,
+            np.where(positions > end, positions - end, np.minimum(positions - start, end - positions)),
+        )
+        min_distance = np.minimum(min_distance, dist)
+    classes[in_interval] = 'disordered'
+    distances[in_interval] = min_distance[in_interval]
+    boundary = (~in_interval) & (min_distance <= boundary_window)
+    classes[boundary] = 'disorder_boundary'
+    distances[boundary] = min_distance[boundary]
+    ordered = (~in_interval) & (min_distance > boundary_window)
+    classes[ordered] = 'ordered'
+    distances[ordered] = min_distance[ordered]
+    has_annotation[:] = True
+    return classes, distances, has_annotation
+
+
+def annotate_disorder_background(background: pd.DataFrame, intervals_by_acc: dict[str, pd.DataFrame], boundary_window: int) -> pd.DataFrame:
+    out = background.copy()
+    out['disorder_context_class'] = 'no_disorder_annotation'
+    out['nearest_disorder_edge_distance'] = pd.NA
+    out['has_disorder_annotation'] = False
+    for accession, group in out.groupby('canonical_UniProtAC', sort=False):
+        positions = pd.to_numeric(group['position'], errors='coerce').to_numpy(dtype=int)
+        intervals = intervals_by_acc.get(str(accession), pd.DataFrame())
+        classes, distances, has_annotation = classify_disorder_positions(intervals, positions, boundary_window)
+        out.loc[group.index, 'disorder_context_class'] = classes
+        out.loc[group.index, 'nearest_disorder_edge_distance'] = distances
+        out.loc[group.index, 'has_disorder_annotation'] = has_annotation & (classes != 'no_disorder_annotation')
+    return out
+
+
 def cumulative_edge_curve(target_dist: pd.Series, background_dist: pd.Series, max_distance: int = 40) -> pd.DataFrame:
     target = target_dist.dropna().astype(float)
     background = background_dist.dropna().astype(float)
@@ -209,6 +298,8 @@ def main() -> None:
     ap.add_argument('--ontology', default='config/domain_class_ontology.json')
     ap.add_argument('--boundary-window', type=int, default=20)
     ap.add_argument('--include-types', nargs='*', default=['domain', 'repeat'])
+    ap.add_argument('--disorder-sites', default='')
+    ap.add_argument('--disorder-intervals', default='')
     ap.add_argument('--outdir', default='results/domain_context')
     args = ap.parse_args()
 
@@ -241,6 +332,7 @@ def main() -> None:
         annotated_sites['nearest_domain_class'] = class_text.map(lambda x: classify_by_patterns(x, ontology['domain_classes'], default='Other domain'))
     annotated_sites.loc[~annotated_sites['has_domain_annotation'].fillna(False), 'nearest_domain_class'] = 'No domain annotation'
     annotated_sites['domain_edge_bin'] = pd.NA
+    annotated_sites['domain_edge_bin_compact'] = pd.NA
     annotated_domain_edge_mask = (
         annotated_sites['has_domain_annotation'].fillna(False) &
         annotated_sites['domain_context_class'].isin(['boundary', 'inter_domain_linker', 'distal']) &
@@ -249,6 +341,47 @@ def main() -> None:
     annotated_sites.loc[annotated_domain_edge_mask, 'domain_edge_bin'] = (
         annotated_sites.loc[annotated_domain_edge_mask, 'nearest_domain_edge_distance'].map(domain_edge_bin)
     )
+    annotated_sites.loc[annotated_domain_edge_mask, 'domain_edge_bin_compact'] = (
+        annotated_sites.loc[annotated_domain_edge_mask, 'nearest_domain_edge_distance'].map(domain_edge_bin_compact)
+    )
+
+    disorder_intervals_by_acc: dict[str, pd.DataFrame] = {}
+    if args.disorder_intervals:
+        disorder_path = Path(args.disorder_intervals)
+        if not disorder_path.exists() or disorder_path.stat().st_size == 0:
+            raise ValueError(f'disorder interval table is missing or empty: {disorder_path}')
+        disorder_intervals = normalize_disorder_intervals(pd.read_csv(disorder_path, sep='\t', low_memory=False))
+        disorder_intervals_by_acc = {
+            accession: group[['fragment_start', 'fragment_end']].reset_index(drop=True)
+            for accession, group in disorder_intervals.groupby('canonical_UniProtAC')
+        }
+
+    if args.disorder_sites:
+        disorder_sites_path = Path(args.disorder_sites)
+        if not disorder_sites_path.exists() or disorder_sites_path.stat().st_size == 0:
+            raise ValueError(f'disorder site table is missing or empty: {disorder_sites_path}')
+        disorder_sites = pd.read_csv(disorder_sites_path, sep='\t', low_memory=False)
+        required_cols = ['canonical_UniProtAC', 'corrected_position', 'disorder_context_class', 'nearest_disorder_edge_distance', 'has_disorder_annotation']
+        missing = [col for col in required_cols if col not in disorder_sites.columns]
+        if missing:
+            raise ValueError(f'disorder site table missing columns: {missing}')
+        disorder_sites = disorder_sites[required_cols].drop_duplicates(['canonical_UniProtAC', 'corrected_position']).copy()
+        merge_cols = [col for col in ['disorder_context_class', 'nearest_disorder_edge_distance', 'has_disorder_annotation'] if col in annotated_sites.columns]
+        if merge_cols:
+            annotated_sites = annotated_sites.drop(columns=merge_cols)
+        annotated_sites = annotated_sites.merge(
+            disorder_sites,
+            on=['canonical_UniProtAC', 'corrected_position'],
+            how='left',
+        )
+    elif disorder_intervals_by_acc:
+        position_col = 'corrected_position' if 'corrected_position' in annotated_sites.columns else 'position'
+        disorder_frame = annotated_sites[['canonical_UniProtAC', position_col]].rename(columns={position_col: 'position'}).copy()
+        disorder_frame = annotate_disorder_background(disorder_frame, disorder_intervals_by_acc, args.boundary_window)
+        for col in ['disorder_context_class', 'nearest_disorder_edge_distance', 'has_disorder_annotation']:
+            if col in annotated_sites.columns:
+                annotated_sites = annotated_sites.drop(columns=[col])
+        annotated_sites = pd.concat([annotated_sites, disorder_frame[['disorder_context_class', 'nearest_disorder_edge_distance', 'has_disorder_annotation']]], axis=1)
 
     if args.background_table:
         background_path = Path(args.background_table)
@@ -266,6 +399,7 @@ def main() -> None:
         methyl_protein_arg = methyl_protein_arg[~methyl_protein_arg['site_key'].isin(methyl_site_keys)].copy()
         methyl_protein_arg = annotate_background(methyl_protein_arg, intervals_by_acc, args.boundary_window, ontology)
     methyl_protein_arg['domain_edge_bin'] = pd.NA
+    methyl_protein_arg['domain_edge_bin_compact'] = pd.NA
     background_domain_edge_mask = (
         methyl_protein_arg['domain_context_class'].isin(['boundary', 'inter_domain_linker', 'distal']) &
         methyl_protein_arg['nearest_domain_edge_distance'].notna()
@@ -273,6 +407,11 @@ def main() -> None:
     methyl_protein_arg.loc[background_domain_edge_mask, 'domain_edge_bin'] = (
         methyl_protein_arg.loc[background_domain_edge_mask, 'nearest_domain_edge_distance'].map(domain_edge_bin)
     )
+    methyl_protein_arg.loc[background_domain_edge_mask, 'domain_edge_bin_compact'] = (
+        methyl_protein_arg.loc[background_domain_edge_mask, 'nearest_domain_edge_distance'].map(domain_edge_bin_compact)
+    )
+    if disorder_intervals_by_acc:
+        methyl_protein_arg = annotate_disorder_background(methyl_protein_arg, disorder_intervals_by_acc, args.boundary_window)
 
     context_enrichment = fisher_like_enrichment(
         annotated_sites['domain_context_class'],
@@ -297,11 +436,40 @@ def main() -> None:
         annotated_sites[annotated_sites['domain_edge_bin'].notna()]['domain_edge_bin'],
         methyl_protein_arg[methyl_protein_arg['domain_edge_bin'].notna()]['domain_edge_bin'],
     )
+    edge_bin_compact_enrichment = fisher_like_enrichment(
+        annotated_sites[annotated_sites['domain_edge_bin_compact'].notna()]['domain_edge_bin_compact'],
+        methyl_protein_arg[methyl_protein_arg['domain_edge_bin_compact'].notna()]['domain_edge_bin_compact'],
+    )
     edge_curve = cumulative_edge_curve(
         annotated_sites.loc[annotated_domain_edge_mask, 'nearest_domain_edge_distance'],
         methyl_protein_arg.loc[background_domain_edge_mask, 'nearest_domain_edge_distance'],
         max_distance=40,
     )
+    disordered_edge_bin_enrichment = pd.DataFrame()
+    disordered_edge_bin_compact_enrichment = pd.DataFrame()
+    disordered_edge_curve = pd.DataFrame()
+    disordered_edge_qc = pd.DataFrame()
+    if 'disorder_context_class' in annotated_sites.columns and 'disorder_context_class' in methyl_protein_arg.columns:
+        annotated_disordered_edge_mask = annotated_domain_edge_mask & (annotated_sites['disorder_context_class'] == 'disordered')
+        background_disordered_edge_mask = background_domain_edge_mask & (methyl_protein_arg['disorder_context_class'] == 'disordered')
+        if int(annotated_disordered_edge_mask.sum()) > 0 and int(background_disordered_edge_mask.sum()) > 0:
+            disordered_edge_bin_enrichment = fisher_like_enrichment(
+                annotated_sites.loc[annotated_disordered_edge_mask, 'domain_edge_bin'],
+                methyl_protein_arg.loc[background_disordered_edge_mask, 'domain_edge_bin'],
+            )
+            disordered_edge_bin_compact_enrichment = fisher_like_enrichment(
+                annotated_sites.loc[annotated_disordered_edge_mask, 'domain_edge_bin_compact'],
+                methyl_protein_arg.loc[background_disordered_edge_mask, 'domain_edge_bin_compact'],
+            )
+            disordered_edge_curve = cumulative_edge_curve(
+                annotated_sites.loc[annotated_disordered_edge_mask, 'nearest_domain_edge_distance'],
+                methyl_protein_arg.loc[background_disordered_edge_mask, 'nearest_domain_edge_distance'],
+                max_distance=40,
+            )
+            disordered_edge_qc = pd.DataFrame([{
+                'annotated_disordered_outside_domain_sites': int(annotated_disordered_edge_mask.sum()),
+                'background_disordered_outside_domain_residues': int(background_disordered_edge_mask.sum()),
+            }])
 
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
@@ -311,7 +479,16 @@ def main() -> None:
     save_table(edge_summary, outdir / 'domain_edge_distance_summary.tsv')
     save_table(edge_comparison, outdir / 'domain_edge_distance_comparison.tsv')
     save_table(edge_bin_enrichment, outdir / 'domain_edge_bin_enrichment.tsv')
+    save_table(edge_bin_compact_enrichment, outdir / 'domain_edge_bin_enrichment_compact.tsv')
     save_table(edge_curve, outdir / 'domain_edge_cumulative_enrichment.tsv')
+    if not disordered_edge_bin_enrichment.empty:
+        save_table(disordered_edge_bin_enrichment, outdir / 'domain_edge_bin_enrichment_disordered_only.tsv')
+    if not disordered_edge_bin_compact_enrichment.empty:
+        save_table(disordered_edge_bin_compact_enrichment, outdir / 'domain_edge_bin_enrichment_disordered_only_compact.tsv')
+    if not disordered_edge_curve.empty:
+        save_table(disordered_edge_curve, outdir / 'domain_edge_cumulative_enrichment_disordered_only.tsv')
+    if not disordered_edge_qc.empty:
+        save_table(disordered_edge_qc, outdir / 'domain_edge_disordered_only_qc.tsv')
     save_table(methyl_protein_arg, outdir / 'same_protein_nonmethyl_arginine_domain_background.tsv')
     save_table(
         pd.DataFrame([{
@@ -423,8 +600,8 @@ def main() -> None:
     )
     style_axis(ax3, zero='x')
     ax3.set_xlabel('log2(OR) vs same-protein non-methyl arginines outside domains')
-    ax3.set_ylabel('Nearest domain-edge distance')
-    ax3.set_title('Methylarginine proximity to domain edges')
+    ax3.set_ylabel('Outside-domain distance from nearest edge')
+    ax3.set_title('Methylarginine proximity outside annotated domains')
     set_symmetric_xlim(ax3, edge_plot['log2_odds_ratio'], annotation_pad_ratio=0.62, center_on_zero=False)
     annotate_barh(
         ax3,
@@ -445,15 +622,134 @@ def main() -> None:
     fig3.tight_layout()
     save_figure(fig3, outdir / 'arg_methyl_domain_edge_bin_enrichment')
 
+    if not disordered_edge_bin_enrichment.empty:
+        disordered_edge_plot = disordered_edge_bin_enrichment.copy()
+        disordered_edge_plot['category'] = pd.Categorical(disordered_edge_plot['category'], categories=DOMAIN_EDGE_BIN_ORDER, ordered=True)
+        disordered_edge_plot = disordered_edge_plot.sort_values('category').copy()
+        fig3b, ax3b = plt.subplots(figsize=(8.8, 5.4))
+        ax3b.barh(
+            disordered_edge_plot['category'].astype(str),
+            disordered_edge_plot['log2_odds_ratio'],
+            color=[edge_palette.get(cat, BREWER_COLORS['mid_gray']) for cat in disordered_edge_plot['category'].astype(str)],
+            edgecolor='white',
+            linewidth=0.8,
+        )
+        style_axis(ax3b, zero='x')
+        ax3b.set_xlabel('log2(OR) vs disordered non-methyl arginines outside domains')
+        ax3b.set_ylabel('Outside-domain distance from nearest edge')
+        ax3b.set_title('Outside-domain proximity within disordered sequence')
+        set_symmetric_xlim(ax3b, disordered_edge_plot['log2_odds_ratio'], annotation_pad_ratio=0.62, center_on_zero=False)
+        annotate_barh(
+            ax3b,
+            disordered_edge_plot['category'].astype(str),
+            disordered_edge_plot['log2_odds_ratio'],
+            [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(disordered_edge_plot['target_count'], disordered_edge_plot['p_value'], disordered_edge_plot['q_value'])],
+            fontsize=8.0,
+        )
+        fig3b.text(
+            0.99,
+            0.01,
+            'Restricted to methylarginine sites and background arginines that are already inside annotated IDRs.',
+            ha='right',
+            va='bottom',
+            fontsize=8,
+            color=BREWER_COLORS['dark_gray'],
+        )
+        fig3b.tight_layout()
+        save_figure(fig3b, outdir / 'arg_methyl_domain_edge_bin_enrichment_disordered_only')
+
+    if not disordered_edge_bin_compact_enrichment.empty:
+        disordered_edge_plot_compact = disordered_edge_bin_compact_enrichment.copy()
+        disordered_edge_plot_compact['category'] = pd.Categorical(
+            disordered_edge_plot_compact['category'],
+            categories=DOMAIN_EDGE_BIN_COMPACT_ORDER,
+            ordered=True,
+        )
+        disordered_edge_plot_compact = disordered_edge_plot_compact.sort_values('category').copy()
+        compact_palette = {
+            'Domain edge <=20 aa': BREWER_COLORS['green'],
+            'Domain edge 21-40 aa': BREWER_COLORS['gold'],
+            'Domain-distal >40 aa': BREWER_COLORS['orange'],
+        }
+        fig3c, ax3c = plt.subplots(figsize=(7.8, 4.6))
+        ax3c.barh(
+            disordered_edge_plot_compact['category'].astype(str),
+            disordered_edge_plot_compact['log2_odds_ratio'],
+            color=[compact_palette.get(cat, BREWER_COLORS['mid_gray']) for cat in disordered_edge_plot_compact['category'].astype(str)],
+            edgecolor='white',
+            linewidth=0.8,
+        )
+        style_axis(ax3c, zero='x')
+        ax3c.set_xlabel('log2(OR) vs disordered non-methyl arginines outside domains')
+        ax3c.set_ylabel('Outside-domain distance from nearest edge')
+        ax3c.set_title('Outside-domain proximity within disordered sequence')
+        set_symmetric_xlim(ax3c, disordered_edge_plot_compact['log2_odds_ratio'], annotation_pad_ratio=0.52, center_on_zero=False)
+        annotate_barh(
+            ax3c,
+            disordered_edge_plot_compact['category'].astype(str),
+            disordered_edge_plot_compact['log2_odds_ratio'],
+            [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(disordered_edge_plot_compact['target_count'], disordered_edge_plot_compact['p_value'], disordered_edge_plot_compact['q_value'])],
+            fontsize=8.0,
+        )
+        fig3c.text(
+            0.99,
+            0.01,
+            'Disordered sites only; compact outside-domain bins for presentation.',
+            ha='right',
+            va='bottom',
+            fontsize=8,
+            color=BREWER_COLORS['dark_gray'],
+        )
+        fig3c.tight_layout()
+        save_figure(fig3c, outdir / 'arg_methyl_domain_edge_bin_enrichment_disordered_only_compact')
+
+        fraction_plot = disordered_edge_plot_compact.copy()
+        fraction_plot['total_arginines_in_bin'] = fraction_plot['target_count'] + fraction_plot['background_count']
+        fraction_plot['methylated_fraction_in_bin'] = fraction_plot['target_count'] / fraction_plot['total_arginines_in_bin']
+        save_table(
+            fraction_plot[['category', 'target_count', 'background_count', 'total_arginines_in_bin', 'methylated_fraction_in_bin', 'odds_ratio', 'log2_odds_ratio', 'p_value', 'q_value']],
+            outdir / 'domain_edge_bin_enrichment_disordered_only_compact_fraction.tsv',
+        )
+        fig3d, ax3d = plt.subplots(figsize=(7.8, 4.6))
+        ax3d.barh(
+            fraction_plot['category'].astype(str),
+            100.0 * fraction_plot['methylated_fraction_in_bin'],
+            color=[compact_palette.get(cat, BREWER_COLORS['mid_gray']) for cat in fraction_plot['category'].astype(str)],
+            edgecolor='white',
+            linewidth=0.8,
+        )
+        style_axis(ax3d, grid_axis='x')
+        ax3d.set_xlabel('% of arginines methylated in bin')
+        ax3d.set_ylabel('Outside-domain distance from nearest edge')
+        ax3d.set_title('Methylarginine frequency in disordered outside-domain bins')
+        annotate_barh(
+            ax3d,
+            fraction_plot['category'].astype(str),
+            100.0 * fraction_plot['methylated_fraction_in_bin'],
+            [f"{n}/{t} ({100.0 * frac:.1f}%), q={format_p_value(q)}" for n, t, frac, q in zip(fraction_plot['target_count'], fraction_plot['total_arginines_in_bin'], fraction_plot['methylated_fraction_in_bin'], fraction_plot['q_value'])],
+            fontsize=8.0,
+        )
+        fig3d.text(
+            0.99,
+            0.01,
+            'Disordered outside-domain arginines only; denominator = methylated + non-methyl arginines in each bin.',
+            ha='right',
+            va='bottom',
+            fontsize=8,
+            color=BREWER_COLORS['dark_gray'],
+        )
+        fig3d.tight_layout()
+        save_figure(fig3d, outdir / 'arg_methyl_domain_edge_bin_frequency_disordered_only_compact')
+
     fig4, ax4 = plt.subplots(figsize=(8.8, 4.8))
     ax4.plot(edge_curve['distance_aa'], edge_curve['log2_odds_ratio'], color=BREWER_COLORS['green'], linewidth=2.2)
     sig = edge_curve[edge_curve['q_value'] <= 0.05]
     if not sig.empty:
         ax4.scatter(sig['distance_aa'], sig['log2_odds_ratio'], color=BREWER_COLORS['orange'], s=18, zorder=3)
     style_axis(ax4, zero='y')
-    ax4.set_xlabel('Distance from nearest domain edge (<= X aa)')
+    ax4.set_xlabel('Outside-domain distance from nearest edge (<= X aa)')
     ax4.set_ylabel('log2(OR) vs same-protein non-methyl arginines')
-    ax4.set_title('Cumulative enrichment near domain edges')
+    ax4.set_title('Cumulative enrichment outside domains by edge proximity')
     ax4.set_xlim(1, 40)
     for checkpoint in [5, 10, 20, 40]:
         row = edge_curve.loc[edge_curve['distance_aa'] == checkpoint]

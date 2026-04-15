@@ -158,6 +158,7 @@ def main() -> None:
     args = ap.parse_args()
 
     sites = pd.read_csv(args.integrated_sites, sep='\t', low_memory=False)
+    input_site_count = len(sites)
     sequences = parse_fasta(args.canonical_fasta)
     sites = validate_sites(sites, sequences=sequences)
     apply_paper_style()
@@ -293,6 +294,19 @@ def main() -> None:
     save_table(rolling_df, outdir / 'nearest_neighbor_rolling_enrichment.tsv')
     save_table(permutations, outdir / 'nearest_neighbor_curve_null_permutations.tsv')
     save_table(protein_summary, outdir / 'protein_local_density_summary.tsv')
+    save_table(
+        pd.DataFrame([{
+            'integrated_input_sites': input_site_count,
+            'sites_analyzed_after_sequence_validation': len(sites),
+            'excluded_sites_without_usable_sequence': input_site_count - len(sites),
+            'proteins_analyzed': len(observed_positions_by_acc),
+            'permutations': args.permutations,
+            'max_distance': args.max_distance,
+            'restrict_context': args.restrict_context,
+            'null_match_disorder': bool(args.null_match_disorder and intervals_by_acc is not None),
+        }]),
+        outdir / 'clustering_qc.tsv',
+    )
 
     fig, ax = plt.subplots(figsize=(9.0, 5.5))
     ax.plot(curve['distance_aa'], curve['prob_neighbor_within_x'], label='Observed', linewidth=2.2, color=BREWER_COLORS['orange'])
@@ -332,7 +346,7 @@ def main() -> None:
         )
     style_axis(ax1b, zero='y', grid_axis='both')
     ax1b.set_xlabel('Distance from methyl-Arg (<= X aa)')
-    ax1b.set_ylabel('log2 enrichment vs within-protein null')
+    ax1b.set_ylabel('log2(observed/null nearest-neighbor probability)')
     ax1b.set_title('Cumulative methyl-Arg neighbor enrichment')
     ax1b.set_xlim(1, 40)
     for checkpoint in [5, 10, 20, 40]:
@@ -361,7 +375,7 @@ def main() -> None:
         ax1c.scatter(sig_roll['window_center_aa'], sig_roll['log2_ratio_vs_null'], color=BREWER_COLORS['purple'], s=18, zorder=3)
     style_axis(ax1c, zero='y', grid_axis='both')
     ax1c.set_xlabel('Nearest methyl-Arg distance (rolling 5-aa window)')
-    ax1c.set_ylabel('log2 enrichment vs within-protein null')
+    ax1c.set_ylabel('log2(observed/null nearest-neighbor probability)')
     ax1c.set_title('Rolling methyl-Arg neighbor enrichment')
     ax1c.set_xlim(3, 38)
     for checkpoint in [5, 10, 20, 40]:
@@ -424,8 +438,8 @@ def main() -> None:
         )
         style_axis(ax4, zero='y', grid_axis='y')
         ax4.set_xlabel('Nearest methyl-Arg distance bin')
-        ax4.set_ylabel('log2 enrichment vs within-protein null')
-        ax4.set_title('Neighbor methyl-Arg enrichment summary')
+        ax4.set_ylabel('log2(observed/null nearest-neighbor probability)')
+        ax4.set_title('Nearest-neighbor probability enrichment summary')
         for idx, row in distance_bin_df.reset_index(drop=True).iterrows():
             p_text = f"p={format_p_value(row['empirical_p_greater'])}" if float(row['empirical_p_greater']) <= 0.05 else 'n.s.'
             ax4.text(
@@ -437,6 +451,15 @@ def main() -> None:
                 fontsize=7.4,
                 color=BREWER_COLORS['dark_gray'],
             )
+        fig4.text(
+            0.99,
+            0.01,
+            'Not an odds ratio: each bar is the observed nearest-neighbor probability in the bin divided by the within-protein permutation null mean.',
+            ha='right',
+            va='bottom',
+            fontsize=8,
+            color=BREWER_COLORS['dark_gray'],
+        )
         fig4.tight_layout()
         save_figure(fig4, outdir / 'arg_methyl_neighbor_clustering_summary')
 

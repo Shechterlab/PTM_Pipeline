@@ -35,8 +35,10 @@ Einstein target layout:
 Optional staged inputs:
 - `PTM_data/context/protein2ipr.dat.gz`
 - `PTM_data/context/interpro_human_reviewed_domain_like_intervals.tsv`
-- `PTM_data/context/mobidb_human_reviewed_disorder_intervals.tsv`
+- `PTM_data/context/mobidb_human_reviewed_disorder_intervals.tsv` for the disorder layer used by the pipeline
 - `PTM_data/external/mobidb_human_*.json`
+- `PTM_data/external/Table_S2_MethylArginine_Residues.xlsx`
+- `PTM_data/external/Table_S3_MethylArginine_Peptides.xlsx`
 - `PTM_data/condensates/cdcode_staged_membership.tsv`
 - `PTM_data/condensates/protein2cdcode_v2.2.tsv`
 - `PTM_data/condensates/condensates_*.csv`
@@ -49,6 +51,7 @@ Independent downloads to stage before a full rerun:
 - Either InterPro bulk/API-derived domain intervals or `protein2ipr.dat.gz` for staging
 - Either MobiDB JSON or a precomputed reviewed-human disorder-interval table
 - Optional CD-CODE downloads for condensate analysis: `protein2cdcode_v2.2.tsv`, plus `condensates_*.csv` and `proteins_*.csv` if you want species/name filtering
+- Optional Maron state/treatment workbooks: `Table_S2_MethylArginine_Residues.xlsx` and `Table_S3_MethylArginine_Peptides.xlsx`
 
 Condensate enrichment can run from either a staged `cdcode_staged_membership.tsv` or direct CD-CODE downloads (`protein2cdcode`, plus optional `condensates` and `proteins` tables for labels/species filtering). There is no in-repo fallback CD-CODE source bundled here.
 
@@ -117,6 +120,8 @@ python3 scripts/07_summarize_domain_enrichment.py \
   --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
   --canonical-fasta "$PTM_CANONICAL_FASTA" \
   --ontology "$PTM_CODE_ROOT/config/domain_class_ontology.json" \
+  --disorder-sites "$PTM_RESULTS_ROOT/disorder_context/sites_with_disorder_context.tsv" \
+  --disorder-intervals "$PTM_MOBIDB_INTERVALS" \
   --outdir "$PTM_RESULTS_ROOT/domain_context"
 
 python3 scripts/09_compare_ptm_contexts.py \
@@ -217,16 +222,24 @@ sbatch hpc/slurm_run_condensate.sh "$PWD"
 - `PTM_results/functional_class_union/`: multi-label broad/subclass enrichment with expanded depleted/background classes and explicit `Other / unclassified` membership tables
 - `PTM_results/functional_class_union/clusterprofiler_go/`: residual GO enrichment for `Other / unclassified` and `Poorly characterized / specialized`, using the reviewed-human functional universe as background
 - `PTM_results/functional_class_union/disease_enrichment/`: DisGeNET disease enrichment for the full methylome and residual ontology buckets, including a neurodegenerative-focus view
-- `PTM_results/motif_arg_odds/`: motif-family enrichment including explicit `DR`/`RD` tests, reordered positional heatmaps, acidic-context asymmetry, and shrinkage-based protein prioritization
-- `PTM_results/disorder_context/`: site-level disorder annotation, binary IDR enrichment, and non-overlapping within-IDR edge-distance bins (`<=5`, `6-10`, `11-20`, `21-40`, `>40`)
-- `PTM_results/domain_context/`: site-level domain placement, nearest-domain-class enrichment, and non-overlapping domain-edge bins (`<=5`, `6-10`, `11-20`, `21-40`, `>40`), using strict InterPro `domain/repeat` intervals by default for architectural context
+- `PTM_results/motif_arg_odds/`: motif-family enrichment including explicit `DR`/`RD` tests, reordered positional heatmaps, acidic-context asymmetry, shrinkage-based protein prioritization, and `motif_analysis_qc.tsv` for retained-site counts
+- `PTM_results/disorder_context/`: site-level disorder annotation, strict binary IDR enrichment, an explicit `IDR-proximal` binary (`inside IDR` or `<=20 aa outside an IDR edge`), and non-overlapping within-IDR edge-distance bins (`<=5`, `6-10`, `11-20`, `21-40`, `>40`)
+- `PTM_results/domain_context/`: site-level domain placement, nearest-domain-class enrichment, non-overlapping outside-domain edge-distance bins (`<=5`, `6-10`, `11-20`, `21-40`, `>40`), and a disordered-only outside-domain proximity sensitivity analysis, using strict InterPro `domain/repeat` intervals by default for architectural context
 - `PTM_results/ptm_compare/`: cross-PTM IDR `log2(OR)` comparison, matched IDR site-fraction figure, and normalized PTM input QC; detailed disorder/domain context line plots are opt-in
 - `PTM_results/assembly_clustering/`: clustering of top methylarginine proteins by membership in enriched CD-CODE assemblies, plus shared-membership edge and community tables
-- `PTM_results/methyl_arg_clustering/`, `PTM_results/ptm_clustering/`: supplemental local-density/clustering outputs, including cumulative checkpoint summaries and non-overlapping nearest-neighbor bins (`<=5`, `6-10`, `11-20`, `21-40`, `>40`)
+- `PTM_results/methyl_arg_clustering/`, `PTM_results/ptm_clustering/`: supplemental local-density/clustering outputs, including cumulative checkpoint summaries, non-overlapping nearest-neighbor bins (`<=5`, `6-10`, `11-20`, `21-40`, `>40`), and `clustering_qc.tsv` for retained-site counts
+- `PTM_results/maron_state_treatment/`: optional Maron-only supplemental analysis of Table S2 residue-state observations and Table S3 IP/treatment sheets, including collapsed site-level summaries and motif checks
 
 ## Notes
 - `mmc2.xlsx` is the site-level ProMetheusDB methylation supplement to include. `mmc3.xlsx` is not used as a primary site source.
+- `Table_S2_MethylArginine_Residues.xlsx` and `Table_S3_MethylArginine_Peptides.xlsx` are optional Maron-only supplements. Table S3 is peptide-redundant, so IP/treatment interpretation should use the collapsed site-level outputs in `PTM_results/maron_state_treatment/`, not raw peptide row counts.
 - `human_ptm_master.tsv` is a convenience background/integration layer, not a ground-truth database export.
+- The disorder analysis uses staged MobiDB reviewed-human interval tables, not a Campen compositional predictor.
+- In the disorder layer, `disorder_boundary` means residues outside an IDR but within 20 aa of an IDR edge; the `idr_edge_bin` analysis is separate and only applies to residues already inside IDRs.
+- If you want a broader architectural fraction than strict IDR occupancy, use the explicit `IDR-proximal` binary (`disordered` or `disorder_boundary`) rather than relabeling it as IDR.
+- In the domain layer, `boundary` means residues outside annotated domains/repeats but within 20 aa of a domain edge; the current `domain_edge_bin` analysis is an outside-domain proximity analysis and is not symmetric with the within-IDR depth analysis.
+- The disordered-only domain-edge sensitivity analysis asks the cleaner structural question: among arginines already inside IDRs, does methylarginine prefer domain-distal versus domain-proximal positions?
+- Motif and clustering modules can analyze fewer sites than the integrated union because they require sequence-confirmed canonical residues in the staged FASTA; use the QC TSVs in those output folders when citing those counts.
 - Do not use `Rme1` vs `Rme2` as a primary split for the integrated union.
 - Cross-PTM nearest-neighbor analyses are supplemental. The primary structural/context story is disorder plus domain adjacency.
 - Condensate odds ratios are calculated against the human non-synthetic CD-CODE condensate universe, not against all reviewed-human proteins.

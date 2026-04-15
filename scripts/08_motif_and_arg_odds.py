@@ -50,6 +50,8 @@ def family_flags(window: str) -> dict[str, bool]:
         'motif_RGG': residue_at(window, 1) == 'G' and residue_at(window, 2) == 'G',
         'motif_GRG': residue_at(window, -1) == 'G' and residue_at(window, 1) == 'G',
         'motif_GAR': residue_at(window, -2) == 'G' and residue_at(window, -1) == 'A',
+        # A centered methyl-Arg can participate in RXR in either orientation:
+        # R-X-[methyl-R] or [methyl-R]-X-R.
         'motif_RXR': residue_at(window, -2) == 'R' or residue_at(window, 2) == 'R',
         'motif_CARM1_proline_rich': 'P' in neighborhood,
         'motif_CARM1_hydrophobic_proline': ('P' in neighborhood) and any(aa in HYDROPHOBIC for aa in near3),
@@ -57,8 +59,6 @@ def family_flags(window: str) -> dict[str, bool]:
         'motif_RD': residue_at(window, 1) == 'D',
         'motif_ER': residue_at(window, -1) == 'E',
         'motif_RE': residue_at(window, 1) == 'E',
-        'motif_PRMT5_acidic_DR_like': residue_at(window, -1) in {'D', 'E'} or residue_at(window, 1) in {'D', 'E'},
-        'motif_PRMT5_acidic_within2': any(residue_at(window, i) in {'D', 'E'} for i in [-2, -1, 1, 2]),
     }
 
 
@@ -165,6 +165,7 @@ def main() -> None:
 
     sites = pd.read_csv(args.integrated_sites, sep='\t', low_memory=False)
     sites = canonical_site_table(sites, accession_col='canonical_UniProtAC', position_col='corrected_position')
+    input_site_count = len(sites)
     sequences = parse_fasta(args.canonical_fasta)
     apply_paper_style()
 
@@ -245,22 +246,6 @@ def main() -> None:
     protein_counts['label'] = protein_counts.apply(top_protein_label, axis=1)
     protein_counts = protein_counts.sort_values(['shrinkage_log2_enrichment', 'methyl_site_count'], ascending=[False, False])
 
-    context_rows = []
-    for column in motif_columns:
-        a = int(sites[column].sum())
-        b = int(len(sites) - a)
-        c = int(background_nonmethyl[column].sum())
-        d = int(len(background_nonmethyl) - c)
-        context_rows.append({
-            'context': column.replace('motif_', ''),
-            'site_count': a,
-            'odds_ratio': odds_ratio(a, b, c, d),
-            'log2_odds_ratio': log2_odds_ratio(odds_ratio(a, b, c, d)),
-            'p_value': float(fisher_exact([[a, b], [c, d]], alternative='two-sided').pvalue),
-            'background_model': 'arginines_in_methylated_proteins',
-        })
-    per_proteome_context = add_q_values(pd.DataFrame(context_rows)).sort_values('odds_ratio', ascending=False)
-
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     save_table(sites, outdir / 'sequence_windows.tsv')
@@ -269,7 +254,17 @@ def main() -> None:
     save_table(positional, outdir / 'positional_amino_acid_enrichment.tsv')
     save_table(protein_counts, outdir / 'per_protein_arg_odds.tsv')
     save_table(protein_counts, outdir / 'per_protein_shrinkage_prioritization.tsv')
-    save_table(per_proteome_context, outdir / 'per_proteome_arg_context_odds.tsv')
+    save_table(
+        pd.DataFrame([{
+            'integrated_input_sites': input_site_count,
+            'analyzed_methyl_sites_with_sequence_window': len(sites),
+            'excluded_sites_without_usable_sequence': input_site_count - len(sites),
+            'background_arginines_same_proteins': len(background_nonmethyl),
+            'all_proteome_arginines': len(all_arg_proteome),
+            'proteins_with_arg_odds': len(protein_counts),
+        }]),
+        outdir / 'motif_analysis_qc.tsv',
+    )
 
     plot_motif = motif_vs_methyl_proteins.sort_values('log2_odds_ratio')
     fig, ax = plt.subplots(figsize=(9.0, 6.0))

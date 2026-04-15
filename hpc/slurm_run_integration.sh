@@ -180,12 +180,17 @@ if [[ -f "$PTM_INTERPRO_DOMAIN_INTERVALS" && -s "$PTM_INTERPRO_DOMAIN_INTERVALS"
     --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
     --position-col corrected_position \
     --outdir "$PTM_RESULTS_ROOT/domain_context"
-  run_step "summarize domain enrichment" python "$PTM_CODE_ROOT/scripts/07_summarize_domain_enrichment.py" \
-    --annotated-sites "$PTM_RESULTS_ROOT/domain_context/sites_with_domain_context.tsv" \
-    --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
-    --canonical-fasta "$PTM_CANONICAL_FASTA" \
-    --ontology "$PTM_CODE_ROOT/config/domain_class_ontology.json" \
+  DOMAIN_SUMMARY_ARGS=(
+    --annotated-sites "$PTM_RESULTS_ROOT/domain_context/sites_with_domain_context.tsv"
+    --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS"
+    --canonical-fasta "$PTM_CANONICAL_FASTA"
+    --ontology "$PTM_CODE_ROOT/config/domain_class_ontology.json"
     --outdir "$PTM_RESULTS_ROOT/domain_context"
+  )
+  if [[ -f "$PTM_MOBIDB_INTERVALS" && -s "$PTM_MOBIDB_INTERVALS" && -f "$PTM_RESULTS_ROOT/disorder_context/sites_with_disorder_context.tsv" ]]; then
+    DOMAIN_SUMMARY_ARGS+=(--disorder-sites "$PTM_RESULTS_ROOT/disorder_context/sites_with_disorder_context.tsv" --disorder-intervals "$PTM_MOBIDB_INTERVALS")
+  fi
+  run_step "summarize domain enrichment" python "$PTM_CODE_ROOT/scripts/07_summarize_domain_enrichment.py" "${DOMAIN_SUMMARY_ARGS[@]}"
 else
   echo "[ptm_pipeline] skipping domain-context annotation: $PTM_INTERPRO_DOMAIN_INTERVALS missing or empty"
 fi
