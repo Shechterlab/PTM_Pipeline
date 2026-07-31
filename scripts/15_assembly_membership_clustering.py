@@ -176,7 +176,7 @@ def main() -> None:
     save_table(community_df, outdir / 'protein_assembly_communities.tsv')
 
     fig, ax = plt.subplots(figsize=(12.5, max(6.0, 0.28 * len(matrix.index) + 2.2)))
-    ax.imshow(matrix.to_numpy(dtype=float), aspect='auto', cmap=plt.cm.Greens, interpolation='nearest', vmin=0, vmax=1)
+    ax.imshow(matrix.to_numpy(dtype=float), aspect='auto', cmap=plt.cm.Greys, interpolation='nearest', vmin=0, vmax=1)
     ax.set_xticks(np.arange(len(matrix.columns)))
     ax.set_xticklabels(matrix.columns, rotation=45, ha='right', fontsize=9)
     ax.set_yticks(np.arange(len(matrix.index)))

@@ -32,6 +32,8 @@ BREWER_COLORS = {
     'dark_gray': '#4d4d4d',
 }
 
+_ARIAL_REGISTERED = False
+
 
 def save_table(df: pd.DataFrame, path: str | Path) -> None:
     path = Path(path)
@@ -57,42 +59,73 @@ def save_figure(fig, path_prefix: str | Path, dpi: int = 300) -> None:
 
 def apply_paper_style() -> None:
     import matplotlib as mpl
+    from matplotlib import font_manager
+
+    global _ARIAL_REGISTERED
+    if not _ARIAL_REGISTERED:
+        font_dirs = [path for path in os.environ.get('PTM_FONT_DIRS', '').split(os.pathsep) if path]
+        for font_dir in font_dirs:
+            for font_path in Path(font_dir).glob('*.ttf'):
+                try:
+                    font_manager.fontManager.addfont(str(font_path))
+                except RuntimeError:
+                    pass
+        _ARIAL_REGISTERED = True
+
+    preferred_sans = ['Liberation Sans', 'DejaVu Sans', 'Arial', 'Helvetica', 'sans-serif']
+    if os.environ.get('PTM_FONT_DIRS'):
+        preferred_sans = ['Arial', *[font for font in preferred_sans if font != 'Arial']]
 
     mpl.rcParams.update({
         'font.family': 'sans-serif',
-        'font.sans-serif': ['Arial', 'Liberation Sans', 'DejaVu Sans', 'Helvetica', 'sans-serif'],
+        'font.sans-serif': preferred_sans,
         'pdf.fonttype': 42,
         'ps.fonttype': 42,
-        'axes.titlesize': 14,
+        'axes.titlesize': 12.5,
         'axes.titleweight': 'regular',
-        'axes.labelsize': 11.5,
-        'axes.linewidth': 0.9,
+        'axes.titlepad': 7,
+        'axes.labelsize': 11,
+        'axes.labelcolor': '#111111',
+        'axes.edgecolor': '#111111',
+        'axes.linewidth': 0.85,
         'axes.spines.top': False,
         'axes.spines.right': False,
-        'xtick.labelsize': 10.5,
-        'ytick.labelsize': 10.5,
+        'xtick.labelsize': 10,
+        'ytick.labelsize': 10,
+        'xtick.color': '#111111',
+        'ytick.color': '#111111',
         'xtick.major.width': 0.8,
         'ytick.major.width': 0.8,
-        'legend.fontsize': 10,
+        'xtick.major.size': 4,
+        'ytick.major.size': 4,
+        'legend.fontsize': 9.5,
+        'legend.frameon': False,
+        'grid.color': '#d9d9d9',
+        'grid.linewidth': 0.6,
         'figure.facecolor': 'white',
         'axes.facecolor': 'white',
         'savefig.facecolor': 'white',
     })
 
 
-def style_axis(ax, zero: str | None = None, grid_axis: str = 'x') -> None:
-    ax.grid(axis=grid_axis, color=BREWER_COLORS['light_gray'], linestyle=':', linewidth=0.8)
+def style_axis(ax, zero: str | None = None, grid_axis: str | None = None, force_grid: bool = False) -> None:
+    wants_grid = grid_axis is not None and (force_grid or len(ax.lines) > 0 or len(ax.collections) > 0)
+    if wants_grid:
+        ax.grid(axis=grid_axis, color=BREWER_COLORS['light_gray'], linestyle='-', linewidth=0.6)
     ax.set_axisbelow(True)
     if zero == 'x':
-        ax.axvline(0, color=BREWER_COLORS['dark_gray'], linewidth=0.9)
+        ax.axvline(0, color='#111111', linewidth=0.85)
     elif zero == 'y':
-        ax.axhline(0, color=BREWER_COLORS['dark_gray'], linewidth=0.9)
+        ax.axhline(0, color='#111111', linewidth=0.85)
+    ax.spines['left'].set_color('#111111')
+    ax.spines['bottom'].set_color('#111111')
+    ax.tick_params(colors='#111111')
 
 
 def signed_bar_colors(values: Iterable[float], positive: str | None = None, negative: str | None = None, neutral: str | None = None) -> list[str]:
-    positive = positive or BREWER_COLORS['orange']
-    negative = negative or BREWER_COLORS['blue']
-    neutral = neutral or BREWER_COLORS['mid_gray']
+    positive = positive or BREWER_COLORS['dark_gray']
+    negative = negative or BREWER_COLORS['mid_gray']
+    neutral = neutral or BREWER_COLORS['light_gray']
     out = []
     for value in values:
         if pd.isna(value):
@@ -124,6 +157,8 @@ def set_symmetric_xlim(ax, values: Iterable[float], annotation_pad_ratio: float 
 
 
 def annotate_barh(ax, y_values: Iterable, x_values: Iterable[float], labels: Iterable[str], fontsize: float = 8.0, color: str | None = None) -> None:
+    import matplotlib.patheffects as pe
+
     color = color or BREWER_COLORS['dark_gray']
     xmin, xmax = ax.get_xlim()
     span = max(xmax - xmin, 1.0)
@@ -138,7 +173,41 @@ def annotate_barh(ax, y_values: Iterable, x_values: Iterable[float], labels: Ite
         else:
             xpos = x - offset
             ha = 'right'
-        ax.text(xpos, y, str(label), va='center', ha=ha, fontsize=fontsize, color=color, clip_on=False)
+        ax.text(
+            xpos,
+            y,
+            str(label),
+            va='center',
+            ha=ha,
+            fontsize=fontsize,
+            color=color,
+            clip_on=False,
+            path_effects=[pe.withStroke(linewidth=2.6, foreground='white')],
+        )
+
+
+def count_over_total_labels(
+    df: pd.DataFrame,
+    target_col: str = 'target_count',
+    background_col: str = 'background_count',
+    include_percent: bool = False,
+) -> list[str]:
+    labels: list[str] = []
+    for _, row in df.iterrows():
+        target = row.get(target_col, np.nan)
+        background = row.get(background_col, np.nan)
+        if pd.notna(target) and pd.notna(background):
+            target_i = int(target)
+            total_i = int(target + background)
+            if include_percent and total_i > 0:
+                labels.append(f'{target_i}/{total_i} ({100.0 * target_i / total_i:.1f}%)')
+            else:
+                labels.append(f'{target_i}/{total_i}')
+        elif pd.notna(target):
+            labels.append(f'n={int(target)}')
+        else:
+            labels.append('')
+    return labels
 
 
 def balanced_category_subset(
@@ -211,6 +280,52 @@ def format_p_value(value) -> str:
     if value < 1e-3:
         return f'{value:.1e}'
     return f'{value:.3f}'
+
+
+def format_compact_number(value, scientific_threshold: float = 1e-2, significant_digits: int = 1) -> str:
+    if pd.isna(value):
+        return 'NA'
+    value = float(value)
+    if value == 0.0:
+        return '0'
+    abs_value = abs(value)
+    if abs_value < scientific_threshold:
+        exponent = int(math.floor(math.log10(abs_value)))
+        mantissa = abs_value / (10 ** exponent)
+        decimals = max(significant_digits - 1, 0)
+        mantissa = round(mantissa, decimals)
+        if mantissa >= 10:
+            mantissa /= 10
+            exponent += 1
+        mantissa_str = f'{mantissa:.{decimals}f}'.rstrip('0').rstrip('.')
+        return rf'${mantissa_str}\times10^{{{exponent}}}$'
+    if abs_value < 0.1:
+        return f'{value:.2f}'
+    if abs_value < 1:
+        return f'{value:.1f}'
+    return f'{value:.0f}'
+
+
+def compact_q_label(value, prefix: str = 'q', significant_digits: int = 1) -> str:
+    if pd.isna(value):
+        return f'{prefix}=NA'
+    value = float(value)
+    if value == 0.0:
+        return f'{prefix}\u22480'
+    body = format_compact_number(value, significant_digits=significant_digits)
+    return f'{prefix}={body}'
+
+
+def q_threshold_note(values: Iterable[float], prefix: str = 'All shown BH q') -> str:
+    series = pd.Series(list(values), dtype='float').replace([np.inf, -np.inf], np.nan).dropna()
+    if series.empty:
+        return ''
+    max_q = float(series.max())
+    if max_q == 0.0:
+        return f'{prefix}\u22480'
+    if max_q <= 0.05:
+        return f'{prefix}<0.05'
+    return f'{prefix}\u2264{format_compact_number(max_q, significant_digits=1)}'
 
 
 def benjamini_hochberg(p_values: Iterable[float]) -> np.ndarray:

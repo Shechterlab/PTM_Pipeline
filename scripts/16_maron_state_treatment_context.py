@@ -389,11 +389,11 @@ def main() -> None:
         ax.bar(
             plot_df['label'],
             plot_df['fraction_sig_down_sites'],
-            color=[BREWER_COLORS['orange'] if t == 'GSK591' else BREWER_COLORS['blue'] for t in plot_df['treatment']],
+            color=[BREWER_COLORS['dark_gray'] if t == 'GSK591' else BREWER_COLORS['mid_gray'] for t in plot_df['treatment']],
             edgecolor='white',
             linewidth=0.8,
         )
-        style_axis(ax, grid_axis='y')
+        style_axis(ax)
         ax.set_ylabel(f'Fraction of unique sites significantly decreased (adj p<={args.padj_cutoff:g})')
         ax.set_xlabel('IP and treatment contrast')
         ax.set_title('Maron site-level depletion by inhibitor and methyl-Arg IP')
@@ -413,9 +413,9 @@ def main() -> None:
             width = 0.38
             adma = plot_df[plot_df['group_value'] == 'ADMA'].set_index('motif_family').reindex(motif_order)
             sdma = plot_df[plot_df['group_value'] == 'SDMA'].set_index('motif_family').reindex(motif_order)
-            ax2.bar(xpos - width / 2, adma['log2_odds_ratio'], width=width, color=BREWER_COLORS['orange'], edgecolor='white', linewidth=0.8, label='ADMA IP')
-            ax2.bar(xpos + width / 2, sdma['log2_odds_ratio'], width=width, color=BREWER_COLORS['blue'], edgecolor='white', linewidth=0.8, label='SDMA IP')
-            style_axis(ax2, zero='y', grid_axis='y')
+            ax2.bar(xpos - width / 2, adma['log2_odds_ratio'], width=width, color=BREWER_COLORS['dark_gray'], edgecolor='white', linewidth=0.8, label='ADMA IP')
+            ax2.bar(xpos + width / 2, sdma['log2_odds_ratio'], width=width, color=BREWER_COLORS['light_gray'], edgecolor='white', linewidth=0.8, label='SDMA IP')
+            style_axis(ax2, zero='y')
             ax2.set_xticks(xpos)
             ax2.set_xticklabels(motif_order)
             ax2.set_ylabel('log2(OR) vs other IP classes')

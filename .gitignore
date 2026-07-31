@@ -1,8 +1,13 @@
+.codex
 .codex/
+.agents/
 
 scripts/__pycache__/
+__pycache__/
 *.pyc
 *.pyo
+*.pyd
+*.so
 
 PTM_data/
 PTM_results/
@@ -10,10 +15,8 @@ PTM_results/
 # Legacy in-repo layout stubs
 data/*
 !data/.gitkeep
-!data/README.md
 results/*
 !results/.gitkeep
-!results/README.md
 
 # Large staged source files should stay local / HPC-staged, not in Git
 data/external/*.xlsx
@@ -25,7 +28,21 @@ data/external/*.pdf
 # Cluster logs and local transfer scratch
 slurm-*.out
 slurm-*.err
+*.log
+*.tmp
+*.bak
+*~
 
 # Optional local envs / editor noise
 .conda/
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
 .DS_Store
+
+# Local archives should not be committed; regenerate from Git when needed.
+*.zip
+*.tar
+*.tar.gz
+*.tgz

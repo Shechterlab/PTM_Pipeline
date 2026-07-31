@@ -15,9 +15,10 @@ from common import (
     apply_paper_style,
     balanced_category_subset,
     canonicalize_uniprot_accession,
-    format_p_value,
+    count_over_total_labels,
     load_json,
     log2_odds_ratio,
+    q_threshold_note,
     save_figure,
     save_table,
     set_symmetric_xlim,
@@ -396,18 +397,18 @@ def main() -> None:
     ax.set_xlabel('log2(OR) vs all proteins')
     ax.set_ylabel('Broad class')
     ax.set_title('Integrated arg-methylome: multi-label broad enrichment')
-    set_symmetric_xlim(ax, pb['log2_odds_ratio'], annotation_pad_ratio=0.65, center_on_zero=False)
+    set_symmetric_xlim(ax, pb['log2_odds_ratio'], annotation_pad_ratio=0.38, center_on_zero=False)
     annotate_barh(
         ax,
         pb['category'],
         pb['log2_odds_ratio'],
-        [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(pb['target_count'], pb['p_value'], pb['q_value'])],
-        fontsize=8.2,
+        count_over_total_labels(pb),
+        fontsize=8.9,
     )
     fig.text(
         0.99,
         0.01,
-        'Protein-level multi-label counts; totals are not additive.',
+        f'{q_threshold_note(pb["q_value"])}. Protein-level multi-label counts; totals are not additive.',
         ha='right',
         va='bottom',
         fontsize=8,
@@ -416,8 +417,9 @@ def main() -> None:
     fig.tight_layout()
     save_figure(fig, outdir / 'arg_methyl_functional_class_broad_enrichment')
 
-    ps = balanced_category_subset(sub, min_count=8, top_positive=10, top_negative=6)
-    subclass_colors = signed_bar_colors(ps['log2_odds_ratio'], positive=BREWER_COLORS['green'], negative=BREWER_COLORS['purple'])
+    sub_sig = sub[sub['q_value'] <= 0.05].copy()
+    ps = balanced_category_subset(sub_sig, min_count=8, top_positive=10, top_negative=6)
+    subclass_colors = signed_bar_colors(ps['log2_odds_ratio'])
     subclass_colors = [BREWER_COLORS['mid_gray'] if cat == 'Other / unclassified' else color for cat, color in zip(ps['category'], subclass_colors)]
     fig2, ax2 = plt.subplots(figsize=(10.2, 7.4))
     ax2.barh(ps['category'], ps['log2_odds_ratio'], color=subclass_colors, edgecolor='white', linewidth=0.8)
@@ -425,18 +427,18 @@ def main() -> None:
     ax2.set_xlabel('log2(OR) vs all proteins')
     ax2.set_ylabel('Subclass')
     ax2.set_title('Integrated arg-methylome: multi-label RNA-centric subclasses')
-    set_symmetric_xlim(ax2, ps['log2_odds_ratio'], annotation_pad_ratio=0.58, center_on_zero=False)
+    set_symmetric_xlim(ax2, ps['log2_odds_ratio'], annotation_pad_ratio=0.34, center_on_zero=False)
     annotate_barh(
         ax2,
         ps['category'],
         ps['log2_odds_ratio'],
-        [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(ps['target_count'], ps['p_value'], ps['q_value'])],
-        fontsize=7.8,
+        count_over_total_labels(ps),
+        fontsize=8.7,
     )
     fig2.text(
         0.99,
         0.01,
-        'Protein-level multi-label counts; totals are not additive.',
+        f'{q_threshold_note(ps["q_value"])}. Protein-level multi-label counts; totals are not additive.',
         ha='right',
         va='bottom',
         fontsize=8,
@@ -444,6 +446,57 @@ def main() -> None:
     )
     fig2.tight_layout()
     save_figure(fig2, outdir / 'arg_methyl_functional_class_subclass_enrichment')
+
+    ps_counts = sub[(sub['target_count'] >= 8) & (sub['q_value'] <= 0.05) & (sub['odds_ratio'] > 1)].copy()
+    ps_counts = ps_counts.sort_values(['odds_ratio', 'target_count'], ascending=[False, False]).head(10).copy()
+    if not ps_counts.empty:
+        ps_counts['total_class_count'] = ps_counts['target_count'] + ps_counts['background_count']
+        ps_counts['methyl_fraction_in_class'] = ps_counts['target_count'] / ps_counts['total_class_count']
+        fig3, ax3 = plt.subplots(figsize=(10.0, 7.2))
+        ax3.barh(
+            ps_counts['category'][::-1],
+            ps_counts['odds_ratio'][::-1],
+            color=BREWER_COLORS['mid_gray'],
+            edgecolor='white',
+            linewidth=0.8,
+        )
+        style_axis(ax3)
+        ax3.set_xlabel('Odds ratio vs all proteins')
+        ax3.set_ylabel('Subclass')
+        ax3.set_title('Integrated arg-methylome: enriched subclasses with class counts')
+        xmax = float(ps_counts['odds_ratio'].max()) if len(ps_counts) else 1.0
+        ax3.set_xlim(0, xmax * 1.22)
+        annotate_barh(
+            ax3,
+            ps_counts['category'][::-1],
+            ps_counts['odds_ratio'][::-1],
+            [
+                f"{n}/{t} ({frac:.0%})"
+                for n, t, frac in zip(
+                    ps_counts['target_count'][::-1],
+                    ps_counts['total_class_count'][::-1],
+                    ps_counts['methyl_fraction_in_class'][::-1],
+                )
+            ],
+            fontsize=8.7,
+        )
+        fig3.text(
+            0.99,
+            0.01,
+            f'{q_threshold_note(ps_counts["q_value"])}. Protein-level multi-label classes; labels show methylated proteins / total proteins in class.',
+            ha='right',
+            va='bottom',
+            fontsize=8,
+            color=BREWER_COLORS['dark_gray'],
+        )
+        fig3.tight_layout()
+        save_figure(fig3, outdir / 'arg_methyl_functional_class_subclass_enrichment_count_aware')
+        save_table(
+            ps_counts[
+                ['category', 'target_count', 'background_count', 'total_class_count', 'methyl_fraction_in_class', 'odds_ratio', 'log2_odds_ratio', 'p_value', 'q_value']
+            ],
+            outdir / 'arg_methyl_functional_class_subclass_enrichment_count_aware.tsv',
+        )
 
 
 if __name__ == '__main__':

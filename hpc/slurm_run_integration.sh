@@ -111,9 +111,9 @@ run_step "functional enrichment" python "$PTM_CODE_ROOT/scripts/03_functional_cl
   --domain-ontology "$PTM_CODE_ROOT/config/domain_class_ontology.json" \
   --outdir "$PTM_RESULTS_ROOT/functional_class_union"
 
-run_step "example figures" python "$PTM_CODE_ROOT/scripts/04_example_figures.py" \
+run_step "source provenance summary" python "$PTM_CODE_ROOT/scripts/04_source_provenance_summary.py" \
   --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-  --outdir "$PTM_RESULTS_ROOT/example_figures"
+  --outdir "$PTM_RESULTS_ROOT/qc/source_provenance"
 
 run_step "motif enrichment and protein prioritization" python "$PTM_CODE_ROOT/scripts/08_motif_and_arg_odds.py" \
   --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \

@@ -16,10 +16,10 @@ from common import (
     balanced_category_subset,
     classify_by_patterns,
     fisher_like_enrichment,
-    format_p_value,
     load_json,
     log2_odds_ratio,
     parse_fasta,
+    q_threshold_note,
     residue_background_from_sequences,
     save_figure,
     save_table,
@@ -523,18 +523,18 @@ def main() -> None:
     ax.set_xlabel('log2(OR) vs arginines in methylated proteins')
     ax.set_ylabel('Domain context')
     ax.set_title('Methylarginine enrichment by domain context')
-    set_symmetric_xlim(ax, plot_context['log2_odds_ratio'], annotation_pad_ratio=0.75, center_on_zero=False)
+    set_symmetric_xlim(ax, plot_context['log2_odds_ratio'], annotation_pad_ratio=0.38, center_on_zero=False)
     annotate_barh(
         ax,
         plot_context['display_category'],
         plot_context['log2_odds_ratio'],
-        [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(plot_context['target_count'], plot_context['p_value'], plot_context['q_value'])],
-        fontsize=8.2,
+        [f'n={n}' for n in plot_context['target_count']],
+        fontsize=8.9,
     )
     fig.text(
         0.99,
         0.01,
-        'Site-level counts using strict InterPro domain/repeat intervals.',
+        f'{q_threshold_note(plot_context["q_value"])}. Site-level counts using strict InterPro domain/repeat intervals.',
         ha='right',
         va='bottom',
         fontsize=8,
@@ -544,14 +544,14 @@ def main() -> None:
     save_figure(fig, outdir / 'arg_methyl_domain_context_enrichment')
 
     plot_domain = balanced_category_subset(
-        domain_class_enrichment,
+        domain_class_enrichment[domain_class_enrichment['q_value'] <= 0.05].copy(),
         min_count=20,
         top_positive=7,
         top_negative=5,
         always_include=[],
     )
     plot_domain = plot_domain[~plot_domain['category'].isin({'Other domain', 'No domain annotation'})].copy()
-    colors = signed_bar_colors(plot_domain['log2_odds_ratio'], positive=BREWER_COLORS['green'], negative=BREWER_COLORS['lavender'])
+    colors = signed_bar_colors(plot_domain['log2_odds_ratio'])
     colors = [BREWER_COLORS['mid_gray'] if cat in {'Other domain', 'No domain annotation'} else color for cat, color in zip(plot_domain['category'], colors)]
     fig2, ax2 = plt.subplots(figsize=(9.4, 6.2))
     plot_domain['display_category'] = plot_domain['category'].map(domain_class_label)
@@ -560,18 +560,18 @@ def main() -> None:
     ax2.set_xlabel('log2(OR) vs arginines in methylated proteins')
     ax2.set_ylabel('Nearest domain class')
     ax2.set_title('Nearest domain-class enrichment around methylarginines')
-    set_symmetric_xlim(ax2, plot_domain['log2_odds_ratio'], annotation_pad_ratio=0.82, center_on_zero=False)
+    set_symmetric_xlim(ax2, plot_domain['log2_odds_ratio'], annotation_pad_ratio=0.42, center_on_zero=False)
     annotate_barh(
         ax2,
         plot_domain['display_category'],
         plot_domain['log2_odds_ratio'],
-        [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(plot_domain['target_count'], plot_domain['p_value'], plot_domain['q_value'])],
-        fontsize=7.7,
+        [f'n={n}' for n in plot_domain['target_count']],
+        fontsize=8.6,
     )
     fig2.text(
         0.99,
         0.01,
-        'Site-level counts; selected enriched/depleted nearest-domain classes.',
+        f'{q_threshold_note(plot_domain["q_value"])}. Site-level counts; selected enriched/depleted nearest-domain classes.',
         ha='right',
         va='bottom',
         fontsize=8,
@@ -584,11 +584,11 @@ def main() -> None:
     edge_plot['category'] = pd.Categorical(edge_plot['category'], categories=DOMAIN_EDGE_BIN_ORDER, ordered=True)
     edge_plot = edge_plot.sort_values('category').copy()
     edge_palette = {
-        'Domain edge <=5 aa': BREWER_COLORS['teal'],
-        'Domain edge 6-10 aa': BREWER_COLORS['light_green'],
-        'Domain edge 11-20 aa': BREWER_COLORS['green'],
-        'Domain edge 21-40 aa': BREWER_COLORS['gold'],
-        'Domain-distal >40 aa': BREWER_COLORS['orange'],
+        'Domain edge <=5 aa': BREWER_COLORS['light_gray'],
+        'Domain edge 6-10 aa': '#c9c9c9',
+        'Domain edge 11-20 aa': BREWER_COLORS['mid_gray'],
+        'Domain edge 21-40 aa': '#8d8d8d',
+        'Domain-distal >40 aa': BREWER_COLORS['dark_gray'],
     }
     fig3, ax3 = plt.subplots(figsize=(8.8, 5.4))
     ax3.barh(
@@ -602,18 +602,18 @@ def main() -> None:
     ax3.set_xlabel('log2(OR) vs same-protein non-methyl arginines outside domains')
     ax3.set_ylabel('Outside-domain distance from nearest edge')
     ax3.set_title('Methylarginine proximity outside annotated domains')
-    set_symmetric_xlim(ax3, edge_plot['log2_odds_ratio'], annotation_pad_ratio=0.62, center_on_zero=False)
+    set_symmetric_xlim(ax3, edge_plot['log2_odds_ratio'], annotation_pad_ratio=0.34, center_on_zero=False)
     annotate_barh(
         ax3,
         edge_plot['category'].astype(str),
         edge_plot['log2_odds_ratio'],
-        [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(edge_plot['target_count'], edge_plot['p_value'], edge_plot['q_value'])],
-        fontsize=8.0,
+        [f'n={n}' for n in edge_plot['target_count']],
+        fontsize=8.8,
     )
     fig3.text(
         0.99,
         0.01,
-        'Out-of-domain methylarginines only; compared with non-methyl arginines from the same methylated proteins.',
+        f'{q_threshold_note(edge_plot["q_value"])}. Out-of-domain methylarginines only; compared with non-methyl arginines from the same methylated proteins.',
         ha='right',
         va='bottom',
         fontsize=8,
@@ -638,18 +638,18 @@ def main() -> None:
         ax3b.set_xlabel('log2(OR) vs disordered non-methyl arginines outside domains')
         ax3b.set_ylabel('Outside-domain distance from nearest edge')
         ax3b.set_title('Outside-domain proximity within disordered sequence')
-        set_symmetric_xlim(ax3b, disordered_edge_plot['log2_odds_ratio'], annotation_pad_ratio=0.62, center_on_zero=False)
+        set_symmetric_xlim(ax3b, disordered_edge_plot['log2_odds_ratio'], annotation_pad_ratio=0.34, center_on_zero=False)
         annotate_barh(
             ax3b,
             disordered_edge_plot['category'].astype(str),
             disordered_edge_plot['log2_odds_ratio'],
-            [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(disordered_edge_plot['target_count'], disordered_edge_plot['p_value'], disordered_edge_plot['q_value'])],
-            fontsize=8.0,
+            [f'n={n}' for n in disordered_edge_plot['target_count']],
+            fontsize=8.8,
         )
         fig3b.text(
             0.99,
             0.01,
-            'Restricted to methylarginine sites and background arginines that are already inside annotated IDRs.',
+            f'{q_threshold_note(disordered_edge_plot["q_value"])}. Restricted to methylarginine sites and background arginines that are already inside annotated IDRs.',
             ha='right',
             va='bottom',
             fontsize=8,
@@ -667,9 +667,9 @@ def main() -> None:
         )
         disordered_edge_plot_compact = disordered_edge_plot_compact.sort_values('category').copy()
         compact_palette = {
-            'Domain edge <=20 aa': BREWER_COLORS['green'],
-            'Domain edge 21-40 aa': BREWER_COLORS['gold'],
-            'Domain-distal >40 aa': BREWER_COLORS['orange'],
+            'Domain edge <=20 aa': BREWER_COLORS['light_gray'],
+            'Domain edge 21-40 aa': BREWER_COLORS['mid_gray'],
+            'Domain-distal >40 aa': BREWER_COLORS['dark_gray'],
         }
         fig3c, ax3c = plt.subplots(figsize=(7.8, 4.6))
         ax3c.barh(
@@ -683,18 +683,18 @@ def main() -> None:
         ax3c.set_xlabel('log2(OR) vs disordered non-methyl arginines outside domains')
         ax3c.set_ylabel('Outside-domain distance from nearest edge')
         ax3c.set_title('Outside-domain proximity within disordered sequence')
-        set_symmetric_xlim(ax3c, disordered_edge_plot_compact['log2_odds_ratio'], annotation_pad_ratio=0.52, center_on_zero=False)
+        set_symmetric_xlim(ax3c, disordered_edge_plot_compact['log2_odds_ratio'], annotation_pad_ratio=0.28, center_on_zero=False)
         annotate_barh(
             ax3c,
             disordered_edge_plot_compact['category'].astype(str),
             disordered_edge_plot_compact['log2_odds_ratio'],
-            [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(disordered_edge_plot_compact['target_count'], disordered_edge_plot_compact['p_value'], disordered_edge_plot_compact['q_value'])],
-            fontsize=8.0,
+            [f'n={n}' for n in disordered_edge_plot_compact['target_count']],
+            fontsize=8.8,
         )
         fig3c.text(
             0.99,
             0.01,
-            'Disordered sites only; compact outside-domain bins for presentation.',
+            f'{q_threshold_note(disordered_edge_plot_compact["q_value"])}. Disordered sites only; compact outside-domain bins for presentation.',
             ha='right',
             va='bottom',
             fontsize=8,
@@ -718,7 +718,7 @@ def main() -> None:
             edgecolor='white',
             linewidth=0.8,
         )
-        style_axis(ax3d, grid_axis='x')
+        style_axis(ax3d)
         ax3d.set_xlabel('% of arginines methylated in bin')
         ax3d.set_ylabel('Outside-domain distance from nearest edge')
         ax3d.set_title('Methylarginine frequency in disordered outside-domain bins')
@@ -726,8 +726,8 @@ def main() -> None:
             ax3d,
             fraction_plot['category'].astype(str),
             100.0 * fraction_plot['methylated_fraction_in_bin'],
-            [f"{n}/{t} ({100.0 * frac:.1f}%), q={format_p_value(q)}" for n, t, frac, q in zip(fraction_plot['target_count'], fraction_plot['total_arginines_in_bin'], fraction_plot['methylated_fraction_in_bin'], fraction_plot['q_value'])],
-            fontsize=8.0,
+            [f"{n}/{t} ({100.0 * frac:.1f}%)" for n, t, frac in zip(fraction_plot['target_count'], fraction_plot['total_arginines_in_bin'], fraction_plot['methylated_fraction_in_bin'])],
+            fontsize=8.8,
         )
         fig3d.text(
             0.99,
@@ -742,10 +742,10 @@ def main() -> None:
         save_figure(fig3d, outdir / 'arg_methyl_domain_edge_bin_frequency_disordered_only_compact')
 
     fig4, ax4 = plt.subplots(figsize=(8.8, 4.8))
-    ax4.plot(edge_curve['distance_aa'], edge_curve['log2_odds_ratio'], color=BREWER_COLORS['green'], linewidth=2.2)
+    ax4.plot(edge_curve['distance_aa'], edge_curve['log2_odds_ratio'], color=BREWER_COLORS['dark_gray'], linewidth=2.2)
     sig = edge_curve[edge_curve['q_value'] <= 0.05]
     if not sig.empty:
-        ax4.scatter(sig['distance_aa'], sig['log2_odds_ratio'], color=BREWER_COLORS['orange'], s=18, zorder=3)
+        ax4.scatter(sig['distance_aa'], sig['log2_odds_ratio'], color='#111111', s=18, zorder=3)
     style_axis(ax4, zero='y')
     ax4.set_xlabel('Outside-domain distance from nearest edge (<= X aa)')
     ax4.set_ylabel('log2(OR) vs same-protein non-methyl arginines')

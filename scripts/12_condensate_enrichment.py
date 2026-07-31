@@ -13,8 +13,8 @@ from common import (
     annotate_barh,
     apply_paper_style,
     canonicalize_uniprot_accession,
-    format_p_value,
     log2_odds_ratio,
+    q_threshold_note,
     save_figure,
     save_table,
     set_symmetric_xlim,
@@ -214,51 +214,45 @@ def main() -> None:
     save_table(summary, outdir / 'condensate_summary.tsv')
 
     apply_paper_style()
-    positive_plot_df = enrich[enrich['member_count'] >= 10].sort_values(['log2_odds_ratio', 'methyl_protein_count'], ascending=[False, False]).head(15).sort_values('log2_odds_ratio')
+    positive_plot_df = enrich[(enrich['member_count'] >= 10) & (enrich['q_value'] <= 0.05)].sort_values(['log2_odds_ratio', 'methyl_protein_count'], ascending=[False, False]).head(15).sort_values('log2_odds_ratio')
     if not positive_plot_df.empty:
         fig0, ax0 = plt.subplots(figsize=(10.0, 7.2))
-        colors0 = signed_bar_colors(positive_plot_df['log2_odds_ratio'], positive=BREWER_COLORS['green'], negative=BREWER_COLORS['orange'])
+        colors0 = signed_bar_colors(positive_plot_df['log2_odds_ratio'])
         ax0.barh(positive_plot_df['condensate_name'], positive_plot_df['log2_odds_ratio'], color=colors0, edgecolor='white', linewidth=0.8)
         style_axis(ax0, zero='x')
         ax0.set_xlabel('log2(OR) vs human condensate protein universe')
         ax0.set_ylabel('Condensate')
         ax0.set_title('Condensate enrichment of methylarginine proteins')
-        set_symmetric_xlim(ax0, positive_plot_df['log2_odds_ratio'], annotation_pad_ratio=0.75, center_on_zero=False)
+        set_symmetric_xlim(ax0, positive_plot_df['log2_odds_ratio'], annotation_pad_ratio=0.36, center_on_zero=False)
         annotate_barh(
             ax0,
             positive_plot_df['condensate_name'],
             positive_plot_df['log2_odds_ratio'],
-            [
-                f'n={nm}/{nt}, q={format_p_value(q)}'
-                for nm, nt, q in zip(positive_plot_df['methyl_protein_count'], positive_plot_df['member_count'], positive_plot_df['q_value'])
-            ],
-            fontsize=8.0,
+            [f'{nm}/{nt}' for nm, nt in zip(positive_plot_df['methyl_protein_count'], positive_plot_df['member_count'])],
+            fontsize=8.8,
         )
+        fig0.text(0.99, 0.01, q_threshold_note(positive_plot_df['q_value']), ha='right', va='bottom', fontsize=8, color=BREWER_COLORS['dark_gray'])
         fig0.tight_layout()
         save_figure(fig0, outdir / 'condensate_enrichment')
 
-    positive = enrich[enrich['member_count'] >= 10].sort_values(['log2_odds_ratio', 'methyl_protein_count'], ascending=[False, False]).head(8)
-    negative = enrich[enrich['member_count'] >= 10].sort_values(['log2_odds_ratio', 'member_count'], ascending=[True, False]).head(8)
-    plot_df = pd.concat([positive, negative], ignore_index=True).drop_duplicates('condensate_id').sort_values('log2_odds_ratio')
+    plot_df = enrich[(enrich['member_count'] >= 10) & (enrich['q_value'] <= 0.05)].sort_values(['log2_odds_ratio', 'methyl_protein_count'], ascending=[False, False]).head(12).sort_values('log2_odds_ratio')
     if not plot_df.empty:
         fig, ax = plt.subplots(figsize=(10.2, 7.6))
-        colors = signed_bar_colors(plot_df['log2_odds_ratio'], positive=BREWER_COLORS['green'], negative=BREWER_COLORS['orange'])
+        colors = signed_bar_colors(plot_df['log2_odds_ratio'])
         ax.barh(plot_df['condensate_name'], plot_df['log2_odds_ratio'], color=colors, edgecolor='white', linewidth=0.8)
         style_axis(ax, zero='x')
         ax.set_xlabel('log2(OR) vs human condensate protein universe')
         ax.set_ylabel('Condensate')
         ax.set_title('Condensate enrichment of methylarginine proteins')
-        set_symmetric_xlim(ax, plot_df['log2_odds_ratio'], annotation_pad_ratio=0.8, center_on_zero=False)
+        set_symmetric_xlim(ax, plot_df['log2_odds_ratio'], annotation_pad_ratio=0.38, center_on_zero=False)
         annotate_barh(
             ax,
             plot_df['condensate_name'],
             plot_df['log2_odds_ratio'],
-            [
-                f'n={nm}/{nt}, q={format_p_value(q)}'
-                for nm, nt, q in zip(plot_df['methyl_protein_count'], plot_df['member_count'], plot_df['q_value'])
-            ],
-            fontsize=8.0,
+            [f'{nm}/{nt}' for nm, nt in zip(plot_df['methyl_protein_count'], plot_df['member_count'])],
+            fontsize=8.8,
         )
+        fig.text(0.99, 0.01, q_threshold_note(plot_df['q_value']), ha='right', va='bottom', fontsize=8, color=BREWER_COLORS['dark_gray'])
         fig.tight_layout()
         save_figure(fig, outdir / 'condensate_enrichment_top_bottom')
 
@@ -266,7 +260,7 @@ def main() -> None:
         frac_pct = plot_df['methyl_fraction_within_condensate'] * 100.0
         baseline_pct = global_methyl_fraction * 100.0
         colors2 = [
-            BREWER_COLORS['green'] if frac >= baseline_pct else BREWER_COLORS['orange']
+            BREWER_COLORS['dark_gray'] if frac >= baseline_pct else BREWER_COLORS['mid_gray']
             for frac in frac_pct
         ]
         ax2.barh(plot_df['condensate_name'], frac_pct, color=colors2, edgecolor='white', linewidth=0.8)

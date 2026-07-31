@@ -20,7 +20,7 @@ from clustering_utils import (
     residue_positions,
     summarize_curve_from_histograms,
 )
-from common import canonicalize_uniprot_accession, parse_fasta, save_figure, save_table
+from common import apply_paper_style, canonicalize_uniprot_accession, parse_fasta, save_figure, save_table, style_axis
 
 
 DEFAULT_PTM_GROUPS = [
@@ -37,6 +37,14 @@ PTM_GROUP_TARGET_RESIDUES = {
     'Lys acylation': {'K'},
     'Lys methylation': {'K'},
     'Ubiquitin/SUMO': {'K'},
+}
+
+PTM_CURVE_COLORS = {
+    'Arg methylation': '#111111',
+    'Phosphorylation': '#4d4d4d',
+    'Lys methylation': '#777777',
+    'Lys acylation': '#9a9a9a',
+    'Ubiquitin/SUMO': '#bdbdbd',
 }
 
 
@@ -89,7 +97,14 @@ def plot_curve_family(curves: pd.DataFrame, value_col: str, ylabel: str, title: 
     fig, ax = plt.subplots(figsize=(9.5, 5.8))
     for ptm_group, group in curves.groupby('ptm_group'):
         group = group.sort_values('distance_aa')
-        ax.plot(group['distance_aa'], group[value_col], label=ptm_group, linewidth=2)
+        ax.plot(
+            group['distance_aa'],
+            group[value_col],
+            label=ptm_group,
+            linewidth=2,
+            color=PTM_CURVE_COLORS.get(ptm_group, '#6b6b6b'),
+        )
+    style_axis(ax, grid_axis='both')
     ax.set_xlabel('Distance X from modified residue (aa)')
     ax.set_ylabel(ylabel)
     ax.set_title(title)
@@ -165,6 +180,7 @@ def main() -> None:
     ap.add_argument('--null-match-disorder', action='store_true')
     ap.add_argument('--restrict-context', choices=['all', 'IDR', 'non_IDR'], default='all')
     args = ap.parse_args()
+    apply_paper_style()
 
     sequences = parse_fasta(args.canonical_fasta)
     master = pd.read_csv(args.base_master, sep='\t', low_memory=False)

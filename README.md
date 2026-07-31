@@ -1,246 +1,250 @@
-# PTM Pipeline
+# Methylarginine Interaction-Regulation Pipeline
 
-Residue-centric integration and downstream analysis for the human methylarginine union, with canonical remapping, provenance retention, disorder/domain context, motif enrichment, protein prioritization, and supplemental cross-PTM comparisons.
+This repository contains the analysis code associated with DeAngelo, Silverstein, and Shechter, "Molecular Interaction Regulation by Arginine Methylation", invited for *Cell Chemical Biology* (2026).
 
-## Current design
-- Default analysis universe: the full remapped methylarginine union
-- Source support: retained as metadata/QC (`exact` and `fuzzy` multi-source support), not as a headline confidence-tier framework
-- Maron defaults: Larsen included by default; exclusion is a sensitivity analysis via `--exclude-pattern`
-- Functional annotation: multi-label, RNA-centric protein annotation
-- Protein prioritization: shrinkage-adjusted per-protein methyl-Arg enrichment, with raw Arg odds ratios kept as supplemental
-- Statistics: Fisher exact p-values from SciPy, plus BH q-values for test families that are interpreted together
-- Domain and disorder are separate annotation layers
+The pipeline assembles, remaps, annotates, and analyzes a human methylarginine site union with an emphasis on questions that should be broadly useful to investigators studying methylarginine biology: source provenance, canonical residue mapping, sequence motifs, disorder/domain context, local site density, condensate/RNP-associated classes, and representative substrate architectures.
 
-## Clean layout
-The code repo should stay code-only. Staged data and outputs live outside the tracked source tree and are resolved through [`hpc/ptm_env.sh`](/mnt/m/Codex/PTM_pipeline/hpc/ptm_env.sh).
+The repository is intentionally code-only. Large source tables, downloaded annotations, and generated outputs are staged outside Git.
 
-Local layout in this workspace:
-- code: `/mnt/m/Codex/PTM_pipeline`
-- staged data: `/mnt/m/Codex/PTM_pipeline/PTM_data`
-- outputs: `/mnt/m/Codex/PTM_pipeline/PTM_results`
+## Repository Layout
 
-Einstein target layout:
-- project root: `/gs/gsfs0/home/dshecht1/projects/2026-04_ArgReview`
-- code repo: `PTM_Pipeline_code`
-- staged data: `PTM_data`
-- outputs: `PTM_results`
+| Path | Purpose |
+| --- | --- |
+| `scripts/00_*` | Static source download/staging helpers for UniProt, InterPro, and MobiDB context. |
+| `scripts/01_*` | Source parsers for methylarginine datasets. |
+| `scripts/02_*` | Canonical remapping and source integration. |
+| `scripts/03_*` to `scripts/16_*` | Main analysis modules: source provenance, functional classes, motifs, disorder/domain context, PTM comparisons, clustering, condensates, GO/disease supplements, and Maron state/treatment checks. |
+| `scripts/17_*` to `scripts/32_*` | Extended analyses and summary-figure utilities, including local-density nulls, domain-edge length nulls, architecture schematics, and 2D nearest-neighbor density panels. |
+| `scripts/common.py`, `scripts/clustering_utils.py` | Shared utilities. |
+| `config/` | JSON ontologies used for functional and domain-class annotation. |
+| `envs/` | Conda environment definition for the full Python/R workflow. |
+| `hpc/` | Environment, hygiene, and Slurm runner scripts. |
 
-## Required staged inputs
-- `PTM_data/base/human_ptm_master.tsv`
-- `PTM_data/external/Table_S5_Compiled_Methylarginine_Data.xlsx`
-- `PTM_data/external/mmc2.xlsx`
-- `PTM_data/context/uniprot_human_reviewed_canonical.fasta`
-- `PTM_data/context/uniprot_human_reviewed_canonical_metadata.tsv`
+## Staged Inputs
 
-Optional staged inputs:
-- `PTM_data/context/protein2ipr.dat.gz`
-- `PTM_data/context/interpro_human_reviewed_domain_like_intervals.tsv`
-- `PTM_data/context/mobidb_human_reviewed_disorder_intervals.tsv` for the disorder layer used by the pipeline
-- `PTM_data/external/mobidb_human_*.json`
-- `PTM_data/external/Table_S2_MethylArginine_Residues.xlsx`
-- `PTM_data/external/Table_S3_MethylArginine_Peptides.xlsx`
-- `PTM_data/condensates/cdcode_staged_membership.tsv`
-- `PTM_data/condensates/protein2cdcode_v2.2.tsv`
-- `PTM_data/condensates/condensates_*.csv`
-- `PTM_data/condensates/proteins_*.csv`
+By default, [`hpc/ptm_env.sh`](hpc/ptm_env.sh) resolves local or HPC inputs from `PTM_data/` and outputs from `PTM_results/`. You can override any path with the exported `PTM_*` variables defined there.
 
-Independent downloads to stage before a full rerun:
-- Maron supplemental workbook: `Table_S5_Compiled_Methylarginine_Data.xlsx`
-- ProMetheusDB methylation workbook: `mmc2.xlsx`
-- Reviewed human canonical UniProt FASTA plus metadata export
-- Either InterPro bulk/API-derived domain intervals or `protein2ipr.dat.gz` for staging
-- Either MobiDB JSON or a precomputed reviewed-human disorder-interval table
-- Optional CD-CODE downloads for condensate analysis: `protein2cdcode_v2.2.tsv`, plus `condensates_*.csv` and `proteins_*.csv` if you want species/name filtering
-- Optional Maron state/treatment workbooks: `Table_S2_MethylArginine_Residues.xlsx` and `Table_S3_MethylArginine_Peptides.xlsx`
+The expected local staging layout is:
 
-Condensate enrichment can run from either a staged `cdcode_staged_membership.tsv` or direct CD-CODE downloads (`protein2cdcode`, plus optional `condensates` and `proteins` tables for labels/species filtering). There is no in-repo fallback CD-CODE source bundled here.
+```text
+PTM_data/
+  base/
+    human_ptm_master.tsv
+  external/
+    Table_S5_Compiled_Methylarginine_Data.xlsx
+    mmc2.xlsx
+    mobidb_human_2026-03-30.json
+  context/
+    uniprot_human_reviewed_canonical.fasta
+    uniprot_human_reviewed_canonical_metadata.tsv
+    protein2ipr.dat.gz
+    interpro_human_reviewed_all_entry_intervals.tsv
+    interpro_human_reviewed_domain_like_intervals.tsv
+    mobidb_human_reviewed_disorder_intervals.tsv
+  condensates/
+    cdcode_staged_membership.tsv
+    proteins_202603181653.csv
+    condensates_202603181647.csv
+```
 
-## Main local run
-All paths below are derived from [`hpc/ptm_env.sh`](/mnt/m/Codex/PTM_pipeline/hpc/ptm_env.sh).
+Only the first five files listed below are required for the core methylarginine union and sequence-confirmed motif/clustering analyses. InterPro, MobiDB, CD-CODE, GO, disease, and Maron state/treatment inputs enable additional annotation or supplement modules.
+
+Required inputs for the main methylarginine union:
+
+| Variable | Default path |
+| --- | --- |
+| `PTM_MASTER_TSV` | `PTM_data/base/human_ptm_master.tsv` |
+| `PTM_MARON_XLSX` | `PTM_data/external/Table_S5_Compiled_Methylarginine_Data.xlsx` |
+| `PTM_PROMETHEUS_MMC2` | `PTM_data/external/mmc2.xlsx` |
+| `PTM_CANONICAL_FASTA` | `PTM_data/context/uniprot_human_reviewed_canonical.fasta` |
+| `PTM_UNIPROT_METADATA` | `PTM_data/context/uniprot_human_reviewed_canonical_metadata.tsv` |
+
+Recommended context inputs:
+
+| Variable | Default path |
+| --- | --- |
+| `PTM_INTERPRO_BULK` | `PTM_data/context/protein2ipr.dat.gz` |
+| `PTM_INTERPRO_DOMAIN_INTERVALS` | `PTM_data/context/interpro_human_reviewed_domain_like_intervals.tsv` |
+| `PTM_MOBIDB_JSON` | `PTM_data/external/mobidb_human_2026-03-30.json` |
+| `PTM_MOBIDB_INTERVALS` | `PTM_data/context/mobidb_human_reviewed_disorder_intervals.tsv` |
+
+Optional modules use staged CD-CODE condensate files and Maron Table S2/S3 workbooks if available. These files are not redistributed in this repository.
+
+### Data Staging
+
+Create the staging directories and source the path configuration:
+
+```bash
+mkdir -p PTM_data/base PTM_data/external PTM_data/context PTM_data/condensates PTM_results
+. hpc/ptm_env.sh
+```
+
+Place user-supplied source tables in the staged paths expected by [`hpc/ptm_env.sh`](hpc/ptm_env.sh):
+
+```text
+$PTM_MASTER_TSV          Cross-PTM human PTM master table used for background comparisons.
+$PTM_MARON_XLSX          Maron Table S5 compiled methylarginine workbook.
+$PTM_PROMETHEUS_MMC2     ProMetheusDB mmc2 methylarginine workbook.
+$PTM_MOBIDB_JSON         Optional MobiDB human JSON export for disorder intervals.
+```
+
+Then stage public sequence and metadata context:
+
+```bash
+python scripts/00_stage_context_sources.py \
+  --outdir "$PTM_CONTEXT_ROOT" \
+  --skip-interpro
+```
+
+If a MobiDB JSON export is available, convert it to intervals:
+
+```bash
+python scripts/00_stage_mobidb_disorder.py \
+  --input "$PTM_MOBIDB_JSON" \
+  --accessions "$PTM_MASTER_TSV" \
+  --outdir "$PTM_CONTEXT_ROOT"
+```
+
+For InterPro domain intervals, the preferred public workflow is to download `protein2ipr.dat.gz` into `$PTM_INTERPRO_BULK` and parse only proteins observed in the remapped methylarginine union. If you have not remapped yet, run the main pipeline once with `PTM_INTERPRO_MODE=api` or omit domain modules until `PTM_results/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv` exists.
+
+```bash
+curl -L -o "$PTM_INTERPRO_BULK" \
+  https://ftp.ebi.ac.uk/pub/databases/interpro/current_release/protein2ipr.dat.gz
+
+python scripts/00_stage_context_sources.py \
+  --outdir "$PTM_CONTEXT_ROOT" \
+  --accessions "$PTM_RESULTS_ROOT/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv" \
+  --interpro-source bulk \
+  --interpro-protein2ipr "$PTM_INTERPRO_BULK" \
+  --bulk-parser pandas
+```
+
+Validate the staged paths before a full run:
 
 ```bash
 . hpc/ptm_env.sh
+for f in \
+  "$PTM_MASTER_TSV" \
+  "$PTM_MARON_XLSX" \
+  "$PTM_PROMETHEUS_MMC2" \
+  "$PTM_CANONICAL_FASTA" \
+  "$PTM_UNIPROT_METADATA"
+do
+  test -s "$f" || { echo "missing or empty: $f"; exit 1; }
+done
+```
+
+To stage data outside the repository, set `PTM_DATA_ROOT` and `PTM_RESULTS_ROOT` before sourcing the environment script:
+
+```bash
+export PTM_DATA_ROOT=/path/to/PTM_data
+export PTM_RESULTS_ROOT=/path/to/PTM_results
+. hpc/ptm_env.sh
+```
+
+## Environment
+
+Create the Conda environment:
+
+```bash
+conda env create -n ptm_pipeline -f envs/ptm_pipeline_hpc.yml
+conda activate ptm_pipeline
+```
+
+For local plotting on shared or restricted filesystems, set writable cache directories:
+
+```bash
 export HOME=/tmp/ptm_home
 export XDG_CACHE_HOME=/tmp/ptm_cache
-export MPLCONFIGDIR=/tmp/mpl_ptm
+export MPLCONFIGDIR=/tmp/ptm_mpl
 mkdir -p "$HOME" "$XDG_CACHE_HOME" "$MPLCONFIGDIR"
-
-python3 scripts/01_parse_maron_s5.py \
-  --input "$PTM_MARON_XLSX" \
-  --outdir "$PTM_RESULTS_ROOT/parsed_maron"
-
-python3 scripts/01_parse_prometheus_mmc2.py \
-  --input "$PTM_PROMETHEUS_MMC2" \
-  --outdir "$PTM_RESULTS_ROOT/parsed_prometheus"
-
-python3 scripts/02_remap_arg_methyl_to_canonical.py \
-  --base-master "$PTM_MASTER_TSV" \
-  --maron "$PTM_RESULTS_ROOT/parsed_maron/maron_s5_arg_methyl_sites.tsv" \
-  --prometheus "$PTM_RESULTS_ROOT/parsed_prometheus/prometheus_mmc2_arg_methyl_sites.tsv" \
-  --canonical-fasta "$PTM_CANONICAL_FASTA" \
-  --uniprot-metadata "$PTM_UNIPROT_METADATA" \
-  --outdir "$PTM_RESULTS_ROOT/remapped"
-
-python3 scripts/02_integrate_arg_methyl_sources.py \
-  --premerged-remapped "$PTM_RESULTS_ROOT/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv" \
-  --outdir "$PTM_RESULTS_ROOT/integrated"
-
-python3 scripts/03_functional_class_enrichment.py \
-  --base-master "$PTM_MASTER_TSV" \
-  --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-  --uniprot-metadata "$PTM_UNIPROT_METADATA" \
-  --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
-  --ontology "$PTM_CODE_ROOT/config/functional_ontology.json" \
-  --domain-ontology "$PTM_CODE_ROOT/config/domain_class_ontology.json" \
-  --outdir "$PTM_RESULTS_ROOT/functional_class_union"
-
-python3 scripts/04_example_figures.py \
-  --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-  --outdir "$PTM_RESULTS_ROOT/example_figures"
-
-python3 scripts/08_motif_and_arg_odds.py \
-  --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-  --canonical-fasta "$PTM_CANONICAL_FASTA" \
-  --outdir "$PTM_RESULTS_ROOT/motif_arg_odds"
-
-python3 scripts/06_annotate_disorder_context.py \
-  --sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-  --disorder-intervals "$PTM_MOBIDB_INTERVALS" \
-  --canonical-fasta "$PTM_CANONICAL_FASTA" \
-  --outdir "$PTM_RESULTS_ROOT/disorder_context"
-
-python3 scripts/05_annotate_domain_context.py \
-  --sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-  --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
-  --position-col corrected_position \
-  --outdir "$PTM_RESULTS_ROOT/domain_context"
-
-python3 scripts/07_summarize_domain_enrichment.py \
-  --annotated-sites "$PTM_RESULTS_ROOT/domain_context/sites_with_domain_context.tsv" \
-  --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
-  --canonical-fasta "$PTM_CANONICAL_FASTA" \
-  --ontology "$PTM_CODE_ROOT/config/domain_class_ontology.json" \
-  --disorder-sites "$PTM_RESULTS_ROOT/disorder_context/sites_with_disorder_context.tsv" \
-  --disorder-intervals "$PTM_MOBIDB_INTERVALS" \
-  --outdir "$PTM_RESULTS_ROOT/domain_context"
-
-python3 scripts/09_compare_ptm_contexts.py \
-  --base-master "$PTM_MASTER_TSV" \
-  --integrated-arg-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-  --canonical-fasta "$PTM_CANONICAL_FASTA" \
-  --disorder-intervals "$PTM_MOBIDB_INTERVALS" \
-  --interpro-intervals "$PTM_INTERPRO_DOMAIN_INTERVALS" \
-  --outdir "$PTM_RESULTS_ROOT/ptm_compare"
 ```
 
-Supplemental clustering:
+If Arial is not installed but you want Matplotlib outputs to use it, point `PTM_FONT_DIRS` to one or more directories containing `.ttf` files, separated by `:` on Linux/macOS.
+
+## Main Pipeline
+
+Source the path configuration:
+
 ```bash
-python3 scripts/10_methyl_arg_clustering.py \
-  --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-  --canonical-fasta "$PTM_CANONICAL_FASTA" \
-  --disorder-intervals "$PTM_MOBIDB_INTERVALS" \
-  --null-match-disorder \
-  --outdir "$PTM_RESULTS_ROOT/methyl_arg_clustering"
-
-python3 scripts/11_compare_ptm_clustering.py \
-  --base-master "$PTM_MASTER_TSV" \
-  --integrated-arg-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-  --canonical-fasta "$PTM_CANONICAL_FASTA" \
-  --disorder-intervals "$PTM_MOBIDB_INTERVALS" \
-  --null-match-disorder \
-  --outdir "$PTM_RESULTS_ROOT/ptm_clustering"
+. hpc/ptm_env.sh
 ```
 
-For quick local exploration, override the defaults explicitly, for example `--permutations 500`.
-
-Residual GO annotation with `clusterProfiler`:
-```bash
-HOME=/tmp/ptm_r_home XDG_CACHE_HOME=/tmp/ptm_r_cache TMPDIR=/tmp \
-Rscript scripts/13_clusterprofiler_residual_go.R \
-  --labels "$PTM_RESULTS_ROOT/functional_class_union/protein_functional_labels.tsv" \
-  --outdir "$PTM_RESULTS_ROOT/functional_class_union/clusterprofiler_go" \
-  --include_all_methyl true
-```
-
-Disease enrichment with DisGeNET via `DOSE`:
-```bash
-HOME=/tmp/ptm_r_home XDG_CACHE_HOME=/tmp/ptm_r_cache TMPDIR=/tmp \
-Rscript scripts/14_disease_enrichment.R \
-  --labels "$PTM_RESULTS_ROOT/functional_class_union/protein_functional_labels.tsv" \
-  --outdir "$PTM_RESULTS_ROOT/functional_class_union/disease_enrichment"
-```
-
-Condensate enrichment from direct CD-CODE downloads:
-```bash
-python3 scripts/12_condensate_enrichment.py \
-  --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-  --staged-membership "$PTM_DATA_ROOT/condensates/protein2cdcode_v2.2.tsv" \
-  --proteins-table "$PTM_DATA_ROOT/condensates/proteins_202603181653.csv" \
-  --condensates-table "$PTM_DATA_ROOT/condensates/condensates_202603181647.csv" \
-  --outdir "$PTM_RESULTS_ROOT/condensates"
-```
-
-Assembly-membership clustering from enriched CD-CODE assemblies:
-```bash
-python3 scripts/15_assembly_membership_clustering.py \
-  --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \
-  --condensate-enrichment "$PTM_RESULTS_ROOT/condensates/condensate_enrichment.tsv" \
-  --condensate-membership "$PTM_RESULTS_ROOT/condensates/condensate_membership.tsv" \
-  --functional-labels "$PTM_RESULTS_ROOT/functional_class_union/protein_functional_labels.tsv" \
-  --outdir "$PTM_RESULTS_ROOT/assembly_clustering"
-```
-
-## HPC
-Create or clone a dedicated environment, then submit the main runner:
+Run the full Slurm workflow on HPC:
 
 ```bash
 bash hpc/create_ptm_env.sh envs/ptm_pipeline_hpc.yml ptm_pipeline
 sbatch hpc/slurm_run_integration.sh "$PWD"
 ```
 
-The Slurm runner:
-- sources [`hpc/ptm_env.sh`](/mnt/m/Codex/PTM_pipeline/hpc/ptm_env.sh)
-- avoids `set -u`
-- guards empty critical variables and empty staged files
-- checks the repo for merge-conflict markers before running
-- defaults clustering permutations to `100000` for final HPC runs
+The Slurm runner stages context, parses source tables, remaps methylarginine sites, integrates the union, annotates motif/disorder/domain context, runs clustering and cross-PTM comparisons, and runs optional condensate/GO/disease modules when their inputs are available.
 
-Useful overrides:
+Useful run-time overrides:
+
 ```bash
+PTM_INTERPRO_MODE=bulk sbatch hpc/slurm_run_integration.sh "$PWD"
 PTM_INTERPRO_MODE=api sbatch hpc/slurm_run_integration.sh "$PWD"
 PTM_CLUSTER_RESTRICT_CONTEXT=IDR PTM_CROSS_PTM_CLUSTER_RESTRICT_CONTEXT=IDR sbatch hpc/slurm_run_integration.sh "$PWD"
 PTM_MARON_EXCLUDE_PATTERN=Larsen sbatch hpc/slurm_run_integration.sh "$PWD"
 ```
 
-Separate condensate job:
+For a local, stepwise rerun, use the commands in [`hpc/slurm_run_integration.sh`](hpc/slurm_run_integration.sh) as the authoritative ordered recipe. The scripts themselves expose explicit `--help` arguments and write tables/figures under `PTM_RESULTS_ROOT`.
+
+## Extended Analyses and Summary Figures
+
+After the main outputs exist, run the extended analysis and summary-figure workflow:
+
 ```bash
-sbatch hpc/slurm_run_condensate.sh "$PWD"
+bash scripts/run_extended_analyses.sh "$PWD"
 ```
 
-## Output highlights
-- `PTM_results/integrated/`: remapped union, support/QC summaries, accession audit
-- `PTM_results/functional_class_union/`: multi-label broad/subclass enrichment with expanded depleted/background classes and explicit `Other / unclassified` membership tables
-- `PTM_results/functional_class_union/clusterprofiler_go/`: residual GO enrichment for `Other / unclassified` and `Poorly characterized / specialized`, using the reviewed-human functional universe as background
-- `PTM_results/functional_class_union/disease_enrichment/`: DisGeNET disease enrichment for the full methylome and residual ontology buckets, including a neurodegenerative-focus view
-- `PTM_results/motif_arg_odds/`: motif-family enrichment including explicit `DR`/`RD` tests, reordered positional heatmaps, acidic-context asymmetry, shrinkage-based protein prioritization, and `motif_analysis_qc.tsv` for retained-site counts
-- `PTM_results/disorder_context/`: site-level disorder annotation, strict binary IDR enrichment, an explicit `IDR-proximal` binary (`inside IDR` or `<=20 aa outside an IDR edge`), and non-overlapping within-IDR edge-distance bins (`<=5`, `6-10`, `11-20`, `21-40`, `>40`)
-- `PTM_results/domain_context/`: site-level domain placement, nearest-domain-class enrichment, non-overlapping outside-domain edge-distance bins (`<=5`, `6-10`, `11-20`, `21-40`, `>40`), and a disordered-only outside-domain proximity sensitivity analysis, using strict InterPro `domain/repeat` intervals by default for architectural context
-- `PTM_results/ptm_compare/`: cross-PTM IDR `log2(OR)` comparison, matched IDR site-fraction figure, and normalized PTM input QC; detailed disorder/domain context line plots are opt-in
-- `PTM_results/assembly_clustering/`: clustering of top methylarginine proteins by membership in enriched CD-CODE assemblies, plus shared-membership edge and community tables
-- `PTM_results/methyl_arg_clustering/`, `PTM_results/ptm_clustering/`: supplemental local-density/clustering outputs, including cumulative checkpoint summaries, non-overlapping nearest-neighbor bins (`<=5`, `6-10`, `11-20`, `21-40`, `>40`), and `clustering_qc.tsv` for retained-site counts
-- `PTM_results/maron_state_treatment/`: optional Maron-only supplemental analysis of Table S2 residue-state observations and Table S3 IP/treatment sheets, including collapsed site-level summaries and motif checks
+This runner produces:
 
-## Notes
-- `mmc2.xlsx` is the site-level ProMetheusDB methylation supplement to include. `mmc3.xlsx` is not used as a primary site source.
-- `Table_S2_MethylArginine_Residues.xlsx` and `Table_S3_MethylArginine_Peptides.xlsx` are optional Maron-only supplements. Table S3 is peptide-redundant, so IP/treatment interpretation should use the collapsed site-level outputs in `PTM_results/maron_state_treatment/`, not raw peptide row counts.
-- `human_ptm_master.tsv` is a convenience background/integration layer, not a ground-truth database export.
-- The disorder analysis uses staged MobiDB reviewed-human interval tables, not a Campen compositional predictor.
-- In the disorder layer, `disorder_boundary` means residues outside an IDR but within 20 aa of an IDR edge; the `idr_edge_bin` analysis is separate and only applies to residues already inside IDRs.
-- If you want a broader architectural fraction than strict IDR occupancy, use the explicit `IDR-proximal` binary (`disordered` or `disorder_boundary`) rather than relabeling it as IDR.
-- In the domain layer, `boundary` means residues outside annotated domains/repeats but within 20 aa of a domain edge; the current `domain_edge_bin` analysis is an outside-domain proximity analysis and is not symmetric with the within-IDR depth analysis.
-- The disordered-only domain-edge sensitivity analysis asks the cleaner structural question: among arginines already inside IDRs, does methylarginine prefer domain-distal versus domain-proximal positions?
-- Motif and clustering modules can analyze fewer sites than the integrated union because they require sequence-confirmed canonical residues in the staged FASTA; use the QC TSVs in those output folders when citing those counts.
-- Do not use `Rme1` vs `Rme2` as a primary split for the integrated union.
-- Cross-PTM nearest-neighbor analyses are supplemental. The primary structural/context story is disorder plus domain adjacency.
-- Condensate odds ratios are calculated against the human non-synthetic CD-CODE condensate universe, not against all reviewed-human proteins.
-- Figure scripts emit both PDF and PNG.
+| Output folder | Main contents |
+| --- | --- |
+| `PTM_results/summary_figures/` | Representative substrate architecture SVGs, interaction-redistribution schematic, and density/domain-adjacency schematic. |
+| `PTM_results/domain_context/` | IDR-length-conditioned domain-edge null, signed domain-edge cumulative density, clustered architecture classifications. |
+| `PTM_results/methyl_arg_clustering/` | Nearest-neighbor plots, multiscale rolling-density nulls, pairwise occupancy heatmaps, and 2D k-nearest methylarginine density panels. |
+
+Runtime controls:
+
+```bash
+PTM_EXTENDED_PERMUTATIONS=1000 PTM_EXTENDED_2D_PERMUTATIONS=250 bash scripts/run_extended_analyses.sh "$PWD"
+```
+
+## Key Output Families
+
+| Folder | Interpretation |
+| --- | --- |
+| `integrated/` | Canonically remapped methylarginine union, provenance, support summaries, accession audit. |
+| `qc/source_provenance/` | Source-support and accession-level provenance summaries. These are useful audit outputs, not primary biological figures. |
+| `functional_class_union/` | Multi-label RNA/RNP-oriented functional class enrichment and membership tables. |
+| `motif_arg_odds/` | Positional amino-acid enrichment, RG/RGG/GAR motif summaries, acidic asymmetry, and per-protein arginine odds. |
+| `disorder_context/` | Disorder/IDR occupancy and IDR-edge localization summaries. |
+| `domain_context/` | Domain placement, nearest-domain class enrichment, domain-edge proximity summaries, and length-null controls. |
+| `methyl_arg_clustering/` | Local methylarginine spacing, rolling-density, and same-protein arginine-null clustering analyses. |
+| `ptm_compare/` | Cross-PTM disorder/domain context comparisons. |
+| `condensates/`, `assembly_clustering/` | Optional CD-CODE condensate enrichment and shared-assembly clustering. |
+| `maron_state_treatment/` | Optional Maron-only state/treatment supplement analyses. |
+| `summary_figures/` | Lightweight SVG schematics for communicating representative architectures and interaction-redistribution concepts. |
+
+## Current Interpretive Guardrails
+
+- The integrated union is the primary analysis universe; source support is retained as provenance/audit metadata rather than used as a primary confidence-tier scheme.
+- Methylarginine state labels are useful where source-supported, but the full union should not be overinterpreted as a clean `Rme1` versus `Rme2a` versus `Rme2s` state-resolved dataset.
+- Domain adjacency is descriptive in this dataset. The IDR-length-conditioned null shows that simple domain-edge proximity is largely explained by IDR geometry/length.
+- The stronger architectural signal is short-range methylarginine clustering/local density relative to same-protein arginine positions.
+- Motif and clustering modules can analyze fewer sites than the integrated union because they require sequence-confirmed canonical residues in the staged FASTA. Use each module's audit TSV when reporting counts.
+
+## Hygiene
+
+Before publishing or archiving, run:
+
+```bash
+bash hpc/check_repo_hygiene.sh "$PWD"
+git status --short --ignored
+```
+
+The hygiene check fails on merge-conflict markers, tracked local app artifacts, tracked bytecode, tracked archives, tracked staged data/results, or tracked files larger than 10 MB.
+
+Ignored local paths include `PTM_data/`, `PTM_results/`, bytecode caches, local archives, editor artifacts, and cluster logs. The tracked repository should contain only source code, lightweight configuration, environment files, and documentation.

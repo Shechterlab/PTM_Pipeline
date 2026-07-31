@@ -16,9 +16,11 @@ from common import (
     apply_paper_style,
     balanced_category_subset,
     canonical_site_table,
-    format_p_value,
+    compact_q_label,
+    count_over_total_labels,
     log2_odds_ratio,
     parse_fasta,
+    q_threshold_note,
     residue_background_from_sequences,
     save_figure,
     save_table,
@@ -151,6 +153,22 @@ def build_heatmap_matrices(heatmap_df: pd.DataFrame, selected_aa: list[str]) -> 
     return matrix, p_matrix, neglog10_p
 
 
+def motif_family_label(label: str) -> str:
+    return {
+        'RGG': 'RGG (R-G-G)',
+        'GRG': 'GRG (G-R-G)',
+        'RG': 'RG (R-G)',
+        'DR': 'DR (D-R)',
+        'RD': 'RD (R-D)',
+        'ER': 'ER (E-R)',
+        'RE': 'RE (R-E)',
+        'GAR': 'GAR (G-A-R)',
+        'RXR': 'R-X-R',
+        'CARM1_proline_rich': 'P within ±5 aa of methyl-R',
+        'CARM1_hydrophobic_proline': 'P within ±5 aa + hydrophobe within ±3 aa',
+    }.get(str(label), str(label))
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--integrated-sites', required=True)
@@ -266,12 +284,13 @@ def main() -> None:
         outdir / 'motif_analysis_qc.tsv',
     )
 
-    plot_motif = motif_vs_methyl_proteins.sort_values('log2_odds_ratio')
+    plot_motif = motif_vs_methyl_proteins[motif_vs_methyl_proteins['q_value'] <= 0.05].sort_values('log2_odds_ratio').copy()
+    plot_motif['display_motif_family'] = plot_motif['motif_family'].map(motif_family_label)
     fig, ax = plt.subplots(figsize=(9.0, 6.0))
     ax.barh(
-        plot_motif['motif_family'],
+        plot_motif['display_motif_family'],
         plot_motif['log2_odds_ratio'],
-        color=signed_bar_colors(plot_motif['log2_odds_ratio'], positive=BREWER_COLORS['green'], negative=BREWER_COLORS['purple']),
+        color=signed_bar_colors(plot_motif['log2_odds_ratio']),
         edgecolor='white',
         linewidth=0.8,
     )
@@ -279,13 +298,22 @@ def main() -> None:
     ax.set_xlabel('log2(OR) vs arginines in methylated proteins')
     ax.set_ylabel('Motif family')
     ax.set_title('Methylarginine motif-family enrichment')
-    set_symmetric_xlim(ax, plot_motif['log2_odds_ratio'], annotation_pad_ratio=0.4, center_on_zero=False)
+    set_symmetric_xlim(ax, plot_motif['log2_odds_ratio'], annotation_pad_ratio=0.26, center_on_zero=False)
     annotate_barh(
         ax,
-        plot_motif['motif_family'],
+        plot_motif['display_motif_family'],
         plot_motif['log2_odds_ratio'],
-        [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(plot_motif['target_count'], plot_motif['p_value'], plot_motif['q_value'])],
-        fontsize=8.0,
+        count_over_total_labels(plot_motif),
+        fontsize=8.8,
+    )
+    fig.text(
+        0.99,
+        0.01,
+        q_threshold_note(plot_motif['q_value']),
+        ha='right',
+        va='bottom',
+        fontsize=8,
+        color=BREWER_COLORS['dark_gray'],
     )
     fig.tight_layout()
     save_figure(fig, outdir / 'arg_methyl_motif_family_enrichment')
@@ -375,9 +403,9 @@ def main() -> None:
         positions = np.arange(4)
         d_rows = acidic_focus[acidic_focus['amino_acid'] == 'D'].sort_values('relative_position')
         e_rows = acidic_focus[acidic_focus['amino_acid'] == 'E'].sort_values('relative_position')
-        ax2c.bar(positions - width / 2, d_rows['log2_odds_ratio'], width=width, color=BREWER_COLORS['orange'], label='Asp (D)', edgecolor='white', linewidth=0.8)
-        ax2c.bar(positions + width / 2, e_rows['log2_odds_ratio'], width=width, color=BREWER_COLORS['blue'], label='Glu (E)', edgecolor='white', linewidth=0.8)
-        style_axis(ax2c, zero='y', grid_axis='y')
+        ax2c.bar(positions - width / 2, d_rows['log2_odds_ratio'], width=width, color=BREWER_COLORS['dark_gray'], label='Asp (D)', edgecolor='white', linewidth=0.8)
+        ax2c.bar(positions + width / 2, e_rows['log2_odds_ratio'], width=width, color=BREWER_COLORS['light_gray'], label='Glu (E)', edgecolor='white', linewidth=0.8)
+        style_axis(ax2c, zero='y')
         ax2c.set_xticks(positions)
         ax2c.set_xticklabels(['-2', '-1', '+1', '+2'])
         ax2c.set_xlabel('Position relative to methyl-Arg')
@@ -389,10 +417,10 @@ def main() -> None:
                 ax2c.text(
                     positions[idx] + shift,
                     float(row.log2_odds_ratio),
-                    f"p={format_p_value(row.p_value)}",
+                    compact_q_label(row.q_value),
                     ha='center',
                     va='bottom' if float(row.log2_odds_ratio) >= 0 else 'top',
-                    fontsize=7.2,
+                    fontsize=7.8,
                     color=BREWER_COLORS['dark_gray'],
                 )
         fig2b.tight_layout()
@@ -403,7 +431,7 @@ def main() -> None:
     ax3.barh(
         top_shrunk['label'],
         top_shrunk['shrinkage_log2_enrichment'],
-        color=signed_bar_colors(top_shrunk['shrinkage_log2_enrichment'], positive=BREWER_COLORS['green'], negative=BREWER_COLORS['purple']),
+        color=signed_bar_colors(top_shrunk['shrinkage_log2_enrichment']),
         edgecolor='white',
         linewidth=0.8,
     )
@@ -416,8 +444,8 @@ def main() -> None:
         ax3,
         top_shrunk['label'],
         top_shrunk['shrinkage_log2_enrichment'],
-        [f'sites={n}, q={format_p_value(q)}' for n, q in zip(top_shrunk['methyl_site_count'], top_shrunk['binom_q_value'])],
-        fontsize=7.6,
+        [f'sites={n}' for n in top_shrunk['methyl_site_count']],
+        fontsize=8.4,
     )
     fig3.tight_layout()
     save_figure(fig3, outdir / 'top_proteins_by_shrinkage_score')
@@ -428,7 +456,7 @@ def main() -> None:
         protein_counts['shrinkage_log2_enrichment'],
         alpha=0.6,
         s=46,
-        color=BREWER_COLORS['blue'],
+        color=BREWER_COLORS['mid_gray'],
         edgecolor='white',
         linewidth=0.4,
     )
@@ -453,7 +481,7 @@ def main() -> None:
     ax5.barh(
         top_or['label'],
         top_or['log2_odds_ratio'],
-        color=signed_bar_colors(top_or['log2_odds_ratio'], positive=BREWER_COLORS['green'], negative=BREWER_COLORS['purple']),
+        color=signed_bar_colors(top_or['log2_odds_ratio']),
         edgecolor='white',
         linewidth=0.8,
     )
@@ -466,8 +494,8 @@ def main() -> None:
         ax5,
         top_or['label'],
         top_or['log2_odds_ratio'],
-        [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(top_or['methyl_site_count'], top_or['p_value'], top_or['q_value'])],
-        fontsize=7.6,
+        [compact_q_label(q) for q in top_or['q_value']],
+        fontsize=8.4,
     )
     fig5.tight_layout()
     save_figure(fig5, outdir / 'top_proteins_by_arg_odds_ratio')
@@ -478,7 +506,7 @@ def main() -> None:
         np.log2(protein_counts['odds_ratio']),
         alpha=0.6,
         s=46,
-        color=BREWER_COLORS['purple'],
+        color=BREWER_COLORS['mid_gray'],
         edgecolor='white',
         linewidth=0.4,
     )

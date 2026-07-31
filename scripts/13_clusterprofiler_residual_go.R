@@ -18,9 +18,10 @@ parse_args <- function(args) {
     ontologies = "BP,CC,MF",
     min_size = "10",
     max_size = "5000",
-    top_n = "6",
-    simplify_cutoff = "0.35",
-    padj_cutoff = "0.05"
+    top_n = "4",
+    simplify_cutoff = "0.25",
+    padj_cutoff = "0.05",
+    make_emap = "false"
   )
 
   i <- 1
@@ -91,6 +92,26 @@ save_plot <- function(plot_obj, out_prefix, width = 10, height = 7) {
   )
 }
 
+wrap_label <- function(x, width = 38) {
+  vapply(
+    as.character(x),
+    function(s) paste(strwrap(s, width = width), collapse = "\n"),
+    character(1)
+  )
+}
+
+theme_ptm <- function() {
+  theme_classic(base_family = "Arial", base_size = 11) +
+    theme(
+      plot.title = element_text(size = 12.5, family = "Arial"),
+      axis.title = element_text(size = 11, family = "Arial"),
+      axis.text = element_text(size = 10, family = "Arial", colour = "#111111"),
+      legend.title = element_text(size = 9.5, family = "Arial"),
+      legend.text = element_text(size = 9, family = "Arial"),
+      panel.grid = element_blank()
+    )
+}
+
 make_plot <- function(df, title_text, out_prefix, top_n) {
   if (nrow(df) == 0) {
     return(invisible(NULL))
@@ -106,25 +127,21 @@ make_plot <- function(df, title_text, out_prefix, top_n) {
   rownames(top_df) <- NULL
 
   top_df$neg_log10_padj <- -log10(pmax(top_df$p.adjust, .Machine$double.xmin))
-  top_df$plot_label <- paste(top_df$Description, sprintf("(%s)", top_df$ONTOLOGY))
+  top_df$plot_label <- paste(wrap_label(top_df$Description), sprintf("(%s)", top_df$ONTOLOGY))
   top_df <- top_df[order(top_df$ONTOLOGY, top_df$neg_log10_padj), ]
   top_df$plot_label <- factor(top_df$plot_label, levels = top_df$plot_label)
 
   p <- ggplot(top_df, aes(x = neg_log10_padj, y = plot_label, size = Count, color = ONTOLOGY)) +
     geom_point(alpha = 0.9) +
-    scale_color_brewer(palette = "Dark2") +
+    scale_color_manual(values = c("BP" = "#4d4d4d", "CC" = "#8c8c8c", "MF" = "#bdbdbd")) +
     labs(
       title = title_text,
       x = expression(-log[10]("BH-adjusted p")),
       y = NULL,
       size = "Gene count"
     ) +
-    theme_minimal(base_family = "sans", base_size = 11) +
-    theme(
-      legend.position = "right",
-      panel.grid.major.y = element_blank(),
-      panel.grid.minor = element_blank()
-    )
+    theme_ptm() +
+    theme(legend.position = "right")
 
   save_plot(p, out_prefix, width = 10, height = 7)
 }
@@ -161,7 +178,8 @@ make_emap_plot <- function(ego, title_text, out_prefix, show_n) {
     node_label = "group",
     layout = "kk"
   ) +
-    ggtitle(title_text)
+    ggtitle(title_text) +
+    theme_ptm()
   save_plot(p, out_prefix, width = 11, height = 8.5)
 }
 
@@ -195,6 +213,7 @@ max_size <- as.integer(args$max_size)
 top_n <- as.integer(args$top_n)
 simplify_cutoff <- as.numeric(args$simplify_cutoff)
 padj_cutoff <- as.numeric(args$padj_cutoff)
+make_emap <- tolower(args$make_emap) %in% c("1", "true", "yes", "y")
 
 dir.create(outdir, recursive = TRUE, showWarnings = FALSE)
 
@@ -322,7 +341,7 @@ for (spec in target_specs) {
     combined_results[[length(combined_results) + 1]] <- result_df
     combined_plot_results[[length(combined_plot_results) + 1]] <- simplify_for_plot(ego, ont, simplify_cutoff)
 
-    if (ont == "BP") {
+    if (ont == "BP" && make_emap) {
       make_emap_plot(
         ego,
         sprintf("GO BP term network: %s", target),

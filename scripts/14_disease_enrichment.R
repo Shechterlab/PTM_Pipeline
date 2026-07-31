@@ -13,7 +13,7 @@ parse_args <- function(args) {
     labels = "",
     outdir = "PTM_results/functional_class_union/disease_enrichment",
     q_cutoff = "0.05",
-    top_n = "12",
+    top_n = "8",
     min_size = "10",
     max_size = "300"
   )
@@ -53,6 +53,56 @@ save_plot <- function(plot_obj, out_prefix, width = 9, height = 7) {
     ggsave(paste0(out_prefix, ".pdf"), plot_obj, width = width, height = height, device = pdf_device),
     error = function(e) warning(sprintf("Failed to write PDF %s: %s", out_prefix, e$message))
   )
+}
+
+theme_ptm <- function() {
+  theme_classic(base_family = "Arial", base_size = 11) +
+    theme(
+      plot.title = element_text(size = 12.5, family = "Arial"),
+      axis.title = element_text(size = 11, family = "Arial"),
+      axis.text = element_text(size = 10, family = "Arial", colour = "#111111"),
+      legend.title = element_text(size = 9.5, family = "Arial"),
+      legend.text = element_text(size = 9, family = "Arial"),
+      panel.grid = element_blank()
+    )
+}
+
+format_compact_q <- function(x) {
+  if (is.na(x)) return("q=NA")
+  if (x == 0) return("q≈0")
+  if (x < 1e-2) {
+    exponent <- floor(log10(x))
+    mantissa <- round(x / (10 ^ exponent), 0)
+    if (mantissa >= 10) {
+      mantissa <- mantissa / 10
+      exponent <- exponent + 1
+    }
+    superscript_map <- c(
+      "-" = "\u207b",
+      "0" = "\u2070",
+      "1" = "\u00b9",
+      "2" = "\u00b2",
+      "3" = "\u00b3",
+      "4" = "\u2074",
+      "5" = "\u2075",
+      "6" = "\u2076",
+      "7" = "\u2077",
+      "8" = "\u2078",
+      "9" = "\u2079"
+    )
+    exponent_chars <- strsplit(as.character(exponent), "", fixed = TRUE)[[1]]
+    exponent_label <- paste0(unname(superscript_map[exponent_chars]), collapse = "")
+    return(paste0("q=", mantissa, "\u00D710", exponent_label))
+  }
+  if (x < 0.1) return(sprintf("q=%.2f", x))
+  if (x < 1) return(sprintf("q=%.1f", x))
+  sprintf("q=%.0f", x)
+}
+
+format_q_threshold_note <- function(x) {
+  if (!is.na(x) && x <= 0.05) return("All shown BH q<0.05")
+  label <- format_compact_q(x)
+  sub("^q=", "All shown q\u2264", label)
 }
 
 args <- parse_args(commandArgs(trailingOnly = TRUE))
@@ -144,32 +194,78 @@ summarize_disease_themes <- function(df, q_cutoff) {
   out
 }
 
+fisher_odds <- function(a, b, c, d) {
+  ((a + 0.5) * (d + 0.5)) / ((b + 0.5) * (c + 0.5))
+}
+
+theme_union_enrichment <- function(target_entrez, universe_entrez) {
+  get_dgn <- getFromNamespace("get_DGN_data", "DOSE")
+  dgn_env <- get_dgn()
+  pathid2name <- get("PATHID2NAME", envir = dgn_env)
+  pathid2extid <- get("PATHID2EXTID", envir = dgn_env)
+
+  target_set <- unique(as.character(target_entrez))
+  universe_set <- unique(as.character(universe_entrez))
+  background_set <- setdiff(universe_set, target_set)
+
+  rows <- list()
+  for (theme_name in names(disease_theme_patterns)) {
+    pattern <- disease_theme_patterns[[theme_name]]
+    matched_ids <- names(pathid2name)[grepl(pattern, unname(pathid2name), ignore.case = TRUE)]
+    if (length(matched_ids) == 0) next
+    theme_genes <- unique(unlist(pathid2extid[matched_ids], use.names = FALSE))
+    theme_genes <- intersect(as.character(theme_genes), universe_set)
+    if (length(theme_genes) == 0) next
+    a <- sum(target_set %in% theme_genes)
+    b <- length(target_set) - a
+    c <- sum(background_set %in% theme_genes)
+    d <- length(background_set) - c
+    rows[[length(rows) + 1]] <- data.frame(
+      disease_theme = theme_name,
+      matched_dgn_term_count = length(matched_ids),
+      target_count = a,
+      background_count = c,
+      total_theme_gene_count = a + c,
+      target_fraction_in_theme = if ((a + c) > 0) a / (a + c) else NA_real_,
+      odds_ratio = fisher_odds(a, b, c, d),
+      log2_odds_ratio = log2(fisher_odds(a, b, c, d)),
+      p_value = fisher.test(matrix(c(a, b, c, d), nrow = 2), alternative = "two.sided")$p.value,
+      stringsAsFactors = FALSE
+    )
+  }
+  if (length(rows) == 0) return(data.frame())
+  out <- do.call(rbind, rows)
+  out$q_value <- p.adjust(out$p_value, method = "BH")
+  out <- out[out$target_count > 0, ]
+  out <- out[order(out$odds_ratio, out$target_count), ]
+  rownames(out) <- NULL
+  out
+}
+
 plot_disease_theme_summary <- function(theme_df, title_text, out_prefix) {
-  plot_df <- theme_df[theme_df$significant_term_count > 0, ]
+  plot_df <- theme_df[theme_df$q_value <= q_cutoff, ]
   if (nrow(plot_df) == 0) return(invisible(NULL))
-  plot_df$best_neg_log10_q <- -log10(pmax(plot_df$best_q_value, .Machine$double.xmin))
-  plot_df <- plot_df[order(plot_df$significant_term_fraction), ]
+  plot_df <- plot_df[order(plot_df$odds_ratio), ]
   plot_df$disease_theme <- factor(plot_df$disease_theme, levels = plot_df$disease_theme)
-  p <- ggplot(plot_df, aes(x = significant_term_fraction, y = disease_theme)) +
-    geom_col(fill = "#1b9e77") +
-    geom_point(aes(color = best_neg_log10_q, size = significant_term_count)) +
-    scale_color_distiller(palette = "YlOrRd", direction = 1, name = expression(-log[10]("best q"))) +
-    geom_text(aes(label = paste0(significant_term_count, "/", matched_term_count, " | ", best_term)), hjust = -0.02, size = 2.8) +
+  max_x <- max(plot_df$odds_ratio, na.rm = TRUE)
+  max_q <- max(plot_df$q_value, na.rm = TRUE)
+  p <- ggplot(plot_df, aes(y = disease_theme)) +
+    geom_col(aes(x = odds_ratio), fill = "#8c8c8c", width = 0.72) +
+    geom_text(
+      aes(x = odds_ratio + max_x * 0.03, label = paste0(target_count, "/", total_theme_gene_count)),
+      hjust = 0,
+      size = 3.3,
+      family = "Arial"
+    ) +
     labs(
       title = title_text,
-      x = "Fraction of matched disease terms significant after BH correction",
-      y = NULL,
-      color = expression(-log[10]("best q")),
-      size = "Significant terms"
+      x = "Odds ratio vs reviewed-human background",
+      y = NULL
     ) +
-    theme_bw(base_family = "sans") +
-    theme(
-      plot.title = element_text(size = 13),
-      axis.text.y = element_text(size = 9),
-      panel.grid.major.y = element_blank()
-    ) +
-    expand_limits(x = min(1.0, max(plot_df$significant_term_fraction, na.rm = TRUE) * 1.2))
-  save_plot(p, out_prefix, width = 11, height = 6.8)
+    theme_ptm() +
+    coord_cartesian(xlim = c(0, max_x * 1.22), clip = "off") +
+    annotate("text", x = max_x * 1.21, y = 0.55, label = format_q_threshold_note(max_q), hjust = 1, vjust = 0, size = 3.0, family = "Arial")
+  save_plot(p, out_prefix, width = 10.8, height = 6.4)
 }
 
 labels_df <- read.delim(args$labels, sep = "\t", quote = "", comment.char = "", stringsAsFactors = FALSE)
@@ -249,11 +345,7 @@ for (target_name in names(targets)) {
   show_n <- min(top_n, nrow(result_df))
   fig <- dotplot(enr, showCategory = show_n) +
     ggtitle(paste0(target_name, ": disease enrichment")) +
-    theme_bw(base_family = "sans") +
-    theme(
-      plot.title = element_text(size = 13),
-      axis.text.y = element_text(size = 9)
-    )
+    theme_ptm()
   save_plot(fig, file.path(outdir, paste0(safe_filename(target_name), "_disease_dotplot")), width = 9, height = 7)
 
   filtered_df <- result_df[result_df$p.adjust <= q_cutoff, ]
@@ -265,7 +357,8 @@ for (target_name in names(targets)) {
           cnetplot(enr, showCategory = network_show_n, colorEdge = TRUE, circular = FALSE, node_label = "all"),
           error = function(e) cnetplot(enr, showCategory = network_show_n, node_label = "all")
         ) +
-          ggtitle(paste0(target_name, ": disease term-gene network"))
+          ggtitle(paste0(target_name, ": disease term-gene network")) +
+          theme_ptm()
         save_plot(fig_cnet, file.path(outdir, paste0(safe_filename(target_name), "_disease_cnetplot")), width = 11, height = 8.5)
       },
       error = function(e) warning(sprintf("Failed cnetplot for %s: %s", target_name, e$message))
@@ -273,14 +366,16 @@ for (target_name in names(targets)) {
     tryCatch(
       {
         fig_heat <- heatplot(enr, showCategory = network_show_n) +
-          ggtitle(paste0(target_name, ": disease term-gene heatmap"))
+          ggtitle(paste0(target_name, ": disease term-gene heatmap")) +
+          theme_ptm()
         save_plot(fig_heat, file.path(outdir, paste0(safe_filename(target_name), "_disease_heatplot")), width = 11, height = 8.5)
       },
       error = function(e) warning(sprintf("Failed heatplot for %s: %s", target_name, e$message))
     )
   }
 
-  theme_df <- summarize_disease_themes(result_df, q_cutoff = q_cutoff)
+  theme_term_df <- summarize_disease_themes(result_df, q_cutoff = q_cutoff)
+  theme_df <- theme_union_enrichment(entrez, universe_entrez)
   if (nrow(theme_df) > 0) {
     theme_rows[[target_name]] <- cbind(target = target_name, theme_df)
     write.table(
@@ -288,10 +383,17 @@ for (target_name in names(targets)) {
       file = file.path(outdir, paste0(safe_filename(target_name), "_disease_theme_summary.tsv")),
       sep = "\t", row.names = FALSE, quote = FALSE
     )
+    if (nrow(theme_term_df) > 0) {
+      write.table(
+        theme_term_df,
+        file = file.path(outdir, paste0(safe_filename(target_name), "_disease_theme_term_summary.tsv")),
+        sep = "\t", row.names = FALSE, quote = FALSE
+      )
+    }
     if (target_name == "All methyl proteins") {
       plot_disease_theme_summary(
         theme_df,
-        "All methyl proteins: consolidated disease-theme summary",
+        "All methyl proteins: consolidated disease-theme enrichment",
         file.path(outdir, paste0(safe_filename(target_name), "_disease_theme_summary"))
       )
     }
@@ -303,19 +405,14 @@ for (target_name in names(targets)) {
     neuro_rows[[target_name]] <- neuro_df
     neuro_df$Description <- factor(neuro_df$Description, levels = rev(neuro_df$Description))
     p <- ggplot(neuro_df, aes(x = log2_fold_enrichment, y = Description)) +
-      geom_col(fill = "#d95f02") +
-      geom_text(aes(label = paste0("n=", Count, ", q=", format(p.adjust, digits = 2, scientific = TRUE))), hjust = -0.02, size = 2.8) +
+      geom_col(fill = "#8c8c8c") +
+      geom_text(aes(label = vapply(p.adjust, format_compact_q, character(1))), hjust = -0.02, size = 3.0) +
       labs(
         title = paste0(target_name, ": neurodegenerative disease associations"),
         x = "log2 fold-enrichment vs reviewed-human background",
         y = NULL
       ) +
-      theme_bw(base_family = "sans") +
-      theme(
-        plot.title = element_text(size = 13),
-        axis.text.y = element_text(size = 9),
-        panel.grid.major.y = element_blank()
-      ) +
+      theme_ptm() +
       expand_limits(x = max(neuro_df$log2_fold_enrichment, na.rm = TRUE) * 1.25)
     save_plot(p, file.path(outdir, paste0(safe_filename(target_name), "_neurodegenerative_focus")), width = 9, height = 5.8)
     write.table(

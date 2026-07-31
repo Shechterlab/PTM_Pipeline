@@ -14,10 +14,11 @@ from common import (
     annotate_barh,
     apply_paper_style,
     canonical_site_table,
+    count_over_total_labels,
     fisher_like_enrichment,
-    format_p_value,
     log2_odds_ratio,
     parse_fasta,
+    q_threshold_note,
     residue_background_from_sequences,
     save_figure,
     save_table,
@@ -246,16 +247,16 @@ def main() -> None:
     plot_df = summary[summary['disorder_context_class'] != 'no_position'].copy()
     bar_colors = [
         {
-            'disordered': BREWER_COLORS['orange'],
-            'disorder_boundary': BREWER_COLORS['teal'],
-            'ordered': BREWER_COLORS['blue'],
+            'disordered': BREWER_COLORS['dark_gray'],
+            'disorder_boundary': BREWER_COLORS['mid_gray'],
+            'ordered': BREWER_COLORS['light_gray'],
             'no_disorder_annotation': BREWER_COLORS['mid_gray'],
         }.get(cat, BREWER_COLORS['mid_gray'])
         for cat in plot_df['disorder_context_class']
     ]
     display_labels = plot_df['disorder_context_class'].map(disorder_label)
     ax.bar(display_labels, plot_df['site_count'], color=bar_colors, edgecolor='white', linewidth=0.8)
-    style_axis(ax, grid_axis='y')
+    style_axis(ax)
     ax.set_ylabel('Methylarginine sites')
     ax.set_title('Methylarginine disorder-context distribution')
     ax.tick_params(axis='x', rotation=20)
@@ -345,9 +346,9 @@ def main() -> None:
         fig2, ax2 = plt.subplots(figsize=(7.6, 4.9))
         colors = [
             {
-                'disordered': BREWER_COLORS['orange'],
-                'disorder_boundary': BREWER_COLORS['teal'],
-                'ordered': BREWER_COLORS['blue'],
+                'disordered': BREWER_COLORS['dark_gray'],
+                'disorder_boundary': BREWER_COLORS['mid_gray'],
+                'ordered': BREWER_COLORS['light_gray'],
             }.get(cat, BREWER_COLORS['mid_gray'])
             for cat in compare['category']
         ]
@@ -356,18 +357,18 @@ def main() -> None:
         ax2.set_xlabel('log2(OR) vs all proteome arginines')
         ax2.set_ylabel('Disorder class')
         ax2.set_title('Global methylarginine disorder-context enrichment')
-        set_symmetric_xlim(ax2, compare['log2_odds_ratio'], annotation_pad_ratio=0.52, center_on_zero=False)
+        set_symmetric_xlim(ax2, compare['log2_odds_ratio'], annotation_pad_ratio=0.34, center_on_zero=False)
         annotate_barh(
             ax2,
             compare['display_category'],
             compare['log2_odds_ratio'],
-            [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(compare['target_count'], compare['p_value'], compare['q_value'])],
-            fontsize=8.3,
+            count_over_total_labels(compare),
+            fontsize=9.0,
         )
         fig2.text(
             0.99,
             0.01,
-            'Global class-level ORs; within-IDR edge bins are shown separately and use only disordered residues.',
+            f'{q_threshold_note(compare["q_value"])}. Global class-level ORs; within-IDR edge bins are shown separately and use only disordered residues.',
             ha='right',
             va='bottom',
             fontsize=8,
@@ -379,14 +380,15 @@ def main() -> None:
         binary_plot = binary_all[binary_all['category'] == 'IDR'].copy()
         if not binary_plot.empty:
             fig3, ax3 = plt.subplots(figsize=(4.8, 4.8))
-            ax3.bar(['IDR'], binary_plot['log2_odds_ratio'], color=BREWER_COLORS['orange'], edgecolor='white', linewidth=0.8)
-            style_axis(ax3, zero='y', grid_axis='y')
+            ax3.bar(['IDR'], binary_plot['log2_odds_ratio'], color=BREWER_COLORS['mid_gray'], edgecolor='white', linewidth=0.8)
+            style_axis(ax3, zero='y')
             ax3.set_ylabel('log2(OR) vs all proteome arginines')
             ax3.set_title('Methylarginine IDR enrichment')
             value = float(binary_plot['log2_odds_ratio'].iloc[0])
-            pval = float(binary_plot['p_value'].iloc[0])
             qval = float(binary_plot['q_value'].iloc[0])
-            ax3.text(0, value, f"p={format_p_value(pval)}\nq={format_p_value(qval)}", ha='center', va='bottom' if value >= 0 else 'top')
+            label = count_over_total_labels(binary_plot)[0]
+            ax3.text(0, value, label, ha='center', va='bottom' if value >= 0 else 'top', fontsize=9.0)
+            fig3.text(0.99, 0.01, q_threshold_note([qval]), ha='right', va='bottom', fontsize=8, color=BREWER_COLORS['dark_gray'])
             fig3.tight_layout()
             save_figure(fig3, outdir / 'arg_methyl_idr_binary_enrichment')
 
@@ -394,19 +396,19 @@ def main() -> None:
         if not proximal_plot.empty:
             fig3b, ax3b = plt.subplots(figsize=(5.8, 4.8))
             display_label = 'Disordered or outside-IDR edge (<=20 aa)'
-            ax3b.bar([display_label], proximal_plot['log2_odds_ratio'], color=BREWER_COLORS['teal'], edgecolor='white', linewidth=0.8)
-            style_axis(ax3b, zero='y', grid_axis='y')
+            ax3b.bar([display_label], proximal_plot['log2_odds_ratio'], color=BREWER_COLORS['mid_gray'], edgecolor='white', linewidth=0.8)
+            style_axis(ax3b, zero='y')
             ax3b.set_ylabel('log2(OR) vs all proteome arginines')
             ax3b.set_title('Methylarginine enrichment in IDR-proximal sequence')
             value = float(proximal_plot['log2_odds_ratio'].iloc[0])
-            pval = float(proximal_plot['p_value'].iloc[0])
             qval = float(proximal_plot['q_value'].iloc[0])
-            ax3b.text(0, value, f"p={format_p_value(pval)}\nq={format_p_value(qval)}", ha='center', va='bottom' if value >= 0 else 'top')
+            label = count_over_total_labels(proximal_plot)[0]
+            ax3b.text(0, value, label, ha='center', va='bottom' if value >= 0 else 'top', fontsize=9.0)
             ax3b.tick_params(axis='x', rotation=15)
             fig3b.text(
                 0.99,
                 0.01,
-                'IDR-proximal = inside an IDR or <=20 aa outside an IDR edge.',
+                f'{q_threshold_note([qval])}. IDR-proximal = inside an IDR or <=20 aa outside an IDR edge.',
                 ha='right',
                 va='bottom',
                 fontsize=8,
@@ -417,11 +419,11 @@ def main() -> None:
 
         edge_plot = edge_bin_same.sort_values('log2_odds_ratio')
         edge_palette = {
-            'IDR edge <=5 aa': BREWER_COLORS['teal'],
-            'IDR edge 6-10 aa': BREWER_COLORS['light_green'],
-            'IDR edge 11-20 aa': BREWER_COLORS['green'],
-            'IDR edge 21-40 aa': BREWER_COLORS['gold'],
-            'Distal IDR >40 aa': BREWER_COLORS['orange'],
+            'IDR edge <=5 aa': BREWER_COLORS['light_gray'],
+            'IDR edge 6-10 aa': '#c9c9c9',
+            'IDR edge 11-20 aa': BREWER_COLORS['mid_gray'],
+            'IDR edge 21-40 aa': '#8d8d8d',
+            'Distal IDR >40 aa': BREWER_COLORS['dark_gray'],
         }
         fig4, ax4 = plt.subplots(figsize=(8.3, 5.2))
         ax4.barh(
@@ -435,22 +437,31 @@ def main() -> None:
         ax4.set_xlabel('log2(OR) vs disordered arginines in methylated proteins')
         ax4.set_ylabel('Within-IDR edge-distance bin')
         ax4.set_title('Methylarginine localization within IDRs')
-        set_symmetric_xlim(ax4, edge_plot['log2_odds_ratio'], annotation_pad_ratio=0.5, center_on_zero=False)
+        set_symmetric_xlim(ax4, edge_plot['log2_odds_ratio'], annotation_pad_ratio=0.32, center_on_zero=False)
         annotate_barh(
             ax4,
             edge_plot['category'],
             edge_plot['log2_odds_ratio'],
-            [f'n={n}, p={format_p_value(p)}, q={format_p_value(q)}' for n, p, q in zip(edge_plot['target_count'], edge_plot['p_value'], edge_plot['q_value'])],
-            fontsize=8.1,
+            count_over_total_labels(edge_plot),
+            fontsize=8.8,
+        )
+        fig4.text(
+            0.99,
+            0.01,
+            q_threshold_note(edge_plot['q_value']),
+            ha='right',
+            va='bottom',
+            fontsize=8,
+            color=BREWER_COLORS['dark_gray'],
         )
         fig4.tight_layout()
         save_figure(fig4, outdir / 'arg_methyl_idr_edge_bin_enrichment')
 
         fig5, ax5 = plt.subplots(figsize=(8.8, 4.8))
-        ax5.plot(edge_curve_same['distance_aa'], edge_curve_same['log2_odds_ratio'], color=BREWER_COLORS['orange'], linewidth=2.2)
+        ax5.plot(edge_curve_same['distance_aa'], edge_curve_same['log2_odds_ratio'], color=BREWER_COLORS['dark_gray'], linewidth=2.2)
         sig = edge_curve_same[edge_curve_same['q_value'] <= 0.05]
         if not sig.empty:
-            ax5.scatter(sig['distance_aa'], sig['log2_odds_ratio'], color=BREWER_COLORS['purple'], s=18, zorder=3)
+            ax5.scatter(sig['distance_aa'], sig['log2_odds_ratio'], color='#111111', s=18, zorder=3)
         style_axis(ax5, zero='y', grid_axis='both')
         ax5.set_xlabel('Within-IDR distance from nearest edge (<= X aa)')
         ax5.set_ylabel('log2(OR) vs disordered arginines in methylated proteins')
@@ -476,10 +487,10 @@ def main() -> None:
         save_figure(fig5, outdir / 'arg_methyl_idr_edge_cumulative_enrichment')
 
         fig6, ax6 = plt.subplots(figsize=(8.8, 4.8))
-        ax6.plot(edge_roll_same['window_center_aa'], edge_roll_same['log2_odds_ratio'], color=BREWER_COLORS['green'], linewidth=2.2)
+        ax6.plot(edge_roll_same['window_center_aa'], edge_roll_same['log2_odds_ratio'], color=BREWER_COLORS['dark_gray'], linewidth=2.2)
         sig_roll = edge_roll_same[edge_roll_same['q_value'] <= 0.05]
         if not sig_roll.empty:
-            ax6.scatter(sig_roll['window_center_aa'], sig_roll['log2_odds_ratio'], color=BREWER_COLORS['purple'], s=18, zorder=3)
+            ax6.scatter(sig_roll['window_center_aa'], sig_roll['log2_odds_ratio'], color='#111111', s=18, zorder=3)
         style_axis(ax6, zero='y', grid_axis='both')
         ax6.set_xlabel('Within-IDR distance from nearest edge (rolling 5-aa window)')
         ax6.set_ylabel('log2(OR) vs disordered arginines in methylated proteins')

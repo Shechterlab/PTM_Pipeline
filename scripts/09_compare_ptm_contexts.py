@@ -13,8 +13,8 @@ from common import (
     apply_paper_style,
     canonicalize_uniprot_accession,
     fisher_like_enrichment,
-    format_p_value,
     parse_fasta,
+    q_threshold_note,
     residue_background_from_sequences,
     save_figure,
     save_table,
@@ -146,28 +146,27 @@ def annotate_domain(df: pd.DataFrame, intervals: pd.DataFrame, boundary_window: 
         for acc, group in intervals.groupby('canonical_UniProtAC')
     }
 
-    def classify(row: pd.Series) -> str:
-        group = intervals_by_acc.get(str(row['canonical_UniProtAC']), pd.DataFrame())
-        if group.empty:
-            return 'no_domain_annotation'
-        position = int(row['position'])
-        overlaps = group[(group['fragment_start'] <= position) & (group['fragment_end'] >= position)].copy()
-        if not overlaps.empty:
-            return 'in_domain'
-        group = group.copy()
-        group['distance'] = group.apply(
-            lambda r: min(abs(int(r['fragment_start']) - position), abs(int(r['fragment_end']) - position)),
-            axis=1,
-        )
-        group['priority'] = group['interpro_type'].map(interval_priority)
-        group = group.sort_values(['distance', 'priority', 'fragment_start', 'interpro_accession'])
-        nearest = int(group.iloc[0]['distance'])
-        if nearest <= boundary_window:
-            return 'boundary'
-        return 'distal'
-
     out = df.copy()
-    out['domain_context_class'] = out.apply(classify, axis=1)
+    out['domain_context_class'] = 'no_domain_annotation'
+    for accession, idx in out.groupby('canonical_UniProtAC').groups.items():
+        group = intervals_by_acc.get(str(accession), pd.DataFrame())
+        if group.empty:
+            continue
+        positions = out.loc[idx, 'position'].to_numpy(dtype=int)
+        classes = np.full(len(positions), 'distal', dtype=object)
+        min_distance = np.full(len(positions), np.iinfo(np.int32).max, dtype=int)
+        in_domain = np.zeros(len(positions), dtype=bool)
+        starts = group['fragment_start'].to_numpy(dtype=int)
+        ends = group['fragment_end'].to_numpy(dtype=int)
+        for start, end in zip(starts, ends):
+            overlap = (positions >= start) & (positions <= end)
+            in_domain |= overlap
+            dist = np.minimum(np.abs(positions - start), np.abs(positions - end))
+            dist[overlap] = 0
+            min_distance = np.minimum(min_distance, dist)
+        classes[min_distance <= boundary_window] = 'boundary'
+        classes[in_domain] = 'in_domain'
+        out.loc[idx, 'domain_context_class'] = classes
     return out
 
 
@@ -272,31 +271,23 @@ def main() -> None:
                 fig_idr, ax_idr = plt.subplots(figsize=(9.2, 5.6))
                 colors = signed_bar_colors(
                     plot_df['log2_odds_ratio'],
-                    positive=BREWER_COLORS['orange'],
-                    negative=BREWER_COLORS['blue'],
+                    positive=BREWER_COLORS['dark_gray'],
+                    negative=BREWER_COLORS['light_gray'],
                 )
                 ax_idr.barh(plot_df['ptm_group'], plot_df['log2_odds_ratio'], color=colors, edgecolor='white', linewidth=0.8)
                 style_axis(ax_idr, zero='x')
                 ax_idr.set_xlabel('log2(OR) for IDR vs target-residue proteome background')
                 ax_idr.set_ylabel('PTM class')
                 ax_idr.set_title('Cross-PTM IDR enrichment')
-                set_symmetric_xlim(ax_idr, plot_df['log2_odds_ratio'], annotation_pad_ratio=0.78, center_on_zero=False)
+                set_symmetric_xlim(ax_idr, plot_df['log2_odds_ratio'], annotation_pad_ratio=0.34, center_on_zero=False)
                 annotate_barh(
                     ax_idr,
                     plot_df['ptm_group'],
                     plot_df['log2_odds_ratio'],
-                    [
-                        f"IDR {n}/{t} ({frac:.1f}%), p={format_p_value(p)}, q={format_p_value(q)}"
-                        for n, t, frac, p, q in zip(
-                            plot_df['idr_site_count'],
-                            plot_df['classified_site_count'],
-                            plot_df['observed_idr_fraction_pct'],
-                            plot_df['p_value'],
-                            plot_df['q_value'],
-                        )
-                    ],
-                    fontsize=7.8,
+                    [f'{n}/{t}' for n, t in zip(plot_df['idr_site_count'], plot_df['classified_site_count'])],
+                    fontsize=8.7,
                 )
+                fig_idr.text(0.99, 0.01, q_threshold_note(plot_df['q_value']), ha='right', va='bottom', fontsize=8, color=BREWER_COLORS['dark_gray'])
                 fig_idr.tight_layout()
                 save_figure(fig_idr, Path(args.outdir) / 'cross_ptm_idr_binary_comparison')
 
@@ -304,7 +295,7 @@ def main() -> None:
                 ax_frac.barh(
                     plot_df['ptm_group'],
                     plot_df['observed_idr_fraction_pct'],
-                    color=BREWER_COLORS['orange'],
+                    color=BREWER_COLORS['mid_gray'],
                     edgecolor='white',
                     linewidth=0.8,
                 )
@@ -317,7 +308,7 @@ def main() -> None:
                     zorder=3,
                     label='Target-residue proteome background',
                 )
-                style_axis(ax_frac, grid_axis='x')
+                style_axis(ax_frac)
                 ax_frac.set_xlabel('% of classified sites in IDRs')
                 ax_frac.set_ylabel('PTM class')
                 ax_frac.set_title('Cross-PTM IDR site burden')
@@ -327,7 +318,7 @@ def main() -> None:
                     plot_df['ptm_group'],
                     plot_df['observed_idr_fraction_pct'],
                     [f'{n}/{t}' for n, t in zip(plot_df['idr_site_count'], plot_df['classified_site_count'])],
-                    fontsize=7.8,
+                    fontsize=8.0,
                 )
                 fig_frac.tight_layout()
                 save_figure(fig_frac, Path(args.outdir) / 'cross_ptm_idr_site_fraction')
@@ -371,7 +362,7 @@ def main() -> None:
                     ax.plot(pivot.index, pivot[category], marker='o', label=category)
                     category_df = plot_df[plot_df['category'] == category]
                     for _, row in category_df.iterrows():
-                        ax.text(row['ptm_group'], row['log2_odds_ratio'], f" p={format_p_value(row['p_value'])}, q={format_p_value(row['q_value'])}", fontsize=6.5, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
+                        ax.text(row['ptm_group'], row['log2_odds_ratio'], f" n={int(row['target_count'])}", fontsize=7.0, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
                 ax.axhline(0, color='black', linewidth=0.8)
                 ax.set_ylabel('log2(OR) vs target-residue proteome background')
                 ax.set_xlabel('PTM class')
@@ -393,7 +384,7 @@ def main() -> None:
                     ax2.plot(pivot.index, pivot[category], marker='o', label=category)
                     category_df = plot_df[plot_df['category'] == category]
                     for _, row in category_df.iterrows():
-                        ax2.text(row['ptm_group'], row['log2_odds_ratio'], f" p={format_p_value(row['p_value'])}, q={format_p_value(row['q_value'])}", fontsize=6.5, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
+                        ax2.text(row['ptm_group'], row['log2_odds_ratio'], f" n={int(row['target_count'])}", fontsize=7.0, va='bottom' if row['log2_odds_ratio'] >= 0 else 'top')
                 ax2.axhline(0, color='black', linewidth=0.8)
                 ax2.set_ylabel('log2(OR) vs target-residue proteome background')
                 ax2.set_xlabel('PTM class')

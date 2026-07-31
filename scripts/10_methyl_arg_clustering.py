@@ -12,7 +12,7 @@ from common import (
     add_q_values,
     apply_paper_style,
     canonical_site_table,
-    format_p_value,
+    compact_q_label,
     parse_fasta,
     save_figure,
     save_table,
@@ -107,7 +107,7 @@ def distance_bin_summary(curve: pd.DataFrame, permutation_df: pd.DataFrame, thre
         'log2_ratio_vs_null': np.log2(obs_tail / float(null_tail.mean())) if float(null_tail.mean()) > 0 and obs_tail > 0 else np.nan,
         'empirical_p_greater': p_tail,
     })
-    return pd.DataFrame(rows)
+    return add_q_values(pd.DataFrame(rows), p_col='empirical_p_greater', out_col='empirical_q_greater')
 
 
 def rolling_probability_ratio(curve: pd.DataFrame, permutation_df: pd.DataFrame, window_size: int = 5, max_distance: int = 40) -> pd.DataFrame:
@@ -139,6 +139,94 @@ def rolling_probability_ratio(curve: pd.DataFrame, permutation_df: pd.DataFrame,
             'empirical_p_greater': p_tail,
         })
     return add_q_values(pd.DataFrame(rows), p_col='empirical_p_greater', out_col='empirical_q_greater')
+
+
+def checkpoint_display_summary(curve: pd.DataFrame, checkpoints: list[int]) -> pd.DataFrame:
+    rows = []
+    for checkpoint in checkpoints:
+        row = curve.loc[curve['distance_aa'] == checkpoint]
+        if row.empty:
+            continue
+        row = row.iloc[0]
+        rows.append({
+            'distance_aa': int(checkpoint),
+            'label': f'<={checkpoint} aa',
+            'sites_total': int(row['sites_total']),
+            'sites_with_neighbor_within_x': int(row['sites_with_neighbor_within_x']),
+            'observed_probability': float(row['prob_neighbor_within_x']),
+            'null_mean_probability': float(row['null_mean_prob_neighbor_within_x']),
+            'ratio_vs_null': float(row['ratio_prob_neighbor_within_x_vs_null']),
+            'empirical_p_greater': float(row['empirical_p_greater_prob_neighbor_within_x']),
+        })
+    return add_q_values(pd.DataFrame(rows), p_col='empirical_p_greater', out_col='empirical_q_greater')
+
+
+def plot_neighbor_probability_curve(curve: pd.DataFrame, outdir: Path, checkpoint_display: pd.DataFrame | None = None) -> None:
+    curve40 = curve[curve['distance_aa'] <= 40].copy()
+    if curve40.empty:
+        return
+
+    fig, ax = plt.subplots(figsize=(5.6, 4.0))
+    observed_pct = 100.0 * curve40['prob_neighbor_within_x'].to_numpy(dtype=float)
+    null_pct = 100.0 * curve40['null_mean_prob_neighbor_within_x'].to_numpy(dtype=float)
+    null_lo_pct = 100.0 * curve40['null_q025_prob_neighbor_within_x'].to_numpy(dtype=float)
+    null_hi_pct = 100.0 * curve40['null_q975_prob_neighbor_within_x'].to_numpy(dtype=float)
+    distance = curve40['distance_aa'].to_numpy(dtype=float)
+
+    ax.fill_between(distance, null_lo_pct, null_hi_pct, alpha=0.14, color=BREWER_COLORS['light_gray'])
+    ax.plot(distance, null_pct, linewidth=2.0, linestyle='--', color=BREWER_COLORS['mid_gray'])
+    ax.plot(distance, observed_pct, linewidth=2.4, color=BREWER_COLORS['blue'])
+    style_axis(ax, grid_axis='y')
+    ax.set_xlim(1, 40)
+    ax.set_xlabel('Distance cutoff from methyl-Arg (aa)')
+    ax.set_ylabel('% of methyl sites with another methyl-Arg nearby')
+    ax.set_title('Nearest methyl-Arg neighbor probability')
+
+    end_x = float(distance[-1])
+    ax.text(end_x + 0.5, float(observed_pct[-1]), 'Observed', color=BREWER_COLORS['blue'], fontsize=9.0, va='center', ha='left')
+    ax.text(end_x + 0.5, float(null_pct[-1]), 'Within-protein null', color=BREWER_COLORS['dark_gray'], fontsize=9.0, va='center', ha='left')
+
+    for checkpoint in (5, 10, 20):
+        row = curve40.loc[curve40['distance_aa'] == checkpoint]
+        if row.empty:
+            continue
+        row = row.iloc[0]
+        ax.scatter(
+            [checkpoint],
+            [100.0 * float(row['prob_neighbor_within_x'])],
+            s=18,
+            color=BREWER_COLORS['blue'],
+            zorder=3,
+        )
+    if checkpoint_display is not None and not checkpoint_display.empty:
+        checkpoint_lookup = checkpoint_display.set_index('distance_aa')
+        for checkpoint in (5, 10, 20):
+            if checkpoint not in checkpoint_lookup.index:
+                continue
+            q_value = float(checkpoint_lookup.loc[checkpoint, 'empirical_q_greater'])
+            obs_pct = 100.0 * float(checkpoint_lookup.loc[checkpoint, 'observed_probability'])
+            ax.text(
+                checkpoint,
+                obs_pct + 2.0,
+                compact_q_label(q_value),
+                ha='center',
+                va='bottom',
+                fontsize=8.4,
+                color=BREWER_COLORS['dark_gray'],
+            )
+
+    ax.set_ylim(0, max(62.0, float(observed_pct.max()) + 4.0))
+    fig.text(
+        0.99,
+        0.01,
+        'Shown to 40 aa because most separation occurs at short distances.',
+        ha='right',
+        va='bottom',
+        fontsize=8,
+        color=BREWER_COLORS['dark_gray'],
+    )
+    fig.tight_layout()
+    save_figure(fig, outdir / 'nearest_neighbor_probability_curve')
 
 
 def main() -> None:
@@ -287,11 +375,13 @@ def main() -> None:
     concise_df['log2_ratio_other_methyl_args_within_x_vs_null'] = np.log2(concise_df['ratio_other_methyl_args_within_x_vs_null'])
     distance_bin_df = distance_bin_summary(curve, permutations, args.summary_checkpoints)
     rolling_df = rolling_probability_ratio(curve, permutations, window_size=5, max_distance=min(40, args.max_distance))
+    display_checkpoint_df = checkpoint_display_summary(curve, [5, 10, 20])
     save_table(checkpoint_df, outdir / 'nearest_neighbor_curve_checkpoints.tsv')
     save_table(concise_df, outdir / 'nearest_neighbor_summary_cumulative.tsv')
     save_table(concise_df, outdir / 'nearest_neighbor_summary_5_10_20.tsv')
     save_table(distance_bin_df, outdir / 'nearest_neighbor_distance_bin_summary.tsv')
     save_table(rolling_df, outdir / 'nearest_neighbor_rolling_enrichment.tsv')
+    save_table(display_checkpoint_df, outdir / 'nearest_neighbor_checkpoint_summary.tsv')
     save_table(permutations, outdir / 'nearest_neighbor_curve_null_permutations.tsv')
     save_table(protein_summary, outdir / 'protein_local_density_summary.tsv')
     save_table(
@@ -308,24 +398,7 @@ def main() -> None:
         outdir / 'clustering_qc.tsv',
     )
 
-    fig, ax = plt.subplots(figsize=(9.0, 5.5))
-    ax.plot(curve['distance_aa'], curve['prob_neighbor_within_x'], label='Observed', linewidth=2.2, color=BREWER_COLORS['orange'])
-    ax.plot(curve['distance_aa'], curve['null_mean_prob_neighbor_within_x'], label='Null mean', linewidth=1.8, linestyle='--', color=BREWER_COLORS['blue'])
-    ax.fill_between(
-        curve['distance_aa'],
-        curve['null_q025_prob_neighbor_within_x'],
-        curve['null_q975_prob_neighbor_within_x'],
-        alpha=0.18,
-        color=BREWER_COLORS['blue'],
-        label='Null 95% interval',
-    )
-    style_axis(ax, grid_axis='both')
-    ax.set_xlabel('Distance X from methyl-Arg (aa)')
-    ax.set_ylabel('P(nearest methyl-Arg <= X)')
-    ax.set_title('Nearest methylarginine neighbor probability curve')
-    ax.legend()
-    fig.tight_layout()
-    save_figure(fig, outdir / 'nearest_neighbor_probability_curve')
+    plot_neighbor_probability_curve(curve, outdir, checkpoint_display=display_checkpoint_df)
 
     curve40 = curve[curve['distance_aa'] <= 40].copy()
     fig1b, ax1b = plt.subplots(figsize=(8.8, 4.8))
@@ -333,14 +406,14 @@ def main() -> None:
         curve40['distance_aa'],
         np.log2(curve40['ratio_prob_neighbor_within_x_vs_null'].replace(0, np.nan)),
         linewidth=2.2,
-        color=BREWER_COLORS['orange'],
+        color=BREWER_COLORS['dark_gray'],
     )
     sig40 = curve40[curve40['empirical_p_greater_prob_neighbor_within_x'] <= 0.05]
     if not sig40.empty:
         ax1b.scatter(
             sig40['distance_aa'],
             np.log2(sig40['ratio_prob_neighbor_within_x_vs_null'].replace(0, np.nan)),
-            color=BREWER_COLORS['purple'],
+            color='#111111',
             s=18,
             zorder=3,
         )
@@ -369,10 +442,10 @@ def main() -> None:
     save_figure(fig1b, outdir / 'arg_methyl_neighbor_cumulative_enrichment')
 
     fig1c, ax1c = plt.subplots(figsize=(8.8, 4.8))
-    ax1c.plot(rolling_df['window_center_aa'], rolling_df['log2_ratio_vs_null'], linewidth=2.2, color=BREWER_COLORS['green'])
+    ax1c.plot(rolling_df['window_center_aa'], rolling_df['log2_ratio_vs_null'], linewidth=2.2, color=BREWER_COLORS['dark_gray'])
     sig_roll = rolling_df[rolling_df['empirical_q_greater'] <= 0.05]
     if not sig_roll.empty:
-        ax1c.scatter(sig_roll['window_center_aa'], sig_roll['log2_ratio_vs_null'], color=BREWER_COLORS['purple'], s=18, zorder=3)
+        ax1c.scatter(sig_roll['window_center_aa'], sig_roll['log2_ratio_vs_null'], color='#111111', s=18, zorder=3)
     style_axis(ax1c, zero='y', grid_axis='both')
     ax1c.set_xlabel('Nearest methyl-Arg distance (rolling 5-aa window)')
     ax1c.set_ylabel('log2(observed/null nearest-neighbor probability)')
@@ -393,14 +466,14 @@ def main() -> None:
     save_figure(fig1c, outdir / 'arg_methyl_neighbor_rolling_enrichment')
 
     fig2, ax2 = plt.subplots(figsize=(9.0, 5.5))
-    ax2.plot(curve['distance_aa'], curve['mean_other_methyl_args_within_x'], label='Observed', linewidth=2.2, color=BREWER_COLORS['green'])
-    ax2.plot(curve['distance_aa'], curve['null_mean_other_methyl_args_within_x'], label='Null mean', linewidth=1.8, linestyle='--', color=BREWER_COLORS['purple'])
+    ax2.plot(curve['distance_aa'], curve['mean_other_methyl_args_within_x'], label='Observed', linewidth=2.2, color=BREWER_COLORS['dark_gray'])
+    ax2.plot(curve['distance_aa'], curve['null_mean_other_methyl_args_within_x'], label='Null mean', linewidth=1.8, linestyle='--', color=BREWER_COLORS['mid_gray'])
     ax2.fill_between(
         curve['distance_aa'],
         curve['null_q025_other_methyl_args_within_x'],
         curve['null_q975_other_methyl_args_within_x'],
         alpha=0.18,
-        color=BREWER_COLORS['purple'],
+        color=BREWER_COLORS['mid_gray'],
         label='Null 95% interval',
     )
     style_axis(ax2, grid_axis='both')
@@ -419,7 +492,7 @@ def main() -> None:
         density_col = f'max_methyl_sites_in_{window}aa_window'
         fig3, ax3 = plt.subplots(figsize=(10.0, 7.0))
         top_dense = top_dense.sort_values([density_col, 'methyl_site_count'], ascending=[True, True])
-        ax3.barh(labels.loc[top_dense.index], top_dense[density_col], color=BREWER_COLORS['teal'], edgecolor='white', linewidth=0.8)
+        ax3.barh(labels.loc[top_dense.index], top_dense[density_col], color=BREWER_COLORS['mid_gray'], edgecolor='white', linewidth=0.8)
         style_axis(ax3, grid_axis='x')
         ax3.set_xlabel(f'Max methyl sites in {window} aa window')
         ax3.set_ylabel('Protein')
@@ -428,40 +501,68 @@ def main() -> None:
         save_figure(fig3, outdir / 'top_proteins_by_local_methyl_arg_density')
 
     if not distance_bin_df.empty:
-        fig4, ax4 = plt.subplots(figsize=(6.8, 4.8))
-        ax4.bar(
-            distance_bin_df['distance_bin'],
-            distance_bin_df['log2_ratio_vs_null'],
-            color=BREWER_COLORS['orange'],
-            edgecolor='white',
-            linewidth=0.8,
-        )
-        style_axis(ax4, zero='y', grid_axis='y')
-        ax4.set_xlabel('Nearest methyl-Arg distance bin')
-        ax4.set_ylabel('log2(observed/null nearest-neighbor probability)')
-        ax4.set_title('Nearest-neighbor probability enrichment summary')
-        for idx, row in distance_bin_df.reset_index(drop=True).iterrows():
-            p_text = f"p={format_p_value(row['empirical_p_greater'])}" if float(row['empirical_p_greater']) <= 0.05 else 'n.s.'
-            ax4.text(
-                idx,
-                float(row['log2_ratio_vs_null']),
-                f"obs={row['observed_probability']:.3f}\nnull={row['null_mean_probability']:.3f}\n{p_text}",
-                ha='center',
-                va='bottom' if float(row['log2_ratio_vs_null']) >= 0 else 'top',
-                fontsize=7.4,
+        plot_bins = distance_bin_df[distance_bin_df['empirical_q_greater'] <= 0.05].copy()
+        if not plot_bins.empty:
+            plot_bins = plot_bins.sort_values('ratio_vs_null', ascending=True).reset_index(drop=True)
+            bar_colors = [BREWER_COLORS['teal'], BREWER_COLORS['blue']][-len(plot_bins):]
+            fig4, ax4 = plt.subplots(figsize=(5.2, 3.7))
+            ax4.barh(
+                plot_bins['distance_bin'],
+                plot_bins['ratio_vs_null'],
+                color=bar_colors,
+                edgecolor='white',
+                linewidth=0.8,
+            )
+            style_axis(ax4, grid_axis='x')
+            ax4.set_xlabel('Observed/null nearest-neighbor probability')
+            ax4.set_ylabel('Nearest methyl-Arg distance bin')
+            ax4.set_title('Short-range methyl-Arg clustering')
+            for idx, row in plot_bins.iterrows():
+                q_text = compact_q_label(row['empirical_q_greater'])
+                compare_text = f'{100.0 * float(row["observed_probability"]):.1f}% vs {100.0 * float(row["null_mean_probability"]):.1f}%'
+                ax4.text(float(row['ratio_vs_null']) + 0.05, idx, f'{compare_text}\n{q_text}', ha='left', va='center', fontsize=8.7, color=BREWER_COLORS['dark_gray'])
+            ax4.set_xlim(0, max(2.6, float(plot_bins['ratio_vs_null'].max()) + 0.65))
+            fig4.text(
+                0.99,
+                0.01,
+                'Only bins with BH q<0.05 are shown. Short-range clustering summary; full curve and null tables are provided separately.',
+                ha='right',
+                va='bottom',
+                fontsize=8,
                 color=BREWER_COLORS['dark_gray'],
             )
-        fig4.text(
+            fig4.tight_layout()
+            save_figure(fig4, outdir / 'arg_methyl_neighbor_clustering_summary')
+
+    if not display_checkpoint_df.empty:
+        fig5, ax5 = plt.subplots(figsize=(5.9, 4.1))
+        x = np.arange(len(display_checkpoint_df))
+        width = 0.34
+        observed_pct = 100.0 * display_checkpoint_df['observed_probability'].to_numpy(dtype=float)
+        null_pct = 100.0 * display_checkpoint_df['null_mean_probability'].to_numpy(dtype=float)
+        ax5.bar(x - width / 2, observed_pct, width=width, color=BREWER_COLORS['blue'], edgecolor='white', linewidth=0.8, label='Observed')
+        ax5.bar(x + width / 2, null_pct, width=width, color=BREWER_COLORS['light_gray'], edgecolor='white', linewidth=0.8, label='Within-protein null')
+        style_axis(ax5, grid_axis='y')
+        ax5.set_xticks(x, display_checkpoint_df['label'])
+        ax5.set_xlabel('Nearest methyl-Arg distance checkpoint')
+        ax5.set_ylabel('% of methyl sites with another methyl-Arg nearby')
+        ax5.set_title('Methyl-Arg sites often occur near another methyl-Arg')
+        ax5.legend(loc='upper right')
+        ymax = max(float(observed_pct.max()), float(null_pct.max()))
+        ax5.set_ylim(0, ymax + 12)
+        for xpos, obs, qv in zip(x - width / 2, observed_pct, display_checkpoint_df['empirical_q_greater']):
+            ax5.text(xpos, obs + 1.6, compact_q_label(qv), ha='center', va='bottom', fontsize=8.6, color=BREWER_COLORS['dark_gray'])
+        fig5.text(
             0.99,
             0.01,
-            'Not an odds ratio: each bar is the observed nearest-neighbor probability in the bin divided by the within-protein permutation null mean.',
+            'Cumulative checkpoint view using the same within-protein permutation null as the full spacing curve.',
             ha='right',
             va='bottom',
             fontsize=8,
             color=BREWER_COLORS['dark_gray'],
         )
-        fig4.tight_layout()
-        save_figure(fig4, outdir / 'arg_methyl_neighbor_clustering_summary')
+        fig5.tight_layout()
+        save_figure(fig5, outdir / 'arg_methyl_neighbor_checkpoint_summary')
 
     print({
         'sites_analyzed': len(sites),
