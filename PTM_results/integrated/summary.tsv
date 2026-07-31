@@ -1,0 +1,2 @@
+rows_union_all	sites_union_dedup	proteins_union_dedup	canonical_accessions_union_naive	sites_support_ge_2_exact	sites_support_ge_2_fuzzy	sites_with_state_annotation	sites_needing_sequence_remap
+28134	13719	5090	5090	1476	1608	1274	18

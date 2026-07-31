@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="620" viewBox="0 0 1320 620">
+<style>
+  svg { background: #FFFFFF; }
+  text {
+    font-family: Arial, "Liberation Sans", "DejaVu Sans", Helvetica, sans-serif;
+    letter-spacing: 0.01em;
+  }
+</style>
+<rect x="0" y="0" width="1320" height="620" fill="#FFFFFF" stroke="none" />
+<text x="52" y="52" fill="#1A2433" font-size="24" text-anchor="start" font-weight="700">Cartoon option for local methylarginine density</text>
+<text x="52" y="80" fill="#637083" font-size="13" text-anchor="start" font-weight="600">Define density visually as the maximum number of methyl-sites captured within the 20 aa window used in the project.</text>
+<rect x="52" y="104" width="185" height="32" rx="16" fill="#F5F8FB" stroke="#D9E1EA" stroke-width="1" />
+<text x="144.5" y="125" fill="#637083" font-size="11.4" text-anchor="middle" font-weight="600">same total track length</text>
+<rect x="252" y="104" width="168" height="32" rx="16" fill="#F5F8FB" stroke="#D9E1EA" stroke-width="1" />
+<text x="336" y="125" fill="#637083" font-size="11.4" text-anchor="middle" font-weight="600">same site chemistry</text>
+<rect x="450" y="104" width="185" height="32" rx="16" fill="#F5F8FB" stroke="#D9E1EA" stroke-width="1" />
+<text x="542.5" y="125" fill="#637083" font-size="11.4" text-anchor="middle" font-weight="600">different local spacing</text>
+<rect x="670" y="104" width="234" height="32" rx="16" fill="#F5F8FB" stroke="#D9E1EA" stroke-width="1" />
+<text x="787" y="125" fill="#637083" font-size="11.4" text-anchor="middle" font-weight="600">density = sites / 20 aa window</text>
+<text x="72" y="206" fill="#1A2433" font-size="18" text-anchor="start" font-weight="700">Diffuse spacing</text>
+<text x="72" y="228" fill="#637083" font-size="11.7" text-anchor="start" font-weight="600">Same total number of methyl-sites, but spread across the IDR.</text>
+<path d="M 280 224 Q 291.11 219.8 302.22 224 Q 313.33 228.2 324.44 224 Q 335.56 219.8 346.67 224 Q 357.78 228.2 368.89 224 Q 380 219.8 391.11 224 Q 402.22 228.2 413.33 224 Q 424.44 219.8 435.56 224 Q 446.67 228.2 457.78 224 Q 468.89 219.8 480 224 Q 491.11 228.2 502.22 224 Q 513.33 219.8 524.44 224 Q 535.56 228.2 546.67 224 Q 557.78 219.8 568.89 224 Q 580 228.2 591.11 224 Q 602.22 219.8 613.33 224 Q 624.44 228.2 635.56 224 Q 646.67 219.8 657.78 224 Q 668.89 228.2 680 224 Q 691.11 219.8 702.22 224 Q 713.33 228.2 724.44 224 Q 735.56 219.8 746.67 224 Q 757.78 228.2 768.89 224 Q 780 219.8 791.11 224 Q 802.22 228.2 813.33 224 Q 824.44 219.8 835.56 224 Q 846.67 228.2 857.78 224 Q 868.89 219.8 880 224 Q 891.11 228.2 902.22 224 Q 913.33 219.8 924.44 224 Q 935.56 228.2 946.67 224 Q 957.78 219.8 968.89 224 Q 980 228.2 991.11 224 Q 1002.22 219.8 1013.33 224 Q 1024.44 228.2 1035.56 224 Q 1046.67 219.8 1057.78 224 Q 1068.89 228.2 1080 224" fill="none" stroke="#8C96A3" stroke-width="2.4" />
+<rect x="537.63" y="190" width="257.63" height="68" rx="18" fill="#EEF4FA" stroke="#C6D3E2" stroke-width="1.2" />
+<text x="666.44" y="182" fill="#4F79A8" font-size="10.8" text-anchor="middle" font-weight="700">20 aa window</text>
+<circle cx="334.24" cy="224" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="456.27" cy="224" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="591.86" cy="224" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="741.02" cy="224" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="890.17" cy="224" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="1039.32" cy="224" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<rect x="823.25" y="204" width="68" height="40" rx="20" fill="white" stroke="#C6D3E2" stroke-width="1.2" />
+<text x="857.25" y="229" fill="#1A2433" font-size="15" text-anchor="middle" font-weight="700">2</text>
+<line x1="280" y1="250" x2="280" y2="256" stroke="#E6ECF2" stroke-width="1.2" />
+<line x1="1080" y1="250" x2="1080" y2="256" stroke="#E6ECF2" stroke-width="1.2" />
+<text x="280" y="272" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="400">1</text>
+<text x="1080" y="272" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="400">60 aa</text>
+<text x="72" y="346" fill="#1A2433" font-size="18" text-anchor="start" font-weight="700">Intermediate clustering</text>
+<text x="72" y="368" fill="#637083" font-size="11.7" text-anchor="start" font-weight="600">Several methyl-sites fall into one window without forming a single tight block.</text>
+<path d="M 280 364 Q 291.11 359.8 302.22 364 Q 313.33 368.2 324.44 364 Q 335.56 359.8 346.67 364 Q 357.78 368.2 368.89 364 Q 380 359.8 391.11 364 Q 402.22 368.2 413.33 364 Q 424.44 359.8 435.56 364 Q 446.67 368.2 457.78 364 Q 468.89 359.8 480 364 Q 491.11 368.2 502.22 364 Q 513.33 359.8 524.44 364 Q 535.56 368.2 546.67 364 Q 557.78 359.8 568.89 364 Q 580 368.2 591.11 364 Q 602.22 359.8 613.33 364 Q 624.44 368.2 635.56 364 Q 646.67 359.8 657.78 364 Q 668.89 368.2 680 364 Q 691.11 359.8 702.22 364 Q 713.33 368.2 724.44 364 Q 735.56 359.8 746.67 364 Q 757.78 368.2 768.89 364 Q 780 359.8 791.11 364 Q 802.22 368.2 813.33 364 Q 824.44 359.8 835.56 364 Q 846.67 368.2 857.78 364 Q 868.89 359.8 880 364 Q 891.11 368.2 902.22 364 Q 913.33 359.8 924.44 364 Q 935.56 368.2 946.67 364 Q 957.78 359.8 968.89 364 Q 980 368.2 991.11 364 Q 1002.22 359.8 1013.33 364 Q 1024.44 368.2 1035.56 364 Q 1046.67 359.8 1057.78 364 Q 1068.89 368.2 1080 364" fill="none" stroke="#8C96A3" stroke-width="2.4" />
+<rect x="537.63" y="330" width="257.63" height="68" rx="18" fill="#EEF4FA" stroke="#C6D3E2" stroke-width="1.2" />
+<text x="666.44" y="322" fill="#4F79A8" font-size="10.8" text-anchor="middle" font-weight="700">20 aa window</text>
+<circle cx="361.36" cy="364" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="510.51" cy="364" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="618.98" cy="364" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="673.22" cy="364" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="713.9" cy="364" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="890.17" cy="364" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<rect x="823.25" y="344" width="68" height="40" rx="20" fill="white" stroke="#C6D3E2" stroke-width="1.2" />
+<text x="857.25" y="369" fill="#1A2433" font-size="15" text-anchor="middle" font-weight="700">4</text>
+<line x1="280" y1="390" x2="280" y2="396" stroke="#E6ECF2" stroke-width="1.2" />
+<line x1="1080" y1="390" x2="1080" y2="396" stroke="#E6ECF2" stroke-width="1.2" />
+<text x="280" y="412" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="400">1</text>
+<text x="1080" y="412" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="400">60 aa</text>
+<text x="72" y="486" fill="#1A2433" font-size="18" text-anchor="start" font-weight="700">High local density</text>
+<text x="72" y="508" fill="#637083" font-size="11.7" text-anchor="start" font-weight="600">Clustered sites create a compact multivalent patch even when the total site count is unchanged.</text>
+<path d="M 280 504 Q 291.11 499.8 302.22 504 Q 313.33 508.2 324.44 504 Q 335.56 499.8 346.67 504 Q 357.78 508.2 368.89 504 Q 380 499.8 391.11 504 Q 402.22 508.2 413.33 504 Q 424.44 499.8 435.56 504 Q 446.67 508.2 457.78 504 Q 468.89 499.8 480 504 Q 491.11 508.2 502.22 504 Q 513.33 499.8 524.44 504 Q 535.56 508.2 546.67 504 Q 557.78 499.8 568.89 504 Q 580 508.2 591.11 504 Q 602.22 499.8 613.33 504 Q 624.44 508.2 635.56 504 Q 646.67 499.8 657.78 504 Q 668.89 508.2 680 504 Q 691.11 499.8 702.22 504 Q 713.33 508.2 724.44 504 Q 735.56 499.8 746.67 504 Q 757.78 508.2 768.89 504 Q 780 499.8 791.11 504 Q 802.22 508.2 813.33 504 Q 824.44 499.8 835.56 504 Q 846.67 508.2 857.78 504 Q 868.89 499.8 880 504 Q 891.11 508.2 902.22 504 Q 913.33 499.8 924.44 504 Q 935.56 508.2 946.67 504 Q 957.78 499.8 968.89 504 Q 980 508.2 991.11 504 Q 1002.22 499.8 1013.33 504 Q 1024.44 508.2 1035.56 504 Q 1046.67 499.8 1057.78 504 Q 1068.89 508.2 1080 504" fill="none" stroke="#8C96A3" stroke-width="2.4" />
+<rect x="537.63" y="470" width="257.63" height="68" rx="18" fill="#EEF4FA" stroke="#C6D3E2" stroke-width="1.2" />
+<text x="666.44" y="462" fill="#4F79A8" font-size="10.8" text-anchor="middle" font-weight="700">20 aa window</text>
+<circle cx="347.8" cy="504" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="591.86" cy="504" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="632.54" cy="504" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="659.66" cy="504" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="686.78" cy="504" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="713.9" cy="504" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<rect x="823.25" y="484" width="68" height="40" rx="20" fill="white" stroke="#C6D3E2" stroke-width="1.2" />
+<text x="857.25" y="509" fill="#1A2433" font-size="15" text-anchor="middle" font-weight="700">5</text>
+<line x1="280" y1="530" x2="280" y2="536" stroke="#E6ECF2" stroke-width="1.2" />
+<line x1="1080" y1="530" x2="1080" y2="536" stroke="#E6ECF2" stroke-width="1.2" />
+<text x="280" y="552" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="400">1</text>
+<text x="1080" y="552" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="400">60 aa</text>
+<rect x="72" y="548" width="168" height="22" rx="11" fill="#E9DFC9" stroke="#736858" stroke-width="1" />
+<text x="156" y="563" fill="#637083" font-size="10.6" text-anchor="middle" font-weight="600">optional: ordered domain edge</text>
+<path d="M 252 559 Q 259.67 555.6 267.33 559 Q 275 562.4 282.67 559 Q 290.33 555.6 298 559 Q 305.67 562.4 313.33 559 Q 321 555.6 328.67 559 Q 336.33 562.4 344 559" fill="none" stroke="#8C96A3" stroke-width="2.0" />
+<text x="352" y="563" fill="#637083" font-size="10.6" text-anchor="start" font-weight="600">optional domain-adjacent version for Figure 2 legend/inset</text>
+<rect x="72" y="578" width="1176" height="24" rx="12" fill="#F7F9FC" stroke="#D9E1EA" stroke-width="1" />
+<text x="660" y="595" fill="#637083" font-size="11.6" text-anchor="middle" font-weight="700">If used in the review, keep it as a small inset or evidence strip rather than a full quantitative panel.</text>
+</svg>

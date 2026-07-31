@@ -1,0 +1,11 @@
+disease_theme	matched_term_count	significant_term_count	best_term	best_q_value	best_log2_fold_enrichment	median_log2_fold_enrichment
+Cancer / neoplasia	828	0	Digestive System Neoplasms	0.35556427785626	3.5977036890129	NA
+Ataxia / cerebellar degeneration	47	0	SPINOCEREBELLAR ATAXIA 17	0.68683164248812	2.62417590037409	NA
+Developmental / congenital syndromes	496	0	CONOTRUNCAL ANOMALY FACE SYNDROME	0.703948638022034	2.96967246639986	NA
+ALS / motor neuron / FTD	24	0	Frontotemporal Lobar Degeneration	0.875168336023903	0.680165849204874	NA
+Alzheimer / tau / dementia	23	0	Alzheimer Disease, Late Onset	0.875168336023903	0.769787444472981	NA
+Parkinsonism	9	0	Parkinsonian Disorders	0.875168336023903	0.34485397686459	NA
+Myopathy / muscle / cardiomyopathy	52	0	Muscular Dystrophy, Duchenne	0.875168336023903	0.220033042198542	NA
+Premature aging / genome instability	16	0	Ataxia Telangiectasia	0.875168336023903	0.533573351593186	NA
+Immune / inflammatory	121	0	Lupus Vulgaris	0.875168336023903	0.168392058751939	NA
+Metabolic / mitochondrial	42	0	Glycogen Storage Disease	0.875168336023903	1.15024471204168	NA

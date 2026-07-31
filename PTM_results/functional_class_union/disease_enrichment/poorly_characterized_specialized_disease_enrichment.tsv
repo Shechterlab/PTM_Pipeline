@@ -1,0 +1,2 @@
+ID	Description	GeneRatio	BgRatio	RichFactor	FoldEnrichment	zScore	pvalue	p.adjust	qvalue	geneID	Count	gene_ratio_num	bg_ratio_num	fold_enrichment	log2_fold_enrichment	target
+C0280631	Leiomyosarcoma of uterus	5/83	60/16946	0.0833333333333333	17.0140562248996	8.7177817946109	1.10320420316066e-05	0.00995090191250918	0.00995090191250918	GAGE12E/GAGE7/GAGE12F/GAGE12G/GAGE12I	5	0.0602409638554217	0.00354065856249262	17.0140562248996	4.08865522165781	Poorly characterized / specialized

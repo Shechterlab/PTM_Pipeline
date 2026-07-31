@@ -1,0 +1,10 @@
+disease_theme	matched_term_count	significant_term_count	significant_term_fraction	best_term	best_q_value	best_log2_fold_enrichment	median_log2_fold_enrichment
+Cancer / neoplasia	84	84	1	Childhood Acute Myeloid Leukemia	0.000180108976234227	0.686030150943956	0.646592412268026
+Developmental / congenital syndromes	71	71	1	Midface retrusion	1.85630605180535e-09	0.905028204325256	0.905028204325256
+Ataxia / cerebellar degeneration	15	15	1	FRIEDREICH ATAXIA 1	5.37796401604938e-05	0.885333610513648	0.813121547015432
+Myopathy / muscle / cardiomyopathy	14	14	1	Myofibrillar Myopathy	9.91298751231175e-05	1.11237614076198	0.967176791664912
+Metabolic / mitochondrial	12	12	1	Mitochondrial abnormalities	9.05655726428563e-05	0.985390488926044	0.987244853753023
+ALS / motor neuron / FTD	9	9	1	Motor neuron atrophy	7.28118789742053e-06	0.894481992727833	0.774775235365949
+Alzheimer / tau / dementia	4	4	1	Frontotemporal dementia	4.84464355657951e-05	0.592171099852891	0.603596569416909
+Immune / inflammatory	3	3	1	Inflammatory Myofibroblastic Tumor	0.000816058742383584	0.865233579534722	0.90880489507074
+Premature aging / genome instability	2	2	1	Werner Syndrome	5.38620787069192e-06	0.916136694380076	0.877434442537273

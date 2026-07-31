@@ -1,0 +1,2 @@
+proteins_tested	proteins_skipped_below_min_sites	protein_window_tests	permutations	min_sites	windows	significant_protein_window_tests	significant_proteins
+1420	3240	11360	1000	3	5,10,15,20,30,50,75,100	471	180

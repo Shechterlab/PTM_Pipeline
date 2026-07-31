@@ -1,0 +1,20 @@
+architecture_class	signed_distance_bin	clustered_window_sites	proteins
+broad across IDR	N 41-100	6	1
+broad across IDR	N 21-40	1	1
+broad across IDR	N <=20	7	3
+broad across IDR	C <=20	29	7
+broad across IDR	C 21-40	14	3
+broad across IDR	C 41-100	13	3
+broad across IDR	C 101-200	13	2
+broad across IDR	C >200	5	1
+domain-distal clustered	N >200	38	10
+domain-distal clustered	N 101-200	58	17
+domain-distal clustered	N 41-100	78	20
+domain-distal clustered	N 21-40	17	4
+domain-distal clustered	C 21-40	31	7
+domain-distal clustered	C 41-100	82	19
+domain-distal clustered	C 101-200	42	12
+domain-distal clustered	C >200	104	24
+domain-proximal clustered	N 21-40	1	1
+domain-proximal clustered	N <=20	33	10
+domain-proximal clustered	C <=20	25	8

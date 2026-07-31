@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="230" viewBox="0 0 1560 230">
+<defs>
+  <filter id="softShadow" x="-20%" y="-20%" width="140%" height="160%">
+    <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#9FB0C8" flood-opacity="0.18" />
+  </filter>
+</defs>
+<style>
+  svg { background: #FFFFFF; }
+  text {
+    font-family: Arial, "Liberation Sans", "DejaVu Sans", Helvetica, sans-serif;
+    letter-spacing: 0.01em;
+  }
+</style>
+<rect x="0" y="0" width="1560" height="230" fill="#FFFFFF" stroke="none" />
+<rect x="20" y="54" width="1520" height="154" rx="26" fill="#FCFDFE" stroke="#E3E8F0" stroke-width="1" filter="url(#softShadow)" />
+<text x="50" y="88" fill="#1A2433" font-size="21" text-anchor="start" font-weight="700" font-style="normal">FUS</text>
+<text x="50" y="112" fill="#637083" font-size="12.2" text-anchor="start" font-weight="600" font-style="normal">clustered RGG/RG-rich IDRs</text>
+<line x1="348" y1="132" x2="931.51" y2="132" stroke="#ECF0F4" stroke-width="2.0" />
+<path d="M 348 132 Q 358.73 128.6 369.45 132 Q 380.18 135.4 390.9 132 Q 401.63 128.6 412.35 132 Q 423.08 135.4 433.8 132 Q 444.53 128.6 455.25 132 Q 465.98 135.4 476.71 132 Q 487.43 128.6 498.16 132 Q 508.88 135.4 519.61 132 Q 530.33 128.6 541.06 132 Q 551.78 135.4 562.51 132" fill="none" stroke="#8C96A3" stroke-width="2.0" />
+<path d="M 563.62 132 Q 574.74 128.6 585.85 132 Q 596.96 135.4 608.08 132 Q 619.19 128.6 630.31 132 Q 641.42 135.4 652.54 132" fill="none" stroke="#8C96A3" stroke-width="2.0" />
+<path d="M 761.46 132 Q 771.46 128.6 781.47 132 Q 791.47 135.4 801.47 132 Q 811.47 128.6 821.48 132" fill="none" stroke="#8C96A3" stroke-width="2.0" />
+<path d="M 852.6 132 Q 865.19 128.6 877.79 132 Q 890.39 135.4 902.98 132 Q 915.58 128.6 928.18 132" fill="none" stroke="#8C96A3" stroke-width="2.0" />
+<path d="M 917.06 132 Q 924.29 128.6 931.51 132" fill="none" stroke="#8C96A3" stroke-width="2.0" />
+<rect x="370" y="122" width="214.51" height="20" rx="10" fill="#F5E9C8" stroke="none" />
+<text x="477.25" y="116" fill="#637083" font-size="11.2" text-anchor="middle" font-weight="600" font-style="normal">PrLD / low complexity</text>
+<text x="767.9" y="116" fill="#637083" font-size="11.3" text-anchor="middle" font-weight="600" font-style="normal">RGG/RG-rich IDRs</text>
+<rect x="585.62" y="123" width="88.92" height="18" rx="9" fill="#F5D6DE" stroke="none" />
+<rect x="783.46" y="123" width="60.02" height="18" rx="9" fill="#F5D6DE" stroke="none" />
+<rect x="874.6" y="123" width="75.58" height="18" rx="9" fill="#F5D6DE" stroke="none" />
+<rect x="939.06" y="122" width="14.45" height="20" rx="10" fill="#E6EEF7" stroke="none" />
+<text x="921.51" y="166" fill="#637083" font-size="11" text-anchor="start" font-weight="600" font-style="normal">PY-NLS</text>
+<rect x="685.65" y="118" width="95.58" height="28" rx="14" fill="#E9DFC9" stroke="#736858" stroke-width="1.25" />
+<text x="733.44" y="136" fill="#1A2433" font-size="10.5" text-anchor="middle" font-weight="600" font-style="normal">RRM</text>
+<rect x="837.92" y="118" width="34.45" height="28" rx="14" fill="#E9DFC9" stroke="#736858" stroke-width="1.25" />
+<text x="855.15" y="136" fill="#1A2433" font-size="9.6" text-anchor="middle" font-weight="600" font-style="normal">ZnF</text>
+<rect x="603.4" y="90" width="66.69" height="30" rx="15" fill="#E8DDE1" stroke="none" opacity="0.55" />
+<rect x="785.68" y="90" width="37.79" height="30" rx="15" fill="#E8DDE1" stroke="none" opacity="0.55" />
+<rect x="891.27" y="90" width="51.13" height="30" rx="15" fill="#E8DDE1" stroke="none" opacity="0.55" />
+<circle cx="605.63" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="608.96" cy="112" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="611.18" cy="128" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="628.97" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="637.86" cy="112" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="640.08" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="644.53" cy="128" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="647.86" cy="114" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="656.75" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="667.87" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="733.44" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="781.24" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="782.35" cy="112" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="787.91" cy="128" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="794.57" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="797.91" cy="112" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="800.13" cy="128" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="806.8" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="821.25" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="893.49" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="894.6" cy="112" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="897.94" cy="128" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="903.5" cy="114" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="907.94" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="910.16" cy="128" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="914.61" cy="112" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="919.06" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="922.39" cy="128" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="927.95" cy="112" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="940.17" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<rect x="1118" y="74" width="260" height="78" rx="22" fill="#DCEBFA" stroke="#7B97B6" stroke-width="1.2" />
+<path d="M 1146 120 C 1136 96 1162 82 1182 92 C 1210 82 1226 112 1206 130 C 1200 152 1160 148 1146 120 Z" fill="#C9DAF0" stroke="#89A6C7" stroke-width="1.1" />
+<path d="M 1150 120 Q 1160 115 1170 120 Q 1180 125 1190 120 Q 1200 115 1210 120" fill="none" stroke="#8E747C" stroke-width="2.0" />
+<circle cx="1164" cy="120" r="3.7" fill="#CBB2B9" stroke="white" stroke-width="0.8" />
+<circle cx="1178" cy="120" r="3.7" fill="#CBB2B9" stroke="white" stroke-width="0.8" />
+<circle cx="1194" cy="120" r="3.7" fill="#CBB2B9" stroke="white" stroke-width="0.8" />
+<rect x="1260" y="98" width="88" height="28" rx="14" fill="white" stroke="#7B97B6" stroke-width="1.1" />
+<text x="1304" y="116" fill="#637083" font-size="10.2" text-anchor="middle" font-weight="600" font-style="normal">Kapβ2</text>
+<text x="1272" y="143" fill="#637083" font-size="10.6" text-anchor="start" font-weight="600" font-style="normal">LLPS / transport outputs</text>
+<rect x="1118" y="162" width="250" height="28" rx="14" fill="#EEF4FA" stroke="#CAD7E7" stroke-width="1" />
+<text x="1243" y="181" fill="#1A2433" font-size="11.2" text-anchor="middle" font-weight="700" font-style="normal">multivalent IDR network tuning</text>
+<text x="1243" y="208" fill="#637083" font-size="10.6" text-anchor="middle" font-weight="600" font-style="normal">LLPS / transport</text>
+<line x1="348" y1="150" x2="348" y2="156" stroke="#ECF0F4" stroke-width="1.4" />
+<line x1="931.51" y1="150" x2="931.51" y2="156" stroke="#ECF0F4" stroke-width="1.4" />
+<text x="348" y="170" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="400" font-style="normal">1</text>
+<text x="931.51" y="170" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="400" font-style="normal">526 aa</text>
+</svg>

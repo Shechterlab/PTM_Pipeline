@@ -1,0 +1,7 @@
+architecture_class	domain_side	clustered_window_sites	proteins	median_abs_distance
+broad across IDR	C-terminal side of domain	74	8	33.0
+broad across IDR	N-terminal side of domain	14	3	19.5
+domain-distal clustered	C-terminal side of domain	259	56	117.0
+domain-distal clustered	N-terminal side of domain	191	44	100.0
+domain-proximal clustered	C-terminal side of domain	25	8	9.0
+domain-proximal clustered	N-terminal side of domain	34	10	12.5

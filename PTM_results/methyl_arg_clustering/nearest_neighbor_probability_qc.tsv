@@ -1,0 +1,2 @@
+integrated_input_sites	sites_analyzed_after_sequence_validation	excluded_sites_without_usable_sequence	proteins_analyzed	permutations	max_distance	restrict_context	null_match_disorder	analysis_type
+13719	12826	893	4657	1000	40	all	True	nearest_neighbor_probability_only

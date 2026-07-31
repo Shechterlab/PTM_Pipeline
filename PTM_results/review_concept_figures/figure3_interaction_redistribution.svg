@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1040" viewBox="0 0 1600 1040">
+<defs>
+  <filter id="softShadow" x="-20%" y="-20%" width="140%" height="160%">
+    <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#A8B7CA" flood-opacity="0.18" />
+  </filter>
+  <marker id="arrowHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <path d="M 0 0 L 10 5 L 0 10 z" fill="#5E6B7D" />
+  </marker>
+</defs>
+<style>
+  svg { background: #FFFFFF; }
+  text {
+    font-family: Arial, "Liberation Sans", "DejaVu Sans", Helvetica, sans-serif;
+    letter-spacing: 0.01em;
+  }
+</style>
+<rect x="0" y="0" width="1600" height="1040" fill="#FFFFFF" stroke="none" />
+<text x="60" y="60" fill="#162131" font-size="25" text-anchor="start" font-weight="700" font-style="normal">Methylarginine redistributes interaction capacity across nucleic-acid, reader, and IDR networks</text>
+<text x="60" y="86" fill="#5E6B7D" font-size="13" text-anchor="start" font-weight="600" font-style="normal">Charge is retained, but donor topology and methyl-face geometry are reweighted across competing interaction outputs.</text>
+<rect x="92" y="182" width="396" height="246" rx="26" fill="#F4E9F9" stroke="#B188C4" stroke-width="1.3" filter="url(#softShadow)" />
+<text x="116" y="218" fill="#162131" font-size="20" text-anchor="start" font-weight="700" font-style="normal">Nucleic-acid binding</text>
+<text x="116" y="258" fill="#5E6B7D" font-size="13" text-anchor="start" font-weight="600"><tspan x="116" dy="0">RGG/RG multivalency</tspan><tspan x="116" dy="18">phosphate and base-edge contacts</tspan><tspan x="116" dy="18">Arg/Rme-base or aromatic contacts</tspan></text>
+<rect x="349" y="277" width="18" height="18" rx="4" fill="white" stroke="#4F79A8" stroke-width="2" />
+<rect x="379" y="277" width="18" height="18" rx="4" fill="white" stroke="#4F79A8" stroke-width="2" />
+<rect x="349" y="307" width="18" height="18" rx="4" fill="white" stroke="#4F79A8" stroke-width="2" />
+<rect x="379" y="307" width="18" height="18" rx="4" fill="white" stroke="#4F79A8" stroke-width="2" />
+<line x1="358" y1="286" x2="388" y2="286" stroke="#4F79A8" stroke-width="1.8" />
+<line x1="358" y1="316" x2="388" y2="316" stroke="#4F79A8" stroke-width="1.8" />
+<line x1="358" y1="286" x2="358" y2="316" stroke="#4F79A8" stroke-width="1.8" />
+<line x1="388" y1="286" x2="388" y2="316" stroke="#4F79A8" stroke-width="1.8" />
+<path d="M 330 342 Q 338 339 346 342 Q 354 345 362 342 Q 370 339 378 342 Q 386 345 394 342 Q 402 339 410 342" fill="none" stroke="#4F79A8" stroke-width="2.2" />
+<text x="374" y="368" fill="#5E6B7D" font-size="11.5" text-anchor="middle" font-weight="600" font-style="normal">RNA / DNA targets</text>
+<rect x="1112" y="182" width="396" height="246" rx="26" fill="#DCEAF7" stroke="#7E9BB9" stroke-width="1.3" filter="url(#softShadow)" />
+<text x="1136" y="218" fill="#162131" font-size="20" text-anchor="start" font-weight="700" font-style="normal">Reader / protein recruitment</text>
+<text x="1136" y="258" fill="#5E6B7D" font-size="13" text-anchor="start" font-weight="600"><tspan x="1136" dy="0">methyl-compatible binding surfaces</tspan><tspan x="1136" dy="18">Tudor domains and WD-repeat pockets</tspan><tspan x="1136" dy="18">transport or other methyl-sensitive interfaces</tspan></text>
+<rect x="1324" y="266" width="76" height="44" rx="16" fill="white" stroke="#7E9BB9" stroke-width="1.4" />
+<circle cx="1346" cy="282" r="4.8" fill="#7E9BB9" stroke="none" />
+<circle cx="1360" cy="282" r="4.8" fill="#7E9BB9" stroke="none" />
+<circle cx="1374" cy="282" r="4.8" fill="#7E9BB9" stroke="none" />
+<path d="M 1342 296 Q 1360 306 1378 296" fill="none" stroke="#7E9BB9" stroke-width="2.0" />
+<rect x="1412" y="272" width="80" height="30" rx="15" fill="white" stroke="#7E9BB9" stroke-width="1.2" />
+<path d="M 1426 287 Q 1452 300 1478 287" fill="none" stroke="#7E9BB9" stroke-width="2.0" />
+<text x="1394" y="368" fill="#5E6B7D" font-size="11.5" text-anchor="middle" font-weight="600" font-style="normal">state-selective compatibility</text>
+<rect x="602" y="692" width="396" height="232" rx="26" fill="#EEF2F6" stroke="#8B9BAE" stroke-width="1.3" filter="url(#softShadow)" />
+<text x="626" y="728" fill="#162131" font-size="20" text-anchor="start" font-weight="700" font-style="normal">IDR self-association / condensates</text>
+<text x="626" y="768" fill="#5E6B7D" font-size="13" text-anchor="start" font-weight="600"><tspan x="626" dy="0">Arg-Tyr cation-pi interactions</tspan><tspan x="626" dy="18">Arg/Rme-aromatic contacts</tspan><tspan x="626" dy="18">RGG/RG network tuning and LLPS</tspan></text>
+<path d="M 860 796 C 850 762 884 744 912 760 C 954 750 974 790 950 816 C 940 844 888 840 860 796 Z" fill="#E9EDF2" stroke="#8B9BAE" stroke-width="1.4" />
+<path d="M 866 796 Q 876 791 886 796 Q 896 801 906 796 Q 916 791 926 796 Q 936 801 946 796" fill="none" stroke="#4E6F9F" stroke-width="2.0" />
+<circle cx="880" cy="796" r="4" fill="#CF6B86" stroke="white" stroke-width="0.8" />
+<circle cx="894" cy="796" r="4" fill="#CF6B86" stroke="white" stroke-width="0.8" />
+<circle cx="910" cy="796" r="4" fill="#CF6B86" stroke="white" stroke-width="0.8" />
+<circle cx="928" cy="796" r="4" fill="#CF6B86" stroke="white" stroke-width="0.8" />
+<circle cx="886" cy="776" r="4.2" fill="#6F8FBF" stroke="none" />
+<circle cx="920" cy="776" r="4.2" fill="#6F8FBF" stroke="none" />
+<text x="876" y="866" fill="#5E6B7D" font-size="11.5" text-anchor="middle" font-weight="600" font-style="normal">material-state tuning</text>
+<circle cx="800" cy="446" r="128" fill="#EEF3F8" stroke="#D3DDE9" stroke-width="1.2" />
+<path d="M 728 464 C 698 404 762 338 828 364 C 892 348 922 424 884 486 C 870 540 792 556 728 464 Z" fill="#E2E7ED" stroke="#BCC7D3" stroke-width="1.2" />
+<path d="M 754 454 Q 765.2 447 776.4 454 Q 787.6 461 798.8 454 Q 810 447 821.2 454 Q 832.4 461 843.6 454 Q 854.8 447 866 454" fill="none" stroke="#4E6F9F" stroke-width="3.0" />
+<circle cx="784" cy="454" r="5.2" fill="#6F8FBF" stroke="white" stroke-width="0.8" />
+<circle cx="808" cy="454" r="5.2" fill="#6F8FBF" stroke="white" stroke-width="0.8" />
+<circle cx="834" cy="454" r="5.2" fill="#6F8FBF" stroke="white" stroke-width="0.8" />
+<circle cx="858" cy="454" r="5.2" fill="#6F8FBF" stroke="white" stroke-width="0.8" />
+<circle cx="798" cy="454" r="5.2" fill="#CF6B86" stroke="white" stroke-width="0.8" />
+<circle cx="824" cy="454" r="5.2" fill="#CF6B86" stroke="white" stroke-width="0.8" />
+<circle cx="846" cy="454" r="5.2" fill="#CF6B86" stroke="white" stroke-width="0.8" />
+<rect x="634" y="278" width="332" height="34" rx="17" fill="#F7F9FC" stroke="#E1E7EF" stroke-width="1" />
+<text x="800" y="300" fill="#162131" font-size="14" text-anchor="middle" font-weight="700" font-style="normal">Arg -&gt; Rme1 / Rme2a / Rme2s</text>
+<text x="800" y="596" fill="#162131" font-size="16" text-anchor="middle" font-weight="700" font-style="normal">RGG/RG-rich IDR hub</text>
+<text x="800" y="618" fill="#5E6B7D" font-size="12.8" text-anchor="middle" font-weight="700" font-style="normal">Interaction redistribution</text>
+<path d="M 690 416 C 618 366 560 340 492 322" fill="none" stroke="#5E6B7D" stroke-width="2.4" marker-end="url(#arrowHead)" />
+<path d="M 910 416 C 982 366 1040 340 1108 322" fill="none" stroke="#5E6B7D" stroke-width="2.4" marker-end="url(#arrowHead)" />
+<path d="M 800 574 C 800 624 800 652 800 690" fill="none" stroke="#5E6B7D" stroke-width="2.4" marker-end="url(#arrowHead)" />
+<rect x="194" y="944" width="1212" height="38" rx="19" fill="#F7F9FC" stroke="#E1E7EF" stroke-width="1" />
+<text x="800" y="968" fill="#5E6B7D" font-size="13" text-anchor="middle" font-weight="700" font-style="normal">Same Arg-rich surface, different dominant outputs: RNA engagement, reader recruitment, or network-driven condensation.</text>
+</svg>

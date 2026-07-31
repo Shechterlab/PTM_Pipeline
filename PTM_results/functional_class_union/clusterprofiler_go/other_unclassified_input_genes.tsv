@@ -1,0 +1,585 @@
+canonical_UniProtAC	primary_symbol	protein_name	functional_class_broad	ENTREZID
+Q9H7C9	AAMDC	Mth938 domain-containing protein (Adipogenesis associated Mth938 domain-containing protein)	Other / unclassified	28971
+E9PR47	AAMDC		Other / unclassified	28971
+Q8NFV4	ABHD11	sn-1-specific diacylglycerol lipase ABHD11 (EC 3.1.1.116) (Alpha/beta hydrolase domain-containing protein 11) (Abhydrolase domain-containing protein 11) (Williams-Beuren syndrome chromosomal region 21 protein)	Other / unclassified	83451
+Q8N6N7	ACBD7	Acyl-CoA-binding domain-containing protein 7	Other / unclassified	414149
+P35611	ADD1	Alpha-adducin; ; Alpha-adducin (Erythrocyte adducin subunit alpha)	Other / unclassified	118
+Q9UEY8	ADD3	Gamma-adducin; ; Gamma-adducin (Adducin-like protein 70)	Other / unclassified	120
+O00116	AGPS	Alkyldihydroxyacetonephosphate synthase, peroxisomal precursor; ; Alkyldihydroxyacetonephosphate synthase, peroxisomal (Alkyl-DHAP synthase) (EC 2.5.1.26) (Aging-associated gene 5 protein) (Alkylglycerone-phosphate synthase)	Other / unclassified	8540
+Q09666	AHNAK	Neuroblast differentiation-associated protein AHNAK; ; Neuroblast differentiation-associated protein AHNAK (Desmoyokin)	Other / unclassified	79026
+Q96B36	AKT1S1	Proline-rich AKT1 substrate 1; ; Proline-rich AKT1 substrate 1 (40 kDa proline-rich AKT substrate)	Other / unclassified	84335
+O75342	ALOX12B	Arachidonate 12-lipoxygenase, 12R-type; ; Arachidonate 12-lipoxygenase, 12R-type (12R-LOX) (12R-lipoxygenase) (EC 1.13.11.-) (Epidermis-type lipoxygenase 12)	Other / unclassified	242
+O95841	ANGPTL1	Angiopoietin-related protein 1 (Angiopoietin-3) (ANG-3) (Angiopoietin-like protein 1)	Other / unclassified	9068
+Q9BY76	ANGPTL4	Angiopoietin-related protein 4 precursor; ; Angiopoietin-related protein 4 (Angiopoietin-like protein 4) (Hepatic fibrinogen/angiopoietin-related protein) (HFARP) [Cleaved into: ANGPTL4 N-terminal chain; ANGPTL4 C-terminal chain]	Other / unclassified	51129
+Q86XS5	ANGPTL5	Angiopoietin-related protein 5 precursor; ; Angiopoietin-related protein 5 (Angiopoietin-like protein 5)	Other / unclassified	253935
+Q6AI12	ANKRD40	Ankyrin repeat domain-containing protein 40; ; Ankyrin repeat domain-containing protein 40	Other / unclassified	91369
+Q92625	ANKS1A	Ankyrin repeat and SAM domain-containing protein 1A; ; Ankyrin repeat and SAM domain-containing protein 1A (Odin)	Other / unclassified	23294
+P50995	ANXA11	Annexin A11; ; Annexin A11 (56 kDa autoantigen) (Annexin XI) (Annexin-11) (Calcyclin-associated annexin 50) (CAP-50)	Other / unclassified	311
+P09525	ANXA4	Annexin A4; ; Annexin A4 (35-beta calcimedin) (Annexin IV) (Annexin-4) (Carbohydrate-binding protein p33/p41) (Chromobindin-4) (Endonexin I) (Lipocortin IV) (P32.5) (PP4-X) (Placental anticoagulant protein II) (PAP-II) (Protein II)	Other / unclassified	307
+P08758	ANXA5	Annexin A5; ; Annexin A5 (Anchorin CII) (Annexin V) (Annexin-5) (Calphobindin I) (CPB-I) (Endonexin II) (Lipocortin V) (Placental anticoagulant protein 4) (PP4) (Placental anticoagulant protein I) (PAP-I) (Thromboplastin inhibitor) (Vascular anticoagulant-alpha) (VAC-alpha)	Other / unclassified	308
+P08133	ANXA6	Annexin A6; ; Annexin A6 (67 kDa calelectrin) (Annexin VI) (Annexin-6) (Calphobindin-II) (CPB-II) (Chromobindin-20) (Lipocortin VI) (Protein III) (p68) (p70)	Other / unclassified	309
+P20073	ANXA7	Annexin A7; ; Annexin A7 (Annexin VII) (Annexin-7) (Synexin)	Other / unclassified	310
+Q5VT79	ANXA8	Annexin A8-like protein 1	Other / unclassified	653145
+Q9NWB6	ARGLU1	Arginine and glutamate-rich protein 1; ; Arginine and glutamate-rich protein 1	Other / unclassified	55082
+E9PMR6	ARHGEF12		Other / unclassified	23365
+Q9NZN5	ARHGEF12	Rho guanine nucleotide exchange factor 12; ; Rho guanine nucleotide exchange factor 12 (Leukemia-associated RhoGEF)	Other / unclassified	23365
+O94989	ARHGEF15	Rho guanine nucleotide exchange factor 15; ; Rho guanine nucleotide exchange factor 15 (Ephexin-5) (E5) (Vsm-RhoGEF)	Other / unclassified	22899
+Q5VV41	ARHGEF16	Rho guanine nucleotide exchange factor 16; ; Rho guanine nucleotide exchange factor 16 (Ephexin-4)	Other / unclassified	27237
+Q96DR7	ARHGEF26	Rho guanine nucleotide exchange factor 26; ; Rho guanine nucleotide exchange factor 26 (SH3 domain-containing guanine exchange factor)	Other / unclassified	26084
+Q8TER5	ARHGEF40	Rho guanine nucleotide exchange factor 40; ; Rho guanine nucleotide exchange factor 40 (Protein SOLO) (Scambio) (Sabi)	Other / unclassified	55701
+A0A2R8YF49	ARHGEF5		Other / unclassified	7984
+O43307	ARHGEF9	Rho guanine nucleotide exchange factor 9; ; Rho guanine nucleotide exchange factor 9 (Collybistin) (PEM-2 homolog) (Rac/Cdc42 guanine nucleotide exchange factor 9)	Other / unclassified	23229
+Q9Y2Y0	ARL2BP	ADP-ribosylation factor-like protein 2-binding protein (ARF-like 2-binding protein) (ARL2-binding protein) (Binder of ARF2 protein 1)	Other / unclassified	23568
+Q7Z6K5	ARPIN	Arpin (Arp2/3 inhibition protein)	Other / unclassified	348110
+P56211	ARPP19	cAMP-regulated phosphoprotein 19; ; cAMP-regulated phosphoprotein 19 (ARPP-19)	Other / unclassified	10776
+Q9UBL0	ARPP21	cAMP-regulated phosphoprotein 21; ; cAMP-regulated phosphoprotein 21 (ARPP-21) (Thymocyte cAMP-regulated phosphoprotein)	Other / unclassified	10777
+D6RG30	ASTE1		Other / unclassified	28990
+P54253	ATXN1	Ataxin-1; ; Ataxin-1 (Spinocerebellar ataxia type 1 protein)	Other / unclassified	6310
+P0C7T5	ATXN1L	Ataxin-1-like; ; Ataxin-1-like (Brother of ataxin-1) (Brother of ATXN1)	Other / unclassified	342371
+F5H4C0	ATXN3		Other / unclassified	4287
+O15265	ATXN7	Ataxin-7; ; Ataxin-7 (Spinocerebellar ataxia type 7 protein)	Other / unclassified	6314
+Q9ULK2	ATXN7L1	Ataxin-7-like protein 1; ; Ataxin-7-like protein 1 (Ataxin-7-like protein 4)	Other / unclassified	222255
+Q9NQS1	AVEN	Cell death regulator Aven; ; Cell death regulator Aven	Other / unclassified	57099
+Q92934	BAD	Bcl2-associated agonist of cell death; ; Bcl2-associated agonist of cell death (BAD) (Bcl-2-binding component 6) (Bcl-2-like protein 8) (Bcl2-L-8) (Bcl-xL/Bcl-2-associated death promoter) (Bcl2 antagonist of cell death)	Other / unclassified	572
+O75531	BANF1	Barrier-to-autointegration factor; ; Barrier-to-autointegration factor (Breakpoint cluster region protein 1) [Cleaved into: Barrier-to-autointegration factor, N-terminally processed]	Other / unclassified	8815
+Q07812	BAX	Apoptosis regulator BAX; ; Apoptosis regulator BAX (Bcl-2-like protein 4) (Bcl2-L-4)	Other / unclassified	581
+E9PAW3	BBC3		Other / unclassified	27113
+Q9BXH1	BBC3	Bcl-2-binding component 3, isoforms 1/2; ; Bcl-2-binding component 3, isoforms 1/2 (JFY-1) (p53 up-regulated modulator of apoptosis)	Other / unclassified	27113
+Q96PG8	BBC3	Bcl-2-binding component 3, isoforms 3/4 (JFY-1) (p53 up-regulated modulator of apoptosis)	Other / unclassified	27113
+Q8IWZ6	BBS7	Bardet-Biedl syndrome 7 protein; ; BBSome complex member BBS7 (BBS2-like protein 1) (Bardet-Biedl syndrome 7 protein)	Other / unclassified	55212
+Q9HB09	BCL2L12	Bcl-2-like protein 12; ; Bcl-2-like protein 12 (Bcl2-L-12) (Bcl-2-related proline-rich protein)	Other / unclassified	83596
+Q4VC05	BCL7A	B-cell CLL/lymphoma 7 protein family member A; ; B-cell CLL/lymphoma 7 protein family member A	Other / unclassified	605
+Q8WUZ0	BCL7C	B-cell CLL/lymphoma 7 protein family member C; ; B-cell CLL/lymphoma 7 protein family member C	Other / unclassified	9274
+P11274	BCR	Breakpoint cluster region protein; ; Breakpoint cluster region protein (EC 2.7.11.1) (Renal carcinoma antigen NY-REN-26)	Other / unclassified	613
+Q5T5X7	BEND3	BEN domain-containing protein 3; ; BEN domain-containing protein 3	Other / unclassified	57673
+Q5SZJ8	BEND6	BEN domain-containing protein 6	Other / unclassified	221336
+F5H7H5	BEX2		Other / unclassified	84707
+Q8TD16	BICD2	Protein bicaudal D homolog 2; ; Protein bicaudal D homolog 2 (Bic-D 2)	Other / unclassified	23299
+P54132	BLM	RecQ-like DNA helicase BLM; ; RecQ-like DNA helicase BLM (EC 5.6.2.4) (Bloom syndrome protein) (DNA 3'-5' helicase BLM) (DNA helicase, RecQ-like type 2) (RecQ2) (RecQ protein-like 3)	Other / unclassified	641
+Q2LD37	BLTP1	Bridge-like lipid transfer protein family member 1; ; Bridge-like lipid transfer protein family member 1 (Fragile site-associated protein)	Other / unclassified	84162
+Q96IK1	BOD1	Biorientation of chromosomes in cell division protein 1; ; Biorientation of chromosomes in cell division protein 1 (Biorientation defective protein 1) (Protein FAM44B)	Other / unclassified	91272
+Q8NFC6	BOD1L1	Biorientation of chromosomes in cell division protein 1-like 1; ; Biorientation of chromosomes in cell division protein 1-like 1	Other / unclassified	259282
+Q9NW68	BSDC1	BSD domain-containing protein 1; ; BSD domain-containing protein 1	Other / unclassified	55108
+Q10588	BST1	ADP-ribosyl cyclase/cyclic ADP-ribose hydrolase 2 precursor; ; ADP-ribosyl cyclase/cyclic ADP-ribose hydrolase 2 (EC 3.2.2.6) (ADP-ribosyl cyclase 2) (Bone marrow stromal cell antigen 1) (BST-1) (Cyclic ADP-ribose hydrolase 2) (cADPR hydrolase 2) (CD antigen CD157)	Other / unclassified	683
+Q9BRD0	BUD13	BUD13 homolog; ; BUD13 homolog	Other / unclassified	84811
+Q4AC94	C2CD3	C2 domain-containing protein 3; ; C2 domain-containing protein 3	Other / unclassified	26005
+Q8TF44	C2CD4C	C2 calcium-dependent domain-containing protein 4C; ; C2 calcium-dependent domain-containing protein 4C (Nuclear-localized factor 3) (Protein FAM148C)	Other / unclassified	126567
+O75493	CA11	Carbonic anhydrase-related protein 11 precursor; ; Carbonic anhydrase-related protein 11 (CA-RP XI) (CA-XI) (CARP XI) (Carbonic anhydrase-related protein 2) (CA-RP II) (CARP-2)	Other / unclassified	770
+P43166	CA7	Carbonic anhydrase 7 (EC 4.2.1.1) (Carbonate dehydratase VII) (Carbonic anhydrase VII) (CA-VII)	Other / unclassified	766
+Q9NZU7	CABP1	Calcium-binding protein 1; ; Calcium-binding protein 1 (CaBP1) (Calbrain) (Caldendrin)	Other / unclassified	9478
+P27482	CALML3	Calmodulin-like protein 3 (CaM-like protein) (CLP) (Calmodulin-related protein NB-1)	Other / unclassified	810
+P27797	CALR	Calreticulin precursor; ; Calreticulin (CRP55) (Calregulin) (Endoplasmic reticulum resident protein 60) (ERp60) (HACBP) (grp60)	Other / unclassified	811
+O43852	CALU	Calumenin precursor; ; Calumenin (Crocalbin) (IEF SSP 9302)	Other / unclassified	813
+P49069	CAMLG	Guided entry of tail-anchored proteins factor CAMLG; ; Guided entry of tail-anchored proteins factor CAMLG (Calcium signal-modulating cyclophilin ligand)	Other / unclassified	819
+Q9BX69	CARD6	Caspase recruitment domain-containing protein 6; ; Caspase recruitment domain-containing protein 6	Other / unclassified	84674
+Q6XLA1	CASC2	Protein CASC2, isoform 3 (Cancer susceptibility candidate gene 2 protein, isoform 3)	Other / unclassified	255082
+P04040	CAT	Catalase; ; Catalase (EC 1.11.1.6)	Other / unclassified	847
+O95810	CAVIN2	Caveolae-associated protein 2; ; Caveolae-associated protein 2 (Cavin-2) (PS-p68) (Phosphatidylserine-binding protein) (Serum deprivation-response protein)	Other / unclassified	8436
+Q13951	CBFB	Core-binding factor subunit beta; ; Core-binding factor subunit beta (CBF-beta) (Polyomavirus enhancer-binding protein 2 beta subunit) (PEA2-beta) (PEBP2-beta) (SL3-3 enhancer factor 1 subunit beta) (SL3/AKV core-binding factor beta subunit)	Other / unclassified	865
+P35520	CBS	Cystathionine beta-synthase; ; Cystathionine beta-synthase (EC 4.2.1.22) (Beta-thionase) (Serine sulfhydrase)	Other / unclassified	875
+Q14781	CBX2	Chromobox protein homolog 2; ; Chromobox protein homolog 2	Other / unclassified	84733
+O00257	CBX4	E3 SUMO-protein ligase CBX4; ; E3 SUMO-protein ligase CBX4 (EC 2.3.2.-) (Chromobox protein homolog 4) (Polycomb 2 homolog) (Pc2) (hPc2)	Other / unclassified	8535
+Q9HC52	CBX8	Chromobox protein homolog 8; ; Chromobox protein homolog 8 (Polycomb 3 homolog) (Pc3) (hPc3) (Rectachrome 1)	Other / unclassified	57332
+Q9H0I3	CCDC113	Cilia- and flagella-associated protein 263	Other / unclassified	NA
+O75909	CCNK	Cyclin-K; ; Cyclin-K	Other / unclassified	8812
+Q9Y5K6	CD2AP	CD2-associated protein; ; CD2-associated protein (Adapter protein CMS) (Cas ligand with multiple SH3 domains)	Other / unclassified	23607
+Q8IWY9	CDAN1	Codanin-1; ; Codanin-1	Other / unclassified	146059
+Q9UJX2	CDC23	Cell division cycle protein 23 homolog; ; Cell division cycle protein 23 homolog (Anaphase-promoting complex subunit 8) (APC8) (Cyclosome subunit 8)	Other / unclassified	8697
+O75419	CDC45	Cell division control protein 45 homolog; ; Cell division control protein 45 homolog (PORC-PI-1)	Other / unclassified	8318
+E9PDH7	CDC45		Other / unclassified	8318
+Q99741	CDC6	Cell division control protein 6 homolog; ; Cell division control protein 6 homolog (CDC6-related protein) (Cdc18-related protein) (HsCdc18) (p62(cdc6)) (HsCDC6)	Other / unclassified	990
+Q96JB5	CDK5RAP3	CDK5 regulatory subunit-associated protein 3; ; CDK5 regulatory subunit-associated protein 3 (CDK5 activator-binding protein C53) (LXXLL/leucine-zipper-containing ARF-binding protein) (Protein HSF-27)	Other / unclassified	80279
+F5H3I5	CDK5RAP3		Other / unclassified	80279
+Q9UKY7	CDV3	Protein CDV3 homolog; ; Protein CDV3 homolog	Other / unclassified	55573
+P53567	CEBPG	CCAAT/enhancer-binding protein gamma; ; CCAAT/enhancer-binding protein gamma (C/EBP gamma)	Other / unclassified	1054
+O15182	CETN3	Centrin-3; ; Centrin-3	Other / unclassified	1070
+Q96RK0	CIC	Protein capicua homolog; ; Protein capicua homolog	Other / unclassified	23152
+I3L2J0	CIC		Other / unclassified	23152
+Q3SX64	CIMAP1D	Protein CIMAP1D (CIMAP1 family member D) (Outer dense fiber protein 3-like protein 2)	Other / unclassified	284451
+Q8N2M8	CLASRP	CLK4-associating serine/arginine rich protein; ; CLK4-associating serine/arginine rich protein (Splicing factor, arginine/serine-rich 16) (Suppressor of white-apricot homolog 2)	Other / unclassified	11129
+Q2KHT3	CLEC16A	Protein CLEC16A; ; Protein CLEC16A (C-type lectin domain family 16 member A)	Other / unclassified	23274
+F5H4D0	CLEC16A		Other / unclassified	23274
+O14967	CLGN	Calmegin precursor; ; Calmegin	Other / unclassified	1047
+Q9HAW4	CLSPN	Claspin; ; Claspin (hClaspin)	Other / unclassified	63967
+E7ESG2	CLSPN		Other / unclassified	63967
+Q96AJ1	CLUAP1	Clusterin-associated protein 1; ; Clusterin-associated protein 1 (Qilin)	Other / unclassified	23059
+Q86X83	COMMD2	COMM domain-containing protein 2	Other / unclassified	51122
+Q9H0A8	COMMD4	COMM domain-containing protein 4	Other / unclassified	54939
+Q96FN4	CPNE2	Copine-2 (Copine II)	Other / unclassified	221184
+Q9HCH3	CPNE5	Copine-5; ; Copine-5 (Copine V)	Other / unclassified	57699
+Q9H3G5	CPVL	Probable serine carboxypeptidase CPVL precursor; ; Probable serine carboxypeptidase CPVL (EC 3.4.16.-) (Carboxypeptidase, vitellogenic-like) (Vitellogenic carboxypeptidase-like protein) (VCP-like protein) (hVLP)	Other / unclassified	54504
+Q9UGL9	CRCT1	Cysteine-rich C-terminal protein 1 (Protein NICE-1)	Other / unclassified	54544
+P16220	CREB1	Cyclic AMP-responsive element-binding protein 1; ; Cyclic AMP-responsive element-binding protein 1 (CREB-1) (cAMP-responsive element-binding protein 1)	Other / unclassified	1385
+Q02930	CREB5	Cyclic AMP-responsive element-binding protein 5; ; Cyclic AMP-responsive element-binding protein 5 (CREB-5) (cAMP-responsive element-binding protein 5) (cAMP-response element-binding protein A) (CRE-BPa)	Other / unclassified	9586
+O60519	CREBL2	cAMP-responsive element-binding protein-like 2	Other / unclassified	1389
+P50238	CRIP1	Cysteine-rich protein 1; ; Cysteine-rich protein 1 (CRP-1) (Cysteine-rich heart protein) (CRHP) (hCRHP) (Cysteine-rich intestinal protein) (CRIP)	Other / unclassified	1396
+Q9H336	CRISPLD1	Cysteine-rich secretory protein LCCL domain-containing 1 (CocoaCrisp) (Cysteine-rich secretory protein 10) (CRISP-10) (LCCL domain-containing cysteine-rich secretory protein 1) (Trypsin inhibitor Hl)	Other / unclassified	83690
+P46108	CRK	Adapter molecule crk; ; Adapter molecule crk (Proto-oncogene c-Crk) (p38)	Other / unclassified	1398
+P46109	CRKL	Crk-like protein; ; Crk-like protein	Other / unclassified	1399
+P05813	CRYBA1	Beta-crystallin A3; ; Beta-crystallin A3 [Cleaved into: Beta-crystallin A3, isoform A1, Delta4 form; Beta-crystallin A3, isoform A1, Delta7 form; Beta-crystallin A3, isoform A1, Delta8 form]	Other / unclassified	1411
+P53674	CRYBB1	Beta-crystallin B1; ; Beta-crystallin B1 (Beta-B1 crystallin)	Other / unclassified	1414
+P07320	CRYGD	Gamma-crystallin D (Gamma-D-crystallin) (Gamma-crystallin 4)	Other / unclassified	1421
+Q16527	CSRP2	Cysteine and glycine-rich protein 2; ; Cysteine and glycine-rich protein 2 (Cysteine-rich protein 2) (CRP2) (LIM domain only protein 5) (LMO-5) (Smooth muscle cell LIM protein) (SmLIM)	Other / unclassified	1466
+Q9H112	CST11	Cystatin-11	Other / unclassified	140880
+P04080	CSTB	Cystatin-B; ; Cystatin-B (CPI-B) (Liver thiol proteinase inhibitor) (Stefin-B)	Other / unclassified	1476
+Q86UF2	CTAGE6	cTAGE family member 6 (Protein cTAGE-6)	Other / unclassified	340307
+P26232	CTNNA2	Catenin alpha-2; ; Catenin alpha-2 (Alpha N-catenin) (Alpha-catenin-related protein)	Other / unclassified	1496
+Q9UBT7	CTNNAL1	Alpha-catulin; ; Alpha-catulin (Alpha-catenin-related protein) (ACRP) (Catenin alpha-like protein 1)	Other / unclassified	8727
+Q2TBE0	CWF19L2	CWF19-like protein 2; ; CWF19-like protein 2	Other / unclassified	143884
+P00167	CYB5A	Cytochrome b5; ; Cytochrome b5 (Microsomal cytochrome b5 type A) (MCB5)	Other / unclassified	1528
+Q6P9G0	CYB5D1	Cytochrome b5 domain-containing protein 1	Other / unclassified	124637
+Q14093	CYLC2	Cylicin-2; ; Cylicin-2 (Cylicin II) (Multiple-band polypeptide II)	Other / unclassified	1539
+Q4G0S4	CYP27C1	Cytochrome P450 27C1 (EC 1.14.19.53) (All-trans retinol 3,4-desaturase)	Other / unclassified	339761
+P11509	CYP2A6	Cytochrome P450 2A6; ; Cytochrome P450 2A6 (EC 1.14.14.-) (1,4-cineole 2-exo-monooxygenase) (CYPIIA6) (Coumarin 7-hydroxylase) (Cytochrome P450 IIA3) (Cytochrome P450(I))	Other / unclassified	1548
+P24462	CYP3A7	Cytochrome P450 3A7 (EC 1.14.14.1) (CYPIIIA7) (Cytochrome P450-HFLA) (P450HLp2)	Other / unclassified	1551
+Q9HBI6	CYP4F11	Cytochrome P450 4F11 (CYPIVF11) (EC 1.14.14.1) (3-hydroxy fatty acids omega-hydroxylase CYP4F11) (Docosahexaenoic acid omega-hydroxylase) (EC 1.14.14.79) (Long-chain fatty acid omega-monooxygenase) (EC 1.14.14.80) (Phylloquinone omega-hydroxylase CYP4F11) (EC 1.14.14.78)	Other / unclassified	57834
+Q9NUQ9	CYRIB	CYFIP-related Rac1 interactor B; ; CYFIP-related Rac1 interactor B (L1)	Other / unclassified	51571
+P98082	DAB2	Disabled homolog 2; ; Disabled homolog 2 (Adaptor molecule disabled-2) (Differentially expressed in ovarian carcinoma 2) (DOC-2) (Differentially-expressed protein 2)	Other / unclassified	1601
+Q9NYF0	DACT1	Dapper homolog 1; ; Dapper homolog 1 (hDPR1) (Dapper antagonist of catenin 1) (Hepatocellular carcinoma novel gene 3 protein)	Other / unclassified	51339
+Q96B18	DACT3	Dapper homolog 3; ; Dapper homolog 3 (Antagonist of beta-catenin Dapper homolog 3) (Arginine-rich region 1 protein) (Dapper antagonist of catenin 3)	Other / unclassified	147906
+Q96JK2	DCAF5	DDB1- and CUL4-associated factor 5; ; DDB1- and CUL4-associated factor 5 (Breakpoint cluster region protein 2) (BCRP2) (WD repeat-containing protein 22)	Other / unclassified	8816
+P61962	DCAF7	DDB1- and CUL4-associated factor 7; ; DDB1- and CUL4-associated factor 7 (WD repeat-containing protein 68) (WD repeat-containing protein An11 homolog)	Other / unclassified	10238
+P81605	DCD	Dermcidin precursor; ; Dermcidin (EC 3.4.-.-) (Preproteolysin) [Cleaved into: Survival-promoting peptide; DCD-1]	Other / unclassified	117159
+P40126	DCT	L-dopachrome tautomerase precursor; ; L-dopachrome tautomerase (DCT) (DT) (EC 5.3.3.12) (L-dopachrome Delta-isomerase) (Tyrosinase-related protein 2) (TRP-2) (TRP2)	Other / unclassified	1638
+Q8NEL9	DDHD1	Phospholipase DDHD1; ; Phospholipase DDHD1 (EC 3.1.1.111) (EC 3.1.1.32) (DDHD domain-containing protein 1) (Phosphatidic acid-preferring phospholipase A1 homolog) (PA-PLA1) (EC 3.1.1.118) (Phospholipid sn-1 acylhydrolase)	Other / unclassified	80821
+P30046	DDT	D-dopachrome decarboxylase; ; D-dopachrome decarboxylase (EC 4.1.1.84) (D-dopachrome tautomerase) (Phenylpyruvate tautomerase II)	Other / unclassified	1652
+P35659	DEK	Protein DEK; ; Protein DEK	Other / unclassified	7913
+Q14129	DGCR6	Protein DGCR6 (DiGeorge syndrome critical region 6)	Other / unclassified	8214
+P00374	DHFR	Dihydrofolate reductase (EC 1.5.1.3)	Other / unclassified	1719
+P49366	DHPS	Deoxyhypusine synthase; ; Deoxyhypusine synthase (DHS) (EC 2.5.1.46)	Other / unclassified	1725
+C4P0B0	DISC1		Other / unclassified	27185
+Q9NRI5	DISC1	Disrupted in schizophrenia 1 protein; ; Disrupted in schizophrenia 1 protein	Other / unclassified	27185
+O95886	DLGAP3	Disks large-associated protein 3 (DAP-3) (PSD-95/SAP90-binding protein 3) (SAP90/PSD-95-associated protein 3) (SAPAP3)	Other / unclassified	58512
+Q15398	DLGAP5	Disks large-associated protein 5; ; Disks large-associated protein 5 (DAP-5) (Discs large homolog 7) (Disks large-associated protein DLG7) (Hepatoma up-regulated protein) (HURP)	Other / unclassified	9787
+Q7Z7J5	DPPA2	Developmental pluripotency-associated protein 2 (Pluripotent embryonic stem cell-related gene 1 protein)	Other / unclassified	151871
+P57055	DSCR6	Protein ripply3 (Down syndrome critical region protein 6)	Other / unclassified	NA
+Q6ZMT9	DTHD1	Death domain-containing protein 1	Other / unclassified	401124
+Q9H8V3	ECT2	Protein ECT2; ; Protein ECT2 (Epithelial cell-transforming sequence 2 oncogene)	Other / unclassified	1894
+Q5T8I3	EEIG2	EEIG family member 2; ; EEIG family member 2 (EEIG2)	Other / unclassified	284611
+Q9BUP0	EFHD1	EF-hand domain-containing protein D1; ; EF-hand domain-containing protein D1 (EF-hand domain-containing protein 1) (Swiprosin-2)	Other / unclassified	80303
+P50402	EMD	Emerin; ; Emerin	Other / unclassified	2010
+Q8N8S7	ENAH	Protein enabled homolog; ; Protein enabled homolog	Other / unclassified	55740
+Q8NFI3	ENGASE	Cytosolic endo-beta-N-acetylglucosaminidase; ; Cytosolic endo-beta-N-acetylglucosaminidase (ENGase) (EC 3.2.1.96)	Other / unclassified	64772
+P09104	ENO2	Gamma-enolase; ; Gamma-enolase (EC 4.2.1.11) (2-phospho-D-glycerate hydro-lyase) (Enolase 2) (Neural enolase) (Neuron-specific enolase) (NSE)	Other / unclassified	2026
+P13929	ENO3	Beta-enolase; ; Beta-enolase (EC 4.2.1.11) (2-phospho-D-glycerate hydro-lyase) (Enolase 3) (Muscle-specific enolase) (MSE) (Skeletal muscle enolase)	Other / unclassified	2027
+Q9H2F5	EPC1	Enhancer of polycomb homolog 1; ; Enhancer of polycomb homolog 1	Other / unclassified	80314
+Q52LR7	EPC2	Enhancer of polycomb homolog 2; ; Enhancer of polycomb homolog 2 (EPC-like)	Other / unclassified	26122
+Q96J88	EPSTI1	Epithelial-stromal interaction protein 1	Other / unclassified	94240
+O15083	ERC2	ERC protein 2; ; ERC protein 2	Other / unclassified	26059
+P84090	ERH	Enhancer of rudimentary homolog; ; Enhancer of rudimentary homolog	Other / unclassified	2079
+Q96HE7	ERO1A	ERO1-like protein alpha precursor; ; ERO1-like protein alpha (ERO1-L) (ERO1-L-alpha) (EC 1.8.3.2) (Endoplasmic oxidoreductin-1-like protein) (Endoplasmic reticulum oxidoreductase alpha) (Oxidoreductin-1-L-alpha)	Other / unclassified	30001
+Q9BS26	ERP44	Endoplasmic reticulum resident protein 44 precursor; ; Endoplasmic reticulum resident protein 44 (ER protein 44) (ERp44) (Thioredoxin domain-containing protein 4)	Other / unclassified	23071
+Q96DF8	ESS2	Splicing factor ESS-2 homolog; ; Splicing factor ESS-2 homolog (DiGeorge syndrome critical region 13) (DiGeorge syndrome critical region 14) (DiGeorge syndrome protein H) (DGS-H) (Protein ES2)	Other / unclassified	8220
+Q9NY74	ETAA1	Ewing's tumor-associated antigen 1; ; Ewing's tumor-associated antigen 1 (Ewing's tumor-associated antigen 16)	Other / unclassified	54465
+P38117	ETFB	Electron transfer flavoprotein subunit beta; ; Electron transfer flavoprotein subunit beta (Beta-ETF)	Other / unclassified	2109
+B9A6I9	EVI5L		Other / unclassified	115704
+Q86X51	EZHIP	EZH inhibitory protein; ; EZH inhibitory protein	Other / unclassified	340602
+Q01469	FABP5	Fatty acid-binding protein 5; ; Fatty acid-binding protein 5 (Epidermal-type fatty acid-binding protein) (E-FABP) (Fatty acid-binding protein, epidermal) (Psoriasis-associated fatty acid-binding protein homolog) (PA-FABP)	Other / unclassified	2171
+Q0Z7S8	FABP9	Fatty acid-binding protein 9 (Testis lipid-binding protein) (TLBP) (Testis-type fatty acid-binding protein) (T-FABP)	Other / unclassified	646480
+Q9UNN5	FAF1	FAS-associated factor 1; ; FAS-associated factor 1 (hFAF1) (UBX domain-containing protein 12) (UBX domain-containing protein 3A)	Other / unclassified	11124
+Q96CS3	FAF2	FAS-associated factor 2; ; FAS-associated factor 2 (UBX domain-containing protein 3B) (UBX domain-containing protein 8)	Other / unclassified	23197
+Q9C073	FAM117A	Protein FAM117A; ; Protein FAM117A (C/EBP-induced protein)	Other / unclassified	81558
+Q86V42	FAM124A	Protein FAM124A; ; Protein FAM124A	Other / unclassified	220108
+Q96AQ9	FAM131C	Protein FAM131C	Other / unclassified	348487
+Q8N9E0	FAM133A	Protein FAM133A	Other / unclassified	286499
+Q5BKY9	FAM133B	Protein FAM133B; ; Protein FAM133B	Other / unclassified	257415
+Q96BN6	FAM149B1	Primary cilium assembly protein FAM149B1	Other / unclassified	317662
+Q96KS9	FAM167A	Protein FAM167A	Other / unclassified	83648
+Q92567	FAM168A	Protein FAM168A; ; Protein FAM168A (Tongue cancer chemotherapy resistance-associated protein 1)	Other / unclassified	23201
+A1KXE4	FAM168B	Myelin-associated neurite-outgrowth inhibitor; ; Myelin-associated neurite-outgrowth inhibitor (Mani) (p20)	Other / unclassified	130074
+A6PVY3	FAM177B	Protein FAM177B; ; Protein FAM177B	Other / unclassified	400823
+Q8NB25	FAM184A	Protein FAM184A	Other / unclassified	79632
+Q9ULE4	FAM184B	Protein FAM184B	Other / unclassified	27146
+A6NE01	FAM186A	Protein FAM186A; ; Protein FAM186A	Other / unclassified	121006
+Q96PV7	FAM193B	Protein FAM193B; ; Protein FAM193B	Other / unclassified	54540
+Q6ZU69	FAM205A	Protein SPATA31F1 (Protein FAM205A)	Other / unclassified	NA
+Q8N7L0	FAM216B	Protein FAM216B	Other / unclassified	144809
+Q14320	FAM50A	Protein FAM50A; ; Protein FAM50A (Protein HXC-26) (Protein XAP-5)	Other / unclassified	9130
+Q9Y247	FAM50B	Protein FAM50B; ; Protein FAM50B (Protein XAP-5-like)	Other / unclassified	26240
+Q96GI7	FAM89A	Protein FAM89A	Other / unclassified	375061
+Q9UBU6	FAM8A1	Protein FAM8A1; ; Protein FAM8A1 (Autosomal highly conserved protein)	Other / unclassified	51439
+Q9HAH7	FBRS	Probable fibrosin-1; ; Probable fibrosin-1	Other / unclassified	64319
+J3KNZ9	FBRS		Other / unclassified	64319
+Q9UK96	FBXO10	F-box only protein 10; ; F-box only protein 10	Other / unclassified	26267
+Q5XUX0	FBXO31	F-box only protein 31; ; F-box only protein 31	Other / unclassified	79791
+Q96AC1	FERMT2	Fermitin family homolog 2; ; Fermitin family homolog 2 (Kindlin-2) (Mitogen-inducible gene 2 protein) (MIG-2) (Pleckstrin homology domain-containing family C member 1) (PH domain-containing family C member 1)	Other / unclassified	10979
+B5TJY2	FERMT2		Other / unclassified	10979
+O76093	FGF18	Fibroblast growth factor 18 (FGF-18) (zFGF5)	Other / unclassified	8817
+P11487	FGF3	Fibroblast growth factor 3 (FGF-3) (Heparin-binding growth factor 3) (HBGF-3) (Proto-oncogene Int-2)	Other / unclassified	2248
+Q13642	FHL1	Four and a half LIM domains protein 1; ; Four and a half LIM domains protein 1 (FHL-1) (Skeletal muscle LIM-protein 1) (SLIM) (SLIM-1)	Other / unclassified	2273
+F5GWR5	FHL1		Other / unclassified	2273
+Q5TD97	FHL5	Four and a half LIM domains protein 5 (FHL-5) (Activator of cAMP-responsive element modulator in testis) (Activator of CREM in testis)	Other / unclassified	9457
+O43427	FIBP	Acidic fibroblast growth factor intracellular-binding protein; ; Acidic fibroblast growth factor intracellular-binding protein (aFGF intracellular-binding protein) (FGF-1 intracellular-binding protein)	Other / unclassified	9158
+Q5T1M5	FKBP15	FK506-binding protein 15; ; FK506-binding protein 15 (FKBP-15) (133 kDa FK506-binding protein) (133 kDa FKBP) (FKBP-133) (WASP- and FKBP-like protein) (WAFL)	Other / unclassified	23307
+Q5VVH2	FKBP1C	Peptidyl-prolyl cis-trans isomerase FKBP1C (EC 5.2.1.8)	Other / unclassified	642489
+Q8NFG4	FLCN	Folliculin; ; Folliculin (BHD skin lesion fibrofolliculoma protein) (Birt-Hogg-Dube syndrome protein)	Other / unclassified	201163
+P15407	FOSL1	Fos-related antigen 1; ; Fos-related antigen 1 (FRA-1)	Other / unclassified	8061
+Q92837	FRAT1	Proto-oncogene FRAT1; ; Proto-oncogene FRAT1 (Frequently rearranged in advanced T-cell lymphomas 1) (FRAT-1)	Other / unclassified	10023
+Q14331	FRG1	Protein FRG1 (FSHD region gene 1 protein)	Other / unclassified	2483
+Q9BZ67	FRMD8	FERM domain-containing protein 8; ; FERM domain-containing protein 8 (Band4.1 inhibitor LRP interactor) (Bili) (iRhom tail-associated protein) (iTAP)	Other / unclassified	83786
+P02794	FTH1	Ferritin heavy chain; ; Ferritin heavy chain (Ferritin H subunit) (EC 1.16.3.1) (Cell proliferation-inducing gene 15 protein) [Cleaved into: Ferritin heavy chain, N-terminally processed]	Other / unclassified	2495
+Q9NPG1	FZD3	Frizzled-3 precursor; ; Frizzled-3 (Fz-3) (hFz3)	Other / unclassified	7976
+P28676	GCA	Grancalcin	Other / unclassified	25801
+Q7Z4P5	GDF7	Growth/differentiation factor 7 (GDF-7)	Other / unclassified	151449
+Q92820	GGH	Gamma-glutamyl hydrolase precursor; ; Gamma-glutamyl hydrolase (EC 3.4.19.9) (Conjugase) (GH) (Gamma-Glu-X carboxypeptidase)	Other / unclassified	8836
+Q86VQ1	GLCCI1	Glucocorticoid-induced transcript 1 protein; ; Glucocorticoid-induced transcript 1 protein	Other / unclassified	113263
+Q04760	GLO1	Lactoylglutathione lyase; ; Lactoylglutathione lyase (EC 4.4.1.5) (Aldoketomutase) (Glyoxalase I) (Glx I) (Ketone-aldehyde mutase) (Methylglyoxalase) (S-D-lactoylglutathione methylglyoxal lyase)	Other / unclassified	2739
+O60547	GMDS	GDP-mannose 4,6 dehydratase; ; GDP-mannose 4,6 dehydratase (EC 4.2.1.47) (GDP-D-mannose dehydratase) (GMD)	Other / unclassified	2762
+Q9BYB4	GNB1L	Guanine nucleotide-binding protein subunit beta-like protein 1; ; Guanine nucleotide-binding protein subunit beta-like protein 1 (G protein subunit beta-like protein 1) (DGCRK3) (WD repeat-containing protein 14) (WD40 repeat-containing protein deleted in VCFS) (WDVCF)	Other / unclassified	54584
+P63218	GNG5	Guanine nucleotide-binding protein G(I)/G(S)/G(O) subunit gamma-5 precursor; ; Guanine nucleotide-binding protein G(I)/G(S)/G(O) subunit gamma-5	Other / unclassified	2787
+Q8IXQ4	GPALPP1	GPALPP motifs-containing protein 1; ; GPALPP motifs-containing protein 1 (Lipopolysaccharide-specific response protein 7)	Other / unclassified	55425
+Q9NW75	GPATCH2	G patch domain-containing protein 2; ; G patch domain-containing protein 2	Other / unclassified	55105
+Q5T3I0	GPATCH4	G patch domain-containing protein 4; ; G patch domain-containing protein 4	Other / unclassified	54865
+Q86WP2	GPBP1	Vasculin; ; Vasculin (GC-rich promoter-binding protein 1) (Vascular wall-linked protein)	Other / unclassified	65056
+F5GY92	GPBP1		Other / unclassified	65056
+Q9HC44	GPBP1L1	Vasculin-like protein 1; ; Vasculin-like protein 1 (GC-rich promoter-binding protein 1-like 1)	Other / unclassified	60313
+P06744	GPI	Glucose-6-phosphate isomerase; ; Glucose-6-phosphate isomerase (GPI) (EC 5.3.1.9) (Autocrine motility factor) (AMF) (D-hexose-6-phosphate anomerase) (Glucose-6-phosphate C2-epimerase) (EC 5.1.3.-) (Neuroleukin) (NLK) (Phosphoglucose isomerase) (PGI) (Phosphohexose isomerase) (PHI) (Sperm antigen 36) (SA-36)	Other / unclassified	2821
+Q7Z2K8	GPRIN1	G protein-regulated inducer of neurite outgrowth 1; ; G protein-regulated inducer of neurite outgrowth 1 (GRIN1)	Other / unclassified	114787
+O60269	GPRIN2	G protein-regulated inducer of neurite outgrowth 2 (GRIN2)	Other / unclassified	9721
+Q13227	GPS2	G protein pathway suppressor 2; ; G protein pathway suppressor 2 (GPS-2)	Other / unclassified	2874
+P81274	GPSM2	G-protein-signaling modulator 2; ; G-protein-signaling modulator 2 (Mosaic protein LGN)	Other / unclassified	29899
+Q96CP6	GRAMD1A	Protein Aster-A; ; Protein Aster-A (GRAM domain-containing protein 1A)	Other / unclassified	57655
+Q3KR37	GRAMD1B	Protein Aster-B; ; Protein Aster-B (GRAM domain-containing protein 1B)	Other / unclassified	57476
+Q4V328	GRIPAP1	GRIP1-associated protein 1; ; GRIP1-associated protein 1 (GRASP-1) [Cleaved into: GRASP-1 C-terminal chain (30kDa C-terminus form)]	Other / unclassified	56850
+Q12849	GRSF1	G-rich sequence factor 1 precursor; ; G-rich sequence factor 1 (GRSF-1)	Other / unclassified	2926
+Q9NYZ3	GTSE1	G2 and S phase-expressed protein 1; ; G2 and S phase-expressed protein 1 (GTSE-1) (Protein B99 homolog)	Other / unclassified	51512
+P13807	GYS1	Glycogen [starch] synthase, muscle; ; Glycogen [starch] synthase, muscle (EC 2.4.1.11) (Glycogen synthase 1)	Other / unclassified	2997
+Q7Z4H7	HAUS6	HAUS augmin-like complex subunit 6; ; HAUS augmin-like complex subunit 6	Other / unclassified	54801
+Q7Z4V5	HDGFL2	Hepatoma-derived growth factor-related protein 2; ; Hepatoma-derived growth factor-related protein 2 (HDGF-related protein 2) (HRP-2) (Hepatoma-derived growth factor 2) (HDGF-2)	Other / unclassified	84717
+Q9UBI9	HECA	Headcase protein homolog; ; Headcase protein homolog (hHDC)	Other / unclassified	51696
+Q96MH2	HEXIM2	Protein HEXIM2; ; Protein HEXIM2 (Hexamethylene bis-acetamide-inducible protein 2)	Other / unclassified	124790
+Q9NWT6	HIF1AN	Hypoxia-inducible factor 1-alpha inhibitor; ; Hypoxia-inducible factor 1-alpha inhibitor (EC 1.14.11.30) (EC 1.14.11.n4) (Factor inhibiting HIF-1) (FIH-1) (Hypoxia-inducible factor asparagine hydroxylase)	Other / unclassified	55662
+P08397	HMBS	Porphobilinogen deaminase; ; Porphobilinogen deaminase (PBG-D) (EC 2.5.1.61) (Hydroxymethylbilane synthase) (HMBS) (Pre-uroporphyrinogen synthase)	Other / unclassified	3145
+F5H2A4	HMGA2		Other / unclassified	8091
+P52926	HMGA2	High mobility group protein HMGI-C; ; High mobility group protein HMGI-C (High mobility group AT-hook protein 2)	Other / unclassified	8091
+P09429	HMGB1	High mobility group protein B1; ; High mobility group protein B1 (High mobility group protein 1) (HMG-1)	Other / unclassified	3146
+P26583	HMGB2	High mobility group protein B2; ; High mobility group protein B2 (High mobility group protein 2) (HMG-2)	Other / unclassified	3148
+O15347	HMGB3	High mobility group protein B3; ; High mobility group protein B3 (High mobility group protein 2a) (HMG-2a) (High mobility group protein 4) (HMG-4)	Other / unclassified	3149
+Q12766	HMGXB3	HMG domain-containing protein 3 (HMG box-containing protein 3) (Protein SMF)	Other / unclassified	22993
+Q9NSC5	HOMER3	Homer protein homolog 3; ; Homer protein homolog 3 (Homer-3)	Other / unclassified	9454
+Q86YV9	HPS6	BLOC-2 complex member HPS6; ; BLOC-2 complex member HPS6 (Hermansky-Pudlak syndrome 6 protein) (Ruby-eye protein homolog) (Ru)	Other / unclassified	79803
+Q86YZ3	HRNR	Hornerin; ; Hornerin	Other / unclassified	388697
+Q9BYI3	HYCC1	Hyccin; ; Hyccin (Down-regulated by CTNNB1 protein A)	Other / unclassified	84668
+Q8IXS8	HYCC2	Hyccin 2; ; Hyccin 2	Other / unclassified	285172
+Q13907	IDI1	Isopentenyl-diphosphate Delta-isomerase 1; ; Isopentenyl-diphosphate Delta-isomerase 1 (EC 5.3.3.2) (Isopentenyl pyrophosphate isomerase 1) (IPP isomerase 1) (IPPI1)	Other / unclassified	3422
+Q13123	IK	Protein Red; ; Protein Red (Cytokine IK) (IK factor) (Protein RER)	Other / unclassified	3550
+Q14005	IL16	Pro-interleukin-16; ; Pro-interleukin-16 [Cleaved into: Interleukin-16 (IL-16) (Lymphocyte chemoattractant factor) (LCF)]	Other / unclassified	3603
+Q8NEV9	IL27	Interleukin-27 subunit alpha (IL-27 subunit alpha) (IL-27-A) (IL27-A) (Interleukin-30) (p28)	Other / unclassified	246778
+Q9NQS7	INCENP	Inner centromere protein; ; Inner centromere protein	Other / unclassified	3619
+Q9C086	INO80B	INO80 complex subunit B; ; INO80 complex subunit B (High mobility group AT-hook 1-like 4) (IES2 homolog) (hIes2) (PAP-1-associated protein 1) (PAPA-1) (Zinc finger HIT domain-containing protein 4)	Other / unclassified	83444
+Q4KMZ1	IQCC	IQ domain-containing protein C; ; IQ domain-containing protein C	Other / unclassified	55721
+F5H7T8	IQCC		Other / unclassified	55721
+P48200	IREB2	Iron-responsive element-binding protein 2; ; Iron-responsive element-binding protein 2 (IRE-BP 2) (Iron regulatory protein 2) (IRP2)	Other / unclassified	3658
+Q96AB3	ISOC2	Isochorismatase domain-containing protein 2; ; Isochorismatase domain-containing protein 2	Other / unclassified	79763
+Q06033	ITIH3	Inter-alpha-trypsin inhibitor heavy chain H3 precursor; ; Inter-alpha-trypsin inhibitor heavy chain H3 (ITI heavy chain H3) (ITI-HC3) (Inter-alpha-inhibitor heavy chain 3) (Serum-derived hyaluronan-associated protein) (SHAP)	Other / unclassified	3699
+Q6UXX5	ITIH6	Inter-alpha-trypsin inhibitor heavy chain H6 (Inter-alpha-trypsin inhibitor heavy chain H5-like protein) (Inter-alpha inhibitor H5-like protein)	Other / unclassified	347365
+Q8WXH2	JPH3	Junctophilin-3 (JP-3) (Junctophilin type 3) (Trinucleotide repeat-containing gene 22 protein)	Other / unclassified	57338
+O94819	KBTBD11	Kelch repeat and BTB domain-containing protein 11; ; Kelch repeat and BTB domain-containing protein 11 (Chronic myelogenous leukemia-associated protein) (Kelch domain-containing protein 7B)	Other / unclassified	9920
+Q9HCM3	KIAA1549	UPF0606 protein KIAA1549; ; UPF0606 protein KIAA1549	Other / unclassified	57670
+Q5QGS0	KIAA2022	Neurite extension and migration factor (XLMR protein related to neurite extension) (XPN)	Other / unclassified	NA
+Q6PID8	KLHDC10	Kelch domain-containing protein 10	Other / unclassified	23008
+Q9P2N7	KLHL13	Kelch-like protein 13 (BTB and kelch domain-containing protein 2)	Other / unclassified	90293
+Q8NBE8	KLHL23	Kelch-like protein 23; ; Kelch-like protein 23	Other / unclassified	151230
+Q9H511	KLHL31	Kelch-like protein 31 (BTB and kelch domain-containing protein 6) (Kelch repeat and BTB domain-containing protein 1) (Kelch-like protein KLHL)	Other / unclassified	401265
+Q8N239	KLHL34	Kelch-like protein 34; ; Kelch-like protein 34	Other / unclassified	257240
+Q8IXQ5	KLHL7	Kelch-like protein 7; ; Kelch-like protein 7	Other / unclassified	55975
+P52292	KPNA2	Importin subunit alpha-1; ; Importin subunit alpha-1 (Karyopherin subunit alpha-2) (RAG cohort protein 1) (SRP1-alpha)	Other / unclassified	3838
+Q14657	LAGE3	EKC/KEOPS complex subunit LAGE3; ; EKC/KEOPS complex subunit LAGE3 (L antigen family member 3) (Protein ESO-3) (Protein ITBA2)	Other / unclassified	8270
+Q13094	LCP2	Lymphocyte cytosolic protein 2; ; Lymphocyte cytosolic protein 2 (SH2 domain-containing leukocyte protein of 76 kDa) (SLP-76 tyrosine phosphoprotein) (SLP76)	Other / unclassified	3937
+Q86U70	LDB1	LIM domain-binding protein 1; ; LIM domain-binding protein 1 (LDB-1) (Carboxyl-terminal LIM domain-binding protein 2) (CLIM-2) (LIM domain-binding factor CLIM2) (hLdb1) (Nuclear LIM interactor)	Other / unclassified	8861
+O43679	LDB2	LIM domain-binding protein 2 (LDB-2) (Carboxyl-terminal LIM domain-binding protein 1) (CLIM-1) (LIM domain-binding factor CLIM1)	Other / unclassified	9079
+Q6ICC9	LDOC1L	Retrotransposon Gag-like protein 6 (Leucine zipper protein down-regulated in cancer cells-like) (Mammalian retrotransposon-derived protein 6) (Protein LDOC1L)	Other / unclassified	NA
+O00182	LGALS9	Galectin-9 (Gal-9) (Ecalectin) (Tumor antigen HOM-HD-21)	Other / unclassified	3965
+Q3B8N2	LGALS9B	Galectin-9B (Gal-9B) (Galectin-9-like protein A)	Other / unclassified	284194
+Q6MZP7	LIN54	Protein lin-54 homolog; ; Protein lin-54 homolog (CXC domain-containing protein 1)	Other / unclassified	132660
+Q9HAP6	LIN7B	Protein lin-7 homolog B (Lin-7B) (hLin7B) (Mammalian lin-seven protein 2) (MALS-2) (Vertebrate lin-7 homolog 2) (Veli-2) (hVeli2)	Other / unclassified	64130
+Q9NUP9	LIN7C	Protein lin-7 homolog C; ; Protein lin-7 homolog C (Lin-7C) (Mammalian lin-seven protein 3) (MALS-3) (Vertebrate lin-7 homolog 3) (Veli-3)	Other / unclassified	55327
+Q8NG48	LINS1	Protein Lines homolog 1; ; Protein Lines homolog 1 (Wnt-signaling molecule Lines homolog 1)	Other / unclassified	55180
+Q8IVB5	LIX1L	LIX1-like protein; ; LIX1-like protein	Other / unclassified	128077
+Q9H0V9	LMAN2L	VIP36-like protein precursor; ; VIP36-like protein (Lectin mannose-binding 2-like) (LMAN2-like protein)	Other / unclassified	81562
+Q93052	LPP	Lipoma-preferred partner; ; Lipoma-preferred partner (LIM domain-containing preferred translocation partner in lipoma)	Other / unclassified	4026
+Q15345	LRRC41	Leucine-rich repeat-containing protein 41; ; Leucine-rich repeat-containing protein 41 (Protein Muf1)	Other / unclassified	10489
+O95232	LUC7L3	Luc7-like protein 3; ; Luc7-like protein 3 (Cisplatin resistance-associated-overexpressed protein) (Luc7A) (Okadaic acid-inducible phosphoprotein OA48-18) (cAMP regulatory element-associated protein 1) (CRE-associated protein 1) (CREAP-1)	Other / unclassified	51747
+B4E2N0	LZIC		Other / unclassified	84328
+Q6ZN28	MACC1	Metastasis-associated in colon cancer protein 1; ; Metastasis-associated in colon cancer protein 1 (SH3 domain-containing protein 7a5)	Other / unclassified	346389
+Q96JY0	MAEL	Protein maelstrom homolog	Other / unclassified	84944
+P61326	MAGOH	Protein mago nashi homolog; ; Protein mago nashi homolog	Other / unclassified	4116
+Q7Z304	MAMDC2	MAM domain-containing protein 2 (MAM domain-containing proteoglycan) (Mamcan)	Other / unclassified	256691
+Q92585	MAML1	Mastermind-like protein 1; ; Mastermind-like protein 1 (Mam-1)	Other / unclassified	9794
+E7EVW8	MAML3		Other / unclassified	55534
+Q96JK9	MAML3	Mastermind-like protein 3; ; Mastermind-like protein 3 (Mam-3)	Other / unclassified	55534
+Q96T17	MAP7D2	MAP7 domain-containing protein 2; ; MAP7 domain-containing protein 2	Other / unclassified	256714
+Q8IWC1	MAP7D3	MAP7 domain-containing protein 3; ; MAP7 domain-containing protein 3	Other / unclassified	79649
+O95983	MBD3	Methyl-CpG-binding domain protein 3; ; Methyl-CpG-binding domain protein 3 (Methyl-CpG-binding protein MBD3)	Other / unclassified	53615
+Q9UJH8	METRN	Meteorin	Other / unclassified	79006
+Q641Q3	METRNL	Meteorin-like protein precursor; ; Meteorin-like protein (Subfatin)	Other / unclassified	284207
+P14174	MIF	Macrophage migration inhibitory factor; ; Macrophage migration inhibitory factor (MIF) (EC 5.3.2.1) (Glycosylation-inhibiting factor) (GIF) (L-dopachrome isomerase) (L-dopachrome tautomerase) (EC 5.3.3.12) (Phenylpyruvate tautomerase)	Other / unclassified	4282
+C9K0D3	MLF1		Other / unclassified	4291
+Q8N8F8	MLF1		Other / unclassified	4291
+P58340	MLF1	Myeloid leukemia factor 1; ; Myeloid leukemia factor 1 (Myelodysplasia-myeloid leukemia factor 1)	Other / unclassified	4291
+Q15773	MLF2	Myeloid leukemia factor 2; ; Myeloid leukemia factor 2 (Myelodysplasia-myeloid leukemia factor 2)	Other / unclassified	8079
+P12872	MLN	Promotilin [Cleaved into: Motilin; Motilin-associated peptide (MAP)]	Other / unclassified	4295
+Q6ZRQ5	MMS22L	Protein MMS22-like (Methyl methanesulfonate-sensitivity protein 22-like)	Other / unclassified	253714
+Q96BY2	MOAP1	Modulator of apoptosis 1; ; Modulator of apoptosis 1 (MAP-1) (MAP1) (Paraneoplastic antigen Ma4)	Other / unclassified	64112
+Q5T089	MORN1	MORN repeat-containing protein 1	Other / unclassified	79906
+Q8NHV5	MOSMO	Modulator of smoothened protein (Attenuator of hedgehog)	Other / unclassified	730094
+F5H1U9	MPDZ		Other / unclassified	8777
+O75970	MPDZ	Multiple PDZ domain protein; ; Multiple PDZ domain protein (Multi-PDZ domain protein 1)	Other / unclassified	8777
+B1AH63	MPPED1		Other / unclassified	758
+Q68DK7	MSL1	Male-specific lethal 1 homolog; ; Male-specific lethal 1 homolog (MSL-1) (Male-specific lethal 1-like 1) (MSL1-like 1) (Male-specific lethal-1 homolog 1)	Other / unclassified	339287
+Q8IXL7	MSRB3	Methionine-R-sulfoxide reductase B3 precursor; ; Methionine-R-sulfoxide reductase B3 (MsrB3) (EC 1.8.4.12) (EC 1.8.4.14)	Other / unclassified	253827
+Q13330	MTA1	Metastasis-associated protein MTA1; ; Metastasis-associated protein MTA1	Other / unclassified	9112
+Q9BTC8	MTA3	Metastasis-associated protein MTA3; ; Metastasis-associated protein MTA3	Other / unclassified	57504
+Q13126	MTAP	S-methyl-5'-thioadenosine phosphorylase; ; S-methyl-5'-thioadenosine phosphorylase (EC 2.4.2.28) (5'-methylthioadenosine phosphorylase) (MTA phosphorylase) (MTAP) (MTAPase)	Other / unclassified	4507
+Q8WXI7	MUC16	Mucin-16; ; Mucin-16 (MUC-16) (Ovarian cancer-related tumor marker CA125) (CA-125) (Ovarian carcinoma antigen CA125)	Other / unclassified	94025
+P10244	MYBL2	Myb-related protein B; ; Myb-related protein B (B-Myb) (Myb-like protein 2)	Other / unclassified	4605
+O15069	NACAD	NAC-alpha domain-containing protein 1; ; NAC-alpha domain-containing protein 1	Other / unclassified	23148
+P60323	NANOS3	Nanos homolog 3 (NOS-3)	Other / unclassified	342977
+Q99747	NAPG	Gamma-soluble NSF attachment protein; ; Gamma-soluble NSF attachment protein (SNAP-gamma) (N-ethylmaleimide-sensitive factor attachment protein gamma)	Other / unclassified	8774
+Q8NCW5	NAXE	NAD(P)H-hydrate epimerase precursor; ; NAD(P)H-hydrate epimerase (EC 5.1.99.6) (Apolipoprotein A-I-binding protein) (AI-BP) (NAD(P)HX epimerase) (NAXE) (YjeF N-terminal domain-containing protein 1) (YjeF_N1)	Other / unclassified	128240
+Q86T75	NBPF11	Neuroblastoma breakpoint family member 11; ; NBPF family member NBPF11 (Neuroblastoma breakpoint family member 11) (Neuroblastoma breakpoint family member 24)	Other / unclassified	200030
+Q15003	NCAPH	Condensin complex subunit 2; ; Condensin complex subunit 2 (Barren homolog protein 1) (Chromosome-associated protein H) (hCAP-H) (Non-SMC condensin I complex subunit H) (XCAP-H homolog)	Other / unclassified	23397
+E9PHA2	NCAPH		Other / unclassified	23397
+Q92542	NCSTN	Nicastrin precursor; ; Nicastrin	Other / unclassified	23385
+P20929	NEB	Nebulin; ; Nebulin	Other / unclassified	4703
+Q8NC96	NECAP1	Adaptin ear-binding coat-associated protein 1; ; Adaptin ear-binding coat-associated protein 1 (NECAP endocytosis-associated protein 1) (NECAP-1)	Other / unclassified	25977
+F5GYH1	NECAP1		Other / unclassified	25977
+Q9NVZ3	NECAP2	Adaptin ear-binding coat-associated protein 2; ; Adaptin ear-binding coat-associated protein 2 (NECAP endocytosis-associated protein 2) (NECAP-2)	Other / unclassified	55707
+Q9Y3R4	NEU2	Sialidase-2 (EC 3.2.1.18) (Cytosolic sialidase) (N-acetyl-alpha-neuraminidase 2)	Other / unclassified	4759
+Q8WWR8	NEU4	Sialidase-4 (EC 3.2.1.18) (N-acetyl-alpha-neuraminidase 4)	Other / unclassified	129807
+Q8NBF2	NHLRC2	NHL repeat-containing protein 2	Other / unclassified	374354
+Q5HYW2	NHSL2	NHS-like protein 2	Other / unclassified	340527
+Q9P206	NHSL3	NHS-like protein 3; ; NHS-like protein 3	Other / unclassified	57648
+Q9GZT8	NIF3L1	NIF3-like protein 1; ; NIF3-like protein 1 (Amyotrophic lateral sclerosis 2 chromosomal region candidate gene 1 protein)	Other / unclassified	60491
+Q9BPW8	NIPSNAP1	Protein NipSnap homolog 1; ; Protein NipSnap homolog 1 (NipSnap1)	Other / unclassified	8508
+O75323	NIPSNAP2	Protein NipSnap homolog 2 (NipSnap2) (Glioblastoma-amplified sequence)	Other / unclassified	2631
+Q8N5F7	NKAP	NF-kappa-B-activating protein; ; NF-kappa-B-activating protein	Other / unclassified	79576
+Q969G9	NKD1	Protein naked cuticle homolog 1 (Naked-1) (hNkd) (hNkd1)	Other / unclassified	85407
+O75052	NOS1AP	Carboxyl-terminal PDZ ligand of neuronal nitric oxide synthase protein; ; Carboxyl-terminal PDZ ligand of neuronal nitric oxide synthase protein (C-terminal PDZ ligand of neuronal nitric oxide synthase protein) (Nitric oxide synthase 1 adaptor protein)	Other / unclassified	9722
+O75607	NPM3	Nucleoplasmin-3; ; Nucleoplasmin-3	Other / unclassified	10360
+Q86VF7	NRAP	Nebulin-related-anchoring protein; ; Nebulin-related-anchoring protein (N-RAP)	Other / unclassified	4892
+Q92686	NRGN	Neurogranin; ; Neurogranin (Ng) (RC3) [Cleaved into: NEUG(55-78)]	Other / unclassified	4900
+Q9H857	NT5DC2	5'-nucleotidase domain-containing protein 2; ; 5'-nucleotidase domain-containing protein 2 (EC 3.1.3.-)	Other / unclassified	64943
+E9PAL9	NT5DC2		Other / unclassified	64943
+P53384	NUBP1	Cytosolic Fe-S cluster assembly factor NUBP1; ; Cytosolic Fe-S cluster assembly factor NUBP1 (Nucleotide-binding protein 1) (NBP 1)	Other / unclassified	4682
+Q02818	NUCB1	Nucleobindin-1 precursor; ; Nucleobindin-1 (CALNUC)	Other / unclassified	4924
+Q96G61	NUDT11	Diphosphoinositol polyphosphate phosphohydrolase 3-beta; ; Diphosphoinositol polyphosphate phosphohydrolase 3-beta (DIPP-3-beta) (DIPP3-beta) (hDIPP3beta) (EC 3.6.1.52) (Diadenosine 5',5'''-P1,P6-hexaphosphate hydrolase 3-beta) (Diadenosine hexaphosphate hydrolase (AMP-forming)) (EC 3.6.1.60) (Nucleoside diphosphate-linked moiety X motif 11) (Nudix motif 11) (hAps1)	Other / unclassified	55190
+Q9NZJ9	NUDT4	Diphosphoinositol polyphosphate phosphohydrolase 2; ; Diphosphoinositol polyphosphate phosphohydrolase 2 (DIPP-2) (EC 3.6.1.52) (Diadenosine 5',5'''-P1,P6-hexaphosphate hydrolase 2) (EC 3.6.1.61) (Nucleoside diphosphate-linked moiety X motif 4) (Nudix motif 4)	Other / unclassified	11163
+Q9Y6R0	NUMBL	Numb-like protein; ; Numb-like protein (Numb-related protein) (Numb-R)	Other / unclassified	9253
+Q6DKJ4	NXN	Nucleoredoxin; ; Nucleoredoxin (EC 1.8.1.8)	Other / unclassified	64359
+P58417	NXPH1	Neurexophilin-1	Other / unclassified	30010
+Q86UD1	OAF	Out at first protein homolog precursor; ; Out at first protein homolog (HCV NS5A-transactivated protein 13 target protein 2)	Other / unclassified	220323
+Q9NX40	OCIAD1	OCIA domain-containing protein 1; ; OCIA domain-containing protein 1 (Ovarian cancer immunoreactive antigen domain containing 1) (Ovarian carcinoma immunoreactive antigen)	Other / unclassified	54940
+Q5BJF6	ODF2	Outer dense fiber protein 2; ; Outer dense fiber protein 2 (Cenexin) (Outer dense fiber of sperm tails protein 2)	Other / unclassified	4957
+Q8IZS5	OFCC1	Orofacial cleft 1 candidate gene 1 protein; ; Orofacial cleft 1 candidate gene 1 protein (Orofacial clefting chromosomal breakpoint region candidate 1 protein)	Other / unclassified	266553
+Q68BL7	OLFML2A	Olfactomedin-like protein 2A precursor; ; Olfactomedin-like protein 2A (Photomedin-1)	Other / unclassified	169611
+Q9Y5N6	ORC6	Origin recognition complex subunit 6; ; Origin recognition complex subunit 6	Other / unclassified	23594
+G3XA88	OS9		Other / unclassified	10956
+P22059	OSBP	Oxysterol-binding protein 1; ; Oxysterol-binding protein 1	Other / unclassified	5007
+Q969R2	OSBP2	Oxysterol-binding protein 2; ; Oxysterol-binding protein 2 (ORP2) (Oxysterol-binding protein-related protein 4) (ORP-4) (OSBP-related protein 4)	Other / unclassified	23762
+Q9BXB5	OSBPL10	Oxysterol-binding protein-related protein 10; ; Oxysterol-binding protein-related protein 10 (ORP-10) (OSBP-related protein 10)	Other / unclassified	114884
+Q9BXB4	OSBPL11	Oxysterol-binding protein-related protein 11; ; Oxysterol-binding protein-related protein 11 (ORP-11) (OSBP-related protein 11)	Other / unclassified	114885
+Q9H0X9	OSBPL5	Oxysterol-binding protein-related protein 5; ; Oxysterol-binding protein-related protein 5 (ORP-5) (OSBP-related protein 5) (Oxysterol-binding protein homolog 1)	Other / unclassified	114879
+Q5VV17	OTUD1	OTU domain-containing protein 1 (EC 3.4.19.12) (DUBA-7)	Other / unclassified	220213
+Q8N573	OXR1	Oxidation resistance protein 1; ; Oxidation resistance protein 1	Other / unclassified	55074
+P07237	P4HB	Protein disulfide-isomerase precursor; ; Protein disulfide-isomerase (PDI) (EC 5.3.4.1) (Cellular thyroid hormone-binding protein) (Prolyl 4-hydroxylase subunit beta) (p55)	Other / unclassified	5034
+Q7Z309	PABIR2	PABIR family member 2; ; PABIR family member 2	Other / unclassified	159090
+Q6VY07	PACS1	Phosphofurin acidic cluster sorting protein 1; ; Phosphofurin acidic cluster sorting protein 1 (PACS-1)	Other / unclassified	55690
+O75781	PALM	Paralemmin-1 precursor; ; Paralemmin-1 (Paralemmin)	Other / unclassified	5064
+Q8TEW8	PARD3B	Partitioning defective 3 homolog B; ; Partitioning defective 3 homolog B (Amyotrophic lateral sclerosis 2 chromosomal region candidate gene 19 protein) (PAR3-beta) (Partitioning defective 3-like protein) (PAR3-L protein)	Other / unclassified	117583
+Q9BYG4	PARD6G	Partitioning defective 6 homolog gamma (PAR-6 gamma) (PAR6D)	Other / unclassified	84552
+P12004	PCNA	Proliferating cell nuclear antigen; ; DNA sliding clamp PCNA (Cyclin) (Proliferating cell nuclear antigen) (PCNA)	Other / unclassified	5111
+Q8WW12	PCNP	PEST proteolytic signal-containing nuclear protein; ; PEST proteolytic signal-containing nuclear protein (PCNP) (PEST-containing nuclear protein)	Other / unclassified	57092
+Q9H6A9	PCNX3	Pecanex-like protein 3; ; Pecanex-like protein 3 (Pecanex homolog protein 3)	Other / unclassified	399909
+Q9BUL8	PDCD10	Programmed cell death protein 10; ; Programmed cell death protein 10 (Cerebral cavernous malformations 3 protein) (TF-1 cell apoptosis-related protein 15)	Other / unclassified	11235
+O14737	PDCD5	Programmed cell death protein 5; ; Programmed cell death protein 5 (TF-1 cell apoptosis-related protein 19) (Protein TFAR19)	Other / unclassified	9141
+Q8N8D1	PDCD7	Programmed cell death protein 7 (ES18) (hES18)	Other / unclassified	10081
+Q9H2J4	PDCL3	Phosducin-like protein 3; ; Phosducin-like protein 3 (HTPHLP) (PhPL3) (Viral IAP-associated factor 1) (VIAF-1)	Other / unclassified	79031
+P30101	PDIA3	Protein disulfide-isomerase A3 precursor; ; Protein disulfide-isomerase A3 (EC 5.3.4.1) (58 kDa glucose-regulated protein) (58 kDa microsomal protein) (p58) (Disulfide isomerase ER-60) (Endoplasmic reticulum resident protein 57) (ER protein 57) (ERp57) (Endoplasmic reticulum resident protein 60) (ER protein 60) (ERp60)	Other / unclassified	2923
+P13667	PDIA4	Protein disulfide-isomerase A4 precursor; ; Protein disulfide-isomerase A4 (EC 5.3.4.1) (Endoplasmic reticulum resident protein 70) (ER protein 70) (ERp70) (Endoplasmic reticulum resident protein 72) (ER protein 72) (ERp-72) (ERp72)	Other / unclassified	9601
+Q15084	PDIA6	Protein disulfide-isomerase A6 precursor; ; Protein disulfide-isomerase A6 (EC 5.3.4.1) (Endoplasmic reticulum protein 5) (ER protein 5) (ERp5) (Protein disulfide isomerase P5) (Thioredoxin domain-containing protein 7)	Other / unclassified	10130
+O15018	PDZD2	PDZ domain-containing protein 2; ; PDZ domain-containing protein 2 (Activated in prostate cancer protein) (PDZ domain-containing protein 3) [Cleaved into: Processed PDZ domain-containing protein 2]	Other / unclassified	23037
+Q8IXQ8	PDZD9	PDZ domain-containing protein 9	Other / unclassified	255762
+Q9UBV8	PEF1	Peflin; ; Peflin (PEF protein with a long N-terminal hydrophobic domain) (Penta-EF hand domain-containing protein 1)	Other / unclassified	553115
+O00541	PES1	Pescadillo homolog; ; Pescadillo homolog	Other / unclassified	23481
+Q9UHV9	PFDN2	Prefoldin subunit 2	Other / unclassified	5202
+P07737	PFN1	Profilin-1; ; Profilin-1 (Epididymis tissue protein Li 184a) (Profilin I)	Other / unclassified	5216
+P35080	PFN2	Profilin-2; ; Profilin-2 (Profilin II)	Other / unclassified	5217
+Q6P3X8	PGBD2	PiggyBac transposable element-derived protein 2	Other / unclassified	267002
+Q8N414	PGBD5	PiggyBac transposable element-derived protein 5 (EC 3.1.-.-) (PiggyBac domain-related protein 5) (PiggyBac transposase 5)	Other / unclassified	79605
+P36871	PGM1	Phosphoglucomutase-1; ; Phosphoglucomutase-1 (PGM 1) (EC 5.4.2.2) (Glucose phosphomutase 1)	Other / unclassified	5236
+Q96G03	PGM2	Phosphopentomutase; ; Phosphopentomutase (EC 5.4.2.7) (Glucose phosphomutase 2) (Phosphodeoxyribomutase) (Phosphoglucomutase-2) (EC 5.4.2.2)	Other / unclassified	55276
+P35232	PHB1	Prohibitin 1; ; Prohibitin 1	Other / unclassified	5245
+P78364	PHC1	Polyhomeotic-like protein 1; ; Polyhomeotic-like protein 1 (hPH1) (Early development regulatory protein 1)	Other / unclassified	1911
+Q8NDX5	PHC3	Polyhomeotic-like protein 3; ; Polyhomeotic-like protein 3 (Early development regulatory protein 3) (Homolog of polyhomeotic 3) (hPH3)	Other / unclassified	80012
+Q6NSJ2	PHLDB3	Pleckstrin homology-like domain family B member 3	Other / unclassified	653583
+Q9UMS5	PHTF1	Protein PHTF1; ; Protein PHTF1	Other / unclassified	10745
+O00625	PIR	Pirin; ; Pirin (EC 1.13.11.24) (Probable quercetin 2,3-dioxygenase PIR) (Probable quercetinase)	Other / unclassified	8544
+Q00169	PITPNA	Phosphatidylinositol transfer protein alpha isoform; ; Phosphatidylinositol transfer protein alpha isoform (PI-TP-alpha) (PtdIns transfer protein alpha) (PtdInsTP alpha)	Other / unclassified	5306
+P48739	PITPNB	Phosphatidylinositol transfer protein beta isoform; ; Phosphatidylinositol transfer protein beta isoform (PI-TP-beta) (PtdIns transfer protein beta) (PtdInsTP beta)	Other / unclassified	23760
+Q8IV08	PLD3	5'-3' exonuclease PLD3; ; 5'-3' exonuclease PLD3 (EC 3.1.16.1) ((S,S)-bis(monoacylglycero)phosphate synthase PLD3) (EC 3.1.4.-) (HindIII K4L homolog) (Hu-K4) (Phospholipase D3)	Other / unclassified	23646
+Q9H7P9	PLEKHG2	Pleckstrin homology domain-containing family G member 2; ; Pleckstrin homology domain-containing family G member 2 (PH domain-containing family G member 2)	Other / unclassified	64857
+H7BXC7	PLEKHG2		Other / unclassified	64857
+A1L390	PLEKHG3	Pleckstrin homology domain-containing family G member 3; ; Pleckstrin homology domain-containing family G member 3 (PH domain-containing family G member 3)	Other / unclassified	26030
+Q7Z736	PLEKHH3	Pleckstrin homology domain-containing family H member 3 precursor; ; Pleckstrin homology domain-containing family H member 3 (PH domain-containing family H member 3)	Other / unclassified	79990
+Q8TD55	PLEKHO2	Pleckstrin homology domain-containing family O member 2; ; Pleckstrin homology domain-containing family O member 2 (PH domain-containing family O member 2) (Pleckstrin homology domain-containing family Q member 1) (PH domain-containing family Q member 1)	Other / unclassified	80301
+O94903	PLPBP	Pyridoxal phosphate homeostasis protein; ; Pyridoxal phosphate homeostasis protein (PLP homeostasis protein) (Proline synthase co-transcribed bacterial homolog protein) (Pyridoxal phosphate-binding protein)	Other / unclassified	11212
+Q8TBY8	PMFBP1	Polyamine-modulated factor 1-binding protein 1; ; Polyamine-modulated factor 1-binding protein 1 (PMF-1-binding protein)	Other / unclassified	83449
+Q92871	PMM1	Phosphomannomutase 1; ; Phosphomannomutase 1 (PMM 1) (EC 5.4.2.8) (PMMH-22)	Other / unclassified	5372
+Q68D20	PMS2CL	Protein PMS2CL (PMS2-C terminal-like protein)	Other / unclassified	441194
+P00491	PNP	Purine nucleoside phosphorylase; ; Purine nucleoside phosphorylase (PNP) (EC 2.4.2.1) (Inosine phosphorylase) (Inosine-guanosine phosphorylase)	Other / unclassified	4860
+Q9NQ55	PPAN	Suppressor of SWI4 1 homolog; ; Suppressor of SWI4 1 homolog (Ssf-1) (Brix domain-containing protein 3) (Peter Pan homolog)	Other / unclassified	56342
+P62937	PPIA	Peptidyl-prolyl cis-trans isomerase A; ; Peptidyl-prolyl cis-trans isomerase A (PPIase A) (EC 5.2.1.8) (Cyclophilin A) (Cyclosporin A-binding protein) (Rotamase A) [Cleaved into: Peptidyl-prolyl cis-trans isomerase A, N-terminally processed]	Other / unclassified	5478
+A0A0B4J2A2	PPIAL4C	Peptidyl-prolyl cis-trans isomerase A-like 4C (PPIase A-like 4C) (EC 5.2.1.8)	Other / unclassified	653598
+P23284	PPIB	Peptidyl-prolyl cis-trans isomerase B precursor; ; Peptidyl-prolyl cis-trans isomerase B (PPIase B) (EC 5.2.1.8) (CYP-S1) (Cyclophilin B) (Rotamase B) (S-cyclophilin) (SCYLP)	Other / unclassified	5479
+P45877	PPIC	Peptidyl-prolyl cis-trans isomerase C; ; Peptidyl-prolyl cis-trans isomerase C (PPIase C) (EC 5.2.1.8) (Cyclophilin C) (Rotamase C)	Other / unclassified	5480
+Q9Y3C6	PPIL1	Peptidyl-prolyl cis-trans isomerase-like 1; ; Peptidyl-prolyl cis-trans isomerase-like 1 (PPIase) (EC 5.2.1.8) (Rotamase PPIL1)	Other / unclassified	51645
+Q9H2H8	PPIL3	Peptidyl-prolyl cis-trans isomerase-like 3; ; Peptidyl-prolyl cis-trans isomerase-like 3 (PPIase) (EC 5.2.1.8) (Cyclophilin J) (CyPJ) (Cyclophilin-like protein PPIL3) (Rotamase PPIL3)	Other / unclassified	53938
+E9PES1	PPT1		Other / unclassified	5538
+O60828	PQBP1	Polyglutamine-binding protein 1; ; Polyglutamine-binding protein 1 (PQBP-1) (38 kDa nuclear protein containing a WW domain) (Npw38) (Polyglutamine tract-binding protein 1)	Other / unclassified	10084
+Q5VWM5	PRAMEF15		Other / unclassified	653619
+Q9ULL5	PRR12	Proline-rich protein 12; ; Proline-rich protein 12	Other / unclassified	57479
+Q53SZ7	PRR30	Proline-rich protein 30	Other / unclassified	339779
+Q9H6K5	PRR36	Proline-rich protein 36; ; Proline-rich protein 36	Other / unclassified	80164
+P85299	PRR5	Proline-rich protein 5 (Protein observed with Rictor-1) (Protor-1)	Other / unclassified	55615
+B1AHF6	PRR5		Other / unclassified	55615
+Q9BXM0	PRX	Periaxin	Other / unclassified	57716
+Q13635	PTCH1	Protein patched homolog 1; ; Protein patched homolog 1 (PTC) (PTC1)	Other / unclassified	5727
+P11216	PYGB	Glycogen phosphorylase, brain form; ; Glycogen phosphorylase, brain form (EC 2.4.1.1)	Other / unclassified	5834
+P06737	PYGL	Glycogen phosphorylase, liver form; ; Glycogen phosphorylase, liver form (EC 2.4.1.1)	Other / unclassified	5836
+Q2KHR3	QSER1	Glutamine and serine-rich protein 1; ; Glutamine and serine-rich protein 1	Other / unclassified	79832
+Q15032	R3HDM1	R3H domain-containing protein 1; ; R3H domain-containing protein 1	Other / unclassified	23518
+Q6VN20	RANBP10	Ran-binding protein 10; ; Ran-binding protein 10 (RanBP10)	Other / unclassified	57610
+P06400	RB1	Retinoblastoma-associated protein; ; Retinoblastoma-associated protein (p105-Rb) (p110-RB1) (pRb) (Rb) (pp110)	Other / unclassified	5925
+Q8NC74	RBBP8NL	RBBP8 N-terminal-like protein	Other / unclassified	140893
+A6NED2	RCCD1	RCC1 domain-containing protein 1	Other / unclassified	91433
+Q15293	RCN1	Reticulocalbin-1 precursor; ; Reticulocalbin-1	Other / unclassified	5954
+Q86VR2	RETREG3	Reticulophagy regulator 3; ; Reticulophagy regulator 3	Other / unclassified	162427
+Q6NUM9	RETSAT	All-trans-retinol 13,14-reductase precursor; ; All-trans-retinol 13,14-reductase (EC 1.3.99.23) (All-trans-13,14-dihydroretinol saturase) (RetSat) (PPAR-alpha-regulated and starvation-induced gene protein)	Other / unclassified	54884
+O43665	RGS10	Regulator of G-protein signaling 10; ; Regulator of G-protein signaling 10 (RGS10)	Other / unclassified	6001
+P49796	RGS3	Regulator of G-protein signaling 3; ; Regulator of G-protein signaling 3 (RGP3) (RGS3)	Other / unclassified	5998
+Q8TCX5	RHPN1	Rhophilin-1 (GTP-Rho-binding protein 1)	Other / unclassified	114822
+Q8IWN7	RP1L1	Retinitis pigmentosa 1-like 1 protein; ; Retinitis pigmentosa 1-like 1 protein	Other / unclassified	94137
+Q6XPR3	RPTN	Repetin; ; Repetin	Other / unclassified	126638
+Q9BST9	RTKN	Rhotekin; ; Rhotekin	Other / unclassified	6242
+Q8NET4	RTL9	Retrotransposon Gag-like protein 9; ; Retrotransposon Gag-like protein 9 (Retrotransposon gag domain-containing protein 1) (Tumor antigen BJ-HCC-23)	Other / unclassified	57529
+Q16799	RTN1	Reticulon-1; ; Reticulon-1 (Neuroendocrine-specific protein)	Other / unclassified	6252
+O95197	RTN3	Reticulon-3; ; Reticulon-3 (Homolog of ASY protein) (HAP) (Neuroendocrine-specific protein-like 2) (NSP-like protein 2) (Neuroendocrine-specific protein-like II) (NSP-like protein II) (NSPLII)	Other / unclassified	10313
+P31949	S100A11	Protein S100-A11; ; Protein S100-A11 (Calgizzarin) (Metastatic lymph node gene 70 protein) (MLN 70) (Protein S100-C) (S100 calcium-binding protein A11) [Cleaved into: Protein S100-A11, N-terminally processed]	Other / unclassified	6282
+Q96BU1	S100PBP	S100P-binding protein; ; S100P-binding protein (S100P-binding protein Riken)	Other / unclassified	64766
+Q96NU1	SAMD11	Sterile alpha motif domain-containing protein 11; ; Sterile alpha motif domain-containing protein 11 (SAM domain-containing protein 11)	Other / unclassified	148398
+O94885	SASH1	SAM and SH3 domain-containing protein 1; ; SAM and SH3 domain-containing protein 1 (Proline-glutamate repeat-containing protein)	Other / unclassified	23328
+Q9H4B6	SAV1	Protein salvador homolog 1; ; Protein salvador homolog 1 (45 kDa WW domain protein) (hWW45)	Other / unclassified	60485
+C9JPG0	SCRN1		Other / unclassified	9805
+Q9BRK5	SDF4	45 kDa calcium-binding protein precursor; ; 45 kDa calcium-binding protein (Cab45) (Stromal cell-derived factor 4) (SDF-4)	Other / unclassified	51150
+Q9UDX3	SEC14L4	SEC14-like protein 4 (Tocopherol-associated protein 3)	Other / unclassified	284904
+B5MCN3	SEC14L6	SEC14-like protein 6	Other / unclassified	730005
+O95486	SEC24A	Protein transport protein Sec24A; ; Protein transport protein Sec24A (SEC24-related protein A)	Other / unclassified	10802
+P53992	SEC24C	Protein transport protein Sec24C; ; Protein transport protein Sec24C (SEC24-related protein C)	Other / unclassified	9632
+O94855	SEC24D	Protein transport protein Sec24D; ; Protein transport protein Sec24D (SEC24-related protein D)	Other / unclassified	9871
+P61619	SEC61A1	Protein transport protein Sec61 subunit alpha isoform 1; ; Protein transport protein Sec61 subunit alpha isoform 1 (Sec61 alpha-1)	Other / unclassified	29927
+B4DR61	SEC61A1		Other / unclassified	29927
+Q9H9S3	SEC61A2	Protein transport protein Sec61 subunit alpha isoform 2 (Sec61 alpha-2)	Other / unclassified	55176
+Q9UGP8	SEC63	Translocation protein SEC63 homolog; ; Translocation protein SEC63 homolog (DnaJ homolog subfamily C member 23)	Other / unclassified	11231
+P84101	SERF2	Small EDRK-rich factor 2 (Gastric cancer-related protein VRG107) (Protein 4F5-related) (4F5rel) (h4F5rel)	Other / unclassified	10169
+P36952	SERPINB5	Serpin B5; ; Serpin B5 (Maspin) (Peptidase inhibitor 5) (PI-5)	Other / unclassified	5268
+Q9NUC0	SERTAD4	SERTA domain-containing protein 4	Other / unclassified	56256
+P58004	SESN2	Sestrin-2; ; Sestrin-2 (EC 1.11.1.-) (Hypoxia-induced gene)	Other / unclassified	83667
+P58005	SESN3	Sestrin-3 (EC 1.11.1.-)	Other / unclassified	143686
+Q9H9B4	SFXN1	Sideroflexin-1; ; Sideroflexin-1	Other / unclassified	94081
+Q96NB2	SFXN2	Sideroflexin-2; ; Sideroflexin-2	Other / unclassified	118980
+Q562F6	SGO2	Shugoshin 2; ; Shugoshin 2 (Shugoshin-2) (Shugoshin-like 2) (Tripin)	Other / unclassified	151246
+O60880	SH2D1A	SH2 domain-containing protein 1A; ; SH2 domain-containing protein 1A (Duncan disease SH2-protein) (Signaling lymphocytic activation molecule-associated protein) (SLAM-associated protein) (T-cell signal transduction molecule SAP)	Other / unclassified	4068
+B8ZZB5	SH2D7		Other / unclassified	646892
+Q9H299	SH3BGRL3	SH3 domain-binding glutamic acid-rich-like protein 3; ; SH3 domain-binding glutamic acid-rich-like protein 3 (SH3 domain-binding protein 1) (SH3BP-1) (TNF inhibitory protein B1) (TIP-B1)	Other / unclassified	83442
+Q5T123	SH3BGRL3		Other / unclassified	83442
+Q99962	SH3GL2	Endophilin-A1; ; Endophilin-A1 (EEN-B1) (Endophilin-1) (SH3 domain protein 2A) (SH3 domain-containing GRB2-like protein 2)	Other / unclassified	6456
+Q99963	SH3GL3	Endophilin-A3; ; Endophilin-A3 (EEN-B2) (Endophilin-3) (SH3 domain protein 2C) (SH3 domain-containing GRB2-like protein 3)	Other / unclassified	6457
+P29353	SHC1	SHC-transforming protein 1; ; SHC-transforming protein 1 (SHC-transforming protein 3) (SHC-transforming protein A) (Src homology 2 domain-containing-transforming protein C1) (SH2 domain protein C1)	Other / unclassified	6464
+Q6ZSJ9	SHISA6	Protein shisa-6 precursor; ; Protein shisa-6	Other / unclassified	388336
+B8ZZ34	SHISA8	Protein shisa-8 (Shisa family member 8)	Other / unclassified	440829
+A0MZ66	SHTN1	Shootin-1; ; Shootin-1 (Shootin1)	Other / unclassified	57698
+Q9P270	SLAIN2	SLAIN motif-containing protein 2; ; SLAIN motif-containing protein 2	Other / unclassified	57606
+O43541	SMAD6	Mothers against decapentaplegic homolog 6; ; SMAD family member 6 (SMAD 6) (hSMAD6) (Mothers against decapentaplegic homolog 6) (MAD homolog 6) (Mothers against DPP homolog 6)	Other / unclassified	4091
+O60504	SORBS3	Vinexin; ; Vinexin (SH3-containing adapter molecule 1) (SCAM-1) (Sorbin and SH3 domain-containing protein 3)	Other / unclassified	10174
+Q07889	SOS1	Son of sevenless homolog 1; ; Son of sevenless homolog 1 (SOS-1)	Other / unclassified	6654
+Q8N0X7	SPART	Spartin; ; Spartin (Spastic paraplegia 20 protein) (Trans-activated by hepatitis C virus core protein 1)	Other / unclassified	23111
+Q9P0W8	SPATA7	Spermatogenesis-associated protein 7; ; Spermatogenesis-associated protein 7 (HSD-3.1) (Spermatogenesis-associated protein HSD3)	Other / unclassified	55812
+Q86XZ4	SPATS2	Spermatogenesis-associated serine-rich protein 2; ; Spermatogenesis-associated serine-rich protein 2 (Serine-rich spermatocytes and round spermatid 59 kDa protein) (p59scr)	Other / unclassified	65244
+Q5JUX0	SPIN3	Spindlin-3 (Spindlin-like protein 3) (SPIN-3)	Other / unclassified	169981
+Q6ZMY3	SPOCD1	SPOC domain-containing protein 1	Other / unclassified	90853
+Q8N5C6	SRBD1	S1 RNA-binding domain-containing protein 1; ; S1 RNA-binding domain-containing protein 1	Other / unclassified	55133
+P30626	SRI	Sorcin; ; Sorcin (22 kDa protein) (CP-22) (CP22) (V19)	Other / unclassified	6717
+P09132	SRP19	Signal recognition particle 19 kDa protein (SRP19)	Other / unclassified	6728
+Q9UHB9	SRP68	Signal recognition particle subunit SRP68; ; Signal recognition particle subunit SRP68 (SRP68) (Signal recognition particle 68 kDa protein)	Other / unclassified	6730
+O76094	SRP72	Signal recognition particle subunit SRP72; ; Signal recognition particle subunit SRP72 (SRP72) (Signal recognition particle 72 kDa protein)	Other / unclassified	6731
+P49458	SRP9	Signal recognition particle 9 kDa protein; ; Signal recognition particle 9 kDa protein (SRP9)	Other / unclassified	6726
+Q15532	SS18	Protein SSXT; ; Protein SSXT (Protein SYT) (Synovial sarcoma translocated to X chromosome protein)	Other / unclassified	6760
+Q9P2P6	STARD9	StAR-related lipid transfer protein 9; ; StAR-related lipid transfer protein 9 (START domain-containing protein 9) (StARD9)	Other / unclassified	57519
+O76061	STC2	Stanniocalcin-2 precursor; ; Stanniocalcin-2 (STC-2) (Stanniocalcin-related protein) (STC-related protein) (STCRP)	Other / unclassified	8614
+Q9P2F5	STOX2	Storkhead-box protein 2	Other / unclassified	56977
+O43815	STRN	Striatin; ; Striatin	Other / unclassified	6801
+Q9UNK0	STX8	Syntaxin-8; ; Syntaxin-8	Other / unclassified	9482
+E7EQD5	STXBP2		Other / unclassified	6813
+O00186	STXBP3	Syntaxin-binding protein 3; ; Syntaxin-binding protein 3 (Platelet Sec1 protein) (PSP) (Protein unc-18 homolog 3) (Unc18-3) (Protein unc-18 homolog C) (Unc-18C)	Other / unclassified	6814
+Q8IWZ8	SUGP1	SURP and G-patch domain-containing protein 1; ; SURP and G-patch domain-containing protein 1 (RNA-binding protein RBP) (Splicing factor 4)	Other / unclassified	57794
+Q8IX01	SUGP2	SURP and G-patch domain-containing protein 2; ; SURP and G-patch domain-containing protein 2 (Arginine/serine-rich-splicing factor 14) (Splicing factor, arginine/serine-rich 14)	Other / unclassified	10147
+Q9Y2Z0	SUGT1	Protein SGT1 homolog; ; Protein SGT1 homolog (Protein 40-6-3) (Sgt1) (Suppressor of G2 allele of SKP1 homolog)	Other / unclassified	10910
+Q15527	SURF2	Surfeit locus protein 2; ; Surfeit locus protein 2 (Surf-2)	Other / unclassified	6835
+O60279	SUSD5	Sushi domain-containing protein 5 precursor; ; Sushi domain-containing protein 5	Other / unclassified	26032
+O95425	SVIL	Supervillin; ; Supervillin (Archvillin) (p205/p250)	Other / unclassified	6840
+O43760	SYNGR2	Synaptogyrin-2; ; Synaptogyrin-2 (Cellugyrin)	Other / unclassified	9144
+F8W9B9	SYTL4		Other / unclassified	94121
+Q12788	TBL3	Transducin beta-like protein 3; ; Transducin beta-like protein 3 (WD repeat-containing protein SAZD)	Other / unclassified	10607
+Q9Y4R8	TELO2	Telomere length regulation protein TEL2 homolog; ; Telomere length regulation protein TEL2 homolog (Protein clk-2 homolog) (hCLK2)	Other / unclassified	9894
+Q6N021	TET2	Methylcytosine dioxygenase TET2; ; Methylcytosine dioxygenase TET2 (EC 1.14.11.80)	Other / unclassified	54790
+Q8IYQ7	THNSL1	Threonine synthase-like 1; ; Threonine synthase-like 1 (TSH1)	Other / unclassified	79896
+Q9UPZ6	THSD7A	Thrombospondin type-1 domain-containing protein 7A precursor; ; Thrombospondin type-1 domain-containing protein 7A [Cleaved into: Thrombospondin type-1 domain-containing protein 7A, soluble form]	Other / unclassified	221981
+H0Y5S0	TLE4		Other / unclassified	7091
+Q04727	TLE4	Transducin-like enhancer protein 4; ; Transducin-like enhancer protein 4 (Grg-4) (Groucho-related protein 4)	Other / unclassified	7091
+Q9C0C2	TNKS1BP1	182 kDa tankyrase-1-binding protein; ; 182 kDa tankyrase-1-binding protein	Other / unclassified	85456
+Q8IZW8	TNS4	Tensin-4 precursor; ; Tensin-4 (C-terminal tensin-like protein)	Other / unclassified	84951
+F5H0B0	TPD52		Other / unclassified	7163
+Q16890	TPD52L1	Tumor protein D53; ; Tumor protein D53 (hD53) (Tumor protein D52-like 1)	Other / unclassified	7164
+O43399	TPD52L2	Tumor protein D54; ; Tumor protein D54 (hD54) (Tumor protein D52-like 2)	Other / unclassified	7165
+P60174	TPI1	Triosephosphate isomerase; ; Triosephosphate isomerase (TIM) (EC 5.3.1.1) (Methylglyoxal synthase) (EC 4.2.3.3) (Triose-phosphate isomerase)	Other / unclassified	7167
+P49815	TSC2	Tuberin; ; Tuberin (Tuberous sclerosis 2 protein)	Other / unclassified	7249
+E9PGT1	TSN		Other / unclassified	7247
+E5RG83	TSNARE1		Other / unclassified	203062
+Q9BVA1	TUBB2B	Tubulin beta-2B chain; ; Tubulin beta-2B chain	Other / unclassified	347733
+P23258	TUBG1	Tubulin gamma-1 chain; ; Tubulin gamma-1 chain (Gamma-1-tubulin) (Gamma-tubulin complex component 1) (GCP-1)	Other / unclassified	7283
+E9PB12	TUBGCP5		Other / unclassified	114791
+Q96RT8	TUBGCP5	Gamma-tubulin complex component 5 (GCP-5)	Other / unclassified	114791
+O00294	TULP1	Tubby-related protein 1 (Tubby-like protein 1)	Other / unclassified	7287
+F8WBZ9	TULP3		Other / unclassified	7289
+P40222	TXLNA	Alpha-taxilin; ; Alpha-taxilin	Other / unclassified	200081
+Q8NBS9	TXNDC5	Thioredoxin domain-containing protein 5 precursor; ; Thioredoxin domain-containing protein 5 (EC 1.8.4.-) (EC 5.3.4.1) (Endoplasmic reticulum resident protein 46) (ER protein 46) (ERp46) (Thioredoxin-like protein p46)	Other / unclassified	81567
+P04818	TYMS	Thymidylate synthase; ; Thymidylate synthase (TS) (TSase) (EC 2.1.1.45)	Other / unclassified	7298
+Q6ZU65	UBN2	Ubinuclein-2; ; Ubinuclein-2	Other / unclassified	254048
+Q70J99	UNC13D	Protein unc-13 homolog D; ; Protein unc-13 homolog D (Munc13-4)	Other / unclassified	201294
+P13051	UNG	Uracil-DNA glycosylase; ; Uracil-DNA glycosylase (UDG) (EC 3.2.2.27)	Other / unclassified	7374
+P14927	UQCRB	Cytochrome b-c1 complex subunit 7; ; Cytochrome b-c1 complex subunit 7 (Complex III subunit 7) (Complex III subunit VII) (QP-C) (Ubiquinol-cytochrome c reductase complex 14 kDa protein)	Other / unclassified	7381
+O14949	UQCRQ	Cytochrome b-c1 complex subunit 8; ; Cytochrome b-c1 complex subunit 8 (Complex III subunit 8) (Complex III subunit VIII) (Ubiquinol-cytochrome c reductase complex 9.5 kDa protein) (Ubiquinol-cytochrome c reductase complex ubiquinone-binding protein QP-C)	Other / unclassified	27089
+Q92738	USP6NL	USP6 N-terminal-like protein; ; USP6 N-terminal-like protein (Related to the N-terminus of tre) (RN-tre)	Other / unclassified	9712
+Q969W3	VCF1	Protein VCF1; ; Protein VCF1 (VCP nuclear cofactor family member 1)	Other / unclassified	84923
+P18206	VCL	Vinculin; ; Vinculin (Metavinculin) (MV)	Other / unclassified	7414
+P40337	VHL	von Hippel-Lindau disease tumor suppressor; ; von Hippel-Lindau disease tumor suppressor (Protein G7) (pVHL)	Other / unclassified	7428
+C9JW99	VWA5B2		Other / unclassified	90113
+Q6VEQ5	WASH2P	WAS protein family homolog 2 (CXYorf1-like protein on chromosome 2) (Protein FAM39B)	Other / unclassified	375260
+Q641Q2	WASHC2A	WASH complex subunit 2A; ; WASH complex subunit 2A	Other / unclassified	387680
+Q9Y2W2	WBP11	WW domain-binding protein 11; ; WW domain-binding protein 11 (WBP-11) (Npw38-binding protein) (NpwBP) (SH3 domain-binding protein SNP70) (Splicing factor that interacts with PQBP-1 and PP1)	Other / unclassified	51729
+Q9BV38	WDR18	WD repeat-containing protein 18; ; WD repeat-containing protein 18	Other / unclassified	57418
+B5MDA0	WDR73		Other / unclassified	84942
+Q6UXN9	WDR82	WD repeat-containing protein 82; ; WD repeat-containing protein 82	Other / unclassified	80335
+Q8IX03	WWC1	Protein KIBRA; ; Protein KIBRA (HBeAg-binding protein 3) (Kidney and brain protein) (KIBRA) (WW domain-containing protein 1)	Other / unclassified	23286
+Q6AWC2	WWC2	Protein WWC2; ; Protein WWC2 (BH-3-only member B) (WW domain-containing protein 2)	Other / unclassified	80014
+Q9ULE0	WWC3	Protein WWC3	Other / unclassified	55841
+O15498	YKT6	Synaptobrevin homolog YKT6 precursor; ; Synaptobrevin homolog YKT6 (EC 2.3.1.-)	Other / unclassified	10652
+P62699	YPEL5	Protein yippee-like 5; ; Protein yippee-like 5	Other / unclassified	51646
+P62258	YWHAE	14-3-3 protein epsilon; ; 14-3-3 protein epsilon (14-3-3E)	Other / unclassified	7531
+Q04917	YWHAH	14-3-3 protein eta; ; 14-3-3 protein eta (Protein AS1)	Other / unclassified	7533
+P27348	YWHAQ	14-3-3 protein theta; ; 14-3-3 protein theta (14-3-3 protein T-cell) (14-3-3 protein tau) (Protein HS1)	Other / unclassified	10971
+Q6NZY4	ZCCHC8	Zinc finger CCHC domain-containing protein 8; ; Zinc finger CCHC domain-containing protein 8 (TRAMP-like complex RNA-binding factor ZCCHC8)	Other / unclassified	55596
+O60232	ZNRD2	Protein ZNRD2; ; Protein ZNRD2 (Autoantigen p27) (Protein zinc ribbon domain type 2) (Sjoegren syndrome/scleroderma autoantigen 1) (Zinc ribbon domain-containing protein 2)	Other / unclassified	10534
+Q15942	ZYX	Zyxin; ; Zyxin (Zyxin-2)	Other / unclassified	7791
+O43149	ZZEF1	Zinc finger ZZ-type and EF-hand domain-containing protein 1; ; Zinc finger ZZ-type and EF-hand domain-containing protein 1	Other / unclassified	23140

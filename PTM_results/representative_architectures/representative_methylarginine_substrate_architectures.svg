@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1060" viewBox="0 0 1320 1060">
+<style>
+  svg { background: #FFFFFF; }
+  text {
+    font-family: Arial, "Liberation Sans", "DejaVu Sans", Helvetica, sans-serif;
+    letter-spacing: 0.01em;
+  }
+</style>
+<rect x="0" y="0" width="1320" height="1060" fill="#FFFFFF" stroke="none" />
+<text x="660" y="46" fill="#12202C" font-size="21" text-anchor="middle" font-weight="700" font-style="normal" dominant-baseline="alphabetic">Representative methylarginine substrate architectures.</text>
+<text x="660" y="68" fill="#5B6673" font-size="10.5" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">Ordered domains from InterPro; low-complexity, RG-rich, and disorder-guided segments derived from project sequence/context tables.</text>
+<text x="52" y="106" fill="#12202C" font-size="15" text-anchor="start" font-weight="700" font-style="normal" dominant-baseline="alphabetic">FUS</text>
+<text x="52" y="124" fill="#5B6673" font-size="10.5" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">526 aa</text>
+<line x1="176" y1="164" x2="910" y2="164" stroke="#9AA6B2" stroke-width="1.2" />
+<path d="M 176 164 Q 187.72 159.6 199.44 164 Q 211.16 168.4 222.88 164 Q 234.6 159.6 246.32 164 Q 258.04 168.4 269.75 164 Q 281.47 159.6 293.19 164 Q 304.91 168.4 316.63 164 Q 328.35 159.6 340.07 164 Q 351.79 168.4 363.51 164 Q 375.23 159.6 386.95 164 Q 398.67 168.4 410.39 164 Q 422.11 159.6 433.83 164 Q 445.54 168.4 457.26 164 Q 468.98 159.6 480.7 164 Q 492.42 168.4 504.14 164 Q 515.86 159.6 527.58 164 Q 539.3 168.4 551.02 164 Q 562.74 159.6 574.46 164" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="M 644.36 164 Q 650.65 159.6 656.94 164" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="M 696.09 164 Q 706.4 159.6 716.71 164 Q 727.02 168.4 737.34 164 Q 747.65 159.6 757.96 164 Q 768.27 168.4 778.58 164" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="M 788.37 164 Q 798.5 159.6 808.64 164 Q 818.77 168.4 828.91 164 Q 839.05 159.6 849.18 164 Q 859.32 168.4 869.46 164 Q 879.59 159.6 889.73 164 Q 899.86 168.4 910 164" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<rect x="573.06" y="152" width="120.24" height="24" rx="12" fill="#E8E1D4" stroke="#675B4F" stroke-width="1.2" />
+<text x="633.18" y="167.8" fill="#12202C" font-size="10" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">RRM</text>
+<rect x="764.6" y="152" width="43.34" height="24" rx="12" fill="#E8E1D4" stroke="#675B4F" stroke-width="1.2" />
+<text x="786.27" y="167.8" fill="#12202C" font-size="9" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">ZnF</text>
+<rect x="176" y="96" width="269.83" height="16" rx="8" fill="#F3E6BF" stroke="none" opacity="0.95" />
+<text x="310.92" y="107.5" fill="#12202C" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">low-complexity / PrLD-like</text>
+<rect x="447.23" y="118" width="111.85" height="16" rx="8" fill="#F1CCD4" stroke="none" opacity="0.95" />
+<text x="503.15" y="129.5" fill="#12202C" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">RGG-rich IDR 1</text>
+<rect x="696.09" y="102" width="75.5" height="5.5" rx="2.75" fill="#F1CCD4" stroke="none" />
+<line x1="771.59" y1="104.75" x2="777.59" y2="104.75" stroke="#F1CCD4" stroke-width="1.3" />
+<text x="781.59" y="108" fill="#12202C" font-size="10" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">RGG-rich IDR 2</text>
+<rect x="810.74" y="118" width="95.07" height="16" rx="8" fill="#F1CCD4" stroke="none" opacity="0.95" />
+<text x="858.27" y="129.5" fill="#12202C" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">RGG-rich IDR 3</text>
+<rect x="891.82" y="102" width="18.18" height="5.5" rx="2.75" fill="#D8E4F2" stroke="none" />
+<line x1="910" y1="104.75" x2="916" y2="104.75" stroke="#D8E4F2" stroke-width="1.3" />
+<text x="920" y="108" fill="#12202C" font-size="10" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">PY tail (NLS-like)</text>
+<line x1="472.4" y1="148" x2="479.39" y2="148" stroke="#B95570" stroke-width="2.0" stroke-linecap="round" />
+<line x1="472.4" y1="144.5" x2="472.4" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="476.59" y1="144.5" x2="476.59" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="479.39" y1="144.5" x2="479.39" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<rect x="465.89" y="126.5" width="20" height="14" rx="7" fill="#B95570" stroke="none" />
+<text x="475.89" y="136.8" fill="white" font-size="9.4" text-anchor="middle" font-weight="700" font-style="normal" dominant-baseline="alphabetic">3</text>
+<circle cx="501.76" cy="148" r="4.25" fill="#C86A82" stroke="#8E4358" stroke-width="1.0" />
+<line x1="512.94" y1="148" x2="525.52" y2="148" stroke="#B95570" stroke-width="2.0" stroke-linecap="round" />
+<line x1="512.94" y1="144.5" x2="512.94" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="515.74" y1="144.5" x2="515.74" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="521.33" y1="144.5" x2="521.33" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="525.52" y1="144.5" x2="525.52" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<rect x="509.23" y="126.5" width="20" height="14" rx="7" fill="#B95570" stroke="none" />
+<text x="519.23" y="136.8" fill="white" font-size="9.4" text-anchor="middle" font-weight="700" font-style="normal" dominant-baseline="alphabetic">4</text>
+<circle cx="536.71" cy="148" r="4.25" fill="#C86A82" stroke="#8E4358" stroke-width="1.0" />
+<circle cx="550.69" cy="148" r="4.25" fill="#C86A82" stroke="#8E4358" stroke-width="1.0" />
+<circle cx="633.18" cy="148" r="4.25" fill="#C86A82" stroke="#8E4358" stroke-width="1.0" />
+<line x1="693.3" y1="148" x2="701.68" y2="148" stroke="#B95570" stroke-width="2.0" stroke-linecap="round" />
+<line x1="693.3" y1="144.5" x2="693.3" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="694.69" y1="144.5" x2="694.69" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="701.68" y1="144.5" x2="701.68" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<rect x="687.49" y="126.5" width="20" height="14" rx="7" fill="#B95570" stroke="none" />
+<text x="697.49" y="136.8" fill="white" font-size="9.4" text-anchor="middle" font-weight="700" font-style="normal" dominant-baseline="alphabetic">3</text>
+<line x1="710.07" y1="148" x2="717.06" y2="148" stroke="#B95570" stroke-width="2.0" stroke-linecap="round" />
+<line x1="710.07" y1="144.5" x2="710.07" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="714.27" y1="144.5" x2="714.27" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="717.06" y1="144.5" x2="717.06" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<rect x="703.57" y="126.5" width="20" height="14" rx="7" fill="#B95570" stroke="none" />
+<text x="713.57" y="136.8" fill="white" font-size="9.4" text-anchor="middle" font-weight="700" font-style="normal" dominant-baseline="alphabetic">3</text>
+<circle cx="725.45" cy="148" r="4.25" fill="#C86A82" stroke="#8E4358" stroke-width="1.0" />
+<circle cx="743.63" cy="148" r="4.25" fill="#C86A82" stroke="#8E4358" stroke-width="1.0" />
+<line x1="834.5" y1="148" x2="877.84" y2="148" stroke="#B95570" stroke-width="2.0" stroke-linecap="round" />
+<line x1="834.5" y1="144.5" x2="834.5" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="835.9" y1="144.5" x2="835.9" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="840.1" y1="144.5" x2="840.1" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="847.09" y1="144.5" x2="847.09" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="852.68" y1="144.5" x2="852.68" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="855.47" y1="144.5" x2="855.47" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="861.07" y1="144.5" x2="861.07" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="866.66" y1="144.5" x2="866.66" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="870.85" y1="144.5" x2="870.85" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="877.84" y1="144.5" x2="877.84" y2="151.5" stroke="#B95570" stroke-width="1.0" />
+<rect x="846.17" y="126.5" width="20" height="14" rx="7" fill="#B95570" stroke="none" />
+<text x="856.17" y="136.8" fill="white" font-size="9.4" text-anchor="middle" font-weight="700" font-style="normal" dominant-baseline="alphabetic">10</text>
+<circle cx="893.22" cy="148" r="4.25" fill="#C86A82" stroke="#8E4358" stroke-width="1.0" />
+<line x1="176" y1="186" x2="176" y2="193" stroke="#9AA6B2" stroke-width="1.0" />
+<line x1="910" y1="186" x2="910" y2="193" stroke="#9AA6B2" stroke-width="1.0" />
+<text x="176" y="207" fill="#5B6673" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">1</text>
+<text x="910" y="207" fill="#5B6673" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">526 aa</text>
+<rect x="956" y="220" width="300" height="48" rx="12" fill="#F5F7F9" stroke="none" />
+<text x="970" y="236" fill="#5B6673" font-size="9.8" text-anchor="start" font-weight="700" font-style="normal" dominant-baseline="alphabetic">Redistribution mode</text>
+<text x="970" y="251" fill="#12202C" font-size="11.6" text-anchor="start" font-weight="400"><tspan x="970" dy="0">multivalent IDR network tuning: LLPS /</tspan><tspan x="970" dy="14.38">transport / Arg-Rme aromatic contacts.</tspan></text>
+<text x="52" y="316" fill="#12202C" font-size="15" text-anchor="start" font-weight="700" font-style="normal" dominant-baseline="alphabetic">SmD3 / SNRPD3</text>
+<text x="52" y="334" fill="#5B6673" font-size="10.5" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">126 aa</text>
+<line x1="176" y1="374" x2="910" y2="374" stroke="#9AA6B2" stroke-width="1.2" />
+<path d="M 176 374 Q 184.81 369.6 193.62 374" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="M 669.25 374 Q 678.79 369.6 688.33 374 Q 697.87 378.4 707.42 374 Q 716.96 369.6 726.5 374 Q 736.04 378.4 745.58 374" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="M 816.05 374 Q 827.79 369.6 839.54 374 Q 851.28 378.4 863.02 374 Q 874.77 369.6 886.51 374 Q 898.26 378.4 910 374" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<rect x="199.49" y="362" width="422.78" height="24" rx="12" fill="#E8E1D4" stroke="#675B4F" stroke-width="1.2" />
+<text x="410.88" y="377.8" fill="#12202C" font-size="10" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">Sm core</text>
+<rect x="816.05" y="306" width="93.95" height="16" rx="8" fill="#F1CCD4" stroke="none" opacity="0.95" />
+<text x="863.02" y="317.5" fill="#12202C" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">C-terminal RG tail</text>
+<line x1="816.05" y1="358" x2="863.02" y2="358" stroke="#B95570" stroke-width="2.0" stroke-linecap="round" />
+<line x1="816.05" y1="354.5" x2="816.05" y2="361.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="827.79" y1="354.5" x2="827.79" y2="361.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="839.54" y1="354.5" x2="839.54" y2="361.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="863.02" y1="354.5" x2="863.02" y2="361.5" stroke="#B95570" stroke-width="1.0" />
+<rect x="829.54" y="336.5" width="20" height="14" rx="7" fill="#B95570" stroke="none" />
+<text x="839.54" y="346.8" fill="white" font-size="9.4" text-anchor="middle" font-weight="700" font-style="normal" dominant-baseline="alphabetic">4</text>
+<line x1="176" y1="396" x2="176" y2="403" stroke="#9AA6B2" stroke-width="1.0" />
+<line x1="910" y1="396" x2="910" y2="403" stroke="#9AA6B2" stroke-width="1.0" />
+<text x="176" y="417" fill="#5B6673" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">1</text>
+<text x="910" y="417" fill="#5B6673" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">126 aa</text>
+<rect x="960" y="318" width="240" height="76" rx="14" fill="#DCEAF7" stroke="#6D8BA9" stroke-width="1.2" />
+<circle cx="988" cy="341" r="4.2" fill="#6D8BA9" stroke="none" />
+<circle cx="1080" cy="341" r="4.2" fill="#6D8BA9" stroke="none" />
+<circle cx="1172" cy="341" r="4.2" fill="#6D8BA9" stroke="none" />
+<text x="1080" y="366" fill="#12202C" font-size="11.3" text-anchor="middle" font-weight="600"><tspan x="1080" dy="0">SMN Tudor aromatic cage</tspan></text>
+<line x1="863.02" y1="356" x2="960" y2="348" stroke="#6D8BA9" stroke-width="1.2" />
+<rect x="956" y="430" width="300" height="48" rx="12" fill="#F5F7F9" stroke="none" />
+<text x="970" y="446" fill="#5B6673" font-size="9.8" text-anchor="start" font-weight="700" font-style="normal" dominant-baseline="alphabetic">Redistribution mode</text>
+<text x="970" y="461" fill="#12202C" font-size="11.6" text-anchor="start" font-weight="400"><tspan x="970" dy="0">SDMA RG tail -&gt; SMN-dependent RNP</tspan><tspan x="970" dy="14.38">assembly.</tspan></text>
+<text x="176" y="485" fill="#5B6673" font-size="9.4" text-anchor="start" font-weight="400"><tspan x="176" dy="0">Tail sites restricted to consensus Rme2 positions in the RG-rich tail.</tspan></text>
+<text x="52" y="526" fill="#12202C" font-size="15" text-anchor="start" font-weight="700" font-style="normal" dominant-baseline="alphabetic">FMRP / FMR1</text>
+<text x="52" y="544" fill="#5B6673" font-size="10.5" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">632 aa</text>
+<line x1="176" y1="584" x2="910" y2="584" stroke="#9AA6B2" stroke-width="1.2" />
+<path d="M 176 584 Q 177.16 579.6 178.33 584" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="M 551.72 584 Q 559.29 579.6 566.85 584 Q 574.41 588.4 581.97 584" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="M 591.27 584 Q 598.84 579.6 606.4 584" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="M 688.99 584 Q 700.04 579.6 711.09 584 Q 722.14 588.4 733.19 584 Q 744.24 579.6 755.29 584 Q 766.34 588.4 777.39 584 Q 788.44 579.6 799.49 584 Q 810.54 588.4 821.59 584 Q 832.65 579.6 843.7 584 Q 854.75 588.4 865.8 584 Q 876.85 579.6 887.9 584 Q 898.95 588.4 910 584" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<rect x="176" y="572" width="134.94" height="24" rx="12" fill="#E8E1D4" stroke="#675B4F" stroke-width="1.2" />
+<text x="243.47" y="587.8" fill="#12202C" font-size="10" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">Agenet tandem</text>
+<rect x="317.91" y="572" width="97.71" height="24" rx="12" fill="#E8E1D4" stroke="#675B4F" stroke-width="1.2" />
+<text x="366.77" y="587.8" fill="#12202C" font-size="10" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">KH0</text>
+<rect x="428.42" y="572" width="72.12" height="24" rx="12" fill="#E8E1D4" stroke="#675B4F" stroke-width="1.2" />
+<text x="464.48" y="587.8" fill="#12202C" font-size="10" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">KH1</text>
+<rect x="663.39" y="572" width="141.91" height="24" rx="12" fill="#E8E1D4" stroke="#675B4F" stroke-width="1.2" />
+<text x="734.35" y="587.8" fill="#12202C" font-size="10" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">C-core</text>
+<rect x="813.45" y="572" width="96.55" height="24" rx="12" fill="#E8E1D4" stroke="#675B4F" stroke-width="1.2" />
+<text x="861.73" y="587.8" fill="#12202C" font-size="10" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">CTD2</text>
+<rect x="712.25" y="516" width="118.65" height="16" rx="8" fill="#F1CCD4" stroke="none" opacity="0.95" />
+<text x="771.58" y="527.5" fill="#12202C" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">RGG / RG box</text>
+<line x1="722.72" y1="568" x2="737.84" y2="568" stroke="#B95570" stroke-width="2.0" stroke-linecap="round" />
+<line x1="722.72" y1="564.5" x2="722.72" y2="571.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="726.21" y1="564.5" x2="726.21" y2="571.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="729.7" y1="564.5" x2="729.7" y2="571.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="732.03" y1="564.5" x2="732.03" y2="571.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="737.84" y1="564.5" x2="737.84" y2="571.5" stroke="#B95570" stroke-width="1.0" />
+<rect x="720.28" y="546.5" width="20" height="14" rx="7" fill="#B95570" stroke="none" />
+<text x="730.28" y="556.8" fill="white" font-size="9.4" text-anchor="middle" font-weight="700" font-style="normal" dominant-baseline="alphabetic">5</text>
+<line x1="796" y1="568" x2="809.96" y2="568" stroke="#B95570" stroke-width="2.0" stroke-linecap="round" />
+<line x1="796" y1="564.5" x2="796" y2="571.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="801.82" y1="564.5" x2="801.82" y2="571.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="807.64" y1="564.5" x2="807.64" y2="571.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="809.96" y1="564.5" x2="809.96" y2="571.5" stroke="#B95570" stroke-width="1.0" />
+<rect x="792.98" y="546.5" width="20" height="14" rx="7" fill="#B95570" stroke="none" />
+<text x="802.98" y="556.8" fill="white" font-size="9.4" text-anchor="middle" font-weight="700" font-style="normal" dominant-baseline="alphabetic">4</text>
+<circle cx="828.57" cy="563.5" r="4.15" fill="#C86A82" stroke="#8E4358" stroke-width="1.0" />
+<circle cx="830.9" cy="572.5" r="4.15" fill="#C86A82" stroke="#8E4358" stroke-width="1.0" />
+<line x1="176" y1="606" x2="176" y2="613" stroke="#9AA6B2" stroke-width="1.0" />
+<line x1="910" y1="606" x2="910" y2="613" stroke="#9AA6B2" stroke-width="1.0" />
+<text x="176" y="627" fill="#5B6673" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">1</text>
+<text x="910" y="627" fill="#5B6673" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">632 aa</text>
+<rect x="992" y="530" width="16" height="16" rx="4" fill="none" stroke="#355D8B" stroke-width="2.0" />
+<rect x="1020" y="530" width="16" height="16" rx="4" fill="none" stroke="#355D8B" stroke-width="2.0" />
+<rect x="992" y="558" width="16" height="16" rx="4" fill="none" stroke="#355D8B" stroke-width="2.0" />
+<rect x="1020" y="558" width="16" height="16" rx="4" fill="none" stroke="#355D8B" stroke-width="2.0" />
+<line x1="1000" y1="538" x2="1028" y2="538" stroke="#355D8B" stroke-width="1.7" />
+<line x1="1000" y1="566" x2="1028" y2="566" stroke="#355D8B" stroke-width="1.7" />
+<line x1="1000" y1="538" x2="1000" y2="566" stroke="#355D8B" stroke-width="1.7" />
+<line x1="1028" y1="538" x2="1028" y2="566" stroke="#355D8B" stroke-width="1.7" />
+<path d="M 986 582 Q 993.25 578.5 1000.5 582 Q 1007.75 585.5 1015 582 Q 1022.25 578.5 1029.5 582 Q 1036.75 585.5 1044 582" fill="none" stroke="#5C86B8" stroke-width="2.0" />
+<text x="1015" y="612" fill="#355D8B" font-size="11" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">G4 RNA/DNA</text>
+<line x1="729.7" y1="567" x2="1000" y2="550" stroke="#355D8B" stroke-width="1.2" />
+<rect x="956" y="640" width="300" height="48" rx="12" fill="#F5F7F9" stroke="none" />
+<text x="970" y="656" fill="#5B6673" font-size="9.8" text-anchor="start" font-weight="700" font-style="normal" dominant-baseline="alphabetic">Redistribution mode</text>
+<text x="970" y="671" fill="#12202C" font-size="11.6" text-anchor="start" font-weight="400"><tspan x="970" dy="0">direct nucleic-acid contact tuning.</tspan></text>
+<text x="176" y="695" fill="#5B6673" font-size="9.4" text-anchor="start" font-weight="400"><tspan x="176" dy="0">RGG/RG box derived from RG-rich windows inside the disordered C-terminal tail.</tspan></text>
+<text x="52" y="736" fill="#12202C" font-size="15" text-anchor="start" font-weight="700" font-style="normal" dominant-baseline="alphabetic">H3.1 / H3C1</text>
+<text x="52" y="754" fill="#5B6673" font-size="10.5" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">136 aa</text>
+<line x1="176" y1="794" x2="910" y2="794" stroke="#9AA6B2" stroke-width="1.2" />
+<path d="M 176 794 Q 187.96 789.6 199.92 794 Q 211.88 798.4 223.85 794 Q 235.81 789.6 247.77 794 Q 259.73 798.4 271.69 794 Q 283.65 789.6 295.61 794 Q 307.58 798.4 319.54 794 Q 331.5 789.6 343.46 794 Q 355.42 798.4 367.38 794 Q 379.35 789.6 391.31 794 Q 403.27 798.4 415.23 794" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="M 888.25 794 Q 899.13 789.6 910 794" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<rect x="409.79" y="782" width="473.02" height="24" rx="12" fill="#E8E1D4" stroke="#675B4F" stroke-width="1.2" />
+<text x="646.3" y="797.8" fill="#12202C" font-size="10" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">histone fold</text>
+<rect x="176" y="726" width="228.36" height="16" rx="8" fill="#D8E4F2" stroke="none" opacity="0.95" />
+<text x="290.18" y="737.5" fill="#12202C" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">N-tail</text>
+<circle cx="186.87" cy="778" r="4.25" fill="#C86A82" stroke="#8E4358" stroke-width="1.0" />
+<line x1="176" y1="816" x2="176" y2="823" stroke="#9AA6B2" stroke-width="1.0" />
+<line x1="910" y1="816" x2="910" y2="823" stroke="#9AA6B2" stroke-width="1.0" />
+<text x="176" y="837" fill="#5B6673" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">1</text>
+<text x="910" y="837" fill="#5B6673" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">136 aa</text>
+<rect x="964" y="736" width="236" height="74" rx="14" fill="#DCEAF7" stroke="#6D8BA9" stroke-width="1.2" />
+<path d="M 986 762 Q 1082 782 1178 762" fill="none" stroke="#6D8BA9" stroke-width="2.2" />
+<text x="1082" y="784" fill="#12202C" font-size="11.3" text-anchor="middle" font-weight="600"><tspan x="1082" dy="0">WDR5 WD-repeat pocket</tspan></text>
+<line x1="186.87" y1="777" x2="964" y2="764" stroke="#6D8BA9" stroke-width="1.2" />
+<rect x="956" y="850" width="300" height="48" rx="12" fill="#F5F7F9" stroke="none" />
+<text x="970" y="866" fill="#5B6673" font-size="9.8" text-anchor="start" font-weight="700" font-style="normal" dominant-baseline="alphabetic">Redistribution mode</text>
+<text x="970" y="881" fill="#12202C" font-size="11.6" text-anchor="start" font-weight="400"><tspan x="970" dy="0">single-site chromatin reader</tspan><tspan x="970" dy="14.38">compatibility/exclusion.</tspan></text>
+<text x="196.87" y="751" fill="#5B6673" font-size="9.2" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">source R2 -&gt; canonical R3</text>
+<text x="176" y="905" fill="#5B6673" font-size="9.4" text-anchor="start" font-weight="400"><tspan x="176" dy="0">Source-reported H3R2 remaps to canonical UniProt residue 3 in P68431.</tspan></text>
+<text x="52" y="994" fill="#5B6673" font-size="11" text-anchor="start" font-weight="700" font-style="normal" dominant-baseline="alphabetic">Legend</text>
+<circle cx="60" cy="1010" r="4.5" fill="#C86A82" stroke="#8E4358" stroke-width="1.0" />
+<text x="96" y="1014" fill="#12202C" font-size="10.6" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">methylarginine site</text>
+<rect x="290" y="1002" width="32" height="16" rx="8" fill="#E8E1D4" stroke="#675B4F" stroke-width="1.0" />
+<text x="334" y="1014" fill="#12202C" font-size="10.6" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">ordered domain</text>
+<path d="M 528 1010 Q 534 1006.8 540 1010 Q 546 1013.2 552 1010 Q 558 1006.8 564 1010" fill="none" stroke="#6D7680" stroke-width="2.2" />
+<rect x="534" y="999" width="24" height="6" rx="3" fill="#F1CCD4" stroke="none" opacity="0.95" />
+<text x="572" y="1014" fill="#12202C" font-size="10.6" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">IDR / RG-rich region</text>
+<rect x="766" y="1002" width="34" height="16" rx="8" fill="#DCEAF7" stroke="#6D8BA9" stroke-width="1.0" />
+<text x="810" y="1014" fill="#12202C" font-size="10.6" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">reader / protein interactor</text>
+<path d="M 1004 1010 Q 1010 1007 1016 1010 Q 1022 1013 1028 1010 Q 1034 1007 1040 1010" fill="none" stroke="#5C86B8" stroke-width="2.0" />
+<text x="1048" y="1014" fill="#12202C" font-size="10.6" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">RNA / DNA target</text>
+</svg>

@@ -1,0 +1,6 @@
+ptm_group	classified_site_count	idr_site_count	background_classified_site_count	background_idr_site_count
+Arg methylation	12842	6221	629311	166422
+Lys acylation	2683	780	650813	159192
+Lys methylation	234	85	653262	159887
+Phosphorylation	66096	41398	1801575	480343
+Ubiquitin/SUMO	643	187	652853	159785

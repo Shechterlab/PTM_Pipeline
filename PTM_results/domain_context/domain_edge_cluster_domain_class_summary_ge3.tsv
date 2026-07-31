@@ -1,0 +1,25 @@
+domain_edge_bin_compact	nearest_domain_class_expanded	n_proteins	n_protein_bin_rows	median_max_sites_20aa
+Domain edge 21-40 aa	RRM / KH RNA-binding	19	19	4.0
+Domain edge 21-40 aa	Other domain	16	16	3.5
+Domain edge 21-40 aa	Repeat / superfamily	2	2	3.5
+Domain edge 21-40 aa	Sm / Lsm	1	1	4.0
+Domain edge <=20 aa	Other domain	28	28	3.5
+Domain edge <=20 aa	RRM / KH RNA-binding	26	26	3.0
+Domain edge <=20 aa	RNA helicase	3	3	4.0
+Domain edge <=20 aa	Ribosome / RNP structural	2	2	3.5
+Domain edge <=20 aa	Chromatin reader	1	1	3.0
+Domain edge <=20 aa	DNA-binding	1	1	3.0
+Domain edge <=20 aa	RNA-associated zinc finger	1	1	4.0
+Domain edge <=20 aa	Repeat / superfamily	1	1	3.0
+Domain-distal >40 aa	Other domain	128	128	3.0
+Domain-distal >40 aa	RRM / KH RNA-binding	36	36	4.0
+Domain-distal >40 aa	Catalytic enzyme domain	9	9	3.0
+Domain-distal >40 aa	Protein-protein repeat / scaffold	7	7	3.0
+Domain-distal >40 aa	Chromatin reader	6	6	4.0
+Domain-distal >40 aa	RNA helicase	6	6	4.0
+Domain-distal >40 aa	RNA-associated zinc finger	6	6	3.5
+Domain-distal >40 aa	DNA-binding	4	4	3.5
+Domain-distal >40 aa	Repeat / superfamily	4	4	3.5
+Domain-distal >40 aa	Ribosome / RNP structural	3	3	5.0
+Domain-distal >40 aa	Chromatin catalytic / remodeler	1	1	5.0
+Domain-distal >40 aa	dsRNA-binding	1	1	4.0

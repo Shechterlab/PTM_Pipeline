@@ -1,0 +1,39 @@
+domain_edge_bin_compact	nearest_domain_class_expanded	all_proteins_with_sites	clustered_proteins_ge3	clustered_fraction_of_site_proteins
+Domain edge 21-40 aa	RRM / KH RNA-binding	44	19.0	0.4318181818181818
+Domain edge 21-40 aa	Other domain	216	16.0	0.07407407407407407
+Domain edge 21-40 aa	Repeat / superfamily	17	2.0	0.11764705882352941
+Domain edge 21-40 aa	Sm / Lsm	1	1.0	1.0
+Domain edge 21-40 aa	Catalytic enzyme domain	22	0.0	0.0
+Domain edge 21-40 aa	Chromatin catalytic / remodeler	2	0.0	0.0
+Domain edge 21-40 aa	Chromatin reader	2	0.0	0.0
+Domain edge 21-40 aa	DNA-binding	2	0.0	0.0
+Domain edge 21-40 aa	Protein-protein repeat / scaffold	6	0.0	0.0
+Domain edge 21-40 aa	RNA helicase	7	0.0	0.0
+Domain edge 21-40 aa	RNA-associated zinc finger	4	0.0	0.0
+Domain edge 21-40 aa	Ribosome / RNP structural	3	0.0	0.0
+Domain edge <=20 aa	Other domain	228	28.0	0.12280701754385964
+Domain edge <=20 aa	RRM / KH RNA-binding	55	26.0	0.4727272727272727
+Domain edge <=20 aa	RNA helicase	6	3.0	0.5
+Domain edge <=20 aa	Ribosome / RNP structural	9	2.0	0.2222222222222222
+Domain edge <=20 aa	Chromatin reader	4	1.0	0.25
+Domain edge <=20 aa	DNA-binding	11	1.0	0.09090909090909091
+Domain edge <=20 aa	RNA-associated zinc finger	7	1.0	0.14285714285714285
+Domain edge <=20 aa	Repeat / superfamily	19	1.0	0.05263157894736842
+Domain edge <=20 aa	Catalytic enzyme domain	19	0.0	0.0
+Domain edge <=20 aa	Chromatin catalytic / remodeler	1	0.0	0.0
+Domain edge <=20 aa	Protein-protein repeat / scaffold	4	0.0	0.0
+Domain edge <=20 aa	Sm / Lsm	2	0.0	0.0
+Domain edge <=20 aa	dsRNA-binding	1	0.0	0.0
+Domain-distal >40 aa	Other domain	757	128.0	0.1690885072655218
+Domain-distal >40 aa	RRM / KH RNA-binding	87	36.0	0.41379310344827586
+Domain-distal >40 aa	Catalytic enzyme domain	98	9.0	0.09183673469387756
+Domain-distal >40 aa	Protein-protein repeat / scaffold	50	7.0	0.14
+Domain-distal >40 aa	Chromatin reader	21	6.0	0.2857142857142857
+Domain-distal >40 aa	RNA helicase	31	6.0	0.1935483870967742
+Domain-distal >40 aa	RNA-associated zinc finger	11	6.0	0.5454545454545454
+Domain-distal >40 aa	DNA-binding	21	4.0	0.19047619047619047
+Domain-distal >40 aa	Repeat / superfamily	40	4.0	0.1
+Domain-distal >40 aa	Ribosome / RNP structural	8	3.0	0.375
+Domain-distal >40 aa	Chromatin catalytic / remodeler	11	1.0	0.09090909090909091
+Domain-distal >40 aa	dsRNA-binding	1	1.0	1.0
+Domain-distal >40 aa	Sm / Lsm	1	0.0	0.0

@@ -1,0 +1,781 @@
+protein_a	protein_b	shared_assembly_count	shared_assemblies	jaccard_similarity
+FUS (P35637)	NONO (Q15233)	7	Neuronal RNP granule;Nuclear speckle;Nucleolus;P-body;PML body;Paraspeckle;Stress granule	0.875
+CPSF6 (Q16630)	SFPQ (P23246)	6	Nuclear speckle;Nucleolus;P-body;PML body;Paraspeckle;Stress granule	1.0
+HNRNPK (P61978)	CPSF6 (Q16630)	6	Nuclear speckle;Nucleolus;P-body;PML body;Paraspeckle;Stress granule	0.8571428571428571
+HNRNPK (P61978)	SFPQ (P23246)	6	Nuclear speckle;Nucleolus;P-body;PML body;Paraspeckle;Stress granule	0.8571428571428571
+CPSF6 (Q16630)	NONO (Q15233)	6	Nuclear speckle;Nucleolus;P-body;PML body;Paraspeckle;Stress granule	0.8571428571428571
+SFPQ (P23246)	NONO (Q15233)	6	Nuclear speckle;Nucleolus;P-body;PML body;Paraspeckle;Stress granule	0.8571428571428571
+EWSR1 (Q01844)	NONO (Q15233)	6	Neuronal RNP granule;Nuclear speckle;Nucleolus;P-body;Paraspeckle;Stress granule	0.8571428571428571
+HNRNPK (P61978)	NONO (Q15233)	6	Nuclear speckle;Nucleolus;P-body;PML body;Paraspeckle;Stress granule	0.75
+CPSF6 (Q16630)	FUS (P35637)	6	Nuclear speckle;Nucleolus;P-body;PML body;Paraspeckle;Stress granule	0.75
+SFPQ (P23246)	FUS (P35637)	6	Nuclear speckle;Nucleolus;P-body;PML body;Paraspeckle;Stress granule	0.75
+FUS (P35637)	EWSR1 (Q01844)	6	Neuronal RNP granule;Nuclear speckle;Nucleolus;P-body;Paraspeckle;Stress granule	0.75
+TARDBP (Q13148)	DHX9 (Q08211)	6	DHX9 Stress Granules;IMP1 RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.75
+DHX9 (Q08211)	HNRNPA1 (P09651)	6	DHX9 Stress Granules;IMP1 RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.75
+HNRNPK (P61978)	FUS (P35637)	6	Nuclear speckle;Nucleolus;P-body;PML body;Paraspeckle;Stress granule	0.6666666666666666
+HNRNPK (P61978)	HNRNPA1 (P09651)	6	Nuclear speckle;Nucleolus;P-body;Paraspeckle;Sam68 nuclear body;Stress granule	0.6666666666666666
+FUS (P35637)	TARDBP (Q13148)	6	IMP1 RNP granule;Neuronal RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.6
+FUS (P35637)	HNRNPA1 (P09651)	6	IMP1 RNP granule;Nuclear speckle;Nucleolus;P-body;Paraspeckle;Stress granule	0.6
+TARDBP (Q13148)	HNRNPA1 (P09651)	6	DHX9 Stress Granules;IMP1 RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.6
+LMNA (P02545)	DHX36 (Q9H2U1)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	1.0
+LMNA (P02545)	HSPA4L (Q92598)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	1.0
+DHX36 (Q9H2U1)	HSPA4L (Q92598)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	1.0
+HNRNPD (Q14103)	HNRNPL (P14866)	5	IMP1 RNP granule;Nucleolus;P-body;Sam68 nuclear body;Stress granule	1.0
+ILF3 (Q12906)	HNRNPA2B1 (P22626)	5	IMP1 RNP granule;Nuclear speckle;Nucleolus;P-body;Stress granule	1.0
+ILF3 (Q12906)	HNRNPU (Q00839)	5	IMP1 RNP granule;Nuclear speckle;Nucleolus;P-body;Stress granule	1.0
+HNRNPA2B1 (P22626)	HNRNPU (Q00839)	5	IMP1 RNP granule;Nuclear speckle;Nucleolus;P-body;Stress granule	1.0
+TAF15 (Q92804)	EWSR1 (Q01844)	5	Neuronal RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.8333333333333334
+HNRNPR (O43390)	DHX9 (Q08211)	5	IMP1 RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.8333333333333334
+CPSF6 (Q16630)	LMNA (P02545)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.8333333333333334
+CPSF6 (Q16630)	DHX36 (Q9H2U1)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.8333333333333334
+CPSF6 (Q16630)	HSPA4L (Q92598)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.8333333333333334
+SFPQ (P23246)	LMNA (P02545)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.8333333333333334
+SFPQ (P23246)	DHX36 (Q9H2U1)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.8333333333333334
+SFPQ (P23246)	HSPA4L (Q92598)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.8333333333333334
+HSPA5 (P11021)	HSPA8 (P11142)	5	Anisosome;Nucleolus;P-body;PML body;Stress granule	0.8333333333333334
+HSPA8 (P11142)	NCL (P19338)	5	IMP1 RNP granule;Nucleolus;P-body;PML body;Stress granule	0.8333333333333334
+RBMX (P38159)	HNRNPK (P61978)	5	Nucleolus;P-body;Paraspeckle;Sam68 nuclear body;Stress granule	0.7142857142857143
+TAF15 (Q92804)	NONO (Q15233)	5	Neuronal RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.7142857142857143
+HNRNPK (P61978)	LMNA (P02545)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.7142857142857143
+HNRNPK (P61978)	DHX36 (Q9H2U1)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.7142857142857143
+HNRNPK (P61978)	HSPA4L (Q92598)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.7142857142857143
+CPSF6 (Q16630)	EWSR1 (Q01844)	5	Nuclear speckle;Nucleolus;P-body;Paraspeckle;Stress granule	0.7142857142857143
+SFPQ (P23246)	EWSR1 (Q01844)	5	Nuclear speckle;Nucleolus;P-body;Paraspeckle;Stress granule	0.7142857142857143
+NONO (Q15233)	LMNA (P02545)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.7142857142857143
+NONO (Q15233)	DHX36 (Q9H2U1)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.7142857142857143
+NONO (Q15233)	HSPA4L (Q92598)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.7142857142857143
+HSPA1A (P0DMV8)	HSPA8 (P11142)	5	Anisosome;IMP1 RNP granule;P-body;PML body;Stress granule	0.7142857142857143
+DHX9 (Q08211)	PABPC1 (P11940)	5	DHX9 Stress Granules;IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.7142857142857143
+RBMX (P38159)	HNRNPA1 (P09651)	5	Nucleolus;P-body;Paraspeckle;Sam68 nuclear body;Stress granule	0.625
+TAF15 (Q92804)	FUS (P35637)	5	Neuronal RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.625
+TAF15 (Q92804)	TARDBP (Q13148)	5	Neuronal RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.625
+HNRNPR (O43390)	FUS (P35637)	5	IMP1 RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.625
+HNRNPR (O43390)	TARDBP (Q13148)	5	IMP1 RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.625
+HNRNPR (O43390)	HNRNPA1 (P09651)	5	IMP1 RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.625
+HNRNPK (P61978)	EWSR1 (Q01844)	5	Nuclear speckle;Nucleolus;P-body;Paraspeckle;Stress granule	0.625
+FUS (P35637)	LMNA (P02545)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.625
+FUS (P35637)	DHX36 (Q9H2U1)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.625
+FUS (P35637)	HSPA4L (Q92598)	5	Nuclear speckle;Nucleolus;P-body;PML body;Stress granule	0.625
+FUS (P35637)	ILF3 (Q12906)	5	IMP1 RNP granule;Nuclear speckle;Nucleolus;P-body;Stress granule	0.625
+FUS (P35637)	HNRNPA2B1 (P22626)	5	IMP1 RNP granule;Nuclear speckle;Nucleolus;P-body;Stress granule	0.625
+FUS (P35637)	HNRNPU (Q00839)	5	IMP1 RNP granule;Nuclear speckle;Nucleolus;P-body;Stress granule	0.625
+FUS (P35637)	NCL (P19338)	5	IMP1 RNP granule;Nucleolus;P-body;PML body;Stress granule	0.625
+HNRNPA1 (P09651)	HNRNPD (Q14103)	5	IMP1 RNP granule;Nucleolus;P-body;Sam68 nuclear body;Stress granule	0.625
+HNRNPA1 (P09651)	HNRNPL (P14866)	5	IMP1 RNP granule;Nucleolus;P-body;Sam68 nuclear body;Stress granule	0.625
+HNRNPA1 (P09651)	ILF3 (Q12906)	5	IMP1 RNP granule;Nuclear speckle;Nucleolus;P-body;Stress granule	0.625
+HNRNPA1 (P09651)	HNRNPA2B1 (P22626)	5	IMP1 RNP granule;Nuclear speckle;Nucleolus;P-body;Stress granule	0.625
+HNRNPA1 (P09651)	HNRNPU (Q00839)	5	IMP1 RNP granule;Nuclear speckle;Nucleolus;P-body;Stress granule	0.625
+CPSF6 (Q16630)	HNRNPA1 (P09651)	5	Nuclear speckle;Nucleolus;P-body;Paraspeckle;Stress granule	0.5555555555555556
+SFPQ (P23246)	HNRNPA1 (P09651)	5	Nuclear speckle;Nucleolus;P-body;Paraspeckle;Stress granule	0.5555555555555556
+FUS (P35637)	HSPA1A (P0DMV8)	5	IMP1 RNP granule;Nuclear speckle;P-body;PML body;Stress granule	0.5555555555555556
+FUS (P35637)	HSPA8 (P11142)	5	IMP1 RNP granule;Nucleolus;P-body;PML body;Stress granule	0.5555555555555556
+FUS (P35637)	DHX9 (Q08211)	5	IMP1 RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.5555555555555556
+EWSR1 (Q01844)	TARDBP (Q13148)	5	Neuronal RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.5555555555555556
+EWSR1 (Q01844)	HNRNPA1 (P09651)	5	Nuclear speckle;Nucleolus;P-body;Paraspeckle;Stress granule	0.5555555555555556
+HSPA8 (P11142)	TARDBP (Q13148)	5	Anisosome;IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5555555555555556
+TARDBP (Q13148)	PABPC1 (P11940)	5	DHX9 Stress Granules;IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5555555555555556
+HNRNPA1 (P09651)	PABPC1 (P11940)	5	DHX9 Stress Granules;IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5555555555555556
+NONO (Q15233)	TARDBP (Q13148)	5	Neuronal RNP granule;Nucleolus;P-body;Paraspeckle;Stress granule	0.5
+NONO (Q15233)	HNRNPA1 (P09651)	5	Nuclear speckle;Nucleolus;P-body;Paraspeckle;Stress granule	0.5
+VCP (P55072)	DDX5 (P17844)	4	Nucleolus;P-body;PML body;Stress granule	1.0
+VCP (P55072)	HSP90AA1 (P07900)	4	Nucleolus;P-body;PML body;Stress granule	1.0
+DDX5 (P17844)	HSP90AA1 (P07900)	4	Nucleolus;P-body;PML body;Stress granule	1.0
+ATXN2L (Q8WWM7)	THRAP3 (Q9Y2W1)	4	Nuclear speckle;P-body;PML body;Stress granule	1.0
+PABPC4 (Q13310)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	1.0
+RBMX (P38159)	HNRNPH1 (P31943)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.8
+TAF15 (Q92804)	HNRNPH1 (P31943)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.8
+HNRNPH1 (P31943)	HNRNPR (O43390)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.8
+HNRNPR (O43390)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+HNRNPR (O43390)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+HSPA5 (P11021)	VCP (P55072)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+HSPA5 (P11021)	DDX5 (P17844)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+HSPA5 (P11021)	HSP90AA1 (P07900)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+HNRNPM (P52272)	VCP (P55072)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+HNRNPM (P52272)	DDX5 (P17844)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+HNRNPM (P52272)	HSP90AA1 (P07900)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+HNRNPM (P52272)	HNRNPA3 (P51991)	4	DHX9 Stress Granules;Nucleolus;P-body;Stress granule	0.8
+VCP (P55072)	LMNA (P02545)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+VCP (P55072)	DHX36 (Q9H2U1)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+VCP (P55072)	HSPA4L (Q92598)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+VCP (P55072)	NCL (P19338)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+DDX5 (P17844)	LMNA (P02545)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+DDX5 (P17844)	DHX36 (Q9H2U1)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+DDX5 (P17844)	HSPA4L (Q92598)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+DDX5 (P17844)	NCL (P19338)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+HSP90AA1 (P07900)	LMNA (P02545)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+HSP90AA1 (P07900)	DHX36 (Q9H2U1)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+HSP90AA1 (P07900)	HSPA4L (Q92598)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+HSP90AA1 (P07900)	NCL (P19338)	4	Nucleolus;P-body;PML body;Stress granule	0.8
+SF3B2 (Q13435)	LMNA (P02545)	4	Nuclear speckle;Nucleolus;P-body;PML body	0.8
+SF3B2 (Q13435)	DHX36 (Q9H2U1)	4	Nuclear speckle;Nucleolus;P-body;PML body	0.8
+SF3B2 (Q13435)	HSPA4L (Q92598)	4	Nuclear speckle;Nucleolus;P-body;PML body	0.8
+ATXN2L (Q8WWM7)	LMNA (P02545)	4	Nuclear speckle;P-body;PML body;Stress granule	0.8
+ATXN2L (Q8WWM7)	DHX36 (Q9H2U1)	4	Nuclear speckle;P-body;PML body;Stress granule	0.8
+ATXN2L (Q8WWM7)	HSPA4L (Q92598)	4	Nuclear speckle;P-body;PML body;Stress granule	0.8
+THRAP3 (Q9Y2W1)	LMNA (P02545)	4	Nuclear speckle;P-body;PML body;Stress granule	0.8
+THRAP3 (Q9Y2W1)	DHX36 (Q9H2U1)	4	Nuclear speckle;P-body;PML body;Stress granule	0.8
+THRAP3 (Q9Y2W1)	HSPA4L (Q92598)	4	Nuclear speckle;P-body;PML body;Stress granule	0.8
+KHDRBS1 (Q07666)	HNRNPD (Q14103)	4	IMP1 RNP granule;Nucleolus;Sam68 nuclear body;Stress granule	0.8
+KHDRBS1 (Q07666)	HNRNPL (P14866)	4	IMP1 RNP granule;Nucleolus;Sam68 nuclear body;Stress granule	0.8
+HNRNPD (Q14103)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+HNRNPD (Q14103)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+HNRNPL (P14866)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+HNRNPL (P14866)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+ILF3 (Q12906)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+ILF3 (Q12906)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+HNRNPA2B1 (P22626)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+HNRNPA2B1 (P22626)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+HNRNPU (Q00839)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+HNRNPU (Q00839)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+NCL (P19338)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+NCL (P19338)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.8
+AKAP8L (Q9ULX6)	CPSF6 (Q16630)	4	Nuclear speckle;PML body;Paraspeckle;Stress granule	0.6666666666666666
+AKAP8L (Q9ULX6)	SFPQ (P23246)	4	Nuclear speckle;PML body;Paraspeckle;Stress granule	0.6666666666666666
+RBMX (P38159)	TAF15 (Q92804)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.6666666666666666
+RBMX (P38159)	HNRNPR (O43390)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.6666666666666666
+RBMX (P38159)	HNRNPD (Q14103)	4	Nucleolus;P-body;Sam68 nuclear body;Stress granule	0.6666666666666666
+RBMX (P38159)	HNRNPL (P14866)	4	Nucleolus;P-body;Sam68 nuclear body;Stress granule	0.6666666666666666
+TAF15 (Q92804)	HNRNPR (O43390)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.6666666666666666
+HNRNPH1 (P31943)	CPSF6 (Q16630)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.6666666666666666
+HNRNPH1 (P31943)	SFPQ (P23246)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.6666666666666666
+HNRNPH1 (P31943)	EWSR1 (Q01844)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.6666666666666666
+HNRNPH1 (P31943)	DHX9 (Q08211)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.6666666666666666
+HNRNPR (O43390)	HNRNPD (Q14103)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPR (O43390)	HNRNPL (P14866)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPR (O43390)	ILF3 (Q12906)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPR (O43390)	HNRNPA2B1 (P22626)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPR (O43390)	HNRNPU (Q00839)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPR (O43390)	NCL (P19338)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+CPSF6 (Q16630)	VCP (P55072)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+CPSF6 (Q16630)	DDX5 (P17844)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+CPSF6 (Q16630)	HSP90AA1 (P07900)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+CPSF6 (Q16630)	SF3B2 (Q13435)	4	Nuclear speckle;Nucleolus;P-body;PML body	0.6666666666666666
+CPSF6 (Q16630)	ATXN2L (Q8WWM7)	4	Nuclear speckle;P-body;PML body;Stress granule	0.6666666666666666
+CPSF6 (Q16630)	THRAP3 (Q9Y2W1)	4	Nuclear speckle;P-body;PML body;Stress granule	0.6666666666666666
+SFPQ (P23246)	VCP (P55072)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+SFPQ (P23246)	DDX5 (P17844)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+SFPQ (P23246)	HSP90AA1 (P07900)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+SFPQ (P23246)	SF3B2 (Q13435)	4	Nuclear speckle;Nucleolus;P-body;PML body	0.6666666666666666
+SFPQ (P23246)	ATXN2L (Q8WWM7)	4	Nuclear speckle;P-body;PML body;Stress granule	0.6666666666666666
+SFPQ (P23246)	THRAP3 (Q9Y2W1)	4	Nuclear speckle;P-body;PML body;Stress granule	0.6666666666666666
+HSPA1A (P0DMV8)	ATXN2L (Q8WWM7)	4	Nuclear speckle;P-body;PML body;Stress granule	0.6666666666666666
+HSPA1A (P0DMV8)	THRAP3 (Q9Y2W1)	4	Nuclear speckle;P-body;PML body;Stress granule	0.6666666666666666
+HSPA5 (P11021)	HNRNPM (P52272)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+HSPA5 (P11021)	LMNA (P02545)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+HSPA5 (P11021)	DHX36 (Q9H2U1)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+HSPA5 (P11021)	HSPA4L (Q92598)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+HSPA5 (P11021)	NCL (P19338)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+HSPA8 (P11142)	VCP (P55072)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+HSPA8 (P11142)	DDX5 (P17844)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+HSPA8 (P11142)	HSP90AA1 (P07900)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+HSPA8 (P11142)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HSPA8 (P11142)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPM (P52272)	LMNA (P02545)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+HNRNPM (P52272)	DHX36 (Q9H2U1)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+HNRNPM (P52272)	HSPA4L (Q92598)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+HNRNPM (P52272)	NCL (P19338)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+LMNA (P02545)	ILF3 (Q12906)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.6666666666666666
+LMNA (P02545)	HNRNPA2B1 (P22626)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.6666666666666666
+LMNA (P02545)	HNRNPU (Q00839)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.6666666666666666
+LMNA (P02545)	NCL (P19338)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+DHX36 (Q9H2U1)	ILF3 (Q12906)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.6666666666666666
+DHX36 (Q9H2U1)	HNRNPA2B1 (P22626)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.6666666666666666
+DHX36 (Q9H2U1)	HNRNPU (Q00839)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.6666666666666666
+DHX36 (Q9H2U1)	NCL (P19338)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+HSPA4L (Q92598)	ILF3 (Q12906)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.6666666666666666
+HSPA4L (Q92598)	HNRNPA2B1 (P22626)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.6666666666666666
+HSPA4L (Q92598)	HNRNPU (Q00839)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.6666666666666666
+HSPA4L (Q92598)	NCL (P19338)	4	Nucleolus;P-body;PML body;Stress granule	0.6666666666666666
+DHX9 (Q08211)	HNRNPA3 (P51991)	4	DHX9 Stress Granules;Nucleolus;P-body;Stress granule	0.6666666666666666
+DHX9 (Q08211)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+DHX9 (Q08211)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPA3 (P51991)	PABPC1 (P11940)	4	DHX9 Stress Granules;Nucleolus;P-body;Stress granule	0.6666666666666666
+PABPC1 (P11940)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+PABPC1 (P11940)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPD (Q14103)	ILF3 (Q12906)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPD (Q14103)	HNRNPA2B1 (P22626)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPD (Q14103)	HNRNPU (Q00839)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPD (Q14103)	NCL (P19338)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPL (P14866)	ILF3 (Q12906)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPL (P14866)	HNRNPA2B1 (P22626)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPL (P14866)	HNRNPU (Q00839)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPL (P14866)	NCL (P19338)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+ILF3 (Q12906)	NCL (P19338)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPA2B1 (P22626)	NCL (P19338)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+HNRNPU (Q00839)	NCL (P19338)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.6666666666666666
+AKAP8L (Q9ULX6)	HNRNPK (P61978)	4	Nuclear speckle;PML body;Paraspeckle;Stress granule	0.5714285714285714
+AKAP8L (Q9ULX6)	NONO (Q15233)	4	Nuclear speckle;PML body;Paraspeckle;Stress granule	0.5714285714285714
+RBMX (P38159)	CPSF6 (Q16630)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5714285714285714
+RBMX (P38159)	SFPQ (P23246)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5714285714285714
+RBMX (P38159)	EWSR1 (Q01844)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5714285714285714
+RBMX (P38159)	DHX9 (Q08211)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5714285714285714
+TAF15 (Q92804)	CPSF6 (Q16630)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5714285714285714
+TAF15 (Q92804)	SFPQ (P23246)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5714285714285714
+TAF15 (Q92804)	DHX9 (Q08211)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5714285714285714
+HNRNPH1 (P31943)	HNRNPK (P61978)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5714285714285714
+HNRNPH1 (P31943)	NONO (Q15233)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5714285714285714
+HNRNPR (O43390)	CPSF6 (Q16630)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5714285714285714
+HNRNPR (O43390)	SFPQ (P23246)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5714285714285714
+HNRNPR (O43390)	EWSR1 (Q01844)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5714285714285714
+HNRNPR (O43390)	HSPA8 (P11142)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+HNRNPR (O43390)	PABPC1 (P11940)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+HNRNPK (P61978)	VCP (P55072)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+HNRNPK (P61978)	DDX5 (P17844)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+HNRNPK (P61978)	HSP90AA1 (P07900)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+HNRNPK (P61978)	SF3B2 (Q13435)	4	Nuclear speckle;Nucleolus;P-body;PML body	0.5714285714285714
+HNRNPK (P61978)	ATXN2L (Q8WWM7)	4	Nuclear speckle;P-body;PML body;Stress granule	0.5714285714285714
+HNRNPK (P61978)	THRAP3 (Q9Y2W1)	4	Nuclear speckle;P-body;PML body;Stress granule	0.5714285714285714
+CPSF6 (Q16630)	HSPA5 (P11021)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+CPSF6 (Q16630)	HNRNPM (P52272)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+CPSF6 (Q16630)	ILF3 (Q12906)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5714285714285714
+CPSF6 (Q16630)	HNRNPA2B1 (P22626)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5714285714285714
+CPSF6 (Q16630)	HNRNPU (Q00839)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5714285714285714
+CPSF6 (Q16630)	NCL (P19338)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+SFPQ (P23246)	HSPA5 (P11021)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+SFPQ (P23246)	HNRNPM (P52272)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+SFPQ (P23246)	ILF3 (Q12906)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5714285714285714
+SFPQ (P23246)	HNRNPA2B1 (P22626)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5714285714285714
+SFPQ (P23246)	HNRNPU (Q00839)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5714285714285714
+SFPQ (P23246)	NCL (P19338)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+EWSR1 (Q01844)	LMNA (P02545)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5714285714285714
+EWSR1 (Q01844)	DHX36 (Q9H2U1)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5714285714285714
+EWSR1 (Q01844)	HSPA4L (Q92598)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5714285714285714
+EWSR1 (Q01844)	ILF3 (Q12906)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5714285714285714
+EWSR1 (Q01844)	HNRNPA2B1 (P22626)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5714285714285714
+EWSR1 (Q01844)	HNRNPU (Q00839)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5714285714285714
+NONO (Q15233)	VCP (P55072)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+NONO (Q15233)	DDX5 (P17844)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+NONO (Q15233)	HSP90AA1 (P07900)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+NONO (Q15233)	SF3B2 (Q13435)	4	Nuclear speckle;Nucleolus;P-body;PML body	0.5714285714285714
+NONO (Q15233)	ATXN2L (Q8WWM7)	4	Nuclear speckle;P-body;PML body;Stress granule	0.5714285714285714
+NONO (Q15233)	THRAP3 (Q9Y2W1)	4	Nuclear speckle;P-body;PML body;Stress granule	0.5714285714285714
+HSPA1A (P0DMV8)	HSPA5 (P11021)	4	Anisosome;P-body;PML body;Stress granule	0.5714285714285714
+HSPA1A (P0DMV8)	LMNA (P02545)	4	Nuclear speckle;P-body;PML body;Stress granule	0.5714285714285714
+HSPA1A (P0DMV8)	DHX36 (Q9H2U1)	4	Nuclear speckle;P-body;PML body;Stress granule	0.5714285714285714
+HSPA1A (P0DMV8)	HSPA4L (Q92598)	4	Nuclear speckle;P-body;PML body;Stress granule	0.5714285714285714
+HSPA1A (P0DMV8)	ILF3 (Q12906)	4	IMP1 RNP granule;Nuclear speckle;P-body;Stress granule	0.5714285714285714
+HSPA1A (P0DMV8)	HNRNPA2B1 (P22626)	4	IMP1 RNP granule;Nuclear speckle;P-body;Stress granule	0.5714285714285714
+HSPA1A (P0DMV8)	HNRNPU (Q00839)	4	IMP1 RNP granule;Nuclear speckle;P-body;Stress granule	0.5714285714285714
+HSPA1A (P0DMV8)	NCL (P19338)	4	IMP1 RNP granule;P-body;PML body;Stress granule	0.5714285714285714
+HSPA8 (P11142)	HNRNPM (P52272)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+HSPA8 (P11142)	LMNA (P02545)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+HSPA8 (P11142)	DHX36 (Q9H2U1)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+HSPA8 (P11142)	HSPA4L (Q92598)	4	Nucleolus;P-body;PML body;Stress granule	0.5714285714285714
+HSPA8 (P11142)	HNRNPD (Q14103)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+HSPA8 (P11142)	HNRNPL (P14866)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+HSPA8 (P11142)	ILF3 (Q12906)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+HSPA8 (P11142)	HNRNPA2B1 (P22626)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+HSPA8 (P11142)	HNRNPU (Q00839)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+HNRNPM (P52272)	DHX9 (Q08211)	4	DHX9 Stress Granules;Nucleolus;P-body;Stress granule	0.5714285714285714
+HNRNPM (P52272)	PABPC1 (P11940)	4	DHX9 Stress Granules;Nucleolus;P-body;Stress granule	0.5714285714285714
+DHX9 (Q08211)	HNRNPD (Q14103)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+DHX9 (Q08211)	HNRNPL (P14866)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+DHX9 (Q08211)	ILF3 (Q12906)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+DHX9 (Q08211)	HNRNPA2B1 (P22626)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+DHX9 (Q08211)	HNRNPU (Q00839)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+DHX9 (Q08211)	NCL (P19338)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+PABPC1 (P11940)	HNRNPD (Q14103)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+PABPC1 (P11940)	HNRNPL (P14866)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+PABPC1 (P11940)	ILF3 (Q12906)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+PABPC1 (P11940)	HNRNPA2B1 (P22626)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+PABPC1 (P11940)	HNRNPU (Q00839)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+PABPC1 (P11940)	NCL (P19338)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5714285714285714
+AKAP8L (Q9ULX6)	FUS (P35637)	4	Nuclear speckle;PML body;Paraspeckle;Stress granule	0.5
+RBMX (P38159)	NONO (Q15233)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5
+TAF15 (Q92804)	HNRNPK (P61978)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5
+HNRNPH1 (P31943)	FUS (P35637)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5
+HNRNPH1 (P31943)	TARDBP (Q13148)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5
+HNRNPH1 (P31943)	HNRNPA1 (P09651)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5
+HNRNPR (O43390)	HNRNPK (P61978)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5
+HNRNPR (O43390)	NONO (Q15233)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5
+HNRNPK (P61978)	HSPA5 (P11021)	4	Nucleolus;P-body;PML body;Stress granule	0.5
+HNRNPK (P61978)	HNRNPM (P52272)	4	Nucleolus;P-body;PML body;Stress granule	0.5
+HNRNPK (P61978)	HNRNPD (Q14103)	4	Nucleolus;P-body;Sam68 nuclear body;Stress granule	0.5
+HNRNPK (P61978)	HNRNPL (P14866)	4	Nucleolus;P-body;Sam68 nuclear body;Stress granule	0.5
+HNRNPK (P61978)	ILF3 (Q12906)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5
+HNRNPK (P61978)	HNRNPA2B1 (P22626)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5
+HNRNPK (P61978)	HNRNPU (Q00839)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5
+HNRNPK (P61978)	NCL (P19338)	4	Nucleolus;P-body;PML body;Stress granule	0.5
+CPSF6 (Q16630)	HSPA1A (P0DMV8)	4	Nuclear speckle;P-body;PML body;Stress granule	0.5
+CPSF6 (Q16630)	HSPA8 (P11142)	4	Nucleolus;P-body;PML body;Stress granule	0.5
+CPSF6 (Q16630)	DHX9 (Q08211)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5
+SFPQ (P23246)	HSPA1A (P0DMV8)	4	Nuclear speckle;P-body;PML body;Stress granule	0.5
+SFPQ (P23246)	HSPA8 (P11142)	4	Nucleolus;P-body;PML body;Stress granule	0.5
+SFPQ (P23246)	DHX9 (Q08211)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5
+FUS (P35637)	VCP (P55072)	4	Nucleolus;P-body;PML body;Stress granule	0.5
+FUS (P35637)	DDX5 (P17844)	4	Nucleolus;P-body;PML body;Stress granule	0.5
+FUS (P35637)	HSP90AA1 (P07900)	4	Nucleolus;P-body;PML body;Stress granule	0.5
+FUS (P35637)	SF3B2 (Q13435)	4	Nuclear speckle;Nucleolus;P-body;PML body	0.5
+FUS (P35637)	ATXN2L (Q8WWM7)	4	Nuclear speckle;P-body;PML body;Stress granule	0.5
+FUS (P35637)	THRAP3 (Q9Y2W1)	4	Nuclear speckle;P-body;PML body;Stress granule	0.5
+FUS (P35637)	FMR1 (Q06787)	4	IMP1 RNP granule;Neuronal RNP granule;P-body;Stress granule	0.5
+FUS (P35637)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5
+FUS (P35637)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5
+EWSR1 (Q01844)	DHX9 (Q08211)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.5
+NONO (Q15233)	HSPA5 (P11021)	4	Nucleolus;P-body;PML body;Stress granule	0.5
+NONO (Q15233)	HNRNPM (P52272)	4	Nucleolus;P-body;PML body;Stress granule	0.5
+NONO (Q15233)	ILF3 (Q12906)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5
+NONO (Q15233)	HNRNPA2B1 (P22626)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5
+NONO (Q15233)	HNRNPU (Q00839)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.5
+NONO (Q15233)	NCL (P19338)	4	Nucleolus;P-body;PML body;Stress granule	0.5
+HSPA8 (P11142)	DHX9 (Q08211)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5
+HSPA8 (P11142)	PABPC1 (P11940)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5
+TARDBP (Q13148)	CAPRIN1 (Q14444)	4	DHX9 Stress Granules;Neuronal RNP granule;P-body;Stress granule	0.5
+TARDBP (Q13148)	HNRNPA3 (P51991)	4	DHX9 Stress Granules;Nucleolus;P-body;Stress granule	0.5
+TARDBP (Q13148)	FMR1 (Q06787)	4	IMP1 RNP granule;Neuronal RNP granule;P-body;Stress granule	0.5
+TARDBP (Q13148)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5
+TARDBP (Q13148)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5
+HNRNPA1 (P09651)	HNRNPA3 (P51991)	4	DHX9 Stress Granules;Nucleolus;P-body;Stress granule	0.5
+HNRNPA1 (P09651)	KHDRBS1 (Q07666)	4	IMP1 RNP granule;Nucleolus;Sam68 nuclear body;Stress granule	0.5
+HNRNPA1 (P09651)	PABPC4 (Q13310)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5
+HNRNPA1 (P09651)	SYNCRIP (O60506)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.5
+RBMX (P38159)	FUS (P35637)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.4444444444444444
+RBMX (P38159)	TARDBP (Q13148)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.4444444444444444
+TAF15 (Q92804)	HNRNPA1 (P09651)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.4444444444444444
+HNRNPK (P61978)	HSPA1A (P0DMV8)	4	Nuclear speckle;P-body;PML body;Stress granule	0.4444444444444444
+HNRNPK (P61978)	HSPA8 (P11142)	4	Nucleolus;P-body;PML body;Stress granule	0.4444444444444444
+HNRNPK (P61978)	DHX9 (Q08211)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.4444444444444444
+FUS (P35637)	HSPA5 (P11021)	4	Nucleolus;P-body;PML body;Stress granule	0.4444444444444444
+FUS (P35637)	HNRNPM (P52272)	4	Nucleolus;P-body;PML body;Stress granule	0.4444444444444444
+FUS (P35637)	HNRNPD (Q14103)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.4444444444444444
+FUS (P35637)	HNRNPL (P14866)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.4444444444444444
+NONO (Q15233)	HSPA1A (P0DMV8)	4	Nuclear speckle;P-body;PML body;Stress granule	0.4444444444444444
+NONO (Q15233)	HSPA8 (P11142)	4	Nucleolus;P-body;PML body;Stress granule	0.4444444444444444
+NONO (Q15233)	DHX9 (Q08211)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.4444444444444444
+HSPA5 (P11021)	TARDBP (Q13148)	4	Anisosome;Nucleolus;P-body;Stress granule	0.4444444444444444
+HNRNPM (P52272)	TARDBP (Q13148)	4	DHX9 Stress Granules;Nucleolus;P-body;Stress granule	0.4444444444444444
+HNRNPM (P52272)	HNRNPA1 (P09651)	4	DHX9 Stress Granules;Nucleolus;P-body;Stress granule	0.4444444444444444
+LMNA (P02545)	HNRNPA1 (P09651)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.4444444444444444
+DHX36 (Q9H2U1)	HNRNPA1 (P09651)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.4444444444444444
+HSPA4L (Q92598)	HNRNPA1 (P09651)	4	Nuclear speckle;Nucleolus;P-body;Stress granule	0.4444444444444444
+TARDBP (Q13148)	HNRNPD (Q14103)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.4444444444444444
+TARDBP (Q13148)	HNRNPL (P14866)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.4444444444444444
+TARDBP (Q13148)	ILF3 (Q12906)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.4444444444444444
+TARDBP (Q13148)	HNRNPA2B1 (P22626)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.4444444444444444
+TARDBP (Q13148)	HNRNPU (Q00839)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.4444444444444444
+TARDBP (Q13148)	NCL (P19338)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.4444444444444444
+HNRNPA1 (P09651)	NCL (P19338)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.4444444444444444
+CPSF6 (Q16630)	TARDBP (Q13148)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.4
+SFPQ (P23246)	TARDBP (Q13148)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.4
+FUS (P35637)	PABPC1 (P11940)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.4
+HSPA1A (P0DMV8)	TARDBP (Q13148)	4	Anisosome;IMP1 RNP granule;P-body;Stress granule	0.4
+HSPA1A (P0DMV8)	HNRNPA1 (P09651)	4	IMP1 RNP granule;Nuclear speckle;P-body;Stress granule	0.4
+HSPA8 (P11142)	HNRNPA1 (P09651)	4	IMP1 RNP granule;Nucleolus;P-body;Stress granule	0.4
+HNRNPK (P61978)	TARDBP (Q13148)	4	Nucleolus;P-body;Paraspeckle;Stress granule	0.36363636363636365
+AKAP8L (Q9ULX6)	ATXN2L (Q8WWM7)	3	Nuclear speckle;PML body;Stress granule	0.6
+AKAP8L (Q9ULX6)	THRAP3 (Q9Y2W1)	3	Nuclear speckle;PML body;Stress granule	0.6
+HNRNPH1 (P31943)	VCP (P55072)	3	Nucleolus;P-body;Stress granule	0.6
+HNRNPH1 (P31943)	DDX5 (P17844)	3	Nucleolus;P-body;Stress granule	0.6
+HNRNPH1 (P31943)	HSP90AA1 (P07900)	3	Nucleolus;P-body;Stress granule	0.6
+HNRNPH1 (P31943)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.6
+HNRNPH1 (P31943)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.6
+HNRNPH1 (P31943)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.6
+VCP (P55072)	SF3B2 (Q13435)	3	Nucleolus;P-body;PML body	0.6
+VCP (P55072)	ATXN2L (Q8WWM7)	3	P-body;PML body;Stress granule	0.6
+VCP (P55072)	THRAP3 (Q9Y2W1)	3	P-body;PML body;Stress granule	0.6
+VCP (P55072)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.6
+VCP (P55072)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.6
+VCP (P55072)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.6
+DDX5 (P17844)	SF3B2 (Q13435)	3	Nucleolus;P-body;PML body	0.6
+DDX5 (P17844)	ATXN2L (Q8WWM7)	3	P-body;PML body;Stress granule	0.6
+DDX5 (P17844)	THRAP3 (Q9Y2W1)	3	P-body;PML body;Stress granule	0.6
+DDX5 (P17844)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.6
+DDX5 (P17844)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.6
+DDX5 (P17844)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.6
+HSP90AA1 (P07900)	SF3B2 (Q13435)	3	Nucleolus;P-body;PML body	0.6
+HSP90AA1 (P07900)	ATXN2L (Q8WWM7)	3	P-body;PML body;Stress granule	0.6
+HSP90AA1 (P07900)	THRAP3 (Q9Y2W1)	3	P-body;PML body;Stress granule	0.6
+HSP90AA1 (P07900)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.6
+HSP90AA1 (P07900)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.6
+HSP90AA1 (P07900)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.6
+SF3B2 (Q13435)	ATXN2L (Q8WWM7)	3	Nuclear speckle;P-body;PML body	0.6
+SF3B2 (Q13435)	THRAP3 (Q9Y2W1)	3	Nuclear speckle;P-body;PML body	0.6
+CAPRIN1 (Q14444)	HNRNPA3 (P51991)	3	DHX9 Stress Granules;P-body;Stress granule	0.6
+CAPRIN1 (Q14444)	FMR1 (Q06787)	3	Neuronal RNP granule;P-body;Stress granule	0.6
+HNRNPA3 (P51991)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.6
+HNRNPA3 (P51991)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.6
+FMR1 (Q06787)	PABPC4 (Q13310)	3	IMP1 RNP granule;P-body;Stress granule	0.6
+FMR1 (Q06787)	SYNCRIP (O60506)	3	IMP1 RNP granule;P-body;Stress granule	0.6
+KHDRBS1 (Q07666)	PABPC4 (Q13310)	3	IMP1 RNP granule;Nucleolus;Stress granule	0.6
+KHDRBS1 (Q07666)	SYNCRIP (O60506)	3	IMP1 RNP granule;Nucleolus;Stress granule	0.6
+AKAP8L (Q9ULX6)	LMNA (P02545)	3	Nuclear speckle;PML body;Stress granule	0.5
+AKAP8L (Q9ULX6)	DHX36 (Q9H2U1)	3	Nuclear speckle;PML body;Stress granule	0.5
+AKAP8L (Q9ULX6)	HSPA4L (Q92598)	3	Nuclear speckle;PML body;Stress granule	0.5
+RBMX (P38159)	VCP (P55072)	3	Nucleolus;P-body;Stress granule	0.5
+RBMX (P38159)	DDX5 (P17844)	3	Nucleolus;P-body;Stress granule	0.5
+RBMX (P38159)	HSP90AA1 (P07900)	3	Nucleolus;P-body;Stress granule	0.5
+RBMX (P38159)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.5
+RBMX (P38159)	KHDRBS1 (Q07666)	3	Nucleolus;Sam68 nuclear body;Stress granule	0.5
+RBMX (P38159)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.5
+RBMX (P38159)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.5
+TAF15 (Q92804)	VCP (P55072)	3	Nucleolus;P-body;Stress granule	0.5
+TAF15 (Q92804)	DDX5 (P17844)	3	Nucleolus;P-body;Stress granule	0.5
+TAF15 (Q92804)	HSP90AA1 (P07900)	3	Nucleolus;P-body;Stress granule	0.5
+TAF15 (Q92804)	CAPRIN1 (Q14444)	3	Neuronal RNP granule;P-body;Stress granule	0.5
+TAF15 (Q92804)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.5
+TAF15 (Q92804)	FMR1 (Q06787)	3	Neuronal RNP granule;P-body;Stress granule	0.5
+TAF15 (Q92804)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.5
+TAF15 (Q92804)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPH1 (P31943)	HSPA5 (P11021)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPH1 (P31943)	HNRNPM (P52272)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPH1 (P31943)	LMNA (P02545)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPH1 (P31943)	DHX36 (Q9H2U1)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPH1 (P31943)	HSPA4L (Q92598)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPH1 (P31943)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPH1 (P31943)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPH1 (P31943)	ILF3 (Q12906)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPH1 (P31943)	HNRNPA2B1 (P22626)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPH1 (P31943)	HNRNPU (Q00839)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPH1 (P31943)	NCL (P19338)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPR (O43390)	VCP (P55072)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPR (O43390)	DDX5 (P17844)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPR (O43390)	HSP90AA1 (P07900)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPR (O43390)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPR (O43390)	FMR1 (Q06787)	3	IMP1 RNP granule;P-body;Stress granule	0.5
+HNRNPR (O43390)	KHDRBS1 (Q07666)	3	IMP1 RNP granule;Nucleolus;Stress granule	0.5
+HSPA5 (P11021)	SF3B2 (Q13435)	3	Nucleolus;P-body;PML body	0.5
+HSPA5 (P11021)	ATXN2L (Q8WWM7)	3	P-body;PML body;Stress granule	0.5
+HSPA5 (P11021)	THRAP3 (Q9Y2W1)	3	P-body;PML body;Stress granule	0.5
+HSPA5 (P11021)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.5
+HSPA5 (P11021)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.5
+HSPA5 (P11021)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPM (P52272)	SF3B2 (Q13435)	3	Nucleolus;P-body;PML body	0.5
+HNRNPM (P52272)	ATXN2L (Q8WWM7)	3	P-body;PML body;Stress granule	0.5
+HNRNPM (P52272)	THRAP3 (Q9Y2W1)	3	P-body;PML body;Stress granule	0.5
+HNRNPM (P52272)	CAPRIN1 (Q14444)	3	DHX9 Stress Granules;P-body;Stress granule	0.5
+HNRNPM (P52272)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPM (P52272)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.5
+VCP (P55072)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.5
+VCP (P55072)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.5
+VCP (P55072)	ILF3 (Q12906)	3	Nucleolus;P-body;Stress granule	0.5
+VCP (P55072)	HNRNPA2B1 (P22626)	3	Nucleolus;P-body;Stress granule	0.5
+VCP (P55072)	HNRNPU (Q00839)	3	Nucleolus;P-body;Stress granule	0.5
+DDX5 (P17844)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.5
+DDX5 (P17844)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.5
+DDX5 (P17844)	ILF3 (Q12906)	3	Nucleolus;P-body;Stress granule	0.5
+DDX5 (P17844)	HNRNPA2B1 (P22626)	3	Nucleolus;P-body;Stress granule	0.5
+DDX5 (P17844)	HNRNPU (Q00839)	3	Nucleolus;P-body;Stress granule	0.5
+HSP90AA1 (P07900)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.5
+HSP90AA1 (P07900)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.5
+HSP90AA1 (P07900)	ILF3 (Q12906)	3	Nucleolus;P-body;Stress granule	0.5
+HSP90AA1 (P07900)	HNRNPA2B1 (P22626)	3	Nucleolus;P-body;Stress granule	0.5
+HSP90AA1 (P07900)	HNRNPU (Q00839)	3	Nucleolus;P-body;Stress granule	0.5
+SF3B2 (Q13435)	ILF3 (Q12906)	3	Nuclear speckle;Nucleolus;P-body	0.5
+SF3B2 (Q13435)	HNRNPA2B1 (P22626)	3	Nuclear speckle;Nucleolus;P-body	0.5
+SF3B2 (Q13435)	HNRNPU (Q00839)	3	Nuclear speckle;Nucleolus;P-body	0.5
+SF3B2 (Q13435)	NCL (P19338)	3	Nucleolus;P-body;PML body	0.5
+ATXN2L (Q8WWM7)	ILF3 (Q12906)	3	Nuclear speckle;P-body;Stress granule	0.5
+ATXN2L (Q8WWM7)	HNRNPA2B1 (P22626)	3	Nuclear speckle;P-body;Stress granule	0.5
+ATXN2L (Q8WWM7)	HNRNPU (Q00839)	3	Nuclear speckle;P-body;Stress granule	0.5
+ATXN2L (Q8WWM7)	NCL (P19338)	3	P-body;PML body;Stress granule	0.5
+THRAP3 (Q9Y2W1)	ILF3 (Q12906)	3	Nuclear speckle;P-body;Stress granule	0.5
+THRAP3 (Q9Y2W1)	HNRNPA2B1 (P22626)	3	Nuclear speckle;P-body;Stress granule	0.5
+THRAP3 (Q9Y2W1)	HNRNPU (Q00839)	3	Nuclear speckle;P-body;Stress granule	0.5
+THRAP3 (Q9Y2W1)	NCL (P19338)	3	P-body;PML body;Stress granule	0.5
+LMNA (P02545)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.5
+LMNA (P02545)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.5
+LMNA (P02545)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.5
+DHX36 (Q9H2U1)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.5
+DHX36 (Q9H2U1)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.5
+DHX36 (Q9H2U1)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.5
+HSPA4L (Q92598)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.5
+HSPA4L (Q92598)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.5
+HSPA4L (Q92598)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPA3 (P51991)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPA3 (P51991)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPA3 (P51991)	ILF3 (Q12906)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPA3 (P51991)	HNRNPA2B1 (P22626)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPA3 (P51991)	HNRNPU (Q00839)	3	Nucleolus;P-body;Stress granule	0.5
+HNRNPA3 (P51991)	NCL (P19338)	3	Nucleolus;P-body;Stress granule	0.5
+FMR1 (Q06787)	HNRNPD (Q14103)	3	IMP1 RNP granule;P-body;Stress granule	0.5
+FMR1 (Q06787)	HNRNPL (P14866)	3	IMP1 RNP granule;P-body;Stress granule	0.5
+FMR1 (Q06787)	ILF3 (Q12906)	3	IMP1 RNP granule;P-body;Stress granule	0.5
+FMR1 (Q06787)	HNRNPA2B1 (P22626)	3	IMP1 RNP granule;P-body;Stress granule	0.5
+FMR1 (Q06787)	HNRNPU (Q00839)	3	IMP1 RNP granule;P-body;Stress granule	0.5
+FMR1 (Q06787)	NCL (P19338)	3	IMP1 RNP granule;P-body;Stress granule	0.5
+KHDRBS1 (Q07666)	ILF3 (Q12906)	3	IMP1 RNP granule;Nucleolus;Stress granule	0.5
+KHDRBS1 (Q07666)	HNRNPA2B1 (P22626)	3	IMP1 RNP granule;Nucleolus;Stress granule	0.5
+KHDRBS1 (Q07666)	HNRNPU (Q00839)	3	IMP1 RNP granule;Nucleolus;Stress granule	0.5
+KHDRBS1 (Q07666)	NCL (P19338)	3	IMP1 RNP granule;Nucleolus;Stress granule	0.5
+AKAP8L (Q9ULX6)	EWSR1 (Q01844)	3	Nuclear speckle;Paraspeckle;Stress granule	0.42857142857142855
+AKAP8L (Q9ULX6)	HSPA1A (P0DMV8)	3	Nuclear speckle;PML body;Stress granule	0.42857142857142855
+RBMX (P38159)	HSPA5 (P11021)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+RBMX (P38159)	HNRNPM (P52272)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+RBMX (P38159)	LMNA (P02545)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+RBMX (P38159)	DHX36 (Q9H2U1)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+RBMX (P38159)	HSPA4L (Q92598)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+RBMX (P38159)	ILF3 (Q12906)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+RBMX (P38159)	HNRNPA2B1 (P22626)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+RBMX (P38159)	HNRNPU (Q00839)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+RBMX (P38159)	NCL (P19338)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+TAF15 (Q92804)	HSPA5 (P11021)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+TAF15 (Q92804)	HNRNPM (P52272)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+TAF15 (Q92804)	LMNA (P02545)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+TAF15 (Q92804)	DHX36 (Q9H2U1)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+TAF15 (Q92804)	HSPA4L (Q92598)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+TAF15 (Q92804)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+TAF15 (Q92804)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+TAF15 (Q92804)	ILF3 (Q12906)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+TAF15 (Q92804)	HNRNPA2B1 (P22626)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+TAF15 (Q92804)	HNRNPU (Q00839)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+TAF15 (Q92804)	NCL (P19338)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HNRNPH1 (P31943)	HSPA8 (P11142)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HNRNPH1 (P31943)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HNRNPR (O43390)	HSPA5 (P11021)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HNRNPR (O43390)	HNRNPM (P52272)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HNRNPR (O43390)	LMNA (P02545)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HNRNPR (O43390)	DHX36 (Q9H2U1)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HNRNPR (O43390)	HSPA4L (Q92598)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+CPSF6 (Q16630)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+CPSF6 (Q16630)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+CPSF6 (Q16630)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+SFPQ (P23246)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+SFPQ (P23246)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+SFPQ (P23246)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+EWSR1 (Q01844)	VCP (P55072)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+EWSR1 (Q01844)	DDX5 (P17844)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+EWSR1 (Q01844)	HSP90AA1 (P07900)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+EWSR1 (Q01844)	SF3B2 (Q13435)	3	Nuclear speckle;Nucleolus;P-body	0.42857142857142855
+EWSR1 (Q01844)	ATXN2L (Q8WWM7)	3	Nuclear speckle;P-body;Stress granule	0.42857142857142855
+EWSR1 (Q01844)	THRAP3 (Q9Y2W1)	3	Nuclear speckle;P-body;Stress granule	0.42857142857142855
+EWSR1 (Q01844)	CAPRIN1 (Q14444)	3	Neuronal RNP granule;P-body;Stress granule	0.42857142857142855
+EWSR1 (Q01844)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+EWSR1 (Q01844)	FMR1 (Q06787)	3	Neuronal RNP granule;P-body;Stress granule	0.42857142857142855
+EWSR1 (Q01844)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+EWSR1 (Q01844)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HSPA1A (P0DMV8)	VCP (P55072)	3	P-body;PML body;Stress granule	0.42857142857142855
+HSPA1A (P0DMV8)	DDX5 (P17844)	3	P-body;PML body;Stress granule	0.42857142857142855
+HSPA1A (P0DMV8)	HSP90AA1 (P07900)	3	P-body;PML body;Stress granule	0.42857142857142855
+HSPA1A (P0DMV8)	SF3B2 (Q13435)	3	Nuclear speckle;P-body;PML body	0.42857142857142855
+HSPA1A (P0DMV8)	FMR1 (Q06787)	3	IMP1 RNP granule;P-body;Stress granule	0.42857142857142855
+HSPA1A (P0DMV8)	PABPC4 (Q13310)	3	IMP1 RNP granule;P-body;Stress granule	0.42857142857142855
+HSPA1A (P0DMV8)	SYNCRIP (O60506)	3	IMP1 RNP granule;P-body;Stress granule	0.42857142857142855
+HSPA5 (P11021)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HSPA5 (P11021)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HSPA5 (P11021)	ILF3 (Q12906)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HSPA5 (P11021)	HNRNPA2B1 (P22626)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HSPA5 (P11021)	HNRNPU (Q00839)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HSPA8 (P11142)	SF3B2 (Q13435)	3	Nucleolus;P-body;PML body	0.42857142857142855
+HSPA8 (P11142)	ATXN2L (Q8WWM7)	3	P-body;PML body;Stress granule	0.42857142857142855
+HSPA8 (P11142)	THRAP3 (Q9Y2W1)	3	P-body;PML body;Stress granule	0.42857142857142855
+HSPA8 (P11142)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HSPA8 (P11142)	FMR1 (Q06787)	3	IMP1 RNP granule;P-body;Stress granule	0.42857142857142855
+HSPA8 (P11142)	KHDRBS1 (Q07666)	3	IMP1 RNP granule;Nucleolus;Stress granule	0.42857142857142855
+HNRNPM (P52272)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HNRNPM (P52272)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HNRNPM (P52272)	ILF3 (Q12906)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HNRNPM (P52272)	HNRNPA2B1 (P22626)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HNRNPM (P52272)	HNRNPU (Q00839)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+VCP (P55072)	DHX9 (Q08211)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+VCP (P55072)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+DDX5 (P17844)	DHX9 (Q08211)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+DDX5 (P17844)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HSP90AA1 (P07900)	DHX9 (Q08211)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HSP90AA1 (P07900)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+LMNA (P02545)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+LMNA (P02545)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+DHX36 (Q9H2U1)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+DHX36 (Q9H2U1)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HSPA4L (Q92598)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+HSPA4L (Q92598)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.42857142857142855
+DHX9 (Q08211)	CAPRIN1 (Q14444)	3	DHX9 Stress Granules;P-body;Stress granule	0.42857142857142855
+DHX9 (Q08211)	FMR1 (Q06787)	3	IMP1 RNP granule;P-body;Stress granule	0.42857142857142855
+DHX9 (Q08211)	KHDRBS1 (Q07666)	3	IMP1 RNP granule;Nucleolus;Stress granule	0.42857142857142855
+CAPRIN1 (Q14444)	PABPC1 (P11940)	3	DHX9 Stress Granules;P-body;Stress granule	0.42857142857142855
+PABPC1 (P11940)	FMR1 (Q06787)	3	IMP1 RNP granule;P-body;Stress granule	0.42857142857142855
+PABPC1 (P11940)	KHDRBS1 (Q07666)	3	IMP1 RNP granule;Nucleolus;Stress granule	0.42857142857142855
+RBMX (P38159)	HSPA8 (P11142)	3	Nucleolus;P-body;Stress granule	0.375
+RBMX (P38159)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.375
+TAF15 (Q92804)	HSPA8 (P11142)	3	Nucleolus;P-body;Stress granule	0.375
+TAF15 (Q92804)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.375
+HNRNPR (O43390)	HSPA1A (P0DMV8)	3	IMP1 RNP granule;P-body;Stress granule	0.375
+HNRNPK (P61978)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.375
+HNRNPK (P61978)	KHDRBS1 (Q07666)	3	Nucleolus;Sam68 nuclear body;Stress granule	0.375
+HNRNPK (P61978)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.375
+HNRNPK (P61978)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.375
+CPSF6 (Q16630)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.375
+CPSF6 (Q16630)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.375
+SFPQ (P23246)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.375
+SFPQ (P23246)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.375
+EWSR1 (Q01844)	HSPA5 (P11021)	3	Nucleolus;P-body;Stress granule	0.375
+EWSR1 (Q01844)	HNRNPM (P52272)	3	Nucleolus;P-body;Stress granule	0.375
+EWSR1 (Q01844)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.375
+EWSR1 (Q01844)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.375
+EWSR1 (Q01844)	NCL (P19338)	3	Nucleolus;P-body;Stress granule	0.375
+NONO (Q15233)	CAPRIN1 (Q14444)	3	Neuronal RNP granule;P-body;Stress granule	0.375
+NONO (Q15233)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.375
+NONO (Q15233)	FMR1 (Q06787)	3	Neuronal RNP granule;P-body;Stress granule	0.375
+NONO (Q15233)	PABPC4 (Q13310)	3	Nucleolus;P-body;Stress granule	0.375
+NONO (Q15233)	SYNCRIP (O60506)	3	Nucleolus;P-body;Stress granule	0.375
+HSPA1A (P0DMV8)	HNRNPM (P52272)	3	P-body;PML body;Stress granule	0.375
+HSPA1A (P0DMV8)	HNRNPD (Q14103)	3	IMP1 RNP granule;P-body;Stress granule	0.375
+HSPA1A (P0DMV8)	HNRNPL (P14866)	3	IMP1 RNP granule;P-body;Stress granule	0.375
+HSPA5 (P11021)	DHX9 (Q08211)	3	Nucleolus;P-body;Stress granule	0.375
+HSPA5 (P11021)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.375
+LMNA (P02545)	DHX9 (Q08211)	3	Nucleolus;P-body;Stress granule	0.375
+LMNA (P02545)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.375
+DHX36 (Q9H2U1)	DHX9 (Q08211)	3	Nucleolus;P-body;Stress granule	0.375
+DHX36 (Q9H2U1)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.375
+HSPA4L (Q92598)	DHX9 (Q08211)	3	Nucleolus;P-body;Stress granule	0.375
+HSPA4L (Q92598)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.375
+AKAP8L (Q9ULX6)	HNRNPA1 (P09651)	3	Nuclear speckle;Paraspeckle;Stress granule	0.3333333333333333
+CPSF6 (Q16630)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+SFPQ (P23246)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+FUS (P35637)	CAPRIN1 (Q14444)	3	Neuronal RNP granule;P-body;Stress granule	0.3333333333333333
+FUS (P35637)	HNRNPA3 (P51991)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+FUS (P35637)	KHDRBS1 (Q07666)	3	IMP1 RNP granule;Nucleolus;Stress granule	0.3333333333333333
+EWSR1 (Q01844)	HSPA1A (P0DMV8)	3	Nuclear speckle;P-body;Stress granule	0.3333333333333333
+EWSR1 (Q01844)	HSPA8 (P11142)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+EWSR1 (Q01844)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+NONO (Q15233)	HNRNPD (Q14103)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+NONO (Q15233)	HNRNPL (P14866)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+HSPA1A (P0DMV8)	DHX9 (Q08211)	3	IMP1 RNP granule;P-body;Stress granule	0.3333333333333333
+HSPA1A (P0DMV8)	PABPC1 (P11940)	3	IMP1 RNP granule;P-body;Stress granule	0.3333333333333333
+VCP (P55072)	TARDBP (Q13148)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+VCP (P55072)	HNRNPA1 (P09651)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+DDX5 (P17844)	TARDBP (Q13148)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+DDX5 (P17844)	HNRNPA1 (P09651)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+HSP90AA1 (P07900)	TARDBP (Q13148)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+HSP90AA1 (P07900)	HNRNPA1 (P09651)	3	Nucleolus;P-body;Stress granule	0.3333333333333333
+SF3B2 (Q13435)	HNRNPA1 (P09651)	3	Nuclear speckle;Nucleolus;P-body	0.3333333333333333
+ATXN2L (Q8WWM7)	HNRNPA1 (P09651)	3	Nuclear speckle;P-body;Stress granule	0.3333333333333333
+THRAP3 (Q9Y2W1)	HNRNPA1 (P09651)	3	Nuclear speckle;P-body;Stress granule	0.3333333333333333
+TARDBP (Q13148)	KHDRBS1 (Q07666)	3	IMP1 RNP granule;Nucleolus;Stress granule	0.3333333333333333
+HNRNPA1 (P09651)	CAPRIN1 (Q14444)	3	DHX9 Stress Granules;P-body;Stress granule	0.3333333333333333
+HNRNPA1 (P09651)	FMR1 (Q06787)	3	IMP1 RNP granule;P-body;Stress granule	0.3333333333333333
+HNRNPK (P61978)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.3
+NONO (Q15233)	PABPC1 (P11940)	3	Nucleolus;P-body;Stress granule	0.3
+HSPA5 (P11021)	HNRNPA1 (P09651)	3	Nucleolus;P-body;Stress granule	0.3
+LMNA (P02545)	TARDBP (Q13148)	3	Nucleolus;P-body;Stress granule	0.3
+DHX36 (Q9H2U1)	TARDBP (Q13148)	3	Nucleolus;P-body;Stress granule	0.3
+HSPA4L (Q92598)	TARDBP (Q13148)	3	Nucleolus;P-body;Stress granule	0.3
+AKAP8L (Q9ULX6)	HNRNPH1 (P31943)	2	Paraspeckle;Stress granule	0.3333333333333333
+AKAP8L (Q9ULX6)	VCP (P55072)	2	PML body;Stress granule	0.3333333333333333
+AKAP8L (Q9ULX6)	DDX5 (P17844)	2	PML body;Stress granule	0.3333333333333333
+AKAP8L (Q9ULX6)	HSP90AA1 (P07900)	2	PML body;Stress granule	0.3333333333333333
+AKAP8L (Q9ULX6)	SF3B2 (Q13435)	2	Nuclear speckle;PML body	0.3333333333333333
+HNRNPH1 (P31943)	SF3B2 (Q13435)	2	Nucleolus;P-body	0.3333333333333333
+HNRNPH1 (P31943)	ATXN2L (Q8WWM7)	2	P-body;Stress granule	0.3333333333333333
+HNRNPH1 (P31943)	THRAP3 (Q9Y2W1)	2	P-body;Stress granule	0.3333333333333333
+HNRNPH1 (P31943)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.3333333333333333
+HNRNPH1 (P31943)	FMR1 (Q06787)	2	P-body;Stress granule	0.3333333333333333
+HNRNPH1 (P31943)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.3333333333333333
+VCP (P55072)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.3333333333333333
+VCP (P55072)	FMR1 (Q06787)	2	P-body;Stress granule	0.3333333333333333
+VCP (P55072)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.3333333333333333
+DDX5 (P17844)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.3333333333333333
+DDX5 (P17844)	FMR1 (Q06787)	2	P-body;Stress granule	0.3333333333333333
+DDX5 (P17844)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.3333333333333333
+HSP90AA1 (P07900)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.3333333333333333
+HSP90AA1 (P07900)	FMR1 (Q06787)	2	P-body;Stress granule	0.3333333333333333
+HSP90AA1 (P07900)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.3333333333333333
+SF3B2 (Q13435)	HNRNPA3 (P51991)	2	Nucleolus;P-body	0.3333333333333333
+SF3B2 (Q13435)	PABPC4 (Q13310)	2	Nucleolus;P-body	0.3333333333333333
+SF3B2 (Q13435)	SYNCRIP (O60506)	2	Nucleolus;P-body	0.3333333333333333
+ATXN2L (Q8WWM7)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.3333333333333333
+ATXN2L (Q8WWM7)	HNRNPA3 (P51991)	2	P-body;Stress granule	0.3333333333333333
+ATXN2L (Q8WWM7)	FMR1 (Q06787)	2	P-body;Stress granule	0.3333333333333333
+ATXN2L (Q8WWM7)	PABPC4 (Q13310)	2	P-body;Stress granule	0.3333333333333333
+ATXN2L (Q8WWM7)	SYNCRIP (O60506)	2	P-body;Stress granule	0.3333333333333333
+THRAP3 (Q9Y2W1)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.3333333333333333
+THRAP3 (Q9Y2W1)	HNRNPA3 (P51991)	2	P-body;Stress granule	0.3333333333333333
+THRAP3 (Q9Y2W1)	FMR1 (Q06787)	2	P-body;Stress granule	0.3333333333333333
+THRAP3 (Q9Y2W1)	PABPC4 (Q13310)	2	P-body;Stress granule	0.3333333333333333
+THRAP3 (Q9Y2W1)	SYNCRIP (O60506)	2	P-body;Stress granule	0.3333333333333333
+CAPRIN1 (Q14444)	PABPC4 (Q13310)	2	P-body;Stress granule	0.3333333333333333
+CAPRIN1 (Q14444)	SYNCRIP (O60506)	2	P-body;Stress granule	0.3333333333333333
+HNRNPA3 (P51991)	FMR1 (Q06787)	2	P-body;Stress granule	0.3333333333333333
+HNRNPA3 (P51991)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.3333333333333333
+FMR1 (Q06787)	KHDRBS1 (Q07666)	2	IMP1 RNP granule;Stress granule	0.3333333333333333
+AKAP8L (Q9ULX6)	RBMX (P38159)	2	Paraspeckle;Stress granule	0.2857142857142857
+AKAP8L (Q9ULX6)	TAF15 (Q92804)	2	Paraspeckle;Stress granule	0.2857142857142857
+AKAP8L (Q9ULX6)	HNRNPR (O43390)	2	Paraspeckle;Stress granule	0.2857142857142857
+AKAP8L (Q9ULX6)	HSPA5 (P11021)	2	PML body;Stress granule	0.2857142857142857
+AKAP8L (Q9ULX6)	HNRNPM (P52272)	2	PML body;Stress granule	0.2857142857142857
+AKAP8L (Q9ULX6)	ILF3 (Q12906)	2	Nuclear speckle;Stress granule	0.2857142857142857
+AKAP8L (Q9ULX6)	HNRNPA2B1 (P22626)	2	Nuclear speckle;Stress granule	0.2857142857142857
+AKAP8L (Q9ULX6)	HNRNPU (Q00839)	2	Nuclear speckle;Stress granule	0.2857142857142857
+AKAP8L (Q9ULX6)	NCL (P19338)	2	PML body;Stress granule	0.2857142857142857
+RBMX (P38159)	SF3B2 (Q13435)	2	Nucleolus;P-body	0.2857142857142857
+RBMX (P38159)	ATXN2L (Q8WWM7)	2	P-body;Stress granule	0.2857142857142857
+RBMX (P38159)	THRAP3 (Q9Y2W1)	2	P-body;Stress granule	0.2857142857142857
+RBMX (P38159)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.2857142857142857
+RBMX (P38159)	FMR1 (Q06787)	2	P-body;Stress granule	0.2857142857142857
+TAF15 (Q92804)	SF3B2 (Q13435)	2	Nucleolus;P-body	0.2857142857142857
+TAF15 (Q92804)	ATXN2L (Q8WWM7)	2	P-body;Stress granule	0.2857142857142857
+TAF15 (Q92804)	THRAP3 (Q9Y2W1)	2	P-body;Stress granule	0.2857142857142857
+TAF15 (Q92804)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.2857142857142857
+HNRNPR (O43390)	SF3B2 (Q13435)	2	Nucleolus;P-body	0.2857142857142857
+HNRNPR (O43390)	ATXN2L (Q8WWM7)	2	P-body;Stress granule	0.2857142857142857
+HNRNPR (O43390)	THRAP3 (Q9Y2W1)	2	P-body;Stress granule	0.2857142857142857
+HNRNPR (O43390)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.2857142857142857
+HSPA5 (P11021)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.2857142857142857
+HSPA5 (P11021)	FMR1 (Q06787)	2	P-body;Stress granule	0.2857142857142857
+HSPA5 (P11021)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.2857142857142857
+HNRNPM (P52272)	FMR1 (Q06787)	2	P-body;Stress granule	0.2857142857142857
+HNRNPM (P52272)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.2857142857142857
+SF3B2 (Q13435)	HNRNPD (Q14103)	2	Nucleolus;P-body	0.2857142857142857
+SF3B2 (Q13435)	HNRNPL (P14866)	2	Nucleolus;P-body	0.2857142857142857
+ATXN2L (Q8WWM7)	HNRNPD (Q14103)	2	P-body;Stress granule	0.2857142857142857
+ATXN2L (Q8WWM7)	HNRNPL (P14866)	2	P-body;Stress granule	0.2857142857142857
+THRAP3 (Q9Y2W1)	HNRNPD (Q14103)	2	P-body;Stress granule	0.2857142857142857
+THRAP3 (Q9Y2W1)	HNRNPL (P14866)	2	P-body;Stress granule	0.2857142857142857
+LMNA (P02545)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.2857142857142857
+LMNA (P02545)	FMR1 (Q06787)	2	P-body;Stress granule	0.2857142857142857
+LMNA (P02545)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.2857142857142857
+DHX36 (Q9H2U1)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.2857142857142857
+DHX36 (Q9H2U1)	FMR1 (Q06787)	2	P-body;Stress granule	0.2857142857142857
+DHX36 (Q9H2U1)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.2857142857142857
+HSPA4L (Q92598)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.2857142857142857
+HSPA4L (Q92598)	FMR1 (Q06787)	2	P-body;Stress granule	0.2857142857142857
+HSPA4L (Q92598)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.2857142857142857
+CAPRIN1 (Q14444)	HNRNPD (Q14103)	2	P-body;Stress granule	0.2857142857142857
+CAPRIN1 (Q14444)	HNRNPL (P14866)	2	P-body;Stress granule	0.2857142857142857
+CAPRIN1 (Q14444)	ILF3 (Q12906)	2	P-body;Stress granule	0.2857142857142857
+CAPRIN1 (Q14444)	HNRNPA2B1 (P22626)	2	P-body;Stress granule	0.2857142857142857
+CAPRIN1 (Q14444)	HNRNPU (Q00839)	2	P-body;Stress granule	0.2857142857142857
+CAPRIN1 (Q14444)	NCL (P19338)	2	P-body;Stress granule	0.2857142857142857
+AKAP8L (Q9ULX6)	HSPA8 (P11142)	2	PML body;Stress granule	0.25
+AKAP8L (Q9ULX6)	DHX9 (Q08211)	2	Paraspeckle;Stress granule	0.25
+HNRNPH1 (P31943)	HSPA1A (P0DMV8)	2	P-body;Stress granule	0.25
+CPSF6 (Q16630)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.25
+CPSF6 (Q16630)	FMR1 (Q06787)	2	P-body;Stress granule	0.25
+CPSF6 (Q16630)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.25
+SFPQ (P23246)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.25
+SFPQ (P23246)	FMR1 (Q06787)	2	P-body;Stress granule	0.25
+SFPQ (P23246)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.25
+EWSR1 (Q01844)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.25
+HSPA1A (P0DMV8)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.25
+HSPA1A (P0DMV8)	HNRNPA3 (P51991)	2	P-body;Stress granule	0.25
+HSPA1A (P0DMV8)	KHDRBS1 (Q07666)	2	IMP1 RNP granule;Stress granule	0.25
+HSPA8 (P11142)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.25
+SF3B2 (Q13435)	DHX9 (Q08211)	2	Nucleolus;P-body	0.25
+SF3B2 (Q13435)	PABPC1 (P11940)	2	Nucleolus;P-body	0.25
+ATXN2L (Q8WWM7)	DHX9 (Q08211)	2	P-body;Stress granule	0.25
+ATXN2L (Q8WWM7)	PABPC1 (P11940)	2	P-body;Stress granule	0.25
+THRAP3 (Q9Y2W1)	DHX9 (Q08211)	2	P-body;Stress granule	0.25
+THRAP3 (Q9Y2W1)	PABPC1 (P11940)	2	P-body;Stress granule	0.25
+RBMX (P38159)	HSPA1A (P0DMV8)	2	P-body;Stress granule	0.2222222222222222
+TAF15 (Q92804)	HSPA1A (P0DMV8)	2	P-body;Stress granule	0.2222222222222222
+HNRNPK (P61978)	CAPRIN1 (Q14444)	2	P-body;Stress granule	0.2222222222222222
+HNRNPK (P61978)	FMR1 (Q06787)	2	P-body;Stress granule	0.2222222222222222
+NONO (Q15233)	KHDRBS1 (Q07666)	2	Nucleolus;Stress granule	0.2222222222222222
+AKAP8L (Q9ULX6)	TARDBP (Q13148)	2	Paraspeckle;Stress granule	0.2
+SF3B2 (Q13435)	TARDBP (Q13148)	2	Nucleolus;P-body	0.2
+ATXN2L (Q8WWM7)	TARDBP (Q13148)	2	P-body;Stress granule	0.2
+THRAP3 (Q9Y2W1)	TARDBP (Q13148)	2	P-body;Stress granule	0.2
+AKAP8L (Q9ULX6)	CAPRIN1 (Q14444)	1	Stress granule	0.14285714285714285
+AKAP8L (Q9ULX6)	HNRNPA3 (P51991)	1	Stress granule	0.14285714285714285
+AKAP8L (Q9ULX6)	FMR1 (Q06787)	1	Stress granule	0.14285714285714285
+AKAP8L (Q9ULX6)	KHDRBS1 (Q07666)	1	Stress granule	0.14285714285714285
+AKAP8L (Q9ULX6)	PABPC4 (Q13310)	1	Stress granule	0.14285714285714285
+AKAP8L (Q9ULX6)	SYNCRIP (O60506)	1	Stress granule	0.14285714285714285
+SF3B2 (Q13435)	CAPRIN1 (Q14444)	1	P-body	0.14285714285714285
+SF3B2 (Q13435)	FMR1 (Q06787)	1	P-body	0.14285714285714285
+SF3B2 (Q13435)	KHDRBS1 (Q07666)	1	Nucleolus	0.14285714285714285
+ATXN2L (Q8WWM7)	KHDRBS1 (Q07666)	1	Stress granule	0.14285714285714285
+THRAP3 (Q9Y2W1)	KHDRBS1 (Q07666)	1	Stress granule	0.14285714285714285
+CAPRIN1 (Q14444)	KHDRBS1 (Q07666)	1	Stress granule	0.14285714285714285
+AKAP8L (Q9ULX6)	HNRNPD (Q14103)	1	Stress granule	0.125
+AKAP8L (Q9ULX6)	HNRNPL (P14866)	1	Stress granule	0.125
+AKAP8L (Q9ULX6)	PABPC1 (P11940)	1	Stress granule	0.1111111111111111

@@ -1,0 +1,6 @@
+ptm_group	site_rows	proteins_with_sites	candidate_proteins	candidate_target_residues	restrict_context	null_match_disorder
+Phosphorylation	66109	9796	9796	1147352	all	True
+Arg methylation	12826	4657	4657	212559	all	True
+Lys acylation	2683	1394	1394	68769	all	True
+Ubiquitin/SUMO	643	266	266	9272	all	True
+Lys methylation	234	130	130	6883	all	True

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="330" viewBox="0 0 1320 330">
+<style>
+  svg { background: #FFFFFF; }
+  text {
+    font-family: Arial, "Liberation Sans", "DejaVu Sans", Helvetica, sans-serif;
+    letter-spacing: 0.01em;
+  }
+</style>
+<rect x="0" y="0" width="1320" height="330" fill="#FFFFFF" stroke="none" />
+<text x="660" y="36" fill="#12202C" font-size="18" text-anchor="middle" font-weight="700" font-style="normal" dominant-baseline="alphabetic">Representative methylarginine substrate architectures.</text>
+<text x="52" y="80" fill="#12202C" font-size="15" text-anchor="start" font-weight="700" font-style="normal" dominant-baseline="alphabetic">SmD3 / SNRPD3</text>
+<text x="52" y="98" fill="#5B6673" font-size="10.5" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">126 aa</text>
+<line x1="176" y1="138" x2="910" y2="138" stroke="#9AA6B2" stroke-width="1.2" />
+<path d="M 176 138 Q 184.81 133.6 193.62 138" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="M 669.25 138 Q 678.79 133.6 688.33 138 Q 697.87 142.4 707.42 138 Q 716.96 133.6 726.5 138 Q 736.04 142.4 745.58 138" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<path d="M 816.05 138 Q 827.79 133.6 839.54 138 Q 851.28 142.4 863.02 138 Q 874.77 133.6 886.51 138 Q 898.26 142.4 910 138" fill="none" stroke="#6D7680" stroke-width="2.4" stroke-linecap="round" />
+<rect x="199.49" y="126" width="422.78" height="24" rx="12" fill="#E8E1D4" stroke="#675B4F" stroke-width="1.2" />
+<text x="410.88" y="141.8" fill="#12202C" font-size="10" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">Sm core</text>
+<rect x="816.05" y="70" width="93.95" height="16" rx="8" fill="#F1CCD4" stroke="none" opacity="0.95" />
+<text x="863.02" y="81.5" fill="#12202C" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">C-terminal RG tail</text>
+<line x1="816.05" y1="122" x2="863.02" y2="122" stroke="#B95570" stroke-width="2.0" stroke-linecap="round" />
+<line x1="816.05" y1="118.5" x2="816.05" y2="125.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="827.79" y1="118.5" x2="827.79" y2="125.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="839.54" y1="118.5" x2="839.54" y2="125.5" stroke="#B95570" stroke-width="1.0" />
+<line x1="863.02" y1="118.5" x2="863.02" y2="125.5" stroke="#B95570" stroke-width="1.0" />
+<rect x="829.54" y="100.5" width="20" height="14" rx="7" fill="#B95570" stroke="none" />
+<text x="839.54" y="110.8" fill="white" font-size="9.4" text-anchor="middle" font-weight="700" font-style="normal" dominant-baseline="alphabetic">4</text>
+<line x1="176" y1="160" x2="176" y2="167" stroke="#9AA6B2" stroke-width="1.0" />
+<line x1="910" y1="160" x2="910" y2="167" stroke="#9AA6B2" stroke-width="1.0" />
+<text x="176" y="181" fill="#5B6673" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">1</text>
+<text x="910" y="181" fill="#5B6673" font-size="10.2" text-anchor="middle" font-weight="400" font-style="normal" dominant-baseline="alphabetic">126 aa</text>
+<rect x="960" y="82" width="240" height="76" rx="14" fill="#DCEAF7" stroke="#6D8BA9" stroke-width="1.2" />
+<circle cx="988" cy="105" r="4.2" fill="#6D8BA9" stroke="none" />
+<circle cx="1080" cy="105" r="4.2" fill="#6D8BA9" stroke="none" />
+<circle cx="1172" cy="105" r="4.2" fill="#6D8BA9" stroke="none" />
+<text x="1080" y="130" fill="#12202C" font-size="11.3" text-anchor="middle" font-weight="600"><tspan x="1080" dy="0">SMN Tudor aromatic cage</tspan></text>
+<line x1="863.02" y1="120" x2="960" y2="112" stroke="#6D8BA9" stroke-width="1.2" />
+<rect x="956" y="194" width="300" height="48" rx="12" fill="#F5F7F9" stroke="none" />
+<text x="970" y="210" fill="#5B6673" font-size="9.8" text-anchor="start" font-weight="700" font-style="normal" dominant-baseline="alphabetic">Redistribution mode</text>
+<text x="970" y="225" fill="#12202C" font-size="11.6" text-anchor="start" font-weight="400"><tspan x="970" dy="0">SDMA RG tail -&gt; SMN-dependent RNP</tspan><tspan x="970" dy="14.38">assembly.</tspan></text>
+<text x="176" y="249" fill="#5B6673" font-size="9.4" text-anchor="start" font-weight="400"><tspan x="176" dy="0">Tail sites restricted to consensus Rme2 positions in the RG-rich tail.</tspan></text>
+<text x="52" y="278" fill="#5B6673" font-size="11" text-anchor="start" font-weight="700" font-style="normal" dominant-baseline="alphabetic">Legend</text>
+<circle cx="60" cy="294" r="4.5" fill="#C86A82" stroke="#8E4358" stroke-width="1.0" />
+<text x="96" y="298" fill="#12202C" font-size="10.6" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">methylarginine site</text>
+<rect x="290" y="286" width="32" height="16" rx="8" fill="#E8E1D4" stroke="#675B4F" stroke-width="1.0" />
+<text x="334" y="298" fill="#12202C" font-size="10.6" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">ordered domain</text>
+<path d="M 528 294 Q 534 290.8 540 294 Q 546 297.2 552 294 Q 558 290.8 564 294" fill="none" stroke="#6D7680" stroke-width="2.2" />
+<rect x="534" y="283" width="24" height="6" rx="3" fill="#F1CCD4" stroke="none" opacity="0.95" />
+<text x="572" y="298" fill="#12202C" font-size="10.6" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">IDR / RG-rich region</text>
+<rect x="766" y="286" width="34" height="16" rx="8" fill="#DCEAF7" stroke="#6D8BA9" stroke-width="1.0" />
+<text x="810" y="298" fill="#12202C" font-size="10.6" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">reader / protein interactor</text>
+<path d="M 1004 294 Q 1010 291 1016 294 Q 1022 297 1028 294 Q 1034 291 1040 294" fill="none" stroke="#5C86B8" stroke-width="2.0" />
+<text x="1048" y="298" fill="#12202C" font-size="10.6" text-anchor="start" font-weight="400" font-style="normal" dominant-baseline="alphabetic">RNA / DNA target</text>
+</svg>

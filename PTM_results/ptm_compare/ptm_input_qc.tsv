@@ -1,0 +1,6 @@
+ptm_group	site_count	protein_count	residues
+Arg methylation	13719	5090	R
+Lys acylation	2683	1394	K
+Lys methylation	234	130	K
+Phosphorylation	66109	9796	S;T;Y
+Ubiquitin/SUMO	643	266	K

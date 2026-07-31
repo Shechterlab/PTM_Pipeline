@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="230" viewBox="0 0 1560 230">
+<defs>
+  <filter id="softShadow" x="-20%" y="-20%" width="140%" height="160%">
+    <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#9FB0C8" flood-opacity="0.18" />
+  </filter>
+</defs>
+<style>
+  svg { background: #FFFFFF; }
+  text {
+    font-family: Arial, "Liberation Sans", "DejaVu Sans", Helvetica, sans-serif;
+    letter-spacing: 0.01em;
+  }
+</style>
+<rect x="0" y="0" width="1560" height="230" fill="#FFFFFF" stroke="none" />
+<rect x="20" y="54" width="1520" height="154" rx="26" fill="#FCFDFE" stroke="#E3E8F0" stroke-width="1" filter="url(#softShadow)" />
+<text x="50" y="88" fill="#1A2433" font-size="21" text-anchor="start" font-weight="700" font-style="normal">SmB/B′ / SNRPB</text>
+<text x="50" y="112" fill="#637083" font-size="12.2" text-anchor="start" font-weight="600" font-style="normal">methyl-dependent SMN-binding C-terminal RG tail</text>
+<line x1="348" y1="132" x2="613.64" y2="132" stroke="#ECF0F4" stroke-width="2.0" />
+<path d="M 446.92 132 Q 457.34 128.6 467.76 132 Q 478.18 135.4 488.6 132 Q 499.02 128.6 509.44 132 Q 519.86 135.4 530.28 132 Q 540.7 128.6 551.12 132 Q 561.54 135.4 571.96 132 Q 582.38 128.6 592.8 132 Q 603.22 135.4 613.64 132" fill="none" stroke="#8C96A3" stroke-width="2.0" />
+<rect x="468.92" y="122" width="166.72" height="20" rx="10" fill="#E6EEF7" stroke="none" />
+<text x="552.28" y="116" fill="#637083" font-size="11" text-anchor="middle" font-weight="600" font-style="normal">C-terminal RG tail</text>
+<rect x="373.33" y="118" width="91.14" height="28" rx="14" fill="#E9DFC9" stroke="#736858" stroke-width="1.25" />
+<text x="418.9" y="136" fill="#1A2433" font-size="10.5" text-anchor="middle" font-weight="600" font-style="normal">Sm core</text>
+<rect x="486.7" y="90" width="148.93" height="30" rx="15" fill="#E8DDE1" stroke="none" opacity="0.55" />
+<circle cx="488.93" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="493.37" cy="112" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="515.6" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="532.27" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<circle cx="634.53" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<rect x="1118" y="76" width="250" height="70" rx="18" fill="#DCEBFA" stroke="#7B97B6" stroke-width="1.2" />
+<circle cx="1176" cy="100" r="4.8" fill="#7B97B6" stroke="none" />
+<circle cx="1208" cy="100" r="4.8" fill="#7B97B6" stroke="none" />
+<circle cx="1240" cy="100" r="4.8" fill="#7B97B6" stroke="none" />
+<path d="M 1168 116 Q 1210 130 1252 116" fill="none" stroke="#7B97B6" stroke-width="2.0" />
+<text x="1288" y="104" fill="#1A2433" font-size="11.3" text-anchor="middle" font-weight="600"><tspan x="1288" dy="0">SMN Tudor</tspan><tspan x="1288" dy="14.01">aromatic cage</tspan></text>
+<rect x="1118" y="162" width="250" height="28" rx="14" fill="#EEF4FA" stroke="#CAD7E7" stroke-width="1" />
+<text x="1243" y="181" fill="#1A2433" font-size="11.2" text-anchor="middle" font-weight="700" font-style="normal">reader-routed RNP assembly</text>
+<text x="1243" y="208" fill="#637083" font-size="10.6" text-anchor="middle" font-weight="600" font-style="normal">methylated RG tail -&gt; SMN Tudor</text>
+<line x1="348" y1="150" x2="348" y2="156" stroke="#ECF0F4" stroke-width="1.4" />
+<line x1="613.64" y1="150" x2="613.64" y2="156" stroke="#ECF0F4" stroke-width="1.4" />
+<text x="348" y="170" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="400" font-style="normal">1</text>
+<text x="613.64" y="170" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="400" font-style="normal">240 aa</text>
+</svg>

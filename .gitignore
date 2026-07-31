@@ -10,7 +10,6 @@ __pycache__/
 *.so
 
 PTM_data/
-PTM_results/
 
 # Legacy in-repo layout stubs
 data/*

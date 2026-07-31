@@ -1,0 +1,119 @@
+canonical_UniProtAC	gene	n_bins	bins	max_cluster	total_cluster_bin_sites
+O00571	DDX3X	1	Domain-distal >40 aa	5	12
+O14686	KMT2D	1	Domain-distal >40 aa	4	22
+O14776	TCERG1	1	Domain-distal >40 aa	4	6
+O15357	INPPL1	1	Domain-distal >40 aa	4	5
+O15523	DDX3Y	1	Domain-distal >40 aa	4	6
+O43390	HNRNPR	1	Domain-distal >40 aa	5	10
+O43497	CACNA1G	1	Domain-distal >40 aa	4	5
+O43823	AKAP8	1	Domain-distal >40 aa	4	9
+O43896	KIF1C	1	Domain-distal >40 aa	4	7
+O60506	SYNCRIP	1	Domain-distal >40 aa	5	17
+O75525	KHDRBS3	2	Domain edge 21-40 aa | Domain-distal >40 aa	5	12
+P11940	PABPC1	1	Domain-distal >40 aa	4	7
+P12270	TPR	1	Domain-distal >40 aa	5	15
+P14678	SNRPB	1	Domain-distal >40 aa	4	9
+P14866	HNRNPL	1	Domain edge 21-40 aa	5	5
+P15880	RPS2	1	Domain-distal >40 aa	5	5
+P16989	CSDA	2	Domain edge <=20 aa | Domain-distal >40 aa	8	31
+P17844	DDX5	2	Domain edge <=20 aa | Domain-distal >40 aa	6	11
+P19338	NCL	1	Domain edge 21-40 aa	5	5
+P20290	BTF3	1	Domain-distal >40 aa	5	7
+P23246	SFPQ	1	Domain-distal >40 aa	5	15
+P23588	EIF4B	1	Domain-distal >40 aa	4	8
+P33991	MCM4	1	Domain-distal >40 aa	5	6
+P35368	ADRA1B	1	Domain-distal >40 aa	4	4
+P35637	FUS	3	Domain edge <=20 aa | Domain edge 21-40 aa | Domain-distal >40 aa	5	27
+P38159	RBMX	3	Domain edge <=20 aa | Domain edge 21-40 aa | Domain-distal >40 aa	5	29
+P48634	PRRC2A	1	Domain-distal >40 aa	6	43
+P49750	YLPM1	1	Domain-distal >40 aa	5	34
+P49959	MRE11	1	Domain-distal >40 aa	7	12
+P50570	DNM2	1	Domain-distal >40 aa	4	5
+P55789	GFER	1	Domain-distal >40 aa	4	6
+P61978	HNRNPK	1	Domain-distal >40 aa	6	17
+P62314	SNRPD1	1	Domain edge <=20 aa	4	4
+P62633	CNBP	1	Domain edge <=20 aa	4	4
+P62995	TRA2B	1	Domain-distal >40 aa	4	7
+P67809	YBX1	1	Domain-distal >40 aa	9	19
+P79522	PRR3	1	Domain-distal >40 aa	5	6
+P98179	RBM3	2	Domain edge <=20 aa | Domain-distal >40 aa	5	9
+Q00839	HNRNPU	1	Domain-distal >40 aa	5	18
+Q01844	EWSR1	2	Domain edge 21-40 aa | Domain-distal >40 aa	6	27
+Q04637	EIF4G1	1	Domain-distal >40 aa	4	16
+Q07666	KHDRBS1	2	Domain edge 21-40 aa | Domain-distal >40 aa	5	22
+Q07955	SRSF1	1	Domain edge <=20 aa	4	4
+Q08211	DHX9	1	Domain-distal >40 aa	4	9
+Q12888	TP53BP1	1	Domain-distal >40 aa	5	7
+Q12905	ILF2	1	Domain edge <=20 aa	5	5
+Q12906	ILF3	1	Domain-distal >40 aa	4	7
+Q13243	SRSF5	1	Domain edge <=20 aa	6	6
+Q14011	CIRBP	2	Domain edge 21-40 aa | Domain-distal >40 aa	4	10
+Q14152	EIF3A	1	Domain-distal >40 aa	5	25
+Q14157	UBAP2L	1	Domain-distal >40 aa	6	11
+Q14444	CAPRIN1	1	Domain edge <=20 aa	4	4
+Q14966	ZNF638	1	Domain-distal >40 aa	4	9
+Q15056	EIF4H	1	Domain-distal >40 aa	6	10
+Q15554	TERF2	1	Domain edge 21-40 aa	4	4
+Q15654	TRIP6	1	Domain-distal >40 aa	4	17
+Q16630	CPSF6	1	Domain-distal >40 aa	4	4
+Q5BKZ1	ZNF326	1	Domain-distal >40 aa	4	9
+Q5JSZ5	PRRC2B	1	Domain-distal >40 aa	4	14
+Q5T200	ZC3H13	1	Domain-distal >40 aa	4	7
+Q5T6F2	UBAP2	1	Domain-distal >40 aa	4	5
+Q5T8P6	RBM26	1	Domain edge 21-40 aa	4	4
+Q5VT52	RPRD2	1	Domain-distal >40 aa	5	18
+Q659C4	LARP1B	1	Domain-distal >40 aa	5	6
+Q68CZ2	TNS3	1	Domain-distal >40 aa	4	4
+Q69YN4	KIAA1429	1	Domain-distal >40 aa	4	17
+Q6PIY7	PAPD4	1	Domain-distal >40 aa	4	4
+Q6PKG0	LARP1	1	Domain-distal >40 aa	5	10
+Q6Y7W6	GIGYF2	1	Domain-distal >40 aa	4	8
+Q7Z5L9	IRF2BP2	1	Domain-distal >40 aa	4	4
+Q7Z6E9	RBBP6	1	Domain-distal >40 aa	4	9
+Q86U42	PABPN1	1	Domain-distal >40 aa	4	4
+Q86UK7	ZNF598	1	Domain-distal >40 aa	5	6
+Q86V81	ALYREF	1	Domain-distal >40 aa	4	7
+Q8IWX8	CHERP	1	Domain-distal >40 aa	4	7
+Q8IXT5	RBM12B	1	Domain-distal >40 aa	5	11
+Q8NC51	SERBP1	2	Domain edge <=20 aa | Domain-distal >40 aa	7	15
+Q8NEZ4	KMT2C	1	Domain-distal >40 aa	4	17
+Q8WUA2	PPIL4	1	Domain-distal >40 aa	4	4
+Q8WUF5	PPP1R13L	1	Domain-distal >40 aa	4	23
+Q8WWM7	ATXN2L	1	Domain edge 21-40 aa	6	7
+Q92576	PHF3	1	Domain-distal >40 aa	4	10
+Q92804	TAF15	1	Domain edge <=20 aa	4	10
+Q92841	DDX17	1	Domain edge <=20 aa	4	7
+Q96E39	RBMXL1	2	Domain edge <=20 aa | Domain edge 21-40 aa	4	12
+Q96EK7	FAM120B	1	Domain-distal >40 aa	4	5
+Q96I24	FUBP3	1	Domain edge <=20 aa	4	4
+Q96JP5	ZFP91	1	Domain-distal >40 aa	5	8
+Q96LA8	PRMT6	1	Domain-distal >40 aa	5	6
+Q96PC5	MIA2	1	Domain-distal >40 aa	4	7
+Q96PV6	LENG8	1	Domain-distal >40 aa	4	5
+Q96QC0	PPP1R10	1	Domain-distal >40 aa	4	10
+Q99569	PKP4	1	Domain-distal >40 aa	4	8
+Q99729	HNRNPAB	1	Domain edge <=20 aa	4	4
+Q9BTD8	RBM42	1	Domain-distal >40 aa	4	8
+Q9BUJ2	HNRNPUL1	2	Domain edge <=20 aa | Domain-distal >40 aa	5	16
+Q9BX40	LSM14B	1	Domain edge <=20 aa	4	8
+Q9BXP5	SRRT	1	Domain-distal >40 aa	4	6
+Q9C0J8	WDR33	1	Domain-distal >40 aa	4	30
+Q9H074	PAIP1	1	Domain-distal >40 aa	5	10
+Q9H0D6	XRN2	1	Domain-distal >40 aa	6	9
+Q9H0L4	CSTF2T	1	Domain-distal >40 aa	4	14
+Q9H2U1	DHX36	1	Domain-distal >40 aa	4	5
+Q9HAU4	SMURF2	1	Domain edge <=20 aa	4	4
+Q9NR12	PDLIM7	1	Domain-distal >40 aa	4	5
+Q9NYL2	MLTK	1	Domain-distal >40 aa	4	8
+Q9NZB2	FAM120A	1	Domain-distal >40 aa	4	5
+Q9P0J7	KCMF1	1	Domain edge 21-40 aa	4	4
+Q9P107	GMIP	1	Domain-distal >40 aa	4	7
+Q9ULX6	AKAP8L	1	Domain-distal >40 aa	4	6
+Q9UMN6	KMT2B	1	Domain-distal >40 aa	4	11
+Q9UPN6	SCAF8	1	Domain-distal >40 aa	5	14
+Q9UQ35	SRRM2	1	Domain edge <=20 aa	4	4
+Q9Y3Y2	CHTOP	1	Domain edge <=20 aa	4	4
+Q9Y4H2	IRS2	1	Domain-distal >40 aa	4	9
+Q9Y4Z0	LSM4	1	Domain edge 21-40 aa	4	4
+Q9Y520	PRRC2C	1	Domain-distal >40 aa	6	34
+Q9Y580	RBM7	1	Domain-distal >40 aa	4	6

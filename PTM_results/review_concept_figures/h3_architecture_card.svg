@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="230" viewBox="0 0 1560 230">
+<defs>
+  <filter id="softShadow" x="-20%" y="-20%" width="140%" height="160%">
+    <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#9FB0C8" flood-opacity="0.18" />
+  </filter>
+</defs>
+<style>
+  svg { background: #FFFFFF; }
+  text {
+    font-family: Arial, "Liberation Sans", "DejaVu Sans", Helvetica, sans-serif;
+    letter-spacing: 0.01em;
+  }
+</style>
+<rect x="0" y="0" width="1560" height="230" fill="#FFFFFF" stroke="none" />
+<rect x="20" y="54" width="1520" height="154" rx="26" fill="#FCFDFE" stroke="#E3E8F0" stroke-width="1" filter="url(#softShadow)" />
+<text x="50" y="88" fill="#1A2433" font-size="21" text-anchor="start" font-weight="700" font-style="normal">H3.1 / H3C1</text>
+<text x="50" y="112" fill="#637083" font-size="12.2" text-anchor="start" font-weight="600" font-style="normal">single chromatin reader-gating site</text>
+<line x1="348" y1="132" x2="498.05" y2="132" stroke="#ECF0F4" stroke-width="2.0" />
+<path d="M 348 132 Q 359.67 128.6 371.34 132 Q 383.01 135.4 394.68 132" fill="none" stroke="#8C96A3" stroke-width="2.0" />
+<rect x="370" y="122" width="46.68" height="20" rx="10" fill="#E6EEF7" stroke="none" />
+<text x="426.68" y="166" fill="#637083" font-size="11" text-anchor="start" font-weight="600" font-style="normal">H3 N-tail</text>
+<rect x="417.79" y="118" width="96.7" height="28" rx="14" fill="#E9DFC9" stroke="#736858" stroke-width="1.25" />
+<text x="466.14" y="136" fill="#1A2433" font-size="10.5" text-anchor="middle" font-weight="600" font-style="normal">histone fold</text>
+<circle cx="372.22" cy="96" r="4.5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.1" />
+<rect x="1118" y="78" width="250" height="76" rx="20" fill="#DCEBFA" stroke="#7B97B6" stroke-width="1.2" />
+<path d="M 1152 108 Q 1196 130 1240 108" fill="none" stroke="#7B97B6" stroke-width="2.4" />
+<text x="1292" y="108" fill="#1A2433" font-size="12" text-anchor="middle" font-weight="700" font-style="normal">WDR5</text>
+<text x="1292" y="126" fill="#637083" font-size="10.8" text-anchor="middle" font-weight="600" font-style="normal">WD-repeat pocket</text>
+<rect x="1114" y="36" width="192" height="30" rx="15" fill="white" stroke="#E3E8F0" stroke-width="1" />
+<text x="1130" y="56" fill="#1A2433" font-size="11.6" text-anchor="start" font-weight="400" font-style="normal">A</text>
+<text x="1142" y="56" fill="#CBB2B9" font-size="11.6" text-anchor="start" font-weight="700" font-style="normal">R</text>
+<text x="1154" y="56" fill="#1A2433" font-size="11.6" text-anchor="start" font-weight="400" font-style="normal">T</text>
+<text x="1166" y="56" fill="#1A2433" font-size="11.6" text-anchor="start" font-weight="400" font-style="normal">K</text>
+<text x="1178" y="56" fill="#1A2433" font-size="11.6" text-anchor="start" font-weight="400" font-style="normal">Q</text>
+<text x="1190" y="56" fill="#1A2433" font-size="11.6" text-anchor="start" font-weight="400" font-style="normal">T</text>
+<text x="1202" y="56" fill="#1A2433" font-size="11.6" text-anchor="start" font-weight="400" font-style="normal">A</text>
+<text x="1214" y="56" fill="#1A2433" font-size="11.6" text-anchor="start" font-weight="400" font-style="normal">R</text>
+<text x="1226" y="56" fill="#1A2433" font-size="11.6" text-anchor="start" font-weight="400" font-style="normal">K</text>
+<text x="1260" y="56" fill="#637083" font-size="10.6" text-anchor="start" font-weight="600" font-style="normal">H3R2</text>
+<rect x="1118" y="162" width="250" height="28" rx="14" fill="#EEF4FA" stroke="#CAD7E7" stroke-width="1" />
+<text x="1243" y="181" fill="#1A2433" font-size="11.2" text-anchor="middle" font-weight="700" font-style="normal">single-site chromatin reader gating</text>
+<text x="1243" y="208" fill="#637083" font-size="10.6" text-anchor="middle" font-weight="600" font-style="normal">H3R2 -&gt; WDR5 pocket</text>
+<line x1="348" y1="150" x2="348" y2="156" stroke="#ECF0F4" stroke-width="1.4" />
+<line x1="498.05" y1="150" x2="498.05" y2="156" stroke="#ECF0F4" stroke-width="1.4" />
+<text x="348" y="170" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="400" font-style="normal">1</text>
+<text x="498.05" y="170" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="400" font-style="normal">136 aa</text>
+</svg>

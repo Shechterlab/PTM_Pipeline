@@ -1,0 +1,283 @@
+domain_edge_bin_compact	canonical_UniProtAC	gene	protein_name	total_sites_in_bin	max_sites_in_20aa_span_within_bin	best_window_start	best_window_end	best_window_positions	median_domain_edge_distance_in_bin	median_idr_segment_length	nearest_domain_classes
+Domain edge <=20 aa	Q8NC51	SERBP1		10	7	155	175	155,160,163,165,170,172,175	12.0	37.0	Other domain
+Domain edge <=20 aa	Q13243	SRSF5		6	6	75	93	75,80,82,88,92,93	11.0	33.0	RRM / KH RNA-binding
+Domain edge <=20 aa	P17844	DDX5		5	5	478	496	478,482,484,486,496	7.0	22.0	RNA helicase
+Domain edge <=20 aa	P98179	RBM3	RNA-binding protein 3;	5	5	87	105	87,90,99,101,105	14.0	72.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q12905	ILF2	Interleukin enhancer-binding factor 2;	5	5	5	16	5,7,9,12,16	13.0	21.0	Other domain
+Domain edge <=20 aa	Q92804	TAF15		10	4	326	343	326,334,337,343	11.5	119.5	Other domain; RRM / KH RNA-binding
+Domain edge <=20 aa	P35637	FUS	RNA-binding protein FUS;	8	4	377	388	377,383,386,388	15.5	49.0	Other domain; RRM / KH RNA-binding
+Domain edge <=20 aa	Q9BX40	LSM14B		8	4	221	238	221,222,234,238	6.5	59.0	Other domain
+Domain edge <=20 aa	P38159	RBMX		7	4	93	103	93,94,101,103	9.0	86.0	Other domain; RRM / KH RNA-binding
+Domain edge <=20 aa	Q92841	DDX17		7	4	90	100	90,92,94,100	15.0	31.0	Other domain; RNA helicase
+Domain edge <=20 aa	Q96E39	RBMXL1		6	4	91	103	91,93,101,103	8.0	86.0	Other domain; RRM / KH RNA-binding
+Domain edge <=20 aa	P16989	CSDA	Y-box-binding protein 3;	4	4	169	179	169,174,176,179	15.0	104.0	Other domain
+Domain edge <=20 aa	P62314	SNRPD1		4	4	98	106	98,100,102,106	8.0	26.0	Ribosome / RNP structural
+Domain edge <=20 aa	P62633	CNBP	CCHC-type zinc finger nucleic acid binding protein;	4	4	25	32	25,27,30,32	7.5	12.0	RNA-associated zinc finger
+Domain edge <=20 aa	Q07955	SRSF1	Serine/arginine-rich splicing factor 1;	4	4	93	111	93,97,109,111	3.0	21.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q14444	CAPRIN1	Caprin-1;	4	4	688	698	688,690,695,698	7.5	24.0	Other domain
+Domain edge <=20 aa	Q96I24	FUBP3		4	4	337	343	337,339,341,343	13.0	13.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q99729	HNRNPAB	Heterogeneous nuclear ribonucleoprotein A/B;	4	4	245	253	245,248,250,253	16.0	37.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q9BUJ2	HNRNPUL1		4	4	171	181	171,173,179,181	15.0	152.0	Other domain
+Domain edge <=20 aa	Q9HAU4	SMURF2		4	4	232	239	232,234,237,239	15.5	18.5	Other domain
+Domain edge <=20 aa	Q9UQ35	SRRM2		4	4	21	33	21,29,30,33	9.5	6.0	Other domain
+Domain edge <=20 aa	Q9Y3Y2	CHTOP		4	4	140	153	140,148,152,153	7.0	9.0	Other domain
+Domain edge <=20 aa	Q01844	EWSR1	RNA-binding protein EWS;	8	3	455	464	455,461,464	14.5	70.0	Other domain; RRM / KH RNA-binding
+Domain edge <=20 aa	P19338	NCL		6	3	656	666	656,660,666	7.5	36.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q8ND56	LSM14A		6	3	269	279	269,270,279	11.0	95.5	Other domain
+Domain edge <=20 aa	Q92945	KHSRP	Far upstream element-binding protein 2;	6	3	394	413	394,411,413	7.5	31.0	RRM / KH RNA-binding
+Domain edge <=20 aa	P51991	HNRNPA3	Heterogeneous nuclear ribonucleoprotein A3;	5	3	16	21	16,17,21	14.0	34.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q13242	SRSF9		5	3	93	101	93,98,101	6.0	11.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q13283	G3BP1	Ras GTPase-activating protein-binding protein 1;	5	3	427	435	427,429,435	11.0	50.0	RRM / KH RNA-binding
+Domain edge <=20 aa	P51114	FXR1	RNA-binding protein FXR1;	4	3	453	459	453,455,459	4.0	12.0	Other domain; Ribosome / RNP structural
+Domain edge <=20 aa	Q01130	SRSF2		4	3	94	109	94,103,109	10.0	129.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q14103	HNRNPD	Heterogeneous nuclear ribonucleoprotein D0;	4	3	272	280	272,278,280	14.0	22.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q15056	EIF4H		4	3	19	31	19,22,31	15.5	36.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q8IZT6	ASPM		4	3	18	25	18,19,25	15.0	31.0	Other domain
+Domain edge <=20 aa	O00571	DDX3X	ATP-dependent RNA helicase DDX3X;	3	3	585	592	585,587,592	12.0	60.0	RNA helicase
+Domain edge <=20 aa	O60885	BRD4		3	3	179	183	179,181,183	15.0	60.0	Chromatin reader
+Domain edge <=20 aa	P10301	RRAS		3	3	11	15	11,13,15	16.0	28.0	Other domain
+Domain edge <=20 aa	P31942	HNRNPH3		3	3	104	110	104,105,110	8.0	16.0	RRM / KH RNA-binding
+Domain edge <=20 aa	P31943	HNRNPH1		3	3	199	212	199,206,212	14.0	24.0	RRM / KH RNA-binding
+Domain edge <=20 aa	P35579	MYH9		3	3	1923	1933	1923,1932,1933	11.0	39.0	Other domain
+Domain edge <=20 aa	P35580	MYH10		3	3	1930	1943	1930,1940,1943	12.0	48.0	Other domain
+Domain edge <=20 aa	P55795	HNRNPH2		3	3	199	212	199,206,212	14.0	24.0	RRM / KH RNA-binding
+Domain edge <=20 aa	P68431	HIST1H3A		3	3	27	43	27,41,43	3.0	43.0	Other domain
+Domain edge <=20 aa	Q01094	E2F1		3	3	109	113	109,111,113	16.0	87.0	DNA-binding
+Domain edge <=20 aa	Q08170	SRSF4		3	3	75	89	75,83,89	11.0	25.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q13151	HNRNPA0		3	3	189	195	189,192,195	17.0	39.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q14011	CIRBP		3	3	94	105	94,101,105	16.0	87.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q32P51	HNRNPA1L2		3	3	194	197	194,196,197	14.0	34.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q3SX64	ODF3L2		3	3	267	283	267,278,283	12.0	23.0	Repeat / superfamily
+Domain edge <=20 aa	Q5JVS0	HABP4		3	3	178	193	178,180,193	18.0	48.0	Other domain
+Domain edge <=20 aa	Q71DI3	HIST1H3A		3	3	27	43	27,41,43	3.0	43.0	Other domain
+Domain edge <=20 aa	Q96AE4	FUBP1	Far upstream element-binding protein 1;	3	3	359	363	359,361,363	14.0	28.0	RRM / KH RNA-binding
+Domain edge <=20 aa	Q9BYB0	SHANK3		3	3	749	751	749,750,751	10.0	284.0	Other domain
+Domain edge <=20 aa	Q9NR30	DDX21		3	3	718	728	718,725,728	10.0	68.0	Other domain
+Domain edge <=20 aa	Q9P2K8	EIF2AK4		3	3	5	12	5,10,12	11.0	20.0	Other domain
+Domain edge <=20 aa	Q9Y5B9	SUPT16H		3	3	1029	1036	1029,1033,1036	17.0	31.0	Other domain
+Domain edge 21-40 aa	Q8WWM7	ATXN2L	Ataxin-2-like protein;	7	6	355	373	355,357,361,365,370,373	30.0	368.0	Other domain
+Domain edge 21-40 aa	P35637	FUS	RNA-binding protein FUS;	9	5	476	491	476,481,485,487,491	32.0	73.0	Other domain; RRM / KH RNA-binding
+Domain edge 21-40 aa	O75525	KHDRBS3		7	5	226	245	226,232,237,239,245	29.0	56.0	Other domain; RRM / KH RNA-binding
+Domain edge 21-40 aa	P38159	RBMX		7	5	107	125	107,110,113,120,125	27.0	86.0	Other domain; RRM / KH RNA-binding
+Domain edge 21-40 aa	P14866	HNRNPL		5	5	343	358	343,344,353,354,358	27.0	91.0	RRM / KH RNA-binding
+Domain edge 21-40 aa	P19338	NCL		5	5	670	687	670,673,679,681,687	30.0	61.0	RRM / KH RNA-binding
+Domain edge 21-40 aa	Q01844	EWSR1	RNA-binding protein EWS;	10	4	572	589	572,575,581,589	29.5	107.0	Other domain; RRM / KH RNA-binding
+Domain edge 21-40 aa	Q07666	KHDRBS1	KH domain-containing, RNA-binding, signal transduction-associated protein 1;	8	4	282	291	282,284,289,291	31.0	42.0	Other domain; RRM / KH RNA-binding
+Domain edge 21-40 aa	Q96E39	RBMXL1		6	4	107	125	107,113,120,125	28.0	86.0	Other domain; RRM / KH RNA-binding
+Domain edge 21-40 aa	Q14011	CIRBP		4	4	108	121	108,110,116,121	28.0	87.0	RRM / KH RNA-binding
+Domain edge 21-40 aa	Q15554	TERF2	Telomeric repeat-binding factor 2;	4	4	59	72	59,60,70,72	31.0	86.0	Repeat / superfamily
+Domain edge 21-40 aa	Q5T8P6	RBM26		4	4	855	864	855,857,862,864	26.5	34.0	RRM / KH RNA-binding
+Domain edge 21-40 aa	Q9P0J7	KCMF1		4	4	159	168	159,165,167,168	29.0	42.0	Other domain
+Domain edge 21-40 aa	Q9Y4Z0	LSM4		4	4	102	117	102,109,115,117	35.0	54.0	Sm / Lsm
+Domain edge 21-40 aa	Q5VWX1	KHDRBS2		6	3	230	246	230,240,246	28.5	89.0	Other domain; RRM / KH RNA-binding
+Domain edge 21-40 aa	P05783	KRT18	Keratin, type I cytoskeletal 18;	4	3	45	55	45,50,55	31.5	6.0	Other domain
+Domain edge 21-40 aa	O14979	HNRNPDL		3	3	336	340	336,338,340	26.0	37.0	RRM / KH RNA-binding
+Domain edge 21-40 aa	O43390	HNRNPR		3	3	441	449	441,447,449	36.0	48.0	RRM / KH RNA-binding
+Domain edge 21-40 aa	O43719	HTATSF1		3	3	380	384	380,383,384	34.0	379.0	RRM / KH RNA-binding
+Domain edge 21-40 aa	O60506	SYNCRIP	Heterogeneous nuclear ribonucleoprotein Q;	3	3	444	448	444,446,448	38.0	28.0	RRM / KH RNA-binding
+Domain edge 21-40 aa	P15924	DSP		3	3	2826	2834	2826,2830,2834	31.0	63.0	Repeat / superfamily
+Domain edge 21-40 aa	P16989	CSDA		3	3	185	190	185,186,190	26.0	197.0	Other domain
+Domain edge 21-40 aa	P50749	RASSF2		3	3	142	151	142,144,151	30.0	54.0	Other domain
+Domain edge 21-40 aa	P62318	SNRPD3		3	3	110	114	110,112,114	35.0	17.0	Other domain
+Domain edge 21-40 aa	P62995	TRA2B		3	3	224	233	224,228,233	32.0	42.0	RRM / KH RNA-binding
+Domain edge 21-40 aa	P67809	YBX1		3	3	151	156	151,152,156	24.0	196.0	Other domain
+Domain edge 21-40 aa	Q04637	EIF4G1		3	3	1205	1218	1205,1216,1218	25.0	209.0	Other domain
+Domain edge 21-40 aa	Q13151	HNRNPA0		3	3	198	204	198,200,204	25.0	39.0	RRM / KH RNA-binding
+Domain edge 21-40 aa	Q14498	RBM39		3	3	122	124	122,123,124	30.0	147.0	RRM / KH RNA-binding
+Domain edge 21-40 aa	Q9UN86	G3BP2		3	3	432	447	432,438,447	29.0	73.0	RRM / KH RNA-binding
+Domain edge 21-40 aa	Q9Y3Y2	CHTOP		3	3	118	128	118,121,128	36.0	16.0	Other domain
+Domain-distal >40 aa	P67809	YBX1		19	9	185	205	185,186,189,190,192,199,200,204,205	103.0	196.0	Other domain
+Domain-distal >40 aa	P16989	CSDA	Y-box-binding protein 3;	27	8	326	340	326,327,330,331,336,337,338,340	128.0	197.0	Other domain
+Domain-distal >40 aa	P49959	MRE11		12	7	570	587	570,572,574,576,577,580,587	122.5	69.0	DNA-binding
+Domain-distal >40 aa	P48634	PRRC2A	Protein PRRC2A;	43	6	1024	1039	1024,1026,1028,1034,1036,1039	892.0	1005.0	Other domain
+Domain-distal >40 aa	Q9Y520	PRRC2C	Protein PRRC2C;	34	6	1342	1358	1342,1344,1349,1350,1353,1358	1042.5	476.5	Other domain
+Domain-distal >40 aa	P61978	HNRNPK	Heterogeneous nuclear ribonucleoprotein K;	17	6	258	278	258,263,268,271,277,278	63.0	83.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q01844	EWSR1	RNA-binding protein EWS;	17	6	300	317	300,302,304,309,314,317	58.0	107.0	Other domain; RRM / KH RNA-binding
+Domain-distal >40 aa	Q14157	UBAP2L	Ubiquitin-associated protein 2-like;	11	6	168	187	168,172,174,177,179,187	72.0	135.0	Other domain
+Domain-distal >40 aa	Q15056	EIF4H	Eukaryotic translation initiation factor 4H;	10	6	166	185	166,170,174,175,183,185	64.0	128.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q9H0D6	XRN2	5'-3' exoribonuclease 2;	9	6	921	936	921,922,925,928,933,936	139.0	47.0	Other domain
+Domain-distal >40 aa	P17844	DDX5		6	6	8	25	8,10,12,14,20,25	81.0	39.0	RNA helicase
+Domain-distal >40 aa	P49750	YLPM1	YLP motif-containing protein 1;	34	5	750	767	750,758,761,766,767	551.0	692.0	Repeat / superfamily
+Domain-distal >40 aa	Q14152	EIF3A		25	5	956	976	956,959,960,966,976	565.0	599.0	Other domain
+Domain-distal >40 aa	Q00839	HNRNPU	Heterogeneous nuclear ribonucleoprotein U;	18	5	702	720	702,707,709,715,720	272.0	86.0	Other domain
+Domain-distal >40 aa	Q5VT52	RPRD2	Regulation of nuclear pre-mRNA domain-containing protein 2;	18	5	1404	1424	1404,1415,1418,1422,1424	1236.0	130.0	Other domain
+Domain-distal >40 aa	O60506	SYNCRIP	Heterogeneous nuclear ribonucleoprotein Q;	17	5	496	510	496,498,501,504,510	118.0	133.0	RRM / KH RNA-binding
+Domain-distal >40 aa	P12270	TPR	Nucleoprotein TPR;	15	5	2327	2345	2327,2333,2337,2343,2345	999.0	137.0	Protein-protein repeat / scaffold
+Domain-distal >40 aa	P23246	SFPQ	Splicing factor, proline- and glutamine-rich;	15	5	7	25	7,9,18,19,25	157.0	289.0	Other domain; RRM / KH RNA-binding
+Domain-distal >40 aa	P38159	RBMX		15	5	339	355	339,341,344,347,355	124.0	174.0	Other domain
+Domain-distal >40 aa	Q07666	KHDRBS1	KH domain-containing, RNA-binding, signal transduction-associated protein 1;	14	5	302	320	302,304,310,315,320	56.5	96.0	Other domain; RRM / KH RNA-binding
+Domain-distal >40 aa	Q9UPN6	SCAF8	SR-related and CTD-associated factor 8;	14	5	1120	1139	1120,1124,1129,1133,1139	501.0	188.0	RRM / KH RNA-binding
+Domain-distal >40 aa	O00571	DDX3X	ATP-dependent RNA helicase DDX3X;	12	5	75	95	75,79,88,93,95	80.0	139.0	RNA helicase
+Domain-distal >40 aa	Q9BUJ2	HNRNPUL1	Heterogeneous nuclear ribonucleoprotein U-like protein 1;	12	5	612	632	612,618,620,628,632	254.0	221.0	Ribosome / RNP structural
+Domain-distal >40 aa	Q8IXT5	RBM12B		11	5	732	749	732,733,740,741,749	169.0	289.0	RRM / KH RNA-binding
+Domain-distal >40 aa	O43390	HNRNPR		10	5	500	516	500,502,506,509,516	101.5	144.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q6PKG0	LARP1		10	5	334	348	334,340,344,346,348	87.5	358.0	Other domain
+Domain-distal >40 aa	Q9H074	PAIP1	Polyadenylate-binding protein-interacting protein 1;	10	5	7	21	7,13,15,17,21	128.5	114.0	Other domain
+Domain-distal >40 aa	Q96JP5	ZFP91		8	5	48	58	48,51,54,56,58	254.0	307.0	Other domain
+Domain-distal >40 aa	P20290	BTF3	Transcription factor BTF3;	7	5	3	19	3,13,15,17,19	65.0	47.0	Other domain
+Domain-distal >40 aa	Q12888	TP53BP1		7	5	1396	1403	1396,1398,1400,1401,1403	85.0	213.0	Chromatin reader
+Domain-distal >40 aa	P33991	MCM4		6	5	10	17	10,11,14,15,17	148.5	82.0	Other domain
+Domain-distal >40 aa	P79522	PRR3		6	5	83	99	83,87,88,93,99	67.5	154.0	RNA-associated zinc finger
+Domain-distal >40 aa	Q659C4	LARP1B		6	5	138	155	138,145,149,153,155	62.0	173.0	Other domain
+Domain-distal >40 aa	Q86UK7	ZNF598		6	5	311	331	311,314,320,324,331	52.0	394.0	Other domain
+Domain-distal >40 aa	Q96LA8	PRMT6	Protein arginine N-methyltransferase 6;	6	5	29	41	29,35,37,38,41	50.0	41.0	Chromatin catalytic / remodeler
+Domain-distal >40 aa	P15880	RPS2		5	5	22	40	22,26,34,36,40	68.0	57.0	Ribosome / RNP structural
+Domain-distal >40 aa	Q8NC51	SERBP1	SERPINE1 mRNA-binding protein 1;	5	5	364	376	364,367,370,373,376	56.0	81.0	Other domain
+Domain-distal >40 aa	Q9C0J8	WDR33	pre-mRNA 3' end processing protein WDR33;	30	4	1030	1047	1030,1035,1046,1047	359.5	607.0	Repeat / superfamily
+Domain-distal >40 aa	Q8WUF5	PPP1R13L	RelA-associated inhibitor;	23	4	66	86	66,69,82,86	464.0	234.0	Protein-protein repeat / scaffold
+Domain-distal >40 aa	O14686	KMT2D	Histone-lysine N-methyltransferase 2D;	22	4	2903	2922	2903,2905,2915,2922	768.0	168.0	Chromatin reader; Other domain
+Domain-distal >40 aa	Q15654	TRIP6	Thyroid receptor-interacting protein 6;	17	4	111	120	111,116,117,120	160.0	81.0	Other domain
+Domain-distal >40 aa	Q69YN4	KIAA1429	Protein virilizer homolog;	17	4	1793	1808	1793,1803,1805,1808	1468.0	203.0	Other domain
+Domain-distal >40 aa	Q8NEZ4	KMT2C	Histone-lysine N-methyltransferase 2C;	17	4	2226	2240	2226,2228,2235,2240	564.0	737.0	Chromatin reader; Other domain
+Domain-distal >40 aa	Q04637	EIF4G1	Eukaryotic translation initiation factor 4 gamma 1;	16	4	675	694	675,681,685,694	78.0	79.0	Other domain
+Domain-distal >40 aa	Q5JSZ5	PRRC2B		14	4	1065	1079	1065,1067,1077,1079	921.0	140.0	Other domain
+Domain-distal >40 aa	Q9H0L4	CSTF2T		14	4	396	413	396,403,410,413	160.0	271.0	Other domain
+Domain-distal >40 aa	Q9UMN6	KMT2B		11	4	33	49	33,36,48,49	866.0	71.0	Other domain
+Domain-distal >40 aa	P35637	FUS	RNA-binding protein FUS;	10	4	495	514	495,498,503,514	50.5	284.0	Other domain; RRM / KH RNA-binding
+Domain-distal >40 aa	Q92576	PHF3	PHD finger protein 3;	10	4	1911	1922	1911,1915,1920,1922	523.0	65.0	Chromatin reader; Other domain
+Domain-distal >40 aa	Q96QC0	PPP1R10	Serine/threonine-protein phosphatase 1 regulatory subunit 10;	10	4	688	707	688,693,705,707	200.0	294.0	RNA-associated zinc finger
+Domain-distal >40 aa	O43823	AKAP8	A-kinase anchor protein 8;	9	4	188	198	188,190,194,198	194.0	60.0	Other domain
+Domain-distal >40 aa	P14678	SNRPB		9	4	221	239	221,228,236,239	110.0	79.0	Other domain
+Domain-distal >40 aa	Q08211	DHX9	ATP-dependent RNA helicase A;	9	4	1235	1253	1235,1242,1249,1253	162.0	31.0	RNA helicase
+Domain-distal >40 aa	Q14966	ZNF638	Zinc finger protein 638;	9	4	33	49	33,41,47,49	390.0	49.0	Other domain
+Domain-distal >40 aa	Q5BKZ1	ZNF326	DBIRD complex subunit ZNF326;	9	4	188	204	188,200,202,204	139.0	59.0	Other domain
+Domain-distal >40 aa	Q7Z6E9	RBBP6		9	4	522	534	522,523,530,534	209.0	85.0	Other domain
+Domain-distal >40 aa	Q9Y4H2	IRS2	Insulin receptor substrate 2;	9	4	871	886	871,876,884,886	271.0	116.0	Other domain
+Domain-distal >40 aa	P23588	EIF4B		8	4	261	279	261,268,273,279	101.0	436.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q6Y7W6	GIGYF2		8	4	118	130	118,120,128,130	404.0	26.0	Other domain
+Domain-distal >40 aa	Q99569	PKP4		8	4	207	218	207,210,211,218	333.0	282.0	Protein-protein repeat / scaffold
+Domain-distal >40 aa	Q9BTD8	RBM42	RNA-binding protein 42;	8	4	321	328	321,323,325,328	102.0	39.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q9NYL2	MLTK	Mitogen-activated protein kinase kinase kinase 20;	8	4	693	709	693,695,707,709	284.0	151.0	Other domain
+Domain-distal >40 aa	O43896	KIF1C	Kinesin-like protein KIF1C;	7	4	948	968	948,958,963,968	378.0	162.0	DNA-binding
+Domain-distal >40 aa	P11940	PABPC1	Polyadenylate-binding protein 1;	7	4	455	475	455,460,467,475	73.0	43.0	Other domain; RRM / KH RNA-binding
+Domain-distal >40 aa	P62995	TRA2B	Transformer-2 protein homolog beta;	7	4	238	256	238,241,251,256	60.0	49.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q12906	ILF3		7	4	640	655	640,642,649,655	65.0	64.0	dsRNA-binding
+Domain-distal >40 aa	Q5T200	ZC3H13		7	4	607	618	607,611,614,618	547.0	935.0	RNA-associated zinc finger
+Domain-distal >40 aa	Q86V81	ALYREF	THO complex subunit 4;	7	4	38	58	38,50,56,58	56.0	90.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q8IWX8	CHERP		7	4	546	564	546,550,559,564	87.0	314.0	Other domain
+Domain-distal >40 aa	Q96PC5	MIA2		7	4	1308	1323	1308,1317,1322,1323	1205.0	293.0	Other domain
+Domain-distal >40 aa	Q9P107	GMIP		7	4	862	878	862,867,874,878	121.0	123.0	Other domain
+Domain-distal >40 aa	O14776	TCERG1	Transcription elongation regulator 1;	6	4	13	30	13,20,28,30	102.0	128.0	Other domain
+Domain-distal >40 aa	O15523	DDX3Y		6	4	75	92	75,78,87,92	88.5	123.0	RNA helicase
+Domain-distal >40 aa	P55789	GFER		6	4	35	42	35,37,41,42	59.0	44.0	Other domain
+Domain-distal >40 aa	Q14011	CIRBP		6	4	127	145	127,131,139,145	57.0	87.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q9BXP5	SRRT		6	4	41	52	41,45,47,52	110.0	117.0	Other domain
+Domain-distal >40 aa	Q9ULX6	AKAP8L	A-kinase anchor protein 8-like;	6	4	179	199	179,185,188,199	197.5	12.0	Other domain
+Domain-distal >40 aa	Q9Y580	RBM7		6	4	198	215	198,201,211,215	119.0	36.5	RRM / KH RNA-binding
+Domain-distal >40 aa	O15357	INPPL1		5	4	1078	1096	1078,1080,1086,1096	107.0	223.0	Other domain
+Domain-distal >40 aa	O43497	CACNA1G		5	4	2122	2132	2122,2128,2131,2132	267.0	44.0	Other domain
+Domain-distal >40 aa	O75525	KHDRBS3		5	4	193	206	193,195,204,206	46.0	31.0	Other domain; RRM / KH RNA-binding
+Domain-distal >40 aa	P50570	DNM2		5	4	849	862	849,850,857,862	106.0	126.0	Other domain
+Domain-distal >40 aa	Q5T6F2	UBAP2	Ubiquitin-associated protein 2;	5	4	166	177	166,169,173,177	66.0	100.0	Other domain
+Domain-distal >40 aa	Q96EK7	FAM120B	Constitutive coactivator of peroxisome proliferator-activated receptor gamma;	5	4	868	885	868,871,878,885	571.0	50.0	Other domain
+Domain-distal >40 aa	Q96PV6	LENG8		5	4	374	394	374,382,392,394	174.0	183.0	Other domain
+Domain-distal >40 aa	Q9H2U1	DHX36		5	4	34	52	34,47,50,52	158.0	61.0	RNA helicase
+Domain-distal >40 aa	Q9NR12	PDLIM7		5	4	156	168	156,158,165,168	73.0	148.0	Other domain
+Domain-distal >40 aa	Q9NZB2	FAM120A	Constitutive coactivator of PPAR-gamma-like protein 1;	5	4	964	984	964,967,982,984	652.0	14.0	Other domain
+Domain-distal >40 aa	P35368	ADRA1B		4	4	389	403	389,393,399,403	48.0	46.0	Other domain
+Domain-distal >40 aa	P98179	RBM3	RNA-binding protein 3;	4	4	131	145	131,133,138,145	50.5	72.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q16630	CPSF6		4	4	202	216	202,204,206,216	44.0	246.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q68CZ2	TNS3		4	4	628	645	628,635,640,645	336.5	83.0	Catalytic enzyme domain
+Domain-distal >40 aa	Q6PIY7	PAPD4		4	4	73	92	73,75,90,92	73.5	27.0	Other domain
+Domain-distal >40 aa	Q7Z5L9	IRF2BP2		4	4	109	128	109,116,125,128	57.5	141.0	Other domain
+Domain-distal >40 aa	Q86U42	PABPN1		4	4	17	25	17,23,24,25	148.5	122.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q8WUA2	PPIL4		4	4	435	443	435,437,441,443	121.0	71.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q92804	TAF15	TATA-binding protein-associated factor 2N;	23	3	175	187	175,185,187	105.0	207.0	Other domain; RRM / KH RNA-binding
+Domain-distal >40 aa	Q9BTC0	DIDO1	Death-inducer obliterator 1;	23	3	1835	1853	1835,1845,1853	698.0	758.0	Chromatin reader; Other domain
+Domain-distal >40 aa	Q96EV2	RBM33	RNA-binding protein 33;	18	3	279	298	279,286,298	639.0	320.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q15424	SAFB	Scaffold attachment factor B1;	17	3	754	764	754,756,764	327.0	186.0	Other domain; RRM / KH RNA-binding
+Domain-distal >40 aa	Q14151	SAFB2	Scaffold attachment factor B2;	15	3	773	784	773,783,784	357.0	430.0	RRM / KH RNA-binding
+Domain-distal >40 aa	P33240	CSTF2	Cleavage stimulation factor subunit 2;	14	3	303	319	303,308,319	129.5	109.0	Other domain
+Domain-distal >40 aa	O75376	NCOR1		13	3	564	572	564,570,572	820.0	104.0	Other domain
+Domain-distal >40 aa	Q12830	BPTF	Nucleosome-remodeling factor subunit BPTF;	12	3	63	74	63,68,74	216.5	233.0	Chromatin reader; Other domain
+Domain-distal >40 aa	Q99590	SCAF11		12	3	956	969	956,965,969	258.5	96.0	Other domain
+Domain-distal >40 aa	O60293	ZFC3H1		11	3	55	62	55,56,62	1086.0	133.0	Other domain
+Domain-distal >40 aa	O94913	PCF11	Pre-mRNA cleavage complex 2 protein Pcf11;	11	3	1051	1065	1051,1062,1065	103.0	68.0	Repeat / superfamily
+Domain-distal >40 aa	Q6ZRV2	FAM83H		10	3	361	378	361,374,378	205.0	60.0	Other domain
+Domain-distal >40 aa	Q96E39	RBMXL1		10	3	343	354	343,346,354	127.5	173.0	Other domain
+Domain-distal >40 aa	O95429	BAG4	BAG family molecular chaperone regulator 4;	9	3	40	53	40,51,53	326.0	107.0	Other domain
+Domain-distal >40 aa	P78332	RBM6		9	3	166	178	166,176,178	278.0	203.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q13435	SF3B2	Splicing factor 3B subunit 2;	9	3	205	222	205,216,222	164.0	187.0	Other domain
+Domain-distal >40 aa	Q8WWM7	ATXN2L	Ataxin-2-like protein;	9	3	399	417	399,414,417	84.0	368.0	Other domain
+Domain-distal >40 aa	Q9C0C7	AMBRA1		9	3	392	408	392,393,408	590.0	60.0	Protein-protein repeat / scaffold
+Domain-distal >40 aa	Q9P2N5	RBM27	RNA-binding protein 27;	9	3	943	963	943,961,963	132.0	36.0	Other domain; RNA-associated zinc finger; RRM / KH RNA-binding
+Domain-distal >40 aa	O15027	SEC16A		8	3	1214	1224	1214,1220,1224	452.0	76.5	Other domain
+Domain-distal >40 aa	Q14686	NCOA6		8	3	1047	1067	1047,1058,1067	872.5	382.0	Other domain
+Domain-distal >40 aa	Q99700	ATXN2	Ataxin-2;	8	3	622	640	622,635,640	196.5	482.0	Other domain
+Domain-distal >40 aa	O95817	BAG3		7	3	123	139	123,133,139	154.0	207.0	Other domain
+Domain-distal >40 aa	P10070	GLI2		7	3	1005	1021	1005,1008,1021	414.0	108.0	Other domain
+Domain-distal >40 aa	Q13310	PABPC4	Polyadenylate-binding protein 4;	7	3	432	442	432,436,442	76.0	61.0	Other domain; RRM / KH RNA-binding
+Domain-distal >40 aa	Q5JRA6	MIA3		7	3	1833	1851	1833,1843,1851	1736.0	206.0	Other domain
+Domain-distal >40 aa	Q6PJG2	C14orf43	Mitotic deacetylase-associated SANT domain protein;	7	3	447	456	447,455,456	377.0	137.0	Other domain
+Domain-distal >40 aa	Q8TDC3	BRSK1		7	3	466	484	466,481,484	99.0	184.0	Other domain
+Domain-distal >40 aa	Q96BH1	RNF25		7	3	344	352	344,348,352	220.0	149.0	Other domain
+Domain-distal >40 aa	Q96FS4	SIPA1		7	3	44	61	44,47,61	274.0	87.0	Other domain
+Domain-distal >40 aa	Q9Y618	NCOR2		7	3	1556	1568	1556,1563,1568	895.0	107.0	Other domain
+Domain-distal >40 aa	A7E2V4	KIAA0913		6	3	1162	1175	1162,1165,1175	491.0	220.0	Other domain
+Domain-distal >40 aa	O14979	HNRPDL	Heterogeneous nuclear ribonucleoprotein D-like;	6	3	68	82	68,81,82	88.0	121.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q15596	NCOA2	Nuclear receptor coactivator 2;	6	3	1169	1177	1169,1173,1177	59.0	15.0	Other domain
+Domain-distal >40 aa	Q15735	INPP5J		6	3	56	76	56,65,76	360.5	209.0	Catalytic enzyme domain
+Domain-distal >40 aa	Q66K74	MAP1S		6	3	854	863	854,861,863	412.5	197.0	Other domain
+Domain-distal >40 aa	Q71RC2	LARP4	La-related protein 4;	6	3	443	450	443,445,450	146.5	126.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q9C0B5	ZDHHC5	Palmitoyltransferase ZDHHC5;	6	3	602	617	602,615,617	386.5	385.0	Catalytic enzyme domain
+Domain-distal >40 aa	P08651	NFIC	Nuclear factor 1 C-type;	5	3	345	365	345,354,365	170.0	68.0	DNA-binding
+Domain-distal >40 aa	P53814	SMTN		5	3	419	436	419,424,436	152.0	331.0	Other domain
+Domain-distal >40 aa	P78344	EIF4G2		5	3	393	402	393,400,402	85.0	43.0	Other domain
+Domain-distal >40 aa	P98174	FGD1		5	3	90	109	90,101,109	272.0	128.0	Other domain
+Domain-distal >40 aa	Q01804	OTUD4		5	3	1050	1068	1050,1061,1068	906.0	208.0	Other domain
+Domain-distal >40 aa	Q15427	SF3B4		5	3	390	409	390,398,409	228.0	243.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q1KMD3	HNRNPUL2	Heterogeneous nuclear ribonucleoprotein U-like protein 2;	5	3	656	666	656,665,666	246.0	43.0	Other domain
+Domain-distal >40 aa	Q7Z460	CLASP1		5	3	660	664	660,662,664	111.0	234.0	Other domain
+Domain-distal >40 aa	Q86UU0	BCL9L		5	3	593	610	593,602,610	178.0	91.0	Other domain
+Domain-distal >40 aa	Q8IZ40	RCOR2		5	3	479	498	479,491,498	113.0	137.0	Other domain
+Domain-distal >40 aa	Q96MS0	ROBO3		5	3	1363	1367	1363,1365,1367	494.0	310.0	Other domain
+Domain-distal >40 aa	Q9H6K5	PRR36		5	3	240	260	240,254,260	1049.0	408.0	Other domain
+Domain-distal >40 aa	Q9NYV4	CDK12		5	3	329	331	329,330,331	397.0	706.0	Catalytic enzyme domain
+Domain-distal >40 aa	Q9UBB5	MBD2		5	3	50	69	50,61,69	84.0	144.0	Other domain
+Domain-distal >40 aa	Q9UPT8	ZC3H4		5	3	326	345	326,328,345	64.0	389.0	RNA-associated zinc finger
+Domain-distal >40 aa	Q9Y3I1	FBXO7		5	3	479	498	479,481,498	120.0	68.0	Other domain
+Domain-distal >40 aa	O00192	ARVCF		4	3	206	214	206,211,214	180.5	112.0	Protein-protein repeat / scaffold
+Domain-distal >40 aa	O60716	CTNND1		4	3	242	253	242,249,253	151.5	24.0	Protein-protein repeat / scaffold
+Domain-distal >40 aa	O95071	UBR5		4	3	977	997	977,984,997	180.5	67.0	Catalytic enzyme domain
+Domain-distal >40 aa	P11831	SRF		4	3	24	43	24,37,43	110.5	99.0	Other domain
+Domain-distal >40 aa	Q5TC82	RC3H1		4	3	729	740	729,734,740	290.5	24.0	RNA-associated zinc finger
+Domain-distal >40 aa	Q6GQQ9	OTUD7B		4	3	700	713	700,712,713	83.5	79.0	Other domain
+Domain-distal >40 aa	Q7KZI7	MARK2		4	3	584	594	584,589,594	147.5	264.0	Catalytic enzyme domain
+Domain-distal >40 aa	Q92540	SMG7		4	3	892	910	892,902,910	476.0	25.0	Other domain
+Domain-distal >40 aa	Q92620	DHX38		4	3	281	289	281,282,289	248.5	269.0	RNA helicase
+Domain-distal >40 aa	Q92734	TFG	Protein TFG;	4	3	383	400	383,385,400	293.0	222.0	Other domain
+Domain-distal >40 aa	Q99933	BAG1		4	3	58	68	58,61,68	84.5	143.0	Other domain
+Domain-distal >40 aa	Q9UN86	G3BP2	Ras GTPase-activating protein-binding protein 2;	4	3	452	468	452,457,468	53.5	73.0	RRM / KH RNA-binding
+Domain-distal >40 aa	A0AV96	RBM47		3	3	381	389	381,383,389	65.0	11.0	RRM / KH RNA-binding
+Domain-distal >40 aa	A1L390	PLEKHG3	Pleckstrin homology domain-containing family G member 3;	3	3	1099	1107	1099,1105,1107	709.0	79.0	Other domain
+Domain-distal >40 aa	C9JLR9	C11orf95		3	3	15	28	15,26,28	80.0	101.0	Other domain
+Domain-distal >40 aa	O43824	GTPBP6		3	3	42	58	42,55,58	65.0	70.0	Other domain
+Domain-distal >40 aa	O60241	ADGRB2		3	3	1375	1384	1375,1383,1384	177.0	32.0	Other domain
+Domain-distal >40 aa	O60269	GPRIN2		3	3	119	131	119,126,131	247.0	78.0	Other domain
+Domain-distal >40 aa	O75385	ULK1		3	3	529	535	529,532,535	254.0	168.0	Catalytic enzyme domain
+Domain-distal >40 aa	O75937	DNAJC8		3	3	224	243	224,239,243	115.0	74.0	Other domain
+Domain-distal >40 aa	O95835	LATS1		3	3	243	259	243,252,259	111.0	138.0	Other domain
+Domain-distal >40 aa	O95985	TOP3B		3	3	824	835	824,829,835	174.0	37.0	Other domain
+Domain-distal >40 aa	P07910	HNRNPC		3	3	142	160	142,151,160	64.0	53.0	RRM / KH RNA-binding
+Domain-distal >40 aa	P0DI83	RAB34		3	3	178	186	178,183,186	66.0	78.0	Other domain
+Domain-distal >40 aa	P18583	SON	Protein SON;	3	3	950	964	950,957,964	1346.0	4.0	Other domain
+Domain-distal >40 aa	P36578	RPL4		3	3	71	86	71,80,86	195.0	15.0	Ribosome / RNP structural
+Domain-distal >40 aa	P46783	RPS10		3	3	153	160	153,158,160	61.0	68.0	Other domain
+Domain-distal >40 aa	P50548	ERF		3	3	218	233	218,224,233	113.0	43.0	Other domain
+Domain-distal >40 aa	P84103	SRSF3		3	3	125	133	125,131,133	48.0	81.0	RRM / KH RNA-binding
+Domain-distal >40 aa	Q08379	GOLGA2	Golgin subfamily A member 2;	3	3	18	35	18,30,35	351.0	115.0	Other domain
+Domain-distal >40 aa	Q14004	CDK13		3	3	1504	1508	1504,1506,1508	508.0	75.0	Catalytic enzyme domain
+Domain-distal >40 aa	Q15058	KIF14		3	3	1187	1189	1187,1188,1189	74.0	3.0	Other domain
+Domain-distal >40 aa	Q2KHR3	QSER1		3	3	1171	1185	1171,1178,1185	345.0	122.0	Other domain
+Domain-distal >40 aa	Q58WW2	DCAF6		3	3	364	368	364,366,368	85.0	141.0	Protein-protein repeat / scaffold
+Domain-distal >40 aa	Q68CQ4	DIEXF		3	3	25	39	25,36,39	253.0	187.0	Catalytic enzyme domain
+Domain-distal >40 aa	Q6P6C2	ALKBH5	RNA demethylase ALKBH5;	3	3	357	359	357,358,359	84.0	75.0	Other domain
+Domain-distal >40 aa	Q8IWF6	DENND6A		3	3	4	15	4,14,15	49.0	48.0	Other domain
+Domain-distal >40 aa	Q8ND56	LSM14A		3	3	442	456	442,445,456	45.0	48.0	Other domain
+Domain-distal >40 aa	Q8WXE0	CASKIN2		3	3	851	862	851,855,862	231.0	458.0	Repeat / superfamily
+Domain-distal >40 aa	Q96L96	ALPK3		3	3	1210	1213	1210,1212,1213	62.0	100.0	Other domain
+Domain-distal >40 aa	Q9BST9	RTKN		3	3	531	547	531,533,547	115.0	53.0	Other domain
+Domain-distal >40 aa	Q9BZ76	CNTNAP3		3	3	688	693	688,689,693	54.0	14.0	Other domain
+Domain-distal >40 aa	Q9P258	RCC2		3	3	22	28	22,26,28	80.0	93.0	Other domain
+Domain-distal >40 aa	Q9P2K3	RCOR3	REST corepressor 3;	3	3	440	457	440,445,457	109.0	151.0	Other domain
+Domain-distal >40 aa	Q9UH92	MLX		3	3	26	31	26,29,31	100.0	65.0	DNA-binding

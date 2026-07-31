@@ -1,0 +1,11 @@
+ptm_group	context_layer	background_residues
+Arg methylation	disorder	629955
+Lys acylation	disorder	651435
+Lys methylation	disorder	653884
+Phosphorylation	disorder	1803951
+Ubiquitin/SUMO	disorder	653475
+Arg methylation	domain	629955
+Lys acylation	domain	651435
+Lys methylation	domain	653884
+Phosphorylation	domain	1803951
+Ubiquitin/SUMO	domain	653475

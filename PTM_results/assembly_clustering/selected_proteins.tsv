@@ -1,0 +1,41 @@
+protein_label	canonical_UniProtAC	methyl_site_count	substrate_genename	functional_class_broad	functional_class_subclass	gene_name	selected_assembly_count
+AKAP8L (Q9ULX6)	Q9ULX6	13	AKAP8L	Cytoplasmic / trafficking / cytoskeleton;Nuclear scaffold / pore / lamina;Signaling / enzymes	Cytoskeleton / trafficking;Nuclear scaffold / pore / lamina;Signaling / enzymes	AKAP8L	4
+RBMX (P38159)	P38159	33	RBMX	Membrane / receptor / extracellular;RNA-binding / RNP	RRM / KH RBPs;hnRNP / RG-rich RBPs	RBMX	5
+TAF15 (Q92804)	Q92804	41	TAF15	Chromatin / transcription;Nuclear scaffold / pore / lamina;RNA-binding / RNP	Nuclear scaffold / pore / lamina;RRM / KH RBPs;Transcription / mediator / polymerase;hnRNP / RG-rich RBPs	TAF15	5
+HNRNPH1 (P31943)	P31943	16	HNRNPH1	RNA-binding / RNP	RRM / KH RBPs;hnRNP / RG-rich RBPs	HNRNPH1	4
+HNRNPR (O43390)	O43390	18	HNRNPR	RNA-binding / RNP;Translation / ribosome / biogenesis	RRM / KH RBPs;hnRNP / RG-rich RBPs	HNRNPR	5
+HNRNPK (P61978)	P61978	28	HNRNPK	RNA-binding / RNP	RRM / KH RBPs;hnRNP / RG-rich RBPs	HNRNPK	7
+CPSF6 (Q16630)	Q16630	6	CPSF6	RNA-binding / RNP	RRM / KH RBPs;mRNA processing / export / 3'-end	CPSF6	6
+SFPQ (P23246)	P23246	20	SFPQ	Chromatin / transcription;RNA-binding / RNP;Translation / ribosome / biogenesis	Nucleolar / ribosome biogenesis;RRM / KH RBPs;Stress granule / paraspeckle / P-body	SFPQ	6
+FUS (P35637)	P35637	30	FUS	Nuclear scaffold / pore / lamina;RNA-binding / RNP	Nuclear scaffold / pore / lamina;RRM / KH RBPs;Stress granule / paraspeckle / P-body;hnRNP / RG-rich RBPs	FUS	8
+EWSR1 (Q01844)	Q01844	35	EWSR1	Nuclear scaffold / pore / lamina;RNA-binding / RNP	Nuclear scaffold / pore / lamina;RRM / KH RBPs;hnRNP / RG-rich RBPs	EWSR1	6
+NONO (Q15233)	Q15233	15	NONO	Chromatin / transcription;RNA-binding / RNP;Translation / ribosome / biogenesis	Nucleolar / ribosome biogenesis;RRM / KH RBPs;Stress granule / paraspeckle / P-body	NONO	7
+HSPA1A (P0DMV8)	P0DMV8	6	HSPA1A	Proteostasis / ubiquitin / chaperone;Signaling / enzymes	Proteostasis / chaperone / proteasome;Signaling / enzymes	HSPA1A	6
+HSPA5 (P11021)	P11021	5	HSPA5	Membrane / receptor / extracellular;Proteostasis / ubiquitin / chaperone;Signaling / enzymes	Proteostasis / chaperone / proteasome;Signaling / enzymes	HSPA5	5
+HSPA8 (P11142)	P11142	5	HSPA8	Proteostasis / ubiquitin / chaperone;Signaling / enzymes	Proteostasis / chaperone / proteasome;Signaling / enzymes	HSPA8	6
+HNRNPM (P52272)	P52272	22	HNRNPM	RNA-binding / RNP	RRM / KH RBPs;hnRNP / RG-rich RBPs	HNRNPM	5
+VCP (P55072)	P55072	14	VCP	Signaling / enzymes	Signaling / enzymes	VCP	4
+DDX5 (P17844)	P17844	21	DDX5	RNA-binding / RNP;Signaling / enzymes	RNA helicases;Signaling / enzymes	DDX5	4
+HSP90AA1 (P07900)	P07900	14	HSP90AA1	Proteostasis / ubiquitin / chaperone;RNA-binding / RNP;Signaling / enzymes;Translation / ribosome / biogenesis	Proteostasis / chaperone / proteasome;Signaling / enzymes;Translation / initiation / elongation	HSP90AA1	4
+SF3B2 (Q13435)	Q13435	16	SF3B2	RNA-binding / RNP	Spliceosome / splicing;mRNA processing / export / 3'-end	SF3B2	4
+ATXN2L (Q8WWM7)	Q8WWM7	16	ATXN2L	RNA-binding / RNP	Poly(A) / stability RBPs;Spliceosome / splicing;Stress granule / paraspeckle / P-body	ATXN2L	4
+THRAP3 (Q9Y2W1)	Q9Y2W1	25	THRAP3	Membrane / receptor / extracellular	Membrane / receptor / extracellular	THRAP3	4
+LMNA (P02545)	P02545	9	LMNA	Cytoplasmic / trafficking / cytoskeleton;Nuclear scaffold / pore / lamina	Nuclear scaffold / pore / lamina	LMNA	5
+DHX36 (Q9H2U1)	Q9H2U1	7	DHX36	RNA-binding / RNP;Signaling / enzymes	RNA helicases;Signaling / enzymes	DHX36	5
+HSPA4L (Q92598)	Q92598	2	HSPA4L	Proteostasis / ubiquitin / chaperone;Signaling / enzymes	Proteostasis / chaperone / proteasome;Signaling / enzymes	HSPA4L	5
+TARDBP (Q13148)	Q13148	2	TARDBP	Chromatin / transcription;RNA-binding / RNP	RRM / KH RBPs;Stress granule / paraspeckle / P-body	TARDBP	8
+DHX9 (Q08211)	Q08211	19	DHX9	DNA repair / genome maintenance;RNA-binding / RNP;Signaling / enzymes	RNA helicases;RNA-associated zinc finger / post-transcriptional;Signaling / enzymes	DHX9	6
+HNRNPA1 (P09651)	P09651	20	HNRNPA1	RNA-binding / RNP;Translation / ribosome / biogenesis	RRM / KH RBPs;hnRNP / RG-rich RBPs	HNRNPA1	8
+CAPRIN1 (Q14444)	Q14444	18	CAPRIN1	Cell cycle / centrosome / spindle;Cytoplasmic / trafficking / cytoskeleton;Membrane / receptor / extracellular;RNA-binding / RNP	Cell cycle / centrosome / spindle;Membrane / receptor / extracellular;Poly(A) / stability RBPs	CAPRIN1	4
+HNRNPA3 (P51991)	P51991	20	HNRNPA3	RNA-binding / RNP	RRM / KH RBPs;hnRNP / RG-rich RBPs	HNRNPA3	4
+PABPC1 (P11940)	P11940	19	PABPC1	RNA-binding / RNP	Poly(A) / stability RBPs;RRM / KH RBPs;Stress granule / paraspeckle / P-body	PABPC1	6
+FMR1 (Q06787)	Q06787	13	FMR1	Chromatin / transcription;RNA-binding / RNP;Translation / ribosome / biogenesis	Chromatin readers;RRM / KH RBPs;Stress granule / paraspeckle / P-body	FMR1	4
+KHDRBS1 (Q07666)	Q07666	25	KHDRBS1	RNA-binding / RNP;Signaling / enzymes	RRM / KH RBPs;Signaling / enzymes	KHDRBS1	4
+HNRNPD (Q14103)	Q14103	9	HNRNPD	RNA-binding / RNP	RRM / KH RBPs;hnRNP / RG-rich RBPs	HNRNPD	5
+HNRNPL (P14866)	P14866	10	HNRNPL	RNA-binding / RNP;Translation / ribosome / biogenesis	RRM / KH RBPs;hnRNP / RG-rich RBPs	HNRNPL	5
+ILF3 (Q12906)	Q12906	13	ILF3	DNA repair / genome maintenance;RNA-binding / RNP;Signaling / enzymes;Translation / ribosome / biogenesis	RNA-associated zinc finger / post-transcriptional;RRM / KH RBPs;Signaling / enzymes;Translation / initiation / elongation	ILF3	5
+HNRNPA2B1 (P22626)	P22626	15	HNRNPA2B1	RNA-binding / RNP;Translation / ribosome / biogenesis	RRM / KH RBPs;hnRNP / RG-rich RBPs	HNRNPA2B1	5
+HNRNPU (Q00839)	Q00839	24	HNRNPU	Nuclear scaffold / pore / lamina;Poorly characterized / specialized;RNA-binding / RNP;Signaling / enzymes;Translation / ribosome / biogenesis	Nuclear scaffold / pore / lamina;Poorly characterized / specialized;Signaling / enzymes;hnRNP / RG-rich RBPs;mRNA processing / export / 3'-end	HNRNPU	5
+NCL (P19338)	P19338	17	NCL	RNA-binding / RNP;Translation / ribosome / biogenesis	Nucleolar / ribosome biogenesis;RRM / KH RBPs	NCL	5
+PABPC4 (Q13310)	Q13310	14	PABPC4	RNA-binding / RNP	Poly(A) / stability RBPs;RRM / KH RBPs;Stress granule / paraspeckle / P-body	PABPC4	4
+SYNCRIP (O60506)	O60506	24	SYNCRIP	Cytoplasmic / trafficking / cytoskeleton;RNA-binding / RNP;Translation / ribosome / biogenesis	Cytoskeleton / trafficking;RRM / KH RBPs;hnRNP / RG-rich RBPs	SYNCRIP	4

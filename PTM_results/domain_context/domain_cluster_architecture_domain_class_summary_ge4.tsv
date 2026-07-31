@@ -1,0 +1,23 @@
+architecture_class	nearest_domain_class	n_proteins
+broad across IDR	Other domain	6
+broad across IDR	RRM / KH RNA-binding	4
+broad across IDR	RNA helicase	1
+broad across IDR	Ribosome / RNP structural	1
+domain-distal clustered	Other domain	57
+domain-distal clustered	RRM / KH RNA-binding	23
+domain-distal clustered	Chromatin reader	4
+domain-distal clustered	RNA helicase	4
+domain-distal clustered	Protein-protein repeat / scaffold	3
+domain-distal clustered	RNA-associated zinc finger	3
+domain-distal clustered	Repeat / superfamily	3
+domain-distal clustered	DNA-binding	2
+domain-distal clustered	Catalytic enzyme domain	1
+domain-distal clustered	Chromatin catalytic / remodeler	1
+domain-distal clustered	Ribosome / RNP structural	1
+domain-distal clustered	Sm / Lsm	1
+domain-distal clustered	dsRNA-binding	1
+domain-proximal clustered	Other domain	8
+domain-proximal clustered	RRM / KH RNA-binding	5
+domain-proximal clustered	RNA helicase	1
+domain-proximal clustered	RNA-associated zinc finger	1
+domain-proximal clustered	Ribosome / RNP structural	1

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="920" viewBox="0 0 1360 920">
+<style>
+  svg { background: #FFFFFF; }
+  text {
+    font-family: Arial, "Liberation Sans", "DejaVu Sans", Helvetica, sans-serif;
+    letter-spacing: 0.01em;
+  }
+</style>
+<rect x="0" y="0" width="1360" height="920" fill="#FFFFFF" stroke="none" />
+<text x="52" y="52" fill="#1A2433" font-size="24" text-anchor="start" font-weight="700">Cartoon options for local methylarginine density and structured-domain adjacency</text>
+<text x="52" y="80" fill="#637083" font-size="13" text-anchor="start" font-weight="600">Use these as small review-style insets: one defines clustering by site spacing, the other defines distance from the nearest ordered-domain edge.</text>
+<rect x="52" y="104" width="168" height="32" rx="16" fill="#F5F8FB" stroke="#D9E1EA" stroke-width="1" />
+<text x="136" y="125" fill="#637083" font-size="11.4" text-anchor="middle" font-weight="600">same site chemistry</text>
+<rect x="242" y="104" width="171" height="32" rx="16" fill="#F5F8FB" stroke="#D9E1EA" stroke-width="1" />
+<text x="327.5" y="125" fill="#637083" font-size="11.4" text-anchor="middle" font-weight="600">same total site count</text>
+<rect x="446" y="104" width="185" height="32" rx="16" fill="#F5F8FB" stroke="#D9E1EA" stroke-width="1" />
+<text x="538.5" y="125" fill="#637083" font-size="11.4" text-anchor="middle" font-weight="600">spacing defines density</text>
+<rect x="646" y="104" width="290" height="32" rx="16" fill="#F5F8FB" stroke="#D9E1EA" stroke-width="1" />
+<text x="791" y="125" fill="#637083" font-size="11.4" text-anchor="middle" font-weight="600">domain-edge distance defines adjacency</text>
+<text x="52" y="162" fill="#1A2433" font-size="18" text-anchor="start" font-weight="700">Local density cartoon</text>
+<text x="52" y="183" fill="#637083" font-size="11.8" text-anchor="start" font-weight="600">Keep the IDR loose and schematic; use a bracketed span, not a box, to avoid looking like an ordered domain.</text>
+<text x="72" y="216" fill="#1A2433" font-size="18" text-anchor="start" font-weight="700">Diffuse spacing</text>
+<text x="72" y="239" fill="#637083" font-size="11.7" text-anchor="start" font-weight="600">Same total number of methyl-sites, but spread across the IDR.</text>
+<path d="M 310 232 Q 322.12 227 334.24 232 Q 346.36 237 358.48 232 Q 370.61 227 382.73 232 Q 394.85 237 406.97 232 Q 419.09 227 431.21 232 Q 443.33 237 455.45 232 Q 467.58 227 479.7 232 Q 491.82 237 503.94 232 Q 516.06 227 528.18 232 Q 540.3 237 552.42 232 Q 564.55 227 576.67 232 Q 588.79 237 600.91 232 Q 613.03 227 625.15 232 Q 637.27 237 649.39 232 Q 661.52 227 673.64 232 Q 685.76 237 697.88 232 Q 710 227 722.12 232 Q 734.24 237 746.36 232 Q 758.48 227 770.61 232 Q 782.73 237 794.85 232 Q 806.97 227 819.09 232 Q 831.21 237 843.33 232 Q 855.45 227 867.58 232 Q 879.7 237 891.82 232 Q 903.94 227 916.06 232 Q 928.18 237 940.3 232 Q 952.42 227 964.55 232 Q 976.67 237 988.79 232 Q 1000.91 227 1013.03 232 Q 1025.15 237 1037.27 232 Q 1049.39 227 1061.52 232 Q 1073.64 237 1085.76 232 Q 1097.88 227 1110 232" fill="none" stroke="#8C96A3" stroke-width="2.5" />
+<line x1="567.63" y1="204" x2="567.63" y2="266" stroke="#9EB6D2" stroke-width="1.4" stroke-dasharray="4 4" />
+<line x1="825.25" y1="204" x2="825.25" y2="266" stroke="#9EB6D2" stroke-width="1.4" stroke-dasharray="4 4" />
+<line x1="567.63" y1="274" x2="825.25" y2="274" stroke="#5D82AF" stroke-width="2.0" />
+<line x1="567.63" y1="264" x2="567.63" y2="284" stroke="#5D82AF" stroke-width="2.0" />
+<line x1="825.25" y1="264" x2="825.25" y2="284" stroke="#5D82AF" stroke-width="2.0" />
+<text x="696.44" y="258" fill="#4F79A8" font-size="10.8" text-anchor="middle" font-weight="700">rolling 20 aa span</text>
+<rect x="847.25" y="258" width="62" height="34" rx="17" fill="white" stroke="#5D82AF" stroke-width="1.2" />
+<text x="878.25" y="281" fill="#1A2433" font-size="14.6" text-anchor="middle" font-weight="700">2</text>
+<text x="878.25" y="296" fill="#637083" font-size="9.5" text-anchor="middle" font-weight="600">sites</text>
+<circle cx="364.24" cy="227" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="486.27" cy="238" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="621.86" cy="227" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="771.02" cy="238" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="920.17" cy="227" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="1069.32" cy="238" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<line x1="310" y1="302" x2="310" y2="308" stroke="#E6ECF2" stroke-width="1.2" />
+<line x1="1110" y1="302" x2="1110" y2="308" stroke="#E6ECF2" stroke-width="1.2" />
+<text x="310" y="326" fill="#637083" font-size="10.2" text-anchor="start" font-weight="600">same 60 aa IDR segment</text>
+<text x="72" y="356" fill="#1A2433" font-size="18" text-anchor="start" font-weight="700">Intermediate clustering</text>
+<text x="72" y="379" fill="#637083" font-size="11.7" text-anchor="start" font-weight="600">Several methyl-sites fall into one span without forming a single tight block.</text>
+<path d="M 310 372 Q 322.12 367 334.24 372 Q 346.36 377 358.48 372 Q 370.61 367 382.73 372 Q 394.85 377 406.97 372 Q 419.09 367 431.21 372 Q 443.33 377 455.45 372 Q 467.58 367 479.7 372 Q 491.82 377 503.94 372 Q 516.06 367 528.18 372 Q 540.3 377 552.42 372 Q 564.55 367 576.67 372 Q 588.79 377 600.91 372 Q 613.03 367 625.15 372 Q 637.27 377 649.39 372 Q 661.52 367 673.64 372 Q 685.76 377 697.88 372 Q 710 367 722.12 372 Q 734.24 377 746.36 372 Q 758.48 367 770.61 372 Q 782.73 377 794.85 372 Q 806.97 367 819.09 372 Q 831.21 377 843.33 372 Q 855.45 367 867.58 372 Q 879.7 377 891.82 372 Q 903.94 367 916.06 372 Q 928.18 377 940.3 372 Q 952.42 367 964.55 372 Q 976.67 377 988.79 372 Q 1000.91 367 1013.03 372 Q 1025.15 377 1037.27 372 Q 1049.39 367 1061.52 372 Q 1073.64 377 1085.76 372 Q 1097.88 367 1110 372" fill="none" stroke="#8C96A3" stroke-width="2.5" />
+<line x1="567.63" y1="344" x2="567.63" y2="406" stroke="#9EB6D2" stroke-width="1.4" stroke-dasharray="4 4" />
+<line x1="825.25" y1="344" x2="825.25" y2="406" stroke="#9EB6D2" stroke-width="1.4" stroke-dasharray="4 4" />
+<line x1="567.63" y1="414" x2="825.25" y2="414" stroke="#5D82AF" stroke-width="2.0" />
+<line x1="567.63" y1="404" x2="567.63" y2="424" stroke="#5D82AF" stroke-width="2.0" />
+<line x1="825.25" y1="404" x2="825.25" y2="424" stroke="#5D82AF" stroke-width="2.0" />
+<text x="696.44" y="398" fill="#4F79A8" font-size="10.8" text-anchor="middle" font-weight="700">rolling 20 aa span</text>
+<rect x="847.25" y="398" width="62" height="34" rx="17" fill="white" stroke="#5D82AF" stroke-width="1.2" />
+<text x="878.25" y="421" fill="#1A2433" font-size="14.6" text-anchor="middle" font-weight="700">4</text>
+<text x="878.25" y="436" fill="#637083" font-size="9.5" text-anchor="middle" font-weight="600">sites</text>
+<circle cx="391.36" cy="367" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="540.51" cy="378" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="648.98" cy="367" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="703.22" cy="378" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="743.9" cy="367" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="920.17" cy="378" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<line x1="310" y1="442" x2="310" y2="448" stroke="#E6ECF2" stroke-width="1.2" />
+<line x1="1110" y1="442" x2="1110" y2="448" stroke="#E6ECF2" stroke-width="1.2" />
+<text x="310" y="466" fill="#637083" font-size="10.2" text-anchor="start" font-weight="600">same 60 aa IDR segment</text>
+<text x="72" y="496" fill="#1A2433" font-size="18" text-anchor="start" font-weight="700">High local density</text>
+<text x="72" y="519" fill="#637083" font-size="11.7" text-anchor="start" font-weight="600">Clustered sites create a compact multivalent patch even when the total site count is unchanged.</text>
+<path d="M 310 512 Q 322.12 507 334.24 512 Q 346.36 517 358.48 512 Q 370.61 507 382.73 512 Q 394.85 517 406.97 512 Q 419.09 507 431.21 512 Q 443.33 517 455.45 512 Q 467.58 507 479.7 512 Q 491.82 517 503.94 512 Q 516.06 507 528.18 512 Q 540.3 517 552.42 512 Q 564.55 507 576.67 512 Q 588.79 517 600.91 512 Q 613.03 507 625.15 512 Q 637.27 517 649.39 512 Q 661.52 507 673.64 512 Q 685.76 517 697.88 512 Q 710 507 722.12 512 Q 734.24 517 746.36 512 Q 758.48 507 770.61 512 Q 782.73 517 794.85 512 Q 806.97 507 819.09 512 Q 831.21 517 843.33 512 Q 855.45 507 867.58 512 Q 879.7 517 891.82 512 Q 903.94 507 916.06 512 Q 928.18 517 940.3 512 Q 952.42 507 964.55 512 Q 976.67 517 988.79 512 Q 1000.91 507 1013.03 512 Q 1025.15 517 1037.27 512 Q 1049.39 507 1061.52 512 Q 1073.64 517 1085.76 512 Q 1097.88 507 1110 512" fill="none" stroke="#8C96A3" stroke-width="2.5" />
+<line x1="567.63" y1="484" x2="567.63" y2="546" stroke="#9EB6D2" stroke-width="1.4" stroke-dasharray="4 4" />
+<line x1="825.25" y1="484" x2="825.25" y2="546" stroke="#9EB6D2" stroke-width="1.4" stroke-dasharray="4 4" />
+<line x1="567.63" y1="554" x2="825.25" y2="554" stroke="#5D82AF" stroke-width="2.0" />
+<line x1="567.63" y1="544" x2="567.63" y2="564" stroke="#5D82AF" stroke-width="2.0" />
+<line x1="825.25" y1="544" x2="825.25" y2="564" stroke="#5D82AF" stroke-width="2.0" />
+<text x="696.44" y="538" fill="#4F79A8" font-size="10.8" text-anchor="middle" font-weight="700">rolling 20 aa span</text>
+<rect x="847.25" y="538" width="62" height="34" rx="17" fill="white" stroke="#5D82AF" stroke-width="1.2" />
+<text x="878.25" y="561" fill="#1A2433" font-size="14.6" text-anchor="middle" font-weight="700">5</text>
+<text x="878.25" y="576" fill="#637083" font-size="9.5" text-anchor="middle" font-weight="600">sites</text>
+<circle cx="377.8" cy="507" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="621.86" cy="518" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="662.54" cy="507" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="689.66" cy="518" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="716.78" cy="507" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="743.9" cy="518" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<line x1="310" y1="582" x2="310" y2="588" stroke="#E6ECF2" stroke-width="1.2" />
+<line x1="1110" y1="582" x2="1110" y2="588" stroke="#E6ECF2" stroke-width="1.2" />
+<text x="310" y="606" fill="#637083" font-size="10.2" text-anchor="start" font-weight="600">same 60 aa IDR segment</text>
+<line x1="52" y1="620" x2="1308" y2="620" stroke="#E6ECF2" stroke-width="1.2" />
+<text x="52" y="656" fill="#1A2433" font-size="18" text-anchor="start" font-weight="700">Structured-domain adjacency cartoon</text>
+<text x="52" y="677" fill="#637083" font-size="11.8" text-anchor="start" font-weight="600">A companion schematic can show how disordered methyl-sites are positioned relative to the nearest ordered-domain edge.</text>
+<rect x="52" y="700" width="396" height="214" rx="24" fill="white" stroke="#D9E1EA" stroke-width="1" />
+<text x="74" y="730" fill="#1A2433" font-size="16" text-anchor="start" font-weight="700">Edge-proximal</text>
+<text x="74" y="752" fill="#637083" font-size="11" text-anchor="start" font-weight="600">disordered sites within &lt;=20 aa of the domain edge</text>
+<rect x="78" y="784" width="88" height="36" rx="18" fill="#E9DFC9" stroke="#736858" stroke-width="1.2" />
+<text x="122" y="807" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="600">ordered</text>
+<text x="122" y="820" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="600">domain</text>
+<rect x="170" y="774" width="76.64" height="58" rx="16" fill="#EAF2FB" stroke="none" />
+<rect x="246.64" y="774" width="80.68" height="58" rx="0" fill="#F4F8FC" stroke="none" />
+<path d="M 170 802 Q 180.82 797 191.64 802 Q 202.45 807 213.27 802 Q 224.09 797 234.91 802 Q 245.73 807 256.55 802 Q 267.36 797 278.18 802 Q 289 807 299.82 802 Q 310.64 797 321.45 802 Q 332.27 807 343.09 802 Q 353.91 797 364.73 802 Q 375.55 807 386.36 802 Q 397.18 797 408 802" fill="none" stroke="#8C96A3" stroke-width="2.5" />
+<line x1="170" y1="768" x2="170" y2="836" stroke="#4F79A8" stroke-width="1.3" />
+<line x1="246.64" y1="772" x2="246.64" y2="832" stroke="#9EB6D2" stroke-width="1.1" stroke-dasharray="4 4" />
+<line x1="327.32" y1="772" x2="327.32" y2="832" stroke="#9EB6D2" stroke-width="1.1" stroke-dasharray="4 4" />
+<text x="206" y="764" fill="#4F79A8" font-size="9.8" text-anchor="middle" font-weight="700">&lt;=20 aa</text>
+<text x="286.98" y="764" fill="#4F79A8" font-size="9.8" text-anchor="middle" font-weight="700">21-40 aa</text>
+<text x="367.66" y="764" fill="#4F79A8" font-size="9.8" text-anchor="middle" font-weight="700">&gt;40 aa</text>
+<circle cx="190.17" cy="796" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="206.31" cy="809" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="222.44" cy="796" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<path d="M 186.14 836 Q 206.31 858 226.47 836" fill="none" stroke="#4F79A8" stroke-width="1.8" />
+<text x="206.31" y="876" fill="#637083" font-size="10.2" text-anchor="middle" font-weight="600">edge-proximal cluster</text>
+<rect x="482" y="700" width="396" height="214" rx="24" fill="white" stroke="#D9E1EA" stroke-width="1" />
+<text x="504" y="730" fill="#1A2433" font-size="16" text-anchor="start" font-weight="700">Intermediate distance</text>
+<text x="504" y="752" fill="#637083" font-size="11" text-anchor="start" font-weight="600">disordered sites in the 21-40 aa shell</text>
+<rect x="508" y="784" width="88" height="36" rx="18" fill="#E9DFC9" stroke="#736858" stroke-width="1.2" />
+<text x="552" y="807" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="600">ordered</text>
+<text x="552" y="820" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="600">domain</text>
+<rect x="600" y="774" width="76.64" height="58" rx="16" fill="#EAF2FB" stroke="none" />
+<rect x="676.64" y="774" width="80.68" height="58" rx="0" fill="#F4F8FC" stroke="none" />
+<path d="M 600 802 Q 610.82 797 621.64 802 Q 632.45 807 643.27 802 Q 654.09 797 664.91 802 Q 675.73 807 686.55 802 Q 697.36 797 708.18 802 Q 719 807 729.82 802 Q 740.64 797 751.45 802 Q 762.27 807 773.09 802 Q 783.91 797 794.73 802 Q 805.55 807 816.36 802 Q 827.18 797 838 802" fill="none" stroke="#8C96A3" stroke-width="2.5" />
+<line x1="600" y1="768" x2="600" y2="836" stroke="#4F79A8" stroke-width="1.3" />
+<line x1="676.64" y1="772" x2="676.64" y2="832" stroke="#9EB6D2" stroke-width="1.1" stroke-dasharray="4 4" />
+<line x1="757.32" y1="772" x2="757.32" y2="832" stroke="#9EB6D2" stroke-width="1.1" stroke-dasharray="4 4" />
+<text x="636" y="764" fill="#4F79A8" font-size="9.8" text-anchor="middle" font-weight="700">&lt;=20 aa</text>
+<text x="716.98" y="764" fill="#4F79A8" font-size="9.8" text-anchor="middle" font-weight="700">21-40 aa</text>
+<text x="797.66" y="764" fill="#4F79A8" font-size="9.8" text-anchor="middle" font-weight="700">&gt;40 aa</text>
+<circle cx="692.78" cy="796" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="708.92" cy="809" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="729.08" cy="796" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<path d="M 688.75 836 Q 710.93 858 733.12 836" fill="none" stroke="#4F79A8" stroke-width="1.8" />
+<text x="710.93" y="876" fill="#637083" font-size="10.2" text-anchor="middle" font-weight="600">intermediate-distance cluster</text>
+<rect x="912" y="700" width="396" height="214" rx="24" fill="white" stroke="#D9E1EA" stroke-width="1" />
+<text x="934" y="730" fill="#1A2433" font-size="16" text-anchor="start" font-weight="700">Domain-distal</text>
+<text x="934" y="752" fill="#637083" font-size="11" text-anchor="start" font-weight="600">disordered sites &gt;40 aa from the nearest domain edge</text>
+<rect x="938" y="784" width="88" height="36" rx="18" fill="#E9DFC9" stroke="#736858" stroke-width="1.2" />
+<text x="982" y="807" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="600">ordered</text>
+<text x="982" y="820" fill="#637083" font-size="10.4" text-anchor="middle" font-weight="600">domain</text>
+<rect x="1030" y="774" width="76.64" height="58" rx="16" fill="#EAF2FB" stroke="none" />
+<rect x="1106.64" y="774" width="80.68" height="58" rx="0" fill="#F4F8FC" stroke="none" />
+<path d="M 1030 802 Q 1040.82 797 1051.64 802 Q 1062.45 807 1073.27 802 Q 1084.09 797 1094.91 802 Q 1105.73 807 1116.55 802 Q 1127.36 797 1138.18 802 Q 1149 807 1159.82 802 Q 1170.64 797 1181.45 802 Q 1192.27 807 1203.09 802 Q 1213.91 797 1224.73 802 Q 1235.55 807 1246.36 802 Q 1257.18 797 1268 802" fill="none" stroke="#8C96A3" stroke-width="2.5" />
+<line x1="1030" y1="768" x2="1030" y2="836" stroke="#4F79A8" stroke-width="1.3" />
+<line x1="1106.64" y1="772" x2="1106.64" y2="832" stroke="#9EB6D2" stroke-width="1.1" stroke-dasharray="4 4" />
+<line x1="1187.32" y1="772" x2="1187.32" y2="832" stroke="#9EB6D2" stroke-width="1.1" stroke-dasharray="4 4" />
+<text x="1066" y="764" fill="#4F79A8" font-size="9.8" text-anchor="middle" font-weight="700">&lt;=20 aa</text>
+<text x="1146.98" y="764" fill="#4F79A8" font-size="9.8" text-anchor="middle" font-weight="700">21-40 aa</text>
+<text x="1227.66" y="764" fill="#4F79A8" font-size="9.8" text-anchor="middle" font-weight="700">&gt;40 aa</text>
+<circle cx="1207.49" cy="796" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="1227.66" cy="809" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<circle cx="1247.83" cy="796" r="5" fill="#CBB2B9" stroke="#8E747C" stroke-width="1.0" />
+<path d="M 1203.46 836 Q 1227.66 858 1251.86 836" fill="none" stroke="#4F79A8" stroke-width="1.8" />
+<text x="1227.66" y="876" fill="#637083" font-size="10.2" text-anchor="middle" font-weight="600">domain-distal cluster</text>
+<rect x="52" y="890" width="1256" height="24" rx="12" fill="#F7F9FC" stroke="#D9E1EA" stroke-width="1" />
+<text x="680" y="907" fill="#637083" font-size="11.6" text-anchor="middle" font-weight="700">For the review, density and adjacency work best as compact explanatory insets, not as replacement main panels.</text>
+</svg>
