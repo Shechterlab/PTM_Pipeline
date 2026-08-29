@@ -15,6 +15,7 @@ The repository is intentionally code-only. Large source tables, downloaded annot
 | `scripts/02_*` | Canonical remapping and source integration. |
 | `scripts/03_*` to `scripts/16_*` | Main analysis modules: source provenance, functional classes, motifs, disorder/domain context, PTM comparisons, clustering, condensates, GO/disease supplements, and Maron state/treatment checks. |
 | `scripts/17_*` to `scripts/32_*` | Extended analyses and summary-figure utilities, including local-density nulls, domain-edge length nulls, architecture schematics, and 2D nearest-neighbor density panels. |
+| `scripts/33_*` | Export helper: the non-methyl PTM slice that falls inside an external flank table. |
 | `scripts/common.py`, `scripts/clustering_utils.py` | Shared utilities. |
 | `config/` | JSON ontologies used for functional and domain-class annotation. |
 | `envs/` | Conda environment definition for the full Python/R workflow. |
@@ -248,3 +249,28 @@ git status --short --ignored
 The hygiene check fails on merge-conflict markers, tracked local app artifacts, tracked bytecode, tracked archives, tracked staged data/results, or tracked files larger than 10 MB.
 
 Ignored local paths include `PTM_data/`, `PTM_results/`, bytecode caches, local archives, editor artifacts, and cluster logs. The tracked repository should contain only source code, lightweight configuration, environment files, and documentation.
+
+## Exports for downstream projects
+
+The cross-PTM union assembled here carries phosphorylation, acylation,
+ubiquitin/SUMO and lysine methylation with enzyme attribution, which is useful
+to projects working on a different coordinate universe. `scripts/33_*` writes
+the slice of that union falling inside an externally supplied set of protein
+windows, so the consumer needs neither this repository's staged inputs nor a
+second copy of the source databases.
+
+```bash
+python scripts/33_export_flank_ptm_annotation.py \
+    --flanks /path/to/flank_table.tsv \
+    --output PTM_results/exports/ptm_sites_in_domain_flanks.tsv
+```
+
+The flank table must carry `canonical_UniProtAC`, `flank_start` and
+`flank_end`. Arginine methylation is deliberately not exported: a consumer
+studying methylarginine already has it, and re-exporting would put the same
+evidence in two places under different provenance. CK2 and the proline-directed
+kinases are labelled from the attributed enzyme, never from sequence.
+
+The current consumer is the MicroDomains repository, whose acidic
+domain-tethered IDR analysis uses the phosphorylation slice to ask which kinase
+family tracks acidic domain-adjacent segments.
