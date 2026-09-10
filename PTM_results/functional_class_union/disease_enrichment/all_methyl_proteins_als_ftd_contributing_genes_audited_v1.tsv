@@ -1,0 +1,1475 @@
+entrez_id	gene_symbol	is_methylarginine_protein	contributing_term_count	contributing_term_ids	contributing_term_names
+1	A1BG	False	1	C0002736	Amyotrophic Lateral Sclerosis
+29974	A1CF	True	1	C0002736	Amyotrophic Lateral Sclerosis
+8086	AAAS	False	3	C0085084;C0338451;C1833662	Motor Neuron Disease;Frontotemporal dementia;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+22848	AAK1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+57505	AARS2	True	1	C0338451	Frontotemporal dementia
+26574	AATF	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5243	ABCB1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1244	ABCC2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6833	ABCC8	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10060	ABCC9	False	1	C0002736	Amyotrophic Lateral Sclerosis
+215	ABCD1	False	1	C4082299	Bulbar palsy
+9619	ABCG1	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+9429	ABCG2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+25	ABL1	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+31	ACACA	True	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+39	ACAT2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+65057	ACD	True	1	C0002736	Amyotrophic Lateral Sclerosis
+1636	ACE	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+43	ACHE	False	3	C0002736;C0085084;C0338451	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia
+55	ACP3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+58	ACTA1	True	3	C0002736;C1833662;C4082299	Amyotrophic Lateral Sclerosis;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;Bulbar palsy
+60	ACTB	True	4	C0002736;C0085084;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+89	ACTN3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+95	ACY1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+100	ADA	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+9509	ADAMTS2	True	1	C0338451	Frontotemporal dementia
+9508	ADAMTS3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9507	ADAMTS4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+103	ADAR	True	1	C0002736	Amyotrophic Lateral Sclerosis
+104	ADARB1	False	3	C0002736;C0338451;C1862941	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Amyotrophic Lateral Sclerosis, Sporadic
+105	ADARB2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+116	ADCYAP1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+117	ADCYAP1R1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+120	ADD3	True	1	C4021584	Frontotemporal cerebral atrophy
+283383	ADGRD1	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+128	ADH5	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9370	ADIPOQ	False	1	C0002736	Amyotrophic Lateral Sclerosis
+133	ADM	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+2334	AFF2	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+177	AGER	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3267	AGFG1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+27161	AGO2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+375790	AGRN	True	1	C4082299	Bulbar palsy
+23287	AGTPBP1	True	3	C0085084;C0270764;C4024896	Motor Neuron Disease;Motor Neuron Disease, Lower;Motor neuron atrophy
+196	AHR	True	1	C0002736	Amyotrophic Lateral Sclerosis
+10598	AHSA1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+199	AIF1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+9131	AIFM1	True	1	C0085084	Motor Neuron Disease
+7965	AIMP2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+205	AK4	True	1	C0002736	Amyotrophic Lateral Sclerosis
+1109	AKR1C4	False	3	C0751072;C3811918;C4011788	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia
+207	AKT1	False	3	C0002736;C4522181;C4551993	Amyotrophic Lateral Sclerosis;Brachial Amyotrophic Diplegia;Amyotrophic Lateral Sclerosis, Familial
+10000	AKT3	False	2	C0002736;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Familial
+210	ALAD	False	1	C0002736	Amyotrophic Lateral Sclerosis
+213	ALB	True	3	C0002736;C0338451;C1833662	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+5832	ALDH18A1	True	1	C4025723	Abnormal upper motor neuron morphology
+8854	ALDH1A2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+56052	ALG1	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+246	ALOX15	False	1	C0002736	Amyotrophic Lateral Sclerosis
+240	ALOX5	False	1	C0002736	Amyotrophic Lateral Sclerosis
+248	ALPI	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+250	ALPP	False	2	C0002736;C1862939	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1
+57679	ALS2	True	11	C0002736;C0085084;C0521659;C1859807;C1862940;C1862941;C1865412;C3468114;C4024896;C4025723;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor Neuron Disease, Upper;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);Amyotrophic Lateral Sclerosis, Autosomal Recessive;Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;Juvenile amyotrophic lateral sclerosis;Motor neuron atrophy;Abnormal upper motor neuron morphology;Amyotrophic Lateral Sclerosis, Familial
+259173	ALS2CL	True	2	C0002736;C1859807	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder)
+10189	ALYREF	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+273	AMPH	False	1	C0002736	Amyotrophic Lateral Sclerosis
+283	ANG	False	5	C0002736;C0085084;C1862939;C1862941;C2678468	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis 9
+284	ANGPT1	False	2	C0002736;C0543859	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Guam Form
+288	ANK3	True	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+27063	ANKRD1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+26287	ANKRD2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+290	ANPEP	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+301	ANXA1	True	1	C0085084	Motor Neuron Disease
+311	ANXA11	True	2	C0002736;C4693381	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 23
+26	AOC1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+317	APAF1	False	1	C4551993	Amyotrophic Lateral Sclerosis, Familial
+325	APCS	False	1	C0002736	Amyotrophic Lateral Sclerosis
+328	APEX1	True	4	C0002736;C0338451;C1862941;C4024896	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Amyotrophic Lateral Sclerosis, Sporadic;Motor neuron atrophy
+51107	APH1A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+335	APOA1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+338	APOB	True	1	C0002736	Amyotrophic Lateral Sclerosis
+341	APOC1	False	2	C0338451;C4011788	Frontotemporal dementia;Behavioral variant of frontotemporal dementia
+347	APOD	False	1	C0338451	Frontotemporal dementia
+348	APOE	False	10	C0002736;C0085084;C0338451;C0543859;C0751072;C1833296;C1833662;C1862941;C3811918;C4011788	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;FRONTOTEMPORAL DEMENTIA, CHROMOSOME 3-LINKED;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;Amyotrophic Lateral Sclerosis, Sporadic;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia
+351	APP	True	8	C0002736;C0085084;C0338451;C0751072;C1833662;C3811918;C4011788;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia;Amyotrophic Lateral Sclerosis, Familial
+353	APRT	True	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+54840	APTX	False	1	C0002736	Amyotrophic Lateral Sclerosis
+360	AQP3	False	1	C4522181	Brachial Amyotrophic Diplegia
+361	AQP4	False	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+367	AR	True	6	C0002736;C0085084;C0270763;C0270764;C4024896;C4082299	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Familial Motor Neuron Disease;Motor Neuron Disease, Lower;Motor neuron atrophy;Bulbar palsy
+116984	ARAP2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+383	ARG1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+83478	ARHGAP24	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9181	ARHGEF2	True	4	C0002736;C0751072;C1859807;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);GRN-related frontotemporal dementia
+64283	ARHGEF28	True	5	C0002736;C0085084;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+8874	ARHGEF7	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10777	ARPP21	True	1	C0002736	Amyotrophic Lateral Sclerosis
+410	ARSA	True	1	C4082299	Bulbar palsy
+427	ASAH1	False	2	C0085084;C4024896	Motor Neuron Disease;Motor neuron atrophy
+50807	ASAP1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+8853	ASAP2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+51008	ASCC1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+434	ASIP	False	1	C0002736	Amyotrophic Lateral Sclerosis
+443	ASPA	False	1	C0002736	Amyotrophic Lateral Sclerosis
+259266	ASPM	True	1	C0002736	Amyotrophic Lateral Sclerosis
+80150	ASRGL1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+84896	ATAD1	True	2	C0002736;C4551951	Amyotrophic Lateral Sclerosis;Inclusion Body Myopathy with Early-Onset Paget Disease with or without Frontotemporal Dementia 1
+79969	ATAT1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+22926	ATF6	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+22863	ATG14	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23192	ATG4B	True	3	C0002736;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+9474	ATG5	False	2	C0002736;C1833662	Amyotrophic Lateral Sclerosis;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+10533	ATG7	True	3	C0002736;C0338451;C1833662	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+51062	ATL1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+472	ATM	True	1	C0002736	Amyotrophic Lateral Sclerosis
+23400	ATP13A2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+498	ATP5F1A	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+538	ATP7A	False	3	C0002736;C0085084;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor neuron atrophy
+374868	ATP9B	False	1	C0338451	Frontotemporal dementia
+26033	ATRNL1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6310	ATXN1	True	5	C0002736;C1862941;C4024896;C4082299;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic;Motor neuron atrophy;Bulbar palsy;Amyotrophic Lateral Sclerosis, Familial
+6311	ATXN2	True	11	C0002736;C0085084;C0338451;C0393554;C0543859;C0751072;C1843792;C1862941;C3149907;C3811918;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;FRONTOTEMPORAL LOBAR DEGENERATION WITH TDP43 INCLUSIONS, GRN-RELATED;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS, SUSCEPTIBILITY TO, 13;GRN-related frontotemporal dementia;Amyotrophic Lateral Sclerosis, Familial
+4287	ATXN3	True	3	C0002736;C1865412;C4551993	Amyotrophic Lateral Sclerosis;Abnormal lower motor neuron morphology;Amyotrophic Lateral Sclerosis, Familial
+6315	ATXN8OS	False	1	C0749870	Upper motor neuron signs
+113451	AZIN2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2583	B4GALNT1	False	1	C0033790	Pseudobulbar Palsy
+572	BAD	True	1	C4522181	Brachial Amyotrophic Diplegia
+573	BAG1	True	3	C0002736;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+9531	BAG3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+8314	BAP1	False	1	C0338451	Frontotemporal dementia
+581	BAX	True	1	C0002736	Amyotrophic Lateral Sclerosis
+583	BBS2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+590	BCHE	False	1	C0338451	Frontotemporal dementia
+8915	BCL10	False	1	C0002736	Amyotrophic Lateral Sclerosis
+64919	BCL11B	True	1	C0002736	Amyotrophic Lateral Sclerosis
+596	BCL2	False	5	C0002736;C0085084;C1862939;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;AMYOTROPHIC LATERAL SCLEROSIS 1;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+598	BCL2L1	False	4	C0002736;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+627	BDNF	False	6	C0002736;C0085084;C0751072;C1862941;C3811918;C4522181	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Sporadic;GRN-related frontotemporal dementia;Brachial Amyotrophic Diplegia
+8678	BECN1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+23299	BICD2	True	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+8548	BLZF1	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+652	BMP4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9790	BMS1	True	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+662	BNIP1	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+665	BNIP3L	False	1	C0002736	Amyotrophic Lateral Sclerosis
+140683	BPIFA2	False	3	C0338451;C0751072;C3811918	Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+673	BRAF	True	1	C4522181	Brachial Amyotrophic Diplegia
+672	BRCA1	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+8019	BRD3	True	1	C1865409	Amyotrophic Lateral Sclerosis 4, Juvenile
+23476	BRD4	True	1	C4024896	Motor neuron atrophy
+26580	BSCL2	False	5	C0002736;C0085084;C3468114;C3661519;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Juvenile amyotrophic lateral sclerosis;Hereditary Motor Neuronopathy;Motor neuron atrophy
+682	BSG	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+84280	BTBD10	False	1	C0002736	Amyotrophic Lateral Sclerosis
+56244	BTNL2	False	1	C0338451	Frontotemporal dementia
+83636	C19orf12	False	5	C0002736;C0085084;C0270764;C1865412;C3468114	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor Neuron Disease, Lower;Abnormal lower motor neuron morphology;Juvenile amyotrophic lateral sclerosis
+713	C1QB	False	1	C1862941	Amyotrophic Lateral Sclerosis, Sporadic
+718	C3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+728	C5AR1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+203228	C9orf72	False	21	C0002736;C0085084;C0338451;C0393554;C0543859;C0751072;C1839042;C1842675;C1862939;C1862941;C1865412;C2678468;C3542025;C3811918;C3888102;C4011788;C4021584;C4024896;C4025723;C4082299;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;Upper motor neuron dysfunction;AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;Amyotrophic Lateral Sclerosis 9;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE;GRN-related frontotemporal dementia;Frontotemporal Dementia With Motor Neuron Disease;Behavioral variant of frontotemporal dementia;Frontotemporal cerebral atrophy;Motor neuron atrophy;Abnormal upper motor neuron morphology;Bulbar palsy;Amyotrophic Lateral Sclerosis, Familial
+23523	CABIN1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+773	CACNA1A	True	2	C0002736;C4082299	Amyotrophic Lateral Sclerosis;Bulbar palsy
+8912	CACNA1H	False	1	C0002736	Amyotrophic Lateral Sclerosis
+779	CACNA1S	False	1	C0002736	Amyotrophic Lateral Sclerosis
+27101	CACYBP	True	1	C0002736	Amyotrophic Lateral Sclerosis
+793	CALB1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+794	CALB2	False	4	C0002736;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+10241	CALCOCO2	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+811	CALR	True	1	C0002736	Amyotrophic Lateral Sclerosis
+57172	CAMK1G	False	3	C0002736;C0393554;C0543859	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form
+815	CAMK2A	False	1	C0338451	Frontotemporal dementia
+814	CAMK4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23261	CAMTA1	True	5	C0002736;C1842675;C1862939;C1862941;C3542025	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+10487	CAP1	False	1	C4024896	Motor neuron atrophy
+822	CAPG	False	1	C0002736	Amyotrophic Lateral Sclerosis
+823	CAPN1	True	3	C0002736;C1839042;C4021255	Amyotrophic Lateral Sclerosis;Upper motor neuron dysfunction;Weakness due to upper motor neuron dysfunction
+824	CAPN2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+114769	CARD16	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10498	CARM1	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+834	CASP1	False	4	C0002736;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+100506742	CASP12	False	1	C0002736	Amyotrophic Lateral Sclerosis
+835	CASP2	True	1	C0338451	Frontotemporal dementia
+836	CASP3	False	3	C0002736;C0338451;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Amyotrophic Lateral Sclerosis, Familial
+837	CASP4	False	2	C1862939;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Familial
+841	CASP8	False	1	C1859807	AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder)
+842	CASP9	True	1	C0002736	Amyotrophic Lateral Sclerosis
+846	CASR	False	1	C0002736	Amyotrophic Lateral Sclerosis
+831	CAST	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+54897	CASZ1	True	3	C0002736;C0030442;C0270764	Amyotrophic Lateral Sclerosis;Progressive bulbar palsy;Motor Neuron Disease, Lower
+847	CAT	True	6	C0002736;C0085084;C0751072;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+857	CAV1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+873	CBR1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+875	CBS	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+55704	CCDC88A	False	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+6362	CCL18	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+6347	CCL2	False	4	C0002736;C0751072;C3811918;C4024896	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia;Motor neuron atrophy
+10850	CCL27	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6351	CCL4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+388372	CCL4L1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6355	CCL8	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+1490	CCN2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+595	CCND1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+899	CCNF	False	3	C0002736;C0338451;C1862941	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Amyotrophic Lateral Sclerosis, Sporadic
+729230	CCR2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9973	CCS	True	3	C0002736;C1862939;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Familial
+929	CD14	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9332	CD163	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23607	CD2AP	True	2	C0002736;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Familial
+947	CD34	False	1	C0002736	Amyotrophic Lateral Sclerosis
+948	CD36	False	1	C0002736	Amyotrophic Lateral Sclerosis
+958	CD40	False	1	C0002736	Amyotrophic Lateral Sclerosis
+959	CD40LG	False	3	C0002736;C0393554;C0543859	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form
+961	CD47	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+966	CD59	False	1	C0002736	Amyotrophic Lateral Sclerosis
+968	CD68	False	4	C0002736;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+924	CD7	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+998	CDC42	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+8317	CDC7	False	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+113130	CDCA5	False	1	C0085084	Motor Neuron Disease
+983	CDK1	False	1	C0338451	Frontotemporal dementia
+1017	CDK2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+1020	CDK5	False	4	C0002736;C0085084;C0338451;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Motor neuron atrophy
+8851	CDK5R1	False	4	C0002736;C0085084;C0338451;C0751072	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration
+1021	CDK6	False	1	C0338451	Frontotemporal dementia
+1025	CDK9	True	1	C0002736	Amyotrophic Lateral Sclerosis
+1029	CDKN2A	True	1	C0002736	Amyotrophic Lateral Sclerosis
+1032	CDKN2D	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1038	CDR1	False	3	C0751072;C3811918;C4011788	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia
+1089	CEACAM4	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+4680	CEACAM6	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+1052	CEBPD	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1951	CELSR3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+201161	CENPV	False	1	C0002736	Amyotrophic Lateral Sclerosis
+22994	CEP131	True	1	C0338451	Frontotemporal dementia
+755	CFAP410	False	3	C0002736;C0393554;C0543859	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form
+10428	CFDP1	True	4	C0002736;C0338451;C1833662;C4551951	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;Inclusion Body Myopathy with Early-Onset Paget Disease with or without Frontotemporal Dementia 1
+10036	CHAF1A	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+1103	CHAT	False	1	C4082299	Bulbar palsy
+400916	CHCHD10	False	11	C0002736;C0085084;C0338451;C0393554;C1862939;C1865412;C3888102;C4014648;C4025723;C4082299;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;AMYOTROPHIC LATERAL SCLEROSIS 1;Abnormal lower motor neuron morphology;Frontotemporal Dementia With Motor Neuron Disease;FRONTOTEMPORAL DEMENTIA AND/OR AMYOTROPHIC LATERAL SCLEROSIS 2;Abnormal upper motor neuron morphology;Bulbar palsy;Amyotrophic Lateral Sclerosis, Familial
+51142	CHCHD2	True	3	C0002736;C0085084;C0338451	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia
+1113	CHGA	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1114	CHGB	False	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+1116	CHI3L1	False	5	C0002736;C0338451;C0751072;C1862941;C4011788	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Sporadic;Behavioral variant of frontotemporal dementia
+1117	CHI3L2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1118	CHIT1	False	4	C0002736;C0338451;C0751072;C4024896	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Motor neuron atrophy
+27243	CHMP2A	False	1	C0338451	Frontotemporal dementia
+25978	CHMP2B	True	15	C0002736;C0085084;C0338451;C0393554;C0543859;C0751072;C1833296;C1836076;C1839042;C1862939;C1865412;C3811918;C3888102;C4011788;C4021584	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;FRONTOTEMPORAL DEMENTIA, CHROMOSOME 3-LINKED;Amyotrophic Lateral Sclerosis, Chmp2B-Related;Upper motor neuron dysfunction;AMYOTROPHIC LATERAL SCLEROSIS 1;Abnormal lower motor neuron morphology;GRN-related frontotemporal dementia;Frontotemporal Dementia With Motor Neuron Disease;Behavioral variant of frontotemporal dementia;Frontotemporal cerebral atrophy
+79643	CHMP6	False	1	C0338451	Frontotemporal dementia
+140578	CHODL	False	1	C4024896	Motor neuron atrophy
+1134	CHRNA1	True	1	C4082299	Bulbar palsy
+1137	CHRNA4	True	1	C1862941	Amyotrophic Lateral Sclerosis, Sporadic
+1145	CHRNE	False	1	C4082299	Bulbar palsy
+1146	CHRNG	False	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+9435	CHST2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+11113	CIT	True	1	C0338451	Frontotemporal dementia
+9075	CLDN2	False	1	C0338451	Frontotemporal dementia
+7122	CLDN5	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10462	CLEC10A	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+170482	CLEC4C	False	2	C0002736;C3468114	Amyotrophic Lateral Sclerosis;Juvenile amyotrophic lateral sclerosis
+2055	CLN8	False	1	C4024896	Motor neuron atrophy
+1191	CLU	False	5	C0002736;C0338451;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+157807	CLVS1	True	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+1261	CNGA3	False	1	C4024896	Motor neuron atrophy
+1268	CNR1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1269	CNR2	False	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+1270	CNTF	False	6	C0002736;C0085084;C1862939;C1862941;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+1271	CNTFR	False	1	C0002736	Amyotrophic Lateral Sclerosis
+152330	CNTN4	False	1	C1862941	Amyotrophic Lateral Sclerosis, Sporadic
+8506	CNTNAP1	False	1	C4082299	Bulbar palsy
+80347	COASY	False	1	C1862941	Amyotrophic Lateral Sclerosis, Sporadic
+25839	COG4	True	1	C4021584	Frontotemporal cerebral atrophy
+1302	COL11A2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1305	COL13A1	False	1	C4082299	Bulbar palsy
+1308	COL17A1	False	2	C0085084;C0751072	Motor Neuron Disease;Frontotemporal Lobar Degeneration
+1310	COL19A1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+340267	COL28A1	False	1	C0338451	Frontotemporal dementia
+1284	COL4A2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+64326	COP1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+27235	COQ2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1351	COX8A	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+1356	CP	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+131034	CPNE4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+8738	CRADD	True	1	C1853215	Pachygyria, frontotemporal
+1385	CREB1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+9586	CREB5	True	1	C0002736	Amyotrophic Lateral Sclerosis
+1387	CREBBP	True	4	C0002736;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+1394	CRHR1	False	1	C0338451	Frontotemporal dementia
+1398	CRK	True	1	C0002736	Amyotrophic Lateral Sclerosis
+1400	CRMP1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+1401	CRP	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1410	CRYAB	True	1	C4551993	Amyotrophic Lateral Sclerosis, Familial
+1428	CRYM	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1431	CS	True	2	C0002736;C4522181	Amyotrophic Lateral Sclerosis;Brachial Amyotrophic Diplegia
+1434	CSE1L	True	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+1437	CSF2	False	7	C0002736;C0030442;C0338451;C0751072;C3811918;C4011788;C4082299	Amyotrophic Lateral Sclerosis;Progressive bulbar palsy;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia;Bulbar palsy
+1440	CSF3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1453	CSNK1D	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+1454	CSNK1E	True	3	C0002736;C1862941;C4024896	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic;Motor neuron atrophy
+1471	CST3	False	7	C0002736;C0751072;C1862939;C1862941;C3811918;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;GRN-related frontotemporal dementia;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+8530	CST7	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1476	CSTB	True	2	C0270764;C4551993	Motor Neuron Disease, Lower;Amyotrophic Lateral Sclerosis, Familial
+1486	CTBS	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10664	CTCF	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+1489	CTF1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+1499	CTNNB1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+1501	CTNND2	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+9646	CTR9	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+1506	CTRL	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+1508	CTSB	False	1	C1833662	INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+1075	CTSC	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+1509	CTSD	False	6	C0002736;C0338451;C0751072;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+1514	CTSL	False	1	C0002736	Amyotrophic Lateral Sclerosis
+79004	CUEDC2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1523	CUX1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+6376	CX3CL1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1524	CX3CR1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2919	CXCL1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3627	CXCL10	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3576	CXCL8	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+2833	CXCR3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7852	CXCR4	True	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+1536	CYBB	False	2	C0002736;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Familial
+54205	CYCS	False	1	C0338451	Frontotemporal dementia
+26999	CYFIP2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1588	CYP19A1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1543	CYP1A1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1544	CYP1A2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1593	CYP27A1	False	4	C0002736;C0033790;C0338451;C1862941	Amyotrophic Lateral Sclerosis;Pseudobulbar Palsy;Frontotemporal dementia;Amyotrophic Lateral Sclerosis, Sporadic
+1565	CYP2D6	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+9420	CYP7B1	False	1	C4024896	Motor neuron atrophy
+1610	DAO	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1612	DAPK1	False	1	C0338451	Frontotemporal dementia
+23604	DAPK2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+28988	DBNL	True	1	C0002736	Amyotrophic Lateral Sclerosis
+51163	DBR1	False	3	C0002736;C0393554;C0543859	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form
+120237	DBX1	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+51473	DCDC2	False	3	C0002736;C0085084;C1862939	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;AMYOTROPHIC LATERAL SCLEROSIS 1
+1638	DCT	True	1	C0338451	Frontotemporal dementia
+1639	DCTN1	True	14	C0002736;C0033790;C0085084;C0270763;C0270764;C0338451;C0751072;C1862939;C1862941;C1865412;C4011788;C4016314;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Pseudobulbar Palsy;Motor Neuron Disease;Familial Motor Neuron Disease;Motor Neuron Disease, Lower;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;Behavioral variant of frontotemporal dementia;AMYOTROPHIC LATERAL SCLEROSIS, SUSCEPTIBILITY TO;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+51164	DCTN4	True	7	C0002736;C0085084;C0338451;C0751072;C1859807;C3811918;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);GRN-related frontotemporal dementia;Motor neuron atrophy
+54165	DCUN1D1	False	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+1641	DCX	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1649	DDIT3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+55308	DDX19A	True	2	C1865409;C3468114	Amyotrophic Lateral Sclerosis 4, Juvenile;Juvenile amyotrophic lateral sclerosis
+11218	DDX20	True	3	C0002736;C0085084;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor neuron atrophy
+1654	DDX3X	True	3	C0002736;C0338451;C4024896	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Motor neuron atrophy
+9879	DDX46	True	2	C1865409;C3468114	Amyotrophic Lateral Sclerosis 4, Juvenile;Juvenile amyotrophic lateral sclerosis
+1666	DECR1	True	5	C0002736;C0085084;C0338451;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+8562	DENR	False	1	C0002736	Amyotrophic Lateral Sclerosis
+79139	DERL1	True	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+1674	DES	True	2	C0002736;C4082299	Amyotrophic Lateral Sclerosis;Bulbar palsy
+8694	DGAT1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+79947	DHDDS	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1719	DHFR	True	1	C0002736	Amyotrophic Lateral Sclerosis
+8449	DHX16	True	2	C1865409;C3468114	Amyotrophic Lateral Sclerosis 4, Juvenile;Juvenile amyotrophic lateral sclerosis
+27185	DISC1	True	3	C0751072;C1862941;C3811918	Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Sporadic;GRN-related frontotemporal dementia
+22943	DKK1	False	1	C0338451	Frontotemporal dementia
+1738	DLD	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+1756	DMD	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1761	DMRT1	True	1	C1833296	FRONTOTEMPORAL DEMENTIA, CHROMOSOME 3-LINKED
+123872	DNAAF1	False	1	C1862941	Amyotrophic Lateral Sclerosis, Sporadic
+1769	DNAH8	False	2	C0338451;C1833662	Frontotemporal dementia;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+55259	DNAI7	False	1	C0085084	Motor Neuron Disease
+3337	DNAJB1	True	2	C0002736;C1862939	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1
+3300	DNAJB2	False	2	C0002736;C0270764	Amyotrophic Lateral Sclerosis;Motor Neuron Disease, Lower
+4189	DNAJB9	True	1	C0002736	Amyotrophic Lateral Sclerosis
+7266	DNAJC7	True	1	C0002736	Amyotrophic Lateral Sclerosis
+92737	DNER	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+10059	DNM1L	True	1	C0002736	Amyotrophic Lateral Sclerosis
+1785	DNM2	True	1	C0338451	Frontotemporal dementia
+1786	DNMT1	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+1788	DNMT3A	True	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+285489	DOK7	False	1	C4082299	Bulbar palsy
+1804	DPP6	True	5	C0002736;C0338451;C0393554;C0543859;C1862941	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Amyotrophic Lateral Sclerosis, Sporadic
+1806	DPYD	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1808	DPYSL2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+1832	DSP	True	1	C0085084	Motor Neuron Disease
+667	DST	True	1	C0751072	Frontotemporal Lobar Degeneration
+1778	DYNC1H1	True	5	C0002736;C0085084;C0521659;C1862941;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor Neuron Disease, Upper;Amyotrophic Lateral Sclerosis, Sporadic;Motor neuron atrophy
+8655	DYNLL1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10148	EBI3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1906	EDN1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1915	EEF1A1	True	1	C4024896	Motor neuron atrophy
+1917	EEF1A2	True	1	C4024896	Motor neuron atrophy
+1946	EFNA5	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1947	EFNB1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1950	EGF	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1956	EGFR	True	1	C0002736	Amyotrophic Lateral Sclerosis
+112399	EGLN3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1958	EGR1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5610	EIF2AK2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+9451	EIF2AK3	False	3	C0002736;C0085084;C0338451	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia
+27335	EIF3K	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1982	EIF4G2	True	4	C0002736;C0338451;C1833662;C4551951	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;Inclusion Body Myopathy with Early-Onset Paget Disease with or without Frontotemporal Dementia 1
+1994	ELAVL1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+1996	ELAVL4	True	1	C0002736	Amyotrophic Lateral Sclerosis
+8518	ELP1	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+55250	ELP2	False	1	C0338451	Frontotemporal dementia
+55140	ELP3	True	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+8909	ENDOU	False	1	C4024896	Motor neuron atrophy
+2022	ENG	False	1	C0002736	Amyotrophic Lateral Sclerosis
+57724	EPG5	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2041	EPHA1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2042	EPHA3	False	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+2043	EPHA4	True	3	C0002736;C0085084;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor neuron atrophy
+2047	EPHB1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2048	EPHB2	False	2	C0002736;C4522181	Amyotrophic Lateral Sclerosis;Brachial Amyotrophic Diplegia
+2056	EPO	False	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+2064	ERBB2	False	1	C0270764	Motor Neuron Disease, Lower
+2066	ERBB4	False	8	C0002736;C0338451;C1842675;C1862939;C1862941;C3542025;C3715155;C4024896	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE;AMYOTROPHIC LATERAL SCLEROSIS 19;Motor neuron atrophy
+375748	ERCC6L2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2069	EREG	False	1	C0002736	Amyotrophic Lateral Sclerosis
+57222	ERGIC1	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+10613	ERLIN1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+11160	ERLIN2	False	3	C0033790;C4024896;C4025723	Pseudobulbar Palsy;Motor neuron atrophy;Abnormal upper motor neuron morphology
+2081	ERN1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+100862688	ERVK-11	False	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+2099	ESR1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+2100	ESR2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2114	ETS2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2130	EWSR1	True	5	C0002736;C0338451;C0751072;C1862939;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;GRN-related frontotemporal dementia
+51010	EXOSC3	False	3	C0085084;C2673351;C4024896	Motor Neuron Disease;Paucity of anterior horn motor neurons;Motor neuron atrophy
+118460	EXOSC6	True	1	C4024896	Motor neuron atrophy
+2131	EXT1	True	1	C0338451	Frontotemporal dementia
+2132	EXT2	False	1	C0338451	Frontotemporal dementia
+2146	EZH2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2160	F11	False	1	C0338451	Frontotemporal dementia
+2149	F2R	False	1	C4024896	Motor neuron atrophy
+2158	F9	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3995	FADS3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+56975	FAM20C	False	3	C0002736;C1862939;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Familial
+355	FAS	False	1	C0002736	Amyotrophic Lateral Sclerosis
+114907	FBXO32	False	1	C0002736	Amyotrophic Lateral Sclerosis
+81545	FBXO38	False	1	C3661519	Hereditary Motor Neuronopathy
+374286	FBXW10B	False	1	C0338451	Frontotemporal dementia
+2214	FCGR3A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2215	FCGR3B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2220	FCN2	False	1	C0085084	Motor Neuron Disease
+8547	FCN3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2246	FGF1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2258	FGF13	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9965	FGF19	False	1	C4522181	Brachial Amyotrophic Diplegia
+2247	FGF2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+26291	FGF21	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2251	FGF6	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+9982	FGFBP1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+55277	FGGY	False	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+57700	FHIP2A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9896	FIG4	True	6	C0002736;C0085084;C1839042;C1862939;C2675491;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Upper motor neuron dysfunction;AMYOTROPHIC LATERAL SCLEROSIS 1;AMYOTROPHIC LATERAL SCLEROSIS 11;Motor neuron atrophy
+51024	FIS1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+60681	FKBP10	True	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+51303	FKBP11	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+55033	FKBP14	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+2280	FKBP1A	True	2	C0085084;C1862939	Motor Neuron Disease;AMYOTROPHIC LATERAL SCLEROSIS 1
+2281	FKBP1B	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+2286	FKBP2	True	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+2287	FKBP3	True	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+2288	FKBP4	True	2	C0002736;C1862939	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1
+2289	FKBP5	True	2	C0002736;C1862939	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1
+8468	FKBP6	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+51661	FKBP7	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+23770	FKBP8	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+11328	FKBP9	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+201163	FLCN	True	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+2318	FLNC	True	1	C0338451	Frontotemporal dementia
+28982	FLVCR1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+752	FMNL1	False	1	C0338451	Frontotemporal dementia
+2326	FMO1	False	4	C0002736;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+2328	FMO3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2332	FMR1	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+2335	FN1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+22862	FNDC3A	True	3	C0002736;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+2353	FOS	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+2309	FOXO3	False	1	C0085084	Motor Neuron Disease
+93986	FOXP2	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+50943	FOXP3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2358	FPR2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2495	FTH1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+2512	FTL	False	1	C0002736	Amyotrophic Lateral Sclerosis
+79068	FTO	False	1	C1862941	Amyotrophic Lateral Sclerosis, Sporadic
+2521	FUS	True	22	C0002736;C0085084;C0338451;C0393554;C0543859;C0751072;C1842675;C1843792;C1859807;C1862939;C1862941;C1865412;C2750729;C2931786;C3468114;C3811918;C3888102;C4011788;C4024896;C4025723;C4082299;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);FRONTOTEMPORAL LOBAR DEGENERATION WITH TDP43 INCLUSIONS, GRN-RELATED;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;Amyotrophic Lateral Sclerosis 6, Autosomal Recessive;Amyotrophic lateral sclerosis, type 6;Juvenile amyotrophic lateral sclerosis;GRN-related frontotemporal dementia;Frontotemporal Dementia With Motor Neuron Disease;Behavioral variant of frontotemporal dementia;Motor neuron atrophy;Abnormal upper motor neuron morphology;Bulbar palsy;Amyotrophic Lateral Sclerosis, Familial
+2395	FXN	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2535	FZD2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10146	G3BP1	True	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+2551	GABPA	True	4	C0002736;C0751072;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+2554	GABRA1	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+2561	GABRB2	False	1	C0338451	Frontotemporal dementia
+339896	GADL1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9514	GAL3ST1	False	3	C0002736;C0030442;C0270764	Amyotrophic Lateral Sclerosis;Progressive bulbar palsy;Motor Neuron Disease, Lower
+2596	GAP43	False	3	C0002736;C0085084;C0338451	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia
+2597	GAPDH	True	2	C0002736;C4522181	Amyotrophic Lateral Sclerosis;Brachial Amyotrophic Diplegia
+2617	GARS1	True	3	C0002736;C3468114;C4024896	Amyotrophic Lateral Sclerosis;Juvenile amyotrophic lateral sclerosis;Motor neuron atrophy
+2618	GART	True	1	C4551993	Amyotrophic Lateral Sclerosis, Familial
+2629	GBA1	False	2	C0002736;C4011788	Amyotrophic Lateral Sclerosis;Behavioral variant of frontotemporal dementia
+2632	GBE1	False	1	C4025723	Abnormal upper motor neuron morphology
+2637	GBX2	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+2638	GC	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2641	GCG	False	3	C0002736;C0751072;C4522181	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;Brachial Amyotrophic Diplegia
+2644	GCHFR	False	1	C0085084	Motor Neuron Disease
+2730	GCLM	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9615	GDA	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10220	GDF11	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9518	GDF15	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2664	GDI1	True	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+2668	GDNF	False	4	C0002736;C0085084;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+81544	GDPD5	False	1	C4551993	Amyotrophic Lateral Sclerosis, Familial
+2669	GEM	False	1	C0002736	Amyotrophic Lateral Sclerosis
+8487	GEMIN2	True	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+50628	GEMIN4	False	4	C0002736;C0338451;C1833662;C4551951	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;Inclusion Body Myopathy with Early-Onset Paget Disease with or without Frontotemporal Dementia 1
+79833	GEMIN6	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+2670	GFAP	True	9	C0002736;C0085084;C0338451;C0393554;C0543859;C0751072;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+2674	GFRA1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+2675	GFRA2	False	2	C0338451;C0751072	Frontotemporal dementia;Frontotemporal Lobar Degeneration
+79893	GGNBP2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2678	GGT1	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+728441	GGT2P	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+728226	GGTLC3	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+2688	GH1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+2690	GHR	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2697	GJA1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+2705	GJB1	False	2	C0002736;C3661519	Amyotrophic Lateral Sclerosis;Hereditary Motor Neuronopathy
+57369	GJD2	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+26035	GLCE	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+2731	GLDC	False	1	C0338451	Frontotemporal dementia
+2733	GLE1	True	4	C0002736;C0085084;C0751072;C2673351	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal Lobar Degeneration;Paucity of anterior horn motor neurons
+2745	GLRX	False	1	C0085084	Motor Neuron Disease
+2744	GLS	True	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+55830	GLT8D1	False	2	C0002736;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Familial
+2752	GLUL	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10249	GLYAT	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2768	GNA12	True	1	C0338451	Frontotemporal dementia
+10020	GNE	False	3	C0338451;C1833662;C4551993	Frontotemporal dementia;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;Amyotrophic Lateral Sclerosis, Familial
+64689	GORASP1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10457	GPNMB	False	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+2876	GPX1	True	2	C1862939;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Familial
+2878	GPX3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2882	GPX7	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9402	GRAP2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+2890	GRIA1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2891	GRIA2	False	3	C0002736;C0085084;C1862941	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Amyotrophic Lateral Sclerosis, Sporadic
+2892	GRIA3	False	5	C0002736;C0338451;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+2893	GRIA4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2897	GRIK1	False	2	C0002736;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Familial
+2903	GRIN2A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+116444	GRIN3B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23426	GRIP1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+2911	GRM1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2912	GRM2	False	3	C0002736;C0085084;C1862941	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Amyotrophic Lateral Sclerosis, Sporadic
+2913	GRM3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2915	GRM5	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2896	GRN	False	12	C0002736;C0085084;C0338451;C0751072;C1839042;C1843792;C1862941;C1865412;C3811918;C4011788;C4021584;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Upper motor neuron dysfunction;FRONTOTEMPORAL LOBAR DEGENERATION WITH TDP43 INCLUSIONS, GRN-RELATED;Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia;Frontotemporal cerebral atrophy;Motor neuron atrophy
+2932	GSK3B	False	3	C0002736;C0338451;C4024896	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Motor neuron atrophy
+2934	GSN	True	1	C4082299	Bulbar palsy
+2936	GSR	True	4	C0002736;C0393554;C0543859;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Amyotrophic Lateral Sclerosis, Sporadic
+373156	GSTK1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+2944	GSTM1	True	1	C0085084	Motor Neuron Disease
+9446	GSTO1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+2950	GSTP1	True	5	C0002736;C0030442;C0085084;C0393554;C0543859	Amyotrophic Lateral Sclerosis;Progressive bulbar palsy;Motor Neuron Disease;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form
+2952	GSTT1	False	1	C0085084	Motor Neuron Disease
+170825	GSX2	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+2965	GTF2H1	False	7	C0002736;C0085084;C0338451;C0751072;C1859807;C3811918;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);GRN-related frontotemporal dementia;Motor neuron atrophy
+9567	GTPBP1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3014	H2AX	True	1	C0751072	Frontotemporal Lobar Degeneration
+9200	HACD1	False	1	C4024896	Motor neuron atrophy
+3030	HADHA	True	1	C0002736	Amyotrophic Lateral Sclerosis
+57817	HAMP	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9001	HAP1	False	1	C0338451	Frontotemporal dementia
+27198	HCAR1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3059	HCLS1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3060	HCRT	False	3	C0338451;C0751072;C3811918	Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+3065	HDAC1	True	2	C0002736;C1862939	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1
+79885	HDAC11	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3066	HDAC2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+9759	HDAC4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10013	HDAC6	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+9734	HDAC9	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3280	HES1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3073	HEXA	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3074	HEXB	True	2	C0085084;C1839042	Motor Neuron Disease;Upper motor neuron dysfunction
+3077	HFE	False	3	C0002736;C0751072;C1862941	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Sporadic
+3082	HGF	False	4	C0002736;C0085084;C1862939;C1862941	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic
+3091	HIF1A	False	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+3098	HK1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3099	HK2	True	1	C0085084	Motor Neuron Disease
+3105	HLA-A	True	1	C0085084	Motor Neuron Disease
+3106	HLA-B	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3123	HLA-DRB1	False	3	C0002736;C0338451;C1833296	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;FRONTOTEMPORAL DEMENTIA, CHROMOSOME 3-LINKED
+3127	HLA-DRB5	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3134	HLA-F	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3145	HMBS	True	2	C0338451;C0751072	Frontotemporal dementia;Frontotemporal Lobar Degeneration
+3146	HMGB1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3162	HMOX1	False	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+3163	HMOX2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3176	HNMT	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3178	HNRNPA1	True	10	C0002736;C0338451;C0751072;C1833662;C1839042;C3715156;C3809469;C3811918;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;Upper motor neuron dysfunction;AMYOTROPHIC LATERAL SCLEROSIS 20;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE WITH OR WITHOUT FRONTOTEMPORAL DEMENTIA 3;GRN-related frontotemporal dementia;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+3181	HNRNPA2B1	True	7	C0002736;C0085084;C0338451;C0751072;C1833662;C1839042;C3809468	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;Upper motor neuron dysfunction;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE WITH OR WITHOUT FRONTOTEMPORAL DEMENTIA 2
+220988	HNRNPA3	True	5	C0002736;C0085084;C0751072;C1862941;C3811918	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Sporadic;GRN-related frontotemporal dementia
+3183	HNRNPC	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+9987	HNRNPDL	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+3187	HNRNPH1	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+3188	HNRNPH2	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+3190	HNRNPK	True	1	C0002736	Amyotrophic Lateral Sclerosis
+10236	HNRNPR	True	2	C0338451;C0751072	Frontotemporal dementia;Frontotemporal Lobar Degeneration
+9456	HOMER1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3236	HOXD10	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+3240	HP	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+3248	HPGD	False	1	C0002736	Amyotrophic Lateral Sclerosis
+27306	HPGDS	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3265	HRAS	False	1	C4522181	Brachial Amyotrophic Diplegia
+3272	HRES1	False	4	C0002736;C0085084;C0338451;C0751072	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration
+3297	HSF1	False	5	C0002736;C0751072;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+3320	HSP90AA1	True	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+7190	HSP90B2P	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3308	HSPA4	True	3	C0002736;C0338451;C1862939	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;AMYOTROPHIC LATERAL SCLEROSIS 1
+3309	HSPA5	True	1	C1833662	INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+3312	HSPA8	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3315	HSPB1	True	5	C0002736;C0085084;C0749870;C1862939;C3661519	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Upper motor neuron signs;AMYOTROPHIC LATERAL SCLEROSIS 1;Hereditary Motor Neuronopathy
+3316	HSPB2	True	3	C0002736;C0085084;C3661519	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Hereditary Motor Neuronopathy
+8988	HSPB3	False	3	C0002736;C0085084;C3661519	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Hereditary Motor Neuronopathy
+26353	HSPB8	True	4	C0002736;C0085084;C0749870;C3661519	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Upper motor neuron signs;Hereditary Motor Neuronopathy
+27429	HTRA2	True	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+3064	HTT	False	3	C0002736;C0338451;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration
+3375	IAPP	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+23379	ICE1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3398	ID2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3416	IDE	True	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+3422	IDI1	True	1	C1862941	Amyotrophic Lateral Sclerosis, Sporadic
+91734	IDI2	False	1	C1862941	Amyotrophic Lateral Sclerosis, Sporadic
+64135	IFIH1	False	1	C4025723	Abnormal upper motor neuron morphology
+3439	IFNA1	False	1	C0338451	Frontotemporal dementia
+3447	IFNA13	False	1	C0338451	Frontotemporal dementia
+3458	IFNG	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3459	IFNGR1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3475	IFRD1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+80173	IFT74	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3479	IGF1	False	4	C0002736;C0085084;C0338451;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Motor neuron atrophy
+3480	IGF1R	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3481	IGF2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3482	IGF2R	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3483	IGFALS	False	16	C0002736;C0030442;C0085084;C0338451;C0543859;C0751072;C1833662;C1837728;C1862939;C1862941;C3811918;C3888102;C4011788;C4024896;C4082299;C4551993	Amyotrophic Lateral Sclerosis;Progressive bulbar palsy;Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;AMYOTROPHIC LATERAL SCLEROSIS 8 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;GRN-related frontotemporal dementia;Frontotemporal Dementia With Motor Neuron Disease;Behavioral variant of frontotemporal dementia;Motor neuron atrophy;Bulbar palsy;Amyotrophic Lateral Sclerosis, Familial
+3488	IGFBP5	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3490	IGFBP7	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3502	IGHG3	False	1	C3809468	INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE WITH OR WITHOUT FRONTOTEMPORAL DEMENTIA 2
+3508	IGHMBP2	True	2	C0085084;C4024896	Motor Neuron Disease;Motor neuron atrophy
+3586	IL10	False	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+3592	IL12A	False	1	C0085084	Motor Neuron Disease
+3596	IL13	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3600	IL15	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3605	IL17A	False	3	C0002736;C1862939;C1862941	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic
+3606	IL18	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+8809	IL18R1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3552	IL1A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3553	IL1B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3558	IL2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+51561	IL23A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3559	IL2RA	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3560	IL2RB	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3565	IL4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3569	IL6	False	3	C0002736;C0751072;C1862941	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Sporadic
+10989	IMMT	True	1	C4024896	Motor neuron atrophy
+9118	INA	True	7	C0002736;C0338451;C0751072;C1862939;C1862941;C3811918;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;GRN-related frontotemporal dementia;Amyotrophic Lateral Sclerosis, Familial
+8821	INPP4B	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+3633	INPP5B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3630	INS	False	1	C0085084	Motor Neuron Disease
+3659	IRF1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3661	IRF3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3665	IRF7	False	1	C0338451	Frontotemporal dementia
+3669	ISG20	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3680	ITGA9	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+3689	ITGB2	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+9445	ITM2B	False	1	C0338451	Frontotemporal dementia
+3708	ITPR1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3709	ITPR2	True	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+3710	ITPR3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+182	JAG1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3714	JAG2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3718	JAK3	False	4	C0002736;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+122953	JDP2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+57338	JPH3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+10899	JTB	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3727	JUND	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+30820	KCNIP1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+30818	KCNIP3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3766	KCNJ10	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3767	KCNJ11	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3764	KCNJ8	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3776	KCNK2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3777	KCNK3	True	1	C4024896	Motor neuron atrophy
+10242	KCNMB2	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+57582	KCNT1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+23028	KDM1A	True	1	C0338451	Frontotemporal dementia
+3791	KDR	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9817	KEAP1	False	3	C0002736;C0751072;C4024896	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;Motor neuron atrophy
+10657	KHDRBS1	True	7	C0002736;C0085084;C0338451;C0751072;C1859807;C3811918;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);GRN-related frontotemporal dementia;Motor neuron atrophy
+8570	KHSRP	True	1	C0002736	Amyotrophic Lateral Sclerosis
+9674	KIAA0040	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9764	KIAA0513	False	1	C0002736	Amyotrophic Lateral Sclerosis
+547	KIF1A	True	1	C4024896	Motor neuron atrophy
+23095	KIF1B	True	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+347240	KIF24	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+3797	KIF3C	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+3798	KIF5A	True	4	C0002736;C0338451;C1862939;C4693609	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;AMYOTROPHIC LATERAL SCLEROSIS 1;AMYOTROPHIC LATERAL SCLEROSIS, SUSCEPTIBILITY TO, 25
+3799	KIF5B	True	1	C0002736	Amyotrophic Lateral Sclerosis
+22920	KIFAP3	False	3	C0002736;C1862939;C1862941	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic
+3801	KIFC3	True	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+3811	KIR3DL1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4254	KITLG	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9365	KL	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3831	KLC1	True	2	C0270763;C4024896	Familial Motor Neuron Disease;Motor neuron atrophy
+9314	KLF4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+387893	KMT5A	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+3837	KPNB1	True	1	C1862941	Amyotrophic Lateral Sclerosis, Sporadic
+26013	L3MBTL1	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+3898	LAD1	True	1	C0338451	Frontotemporal dementia
+3909	LAMA3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3915	LAMC1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+3918	LAMC2	False	7	C0002736;C0030442;C0338451;C0751072;C3811918;C4011788;C4082299	Amyotrophic Lateral Sclerosis;Progressive bulbar palsy;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia;Bulbar palsy
+3916	LAMP1	False	3	C0338451;C0751072;C4551993	Frontotemporal dementia;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Familial
+3920	LAMP2	True	2	C0751072;C1833662	Frontotemporal Lobar Degeneration;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+10314	LANCL1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+81887	LAS1L	True	1	C0085084	Motor Neuron Disease
+27040	LAT	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+3929	LBP	False	1	C0751072	Frontotemporal Lobar Degeneration
+3934	LCN2	False	4	C0002736;C0085084;C0338451;C0751072	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration
+3949	LDLR	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+3952	LEP	False	3	C0002736;C0338451;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration
+3956	LGALS1	False	2	C0002736;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Familial
+3957	LGALS2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3958	LGALS3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3960	LGALS4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+8549	LGR5	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3976	LIF	False	2	C0002736;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Familial
+3981	LIG4	True	1	C0002736	Amyotrophic Lateral Sclerosis
+11027	LILRA2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+89782	LMLN	False	2	C0002736;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Familial
+4000	LMNA	True	1	C0338451	Frontotemporal dementia
+4001	LMNB1	True	2	C0002736;C0033790	Amyotrophic Lateral Sclerosis;Pseudobulbar Palsy
+56203	LMOD3	False	1	C4082299	Bulbar palsy
+4012	LNPEP	True	1	C4024896	Motor neuron atrophy
+9361	LONP1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4015	LOX	False	1	C4534438	Non-Alzheimer's dementia (e.g., Lewy body dementia, vascular or multi-infarct dementia; mixed dementia; frontotemporal dementia such as Pick's disease; and dementia related to stroke, Parkinson's or Creutzfeldt-Jakob diseases)
+4038	LRP4	True	1	C0002736	Amyotrophic Lateral Sclerosis
+120892	LRRK2	False	6	C0002736;C0085084;C0338451;C0543859;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+90678	LRSAM1	False	1	C4024896	Motor neuron atrophy
+57819	LSM2	False	4	C0002736;C0085084;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+4055	LTBR	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4060	LUM	False	1	C0002736	Amyotrophic Lateral Sclerosis
+56925	LXN	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4061	LY6E	False	3	C0002736;C0085084;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Amyotrophic Lateral Sclerosis, Familial
+259215	LY6G6F	False	1	C0751072	Frontotemporal Lobar Degeneration
+9762	LZTS3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+57692	MAGEE1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+84061	MAGT1	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+84549	MAK16	False	6	C0002736;C0338451;C0751072;C1862941;C3811918;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Sporadic;GRN-related frontotemporal dementia;Amyotrophic Lateral Sclerosis, Familial
+4128	MAOA	False	1	C0338451	Frontotemporal dementia
+4129	MAOB	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4131	MAP1B	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4133	MAP2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+6416	MAP2K4	True	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+5607	MAP2K5	True	1	C0002736	Amyotrophic Lateral Sclerosis
+9020	MAP3K14	True	1	C0338451	Frontotemporal dementia
+4217	MAP3K5	True	1	C0002736	Amyotrophic Lateral Sclerosis
+6885	MAP3K7	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+1326	MAP3K8	False	1	C0002736	Amyotrophic Lateral Sclerosis
+8491	MAP4K3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9448	MAP4K4	True	3	C0002736;C0338451;C4024896	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Motor neuron atrophy
+5594	MAPK1	True	2	C0002736;C4522181	Amyotrophic Lateral Sclerosis;Brachial Amyotrophic Diplegia
+1432	MAPK14	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5595	MAPK3	True	3	C0002736;C0338451;C4522181	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Brachial Amyotrophic Diplegia
+5599	MAPK8	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+5601	MAPK9	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4137	MAPT	False	15	C0002736;C0085084;C0270764;C0338451;C0543859;C0751072;C1839042;C1862941;C1865412;C3811918;C4011788;C4021584;C4024896;C4534438;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor Neuron Disease, Lower;Frontotemporal dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;Upper motor neuron dysfunction;Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia;Frontotemporal cerebral atrophy;Motor neuron atrophy;Non-Alzheimer's dementia (e.g., Lewy body dementia, vascular or multi-infarct dementia; mixed dementia; frontotemporal dementia such as Pick's disease; and dementia related to stroke, Parkinson's or Creutzfeldt-Jakob diseases);Amyotrophic Lateral Sclerosis, Familial
+4082	MARCKS	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5648	MASP1	False	5	C1833662;C1842675;C1862939;C1862941;C3542025	INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+10747	MASP2	False	1	C0338451	Frontotemporal dementia
+9782	MATR3	True	11	C0002736;C0338451;C0751072;C1862939;C1862941;C1865412;C3807521;C3811918;C4025723;C4082299;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;AMYOTROPHIC LATERAL SCLEROSIS 21;GRN-related frontotemporal dementia;Abnormal upper motor neuron morphology;Bulbar palsy;Amyotrophic Lateral Sclerosis, Familial
+4151	MB	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4155	MBP	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4160	MC4R	False	1	C0002736	Amyotrophic Lateral Sclerosis
+345643	MCIDAS	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+8888	MCM3AP	True	1	C4024896	Motor neuron atrophy
+57192	MCOLN1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+90550	MCU	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4190	MDH1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4193	MDM2	False	1	C4024896	Motor neuron atrophy
+4194	MDM4	False	1	C4024896	Motor neuron atrophy
+4204	MECP2	True	2	C0002736;C4082299	Amyotrophic Lateral Sclerosis;Bulbar palsy
+219541	MED19	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4205	MEF2A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4208	MEF2C	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+4233	MET	False	1	C0002736	Amyotrophic Lateral Sclerosis
+151194	METTL21A	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+4236	MFAP1	True	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+4240	MFGE8	False	1	C0751072	Frontotemporal Lobar Degeneration
+55669	MFN1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+9927	MFN2	True	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+256471	MFSD8	False	2	C0338451;C0751072	Frontotemporal dementia;Frontotemporal Lobar Degeneration
+8972	MGAM	False	1	C0002736	Amyotrophic Lateral Sclerosis
+11343	MGLL	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23295	MGRN1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4282	MIF	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4284	MIP	False	1	C0002736	Amyotrophic Lateral Sclerosis
+407975	MIR17HG	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23209	MLC1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+197259	MLKL	False	1	C4024896	Motor neuron atrophy
+4323	MMP14	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4313	MMP2	False	1	C0338451	Frontotemporal dementia
+79148	MMP28	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4316	MMP7	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4318	MMP9	False	3	C0002736;C0338451;C1862941	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Amyotrophic Lateral Sclerosis, Sporadic
+4331	MNAT1	False	1	C0085084	Motor Neuron Disease
+3110	MNX1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+64112	MOAP1	True	1	C1833662	INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+79817	MOB3B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4336	MOBP	False	8	C0002736;C0393554;C0543859;C1842675;C1862939;C1862941;C3542025;C4011788	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE;Behavioral variant of frontotemporal dementia
+5891	MOK	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4359	MPZ	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4360	MRC1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+51149	MRNIP	True	1	C4225326	FRONTOTEMPORAL DEMENTIA AND/OR AMYOTROPHIC LATERAL SCLEROSIS 3
+3396	MRPL58	True	1	C4522181	Brachial Amyotrophic Diplegia
+10884	MRPS30	True	1	C0002736	Amyotrophic Lateral Sclerosis
+9242	MSC	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4477	MSMB	False	5	C0002736;C0338451;C0751072;C3811918;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia;Amyotrophic Lateral Sclerosis, Familial
+4485	MST1	False	3	C0002736;C4551951;C4551993	Amyotrophic Lateral Sclerosis;Inclusion Body Myopathy with Early-Onset Paget Disease with or without Frontotemporal Dementia 1;Amyotrophic Lateral Sclerosis, Familial
+4486	MST1R	False	1	C4551951	Inclusion Body Myopathy with Early-Onset Paget Disease with or without Frontotemporal Dementia 1
+2660	MSTN	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4508	MT-ATP6	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4512	MT-CO1	False	1	C0085084	Motor Neuron Disease
+4513	MT-CO2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4535	MT-ND1	False	1	C0338451	Frontotemporal dementia
+4540	MT-ND5	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4489	MT1A	False	3	C0002736;C1862939;C1862941	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic
+4490	MT1B	False	2	C0002736;C1862939	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1
+4493	MT1E	False	2	C1862939;C1862941	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic
+4494	MT1F	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+4495	MT1G	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+4496	MT1H	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+4500	MT1L	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+4499	MT1M	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+4501	MT1X	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+4502	MT2A	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+4504	MT3	False	1	C0085084	Motor Neuron Disease
+92140	MTDH	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4524	MTHFR	False	3	C0002736;C1862941;C4024896	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic;Motor neuron atrophy
+64779	MTHFSD	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4543	MTNR1A	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+4544	MTNR1B	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+2475	MTOR	True	1	C0002736	Amyotrophic Lateral Sclerosis
+55149	MTPAP	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4593	MUSK	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4608	MYBPH	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4609	MYC	False	1	C0002736	Amyotrophic Lateral Sclerosis
+22989	MYH15	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4624	MYH6	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4625	MYH7	False	1	C4082299	Bulbar palsy
+4627	MYH9	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4646	MYO6	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4649	MYO9A	True	1	C4082299	Bulbar palsy
+4654	MYOD1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4656	MYOG	False	1	C4024896	Motor neuron atrophy
+4671	NAIP	False	3	C0002736;C0085084;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor neuron atrophy
+10135	NAMPT	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4673	NAP1L1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+8774	NAPG	True	1	C0338451	Frontotemporal dementia
+55226	NAT10	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4684	NCAM1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4691	NCL	True	1	C0751072	Frontotemporal Lobar Degeneration
+57447	NDRG2	True	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+284184	NDUFAF8	True	1	C0338451	Frontotemporal dementia
+4719	NDUFS1	True	1	C0338451	Frontotemporal dementia
+4703	NEB	True	1	C4082299	Bulbar palsy
+4738	NEDD8	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4744	NEFH	True	9	C0002736;C0033790;C0085084;C0338451;C1862939;C1862941;C4016314;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Pseudobulbar Palsy;Motor Neuron Disease;Frontotemporal dementia;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS, SUSCEPTIBILITY TO;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+4747	NEFL	True	8	C0002736;C0085084;C0338451;C0751072;C1862939;C3811918;C4011788;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia;Motor neuron atrophy
+4741	NEFM	True	3	C0002736;C0085084;C0338451	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia
+4750	NEK1	True	5	C0002736;C0085084;C0393554;C0543859;C4693523	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;AMYOTROPHIC LATERAL SCLEROSIS, SUSCEPTIBILITY TO, 24
+10763	NES	True	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+4762	NEUROG1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4763	NF1	True	1	C1833662	INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+4780	NFE2L2	True	4	C0002736;C0751072;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+4783	NFIL3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4790	NFKB1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4791	NFKB2	False	2	C0338451;C1833662	Frontotemporal dementia;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+58157	NGB	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4803	NGF	False	2	C0002736;C4522181	Amyotrophic Lateral Sclerosis;Brachial Amyotrophic Diplegia
+4804	NGFR	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+55768	NGLY1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9351	NHERF2	False	1	C0085084	Motor Neuron Disease
+60491	NIF3L1	True	1	C1859807	AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder)
+123606	NIPA1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+4820	NKTR	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+57486	NLN	False	1	C0002736	Amyotrophic Lateral Sclerosis
+114548	NLRP3	False	2	C0002736;C4522181	Amyotrophic Lateral Sclerosis;Brachial Amyotrophic Diplegia
+51068	NMD3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+347736	NME9	False	1	C0002736	Amyotrophic Lateral Sclerosis
+129521	NMS	False	1	C1833662	INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+26155	NOC2L	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4841	NONO	True	3	C0002736;C0033790;C0338451	Amyotrophic Lateral Sclerosis;Pseudobulbar Palsy;Frontotemporal dementia
+29997	NOP53	True	1	C0002736	Amyotrophic Lateral Sclerosis
+10528	NOP56	True	3	C0002736;C0085084;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor neuron atrophy
+4842	NOS1	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+4843	NOS2	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+4846	NOS3	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+4851	NOTCH1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4854	NOTCH3	True	2	C0033790;C0338451	Pseudobulbar Palsy;Frontotemporal dementia
+27035	NOX1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+4864	NPC1	False	1	C0751072	Frontotemporal Lobar Degeneration
+10577	NPC2	False	1	C0751072	Frontotemporal Lobar Degeneration
+9520	NPEPPS	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+4869	NPM1	True	1	C0751072	Frontotemporal Lobar Degeneration
+4852	NPY	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+8856	NR1I2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7182	NR2C2	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+4893	NRAS	False	1	C4522181	Brachial Amyotrophic Diplegia
+4899	NRF1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3084	NRG1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+4900	NRGN	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+8829	NRP1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9378	NRXN1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+9369	NRXN3	True	1	C1862941	Amyotrophic Lateral Sclerosis, Sporadic
+4905	NSF	True	1	C0338451	Frontotemporal dementia
+55968	NSFL1C	True	1	C4024896	Motor neuron atrophy
+115024	NT5C3B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4907	NT5E	False	1	C0085084	Motor Neuron Disease
+4908	NTF3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4909	NTF4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4914	NTRK1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4915	NTRK2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4916	NTRK3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4521	NUDT1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+57122	NUP107	True	1	C0002736	Amyotrophic Lateral Sclerosis
+9972	NUP153	True	1	C4551993	Amyotrophic Lateral Sclerosis, Familial
+23165	NUP205	True	1	C0002736	Amyotrophic Lateral Sclerosis
+23636	NUP62	False	7	C0002736;C0085084;C0338451;C0751072;C1859807;C3811918;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);GRN-related frontotemporal dementia;Motor neuron atrophy
+4928	NUP98	True	3	C0002736;C0338451;C1862941	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Amyotrophic Lateral Sclerosis, Sporadic
+100506658	OCLN	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10724	OGA	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+10439	OLFM1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10562	OLFM4	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+10215	OLIG2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4976	OPA1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+4978	OPCML	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+10133	OPTN	False	14	C0002736;C0085084;C0338451;C0393554;C0543859;C0749870;C0751072;C1862939;C1862940;C1862941;C3150692;C3811918;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Upper motor neuron signs;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Autosomal Recessive;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 12;GRN-related frontotemporal dementia;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+5007	OSBP	True	2	C0002736;C1837728	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 8 (disorder)
+26031	OSBPL3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+340990	OTOG	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+55074	OXR1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5023	P2RX1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+22953	P2RX2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5024	P2RX3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5025	P2RX4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5026	P2RX5	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9127	P2RX6	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5027	P2RX7	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5028	P2RY1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+64805	P2RY12	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5029	P2RY2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5034	P4HB	True	3	C0002736;C1862941;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+26986	PABPC1	True	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+8106	PABPN1	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+29943	PADI1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23569	PADI4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5053	PAH	False	1	C0002736	Amyotrophic Lateral Sclerosis
+24145	PANX1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10914	PAPOLA	False	1	C0002736	Amyotrophic Lateral Sclerosis
+11315	PARK7	True	3	C0002736;C0085084;C0543859	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Amyotrophic Lateral Sclerosis, Guam Form
+142	PARP1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5074	PAWR	False	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+5093	PCBP1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5094	PCBP2	True	3	C0338451;C0751072;C3811918	Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+5126	PCSK2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9468	PCYT1B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+11333	PDAP1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5132	PDC	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5154	PDGFA	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+64714	PDIA2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+2923	PDIA3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5163	PDK1	True	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+27295	PDLIM3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10611	PDLIM5	True	1	C0338451	Frontotemporal dementia
+23590	PDSS1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+387521	PEDS1	False	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+5179	PENK	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+5216	PFN1	True	10	C0002736;C0085084;C0338451;C0751072;C1862939;C1862941;C3553719;C3811918;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 18;GRN-related frontotemporal dementia;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+5217	PFN2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5228	PGF	False	1	C0338451	Frontotemporal dementia
+5230	PGK1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5245	PHB1	True	3	C0002736;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+11331	PHB2	True	1	C0751072	Frontotemporal Lobar Degeneration
+5252	PHF1	True	1	C0338451	Frontotemporal dementia
+26227	PHGDH	True	1	C0002736	Amyotrophic Lateral Sclerosis
+8301	PICALM	True	1	C0338451	Frontotemporal dementia
+9463	PICK1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9487	PIGL	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5290	PIK3CA	False	2	C4024896;C4522181	Motor neuron atrophy;Brachial Amyotrophic Diplegia
+5291	PIK3CB	False	2	C4024896;C4522181	Motor neuron atrophy;Brachial Amyotrophic Diplegia
+5293	PIK3CD	False	2	C4024896;C4522181	Motor neuron atrophy;Brachial Amyotrophic Diplegia
+5294	PIK3CG	False	2	C4024896;C4522181	Motor neuron atrophy;Brachial Amyotrophic Diplegia
+30849	PIK3R4	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+5300	PIN1	True	5	C0002736;C0085084;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+65018	PINK1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5585	PKN1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+51365	PLA1A	False	1	C4024896	Motor neuron atrophy
+5321	PLA2G4A	False	3	C0002736;C0393554;C0543859	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form
+8398	PLA2G6	False	2	C0338451;C4021584	Frontotemporal dementia;Frontotemporal cerebral atrophy
+9373	PLAA	True	1	C4082299	Bulbar palsy
+23236	PLCB1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5333	PLCD1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5339	PLEC	True	1	C0002736	Amyotrophic Lateral Sclerosis
+57449	PLEKHG5	False	4	C0085084;C0270764;C1865412;C4749820	Motor Neuron Disease;Motor Neuron Disease, Lower;Abnormal lower motor neuron morphology;Autosomal recessive lower motor neuron disease with childhood onset
+5354	PLP1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5357	PLS1	True	1	C0085084	Motor Neuron Disease
+5362	PLXNA2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+56902	PNO1	True	6	C0002736;C0338451;C0751072;C1862941;C3811918;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Sporadic;GRN-related frontotemporal dementia;Amyotrophic Lateral Sclerosis, Familial
+10908	PNPLA6	False	7	C0002736;C0085084;C0270763;C0270764;C0521659;C0543858;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Familial Motor Neuron Disease;Motor Neuron Disease, Lower;Motor Neuron Disease, Upper;Motor Neuron Disease, Secondary;Motor neuron atrophy
+5424	POLD1	True	1	C0338451	Frontotemporal dementia
+26073	POLDIP2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+84271	POLDIP3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+11128	POLR3A	True	1	C4025723	Abnormal upper motor neuron morphology
+55703	POLR3B	True	1	C4025723	Abnormal upper motor neuron morphology
+5443	POMC	False	3	C0002736;C0751141;C0751142	Amyotrophic Lateral Sclerosis;Facial Palsy, Upper Motor Neuron;Facial Palsy, Lower Motor Neuron
+5444	PON1	False	7	C0002736;C0085084;C0393554;C0543859;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+5445	PON2	False	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+5446	PON3	False	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+728378	POTEF	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5460	POU5F1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5464	PPA1	True	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+5468	PPARG	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10891	PPARGC1A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+133522	PPARGC1B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5478	PPIA	True	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+5481	PPID	True	1	C0002736	Amyotrophic Lateral Sclerosis
+10105	PPIF	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23759	PPIL2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+8493	PPM1D	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23645	PPP1R15A	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+10084	PQBP1	True	1	C0085084	Motor Neuron Disease
+7001	PRDX2	True	2	C1862939;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Familial
+10935	PRDX3	True	5	C0085084;C0270763;C0270764;C0521659;C0543858	Motor Neuron Disease;Familial Motor Neuron Disease;Motor Neuron Disease, Lower;Motor Neuron Disease, Upper;Motor Neuron Disease, Secondary
+9588	PRDX6	True	1	C4551993	Amyotrophic Lateral Sclerosis, Familial
+5575	PRKAR1B	True	2	C0338451;C4021584	Frontotemporal dementia;Frontotemporal cerebral atrophy
+5578	PRKCA	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5579	PRKCB	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5071	PRKN	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3276	PRMT1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+56341	PRMT8	True	3	C0002736;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+5621	PRNP	False	6	C0002736;C0338451;C0751072;C3811918;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+8842	PROM1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5630	PRPH	True	8	C0002736;C0033790;C0085084;C1862939;C1862941;C4016314;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Pseudobulbar Palsy;Motor Neuron Disease;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS, SUSCEPTIBILITY TO;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+112476	PRRT2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+51450	PRRX2	False	2	C1862939;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Familial
+5660	PSAP	True	5	C0002736;C0338451;C0751072;C3811918;C4024896	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia;Motor neuron atrophy
+23362	PSD3	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+5663	PSEN1	False	9	C0002736;C0085084;C0338451;C0751072;C1839042;C1865412;C3811918;C4011788;C4021584	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Upper motor neuron dysfunction;Abnormal lower motor neuron morphology;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia;Frontotemporal cerebral atrophy
+5664	PSEN2	False	3	C0338451;C0751072;C3811918	Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+5669	PSG1	False	1	C0338451	Frontotemporal dementia
+5670	PSG2	False	1	C0338451	Frontotemporal dementia
+5676	PSG7	False	1	C0338451	Frontotemporal dementia
+440533	PSG8	False	1	C0338451	Frontotemporal dementia
+11168	PSIP1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5688	PSMA7	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5704	PSMC4	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5708	PSMD2	True	4	C0002736;C0338451;C1833662;C4551951	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;Inclusion Body Myopathy with Early-Onset Paget Disease with or without Frontotemporal Dementia 1
+5723	PSPH	True	3	C0338451;C0751072;C3811918	Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+5623	PSPN	False	3	C0338451;C0751072;C3811918	Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+5724	PTAFR	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5725	PTBP1	True	6	C0002736;C0338451;C0751072;C1862941;C3811918;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Sporadic;GRN-related frontotemporal dementia;Amyotrophic Lateral Sclerosis, Familial
+58155	PTBP2	False	1	C0338451	Frontotemporal dementia
+171558	PTCRA	False	1	C0338451	Frontotemporal dementia
+5728	PTEN	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5732	PTGER2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5733	PTGER3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9536	PTGES	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5743	PTGS2	True	3	C0002736;C0393554;C0543859	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form
+2185	PTK2B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5524	PTPA	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5798	PTPRN	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5803	PTPRZ1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5805	PTS	False	2	C1862939;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Familial
+5813	PURA	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+5816	PVALB	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5817	PVR	False	1	C0085084	Motor Neuron Disease
+5697	PYY	False	1	C0338451	Frontotemporal dementia
+8766	RAB11A	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5861	RAB1A	True	1	C0002736	Amyotrophic Lateral Sclerosis
+8934	RAB29	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+23682	RAB38	False	1	C0338451	Frontotemporal dementia
+25782	RAB3GAP2	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+5868	RAB5A	True	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+10399	RACK1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+8480	RAE1	True	1	C4024896	Motor neuron atrophy
+5897	RAG2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5900	RALGDS	False	1	C1865409	Amyotrophic Lateral Sclerosis 4, Juvenile
+10268	RAMP3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5901	RAN	True	4	C0002736;C0085084;C0338451;C0751072	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration
+5903	RANBP2	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+5905	RANGAP1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+5909	RAP1GAP	False	2	C0751072;C4011788	Frontotemporal Lobar Degeneration;Behavioral variant of frontotemporal dementia
+5914	RARA	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5917	RARS1	True	1	C0033790	Pseudobulbar Palsy
+5923	RASGRF1	False	3	C0002736;C0085084;C1859807	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder)
+8045	RASSF7	True	1	C4522181	Brachial Amyotrophic Diplegia
+10741	RBBP9	True	1	C0002736	Amyotrophic Lateral Sclerosis
+55131	RBM28	True	2	C1839042;C4024896	Upper motor neuron dysfunction;Motor neuron atrophy
+129831	RBM45	False	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+9939	RBM8A	True	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+27303	RBMS3	False	6	C0002736;C0338451;C0751072;C1862941;C3811918;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Sporadic;GRN-related frontotemporal dementia;Amyotrophic Lateral Sclerosis, Familial
+27316	RBMX	True	1	C0338451	Frontotemporal dementia
+5950	RBP4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+65055	REEP1	False	1	C3661519	Hereditary Motor Neuronopathy
+5967	REG1A	False	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+5068	REG3A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5970	RELA	True	1	C0002736	Amyotrophic Lateral Sclerosis
+28954	REM1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5978	REST	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5979	RET	False	1	C0002736	Amyotrophic Lateral Sclerosis
+56729	RETN	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+55288	RHOT1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+10247	RIDA	False	3	C0338451;C0751072;C3811918	Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+23586	RIGI	False	1	C0002736	Amyotrophic Lateral Sclerosis
+8737	RIPK1	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+11035	RIPK3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+51115	RMDN1	False	1	C0338451	Frontotemporal dementia
+151393	RMDN2	False	1	C0338451	Frontotemporal dementia
+55177	RMDN3	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+6035	RNASE1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+6038	RNASE4	False	2	C0002736;C2678468	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis 9
+6041	RNASEL	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7732	RNF112	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+25897	RNF19A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+55599	RNPC3	False	1	C0751072	Frontotemporal Lobar Degeneration
+10921	RNPS1	True	1	C0338451	Frontotemporal dementia
+9475	ROCK2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+83853	ROPN1L	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6098	ROS1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6218	RPS17	True	1	C0002736	Amyotrophic Lateral Sclerosis
+6230	RPS25	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+6233	RPS27A	True	1	C0002736	Amyotrophic Lateral Sclerosis
+6194	RPS6	True	2	C0085084;C4522181	Motor Neuron Disease;Brachial Amyotrophic Diplegia
+6198	RPS6KB1	True	1	C4522181	Brachial Amyotrophic Diplegia
+6236	RRAD	True	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+6239	RREB1	False	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+6240	RRM1	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+6241	RRM2	True	3	C0002736;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+57142	RTN4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+65078	RTN4R	False	1	C1862941	Amyotrophic Lateral Sclerosis, Sporadic
+80183	RUBCNL	False	1	C0002736	Amyotrophic Lateral Sclerosis
+862	RUNX1T1	False	3	C0751072;C3811918;C4011788	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia
+6256	RXRA	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+6261	RYR1	True	1	C4082299	Bulbar palsy
+6281	S100A10	False	1	C4024896	Motor neuron atrophy
+6275	S100A4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6277	S100A6	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6279	S100A8	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6280	S100A9	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6285	S100B	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+55511	SAGE1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23098	SARM1	False	8	C0002736;C0085084;C0338451;C1842675;C1862939;C1862941;C3542025;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE;Motor neuron atrophy
+9169	SCAF11	True	1	C0085084	Motor Neuron Disease
+6319	SCD	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23256	SCFD1	True	3	C0002736;C0393554;C0543859	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form
+7857	SCG2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7356	SCGB1A1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6334	SCN8A	False	2	C0002736;C4082299	Amyotrophic Lateral Sclerosis;Bulbar palsy
+6337	SCNN1A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6342	SCP2	False	1	C4025707	Abnormal motor neuron morphology
+9805	SCRN1	True	1	C0751072	Frontotemporal Lobar Degeneration
+6400	SEL1L	False	1	C0002736	Amyotrophic Lateral Sclerosis
+8991	SELENBP1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+57190	SELENON	False	1	C4082299	Bulbar palsy
+6404	SELPLG	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+10371	SEMA3A	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+55752	SEPTIN11	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+5265	SERPINA1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+12	SERPINA3	False	4	C0002736;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+5269	SERPINB6	True	1	C4024896	Motor neuron atrophy
+5054	SERPINE1	False	1	C0751072	Frontotemporal Lobar Degeneration
+5176	SERPINF1	False	3	C0002736;C0338451;C4024896	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Motor neuron atrophy
+5274	SERPINI1	False	1	C0338451	Frontotemporal dementia
+23064	SETX	True	12	C0002736;C0085084;C0338451;C0749870;C1859807;C1862941;C1865409;C1865412;C3468114;C3661519;C4024896;C4025723	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Upper motor neuron signs;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis 4, Juvenile;Abnormal lower motor neuron morphology;Juvenile amyotrophic lateral sclerosis;Hereditary Motor Neuronopathy;Motor neuron atrophy;Abnormal upper motor neuron morphology
+6421	SFPQ	True	3	C0002736;C0338451;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration
+6445	SGCG	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6446	SGK1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+27352	SGSM3	False	1	C0338451	Frontotemporal dementia
+10019	SH2B3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+4068	SH2D1A	True	1	C0002736	Amyotrophic Lateral Sclerosis
+57630	SH3RF1	False	1	C0338451	Frontotemporal dementia
+6462	SHBG	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6464	SHC1	True	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+6469	SHH	False	1	C0002736	Amyotrophic Lateral Sclerosis
+8036	SHOC2	False	1	C1833662	INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+6476	SI	False	1	C0002736	Amyotrophic Lateral Sclerosis
+27036	SIGLEC7	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10280	SIGMAR1	False	13	C0002736;C0085084;C0338451;C0393554;C0543859;C0751072;C1859807;C1865412;C3280587;C3468114;C3811918;C3888102;C4025723	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);Abnormal lower motor neuron morphology;AMYOTROPHIC LATERAL SCLEROSIS 16, JUVENILE;Juvenile amyotrophic lateral sclerosis;GRN-related frontotemporal dementia;Frontotemporal Dementia With Motor Neuron Disease;Abnormal upper motor neuron morphology
+64374	SIL1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23411	SIRT1	False	3	C0002736;C0085084;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor neuron atrophy
+22933	SIRT2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+23410	SIRT3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+23408	SIRT5	False	1	C0002736	Amyotrophic Lateral Sclerosis
+51548	SIRT6	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10736	SIX2	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+4891	SLC11A2	False	2	C0002736;C1833296	Amyotrophic Lateral Sclerosis;FRONTOTEMPORAL DEMENTIA, CHROMOSOME 3-LINKED
+6558	SLC12A2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+6560	SLC12A4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+57468	SLC12A5	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6566	SLC16A1	False	1	C4024896	Motor neuron atrophy
+26503	SLC17A5	False	1	C1862941	Amyotrophic Lateral Sclerosis, Sporadic
+57084	SLC17A6	False	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+6571	SLC18A2	False	2	C0338451;C1862941	Frontotemporal dementia;Amyotrophic Lateral Sclerosis, Sporadic
+6572	SLC18A3	False	1	C4082299	Bulbar palsy
+6505	SLC1A1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6506	SLC1A2	False	7	C0002736;C0085084;C0393554;C0543859;C1862939;C1862941;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Motor neuron atrophy
+6507	SLC1A3	False	3	C0002736;C0085084;C0751072	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal Lobar Degeneration
+6576	SLC25A1	True	1	C4082299	Bulbar palsy
+8604	SLC25A12	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+788	SLC25A20	True	1	C4011788	Behavioral variant of frontotemporal dementia
+9481	SLC25A27	True	1	C0338451	Frontotemporal dementia
+51312	SLC25A37	False	1	C0002736	Amyotrophic Lateral Sclerosis
+54977	SLC25A38	False	1	C0338451	Frontotemporal dementia
+56731	SLC2A4RG	False	3	C0751072;C1859807;C3811918	Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);GRN-related frontotemporal dementia
+7781	SLC30A3	True	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+55676	SLC30A6	True	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+9197	SLC33A1	False	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+10559	SLC35A1	False	3	C0002736;C0030442;C0270764	Amyotrophic Lateral Sclerosis;Progressive bulbar palsy;Motor Neuron Disease, Lower
+30061	SLC40A1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+79581	SLC52A2	False	1	C4082299	Bulbar palsy
+113278	SLC52A3	False	4	C0002736;C0030442;C0393540;C4082299	Amyotrophic Lateral Sclerosis;Progressive bulbar palsy;Childhood Progressive Bulbar Palsy;Bulbar palsy
+60482	SLC5A7	False	1	C4082299	Bulbar palsy
+6529	SLC6A1	False	3	C0002736;C0393554;C0543859	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form
+6531	SLC6A3	False	4	C0338451;C0751072;C3811918;C4551993	Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia;Amyotrophic Lateral Sclerosis, Familial
+6532	SLC6A4	False	3	C0338451;C0751072;C4011788	Frontotemporal dementia;Frontotemporal Lobar Degeneration;Behavioral variant of frontotemporal dementia
+23657	SLC7A11	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6547	SLC8A3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+285195	SLC9A9	False	4	C1842675;C1862939;C1862941;C3542025	AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+133482	SLCO6A1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+6590	SLPI	False	3	C0002736;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+6594	SMARCA1	False	1	C0338451	Frontotemporal dementia
+140775	SMCR8	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+6606	SMN1	True	7	C0002736;C0085084;C0270763;C0270764;C1862941;C3661519;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Familial Motor Neuron Disease;Motor Neuron Disease, Lower;Amyotrophic Lateral Sclerosis, Sporadic;Hereditary Motor Neuronopathy;Motor neuron atrophy
+23583	SMUG1	False	3	C0002736;C0338451;C4011788	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Behavioral variant of frontotemporal dementia
+57154	SMURF1	False	1	C0338451	Frontotemporal dementia
+6615	SNAI1	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+6616	SNAP25	False	4	C0002736;C0338451;C0751072;C4082299	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Bulbar palsy
+6622	SNCA	False	8	C0002736;C0085084;C0338451;C0751072;C1843792;C3811918;C3888102;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;FRONTOTEMPORAL LOBAR DEGENERATION WITH TDP43 INCLUSIONS, GRN-RELATED;GRN-related frontotemporal dementia;Frontotemporal Dementia With Motor Neuron Disease;Amyotrophic Lateral Sclerosis, Familial
+6620	SNCB	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+6623	SNCG	False	6	C0085084;C0751072;C1862939;C1862941;C3542025;C3811918	Motor Neuron Disease;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE;GRN-related frontotemporal dementia
+9751	SNPH	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6638	SNRPN	True	5	C0002736;C0085084;C0270764;C1862941;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor Neuron Disease, Lower;Amyotrophic Lateral Sclerosis, Sporadic;Motor neuron atrophy
+8926	SNURF	False	5	C0002736;C0085084;C0270764;C1862941;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor Neuron Disease, Lower;Amyotrophic Lateral Sclerosis, Sporadic;Motor neuron atrophy
+6646	SOAT1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6647	SOD1	True	27	C0002736;C0030442;C0033790;C0085084;C0270763;C0270764;C0338451;C0393554;C0521659;C0543858;C0543859;C0749870;C0751072;C1833662;C1837728;C1859807;C1862939;C1862941;C3542025;C3715156;C3811918;C3888102;C4011788;C4024896;C4082299;C4509818;C4551993	Amyotrophic Lateral Sclerosis;Progressive bulbar palsy;Pseudobulbar Palsy;Motor Neuron Disease;Familial Motor Neuron Disease;Motor Neuron Disease, Lower;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;Motor Neuron Disease, Upper;Motor Neuron Disease, Secondary;Amyotrophic Lateral Sclerosis, Guam Form;Upper motor neuron signs;Frontotemporal Lobar Degeneration;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;AMYOTROPHIC LATERAL SCLEROSIS 8 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE;AMYOTROPHIC LATERAL SCLEROSIS 20;GRN-related frontotemporal dementia;Frontotemporal Dementia With Motor Neuron Disease;Behavioral variant of frontotemporal dementia;Motor neuron atrophy;Bulbar palsy;Facial onset sensory and motor neuronopathy syndrome;Amyotrophic Lateral Sclerosis, Familial
+6648	SOD2	False	9	C0002736;C0085084;C0393554;C0543859;C0751072;C1862939;C1862941;C3542025;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE;Amyotrophic Lateral Sclerosis, Familial
+6649	SOD3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+10580	SORBS1	False	1	C4024896	Motor neuron atrophy
+6272	SORT1	True	4	C0002736;C0338451;C0751072;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Familial
+6654	SOS1	True	3	C0002736;C0085084;C1859807	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder)
+6663	SOX10	False	2	C0002736;C1833296	Amyotrophic Lateral Sclerosis;FRONTOTEMPORAL DEMENTIA, CHROMOSOME 3-LINKED
+6657	SOX2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6660	SOX5	True	1	C0002736	Amyotrophic Lateral Sclerosis
+6662	SOX9	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6671	SP4	False	1	C0751072	Frontotemporal Lobar Degeneration
+653423	SPAG11A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+10407	SPAG11B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+26206	SPAG8	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+6683	SPAST	True	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+245711	SPDYA	False	1	C0002736	Amyotrophic Lateral Sclerosis
+80208	SPG11	False	8	C0002736;C0338451;C1859807;C1865412;C1865864;C3468114;C4024896;C4025723	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);Abnormal lower motor neuron morphology;AMYOTROPHIC LATERAL SCLEROSIS 5;Juvenile amyotrophic lateral sclerosis;Motor neuron atrophy;Abnormal upper motor neuron morphology
+51324	SPG21	False	1	C4021584	Frontotemporal cerebral atrophy
+6687	SPG7	False	1	C4025723	Abnormal upper motor neuron morphology
+6696	SPP1	False	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+6711	SPTBN1	True	1	C4551993	Amyotrophic Lateral Sclerosis, Familial
+6712	SPTBN2	True	1	C1839042	Upper motor neuron dysfunction
+10558	SPTLC1	False	1	C0338451	Frontotemporal dementia
+8878	SQSTM1	True	19	C0002736;C0085084;C0338451;C0393554;C0543859;C0751072;C1833662;C1839042;C1859807;C1862941;C1865412;C3811918;C3888102;C4011788;C4021584;C4024896;C4025723;C4082299;C4225326	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;Upper motor neuron dysfunction;AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;GRN-related frontotemporal dementia;Frontotemporal Dementia With Motor Neuron Disease;Behavioral variant of frontotemporal dementia;Frontotemporal cerebral atrophy;Motor neuron atrophy;Abnormal upper motor neuron morphology;Bulbar palsy;FRONTOTEMPORAL DEMENTIA AND/OR AMYOTROPHIC LATERAL SCLEROSIS 3
+80725	SRCIN1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6720	SREBF1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+63826	SRR	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23524	SRRM2	True	6	C0002736;C0338451;C0751072;C1862941;C3811918;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Sporadic;GRN-related frontotemporal dementia;Amyotrophic Lateral Sclerosis, Familial
+6428	SRSF3	True	1	C0338451	Frontotemporal dementia
+6429	SRSF4	True	1	C0338451	Frontotemporal dementia
+8683	SRSF9	True	1	C0338451	Frontotemporal dementia
+26039	SS18L1	False	3	C0002736;C0751072;C1862939	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1
+6750	SST	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+9705	ST18	False	1	C0338451	Frontotemporal dementia
+6487	ST3GAL3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6484	ST3GAL4	False	1	C0338451	Frontotemporal dementia
+6774	STAT3	True	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+6776	STAT5A	True	1	C0002736	Amyotrophic Lateral Sclerosis
+246744	STH	False	2	C0338451;C0751072	Frontotemporal dementia;Frontotemporal Lobar Degeneration
+65975	STK33	False	1	C4522181	Brachial Amyotrophic Diplegia
+27148	STK36	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3925	STMN1	True	6	C0002736;C0085084;C0270764;C1862941;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Motor Neuron Disease, Lower;Amyotrophic Lateral Sclerosis, Sporadic;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+11075	STMN2	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+55437	STRADB	False	2	C1859807;C3468114	AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);Juvenile amyotrophic lateral sclerosis
+10273	STUB1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+6812	STXBP1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6814	STXBP3	True	3	C0338451;C0751072;C3811918	Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+8803	SUCLA2	True	1	C0338451	Frontotemporal dementia
+57794	SUGP1	True	3	C0002736;C0751072;C1862941	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Sporadic
+6783	SULT1E1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7341	SUMO1	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+6613	SUMO2	True	1	C0002736	Amyotrophic Lateral Sclerosis
+6612	SUMO3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+25777	SUN2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+256979	SUN3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6827	SUPT4H1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+56241	SUSD2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+55638	SYBU	False	1	C0338451	Frontotemporal dementia
+6853	SYN1	False	1	C0338451	Frontotemporal dementia
+10492	SYNCRIP	True	3	C0338451;C0751072;C4024896	Frontotemporal dementia;Frontotemporal Lobar Degeneration;Motor neuron atrophy
+23345	SYNE1	True	1	C0085084	Motor Neuron Disease
+8831	SYNGAP1	False	1	C0751072	Frontotemporal Lobar Degeneration
+8867	SYNJ1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+8871	SYNJ2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23336	SYNM	True	1	C4011788	Behavioral variant of frontotemporal dementia
+6855	SYP	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+6857	SYT1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+127833	SYT2	False	1	C4082299	Bulbar palsy
+143425	SYT9	False	1	C0002736	Amyotrophic Lateral Sclerosis
+319100	TAAR6	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6863	TAC1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6869	TACR1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6883	TAF12	False	1	C4551993	Amyotrophic Lateral Sclerosis, Familial
+8148	TAF15	True	7	C0002736;C0338451;C0751072;C1843792;C1862939;C3811918;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;FRONTOTEMPORAL LOBAR DEGENERATION WITH TDP43 INCLUSIONS, GRN-RELATED;AMYOTROPHIC LATERAL SCLEROSIS 1;GRN-related frontotemporal dementia;Amyotrophic Lateral Sclerosis, Familial
+10010	TANK	False	2	C0002736;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Familial
+23435	TARDBP	True	23	C0002736;C0085084;C0270763;C0338451;C0393554;C0543859;C0751072;C1833662;C1843792;C1862939;C1862941;C1865412;C2677565;C3148872;C3150169;C3502417;C3811918;C3888102;C4011788;C4024896;C4025723;C4082299;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Familial Motor Neuron Disease;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Frontotemporal Lobar Degeneration;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;FRONTOTEMPORAL LOBAR DEGENERATION WITH TDP43 INCLUSIONS, GRN-RELATED;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;AMYOTROPHIC LATERAL SCLEROSIS 10 (disorder);FRONTOTEMPORAL DEMENTIA WITH TDP43 INCLUSIONS, TARDBP-RELATED;FRONTOTEMPORAL LOBAR DEGENERATION WITH TDP43 INCLUSIONS, TARDBP-RELATED;Amyotrophic Lateral Sclerosis 10;GRN-related frontotemporal dementia;Frontotemporal Dementia With Motor Neuron Disease;Behavioral variant of frontotemporal dementia;Motor neuron atrophy;Abnormal upper motor neuron morphology;Bulbar palsy;Amyotrophic Lateral Sclerosis, Familial
+6898	TAT	False	1	C0002736	Amyotrophic Lateral Sclerosis
+1155	TBCB	False	1	C0002736	Amyotrophic Lateral Sclerosis
+6905	TBCE	True	1	C0085084	Motor Neuron Disease
+29110	TBK1	False	14	C0002736;C0085084;C0338451;C0751072;C1862939;C1862941;C1865412;C3811918;C3888102;C4011788;C4025723;C4082299;C4225325;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;GRN-related frontotemporal dementia;Frontotemporal Dementia With Motor Neuron Disease;Behavioral variant of frontotemporal dementia;Abnormal upper motor neuron morphology;Bulbar palsy;FRONTOTEMPORAL DEMENTIA AND/OR AMYOTROPHIC LATERAL SCLEROSIS 4;Amyotrophic Lateral Sclerosis, Familial
+6929	TCF3	True	1	C0002736	Amyotrophic Lateral Sclerosis
+55775	TDP1	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+7003	TEAD1	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+9895	TECPR2	False	1	C0085084	Motor Neuron Disease
+146705	TEPSIN	False	1	C0338451	Frontotemporal dementia
+7019	TFAM	True	1	C0002736	Amyotrophic Lateral Sclerosis
+7942	TFEB	True	1	C0002736	Amyotrophic Lateral Sclerosis
+10342	TFG	True	1	C4024896	Motor neuron atrophy
+24144	TFIP11	True	1	C0002736	Amyotrophic Lateral Sclerosis
+7980	TFPI2	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+7040	TGFB1	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+7042	TGFB2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7052	TGM2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+343641	TGM6	False	2	C0002736;C0033790	Amyotrophic Lateral Sclerosis;Pseudobulbar Palsy
+117145	THEM4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7070	THY1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7072	TIA1	True	4	C0002736;C0085084;C0338451;C0751072	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration
+7074	TIAM1	False	4	C0002736;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+148022	TICAM1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+57103	TIGAR	True	1	C0085084	Motor Neuron Disease
+7076	TIMP1	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+7077	TIMP2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7078	TIMP3	False	2	C0002736;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Familial
+7084	TK2	False	1	C4082299	Bulbar palsy
+7090	TLE3	True	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+7097	TLR2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7099	TLR4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+54732	TMED9	False	4	C0002736;C0085084;C0338451;C0751072	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration
+54664	TMEM106B	False	10	C0002736;C0085084;C0338451;C0751072;C1839042;C1862941;C1865412;C3811918;C4011788;C4021584	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Upper motor neuron dysfunction;Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia;Frontotemporal cerebral atrophy
+55287	TMEM40	False	1	C0751072	Frontotemporal Lobar Degeneration
+440026	TMEM41B	False	1	C4024896	Motor neuron atrophy
+84000	TMPRSS13	False	2	C0002736;C4551993	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Familial
+164656	TMPRSS6	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+7114	TMSB4X	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+7124	TNF	False	7	C0002736;C0085084;C0338451;C0751072;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+8795	TNFRSF10B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7132	TNFRSF1A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7133	TNFRSF1B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+27242	TNFRSF21	False	3	C0002736;C0393554;C0543859	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form
+8718	TNFRSF25	False	1	C0270764	Motor Neuron Disease, Lower
+8740	TNFSF14	False	1	C0002736	Amyotrophic Lateral Sclerosis
+23043	TNIK	True	1	C0338451	Frontotemporal dementia
+10318	TNIP1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+8658	TNKS	False	1	C0002736	Amyotrophic Lateral Sclerosis
+3842	TNPO1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+10452	TOMM40	False	3	C0338451;C0751072;C4011788	Frontotemporal dementia;Frontotemporal Lobar Degeneration;Behavioral variant of frontotemporal dementia
+7157	TP53	True	6	C0002736;C0085084;C0393554;C0543859;C1862941;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;Amyotrophic Lateral Sclerosis, Sporadic;Motor neuron atrophy
+7161	TP73	False	1	C0002736	Amyotrophic Lateral Sclerosis
+121278	TPH2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7169	TPM2	False	1	C4082299	Bulbar palsy
+7170	TPM3	True	1	C4082299	Bulbar palsy
+7173	TPO	False	1	C0002736	Amyotrophic Lateral Sclerosis
+11076	TPPP	False	4	C0002736;C0085084;C0338451;C0751072	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration
+25823	TPSG1	False	1	C4011788	Behavioral variant of frontotemporal dementia
+66008	TRAK2	False	2	C1859807;C3468114	AMYOTROPHIC LATERAL SCLEROSIS 2, JUVENILE (disorder);Juvenile amyotrophic lateral sclerosis
+54209	TREM2	False	10	C0002736;C0085084;C0338451;C0751072;C1839042;C1862941;C1865412;C3811918;C4011788;C4021584	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;Upper motor neuron dysfunction;Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;GRN-related frontotemporal dementia;Behavioral variant of frontotemporal dementia;Frontotemporal cerebral atrophy
+5987	TRIM27	False	1	C0002736	Amyotrophic Lateral Sclerosis
+140691	TRIM69	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7226	TRPM2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+54822	TRPM7	False	5	C0002736;C0543859;C1865412;C4016940;C4082299	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Guam Form;Abnormal lower motor neuron morphology;AMYOTROPHIC LATERAL SCLEROSIS-PARKINSONISM/DEMENTIA COMPLEX 1, SUSCEPTIBILITY TO;Bulbar palsy
+59341	TRPV4	False	1	C3661519	Hereditary Motor Neuronopathy
+10665	TSBP1	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+10194	TSHZ1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+706	TSPO	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+84630	TTBK1	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+146057	TTBK2	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+7273	TTN	True	1	C0002736	Amyotrophic Lateral Sclerosis
+7276	TTR	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7846	TUBA1A	False	2	C0002736;C1833662	Amyotrophic Lateral Sclerosis;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+10376	TUBA1B	True	2	C0002736;C1833662	Amyotrophic Lateral Sclerosis;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+7277	TUBA4A	True	5	C0002736;C0338451;C4015512;C4016414;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;AMYOTROPHIC LATERAL SCLEROSIS 22 WITH OR WITHOUT FRONTOTEMPORAL DEMENTIA;AMYOTROPHIC LATERAL SCLEROSIS 22 WITH FRONTOTEMPORAL DEMENTIA;Amyotrophic Lateral Sclerosis, Familial
+27229	TUBGCP4	False	1	C0002736	Amyotrophic Lateral Sclerosis
+11334	TUSC2	True	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+56652	TWNK	False	1	C0749870	Upper motor neuron signs
+7295	TXN	False	3	C0002736;C1862939;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Familial
+7296	TXNRD1	True	2	C1862939;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Familial
+7301	TYRO3	False	1	C0338451	Frontotemporal dementia
+7305	TYROBP	False	1	C4025723	Abnormal upper motor neuron morphology
+51271	UBAP1	False	2	C0751072;C3811918	Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+7316	UBC	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7328	UBE2H	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7335	UBE2V1	False	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+29855	UBN1	False	3	C0002736;C0338451;C1843792	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;FRONTOTEMPORAL LOBAR DEGENERATION WITH TDP43 INCLUSIONS, GRN-RELATED
+29979	UBQLN1	True	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+29978	UBQLN2	True	10	C0002736;C0085084;C0338451;C0751072;C1862939;C1862941;C3275459;C3811918;C3888102;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 15, WITH OR WITHOUT FRONTOTEMPORAL DEMENTIA;GRN-related frontotemporal dementia;Frontotemporal Dementia With Motor Neuron Disease;Amyotrophic Lateral Sclerosis, Familial
+56893	UBQLN4	False	1	C1862939	AMYOTROPHIC LATERAL SCLEROSIS 1
+7345	UCHL1	True	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+7350	UCP1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7351	UCP2	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7352	UCP3	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7357	UGCG	False	1	C0002736	Amyotrophic Lateral Sclerosis
+9094	UNC119	True	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+23025	UNC13A	False	8	C0002736;C0338451;C0393554;C0543859;C1842675;C1862939;C1862941;C3542025	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Amyotrophic Lateral Sclerosis With Dementia;Amyotrophic Lateral Sclerosis, Guam Form;AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+10497	UNC13B	False	1	C0002736	Amyotrophic Lateral Sclerosis
+5976	UPF1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+105375355	UPK3B	False	1	C0085084	Motor Neuron Disease
+7402	UTRN	True	1	C0002736	Amyotrophic Lateral Sclerosis
+10911	UTS2	False	1	C4522181	Brachial Amyotrophic Diplegia
+6843	VAMP1	True	1	C4082299	Bulbar palsy
+9218	VAPA	True	1	C0002736	Amyotrophic Lateral Sclerosis
+9217	VAPB	True	7	C0002736;C0085084;C1837728;C1854059;C1862939;C4024896;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;AMYOTROPHIC LATERAL SCLEROSIS 8 (disorder);AMYOTROPHIC LATERAL SCLEROSIS, TYPICAL;AMYOTROPHIC LATERAL SCLEROSIS 1;Motor neuron atrophy;Amyotrophic Lateral Sclerosis, Familial
+7415	VCP	True	21	C0002736;C0085084;C0338451;C0751072;C1833662;C1839042;C1843792;C1862939;C1862941;C1865412;C3151403;C3152097;C3811918;C3888102;C4011788;C4021584;C4024896;C4025723;C4082299;C4551951;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA;Upper motor neuron dysfunction;FRONTOTEMPORAL LOBAR DEGENERATION WITH TDP43 INCLUSIONS, GRN-RELATED;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Abnormal lower motor neuron morphology;AMYOTROPHIC LATERAL SCLEROSIS 14 WITH OR WITHOUT FRONTOTEMPORAL DEMENTIA;AMYOTROPHIC LATERAL SCLEROSIS 14 WITHOUT FRONTOTEMPORAL DEMENTIA;GRN-related frontotemporal dementia;Frontotemporal Dementia With Motor Neuron Disease;Behavioral variant of frontotemporal dementia;Frontotemporal cerebral atrophy;Motor neuron atrophy;Abnormal upper motor neuron morphology;Bulbar palsy;Inclusion Body Myopathy with Early-Onset Paget Disease with or without Frontotemporal Dementia 1;Amyotrophic Lateral Sclerosis, Familial
+7416	VDAC1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+7421	VDR	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7422	VEGFA	False	9	C0002736;C0085084;C0338451;C0751072;C1862939;C1862941;C3542025;C3811918;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Frontotemporal dementia;Frontotemporal Lobar Degeneration;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE;GRN-related frontotemporal dementia;Motor neuron atrophy
+7423	VEGFB	False	1	C4024896	Motor neuron atrophy
+7425	VGF	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7431	VIM	True	9	C0002736;C0085084;C0270763;C0270764;C0521659;C0543858;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;Familial Motor Neuron Disease;Motor Neuron Disease, Lower;Motor Neuron Disease, Upper;Motor Neuron Disease, Secondary;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+137492	VPS37A	False	1	C0521659	Motor Neuron Disease, Upper
+51542	VPS54	False	6	C0002736;C0085084;C1862939;C1862941;C3542025;C4024896	Amyotrophic Lateral Sclerosis;Motor Neuron Disease;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE;Motor neuron atrophy
+7443	VRK1	False	2	C0002736;C0085084	Amyotrophic Lateral Sclerosis;Motor Neuron Disease
+7447	VSNL1	False	3	C0002736;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+9897	WASHC5	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+55255	WDR41	False	2	C0002736;C0751072	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration
+23038	WDTC1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+55062	WIPI1	False	1	C0002736	Amyotrophic Lateral Sclerosis
+65125	WNK1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+7472	WNT2	False	1	C0751072	Frontotemporal Lobar Degeneration
+89780	WNT3A	False	1	C0002736	Amyotrophic Lateral Sclerosis
+7474	WNT5A	False	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+7476	WNT7A	False	3	C1862939;C1862941;C4551993	AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+7494	XBP1	False	3	C0002736;C0751072;C4551993	Amyotrophic Lateral Sclerosis;Frontotemporal Lobar Degeneration;Amyotrophic Lateral Sclerosis, Familial
+7498	XDH	False	1	C0002736	Amyotrophic Lateral Sclerosis
+331	XIAP	True	4	C0002736;C1862939;C1862941;C4551993	Amyotrophic Lateral Sclerosis;AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;Amyotrophic Lateral Sclerosis, Familial
+7514	XPO1	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+9213	XPR1	False	2	C0002736;C4522181	Amyotrophic Lateral Sclerosis;Brachial Amyotrophic Diplegia
+7515	XRCC1	True	2	C0002736;C1862941	Amyotrophic Lateral Sclerosis;Amyotrophic Lateral Sclerosis, Sporadic
+7520	XRCC5	True	2	C0002736;C0338451	Amyotrophic Lateral Sclerosis;Frontotemporal dementia
+54464	XRN1	True	1	C0002736	Amyotrophic Lateral Sclerosis
+10971	YWHAQ	True	1	C0002736	Amyotrophic Lateral Sclerosis
+7534	YWHAZ	True	1	C0002736	Amyotrophic Lateral Sclerosis
+9839	ZEB2	False	1	C0085084	Motor Neuron Disease
+79752	ZFAND1	False	1	C1833662	INCLUSION BODY MYOPATHY WITH EARLY-ONSET PAGET DISEASE AND FRONTOTEMPORAL DEMENTIA
+23503	ZFYVE26	False	6	C0033790;C0338451;C1842675;C1862939;C1862941;C3542025	Pseudobulbar Palsy;Frontotemporal dementia;AMYOTROPHIC LATERAL SCLEROSIS 6 (disorder);AMYOTROPHIC LATERAL SCLEROSIS 1;Amyotrophic Lateral Sclerosis, Sporadic;AMYOTROPHIC LATERAL SCLEROSIS 1, AUTOSOMAL RECESSIVE
+118813	ZFYVE27	False	1	C0002736	Amyotrophic Lateral Sclerosis
+55888	ZKSCAN7	False	1	C0002736	Amyotrophic Lateral Sclerosis
+64397	ZNF106	False	2	C0002736;C4024896	Amyotrophic Lateral Sclerosis;Motor neuron atrophy
+56242	ZNF253	False	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+80818	ZNF436	False	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+57473	ZNF512B	True	1	C0002736	Amyotrophic Lateral Sclerosis
+148266	ZNF569	False	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+23361	ZNF629	True	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+619279	ZNF704	False	1	C0002736	Amyotrophic Lateral Sclerosis
+284390	ZNF763	False	4	C0002736;C0338451;C0751072;C3811918	Amyotrophic Lateral Sclerosis;Frontotemporal dementia;Frontotemporal Lobar Degeneration;GRN-related frontotemporal dementia
+9326	ZNHIT3	False	1	C0002736	Amyotrophic Lateral Sclerosis

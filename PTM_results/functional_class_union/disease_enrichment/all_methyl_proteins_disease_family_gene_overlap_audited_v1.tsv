@@ -1,0 +1,65 @@
+family_1	family_2	family_1_genes	family_2_genes	overlap_genes	jaccard	overlap_coefficient	substantial_overlap_flag
+ALS / motor neuron / FTD	ALS / motor neuron / FTD	1474	1474	1474	1.0	1.0	True
+ALS / motor neuron / FTD	Alzheimer / tau / dementia	1474	3435	957	0.24215587044534412	0.6492537313432836	True
+ALS / motor neuron / FTD	Parkinsonism	1474	2104	726	0.25455820476858343	0.4925373134328358	False
+ALS / motor neuron / FTD	Ataxia / cerebellar degeneration	1474	1827	477	0.16890934844192634	0.32360922659430125	False
+ALS / motor neuron / FTD	Myopathy / muscle / cardiomyopathy	1474	2797	710	0.19938219601235607	0.4816824966078697	False
+ALS / motor neuron / FTD	Cancer / neoplasia	1474	13574	1410	0.10338759348878135	0.9565807327001357	True
+ALS / motor neuron / FTD	Immune / inflammatory	1474	6521	1074	0.1551798872995232	0.728629579375848	True
+ALS / motor neuron / FTD	Developmental / congenital syndromes	1474	8677	1252	0.14068996516462523	0.8493894165535957	True
+Alzheimer / tau / dementia	ALS / motor neuron / FTD	3435	1474	957	0.24215587044534412	0.6492537313432836	True
+Alzheimer / tau / dementia	Alzheimer / tau / dementia	3435	3435	3435	1.0	1.0	True
+Alzheimer / tau / dementia	Parkinsonism	3435	2104	1301	0.30698442661632847	0.6183460076045627	True
+Alzheimer / tau / dementia	Ataxia / cerebellar degeneration	3435	1827	836	0.18888386805241753	0.4575807334428024	False
+Alzheimer / tau / dementia	Myopathy / muscle / cardiomyopathy	3435	2797	1340	0.2739165985282093	0.47908473364318915	False
+Alzheimer / tau / dementia	Cancer / neoplasia	3435	13574	3245	0.235759953501889	0.9446870451237264	True
+Alzheimer / tau / dementia	Immune / inflammatory	3435	6521	2388	0.31553911205074	0.6951965065502184	True
+Alzheimer / tau / dementia	Developmental / congenital syndromes	3435	8677	2774	0.2970657528378668	0.8075691411935954	True
+Parkinsonism	ALS / motor neuron / FTD	2104	1474	726	0.25455820476858343	0.4925373134328358	False
+Parkinsonism	Alzheimer / tau / dementia	2104	3435	1301	0.30698442661632847	0.6183460076045627	True
+Parkinsonism	Parkinsonism	2104	2104	2104	1.0	1.0	True
+Parkinsonism	Ataxia / cerebellar degeneration	2104	1827	609	0.18332329921733895	0.3333333333333333	False
+Parkinsonism	Myopathy / muscle / cardiomyopathy	2104	2797	898	0.22433175118661003	0.4268060836501901	False
+Parkinsonism	Cancer / neoplasia	2104	13574	1983	0.1447973713033954	0.9424904942965779	True
+Parkinsonism	Immune / inflammatory	2104	6521	1491	0.2089991589571068	0.7086501901140685	True
+Parkinsonism	Developmental / congenital syndromes	2104	8677	1715	0.18916832120008825	0.8151140684410646	True
+Ataxia / cerebellar degeneration	ALS / motor neuron / FTD	1827	1474	477	0.16890934844192634	0.32360922659430125	False
+Ataxia / cerebellar degeneration	Alzheimer / tau / dementia	1827	3435	836	0.18888386805241753	0.4575807334428024	False
+Ataxia / cerebellar degeneration	Parkinsonism	1827	2104	609	0.18332329921733895	0.3333333333333333	False
+Ataxia / cerebellar degeneration	Ataxia / cerebellar degeneration	1827	1827	1827	1.0	1.0	True
+Ataxia / cerebellar degeneration	Myopathy / muscle / cardiomyopathy	1827	2797	803	0.21015440984035594	0.4395183360700602	False
+Ataxia / cerebellar degeneration	Cancer / neoplasia	1827	13574	1601	0.11601449275362319	0.8762999452654625	True
+Ataxia / cerebellar degeneration	Immune / inflammatory	1827	6521	1032	0.14106068890103882	0.5648604269293924	True
+Ataxia / cerebellar degeneration	Developmental / congenital syndromes	1827	8677	1662	0.18796652341099299	0.909688013136289	True
+Myopathy / muscle / cardiomyopathy	ALS / motor neuron / FTD	2797	1474	710	0.19938219601235607	0.4816824966078697	False
+Myopathy / muscle / cardiomyopathy	Alzheimer / tau / dementia	2797	3435	1340	0.2739165985282093	0.47908473364318915	False
+Myopathy / muscle / cardiomyopathy	Parkinsonism	2797	2104	898	0.22433175118661003	0.4268060836501901	False
+Myopathy / muscle / cardiomyopathy	Ataxia / cerebellar degeneration	2797	1827	803	0.21015440984035594	0.4395183360700602	False
+Myopathy / muscle / cardiomyopathy	Myopathy / muscle / cardiomyopathy	2797	2797	2797	1.0	1.0	True
+Myopathy / muscle / cardiomyopathy	Cancer / neoplasia	2797	13574	2615	0.1900988659494039	0.9349302824454773	True
+Myopathy / muscle / cardiomyopathy	Immune / inflammatory	2797	6521	1979	0.2696552663850661	0.7075437969252771	True
+Myopathy / muscle / cardiomyopathy	Developmental / congenital syndromes	2797	8677	2459	0.2727676095396561	0.879156238827315	True
+Cancer / neoplasia	ALS / motor neuron / FTD	13574	1474	1410	0.10338759348878135	0.9565807327001357	True
+Cancer / neoplasia	Alzheimer / tau / dementia	13574	3435	3245	0.235759953501889	0.9446870451237264	True
+Cancer / neoplasia	Parkinsonism	13574	2104	1983	0.1447973713033954	0.9424904942965779	True
+Cancer / neoplasia	Ataxia / cerebellar degeneration	13574	1827	1601	0.11601449275362319	0.8762999452654625	True
+Cancer / neoplasia	Myopathy / muscle / cardiomyopathy	13574	2797	2615	0.1900988659494039	0.9349302824454773	True
+Cancer / neoplasia	Cancer / neoplasia	13574	13574	13574	1.0	1.0	True
+Cancer / neoplasia	Immune / inflammatory	13574	6521	6024	0.4281145618648284	0.9237846955988346	True
+Cancer / neoplasia	Developmental / congenital syndromes	13574	8677	7773	0.5368835474513054	0.8958165264492336	True
+Immune / inflammatory	ALS / motor neuron / FTD	6521	1474	1074	0.1551798872995232	0.728629579375848	True
+Immune / inflammatory	Alzheimer / tau / dementia	6521	3435	2388	0.31553911205074	0.6951965065502184	True
+Immune / inflammatory	Parkinsonism	6521	2104	1491	0.2089991589571068	0.7086501901140685	True
+Immune / inflammatory	Ataxia / cerebellar degeneration	6521	1827	1032	0.14106068890103882	0.5648604269293924	True
+Immune / inflammatory	Myopathy / muscle / cardiomyopathy	6521	2797	1979	0.2696552663850661	0.7075437969252771	True
+Immune / inflammatory	Cancer / neoplasia	6521	13574	6024	0.4281145618648284	0.9237846955988346	True
+Immune / inflammatory	Immune / inflammatory	6521	6521	6521	1.0	1.0	True
+Immune / inflammatory	Developmental / congenital syndromes	6521	8677	4842	0.4675550405561993	0.7425241527373102	True
+Developmental / congenital syndromes	ALS / motor neuron / FTD	8677	1474	1252	0.14068996516462523	0.8493894165535957	True
+Developmental / congenital syndromes	Alzheimer / tau / dementia	8677	3435	2774	0.2970657528378668	0.8075691411935954	True
+Developmental / congenital syndromes	Parkinsonism	8677	2104	1715	0.18916832120008825	0.8151140684410646	True
+Developmental / congenital syndromes	Ataxia / cerebellar degeneration	8677	1827	1662	0.18796652341099299	0.909688013136289	True
+Developmental / congenital syndromes	Myopathy / muscle / cardiomyopathy	8677	2797	2459	0.2727676095396561	0.879156238827315	True
+Developmental / congenital syndromes	Cancer / neoplasia	8677	13574	7773	0.5368835474513054	0.8958165264492336	True
+Developmental / congenital syndromes	Immune / inflammatory	8677	6521	4842	0.4675550405561993	0.7425241527373102	True
+Developmental / congenital syndromes	Developmental / congenital syndromes	8677	8677	8677	1.0	1.0	True

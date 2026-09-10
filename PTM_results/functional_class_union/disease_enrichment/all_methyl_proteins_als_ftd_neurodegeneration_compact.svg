@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="480" viewBox="0 0 1050 480">
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#1d1d1d}.label{font-size:20px}.value{font-size:17px}.tick{font-size:15px}.note{font-size:14px;fill:#555}.title{font-size:24px;font-weight:700}</style>
+<text x="335" y="34" class="title">Neurodegenerative disease ontology enrichment</text>
+<line x1="373.3" y1="60" x2="373.3" y2="412" stroke="#e7e7e7" stroke-width="1"/>
+<text x="373.3" y="437" text-anchor="middle" class="tick">1</text>
+<line x1="468.9" y1="60" x2="468.9" y2="412" stroke="#e7e7e7" stroke-width="1"/>
+<text x="468.9" y="437" text-anchor="middle" class="tick">1.25</text>
+<line x1="564.6" y1="60" x2="564.6" y2="412" stroke="#e7e7e7" stroke-width="1"/>
+<text x="564.6" y="437" text-anchor="middle" class="tick">1.5</text>
+<line x1="660.2" y1="60" x2="660.2" y2="412" stroke="#e7e7e7" stroke-width="1"/>
+<text x="660.2" y="437" text-anchor="middle" class="tick">1.75</text>
+<line x1="755.9" y1="60" x2="755.9" y2="412" stroke="#e7e7e7" stroke-width="1"/>
+<text x="755.9" y="437" text-anchor="middle" class="tick">2</text>
+<line x1="373.3" y1="60" x2="373.3" y2="412" stroke="#4b4b4b" stroke-width="1.5"/>
+<text x="317" y="78" text-anchor="end" class="label">Motor neuron atrophy</text>
+<line x1="373.3" y1="72" x2="701.9" y2="72" stroke="#d8c5bc" stroke-width="7" stroke-linecap="round"/>
+<circle cx="701.9" cy="72" r="10" fill="#a85b45" stroke="white" stroke-width="2"/>
+<text x="719.9" y="78" class="value">qBH=7.3×10^-6; n=63</text>
+<text x="317" y="145" text-anchor="end" class="label">Motor neuron disease</text>
+<line x1="373.3" y1="139" x2="645.3" y2="139" stroke="#d8c5bc" stroke-width="7" stroke-linecap="round"/>
+<circle cx="645.3" cy="139" r="10" fill="#a85b45" stroke="white" stroke-width="2"/>
+<text x="663.3" y="145" class="value">qBH=9.4×10^-6; n=81</text>
+<text x="317" y="212" text-anchor="end" class="label">Frontotemporal dementia (FTD)</text>
+<line x1="373.3" y1="206" x2="567.4" y2="206" stroke="#d8c5bc" stroke-width="7" stroke-linecap="round"/>
+<circle cx="567.4" cy="206" r="10" fill="#a85b45" stroke="white" stroke-width="2"/>
+<text x="585.4" y="212" class="value">qBH=4.8×10^-5; n=117</text>
+<text x="317" y="279" text-anchor="end" class="label">Tauopathies</text>
+<line x1="373.3" y1="273" x2="562.3" y2="273" stroke="#d8c5bc" stroke-width="7" stroke-linecap="round"/>
+<circle cx="562.3" cy="273" r="10" fill="#a85b45" stroke="white" stroke-width="2"/>
+<text x="580.3" y="279" class="value">qBH=5.6×10^-4; n=92</text>
+<text x="317" y="346" text-anchor="end" class="label">Familial ALS</text>
+<line x1="373.3" y1="340" x2="572.9" y2="340" stroke="#d8c5bc" stroke-width="7" stroke-linecap="round"/>
+<circle cx="572.9" cy="340" r="10" fill="#a85b45" stroke="white" stroke-width="2"/>
+<text x="590.9" y="346" class="value">qBH=0.0118; n=50</text>
+<text x="555.0" y="460" text-anchor="middle" class="label">Fold enrichment vs reviewed-human background</text>
+<text x="1038" y="472" text-anchor="end" class="note">Two-sided enrichment test; BH adjustment across ontology terms</text>
+</svg>

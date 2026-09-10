@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="726" viewBox="0 0 1280 726">
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#1d1d1d}.title{font-size:25px;font-weight:700}.label{font-size:19px}.value{font-size:16px}.tick{font-size:14px}.note{font-size:14px;fill:#666}</style>
+<text x="420" y="38" class="title">Disease ontology enrichment among methylarginine proteins</text>
+<line x1="466.6" y1="64" x2="466.6" y2="654" stroke="#E7E7E7"/>
+<text x="466.6" y="679" text-anchor="middle" class="tick">1</text>
+<line x1="544.2" y1="64" x2="544.2" y2="654" stroke="#E7E7E7"/>
+<text x="544.2" y="679" text-anchor="middle" class="tick">1.25</text>
+<line x1="621.9" y1="64" x2="621.9" y2="654" stroke="#E7E7E7"/>
+<text x="621.9" y="679" text-anchor="middle" class="tick">1.5</text>
+<line x1="699.6" y1="64" x2="699.6" y2="654" stroke="#E7E7E7"/>
+<text x="699.6" y="679" text-anchor="middle" class="tick">1.75</text>
+<line x1="777.2" y1="64" x2="777.2" y2="654" stroke="#E7E7E7"/>
+<text x="777.2" y="679" text-anchor="middle" class="tick">2</text>
+<line x1="854.9" y1="64" x2="854.9" y2="654" stroke="#E7E7E7"/>
+<text x="854.9" y="679" text-anchor="middle" class="tick">2.25</text>
+<line x1="466.6" y1="64" x2="466.6" y2="654" stroke="#444" stroke-width="1.5"/>
+<text x="402" y="120.2" text-anchor="end" class="label">Immune / inflammatory</text>
+<line x1="466.6" y1="114.2" x2="561.0" y2="114.2" stroke="#D8C5BC" stroke-width="7" stroke-linecap="round"/>
+<circle cx="561.0" cy="114.2" r="10" fill="#A85B45" stroke="white" stroke-width="2"/>
+<text x="579.0" y="120.2" class="value">BH-adjusted p=4.6e-14; n=1735</text>
+<text x="402" y="191.7" text-anchor="end" class="label">Parkinsonism</text>
+<line x1="466.6" y1="185.7" x2="607.1" y2="185.7" stroke="#D8C5BC" stroke-width="7" stroke-linecap="round"/>
+<circle cx="607.1" cy="185.7" r="10" fill="#A85B45" stroke="white" stroke-width="2"/>
+<text x="625.1" y="191.7" class="value">BH-adjusted p=6.9e-13; n=626</text>
+<text x="402" y="263.2" text-anchor="end" class="label">Alzheimer / tau / dementia</text>
+<line x1="466.6" y1="257.2" x2="621.5" y2="257.2" stroke="#D8C5BC" stroke-width="7" stroke-linecap="round"/>
+<circle cx="621.5" cy="257.2" r="10" fill="#A85B45" stroke="white" stroke-width="2"/>
+<text x="639.5" y="263.2" class="value">BH-adjusted p=3.2e-21; n=1021</text>
+<text x="402" y="334.7" text-anchor="end" class="label">Myopathy / muscle / cardiomyopathy</text>
+<line x1="466.6" y1="328.7" x2="652.2" y2="328.7" stroke="#D8C5BC" stroke-width="7" stroke-linecap="round"/>
+<circle cx="652.2" cy="328.7" r="10" fill="#A85B45" stroke="white" stroke-width="2"/>
+<text x="670.2" y="334.7" class="value">BH-adjusted p=2.9e-24; n=871</text>
+<text x="402" y="406.2" text-anchor="end" class="label">Developmental / congenital syndromes</text>
+<line x1="466.6" y1="400.2" x2="674.2" y2="400.2" stroke="#D8C5BC" stroke-width="7" stroke-linecap="round"/>
+<circle cx="674.2" cy="400.2" r="10" fill="#A85B45" stroke="white" stroke-width="2"/>
+<text x="692.2" y="406.2" class="value">BH-adjusted p=6.6e-52; n=2479</text>
+<text x="402" y="477.7" text-anchor="end" class="label">ALS / motor neuron / FTD</text>
+<line x1="466.6" y1="471.7" x2="691.0" y2="471.7" stroke="#D8C5BC" stroke-width="7" stroke-linecap="round"/>
+<circle cx="691.0" cy="471.7" r="10" fill="#A85B45" stroke="white" stroke-width="2"/>
+<text x="709.0" y="477.7" class="value">BH-adjusted p=1.2e-19; n=492</text>
+<text x="402" y="549.2" text-anchor="end" class="label">Ataxia / cerebellar degeneration</text>
+<line x1="466.6" y1="543.2" x2="755.7" y2="543.2" stroke="#D8C5BC" stroke-width="7" stroke-linecap="round"/>
+<circle cx="755.7" cy="543.2" r="10" fill="#A85B45" stroke="white" stroke-width="2"/>
+<text x="773.7" y="549.2" class="value">BH-adjusted p=4.2e-34; n=647</text>
+<text x="402" y="620.7" text-anchor="end" class="label">Cancer / neoplasia</text>
+<line x1="466.6" y1="614.7" x2="891.7" y2="614.7" stroke="#D8C5BC" stroke-width="7" stroke-linecap="round"/>
+<circle cx="891.7" cy="614.7" r="10" fill="#A85B45" stroke="white" stroke-width="2"/>
+<text x="909.7" y="620.7" class="value">BH-adjusted p=5.4e-110; n=3774</text>
+<text x="700.0" y="704" text-anchor="middle" class="label">Odds ratio vs reviewed-human background</text>
+</svg>
