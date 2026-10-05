@@ -205,6 +205,62 @@ pres.addSection({ title: "ALS enrichment" });
   s.addText("Residue", { x: X(400) - 0.6, y: ay + 0.3, w: 1.2, h: 0.25, fontSize: 12, color: C.accent6, align: "center", margin: 0, isTextBox: true });
 }
 
+// ---------- condensates (Maron 2021 Fig. 7 analogue) ----------
+{
+  const cd = D.condensates;
+  const [als, meth, prot] = cd.groups;
+  const s = content("ALS enrichment", `${Math.round(als.sg_pct)}% of methylated ALS proteins are stress-granule proteins`,
+    "Methylarginine marks condensate-forming proteins (Maron 2021, Fig. 7); ALS proteins are the extreme case",
+    "Condensate membership: CD-CODE. Methylation in FUS RGG regions suppresses phase separation and stress-granule partitioning; FTD-FUS hypomethylation promotes it (Hofweber et al., Cell 2018; Qamar et al., Cell 2018).",
+    `Any condensate: ALS ${als.any_pct}% (n=${als.n}), all methylated ${meth.any_pct}%, proteome ${prot.any_pct}%. Stress granule: ${als.sg_pct}%, ${meth.sg_pct}%, ${prot.sg_pct}%.\n` +
+    "Caveats: CD-CODE is literature-curated, and ALS proteins are among the most studied stress-granule proteins, so part of this is ascertainment. " +
+    "RNA binding explains some of the overlap. Maron 2021 Fig. 7 shows methylarginine proteins are more disordered, charged and LLPS-prone (PScore) than the proteome.");
+  s.addChart(pres.charts.BAR, [
+    { name: "In any condensate", labels: cd.groups.map((g) => `${g.label}\n(n = ${g.n.toLocaleString("en-US")})`), values: cd.groups.map((g) => g.any_pct) },
+    { name: "In stress granules", labels: cd.groups.map((g) => `${g.label}\n(n = ${g.n.toLocaleString("en-US")})`), values: cd.groups.map((g) => g.sg_pct) },
+  ], {
+    x: 0.6, y: 1.75, w: 8.6, h: 4.85, barDir: "col", barGapWidthPct: 60, barOverlapPct: -10,
+    chartColors: [HEX.light, HEX.red],
+    showValue: true, dataLabelPosition: "outEnd", dataLabelFormatCode: '0"%"', dataLabelFontSize: 16, dataLabelFontBold: true,
+    dataLabelColor: HEX.ink, dataLabelFontFace: "+mn-lt",
+    catAxisLabelColor: HEX.ink, catAxisLabelFontSize: 13, catAxisLabelFontFace: "+mn-lt", catAxisMajorTickMark: "none",
+    valAxisHidden: true, valAxisMinVal: 0, valAxisMaxVal: 100, valGridLine: { style: "none" }, catGridLine: { style: "none" },
+    showLegend: true, legendPos: "t", legendFontSize: 13, legendFontFace: "+mn-lt", legendColor: HEX.ink,
+    objectName: "Condensate and stress granule membership",
+  });
+  sidePanel(s, 9.7, "Methylated ALS proteins in stress granules", cd.als_sg_proteins, `${cd.als_sg_proteins.length} of ${als.n}`, null);
+}
+
+// ---------- PRMT inhibitor response (Maron 2021 Table S3) ----------
+{
+  const pr = D.prmt;
+  const mix = (a, b, f) => { const h = (x) => parseInt(x, 16); const c = [0, 2, 4].map((i) => Math.round(h(a.substr(i, 2)) + (h(b.substr(i, 2)) - h(a.substr(i, 2))) * f));
+    return c.map((v) => v.toString(16).padStart(2, "0")).join("").toUpperCase(); };
+  const fill = (v) => (v === null ? HEX.white : v >= 0 ? mix(HEX.paper, HEX.red, Math.min(v, 4) / 4) : mix(HEX.paper, HEX.domain, Math.min(-v, 4) / 4));
+  const fus = pr.rows[0].cells, ews = pr.rows[1].cells, all = pr.rows[pr.rows.length - 1].cells;
+  const s = content("ALS enrichment", "Type I PRMT inhibition shifts FET proteins to monomethylation",
+    "Median log2 change (treated / DMSO) of methylated sites per pulldown, A549 cells, 7 days of 1 µM GSK591 (PRMT5) or MS023 (type I); n = sites",
+    "Data: Maron et al., iScience 2021, Table S3 (PTMScan MMA / ADMA / SDMA immunoaffinity). Red = more methylated peptide after treatment; blue = less. TDP-43 sites were not detected.",
+    `MS023 raises MMA-pulldown sites on FUS (median log2 ${fus[3].median}, ${fus[3].sig} of ${fus[3].n} sites FDR<0.05) and EWSR1 (${ews[3].median}), against a proteome median of ${all[3].median}. ` +
+    "Maron 2021 describes this as substrate scavenging: when type I PRMTs are blocked, PRMT5 and monomethylation take over (FUS gains Rme2s and Rme1; TAF15 gains Rme1).\n" +
+    `Caveat: FUS sites in the ADMA pulldown also rise with MS023 (median ${fus[4].median}) in our parse of Table S3, whereas the paper text says FUS Rme2a decreased. PTMScan is not normalised to protein level, so higher FUS recovery could inflate all three pulldowns. Check against the original Table S3 before quoting the ADMA direction.\n` +
+    "Relevance: type I PRMT inhibitors are in clinical development, and they block the asymmetric dimethylation of poly-GR/PR that drives C9orf72 DPR toxicity in cell models; symmetric poly-GR dimethylation correlates with longer disease duration (Gittings et al., 2020).");
+  const hdr = (t) => ({ text: t, options: { bold: true, color: HEX.ink, fill: { color: HEX.white }, align: "center", fontSize: 13 } });
+  const rows = [
+    [hdr(""), { text: "GSK591 (PRMT5)", options: { colspan: 3, bold: true, align: "center", fontSize: 14, color: HEX.ink } },
+      { text: "MS023 (type I)", options: { colspan: 3, bold: true, align: "center", fontSize: 14, color: HEX.ink } }],
+    [hdr("Protein"), ...["MMA", "ADMA", "SDMA", "MMA", "ADMA", "SDMA"].map(hdr)],
+    ...pr.rows.map((r, i) => [
+      { text: r.label, options: { bold: true, fontSize: 14, color: i === pr.rows.length - 1 ? HEX.muted : HEX.ink, align: "right" } },
+      ...r.cells.map((c) => ({ text: c.median === null ? "—" : `${c.median > 0 ? "+" : ""}${c.median.toFixed(1)}  (${c.n})`,
+        options: { fill: { color: fill(c.median) }, color: c.median !== null && Math.abs(c.median) > 2.5 ? HEX.white : HEX.ink,
+          align: "center", fontSize: 13, bold: c.median !== null && Math.abs(c.median) > 2 } })),
+    ]),
+  ];
+  s.addTable(rows, { x: 0.6, y: 1.85, w: 12.1, colW: [2.5, 1.6, 1.6, 1.6, 1.6, 1.6, 1.6], rowH: 0.48, valign: "middle",
+    border: { type: "solid", pt: 1, color: HEX.white }, fontFace: "Arial", objectName: "PRMT inhibitor response" });
+}
+
 // ---------- slide 5: Disease Ontology ----------
 {
   const d = D.do;

@@ -119,8 +119,49 @@ def proteins() -> list[dict]:
     return out
 
 
+PRMT_PROTEINS = [('FUS', 'FUS'), ('EWSR1', 'EWSR1'), ('TAF15', 'TAF15'), ('HNRNPA1', 'hnRNPA1'),
+                 ('HNRNPA2B1', 'hnRNPA2B1'), ('HNRNPA3', 'hnRNPA3'), ('G3BP1', 'G3BP1')]
+
+
+def condensates() -> dict:
+    """Maron 2021 Fig. 7 analogue: condensate / stress-granule membership (CD-CODE) of methylated ALS proteins."""
+    g = pd.read_csv(D / 'gene_table.tsv', sep='\t')
+    panels = pd.read_csv(D / 'clingen_panel_methylarginine.tsv', sep='\t')
+    als_genes = panels[panels['panel'].str.startswith('Amyotrophic')].iloc[0]['methyl_genes'].split(',')
+    mem = pd.read_csv(RESULTS / 'condensates' / 'condensate_membership.tsv', sep='\t')
+    any_c = set(mem['canonical_UniProtAC'])
+    sg = set(mem.loc[mem['condensate_name'].str.contains('stress granule', case=False), 'canonical_UniProtAC'])
+    als = set(g.loc[g['symbol'].isin(als_genes), 'uniprot'])
+    meth = set(g.loc[g['methyl_any'].astype(str).eq('True'), 'uniprot'])
+    prot = set(g['uniprot'])
+    groups = [('Methylated ALS-causing proteins', als), ('All methylated proteins', meth), ('All human proteins', prot)]
+    return {
+        'groups': [{'label': lab, 'n': len(S), 'any_pct': round(100 * len(S & any_c) / len(S), 1),
+                    'sg_pct': round(100 * len(S & sg) / len(S), 1)} for lab, S in groups],
+        'als_sg_proteins': sorted(g.loc[g['uniprot'].isin(als & sg), 'symbol']),
+    }
+
+
+def prmt() -> dict:
+    """Maron 2021 Table S3: site-level log2(treated/DMSO) in MMA/ADMA/SDMA PTMScan after GSK591 or MS023."""
+    t = pd.read_csv(RESULTS / 'maron_state_treatment' / 'maron_table_s3_site_treatment_collapsed.tsv', sep='\t')
+    cols = [(tr, ip) for tr in ('GSK591', 'MS023') for ip in ('MMA', 'ADMA', 'SDMA')]
+    rows = []
+    for gene, label in PRMT_PROTEINS + [(None, 'All sites (proteome)')]:
+        sub = t if gene is None else t[t['gene'] == gene]
+        cells = []
+        for tr, ip in cols:
+            c = sub[(sub['treatment'] == tr) & (sub['ip'] == ip)]
+            cells.append({'n': int(len(c)), 'median': None if c.empty else round(float(c['treatment_diff_median'].median()), 2),
+                          'sig': int((c['treatment_padj_min'] < 0.05).sum())})
+        rows.append({'label': label, 'cells': cells})
+    return {'columns': [f'{tr} {ip}' for tr, ip in cols], 'rows': rows,
+            'tdp43_detected': bool((t['gene'] == 'TARDBP').any())}
+
+
 def main() -> None:
-    data = {'kegg': kegg(), 'clingen': clingen(), 'do': do(), 'proteins': proteins()}
+    data = {'kegg': kegg(), 'clingen': clingen(), 'do': do(), 'proteins': proteins(),
+            'condensates': condensates(), 'prmt': prmt()}
     OUT.write_text(json.dumps(data, indent=1))
     print('wrote', OUT)
     print({p['label']: len(p['sites']) for p in data['proteins']}, 'TDP-43 studies', data['proteins'][3]['studies_per_site'])

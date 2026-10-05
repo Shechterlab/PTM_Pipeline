@@ -1396,5 +1396,334 @@
     "92": 2
    }
   }
- ]
+ ],
+ "condensates": {
+  "groups": [
+   {
+    "label": "Methylated ALS-causing proteins",
+    "n": 21,
+    "any_pct": 81.0,
+    "sg_pct": 57.1
+   },
+   {
+    "label": "All methylated proteins",
+    "n": 4687,
+    "any_pct": 44.9,
+    "sg_pct": 16.7
+   },
+   {
+    "label": "All human proteins",
+    "n": 19113,
+    "any_pct": 20.9,
+    "sg_pct": 5.9
+   }
+  ],
+  "als_sg_proteins": [
+   "ANXA11",
+   "ATXN2",
+   "FUS",
+   "HNRNPA2B1",
+   "MATR3",
+   "PFN1",
+   "SOD1",
+   "SQSTM1",
+   "TARDBP",
+   "TUBA4A",
+   "UBQLN2",
+   "VCP"
+  ]
+ },
+ "prmt": {
+  "columns": [
+   "GSK591 MMA",
+   "GSK591 ADMA",
+   "GSK591 SDMA",
+   "MS023 MMA",
+   "MS023 ADMA",
+   "MS023 SDMA"
+  ],
+  "rows": [
+   {
+    "label": "FUS",
+    "cells": [
+     {
+      "n": 23,
+      "median": 0.53,
+      "sig": 12
+     },
+     {
+      "n": 14,
+      "median": 2.17,
+      "sig": 9
+     },
+     {
+      "n": 19,
+      "median": -0.72,
+      "sig": 4
+     },
+     {
+      "n": 23,
+      "median": 3.72,
+      "sig": 21
+     },
+     {
+      "n": 14,
+      "median": 2.09,
+      "sig": 13
+     },
+     {
+      "n": 19,
+      "median": 0.36,
+      "sig": 7
+     }
+    ]
+   },
+   {
+    "label": "EWSR1",
+    "cells": [
+     {
+      "n": 29,
+      "median": 0.37,
+      "sig": 0
+     },
+     {
+      "n": 16,
+      "median": 0.73,
+      "sig": 7
+     },
+     {
+      "n": 18,
+      "median": 0.0,
+      "sig": 0
+     },
+     {
+      "n": 29,
+      "median": 3.14,
+      "sig": 14
+     },
+     {
+      "n": 16,
+      "median": 0.78,
+      "sig": 6
+     },
+     {
+      "n": 18,
+      "median": 2.64,
+      "sig": 10
+     }
+    ]
+   },
+   {
+    "label": "TAF15",
+    "cells": [
+     {
+      "n": 33,
+      "median": -0.53,
+      "sig": 0
+     },
+     {
+      "n": 14,
+      "median": -0.95,
+      "sig": 7
+     },
+     {
+      "n": 9,
+      "median": 1.63,
+      "sig": 2
+     },
+     {
+      "n": 33,
+      "median": 0.6,
+      "sig": 17
+     },
+     {
+      "n": 14,
+      "median": 0.19,
+      "sig": 10
+     },
+     {
+      "n": 9,
+      "median": 0.0,
+      "sig": 0
+     }
+    ]
+   },
+   {
+    "label": "hnRNPA1",
+    "cells": [
+     {
+      "n": 6,
+      "median": 1.85,
+      "sig": 4
+     },
+     {
+      "n": 4,
+      "median": 1.4,
+      "sig": 3
+     },
+     {
+      "n": 5,
+      "median": 1.07,
+      "sig": 3
+     },
+     {
+      "n": 6,
+      "median": 2.42,
+      "sig": 3
+     },
+     {
+      "n": 4,
+      "median": 1.17,
+      "sig": 3
+     },
+     {
+      "n": 5,
+      "median": -0.24,
+      "sig": 3
+     }
+    ]
+   },
+   {
+    "label": "hnRNPA2B1",
+    "cells": [
+     {
+      "n": 5,
+      "median": 0.25,
+      "sig": 0
+     },
+     {
+      "n": 0,
+      "median": null,
+      "sig": 0
+     },
+     {
+      "n": 2,
+      "median": 0.87,
+      "sig": 2
+     },
+     {
+      "n": 5,
+      "median": -5.53,
+      "sig": 3
+     },
+     {
+      "n": 0,
+      "median": null,
+      "sig": 0
+     },
+     {
+      "n": 2,
+      "median": -0.29,
+      "sig": 0
+     }
+    ]
+   },
+   {
+    "label": "hnRNPA3",
+    "cells": [
+     {
+      "n": 6,
+      "median": 0.26,
+      "sig": 4
+     },
+     {
+      "n": 0,
+      "median": null,
+      "sig": 0
+     },
+     {
+      "n": 2,
+      "median": 0.0,
+      "sig": 0
+     },
+     {
+      "n": 6,
+      "median": 4.78,
+      "sig": 4
+     },
+     {
+      "n": 0,
+      "median": null,
+      "sig": 0
+     },
+     {
+      "n": 2,
+      "median": 8.8,
+      "sig": 2
+     }
+    ]
+   },
+   {
+    "label": "G3BP1",
+    "cells": [
+     {
+      "n": 5,
+      "median": 1.79,
+      "sig": 3
+     },
+     {
+      "n": 5,
+      "median": -0.93,
+      "sig": 4
+     },
+     {
+      "n": 6,
+      "median": -3.22,
+      "sig": 2
+     },
+     {
+      "n": 5,
+      "median": 1.19,
+      "sig": 2
+     },
+     {
+      "n": 5,
+      "median": -0.84,
+      "sig": 0
+     },
+     {
+      "n": 6,
+      "median": -1.53,
+      "sig": 1
+     }
+    ]
+   },
+   {
+    "label": "All sites (proteome)",
+    "cells": [
+     {
+      "n": 748,
+      "median": 0.1,
+      "sig": 156
+     },
+     {
+      "n": 569,
+      "median": -0.28,
+      "sig": 147
+     },
+     {
+      "n": 461,
+      "median": -0.33,
+      "sig": 140
+     },
+     {
+      "n": 748,
+      "median": 0.0,
+      "sig": 259
+     },
+     {
+      "n": 569,
+      "median": -0.35,
+      "sig": 221
+     },
+     {
+      "n": 461,
+      "median": 0.03,
+      "sig": 140
+     }
+    ]
+   }
+  ],
+  "tdp43_detected": false
+ }
 }
