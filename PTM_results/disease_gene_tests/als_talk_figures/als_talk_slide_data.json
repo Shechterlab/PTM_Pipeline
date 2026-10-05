@@ -1,0 +1,1400 @@
+{
+ "kegg": {
+  "n_query": 2340,
+  "n_significant": 68,
+  "top_by_p": [
+   {
+    "name": "Nucleocytoplasmic transport",
+    "count": 69,
+    "neglog10fdr": 14.66,
+    "gene_ratio": 0.0295,
+    "fdr": 2.1833836961386802e-15,
+    "highlight": false
+   },
+   {
+    "name": "Amyotrophic lateral sclerosis",
+    "count": 164,
+    "neglog10fdr": 14.26,
+    "gene_ratio": 0.0701,
+    "fdr": 5.540434353179041e-15,
+    "highlight": true
+   },
+   {
+    "name": "ATP-dependent chromatin remodeling",
+    "count": 71,
+    "neglog10fdr": 13.9,
+    "gene_ratio": 0.0303,
+    "fdr": 1.25531490297373e-14,
+    "highlight": false
+   },
+   {
+    "name": "mRNA surveillance pathway",
+    "count": 65,
+    "neglog10fdr": 13.9,
+    "gene_ratio": 0.0278,
+    "fdr": 1.25531490297373e-14,
+    "highlight": false
+   },
+   {
+    "name": "Motor proteins",
+    "count": 100,
+    "neglog10fdr": 13.27,
+    "gene_ratio": 0.0427,
+    "fdr": 5.4225252770915704e-14,
+    "highlight": false
+   },
+   {
+    "name": "Spliceosome",
+    "count": 113,
+    "neglog10fdr": 11.35,
+    "gene_ratio": 0.0483,
+    "fdr": 4.43297400120452e-12,
+    "highlight": false
+   },
+   {
+    "name": "Ribosome",
+    "count": 106,
+    "neglog10fdr": 10.48,
+    "gene_ratio": 0.0453,
+    "fdr": 3.30696652753706e-11,
+    "highlight": false
+   },
+   {
+    "name": "Biosynthesis of amino acids",
+    "count": 47,
+    "neglog10fdr": 9.82,
+    "gene_ratio": 0.0201,
+    "fdr": 1.50500339344926e-10,
+    "highlight": false
+   },
+   {
+    "name": "Carbon metabolism",
+    "count": 63,
+    "neglog10fdr": 9.56,
+    "gene_ratio": 0.0269,
+    "fdr": 2.7572942210453803e-10,
+    "highlight": false
+   },
+   {
+    "name": "Endocytosis",
+    "count": 107,
+    "neglog10fdr": 8.17,
+    "gene_ratio": 0.0457,
+    "fdr": 6.72543913838871e-09,
+    "highlight": false
+   },
+   {
+    "name": "Salmonella infection",
+    "count": 104,
+    "neglog10fdr": 7.24,
+    "gene_ratio": 0.0444,
+    "fdr": 5.7628708029676e-08,
+    "highlight": false
+   },
+   {
+    "name": "Pathways of neurodegeneration",
+    "count": 176,
+    "neglog10fdr": 7.22,
+    "gene_ratio": 0.0752,
+    "fdr": 6.00821762599066e-08,
+    "highlight": true
+   }
+  ],
+  "top_by_gene_ratio": [
+   {
+    "name": "Pathways of neurodegeneration",
+    "count": 176,
+    "neglog10fdr": 7.22,
+    "gene_ratio": 0.0752,
+    "fdr": 6.00821762599066e-08,
+    "highlight": true
+   },
+   {
+    "name": "Amyotrophic lateral sclerosis",
+    "count": 164,
+    "neglog10fdr": 14.26,
+    "gene_ratio": 0.0701,
+    "fdr": 5.540434353179041e-15,
+    "highlight": true
+   },
+   {
+    "name": "Alzheimer disease",
+    "count": 129,
+    "neglog10fdr": 3.13,
+    "gene_ratio": 0.0551,
+    "fdr": 0.0007479542289432,
+    "highlight": false
+   },
+   {
+    "name": "Cadherin signaling",
+    "count": 124,
+    "neglog10fdr": 1.71,
+    "gene_ratio": 0.053,
+    "fdr": 0.0194995541700684,
+    "highlight": false
+   },
+   {
+    "name": "Huntington disease",
+    "count": 119,
+    "neglog10fdr": 6.06,
+    "gene_ratio": 0.0509,
+    "fdr": 8.74834844831069e-07,
+    "highlight": false
+   },
+   {
+    "name": "Spliceosome",
+    "count": 113,
+    "neglog10fdr": 11.35,
+    "gene_ratio": 0.0483,
+    "fdr": 4.43297400120452e-12,
+    "highlight": false
+   },
+   {
+    "name": "Endocytosis",
+    "count": 107,
+    "neglog10fdr": 8.17,
+    "gene_ratio": 0.0457,
+    "fdr": 6.72543913838871e-09,
+    "highlight": false
+   },
+   {
+    "name": "Ribosome",
+    "count": 106,
+    "neglog10fdr": 10.48,
+    "gene_ratio": 0.0453,
+    "fdr": 3.30696652753706e-11,
+    "highlight": false
+   },
+   {
+    "name": "IgSF CAM signaling",
+    "count": 105,
+    "neglog10fdr": 3.46,
+    "gene_ratio": 0.0449,
+    "fdr": 0.0003504162940667,
+    "highlight": false
+   },
+   {
+    "name": "Salmonella infection",
+    "count": 104,
+    "neglog10fdr": 7.24,
+    "gene_ratio": 0.0444,
+    "fdr": 5.7628708029676e-08,
+    "highlight": false
+   },
+   {
+    "name": "Prion disease",
+    "count": 103,
+    "neglog10fdr": 4.55,
+    "gene_ratio": 0.044,
+    "fdr": 2.79327353463718e-05,
+    "highlight": false
+   },
+   {
+    "name": "Parkinson disease",
+    "count": 102,
+    "neglog10fdr": 4.85,
+    "gene_ratio": 0.0436,
+    "fdr": 1.39722067184362e-05,
+    "highlight": false
+   },
+   {
+    "name": "Motor proteins",
+    "count": 100,
+    "neglog10fdr": 13.27,
+    "gene_ratio": 0.0427,
+    "fdr": 5.4225252770915704e-14,
+    "highlight": false
+   },
+   {
+    "name": "Coronavirus disease",
+    "count": 97,
+    "neglog10fdr": 6.06,
+    "gene_ratio": 0.0415,
+    "fdr": 8.74834844831069e-07,
+    "highlight": false
+   },
+   {
+    "name": "Shigellosis",
+    "count": 91,
+    "neglog10fdr": 3.46,
+    "gene_ratio": 0.0389,
+    "fdr": 0.0003504162940667,
+    "highlight": false
+   },
+   {
+    "name": "Cytoskeleton in muscle cells",
+    "count": 87,
+    "neglog10fdr": 3.91,
+    "gene_ratio": 0.0372,
+    "fdr": 0.0001235612797719,
+    "highlight": false
+   },
+   {
+    "name": "Viral carcinogenesis",
+    "count": 77,
+    "neglog10fdr": 3.57,
+    "gene_ratio": 0.0329,
+    "fdr": 0.000268272126692,
+    "highlight": false
+   },
+   {
+    "name": "Protein processing in endoplasmic reticulum",
+    "count": 77,
+    "neglog10fdr": 6.36,
+    "gene_ratio": 0.0329,
+    "fdr": 4.36156766591837e-07,
+    "highlight": false
+   },
+   {
+    "name": "Regulation of actin cytoskeleton",
+    "count": 74,
+    "neglog10fdr": 1.4,
+    "gene_ratio": 0.0316,
+    "fdr": 0.0400789265205627,
+    "highlight": false
+   },
+   {
+    "name": "Pathogenic Escherichia coli infection",
+    "count": 73,
+    "neglog10fdr": 2.92,
+    "gene_ratio": 0.0312,
+    "fdr": 0.0011906121971773,
+    "highlight": false
+   }
+  ],
+  "als": {
+   "rank": 2,
+   "count": 164,
+   "size": 369,
+   "fold": 1.8,
+   "fdr": 5.540434353179041e-15
+  },
+  "showcase": [
+   "TARDBP",
+   "FUS",
+   "HNRNPA1",
+   "HNRNPA2B1",
+   "MATR3",
+   "ATXN2",
+   "VCP",
+   "SOD1",
+   "UBQLN2",
+   "SQSTM1",
+   "NEFH",
+   "PRPH",
+   "DCTN1",
+   "SETX",
+   "TUBA4A"
+  ]
+ },
+ "clingen": {
+  "bars": [
+   {
+    "label": "ALS-causing proteins",
+    "pct": 72.4,
+    "n": "21 of 29"
+   },
+   {
+    "label": "All disease proteins",
+    "pct": 35.0,
+    "n": "865 of 2,471"
+   },
+   {
+    "label": "All human proteins",
+    "pct": 24.5,
+    "n": "4,687 of 19,113"
+   }
+  ],
+  "panels": [
+   {
+    "panel": "Amyotrophic Lateral Sclerosis Spectrum Disorders",
+    "pct": 72.4,
+    "n": 29,
+    "als": true
+   },
+   {
+    "panel": "Cerebellar Ataxia",
+    "pct": 58.3,
+    "n": 12,
+    "als": false
+   },
+   {
+    "panel": "Intellectual Disability and Autism",
+    "pct": 54.7,
+    "n": 316,
+    "als": false
+   },
+   {
+    "panel": "Fatty Acid Oxidation Disorders",
+    "pct": 54.2,
+    "n": 24,
+    "als": false
+   },
+   {
+    "panel": "Charcot-Marie-Tooth Disease",
+    "pct": 52.3,
+    "n": 65,
+    "als": false
+   },
+   {
+    "panel": "RASopathy",
+    "pct": 50.0,
+    "n": 18,
+    "als": false
+   },
+   {
+    "panel": "Leukodystrophy and Leukoencephalopathy",
+    "pct": 48.6,
+    "n": 37,
+    "als": false
+   },
+   {
+    "panel": "Brain Malformations",
+    "pct": 46.4,
+    "n": 56,
+    "als": false
+   },
+   {
+    "panel": "Dilated Cardiomyopathy",
+    "pct": 43.3,
+    "n": 30,
+    "als": false
+   },
+   {
+    "panel": "Syndromic Disorders",
+    "pct": 43.1,
+    "n": 144,
+    "als": false
+   },
+   {
+    "panel": "Hereditary Cancer",
+    "pct": 42.1,
+    "n": 107,
+    "als": false
+   },
+   {
+    "panel": "Hereditary Cardiovascular Disease",
+    "pct": 38.5,
+    "n": 26,
+    "als": false
+   },
+   {
+    "panel": "Mitochondrial Diseases",
+    "pct": 38.2,
+    "n": 186,
+    "als": false
+   },
+   {
+    "panel": "Prenatal",
+    "pct": 37.5,
+    "n": 32,
+    "als": false
+   },
+   {
+    "panel": "Cerebral Palsy",
+    "pct": 35.7,
+    "n": 28,
+    "als": false
+   },
+   {
+    "panel": "Congenital Heart Disease",
+    "pct": 34.8,
+    "n": 23,
+    "als": false
+   },
+   {
+    "panel": "Congenital Myopathies and Myasthenic Syndromes",
+    "pct": 34.2,
+    "n": 38,
+    "als": false
+   },
+   {
+    "panel": "SCID-CID",
+    "pct": 34.1,
+    "n": 85,
+    "als": false
+   },
+   {
+    "panel": "Kidney Cystic and Ciliopathy Disorders",
+    "pct": 32.8,
+    "n": 67,
+    "als": false
+   },
+   {
+    "panel": "Primary Immune Regulatory Disorders",
+    "pct": 32.5,
+    "n": 40,
+    "als": false
+   },
+   {
+    "panel": "Congenital Disorders of Glycosylation",
+    "pct": 32.2,
+    "n": 59,
+    "als": false
+   },
+   {
+    "panel": "Glomerulopathy",
+    "pct": 31.6,
+    "n": 19,
+    "als": false
+   },
+   {
+    "panel": "General Inborn Errors of Metabolism",
+    "pct": 31.6,
+    "n": 76,
+    "als": false
+   },
+   {
+    "panel": "Interstitial Lung Disease",
+    "pct": 31.2,
+    "n": 16,
+    "als": false
+   },
+   {
+    "panel": "Aminoacidopathy",
+    "pct": 30.9,
+    "n": 97,
+    "als": false
+   },
+   {
+    "panel": "Craniofacial Malformations",
+    "pct": 30.4,
+    "n": 46,
+    "als": false
+   },
+   {
+    "panel": "General",
+    "pct": 30.3,
+    "n": 33,
+    "als": false
+   },
+   {
+    "panel": "Antibody Deficiencies",
+    "pct": 30.0,
+    "n": 40,
+    "als": false
+   },
+   {
+    "panel": "Glaucoma and Neuro-Ophthalmology",
+    "pct": 28.0,
+    "n": 25,
+    "als": false
+   },
+   {
+    "panel": "Hearing Loss",
+    "pct": 24.8,
+    "n": 117,
+    "als": false
+   },
+   {
+    "panel": "Epilepsy",
+    "pct": 24.3,
+    "n": 103,
+    "als": false
+   },
+   {
+    "panel": "Skeletal Disorders",
+    "pct": 23.7,
+    "n": 38,
+    "als": false
+   },
+   {
+    "panel": "Peroxisomal Disorders",
+    "pct": 23.3,
+    "n": 30,
+    "als": false
+   },
+   {
+    "panel": "Pulmonary Hypertension",
+    "pct": 23.1,
+    "n": 13,
+    "als": false
+   },
+   {
+    "panel": "Retina",
+    "pct": 20.8,
+    "n": 120,
+    "als": false
+   },
+   {
+    "panel": "Muscular Dystrophies and Myopathies",
+    "pct": 19.4,
+    "n": 31,
+    "als": false
+   },
+   {
+    "panel": "Hemostasis/Thrombosis",
+    "pct": 17.8,
+    "n": 90,
+    "als": false
+   },
+   {
+    "panel": "Lysosomal Diseases",
+    "pct": 17.5,
+    "n": 40,
+    "als": false
+   },
+   {
+    "panel": "Motile Ciliopathy",
+    "pct": 16.9,
+    "n": 59,
+    "als": false
+   },
+   {
+    "panel": "Monogenic Diabetes",
+    "pct": 16.0,
+    "n": 25,
+    "als": false
+   },
+   {
+    "panel": "Tubulopathy",
+    "pct": 7.7,
+    "n": 26,
+    "als": false
+   },
+   {
+    "panel": "Childhood, Adolescent and Young Adult Cancer Predisposition",
+    "pct": 6.7,
+    "n": 15,
+    "als": false
+   }
+  ],
+  "als_adj_or": [
+   3.04,
+   1.25,
+   7.39
+  ],
+  "als_adj_p": 0.0139448265177409,
+  "als_methyl_genes": [
+   "ALS2",
+   "ANXA11",
+   "AR",
+   "ATXN2",
+   "CHMP2B",
+   "DCTN1",
+   "FUS",
+   "HNRNPA2B1",
+   "KIF5A",
+   "LRP12",
+   "MATR3",
+   "NEK1",
+   "PFN1",
+   "SOD1",
+   "SPTLC2",
+   "SQSTM1",
+   "TARDBP",
+   "TUBA4A",
+   "UBQLN2",
+   "VAPB",
+   "VCP"
+  ]
+ },
+ "do": {
+  "n_terms": 1045,
+  "n_query": 2384,
+  "rows": [
+   {
+    "name": "Intellectual disability",
+    "rank": 1,
+    "count": 199,
+    "size": 412,
+    "neglog10fdr": 11.68,
+    "fdr": 2.10076327922339e-12,
+    "highlight": false
+   },
+   {
+    "name": "Autosomal dominant intellectual developmental disorder",
+    "rank": 2,
+    "count": 66,
+    "size": 108,
+    "neglog10fdr": 7.92,
+    "fdr": 1.20642015506359e-08,
+    "highlight": false
+   },
+   {
+    "name": "Liver cancer",
+    "rank": 3,
+    "count": 182,
+    "size": 450,
+    "neglog10fdr": 3.38,
+    "fdr": 0.0004193473874923,
+    "highlight": false
+   },
+   {
+    "name": "Liver carcinoma",
+    "rank": 4,
+    "count": 176,
+    "size": 434,
+    "neglog10fdr": 3.38,
+    "fdr": 0.0004193473874923,
+    "highlight": false
+   },
+   {
+    "name": "Hepatocellular carcinoma",
+    "rank": 5,
+    "count": 174,
+    "size": 431,
+    "neglog10fdr": 3.27,
+    "fdr": 0.0005379120060511,
+    "highlight": false
+   },
+   {
+    "name": "Motor neuron disease",
+    "rank": 6,
+    "count": 78,
+    "size": 167,
+    "neglog10fdr": 3.12,
+    "fdr": 0.0007610571644107,
+    "highlight": true
+   },
+   {
+    "name": "Emery-Dreifuss muscular dystrophy",
+    "rank": 7,
+    "count": 13,
+    "size": 15,
+    "neglog10fdr": 2.86,
+    "fdr": 0.0013947716636791,
+    "highlight": false
+   },
+   {
+    "name": "Diamond-Blackfan anemia",
+    "rank": 8,
+    "count": 19,
+    "size": 28,
+    "neglog10fdr": 2.29,
+    "fdr": 0.0051019958026997,
+    "highlight": false
+   },
+   {
+    "name": "Microcephaly",
+    "rank": 9,
+    "count": 34,
+    "size": 62,
+    "neglog10fdr": 2.29,
+    "fdr": 0.0051019958026997,
+    "highlight": false
+   },
+   {
+    "name": "Syndromic intellectual disability",
+    "rank": 10,
+    "count": 55,
+    "size": 115,
+    "neglog10fdr": 2.29,
+    "fdr": 0.0051019958026997,
+    "highlight": false
+   },
+   {
+    "name": "Amyotrophic lateral sclerosis",
+    "rank": 20,
+    "count": 55,
+    "size": 121,
+    "neglog10fdr": 1.87,
+    "fdr": 0.0135184915580936,
+    "highlight": true
+   }
+  ],
+  "mnd": {
+   "rank": 6,
+   "count": 78,
+   "fdr": 0.0007610571644107
+  },
+  "mnd_ms_detectable": {
+   "rank": 8,
+   "fdr": 0.0627688877119757
+  },
+  "showcase": [
+   "FUS",
+   "TAF15",
+   "EWSR1",
+   "TARDBP",
+   "HNRNPA1",
+   "MATR3",
+   "VCP",
+   "SOD1",
+   "ANXA11",
+   "NEFM",
+   "DYNC1H1",
+   "BAG3",
+   "HSPB1",
+   "UBA1"
+  ]
+ },
+ "proteins": [
+  {
+   "gene": "FUS",
+   "label": "FUS",
+   "uniprot": "P35637",
+   "length": 526,
+   "features": [
+    {
+     "kind": "domain",
+     "start": 285,
+     "end": 371,
+     "label": "RRM"
+    },
+    {
+     "kind": "domain",
+     "start": 422,
+     "end": 453,
+     "label": "ZnF"
+    },
+    {
+     "kind": "lcd",
+     "start": 17,
+     "end": 75,
+     "label": "Low complexity"
+    },
+    {
+     "kind": "lcd",
+     "start": 83,
+     "end": 164,
+     "label": "Low complexity"
+    },
+    {
+     "kind": "lcd",
+     "start": 165,
+     "end": 177,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 186,
+     "end": 209,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 217,
+     "end": 232,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 244,
+     "end": 259,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 377,
+     "end": 421,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 454,
+     "end": 468,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 494,
+     "end": 508,
+     "label": "Gly residues"
+    }
+   ],
+   "sites": [
+    213,
+    216,
+    218,
+    234,
+    242,
+    244,
+    248,
+    251,
+    259,
+    269,
+    328,
+    371,
+    372,
+    377,
+    383,
+    386,
+    388,
+    394,
+    407,
+    472,
+    473,
+    476,
+    481,
+    485,
+    487,
+    491,
+    495,
+    498,
+    503,
+    514
+   ],
+   "studies_per_site": {
+    "213": 2,
+    "216": 3,
+    "218": 7,
+    "234": 4,
+    "242": 4,
+    "244": 3,
+    "248": 3,
+    "251": 4,
+    "259": 4,
+    "269": 2,
+    "328": 2,
+    "371": 4,
+    "372": 1,
+    "377": 2,
+    "383": 2,
+    "386": 0,
+    "388": 1,
+    "394": 4,
+    "407": 6,
+    "472": 2,
+    "473": 2,
+    "476": 3,
+    "481": 4,
+    "485": 2,
+    "487": 3,
+    "491": 3,
+    "495": 3,
+    "498": 1,
+    "503": 7,
+    "514": 4
+   }
+  },
+  {
+   "gene": "EWSR1",
+   "label": "EWSR1",
+   "uniprot": "Q01844",
+   "length": 656,
+   "features": [
+    {
+     "kind": "domain",
+     "start": 361,
+     "end": 447,
+     "label": "RRM"
+    },
+    {
+     "kind": "domain",
+     "start": 518,
+     "end": 549,
+     "label": "ZnF"
+    },
+    {
+     "kind": "lcd",
+     "start": 123,
+     "end": 137,
+     "label": "Low complexity"
+    },
+    {
+     "kind": "lcd",
+     "start": 192,
+     "end": 266,
+     "label": "Low complexity"
+    },
+    {
+     "kind": "lcd",
+     "start": 308,
+     "end": 335,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 336,
+     "end": 350,
+     "label": "Low complexity"
+    },
+    {
+     "kind": "lcd",
+     "start": 472,
+     "end": 490,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 566,
+     "end": 591,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 607,
+     "end": 618,
+     "label": "Gly residues"
+    }
+   ],
+   "sites": [
+    292,
+    300,
+    302,
+    304,
+    309,
+    314,
+    317,
+    321,
+    330,
+    455,
+    461,
+    464,
+    471,
+    486,
+    490,
+    494,
+    500,
+    503,
+    506,
+    563,
+    565,
+    572,
+    575,
+    581,
+    589,
+    592,
+    596,
+    600,
+    603,
+    607,
+    614,
+    615,
+    632,
+    633,
+    636
+   ],
+   "studies_per_site": {
+    "292": 2,
+    "300": 3,
+    "302": 2,
+    "304": 2,
+    "309": 4,
+    "314": 3,
+    "317": 2,
+    "321": 4,
+    "330": 2,
+    "455": 4,
+    "461": 3,
+    "464": 3,
+    "471": 8,
+    "486": 5,
+    "490": 2,
+    "494": 4,
+    "500": 3,
+    "503": 3,
+    "506": 4,
+    "563": 3,
+    "565": 3,
+    "572": 3,
+    "575": 2,
+    "581": 3,
+    "589": 2,
+    "592": 2,
+    "596": 4,
+    "600": 2,
+    "603": 3,
+    "607": 4,
+    "614": 1,
+    "615": 7,
+    "632": 5,
+    "633": 2,
+    "636": 1
+   }
+  },
+  {
+   "gene": "TAF15",
+   "label": "TAF15",
+   "uniprot": "Q92804",
+   "length": 592,
+   "features": [
+    {
+     "kind": "domain",
+     "start": 234,
+     "end": 320,
+     "label": "RRM"
+    },
+    {
+     "kind": "domain",
+     "start": 354,
+     "end": 385,
+     "label": "ZnF"
+    },
+    {
+     "kind": "lcd",
+     "start": 407,
+     "end": 575,
+     "label": "21 X approximate tandem repeats of D-R-[S,G](0,3)-G-G-Y-G-G"
+    },
+    {
+     "kind": "lcd",
+     "start": 1,
+     "end": 21,
+     "label": "Low complexity"
+    },
+    {
+     "kind": "lcd",
+     "start": 28,
+     "end": 91,
+     "label": "Low complexity"
+    },
+    {
+     "kind": "lcd",
+     "start": 104,
+     "end": 129,
+     "label": "Low complexity"
+    },
+    {
+     "kind": "lcd",
+     "start": 140,
+     "end": 150,
+     "label": "Low complexity"
+    },
+    {
+     "kind": "lcd",
+     "start": 176,
+     "end": 187,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 341,
+     "end": 350,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 415,
+     "end": 578,
+     "label": "Gly residues"
+    }
+   ],
+   "sites": [
+    164,
+    175,
+    185,
+    187,
+    195,
+    206,
+    216,
+    320,
+    321,
+    326,
+    334,
+    337,
+    343,
+    349,
+    373,
+    383,
+    388,
+    395,
+    397,
+    403,
+    406,
+    415,
+    431,
+    441,
+    450,
+    459,
+    467,
+    475,
+    483,
+    490,
+    498,
+    505,
+    512,
+    519,
+    528,
+    535,
+    545,
+    553,
+    562,
+    570,
+    580
+   ],
+   "studies_per_site": {
+    "164": 1,
+    "175": 1,
+    "185": 6,
+    "187": 3,
+    "195": 5,
+    "206": 7,
+    "216": 1,
+    "320": 3,
+    "321": 1,
+    "326": 4,
+    "334": 2,
+    "337": 1,
+    "343": 1,
+    "349": 0,
+    "373": 1,
+    "383": 3,
+    "388": 2,
+    "395": 4,
+    "397": 4,
+    "403": 3,
+    "406": 1,
+    "415": 3,
+    "431": 3,
+    "441": 1,
+    "450": 1,
+    "459": 7,
+    "467": 5,
+    "475": 5,
+    "483": 7,
+    "490": 4,
+    "498": 4,
+    "505": 3,
+    "512": 4,
+    "519": 4,
+    "528": 5,
+    "535": 6,
+    "545": 3,
+    "553": 2,
+    "562": 6,
+    "570": 7,
+    "580": 3
+   }
+  },
+  {
+   "gene": "TARDBP",
+   "label": "TDP-43",
+   "uniprot": "Q13148",
+   "length": 414,
+   "features": [
+    {
+     "kind": "domain",
+     "start": 104,
+     "end": 200,
+     "label": "RRM"
+    },
+    {
+     "kind": "domain",
+     "start": 191,
+     "end": 262,
+     "label": "RRM"
+    },
+    {
+     "kind": "lcd",
+     "start": 275,
+     "end": 303,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 342,
+     "end": 358,
+     "label": "Low complexity"
+    }
+   ],
+   "sites": [
+    275,
+    293
+   ],
+   "studies_per_site": {
+    "275": 3,
+    "293": 7
+   }
+  },
+  {
+   "gene": "HNRNPA1",
+   "label": "hnRNPA1",
+   "uniprot": "P09651",
+   "length": 372,
+   "features": [
+    {
+     "kind": "domain",
+     "start": 14,
+     "end": 97,
+     "label": "RRM"
+    },
+    {
+     "kind": "domain",
+     "start": 105,
+     "end": 184,
+     "label": "RRM"
+    },
+    {
+     "kind": "lcd",
+     "start": 218,
+     "end": 240,
+     "label": "RNA-binding RGG-box"
+    },
+    {
+     "kind": "lcd",
+     "start": 197,
+     "end": 216,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 328,
+     "end": 346,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 360,
+     "end": 372,
+     "label": "Low complexity"
+    }
+   ],
+   "sites": [
+    14,
+    31,
+    53,
+    55,
+    88,
+    122,
+    140,
+    146,
+    178,
+    194,
+    196,
+    206,
+    218,
+    225,
+    232,
+    265,
+    336,
+    352,
+    370,
+    371
+   ],
+   "studies_per_site": {
+    "122": 2,
+    "14": 2,
+    "140": 5,
+    "146": 3,
+    "178": 1,
+    "194": 8,
+    "196": 5,
+    "206": 7,
+    "218": 8,
+    "225": 4,
+    "232": 6,
+    "265": 2,
+    "31": 5,
+    "336": 6,
+    "352": 6,
+    "370": 3,
+    "371": 0,
+    "53": 1,
+    "55": 2,
+    "88": 1
+   }
+  },
+  {
+   "gene": "HNRNPA2B1",
+   "label": "hnRNPA2B1",
+   "uniprot": "P22626",
+   "length": 353,
+   "features": [
+    {
+     "kind": "domain",
+     "start": 21,
+     "end": 104,
+     "label": "RRM"
+    },
+    {
+     "kind": "domain",
+     "start": 112,
+     "end": 191,
+     "label": "RRM"
+    },
+    {
+     "kind": "lcd",
+     "start": 202,
+     "end": 223,
+     "label": "Gly residues"
+    },
+    {
+     "kind": "lcd",
+     "start": 320,
+     "end": 353,
+     "label": "Gly residues"
+    }
+   ],
+   "sites": [
+    15,
+    38,
+    95,
+    99,
+    129,
+    147,
+    153,
+    200,
+    203,
+    213,
+    228,
+    238,
+    266,
+    325,
+    350
+   ],
+   "studies_per_site": {
+    "129": 2,
+    "147": 3,
+    "15": 1,
+    "153": 4,
+    "200": 3,
+    "203": 7,
+    "213": 8,
+    "228": 8,
+    "238": 7,
+    "266": 5,
+    "325": 8,
+    "350": 6,
+    "38": 3,
+    "95": 1,
+    "99": 1
+   }
+  },
+  {
+   "gene": "MATR3",
+   "label": "MATR3",
+   "uniprot": "P43243",
+   "length": 847,
+   "features": [
+    {
+     "kind": "domain",
+     "start": 398,
+     "end": 473,
+     "label": "RRM"
+    },
+    {
+     "kind": "domain",
+     "start": 496,
+     "end": 571,
+     "label": "RRM"
+    },
+    {
+     "kind": "domain",
+     "start": 801,
+     "end": 832,
+     "label": "ZnF"
+    },
+    {
+     "kind": "lcd",
+     "start": 666,
+     "end": 676,
+     "label": "Low complexity"
+    }
+   ],
+   "sites": [
+    12,
+    51,
+    92,
+    192,
+    216,
+    223,
+    255,
+    387,
+    407
+   ],
+   "studies_per_site": {
+    "12": 0,
+    "192": 1,
+    "216": 1,
+    "223": 1,
+    "255": 1,
+    "387": 1,
+    "407": 1,
+    "51": 1,
+    "92": 2
+   }
+  }
+ ]
+}
