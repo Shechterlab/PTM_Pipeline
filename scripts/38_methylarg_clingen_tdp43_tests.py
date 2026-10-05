@@ -70,6 +70,8 @@ def clingen_panels(genes: pd.DataFrame, clingen_csv: Path) -> tuple[pd.DataFrame
     panel_genes = cg.groupby('GCEP')['entrez'].apply(set)
     panel_genes = panel_genes[panel_genes.map(len) >= 10]
     curated = genes[genes['entrez'].isin(set(cg['entrez']))].copy()
+    curated[['entrez', 'symbol', 'methyl_any', 'arg_methyl_sites']].to_csv(
+        OUT / 'clingen_curated_genes.tsv', sep='\t', index=False)
 
     rows = []
     for panel, members in panel_genes.items():

@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="959.76pt" height="540pt" viewBox="0 0 959.76 540" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-05T02:15:35.818632</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 540 
+L 959.76 540 
+L 959.76 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 316.7208 464.4 
+L 700.6248 464.4 
+L 700.6248 108 
+L 316.7208 108 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <path d="M 316.7208 464.4 
+L 316.7208 108 
+" clip-path="url(#p11eeca479e)" style="fill: none; stroke: #e5e7eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_2">
+      <defs>
+       <path id="m5c96449f28" d="M 0 0 
+L 0 3.5 
+" style="stroke: #6b7280; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m5c96449f28" x="316.7208" y="464.4" style="fill: #6b7280; stroke: #6b7280; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #6b7280" x="316.7208" y="480.517187" transform="rotate(-0 316.7208 480.517187)">0</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_3">
+      <path d="M 363.480839 464.4 
+L 363.480839 108 
+" clip-path="url(#p11eeca479e)" style="fill: none; stroke: #e5e7eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#m5c96449f28" x="363.480839" y="464.4" style="fill: #6b7280; stroke: #6b7280; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #6b7280" x="363.480839" y="480.517187" transform="rotate(-0 363.480839 480.517187)">2</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_5">
+      <path d="M 410.240879 464.4 
+L 410.240879 108 
+" clip-path="url(#p11eeca479e)" style="fill: none; stroke: #e5e7eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#m5c96449f28" x="410.240879" y="464.4" style="fill: #6b7280; stroke: #6b7280; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #6b7280" x="410.240879" y="480.517187" transform="rotate(-0 410.240879 480.517187)">4</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_7">
+      <path d="M 457.000918 464.4 
+L 457.000918 108 
+" clip-path="url(#p11eeca479e)" style="fill: none; stroke: #e5e7eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#m5c96449f28" x="457.000918" y="464.4" style="fill: #6b7280; stroke: #6b7280; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #6b7280" x="457.000918" y="480.517187" transform="rotate(-0 457.000918 480.517187)">6</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_9">
+      <path d="M 503.760958 464.4 
+L 503.760958 108 
+" clip-path="url(#p11eeca479e)" style="fill: none; stroke: #e5e7eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#m5c96449f28" x="503.760958" y="464.4" style="fill: #6b7280; stroke: #6b7280; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #6b7280" x="503.760958" y="480.517187" transform="rotate(-0 503.760958 480.517187)">8</text>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_11">
+      <path d="M 550.520997 464.4 
+L 550.520997 108 
+" clip-path="url(#p11eeca479e)" style="fill: none; stroke: #e5e7eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_12">
+      <g>
+       <use xlink:href="#m5c96449f28" x="550.520997" y="464.4" style="fill: #6b7280; stroke: #6b7280; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #6b7280" x="550.520997" y="480.517187" transform="rotate(-0 550.520997 480.517187)">10</text>
+     </g>
+    </g>
+    <g id="xtick_7">
+     <g id="line2d_13">
+      <path d="M 597.281037 464.4 
+L 597.281037 108 
+" clip-path="url(#p11eeca479e)" style="fill: none; stroke: #e5e7eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_14">
+      <g>
+       <use xlink:href="#m5c96449f28" x="597.281037" y="464.4" style="fill: #6b7280; stroke: #6b7280; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #6b7280" x="597.281037" y="480.517187" transform="rotate(-0 597.281037 480.517187)">12</text>
+     </g>
+    </g>
+    <g id="xtick_8">
+     <g id="line2d_15">
+      <path d="M 644.041076 464.4 
+L 644.041076 108 
+" clip-path="url(#p11eeca479e)" style="fill: none; stroke: #e5e7eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_16">
+      <g>
+       <use xlink:href="#m5c96449f28" x="644.041076" y="464.4" style="fill: #6b7280; stroke: #6b7280; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #6b7280" x="644.041076" y="480.517187" transform="rotate(-0 644.041076 480.517187)">14</text>
+     </g>
+    </g>
+    <g id="xtick_9">
+     <g id="line2d_17">
+      <path d="M 690.801116 464.4 
+L 690.801116 108 
+" clip-path="url(#p11eeca479e)" style="fill: none; stroke: #e5e7eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_18">
+      <g>
+       <use xlink:href="#m5c96449f28" x="690.801116" y="464.4" style="fill: #6b7280; stroke: #6b7280; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #6b7280" x="690.801116" y="480.517187" transform="rotate(-0 690.801116 480.517187)">16</text>
+     </g>
+    </g>
+    <g id="text_10">
+     <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #6b7280" x="508.6728" y="496.518125" transform="rotate(-0 508.6728 496.518125)">Enrichment, −log10 FDR   (numbers: methylated proteins in pathway)</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_19"/>
+     <g id="text_11">
+      <text style="font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #1f2937" x="313.2208" y="138.118835" transform="rotate(-0 313.2208 138.118835)">Nucleocytoplasmic transport</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_20"/>
+     <g id="text_12">
+      <text style="font-weight: 700; font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #b5332a" x="313.2208" y="165.906142" transform="rotate(-0 313.2208 165.906142)">Amyotrophic lateral sclerosis</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_21"/>
+     <g id="text_13">
+      <text style="font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #1f2937" x="313.2208" y="193.693449" transform="rotate(-0 313.2208 193.693449)">ATP-dependent chromatin remodeling</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_22"/>
+     <g id="text_14">
+      <text style="font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #1f2937" x="313.2208" y="221.480756" transform="rotate(-0 313.2208 221.480756)">mRNA surveillance pathway</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_23"/>
+     <g id="text_15">
+      <text style="font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #1f2937" x="313.2208" y="249.268063" transform="rotate(-0 313.2208 249.268063)">Motor proteins</text>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_24"/>
+     <g id="text_16">
+      <text style="font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #1f2937" x="313.2208" y="277.05537" transform="rotate(-0 313.2208 277.05537)">Spliceosome</text>
+     </g>
+    </g>
+    <g id="ytick_7">
+     <g id="line2d_25"/>
+     <g id="text_17">
+      <text style="font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #1f2937" x="313.2208" y="304.842677" transform="rotate(-0 313.2208 304.842677)">Ribosome</text>
+     </g>
+    </g>
+    <g id="ytick_8">
+     <g id="line2d_26"/>
+     <g id="text_18">
+      <text style="font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #1f2937" x="313.2208" y="332.629984" transform="rotate(-0 313.2208 332.629984)">Biosynthesis of amino acids</text>
+     </g>
+    </g>
+    <g id="ytick_9">
+     <g id="line2d_27"/>
+     <g id="text_19">
+      <text style="font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #1f2937" x="313.2208" y="360.417291" transform="rotate(-0 313.2208 360.417291)">Carbon metabolism</text>
+     </g>
+    </g>
+    <g id="ytick_10">
+     <g id="line2d_28"/>
+     <g id="text_20">
+      <text style="font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #1f2937" x="313.2208" y="388.204598" transform="rotate(-0 313.2208 388.204598)">Endocytosis</text>
+     </g>
+    </g>
+    <g id="ytick_11">
+     <g id="line2d_29"/>
+     <g id="text_21">
+      <text style="font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #1f2937" x="313.2208" y="415.991905" transform="rotate(-0 313.2208 415.991905)">Salmonella infection</text>
+     </g>
+    </g>
+    <g id="ytick_12">
+     <g id="line2d_30"/>
+     <g id="text_22">
+      <text style="font-weight: 700; font-size: 12.5px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #b5332a" x="313.2208" y="443.779212" transform="rotate(-0 313.2208 443.779212)">Pathways of neurodegeneration</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_3">
+    <path d="M 316.7208 142.539623 
+L 659.492229 142.539623 
+L 659.492229 124.2 
+L 316.7208 124.2 
+z
+" clip-path="url(#p11eeca479e)" style="fill: #687388"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 316.7208 170.32693 
+L 650.037027 170.32693 
+L 650.037027 151.987307 
+L 316.7208 151.987307 
+z
+" clip-path="url(#p11eeca479e)" style="fill: #b5332a"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 316.7208 198.114237 
+L 641.732237 198.114237 
+L 641.732237 179.774614 
+L 316.7208 179.774614 
+z
+" clip-path="url(#p11eeca479e)" style="fill: #687388"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 316.7208 225.901544 
+L 641.732237 225.901544 
+L 641.732237 207.561921 
+L 316.7208 207.561921 
+z
+" clip-path="url(#p11eeca479e)" style="fill: #687388"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 316.7208 253.688851 
+L 626.875429 253.688851 
+L 626.875429 235.349228 
+L 316.7208 235.349228 
+z
+" clip-path="url(#p11eeca479e)" style="fill: #687388"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 316.7208 281.476158 
+L 582.161291 281.476158 
+L 582.161291 263.136535 
+L 316.7208 263.136535 
+z
+" clip-path="url(#p11eeca479e)" style="fill: #687388"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 316.7208 309.263465 
+L 561.756738 309.263465 
+L 561.756738 290.923842 
+L 316.7208 290.923842 
+z
+" clip-path="url(#p11eeca479e)" style="fill: #687388"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 316.7208 337.050772 
+L 546.370168 337.050772 
+L 546.370168 318.711149 
+L 316.7208 318.711149 
+z
+" clip-path="url(#p11eeca479e)" style="fill: #687388"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 316.7208 364.838079 
+L 540.222494 364.838079 
+L 540.222494 346.498456 
+L 316.7208 346.498456 
+z
+" clip-path="url(#p11eeca479e)" style="fill: #687388"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 316.7208 392.625386 
+L 507.788853 392.625386 
+L 507.788853 374.285763 
+L 316.7208 374.285763 
+z
+" clip-path="url(#p11eeca479e)" style="fill: #687388"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 316.7208 420.412693 
+L 485.977206 420.412693 
+L 485.977206 402.07307 
+L 316.7208 402.07307 
+z
+" clip-path="url(#p11eeca479e)" style="fill: #687388"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 316.7208 448.2 
+L 485.553869 448.2 
+L 485.553869 429.860377 
+L 316.7208 429.860377 
+z
+" clip-path="url(#p11eeca479e)" style="fill: #b5332a"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 316.7208 464.4 
+L 700.6248 464.4 
+" style="fill: none; stroke: #6b7280; stroke-width: 0.9; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_23">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f2937" x="664.168233" y="136.227233" transform="rotate(-0 664.168233 136.227233)">69</text>
+   </g>
+   <g id="text_24">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f2937" x="654.713031" y="164.01454" transform="rotate(-0 654.713031 164.01454)">164</text>
+   </g>
+   <g id="text_25">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f2937" x="646.408241" y="191.801847" transform="rotate(-0 646.408241 191.801847)">71</text>
+   </g>
+   <g id="text_26">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f2937" x="646.408241" y="219.589154" transform="rotate(-0 646.408241 219.589154)">65</text>
+   </g>
+   <g id="text_27">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f2937" x="631.551433" y="247.376461" transform="rotate(-0 631.551433 247.376461)">100</text>
+   </g>
+   <g id="text_28">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f2937" x="586.837295" y="275.163768" transform="rotate(-0 586.837295 275.163768)">113</text>
+   </g>
+   <g id="text_29">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f2937" x="566.432742" y="302.951075" transform="rotate(-0 566.432742 302.951075)">106</text>
+   </g>
+   <g id="text_30">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f2937" x="551.046172" y="330.738382" transform="rotate(-0 551.046172 330.738382)">47</text>
+   </g>
+   <g id="text_31">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f2937" x="544.898498" y="358.525689" transform="rotate(-0 544.898498 358.525689)">63</text>
+   </g>
+   <g id="text_32">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f2937" x="512.464857" y="386.312996" transform="rotate(-0 512.464857 386.312996)">107</text>
+   </g>
+   <g id="text_33">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f2937" x="490.65321" y="414.100304" transform="rotate(-0 490.65321 414.100304)">104</text>
+   </g>
+   <g id="text_34">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f2937" x="490.229873" y="441.887611" transform="rotate(-0 490.229873 441.887611)">176</text>
+   </g>
+  </g>
+  <g id="text_35">
+   <text style="font-weight: 700; font-size: 23px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #1f3f7a" x="43.1892" y="45.9" transform="rotate(-0 43.1892 45.9)">ALS is the #2 KEGG pathway for arginine-methylated proteins</text>
+  </g>
+  <g id="text_36">
+   <text style="font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #6b7280" x="43.1892" y="74.52" transform="rotate(-0 43.1892 74.52)">KEGG enrichment of 2,340 KEGG-annotated methylated proteins. Top 12 of 68 significant pathways.</text>
+  </g>
+  <g id="text_37">
+   <text style="font-weight: 700; font-size: 14px; font-family: 'DejaVu Sans'; fill: #b5332a" transform="translate(734.2164 130.83918)">Methylated proteins in</text>
+   <text style="font-weight: 700; font-size: 14px; font-family: 'DejaVu Sans'; fill: #b5332a" transform="translate(734.2164 147.643008)">the KEGG ALS pathway</text>
+  </g>
+  <g id="text_38">
+   <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; fill: #1f2937" transform="translate(734.2164 192.031797)">TARDBP  FUS  HNRNPA1</text>
+   <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; fill: #1f2937" transform="translate(734.2164 210.231797)">HNRNPA2B1  MATR3</text>
+   <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; fill: #1f2937" transform="translate(734.2164 228.431797)">ATXN2  VCP  SOD1</text>
+   <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; fill: #1f2937" transform="translate(734.2164 245.775625)">UBQLN2  SQSTM1  NEFH</text>
+   <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; fill: #1f2937" transform="translate(734.2164 264.831797)">PRPH  DCTN1  SETX</text>
+   <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; fill: #1f2937" transform="translate(734.2164 282.946484)">TUBA4A</text>
+  </g>
+  <g id="text_39">
+   <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #6b7280" x="734.2164" y="315.837187" transform="rotate(-0 734.2164 315.837187)">+ 149 more</text>
+  </g>
+  <g id="text_40">
+   <text style="font-size: 12px; font-family: 'DejaVu Sans'; fill: #1f2937" transform="translate(734.2164 388.319297)">164 of 369 pathway proteins are</text>
+   <text style="font-size: 12px; font-family: 'DejaVu Sans'; fill: #1f2937" transform="translate(734.2164 402.722578)">methylated (1.8-fold over</text>
+   <text style="font-size: 12px; font-family: 'DejaVu Sans'; fill: #1f2937" transform="translate(734.2164 417.125859)">expected; FDR 6e-15).</text>
+  </g>
+  <g id="text_41">
+   <text style="font-style: italic; font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #6b7280" transform="translate(43.1892 509.697402)">clusterProfiler enrichKEGG (organism hsa, default KEGG background, BH), as in the 2022 analysis of Maron et al. 2021 Table S5, re-run on the PTM_pipeline methylarginine union</text>
+   <text style="font-style: italic; font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #6b7280" transform="translate(43.1892 521.1)">(Table S5, PRoMetheusDB, curated PTM databases). Against a stricter MS-detectable background the ALS pathway ranks 11 (FDR 0.001).</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p11eeca479e">
+   <rect x="316.7208" y="108" width="383.904" height="356.4"/>
+  </clipPath>
+ </defs>
+</svg>

@@ -67,3 +67,29 @@ Methylarginine marks the inherited ALS genes, which are largely RNA-binding and 
 - **ClinGen ALS result.** It reproduces: 21/29, rank 1, OR 3.04 here against 3.2 earlier.
 - **Heavy-methylation rank.** ALS ranks 5 here, against 19 earlier; neither result is enriched after adjustment.
 - **TDP-43 gene sets.** These come from the external compendium, not from Ma 2022 or Brown 2022 directly.
+
+## ALS talk slides (`als_talk_figures/`, script 41) and KEGG 2022 re-run (`kegg_2022_rerun/`, script 40)
+
+Counts are proteins: the union's 5,090 methylated proteins map to 4,687 genes. Ontology tools annotate genes, so each term count is the number of annotated proteins that carry a methylarginine site.
+
+| Slide | Message | Numbers |
+|---|---|---|
+| `als_clingen_slide` | 72% of ALS-causing proteins are arginine-methylated | 21/29 ALS vs 35% of disease proteins vs 25% of all human proteins; rank 1 of 42 panels; adjusted OR 3.0 |
+| `als_kegg_slide` | ALS is the #2 KEGG pathway | 164 of 369 pathway proteins methylated, 1.8-fold, FDR 6e-15 (KEGG default background) |
+| `als_do_slide` | Motor neuron disease ranks #6 of 1,045 DO terms | 78 of 167, FDR 8e-4 (reviewed proteome background) |
+| `als_protein_map_slide` | Sites sit in RGG / Gly-rich regions | FUS 30, EWSR1 35, TAF15 41, TDP-43 2 (R275, R293), hnRNPA1 20, hnRNPA2B1 15, MATR3 9 (canonical positions only) |
+
+**KEGG 2022 re-run.** This is the same `enrichKEGG(organism = "hsa", pvalueCutoff = 0.05)` call with the default KEGG background, run on the current KEGG release.
+
+| Input | Pathways of neurodegeneration | ALS |
+|---|---|---|
+| Maron 2021 Table S5 alone | #1 by GeneRatio, 173 proteins | #2 by GeneRatio, 162 proteins, FDR 7e-15 |
+| Full union | #1 by GeneRatio, 176 proteins | #2 by GeneRatio, 164 proteins, FDR 6e-15; #2 by p value |
+
+**Caveats for the speaker.**
+- The KEGG and DO slides use whole-genome backgrounds, as the 2022 analysis did. Restricting to MS-detectable proteins weakens them:
+  - KEGG ALS: rank 11, FDR 0.001.
+  - DO motor neuron disease: rank 8, FDR 0.06.
+- The KEGG ALS map (hsa05014) is large, at 369 proteins. It includes proteasome, mitochondrial and cytoskeletal proteins, not only ALS genes.
+- The ClinGen result is the least background-sensitive: rank 1 of 42 panels, with covariate adjustment.
+- Site counts on the protein map use canonical UniProt positions only. Rows mapped to TrEMBL or isoform accessions are excluded, so EWSR1, hnRNPA1 and MATR3 show fewer sites here than the union holds under the gene name.
