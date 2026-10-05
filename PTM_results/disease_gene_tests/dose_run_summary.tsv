@@ -1,0 +1,7 @@
+ontology	background	query_genes_in_ontology	background_genes_in_ontology	terms_tested	terms_fdr_lt_0.05	top_term
+DO	ms_detectable	2384	5554	864	7	autosomal dominant intellectual developmental disorder
+DO	reviewed	2384	7889	1045	39	intellectual disability
+DGN	ms_detectable	4397	11011	7085	133	Neurodevelopmental Disorders
+DGN	reviewed	4397	16556	8604	673	Low set ears
+KEGG	ms_detectable	2413	5698	344	22	Spliceosome
+KEGG	reviewed	2413	8461	351	63	Spliceosome
