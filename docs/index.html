@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Methylarginine Site Explorer · Shechter Lab</title>
+  <meta name="description" content="Search 13,719 human protein arginine methylation sites on 5,090 proteins from DeAngelo, Silverstein &amp; Shechter, Cell Chemical Biology 2026: provenance, methylation state, PRMT inhibitor response, motifs, disorder and domain context, condensates, and disease associations.">
+  <link rel="icon" href="assets/shechterlab-icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Serif:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="assets/explorer.css">
+  <script>
+    try { var t = localStorage.getItem('mre-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+  </script>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-art" aria-hidden="true" id="hero-art"></div>
+    <div class="wrap">
+      <div class="brand">
+        <a class="brand-mark" href="https://www.shechterlab.org/">
+          <img src="assets/shechterlab-icon.svg" alt="" width="34" height="34">
+          <span>Shechter Lab<small>Albert Einstein College of Medicine</small></span>
+        </a>
+        <nav class="brand-links" aria-label="Lab links">
+          <a href="https://www.shechterlab.org/research/">Research</a>
+          <a href="https://www.shechterlab.org/publications/">Publications</a>
+          <a href="https://github.com/Shechterlab/PTM_Pipeline">Code &amp; data</a>
+        </nav>
+      </div>
+      <h1>Methylarginine Site Explorer</h1>
+      <p class="lede" id="lede">Search the human arginine methylome assembled for DeAngelo, Silverstein &amp; Shechter, <a href="https://doi.org/10.1016/j.chembiol.2026.09.011"><i>Protein arginine methylation rewires molecular interactions</i></a>, Cell Chemical Biology (2026). Look up a protein, a site, or paste a gene list, then filter by provenance, methylation state, PRMT inhibitor response, sequence motif, disorder, domains, condensates and disease.</p>
+      <div class="hero-stats" id="hero-stats" aria-label="Dataset summary"></div>
+    </div>
+    <div class="hero-art-caption" id="hero-art-caption"></div>
+  </header>
+
+  <div class="toolbar" id="toolbar">
+    <div class="wrap">
+      <div class="search" role="search">
+        <div class="search-field">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <label class="sr-only" for="q">Search genes, UniProt accessions, protein names or sites</label>
+          <input id="q" type="search" autocomplete="off" spellcheck="false"
+            placeholder="Gene, UniProt accession, protein name, site (FUS R216), or a pasted gene list"
+            aria-controls="suggest" aria-autocomplete="list" aria-expanded="false">
+          <button class="search-clear" id="q-clear" type="button" aria-label="Clear search" hidden>×</button>
+          <ul class="suggest" id="suggest" role="listbox" hidden></ul>
+        </div>
+      </div>
+      <div class="query-note" id="query-note" aria-live="polite"></div>
+      <div class="tabs" role="tablist" aria-label="Views">
+        <button class="tab" role="tab" id="tab-overview" data-view="overview" aria-selected="true">Overview</button>
+        <button class="tab" role="tab" id="tab-proteins" data-view="proteins" aria-selected="false">Proteins <span class="count" id="count-proteins">–</span></button>
+        <button class="tab" role="tab" id="tab-sites" data-view="sites" aria-selected="false">Sites <span class="count" id="count-sites">–</span></button>
+        <button class="tab" role="tab" id="tab-protein" data-view="protein" aria-selected="false" hidden>Protein</button>
+        <button class="tab" role="tab" id="tab-about" data-view="about" aria-selected="false">Data &amp; methods</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <div class="layout" id="layout">
+      <aside class="rail" id="rail" aria-label="Filters" data-collapsed="true"></aside>
+      <div class="content" id="content">
+        <div class="loading" id="loading"><div class="spinner"></div><p>Loading 13,719 methylarginine sites…</p></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <p>© <span id="year">2026</span> Shechter Lab · <a href="https://einsteinmed.edu/departments/biochemistry">Department of Biochemistry</a>, <a href="https://einsteinmed.edu">Albert Einstein College of Medicine</a><br>
+        Cite: DeAngelo, Silverstein &amp; Shechter, <i>Cell Chem Biol</i> 33:1404–1421 (2026), <a href="https://doi.org/10.1016/j.chembiol.2026.09.011">doi:10.1016/j.chembiol.2026.09.011</a><br>
+        Built from <a href="https://github.com/Shechterlab/PTM_Pipeline">Shechterlab/PTM_Pipeline</a> · <span id="data-version"></span></p>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" data-theme-set="light">Light</button>
+        <button type="button" data-theme-set="system">System</button>
+        <button type="button" data-theme-set="dark">Dark</button>
+      </div>
+    </div>
+  </footer>
+
+  <div class="tip" id="tip" hidden></div>
+  <script src="assets/explorer.js"></script>
+</body>
+</html>

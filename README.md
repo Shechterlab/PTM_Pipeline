@@ -1,6 +1,8 @@
 # Methylarginine Interaction-Regulation Pipeline
 
-This repository contains the analysis code associated with DeAngelo, Silverstein, and Shechter, "Molecular Interaction Regulation by Arginine Methylation", invited for *Cell Chemical Biology* (2026).
+This repository contains the analysis code associated with DeAngelo JD, Silverstein AM, Shechter D. "Protein arginine methylation rewires molecular interactions." *Cell Chemical Biology* 33(10):1404–1421 (2026). [doi:10.1016/j.chembiol.2026.09.011](https://doi.org/10.1016/j.chembiol.2026.09.011)
+
+An interactive, searchable version of the methylarginine site union lives in [`docs/`](docs/) (see [Site Explorer](#site-explorer)).
 
 The pipeline assembles, remaps, annotates, and analyzes a human methylarginine site union with an emphasis on questions that should be broadly useful to investigators studying methylarginine biology: source provenance, canonical residue mapping, sequence motifs, disorder/domain context, local site density, condensate/RNP-associated classes, and representative substrate architectures.
 
@@ -16,6 +18,8 @@ The repository is intentionally code-only. Large source tables, downloaded annot
 | `scripts/03_*` to `scripts/16_*` | Main analysis modules: source provenance, functional classes, motifs, disorder/domain context, PTM comparisons, clustering, condensates, GO/disease supplements, and Maron state/treatment checks. |
 | `scripts/17_*` to `scripts/32_*` | Extended analyses and summary-figure utilities, including local-density nulls, domain-edge length nulls, architecture schematics, and 2D nearest-neighbor density panels. |
 | `scripts/common.py`, `scripts/clustering_utils.py` | Shared utilities. |
+| `scripts/36_export_site_explorer_data.py` | Exports the site union and its annotations as JSON for the static site explorer. |
+| `docs/` | Static Methylarginine Site Explorer (HTML/CSS/JS plus exported JSON data), served by GitHub Pages or Netlify. |
 | `config/` | JSON ontologies used for functional and domain-class annotation. |
 | `envs/` | Conda environment definition for the full Python/R workflow. |
 | `hpc/` | Environment, hygiene, and Slurm runner scripts. |
@@ -227,6 +231,34 @@ PTM_EXTENDED_PERMUTATIONS=1000 PTM_EXTENDED_2D_PERMUTATIONS=250 bash scripts/run
 | `condensates/`, `assembly_clustering/` | Optional CD-CODE condensate enrichment and shared-assembly clustering. |
 | `maron_state_treatment/` | Optional Maron-only state/treatment supplement analyses. |
 | `summary_figures/` | Lightweight SVG schematics for communicating representative architectures and interaction-redistribution concepts. |
+
+## Site Explorer
+
+`docs/` is a static, client-side web app for querying the methylarginine union by gene, UniProt accession, protein name, site (`FUS R216`) or pasted gene list. It filters by study-level provenance, methylation state, Maron methyl-IP and PRMT inhibitor response, motif, disorder and domain context, clustering, nearby PTMs, CD-CODE condensates, functional class and disease family. Each protein page shows a site map with live UniProt domains, disordered regions and sequence, plus per-site source evidence. Styling follows shechterlab.org.
+
+Regenerate the data after rerunning the pipeline:
+
+```bash
+. hpc/ptm_env.sh
+python scripts/36_export_site_explorer_data.py \
+  --results-root "$PTM_RESULTS_ROOT" \
+  --uniprot-metadata "$PTM_UNIPROT_METADATA" \
+  --outdir docs/data
+```
+
+This writes `docs/data/methylarg_sites.json` (search and filter index) and `docs/data/methylarg_evidence.json` (per-row source evidence and disease terms, loaded when a protein is opened). Optional inputs that are missing are skipped with a note.
+
+Preview locally (the page fetches its JSON, so open it through a server rather than from disk):
+
+```bash
+cd docs && python3 -m http.server 8000
+# then open http://localhost:8000
+```
+
+Deploy either way; neither needs a build step:
+
+- **GitHub Pages:** Settings → Pages → Build and deployment → Source: *Deploy from a branch*, Branch: `main`, Folder: `/docs`. The site appears at `https://shechterlab.github.io/PTM_Pipeline/`.
+- **Netlify:** Add new site → Import an existing project → this repository. `netlify.toml` already sets the publish directory to `docs` with no build command.
 
 ## Current Interpretive Guardrails
 

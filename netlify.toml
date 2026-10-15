@@ -1,0 +1,9 @@
+# Netlify: serve the static Methylarginine Site Explorer from docs/ (no build step).
+[build]
+  publish = "docs"
+  command = ""
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
