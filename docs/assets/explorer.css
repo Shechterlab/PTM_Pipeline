@@ -934,3 +934,4 @@ details.ix-sec[open] > summary .pm { border-color: var(--accent); }
 .tabs.more-right { -webkit-mask-image: linear-gradient(to right, #000 82%, transparent); mask-image: linear-gradient(to right, #000 82%, transparent); }
 /* Touch screens: horizontal drags on the map zoom (brush), so it cannot also scroll sideways; fit it to the width instead. */
 @media (pointer: coarse) { svg.pmap { min-width: 0; } }
+.tag.warn-tag { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent-dark); }

@@ -213,7 +213,7 @@
   let mol = null;              // live 3Dmol viewer for the open protein
 
   const DEFAULT_FILTERS = () => ({
-    states: new Set(), ips: new Set(), sources: new Set(), s2: new Set(), multi: false, studies: new Set(), minRep: 0,
+    states: new Set(), ips: new Set(), sources: new Set(), s2: new Set(), multi: false, reviewed: false, studies: new Set(), minRep: 0,
     treat: '', motifs: new Set(), motifQ: '', motifWhere: 'site', disorder: new Set(), domctx: new Set(), domclass: '',
     nn: 0, ptmGroup: '', ptmDist: 0,
     func: '', sub: '', cond: '', anyCond: false, disease: '', minSites: 1, dense: false, arch: '', argEnriched: false,
@@ -402,6 +402,23 @@
       iface: 0, ifP: null, ifPdb: null, ifN: 0, contacts: null, modelledMe: '', geo: null, modelled: null,
     }));
     for (const s of S) P[s.p].sites.push(s.j);
+    // Unreviewed (TrEMBL) entries have no Swiss-Prot entry name. Their sites often repeat a site of the reviewed entry
+    // of the same gene at the same position; keep both (the union as published) but flag the repeat.
+    const reviewedByGene = new Map();
+    for (const p of P) {
+      p.unrev = !p.uid || p.uid === p.acc.split('-')[0] + '_HUMAN';
+      if (!p.unrev && p.gene) { if (!reviewedByGene.has(p.gene)) reviewedByGene.set(p.gene, []); reviewedByGene.get(p.gene).push(p); }
+    }
+    for (const p of P) {
+      if (!p.unrev) continue;
+      p.reviewedTwin = (reviewedByGene.get(p.gene) || [])[0] || null;
+      for (const j of p.sites) {
+        for (const q of reviewedByGene.get(p.gene) || []) {
+          const k = q.sites.find((x) => S[x].pos === S[j].pos);
+          if (k != null) { S[j].dup = k; break; }
+        }
+      }
+    }
 
     for (const p of P) {
       p.label = p.gene || p.acc;
@@ -546,6 +563,7 @@
     if (f.s2.size && !bits(s.s2).some((b) => f.s2.has(b))) return false;
     if (f.sources.size && !bits(s.src).some((b) => f.sources.has(b))) return false;
     if (f.multi && popcount(s.src) < 2) return false;
+    if (f.reviewed && P[s.p].unrev) return false;
     if (f.studies.size && !bits(s.study).some((b) => f.studies.has(b))) return false;
     if (f.minRep && popcount(s.study) < f.minRep) return false;
     if (f.treat) {
@@ -672,6 +690,7 @@
     if (F.minRep) add('prov', '≥' + F.minRep + ' independent reports', () => { F.minRep = 0; });
     F.sources.forEach((v) => add('prov', SOURCE_LABEL[M.sources[v]], () => F.sources.delete(v)));
     if (F.multi) add('prov', '≥2 source tables', () => { F.multi = false; });
+    if (F.reviewed) add('prov', 'Reviewed UniProt entries only', () => { F.reviewed = false; });
     if (F.treat) add('treat', TREAT_OPTIONS.find((o) => o[0] === F.treat)[1], () => { F.treat = ''; });
     F.motifs.forEach((v) => add('motif', 'Motif ' + MOTIF_LABEL[M.motifs[v]], () => F.motifs.delete(v)));
     if (F.motifQ) { const m = parseMotif(F.motifQ); if (m && m.toks) add('motif', 'Motif ' + m.text + (F.motifWhere === 'window' ? ' within ±15 aa' : ' at the site'), () => { F.motifQ = ''; }); }
@@ -870,7 +889,8 @@
         chipRow('studies', M.studyOrder.map((k) => [k, M.studies[k][0] + ' · ' + compact(M.studies[k][2]), M.studies[k][1] || STUDY_HELP[M.studies[k][0]] || '']), F.studies) + '</div>' +
         '<div class="fgroup"><label class="flabel" for="f-minrep">Independent reports per site</label>' + sel('f-minrep', options([[2, '≥2 studies or databases'], [3, '≥3'], [5, '≥5']], F.minRep || '', 'Any'), !!F.minRep) + '</div>' +
         '<div class="fgroup"><span class="flabel">Pipeline source table</span>' + chipRow('sources', M.sources.map((n, k) => [k, SOURCE_LABEL[n], SOURCE_HELP[n]]), F.sources) +
-        '<label class="check"><input type="checkbox" id="f-multi"' + (F.multi ? ' checked' : '') + '> In ≥2 source tables at the same position</label></div>';
+        '<label class="check"><input type="checkbox" id="f-multi"' + (F.multi ? ' checked' : '') + '> In ≥2 source tables at the same position</label>' +
+        '<label class="check" title="' + esc(unrevHelp()) + '"><input type="checkbox" id="f-reviewed"' + (F.reviewed ? ' checked' : '') + '> Reviewed UniProt entries only</label></div>';
       case 'treat': return '<div class="fgroup"><label class="flabel" for="f-treat">Maron Table S3 response (adj. p ≤ 0.05)</label>' + sel('f-treat', options(TREAT_OPTIONS, F.treat), !!F.treat) + '</div>';
       case 'motif': return '<div class="fgroup"><span class="flabel">Around the methyl-R (match any)</span>' + chipRow('motifs', M.motifs.map((m, k) => [k, MOTIF_LABEL[m], MOTIF_HELP[m]]), F.motifs) + '</div>' +
         '<div class="fgroup"><label class="flabel" for="f-motifq">Custom motif (2–10 residues)</label>' +
@@ -958,6 +978,7 @@
       if (el) el.addEventListener(ev, () => { fn(el); UI.pageP = 50; UI.pageS = 100; compute(); renderView(); if (el.tagName === 'SELECT' || el.type === 'number') el.classList.toggle('set', !!el.value && el.value !== '1'); });
     };
     bind('f-multi', (el) => { F.multi = el.checked; });
+    bind('f-reviewed', (el) => { F.reviewed = el.checked; });
     bind('f-minrep', (el) => { F.minRep = +el.value || 0; });
     bind('f-treat', (el) => { F.treat = el.value; });
     bind('f-domclass', (el) => { F.domclass = el.value; });
@@ -1234,6 +1255,13 @@
   }
 
   // When nothing matches, show what each constraint would give back on its own.
+  function unrevHelp() {
+    const prots = P.filter((p) => p.unrev);
+    const sites = prots.reduce((n, p) => n + p.sites.length, 0);
+    const dups = S.filter((s) => s.dup != null).length;
+    return 'Drops ' + fmt(sites) + ' sites on ' + fmt(prots.length) + ' unreviewed (TrEMBL) entries. ' + fmt(dups) + ' of them repeat a site at the same position on the reviewed entry of the same gene, so the union counts them twice.';
+  }
+
   function emptyState() {
     const cons = constraints();
     if (!cons.length) return '<div class="card empty"><b>No sites match</b>Broaden the search.</div>';
@@ -1657,12 +1685,18 @@
       (p.aliases.length ? '<p class="aliases">Also reported as ' + p.aliases.map((a) => '<span>' + esc(a) + '</span>').join(', ') + '</p>' : '') +
       '<div class="detail-links"><span class="tag mono">' + esc(p.acc) + '</span>' + (p.uid ? '<span class="tag mono">' + esc(p.uid) + '</span>' : '') +
       (p.iso ? '<span class="tag" title="Sites were reported on this isoform accession">isoform</span>' : '') +
+      (p.unrev ? '<span class="tag warn-tag" title="Unreviewed UniProt entry (TrEMBL)">unreviewed entry</span>' : '') +
       ext('https://www.uniprot.org/uniprotkb/' + encodeURIComponent(p.acc) + '/entry', 'UniProt') +
       ext('https://alphafold.ebi.ac.uk/entry/' + encodeURIComponent(base), 'AlphaFold') +
       ext('https://www.ebi.ac.uk/interpro/protein/UniProt/' + encodeURIComponent(base) + '/', 'InterPro') +
       '<button class="btn small" type="button" id="save-pdf" title="Print this protein page, or save it as a PDF from the print dialog">Save PDF</button></div></div>' +
       ctxToggleHtml(p) +
       (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
+      (p.unrev ? (() => {
+        const twin = p.reviewedTwin, nDup = p.sites.filter((j) => S[j].dup != null).length;
+        return '<div class="filter-note">This is an unreviewed UniProt entry (TrEMBL), so sequence-based context (motifs, disorder, domains) may be missing. ' +
+          (twin ? 'The reviewed entry for ' + esc(p.gene) + ' is <button class="linkish" type="button" data-open-p="' + twin.i + '">' + esc(twin.label) + ' (' + esc(twin.acc) + ')</button>; ' + (p.sites.length === 1 ? (nDup ? 'the site here is also a site there.' : 'the site here is not among its sites.') : (nDup === p.sites.length ? 'all ' + fmt(nDup) + ' sites here are also sites there.' : fmt(nDup) + ' of the ' + fmt(p.sites.length) + ' sites here are also sites there, at the same position.')) : 'No reviewed entry for this gene is in the set.') + '</div>';
+      })() : '') +
       '<div class="facts">' +
       fact(fmt(p.sites.length), 'Methylarginine sites', shownN === p.sites.length ? (filtered ? 'all match your filters' : 'all reported sites') : fmt(shownN) + ' match current filters') +
       fact('<span id="arg-count">' + (argN == null ? '—' : fmt(argN)) + '</span>', 'Arginines', '<span id="arg-frac">' + (argN ? pctText(p.sites.length, argN) + '% methylated' : 'loading from UniProt') + '</span>') +
@@ -1685,6 +1719,7 @@
     $('#back', el).addEventListener('click', () => { if (history.length > 1) history.back(); else go('proteins'); });
     $('#save-pdf', el).addEventListener('click', (e) => savePdf(p, e.currentTarget));
     bindCtx(p);
+    $$('[data-open-p]', el).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.openP)));
     const pfc = $('#pf-clear', el);
     if (pfc) pfc.addEventListener('click', () => { const q = Q.raw; F = DEFAULT_FILTERS(); afterFilterChange(); if (q) $('#q').value = q; });
     renderSiteTable(p);
@@ -1769,6 +1804,7 @@
         const vs = (varsAt.get(s.pos) || []).filter((v) => v.from === 'R');
         const open = UI.openEvidence.has(s.j);
         return '<tr class="row' + (dim ? ' dim' : '') + '" tabindex="0" data-j="' + s.j + '" data-pos="' + s.pos + '"><td class="num"><b>R' + s.pos + '</b>' +
+          (s.dup != null ? '<br><span class="tag" title="The same gene and position is also a site on the reviewed UniProt entry ' + esc(P[S[s.dup].p].acc) + '">also on ' + esc(P[S[s.dup].p].acc) + '</span>' : '') +
           (s.orig ? '<br><span class="muted" title="Positions given by the source studies before mapping to the current canonical UniProt sequence. Several can land on one site when a source used another isoform or its peptide fits more than one arginine; expand the row to see how each record was mapped.">source position' + (new Set(s.orig.split(';')).size > 1 ? 's ' : ' ') + esc(Array.from(new Set(s.orig.split(';'))).join(', ')) + '</span>' : '') +
           vs.map((v) => '<br><span class="tag var" title="UniProt natural variant ' + esc(v.id) + ': R' + s.pos + v.to + ' · ' + esc(v.desc) + '">R' + s.pos + esc(v.to) + (shortDisease(v.desc) ? ' · ' + esc(shortDisease(v.desc).slice(0, 18)) : '') + '</span>').join('') + '</td>' +
           '<td>' + pill(s.st) + '</td><td>' + windowHtml(s.win, 7) + (s.mis ? ' <span class="warn" title="Canonical residue at this position is not R">!</span>' : '') + '</td>' +
@@ -5402,6 +5438,7 @@
       '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two most recent entries per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were read from the structure itself (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylated arginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
       '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue that touched RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016). DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence (26,012 matched, 68 dropped). Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides.</li>' +
       '<li><b>Writer and reader paths</b>: the protein network can add a second ring of PRMTs and Tudor-domain proteins that bind its partners (STRING ≥ 0.7).</li>' +
+      '<li><b>Unreviewed UniProt entries</b>: about 870 sites in the union sit on unreviewed (TrEMBL) entries, mostly without a staged sequence, so they lack motif, disorder and domain context. About 580 of them repeat a site at the same position on the reviewed entry of the same gene, so the union counts those residues twice. The explorer keeps the union as published, tags these entries and sites, and offers a "Reviewed UniProt entries only" filter (Provenance); the sites TSV has <code>uniprot_reviewed</code> and <code>same_site_on_reviewed_entry</code> columns.</li>' +
       '<li><b>Statistics</b> (interaction export, <code>scripts/37_export_interaction_data.py</code>): SciPy for Fisher\'s exact test, the hypergeometric test (complexes), Benjamini–Hochberg adjustment and the Mann–Whitney U test; statsmodels for the Mantel–Haenszel pooled odds ratio within proteins, its Robins–Breslow–Greenland 95% confidence interval and the continuity-corrected Cochran–Mantel–Haenszel test. Pooled odds ratios across proteins carry Woolf (log) 95% intervals; log2 odds ratios in the GO and interface tables add 0.5 to each cell (Haldane–Anscombe).</li>' +
       '<li><b>Interactions tab</b>: the key findings are written from the exported statistics, so their wording (more often, less often, not significantly different) follows the numbers. "Self-contact" marks residues that touch another copy of the same protein (a homodimer or homo-oligomer) in a PDB entry.</li>' +
       '<li><b>Interface geometry</b>: for every methylarginine at a PDB interface and up to 12 non-methylated interface arginines per protein, the 10 Å environment in one entry (the most recent showing the interface) gives relative solvent accessibility alone and in the complex (Shrake–Rupley, Arg maximum 274 Å² from Tien et al. 2013) and the Levy (' + doiLink('10.1016/j.jmb.2010.09.028', '2010') + ') class: core, rim or support. Guanidino nitrogens within 3.5 Å of a nucleobase N/O count as base hydrogen bonds, of a phosphate or sugar O as backbone hydrogen bonds. Both are compared within proteins (Mantel–Haenszel). The RG/RGG table repeats the interface test within each sequence context.</li>' +
@@ -5433,7 +5470,7 @@
 
   // ----------------------------------------------------------- export / copy
   function siteTsv(rows) {
-    const head = ['gene', 'uniprot_accession', 'protein_name', 'site', 'position', 'state', 'maron_s2_state', 'maron_ip', 'sources', 'source_count',
+    const head = ['gene', 'uniprot_accession', 'uniprot_reviewed', 'same_site_on_reviewed_entry', 'protein_name', 'site', 'position', 'state', 'maron_s2_state', 'maron_ip', 'sources', 'source_count',
       'window_15', 'window_31', 'motifs', 'disorder_context', 'disorder_edge_distance', 'domain_context', 'nearest_interpro', 'nearest_domain_class',
       'domain_edge_distance', 'domain_side', 'nearest_methyl_r_distance', 'GSK591_decreased', 'GSK591_increased', 'MS023_decreased', 'MS023_increased',
       'maron_s3_measurements', 'condensates', 'functional_classes', 'reported_by', 'independent_reports', 'references', 'pdb_interface_partners', 'pdb_interface_entries', 'pdb_contacts', 'predicted_interface_partners_pdockq', 'rna_dna_crosslinks'];
@@ -5442,7 +5479,7 @@
       const p = P[s.p];
       const ipr = s.ipr >= 0 ? M.interpro[s.ipr] : null;
       out.push([
-        p.gene, p.acc, p.name, 'R' + s.pos, s.pos, STATE_LABEL[s.st], bits(s.s2).map((b) => ['Rme1', 'Rme2'][b]).join(';'),
+        p.gene, p.acc, p.unrev ? 'no' : 'yes', s.dup != null ? P[S[s.dup].p].acc : '', p.name, 'R' + s.pos, s.pos, STATE_LABEL[s.st], bits(s.s2).map((b) => ['Rme1', 'Rme2'][b]).join(';'),
         bits(s.ip).map((b) => ipLabel(M.maron_ips[b])).join(';'), bits(s.src).map((b) => M.sources[b]).join(';'), popcount(s.src),
         s.win ? s.win.slice(8, 23) : '', s.win, bits(s.mot).map((b) => M.motifs[b]).join(';'),
         M.disorder_classes[s.dc], s.dEdge == null ? '' : s.dEdge, M.domain_contexts[s.dctx], ipr ? ipr[0] + ' ' + ipr[1] : '',
