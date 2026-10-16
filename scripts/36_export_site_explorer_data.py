@@ -5,7 +5,7 @@ import datetime as dt
 import json
 import os
 import re
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 import pandas as pd
@@ -111,22 +111,39 @@ def study_label(reference: str) -> str:
 PTM_MASTER_SOURCES = {'unip': 'UniProt', 'iedb': 'IEDB'}
 
 
-def load_lengths(path: Path | None) -> dict[str, int]:
-    if path is None or not path.exists():
-        return {}
-    meta = read_tsv(path, usecols=['Entry', 'Length'])
-    meta['Length'] = pd.to_numeric(meta['Length'], errors='coerce')
-    meta = meta[meta['Length'].notna()]
-    return dict(zip(meta['Entry'], meta['Length'].astype(int)))
+def gene_symbols(value: str) -> list[str]:
+    """Symbols from a plain symbol or a UniProt 'Name: X; Synonyms: A, B; ORFNames: ...;' gene string."""
+    value = str(value or '').strip()
+    if 'Name=' in value or 'Name:' in value or 'Synonyms' in value:
+        out = []
+        for part in value.split(';'):
+            key, _, rest = part.partition(':') if ':' in part else part.partition('=')
+            if key.strip() in ('Name', 'Synonyms'):
+                out += [g.strip() for g in rest.split(',') if g.strip()]
+        return out
+    return [g for g in value.replace(';', ' ').split() if g]
 
 
-def load_names(path: Path | None) -> dict[str, tuple[str, str]]:
+def load_uniprot(path: Path | None) -> dict[str, dict]:
+    """Per-accession length, names and gene symbols from a UniProt metadata TSV.
+
+    Uses the pipeline's PTM_UNIPROT_METADATA columns (Entry, Entry Name, Gene Names (primary),
+    Protein names, Length); an optional 'Gene Names' column adds synonyms for search.
+    """
     if path is None or not path.exists():
         return {}
     meta = read_tsv(path)
-    if 'Protein names' not in meta.columns:
-        return {}
-    return {row['Entry']: (row['Protein names'], row.get('Entry Name', '')) for _, row in meta.iterrows()}
+    out = {}
+    for row in meta.to_dict('records'):
+        primary = split_multi(row.get('Gene Names (primary)', ''))
+        out[row['Entry']] = {
+            'length': to_int(row.get('Length')),
+            'name': row.get('Protein names', ''),
+            'entry_name': row.get('Entry Name', ''),
+            'gene': primary[0] if primary else '',
+            'synonyms': [g for g in str(row.get('Gene Names', '')).replace(';', ' ').split() if g],
+        }
+    return out
 
 
 def enrichment_rows(df: pd.DataFrame, label_col: str = 'category') -> list[list]:
@@ -156,8 +173,7 @@ def main() -> None:
 
     root = Path(args.results_root)
     meta_path = Path(args.uniprot_metadata) if args.uniprot_metadata else None
-    lengths = load_lengths(meta_path)
-    uniprot_names = load_names(meta_path)
+    uniprot = load_uniprot(meta_path)
 
     # ---- Site-level tables -------------------------------------------------------------------
     sites = read_tsv(root / 'integrated' / 'human_arg_methyl_union_dedup_by_site.tsv')
@@ -235,17 +251,35 @@ def main() -> None:
 
     condensate_membership = read_optional(root / 'condensates' / 'condensate_membership.tsv')
     condensate_enrichment = read_optional(root / 'condensates' / 'condensate_enrichment.tsv')
+    # CD-CODE condensates: id, type, members in the CD-CODE universe and among methylarginine proteins,
+    # plus condensate-level enrichment where the condensate passed the module's size filter.
+    union_accessions = set(merged['canonical_UniProtAC'])
     condensates = Vocab()
-    condensate_stats = {}
-    for _, row in condensate_enrichment.iterrows():
-        idx = condensates.index(row['condensate_name'])
-        condensate_stats[idx] = [
-            to_int(row['member_count']), to_int(row['methyl_protein_count']),
-            to_float(row['log2_odds_ratio']), to_sig(row['q_value']),
-        ]
+    condensate_info: dict[int, dict] = {}
     protein_condensates = defaultdict(set)
-    for _, row in condensate_membership.iterrows():
-        protein_condensates[row['canonical_UniProtAC']].add(condensates.index(row['condensate_name']))
+    for row in condensate_membership.to_dict('records'):
+        idx = condensates.index(row['condensate_id'])
+        info = condensate_info.setdefault(idx, {'name': row['condensate_name'], 'type': row['condensate_type'],
+                                               'members': set(), 'methyl': set()})
+        info['members'].add(row['canonical_UniProtAC'])
+        if row['canonical_UniProtAC'] in union_accessions:
+            info['methyl'].add(row['canonical_UniProtAC'])
+            protein_condensates[row['canonical_UniProtAC']].add(idx)
+    condensate_stats = {}
+    for row in condensate_enrichment.to_dict('records'):
+        if row['condensate_id'] in condensates.lookup:
+            condensate_stats[condensates.lookup[row['condensate_id']]] = row
+    condensate_rows = []
+    for idx, cid in enumerate(condensates.values):
+        info = condensate_info[idx]
+        stat = condensate_stats.get(idx)
+        condensate_rows.append([
+            info['name'], cid, info['type'],
+            to_int(stat['member_count']) if stat else len(info['members']),
+            to_int(stat['methyl_protein_count']) if stat else len(info['methyl']),
+            to_float(stat['log2_odds_ratio']) if stat else None,
+            to_sig(stat['q_value']) if stat else None,
+        ])
 
     # Disease: enriched DisGeNET terms (clusterProfiler) mapped to the audited primary disease families.
     disease_root = root / 'functional_class_union' / 'disease_enrichment'
@@ -288,13 +322,20 @@ def main() -> None:
         first = group.iloc[0]
         func = functional.loc[accession] if accession in functional.index else None
         odds = arg_odds.loc[accession] if accession in arg_odds.index else None
-        gene = first['substrate_genename'] or (func['genename'] if func is not None else '')
-        name = uniprot_names.get(accession, ('', ''))[0] or first['protein_name'] \
-            or (func['protein_name'] if func is not None else '')
-        name = recommended_name(name)
-        uniprot_id = first['UniProtID'] or (func['UniProtID'] if func is not None else '') \
-            or uniprot_names.get(accession, ('', ''))[1]
-        length = lengths.get(accession)
+        up = uniprot.get(accession, {})
+        # Current UniProt symbol first; source tables carry outdated or paralog symbols on some rows.
+        row_genes = Counter(g for g in group['substrate_genename'] if g)
+        func_genes = gene_symbols(func['genename']) if func is not None else []
+        gene = up.get('gene') or (row_genes.most_common(1)[0][0] if row_genes else '') \
+            or (func_genes[0] if func_genes else '')
+        aliases = set(row_genes) | set(up.get('synonyms', []))
+        if func is not None:
+            aliases.update(func_genes)
+        aliases = {a for a in aliases if a != gene and ' ' not in a and ':' not in a}
+        name = recommended_name(up.get('name') or first['protein_name']
+                                or (func['protein_name'] if func is not None else ''))
+        uniprot_id = up.get('entry_name') or first['UniProtID'] or (func['UniProtID'] if func is not None else '')
+        length = up.get('length')
         if length is not None and length < int(group['position_int'].max()):
             length = None
         if length is None and odds is not None:
@@ -322,7 +363,8 @@ def main() -> None:
                     clusters.append([min(positions), max(positions), len(positions)])
             arch = [ar['architecture_class'], clusters]
 
-        terms = sorted(set(gene_terms.get(gene, [])))
+        symbols = {gene} | aliases
+        terms = sorted({t for symbol in symbols for t in gene_terms.get(symbol, [])})
         family_mask = 0
         for term_idx in terms:
             family_idx = disease_terms[term_idx][2]
@@ -345,12 +387,13 @@ def main() -> None:
             int(first['accession_is_isoform'] == 'True'),
             sorted(protein_condensates.get(accession, set())),
             family_mask,
-            int(gene in als_genes),
+            int(bool(symbols & als_genes)),
             density,
             best,
             sig_regions.get(accession, []),
             arch,
             [list(item) for item in sorted(other_ptms.get(accession, set()))],
+            sorted(aliases),
         ])
 
     # ---- Sites --------------------------------------------------------------------------------
@@ -477,6 +520,15 @@ def main() -> None:
             for _, row in read_optional(maron_root / 'maron_s3_treatment_ip_summary.tsv').iterrows()
         ],
     }
+    parent_counts = defaultdict(Counter)
+    for row in functional.reset_index().to_dict('records'):
+        for sub in split_multi(row['functional_class_subclass']):
+            for broad in split_multi(row['functional_class_broad']):
+                parent_counts[sub][broad] += 1
+    overview_tables['functional_subclasses'] = [
+        r + [parent_counts[r[0]].most_common(1)[0][0] if parent_counts[r[0]] else '']
+        for r in table(root / 'functional_class_union' / 'arg_methyl_functional_class_subclass_enrichment.tsv')
+    ]
     condensate_summary = read_optional(root / 'condensates' / 'condensate_summary.tsv')
 
     payload = {
@@ -503,8 +555,8 @@ def main() -> None:
             'domain_contexts': domain_contexts.values,
             'domain_classes': domain_classes.values,
             'disease_families': disease_families.values,
-            'condensates': condensates.values,
-            'condensate_stats': {str(k): v for k, v in condensate_stats.items()},
+            'condensates': condensate_rows,
+            'condensate_fields': ['name', 'cdcode_id', 'type', 'members', 'methyl_members', 'log2_odds_ratio', 'q_value'],
             'condensate_summary': condensate_summary.iloc[0].to_dict() if not condensate_summary.empty else {},
             'refs': refs.values,
             'interpro': interpro,
@@ -513,7 +565,7 @@ def main() -> None:
                 'accession', 'gene', 'protein_name', 'uniprot_id', 'func_class_mask', 'func_subclass_mask', 'length',
                 'arginine_count', 'shrinkage_log2_enrichment', 'arg_odds_q', 'is_isoform', 'condensates',
                 'disease_family_mask', 'als_ftd_audited_gene', 'local_density', 'best_density_window',
-                'significant_density_windows', 'cluster_architecture', 'other_ptms',
+                'significant_density_windows', 'cluster_architecture', 'other_ptms', 'gene_aliases',
             ],
             'site_fields': [
                 'protein', 'position', 'state', 'source_mask', 'refs', 'disorder_class', 'disorder_edge_distance',
@@ -542,7 +594,8 @@ def main() -> None:
         path = outdir / name
         path.write_text(json.dumps(data, separators=(',', ':'), ensure_ascii=False), encoding='utf-8')
         print(f'wrote {path} ({path.stat().st_size / 1e6:.2f} MB)')
-    print(f'{len(site_rows)} sites, {len(proteins)} proteins ({sum(p[6] is not None for p in proteins)} with lengths); '
+    print(f'{len(site_rows)} sites, {len(proteins)} proteins ({sum(p[6] is not None for p in proteins)} with lengths, '
+          f'{sum(1 for p in proteins if p[19])} with gene aliases); '
           f'window flags {window_flags}; Maron S3 rows unmatched {maron_unmatched}; '
           f'evidence rows unmatched {evidence_unmatched}')
 

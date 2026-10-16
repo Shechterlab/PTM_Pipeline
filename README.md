@@ -234,7 +234,7 @@ PTM_EXTENDED_PERMUTATIONS=1000 PTM_EXTENDED_2D_PERMUTATIONS=250 bash scripts/run
 
 ## Site Explorer
 
-`docs/` is a static, client-side web app for querying the methylarginine union by gene, UniProt accession, protein name, site (`FUS R216`) or pasted gene list. It filters by study-level provenance, methylation state, Maron methyl-IP and PRMT inhibitor response, motif, disorder and domain context, clustering, nearby PTMs, CD-CODE condensates, functional class and disease family. Each protein page shows a site map with live UniProt domains, disordered regions and sequence, plus per-site source evidence. Styling follows shechterlab.org.
+`docs/` is a static, client-side web app for querying the methylarginine union by gene symbol or synonym, UniProt accession, protein name, site (`FUS R216`) or pasted gene list. It filters by study-level provenance, methylation state, Maron methyl-IP and PRMT inhibitor response, motif, disorder and domain context, clustering, nearby PTMs, CD-CODE condensates, functional class/subclass and disease family; a bar under the search box always shows the active constraints with one-click removal. Each protein page has a protein map (methylarginine lollipops coloured by state, methyl-IP, PRMT inhibitor response or number of reports, over UniProt domains, disorder, composition, RG/RGG-rich segments, AlphaFold pLDDT, UniProt variants and other PTMs) that exports as SVG or PNG; a 3D view of the AlphaFold DB model or any mapped PDB entry with the methylarginines highlighted (entries that model a methylated arginine are flagged); per-site pLDDT, AlphaMissense and UniProt variant/modification annotations; domain, condensate, ontology and disease panels; and per-site source evidence. UniProt, AlphaFold DB, RCSB PDB and PDBe data are fetched live in the browser. Overview charts export as SVG, PNG or TSV. Styling follows shechterlab.org.
 
 Regenerate the data after rerunning the pipeline:
 
@@ -247,6 +247,16 @@ python scripts/36_export_site_explorer_data.py \
 ```
 
 This writes `docs/data/methylarg_sites.json` (search and filter index) and `docs/data/methylarg_evidence.json` (per-row source evidence and disease terms, loaded when a protein is opened). Optional inputs that are missing are skipped with a note.
+
+Gene symbols follow current UniProt; symbols reported by the source tables (some outdated or belonging to a paralog) are kept as search aliases. If the metadata TSV also has UniProt's `Gene Names` column, its synonyms become aliases too. The committed data used the same query as `00_stage_context_sources.py` with `gene_names` added to the fields:
+
+```bash
+curl -G https://rest.uniprot.org/uniprotkb/stream \
+  --data-urlencode "format=tsv" \
+  --data-urlencode "query=(proteome:UP000005640) AND (reviewed:true)" \
+  --data-urlencode "fields=accession,id,gene_primary,gene_names,protein_name,length" \
+  -o uniprot_human_reviewed_metadata_with_synonyms.tsv
+```
 
 Preview locally (the page fetches its JSON, so open it through a server rather than from disk):
 
