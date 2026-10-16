@@ -684,6 +684,42 @@ footer.site a:hover { color: var(--accent); }
 .legend i.grad { width: 64px; height: 10px; border-radius: 2px; margin: 0 0.15rem; }
 .af-legend li b { margin-left: auto; padding-left: 0.5rem; font-weight: 600; }
 
+/* Interactions */
+:root { --na-rna-ink: #5b3a96; --na-dna-ink: #7a4f10; --na-rna-bg: rgba(123, 79, 191, 0.14); --na-dna-bg: rgba(183, 121, 31, 0.16); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --na-rna-ink: #d2bdf5; --na-dna-ink: #efca85; --na-rna-bg: rgba(123, 79, 191, 0.3); --na-dna-bg: rgba(183, 121, 31, 0.3); } }
+:root[data-theme="dark"] { --na-rna-ink: #d2bdf5; --na-dna-ink: #efca85; --na-rna-bg: rgba(123, 79, 191, 0.3); --na-dna-bg: rgba(183, 121, 31, 0.3); }
+.tag.na-rna { background: var(--na-rna-bg); color: var(--na-rna-ink); }
+.tag.na-dna { background: var(--na-dna-bg); color: var(--na-dna-ink); }
+.tag.iface-p { background: var(--teal-wash); color: var(--brand-ink); }
+.tag.ix-prmt { background: var(--ink); color: var(--surface); }
+.tag.ix-tudor { background: transparent; color: var(--accent-dark); border: 1px dashed var(--accent); }
+.tag.go-exp { background: var(--brand-ink); color: #fff; }
+.tag.cx-cur { background: var(--teal-wash); color: var(--brand-ink); }
+.ix-tabs { margin: 0.2rem 0 0.9rem; flex-wrap: wrap; }
+.ix-tabs .n { font-weight: 400; opacity: 0.75; margin-left: 0.1rem; }
+.ix-net-box { border: 1px solid var(--line); border-radius: 0.7rem; background: var(--surface); overflow: hidden; margin-top: 0.4rem; }
+svg.ix-net { display: block; width: 100%; height: auto; }
+.ix-net .nd { outline: none; }
+.ix-net .nd:hover circle, .ix-net .nd:focus-visible circle, .ix-net .nd:hover rect, .ix-net .nd:focus-visible rect { stroke: var(--accent); stroke-width: 2.6; }
+.legend i.hollow { background: var(--surface); border: 1.5px solid var(--line-strong); }
+.legend i.diamond { width: 9px; height: 9px; border-radius: 1px; transform: rotate(45deg); border: 1.5px solid var(--ink); background: transparent; }
+.legend i.ring { width: 12px; height: 12px; border: 1.5px dashed var(--accent); background: transparent; }
+.ix-tbl { max-height: 26rem; overflow-y: auto; margin-top: 0.4rem; }
+.cx-list { list-style: none; margin: 0.3rem 0 0.8rem; padding: 0; display: grid; gap: 0.8rem; }
+.cx-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.6rem; font-size: 0.88rem; margin-bottom: 0.35rem; }
+.cx-stat { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); font-size: 0.8rem; }
+.tag.cx-m { background: var(--fig-site); color: #fff; border: 0; cursor: pointer; font: inherit; font-size: 0.74rem; font-weight: 600; }
+.tag.cx-m.self { outline: 2px solid var(--ink); outline-offset: 1px; }
+.tag.cx-u { background: transparent; border: 1px solid var(--line-strong); color: var(--muted); }
+.cx-tbl td:first-child { white-space: normal; }
+.ix-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem 1.6rem; }
+.ix-grid section h4 { margin: 0 0 0.4rem; font-size: 0.92rem; }
+.ix-grid section p { margin: 0 0 0.45rem; font-size: 0.86rem; }
+.go-list, .enc-list, .ix-sites, .contact-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.32rem; font-size: 0.82rem; }
+.tag.pdb-btn { cursor: pointer; border: 1px solid var(--line-strong); font: inherit; font-size: 0.74rem; font-weight: 600; background: var(--surface-2); }
+.tag.pdb-btn:hover, .tag.pdb-btn:focus-visible { border-color: var(--accent); }
+@media (max-width: 900px) { .ix-grid { grid-template-columns: minmax(0, 1fr); } }
+
 /* Print / Save as PDF: a protein page becomes a report on white paper. */
 .print-only { display: none; }
 @media print {
@@ -735,7 +771,10 @@ footer.site a:hover { color: var(--accent); }
     --toolbar-h: 7.25rem;
     color-scheme: light;
   }
+  :root, :root:not([data-theme="light"]), :root[data-theme="dark"] { --na-rna-ink: #5b3a96; --na-dna-ink: #7a4f10; --na-rna-bg: rgba(123, 79, 191, 0.14); --na-dna-bg: rgba(183, 121, 31, 0.16); }
   @page { margin: 12mm 11mm; }
+  .ix-tbl { max-height: none !important; overflow: visible !important; }
+  .ix-tabs { display: none !important; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   html, body { background: #ffffff !important; color: var(--ink); font-size: 9.5pt; }
   .print-only { display: block; }
@@ -769,6 +808,8 @@ footer.site a:hover { color: var(--accent); }
   .print-3d img { display: block; width: 100%; max-height: 120mm; object-fit: contain; border: 1px solid #d5dde0; border-radius: 6px; }
   .print-3d figcaption { font-size: 7.5pt; color: var(--muted); margin-top: 1mm; }
   .print-map svg { display: block; width: 100%; height: auto; }
+  #ix-net { display: none !important; }
+  .print-net svg { display: block; width: 100%; height: auto; border: 1px solid #d5dde0; border-radius: 6px; }
   .print-head { font-size: 8pt; color: var(--muted); border-bottom: 1px solid #d5dde0; padding-bottom: 2mm; margin-bottom: 4mm; word-break: break-all; }
   .print-foot { font-size: 7.5pt; color: var(--muted); border-top: 1px solid #d5dde0; padding-top: 2mm; margin-top: 4mm; }
   .print-foot p { margin: 0 0 1mm; }
