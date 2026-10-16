@@ -74,6 +74,10 @@
   const PTM_LABEL = ['Phospho', 'Lys acyl', 'Ub/SUMO', 'Lys methyl'];
   const PTM_PREFIX = ['p', 'ac', 'ub', 'me'];
   const PADJ = 0.05;
+  // Maron 2021 methyl-IP antibodies named by the residue state they recognise.
+  const IP_LABEL = { MMA: 'Rme1', ADMA: 'Rme2a', SDMA: 'Rme2s' };
+  const IP_HELP = { MMA: 'monomethylarginine (MMA) antibody', ADMA: 'asymmetric dimethylarginine (ADMA) antibody', SDMA: 'symmetric dimethylarginine (SDMA) antibody' };
+  const ipLabel = (name) => IP_LABEL[name] || name;
   const TREAT_OPTIONS = [
     ['', 'Any site'],
     ['tested', 'Measured in Maron Table S3'],
@@ -91,7 +95,7 @@
       cat: (s) => [3, 0, 1, 2][s.st], colors: (pal) => [pal.cat[0], pal.cat[1], pal.cat[2], pal.none],
     },
     ip: {
-      name: 'Maron methyl-IP', cats: ['SDMA IP', 'ADMA IP (no SDMA)', 'MMA IP only', 'Not in Maron IP'],
+      name: 'Maron methyl-IP', cats: ['Rme2s IP', 'Rme2a IP (no Rme2s)', 'Rme1 IP only', 'Not in Maron IP'],
       cat: (s) => (s.ip & 4 ? 0 : s.ip & 2 ? 1 : s.ip & 1 ? 2 : 3), colors: (pal) => [pal.cat[0], pal.cat[1], pal.cat[2], pal.none],
     },
     prmti: {
@@ -222,7 +226,7 @@
   // UniProt's own modified-residue term for a methylarginine, shortened.
   function uniprotMethylLabel(desc) {
     const d = desc.toLowerCase();
-    const t = d.includes('asymmetric') ? 'ADMA' : d.includes('symmetric') ? 'SDMA' : d.includes('dimethyl') ? 'Rme2' : d.includes('methyl') ? 'MMA' : 'modified';
+    const t = d.includes('asymmetric') ? 'Rme2a' : d.includes('symmetric') ? 'Rme2s' : d.includes('dimethyl') ? 'Rme2' : d.includes('methyl') ? 'Rme1' : 'modified';
     return t + (d.includes('alternate') ? ' (alt.)' : '');
   }
 
@@ -527,8 +531,8 @@
     const add = (group, label, clear) => out.push({ group, label, clear });
     if (Q.raw) add('search', 'Search: ' + (Q.raw.length > 40 ? Q.raw.slice(0, 38) + '…' : Q.raw), () => setQuery(''));
     F.states.forEach((v) => add('methyl', 'State: ' + STATE_LABEL[v], () => F.states.delete(v)));
-    F.ips.forEach((v) => add('methyl', M.maron_ips[v] + ' IP', () => F.ips.delete(v)));
-    F.s2.forEach((v) => add('methyl', 'Table S2 ' + ['me1', 'me2'][v], () => F.s2.delete(v)));
+    F.ips.forEach((v) => add('methyl', ipLabel(M.maron_ips[v]) + ' IP', () => F.ips.delete(v)));
+    F.s2.forEach((v) => add('methyl', 'Table S2 ' + ['Rme1', 'Rme2'][v], () => F.s2.delete(v)));
     F.studies.forEach((v) => add('prov', 'Reported by ' + M.studies[v][0], () => F.studies.delete(v)));
     if (F.minRep) add('prov', '≥' + F.minRep + ' independent reports', () => { F.minRep = 0; });
     F.sources.forEach((v) => add('prov', SOURCE_LABEL[M.sources[v]], () => F.sources.delete(v)));
@@ -705,8 +709,8 @@
       case 'methyl': return '<div class="fgroup"><span class="flabel" title="Consensus Rme1/Rme2 calls across sources; most compiled sites have no state call">Methylation state</span>' +
         chipRow('states', [[1, 'Rme1'], [2, 'Rme2'], [3, 'Rme1 + Rme2'], [0, 'No call']], F.states, true) + '</div>' +
         '<div class="fgroup"><span class="flabel" title="Maron et al. 2021 Table S3: methyl-specific immunoprecipitation that recovered the peptide">Maron methyl-IP</span>' +
-        chipRow('ips', M.maron_ips.map((n, k) => [k, n, n === 'SDMA' ? 'Symmetric dimethyl-Arg antibody IP' : n === 'ADMA' ? 'Asymmetric dimethyl-Arg antibody IP' : 'Monomethyl-Arg antibody IP']), F.ips) + '</div>' +
-        '<div class="fgroup"><span class="flabel" title="Maron et al. 2021 Table S2 me1/me2 site calls">Maron Table S2 call</span>' + chipRow('s2', [[0, 'me1'], [1, 'me2']], F.s2) + '</div>';
+        chipRow('ips', M.maron_ips.map((n, k) => [k, ipLabel(n), 'Recovered by the ' + (IP_HELP[n] || n) + ' IP']), F.ips) + '</div>' +
+        '<div class="fgroup"><span class="flabel" title="Maron et al. 2021 Table S2 Rme1/Rme2 site calls">Maron Table S2 call</span>' + chipRow('s2', [[0, 'Rme1'], [1, 'Rme2']], F.s2) + '</div>';
       case 'prov': return '<div class="fgroup"><span class="flabel">Reported by study or database (match any)</span>' +
         chipRow('studies', M.studyOrder.map((k) => [k, M.studies[k][0] + ' · ' + compact(M.studies[k][2]), M.studies[k][1] || STUDY_HELP[M.studies[k][0]] || '']), F.studies) + '</div>' +
         '<div class="fgroup"><label class="flabel" for="f-minrep">Independent reports per site</label>' + sel('f-minrep', options([[2, '≥2 studies or databases'], [3, '≥3'], [5, '≥5']], F.minRep || '', 'Any'), !!F.minRep) + '</div>' +
@@ -919,7 +923,7 @@
 
   const pill = (st) => '<span class="pill"><i class="st-' + st + '"></i>' + STATE_LABEL[st] + '</span>';
   const motifTags = (mask) => bits(mask).filter((b) => !M.motifs[b].startsWith('CARM1')).map((b) => '<span class="tag">' + MOTIF_LABEL[M.motifs[b]] + '</span>').join(' ') || '<span class="muted">—</span>';
-  const ipTags = (mask) => bits(mask).map((b) => '<span class="tag ip">' + M.maron_ips[b] + '</span>').join(' ');
+  const ipTags = (mask) => bits(mask).map((b) => '<span class="tag ip" title="Recovered by the Maron 2021 ' + esc(IP_HELP[M.maron_ips[b]] || M.maron_ips[b]) + ' IP">' + ipLabel(M.maron_ips[b]) + '</span>').join(' ');
   function studyTags(mask, max) {
     const list = M.studyOrder.filter((k) => mask & (1 << k));
     const shown = list.slice(0, max || 3);
@@ -1084,7 +1088,7 @@
   function bindSort(el, sort, redraw) {
     $$('th[data-sort]', el).forEach((th) => th.addEventListener('click', () => {
       const k = th.dataset.sort;
-      if (sort.key === k) sort.dir = -sort.dir; else { sort.key = k; sort.dir = k === 'gene' || k === 'pos' ? 1 : -1; }
+      if (sort.key === k) sort.dir = -sort.dir; else { sort.key = k; sort.dir = ['gene', 'pos', 'win', 'mot', 'ctx'].includes(k) ? 1 : -1; }
       redraw();
     }));
   }
@@ -1094,8 +1098,14 @@
     gene: (s) => P[s.p].label.toLowerCase(),
     pos: (s) => s.pos,
     state: (s) => s.st,
-    nn: (s) => (s.nn == null ? 1e9 : s.nn),
+    nn: (s) => s.nn,
     src: (s) => popcount(s.study),
+    win: (s) => (s.win ? s.win.slice(8, 23) : null),
+    mot: (s) => bits(s.mot).filter((b) => !M.motifs[b].startsWith('CARM1')).map((b) => MOTIF_LABEL[M.motifs[b]]).join(' ') || null,
+    ctx: (s) => (DISORDER_LABEL[M.disorder_classes[s.dc]] || M.disorder_classes[s.dc] || '') + ' ' + (DOMAIN_LABEL[M.domain_contexts[s.dctx]] || M.domain_contexts[s.dctx] || ''),
+    ip: (s) => s.ip || null,
+    // Most informative first when descending: decreased by both inhibitors, GSK591, MS023, increased, n.s., not measured.
+    prmti: (s) => (!s.tr.length ? null : (s.trf & 1) && (s.trf & 4) ? 4 : s.trf & 1 ? 3 : s.trf & 4 ? 2 : s.trf & 10 ? 1 : 0),
   };
 
   function renderSites(el) {
@@ -1104,8 +1114,10 @@
     const dir = UI.sortS.dir;
     const rows = R.sites.slice().sort((a, b) => {
       const x = fn(a), y = fn(b);
-      if (x < y) return -dir;
-      if (x > y) return dir;
+      // Missing values sort last in either direction.
+      if (x == null || y == null) { if (x != null) return -1; if (y != null) return 1; }
+      else if (x < y) return -dir;
+      else if (x > y) return dir;
       return a.p - b.p || a.pos - b.pos;
     });
     const shownRows = rows.slice(0, UI.pageS);
@@ -1114,8 +1126,8 @@
       '<button class="btn small" type="button" id="dl-sites">Download TSV</button>') +
       contextCards() +
       (rows.length ? '<div class="card tbl-card"><div class="tbl-wrap"><table class="tbl"><thead><tr>' +
-        th('gene', 'Protein') + th('pos', 'Site') + th('state', 'State') + '<th>Window ±7</th><th class="hide-sm">Motifs</th>' +
-        '<th class="hide-xs">Context</th>' + th('nn', 'Next methyl-R', 'r hide-sm') + '<th class="hide-sm">Maron IP</th><th>PRMTi</th>' + th('src', 'Reported by', 'hide-sm') +
+        th('gene', 'Protein') + th('pos', 'Site') + th('state', 'State') + th('win', 'Window ±7') + th('mot', 'Motifs', 'hide-sm') +
+        th('ctx', 'Context', 'hide-xs') + th('nn', 'Next methyl-R', 'r hide-sm') + th('ip', 'Maron IP', 'hide-sm') + th('prmti', 'PRMTi') + th('src', 'Reported by', 'hide-sm') +
         '</tr></thead><tbody>' +
         shownRows.map((s) => {
           const p = P[s.p];
@@ -1374,7 +1386,7 @@
         const t = M.maron_treatments.indexOf(r[0]);
         const ip = M.maron_ips.indexOf(r[1]);
         const down = r[2] ? r[3] / r[2] : 0, up = r[2] ? r[4] / r[2] : 0;
-        return '<tr class="row" tabindex="0" data-t="' + t + '" data-ip="' + ip + '" data-dir="down"><td><b>' + esc(r[0]) + '</b> <span class="muted">' + esc(TREAT_HELP[r[0]] || '') + '</span></td><td><span class="tag ip">' + esc(r[1]) + '</span></td><td class="r num">' + fmt(r[2]) + '</td>' +
+        return '<tr class="row" tabindex="0" data-t="' + t + '" data-ip="' + ip + '" data-dir="down"><td><b>' + esc(r[0]) + '</b> <span class="muted">' + esc(TREAT_HELP[r[0]] || '') + '</span></td><td><span class="tag ip" title="' + esc(IP_HELP[r[1]] || '') + '">' + esc(ipLabel(r[1])) + '</span></td><td class="r num">' + fmt(r[2]) + '</td>' +
           '<td><div class="meter-row"><span class="meter"><i style="width:' + (100 * down / max).toFixed(1) + '%"></i></span><span class="num">' + r[3] + ' (' + (100 * down).toFixed(0) + '%)</span></div></td>' +
           '<td class="hide-xs"><div class="meter-row"><span class="meter up"><i style="width:' + (100 * up / max).toFixed(1) + '%"></i></span><span class="num">' + r[4] + ' (' + (100 * up).toFixed(0) + '%)</span></div></td>' +
           '<td class="r num hide-sm">' + fmtL2(r[5]) + '</td></tr>';
@@ -1493,7 +1505,7 @@
         const dim = !R.shown.has(s.j);
         const ipr = s.ipr >= 0 ? M.interpro[s.ipr] : null;
         const dom = ipr ? '<a href="https://www.ebi.ac.uk/interpro/entry/InterPro/' + encodeURIComponent(ipr[0]) + '/" target="_blank" rel="noopener" title="' + esc(ipr[0]) + ' · ' + esc(M.domain_classes[s.dcls]) + '">' + esc(ipr[1]) + '</a><br><span class="muted">' + (s.domDist === 0 ? 'inside' : s.domDist + ' aa ' + (s.domSide === 'N_terminal_to_domain' ? 'N-term' : 'C-term')) + '</span>' : '<span class="muted">—</span>';
-        const s2 = bits(s.s2).map((b) => ['me1', 'me2'][b]).join('/');
+        const s2 = bits(s.s2).map((b) => ['Rme1', 'Rme2'][b]).join('/');
         const uniType = u && u.methylR.get(s.pos);
         const vs = (varsAt.get(s.pos) || []).filter((v) => v.from === 'R');
         const open = UI.openEvidence.has(s.j);
@@ -1544,7 +1556,7 @@
     let html = '';
     if (s.tr.length) {
       html += '<p><b>PRMT inhibitor response</b> (Maron et al. 2021 Table S3, change vs DMSO, adj. p)</p><table><thead><tr><th>Methyl-IP</th><th>Inhibitor</th><th>Change</th><th>adj. p</th><th>Peptides</th></tr></thead><tbody>' +
-        s.tr.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(([ip, t, d, q, n]) => '<tr><td>' + M.maron_ips[ip] + '</td><td>' + M.maron_treatments[t] + ' <span class="muted">' + TREAT_HELP[M.maron_treatments[t]] + '</span></td><td class="num">' + fmtL2(d) + '</td><td class="num">' + (q != null && q <= PADJ ? '<b>' + fmtP(q) + '</b>' : fmtP(q)) + '</td><td class="num">' + (n == null ? '—' : n) + '</td></tr>').join('') + '</tbody></table>';
+        s.tr.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(([ip, t, d, q, n]) => '<tr><td>' + ipLabel(M.maron_ips[ip]) + '</td><td>' + M.maron_treatments[t] + ' <span class="muted">' + TREAT_HELP[M.maron_treatments[t]] + '</span></td><td class="num">' + fmtL2(d) + '</td><td class="num">' + (q != null && q <= PADJ ? '<b>' + fmtP(q) + '</b>' : fmtP(q)) + '</td><td class="num">' + (n == null ? '—' : n) + '</td></tr>').join('') + '</tbody></table>';
     }
     if (u) {
       const at = (list) => list.filter((f) => f.start <= s.pos && f.end >= s.pos);
@@ -1768,8 +1780,8 @@
   }
 
   function bindFigure(p) {
-    const rerender = () => { drawMap(p, UNIDATA.get(p.acc)); styleStructure(); };
-    $('#fig-color').addEventListener('change', (e) => { UI.fig.color = e.target.value; rerender(); renderAfSide(p, AFDATA.get(p.acc)); });
+    const rerender = () => drawMap(p, UNIDATA.get(p.acc));
+    $('#fig-color').addEventListener('change', (e) => { UI.fig.color = e.target.value; rerender(); styleStructure(); renderAfSide(p, AFDATA.get(p.acc)); });
     $$('[data-lab]').forEach((b) => b.addEventListener('click', () => { UI.fig.labels = b.dataset.lab; $$('[data-lab]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); rerender(); }));
     $$('[data-track]').forEach((b) => b.addEventListener('click', () => {
       const k = b.dataset.track;
@@ -2036,8 +2048,9 @@
 
   // ------------------------------------------------------------- 3D structure
   function structureCard(p) {
-    return '<div class="card" id="card-af"><div class="card-head"><div><h3>3D structure</h3><p class="sub" id="af-sub">AlphaFold DB model coloured by confidence (pLDDT), or any experimental structure listed below. Methylarginine side chains are drawn in the protein-map colours; click one, or a row in the site table, to focus it.</p></div>' +
+    return '<div class="card" id="card-af"><div class="card-head"><div><h3>3D structure</h3><p class="sub" id="af-sub">The AlphaFold DB model, or any experimental structure listed below. Methylarginine side chains use the protein-map colours. Click any residue, or a row in the site table, to zoom to it and show its contacts; the options change the style, colouring, surface and lighting.</p></div>' +
       '<div class="exp" role="group" aria-label="Structure controls"><button type="button" id="af-reset" disabled>Reset view</button><button type="button" id="af-spin" disabled aria-pressed="false">Spin</button><button type="button" id="af-png" disabled>PNG</button></div></div>' +
+      '<div class="af-controls" id="af-controls"></div>' +
       '<div class="af-wrap"><div><div class="af-viewer" id="af-viewer"><div class="af-placeholder">Loading the AlphaFold model…</div></div><p class="note af-msg" id="af-msg" aria-live="polite"></p></div><div class="af-side" id="af-side"></div></div>' +
       '<div class="pdb-block"><div class="card-head"><div><h3 class="h4">Experimental structures (PDB)</h3><p class="sub" id="pdb-sub">Looking up PDB entries…</p></div>' +
       '<div class="exp"><a class="exp-link" href="https://www.ebi.ac.uk/pdbe/pdbe-kb/proteins/' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">PDBe-KB ↗</a></div></div><div id="pdb-list"></div></div></div>';
@@ -2058,9 +2071,9 @@
     const side = $('#af-side');
     if (!side) return;
     if (af === undefined) { side.innerHTML = '<p class="note">Looking up AlphaFold DB…</p>'; return; }
-    const legend = '<p class="flabel">Model confidence (pLDDT)</p><ul class="af-legend">' + PLDDT_BANDS.map((b) => '<li><i style="background:' + b[1] + '"></i>' + esc(b[2]) + '</li>').join('') + '</ul>';
+    const legend = (counts) => '<ul class="af-legend">' + PLDDT_BANDS.map((b, k) => '<li><i style="background:' + b[1] + '"></i>' + esc(b[2]) + (counts ? '<b class="num">' + counts[k] + '</b>' : '') + '</li>').join('') + '</ul>';
     if (mol && mol.mode === 'pdb' && mol.p.i === p.i) { renderPdbSide(p); return; }
-    if (!af) { side.innerHTML = legend + '<p class="note">No AlphaFold DB model for ' + esc(p.acc) + '. Experimental structures, if any, are listed below.</p>'; return; }
+    if (!af) { side.innerHTML = '<p class="note">No AlphaFold DB model for ' + esc(p.acc) + '. Experimental structures, if any, are listed below.</p>'; return; }
     const counts = [0, 0, 0, 0];
     let n = 0, amSum = 0, amN = 0, amLp = 0;
     for (const j of p.sites) {
@@ -2072,12 +2085,12 @@
     const pal = screenPalette();
     const mode = COLOR_MODES[UI.fig.color] || COLOR_MODES.state;
     const colors = mode.colors(pal);
-    side.innerHTML = legend +
-      '<dl class="kv"><dt>Model</dt><dd><a href="https://alphafold.ebi.ac.uk/entry/' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">' + esc(af.entry.entryId) + ' v' + esc(af.entry.latestVersion || '') + ' ↗</a></dd>' +
+    side.innerHTML = '<dl class="kv"><dt>Model</dt><dd><a href="https://alphafold.ebi.ac.uk/entry/' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">' + esc(af.entry.entryId) + ' v' + esc(af.entry.latestVersion || '') + ' ↗</a></dd>' +
       '<dt>Mean pLDDT</dt><dd>' + (af.entry.globalMetricValue != null ? af.entry.globalMetricValue.toFixed(1) : '—') + '</dd>' +
       (af.entry.paeImageUrl ? '<dt>PAE</dt><dd><a href="' + esc(af.entry.paeImageUrl) + '" target="_blank" rel="noopener">Predicted aligned error ↗</a></dd>' : '') + '</dl>' +
-      (n ? '<p class="flabel">Methylarginines by confidence</p><div class="af-stack">' + counts.map((c, k) => (c ? '<i style="flex:' + c + ';background:' + PLDDT_BANDS[k][1] + '" title="' + esc(PLDDT_BANDS[k][2]) + ': ' + c + '"></i>' : '')).join('') + '</div>' +
-        '<p class="note">' + counts.map((c, k) => c + ' ' + PLDDT_BANDS[k][2].replace(/ \(.*\)/, '').toLowerCase()).join(' · ') + '</p>' : '') +
+      '<p class="flabel">Methylarginines by model confidence (pLDDT)</p>' +
+      (n ? '<div class="af-stack">' + counts.map((c, k) => (c ? '<i style="flex:' + c + ';background:' + PLDDT_BANDS[k][1] + '" title="' + esc(PLDDT_BANDS[k][2]) + ': ' + c + '"></i>' : '')).join('') + '</div>' : '') +
+      legend(n ? counts : null) +
       (amN ? '<p class="note">AlphaMissense: mean R→X pathogenicity ' + (amSum / amN).toFixed(2) + ' across sites; ' + amLp + ' of ' + amN + ' sites average “likely pathogenic”.</p>' : '') +
       '<p class="flabel">Focus a site</p><div class="chips af-sites">' + p.sites.map((j) => S[j]).map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '"><i class="dot" style="background:' + (colors[mode.cat(s)] || pal.none) + '"></i>R' + s.pos + '</button>').join('') + '</div>';
     $$('.af-sites .chip', side).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
@@ -2089,11 +2102,20 @@
     renderAfSide(p, AFDATA.get(p.acc));
     const enable = () => ['#af-reset', '#af-spin', '#af-png'].forEach((id) => { const b = $(id); if (b) b.disabled = false; });
     const bindButtons = () => {
-      $('#af-reset').onclick = () => { if (!mol) return; if (mol.label) { mol.viewer.removeLabel(mol.label); mol.label = null; } mol.viewer.zoomTo(); mol.viewer.render(); };
+      $('#af-reset').onclick = () => {
+        if (!mol) return;
+        if (mol.label) { mol.viewer.removeLabel(mol.label); mol.label = null; }
+        mol.focus = null;
+        styleStructure(false);
+        mol.viewer.zoomTo();
+        mol.viewer.render();
+        const msg = $('#af-msg');
+        if (msg) msg.textContent = '';
+      };
       $('#af-spin').onclick = (e) => { if (!mol) return; mol.spin = !mol.spin; mol.viewer.spin(mol.spin ? 'y' : false); e.currentTarget.setAttribute('aria-pressed', String(mol.spin)); };
       $('#af-png').onclick = () => {
         if (!mol) return;
-        fetch(mol.viewer.pngURI()).then((r) => r.blob()).then((b) => downloadBlob((p.gene || p.acc) + '_alphafold_methylarginines.png', b));
+        fetch(mol.viewer.pngURI()).then((r) => r.blob()).then((b) => downloadBlob((p.gene || p.acc) + '_' + (mol.mode === 'pdb' ? mol.pdb.e.id.toUpperCase() : 'alphafold') + '_methylarginines.png', b));
       };
     };
     // Re-renders of the same protein keep the live viewer instead of rebuilding it.
@@ -2101,7 +2123,8 @@
       holder.replaceWith(mol.el);
       mol.el.id = 'af-viewer';
       mol.viewer.resize();
-      styleStructure();
+      renderViewControls();
+      styleStructure(false);
       renderAfSide(p, AFDATA.get(p.acc));
       renderPdbList(p);
       enable(); bindButtons();
@@ -2109,6 +2132,7 @@
       return;
     }
     disposeStructure();
+    renderViewControls();
     const start = () => { renderPdbList(p); return startAf(); };
     const startAf = () => loadAF(p.acc).then((af) => {
       if (UI.detail !== p.i || !document.body.contains(holder)) return;
@@ -2125,6 +2149,7 @@
         const viewer = lib.createViewer(holder, { backgroundColor: cssVar('--surface-2') || '#eef5f7', antialias: true });
         viewer.addModel(pdb, 'pdb');
         mol = { viewer, p, el: holder, label: null, spin: false, mode: 'af', afPdb: pdb };
+        renderViewControls();
         styleStructure();
         viewer.zoomTo();
         viewer.render();
@@ -2140,61 +2165,283 @@
     } else start();
   }
 
-  function styleStructure() {
-    if (!mol || mol.p.i !== UI.detail) return;
-    if (mol.mode === 'pdb') { stylePdb(); return; }
-    const { viewer, p } = mol;
-    const af = AFDATA.get(p.acc);
-    viewer.setBackgroundColor(cssVar('--surface-2') || '#eef5f7');
-    viewer.setStyle({}, { cartoon: { color: '#9AA6B2' } });
-    if (af) {
-      const groups = [[], [], [], []];
-      af.plddt.forEach((v, r) => groups[plddtBand(v)].push(r));
-      groups.forEach((list, k) => { if (list.length) viewer.setStyle({ resi: list }, { cartoon: { color: PLDDT_BANDS[k][1] } }); });
+  // 3D view options shared by the AlphaFold model and PDB entries; remembered between visits.
+  const VIEW_STYLES = [['cartoon', 'Cartoon'], ['trace', 'Trace'], ['sticks', 'Sticks'], ['spheres', 'Spheres']];
+  const VIEW_COLORS = [
+    ['plddt', 'Confidence (pLDDT)', 'af'], ['focus', 'This protein\'s chain', 'pdb'], ['chain', 'By chain', 'pdb'],
+    ['rainbow', 'Rainbow (N→C)'], ['ss', 'Secondary structure'], ['charge', 'Charge'], ['hydro', 'Hydrophobicity'], ['uniform', 'Uniform grey'],
+  ];
+  const VIEW_SURFACES = [['off', 'Off'], ['glass', 'Transparent'], ['solid', 'Opaque']];
+  const VIEW_BGS = [['page', 'Page'], ['white', 'White'], ['black', 'Black']];
+  const VIEW_LIGHTS = [['ao', 'Ambient occlusion'], ['aoline', 'Occlusion + outline'], ['outline', 'Outline'], ['plain', 'Standard']];
+  const VIEW_TOGGLES = [
+    ['contacts', 'Contacts (5 Å)', 'Show side chains within 5 Å of the focused residue'],
+    ['labels', 'Site labels', 'Label every resolved methylarginine'],
+    ['others', 'Other chains', 'Show the other chains of the PDB entry', 'pdb'],
+    ['ligands', 'Ligands', 'Show ligands and other hetero groups (waters are always hidden)', 'pdb'],
+  ];
+  const VIEW_DEFAULT = { style: 'cartoon', color: 'auto', surface: 'off', light: 'ao', bg: 'page', contacts: true, labels: false, others: true, ligands: true };
+  UI.mv = (() => {
+    const v = Object.assign({}, VIEW_DEFAULT);
+    let saved = {};
+    try { saved = JSON.parse(store.get('mx-view') || '{}') || {}; } catch (e) { /* ignore */ }
+    const ok = { style: VIEW_STYLES, color: VIEW_COLORS, surface: VIEW_SURFACES, light: VIEW_LIGHTS, bg: VIEW_BGS };
+    for (const k of Object.keys(v)) {
+      if (!(k in saved)) continue;
+      if (ok[k] ? ok[k].some((o) => o[0] === saved[k]) : typeof saved[k] === 'boolean') v[k] = saved[k];
     }
+    return v;
+  })();
+  // Kyte & Doolittle (1982) hydropathy.
+  const KD = { ILE: 4.5, VAL: 4.2, LEU: 3.8, PHE: 2.8, CYS: 2.5, MET: 1.9, ALA: 1.8, GLY: -0.4, THR: -0.7, SER: -0.8, TRP: -0.9, TYR: -1.3, PRO: -1.6, HIS: -3.2, GLU: -3.5, GLN: -3.5, ASP: -3.5, ASN: -3.5, LYS: -3.9, ARG: -4.5 };
+  const SS_COLORS = { h: '#D9466F', s: '#E8B730', c: '#B7C2CA' };
+  const CHARGE_COLORS = { basic: '#2F6FD6', his: '#8DA9E8', acidic: '#D64545', other: '#CDD5DB' };
+  const RAINBOW = ['#3B4CC0', '#2C9FD9', '#3DBE7A', '#F2C230', '#E8543B'];
+  const HYDRO = ['#2F6FA7', '#F1F3F5', '#C8742B'];
+  const CHAIN_COLORS = ['#0E7490', '#E07A2E', '#6C5CE7', '#2E9E5B', '#C2417A', '#8C6D1F', '#3D7DD8', '#B33939', '#5B8C85', '#9B59B6'];
+  const ELEM_GREY = { prop: 'elem', map: { C: '#A3AEB8', N: '#3B5BDB', O: '#E03131', S: '#E6B800', P: '#F08C00', SE: '#F08C00' } };
+  const ELEM_FOCUS = { prop: 'elem', map: { C: '#F59E0B', N: '#3B5BDB', O: '#E03131', S: '#E6B800' } };
+  const WATER = ['HOH', 'WAT', 'DOD'];
+  const mixHex = (a, b, t) => {
+    const pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16);
+    const ch = (s) => Math.round(((pa >> s) & 255) * (1 - t) + ((pb >> s) & 255) * t);
+    return '#' + ((1 << 24) | (ch(16) << 16) | (ch(8) << 8) | ch(0)).toString(16).slice(1);
+  };
+  const ramp = (stops, t) => {
+    const n = stops.length - 1;
+    const u = Math.max(0, Math.min(1, t)) * n;
+    const k = Math.min(n - 1, Math.floor(u));
+    return mixHex(stops[k], stops[k + 1], u - k);
+  };
+  const baseResn = (r) => (METHYL_R_CODES.includes(r) ? 'ARG' : r);
+  const isPolymer = (a) => !a.hetflag || METHYL_R_CODES.includes(a.resn);
+
+  function viewColorKey() {
+    const pdbMode = !!(mol && mol.mode === 'pdb');
+    const opt = VIEW_COLORS.find((o) => o[0] === UI.mv.color);
+    if (!opt || (opt[2] && opt[2] !== (pdbMode ? 'pdb' : 'af'))) return pdbMode ? 'focus' : 'plddt';
+    return opt[0];
+  }
+
+  // Per-chain residue ranges and chain order of the loaded model, for rainbow and chain colouring.
+  function modelChains() {
+    if (mol.chains) return mol.chains;
+    const ranges = new Map();
+    for (const a of mol.viewer.selectedAtoms({})) {
+      if (!isPolymer(a)) continue;
+      const r = ranges.get(a.chain);
+      if (!r) ranges.set(a.chain, [a.resi, a.resi]);
+      else { if (a.resi < r[0]) r[0] = a.resi; if (a.resi > r[1]) r[1] = a.resi; }
+    }
+    mol.chains = { ranges, order: new Map(Array.from(ranges.keys()).map((c, k) => [c, k])) };
+    return mol.chains;
+  }
+
+  function viewColorFn(key) {
+    const grey = '#9AA6B2';
+    if (key === 'plddt') {
+      const af = AFDATA.get(mol.p.acc);
+      return (a) => { const v = af && af.plddt.has(a.resi) ? af.plddt.get(a.resi) : a.b; return v == null ? grey : PLDDT_BANDS[plddtBand(v)][1]; };
+    }
+    if (key === 'focus') { const c = mol.pdb.chain; return (a) => (a.chain === c ? '#0E7490' : '#C7D4D9'); }
+    if (key === 'chain') { const { order } = modelChains(); return (a) => CHAIN_COLORS[(order.get(a.chain) || 0) % CHAIN_COLORS.length]; }
+    if (key === 'rainbow') {
+      const { ranges } = modelChains();
+      return (a) => { const r = ranges.get(a.chain); return r ? ramp(RAINBOW, (a.resi - r[0]) / Math.max(1, r[1] - r[0])) : grey; };
+    }
+    if (key === 'ss') return (a) => SS_COLORS[a.ss] || SS_COLORS.c;
+    if (key === 'charge') {
+      return (a) => { const r = baseResn(a.resn); return r === 'ARG' || r === 'LYS' ? CHARGE_COLORS.basic : r === 'HIS' ? CHARGE_COLORS.his : r === 'ASP' || r === 'GLU' ? CHARGE_COLORS.acidic : CHARGE_COLORS.other; };
+    }
+    if (key === 'hydro') return (a) => { const v = KD[baseResn(a.resn)]; return v == null ? CHARGE_COLORS.other : ramp(HYDRO, (v + 4.5) / 9); };
+    return () => grey;
+  }
+
+  function viewColorKeyHtml(key) {
+    const sw = (c, l) => '<span><i class="sq" style="background:' + c + '"></i>' + esc(l) + '</span>';
+    const grad = (stops, a, b) => '<span>' + esc(a) + '<i class="grad" style="background:linear-gradient(90deg,' + stops.join(',') + ')"></i>' + esc(b) + '</span>';
+    const parts = {
+      plddt: () => PLDDT_BANDS.map((b) => sw(b[1], b[2])).join(''),
+      focus: () => sw('#0E7490', 'Chain ' + mol.pdb.chain + ' (this protein)') + sw('#C7D4D9', 'Other chains'),
+      chain: () => Array.from(modelChains().order.keys()).slice(0, 8).map((c, k) => sw(CHAIN_COLORS[k % CHAIN_COLORS.length], 'Chain ' + c + (mol.pdb && c === mol.pdb.chain ? ' (this protein)' : ''))).join('') + (modelChains().order.size > 8 ? '<span class="muted">+' + (modelChains().order.size - 8) + ' more</span>' : ''),
+      rainbow: () => grad(RAINBOW, 'N-terminus', 'C-terminus'),
+      ss: () => sw(SS_COLORS.h, 'Helix') + sw(SS_COLORS.s, 'Strand') + sw(SS_COLORS.c, 'Coil'),
+      charge: () => sw(CHARGE_COLORS.basic, 'Basic (R, K)') + sw(CHARGE_COLORS.his, 'His') + sw(CHARGE_COLORS.acidic, 'Acidic (D, E)') + sw(CHARGE_COLORS.other, 'Other'),
+      hydro: () => grad(HYDRO, 'Hydrophilic', 'Hydrophobic') + '<span class="muted">Kyte–Doolittle</span>',
+      uniform: () => '',
+    };
+    return '<span class="legend-title">' + esc((VIEW_COLORS.find((o) => o[0] === key) || ['', ''])[1]) + '</span>' + (parts[key] || parts.uniform)() +
+      '<span><i style="background:var(--fig-site)"></i>Methylarginines: map colours</span>' +
+      (UI.mv.contacts && mol && mol.focus ? '<span><i class="sq" style="background:' + ELEM_GREY.map.C + '"></i>Contacts within 5 Å</span>' : '');
+  }
+
+  function renderViewControls() {
+    const box = $('#af-controls');
+    if (!box) return;
+    const V = UI.mv;
+    const pdbMode = !!(mol && mol.mode === 'pdb');
+    const key = viewColorKey();
+    const sel = (id, label, list, cur) => '<label class="fig-ctl">' + label + ' <select id="' + id + '">' + list.map((o) => '<option value="' + o[0] + '"' + (o[0] === cur ? ' selected' : '') + '>' + esc(o[1]) + '</option>').join('') + '</select></label>';
+    box.innerHTML = '<div class="fig-controls">' +
+      sel('vw-style', 'Style', VIEW_STYLES, V.style) +
+      sel('vw-color', 'Colour', VIEW_COLORS.filter((o) => !o[2] || o[2] === (pdbMode ? 'pdb' : 'af')), key) +
+      sel('vw-surface', 'Surface', VIEW_SURFACES, V.surface) +
+      sel('vw-light', 'Lighting', VIEW_LIGHTS, V.light) +
+      sel('vw-bg', 'Background', VIEW_BGS, V.bg) + '</div>' +
+      '<div class="chips af-toggles" aria-label="Show">' + VIEW_TOGGLES.filter((t) => !t[3] || pdbMode).map((t) => '<button class="chip" type="button" data-vw="' + t[0] + '" aria-pressed="' + !!V[t[0]] + '" title="' + esc(t[2]) + '">' + esc(t[1]) + '</button>').join('') +
+      '<button class="linkish" type="button" id="vw-default">Default view</button></div>' +
+      '<div class="legend af-key" id="af-key">' + (mol ? viewColorKeyHtml(key) : '') + '</div>';
+    const save = () => store.set('mx-view', JSON.stringify(V));
+    const change = (k, val, reSurface) => { V[k] = val; save(); if (mol) styleStructure(reSurface); renderViewControls(); };
+    $('#vw-style').onchange = (e) => change('style', e.target.value, false);
+    $('#vw-color').onchange = (e) => change('color', e.target.value, true);
+    $('#vw-surface').onchange = (e) => change('surface', e.target.value, true);
+    $('#vw-light').onchange = (e) => change('light', e.target.value, false);
+    $('#vw-bg').onchange = (e) => change('bg', e.target.value, false);
+    $$('[data-vw]', box).forEach((b) => { b.onclick = () => change(b.dataset.vw, !V[b.dataset.vw], false); });
+    $('#vw-default').onclick = () => { Object.assign(V, VIEW_DEFAULT); store.set('mx-view', null); if (mol) styleStructure(true); renderViewControls(); };
+  }
+
+  function viewBackground() {
+    return UI.mv.bg === 'white' ? '#FFFFFF' : UI.mv.bg === 'black' ? '#000000' : (cssVar('--surface-2') || '#eef5f7');
+  }
+
+  function styleStructure(reSurface) {
+    if (!mol || mol.p.i !== UI.detail) return;
+    const { viewer, p } = mol;
+    const V = UI.mv;
+    const pdbMode = mol.mode === 'pdb';
+    const pdb = mol.pdb;
+    const af = AFDATA.get(p.acc);
+    const inChain = (a) => !pdbMode || a.chain === pdb.chain;
+    viewer.setBackgroundColor(viewBackground());
+    // Screen-space ambient occlusion and/or silhouette outlines (WebGL2; ignored by WebGL1 browsers).
+    const light = { ao: 'ambientOcclusion', aoline: 'ambientOcclusion outline', outline: 'outline' }[V.light] || '';
+    viewer.setViewStyle({ style: light, strength: V.style === 'spheres' || V.surface === 'solid' ? 1.6 : 1.9, color: UI.mv.bg === 'black' ? '#FFFFFF' : '#000000', width: 0.08 });
+
+    // Methylarginine positions in model numbering with their map colours.
     const pal = screenPalette();
     const mode = COLOR_MODES[UI.fig.color] || COLOR_MODES.state;
     const colors = mode.colors(pal);
-    const byColor = new Map();
+    const siteColor = new Map();
     for (const j of p.sites) {
-      const s = S[j];
-      const c = colors[mode.cat(s)] || pal.none;
-      if (!byColor.has(c)) byColor.set(c, []);
-      byColor.get(c).push(s.pos);
+      const r = pdbMode ? pdb.toAuth.get(S[j].pos) : S[j].pos;
+      if (r != null) siteColor.set(r, colors[mode.cat(S[j])] || pal.none);
     }
-    byColor.forEach((pos, c) => {
-      viewer.addStyle({ resi: pos, resn: 'ARG', atom: ['CB', 'CG', 'CD', 'NE', 'CZ', 'NH1', 'NH2'] }, { stick: { radius: 0.28, color: c } });
-      viewer.addStyle({ resi: pos, resn: 'ARG', atom: 'CZ' }, { sphere: { radius: 1.15, color: c } });
+    if (pdbMode) for (const r of pdb.det.modres) if (r.chain_id === pdb.chain && !siteColor.has(+r.author_residue_number)) siteColor.set(+r.author_residue_number, '#C2410C');
+    const siteAt = (a) => (inChain(a) && siteColor.has(a.resi) && baseResn(a.resn) === 'ARG' ? siteColor.get(a.resi) : null);
+
+    // Polymer in the chosen representation and colouring; sites tint spheres and surfaces so they stay visible.
+    const key = viewColorKey();
+    const base = viewColorFn(key);
+    const tinted = (a) => siteAt(a) || base(a);
+    const rep = {
+      cartoon: () => ({ cartoon: { colorfunc: base } }),
+      trace: () => ({ cartoon: { style: 'trace', thickness: 0.35, colorfunc: base } }),
+      sticks: () => ({ stick: { radius: 0.16, colorfunc: base } }),
+      spheres: () => ({ sphere: { colorfunc: tinted } }),
+    }[V.style] || (() => ({ cartoon: { colorfunc: base } }));
+    viewer.setStyle({}, rep());
+    if (pdbMode) {
+      viewer.setStyle({ predicate: (a) => a.hetflag && !isPolymer(a) }, V.ligands ? { stick: { radius: 0.18, colorscheme: 'greenCarbon' } } : {});
+      if (!V.others) viewer.setStyle({ predicate: (a) => a.chain !== pdb.chain }, {});
+    }
+    viewer.setStyle({ resn: WATER }, {});
+
+    // Methylarginine side chains (union sites in map colours; methylated residues modelled in the entry in orange).
+    const byColor = new Map();
+    siteColor.forEach((c, r) => { if (!byColor.has(c)) byColor.set(c, []); byColor.get(c).push(r); });
+    const chainSel = pdbMode ? { chain: pdb.chain } : {};
+    byColor.forEach((list, c) => {
+      viewer.addStyle(Object.assign({ resi: list, atom: ['CB', 'CG', 'CD', 'NE', 'CZ', 'NH1', 'NH2'] }, chainSel), { stick: { radius: 0.28, color: c } });
+      viewer.addStyle(Object.assign({ resi: list, atom: 'CZ' }, chainSel), { sphere: { radius: 1.15, color: c } });
     });
-    const sitePos = p.sites.map((j) => S[j].pos);
+    if (pdbMode) for (const r of pdb.det.modres) viewer.addStyle({ chain: r.chain_id, resi: r.author_residue_number }, { stick: { radius: 0.3, color: '#C2410C' } });
+
+    // Side chains around the focused residue.
+    if (V.contacts && mol.focus) {
+      const f = mol.focus;
+      const near = viewer.selectedAtoms({ within: { distance: 5, sel: { chain: f.chain, resi: f.resi } } });
+      const keys = new Set(near.filter((a) => !WATER.includes(a.resn) && (V.others || !pdbMode || a.chain === pdb.chain) && (V.ligands || isPolymer(a))).map((a) => a.chain + ':' + a.resi));
+      keys.delete(f.chain + ':' + f.resi);
+      if (keys.size) viewer.addStyle({ predicate: (a) => keys.has(a.chain + ':' + a.resi) && (a.hetflag || !['N', 'C', 'O'].includes(a.atom)) }, { stick: { radius: 0.15, colorscheme: ELEM_GREY } });
+      if (!siteColor.has(f.resi) || (pdbMode && f.chain !== pdb.chain)) viewer.addStyle({ chain: f.chain, resi: f.resi }, { stick: { radius: 0.24, colorscheme: ELEM_FOCUS } });
+    }
+
+    // Persistent site labels.
+    (mol.siteLabels || []).forEach((l) => viewer.removeLabel(l));
+    mol.siteLabels = [];
+    if (V.labels) {
+      for (const j of p.sites) {
+        const r = pdbMode ? pdb.toAuth.get(S[j].pos) : S[j].pos;
+        if (r == null) continue;
+        const at = viewer.selectedAtoms(Object.assign({ resi: r, atom: 'CZ' }, chainSel))[0];
+        if (at) mol.siteLabels.push(viewer.addLabel('R' + S[j].pos, { position: { x: at.x, y: at.y, z: at.z }, backgroundColor: siteColor.get(r), backgroundOpacity: 0.85, fontColor: '#FFFFFF', fontSize: 11, inFront: true }));
+      }
+    }
+
     bindResidueClicks();
-    viewer.setHoverable({ resi: sitePos, atom: 'CZ' }, true,
+    const siteResi = Array.from(siteColor.keys());
+    const hoverSel = Object.assign({ resi: siteResi, atom: 'CZ' }, chainSel);
+    const unpOf = (atom) => (pdbMode ? pdb.toUnp.get(atom.resi) : atom.resi);
+    viewer.setHoverable(hoverSel, true,
       (atom, v) => {
-        if (atom.hoverLabel) return;
-        const pl = af && af.plddt.get(atom.resi);
-        atom.hoverLabel = v.addLabel('R' + atom.resi + (pl != null ? ' · pLDDT ' + Math.round(pl) : ''), { position: { x: atom.x, y: atom.y, z: atom.z }, backgroundColor: '#12202C', backgroundOpacity: 0.85, fontColor: '#FFFFFF', fontSize: 12, inFront: true });
+        if (atom.hoverLabel || UI.mv.labels) return;
+        const pos = unpOf(atom);
+        const pl = !pdbMode && af ? af.plddt.get(atom.resi) : null;
+        const text = pos != null ? 'R' + pos + (pdbMode ? ' (' + atom.chain + atom.resi + ')' : '') + (pl != null ? ' · pLDDT ' + Math.round(pl) : '') : atom.resn + ' ' + atom.chain + atom.resi;
+        atom.hoverLabel = v.addLabel(text, { position: { x: atom.x, y: atom.y, z: atom.z }, backgroundColor: '#12202C', backgroundOpacity: 0.85, fontColor: '#FFFFFF', fontSize: 12, inFront: true });
       },
       (atom, v) => { if (atom.hoverLabel) { v.removeLabel(atom.hoverLabel); delete atom.hoverLabel; } });
-    viewer.setClickable({ resi: sitePos, atom: 'CZ' }, true, (atom) => { UI.highlight = atom.resi; flashSite(atom.resi, true); });
+    viewer.setClickable(hoverSel, true, (atom) => {
+      const pos = unpOf(atom);
+      if (pos == null) { focusResidue(atom); return; }
+      UI.highlight = pos;
+      flashSite(pos, true);
+    });
+
+    if (reSurface !== false) updateSurface(tinted);
     viewer.render();
+    const keyBox = $('#af-key');
+    if (keyBox) keyBox.innerHTML = viewColorKeyHtml(key);
   }
 
-  // Click any residue in the 3D view to zoom to it and label it with UniProt numbering where known.
-  function bindResidueClicks() {
+  function updateSurface(colorfunc) {
     const { viewer } = mol;
-    viewer.setClickable({}, true, (atom) => {
-      const pdbMode = mol.mode === 'pdb';
-      const unp = pdbMode ? (atom.chain === mol.pdb.chain ? authToUnp(atom.resi) : null) : atom.resi;
-      if (mol.label) { viewer.removeLabel(mol.label); mol.label = null; }
-      mol.label = viewer.addLabel(atom.resn + ' ' + (pdbMode ? atom.chain : '') + atom.resi + (pdbMode && unp != null ? ' (UniProt ' + unp + ')' : ''),
-        { position: { x: atom.x, y: atom.y, z: atom.z }, backgroundColor: '#12202C', backgroundOpacity: 0.9, fontColor: '#FFFFFF', fontSize: 12, inFront: true });
-      const around = [];
-      for (let r = atom.resi - 6; r <= atom.resi + 6; r++) around.push(r);
-      viewer.zoomTo(pdbMode ? { chain: atom.chain, resi: around } : { resi: around }, 600);
+    mol.surfGen = (mol.surfGen || 0) + 1;
+    const gen = mol.surfGen;
+    viewer.removeAllSurfaces();
+    if (UI.mv.surface === 'off') return;
+    const chain = mol.mode === 'pdb' ? mol.pdb.chain : null;
+    const sel = { predicate: (a) => isPolymer(a) && (!chain || a.chain === chain) };
+    const owner = mol;
+    viewer.addSurface('MS', { opacity: UI.mv.surface === 'glass' ? 0.55 : 1, colorfunc }, sel, sel, undefined, (id) => {
+      if (mol !== owner || owner.surfGen !== gen) { try { viewer.removeSurface(id); } catch (e) { /* viewer gone */ } }
       viewer.render();
-      const msg = $('#af-msg');
-      if (msg) msg.textContent = '';
     });
+  }
+
+  // Click any residue in the 3D view to zoom to it, label it with UniProt numbering where known and show its contacts.
+  function bindResidueClicks() {
+    mol.viewer.setClickable({}, true, (atom) => focusResidue(atom));
+  }
+
+  function focusResidue(atom) {
+    const { viewer } = mol;
+    const pdbMode = mol.mode === 'pdb';
+    const unp = pdbMode ? (atom.chain === mol.pdb.chain ? authToUnp(atom.resi) : null) : atom.resi;
+    mol.focus = { chain: atom.chain, resi: atom.resi };
+    styleStructure(false);
+    if (mol.label) { viewer.removeLabel(mol.label); mol.label = null; }
+    const ca = viewer.selectedAtoms({ chain: atom.chain, resi: atom.resi, atom: 'CA' })[0] || atom;
+    mol.label = viewer.addLabel(atom.resn + ' ' + (pdbMode ? atom.chain : '') + atom.resi + (pdbMode && unp != null ? ' (UniProt ' + unp + ')' : ''),
+      { position: { x: ca.x, y: ca.y, z: ca.z }, backgroundColor: '#12202C', backgroundOpacity: 0.9, fontColor: '#FFFFFF', fontSize: 12, inFront: true });
+    const around = [];
+    for (let r = atom.resi - 6; r <= atom.resi + 6; r++) around.push(r);
+    viewer.zoomTo({ chain: atom.chain, resi: around }, 600);
+    viewer.render();
+    const msg = $('#af-msg');
+    if (msg) msg.textContent = '';
   }
 
   // Author residue number in the loaded PDB chain -> UniProt position, via the SIFTS segment and observed ranges.
@@ -2219,6 +2466,8 @@
     if (msg) msg.textContent = atoms.length ? '' : 'R' + pos + ' is not resolved in ' + (pdbMode ? mol.pdb.e.id.toUpperCase() + ' chain ' + mol.pdb.chain : 'the AlphaFold model') + '.';
     if (!atoms.length) return;
     const a = atoms[0];
+    mol.focus = { chain: a.chain, resi: a.resi };
+    styleStructure(false);
     mol.label = viewer.addLabel('R' + pos + (pdbMode ? ' (' + mol.pdb.chain + auth + ')' : ''), { position: { x: a.x, y: a.y, z: a.z }, backgroundColor: '#C2410C', backgroundOpacity: 0.95, fontColor: '#FFFFFF', fontSize: 13, inFront: true });
     const around = [];
     for (let r = auth - 6; r <= auth + 6; r++) around.push(r);
@@ -2363,10 +2612,13 @@
       viewer.removeAllLabels();
       mol.label = null;
       viewer.clear();
+      viewer.removeAllSurfaces();
       viewer.addModel(cif, fmtName);
+      Object.assign(mol, { chains: null, focus: null, siteLabels: [] });
       const sites = pdbSites(p, e, det).filter((x) => x[1] != null && x[2]);
       mol.mode = 'pdb';
       mol.pdb = { e, det, chain: det.chain, toAuth: new Map(sites.map((x) => [x[0], x[1]])), toUnp: new Map(sites.map((x) => [x[1], x[0]])) };
+      renderViewControls();
       styleStructure();
       viewer.zoomTo();
       viewer.render();
@@ -2375,41 +2627,6 @@
       $('#af-viewer').scrollIntoView({ block: 'center', behavior: 'smooth' });
     }).catch(() => { if (btn) btn.textContent = 'Failed'; })
       .finally(() => { if (btn) { btn.disabled = false; if (btn.textContent === 'Loading…') btn.textContent = 'View'; } });
-  }
-
-  function stylePdb() {
-    const { viewer, p, pdb } = mol;
-    viewer.setBackgroundColor(cssVar('--surface-2') || '#eef5f7');
-    viewer.setStyle({}, { cartoon: { color: '#C7D4D9' } });
-    if (pdb.chain) viewer.setStyle({ chain: pdb.chain }, { cartoon: { color: '#0E7490' } });
-    viewer.setStyle({ hetflag: true }, { stick: { radius: 0.18 } });
-    viewer.setStyle({ resn: ['HOH', 'WAT', 'DOD'] }, {});
-    const pal = screenPalette();
-    const mode = COLOR_MODES[UI.fig.color] || COLOR_MODES.state;
-    const colors = mode.colors(pal);
-    const byColor = new Map();
-    for (const j of p.sites) {
-      const auth = pdb.toAuth.get(S[j].pos);
-      if (auth == null) continue;
-      const c = colors[mode.cat(S[j])] || pal.none;
-      if (!byColor.has(c)) byColor.set(c, []);
-      byColor.get(c).push(auth);
-    }
-    byColor.forEach((list, c) => {
-      viewer.addStyle({ chain: pdb.chain, resi: list, atom: ['CB', 'CG', 'CD', 'NE', 'CZ', 'NH1', 'NH2'] }, { stick: { radius: 0.28, color: c } });
-      viewer.addStyle({ chain: pdb.chain, resi: list, atom: 'CZ' }, { sphere: { radius: 1.15, color: c } });
-    });
-    for (const r of pdb.det.modres) {
-      viewer.setStyle({ chain: r.chain_id, resi: r.author_residue_number }, { stick: { radius: 0.3, color: '#C2410C' } });
-      viewer.addStyle({ chain: r.chain_id, resi: r.author_residue_number, atom: 'CZ' }, { sphere: { radius: 1.2, color: '#C2410C' } });
-    }
-    bindResidueClicks();
-    const sel = { chain: pdb.chain, resi: Array.from(pdb.toUnp.keys()), atom: 'CZ' };
-    viewer.setHoverable(sel, true,
-      (atom, v) => { if (!atom.hoverLabel) atom.hoverLabel = v.addLabel('R' + pdb.toUnp.get(atom.resi) + ' (' + atom.chain + atom.resi + ')', { position: { x: atom.x, y: atom.y, z: atom.z }, backgroundColor: '#12202C', backgroundOpacity: 0.85, fontColor: '#FFFFFF', fontSize: 12, inFront: true }); },
-      (atom, v) => { if (atom.hoverLabel) { v.removeLabel(atom.hoverLabel); delete atom.hoverLabel; } });
-    viewer.setClickable(sel, true, (atom) => { const pos = pdb.toUnp.get(atom.resi); UI.highlight = pos; flashSite(pos, true); });
-    viewer.render();
   }
 
   function renderPdbSide(p) {
@@ -2430,9 +2647,10 @@
     const back = $('#back-af', side);
     if (back) back.addEventListener('click', () => {
       const v = mol.viewer;
-      v.removeAllLabels(); mol.label = null; v.clear();
+      v.removeAllLabels(); mol.label = null; v.clear(); v.removeAllSurfaces();
       v.addModel(mol.afPdb, 'pdb');
-      mol.mode = 'af'; mol.pdb = null;
+      Object.assign(mol, { mode: 'af', pdb: null, chains: null, focus: null, siteLabels: [] });
+      renderViewControls();
       styleStructure(); v.zoomTo(); v.render();
       renderAfSide(p, AFDATA.get(p.acc));
     });
@@ -2482,7 +2700,7 @@
 
   function siteTip(s) {
     const ipr = s.ipr >= 0 ? M.interpro[s.ipr][1] : null;
-    return '<b>R' + s.pos + '</b> · ' + STATE_LABEL[s.st] + (s.ip ? ' · ' + bits(s.ip).map((b) => M.maron_ips[b]).join('/') + ' IP' : '') + '<br>' +
+    return '<b>R' + s.pos + '</b> · ' + STATE_LABEL[s.st] + (s.ip ? ' · ' + bits(s.ip).map((b) => ipLabel(M.maron_ips[b])).join('/') + ' IP' : '') + '<br>' +
       (s.win ? windowHtml(s.win, 7) + '<br>' : '') +
       esc(DISORDER_LABEL[M.disorder_classes[s.dc]] || '') + ' · ' + esc(DOMAIN_LABEL[M.domain_contexts[s.dctx]] || '') + (ipr ? ' (' + esc(ipr) + ')' : '') + '<br>' +
       'Reported by ' + M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => esc(M.studies[k][0])).join(', ') +
@@ -2519,7 +2737,7 @@
       '<h3>How sites were processed</h3><ul>' +
       '<li>Source rows were remapped to canonical UniProt sequences by peptide/sequence anchors and deduplicated by canonical accession and position. The original reported accession and position are kept in each site\'s evidence.</li>' +
       '<li><b>Gene symbols</b> follow current UniProt. Symbols reported by the sources (some outdated, a few belonging to paralogs with near-identical sequence, such as SNRPN on SmB/B′ rows) and UniProt synonyms are kept as searchable aliases.</li>' +
-      '<li><b>State</b> is the consensus Rme1/Rme2 call where a source provides one; most compiled sites have no state call. Maron Table S2 me1/me2 calls and Table S3 methyl-IP (MMA, ADMA, SDMA) recovery are shown separately.</li>' +
+      '<li><b>State</b> is the consensus Rme1/Rme2 call where a source provides one; most compiled sites have no state call. Maron Table S2 Rme1/Rme2 calls and Table S3 methyl-IP recovery are shown separately; the IPs are named by the state their antibody recognises: Rme1 (MMA antibody), Rme2a (ADMA antibody) and Rme2s (SDMA antibody).</li>' +
       '<li><b>PRMT inhibitor response</b> uses Maron Table S3 <code>GSK591_vs_DMSO</code> and <code>MS023_vs_DMSO</code> differences (median over peptides) with adjusted p ≤ 0.05. GSK591 inhibits PRMT5; MS023 inhibits type I PRMTs.</li>' +
       '<li><b>Motifs</b> are read from a ±7 window on the canonical sequence: ' + M.motifs.map((m) => MOTIF_LABEL[m] + ' (' + MOTIF_HELP[m] + ')').join('; ') + '.</li>' +
       '<li><b>Disorder</b> uses MobiDB intervals: ' + Object.keys(DISORDER_LABEL).map((k) => DISORDER_LABEL[k] + ' = ' + DISORDER_HELP[k].toLowerCase()).join('; ') + '. The architecture figure draws UniProt "Disordered" regions as a wavy backbone.</li>' +
@@ -2561,13 +2779,13 @@
       const p = P[s.p];
       const ipr = s.ipr >= 0 ? M.interpro[s.ipr] : null;
       out.push([
-        p.gene, p.acc, p.name, 'R' + s.pos, s.pos, STATE_LABEL[s.st], bits(s.s2).map((b) => ['me1', 'me2'][b]).join(';'),
-        bits(s.ip).map((b) => M.maron_ips[b]).join(';'), bits(s.src).map((b) => M.sources[b]).join(';'), popcount(s.src),
+        p.gene, p.acc, p.name, 'R' + s.pos, s.pos, STATE_LABEL[s.st], bits(s.s2).map((b) => ['Rme1', 'Rme2'][b]).join(';'),
+        bits(s.ip).map((b) => ipLabel(M.maron_ips[b])).join(';'), bits(s.src).map((b) => M.sources[b]).join(';'), popcount(s.src),
         s.win ? s.win.slice(8, 23) : '', s.win, bits(s.mot).map((b) => M.motifs[b]).join(';'),
         M.disorder_classes[s.dc], s.dEdge == null ? '' : s.dEdge, M.domain_contexts[s.dctx], ipr ? ipr[0] + ' ' + ipr[1] : '',
         M.domain_classes[s.dcls], s.domDist == null ? '' : s.domDist, s.domSide, s.nn == null ? '' : s.nn,
         s.trf & 1 ? 1 : 0, s.trf & 2 ? 1 : 0, s.trf & 4 ? 1 : 0, s.trf & 8 ? 1 : 0,
-        s.tr.map(([ip, t, d, q]) => M.maron_ips[ip] + ':' + M.maron_treatments[t] + ':' + d + ':' + q).join(';'),
+        s.tr.map(([ip, t, d, q]) => ipLabel(M.maron_ips[ip]) + ':' + M.maron_treatments[t] + ':' + d + ':' + q).join(';'),
         p.cond.map((k) => M.condensates[k][0]).join(';'), bits(p.func).map((b) => M.func_classes[b]).join(';'),
         bits(s.study).map((b) => M.studies[b][0]).join(';'), popcount(s.study),
         s.refs.map((k) => M.refs[k]).join(' | '),

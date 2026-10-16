@@ -674,3 +674,12 @@ footer.site a:hover { color: var(--accent); }
 @media (forced-colors: active) {
   .pill i, .chip .dot, .legend i { forced-color-adjust: none; }
 }
+
+/* 3D view options */
+.af-controls { margin-bottom: 0.6rem; }
+.af-controls .fig-controls { margin-bottom: 0.45rem; }
+.af-toggles { align-items: center; margin-bottom: 0.45rem; }
+.af-toggles .linkish { margin-left: 0.35rem; font-size: 0.8rem; }
+.af-key { margin-bottom: 0; }
+.legend i.grad { width: 64px; height: 10px; border-radius: 2px; margin: 0 0.15rem; }
+.af-legend li b { margin-left: auto; padding-left: 0.5rem; font-weight: 600; }
