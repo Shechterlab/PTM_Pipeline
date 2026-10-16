@@ -147,7 +147,7 @@
     treat: '', motifs: new Set(), disorder: new Set(), domctx: new Set(), domclass: '',
     nn: 0, ptmGroup: '', ptmDist: 0,
     func: '', sub: '', cond: '', anyCond: false, disease: '', minSites: 1, dense: false, arch: '', argEnriched: false,
-    binds: new Set(), ixScore: 700, partner: '', go: new Set(), goExp: false, iface: new Set(), cpx: '', condConf: 0, modelledPdb: false,
+    binds: new Set(), ixScore: 700, partner: '', go: new Set(), goExp: false, iface: new Set(), cpx: '', condConf: 0, modelledPdb: false, pred: 0,
   });
   const cloneFilters = (f) => {
     const out = {};
@@ -1166,7 +1166,7 @@
             '<td class="nw hide-sm">' + motifTags(s.mot) + '</td><td class="nw hide-xs">' + contextHtml(s) + '</td>' +
             '<td class="r num hide-sm">' + (s.nn == null ? '<span class="muted">—</span>' : s.nn + ' aa') + '</td>' +
             '<td class="nw hide-sm">' + (ipTags(s.ip) || '<span class="muted">—</span>') + '</td><td class="nw">' + treatHtml(s) + '</td>' +
-            '<td class="hide-sm"><div class="tags">' + ((ifaceTags(s, 2) + modelledTag(s)) || '<span class="muted">—</span>') + '</div>' + contactHtml(s, 2) + '</td>' +
+            '<td class="hide-sm"><div class="tags">' + ((ifaceTags(s, 2) + modelledTag(s) + predTag(s)) || '<span class="muted">—</span>') + '</div>' + contactHtml(s, 2) + '</td>' +
             '<td class="nw hide-sm"><div class="tags">' + studyTags(s.study, 2) + '</div></td></tr>';
         }).join('') +
         '</tbody></table></div><div class="tbl-foot"><span>Showing ' + fmt(shownRows.length) + ' of ' + fmt(rows.length) + '</span>' +
@@ -1321,7 +1321,7 @@
     const cond = {
       id: 'ch-cond', title: 'Biomolecular condensates',
       subHtml: 'CD-CODE condensates with ≥5 counted members: methylated fraction vs the global rate (methylated / members shown). ' +
-        (thr ? 'Only memberships with CD-CODE confidence ≥ ' + thr + ' of 5 are counted (CD-CODE ' + esc(IX.meta.cdcode_version || '') + '), so condensates whose member lists rest on single proteomics screens do not dominate. ' : 'All memberships are counted, including single proteomics lists (confidence 1). ') +
+        (thr ? 'Only memberships with CD-CODE confidence ≥ ' + thr + ' of 5 are counted (CD-CODE ' + esc(IX.meta.cdcode_version || '') + '), so condensates whose member lists rest on single proteomics screens do not dominate. ' + condHistNote() : 'All memberships are counted, including single proteomics lists (confidence 1). ') +
         'Click a bar to list its members.<br>' + thrSel,
       subText: 'CD-CODE condensates: methylated members vs the global rate' + (thr ? ' (confidence ≥ ' + thr + ')' : ' (all memberships)'), extraCol: true, extraName: 'methylated_of_members',
       rows: condShown.map(({ c, k, n, m, l2, q }) => ({ label: c[0], value: l2, q, sig: sigq(q), key: k, extra: m + '/' + n,
@@ -1570,7 +1570,7 @@
           '<td class="nw hide-sm">' + motifTags(s.mot) + '</td><td class="nw hide-xs">' + contextHtml(s) + '</td><td class="hide-sm">' + dom + '</td>' +
           '<td class="r num hide-sm">' + (s.nn == null ? '—' : s.nn + ' aa') + '</td>' +
           '<td class="nw hide-sm">' + ([ipTags(s.ip), s2 ? '<span class="tag">S2 ' + s2 + '</span>' : '', uniType ? '<span class="tag uni" title="UniProt: ' + esc(uniType) + '">UniProt ' + esc(uniprotMethylLabel(uniType)) + '</span>' : ''].filter(Boolean).join(' ') || '<span class="muted">—</span>') + '</td>' +
-          '<td class="nw">' + treatHtml(s) + '</td><td class="nw hide-xs">' + afCell(p, s) + '</td><td class="hide-sm"><div class="tags">' + ((ifaceTags(s, 3) + modelledTag(s)) || '<span class="muted">' + (IX ? '—' : '…') + '</span>') + '</div>' + contactHtml(s, 3) + '</td><td class="nw hide-sm"><div class="tags">' + studyTags(s.study, 3) + '</div></td>' +
+          '<td class="nw">' + treatHtml(s) + '</td><td class="nw hide-xs">' + afCell(p, s) + '</td><td class="hide-sm"><div class="tags">' + ((ifaceTags(s, 3) + modelledTag(s) + predTag(s)) || '<span class="muted">' + (IX ? '—' : '…') + '</span>') + '</div>' + contactHtml(s, 3) + '</td><td class="nw hide-sm"><div class="tags">' + studyTags(s.study, 3) + '</div></td>' +
           '<td class="nw"><button class="btn quiet small view3d" type="button" data-pos="' + s.pos + '" title="Zoom to R' + s.pos + ' in the 3D structure">3D</button> <button class="btn quiet small ev-toggle" type="button" aria-expanded="' + open + '" data-j="' + s.j + '">' + (open ? 'Hide' : 'Evidence') + '</button></td></tr>' +
           (open ? '<tr class="ev-row" data-for="' + s.j + '"><td colspan="13" class="ev" id="ev-' + s.j + '">Loading evidence…</td></tr>' : '');
       }).join('') + '</tbody></table>';
@@ -2281,7 +2281,8 @@
       '<div class="af-controls" id="af-controls"></div>' +
       '<div class="af-wrap"><div><div class="af-viewer" id="af-viewer"><div class="af-placeholder">Loading the AlphaFold model…</div></div><p class="note af-msg" id="af-msg" aria-live="polite"></p></div><div class="af-side" id="af-side"></div></div>' +
       '<div class="pdb-block"><div class="card-head"><div><h3 class="h4">Experimental structures (PDB)</h3><p class="sub" id="pdb-sub">Looking up PDB entries…</p></div>' +
-      '<div class="exp"><a class="exp-link" href="https://www.ebi.ac.uk/pdbe/pdbe-kb/proteins/' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">PDBe-KB ↗</a></div></div><div id="pdb-list"></div></div></div>';
+      '<div class="exp"><a class="exp-link" href="https://www.ebi.ac.uk/pdbe/pdbe-kb/proteins/' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">PDBe-KB ↗</a></div></div><div id="pdb-list"></div></div>' +
+      '<div class="pdb-block" id="pred-block"><div class="card-head"><div><h3 class="h4">Predicted complexes</h3><p class="sub" id="pred-sub">Looking up predicted complexes…</p></div></div><div id="pred-list"></div></div></div>';
   }
 
   function disposeStructure() {
@@ -2355,6 +2356,7 @@
       styleStructure(false);
       renderAfSide(p, AFDATA.get(p.acc));
       renderPdbList(p);
+      renderPredList(p);
       enable(); bindButtons();
       if (mol.spin) $('#af-spin').setAttribute('aria-pressed', 'true');
       UI.startStructure = () => {};
@@ -2362,7 +2364,7 @@
     }
     disposeStructure();
     renderViewControls();
-    const start = () => { renderPdbList(p); return startAf(); };
+    const start = () => { renderPdbList(p); renderPredList(p); return startAf(); };
     const startAf = () => loadAF(p.acc).then((af) => {
       if (UI.detail !== p.i || !document.body.contains(holder)) return;
       renderAfSide(p, af);
@@ -2448,10 +2450,15 @@
   const baseResn = (r) => (METHYL_R_CODES.includes(r) ? 'ARG' : r);
   const isPolymer = (a) => !a.hetflag || METHYL_R_CODES.includes(a.resn);
 
+  // Colour options that apply to the loaded model: pLDDT for AlphaFold models (B-factors in predicted complexes).
+  function viewColorOk(o) {
+    const pdbMode = !!(mol && mol.mode === 'pdb');
+    return !o[2] || o[2] === (pdbMode ? 'pdb' : 'af') || (o[0] === 'plddt' && pdbMode && !!mol.pdb.pred);
+  }
   function viewColorKey() {
     const pdbMode = !!(mol && mol.mode === 'pdb');
     const opt = VIEW_COLORS.find((o) => o[0] === UI.mv.color);
-    if (!opt || (opt[2] && opt[2] !== (pdbMode ? 'pdb' : 'af'))) return pdbMode ? 'focus' : 'plddt';
+    if (!opt || !viewColorOk(opt)) return pdbMode ? 'focus' : 'plddt';
     return opt[0];
   }
 
@@ -2471,6 +2478,7 @@
 
   function viewColorFn(key) {
     const grey = '#9AA6B2';
+    if (key === 'plddt' && mol.mode === 'pdb') return (a) => PLDDT_BANDS[plddtBand(a.b)][1];
     if (key === 'plddt') {
       const af = AFDATA.get(mol.p.acc);
       return (a) => { const v = af && af.plddt.has(a.resi) ? af.plddt.get(a.resi) : a.b; return v == null ? grey : PLDDT_BANDS[plddtBand(v)][1]; };
@@ -2494,8 +2502,8 @@
     const grad = (stops, a, b) => '<span>' + esc(a) + '<i class="grad" style="background:linear-gradient(90deg,' + stops.join(',') + ')"></i>' + esc(b) + '</span>';
     const parts = {
       plddt: () => PLDDT_BANDS.map((b) => sw(b[1], b[2])).join(''),
-      focus: () => sw('#0E7490', 'Chain ' + mol.pdb.chain + ' (this protein)') + sw('#C7D4D9', 'Other chains'),
-      chain: () => Array.from(modelChains().order.keys()).slice(0, 8).map((c, k) => sw(CHAIN_COLORS[k % CHAIN_COLORS.length], 'Chain ' + c + (mol.pdb && c === mol.pdb.chain ? ' (this protein)' : ''))).join('') + (modelChains().order.size > 8 ? '<span class="muted">+' + (modelChains().order.size - 8) + ' more</span>' : ''),
+      focus: () => sw('#0E7490', 'Chain ' + mol.pdb.chain + ' (this protein)') + sw('#C7D4D9', mol.pdb.pred ? 'Partner: ' + mol.pdb.pred.partnerLabel : 'Other chains'),
+      chain: () => Array.from(modelChains().order.keys()).slice(0, 8).map((c, k) => sw(CHAIN_COLORS[k % CHAIN_COLORS.length], 'Chain ' + c + (mol.pdb && c === mol.pdb.chain ? ' (this protein)' : mol.pdb && mol.pdb.pred && mol.pdb.pred.names[c] ? ' (' + mol.pdb.pred.names[c] + ')' : ''))).join('') + (modelChains().order.size > 8 ? '<span class="muted">+' + (modelChains().order.size - 8) + ' more</span>' : ''),
       rainbow: () => grad(RAINBOW, 'N-terminus', 'C-terminus'),
       ss: () => sw(SS_COLORS.h, 'Helix') + sw(SS_COLORS.s, 'Strand') + sw(SS_COLORS.c, 'Coil'),
       charge: () => sw(CHARGE_COLORS.basic, 'Basic (R, K)') + sw(CHARGE_COLORS.his, 'His') + sw(CHARGE_COLORS.acidic, 'Acidic (D, E)') + sw(CHARGE_COLORS.other, 'Other'),
@@ -2517,7 +2525,7 @@
     const sel = (id, label, list, cur) => '<label class="fig-ctl">' + label + ' <select id="' + id + '">' + list.map((o) => '<option value="' + o[0] + '"' + (o[0] === cur ? ' selected' : '') + '>' + esc(o[1]) + '</option>').join('') + '</select></label>';
     box.innerHTML = '<div class="fig-controls">' +
       sel('vw-style', 'Style', VIEW_STYLES, V.style) +
-      sel('vw-color', 'Colour', VIEW_COLORS.filter((o) => !o[2] || o[2] === (pdbMode ? 'pdb' : 'af')), key) +
+      sel('vw-color', 'Colour', VIEW_COLORS.filter(viewColorOk), key) +
       sel('vw-surface', 'Surface', VIEW_SURFACES, V.surface) +
       sel('vw-light', 'Lighting', VIEW_LIGHTS, V.light) +
       sel('vw-bg', 'Background', VIEW_BGS, V.bg) + '</div>' +
@@ -2627,7 +2635,7 @@
       (atom, v) => {
         if (atom.hoverLabel || UI.mv.labels) return;
         const pos = unpOf(atom);
-        const pl = !pdbMode && af ? af.plddt.get(atom.resi) : null;
+        const pl = !pdbMode && af ? af.plddt.get(atom.resi) : pdbMode && mol.pdb.pred ? atom.b : null;
         const text = pos != null ? 'R' + pos + (pdbMode ? ' (' + atom.chain + atom.resi + ')' : '') + (pl != null ? ' · pLDDT ' + Math.round(pl) : '') : atom.resn + ' ' + atom.chain + atom.resi;
         atom.hoverLabel = v.addLabel(text, { position: { x: atom.x, y: atom.y, z: atom.z }, backgroundColor: '#12202C', backgroundOpacity: 0.85, fontColor: '#FFFFFF', fontSize: 12, inFront: true });
       },
@@ -2668,12 +2676,14 @@
   function focusResidue(atom) {
     const { viewer } = mol;
     const pdbMode = mol.mode === 'pdb';
+    const pred = pdbMode && mol.pdb.pred;
     const unp = pdbMode ? (atom.chain === mol.pdb.chain ? authToUnp(atom.resi) : null) : atom.resi;
     mol.focus = { chain: atom.chain, resi: atom.resi };
     styleStructure(false);
     if (mol.label) { viewer.removeLabel(mol.label); mol.label = null; }
     const ca = viewer.selectedAtoms({ chain: atom.chain, resi: atom.resi, atom: 'CA' })[0] || atom;
-    mol.label = viewer.addLabel(atom.resn + ' ' + (pdbMode ? atom.chain : '') + atom.resi + (pdbMode && unp != null ? ' (UniProt ' + unp + ')' : ''),
+    mol.label = viewer.addLabel(pred ? atom.resn + ' ' + atom.resi + ' · ' + (pred.names[atom.chain] || 'chain ' + atom.chain) + ' · pLDDT ' + Math.round(atom.b) :
+      atom.resn + ' ' + (pdbMode ? atom.chain : '') + atom.resi + (pdbMode && unp != null ? ' (UniProt ' + unp + ')' : ''),
       { position: { x: ca.x, y: ca.y, z: ca.z }, backgroundColor: '#12202C', backgroundOpacity: 0.9, fontColor: '#FFFFFF', fontSize: 12, inFront: true });
     const around = [];
     for (let r = atom.resi - 6; r <= atom.resi + 6; r++) around.push(r);
@@ -2685,6 +2695,7 @@
 
   // Author residue number in the loaded PDB chain -> UniProt position, via the SIFTS segment and observed ranges.
   function authToUnp(auth) {
+    if (mol.pdb.pred) return auth;
     const { e, det } = mol.pdb;
     const seg = (det.coverage || []).find(([a, b, au]) => au != null && auth >= au && auth <= au + (b - a));
     if (!seg) return null;
@@ -2702,7 +2713,7 @@
     const chainSel = pdbMode ? { chain: mol.pdb.chain } : {};
     const atoms = auth == null ? [] : viewer.selectedAtoms(Object.assign({ resi: auth, atom: 'CZ' }, chainSel));
     const msg = $('#af-msg');
-    if (msg) msg.textContent = atoms.length ? '' : 'R' + pos + ' is not resolved in ' + (pdbMode ? mol.pdb.e.id.toUpperCase() + ' chain ' + mol.pdb.chain : 'the AlphaFold model') + '.';
+    if (msg) msg.textContent = atoms.length ? '' : 'R' + pos + ' is not ' + (pdbMode && mol.pdb.pred ? 'in the ' + mol.pdb.pred.label + ' model' : 'resolved in ' + (pdbMode ? mol.pdb.e.id.toUpperCase() + ' chain ' + mol.pdb.chain : 'the AlphaFold model')) + '.';
     if (!atoms.length) return;
     const a = atoms[0];
     mol.focus = { chain: a.chain, resi: a.resi };
@@ -2885,12 +2896,21 @@
   function renderPdbSide(p) {
     const side = $('#af-side');
     if (!side || !mol || mol.mode !== 'pdb') return;
-    const { e, det, toAuth } = mol.pdb;
+    const { e, det, toAuth, pred } = mol.pdb;
     const pal = screenPalette();
     const mode = COLOR_MODES[UI.fig.color] || COLOR_MODES.state;
     const colors = mode.colors(pal);
     const sites = p.sites.map((j) => S[j]).filter((s) => toAuth.has(s.pos));
-    side.innerHTML = '<p class="flabel">Showing PDB entry</p><dl class="kv"><dt>Entry</dt><dd><a href="https://www.rcsb.org/structure/' + e.id.toUpperCase() + '" target="_blank" rel="noopener">' + e.id.toUpperCase() + ' ↗</a></dd>' +
+    const chips = () => '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '"><i class="dot" style="background:' + (colors[mode.cat(s)] || pal.none) + '"></i>R' + s.pos + '</button>').join('') + '</div>';
+    if (pred) {
+      side.innerHTML = '<p class="flabel">Showing a predicted complex</p><dl class="kv"><dt>Model</dt><dd><a href="' + esc(pred.link) + '" target="_blank" rel="noopener">' + esc(pred.label) + ' ↗</a></dd>' +
+        '<dt>Source</dt><dd>' + esc(pred.method) + '</dd><dt>Scores</dt><dd>' + esc(pred.scores) + '</dd>' +
+        '<dt>Chains</dt><dd>' + Object.keys(pred.names).sort().map((c) => esc(c) + ': ' + esc(pred.names[c]) + (c === pred.chain ? ' (teal)' : '')).join(' · ') + '</dd></dl>' +
+        '<p class="flabel">Methylarginines in the model</p>' + (sites.length ? chips() : '<p class="note">None of this protein\'s methylarginines are in the modelled range.</p>') +
+        predDistHtml() +
+        '<p class="note">A predicted model, not an experimental structure: weigh each contact by the pLDDT of both residues and by the model\'s predicted aligned error' + (pred.pae ? ' (<a href="' + esc(pred.pae) + '" target="_blank" rel="noopener">PAE plot ↗</a>)' : '') + '. Colour by pLDDT under Colour.</p>' +
+        (mol.afPdb ? '<p><button class="btn quiet small" type="button" id="back-af">Back to AlphaFold model</button></p>' : '');
+    } else side.innerHTML = '<p class="flabel">Showing PDB entry</p><dl class="kv"><dt>Entry</dt><dd><a href="https://www.rcsb.org/structure/' + e.id.toUpperCase() + '" target="_blank" rel="noopener">' + e.id.toUpperCase() + ' ↗</a></dd>' +
       '<dt>Method</dt><dd>' + esc(methodShort(e.method)) + (e.resolution ? ', ' + e.resolution.toFixed(1) + ' Å' : '') + (/NMR/i.test(e.method || '') ? ' (first model of the ensemble)' : '') + '</dd><dt>Chain</dt><dd>' + esc(det.chain || '—') + ' (teal; other chains grey)</dd></dl>' +
       (det.modres.length ? '<p class="flabel">Methylated arginines in the model</p><div class="tags">' + det.modres.map((r) => '<span class="tag var" title="' + esc(r.chem_comp_name) + '">' + esc(r.chem_comp_id) + ' ' + esc(r.chain_id) + esc(r.author_residue_number) + '</span>').join('') + '</div><p class="note">Drawn in orange.</p>' : '') +
       '<p class="flabel">Resolved methylarginines from the union</p>' +
@@ -2913,6 +2933,154 @@
 
 
 
+  // ------------------------------------------------------------- predicted complexes
+  // ProtVar (static export: partners whose AlphaFold-Multimer interface includes a methylarginine) and AlphaFold DB
+  // complexes (live API). Both use UniProt numbering in every chain, so sites map onto the model directly.
+  const PROTVAR_MODEL = (a, b) => 'https://www.ebi.ac.uk/ProtVar/api/prediction/interaction/' + encodeURIComponent(a) + '/' + encodeURIComponent(b) + '/model';
+
+  // This protein's ProtVar partners with the methylarginines at each predicted interface, best pDockQ first.
+  function predPartners(p) {
+    const out = new Map();
+    for (const j of p.sites) {
+      const s = S[j];
+      if (!s.pred) continue;
+      for (const [k, sc, first, model] of s.pred.hits) {
+        if (!out.has(k)) out.set(k, { k, sc, first, model, sites: [] });
+        out.get(k).sites.push(s.pos);
+      }
+    }
+    return Array.from(out.values()).sort((a, b) => b.sc - a.sc || b.sites.length - a.sites.length);
+  }
+
+  function loadAfComplexes(acc) {
+    return live('afcx:' + acc, () => fetch('https://alphafold.ebi.ac.uk/api/complex/' + encodeURIComponent(acc))
+      .then((r) => { if (r.status === 404) return []; if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then((d) => (Array.isArray(d) ? d : []).filter((x) => x.isComplex !== false && (x.uniprotAccession || []).includes(acc))
+        .sort((a, b) => (b.complexPredictionAccuracy_ipTM || 0) - (a.complexPredictionAccuracy_ipTM || 0))));
+  }
+
+  function renderPredList(p) {
+    const box = $('#pred-list');
+    const sub = $('#pred-sub');
+    if (!box) return;
+    const base = p.acc.split('-')[0];
+    const isoform = p.acc.includes('-');
+    const pv = ixReady() && !isoform ? predPartners(p) : [];
+    const geneLink = (k) => {
+      const x = IX.prot[k];
+      return x.p >= 0 && x.p !== p.i ? '<button class="linkish strong" type="button" data-open="' + x.p + '">' + esc(x.gene) + '</button>' : '<b>' + esc(x.gene) + '</b>';
+    };
+    const pvRows = pv.slice(0, UI.predAll ? pv.length : 12).map((r) => '<tr><td>' + geneLink(r.k) + ' <span class="muted mono">' + esc(IX.prot[r.k].acc) + '</span></td>' +
+      '<td class="r num">' + (r.sc / 100).toFixed(2) + '</td><td>' + r.sites.slice(0, 10).map((x) => 'R' + x).join(', ') + (r.sites.length > 10 ? ' +' + (r.sites.length - 10) : '') + '</td>' +
+      '<td>' + (r.model ? '<button class="btn quiet small" type="button" data-pv="' + r.k + '">View</button>' : '<span class="muted" title="The ProtVar API serves no model for this pair; its interface comes from an earlier model set">no model</span>') + '</td></tr>').join('');
+    const pvHtml = !ixReady() ? '<p class="note">Loading interaction data…</p>' :
+      isoform ? '<p class="note">Predicted complexes use canonical sequences; open the canonical entry for ' + esc(base) + '.</p>' :
+      pv.length ? '<p class="flabel">ProtVar: partners with a methylarginine at the predicted interface</p><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Partner</th><th class="r">pDockQ</th><th title="Methylarginines within 5 Å of the partner in the ProtVar 2024 interface table">Methyl-R ≤ 5 Å</th><th><span class="sr-only">View</span></th></tr></thead><tbody>' + pvRows + '</tbody></table></div>' +
+        (pv.length > 12 ? '<button class="linkish" type="button" id="pred-more">' + (UI.predAll ? 'Show the top 12' : 'Show all ' + fmt(pv.length) + ' partners') + '</button>' : '') :
+      '<p class="note">No ProtVar model (pDockQ ≥ 0.23) places one of these methylarginines at an interface.</p>';
+    box.innerHTML = pvHtml + '<div id="afcx-list"><p class="note">Looking up AlphaFold DB complexes…</p></div>';
+    if (sub) sub.innerHTML = 'Putative contacts from AlphaFold-Multimer models of protein pairs. pDockQ and ipTM score the predicted interface (pDockQ ≥ 0.23 acceptable, ≥ 0.5 confident). These are predictions of unmodified proteins; <b>View</b> opens a model above and measures each methylarginine\'s distance to the partner.';
+    $$('[data-open]', box).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.open)));
+    const more = $('#pred-more', box);
+    if (more) more.addEventListener('click', () => { UI.predAll = !UI.predAll; renderPredList(p); });
+    $$('[data-pv]', box).forEach((b) => b.addEventListener('click', () => viewProtvar(p, pv.find((x) => x.k === +b.dataset.pv), b)));
+    if (isoform) { $('#afcx-list', box).innerHTML = ''; return; }
+    loadAfComplexes(base).then((list) => {
+      const hold = $('#afcx-list', box);
+      if (!hold || UI.detail !== p.i) return;
+      if (list == null) { hold.innerHTML = '<p class="note">AlphaFold DB did not answer.</p>'; return; }
+      if (!list.length) { hold.innerHTML = '<p class="note">AlphaFold DB has no predicted complex for ' + esc(base) + '.</p>'; return; }
+      const partners = (x) => {
+        const accs = x.uniprotAccession || [];
+        const others = accs.map((acc, k) => [acc, k]).filter(([acc]) => acc !== base);
+        if (!others.length) return '<b>' + esc(p.label) + '</b> <span class="tag">homodimer</span>';
+        return others.map(([acc, k]) => {
+          const ki = IX.byAcc.get(acc);
+          const name = (x.gene || [])[k] || acc;
+          const org = (x.taxId || [])[k] !== 9606 ? ' <span class="tag" title="' + esc((x.organismScientificName || [])[k] || '') + '">' + esc((x.organismScientificName || [])[k] || 'non-human') + '</span>' : '';
+          return (ki != null ? geneLink(ki) : '<b>' + esc(name) + '</b>') + ' <span class="muted mono">' + esc(acc) + '</span>' + org;
+        }).join(', ');
+      };
+      const num = (v) => (v == null ? '—' : (+v).toFixed(2));
+      hold.innerHTML = '<p class="flabel" style="margin-top:.8rem">AlphaFold DB complexes</p><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Partner</th><th class="r">ipTM</th><th class="r">pDockQ</th><th class="r hide-xs">Mean pLDDT</th><th><span class="sr-only">View</span></th></tr></thead><tbody>' +
+        list.map((x) => '<tr><td>' + partners(x) + '</td><td class="r num">' + num(x.complexPredictionAccuracy_ipTM) + '</td><td class="r num">' + num(x.complexPredictionAccuracy_pDockQ) + '</td><td class="r num hide-xs">' + (x.globalMetricValue != null ? (+x.globalMetricValue).toFixed(1) : '—') + '</td>' +
+          '<td><button class="btn quiet small" type="button" data-afcx="' + esc(x.modelEntityId) + '">View</button></td></tr>').join('') + '</tbody></table></div>' +
+        '<p class="note">AlphaFold DB predicted complexes (CC BY 4.0). EMBL-EBI guidance: ipTM above 0.8 is a confident prediction, below 0.6 likely a failed one, and 0.6–0.8 a grey zone; low pLDDT in disordered regions can lower ipTM even when the complex is right (<a href="https://www.ebi.ac.uk/training/online/courses/alphafold/inputs-and-outputs/evaluating-alphafolds-predicted-structures-using-confidence-scores/confidence-scores-in-alphafold-multimer/" target="_blank" rel="noopener">source ↗</a>).</p>';
+      $$('[data-open]', hold).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.open)));
+      $$('[data-afcx]', hold).forEach((b) => b.addEventListener('click', () => {
+        const x = list.find((y) => y.modelEntityId === b.dataset.afcx);
+        const id = x.modelEntityId;
+        showModel(p, () => fetchJson('https://alphafold.ebi.ac.uk/api/prediction/' + encodeURIComponent(id)).then((chains) => {
+          const mine = chains.find((c) => c.uniprotAccession === base) || chains[0];
+          const names = {};
+          chains.forEach((c) => { names[c.chainId] = c.gene || c.uniprotAccession; });
+          const partnerLabel = chains.filter((c) => c.chainId !== mine.chainId).map((c) => c.gene || c.uniprotAccession).join(', ') || p.label;
+          return {
+            id, url: mine.pdbUrl, chain: mine.chainId, label: id, names, partnerLabel,
+            method: (mine.toolUsed || 'AlphaFold-Multimer') + ' via AlphaFold DB', link: 'https://alphafold.ebi.ac.uk/entry/' + encodeURIComponent(id), pae: mine.paeImageUrl || null,
+            scores: 'ipTM ' + num(x.complexPredictionAccuracy_ipTM) + ' · pDockQ ' + num(x.complexPredictionAccuracy_pDockQ) + ' · mean pLDDT ' + (x.globalMetricValue != null ? (+x.globalMetricValue).toFixed(1) : '—'),
+          };
+        }), b, null);
+      }));
+    });
+  }
+
+  // ProtVar model of this protein with partner r.k. The API serves a later model run than the 2024 interface table,
+  // sometimes with the accessions the other way round; its first accession is chain A.
+  function viewProtvar(p, r, btn) {
+    if (!r || !r.model) return Promise.resolve();
+    const base = p.acc.split('-')[0];
+    const other = IX.prot[r.k];
+    const me = IX.prot[p.i];
+    const first = r.model === 2 ? !r.first : !!r.first;
+    const [a, b] = first ? [base, other.acc] : [other.acc, base];
+    const url = PROTVAR_MODEL(a, b);
+    if (UI.startStructure) UI.startStructure();
+    return showModel(p, () => Promise.resolve({
+      id: 'protvar_' + a + '_' + b, url, chain: first ? 'A' : 'B', label: 'ProtVar ' + me.gene + '–' + other.gene,
+      method: 'AlphaFold-Multimer via ProtVar (EMBL-EBI)', scores: 'pDockQ ' + (r.sc / 100).toFixed(2) + ' (2024 interface table)', link: url, pae: null,
+      names: first ? { A: me.gene, B: other.gene } : { A: other.gene, B: me.gene }, partnerLabel: other.gene, tableSites: r.sites,
+    }), btn, r.sites[0]);
+  }
+
+  // Load a predicted complex into the 3D panel. spec() resolves to {url, chain, names, ...}; numbering is UniProt.
+  function showModel(p, spec, btn, focusPos) {
+    const holder = mol && mol.p.i === p.i ? mol.el : $('#af-viewer');
+    if (!holder) return Promise.resolve();
+    if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
+    const card = $('#card-af');
+    if (card) card.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    return Promise.all([load3Dmol(), spec()]).then(([lib, m]) => fetchText(m.url).then((text) => [lib, m, text])).then(([lib, m, text]) => {
+      if (UI.detail !== p.i) return;
+      if (!/^ATOM/m.test(text)) throw new Error('empty model');
+      if (!mol || mol.p.i !== p.i) {
+        disposeStructure();
+        holder.innerHTML = '';
+        mol = { viewer: lib.createViewer(holder, { backgroundColor: cssVar('--surface-2') || '#eef5f7', antialias: true }), p, el: holder, label: null, spin: false, mode: 'af', afPdb: null };
+      }
+      const viewer = mol.viewer;
+      viewer.removeAllLabels();
+      mol.label = null;
+      viewer.clear();
+      viewer.removeAllSurfaces();
+      viewer.addModel(text, 'pdb');
+      Object.assign(mol, { chains: null, focus: null, siteLabels: [], naKinds: null });
+      const present = new Set(viewer.selectedAtoms({ chain: m.chain, atom: 'CA' }).map((a) => a.resi));
+      const sites = p.sites.map((j) => S[j].pos).filter((pos) => present.has(pos));
+      mol.mode = 'pdb';
+      mol.pdb = { e: { id: m.id, method: m.method, resolution: null, maps: [] }, det: { chain: m.chain, coverage: null, modres: [] }, chain: m.chain,
+        toAuth: new Map(sites.map((x) => [x, x])), toUnp: new Map(sites.map((x) => [x, x])), pred: m };
+      renderViewControls();
+      styleStructure();
+      viewer.zoomTo();
+      viewer.render();
+      ['#af-reset', '#af-spin', '#af-png'].forEach((id) => { const b = $(id); if (b) b.disabled = false; });
+      renderPdbSide(p);
+      if (focusPos != null && present.has(focusPos)) { UI.highlight = focusPos; focusStructure(focusPos); }
+    }).catch(() => { if (btn) btn.textContent = 'Failed'; })
+      .finally(() => { if (btn) { btn.disabled = false; if (btn.textContent === 'Loading…') btn.textContent = 'View'; } });
+  }
+
   // ------------------------------------------------------------- interactions
   // Static context from scripts/37_export_interaction_data.py (STRING physical links, Complex Portal, GO,
   // PDBe-KB interfaces) plus live STRING, QuickGO, ENCODE and ChIP-Atlas calls on protein pages.
@@ -2928,6 +3096,7 @@
   ];
   const IX_SCORES = [[400, 'Medium (≥ 0.4, live from STRING)'], [700, 'High (≥ 0.7)'], [900, 'Highest (≥ 0.9)']];
   const RAIL_SCORES = [[700, 'High (≥ 0.7)'], [900, 'Highest (≥ 0.9)']];
+  const PRED_OPTS = [[0, 'Any'], [23, 'pDockQ ≥ 0.23 (acceptable)'], [50, 'pDockQ ≥ 0.5 (confident)']];
   const STRING_CALLER = 'shechterlab_methylarginine_explorer';
   let IX = null;
   let ixPromise = null;
@@ -3009,9 +3178,13 @@
       if (s) s.geo = { pdb: g[1], chain: g[2], levy: g[3], rMono: g[4], rCplx: g[5], na: g[6], baseHb: g[7] || [], dNa: g[8], dProt: g[9], protHb: g[10] };
     }
     for (const [j, pdbs, comps] of d.modelled || []) { if (S[j]) S[j].modelled = { pdbs, comps }; }
+    // ProtVar predicted heterodimer interfaces: [partner, pDockQ x 100, 1 if this protein is ProtVar's first chain].
+    for (const [j, hits, n] of d.pred || []) { if (S[j]) S[j].pred = { hits, n }; }
     const modelledGaps = new Map((d.modelled_gaps || []).map(([k, pos, pdbs]) => [k, { pos, pdbs }]));
     IX = { meta: d.meta, prot, byEnsp, cx, cxOf, enrich: d.enrich || {}, goEnrich: d.go_enrich || {}, strata: d.enrich_strata || {}, cd, wr, nP,
-      geoSummary: d.geometry_summary || {}, rg: d.rg_iface || {}, modelledGaps, condConf: d.cond_conf || {}, nModelled: (d.modelled || []).length };
+      geoSummary: d.geometry_summary || {}, rg: d.rg_iface || {}, modelledGaps, condConf: d.cond_conf || {}, nModelled: (d.modelled || []).length,
+      predEnrich: d.pred_enrich || {}, nPred: (d.pred || []).length, condHist: d.cond_score_hist || {} };
+    IX.byAcc = new Map(prot.map((x) => [x.acc, x.k]));
     IX.prmts = prot.filter((x) => x.flags & IXF.prmt).sort((a, b) => a.gene.localeCompare(b.gene, 'en', { numeric: true }));
     IX.tudors = prot.filter((x) => x.flags & IXF.tudor).sort((a, b) => a.gene.localeCompare(b.gene));
     return IX;
@@ -3027,6 +3200,8 @@
       renderCondCard(p);
       renderSiteTable(p);
       drawMap(p, UNIDATA.get(p.acc));
+      const pl = $('#pred-list');
+      if (pl && pl.childElementCount) renderPredList(p);
     }
   }
 
@@ -3078,6 +3253,14 @@
     return '<span class="geo" title="' + esc('Relative accessibility of the arginine alone ' + Math.round(100 * g.rMono) + '%, in the complex ' + Math.round(100 * g.rCplx) + '% (' + g.pdb.toUpperCase() + ' chain ' + g.chain + '; Levy 2010 classes). ' + (g.protHb ? g.protHb + ' H-bond(s) to protein.' : '')) + '">' +
       esc(LEVY_LABEL[g.levy]) + ' <span class="muted">' + g.pdb.toUpperCase() + '</span>' + (na ? ' · ' + esc(na) : '') + '</span>';
   }
+  // ProtVar predicted interface: the best-scoring partner, the rest in the tooltip.
+  const predTag = (s) => {
+    if (!s.pred) return '';
+    const h = s.pred.hits;
+    const tip = 'Predicted heterodimer interface (ProtVar, AlphaFold-Multimer, ≤ 5 Å): ' + h.map(([k, sc]) => ixGene(k) + ' pDockQ ' + (sc / 100).toFixed(2)).join(', ') + (s.pred.n > h.length ? ' and ' + (s.pred.n - h.length) + ' more' : '');
+    return '<span class="tag pred' + (h[0][1] >= 50 ? ' pred-hi' : '') + '" title="' + esc(tip) + '">pred. ' + esc(ixGene(h[0][0])) + (s.pred.n > 1 ? ' +' + (s.pred.n - 1) : '') + '</span>';
+  };
+  const predText = (s) => (s.pred ? s.pred.hits.map(([k, sc]) => ixGene(k) + ':' + (sc / 100).toFixed(2)).join(';') : '');
   const modelledTag = (s) => (s.modelled ? '<span class="tag var" title="' + esc('Modelled as ' + s.modelled.comps.join('/') + ' in ' + s.modelled.pdbs.map((x) => x.toUpperCase()).join(', ')) + '">PDB ' + esc(s.modelled.comps[0]) + '</span>' : '');
   function contactHtml(s, max) {
     const gs = contactGroups(s);
@@ -3187,6 +3370,7 @@
 
   function ixSitePass(s, f) {
     if (f.modelledPdb && !s.modelled) return false;
+    if (f.pred && !(s.pred && s.pred.hits[0][1] >= f.pred)) return false;
     if (!f.iface.size) return true;
     let m = 0;
     f.iface.forEach((b) => { m |= b; });
@@ -3201,6 +3385,7 @@
     F.iface.forEach((v) => add('ix', 'Site at PDB interface with ' + IFACE_NAME[v], () => F.iface.delete(v)));
     if (F.cpx !== '' && ixReady()) add('ix', 'Complex: ' + IX.cx[+F.cpx].name, () => { F.cpx = ''; });
     if (F.modelledPdb) add('ix', 'Modelled as methyl-R in a PDB entry', () => { F.modelledPdb = false; });
+    if (F.pred) add('ix', 'Predicted interface (pDockQ ≥ ' + (F.pred / 100).toFixed(2) + ')', () => { F.pred = 0; });
   }
 
   function ixRailBody(sel) {
@@ -3218,7 +3403,9 @@
       '<div class="fgroup"><span class="flabel" title="Gene Ontology GO:0003723 (RNA binding) or GO:0003677 (DNA binding), including child terms">Protein binds (Gene Ontology, match any)</span>' + chipRow('go', [[1, 'RNA'], [2, 'DNA']], F.go) +
       '<label class="check"><input type="checkbox" id="f-goexp"' + (F.goExp ? ' checked' : '') + '> Experimental evidence only (not electronic or inferred)</label></div>' +
       '<div class="fgroup"><span class="flabel" title="PDBe-KB: in at least one PDB structure the residue contacts this kind of partner">Site at a PDB interface with (match any)</span>' + chipRow('iface', IFACE_OPTS, F.iface) +
-      '<label class="check"><input type="checkbox" id="f-modelled"' + (F.modelledPdb ? ' checked' : '') + '> Modelled as a methylated arginine (2MR, DA2, NMM, AGM) in a PDB entry</label></div>';
+      '<label class="check"><input type="checkbox" id="f-modelled"' + (F.modelledPdb ? ' checked' : '') + '> Modelled as a methylated arginine (2MR, DA2, NMM, AGM) in a PDB entry</label>' +
+      '<label class="flabel" for="f-pred" title="ProtVar: residues within 5 Å of the partner in AlphaFold-Multimer models of human protein pairs. pDockQ estimates model quality; 0.23 is the usual floor for an acceptable interface, 0.5 for a confident one.">Site at a predicted interface (ProtVar)</label>' +
+      sel('f-pred', options(PRED_OPTS, F.pred), !!F.pred) + '</div>';
   }
 
   // Open a PDB entry from a contact list in the 3D panel, focused on the site.
@@ -3250,6 +3437,8 @@
     if (ge) ge.addEventListener('change', () => { F.goExp = ge.checked; refresh(); });
     const mo = $('#f-modelled', rail);
     if (mo) mo.addEventListener('change', () => { F.modelledPdb = mo.checked; refresh(); });
+    const pr = $('#f-pred', rail);
+    if (pr) pr.addEventListener('change', () => { F.pred = +pr.value || 0; refresh(); });
   }
 
   // ----- protein network
@@ -3523,25 +3712,29 @@
       const all = res.list;
       const min = res.failed ? IX.meta.string_min_score : minAsked;
       const nMeth = all.filter(([k]) => k < IX.nP).length;
+      const predMap = new Map(predPartners(p).map((r) => [r.k, r]));
       box.innerHTML = (res.failed && minAsked < IX.meta.string_min_score ? '<p class="note">STRING did not answer; showing the high-confidence (≥ 0.7) links from the export instead.</p>' : '') +
         (all.length ? '<div class="ix-net-box" id="ix-net"></div><p class="note" id="ix-net-note"></p><div id="ix-paths"></div>' : '<p class="note">No STRING physical partners at this confidence.</p>') +
         '<p class="sub">' + fmt(all.length) + ' physical partners at score ≥ ' + (min / 1000).toFixed(1) + (res.live ? ' (live from STRING)' : '') + '; <b>' + fmt(nMeth) + '</b> (' + pctText(nMeth, all.length || 1) + '%) are themselves in this methylarginine set, against ' +
         pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of the reviewed proteome. ' +
         (nMeth ? '<button class="linkish" type="button" id="ix-list">List the methylated partners' + (min < 700 ? ' (≥ 0.7)' : '') + '</button>' : '') + '</p>' +
-        (all.length ? '<div class="tbl-wrap ix-tbl"><table class="tbl compact"><thead><tr><th>Partner</th><th class="r">STRING</th><th>Methyl-R sites</th><th>Annotations</th><th class="hide-sm">Shared complexes</th></tr></thead><tbody>' +
+        (all.length ? '<div class="tbl-wrap ix-tbl"><table class="tbl compact"><thead><tr><th>Partner</th><th class="r">STRING</th><th>Methyl-R sites</th><th>Annotations</th><th class="hide-sm" title="ProtVar AlphaFold-Multimer model of this pair places a methylarginine of ' + esc(p.label) + ' within 5 Å of the partner">Predicted interface</th><th class="hide-sm">Shared complexes</th></tr></thead><tbody>' +
           all.slice(0, UI.ixAll ? all.length : 40).map(([k, sc]) => {
             const x = IX.prot[k];
             const q = x.p >= 0 ? P[x.p] : null;
             const shared = (IX.cxOf.get(k) || []).filter((c) => p.cx.includes(c));
             return '<tr' + (q ? ' class="row" tabindex="0" data-i="' + q.i + '"' : '') + '><td><b>' + esc(x.gene) + '</b> <span class="muted mono">' + esc(x.acc) + '</span></td><td class="r num">' + (sc / 1000).toFixed(3) + '</td>' +
               '<td>' + (q ? '<span class="pill"><i style="background:' + (colors[mode.cat(q)] || pal.none) + '"></i>' + q.sites.length + '</span>' : '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(x.acc) + '/entry" target="_blank" rel="noopener" class="muted">not in set ↗</a>') + '</td>' +
-              '<td class="nw">' + (partnerTags(x) || '<span class="muted">—</span>') + '</td><td class="hide-sm">' + (shared.length ? shared.slice(0, 2).map((c) => esc(IX.cx[c].name)).join('; ') + (shared.length > 2 ? ' +' + (shared.length - 2) : '') : '<span class="muted">—</span>') + '</td></tr>';
+              '<td class="nw">' + (partnerTags(x) || '<span class="muted">—</span>') + '</td>' +
+              '<td class="hide-sm">' + (predMap.has(k) ? (predMap.get(k).model ? '<button class="linkish" type="button" data-pvk="' + k + '" title="Open the ProtVar model">pDockQ ' + (predMap.get(k).sc / 100).toFixed(2) + '</button>' : 'pDockQ ' + (predMap.get(k).sc / 100).toFixed(2)) + ' <span class="muted">' + predMap.get(k).sites.slice(0, 4).map((x) => 'R' + x).join(', ') + (predMap.get(k).sites.length > 4 ? ' +' + (predMap.get(k).sites.length - 4) : '') + '</span>' : '<span class="muted">—</span>') + '</td>' +
+              '<td class="hide-sm">' + (shared.length ? shared.slice(0, 2).map((c) => esc(IX.cx[c].name)).join('; ') + (shared.length > 2 ? ' +' + (shared.length - 2) : '') : '<span class="muted">—</span>') + '</td></tr>';
           }).join('') + '</tbody></table></div>' + (all.length > 40 ? '<button class="linkish" type="button" id="ix-all">' + (UI.ixAll ? 'Show the first 40' : 'Show all ' + fmt(all.length)) + '</button>' : '') : '') +
         '<p class="note">STRING v' + esc(IX.meta.string_version) + ' physical subnetwork (experiments, curated databases and text mining of physical binding). RNA*/DNA* mark GO annotations without experimental evidence. Click a methylated partner to open it.</p>';
       const lst = $('#ix-list', box);
       if (lst) lst.addEventListener('click', () => setFilters((f) => { f.partner = String(p.i); f.ixScore = Math.max(700, min); }, 'proteins'));
       const allBtn = $('#ix-all', box);
       if (allBtn) allBtn.addEventListener('click', () => { UI.ixAll = !UI.ixAll; renderIxProteins(p, body); });
+      $$('[data-pvk]', box).forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); viewProtvar(p, predMap.get(+b.dataset.pvk), null); }));
       bindRows(box, (tr) => openProtein(+tr.dataset.i));
       if (!all.length) return;
       const draw = (net) => {
@@ -3574,8 +3767,8 @@
       const name = (p.gene || p.acc) + '_physical_partners';
       $('#ix-svg').onclick = () => { if (UI.ixNet) downloadBlob(name + '.svg', new Blob([ixNetSvg(UI.ixNet, EXPORT_PAL, true)], { type: 'image/svg+xml;charset=utf-8' })); };
       $('#ix-png').onclick = () => { if (!UI.ixNet) return; const svg = ixNetSvg(UI.ixNet, EXPORT_PAL, true); const m = /width="(\d+)" height="(\d+)"/.exec(svg); svgToPng(svg, +m[1], +m[2], 3, name + '.png'); };
-      $('#ix-tsv').onclick = () => download(name + '.tsv', ['partner_gene\tpartner_accession\tstring_physical_score\tmethylarginine_sites\tprmt\ttudor_domain\tgo_rna_binding\tgo_dna_binding']
-        .concat(all.map(([k, sc]) => { const x = IX.prot[k]; return [x.gene, x.acc, (sc / 1000).toFixed(3), x.p >= 0 ? P[x.p].sites.length : 0, x.flags & IXF.prmt ? 1 : 0, x.flags & IXF.tudor ? 1 : 0, x.flags & IXF.rna ? (x.flags & IXF.rnaExp ? 'experimental' : 'yes') : '', x.flags & IXF.dna ? (x.flags & IXF.dnaExp ? 'experimental' : 'yes') : ''].join('\t'); })).join('\n') + '\n');
+      $('#ix-tsv').onclick = () => download(name + '.tsv', ['partner_gene\tpartner_accession\tstring_physical_score\tmethylarginine_sites\tprmt\ttudor_domain\tgo_rna_binding\tgo_dna_binding\tprotvar_pdockq\tmethylarginines_at_predicted_interface']
+        .concat(all.map(([k, sc]) => { const x = IX.prot[k]; const r = predMap.get(k); return [x.gene, x.acc, (sc / 1000).toFixed(3), x.p >= 0 ? P[x.p].sites.length : 0, x.flags & IXF.prmt ? 1 : 0, x.flags & IXF.tudor ? 1 : 0, x.flags & IXF.rna ? (x.flags & IXF.rnaExp ? 'experimental' : 'yes') : '', x.flags & IXF.dna ? (x.flags & IXF.dnaExp ? 'experimental' : 'yes') : '', r ? (r.sc / 100).toFixed(2) : '', r ? r.sites.map((v) => 'R' + v).join(';') : ''].join('\t'); })).join('\n') + '\n');
     });
   }
 
@@ -3803,10 +3996,43 @@
       };
       html += '<h4 style="margin-top:1rem">RG/RGG context</h4><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Arginine context</th><th class="r">Methylated sites</th><th class="r">Seen in a PDB structure</th><th class="r">RNA interface (log2 MH OR)</th><th class="r">Any interface</th></tr></thead><tbody>' +
         ctxRow('segment', 'In an RG/RGG-rich segment') + ctxRow('dipeptide', 'RG dipeptide elsewhere') + ctxRow('other', 'Other arginines') + '</tbody></table></div>' +
-        '<p class="note">Within each context, methylated arginines are compared with the other arginines of the same context and protein. RG/RGG-rich segments: ≥ 3 RG dipeptides with ≤ 12 aa between consecutive RG arginines.</p>';
+        '<p class="note">Within each context, methylated arginines are compared with the other arginines of the same context and protein. RG/RGG-rich segments: ≥ 3 RG dipeptides with ≤ 12 aa between consecutive RG arginines.' +
+        (rg.segment.rna && rg.segment.rna.mh && rg.segment.rna.mh[0] == null ? ' Only ' + fmt((rg.segment.cover || [0, 0])[1]) + ' methylated arginines in RG/RGG-rich segments are resolved in any PDB structure, too few for a within-protein test: these low-complexity regions are rarely crystallised or modelled.' : '') + '</p>';
     }
+    html += predEnrichHtml();
     if (IX.nModelled) html += '<p class="note"><button class="linkish" type="button" id="geo-modelled">' + fmt(IX.nModelled) + ' union sites are modelled as a methylated arginine in at least one PDB entry</button>; PDB entries model a further ' + fmt(Array.from(IX.modelledGaps.values()).reduce((n, g) => n + g.pos.length, 0)) + ' methylated positions that the union lacks (listed on each protein page).</p>';
     return html;
+  }
+
+  // CD-CODE scores cluster at 1-2 and 4-5, so a threshold of 3 or 4 keeps nearly the same members.
+  function condHistNote() {
+    const h = (IX && IX.condHist) || {};
+    const n = (k) => h[String(k)] || 0;
+    const tot = Object.values(h).reduce((a, b) => a + b, 0);
+    if (!tot) return '';
+    return 'Of ' + fmt(tot) + ' human memberships, ' + fmt(n(0) + n(1) + n(2)) + ' score 0–2, ' + fmt(n(3)) + ' score 3 and ' + fmt(n(4) + n(5)) + ' score 4–5, so from 3 upward the chart rests on the small high-confidence set. ';
+  }
+
+  // Methylated vs other arginines of the same protein at ProtVar predicted heterodimer interfaces.
+  function predEnrichHtml() {
+    const pe = IX.predEnrich || {};
+    if (!pe['0.23']) return '';
+    const cell = (t, f) => {
+      const x = pe[t] && pe[t][f];
+      if (!x) return '<td class="r">—</td>';
+      const [a, b, c, d] = x.pooled;
+      return '<td class="r num" title="' + esc('Methylated R at a predicted interface ' + fmt(a) + '/' + fmt(a + b) + ' (' + pctText(a, a + b || 1) + '%) · other R ' + fmt(c) + '/' + fmt(c + d) + ' (' + pctText(c, c + d || 1) + '%) · pooled log2 OR ' + fmtL2(x.pooled[4]) + ' · Mantel–Haenszel over ' + fmt(x.mh[2]) + ' informative proteins') + '">' +
+        (x.mh[0] == null ? '—' : '<b>' + fmtL2(x.mh[0]) + '</b> <span class="muted">p ' + fmtP(x.mh[1]) + '</span>') + '</td>';
+    };
+    const all = pe['0.23'].all.pooled, ord = pe['0.23'].ordered.pooled, dis = pe['0.23'].disordered.pooled;
+    return '<h4 style="margin-top:1rem">Predicted interfaces (AlphaFold-Multimer)</h4>' +
+      '<p class="sub">PDB structures cover few methylarginines, so the same within-protein question is asked of predicted complexes: ProtVar residues within 5 Å of the partner in AlphaFold-Multimer models of human protein pairs. Models are full length, so disordered regions count, and every arginine of the sequence is compared.</p>' +
+      '<div class="tbl-wrap"><table class="tbl compact strata-tbl"><thead><tr><th>Model quality (log2 MH OR)</th><th class="r">All R</th><th class="r">Ordered regions</th><th class="r">Disordered regions</th></tr></thead><tbody>' +
+      [['0.23', 'pDockQ ≥ 0.23 (acceptable)'], ['0.5', 'pDockQ ≥ 0.5 (confident)']].map(([t, l]) => '<tr><td><b>' + l + '</b></td>' + cell(t, 'all') + cell(t, 'ordered') + cell(t, 'disordered') + '</tr>').join('') +
+      '</tbody></table></div>' +
+      '<p class="note">' + fmt(all[0]) + ' of ' + fmt(all[0] + all[1]) + ' methylarginines (' + pctText(all[0], all[0] + all[1] || 1) + '%) in proteins with a modelled partner sit at a predicted interface, against ' + pctText(all[2], all[2] + all[3] || 1) + '% of their other arginines; pooled, that looks like enrichment, but within each protein methylarginines are less often at the predicted interface. ' +
+      'In these models ' + pctText(dis[0] + dis[2], dis[0] + dis[1] + dis[2] + dis[3] || 1) + '% of arginines in disordered regions sit at an interface, against ' + pctText(ord[0] + ord[2], ord[0] + ord[1] + ord[2] + ord[3] || 1) + '% in ordered regions. The models are of unmodified sequences and of pairs chosen from interaction data, so this describes the predicted structures, not binding in cells. ' +
+      '<button class="linkish" type="button" id="geo-pred">List the ' + fmt(IX.nPred) + ' sites at a predicted interface</button>.</p>';
   }
 
   function bindIxOverview(el) {
@@ -3823,6 +4049,8 @@
     $$('#ch-iface tr[data-iface]', el).forEach((tr) => { const run = () => setFilters((f) => { f.iface = new Set([+tr.dataset.iface]); }, 'sites'); tr.addEventListener('click', run); tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') run(); }); });
     const gm = $('#geo-modelled', el);
     if (gm) gm.addEventListener('click', () => setFilters((f) => { f.modelledPdb = true; }, 'sites'));
+    const gp = $('#geo-pred', el);
+    if (gp) gp.addEventListener('click', () => setFilters((f) => { f.pred = 23; }, 'sites'));
     $$('#ch-iface tr[data-go]', el).forEach((tr) => { const run = () => setFilters((f) => { f.go = new Set([+tr.dataset.go]); f.goExp = tr.dataset.goexp === '1'; }, 'proteins'); tr.addEventListener('click', run); tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') run(); }); });
     const tsv = $('#cx-tsv', el);
     if (tsv) tsv.addEventListener('click', () => download('complexes_methylarginine_members.tsv', ['complex_ac\tname\tset\tmembers\tmethylated_members\tfold\tp\tq\tmethylated_genes']
@@ -3854,9 +4082,42 @@
         const key = kind + ':' + a.chain + ':' + a.resi;
         if (!hits.has(key)) hits.set(key, { kind, chain: a.chain, resi: a.resi, resn: a.resn });
       }
-      if (hits.size) out.push({ pos, auth, hits: Array.from(hits.values()) });
+      if (hits.size) out.push({ pos, auth, hits: Array.from(hits.values()), b: atoms[0].b });
     }
     return out;
+  }
+
+  // Predicted complexes: each methylarginine's nearest partner heavy atom in the loaded model.
+  function predDistances() {
+    const { viewer, pdb } = mol;
+    const out = [];
+    for (const [pos] of pdb.toAuth) {
+      const own = viewer.selectedAtoms({ chain: pdb.chain, resi: pos });
+      if (!own.length) continue;
+      const near = viewer.selectedAtoms({ within: { distance: 8, sel: { chain: pdb.chain, resi: pos } }, predicate: (a) => a.chain !== pdb.chain });
+      let best = null;
+      for (const a of near) for (const o of own) {
+        const d = Math.hypot(a.x - o.x, a.y - o.y, a.z - o.z);
+        if (!best || d < best.d) best = { d, a };
+      }
+      const ca = own.find((o) => o.atom === 'CA') || own[0];
+      out.push({ pos, d: best ? best.d : null, partner: best ? best.a : null, b: ca.b });
+    }
+    return out.sort((x, y) => (x.d == null ? 99 : x.d) - (y.d == null ? 99 : y.d));
+  }
+
+  function predDistHtml() {
+    const pred = mol.pdb.pred;
+    if (!mol.pdb.dist) mol.pdb.dist = predDistances();
+    const list = mol.pdb.dist;
+    if (!list.length) return '';
+    const table = new Set(pred.tableSites || []);
+    return '<p class="flabel">Distance to the partner in this model</p><ul class="contact-list">' + list.map((x) => '<li><button class="linkish strong" type="button" data-pos="' + x.pos + '">R' + x.pos + '</button> ' +
+      (x.d == null ? '<span class="muted">more than 8 Å from ' + esc(pred.partnerLabel) + '</span>' :
+        '<b>' + x.d.toFixed(1) + ' Å</b> to ' + esc((pred.names[x.partner.chain] || 'chain ' + x.partner.chain) + ' ' + x.partner.resn + x.partner.resi) + (x.d <= 4 ? ' <span class="tag iface-p">contact</span>' : '')) +
+      ' <span class="muted">· pLDDT ' + Math.round(x.b) + '</span>' +
+      (table.has(x.pos) && (x.d == null || x.d > 5) ? '<br><span class="muted">ProtVar\'s 2024 interface table puts R' + x.pos + ' within 5 Å; this later model does not.</span>' : '') + '</li>').join('') + '</ul>' +
+      '<p class="note">Nearest heavy atoms between the arginine and any partner chain; ≤ 4 Å is marked as a contact.' + (pred.tableSites ? ' The ProtVar API serves a later prediction run than the 2024 interface table used for the site flags and statistics, so distances can differ.' : '') + '</p>';
   }
 
   function contactsHtml() {
@@ -3869,10 +4130,11 @@
       const kinds = ['RNA', 'DNA', 'protein'].map((k) => {
         const h = c.hits.filter((x) => x.kind === k);
         if (!h.length) return '';
-        const lab = h.slice(0, 4).map((x) => x.resn + ' ' + x.chain + x.resi).join(', ') + (h.length > 4 ? ' +' + (h.length - 4) : '');
+        const pred = mol.pdb.pred;
+        const lab = h.slice(0, 4).map((x) => (pred ? (pred.names[x.chain] || x.chain) + ' ' + x.resn + x.resi : x.resn + ' ' + x.chain + x.resi)).join(', ') + (h.length > 4 ? ' +' + (h.length - 4) : '');
         return '<span class="tag ' + (k === 'RNA' ? 'na-rna' : k === 'DNA' ? 'na-dna' : 'iface-p') + '" title="' + esc(lab) + '">' + k + '</span> <span class="muted">' + esc(lab) + '</span>';
       }).filter(Boolean).join('<br>');
-      return '<li><button class="linkish strong" type="button" data-pos="' + c.pos + '">R' + c.pos + '</button> <span class="muted">(' + esc(mol.pdb.chain) + c.auth + ')</span><br>' + kinds + '</li>';
+      return '<li><button class="linkish strong" type="button" data-pos="' + c.pos + '">R' + c.pos + '</button> <span class="muted">(' + (mol.pdb.pred ? 'pLDDT ' + Math.round(c.b) : esc(mol.pdb.chain) + c.auth) + ')</span><br>' + kinds + '</li>';
     }).join('') + '</ul>';
   }
 
@@ -4095,7 +4357,7 @@
     const head = ['gene', 'uniprot_accession', 'protein_name', 'site', 'position', 'state', 'maron_s2_state', 'maron_ip', 'sources', 'source_count',
       'window_15', 'window_31', 'motifs', 'disorder_context', 'disorder_edge_distance', 'domain_context', 'nearest_interpro', 'nearest_domain_class',
       'domain_edge_distance', 'domain_side', 'nearest_methyl_r_distance', 'GSK591_decreased', 'GSK591_increased', 'MS023_decreased', 'MS023_increased',
-      'maron_s3_measurements', 'condensates', 'functional_classes', 'reported_by', 'independent_reports', 'references', 'pdb_interface_partners', 'pdb_interface_entries', 'pdb_contacts'];
+      'maron_s3_measurements', 'condensates', 'functional_classes', 'reported_by', 'independent_reports', 'references', 'pdb_interface_partners', 'pdb_interface_entries', 'pdb_contacts', 'predicted_interface_partners_pdockq'];
     const out = [head.join('\t')];
     for (const s of rows) {
       const p = P[s.p];
@@ -4111,7 +4373,7 @@
         p.cond.map((k) => M.condensates[k][0]).join(';'), bits(p.func).map((b) => M.func_classes[b]).join(';'),
         bits(s.study).map((b) => M.studies[b][0]).join(';'), popcount(s.study),
         s.refs.map((k) => M.refs[k]).join(' | '),
-        ixReady() ? ifaceText(s) : '', (s.ifPdb || []).join(';'), ixReady() ? contactText(s) : '',
+        ixReady() ? ifaceText(s) : '', (s.ifPdb || []).join(';'), ixReady() ? contactText(s) : '', ixReady() ? predText(s) : '',
       ].map(cell).join('\t'));
     }
     return out.join('\n') + '\n';

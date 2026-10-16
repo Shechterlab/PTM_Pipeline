@@ -15,6 +15,7 @@ Sources
   UniProt disordered regions and domains (CC BY 4.0) ....... strata for the interface test
   CD-CODE condensate membership (cd-code.org API) .......... per-protein confidence score, role and evidence
   RCSB ModelServer + SIFTS chain mapping ................... residues each interface methylarginine touches
+  ProtVar predicted interfaces (EMBL-EBI, CC BY 4.0) ....... AlphaFold-Multimer interface residues of human pairs
 
 Stages that make many requests cache every answer: the PDBe interface lookup (about 5,000 calls) and the
 structure contacts (about 5,500 calls). Run them alone first with --fetch-interfaces-only / --fetch-contacts-only.
@@ -34,7 +35,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from collections import defaultdict
+from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -52,6 +53,13 @@ SIFTS_CHAINS = 'https://ftp.ebi.ac.uk/pub/databases/msd/sifts/flatfiles/tsv/pdb_
 CDCODE_API = 'https://cd-code.org/api'
 MODELSERVER = 'https://models.rcsb.org/v1/{pdb}/residueSurroundings'
 RCSB_SEARCH = 'https://search.rcsb.org/rcsbsearch/v2/query'
+# ProtVar predicted interfaces: AlphaFold-Multimer models of human binary interactions, residues within 5 Å
+# of the partner chain, in UniProt numbering (CC BY 4.0).
+PROTVAR_IFACE = 'https://ftp.ebi.ac.uk/pub/databases/ProtVar/predictions/interfaces/2024.05.28_interface_summary_5A.tsv.gz'
+PRED_TIERS = (0.23, 0.5)
+# Models served by the ProtVar API (/prediction/interaction/{A}/{B}/model) are a later prediction run, listed with
+# 10 Å interfaces in this table; the 2024 5 Å table above was computed on earlier models that the API often lacks.
+PROTVAR_SERVED = 'https://ftp.ebi.ac.uk/pub/databases/ProtVar/predictions/interfaces/af2complexes_interfaces_v1.tsv.gz'
 PDBE_MODRES = 'https://www.ebi.ac.uk/pdbe/api/pdb/entry/modified_AA_or_NA/{pdb}'
 
 # The nine human protein arginine methyltransferases.
@@ -678,6 +686,49 @@ def cdcode_threshold_enrichment(cd, proteome, meth_base, uids, thresholds=(1, 2,
     return out
 
 
+def load_protvar(cache: Path, refresh: bool, keep: set):
+    """Predicted heterodimer interfaces touching a protein in keep: acc -> list of (partner, pDockQ, R positions, all positions, is_first)."""
+    path = fetch(PROTVAR_IFACE, cache / Path(PROTVAR_IFACE).name, refresh)
+    out = defaultdict(list)
+    n = 0
+    with open_text(path) as fh:
+        rows = csv.reader(fh, delimiter='\t')
+        header = next(rows)
+        ix = {h: k for k, h in enumerate(header)}
+        for row in rows:
+            try:
+                score = float(row[ix['pdockq']])
+            except (ValueError, IndexError):
+                continue
+            a, b = base_acc(row[ix['uniprot_id1']]), base_acc(row[ix['uniprot_id2']])
+            if a == b or score < PRED_TIERS[0] or (a not in keep and b not in keep):
+                continue
+            for acc, other, field, first in ((a, b, 'ifresid1', True), (b, a, 'ifresid2', False)):
+                if acc not in keep:
+                    continue
+                res = [x for x in (row[ix[field]] or '').split(',') if x]
+                pos_all = {int(x[1:]) for x in res if x[1:].isdigit()}
+                pos_r = {int(x[1:]) for x in res if x[:1] == 'R' and x[1:].isdigit()}
+                if pos_all:
+                    out[acc].append((other, score, pos_r, pos_all, first))
+                    n += 1
+    log(f'ProtVar predicted interfaces: {n:,} heterodimer interface sides (pDockQ >= {PRED_TIERS[0]}) on {len(out):,} methylated proteins')
+    return out
+
+
+def load_protvar_served(cache: Path, refresh: bool):
+    """Ordered (uniprot_id1, uniprot_id2) pairs that the ProtVar API serves a model for."""
+    path = fetch(PROTVAR_SERVED, cache / Path(PROTVAR_SERVED).name, refresh)
+    out = set()
+    with open_text(path) as fh:
+        rows = csv.reader(fh, delimiter='\t')
+        ix = {h: k for k, h in enumerate(next(rows))}
+        for row in rows:
+            out.add((row[ix['uniprot_id1']], row[ix['uniprot_id2']]))
+    log(f'ProtVar served models: {len(out):,} pairs')
+    return out
+
+
 def mantel_haenszel(tables):
     """Mantel-Haenszel common odds ratio and CMH test (continuity-corrected) over 2x2 strata [[a, b], [c, d]]."""
     num = den = sa = sea = sva = 0.0
@@ -1073,6 +1124,57 @@ def main():
     modelled_gaps = [[vid(a), sorted({u for u, _, _ in v}), sorted({p2 for _, p2, _ in v})[:6]] for a, v in sorted(modelled_other.items()) if a in proteome]
     log(f'PDB-modelled methylarginines: {len(modelled_rows)} union sites, {sum(len(r[1]) for r in modelled_gaps)} positions not in the union')
 
+    # Predicted interfaces (ProtVar, AlphaFold-Multimer): flags for methylated sites and a within-protein test
+    # over every arginine of the sequence (predicted models are full length, so disordered regions count too).
+    pred = load_protvar(cache, args.refresh, set(meth_base))
+    served = load_protvar_served(cache, args.refresh)
+
+    def model_order(acc, other, first):
+        """1 if the API serves the pair in the 2024 table's order, 2 if only reversed, 0 if not at all."""
+        a, b = (acc, other) if first else (other, acc)
+        return 1 if (a, b) in served else 2 if (b, a) in served else 0
+
+    pred_rows = []
+    pred_strata = {(t, f): defaultdict(lambda: [0, 0, 0, 0]) for t in PRED_TIERS for f in ('all', 'ordered', 'disordered')}
+    for i, acc in enumerate(meth_accs):
+        if prots[i][10] or '-' in acc or acc not in pred:
+            continue
+        pairs = pred[acc]
+        for j in by_prot_sites[i]:
+            pos = sites[j][1]
+            hits = sorted(((vid(o), round(sc * 100), int(first), model_order(acc, o, first)) for o, sc, pos_r, _, first in pairs if pos in pos_r), key=lambda h: -h[1])
+            if hits:
+                pred_rows.append([j, [list(h) for h in hits[:12]], len(hits)])
+        seq = proteome.get(acc, ('', '', ''))[2]
+        if not seq:
+            continue
+        dis = disordered.get(acc, [])
+        site_pos = {sites[j][1] for j in by_prot_sites[i]}
+        for t in PRED_TIERS:
+            iface_r = set()
+            for o, sc, pos_r, _, first in pairs:
+                if sc >= t:
+                    iface_r |= pos_r
+            if not iface_r:
+                continue
+            for pos in range(1, len(seq) + 1):
+                if seq[pos - 1] != 'R':
+                    continue
+                cell = (0 if pos in site_pos else 2) + (0 if pos in iface_r else 1)
+                pred_strata[(t, 'all')][acc][cell] += 1
+                pred_strata[(t, 'disordered' if any(a <= pos <= b for a, b in dis) else 'ordered')][acc][cell] += 1
+    pred_enrich = {}
+    for t in PRED_TIERS:
+        pred_enrich[str(t)] = {}
+        for f in ('all', 'ordered', 'disordered'):
+            tabs = list(pred_strata[(t, f)].values())
+            a, b, c, d = (sum(x[k] for x in tabs) for k in range(4))
+            p, odds = fisher_2x2(a, b, c, d) if a + b + c + d else (None, None)
+            mh_or, mh_p, used = mantel_haenszel(tabs)
+            pred_enrich[str(t)][f] = {'pooled': [a, b, c, d, sig(math.log2(odds)) if odds else None, sig(p)],
+                                       'mh': [sig(math.log2(mh_or)) if mh_or and math.isfinite(mh_or) else None, sig(mh_p), used]}
+    log(f'Predicted interfaces: {len(pred_rows):,} methylated sites at a predicted heterodimer interface')
+
     # Residues each interface methylarginine touches, from the structures themselves (RCSB ModelServer).
     contact_rows = []
     if contact_jobs:
@@ -1146,6 +1248,9 @@ def main():
     cd_uids = [c[1] for c in cond_meta]
     cd, cd_version = load_cdcode(cache, args.refresh, cd_uids, args.workers)
     cond_conf = cdcode_threshold_enrichment(cd, proteome, meth_base, cd_uids)
+    # How CD-CODE confidence scores are distributed over human memberships (scores cluster at 1-2 and 4-5).
+    score_hist = Counter(m[0] for uid in cd_uids for a, m in cd.get(uid, {}).items() if a in proteome)
+    cond_score_hist = {str(k): v for k, v in sorted(score_hist.items())}
     cd_rows = []
     for i, acc in enumerate(meth_accs):
         b = base_acc(acc)
@@ -1232,6 +1337,7 @@ def main():
                 'cdcode': f'CD-CODE {cd_version} condensate membership via cd-code.org API',
                 'contacts': 'RCSB ModelServer residue surroundings (wwPDB data, CC0)',
                 'regions': 'UniProt disordered regions (MobiDB-lite) and domain, repeat and zinc-finger features (CC BY 4.0)',
+                'protvar': 'ProtVar predicted interfaces 2024.05.28, AlphaFold-Multimer, residues within 5 Å (EMBL-EBI, CC BY 4.0); served-model list from af2complexes_interfaces_v1',
             },
             'fields': {
                 'proteins': ['accession', 'gene', 'flags', 'ensp'],
@@ -1250,6 +1356,9 @@ def main():
                 'modelled': ['site', 'PDB entries modelling a methylated arginine there', 'residue names'],
                 'modelled_gaps': ['protein index', 'UniProt positions modelled as methylarginine but not in the union', 'PDB entries'],
                 'cond_conf': '{min stars: [[condensate index, members, methylated, log2 OR, p, q], ...]}',
+                'cond_score_hist': '{CD-CODE confidence score: memberships of reviewed human proteins}',
+                'pred': ['site', '[[partner index, pDockQ x 100, 1 if this protein is ProtVar uniprot_id1, served model: 1 same order, 2 reversed, 0 none], ...] (top 12)', 'predicted partners'],
+                'pred_enrich': '{pDockQ floor: {all|ordered|disordered: {pooled, mh}}} methylated vs other arginines of the same protein at a predicted interface',
             },
         },
         'proteins': [[a, gene_of.get(base_acc(a), ''), flags[k], ensp(a)] for k, a in enumerate(vocab)],
@@ -1268,6 +1377,9 @@ def main():
         'modelled': modelled_rows,
         'modelled_gaps': modelled_gaps,
         'cond_conf': cond_conf,
+        'cond_score_hist': cond_score_hist,
+        'pred': pred_rows,
+        'pred_enrich': pred_enrich,
     }
     # Explorer proteins keep their own gene labels.
     for k, p in enumerate(prots):

@@ -691,6 +691,9 @@ footer.site a:hover { color: var(--accent); }
 .tag.na-rna { background: var(--na-rna-bg); color: var(--na-rna-ink); }
 .tag.na-dna { background: var(--na-dna-bg); color: var(--na-dna-ink); }
 .tag.iface-p { background: var(--teal-wash); color: var(--brand-ink); }
+/* Predicted (ProtVar AlphaFold-Multimer) interface: dashed outline, solid tint when pDockQ >= 0.5. */
+.tag.pred { background: transparent; color: var(--brand-ink); border: 1px dashed color-mix(in srgb, var(--brand-ink) 55%, transparent); }
+.tag.pred.pred-hi { background: color-mix(in srgb, var(--teal-wash) 60%, transparent); border-style: solid; }
 .tag.ix-prmt { background: var(--ink); color: var(--surface); }
 .tag.ix-tudor { background: transparent; color: var(--accent-dark); border: 1px dashed var(--accent); }
 .tag.go-exp { background: var(--brand-ink); color: #fff; }
