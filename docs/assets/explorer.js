@@ -39,6 +39,59 @@
     IEDB: 'Immune Epitope Database record with a methylated arginine, via the cross-PTM master table',
     'Maron 2021': 'Sites first reported in Maron et al. 2021 (Table S5 "This study")',
   };
+  // DOIs of the studies and databases behind the union (each checked against Crossref).
+  const STUDY_DOI = {
+    'Maron 2021': '10.1016/j.isci.2021.102971', ProMetheusDB: '10.1016/j.mcpro.2022.100243', PhosphoSitePlus: '10.1093/nar/gku1267',
+    'Larsen 2016': '10.1126/scisignal.aaf7329', 'Musiani 2019': '10.1126/scisignal.aat8388', 'Fong 2019': '10.1016/j.ccell.2019.07.003',
+    'Guo 2014': '10.1074/mcp.O113.027870', 'Fedoriw 2019': '10.1016/j.ccell.2019.05.014', 'Wei 2020': '10.3389/fcell.2020.545934',
+    'Lim 2020': '10.1186/s12953-020-00162-8', 'Li 2021': '10.1038/s41467-021-21963-1', IEDB: '10.1093/nar/gky1006', UniProt: '10.1093/nar/gkae1010',
+  };
+  const doiLink = (doi, text) => '<a href="https://doi.org/' + doi + '" target="_blank" rel="noopener">' + (text == null ? 'doi:' + doi : text) + '</a>';
+  const PSP_NOTICE = 'PhosphoSitePlus® data (www.phosphosite.org) are licensed under CC BY-NC-SA 3.0: non-commercial use, with attribution, and adaptations shared under the same licence.';
+  // Data sources, versions and licences shown on the Data & methods page. [name, used for, version, licence, citation, doi]
+  const DATA_SOURCES = [
+    ['Site union', [
+      ['Maron et al. 2021, Table S5', 'Compiled methylarginine sites; Table S2/S3 state and PRMT inhibitor response', 'Supplementary tables', 'Journal article supplement', 'iScience 24:102971', '10.1016/j.isci.2021.102971'],
+      ['PhosphoSitePlus®', 'Sites compiled in Maron Table S5', 'As compiled in Maron et al. 2021', 'CC BY-NC-SA 3.0 (non-commercial)', 'Hornbeck et al., Nucleic Acids Res 43:D512 (2015)', '10.1093/nar/gku1267'],
+      ['ProMetheusDB', 'Methyl-proteome table mmc2 (Rme1/Rme2 calls)', 'mmc2, sheet RK-methylsites', 'Journal article supplement', 'Massignani et al., Mol Cell Proteomics 21:100243 (2022)', '10.1016/j.mcpro.2022.100243'],
+      ['iPTMnet (PTM master table)', 'Other-PTM sites shown as crosstalk; methylarginine rows', 'Lab export', 'See iPTMnet terms', 'Huang et al., Nucleic Acids Res 46:D542 (2018)', '10.1093/nar/gkx1104'],
+      ['IEDB (PTM master table)', 'Epitope records with a methylated arginine', 'Lab export', 'IEDB terms of use', 'Vita et al., Nucleic Acids Res 47:D339 (2019)', '10.1093/nar/gky1006'],
+    ]],
+    ['Annotations in the pipeline', [
+      ['UniProt', 'Canonical sequences, remapping, gene symbols and synonyms', 'Reviewed human proteome at staging', 'CC BY 4.0', 'UniProt Consortium, Nucleic Acids Res 53:D609 (2025)', '10.1093/nar/gkae1010'],
+      ['InterPro', 'Domain context and nearest domain', 'Current release at staging', 'CC0', 'Blum et al., Nucleic Acids Res 53:D444 (2025)', '10.1093/nar/gkae1082'],
+      ['MobiDB', 'Disorder context (predicted consensus disorder, prediction-disorder-th_50)', 'Human export of 30 Mar 2026', 'Not stated on mobidb.org (CC BY 4.0 reported elsewhere)', 'Piovesan et al., Nucleic Acids Res 53:D495 (2025)', '10.1093/nar/gkae969'],
+      ['CD-CODE', 'Condensate membership (filters and enrichment); per-protein confidence on protein pages', 'Export of 18 Mar 2026; API release 2.3', 'Not stated by CD-CODE', 'Rostam et al., Nat Methods 20:673 (2023)', '10.1038/s41592-023-01831-0'],
+      ['DisGeNET (via DOSE)', 'Disease enrichment terms and families', 'As bundled with DOSE / clusterProfiler 4.18 (Bioconductor, R 4.5)', 'CC BY-NC-SA 4.0 (non-commercial)', 'Piñero et al., Nucleic Acids Res (2019 update)', '10.1093/nar/gkz1021'],
+      ['clusterProfiler / DOSE', 'Over-representation analysis', 'clusterProfiler 4.18', 'Artistic-2.0 (software)', 'Wu et al., The Innovation 2:100141 (2021); Yu et al., Bioinformatics 31:608 (2015)', '10.1016/j.xinn.2021.100141'],
+    ]],
+    ['Interactions and structures (exported with scripts/37)', [
+      ['STRING', 'Physical partners (score ≥ 0.7 exported; lower scores live)', 'v12.5', 'CC BY 4.0', 'Szklarczyk et al., Nucleic Acids Res 51:D638 (2023)', '10.1093/nar/gkac1000'],
+      ['Complex Portal', 'Curated human complexes', 'Current release at export', 'CC0', 'Meldal et al., Nucleic Acids Res 50:D578 (2022)', '10.1093/nar/gkab991'],
+      ['hu.MAP 3.0', 'Predicted complexes (via Complex Portal)', 'hu.MAP 3.0', 'CC0', 'Fischer et al., Mol Syst Biol 21 (2025)', '10.1038/s44320-025-00121-5'],
+      ['Gene Ontology / QuickGO', 'RNA- and DNA-binding annotations', 'Current release at export', 'CC BY 4.0', 'Gene Ontology Consortium, Genetics 224:iyad031 (2023); Binns et al., Bioinformatics 25:3045 (2009)', '10.1093/genetics/iyad031'],
+      ['PDBe-KB and SIFTS', 'Interface residues; PDB–UniProt residue mapping', 'Current release at export', 'EMBL-EBI terms of use', 'PDBe-KB consortium, Nucleic Acids Res 50:D534 (2022); Dana et al., Nucleic Acids Res 47:D482 (2019)', '10.1093/nar/gkab988'],
+      ['RCSB PDB', 'Structure files, ModelServer contacts, search, entity metadata', 'Live / at export', 'CC0 (PDB data)', 'Burley et al., Nucleic Acids Res 51:D488 (2023)', '10.1093/nar/gkac1077'],
+      ['ProtVar', 'Predicted interfaces (5 Å) and served AlphaFold-Multimer models', 'Interface table 2024.05.28; served-model list af2complexes_interfaces_v1', 'CC BY 4.0', 'Stephenson et al., Nucleic Acids Res 52:W140 (2024)', '10.1093/nar/gkae413'],
+      ['AlphaFold DB complexes', 'Predicted heterodimers (gallery and protein pages)', 'Live API', 'CC BY 4.0', 'Han et al., preprint (2026): AlphaFold Database expands to proteome-scale quaternary structures', '10.64898/2026.03.27.714458'],
+    ]],
+    ['Live on protein pages', [
+      ['AlphaFold DB', 'Predicted models and pLDDT', 'Live API', 'CC BY 4.0', 'Jumper et al., Nature 596:583 (2021); Varadi et al., Nucleic Acids Res 52:D368 (2024)', '10.1093/nar/gkad1011'],
+      ['AlphaMissense', 'R→X pathogenicity at each site', 'Via AlphaFold DB', 'CC BY 4.0', 'Cheng et al., Science 381:eadg7492 (2023)', '10.1126/science.adg7492'],
+      ['ENCODE', 'eCLIP and TF ChIP-seq experiments', 'Live API', 'Unrestricted use (ENCODE data use policy)', 'ENCODE Project Consortium, Nature 583:699 (2020)', '10.1038/s41586-020-2493-4'],
+      ['ChIP-Atlas', 'TF target genes', 'Live', 'CC BY 4.0', 'Zou et al., Nucleic Acids Res 52:W45 (2024)', '10.1093/nar/gkae358'],
+      ['Open Targets Platform', 'Gene–disease association scores', 'Live GraphQL API', 'CC0', 'Buniello et al., Nucleic Acids Res 53:D1467 (2025)', '10.1093/nar/gkae1128'],
+      ['RCSB sequence search', 'Homologous structures (MMseqs2)', 'Live API', 'CC0 (PDB data)', 'Steinegger & Söding, Nat Biotechnol 35:1026 (2017)', '10.1038/nbt.3988'],
+      ['NCBI E-utilities', 'Reference titles for CD-CODE PubMed IDs', 'Live API', 'NCBI policies', '', ''],
+    ]],
+    ['Methods and software', [
+      ['3Dmol.js 2.5.3', '3D viewer', '2.5.3', 'BSD-3-Clause', 'Rego & Koes, Bioinformatics 31:1322 (2015)', '10.1093/bioinformatics/btu829'],
+      ['Levy interface classes', 'Core, rim and support', '', '', 'Levy, J Mol Biol 403:660 (2010)', '10.1016/j.jmb.2010.09.028'],
+      ['Solvent accessibility', 'Shrake–Rupley; Arg maximum 274 Å²', '', '', 'Shrake & Rupley, J Mol Biol 79:351 (1973); Tien et al., PLoS ONE 8:e80635 (2013)', '10.1016/0022-2836(73)90011-9'],
+      ['AlphaFold-Multimer and pDockQ', 'Predicted complexes and their interface score', '', '', 'Evans et al., bioRxiv (2021); Bryant et al., Nat Commun 13:1265 (2022)', '10.1038/s41467-022-28865-w'],
+    ]],
+  ];
+
   const PAPER = {
     cite: 'DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33(10):1404–1421 (2026).',
     short: 'DeAngelo, Silverstein & Shechter, Cell Chem Biol 2026',
@@ -1707,11 +1760,13 @@
     if (s.win) html += '<p><b>Window ±15:</b> ' + windowHtml(s.win, 15) + '</p>';
     if (rows && rows.length) {
       html += '<p><b>Source rows</b> (' + rows.length + ')</p><table><thead><tr><th>Study / database</th><th>Source table</th><th>Reference</th><th>PMID</th><th>Peptide</th><th>Enzyme</th><th>State</th><th>Reported as</th></tr></thead><tbody>' +
-        rows.map((r) => '<tr><td><b>' + esc(r[9] != null ? ev.studies[r[9]] : '—') + '</b></td><td>' + esc(ev.source_tables[r[0]]) + '</td><td>' + esc(r[1] >= 0 ? ev.refs[r[1]] : '—') + '</td>' +
+        rows.map((r) => { const st = r[9] != null ? ev.studies[r[9]] : null; const ref = r[1] >= 0 ? ev.refs[r[1]] : '';
+          return '<tr><td><b>' + (st && STUDY_DOI[st] ? doiLink(STUDY_DOI[st], esc(st)) : esc(st || '—')) + '</b></td><td>' + esc(ev.source_tables[r[0]]) + '</td><td>' + esc(ref === 'This study.' ? 'Maron et al. 2021 (first reported in that study)' : ref || '—') + '</td>' +
           '<td>' + (r[2] ? r[2].split(/[;,\s]+/).filter(Boolean).map((id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">' + esc(id) + '</a>').join(' ') : '—') + '</td>' +
           '<td class="pep">' + esc(r[3] || '—') + '</td><td>' + esc(r[4] || '—') + '</td><td>' + esc(r[5] || '—') + '</td>' +
-          '<td class="mono">' + esc(r[6]) + ':' + esc(r[7]) + (r[7] && String(r[7]) !== String(s.pos) ? ' <span class="muted">→ R' + s.pos + '</span>' : '') + '<br><span class="muted">' + esc(ev.remap_statuses[r[8]].replace(/_/g, ' ')) + '</span></td></tr>').join('') +
-        '</tbody></table>';
+          '<td class="mono">' + esc(r[6]) + ':' + esc(r[7]) + (r[7] && String(r[7]) !== String(s.pos) ? ' <span class="muted">→ R' + s.pos + '</span>' : '') + '<br><span class="muted">' + esc(ev.remap_statuses[r[8]].replace(/_/g, ' ')) + '</span></td></tr>'; }).join('') +
+        '</tbody></table>' +
+        (rows.some((r) => r[9] != null && ev.studies[r[9]] === 'PhosphoSitePlus') ? '<p class="note">' + esc(PSP_NOTICE) + '</p>' : '');
     } else if (!ev) html += '<p class="note">The evidence file did not load.</p>';
     if (s.refs.length && !(rows && rows.length)) html += '<p><b>References:</b> ' + s.refs.map((k) => esc(M.refs[k])).join('; ') + '</p>';
     cellEl.innerHTML = html || '<span class="muted">No additional evidence.</span>';
@@ -4704,10 +4759,11 @@
       '<p>Please also cite the original studies for any sites you use; each site\'s evidence lists them.</p>' +
       '<h3>Sources in the union</h3><dl>' +
       '<dt>Maron 2021</dt><dd>Table S5 of Maron et al., <a href="https://doi.org/10.1016/j.isci.2021.102971">iScience 24:102971 (2021)</a>, a compilation of human methylarginine sites from published proteomics.</dd>' +
-      '<dt>ProMetheusDB</dt><dd>Methyl-proteome table (mmc2) with monomethyl (Rme1) and dimethyl (Rme2) calls.</dd>' +
-      '<dt>PTM master</dt><dd>Methylarginine rows of the lab\'s cross-PTM human master table (UniProt and IEDB annotations); the same table supplies the phospho, lysine acyl, ubiquitin/SUMO and lysine methyl sites shown as crosstalk. Those other-PTM sites are not exhaustive: they come from an iPTMnet export (HPRD, literature mining and other curated sources) plus UniProt, so modifications reported elsewhere, for example in PhosphoSitePlus or recent proteomics studies, may be missing.</dd></dl>' +
+      '<dt>ProMetheusDB</dt><dd>Methyl-proteome table (mmc2) with monomethyl (Rme1) and dimethyl (Rme2) calls: Massignani et al., ' + doiLink('10.1016/j.mcpro.2022.100243', 'Mol Cell Proteomics 21:100243 (2022)') + '.</dd>' +
+      '<dt>PTM master</dt><dd>Methylarginine rows of the lab\'s cross-PTM human master table (UniProt and IEDB annotations); the same table supplies the phospho, lysine acyl, ubiquitin/SUMO and lysine methyl sites shown as crosstalk. Those other-PTM sites are not exhaustive: they come from an iPTMnet export (HPRD, literature mining and other curated sources) plus UniProt, so modifications reported elsewhere, for example in PhosphoSitePlus or recent proteomics studies, may be missing. iPTMnet: Huang et al., ' + doiLink('10.1093/nar/gkx1104', 'Nucleic Acids Res 46:D542 (2018)') + '; IEDB: Vita et al., ' + doiLink('10.1093/nar/gky1006', 'Nucleic Acids Res 47:D339 (2019)') + '.</dd></dl>' +
+      '<p class="note"><b>Licence notice.</b> ' + fmt((M.studies.find((x) => x[0] === 'PhosphoSitePlus') || [0, 0, 0])[2]) + ' sites in the union are reported by PhosphoSitePlus® (via Maron et al. 2021 Table S5). ' + esc(PSP_NOTICE) + ' Please acknowledge PhosphoSitePlus® and cite Hornbeck et al. 2015 (' + doiLink('10.1093/nar/gku1267') + ') when using these sites, including in downloads.</p>' +
       '<p>Studies and databases behind the sites (sites reported · reported only there):</p><ul>' +
-      M.studyOrder.map((k) => '<li><b>' + esc(M.studies[k][0]) + '</b> · ' + fmt(M.studies[k][2]) + ' · ' + fmt(M.studies[k][3]) + '<br><span class="muted">' + esc(M.studies[k][1] && M.studies[k][1] !== 'This study.' ? M.studies[k][1] : STUDY_HELP[M.studies[k][0]] || '') + '</span></li>').join('') + '</ul>' +
+      M.studyOrder.map((k) => '<li><b>' + esc(M.studies[k][0]) + '</b> · ' + fmt(M.studies[k][2]) + ' · ' + fmt(M.studies[k][3]) + (STUDY_DOI[M.studies[k][0]] ? ' · ' + doiLink(STUDY_DOI[M.studies[k][0]]) : '') + '<br><span class="muted">' + esc(M.studies[k][1] && M.studies[k][1] !== 'This study.' ? M.studies[k][1] : STUDY_HELP[M.studies[k][0]] || '') + '</span></li>').join('') + '</ul>' +
       '<h3>How sites were processed</h3><ul>' +
       '<li>Source rows were remapped to canonical UniProt sequences by peptide/sequence anchors and deduplicated by canonical accession and position. The original reported accession and position are kept in each site\'s evidence.</li>' +
       '<li><b>Gene symbols</b> follow current UniProt. Symbols reported by the sources (some outdated, a few belonging to paralogs with near-identical sequence, such as SNRPN on SmB/B′ rows) and UniProt synonyms are kept as searchable aliases.</li>' +
@@ -4734,12 +4790,17 @@
       '<li><b>RNA and DNA binding</b>: Gene Ontology GO:0003723 and GO:0003677 including child terms (QuickGO/GOA, CC BY 4.0); experimental evidence means EXP, IDA, IPI, IMP, IGI, IEP or their high-throughput equivalents. Protein pages add live ENCODE eCLIP and TF ChIP-seq experiments and ChIP-Atlas target genes (CC BY 4.0).</li>' +
       '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two most recent entries per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were read from the structure itself (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylated arginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
       '<li><b>Writer and reader paths</b>: the protein network can add a second ring of PRMTs and Tudor-domain proteins that bind its partners (STRING ≥ 0.7).</li>' +
-      '<li><b>Interface geometry</b>: for every methylarginine at a PDB interface and up to 12 non-methylated interface arginines per protein, the 10 Å environment in one entry (the most recent showing the interface) gives relative solvent accessibility alone and in the complex (Shrake–Rupley, Arg maximum 274 Å²) and the Levy (2010) class: core, rim or support. Guanidino nitrogens within 3.5 Å of a nucleobase N/O count as base hydrogen bonds, of a phosphate or sugar O as backbone hydrogen bonds. Both are compared within proteins (Mantel–Haenszel). The RG/RGG table repeats the interface test within each sequence context.</li>' +
+      '<li><b>Interface geometry</b>: for every methylarginine at a PDB interface and up to 12 non-methylated interface arginines per protein, the 10 Å environment in one entry (the most recent showing the interface) gives relative solvent accessibility alone and in the complex (Shrake–Rupley, Arg maximum 274 Å² from Tien et al. 2013) and the Levy (' + doiLink('10.1016/j.jmb.2010.09.028', '2010') + ') class: core, rim or support. Guanidino nitrogens within 3.5 Å of a nucleobase N/O count as base hydrogen bonds, of a phosphate or sugar O as backbone hydrogen bonds. Both are compared within proteins (Mantel–Haenszel). The RG/RGG table repeats the interface test within each sequence context.</li>' +
       '<li><b>Methylarginines modelled in the PDB</b>: entries containing 2MR, DA2, NMM or AGM (RCSB search), their residues from PDBe, mapped to UniProt through SIFTS; union sites are flagged and positions the union lacks are listed on protein pages.</li>' +
       '<li><b>References</b>: CD-CODE publications for each membership are listed in full (titles from NCBI E-utilities) with a PubMed search for all of them.</li>' +
       '<li><b>Condensates</b>: protein pages show CD-CODE\'s own confidence score (1–5), role and evidence types for that protein in each condensate (CD-CODE API, release ' + esc((IX && IX.meta && IX.meta.cdcode_version) || '2.3') + '). Condensate-wide statistics (methylated share and enrichment) are shown separately and labelled as being about the condensate.</li>' +
       '<li><b>Disease</b>: protein pages show UniProt\'s curated disease involvement and Open Targets Platform association scores for the gene (live; Open Targets data is CC0). DisGeNET terms come from the dataset-level enrichment and are listed separately as context.</li>' +
       '</ul>' +
+      '<h3>Data sources, versions and licences</h3>' +
+      '<p>Every external source behind the explorer, with the release used and its licence. Please cite the sources you rely on.</p>' +
+      DATA_SOURCES.map(([group, rows]) => '<h4>' + esc(group) + '</h4><div class="tbl-wrap"><table class="tbl compact src-tbl"><thead><tr><th>Source</th><th>Used for</th><th>Version</th><th>Licence</th><th>Citation</th></tr></thead><tbody>' +
+        rows.map(([name, use, ver, lic, cite, doi]) => '<tr><td><b>' + esc(name) + '</b></td><td>' + esc(use) + '</td><td>' + esc(ver || '—') + '</td><td>' + esc(lic || '—') + '</td><td>' + (cite ? esc(cite) + (doi ? ' · ' + doiLink(doi) : '') : '—') + '</td></tr>').join('') + '</tbody></table></div>').join('') +
+      '<p class="note">Interaction data exported ' + esc((IX && IX.meta && IX.meta.generated) || '—') + '; site data exported ' + esc(M.generated) + '. "At staging" and "at export" mean the release current on those dates. Software licences cover the code, not the data.</p>' +
       '<h3>Interpretive guardrails</h3><ul>' +
       '<li>The integrated union is the primary analysis universe; source support is provenance, not a confidence tier.</li>' +
       '<li>State labels are useful where a source supports them, but the union is not a clean Rme1 / Rme2a / Rme2s state-resolved dataset.</li>' +
@@ -4749,6 +4810,7 @@
       '<li>Coverage follows the source compilations. Methylation reported only in low-throughput studies that none of the sources compiled is not in the union.</li>' +
       '</ul>' +
       '<h3>Downloads and figures</h3>' +
+      '<p class="note">' + esc(PSP_NOTICE) + ' Site downloads that include PhosphoSitePlus® sites carry these terms; DisGeNET-derived disease terms are CC BY-NC-SA 4.0.</p>' +
       '<p>Use <b>Download TSV</b> on the Proteins or Sites view to export the current selection. Every overview chart exports as SVG, PNG or TSV, each protein map exports as SVG or PNG at the current zoom, colouring and tracks, and the 3D view exports as PNG. The data files are regenerated from pipeline outputs with <code>python scripts/36_export_site_explorer_data.py</code>; see the repository README.</p>' +
       '<p class="note">Data exported ' + esc(M.generated) + ' · ' + fmt(M.n_sites) + ' sites · ' + fmt(M.n_proteins) + ' proteins.</p>' +
       '</div>';

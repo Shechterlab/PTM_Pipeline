@@ -878,3 +878,8 @@ svg.ix-net { display: block; width: 100%; height: auto; }
 .motif-search input.set { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
 .motif-search input[aria-invalid="true"] { border-color: #c2410c; }
 .warn-text { color: #c2410c; }
+.src-tbl { table-layout: fixed; width: 100%; }
+.src-tbl td { vertical-align: top; overflow-wrap: anywhere; font-size: 0.82rem; }
+.src-tbl th:nth-child(1) { width: 17%; } .src-tbl th:nth-child(2) { width: 25%; } .src-tbl th:nth-child(3) { width: 17%; } .src-tbl th:nth-child(4) { width: 14%; } .src-tbl th:nth-child(5) { width: 27%; }
+@media (max-width: 640px) { .src-tbl { table-layout: auto; } .src-tbl th:nth-child(2), .src-tbl td:nth-child(2), .src-tbl th:nth-child(3), .src-tbl td:nth-child(3) { display: none; } }
+.prose h4 { margin: 1rem 0 0.4rem; }
