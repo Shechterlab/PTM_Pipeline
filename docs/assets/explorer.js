@@ -1404,6 +1404,7 @@
     const base = p.acc.split('-')[0];
     const filtered = constraints().length > 0;
     el.innerHTML =
+      '<div class="print-only print-head" id="print-head"></div>' +
       '<div class="detail-head"><button class="linkish back" type="button" id="back">← Back to results</button>' +
       '<div class="detail-title"><h2>' + esc(p.label) + '</h2><span class="pn" id="pname">' + esc(p.name) + '</span></div>' +
       (p.aliases.length ? '<p class="aliases">Also reported as ' + p.aliases.map((a) => '<span>' + esc(a) + '</span>').join(', ') + '</p>' : '') +
@@ -1411,7 +1412,8 @@
       (p.iso ? '<span class="tag" title="Sites were reported on this isoform accession">isoform</span>' : '') +
       ext('https://www.uniprot.org/uniprotkb/' + encodeURIComponent(p.acc) + '/entry', 'UniProt') +
       ext('https://alphafold.ebi.ac.uk/entry/' + encodeURIComponent(base), 'AlphaFold') +
-      ext('https://www.ebi.ac.uk/interpro/protein/UniProt/' + encodeURIComponent(base) + '/', 'InterPro') + '</div></div>' +
+      ext('https://www.ebi.ac.uk/interpro/protein/UniProt/' + encodeURIComponent(base) + '/', 'InterPro') +
+      '<button class="btn small" type="button" id="save-pdf" title="Print this protein page, or save it as a PDF from the print dialog">Save PDF</button></div></div>' +
       (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
       '<div class="facts">' +
       fact(fmt(p.sites.length), 'Methylarginine sites', shownN === p.sites.length ? (filtered ? 'all match your filters' : 'all reported sites') : fmt(shownN) + ' match current filters') +
@@ -1428,9 +1430,11 @@
       '<div class="two-col"><div class="card" id="card-dom"></div><div class="card" id="card-cond"></div></div>' +
       '<div class="two-col"><div class="card" id="card-func"></div><div class="card" id="card-dis"></div></div>' +
       '<div class="two-col"><div class="card" id="card-cluster"></div><div class="card" id="card-ptm"></div></div>' +
-      '<div class="card"><div class="card-head"><div><h3>Sequence</h3><p class="sub" id="seq-sub">Loading sequence from UniProt…</p></div><div class="exp"><button type="button" id="copy-fasta" disabled>Copy FASTA</button></div></div><div id="seq"></div></div>';
+      '<div class="card"><div class="card-head"><div><h3>Sequence</h3><p class="sub" id="seq-sub">Loading sequence from UniProt…</p></div><div class="exp"><button type="button" id="copy-fasta" disabled>Copy FASTA</button></div></div><div id="seq"></div></div>' +
+      '<div class="print-only print-foot"><p>Cite: ' + esc(PAPER.cite) + ' https://doi.org/' + esc(PAPER.doi) + '</p><p>Sites: methylarginine union from PTM_Pipeline. Features, variants and sequence: UniProt. Predicted structure, pLDDT and AlphaMissense: AlphaFold DB. Experimental structures: RCSB PDB and PDBe (SIFTS). Condensates: CD-CODE.</p></div>';
 
     $('#back', el).addEventListener('click', () => { if (history.length > 1) history.back(); else go('proteins'); });
+    $('#save-pdf', el).addEventListener('click', (e) => savePdf(p, e.currentTarget));
     const pfc = $('#pf-clear', el);
     if (pfc) pfc.addEventListener('click', () => { const q = Q.raw; F = DEFAULT_FILTERS(); afterFilterChange(); if (q) $('#q').value = q; });
     renderSiteTable(p);
@@ -1776,7 +1780,7 @@
       '<div class="seg" role="group" aria-label="Site labels"><span>Site labels</span>' + [['auto', 'Auto'], ['all', 'All'], ['none', 'None']].map(([k, l]) => '<button type="button" data-lab="' + k + '" aria-pressed="' + (f.labels === k) + '">' + l + '</button>').join('') + '</div></div>' +
       '<div class="chips fig-tracks" aria-label="Tracks">' + TRACKS.map(([k, l]) => '<button class="chip" type="button" data-track="' + k + '" aria-pressed="' + f.tracks.has(k) + '">' + l + '</button>').join('') + '</div>' +
       '<div class="legend" id="fig-legend"></div><div class="map-box" id="map-box"></div>' +
-      '<p class="note">Drag across the map to zoom. SVG and PNG exports reproduce this view on a white background with a title and legend.</p></div>';
+      '<p class="note screen-only">Drag across the map to zoom. SVG and PNG exports reproduce this view on a white background with a title and legend.</p></div>';
   }
 
   function bindFigure(p) {
@@ -2092,7 +2096,7 @@
       (n ? '<div class="af-stack">' + counts.map((c, k) => (c ? '<i style="flex:' + c + ';background:' + PLDDT_BANDS[k][1] + '" title="' + esc(PLDDT_BANDS[k][2]) + ': ' + c + '"></i>' : '')).join('') + '</div>' : '') +
       legend(n ? counts : null) +
       (amN ? '<p class="note">AlphaMissense: mean R→X pathogenicity ' + (amSum / amN).toFixed(2) + ' across sites; ' + amLp + ' of ' + amN + ' sites average “likely pathogenic”.</p>' : '') +
-      '<p class="flabel">Focus a site</p><div class="chips af-sites">' + p.sites.map((j) => S[j]).map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '"><i class="dot" style="background:' + (colors[mode.cat(s)] || pal.none) + '"></i>R' + s.pos + '</button>').join('') + '</div>';
+      '<p class="flabel screen-only">Focus a site</p><div class="chips af-sites screen-only">' + p.sites.map((j) => S[j]).map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '"><i class="dot" style="background:' + (colors[mode.cat(s)] || pal.none) + '"></i>R' + s.pos + '</button>').join('') + '</div>';
     $$('.af-sites .chip', side).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
   }
 
@@ -2129,6 +2133,7 @@
       renderPdbList(p);
       enable(); bindButtons();
       if (mol.spin) $('#af-spin').setAttribute('aria-pressed', 'true');
+      UI.startStructure = () => {};
       return;
     }
     disposeStructure();
@@ -2159,10 +2164,13 @@
     }).catch(() => {
       holder.innerHTML = '<div class="af-placeholder">The 3D viewer could not load. <a href="https://alphafold.ebi.ac.uk/entry/' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">Open the model in AlphaFold DB ↗</a></div>';
     });
+    let started = false;
+    const startOnce = () => { if (!started) { started = true; start(); } };
+    UI.startStructure = startOnce;
     if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries) => { if (entries.some((e) => e.isIntersecting)) { io.disconnect(); start(); } }, { rootMargin: '300px' });
+      const io = new IntersectionObserver((entries) => { if (entries.some((e) => e.isIntersecting)) { io.disconnect(); startOnce(); } }, { rootMargin: '300px' });
       io.observe(holder);
-    } else start();
+    } else startOnce();
   }
 
   // 3D view options shared by the AlphaFold model and PDB entries; remembered between visits.
@@ -2656,6 +2664,90 @@
     });
   }
 
+
+
+  // ------------------------------------------------------------- print / PDF
+  // A protein page prints as a report; the browser's "Save as PDF" keeps text, tables and the map as vectors.
+  // Before printing, the map is redrawn in the light export palette and the WebGL view is replaced by a snapshot.
+  let printUndo = [];
+  let printReady = false;   // set when Save PDF prepared the page itself, so beforeprint does not redo it
+  function restorePrint() {
+    printReady = false;
+    const undo = printUndo;
+    printUndo = [];
+    undo.reverse().forEach((f) => { try { f(); } catch (e) { /* element gone */ } });
+  }
+  function preparePrint() {
+    restorePrint();
+    const p = UI.view === 'protein' ? P[UI.detail] : null;
+    if (!p) return;
+    const head = $('#print-head');
+    if (head) head.innerHTML = '<b>Methylarginine Site Explorer</b> · Shechter Lab · ' + esc(location.href) + ' · printed ' + new Date().toISOString().slice(0, 10);
+    const box = $('#map-box');
+    if (box) {
+      const div = document.createElement('div');
+      div.className = 'print-only print-map';
+      div.innerHTML = mapSvg(p, UNIDATA.get(p.acc), { pal: EXPORT_PAL, forExport: true }).svg;
+      box.after(div);
+      printUndo.push(() => div.remove());
+    }
+    if (mol && mol.p.i === p.i && mol.el && document.body.contains(mol.el)) {
+      try {
+        const v = mol.viewer;
+        v.setBackgroundColor(UI.mv.bg === 'black' ? '#000000' : '#FFFFFF');
+        v.render();
+        const fig = document.createElement('figure');
+        fig.className = 'print-only print-3d';
+        fig.innerHTML = '<img alt="3D structure snapshot" src="' + v.pngURI() + '"><figcaption>' +
+          esc(mol.mode === 'pdb' ? 'PDB ' + mol.pdb.e.id.toUpperCase() + ', chain ' + mol.pdb.chain : 'AlphaFold DB model ' + ((AFDATA.get(p.acc) || {}).entry || {}).entryId) +
+          ' as shown on screen; methylarginine side chains in the protein-map colours.</figcaption>';
+        v.setBackgroundColor(viewBackground());
+        v.render();
+        mol.el.after(fig);
+        printUndo.push(() => fig.remove());
+      } catch (e) { /* no snapshot; the viewer is hidden in print */ }
+    }
+    $$('#content details:not([open])').forEach((d) => { d.open = true; printUndo.push(() => { d.open = false; }); });
+    const title = document.title;
+    document.title = (p.gene || p.acc) + '_' + p.acc + '_methylarginines';
+    printUndo.push(() => { document.title = title; });
+  }
+  window.addEventListener('beforeprint', () => { if (!printReady) preparePrint(); });
+  window.addEventListener('afterprint', restorePrint);
+
+  // Load what the page fetches lazily (UniProt, AlphaFold, the 3D view) before opening the print dialog.
+  function savePdf(p, btn) {
+    btn.disabled = true;
+    btn.textContent = 'Preparing…';
+    if (UI.startStructure) UI.startStructure();
+    const settle = (pr, ms) => Promise.race([pr.catch(() => null), new Promise((r) => setTimeout(r, ms))]);
+    const viewerReady = () => new Promise((resolve) => {
+      const t0 = Date.now();
+      (function poll() {
+        const af = AFDATA.get(p.acc);
+        if ((mol && mol.p.i === p.i) || af === null || Date.now() - t0 > 15000) resolve();
+        else setTimeout(poll, 200);
+      })();
+    });
+    settle(Promise.all([loadUniProt(p.acc), loadAF(p.acc), loadEvidence()]), 15000)
+      .then(viewerReady)
+      .then(() => new Promise((r) => setTimeout(r, 500)))
+      .then(() => {
+        if (UI.detail !== p.i) return null;
+        preparePrint();
+        printReady = true;
+        // The snapshot is a data URI; wait for it to decode so it is in the printout.
+        const img = $('.print-3d img');
+        return img && img.decode ? settle(img.decode(), 5000) : null;
+      })
+      .then(() => {
+        btn.disabled = false;
+        btn.textContent = 'Save PDF';
+        if (UI.detail === p.i && printReady) {
+          window.print();
+        }
+      });
+  }
 
   function bindMap(box, p, u, g) {
     const svg = $('svg', box);
