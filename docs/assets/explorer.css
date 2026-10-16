@@ -28,7 +28,7 @@
   --dense: rgba(194, 65, 12, 0.14);
   --fig-domain: #b9dde6;
   --fig-domain-ink: #0f3b47;
-  --fig-dis: #e9eef0;
+  --fig-dis: #d2dbdf;
   --fig-rg: #f5d6de;
   --fig-rg-ink: #7a2e45;
   --fig-bias: #fde3d4;
@@ -74,7 +74,7 @@
     --dense: rgba(251, 146, 60, 0.18);
     --fig-domain: #1f5566;
     --fig-domain-ink: #e3f4f8;
-    --fig-dis: #22343c;
+    --fig-dis: #31474f;
     --fig-rg: #5a2c3a;
     --fig-rg-ink: #f6c9d6;
     --fig-bias: #4a2a1c;
@@ -114,7 +114,7 @@
   --dense: rgba(251, 146, 60, 0.18);
   --fig-domain: #1f5566;
   --fig-domain-ink: #e3f4f8;
-  --fig-dis: #22343c;
+  --fig-dis: #31474f;
   --fig-rg: #5a2c3a;
   --fig-rg-ink: #f6c9d6;
   --fig-bias: #4a2a1c;
@@ -191,6 +191,8 @@ button, input, select { font: inherit; color: inherit; }
 .brand-links a { color: #fff; text-decoration-color: rgba(255, 255, 255, 0.45); }
 .brand-links a:hover { color: #fdba74; text-decoration-color: #fdba74; }
 .hero h1 { font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem); line-height: 1.15; }
+.hero h1 .home-link { color: inherit; text-decoration: none; }
+.hero h1 .home-link:hover, .hero h1 .home-link:focus-visible { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
 .hero .lede { max-width: 46rem; margin: 0; color: rgba(255, 255, 255, 0.86); font-size: 1rem; }
 .hero .lede a { color: #fff; text-decoration-color: #fdba74; }
 .hero .lede a:hover { color: #fdba74; }
@@ -793,7 +795,7 @@ svg.ix-net { display: block; width: 100%; height: auto; }
     --dense: rgba(194, 65, 12, 0.14);
     --fig-domain: #b9dde6;
     --fig-domain-ink: #0f3b47;
-    --fig-dis: #e9eef0;
+    --fig-dis: #d2dbdf;
     --fig-rg: #f5d6de;
     --fig-rg-ink: #7a2e45;
     --fig-bias: #fde3d4;
@@ -862,3 +864,9 @@ svg.ix-net { display: block; width: 100%; height: auto; }
   .print-foot p { margin: 0 0 1mm; }
   a { color: inherit; text-decoration: none; }
 }
+
+/* Homologous structures: methylarginines conserved as arginine in the homolog. */
+.hom-r { font-weight: 700; color: var(--brand-ink); }
+.hom-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+.hom-list li { line-height: 1.5; }
+.hom-list .btn { margin-right: 0.25rem; }

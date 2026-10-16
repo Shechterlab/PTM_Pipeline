@@ -37,7 +37,7 @@
     ProMetheusDB: 'ProMetheusDB methyl-proteome table (mmc2)',
     UniProt: 'UniProt methylarginine annotation, via the cross-PTM master table',
     IEDB: 'Immune Epitope Database record with a methylated arginine, via the cross-PTM master table',
-    'Maron 2021 (this study)': 'Sites first reported in Maron et al. 2021 (Table S5 "This study")',
+    'Maron 2021': 'Sites first reported in Maron et al. 2021 (Table S5 "This study")',
   };
   const PAPER = {
     cite: 'DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33(10):1404–1421 (2026).',
@@ -122,7 +122,7 @@
   const EXPORT_PAL = {
     bg: '#FFFFFF', ink: '#111827', muted: '#5F6F78', grid: '#E0E8EB', backbone: '#9AA6B2', stem: '#C7D4D9',
     backboneFill: '#EEF5F7', backboneEdge: '#C7D4D9', domainFill: '#B9DDE6', domainInk: '#0F3B47',
-    disFill: '#E9EEF0', disEdge: '#AEBCC2', regionFill: '#E3ECF6', biasFill: '#FDE3D4', rgFill: '#F5D6DE', rgInk: '#7A2E45',
+    disFill: '#D2DBDF', disEdge: '#8E9DA4', regionFill: '#E3ECF6', biasFill: '#FDE3D4', rgFill: '#F5D6DE', rgInk: '#7A2E45',
     dense: 'rgba(194,65,12,0.12)', denseInk: '#9A3412', ptm: '#6B7F88', rtick: '#C7D4D9', ring: '#FFFFFF',
     site: '#B4485F', brush: 'rgba(194,65,12,0.16)', accent: '#C2410C', variant: '#9AA6B2',
     cat: ['#2A78D6', '#EB6834', '#1BAF7A'], none: '#A3AEB3', dark: '#5F6F78', seq: ['#86B6EF', '#3987E5', '#1C5CAB', '#0D366B'],
@@ -921,6 +921,8 @@
       else go(t.dataset.view);
     }));
     window.addEventListener('hashchange', route);
+    const home = $('.home-link');
+    if (home) home.addEventListener('click', (e) => { e.preventDefault(); go('overview'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
     $$('[data-theme-set]').forEach((b) => b.addEventListener('click', () => { setTheme(b.dataset.themeSet); if (UI.view === 'protein') renderView(); }));
     setTheme(store.get('mre-theme') || 'system', true);
     syncToolbar();
@@ -2282,6 +2284,7 @@
       '<div class="af-wrap"><div><div class="af-viewer" id="af-viewer"><div class="af-placeholder">Loading the AlphaFold model…</div></div><p class="note af-msg" id="af-msg" aria-live="polite"></p></div><div class="af-side" id="af-side"></div></div>' +
       '<div class="pdb-block"><div class="card-head"><div><h3 class="h4">Experimental structures (PDB)</h3><p class="sub" id="pdb-sub">Looking up PDB entries…</p></div>' +
       '<div class="exp"><a class="exp-link" href="https://www.ebi.ac.uk/pdbe/pdbe-kb/proteins/' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">PDBe-KB ↗</a></div></div><div id="pdb-list"></div></div>' +
+      '<div class="pdb-block" id="hom-block"><div class="card-head"><div><h3 class="h4">Homologous experimental structures</h3><p class="sub" id="hom-sub">Searching the PDB for related proteins…</p></div></div><div id="hom-list"></div></div>' +
       '<div class="pdb-block" id="pred-block"><div class="card-head"><div><h3 class="h4">Predicted complexes</h3><p class="sub" id="pred-sub">Looking up predicted complexes…</p></div></div><div id="pred-list"></div></div></div>';
   }
 
@@ -2356,6 +2359,7 @@
       styleStructure(false);
       renderAfSide(p, AFDATA.get(p.acc));
       renderPdbList(p);
+      renderHomologList(p);
       renderPredList(p);
       enable(); bindButtons();
       if (mol.spin) $('#af-spin').setAttribute('aria-pressed', 'true');
@@ -2364,7 +2368,7 @@
     }
     disposeStructure();
     renderViewControls();
-    const start = () => { renderPdbList(p); renderPredList(p); return startAf(); };
+    const start = () => { renderPdbList(p); renderHomologList(p); renderPredList(p); return startAf(); };
     const startAf = () => loadAF(p.acc).then((af) => {
       if (UI.detail !== p.i || !document.body.contains(holder)) return;
       renderAfSide(p, af);
@@ -2502,7 +2506,7 @@
     const grad = (stops, a, b) => '<span>' + esc(a) + '<i class="grad" style="background:linear-gradient(90deg,' + stops.join(',') + ')"></i>' + esc(b) + '</span>';
     const parts = {
       plddt: () => PLDDT_BANDS.map((b) => sw(b[1], b[2])).join(''),
-      focus: () => sw('#0E7490', 'Chain ' + mol.pdb.chain + ' (this protein)') + sw('#C7D4D9', mol.pdb.pred ? 'Partner: ' + mol.pdb.pred.partnerLabel : 'Other chains'),
+      focus: () => sw('#0E7490', 'Chain ' + mol.pdb.chain + (mol.pdb.homolog ? ' (homolog)' : ' (this protein)')) + sw('#C7D4D9', mol.pdb.pred ? 'Partner: ' + mol.pdb.pred.partnerLabel : 'Other chains'),
       chain: () => Array.from(modelChains().order.keys()).slice(0, 8).map((c, k) => sw(CHAIN_COLORS[k % CHAIN_COLORS.length], 'Chain ' + c + (mol.pdb && c === mol.pdb.chain ? ' (this protein)' : mol.pdb && mol.pdb.pred && mol.pdb.pred.names[c] ? ' (' + mol.pdb.pred.names[c] + ')' : ''))).join('') + (modelChains().order.size > 8 ? '<span class="muted">+' + (modelChains().order.size - 8) + ' more</span>' : ''),
       rainbow: () => grad(RAINBOW, 'N-terminus', 'C-terminus'),
       ss: () => sw(SS_COLORS.h, 'Helix') + sw(SS_COLORS.s, 'Strand') + sw(SS_COLORS.c, 'Coil'),
@@ -2684,8 +2688,9 @@
     styleStructure(false);
     if (mol.label) { viewer.removeLabel(mol.label); mol.label = null; }
     const ca = viewer.selectedAtoms({ chain: atom.chain, resi: atom.resi, atom: 'CA' })[0] || atom;
+    const hom = pdbMode && mol.pdb.homolog;
     mol.label = viewer.addLabel(pred ? atom.resn + ' ' + atom.resi + ' · ' + (pred.names[atom.chain] || 'chain ' + atom.chain) + ' · pLDDT ' + Math.round(atom.b) :
-      atom.resn + ' ' + (pdbMode ? atom.chain : '') + atom.resi + (pdbMode && unp != null ? ' (UniProt ' + unp + ')' : ''),
+      atom.resn + ' ' + (pdbMode ? atom.chain : '') + atom.resi + (pdbMode && unp != null ? (hom ? ' (≙ ' + mol.p.label + ' ' + unp + ')' : ' (UniProt ' + unp + ')') : ''),
       { position: { x: ca.x, y: ca.y, z: ca.z }, backgroundColor: '#12202C', backgroundOpacity: 0.9, fontColor: '#FFFFFF', fontSize: 12, inFront: true });
     const around = [];
     for (let r = atom.resi - 6; r <= atom.resi + 6; r++) around.push(r);
@@ -2698,6 +2703,7 @@
   // Author residue number in the loaded PDB chain -> UniProt position, via the SIFTS segment and observed ranges.
   function authToUnp(auth) {
     if (mol.pdb.pred) return auth;
+    if (mol.pdb.homolog) { const q = mol.pdb.homolog.authToQuery.get(auth); return q == null ? null : q; }
     const { e, det } = mol.pdb;
     const seg = (det.coverage || []).find(([a, b, au]) => au != null && auth >= au && auth <= au + (b - a));
     if (!seg) return null;
@@ -2912,6 +2918,19 @@
         predDistHtml() +
         '<p class="note">A predicted model, not an experimental structure: weigh each contact by the pLDDT of both residues and by the model\'s predicted aligned error' + (pred.pae ? ' (<a href="' + esc(pred.pae) + '" target="_blank" rel="noopener">PAE plot ↗</a>)' : '') + '. Colour by pLDDT under Colour.</p>' +
         (mol.afPdb ? '<p><button class="btn quiet small" type="button" id="back-af">Back to AlphaFold model</button></p>' : '');
+    } else if (mol.pdb.homolog) {
+      const h = mol.pdb.homolog;
+      side.innerHTML = '<p class="flabel">Showing a homologous structure</p><dl class="kv"><dt>Entry</dt><dd><a href="https://www.rcsb.org/structure/' + e.id.toUpperCase() + '" target="_blank" rel="noopener">' + e.id.toUpperCase() + ' ↗</a></dd>' +
+        '<dt>Method</dt><dd>' + esc(methodShort(e.method)) + (e.resolution ? ', ' + e.resolution.toFixed(1) + ' Å' : '') + '</dd>' +
+        '<dt>Homolog</dt><dd>' + esc(h.desc) + (h.org ? ' <i>(' + esc(h.org) + ')</i>' : '') + (h.uniprot.length ? ' · ' + h.uniprot.map((a) => '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(a) + '/entry" target="_blank" rel="noopener">' + esc(a) + '</a>').join(', ') : '') + '</dd>' +
+        '<dt>Alignment</dt><dd>' + Math.round(100 * h.identity) + '% identity over ' + esc(p.label) + ' ' + h.qBeg + '–' + h.qEnd + '</dd><dt>Chain</dt><dd>' + esc(det.chain) + ' (teal; other chains grey)</dd>' +
+        (h.partners.length ? '<dt>With</dt><dd>' + h.partners.map((x) => esc(x)).join('; ') + '</dd>' : '') + '</dl>' +
+        '<p class="flabel">Aligned methylarginines</p>' + (sites.length ? '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '"><i class="dot" style="background:' + (colors[mode.cat(s)] || pal.none) + '"></i>R' + s.pos + ' ≙ ' + esc(det.chain) + toAuth.get(s.pos) + '</button>').join('') + '</div>' :
+          '<p class="note">No methylarginine of ' + esc(p.label) + ' aligns to a resolved arginine in this chain.</p>') +
+        (det.modres.length ? '<p class="flabel">Methylated arginines in the model</p><div class="tags">' + det.modres.map((r) => '<span class="tag var" title="' + esc(r.chem_comp_name) + '">' + esc(r.chem_comp_id) + ' ' + esc(r.chain_id) + esc(r.author_residue_number) + '</span>').join('') + '</div>' : '') +
+        contactsHtml() +
+        '<p class="note">A related protein, not ' + esc(p.label) + ' itself: positions come from the RCSB sequence alignment (MMseqs2), and the contacts are those of the homologous arginine.</p>' +
+        (mol.afPdb ? '<p><button class="btn quiet small" type="button" id="back-af">Back to AlphaFold model</button></p>' : '');
     } else side.innerHTML = '<p class="flabel">Showing PDB entry</p><dl class="kv"><dt>Entry</dt><dd><a href="https://www.rcsb.org/structure/' + e.id.toUpperCase() + '" target="_blank" rel="noopener">' + e.id.toUpperCase() + ' ↗</a></dd>' +
       '<dt>Method</dt><dd>' + esc(methodShort(e.method)) + (e.resolution ? ', ' + e.resolution.toFixed(1) + ' Å' : '') + (/NMR/i.test(e.method || '') ? ' (first model of the ensemble)' : '') + '</dd><dt>Chain</dt><dd>' + esc(det.chain || '—') + ' (teal; other chains grey)</dd></dl>' +
       (det.modres.length ? '<p class="flabel">Methylated arginines in the model</p><div class="tags">' + det.modres.map((r) => '<span class="tag var" title="' + esc(r.chem_comp_name) + '">' + esc(r.chem_comp_id) + ' ' + esc(r.chain_id) + esc(r.author_residue_number) + '</span>').join('') + '</div><p class="note">Drawn in orange.</p>' : '') +
@@ -2934,6 +2953,209 @@
   }
 
 
+
+  // ------------------------------------------------------------- homologous structures
+  // PDB entities related to this protein by sequence (RCSB MMseqs2 search, experimental entries), excluding entities
+  // mapped to this accession. Each methylarginine is carried through the alignment to the homolog's residue.
+  function loadHomologs(p) {
+    const base = p.acc.split('-')[0];
+    return live('homologs:' + p.acc, () => loadUniProt(p.acc).then((u) => {
+      if (!u || !u.seq) return null;
+      const q = { query: { type: 'terminal', service: 'sequence', parameters: { evalue_cutoff: 1e-3, identity_cutoff: 0.3, sequence_type: 'protein', value: u.seq } },
+        return_type: 'polymer_entity', request_options: { paginate: { start: 0, rows: 500 }, results_content_type: ['experimental'], scoring_strategy: 'sequence', results_verbosity: 'verbose' } };
+      return withTimeout(fetch('https://search.rcsb.org/rcsbsearch/v2/query', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(q) }), 45000)
+        .then((r) => (r.status === 204 ? { result_set: [] } : r.ok ? r.json() : Promise.reject(new Error(r.status))));
+    }).then((d) => {
+      if (!d) return null;
+      const sitePos = p.sites.map((j) => S[j].pos);
+      const hits = [];
+      for (const r of d.result_set || []) {
+        const m = (((r.services || [])[0] || {}).nodes || [])[0];
+        const ctx = m && (m.match_context || [])[0];
+        if (!ctx || !ctx.query_aligned_seq) continue;
+        // Walk the alignment: query position -> subject (entity sequence) index and residue.
+        const qa = ctx.query_aligned_seq, sa = ctx.subject_aligned_seq;
+        const align = new Map();
+        let qi = ctx.query_beg - 1, si = ctx.subject_beg - 1;
+        for (let k = 0; k < qa.length; k++) {
+          if (qa[k] !== '-') qi++;
+          if (sa[k] !== '-') si++;
+          if (qa[k] !== '-' && sa[k] !== '-') align.set(qi, [si, sa[k]]);
+        }
+        const sites = sitePos.filter((pos) => align.has(pos)).map((pos) => ({ pos, sub: align.get(pos)[0], aa: align.get(pos)[1] }));
+        if (!sites.length) continue;
+        hits.push({ id: r.identifier, entry: r.identifier.split('_')[0], identity: ctx.sequence_identity, qBeg: ctx.query_beg, qEnd: ctx.query_end, align, sites });
+      }
+      const entries = Array.from(new Set(hits.map((h) => h.entry)));
+      const chunks = [];
+      for (let k = 0; k < entries.length; k += 80) chunks.push(entries.slice(k, k + 80));
+      const gql = (ids) => fetch('https://data.rcsb.org/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query:
+        '{ entries(entry_ids: ' + JSON.stringify(ids) + ') { rcsb_id struct { title } rcsb_entry_info { resolution_combined experimental_method } polymer_entities { rcsb_id rcsb_polymer_entity { pdbx_description } ' +
+        'rcsb_polymer_entity_container_identifiers { asym_ids auth_asym_ids uniprot_ids } entity_poly { rcsb_entity_polymer_type } rcsb_entity_source_organism { ncbi_scientific_name } } } }' }) })
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.status))));
+      return Promise.all(chunks.map(gql)).then((parts) => {
+        const meta = new Map();
+        for (const part of parts) for (const en of ((part.data || {}).entries || [])) meta.set(en.rcsb_id, en);
+        const out = [];
+        for (const h of hits) {
+          const en = meta.get(h.entry);
+          if (!en) continue;
+          const ent = (en.polymer_entities || []).find((x) => x.rcsb_id === h.id);
+          if (!ent) continue;
+          const ids = ent.rcsb_polymer_entity_container_identifiers || {};
+          const uniprot = ids.uniprot_ids || [];
+          if (uniprot.includes(base)) continue; // this protein's own entries are listed above
+          const orgs = (ent.rcsb_entity_source_organism || []).map((o) => o.ncbi_scientific_name).filter(Boolean);
+          const partners = (en.polymer_entities || []).filter((x) => x.rcsb_id !== h.id).map((x) => {
+            const type = (x.entity_poly || {}).rcsb_entity_polymer_type || '';
+            const desc = pdbDesc((x.rcsb_polymer_entity || {}).pdbx_description || type);
+            return /RNA/.test(type) ? 'RNA: ' + desc : /DNA/.test(type) ? 'DNA: ' + desc : desc;
+          });
+          const info = en.rcsb_entry_info || {};
+          out.push(Object.assign(h, {
+            desc: pdbDesc((ent.rcsb_polymer_entity || {}).pdbx_description || ''), org: orgs[0] || '', uniprot, chain: (ids.auth_asym_ids || [])[0] || null, asym: (ids.asym_ids || [])[0] || null,
+            partners: Array.from(new Set(partners)), title: (en.struct || {}).title || '', method: info.experimental_method || '', resolution: (info.resolution_combined || [])[0] || null,
+            nR: h.sites.filter((x) => x.aa === 'R').length,
+          }));
+        }
+        return out.filter((h) => h.chain && h.asym);
+      }).then((out) => {
+        // Which aligned residues are modelled: unobserved ranges of the first chain of each entity (label numbering).
+        const inst = out.map((h) => h.entry + '.' + h.asym);
+        const chunks2 = [];
+        for (let k = 0; k < inst.length; k += 100) chunks2.push(inst.slice(k, k + 100));
+        const gql2 = (ids) => fetch('https://data.rcsb.org/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query:
+          '{ polymer_entity_instances(instance_ids: ' + JSON.stringify(ids) + ') { rcsb_id rcsb_polymer_entity_instance_container_identifiers { auth_asym_id } rcsb_polymer_instance_feature { type feature_positions { beg_seq_id end_seq_id } } } }' }) })
+          .then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.status))));
+        return Promise.all(chunks2.map(gql2)).then((parts) => {
+          const gaps = new Map();
+          for (const part of parts) for (const x of ((part.data || {}).polymer_entity_instances || [])) {
+            const ranges = [];
+            for (const f of x.rcsb_polymer_instance_feature || []) if (f.type === 'UNOBSERVED_RESIDUE_XYZ') for (const q of f.feature_positions || []) ranges.push([q.beg_seq_id, q.end_seq_id == null ? q.beg_seq_id : q.end_seq_id]);
+            gaps.set(x.rcsb_id, { ranges, auth: (x.rcsb_polymer_entity_instance_container_identifiers || {}).auth_asym_id });
+          }
+          for (const h of out) {
+            const g = gaps.get(h.entry + '.' + h.asym);
+            if (g && g.auth) h.chain = g.auth;
+            for (const x of h.sites) x.obs = !g || !g.ranges.some(([a, b]) => x.sub >= a && x.sub <= b);
+            h.nR = h.sites.filter((x) => x.aa === 'R' && x.obs).length;
+            h.nObs = h.sites.filter((x) => x.obs).length;
+          }
+          // Modelled, conserved arginines first; then entries with a partner; then identity.
+          return out.filter((h) => h.nObs).sort((a, b) => (b.nR > 0) - (a.nR > 0) || (b.partners.length > 0) - (a.partners.length > 0) || b.nR - a.nR || b.identity - a.identity);
+        });
+      });
+    }));
+  }
+
+  // PDB entity descriptions are often upper case ("PROTEIN (IMPORTIN BETA SUBUNIT)"); show them in sentence case.
+  const pdbDesc = (s) => {
+    const x = String(s || '').replace(/^PROTEIN \((.*)\)$/i, '$1');
+    return x && x === x.toUpperCase() ? x.charAt(0) + x.slice(1).toLowerCase() : x;
+  };
+  const shorten = (s, n) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
+
+  function renderHomologList(p) {
+    const box = $('#hom-list');
+    const sub = $('#hom-sub');
+    if (!box) return;
+    loadHomologs(p).then((list) => {
+      if (UI.detail !== p.i || !document.body.contains(box)) return;
+      if (list == null) { sub.textContent = 'The RCSB sequence search did not answer.'; box.innerHTML = ''; return; }
+      // Per methylarginine: entries where the aligned residue is a modelled arginine. Entries with a partner first,
+      // then higher identity, then better resolution.
+      const bySite = new Map();
+      for (const h of list) for (const x of h.sites) {
+        if (x.aa !== 'R' || !x.obs) continue;
+        if (!bySite.has(x.pos)) bySite.set(x.pos, []);
+        bySite.get(x.pos).push(h);
+      }
+      const rank = (a, b) => (b.partners.length > 0) - (a.partners.length > 0) || b.identity - a.identity || (a.resolution || 99) - (b.resolution || 99);
+      const sites = Array.from(bySite.keys()).sort((a, b) => a - b);
+      if (!sites.length) { sub.textContent = 'No experimental structure of a related protein (≥ 30% identity) models an arginine at these methylarginine positions.'; box.innerHTML = ''; return; }
+      const nEntries = new Set(sites.flatMap((pos) => bySite.get(pos).map((h) => h.entry))).size;
+      sub.innerHTML = fmt(sites.length) + ' of ' + fmt(p.sites.length) + ' methylarginines align to a modelled arginine in ' + fmt(nEntries) + ' PDB entr' + (nEntries === 1 ? 'y' : 'ies') + ' of related proteins (≥ 30% identity, RCSB sequence search). ' +
+        'Where ' + esc(p.label) + ' has no structure of its own, the homolog\'s arginine and its contacts are the closest experimental evidence; <b>View</b> opens the entry at that residue.';
+      UI.homOpen = UI.homOpen || new Set();
+      const line = (h, pos) => {
+        const x = h.sites.find((y) => y.pos === pos);
+        return '<li title="' + esc('R' + pos + ' aligns to the arginine at position ' + x.sub + ' of the ' + h.entry + ' chain ' + h.chain + ' sequence') + '"><button class="btn quiet small" type="button" data-hom="' + esc(h.id) + '" data-hpos="' + pos + '">View</button> ' +
+          '<a href="https://www.rcsb.org/structure/' + h.entry + '" target="_blank" rel="noopener"><b>' + h.entry + '</b></a> <span class="muted">' + esc(methodShort(h.method)) + (h.resolution ? ' ' + (+h.resolution).toFixed(1) + ' Å' : '') + '</span> · ' +
+          esc(h.desc) + (h.org ? ' <i class="muted">' + esc(h.org) + '</i>' : '') + ' · <span class="num">' + Math.round(100 * h.identity) + '%</span> identity' +
+          (h.partners.length ? ' · with ' + h.partners.slice(0, 2).map((y) => '<span class="' + (/^RNA:/.test(y) ? 'tag na-rna' : /^DNA:/.test(y) ? 'tag na-dna' : 'tag') + '" title="' + esc(y) + '">' + esc(shorten(y.replace(/^(RNA|DNA): /, ''), 34)) + '</span>').join(' ') + (h.partners.length > 2 ? ' +' + (h.partners.length - 2) : '') : ' · <span class="muted">no other chain type</span>') +
+          '</li>';
+      };
+      const shownSites = UI.homAll ? sites : sites.slice(0, 12);
+      box.innerHTML = '<div class="tbl-wrap"><table class="tbl compact hom-tbl"><thead><tr><th>Site</th><th>Homologous entries with a modelled arginine here</th></tr></thead><tbody>' +
+        shownSites.map((pos) => {
+          const hs = bySite.get(pos).slice().sort(rank);
+          const open = UI.homOpen.has(pos);
+          return '<tr><td class="nw"><b>R' + pos + '</b><br><span class="muted">' + fmt(hs.length) + ' entr' + (hs.length === 1 ? 'y' : 'ies') + '</span></td><td><ul class="hom-list">' +
+            hs.slice(0, open ? hs.length : 3).map((h) => line(h, pos)).join('') + '</ul>' +
+            (hs.length > 3 ? '<button class="linkish" type="button" data-homopen="' + pos + '">' + (open ? 'Show the top 3' : 'Show all ' + fmt(hs.length)) + '</button>' : '') + '</td></tr>';
+        }).join('') + '</tbody></table></div>' +
+        (sites.length > 12 ? '<button class="linkish" type="button" id="hom-more" style="margin-top:.5rem">' + (UI.homAll ? 'Show the first 12 sites' : 'Show all ' + fmt(sites.length) + ' sites') + '</button>' : '') +
+        '<p class="note">Entries with another protein, RNA or DNA come first, then higher identity. Positions follow the RCSB MMseqs2 alignment; only arginines modelled in the deposited chain are listed.</p>';
+      const byId = new Map(list.map((h) => [h.id, h]));
+      $$('[data-hom]', box).forEach((b) => b.addEventListener('click', () => showHomolog(p, byId.get(b.dataset.hom), b, +b.dataset.hpos)));
+      $$('[data-homopen]', box).forEach((b) => b.addEventListener('click', () => { const k = +b.dataset.homopen; if (UI.homOpen.has(k)) UI.homOpen.delete(k); else UI.homOpen.add(k); renderHomologList(p); }));
+      const more = $('#hom-more', box);
+      if (more) more.addEventListener('click', () => { UI.homAll = !UI.homAll; renderHomologList(p); });
+    });
+  }
+
+  // Load a homologous PDB entry; residues map through the alignment (entity index -> author number via PDBe coverage).
+  function showHomolog(p, h, btn, focusPos) {
+    const holder = mol && mol.p.i === p.i ? mol.el : $('#af-viewer');
+    if (!holder) return Promise.resolve();
+    if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
+    const id = h.entry.toLowerCase();
+    const nmr = /NMR/i.test(h.method || '');
+    const file = nmr ? fetchText('https://files.rcsb.org/download/' + h.entry + '.pdb').then((t) => [t, 'pdb']).catch(() => fetchText('https://files.rcsb.org/download/' + h.entry + '.cif').then((t) => [t, 'cif']))
+      : fetchText('https://files.rcsb.org/download/' + h.entry + '.cif').then((t) => [t, 'cif']);
+    const cov = fetchJson('https://www.ebi.ac.uk/pdbe/api/pdb/entry/polymer_coverage/' + id + '/chain/' + encodeURIComponent(h.chain))
+      .then((d) => {
+        const segs = [];
+        for (const m of (d[id] || {}).molecules || []) for (const c of m.chains || []) for (const o of c.observed || []) segs.push([o.start.residue_number, o.end.residue_number, o.start.author_residue_number]);
+        return segs;
+      }).catch(() => []);
+    const mods = fetch('https://www.ebi.ac.uk/pdbe/api/pdb/entry/modified_AA_or_NA/' + id).then((r) => (r.ok ? r.json() : null))
+      .then((d) => (d ? (d[id] || []).filter((r) => METHYL_R_CODES.includes(r.chem_comp_id)) : [])).catch(() => []);
+    const card = $('#card-af');
+    if (card) card.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    return Promise.all([load3Dmol(), file, cov, mods]).then(([lib, [text, fmtName], segs, modres]) => {
+      if (UI.detail !== p.i) return;
+      if (!mol || mol.p.i !== p.i) {
+        disposeStructure();
+        holder.innerHTML = '';
+        mol = { viewer: lib.createViewer(holder, { backgroundColor: cssVar('--surface-2') || '#eef5f7', antialias: true }), p, el: holder, label: null, spin: false, mode: 'af', afPdb: null };
+      }
+      const viewer = mol.viewer;
+      viewer.removeAllLabels();
+      mol.label = null;
+      viewer.clear();
+      viewer.removeAllSurfaces();
+      viewer.addModel(text, fmtName);
+      Object.assign(mol, { chains: null, focus: null, siteLabels: [], naKinds: null });
+      // Entity index -> author residue number from the observed segments (no mapping without coverage).
+      const toAuthNum = (sub) => { const s = segs.find(([a, b]) => sub >= a && sub <= b); return s && s[2] != null ? s[2] + (sub - s[0]) : null; };
+      const authToQuery = new Map();
+      h.align.forEach(([sub], q) => { const a = toAuthNum(sub); if (a != null) authToQuery.set(a, q); });
+      const pairs = h.sites.filter((x) => x.aa === 'R').map((x) => [x.pos, toAuthNum(x.sub)]).filter((x) => x[1] != null);
+      mol.mode = 'pdb';
+      mol.pdb = { e: { id, method: h.method, resolution: h.resolution ? +h.resolution : null, maps: [] }, det: { chain: h.chain, coverage: segs, modres }, chain: h.chain,
+        toAuth: new Map(pairs), toUnp: new Map(pairs.map(([a, b]) => [b, a])), homolog: Object.assign({}, h, { authToQuery }) };
+      renderViewControls();
+      styleStructure();
+      viewer.zoomTo();
+      viewer.render();
+      ['#af-reset', '#af-spin', '#af-png'].forEach((k) => { const b = $(k); if (b) b.disabled = false; });
+      renderPdbSide(p);
+      const first = focusPos != null ? focusPos : (pairs[0] || [])[0];
+      if (first != null && mol.pdb.toAuth.has(first)) { UI.highlight = first; focusStructure(first); }
+    }).catch(() => { if (btn) btn.textContent = 'Failed'; })
+      .finally(() => { if (btn) { btn.disabled = false; if (btn.textContent === 'Loading…') btn.textContent = 'View'; } });
+  }
 
   // ------------------------------------------------------------- predicted complexes
   // ProtVar (static export: partners whose AlphaFold-Multimer interface includes a methylarginine) and AlphaFold DB

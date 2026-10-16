@@ -100,7 +100,7 @@ def study_label(reference: str) -> str:
     """Short 'Author Year' label for a Maron Table S5 reference string."""
     ref = reference.strip()
     if ref.lower().startswith('this study'):
-        return 'Maron 2021 (this study)'
+        return 'Maron 2021'
     if 'PhosphoSitePlus' in ref:
         return 'PhosphoSitePlus'
     author = ref.split(' et al.')[0].split()[-1] if ' et al.' in ref else ref[:24]
