@@ -147,7 +147,7 @@
     treat: '', motifs: new Set(), disorder: new Set(), domctx: new Set(), domclass: '',
     nn: 0, ptmGroup: '', ptmDist: 0,
     func: '', sub: '', cond: '', anyCond: false, disease: '', minSites: 1, dense: false, arch: '', argEnriched: false,
-    binds: new Set(), ixScore: 700, partner: '', go: new Set(), goExp: false, iface: new Set(), cpx: '', condConf: 0,
+    binds: new Set(), ixScore: 700, partner: '', go: new Set(), goExp: false, iface: new Set(), cpx: '', condConf: 0, modelledPdb: false,
   });
   const cloneFilters = (f) => {
     const out = {};
@@ -163,7 +163,7 @@
     allCond: false, funcExpanded: false, charts: {},
     fig: { color: 'state', labels: 'auto', tracks: new Set(['dense', 'domains', 'regions', 'disorder', 'bias', 'rg', 'args', 'variants', 'ptms', 'iface']) },
     ixTab: 'proteins', ixTop: 20, ixMin: 700, ixColor: 'meth', ixAll: false, ixNet: null,
-    cxPred: false, cxMin: 3, cxSort: 'q', cxAll: false,
+    cxPred: false, cxMin: 3, cxSort: 'q', cxAll: false, refsOpen: new Set(), ctx: 'protein', condThr: 3, pendingContact: null,
   };
 
   // ------------------------------------------------------------------- load
@@ -328,7 +328,7 @@
       j, p: r[0], pos: r[1], st: r[2], src: r[3], refs: r[4], dc: r[5], dEdge: r[6], dctx: r[7], ipr: r[8],
       dcls: r[9], domDist: r[10], domSide: r[11], win: r[12], mot: r[13], mis: !!r[14], orig: r[15],
       s2: r[16], ip: r[17], tr: r[18], study: r[19] || 0, nn: null, ptmD: null, trf: 0,
-      iface: 0, ifP: null, ifPdb: null, ifN: 0, contacts: null, modelledMe: '',
+      iface: 0, ifP: null, ifPdb: null, ifN: 0, contacts: null, modelledMe: '', geo: null, modelled: null,
     }));
     for (const s of S) P[s.p].sites.push(s.j);
 
@@ -1166,13 +1166,14 @@
             '<td class="nw hide-sm">' + motifTags(s.mot) + '</td><td class="nw hide-xs">' + contextHtml(s) + '</td>' +
             '<td class="r num hide-sm">' + (s.nn == null ? '<span class="muted">—</span>' : s.nn + ' aa') + '</td>' +
             '<td class="nw hide-sm">' + (ipTags(s.ip) || '<span class="muted">—</span>') + '</td><td class="nw">' + treatHtml(s) + '</td>' +
-            '<td class="hide-sm"><div class="tags">' + (ifaceTags(s, 2) || '<span class="muted">—</span>') + '</div>' + contactHtml(s, 2) + '</td>' +
+            '<td class="hide-sm"><div class="tags">' + ((ifaceTags(s, 2) + modelledTag(s)) || '<span class="muted">—</span>') + '</div>' + contactHtml(s, 2) + '</td>' +
             '<td class="nw hide-sm"><div class="tags">' + studyTags(s.study, 2) + '</div></td></tr>';
         }).join('') +
         '</tbody></table></div><div class="tbl-foot"><span>Showing ' + fmt(shownRows.length) + ' of ' + fmt(rows.length) + '</span>' +
         (rows.length > shownRows.length ? '<button class="btn quiet small" type="button" id="more">Show 100 more</button>' : '') + '</div></div>' : emptyState());
     bindEmpty(el);
     bindRows(el, (tr) => { const s = S[+tr.dataset.j]; openProtein(s.p, s.pos); });
+    bindContactLinks(el);
     bindSort(el, UI.sortS, () => renderSites(el));
     const more = $('#more', el);
     if (more) more.addEventListener('click', () => { UI.pageS += 100; renderSites(el); });
@@ -1310,14 +1311,21 @@
         title: '<b>' + esc(MOTIF_LABEL[r[0]]) + '</b> (' + esc(MOTIF_HELP[r[0]]) + ')<br>' + fmt(r[1]) + ' methyl-R sites (' + (100 * r[2]).toFixed(1) + '%) vs ' + (100 * r[3]).toFixed(1) + '% of unmodified R in the same proteins<br>log2 OR ' + fmtL2(r[4]) + ', q ' + fmtP(r[5]) })),
       extraName: 'sites',
     };
-    const condAll = M.condensates.map((c, k) => ({ c, k })).filter((x) => x.c[5] != null).sort((a, b) => b.c[5] - a.c[5]);
+    // Members counted: the pipeline's CD-CODE table (all memberships) or only CD-CODE confidence >= threshold.
+    const thr = ixReady() && IX.condConf[String(UI.condThr)] ? UI.condThr : 0;
+    const condAll = (thr ? IX.condConf[String(thr)].map(([k, n, m, l2, , q]) => ({ k, c: M.condensates[k], n, m, l2, q })) :
+      M.condensates.map((c, k) => ({ k, c, n: c[3], m: c[4], l2: c[5], q: c[6] }))).filter((x) => x.l2 != null).sort((a, b) => b.l2 - a.l2);
     const condShown = UI.allCond ? condAll : condAll.slice(0, 14);
+    const thrSel = '<label class="fig-ctl cond-thr">Count members <select id="cond-thr">' + [[0, 'all memberships'], [2, 'CD-CODE confidence ≥ 2'], [3, 'CD-CODE confidence ≥ 3'], [4, 'CD-CODE confidence ≥ 4']]
+      .map(([v, l]) => '<option value="' + v + '"' + (v === thr ? ' selected' : '') + (v && !ixReady() ? ' disabled' : '') + '>' + l + '</option>').join('') + '</select></label>';
     const cond = {
       id: 'ch-cond', title: 'Biomolecular condensates',
-      subHtml: 'CD-CODE condensates with ≥5 members: methylated fraction vs the global rate (methylated / members shown). ' + fmt(M.condensate_summary.methyl_proteins_in_any_condensate) + ' methylarginine proteins sit in at least one condensate. Click to list members.',
-      subText: 'CD-CODE condensates: methylated members vs the global rate', extraCol: true, extraName: 'methylated_of_members',
-      rows: condShown.map(({ c, k }) => ({ label: c[0], value: c[5], q: c[6], sig: sigq(c[6]), key: k, extra: c[4] + '/' + c[3],
-        title: '<b>' + esc(c[0]) + '</b> · CD-CODE ' + esc(c[1]) + (c[2] !== 'biomolecular' ? ' · ' + esc(c[2]) : '') + '<br>' + c[4] + ' of ' + c[3] + ' members methylated<br>log2 OR ' + fmtL2(c[5]) + ', q ' + fmtP(c[6]) })),
+      subHtml: 'CD-CODE condensates with ≥5 counted members: methylated fraction vs the global rate (methylated / members shown). ' +
+        (thr ? 'Only memberships with CD-CODE confidence ≥ ' + thr + ' of 5 are counted (CD-CODE ' + esc(IX.meta.cdcode_version || '') + '), so condensates whose member lists rest on single proteomics screens do not dominate. ' : 'All memberships are counted, including single proteomics lists (confidence 1). ') +
+        'Click a bar to list its members.<br>' + thrSel,
+      subText: 'CD-CODE condensates: methylated members vs the global rate' + (thr ? ' (confidence ≥ ' + thr + ')' : ' (all memberships)'), extraCol: true, extraName: 'methylated_of_members',
+      rows: condShown.map(({ c, k, n, m, l2, q }) => ({ label: c[0], value: l2, q, sig: sigq(q), key: k, extra: m + '/' + n,
+        title: '<b>' + esc(c[0]) + '</b> · CD-CODE ' + esc(c[1]) + (c[2] !== 'biomolecular' ? ' · ' + esc(c[2]) : '') + '<br>' + m + ' of ' + n + ' counted members methylated' + (thr ? ' (confidence ≥ ' + thr + ')' : '') + '<br>log2 OR ' + fmtL2(l2) + ', q ' + fmtP(q) })),
       footHtml: '<button class="linkish" type="button" id="cond-more" style="margin-top:.5rem">' + (UI.allCond ? 'Show the top 14' : 'Show all ' + condAll.length + ' tested condensates') + '</button>',
     };
     // Functional ontology: broad classes, each optionally expanded into its subclasses.
@@ -1392,7 +1400,9 @@
     bindBars($('#ch-study .hbars:not(.rep-dist)', el), study.rows, (r) => setFilters((f) => { f.studies = new Set([r.key]); }, 'sites'));
     $$('.rep-dist .hb', el).forEach((b) => b.addEventListener('click', () => setFilters((f) => { f.minRep = +b.dataset.rep > 1 ? +b.dataset.rep : 0; }, 'sites')));
     bindBars($('#ch-motif', el), motif.rows, (r) => setFilters((f) => { f.motifs = new Set([M.motifs.indexOf(r.key)]); }, 'sites'));
-    bindBars($('#ch-cond', el), cond.rows, (r) => setFilters((f) => { f.cond = String(r.key); }, 'proteins'));
+    bindBars($('#ch-cond', el), cond.rows, (r) => setFilters((f) => { f.cond = String(r.key); f.condConf = thr; }, 'proteins'));
+    const ct = $('#cond-thr', el);
+    if (ct) ct.addEventListener('change', () => { UI.condThr = +ct.value; UI.allCond = false; renderOverview(el); });
     $('#cond-more', el).addEventListener('click', () => { UI.allCond = !UI.allCond; renderOverview(el); });
     bindBars($('#ch-func', el), func.rows, (r) => setFilters((f) => {
       if (r.kind === 'sub') { f.sub = String(M.func_subclasses.indexOf(r.key)); } else { f.func = String(M.func_classes.indexOf(r.key)); }
@@ -1447,6 +1457,7 @@
       ext('https://alphafold.ebi.ac.uk/entry/' + encodeURIComponent(base), 'AlphaFold') +
       ext('https://www.ebi.ac.uk/interpro/protein/UniProt/' + encodeURIComponent(base) + '/', 'InterPro') +
       '<button class="btn small" type="button" id="save-pdf" title="Print this protein page, or save it as a PDF from the print dialog">Save PDF</button></div></div>' +
+      ctxToggleHtml(p) +
       (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
       '<div class="facts">' +
       fact(fmt(p.sites.length), 'Methylarginine sites', shownN === p.sites.length ? (filtered ? 'all match your filters' : 'all reported sites') : fmt(shownN) + ' match current filters') +
@@ -1469,6 +1480,7 @@
 
     $('#back', el).addEventListener('click', () => { if (history.length > 1) history.back(); else go('proteins'); });
     $('#save-pdf', el).addEventListener('click', (e) => savePdf(p, e.currentTarget));
+    bindCtx(p);
     const pfc = $('#pf-clear', el);
     if (pfc) pfc.addEventListener('click', () => { const q = Q.raw; F = DEFAULT_FILTERS(); afterFilterChange(); if (q) $('#q').value = q; });
     renderSiteTable(p);
@@ -1513,6 +1525,7 @@
       renderSiteTable(p);
     });
     if (UI.highlight != null) setTimeout(() => flashSite(UI.highlight, true), 60);
+    if (UI.pendingContact) { const pc = UI.pendingContact; UI.pendingContact = null; setTimeout(() => openContactStructure(p, pc.pdb, pc.pos), 400); }
   }
 
   function fact(value, label, sub) {
@@ -1557,11 +1570,12 @@
           '<td class="nw hide-sm">' + motifTags(s.mot) + '</td><td class="nw hide-xs">' + contextHtml(s) + '</td><td class="hide-sm">' + dom + '</td>' +
           '<td class="r num hide-sm">' + (s.nn == null ? '—' : s.nn + ' aa') + '</td>' +
           '<td class="nw hide-sm">' + ([ipTags(s.ip), s2 ? '<span class="tag">S2 ' + s2 + '</span>' : '', uniType ? '<span class="tag uni" title="UniProt: ' + esc(uniType) + '">UniProt ' + esc(uniprotMethylLabel(uniType)) + '</span>' : ''].filter(Boolean).join(' ') || '<span class="muted">—</span>') + '</td>' +
-          '<td class="nw">' + treatHtml(s) + '</td><td class="nw hide-xs">' + afCell(p, s) + '</td><td class="hide-sm"><div class="tags">' + (ifaceTags(s, 3) || '<span class="muted">' + (IX ? '—' : '…') + '</span>') + '</div>' + contactHtml(s, 3) + '</td><td class="nw hide-sm"><div class="tags">' + studyTags(s.study, 3) + '</div></td>' +
+          '<td class="nw">' + treatHtml(s) + '</td><td class="nw hide-xs">' + afCell(p, s) + '</td><td class="hide-sm"><div class="tags">' + ((ifaceTags(s, 3) + modelledTag(s)) || '<span class="muted">' + (IX ? '—' : '…') + '</span>') + '</div>' + contactHtml(s, 3) + '</td><td class="nw hide-sm"><div class="tags">' + studyTags(s.study, 3) + '</div></td>' +
           '<td class="nw"><button class="btn quiet small view3d" type="button" data-pos="' + s.pos + '" title="Zoom to R' + s.pos + ' in the 3D structure">3D</button> <button class="btn quiet small ev-toggle" type="button" aria-expanded="' + open + '" data-j="' + s.j + '">' + (open ? 'Hide' : 'Evidence') + '</button></td></tr>' +
           (open ? '<tr class="ev-row" data-for="' + s.j + '"><td colspan="13" class="ev" id="ev-' + s.j + '">Loading evidence…</td></tr>' : '');
       }).join('') + '</tbody></table>';
     bindRows(box, (tr) => { UI.highlight = +tr.dataset.pos; flashSite(+tr.dataset.pos, false); });
+    bindContactLinks(box);
     $$('.ev-toggle', box).forEach((b) => b.addEventListener('click', () => {
       const j = +b.dataset.j;
       if (UI.openEvidence.has(j)) UI.openEvidence.delete(j); else UI.openEvidence.add(j);
@@ -1583,6 +1597,12 @@
       extra.hidden = !missing.length;
       extra.innerHTML = missing.length ? 'UniProt also annotates ' + missing.length + ' methylarginine' + (missing.length === 1 ? '' : 's') + ' that ' + (missing.length === 1 ? 'is' : 'are') + ' not in the union: ' +
         missing.map(([pos, d]) => '<span class="tag uni" title="' + esc(d) + '">R' + pos + ' ' + esc(uniprotMethylLabel(d)) + '</span>').join(' ') + '. Positions follow the current UniProt sequence.' : '';
+    }
+    const gap = ixReady() ? IX.modelledGaps.get(p.i) : null;
+    if (extra && gap) {
+      extra.hidden = false;
+      extra.innerHTML += (extra.innerHTML ? '<br>' : '') + 'PDB entries model a methylated arginine at ' + gap.pos.map((x) => '<span class="tag var">R' + x + '</span>').join(' ') + ', which the union does not contain (' +
+        gap.pdbs.map((x) => '<a href="https://www.rcsb.org/structure/' + x.toUpperCase() + '" target="_blank" rel="noopener">' + x.toUpperCase() + '</a>').join(', ') + ').';
     }
   }
 
@@ -1674,6 +1694,61 @@
     $$('[data-cls]', box).forEach((b) => b.addEventListener('click', () => setFilters((f) => { f.domclass = String(M.domain_classes.indexOf(b.dataset.cls)); }, 'sites')));
   }
 
+  // PubMed summaries (first author, year, journal, title) for reference lists, from NCBI E-utilities.
+  const PUBMED = new Map();
+  function loadPubmed(ids) {
+    const need = Array.from(new Set(ids.map(String))).filter((id) => /^\d+$/.test(id) && !PUBMED.has(id));
+    if (!need.length) return Promise.resolve(false);
+    need.forEach((id) => PUBMED.set(id, null));
+    const batches = [];
+    for (let k = 0; k < need.length; k += 200) batches.push(need.slice(k, k + 200));
+    return Promise.all(batches.map((b) => fetchJson('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=json&tool=methylarginine_explorer&id=' + b.join(','))
+      .then((d) => {
+        const r = d.result || {};
+        (r.uids || []).forEach((u) => { const x = r[u] || {}; PUBMED.set(u, { au: x.sortfirstauthor || '', year: (x.pubdate || '').slice(0, 4), journal: x.source || '', title: (x.title || '').replace(/\.$/, '') }); });
+      }).catch(() => null))).then(() => true);
+  }
+  const pubmedUrl = (pm) => 'https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(pm) + '/';
+  const pubmedAll = (ids) => 'https://pubmed.ncbi.nlm.nih.gov/?term=' + encodeURIComponent(ids.map((x) => x + '[pmid]').join(' OR '));
+  const refShort = (pm) => { const x = PUBMED.get(String(pm)); return x && x.au ? x.au.split(' ')[0] + ' ' + x.year : 'PMID ' + pm; };
+  const refFull = (pm) => {
+    const x = PUBMED.get(String(pm));
+    return x ? esc(x.au) + (x.au ? ' et al. ' : '') + (x.year ? '(' + esc(x.year) + ') ' : '') + esc(x.title) + (x.journal ? '. <i>' + esc(x.journal) + '</i>.' : '.') : 'PMID ' + esc(pm);
+  };
+  // Up to three short links, then a "+N more" expander with the full list and a PubMed search for all of them.
+  function refsBlock(pmids, key) {
+    if (!pmids || !pmids.length) return '';
+    const link = (pm) => { const x = PUBMED.get(String(pm)); return '<a href="' + pubmedUrl(pm) + '" target="_blank" rel="noopener"' + (x ? ' title="' + esc(x.title) + '"' : '') + '>' + esc(refShort(pm)) + '</a>'; };
+    const list = '<ol class="ref-list">' + pmids.map((pm) => '<li>' + refFull(pm) + ' <a href="' + pubmedUrl(pm) + '" target="_blank" rel="noopener">PMID ' + esc(pm) + ' ↗</a></li>').join('') + '</ol>';
+    return '<div class="refs small">' + pmids.slice(0, 3).map(link).join(', ') +
+      (pmids.length > 1 ? ' · <a href="' + pubmedAll(pmids) + '" target="_blank" rel="noopener">All ' + pmids.length + ' in PubMed ↗</a>' : '') +
+      '<details class="refs-more" data-refkey="' + esc(key) + '"' + (UI.refsOpen.has(key) ? ' open' : '') + '><summary>' + (pmids.length > 3 ? '+' + (pmids.length - 3) + ' more · full list' : 'Full reference' + (pmids.length === 1 ? '' : 's')) + '</summary>' + list + '</details></div>';
+  }
+  function bindRefs(box) {
+    $$('details[data-refkey]', box).forEach((d) => d.addEventListener('toggle', () => { if (d.open) UI.refsOpen.add(d.dataset.refkey); else UI.refsOpen.delete(d.dataset.refkey); }));
+  }
+
+  // One switch for every context card: what is known about this protein, or how its classes, condensates,
+  // complexes and diseases behave across all methylarginine proteins.
+  function ctxToggleHtml(p) {
+    return '<div class="ctx-bar"><span class="flabel">Context cards</span><div class="seg" role="group" aria-label="Context cards show">' +
+      '<button type="button" data-ctx="protein" aria-pressed="' + (UI.ctx !== 'dataset') + '">' + esc(p.label) + ' evidence</button>' +
+      '<button type="button" data-ctx="dataset" aria-pressed="' + (UI.ctx === 'dataset') + '">Dataset context</button></div>' +
+      '<span class="muted small">' + (UI.ctx === 'dataset' ? 'Condensates, ontology, disease and complexes show statistics across all methylarginine proteins.' : 'Condensates, ontology, disease and complexes show what is recorded for ' + esc(p.label) + ' itself.') + '</span></div>';
+  }
+  function bindCtx(p) {
+    $$('.ctx-bar [data-ctx]').forEach((b) => b.addEventListener('click', () => setCtx(p, b.dataset.ctx)));
+  }
+  function setCtx(p, v) {
+    UI.ctx = v === 'dataset' ? 'dataset' : 'protein';
+    const bar = $('.ctx-bar');
+    if (bar) { bar.outerHTML = ctxToggleHtml(p); bindCtx(p); }
+    renderCondCard(p);
+    renderFuncCard(p);
+    loadEvidence().then((ev) => { if (UI.detail === p.i) renderDiseaseCard(p, ev); });
+    if (UI.ixTab === 'complexes') renderIxCard(p);
+  }
+
   const ROLE_LABEL = [[1, 'member'], [2, 'driver'], [4, 'client'], [8, 'regulator'], [16, 'other role']];
   const EVID_LABEL = [[1, 'in vivo'], [2, 'in cellulo'], [4, 'in vitro'], [8, 'FRAP'], [16, 'colocalisation'], [32, 'mass spectrometry'], [64, 'emergent properties'], [128, 'other']];
   const stars = (n) => '<span class="stars" role="img" aria-label="' + n + ' of 5">' + [1, 2, 3, 4, 5].map((k) => '<i class="' + (k <= n ? 'on' : '') + '">★</i>').join('') + '</span>';
@@ -1684,7 +1759,7 @@
   function renderCondCard(p) {
     const box = $('#card-cond');
     if (!box) return;
-    const view = UI.condView || 'protein';
+    const view = UI.ctx === 'dataset' ? 'context' : 'protein';
     const mem = cdMemberships(p);
     const tabs = '<div class="seg cond-tabs" role="tablist"><button type="button" data-cv="protein" aria-pressed="' + (view === 'protein') + '">' + esc(p.label) + '</button><button type="button" data-cv="context" aria-pressed="' + (view === 'context') + '">Condensate context</button></div>';
     let body;
@@ -1712,14 +1787,16 @@
           return '<li><div class="cond-name"><b>' + esc(c[0]) + '</b>' + (c[2] !== 'biomolecular' ? ' <span class="tag">' + esc(c[2]) + '</span>' : '') +
             '<a class="ext" href="https://cd-code.org/condensates/' + encodeURIComponent(c[1]) + '" target="_blank" rel="noopener" title="Open in CD-CODE">CD-CODE ↗</a></div>' +
             (m ? '<div class="cond-conf">' + stars(m.score) + '<span class="muted small">' + esc(roles.join(', ') || 'role not given') + '</span></div>' +
-              '<div class="cond-ev small">' + (ev.length ? esc(ev.join(' · ')) : '<span class="muted">no evidence type recorded</span>') + ' · ' + m.nPub + ' publication' + (m.nPub === 1 ? '' : 's') +
-              (m.pmids.length ? ': ' + m.pmids.slice(0, 3).map((pm) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + pm + '/" target="_blank" rel="noopener">' + pm + '</a>').join(', ') + (m.nPub > 3 ? ' …' : '') : '') + '</div>' :
+              '<div class="cond-ev small">' + (ev.length ? esc(ev.join(' · ')) : '<span class="muted">no evidence type recorded</span>') + ' · ' +
+              (m.nPub ? m.nPub + ' publication' + (m.nPub === 1 ? '' : 's') : '<span class="muted">no publication recorded</span>') + '</div>' + refsBlock(m.pmids, 'cd:' + p.i + ':' + ci) :
               '<div class="cond-ev small muted">In the pipeline\'s membership table but not in the current CD-CODE release.</div>') + '</li>';
         }).join('') + '</ul>' : '<p class="muted">No CD-CODE condensate membership recorded.</p>') +
         '<p class="note">Low-star memberships usually rest on a single proteomics list. Condensate-wide methylation statistics are under “Condensate context”.</p>';
     }
     box.innerHTML = '<div class="card-head"><div><h3>Condensates</h3></div></div>' + tabs + body;
-    $$('[data-cv]', box).forEach((b2) => b2.addEventListener('click', () => { UI.condView = b2.dataset.cv; renderCondCard(p); }));
+    $$('[data-cv]', box).forEach((b2) => b2.addEventListener('click', () => setCtx(p, b2.dataset.cv === 'context' ? 'dataset' : 'protein')));
+    bindRefs(box);
+    if (mem && view === 'protein') loadPubmed(mem.flatMap((m) => m.pmids)).then((fresh) => { if (fresh && UI.detail === p.i && UI.ctx !== 'dataset') renderCondCard(p); });
     $$('button[data-k]', box).forEach((b2) => b2.addEventListener('click', () => setFilters((f) => { f.cond = b2.dataset.k; }, 'proteins')));
     const factSub = $('#cond-fact-sub');
     if (factSub && mem) {
@@ -1735,18 +1812,22 @@
     const broad = bits(p.func).map((b) => M.func_classes[b]);
     const subs = bits(p.sub).map((b) => M.func_subclasses[b]);
     // Dataset-level class enrichment stays in the tooltip; the card itself lists only this protein's classes.
-    const stat = () => '';
+    const stat = (name, table) => {
+      if (UI.ctx !== 'dataset' || !name) return '';
+      const r = (table || []).find((x) => x[0] === name);
+      return r ? ' <span class="tag' + (r[5] != null && r[5] <= PADJ ? '' : ' src') + '" title="Class enrichment among methylarginine proteins: log2 OR ' + fmtL2(r[4]) + ', q ' + fmtP(r[5]) + '">' + fmtL2(r[4]) + '</span>' : '';
+    };
     const tipOf = (name, table) => { const r = (table || []).find((x) => x[0] === name); return r ? ' title="' + esc('Click to list the methylated proteins in this class. Across the dataset: log2 OR ' + fmtL2(r[4]) + ', q ' + fmtP(r[5])) + '"' : ''; };
     const used = new Set();
     const tree = broad.map((b) => {
       const kids = subs.filter((s) => (M.subParent[s] || '') === b && s !== b);
       kids.forEach((k) => used.add(k));
-      return '<li><button class="linkish strong" type="button" data-func="' + esc(b) + '"' + tipOf(b, ov.functional_classes) + '>' + esc(b) + '</button>' +
-        (kids.length ? '<ul>' + kids.map((k) => '<li><button class="linkish" type="button" data-sub="' + esc(k) + '"' + tipOf(k, ov.functional_subclasses) + '>' + esc(k) + '</button></li>').join('') + '</ul>' : '') + '</li>';
+      return '<li><button class="linkish strong" type="button" data-func="' + esc(b) + '"' + tipOf(b, ov.functional_classes) + '>' + esc(b) + '</button>' + stat(b, ov.functional_classes) +
+        (kids.length ? '<ul>' + kids.map((k) => '<li><button class="linkish" type="button" data-sub="' + esc(k) + '"' + tipOf(k, ov.functional_subclasses) + '>' + esc(k) + '</button>' + stat(k, ov.functional_subclasses) + '</li>').join('') + '</ul>' : '') + '</li>';
     });
     const rest = subs.filter((s) => !used.has(s) && !broad.includes(s));
-    box.innerHTML = '<h3>Functional ontology</h3><p class="sub">The lab functional classes (config/functional_ontology.json) assigned to ' + esc(p.label) + ', with subclasses nested under their usual parent. Click a class to list the other methylated proteins in it; how strongly each class is enriched across the dataset is on the Overview.</p>' +
-      (broad.length || subs.length ? '<ul class="tree">' + tree.join('') + (rest.length ? '<li><span class="muted">Other subclasses</span><ul>' + rest.map((k) => '<li><button class="linkish" type="button" data-sub="' + esc(k) + '"' + tipOf(k, ov.functional_subclasses) + '>' + esc(k) + '</button>' + stat() + '</li>').join('') + '</ul></li>' : '') + '</ul>' : '<p class="muted">No functional class assigned.</p>');
+    box.innerHTML = '<h3>Functional ontology</h3><p class="sub">The lab functional classes (config/functional_ontology.json) assigned to ' + esc(p.label) + ', with subclasses nested under their usual parent. Click a class to list the other methylated proteins in it. ' + (UI.ctx === 'dataset' ? 'Tags: each class\'s enrichment among all methylarginine proteins (log2 OR; outlined = not significant).' : 'Switch to Dataset context to see how strongly each class is enriched across the dataset.') + '</p>' +
+      (broad.length || subs.length ? '<ul class="tree">' + tree.join('') + (rest.length ? '<li><span class="muted">Other subclasses</span><ul>' + rest.map((k) => '<li><button class="linkish" type="button" data-sub="' + esc(k) + '"' + tipOf(k, ov.functional_subclasses) + '>' + esc(k) + '</button>' + stat(k, ov.functional_subclasses) + '</li>').join('') + '</ul></li>' : '') + '</ul>' : '<p class="muted">No functional class assigned.</p>');
     $$('[data-func]', box).forEach((b) => b.addEventListener('click', () => setFilters((f) => { f.func = String(M.func_classes.indexOf(b.dataset.func)); }, 'proteins')));
     $$('[data-sub]', box).forEach((b) => b.addEventListener('click', () => setFilters((f) => { f.sub = String(M.func_subclasses.indexOf(b.dataset.sub)); }, 'proteins')));
   }
@@ -1783,14 +1864,14 @@
         const fi = M.disease_families.indexOf(g);
         return '<details><summary>' + (fi >= 0 ? '<button class="linkish strong" type="button" data-fam="' + fi + '">' + esc(g) + '</button>' : '<span class="strong">' + esc(g) + '</span>') +
           ' <span class="muted">' + terms.length + ' term' + (terms.length === 1 ? '' : 's') + '</span></summary><ul class="term-list">' +
-          terms.map((t) => '<li title="' + esc('Term enrichment across all methylarginine proteins: p.adjust ' + fmtP(t[4])) + '">' + esc(t[1]) + ' <span class="muted">· ' + esc(t[0]) + '</span></li>').join('') + '</ul></details>';
+          terms.map((t) => '<li title="' + esc('Term enrichment across all methylarginine proteins: p.adjust ' + fmtP(t[4])) + '">' + esc(t[1]) + ' <span class="muted">· ' + esc(t[0]) + (UI.ctx === 'dataset' ? ' · p.adj ' + fmtP(t[4]) : '') + '</span></li>').join('') + '</ul></details>';
       }).join('') + '</div>' : '<p class="muted">' + esc(p.label) + ' is in none of the enriched DisGeNET terms.</p>';
     } else dg = '<p class="note">Loading terms…</p>';
     box.innerHTML = '<h3>Disease associations</h3>' +
       (p.als ? '<p><span class="tag ip" title="Member of the full audited ALS / motor neuron / FTD family gene set">In the audited ALS / MN / FTD gene set</span></p>' : '') +
       '<p class="flabel">Curated in UniProt</p>' + uni +
       '<p class="flabel">Open Targets association scores</p><div id="ot-box">' + (u && u.ensg && u.ensg.length ? '<p class="note">Loading Open Targets…</p>' : '<p class="muted">' + (u === undefined ? 'Waiting for UniProt…' : 'No Ensembl gene for this entry.') + '</p>') + '</div>' +
-      '<details class="dataset-ctx"><summary class="flabel">Dataset context: DisGeNET terms enriched among all methylarginine proteins that include ' + esc(p.label) + '</summary>' +
+      '<details class="dataset-ctx"' + (UI.ctx === 'dataset' ? ' open' : '') + '><summary class="flabel">Dataset context: DisGeNET terms enriched among all methylarginine proteins that include ' + esc(p.label) + '</summary>' +
       '<p class="note">These terms were tested for enrichment across the whole methylarginine set (clusterProfiler, p.adjust ≤ 0.05); the gene–term link is DisGeNET\'s, the statistics are about the set. Association, not causation.</p>' + dg + '</details>';
     $$('[data-fam]', box).forEach((b2) => b2.addEventListener('click', (e) => { e.preventDefault(); setFilters((f) => { f.disease = b2.dataset.fam; }, 'proteins'); }));
     if (u && u.ensg && u.ensg.length) {
@@ -2773,7 +2854,7 @@
     const file = nmr
       ? fetchText('https://files.rcsb.org/download/' + e.id.toUpperCase() + '.pdb').then((t) => [t, 'pdb']).catch(() => fetchText('https://files.rcsb.org/download/' + e.id.toUpperCase() + '.cif').then((t) => [t, 'cif']))
       : fetchText('https://files.rcsb.org/download/' + e.id.toUpperCase() + '.cif').then((t) => [t, 'cif']);
-    Promise.all([load3Dmol(), file, loadPdb(p.acc).then((res) => loadPdbDetail(e, res.methyl.has(e.id)))]).then(([lib, [cif, fmtName], det]) => {
+    return Promise.all([load3Dmol(), file, loadPdb(p.acc).then((res) => loadPdbDetail(e, res.methyl.has(e.id)))]).then(([lib, [cif, fmtName], det]) => {
       if (UI.detail !== p.i) return;
       if (!mol || mol.p.i !== p.i) {
         disposeStructure();
@@ -2923,7 +3004,14 @@
       s.modelledMe = modelled;
     }
     const wr = new Map((d.wr || []).map(([k, list]) => [k, new Set(list)]));
-    IX = { meta: d.meta, prot, byEnsp, cx, cxOf, enrich: d.enrich || {}, goEnrich: d.go_enrich || {}, strata: d.enrich_strata || {}, cd, wr, nP };
+    for (const g of d.geometry || []) {
+      const s = S[g[0]];
+      if (s) s.geo = { pdb: g[1], chain: g[2], levy: g[3], rMono: g[4], rCplx: g[5], na: g[6], baseHb: g[7] || [], dNa: g[8], dProt: g[9], protHb: g[10] };
+    }
+    for (const [j, pdbs, comps] of d.modelled || []) { if (S[j]) S[j].modelled = { pdbs, comps }; }
+    const modelledGaps = new Map((d.modelled_gaps || []).map(([k, pos, pdbs]) => [k, { pos, pdbs }]));
+    IX = { meta: d.meta, prot, byEnsp, cx, cxOf, enrich: d.enrich || {}, goEnrich: d.go_enrich || {}, strata: d.enrich_strata || {}, cd, wr, nP,
+      geoSummary: d.geometry_summary || {}, rg: d.rg_iface || {}, modelledGaps, condConf: d.cond_conf || {}, nModelled: (d.modelled || []).length };
     IX.prmts = prot.filter((x) => x.flags & IXF.prmt).sort((a, b) => a.gene.localeCompare(b.gene, 'en', { numeric: true }));
     IX.tudors = prot.filter((x) => x.flags & IXF.tudor).sort((a, b) => a.gene.localeCompare(b.gene));
     return IX;
@@ -2980,12 +3068,23 @@
       cls: g.k === -1 ? 'na-rna' : g.k === -2 ? 'na-dna' : g.k >= 0 ? 'iface-p' : '',
     })).sort((x, y) => ((x.k === -1 || x.k === -2) ? 0 : 1) - ((y.k === -1 || y.k === -2) ? 0 : 1));
   }
+  const LEVY_LABEL = ['not buried in this entry', 'interface support', 'interface rim', 'interface core'];
+  const pdbButtons = (s, pdbs) => pdbs.slice(0, 3).map((x) => '<button class="linkish pdb-open" type="button" data-cpdb="' + esc(x) + '" data-cpos="' + s.pos + '" data-cp="' + s.p + '" title="Open ' + x.toUpperCase() + ' in the 3D viewer at R' + s.pos + '">' + x.toUpperCase() + '</button>').join(', ') +
+    (pdbs.length > 3 ? ' <span title="' + esc(pdbs.map((x) => x.toUpperCase()).join(', ')) + '">+' + (pdbs.length - 3) + '</span>' : '');
+  function geoLine(s) {
+    const g = s.geo;
+    if (!g) return '';
+    const na = g.na === 'base' ? 'H-bonds to ' + (g.baseHb.length ? 'bases ' + g.baseHb.slice(0, 4).join(' ') : 'nucleobases') : g.na === 'backbone' ? 'H-bonds to the nucleic-acid backbone' : g.na === 'contact' ? 'touches nucleic acid without an H-bond' : '';
+    return '<span class="geo" title="' + esc('Relative accessibility of the arginine alone ' + Math.round(100 * g.rMono) + '%, in the complex ' + Math.round(100 * g.rCplx) + '% (' + g.pdb.toUpperCase() + ' chain ' + g.chain + '; Levy 2010 classes). ' + (g.protHb ? g.protHb + ' H-bond(s) to protein.' : '')) + '">' +
+      esc(LEVY_LABEL[g.levy]) + ' <span class="muted">' + g.pdb.toUpperCase() + '</span>' + (na ? ' · ' + esc(na) : '') + '</span>';
+  }
+  const modelledTag = (s) => (s.modelled ? '<span class="tag var" title="' + esc('Modelled as ' + s.modelled.comps.join('/') + ' in ' + s.modelled.pdbs.map((x) => x.toUpperCase()).join(', ')) + '">PDB ' + esc(s.modelled.comps[0]) + '</span>' : '');
   function contactHtml(s, max) {
     const gs = contactGroups(s);
-    if (!gs.length) return '';
-    return '<div class="contacts">' + gs.slice(0, max || 4).map((g) => '<span><b class="' + g.cls + '">' + esc(g.name) + '</b> ' + esc(g.labels.slice(0, 6).join(' ')) + (g.labels.length > 6 ? ' …' : '') +
-      ' <span class="muted" title="' + esc(g.pdbs.map((x) => x.toUpperCase()).join(', ')) + '">' + g.pdbs.slice(0, 3).map((x) => x.toUpperCase()).join(', ') + (g.pdbs.length > 3 ? ' +' + (g.pdbs.length - 3) : '') + '</span></span>').join('') + (gs.length > (max || 4) ? '<span class="muted">+' + (gs.length - (max || 4)) + ' more</span>' : '') +
-      (s.modelledMe ? '<span class="muted">modelled as ' + esc(s.modelledMe) + '</span>' : '') + '</div>';
+    if (!gs.length) return s.geo ? '<div class="contacts">' + geoLine(s) + '</div>' : '';
+    return '<div class="contacts">' + gs.slice(0, max || 4).map((g) => '<span title="' + esc(g.name + ': ' + g.labels.join(' ')) + '"><b class="' + g.cls + '">' + esc(g.name) + '</b> ' + esc(g.labels.slice(0, 6).join(' ')) + (g.labels.length > 6 ? ' +' + (g.labels.length - 6) : '') +
+      ' <span class="muted">' + pdbButtons(s, g.pdbs) + '</span></span>').join('') + (gs.length > (max || 4) ? '<span class="muted" title="' + esc(gs.slice(max || 4).map((g) => g.name + ': ' + g.labels.join(' ')).join(' · ')) + '">+' + (gs.length - (max || 4)) + ' more partners</span>' : '') +
+      geoLine(s) + '</div>';
   }
   function contactText(s) {
     return contactGroups(s).map((g) => g.name + ': ' + g.labels.join(' ') + ' (' + g.pdbs.join(',') + ')').join('; ');
@@ -3087,6 +3186,7 @@
   }
 
   function ixSitePass(s, f) {
+    if (f.modelledPdb && !s.modelled) return false;
     if (!f.iface.size) return true;
     let m = 0;
     f.iface.forEach((b) => { m |= b; });
@@ -3100,6 +3200,7 @@
     F.go.forEach((v) => add('ix', (v === 1 ? 'RNA' : 'DNA') + '-binding (GO' + (F.goExp ? ', experimental' : '') + ')', () => F.go.delete(v)));
     F.iface.forEach((v) => add('ix', 'Site at PDB interface with ' + IFACE_NAME[v], () => F.iface.delete(v)));
     if (F.cpx !== '' && ixReady()) add('ix', 'Complex: ' + IX.cx[+F.cpx].name, () => { F.cpx = ''; });
+    if (F.modelledPdb) add('ix', 'Modelled as methyl-R in a PDB entry', () => { F.modelledPdb = false; });
   }
 
   function ixRailBody(sel) {
@@ -3116,7 +3217,28 @@
       '<label class="flabel" for="f-ixscore">STRING physical confidence</label>' + sel('f-ixscore', options(RAIL_SCORES, F.ixScore), false) + '</div>' +
       '<div class="fgroup"><span class="flabel" title="Gene Ontology GO:0003723 (RNA binding) or GO:0003677 (DNA binding), including child terms">Protein binds (Gene Ontology, match any)</span>' + chipRow('go', [[1, 'RNA'], [2, 'DNA']], F.go) +
       '<label class="check"><input type="checkbox" id="f-goexp"' + (F.goExp ? ' checked' : '') + '> Experimental evidence only (not electronic or inferred)</label></div>' +
-      '<div class="fgroup"><span class="flabel" title="PDBe-KB: in at least one PDB structure the residue contacts this kind of partner">Site at a PDB interface with (match any)</span>' + chipRow('iface', IFACE_OPTS, F.iface) + '</div>';
+      '<div class="fgroup"><span class="flabel" title="PDBe-KB: in at least one PDB structure the residue contacts this kind of partner">Site at a PDB interface with (match any)</span>' + chipRow('iface', IFACE_OPTS, F.iface) +
+      '<label class="check"><input type="checkbox" id="f-modelled"' + (F.modelledPdb ? ' checked' : '') + '> Modelled as a methylated arginine (2MR, DA2, NMM, AGM) in a PDB entry</label></div>';
+  }
+
+  // Open a PDB entry from a contact list in the 3D panel, focused on the site.
+  function openContactStructure(p, pdb, pos) {
+    const card = $('#card-af');
+    if (card) card.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    if (UI.startStructure) UI.startStructure();
+    loadPdb(p.acc).then((res) => {
+      const e = res.entries.find((x) => x.id === pdb);
+      if (!e) { window.open('https://www.rcsb.org/structure/' + pdb.toUpperCase(), '_blank', 'noopener'); return null; }
+      return showPdb(p, e, null);
+    }).then(() => { if (UI.detail === p.i && mol && mol.mode === 'pdb') { UI.highlight = pos; focusStructure(pos); } });
+  }
+  function bindContactLinks(box) {
+    $$('[data-cpdb]', box).forEach((b) => b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const pi = +b.dataset.cp, pos = +b.dataset.cpos, pdb = b.dataset.cpdb;
+      if (UI.view === 'protein' && UI.detail === pi) openContactStructure(P[pi], pdb, pos);
+      else { UI.pendingContact = { pdb, pos }; openProtein(pi, pos); }
+    }));
   }
 
   function bindIxRail(rail, refresh) {
@@ -3126,6 +3248,8 @@
     if (sc) sc.addEventListener('change', () => { F.ixScore = +sc.value || 700; refresh(); });
     const ge = $('#f-goexp', rail);
     if (ge) ge.addEventListener('change', () => { F.goExp = ge.checked; refresh(); });
+    const mo = $('#f-modelled', rail);
+    if (mo) mo.addEventListener('change', () => { F.modelledPdb = mo.checked; refresh(); });
   }
 
   // ----- protein network
@@ -3458,13 +3582,15 @@
   function memberChips(c, focal) {
     const slots = c.members.map((m) => (Array.isArray(m) ? m : [m]));
     const shown = slots.slice(0, 48);
-    return '<div class="tags cx-members">' + shown.map((ids) => {
+    const chip = (ids) => {
       const meth = ids.find((k) => k < IX.nP);
       const k = meth != null ? meth : ids[0];
       const label = ids.map(ixGene).join('/');
       return meth != null ? '<button class="tag cx-m' + (meth === focal ? ' self' : '') + '" type="button" data-i="' + meth + '" title="' + esc(P[meth].sites.length + ' methylarginine sites') + '">' + esc(label) + '</button>' :
         '<span class="tag cx-u" title="' + esc(IX.prot[k] ? IX.prot[k].acc : '') + ' · not in this set">' + esc(label) + '</span>';
-    }).join('') + (slots.length > shown.length ? '<span class="tag">+' + (slots.length - shown.length) + ' more</span>' : '') + '</div>';
+    };
+    return '<div class="tags cx-members">' + shown.map(chip).join('') +
+      (slots.length > shown.length ? '<details class="inline-more"><summary>+' + (slots.length - shown.length) + ' more</summary><div class="tags">' + slots.slice(shown.length).map(chip).join('') + '</div></details>' : '') + '</div>';
   }
 
   function cxLink(c) {
@@ -3478,7 +3604,8 @@
     if (!list.length) { body.innerHTML = '<p class="note">' + esc(p.label) + ' is not a member of any curated or predicted Complex Portal complex.</p>'; return; }
     const cur = list.filter((c) => !c.pred), pred = list.filter((c) => c.pred);
     const block = (c) => '<li><div class="cx-head"><b>' + esc(c.name) + '</b> <span class="tag' + (c.pred ? '' : ' cx-cur') + '">' + (c.pred ? 'predicted (hu.MAP 3.0)' : 'curated') + '</span> ' + cxLink(c) +
-      '<span class="cx-stat" title="About the complex: members that are methylated in this dataset">' + c.m + ' of ' + c.n + ' members methylated</span>' +
+      '<span class="cx-stat" title="About the complex: members that are methylated in this dataset">' + c.m + ' of ' + c.n + ' members methylated' +
+      (UI.ctx === 'dataset' && c.q != null ? ' · ' + (c.fold != null ? c.fold.toFixed(1) + '× the proteome rate, ' : '') + 'q ' + fmtP(c.q) : '') + '</span>' +
       '<button class="linkish" type="button" data-cx="' + c.k + '">Filter to members</button></div>' + memberChips(c, p.i) + '</li>';
     body.innerHTML = '<p class="sub">Complex Portal complexes that contain ' + esc(p.label) + ' (curated, or predicted by hu.MAP 3.0). Members that are methylated in this dataset are filled; click one to open it. Complex-level enrichment is ranked on the Overview.</p>' +
       (cur.length ? '<p class="flabel">Curated complexes (' + cur.length + ')</p><ul class="cx-list">' + cur.map(block).join('') + '</ul>' : '') +
@@ -3526,7 +3653,11 @@
       el.className = '';
       el.innerHTML = '<ul class="go-list">' + Array.from(byCode.entries()).sort((a, b) => (IX.meta.go_experimental_codes.includes(b[0]) - IX.meta.go_experimental_codes.includes(a[0]))).map(([code, v]) =>
         '<li><span class="tag' + (IX.meta.go_experimental_codes.includes(code) ? ' go-exp' : '') + '">' + esc(code) + '</span> ' + esc(Array.from(v.terms).join(', ')) +
-        ' <span class="muted">' + Array.from(v.refs).slice(0, 4).map((ref) => /^PMID:/.test(ref) ? '<a href="https://pubmed.ncbi.nlm.nih.gov/' + ref.slice(5) + '/" target="_blank" rel="noopener">' + esc(ref) + '</a>' : esc(ref)).join(', ') + (v.refs.size > 4 ? ' +' + (v.refs.size - 4) : '') + '</span></li>').join('') + '</ul>' +
+        ' <span class="muted">' + (() => {
+          const refs = Array.from(v.refs);
+          const fmtRef = (ref) => (/^PMID:/.test(ref) ? '<a href="' + pubmedUrl(ref.slice(5)) + '" target="_blank" rel="noopener">' + esc(ref) + '</a>' : esc(ref));
+          return refs.slice(0, 4).map(fmtRef).join(', ') + (refs.length > 4 ? ' <details class="inline-more"><summary>+' + (refs.length - 4) + ' more</summary>' + refs.slice(4).map(fmtRef).join(', ') + '</details>' : '');
+        })() + '</span></li>').join('') + '</ul>' +
         '<p class="note"><a href="https://www.ebi.ac.uk/QuickGO/annotations?geneProductId=' + encodeURIComponent(p.acc.split('-')[0]) + '&goId=' + term + '&goUsage=descendants" target="_blank" rel="noopener">All annotations in QuickGO ↗</a></p>';
     });
     loadPdb(p.acc).then((res) => {
@@ -3613,7 +3744,7 @@
       '<p class="flabel">Protein arginine methyltransferases</p>' + barList(prmtRows) + '<p class="flabel" style="margin-top:.8rem">Tudor-domain proteins</p>' + barList(tudorRows) +
       '<p class="note">Summed over methylated proteins, ' + fmt(edgesMeth) + ' of their ' + fmt(edgesAll) + ' high-confidence physical partners (' + pctText(edgesMeth, edgesAll || 1) + '%) are themselves methylated, against ' + pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of reviewed human proteins. Well-studied proteins carry both more mapped sites and more mapped interactions, so read this as association, not mechanism.</p></div>' +
       '<div class="card wide chart-card" id="ch-iface"><h3>Interfaces and nucleic-acid binding</h3><p class="sub">Do methylated arginines sit at protein, RNA or DNA interfaces in PDB structures (PDBe-KB) more often than the other arginines of the same proteins? Only structurally observed arginines (SIFTS) count, and most methylarginines sit in disordered regions that are rarely crystallised.</p>' +
-      strataTable() +
+      strataTable() + geometryHtml() +
       '<details class="dataset-ctx"><summary class="flabel">Pooled across proteins (not controlled; click a row to filter sites)</summary><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Arginines at an interface with</th><th class="r">Methylated R</th><th class="r">Other R</th><th class="r">log2 OR</th><th class="r">p</th></tr></thead><tbody>' +
       ifRow('rna', 'RNA', 4) + ifRow('dna', 'DNA', 8) + ifRow('protein', 'Protein', 1) + '</tbody></table></div>' +
       '<p class="note">Pooling mixes proteins: proteins solved bound to RNA or DNA also tend to carry more mapped methylarginines, which inflates these odds ratios. The within-protein test above removes that.</p></details>' +
@@ -3640,6 +3771,44 @@
       '</tbody></table></div><p class="note">Each protein is its own stratum (Cochran–Mantel–Haenszel), so methylated arginines are only compared with other arginines of the same protein. "Ordered" excludes UniProt disordered regions (MobiDB-lite); "inside domains" keeps residues in UniProt domain, repeat or zinc-finger features. Values near 0 mean no difference; hover a cell for the counts.</p>';
   }
 
+  // Where in an interface methylated arginines sit (Levy core/rim/support, nucleic-acid hydrogen bonds) and the
+  // RG/RGG context comparison, from the export's residue-environment analysis.
+  function geometryHtml() {
+    const gs = IX.geoSummary || {};
+    const rg = IX.rg || {};
+    const mh = (x) => (x && x.mh && x.mh[0] != null ? '<b>' + fmtL2(x.mh[0]) + '</b> <span class="muted">p ' + fmtP(x.mh[1]) + '</span>' : '—');
+    const pooledTip = (x) => (x && x.pooled ? ' title="' + esc('Methylated ' + x.pooled[0] + '/' + (x.pooled[0] + x.pooled[1]) + ' · other ' + x.pooled[2] + '/' + (x.pooled[2] + x.pooled[3]) + ' · Mantel–Haenszel over ' + x.mh[2] + ' informative proteins') + '"' : '');
+    let html = '';
+    if (gs.levy_counts) {
+      const m = gs.levy_counts['1'] || {}, c = gs.levy_counts['0'] || {};
+      const buried = (x) => (x.core || 0) + (x.rim || 0) + (x.support || 0);
+      const row = (k, label) => '<tr><td>' + label + '</td><td class="r num">' + fmt(m[k] || 0) + ' <span class="muted">(' + pctText(m[k] || 0, buried(m) || 1) + '%)</span></td><td class="r num">' + fmt(c[k] || 0) + ' <span class="muted">(' + pctText(c[k] || 0, buried(c) || 1) + '%)</span></td></tr>';
+      const nm = gs.na_counts['1'] || {}, nc = gs.na_counts['0'] || {};
+      const naTot = (x) => (x.base || 0) + (x.backbone || 0) + (x.contact || 0);
+      const nrow = (k, label) => '<tr><td>' + label + '</td><td class="r num">' + fmt(nm[k] || 0) + ' <span class="muted">(' + pctText(nm[k] || 0, naTot(nm) || 1) + '%)</span></td><td class="r num">' + fmt(nc[k] || 0) + ' <span class="muted">(' + pctText(nc[k] || 0, naTot(nc) || 1) + '%)</span></td></tr>';
+      html += '<h4 style="margin-top:1rem">Where in the interface?</h4><div class="two-col geo-cols"><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Position (Levy classes)</th><th class="r">Methylated R</th><th class="r">Other interface R</th></tr></thead><tbody>' +
+        row('core', 'Interface core') + row('rim', 'Interface rim') + row('support', 'Interface support') +
+        '<tr class="muted"><td>Not buried in the chosen entry</td><td class="r num">' + fmt(m.none || 0) + '</td><td class="r num">' + fmt(c.none || 0) + '</td></tr></tbody></table>' +
+        '<p class="note"' + pooledTip(gs.core) + '>Core vs rim or support, within protein: ' + mh(gs.core) + '</p></div>' +
+        '<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Contact with RNA or DNA</th><th class="r">Methylated R</th><th class="r">Other interface R</th></tr></thead><tbody>' +
+        nrow('base', 'Hydrogen bond to a base') + nrow('backbone', 'Hydrogen bond to the backbone only') + nrow('contact', 'Contact without hydrogen bond') + '</tbody></table>' +
+        '<p class="note"' + pooledTip(gs.base) + '>Base H-bond vs other nucleic-acid contacts, within protein: ' + mh(gs.base) + '</p></div></div>' +
+        '<p class="note">One PDB entry per residue (the most recent showing the interface); controls are up to ' + (gs.controls_per_protein || 12) + ' non-methylated interface arginines per protein. Relative accessibility by Shrake–Rupley over a 10 Å environment (RCSB ModelServer), Arg maximum 274 Å² (Tien et al. 2013); Levy (2010) classes: core = exposed alone and buried (&lt; 25%) in the complex. Hydrogen bonds: guanidino N to partner N/O ≤ 3.5 Å.</p>';
+    }
+    if (rg.segment) {
+      const ctxRow = (k, label) => {
+        const x = rg[k] || {};
+        const cov = x.cover || [0, 0];
+        return '<tr><td>' + label + '</td><td class="r num">' + fmt(cov[0]) + '</td><td class="r num">' + fmt(cov[1]) + ' <span class="muted">(' + pctText(cov[1], cov[0] || 1) + '%)</span></td><td class="r num"' + pooledTip(x.rna) + '>' + mh(x.rna) + '</td><td class="r num"' + pooledTip(x.any) + '>' + mh(x.any) + '</td></tr>';
+      };
+      html += '<h4 style="margin-top:1rem">RG/RGG context</h4><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Arginine context</th><th class="r">Methylated sites</th><th class="r">Seen in a PDB structure</th><th class="r">RNA interface (log2 MH OR)</th><th class="r">Any interface</th></tr></thead><tbody>' +
+        ctxRow('segment', 'In an RG/RGG-rich segment') + ctxRow('dipeptide', 'RG dipeptide elsewhere') + ctxRow('other', 'Other arginines') + '</tbody></table></div>' +
+        '<p class="note">Within each context, methylated arginines are compared with the other arginines of the same context and protein. RG/RGG-rich segments: ≥ 3 RG dipeptides with ≤ 12 aa between consecutive RG arginines.</p>';
+    }
+    if (IX.nModelled) html += '<p class="note"><button class="linkish" type="button" id="geo-modelled">' + fmt(IX.nModelled) + ' union sites are modelled as a methylated arginine in at least one PDB entry</button>; PDB entries model a further ' + fmt(Array.from(IX.modelledGaps.values()).reduce((n, g) => n + g.pos.length, 0)) + ' methylated positions that the union lacks (listed on each protein page).</p>';
+    return html;
+  }
+
   function bindIxOverview(el) {
     if (!ixReady()) return;
     $$('[data-cxset]', el).forEach((b) => b.addEventListener('click', () => { UI.cxPred = b.dataset.cxset === 'pred'; UI.cxAll = false; renderOverview(el); }));
@@ -3652,6 +3821,8 @@
     bindRows($('#ch-cx', el), (tr) => setFilters((f) => { f.cpx = tr.dataset.cx; }, 'proteins'));
     $$('#ch-readers [data-partner]', el).forEach((b) => b.addEventListener('click', () => setFilters((f) => { f.partner = b.dataset.partner; f.ixScore = 700; }, 'proteins')));
     $$('#ch-iface tr[data-iface]', el).forEach((tr) => { const run = () => setFilters((f) => { f.iface = new Set([+tr.dataset.iface]); }, 'sites'); tr.addEventListener('click', run); tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') run(); }); });
+    const gm = $('#geo-modelled', el);
+    if (gm) gm.addEventListener('click', () => setFilters((f) => { f.modelledPdb = true; }, 'sites'));
     $$('#ch-iface tr[data-go]', el).forEach((tr) => { const run = () => setFilters((f) => { f.go = new Set([+tr.dataset.go]); f.goExp = tr.dataset.goexp === '1'; }, 'proteins'); tr.addEventListener('click', run); tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') run(); }); });
     const tsv = $('#cx-tsv', el);
     if (tsv) tsv.addEventListener('click', () => download('complexes_methylarginine_members.tsv', ['complex_ac\tname\tset\tmembers\tmethylated_members\tfold\tp\tq\tmethylated_genes']
@@ -3899,6 +4070,9 @@
       '<li><b>RNA and DNA binding</b>: Gene Ontology GO:0003723 and GO:0003677 including child terms (QuickGO/GOA, CC BY 4.0); experimental evidence means EXP, IDA, IPI, IMP, IGI, IEP or their high-throughput equivalents. Protein pages add live ENCODE eCLIP and TF ChIP-seq experiments and ChIP-Atlas target genes (CC BY 4.0).</li>' +
       '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two most recent entries per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were read from the structure itself (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylated arginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
       '<li><b>Writer and reader paths</b>: the protein network can add a second ring of PRMTs and Tudor-domain proteins that bind its partners (STRING ≥ 0.7).</li>' +
+      '<li><b>Interface geometry</b>: for every methylarginine at a PDB interface and up to 12 non-methylated interface arginines per protein, the 10 Å environment in one entry (the most recent showing the interface) gives relative solvent accessibility alone and in the complex (Shrake–Rupley, Arg maximum 274 Å²) and the Levy (2010) class: core, rim or support. Guanidino nitrogens within 3.5 Å of a nucleobase N/O count as base hydrogen bonds, of a phosphate or sugar O as backbone hydrogen bonds. Both are compared within proteins (Mantel–Haenszel). The RG/RGG table repeats the interface test within each sequence context.</li>' +
+      '<li><b>Methylarginines modelled in the PDB</b>: entries containing 2MR, DA2, NMM or AGM (RCSB search), their residues from PDBe, mapped to UniProt through SIFTS; union sites are flagged and positions the union lacks are listed on protein pages.</li>' +
+      '<li><b>References</b>: CD-CODE publications for each membership are listed in full (titles from NCBI E-utilities) with a PubMed search for all of them.</li>' +
       '<li><b>Condensates</b>: protein pages show CD-CODE\'s own confidence score (1–5), role and evidence types for that protein in each condensate (CD-CODE API, release ' + esc((IX && IX.meta && IX.meta.cdcode_version) || '2.3') + '). Condensate-wide statistics (methylated share and enrichment) are shown separately and labelled as being about the condensate.</li>' +
       '<li><b>Disease</b>: protein pages show UniProt\'s curated disease involvement and Open Targets Platform association scores for the gene (live; Open Targets data is CC0). DisGeNET terms come from the dataset-level enrichment and are listed separately as context.</li>' +
       '</ul>' +

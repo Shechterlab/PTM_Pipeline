@@ -51,6 +51,8 @@ SIFTS_OBSERVED = 'https://ftp.ebi.ac.uk/pub/databases/msd/sifts/flatfiles/tsv/un
 SIFTS_CHAINS = 'https://ftp.ebi.ac.uk/pub/databases/msd/sifts/flatfiles/tsv/pdb_chain_uniprot.tsv.gz'
 CDCODE_API = 'https://cd-code.org/api'
 MODELSERVER = 'https://models.rcsb.org/v1/{pdb}/residueSurroundings'
+RCSB_SEARCH = 'https://search.rcsb.org/rcsbsearch/v2/query'
+PDBE_MODRES = 'https://www.ebi.ac.uk/pdbe/api/pdb/entry/modified_AA_or_NA/{pdb}'
 
 # The nine human protein arginine methyltransferases.
 PRMT_GENES = ['PRMT1', 'PRMT2', 'PRMT3', 'CARM1', 'PRMT5', 'PRMT6', 'PRMT7', 'PRMT8', 'PRMT9']
@@ -78,6 +80,15 @@ AA3 = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D', 'CYS': 'C', 'GLN': 'Q', '
 WATERS = {'HOH', 'WAT', 'DOD'}
 SIDE_CHAIN = {'NE', 'CZ', 'NH1', 'NH2', 'CD'}
 CONTACT_CUTOFF = 4.0
+# Interface geometry: residue environments within ENV_RADIUS, solvent accessibility by Shrake-Rupley.
+ENV_RADIUS = 10.0
+VDW = {'C': 1.7, 'N': 1.55, 'O': 1.52, 'S': 1.8, 'P': 1.8, 'SE': 1.9}
+PROBE = 1.4
+ARG_MAX_ASA = 274.0        # theoretical maximum for Arg (Tien et al. 2013, PLoS One 8:e80635)
+NA_BACKBONE = {'P', 'OP1', 'OP2', 'OP3', "O5'", "C5'", "C4'", "O4'", "C3'", "O3'", "C2'", "O2'", "C1'"}
+GUANIDINO_N = {'NE', 'NH1', 'NH2'}
+HBOND = 3.5
+LEVY = ['none', 'support', 'rim', 'core']
 
 ACC_RE = re.compile(r'^(?:[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2})$')
 UA = 'PTM_Pipeline-site-explorer/1.0 (https://github.com/Shechterlab/PTM_Pipeline)'
@@ -458,6 +469,215 @@ def site_contacts(cache: Path, pdb: str, chain: str, label: int, refresh: bool):
     return out
 
 
+def rg_boxes(seq: str):
+    """RG/RGG-rich segments: runs of >=3 RG dipeptides with <=12 aa between consecutive RG arginines (as in the explorer)."""
+    out, cur = [], None
+    for k in range(len(seq) - 1):
+        if seq[k] != 'R' or seq[k + 1] != 'G':
+            continue
+        pos = k + 1
+        if cur and pos - cur[1] <= 12:
+            cur = [cur[0], pos, cur[2] + 1]
+        else:
+            if cur and cur[2] >= 3:
+                out.append((cur[0], cur[1] + 1))
+            cur = [pos, pos, 1]
+    if cur and cur[2] >= 3:
+        out.append((cur[0], cur[1] + 1))
+    return out
+
+
+def residue_environment(cache: Path, pdb: str, chain: str, label: int, refresh: bool):
+    """All atoms of residues within ENV_RADIUS of a residue (RCSB ModelServer), cached as gzipped JSON rows
+    [author chain, label_seq_id, author residue number, residue name, atom name, element, x, y, z]."""
+    folder = cache / 'environments'
+    folder.mkdir(parents=True, exist_ok=True)
+    dest = folder / f'{pdb}_{chain}_{label}.json.gz'
+    if dest.exists() and not refresh:
+        try:
+            return json.loads(gzip.decompress(dest.read_bytes()))
+        except (OSError, json.JSONDecodeError):
+            pass
+    url = MODELSERVER.format(pdb=pdb) + '?' + urllib.parse.urlencode(
+        {'auth_asym_id': chain, 'label_seq_id': label, 'radius': ENV_RADIUS, 'model_nums': 1, 'encoding': 'cif'})
+    text = None
+    for k in range(4):
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': UA})
+            with urllib.request.urlopen(req, timeout=120) as r:
+                text = r.read().decode('utf-8', 'replace')
+            break
+        except urllib.error.HTTPError as e:
+            if e.code in (400, 404):
+                text = ''
+                break
+            time.sleep(2 ** k)
+        except Exception:  # noqa: BLE001 - network hiccup, retried
+            time.sleep(2 ** k)
+    if text is None:
+        return None
+    rows = []
+    for a in parse_cif_atoms(text):
+        el = (a.get('type_symbol') or '').upper()
+        if el in ('H', 'D') or a.get('label_comp_id') in WATERS or a.get('label_alt_id') not in (None, '.', 'A'):
+            continue
+        try:
+            rows.append([a.get('auth_asym_id'), a.get('label_seq_id'), a.get('auth_seq_id'), a.get('label_comp_id'), a.get('label_atom_id'), el,
+                         round(float(a['Cartn_x']), 2), round(float(a['Cartn_y']), 2), round(float(a['Cartn_z']), 2)])
+        except (KeyError, ValueError):
+            continue
+    dest.write_bytes(gzip.compress(json.dumps(rows, separators=(',', ':')).encode()))
+    return rows
+
+
+_SPHERE = None
+
+
+def sphere_points(n=96):
+    global _SPHERE
+    if _SPHERE is None:
+        import numpy as np
+        k = np.arange(n) + 0.5
+        phi = np.arccos(1 - 2 * k / n)
+        theta = np.pi * (1 + 5 ** 0.5) * k
+        _SPHERE = np.stack([np.cos(theta) * np.sin(phi), np.sin(theta) * np.sin(phi), np.cos(phi)], axis=1)
+    return _SPHERE
+
+
+def residue_sasa(target, occluders):
+    """Shrake-Rupley SASA (Å²) of the target atoms given occluding atoms (both lists of (element, xyz))."""
+    import numpy as np
+    if not target:
+        return 0.0
+    pts = sphere_points()
+    allc = np.array([xyz for _, xyz in occluders]) if occluders else np.zeros((0, 3))
+    allr = np.array([VDW.get(el, 1.8) + PROBE for el, _ in occluders]) if occluders else np.zeros(0)
+    total = 0.0
+    for el, xyz in target:
+        r = VDW.get(el, 1.8) + PROBE
+        sp = np.asarray(xyz) + pts * r
+        if len(allc):
+            d0 = np.linalg.norm(allc - np.asarray(xyz), axis=1)
+            near = (d0 < r + allr) & (d0 > 1e-3)
+            if near.any():
+                dd = np.linalg.norm(sp[:, None, :] - allc[near][None, :, :], axis=2)
+                free = ~(dd < allr[near][None, :]).any(axis=1)
+            else:
+                free = np.ones(len(sp), bool)
+        else:
+            free = np.ones(len(sp), bool)
+        total += 4 * math.pi * r * r * free.mean()
+    return total
+
+
+def analyze_environment(rows, chain: str, label: int):
+    """Levy interface class, relative accessibility and nucleic-acid / protein hydrogen-bond partners of one arginine."""
+    me = [r for r in rows if r[0] == chain and r[1] == str(label)]
+    if not me or me[0][3] not in ({'ARG'} | METHYL_R):
+        return None
+    me_ids = {id(r) for r in me}
+    own = [r for r in rows if r[0] == chain and id(r) not in me_ids]
+    na = [r for r in rows if r[0] != chain and (r[3] in NUC_RNA or r[3] in NUC_DNA)]
+    prot = [r for r in rows if r[0] != chain and r[3] in AA3]
+    other = [r for r in rows if r[0] != chain]
+    tgt = [(r[5], r[6:9]) for r in me]
+    occ = lambda rs: [(r[5], r[6:9]) for r in rs]
+    # The residue's own atoms occlude each other (an atom never occludes itself).
+    s_mono = float(residue_sasa(tgt, occ(me + own)))
+    s_cplx = float(residue_sasa(tgt, occ(me + own + other)))
+    s_na = float(residue_sasa(tgt, occ(me + own + na))) if na else s_mono
+    s_prot = float(residue_sasa(tgt, occ(me + own + prot))) if prot else s_mono
+    r_mono, r_cplx = s_mono / ARG_MAX_ASA, s_cplx / ARG_MAX_ASA
+    if s_mono - s_cplx < 1.0:
+        levy = 'none'
+    elif r_mono < 0.25:
+        levy = 'support'
+    elif r_cplx < 0.25:
+        levy = 'core'
+    else:
+        levy = 'rim'
+    gn = [r for r in me if r[4] in GUANIDINO_N]
+    na_type = 'none'
+    base_hb, bb_hb, prot_hb = set(), set(), set()
+    for r in na + prot:
+        if r[5] not in ('N', 'O'):
+            continue
+        d = min(math.dist(r[6:9], g[6:9]) for g in gn) if gn else 99
+        if d > HBOND:
+            continue
+        if r in prot:
+            prot_hb.add((r[0], r[1], r[3]))
+        elif r[4] in NA_BACKBONE:
+            bb_hb.add((r[0], r[2], r[3]))
+        else:
+            base_hb.add((r[0], r[2], r[3]))
+    if na:
+        sc = [r for r in me if r[4] in SIDE_CHAIN]
+        close = any(min(math.dist(a[6:9], b[6:9]) for b in sc) <= CONTACT_CUTOFF for a in na) if sc else False
+        na_type = 'base' if base_hb else 'backbone' if bb_hb else 'contact' if close else 'none'
+    return {
+        'resn': me[0][3], 'levy': levy, 'rasa_mono': round(r_mono, 3), 'rasa_cplx': round(r_cplx, 3),
+        'd_na': round(s_mono - s_na, 1), 'd_prot': round(s_mono - s_prot, 1), 'na_type': na_type,
+        'base_hb': sorted({c + n for _, n, c in [(x[0], x[1], x[2]) for x in base_hb]}),
+        'n_prot_hb': len(prot_hb),
+    }
+
+
+def load_modelled_methyl_r(cache: Path, refresh: bool, workers: int):
+    """PDB entries that model a methylated arginine (2MR, DA2, NMM, AGM), with chain, SEQRES index and residue name."""
+    folder = cache / 'modelled_methyl_r'
+    folder.mkdir(parents=True, exist_ok=True)
+    q = {'query': {'type': 'terminal', 'service': 'text', 'parameters': {'attribute': 'rcsb_polymer_entity_container_identifiers.chem_comp_monomers', 'operator': 'in', 'value': sorted(METHYL_R)}},
+         'return_type': 'entry', 'request_options': {'return_all_hits': True}}
+    hits = fetch(RCSB_SEARCH, folder / 'entries.json', refresh, {'json': json.dumps(q)})
+    entries = sorted(x['identifier'].lower() for x in json.loads(hits.read_text()).get('result_set', []))
+
+    def one(pdb):
+        dest = folder / f'{pdb}.json'
+        if dest.exists() and not refresh:
+            return
+        try:
+            fetch(PDBE_MODRES.format(pdb=pdb), dest, refresh)
+        except Exception:  # noqa: BLE001 - a missing entry is skipped
+            dest.write_text('{}')
+
+    with ThreadPoolExecutor(max_workers=min(4, workers)) as pool:
+        list(pool.map(one, entries))
+    out = []
+    for pdb in entries:
+        try:
+            rows = json.loads((folder / f'{pdb}.json').read_text()).get(pdb, [])
+        except (OSError, json.JSONDecodeError):
+            continue
+        for r in rows:
+            if r.get('chem_comp_id') in METHYL_R and r.get('residue_number') is not None:
+                out.append((pdb, r.get('chain_id'), int(r['residue_number']), r['chem_comp_id']))
+    log(f'PDB-modelled methylarginines: {len(out)} residues in {len(entries)} entries')
+    return out
+
+
+def cdcode_threshold_enrichment(cd, proteome, meth_base, uids, thresholds=(1, 2, 3, 4)):
+    """Methylated share of each condensate counting only members at or above a CD-CODE confidence score."""
+    N = len(proteome)
+    K = sum(1 for a in proteome if a in meth_base)
+    out = {}
+    for t in thresholds:
+        rows, pv = [], []
+        for ci, uid in enumerate(uids):
+            members = {a for a, m in cd.get(uid, {}).items() if m[0] >= t and a in proteome}
+            n = len(members)
+            if n < 5:
+                continue
+            m = sum(1 for a in members if a in meth_base)
+            p, odds = fisher_2x2(m, n - m, K - m, (N - K) - (n - m))
+            rows.append([ci, n, m, sig(math.log2(odds)), sig(p)])
+            pv.append(p)
+        for r, q in zip(rows, bh(pv)):
+            r.append(sig(q))
+        out[str(t)] = rows
+    return out
+
+
 def mantel_haenszel(tables):
     """Mantel-Haenszel common odds ratio and CMH test (continuity-corrected) over 2x2 strata [[a, b], [c, d]]."""
     num = den = sa = sea = sva = 0.0
@@ -538,6 +758,8 @@ def main():
     ap.add_argument('--fetch-interfaces-only', action='store_true', help='only fill the PDBe interface cache')
     ap.add_argument('--fetch-contacts-only', action='store_true', help='only fill the structure-contact cache (needs the interface cache)')
     ap.add_argument('--contact-entries', type=int, default=2, help='PDB entries examined per site and partner type')
+    ap.add_argument('--fetch-environments-only', action='store_true', help='only fill the 10 Å residue-environment cache (interface geometry)')
+    ap.add_argument('--controls-per-protein', type=int, default=12, help='non-methylated interface arginines sampled per protein for the geometry comparison')
     args = ap.parse_args()
     cache = Path(args.cache)
 
@@ -629,12 +851,16 @@ def main():
 
     # Interfaces at methylarginine sites, plus all-arginine counts for the enrichment test.
     site_rows = []
-    observed = load_observed(cache, args.refresh, set(ifaces))
+    observed = load_observed(cache, args.refresh, set(meth_base))
     enrich = {'rna': [0, 0, 0, 0], 'dna': [0, 0, 0, 0], 'protein': [0, 0, 0, 0], 'any': [0, 0, 0, 0]}
     IFACE_TYPES = (('rna', I_RNA), ('dna', I_DNA), ('protein', I_PROTEIN | I_SELF), ('any', I_RNA | I_DNA | I_PROTEIN | I_SELF))
     STRATA = ('all', 'ordered', 'domain')
     strata = {(t, f): defaultdict(lambda: [0, 0, 0, 0]) for t, _ in IFACE_TYPES for f in STRATA}
     contact_jobs = []   # (site j, partner key, pdb, own accession, position)
+    env_jobs = []       # (methylated 1/0, protein index, position, site j or -1, pdb, accession)
+    RG_CONTEXTS = ('segment', 'dipeptide', 'other')
+    rg_strata = {(c, t): defaultdict(lambda: [0, 0, 0, 0]) for c in RG_CONTEXTS for t in ('rna', 'any')}
+    rg_cover = {c: [0, 0] for c in RG_CONTEXTS}   # methylated sites in context: [all, structurally observed]
     by_prot_sites = defaultdict(list)
     for j, s in enumerate(sites):
         by_prot_sites[s[0]].append(j)
@@ -676,6 +902,19 @@ def main():
                 for pdb in sorted(ids, reverse=True)[:args.contact_entries]:
                     contact_jobs.append((j, key, pdb, acc, pos))
             site_rows.append([j, mask_of(hit), plist, sorted(pdbs)[:8], len(pdbs)])
+            if pdbs:
+                env_jobs.append((1, i, pos, j, max(pdbs), acc))
+        # Controls: non-methylated arginines of the same protein at an interface, evenly spaced, capped.
+        seq0 = proteome.get(acc, ('', '', ''))[2]
+        if any(pos in res_partners for pos in site_pos) and seq0:
+            ctrl = sorted(pos for pos in res_partners if pos not in site_pos and pos <= len(seq0) and seq0[pos - 1] == 'R')
+            if len(ctrl) > args.controls_per_protein:
+                step = len(ctrl) / args.controls_per_protein
+                ctrl = [ctrl[int(k * step)] for k in range(args.controls_per_protein)]
+            for pos in ctrl:
+                ids = set().union(*res_partners[pos].values())
+                if ids:
+                    env_jobs.append((0, i, pos, -1, max(ids), acc))
 
         # Enrichment: methylated vs other observed arginines of this protein at each interface type.
         seq = proteome.get(acc, ('', '', ''))[2]
@@ -687,6 +926,8 @@ def main():
             cov.update(range(a, b + 1))
         dis = disordered.get(acc, [])
         dom = domains.get(acc, [])
+        boxes = rg_boxes(seq)
+        rg_ctx = lambda pos: 'segment' if any(a <= pos <= b for a, b in boxes) else 'dipeptide' if pos < len(seq) and seq[pos] == 'G' else 'other'
         for pos in cov:
             if pos > len(seq) or seq[pos - 1] != 'R':
                 continue
@@ -694,6 +935,9 @@ def main():
             meth = pos in site_pos
             ordered = not any(a <= pos <= b for a, b in dis)
             in_dom = any(a <= pos <= b for a, b in dom)
+            ctx = rg_ctx(pos)
+            for key, bit in (('rna', I_RNA), ('any', I_RNA | I_DNA | I_PROTEIN | I_SELF)):
+                rg_strata[(ctx, key)][acc][(0 if meth else 2) + (0 if m & bit else 1)] += 1
             for key, bit in IFACE_TYPES:
                 cell = (0 if meth else 2) + (0 if m & bit else 1)
                 enrich[key][cell] += 1
@@ -720,6 +964,114 @@ def main():
                 'pooled': [a, b, c, d, sig(math.log2(odds)) if odds else None, sig(p)],
                 'mh': [sig(math.log2(mh_or)) if mh_or and math.isfinite(mh_or) else None, sig(mh_p), used],
             }
+
+    # How many methylated arginines in each RG context are structurally observed at all (all canonical proteins).
+    for i, acc in enumerate(meth_accs):
+        if prots[i][10] or '-' in acc:
+            continue
+        seq = proteome.get(acc, ('', '', ''))[2]
+        if not seq:
+            continue
+        boxes = rg_boxes(seq)
+        segs = observed.get(acc, [])
+        for j in by_prot_sites[i]:
+            pos = sites[j][1]
+            if pos > len(seq) or seq[pos - 1] != 'R':
+                continue
+            c = 'segment' if any(a <= pos <= b for a, b in boxes) else 'dipeptide' if pos < len(seq) and seq[pos] == 'G' else 'other'
+            rg_cover[c][0] += 1
+            rg_cover[c][1] += any(a <= pos <= b for a, b in segs)
+
+    # RG/RGG context: methylated vs other arginines of the same protein in each sequence context.
+    rg_out = {}
+    for c in RG_CONTEXTS:
+        rg_out[c] = {'cover': rg_cover[c]}
+        for key in ('rna', 'any'):
+            tabs = list(rg_strata[(c, key)].values())
+            a, b, cc, d = (sum(t[k] for t in tabs) for k in range(4))
+            p, odds = fisher_2x2(a, b, cc, d) if a + b + cc + d else (None, None)
+            mh_or, mh_p, used = mantel_haenszel(tabs)
+            rg_out[c][key] = {'pooled': [a, b, cc, d, sig(math.log2(odds)) if odds else None, sig(p)],
+                              'mh': [sig(math.log2(mh_or)) if mh_or and math.isfinite(mh_or) else None, sig(mh_p), used]}
+
+    # Interface geometry from 10 Å residue environments: Levy core/rim/support and nucleic-acid hydrogen bonds,
+    # methylated interface arginines vs sampled non-methylated interface arginines of the same proteins.
+    geo_sites, geo_summary = [], {}
+    if env_jobs:
+        echains = load_sifts_chains(cache, args.refresh, {pdb for *_, pdb, _ in env_jobs})
+        units = []
+        for meth, i, pos, j, pdb, acc in env_jobs:
+            cands = sorted({(ch, res_beg + (pos - sp_beg)) for ch, sp, res_beg, sp_beg, sp_end in echains.get(pdb, [])
+                            if base_acc(sp) == acc and sp_beg <= pos <= sp_end})
+            if cands:
+                units.append((meth, i, pos, j, pdb, cands[0][0], cands[0][1]))
+        log(f'Interface geometry: {len(units):,} residue environments ({sum(u[0] for u in units):,} methylated)')
+        done = 0
+
+        def run_env(u):
+            rows = residue_environment(cache, u[4], u[5], u[6], args.refresh)
+            return u, (analyze_environment(rows, u[5], u[6]) if rows else None)
+
+        results = []
+        with ThreadPoolExecutor(max_workers=args.workers) as pool:
+            for u, res in pool.map(run_env, units):
+                results.append((u, res))
+                done += 1
+                if done % 500 == 0:
+                    log(f'  {done:,}/{len(units):,}')
+        if args.fetch_environments_only:
+            return
+        levy_tabs = defaultdict(lambda: [0, 0, 0, 0])
+        base_tabs = defaultdict(lambda: [0, 0, 0, 0])
+        levy_counts = {1: {k: 0 for k in LEVY}, 0: {k: 0 for k in LEVY}}
+        na_counts = {1: {'base': 0, 'backbone': 0, 'contact': 0}, 0: {'base': 0, 'backbone': 0, 'contact': 0}}
+        for (meth, i, pos, j, pdb, ch, lab), res in results:
+            if not res:
+                continue
+            levy_counts[meth][res['levy']] += 1
+            if res['levy'] != 'none':
+                levy_tabs[i][(0 if meth else 2) + (0 if res['levy'] == 'core' else 1)] += 1
+            if res['na_type'] != 'none':
+                na_counts[meth][res['na_type']] += 1
+                base_tabs[i][(0 if meth else 2) + (0 if res['na_type'] == 'base' else 1)] += 1
+            if meth:
+                geo_sites.append([j, pdb, ch, LEVY.index(res['levy']), res['rasa_mono'], res['rasa_cplx'], res['na_type'], res['base_hb'], res['d_na'], res['d_prot'], res['n_prot_hb']])
+
+        def summary(tabs):
+            tl = list(tabs.values())
+            a, b, c, d = (sum(t[k] for t in tl) for k in range(4))
+            p, odds = fisher_2x2(a, b, c, d) if a + b + c + d else (None, None)
+            mh_or, mh_p, used = mantel_haenszel(tl)
+            return {'pooled': [a, b, c, d, sig(math.log2(odds)) if odds else None, sig(p)],
+                    'mh': [sig(math.log2(mh_or)) if mh_or and math.isfinite(mh_or) else None, sig(mh_p), used]}
+
+        geo_summary = {'levy_counts': levy_counts, 'na_counts': na_counts, 'core': summary(levy_tabs), 'base': summary(base_tabs),
+                       'controls_per_protein': args.controls_per_protein}
+        log(f'Interface geometry: {len(geo_sites):,} methylated sites classified')
+    elif args.fetch_environments_only:
+        return
+
+    # Methylated arginines modelled as such in PDB entries, mapped to UniProt through SIFTS SEQRES ranges.
+    modelled = load_modelled_methyl_r(cache, args.refresh, args.workers)
+    mchains = load_sifts_chains(cache, args.refresh, {m[0] for m in modelled})
+    site_index = {(base_acc(meth_accs[s[0]]), s[1]): j for j, s in enumerate(sites)}
+    modelled_sites = defaultdict(set)
+    modelled_other = defaultdict(set)
+    for pdb, ch, lab, comp in modelled:
+        for c2, sp, res_beg, sp_beg, sp_end in mchains.get(pdb, []):
+            if c2 != ch:
+                continue
+            u = sp_beg + (lab - res_beg)
+            if not (sp_beg <= u <= sp_end):
+                continue
+            j = site_index.get((base_acc(sp), u))
+            if j is not None:
+                modelled_sites[j].add((pdb, comp))
+            else:
+                modelled_other[base_acc(sp)].add((u, pdb, comp))
+    modelled_rows = [[j, sorted({p2 for p2, _ in v}), sorted({c for _, c in v})] for j, v in sorted(modelled_sites.items())]
+    modelled_gaps = [[vid(a), sorted({u for u, _, _ in v}), sorted({p2 for _, p2, _ in v})[:6]] for a, v in sorted(modelled_other.items()) if a in proteome]
+    log(f'PDB-modelled methylarginines: {len(modelled_rows)} union sites, {sum(len(r[1]) for r in modelled_gaps)} positions not in the union')
 
     # Residues each interface methylarginine touches, from the structures themselves (RCSB ModelServer).
     contact_rows = []
@@ -793,6 +1145,7 @@ def main():
     cond_meta = explorer['meta'].get('condensates', [])
     cd_uids = [c[1] for c in cond_meta]
     cd, cd_version = load_cdcode(cache, args.refresh, cd_uids, args.workers)
+    cond_conf = cdcode_threshold_enrichment(cd, proteome, meth_base, cd_uids)
     cd_rows = []
     for i, acc in enumerate(meth_accs):
         b = base_acc(acc)
@@ -800,7 +1153,7 @@ def main():
             m = cd.get(uid, {}).get(b)
             if m:
                 score, roles, evid, pmids = m
-                cd_rows.append([i, ci, score, roles, evid, len(pmids), pmids[:6]])
+                cd_rows.append([i, ci, score, roles, evid, len(pmids), pmids])
 
     # STRING partners of PRMTs and Tudor-domain proteins, for writer-substrate-reader paths.
     wr_lists = defaultdict(set)
@@ -889,8 +1242,14 @@ def main():
                 'go_enrich': '[methylated with term, methylated reviewed, other with term, other reviewed, log2 OR, p]',
                 'enrich_strata': '{type: {all|ordered|domain: {pooled: [a, b, c, d, log2 OR, p], mh: [log2 MH OR, CMH p, informative proteins]}}}',
                 'contacts': ['site', '[partner (-1 RNA, -2 DNA, -3 ligand, -4 unmapped chain, else protein index), pdb, residue labels]', 'methylated residue modelled (2MR/DA2/NMM/AGM)'],
-                'cd_members': ['protein', 'condensate index (meta.condensates of the sites file)', 'confidence 1-5', 'role bits', 'evidence bits', 'publications', 'first PMIDs'],
+                'cd_members': ['protein', 'condensate index (meta.condensates of the sites file)', 'confidence 1-5', 'role bits', 'evidence bits', 'publications', 'all PMIDs'],
                 'wr': ['PRMT or Tudor protein index', 'its STRING physical partners (indices)'],
+                'rg_iface': '{segment|dipeptide|other: {cover: [methylated sites, structurally observed], rna|any: {pooled, mh}}}',
+                'geometry': ['site', 'pdb', 'chain', 'Levy class (0 none, 1 support, 2 rim, 3 core)', 'rASA alone', 'rASA in complex', 'nucleic-acid contact (base/backbone/contact/none)', 'bases hydrogen-bonded', 'ASA buried by nucleic acid', 'ASA buried by protein', 'hydrogen bonds to protein'],
+                'geometry_summary': '{levy_counts, na_counts: {1 methylated, 0 control}, core|base: {pooled, mh}}',
+                'modelled': ['site', 'PDB entries modelling a methylated arginine there', 'residue names'],
+                'modelled_gaps': ['protein index', 'UniProt positions modelled as methylarginine but not in the union', 'PDB entries'],
+                'cond_conf': '{min stars: [[condensate index, members, methylated, log2 OR, p, q], ...]}',
             },
         },
         'proteins': [[a, gene_of.get(base_acc(a), ''), flags[k], ensp(a)] for k, a in enumerate(vocab)],
@@ -903,6 +1262,12 @@ def main():
         'contacts': contact_rows,
         'cd_members': cd_rows,
         'wr': wr_rows,
+        'rg_iface': rg_out,
+        'geometry': geo_sites,
+        'geometry_summary': geo_summary,
+        'modelled': modelled_rows,
+        'modelled_gaps': modelled_gaps,
+        'cond_conf': cond_conf,
     }
     # Explorer proteins keep their own gene labels.
     for k, p in enumerate(prots):
