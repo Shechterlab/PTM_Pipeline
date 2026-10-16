@@ -66,7 +66,7 @@
       ['clusterProfiler / DOSE', 'Over-representation analysis', 'clusterProfiler 4.18', 'Artistic-2.0 (software)', 'Wu et al., The Innovation 2:100141 (2021); Yu et al., Bioinformatics 31:608 (2015)', '10.1016/j.xinn.2021.100141'],
     ]],
     ['Interactions and structures (exported with scripts/37)', [
-      ['STRING', 'Physical partners (score ≥ 0.7 exported; lower scores live)', 'v12.5', 'CC BY 4.0', 'Szklarczyk et al., Nucleic Acids Res 51:D638 (2023)', '10.1093/nar/gkac1000'],
+      ['STRING', 'Physical partners (score ≥ 0.7 exported; lower scores live)', 'v12.5', 'CC BY 4.0', 'Szklarczyk et al., Nucleic Acids Res 53:D730 (2025)', '10.1093/nar/gkae1113'],
       ['Complex Portal', 'Curated human complexes', 'Current release at export', 'CC0', 'Meldal et al., Nucleic Acids Res 50:D578 (2022)', '10.1093/nar/gkab991'],
       ['hu.MAP 3.0', 'Predicted complexes (via Complex Portal)', 'hu.MAP 3.0', 'CC0', 'Fischer et al., Mol Syst Biol 21 (2025)', '10.1038/s44320-025-00121-5'],
       ['Gene Ontology / QuickGO', 'RNA- and DNA-binding annotations', 'Current release at export', 'CC BY 4.0', 'Gene Ontology Consortium, Genetics 224:iyad031 (2023); Binns et al., Bioinformatics 25:3045 (2009)', '10.1093/genetics/iyad031'],
@@ -99,6 +99,7 @@
       ['Levy interface classes', 'Core, rim and support', '', '', 'Levy, J Mol Biol 403:660 (2010)', '10.1016/j.jmb.2010.09.028'],
       ['Solvent accessibility', 'Shrake–Rupley; Arg maximum 274 Å²', '', '', 'Shrake & Rupley, J Mol Biol 79:351 (1973); Tien et al., PLoS ONE 8:e80635 (2013)', '10.1016/0022-2836(73)90011-9'],
       ['AlphaFold-Multimer and pDockQ', 'Predicted complexes and their interface score', '', '', 'Evans et al., bioRxiv (2021); Bryant et al., Nat Commun 13:1265 (2022)', '10.1038/s41467-022-28865-w'],
+      ['pDockQ thresholds', 'pDockQ ≥ 0.23 (acceptable) and ≥ 0.5 (confident)', '', '', 'Burke et al., Nat Struct Mol Biol 30:216 (2023)', '10.1038/s41594-022-00910-8'],
     ]],
   ];
 
@@ -139,6 +140,7 @@
     sequence_unique_canonical: 'Peptide fits one place in the canonical sequence',
     sequence_unique_candidate: 'Peptide fits one place (from another isoform)',
     sequence_closest_supported: 'Ambiguous: peptide fits several places; nearest supported position used',
+    sequence_position_verified: 'Reported position is an arginine inside the matching peptide',
   };
   const TREAT_HELP = { GSK591: 'PRMT5 inhibitor', MS023: 'type I PRMT inhibitor' };
   const PTM_LABEL = ['Phospho', 'Lys acyl', 'Ub/SUMO', 'Lys methyl'];
@@ -2540,12 +2542,13 @@
         xp.rnaPos.forEach((pos, k) => { if (pos >= v0 && pos <= v1) g += tick(pos, IFACE_COLOR[4], '<b>RNA-crosslinked residue</b> ' + pos + '<br>' + esc(xlSets(xp.rnaBits[k]).join(', '))); });
         y += 18;
       }
-      if (xp.dnaPos.length || xp.dnaPeps.length || xp.dnaBind.length) {
+      if (xp.dnaPos.length || xp.dnaCand.length || xp.dnaPeps.length || xp.dnaBind.length) {
         tlabel('DNA crosslinks', y);
         gridLine(y);
         for (const [a, b] of xp.dnaBind) if (inView(a, b)) g += box(a, b, IFACE_COLOR[8], 0.22, '<b>UniProt DNA-binding region</b> ' + a + '–' + b);
         for (const [a, b] of xp.dnaPeps) if (inView(a, b)) g += box(a, b, IFACE_COLOR[8], 0.45, '<b>DNA-crosslinked peptide</b> ' + a + '–' + b + '<br>Trendel et al. 2025, MCF7');
-        for (const pos of xp.dnaPos) if (pos >= v0 && pos <= v1) g += tick(pos, IFACE_COLOR[8], '<b>DNA-crosslinked residue</b> ' + pos + '<br>Trendel et al. 2025, MCF7');
+        for (const pos of xp.dnaCand) if (pos >= v0 && pos <= v1) g += box(pos, pos, IFACE_COLOR[8], 0.75, '<b>DNA crosslink candidate</b> ' + pos + '<br>One of several residues the crosslink may sit on · Trendel et al. 2025, MCF7');
+        for (const pos of xp.dnaPos) if (pos >= v0 && pos <= v1) g += tick(pos, IFACE_COLOR[8], '<b>DNA crosslink at this residue</b> ' + pos + '<br>Trendel et al. 2025, MCF7');
         y += 18;
       }
     }
@@ -2873,7 +2876,7 @@
       ss: () => sw(SS_COLORS.h, 'Helix') + sw(SS_COLORS.s, 'Strand') + sw(SS_COLORS.c, 'Coil'),
       charge: () => sw(CHARGE_COLORS.basic, 'Basic (R, K)') + sw(CHARGE_COLORS.his, 'His') + sw(CHARGE_COLORS.acidic, 'Acidic (D, E)') + sw(CHARGE_COLORS.other, 'Other'),
       hydro: () => grad(HYDRO, 'Hydrophilic', 'Hydrophobic') + '<span class="muted">Kyte–Doolittle</span>',
-      xl: () => (ixReady() && IX.xlProt.get(mol.p.i) ? sw(XL_COLORS.rna, 'RNA-crosslinked residue') + sw(XL_COLORS.dna, 'DNA-crosslinked residue') + sw(XL_COLORS.both, 'Both') + sw(XL_COLORS.rbd, 'RBDmap RNA-bound fragment') + sw(XL_COLORS.dnaReg, 'DNA-crosslinked peptide or DNA-binding region') + sw(XL_COLORS.none, 'No crosslink') + (mol.mode === 'pdb' && !mol.pdb.pred ? sw(XL_COLORS.other, 'Other chains') : '') :
+      xl: () => (ixReady() && IX.xlProt.get(mol.p.i) ? sw(XL_COLORS.rna, 'RNA-crosslinked residue') + sw(XL_COLORS.dna, 'DNA-crosslinked residue') + sw(XL_COLORS.both, 'Both') + sw(XL_COLORS.rbd, 'RBDmap RNA-bound fragment') + sw(XL_COLORS.dnaReg, 'DNA crosslink candidate, crosslinked peptide or DNA-binding region') + sw(XL_COLORS.none, 'No crosslink') + (mol.mode === 'pdb' && !mol.pdb.pred ? sw(XL_COLORS.other, 'Other chains') : '') :
         '<span class="muted">No RNA or DNA crosslinks recorded for this protein</span>'),
       uniform: () => '',
     };
@@ -3685,9 +3688,9 @@
   const NA_COLOR = { RNA: '#7B4FBF', DNA: '#B7791F' };
   const BIND_OPTS = [
     [1, 'a PRMT', 'PRMT1, PRMT2, PRMT3, CARM1 (PRMT4), PRMT5, PRMT6, PRMT7, PRMT8 or PRMT9'],
-    [2, 'a Tudor-domain protein', 'InterPro IPR002999: methylarginine readers such as SMN1/2, SMNDC1, TDRD3, SND1 and TDRKH, and methyllysine readers such as PHF1, SETDB1 and KDM4A'],
+    [2, 'a Tudor-domain protein', 'InterPro IPR002999: methylarginine readers such as SMN1/2, SMNDC1, TDRD3 and SND1 (TDRKH binds methylated PIWI proteins but can also bind PIWIL1 independently of methylation), and methyllysine readers such as PHF1, SETDB1 and KDM4A'],
     [4, 'a WD40-repeat protein', 'InterPro IPR001680, e.g. WDR77 (MEP50), the PRMT5 cofactor, and WDR5, which reads symmetric dimethyl-H3R2'],
-    [5, 'a PHD-finger protein', 'InterPro IPR001965 or IPR019787: zinc fingers that mostly read the histone H3 N-terminus, where H3R2 methylation can block binding (e.g. UHRF1)'],
+    [5, 'a PHD-finger protein', 'InterPro IPR001965 or IPR019787: zinc fingers, many of which read the histone H3 N-terminus, where H3R2 methylation can block binding (e.g. UHRF1)'],
     [3, 'another methylated protein', 'A partner that is itself in this methylarginine set'],
     [6, 'any other protein', 'A partner that is not a PRMT and has no Tudor, WD40 or PHD domain'],
   ];
@@ -3794,9 +3797,9 @@
     const gallery = (d.gallery || []).map(([j, k, src, score, pdq, plR, plP, d10, flags, res, ref, chain]) => ({ j, k, src, score, pdq, plR, plP, d: d10 / 10, flags, res, ref, chain }));
     for (const g of gallery) { const s = S[g.j]; if (s) (s.gal = s.gal || []).push(g); }
     // Residue-level RNA/DNA crosslinks (pepR-MS compendium, RBDmap, Trendel 2025, UniProt DNA-binding regions).
-    for (const [j, r, n, dna, f] of d.xl || []) { if (S[j]) S[j].xl = { r, n, d: dna, f }; }
+    for (const [j, r, n, dna, f, one] of d.xl || []) { if (S[j]) S[j].xl = { r, n, d: dna, f, one: !!one }; }
     const xlProt = new Map();
-    for (const [i, rnaPos, rnaBits, dnaPos, dnaPeps, dnaBind, dnaInt, rbd] of d.xl_prot || []) xlProt.set(i, { rnaPos, rnaBits, dnaPos, dnaPeps, dnaBind, dnaInt: !!dnaInt, rbd: rbd || [] });
+    for (const [i, rnaPos, rnaBits, dnaPos, dnaPeps, dnaBind, dnaInt, rbd, dnaCand] of d.xl_prot || []) xlProt.set(i, { rnaPos, rnaBits, dnaPos, dnaPeps, dnaBind, dnaInt: !!dnaInt, rbd: rbd || [], dnaCand: dnaCand || [] });
     const modelledGaps = new Map((d.modelled_gaps || []).map(([k, pos, pdbs]) => [k, { pos, pdbs }]));
     IX = { meta: d.meta, prot, byEnsp, cx, cxOf, enrich: d.enrich || {}, goEnrich: d.go_enrich || {}, strata: d.enrich_strata || {}, cd, wr, nP,
       geoSummary: d.geometry_summary || {}, rg: d.rg_iface || {}, modelledGaps, condConf: d.cond_conf || {}, nModelled: (d.modelled || []).length,
@@ -3885,26 +3888,29 @@
     return '<span class="tag pred' + (best ? ' pred-hi' : '') + '" title="' + esc(tip) + '">pred. ' + esc(name) + (more.size > 1 ? ' +' + (more.size - 1) : '') + '</span>';
   };
   // RNA/DNA crosslinking mass spectrometry in living human cells.
-  const XL_OPTS = [[1, 'RNA-crosslinked residue'], [2, 'Within 3 aa of an RNA crosslink'], [4, 'RBDmap RNA-bound fragment'], [8, 'DNA-crosslinked residue'], [16, 'UniProt DNA-binding region']];
+  const XL_OPTS = [[1, 'RNA-crosslinked residue'], [2, 'Within 3 aa of an RNA crosslink'], [4, 'RBDmap RNA-bound fragment'],
+    [8, 'DNA crosslink at this residue', 'The DNA crosslink is localised to this residue alone (Trendel et al. 2025)'],
+    [32, 'DNA crosslink candidate', 'One of the residues a DNA crosslink may sit on; most DNA crosslinks are not localised to a single residue'], [16, 'UniProt DNA-binding region']];
   const xlSets = (bits) => (IX.xlSets || []).filter((_, k) => bits & (1 << k)).concat(bits & 32 ? ['pepR-MS focused site'] : []);
   function xlMask(s) {
     const x = s.xl;
     if (!x) return 0;
-    return (x.r ? 1 : 0) | (x.n ? 2 : 0) | (x.f ? 4 : 0) | (x.d & 1 ? 8 : 0) | (x.d & 4 ? 16 : 0);
+    return (x.r ? 1 : 0) | (x.n ? 2 : 0) | (x.f ? 4 : 0) | (x.d & 1 ? 8 : 0) | (x.d & 4 ? 16 : 0) | (x.d & 9 ? 32 : 0);
   }
   function xlTags(s) {
     const x = s.xl;
     if (!x) return '';
     const t = [];
-    if (x.r) t.push('<span class="tag na-rna" title="' + esc('RNA-crosslinked residue in living human cells (UV crosslinking mass spectrometry): ' + xlSets(x.r).join(', ')) + '">RNA xl</span>');
+    if (x.r) t.push('<span class="tag na-rna' + (x.one ? '' : ' xl-near') + '" title="' + esc('RNA-crosslinked residue in living human cells (UV crosslinking mass spectrometry): ' + xlSets(x.r).join(', ') + (x.one ? '. At least one crosslink is localised to this residue alone.' : '. Only as one of several candidate residues of a crosslink.')) + '">RNA xl</span>');
     else if (x.n) t.push('<span class="tag na-rna xl-near" title="' + esc('Within 3 residues of an RNA-crosslinked residue: ' + xlSets(x.n).join(', ')) + '">near RNA xl</span>');
     if (x.f) t.push('<span class="tag na-rna xl-near" title="Inside an RNA-bound fragment (RBDmap, HeLa; Castello et al. 2016)">RBDmap</span>');
-    if (x.d & 1) t.push('<span class="tag na-dna" title="DNA-crosslinked residue in living MCF7 cells (Trendel et al. 2025)">DNA xl</span>');
+    if (x.d & 1) t.push('<span class="tag na-dna" title="DNA crosslink localised to this residue in living MCF7 cells (Trendel et al. 2025)">DNA xl</span>');
+    else if (x.d & 8) t.push('<span class="tag na-dna xl-near" title="One of several candidate residues of a DNA crosslink in living MCF7 cells (Trendel et al. 2025)">DNA xl candidate</span>');
     else if (x.d & 2) t.push('<span class="tag na-dna xl-near" title="Inside a DNA-crosslinked peptide (Trendel et al. 2025)">DNA xl peptide</span>');
     if (x.d & 4) t.push('<span class="tag na-dna xl-near" title="Inside a UniProt DNA-binding region">DNA-binding domain</span>');
     return t.join(' ');
   }
-  const xlText = (s) => (s.xl ? [s.xl.r ? 'RNA:' + xlSets(s.xl.r).join('/') : '', s.xl.n && !s.xl.r ? 'RNA<=3aa' : '', s.xl.f ? 'RBDmap' : '', s.xl.d & 1 ? 'DNA' : '', s.xl.d & 2 && !(s.xl.d & 1) ? 'DNA peptide' : '', s.xl.d & 4 ? 'UniProt DNA-binding' : ''].filter(Boolean).join(';') : '');
+  const xlText = (s) => (s.xl ? [s.xl.r ? 'RNA:' + xlSets(s.xl.r).join('/') : '', s.xl.n && !s.xl.r ? 'RNA<=3aa' : '', s.xl.f ? 'RBDmap' : '', s.xl.d & 1 ? 'DNA' : s.xl.d & 8 ? 'DNA candidate' : '', s.xl.d & 2 && !(s.xl.d & 9) ? 'DNA peptide' : '', s.xl.d & 4 ? 'UniProt DNA-binding' : ''].filter(Boolean).join(';') : '');
   const predText = (s) => (s.pred ? s.pred.hits.map(([k, sc]) => ixGene(k) + ':' + (sc / 100).toFixed(2)).join(';') : '');
   const modelledTag = (s) => (s.modelled ? '<span class="tag var" title="' + esc('Modelled as ' + s.modelled.comps.join('/') + ' in ' + s.modelled.pdbs.map((x) => x.toUpperCase()).join(', ')) + '">PDB ' + esc(s.modelled.comps[0]) + '</span>' : '');
   function contactHtml(s, max) {
@@ -4550,12 +4556,13 @@
         '<p class="muted">No RNA crosslinks recorded for this protein in the pepR-MS compendium or RBDmap.</p>') +
         '<p class="note">UV crosslinking mass spectrometry localises the amino acid that touched RNA in living cells (pepR-MS re-analysis of Kramer 2014, XRNAX, RBS-ID, pRBS-ID and pepR-MS; RBDmap gives RNA-bound fragments). None of the pepR-MS crosslinked peptides carries a methylation mass shift, so a methylated arginine is seen there through its unmethylated fraction.</p></section>';
     }
-    const at = sites.filter((s) => s.xl && s.xl.d & 1), pep = sites.filter((s) => s.xl && !(s.xl.d & 1) && s.xl.d & 2), bind = sites.filter((s) => s.xl && s.xl.d & 4);
+    const at = sites.filter((s) => s.xl && s.xl.d & 1), cand = sites.filter((s) => s.xl && !(s.xl.d & 1) && s.xl.d & 8), pep = sites.filter((s) => s.xl && !(s.xl.d & 9) && s.xl.d & 2), bind = sites.filter((s) => s.xl && s.xl.d & 4);
     return '<section><h4>DNA contact in living cells</h4>' +
       '<p>' + (xp && xp.dnaInt ? '<b>In the DNA interactome</b> of MCF7 cells (direct protein–DNA photo-crosslinking; Trendel et al. 2025).' : 'Not in the Trendel et al. 2025 DNA interactome (MCF7).') +
-      (xp && xp.dnaPos.length ? ' ' + fmt(xp.dnaPos.length) + ' DNA-crosslinked residues.' : '') + (xp && xp.dnaBind.length ? ' UniProt DNA-binding regions: ' + ranges(xp.dnaBind) + '.' : '') + '</p>' +
-      '<ul class="ix-sites">' + (at.length ? '<li><b>At a DNA-crosslinked residue:</b> ' + list(at) + '</li>' : '') + (pep.length ? '<li><b>Inside a DNA-crosslinked peptide:</b> ' + list(pep) + '</li>' : '') + (bind.length ? '<li><b>Inside a UniProt DNA-binding region:</b> ' + list(bind) + '</li>' : '') +
-      (!at.length && !pep.length && !bind.length ? '<li class="muted">No methylarginine at a DNA-crosslinked residue or in a DNA-binding region.</li>' : '') + '</ul></section>';
+      (xp && (xp.dnaPos.length || xp.dnaCand.length) ? ' Crosslinks localised to ' + fmt(xp.dnaPos.length) + ' residue' + (xp.dnaPos.length === 1 ? '' : 's') + ' alone and to ' + fmt(xp.dnaCand.length) + ' further candidate residue' + (xp.dnaCand.length === 1 ? '' : 's') + '.' : '') + (xp && xp.dnaBind.length ? ' UniProt DNA-binding regions: ' + ranges(xp.dnaBind) + '.' : '') + '</p>' +
+      '<ul class="ix-sites">' + (at.length ? '<li><b>At a DNA-crosslinked residue:</b> ' + list(at) + '</li>' : '') + (cand.length ? '<li><b>A candidate residue of a DNA crosslink:</b> ' + list(cand) + '</li>' : '') + (pep.length ? '<li><b>Inside a DNA-crosslinked peptide:</b> ' + list(pep) + '</li>' : '') + (bind.length ? '<li><b>Inside a UniProt DNA-binding region:</b> ' + list(bind) + '</li>' : '') +
+      (!at.length && !cand.length && !pep.length && !bind.length ? '<li class="muted">No methylarginine at a DNA-crosslinked residue or in a DNA-binding region.</li>' : '') + '</ul>' +
+      '<p class="note">Most DNA crosslinks in Trendel et al. 2025 are localised only to a short run of candidate residues, so "candidate" marks residues the crosslink may sit on.</p></section>';
   }
 
   function renderIxNucleic(p, body, kind) {
@@ -4668,21 +4675,23 @@
     const xe = IX.xlEnrich || {}, T = IX.xlTypes || {};
     if (xe.rna_xl && xe.rna_xl.or) {
       const [a, b, c, d] = xe.rna_xl.or.pooled, m = xe.rna_xl.or.mh;
+      const one = xe.rna_xl_single && xe.rna_xl_single.or ? xe.rna_xl_single.or.mh : null;
       out.push({ sec: 'cells', html: 'In living cells, methylated arginines are <b>' + dirCi(m[1], m[2]) + '</b> the residue crosslinked to RNA than the other arginines of the same proteins: ' +
-        pctText(a, a + b || 1) + '% vs ' + pctText(c, c + d || 1) + '% (within-protein ' + orCi(m) + ', ' + fmt(m[4]) + ' proteins).' });
+        pctText(a, a + b || 1) + '% vs ' + pctText(c, c + d || 1) + '% (within-protein ' + orCi(m) + ', ' + fmt(m[4]) + ' proteins' + (one ? '; crosslinks localised to a single residue only: ' + orCi(one) : '') + '). ' +
+        'The crosslink searches carry no methylation mass, so these crosslinks were caught on unmethylated copies of the peptides.' });
     }
-    const t = T.rna_xl || {};
+    const t = T.rna_xl || {}, t1 = T.rna_xl_single || {};
     if (t.rme2s && t.rme2a && t.nostate) {
-      const part = (o, label) => label + ', <b>' + (o.mh[1] > 1 ? 'more often' : o.mh[2] < 1 ? 'less often' : 'no significant difference') + '</b> (' + orCi(o.mh) + ')';
-      out.push({ sec: 'cells', html: 'RNA crosslinking by methylation type, against unmethylated arginines of the same proteins: ' + part(t.rme2s, 'symmetric dimethylarginines (Rme2s, SDMA IP)') + '; ' + part(t.rme2a, 'asymmetric (Rme2a, ADMA IP)') + '; ' + part(t.nostate, 'sites without a state call') + '.' });
+      const part = (o, label) => label + ', <b>' + (o.mh[1] > 1 ? 'more often' : o.mh[2] < 1 ? 'less often' : 'no significant difference') + '</b> (' + orCi(o.mh) + ', ' + fmt(o.pooled[0]) + ' crosslinked)';
+      const s1 = t1.rme2s && t1.rme2s.mh[0] != null ? ' With single-localisation crosslinks only, SDMA-IP sites: ' + orCi(t1.rme2s.mh) + '.' : '';
+      out.push({ sec: 'cells', html: 'RNA crosslinking by methylation class, against unmethylated arginines of the same proteins: ' + part(t.rme2s, 'sites recovered by the SDMA IP (Rme2s)') + '; ' + part(t.rme2a, 'ADMA IP (Rme2a)') + '; ' + part(t.nostate, 'sites without a state call') + '.' + s1 +
+        ' Few residues carry these classes, so treat the class differences as suggestive.' });
     }
-    if (xe.dna_xl && xe.dna_xl.or) {
-      const m = xe.dna_xl.or.mh;
-      const td = T.dna_xl || {};
-      const typed = ['rme2s', 'rme2a', 'rme1ip'].filter((k) => td[k]).reduce((n, k) => n + td[k].pooled[0], 0);
-      const noState = td.nostate ? td.nostate.pooled[0] : null;
-      out.push({ sec: 'cells', html: 'Methylated arginines are <b>' + dirCi(m[1], m[2]) + '</b> the residue crosslinked to DNA (within-protein ' + orCi(m) + ', ' + fmt(m[4]) + ' proteins; Trendel et al. 2025)' +
-        (noState != null && typed === 0 ? '; ' + fmt(noState) + ' of the ' + fmt(xe.dna_xl.or.pooled[0]) + ' DNA-crosslinked methylarginines have no state call, and none is typed by methyl-specific IP' : '') + '.' });
+    if (xe.dna_cand && xe.dna_cand.or) {
+      const one = xe.dna_xl && xe.dna_xl.or ? xe.dna_xl.or.pooled : null, m = xe.dna_cand.or.mh, bind = xe.dna_bind && xe.dna_bind.or ? xe.dna_bind.or.mh : null;
+      out.push({ sec: 'cells', html: 'DNA crosslinks (Trendel et al. 2025, MCF7) are rarely localised to one residue: ' + (one ? fmt(one[0]) + ' methylarginine' + (one[0] === 1 ? ' carries one' : 's carry one') + ' localised to it alone. ' : '') +
+        'Counting every candidate residue, methylated arginines are <b>' + dirCi(m[1], m[2]) + '</b> a candidate than other arginines of the same proteins (' + orCi(m) + ')' +
+        (bind && bind[0] != null ? ', and they sit <b>' + dirCi(bind[1], bind[2]) + '</b> inside UniProt DNA-binding regions (' + orCi(bind) + ')' : '') + '.' });
     }
     const st = IX.strata || {};
     if (st.rna && st.protein) {
@@ -4916,22 +4925,28 @@
         const [a, b] = o.pooled;
         return '<td class="r num">' + fmt(a) + ' / ' + fmt(a + b) + ' <span class="muted">(' + pctText(a, a + b || 1) + '%)</span></td><td class="r num">' + cellOr(o) + '</td>';
       };
-      return '<tr><td><b>' + label + '</b></td>' + cell('rna_xl') + cell('rna_rbdmap') + '</tr>';
+      return '<tr><td><b>' + label + '</b></td>' + cell('rna_xl') + cell('rna_xl_single') + cell('rna_rbdmap') + '</tr>';
     };
     const ref = T.rna_xl && T.rna_xl.any ? T.rna_xl.any.pooled : null, refF = T.rna_rbdmap && T.rna_rbdmap.any ? T.rna_rbdmap.any.pooled : null;
+    const refS = T.rna_xl_single && T.rna_xl_single.any ? T.rna_xl_single.any.pooled : null;
+    const refCell = (r) => (r ? '<td class="r num">' + fmt(r[2]) + ' / ' + fmt(r[2] + r[3]) + ' (' + pctText(r[2], r[2] + r[3] || 1) + '%)</td><td class="r">1</td>' : '<td class="r">—</td><td class="r">1</td>');
+    const sd = (k) => (T[k] && T[k].rme2s ? T[k].rme2s : null);
+    const orTxt = (o, noun) => (o && o.mh && o.mh[0] != null ? 'OR ' + fmtOr(o.mh[0], o.mh[1], o.mh[2]) + ', p ' + fmtP(o.mh[3]) + ', ' + fmt(o.pooled[0]) + ' ' + (noun || 'crosslinked') : '—');
     const F_ = IX.xlFreq;
     return '<h4 style="margin-top:1rem">RNA and DNA contact in living cells (crosslinking mass spectrometry)</h4>' +
       '<p class="sub">UV crosslinking locates the residue that touches RNA or DNA in human cells, including in disordered regions that structures miss. Each row compares methylated arginines with the other arginines of the proteins that have that evidence: odds ratio within proteins (Mantel–Haenszel, each protein a stratum) with its 95% confidence interval (Robins–Breslow–Greenland) and CMH p value.</p>' +
       '<div class="tbl-wrap"><table class="tbl compact strata-tbl"><thead><tr><th>Arginine is…</th><th class="r">OR within protein [95% CI]</th><th class="r">Methylated R</th><th class="r">Other R</th><th class="r hide-xs">Informative / proteins</th></tr></thead><tbody>' +
-      row('rna_xl', 'An RNA-crosslinked residue', 1) + row('rna_xl_nonrg', '… excluding RG/GR dipeptides') + row('rna_near', 'Within 3 aa of an RNA crosslink', 2) + row('rna_rbdmap', 'Inside an RBDmap RNA-bound fragment', 4) + row('rna_rbdmap_nonrg', '… excluding RG/GR dipeptides') +
-      row('dna_xl', 'A DNA-crosslinked residue', 8) + row('dna_pep', 'Inside a DNA-crosslinked peptide') + row('dna_bind', 'Inside a UniProt DNA-binding region', 16) + '</tbody></table></div>' +
+      row('rna_xl', 'An RNA-crosslinked residue', 1) + row('rna_xl_single', '… named alone by a crosslink (single localisation)') + row('rna_xl_nonrg', '… excluding RG/GR dipeptides') + row('rna_near', 'Within 3 aa of an RNA crosslink', 2) + row('rna_rbdmap', 'Inside an RBDmap RNA-bound fragment', 4) + row('rna_rbdmap_nonrg', '… excluding RG/GR dipeptides') +
+      row('dna_xl', 'A DNA crosslink localised to this residue', 8) + row('dna_cand', '… or one of its candidate residues', 32) + row('dna_pep', 'Inside a DNA-crosslinked peptide') + row('dna_bind', 'Inside a UniProt DNA-binding region', 16) + '</tbody></table></div>' +
+      '<p class="note">About half of the crosslinks name several candidate residues; "single localisation" keeps only residues that at least one crosslink names alone. Few DNA crosslinks are localised to one residue, so the DNA test rests on candidates.</p>' +
       '<h4 style="margin-top:1rem">By methylation type</h4>' +
       '<p class="sub">Each class of methylated arginine against the unmethylated arginines (not in the union) of the same proteins. IP classes come from methyl-specific immunoprecipitation (Maron et al. 2021: SDMA, ADMA, MMA antibodies); state calls come from the source studies.</p>' +
-      '<div class="tbl-wrap"><table class="tbl compact strata-tbl"><thead><tr><th>Methylarginines</th><th class="r">At the crosslinked residue</th><th class="r">OR [95% CI]</th><th class="r">Inside an RBDmap fragment</th><th class="r">OR [95% CI]</th></tr></thead><tbody>' +
-      typeRow('rme2s', 'Rme2s (SDMA IP)') + typeRow('rme2a', 'Rme2a (ADMA IP, not SDMA)') + typeRow('rme1ip', 'Rme1 (MMA IP only)') + typeRow('rme2', 'Rme2 (source call)') + typeRow('rme1', 'Rme1 only (source call)') + typeRow('nostate', 'No state call or IP') + typeRow('any', 'All methylarginines') +
-      (ref ? '<tr class="muted"><td>Unmethylated arginines (reference)</td><td class="r num">' + fmt(ref[2]) + ' / ' + fmt(ref[2] + ref[3]) + ' (' + pctText(ref[2], ref[2] + ref[3] || 1) + '%)</td><td class="r">1</td><td class="r num">' + (refF ? fmt(refF[2]) + ' / ' + fmt(refF[2] + refF[3]) + ' (' + pctText(refF[2], refF[2] + refF[3] || 1) + '%)' : '—') + '</td><td class="r">1</td></tr>' : '') +
+      '<div class="tbl-wrap"><table class="tbl compact strata-tbl"><thead><tr><th>Methylarginines</th><th class="r">At the crosslinked residue</th><th class="r">OR [95% CI]</th><th class="r">Single localisation</th><th class="r">OR [95% CI]</th><th class="r">Inside an RBDmap fragment</th><th class="r">OR [95% CI]</th></tr></thead><tbody>' +
+      typeRow('rme2s', 'Recovered by the SDMA IP (Rme2s)') + typeRow('rme2a', 'ADMA IP, not SDMA (Rme2a)') + typeRow('rme1ip', 'MMA IP only (Rme1)') + typeRow('rme2', 'Rme2 (source call)') + typeRow('rme1', 'Rme1 only (source call)') + typeRow('nostate', 'No state call or IP') + typeRow('any', 'All methylarginines') +
+      (ref ? '<tr class="muted"><td>Unmethylated arginines (reference)</td>' + refCell(ref) + refCell(refS) + refCell(refF) + '</tr>' : '') +
       '</tbody></table></div>' +
-      '<p class="note">Symmetric dimethylarginines (Rme2s) sit inside RNA-bound fragments far more often than other arginines of the same proteins, yet are less often the exact residue caught crosslinked to RNA. Methylation weakening that residue\'s own contact would give this pattern; so would a detection effect, because RBDmap detects a fragment through neighbouring peptides while the pepR-MS searches identify only unmethylated crosslinked peptides (none carries a methylation mass shift), which a fully methylated site cannot give.</p>' +
+      '<p class="note">Sites recovered by the SDMA IP sit inside RNA-bound RBDmap fragments more often than other arginines of the same proteins (' + orTxt(sd('rna_rbdmap'), 'inside fragments') + '), but are less often the exact residue caught crosslinked to RNA (' + orTxt(sd('rna_xl')) + '; single localisation only: ' + orTxt(sd('rna_xl_single')) + '). ' +
+        'Treat the second result as suggestive: it rests on few crosslinked residues, and the pepR-MS searches identify only unmethylated crosslinked peptides (none carries a methylation mass shift), so a site that is almost fully methylated can look depleted even if its methylated copies touch RNA. Methylation weakening that residue\'s own contact would also give this pattern. The SDMA IP class means the peptide was recovered by the SDMA antibody, not that the site was shown to be symmetric dimethylated.</p>' +
       (F_ ? '<p class="note"><b>Contact frequency.</b> Among RNA-crosslinked arginines, methylated ones were seen in ' + F_.spectra.meth[1] + ' crosslinked spectra on average (median ' + F_.spectra.meth[2] + ', n = ' + fmt(F_.spectra.meth[0]) + ') against ' + F_.spectra.other[1] + ' (median ' + F_.spectra.other[2] + ', n = ' + fmt(F_.spectra.other[0]) + ') for unmethylated ones (Mann–Whitney p ' + fmtP(F_.spectra.p) + '), and in ' + F_.datasets.meth[1] + ' vs ' + F_.datasets.other[1] + ' datasets (p ' + fmtP(F_.datasets.p) + '); crosslinked in two or more datasets, within protein: OR ' + fmtOr(F_.multi.mh[0], F_.multi.mh[1], F_.multi.mh[2]) + ', p ' + fmtP(F_.multi.mh[3]) + '.</p>' : '') +
       '<p class="note">RNA: pepR-MS compendium (Sha, Kuster & Trendel 2025; with Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 re-analysed) and RBDmap (Castello et al. 2016). DNA: Trendel et al. 2025 (MCF7). Click a row of the first table to list the sites.</p>';
   }
@@ -5444,6 +5459,7 @@
       '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two most recent entries per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were read from the structure itself (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylated arginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
       '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue that touched RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016). DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence (26,012 matched, 68 dropped). Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides.</li>' +
       '<li><b>Writer and reader paths</b>: the protein network can add a second ring of PRMTs and Tudor-domain proteins that bind its partners (STRING ≥ 0.7).</li>' +
+      '<li><b>Residue numbering</b>: positions follow the canonical UniProt sequence with the initiator methionine as 1. Papers often number differently: histone marks omit the methionine (H3R2 is UniProt R3 of P68431, H4R3 is R4 of P62805), and some receptors are numbered from the mature protein (EGFR R198/R200 in Liao et al. 2015 are UniProt R222/R224).</li>' +
       '<li><b>Unreviewed UniProt entries</b>: about 870 sites in the union sit on unreviewed (TrEMBL) entries, mostly without a staged sequence, so they lack motif, disorder and domain context. About 580 of them repeat a site at the same position on the reviewed entry of the same gene, so the union counts those residues twice. The explorer keeps the union as published, tags these entries and sites, and offers a "Reviewed UniProt entries only" filter (Provenance); the sites TSV has <code>uniprot_reviewed</code> and <code>same_site_on_reviewed_entry</code> columns.</li>' +
       '<li><b>Statistics</b> (interaction export, <code>scripts/37_export_interaction_data.py</code>): SciPy for Fisher\'s exact test, the hypergeometric test (complexes), Benjamini–Hochberg adjustment and the Mann–Whitney U test; statsmodels for the Mantel–Haenszel pooled odds ratio within proteins, its Robins–Breslow–Greenland 95% confidence interval and the continuity-corrected Cochran–Mantel–Haenszel test. Pooled odds ratios across proteins carry Woolf (log) 95% intervals; log2 odds ratios in the GO and interface tables add 0.5 to each cell (Haldane–Anscombe).</li>' +
       '<li><b>Interactions tab</b>: the key findings are written from the exported statistics, so their wording (more often, less often, not significantly different) follows the numbers. "Self-contact" marks residues that touch another copy of the same protein (a homodimer or homo-oligomer) in a PDB entry.</li>' +

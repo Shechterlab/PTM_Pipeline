@@ -96,6 +96,16 @@ def recommended_name(value: str) -> str:
     return name.strip()
 
 
+# Typos carried over from the Maron et al. 2021 Table S5 reference strings.
+REFERENCE_FIXES = {'Cancer Cell 36, 194-209.e199 (2019)': 'Cancer Cell 36, 194-209.e9 (2019)'}
+
+
+def clean_reference(reference: str) -> str:
+    for bad, good in REFERENCE_FIXES.items():
+        reference = reference.replace(bad, good)
+    return reference
+
+
 def study_label(reference: str) -> str:
     """Short 'Author Year' label for a Maron Table S5 reference string."""
     ref = reference.strip()
@@ -434,7 +444,7 @@ def main() -> None:
             int(row['position_int']),
             STATES.index(state) if state in STATES else 0,
             source_vocab.mask(split_multi(row['source_families_exact'])),
-            [refs.index(ref) for ref in split_multi(row['reference_any'])],
+            [refs.index(clean_reference(ref)) for ref in split_multi(row['reference_any'])],
             disorder_classes.index(row['disorder_context_class']),
             to_int(row['nearest_disorder_edge_distance']),
             domain_contexts.index(row['domain_context_class']),
@@ -465,7 +475,7 @@ def main() -> None:
         if idx is None:
             evidence_unmatched += 1
             continue
-        reference = row['reference'].strip()
+        reference = clean_reference(row['reference'].strip())
         if row['source_table'] == 'maron_s5' and reference:
             study = study_label(reference)
             study_citations[study] = reference

@@ -84,7 +84,8 @@ RBDMAP_S1 = 'https://ora.ox.ac.uk/objects/uuid:092f4366-cac9-4ed7-8283-89dc60328
 UNIPROT_DNA_BIND = 'https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606+AND+ft_dna_bind:*&fields=accession,ft_dna_bind&format=tsv'
 RNA_XL_SETS = [('Kramer_2014', 'Kramer 2014'), ('Trendel_2019', 'XRNAX 2019'), ('Bae_2020', 'RBS-ID 2020'), ('Bae_2021', 'pRBS-ID 2021'), ('this study', 'pepR-MS 2025')]
 RNA_FOCUSED = 32                       # pepR-MS Table S3 focused crosslinking site
-D_XL, D_PEP, D_BIND = 1, 2, 4          # DNA: localised crosslink residue, inside a crosslinked peptide, UniProt DNA-binding region
+D_XL, D_PEP, D_BIND, D_CAND = 1, 2, 4, 8  # DNA: crosslink localised to this residue alone, inside a crosslinked peptide,
+                                          # UniProt DNA-binding region, one of several candidate residues of a crosslink
 XL_NEAR = 3                            # "near" = within this many residues of a crosslinked residue
 RINGS = {'PHE': ('CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ'), 'TYR': ('CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ'), 'TRP': ('CD2', 'CE2', 'CE3', 'CZ2', 'CZ3', 'CH2')}
 PDBE_MODRES = 'https://www.ebi.ac.uk/pdbe/api/pdb/entry/modified_AA_or_NA/{pdb}'
@@ -1015,6 +1016,9 @@ def load_crosslinks(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None
     folder.mkdir(parents=True, exist_ok=True)
     rna, dna, rbd = defaultdict(dict), defaultdict(dict), defaultdict(list)
     rna_n = defaultdict(Counter)   # crosslinked peptide-spectrum rows per residue (Table S2, all datasets)
+    # A crosslink (dataset, peptide, RNA mass) is often listed at several candidate positions; residues named alone
+    # by at least one crosslink are "single-localisation" residues.
+    rna_cands, rna_single = defaultdict(set), defaultdict(set)
     dna_peps, dna_bind, dna_interactome = defaultdict(list), defaultdict(list), set()
     checked = Counter()
 
@@ -1048,14 +1052,22 @@ def load_crosslinks(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None
                     if m and ok(acc, pos, m.group(1)):
                         rna[acc][pos] = rna[acc].get(pos, 0) | (1 << bit)
                         rna_n[acc][pos] += 1
+                        rna_cands[(bit, acc, str(r[ix['Peptide Sequence']]), str(r[ix['RNA Mass']]))].add(pos)
             wb = openpyxl.load_workbook(io.BytesIO(zf.read(names['Table_S3.xlsx'])), read_only=True)
             rows = wb['Crosslinking site'].iter_rows(values_only=True)
             ix = {h: k for k, h in enumerate(next(rows))}
             for r in rows:
                 acc = base_acc(str(r[ix['Protein ID']]))
-                for aa, pos in zip(json.loads(r[ix['Focused Site AA']] or '[]'), json.loads(r[ix['Focused Site Position']] or '[]')):
+                focused = list(zip(json.loads(r[ix['Focused Site AA']] or '[]'), json.loads(r[ix['Focused Site Position']] or '[]')))
+                for aa, pos in focused:
                     if ok(acc, int(pos), aa):
                         rna[acc][int(pos)] = rna[acc].get(int(pos), 0) | RNA_FOCUSED
+                        if len(focused) == 1:
+                            rna_single[acc].add(int(pos))
+            for (_, acc, _, _), positions in rna_cands.items():
+                if len(positions) == 1:
+                    rna_single[acc].update(positions)
+            log(f'RNA crosslinks: {sum(len(v) for v in rna.values()):,} residues, {sum(len(v) for v in rna_single.values()):,} named alone by at least one crosslink')
 
     # RBDmap high-confidence RNA-bound fragments (RBDpep), kept where the fragment matches the canonical sequence.
     rpath = folder / 'rbdmap_castello2016_table_s1.xlsx'
@@ -1112,9 +1124,11 @@ def load_crosslinks(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None
                 start = int(r[ix['Protein position start']])
             except (TypeError, ValueError):
                 continue
+            # Lower case marks the residues the crosslink may sit on; most peptides leave several candidates.
+            bit = D_XL if sum(ch.islower() for ch in pep) == 1 else D_CAND
             for k, ch in enumerate(pep):
                 if ch.islower() and ok(acc, start + k, ch.upper()):
-                    dna[acc][start + k] = D_XL
+                    dna[acc][start + k] = dna[acc].get(start + k, 0) | bit
         rows = wb['4ST-xl-peptides combined'].iter_rows(values_only=True)
         ix = {h: k for k, h in enumerate(next(rows))}
         for r in rows:
@@ -1138,7 +1152,7 @@ def load_crosslinks(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None
                 dna_bind[acc].append((int(a), int(b)))
     log(f'Crosslinks: RNA {sum(len(v) for v in rna.values()):,} residues in {len(rna):,} proteins; DNA {sum(len(v) for v in dna.values()):,} residues in {len(dna):,} proteins, '
         f'{len(dna_interactome):,} DNA-interactome proteins; UniProt DNA-binding regions in {len(dna_bind):,} proteins; sequence check {dict(checked)}')
-    return rna, rna_n, rbd, dna, dna_peps, dna_interactome, dna_bind
+    return rna, rna_n, rbd, dna, dna_peps, dna_interactome, dna_bind, rna_single
 
 
 def informative_strata(tables):
@@ -1626,13 +1640,14 @@ def main():
         f'{sum(1 for g in gallery if g[8] & (G_SB | G_HB)):,} with a salt bridge or H-bond')
 
     # Residue-level RNA and DNA crosslinks: site flags, per-protein tracks and within-protein tests.
-    rna_xl, rna_count, rbd_frag, dna_xl, dna_peps, dna_int, dna_bind = load_crosslinks(cache, args.refresh, {a: v[2] for a, v in proteome.items()}, proteome)
+    rna_xl, rna_count, rbd_frag, dna_xl, dna_peps, dna_int, dna_bind, rna_single = load_crosslinks(cache, args.refresh, {a: v[2] for a, v in proteome.items()}, proteome)
     xl_rows, xl_prot = [], []
-    xl_strata = {k: defaultdict(lambda: [0, 0, 0, 0]) for k in ('rna_xl', 'rna_near', 'rna_rbdmap', 'dna_xl', 'dna_pep', 'dna_bind', 'rna_xl_nonrg', 'rna_rbdmap_nonrg')}
+    xl_strata = {k: defaultdict(lambda: [0, 0, 0, 0]) for k in ('rna_xl', 'rna_xl_single', 'rna_near', 'rna_rbdmap', 'dna_xl', 'dna_cand', 'dna_pep', 'dna_bind', 'rna_xl_nonrg', 'rna_rbdmap_nonrg')}
     for i, acc in enumerate(meth_accs):
         if prots[i][10] or '-' in acc:
             continue
         r_map, d_map, peps, binds, frags = rna_xl.get(acc, {}), dna_xl.get(acc, {}), dna_peps.get(acc, []), dna_bind.get(acc, []), rbd_frag.get(acc, [])
+        r_single = rna_single.get(acc, set())
         site_pos = {sites[j][1] for j in by_prot_sites[i]}
         def near_bits(pos):
             b = 0
@@ -1646,15 +1661,17 @@ def main():
             rb, nb, db = r_map.get(pos, 0), near_bits(pos), dna_bits(pos)
             fb = 1 if any(a <= pos <= b for a, b in frags) else 0
             if rb or nb or db or fb:
-                xl_rows.append([j, rb, nb, db, fb])
+                xl_rows.append([j, rb, nb, db, fb, 1 if pos in r_single else 0])
         if r_map or d_map or peps or binds or frags or acc in dna_int:
-            xl_prot.append([i, sorted(r_map), [r_map[q] for q in sorted(r_map)], sorted(d_map), sorted(set(peps)), sorted(set(binds)), 1 if acc in dna_int else 0, sorted(set(frags))])
+            xl_prot.append([i, sorted(r_map), [r_map[q] for q in sorted(r_map)], sorted(q for q, v in d_map.items() if v & D_XL), sorted(set(peps)), sorted(set(binds)),
+                            1 if acc in dna_int else 0, sorted(set(frags)), sorted(q for q, v in d_map.items() if v == D_CAND)])
         seq_ = proteome.get(acc, ('', '', ''))[2]
         if not seq_:
             continue
-        for key, test, have in (('rna_xl', lambda q: bool(r_map.get(q)), bool(r_map)), ('rna_near', lambda q: bool(near_bits(q)), bool(r_map)),
+        for key, test, have in (('rna_xl', lambda q: bool(r_map.get(q)), bool(r_map)), ('rna_xl_single', lambda q: q in r_single, bool(r_single)), ('rna_near', lambda q: bool(near_bits(q)), bool(r_map)),
                                 ('rna_rbdmap', lambda q: any(a <= q <= b for a, b in frags), bool(frags)),
-                                ('dna_xl', lambda q: bool(d_map.get(q)), bool(d_map)), ('dna_pep', lambda q: any(a <= q <= b for a, b in peps), bool(peps)),
+                                ('dna_xl', lambda q: bool(d_map.get(q, 0) & D_XL), any(v & D_XL for v in d_map.values())),
+                                ('dna_cand', lambda q: bool(d_map.get(q, 0)), bool(d_map)), ('dna_pep', lambda q: any(a <= q <= b for a, b in peps), bool(peps)),
                                 ('dna_bind', lambda q: any(a <= q <= b for a, b in binds), bool(binds))):
             if not have:
                 continue
@@ -1684,8 +1701,9 @@ def main():
     xl_types = {}
     xl_freq = {}
     for out_key, have, test in (('rna_xl', lambda acc: bool(rna_xl.get(acc)), lambda acc, q: bool(rna_xl.get(acc, {}).get(q))),
+                                ('rna_xl_single', lambda acc: bool(rna_single.get(acc)), lambda acc, q: q in rna_single.get(acc, set())),
                                 ('rna_rbdmap', lambda acc: bool(rbd_frag.get(acc)), lambda acc, q: any(a <= q <= b for a, b in rbd_frag.get(acc, []))),
-                                ('dna_xl', lambda acc: bool(dna_xl.get(acc)), lambda acc, q: bool(dna_xl.get(acc, {}).get(q)))):
+                                ('dna_xl', lambda acc: any(v & D_XL for v in dna_xl.get(acc, {}).values()), lambda acc, q: bool(dna_xl.get(acc, {}).get(q, 0) & D_XL))):
         tabs = {name: defaultdict(lambda: [0, 0, 0, 0]) for name, _ in type_classes}
         for i, acc in enumerate(meth_accs):
             if prots[i][10] or '-' in acc or not have(acc):
@@ -1737,7 +1755,8 @@ def main():
     log(f"Crosslink frequency: methylated R mean spectra {xl_freq['spectra']['meth'][1]} vs {xl_freq['spectra']['other'][1]} (p {xl_freq['spectra']['p']}); "
         f"datasets {xl_freq['datasets']['meth'][1]} vs {xl_freq['datasets']['other'][1]} (p {xl_freq['datasets']['p']})")
     log(f'Crosslinks: {sum(1 for r in xl_rows if r[1]):,} methylarginines are RNA-crosslinked residues, {sum(1 for r in xl_rows if r[2]):,} within {XL_NEAR} residues; '
-        f'{sum(1 for r in xl_rows if r[3] & D_XL):,} DNA-crosslinked, {sum(1 for r in xl_rows if r[3] & D_BIND):,} in UniProt DNA-binding regions')
+        f'{sum(1 for r in xl_rows if r[3] & D_XL):,} DNA-crosslinked (single localisation), {sum(1 for r in xl_rows if r[3] & D_CAND):,} DNA candidate residues, '
+        f'{sum(1 for r in xl_rows if r[3] & D_BIND):,} in UniProt DNA-binding regions')
 
     # Residues each interface methylarginine touches, from the structures themselves (RCSB ModelServer).
     contact_rows = []
@@ -1929,10 +1948,10 @@ def main():
                 'cond_score_hist': '{CD-CODE confidence score: memberships of reviewed human proteins}',
                 'pred': ['site', '[[partner index, pDockQ x 100, 1 if this protein is ProtVar uniprot_id1, served model: 1 same order, 2 reversed, 0 none], ...] (top 12)', 'predicted partners'],
                 'gallery': ['site', 'partner index', 'source (0 ProtVar served model, 1 AlphaFold DB complex)', 'score x 100 (ProtVar pDockQ; AlphaFold DB ipTM)', 'pDockQ x 100', 'pLDDT of the arginine', 'lowest pLDDT of the partner residues named', 'minimum heavy-atom distance x 10 (Å)', 'flags (1 salt bridge <= 4 Å, 2 H-bond <= 3.5 Å, 4 cation-pi <= 5 Å, 8 clash < 2.2 Å)', 'partner residues with bond codes (sb, hb, pi)', 'model reference (ProtVar: 1 this protein first, 2 partner first; AlphaFold DB: model id)', 'this protein\'s chain'],
-                'xl': ['site', 'RNA crosslink bits at the residue (1 Kramer 2014, 2 XRNAX 2019, 4 RBS-ID 2020, 8 pRBS-ID 2021, 16 pepR-MS 2025, 32 pepR-MS focused site)', 'same bits within 3 residues', 'DNA bits (1 crosslinked residue, 2 inside a crosslinked peptide, 4 UniProt DNA-binding region)', '1 if inside an RBDmap RNA-bound fragment'],
-                'xl_prot': ['protein index', 'RNA-crosslinked positions', 'their dataset bits', 'DNA-crosslinked positions', 'DNA-crosslinked peptide spans', 'UniProt DNA-binding regions', '1 if in the Trendel 2025 DNA interactome', 'RBDmap RNA-bound fragments'],
-                'xl_enrich': '{rna_xl|rna_near|dna_xl|dna_pep|dna_bind: {pooled, mh, proteins, or: {pooled: [a, b, c, d, OR, lo, hi, p], mh: [OR, lo, hi, p, strata]}}} methylated vs other arginines of proteins with that evidence',
-                'xl_types': '{rna_xl|rna_rbdmap|dna_xl: {rme2s|rme2a|rme1ip|rme2|rme1|nostate|any: or_summary}} each methylation class vs unmethylated arginines of the same proteins',
+                'xl': ['site', 'RNA crosslink bits at the residue (1 Kramer 2014, 2 XRNAX 2019, 4 RBS-ID 2020, 8 pRBS-ID 2021, 16 pepR-MS 2025, 32 pepR-MS focused site)', 'same bits within 3 residues', 'DNA bits (1 crosslink localised to this residue alone, 2 inside a crosslinked peptide, 4 UniProt DNA-binding region, 8 one of several candidate residues of a crosslink)', '1 if inside an RBDmap RNA-bound fragment', '1 if an RNA crosslink names this residue alone (single localisation)'],
+                'xl_prot': ['protein index', 'RNA-crosslinked positions', 'their dataset bits', 'DNA-crosslinked positions (single localisation)', 'DNA-crosslinked peptide spans', 'UniProt DNA-binding regions', '1 if in the Trendel 2025 DNA interactome', 'RBDmap RNA-bound fragments', 'DNA candidate positions (crosslink localised to several residues)'],
+                'xl_enrich': '{rna_xl|rna_near|rna_rbdmap|dna_xl|dna_cand|dna_pep|dna_bind (+ _nonrg RNA variants): {pooled, mh, proteins, or: {pooled: [a, b, c, d, OR, lo, hi, p], mh: [OR, lo, hi, p, strata]}}} methylated vs other arginines of proteins with that evidence',
+                'xl_types': '{rna_xl|rna_xl_single|rna_rbdmap|dna_xl: {rme2s|rme2a|rme1ip|rme2|rme1|nostate|any: or_summary}} each methylation class vs unmethylated arginines of the same proteins',
                 'xl_freq': '{spectra|datasets: {meth: [n, mean, median], other: [...], p (Mann-Whitney)}, multi: or_summary (crosslinked in >= 2 datasets)} among RNA-crosslinked arginines',
                 'pred_enrich': '{pDockQ floor: {all|ordered|disordered: {pooled, mh}}} methylated vs other arginines of the same protein at a predicted interface',
             },
