@@ -2984,7 +2984,7 @@
     const gs = contactGroups(s);
     if (!gs.length) return '';
     return '<div class="contacts">' + gs.slice(0, max || 4).map((g) => '<span><b class="' + g.cls + '">' + esc(g.name) + '</b> ' + esc(g.labels.slice(0, 6).join(' ')) + (g.labels.length > 6 ? ' …' : '') +
-      ' <span class="muted">' + g.pdbs.map((x) => x.toUpperCase()).join(', ') + '</span></span>').join('') + (gs.length > (max || 4) ? '<span class="muted">+' + (gs.length - (max || 4)) + ' more</span>' : '') +
+      ' <span class="muted" title="' + esc(g.pdbs.map((x) => x.toUpperCase()).join(', ')) + '">' + g.pdbs.slice(0, 3).map((x) => x.toUpperCase()).join(', ') + (g.pdbs.length > 3 ? ' +' + (g.pdbs.length - 3) : '') + '</span></span>').join('') + (gs.length > (max || 4) ? '<span class="muted">+' + (gs.length - (max || 4)) + ' more</span>' : '') +
       (s.modelledMe ? '<span class="muted">modelled as ' + esc(s.modelledMe) + '</span>' : '') + '</div>';
   }
   function contactText(s) {
