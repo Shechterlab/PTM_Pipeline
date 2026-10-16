@@ -422,9 +422,10 @@
     if (window.matchMedia && window.matchMedia('(max-width: 560px)').matches) $('#q').placeholder = 'Gene, accession, site or gene list';
     $('#year').textContent = new Date().getFullYear();
     renderHero();
+    const params = new URLSearchParams(location.search);
+    F = filtersFromParams(params);
     renderRail();
     bindGlobal();
-    const params = new URLSearchParams(location.search);
     if (params.get('q')) { $('#q').value = params.get('q'); $('#q-clear').hidden = false; Q = parseQuery(params.get('q')); }
     compute();
     route();
@@ -600,6 +601,46 @@
     $('#query-note').innerHTML = Q.note || '';
     renderScope();
     renderRailState();
+    syncUrl();
+  }
+
+  // Shareable state: the search and every non-default filter live in the query string, e.g.
+  // ?q=FUS&motifQ=PRPR&motifWhere=site#sites. The hash keeps the view or protein, so links reopen the same page.
+  function filterParams(f) {
+    const d = DEFAULT_FILTERS(), out = [];
+    for (const k of Object.keys(d)) {
+      const v = f[k], dv = d[k];
+      if (dv instanceof Set) { if (v.size) out.push([k, Array.from(v).sort((a, b) => a - b).join(',')]); }
+      else if (typeof dv === 'boolean') { if (v) out.push([k, '1']); }
+      else if (String(v) !== String(dv)) out.push([k, String(v)]);
+    }
+    return out;
+  }
+  function filtersFromParams(params) {
+    const f = DEFAULT_FILTERS();
+    for (const k of Object.keys(f)) {
+      if (!params.has(k)) continue;
+      const raw = params.get(k), dv = f[k];
+      if (dv instanceof Set) raw.split(',').filter((x) => x !== '' && Number.isFinite(+x)).forEach((x) => dv.add(+x));
+      else if (typeof dv === 'boolean') f[k] = raw === '1' || raw === 'true';
+      else if (typeof dv === 'number') { const n = +raw; if (Number.isFinite(n)) f[k] = n; }
+      else f[k] = raw;
+    }
+    return f;
+  }
+  function syncUrl() {
+    const qs = new URLSearchParams();
+    if (Q.raw) qs.set('q', Q.raw);
+    for (const [k, v] of filterParams(F)) qs.set(k, v);
+    const s = qs.toString();
+    const next = location.pathname + (s ? '?' + s : '') + location.hash;
+    if (next !== location.pathname + location.search + location.hash) history.replaceState(null, '', next);
+  }
+  function copyLink(btn) {
+    syncUrl();
+    const done = (ok) => { if (!btn) return; const old = btn.textContent; btn.textContent = ok ? 'Link copied' : 'Copy failed'; setTimeout(() => { btn.textContent = old; }, 1600); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(location.href).then(() => done(true), () => done(false));
+    else { window.prompt('Copy this link:', location.href); done(true); }
   }
 
   // Every active constraint, search included, as {label, group, clear}.
@@ -616,7 +657,7 @@
     if (F.multi) add('prov', '≥2 source tables', () => { F.multi = false; });
     if (F.treat) add('treat', TREAT_OPTIONS.find((o) => o[0] === F.treat)[1], () => { F.treat = ''; });
     F.motifs.forEach((v) => add('motif', 'Motif ' + MOTIF_LABEL[M.motifs[v]], () => F.motifs.delete(v)));
-    if (F.motifQ) { const m = parseMotif(F.motifQ); if (m && m.toks) add('motif', 'Motif ' + m.text + (F.motifWhere === 'window' ? ' within ±15 aa' : ' at the site'), () => { F.motifQ = ''; const i = $('#f-motifq'); if (i) i.value = ''; }); }
+    if (F.motifQ) { const m = parseMotif(F.motifQ); if (m && m.toks) add('motif', 'Motif ' + m.text + (F.motifWhere === 'window' ? ' within ±15 aa' : ' at the site'), () => { F.motifQ = ''; }); }
     F.disorder.forEach((v) => add('struct', DISORDER_LABEL[M.disorder_classes[v]], () => F.disorder.delete(v)));
     F.domctx.forEach((v) => add('struct', DOMAIN_LABEL[M.domain_contexts[v]], () => F.domctx.delete(v)));
     if (F.domclass !== '') add('struct', 'Nearest domain: ' + M.domain_classes[+F.domclass], () => { F.domclass = ''; });
@@ -669,8 +710,10 @@
     }
     box.innerHTML = '<span class="scope-count"><span class="scope-flag">Filtered</span><b>' + fmt(R.sites.length) + '</b> of ' + fmt(S.length) + ' sites · <b>' + fmt(R.prots.length) + '</b> proteins</span>' +
       '<span class="scope-chips">' + cons.map((c, k) => '<span class="af' + (c.group === 'search' ? ' search' : '') + '">' + esc(c.label) + '<button type="button" data-k="' + k + '" aria-label="Remove ' + esc(c.label) + '">×</button></span>').join('') + '</span>' +
+      '<button class="btn small quiet scope-link" type="button" id="scope-link" title="Copy a link that reopens this page with the same search and filters">Copy link</button>' +
       '<button class="btn small scope-clear" type="button" id="scope-clear">Clear all</button>';
     $$('.af button', box).forEach((b) => b.addEventListener('click', () => { cons[+b.dataset.k].clear(); afterFilterChange(); }));
+    $('#scope-link', box).addEventListener('click', (e) => copyLink(e.currentTarget));
     $('#scope-clear', box).addEventListener('click', clearAll);
     syncToolbar();
   }
@@ -843,6 +886,9 @@
   }
 
   function renderRailState() {
+    // The motif box mirrors the filter (cleared from a chip, or restored from a shared link) unless being edited.
+    const mq = $('#f-motifq');
+    if (mq && document.activeElement !== mq && mq.value.toUpperCase().replace(/\s+/g, '') !== F.motifQ) { mq.value = F.motifQ; mq.classList.toggle('set', !!F.motifQ); }
     const counts = {};
     for (const c of constraints()) counts[c.group] = (counts[c.group] || 0) + 1;
     $$('[data-count]').forEach((el) => { const n = counts[el.dataset.count] || 0; el.hidden = !n; el.textContent = n; });
