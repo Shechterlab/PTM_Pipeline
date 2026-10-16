@@ -85,6 +85,17 @@ def candidate_accessions(row: pd.Series, canonical_sequences: dict[str, str], ge
     return candidates
 
 
+# Centred site windows in the compiled sources are 13, 15 or 31 residues (+/-6, +/-7, +/-15) with the site in the
+# middle. Anything else in these fields is a peptide (Maron, Fedoriw, Li, Lim) or a window truncated at a protein
+# terminus, whose middle residue says nothing about which arginine was modified.
+CENTERED_WINDOW_LENGTHS = {13, 15, 31}
+
+
+def is_centered_window(sequence: str) -> bool:
+    seq = clean_aa_sequence(sequence)
+    return len(seq) in CENTERED_WINDOW_LENGTHS and seq[(len(seq) + 1) // 2 - 1] == 'R'
+
+
 def build_anchors(row: pd.Series) -> list[dict]:
     anchors: list[dict] = []
     seen: set[tuple[str, tuple[int, ...], str]] = set()
@@ -102,6 +113,7 @@ def build_anchors(row: pd.Series) -> list[dict]:
             'sequence': seq,
             'indices': clean_indices,
             'anchor_type': anchor_type,
+            'full_window': anchor_type == 'centered_window' and is_centered_window(seq),
         })
 
     for peptide in split_multi_value_field(row.get('peptides', ''), separators=','):
@@ -193,6 +205,23 @@ def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dic
                     })
 
     corrected_position, remap_status, anchor_type, anchor_sequence, hit_count = resolve_hit(row, hits, canonical_acc)
+
+    # A peptide (or a truncated window) does not say which of its arginines was modified; the source position does.
+    # Keep the reported position when it is an arginine inside an occurrence of such an anchor on the canonical
+    # accession, instead of the arginine nearest the anchor's middle. Full centred windows stay authoritative.
+    reported = int(row.get('position', 0))
+    canonical_seq = canonical_sequences.get(canonical_acc, '')
+    if corrected_position != reported and canonical_seq and 1 <= reported <= len(canonical_seq) and canonical_seq[reported - 1] == 'R':
+        for anchor in anchors:
+            # Annotated peptides mark the modified residue themselves; full centred windows mark it by position.
+            if anchor['anchor_type'] != 'centered_window' or anchor['full_window']:
+                continue
+            length = len(anchor['sequence'])
+            if any(start <= reported < start + length for start in find_all_occurrences(canonical_seq, anchor['sequence'])):
+                corrected_position, remap_status = reported, 'sequence_position_verified'
+                anchor_type, anchor_sequence = anchor['anchor_type'], anchor['sequence']
+                hit_count = max(hit_count, 1)
+                break
     if corrected_position is None:
         corrected_position, fallback_status = fallback_position(row, canonical_sequences)
         if corrected_position is not None:
