@@ -870,3 +870,11 @@ svg.ix-net { display: block; width: 100%; height: auto; }
 .hom-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
 .hom-list li { line-height: 1.5; }
 .hom-list .btn { margin-right: 0.25rem; }
+
+/* Custom motif search in the filter rail. */
+.motif-search { display: flex; gap: 0.4rem; margin: 0.25rem 0 0.4rem; min-width: 0; }
+.motif-search .btn { flex: none; }
+.motif-search input { flex: 1; width: 0; min-width: 0; font: inherit; font-family: var(--font-mono); text-transform: uppercase; padding: 0.35rem 0.5rem; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); color: var(--ink); }
+.motif-search input.set { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.motif-search input[aria-invalid="true"] { border-color: #c2410c; }
+.warn-text { color: #c2410c; }

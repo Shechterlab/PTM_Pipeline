@@ -60,6 +60,16 @@ PRED_TIERS = (0.23, 0.5)
 # Models served by the ProtVar API (/prediction/interaction/{A}/{B}/model) are a later prediction run, listed with
 # 10 Å interfaces in this table; the 2024 5 Å table above was computed on earlier models that the API often lacks.
 PROTVAR_SERVED = 'https://ftp.ebi.ac.uk/pub/databases/ProtVar/predictions/interfaces/af2complexes_interfaces_v1.tsv.gz'
+PROTVAR_MODEL = 'https://www.ebi.ac.uk/ProtVar/api/prediction/interaction/{a}/{b}/model'
+AFDB_COMPLEX = 'https://alphafold.ebi.ac.uk/api/complex/{acc}'
+AFDB_PREDICTION = 'https://alphafold.ebi.ac.uk/api/prediction/{id}'
+# Predicted-contact gallery: every methylarginine within 5 Å of the partner in a served model is measured.
+GALLERY_PDOCKQ = 0.5          # ProtVar models measured (served-model pDockQ floor)
+SALT_BRIDGE, HBOND_PRED, CATION_PI, CLASH, CONTACT_KEEP = 4.0, 3.5, 5.0, 2.2, 5.0
+G_SB, G_HB, G_CATPI, G_CLASH = 1, 2, 4, 8
+ARG_N = ('NE', 'NH1', 'NH2')
+ACIDIC_O = {('ASP', 'OD1'), ('ASP', 'OD2'), ('GLU', 'OE1'), ('GLU', 'OE2')}
+RINGS = {'PHE': ('CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ'), 'TYR': ('CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ'), 'TRP': ('CD2', 'CE2', 'CE3', 'CZ2', 'CZ3', 'CH2')}
 PDBE_MODRES = 'https://www.ebi.ac.uk/pdbe/api/pdb/entry/modified_AA_or_NA/{pdb}'
 
 # The nine human protein arginine methyltransferases.
@@ -729,6 +739,248 @@ def load_protvar_served(cache: Path, refresh: bool):
     return out
 
 
+def get_bytes(url: str, tries: int = 4):
+    """Body of a GET (gunzipped when needed), or None on 404."""
+    for k in range(tries):
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': UA, 'Accept-Encoding': 'gzip'})
+            with urllib.request.urlopen(req, timeout=180) as r:
+                data = r.read()
+            return gzip.decompress(data) if data[:2] == b'\x1f\x8b' else data
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                return None
+            if k == tries - 1:
+                raise
+        except Exception:  # noqa: BLE001 - retried, then raised
+            if k == tries - 1:
+                raise
+        time.sleep(2 ** (k + 1))
+    return None
+
+
+def parse_model_chains(text: str):
+    """Heavy atoms of the first model: chain -> residue number -> [(resn, atom, x, y, z, b)]."""
+    chains = defaultdict(lambda: defaultdict(list))
+    for line in text.splitlines():
+        if line.startswith('ENDMDL'):
+            break
+        if not line.startswith('ATOM') or line[16] not in ' A':
+            continue
+        name = line[12:16].strip()
+        elem = line[76:78].strip() or name[:1]
+        if elem == 'H':
+            continue
+        chains[line[21]][int(line[22:26])].append((line[17:20], name, float(line[30:38]), float(line[38:46]), float(line[46:54]), float(line[60:66])))
+    return chains
+
+
+def measure_methyl_r(chains, chain: str, positions):
+    """Arginines of `chain` at `positions` against every other chain of a predicted complex.
+
+    Returns pos -> [min distance, flags, pLDDT of the arginine, lowest pLDDT of the partner residues named,
+    [partner chain, residue label with bond codes]] for arginines within CONTACT_KEEP of a partner atom."""
+    import numpy as np
+    me = chains.get(chain) or {}
+    meta, xyz = [], []
+    rings = []
+    ca_b = {}
+    for c, residues in chains.items():
+        if c == chain:
+            continue
+        for resi, atoms in residues.items():
+            for resn, name, x, y, z, b in atoms:
+                meta.append((c, resi, resn, name))
+                xyz.append((x, y, z))
+                if name == 'CA':
+                    ca_b[(c, resi)] = b
+            ring = RINGS.get(atoms[0][0])
+            if ring:
+                pts = [(x, y, z) for resn, name, x, y, z, b in atoms if name in ring]
+                if len(pts) == 6:
+                    rings.append((c, resi, atoms[0][0], np.mean(np.array(pts), axis=0)))
+    if not xyz:
+        return {}
+    P = np.array(xyz)
+    out = {}
+    for pos in positions:
+        atoms = me.get(pos)
+        if not atoms or atoms[0][0] != 'ARG':
+            continue
+        X = np.array([(x, y, z) for _, _, x, y, z, _ in atoms])
+        D = np.sqrt(((X[:, None, :] - P[None, :, :]) ** 2).sum(-1))
+        dmin = float(D.min())
+        if dmin > CONTACT_KEEP:
+            continue
+        names = [a[1] for a in atoms]
+        flags = G_CLASH if dmin < CLASH else 0
+        bonds = defaultdict(set)
+        for ai, an in enumerate(names):
+            if an not in ARG_N:
+                continue
+            for pj in np.nonzero(D[ai] <= HBOND_PRED)[0]:
+                c, resi, resn, pn = meta[pj]
+                if pn.startswith('O') or (resn == 'HIS' and pn in ('ND1', 'NE2')):
+                    bonds[(c, resi, resn)].add('hb')
+            for pj in np.nonzero(D[ai] <= SALT_BRIDGE)[0]:
+                c, resi, resn, pn = meta[pj]
+                if (resn, pn) in ACIDIC_O:
+                    bonds[(c, resi, resn)].add('sb')
+        if 'CZ' in names:
+            cz = X[names.index('CZ')]
+            for c, resi, resn, centre in rings:
+                if float(np.sqrt(((cz - centre) ** 2).sum())) <= CATION_PI:
+                    bonds[(c, resi, resn)].add('pi')
+        kinds = set().union(*bonds.values()) if bonds else set()
+        flags |= (G_SB if 'sb' in kinds else 0) | (G_HB if 'hb' in kinds else 0) | (G_CATPI if 'pi' in kinds else 0)
+        if not bonds:
+            c, resi, resn, _ = meta[int(D.min(axis=0).argmin())]
+            bonds[(c, resi, resn)] = set()
+        ca = next((b for _, n, *_rest, b in atoms if n == 'CA'), atoms[0][5])
+        partner_b = [ca_b.get((c, resi)) for c, resi, _ in bonds]
+        labels = [[c, AA3.get(resn, 'X') + str(resi) + (':' + '+'.join(sorted(k)) if k else '')] for (c, resi, resn), k in sorted(bonds.items(), key=lambda kv: kv[0][1])]
+        out[pos] = [round(dmin, 1), flags, round(ca), round(min(b for b in partner_b if b is not None)) if any(b is not None for b in partner_b) else None, labels[:6]]
+    return out
+
+
+def measure_protvar_models(cache: Path, refresh: bool, workers: int, sites_by_acc: dict):
+    """Methylarginines at the interface of served ProtVar models (pDockQ >= GALLERY_PDOCKQ): one cached JSON per pair."""
+    path = fetch(PROTVAR_SERVED, cache / Path(PROTVAR_SERVED).name, refresh)
+    jobs = []
+    with open_text(path) as fh:
+        rows = csv.reader(fh, delimiter='\t')
+        ix = {h: k for k, h in enumerate(next(rows))}
+        for row in rows:
+            a, b = row[ix['uniprot_id1']], row[ix['uniprot_id2']]
+            if '-' in a or '-' in b or a == b:
+                continue
+            try:
+                sc = float(row[ix['pdockq']])
+            except ValueError:
+                continue
+            if sc < GALLERY_PDOCKQ:
+                continue
+            want = {}
+            for acc, ch, col in ((a, row[ix['chain1']] or 'A', 'ifresid1'), (b, row[ix['chain2']] or 'B', 'ifresid2')):
+                near = sites_by_acc.get(acc, set()) & {int(v) for v in row[ix[col]].split(',') if v.isdigit()}
+                if near:
+                    want[ch] = (acc, sorted(near))
+            if want:
+                jobs.append((a, b, sc, want))
+    folder = cache / 'protvar_measure'
+    folder.mkdir(parents=True, exist_ok=True)
+    done = [0]
+
+    def one(job):
+        a, b, sc, want = job
+        dest = folder / f'{a}_{b}.json'
+        if dest.exists() and not refresh:
+            return
+        data = get_bytes(PROTVAR_MODEL.format(a=a, b=b))
+        res = {}
+        if data:
+            chains = parse_model_chains(data.decode('utf-8', 'replace'))
+            for ch, (acc, pos) in want.items():
+                m = measure_methyl_r(chains, ch, pos)
+                if m:
+                    res[ch] = {str(k): v for k, v in m.items()}
+        dest.write_text(json.dumps({'served': bool(data), 'chains': res}))
+        done[0] += 1
+        if done[0] % 250 == 0:
+            log(f'  ProtVar models measured: {done[0]:,}')
+
+    todo = [j for j in jobs if refresh or not (folder / f'{j[0]}_{j[1]}.json').exists()]
+    log(f'ProtVar served models (pDockQ >= {GALLERY_PDOCKQ}) with a methylarginine within 10 Å: {len(jobs):,} pairs, {len(todo):,} to measure')
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        list(pool.map(one, todo))
+    out = []
+    for a, b, sc, want in jobs:
+        f = folder / f'{a}_{b}.json'
+        if not f.exists():
+            continue
+        rec = json.loads(f.read_text())
+        for ch, sites in rec.get('chains', {}).items():
+            acc = want[ch][0]
+            other = b if acc == a else a
+            for pos, m in sites.items():
+                out.append({'acc': acc, 'pos': int(pos), 'partner': other, 'src': 0, 'score': sc, 'pdockq': sc, 'm': m, 'ref': 1 if acc == a else 2, 'chain': ch})
+    return out
+
+
+def measure_afdb_complexes(cache: Path, refresh: bool, workers: int, sites_by_acc: dict):
+    """Human heterodimers in AlphaFold DB that include a methylated protein; every methylarginine is measured."""
+    lists = cache / 'afdb_complex'
+    preds = cache / 'afdb_prediction'
+    folder = cache / 'afdb_measure'
+    for d in (lists, preds, folder):
+        d.mkdir(parents=True, exist_ok=True)
+    accs = sorted(sites_by_acc)
+
+    def get_list(acc):
+        dest = lists / f'{acc}.json'
+        if dest.exists() and not refresh:
+            return
+        data = get_bytes(AFDB_COMPLEX.format(acc=acc))
+        dest.write_text(data.decode() if data else '[]')
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        list(pool.map(get_list, accs))
+    complexes = {}
+    for acc in accs:
+        try:
+            rows = json.loads((lists / f'{acc}.json').read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        for x in rows if isinstance(rows, list) else []:
+            if x.get('assemblyType') == 'Hetero' and set(x.get('taxId') or []) == {9606} and x.get('modelEntityId'):
+                complexes[x['modelEntityId']] = x
+    log(f'AlphaFold DB: {len(complexes):,} human heterodimer models with a methylated protein')
+    done = [0]
+
+    def one(mid):
+        dest = folder / f'{mid}.json'
+        if dest.exists() and not refresh:
+            return
+        pf = preds / f'{mid}.json'
+        if not pf.exists() or refresh:
+            data = get_bytes(AFDB_PREDICTION.format(id=mid))
+            pf.write_text(data.decode() if data else '[]')
+        chains_meta = json.loads(pf.read_text())
+        res = {}
+        mine = [c for c in chains_meta if c.get('uniprotAccession') in sites_by_acc]
+        if mine and chains_meta[0].get('pdbUrl'):
+            data = get_bytes(chains_meta[0]['pdbUrl'])
+            if data:
+                chains = parse_model_chains(data.decode('utf-8', 'replace'))
+                for c in mine:
+                    m = measure_methyl_r(chains, c['chainId'], sorted(sites_by_acc[c['uniprotAccession']]))
+                    if m:
+                        res[c['chainId']] = {str(k): v for k, v in m.items()}
+        dest.write_text(json.dumps({'chains': res, 'meta': [[c.get('chainId'), c.get('uniprotAccession')] for c in chains_meta]}))
+        done[0] += 1
+        if done[0] % 250 == 0:
+            log(f'  AlphaFold DB models measured: {done[0]:,}')
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        list(pool.map(one, sorted(complexes)))
+    out = []
+    for mid, x in complexes.items():
+        f = folder / f'{mid}.json'
+        if not f.exists():
+            continue
+        rec = json.loads(f.read_text())
+        acc_of = {c: a for c, a in rec.get('meta', [])}
+        for ch, sites in rec.get('chains', {}).items():
+            acc = acc_of.get(ch)
+            others = [a for c, a in rec.get('meta', []) if c != ch]
+            if not acc or not others:
+                continue
+            for pos, m in sites.items():
+                out.append({'acc': acc, 'pos': int(pos), 'partner': others[0], 'src': 1, 'score': x.get('complexPredictionAccuracy_ipTM'),
+                            'pdockq': x.get('complexPredictionAccuracy_pDockQ'), 'm': m, 'ref': mid, 'chain': ch})
+    return out
+
+
 def mantel_haenszel(tables):
     """Mantel-Haenszel common odds ratio and CMH test (continuity-corrected) over 2x2 strata [[a, b], [c, d]]."""
     num = den = sa = sea = sva = 0.0
@@ -811,6 +1063,8 @@ def main():
     ap.add_argument('--contact-entries', type=int, default=2, help='PDB entries examined per site and partner type')
     ap.add_argument('--fetch-environments-only', action='store_true', help='only fill the 10 Å residue-environment cache (interface geometry)')
     ap.add_argument('--controls-per-protein', type=int, default=12, help='non-methylated interface arginines sampled per protein for the geometry comparison')
+    ap.add_argument('--fetch-models-only', action='store_true', help='only measure methylarginines in predicted complex models (ProtVar, AlphaFold DB)')
+    ap.add_argument('--model-workers', type=int, default=8, help='parallel model downloads for the predicted-contact gallery')
     args = ap.parse_args()
     cache = Path(args.cache)
 
@@ -1175,6 +1429,29 @@ def main():
                                        'mh': [sig(math.log2(mh_or)) if mh_or and math.isfinite(mh_or) else None, sig(mh_p), used]}
     log(f'Predicted interfaces: {len(pred_rows):,} methylated sites at a predicted heterodimer interface')
 
+    # Predicted-contact gallery: every methylarginine within 5 Å of the partner in a served ProtVar model
+    # (pDockQ >= 0.5) or an AlphaFold DB human heterodimer, with salt bridges, H-bonds, cation-pi and pLDDT.
+    sites_by_acc = defaultdict(set)
+    for s in sites:
+        acc = meth_accs[s[0]]
+        if '-' not in acc and not prots[s[0]][10]:
+            sites_by_acc[acc].add(s[1])
+    measured = measure_protvar_models(cache, args.refresh, args.model_workers, sites_by_acc)
+    measured += measure_afdb_complexes(cache, args.refresh, max(2, args.model_workers // 2), sites_by_acc)
+    if args.fetch_models_only:
+        return
+    gallery = []
+    for r in measured:
+        j = site_index.get((r['acc'], r['pos']))
+        if j is None:
+            continue
+        dmin, flags, pl_r, pl_p, labels = r['m']
+        pct = lambda v: round(100 * v) if v is not None else None  # noqa: E731
+        gallery.append([j, vid(r['partner']), r['src'], pct(r['score']), pct(r['pdockq']), pl_r, pl_p, round(dmin * 10), flags, [lab for _, lab in labels], r['ref'], r['chain']])
+    gallery.sort(key=lambda g: (g[0], -(g[3] or 0)))
+    log(f'Predicted-contact gallery: {len(gallery):,} methylarginine-partner contacts (<= {CONTACT_KEEP} Å) on {len({g[0] for g in gallery}):,} sites; '
+        f'{sum(1 for g in gallery if g[8] & (G_SB | G_HB)):,} with a salt bridge or H-bond')
+
     # Residues each interface methylarginine touches, from the structures themselves (RCSB ModelServer).
     contact_rows = []
     if contact_jobs:
@@ -1338,6 +1615,7 @@ def main():
                 'contacts': 'RCSB ModelServer residue surroundings (wwPDB data, CC0)',
                 'regions': 'UniProt disordered regions (MobiDB-lite) and domain, repeat and zinc-finger features (CC BY 4.0)',
                 'protvar': 'ProtVar predicted interfaces 2024.05.28, AlphaFold-Multimer, residues within 5 Å (EMBL-EBI, CC BY 4.0); served-model list from af2complexes_interfaces_v1',
+                'afdb_complexes': 'AlphaFold DB predicted complexes (human heterodimers), API and model files (EMBL-EBI, CC BY 4.0)',
             },
             'fields': {
                 'proteins': ['accession', 'gene', 'flags', 'ensp'],
@@ -1358,6 +1636,7 @@ def main():
                 'cond_conf': '{min stars: [[condensate index, members, methylated, log2 OR, p, q], ...]}',
                 'cond_score_hist': '{CD-CODE confidence score: memberships of reviewed human proteins}',
                 'pred': ['site', '[[partner index, pDockQ x 100, 1 if this protein is ProtVar uniprot_id1, served model: 1 same order, 2 reversed, 0 none], ...] (top 12)', 'predicted partners'],
+                'gallery': ['site', 'partner index', 'source (0 ProtVar served model, 1 AlphaFold DB complex)', 'score x 100 (ProtVar pDockQ; AlphaFold DB ipTM)', 'pDockQ x 100', 'pLDDT of the arginine', 'lowest pLDDT of the partner residues named', 'minimum heavy-atom distance x 10 (Å)', 'flags (1 salt bridge <= 4 Å, 2 H-bond <= 3.5 Å, 4 cation-pi <= 5 Å, 8 clash < 2.2 Å)', 'partner residues with bond codes (sb, hb, pi)', 'model reference (ProtVar: 1 this protein first, 2 partner first; AlphaFold DB: model id)', 'this protein\'s chain'],
                 'pred_enrich': '{pDockQ floor: {all|ordered|disordered: {pooled, mh}}} methylated vs other arginines of the same protein at a predicted interface',
             },
         },
@@ -1380,6 +1659,7 @@ def main():
         'cond_score_hist': cond_score_hist,
         'pred': pred_rows,
         'pred_enrich': pred_enrich,
+        'gallery': gallery,
     }
     # Explorer proteins keep their own gene labels.
     for k, p in enumerate(prots):
