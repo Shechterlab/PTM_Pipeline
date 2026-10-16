@@ -192,7 +192,24 @@ PTM_CLUSTER_RESTRICT_CONTEXT=IDR PTM_CROSS_PTM_CLUSTER_RESTRICT_CONTEXT=IDR sbat
 PTM_MARON_EXCLUDE_PATTERN=Larsen sbatch hpc/slurm_run_integration.sh "$PWD"
 ```
 
-For a local, stepwise rerun, use the commands in [`hpc/slurm_run_integration.sh`](hpc/slurm_run_integration.sh) as the authoritative ordered recipe. The scripts themselves expose explicit `--help` arguments and write tables/figures under `PTM_RESULTS_ROOT`.
+For a local, stepwise rerun, use the commands in [`hpc/slurm_run_integration.sh`](hpc/slurm_run_integration.sh) as the authoritative ordered recipe.
+
+### Rerun after a pipeline fix and compare with the published results
+
+```bash
+cd /path/to/PTM_Pipeline && git pull
+sbatch hpc/slurm_rerun_remap_fix.sh "$PWD"                       # new results in ../PTM_results_remapfix
+# or choose the location:  sbatch hpc/slurm_rerun_remap_fix.sh "$PWD" /path/to/PTM_results_remapfix
+```
+
+The job reuses the staged inputs under `PTM_DATA_ROOT` (so no newer UniProt or InterPro release enters the comparison), runs `hpc/slurm_run_integration.sh` and `scripts/run_extended_analyses.sh` into the new root, rebuilds the explorer's site data there (`site_explorer_data/`), and finishes with:
+
+```bash
+python scripts/38_compare_results_roots.py --old PTM_results --new ../PTM_results_remapfix \
+  --outdir ../PTM_results_remapfix/rerun_comparison
+```
+
+`rerun_comparison/report.md` lists the site-union difference (sites and proteins added or removed, per-source counts), every changed headline `summary.tsv`, p/q values that cross 0.05 and effect sizes that change sign; `file_summary.tsv` covers every table and figure, `changes_detail.tsv` the cell-level changes and `site_union_diff.tsv` each added or removed site. The published root is never written to. Options: `PTM_RERUN_INTERACTIONS=1` also rebuilds the interaction data (needs internet), `PTM_RERUN_EXTENDED=0` skips the extended analyses. `PTM_SKIP_HYGIENE=1` (the default in this job) skips the repo hygiene guard, which fails on a checkout that tracks `PTM_results/`. To publish the new results in the explorer, copy `site_explorer_data/methylarg_sites.json` and `methylarg_evidence.json` to `docs/data/` and rerun `scripts/37_export_interaction_data.py`. The scripts themselves expose explicit `--help` arguments and write tables/figures under `PTM_RESULTS_ROOT`.
 
 ## Extended Analyses and Summary Figures
 
@@ -300,7 +317,12 @@ Deploy either way; neither needs a build step:
 - Methylarginine state labels are useful where source-supported, but the full union should not be overinterpreted as a clean `Rme1` versus `Rme2a` versus `Rme2s` state-resolved dataset.
 - Domain adjacency is descriptive in this dataset. The IDR-length-conditioned null shows that simple domain-edge proximity is largely explained by IDR geometry/length.
 - The stronger architectural signal is short-range methylarginine clustering/local density relative to same-protein arginine positions.
-- Remapping (`scripts/02`): a centred 13-, 15- or 31-residue window fixes the site by its middle residue, but a peptide (Maron, Fedoriw, Li, Lim) or a window truncated at a protein terminus does not say which of its arginines was modified. For those, the reported position is kept when it is an arginine inside a matching occurrence on the canonical accession (`remap_status = sequence_position_verified`). Earlier runs assigned such rows to the arginine nearest the peptide's middle. Replaying that step on the committed source rows with the current UniProt sequences, the old rule gives the published union of 13,719 sites, and the corrected rule gives 14,019: 545 reported sites return (for example SNRPD1 R104–R114, R118 and R119) and 245 residues that no source reported drop out. Rerun the pipeline from `scripts/02` to regenerate the union and every downstream result.
+- Remapping (`scripts/02`) was corrected in three ways; rerun the pipeline from `scripts/02` (`hpc/slurm_rerun_remap_fix.sh`) to regenerate the union and every downstream result.
+  1. A centred 13-, 15- or 31-residue window fixes the site by its middle residue, but a peptide (Maron, Fedoriw, Li, Lim) or a window truncated at a protein terminus does not say which of its arginines was modified. For those, the reported position is now kept when it is an arginine inside a matching occurrence on the canonical accession (`sequence_position_verified`); earlier runs took the arginine nearest the peptide's middle (SNRPD1 R104–R114, R118 and R119 had collapsed onto R98–R106).
+  2. When the sequence matched a different accession than the row's own (usually the reviewed entry behind an unreviewed or mislabelled source accession), the position was computed on the matched protein but filed under the row's accession. It is now filed under the matched accession (`is_accession_remapped`). Earlier unions carried about 870 sites on 430 unreviewed accessions in reviewed-entry numbering, and a few sites on the wrong reviewed protein (PTCD1 R235 filed as MED12 R235).
+  3. A full-length window whose middle residue is not an arginine (for example 132 Musiani rows in Maron Table S5 centred on a lysine) no longer anchors a guess at the nearest arginine.
+  Replaying the remapping on the committed source rows with current UniProt sequences, the old code reproduces the published union (13,719 sites on 5,090 accessions) and the corrected code gives 13,355 sites on 4,715 reviewed proteins: 828 sites added, 1,192 removed (872 of them sites on unreviewed accessions that move to the reviewed entry), 81 reviewed proteins entering and 26 leaving. Maron Table S2 state calls matched to the union rise from 1,455 to 1,794 of 1,825 sites, and Table S3 SDMA-IP sites from 372 to 453 of 458.
+- Per-protein arginine odds (`scripts/08`) now group sites by accession only. They were grouped by accession and gene symbol, which split 138 proteins whose sites carry an alias (MRE11/MRE11A, 13 sites tested as 7 and 6) into separate, weaker tests; on the published union this changes the proteins at q ≤ 0.05 from 807 to 832.
 - Motif and clustering modules can analyze fewer sites than the integrated union because they require sequence-confirmed canonical residues in the staged FASTA. Use each module's audit TSV when reporting counts.
 
 ## Hygiene

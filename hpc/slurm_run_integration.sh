@@ -68,7 +68,12 @@ export MPLCONFIGDIR="${TMPDIR:-/tmp}/matplotlib-${SLURM_JOB_ID:-manual}"
 mkdir -p "$MPLCONFIGDIR"
 mkdir -p "$PTM_RESULTS_ROOT"
 
-run_step "repo hygiene guard" bash "$PTM_CODE_ROOT/hpc/check_repo_hygiene.sh" "$PTM_CODE_ROOT"
+# PTM_SKIP_HYGIENE=1 skips the guard, e.g. for a checkout that tracks published PTM_results/ tables.
+if [ "${PTM_SKIP_HYGIENE:-0}" = "1" ]; then
+  echo "[ptm_pipeline] repo hygiene guard skipped (PTM_SKIP_HYGIENE=1)"
+else
+  run_step "repo hygiene guard" bash "$PTM_CODE_ROOT/hpc/check_repo_hygiene.sh" "$PTM_CODE_ROOT"
+fi
 echo "[ptm_pipeline] code=$PTM_CODE_ROOT"
 echo "[ptm_pipeline] data=$PTM_DATA_ROOT"
 echo "[ptm_pipeline] results=$PTM_RESULTS_ROOT"
