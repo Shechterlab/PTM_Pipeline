@@ -3707,6 +3707,7 @@
   const RAIL_SCORES = [[700, 'High (≥ 0.7)'], [900, 'Highest (≥ 0.9)']];
   const PRED_OPTS = [[0, 'Any'], [23, 'pDockQ ≥ 0.23 (acceptable)'], [50, 'pDockQ ≥ 0.5 (confident)']];
   const STRING_CALLER = 'shechterlab_methylarginine_explorer';
+  const IX_WD_COLOR = '#0E7490', IX_PHD_COLOR = '#7B4FBF';
   let IX = null;
   let ixPromise = null;
 
@@ -4339,7 +4340,10 @@
         (x.flags & IXF.wd40 ? '<br>WD40 repeat' : '') + (x.flags & IXF.phd ? '<br>PHD finger' : '') +
         (x.flags & IXF.rna ? '<br>RNA binding (GO)' : '') + (x.flags & IXF.dna ? '<br>DNA binding (GO)' : '');
       g += '<g class="nd" data-k="' + k + '"' + (forExport ? '' : ' tabindex="0" role="button" data-tip="' + esc(tipHtml) + '"') + ' style="cursor:pointer">';
-      if (x.flags & IXF.tudor) g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + (r + 4) + '" fill="none" stroke="' + pal.accent + '" stroke-width="1.4" stroke-dasharray="3 2"/>';
+      let ringR = r + 4;
+      if (x.flags & IXF.tudor) { g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + ringR + '" fill="none" stroke="' + pal.accent + '" stroke-width="1.4" stroke-dasharray="3 2"/>'; ringR += 3; }
+      if (x.flags & IXF.wd40) { g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + ringR + '" fill="none" stroke="' + IX_WD_COLOR + '" stroke-width="1.4"/>'; ringR += 3; }
+      if (x.flags & IXF.phd) g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + ringR + '" fill="none" stroke="' + IX_PHD_COLOR + '" stroke-width="1.6" stroke-dasharray="1 2" stroke-linecap="round"/>';
       if (x.flags & IXF.prmt) g += '<rect x="' + r1(pos[n].x - r) + '" y="' + r1(pos[n].y - r) + '" width="' + r1(2 * r) + '" height="' + r1(2 * r) + '" rx="3" transform="rotate(45 ' + cxp + ' ' + cyp + ')" fill="' + fill + '" stroke="' + pal.ink + '" stroke-width="1.6"/>';
       else g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + r1(r) + '" fill="' + fill + '" stroke="' + (n === 0 ? pal.ink : stroke) + '" stroke-width="' + (n === 0 ? 2 : q ? 1.2 : 1.4) + '"/>';
       g += '<text x="' + cxp + '" y="' + r1(pos[n].y + r + 12) + '" font-size="' + (n === 0 ? 12.5 : outer ? 9.5 : 10.5) + '" font-weight="' + (n === 0 || (q && !outer) ? 700 : 400) + '" text-anchor="middle" fill="' + (q && !outer ? pal.ink : pal.muted) + '"' + (outer ? ' font-style="italic"' : '') + '>' + esc(x.gene) + '</text></g>';
@@ -4355,8 +4359,10 @@
       const ly2 = ly + 20;
       g += '<rect x="18" y="' + (ly2 - 10) + '" width="10" height="10" transform="rotate(45 23 ' + (ly2 - 5) + ')" fill="none" stroke="' + pal.ink + '"/><text x="34" y="' + ly2 + '" font-size="10.5" fill="' + pal.ink + '">PRMT</text>' +
         '<circle cx="90" cy="' + (ly2 - 4) + '" r="7" fill="none" stroke="' + pal.accent + '" stroke-dasharray="3 2"/><text x="102" y="' + ly2 + '" font-size="10.5" fill="' + pal.ink + '">Tudor domain</text>' +
-        (net.ring && net.ring.length ? '<line x1="190" y1="' + (ly2 - 4) + '" x2="214" y2="' + (ly2 - 4) + '" stroke="' + pal.accent + '" stroke-dasharray="4 3"/><text x="220" y="' + ly2 + '" font-size="10.5" font-style="italic" fill="' + pal.ink + '">Second ring: PRMTs and Tudor proteins that bind the partners</text>' : '') +
-        '<text x="' + (W - 16) + '" y="' + ly2 + '" font-size="9" text-anchor="end" fill="' + pal.muted + '">Edges: STRING physical links (CC BY 4.0) · methylarginine set: PTM_Pipeline · ' + esc(PAPER.short) + '</text>';
+        '<circle cx="190" cy="' + (ly2 - 4) + '" r="7" fill="none" stroke="' + IX_WD_COLOR + '"/><text x="202" y="' + ly2 + '" font-size="10.5" fill="' + pal.ink + '">WD40 repeat</text>' +
+        '<circle cx="290" cy="' + (ly2 - 4) + '" r="7" fill="none" stroke="' + IX_PHD_COLOR + '" stroke-width="1.6" stroke-dasharray="1 2" stroke-linecap="round"/><text x="302" y="' + ly2 + '" font-size="10.5" fill="' + pal.ink + '">PHD finger</text>' +
+        (net.ring && net.ring.length ? '<line x1="380" y1="' + (ly2 - 4) + '" x2="404" y2="' + (ly2 - 4) + '" stroke="' + pal.accent + '" stroke-dasharray="4 3"/><text x="410" y="' + ly2 + '" font-size="10.5" font-style="italic" fill="' + pal.ink + '">Second ring: PRMTs and Tudor proteins that bind the partners</text>' : '') +
+        '<text x="' + (W - 16) + '" y="' + (ly2 + 18) + '" font-size="9" text-anchor="end" fill="' + pal.muted + '">Edges: STRING physical links (CC BY 4.0) · methylarginine set: PTM_Pipeline · ' + esc(PAPER.short) + '</text>';
     }
     return '<svg xmlns="http://www.w3.org/2000/svg" class="ix-net" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + (pal.font || EXPORT_PAL.font).replace(/'/g, '"') + '\'' +
       ' role="img" aria-label="Physical interaction partners of ' + esc(p.label) + '">' + (forExport ? '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' : '') + g + '</svg>';
@@ -4419,7 +4425,7 @@
       '<label class="fig-ctl">Colour partners by <select id="ix-color">' + Object.keys(NODE_MODES).map((k) => '<option value="' + k + '"' + (UI.ixColor === k ? ' selected' : '') + '>' + esc(NODE_MODES[k].name) + '</option>').join('') + '</select></label>' +
       '<label class="check fig-ctl" title="Add the PRMTs and Tudor-domain proteins that bind these partners (STRING ≥ 0.7), to trace writer–substrate–reader paths"><input type="checkbox" id="ix-ring"' + (UI.ixRing ? ' checked' : '') + '> Second ring: PRMTs and Tudor proteins</label></div>' +
       '<div class="legend"><span class="legend-title">' + esc(mode.name) + '</span>' + mode.cats.map((c, k) => '<span><i style="background:' + colors[k] + '"></i>' + esc(c) + '</span>').join('') +
-      '<span><i class="hollow"></i>Not in this set</span><span><i class="diamond"></i>PRMT</span><span><i class="ring"></i>Tudor domain</span></div>' +
+      '<span><i class="hollow"></i>Not in this set</span><span><i class="diamond"></i>PRMT</span><span><i class="ring"></i>Tudor domain</span><span><i class="ring wd"></i>WD40 repeat</span><span><i class="ring phd"></i>PHD finger</span></div>' +
       '<div id="ix-partners"><p class="note">Loading STRING partners…</p></div>';
     $('#ix-top', body).addEventListener('change', (e) => { UI.ixTop = +e.target.value; renderIxProteins(p, body); });
     $('#ix-min', body).addEventListener('change', (e) => { UI.ixMin = +e.target.value; renderIxProteins(p, body); });

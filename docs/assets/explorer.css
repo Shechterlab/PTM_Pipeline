@@ -935,3 +935,5 @@ details.ix-sec[open] > summary .pm { border-color: var(--accent); }
 /* Touch screens: horizontal drags on the map zoom (brush), so it cannot also scroll sideways; fit it to the width instead. */
 @media (pointer: coarse) { svg.pmap { min-width: 0; } }
 .tag.warn-tag { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent-dark); }
+.legend i.ring.wd { border: 1.5px solid #0E7490; }
+.legend i.ring.phd { border: 2px dotted #7B4FBF; }
