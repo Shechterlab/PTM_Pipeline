@@ -39,6 +39,10 @@ from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+import numpy as np
+from scipy import stats as sps
+from statsmodels.stats.contingency_tables import StratifiedTable
+
 STRING_VERSION = '12.5'
 STRING_LINKS = f'https://stringdb-downloads.org/download/protein.physical.links.v{STRING_VERSION}/9606.protein.physical.links.v{STRING_VERSION}.txt.gz'
 COMPLEX_URLS = {
@@ -1005,6 +1009,7 @@ def load_crosslinks(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None
     folder = cache / 'crosslinks'
     folder.mkdir(parents=True, exist_ok=True)
     rna, dna, rbd = defaultdict(dict), defaultdict(dict), defaultdict(list)
+    rna_n = defaultdict(Counter)   # crosslinked peptide-spectrum rows per residue (Table S2, all datasets)
     dna_peps, dna_bind, dna_interactome = defaultdict(list), defaultdict(list), set()
     checked = Counter()
 
@@ -1037,6 +1042,7 @@ def load_crosslinks(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None
                     m = re.search(r'([A-Z])\[(\d+\.\d+)\]', re.sub(r'C\[57\.02\d*\]|M\[15\.99\d*\]', lambda x: x.group(0)[0], str(r[ix['Modified Sequence']])))
                     if m and ok(acc, pos, m.group(1)):
                         rna[acc][pos] = rna[acc].get(pos, 0) | (1 << bit)
+                        rna_n[acc][pos] += 1
             wb = openpyxl.load_workbook(io.BytesIO(zf.read(names['Table_S3.xlsx'])), read_only=True)
             rows = wb['Crosslinking site'].iter_rows(values_only=True)
             ix = {h: k for k, h in enumerate(next(rows))}
@@ -1127,75 +1133,87 @@ def load_crosslinks(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None
                 dna_bind[acc].append((int(a), int(b)))
     log(f'Crosslinks: RNA {sum(len(v) for v in rna.values()):,} residues in {len(rna):,} proteins; DNA {sum(len(v) for v in dna.values()):,} residues in {len(dna):,} proteins, '
         f'{len(dna_interactome):,} DNA-interactome proteins; UniProt DNA-binding regions in {len(dna_bind):,} proteins; sequence check {dict(checked)}')
-    return rna, rbd, dna, dna_peps, dna_interactome, dna_bind
+    return rna, rna_n, rbd, dna, dna_peps, dna_interactome, dna_bind
+
+
+def informative_strata(tables):
+    """Strata that carry information for a Mantel-Haenszel analysis (no empty margin, at least two observations)."""
+    return [(a, b, c, d) for a, b, c, d in tables if a + b + c + d >= 2 and (a + b) and (c + d) and (a + c) and (b + d)]
 
 
 def mantel_haenszel(tables):
-    """Mantel-Haenszel common odds ratio and CMH test (continuity-corrected) over 2x2 strata [[a, b], [c, d]]."""
-    num = den = sa = sea = sva = 0.0
-    used = 0
-    for a, b, c, d in tables:
-        n = a + b + c + d
-        if n < 2 or (a + b) == 0 or (c + d) == 0 or (a + c) == 0 or (b + d) == 0:
-            continue
-        used += 1
-        num += a * d / n
-        den += b * c / n
-        sa += a
-        sea += (a + b) * (a + c) / n
-        sva += (a + b) * (c + d) * (a + c) * (b + d) / (n * n * (n - 1))
-    if not used or sva <= 0:
+    """Mantel-Haenszel common odds ratio and the continuity-corrected CMH test (statsmodels StratifiedTable).
+
+    Returns (odds, p, informative strata); odds may be inf when no stratum has b*c > 0."""
+    strata = informative_strata(tables)
+    if not strata:
         return None, None, 0
-    odds = (num / den) if den > 0 else float('inf')
-    stat = (abs(sa - sea) - 0.5) ** 2 / sva
-    p = math.erfc(math.sqrt(max(stat, 0) / 2))
-    return odds, p, used
+    st = StratifiedTable([np.array([[a, b], [c, d]], dtype=float) for a, b, c, d in strata])
+    den = sum(b * c / (a + b + c + d) for a, b, c, d in strata)
+    odds = float(st.oddsratio_pooled) if den > 0 else float('inf')
+    # statsmodels reports 1 - cdf, which underflows below ~1e-16; take its statistic to scipy's survival function.
+    return odds, float(sps.chi2.sf(st.test_null_odds(correction=True).statistic, 1)), len(strata)
+
+
+def mantel_haenszel_ci(tables):
+    """Mantel-Haenszel OR with its Robins-Breslow-Greenland 95% CI (statsmodels): (odds, lo, hi, p, informative strata)."""
+    odds, p, used = mantel_haenszel(tables)
+    if odds is None or not math.isfinite(odds) or odds <= 0:
+        return odds, None, None, p, used
+    strata = informative_strata(tables)
+    st = StratifiedTable([np.array([[a, b], [c, d]], dtype=float) for a, b, c, d in strata])
+    lo, hi = st.oddsratio_pooled_confint(alpha=0.05)
+    return odds, (float(lo) if math.isfinite(lo) else None), (float(hi) if math.isfinite(hi) else None), p, used
+
+
+def woolf_ci(a, b, c, d):
+    """95% CI of the sample odds ratio (scipy, normal approximation on the log scale)."""
+    with np.errstate(divide='ignore', invalid='ignore'):   # a zero cell gives an open interval, reported as missing
+        ci = sps.contingency.odds_ratio([[a, b], [c, d]], kind='sample').confidence_interval(0.95)
+    return float(ci.low), float(ci.high)
+
+
+def or_summary(tables):
+    """Pooled Fisher OR and within-stratum MH OR, each with 95% CI and p: {'pooled': [a, b, c, d, OR, lo, hi, p], 'mh': [OR, lo, hi, p, used]}."""
+    tables = list(tables)
+    a, b, c, d = (sum(x[k] for x in tables) for k in range(4))
+    if not (a + b) or not (c + d):
+        return {'pooled': [a, b, c, d, None, None, None, None], 'mh': [None, None, None, None, 0], 'proteins': len(tables)}
+    pv, _ = fisher_2x2(a, b, c, d)
+    odds = a * d / (b * c) if b * c else float('inf')   # sample odds ratio, the centre of the Woolf interval
+    lo, hi = woolf_ci(a, b, c, d)
+    mo, mlo, mhi, mp, used = mantel_haenszel_ci(tables)
+    return {'pooled': [a, b, c, d, sig(odds), sig(lo), sig(hi), sig(pv)], 'mh': [sig(mo), sig(mlo), sig(mhi), sig(mp), used], 'proteins': len(tables)}
+
+
+def mann_whitney(x, y):
+    """Two-sided Mann-Whitney U test (scipy): (U for x, p)."""
+    if not len(x) or not len(y):
+        return None, None
+    res = sps.mannwhitneyu(x, y, alternative='two-sided')
+    return float(res.statistic), float(res.pvalue)
 
 
 # ----------------------------------------------------------------------------- statistics
-def log_choose(n, k):
-    return math.lgamma(n + 1) - math.lgamma(k + 1) - math.lgamma(n - k + 1)
-
-
 def hypergeom_sf(k, N, K, n):
     """P(X >= k) for X ~ Hypergeometric(N population, K successes, n draws)."""
-    hi = min(K, n)
-    if k > hi:
-        return 0.0
-    lo = max(0, n - (N - K))
-    k = max(k, lo)
-    denom = log_choose(N, n)
-    terms = [log_choose(K, i) + log_choose(N - K, n - i) - denom for i in range(k, hi + 1)]
-    m = max(terms)
-    return min(1.0, math.exp(m) * sum(math.exp(t - m) for t in terms))
+    return float(sps.hypergeom.sf(k - 1, N, K, n))
 
 
 def fisher_2x2(a, b, c, d):
-    """Two-sided Fisher exact p for [[a, b], [c, d]] and the sample odds ratio (Haldane-corrected)."""
-    n1, n2, m1 = a + b, c + d, a + c
-    N = n1 + n2
-    lo, hi = max(0, m1 - n2), min(m1, n1)
-    denom = log_choose(N, m1)
-    probs = {x: math.exp(log_choose(n1, x) + log_choose(n2, m1 - x) - denom) for x in range(lo, hi + 1)}
-    p_obs = probs[a]
-    p = min(1.0, sum(v for v in probs.values() if v <= p_obs * (1 + 1e-7)))
-    odds = ((a + 0.5) * (d + 0.5)) / ((b + 0.5) * (c + 0.5))
-    return p, odds
+    """Two-sided Fisher exact p (scipy) for [[a, b], [c, d]] and the Haldane-Anscombe corrected sample odds ratio."""
+    p = float(sps.fisher_exact([[a, b], [c, d]]).pvalue)
+    return p, ((a + 0.5) * (d + 0.5)) / ((b + 0.5) * (c + 0.5))
 
 
 def bh(pvals):
-    n = len(pvals)
-    order = sorted(range(n), key=lambda i: pvals[i])
-    q = [1.0] * n
-    prev = 1.0
-    for rank, i in reversed(list(enumerate(order, start=1))):
-        prev = min(prev, pvals[i] * n / rank)
-        q[i] = prev
-    return q
+    """Benjamini-Hochberg adjusted p values (scipy)."""
+    return [float(q) for q in sps.false_discovery_control(pvals, method='bh')] if len(pvals) else []
 
 
 def sig(x, d=3):
-    return None if x is None or (isinstance(x, float) and math.isnan(x)) else float(f'{x:.{d}g}')
+    """Round to d significant digits; None for missing, NaN or infinite values (JSON has no Infinity)."""
+    return None if x is None or (isinstance(x, float) and not math.isfinite(x)) else float(f'{x:.{d}g}')
 
 
 # ----------------------------------------------------------------------------- main
@@ -1602,7 +1620,7 @@ def main():
         f'{sum(1 for g in gallery if g[8] & (G_SB | G_HB)):,} with a salt bridge or H-bond')
 
     # Residue-level RNA and DNA crosslinks: site flags, per-protein tracks and within-protein tests.
-    rna_xl, rbd_frag, dna_xl, dna_peps, dna_int, dna_bind = load_crosslinks(cache, args.refresh, {a: v[2] for a, v in proteome.items()}, proteome)
+    rna_xl, rna_count, rbd_frag, dna_xl, dna_peps, dna_int, dna_bind = load_crosslinks(cache, args.refresh, {a: v[2] for a, v in proteome.items()}, proteome)
     xl_rows, xl_prot = [], []
     xl_strata = {k: defaultdict(lambda: [0, 0, 0, 0]) for k in ('rna_xl', 'rna_near', 'rna_rbdmap', 'dna_xl', 'dna_pep', 'dna_bind', 'rna_xl_nonrg', 'rna_rbdmap_nonrg')}
     for i, acc in enumerate(meth_accs):
@@ -1650,6 +1668,68 @@ def main():
         mh_or, mh_p, used = mantel_haenszel(tabs)
         xl_enrich[key] = {'pooled': [a, b, c, d, sig(math.log2(odds)) if odds else None, sig(pv)],
                           'mh': [sig(math.log2(mh_or)) if mh_or and math.isfinite(mh_or) else None, sig(mh_p), used], 'proteins': len(tabs)}
+    for key, tabs in xl_strata.items():
+        xl_enrich[key]['or'] = or_summary(tabs.values())
+
+    # By methylation type: each class of methylated arginine vs the unmethylated arginines (not in the union) of the
+    # same proteins. Maron IP classes come from methyl-specific immunoprecipitation; state calls from the sources.
+    type_classes = [('rme2s', lambda r: r[17] & 4), ('rme2a', lambda r: (r[17] & 2) and not (r[17] & 4)), ('rme1ip', lambda r: r[17] == 1),
+                    ('rme2', lambda r: r[2] in (2, 3)), ('rme1', lambda r: r[2] == 1), ('nostate', lambda r: r[2] == 0 and not r[17]), ('any', lambda r: True)]
+    xl_types = {}
+    xl_freq = {}
+    for out_key, have, test in (('rna_xl', lambda acc: bool(rna_xl.get(acc)), lambda acc, q: bool(rna_xl.get(acc, {}).get(q))),
+                                ('rna_rbdmap', lambda acc: bool(rbd_frag.get(acc)), lambda acc, q: any(a <= q <= b for a, b in rbd_frag.get(acc, []))),
+                                ('dna_xl', lambda acc: bool(dna_xl.get(acc)), lambda acc, q: bool(dna_xl.get(acc, {}).get(q)))):
+        tabs = {name: defaultdict(lambda: [0, 0, 0, 0]) for name, _ in type_classes}
+        for i, acc in enumerate(meth_accs):
+            if prots[i][10] or '-' in acc or not have(acc):
+                continue
+            seq_ = proteome.get(acc, ('', '', ''))[2]
+            if not seq_:
+                continue
+            row_at = {sites[j][1]: sites[j] for j in by_prot_sites[i]}
+            for q in range(1, len(seq_) + 1):
+                if seq_[q - 1] != 'R':
+                    continue
+                hit = test(acc, q)
+                r = row_at.get(q)
+                for name, member in type_classes:
+                    if r is None:
+                        tabs[name][acc][2 if hit else 3] += 1
+                    elif member(r):
+                        tabs[name][acc][0 if hit else 1] += 1
+        xl_types[out_key] = {name: or_summary(tabs[name].values()) for name, _ in type_classes}
+
+    # Contact frequency: among RNA-crosslinked arginines, are methylated ones crosslinked in more datasets or
+    # more spectra than unmethylated ones of the same proteins?
+    freq_meth, freq_un, ds_meth, ds_un = [], [], [], []
+    multi = defaultdict(lambda: [0, 0, 0, 0])
+    for i, acc in enumerate(meth_accs):
+        if prots[i][10] or '-' in acc or not rna_xl.get(acc):
+            continue
+        site_pos = {sites[j][1] for j in by_prot_sites[i]}
+        seq_ = proteome.get(acc, ('', '', ''))[2]
+        for q, bits in rna_xl[acc].items():
+            if not seq_ or q > len(seq_) or seq_[q - 1] != 'R':
+                continue
+            nds = bin(bits & 31).count('1')
+            nsp = rna_count[acc].get(q, 0)
+            if q in site_pos:
+                freq_meth.append(nsp); ds_meth.append(nds)
+            else:
+                freq_un.append(nsp); ds_un.append(nds)
+            multi[acc][(0 if q in site_pos else 2) + (0 if nds >= 2 else 1)] += 1
+    med = lambda v: sorted(v)[len(v) // 2] if v else None  # noqa: E731
+    xl_freq = {
+        'spectra': {'meth': [len(freq_meth), sig(sum(freq_meth) / len(freq_meth)) if freq_meth else None, med(freq_meth)],
+                    'other': [len(freq_un), sig(sum(freq_un) / len(freq_un)) if freq_un else None, med(freq_un)], 'p': sig(mann_whitney(freq_meth, freq_un)[1])},
+        'datasets': {'meth': [len(ds_meth), sig(sum(ds_meth) / len(ds_meth)) if ds_meth else None, med(ds_meth)],
+                     'other': [len(ds_un), sig(sum(ds_un) / len(ds_un)) if ds_un else None, med(ds_un)], 'p': sig(mann_whitney(ds_meth, ds_un)[1])},
+        'multi': or_summary(multi.values()),
+    }
+    log(f'Crosslinks by type: ' + ', '.join(f"{k} MH OR {v['mh'][0]} (p {v['mh'][3]})" for k, v in xl_types['rna_xl'].items()))
+    log(f"Crosslink frequency: methylated R mean spectra {xl_freq['spectra']['meth'][1]} vs {xl_freq['spectra']['other'][1]} (p {xl_freq['spectra']['p']}); "
+        f"datasets {xl_freq['datasets']['meth'][1]} vs {xl_freq['datasets']['other'][1]} (p {xl_freq['datasets']['p']})")
     log(f'Crosslinks: {sum(1 for r in xl_rows if r[1]):,} methylarginines are RNA-crosslinked residues, {sum(1 for r in xl_rows if r[2]):,} within {XL_NEAR} residues; '
         f'{sum(1 for r in xl_rows if r[3] & D_XL):,} DNA-crosslinked, {sum(1 for r in xl_rows if r[3] & D_BIND):,} in UniProt DNA-binding regions')
 
@@ -1843,7 +1923,9 @@ def main():
                 'gallery': ['site', 'partner index', 'source (0 ProtVar served model, 1 AlphaFold DB complex)', 'score x 100 (ProtVar pDockQ; AlphaFold DB ipTM)', 'pDockQ x 100', 'pLDDT of the arginine', 'lowest pLDDT of the partner residues named', 'minimum heavy-atom distance x 10 (Å)', 'flags (1 salt bridge <= 4 Å, 2 H-bond <= 3.5 Å, 4 cation-pi <= 5 Å, 8 clash < 2.2 Å)', 'partner residues with bond codes (sb, hb, pi)', 'model reference (ProtVar: 1 this protein first, 2 partner first; AlphaFold DB: model id)', 'this protein\'s chain'],
                 'xl': ['site', 'RNA crosslink bits at the residue (1 Kramer 2014, 2 XRNAX 2019, 4 RBS-ID 2020, 8 pRBS-ID 2021, 16 pepR-MS 2025, 32 pepR-MS focused site)', 'same bits within 3 residues', 'DNA bits (1 crosslinked residue, 2 inside a crosslinked peptide, 4 UniProt DNA-binding region)', '1 if inside an RBDmap RNA-bound fragment'],
                 'xl_prot': ['protein index', 'RNA-crosslinked positions', 'their dataset bits', 'DNA-crosslinked positions', 'DNA-crosslinked peptide spans', 'UniProt DNA-binding regions', '1 if in the Trendel 2025 DNA interactome', 'RBDmap RNA-bound fragments'],
-                'xl_enrich': '{rna_xl|rna_near|dna_xl|dna_pep|dna_bind: {pooled, mh, proteins}} methylated vs other arginines of proteins with that evidence',
+                'xl_enrich': '{rna_xl|rna_near|dna_xl|dna_pep|dna_bind: {pooled, mh, proteins, or: {pooled: [a, b, c, d, OR, lo, hi, p], mh: [OR, lo, hi, p, strata]}}} methylated vs other arginines of proteins with that evidence',
+                'xl_types': '{rna_xl|rna_rbdmap|dna_xl: {rme2s|rme2a|rme1ip|rme2|rme1|nostate|any: or_summary}} each methylation class vs unmethylated arginines of the same proteins',
+                'xl_freq': '{spectra|datasets: {meth: [n, mean, median], other: [...], p (Mann-Whitney)}, multi: or_summary (crosslinked in >= 2 datasets)} among RNA-crosslinked arginines',
                 'pred_enrich': '{pDockQ floor: {all|ordered|disordered: {pooled, mh}}} methylated vs other arginines of the same protein at a predicted interface',
             },
         },
@@ -1871,6 +1953,8 @@ def main():
         'xl_prot': xl_prot,
         'xl_enrich': xl_enrich,
         'xl_sets': [label for _, label in RNA_XL_SETS],
+        'xl_types': xl_types,
+        'xl_freq': xl_freq,
     }
     # Explorer proteins keep their own gene labels.
     for k, p in enumerate(prots):
