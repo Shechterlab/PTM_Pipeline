@@ -888,3 +888,38 @@ svg.ix-net { display: block; width: 100%; height: auto; }
 .tag.clash { background: color-mix(in srgb, #c2410c 16%, transparent); color: #9a3412; font-weight: 600; }
 /* Crosslink evidence near (not at) the residue, or region-level. */
 .tag.xl-near { background: transparent; border: 1px dashed currentColor; }
+/* Partner domain classes beyond PRMT and Tudor. */
+.tag.ix-dom { background: transparent; color: var(--ink-2); border: 1px solid var(--line-strong); }
+.legend-note { color: var(--muted); font-style: italic; }
+/* Interactions view: key findings, then collapsible sections marked + / −. */
+.ix-page { display: grid; gap: 1rem; }
+.findings { margin: 0.4rem 0 0; padding-left: 1.1rem; display: grid; gap: 0.45rem; }
+.findings li { line-height: 1.45; }
+.findings .more-link { white-space: nowrap; margin-left: 0.2rem; }
+.ix-toc { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; margin-top: 0.9rem; padding-top: 0.7rem; border-top: 1px solid var(--line); }
+.ix-toc .flabel { margin: 0 0.3rem 0 0; }
+.ix-toc .linkish { margin-left: auto; }
+details.ix-sec { padding: 0; }
+details.ix-sec > summary { list-style: none; cursor: pointer; display: flex; gap: 0.75rem; align-items: flex-start; padding: 1rem 1.25rem; }
+details.ix-sec > summary::-webkit-details-marker { display: none; }
+details.ix-sec > summary:hover .ix-sec-t b { color: var(--accent); }
+details.ix-sec > summary .pm { flex: none; width: 1.5rem; height: 1.5rem; border-radius: 50%; border: 1.5px solid var(--line-strong); position: relative; margin-top: 0.05rem; }
+details.ix-sec > summary .pm::before, details.ix-sec > summary .pm::after { content: ""; position: absolute; left: 50%; top: 50%; width: 0.7rem; height: 1.5px; background: var(--ink-2); transform: translate(-50%, -50%); }
+details.ix-sec > summary .pm::after { transform: translate(-50%, -50%) rotate(90deg); }
+details.ix-sec[open] > summary .pm::after { display: none; }
+details.ix-sec[open] > summary .pm { border-color: var(--accent); }
+.ix-sec-t { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.ix-sec-t b { font-size: 1.02rem; }
+.ix-sec-t .sub { margin: 0; }
+.ix-sec-body { padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--line); padding-top: 0.9rem; min-width: 0; }
+.ix-sec-body > h4:first-child { margin-top: 0; }
+@media (max-width: 640px) { details.ix-sec > summary { padding: 0.85rem 1rem; } .ix-sec-body { padding: 0.8rem 1rem 1rem; } .ix-toc .linkish { margin-left: 0; } }
+/* Filter groups: less-used controls behind "+ More". */
+.rail details.more-opts, .more-opts { margin-top: 0.35rem; border-bottom: 0; padding: 0; box-shadow: none; }
+.rail .more-opts > summary, .more-opts > summary { cursor: pointer; display: inline-block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--accent); list-style: none; padding: 0.15rem 0; }
+.rail details.more-opts > summary::after, .rail details.more-opts[open] > summary::after { content: none; }
+.more-opts > summary::-webkit-details-marker { display: none; }
+.more-opts > summary::before { content: "+ "; font-weight: 700; }
+.more-opts[open] > summary::before { content: "− "; }
+.more-opts > :not(summary) { margin-top: 0.4rem; }
+.motif-search input::placeholder { text-transform: none; }

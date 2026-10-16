@@ -8,7 +8,7 @@ ignores) and reused; pass --refresh to download them again.
 Sources
   STRING v12.5 human physical links (CC BY 4.0) .......... physical partners and scores
   Complex Portal human complexes, curated + predicted (CC0) complex membership
-  UniProt reviewed human proteome (CC BY 4.0) .............. gene symbols, STRING ids, sequences, Tudor domains
+  UniProt reviewed human proteome (CC BY 4.0) .............. gene symbols, STRING ids, sequences, Tudor, WD40 and PHD domains
   QuickGO / GOA (CC BY 4.0) ................................ RNA binding (GO:0003723) and DNA binding (GO:0003677)
   PDBe-KB interface residues (EMBL-EBI) .................... residues at protein, RNA and DNA interfaces in the PDB
   SIFTS observed UniProt segments (EMBL-EBI) ............... structural coverage, for the interface enrichment test
@@ -91,13 +91,15 @@ PDBE_MODRES = 'https://www.ebi.ac.uk/pdbe/api/pdb/entry/modified_AA_or_NA/{pdb}'
 
 # The nine human protein arginine methyltransferases.
 PRMT_GENES = ['PRMT1', 'PRMT2', 'PRMT3', 'CARM1', 'PRMT5', 'PRMT6', 'PRMT7', 'PRMT8', 'PRMT9']
-TUDOR_INTERPRO = 'IPR002999'
+# Reader-domain classes marked on partners (InterPro): Tudor, WD40 repeat, PHD finger (SMART and Pfam/PROSITE entries).
+DOMAIN_CLASSES = {'tudor': ('IPR002999',), 'wd40': ('IPR001680',), 'phd': ('IPR001965', 'IPR019787')}
 GO_TERMS = {'rna': 'GO:0003723', 'dna': 'GO:0003677'}
 # GO evidence codes counted as experimental support.
 GO_EXPERIMENTAL = {'EXP', 'IDA', 'IPI', 'IMP', 'IGI', 'IEP', 'HTP', 'HDA', 'HMP', 'HGI', 'HEP'}
 
 # Partner flag bits (shared with docs/assets/explorer.js).
-F_PRMT, F_TUDOR, F_RNA, F_DNA, F_RNA_EXP, F_DNA_EXP = 1, 2, 4, 8, 16, 32
+F_PRMT, F_TUDOR, F_RNA, F_DNA, F_RNA_EXP, F_DNA_EXP, F_WD40, F_PHD = 1, 2, 4, 8, 16, 32, 64, 128
+F_DOMAIN = {'tudor': F_TUDOR, 'wd40': F_WD40, 'phd': F_PHD}
 # Site interface bits.
 I_PROTEIN, I_SELF, I_RNA, I_DNA = 1, 2, 4, 8
 # CD-CODE role and evidence bits (shared with docs/assets/explorer.js).
@@ -169,7 +171,7 @@ def base_acc(acc: str) -> str:
 
 # ----------------------------------------------------------------------------- sources
 def load_uniprot(cache: Path, refresh: bool):
-    """Reviewed human proteome: accession -> (gene, STRING id, sequence); plus Tudor-domain accessions."""
+    """Reviewed human proteome: accession -> (gene, STRING id, sequence); plus {class: accessions} for DOMAIN_CLASSES."""
     path = fetch(UNIPROT_STREAM, cache / 'uniprot_human_reviewed.tsv.gz', refresh,
                  {'query': '(organism_id:9606) AND (reviewed:true)', 'fields': 'accession,gene_primary,xref_string,sequence',
                   'format': 'tsv', 'compressed': 'true'})
@@ -178,11 +180,14 @@ def load_uniprot(cache: Path, refresh: bool):
         for row in csv.DictReader(fh, delimiter='\t'):
             sid = (row.get('STRING') or '').split(';')[0].strip()
             proteome[row['Entry']] = (row.get('Gene Names (primary)') or '', sid, row.get('Sequence') or '')
-    tud = fetch(UNIPROT_STREAM, cache / 'uniprot_human_tudor.tsv', refresh,
-                {'query': f'(organism_id:9606) AND (reviewed:true) AND (xref:interpro-{TUDOR_INTERPRO})', 'fields': 'accession', 'format': 'tsv'})
-    tudor = {line.split('\t')[0].strip() for line in open(tud, encoding='utf-8').read().splitlines()[1:] if line.strip()}
-    log(f'UniProt: {len(proteome):,} reviewed human entries, {len(tudor)} with a Tudor domain')
-    return proteome, tudor
+    classes = {}
+    for key, entries in DOMAIN_CLASSES.items():
+        xref = ' OR '.join(f'xref:interpro-{e}' for e in entries)
+        path = fetch(UNIPROT_STREAM, cache / f'uniprot_human_{key}.tsv', refresh,
+                     {'query': f'(organism_id:9606) AND (reviewed:true) AND ({xref})', 'fields': 'accession', 'format': 'tsv'})
+        classes[key] = {line.split('\t')[0].strip() for line in open(path, encoding='utf-8').read().splitlines()[1:] if line.strip()}
+    log(f'UniProt: {len(proteome):,} reviewed human entries; ' + ', '.join(f'{len(v)} {k}' for k, v in classes.items()))
+    return proteome, classes
 
 
 def load_go(cache: Path, refresh: bool):
@@ -1245,7 +1250,8 @@ def main():
         fetch_interfaces(cache, canonical, args.refresh, args.workers)
         return
 
-    proteome, tudor = load_uniprot(cache, args.refresh)
+    proteome, domain_classes = load_uniprot(cache, args.refresh)
+    tudor = domain_classes['tudor']
     go = load_go(cache, args.refresh)
     sid_to_acc = {}
     for acc, (_, sid, _) in proteome.items():
@@ -1834,8 +1840,9 @@ def main():
         f = 0
         if b in prmt_accs:
             f |= F_PRMT
-        if b in tudor:
-            f |= F_TUDOR
+        for key, bit in F_DOMAIN.items():
+            if b in domain_classes[key]:
+                f |= bit
         g = go.get(b)
         if g:
             if g['rna']:
@@ -1878,7 +1885,8 @@ def main():
             'complexes_tested': {'curated': n_curated, 'predicted': n_predicted},
             'methylated_in_proteome': K,
             'prmt_genes': PRMT_GENES,
-            'flag_bits': {'prmt': F_PRMT, 'tudor': F_TUDOR, 'rna': F_RNA, 'dna': F_DNA, 'rna_exp': F_RNA_EXP, 'dna_exp': F_DNA_EXP},
+            'flag_bits': {'prmt': F_PRMT, 'tudor': F_TUDOR, 'rna': F_RNA, 'dna': F_DNA, 'rna_exp': F_RNA_EXP, 'dna_exp': F_DNA_EXP, 'wd40': F_WD40, 'phd': F_PHD},
+            'domain_classes': {k: list(v) for k, v in DOMAIN_CLASSES.items()},
             'iface_bits': {'protein': I_PROTEIN, 'self': I_SELF, 'rna': I_RNA, 'dna': I_DNA},
             'cdcode_version': cd_version,
             'role_bits': dict(ROLE_BITS, other=ROLE_OTHER),
@@ -1889,7 +1897,7 @@ def main():
             'sources': {
                 'string': f'STRING v{STRING_VERSION} physical links (CC BY 4.0)',
                 'complex_portal': 'Complex Portal human curated and predicted complexes (CC0)',
-                'uniprot': 'UniProt reviewed human proteome (CC BY 4.0)',
+                'uniprot': 'UniProt reviewed human proteome; InterPro Tudor (IPR002999), WD40 repeat (IPR001680) and PHD finger (IPR001965, IPR019787) members (CC BY 4.0)',
                 'go': 'QuickGO/GOA annotations to GO:0003723 and GO:0003677 incl. descendants (CC BY 4.0)',
                 'pdbe': 'PDBe-KB interface residues and SIFTS observed segments and chain mapping (EMBL-EBI)',
                 'cdcode': f'CD-CODE {cd_version} condensate membership via cd-code.org API',
