@@ -4617,10 +4617,10 @@
     const table = new Set(pred.tableSites || []);
     return '<p class="flabel">Distance to the partner in this model</p><ul class="contact-list">' + list.map((x) => '<li><button class="linkish strong" type="button" data-pos="' + x.pos + '">R' + x.pos + '</button> ' +
       (x.d == null ? '<span class="muted">more than 8 Å from ' + esc(pred.partnerLabel) + '</span>' :
-        '<b>' + x.d.toFixed(1) + ' Å</b> to ' + esc((pred.names[x.partner.chain] || 'chain ' + x.partner.chain) + ' ' + x.partner.resn + x.partner.resi) + (x.d <= 4 ? ' <span class="tag iface-p">contact</span>' : '')) +
+        '<b>' + x.d.toFixed(1) + ' Å</b> to ' + esc((pred.names[x.partner.chain] || 'chain ' + x.partner.chain) + ' ' + x.partner.resn + x.partner.resi) + (x.d < 2.2 ? ' <span class="tag clash" title="Heavy atoms closer than 2.2 Å: a steric clash in the model, not a real contact">clash</span>' : x.d <= 4 ? ' <span class="tag iface-p">contact</span>' : '')) +
       ' <span class="muted">· pLDDT ' + Math.round(x.b) + '</span>' +
       (table.has(x.pos) && (x.d == null || x.d > 5) ? '<br><span class="muted">ProtVar\'s 2024 interface table puts R' + x.pos + ' within 5 Å; this later model does not.</span>' : '') + '</li>').join('') + '</ul>' +
-      '<p class="note">Nearest heavy atoms between the arginine and any partner chain; ≤ 4 Å is marked as a contact.' + (pred.tableSites ? ' The ProtVar API serves a later prediction run than the 2024 interface table used for the site flags and statistics, so distances can differ.' : '') + '</p>';
+      '<p class="note">Nearest heavy atoms between the arginine and any partner chain; ≤ 4 Å is marked as a contact, < 2.2 Å as a steric clash (a modelling error).' + (pred.tableSites ? ' The ProtVar API serves a later prediction run than the 2024 interface table used for the site flags and statistics, so distances can differ.' : '') + '</p>';
   }
 
   function contactsHtml() {

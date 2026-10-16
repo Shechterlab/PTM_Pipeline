@@ -884,3 +884,4 @@ svg.ix-net { display: block; width: 100%; height: auto; }
 .src-tbl th:nth-child(1) { width: 17%; } .src-tbl th:nth-child(2) { width: 25%; } .src-tbl th:nth-child(3) { width: 17%; } .src-tbl th:nth-child(4) { width: 14%; } .src-tbl th:nth-child(5) { width: 27%; }
 @media (max-width: 640px) { .src-tbl { table-layout: auto; } .src-tbl th:nth-child(2), .src-tbl td:nth-child(2), .src-tbl th:nth-child(3), .src-tbl td:nth-child(3) { display: none; } }
 .prose h4 { margin: 1rem 0 0.4rem; }
+.tag.clash { background: color-mix(in srgb, #c2410c 16%, transparent); color: #9a3412; font-weight: 600; }
