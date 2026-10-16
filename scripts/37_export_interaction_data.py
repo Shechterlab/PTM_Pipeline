@@ -69,6 +69,19 @@ SALT_BRIDGE, HBOND_PRED, CATION_PI, CLASH, CONTACT_KEEP = 4.0, 3.5, 5.0, 2.2, 5.
 G_SB, G_HB, G_CATPI, G_CLASH = 1, 2, 4, 8
 ARG_N = ('NE', 'NH1', 'NH2')
 ACIDIC_O = {('ASP', 'OD1'), ('ASP', 'OD2'), ('GLU', 'OE1'), ('GLU', 'OE2')}
+# Residue-level nucleic-acid crosslinks (mass spectrometry, human cells).
+# pepR-MS supplement (Sha, Kuster & Trendel, bioRxiv 2025.09.05.674461, CC BY-NC): Table S2 re-analyses Kramer 2014,
+# XRNAX (Trendel 2019), RBS-ID (Bae 2020) and pRBS-ID (Bae 2021) with the pepR-MS pipeline; Table S3 lists focused sites.
+# bioRxiv rate-limits scripts: if the download fails, save the supplementary zip as crosslinks/pepr_media-1.zip.
+PEPR_ZIP = 'https://www.biorxiv.org/content/biorxiv/early/2026/09/21/2025.09.05.674461/DC1/embed/media-1.zip?download=true'
+TRENDEL_MMC = 'https://ars.els-cdn.com/content/image/1-s2.0-S0092867425005070-mmc{k}.xlsx'   # Trendel et al. 2025 Cell
+# RBDmap (Castello et al. 2016 Mol Cell, HeLa): RNA-bound proteolytic fragments, Oxford Research Archive dataset.
+RBDMAP_S1 = 'https://ora.ox.ac.uk/objects/uuid:092f4366-cac9-4ed7-8283-89dc6032834a/files/ma75a36ddd2e91c194d65041242e5a683'
+UNIPROT_DNA_BIND = 'https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606+AND+ft_dna_bind:*&fields=accession,ft_dna_bind&format=tsv'
+RNA_XL_SETS = [('Kramer_2014', 'Kramer 2014'), ('Trendel_2019', 'XRNAX 2019'), ('Bae_2020', 'RBS-ID 2020'), ('Bae_2021', 'pRBS-ID 2021'), ('this study', 'pepR-MS 2025')]
+RNA_FOCUSED = 32                       # pepR-MS Table S3 focused crosslinking site
+D_XL, D_PEP, D_BIND = 1, 2, 4          # DNA: localised crosslink residue, inside a crosslinked peptide, UniProt DNA-binding region
+XL_NEAR = 3                            # "near" = within this many residues of a crosslinked residue
 RINGS = {'PHE': ('CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ'), 'TYR': ('CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ'), 'TRP': ('CD2', 'CE2', 'CE3', 'CZ2', 'CZ3', 'CH2')}
 PDBE_MODRES = 'https://www.ebi.ac.uk/pdbe/api/pdb/entry/modified_AA_or_NA/{pdb}'
 
@@ -981,6 +994,142 @@ def measure_afdb_complexes(cache: Path, refresh: bool, workers: int, sites_by_ac
     return out
 
 
+def load_crosslinks(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None = None):
+    """Residue-level RNA and DNA crosslinks in canonical UniProt numbering, each checked against the sequence.
+
+    Returns rna[acc][pos] -> bitmask (one bit per dataset, RNA_FOCUSED for pepR-MS focused sites), rbd[acc] ->
+    [(start, end)] RBDmap RNA-bound fragments, dna[acc][pos] -> D_XL, dna_peps[acc] -> [(start, end)],
+    dna_interactome (set of accessions) and dna_bind[acc] -> [(start, end)]."""
+    import openpyxl
+    import zipfile
+    folder = cache / 'crosslinks'
+    folder.mkdir(parents=True, exist_ok=True)
+    rna, dna, rbd = defaultdict(dict), defaultdict(dict), defaultdict(list)
+    dna_peps, dna_bind, dna_interactome = defaultdict(list), defaultdict(list), set()
+    checked = Counter()
+
+    def ok(acc, pos, aa):
+        s = seq.get(acc)
+        good = bool(s) and 0 < pos <= len(s) and s[pos - 1] == aa
+        checked['ok' if good else 'mismatch'] += 1
+        return good
+
+    zpath = folder / 'pepr_media-1.zip'
+    try:
+        fetch(PEPR_ZIP, zpath, refresh)
+    except Exception as e:  # noqa: BLE001 - bioRxiv often answers scripts with 429
+        if not zpath.exists():
+            log(f'pepR-MS supplement not available ({e}); save it as {zpath} to include RNA crosslinks')
+    if zpath.exists():
+        with zipfile.ZipFile(zpath) as zf:
+            names = {Path(n).name: n for n in zf.namelist()}
+            wb = openpyxl.load_workbook(io.BytesIO(zf.read(names['Table_S2.xlsx'])), read_only=True)
+            for bit, (sheet, _) in enumerate(RNA_XL_SETS):
+                rows = wb[sheet].iter_rows(values_only=True)
+                ix = {h: k for k, h in enumerate(next(rows))}
+                for r in rows:
+                    acc = base_acc(str(r[ix['Protein ID']]).split(';')[0])
+                    try:
+                        pos = int(r[ix['Position']])
+                    except (TypeError, ValueError):
+                        continue
+                    # The crosslinked residue is the one carrying the nucleotide mass in the modified sequence.
+                    m = re.search(r'([A-Z])\[(\d+\.\d+)\]', re.sub(r'C\[57\.02\d*\]|M\[15\.99\d*\]', lambda x: x.group(0)[0], str(r[ix['Modified Sequence']])))
+                    if m and ok(acc, pos, m.group(1)):
+                        rna[acc][pos] = rna[acc].get(pos, 0) | (1 << bit)
+            wb = openpyxl.load_workbook(io.BytesIO(zf.read(names['Table_S3.xlsx'])), read_only=True)
+            rows = wb['Crosslinking site'].iter_rows(values_only=True)
+            ix = {h: k for k, h in enumerate(next(rows))}
+            for r in rows:
+                acc = base_acc(str(r[ix['Protein ID']]))
+                for aa, pos in zip(json.loads(r[ix['Focused Site AA']] or '[]'), json.loads(r[ix['Focused Site Position']] or '[]')):
+                    if ok(acc, int(pos), aa):
+                        rna[acc][int(pos)] = rna[acc].get(int(pos), 0) | RNA_FOCUSED
+
+    # RBDmap high-confidence RNA-bound fragments (RBDpep), kept where the fragment matches the canonical sequence.
+    rpath = folder / 'rbdmap_castello2016_table_s1.xlsx'
+    try:
+        fetch(RBDMAP_S1, rpath, refresh)
+    except Exception as e:  # noqa: BLE001
+        log(f'RBDmap Table S1 not available ({e})')
+    if rpath.exists():
+        gene_acc = {v[0]: a for a, v in sorted(seq_meta.items())} if seq_meta else {}
+        wb = openpyxl.load_workbook(rpath, read_only=True)
+        rows = wb['RBDpep'].iter_rows(values_only=True)
+        head = next(rows)
+        ix = {str(h).strip(): k for k, h in enumerate(head)}
+        frag_col = next(k for h, k in ix.items() if h.startswith('LysC/ArgC'))
+        kept = moved = dropped = 0
+        for r in rows:
+            frag = str(r[frag_col] or '')
+            acc = base_acc(str(r[ix['ProtID']]))
+            if acc not in seq:
+                acc = gene_acc.get(str(r[ix['Symbol']]), acc)
+            s = seq.get(acc, '')
+            try:
+                a, b = int(r[ix['fragmentStart']]), int(r[ix['fragmentStop']])
+            except (TypeError, ValueError):
+                dropped += 1
+                continue
+            if not s or not frag:
+                dropped += 1
+                continue
+            if s[a - 1:b] != frag:
+                hit = s.find(frag)
+                if hit < 0 or s.find(frag, hit + 1) >= 0:
+                    dropped += 1
+                    continue
+                a, b = hit + 1, hit + len(frag)
+                moved += 1
+            rbd[acc].append((a, b))
+            kept += 1
+        log(f'RBDmap: {kept:,} RNA-bound fragments kept ({moved:,} re-located by sequence), {dropped:,} dropped')
+
+    for k in (1, 2):
+        dest = folder / f'trendel2025_mmc{k}.xlsx'
+        try:
+            fetch(TRENDEL_MMC.format(k=k), dest, refresh)
+        except Exception as e:  # noqa: BLE001
+            log(f'Trendel 2025 table S{k} not available ({e})')
+    if (folder / 'trendel2025_mmc2.xlsx').exists():
+        wb = openpyxl.load_workbook(folder / 'trendel2025_mmc2.xlsx', read_only=True)
+        rows = wb['4ST-xl-peptides localization'].iter_rows(values_only=True)
+        ix = {h: k for k, h in enumerate(next(rows))}
+        for r in rows:
+            pep, acc = str(r[ix['Sequence with localization']]), base_acc(str(r[ix['Uniprot ID']]))
+            try:
+                start = int(r[ix['Protein position start']])
+            except (TypeError, ValueError):
+                continue
+            for k, ch in enumerate(pep):
+                if ch.islower() and ok(acc, start + k, ch.upper()):
+                    dna[acc][start + k] = D_XL
+        rows = wb['4ST-xl-peptides combined'].iter_rows(values_only=True)
+        ix = {h: k for k, h in enumerate(next(rows))}
+        for r in rows:
+            try:
+                dna_peps[base_acc(str(r[ix['Uniprot ID']]))].append((int(r[ix['Protein position start']]), int(r[ix['Protein position end']])))
+            except (TypeError, ValueError):
+                continue
+    if (folder / 'trendel2025_mmc1.xlsx').exists():
+        wb = openpyxl.load_workbook(folder / 'trendel2025_mmc1.xlsx', read_only=True)
+        rows = wb['DNA interactome & subproteomes'].iter_rows(values_only=True)
+        ix = {h: k for k, h in enumerate(next(rows))}
+        for r in rows:
+            if r[ix['MCF7 DNA interactome']] == 'DNA interactome':
+                dna_interactome.add(base_acc(str(r[ix['Uniprot ID']])))
+    path = fetch(UNIPROT_DNA_BIND, folder / 'uniprot_dna_bind.tsv', refresh)
+    with open(path, encoding='utf-8') as fh:
+        next(fh)
+        for line in fh:
+            acc, _, feats = line.rstrip('\n').partition('\t')
+            for a, b in re.findall(r'DNA_BIND (\d+)\.\.(\d+)', feats):
+                dna_bind[acc].append((int(a), int(b)))
+    log(f'Crosslinks: RNA {sum(len(v) for v in rna.values()):,} residues in {len(rna):,} proteins; DNA {sum(len(v) for v in dna.values()):,} residues in {len(dna):,} proteins, '
+        f'{len(dna_interactome):,} DNA-interactome proteins; UniProt DNA-binding regions in {len(dna_bind):,} proteins; sequence check {dict(checked)}')
+    return rna, rbd, dna, dna_peps, dna_interactome, dna_bind
+
+
 def mantel_haenszel(tables):
     """Mantel-Haenszel common odds ratio and CMH test (continuity-corrected) over 2x2 strata [[a, b], [c, d]]."""
     num = den = sa = sea = sva = 0.0
@@ -1452,6 +1601,58 @@ def main():
     log(f'Predicted-contact gallery: {len(gallery):,} methylarginine-partner contacts (<= {CONTACT_KEEP} Å) on {len({g[0] for g in gallery}):,} sites; '
         f'{sum(1 for g in gallery if g[8] & (G_SB | G_HB)):,} with a salt bridge or H-bond')
 
+    # Residue-level RNA and DNA crosslinks: site flags, per-protein tracks and within-protein tests.
+    rna_xl, rbd_frag, dna_xl, dna_peps, dna_int, dna_bind = load_crosslinks(cache, args.refresh, {a: v[2] for a, v in proteome.items()}, proteome)
+    xl_rows, xl_prot = [], []
+    xl_strata = {k: defaultdict(lambda: [0, 0, 0, 0]) for k in ('rna_xl', 'rna_near', 'rna_rbdmap', 'dna_xl', 'dna_pep', 'dna_bind', 'rna_xl_nonrg', 'rna_rbdmap_nonrg')}
+    for i, acc in enumerate(meth_accs):
+        if prots[i][10] or '-' in acc:
+            continue
+        r_map, d_map, peps, binds, frags = rna_xl.get(acc, {}), dna_xl.get(acc, {}), dna_peps.get(acc, []), dna_bind.get(acc, []), rbd_frag.get(acc, [])
+        site_pos = {sites[j][1] for j in by_prot_sites[i]}
+        def near_bits(pos):
+            b = 0
+            for q in range(pos - XL_NEAR, pos + XL_NEAR + 1):
+                b |= r_map.get(q, 0)
+            return b
+        def dna_bits(pos):
+            return (d_map.get(pos, 0)) | (D_PEP if any(a <= pos <= b for a, b in peps) else 0) | (D_BIND if any(a <= pos <= b for a, b in binds) else 0)
+        for j in by_prot_sites[i]:
+            pos = sites[j][1]
+            rb, nb, db = r_map.get(pos, 0), near_bits(pos), dna_bits(pos)
+            fb = 1 if any(a <= pos <= b for a, b in frags) else 0
+            if rb or nb or db or fb:
+                xl_rows.append([j, rb, nb, db, fb])
+        if r_map or d_map or peps or binds or frags or acc in dna_int:
+            xl_prot.append([i, sorted(r_map), [r_map[q] for q in sorted(r_map)], sorted(d_map), sorted(set(peps)), sorted(set(binds)), 1 if acc in dna_int else 0, sorted(set(frags))])
+        seq_ = proteome.get(acc, ('', '', ''))[2]
+        if not seq_:
+            continue
+        for key, test, have in (('rna_xl', lambda q: bool(r_map.get(q)), bool(r_map)), ('rna_near', lambda q: bool(near_bits(q)), bool(r_map)),
+                                ('rna_rbdmap', lambda q: any(a <= q <= b for a, b in frags), bool(frags)),
+                                ('dna_xl', lambda q: bool(d_map.get(q)), bool(d_map)), ('dna_pep', lambda q: any(a <= q <= b for a, b in peps), bool(peps)),
+                                ('dna_bind', lambda q: any(a <= q <= b for a, b in binds), bool(binds))):
+            if not have:
+                continue
+            for q in range(1, len(seq_) + 1):
+                if seq_[q - 1] == 'R':
+                    cell = (0 if q in site_pos else 2) + (0 if test(q) else 1)
+                    xl_strata[key][acc][cell] += 1
+                    # RG/RGG regions both bind RNA and carry most methylarginines: repeat the RNA tests without
+                    # arginines in an RG or GR dipeptide.
+                    if key in ('rna_xl', 'rna_rbdmap') and not ((q < len(seq_) and seq_[q] == 'G') or (q > 1 and seq_[q - 2] == 'G')):
+                        xl_strata[key + '_nonrg'][acc][cell] += 1
+    xl_enrich = {}
+    for key, tabs in xl_strata.items():
+        tabs = list(tabs.values())
+        a, b, c, d = (sum(x[k] for x in tabs) for k in range(4))
+        pv, odds = fisher_2x2(a, b, c, d) if a + b + c + d else (None, None)
+        mh_or, mh_p, used = mantel_haenszel(tabs)
+        xl_enrich[key] = {'pooled': [a, b, c, d, sig(math.log2(odds)) if odds else None, sig(pv)],
+                          'mh': [sig(math.log2(mh_or)) if mh_or and math.isfinite(mh_or) else None, sig(mh_p), used], 'proteins': len(tabs)}
+    log(f'Crosslinks: {sum(1 for r in xl_rows if r[1]):,} methylarginines are RNA-crosslinked residues, {sum(1 for r in xl_rows if r[2]):,} within {XL_NEAR} residues; '
+        f'{sum(1 for r in xl_rows if r[3] & D_XL):,} DNA-crosslinked, {sum(1 for r in xl_rows if r[3] & D_BIND):,} in UniProt DNA-binding regions')
+
     # Residues each interface methylarginine touches, from the structures themselves (RCSB ModelServer).
     contact_rows = []
     if contact_jobs:
@@ -1616,6 +1817,9 @@ def main():
                 'regions': 'UniProt disordered regions (MobiDB-lite) and domain, repeat and zinc-finger features (CC BY 4.0)',
                 'protvar': 'ProtVar predicted interfaces 2024.05.28, AlphaFold-Multimer, residues within 5 Å (EMBL-EBI, CC BY 4.0); served-model list from af2complexes_interfaces_v1',
                 'afdb_complexes': 'AlphaFold DB predicted complexes (human heterodimers), API and model files (EMBL-EBI, CC BY 4.0)',
+                'rbdmap': 'RBDmap (Castello et al. 2016 Mol Cell, HeLa) Table S1 RBDpep: RNA-bound proteolytic fragments (Oxford Research Archive)',
+                'rna_crosslinks': 'pepR-MS (Sha, Kuster & Trendel, bioRxiv 2025, CC BY-NC) Tables S2-S3: RNA-crosslinked residues re-analysed from Kramer 2014, XRNAX 2019, RBS-ID 2020, pRBS-ID 2021 and pepR-MS',
+                'dna_crosslinks': 'Trendel et al. 2025 Cell Tables S1-S2: DNA interactome and DNA-crosslinked peptides with localised residues; UniProt DNA-binding regions (CC BY 4.0)',
             },
             'fields': {
                 'proteins': ['accession', 'gene', 'flags', 'ensp'],
@@ -1637,6 +1841,9 @@ def main():
                 'cond_score_hist': '{CD-CODE confidence score: memberships of reviewed human proteins}',
                 'pred': ['site', '[[partner index, pDockQ x 100, 1 if this protein is ProtVar uniprot_id1, served model: 1 same order, 2 reversed, 0 none], ...] (top 12)', 'predicted partners'],
                 'gallery': ['site', 'partner index', 'source (0 ProtVar served model, 1 AlphaFold DB complex)', 'score x 100 (ProtVar pDockQ; AlphaFold DB ipTM)', 'pDockQ x 100', 'pLDDT of the arginine', 'lowest pLDDT of the partner residues named', 'minimum heavy-atom distance x 10 (Å)', 'flags (1 salt bridge <= 4 Å, 2 H-bond <= 3.5 Å, 4 cation-pi <= 5 Å, 8 clash < 2.2 Å)', 'partner residues with bond codes (sb, hb, pi)', 'model reference (ProtVar: 1 this protein first, 2 partner first; AlphaFold DB: model id)', 'this protein\'s chain'],
+                'xl': ['site', 'RNA crosslink bits at the residue (1 Kramer 2014, 2 XRNAX 2019, 4 RBS-ID 2020, 8 pRBS-ID 2021, 16 pepR-MS 2025, 32 pepR-MS focused site)', 'same bits within 3 residues', 'DNA bits (1 crosslinked residue, 2 inside a crosslinked peptide, 4 UniProt DNA-binding region)', '1 if inside an RBDmap RNA-bound fragment'],
+                'xl_prot': ['protein index', 'RNA-crosslinked positions', 'their dataset bits', 'DNA-crosslinked positions', 'DNA-crosslinked peptide spans', 'UniProt DNA-binding regions', '1 if in the Trendel 2025 DNA interactome', 'RBDmap RNA-bound fragments'],
+                'xl_enrich': '{rna_xl|rna_near|dna_xl|dna_pep|dna_bind: {pooled, mh, proteins}} methylated vs other arginines of proteins with that evidence',
                 'pred_enrich': '{pDockQ floor: {all|ordered|disordered: {pooled, mh}}} methylated vs other arginines of the same protein at a predicted interface',
             },
         },
@@ -1660,6 +1867,10 @@ def main():
         'pred': pred_rows,
         'pred_enrich': pred_enrich,
         'gallery': gallery,
+        'xl': xl_rows,
+        'xl_prot': xl_prot,
+        'xl_enrich': xl_enrich,
+        'xl_sets': [label for _, label in RNA_XL_SETS],
     }
     # Explorer proteins keep their own gene labels.
     for k, p in enumerate(prots):

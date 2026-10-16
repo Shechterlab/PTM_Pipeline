@@ -192,6 +192,7 @@ button, input, select { font: inherit; color: inherit; }
 .brand-links a:hover { color: #fdba74; text-decoration-color: #fdba74; }
 .hero h1 { font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem); line-height: 1.15; }
 .hero h1 .home-link { color: inherit; text-decoration: none; }
+.hero-scope { margin: 0.35rem 0 0; font-size: 0.86rem; opacity: 0.88; max-width: 62rem; }
 .hero h1 .home-link:hover, .hero h1 .home-link:focus-visible { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
 .hero .lede { max-width: 46rem; margin: 0; color: rgba(255, 255, 255, 0.86); font-size: 1rem; }
 .hero .lede a { color: #fff; text-decoration-color: #fdba74; }
@@ -885,3 +886,5 @@ svg.ix-net { display: block; width: 100%; height: auto; }
 @media (max-width: 640px) { .src-tbl { table-layout: auto; } .src-tbl th:nth-child(2), .src-tbl td:nth-child(2), .src-tbl th:nth-child(3), .src-tbl td:nth-child(3) { display: none; } }
 .prose h4 { margin: 1rem 0 0.4rem; }
 .tag.clash { background: color-mix(in srgb, #c2410c 16%, transparent); color: #9a3412; font-weight: 600; }
+/* Crosslink evidence near (not at) the residue, or region-level. */
+.tag.xl-near { background: transparent; border: 1px dashed currentColor; }

@@ -258,7 +258,17 @@ This writes `docs/data/methylarg_interactions.json` from STRING v12.5 physical l
 
 The predicted-contact gallery is part of the same export: it measures every methylarginine within 5 Å of the partner in served ProtVar models (pDockQ ≥ 0.5) and in AlphaFold DB human heterodimers (salt bridges ≤ 4 Å, hydrogen bonds ≤ 3.5 Å, cation–π ≤ 5 Å, clashes < 2.2 Å, pLDDT of both residues). It downloads a few thousand model files on its first run and keeps only the per-site results (`data/interactions_cache/protvar_measure`, `afdb_measure`); run it alone with `--fetch-models-only`.
 
-**Data licences.** The Data & methods page of the explorer lists every source with its version, licence and citation. Two sources carry non-commercial terms: PhosphoSitePlus® sites (8,175 sites in the union, via Maron et al. 2021 Table S5) are licensed under CC BY-NC-SA 3.0 (cite Hornbeck et al. 2015, doi:10.1093/nar/gku1267, and acknowledge www.phosphosite.org), and DisGeNET-derived disease terms are CC BY-NC-SA 4.0. Downloads that include these data carry the same terms.
+The same export adds residue-level RNA and DNA contact in living human cells:
+- **RNA-crosslinked residues:** from the pepR-MS supplement (Sha, Kuster & Trendel, bioRxiv doi:10.1101/2025.09.05.674461, CC BY-NC). Its Tables S2–S3 re-analyse Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 with pepR-MS.
+- **RNA-bound fragments:** RBDmap (Castello et al. 2016, Oxford Research Archive).
+- **DNA-crosslinked peptides and residues, and the DNA interactome:** Trendel et al. 2025, *Cell* (doi:10.1016/j.cell.2025.04.037).
+- **DNA-binding regions:** UniProt.
+
+bioRxiv often refuses scripted downloads (HTTP 429). If it does, save the pepR-MS supplementary zip as `data/interactions_cache/crosslinks/pepr_media-1.zip`.
+
+**Licence.** Code is MIT, and data, figures and text are CC BY-NC-SA 4.0; see [LICENSE.md](LICENSE.md). The share-alike, non-commercial terms follow from PhosphoSitePlus, DisGeNET and pepR-MS.
+
+**Data licences.** The Data & methods page of the explorer lists every source with its version, licence and citation. Two sources carry non-commercial terms: PhosphoSitePlus® sites (8,175 sites in the union, via Maron et al. 2021 Table S5) are licensed under CC BY-NC-SA 3.0 (cite Hornbeck et al. 2015, doi:10.1093/nar/gku1267, and acknowledge www.phosphosite.org), and DisGeNET-derived disease terms are CC BY-NC-SA 4.0. pepR-MS crosslinks are CC BY-NC. Downloads that include these data carry the same terms.
 
 Gene symbols follow current UniProt; symbols reported by the source tables (some outdated or belonging to a paralog) are kept as search aliases. If the metadata TSV also has UniProt's `Gene Names` column, its synonyms become aliases too. The committed data used the same query as `00_stage_context_sources.py` with `gene_names` added to the fields:
 
