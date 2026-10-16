@@ -123,6 +123,11 @@ def build_anchors(row: pd.Series) -> list[dict]:
     for field, anchor_type in [('seq_window', 'centered_window'), ('peptide_sequence', 'centered_window')]:
         for token in split_multi_value_field(row.get(field, ''), separators=';'):
             clean = clean_aa_sequence(token)
+            # A window of full length whose middle residue is not an arginine contradicts the record (for example a
+            # methyllysine window filed as an arginine site); do not guess the nearest arginine from it. A peptide of
+            # the same length still keeps its reported position through fallback_position.
+            if len(clean) in CENTERED_WINDOW_LENGTHS and not is_centered_window(clean):
+                continue
             add_anchor(clean, centered_anchor_indices(clean), anchor_type)
 
     return anchors
@@ -205,6 +210,13 @@ def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dic
                     })
 
     corrected_position, remap_status, anchor_type, anchor_sequence, hit_count = resolve_hit(row, hits, canonical_acc)
+    # The position belongs to the accession whose sequence matched. For a candidate found through the gene name (often
+    # the reviewed entry behind an unreviewed or mislabelled source accession) that is not the row's own accession.
+    matched_accession = canonical_acc
+    if corrected_position is not None and remap_status in ('sequence_unique_candidate', 'sequence_closest_supported'):
+        at = [hit for hit in hits if hit['matched_position'] == corrected_position]
+        if at and not any(hit['matched_accession'] == canonical_acc for hit in at):
+            matched_accession = sorted(at, key=lambda h: (h['priority'], -len(h['anchor_sequence'])))[0]['matched_accession']
 
     # A peptide (or a truncated window) does not say which of its arginines was modified; the source position does.
     # Keep the reported position when it is an arginine inside an occurrence of such an anchor on the canonical
@@ -218,7 +230,7 @@ def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dic
                 continue
             length = len(anchor['sequence'])
             if any(start <= reported < start + length for start in find_all_occurrences(canonical_seq, anchor['sequence'])):
-                corrected_position, remap_status = reported, 'sequence_position_verified'
+                corrected_position, remap_status, matched_accession = reported, 'sequence_position_verified', canonical_acc
                 anchor_type, anchor_sequence = anchor['anchor_type'], anchor['sequence']
                 hit_count = max(hit_count, 1)
                 break
@@ -231,7 +243,7 @@ def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dic
         elif remap_status == 'unresolved_no_hit':
             remap_status = fallback_status
 
-    corrected_accession = canonical_acc if corrected_position is not None and canonical_acc else ''
+    corrected_accession = (matched_accession if remap_status.startswith('sequence_') else canonical_acc) if corrected_position is not None and canonical_acc else ''
     corrected_site = f'R{corrected_position}' if corrected_position is not None else ''
     remapped = corrected_position is not None
     return {
@@ -248,6 +260,7 @@ def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dic
         'corrected_canonical_UniProtAC': corrected_accession,
         'position_delta': (corrected_position - int(row.get('position', 0))) if corrected_position is not None else pd.NA,
         'is_position_remapped': remapped and corrected_position != int(row.get('position', 0)),
+        'is_accession_remapped': remapped and corrected_accession != canonical_acc,
         'is_position_resolved': remapped,
     }
 

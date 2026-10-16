@@ -212,7 +212,12 @@ def main() -> None:
     positional = positional_enrichment(sites['window_15'], background_nonmethyl['window_15'])
 
     arg_counts = residue_background_from_sequences(sequences, residue='R')[['canonical_UniProtAC', 'site_key']].groupby('canonical_UniProtAC').size().rename('arginine_count').reset_index()
-    protein_counts = sites.groupby(['canonical_UniProtAC', 'substrate_genename'], as_index=False).size().rename(columns={'size': 'methyl_site_count'})
+    # One row per protein: sites of one accession can carry different gene symbols (aliases such as MRE11/MRE11A),
+    # and grouping by symbol as well split them into separate, weaker tests. Report the most frequent symbol.
+    protein_counts = sites.groupby('canonical_UniProtAC', as_index=False).size().rename(columns={'size': 'methyl_site_count'})
+    gene_symbol = (sites.assign(_g=sites['substrate_genename'].fillna('').astype(str))
+                   .groupby('canonical_UniProtAC')['_g'].agg(lambda g: g[g != ''].value_counts().index[0] if (g != '').any() else ''))
+    protein_counts.insert(1, 'substrate_genename', protein_counts['canonical_UniProtAC'].map(gene_symbol))
     protein_counts = protein_counts.merge(arg_counts, how='left', on='canonical_UniProtAC')
     total_methyl = int(protein_counts['methyl_site_count'].sum())
     total_arg = int(arg_counts['arginine_count'].sum())
