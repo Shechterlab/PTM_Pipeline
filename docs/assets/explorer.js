@@ -133,6 +133,13 @@
     distal: 'More than 20 aa from any domain and not between two domains',
     no_domain_annotation: 'Protein has no InterPro domain or repeat annotation',
   };
+  // How each evidence record was placed on the canonical sequence (PTM_Pipeline remapping).
+  const REMAP_HELP = {
+    same_accession_position_verified: 'Same accession; position checked',
+    sequence_unique_canonical: 'Peptide fits one place in the canonical sequence',
+    sequence_unique_candidate: 'Peptide fits one place (from another isoform)',
+    sequence_closest_supported: 'Ambiguous: peptide fits several places; nearest supported position used',
+  };
   const TREAT_HELP = { GSK591: 'PRMT5 inhibitor', MS023: 'type I PRMT inhibitor' };
   const PTM_LABEL = ['Phospho', 'Lys acyl', 'Ub/SUMO', 'Lys methyl'];
   const PTM_PREFIX = ['p', 'ac', 'ub', 'me'];
@@ -748,9 +755,23 @@
     const ptab = $('#tab-protein');
     ptab.hidden = UI.detail == null;
     if (UI.detail != null) ptab.textContent = P[UI.detail].label;
+    tabsInView();
     $('#layout').classList.toggle('no-rail', view === 'about');
     renderView();
     if (view !== 'protein') UI.highlight = null;
+  }
+
+  // Narrow screens scroll the tab bar: keep the selected tab visible and fade the edge while tabs are hidden.
+  function tabsInView() {
+    const bar = $('.tabs');
+    if (!bar) return;
+    const sel = $('.tab[aria-selected="true"]', bar);
+    if (sel && (sel.offsetLeft < bar.scrollLeft || sel.offsetLeft + sel.offsetWidth > bar.scrollLeft + bar.clientWidth)) bar.scrollLeft = Math.max(0, sel.offsetLeft - 16);
+    tabsFade();
+  }
+  function tabsFade() {
+    const bar = $('.tabs');
+    if (bar) bar.classList.toggle('more-right', bar.scrollWidth - bar.clientWidth - bar.scrollLeft > 4);
   }
 
   function renderView() {
@@ -1037,6 +1058,8 @@
         setQuery(input.value);
         compute();
         if (R.prots.length === 1) openProtein(R.prots[0].i, Q.positions && Q.positions.size ? Array.from(Q.positions.values())[0].values().next().value : null);
+        // One protein named with a site it lacks: open the protein; the note under the search says the site is not in the set.
+        else if (!R.prots.length && Q.proteins && Q.proteins.size === 1 && Q.positions) openProtein(Q.proteins.values().next().value);
         else if (Q.positions) go('sites');
         else go('proteins');
       }
@@ -1066,6 +1089,8 @@
     setTheme(store.get('mre-theme') || 'system', true);
     syncToolbar();
     window.addEventListener('resize', debounce(syncToolbar, 150));
+    window.addEventListener('resize', debounce(tabsFade, 150));
+    $('.tabs').addEventListener('scroll', debounce(tabsFade, 60), { passive: true });
   }
 
   function setTheme(mode, initial) {
@@ -1214,12 +1239,13 @@
     if (!cons.length) return '<div class="card empty"><b>No sites match</b>Broaden the search.</div>';
     const saveF = cloneFilters(F), saveQ = Q;
     const tries = cons.map((c, k) => {
-      c.clear();
+      // Dry run: the search constraint's clear() also empties the box and the URL, so drop it from Q directly.
+      if (c.group === 'search') Q = parseQuery(''); else c.clear();
       const n = filterSites(F, Q).sites.length;
       F = cloneFilters(saveF); Q = saveQ;
       return [k, c.label, n];
     }).filter((t) => t[2] > 0).sort((a, b) => b[2] - a[2]).slice(0, 5);
-    return '<div class="card empty"><b>No sites match all ' + cons.length + ' constraints</b>' +
+    return '<div class="card empty"><b>' + (cons.length === 1 ? 'No sites match' : 'No sites match all ' + cons.length + ' constraints') + '</b>' +
       (tries.length ? 'Removing one of these brings sites back:<div class="empty-tries">' + tries.map((t) => '<button class="chip" type="button" data-k="' + t[0] + '">Remove “' + esc(t[1]) + '” · ' + fmt(t[2]) + ' sites</button>').join('') + '</div>' : 'Remove a filter or broaden the search.') +
       '<p><button class="btn small" type="button" id="empty-reset">Clear all</button></p></div>';
   }
@@ -1743,7 +1769,7 @@
         const vs = (varsAt.get(s.pos) || []).filter((v) => v.from === 'R');
         const open = UI.openEvidence.has(s.j);
         return '<tr class="row' + (dim ? ' dim' : '') + '" tabindex="0" data-j="' + s.j + '" data-pos="' + s.pos + '"><td class="num"><b>R' + s.pos + '</b>' +
-          (s.orig ? '<br><span class="muted" title="Position as reported by the source before canonical remapping">reported ' + esc(Array.from(new Set(s.orig.split(';'))).join(', ')) + '</span>' : '') +
+          (s.orig ? '<br><span class="muted" title="Positions given by the source studies before mapping to the current canonical UniProt sequence. Several can land on one site when a source used another isoform or its peptide fits more than one arginine; expand the row to see how each record was mapped.">source position' + (new Set(s.orig.split(';')).size > 1 ? 's ' : ' ') + esc(Array.from(new Set(s.orig.split(';'))).join(', ')) + '</span>' : '') +
           vs.map((v) => '<br><span class="tag var" title="UniProt natural variant ' + esc(v.id) + ': R' + s.pos + v.to + ' · ' + esc(v.desc) + '">R' + s.pos + esc(v.to) + (shortDisease(v.desc) ? ' · ' + esc(shortDisease(v.desc).slice(0, 18)) : '') + '</span>').join('') + '</td>' +
           '<td>' + pill(s.st) + '</td><td>' + windowHtml(s.win, 7) + (s.mis ? ' <span class="warn" title="Canonical residue at this position is not R">!</span>' : '') + '</td>' +
           '<td class="nw hide-sm">' + motifTags(s.mot) + '</td><td class="nw hide-xs">' + contextHtml(s) + '</td><td class="hide-sm">' + dom + '</td>' +
@@ -1826,7 +1852,7 @@
           return '<tr><td><b>' + (st && STUDY_DOI[st] ? doiLink(STUDY_DOI[st], esc(st)) : esc(st || '—')) + '</b></td><td>' + esc(ev.source_tables[r[0]]) + '</td><td>' + esc(ref === 'This study.' ? 'Maron et al. 2021 (first reported in that study)' : ref || '—') + '</td>' +
           '<td>' + (r[2] ? r[2].split(/[;,\s]+/).filter(Boolean).map((id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">' + esc(id) + '</a>').join(' ') : '—') + '</td>' +
           '<td class="pep">' + esc(r[3] || '—') + '</td><td>' + esc(r[4] || '—') + '</td><td>' + esc(r[5] || '—') + '</td>' +
-          '<td class="mono">' + esc(r[6]) + ':' + esc(r[7]) + (r[7] && String(r[7]) !== String(s.pos) ? ' <span class="muted">→ R' + s.pos + '</span>' : '') + '<br><span class="muted">' + esc(ev.remap_statuses[r[8]].replace(/_/g, ' ')) + '</span></td></tr>'; }).join('') +
+          '<td class="mono">' + esc(r[6]) + ':' + esc(r[7]) + (r[7] && String(r[7]) !== String(s.pos) ? ' <span class="muted">→ R' + s.pos + '</span>' : '') + '<br><span class="muted"' + (REMAP_HELP[ev.remap_statuses[r[8]]] ? ' title="' + esc(ev.remap_statuses[r[8]]) + '"' : '') + '>' + esc((REMAP_HELP[ev.remap_statuses[r[8]]] || ev.remap_statuses[r[8]].replace(/_/g, ' '))) + '</span></td></tr>'; }).join('') +
         '</tbody></table>' +
         (rows.some((r) => r[9] != null && ev.studies[r[9]] === 'PhosphoSitePlus') ? '<p class="note">' + esc(PSP_NOTICE) + '</p>' : '');
     } else if (!ev) html += '<p class="note">The evidence file did not load.</p>';
@@ -4610,7 +4636,11 @@
     }
     if (xe.dna_xl && xe.dna_xl.or) {
       const m = xe.dna_xl.or.mh;
-      out.push({ sec: 'cells', html: 'Methylated arginines are <b>' + dirCi(m[1], m[2]) + '</b> the residue crosslinked to DNA (within-protein ' + orCi(m) + ', ' + fmt(m[4]) + ' proteins; Trendel et al. 2025).' });
+      const td = T.dna_xl || {};
+      const typed = ['rme2s', 'rme2a', 'rme1ip'].filter((k) => td[k]).reduce((n, k) => n + td[k].pooled[0], 0);
+      const noState = td.nostate ? td.nostate.pooled[0] : null;
+      out.push({ sec: 'cells', html: 'Methylated arginines are <b>' + dirCi(m[1], m[2]) + '</b> the residue crosslinked to DNA (within-protein ' + orCi(m) + ', ' + fmt(m[4]) + ' proteins; Trendel et al. 2025)' +
+        (noState != null && typed === 0 ? '; ' + fmt(noState) + ' of the ' + fmt(xe.dna_xl.or.pooled[0]) + ' DNA-crosslinked methylarginines have no state call, and none is typed by methyl-specific IP' : '') + '.' });
     }
     const st = IX.strata || {};
     if (st.rna && st.protein) {
@@ -4833,8 +4863,8 @@
       const x = e[key];
       if (!x || !x.or) return '';
       const [a, b, c, d] = x.or.pooled;
-      return '<tr' + (filt ? ' class="row" tabindex="0" data-xl="' + filt + '"' : '') + '><td><b>' + label + '</b></td><td class="r num">' + fmt(a) + ' / ' + fmt(a + b) + ' <span class="muted">(' + pctText(a, a + b || 1) + '%)</span></td>' +
-        '<td class="r num">' + fmt(c) + ' / ' + fmt(c + d) + ' <span class="muted">(' + pctText(c, c + d || 1) + '%)</span></td><td class="r num">' + cellOr(x.or) + '</td><td class="r num hide-xs">' + fmt(x.or.mh[4]) + ' / ' + fmt(x.proteins) + '</td></tr>';
+      return '<tr' + (filt ? ' class="row" tabindex="0" data-xl="' + filt + '"' : '') + '><td><b>' + label + '</b></td><td class="r num">' + cellOr(x.or) + '</td><td class="r num">' + fmt(a) + ' / ' + fmt(a + b) + ' <span class="muted">(' + pctText(a, a + b || 1) + '%)</span></td>' +
+        '<td class="r num">' + fmt(c) + ' / ' + fmt(c + d) + ' <span class="muted">(' + pctText(c, c + d || 1) + '%)</span></td><td class="r num hide-xs">' + fmt(x.or.mh[4]) + ' / ' + fmt(x.proteins) + '</td></tr>';
     };
     const T = IX.xlTypes || {};
     const typeRow = (key, label) => {
@@ -4850,7 +4880,7 @@
     const F_ = IX.xlFreq;
     return '<h4 style="margin-top:1rem">RNA and DNA contact in living cells (crosslinking mass spectrometry)</h4>' +
       '<p class="sub">UV crosslinking locates the residue that touches RNA or DNA in human cells, including in disordered regions that structures miss. Each row compares methylated arginines with the other arginines of the proteins that have that evidence: odds ratio within proteins (Mantel–Haenszel, each protein a stratum) with its 95% confidence interval (Robins–Breslow–Greenland) and CMH p value.</p>' +
-      '<div class="tbl-wrap"><table class="tbl compact strata-tbl"><thead><tr><th>Arginine is…</th><th class="r">Methylated R</th><th class="r">Other R</th><th class="r">OR within protein [95% CI]</th><th class="r hide-xs">Informative / proteins</th></tr></thead><tbody>' +
+      '<div class="tbl-wrap"><table class="tbl compact strata-tbl"><thead><tr><th>Arginine is…</th><th class="r">OR within protein [95% CI]</th><th class="r">Methylated R</th><th class="r">Other R</th><th class="r hide-xs">Informative / proteins</th></tr></thead><tbody>' +
       row('rna_xl', 'An RNA-crosslinked residue', 1) + row('rna_xl_nonrg', '… excluding RG/GR dipeptides') + row('rna_near', 'Within 3 aa of an RNA crosslink', 2) + row('rna_rbdmap', 'Inside an RBDmap RNA-bound fragment', 4) + row('rna_rbdmap_nonrg', '… excluding RG/GR dipeptides') +
       row('dna_xl', 'A DNA-crosslinked residue', 8) + row('dna_pep', 'Inside a DNA-crosslinked peptide') + row('dna_bind', 'Inside a UniProt DNA-binding region', 16) + '</tbody></table></div>' +
       '<h4 style="margin-top:1rem">By methylation type</h4>' +
@@ -5372,6 +5402,7 @@
       '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two most recent entries per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were read from the structure itself (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylated arginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
       '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue that touched RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016). DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence (26,012 matched, 68 dropped). Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides.</li>' +
       '<li><b>Writer and reader paths</b>: the protein network can add a second ring of PRMTs and Tudor-domain proteins that bind its partners (STRING ≥ 0.7).</li>' +
+      '<li><b>Interactions tab</b>: the key findings are written from the exported statistics, so their wording (more often, less often, not significantly different) follows the numbers. "Self-contact" marks residues that touch another copy of the same protein (a homodimer or homo-oligomer) in a PDB entry.</li>' +
       '<li><b>Interface geometry</b>: for every methylarginine at a PDB interface and up to 12 non-methylated interface arginines per protein, the 10 Å environment in one entry (the most recent showing the interface) gives relative solvent accessibility alone and in the complex (Shrake–Rupley, Arg maximum 274 Å² from Tien et al. 2013) and the Levy (' + doiLink('10.1016/j.jmb.2010.09.028', '2010') + ') class: core, rim or support. Guanidino nitrogens within 3.5 Å of a nucleobase N/O count as base hydrogen bonds, of a phosphate or sugar O as backbone hydrogen bonds. Both are compared within proteins (Mantel–Haenszel). The RG/RGG table repeats the interface test within each sequence context.</li>' +
       '<li><b>Methylarginines modelled in the PDB</b>: entries containing 2MR, DA2, NMM or AGM (RCSB search), their residues from PDBe, mapped to UniProt through SIFTS; union sites are flagged and positions the union lacks are listed on protein pages.</li>' +
       '<li><b>References</b>: CD-CODE publications for each membership are listed in full (titles from NCBI E-utilities) with a PubMed search for all of them.</li>' +

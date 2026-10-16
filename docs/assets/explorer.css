@@ -923,3 +923,14 @@ details.ix-sec[open] > summary .pm { border-color: var(--accent); }
 .more-opts[open] > summary::before { content: "− "; }
 .more-opts > :not(summary) { margin-top: 0.4rem; }
 .motif-search input::placeholder { text-transform: none; }
+/* Phones: tighter tabs (the scope bar above already shows the counts), and a fade while more tabs sit off-screen. */
+.tab-short { display: none; }
+@media (max-width: 560px) {
+  .tab { padding: 0.5rem 0.55rem 0.6rem; font-size: 0.85rem; }
+  .tab .count { display: none; }
+  .tab-long { display: none; }
+  .tab-short { display: inline; }
+}
+.tabs.more-right { -webkit-mask-image: linear-gradient(to right, #000 82%, transparent); mask-image: linear-gradient(to right, #000 82%, transparent); }
+/* Touch screens: horizontal drags on the map zoom (brush), so it cannot also scroll sideways; fit it to the width instead. */
+@media (pointer: coarse) { svg.pmap { min-width: 0; } }
