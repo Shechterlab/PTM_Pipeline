@@ -2511,7 +2511,7 @@
       uniform: () => '',
     };
     return '<span class="legend-title">' + esc((VIEW_COLORS.find((o) => o[0] === key) || ['', ''])[1]) + '</span>' + (parts[key] || parts.uniform)() +
-      '<span><i style="background:var(--fig-site)"></i>Methylarginines: map colours</span>' +
+      '<span><i style="background:var(--fig-site)"></i>Methylarginines: map colours (this colour where the map shows grey)</span>' +
       (mol && mol.mode === 'pdb' && mol.naKinds ? Array.from(mol.naKinds).map((k) => '<span><i class="sq" style="background:' + NA_COLOR[k] + '"></i>' + k + '</span>').join('') : '') +
       (UI.mv.contacts && mol && mol.focus ? '<span><i class="sq" style="background:' + ELEM_GREY.map.C + '"></i>Contacts within 5 Å</span>' : '');
   }
@@ -2567,7 +2567,9 @@
     const siteColor = new Map();
     for (const j of p.sites) {
       const r = pdbMode ? pdb.toAuth.get(S[j].pos) : S[j].pos;
-      if (r != null) siteColor.set(r, colors[mode.cat(S[j])] || pal.none);
+      // Uncategorised sites take the accent colour in 3D, where the map's neutral grey would vanish against grey chains.
+      const c = colors[mode.cat(S[j])] || pal.none;
+      if (r != null) siteColor.set(r, c === pal.none ? pal.site : c);
     }
     if (pdbMode) for (const r of pdb.det.modres) if (r.chain_id === pdb.chain && !siteColor.has(+r.author_residue_number)) siteColor.set(+r.author_residue_number, '#C2410C');
     const siteAt = (a) => (inChain(a) && siteColor.has(a.resi) && baseResn(a.resn) === 'ARG' ? siteColor.get(a.resi) : null);
