@@ -12,6 +12,12 @@ Sources
   QuickGO / GOA (CC BY 4.0) ................................ RNA binding (GO:0003723) and DNA binding (GO:0003677)
   PDBe-KB interface residues (EMBL-EBI) .................... residues at protein, RNA and DNA interfaces in the PDB
   SIFTS observed UniProt segments (EMBL-EBI) ............... structural coverage, for the interface enrichment test
+  UniProt disordered regions and domains (CC BY 4.0) ....... strata for the interface test
+  CD-CODE condensate membership (cd-code.org API) .......... per-protein confidence score, role and evidence
+  RCSB ModelServer + SIFTS chain mapping ................... residues each interface methylarginine touches
+
+Stages that make many requests cache every answer: the PDBe interface lookup (about 5,000 calls) and the
+structure contacts (about 5,500 calls). Run them alone first with --fetch-interfaces-only / --fetch-contacts-only.
 """
 from __future__ import annotations
 
@@ -42,6 +48,9 @@ UNIPROT_STREAM = 'https://rest.uniprot.org/uniprotkb/stream'
 QUICKGO_DOWNLOAD = 'https://www.ebi.ac.uk/QuickGO/services/annotation/downloadSearch'
 PDBE_IFACE = 'https://www.ebi.ac.uk/pdbe/graph-api/uniprot/interface_residues/{acc}'
 SIFTS_OBSERVED = 'https://ftp.ebi.ac.uk/pub/databases/msd/sifts/flatfiles/tsv/uniprot_segments_observed.tsv.gz'
+SIFTS_CHAINS = 'https://ftp.ebi.ac.uk/pub/databases/msd/sifts/flatfiles/tsv/pdb_chain_uniprot.tsv.gz'
+CDCODE_API = 'https://cd-code.org/api'
+MODELSERVER = 'https://models.rcsb.org/v1/{pdb}/residueSurroundings'
 
 # The nine human protein arginine methyltransferases.
 PRMT_GENES = ['PRMT1', 'PRMT2', 'PRMT3', 'CARM1', 'PRMT5', 'PRMT6', 'PRMT7', 'PRMT8', 'PRMT9']
@@ -54,6 +63,21 @@ GO_EXPERIMENTAL = {'EXP', 'IDA', 'IPI', 'IMP', 'IGI', 'IEP', 'HTP', 'HDA', 'HMP'
 F_PRMT, F_TUDOR, F_RNA, F_DNA, F_RNA_EXP, F_DNA_EXP = 1, 2, 4, 8, 16, 32
 # Site interface bits.
 I_PROTEIN, I_SELF, I_RNA, I_DNA = 1, 2, 4, 8
+# CD-CODE role and evidence bits (shared with docs/assets/explorer.js).
+ROLE_BITS = {'member': 1, 'driver': 2, 'client': 4, 'regulator': 8}
+ROLE_OTHER = 16
+EVIDENCE_BITS = {'in_vivo': 1, 'in_cellulo': 2, 'in_vitro': 4, 'frap': 8, 'colocalization': 16, 'mass_spectrometry': 32, 'emergent properties': 64}
+EVIDENCE_OTHER = 128
+# Residue classes for structure contacts.
+NUC_RNA = {'A', 'C', 'G', 'U', 'I', 'PSU', '5MC', '7MG', 'OMG', 'OMC', 'OMU', '2MG', 'M2G', 'H2U', '1MA', '5MU', '4SU'}
+NUC_DNA = {'DA', 'DC', 'DG', 'DT', 'DI', 'DU', '5CM'}
+METHYL_R = {'2MR', 'DA2', 'NMM', 'AGM'}
+AA3 = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D', 'CYS': 'C', 'GLN': 'Q', 'GLU': 'E', 'GLY': 'G', 'HIS': 'H', 'ILE': 'I', 'LEU': 'L',
+       'LYS': 'K', 'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S', 'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'SEP': 'pS', 'TPO': 'pT',
+       'PTR': 'pY', 'MLY': 'Kme2', 'M3L': 'Kme3', 'MLZ': 'Kme1', 'ALY': 'Kac', '2MR': 'Rme2', 'DA2': 'Rme2a', 'NMM': 'Rme1', 'AGM': 'Rme1'}
+WATERS = {'HOH', 'WAT', 'DOD'}
+SIDE_CHAIN = {'NE', 'CZ', 'NH1', 'NH2', 'CD'}
+CONTACT_CUTOFF = 4.0
 
 ACC_RE = re.compile(r'^(?:[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2})$')
 UA = 'PTM_Pipeline-site-explorer/1.0 (https://github.com/Shechterlab/PTM_Pipeline)'
@@ -266,6 +290,196 @@ def load_observed(cache: Path, refresh: bool, keep: set):
     return obs
 
 
+def load_uniprot_regions(cache: Path, refresh: bool):
+    """Reviewed human proteome: disordered regions (MobiDB-lite) and domain/repeat/zinc-finger intervals."""
+    path = fetch(UNIPROT_STREAM, cache / 'uniprot_human_regions.tsv.gz', refresh,
+                 {'query': '(organism_id:9606) AND (reviewed:true)', 'fields': 'accession,ft_region,ft_domain,ft_repeat,ft_zn_fing',
+                  'format': 'tsv', 'compressed': 'true'})
+    feat = re.compile(r'(REGION|DOMAIN|REPEAT|ZN_FING) [<?]?(\d+)\.\.[>?]?(\d+);(?: /note="([^"]*)")?')
+    disordered, domains = defaultdict(list), defaultdict(list)
+    with open_text(path) as fh:
+        for row in csv.reader(fh, delimiter='\t'):
+            if not row or row[0] == 'Entry':
+                continue
+            for m in feat.finditer('\t'.join(row[1:])):
+                kind, a, b, note = m.group(1), int(m.group(2)), int(m.group(3)), m.group(4) or ''
+                if kind == 'REGION':
+                    if note == 'Disordered':
+                        disordered[row[0]].append((a, b))
+                else:
+                    domains[row[0]].append((a, b))
+    return disordered, domains
+
+
+def load_sifts_chains(cache: Path, refresh: bool, keep_pdbs: set):
+    """SIFTS chain-level mapping for the PDB entries in keep_pdbs: pdb -> list of (chain, acc, res_beg, sp_beg, sp_end).
+
+    RES_BEG is the SEQRES index (mmCIF label_seq_id), which exists even when the segment's first residue
+    is unobserved and has no author number."""
+    path = fetch(SIFTS_CHAINS, cache / Path(SIFTS_CHAINS).name, refresh)
+    out = defaultdict(list)
+    with open_text(path) as fh:
+        header = None
+        for row in csv.reader(fh, delimiter='\t'):
+            if not row or row[0].startswith('#'):
+                continue
+            if header is None:
+                header = {h.strip(): i for i, h in enumerate(row)}
+                continue
+            pdb = row[header['PDB']].lower()
+            if pdb not in keep_pdbs:
+                continue
+            beg = row[header['RES_BEG']]
+            if not re.fullmatch(r'\d+', beg):
+                continue
+            try:
+                out[pdb].append((row[header['CHAIN']], row[header['SP_PRIMARY']], int(beg), int(row[header['SP_BEG']]), int(row[header['SP_END']])))
+            except ValueError:
+                pass
+    return out
+
+
+def load_cdcode(cache: Path, refresh: bool, uids: list, workers: int):
+    """CD-CODE member lists with per-protein confidence, role and evidence, one cached JSON per condensate."""
+    folder = cache / 'cdcode'
+    folder.mkdir(parents=True, exist_ok=True)
+    release = fetch(f'{CDCODE_API}/releases/latest', folder / 'release.json', refresh)
+
+    def one(uid):
+        fetch(f'{CDCODE_API}/condensates/{uid}/proteins', folder / f'{uid}.json', refresh, {'per_page': '5000'})
+
+    with ThreadPoolExecutor(max_workers=min(4, workers)) as pool:
+        list(pool.map(one, uids))
+    out = {}
+    for uid in uids:
+        p = folder / f'{uid}.json'
+        try:
+            rows = json.loads(p.read_text()).get('data', [])
+        except (OSError, json.JSONDecodeError):
+            continue
+        members = {}
+        for r in rows:
+            acc = base_acc((r.get('protein') or {}).get('uniprot_id') or '')
+            if not acc:
+                continue
+            roles = evid = 0
+            pmids = []
+            for a in (r.get('new_annotations') or []) + (r.get('old_annotations') or []):
+                an = a.get('annotations') or {}
+                t = an.get('functional_type')
+                for x in (t if isinstance(t, list) else [t] if t else []):
+                    roles |= ROLE_BITS.get(x, ROLE_OTHER)
+                for e in an.get('exp_evidence') or []:
+                    evid |= EVIDENCE_BITS.get(e, EVIDENCE_OTHER)
+                for pm in ([a.get('publication')] if a.get('publication') else []) + list(a.get('publications') or []):
+                    pm = str(pm)
+                    if pm.isdigit() and pm not in pmids:
+                        pmids.append(pm)
+            members[acc] = (r.get('confidence_score') or 0, roles, evid, pmids)
+        out[uid] = members
+    try:
+        version = json.loads(release.read_text()).get('latest_release_version', '')
+    except (OSError, json.JSONDecodeError):
+        version = ''
+    log(f'CD-CODE {version}: member lists for {len(out)} condensates')
+    return out, version
+
+
+def parse_cif_atoms(text: str):
+    """Minimal mmCIF atom_site reader: list of dicts with the columns needed for contacts."""
+    lines = text.splitlines()
+    cols, atoms, in_loop = [], [], False
+    for line in lines:
+        if line.startswith('_atom_site.'):
+            cols.append(line.split('.', 1)[1].strip())
+            in_loop = True
+            continue
+        if in_loop:
+            if line.startswith(('ATOM', 'HETATM')):
+                parts = line.split()
+                if len(parts) >= len(cols):
+                    atoms.append(dict(zip(cols, parts)))
+            elif line.startswith(('#', 'loop_', '_')) and atoms:
+                break
+    return atoms
+
+
+def site_contacts(cache: Path, pdb: str, chain: str, label: int, refresh: bool):
+    """Residues of other chains within CONTACT_CUTOFF of an arginine side chain, cached as JSON.
+
+    The residue is addressed by author chain and SEQRES index (label_seq_id). Hits are
+    [author chain, label_seq_id, author residue number, residue name, distance]."""
+    folder = cache / 'contacts_seqres'
+    folder.mkdir(parents=True, exist_ok=True)
+    dest = folder / f'{pdb}_{chain}_{label}.json'
+    if dest.exists() and not refresh:
+        try:
+            return json.loads(dest.read_text())
+        except json.JSONDecodeError:
+            pass
+    url = MODELSERVER.format(pdb=pdb) + '?' + urllib.parse.urlencode(
+        {'auth_asym_id': chain, 'label_seq_id': label, 'radius': CONTACT_CUTOFF + 1.5, 'model_nums': 1, 'encoding': 'cif'})
+    text = None
+    for k in range(4):
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': UA})
+            with urllib.request.urlopen(req, timeout=90) as r:
+                text = r.read().decode('utf-8', 'replace')
+            break
+        except urllib.error.HTTPError as e:
+            if e.code in (400, 404):
+                text = ''
+                break
+            time.sleep(2 ** k)
+        except Exception:  # noqa: BLE001 - network hiccup, retried
+            time.sleep(2 ** k)
+    if text is None:
+        return None
+    atoms = parse_cif_atoms(text)
+    me = [a for a in atoms if a.get('auth_asym_id') == chain and a.get('label_seq_id') == str(label)]
+    resn = me[0].get('label_comp_id') if me else ''
+    side = [(float(a['Cartn_x']), float(a['Cartn_y']), float(a['Cartn_z'])) for a in me if a.get('label_atom_id') in SIDE_CHAIN]
+    out = {'resn': resn, 'hits': []}
+    if side and resn in ({'ARG'} | METHYL_R):
+        seen = {}
+        for a in atoms:
+            ch, comp = a.get('auth_asym_id'), a.get('label_comp_id')
+            if ch == chain or comp in WATERS:
+                continue
+            x, y, z = float(a['Cartn_x']), float(a['Cartn_y']), float(a['Cartn_z'])
+            d = min(math.dist((x, y, z), q) for q in side)
+            if d > CONTACT_CUTOFF:
+                continue
+            key = (ch, a.get('label_seq_id'), a.get('auth_seq_id'), comp)
+            if key not in seen or d < seen[key]:
+                seen[key] = d
+        out['hits'] = [[ch, lab, seq, comp, round(d, 2)] for (ch, lab, seq, comp), d in sorted(seen.items(), key=lambda kv: kv[1])]
+    dest.write_text(json.dumps(out))
+    return out
+
+
+def mantel_haenszel(tables):
+    """Mantel-Haenszel common odds ratio and CMH test (continuity-corrected) over 2x2 strata [[a, b], [c, d]]."""
+    num = den = sa = sea = sva = 0.0
+    used = 0
+    for a, b, c, d in tables:
+        n = a + b + c + d
+        if n < 2 or (a + b) == 0 or (c + d) == 0 or (a + c) == 0 or (b + d) == 0:
+            continue
+        used += 1
+        num += a * d / n
+        den += b * c / n
+        sa += a
+        sea += (a + b) * (a + c) / n
+        sva += (a + b) * (c + d) * (a + c) * (b + d) / (n * n * (n - 1))
+    if not used or sva <= 0:
+        return None, None, 0
+    odds = (num / den) if den > 0 else float('inf')
+    stat = (abs(sa - sea) - 0.5) ** 2 / sva
+    p = math.erfc(math.sqrt(max(stat, 0) / 2))
+    return odds, p, used
+
+
 # ----------------------------------------------------------------------------- statistics
 def log_choose(n, k):
     return math.lgamma(n + 1) - math.lgamma(k + 1) - math.lgamma(n - k + 1)
@@ -322,6 +536,8 @@ def main():
     ap.add_argument('--workers', type=int, default=6, help='parallel PDBe requests')
     ap.add_argument('--refresh', action='store_true', help='download every source again')
     ap.add_argument('--fetch-interfaces-only', action='store_true', help='only fill the PDBe interface cache')
+    ap.add_argument('--fetch-contacts-only', action='store_true', help='only fill the structure-contact cache (needs the interface cache)')
+    ap.add_argument('--contact-entries', type=int, default=2, help='PDB entries examined per site and partner type')
     args = ap.parse_args()
     cache = Path(args.cache)
 
@@ -344,9 +560,11 @@ def main():
     meth_base = {}
     for i, acc in enumerate(meth_accs):
         meth_base.setdefault(base_acc(acc), i)
-    edges = load_string(cache, args.refresh, sid_to_acc, set(meth_base), args.string_min_score)
+    prmt_tudor = {acc for acc, (g, _, _) in proteome.items() if g in PRMT_GENES} | set(tudor)
+    edges = load_string(cache, args.refresh, sid_to_acc, set(meth_base) | prmt_tudor, args.string_min_score)
     complexes = load_complexes(cache, args.refresh)
     ifaces = fetch_interfaces(cache, canonical, args.refresh, args.workers)
+    disordered, domains = load_uniprot_regions(cache, args.refresh)
 
     # Protein vocabulary: the explorer's proteins first (same order), then every other protein referenced.
     vocab = list(meth_accs)
@@ -413,6 +631,10 @@ def main():
     site_rows = []
     observed = load_observed(cache, args.refresh, set(ifaces))
     enrich = {'rna': [0, 0, 0, 0], 'dna': [0, 0, 0, 0], 'protein': [0, 0, 0, 0], 'any': [0, 0, 0, 0]}
+    IFACE_TYPES = (('rna', I_RNA), ('dna', I_DNA), ('protein', I_PROTEIN | I_SELF), ('any', I_RNA | I_DNA | I_PROTEIN | I_SELF))
+    STRATA = ('all', 'ordered', 'domain')
+    strata = {(t, f): defaultdict(lambda: [0, 0, 0, 0]) for t, _ in IFACE_TYPES for f in STRATA}
+    contact_jobs = []   # (site j, partner key, pdb, own accession, position)
     by_prot_sites = defaultdict(list)
     for j, s in enumerate(sites):
         by_prot_sites[s[0]].append(j)
@@ -451,6 +673,8 @@ def main():
             for key, ids in hit.items():
                 plist.append(-1 if key == 'RNA' else -2 if key == 'DNA' else vid(key))
                 pdbs.update(ids)
+                for pdb in sorted(ids, reverse=True)[:args.contact_entries]:
+                    contact_jobs.append((j, key, pdb, acc, pos))
             site_rows.append([j, mask_of(hit), plist, sorted(pdbs)[:8], len(pdbs)])
 
         # Enrichment: methylated vs other observed arginines of this protein at each interface type.
@@ -461,18 +685,131 @@ def main():
         cov = set()
         for a, b in segs:
             cov.update(range(a, b + 1))
+        dis = disordered.get(acc, [])
+        dom = domains.get(acc, [])
         for pos in cov:
             if pos > len(seq) or seq[pos - 1] != 'R':
                 continue
             m = mask_of(res_partners.get(pos, {}))
             meth = pos in site_pos
-            for key, bit in (('rna', I_RNA), ('dna', I_DNA), ('protein', I_PROTEIN | I_SELF), ('any', I_RNA | I_DNA | I_PROTEIN | I_SELF)):
-                at = bool(m & bit)
-                enrich[key][(0 if meth else 2) + (0 if at else 1)] += 1
+            ordered = not any(a <= pos <= b for a, b in dis)
+            in_dom = any(a <= pos <= b for a, b in dom)
+            for key, bit in IFACE_TYPES:
+                cell = (0 if meth else 2) + (0 if m & bit else 1)
+                enrich[key][cell] += 1
+                strata[(key, 'all')][acc][cell] += 1
+                if ordered:
+                    strata[(key, 'ordered')][acc][cell] += 1
+                if in_dom:
+                    strata[(key, 'domain')][acc][cell] += 1
     enrich_out = {}
     for key, (a, b, c, d) in enrich.items():
         p, odds = fisher_2x2(a, b, c, d)
         enrich_out[key] = [a, b, c, d, sig(math.log2(odds)), sig(p)]
+    # Stratified versions: pooled within a residue class, and Mantel-Haenszel with each protein as a stratum,
+    # so the comparison is always against arginines of the same protein.
+    enrich_strata = {}
+    for key, _ in IFACE_TYPES:
+        enrich_strata[key] = {}
+        for f in STRATA:
+            tabs = list(strata[(key, f)].values())
+            a, b, c, d = (sum(t[k] for t in tabs) for k in range(4))
+            p, odds = fisher_2x2(a, b, c, d) if a + b + c + d else (None, None)
+            mh_or, mh_p, used = mantel_haenszel(tabs)
+            enrich_strata[key][f] = {
+                'pooled': [a, b, c, d, sig(math.log2(odds)) if odds else None, sig(p)],
+                'mh': [sig(math.log2(mh_or)) if mh_or and math.isfinite(mh_or) else None, sig(mh_p), used],
+            }
+
+    # Residues each interface methylarginine touches, from the structures themselves (RCSB ModelServer).
+    contact_rows = []
+    if contact_jobs:
+        chains = load_sifts_chains(cache, args.refresh, {pdb for _, _, pdb, _, _ in contact_jobs})
+        requests_ = defaultdict(list)   # (pdb, chain, author residue) -> [(site, partner key)]
+        for j, key, pdb, acc, pos in contact_jobs:
+            # The site's residue in at most two copies of the protein in the entry.
+            cands = sorted({(ch, res_beg + (pos - sp_beg)) for ch, sp, res_beg, sp_beg, sp_end in chains.get(pdb, [])
+                            if base_acc(sp) == acc and sp_beg <= pos <= sp_end})
+            for ch, auth in cands[:2]:
+                requests_[(pdb, ch, auth)].append((j, key))
+        todo = sorted(requests_)
+        log(f'Structure contacts: {len(todo):,} residue neighbourhoods to read')
+        done = 0
+        results = {}
+
+        def run(req):
+            return req, site_contacts(cache, req[0], req[1], req[2], args.refresh)
+
+        with ThreadPoolExecutor(max_workers=args.workers) as pool:
+            for req, res in pool.map(run, todo):
+                results[req] = res
+                done += 1
+                if done % 500 == 0:
+                    log(f'  {done:,}/{len(todo):,}')
+        chain_acc = {(pdb, ch): base_acc(sp) for pdb, rows in chains.items() for ch, sp, *_ in rows}
+        chain_map = defaultdict(list)
+        for pdb, rows in chains.items():
+            for ch, sp, beg, sp_beg, sp_end in rows:
+                chain_map[(pdb, ch)].append((beg, sp_beg, sp_end))
+        by_site = defaultdict(dict)   # j -> {(key, pdb): set(labels)}
+        modelled = {}
+        for (pdb, ch, auth), owners in requests_.items():
+            res = results.get((pdb, ch, auth))
+            if not res:
+                continue
+            for j, _ in owners:
+                own = meth_accs[sites[j][0]]
+                if res.get('resn') in METHYL_R:
+                    modelled[j] = res['resn']
+                for hch, hlab, hseq, comp, dist in res['hits']:
+                    if comp in NUC_RNA:
+                        k, label = -1, comp + hseq
+                    elif comp in NUC_DNA:
+                        k, label = -2, comp[1:] + hseq if comp.startswith('D') and len(comp) == 2 else comp + hseq
+                    elif comp in AA3:
+                        pacc = chain_acc.get((pdb, hch))
+                        unp = None
+                        if re.fullmatch(r'\d+', hlab or ''):
+                            for res_beg, sp_beg, sp_end in chain_map.get((pdb, hch), []):
+                                u = sp_beg + (int(hlab) - res_beg)
+                                if sp_beg <= u <= sp_end:
+                                    unp = u
+                                    break
+                        k = vid(pacc) if pacc else -4
+                        label = AA3[comp] + (str(unp) if unp is not None else hch + ':' + hseq)
+                    else:
+                        k, label = -3, comp
+                    by_site[j].setdefault((k, pdb), set()).add(label)
+        for j, groups in by_site.items():
+            rows = []
+            for (k, pdb), labels in sorted(groups.items(), key=lambda kv: (0 if kv[0][0] in (-1, -2) else 1, kv[0])):
+                rows.append([k, pdb, sorted(labels, key=lambda x: (re.sub(r'\d', '', x), int(re.sub(r'\D', '', x) or 0)))[:8]])
+            contact_rows.append([j, rows, modelled.get(j, '')])
+        log(f'Structure contacts: {len(contact_rows):,} sites with residue-level contacts')
+    if args.fetch_contacts_only:
+        return
+
+    # CD-CODE: this protein's own membership confidence, role and evidence in each condensate.
+    cond_meta = explorer['meta'].get('condensates', [])
+    cd_uids = [c[1] for c in cond_meta]
+    cd, cd_version = load_cdcode(cache, args.refresh, cd_uids, args.workers)
+    cd_rows = []
+    for i, acc in enumerate(meth_accs):
+        b = base_acc(acc)
+        for ci, uid in enumerate(cd_uids):
+            m = cd.get(uid, {}).get(b)
+            if m:
+                score, roles, evid, pmids = m
+                cd_rows.append([i, ci, score, roles, evid, len(pmids), pmids[:6]])
+
+    # STRING partners of PRMTs and Tudor-domain proteins, for writer-substrate-reader paths.
+    wr_lists = defaultdict(set)
+    for (a, b), sc in edges.items():
+        if a in prmt_tudor:
+            wr_lists[a].add(b)
+        if b in prmt_tudor:
+            wr_lists[b].add(a)
+    wr_rows = [[vid(w), sorted(vid(x) for x in xs)] for w, xs in sorted(wr_lists.items())]
 
     # Flags for every protein in the vocabulary.
     flags = []
@@ -527,13 +864,21 @@ def main():
             'prmt_genes': PRMT_GENES,
             'flag_bits': {'prmt': F_PRMT, 'tudor': F_TUDOR, 'rna': F_RNA, 'dna': F_DNA, 'rna_exp': F_RNA_EXP, 'dna_exp': F_DNA_EXP},
             'iface_bits': {'protein': I_PROTEIN, 'self': I_SELF, 'rna': I_RNA, 'dna': I_DNA},
+            'cdcode_version': cd_version,
+            'role_bits': dict(ROLE_BITS, other=ROLE_OTHER),
+            'evidence_bits': dict(EVIDENCE_BITS, other=EVIDENCE_OTHER),
+            'contact_cutoff': CONTACT_CUTOFF,
+            'contact_entries': args.contact_entries,
             'go_experimental_codes': sorted(GO_EXPERIMENTAL),
             'sources': {
                 'string': f'STRING v{STRING_VERSION} physical links (CC BY 4.0)',
                 'complex_portal': 'Complex Portal human curated and predicted complexes (CC0)',
                 'uniprot': 'UniProt reviewed human proteome (CC BY 4.0)',
                 'go': 'QuickGO/GOA annotations to GO:0003723 and GO:0003677 incl. descendants (CC BY 4.0)',
-                'pdbe': 'PDBe-KB interface residues and SIFTS observed segments (EMBL-EBI)',
+                'pdbe': 'PDBe-KB interface residues and SIFTS observed segments and chain mapping (EMBL-EBI)',
+                'cdcode': f'CD-CODE {cd_version} condensate membership via cd-code.org API',
+                'contacts': 'RCSB ModelServer residue surroundings (wwPDB data, CC0)',
+                'regions': 'UniProt disordered regions (MobiDB-lite) and domain, repeat and zinc-finger features (CC BY 4.0)',
             },
             'fields': {
                 'proteins': ['accession', 'gene', 'flags', 'ensp'],
@@ -542,6 +887,10 @@ def main():
                 'iface': ['site', 'mask', 'partners (-1 RNA, -2 DNA, else protein index)', 'pdb ids (first 8)', 'pdb count'],
                 'enrich': '[methylated at, methylated not at, other R at, other R not at, log2 OR, p] over structurally observed arginines',
                 'go_enrich': '[methylated with term, methylated reviewed, other with term, other reviewed, log2 OR, p]',
+                'enrich_strata': '{type: {all|ordered|domain: {pooled: [a, b, c, d, log2 OR, p], mh: [log2 MH OR, CMH p, informative proteins]}}}',
+                'contacts': ['site', '[partner (-1 RNA, -2 DNA, -3 ligand, -4 unmapped chain, else protein index), pdb, residue labels]', 'methylated residue modelled (2MR/DA2/NMM/AGM)'],
+                'cd_members': ['protein', 'condensate index (meta.condensates of the sites file)', 'confidence 1-5', 'role bits', 'evidence bits', 'publications', 'first PMIDs'],
+                'wr': ['PRMT or Tudor protein index', 'its STRING physical partners (indices)'],
             },
         },
         'proteins': [[a, gene_of.get(base_acc(a), ''), flags[k], ensp(a)] for k, a in enumerate(vocab)],
@@ -550,6 +899,10 @@ def main():
         'iface': site_rows,
         'enrich': enrich_out,
         'go_enrich': go_enrich,
+        'enrich_strata': enrich_strata,
+        'contacts': contact_rows,
+        'cd_members': cd_rows,
+        'wr': wr_rows,
     }
     # Explorer proteins keep their own gene labels.
     for k, p in enumerate(prots):
