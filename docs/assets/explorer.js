@@ -106,7 +106,7 @@
     single: { name: 'Single colour', cats: ['Methylarginine'], cat: () => 0, colors: (pal) => [pal.site] },
   };
   const TRACKS = [
-    ['dense', 'Dense windows'], ['domains', 'Domains'], ['regions', 'Regions'], ['disorder', 'Disorder'], ['plddt', 'AlphaFold pLDDT'],
+    ['dense', 'Dense windows'], ['domains', 'Domains'], ['regions', 'Regions'], ['disorder', 'Disorder'],
     ['bias', 'Composition'], ['rg', 'RG/RGG-rich'], ['args', 'All arginines'], ['variants', 'Variants'], ['ptms', 'Other PTMs'],
   ];
   // AlphaFold DB confidence bands and colours.
@@ -156,7 +156,7 @@
     sortP: { key: 'sites', dir: -1 }, sortS: { key: 'gene', dir: 1 },
     pageP: 50, pageS: 100, zoom: null, openEvidence: new Set(),
     allCond: false, funcExpanded: false, charts: {},
-    fig: { color: 'state', labels: 'auto', tracks: new Set(['dense', 'domains', 'regions', 'disorder', 'plddt', 'bias', 'rg', 'args', 'variants', 'ptms']) },
+    fig: { color: 'state', labels: 'auto', tracks: new Set(['dense', 'domains', 'regions', 'disorder', 'bias', 'rg', 'args', 'variants', 'ptms']) },
   };
 
   // ------------------------------------------------------------------- load
@@ -1399,8 +1399,7 @@
       (p.iso ? '<span class="tag" title="Sites were reported on this isoform accession">isoform</span>' : '') +
       ext('https://www.uniprot.org/uniprotkb/' + encodeURIComponent(p.acc) + '/entry', 'UniProt') +
       ext('https://alphafold.ebi.ac.uk/entry/' + encodeURIComponent(base), 'AlphaFold') +
-      ext('https://www.ebi.ac.uk/interpro/protein/UniProt/' + encodeURIComponent(base) + '/', 'InterPro') +
-      ext('https://www.phosphosite.org/uniprotAccSubmitAction.action?id=' + encodeURIComponent(base), 'PhosphoSitePlus') + '</div></div>' +
+      ext('https://www.ebi.ac.uk/interpro/protein/UniProt/' + encodeURIComponent(base) + '/', 'InterPro') + '</div></div>' +
       (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
       '<div class="facts">' +
       fact(fmt(p.sites.length), 'Methylarginine sites', shownN === p.sites.length ? (filtered ? 'all match your filters' : 'all reported sites') : fmt(shownN) + ' match current filters') +
@@ -1458,7 +1457,6 @@
         lowEl.textContent = pct(low, vals.length) + '%';
         subEl.textContent = low + ' of ' + vals.length + ' sites at pLDDT < 70 (model mean ' + (af.entry.globalMetricValue != null ? af.entry.globalMetricValue.toFixed(1) : '—') + ')';
       } else { lowEl.textContent = '—'; subEl.textContent = 'no AlphaFold DB model'; }
-      drawMap(p, UNIDATA.get(p.acc));
       renderSiteTable(p);
     });
     if (UI.highlight != null) setTimeout(() => flashSite(UI.highlight, true), 60);
@@ -1812,7 +1810,6 @@
     const T = fig.tracks;
     const mode = COLOR_MODES[fig.color] || COLOR_MODES.state;
     const colors = mode.colors(pal);
-    const af = AFDATA.get(p.acc);
     const len = (u && u.len) || p.len || Math.ceil(p.maxPos * 1.05) || 100;
     const feats = u ? u.feats : [];
     const z = UI.zoom || [1, len];
@@ -1932,23 +1929,6 @@
       if (dis.length) boxTrack('Disorder', dis, pal.disFill, pal.muted, null, (f) => '<b>Disordered</b> (UniProt)<br>' + f.start + '–' + f.end, true);
       else { tlabel('Disorder', y); gridLine(y); y += 20; }
     }
-    if (T.has('plddt') && af && af.plddt.size) {
-      tlabel('pLDDT', y);
-      let runStart = null, runBand = -1, prev = null;
-      const flush = (end) => {
-        if (runStart == null) return;
-        const a = cx(runStart), b = cx(end + 1);
-        g += '<rect class="feat" x="' + r1(a) + '" y="' + (y - 5) + '" width="' + r1(Math.max(1, b - a)) + '" height="10" fill="' + PLDDT_BANDS[runBand][1] + '"' + tip('<b>AlphaFold pLDDT</b> ' + esc(PLDDT_BANDS[runBand][2]) + '<br>' + runStart + '–' + end) + '/>';
-      };
-      for (let r = v0; r <= v1; r++) {
-        const v = af.plddt.get(r);
-        const band = v == null ? -1 : plddtBand(v);
-        if (band !== runBand || prev == null) { flush(r - 1); runStart = band >= 0 ? r : null; runBand = band; }
-        prev = r;
-      }
-      flush(v1);
-      y += 20;
-    }
     if (T.has('bias')) boxTrack('Composition', feats.filter((f) => f.type === 'Compositional bias' && visible(f.start, f.end)), pal.biasFill, pal.ink, (f) => f.desc.replace(/ residues$/, '-rich').replace('Basic and acidic', 'Charged'), (f) => '<b>Compositional bias</b> ' + esc(f.desc) + '<br>' + f.start + '–' + f.end);
     if (T.has('rg') && u) boxTrack('RG/RGG', u.rg.filter((b) => visible(b.start, b.end)).map((b) => Object.assign({}, b)), pal.rgFill, pal.rgInk, (b) => b.label, (b) => '<b>' + b.label + '</b> ' + b.start + '–' + b.end + '<br>' + b.n + ' RG dipeptides, ' + b.rgg + ' RGG<br>' + RG_HELP);
     if (T.has('args') && u && u.seq) {
@@ -2025,16 +2005,9 @@
       if (T.has('rg') && u && shown(u.rg)) item((a, b) => '<rect x="' + a + '" y="' + (b - 5) + '" width="20" height="10" rx="3" fill="' + pal.rgFill + '"/>', 'RG/RGG-rich');
       if (T.has('dense') && p.sig.some((w) => visible(w[1], w[2]))) item((a, b) => '<rect x="' + a + '" y="' + (b - 5) + '" width="20" height="10" rx="3" fill="' + pal.dense + '"/>', 'Dense methyl-R window');
       if (T.has('variants') && u && u.variants.some((f) => f.from === 'R' && p.sites.some((j) => S[j].pos === f.start))) item((a, b) => '<rect x="' + (a + 9) + '" y="' + (b - 7) + '" width="3" height="14" rx="1" fill="' + pal.accent + '"/>', 'Variant at a methylarginine');
-      if (T.has('plddt') && af && af.plddt.size) {
-        y = ey + 22;
-        ex = 0;
-        g += '<text x="0" y="' + (y + 4) + '" font-size="10.5" font-weight="700" fill="' + pal.muted + '">AlphaFold pLDDT</text>';
-        ex = 104;
-        PLDDT_BANDS.forEach((b) => { g += '<rect x="' + ex + '" y="' + (y - 5) + '" width="14" height="10" fill="' + b[1] + '"/><text x="' + (ex + 19) + '" y="' + (y + 4) + '" font-size="10.5" fill="' + pal.ink + '">' + esc(b[2]) + '</text>'; ex += 34 + b[2].length * 5.9; });
-        y += 4;
-      } else y = ey;
+      y = ey;
       y += 18;
-      g += '<text x="' + (W - MR) + '" y="' + (y + 4) + '" font-size="9" text-anchor="end" fill="' + pal.muted + '">Sites: methylarginine union, PTM_Pipeline · features and variants: UniProt' + (af && T.has('plddt') ? ' · pLDDT: AlphaFold DB' : '') + ' · ' + esc(PAPER.short) + '</text>';
+      g += '<text x="' + (W - MR) + '" y="' + (y + 4) + '" font-size="9" text-anchor="end" fill="' + pal.muted + '">Sites: methylarginine union, PTM_Pipeline · features and variants: UniProt' + ' · ' + esc(PAPER.short) + '</text>';
       y += 12;
     }
     const H = Math.ceil(y + 4);
@@ -2051,13 +2024,12 @@
     const sub = $('#map-sub');
     const out = mapSvg(p, u, { pal: screenPalette(), forExport: false });
     if (sub) {
-      sub.textContent = u ? fmt(out.len) + ' aa · domains, regions, disorder and variants from UniProt' + (AFDATA.get(p.acc) ? ' · pLDDT from AlphaFold DB' : '') + (UI.zoom ? ' · showing ' + out.v0 + '–' + out.v1 : '') :
+      sub.textContent = u ? fmt(out.len) + ' aa · domains, regions, disorder and variants from UniProt' + (UI.zoom ? ' · showing ' + out.v0 + '–' + out.v1 : '') :
         (uniprotCache.has(p.acc) && UNIDATA.has(p.acc) ? 'UniProt features unavailable; showing sites on a ' + (p.len ? fmt(out.len) + ' aa' : 'length-estimated') + ' backbone.' : 'Loading UniProt features…');
     }
     $('#zoom-reset').hidden = !UI.zoom;
     $('#fig-legend').innerHTML = '<span class="legend-title">' + esc(out.mode.name) + '</span>' + out.mode.cats.map((c, k) => '<span><i style="background:' + out.colors[k] + '"></i>' + esc(c) + '</span>').join('') +
-      '<span><i class="sq" style="background:var(--fig-domain)"></i>Domain</span>' +
-      (UI.fig.tracks.has('plddt') && AFDATA.get(p.acc) ? '<span class="legend-title">pLDDT</span>' + PLDDT_BANDS.map((b) => '<span><i class="sq" style="background:' + b[1] + '"></i>' + esc(b[2].replace(/ \(.*\)/, '')) + '</span>').join('') : '');
+      '<span><i class="sq" style="background:var(--fig-domain)"></i>Domain</span>';
     box.innerHTML = out.svg;
     bindMap(box, p, u, out);
   }
