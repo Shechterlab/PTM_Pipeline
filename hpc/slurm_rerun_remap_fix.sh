@@ -103,5 +103,13 @@ python "$BASE_DIR/scripts/38_compare_results_roots.py" \
   --new "$NEW_ROOT" \
   --outdir "$NEW_ROOT/rerun_comparison"
 
+echo "[ptm_remapfix] checking every source row against its own evidence (old and new root)"
+for root in "$OLD_ROOT" "$NEW_ROOT"; do
+  python "$BASE_DIR/scripts/qc_remap_evidence_check.py" \
+    --results-root "$root" \
+    --fasta "$PTM_CANONICAL_FASTA" \
+    --outdir "$NEW_ROOT/rerun_comparison/evidence_check_$(basename "$root")" | tee "$NEW_ROOT/rerun_comparison/evidence_check_$(basename "$root").txt"
+done
+
 echo "finished: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$NEW_ROOT/RUN_INFO.txt"
 echo "[ptm_remapfix] done; read $NEW_ROOT/rerun_comparison/report.md"

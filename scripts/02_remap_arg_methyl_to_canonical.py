@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 import pandas as pd
@@ -10,7 +10,6 @@ from common import (
     accession_is_isoform,
     canonical_gene_name,
     canonicalize_uniprot_accession,
-    centered_anchor_indices,
     clean_aa_sequence,
     normalize_accession,
     parse_fasta,
@@ -85,15 +84,40 @@ def candidate_accessions(row: pd.Series, canonical_sequences: dict[str, str], ge
     return candidates
 
 
-# Centred site windows in the compiled sources are 13, 15 or 31 residues (+/-6, +/-7, +/-15) with the site in the
-# middle. Anything else in these fields is a peptide (Maron, Fedoriw, Li, Lim) or a window truncated at a protein
-# terminus, whose middle residue says nothing about which arginine was modified.
-CENTERED_WINDOW_LENGTHS = {13, 15, 31}
+# A source record gives either a centred site window (13, 15 or 31 residues: Guo; PhosphoSitePlus, Musiani, Fong,
+# ProMetheusDB; Larsen, Wei) or a peptide that contains the site somewhere (Maron, Fedoriw, Li, Lim). The token length
+# alone does not tell them apart (a tryptic peptide can be 15 residues long), so the kind is read per source: a source
+# whose tokens mostly share one window length gives windows. Its windows are shorter where they run off a protein end.
+WINDOW_LENGTHS = (13, 15, 31)
+WINDOW_SOURCE_MIN_SHARE = 0.5
 
 
-def is_centered_window(sequence: str) -> bool:
-    seq = clean_aa_sequence(sequence)
-    return len(seq) in CENTERED_WINDOW_LENGTHS and seq[(len(seq) + 1) // 2 - 1] == 'R'
+def annotate_window_lengths(rows: pd.DataFrame) -> pd.DataFrame:
+    """Add seq_window_window_length and peptide_sequence_window_length: the full window length of the row's source for
+    that field, or 0 when the source gives peptides. A source is a source table plus, for compilations, the reference."""
+    rows = rows.copy()
+    reference = rows['reference'] if 'reference' in rows.columns else pd.Series('', index=rows.index)
+    keys = rows['source_table'].astype(str) + '|' + reference.fillna('').astype(str)
+    for field in ('seq_window', 'peptide_sequence'):
+        values = rows[field] if field in rows.columns else pd.Series('', index=rows.index)
+        lengths = values.map(lambda v: [len(clean_aa_sequence(t)) for t in split_multi_value_field(v, separators=';')])
+        per_source = {}
+        for key, group in lengths.groupby(keys):
+            flat = [n for row_lengths in group for n in row_lengths]
+            if flat:
+                top, count = Counter(flat).most_common(1)[0]
+                per_source[key] = top if top in WINDOW_LENGTHS and count / len(flat) >= WINDOW_SOURCE_MIN_SHARE else 0
+        rows[f'{field}_window_length'] = keys.map(per_source).fillna(0).astype(int)
+    return rows
+
+
+def window_anchor_indices(window: str, full_length: int) -> list[int]:
+    """1-based index of the site in a centred window. A window cut short at one end keeps the site half a window from
+    its intact end, so both readings are tried; only arginines count."""
+    half = full_length // 2
+    if len(window) == full_length:
+        return [half + 1] if window[half] == 'R' else []
+    return sorted({i for i in (half + 1, len(window) - half) if 1 <= i <= len(window) and window[i - 1] == 'R'})
 
 
 def build_anchors(row: pd.Series) -> list[dict]:
@@ -103,32 +127,32 @@ def build_anchors(row: pd.Series) -> list[dict]:
     def add_anchor(sequence: str, indices: list[int], anchor_type: str) -> None:
         seq = clean_aa_sequence(sequence)
         clean_indices = sorted(set(idx for idx in indices if 1 <= idx <= len(seq)))
-        if not seq or not clean_indices:
+        # A peptide without a single arginine is kept without indices: it still verifies the reported position.
+        if not seq or (not clean_indices and anchor_type != 'peptide'):
             return
         key = (seq, tuple(clean_indices), anchor_type)
         if key in seen:
             return
         seen.add(key)
-        anchors.append({
-            'sequence': seq,
-            'indices': clean_indices,
-            'anchor_type': anchor_type,
-            'full_window': anchor_type == 'centered_window' and is_centered_window(seq),
-        })
+        anchors.append({'sequence': seq, 'indices': clean_indices, 'anchor_type': anchor_type})
 
     for peptide in split_multi_value_field(row.get('peptides', ''), separators=','):
         clean, modified = parse_modified_peptide(peptide)
         add_anchor(clean, modified, 'annotated_peptide')
 
-    for field, anchor_type in [('seq_window', 'centered_window'), ('peptide_sequence', 'centered_window')]:
+    for field in ('seq_window', 'peptide_sequence'):
+        full_length = int(row.get(f'{field}_window_length', 0) or 0)
         for token in split_multi_value_field(row.get(field, ''), separators=';'):
             clean = clean_aa_sequence(token)
-            # A window of full length whose middle residue is not an arginine contradicts the record (for example a
-            # methyllysine window filed as an arginine site); do not guess the nearest arginine from it. A peptide of
-            # the same length still keeps its reported position through fallback_position.
-            if len(clean) in CENTERED_WINDOW_LENGTHS and not is_centered_window(clean):
-                continue
-            add_anchor(clean, centered_anchor_indices(clean), anchor_type)
+            if full_length and len(clean) <= full_length:
+                # A full window centred on another residue (for example a methyllysine window filed as an arginine
+                # site) gives no anchor: no arginine is guessed from it.
+                kind = 'centered_window' if len(clean) == full_length else 'truncated_window'
+                add_anchor(clean, window_anchor_indices(clean, full_length), kind)
+            else:
+                # A peptide names its modified arginine only when it has a single one.
+                arginines = [i + 1 for i, aa in enumerate(clean) if aa == 'R']
+                add_anchor(clean, arginines if len(arginines) == 1 else [], 'peptide')
 
     return anchors
 
@@ -218,15 +242,14 @@ def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dic
         if at and not any(hit['matched_accession'] == canonical_acc for hit in at):
             matched_accession = sorted(at, key=lambda h: (h['priority'], -len(h['anchor_sequence'])))[0]['matched_accession']
 
-    # A peptide (or a truncated window) does not say which of its arginines was modified; the source position does.
-    # Keep the reported position when it is an arginine inside an occurrence of such an anchor on the canonical
-    # accession, instead of the arginine nearest the anchor's middle. Full centred windows stay authoritative.
+    # A peptide does not say which of its arginines was modified; the source position does. Keep the reported position
+    # when it is an arginine inside an occurrence of one of the row's peptides on the canonical accession. Windows and
+    # annotated peptides mark the modified residue themselves.
     reported = int(row.get('position', 0))
     canonical_seq = canonical_sequences.get(canonical_acc, '')
     if corrected_position != reported and canonical_seq and 1 <= reported <= len(canonical_seq) and canonical_seq[reported - 1] == 'R':
         for anchor in anchors:
-            # Annotated peptides mark the modified residue themselves; full centred windows mark it by position.
-            if anchor['anchor_type'] != 'centered_window' or anchor['full_window']:
+            if anchor['anchor_type'] != 'peptide':
                 continue
             length = len(anchor['sequence'])
             if any(start <= reported < start + length for start in find_all_occurrences(canonical_seq, anchor['sequence'])):
@@ -290,6 +313,11 @@ def main() -> None:
     ]
     all_rows = pd.concat(frames, ignore_index=True, sort=False)
     all_rows['canonical_UniProtAC'] = all_rows['canonical_UniProtAC'].astype(str).map(canonicalize_uniprot_accession)
+    all_rows = annotate_window_lengths(all_rows)
+    kinds = all_rows.assign(reference=all_rows.get('reference', pd.Series('', index=all_rows.index)).fillna('')).groupby(
+        ['source_table', 'reference'])[['seq_window_window_length', 'peptide_sequence_window_length']].first()
+    print('window length per source (0 = peptides):')
+    print(kinds.to_string())
 
     remap_annotations = all_rows.apply(
         lambda row: pd.Series(remap_row(row, canonical_sequences=canonical_sequences, gene_map=gene_map)),
