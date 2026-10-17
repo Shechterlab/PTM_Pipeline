@@ -988,3 +988,25 @@ details.ix-sec[open] > summary .pm { border-color: var(--accent); }
   .hero-stats .stat:nth-child(n+4) { display: none; }
   .docs-toc ol { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ---- Evidence map, selection profile, complex members ------------------ */
+.upset { width: auto; min-width: 100%; }
+.upset th.ev-col { text-align: center; font-size: 0.7rem; white-space: nowrap; padding-inline: 0.45rem; }
+.upset td.dot { text-align: center; padding-inline: 0.45rem; }
+.upset td.dot i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--line); vertical-align: middle; }
+.upset td.dot i.on { background: var(--brand-ink, var(--ink)); }
+.upset tr.ev-tot td { text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+.upset tr.ev-tot td:last-child { text-align: left; font-weight: 400; }
+.ev-top { margin-top: 0.9rem; border-top: 1px solid var(--line); padding-top: 0.8rem; }
+.ev-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+.profile-card tr.depleted { cursor: default; }
+.profile-card tr.depleted td { color: var(--muted); }
+.cx-mem-btn { font-size: 0.78rem; margin-right: 0.35rem; }
+.cx-mem-row td { background: var(--surface-2); }
+.cx-members { padding: 0.35rem 0 0.2rem; }
+.gene-chip.off { opacity: 0.55; cursor: default; font-weight: 500; }
+.gene-chip.off:hover { border-color: var(--line); color: inherit; }
+.prof-tbl td.num { white-space: nowrap; }
+.ev-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; margin: 0 0 0.75rem; }
+.ev-tag { cursor: pointer; border: 1px solid var(--line); background: var(--surface); }
+.ev-tag:hover { border-color: var(--accent); color: var(--accent-dark); }

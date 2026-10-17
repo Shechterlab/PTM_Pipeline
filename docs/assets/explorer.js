@@ -227,6 +227,7 @@
     nn: 0, ptmGroup: '', ptmDist: 0,
     func: '', sub: '', cond: '', anyCond: false, disease: '', minSites: 1, dense: false, arch: '', argEnriched: false,
     binds: new Set(), ixScore: 700, partner: '', go: new Set(), goExp: false, iface: new Set(), cpx: '', condConf: 0, modelledPdb: false, pred: 0, galOnly: false, xl: new Set(),
+    evAll: 0, evExact: false,
   });
   const cloneFilters = (f) => {
     const out = {};
@@ -245,6 +246,7 @@
     cxPred: false, cxMin: 3, cxSort: 'q', cxAll: false, refsOpen: new Set(), ctx: 'protein', condThr: 3, pendingContact: null, pendingModel: null, ixOpen: new Set(), ixJump: null,
     gal: { conf: 'confident', pl: 80, kind: 'bond', noPdb: false, xl: false, all: false },
     figs: { flank: 7, rows: 50, order: 'protein', logo: 'freq', nProt: 8, scale: 'common', color: 'state' }, consPos: null, consFlank: 10, docJump: null,
+    evTop: 1, evAllRows: false, cxOpen: new Set(), ixScrollMap: false,
   };
 
   // ------------------------------------------------------------------- load
@@ -1322,7 +1324,7 @@
     const th = (k, label, cls) => '<th' + (cls ? ' class="' + cls + '"' : '') + ' data-sort="' + k + '"' + (key === k ? ' aria-sort="' + (dir > 0 ? 'ascending' : 'descending') + '"' : '') + '>' + label + '</th>';
     el.innerHTML = resultsHead('Proteins', fmt(rows.length) + ' of ' + fmt(P.length) + ' proteins · ' + fmt(R.sites.length) + ' sites',
       '<button class="btn quiet small" type="button" id="copy-genes">Copy gene list</button><button class="btn quiet small" type="button" data-go-figs>Make figures</button><button class="btn small" type="button" id="dl-proteins">Download TSV</button>') +
-      contextCards() +
+      contextCards() + profileCardHtml() +
       (rows.length ? '<div class="card tbl-card"><div class="tbl-wrap"><table class="tbl"><thead><tr>' +
         th('gene', 'Protein') + '<th class="hide-sm">Name</th>' + th('sites', 'Sites', 'r') + '<th class="hide-xs">Site map</th>' +
         th('idr', 'In IDR', 'r hide-xs') + th('cond', 'Condensates', 'r hide-sm') + th('density', 'Densest window', 'hide-sm') + th('arg', 'Arg enrichment', 'r hide-sm') +
@@ -1343,11 +1345,12 @@
         '<div class="tbl-foot"><span>Showing ' + fmt(shownRows.length) + ' of ' + fmt(rows.length) + '</span>' +
         (rows.length > shownRows.length ? '<button class="btn quiet small" type="button" id="more">Show 50 more</button>' : '') + '</div></div>' : emptyState());
     bindEmpty(el);
-    bindRows(el, (tr) => openProtein(+tr.dataset.i));
+    bindRows(el, (tr) => { if (tr.dataset.i != null) openProtein(+tr.dataset.i); });
     bindSort(el, UI.sortP, () => renderProteins(el));
     const more = $('#more', el);
     if (more) more.addEventListener('click', () => { UI.pageP += 50; renderProteins(el); });
     $('#dl-proteins', el).addEventListener('click', () => download('methylarginine_proteins.tsv', proteinTsv(rows)));
+    bindProfile(el);
     $$('[data-go-figs]', el).forEach((b) => b.addEventListener('click', () => { go('figures'); window.scrollTo({ top: 0 }); }));
     $('#copy-genes', el).addEventListener('click', (e) => copyText(rows.map((p) => p.gene || p.acc).join('\n'), e.currentTarget));
   }
@@ -1399,7 +1402,7 @@
     const th = (k, label, cls) => '<th' + (cls ? ' class="' + cls + '"' : '') + ' data-sort="' + k + '"' + (key === k ? ' aria-sort="' + (dir > 0 ? 'ascending' : 'descending') + '"' : '') + '>' + label + '</th>';
     el.innerHTML = resultsHead('Sites', fmt(rows.length) + ' of ' + fmt(S.length) + ' methylarginine sites on ' + fmt(R.prots.length) + ' proteins',
       '<button class="btn quiet small" type="button" data-go-figs>Make figures</button><button class="btn small" type="button" id="dl-sites">Download TSV</button>') +
-      contextCards() +
+      contextCards() + profileCardHtml() +
       (rows.length ? '<div class="card tbl-card"><div class="tbl-wrap"><table class="tbl"><thead><tr>' +
         th('gene', 'Protein') + th('pos', 'Site') + th('state', 'State') + th('win', 'Window ±7') + th('mot', 'Motifs', 'hide-sm') +
         th('ctx', 'Context', 'hide-xs') + th('nn', 'Next methyl-R', 'r hide-sm') + th('ip', 'Maron IP', 'hide-sm') + th('prmti', 'PRMTi') + th('iface', 'Interfaces & binding', 'hide-sm') + th('src', 'Reported by', 'hide-sm') +
@@ -1417,12 +1420,13 @@
         '</tbody></table></div><div class="tbl-foot"><span>Showing ' + fmt(shownRows.length) + ' of ' + fmt(rows.length) + '</span>' +
         (rows.length > shownRows.length ? '<button class="btn quiet small" type="button" id="more">Show 100 more</button>' : '') + '</div></div>' : emptyState());
     bindEmpty(el);
-    bindRows(el, (tr) => { const s = S[+tr.dataset.j]; openProtein(s.p, s.pos); });
+    bindRows(el, (tr) => { if (tr.dataset.j == null) return; const s = S[+tr.dataset.j]; openProtein(s.p, s.pos); });
     bindContactLinks(el);
     bindSort(el, UI.sortS, () => renderSites(el));
     const more = $('#more', el);
     if (more) more.addEventListener('click', () => { UI.pageS += 100; renderSites(el); });
     $('#dl-sites', el).addEventListener('click', () => download('methylarginine_sites.tsv', siteTsv(rows)));
+    bindProfile(el);
     $$('[data-go-figs]', el).forEach((b) => b.addEventListener('click', () => { go('figures'); window.scrollTo({ top: 0 }); }));
   }
 
@@ -3822,6 +3826,7 @@
   }
 
   function afterInteractionsLoaded() {
+    for (const s of S) s.ev = evMask(s);
     renderRail();
     compute();
     if (UI.view === 'overview' || UI.view === 'sites' || UI.view === 'interactions') renderView();
@@ -3905,6 +3910,20 @@
     if (!x) return 0;
     return (x.r ? 1 : 0) | (x.n ? 2 : 0) | (x.f ? 4 : 0) | (x.d & 1 ? 8 : 0) | (x.d & 4 ? 16 : 0) | (x.d & 9 ? 32 : 0);
   }
+  // Interaction evidence per site as bits, for the evidence map and its filter. No bit means nothing recorded: most
+  // proteins were never crystallised or crosslinked, so it is not evidence of no contact.
+  const EV_SETS = [
+    [1, 'RNA crosslink', 'RNA XL', 'Crosslinked to RNA at this residue in living cells (pepR-MS compendium)', (s) => xlMask(s) & 1],
+    [2, 'RNA-bound fragment', 'RBDmap', 'Inside an RBDmap RNA-bound fragment (Castello et al. 2016)', (s) => xlMask(s) & 4],
+    [4, 'DNA crosslink', 'DNA XL', 'A DNA crosslink localised to, or with a candidate at, this residue (Trendel et al. 2025)', (s) => xlMask(s) & 40],
+    [8, 'PDB protein interface', 'PDB protein', 'Contacts another protein, or another copy of itself, in a PDB structure (PDBe-KB)', (s) => s.iface & 3],
+    [16, 'PDB RNA/DNA interface', 'PDB RNA/DNA', 'Contacts RNA or DNA in a PDB structure (PDBe-KB)', (s) => s.iface & 12],
+    [32, 'Predicted interface', 'Predicted', 'At the partner interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23)', (s) => s.pred && s.pred.hits[0][1] >= 23],
+    [64, 'Confident predicted contact', 'Best contact', 'Salt bridge or hydrogen bond to a partner in a confident predicted complex, both residues at pLDDT ≥ 80', (s) => (s.gal || []).some((g) => galPass(g, GAL_DEFAULT))],
+  ];
+  const evMask = (s) => EV_SETS.reduce((m, [b, , , , t]) => (t(s) ? m | b : m), 0);
+  const evLabel = (mask) => EV_SETS.filter(([b]) => mask & b).map(([, l]) => l).join(' + ');
+
   function xlTags(s) {
     const x = s.xl;
     if (!x) return '';
@@ -4028,6 +4047,7 @@
   }
 
   function ixSitePass(s, f) {
+    if (f.evAll) { const m = s.ev || 0; if ((m & f.evAll) !== f.evAll || (f.evExact && m !== f.evAll)) return false; }
     if (f.modelledPdb && !s.modelled) return false;
     if (f.pred && !(s.pred && s.pred.hits[0][1] >= f.pred)) return false;
     if (f.galOnly && !(s.gal || []).some((g) => galPass(g, UI.gal))) return false;
@@ -4049,6 +4069,7 @@
     if (F.pred) add('ix', 'Predicted interface (pDockQ ≥ ' + (F.pred / 100).toFixed(2) + ')', () => { F.pred = 0; });
     if (F.galOnly) add('ix', 'Best-supported predicted contact', () => { F.galOnly = false; });
     F.xl.forEach((v) => add('ix', (XL_OPTS.find((o) => o[0] === v) || ['', 'Crosslink'])[1], () => F.xl.delete(v)));
+    if (F.evAll) add('ix', 'Evidence: ' + evLabel(F.evAll) + (F.evExact ? ' (only these)' : ''), () => { F.evAll = 0; F.evExact = false; });
   }
 
   function ixRailBody(sel) {
@@ -4390,8 +4411,12 @@
     if (!IX) { box.innerHTML = head + '<p class="note">Loading interaction data…</p>'; return; }
     if (IX.failed) { box.innerHTML = head + '<p class="note">Interaction data is not available.</p>'; return; }
     const tabs = [['proteins', 'Protein partners', partnersAt(p, 700).length], ['complexes', 'Complexes', p.cx.length], ['rna', 'RNA', null], ['dna', 'DNA', null]];
-    box.innerHTML = head + '<div class="seg ix-tabs" role="tablist">' + tabs.map(([k, l, n]) => '<button type="button" role="tab" data-ixtab="' + k + '" aria-pressed="' + (UI.ixTab === k) + '">' + esc(l) + (n != null ? ' <span class="n">' + fmt(n) + '</span>' : '') + '</button>').join('') + '</div><div id="ix-body"></div>';
+    const ev = EV_SETS.map(([b, l]) => [b, l, p.sites.filter((j) => (S[j].ev || 0) & b).length]).filter((x) => x[2]);
+    const strip = ev.length ? '<p class="ev-strip"><span class="muted small">Evidence at its ' + fmt(p.sites.length) + ' methylarginines:</span> ' +
+      ev.map(([b, l, n]) => '<button class="tag ev-tag" type="button" data-evp="' + b + '" title="List the ' + n + ' sites of ' + esc(p.label) + ' with: ' + esc(l) + '">' + esc(l) + ' <b>' + n + '</b></button>').join(' ') + '</p>' : '';
+    box.innerHTML = head + strip + '<div class="seg ix-tabs" role="tablist">' + tabs.map(([k, l, n]) => '<button type="button" role="tab" data-ixtab="' + k + '" aria-pressed="' + (UI.ixTab === k) + '">' + esc(l) + (n != null ? ' <span class="n">' + fmt(n) + '</span>' : '') + '</button>').join('') + '</div><div id="ix-body"></div>';
     $$('[data-ixtab]', box).forEach((b) => b.addEventListener('click', () => { UI.ixTab = b.dataset.ixtab; renderIxCard(p); }));
+    $$('[data-evp]', box).forEach((b) => b.addEventListener('click', () => { setQuery(p.acc); setFilters((f) => { f.evAll = +b.dataset.evp; f.evExact = false; }, 'sites'); window.scrollTo({ top: 0 }); }));
     const body = $('#ix-body', box);
     if (UI.ixTab === 'complexes') renderIxComplexes(p, body);
     else if (UI.ixTab === 'rna' || UI.ixTab === 'dna') renderIxNucleic(p, body, UI.ixTab);
@@ -4740,6 +4765,184 @@
       '<div class="exp"><button type="button" class="btn" data-ixgo="">Explore interactions →</button></div></div>' + findingsList(pick) + '</div>';
   }
 
+  // ------------------------------------------------- evidence map (UpSet)
+  // How the interaction evidence types combine on the sites of the current selection, and the proteins carrying most
+  // sites with a chosen type. Totals and rows set the evidence filter; the actions hand the sites to the Figures tab.
+  function evCounts(sites) {
+    const combos = new Map(), tot = EV_SETS.map(() => 0);
+    let none = 0;
+    for (const s of sites) {
+      const m = s.ev || 0;
+      if (!m) { none++; continue; }
+      combos.set(m, (combos.get(m) || 0) + 1);
+      EV_SETS.forEach(([b], k) => { if (m & b) tot[k]++; });
+    }
+    return { rows: Array.from(combos.entries()).sort((a, b) => b[1] - a[1] || a[0] - b[0]), tot, none };
+  }
+
+  function ixEvidenceMapHtml() {
+    const sites = R.sites, scoped = constraints().length > 0;
+    const { rows, tot, none } = evCounts(sites);
+    const shown = UI.evAllRows ? rows : rows.slice(0, 12);
+    const max = Math.max(1, ...rows.map((r) => r[1]));
+    const key = UI.evTop;
+    const per = new Map();
+    for (const s of sites) if ((s.ev || 0) & key) per.set(s.p, (per.get(s.p) || 0) + 1);
+    const top = Array.from(per.entries()).sort((a, b) => b[1] - a[1] || P[a[0]].label.localeCompare(P[b[0]].label)).slice(0, 15);
+    const keyLabel = EV_SETS.find(([b]) => b === key)[1];
+    return '<div class="card ix-evmap" id="ix-evmap"><div class="card-head"><div><h3>How the evidence fits together</h3><p class="sub">' +
+      (scoped ? 'The ' + fmt(sites.length) + ' sites in your selection' : 'All ' + fmt(sites.length) + ' methylarginines') + ', by the interaction evidence each carries. Click a column total for every site with that evidence, or a row for the sites with exactly that combination.' + docLink('ix-evmap') + '</p></div>' +
+      '<div class="exp"><button type="button" id="ev-tsv">TSV</button></div></div>' +
+      '<div class="tbl-wrap"><table class="tbl compact upset"><thead><tr>' + EV_SETS.map(([b, l, sh, help]) => '<th class="ev-col" title="' + esc(l + ': ' + help) + '">' + esc(sh) + '</th>').join('') + '<th>Sites</th></tr>' +
+      '<tr class="ev-tot">' + EV_SETS.map(([b, l], k) => '<td><button type="button" class="linkish" data-evset="' + b + '" title="List the ' + fmt(tot[k]) + ' sites with: ' + esc(l) + '">' + fmt(tot[k]) + '</button></td>').join('') + '<td class="muted small">sites with each type</td></tr></thead><tbody>' +
+      shown.map(([m, n]) => '<tr class="row" tabindex="0" data-evcombo="' + m + '" title="' + esc(evLabel(m)) + ' only">' + EV_SETS.map(([b]) => '<td class="dot">' + (m & b ? '<i class="on"></i>' : '<i></i>') + '</td>').join('') +
+        '<td><div class="meter-row"><span class="meter"><i style="width:' + (100 * n / max).toFixed(1) + '%"></i></span><span class="num">' + fmt(n) + '</span></div></td></tr>').join('') +
+      '</tbody></table></div>' +
+      '<p class="note">' + fmt(none) + ' sites (' + pctText(none, sites.length || 1) + '%) carry none of these; most sit in proteins that were never crystallised, modelled with a partner or crosslinked, so no evidence is not evidence of no contact.' +
+      (rows.length > 12 ? ' <button class="linkish" type="button" id="ev-more">' + (UI.evAllRows ? 'Show the top 12 combinations' : 'Show all ' + rows.length + ' combinations') + '</button>' : '') + '</p>' +
+      '<div class="ev-top"><div class="fig-controls"><label class="fig-ctl">Proteins with most sites carrying <select id="ev-top">' + EV_SETS.map(([b, l]) => '<option value="' + b + '"' + (b === key ? ' selected' : '') + '>' + esc(l) + '</option>').join('') + '</select></label></div>' +
+      (top.length ? '<div class="gene-chips">' + top.map(([i, n]) => '<button class="gene-chip" type="button" data-i="' + i + '" title="' + n + ' of ' + P[i].sites.length + ' methylarginines on ' + esc(P[i].label) + ' carry: ' + esc(keyLabel) + '">' + esc(P[i].label) + '<span>' + n + '/' + P[i].sites.length + '</span></button>').join('') + '</div>' +
+        '<div class="ev-actions"><button class="btn quiet small" type="button" data-evact="sites">List these ' + fmt(tot[EV_SETS.findIndex(([b]) => b === key)]) + ' sites</button><button class="btn quiet small" type="button" data-evact="logo">Logo and alignment of these sites</button><button class="btn quiet small" type="button" data-evact="compare">Compare the top ' + Math.min(8, top.length) + ' proteins</button></div>' :
+        '<p class="note">No site in the selection carries this evidence.</p>') + '</div></div>';
+  }
+
+  function bindEvidenceMap(el) {
+    const box = $('#ix-evmap', el);
+    if (!box) return;
+    $$('[data-evset]', box).forEach((b) => b.addEventListener('click', () => setFilters((f) => { f.evAll = +b.dataset.evset; f.evExact = false; }, 'sites')));
+    bindRows(box, (tr) => { if (tr.dataset.evcombo) setFilters((f) => { f.evAll = +tr.dataset.evcombo; f.evExact = true; }, 'sites'); });
+    const more = $('#ev-more', box);
+    if (more) more.addEventListener('click', () => { UI.evAllRows = !UI.evAllRows; box.outerHTML = ixEvidenceMapHtml(); bindEvidenceMap(el); });
+    $('#ev-top', box).addEventListener('change', (e) => { UI.evTop = +e.target.value; box.outerHTML = ixEvidenceMapHtml(); bindEvidenceMap(el); });
+    $$('.gene-chip[data-i]', box).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.i)));
+    $$('[data-evact]', box).forEach((b) => b.addEventListener('click', () => {
+      const key = UI.evTop, act = b.dataset.evact;
+      if (act === 'compare') {
+        const per = new Map();
+        for (const s of R.sites) if ((s.ev || 0) & key) per.set(s.p, (per.get(s.p) || 0) + 1);
+        const genes = Array.from(per.entries()).sort((a, c) => c[1] - a[1]).slice(0, 8).map(([i]) => P[i].label);
+        setQuery(genes.join(' '));
+      }
+      setFilters((f) => { f.evAll = key; f.evExact = false; }, act === 'sites' ? 'sites' : 'figures');
+      window.scrollTo({ top: 0 });
+    }));
+    $('#ev-tsv', box).addEventListener('click', () => {
+      const { rows } = evCounts(R.sites);
+      download('methylarginine_evidence_combinations.tsv', [EV_SETS.map(([, l]) => l.toLowerCase().replace(/[^a-z0-9]+/g, '_')).join('\t') + '\tsites']
+        .concat(rows.map(([m, n]) => EV_SETS.map(([b]) => (m & b ? 1 : 0)).join('\t') + '\t' + n)).join('\n') + '\n');
+    });
+  }
+
+  // ------------------------------------------- what sets this selection apart
+  // Site features compared between the current selection and the remaining sites (Fisher's exact test, BH across the
+  // features tested). Sites of one protein are not independent, so this points to differences rather than testing them.
+  function profileFeatures() {
+    const out = [];
+    const add = (key, group, label, test, apply) => out.push({ key, group, label, test, apply });
+    M.motifs.forEach((m, b) => add('mot' + b, 'Motif', MOTIF_LABEL[m] + ' · ' + MOTIF_HELP[m], (s) => s.mot & (1 << b), (f) => { f.motifs.add(b); }));
+    const dIdx = (k) => M.disorder_classes.indexOf(k);
+    [['disordered', 'Inside an IDR'], ['ordered', 'In an ordered region']].forEach(([k, l]) => { const i = dIdx(k); if (i >= 0) add('dis' + i, 'Structure', l, (s) => s.dc === i, (f) => { f.disorder = new Set([i]); }); });
+    [[1, 'Rme1 (source call)'], [2, 'Rme2 (source call)']].forEach(([v, l]) => add('st' + v, 'Methylation', l, (s) => s.st === v || s.st === 3, (f) => { f.states.add(v); }));
+    M.maron_ips.forEach((n, b) => add('ip' + b, 'Methylation', 'Recovered by the ' + n + ' IP (' + ipLabel(n) + ')', (s) => s.ip & (1 << b), (f) => { f.ips.add(b); }));
+    add('gsk', 'PRMT inhibitors', 'Decreased with GSK591 (PRMT5i)', (s) => s.trf & 1, (f) => { f.treat = '0:down'; });
+    add('ms', 'PRMT inhibitors', 'Decreased with MS023 (type I PRMTi)', (s) => s.trf & 4, (f) => { f.treat = '1:down'; });
+    add('nn5', 'Clustering', 'Another methyl-R within 5 aa', (s) => s.nn != null && s.nn <= 5, (f) => { f.nn = 5; });
+    add('rep2', 'Provenance', 'Reported by ≥2 studies', (s) => popcount(s.study) >= 2, (f) => { f.minRep = 2; });
+    if (ixReady()) EV_SETS.forEach(([b, l]) => add('ev' + b, 'Interactions', l, (s) => (s.ev || 0) & b, (f) => { f.evAll |= b; f.evExact = false; }));
+    return out;
+  }
+
+  function profileRows() {
+    const inSel = R.shown, n1 = R.sites.length, n2 = S.length - n1;
+    if (n1 < 5 || n2 < 5) return null;
+    const rows = profileFeatures().map((ft) => {
+      let a = 0, c = 0;
+      for (const s of S) if (ft.test(s)) { if (inSel.has(s.j)) a++; else c++; }
+      return { ft, a, c, n1, n2 };
+    }).filter((r) => r.a + r.c >= 10 && r.a < r.n1 && !(r.a === 0 && r.c === 0));
+    for (const r of rows) {
+      r.p = fisherP(r.a, r.n1 - r.a, r.c, r.n2 - r.c);
+      r.fold = (r.a / r.n1) / ((r.c || 0.5) / r.n2);
+    }
+    const order = rows.slice().sort((x, y) => x.p - y.p);
+    let prev = 1;
+    for (let k = order.length - 1; k >= 0; k--) { prev = Math.min(prev, (order[k].p * order.length) / (k + 1)); order[k].q = prev; }
+    return order;
+  }
+
+  function profileCardHtml() {
+    if (!constraints().length) return '';
+    const rows = profileRows();
+    if (!rows) return '';
+    const sig = rows.filter((r) => r.q <= 0.05);
+    const up = sig.filter((r) => r.fold > 1).slice(0, 8), down = sig.filter((r) => r.fold < 1).slice(0, 4);
+    const show = up.concat(down);
+    const pc = (x, n) => (100 * x / n).toFixed(x / n < 0.1 ? 1 : 0) + '%';
+    return '<div class="card profile-card" id="profile"><div class="card-head"><div><h3>What sets this selection apart</h3><p class="sub">Site features in these ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + '. Click a feature to narrow the selection to it.' + docLink('profile') + '</p></div>' +
+      '<div class="exp"><button type="button" data-prof="figures">Logo and comparison</button><button type="button" data-prof="evidence">Evidence map</button></div></div>' +
+      (show.length ? '<div class="tbl-wrap"><table class="tbl compact prof-tbl"><thead><tr><th>Feature</th><th class="r">Here</th><th class="r">Other sites</th><th class="r">Ratio</th><th class="r">q</th></tr></thead><tbody>' +
+        show.map((r) => '<tr class="row' + (r.fold < 1 ? ' depleted' : '') + '" tabindex="0" data-prof-key="' + r.ft.key + '" title="' + (r.fold > 1 ? 'Narrow the selection to sites with this feature' : 'Less common here than in the other sites') + '"><td><span class="muted small">' + esc(r.ft.group) + '</span> ' + esc(r.ft.label) + '</td>' +
+          '<td class="r num">' + fmt(r.a) + ' <span class="muted">(' + pc(r.a, r.n1) + ')</span></td><td class="r num">' + pc(r.c, r.n2) + '</td><td class="r num"><b>' + (r.fold >= 10 ? r.fold.toFixed(0) : r.fold.toFixed(1)) + '×</b></td><td class="r num">' + fmtP(r.q) + '</td></tr>').join('') + '</tbody></table></div>' :
+        '<p class="note">No site feature differs significantly (BH q ≤ 0.05) between this selection and the other sites.</p>') +
+      '<p class="note">Fisher\'s exact test per feature, Benjamini–Hochberg across the ' + rows.length + ' features tested. Sites in one protein are not independent, so read this as a pointer.</p></div>';
+  }
+
+  function bindProfile(el) {
+    const box = $('#profile', el);
+    if (!box) return;
+    const feats = new Map(profileFeatures().map((f) => [f.key, f]));
+    bindRows(box, (tr) => { const ft = feats.get(tr.dataset.profKey); if (ft && !tr.classList.contains('depleted')) setFilters((f) => ft.apply(f), UI.view); });
+    $$('[data-prof]', box).forEach((b) => b.addEventListener('click', () => {
+      if (b.dataset.prof === 'figures') { go('figures'); window.scrollTo({ top: 0 }); }
+      else { UI.ixScrollMap = true; go('interactions'); }
+    }));
+    bindDocLinks(box);
+  }
+
+  // ----- complex members, expanded in place from the complexes table
+  function cxMembersHtml(c) {
+    const ids = c.members.map((m) => (Array.isArray(m) ? m : [m]));
+    const meth = [], other = [];
+    for (const alts of ids) {
+      const hit = alts.find((k) => k < IX.nP);
+      if (hit != null) meth.push(hit); else other.push(alts[0]);
+    }
+    meth.sort((a, b) => P[b].sites.length - P[a].sites.length);
+    return '<div class="cx-members"><div class="gene-chips">' + meth.map((i) => '<button class="gene-chip" type="button" data-i="' + i + '" title="Open ' + esc(P[i].label) + '">' + esc(P[i].label) + '<span>' + P[i].sites.length + ' site' + (P[i].sites.length === 1 ? '' : 's') + '</span></button>').join('') +
+      other.map((k) => '<span class="gene-chip off" title="No methylarginine in the set">' + esc(ixGene(k)) + '</span>').join('') + '</div>' +
+      '<div class="ev-actions"><button class="btn quiet small" type="button" data-cxact="list" data-k="' + c.k + '">List methylated members</button><button class="btn quiet small" type="button" data-cxact="compare" data-k="' + c.k + '">Compare members (figure)</button><button class="btn quiet small" type="button" data-cxact="evidence" data-k="' + c.k + '">Evidence map of their sites</button></div></div>';
+  }
+
+  function bindComplexMembers(el) {
+    const tbl = $('#ch-cx', el);
+    if (!tbl) return;
+    $$('[data-cxmem]', tbl).forEach((b) => b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const k = +b.dataset.cxmem, tr = b.closest('tr');
+      const open = tr.nextElementSibling && tr.nextElementSibling.classList.contains('cx-mem-row');
+      if (open) { tr.nextElementSibling.remove(); UI.cxOpen.delete(k); b.setAttribute('aria-expanded', 'false'); return; }
+      UI.cxOpen.add(k);
+      b.setAttribute('aria-expanded', 'true');
+      tr.insertAdjacentHTML('afterend', '<tr class="cx-mem-row"><td colspan="5">' + cxMembersHtml(IX.cx[k]) + '</td></tr>');
+      bindMemberRow(tr.nextElementSibling);
+    }));
+    $$('tr.cx-mem-row', tbl).forEach(bindMemberRow);
+  }
+  function bindMemberRow(row) {
+    $$('.gene-chip[data-i]', row).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.i)));
+    $$('[data-cxact]', row).forEach((b) => b.addEventListener('click', () => {
+      const k = b.dataset.k, act = b.dataset.cxact;
+      if (act === 'compare') {
+        const c = IX.cx[+k];
+        const genes = c.members.map((m) => (Array.isArray(m) ? m : [m]).find((x) => x < IX.nP)).filter((x) => x != null).map((i) => P[i].label);
+        setQuery(Array.from(new Set(genes)).join(' '));
+        setFilters((f) => { f.cpx = k; }, 'figures');
+      } else if (act === 'evidence') { UI.ixScrollMap = true; setFilters((f) => { f.cpx = k; }, 'interactions'); }
+      else setFilters((f) => { f.cpx = k; }, 'proteins');
+      window.scrollTo({ top: 0 });
+    }));
+  }
+
   function renderInteractions(el) {
     if (!IX) { el.innerHTML = '<div class="card"><h3>Interactions and binding</h3><p class="note">Loading interaction data…</p></div>'; return; }
     if (IX.failed) { el.innerHTML = '<div class="card"><h3>Interactions and binding</h3><p class="note">Interaction data (<code>data/methylarg_interactions.json</code>) is not available.</p></div>'; return; }
@@ -4750,6 +4953,7 @@
       '<h4>Key findings</h4>' + findingsList(ixFindings()) +
       '<div class="ix-toc"><span class="flabel">Sections</span>' + IX_SECTIONS.map(([k, title]) => '<button class="chip" type="button" data-ixgo="' + k + '">' + esc(title) + '</button>').join('') +
       '<button class="linkish" type="button" id="ix-all">' + (UI.ixOpen.size === IX_SECTIONS.length ? 'Collapse all' : 'Expand all') + '</button></div></div>' +
+      ixEvidenceMapHtml() +
       IX_SECTIONS.map(([k, title, tag]) => '<details class="card ix-sec" id="ixs-' + k + '" data-ixsec="' + k + '"' + (UI.ixOpen.has(k) ? ' open' : '') + '><summary><span class="pm" aria-hidden="true"></span><span class="ix-sec-t"><b>' + esc(title) + '</b><span class="sub">' + esc(tag) + '</span></span></summary>' +
         '<div class="ix-sec-body">' + body[k]() + '</div></details>').join('') + '</div>';
     $$('details.ix-sec', el).forEach((d) => d.addEventListener('toggle', () => {
@@ -4764,7 +4968,11 @@
     bindIxGo(el);
     bindIxOverview(el);
     bindChartExports(el);
+    bindEvidenceMap(el);
+    bindComplexMembers(el);
+    bindDocLinks(el);
     if (UI.ixJump) { const k = UI.ixJump; UI.ixJump = null; openIxSection(k); }
+    if (UI.ixScrollMap) { UI.ixScrollMap = false; const m = $('#ix-evmap', el); if (m) setTimeout(() => m.scrollIntoView({ block: 'start' }), 0); }
   }
 
   function openIxSection(k) {
@@ -4806,15 +5014,16 @@
     const rows = IX.cx.filter((c) => c.pred === !curated && c.n >= min && c.m > 0)
       .sort(UI.cxSort === 'share' ? (a, b) => b.m / b.n - a.m / a.n || b.n - a.n : (a, b) => (a.q - b.q) || (b.m / b.n - a.m / a.n));
     const shown = rows.slice(0, UI.cxAll ? rows.length : 15);
-    return '<div id="ch-cx"><div class="card-head"><div><p class="sub">Complex Portal complexes ranked by their arginine-methylated members (hypergeometric test against the ' + fmt(IX.meta.proteome_size) + ' reviewed human proteins, ' + pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of which are in this set; BH-adjusted). Click a complex to list its methylated members.</p></div>' +
+    return '<div id="ch-cx"><div class="card-head"><div><p class="sub">Complex Portal complexes ranked by their arginine-methylated members (hypergeometric test against the ' + fmt(IX.meta.proteome_size) + ' reviewed human proteins, ' + pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of which are in this set; BH-adjusted). Click a complex to list its methylated members, or Members to see them all here.</p></div>' +
       '<div class="exp"><button type="button" id="cx-tsv">TSV</button></div></div>' +
       '<div class="fig-controls"><div class="seg" role="group" aria-label="Complex set"><span>Complexes</span><button type="button" data-cxset="cur" aria-pressed="' + curated + '">Curated</button><button type="button" data-cxset="pred" aria-pressed="' + !curated + '">Predicted (hu.MAP 3.0)</button></div>' +
       '<label class="fig-ctl">Min. members <select id="cx-min">' + [2, 3, 5, 10, 20].map((n) => '<option' + (n === min ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label>' +
       '<label class="fig-ctl">Rank by <select id="cx-sort"><option value="q"' + (UI.cxSort !== 'share' ? ' selected' : '') + '>Enrichment q</option><option value="share"' + (UI.cxSort === 'share' ? ' selected' : '') + '>Share methylated</option></select></label></div>' +
       '<div class="tbl-wrap"><table class="tbl compact cx-tbl"><thead><tr><th>Complex</th><th class="r">Members</th><th>Methylated</th><th class="r hide-xs">Fold</th><th class="r">q</th></tr></thead><tbody>' +
-      shown.map((c) => '<tr class="row" tabindex="0" data-cx="' + c.k + '"><td><b>' + esc(c.name) + '</b> <span class="muted mono">' + esc(c.id) + '</span></td><td class="r num">' + c.n + '</td>' +
+      shown.map((c) => '<tr class="row" tabindex="0" data-cx="' + c.k + '"><td><button class="linkish cx-mem-btn" type="button" data-cxmem="' + c.k + '" aria-expanded="' + UI.cxOpen.has(c.k) + '" title="Show the members">Members</button> <b>' + esc(c.name) + '</b> <span class="muted mono">' + esc(c.id) + '</span></td><td class="r num">' + c.n + '</td>' +
         '<td><div class="meter-row"><span class="meter"><i style="width:' + (100 * c.m / c.n).toFixed(1) + '%"></i></span><span class="num">' + c.m + ' (' + Math.round(100 * c.m / c.n) + '%)</span></div></td>' +
-        '<td class="r num hide-xs">' + (c.fold != null ? c.fold.toFixed(1) + '×' : '—') + '</td><td class="r num">' + fmtP(c.q) + '</td></tr>').join('') +
+        '<td class="r num hide-xs">' + (c.fold != null ? c.fold.toFixed(1) + '×' : '—') + '</td><td class="r num">' + fmtP(c.q) + '</td></tr>' +
+        (UI.cxOpen.has(c.k) ? '<tr class="cx-mem-row"><td colspan="5">' + cxMembersHtml(c) + '</td></tr>' : '')).join('') +
       '</tbody></table></div>' + (rows.length > 15 ? '<button class="linkish" type="button" id="cx-more" style="margin-top:.5rem">' + (UI.cxAll ? 'Show the top 15' : 'Show all ' + fmt(rows.length) + ' complexes') + '</button>' : '') + '</div>';
   }
 
@@ -4933,7 +5142,8 @@
         const [a, b] = o.pooled;
         return '<td class="r num">' + fmt(a) + ' / ' + fmt(a + b) + ' <span class="muted">(' + pctText(a, a + b || 1) + '%)</span></td><td class="r num">' + cellOr(o) + '</td>';
       };
-      return '<tr><td><b>' + label + '</b></td>' + cell('rna_xl') + cell('rna_xl_single') + cell('rna_rbdmap') + '</tr>';
+      const click = key === 'rme2s' || key === 'any' ? ' class="row" tabindex="0" data-xlcls="' + key + '" title="List these RNA-crosslinked sites"' : '';
+      return '<tr' + click + '><td><b>' + label + '</b></td>' + cell('rna_xl') + cell('rna_xl_single') + cell('rna_rbdmap') + '</tr>';
     };
     const ref = T.rna_xl && T.rna_xl.any ? T.rna_xl.any.pooled : null, refF = T.rna_rbdmap && T.rna_rbdmap.any ? T.rna_rbdmap.any.pooled : null;
     const refS = T.rna_xl_single && T.rna_xl_single.any ? T.rna_xl_single.any.pooled : null;
@@ -5183,6 +5393,10 @@
     if (gp) gp.addEventListener('click', () => setFilters((f) => { f.pred = 23; }, 'sites'));
     bindGallery(el);
     $$('tr[data-xl]', el).forEach((tr) => { const run = () => setFilters((f) => { f.xl = new Set([+tr.dataset.xl]); }, 'sites'); tr.addEventListener('click', run); tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') run(); }); });
+    $$('tr[data-xlcls]', el).forEach((tr) => {
+      const run = () => setFilters((f) => { f.xl = new Set([1]); if (tr.dataset.xlcls === 'rme2s') f.ips = new Set([M.maron_ips.indexOf('SDMA')]); }, 'sites');
+      tr.addEventListener('click', run); tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') run(); });
+    });
     $$('tr[data-go]', el).forEach((tr) => { const run = () => setFilters((f) => { f.go = new Set([+tr.dataset.go]); f.goExp = tr.dataset.goexp === '1'; }, 'proteins'); tr.addEventListener('click', run); tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') run(); }); });
     const tsv = $('#cx-tsv', el);
     if (tsv) tsv.addEventListener('click', () => download('complexes_methylarginine_members.tsv', ['complex_ac\tname\tset\tmembers\tmethylated_members\tfold\tp\tq\tmethylated_genes']
@@ -5449,6 +5663,8 @@
         sub('fig-align', 'Site alignment and sequence logo', '<p>The selected sites (Figures tab) are aligned at the methylated arginine using the ±15 residue windows of the canonical sequence; positions past a protein end are left blank. The logo uses every selected site with a window. "Frequency" stacks residue frequencies at each position; "Information" scales each stack by its information content, log2(20) minus the Shannon entropy and the small-sample correction 19/(2 ln2 n) (Schneider et al. 1986, ' + doiLink('10.1016/0022-2836(86)90165-8', 'J Mol Biol 188:415') + '), so the invariant central arginine reaches about 4.3 bits. Colours follow WebLogo\'s chemistry scheme (Crooks et al. 2004, ' + doiLink('10.1101/gr.849004', 'Genome Res 14:1188') + '). FASTA export writes the aligned windows with - for positions past a protein end.</p>') +
         sub('fig-compare', 'Protein comparison', '<p>The selected proteins (a searched gene list keeps its order) drawn on one residue scale or each to its own length, with UniProt domains, repeats and zinc fingers, UniProt "Disordered" regions, and the selected methylarginines coloured as on protein maps. Features are fetched live from UniProt.</p>') +
         sub('fig-ortho', 'Orthologue alignment', '<p>On protein pages, the Ensembl gene from UniProt\'s cross-references is sent to Ensembl Compara (REST, live) for orthologues in mouse, chicken, frog (<i>X. tropicalis</i>), zebrafish, fly, worm and yeast; for each species the orthologue with the highest identity is used, with Ensembl\'s pairwise protein alignment. UniProt positions are carried to the Ensembl human protein when the sequences are identical or one contains the other, otherwise through a unique 15-residue anchor around each site; positions without one are shown as not mapped. Columns follow the human sequence, so insertions in other species are not shown. R means the arginine is conserved, K a conservative change. ' + doiLink('10.1093/database/bav096', 'Herrero et al. 2016') + '; ' + doiLink('10.1093/bioinformatics/btu613', 'Yates et al. 2015') + '.</p>')],
+      ['insight', 'Evidence map and selection profile', sub('ix-evmap', 'How the evidence fits together', '<p>For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink at or possibly at the residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. Below, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
+        sub('profile', 'What sets this selection apart', '<p>Shown on the Proteins and Sites views whenever a search or filter is set. Each site feature (motifs, disorder, methylation calls and IPs, PRMT inhibitor response, close spacing, number of reports and the interaction evidence types) is compared between the selected sites and all other sites with Fisher\'s exact test, Benjamini–Hochberg-adjusted across the features tested; features with q ≤ 0.05 are listed, more common ones first. The ratio is the share in the selection over the share in the other sites. Clicking a more common feature narrows the selection to it. Sites of the same protein are not independent, so this points to differences rather than testing them; a selection built from a few proteins mostly reflects those proteins.</p>')],
       ['about', 'About and how to cite', '<p>The explorer indexes the integrated human methylarginine union assembled by the <a href="https://github.com/Shechterlab/PTM_Pipeline">PTM_Pipeline</a> for the review below. It runs entirely in your browser; UniProt, AlphaFold DB, PDB, Ensembl and other annotations on protein pages are fetched live.</p>' +
         '<p><b>Cite:</b> ' + esc(PAPER.cite) + ' <a href="https://doi.org/' + PAPER.doi + '">doi:' + PAPER.doi + '</a>. Please also cite the original studies for any sites you use; each site\'s evidence lists them.</p>'],
       ['sources', 'Sources in the union', '' +
