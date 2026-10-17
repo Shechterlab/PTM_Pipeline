@@ -146,11 +146,13 @@ def selected_heatmap_rows(heatmap_df: pd.DataFrame, limit: int = 20) -> list[str
 def build_heatmap_matrices(heatmap_df: pd.DataFrame, selected_aa: list[str]) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     matrix = heatmap_df[heatmap_df['amino_acid'].isin(selected_aa)].pivot(index='amino_acid', columns='relative_position', values='log2_odds_ratio').fillna(0.0)
     matrix = matrix.reindex(index=[aa for aa in selected_aa if aa in matrix.index])
-    p_matrix = heatmap_df[heatmap_df['amino_acid'].isin(selected_aa)].pivot(index='amino_acid', columns='relative_position', values='p_value')
-    p_matrix = p_matrix.reindex(index=matrix.index, columns=matrix.columns)
+    subset = heatmap_df[heatmap_df['amino_acid'].isin(selected_aa)]
+    p_matrix = subset.pivot(index='amino_acid', columns='relative_position', values='p_value').reindex(index=matrix.index, columns=matrix.columns)
+    # Stars use BH q-values (*q < 0.05, **q < 1e-5, ***q < 1e-20), as stated in the published Figure 3A legend.
+    q_matrix = subset.pivot(index='amino_acid', columns='relative_position', values='q_value').reindex(index=matrix.index, columns=matrix.columns)
     p_floor = np.nextafter(0.0, 1.0)
     neglog10_p = -np.log10(p_matrix.fillna(1.0).clip(lower=p_floor)).clip(upper=50)
-    return matrix, p_matrix, neglog10_p
+    return matrix, q_matrix, neglog10_p
 
 
 def motif_family_label(label: str) -> str:
@@ -326,7 +328,7 @@ def main() -> None:
     heatmap_df = positional.copy()
     selected_aa = selected_heatmap_rows(heatmap_df, limit=20)
     if selected_aa:
-        matrix, p_matrix, neglog10_p = build_heatmap_matrices(heatmap_df, selected_aa)
+        matrix, q_matrix, neglog10_p = build_heatmap_matrices(heatmap_df, selected_aa)
 
         fig2, (ax2, ax2b) = plt.subplots(
             ncols=2,
@@ -342,7 +344,7 @@ def main() -> None:
         ax2.set_title('Positional amino-acid enrichment around methylarginines')
         for row_idx, aa in enumerate(matrix.index):
             for col_idx, rel in enumerate(matrix.columns):
-                pval = p_matrix.loc[aa, rel]
+                pval = q_matrix.loc[aa, rel]
                 if pd.isna(pval):
                     continue
                 if pval < 1e-20:
@@ -370,7 +372,7 @@ def main() -> None:
 
         focus_aa = [aa for aa in FOCUS_HEATMAP_ORDER if aa in set(heatmap_df['amino_acid'].astype(str))]
         if focus_aa:
-            focus_matrix, focus_p, _ = build_heatmap_matrices(heatmap_df, focus_aa)
+            focus_matrix, focus_q, _ = build_heatmap_matrices(heatmap_df, focus_aa)
             fig2_focus, ax2_focus = plt.subplots(figsize=(8.2, 3.8))
             im_focus = ax2_focus.imshow(focus_matrix.to_numpy(), aspect='auto', cmap='RdBu_r', vmin=-3, vmax=3)
             ax2_focus.set_yticks(range(len(focus_matrix.index)))
@@ -381,7 +383,7 @@ def main() -> None:
             ax2_focus.set_title('Focused positional enrichment around methylarginines')
             for row_idx, aa in enumerate(focus_matrix.index):
                 for col_idx, rel in enumerate(focus_matrix.columns):
-                    pval = focus_p.loc[aa, rel]
+                    pval = focus_q.loc[aa, rel]
                     if pd.isna(pval):
                         continue
                     if pval < 1e-20:
