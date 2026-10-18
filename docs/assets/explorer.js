@@ -294,6 +294,10 @@
     return order.concat(keys.filter((k) => !order.includes(k)));
   };
   const saveMapPrefs = () => store.set('mre-map-rows', JSON.stringify({ on: Array.from(UI.fig.tracks), order: mapRowOrder() }));
+  // STRING network options on protein pages, remembered in this browser. ch: evidence channels by letter (NET_CHANNELS).
+  const NET_DEFAULT = { type: 'physical', ch: 'edtanfp', show: 'all', labels: 'all', size: 'sites', pins: [] };
+  const netPrefs = (() => { try { return Object.assign({}, NET_DEFAULT, JSON.parse(store.get('mre-ixnet') || 'null') || {}); } catch (e) { return Object.assign({}, NET_DEFAULT); } })();
+  const saveNetPrefs = () => store.set('mre-ixnet', JSON.stringify(UI.net));
   const CHARGE_AA = { K: 1, R: 1, H: 0.5, D: -1, E: -1 };
   // Mean charge of the residues centred on each position, i-2 to i+2, on the EMBOSS charge scale. Near either
   // terminus the window is cut short and the mean is taken over the residues actually present (3 or 4), so every
@@ -363,7 +367,7 @@
     pageP: 50, pageS: 100, zoom: null, openEvidence: new Set(),
     allCond: false, funcExpanded: false, charts: {},
     fig: { color: 'state', labels: 'auto', tracks: new Set(Array.isArray(mapPrefs.on) ? mapPrefs.on : MAP_DEFAULT_ON), order: Array.isArray(mapPrefs.order) ? mapPrefs.order : null },
-    ixTab: 'proteins', ixTop: 20, ixMin: 700, ixColor: 'meth', ixAll: false, ixNet: null,
+    ixTab: 'proteins', ixTop: 20, ixMin: 700, ixColor: 'meth', ixAll: false, ixNet: null, net: netPrefs,
     cxPred: false, cxMin: 3, cxSort: 'q', cxAll: false, refsOpen: new Set(), ctx: 'protein', condThr: 3, pendingContact: null, pendingModel: null, ixOpen: new Set(), ixJump: null,
     gal: { conf: 'confident', pl: 80, kind: 'bond', noPdb: false, xl: false, all: false },
     figs: { flank: 7, rows: 50, order: 'protein', logo: 'freq', nProt: 8, scale: 'common', color: 'state', lanes: true, sortP: 'default' }, consPos: null, consFlank: 10, docJump: null,
@@ -4758,7 +4762,28 @@
       default: return false;
     }
   }
-  const IX_SCORES = [[400, 'Medium (≥ 0.4, live from STRING)'], [700, 'High (≥ 0.7)'], [900, 'Highest (≥ 0.9)']];
+  const IX_SCORES = [[150, 'Low (≥ 0.15, live from STRING)'], [400, 'Medium (≥ 0.4, live from STRING)'], [700, 'High (≥ 0.7)'], [900, 'Highest (≥ 0.9)']];
+  // STRING evidence channels: letter, API field, name. The physical network uses the first three.
+  const NET_CHANNELS = [['e', 'escore', 'Experiments'], ['d', 'dscore', 'Databases'], ['t', 'tscore', 'Text mining'], ['a', 'ascore', 'Co-expression'], ['n', 'nscore', 'Neighbourhood'], ['f', 'fscore', 'Gene fusion'], ['p', 'pscore', 'Co-occurrence']];
+  const netChannels = () => (UI.net.type === 'physical' ? UI.net.ch.replace(/[anfp]/g, '') : UI.net.ch);
+  const netAllChannels = () => (UI.net.type === 'physical' ? 'edt' : 'edtanfp').split('').every((c) => netChannels().includes(c));
+  // Live from STRING whenever the export cannot answer: a functional network, a channel subset or a score below its floor.
+  const netLive = (min) => UI.net.type !== 'physical' || !netAllChannels() || min < IX.meta.string_min_score;
+  // STRING's combined score from a subset of channels: remove the prior (0.041) from each channel score, combine them,
+  // and add the prior back once (STRING FAQ, "How are the scores computed?"). All channels: STRING's own score.
+  function stringScore(row) {
+    if (netAllChannels()) return Math.round(row.score * 1000);
+    const prior = 0.041, ch = netChannels();
+    let rest = 1;
+    for (const [c, field] of NET_CHANNELS) if (ch.includes(c)) rest *= 1 - Math.max(0, ((+row[field] || 0) - prior) / (1 - prior));
+    const tot = 1 - rest;
+    return Math.round((tot + prior * (1 - tot)) * 1000);
+  }
+  const netDesc = () => 'STRING v' + IX.meta.string_version + ' ' + UI.net.type + ' network' + (netAllChannels() ? '' : ', scored on ' + NET_CHANNELS.filter(([c]) => netChannels().includes(c)).map(([, , n]) => n.toLowerCase()).join(', ') + ' only');
+  const NET_SHOW = {
+    all: ['All partners', () => true], methyl: ['Methylated partners (in this set)', (x) => x.p >= 0],
+    rw: ['PRMTs and reader domains (Tudor, WD40, PHD)', (x) => x.flags & IXF_CLASS], rna: ['RNA-binding (GO)', (x) => x.flags & IXF.rna], dna: ['DNA-binding (GO)', (x) => x.flags & IXF.dna],
+  };
   const RAIL_SCORES = [[700, 'High (≥ 0.7)'], [900, 'Highest (≥ 0.9)']];
   const PRED_OPTS = [[0, 'Any'], [23, 'pDockQ ≥ 0.23 (acceptable)'], [50, 'pDockQ ≥ 0.5 (confident)']];
   const STRING_CALLER = 'shechterlab_methylarginine_explorer';
@@ -5063,19 +5088,20 @@
   function loadStringNet(ids, minScore) {
     const usable = ids.filter((k) => IX.prot[k] && IX.prot[k].ensp);
     if (usable.length < 2) return Promise.resolve([]);
-    return live('string:' + usable.join(',') + ':' + minScore, () =>
+    return live('string:' + usable.join(',') + ':' + minScore + ':' + UI.net.type + ':' + netChannels(), () =>
       fetch('https://string-db.org/api/json/network', {
         method: 'POST',
-        body: new URLSearchParams({ identifiers: usable.map(enspId).join('\r'), species: '9606', network_type: 'physical', required_score: String(minScore), caller_identity: STRING_CALLER }),
+        body: new URLSearchParams({ identifiers: usable.map(enspId).join('\r'), species: '9606', network_type: UI.net.type, required_score: String(minScore), caller_identity: STRING_CALLER }),
       }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
         .then((rows) => {
           const out = new Map();
           for (const e of rows) {
             const a = IX.byEnsp.get(+String(e.stringId_A).replace(/^9606\.ENSP/, ''));
             const b = IX.byEnsp.get(+String(e.stringId_B).replace(/^9606\.ENSP/, ''));
-            if (a == null || b == null || a === b) continue;
+            const sc = stringScore(e);
+            if (a == null || b == null || a === b || sc < minScore) continue;
             const key = a < b ? a + ',' + b : b + ',' + a;
-            out.set(key, Math.max(out.get(key) || 0, Math.round(e.score * 1000)));
+            out.set(key, Math.max(out.get(key) || 0, sc));
           }
           return Array.from(out.entries()).map(([key, sc]) => key.split(',').map(Number).concat([sc]));
         }));
@@ -5384,12 +5410,13 @@
 
   function nodeRadius(k, focal) {
     if (focal) return 17;
+    if (UI.net.size === 'equal') return 9;
     const x = IX.prot[k];
     return x.p >= 0 ? Math.min(15, 6 + 2.2 * Math.sqrt(P[x.p].sites.length)) : 6;
   }
 
-  function ixNetModel(p, all, min, extra) {
-    const list = all.slice(0, UI.ixTop);
+  // list: the partners to draw ([k, score], top N plus pinned genes); total: how many partners there are in all.
+  function ixNetModel(p, list, min, extra, total) {
     const ids = [p.i].concat(list.map(([k]) => k));
     const idx = new Map(ids.map((k, n) => [k, n]));
     const edges = list.map(([k, sc]) => [0, idx.get(k), sc]);
@@ -5437,7 +5464,7 @@
         it.hits.forEach((h) => ringEdges.push([n, h]));
       });
     }
-    return { p, ids, edges, ringEdges, nCore: ids.length - ring.length, ring, pos, W, H, live: !!extra, total: all.length, min };
+    return { p, ids, edges, ringEdges, nCore: ids.length - ring.length, ring, pos, W, H, live: !!extra, total, min, pinned: new Set(list.filter((r) => r.pinned).map(([k]) => k)) };
   }
 
   function ixNetSvg(net, pal, forExport) {
@@ -5447,8 +5474,8 @@
     const W = net.W, top = forExport ? 54 : 0, H = net.H + top + (forExport ? 70 : 0);
     let g = '';
     if (forExport) {
-      g += '<text x="16" y="24" font-size="17" font-weight="700" fill="' + pal.ink + '">' + esc(p.label) + ' physical interaction partners</text>' +
-        '<text x="16" y="42" font-size="11" fill="' + pal.muted + '">STRING v' + esc(IX.meta.string_version) + ' physical subnetwork, score ≥ ' + (net.min / 1000).toFixed(1) + ' · top ' + ((net.nCore || ids.length) - 1) + ' of ' + net.total + ' partners · nodes coloured by ' + esc(mode.name.toLowerCase()) + ' in this methylarginine set</text>';
+      g += '<text x="16" y="24" font-size="17" font-weight="700" fill="' + pal.ink + '">' + esc(p.label) + ' ' + (UI.net.type === 'physical' ? 'physical interaction partners' : 'STRING functional partners') + '</text>' +
+        '<text x="16" y="42" font-size="11" fill="' + pal.muted + '">' + esc(netDesc()) + ', score ≥ ' + (net.min / 1000).toFixed(2).replace(/0$/, '') + (UI.net.show !== 'all' ? ' · ' + esc(NET_SHOW[UI.net.show][0].toLowerCase()) : '') + ' · top ' + ((net.nCore || ids.length) - 1) + ' of ' + net.total + ' partners · nodes coloured by ' + esc(mode.name.toLowerCase()) + ' in this methylarginine set</text>';
     }
     g += '<g transform="translate(0,' + top + ')">';
     for (const [a, b] of net.ringEdges || []) {
@@ -5479,7 +5506,8 @@
       if (x.flags & IXF.phd) g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + ringR + '" fill="none" stroke="' + IX_PHD_COLOR + '" stroke-width="1.6" stroke-dasharray="1 2" stroke-linecap="round"/>';
       if (x.flags & IXF.prmt) g += '<rect x="' + r1(pos[n].x - r) + '" y="' + r1(pos[n].y - r) + '" width="' + r1(2 * r) + '" height="' + r1(2 * r) + '" rx="3" transform="rotate(45 ' + cxp + ' ' + cyp + ')" fill="' + fill + '" stroke="' + pal.ink + '" stroke-width="1.6"/>';
       else g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + r1(r) + '" fill="' + fill + '" stroke="' + (n === 0 ? pal.ink : stroke) + '" stroke-width="' + (n === 0 ? 2 : q ? 1.2 : 1.4) + '"/>';
-      g += '<text x="' + cxp + '" y="' + r1(pos[n].y + r + 12) + '" font-size="' + (n === 0 ? 12.5 : outer ? 9.5 : 10.5) + '" font-weight="' + (n === 0 || (q && !outer) ? 700 : 400) + '" text-anchor="middle" fill="' + (q && !outer ? pal.ink : pal.muted) + '"' + (outer ? ' font-style="italic"' : '') + '>' + esc(x.gene) + '</text></g>';
+      const labelled = n === 0 || UI.net.labels === 'all' || (UI.net.labels === 'methyl' && (q || outer)) || net.pinned.has(k);
+      g += (labelled ? '<text x="' + cxp + '" y="' + r1(pos[n].y + r + 12) + '" font-size="' + (n === 0 ? 12.5 : outer ? 9.5 : 10.5) + '" font-weight="' + (n === 0 || (q && !outer) ? 700 : 400) + '" text-anchor="middle" fill="' + (q && !outer ? pal.ink : pal.muted) + '"' + (outer ? ' font-style="italic"' : '') + '>' + esc(x.gene) + '</text>' : '') + '</g>';
     });
     g += '</g>';
     if (forExport) {
@@ -5532,22 +5560,37 @@
   function partnersFor(p, min) {
     const floor = IX.meta.string_min_score;
     const fallback = () => ({ list: partnersAt(p, floor), live: false, failed: true });
-    if (min >= floor) return Promise.resolve({ list: partnersAt(p, min), live: false });
+    if (!netLive(min)) return Promise.resolve({ list: partnersAt(p, min), live: false });
     const me = IX.prot[p.i];
     if (!me || !me.ensp) return Promise.resolve(fallback());
-    return live('partners:' + p.i + ':' + min, () => fetch('https://string-db.org/api/json/interaction_partners', {
+    // A channel subset never scores above STRING's combined score, so asking for >= min loses nothing.
+    return live('partners:' + p.i + ':' + min + ':' + UI.net.type + ':' + netChannels(), () => fetch('https://string-db.org/api/json/interaction_partners', {
       method: 'POST',
-      body: new URLSearchParams({ identifiers: enspId(p.i), species: '9606', network_type: 'physical', required_score: String(min), limit: '2000', caller_identity: STRING_CALLER }),
+      body: new URLSearchParams({ identifiers: enspId(p.i), species: '9606', network_type: UI.net.type, required_score: String(min), limit: '2000', caller_identity: STRING_CALLER }),
     }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then((rows) => {
         const seen = new Map();
         for (const e of rows) {
           const k = IX.byEnsp.get(+String(e.stringId_B).replace(/^9606\.ENSP/, ''));
-          if (k == null || k === p.i) continue;
-          seen.set(k, Math.max(seen.get(k) || 0, Math.round(e.score * 1000)));
+          const sc = stringScore(e);
+          if (k == null || k === p.i || sc < min) continue;
+          seen.set(k, Math.max(seen.get(k) || 0, sc));
         }
         return Array.from(seen.entries()).sort((x, y) => y[1] - x[1]);
       })).then((list) => (list ? { list, live: true } : fallback()));
+  }
+
+  function netOptsHtml() {
+    const o = UI.net, phys = o.type === 'physical';
+    return '<p class="flabel">Network</p>' +
+      [['physical', 'Physical: proteins that bind (export ≥ 0.7, live below)'], ['functional', 'Functional: all associations (live from STRING)']].map(([v, l]) =>
+        '<label class="check"><input type="radio" name="ix-type" value="' + v + '"' + (o.type === v ? ' checked' : '') + '> ' + esc(l) + '</label>').join('') +
+      '<p class="flabel">Evidence channels</p><p class="note">Unticking a channel rescores every link from the rest, as STRING combines them (live).</p>' +
+      NET_CHANNELS.map(([c, , n]) => { const off = phys && !'edt'.includes(c); return '<label class="check' + (off ? ' muted' : '') + '"' + (off ? ' title="The physical network uses experiments, databases and text mining only"' : '') + '><input type="checkbox" data-ch="' + c + '"' + (o.ch.includes(c) ? ' checked' : '') + (off ? ' disabled' : '') + '> ' + esc(n) + '</label>'; }).join('') +
+      '<p class="flabel">Labels</p><select id="ix-labels">' + [['all', 'Every node'], ['methyl', 'Methylated partners and the second ring'], ['none', 'This protein only']].map(([v, l]) => '<option value="' + v + '"' + (o.labels === v ? ' selected' : '') + '>' + esc(l) + '</option>').join('') + '</select>' +
+      '<p class="flabel">Node size</p><select id="ix-size">' + [['sites', 'By methylarginine count'], ['equal', 'All the same']].map(([v, l]) => '<option value="' + v + '"' + (o.size === v ? ' selected' : '') + '>' + esc(l) + '</option>').join('') + '</select>' +
+      '<p class="flabel">Always include</p><input id="ix-pins" type="text" placeholder="Gene symbols, e.g. PRMT5, SMN1" value="' + esc(o.pins.join(', ')) + '">' +
+      '<p style="margin:.6rem 0 0"><button class="linkish" type="button" id="ix-net-reset">Reset network options</button></p>';
   }
 
   function renderIxProteins(p, body) {
@@ -5557,10 +5600,13 @@
     const exp = $('#ix-exp');
     if (exp) exp.innerHTML = '<button type="button" id="ix-svg">SVG</button><button type="button" id="ix-png">PNG</button><button type="button" id="ix-tsv">TSV</button>';
     body.innerHTML = '<div class="fig-controls">' +
-      '<label class="fig-ctl">Show top <select id="ix-top">' + [10, 20, 30, 50].map((n) => '<option value="' + n + '"' + (UI.ixTop === n ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label>' +
+      '<label class="fig-ctl">Show top <select id="ix-top">' + [5, 10, 20, 30, 50, 75, 100].map((n) => '<option value="' + n + '"' + (UI.ixTop === n ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label>' +
       '<label class="fig-ctl">Confidence <select id="ix-min">' + IX_SCORES.map(([v, l]) => '<option value="' + v + '"' + (UI.ixMin === v ? ' selected' : '') + '>' + esc(l) + '</option>').join('') + '</select></label>' +
+      '<label class="fig-ctl">Partners <select id="ix-show">' + Object.keys(NET_SHOW).map((k) => '<option value="' + k + '"' + (UI.net.show === k ? ' selected' : '') + '>' + esc(NET_SHOW[k][0]) + '</option>').join('') + '</select></label>' +
       '<label class="fig-ctl">Colour partners by <select id="ix-color">' + Object.keys(NODE_MODES).map((k) => '<option value="' + k + '"' + (UI.ixColor === k ? ' selected' : '') + '>' + esc(NODE_MODES[k].name) + '</option>').join('') + '</select></label>' +
-      '<label class="check fig-ctl" title="Add the PRMTs and Tudor-domain proteins that bind these partners (STRING ≥ 0.7), to trace writer–substrate–reader paths"><input type="checkbox" id="ix-ring"' + (UI.ixRing ? ' checked' : '') + '> Second ring: PRMTs and Tudor proteins</label></div>' +
+      '<label class="check fig-ctl" title="Add the PRMTs and Tudor-domain proteins that bind these partners (STRING ≥ 0.7), to trace writer–substrate–reader paths"><input type="checkbox" id="ix-ring"' + (UI.ixRing ? ' checked' : '') + '> Second ring: PRMTs and Tudor proteins</label>' +
+      '<details class="col-menu net-menu"' + (UI.netMenuOpen ? ' open' : '') + '><summary class="btn quiet small">Network options</summary><div class="col-pop" id="ix-opts">' + netOptsHtml() + '</div></details>' +
+      '<button class="btn quiet small" type="button" id="ix-string" title="Open this network on string-db.org with the same settings">Open in STRING ↗</button></div>' +
       '<div class="legend"><span class="legend-title">' + esc(mode.name) + '</span>' + mode.cats.map((c, k) => '<span><i style="background:' + colors[k] + '"></i>' + esc(c) + '</span>').join('') +
       '<span><i class="hollow"></i>Not in this set</span><span><i class="diamond"></i>PRMT</span><span><i class="ring"></i>Tudor domain</span><span><i class="ring wd"></i>WD40 repeat</span><span><i class="ring phd"></i>PHD finger</span></div>' +
       '<div id="ix-partners"><p class="note">Loading STRING partners…</p></div>';
@@ -5568,6 +5614,22 @@
     $('#ix-min', body).addEventListener('change', (e) => { UI.ixMin = +e.target.value; renderIxProteins(p, body); });
     $('#ix-color', body).addEventListener('change', (e) => { UI.ixColor = e.target.value; renderIxProteins(p, body); });
     $('#ix-ring', body).addEventListener('change', (e) => { UI.ixRing = e.target.checked; renderIxProteins(p, body); });
+    const netChanged = () => { saveNetPrefs(); renderIxProteins(p, body); };
+    $('#ix-show', body).addEventListener('change', (e) => { UI.net.show = e.target.value; netChanged(); });
+    const menu = $('.net-menu', body);
+    menu.addEventListener('toggle', () => { UI.netMenuOpen = menu.open; });
+    $$('[name="ix-type"]', body).forEach((r) => r.addEventListener('change', () => { UI.net.type = r.value; netChanged(); }));
+    $$('[data-ch]', body).forEach((c) => c.addEventListener('change', () => {
+      const on = $$('[data-ch]', body).filter((x) => x.checked).map((x) => x.dataset.ch).join('');
+      // Keep at least one channel that this network type scores.
+      if (!on.split('').some((x) => UI.net.type !== 'physical' || 'edt'.includes(x))) { c.checked = true; return; }
+      UI.net.ch = on;
+      netChanged();
+    }));
+    $('#ix-labels', body).addEventListener('change', (e) => { UI.net.labels = e.target.value; netChanged(); });
+    $('#ix-size', body).addEventListener('change', (e) => { UI.net.size = e.target.value; netChanged(); });
+    $('#ix-pins', body).addEventListener('change', (e) => { UI.net.pins = e.target.value.split(/[\s,;]+/).map((g) => g.trim()).filter(Boolean); netChanged(); });
+    $('#ix-net-reset', body).addEventListener('click', () => { UI.net = Object.assign({}, NET_DEFAULT, { pins: [] }); netChanged(); });
     UI.ixNet = null;
     const minAsked = UI.ixMin;
     partnersFor(p, minAsked).then((res) => {
@@ -5575,15 +5637,25 @@
       if (!box || UI.detail !== p.i || UI.ixTab !== 'proteins' || UI.ixMin !== minAsked) return;
       const all = res.list;
       const min = res.failed ? IX.meta.string_min_score : minAsked;
+      // Partners to show (the Partners filter), the top N of them, plus pinned genes wherever they rank.
+      const keep = (NET_SHOW[UI.net.show] || NET_SHOW.all)[1];
+      const shown = all.filter(([k]) => keep(IX.prot[k]));
+      const pinSet = new Set(UI.net.pins.map((g) => g.toUpperCase()));
+      const isPin = (k) => pinSet.has(String(IX.prot[k].gene).toUpperCase());
+      const mark = (r) => (isPin(r[0]) ? Object.assign([r[0], r[1]], { pinned: true }) : r);
+      const top = shown.slice(0, UI.ixTop).map(mark);
+      const netList = top.concat(all.filter(([k]) => isPin(k) && !top.some(([t]) => t === k)).map(mark));
+      const missingPins = UI.net.pins.filter((g) => !all.some(([k]) => String(IX.prot[k].gene).toUpperCase() === g.toUpperCase()));
       const nMeth = all.filter(([k]) => k < IX.nP).length;
       const predMap = new Map(predPartners(p).map((r) => [r.k, r]));
       box.innerHTML = (res.failed && minAsked < IX.meta.string_min_score ? '<p class="note">STRING did not answer; showing the high-confidence (≥ 0.7) links from the export instead.</p>' : '') +
         (all.length ? '<div class="ix-net-box" id="ix-net"></div><p class="note" id="ix-net-note"></p><div id="ix-paths"></div>' : '<p class="note">No STRING physical partners at this confidence.</p>') +
-        '<p class="sub">' + fmt(all.length) + ' physical partners at score ≥ ' + (min / 1000).toFixed(1) + (res.live ? ' (live from STRING)' : '') + '; <b>' + fmt(nMeth) + '</b> (' + pctText(nMeth, all.length || 1) + '%) are themselves in this methylarginine set, against ' +
+        '<p class="sub">' + fmt(all.length) + ' ' + UI.net.type + ' partners at score ≥ ' + (min / 1000).toFixed(2).replace(/0$/, '') + (netAllChannels() ? '' : ' on ' + NET_CHANNELS.filter(([c]) => netChannels().includes(c)).map(([, , n]) => n.toLowerCase()).join(', ')) + (res.live ? ' (live from STRING)' : '') +
+        (UI.net.show !== 'all' ? ', ' + fmt(shown.length) + ' of them ' + esc(NET_SHOW[UI.net.show][0].toLowerCase().replace(/ \(in this set\)/, '')) : '') + '; <b>' + fmt(nMeth) + '</b> (' + pctText(nMeth, all.length || 1) + '%) are themselves in this methylarginine set, against ' +
         pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of the reviewed proteome. ' +
         (nMeth ? '<button class="linkish" type="button" id="ix-list">List the methylated partners' + (min < 700 ? ' (≥ 0.7)' : '') + '</button>' : '') + '</p>' +
         (all.length ? '<div class="tbl-wrap ix-tbl"><table class="tbl compact"><thead><tr><th>Partner</th><th class="r">STRING</th><th>Methyl-R sites</th><th>Annotations</th><th class="hide-sm" title="ProtVar AlphaFold-Multimer model of this pair places a methylarginine of ' + esc(p.label) + ' within 5 Å of the partner">Predicted interface</th><th class="hide-sm">Shared complexes</th></tr></thead><tbody>' +
-          all.slice(0, UI.ixAll ? all.length : 40).map(([k, sc]) => {
+          shown.slice(0, UI.ixAll ? shown.length : 40).map(([k, sc]) => {
             const x = IX.prot[k];
             const q = x.p >= 0 ? P[x.p] : null;
             const shared = (IX.cxOf.get(k) || []).filter((c) => p.cx.includes(c));
@@ -5592,8 +5664,8 @@
               '<td class="nw">' + (partnerTags(x) || '<span class="muted">—</span>') + '</td>' +
               '<td class="hide-sm">' + (predMap.has(k) ? (predMap.get(k).model ? '<button class="linkish" type="button" data-pvk="' + k + '" title="Open the ProtVar model">pDockQ ' + (predMap.get(k).sc / 100).toFixed(2) + '</button>' : 'pDockQ ' + (predMap.get(k).sc / 100).toFixed(2)) + ' <span class="muted">' + predMap.get(k).sites.slice(0, 4).map((x) => '' + rl(x)).join(', ') + (predMap.get(k).sites.length > 4 ? ' +' + (predMap.get(k).sites.length - 4) : '') + '</span>' : '<span class="muted">—</span>') + '</td>' +
               '<td class="hide-sm">' + (shared.length ? shared.slice(0, 2).map((c) => esc(IX.cx[c].name)).join('; ') + (shared.length > 2 ? ' +' + (shared.length - 2) : '') : '<span class="muted">—</span>') + '</td></tr>';
-          }).join('') + '</tbody></table></div>' + (all.length > 40 ? '<button class="linkish" type="button" id="ix-all">' + (UI.ixAll ? 'Show the first 40' : 'Show all ' + fmt(all.length)) + '</button>' : '') : '') +
-        '<p class="note">STRING v' + esc(IX.meta.string_version) + ' physical subnetwork (experiments, curated databases and text mining of physical binding). RNA*/DNA* mark GO annotations without experimental evidence. Click a methylated partner to open it.</p>';
+          }).join('') + '</tbody></table></div>' + (shown.length > 40 ? '<button class="linkish" type="button" id="ix-all">' + (UI.ixAll ? 'Show the first 40' : 'Show all ' + fmt(shown.length)) + '</button>' : '') : '') +
+        '<p class="note">' + esc(netDesc()) + (UI.net.type === 'physical' ? ' (experiments, curated databases and text mining of physical binding)' : ' (all association evidence, including co-expression and genomic context)') + '. RNA*/DNA* mark GO annotations without experimental evidence. Click a methylated partner to open it.</p>';
       const lst = $('#ix-list', box);
       if (lst) lst.addEventListener('click', () => { F.ixScore = Math.max(700, min); replaceToken(partnerToken(), 'binds', IX.prot[p.i].gene, 'proteins'); });
       const allBtn = $('#ix-all', box);
@@ -5615,7 +5687,8 @@
           nd.addEventListener('keydown', (e) => { if (e.key === 'Enter') open(); });
         });
         const note = $('#ix-net-note', box);
-        if (note) note.textContent = 'Top ' + (net.nCore - 1) + ' partners by STRING score. ' + (net.live ? 'Thin grey lines join partners that are STRING physical partners of each other.' : 'Links among partners come from the STRING API; showing direct links only.') +
+        if (note) note.textContent = 'Top ' + top.length + (UI.net.show !== 'all' ? ' ' + NET_SHOW[UI.net.show][0].toLowerCase().replace(/ \(in this set\)/, '') : ' partners') + ' by STRING score' + (netList.length > top.length ? ', plus pinned ' + netList.slice(top.length).map(([k]) => IX.prot[k].gene).join(', ') : '') + '. ' +
+          (missingPins.length ? 'Not a partner at this setting: ' + missingPins.join(', ') + '. ' : '') + (net.live ? 'Thin grey lines join partners that are STRING ' + UI.net.type + ' partners of each other.' : 'Links among partners come from the STRING API; showing direct links only.') +
           (net.ring.length ? ' Dashed lines: PRMTs and Tudor-domain proteins (outer ring, italic) that bind those partners.' : '');
         const paths = $('#ix-paths', box);
         if (paths) {
@@ -5625,13 +5698,24 @@
         }
         UI.ixNet = net;
       };
-      draw(ixNetModel(p, all, min, null));
-      const ids = [p.i].concat(all.slice(0, UI.ixTop).map(([k]) => k));
-      loadStringNet(ids, min).then((extra) => { if (extra && UI.detail === p.i && UI.ixTab === 'proteins' && UI.ixMin === minAsked && document.body.contains(box)) draw(ixNetModel(p, all, min, extra)); });
-      const name = (p.gene || p.acc) + '_physical_partners';
+      if (!netList.length) { $('#ix-net', box).innerHTML = '<p class="note">No partner of this kind at this confidence.</p>'; return; }
+      draw(ixNetModel(p, netList, min, null, shown.length));
+      const ids = [p.i].concat(netList.map(([k]) => k));
+      loadStringNet(ids, min).then((extra) => { if (extra && UI.detail === p.i && UI.ixTab === 'proteins' && UI.ixMin === minAsked && document.body.contains(box)) draw(ixNetModel(p, netList, min, extra, shown.length)); });
+      $('#ix-string').onclick = () => {
+        const net = UI.ixNet;
+        if (!net) return;
+        const idsE = net.ids.slice(0, net.nCore).filter((k) => IX.prot[k].ensp).map(enspId);
+        const w = window.open('', '_blank');
+        const qs = new URLSearchParams({ identifiers: idsE.join('\r'), species: '9606', network_type: UI.net.type, required_score: String(net.min), network_flavor: 'evidence', caller_identity: STRING_CALLER });
+        fetch('https://string-db.org/api/json/get_link?' + qs).then((r) => r.json())
+          .then((d) => { const url = d && (typeof d[0] === 'string' ? d[0] : d[0] && d[0].url); if (url && w) { w.opener = null; w.location.href = url; } else if (w) w.close(); })
+          .catch(() => { if (w) w.close(); });
+      };
+      const name = (p.gene || p.acc) + '_' + UI.net.type + '_partners';
       $('#ix-svg').onclick = () => { if (UI.ixNet) exportFigure('svg', ixNetSvg(UI.ixNet, EXPORT_PAL, true), name); };
       $('#ix-png').onclick = () => { if (UI.ixNet) exportFigure('png', ixNetSvg(UI.ixNet, EXPORT_PAL, true), name); };
-      $('#ix-tsv').onclick = () => download(name + '.tsv', ['partner_gene\tpartner_accession\tstring_physical_score\tmethylarginine_sites\tprmt\ttudor_domain\tgo_rna_binding\tgo_dna_binding\tprotvar_pdockq\tmethylarginines_at_predicted_interface']
+      $('#ix-tsv').onclick = () => download(name + '.tsv', ['partner_gene\tpartner_accession\tstring_score\tmethylarginine_sites\tprmt\ttudor_domain\tgo_rna_binding\tgo_dna_binding\tprotvar_pdockq\tmethylarginines_at_predicted_interface']
         .concat(all.map(([k, sc]) => { const x = IX.prot[k]; const r = predMap.get(k); return [x.gene, x.acc, (sc / 1000).toFixed(3), x.p >= 0 ? P[x.p].sites.length : 0, x.flags & IXF.prmt ? 1 : 0, x.flags & IXF.tudor ? 1 : 0, x.flags & IXF.rna ? (x.flags & IXF.rnaExp ? 'experimental' : 'yes') : '', x.flags & IXF.dna ? (x.flags & IXF.dnaExp ? 'experimental' : 'yes') : '', r ? (r.sc / 100).toFixed(2) : '', r ? r.sites.map((v) => rl(v, p)).join(';') : ''].join('\t'); })).join('\n') + '\n');
     });
   }
@@ -7433,6 +7517,7 @@
       '<li><b>RNA and DNA binding</b>: Gene Ontology GO:0003723 and GO:0003677 including child terms (QuickGO/GOA, CC BY 4.0); experimental evidence means EXP, IDA, IPI, IMP, IGI, IEP or their high-throughput equivalents. Protein pages add live ENCODE eCLIP and TF ChIP-seq experiments and ChIP-Atlas target genes (CC BY 4.0).</li>' +
       '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two most recent entries per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were read from the structure itself (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylated arginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
       '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue that touched RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016). DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence (26,012 matched, 68 dropped). Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides.</li>' +
+      '<li><b>STRING network options</b>: on a protein page, the network can be physical or functional (all associations), scored on chosen evidence channels (STRING\'s own rule: remove the 0.041 prior from each channel score, combine, add the prior back), limited to methylated partners, PRMTs and reader domains or RNA/DNA binders, labelled and sized as needed, extended with pinned genes, and opened on string-db.org with the same settings. Options are remembered in this browser.</li>' +
       '<li><b>Writer and reader paths</b>: the protein network can add a second ring of PRMTs and Tudor-domain proteins that bind its partners (STRING ≥ 0.7).</li>' +
       '<li><b>Residue numbering</b>: positions follow the canonical UniProt sequence with the initiator methionine as 1. Papers often number differently: histone marks omit the methionine (H3R2 is UniProt R3 of P68431, H4R3 is R4 of P62805), and some receptors are numbered from the mature protein (EGFR R198/R200 in Liao et al. 2015 are UniProt R222/R224).</li>' +
       '<li><b>Unreviewed UniProt entries</b>: about 870 sites in the union sit on unreviewed (TrEMBL) entries, mostly without a staged sequence, so they lack motif, disorder and domain context. About 580 of them repeat a site at the same position on the reviewed entry of the same gene, so the union counts those residues twice. The explorer keeps the union as published, tags these entries and sites, and offers a "Reviewed UniProt entries only" filter (Provenance); the sites TSV has <code>uniprot_reviewed</code> and <code>same_site_on_reviewed_entry</code> columns.</li>' +

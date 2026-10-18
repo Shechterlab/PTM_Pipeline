@@ -1245,3 +1245,10 @@ svg [data-ev]:hover { stroke: var(--ink); stroke-width: 0.8; }
   .src-tbl td { display: block; border: 0; padding: 0.15rem 0; }
   .src-tbl td::before { content: attr(data-label); display: block; font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
 }
+
+/* STRING network options */
+.net-menu .col-pop { min-width: 19rem; max-width: min(24rem, calc(100vw - 32px)); }
+.net-menu .col-pop .flabel { margin: 0.35rem 0 0; }
+.net-menu .col-pop .note { margin: 0; font-size: 0.76rem; }
+.net-menu .col-pop select, .net-menu .col-pop input[type="text"] { width: 100%; }
+.net-menu .check.muted { opacity: 0.55; }
