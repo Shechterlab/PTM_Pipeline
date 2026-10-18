@@ -99,6 +99,16 @@ python "$BASE_DIR/scripts/36_export_site_explorer_data.py" \
   --results-root "$NEW_ROOT" \
   --uniprot-metadata "$PTM_UNIPROT_METADATA" \
   --outdir "$NEW_ROOT/site_explorer_data"
+if [ -s "$PTM_MOBIDB_INTERVALS" ]; then
+  CPLM_ARGS=()
+  [ -s "$NEW_ROOT/cplm4/cplm4_human_lys_methyl_validated.tsv" ] && CPLM_ARGS=(--cplm4-sites "$NEW_ROOT/cplm4/cplm4_human_lys_methyl_validated.tsv")
+  python "$BASE_DIR/scripts/40_methylk_methylr_cooccurrence.py" \
+    --sites-json "$NEW_ROOT/site_explorer_data/methylarg_sites.json" \
+    --fasta "$PTM_CANONICAL_FASTA" \
+    --disorder-intervals "$PTM_MOBIDB_INTERVALS" \
+    "${CPLM_ARGS[@]}" \
+    --outdir "$NEW_ROOT/methylk_methylr"
+fi
 if [ "${PTM_RERUN_INTERACTIONS:-0}" = "1" ]; then
   python "$BASE_DIR/scripts/37_export_interaction_data.py" \
     --sites-json "$NEW_ROOT/site_explorer_data/methylarg_sites.json" \

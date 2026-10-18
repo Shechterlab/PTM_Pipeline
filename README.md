@@ -20,6 +20,7 @@ The repository is intentionally code-only. Large source tables, downloaded annot
 | `scripts/common.py`, `scripts/clustering_utils.py` | Shared utilities. |
 | `scripts/36_export_site_explorer_data.py` | Exports the site union and its annotations as JSON for the static site explorer. |
 | `scripts/39_stage_cplm4_lys_methylation.py` | Stages CPLM 4.0 lysine methylation: keeps human sites whose CPLM sequence matches the canonical UniProt sequence around the lysine, for the explorer's Lys methylation marks. |
+| `scripts/40_methylk_methylr_cooccurrence.py` | Tests whether methylated lysines sit near methylarginines more often than the other lysines of the same proteins (Mantel–Haenszel by protein, disorder and local arginine count; distance profile; evidence subsets). |
 | `docs/` | Static Methylarginine Site Explorer (HTML/CSS/JS plus exported JSON data), served by GitHub Pages or Netlify. |
 | `config/` | JSON ontologies used for functional and domain-class annotation. |
 | `envs/` | Conda environment definition for the full Python/R workflow. |
@@ -289,6 +290,18 @@ python scripts/39_stage_cplm4_lys_methylation.py \
 ```
 
 It keeps human methylation rows on a lysine of CPLM's own sequence and of the canonical UniProt sequence at the same position, with the same ±7-residue context (nothing is remapped), and writes `cplm4_human_lys_methyl_validated.tsv`, the rejected rows with their reason, and `cplm4_summary.json` (input checksum and counts). Script 36 picks the validated table up from `$PTM_RESULTS_ROOT/cplm4/` (or `--cplm4-sites`); `--explorer-json docs/data/methylarg_sites.json` merges it into an existing export instead. On the CPLM download of 13 Jun 2021 (sha256 `80160a4a…`) and UniProt release 2026_03: 5,915 human rows, 5,292 with identical sequences and 64 with matching context kept (5,356 lysines on 2,939 proteins); 494 accessions not in the reviewed canonical proteome (166 of them isoforms), 60 positions without a lysine in UniProt and 5 lysines in a different sequence context rejected.
+
+Methylated lysines near methylarginines (`scripts/40_methylk_methylr_cooccurrence.py`; the rerun job calls it after the export when `PTM_MOBIDB_INTERVALS` exists):
+
+```bash
+python scripts/40_methylk_methylr_cooccurrence.py \
+  --sites-json docs/data/methylarg_sites.json --fasta "$PTM_CANONICAL_FASTA" \
+  --disorder-intervals "$PTM_MOBIDB_INTERVALS" \
+  --cplm4-sites "$PTM_RESULTS_ROOT/cplm4/cplm4_human_lys_methyl_validated.tsv" \
+  --outdir "$PTM_RESULTS_ROOT/methylk_methylr"
+```
+
+Each lysine of each canonical methylarginine protein is one observation (methylated or not, from the export's Lys methylation entries); the exposure is a methylarginine within ±10 residues. It writes Mantel–Haenszel odds ratios within protein, protein × MobiDB disorder and protein × disorder × arginines within the window (`cmh_models.tsv`), the odds ratio by distance to the nearest methylarginine against lysines more than 50 residues away (`distance_profile.tsv`), the per-lysine table and a forest plot. Sensitivity rows use ±5 and ±20 windows, leave out histones, split methyl-K by source, and keep only "independent" CPLM experimental sites that cite none of the union's studies or PhosphoSitePlus (which feeds both), against co-detection of both marks on one peptide. On the current export (UniProt 2026_03 sequences, MobiDB consensus disorder fetched October 2026): 216,605 lysines on 4,646 proteins, 3,259 methylated; main model OR 2.17 (95% CI 1.86–2.52), independent CPLM sites OR 3.73 (2.55–5.48), falling from 2.81 at 1–5 residues to 1.21 at 21–50.
 
 Then export the interaction context (downloads are cached in `data/interactions_cache/`, which Git ignores; the first run makes about 5,000 PDBe requests and takes roughly 25 minutes, later runs reuse the cache, and `--refresh` downloads everything again):
 
