@@ -1101,7 +1101,7 @@ details.ix-sec[open] > summary .pm { border-color: var(--accent); }
 .ix-seg { display: flex; align-items: center; gap: 0.5rem 0.9rem; flex-wrap: wrap; margin: 0 0 0.9rem; }
 .card-flat { padding: 0.6rem 0.9rem; border: 1px solid var(--line); border-radius: 0.7rem; background: var(--surface); }
 #psites-ix .ix-seg { margin: 0.2rem 0 0.8rem; }
-.seg { display: inline-flex; flex-wrap: wrap; gap: 0.3rem; }
+.ixseg-btns { display: inline-flex; flex-wrap: wrap; gap: 0.3rem; }
 .seg-btn { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.28rem 0.7rem; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--ink-2); font: inherit; font-size: 0.8rem; cursor: pointer; }
 .seg-btn[aria-pressed="true"] { border-color: var(--chip-on-bg); }
 .seg-btn b { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
@@ -1177,3 +1177,17 @@ dl.sc-kv dd { margin: 0; min-width: 0; }
 ul.sc-refs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.2rem 0.7rem; }
 footer.site .linkish { font-size: inherit; }
 @media print { .cite-box { border: 0; padding: 0; } .cite-box > summary { display: none; } }
+
+/* ---- Contacts cartoon and map rows -------------------------------------- */
+.cc-box svg.ccart { width: 100%; height: auto; display: block; }
+.cc-box { overflow-x: auto; }
+.ix-ex-form { margin: 0.2rem 0 0.6rem; max-width: 36rem; }
+.ix-ex-form .note:empty { display: none; }
+.rows-menu .col-pop { min-width: 17rem; max-height: 70vh; overflow-y: auto; }
+.rows-menu .flabel { margin: 0.2rem 0 0; font-weight: 600; }
+.rows-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
+.rows-list li { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.row-move { display: inline-flex; gap: 0.15rem; }
+.row-move .linkish { padding: 0 0.3rem; font-size: 0.95rem; text-decoration: none; }
+.row-move .linkish:disabled { opacity: 0.3; cursor: default; }
+@media (max-width: 560px) { .cc-box svg.ccart { min-width: 640px; } }
