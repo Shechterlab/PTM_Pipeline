@@ -5,6 +5,11 @@
 (function () {
   'use strict';
 
+  // Version stamp from this script's own address (index.html loads explorer.js?v=...). Data requests carry it too, so
+  // a new deploy never runs against cached code or data; bump it in index.html whenever docs/ changes.
+  const ASSET_V = (() => { try { return new URL(document.currentScript.src).searchParams.get('v') || ''; } catch (e) { return ''; } })();
+  const dataUrl = (name) => 'data/' + name + (ASSET_V ? '?v=' + encodeURIComponent(ASSET_V) : '');
+
   // ---------------------------------------------------------------- helpers
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -67,6 +72,7 @@
     ['Annotations in the pipeline', [
       ['UniProt', 'Canonical sequences, remapping, gene symbols and synonyms', 'Reviewed human proteome at staging', 'CC BY 4.0', 'UniProt Consortium, Nucleic Acids Res 53:D609 (2025)', '10.1093/nar/gkae1010'],
       ['InterPro', 'Domain context and nearest domain; Tudor, WD40 and PHD classes of interaction partners', 'Current release at staging', 'CC0', 'Blum et al., Nucleic Acids Res 53:D444 (2025)', '10.1093/nar/gkae1082'],
+      ['CPLM 4.0', 'Lysine methylation on protein maps, the contacts cartoon and the Other PTMs card (human sites whose CPLM sequence matches canonical UniProt around the lysine; scripts/39)', 'Methylation download (Methylation.txt of 13 Jun 2021)', 'Not stated (© The CUCKOO Workgroup)', 'Zhang et al., Nucleic Acids Res 50:D451 (2022)', '10.1093/nar/gkab849'],
       ['MobiDB', 'Disorder context (predicted consensus disorder, prediction-disorder-th_50)', 'Human export of 30 Mar 2026', 'Not stated on mobidb.org (CC BY 4.0 reported elsewhere)', 'Piovesan et al., Nucleic Acids Res 53:D495 (2025)', '10.1093/nar/gkae969'],
       ['CD-CODE', 'Condensate membership (filters and enrichment); per-protein confidence on protein pages', 'Export of 18 Mar 2026; API release 2.3', 'Not stated by CD-CODE', 'Rostam et al., Nat Methods 20:673 (2023)', '10.1038/s41592-023-01831-0'],
       ['DisGeNET (via DOSE)', 'Disease enrichment terms and families', 'As bundled with DOSE / clusterProfiler 4.18 (Bioconductor, R 4.5)', 'CC BY-NC-SA 4.0 (non-commercial)', 'Piñero et al., Nucleic Acids Res (2019 update)', '10.1093/nar/gkz1021'],
@@ -219,6 +225,20 @@
   const TREAT_HELP = { GSK591: 'PRMT5 inhibitor', MS023: 'type I PRMT inhibitor' };
   const PTM_LABEL = ['Phospho', 'Lys acyl', 'Ub/SUMO', 'Lys methyl'];
   const PTM_PREFIX = ['p', 'ac', 'ub', 'me'];
+  // An other-PTM entry is [position, group, residue, source bits]: bit 0 the cross-PTM master table, then the CPLM 4.0
+  // evidence labels (meta.other_ptm_sources). Exports made before CPLM was added have no fourth element.
+  const ptmSources = (t) => {
+    const m = t[3] == null ? 1 : t[3], names = ((M && M.other_ptm_sources) || ['Cross-PTM master table']).filter((_, k) => m & (1 << k));
+    const cplm = names.filter((n) => n.startsWith('CPLM 4.0 (')).map((n) => n.slice(10, -1));
+    return names.filter((n) => !n.startsWith('CPLM 4.0 (')).concat(cplm.length ? ['CPLM 4.0 (' + cplm.join('/') + ')'] : []);
+  };
+  const ptmFromCplm = (t) => (t[3] || 0) > 1;
+  const ptmName = (t, p) => PTM_PREFIX[t[1]] + t[2] + rn(t[0], p);
+  const cplmText = () => {
+    const c = M && M.cplm4;
+    return c && c.validated_sites ? fmt(c.validated_sites) + ' lysines on ' + fmt(c.validated_proteins) + ' proteins have a lysine at the same position of the canonical UniProt sequence with the same ±7-residue context (no remapping; scripts/39), ' + fmt(c.explorer_sites) + ' of them on ' + fmt(c.explorer_proteins) + ' proteins in this explorer.' : 'none are loaded in this export.';
+  };
+  const ptmSourceNote = (p) => (p.ptms.some(ptmFromCplm) ? 'the PTM master table and CPLM 4.0' : 'the PTM master table');
   const PADJ = 0.05;
   // Maron 2021 methyl-IP antibodies named by the residue state they recognise.
   const IP_LABEL = { MMA: 'Rme1', ADMA: 'Rme2a', SDMA: 'Rme2s' };
@@ -351,7 +371,7 @@
   };
 
   // ------------------------------------------------------------------- load
-  fetch('data/methylarg_sites.json')
+  fetch(dataUrl('methylarg_sites.json'))
     .then((r) => { if (!r.ok) throw new Error(r.status + ' ' + r.statusText); return r.json(); })
     .then(init)
     .catch((err) => {
@@ -362,7 +382,7 @@
 
   function loadEvidence() {
     if (!evidencePromise) {
-      evidencePromise = fetch('data/methylarg_evidence.json')
+      evidencePromise = fetch(dataUrl('methylarg_evidence.json'))
         .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
         .catch(() => null);
     }
@@ -1352,7 +1372,7 @@
         '<div class="fgroup"><span class="flabel">Domain context (InterPro)</span>' + chipRow('domctx', M.domain_contexts.map((c, k) => [k, DOMAIN_LABEL[c] || c, DOMAIN_HELP[c]]), F.domctx) + '</div>' +
         '<div class="fgroup"><label class="flabel" for="f-domclass">Nearest domain class (lab domain ontology)</label>' + termSelect('f-domclass', 'domain', termOptions(M.domain_classes.map((c, k) => [termSlug('domain', k), c]).sort((a, b) => a[1].localeCompare(b[1])))) + '</div>';
       case 'cluster': return '<div class="fgroup"><label class="flabel" for="f-nn">Another methyl-R within</label>' + sel('f-nn', options([[2, '2 aa'], [3, '3 aa'], [5, '5 aa'], [10, '10 aa'], [20, '20 aa']], F.nn || '', 'Any spacing'), !!F.nn) + '</div>' +
-        '<div class="fgroup"><label class="flabel" for="f-ptm" title="Sites from the pipeline\'s cross-PTM master table (iPTMnet sources and UniProt). Not exhaustive: sites reported elsewhere may be missing.">Other PTM nearby (PTM master table; not exhaustive)</label>' + sel('f-ptm', options(PTM_LABEL.map((l, k) => [k, l]), F.ptmGroup, 'Any PTM type'), !!F.ptmDist) +
+        '<div class="fgroup"><label class="flabel" for="f-ptm" title="Sites from the pipeline\'s cross-PTM master table (iPTMnet sources and UniProt) and, for lysine methylation, sequence-validated human CPLM 4.0 sites. Not exhaustive: sites reported elsewhere may be missing.">Other PTM nearby (PTM master table, CPLM 4.0; not exhaustive)</label>' + sel('f-ptm', options(PTM_LABEL.map((l, k) => [k, l]), F.ptmGroup, 'Any PTM type'), !!F.ptmDist) +
         sel('f-ptmdist', options([[2, 'within ±2 aa'], [5, 'within ±5 aa'], [10, 'within ±10 aa'], [20, 'within ±20 aa']], F.ptmDist || '', 'Off'), !!F.ptmDist, 'PTM distance') + '</div>' +
         '<div class="fgroup"><label class="check"><input type="checkbox" id="f-dense"' + (F.dense ? ' checked' : '') + '> Protein has a significant dense methyl-R region (multiscale null, q ≤ 0.05)</label></div>' +
         '<div class="fgroup"><label class="flabel" for="f-arch">Clustered architecture (≥3 sites in 20 aa)</label>' + sel('f-arch', options(archClasses.map((a) => [a, a]), F.arch, 'Any'), F.arch !== '') + '</div>';
@@ -2506,8 +2526,8 @@
       }
     }
     const near = [];
-    for (const [pos, g, res] of p.ptms) { const d = pos - s.pos; if (Math.abs(d) <= 10) near.push(PTM_PREFIX[g] + res + pos + ' (' + (d > 0 ? '+' : '') + d + ')'); }
-    if (near.length) html += '<p><b>Other PTMs within ±10 aa</b> <span class="muted">(PTM master table; not exhaustive)</span>: ' + esc(near.join(', ')) + '</p>';
+    for (const t of p.ptms) { const d = t[0] - s.pos; if (Math.abs(d) <= 10) near.push(ptmName(t, p) + ' (' + (d > 0 ? '+' : '') + d + ')'); }
+    if (near.length) html += '<p><b>Other PTMs within ±10 aa</b> <span class="muted">(' + ptmSourceNote(p) + '; not exhaustive)</span>: ' + esc(near.join(', ')) + '</p>';
     if (s.win) html += '<p><b>Window ±15:</b> ' + windowHtml(s.win, 15) + '</p>';
     if (rows && rows.length) {
       html += '<p><b>Source rows</b> (' + rows.length + ')</p><table><thead><tr><th>Study / database</th><th>Source table</th><th>Reference</th><th>PMID</th><th>Peptide</th><th>Enzyme</th><th>State</th><th>Reported as</th></tr></thead><tbody>' +
@@ -2851,17 +2871,18 @@
     const counts = [0, 0, 0, 0];
     for (const [, g] of p.ptms) counts[g]++;
     const near = [];
-    for (const [pos, g, res] of p.ptms) {
+    for (const t of p.ptms) {
       let best = null;
-      for (const j of p.sites) { const d = Math.abs(S[j].pos - pos); if (d <= 10 && (!best || d < best[1])) best = [S[j].pos, d]; }
-      if (best) near.push([pos, g, res, best[0], best[1]]);
+      for (const j of p.sites) { const d = Math.abs(S[j].pos - t[0]); if (d <= 10 && (!best || d < best[1])) best = [S[j].pos, d]; }
+      if (best) near.push([t, best[0], best[1]]);
     }
-    near.sort((a, b) => a[4] - b[4] || a[0] - b[0]);
-    box.innerHTML = '<h3>Other PTMs</h3><p class="sub">Other modification types recorded for this protein in the pipeline\'s cross-PTM master table.</p>' +
-      '<p class="note ptm-caveat"><b>Not an exhaustive list:</b> it holds only what the pipeline\'s cross-PTM master table contains (an iPTMnet export of HPRD, literature mining and other curated sources, plus UniProt), so modifications reported elsewhere, for example in PhosphoSitePlus or recent proteomics studies, may be missing.</p>' +
-      (p.ptms.length ? '<dl class="kv">' + counts.map((c, g) => (c ? '<dt>' + PTM_LABEL[g] + '</dt><dd>' + c + '</dd>' : '')).join('') + '</dl>' +
-        (near.length ? '<p style="margin:.9rem 0 .4rem"><b>Within 10 aa of a methyl-R</b></p><div class="tags">' + near.slice(0, 40).map((n) => '<span class="tag" title="' + n[4] + ' aa from ' + rl(n[3], p) + '">' + PTM_PREFIX[n[1]] + esc(n[2]) + n[0] + ' · ' + rl(n[3], p) + '</span>').join('') + '</div>' + (near.length > 40 ? '<p class="note">' + (near.length - 40) + ' more not shown.</p>' : '') : '<p class="note">None within 10 aa of a methylarginine.</p>')
-        : '<p class="muted">None in the master table for this accession, which does not mean the protein has no other modifications.</p>');
+    near.sort((a, b) => a[2] - b[2] || a[0][0] - b[0][0]);
+    const cplmN = p.ptms.filter(ptmFromCplm).length;
+    box.innerHTML = '<h3>Other PTMs</h3><p class="sub">Other modification types recorded for this protein in the pipeline\'s cross-PTM master table, with lysine methylation also from CPLM 4.0.</p>' +
+      '<p class="note ptm-caveat"><b>Not an exhaustive list:</b> it holds only what the pipeline\'s cross-PTM master table contains (an iPTMnet export of HPRD, literature mining and other curated sources, plus UniProt) and, for lysine methylation, the human CPLM 4.0 sites whose sequence matches the canonical UniProt sequence, so modifications reported elsewhere, for example in PhosphoSitePlus or recent proteomics studies, may be missing.</p>' +
+      (p.ptms.length ? '<dl class="kv">' + counts.map((c, g) => (c ? '<dt>' + PTM_LABEL[g] + '</dt><dd>' + c + (g === 3 && cplmN ? ' <span class="muted">(' + cplmN + ' in CPLM 4.0)</span>' : '') + '</dd>' : '')).join('') + '</dl>' +
+        (near.length ? '<p style="margin:.9rem 0 .4rem"><b>Within 10 aa of a methyl-R</b></p><div class="tags">' + near.slice(0, 40).map(([t, pos, d]) => '<span class="tag" title="' + esc(d + ' aa from ' + rl(pos, p) + ' · ' + ptmSources(t).join(', ')) + '">' + esc(ptmName(t, p)) + ' · ' + rl(pos, p) + '</span>').join('') + '</div>' + (near.length > 40 ? '<p class="note">' + (near.length - 40) + ' more not shown.</p>' : '') : '<p class="note">None within 10 aa of a methylarginine.</p>')
+        : '<p class="muted">None in the master table or CPLM 4.0 for this accession, which does not mean the protein has no other modifications.</p>');
   }
 
   function renderSequence(p, u) {
@@ -3021,9 +3042,9 @@
       const lab = rep ? '' : (f.desc || '').replace(/ domain$/i, '');
       if (lab && lab.length * 5.4 < wd - 4) g += '<text x="' + r1(a + wd / 2) + '" y="' + (base + 3.5) + '" font-size="9" text-anchor="middle" fill="' + pal.domainInk + '">' + esc(lab) + '</text>';
     }
-    // Lysine methylation (PTM master table) as diamonds on the backbone, for methyl-R/K-methyl crosstalk.
+    // Lysine methylation (PTM master table, CPLM 4.0) as diamonds on the backbone, for methyl-R/K-methyl crosstalk.
     const kme = p.ptms.filter((x) => x[1] === 3);
-    for (const [pos] of kme) g += '<rect x="' + r1(X(pos) - 3) + '" y="' + (base - 3) + '" width="6" height="6" transform="rotate(45 ' + r1(X(pos)) + ' ' + base + ')" fill="' + KME_COLOR + '" stroke="' + pal.ring + '" stroke-width="0.6"><title>' + esc(p.label + ' K' + pos + ' methylation (PTM master table)') + '</title></rect>';
+    for (const t of kme) g += '<rect x="' + r1(X(t[0]) - 3) + '" y="' + (base - 3) + '" width="6" height="6" transform="rotate(45 ' + r1(X(t[0])) + ' ' + base + ')" fill="' + KME_COLOR + '" stroke="' + pal.ring + '" stroke-width="0.6"><title>' + esc(p.label + ' K' + rn(t[0], p) + ' methylation (' + ptmSources(t).join(', ') + ')') + '</title></rect>';
     // Lanes start under the backbone; guides need the lane block's extent first.
     const laneTop = base + 22, laneH = 22;
     const laneY = (k) => laneTop + k * laneH + laneH / 2;
@@ -3160,9 +3181,11 @@
     }));
     $('[data-rows-reset]', pop).addEventListener('click', () => { UI.fig.tracks = new Set(MAP_DEFAULT_ON); UI.fig.order = null; redraw(); });
   }
+  // "Histone H3.1 (H3C1) protein map": the protein name leads, the gene symbol follows when it differs.
+  const mapTitle = (p) => (p.name && p.name !== p.label ? p.name + ' (' + p.label + ')' : p.label) + ' protein map';
   function figureCard(p) {
     const f = UI.fig;
-    return '<div class="card fig-card"><div class="card-head"><div><h3>' + esc(p.label) + ' protein map</h3><p class="sub" id="map-sub">' + esc((p.name ? p.name + ' · ' : '') + p.acc) + ' · loading UniProt features…</p></div>' +
+    return '<div class="card fig-card"><div class="card-head"><div><h3>' + esc(mapTitle(p)) + '</h3><p class="sub" id="map-sub">' + esc(p.acc) + ' · loading UniProt features…</p></div>' +
       '<div class="exp" role="group" aria-label="Figure export"><button type="button" id="zoom-reset" hidden>Reset zoom</button><button type="button" id="fig-svg">SVG</button><button type="button" id="fig-png">PNG</button></div></div>' +
       '<div class="fig-controls"><label class="fig-ctl">Colour sites by <select id="fig-color">' + Object.keys(COLOR_MODES).map((k) => '<option value="' + k + '"' + (f.color === k ? ' selected' : '') + '>' + esc(COLOR_MODES[k].name) + '</option>').join('') + '</select></label>' +
       '<div class="seg" role="group" aria-label="Site labels"><span>Site labels</span>' + [['auto', 'Auto'], ['all', 'All'], ['none', 'None']].map(([k, l]) => '<button type="button" data-lab="' + k + '" aria-pressed="' + (f.labels === k) + '">' + l + '</button>').join('') + '</div>' +
@@ -3239,8 +3262,8 @@
     const gridLine = (yy) => { g += '<line x1="' + ML + '" x2="' + (W - MR) + '" y1="' + yy + '" y2="' + yy + '" stroke="' + pal.grid + '"/>'; };
 
     if (o.forExport) {
-      g += '<text x="0" y="26" font-size="19" font-weight="700" fill="' + pal.ink + '">' + esc(p.label) + (p.name ? ' <tspan font-weight="400" fill="' + pal.muted + '" font-size="14">' + esc(p.name) + '</tspan>' : '') + '</text>' +
-        '<text x="0" y="46" font-size="11.5" fill="' + pal.muted + '">' + esc(p.acc + ' · ' + fmt(len) + ' aa · ' + p.sites.length + ' methylarginine site' + (p.sites.length === 1 ? '' : 's') + (UI.zoom ? ' · showing residues ' + v0 + '–' + v1 : '')) + '</text>';
+      g += '<text x="0" y="26" font-size="19" font-weight="700" fill="' + pal.ink + '">' + esc(mapTitle(p)) + '</text>' +
+        '<text x="0" y="46" font-size="11.5" fill="' + pal.muted + '">' + esc(p.acc + ' · ' + fmt(len) + ' aa · ' + p.sites.length + ' methylarginine site' + (p.sites.length === 1 ? '' : 's') + (p.hist ? ' · histone numbering (no initiator Met)' : '') + (UI.zoom ? ' · showing residues ' + rn(v0, p) + '–' + rn(v1, p) : '')) + '</text>';
     }
     if (T.has('dense')) {
       for (const w of p.sig) {
@@ -3392,13 +3415,13 @@
       track('Variants', u.variants, false);
       track('Mutagenesis', u.mutagen.filter((f) => f.from === 'R' || f.from.includes('R')), true);
     };
-    // Other PTMs from the cross-PTM master table, one row per group; lysine methylation in its own colour.
+    // Other PTMs from the cross-PTM master table (and CPLM 4.0 for lysine methylation), one row per group.
     const ptmRow = (gi) => {
         const list = p.ptms.filter((t) => t[1] === gi && t[0] >= v0 && t[0] <= v1);
         if (!list.length) return;
         tlabel(PTM_LABEL[gi], y);
         gridLine(y);
-        for (const t of list) g += '<rect class="feat" x="' + r1(x(t[0]) - 1.5) + '" y="' + (y - 5) + '" width="3" height="10" rx="1" fill="' + (gi === 3 ? KME_COLOR : pal.ptm) + '"' + tip('<b>' + PTM_PREFIX[gi] + t[2] + t[0] + '</b> · ' + PTM_LABEL[gi]) + '/>';
+        for (const t of list) g += '<rect class="feat" x="' + r1(x(t[0]) - 1.5) + '" y="' + (y - 5) + '" width="3" height="10" rx="1" fill="' + (gi === 3 ? KME_COLOR : pal.ptm) + '"' + tip('<b>' + esc(ptmName(t, p)) + '</b> · ' + PTM_LABEL[gi] + (p.hist ? ' · UniProt ' + t[2] + t[0] : '') + '<br>' + esc(ptmSources(t).join(' · '))) + '/>';
         y += 18;
     };
     // Residues at interfaces in PDB structures (PDBe-KB), one row per partner type.
@@ -3516,7 +3539,7 @@
       if (T.has('variants') && u && u.variants.some((f) => f.from === 'R' && p.sites.some((j) => S[j].pos === f.start))) item((a, b) => '<rect x="' + (a + 9) + '" y="' + (b - 7) + '" width="3" height="14" rx="1" fill="' + pal.accent + '"/>', 'Variant at a methylarginine');
       y = ey;
       y += 18;
-      g += '<text x="' + (W - MR) + '" y="' + (y + 4) + '" font-size="9" text-anchor="end" fill="' + pal.muted + '">Sites: methylarginine union, PTM_Pipeline · features and variants: UniProt' + (MAP_PTM_KEYS.some((k) => T.has(k)) && p.ptms.length ? ' · other PTMs incl. Lys methylation: PTM master table (not exhaustive)' : '') + (T.has('iface') && !p.iso && IFDATA.get(p.acc.split('-')[0]) ? ' · interfaces: PDBe-KB' : '') + (T.has('charge') && u && u.seq ? ' · charge: EMBOSS scale, 5-aa mean' : '') + '</text>';
+      g += '<text x="' + (W - MR) + '" y="' + (y + 4) + '" font-size="9" text-anchor="end" fill="' + pal.muted + '">Sites: methylarginine union, PTM_Pipeline · features and variants: UniProt' + (MAP_PTM_KEYS.some((k) => T.has(k)) && p.ptms.length ? ' · other PTMs: ' + ptmSourceNote(p).replace(/^the /, '') + ' (not exhaustive)' : '') + (T.has('iface') && !p.iso && IFDATA.get(p.acc.split('-')[0]) ? ' · interfaces: PDBe-KB' : '') + (T.has('charge') && u && u.seq ? ' · charge: EMBOSS scale, 5-aa mean' : '') + '</text>';
       y += 12;
     }
     const H = Math.ceil(y + 4);
@@ -3533,8 +3556,8 @@
     const sub = $('#map-sub');
     const out = mapSvg(p, u, { pal: screenPalette(), forExport: false });
     if (sub) {
-      const who = (p.name || (u && u.name) || '') + (p.name || (u && u.name) ? ' · ' : '') + p.acc + ' · ' + (p.hist ? 'histone numbering (no initiator Met; R2 = UniProt R3) · ' : '');
-      sub.textContent = u ? who + fmt(out.len) + ' aa · domains, regions, disorder and variants from UniProt' + (MAP_PTM_KEYS.some((k) => UI.fig.tracks.has(k)) && p.ptms.length ? ' · other PTMs from the PTM master table (not exhaustive)' : '') + (UI.fig.tracks.has('iface') && IFDATA.get(p.acc.split('-')[0]) ? ' · PDB interfaces from PDBe-KB' : '') + (UI.zoom ? ' · showing ' + out.v0 + '–' + out.v1 : '') :
+      const who = p.acc + ' · ' + (p.hist ? 'histone numbering (no initiator Met; R2 = UniProt R3) · ' : '');
+      sub.textContent = u ? who + fmt(out.len) + ' aa · domains, regions, disorder and variants from UniProt' + (MAP_PTM_KEYS.some((k) => UI.fig.tracks.has(k)) && p.ptms.length ? ' · other PTMs from ' + ptmSourceNote(p) + ' (not exhaustive)' : '') + (UI.fig.tracks.has('iface') && IFDATA.get(p.acc.split('-')[0]) ? ' · PDB interfaces from PDBe-KB' : '') + (UI.zoom ? ' · showing ' + out.v0 + '–' + out.v1 : '') :
         (uniprotCache.has(p.acc) && UNIDATA.has(p.acc) ? 'UniProt features unavailable; showing sites on a ' + (p.len ? fmt(out.len) + ' aa' : 'length-estimated') + ' backbone.' : 'Loading UniProt features…');
     }
     $('#zoom-reset').hidden = !UI.zoom;
@@ -4650,7 +4673,7 @@
 
   function loadInteractions() {
     if (!ixPromise) {
-      ixPromise = fetch('data/methylarg_interactions.json')
+      ixPromise = fetch(dataUrl('methylarg_interactions.json'))
         .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
         .then(initInteractions)
         .catch(() => { IX = { failed: true }; return null; })
@@ -7112,7 +7135,7 @@
       ['protein-pages', 'Live annotations on protein pages', '' +
         '<p><b>Protein map rows.</b> The Rows menu switches each row on or off and moves it up or down; the choice and order are remembered in this browser and used by the SVG and PNG exports. ' +
         '<b>Charge</b> is the mean residue charge of a sliding 5-residue window on the EMBOSS <i>charge</i> scale (K and R +1, H +0.5, D and E −1): the value at residue <i>i</i> is the mean of residues <i>i</i>−2 to <i>i</i>+2, and within two residues of either terminus the window is cut short and the mean is taken over the residues actually present (3 or 4). Blue above the line is basic, red below acidic. ' +
-        '<b>Lysine methylation</b>, phosphorylation, lysine acylation and ubiquitin/SUMO sites come from the pipeline\'s cross-PTM master table (iPTMnet sources, UniProt and IEDB) and are not exhaustive: it holds 234 lysine-methylation sites on 130 proteins. Composition (UniProt compositional bias) is off by default.</p>' +
+        'Phosphorylation, lysine acylation and ubiquitin/SUMO sites come from the pipeline\'s cross-PTM master table (iPTMnet sources, UniProt and IEDB). <b>Lysine methylation</b> combines that table (234 lysine-methylation sites on 130 proteins) with CPLM 4.0 (' + doiLink('10.1093/nar/gkab849', 'Zhang et al. 2022') + '): of its human methylation rows, ' + cplmText() + ' Neither source is exhaustive. Tooltips name the source of each mark; CPLM\'s evidence label (Exp., Dat. or both) is shown as CPLM gives it. Composition (UniProt compositional bias) is off by default.</p>' +
         '<p><b>Regions</b> are UniProt Region and Motif features (motifs outlined). Overlapping features, which UniProt often nests (NPM1 1–186 and 1–117), are stacked on separate lines so none hides another; a label sits inside its box, after it, or shortened, and the tooltip always gives the full text and coordinates.</p>' +
         '<p><b>Journal panels.</b> The contacts cartoon and the Figures-tab protein comparison can be exported at a printed column width (85, 114 or 174 mm, the usual Cell Press columns): the layout is narrowed so the smallest labels print at 6 pt, the SVG carries its width in millimetres, and the PNG is rendered at 300, 600 or 1000 dpi with the resolution recorded in the file.</p>' +
         '<p><b>Contacts at a glance</b> draws the protein once more as a simple linear cartoon: the methylarginines coloured by interaction status, and under them, on the same residue scale, RNA and DNA crosslinks in living cells, PDB interface residues (PDBe-KB, live), and predicted-complex interfaces (assessed at methylarginines only). A dashed line drops from each methylarginine with evidence at the residue itself and a ring marks which kind; diamonds on the backbone are lysine methylation. The Interactions tab shows the same cartoon for any protein, and the Figures tab adds the crosslink and PDB lanes under every protein of the comparison, which can be ordered by contact evidence, length or name.</p>' +

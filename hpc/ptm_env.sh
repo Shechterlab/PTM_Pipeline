@@ -39,6 +39,7 @@ PTM_MOBIDB_INTERVALS=${PTM_MOBIDB_INTERVALS:-$PTM_CONTEXT_ROOT/mobidb_human_revi
 PTM_INTERPRO_BULK=${PTM_INTERPRO_BULK:-$PTM_CONTEXT_ROOT/protein2ipr.dat.gz}
 PTM_INTERPRO_ALL_INTERVALS=${PTM_INTERPRO_ALL_INTERVALS:-$PTM_CONTEXT_ROOT/interpro_human_reviewed_all_entry_intervals.tsv}
 PTM_INTERPRO_DOMAIN_INTERVALS=${PTM_INTERPRO_DOMAIN_INTERVALS:-$PTM_CONTEXT_ROOT/interpro_human_reviewed_domain_like_intervals.tsv}
+PTM_CPLM4_METHYL=${PTM_CPLM4_METHYL:-$(ptm_choose_default_root "$PTM_EXTERNAL_ROOT/CPLM4_Methylation_Downloaded-06-22-26" "$PTM_EXTERNAL_ROOT/Methylation.zip" "$PTM_EXTERNAL_ROOT/CPLM4_Methylation_Downloaded-06-22-26")}
 PTM_CDCODE_STAGED=${PTM_CDCODE_STAGED:-$(ptm_choose_default_root "$PTM_DATA_ROOT/condensates/cdcode_staged_membership.tsv" "$PTM_DATA_ROOT/condensates/protein2cdcode_v2.2.tsv" "$PTM_DATA_ROOT/condensates/cdcode_staged_membership.tsv")}
 PTM_CDCODE_PROTEINS=${PTM_CDCODE_PROTEINS:-$(ptm_choose_default_root "$PTM_DATA_ROOT/condensates/proteins_202603181653.csv" "" "$PTM_DATA_ROOT/condensates/proteins_202603181653.csv")}
 PTM_CDCODE_CONDENSATES=${PTM_CDCODE_CONDENSATES:-$(ptm_choose_default_root "$PTM_DATA_ROOT/condensates/condensates_202603181647.csv" "" "$PTM_DATA_ROOT/condensates/condensates_202603181647.csv")}
@@ -67,6 +68,7 @@ export PTM_MOBIDB_INTERVALS
 export PTM_INTERPRO_BULK
 export PTM_INTERPRO_ALL_INTERVALS
 export PTM_INTERPRO_DOMAIN_INTERVALS
+export PTM_CPLM4_METHYL
 export PTM_CDCODE_STAGED
 export PTM_CDCODE_PROTEINS
 export PTM_CDCODE_CONDENSATES

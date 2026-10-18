@@ -68,6 +68,7 @@ grep -q "sequence_position_verified" "$BASE_DIR/scripts/02_remap_arg_methyl_to_c
   for f in "$PTM_CANONICAL_FASTA" "$PTM_UNIPROT_METADATA" "$PTM_MASTER_TSV" "$PTM_MARON_XLSX" "$PTM_PROMETHEUS_MMC2"; do
     echo "input: $(md5sum "$f")"
   done
+  if [ -f "$PTM_CPLM4_METHYL" ]; then echo "input: $(md5sum "$PTM_CPLM4_METHYL")"; fi
 } > "$NEW_ROOT/RUN_INFO.txt"
 cat "$NEW_ROOT/RUN_INFO.txt"
 
@@ -86,6 +87,14 @@ fi
 # <repo>/PTM_results) do not read site positions, so they are not rerun.
 
 echo "[ptm_remapfix] site explorer data"
+if [ -e "$PTM_CPLM4_METHYL" ]; then
+  python "$BASE_DIR/scripts/39_stage_cplm4_lys_methylation.py" \
+    --cplm "$PTM_CPLM4_METHYL" \
+    --fasta "$PTM_CANONICAL_FASTA" \
+    --outdir "$NEW_ROOT/cplm4"
+else
+  echo "[ptm_remapfix] no CPLM 4.0 download at $PTM_CPLM4_METHYL; Lys methylation from the master table only"
+fi
 python "$BASE_DIR/scripts/36_export_site_explorer_data.py" \
   --results-root "$NEW_ROOT" \
   --uniprot-metadata "$PTM_UNIPROT_METADATA" \

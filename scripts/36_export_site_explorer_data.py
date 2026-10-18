@@ -10,6 +10,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from common import CPLM4_SOURCE_BITS, cplm4_evidence_mask
+
 
 SOURCES = ['Maron2021', 'ProMetheusDB', 'human_ptm_master']
 STATES = ['', 'Rme1', 'Rme2', 'mixed']
@@ -21,6 +23,8 @@ MOTIFS = [
 MARON_IPS = ['MMA', 'ADMA', 'SDMA']
 MARON_TREATMENTS = ['GSK591', 'MS023']
 OTHER_PTM_GROUPS = ['Phosphorylation', 'Lys acylation', 'Ubiquitin/SUMO', 'Lys methylation']
+# Bit k of an other-PTM entry's source mask (its fourth element) means OTHER_PTM_SOURCES[k].
+OTHER_PTM_SOURCES = ['Cross-PTM master table', 'CPLM 4.0 (Exp.)', 'CPLM 4.0 (Dat.)']
 ALS_FAMILY = 'ALS / motor neuron / FTD'
 WINDOW_FLANK = 15
 
@@ -178,6 +182,9 @@ def main() -> None:
     ap.add_argument('--results-root', default=os.environ.get('PTM_RESULTS_ROOT', 'PTM_results'))
     ap.add_argument('--uniprot-metadata', default=os.environ.get('PTM_UNIPROT_METADATA', ''),
                     help='UniProt metadata TSV with Entry, Entry Name, Protein names and Length (PTM_UNIPROT_METADATA).')
+    ap.add_argument('--cplm4-sites', default=os.environ.get('PTM_CPLM4_SITES', ''),
+                    help='Validated CPLM 4.0 lysine methylation table from 39_stage_cplm4_lys_methylation.py '
+                         '(default <results-root>/cplm4/cplm4_human_lys_methyl_validated.tsv; skipped if missing).')
     ap.add_argument('--outdir', default='docs/data')
     args = ap.parse_args()
 
@@ -312,8 +319,9 @@ def main() -> None:
     for _, row in als.iterrows():
         als_genes.add(row['gene_symbol'])
 
-    # Other PTM groups on the same canonical proteins (from the cross-PTM master table).
-    other_ptms = defaultdict(set)
+    # Other PTM groups on the same canonical proteins: the cross-PTM master table (source bit 1) and, for lysine
+    # methylation, the sequence-validated CPLM 4.0 sites from 39_stage_cplm4_lys_methylation.py (bits 2 and 4).
+    other_ptms: dict[str, dict[tuple[int, int, str], int]] = defaultdict(dict)
     ptm_path = root / 'ptm_compare' / 'ptm_sites_with_contexts.tsv'
     if ptm_path.exists():
         ptm = read_tsv(ptm_path, usecols=['ptm_group', 'substrate_UniProtAC', 'canonical_UniProtAC', 'residue', 'position'])
@@ -321,7 +329,25 @@ def main() -> None:
         for row in ptm.itertuples(index=False):
             pos = to_int(row.position)
             if pos is not None:
-                other_ptms[row.canonical_UniProtAC].add((pos, OTHER_PTM_GROUPS.index(row.ptm_group), row.residue[:1]))
+                key = (pos, OTHER_PTM_GROUPS.index(row.ptm_group), row.residue[:1])
+                other_ptms[row.canonical_UniProtAC][key] = other_ptms[row.canonical_UniProtAC].get(key, 0) | 1
+    cplm_path = Path(args.cplm4_sites) if args.cplm4_sites else root / 'cplm4' / 'cplm4_human_lys_methyl_validated.tsv'
+    cplm_meta: dict = {}
+    cplm_bits = sum(CPLM4_SOURCE_BITS.values())
+    if cplm_path.exists():
+        cplm = read_tsv(cplm_path, usecols=['canonical_UniProtAC', 'position', 'evidence'])
+        summary_path = cplm_path.parent / 'cplm4_summary.json'
+        if summary_path.exists():
+            staged = json.loads(summary_path.read_text(encoding='utf-8'))
+            cplm_meta = {k: staged.get(k) for k in ('input_sha256', 'input_member')}
+        cplm_meta.update({'validated_sites': len(cplm), 'validated_proteins': int(cplm['canonical_UniProtAC'].nunique())})
+        for row in cplm.itertuples(index=False):
+            pos = to_int(row.position)
+            if pos is not None:
+                key = (pos, OTHER_PTM_GROUPS.index('Lys methylation'), 'K')
+                other_ptms[row.canonical_UniProtAC][key] = other_ptms[row.canonical_UniProtAC].get(key, 0) | cplm4_evidence_mask(row.evidence)
+    else:
+        print(f'no CPLM 4.0 table at {cplm_path}; Lys methylation from the master table only')
 
     func_classes = Vocab()
     func_subclasses = Vocab()
@@ -402,7 +428,7 @@ def main() -> None:
             best,
             sig_regions.get(accession, []),
             arch,
-            [list(item) for item in sorted(other_ptms.get(accession, set()))],
+            [[*key, mask] for key, mask in sorted(other_ptms.get(accession, {}).items())],
             sorted(aliases),
         ])
 
@@ -559,6 +585,10 @@ def main() -> None:
             'maron_ips': MARON_IPS,
             'maron_treatments': MARON_TREATMENTS,
             'other_ptm_groups': OTHER_PTM_GROUPS,
+            'other_ptm_sources': OTHER_PTM_SOURCES,
+            'cplm4': {**cplm_meta,
+                      'explorer_sites': sum(1 for p in proteins for item in p[18] if item[3] & cplm_bits),
+                      'explorer_proteins': sum(1 for p in proteins if any(item[3] & cplm_bits for item in p[18]))} if cplm_meta else {},
             'func_classes': func_classes.values,
             'func_subclasses': func_subclasses.values,
             'disorder_classes': disorder_classes.values,

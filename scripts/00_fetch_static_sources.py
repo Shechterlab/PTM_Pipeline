@@ -14,7 +14,9 @@ URLS = {
     'dbptm_citrullination_gz': 'https://biomics.lab.nycu.edu.tw/dbPTM/download/experiment/Citrullination.gz',
     'dbptm_n_glycosylation_gz': 'https://biomics.lab.nycu.edu.tw/dbPTM/download/experiment/N-linked_Glycosylation.gz',
     'dbptm_o_glycosylation_gz': 'https://biomics.lab.nycu.edu.tw/dbPTM/download/experiment/O-linked_Glycosylation.gz',
-    'dbptm_myristoylation_gz': 'https://biomics.lab.nycu.edu.tw/dbPTM/download/experiment/Myristoylation.gz'
+    'dbptm_myristoylation_gz': 'https://biomics.lab.nycu.edu.tw/dbPTM/download/experiment/Myristoylation.gz',
+    # CPLM 4.0 lysine methylation (Zhang et al., Nucleic Acids Res 2022); stage with 39_stage_cplm4_lys_methylation.py.
+    'cplm4_methylation_zip': 'https://cplm.biocuckoo.cn/Download/Methylation.zip',
 }
 
 
