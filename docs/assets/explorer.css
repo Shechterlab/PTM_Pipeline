@@ -1191,3 +1191,5 @@ footer.site .linkish { font-size: inherit; }
 .row-move .linkish { padding: 0 0.3rem; font-size: 0.95rem; text-decoration: none; }
 .row-move .linkish:disabled { opacity: 0.3; cursor: default; }
 @media (max-width: 560px) { .cc-box svg.ccart { min-width: 640px; } }
+.panel-prev { width: 100%; }
+.panel-prev svg { width: 100%; height: auto; display: block; }
