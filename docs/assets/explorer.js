@@ -23,8 +23,8 @@
   // Residue numbers as shown. Histones follow the convention without the initiator methionine (H3R2 is UniProt R3 of
   // P68431); every other protein, and every stored position, uses UniProt numbering with Met as 1. p defaults to the
   // protein page that is open.
-  const HISTONE_GENE = /^(H1-\d+|H2A[A-Z0-9-]*|H2B[A-Z0-9-]*|H3C\d+|H3-\d+[A-Z]?|H3Y\d|H4C\d+|H4-\d+|MACROH2A\d)$/;
-  const HISTONE_NAME = /^(putative |core )?histone (h1|h2a|h2b|h3|h4|macro-h2a)\b|^testis-specific h1 histone/i;
+  const HISTONE_GENE = /^(H1-\d+|H2A[A-Z0-9-]*|H2B[A-Z0-9-]*|H3C\d+|H3-\d+[A-Z]?|H3Y\d|H4C\d+|H4-\d+|MACROH2A\d|CENPA)$/;
+  const HISTONE_NAME = /^(putative |core )?histone (h1|h2a|h2b|h3|h4|macro-h2a)\b|^testis-specific h1 histone|^histone h3-like centromeric/i;
   const rn = (pos, p) => { p = p || (UI.detail != null ? P[UI.detail] : null); return pos - (p && p.hist ? 1 : 0); };
   const rl = (pos, p) => 'R' + rn(pos, p);
   const store = {
@@ -275,13 +275,18 @@
   };
   const saveMapPrefs = () => store.set('mre-map-rows', JSON.stringify({ on: Array.from(UI.fig.tracks), order: mapRowOrder() }));
   const CHARGE_AA = { K: 1, R: 1, H: 0.5, D: -1, E: -1 };
-  // Mean charge of the 5 residues centred on each position, i-2 to i+2, on the EMBOSS charge scale. Positions past
-  // either terminus count as 0, so every residue has a value and the two ends are damped rather than dropped.
+  // Mean charge of the residues centred on each position, i-2 to i+2, on the EMBOSS charge scale. Near either
+  // terminus the window is cut short and the mean is taken over the residues actually present (3 or 4), so every
+  // residue has a value and the ends are not diluted by imaginary neutral residues.
   function chargeProfile(u) {
     if (!u || !u.seq) return null;
     if (!u.charge5) {
-      const q = u.seq, out = new Array(q.length);
-      for (let i = 0; i < q.length; i++) { let t = 0; for (let k = -2; k <= 2; k++) t += CHARGE_AA[q[i + k]] || 0; out[i] = t / 5; }
+      const q = u.seq, L = q.length, out = new Array(L);
+      for (let i = 0; i < L; i++) {
+        let t = 0, n = 0;
+        for (let k = Math.max(0, i - 2); k <= Math.min(L - 1, i + 2); k++) { t += CHARGE_AA[q[k]] || 0; n++; }
+        out[i] = t / n;
+      }
       u.charge5 = out;
     }
     return u.charge5;
@@ -529,7 +534,7 @@
     }
 
     for (const p of P) {
-      p.hist = HISTONE_GENE.test(p.gene) || (!p.gene && HISTONE_NAME.test(p.name) && !/centromeric/i.test(p.name));
+      p.hist = HISTONE_GENE.test(p.gene) || (!p.gene && HISTONE_NAME.test(p.name));
       p.label = p.gene || p.acc;
       p.maxPos = p.sites.length ? S[p.sites[p.sites.length - 1]].pos : 0;
       p.ptmPos = [[], [], [], []];
@@ -3469,7 +3474,7 @@
       g += '<polygon points="' + ends(pos) + '" fill="' + CHARGE_COLORS.basic + '" fill-opacity="0.75"/>' +
         '<polygon points="' + ends(neg) + '" fill="' + CHARGE_COLORS.acidic + '" fill-opacity="0.75"/>' +
         '<rect class="feat" x="' + ML + '" y="' + (mid - amp) + '" width="' + (W - ML - MR) + '" height="' + (2 * amp) + '" fill="transparent"' +
-        tip('<b>Charge, sliding 5-residue mean</b> (EMBOSS charge: K and R +1, H +0.5, D and E −1)<br>Residues i−2 to i+2, drawn at residue i; positions past either end count as 0. Blue above the line is basic, red below is acidic; full height = ±1') + '/>' +
+        tip('<b>Charge, sliding 5-residue mean</b> (EMBOSS charge: K and R +1, H +0.5, D and E −1)<br>Residues i−2 to i+2, drawn at residue i; near either end the mean is over the residues present. Blue above the line is basic, red below is acidic; full height = ±1') + '/>' +
         '<text x="' + (W - MR + 3) + '" y="' + (mid - amp + 6) + '" font-size="8" fill="' + pal.muted + '">+1</text>' +
         '<text x="' + (W - MR + 3) + '" y="' + (mid + amp) + '" font-size="8" fill="' + pal.muted + '">−1</text>';
       y += 30;
@@ -7037,7 +7042,7 @@
         '<li><b>Filter</b> with the panel on the left, or click a bar in any chart. The URL keeps the search and filters, so a link reopens the same selection.</li>' +
         '<li><b>Views</b>: Overview (dataset charts), Proteins and Sites (tables, TSV download), Interactions (partners, complexes, structures and RNA/DNA crosslinks), Figures (alignment, logo and protein comparison from the current selection) and a page per protein (map, sites, interactions, conservation, 3D structure and sequence).</li>' +
         '<li><b>Human only.</b> Every site, protein and annotation is <i>Homo sapiens</i> (canonical UniProt sequences, human cells and tissues). Related proteins from other species appear only in the homologous-structures panel and the orthologue alignment on protein pages, labelled with their species.</li>' +
-        '<li><b>Residue numbering</b> follows the canonical UniProt sequence with the initiator methionine as 1, except for histones (H1, H2A, H2B, H3, H4 and their variants), which follow the histone convention without the initiator methionine: H3R2 is UniProt R3 of P68431. Histone sites are searched, shown and linked in histone numbering, with the UniProt number alongside; stored positions and the TSV <code>position</code> column stay in UniProt numbering. CENP-A keeps UniProt numbering.</li>' +
+        '<li><b>Residue numbering</b> follows the canonical UniProt sequence with the initiator methionine as 1, except for histones (H1, H2A, H2B, H3, H4 and their variants, including CENP-A), which follow the histone convention without the initiator methionine: H3R2 is UniProt R3 of P68431. Histone sites are searched, shown and linked in histone numbering, with the UniProt number alongside; stored positions and the TSV <code>position</code> column stay in UniProt numbering.</li>' +
         '<li><b>Where you are.</b> The address always names the view, or the protein and the open site (<code>#P35637/R216</code>), together with the search and filters, so a copied link reopens the same place; protein pages show breadcrumbs back to the list you came from and the proteins you opened recently.</li></ul>' +
         sub('search', 'Search terms', '<p>Filters are written into the search as readable terms, so the search box and the link always say what is selected. Clicking a chart bar, a card or a filter chip adds the same term; type them directly too, with suggestions as you type. ' +
           'A comma means any of the values (<code>motif:RGG,GAR</code>); separate terms must all match (<code>class:rna-binding interaction:experimental</code>); plain words still search genes and sites (<code>FUS motif:RGG</code>). Names can be shortened to their first word (<code>disease:als</code>, <code>condensate:stress</code>) or quoted in full.</p>' +
@@ -7105,7 +7110,7 @@
       ''],
       ['protein-pages', 'Live annotations on protein pages', '' +
         '<p><b>Protein map rows.</b> The Rows menu switches each row on or off and moves it up or down; the choice and order are remembered in this browser and used by the SVG and PNG exports. ' +
-        '<b>Charge</b> is the mean residue charge of a sliding 5-residue window on the EMBOSS <i>charge</i> scale (K and R +1, H +0.5, D and E −1): the value at residue <i>i</i> is the mean of residues <i>i</i>−2 to <i>i</i>+2, and positions past either terminus count as 0 (so the first and last two residues are damped). Blue above the line is basic, red below acidic. ' +
+        '<b>Charge</b> is the mean residue charge of a sliding 5-residue window on the EMBOSS <i>charge</i> scale (K and R +1, H +0.5, D and E −1): the value at residue <i>i</i> is the mean of residues <i>i</i>−2 to <i>i</i>+2, and within two residues of either terminus the window is cut short and the mean is taken over the residues actually present (3 or 4). Blue above the line is basic, red below acidic. ' +
         '<b>Lysine methylation</b>, phosphorylation, lysine acylation and ubiquitin/SUMO sites come from the pipeline\'s cross-PTM master table (iPTMnet sources, UniProt and IEDB) and are not exhaustive: it holds 234 lysine-methylation sites on 130 proteins. Composition (UniProt compositional bias) is off by default.</p>' +
         '<p><b>Regions</b> are UniProt Region and Motif features (motifs outlined). Overlapping features, which UniProt often nests (NPM1 1–186 and 1–117), are stacked on separate lines so none hides another; a label sits inside its box, after it, or shortened, and the tooltip always gives the full text and coordinates.</p>' +
         '<p><b>Journal panels.</b> The contacts cartoon and the Figures-tab protein comparison can be exported at a printed column width (85, 114 or 174 mm, the usual Cell Press columns): the layout is narrowed so the smallest labels print at 6 pt, the SVG carries its width in millimetres, and the PNG is rendered at 300, 600 or 1000 dpi with the resolution recorded in the file.</p>' +
