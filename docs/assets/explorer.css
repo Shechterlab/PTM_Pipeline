@@ -1204,3 +1204,23 @@ footer.site .linkish { font-size: inherit; }
 .crumbs li[aria-current] b { color: var(--ink); }
 .crumbs #crumb-site { font-weight: 700; color: var(--accent-dark); }
 .crumb-recent { display: inline-flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; }
+
+/* Residue read-out and contact evidence */
+.win[data-j] [data-o] { cursor: help; border-radius: 2px; }
+.win[data-j] [data-o]:hover { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+svg [data-ev] { cursor: pointer; }
+svg [data-ev]:hover { stroke: var(--ink); stroke-width: 0.8; }
+.evpop {
+  position: fixed; z-index: 70; width: min(26rem, calc(100vw - 16px)); max-height: min(24rem, calc(100vh - 16px)); overflow: auto;
+  padding: 0.7rem 0.85rem; border-radius: 0.6rem; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); box-shadow: var(--shadow-hover); font-size: 0.82rem; line-height: 1.45;
+}
+.evpop-head { display: flex; gap: 0.5rem; align-items: baseline; padding-right: 1.6rem; position: relative; }
+.evpop-x { position: absolute; right: -0.3rem; top: -0.35rem; border: 0; background: none; font-size: 1.2rem; line-height: 1; color: var(--muted); cursor: pointer; padding: 0.15rem 0.35rem; }
+.evpop-x:hover { color: var(--ink); }
+.evpop-sub { margin: 0.25rem 0 0; color: var(--muted); }
+.evpop-list { margin: 0.5rem 0 0; padding-left: 1.1rem; }
+.evpop-list li { margin: 0.2rem 0; }
+.evpop-list li.muted { list-style: none; margin-left: -1.1rem; font-size: 0.76rem; }
+.evpop-foot { margin: 0.5rem 0 0; }
+.evpop .linkish { font-size: inherit; }
