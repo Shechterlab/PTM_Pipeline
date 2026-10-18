@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import gzip
+import hashlib
 import io
 import json
 import re
@@ -77,12 +79,50 @@ def fetch_json(url: str, params: dict[str, str] | None = None, timeout: int = 30
         return json.loads(response.read().decode('utf-8'))
 
 
-def download_file(url: str, params: dict[str, str], dest: Path, timeout: int = 300) -> None:
+def download_file(url: str, params: dict[str, str], dest: Path, timeout: int = 300) -> dict[str, str]:
+    """Download to dest; returns the response headers (UniProt names its release in X-UniProt-Release)."""
     dest.parent.mkdir(parents=True, exist_ok=True)
     with http_open(url, params=params, timeout=timeout) as response:
         with open(dest, 'wb') as fh:
             for chunk in iter_response_chunks(response, chunk_size=1024 * 1024):
                 fh.write(chunk)
+        return {key.lower(): value for key, value in response.headers.items()}
+
+
+def file_md5(path: Path) -> str:
+    digest = hashlib.md5()
+    with open(path, 'rb') as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def record_uniprot_release(record_path: Path, fasta_path: Path, metadata_path: Path, headers: dict[str, str] | None) -> None:
+    """Write which UniProt release the staged FASTA and metadata are, next to them (uniprot_release.json). Site positions
+    refer to these sequences, so the release must be known to compare them with later UniProt data. A FASTA staged before
+    this record existed gets an entry with its checksum and an unknown release; the FASTA itself is never changed."""
+    previous = json.loads(record_path.read_text()) if record_path.exists() else None
+    fasta_md5, metadata_md5 = file_md5(fasta_path), file_md5(metadata_path)
+    if headers is None and previous is not None:
+        if previous.get('fasta_md5') != fasta_md5:
+            print(f'WARNING: {fasta_path} changed since {record_path} was written (release {previous.get("release")}); '
+                  'positions computed from it no longer refer to that release')
+        return
+    record = {
+        'release': (headers or {}).get('x-uniprot-release'),
+        'release_date': (headers or {}).get('x-uniprot-release-date', ''),
+        'downloaded': dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds') if headers else '',
+        'query': UNIPROT_QUERY,
+        'fasta': fasta_path.name,
+        'fasta_md5': fasta_md5,
+        'fasta_modified': dt.datetime.fromtimestamp(fasta_path.stat().st_mtime, dt.timezone.utc).isoformat(timespec='seconds'),
+        'metadata': metadata_path.name,
+        'metadata_md5': metadata_md5,
+    }
+    if headers is None:
+        record['note'] = 'FASTA staged before releases were recorded; the release is unknown (fasta_modified is the file date)'
+    record_path.write_text(json.dumps(record, indent=1) + '\n')
+    print(f'UniProt release record -> {record_path} (release {record["release"] or "unknown"})')
 
 
 def parse_accessions_from_tsv(path: Path) -> list[str]:
@@ -479,9 +519,10 @@ def main() -> None:
     fasta_path = outdir / 'uniprot_human_reviewed_canonical.fasta'
     metadata_path = outdir / 'uniprot_human_reviewed_canonical_metadata.tsv'
 
+    release_headers = None
     if args.force_uniprot or not fasta_path.exists():
         print(f'downloading UniProt FASTA -> {fasta_path}')
-        download_file(
+        release_headers = download_file(
             UNIPROT_FASTA_URL,
             {'format': 'fasta', 'query': UNIPROT_QUERY},
             fasta_path,
@@ -491,14 +532,19 @@ def main() -> None:
         print(f'reusing UniProt FASTA -> {fasta_path}')
     if args.force_uniprot or not metadata_path.exists():
         print(f'downloading UniProt metadata -> {metadata_path}')
-        download_file(
+        metadata_headers = download_file(
             UNIPROT_TSV_URL,
             {'format': 'tsv', 'query': UNIPROT_QUERY, 'fields': 'accession,id,gene_primary,protein_name,length'},
             metadata_path,
             timeout=max(args.timeout, 300),
         )
+        if release_headers and metadata_headers.get('x-uniprot-release') != release_headers.get('x-uniprot-release'):
+            raise SystemExit('UniProt released between the FASTA and metadata downloads; rerun with --force-uniprot')
     else:
         print(f'reusing UniProt metadata -> {metadata_path}')
+        if release_headers:
+            print('WARNING: new UniProt FASTA but reused metadata; rerun with --force-uniprot so both come from one release')
+    record_uniprot_release(outdir / 'uniprot_release.json', fasta_path, metadata_path, release_headers)
 
     if args.accessions:
         accessions = load_accessions(Path(args.accessions))

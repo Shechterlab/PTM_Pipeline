@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import os
 import re
+import subprocess
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -33,11 +35,97 @@ def read_tsv(path: Path, **kwargs) -> pd.DataFrame:
     return pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False, **kwargs)
 
 
+# --strict: a missing input stops the export instead of leaving its annotations out of the website.
+STRICT = False
+
+
 def read_optional(path: Path, **kwargs) -> pd.DataFrame:
     if not path.exists():
+        if STRICT:
+            raise SystemExit(f'[site explorer] input missing (--strict): {path}')
         print(f'[site explorer] optional input missing, skipped: {path}')
         return pd.DataFrame()
     return read_tsv(path, **kwargs)
+
+
+def read_fasta(path: Path) -> dict[str, str]:
+    sequences: dict[str, list[str]] = {}
+    acc = ''
+    for line in path.read_text().splitlines():
+        if line.startswith('>'):
+            parts = line[1:].split('|')
+            acc = parts[1] if len(parts) >= 2 else line[1:].split()[0]
+            sequences[acc] = []
+        elif acc:
+            sequences[acc].append(line.strip())
+    return {acc: ''.join(chunks) for acc, chunks in sequences.items()}
+
+
+def sequence_md5(sequence: str) -> str:
+    """UniProt's sequence checksum: uppercase hex MD5 of the residues (UniProt REST field sequence.md5)."""
+    return hashlib.md5(sequence.encode()).hexdigest().upper()
+
+
+def file_md5(path: Path) -> str:
+    digest = hashlib.md5()
+    with open(path, 'rb') as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def provenance(root: Path, fasta_path: Path | None, fasta: dict[str, str], dataset_version: str) -> dict:
+    """What the exported positions refer to and how the data were made: the reference sequences (UniProt release and
+    checksums), the pipeline commit, the run's input checksums and the outcome of its validation gates."""
+    code = Path(__file__).resolve().parents[1]
+
+    def git(*cmd: str) -> str:
+        try:
+            return subprocess.run(['git', '-C', str(code), *cmd], capture_output=True, text=True, timeout=30).stdout.strip()
+        except (OSError, subprocess.SubprocessError):
+            return ''
+
+    reference: dict = {}
+    if fasta_path is not None:
+        release_file = fasta_path.parent / 'uniprot_release.json'
+        release = json.loads(release_file.read_text()) if release_file.exists() else {}
+        reference = {
+            'file': fasta_path.name,
+            'md5': file_md5(fasta_path),
+            'sequences': len(fasta),
+            'uniprot_release': release.get('release') or 'not recorded',
+            'uniprot_release_date': release.get('release_date', ''),
+            'downloaded': release.get('downloaded', ''),
+        }
+    inputs = []
+    run_info = root / 'RUN_INFO.txt'
+    if run_info.exists():
+        for line in run_info.read_text().splitlines():
+            if line.startswith('input: ') and len(line.split()) >= 3:
+                _, md5, path = line.split(None, 2)
+                inputs.append({'file': Path(path).name, 'md5': md5})
+    checks: dict = {}
+    summary = root / 'qc' / 'remap_evidence_check' / 'remap_evidence_check_summary.tsv'
+    if summary.exists():
+        checks['evidence_check'] = {row['verdict']: to_int(row['rows']) for _, row in read_tsv(summary).iterrows()}
+        failures = summary.parent / 'remap_evidence_check_failures.tsv'
+        checks['rows_against_evidence_not_accepted'] = len(read_tsv(failures)) if failures.exists() else None
+    audit = root / 'qc' / 'remap_evidence_check' / 'union_site_residue_audit.tsv'
+    if audit.exists():
+        checks['union_sites_not_arginine'] = len(read_tsv(audit))
+    return {
+        'dataset_version': dataset_version,
+        'pipeline_commit': git('rev-parse', 'HEAD') or 'unknown',
+        'uncommitted_changes': bool(git('status', '--porcelain', '--untracked-files=no')),
+        'results_root': root.resolve().name,
+        'reference_sequences': reference,
+        'inputs': inputs,
+        'validation': checks,
+        'coordinates': 'Positions are 1-based on the reference sequences (canonical UniProt entries, initiator methionine '
+                       '= 1). Protein field reference_md5 is the checksum of each reference sequence in UniProt\'s format; '
+                       'current UniProt annotations line up with the positions only where the current sequence has the '
+                       'same checksum.',
+    }
 
 
 def to_float(value, digits: int = 3) -> float | None:
@@ -185,12 +273,24 @@ def main() -> None:
     ap.add_argument('--cplm4-sites', default=os.environ.get('PTM_CPLM4_SITES', ''),
                     help='Validated CPLM 4.0 lysine methylation table from 39_stage_cplm4_lys_methylation.py '
                          '(default <results-root>/cplm4/cplm4_human_lys_methyl_validated.tsv; skipped if missing).')
+    ap.add_argument('--canonical-fasta', default=os.environ.get('PTM_CANONICAL_FASTA', ''),
+                    help='the run\'s reference FASTA (PTM_CANONICAL_FASTA): per-protein sequence checksums and provenance')
+    ap.add_argument('--dataset-version', default=os.environ.get('PTM_DATASET_VERSION', 'unversioned'),
+                    help='label of this dataset release, shown on the website and in downloads')
+    ap.add_argument('--strict', action='store_true',
+                    help='fail on a missing input or a protein without a reference sequence instead of leaving it out')
     ap.add_argument('--outdir', default='docs/data')
     args = ap.parse_args()
+    global STRICT
+    STRICT = args.strict
 
     root = Path(args.results_root)
     meta_path = Path(args.uniprot_metadata) if args.uniprot_metadata else None
     uniprot = load_uniprot(meta_path)
+    fasta_path = Path(args.canonical_fasta) if args.canonical_fasta else None
+    if STRICT and (fasta_path is None or not fasta_path.exists()):
+        raise SystemExit('[site explorer] --strict needs --canonical-fasta (the run\'s reference FASTA)')
+    reference_sequences = read_fasta(fasta_path) if fasta_path is not None else {}
 
     # ---- Site-level tables -------------------------------------------------------------------
     sites = read_tsv(root / 'integrated' / 'human_arg_methyl_union_dedup_by_site.tsv')
@@ -430,7 +530,14 @@ def main() -> None:
             arch,
             [[*key, mask] for key, mask in sorted(other_ptms.get(accession, {}).items())],
             sorted(aliases),
+            sequence_md5(reference_sequences[accession]) if accession in reference_sequences else None,
         ])
+    missing_reference = [p[0] for p in proteins if p[20] is None]
+    if reference_sequences and missing_reference:
+        message = f'{len(missing_reference)} proteins have no reference sequence (e.g. {", ".join(missing_reference[:5])})'
+        if STRICT:
+            raise SystemExit(f'[site explorer] {message} (--strict)')
+        print(f'[site explorer] {message}; their positions cannot be checked against current UniProt')
 
     # ---- Sites --------------------------------------------------------------------------------
     source_vocab = Vocab(SOURCES)
@@ -571,6 +678,7 @@ def main() -> None:
         'meta': {
             'title': 'Human methylarginine site union',
             'generated': dt.date.today().isoformat(),
+            'provenance': provenance(root, fasta_path, reference_sequences, args.dataset_version),
             'n_sites': len(site_rows),
             'n_proteins': len(proteins),
             'window_flank': WINDOW_FLANK,
@@ -605,7 +713,7 @@ def main() -> None:
                 'accession', 'gene', 'protein_name', 'uniprot_id', 'func_class_mask', 'func_subclass_mask', 'length',
                 'arginine_count', 'shrinkage_log2_enrichment', 'arg_odds_q', 'is_isoform', 'condensates',
                 'disease_family_mask', 'als_ftd_audited_gene', 'local_density', 'best_density_window',
-                'significant_density_windows', 'cluster_architecture', 'other_ptms', 'gene_aliases',
+                'significant_density_windows', 'cluster_architecture', 'other_ptms', 'gene_aliases', 'reference_md5',
             ],
             'site_fields': [
                 'protein', 'position', 'state', 'source_mask', 'refs', 'disorder_class', 'disorder_edge_distance',
