@@ -143,7 +143,9 @@
   };
   // How each evidence record was placed on the canonical sequence (PTM_Pipeline remapping).
   const REMAP_HELP = {
-    same_accession_position_verified: 'Same accession; position checked',
+    same_accession_position_verified: 'Reported position kept: an arginine on the same entry',
+    same_accession_evidence_near_match: 'Peptide or window not in the current sequence; matches at the reported arginine within 2 residues',
+    canonical_evidence_near_match: 'Peptide or window not in the current sequence; matches at the reported arginine within 2 residues',
     sequence_unique_canonical: 'Peptide fits one place in the canonical sequence',
     sequence_unique_candidate: 'Peptide fits one place (from another isoform)',
     sequence_closest_supported: 'Ambiguous: peptide fits several places; nearest supported position used',
@@ -217,6 +219,7 @@
   let evidencePromise = null;
   const uniprotCache = new Map();
   const UNIDATA = new Map();   // accession -> resolved UniProt features (or null)
+  const REFMD5 = new Map();    // accession -> MD5 of the reference sequence the site positions refer to
   const afCache = new Map();
   const AFDATA = new Map();    // accession -> resolved AlphaFold data (or null)
   let mol = null;              // live 3Dmol viewer for the open protein
@@ -270,7 +273,7 @@
 
   function loadUniProt(acc) {
     if (uniprotCache.has(acc)) return uniprotCache.get(acc);
-    const fields = 'accession,length,sequence,protein_name,gene_primary,ft_domain,ft_repeat,ft_zn_fing,ft_region,ft_compbias,ft_motif,ft_variant,ft_mutagen,ft_mod_res,cc_disease,xref_ensembl';
+    const fields = 'accession,length,sequence,sequence_version,protein_name,gene_primary,ft_domain,ft_repeat,ft_zn_fing,ft_region,ft_compbias,ft_motif,ft_variant,ft_mutagen,ft_mod_res,cc_disease,xref_ensembl';
     const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
     const timer = ctrl ? setTimeout(() => ctrl.abort(), 20000) : null;
     const promise = fetch('https://rest.uniprot.org/uniprotkb/' + encodeURIComponent(acc) + '.json?fields=' + fields,
@@ -290,7 +293,7 @@
           };
         }).filter((f) => f.start && f.end);
         const special = ['Natural variant', 'Mutagenesis', 'Modified residue'];
-        return {
+        const out = {
           seq,
           len: (d.sequence && d.sequence.length) || null,
           name: (nameObj.fullName && nameObj.fullName.value) || '',
@@ -307,7 +310,18 @@
           })).filter((x) => x.name),
           ensg: Array.from(new Set((d.uniProtKBCrossReferences || []).filter((x) => x.database === 'Ensembl')
             .map((x) => ((x.properties || []).find((pp) => pp.key === 'GeneId') || {}).value || '').filter(Boolean).map((g) => g.split('.')[0]))),
+          md5: (d.sequence && d.sequence.md5) || '',
+          seqVersion: (d.entryAudit && d.entryAudit.sequenceVersion) || null,
+          drift: false,
         };
+        // Site positions refer to the dataset's reference sequence. When the current UniProt sequence differs, its
+        // positional annotations (sequence, features, variants, modified residues) need not line up with the sites,
+        // so they are left out; name, gene, diseases and cross-references are kept.
+        const ref = REFMD5.get(acc);
+        if (ref && out.md5 && ref !== out.md5) {
+          Object.assign(out, { drift: true, seq: '', len: null, feats: [], variants: [], mutagen: [], methylR: new Map(), rg: [] });
+        }
+        return out;
       })
       .catch(() => null)
       .then((d) => { UNIDATA.set(acc, d); return d; })
@@ -405,8 +419,9 @@
     P = data.proteins.map((r, i) => ({
       i, acc: r[0], gene: r[1] || '', name: r[2] || '', uid: r[3] || '', func: r[4], sub: r[5], len: r[6],
       argN: r[7], shrink: r[8], argQ: r[9], iso: !!r[10], cond: r[11], dis: r[12], als: !!r[13],
-      dens: r[14], best: r[15], sig: r[16], arch: r[17], ptms: r[18], aliases: r[19] || [], sites: [],
+      dens: r[14], best: r[15], sig: r[16], arch: r[17], ptms: r[18], aliases: r[19] || [], ref: r[20] || '', sites: [],
     }));
+    for (const p of P) if (p.ref) REFMD5.set(p.acc, p.ref);
     S = data.sites.map((r, j) => ({
       j, p: r[0], pos: r[1], st: r[2], src: r[3], refs: r[4], dc: r[5], dEdge: r[6], dctx: r[7], ipr: r[8],
       dcls: r[9], domDist: r[10], domSide: r[11], win: r[12], mot: r[13], mis: !!r[14], orig: r[15],
@@ -464,7 +479,7 @@
       for (const a of p.aliases) add(IDX.alias, a, p.i);
     }
 
-    $('#data-version').textContent = 'data exported ' + M.generated;
+    $('#data-version').textContent = (M.provenance && M.provenance.dataset_version ? 'dataset ' + M.provenance.dataset_version + ' · ' : '') + 'data exported ' + M.generated;
     if (window.matchMedia && window.matchMedia('(max-width: 560px)').matches) $('#q').placeholder = 'Gene, accession, site or gene list';
     $('#year').textContent = new Date().getFullYear();
     renderHero();
@@ -1707,6 +1722,7 @@
       '<button class="btn small" type="button" id="save-pdf" title="Print this protein page, or save it as a PDF from the print dialog">Save PDF</button></div></div>' +
       ctxToggleHtml(p) +
       (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
+      '<div id="drift-note"></div>' +
       (p.unrev ? (() => {
         const twin = p.reviewedTwin, nDup = p.sites.filter((j) => S[j].dup != null).length;
         return '<div class="filter-note">This is an unreviewed UniProt entry (TrEMBL), so sequence-based context (motifs, disorder, domains) may be missing. ' +
@@ -1760,13 +1776,14 @@
       renderConsCard(p, u);
       renderDomainCard(p, u);
       renderSiteTable(p);
+      if (u && u.drift) $('#drift-note').innerHTML = '<div class="filter-note"><span class="warn-text">' + esc(driftText(p, u)) + '</span></div>';
       if (u) {
         if (!p.name && u.name) $('#pname').textContent = u.name;
         if (argN == null && u.seq) {
           const n = (u.seq.match(/R/g) || []).length;
           $('#arg-count').textContent = fmt(n);
           $('#arg-frac').textContent = pctText(p.sites.length, n) + '% methylated (UniProt sequence)';
-        }
+        } else if (argN == null && u.drift) $('#arg-frac').textContent = 'current UniProt sequence differs';
       } else if (argN == null) $('#arg-frac').textContent = 'UniProt unavailable';
     });
     loadIface(p.acc).then(() => { if (current()) drawMap(p, UNIDATA.get(p.acc)); });
@@ -2189,10 +2206,51 @@
         : '<p class="muted">None in the master table for this accession, which does not mean the protein has no other modifications.</p>');
   }
 
+  // What the exported site positions refer to and how the data were made (scripts/36 meta.provenance).
+  function provenanceHtml() {
+    const pv = M.provenance;
+    if (!pv) {
+      return '<p>This export predates provenance recording: it names no dataset version, pipeline commit, UniProt release or ' +
+        'sequence checksums. Its site positions refer to the UniProt sequences staged for the published run. Protein pages ' +
+        'draw them on the current UniProt sequence and flag sites that do not fall on an arginine there, which does not ' +
+        'detect every sequence change.</p>';
+    }
+    const ref = pv.reference_sequences || {}, val = pv.validation || {};
+    const row = (k, v) => '<tr><th>' + esc(k) + '</th><td>' + v + '</td></tr>';
+    const commit = /^[0-9a-f]{40}$/.test(pv.pipeline_commit || '')
+      ? '<a href="https://github.com/shechterlab/PTM_Pipeline/commit/' + pv.pipeline_commit + '" target="_blank" rel="noopener"><code>' + pv.pipeline_commit.slice(0, 12) + '</code></a>'
+      : esc(pv.pipeline_commit || 'unknown');
+    const checks = val.evidence_check ? Object.entries(val.evidence_check).map(([k, n]) => esc(k) + ': ' + fmt(n)).join('; ') : 'not recorded';
+    return '<p>' + esc(pv.coordinates || '') + '</p>' +
+      '<div class="tbl-wrap"><table class="tbl compact"><tbody>' +
+      row('Dataset version', esc(pv.dataset_version || '—')) +
+      row('Pipeline commit', commit + (pv.uncommitted_changes ? ' <span class="warn-text">(with uncommitted changes)</span>' : '')) +
+      row('Reference sequences', esc(ref.uniprot_release && ref.uniprot_release !== 'not recorded' ? 'UniProt ' + ref.uniprot_release + (ref.uniprot_release_date ? ' (' + ref.uniprot_release_date + ')' : '') : 'UniProt release not recorded') +
+        (ref.sequences ? ', ' + fmt(ref.sequences) + ' sequences' : '') + (ref.md5 ? '; ' + esc(ref.file || 'FASTA') + ' MD5 <code>' + esc(ref.md5) + '</code>' : '')) +
+      row('Pipeline inputs', (pv.inputs || []).length ? pv.inputs.map((x) => esc(x.file) + ' <code>' + esc(x.md5) + '</code>').join('<br>') : 'not recorded') +
+      row('Evidence check', checks + (val.rows_against_evidence_not_accepted != null ? '; rows placed against their evidence and not accepted: ' + fmt(val.rows_against_evidence_not_accepted) : '')) +
+      row('Union sites not on an arginine', val.union_sites_not_arginine != null ? fmt(val.union_sites_not_arginine) : 'not recorded') +
+      '</tbody></table></div>';
+  }
+
+  // The dataset's reference sequence for site positions, as the export recorded it.
+  function referenceLabel() {
+    const ref = (M.provenance && M.provenance.reference_sequences) || {};
+    return ref.uniprot_release && ref.uniprot_release !== 'not recorded' ? 'UniProt release ' + ref.uniprot_release : 'the pipeline\'s staged UniProt sequence';
+  }
+
+  function driftText(p, u) {
+    return 'The site positions on this page refer to ' + referenceLabel() + '. The current UniProt sequence of ' + p.acc +
+      (u.seqVersion ? ' (sequence version ' + u.seqVersion + ')' : '') + ' differs from it, so the current sequence, domains, ' +
+      'variants and modified residues are not drawn against these positions, and AlphaFold and PDB structures, which use the ' +
+      'current numbering, may not line up with them.';
+  }
+
   function renderSequence(p, u) {
     const box = $('#seq');
     const sub = $('#seq-sub');
     if (!box) return;
+    if (u && u.drift) { sub.textContent = driftText(p, u); return; }
     if (!u || !u.seq) { sub.textContent = 'The UniProt sequence could not be loaded. Open the UniProt entry for the full record.'; return; }
     const seq = u.seq;
     const siteAt = new Map(p.sites.map((j) => [S[j].pos, S[j]]));
@@ -5719,6 +5777,7 @@
       '<li><b>Disease</b>: protein pages show UniProt\'s curated disease involvement and Open Targets Platform association scores for the gene (live; Open Targets data is CC0). DisGeNET terms come from the dataset-level enrichment and are listed separately as context.</li>' +
       '</ul>' +
       ''],
+      ['provenance', 'Dataset provenance', provenanceHtml()],
       ['licences', 'Data sources, versions and licences', '' +
       '<p>Every external source behind the explorer, with the release used and its licence. Please cite the sources you rely on.</p>' +
       DATA_SOURCES.map(([group, rows]) => '<h4>' + esc(group) + '</h4><div class="tbl-wrap"><table class="tbl compact src-tbl"><thead><tr><th>Source</th><th>Used for</th><th>Version</th><th>Licence</th><th>Citation</th></tr></thead><tbody>' +
