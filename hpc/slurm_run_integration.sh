@@ -107,6 +107,19 @@ run_step "integrate remapped sites" python "$PTM_CODE_ROOT/scripts/02_integrate_
   --premerged-remapped "$PTM_RESULTS_ROOT/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv" \
   --outdir "$PTM_RESULTS_ROOT/integrated"
 
+# Stop unless every source row sits where its own evidence puts it and every union site is an arginine of the run's
+# FASTA. Accepted exceptions are listed, each with its reason, in config/remap_evidence_allowlist.tsv.
+run_step "check remapped rows against their evidence" python "$PTM_CODE_ROOT/scripts/qc_remap_evidence_check.py" \
+  --results-root "$PTM_RESULTS_ROOT" \
+  --fasta "$PTM_CANONICAL_FASTA" \
+  --fail-on-contradictions \
+  --allow "${PTM_REMAP_ALLOWLIST:-$PTM_CODE_ROOT/config/remap_evidence_allowlist.tsv}"
+run_step "check that union sites are arginines" python "$PTM_CODE_ROOT/scripts/qc_remap_hand_check.py" \
+  --audit-union \
+  --results-root "$PTM_RESULTS_ROOT" \
+  --fasta "$PTM_CANONICAL_FASTA" \
+  --audit-out "$PTM_RESULTS_ROOT/qc/remap_evidence_check/union_site_residue_audit.tsv"
+
 run_step "functional enrichment" python "$PTM_CODE_ROOT/scripts/03_functional_class_enrichment.py" \
   --base-master "$PTM_MASTER_TSV" \
   --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv" \

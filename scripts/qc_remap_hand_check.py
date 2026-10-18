@@ -10,6 +10,7 @@ positions marked. Reads the committed remap and union tables; sequences come fro
     python scripts/qc_remap_hand_check.py examples          # the cases behind the 2026-10 remap fixes
     python scripts/qc_remap_hand_check.py P62314 --results-root /path/to/PTM_results_remapfix
     python scripts/qc_remap_hand_check.py --audit-union     # is every union site an arginine in UniProt?
+    python scripts/qc_remap_hand_check.py --audit-union --fasta <the run's FASTA>   # exit 1 if not (pipeline gate)
 """
 from __future__ import annotations
 
@@ -160,7 +161,8 @@ def fetch_many(accs: list[str], cache: dict) -> None:
         cache.setdefault(a, '')
 
 
-def audit_union(union: pd.DataFrame, cache: dict, fasta: dict | None, out: Path) -> None:
+def audit_union(union: pd.DataFrame, cache: dict, fasta: dict | None, out: Path) -> int:
+    """Check every union site against the sequences; returns the number of sites that are not an arginine."""
     accs = sorted(set(union['canonical_UniProtAC'].astype(str)))
     if fasta is None:
         fetch_many(accs, cache)
@@ -168,7 +170,7 @@ def audit_union(union: pd.DataFrame, cache: dict, fasta: dict | None, out: Path)
     for acc, pos in zip(union['canonical_UniProtAC'].astype(str), union['corrected_position'].astype(int)):
         seq = fasta.get(acc, '') if fasta is not None else cache.get(acc, '')
         if not seq:
-            kind = 'accession not in current UniProt'
+            kind = 'accession not in --fasta' if fasta is not None else 'accession not in current UniProt'
         elif pos > len(seq):
             kind = 'position beyond the sequence end'
         elif seq[pos - 1] != 'R':
@@ -179,11 +181,12 @@ def audit_union(union: pd.DataFrame, cache: dict, fasta: dict | None, out: Path)
         counts[kind.split(',')[0] if kind.startswith('residue') else kind] += 1
         rows.append({'accession': acc, 'position': pos, 'problem': kind,
                      'context': seq[max(0, pos - 8):pos + 7] if seq and pos <= len(seq) else ''})
-    print(f'{len(union):,} union sites checked against current UniProt sequences:')
+    print(f'{len(union):,} union sites checked against {"the --fasta" if fasta is not None else "current UniProt"} sequences:')
     for k, v in counts.most_common():
         print(f'  {v:7,}  {k}')
-    pd.DataFrame(rows).to_csv(out, sep='\t', index=False)
+    pd.DataFrame(rows, columns=['accession', 'position', 'problem', 'context']).to_csv(out, sep='\t', index=False)
     print(f'sites that are not an arginine, or cannot be checked: {out}')
+    return len(rows)
 
 
 def main() -> None:
@@ -200,9 +203,9 @@ def main() -> None:
     fasta = read_fasta(args.fasta) if args.fasta else None
     cache: dict = {}
     if args.audit_union:
-        audit_union(union, cache, fasta, Path(args.audit_out))
+        problems = audit_union(union, cache, fasta, Path(args.audit_out))
         if not args.query:
-            return
+            sys.exit(1 if problems else 0)
     queries = [(g, note) for g, note in EXAMPLES] if args.query == ['examples'] else [(q, '') for q in args.query]
     for q, note in queries:
         print('=' * 100)

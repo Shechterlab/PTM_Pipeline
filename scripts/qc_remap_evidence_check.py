@@ -15,6 +15,15 @@ Each row also gets a drift class, which says whether the source position still f
     python scripts/qc_remap_evidence_check.py --results-root PTM_results --fasta canonical_human.fasta
     python scripts/qc_remap_evidence_check.py --results-root PTM_results_remapfix --fasta ... --extra-fasta unreviewed.fasta
 
+A window cut short at a protein end is read from its intact end (padding with _ or X names the end); one inside a
+longer entry gives the reading that lands on an arginine, the reported position deciding between two. Evidence that
+is not in the reported entry still supports the reported arginine when, laid with its site there, it differs at no
+more than 2 residues and no more than a fifth of them.
+
+With --fail-on-contradictions the exit status is 1 when a row is placed against its evidence, without evidence, or on an
+accession outside --fasta, unless --allow lists it (TSV: source_table, reported_accession, reported_position,
+placed_site, reason). Such rows are written to remap_evidence_check_failures.tsv.
+
 Writes <outdir>/remap_evidence_check_rows.tsv and remap_evidence_check_summary.tsv and prints the summary.
 """
 from __future__ import annotations
@@ -23,12 +32,16 @@ import argparse
 import bisect
 import gzip
 import re
+import sys
 from collections import Counter
 from pathlib import Path
 
 import pandas as pd
 
 WINDOW_LENGTHS = (13, 15, 31)
+PADDING = '_-X'
+NEAR_MAX_MISMATCHES, NEAR_MAX_FRACTION = 2, 0.2
+FAIL_VERDICTS = ('contradicts evidence', 'placed without evidence', 'filed under an accession outside --fasta')
 ACC = re.compile(r'([OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2})(-\d+)?')
 
 
@@ -105,6 +118,44 @@ def window_lengths(rows: pd.DataFrame, field: str) -> pd.Series:
     return key.map(out).fillna(0).astype(int)
 
 
+def window_token(tok, w: int) -> tuple[str, int | None]:
+    """Residues of a window and the 0-based offset of its site; None for a window cut short without padding."""
+    raw = re.sub(r'[^A-Z_\-]', '', str(tok).upper())
+    core = raw.strip(PADDING)
+    lead, trail = len(raw) - len(raw.lstrip(PADDING)), len(raw) - len(raw.rstrip(PADDING))
+    if len(core) == w:
+        return core, w // 2
+    if (lead or trail) and lead + len(core) + trail == w:
+        return core, w // 2 - lead
+    return core, None
+
+
+def window_sites(s: str, i: int, t: str, w: int, off: int | None, pos: int) -> list[int]:
+    """0-based site supported by an occurrence of window t at offset i of s (empty if none or undecided)."""
+    if off is not None:
+        offs = [off]
+    else:
+        n_cut, c_cut = len(t) - 1 - w // 2, w // 2
+        at_n, at_c = i == 0, i + len(t) == len(s)
+        offs = range(max(0, n_cut), min(len(t) - 1, c_cut) + 1) if at_n and at_c else [n_cut] if at_n else [c_cut] if at_c else [n_cut, c_cut]
+    sites = [i + o for o in offs if 0 <= o < len(t) and s[i + o] == 'R']
+    if len(sites) > 1:
+        sites = [c for c in sites if c == pos - 1 or (off is None and c - i == len(t) - 1 - w // 2 and c - i + 1 == pos)]
+    return sites if len(sites) == 1 else []
+
+
+def near_match(s: str, pos: int, tokens: list[tuple[str, list[int]]]) -> bool:
+    """Does one token, laid with one of its arginine site offsets on pos, match s within the near-match limits?"""
+    for t, offs in tokens:
+        for o in offs:
+            if 0 <= o < len(t) and t[o] == 'R':
+                st = pos - 1 - o
+                mm = sum(1 for k, aa in enumerate(t) if not 0 <= st + k < len(s) or s[st + k] != aa)
+                if mm <= NEAR_MAX_MISMATCHES and mm <= NEAR_MAX_FRACTION * len(t):
+                    return True
+    return False
+
+
 def check_row(r, seqs: dict, genes: dict, proteome: Proteome) -> tuple[str, set]:
     """Drift class and the evidence-implied sites (accession, position) on reviewed entries."""
     m = ACC.search(str(r.substrate_UniProtAC_original))
@@ -113,7 +164,7 @@ def check_row(r, seqs: dict, genes: dict, proteome: Proteome) -> tuple[str, set]
     at_r = bool(s) and 0 < pos <= len(s) and s[pos - 1] == 'R'
     windows = [(t, r.wlen_seq_window) for t in str(r.seq_window).split(';') if r.wlen_seq_window and letters(t)]
     windows += [(t, r.wlen_peptide_sequence) for t in str(r.peptide_sequence).split(';') if r.wlen_peptide_sequence and letters(t)]
-    windows = [(letters(t), w) for t, w in windows if len(letters(t)) <= w]
+    windows = [(core, off, w) for t, w in windows for core, off in [window_token(t, w)] if core and len(core) <= w]
     peptides = [letters(t) for t in str(r.peptide_sequence).split(';') if letters(t) and not r.wlen_peptide_sequence]
     marks = marked_peptides(r.peptides) if str(r.peptides) not in ('', 'nan') else []
 
@@ -122,28 +173,28 @@ def check_row(r, seqs: dict, genes: dict, proteome: Proteome) -> tuple[str, set]
 
     cls, implied = 'C', set()
     if s:
-        fits = any(t == s[max(0, pos - 1 - w // 2):min(len(s), pos + w // 2)] for t, w in windows) and at_r
-        fits = fits or any(i + j == pos - 1 for p, idx in marks for i in occurrences(s, p) for j in idx)
+        sites = {c for t, off, w in windows for i in occurrences(s, t) for c in window_sites(s, i, t, w, off, pos)}
+        sites |= {i + j for p, idx in marks for i in occurrences(s, p) for j in idx}
         covers = [(i, t) for t in peptides for i in occurrences(s, t) if i <= pos - 1 < i + len(t)]
-        if fits or (covers and at_r):
+        if pos - 1 in sites or (covers and at_r):
             cls, implied = 'A', {(acc, pos)}
-        elif covers:
-            cls = 'E'
         else:
-            for t, w in windows:
-                for i in occurrences(s, t):
-                    c = i + w // 2 if len(t) == w or i + len(t) == len(s) else i + len(t) - 1 - w // 2 if i == 0 else None
-                    if c is not None and 0 <= c < len(s) and s[c] == 'R':
-                        implied.add((acc, c + 1))
-            implied |= {(acc, i + j + 1) for p, idx in marks for i in occurrences(s, p) for j in idx}
-            found = any(occurrences(s, t) for t, _ in windows) or any(occurrences(s, p) for p, _ in marks) or any(occurrences(s, t) for t in peptides)
-            cls = 'B' if found else 'D'
+            # A peptide with a single arginine names it wherever the peptide lies.
+            sites |= {i + t.index('R') for t in peptides if t.count('R') == 1 for i in occurrences(s, t)}
+            implied = {(acc, c + 1) for c in sites}
+            found = any(occurrences(s, t) for t, _, _ in windows) or any(occurrences(s, p) for p, _ in marks) or any(occurrences(s, t) for t in peptides)
+            cls = 'E' if covers else 'B' if found else 'D'
+            if not found:
+                tokens = [(t, [off] if off is not None else [len(t) - 1 - w // 2, w // 2]) for t, off, w in windows]
+                tokens += [(p, idx) for p, idx in marks] + [(t, [k for k, aa in enumerate(t) if aa == 'R']) for t in peptides]
+                if near_match(s, pos, tokens):
+                    implied = {(acc, pos)}
     if acc not in genes or cls not in ('A', 'B') or not implied:
-        # Reported entry unusable: search the evidence across the reviewed proteome.
+        # Reported entry unusable or not matching: search the evidence across the reviewed proteome.
         cand = set()
-        for t, w in windows:
-            if len(t) == w:
-                cand |= {(a, i + w // 2 + 1) for a, i in proteome.find(t) if seqs[a][i + w // 2] == 'R'}
+        for t, off, w in windows:
+            for a, i in proteome.find(t):
+                cand |= {(a, c + 1) for c in window_sites(seqs[a], i, t, w, off, pos)}
         for p, idx in marks:
             cand |= {(a, i + j + 1) for a, i in proteome.find(p) for j in idx}
         for t in peptides:
@@ -151,11 +202,18 @@ def check_row(r, seqs: dict, genes: dict, proteome: Proteome) -> tuple[str, set]
             for a, i in proteome.find(t):
                 if src and seqs[a][i + pos - 1 - src[0]] == 'R':
                     cand.add((a, i + pos - src[0]))
-                elif not src and t.count('R') == 1:
+                elif t.count('R') == 1:
                     cand.add((a, i + t.index('R') + 1))
         same_gene = {c for c in cand if genes.get(c[0]) == str(r.substrate_genename).upper()}
-        implied = same_gene or cand
+        implied = same_gene or cand or implied
     return cls, implied
+
+
+def read_allow(path: str | None) -> set:
+    if not path:
+        return set()
+    allow = pd.read_csv(path, sep='\t', dtype=str, comment='#').fillna('')
+    return set(zip(allow.source_table, allow.reported_accession, allow.reported_position, allow.placed_site))
 
 
 def main() -> None:
@@ -164,6 +222,8 @@ def main() -> None:
     ap.add_argument('--fasta', required=True, help='reviewed human UniProt FASTA used by the run')
     ap.add_argument('--extra-fasta', action='append', default=[], help='more sequences (unreviewed or isoform entries) for the drift class')
     ap.add_argument('--outdir', help='default: <results-root>/qc/remap_evidence_check')
+    ap.add_argument('--fail-on-contradictions', action='store_true', help='exit 1 when a row is placed against or without its evidence')
+    ap.add_argument('--allow', help='TSV of accepted exceptions (source_table, reported_accession, reported_position, placed_site, reason)')
     args = ap.parse_args()
     root = Path(args.results_root)
     outdir = Path(args.outdir) if args.outdir else root / 'qc' / 'remap_evidence_check'
@@ -191,14 +251,16 @@ def main() -> None:
         cls, implied = check_row(r, seqs, genes, proteome)
         placed = f'{r.corrected_canonical_UniProtAC}:{int(r.corrected_position)}' if bool(r.is_position_resolved) and pd.notna(r.corrected_position) else ''
         evidence = sorted(f'{a}:{p}' for a, p in implied if a in reviewed)
-        if len(evidence) > 1:
-            verdict = 'one of several evidence sites' if placed in evidence else 'evidence ambiguous'
-        elif not evidence:
-            verdict = 'agrees: no site' if not placed else 'placed without evidence'
-        else:
-            verdict = 'agrees' if placed == evidence[0] else 'dropped, evidence has a site' if not placed else 'contradicts evidence'
         if placed and placed.split(':')[0] not in reviewed:
             verdict = 'filed under an accession outside --fasta'
+        elif not evidence:
+            verdict = 'agrees: no site' if not placed else 'placed without evidence'
+        elif placed in evidence:
+            verdict = 'agrees' if len(evidence) == 1 else 'one of several evidence sites'
+        elif placed:
+            verdict = 'contradicts evidence'
+        else:
+            verdict = 'dropped, evidence has a site' if len(evidence) == 1 else 'evidence ambiguous'
         study = str(r.reference).split(' et al')[0] if str(r.reference) not in ('', 'nan') else str(r.source_table)
         out.append({'source_table': r.source_table, 'study': study, 'reported_accession': r.substrate_UniProtAC_original, 'reported_position': int(r.position),
                     'drift_class': cls, 'evidence_sites': ';'.join(evidence), 'placed_site': placed, 'remap_status': r.remap_status, 'verdict': verdict})
@@ -210,8 +272,20 @@ def main() -> None:
     print('drift class by study (A = reported position fits the current sequence):')
     print(pd.crosstab(res['study'].str[:24], res['drift_class'], margins=True).to_string(), '\n')
     print('rows that contradict their evidence, by study:')
-    print(res[res.verdict.isin(['contradicts evidence', 'filed under an accession outside --fasta'])].groupby(['study', 'verdict']).size().to_string())
+    print(res[res.verdict.isin(FAIL_VERDICTS)].groupby(['study', 'verdict']).size().to_string())
     print(f'\nrows: {outdir / "remap_evidence_check_rows.tsv"}')
+
+    allow = read_allow(args.allow)
+    keys = zip(res.source_table.astype(str), res.reported_accession.astype(str), res.reported_position.astype(str), res.placed_site.astype(str))
+    failures = res[res.verdict.isin(FAIL_VERDICTS) & ~pd.Series([k in allow for k in keys], index=res.index)]
+    failures.to_csv(outdir / 'remap_evidence_check_failures.tsv', sep='\t', index=False)
+    allowed = int(res.verdict.isin(FAIL_VERDICTS).sum()) - len(failures)
+    print(f'\nrows placed against, or without, their evidence: {len(failures)} (plus {allowed} accepted in --allow)')
+    if len(failures):
+        print(failures.head(40).to_string(index=False))
+        print(f'all: {outdir / "remap_evidence_check_failures.tsv"}')
+        if args.fail_on_contradictions:
+            sys.exit(1)
 
 
 if __name__ == '__main__':

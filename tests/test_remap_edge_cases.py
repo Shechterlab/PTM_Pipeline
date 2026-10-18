@@ -1,0 +1,199 @@
+"""Edge cases of the remapping (scripts/02) and of its validation gates, on small hand-made sequences.
+
+    python -m pytest tests/        or        python tests/test_remap_edge_cases.py
+"""
+from __future__ import annotations
+
+import importlib.util
+import subprocess
+import sys
+from pathlib import Path
+
+import pandas as pd
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'scripts'))
+
+
+def load(name: str, filename: str):
+    spec = importlib.util.spec_from_file_location(name, ROOT / 'scripts' / filename)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+remap = load('remap', '02_remap_arg_methyl_to_canonical.py')
+evidence_check = load('evidence_check', 'qc_remap_evidence_check.py')
+
+FILLER = 'LLKKAAPPQQEEDDSSTTVVWWYYLLKKAAPPQQEEDDSSTTVVWWYY'
+
+
+def row(**fields) -> pd.Series:
+    base = dict(substrate_UniProtAC='P1', substrate_UniProtAC_original='P1', canonical_UniProtAC='P1', substrate_genename='G',
+                position=1, seq_window='', peptide_sequence='', peptides='', accession_is_isoform=False,
+                seq_window_window_length=0, peptide_sequence_window_length=0, source_table='maron_s5', reference='X')
+    base.update(fields)
+    return pd.Series(base)
+
+
+def place(r: pd.Series, sequences: dict, gene_map: dict | None = None) -> tuple[str, str]:
+    out = remap.remap_row(r, sequences, gene_map or {})
+    return (f"{out['corrected_canonical_UniProtAC']}:{out['corrected_site']}" if out['is_position_resolved'] else ''), out['remap_status']
+
+
+# ---- windows cut short at a protein end ---------------------------------------------------------------------------
+
+def test_n_terminal_window_reads_from_its_intact_end():
+    seq = 'MAR' + 'GSTAR' + FILLER  # R3 and R8
+    window = seq[:10]  # 15-residue window around R3, cut at the N-terminus
+    for reported in (3, 4, 8):
+        assert place(row(position=reported, peptide_sequence=window, peptide_sequence_window_length=15), {'P1': seq})[0] == 'P1:R3'
+
+
+def test_c_terminal_window_reads_from_its_intact_end():
+    seq = FILLER + 'GSRRAAAARGS'  # both readings of the last 10 residues are arginines: len-7 and len-2
+    window = seq[-10:]  # 15-residue window around the R at len-2, cut at the C-terminus
+    site = len(seq) - 2
+    assert place(row(position=site - 6, peptide_sequence=window, peptide_sequence_window_length=15), {'P1': seq})[0] == f'P1:R{site}'
+
+
+def test_window_inside_a_longer_entry_mature_chain():
+    # Histone H4: sources number the mature chain (SGR3), UniProt counts the initiator methionine (R4).
+    seq = 'MSGRGKGGKGLGKGGAKRHRKVLRDNIQGITKPAIRRLARRGGVKRISGLIYEETRGVLKVFLENVIRDAVTYTEHAKRKTVTAMDVVYALKRQGRTLYGFGG'
+    assert place(row(position=3, peptide_sequence='SGRGKGGKGL', peptide_sequence_window_length=15), {'P1': seq})[0] == 'P1:R4'
+
+
+def test_window_inside_a_longer_entry_with_two_readings_needs_the_reported_position():
+    # 16 residues of a 31-residue window, inside the entry, with an arginine at both readings (window index 1 if cut
+    # at its N-terminal side, 16 if cut at its C-terminal side): only the reported position decides.
+    window = 'R' + 'A' * 14 + 'R'
+    seq = 'MKKK' + window + FILLER
+    kwargs = dict(peptide_sequence=window, peptide_sequence_window_length=31)
+    assert place(row(position=5, **kwargs), {'P1': seq})[0] == 'P1:R5'  # this entry's numbering, n-cut reading
+    assert place(row(position=20, **kwargs), {'P1': seq})[0] == 'P1:R20'  # this entry's numbering, c-cut reading
+    assert place(row(position=1, **kwargs), {'P1': seq})[0] == 'P1:R5'  # source numbering from the window's first residue
+    assert place(row(position=12, **kwargs), {'P1': seq})[0] == ''
+
+
+def test_padding_gives_the_cut_side():
+    seq = FILLER + 'VMSQGGRY'
+    site = len(seq) - 1
+    guo = row(position=site, peptide_sequence='VMSQGGRYXXXXX', peptide_sequence_window_length=13)
+    assert place(guo, {'P1': seq}) == (f'P1:R{site}', 'sequence_unique_canonical')
+    prometheus = row(source_table='prometheus_mmc2', position=5, seq_window='___MKEPRIFPRERP', seq_window_window_length=15)
+    assert place(prometheus, {'P1': 'MKEPRIFPRERPAAQQ' + FILLER})[0] == 'P1:R5'
+
+
+# ---- several candidate entries ------------------------------------------------------------------------------------
+
+def test_equal_support_on_two_other_entries_stays_ambiguous():
+    seq = 'MSTRAGGPLLR' + 'K' * 30
+    r = row(substrate_UniProtAC='T0', substrate_UniProtAC_original='T0', canonical_UniProtAC='T0', position=13, peptide_sequence='GGPLLRK;TRAGG')
+    for order in (['A1', 'B2'], ['B2', 'A1']):
+        assert place(r, {'A1': seq, 'B2': seq}, {'G': order}) == ('', 'unresolved_ambiguous_hit')
+
+
+def test_own_accession_breaks_a_tie():
+    seq = 'MSTRAGGPLLR' + 'K' * 30
+    r = row(substrate_UniProtAC='B2', substrate_UniProtAC_original='B2', canonical_UniProtAC='B2', position=13,
+            peptide_sequence='GGPLLRK;TRAGG')
+    assert place(r, {'A1': seq + 'GGPLLRK', 'B2': seq}, {'G': ['A1', 'B2']})[0] == 'B2:R11'
+
+
+# ---- the reported position without placing evidence ----------------------------------------------------------------
+
+def test_peptide_elsewhere_in_the_entry_does_not_back_the_reported_arginine():
+    seq = 'RRR' + 'AAAAA' + 'R' + 'A' * 20
+    assert place(row(position=9, peptide_sequence='RRR'), {'P1': seq}) == ('', 'unresolved_evidence_elsewhere')
+
+
+def test_window_not_in_the_entry_backs_the_reported_arginine_only_when_it_nearly_matches():
+    seq = FILLER[:20] + 'GSKPAGRGGAPLE' + FILLER
+    site = 20 + 7
+    near = 'GSKPAGRGGAPLD'  # one difference: a variant or sequence conflict
+    far = 'WSKPWGRGGWPLD'  # four differences
+    assert place(row(position=site, peptide_sequence=near, peptide_sequence_window_length=13), {'P1': seq}) == (f'P1:R{site}', 'same_accession_evidence_near_match')
+    assert place(row(position=site, peptide_sequence=far, peptide_sequence_window_length=13), {'P1': seq}) == ('', 'unresolved_evidence_mismatch')
+
+
+def test_short_peptide_needs_more_than_two_matching_residues():
+    seq = 'AAAAARAAA' + 'A' * 20
+    assert place(row(position=6, peptide_sequence='KRK'), {'P1': seq}) == ('', 'unresolved_evidence_mismatch')
+
+
+def test_position_only_row_keeps_the_reported_arginine():
+    seq = 'MAAAR' + FILLER
+    assert place(row(source_table='human_ptm_master', reference='', position=5), {'P1': seq}) == ('P1:R5', 'same_accession_position_verified')
+
+
+# ---- the validation gates fail the run -----------------------------------------------------------------------------
+
+def write_fasta(path: Path, sequences: dict) -> None:
+    path.write_text(''.join(f'>sp|{acc}|{acc}_HUMAN Test OS=Homo sapiens GN=G{acc}\n{seq}\n' for acc, seq in sequences.items()))
+
+
+def results_root(tmp_path: Path, placed_position: int) -> Path:
+    seq = 'MAAAR' + 'GGRGG' + FILLER
+    remapped = tmp_path / 'root' / 'remapped'
+    remapped.mkdir(parents=True)
+    pd.DataFrame([{
+        'source_table': 'human_ptm_master', 'reference': '', 'substrate_UniProtAC_original': 'P12345', 'substrate_genename': 'GP12345',
+        'position': 5, 'seq_window': '', 'peptide_sequence': '', 'peptides': '', 'corrected_canonical_UniProtAC': 'P12345',
+        'corrected_position': placed_position, 'is_position_resolved': True, 'remap_status': 'same_accession_position_verified',
+    }]).to_csv(remapped / 'human_arg_methyl_source_rows_with_remap.tsv', sep='\t', index=False)
+    integrated = tmp_path / 'root' / 'integrated'
+    integrated.mkdir()
+    pd.DataFrame([{'canonical_UniProtAC': 'P12345', 'corrected_position': placed_position}]).to_csv(
+        integrated / 'human_arg_methyl_union_dedup_by_site.tsv', sep='\t', index=False)
+    write_fasta(tmp_path / 'ref.fasta', {'P12345': seq})
+    return tmp_path / 'root'
+
+
+def run(script: str, *args: str) -> subprocess.CompletedProcess:
+    return subprocess.run([sys.executable, str(ROOT / 'scripts' / script), *args], capture_output=True, text=True)
+
+
+def test_evidence_check_fails_on_a_contradiction(tmp_path):
+    root = results_root(tmp_path, placed_position=8)  # placed on R8; the position-only evidence says R5
+    args = ['--results-root', str(root), '--fasta', str(tmp_path / 'ref.fasta')]
+    assert run('qc_remap_evidence_check.py', *args).returncode == 0  # report only
+    gated = run('qc_remap_evidence_check.py', *args, '--fail-on-contradictions')
+    assert gated.returncode == 1, gated.stdout + gated.stderr
+    allow = tmp_path / 'allow.tsv'
+    allow.write_text('source_table\treported_accession\treported_position\tplaced_site\treason\nhuman_ptm_master\tP12345\t5\tP12345:8\ttest\n')
+    assert run('qc_remap_evidence_check.py', *args, '--fail-on-contradictions', '--allow', str(allow)).returncode == 0
+
+
+def test_evidence_check_passes_an_agreeing_root(tmp_path):
+    root = results_root(tmp_path, placed_position=5)
+    assert run('qc_remap_evidence_check.py', '--results-root', str(root), '--fasta', str(tmp_path / 'ref.fasta'), '--fail-on-contradictions').returncode == 0
+
+
+def test_residue_audit_fails_on_a_non_arginine(tmp_path):
+    root = results_root(tmp_path, placed_position=6)  # residue 6 is G
+    out = tmp_path / 'audit.tsv'
+    audit = run('qc_remap_hand_check.py', '--audit-union', '--results-root', str(root), '--fasta', str(tmp_path / 'ref.fasta'), '--audit-out', str(out))
+    assert audit.returncode == 1, audit.stdout + audit.stderr
+    root = results_root(tmp_path / 'ok', placed_position=5)
+    assert run('qc_remap_hand_check.py', '--audit-union', '--results-root', str(root), '--fasta', str(tmp_path / 'ok' / 'ref.fasta'),
+               '--audit-out', str(out)).returncode == 0
+
+
+if __name__ == '__main__':
+    import inspect
+    import tempfile
+    failed = 0
+    for name, test in sorted(globals().items()):
+        if not name.startswith('test_'):
+            continue
+        try:
+            if 'tmp_path' in inspect.signature(test).parameters:
+                with tempfile.TemporaryDirectory() as tmp:
+                    test(Path(tmp))
+            else:
+                test()
+            print(f'ok    {name}')
+        except AssertionError as error:
+            failed += 1
+            print(f'FAIL  {name}: {error}')
+    sys.exit(1 if failed else 0)
