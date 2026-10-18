@@ -2540,18 +2540,81 @@
     for (const t of p.ptms) { const d = t[0] - s.pos; if (Math.abs(d) <= 10) near.push(ptmName(t, p) + ' (' + (d > 0 ? '+' : '') + d + ')'); }
     if (near.length) html += '<p><b>Other PTMs within ±10 aa</b> <span class="muted">(' + ptmSourceNote(p) + '; not exhaustive)</span>: ' + esc(near.join(', ')) + '</p>';
     if (s.win) html += '<p><b>Window ±15:</b> ' + windowHtml(s.win, 15, s.j) + ' <span class="muted small">hover a residue for what is recorded there</span></p>';
-    if (rows && rows.length) {
-      html += '<p><b>Source rows</b> (' + rows.length + ')</p><table><thead><tr><th>Study / database</th><th>Source table</th><th>Reference</th><th>PMID</th><th>Peptide</th><th>Enzyme</th><th>State</th><th>Reported as</th></tr></thead><tbody>' +
-        rows.map((r) => { const st = r[9] != null ? ev.studies[r[9]] : null; const ref = r[1] >= 0 ? ev.refs[r[1]] : '';
-          return '<tr><td><b>' + (st && STUDY_DOI[st] ? doiLink(STUDY_DOI[st], esc(st)) : esc(st || '—')) + '</b></td><td>' + esc(ev.source_tables[r[0]]) + '</td><td>' + esc(ref === 'This study.' ? 'Maron et al. 2021 (first reported in that study)' : ref || '—') + '</td>' +
-          '<td>' + (r[2] ? r[2].split(/[;,\s]+/).filter(Boolean).map((id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">' + esc(id) + '</a>').join(' ') : '—') + '</td>' +
-          '<td class="pep">' + esc(r[3] || '—') + '</td><td>' + esc(r[4] || '—') + '</td><td>' + esc(r[5] || '—') + '</td>' +
-          '<td class="mono">' + esc(r[6]) + ':' + esc(r[7]) + (r[7] && String(r[7]) !== String(s.pos) ? ' <span class="muted">→ ' + rl(s.pos, P[s.p]) + '</span>' : '') + '<br><span class="muted"' + (REMAP_HELP[ev.remap_statuses[r[8]]] ? ' title="' + esc(ev.remap_statuses[r[8]]) + '"' : '') + '>' + esc((REMAP_HELP[ev.remap_statuses[r[8]]] || ev.remap_statuses[r[8]].replace(/_/g, ' '))) + '</span></td></tr>'; }).join('') +
-        '</tbody></table>' +
-        (rows.some((r) => r[9] != null && ev.studies[r[9]] === 'PhosphoSitePlus') ? '<p class="note">' + esc(PSP_NOTICE) + '</p>' : '');
-    } else if (!ev) html += '<p class="note">The evidence file did not load.</p>';
+    if (rows && rows.length) html += sourceRowsHtml(s, rows, ev);
+    else if (!ev) html += '<p class="note">The evidence file did not load.</p>';
     if (s.refs.length && !(rows && rows.length)) html += '<p><b>References:</b> ' + s.refs.map((k) => esc(M.refs[k])).join('; ') + '</p>';
     cellEl.innerHTML = html || '<span class="muted">No additional evidence.</span>';
+  }
+
+  // ------------------------------------------------------------- source rows
+  // Where each source table came from, in words (the export keeps the pipeline's table ids).
+  const SOURCE_TABLE_LABEL = {
+    maron_s5: 'Maron et al. 2021, Table S5 (compiled sites)', prometheus_mmc2: 'ProMetheusDB supplementary table mmc2',
+    human_ptm_master: 'Cross-PTM master table',
+  };
+  const REMAP_SHORT = {
+    same_accession_position_verified: ['ok', 'Reported position checked on the canonical sequence'],
+    sequence_position_verified: ['ok', 'Reported position is an arginine inside the matching peptide'],
+    sequence_unique_canonical: ['ok', 'Peptide fits one place in the canonical sequence'],
+    sequence_unique_candidate: ['ok', 'Peptide fits one place (reported on another isoform)'],
+    sequence_closest_supported: ['warn', 'Peptide fits several places; the nearest supported position is used'],
+  };
+  // A source peptide with its methylated arginines marked ("R(me)" in ProMetheusDB), and this site's arginine
+  // highlighted when the peptide can be placed on the site's sequence window without a mismatch.
+  function pepHtml(pep, s) {
+    if (!pep) return '<span class="muted">—</span>';
+    const res = [];
+    for (let k = 0; k < pep.length; k++) {
+      const ch = pep[k];
+      if (ch === '(') { const e = pep.indexOf(')', k); if (res.length) res[res.length - 1].mod = pep.slice(k + 1, e < 0 ? pep.length : e); k = e < 0 ? pep.length : e; }
+      else if (/[A-Za-z]/.test(ch)) res.push({ aa: ch.toUpperCase(), mod: '' });
+    }
+    let site = -1;
+    if (s.win) {
+      const fits = [];
+      res.forEach((r, k) => {
+        if (r.aa !== 'R') return;
+        let n = 0, bad = false;
+        res.forEach((q, i) => { const w = s.win[15 - k + i]; if (w && w !== '_') { if (w === q.aa) n++; else bad = true; } });
+        if (!bad && n >= Math.min(res.length, 6)) fits.push(k);
+      });
+      const marked = fits.filter((k) => res[k].mod);
+      site = fits.length === 1 ? fits[0] : marked.length === 1 ? marked[0] : -1;
+    }
+    return '<span class="pep-seq">' + res.map((r, k) => {
+      const t = r.mod ? '<b class="pep-me" title="' + esc(r.aa + '(' + r.mod + ') in the source') + '">' + r.aa + '<sup>' + esc(r.mod) + '</sup></b>' : r.aa;
+      return k === site ? '<span class="c" title="This site">' + t + '</span>' : t;
+    }).join('') + '</span>';
+  }
+  function sourceRowsHtml(s, rows, ev) {
+    const p = P[s.p];
+    const states = rows.map((r) => r[5] || '');
+    const showState = states.some(Boolean), showEnzyme = rows.some((r) => r[4]);
+    const body = rows.map((r) => {
+      const st = r[9] != null ? ev.studies[r[9]] : null, tbl = ev.source_tables[r[0]] || '';
+      const ref = r[1] >= 0 ? ev.refs[r[1]] : '', own = ref === 'This study.';
+      const refText = own ? 'Maron et al. 2021 (first reported in that study)' : ref;
+      const name = st ? (STUDY_DOI[st] ? doiLink(STUDY_DOI[st], esc(st)) : esc(st)) : esc(refText || '—');
+      const via = (SOURCE_TABLE_LABEL[tbl] || tbl.replace(/_/g, ' '));
+      const pmids = r[2] ? r[2].split(/[;,\s]+/).filter(Boolean) : [];
+      const src = '<b' + (refText ? ' title="' + esc(refText) + '"' : '') + '>' + name + '</b>' +
+        '<span class="src-via">' + (st === 'ProMetheusDB' || (st === 'Maron 2021' && own) ? esc(via.replace(/^Maron et al\. 2021, /, '')) : 'via ' + esc(via)) +
+        (pmids.length ? ' · PubMed ' + pmids.map((id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">' + esc(id) + '</a>').join(', ') : '') + '</span>' +
+        (refText && !(st && STUDY_DOI[st]) && !own && refText !== st ? '<span class="src-ref">' + esc(refText) + '</span>' : '');
+      const status = ev.remap_statuses[r[8]] || '', rs = REMAP_SHORT[status] || ['ok', status.replace(/_/g, ' ')];
+      const acc0 = r[6] || '', pos0 = r[7] != null && r[7] !== '' ? +r[7] : null;
+      const moved = acc0 !== p.acc || (pos0 != null && pos0 !== s.pos);
+      const map = '<span class="mono">' + esc(acc0) + (pos0 != null ? ' R' + pos0 : '') + '</span>' + (p.hist && !moved ? ' <span class="muted">(UniProt; R' + rn(s.pos, p) + ' in histone numbering)</span>' : '') +
+        (moved ? ' → <b>' + (p.hist ? 'UniProt R' + s.pos + ' = R' + rn(s.pos, p) : rl(s.pos, p)) + '</b>' : '') +
+        '<span class="src-map ' + rs[0] + '">' + (rs[0] === 'ok' ? '✓ ' : '⚠ ') + esc(rs[1]) + '</span>';
+      return '<tr><td data-label="Source">' + src + '</td>' +
+        '<td data-label="Peptide" class="pep">' + pepHtml(r[3], s) + (showEnzyme && r[4] ? '<span class="src-via">Enzyme: ' + esc(r[4]) + '</span>' : '') + '</td>' +
+        (showState ? '<td data-label="State">' + (r[5] ? esc(r[5]) : '<span class="muted">not given</span>') + '</td>' : '') +
+        '<td data-label="Reported as">' + map + '</td></tr>';
+    }).join('');
+    return '<p><b>Source rows</b> (' + rows.length + ') <span class="muted small">Each row is one report of this site; the study links to its paper, and a highlighted R marks this site in the peptide.</span></p>' +
+      '<table class="src-tbl"><thead><tr><th>Source</th><th>Peptide</th>' + (showState ? '<th>State</th>' : '') + '<th>Reported as</th></tr></thead><tbody>' + body + '</tbody></table>' +
+      (rows.some((r) => r[9] != null && ev.studies[r[9]] === 'PhosphoSitePlus') ? '<p class="note">' + esc(PSP_NOTICE) + '</p>' : '');
   }
 
   // Site card: one methylarginine at a glance, interaction evidence first. Opens when a site is searched or clicked.

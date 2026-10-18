@@ -1224,3 +1224,24 @@ svg [data-ev]:hover { stroke: var(--ink); stroke-width: 0.8; }
 .evpop-list li.muted { list-style: none; margin-left: -1.1rem; font-size: 0.76rem; }
 .evpop-foot { margin: 0.5rem 0 0; }
 .evpop .linkish { font-size: inherit; }
+
+/* Source rows on site details */
+.src-tbl { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+.src-tbl th { text-align: left; font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 0.35rem 0.6rem 0.35rem 0; border-bottom: 1px solid var(--line); }
+.src-tbl td { vertical-align: top; padding: 0.5rem 0.9rem 0.5rem 0; border-bottom: 1px solid var(--line); }
+.src-tbl td:first-child { min-width: 11rem; }
+.src-via, .src-ref, .src-map { display: block; font-size: 0.76rem; color: var(--muted); margin-top: 0.15rem; }
+.src-ref { max-width: 26rem; }
+.src-map.ok { color: var(--muted); }
+.src-map.warn { color: var(--warn, #b45309); }
+.pep-seq { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.02em; word-break: break-all; }
+.pep-seq .c { padding: 0 0.1rem; border-radius: 3px; background: var(--teal); color: #fff; }
+.pep-me { color: var(--brand-ink); font-weight: 700; }
+.pep-seq .c .pep-me { color: #fff; }
+.pep-me sup { font-size: 0.6em; font-weight: 600; margin-left: 0.05em; }
+@media (max-width: 640px) {
+  .src-tbl thead { display: none; }
+  .src-tbl tr { display: block; padding: 0.5rem 0; border-bottom: 1px solid var(--line); }
+  .src-tbl td { display: block; border: 0; padding: 0.15rem 0; }
+  .src-tbl td::before { content: attr(data-label); display: block; font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+}
