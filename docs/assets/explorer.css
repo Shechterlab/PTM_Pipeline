@@ -1010,3 +1010,40 @@ details.ix-sec[open] > summary .pm { border-color: var(--accent); }
 .ev-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; margin: 0 0 0.75rem; }
 .ev-tag { cursor: pointer; border: 1px solid var(--line); background: var(--surface); }
 .ev-tag:hover { border-color: var(--accent); color: var(--accent-dark); }
+.ev-h { margin: 1rem 0 0.2rem; font-size: 0.98rem; }
+.ctx-tbl td, .ctx-tbl th { white-space: nowrap; }
+.ctx-tbl tr.ctx-ref td { font-weight: 600; border-bottom: 2px solid var(--line-strong); }
+.ctx-cell .linkish { color: inherit; text-decoration: none; font-weight: 600; }
+.ctx-cell .linkish:hover { text-decoration: underline; }
+.ctx-ratio { font-size: 0.7rem; margin-left: 0.2rem; }
+.ctx-ratio.up { color: var(--accent-dark); }
+.ctx-ratio.down { color: var(--muted); }
+:root[data-theme="dark"] .ctx-cell, :root:not([data-theme="light"]) .ctx-cell { color: var(--ink); }
+
+/* ---- Insight report ------------------------------------------------------ */
+.report { display: grid; gap: 1.1rem; }
+.report-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.report-head h2 { margin: 0.2rem 0 0.4rem; font-size: 1.5rem; }
+.report-kicker { margin: 0; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+.report-head .mono { word-break: break-all; }
+.report-facts { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.report-sec h3 { margin-top: 0; }
+.rep-prot td { vertical-align: top; }
+@media (max-width: 900px) { .report-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media print {
+  .report { gap: 3mm; }
+  .report-facts { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .report-sec .fig-preview, .report-sec .ctx-tbl, .report-facts { break-inside: avoid; }
+  .report-sec h3, .report-sec h4 { break-after: avoid; }
+  .prof-tbl td.num { white-space: nowrap !important; }
+  .report-sec .fig-preview { border: none; padding: 0; }
+  .report-sec .fig-preview svg { width: 100%; height: auto; }
+  .report-sec { break-inside: auto; }
+  .report-head { border-bottom: 1px solid #d5dde0; padding-bottom: 2mm; }
+}
+/* Report footer for browsers without CSS page-margin boxes: a fixed element repeats on every printed page. */
+.report-runfoot { display: none !important; }
+@media print {
+  .report.runfoot .report-runfoot { display: block !important; position: fixed; bottom: 0; left: 0; right: 0; font-size: 7pt; color: #5f6f78; border-top: 1px solid #d5dde0; padding-top: 1mm; background: #fff; }
+  .report.runfoot { padding-bottom: 8mm; }
+}
