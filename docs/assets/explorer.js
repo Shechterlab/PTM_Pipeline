@@ -114,7 +114,66 @@
   // current URL), so renaming or moving the site updates every figure credit.
   const siteName = () => { const m = document.querySelector('meta[name="application-name"]'); return (m && m.content) || document.title.split(' · ')[0]; };
   const siteUrl = () => (location.protocol === 'file:' ? location.pathname : location.origin + location.pathname).replace(/index\.html$/, '');
-  const creditLines = () => [siteName() + ' · ' + siteUrl().replace(/^https?:\/\//, ''), 'Please cite ' + PAPER.short + ', doi:' + PAPER.doi];
+  const creditLines = () => [siteName() + ' · ' + siteUrl().replace(/^https?:\/\//, ''), 'Please cite ' + PAPER.short + ', doi:' + PAPER.doi + ' · and the original data sources'];
+
+  // ----- citing the original data. Every list of sites can say which studies reported them and which resources
+  // supplied the evidence shown, so users cite the primary work as well as the compilation.
+  const SOURCE_CITE = {
+    'Maron 2021': ['Maron MI et al., iScience 24:102971 (2021)', '10.1016/j.isci.2021.102971'],
+    ProMetheusDB: ['Massignani E et al., Mol Cell Proteomics 21:100243 (2022)', '10.1016/j.mcpro.2022.100243'],
+    PhosphoSitePlus: ['Hornbeck PV et al., Nucleic Acids Res 43:D512 (2015)', '10.1093/nar/gku1267'],
+    UniProt: ['UniProt Consortium, Nucleic Acids Res 53:D609 (2025)', '10.1093/nar/gkae1010'],
+    IEDB: ['Vita R et al., Nucleic Acids Res 47:D339 (2019)', '10.1093/nar/gky1006'],
+  };
+  // Full reference of a study or database behind the union: [text, doi].
+  function studyRef(k) {
+    const name = M.studies[k][0], ref = M.studies[k][1];
+    if (SOURCE_CITE[name]) return SOURCE_CITE[name];
+    return [ref && ref !== 'This study.' ? ref.replace(/\s+/g, ' ').trim() : name, STUDY_DOI[name] || ''];
+  }
+  const dsCite = (name) => { for (const [, rows] of DATA_SOURCES) { const r = rows.find((x) => x[0] === name); if (r) return [r[4], r[5]]; } return [name, '']; };
+  // The studies reporting these sites, most sites first, and the evidence resources their annotations come from.
+  function citeRefs(sites) {
+    const n = new Array(M.studies.length).fill(0);
+    for (const s of sites) for (const b of bits(s.study)) n[b]++;
+    const studies = n.map((c, k) => ({ k, name: M.studies[k][0], n: c, ref: studyRef(k) })).filter((x) => x.n).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
+    const ev = [];
+    const use = (label, names, count) => { if (count) ev.push({ label, n: count, refs: names.map((x) => (Array.isArray(x) ? x : dsCite(x))) }); };
+    const cnt = (f) => sites.reduce((a, s) => a + (f(s) ? 1 : 0), 0);
+    use('PRMT inhibitor response and methyl-IP calls (Maron Tables S2–S3)', [SOURCE_CITE['Maron 2021']], cnt((s) => s.tr.length || s.ip || s.s2));
+    if (ixReady()) {
+      const sets = new Set();
+      for (const s of sites) if (s.xl && (s.xl.r || s.xl.n)) xlSets((s.xl.r || 0) | (s.xl.n || 0)).forEach((x) => sets.add(x));
+      const setNames = { 'Kramer 2014': 'Kramer et al. 2014', 'XRNAX 2019': 'XRNAX', 'RBS-ID 2020': 'RBS-ID', 'pRBS-ID 2021': 'pRBS-ID' };
+      use('RNA crosslinks in cells', ['pepR-MS compendium'].concat(Array.from(sets).map((x) => setNames[x]).filter(Boolean)), cnt((s) => s.xl && (s.xl.r || s.xl.n)));
+      use('RBDmap RNA-bound fragments', ['RBDmap'], cnt((s) => s.xl && s.xl.f));
+      use('DNA crosslinks in cells', ['DNA interactome'], cnt((s) => s.xl && s.xl.d & 11));
+      use('PDB interfaces and contacts', ['PDBe-KB and SIFTS', 'RCSB PDB'], cnt((s) => s.iface || s.contacts));
+      use('Predicted complexes', ['ProtVar', 'AlphaFold-Multimer and pDockQ'], cnt((s) => s.pred || (s.gal || []).length));
+    }
+    return { studies, ev };
+  }
+  const refLine = ([text, doi]) => esc(text) + (doi ? ' ' + doiLink(doi) : '');
+  const refText = ([text, doi]) => text + (doi ? ' doi:' + doi : '');
+  // "Cite the sources": the compilation, the reporting studies (with how many of these sites each reported) and the
+  // evidence resources. open: expanded (reports); what: the noun for the sites ("these 209 sites", "this site").
+  function citeBoxHtml(sites, what, open) {
+    if (!sites.length) return '';
+    const { studies, ev } = citeRefs(sites);
+    const text = ['Compilation and explorer: ' + PAPER.cite + ' doi:' + PAPER.doi, '', 'Studies and databases that reported ' + what + ':']
+      .concat(studies.map((x) => '- ' + refText(x.ref) + ' [' + x.n + ' site' + (x.n === 1 ? '' : 's') + ']'))
+      .concat(ev.length ? ['', 'Evidence shown for ' + what + ':'].concat(ev.map((e) => '- ' + e.label + ': ' + e.refs.map(refText).join('; '))) : []).join('\n');
+    return '<details class="cite-box"' + (open ? ' open' : '') + '><summary>How to cite ' + esc(what) + '</summary>' +
+      '<p class="small">Please cite the original studies that reported the sites you use, the resources behind any evidence you rely on, and ' + esc(PAPER.short) + ' (' + doiLink(PAPER.doi) + ') for the compilation and this explorer. Full list: ' + docLink('cite').replace('>Method<', '>How to cite<') + '</p>' +
+      '<h4>Reported by</h4><ol class="cite-list">' + studies.map((x) => '<li>' + refLine(x.ref) + ' <span class="muted">· ' + fmt(x.n) + ' site' + (x.n === 1 ? '' : 's') + '</span></li>').join('') + '</ol>' +
+      (ev.length ? '<h4>Evidence shown</h4><ul class="cite-list">' + ev.map((e) => '<li><b>' + esc(e.label) + '</b> <span class="muted">(' + fmt(e.n) + ' site' + (e.n === 1 ? '' : 's') + ')</span>: ' + e.refs.map(refLine).join('; ') + '</li>').join('') + '</ul>' : '') +
+      (studies.some((x) => x.name === 'PhosphoSitePlus') ? '<p class="note">' + esc(PSP_NOTICE) + '</p>' : '') +
+      '<p class="screen-only"><button class="btn quiet small" type="button" data-copy-refs="' + esc(text) + '">Copy references</button></p></details>';
+  }
+  function bindCiteBox(root) {
+    $$('[data-copy-refs]', root).forEach((b) => b.addEventListener('click', (e) => copyText(b.dataset.copyRefs, e.currentTarget)));
+    bindDocLinks(root);
+  }
   const MOTIF_LABEL = {
     RG: 'RG', RGG: 'RGG', GRG: 'GRG', GAR: 'GAR', RXR: 'RXR',
     CARM1_proline_rich: 'Pro ±5', CARM1_hydrophobic_proline: 'Pro ±5 + Φ ±3',
@@ -481,6 +540,7 @@
     if (q0) { $('#q').value = q0; $('#q-clear').hidden = false; Q = parseQuery(q0); }
     renderRail();
     bindGlobal();
+    bindDocLinks($('footer.site'));
     compute();
     route();
     loadInteractions();
@@ -1722,11 +1782,13 @@
         shownRows.map((p) => '<tr class="row" tabindex="0" data-i="' + p.i + '">' + colRow(cols, p) + '</tr>').join('') +
         '</tbody></table></div>' +
         '<div class="tbl-foot"><span>Showing ' + fmt(shownRows.length) + ' of ' + fmt(rows.length) + '</span>' +
-        (rows.length > shownRows.length ? '<button class="btn quiet small" type="button" id="more">Show 50 more</button>' : '') + '</div></div>' : emptyState());
+        (rows.length > shownRows.length ? '<button class="btn quiet small" type="button" id="more">Show 50 more</button>' : '') + '</div></div>' +
+        citeBoxHtml(R.sites, R.sites.length === S.length ? 'the sites in the union' : 'the ' + fmt(R.sites.length) + ' sites on these proteins') : emptyState());
     bindEmpty(el);
     bindRows(el, (tr) => { if (tr.dataset.i != null) openProtein(+tr.dataset.i); });
     bindSort(el, UI.sortP, () => renderProteins(el));
     bindColMenu(el, 'proteins', () => { renderProteins(el); const m = $('.col-menu', el); if (m) m.open = true; });
+    bindCiteBox(el);
     const more = $('#more', el);
     if (more) more.addEventListener('click', () => { UI.pageP += 50; renderProteins(el); });
     $('#dl-proteins', el).addEventListener('click', () => download('methylarginine_proteins.tsv', proteinTsv(rows)));
@@ -1817,12 +1879,14 @@
       (rows.length ? '<div class="card tbl-card"><div class="tbl-tools"><span class="muted small">Click a site to open it on its protein.</span>' + colMenu('sites', SITE_COLS) + '</div><div class="tbl-wrap"><table class="tbl stackable">' + colHead(cols, UI.sortS, key) + '<tbody>' +
         shownRows.map((s) => '<tr class="row" tabindex="0" data-j="' + s.j + '">' + colRow(cols, s) + '</tr>').join('') +
         '</tbody></table></div><div class="tbl-foot"><span>Showing ' + fmt(shownRows.length) + ' of ' + fmt(rows.length) + '</span>' +
-        (rows.length > shownRows.length ? '<button class="btn quiet small" type="button" id="more">Show 100 more</button>' : '') + '</div></div>' : emptyState());
+        (rows.length > shownRows.length ? '<button class="btn quiet small" type="button" id="more">Show 100 more</button>' : '') + '</div></div>' +
+        citeBoxHtml(R.sites, R.sites.length === S.length ? 'the sites in the union' : 'these ' + fmt(R.sites.length) + ' sites') : emptyState());
     bindEmpty(el);
     bindRows(el, (tr) => { if (tr.dataset.j == null) return; const s = S[+tr.dataset.j]; openProtein(s.p, s.pos); });
     bindContactLinks(el);
     bindSort(el, UI.sortS, () => renderSites(el));
     bindColMenu(el, 'sites', () => { renderSites(el); const m = $('.col-menu', el); if (m) m.open = true; });
+    bindCiteBox(el);
     bindIxSeg(el);
     const more = $('#more', el);
     if (more) more.addEventListener('click', () => { UI.pageS += 100; renderSites(el); });
@@ -2133,7 +2197,7 @@
       figureCard(p) +
       '<div class="card" id="site-card" hidden></div>' +
       '<div class="card tbl-card" id="card-sites"><div class="card-pad"><div class="card-head"><div><h3>Sites</h3><p class="sub">Every reported methylarginine on ' + esc(p.label) + '. Click a row for a summary of the site; faded rows do not match the current filters.</p></div><div class="actions" id="psites-tools"></div></div><div id="psites-ix"></div></div>' +
-      '<div class="tbl-wrap" id="psites"></div><p class="note uni-extra" id="uni-extra" hidden></p></div>' +
+      '<div class="tbl-wrap" id="psites"></div><p class="note uni-extra" id="uni-extra" hidden></p><div class="card-pad" id="psites-cite"></div></div>' +
       '<div class="card" id="card-ix"></div>' +
       '<div class="card" id="card-cons"></div>' +
       structureCard(p) +
@@ -2299,6 +2363,13 @@
       }));
     }
     if (UI.openEvidence.size) loadEvidence().then((ev) => UI.openEvidence.forEach((j) => fillEvidence(j, ev)));
+    // Sources to cite for this protein's sites; the evidence part fills in once the interaction data is here.
+    const pc = $('#psites-cite');
+    if (pc) {
+      const wasOpen = !!$('details[open]', pc);
+      pc.innerHTML = citeBoxHtml(rows, 'the ' + rows.length + ' site' + (rows.length === 1 ? '' : 's') + ' on ' + p.label, wasOpen);
+      bindCiteBox(pc);
+    }
     // The site card shows the same per-site data (AlphaFold, variants), so it follows each refresh.
     const sc = $('#site-card');
     if (sc && !sc.hidden && UI.highlight != null) renderSiteCard(UI.highlight);
@@ -2406,7 +2477,8 @@
       '<div class="sc-grid"><section class="sc-ix"><h4>Interaction evidence' + docLink('ix-status') + '</h4>' + ix + '</section>' +
       '<section><h4>Site</h4><dl class="sc-kv">' + pub('Window ±7', windowHtml(s.win, 7)) + pub('Motifs', motifTags(s.mot)) + pub('Context', contextHtml(s).replace('<br>', ' · ')) +
       pub('Next methyl-R', s.nn == null ? '—' : s.nn + ' aa') + pub('PRMT inhibitors', treatHtml(s)) + pub('Maron IP', ipTags(s.ip) || '—') + pub('AlphaFold', afCell(p, s)) +
-      pub('Reported by', '<div class="tags">' + studyTags(s.study, 6) + '</div>') + '</dl></section></div>';
+      pub('Reported by', '<ul class="sc-refs">' + M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => { const r = studyRef(k); return '<li>' + (r[1] ? '<a href="https://doi.org/' + r[1] + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">' + esc(M.studies[k][0]) + '</a>' : '<span title="' + esc(r[0]) + '">' + esc(M.studies[k][0]) + '</span>') + '</li>'; }).join('') + '</ul>' +
+        '<p class="muted small">Cite these for R' + s.pos + ', with ' + esc(PAPER.short) + ' for the compilation.</p>') + '</dl></section></div>';
     bindDocLinks(box);
     bindContactLinks(box);
     $$('[data-sc]', box).forEach((b) => b.addEventListener('click', (e) => {
@@ -5578,6 +5650,7 @@
         topProts.map((p) => '<tr><td><b>' + esc(p.label) + '</b> <span class="muted mono">' + esc(p.acc) + '</span><br><span class="muted small">' + esc((p.name || '').slice(0, 60)) + '</span></td><td class="r num">' + R.counts[p.i] + ' / ' + p.sites.length + '</td>' +
           (ixReady() ? EV_SETS.slice(0, 6).map(([b]) => { const n = evCount(p, b); return '<td class="r num">' + (n || '<span class="muted">·</span>') + '</td>'; }).join('') + '<td class="small">' + esc(PEV_SETS.filter(([b]) => b !== 64 && (p.pev || 0) & b).map(([, , sh]) => sh).join(', ')) + '</td>' : '') + '</tr>').join('') +
         '</tbody></table></div>' + (prots.length > topProts.length ? '<p class="note">The ' + topProts.length + ' proteins with most selected sites of ' + fmt(prots.length) + '.</p>' : '')) +
+      sec('cite', 'Sources to cite', citeBoxHtml(sites, scoped ? 'these ' + fmt(sites.length) + ' sites' : 'the sites in the union', true)) +
       sec('methods', 'Methods and sources', '<ul class="small">' +
         '<li>Sites: the integrated human methylarginine union (Maron et al. 2021 Table S5, ProMetheusDB, UniProt and IEDB) on canonical UniProt sequences, as described in the Documentation of ' + esc(siteName()) + '.</li>' +
         '<li>Interaction evidence: pepR-MS RNA crosslinks and RBDmap fragments, Trendel et al. 2025 DNA crosslinks, PDBe-KB interfaces, ProtVar AlphaFold-Multimer interfaces (pDockQ ≥ 0.23) and confident predicted contacts; protein evidence from Gene Ontology, CD-CODE, STRING physical links (≥ 0.7) and Complex Portal.</li>' +
@@ -5595,6 +5668,7 @@
     };
     $('#rep-print', el).addEventListener('click', print);
     bindCmpButtons(el);
+    bindCiteBox(el);
     let printed = false;
     const ready = () => { if (UI.reportPrint && !printed && UI.view === 'report') { printed = true; UI.reportPrint = false; setTimeout(print, 300); } };
     const timer = setTimeout(ready, 12000);
@@ -5752,6 +5826,7 @@
       '<section class="card report-sec"><h3>Sequence logos</h3><div class="cmp-grid"><div class="fig-preview">' + logo(A, 'A · ' + A.label.slice(0, 60)) + '</div><div class="fig-preview">' + logo(B, 'B · ' + B.label.slice(0, 60)) + '</div></div></section>' +
       '<section class="card report-sec"><h3>Proteins with most sites</h3><div class="cmp-grid">' + [[A, 'A'], [B, 'B']].map(([sel, t]) => '<div><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>' + t + '</th><th class="r">Sites</th><th class="r">In ' + (t === 'A' ? 'B' : 'A') + '</th></tr></thead><tbody>' +
         top(sel).map((p) => '<tr><td><button class="linkish" type="button" data-open-p="' + p.i + '">' + esc(p.label) + '</button></td><td class="r num">' + sel.counts[p.i] + '</td><td class="r num">' + ((t === 'A' ? B : A).counts[p.i] || '<span class="muted">·</span>') + '</td></tr>').join('') + '</tbody></table></div></div>').join('') + '</div></section>' +
+      '<section class="card report-sec"><h3>Sources to cite</h3>' + citeBoxHtml(Array.from(new Map(A.sites.concat(B.sites).map((x) => [x.j, x])).values()), 'the sites in A and B', true) + '</section>' +
       '<section class="card report-sec"><h3>Methods</h3><p class="small">Selections are the search terms and filters shown above, applied to the integrated human methylarginine union. Interaction status: experimental = RNA or DNA crosslink, RBDmap fragment or PDB interface at the residue; predicted only = predicted-complex interface or confident predicted contact without experimental evidence. Logos show residue frequencies in the ±7 windows. ' + esc(creditLines().join(' · ')) + '</p></section>' +
       '</div>';
     $('#cmp-back', el).addEventListener('click', () => { if (history.length > 1) history.back(); else go('sites'); });
@@ -5759,6 +5834,7 @@
     $('#cmp-swap', el).addEventListener('click', () => { saveSelectionA(); renderCompare(el); });
     $('#cmp-clear', el).addEventListener('click', () => { UI.cmpA = null; syncUrl(); renderScope(); renderCompare(el); });
     $$('[data-open-p]', el).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.openP)));
+    bindCiteBox(el);
   }
 
   // ------------------------------------------- what sets this selection apart
@@ -6614,8 +6690,14 @@
         sub('compare', 'Comparing two selections', '<p>Press <b>Save as A for a comparison</b> on a selection (on the selection profile or the report), change the search or filters, then <b>Compare with A</b> (also in the bar under the search). The comparison shows both selections, their overlap, a paragraph on each, the interaction status split, every site feature as the share of A and of B with the ratio and a Fisher\'s exact test (Benjamini–Hochberg across features), side-by-side logos and the proteins with most sites. ' +
           'Sites in both selections count on both sides, which makes the test conservative. The link keeps both selections (<code>A=</code> holds the first), and the page prints with the same header, citation and page numbers as the report.</p>') +
         sub('report', 'Insight report', '<p>One printable page for the current selection: the selection and a link that reopens it, headline numbers, what sets it apart, the site and protein evidence maps with the protein-context table, the sequence logo and alignment (±7, first 30 sites), the proteins on one residue scale (up to 8, UniProt features fetched live), the proteins with most selected sites with their evidence, and the methods and citation. It opens the browser\'s print dialog; choose Save as PDF.</p>')],
-      ['about', 'About and how to cite', '<p>The explorer indexes the integrated human methylarginine union assembled by the <a href="https://github.com/Shechterlab/PTM_Pipeline">PTM_Pipeline</a> for the review below. It runs entirely in your browser; UniProt, AlphaFold DB, PDB, Ensembl and other annotations on protein pages are fetched live.</p>' +
-        '<p><b>Cite:</b> ' + esc(PAPER.cite) + ' <a href="https://doi.org/' + PAPER.doi + '">doi:' + PAPER.doi + '</a>. Please also cite the original studies for any sites you use; each site\'s evidence lists them.</p>'],
+      ['about', 'About', '<p>The explorer indexes the integrated human methylarginine union assembled by the <a href="https://github.com/Shechterlab/PTM_Pipeline">PTM_Pipeline</a> for the review below. It runs entirely in your browser; UniProt, AlphaFold DB, PDB, Ensembl and other annotations on protein pages are fetched live.</p>' +
+        '<p><b>Cite:</b> ' + esc(PAPER.cite) + ' <a href="https://doi.org/' + PAPER.doi + '">doi:' + PAPER.doi + '</a>, and the original studies and resources (see How to cite).</p>'],
+      ['cite', 'How to cite', '<p>The sites here were measured and first reported by other groups; this explorer compiles them. When you use sites or evidence from it, please cite:</p><ol>' +
+        '<li><b>The original studies or databases that reported the sites you use.</b> Every list of sites (Proteins, Sites, protein pages, the insight report and the comparison) ends with <i>How to cite these sites</i>: the reporting studies with how many of the sites each reported, full references and DOIs, and a <i>Copy references</i> button. The site card lists the studies behind one site, and the Sites TSV has a <code>reported_by_doi</code> column.</li>' +
+        '<li><b>The resources behind any evidence you rely on</b>: for example the pepR-MS compendium and the datasets it re-analyses for RNA crosslinks, Trendel et al. 2025 for DNA crosslinks, PDBe-KB for interfaces, ProtVar and AlphaFold for predicted complexes, CD-CODE for condensates and STRING or Complex Portal for partners. The same lists name them for the sites in view; every resource is in <i>Data sources, versions and licences</i> below with its citation and licence.</li>' +
+        '<li><b>' + esc(PAPER.cite) + '</b> ' + doiLink(PAPER.doi) + ', for the compiled, remapped union and this explorer.</li></ol>' +
+        '<p>PhosphoSitePlus® sites carry a non-commercial licence (CC BY-NC-SA 3.0); see Sources in the union.</p>' +
+        '<h4>Studies and databases behind the union</h4><ol class="cite-list">' + M.studyOrder.map((k) => '<li>' + refLine(studyRef(k)) + ' <span class="muted">· ' + fmt(M.studies[k][2]) + ' sites</span></li>').join('') + '</ol>'],
       ['sources', 'Sources in the union', '' +
       '<dl>' +
       '<dt>Maron 2021</dt><dd>Table S5 of Maron et al., <a href="https://doi.org/10.1016/j.isci.2021.102971">iScience 24:102971 (2021)</a>, a compilation of human methylarginine sites from published proteomics.</dd>' +
@@ -7103,7 +7185,7 @@
     const head = ['gene', 'uniprot_accession', 'uniprot_reviewed', 'same_site_on_reviewed_entry', 'protein_name', 'site', 'position', 'state', 'maron_s2_state', 'maron_ip', 'sources', 'source_count',
       'window_15', 'window_31', 'motifs', 'disorder_context', 'disorder_edge_distance', 'domain_context', 'nearest_interpro', 'nearest_domain_class',
       'domain_edge_distance', 'domain_side', 'nearest_methyl_r_distance', 'GSK591_decreased', 'GSK591_increased', 'MS023_decreased', 'MS023_increased',
-      'maron_s3_measurements', 'condensates', 'functional_classes', 'reported_by', 'independent_reports', 'references', 'pdb_interface_partners', 'pdb_interface_entries', 'pdb_contacts', 'predicted_interface_partners_pdockq', 'rna_dna_crosslinks'];
+      'maron_s3_measurements', 'condensates', 'functional_classes', 'reported_by', 'independent_reports', 'references', 'reported_by_doi', 'pdb_interface_partners', 'pdb_interface_entries', 'pdb_contacts', 'predicted_interface_partners_pdockq', 'rna_dna_crosslinks'];
     const out = [head.join('\t')];
     for (const s of rows) {
       const p = P[s.p];
@@ -7118,7 +7200,7 @@
         s.tr.map(([ip, t, d, q]) => ipLabel(M.maron_ips[ip]) + ':' + M.maron_treatments[t] + ':' + d + ':' + q).join(';'),
         p.cond.map((k) => M.condensates[k][0]).join(';'), bits(p.func).map((b) => M.func_classes[b]).join(';'),
         bits(s.study).map((b) => M.studies[b][0]).join(';'), popcount(s.study),
-        s.refs.map((k) => M.refs[k]).join(' | '),
+        s.refs.map((k) => M.refs[k]).join(' | '), bits(s.study).map((b) => studyRef(b)[1]).filter(Boolean).join(';'),
         ixReady() ? ifaceText(s) : '', (s.ifPdb || []).join(';'), ixReady() ? contactText(s) : '', ixReady() ? predText(s) : '', ixReady() ? xlText(s) : '',
       ].map(cell).join('\t'));
     }

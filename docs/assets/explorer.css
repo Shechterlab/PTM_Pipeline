@@ -1163,3 +1163,17 @@ dl.sc-kv dd { margin: 0; min-width: 0; }
 .cmp-tbl tr.dim > td { opacity: 0.55; }
 @media (max-width: 760px) { .cmp-sides, .cmp-grid { grid-template-columns: minmax(0, 1fr); } }
 @media print { .cmp-sides, .cmp-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cmp-row, .cmp-btns { display: none !important; } }
+
+/* ---- How to cite ------------------------------------------------------- */
+.cite-box { margin-top: 0.2rem; padding: 0.75rem 1rem; border: 1px solid var(--line); border-radius: 0.7rem; background: var(--surface); font-size: 0.86rem; }
+.cite-box > summary { cursor: pointer; font-weight: 600; color: var(--brand-ink); }
+.cite-box h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 0.8rem 0 0.35rem; }
+.cite-list { margin: 0; padding-left: 1.3rem; display: grid; gap: 0.3rem; }
+.cite-list li { line-height: 1.45; }
+.card-pad#psites-cite { padding: 0.6rem 1.25rem 1.1rem; }
+.card-pad#psites-cite:empty { display: none; }
+.report-sec .cite-box { border: 0; padding: 0; }
+.report-sec .cite-box > summary { display: none; }
+ul.sc-refs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.2rem 0.7rem; }
+footer.site .linkish { font-size: inherit; }
+@media print { .cite-box { border: 0; padding: 0; } .cite-box > summary { display: none; } }
