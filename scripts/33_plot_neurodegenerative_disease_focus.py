@@ -1,10 +1,12 @@
+import argparse
 import csv
 import html
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-INPUT = ROOT / "PTM_results/functional_class_union/disease_enrichment/all_methyl_proteins_neurodegenerative_focus.tsv"
-PREFIX = ROOT / "PTM_results/functional_class_union/disease_enrichment/all_methyl_proteins_als_ftd_neurodegeneration_compact"
+DISEASE_DIR = ROOT / "PTM_results/functional_class_union/disease_enrichment"
+INPUT = DISEASE_DIR / "all_methyl_proteins_neurodegenerative_focus.tsv"
+PREFIX = DISEASE_DIR / "all_methyl_proteins_als_ftd_neurodegeneration_compact"
 DISPLAY = [
     ("Motor neuron atrophy", "Motor neuron atrophy"),
     ("Motor Neuron Disease", "Motor neuron disease"),
@@ -22,6 +24,11 @@ def q_label(value: float) -> str:
 
 
 def main() -> None:
+    global INPUT, PREFIX
+    ap = argparse.ArgumentParser(description="Compact ALS/FTD neurodegeneration panel from the clusterProfiler focus table.")
+    ap.add_argument("--disease-dir", type=Path, default=DISEASE_DIR, help="disease_enrichment folder of a results root")
+    disease_dir = ap.parse_args().disease_dir
+    INPUT, PREFIX = disease_dir / INPUT.name, disease_dir / PREFIX.name
     with INPUT.open(encoding="utf-8", newline="") as handle:
         source = {row["Description"]: row for row in csv.DictReader(handle, delimiter="\t")}
     rows = [(label, source[name]) for name, label in DISPLAY]
