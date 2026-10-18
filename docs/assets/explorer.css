@@ -196,6 +196,8 @@ button, input, select { font: inherit; color: inherit; }
 .hero .lede { max-width: 46rem; margin: 0; color: rgba(255, 255, 255, 0.86); font-size: 1rem; }
 .hero .lede a { color: #fff; text-decoration-color: #fdba74; }
 .hero .lede a:hover { color: #fdba74; }
+.hero .lede .linkish { color: #fff; font-size: inherit; text-decoration-color: #fdba74; }
+.hero .lede .linkish:hover { color: #fdba74; }
 .hero-stats { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.25rem; }
 .stat {
   display: grid;

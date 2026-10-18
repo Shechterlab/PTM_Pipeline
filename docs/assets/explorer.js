@@ -578,6 +578,7 @@
     renderRail();
     bindGlobal();
     bindDocLinks($('footer.site'));
+    bindDocLinks($('#lede'));
     compute();
     route();
     loadInteractions();
