@@ -1193,3 +1193,12 @@ footer.site .linkish { font-size: inherit; }
 @media (max-width: 560px) { .cc-box svg.ccart { min-width: 640px; } }
 .panel-prev { width: 100%; }
 .panel-prev svg { width: 100%; height: auto; display: block; }
+/* ---- Breadcrumbs -------------------------------------------------------- */
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.4rem 1rem; margin: 0 0 0.6rem; font-size: 0.86rem; }
+.crumbs ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem; }
+.crumbs li { display: inline-flex; align-items: center; gap: 0.3rem; }
+.crumbs li + li::before { content: "›"; color: var(--muted); margin: 0 0.35rem 0 0.15rem; }
+.crumbs li[hidden] { display: none; }
+.crumbs li[aria-current] b { color: var(--ink); }
+.crumbs #crumb-site { font-weight: 700; color: var(--accent-dark); }
+.crumb-recent { display: inline-flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; }
