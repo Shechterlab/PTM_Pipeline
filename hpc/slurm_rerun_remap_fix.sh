@@ -72,7 +72,9 @@ grep -q "unresolved_evidence_mismatch" "$BASE_DIR/scripts/02_remap_arg_methyl_to
   for f in "$PTM_CANONICAL_FASTA" "$PTM_UNIPROT_METADATA" "$PTM_MASTER_TSV" "$PTM_MARON_XLSX" "$PTM_PROMETHEUS_MMC2"; do
     echo "input: $(md5sum "$f")"
   done
-  if [ -f "$PTM_CPLM4_METHYL" ]; then echo "input: $(md5sum "$PTM_CPLM4_METHYL")"; fi
+  for f in "$PTM_CPLM4_METHYL" "$PTM_CARM1_KO_XLSX" "$PTM_HPA_SUBCELLULAR" "$PTM_HPA_ATLAS"; do
+    if [ -f "$f" ]; then echo "input: $(md5sum "$f")"; fi
+  done
   release_file="$(dirname "$PTM_CANONICAL_FASTA")/uniprot_release.json"
   echo "UniProt release record: $(cat "$release_file" 2>/dev/null | tr -d '\n' || echo 'none (FASTA staged before releases were recorded)')"
 } > "$NEW_ROOT/RUN_INFO.txt"
@@ -129,6 +131,24 @@ if [ -e "$PTM_CPLM4_METHYL" ]; then
     --outdir "$NEW_ROOT/cplm4"
 else
   echo "[ptm_remapfix] no CPLM 4.0 download at $PTM_CPLM4_METHYL; Lys methylation from the master table only"
+fi
+if [ -e "$PTM_CARM1_KO_XLSX" ]; then
+  python "$BASE_DIR/scripts/41_stage_carm1_ko_sites.py" \
+    --xlsx "$PTM_CARM1_KO_XLSX" \
+    --fasta "$PTM_CANONICAL_FASTA" \
+    --outdir "$NEW_ROOT/carm1_ko"
+else
+  echo "[ptm_remapfix] no CARM1 knockout table at $PTM_CARM1_KO_XLSX; the explorer shows no CARM1 response"
+fi
+if [ -e "$PTM_HPA_SUBCELLULAR" ] && [ -e "$PTM_HPA_ATLAS" ]; then
+  python "$BASE_DIR/scripts/42_stage_hpa_subcellular.py" \
+    --subcellular "$PTM_HPA_SUBCELLULAR" \
+    --atlas "$PTM_HPA_ATLAS" \
+    --version "$PTM_HPA_VERSION" \
+    --fasta "$PTM_CANONICAL_FASTA" \
+    --outdir "$NEW_ROOT/hpa"
+else
+  echo "[ptm_remapfix] no HPA downloads at $PTM_HPA_SUBCELLULAR and $PTM_HPA_ATLAS; the explorer shows no HPA locations"
 fi
 python "$BASE_DIR/scripts/36_export_site_explorer_data.py" \
   --results-root "$NEW_ROOT" \

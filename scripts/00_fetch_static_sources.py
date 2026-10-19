@@ -17,6 +17,11 @@ URLS = {
     'dbptm_myristoylation_gz': 'https://biomics.lab.nycu.edu.tw/dbPTM/download/experiment/Myristoylation.gz',
     # CPLM 4.0 lysine methylation (Zhang et al., Nucleic Acids Res 2022); stage with 39_stage_cplm4_lys_methylation.py.
     'cplm4_methylation_zip': 'https://cplm.biocuckoo.cn/Download/Methylation.zip',
+    # CARM1 knockout ADMA peptides (Shishkova et al., Nat Commun 2017, Supplementary Data 1, CC BY 4.0); 41_stage_carm1_ko_sites.py.
+    'carm1_ko_xlsx': 'https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fncomms15571/MediaObjects/41467_2017_BFncomms15571_MOESM422_ESM.xlsx',
+    # Human Protein Atlas subcellular locations and its UniProt mapping (CC BY 4.0); 42_stage_hpa_subcellular.py.
+    'hpa_subcellular_zip': 'https://www.proteinatlas.org/download/tsv/subcellular_location.tsv.zip',
+    'hpa_atlas_zip': 'https://www.proteinatlas.org/download/proteinatlas.tsv.zip',
 }
 
 

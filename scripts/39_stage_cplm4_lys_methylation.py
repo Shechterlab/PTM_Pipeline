@@ -21,7 +21,7 @@ Outputs (in --outdir, default $PTM_RESULTS_ROOT/cplm4)
 
 With --explorer-json, the validated sites are also merged into an existing Site Explorer export
 (docs/data/methylarg_sites.json) as Lys methylation entries with their CPLM source bits, replacing any CPLM
-entries already there; 36_export_site_explorer_data.py does the same merge when it builds the export.
+entries already there; 36_export_site_explorer_data.py applies the same merge (explorer_merge.py) when it builds the export.
 """
 from __future__ import annotations
 
@@ -37,12 +37,12 @@ from pathlib import Path
 
 import pandas as pd
 
-from common import CPLM4_SOURCE_BITS, cplm4_evidence_mask, parse_fasta, save_table
+from common import parse_fasta, save_table
+from explorer_merge import merge_cplm4, update_export
 
 CPLM4_COLUMNS = ['cplm_id', 'source_UniProtAC', 'position', 'modification', 'gene', 'organism', 'cplm_sequence',
                  'evidence', 'references']
 WINDOW_FLANK = 7
-KME_GROUP = 'Lys methylation'
 
 
 def read_cplm(path: Path) -> tuple[pd.DataFrame, str, str]:
@@ -94,38 +94,6 @@ def check_row(row, canonical: dict[str, str]) -> tuple[str, str]:
     if window(own, pos) == window(seq, pos):
         return 'window_match', ''
     return 'window_mismatch', f'{window(own, pos)} vs {window(seq, pos)}'
-
-
-def merge_into_explorer(json_path: Path, sites: pd.DataFrame, summary: dict) -> dict:
-    data = json.loads(json_path.read_text(encoding='utf-8'))
-    meta = data['meta']
-    field = meta['protein_fields'].index('other_ptms')
-    group = meta['other_ptm_groups'].index(KME_GROUP)
-    by_acc: dict[str, dict[int, int]] = {}
-    for row in sites.itertuples(index=False):
-        masks = by_acc.setdefault(row.canonical_UniProtAC, {})
-        masks[row.position] = masks.get(row.position, 0) | cplm4_evidence_mask(row.evidence)
-    cplm_bits = sum(CPLM4_SOURCE_BITS.values())
-    added = proteins_with = 0
-    for prot in data['proteins']:
-        entries: dict[tuple[int, int, str], int] = {}
-        for item in prot[field]:
-            mask = (item[3] if len(item) > 3 else 1) & ~cplm_bits
-            if mask:
-                entries[(item[0], item[1], item[2])] = mask
-        acc = prot[0]
-        hits = by_acc.get(acc, {}) if '-' not in acc else {}
-        for pos, mask in hits.items():
-            key = (pos, group, 'K')
-            entries[key] = entries.get(key, 0) | mask
-        added += len(hits)
-        proteins_with += bool(hits)
-        prot[field] = [[pos, g, res, mask] for (pos, g, res), mask in sorted(entries.items())]
-    meta['other_ptm_sources'] = ['Cross-PTM master table', 'CPLM 4.0 (Exp.)', 'CPLM 4.0 (Dat.)']
-    meta['cplm4'] = {k: summary[k] for k in ('input_sha256', 'input_member', 'validated_sites', 'validated_proteins')}
-    meta['cplm4'].update({'explorer_sites': added, 'explorer_proteins': proteins_with})
-    json_path.write_text(json.dumps(data, separators=(',', ':'), ensure_ascii=False), encoding='utf-8')
-    return {'explorer_sites': added, 'explorer_proteins': proteins_with}
 
 
 def main() -> None:
@@ -189,7 +157,7 @@ def main() -> None:
         'validated_evidence': dict(Counter(good['evidence'])),
     }
     if args.explorer_json:
-        summary.update(merge_into_explorer(Path(args.explorer_json), good, summary))
+        summary.update(update_export(args.explorer_json, merge_cplm4, good, summary))
     (outdir / 'cplm4_summary.json').write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(summary, indent=2))
 

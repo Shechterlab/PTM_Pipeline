@@ -214,16 +214,6 @@
     distal: 'More than 20 aa from any domain and not between two domains',
     no_domain_annotation: 'Protein has no InterPro domain or repeat annotation',
   };
-  // How each evidence record was placed on the canonical sequence (PTM_Pipeline remapping).
-  const REMAP_HELP = {
-    same_accession_position_verified: 'Reported position kept: an arginine on the same entry',
-    same_accession_evidence_near_match: 'Peptide or window not in the current sequence; matches at the reported arginine within 2 residues',
-    canonical_evidence_near_match: 'Peptide or window not in the current sequence; matches at the reported arginine within 2 residues',
-    sequence_unique_canonical: 'Peptide fits one place in the canonical sequence',
-    sequence_unique_candidate: 'Peptide fits one place (from another isoform)',
-    sequence_closest_supported: 'Ambiguous: peptide fits several places; nearest supported position used',
-    sequence_position_verified: 'Reported position is an arginine inside the matching peptide',
-  };
   const TREAT_HELP = { GSK591: 'PRMT5 inhibitor', MS023: 'type I PRMT inhibitor' };
   const PTM_LABEL = ['Phospho', 'Lys acyl', 'Ub/SUMO', 'Lys methyl'];
   const PTM_PREFIX = ['p', 'ac', 'ub', 'me'];
@@ -2347,7 +2337,6 @@
     const shownN = R.counts[p.i];
     const argN = p.argN;
     const best = p.best;
-    const nnMed = p.dens ? p.dens[1] : null;
     const ext = (href, label) => '<a class="btn quiet small" href="' + href + '" target="_blank" rel="noopener">' + label + ' ↗</a>';
     const base = p.acc.split('-')[0];
     const filtered = constraints().length > 0;
@@ -2637,6 +2626,8 @@
     sequence_unique_canonical: ['ok', 'Peptide fits one place in the canonical sequence'],
     sequence_unique_candidate: ['ok', 'Peptide fits one place (reported on another isoform)'],
     sequence_closest_supported: ['warn', 'Peptide fits several places; the nearest supported position is used'],
+    same_accession_evidence_near_match: ['warn', 'Peptide or window not in the current sequence; matched within 2 residues of the reported arginine'],
+    canonical_evidence_near_match: ['warn', 'Peptide or window not in the current sequence; matched within 2 residues of the reported arginine'],
   };
   // A source peptide with its methylated arginines marked ("R(me)" in ProMetheusDB), and this site's arginine
   // highlighted when the peptide can be placed on the site's sequence window without a mismatch.
@@ -2908,7 +2899,6 @@
   const EVID_LABEL = [[1, 'in vivo'], [2, 'in cellulo'], [4, 'in vitro'], [8, 'FRAP'], [16, 'colocalisation'], [32, 'mass spectrometry'], [64, 'emergent properties'], [128, 'other']];
   const stars = (n) => '<span class="stars" role="img" aria-label="' + n + ' of 5">' + [1, 2, 3, 4, 5].map((k) => '<i class="' + (k <= n ? 'on' : '') + '">★</i>').join('') + '</span>';
   const cdMemberships = (p) => (ixReady() ? IX.cd.get(p.i) || [] : null);
-  const condConfidence = (p, ci) => { const m = cdMemberships(p); if (!m) return null; const r = m.find((x) => x.ci === ci); return r ? r.score : 0; };
 
   // Condensates: this protein's own CD-CODE membership first; condensate-wide statistics in a separate, labelled view.
   function renderCondCard(p) {
