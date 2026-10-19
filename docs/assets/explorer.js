@@ -370,7 +370,7 @@
       rna: '#7B4FBF', dna: '#B7791F', protein: '#0E7490', self: '#7FA9B6', other: '#8A99A3', ev: '#0F3B47',
       rnaBg: 'rgba(123,79,191,0.14)', dnaBg: 'rgba(183,121,31,0.16)', proteinBg: 'rgba(14,116,144,0.12)', rnaInk: '#5B3A96', dnaInk: '#7A4F10', proteinInk: '#0B5A70',
       domain: '#B9DDE6', domainInk: '#0F3B47', dis: '#D2DBDF', disEdge: '#8E9DA4', rg: '#F5D6DE', rgInk: '#7A2E45',
-      bias: '#FDE3D4', region: '#E3ECF6', dense: 'rgba(17,24,39,0.07)', denseInk: '#374151',
+      bias: '#FDE3D4', region: '#E3ECF6', dense: 'rgba(17,24,39,0.07)',
       kme: '#A21CAF', ptm: '#6B7F88', variant: '#8A99A3', mark: '#111827', arg: '#155E75',
       seq: ['#DCE2E5', '#B3BFC5', '#8396A0', '#566A73', '#26343B'], rnaPale: '#CDB8EE', dnaPale: '#EBD3A6',
       up: ['#F6D0CD', '#EF9A94', '#E34948', '#A8302F'], down: ['#DCE3E7', '#A9B7BF', '#6C818C', '#3B4F5A'], mid: '#F0EFEC',
@@ -380,7 +380,7 @@
       rna: '#A98BE0', dna: '#D9A548', protein: '#3FB5CF', self: '#6E98A5', other: '#7E8E95', ev: '#D7EEF3',
       rnaBg: 'rgba(123,79,191,0.3)', dnaBg: 'rgba(183,121,31,0.3)', proteinBg: 'rgba(63,181,207,0.22)', rnaInk: '#D2BDF5', dnaInk: '#EFCA85', proteinInk: '#9BDDEC',
       domain: '#1F5566', domainInk: '#E3F4F8', dis: '#31474F', disEdge: '#5B7480', rg: '#5A2C3A', rgInk: '#F6C9D6',
-      bias: '#4A2A1C', region: '#213847', dense: 'rgba(232,239,242,0.09)', denseInk: '#C8D6DB',
+      bias: '#4A2A1C', region: '#213847', dense: 'rgba(232,239,242,0.09)',
       kme: '#D46BE0', ptm: '#8FA3AB', variant: '#7E8E95', mark: '#F3F6F7', arg: '#6CC6DB',
       seq: ['#2E3B41', '#3F5059', '#5C717B', '#8DA2AB', '#C9D6DB'], rnaPale: '#5B4A80', dnaPale: '#6B5530',
       up: ['#5A2523', '#8E3330', '#D2524F', '#F09A95'], down: ['#26343B', '#3D5260', '#6C8592', '#A9BDC7'], mid: '#1A2D35',
@@ -3439,10 +3439,6 @@
   }
 
   // ------------------------------------------------------------- figure
-  // ----- contacts at a glance: one protein as a linear cartoon, its methylarginines coloured by interaction status
-  // and, underneath on the same residue scale, the contact evidence: RNA and DNA crosslinks in cells, PDB interfaces
-  // (PDBe-KB, live) and predicted-complex interfaces (assessed at methylarginines only). A dashed guide drops from
-  // every methylarginine that has contact evidence at the residue itself, so coincidences read at a glance.
   // The colour key on the Documentation page, drawn from TOKENS and MARK so it always matches the figures.
   function graphicKeyHtml() {
     const pal = screenPalette();
@@ -3510,6 +3506,10 @@
         ticks: sites.filter((s) => on(s, EV_PRED)).map((s) => s.pos), hit: (s) => on(s, EV_PRED) },
     ].filter(Boolean);
   }
+  // ----- interaction evidence at a glance: one protein as a linear cartoon, its methylarginines coloured by interaction
+  // status and, underneath on the same residue scale, the evidence lanes of contactLanes: RNA and DNA crosslinks in
+  // cells, PDB interfaces (PDBe-KB, live), IntAct when switched on, and predicted-complex interfaces (assessed at
+  // methylarginines only). A dashed guide drops from every methylarginine with evidence at the residue itself.
   function contactCartoonSvg(p, u, ifd, o) {
     const pal = o.pal || EXPORT_PAL, exp = !!o.forExport, panel = !!o.panel;
     const W = o.W || 1000, m = panel ? 4 : 16, labelW = panel ? 64 : 150, x0 = m + labelW, x1 = W - (panel ? 6 : 96);
@@ -4144,7 +4144,7 @@
       (n ? '<div class="af-stack">' + counts.map((c, k) => (c ? '<i style="flex:' + c + ';background:' + PLDDT_BANDS[k][1] + '" title="' + esc(PLDDT_BANDS[k][2]) + ': ' + c + '"></i>' : '')).join('') + '</div>' : '') +
       legend(n ? counts : null) +
       (amN ? '<p class="note">AlphaMissense: mean R→X pathogenicity ' + (amSum / amN).toFixed(2) + ' across sites; ' + amLp + ' of ' + amN + ' sites average “likely pathogenic”.</p>' : '') +
-      '<p class="flabel screen-only">Focus a site</p><div class="chips af-sites screen-only">' + p.sites.map((j) => S[j]).map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '"><i class="dot" style="background:' + (colors[mode.cat(s)] || pal.none) + '"></i>' + rl(s.pos, P[s.p]) + '</button>').join('') + '</div>';
+      '<p class="flabel screen-only">Focus a site</p><div class="chips af-sites screen-only">' + p.sites.map((j) => S[j]).map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '">' + modeDot(mode, mode.cat(s), colors[mode.cat(s)] || pal.none) + rl(s.pos, P[s.p]) + '</button>').join('') + '</div>';
     $$('.af-sites .chip', side).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
   }
 
@@ -4776,7 +4776,7 @@
     const mode = COLOR_MODES[UI.fig.color] || COLOR_MODES.state;
     const colors = mode.colors(pal);
     const sites = p.sites.map((j) => S[j]).filter((s) => toAuth.has(s.pos));
-    const chips = () => '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '"><i class="dot" style="background:' + (colors[mode.cat(s)] || pal.none) + '"></i>' + rl(s.pos, P[s.p]) + '</button>').join('') + '</div>';
+    const chips = () => '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '">' + modeDot(mode, mode.cat(s), colors[mode.cat(s)] || pal.none) + rl(s.pos, P[s.p]) + '</button>').join('') + '</div>';
     if (pred) {
       side.innerHTML = '<p class="flabel">Showing a predicted complex</p><dl class="kv"><dt>Model</dt><dd><a href="' + esc(pred.link) + '" target="_blank" rel="noopener">' + esc(pred.label) + ' ↗</a></dd>' +
         '<dt>Source</dt><dd>' + esc(pred.method) + '</dd><dt>Scores</dt><dd>' + esc(pred.scores) + '</dd>' +
@@ -4792,7 +4792,7 @@
         '<dt>Homolog</dt><dd>' + esc(h.desc) + (h.org ? ' <i>(' + esc(h.org) + ')</i>' : '') + (h.uniprot.length ? ' · ' + h.uniprot.map((a) => '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(a) + '/entry" target="_blank" rel="noopener">' + esc(a) + '</a>').join(', ') : '') + '</dd>' +
         '<dt>Alignment</dt><dd>' + Math.round(100 * h.identity) + '% identity over ' + esc(p.label) + ' ' + h.qBeg + '–' + h.qEnd + '</dd><dt>Chain</dt><dd>' + esc(det.chain) + ' (teal; other chains grey)</dd>' +
         (h.partners.length ? '<dt>With</dt><dd>' + h.partners.map((x) => esc(x)).join('; ') + '</dd>' : '') + '</dl>' +
-        '<p class="flabel">Aligned methylarginines</p>' + (sites.length ? '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '"><i class="dot" style="background:' + (colors[mode.cat(s)] || pal.none) + '"></i>' + rl(s.pos, P[s.p]) + ' ≙ ' + esc(det.chain) + toAuth.get(s.pos) + '</button>').join('') + '</div>' :
+        '<p class="flabel">Aligned methylarginines</p>' + (sites.length ? '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '">' + modeDot(mode, mode.cat(s), colors[mode.cat(s)] || pal.none) + rl(s.pos, P[s.p]) + ' ≙ ' + esc(det.chain) + toAuth.get(s.pos) + '</button>').join('') + '</div>' :
           '<p class="note">No methylarginine of ' + esc(p.label) + ' aligns to a resolved arginine in this chain.</p>') +
         (det.modres.length ? '<p class="flabel">Methylated arginines in the model</p><div class="tags">' + det.modres.map((r) => '<span class="tag var" title="' + esc(r.chem_comp_name) + '">' + esc(r.chem_comp_id) + ' ' + esc(r.chain_id) + esc(r.author_residue_number) + '</span>').join('') + '</div>' : '') +
         contactsHtml() +
@@ -4802,7 +4802,7 @@
       '<dt>Method</dt><dd>' + esc(methodShort(e.method)) + (e.resolution ? ', ' + e.resolution.toFixed(1) + ' Å' : '') + (/NMR/i.test(e.method || '') ? ' (first model of the ensemble)' : '') + '</dd><dt>Chain</dt><dd>' + esc(det.chain || '—') + ' (teal; other chains grey)</dd></dl>' +
       (det.modres.length ? '<p class="flabel">Methylated arginines in the model</p><div class="tags">' + det.modres.map((r) => '<span class="tag var" title="' + esc(r.chem_comp_name) + '">' + esc(r.chem_comp_id) + ' ' + esc(r.chain_id) + esc(r.author_residue_number) + '</span>').join('') + '</div><p class="note">Drawn in orange.</p>' : '') +
       '<p class="flabel">Resolved methylarginines from the union</p>' +
-      (sites.length ? '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '"><i class="dot" style="background:' + (colors[mode.cat(s)] || pal.none) + '"></i>' + rl(s.pos, P[s.p]) + ' · ' + esc(det.chain) + toAuth.get(s.pos) + '</button>').join('') + '</div>' : '<p class="note">None of this protein\'s methylarginines are resolved in this chain.</p>') +
+      (sites.length ? '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '">' + modeDot(mode, mode.cat(s), colors[mode.cat(s)] || pal.none) + rl(s.pos, P[s.p]) + ' · ' + esc(det.chain) + toAuth.get(s.pos) + '</button>').join('') + '</div>' : '<p class="note">None of this protein\'s methylarginines are resolved in this chain.</p>') +
       contactsHtml() +
       (mol.afPdb ? '<p><button class="btn quiet small" type="button" id="back-af">Back to AlphaFold model</button></p>' : '');
     $$('.contact-list [data-pos]', side).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
@@ -5355,6 +5355,8 @@
     renderRail();
     compute();
     if (['overview', 'proteins', 'sites', 'interactions', 'figures', 'report', 'compare'].includes(UI.view)) renderView();
+    // The Documentation quotes numbers from the interaction export; redraw it in place.
+    else if (UI.view === 'about') { const y = window.scrollY; renderView(); window.scrollTo(0, y); }
     else if (UI.view === 'protein' && UI.detail != null) {
       const p = P[UI.detail];
       renderIxCard(p);
@@ -5681,7 +5683,7 @@
     const more = (label, isSet, html) => '<details class="more-opts"' + (isSet ? ' open' : '') + '><summary>' + esc(label) + '</summary>' + html + '</details>';
     const pt = partnerToken(), ptText = pt ? pt.vals.map((v) => v.text).join(',') : '';
     return '<p class="note" style="margin-top:0">Site evidence and crosslink and interface filters keep individual sites; partner and Gene Ontology filters keep whole proteins. <button class="linkish" type="button" data-ixgo="">See the analyses</button></p>' +
-      '<div class="fgroup"><span class="flabel" title="Experimental: RNA or DNA crosslink, RBDmap fragment, or a PDB interface at this residue. Predicted: at the interface of an AlphaFold-Multimer model (pDockQ ≥ 0.23) or a confident predicted contact.">Contact evidence at the site</span>' +
+      '<div class="fgroup"><span class="flabel" title="Experimental: RNA or DNA crosslink, RBDmap fragment, PDB interface or IntAct record at this residue. Predicted: at the interface of an AlphaFold-Multimer model (pDockQ ≥ 0.23) or a confident predicted contact.">Interaction evidence at the site</span>' +
       termChips('interaction', [['experimental', 'Experimental', 'Crosslink, RBDmap or PDB interface at this residue'], ['predicted', 'Predicted', 'Predicted interface or confident predicted contact, with or without experimental evidence'],
         ['predicted-only', 'Predicted only', 'Predicted, with no experimental evidence yet: candidates to test'], ['none', 'None recorded', 'No interaction evidence recorded; most proteins were never crystallised or crosslinked']]) + '</div>' +
       '<div class="fgroup"><span class="flabel" title="STRING v' + esc(IX.meta.string_version) + ' physical subnetwork">Has a physical partner that is (match any)</span>' + termChips('binds', BIND_TERMS.map(([t, v]) => { const o = BIND_OPTS.find((x) => x[0] === v); return [t, o[1], o[2]]; })) +
@@ -6564,7 +6566,7 @@
       const shade = Math.min(0.55, f * 0.6);
       const title = fmt(v) + ' of ' + fmt(r.n) + ' sites' + (r.b ? '; ' + (ratio != null ? ratio.toFixed(1) + '× the share among all selected sites' : '') : '');
       const inner = Math.round(100 * f) + '%' + (r.b && ratio != null && v >= 3 && (ratio >= 1.25 || ratio <= 0.8) ? '<span class="ctx-ratio ' + (ratio > 1 ? 'up' : 'down') + '">' + (ratio > 1 ? '▲' : '▼') + '</span>' : '');
-      return '<td class="r num ctx-cell" style="background:rgba(14,116,144,' + shade.toFixed(2) + ')" title="' + esc(title) + '">' +
+      return '<td class="r num ctx-cell" style="background:color-mix(in srgb, var(--t-seq-3) ' + Math.round(100 * shade) + '%, transparent)" title="' + esc(title) + '">' +
         (clickable && v ? '<button type="button" class="linkish" data-ctx="' + r.b + ':' + CTX_SETS()[k][0] + '">' + inner + '</button>' : inner) + '</td>';
     };
     return '<div class="tbl-wrap"><table class="tbl compact ctx-tbl"><thead><tr><th>Sites</th><th class="r">n</th>' + CTX_SETS().map(([, l, sh, help]) => '<th class="r" title="' + esc(l + ': ' + help) + '">' + esc(sh) + '</th>').join('') + '</tr></thead><tbody>' +
@@ -6992,9 +6994,9 @@
       (ixReady() ? sec('evidence', 'Interaction evidence', '<div class="fig-preview">' + upsetSvg(EV_SETS, evCounts(sites), 'Site-level evidence', 'sites').svg + '</div>' +
         '<h4 class="ev-h">Protein context of these sites</h4><p class="sub">Share of the sites in each row on proteins with each property; ▲▼ mark rows at least 1.25× above or below the share among all selected sites.</p>' + contextTableHtml(sites, false) +
         '<div class="fig-preview">' + upsetSvg(PEV_SETS, upsetData(prots, (p) => p.pev, PEV_SETS), 'Protein-level evidence', 'proteins').svg + '</div>' +
-        '', 'report-break') : '') +
-      sec('logo', 'Sequence logo and alignment', alignList.length ? '<div class="fig-preview">' + alignSvg(alignList, { flank: 7, rows: 30, logo: 'freq', title: 'Selected sites aligned at the methylarginine', sub: fmt(alignList.length) + ' sites with a sequence window; the logo uses all of them' }).svg + '</div>' : '<p class="note">No selected site has a sequence window.</p>', 'report-break') +
-      sec('compare', 'Proteins on one scale', '<div class="fig-preview" id="rep-cmp"><p class="note">Loading UniProt features for ' + fmt(cmpProts.length) + ' proteins…</p></div>', 'report-break') +
+        '', 'report-fig') : '') +
+      sec('logo', 'Sequence logo and alignment', alignList.length ? '<div class="fig-preview">' + alignSvg(alignList, { flank: 7, rows: 30, logo: 'freq', title: 'Selected sites aligned at the methylarginine', sub: fmt(alignList.length) + ' sites with a sequence window; the logo uses all of them' }).svg + '</div>' : '<p class="note">No selected site has a sequence window.</p>', 'report-fig') +
+      sec('compare', 'Proteins on one scale', '<div class="fig-preview" id="rep-cmp"><p class="note">Loading UniProt features for ' + fmt(cmpProts.length) + ' proteins…</p></div>', 'report-fig') +
       sec('proteins', 'Proteins in the selection', '<div class="tbl-wrap"><table class="tbl compact rep-prot"><thead><tr><th>Protein</th><th class="r">Sites here / all</th>' + (ixReady() ? EV_SETS.slice(0, 6).map(([, , sh]) => '<th class="r">' + esc(sh) + '</th>').join('') + '<th>Protein evidence</th>' : '') + '</tr></thead><tbody>' +
         topProts.map((p) => '<tr><td><b>' + esc(p.label) + '</b> <span class="muted mono">' + esc(p.acc) + '</span><br><span class="muted small">' + esc((p.name || '').slice(0, 60)) + '</span></td><td class="r num">' + R.counts[p.i] + ' / ' + p.sites.length + '</td>' +
           (ixReady() ? EV_SETS.slice(0, 6).map(([b]) => { const n = evCount(p, b); return '<td class="r num">' + (n || '<span class="muted">·</span>') + '</td>'; }).join('') + '<td class="small">' + esc(PEV_SETS.filter(([b]) => b !== 64 && (p.pev || 0) & b).map(([, , sh]) => sh).join(', ')) + '</td>' : '') + '</tr>').join('') +
@@ -8053,7 +8055,7 @@
       (s.trf ? '<br>' + PERTURB.map(([label, down]) => (s.trf & down ? '▼' + label + ' ' : '') + (s.trf & (down << 1) ? '▲' + label + ' ' : '')).join('') : '');
   }
 
-  // ------------------------------------------------- residue read-out and contact evidence
+  // ------------------------------------------------- residue read-out and interaction evidence
   // What is recorded at one residue. Hovering anywhere along a protein map or contacts cartoon, or over a residue of a
   // sequence window, shows it; contact marks open their evidence (studies, PDB entries) on click.
   const READOUT_FEATS = new Set(['Domain', 'Region', 'Motif', 'Repeat', 'Zinc finger', 'Compositional bias', 'DNA binding', 'Coiled coil', 'Topological domain', 'Transmembrane', 'Intramembrane']);
@@ -8348,7 +8350,7 @@
       '<li><b>Complexes</b>: Complex Portal curated complexes and hu.MAP 3.0 predicted complexes (CC0). Enrichment of methylated members is a one-sided hypergeometric test against the reviewed human proteome, BH-adjusted separately for curated and predicted complexes.</li>' +
       '<li><b>RNA and DNA binding</b>: Gene Ontology GO:0003723 and GO:0003677 including child terms (QuickGO/GOA, CC BY 4.0); experimental evidence means EXP, IDA, IPI, IMP, IGI, IEP or their high-throughput equivalents. Protein pages add live ENCODE eCLIP and TF ChIP-seq experiments and ChIP-Atlas target genes (CC BY 4.0).</li>' +
       '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two most recent entries per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were read from the structure itself (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylated arginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
-      '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue that touched RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016). DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence (26,012 matched, 68 dropped). Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides.</li>' +
+      '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue that touched RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016). DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence' + (IX && IX.meta && IX.meta.xl_check ? ' (' + fmt(IX.meta.xl_check.matched) + ' matched, ' + fmt(IX.meta.xl_check.dropped) + ' dropped)' : '') + '. Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides.</li>' +
       '<li><b>IntAct</b>: curated features of interaction participants (' + doiLink('10.1093/nar/gkab1006', 'del Toro et al. 2022') + '; CC BY 4.0), exported by scripts/37 when their curated sequence matches the canonical UniProt sequence at their range: mutations and their effect on an interaction (disrupts, decreases, increases, causes, no effect), regions mapped as sufficient, necessary or binding-associated for a partner, and methylated arginines of participants. At a site, a mutation of up to 3 residues, a binding region of up to ' + ((IX && IX.ia && IX.ia.peptide_max) || 20) + ' residues and a methylated-residue record count as experimental interaction evidence; longer regions appear only on the protein map. The IntAct map row (and its lane in the cartoon and comparison) is off until switched on in the Rows menu. The Interactions tab tests methylated against other arginines of the same proteins.</li>' +
       '<li><b>STRING network options</b>: on a protein page, the network can be physical or functional (all associations), scored on chosen evidence channels (STRING\'s own rule: remove the 0.041 prior from each channel score, combine, add the prior back), limited to methylated partners, PRMTs and reader domains or RNA/DNA binders, labelled and sized as needed, extended with pinned genes, and opened on string-db.org with the same settings. Options are remembered in this browser.</li>' +
       '<li><b>Writer and reader paths</b>: the protein network can add a second ring of PRMTs and Tudor-domain proteins that bind its partners (STRING ≥ 0.7).</li>' +
@@ -8638,7 +8640,7 @@
       '<div class="fig-controls"><label class="fig-ctl">Proteins ' + sel2('fg-nprot', [[4, '4'], [8, '8'], [12, '12'], [20, '20']], f.nProt) + '</label>' +
       '<label class="fig-ctl">Scale ' + sel2('fg-scale', [['common', 'Same residue scale'], ['fit', 'Fit each protein']], f.scale) + '</label>' +
       '<label class="fig-ctl">Colour sites by ' + sel2('fg-color', Object.keys(COLOR_MODES).map((k) => [k, COLOR_MODES[k].name]), f.color) + '</label>' +
-      '<label class="fig-ctl">Order ' + sel2('fg-psort', [['default', Q.proteins && Q.proteins.size ? 'Search order' : 'Most selected sites'], ['evidence', 'Most sites with contact evidence'], ['length', 'Longest first'], ['name', 'Name']], f.sortP) + '</label>' +
+      '<label class="fig-ctl">Order ' + sel2('fg-psort', [['default', Q.proteins && Q.proteins.size ? 'Search order' : 'Most selected sites'], ['evidence', 'Most sites with interaction evidence'], ['length', 'Longest first'], ['name', 'Name']], f.sortP) + '</label>' +
       '<label class="check fig-ctl"><input type="checkbox" id="fg-lanes"' + (f.lanes ? ' checked' : '') + '> Contact lanes (RNA/DNA crosslinks, PDB interfaces)</label>' + panelControlsHtml() + '</div>' +
       '<div class="fig-preview" id="fg-cmp-box"><p class="note">Loading UniProt features for ' + fmt(prots.length) + ' proteins…</p></div></div>' +
       '<div class="card"><div class="card-head"><div><h3>More figures</h3></div><div class="exp"><button type="button" id="fg-report" title="Profile, evidence map, logo and protein comparison of this selection as one PDF">Insight report (PDF)</button></div></div><ul class="fig-more">' +
@@ -8653,7 +8655,7 @@
     $('#fg-align-box', el).innerHTML = sel.length ? alignSvg(sel, alignOpts()).svg : '<p class="note">No selected site has a sequence window.</p>';
     const cmpOpts = () => ({ scale: f.scale, color: f.color, lanes: f.lanes, title: 'Methylarginine sites on ' + fmt(prots.length) + ' protein' + (prots.length === 1 ? '' : 's'), sub: 'Selection: ' + selectionText() + (f.scale === 'fit' ? ' · each protein scaled to its own length' : ' · common residue scale') });
     let items = null;
-    // Rows in the chosen order; contact evidence counts sites of the selection with experimental or predicted status.
+    // Rows in the chosen order; interaction evidence counts sites of the selection with experimental or predicted status.
     const sortedItems = () => {
       const ev = (p) => p.sites.filter((j) => R.shown.has(j) && ixReady() && ixStatus(S[j]) !== 'none').length;
       const len = (it) => (it.u && it.u.len) || it.p.len || 0;

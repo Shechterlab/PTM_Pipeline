@@ -5,7 +5,6 @@
 :root {
   --teal: #155e75;
   --teal-600: #0e7490;
-  --teal-deep: #0f3b47;
   --teal-wash: #ecf7f9;
   --accent: #c2410c;
   --accent-dark: #9a3412;
@@ -476,8 +475,6 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .seg button:first-of-type { border-radius: var(--radius) 0 0 var(--radius); margin-left: 0; }
 .seg button:last-of-type { border-radius: 0 var(--radius) var(--radius) 0; }
 .seg button[aria-pressed="true"] { background: var(--chip-on-bg); border-color: var(--chip-on-bg); color: var(--chip-on-fg); }
-.fig-tracks { margin-bottom: 0.7rem; }
-.fig-tracks .chip { font-size: 0.75rem; padding: 0.15rem 0.5rem; }
 .legend-title { font-weight: 700; color: var(--muted); }
 .legend { margin-bottom: 0.4rem; }
 .legend i.sq { border-radius: 2px; width: 14px; }
@@ -733,7 +730,6 @@ svg.ix-net { display: block; width: 100%; height: auto; }
   :root, :root:not([data-theme="light"]), :root[data-theme="dark"] {
     --teal: #155e75;
     --teal-600: #0e7490;
-    --teal-deep: #0f3b47;
     --teal-wash: #ecf7f9;
     --accent: #c2410c;
     --accent-dark: #9a3412;
@@ -770,7 +766,7 @@ svg.ix-net { display: block; width: 100%; height: auto; }
   html, body { background: #ffffff !important; color: var(--ink); font-size: 9.5pt; }
   .print-only { display: block; }
   .screen-only, .hero, .toolbar, .rail, footer.site, .tip, #back, .detail-links .btn, .filter-note button,
-  .exp, .fig-controls, .fig-tracks, #fig-legend, .map-box, .af-controls .fig-controls, .af-toggles, .af-viewer, .af-msg, #af-sub,
+  .exp, .fig-controls, #fig-legend, .map-box, .af-controls .fig-controls, .af-toggles, .af-viewer, .af-msg, #af-sub,
   #back-af, .ev-toggle, .view3d, #pdb-more, #pdb-list th:last-child, #pdb-list td:last-child, .tbl-foot button, #zoom-reset { display: none !important; }
   .wrap { max-width: none; padding: 0; }
   .layout { display: block; }
@@ -808,7 +804,6 @@ svg.ix-net { display: block; width: 100%; height: auto; }
 }
 
 /* Homologous structures: methylarginines conserved as arginine in the homolog. */
-.hom-r { font-weight: 700; color: var(--brand-ink); }
 .hom-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
 .hom-list li { line-height: 1.5; }
 .hom-list .btn { margin-right: 0.25rem; }
@@ -830,7 +825,6 @@ svg.ix-net { display: block; width: 100%; height: auto; }
 .tag.xl-near { background: transparent; border: 1px dashed currentColor; }
 /* Partner domain classes beyond PRMT and Tudor. */
 .tag.ix-dom { background: transparent; color: var(--ink-2); border: 1px solid var(--line-strong); }
-.legend-note { color: var(--muted); font-style: italic; }
 /* Interactions view: key findings, then collapsible sections marked + / −. */
 .ix-page { display: grid; gap: 1rem; }
 .findings { margin: 0.4rem 0 0; padding-left: 1.1rem; display: grid; gap: 0.45rem; }
@@ -982,6 +976,9 @@ details.ix-sec[open] > summary .pm { border-color: var(--accent); }
   .report-sec .fig-preview { border: none; padding: 0; }
   .report-sec .fig-preview svg { width: 100%; height: auto; }
   .report-sec { break-inside: auto; }
+  /* A figure section stays on one page with its heading when it fits (scroll boxes cannot be split or kept with it). */
+  .report-sec.report-fig { break-inside: avoid; }
+  .report-sec .fig-preview { overflow: visible; }
   .report-head { border-bottom: 1px solid #d5dde0; padding-bottom: 2mm; }
 }
 /* Report footer for browsers without CSS page-margin boxes: a fixed element repeats on every printed page. */
@@ -1024,7 +1021,7 @@ details.ix-sec[open] > summary .pm { border-color: var(--accent); }
 .ixs-exp { background: color-mix(in srgb, var(--t-ev) 11%, transparent); color: var(--ink); border-color: color-mix(in srgb, var(--t-ev) 35%, transparent); }
 .ixs-exp i, .ixd-exp { background: var(--t-ev); }
 .ixs-pred { background: transparent; color: var(--ink-2); border-color: color-mix(in srgb, var(--t-ev) 35%, transparent); border-style: dashed; }
-.ixs-pred i, .ixd-pred { background: transparent; box-shadow: inset 0 0 0 1.5px var(--t-ev); }
+.ixs-pred i, .ixd-pred { background: transparent; border: 1.5px dashed var(--t-ev); box-sizing: border-box; }
 .ixs-none { background: transparent; color: var(--muted); border-color: var(--line-strong); }
 .ixs-none i, .ixd-none { background: var(--line-strong); }
 .ixs-wait { color: var(--muted); }
@@ -1163,7 +1160,7 @@ svg [data-ev]:hover { stroke: var(--ink); stroke-width: 0.8; }
 .src-via, .src-ref, .src-map { display: block; font-size: 0.76rem; color: var(--muted); margin-top: 0.15rem; }
 .src-ref { max-width: 26rem; }
 .src-map.ok { color: var(--muted); }
-.src-map.warn { color: var(--warn, #b45309); }
+.src-map.warn { color: var(--accent-dark); }
 .pep-seq { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.02em; word-break: break-all; }
 .pep-seq .c { padding: 0 0.1rem; border-radius: 3px; background: var(--teal); color: #fff; }
 .pep-me { color: var(--brand-ink); font-weight: 700; }

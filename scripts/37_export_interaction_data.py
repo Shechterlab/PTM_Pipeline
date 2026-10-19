@@ -1022,7 +1022,7 @@ def load_crosslinks(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None
 
     Returns rna[acc][pos] -> bitmask (one bit per dataset, RNA_FOCUSED for pepR-MS focused sites), rbd[acc] ->
     [(start, end)] RBDmap RNA-bound fragments, dna[acc][pos] -> D_XL, dna_peps[acc] -> [(start, end)],
-    dna_interactome (set of accessions) and dna_bind[acc] -> [(start, end)]."""
+    dna_interactome (set of accessions), dna_bind[acc] -> [(start, end)], and the sequence check {matched, dropped}."""
     import openpyxl
     import zipfile
     folder = cache / 'crosslinks'
@@ -1165,7 +1165,7 @@ def load_crosslinks(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None
                 dna_bind[acc].append((int(a), int(b)))
     log(f'Crosslinks: RNA {sum(len(v) for v in rna.values()):,} residues in {len(rna):,} proteins; DNA {sum(len(v) for v in dna.values()):,} residues in {len(dna):,} proteins, '
         f'{len(dna_interactome):,} DNA-interactome proteins; UniProt DNA-binding regions in {len(dna_bind):,} proteins; sequence check {dict(checked)}')
-    return rna, rna_n, rbd, dna, dna_peps, dna_interactome, dna_bind, rna_single
+    return rna, rna_n, rbd, dna, dna_peps, dna_interactome, dna_bind, rna_single, {'matched': checked['ok'], 'dropped': checked['mismatch']}
 
 
 def load_intact(cache: Path, refresh: bool, seq: dict):
@@ -1785,7 +1785,7 @@ def main():
         + ', '.join(f'{k} MH OR {v["mh"][0]} (p {v["mh"][3]})' for k, v in intact_enrich.items()))
 
     # Residue-level RNA and DNA crosslinks: site flags, per-protein tracks and within-protein tests.
-    rna_xl, rna_count, rbd_frag, dna_xl, dna_peps, dna_int, dna_bind, rna_single = load_crosslinks(cache, args.refresh, {a: v[2] for a, v in proteome.items()}, proteome)
+    rna_xl, rna_count, rbd_frag, dna_xl, dna_peps, dna_int, dna_bind, rna_single, xl_check = load_crosslinks(cache, args.refresh, {a: v[2] for a, v in proteome.items()}, proteome)
     xl_rows, xl_prot = [], []
     xl_strata = {k: defaultdict(lambda: [0, 0, 0, 0]) for k in ('rna_xl', 'rna_xl_single', 'rna_near', 'rna_rbdmap', 'dna_xl', 'dna_cand', 'dna_pep', 'dna_bind', 'rna_xl_nonrg', 'rna_rbdmap_nonrg')}
     for i, acc in enumerate(meth_accs):
@@ -2076,6 +2076,7 @@ def main():
             },
             'intact': {'effects': INTACT_EFFECTS, 'regions': INTACT_REGIONS, 'peptide_max': INTACT_PEPTIDE_MAX,
                        'mutation_max': INTACT_MUT_MAX, 'release': intact_release, 'counts': intact_counts},
+            'xl_check': xl_check,
             'fields': {
                 'proteins': ['accession', 'gene', 'flags', 'ensp'],
                 'string': 'per explorer protein: [delta partner index, score, ...] with partner indices ascending',
