@@ -6333,6 +6333,102 @@
     }; });
   }
 
+  // ------------------------------------------------- writers and readers sharing substrates
+  // PRMTs (rows) against Tudor-domain proteins (columns): each cell counts the methylated proteins of the selection
+  // that are STRING physical partners (≥ 0.7) of both, substrates a writer and a possible reader have in common. The
+  // hover adds the count expected if the two partner lists were independent (Fisher, Benjamini–Hochberg).
+  const WR_SEQ = ['#cde2fb', '#9ec5f4', '#5598e7', '#256abf', '#104281'];
+  function wrMatrix() {
+    const sel = new Set(R.prots.map((p) => p.i));
+    const universe = new Set(R.prots.filter((p) => IX.prot[p.i] && IX.prot[p.i].ensp).map((p) => p.i));
+    const subs = (k) => { const out = new Set(); for (const q of IX.wr.get(k) || []) { const x = IX.prot[q]; if (x && x.p >= 0 && sel.has(x.p)) out.add(x.p); } return out; };
+    const W = [], Rd = [];
+    IX.wr.forEach((_, k) => { const f = IX.prot[k].flags; if (f & IXF.prmt) W.push({ k, set: subs(k) }); else if (f & IXF.tudor) Rd.push({ k, set: subs(k) }); });
+    const cells = [];
+    for (const w of W) for (const r of Rd) {
+      const both = Array.from(w.set).filter((i) => r.set.has(i));
+      const a = both.length, b = w.set.size - a, c = r.set.size - a, d = Math.max(0, universe.size - a - b - c);
+      cells.push({ w, r, both, a, b, c, d, exp: universe.size ? (w.set.size * r.set.size) / universe.size : 0, p: a ? fisherP(a, b, c, d) : null });
+    }
+    const tested = cells.filter((x) => x.p != null).sort((x, y) => x.p - y.p);
+    let prev = 1;
+    for (let k = tested.length - 1; k >= 0; k--) { prev = Math.min(prev, (tested[k].p * tested.length) / (k + 1)); tested[k].q = prev; }
+    const tot = (list, key) => list.map((x) => ({ x, n: cells.filter((c) => c[key] === x).reduce((m, c) => m + c.a, 0) })).filter((t) => t.n > 0).sort((u, v) => v.n - u.n || IX.prot[u.x.k].gene.localeCompare(IX.prot[v.x.k].gene)).map((t) => t.x);
+    const cols = tot(Rd, 'r').slice(0, 12);
+    const rows = tot(W, 'w').filter((w) => cells.some((c) => c.w === w && c.a && cols.includes(c.r)));
+    return { rows, cols, cells, n: universe.size };
+  }
+  function wrMatrixSvg(m, pal, forExport, title) {
+    const lw = 92, cw = 66, ch = 30, top = forExport ? 96 : 44, W = lw + cw * m.cols.length + 16, H = top + ch * m.rows.length + (forExport ? 70 : 46);
+    let g = '';
+    if (forExport) g += '<text x="0" y="24" font-size="17" font-weight="700" fill="' + pal.ink + '">' + esc(title) + '</text>' +
+      '<text x="0" y="44" font-size="11" fill="' + pal.muted + '">' + esc('Methylated proteins that are STRING physical partners (≥ 0.7) of both a PRMT and a Tudor-domain protein, among ' + fmt(m.n) + ' methylated proteins in STRING') + '</text>';
+    m.cols.forEach((r, ci) => { g += '<text x="' + (lw + ci * cw + cw / 2) + '" y="' + (top - 10) + '" font-size="10.5" font-weight="600" text-anchor="middle" fill="' + pal.ink + '">' + (forExport ? '' : '<title>' + esc(IX.prot[r.k].gene + ' binds ' + r.set.size + ' methylated proteins of the selection') + '</title>') + esc(IX.prot[r.k].gene) + '</text>'; });
+    m.rows.forEach((w, ri) => {
+      const y = top + ri * ch;
+      g += '<text x="0" y="' + (y + ch / 2 + 4) + '" font-size="11.5" font-weight="600" fill="' + pal.ink + '">' + (forExport ? '' : '<title>' + esc(IX.prot[w.k].gene + ' binds ' + w.set.size + ' methylated proteins of the selection') + '</title>') + esc(IX.prot[w.k].gene) + '</text>';
+      m.cols.forEach((r, ci) => {
+        const c = m.cells.find((x) => x.w === w && x.r === r), x = lw + ci * cw;
+        const step = !c.a ? -1 : c.a === 1 ? 0 : c.a === 2 ? 1 : c.a <= 4 ? 2 : c.a <= 9 ? 3 : 4;
+        // Outline needs two or more shared partners: with short partner lists one shared protein can pass the test alone.
+        const fill = step < 0 ? pal.cmMid : WR_SEQ[step], sig = c.a >= 2 && c.q != null && c.q <= 0.05;
+        const genes = c.both.map((i) => P[i].label).sort();
+        const tipHtml = '<b>' + esc(IX.prot[w.k].gene) + ' and ' + esc(IX.prot[r.k].gene) + '</b><br>' + fmt(c.a) + ' methylated protein' + (c.a === 1 ? '' : 's') + ' bind both' + (c.a ? ': ' + esc(genes.slice(0, 14).join(', ')) + (genes.length > 14 ? ' and ' + (genes.length - 14) + ' more' : '') : '') +
+          '<br>Expected if independent: ' + c.exp.toFixed(1) + (c.p != null ? ' · Fisher p ' + fmtP(c.p) + ', q ' + fmtP(c.q) : '') + (c.a ? '<br><i>Click to list them</i>' : '');
+        g += '<g' + (forExport ? '' : ' class="wr-cell" data-w="' + w.k + '" data-r="' + r.k + '" tabindex="0" role="button" data-tip="' + esc(tipHtml) + '" style="cursor:' + (c.a ? 'pointer' : 'default') + '"') + '>' +
+          '<rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="' + (cw - 2) + '" height="' + (ch - 2) + '" rx="4" fill="' + fill + '"' + (sig ? ' stroke="' + pal.ink + '" stroke-width="1.6"' : '') + '/>' +
+          '<text x="' + (x + cw / 2) + '" y="' + (y + ch / 2 + 4) + '" font-size="11.5" font-weight="' + (sig ? 700 : 400) + '" text-anchor="middle" fill="' + cmInk(fill) + '">' + (c.a || '·') + '</text></g>';
+      });
+    });
+    const ly = top + ch * m.rows.length + 18;
+    g += '<text x="0" y="' + (ly + 9) + '" font-size="10" fill="' + pal.muted + '">Shared</text>';
+    ['1', '2', '3–4', '5–9', '10+'].forEach((t, k) => { g += '<rect x="' + (lw + k * 42) + '" y="' + ly + '" width="40" height="12" rx="2" fill="' + WR_SEQ[k] + '"/><text x="' + (lw + k * 42 + 20) + '" y="' + (ly + 24) + '" font-size="9" text-anchor="middle" fill="' + pal.muted + '">' + t + '</text>'; });
+    g += '<text x="' + (lw + 5 * 42 + 10) + '" y="' + (ly + 10) + '" font-size="10" fill="' + pal.muted + '">outlined: ≥ 2 shared and more than expected, q ≤ 0.05</text>';
+    return { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + (pal.font || EXPORT_PAL.font).replace(/'/g, '"') + '\' role="img" aria-label="' + esc(title) + '">' +
+      (forExport ? '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' : '') + '<g transform="translate(' + (forExport ? 16 : 0) + ',0)">' + g + '</g></svg>', W: W + (forExport ? 16 : 0), H };
+  }
+  function ixWrMatrixHtml() {
+    if (!ixReady() || !IX.wr || !IX.wr.size) return '';
+    const scoped = constraints().length > 0;
+    return '<div class="card" id="ix-wr"><div class="card-head"><div><h3>Writers and readers sharing substrates</h3><p class="sub">' +
+      (scoped ? 'Methylated proteins in your selection' : 'All methylated proteins') + ' that are STRING physical partners (≥ 0.7) of both a PRMT (rows) and a Tudor-domain protein (columns, InterPro IPR002999; the 12 with most shared partners). A cell counts the shared partners; outlined cells share at least two, more than expected if the two partner lists were independent. Hover for the proteins, click to list them.' + docLink('ix-wr') + '</p></div>' +
+      '<div class="exp"><button type="button" data-wrex="svg">SVG</button><button type="button" data-wrex="png">PNG</button><button type="button" data-wrex="tsv">TSV</button></div></div>' +
+      '<div class="cm-box" id="wr-box"></div>' +
+      '<p class="note">Binding is a STRING physical link to the whole protein, not to a methylarginine, and not every Tudor domain reads methylarginine: the Tudor domains of PHF1, PHF19 and MTF2, for example, bind H3K36me3 (' + doiLink('10.1038/nsmb.2435', 'Musselman et al. 2012') + '). Read a shared partner as a candidate writer–substrate–reader path to test.</p></div>';
+  }
+  function bindWrMatrix(el) {
+    const box = $('#wr-box', el);
+    if (!box) return;
+    const m = wrMatrix();
+    if (!m.rows.length || !m.cols.length) { box.innerHTML = '<p class="note">No methylated protein in the selection binds both a PRMT and a Tudor-domain protein at STRING ≥ 0.7.</p>'; return; }
+    const pal = Object.assign(screenPalette(), { cmMid: cssVar('--surface-2') || CM_DIVERGING.mid });
+    box.innerHTML = wrMatrixSvg(m, pal, false, '').svg;
+    $$('.wr-cell', box).forEach((c) => {
+      c.addEventListener('mouseenter', (e) => showTip(e, c.getAttribute('data-tip')));
+      c.addEventListener('mousemove', moveTip);
+      c.addEventListener('mouseleave', hideTip);
+      const go2 = () => {
+        const cell = m.cells.find((x) => x.w.k === +c.dataset.w && x.r.k === +c.dataset.r);
+        if (!cell || !cell.a) return;
+        hideTip();
+        F.ixScore = Math.max(700, F.ixScore);
+        applyQueryText(queryText(Q.plain, Q.tokens.map((t) => ({ key: t.key, vals: t.vals.slice() })).concat([{ key: 'binds', vals: [{ text: IX.prot[cell.w.k].gene }] }, { key: 'binds', vals: [{ text: IX.prot[cell.r.k].gene }] }])), 'proteins');
+        window.scrollTo({ top: 0 });
+      };
+      c.addEventListener('click', go2);
+      c.addEventListener('keydown', (e) => { if (e.key === 'Enter') go2(); });
+    });
+    const title = 'PRMTs and Tudor-domain proteins that share methylated partners';
+    $$('[data-wrex]', el).forEach((b) => { b.onclick = () => {
+      if (b.dataset.wrex === 'tsv') {
+        download('prmt_tudor_shared_partners.tsv', ['prmt\ttudor_protein\tshared_methylated_partners\texpected\tfisher_p\tq\tpartners']
+          .concat(m.cells.filter((x) => x.a).sort((x, y) => y.a - x.a).map((x) => [IX.prot[x.w.k].gene, IX.prot[x.r.k].gene, x.a, x.exp.toFixed(2), x.p != null ? x.p.toExponential(2) : '', x.q != null ? x.q.toExponential(2) : '', x.both.map((i) => P[i].label).sort().join(';')].join('\t'))).join('\n') + '\n');
+        return;
+      }
+      exportFigure(b.dataset.wrex, wrMatrixSvg(m, Object.assign({}, EXPORT_PAL, { cmMid: CM_DIVERGING.mid }), true, title), 'prmt_tudor_shared_partners');
+    }; });
+  }
+
   function bindEvidenceMap(el) {
     const box = $('#ix-evmap', el);
     if (!box) return;
@@ -6782,6 +6878,7 @@
       ixExampleHtml() +
       ixEvidenceMapHtml() +
       ixConnMatrixHtml() +
+      ixWrMatrixHtml() +
       IX_SECTIONS.map(([k, title, tag]) => '<details class="card ix-sec" id="ixs-' + k + '" data-ixsec="' + k + '"' + (UI.ixOpen.has(k) ? ' open' : '') + '><summary><span class="pm" aria-hidden="true"></span><span class="ix-sec-t"><b>' + esc(title) + '</b><span class="sub">' + esc(tag) + '</span></span></summary>' +
         '<div class="ix-sec-body">' + body[k]() + '</div></details>').join('') + '</div>';
     $$('details.ix-sec', el).forEach((d) => d.addEventListener('toggle', () => {
@@ -6800,6 +6897,7 @@
     bindChartExports(el);
     bindEvidenceMap(el);
     bindConnMatrix(el);
+    bindWrMatrix(el);
     bindComplexMembers(el);
     bindDocLinks(el);
     if (UI.ixJump) { const k = UI.ixJump; UI.ixJump = null; openIxSection(k); }
@@ -7684,6 +7782,7 @@
           'The <b>Check a site</b> box on the Overview and Interactions pages answers the question for one site without leaving the page.</p>') +
         sub('ix-evmap', 'How the evidence fits together', '<p>Counted per site or per protein. For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink at or possibly at the residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. The protein-context table shows, for the sites with each kind of evidence, the share on proteins annotated as RNA- or DNA-binding (Gene Ontology), in a CD-CODE condensate, physically linked to a PRMT or a Tudor-domain reader (STRING ≥ 0.7) or in a Complex Portal curated complex, against all selected sites; each cell lists those sites. Counted per protein, the same layout combines these protein properties and whether any of the protein\'s sites carries contact evidence. Below the site view, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
         sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a dimethylarginine call from any source, the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the plain odds ratio with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ 0.05 are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions are read with care.</p>') +
+        sub('ix-wr', 'Writers and readers sharing substrates', '<p>For the proteins in the current selection, each cell counts the methylated proteins that are STRING physical partners (score ≥ 0.7) of both a PRMT (rows) and a Tudor-domain protein (columns, InterPro IPR002999; the 12 with most shared partners are shown). The expected count assumes the two partner lists are independent among the selected methylated proteins that are in STRING; Fisher\'s exact test, Benjamini–Hochberg across the cells; outlined cells have at least two shared partners and q ≤ 0.05 (a single shared partner of two short lists can pass the test alone). Clicking a cell lists the proteins (binds: both partners). A physical link is to the whole protein, not to a site, and several Tudor proteins read methyllysine rather than methylarginine, so a shared partner is a candidate path to test, not a demonstrated one.</p>') +
         sub('profile', 'What sets this selection apart', '<p>Shown on the Proteins and Sites views whenever a search or filter is set. Each site feature (motifs, disorder, methylation calls and IPs, PRMT inhibitor response, close spacing, number of reports and the interaction evidence types) is compared between the selected sites and all other sites with Fisher\'s exact test, Benjamini–Hochberg-adjusted across the features tested; features with q ≤ 0.05 are listed, more common ones first. The ratio is the share in the selection over the share in the other sites. Clicking a more common feature narrows the selection to it. Sites of the same protein are not independent, so this points to differences rather than testing them; a selection built from a few proteins mostly reflects those proteins.</p>') +
         sub('compare', 'Comparing two selections', '<p>Press <b>Save as A for a comparison</b> on a selection (on the selection profile or the report), change the search or filters, then <b>Compare with A</b> (also in the bar under the search). The comparison shows both selections, their overlap, a paragraph on each, the interaction status split, every site feature as the share of A and of B with the ratio and a Fisher\'s exact test (Benjamini–Hochberg across features), side-by-side logos and the proteins with most sites. ' +
           'Sites in both selections count on both sides, which makes the test conservative. The link keeps both selections (<code>A=</code> holds the first), and the page prints with the same header, citation and page numbers as the report.</p>') +
