@@ -6213,6 +6213,25 @@
       ' role="img" aria-label="Physical interaction partners of ' + esc(p.label) + '">' + (forExport ? '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' : '') + g + '</svg>';
   }
 
+  // The network as Cytoscape JSON: nodes with their layout, attributes and the colour they are drawn in (map fill_colour
+  // with a passthrough mapping to keep it), edges with STRING scores; second-ring links are typed "second_ring".
+  function netCytoscape(net) {
+    const pal = EXPORT_PAL, mode = NODE_MODES[UI.ixColor] || NODE_MODES.sites, colors = mode.colors(pal);
+    const nodes = net.ids.map((k, n) => {
+      const x = IX.prot[k], q = x.p >= 0 ? P[x.p] : null, ck = mode.cat(x, q);
+      return { data: { id: 'n' + n, name: x.gene, accession: x.acc, focal: n === 0, second_ring: n >= (net.nCore || net.ids.length),
+        methylarginine_sites: q ? q.sites.length : 0, in_methylarginine_set: !!q, prmt: !!(x.flags & IXF.prmt), tudor: !!(x.flags & IXF.tudor),
+        wd40: !!(x.flags & IXF.wd40), phd: !!(x.flags & IXF.phd), go_rna_binding: !!(x.flags & IXF.rna), go_dna_binding: !!(x.flags & IXF.dna),
+        colour_by: mode.name, category: ck < 0 ? 'Not in this methylarginine set' : mode.cats[ck], fill_colour: ck < 0 ? pal.seq[0] : colors[ck] || pal.none },
+        position: { x: r1(net.pos[n].x), y: r1(net.pos[n].y) } };
+    });
+    const edges = net.edges.map(([a, b, sc], k) => ({ data: { id: 'e' + k, source: 'n' + a, target: 'n' + b, interaction: UI.net.type, string_score: sc / 1000 } }))
+      .concat((net.ringEdges || []).map(([a, b], k) => ({ data: { id: 'r' + k, source: 'n' + a, target: 'n' + b, interaction: 'second_ring' } })));
+    return { format_version: '1.0', generated_by: siteName() + ' (' + siteUrl() + ')',
+      data: { name: net.p.label + ' ' + UI.net.type + ' partners (STRING v' + IX.meta.string_version + ', score >= ' + net.min / 1000 + ')',
+        cite: PAPER.short + ', doi:' + PAPER.doi + '; STRING (CC BY 4.0)' }, elements: { nodes, edges } };
+  }
+
   // ----- protein page card
   function renderIxCard(p) {
     const box = $('#card-ix');
@@ -6282,7 +6301,7 @@
     const pal = screenPalette();
     const colors = mode.colors(pal);
     const exp = $('#ix-exp');
-    if (exp) exp.innerHTML = '<button type="button" id="ix-svg">SVG</button><button type="button" id="ix-png">PNG</button><button type="button" id="ix-tsv">TSV</button>';
+    if (exp) exp.innerHTML = '<button type="button" id="ix-svg">SVG</button><button type="button" id="ix-png">PNG</button><button type="button" id="ix-tsv">TSV</button><button type="button" id="ix-cyjs" title="The network as shown, with its layout and attributes, for Cytoscape (File > Import > Network from File)">Cytoscape</button>';
     body.innerHTML = '<div class="fig-controls">' +
       '<label class="fig-ctl">Show top <select id="ix-top">' + [5, 10, 20, 30, 50, 75, 100].map((n) => '<option value="' + n + '"' + (UI.ixTop === n ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label>' +
       '<label class="fig-ctl">Confidence <select id="ix-min">' + IX_SCORES.map(([v, l]) => '<option value="' + v + '"' + (UI.ixMin === v ? ' selected' : '') + '>' + esc(l) + '</option>').join('') + '</select></label>' +
@@ -6398,6 +6417,7 @@
       const name = (p.gene || p.acc) + '_' + UI.net.type + '_partners';
       $('#ix-svg').onclick = () => { if (UI.ixNet) exportFigure('svg', ixNetSvg(UI.ixNet, EXPORT_PAL, true), name); };
       $('#ix-png').onclick = () => { if (UI.ixNet) exportFigure('png', ixNetSvg(UI.ixNet, EXPORT_PAL, true), name); };
+      $('#ix-cyjs').onclick = () => { if (UI.ixNet) download(name + '.cyjs', JSON.stringify(netCytoscape(UI.ixNet), null, 1)); };
       $('#ix-tsv').onclick = () => download(name + '.tsv', ['partner_gene\tpartner_accession\tstring_score\tmethylarginine_sites\tprmt\ttudor_domain\tgo_rna_binding\tgo_dna_binding\tprotvar_pdockq\tmethylarginines_at_predicted_interface']
         .concat(all.map(([k, sc]) => { const x = IX.prot[k]; const r = predMap.get(k); return [x.gene, x.acc, (sc / 1000).toFixed(3), x.p >= 0 ? P[x.p].sites.length : 0, x.flags & IXF.prmt ? 1 : 0, x.flags & IXF.tudor ? 1 : 0, x.flags & IXF.rna ? (x.flags & IXF.rnaExp ? 'experimental' : 'yes') : '', x.flags & IXF.dna ? (x.flags & IXF.dnaExp ? 'experimental' : 'yes') : '', r ? (r.sc / 100).toFixed(2) : '', r ? r.sites.map((v) => rl(v, p)).join(';') : ''].join('\t'); })).join('\n') + '\n');
     });
@@ -8831,7 +8851,7 @@
     el.innerHTML = resultsHead('Figures', 'From the current selection: ' + fmt(R.sites.length) + ' sites on ' + fmt(R.prots.length) + ' proteins. Exports credit this site and ' + esc(PAPER.short) + '.') +
       (scoped ? '' : '<div class="filter-note">No search or filter is set, so these figures use the whole dataset. Search for proteins or set filters to focus them.</div>') +
       '<div class="card" id="fg-align"><div class="card-head"><div><h3>Site alignment and sequence logo</h3><p class="sub">Selected sites aligned at the methylarginine; the logo uses all ' + fmt(sel.length) + ' with a sequence window.' + docLink('fig-align') + '</p></div>' +
-      '<div class="exp" role="group" aria-label="Alignment export"><button type="button" data-fx="align-svg">SVG</button><button type="button" data-fx="align-png">PNG</button><button type="button" data-fx="align-fasta">FASTA</button></div></div>' +
+      '<div class="exp" role="group" aria-label="Alignment export"><button type="button" data-fx="align-svg">SVG</button><button type="button" data-fx="align-png">PNG</button><button type="button" data-fx="align-fasta">FASTA</button><button type="button" data-fx="align-jalview" title="Jalview features file that colours every methylarginine in that FASTA">Jalview</button></div></div>' +
       '<div class="fig-controls"><label class="fig-ctl">Flank ' + sel2('fg-flank', [[5, '±5'], [7, '±7'], [10, '±10'], [15, '±15']], f.flank) + '</label>' +
       '<label class="fig-ctl">Rows ' + sel2('fg-rows', [[25, '25'], [50, '50'], [100, '100'], [250, '250']], f.rows) + '</label>' +
       '<label class="fig-ctl">Order ' + sel2('fg-order', FIG_ORDERS, f.order) + '</label>' +
@@ -8891,8 +8911,16 @@
       const [what, kind] = b.dataset.fx.split('-');
       if (what === 'align') {
         if (!sel.length) return;
+        const rowOf = (s) => [P[s.p].label + '_' + rl(s.pos, P[s.p]), s.win.slice(15 - f.flank, 16 + f.flank).replace(/_/g, '-')];
         if (kind === 'fasta') {
-          download('methylarginine_site_alignment.fasta', sel.map((s) => '>' + P[s.p].label + '_' + rl(s.pos, P[s.p]) + ' ' + P[s.p].acc + '\n' + s.win.slice(15 - f.flank, 16 + f.flank).replace(/_/g, '-')).join('\n') + '\n');
+          download('methylarginine_site_alignment.fasta', sel.map((s) => { const [id, seq] = rowOf(s); return '>' + id + ' ' + P[s.p].acc + '\n' + seq; }).join('\n') + '\n');
+        } else if (kind === 'jalview') {
+          // Every methylarginine in each row's window, the aligned one and its neighbours on the same protein.
+          download('methylarginine_site_alignment_jalview_features.txt', jalviewFeatures(sel.flatMap((s) => {
+            const [id, seq] = rowOf(s), idx = ungappedAt(seq), pr = P[s.p];
+            return pr.sites.map((j) => S[j]).filter((t) => Math.abs(t.pos - s.pos) <= f.flank && idx[f.flank + t.pos - s.pos] != null)
+              .map((t) => ({ seq: id, pos: idx[f.flank + t.pos - s.pos], st: t.st, desc: pr.label + ' ' + rl(t.pos, pr) }));
+          })));
         } else exportFigure(kind, alignSvg(sel, alignOpts()), 'methylarginine_site_alignment');
       } else if (items && items.length) exportPanel(kind, compareSvg(sortedItems(), Object.assign(cmpOpts(), panelOpts())), 'methylarginine_protein_comparison');
     }));
@@ -8924,6 +8952,26 @@
 
   // Map UniProt positions onto the Ensembl human protein (identical, contained, or by a unique 15-residue anchor), then
   // read the aligned residue of each orthologue at every column of a human-anchored window.
+  // Jalview features file (jalview.org, "Sequence Features File"): one feature type per methylation class in its site
+  // colour, each methylarginine a feature on the sequence named as in the FASTA file it goes with.
+  // feats: [{ seq, pos (1-based in that sequence, gaps not counted), st, desc }]
+  function jalviewFeatures(feats) {
+    const pal = EXPORT_PAL, stColor = [pal.none, pal.st1, pal.st2, pal.stMix], type = (st) => 'Methylarginine ' + STATE_LABEL[st];
+    return Array.from(new Set(feats.map((f) => f.st))).sort().map((st) => type(st) + '\t' + stColor[st].slice(1)).join('\n') + '\nSTARTGROUP\tmethylarginines\n' +
+      feats.map((f) => [f.desc, f.seq, -1, f.pos, f.pos, type(f.st)].join('\t')).join('\n') + '\nENDGROUP\tmethylarginines\n';
+  }
+  // Residue number (gaps not counted) of each column of an aligned row.
+  const ungappedAt = (row) => { const out = []; let n = 0; for (const ch of row) out.push(/[-_.]/.test(ch) ? null : ++n); return out; };
+  // The orthologue alignment around one site, anchored on human columns: FASTA rows and their methylarginine features.
+  function orthoWindow(p, u, model, pos, flank) {
+    const cols = Array.from({ length: 2 * flank + 1 }, (_, k) => pos - flank + k);
+    const human = cols.map((q) => (q >= 1 && q <= u.seq.length ? u.seq[q - 1] : '-')).join('');
+    const rows = [[(p.gene || p.acc) + '_human', human]].concat(model.rows.map((r) => [r.name.replace(/\W+/g, '_') + '_' + r.prot, cols.map((q) => (q >= 1 ? r.at(q) || '-' : '-')).join('')]));
+    const idx = ungappedAt(human);
+    const feats = p.sites.map((j) => S[j]).filter((s) => s.pos >= cols[0] && s.pos <= cols[cols.length - 1] && idx[s.pos - cols[0]] != null)
+      .map((s) => ({ seq: rows[0][0], pos: idx[s.pos - cols[0]], st: s.st, desc: p.label + ' ' + rl(s.pos, p) }));
+    return { fasta: rows.map(([id, seq]) => '>' + id + '\n' + seq).join('\n') + '\n', features: jalviewFeatures(feats) };
+  }
   function orthoModel(p, u, orthos) {
     const uni = u.seq;
     const rows = orthos.map((o) => {
@@ -8980,7 +9028,7 @@
     const box = $('#card-cons');
     if (!box) return;
     const head = '<div class="card-head"><div><h3>Conservation across species</h3><p class="sub">The residue aligned to each methylarginine in mouse, chicken, frog, zebrafish, fly, worm and yeast orthologues (Ensembl Compara).' + docLink('fig-ortho') + '</p></div>' +
-      '<div class="exp" role="group" aria-label="Conservation export"><button type="button" id="cons-svg" disabled>SVG</button><button type="button" id="cons-png" disabled>PNG</button><button type="button" id="cons-tsv" disabled>TSV</button></div></div>';
+      '<div class="exp" role="group" aria-label="Conservation export"><button type="button" id="cons-svg" disabled>SVG</button><button type="button" id="cons-png" disabled>PNG</button><button type="button" id="cons-tsv" disabled>TSV</button><button type="button" id="cons-fasta" disabled title="The alignment shown, as FASTA">FASTA</button><button type="button" id="cons-jv" disabled title="Jalview features file that colours the methylarginines in that FASTA">Jalview</button></div></div>';
     const ensg = u && u.ensg && u.ensg[0];
     if (!u || !u.seq) { box.innerHTML = head + '<p class="note">' + (u === undefined ? 'Loading UniProt…' : 'UniProt sequence unavailable.') + '</p>'; bindDocLinks(box); return; }
     if (!ensg) { box.innerHTML = head + '<p class="note">UniProt lists no Ensembl gene for ' + esc(p.acc) + '.</p>'; bindDocLinks(box); return; }
@@ -9013,7 +9061,9 @@
         $('#cons-flank', body).addEventListener('change', (e) => { UI.consFlank = +e.target.value; draw(); });
         $$('[data-cpos]', body).forEach((b) => b.addEventListener('click', () => { UI.consPos = +b.dataset.cpos; $('#cons-pos', body).value = String(UI.consPos); draw(); }));
         const name = (p.gene || p.acc) + '_orthologue_alignment';
-        $('#cons-svg', box).disabled = false; $('#cons-png', box).disabled = false; $('#cons-tsv', box).disabled = false;
+        ['#cons-svg', '#cons-png', '#cons-tsv', '#cons-fasta', '#cons-jv'].forEach((id) => { $(id, box).disabled = false; });
+        $('#cons-fasta', box).onclick = () => download(name + '_' + rl(UI.consPos, p) + '.fasta', orthoWindow(p, u, model, UI.consPos, UI.consFlank).fasta);
+        $('#cons-jv', box).onclick = () => download(name + '_' + rl(UI.consPos, p) + '_jalview_features.txt', orthoWindow(p, u, model, UI.consPos, UI.consFlank).features);
         $('#cons-svg', box).onclick = () => exportFigure('svg', consSvg(p, u, model, UI.consPos, UI.consFlank), name + '_' + rl(UI.consPos, p));
         $('#cons-png', box).onclick = () => exportFigure('png', consSvg(p, u, model, UI.consPos, UI.consFlank), name + '_' + rl(UI.consPos, p));
         $('#cons-tsv', box).onclick = () => download(name + '.tsv', ['site\t' + per.map((x) => x.r.name.toLowerCase() + '_residue').join('\t')]
