@@ -406,6 +406,9 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .hbars.has-extra.has-sel .hb, .hb-axis.has-extra.has-sel { grid-template-columns: minmax(6rem, 30%) 4.6rem minmax(0, 1fr) 3.4rem 2.9rem; }
 .hb-sel { display: inline-flex; align-items: center; justify-content: flex-end; gap: 0.3rem; font-size: 0.76rem; font-weight: 700; color: var(--accent-dark); font-variant-numeric: tabular-nums; }
 .hb-sel i, .sel-key i { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); flex: none; }
+.hb-note { margin-left: 0.45rem; font-size: 0.7rem; color: var(--muted); }
+.hb.noclick { cursor: default; }
+.hb.noclick:hover, .hb.noclick:focus-visible { background: none; }
 .hb.off, .tbl tr.off { opacity: 0.4; }
 .hb.off:hover, .hb.off:focus-visible, .tbl tr.off:hover { opacity: 1; }
 .chart-key .sel-key i, .ov-hint .sel-key i, .ix-sel .sel-key i { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); }

@@ -3,7 +3,8 @@
 36_export_site_explorer_data.py calls these on the payload it builds. Each staging script (39 CPLM 4.0, 41 CARM1
 knockout, 42 HPA subcellular locations) calls the same function through --explorer-json to update an existing export
 in place, so both routes give the same file. The disorder intervals are the pipeline's own (PTM_MOBIDB_INTERVALS, read
-by 06_annotate_disorder_context.py), so the website draws the regions its disorder classes were computed from. Fields added here are looked up by name (meta.protein_fields,
+by 06_annotate_disorder_context.py), so the website draws the regions its disorder classes were computed from. The
+disease-family membership comes from 34_regenerate_disease_ontology_figures.py, which calls the merge the same way. Fields added here are looked up by name (meta.protein_fields,
 meta.site_fields), so their position does not matter.
 """
 from __future__ import annotations
@@ -115,6 +116,37 @@ def merge_carm1_ko(data: dict, sites: pd.DataFrame, summary: dict) -> dict:
         'not_in_union': len(placed) - len(matched),
     }
     return {k: meta['carm1_ko'][k] for k in ('union_sites', 'union_sites_down', 'not_in_union')}
+
+
+def merge_disease_families(data: dict, table: pd.DataFrame, summary: dict) -> dict:
+    """Audited disease families whose gene unions hold each protein's gene, from 34_regenerate_disease_ontology_figures.py
+    (the gene sets its family tests count): protein field disease_families, [index in meta.disease_families, number of
+    the family's terms naming the gene] per family, and each family's term and gene counts in meta.disease_family_sets.
+    Isoform entries take their canonical accession's families."""
+    meta = data['meta']
+    names = meta['disease_families']
+    field = field_index(data, 'proteins', 'disease_families', list)
+    per_acc: dict[str, dict[int, int]] = defaultdict(dict)
+    unknown = set()
+    for row in table.itertuples(index=False):
+        if row.disease_family not in names:
+            unknown.add(row.disease_family)
+            continue
+        k = names.index(row.disease_family)
+        per_acc[row.canonical_UniProtAC][k] = max(per_acc[row.canonical_UniProtAC].get(k, 0), int(row.contributing_term_count))
+    matched = 0
+    for prot in data['proteins']:
+        fams = per_acc.get(prot[0].split('-')[0], {})
+        prot[field] = sorted([k, n] for k, n in fams.items())
+        matched += bool(fams)
+    info = {f['family']: f for f in summary.get('families', [])}
+    meta['disease_family_sets'] = {
+        'version': summary.get('version', ''), 'input_sha256': summary.get('input_sha256', {}),
+        'fields': ['terms', 'genes', 'methylarginine_genes'],
+        'families': [[int(info[n]['terms']), int(info[n]['genes']), int(info[n]['methylarginine_genes'])] if n in info else None
+                     for n in names],
+    }
+    return {'proteins_with_a_family': matched, 'unknown_families': sorted(unknown)}
 
 
 def merge_hpa(data: dict, locations: pd.DataFrame, summary: dict) -> dict:

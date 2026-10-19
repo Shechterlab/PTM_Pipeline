@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from explorer_merge import OTHER_PTM_SOURCES, merge_carm1_ko, merge_cplm4, merge_disorder_intervals, merge_hpa
+from explorer_merge import OTHER_PTM_SOURCES, merge_carm1_ko, merge_cplm4, merge_disease_families, merge_disorder_intervals, merge_hpa
 
 
 SOURCES = ['Maron2021', 'ProMetheusDB', 'human_ptm_master']
@@ -33,6 +33,9 @@ STAGED = [
     ('CPLM 4.0', 'cplm4_sites', 'cplm4/cplm4_human_lys_methyl_validated.tsv', 'cplm4_summary.json', merge_cplm4),
     ('CARM1 knockout', 'carm1_ko_sites', 'carm1_ko/carm1_ko_sites.tsv', 'carm1_ko_summary.json', merge_carm1_ko),
     ('HPA subcellular', 'hpa_locations', 'hpa/hpa_subcellular_locations.tsv', 'hpa_summary.json', merge_hpa),
+    ('Disease-family membership', 'disease_family_proteins',
+     'functional_class_union/disease_enrichment/all_methyl_proteins_disease_family_proteins_audited_v1.tsv',
+     'disease_family_summary.json', merge_disease_families),
 ]
 ALS_FAMILY = 'ALS / motor neuron / FTD'
 WINDOW_FLANK = 15
@@ -286,6 +289,9 @@ def main() -> None:
     ap.add_argument('--carm1-ko-sites', default=os.environ.get('PTM_CARM1_KO_SITES', ''),
                     help='CARM1 knockout site table from 41_stage_carm1_ko_sites.py '
                          '(default <results-root>/carm1_ko/carm1_ko_sites.tsv; skipped if missing).')
+    ap.add_argument('--disease-family-proteins', default='',
+                    help='per-protein disease-family table from 34_regenerate_disease_ontology_figures.py (default: '
+                         'under functional_class_union/disease_enrichment in the results root)')
     ap.add_argument('--hpa-locations', default=os.environ.get('PTM_HPA_LOCATIONS', ''),
                     help='HPA subcellular location table from 42_stage_hpa_subcellular.py '
                          '(default <results-root>/hpa/hpa_subcellular_locations.tsv; skipped if missing).')

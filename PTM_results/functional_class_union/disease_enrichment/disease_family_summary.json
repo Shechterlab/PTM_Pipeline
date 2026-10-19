@@ -1,0 +1,61 @@
+{
+ "version": "audited_v1",
+ "input_sha256": {
+  "term_gene": "35ed66df643088556f52f87d4d8422685747eff5c6f84459290dab907793227f"
+ },
+ "families": [
+  {
+   "family": "Immune / inflammatory",
+   "terms": 521,
+   "genes": 6521,
+   "methylarginine_genes": 1735
+  },
+  {
+   "family": "Parkinsonism",
+   "terms": 62,
+   "genes": 2104,
+   "methylarginine_genes": 626
+  },
+  {
+   "family": "Alzheimer / tau / dementia",
+   "terms": 73,
+   "genes": 3435,
+   "methylarginine_genes": 1021
+  },
+  {
+   "family": "Myopathy / muscle / cardiomyopathy",
+   "terms": 455,
+   "genes": 2797,
+   "methylarginine_genes": 871
+  },
+  {
+   "family": "Developmental / congenital syndromes",
+   "terms": 3233,
+   "genes": 8677,
+   "methylarginine_genes": 2479
+  },
+  {
+   "family": "ALS / motor neuron / FTD",
+   "terms": 81,
+   "genes": 1474,
+   "methylarginine_genes": 492
+  },
+  {
+   "family": "Ataxia / cerebellar degeneration",
+   "terms": 304,
+   "genes": 1827,
+   "methylarginine_genes": 647
+  },
+  {
+   "family": "Cancer / neoplasia",
+   "terms": 3256,
+   "genes": 13574,
+   "methylarginine_genes": 3774
+  }
+ ],
+ "proteins": 4388,
+ "explorer": {
+  "proteins_with_a_family": 4388,
+  "unknown_families": []
+ }
+}
