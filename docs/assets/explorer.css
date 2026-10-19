@@ -883,6 +883,15 @@ details.ix-sec[open] > summary .pm { border-color: var(--accent); }
 .doc-link { font-size: 0.8rem; margin-left: 0.2rem; white-space: nowrap; }
 
 /* ---- Figures ----------------------------------------------------------- */
+/* Figures page: section headings, the print-size note under each figure, the list of dataset charts. */
+.fig-sec { font-size: 1.05rem; font-weight: 700; color: var(--ink-2); margin: 1.6rem 0 0.6rem; }
+.print-note { font-size: 0.78rem; color: var(--muted); margin: 0.45rem 0 0; }
+.print-note:empty { display: none; }
+.print-note.warn { color: var(--accent-dark); }
+.fig-pick { margin-bottom: 0.8rem; }
+.fig-list { list-style: none; margin: 0.6rem 0 0; padding: 0; }
+.fig-list li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.4rem 1rem; padding: 0.45rem 0; border-top: 1px solid var(--line); }
+.fig-list li > .fig-preview { flex-basis: 100%; }
 .fig-preview { overflow-x: auto; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 0.5rem; margin-top: 0.75rem; }
 .fig-preview svg { display: block; max-width: 100%; height: auto; }
 .fig-more { margin: 0.25rem 0 0; padding-left: 1.2rem; color: var(--ink-2); }
