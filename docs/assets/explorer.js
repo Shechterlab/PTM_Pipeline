@@ -2310,6 +2310,11 @@
       ext('https://www.uniprot.org/uniprotkb/' + encodeURIComponent(p.acc) + '/entry', 'UniProt') +
       ext('https://alphafold.ebi.ac.uk/entry/' + encodeURIComponent(base), 'AlphaFold') +
       ext('https://www.ebi.ac.uk/interpro/protein/UniProt/' + encodeURIComponent(base) + '/', 'InterPro') +
+      ext('https://www.ebi.ac.uk/pdbe/pdbe-kb/proteins/' + encodeURIComponent(base), 'PDBe-KB') +
+      ext('https://mobidb.org/' + encodeURIComponent(base), 'MobiDB') +
+      ext('https://www.ebi.ac.uk/QuickGO/annotations?geneProductId=' + encodeURIComponent(base), 'GO') +
+      ext('https://www.ebi.ac.uk/complexportal/home?query=' + encodeURIComponent(base), 'Complex Portal') +
+      ext('https://www.phosphosite.org/uniprotAccAction?id=' + encodeURIComponent(base), 'PhosphoSitePlus') +
       '<button class="btn small" type="button" id="save-pdf" title="Print this protein page, or save it as a PDF from the print dialog">Save PDF</button></div></div>' +
       ctxToggleHtml(p) +
       (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
@@ -2915,7 +2920,7 @@
         const fi = M.disease_families.indexOf(g);
         return '<details><summary>' + (fi >= 0 ? '<button class="linkish strong" type="button" data-fam="' + fi + '">' + esc(g) + '</button>' : '<span class="strong">' + esc(g) + '</span>') +
           ' <span class="muted">' + terms.length + ' term' + (terms.length === 1 ? '' : 's') + '</span></summary><ul class="term-list">' +
-          terms.map((t) => '<li title="' + esc('Term enrichment across all methylarginine proteins: p.adjust ' + fmtP(t[4])) + '">' + esc(t[1]) + ' <span class="muted">· ' + esc(t[0]) + (UI.ctx === 'dataset' ? ' · p.adj ' + fmtP(t[4]) : '') + '</span></li>').join('') + '</ul></details>';
+          terms.map((t) => '<li title="' + esc('Term enrichment across all methylarginine proteins: p.adjust ' + fmtP(t[4])) + '"><a href="https://www.ncbi.nlm.nih.gov/medgen/?term=' + encodeURIComponent(t[0]) + '" target="_blank" rel="noopener" title="' + esc(t[0] + ' (UMLS) in NCBI MedGen') + '">' + esc(t[1]) + '</a> <span class="muted">· ' + esc(t[0]) + (UI.ctx === 'dataset' ? ' · p.adj ' + fmtP(t[4]) : '') + '</span></li>').join('') + '</ul></details>';
       }).join('') + '</div>' : '<p class="muted">' + esc(p.label) + ' is in none of the enriched DisGeNET terms.</p>';
     } else dg = '<p class="note">Loading terms…</p>';
     box.innerHTML = '<h3>Disease associations</h3>' +
@@ -5871,13 +5876,13 @@
       const byCode = new Map();
       for (const r of rows) {
         const key = r.goEvidence;
-        if (!byCode.has(key)) byCode.set(key, { terms: new Set(), refs: new Set() });
-        byCode.get(key).terms.add(r.goName || r.goId);
+        if (!byCode.has(key)) byCode.set(key, { terms: new Map(), refs: new Set() });
+        byCode.get(key).terms.set(r.goId, r.goName || r.goId);
         if (r.reference) byCode.get(key).refs.add(r.reference);
       }
       el.className = '';
       el.innerHTML = '<ul class="go-list">' + Array.from(byCode.entries()).sort((a, b) => (IX.meta.go_experimental_codes.includes(b[0]) - IX.meta.go_experimental_codes.includes(a[0]))).map(([code, v]) =>
-        '<li><span class="tag' + (IX.meta.go_experimental_codes.includes(code) ? ' go-exp' : '') + '">' + esc(code) + '</span> ' + esc(Array.from(v.terms).join(', ')) +
+        '<li><span class="tag' + (IX.meta.go_experimental_codes.includes(code) ? ' go-exp' : '') + '">' + esc(code) + '</span> ' + Array.from(v.terms.entries()).map(([id, name]) => '<a href="https://www.ebi.ac.uk/QuickGO/term/' + String(id).replace(/[^A-Za-z0-9:]/g, '') + '" target="_blank" rel="noopener" title="' + esc(id + ' in QuickGO') + '">' + esc(name) + '</a>').join(', ') +
         ' <span class="muted">' + (() => {
           const refs = Array.from(v.refs);
           const fmtRef = (ref) => (/^PMID:/.test(ref) ? '<a href="' + pubmedUrl(ref.slice(5)) + '" target="_blank" rel="noopener">' + esc(ref) + '</a>' : esc(ref));
