@@ -665,8 +665,6 @@ svg.ix-net { display: block; width: 100%; height: auto; }
 .legend i.hollow, .chip .dot.hollow, .pill i.hollow, i.dot.hollow { background: var(--surface) !important; border: 1.5px dashed; box-sizing: border-box; }
 .legend .lg-sw { flex: none; overflow: visible; }
 .legend .legend-break { flex-basis: 100%; height: 0; }
-.legend i.diamond { width: 9px; height: 9px; border-radius: 1px; transform: rotate(45deg); border: 1.5px solid var(--ink); background: transparent; }
-.legend i.ring { width: 12px; height: 12px; border: 1.5px dashed var(--ink-2); background: transparent; }
 .ix-tbl { max-height: 26rem; overflow-y: auto; margin-top: 0.4rem; }
 .cx-list { list-style: none; margin: 0.3rem 0 0.8rem; padding: 0; display: grid; gap: 0.8rem; }
 .cx-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.6rem; font-size: 0.88rem; margin-bottom: 0.35rem; }
@@ -869,8 +867,6 @@ details.ix-sec[open] > summary .pm { border-color: var(--accent); }
 /* Touch screens: horizontal drags on the map zoom (brush), so it cannot also scroll sideways; fit it to the width instead. */
 @media (pointer: coarse) { svg.pmap { min-width: 0; } }
 .tag.warn-tag { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent-dark); }
-.legend i.ring.wd { border: 1.5px solid #0E7490; }
-.legend i.ring.phd { border: 2px dotted #7B4FBF; }
 
 /* ---- Overview: hint, interactions feature, starting points ---------------- */
 .ov-hint { margin: 0 0 -0.4rem; font-size: 0.85rem; color: var(--muted); }

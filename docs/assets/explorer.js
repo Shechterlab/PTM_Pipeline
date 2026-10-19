@@ -528,7 +528,7 @@
     pageP: 50, pageS: 100, zoom: null, openEvidence: new Set(),
     allCond: false, funcExpanded: false, charts: {},
     fig: { color: 'state', labels: 'auto', tracks: new Set(mapTracks0()), order: Array.isArray(mapPrefs.order) ? mapPrefs.order : null },
-    ixTab: 'proteins', ixTop: 20, ixMin: 700, ixColor: 'meth', ixAll: false, ixNet: null, net: netPrefs, ixRing: true,
+    ixTab: 'proteins', ixTop: 20, ixMin: 700, ixColor: 'sites', ixAll: false, ixNet: null, net: netPrefs, ixRing: true,
     cxPred: false, cxMin: 3, cxSort: 'q', cxAll: false, refsOpen: new Set(), ctx: 'protein', condThr: 3, pendingContact: null, pendingModel: null, ixOpen: new Set(), ixJump: null,
     gal: { conf: 'confident', pl: 80, kind: 'bond', noPdb: false, xl: false, all: false },
     figs: { flank: 7, rows: 50, order: 'protein', logo: 'freq', nProt: 8, scale: 'common', color: 'state', lanes: true, sortP: 'default' }, consPos: null, consFlank: 10, docJump: null,
@@ -4151,7 +4151,7 @@
   // ------------------------------------------------------------- 3D structure
   function structureCard(p) {
     return '<div class="card" id="card-af"><div class="card-head"><div><h3>3D structure</h3><p class="sub" id="af-sub">The AlphaFold DB model, or any experimental structure listed below. Methylarginine side chains use the protein-map colours. Click any residue, or a row in the site table, to zoom to it and show its contacts; the options change the style, colouring, surface and lighting.</p></div>' +
-      '<div class="exp" role="group" aria-label="Structure controls"><button type="button" id="af-reset" disabled>Reset view</button><button type="button" id="af-spin" disabled aria-pressed="false">Spin</button><button type="button" id="af-png" disabled>PNG</button></div></div>' +
+      '<div class="exp" role="group" aria-label="Structure controls"><button type="button" id="af-reset" disabled>Reset view</button><button type="button" id="af-spin" disabled aria-pressed="false">Spin</button><button type="button" id="af-png" disabled>PNG</button><button type="button" id="af-cxc" disabled title="ChimeraX command script that rebuilds this view">ChimeraX</button><button type="button" id="af-pml" disabled title="PyMOL script that rebuilds this view">PyMOL</button><button type="button" id="af-coords" disabled title="The coordinates shown, with the methylarginines listed in the header">Coordinates</button></div></div>' +
       '<div class="af-controls" id="af-controls"></div>' +
       '<div class="af-wrap"><div><div class="af-viewer" id="af-viewer"><div class="af-placeholder">Loading the AlphaFold model…</div></div><p class="note af-msg" id="af-msg" aria-live="polite"></p></div><div class="af-side" id="af-side"></div></div>' +
       '<div class="pdb-block"><div class="card-head"><div><h3 class="h4">Experimental structures (PDB)</h3><p class="sub" id="pdb-sub">Looking up PDB entries…</p></div>' +
@@ -4204,8 +4204,11 @@
     const holder = $('#af-viewer');
     if (!holder) return;
     renderAfSide(p, AFDATA.get(p.acc));
-    const enable = () => ['#af-reset', '#af-spin', '#af-png'].forEach((id) => { const b = $(id); if (b) b.disabled = false; });
+    const enable = () => AF_BUTTONS.forEach((id) => { const b = $(id); if (b) b.disabled = false; });
     const bindButtons = () => {
+      $('#af-cxc').onclick = () => { if (mol) { const d = sceneData(); download(d.file + '.cxc', chimeraxScene(d)); } };
+      $('#af-pml').onclick = () => { if (mol) { const d = sceneData(); download(d.file + '.pml', pymolScene(d)); } };
+      $('#af-coords').onclick = () => { if (mol) { const d = sceneData(); download(d.file + (d.fmt === 'cif' ? '.cif' : '.pdb'), annotatedCoords(d)); } };
       $('#af-reset').onclick = () => {
         if (!mol) return;
         if (mol.label) { mol.viewer.removeLabel(mol.label); mol.label = null; }
@@ -4283,7 +4286,7 @@
     ['rainbow', 'Rainbow (N→C)'], ['ss', 'Secondary structure'], ['charge', 'Charge'], ['hydro', 'Hydrophobicity'], ['xl', 'RNA/DNA crosslinks (cells)'], ['uniform', 'Uniform grey'],
   ];
   // 3D crosslink colouring: the shared RNA/DNA colours, pale for fragments and regions; neutral greys for the rest.
-  const xlColors = () => { const t = TOKENS[themeName()]; return { rna: t.rna, dna: t.dna, both: t.ev, rbd: t.rnaPale, dnaReg: t.dnaPale, none: '#C9D2D8', other: '#E6EAED' }; };
+  const xlColors = (t = TOKENS[themeName()]) => { return { rna: t.rna, dna: t.dna, both: t.ev, rbd: t.rnaPale, dnaReg: t.dnaPale, none: '#C9D2D8', other: '#E6EAED' }; };
   const VIEW_SURFACES = [['off', 'Off'], ['glass', 'Transparent'], ['solid', 'Opaque']];
   const VIEW_BGS = [['page', 'Page'], ['white', 'White'], ['black', 'Black']];
   const VIEW_LIGHTS = [['ao', 'Ambient occlusion'], ['aoline', 'Occlusion + outline'], ['outline', 'Outline'], ['plain', 'Standard']];
@@ -4355,14 +4358,14 @@
     return mol.chains;
   }
 
-  function viewColorFn(key) {
+  function viewColorFn(key, tok = TOKENS[themeName()]) {
     const grey = '#9AA6B2';
     if (key === 'plddt' && mol.mode === 'pdb') return (a) => PLDDT_BANDS[plddtBand(a.b)][1];
     if (key === 'plddt') {
       const af = AFDATA.get(mol.p.acc);
       return (a) => { const v = af && af.plddt.has(a.resi) ? af.plddt.get(a.resi) : a.b; return v == null ? grey : PLDDT_BANDS[plddtBand(v)][1]; };
     }
-    if (key === 'focus') { const c = mol.pdb.chain, prot = TOKENS[themeName()].protein; return (a) => (a.chain === c ? prot : '#C7D4D9'); }
+    if (key === 'focus') { const c = mol.pdb.chain, prot = tok.protein; return (a) => (a.chain === c ? prot : '#C7D4D9'); }
     if (key === 'chain') { const { order } = modelChains(); return (a) => CHAIN_COLORS[(order.get(a.chain) || 0) % CHAIN_COLORS.length]; }
     if (key === 'rainbow') {
       const { ranges } = modelChains();
@@ -4387,7 +4390,7 @@
         if (!cache.has(atom.resi)) cache.set(atom.resi, authToUnp(atom.resi));
         return cache.get(atom.resi);
       };
-      const XL = xlColors();
+      const XL = xlColors(tok);
       return (a) => {
         const pos = unpOf(a);
         if (pos == null) return XL.other;
@@ -4457,6 +4460,20 @@
     return UI.mv.bg === 'white' ? '#FFFFFF' : UI.mv.bg === 'black' ? '#000000' : (cssVar('--surface-2') || '#eef5f7');
   }
 
+  // Methylarginine positions in model numbering with their map colours; uncategorised sites take the accent colour in
+  // 3D, where the map's neutral grey would vanish against grey chains. Methylated residues modelled in a PDB entry too.
+  function structureSiteColors(pal) {
+    const { p } = mol, pdbMode = mol.mode === 'pdb', pdb = mol.pdb;
+    const mode = COLOR_MODES[UI.fig.color] || COLOR_MODES.state, colors = mode.colors(pal);
+    const out = new Map();
+    for (const j of p.sites) {
+      const r = pdbMode ? pdb.toAuth.get(S[j].pos) : S[j].pos;
+      const c = colors[mode.cat(S[j])] || pal.none;
+      if (r != null) out.set(r, c === pal.none ? pal.meth : c);
+    }
+    if (pdbMode) for (const r of pdb.det.modres) if (r.chain_id === pdb.chain && !out.has(+r.author_residue_number)) out.set(+r.author_residue_number, pal.meth);
+    return out;
+  }
   function styleStructure(reSurface) {
     if (!mol || mol.p.i !== UI.detail) return;
     const { viewer, p } = mol;
@@ -4470,18 +4487,7 @@
     const light = { ao: 'ambientOcclusion', aoline: 'ambientOcclusion outline', outline: 'outline' }[V.light] || '';
     viewer.setViewStyle({ style: light, strength: V.style === 'spheres' || V.surface === 'solid' ? 1.6 : 1.9, color: UI.mv.bg === 'black' ? '#FFFFFF' : '#000000', width: 0.08 });
 
-    // Methylarginine positions in model numbering with their map colours.
-    const pal = screenPalette();
-    const mode = COLOR_MODES[UI.fig.color] || COLOR_MODES.state;
-    const colors = mode.colors(pal);
-    const siteColor = new Map();
-    for (const j of p.sites) {
-      const r = pdbMode ? pdb.toAuth.get(S[j].pos) : S[j].pos;
-      // Uncategorised sites take the accent colour in 3D, where the map's neutral grey would vanish against grey chains.
-      const c = colors[mode.cat(S[j])] || pal.none;
-      if (r != null) siteColor.set(r, c === pal.none ? pal.meth : c);
-    }
-    if (pdbMode) for (const r of pdb.det.modres) if (r.chain_id === pdb.chain && !siteColor.has(+r.author_residue_number)) siteColor.set(+r.author_residue_number, TOKENS[themeName()].meth);
+    const siteColor = structureSiteColors(screenPalette());
     const siteAt = (a) => (inChain(a) && siteColor.has(a.resi) && baseResn(a.resn) === 'ARG' ? siteColor.get(a.resi) : null);
 
     // Polymer in the chosen representation and colouring; sites tint spheres and surfaces so they stay visible.
@@ -4626,6 +4632,120 @@
     const rn = seg[0] + (auth - seg[2]);
     const m = e.maps.find((x) => x.chain === det.chain && rn >= x.start && rn <= x.end);
     return m ? m.unpStart + (rn - m.start) : null;
+  }
+
+  const AF_BUTTONS = ['#af-reset', '#af-spin', '#af-png', '#af-cxc', '#af-pml', '#af-coords'];
+
+  // ----- the 3D view outside the browser: ChimeraX and PyMOL scripts that rebuild it (model, colouring, methylarginine
+  // side chains in their site colours, labels, focused residue, light background) and the coordinates with the
+  // methylarginines listed in the header. Colours are the light palette's, as in every export.
+  function sceneData() {
+    const { viewer, p } = mol, V = UI.mv, tok = TOKENS.light, pdbMode = mol.mode === 'pdb', pdb = mol.pdb;
+    const af = AFDATA.get(p.acc), base = p.acc.split('-')[0];
+    const src = !pdbMode ? { url: af.entry.cifUrl || af.entry.pdbUrl, tag: 'AF-' + base, what: 'AlphaFold DB model of ' + base + (af.entry.latestVersion ? ' (v' + af.entry.latestVersion + ')' : '') }
+      : pdb.pred ? { url: pdb.pred.url, format: 'pdb', tag: 'pred_' + String(pdb.pred.id).replace(/[^A-Za-z0-9]+/g, '_'), what: pdb.pred.label + ' (predicted complex)' }
+      : { id: pdb.e.id.toUpperCase(), tag: pdb.e.id.toUpperCase(), what: 'PDB ' + pdb.e.id.toUpperCase() + (pdb.homolog ? ', a homologous structure' : '') };
+    const key = viewColorKey(), fn = viewColorFn(key, tok);
+    const polymer = new Map(), ligands = new Set();
+    for (const a of viewer.selectedAtoms({})) {
+      if (WATER.includes(a.resn) || (pdbMode && !V.others && a.chain !== pdb.chain)) continue;
+      const nuc = isNuc(a);
+      if (!nuc && !isPolymer(a)) { ligands.add(a.chain); continue; }
+      if (nuc ? a.atom !== 'P' && a.atom !== "C4'" : a.atom !== 'CA') continue;
+      if (!polymer.has(a.chain)) polymer.set(a.chain, new Map());
+      const m = polymer.get(a.chain);
+      if (!m.has(a.resi)) m.set(a.resi, nuc ? naColor(nucKind(a), tok) : fn(a));
+    }
+    // Consecutive residues of one colour become one range.
+    const chains = Array.from(polymer, ([chain, m]) => {
+      const ranges = [];
+      for (const r of Array.from(m.keys()).sort((x, y) => x - y)) {
+        const last = ranges[ranges.length - 1];
+        if (last && r === last[1] + 1 && m.get(r) === last[2]) last[1] = r; else ranges.push([r, r, m.get(r)]);
+      }
+      return { chain, ranges };
+    });
+    const chain = pdbMode ? pdb.chain : (chains[0] || { chain: 'A' }).chain;
+    const siteColor = structureSiteColors(EXPORT_PAL), unpOf = (r) => (pdbMode ? pdb.toUnp.get(r) : r);
+    const sites = Array.from(siteColor, ([resi, color]) => ({ resi, color, unp: unpOf(resi) })).filter((x) => polymer.has(chain) && polymer.get(chain).has(x.resi)).sort((a, b) => a.resi - b.resi);
+    const label = (x) => (x.unp != null ? rl(x.unp, p) : 'R' + x.resi);
+    const labels = V.labels ? sites.map((x) => [x.resi, label(x)]) : mol.focus && mol.focus.chain === chain ? sites.filter((x) => x.resi === mol.focus.resi).map((x) => [x.resi, label(x)]) : [];
+    const scheme = (VIEW_COLORS.find((o) => o[0] === key) || [0, 'grey'])[1];
+    const mode = COLOR_MODES[UI.fig.color] || COLOR_MODES.state;
+    return {
+      p, src, chains, chain, sites, labels, focus: mol.focus, style: V.style, surface: V.surface, contacts: V.contacts && !!mol.focus,
+      ligands: pdbMode && V.ligands && ligands.size > 0, others: !pdbMode || V.others, bg: V.bg === 'black' ? 'black' : 'white',
+      text: pdbMode ? mol.text : mol.afPdb, fmt: pdbMode ? mol.fmt : 'pdb',
+      file: (p.gene || base) + '_' + src.tag + '_methylarginines',
+      header: [p.label + ' (' + base + '), ' + src.what, 'Cartoon colouring: ' + scheme,
+        'Methylarginine side chains, ' + mode.name + ': ' + mode.cats.map((c, k) => { const col = mode.colors(EXPORT_PAL)[k]; return c + ' ' + (col === EXPORT_PAL.none ? EXPORT_PAL.meth : col); }).join(', '),
+        'From ' + siteName() + ' (' + siteUrl().replace(/^https?:\/\//, '') + '). Please cite ' + PAPER.short + ', doi:' + PAPER.doi + ', the structure source and the original data sources.'],
+    };
+  }
+  // Residue lists in each program's syntax; negative residue numbers stand alone (ChimeraX) or are escaped (PyMOL).
+  const cxRes = (ranges) => ranges.map(([a, b]) => (a === b ? '' + a : a >= 0 ? a + '-' + b : Array.from({ length: b - a + 1 }, (_, k) => a + k).join(','))).join(',');
+  const pmRes = (ranges) => ranges.map(([a, b]) => { const e = (n) => (n < 0 ? '\\' + n : '' + n); return a === b ? e(a) : e(a) + '-' + e(b); }).join('+');
+  const SIDE_CHAIN = ['CB', 'CG', 'CD', 'NE', 'CZ', 'NH1', 'NH2'];
+  // Ranges grouped by colour, so each colour is one command.
+  const byColour = (ranges) => { const m = new Map(); for (const [a, b, c] of ranges) { if (!m.has(c)) m.set(c, []); m.get(c).push([a, b]); } return m; };
+  function chimeraxScene(d) {
+    const L = d.header.map((t) => '# ' + t);
+    L.push(d.src.id ? 'open ' + d.src.id : 'open ' + d.src.url + (d.src.format ? ' format ' + d.src.format : ''));
+    L.push('set bgColor ' + d.bg, 'lighting soft', 'graphics silhouettes true', 'hide #1 atoms', 'cartoon #1');
+    if (!d.others) L.push('cartoon hide #1 & ~/' + d.chain);
+    for (const c of d.chains) byColour(c.ranges).forEach((rs, col) => L.push('color #1/' + c.chain + ':' + cxRes(rs) + ' ' + col + ' target ac'));
+    if (d.style === 'sticks' || d.style === 'spheres') L.push('show #1 atoms', 'style #1 ' + (d.style === 'sticks' ? 'stick' : 'sphere'), 'cartoon hide #1');
+    if (d.ligands) L.push('show #1 & ligand atoms');
+    L.push('hide #1 & solvent atoms');
+    byColour(d.sites.map((x) => [x.resi, x.resi, x.color])).forEach((rs, col) => {
+      const spec = '#1/' + d.chain + ':' + cxRes(rs) + '@' + SIDE_CHAIN.join(',').toLowerCase();
+      L.push('show ' + spec + ' atoms', 'style ' + spec + ' stick', 'color ' + spec + ' ' + col + ' target a');
+    });
+    for (const [r, t] of d.labels) L.push('label #1/' + d.chain + ':' + r + ' text "' + t + '" height 1.6');
+    if (d.surface !== 'off') L.push('surface #1/' + d.chain);
+    if (d.surface === 'glass') L.push('transparency #1/' + d.chain + ' 70 target s');
+    if (d.contacts) L.push('show #1/' + d.focus.chain + ':' + d.focus.resi + ' :<5 atoms', 'hide #1 & solvent atoms');
+    L.push(d.focus ? 'view #1/' + d.focus.chain + ':' + d.focus.resi : 'view');
+    return L.join('\n') + '\n';
+  }
+  function pymolScene(d) {
+    const obj = d.src.tag.replace(/[^A-Za-z0-9_]/g, '_'), ch = (c) => (c ? 'chain ' + c : 'chain ""');
+    const L = d.header.map((t) => '# ' + t);
+    L.push(d.src.id ? 'fetch ' + d.src.id + ', ' + obj + ', async=0' : 'load ' + d.src.url + ', ' + obj + (d.src.format ? ', format=' + d.src.format : ''));
+    L.push('hide everything, ' + obj, 'bg_color ' + d.bg, 'set ray_trace_mode, 1', 'set cartoon_transparency, 0', 'remove solvent');
+    L.push(d.style === 'sticks' ? 'show sticks, ' + obj + ' and polymer' : d.style === 'spheres' ? 'show spheres, ' + obj + ' and polymer' : 'show cartoon, ' + obj);
+    if (d.style === 'trace') L.push('cartoon tube, ' + obj);
+    if (!d.others) L.push('hide everything, ' + obj + ' and not ' + ch(d.chain));
+    let k = 0;
+    const colourName = new Map();
+    const named = (hex) => { if (!colourName.has(hex)) { const n = 'mr_c' + (k++); colourName.set(hex, n); L.push('set_color ' + n + ', [' + [1, 3, 5].map((i) => (parseInt(hex.slice(i, i + 2), 16) / 255).toFixed(3)).join(', ') + ']'); } return colourName.get(hex); };
+    for (const c of d.chains) byColour(c.ranges).forEach((rs, col) => { const n = named(col); L.push('color ' + n + ', ' + obj + ' and ' + ch(c.chain) + ' and resi ' + pmRes(rs)); });
+    if (d.ligands) L.push('show sticks, ' + obj + ' and organic', 'color green, ' + obj + ' and organic and elem C');
+    byColour(d.sites.map((x) => [x.resi, x.resi, x.color])).forEach((rs, col) => {
+      const n = named(col), spec = obj + ' and ' + ch(d.chain) + ' and resi ' + pmRes(rs) + ' and name ' + SIDE_CHAIN.join('+');
+      L.push('show sticks, ' + spec, 'color ' + n + ', ' + spec, 'set stick_radius, 0.3, ' + spec);
+    });
+    for (const [r, t] of d.labels) L.push('label ' + obj + ' and ' + ch(d.chain) + ' and resi ' + pmRes([[r, r]]) + ' and name CZ, "' + t + '"');
+    if (d.labels.length) L.push('set label_size, 18', 'set label_color, ' + (d.bg === 'black' ? 'white' : 'black'));
+    if (d.surface !== 'off') L.push('show surface, ' + obj + ' and ' + ch(d.chain));
+    if (d.surface === 'glass') L.push('set transparency, 0.6');
+    const focus = d.focus ? obj + ' and ' + ch(d.focus.chain) + ' and resi ' + pmRes([[d.focus.resi, d.focus.resi]]) : '';
+    if (d.contacts) L.push('show sticks, byres (' + obj + ' within 5 of (' + focus + ')) and not name N+C+O');
+    L.push(focus ? 'orient ' + focus : 'orient ' + obj, focus ? 'zoom ' + focus + ', 10' : 'zoom ' + obj);
+    return L.join('\n') + '\n';
+  }
+  // The coordinates as loaded, unchanged, with the methylarginines of this protein listed first (PDB REMARK 999 or
+  // mmCIF comments).
+  function annotatedCoords(d) {
+    const head = d.header.concat(['Methylarginines in chain ' + d.chain + ' of this model (model numbering, UniProt site, methylation, interaction evidence):'])
+      .concat(d.sites.map((x) => {
+        const j = x.unp != null ? d.p.sites.find((k) => S[k].pos === x.unp) : null, st = j != null ? S[j] : null;
+        return '  ' + d.chain + ' ' + x.resi + '  ' + (x.unp != null ? rl(x.unp, d.p) : 'methylated in the entry') + (st ? '  ' + STATE_LABEL[st.st] + (ixReady() ? '; interaction evidence ' + IXS[ixStatus(st)][0].toLowerCase() : '') : '');
+      }));
+    if (d.fmt === 'cif') return head.map((t) => '# ' + t).join('\n') + '\n' + d.text;
+    const rem = head.flatMap((t) => (t.match(/.{1,68}(\s|$)/g) || [t]).map((line) => ('REMARK 999 ' + line.trim()).padEnd(80)));
+    const lines = d.text.split('\n'), at = lines.findIndex((l) => !/^(HEADER|TITLE |COMPND|SOURCE|KEYWDS|EXPDTA|AUTHOR|REVDAT|SPRSDE|JRNL  )/.test(l));
+    return lines.slice(0, Math.max(0, at)).concat(rem, lines.slice(Math.max(0, at))).join('\n');
   }
 
   function focusStructure(pos) {
@@ -4805,7 +4925,7 @@
       viewer.clear();
       viewer.removeAllSurfaces();
       viewer.addModel(cif, fmtName);
-      Object.assign(mol, { chains: null, focus: null, siteLabels: [], naKinds: null });
+      Object.assign(mol, { chains: null, focus: null, siteLabels: [], naKinds: null, text: cif, fmt: fmtName });
       const sites = pdbSites(p, e, det).filter((x) => x[1] != null && x[2]);
       mol.mode = 'pdb';
       mol.pdb = { e, det, chain: det.chain, toAuth: new Map(sites.map((x) => [x[0], x[1]])), toUnp: new Map(sites.map((x) => [x[1], x[0]])) };
@@ -4813,7 +4933,7 @@
       styleStructure();
       viewer.zoomTo();
       viewer.render();
-      ['#af-reset', '#af-spin', '#af-png'].forEach((id) => { const b = $(id); if (b) b.disabled = false; });
+      AF_BUTTONS.forEach((id) => { const b = $(id); if (b) b.disabled = false; });
       renderPdbSide(p);
       $('#af-viewer').scrollIntoView({ block: 'center', behavior: 'smooth' });
     }).catch(() => { if (btn) btn.textContent = 'Failed'; })
@@ -5055,7 +5175,7 @@
       viewer.clear();
       viewer.removeAllSurfaces();
       viewer.addModel(text, fmtName);
-      Object.assign(mol, { chains: null, focus: null, siteLabels: [], naKinds: null });
+      Object.assign(mol, { chains: null, focus: null, siteLabels: [], naKinds: null, text, fmt: fmtName });
       // Entity index -> author residue number from the observed segments (no mapping without coverage).
       const toAuthNum = (sub) => { const s = segs.find(([a, b]) => sub >= a && sub <= b); return s && s[2] != null ? s[2] + (sub - s[0]) : null; };
       const authToQuery = new Map();
@@ -5068,7 +5188,7 @@
       styleStructure();
       viewer.zoomTo();
       viewer.render();
-      ['#af-reset', '#af-spin', '#af-png'].forEach((k) => { const b = $(k); if (b) b.disabled = false; });
+      AF_BUTTONS.forEach((k) => { const b = $(k); if (b) b.disabled = false; });
       renderPdbSide(p);
       const first = focusPos != null ? focusPos : (pairs[0] || [])[0];
       if (first != null && mol.pdb.toAuth.has(first)) { UI.highlight = first; focusStructure(first); }
@@ -5212,7 +5332,7 @@
       viewer.clear();
       viewer.removeAllSurfaces();
       viewer.addModel(text, 'pdb');
-      Object.assign(mol, { chains: null, focus: null, siteLabels: [], naKinds: null });
+      Object.assign(mol, { chains: null, focus: null, siteLabels: [], naKinds: null, text, fmt: 'pdb' });
       const present = new Set(viewer.selectedAtoms({ chain: m.chain, atom: 'CA' }).map((a) => a.resi));
       const sites = p.sites.map((j) => S[j].pos).filter((pos) => present.has(pos));
       mol.mode = 'pdb';
@@ -5222,7 +5342,7 @@
       styleStructure();
       viewer.zoomTo();
       viewer.render();
-      ['#af-reset', '#af-spin', '#af-png'].forEach((id) => { const b = $(id); if (b) b.disabled = false; });
+      AF_BUTTONS.forEach((id) => { const b = $(id); if (b) b.disabled = false; });
       renderPdbSide(p);
       if (focusPos != null && present.has(focusPos)) { UI.highlight = focusPos; focusStructure(focusPos); }
     }).catch(() => { if (btn) btn.textContent = 'Failed'; })
@@ -5237,7 +5357,7 @@
   const IXF_CLASS = IXF.prmt | IXF.tudor | IXF.wd40 | IXF.phd;
   const IFACE_OPTS = [[4, 'RNA'], [8, 'DNA'], [1, 'Another protein'], [2, 'A copy of itself', 'Self-contact: the arginine touches another copy of the same protein in a homodimer or larger homo-oligomer']];
   const IFACE_NAME = { 4: 'RNA', 8: 'DNA', 1: 'another protein', 2: 'a copy of itself (homo-oligomer)' };
-  const naColor = (kind) => TOKENS[themeName()][kind === 'RNA' ? 'rna' : 'dna'];
+  const naColor = (kind, t = TOKENS[themeName()]) => t[kind === 'RNA' ? 'rna' : 'dna'];
   const BIND_OPTS = [
     [1, 'a PRMT', 'PRMT1, PRMT2, PRMT3, CARM1 (PRMT4), PRMT5, PRMT6, PRMT7, PRMT8 or PRMT9'],
     [2, 'a Tudor-domain protein', 'InterPro IPR002999: methylarginine readers such as SMN1/2, SMNDC1, TDRD3 and SND1 (TDRKH binds methylated PIWI proteins but can also bind PIWIL1 independently of methylation), and methyllysine readers such as PHF1, SETDB1 and KDM4A'],
@@ -5870,16 +5990,32 @@
   }
 
   // ----- protein network
+  // Partner network colourings. cat(x, q) takes the partner (IX protein) and its explorer protein (null when it is not in
+  // this methylarginine set); -1 draws the count ramp's lightest step, "not in this set".
   const NODE_MODES = {
-    meth: { name: 'Methylated', cats: ['In this methylarginine set'], cat: () => 0, colors: (pal) => [pal.meth] },
     sites: {
-      name: 'Methyl-R sites', cats: ['1 site', '2–4 sites', '5–9 sites', '10 or more'],
-      cat: (p) => { const n = p.sites.length; return n >= 10 ? 3 : n >= 5 ? 2 : n >= 2 ? 1 : 0; }, colors: (pal) => pal.seq.slice(1),
+      name: 'Methyl-R sites', cats: ['1 site', '2–4 sites', '5–9 sites', '10 or more'], colors: (pal) => pal.seq.slice(1),
+      cat: (x, q) => { if (!q) return -1; const n = q.sites.length; return n >= 10 ? 3 : n >= 5 ? 2 : n >= 2 ? 1 : 0; },
+    },
+    // The partner hues used across the site, for every partner, methylated or not (node size shows its sites).
+    partner: {
+      name: 'Partner type', all: true, cats: ['RNA binding (GO)', 'DNA binding (GO)', 'RNA and DNA binding (GO)', 'Other protein'],
+      cat: (x) => { const r = x.flags & IXF.rna, d = x.flags & IXF.dna; return r && d ? 2 : r ? 0 : d ? 1 : 3; }, colors: (pal) => [pal.rna, pal.dna, pal.ev, pal.protein],
     },
     // Same categories, colours and wording as the site colour modes.
-    state: Object.assign({}, COLOR_MODES.state, { cat: (p) => p.stCat }),
-    prmti: Object.assign({}, COLOR_MODES.prmti, { cat: (p) => p.trCat }),
+    state: Object.assign({}, COLOR_MODES.state, { cat: (x, q) => (q ? q.stCat : -1) }),
+    prmti: Object.assign({}, COLOR_MODES.prmti, { cat: (x, q) => (q ? q.trCat : -1) }),
   };
+  // The network's legend, for the page and the export alike: the colouring, "not in this set", PRMT squares and reader rings.
+  function netLegendItems(pal, mode, ring) {
+    const colors = mode.colors(pal);
+    const readerRing = (dash) => (x, y) => '<circle cx="' + (x + 10) + '" cy="' + y + '" r="6" fill="none" stroke="' + pal.ink + '" stroke-width="1.3"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + '/>';
+    return mode.cats.map((c, k) => [SWATCH.head(pal, colors[k], !!(mode.hollow && mode.hollow[k])), c])
+      .concat(mode.all ? [] : [[(x, y) => '<circle cx="' + (x + 10) + '" cy="' + y + '" r="4.6" fill="' + pal.seq[0] + '" stroke="' + pal.backbone + '"/>', 'Not in this methylarginine set']])
+      .concat([[(x, y) => '<rect x="' + (x + 5) + '" y="' + (y - 5) + '" width="10" height="10" rx="2" fill="none" stroke="' + pal.ink + '" stroke-width="1.4"/>', 'PRMT'],
+        [readerRing('3 2'), 'Tudor domain'], [readerRing(''), 'WD40 repeat'], [readerRing('1 2'), 'PHD finger']])
+      .concat(ring ? [[(x, y) => '<line x1="' + x + '" y1="' + y + '" x2="' + (x + 20) + '" y2="' + y + '" stroke="' + pal.muted + '" stroke-dasharray="4 3"/>', 'Second ring: PRMTs and Tudor proteins that bind the partners']] : []);
+  }
 
   // Radial force layout: the protein is pinned at the centre, partners sit at a distance that shrinks with
   // their STRING score, links among partners pull gently, nodes and labels repel, then the layout is
@@ -6019,7 +6155,7 @@
 
   function ixNetSvg(net, pal, forExport) {
     const { p, ids, edges, pos } = net;
-    const mode = NODE_MODES[UI.ixColor] || NODE_MODES.meth;
+    const mode = NODE_MODES[UI.ixColor] || NODE_MODES.sites;
     const colors = mode.colors(pal);
     const W = net.W, top = forExport ? 54 : 0;
     let H = net.H + top;
@@ -6041,9 +6177,9 @@
       const q = x.p >= 0 ? P[x.p] : null;
       const outer = n >= (net.nCore || ids.length);
       const r = outer ? Math.min(9, nodeRadius(k, false)) : nodeRadius(k, n === 0);
-      const ck = q ? mode.cat(q) : -1, hol = ck >= 0 && !!(mode.hollow && mode.hollow[ck]);
-      const fill = q && !hol ? colors[ck] || pal.none : pal.bg;
-      const stroke = hol ? colors[ck] : q ? pal.ring : pal.backbone;
+      const ck = mode.cat(x, q), hol = ck >= 0 && !!(mode.hollow && mode.hollow[ck]);
+      const fill = ck < 0 ? pal.seq[0] : hol ? pal.bg : colors[ck] || pal.none;
+      const stroke = ck < 0 ? pal.backbone : hol ? colors[ck] : pal.ring;
       const cxp = r1(pos[n].x), cyp = r1(pos[n].y);
       const binds = outer ? (net.ringEdges || []).filter((e) => e[0] === n).map((e) => IX.prot[ids[e[1]]].gene) : [];
       const tipHtml = '<b>' + esc(x.gene) + '</b> ' + esc(x.acc) + (outer ? '<br>Second ring: binds ' + esc(binds.join(', ')) + ' (STRING ≥ 0.7)' : n ? '<br>STRING physical score ' + (net.edges.find((e) => e[0] === 0 && e[1] === n) || [0, 0, 0])[2] / 1000 : '') +
@@ -6067,13 +6203,7 @@
     });
     g += '</g>';
     if (forExport) {
-      const ring = (dash) => (xa, yb) => '<circle cx="' + (xa + 10) + '" cy="' + yb + '" r="6" fill="none" stroke="' + pal.ink + '" stroke-width="1.3"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + '/>';
-      const items = mode.cats.map((c, k) => [SWATCH.head(pal, colors[k], !!(mode.hollow && mode.hollow[k])), c])
-        .concat([[(xa, yb) => '<circle cx="' + (xa + 10) + '" cy="' + yb + '" r="4.6" fill="' + pal.bg + '" stroke="' + pal.backbone + '"/>', 'Not in this set'],
-          [(xa, yb) => '<rect x="' + (xa + 5) + '" y="' + (yb - 5) + '" width="10" height="10" rx="2" fill="none" stroke="' + pal.ink + '" stroke-width="1.4"/>', 'PRMT'],
-          [ring('3 2'), 'Tudor domain'], [ring(''), 'WD40 repeat'], [ring('1 2'), 'PHD finger']]);
-      if (net.ring && net.ring.length) items.push([(xa, yb) => '<line x1="' + xa + '" y1="' + yb + '" x2="' + (xa + 20) + '" y2="' + yb + '" stroke="' + pal.muted + '" stroke-dasharray="4 3"/>', 'Second ring: PRMTs and Tudor proteins that bind the partners']);
-      const leg = svgLegend(pal, items, 16, top + net.H + 12, W - 32, { title: mode.name });
+      const leg = svgLegend(pal, netLegendItems(pal, mode, net.ring && net.ring.length), 16, top + net.H + 12, W - 32, { title: mode.name });
       const ly2 = top + net.H + 12 + leg.h;
       H = Math.ceil(ly2 + 26);
       g += leg.svg +
@@ -6148,7 +6278,7 @@
   }
 
   function renderIxProteins(p, body) {
-    const mode = NODE_MODES[UI.ixColor] || NODE_MODES.meth;
+    const mode = NODE_MODES[UI.ixColor] || NODE_MODES.sites;
     const pal = screenPalette();
     const colors = mode.colors(pal);
     const exp = $('#ix-exp');
@@ -6161,8 +6291,7 @@
       '<label class="check fig-ctl" title="Add the PRMTs and Tudor-domain proteins that bind these partners (STRING ≥ 0.7), to trace writer–substrate–reader paths"><input type="checkbox" id="ix-ring"' + (UI.ixRing ? ' checked' : '') + '> Second ring: PRMTs and Tudor proteins</label>' +
       '<details class="col-menu net-menu"' + (UI.netMenuOpen ? ' open' : '') + '><summary class="btn quiet small">Network options</summary><div class="col-pop" id="ix-opts">' + netOptsHtml() + '</div></details>' +
       '<button class="btn quiet small" type="button" id="ix-string" title="Open this network on string-db.org with the same settings">Open in STRING ↗</button></div>' +
-      '<div class="legend"><span class="legend-title">' + esc(mode.name) + '</span>' + mode.cats.map((c, k) => '<span><i style="background:' + colors[k] + '"></i>' + esc(c) + '</span>').join('') +
-      '<span><i class="hollow"></i>Not in this set</span><span><i class="diamond"></i>PRMT</span><span><i class="ring"></i>Tudor domain</span><span><i class="ring wd"></i>WD40 repeat</span><span><i class="ring phd"></i>PHD finger</span></div>' +
+      '<div class="legend"><span class="legend-title">' + esc(mode.name) + '</span>' + netLegendItems(pal, mode, false).map(([draw, label]) => '<span>' + swatchHtml(draw) + esc(label) + '</span>').join('') + '</div>' +
       '<div id="ix-partners"><p class="note">Loading STRING partners…</p></div>';
     $('#ix-top', body).addEventListener('change', (e) => { UI.ixTop = +e.target.value; renderIxProteins(p, body); });
     $('#ix-min', body).addEventListener('change', (e) => { UI.ixMin = +e.target.value; renderIxProteins(p, body); });
@@ -6214,7 +6343,7 @@
             const q = x.p >= 0 ? P[x.p] : null;
             const shared = (IX.cxOf.get(k) || []).filter((c) => p.cx.includes(c));
             return '<tr' + (q ? ' class="row" tabindex="0" data-i="' + q.i + '"' : '') + '><td><b>' + esc(x.gene) + '</b> <span class="muted mono">' + esc(x.acc) + '</span></td><td class="r num">' + (IX.prot[p.i] && IX.prot[p.i].ensp && x.ensp ? '<a href="https://string-db.org/interaction/' + enspId(p.i) + '/' + enspId(k) + '" target="_blank" rel="noopener" title="' + esc('The evidence for ' + p.label + '–' + x.gene + ' in STRING') + '">' + (sc / 1000).toFixed(3) + '</a>' : (sc / 1000).toFixed(3)) + '</td>' +
-              '<td>' + (q ? '<span class="pill"><i style="background:' + (colors[mode.cat(q)] || pal.none) + '"></i>' + q.sites.length + '</span>' : '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(x.acc) + '/entry" target="_blank" rel="noopener" class="muted">not in set ↗</a>') + '</td>' +
+              '<td>' + (q ? '<span class="pill">' + modeDot(mode, mode.cat(x, q), colors[mode.cat(x, q)] || pal.none, 'pd') + q.sites.length + '</span>' : '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(x.acc) + '/entry" target="_blank" rel="noopener" class="muted">not in set ↗</a>') + '</td>' +
               '<td class="nw">' + (partnerTags(x) || '<span class="muted">—</span>') + '</td>' +
               '<td class="hide-sm">' + (predMap.has(k) ? (predMap.get(k).model ? '<button class="linkish" type="button" data-pvk="' + k + '" title="Open the ProtVar model">pDockQ ' + (predMap.get(k).sc / 100).toFixed(2) + '</button>' : 'pDockQ ' + (predMap.get(k).sc / 100).toFixed(2)) + ' <span class="muted">' + predMap.get(k).sites.slice(0, 4).map((x) => '' + rl(x)).join(', ') + (predMap.get(k).sites.length > 4 ? ' +' + (predMap.get(k).sites.length - 4) : '') + '</span>' : '<span class="muted">—</span>') + '</td>' +
               '<td class="hide-sm">' + (shared.length ? shared.slice(0, 2).map((c) => '<a href="https://www.ebi.ac.uk/complexportal/complex/' + encodeURIComponent(IX.cx[c].id) + '" target="_blank" rel="noopener" title="' + esc(IX.cx[c].id + ' in Complex Portal') + '">' + esc(IX.cx[c].name) + '</a>').join('; ') + (shared.length > 2 ? ' +' + (shared.length - 2) : '') : '<span class="muted">—</span>') + '</td></tr>';
