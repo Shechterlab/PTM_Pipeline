@@ -370,7 +370,7 @@
     pageP: 50, pageS: 100, zoom: null, openEvidence: new Set(),
     allCond: false, funcExpanded: false, charts: {},
     fig: { color: 'state', labels: 'auto', tracks: new Set(Array.isArray(mapPrefs.on) ? mapPrefs.on : MAP_DEFAULT_ON), order: Array.isArray(mapPrefs.order) ? mapPrefs.order : null },
-    ixTab: 'proteins', ixTop: 20, ixMin: 700, ixColor: 'meth', ixAll: false, ixNet: null, net: netPrefs,
+    ixTab: 'proteins', ixTop: 20, ixMin: 700, ixColor: 'meth', ixAll: false, ixNet: null, net: netPrefs, ixRing: true,
     cxPred: false, cxMin: 3, cxSort: 'q', cxAll: false, refsOpen: new Set(), ctx: 'protein', condThr: 3, pendingContact: null, pendingModel: null, ixOpen: new Set(), ixJump: null,
     gal: { conf: 'confident', pl: 80, kind: 'bond', noPdb: false, xl: false, all: false },
     figs: { flank: 7, rows: 50, order: 'protein', logo: 'freq', nProt: 8, scale: 'common', color: 'state', lanes: true, sortP: 'default' }, consPos: null, consFlank: 10, docJump: null,
@@ -1567,6 +1567,14 @@
   function bindGlobal() {
     // Residues of sequence windows read out on hover (windowHtml with a site index).
     const winRes = (e) => (e.target.closest ? e.target.closest('.win[data-j] [data-o]') : null);
+    // Evidence chips in tables and cards open the evidence popover for their site.
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest ? e.target.closest('[data-evp][data-ev]') : null;
+      if (!b) return;
+      e.stopPropagation();
+      const [kind, a, c] = b.dataset.ev.split(':');
+      showEvidence(e, P[+b.dataset.evp], kind, +a, +c);
+    }, true);
     // "Did you mean" filter suggestions in the search note replace the search with the term.
     document.addEventListener('click', (e) => {
       const b = e.target.closest ? e.target.closest('[data-setq]') : null;
@@ -1754,11 +1762,21 @@
   const pill = (st) => '<span class="pill"><i class="st-' + st + '"></i>' + STATE_LABEL[st] + '</span>';
   const motifTags = (mask) => bits(mask).filter((b) => !M.motifs[b].startsWith('CARM1')).map((b) => '<span class="tag">' + MOTIF_LABEL[M.motifs[b]] + '</span>').join(' ') || '<span class="muted">—</span>';
   const ipTags = (mask) => bits(mask).map((b) => '<span class="tag ip" title="Recovered by the Maron 2021 ' + esc(IP_HELP[M.maron_ips[b]] || M.maron_ips[b]) + ' IP">' + ipLabel(M.maron_ips[b]) + '</span>').join(' ');
-  function studyTags(mask, max) {
+  // Study chips link to the paper, or for the databases to this protein's record when the accession is given.
+  const STUDY_RECORD = {
+    PhosphoSitePlus: (acc) => 'https://www.phosphosite.org/uniprotAccAction?id=' + encodeURIComponent(acc),
+    UniProt: (acc) => 'https://www.uniprot.org/uniprotkb/' + encodeURIComponent(acc) + '/entry#ptm_processing',
+  };
+  function studyTags(mask, max, acc) {
     const list = M.studyOrder.filter((k) => mask & (1 << k));
     const shown = list.slice(0, max || 3);
     const rest = list.slice(shown.length);
-    return shown.map((k) => '<span class="tag src" title="' + esc(M.studies[k][1] || STUDY_HELP[M.studies[k][0]] || '') + '">' + esc(M.studies[k][0]) + '</span>').join(' ') +
+    return shown.map((k) => {
+      const name = M.studies[k][0], tip = M.studies[k][1] || STUDY_HELP[name] || '';
+      const url = acc && STUDY_RECORD[name] ? STUDY_RECORD[name](acc.split('-')[0]) : studyRef(k)[1] ? 'https://doi.org/' + studyRef(k)[1] : '';
+      return url ? '<a class="tag src" href="' + url + '" target="_blank" rel="noopener" title="' + esc(tip + (STUDY_RECORD[name] && acc ? ' · open the ' + name + ' record' : ' · open the paper')) + '">' + esc(name) + '</a>'
+        : '<span class="tag src" title="' + esc(tip) + '">' + esc(name) + '</span>';
+    }).join(' ') +
       (rest.length ? ' <span class="tag" title="' + esc(rest.map((k) => M.studies[k][0]).join(', ')) + '">+' + rest.length + '</span>' : '');
   }
 
@@ -2004,7 +2022,7 @@
     { k: 'win', label: 'Window ±7 · motifs', sort: 'win', td: winCell },
     { k: 'ix', label: 'Interaction evidence', sort: 'ix', opt: true, tdCls: 'ix-col', tip: 'Experimental: RNA/DNA crosslink, RBDmap or a PDB interface at this residue. Predicted: at the interface of a predicted complex.', td: (s) => ixCell(s, 2) },
     { k: 'prmti', label: 'PRMTi', sort: 'prmti', opt: true, menu: 'PRMT inhibitor response', tip: 'Maron 2021 Table S3: change after GSK591 (PRMT5i) or MS023 (type I PRMTi), adj. p ≤ 0.05', td: treatHtml },
-    { k: 'src', label: 'Reported by', sort: 'src', opt: true, cls: 'hide-sm', td: (s) => '<div class="tags">' + studyTags(s.study, 2) + '</div>' },
+    { k: 'src', label: 'Reported by', sort: 'src', opt: true, cls: 'hide-sm', td: (s) => '<div class="tags">' + studyTags(s.study, 2, P[s.p].acc) + '</div>' },
     { k: 'ctx', label: 'Context', sort: 'ctx', opt: true, menu: 'Disorder and domain context', cls: 'hide-xs', tdCls: 'nw', td: contextHtml },
     { k: 'nn', label: 'Next methyl-R', sort: 'nn', opt: true, cls: 'r hide-sm', tdCls: 'num', td: (s) => (s.nn == null ? '<span class="muted">—</span>' : s.nn + ' aa') },
     { k: 'ip', label: 'Maron IP', sort: 'ip', opt: true, menu: 'Maron methyl-IP', cls: 'hide-sm', td: (s) => '<div class="tags">' + (ipTags(s.ip) || '<span class="muted">—</span>') + '</div>' },
@@ -2468,7 +2486,7 @@
       { k: 'win', label: 'Window ±7 · motifs', td: winCell },
       { k: 'ix', label: 'Interaction evidence', opt: true, tdCls: 'ix-col', tip: 'Experimental: RNA/DNA crosslink, RBDmap or a PDB interface at this residue. Predicted: at the interface of a predicted complex.', td: (s) => ixCell(s, 3) },
       { k: 'prmti', label: 'PRMTi', opt: true, menu: 'PRMT inhibitor response', td: treatHtml },
-      { k: 'src', label: 'Reported by', opt: true, cls: 'hide-sm', td: (s) => '<div class="tags">' + studyTags(s.study, 3) + '</div>' },
+      { k: 'src', label: 'Reported by', opt: true, cls: 'hide-sm', td: (s) => '<div class="tags">' + studyTags(s.study, 3, P[s.p].acc) + '</div>' },
       { k: 'af', label: 'AlphaFold', opt: true, menu: 'AlphaFold pLDDT and AlphaMissense', tdCls: 'nw', tip: 'AlphaFold pLDDT at the site and mean AlphaMissense score for R→X', td: (s) => afCell(p, s) },
       { k: 'ctx', label: 'Context', opt: true, menu: 'Disorder and domain context', tdCls: 'nw', td: contextHtml },
       { k: 'dom', label: 'Nearest domain', opt: true, td: (s) => {
@@ -2821,7 +2839,7 @@
         .concat(u.rg.map((b) => ({ name: b.label + ' (' + b.n + ' RG)', kind: 'RG/RGG', start: b.start, end: b.end, rg: true })))
         .sort((a, b) => a.start - b.start || b.end - a.end);
       table = feats.length ? '<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Feature</th><th>Type</th><th class="r">Range</th><th class="r" title="Methylarginine sites inside the feature">Sites in</th><th class="r hide-xs" title="Sites within 20 aa outside the feature">±20 aa</th></tr></thead><tbody>' +
-        feats.map((f) => { const n = inside(f); return '<tr' + (n ? ' class="has"' : '') + '><td>' + esc(f.name) + '</td><td><span class="tag kind-' + f.kind.replace(/[^A-Za-z]/g, '') + '">' + esc(f.kind) + '</span></td><td class="r num">' + f.start + '–' + f.end + '</td><td class="r num">' + (n || '<span class="muted">0</span>') + '</td><td class="r num hide-xs">' + (near(f) || '<span class="muted">0</span>') + '</td></tr>'; }).join('') +
+        feats.map((f) => { const n = inside(f); const ins = pos.filter((x) => x >= f.start && x <= f.end).map((x) => rl(x, p)); return '<tr' + (n ? ' class="has"' : '') + '><td>' + (f.rg ? '<span title="' + esc('Found in the sequence: ' + RG_HELP + (ins.length ? '. Methylarginines inside: ' + ins.join(', ') : '')) + '">' + esc(f.name) + '</span>' : '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(p.acc.split('-')[0]) + '/entry#family_and_domains" target="_blank" rel="noopener" title="' + esc(f.kind + ' ' + f.name + ', ' + rn(f.start, p) + '–' + rn(f.end, p) + ' (UniProt)' + (ins.length ? '. Methylarginines inside: ' + ins.join(', ') : '')) + '">' + esc(f.name) + '</a>') + '</td><td><span class="tag kind-' + f.kind.replace(/[^A-Za-z]/g, '') + '">' + esc(f.kind) + '</span></td><td class="r num">' + f.start + '–' + f.end + '</td><td class="r num">' + (n || '<span class="muted">0</span>') + '</td><td class="r num hide-xs">' + (near(f) || '<span class="muted">0</span>') + '</td></tr>'; }).join('') +
         '</tbody></table></div>' : '<p class="muted">UniProt annotates no domains or regions for this entry.</p>';
     }
     box.innerHTML = '<h3>Domains &amp; regions</h3><p class="sub">UniProt features (live) with the methylarginines they contain. RG/RGG-rich segments are found in the sequence: ' + esc(RG_HELP.charAt(0).toLowerCase() + RG_HELP.slice(1)) + '.</p>' + table +
@@ -5119,7 +5137,7 @@
       (best ? 'Best-supported predicted contact: ' + galBondText(best) + ' (' + galModelText(best) + ', pLDDT ' + best.plR + '/' + best.plP + ').' : '');
     const name = best ? ixGene(best.k) : ixGene(h[0][0]);
     const more = new Set(h.map((x) => x[0]).concat((s.gal || []).map((g) => g.k)));
-    return '<span class="tag pred' + (best ? ' pred-hi' : '') + '" title="' + esc(tip) + '">pred. ' + esc(name) + (more.size > 1 ? ' +' + (more.size - 1) : '') + '</span>';
+    return '<button type="button" class="tag pred' + (best ? ' pred-hi' : '') + '"' + evChip(s, 'pred', s.pos, s.pos) + ' title="' + esc(tip + ' Click for the partners and models.') + '">pred. ' + esc(name) + (more.size > 1 ? ' +' + (more.size - 1) : '') + '</button>';
   };
   // RNA/DNA crosslinking mass spectrometry in living human cells.
   const XL_OPTS = [[1, 'RNA-crosslinked residue'], [2, 'Within 3 aa of an RNA crosslink'], [4, 'RBDmap RNA-bound fragment'],
@@ -5193,17 +5211,19 @@
   const pevMask = (p) => PEV_SETS.reduce((m, [b, , , , t]) => (t(p) ? m | b : m), 0);
   const pevLabel = (mask) => PEV_SETS.filter(([b]) => mask & b).map(([, l]) => l).join(' + ');
 
+  // Evidence chips are buttons: a click opens the evidence (studies, DOIs) for that stretch of the protein.
+  const evChip = (s, kind, a, b) => ' data-evp="' + s.p + '" data-ev="' + kind + ':' + a + ':' + b + '"';
   function xlTags(s) {
     const x = s.xl;
     if (!x) return '';
     const t = [];
-    if (x.r) t.push('<span class="tag na-rna' + (x.one ? '' : ' xl-near') + '" title="' + esc('RNA-crosslinked residue in living human cells (UV crosslinking mass spectrometry): ' + xlSets(x.r).join(', ') + (x.one ? '. At least one crosslink is localised to this residue alone.' : '. Only as one of several candidate residues of a crosslink.')) + '">RNA xl</span>');
-    else if (x.n) t.push('<span class="tag na-rna xl-near" title="' + esc('Within 3 residues of an RNA-crosslinked residue: ' + xlSets(x.n).join(', ')) + '">near RNA xl</span>');
-    if (x.f) t.push('<span class="tag na-rna xl-near" title="Inside an RNA-bound fragment (RBDmap, HeLa; Castello et al. 2016)">RBDmap</span>');
-    if (x.d & 1) t.push('<span class="tag na-dna" title="DNA crosslink localised to this residue in living MCF7 cells (Trendel et al. 2025)">DNA xl</span>');
-    else if (x.d & 8) t.push('<span class="tag na-dna xl-near" title="One of several candidate residues of a DNA crosslink in living MCF7 cells (Trendel et al. 2025)">DNA xl candidate</span>');
-    else if (x.d & 2) t.push('<span class="tag na-dna xl-near" title="Inside a DNA-crosslinked peptide (Trendel et al. 2025)">DNA xl peptide</span>');
-    if (x.d & 4) t.push('<span class="tag na-dna xl-near" title="Inside a UniProt DNA-binding region">DNA-binding domain</span>');
+    if (x.r) t.push('<button type="button" class="tag na-rna' + (x.one ? '' : ' xl-near') + '"' + evChip(s, 'rna', s.pos, s.pos) + ' title="' + esc('RNA-crosslinked residue in living human cells (UV crosslinking mass spectrometry): ' + xlSets(x.r).join(', ') + (x.one ? '. At least one crosslink is localised to this residue alone.' : '. Only as one of several candidate residues of a crosslink.')) + '">RNA xl</button>');
+    else if (x.n) t.push('<button type="button" class="tag na-rna xl-near"' + evChip(s, 'rna', s.pos - 3, s.pos + 3) + ' title="' + esc('Within 3 residues of an RNA-crosslinked residue: ' + xlSets(x.n).join(', ')) + '">near RNA xl</button>');
+    if (x.f) t.push('<button type="button" class="tag na-rna xl-near"' + evChip(s, 'rna', s.pos, s.pos) + ' title="Inside an RNA-bound fragment (RBDmap, HeLa; Castello et al. 2016)">RBDmap</button>');
+    if (x.d & 1) t.push('<button type="button" class="tag na-dna"' + evChip(s, 'dna', s.pos, s.pos) + ' title="DNA crosslink localised to this residue in living MCF7 cells (Trendel et al. 2025)">DNA xl</button>');
+    else if (x.d & 8) t.push('<button type="button" class="tag na-dna xl-near"' + evChip(s, 'dna', s.pos, s.pos) + ' title="One of several candidate residues of a DNA crosslink in living MCF7 cells (Trendel et al. 2025)">DNA xl candidate</button>');
+    else if (x.d & 2) t.push('<button type="button" class="tag na-dna xl-near"' + evChip(s, 'dna', s.pos, s.pos) + ' title="Inside a DNA-crosslinked peptide (Trendel et al. 2025)">DNA xl peptide</button>');
+    if (x.d & 4) t.push('<button type="button" class="tag na-dna xl-near"' + evChip(s, 'dna', s.pos, s.pos) + ' title="Inside a UniProt DNA-binding region">DNA-binding domain</button>');
     return t.join(' ');
   }
   const xlText = (s) => (s.xl ? [s.xl.r ? 'RNA:' + xlSets(s.xl.r).join('/') : '', s.xl.n && !s.xl.r ? 'RNA<=3aa' : '', s.xl.f ? 'RBDmap' : '', s.xl.d & 1 ? 'DNA' : s.xl.d & 8 ? 'DNA candidate' : '', s.xl.d & 2 && !(s.xl.d & 9) ? 'DNA peptide' : '', s.xl.d & 4 ? 'UniProt DNA-binding' : ''].filter(Boolean).join(';') : '');
@@ -5803,11 +5823,11 @@
             const x = IX.prot[k];
             const q = x.p >= 0 ? P[x.p] : null;
             const shared = (IX.cxOf.get(k) || []).filter((c) => p.cx.includes(c));
-            return '<tr' + (q ? ' class="row" tabindex="0" data-i="' + q.i + '"' : '') + '><td><b>' + esc(x.gene) + '</b> <span class="muted mono">' + esc(x.acc) + '</span></td><td class="r num">' + (sc / 1000).toFixed(3) + '</td>' +
+            return '<tr' + (q ? ' class="row" tabindex="0" data-i="' + q.i + '"' : '') + '><td><b>' + esc(x.gene) + '</b> <span class="muted mono">' + esc(x.acc) + '</span></td><td class="r num">' + (IX.prot[p.i] && IX.prot[p.i].ensp && x.ensp ? '<a href="https://string-db.org/interaction/' + enspId(p.i) + '/' + enspId(k) + '" target="_blank" rel="noopener" title="' + esc('The evidence for ' + p.label + '–' + x.gene + ' in STRING') + '">' + (sc / 1000).toFixed(3) + '</a>' : (sc / 1000).toFixed(3)) + '</td>' +
               '<td>' + (q ? '<span class="pill"><i style="background:' + (colors[mode.cat(q)] || pal.none) + '"></i>' + q.sites.length + '</span>' : '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(x.acc) + '/entry" target="_blank" rel="noopener" class="muted">not in set ↗</a>') + '</td>' +
               '<td class="nw">' + (partnerTags(x) || '<span class="muted">—</span>') + '</td>' +
               '<td class="hide-sm">' + (predMap.has(k) ? (predMap.get(k).model ? '<button class="linkish" type="button" data-pvk="' + k + '" title="Open the ProtVar model">pDockQ ' + (predMap.get(k).sc / 100).toFixed(2) + '</button>' : 'pDockQ ' + (predMap.get(k).sc / 100).toFixed(2)) + ' <span class="muted">' + predMap.get(k).sites.slice(0, 4).map((x) => '' + rl(x)).join(', ') + (predMap.get(k).sites.length > 4 ? ' +' + (predMap.get(k).sites.length - 4) : '') + '</span>' : '<span class="muted">—</span>') + '</td>' +
-              '<td class="hide-sm">' + (shared.length ? shared.slice(0, 2).map((c) => esc(IX.cx[c].name)).join('; ') + (shared.length > 2 ? ' +' + (shared.length - 2) : '') : '<span class="muted">—</span>') + '</td></tr>';
+              '<td class="hide-sm">' + (shared.length ? shared.slice(0, 2).map((c) => '<a href="https://www.ebi.ac.uk/complexportal/complex/' + encodeURIComponent(IX.cx[c].id) + '" target="_blank" rel="noopener" title="' + esc(IX.cx[c].id + ' in Complex Portal') + '">' + esc(IX.cx[c].name) + '</a>').join('; ') + (shared.length > 2 ? ' +' + (shared.length - 2) : '') : '<span class="muted">—</span>') + '</td></tr>';
           }).join('') + '</tbody></table></div>' + (shown.length > 40 ? '<button class="linkish" type="button" id="ix-all">' + (UI.ixAll ? 'Show the first 40' : 'Show all ' + fmt(shown.length)) + '</button>' : '') : '') +
         '<p class="note">' + esc(netDesc()) + (UI.net.type === 'physical' ? ' (experiments, curated databases and text mining of physical binding)' : ' (all association evidence, including co-expression and genomic context)') + '. RNA*/DNA* mark GO annotations without experimental evidence. Click a methylated partner to open it.</p>';
       const lst = $('#ix-list', box);
@@ -5991,7 +6011,7 @@
     loadEncode(gene, kind === 'rna' ? 'eCLIP' : 'TF ChIP-seq').then((rows) => {
       const el = $('#ix-encode', body);
       if (!el || !alive()) return;
-      if (!rows) { el.textContent = 'ENCODE did not answer.'; return; }
+      if (!rows) { el.innerHTML = 'ENCODE did not answer. <a href="https://www.encodeproject.org/search/?type=Experiment&status=released&assay_title=' + encodeURIComponent(kind === 'rna' ? 'eCLIP' : 'TF ChIP-seq') + '&target.label=' + encodeURIComponent(gene) + '" target="_blank" rel="noopener">Search ENCODE for ' + esc(gene) + ' ↗</a>'; return; }
       if (!rows.length) { el.textContent = 'No released ENCODE ' + (kind === 'rna' ? 'eCLIP' : 'TF ChIP-seq') + ' experiment targets ' + gene + '.'; return; }
       el.className = '';
       el.innerHTML = '<ul class="enc-list">' + rows.map((r) => '<li><a href="https://www.encodeproject.org/experiments/' + encodeURIComponent(r.accession) + '/" target="_blank" rel="noopener">' + esc(r.accession) + ' ↗</a> ' + esc((r.biosample_summary || '').replace(/^Homo sapiens /, '')) + ' <span class="muted">' + esc(r.date_released || '') + '</span></li>').join('') + '</ul>' +
@@ -6342,7 +6362,7 @@
     });
     for (const c of cm.cells) {
       const st = cm.mode === 'pooled' ? { or: c.po.or } : c.mh, l2 = st.or != null && st.or > 0 && Number.isFinite(st.or) ? Math.log2(st.or) : null;
-      const sig = c.q != null && c.q <= 0.05, fill = c.a ? cmColor(l2, sig, pal) : pal.cmMid;
+      const sig = c.a >= 3 && c.q != null && c.q <= 0.05, fill = c.a ? cmColor(l2, sig, pal) : pal.cmMid;
       const x = lw + c.ci * cw, y = rowY(c.ri);
       const r = cm.rows[c.ri], col = cm.cols[c.ci];
       const label = !c.a ? '·' : st.or == null ? 'n/e' : st.or === 0 ? '0×' : !Number.isFinite(st.or) ? '∞' : (st.or >= 10 ? st.or.toFixed(0) : st.or.toFixed(st.or < 1 ? 2 : 1)) + '×';
@@ -6365,7 +6385,7 @@
     const sw = CM_DIVERGING.down.slice().reverse().concat([pal.cmMid]).concat(CM_DIVERGING.up);
     sw.forEach((c, k) => { g += '<rect x="' + (lx + k * 30) + '" y="' + ly + '" width="28" height="12" rx="2" fill="' + c + '"/>'; });
     ticks.forEach((t, k) => { if (t) g += '<text x="' + (lx + k * 30 + (k < 4 ? 0 : 28)) + '" y="' + (ly + 25) + '" font-size="9" text-anchor="' + (k < 4 ? 'start' : 'end') + '" fill="' + pal.muted + '">' + (k < 4 ? '≤' : '≥') + t + '</text>'; });
-    g += '<text x="' + (lx + sw.length * 30 + 10) + '" y="' + (ly + 10) + '" font-size="10" fill="' + pal.muted + '">coloured where q ≤ 0.05 (Benjamini–Hochberg); grey cells are not significant</text>';
+    g += '<text x="' + (lx + sw.length * 30 + 10) + '" y="' + (ly + 10) + '" font-size="10" fill="' + pal.muted + '">coloured where q ≤ 0.05 (Benjamini–Hochberg) and n ≥ 3; other cells grey</text>';
     return { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + (pal.font || EXPORT_PAL.font).replace(/'/g, '"') + '\' role="img" aria-label="' + esc(title) + '">' +
       (forExport ? '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' : '') + '<g transform="translate(' + (forExport ? 16 : 0) + ',0)">' + g + '</g></svg>', W: W + (forExport ? 16 : 0), H };
   }
@@ -6374,7 +6394,7 @@
     const scoped = constraints().length > 0, mode = UI.cmMode || 'within';
     return '<div class="card" id="ix-cm"><div class="card-head"><div><h3>Which sites carry which evidence</h3><p class="sub">' +
       (scoped ? 'The ' + fmt(R.sites.length) + ' sites in your selection' : 'All ' + fmt(R.sites.length) + ' methylarginines') +
-      ': each cell asks whether sites with the row feature (the writer evidence, methylation call, motif or context, from the site union) carry each kind of contact evidence (crosslinks, PDB, predicted complexes) more or less often than the other sites. Red is more often, blue less often (coloured where q ≤ 0.05); hover a cell for the counts and both statistics, click it to list the sites.' + docLink('ix-cm') + '</p></div>' +
+      ': each cell asks whether sites with the row feature (the writer evidence, methylation call, motif or context, from the site union) carry each kind of contact evidence (crosslinks, PDB, predicted complexes) more or less often than the other sites. Red is more often, blue less often (coloured where q ≤ 0.05 and at least 3 sites); hover a cell for the counts and both statistics, click it to list the sites.' + docLink('ix-cm') + '</p></div>' +
       '<div class="exp"><button type="button" data-cmex="svg">SVG</button><button type="button" data-cmex="png">PNG</button><button type="button" data-cmex="tsv">TSV</button></div></div>' +
       '<div class="fig-controls"><div class="seg" role="group" aria-label="Comparison"><span>Compare</span>' +
       [['within', 'Within protein'], ['pooled', 'Pooled']].map(([k, l]) => '<button type="button" data-cmmode="' + k + '" aria-pressed="' + (mode === k) + '">' + l + '</button>').join('') + '</div></div>' +
@@ -6426,6 +6446,8 @@
   const WR_SEQ = ['#cde2fb', '#9ec5f4', '#5598e7', '#256abf', '#104281'];
   function wrMatrix() {
     const sel = new Set(R.prots.map((p) => p.i));
+    // Partners the search already requires (binds:PRMT5): their row or column is full by construction.
+    const searched = new Set(termValues('binds').map((v) => String(v.text).toUpperCase()));
     const universe = new Set(R.prots.filter((p) => IX.prot[p.i] && IX.prot[p.i].ensp).map((p) => p.i));
     const subs = (k) => { const out = new Set(); for (const q of IX.wr.get(k) || []) { const x = IX.prot[q]; if (x && x.p >= 0 && sel.has(x.p)) out.add(x.p); } return out; };
     const W = [], Rd = [];
@@ -6442,7 +6464,7 @@
     const tot = (list, key) => list.map((x) => ({ x, n: cells.filter((c) => c[key] === x).reduce((m, c) => m + c.a, 0) })).filter((t) => t.n > 0).sort((u, v) => v.n - u.n || IX.prot[u.x.k].gene.localeCompare(IX.prot[v.x.k].gene)).map((t) => t.x);
     const cols = tot(Rd, 'r').slice(0, 12);
     const rows = tot(W, 'w').filter((w) => cells.some((c) => c.w === w && c.a && cols.includes(c.r)));
-    return { rows, cols, cells, n: universe.size };
+    return { rows, cols, cells, n: universe.size, searched };
   }
   function wrMatrixSvg(m, pal, forExport, title) {
     const lw = 92, cw = 66, ch = 30, top = forExport ? 96 : 44, W = lw + cw * m.cols.length + 16, H = top + ch * m.rows.length + (forExport ? 70 : 46);
@@ -6452,15 +6474,16 @@
     m.cols.forEach((r, ci) => { g += '<text x="' + (lw + ci * cw + cw / 2) + '" y="' + (top - 10) + '" font-size="10.5" font-weight="600" text-anchor="middle" fill="' + pal.ink + '">' + (forExport ? '' : '<title>' + esc(IX.prot[r.k].gene + ' binds ' + r.set.size + ' methylated proteins of the selection') + '</title>') + esc(IX.prot[r.k].gene) + '</text>'; });
     m.rows.forEach((w, ri) => {
       const y = top + ri * ch;
-      g += '<text x="0" y="' + (y + ch / 2 + 4) + '" font-size="11.5" font-weight="600" fill="' + pal.ink + '">' + (forExport ? '' : '<title>' + esc(IX.prot[w.k].gene + ' binds ' + w.set.size + ' methylated proteins of the selection') + '</title>') + esc(IX.prot[w.k].gene) + '</text>';
+      g += '<text x="0" y="' + (y + ch / 2 + 4) + '" font-size="11.5" font-weight="600" fill="' + pal.ink + '">' + (forExport ? '' : '<title>' + esc(IX.prot[w.k].gene + ' binds ' + w.set.size + ' methylated proteins of the selection') + '</title>') + esc(IX.prot[w.k].gene) + (m.searched.has(IX.prot[w.k].gene.toUpperCase()) ? ' *' : '') + '</text>';
       m.cols.forEach((r, ci) => {
         const c = m.cells.find((x) => x.w === w && x.r === r), x = lw + ci * cw;
         const step = !c.a ? -1 : c.a === 1 ? 0 : c.a === 2 ? 1 : c.a <= 4 ? 2 : c.a <= 9 ? 3 : 4;
         // Outline needs two or more shared partners: with short partner lists one shared protein can pass the test alone.
-        const fill = step < 0 ? pal.cmMid : WR_SEQ[step], sig = c.a >= 2 && c.q != null && c.q <= 0.05;
+        const inSearch = m.searched.has(IX.prot[w.k].gene.toUpperCase()) || m.searched.has(IX.prot[r.k].gene.toUpperCase());
+        const fill = step < 0 ? pal.cmMid : WR_SEQ[step], sig = !inSearch && c.a >= 2 && c.q != null && c.q <= 0.05;
         const genes = c.both.map((i) => P[i].label).sort();
         const tipHtml = '<b>' + esc(IX.prot[w.k].gene) + ' and ' + esc(IX.prot[r.k].gene) + '</b><br>' + fmt(c.a) + ' methylated protein' + (c.a === 1 ? '' : 's') + ' bind both' + (c.a ? ': ' + esc(genes.slice(0, 14).join(', ')) + (genes.length > 14 ? ' and ' + (genes.length - 14) + ' more' : '') : '') +
-          '<br>Expected if independent: ' + c.exp.toFixed(1) + (c.p != null ? ' · Fisher p ' + fmtP(c.p) + ', q ' + fmtP(c.q) : '') + (c.a ? '<br><i>Click to list them</i>' : '');
+          (inSearch ? '<br>Your search already requires binding to ' + esc(m.searched.has(IX.prot[w.k].gene.toUpperCase()) ? IX.prot[w.k].gene : IX.prot[r.k].gene) + ', so this count is not tested' : '<br>Expected if independent: ' + c.exp.toFixed(1) + (c.p != null ? ' · Fisher p ' + fmtP(c.p) + ', q ' + fmtP(c.q) : '')) + (c.a ? '<br><i>Click to list their methylarginines</i>' : '');
         g += '<g' + (forExport ? '' : ' class="wr-cell" data-w="' + w.k + '" data-r="' + r.k + '" tabindex="0" role="button" data-tip="' + esc(tipHtml) + '" style="cursor:' + (c.a ? 'pointer' : 'default') + '"') + '>' +
           '<rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="' + (cw - 2) + '" height="' + (ch - 2) + '" rx="4" fill="' + fill + '"' + (sig ? ' stroke="' + pal.ink + '" stroke-width="1.6"' : '') + '/>' +
           '<text x="' + (x + cw / 2) + '" y="' + (y + ch / 2 + 4) + '" font-size="11.5" font-weight="' + (sig ? 700 : 400) + '" text-anchor="middle" fill="' + cmInk(fill) + '">' + (c.a || '·') + '</text></g>';
@@ -6480,6 +6503,7 @@
       (scoped ? 'Methylated proteins in your selection' : 'All methylated proteins') + ' that are STRING physical partners (≥ 0.7) of both a PRMT (rows) and a Tudor-domain protein (columns, InterPro IPR002999; the 12 with most shared partners). A cell counts the shared partners; outlined cells share at least two, more than expected if the two partner lists were independent. Hover for the proteins, click to list them.' + docLink('ix-wr') + '</p></div>' +
       '<div class="exp"><button type="button" data-wrex="svg">SVG</button><button type="button" data-wrex="png">PNG</button><button type="button" data-wrex="tsv">TSV</button></div></div>' +
       '<div class="cm-box" id="wr-box"></div>' +
+      (termValues('binds').length ? '<p class="note">* Required by your search (binds:), so its row is full by construction and not tested.</p>' : '') +
       '<p class="note">Binding is a STRING physical link to the whole protein, not to a methylarginine, and not every Tudor domain reads methylarginine: the Tudor domains of PHF1, PHF19 and MTF2, for example, bind H3K36me3 (' + doiLink('10.1038/nsmb.2435', 'Musselman et al. 2012') + '). Read a shared partner as a candidate writer–substrate–reader path to test.</p></div>';
   }
   function bindWrMatrix(el) {
@@ -6498,7 +6522,9 @@
         if (!cell || !cell.a) return;
         hideTip();
         F.ixScore = Math.max(700, F.ixScore);
-        applyQueryText(queryText(Q.plain, Q.tokens.map((t) => ({ key: t.key, vals: t.vals.slice() })).concat([{ key: 'binds', vals: [{ text: IX.prot[cell.w.k].gene }] }, { key: 'binds', vals: [{ text: IX.prot[cell.r.k].gene }] }])), 'proteins');
+        const have = (g) => m.searched.has(g.toUpperCase());
+        const add = [IX.prot[cell.w.k].gene, IX.prot[cell.r.k].gene].filter((g) => !have(g)).map((g) => ({ key: 'binds', vals: [{ text: g }] }));
+        applyQueryText(queryText(Q.plain, Q.tokens.map((t) => ({ key: t.key, vals: t.vals.slice() })).concat(add)), 'sites');
         window.scrollTo({ top: 0 });
       };
       c.addEventListener('click', go2);
@@ -7035,7 +7061,7 @@
       '<label class="fig-ctl">Min. members <select id="cx-min">' + [2, 3, 5, 10, 20].map((n) => '<option' + (n === min ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label>' +
       '<label class="fig-ctl">Rank by <select id="cx-sort"><option value="q"' + (UI.cxSort !== 'share' ? ' selected' : '') + '>Enrichment q</option><option value="share"' + (UI.cxSort === 'share' ? ' selected' : '') + '>Share methylated</option></select></label></div>' +
       '<div class="tbl-wrap"><table class="tbl compact cx-tbl"><thead><tr><th>Complex</th><th class="r">Members</th><th>Methylated</th><th class="r hide-xs">Fold</th><th class="r">q</th></tr></thead><tbody>' +
-      shown.map((c) => '<tr class="row" tabindex="0" data-cx="' + c.k + '"><td><button class="linkish cx-mem-btn" type="button" data-cxmem="' + c.k + '" aria-expanded="' + UI.cxOpen.has(c.k) + '" title="Show the members">Members</button> <b>' + esc(c.name) + '</b> <span class="muted mono">' + esc(c.id) + '</span></td><td class="r num">' + c.n + '</td>' +
+      shown.map((c) => '<tr class="row" tabindex="0" data-cx="' + c.k + '"><td><button class="linkish cx-mem-btn" type="button" data-cxmem="' + c.k + '" aria-expanded="' + UI.cxOpen.has(c.k) + '" title="Show the members">Members</button> <b>' + esc(c.name) + '</b> <a class="muted mono" href="https://www.ebi.ac.uk/complexportal/complex/' + encodeURIComponent(c.id) + '" target="_blank" rel="noopener" title="Open in Complex Portal">' + esc(c.id) + '</a></td><td class="r num">' + c.n + '</td>' +
         '<td><div class="meter-row"><span class="meter"><i style="width:' + (100 * c.m / c.n).toFixed(1) + '%"></i></span><span class="num">' + c.m + ' (' + Math.round(100 * c.m / c.n) + '%)</span></div></td>' +
         '<td class="r num hide-xs">' + (c.fold != null ? c.fold.toFixed(1) + '×' : '—') + '</td><td class="r num">' + fmtP(c.q) + '</td></tr>' +
         (UI.cxOpen.has(c.k) ? '<tr class="cx-mem-row"><td colspan="5">' + cxMembersHtml(c) + '</td></tr>' : '')).join('') +
@@ -7077,7 +7103,7 @@
     };
     return '<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Gene Ontology</th><th class="r">Methylated proteins</th><th class="r">Other proteins</th><th class="r">log2 OR</th><th class="r">p</th></tr></thead><tbody>' +
       goRow('rna', 'RNA binding', 1, false) + goRow('rna_exp', 'RNA binding, experimental', 1, true) + goRow('dna', 'DNA binding', 2, false) + goRow('dna_exp', 'DNA binding, experimental', 2, true) + '</tbody></table></div>' +
-      '<p class="note">Methylated vs other reviewed human proteins (Fisher exact test), GO:0003723 and GO:0003677 including child terms. Click a row to list the proteins.</p>';
+      '<p class="note">Methylated vs other reviewed human proteins (Fisher exact test), <a href="https://www.ebi.ac.uk/QuickGO/term/GO:0003723" target="_blank" rel="noopener">GO:0003723</a> and <a href="https://www.ebi.ac.uk/QuickGO/term/GO:0003677" target="_blank" rel="noopener">GO:0003677</a> including child terms. Click a row to list the proteins.</p>';
   }
 
   // The interface test repeated within proteins (Mantel–Haenszel, each protein a stratum) and restricted to
@@ -7718,7 +7744,7 @@
   function contactEvidenceHtml(p, kind, a, b) {
     const span = a === b ? rn(a, p) : rn(a, p) + '–' + rn(b, p);
     const u = UNIDATA.get(p.acc), seq = (u && u.seq) || '';
-    const res = (pos) => (seq[pos - 1] || '') + rn(pos, p);
+    const res = (pos) => (seq[pos - 1] ? seq[pos - 1] + rn(pos, p) : 'residue ' + rn(pos, p));
     const inR = (pos) => pos >= a && pos <= b, overlap = ([x, y]) => y >= a && x <= b;
     const methyl = p.sites.map((j) => S[j].pos).filter(inR);
     const items = [];

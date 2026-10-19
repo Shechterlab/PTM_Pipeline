@@ -1258,3 +1258,12 @@ svg [data-ev]:hover { stroke: var(--ink); stroke-width: 0.8; }
 .sc-wr dl.sc-kv > div { grid-template-columns: 12rem minmax(0, 1fr); }
 @media (max-width: 640px) { .sc-wr dl.sc-kv > div { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; } }
 .var-item a { margin-left: 0.25rem; }
+
+/* Chips that link or open evidence keep the tag look */
+a.tag { text-decoration: none; }
+a.tag:hover, button.tag:hover { text-decoration: underline; text-underline-offset: 2px; }
+button.tag { border: 0; font-family: inherit; line-height: inherit; cursor: pointer; }
+
+/* Jumps to a card or section land below the sticky search and tabs */
+.card, details.ix-sec, [id^="ch-"], [id^="ix-"], #site-card { scroll-margin-top: 170px; }
+@media (max-width: 760px) { .card, details.ix-sec, [id^="ch-"], [id^="ix-"], #site-card { scroll-margin-top: 120px; } }
