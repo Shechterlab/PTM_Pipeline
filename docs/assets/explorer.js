@@ -6168,6 +6168,171 @@
         '<p class="note">No site in the selection carries this evidence.</p>') + '</div></div>';
   }
 
+  // ------------------------------------------------- connections matrix
+  // Site features (rows) against site-level interaction evidence (columns) for the selected sites. Each cell compares
+  // the sites with the row feature with the other selected sites: within protein by default (Mantel–Haenszel, each
+  // protein a stratum, so a protein with many mapped sites does not dominate), or pooled across proteins. Colour is
+  // the log2 odds ratio, shown only where q ≤ 0.05 (Benjamini–Hochberg across the matrix); other cells stay grey.
+  const CM_DIVERGING = { up: ['#f6d0cd', '#ef9a94', '#e34948', '#a8302f'], down: ['#cde2fb', '#86b6ef', '#2a78d6', '#184f95'], mid: '#f0efec' };
+  const CM_STEPS = [Math.log2(1.25), 1, Math.log2(3), Math.log2(5)];
+  function cmRows() {
+    const ft = new Map(profileFeatures().map((f) => [f.key, f]));
+    const ip = (n) => 'ip' + M.maron_ips.indexOf(n), mot = (m) => 'mot' + M.motifs.indexOf(m), dis = 'dis' + M.disorder_classes.indexOf('disordered');
+    const dom = M.domain_contexts.indexOf('in_domain');
+    const rows = [
+      ['Writer', 'Rme2s IP', ip('SDMA'), 'Recovered by the SDMA antibody (Maron et al. 2021): symmetric dimethylation, made by PRMT5'],
+      ['Writer', 'Rme2a IP', ip('ADMA'), 'Recovered by the ADMA antibody (Maron et al. 2021): asymmetric dimethylation, made by type I PRMTs'],
+      ['Writer', 'Rme1 IP', ip('MMA'), 'Recovered by the MMA antibody (Maron et al. 2021): monomethylation'],
+      ['Writer', 'Down with GSK591', 'gsk', 'Decreased after the PRMT5 inhibitor GSK591 (Maron et al. 2021, adj. p ≤ 0.05)'],
+      ['Writer', 'Down with MS023', 'ms', 'Decreased after the type I PRMT inhibitor MS023 (Maron et al. 2021, adj. p ≤ 0.05)'],
+      ['State', 'Rme2 reported', 'st2', 'A source reported dimethylarginine at the site (Rme2, alone or with Rme1)'],
+      ['Motif', 'RGG', mot('RGG'), MOTIF_HELP.RGG], ['Motif', 'GAR', mot('GAR'), MOTIF_HELP.GAR], ['Motif', 'RXR', mot('RXR'), MOTIF_HELP.RXR],
+      ['Motif', 'Pro ±5', mot('CARM1_proline_rich'), MOTIF_HELP.CARM1_proline_rich],
+      ['Context', 'In an IDR', dis, 'Inside a MobiDB consensus disordered region'],
+    ].map(([group, label, key, help]) => { const f = ft.get(key); return f && { group, label, help, test: f.test, apply: f.apply, term: f.term }; }).filter(Boolean);
+    if (dom >= 0) rows.push({ group: 'Context', label: 'In a domain', help: 'Inside an InterPro domain', test: (x) => x.dctx === dom, apply: (f) => { f.domctx = new Set([dom]); } });
+    return rows;
+  }
+  function connMatrix(sites, mode) {
+    const rows = cmRows(), cols = EV_SETS, nr = rows.length, nc = cols.length;
+    const pooled = Array.from({ length: nr * nc }, () => [0, 0, 0, 0]), tabs = Array.from({ length: nr * nc }, () => []);
+    const byP = new Map();
+    for (const x of sites) { if (!byP.has(x.p)) byP.set(x.p, []); byP.get(x.p).push(x); }
+    const local = new Int32Array(nr * nc * 4);
+    for (const list of byP.values()) {
+      local.fill(0);
+      for (const x of list) {
+        const ev = x.ev || 0;
+        rows.forEach((r, ri) => {
+          const f = r.test(x) ? 0 : 2;
+          for (let ci = 0; ci < nc; ci++) local[(ri * nc + ci) * 4 + f + (ev & cols[ci][0] ? 0 : 1)]++;
+        });
+      }
+      for (let k = 0; k < nr * nc; k++) {
+        const t = [local[k * 4], local[k * 4 + 1], local[k * 4 + 2], local[k * 4 + 3]];
+        for (let q = 0; q < 4; q++) pooled[k][q] += t[q];
+        if ((t[0] + t[1]) && (t[2] + t[3]) && (t[0] + t[2]) && (t[1] + t[3])) tabs[k].push(t);
+      }
+    }
+    const cells = pooled.map(([a, b, c, d], k) => {
+      const po = oddsCi(a, b, c, d), mh = mhTest(tabs[k]);
+      const ok = (a + b) && (c + d) && (a + c) && (b + d);
+      return { ri: Math.floor(k / nc), ci: k % nc, a, b, c, d, po, pp: ok ? fisherP(a, b, c, d) : null, mh };
+    });
+    const key = (x) => (mode === 'pooled' ? x.pp : x.mh.p);
+    const tested = cells.filter((x) => key(x) != null).sort((x, y) => key(x) - key(y));
+    let prev = 1;
+    for (let k = tested.length - 1; k >= 0; k--) { prev = Math.min(prev, (key(tested[k]) * tested.length) / (k + 1)); tested[k].q = prev; }
+    return { rows, cols, cells, n: sites.length, proteins: byP.size, mode };
+  }
+  function cmColor(l2, sig, pal) {
+    if (l2 == null || !Number.isFinite(l2)) return pal.cmMid;
+    const arm = l2 > 0 ? CM_DIVERGING.up : CM_DIVERGING.down;
+    let step = -1;
+    CM_STEPS.forEach((t, k) => { if (Math.abs(l2) >= t) step = k; });
+    return step < 0 || !sig ? pal.cmMid : arm[step];
+  }
+  // Ink that reads on a fill: dark text on light cells, white on dark ones.
+  const cmInk = (hex) => { const v = parseInt(hex.slice(1), 16), r = v >> 16, g = (v >> 8) & 255, b = v & 255; return 0.299 * r + 0.587 * g + 0.114 * b > 150 ? '#1f2a30' : '#ffffff'; };
+  function connMatrixSvg(cm, pal, forExport, title) {
+    const lw = 150, cw = 96, ch = 34, top = forExport ? 96 : 52, W = lw + cw * cm.cols.length + 16;
+    const groups = [];
+    cm.rows.forEach((r, ri) => { if (!groups.length || groups[groups.length - 1][0] !== r.group) groups.push([r.group, ri]); });
+    const gap = 8, rowY = (ri) => top + ri * ch + groups.filter(([, start]) => start <= ri).length * gap - gap;
+    const H = rowY(cm.rows.length - 1) + ch + (forExport ? 92 : 60);
+    let g = '';
+    if (forExport) {
+      g += '<text x="0" y="24" font-size="17" font-weight="700" fill="' + pal.ink + '">' + esc(title) + '</text>' +
+        '<text x="0" y="44" font-size="11" fill="' + pal.muted + '">' + esc(fmt(cm.n) + ' methylarginines on ' + fmt(cm.proteins) + ' proteins · odds ratio of each kind of evidence for sites with the row feature, ' + (cm.mode === 'pooled' ? 'pooled across proteins' : 'within protein (Mantel–Haenszel)')) + '</text>';
+    }
+    cm.cols.forEach(([, , short, help], ci) => {
+      const x = lw + ci * cw + cw / 2;
+      g += '<text x="' + x + '" y="' + (top - 12) + '" font-size="10.5" font-weight="600" text-anchor="middle" fill="' + pal.ink + '">' + (forExport ? '' : '<title>' + esc(help) + '</title>') + esc(short) + '</text>';
+    });
+    groups.forEach(([name, start]) => { g += '<text x="0" y="' + (rowY(start) - 2) + '" font-size="9" letter-spacing=".06em" font-weight="700" fill="' + pal.muted + '">' + esc(name.toUpperCase()) + '</text>'; });
+    cm.rows.forEach((r, ri) => {
+      const y = rowY(ri);
+      g += '<text x="8" y="' + (y + ch / 2 + 4) + '" font-size="11.5" fill="' + pal.ink + '">' + (forExport ? '' : '<title>' + esc(r.help) + '</title>') + esc(r.label) + '</text>';
+    });
+    for (const c of cm.cells) {
+      const st = cm.mode === 'pooled' ? { or: c.po.or } : c.mh, l2 = st.or != null && st.or > 0 && Number.isFinite(st.or) ? Math.log2(st.or) : null;
+      const sig = c.q != null && c.q <= 0.05, fill = c.a ? cmColor(l2, sig, pal) : pal.cmMid;
+      const x = lw + c.ci * cw, y = rowY(c.ri);
+      const r = cm.rows[c.ri], col = cm.cols[c.ci];
+      const label = !c.a ? '·' : st.or == null ? 'n/e' : st.or === 0 ? '0×' : !Number.isFinite(st.or) ? '∞' : (st.or >= 10 ? st.or.toFixed(0) : st.or.toFixed(st.or < 1 ? 2 : 1)) + '×';
+      const tipHtml = '<b>' + esc(r.label) + ' × ' + esc(col[1]) + '</b><br>' +
+        fmt(c.a) + ' of ' + fmt(c.a + c.b) + ' sites with the feature (' + pctText(c.a, c.a + c.b || 1) + '%) carry it, against ' + fmt(c.c) + ' of ' + fmt(c.c + c.d) + ' other sites (' + pctText(c.c, c.c + c.d || 1) + '%)<br>' +
+        'Within protein: OR ' + (c.mh.or != null ? (Number.isFinite(c.mh.or) ? c.mh.or.toFixed(2) : '∞') + (c.mh.lo != null ? ' [' + c.mh.lo.toFixed(2) + '–' + c.mh.hi.toFixed(2) + ']' : '') + ', CMH p ' + fmtP(c.mh.p) + ' (' + c.mh.used + ' informative proteins)' : 'not estimable (no protein has both kinds of site)') + '<br>' +
+        'Pooled: OR ' + (c.po.or != null ? c.po.or.toFixed(2) + ' [' + c.po.lo.toFixed(2) + '–' + c.po.hi.toFixed(2) + ']' : '—') + (c.pp != null ? ', Fisher p ' + fmtP(c.pp) : '') +
+        (c.q != null ? '<br>q ' + fmtP(c.q) + ' (Benjamini–Hochberg across the matrix, ' + (cm.mode === 'pooled' ? 'pooled' : 'within protein') + ')' : '') +
+        (c.a ? '<br><i>Click to list these ' + fmt(c.a) + ' sites</i>' : '');
+      g += '<g' + (forExport ? '' : ' class="cm-cell" data-r="' + c.ri + '" data-c="' + c.ci + '" tabindex="0" role="button" data-tip="' + esc(tipHtml) + '" style="cursor:' + (c.a ? 'pointer' : 'default') + '"') + '>' +
+        '<rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="' + (cw - 2) + '" height="' + (ch - 2) + '" rx="4" fill="' + fill + '"/>' +
+        '<text x="' + (x + cw / 2) + '" y="' + (y + 15) + '" font-size="11.5" font-weight="' + (sig ? 700 : 400) + '" text-anchor="middle" fill="' + cmInk(fill) + '">' + label + '</text>' +
+        '<text x="' + (x + cw / 2) + '" y="' + (y + 27) + '" font-size="9" text-anchor="middle" fill="' + cmInk(fill) + '" opacity="0.8">' + (c.a ? 'n=' + fmt(c.a) : '') + '</text></g>';
+    }
+    // Legend: the diverging steps, depleted to enriched, with the pale variant for q > 0.05.
+    const ly = rowY(cm.rows.length - 1) + ch + 22;
+    let lx = lw;
+    g += '<text x="0" y="' + (ly + 9) + '" font-size="10" fill="' + pal.muted + '">Odds ratio</text>';
+    const ticks = ['0.2', '0.33', '0.5', '0.8', '', '1.25', '2', '3', '5'];
+    const sw = CM_DIVERGING.down.slice().reverse().concat([pal.cmMid]).concat(CM_DIVERGING.up);
+    sw.forEach((c, k) => { g += '<rect x="' + (lx + k * 30) + '" y="' + ly + '" width="28" height="12" rx="2" fill="' + c + '"/>'; });
+    ticks.forEach((t, k) => { if (t) g += '<text x="' + (lx + k * 30 + (k < 4 ? 0 : 28)) + '" y="' + (ly + 25) + '" font-size="9" text-anchor="' + (k < 4 ? 'start' : 'end') + '" fill="' + pal.muted + '">' + (k < 4 ? '≤' : '≥') + t + '</text>'; });
+    g += '<text x="' + (lx + sw.length * 30 + 10) + '" y="' + (ly + 10) + '" font-size="10" fill="' + pal.muted + '">coloured where q ≤ 0.05 (Benjamini–Hochberg); grey cells are not significant</text>';
+    return { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + (pal.font || EXPORT_PAL.font).replace(/'/g, '"') + '\' role="img" aria-label="' + esc(title) + '">' +
+      (forExport ? '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' : '') + '<g transform="translate(' + (forExport ? 16 : 0) + ',0)">' + g + '</g></svg>', W: W + (forExport ? 16 : 0), H };
+  }
+  function ixConnMatrixHtml() {
+    if (!ixReady()) return '';
+    const scoped = constraints().length > 0, mode = UI.cmMode || 'within';
+    return '<div class="card" id="ix-cm"><div class="card-head"><div><h3>Which sites carry which evidence</h3><p class="sub">' +
+      (scoped ? 'The ' + fmt(R.sites.length) + ' sites in your selection' : 'All ' + fmt(R.sites.length) + ' methylarginines') +
+      ': each cell asks whether sites with the row feature (the writer evidence, methylation call, motif or context, from the site union) carry each kind of contact evidence (crosslinks, PDB, predicted complexes) more or less often than the other sites. Red is more often, blue less often (coloured where q ≤ 0.05); hover a cell for the counts and both statistics, click it to list the sites.' + docLink('ix-cm') + '</p></div>' +
+      '<div class="exp"><button type="button" data-cmex="svg">SVG</button><button type="button" data-cmex="png">PNG</button><button type="button" data-cmex="tsv">TSV</button></div></div>' +
+      '<div class="fig-controls"><div class="seg" role="group" aria-label="Comparison"><span>Compare</span>' +
+      [['within', 'Within protein'], ['pooled', 'Pooled']].map(([k, l]) => '<button type="button" data-cmmode="' + k + '" aria-pressed="' + (mode === k) + '">' + l + '</button>').join('') + '</div></div>' +
+      '<div class="cm-box" id="cm-box"></div>' +
+      '<p class="note">Within protein compares each site with the other methylarginines of its own protein, so it asks about the site; pooled also reflects which proteins carry the feature (for example, RBDmap fragments cluster in RNA-binding proteins whose sites are often in SDMA IPs). A feature that never varies within a protein cannot be tested within protein.</p></div>';
+  }
+  function bindConnMatrix(el) {
+    const box = $('#cm-box', el);
+    if (!box) return;
+    const mode = UI.cmMode || 'within';
+    const cm = connMatrix(R.sites, mode);
+    const pal = Object.assign(screenPalette(), { cmMid: cssVar('--surface-2') || CM_DIVERGING.mid });
+    box.innerHTML = connMatrixSvg(cm, pal, false, '').svg;
+    $$('.cm-cell', box).forEach((c) => {
+      c.addEventListener('mouseenter', (e) => showTip(e, c.getAttribute('data-tip')));
+      c.addEventListener('mousemove', moveTip);
+      c.addEventListener('mouseleave', hideTip);
+      const go2 = () => {
+        const cell = cm.cells.find((x) => x.ri === +c.dataset.r && x.ci === +c.dataset.c);
+        if (!cell || !cell.a) return;
+        hideTip();
+        const r = cm.rows[cell.ri], bit = cm.cols[cell.ci][0];
+        setFilters((f) => { if (r.apply) r.apply(f); f.evAll |= bit; f.evExact = false; }, 'sites');
+        if (r.term) addTerm(r.term[0], r.term[1], 'sites');
+        window.scrollTo({ top: 0 });
+      };
+      c.addEventListener('click', go2);
+      c.addEventListener('keydown', (e) => { if (e.key === 'Enter') go2(); });
+    });
+    $$('[data-cmmode]', el).forEach((b) => b.addEventListener('click', () => { UI.cmMode = b.dataset.cmmode; $$('[data-cmmode]', el).forEach((x) => x.setAttribute('aria-pressed', x === b)); bindConnMatrix(el); }));
+    const title = 'Which methylarginines carry which interaction evidence';
+    $$('[data-cmex]', el).forEach((b) => { b.onclick = () => {
+      const k = b.dataset.cmex;
+      if (k === 'tsv') {
+        download('methylarginine_connections_matrix.tsv', ['row_group\trow_feature\tevidence\tsites_with_both\tsites_with_feature\tsites_with_evidence_without_feature\tother_sites\tpooled_or\tpooled_ci_low\tpooled_ci_high\tfisher_p\twithin_protein_or\twithin_ci_low\twithin_ci_high\tcmh_p\tinformative_proteins\tq_' + mode]
+          .concat(cm.cells.map((x) => [cm.rows[x.ri].group, cm.rows[x.ri].label, cm.cols[x.ci][1], x.a, x.a + x.b, x.c, x.c + x.d,
+            x.po.or != null ? x.po.or.toFixed(3) : '', x.po.lo != null ? x.po.lo.toFixed(3) : '', x.po.hi != null ? x.po.hi.toFixed(3) : '', x.pp != null ? x.pp.toExponential(2) : '',
+            x.mh.or != null && Number.isFinite(x.mh.or) ? x.mh.or.toFixed(3) : '', x.mh.lo != null ? x.mh.lo.toFixed(3) : '', x.mh.hi != null ? x.mh.hi.toFixed(3) : '', x.mh.p != null ? x.mh.p.toExponential(2) : '', x.mh.used, x.q != null ? x.q.toExponential(2) : ''].join('\t'))).join('\n') + '\n');
+        return;
+      }
+      exportFigure(k, connMatrixSvg(cm, Object.assign({}, EXPORT_PAL, { cmMid: CM_DIVERGING.mid }), true, title), 'methylarginine_connections_matrix');
+    }; });
+  }
+
   function bindEvidenceMap(el) {
     const box = $('#ix-evmap', el);
     if (!box) return;
@@ -6616,6 +6781,7 @@
       '<button class="linkish" type="button" id="ix-all">' + (UI.ixOpen.size === IX_SECTIONS.length ? 'Collapse all' : 'Expand all') + '</button></div></div>' +
       ixExampleHtml() +
       ixEvidenceMapHtml() +
+      ixConnMatrixHtml() +
       IX_SECTIONS.map(([k, title, tag]) => '<details class="card ix-sec" id="ixs-' + k + '" data-ixsec="' + k + '"' + (UI.ixOpen.has(k) ? ' open' : '') + '><summary><span class="pm" aria-hidden="true"></span><span class="ix-sec-t"><b>' + esc(title) + '</b><span class="sub">' + esc(tag) + '</span></span></summary>' +
         '<div class="ix-sec-body">' + body[k]() + '</div></details>').join('') + '</div>';
     $$('details.ix-sec', el).forEach((d) => d.addEventListener('toggle', () => {
@@ -6633,6 +6799,7 @@
     bindIxExample(el);
     bindChartExports(el);
     bindEvidenceMap(el);
+    bindConnMatrix(el);
     bindComplexMembers(el);
     bindDocLinks(el);
     if (UI.ixJump) { const k = UI.ixJump; UI.ixJump = null; openIxSection(k); }
@@ -7516,6 +7683,7 @@
           'Partner and complex information about the whole protein (STRING, Complex Portal, Gene Ontology) is never counted as site evidence. Search with <code>interaction:experimental</code>, <code>interaction:predicted-only</code>, <code>interaction:none</code>, or <code>interaction:predicted</code> for any predicted evidence. ' +
           'The <b>Check a site</b> box on the Overview and Interactions pages answers the question for one site without leaving the page.</p>') +
         sub('ix-evmap', 'How the evidence fits together', '<p>Counted per site or per protein. For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink at or possibly at the residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. The protein-context table shows, for the sites with each kind of evidence, the share on proteins annotated as RNA- or DNA-binding (Gene Ontology), in a CD-CODE condensate, physically linked to a PRMT or a Tudor-domain reader (STRING ≥ 0.7) or in a Complex Portal curated complex, against all selected sites; each cell lists those sites. Counted per protein, the same layout combines these protein properties and whether any of the protein\'s sites carries contact evidence. Below the site view, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
+        sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a dimethylarginine call from any source, the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the plain odds ratio with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ 0.05 are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions are read with care.</p>') +
         sub('profile', 'What sets this selection apart', '<p>Shown on the Proteins and Sites views whenever a search or filter is set. Each site feature (motifs, disorder, methylation calls and IPs, PRMT inhibitor response, close spacing, number of reports and the interaction evidence types) is compared between the selected sites and all other sites with Fisher\'s exact test, Benjamini–Hochberg-adjusted across the features tested; features with q ≤ 0.05 are listed, more common ones first. The ratio is the share in the selection over the share in the other sites. Clicking a more common feature narrows the selection to it. Sites of the same protein are not independent, so this points to differences rather than testing them; a selection built from a few proteins mostly reflects those proteins.</p>') +
         sub('compare', 'Comparing two selections', '<p>Press <b>Save as A for a comparison</b> on a selection (on the selection profile or the report), change the search or filters, then <b>Compare with A</b> (also in the bar under the search). The comparison shows both selections, their overlap, a paragraph on each, the interaction status split, every site feature as the share of A and of B with the ratio and a Fisher\'s exact test (Benjamini–Hochberg across features), side-by-side logos and the proteins with most sites. ' +
           'Sites in both selections count on both sides, which makes the test conservative. The link keeps both selections (<code>A=</code> holds the first), and the page prints with the same header, citation and page numbers as the report.</p>') +
