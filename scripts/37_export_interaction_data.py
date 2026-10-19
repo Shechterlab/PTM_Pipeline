@@ -264,7 +264,8 @@ def parse_members(field: str):
             a = a.split('_')[0]
             if ACC_RE.match(a) and a not in accs:
                 accs.append(a)
-        if accs:
+        if accs and accs not in slots:
+            # A protein listed twice (two PRO chains of one precursor, or a repeated accession) is one member.
             slots.append(accs)
     return slots
 
@@ -715,9 +716,11 @@ def load_modelled_methyl_r(cache: Path, refresh: bool, workers: int):
 
 
 def cdcode_threshold_enrichment(cd, proteome, meth_base, uids, thresholds=(1, 2, 3, 4)):
-    """Methylated share of each condensate counting only members at or above a CD-CODE confidence score."""
-    N = len(proteome)
-    K = sum(1 for a in proteome if a in meth_base)
+    """Methylated share of each condensate counting only members at or above a CD-CODE confidence score, against the
+    other proteins in any human CD-CODE condensate (at any score), the background scripts/12 uses for all memberships."""
+    universe = {a for uid in uids for a in cd.get(uid, {}) if a in proteome}
+    N = len(universe)
+    K = sum(1 for a in universe if a in meth_base)
     out = {}
     for t in thresholds:
         rows, pv = [], []
@@ -1359,7 +1362,7 @@ def main():
     prots, sites = explorer['proteins'], explorer['sites']
     nP = len(prots)
     meth_accs = [p[0] for p in prots]
-    canonical = [p[0] for p in prots if not p[10] and '-' not in p[0]]
+    canonical = [p[0] for p in prots if '-' not in p[0]]
 
     if args.fetch_interfaces_only:
         fetch_interfaces(cache, canonical, args.refresh, args.workers)
@@ -1560,7 +1563,7 @@ def main():
 
     # How many methylated arginines in each RG context are structurally observed at all (all canonical proteins).
     for i, acc in enumerate(meth_accs):
-        if prots[i][10] or '-' in acc:
+        if '-' in acc:
             continue
         seq = proteome.get(acc, ('', '', ''))[2]
         if not seq:
@@ -1679,7 +1682,7 @@ def main():
     pred_rows = []
     pred_strata = {(t, f): defaultdict(lambda: [0, 0, 0, 0]) for t in PRED_TIERS for f in ('all', 'ordered', 'disordered')}
     for i, acc in enumerate(meth_accs):
-        if prots[i][10] or '-' in acc or acc not in pred:
+        if '-' in acc or acc not in pred:
             continue
         pairs = pred[acc]
         for j in by_prot_sites[i]:
@@ -1759,7 +1762,7 @@ def main():
     intact_rows, intact_prot = [], []
     intact_strata = {k: defaultdict(lambda: [0, 0, 0, 0]) for k in ('mutation', 'peptide', 'peptide_disordered')}
     for i, acc in enumerate(meth_accs):
-        if prots[i][10] or '-' in acc or acc not in intact:
+        if '-' in acc or acc not in intact:
             continue
         site_pos = {sites[j][1]: j for j in by_prot_sites[i]}
         at_site, regions, muts = defaultdict(dict), {}, {}
@@ -1817,7 +1820,7 @@ def main():
     xl_rows, xl_prot = [], []
     xl_strata = {k: defaultdict(lambda: [0, 0, 0, 0]) for k in ('rna_xl', 'rna_xl_single', 'rna_near', 'rna_rbdmap', 'dna_xl', 'dna_cand', 'dna_pep', 'dna_bind', 'rna_xl_nonrg', 'rna_rbdmap_nonrg')}
     for i, acc in enumerate(meth_accs):
-        if prots[i][10] or '-' in acc:
+        if '-' in acc:
             continue
         r_map, d_map, peps, binds, frags = rna_xl.get(acc, {}), dna_xl.get(acc, {}), dna_peps.get(acc, []), dna_bind.get(acc, []), rbd_frag.get(acc, [])
         r_single = rna_single.get(acc, set())
@@ -1879,7 +1882,7 @@ def main():
                                 ('dna_xl', lambda acc: any(v & D_XL for v in dna_xl.get(acc, {}).values()), lambda acc, q: bool(dna_xl.get(acc, {}).get(q, 0) & D_XL))):
         tabs = {name: defaultdict(lambda: [0, 0, 0, 0]) for name, _ in type_classes}
         for i, acc in enumerate(meth_accs):
-            if prots[i][10] or '-' in acc or not have(acc):
+            if '-' in acc or not have(acc):
                 continue
             seq_ = proteome.get(acc, ('', '', ''))[2]
             if not seq_:
@@ -1902,7 +1905,7 @@ def main():
     freq_meth, freq_un, ds_meth, ds_un = [], [], [], []
     multi = defaultdict(lambda: [0, 0, 0, 0])
     for i, acc in enumerate(meth_accs):
-        if prots[i][10] or '-' in acc or not rna_xl.get(acc):
+        if '-' in acc or not rna_xl.get(acc):
             continue
         site_pos = {sites[j][1] for j in by_prot_sites[i]}
         seq_ = proteome.get(acc, ('', '', ''))[2]
@@ -1910,6 +1913,8 @@ def main():
             if not seq_ or q > len(seq_) or seq_[q - 1] != 'R':
                 continue
             nds = bin(bits & 31).count('1')
+            if not nds:
+                continue    # only in Table S3's focused sites: no dataset or spectrum count to compare
             nsp = rna_count[acc].get(q, 0)
             if q in site_pos:
                 freq_meth.append(nsp); ds_meth.append(nds)
