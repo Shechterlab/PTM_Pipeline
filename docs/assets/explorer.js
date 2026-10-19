@@ -911,7 +911,7 @@
     domain: 'Nearest InterPro domain class (lab domain ontology), e.g. rrm, rna-helicase',
     class: 'Functional class (lab protein ontology), e.g. rna-binding, chromatin',
     subclass: 'Functional subclass (lab protein ontology), e.g. hnrnp, chromatin-readers',
-    disease: 'Disease family (DisGeNET), e.g. als, cancer; als-all is the full audited ALS/MN/FTD gene set',
+    disease: 'Disease family (DisGeNET): methylated proteins in the family\'s enriched terms, e.g. als, cancer; als-all is the full audited ALS/MN/FTD gene set',
     condensate: 'CD-CODE condensate, e.g. stress-granule, nuclear-speckle',
     location: 'Subcellular location in the Human Protein Atlas (reliability Approved or better), e.g. nucleoli, nuclear-speckles',
     complex: 'Complex Portal complex, by ID (CPX-1234) or name',
@@ -960,6 +960,8 @@
     return (termNameCache[key] = out);
   }
   const termSlug = (key, k) => { const x = termNames(key).find((y) => y.k === k); return x ? x.slug : ''; };
+  // Methylated proteins in the enriched DisGeNET terms of disease family k (what disease:<family> lists).
+  const diseaseTermCount = (k) => (k >= 0 ? P.reduce((n, p) => n + (p.dis & 2 ** k ? 1 : 0), 0) : 0);
   // Exact slug or name first, then slug or name prefix, then any substring; the shortest name wins a tie.
   function pickName(list, v) {
     const t = v.toLowerCase(), sv = slugify(v);
@@ -996,7 +998,7 @@
                 : key === 'complex' ? (p) => (p.cx || []).includes(k)
                   : key === 'location' ? (p) => p.hpa.some((x) => x[0] === k && x[1] >= HPA_SURE)
                   : (p, f) => (f.condConf ? (cdMemberships(p) || []).some((c) => c.ci === k && c.score >= f.condConf) : p.cond.includes(k));
-      return { text: x.slug, label: key === 'complex' ? x.name + ' (' + x.slug + ')' : x.name, kind: key === 'study' || key === 'domain' ? 'site' : 'prot', k, test };
+      return { text: x.slug, label: key === 'complex' ? x.name + ' (' + x.slug + ')' : key === 'disease' && k !== 'als' ? x.name + ' (enriched terms)' : x.name, kind: key === 'study' || key === 'domain' ? 'site' : 'prot', k, test };
     }
     if (key === 'go') {
       const w = v.toLowerCase();
@@ -2060,7 +2062,9 @@
       else {
         const name = M.disease_families[one('disease')];
         const r = ov.disease_families.find((x) => x[0] === name);
-        if (r) card('Audited disease family (DisGeNET)', name, fmt(r[1]) + ' methylarginine genes among ' + fmt(r[2]) + ' family genes; OR <b>' + (r[3] || 0).toFixed(2) + '</b>, BH-adjusted p ' + fmtP(r[4]) + '. Proteins listed here belong to an enriched term of this family.');
+        const n = diseaseTermCount(one('disease'));
+        if (r) card('Audited disease family (DisGeNET)', name, (n ? 'Listed here: the <b>' + fmt(n) + '</b> methylated proteins in this family\'s enriched DisGeNET terms (clusterProfiler, p.adjust ≤ 0.05).' : 'No DisGeNET term of this family is enriched on its own (clusterProfiler, p.adjust ≤ 0.05), so no proteins are listed.') + ' For context, the whole family holds ' + fmt(r[1]) + ' methylarginine genes among ' + fmt(r[2]) + ' family genes; OR <b>' + (r[3] || 0).toFixed(2) + '</b>, BH-adjusted p ' + fmtP(r[4]) + '.' +
+          (M.disease_families[one('disease')] === 'ALS / motor neuron / FTD' ? ' <code>disease:als-all</code> lists all ' + fmt(P.filter((p) => p.als).length) + ' methylated proteins of the full audited gene set.' : ''));
       }
     }
     if (one('study') != null) {
@@ -2299,7 +2303,7 @@
   }
   // The selection's count in a bar (orange dot, as the Filtered flag), blank where none of it is there.
   const selCell = (n) => '<span class="hb-sel">' + (n ? '<i></i>' + fmt(n) : '') + '</span>';
-  const selKeyHtml = (sel) => '<span class="sel-key"><i></i>Selected ' + sel.unit + ' in the bar, of ' + fmt(sel.n) + '</span>';
+  const selKeyHtml = (sel) => '<span class="sel-key"><i></i>' + esc(sel.noun) + ', of ' + fmt(sel.n) + '</span>';
 
   const expButtons = (id) => '<div class="exp" role="group" aria-label="Export chart"><button type="button" data-exp="svg" data-chart="' + id + '">SVG</button><button type="button" data-exp="png" data-chart="' + id + '">PNG</button><button type="button" data-exp="tsv" data-chart="' + id + '">TSV</button></div>';
 
@@ -2342,17 +2346,18 @@
     g += '<text x="' + r1((x0 + x1) / 2) + '" y="' + (ay + 16) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="middle">' + esc(spec.axis || 'log2 odds ratio vs background') + '</text>';
     const items = spec.noSig ? [] : [[SWATCH.fill(pal.up[3]), 'More than expected, q ≤ 0.05'], [SWATCH.fill(pal.down[3]), 'Less than expected, q ≤ 0.05'],
       [(a, b) => '<rect x="' + r1(a) + '" y="' + r1(b - 5) + '" width="20" height="10" rx="2" fill="' + pal.bg + '" stroke="' + pal.muted + '" stroke-width="1.4"/>', 'Not significant (outline)']];
-    if (spec.sel) items.push([(a, b) => '<circle cx="' + r1(a + 10) + '" cy="' + r1(b) + '" r="3.5" fill="' + pal.accent + '"/>', 'Selected ' + spec.sel.unit + ' in the bar, of ' + fmt(spec.sel.n) + ' (' + (spec.sel.what.length > 70 ? spec.sel.what.slice(0, 68) + '…' : spec.sel.what) + ')']);
+    if (spec.sel) items.push([(a, b) => '<circle cx="' + r1(a + 10) + '" cy="' + r1(b) + '" r="3.5" fill="' + pal.accent + '"/>', spec.sel.noun + ', of ' + fmt(spec.sel.n) + ' (' + (spec.sel.what.length > 70 ? spec.sel.what.slice(0, 68) + '…' : spec.sel.what) + ')']);
     const key = items.length ? svgLegend(pal, items, 24, ay + 22, W - 48, { fs: 10 }) : null;
     const H = Math.ceil(key ? ay + 22 + key.h + 22 : ay + 30);
     return { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + pal.font + '\'><rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' + g + (key ? key.svg : '') + '</svg>', W, H };
   }
 
   function chartTsv(spec) {
+    const more = spec.tsvCols || [];
     const sel = spec.sel ? '\tselected_' + spec.sel.unit : '';
-    return (spec.sel ? '# selected: ' + spec.sel.what + ' (' + spec.sel.n + ' ' + spec.sel.unit + ')\n' : '') +
-      ['label\t' + (spec.valueLabel || 'log2_odds_ratio') + '\tq_value\t' + (spec.extraName || 'detail') + sel,
-        ...spec.rows.map((r) => [r.label, r.value, r.q == null ? '' : r.q, r.extra || ''].concat(spec.sel ? [r.sel == null ? '' : r.sel] : []).map(cell).join('\t'))].join('\n') + '\n';
+    return (spec.sel ? '# selected: ' + spec.sel.what + ' (' + spec.sel.n + ' ' + (spec.sel.n === 1 ? spec.sel.unit.replace(/s$/, '') : spec.sel.unit) + ')\n' : '') +
+      ['label\t' + (spec.valueLabel || 'log2_odds_ratio') + '\tq_value\t' + (spec.extraName || 'detail') + more.map((c) => '\t' + c[0]).join('') + sel,
+        ...spec.rows.map((r) => [r.label, r.value, r.q == null ? '' : r.q, r.extra || ''].concat(more.map((c) => c[1](r)), spec.sel ? [r.sel == null ? '' : r.sel] : []).map(cell).join('\t'))].join('\n') + '\n';
   }
 
   function bindChartExports(root) {
@@ -2441,10 +2446,15 @@
       footHtml: '<button class="linkish" type="button" id="func-more" style="margin-top:.5rem">' + (UI.funcExpanded ? 'Hide subclasses' : 'Show ' + subs.length + ' subclasses') + '</button>',
     };
     const dis = {
-      id: 'ch-dis', title: 'Disease families', subHtml: 'DisGeNET disease families, methylated proteins vs the reviewed human proteome. Association, not causation.' + docLink('ov-disease'),
+      id: 'ch-dis', title: 'Disease families', subHtml: 'DisGeNET disease families, methylated proteins vs the reviewed human proteome. Association, not causation. A click lists the methylated proteins in the family\'s enriched disease terms; hover for how many.' + docLink('ov-disease'),
       subText: 'Audited DisGeNET disease families vs the reviewed background', axis: 'log2 odds ratio vs reviewed background', extraCol: true, extraName: 'methylarginine_genes_of_family',
-      rows: ov.disease_families.map((r) => ({ label: r[0], value: r[3] ? Math.log2(r[3]) : null, q: r[4], sig: sigq(r[4]), key: r[0], extra: fmt(r[1]) + '/' + compact(r[2]),
-        title: '<b>' + esc(r[0]) + '</b><br>' + fmt(r[1]) + ' methylarginine genes of ' + fmt(r[2]) + ' family genes<br>OR ' + (r[3] || 0).toFixed(2) + ', BH-adjusted p ' + fmtP(r[4]) })).sort((a, b) => b.value - a.value),
+      tsvCols: [['methylated_proteins_in_enriched_terms', (r) => r.inTerms]],
+      rows: ov.disease_families.map((r) => {
+        const inTerms = diseaseTermCount(M.disease_families.indexOf(r[0]));
+        return { label: r[0], value: r[3] ? Math.log2(r[3]) : null, q: r[4], sig: sigq(r[4]), key: r[0], extra: fmt(r[1]) + '/' + compact(r[2]), inTerms,
+          title: '<b>' + esc(r[0]) + '</b><br>Family: ' + fmt(r[1]) + ' methylarginine genes of ' + fmt(r[2]) + ' family genes, OR ' + (r[3] || 0).toFixed(2) + ', BH-adjusted p ' + fmtP(r[4]) +
+            '<br>' + (inTerms ? 'Click: the ' + fmt(inTerms) + ' methylated proteins in this family\'s enriched DisGeNET terms' : 'No single term of this family is enriched on its own, so a click lists no proteins') };
+      }).sort((a, b) => b.value - a.value),
     };
     // Fixed categories keep their logical order (inside to outside); ranked lists say so and sort by value.
     const ctxOrder = (table, order) => table.slice().sort((a, b) => (order.indexOf(a[0]) + 99) % 99 - (order.indexOf(b[0]) + 99) % 99);
@@ -2474,7 +2484,7 @@
     if (loc) markSelection(loc, 'proteins', (r) => (p) => p.hpa.some((x) => x[0] === r.key && x[1] >= HPA_SURE));
     markSelection(func, 'proteins', (r) => (r.kind === 'sub' ? ix(M.func_subclasses, r.key) >= 0 && ((p) => p.sub & 2 ** ix(M.func_subclasses, r.key))
       : ix(M.func_classes, r.key) >= 0 && ((p) => p.func & 2 ** ix(M.func_classes, r.key))));
-    markSelection(dis, 'proteins', (r) => ix(M.disease_families, r.key) >= 0 && ((p) => p.dis & 2 ** ix(M.disease_families, r.key)));
+    markSelection(dis, 'proteins', (r) => ix(M.disease_families, r.key) >= 0 && ((p) => p.dis & 2 ** ix(M.disease_families, r.key)), 'Selected proteins in the family\'s enriched terms');
     markSelection(disorder, 'sites', (r) => ix(M.disorder_classes, r.key) >= 0 && ((s) => s.dc === ix(M.disorder_classes, r.key)));
     markSelection(domctx, 'sites', (r) => ix(M.domain_contexts, r.key) >= 0 && ((s) => s.dctx === ix(M.domain_contexts, r.key)));
     markSelection(domcls, 'sites', (r) => ix(M.domain_classes, r.key) >= 0 && ((s) => s.dcls === ix(M.domain_classes, r.key)));
@@ -2482,12 +2492,12 @@
     return { study, motif, cond, loc, func, dis, disorder, domctx, domcls, thr };
   }
 
-  // spec.sel {unit, n, what} and row.sel (selected items in the bar, null where the bar has no test) when a selection is
+  // spec.sel {unit, n, what, noun} and row.sel (selected items in the bar, null where the bar has no test) when a selection is
   // set. test(row) returns the item test or a falsy value.
-  function markSelection(spec, unit, test) {
+  function markSelection(spec, unit, test, noun) {
     if (!constraints().length) return;
     const items = unit === 'sites' ? R.sites : R.prots;
-    spec.sel = { unit, n: items.length, what: selectionText() };
+    spec.sel = { unit, n: items.length, what: selectionText(), noun: noun || 'Selected ' + unit + ' in the bar' };
     for (const r of spec.rows) {
       const t = test(r);
       r.sel = t ? items.reduce((n, x) => n + (t(x) ? 1 : 0), 0) : null;
@@ -8641,7 +8651,7 @@
           'Clicking a site, or opening a link with a site in the search (<code>FUS R216</code>), opens the <b>site card</b> under the protein map: its interaction status and evidence with partners, what is known about the whole protein (labelled as such), sequence context, inhibitor response, AlphaFold confidence and reports.</p>')],
       ['overview', 'Overview charts', '<p>Bars show log2 odds ratios; filled bars have a Benjamini–Hochberg q ≤ 0.05, outlined bars do not. The bars and their statistics always describe the whole dataset; clicking a bar filters the Proteins and Sites views. With a search or filter set, an orange count after each bar gives how many of the selected proteins or sites fall in it (the same test a click on the bar adds), bars the selection does not reach are faded, and “What sets this selection apart” opens the page. Exported charts and their TSV files carry the same counts.</p>' +
         sub('ov-ontology', 'Functional ontology', '<p>Classes from the lab functional ontology (config/functional_ontology.json); a protein can belong to several. Each class is compared between methylated proteins and the reviewed human proteome. "Show subclasses" lists subclasses under the broad class most of their proteins share.</p>') +
-        sub('ov-disease', 'Disease families', '<p>Audited DisGeNET disease families (via DOSE/clusterProfiler), genes counted once per family, BH-adjusted across the 8 families. This is enrichment of disease gene sets among methylated proteins, not causation. The ALS/MN/FTD filter uses the full audited family gene set.</p>') +
+        sub('ov-disease', 'Disease families', '<p>Audited DisGeNET disease families (via DOSE/clusterProfiler), genes counted once per family, BH-adjusted across the 8 families. This is enrichment of disease gene sets among methylated proteins, not causation. Each bar tests the whole family; clicking it (or <code>disease:cancer</code>, <code>disease:als</code> in the search) lists the methylated proteins in that family\'s individually enriched DisGeNET terms (clusterProfiler, p.adjust ≤ 0.05), so the list is shorter than the family count, and a family whose terms are not enriched one by one' + (() => { const e = M.disease_families.filter((_, i) => !diseaseTermCount(i)); return e.length ? ' (' + esc(e.join(', ')) + ' in the current data)' : ''; })() + ' lists none. <code>disease:als-all</code> lists every methylated protein in the full audited ALS/MN/FTD gene set.</p>') +
         sub('ov-motifs', 'Sequence motifs', '<p>Motifs are read from a ±7 window on the canonical sequence and compared between methylated arginines and the other arginines of the same proteins: ' + M.motifs.map((m) => esc(MOTIF_LABEL[m]) + ' (' + esc(MOTIF_HELP[m]) + ')').join('; ') + '.</p>') +
         sub('ov-condensates', 'Condensates', '<p>CD-CODE condensates with at least five counted members; the bar is the log2 odds ratio of methylated members against the global rate, and the numbers are methylated / members. "Count members" keeps only memberships with CD-CODE confidence ≥ 2, 3 or 4 of 5, so condensates whose member lists rest on single proteomics screens do not dominate. ' + condHistNote() + '</p>') +
         (hpaMeta() ? sub('ov-location', 'Subcellular location', '<p>Human Protein Atlas' + (hpaMeta().version ? ' ' + esc(hpaMeta().version) : '') + ' subcellular locations (' + doiLink('10.1126/science.aal3321', 'Thul et al. 2017') + '; CC BY 4.0), mapped to canonical UniProt entries with HPA\'s own Ensembl–UniProt table (scripts/42). Each location carries HPA\'s reliability (Enhanced, Supported, Approved or Uncertain); searches (<code>location:</code>), the filter and the test count Approved or better. For each location the bar is the log2 odds ratio of methylated against the other ' + fmt(hpaMeta().universe - hpaMeta().methylated) + ' HPA-profiled proteins (' + fmt(hpaMeta().methylated) + ' methylated proteins profiled; Fisher test, Benjamini–Hochberg q). Locations with fewer than 10 profiled proteins are not drawn. Protein pages list the locations, main ones first, beside the CD-CODE condensates.</p>') : '') +
