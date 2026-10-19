@@ -12,7 +12,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from explorer_merge import OTHER_PTM_SOURCES, merge_carm1_ko, merge_cplm4, merge_disease_families, merge_disorder_intervals, merge_hpa
+from explorer_merge import (OTHER_PTM_SOURCES, merge_carm1_ko, merge_cplm4, merge_disease_families, merge_disease_links,
+                            merge_disorder_intervals, merge_hpa, merge_maron_peptide_calls)
 
 
 SOURCES = ['Maron2021', 'ProMetheusDB', 'human_ptm_master']
@@ -504,6 +505,8 @@ def main() -> None:
                     clusters.append([min(positions), max(positions), len(positions)])
             arch = [ar['architecture_class'], clusters]
 
+        # Provisional, by symbol or alias; merge_disease_links (after the build) replaces both with the enrichment's own
+        # symbol for the accession.
         symbols = {gene} | aliases
         terms = sorted({t for symbol in symbols for t in gene_terms.get(symbol, [])})
         family_mask = 0
@@ -525,7 +528,7 @@ def main() -> None:
             to_int(odds['arginine_count']) if odds is not None else None,
             to_float(odds['shrinkage_log2_enrichment']) if odds is not None else None,
             to_sig(odds['q_value']) if odds is not None else None,
-            int(first['accession_is_isoform'] == 'True'),
+            int('-' in accession),
             sorted(protein_condensates.get(accession, set())),
             family_mask,
             int(bool(symbols & als_genes)),
@@ -738,6 +741,13 @@ def main() -> None:
         'disease_terms': disease_terms,
         'protein_disease_terms': protein_disease_terms,
     }
+    # Disease terms per protein by the gene symbol the enrichment counted (not by aliases, which can name another gene),
+    # and the direction of each Maron call from its significant peptides.
+    if not enriched.empty:
+        print(f"Disease term links: {merge_disease_links(payload, evidence_payload, enriched, read_tsv(root / 'functional_class_union' / 'protein_functional_labels.tsv'))}")
+    peptides = read_optional(maron_root / 'maron_table_s3_sites.tsv')
+    if not peptides.empty:
+        print(f'Maron peptide calls: {merge_maron_peptide_calls(payload, peptides)}')
     for label, option, default, summary_name, merge in STAGED:
         path = Path(getattr(args, option)) if getattr(args, option) else root / default if default else None
         if path is None or not path.exists():

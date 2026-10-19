@@ -118,6 +118,80 @@ def merge_carm1_ko(data: dict, sites: pd.DataFrame, summary: dict) -> dict:
     return {k: meta['carm1_ko'][k] for k in ('union_sites', 'union_sites_down', 'not_in_union')}
 
 
+def label_symbols(labels: pd.DataFrame) -> dict[str, str]:
+    """Accession -> the gene symbol the functional and disease analyses used for it (the first symbol of
+    substrate_genename, else of genename, in protein_functional_labels.tsv; scripts/14 and 34 map these to Entrez)."""
+    out = {}
+    for acc, sub, gen in labels[['canonical_UniProtAC', 'substrate_genename', 'genename']].itertuples(index=False):
+        sym = (str(sub or '').split(';', 1)[0].strip()) or (str(gen or '').split(';', 1)[0].strip())
+        if sym and acc not in out:
+            out[acc] = sym
+    return out
+
+
+def merge_disease_links(data: dict, evidence: dict, enriched: pd.DataFrame, labels: pd.DataFrame) -> dict:
+    """Enriched DisGeNET terms per protein (evidence protein_disease_terms) and their families (protein field
+    disease_family_mask), matched on the gene symbol the enrichment counted for that accession. Matching any symbol or
+    alias linked proteins to terms of another gene whose symbol is among their aliases (GET3 to ARSA's terms).
+    Isoform entries take their canonical accession's symbol. evidence['disease_terms'] must list `enriched` in order."""
+    terms = evidence['disease_terms']
+    if len(terms) != len(enriched) or any(t[0] != i for t, i in zip(terms, enriched['ID'])):
+        raise ValueError('evidence disease_terms do not match the enrichment table')
+    gene_terms: dict[str, list[int]] = defaultdict(list)
+    for k, genes in enumerate(enriched['geneID']):
+        for g in str(genes).split('/'):
+            if g:
+                gene_terms[g].append(k)
+    symbols = label_symbols(labels)
+    field = data['meta']['protein_fields'].index('disease_family_mask')
+    links, changed = [], 0
+    for prot in data['proteins']:
+        ids = sorted(set(gene_terms.get(symbols.get(prot[0].split('-')[0], ''), [])))
+        mask = 0
+        for k in ids:
+            if terms[k][2] >= 0:
+                mask |= 1 << terms[k][2]
+        changed += mask != prot[field]
+        prot[field] = mask
+        links.append(ids)
+    before = sum(len(x) for x in evidence.get('protein_disease_terms', []))
+    evidence['protein_disease_terms'] = links
+    return {'term_links': sum(len(x) for x in links), 'term_links_before': before, 'proteins_with_changed_families': changed}
+
+
+def merge_maron_peptide_calls(data: dict, peptides: pd.DataFrame, padj: float = 0.05) -> dict:
+    """Append to each site's Maron Table S3 entries [IP, treatment, median change, lowest adj. p, peptide rows] the
+    number of its peptides that fell and that rose at adj. p <= padj (maron_table_s3_sites.tsv). The site explorer calls
+    a site decreased or increased only when its significant peptides agree; the median over all peptides can point the
+    other way (one significant peptide up, several unchanged ones slightly down)."""
+    meta = data['meta']
+    sf = meta['site_fields']
+    pk, pos_k, tk = sf.index('protein'), sf.index('position'), sf.index('maron_treatment')
+    accs = [prot[0] for prot in data['proteins']]
+    site_at = {(accs[row[pk]], row[pos_k]): j for j, row in enumerate(data['sites'])}
+    ips, trs = meta['maron_ips'], meta['maron_treatments']
+    counts: dict[tuple, list[int]] = defaultdict(lambda: [0, 0])
+    for acc, pos, ip, tr, diff, q in peptides[['canonical_UniProtAC', 'position', 'ip', 'treatment', 'treatment_diff', 'treatment_padj']].itertuples(index=False):
+        try:
+            j, d, q = site_at.get((acc, int(pos))), float(diff), float(q)
+        except (TypeError, ValueError):
+            continue
+        if j is None or ip not in ips or tr not in trs or math.isnan(d) or math.isnan(q) or q > padj or d == 0:
+            continue
+        counts[(j, ips.index(ip), trs.index(tr))][0 if d < 0 else 1] += 1
+    disagree = 0
+    for j, row in enumerate(data['sites']):
+        for e in row[tk]:
+            down, up = counts.get((j, e[0], e[1]), (0, 0))
+            del e[5:]
+            e += [down, up]
+            if e[3] is not None and e[3] <= padj and e[2] is not None and e[2] != 0 and ((e[2] < 0 and not down) or (e[2] > 0 and not up)):
+                disagree += 1
+    meta['maron_treatment_fields'] = ['ip', 'treatment', 'median change', 'lowest adj. p', 'peptide rows',
+                                      f'peptides down at adj. p <= {padj:g}', f'peptides up at adj. p <= {padj:g}']
+    return {'entries_with_median_against_significant_peptides': disagree}
+
+
 def merge_disease_families(data: dict, table: pd.DataFrame, summary: dict) -> dict:
     """Audited disease families whose gene unions hold each protein's gene, from 34_regenerate_disease_ontology_figures.py
     (the gene sets its family tests count): protein field disease_families, [index in meta.disease_families, number of
@@ -209,3 +283,23 @@ def merge_disorder_intervals(data: dict, intervals: pd.DataFrame, summary: dict)
     data['meta']['disorder_intervals'] = {'source': summary.get('source', 'MobiDB disorder intervals (PTM_MOBIDB_INTERVALS)'),
                                           'input_md5': summary.get('input_md5'), 'proteins': with_any}
     return {'explorer_proteins_with_intervals': with_any}
+
+
+if __name__ == '__main__':
+    # Re-apply the merges that read pipeline result tables to an existing export, without rebuilding it:
+    #   python scripts/explorer_merge.py --results-root PTM_results --explorer-dir docs/data
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__.split('\n', 1)[0])
+    ap.add_argument('--results-root', default='PTM_results')
+    ap.add_argument('--explorer-dir', default='docs/data')
+    args = ap.parse_args()
+    root, out = Path(args.results_root), Path(args.explorer_dir)
+    sites_path, ev_path = out / 'methylarg_sites.json', out / 'methylarg_evidence.json'
+    sites, ev = json.loads(sites_path.read_text(encoding='utf-8')), json.loads(ev_path.read_text(encoding='utf-8'))
+    read = lambda p: pd.read_csv(p, sep='\t', dtype=str, keep_default_na=False)
+    disease = root / 'functional_class_union' / 'disease_enrichment'
+    print('disease links:', merge_disease_links(sites, ev, read(disease / 'all_methyl_proteins_disease_enrichment.tsv'),
+                                                read(root / 'functional_class_union' / 'protein_functional_labels.tsv')))
+    print('Maron peptide calls:', merge_maron_peptide_calls(sites, read(root / 'maron_state_treatment' / 'maron_table_s3_sites.tsv')))
+    for path, data in ((sites_path, sites), (ev_path, ev)):
+        path.write_text(json.dumps(data, separators=(',', ':'), ensure_ascii=False), encoding='utf-8')
