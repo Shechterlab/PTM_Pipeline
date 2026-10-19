@@ -95,12 +95,21 @@ run_step "parse ProMetheus mmc2" python "$PTM_CODE_ROOT/scripts/01_parse_prometh
   --input "$PTM_PROMETHEUS_MMC2" \
   --outdir "$PTM_RESULTS_ROOT/parsed_prometheus"
 
+# Accessions UniProt has merged or split, and outdated gene symbols, reach their current entry through the staged
+# accession history (scripts/00 writes it beside the FASTA); without it those rows find no candidate.
+HISTORY_ARGS=()
+if [ -s "$PTM_ACCESSION_HISTORY" ]; then
+  HISTORY_ARGS=(--accession-history "$PTM_ACCESSION_HISTORY")
+else
+  echo "[ptm_pipeline] no accession history at $PTM_ACCESSION_HISTORY; merged accessions and outdated symbols stay unplaced"
+fi
 run_step "remap to canonical coordinates" python "$PTM_CODE_ROOT/scripts/02_remap_arg_methyl_to_canonical.py" \
   --base-master "$PTM_MASTER_TSV" \
   --maron "$PTM_RESULTS_ROOT/parsed_maron/maron_s5_arg_methyl_sites.tsv" \
   --prometheus "$PTM_RESULTS_ROOT/parsed_prometheus/prometheus_mmc2_arg_methyl_sites.tsv" \
   --canonical-fasta "$PTM_CANONICAL_FASTA" \
   --uniprot-metadata "$PTM_UNIPROT_METADATA" \
+  "${HISTORY_ARGS[@]}" \
   --outdir "$PTM_RESULTS_ROOT/remapped"
 
 run_step "integrate remapped sites" python "$PTM_CODE_ROOT/scripts/02_integrate_arg_methyl_sources.py" \

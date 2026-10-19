@@ -35,7 +35,7 @@ Severity: **high** changes sites in the published union; **medium** loses or kee
 | 4 | Windows cut off at a protein end centred wrongly | 302 rows | high · fixed (end-aware since 2026-10-18) |
 | 5 | Guessed arginine for multi-R peptides whose reported position does not fit | 52 rows | medium · fixed (the middle-R guess is gone; the fallback still placed some until issue 8 was fixed) |
 | 6 | Filed under the wrong reviewed protein | 49 rows | high · fixed |
-| 7 | Candidate search by gene symbol misses outdated symbols and deleted accessions | 129 rows dropped | medium · **open** |
+| 7 | Candidate search by gene symbol misses outdated symbols and deleted accessions | 129 rows dropped | medium · mostly fixed 2026-10-19 (accession history, synonyms, proteome search; see `ISSUES_2026-10-19.md`) |
 | 8 | Reported arginine kept although the source window or peptide does not match there | 167 rows with evidence; 90 now unplaced | medium · fixed 2026-10-18 |
 | 9 | Larsen windows that match a paralog, not the reported protein | 31 rows (22 kept on the reported protein, listed in the allow-list) | medium · **open** |
 | 10 | Malformed source accessions | 9 rows | low · **open** |
@@ -82,7 +82,10 @@ Windows shorter than full length (cut at a protein end, or at the ubiquitin C-te
 
 Same mechanism as issue 2 with a reviewed accession, for example a PTCD1 window filed as MED12 (Q93074) "R235" (a Y in MED12), and a Lim XRN2 peptide filed under STAU1 (O95793) at 946, beyond STAU1's 577 residues (now XRN2 Q9H0D6 R946).
 
-### 7. Recall gap from gene-symbol candidates (open)
+### 7. Recall gap from gene-symbol candidates (mostly fixed 2026-10-19)
+
+*2026-10-19:* step 02 reads a staged UniProt accession history (secondary accessions and gene synonyms) and, for rows with no candidate at all, searches the whole reference set for a unique site: +103 rows, +29 sites, nothing moved, both gates pass. What is left is listed in `ISSUES_2026-10-19.md` (issues 17–23).
+
 
 `candidate_accessions` searches the row's own accession plus accessions sharing its gene symbol. Rows with an outdated symbol (MST4 → STK26, FAM60A → SINHCAF, C11orf67 → AAMDC) and an unreviewed or deleted accession get no candidates and are dropped, in both versions. A proteome-wide search finds 129 of them on a single reviewed entry.
 

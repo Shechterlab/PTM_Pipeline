@@ -126,6 +126,68 @@ def test_position_only_row_keeps_the_reported_arginine():
     assert place(row(source_table='human_ptm_master', reference='', position=5), {'P1': seq}) == ('P1:R5', 'same_accession_position_verified')
 
 
+# ---- accessions and symbols that are no longer current (UniProt sec_ac.txt and gene synonyms) ------------------------
+
+def place_history(r: pd.Series, sequences: dict, gene_map: dict | None = None, secondary: dict | None = None,
+                  synonyms: dict | None = None) -> tuple[str, str]:
+    out = remap.remap_row(r, sequences, gene_map or {}, secondary or {}, synonyms or {}, remap.ProteomeIndex(sequences))
+    return (f"{out['corrected_canonical_UniProtAC']}:{out['corrected_site']}" if out['is_position_resolved'] else ''), out['remap_status']
+
+
+WINDOW_SEQ = 'MSTRAGGPLLR' + 'K' * 30  # 13-residue window AGGPLLRKKKKKK centred on R11
+
+
+def old_row(acc: str, gene: str = 'OLDSYM', **fields) -> pd.Series:
+    return row(substrate_UniProtAC=acc, substrate_UniProtAC_original=acc, canonical_UniProtAC=acc, substrate_genename=gene, **fields)
+
+
+def test_merged_accession_is_placed_on_its_current_entry_and_wins_a_tie():
+    r = old_row('T9', position=11, peptide_sequence='AGGPLLRKKKKKK', peptide_sequence_window_length=13)
+    seqs = {'A1': WINDOW_SEQ, 'P2': WINDOW_SEQ}
+    # Without the history the window names two entries equally and nothing is placed; with it, P2 is the row's own.
+    assert place_history(r, seqs, {'OLDSYM': ['A1', 'P2']}) == ('', 'unresolved_ambiguous_hit')
+    assert place_history(r, seqs, {'OLDSYM': ['A1', 'P2']}, {'T9': ['P2']}) == ('P2:R11', 'sequence_unique_canonical')
+
+
+def test_split_accession_goes_where_its_evidence_is():
+    r = old_row('T8', position=11, peptide_sequence='AGGPLLRKKKKKK', peptide_sequence_window_length=13)
+    seqs = {'P3': 'M' + 'A' * 40, 'P4': WINDOW_SEQ}
+    assert place_history(r, seqs, secondary={'T8': ['P3', 'P4']}) == ('P4:R11', 'sequence_unique_candidate')
+
+
+def test_split_accession_into_identical_entries_follows_the_gene_symbol():
+    # HSPA1A P08107 was split into P0DMV8 (HSPA1A) and P0DMV9 (HSPA1B), whose sequences are identical.
+    r = old_row('T8', gene='HSPA1A', position=11, peptide_sequence='AGGPLLRKKKKKK', peptide_sequence_window_length=13)
+    seqs = {'P3': WINDOW_SEQ, 'P4': WINDOW_SEQ}
+    assert place_history(r, seqs, {'HSPA1A': ['P3'], 'HSPA1B': ['P4']}, {'T8': ['P3', 'P4']}) == ('P3:R11', 'sequence_unique_canonical')
+    assert place_history(old_row('T8', gene='OTHER', position=11, peptide_sequence='AGGPLLRKKKKKK', peptide_sequence_window_length=13),
+                         seqs, {}, {'T8': ['P3', 'P4']}) == ('', 'unresolved_ambiguous_hit')
+
+
+def test_outdated_symbol_is_found_through_its_synonym():
+    r = old_row('T7', gene='MST4', position=11, peptide_sequence='AGGPLLRKKKKKK', peptide_sequence_window_length=13)
+    seqs = {'P5': WINDOW_SEQ, 'Q1': 'M' + 'A' * 40}
+    assert place_history(r, seqs, {'STK26': ['P5']}, synonyms={'MST4': ['P5']}) == ('P5:R11', 'sequence_unique_candidate')
+
+
+def test_deleted_accession_is_placed_only_on_a_unique_proteome_match():
+    r = old_row('T6', gene='GONE', position=11, peptide_sequence='AGGPLLRKKKKKK', peptide_sequence_window_length=13)
+    assert place_history(r, {'P6': WINDOW_SEQ, 'Q2': 'M' + 'A' * 40}) == ('P6:R11', 'sequence_unique_proteome')
+    assert place_history(r, {'P6': WINDOW_SEQ, 'Q2': WINDOW_SEQ})[0] == ''
+
+
+def test_proteome_search_never_moves_a_row_to_a_paralog_of_its_named_gene():
+    # ELMO1's window matching only ELMO2: the symbol names a current entry, so the row stays unplaced (issue 9).
+    r = old_row('T5', gene='ELMO1', position=11, peptide_sequence='AGGPLLRKKKKKK', peptide_sequence_window_length=13)
+    assert place_history(r, {'Q1': 'M' + 'A' * 40, 'Q2': WINDOW_SEQ}, {'ELMO1': ['Q1'], 'ELMO2': ['Q2']})[0] == ''
+
+
+def test_merged_accession_without_evidence_keeps_no_position():
+    # Numbering of the old entry can differ from the current one (A8MZ91 vs PRMT5 O14744), so a bare position is not moved.
+    r = old_row('T9', source_table='human_ptm_master', reference='', position=5)
+    assert place_history(r, {'P2': 'MAAAR' + FILLER}, secondary={'T9': ['P2']})[0] == ''
+
+
 # ---- the validation gates fail the run -----------------------------------------------------------------------------
 
 def write_fasta(path: Path, sequences: dict) -> None:

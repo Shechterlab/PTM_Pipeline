@@ -1441,7 +1441,7 @@
   function route() {
     const h = decodeURIComponent(location.hash.slice(1));
     let view = 'overview';
-    if (['overview', 'proteins', 'sites', 'interactions', 'figures', 'about', 'report', 'compare'].includes(h)) view = h;
+    if (['overview', 'proteins', 'sites', 'interactions', 'charts', 'figures', 'about', 'report', 'compare'].includes(h)) view = h;
     else if (h === 'docs') view = 'about';
     else if (h) {
       // #P35637 opens a protein; #P35637/R216 opens it with that site selected (shown numbering, so histones are
@@ -1495,6 +1495,7 @@
     else if (UI.view === 'proteins') renderProteins(el);
     else if (UI.view === 'sites') renderSites(el);
     else if (UI.view === 'interactions') renderInteractions(el);
+    else if (UI.view === 'charts') renderCharts(el);
     else if (UI.view === 'figures') renderFigures(el);
     else if (UI.view === 'report') renderReport(el);
     else if (UI.view === 'compare') renderCompare(el);
@@ -1514,7 +1515,7 @@
     if (location.hash !== want) history.replaceState(null, '', location.pathname + location.search + want);
     setDocTitle();
   }
-  const VIEW_NAMES = { overview: 'Overview', proteins: 'Proteins', sites: 'Sites', interactions: 'Interactions', figures: 'Figures', about: 'Documentation', report: 'Insight report', compare: 'Comparison' };
+  const VIEW_NAMES = { overview: 'Overview', proteins: 'Proteins', sites: 'Sites', interactions: 'Interactions', charts: 'Charts', figures: 'Figures', about: 'Documentation', report: 'Insight report', compare: 'Comparison' };
   let baseTitle = '';
   function setDocTitle() {
     baseTitle = baseTitle || document.title;
@@ -1580,7 +1581,7 @@
 
   // ------------------------------------------------------------------ rail
   const SECTIONS = [
-    ['motif', 'Sequence motif', true], ['methyl', 'Methylation evidence', true], ['prov', 'Provenance', false], ['treat', 'PRMT inhibitors', false], ['struct', 'Disorder & domains', false], ['cluster', 'Clustering & crosstalk', false],
+    ['motif', 'Sequence motif', false], ['methyl', 'Methylation evidence', false], ['prov', 'Provenance', false], ['treat', 'PRMT inhibitors', false], ['struct', 'Disorder & domains', false], ['cluster', 'Clustering & crosstalk', false],
     ['protein', 'Protein features', false], ['ix', 'Interactions & binding', false],
   ];
 
@@ -2616,7 +2617,11 @@
     }
   }
 
-  function renderOverview(el) {
+  // The Overview (selection, interactions, starting points) and the Charts tab (every dataset chart) share one builder.
+  function renderOverview(el) { renderDash(el, 'overview'); }
+  function renderCharts(el) { renderDash(el, 'charts'); }
+  function renderDash(el, page) {
+    const charts = page === 'charts';
     const ov = M.overview;
     UI.charts = {};
     const topSites = P.slice().sort((a, b) => b.sites.length - a.sites.length).slice(0, 14);
@@ -2632,12 +2637,22 @@
     const selOn = constraints().length > 0, repSel = [0, 0, 0, 0, 0];
     if (selOn) for (const s of R.sites) repSel[Math.min(5, popcount(s.study)) - 1]++;
     const one = R.prots.length === 1 ? R.prots[0] : null;
-    el.innerHTML =
-      (selOn ? '<p class="ov-hint sel">The charts describe the whole dataset. <span class="sel-key"><i></i>Orange counts</span> are your selection (' + fmt(R.sites.length) + ' site' + (R.sites.length === 1 ? '' : 's') + ' on ' + fmt(R.prots.length) + ' protein' + (R.prots.length === 1 ? '' : 's') + ') in each bar; bars it does not reach are faded. Click a bar to narrow the selection to it.' +
-        (one ? ' <button class="linkish" type="button" id="ov-open-one">Open ' + esc(one.label) + ' →</button>' : '') + '</p>' + profileCardHtml()
+    const toCharts = '<button class="linkish" type="button" data-go-charts>Charts</button>';
+    const startsHtml = foldHtml('ov-start', 'Starting points', '<div class="card wide starts" id="ov-start"><h3>Starting points</h3><div class="starts-grid">' +
+      '<div><h4>Try a search</h4><div class="gene-chips">' + examples.map((e) => '<button class="gene-chip" type="button" data-q="' + esc(e[0]) + '">' + esc(e[0]) + '<span>' + esc(e[1]) + '</span></button>').join('') + '</div></div>' +
+      '<div><h4>Most methyl-R sites</h4>' + geneChips(topSites, (p) => p.sites.length) + '</div>' +
+      '<div><h4>Strongest arginine-methylation enrichment</h4>' + geneChips(topArg, (p) => fmtL2(p.shrink)) + '</div>' +
+      '<div><h4>Strongest methyl-R clustering vs chance</h4>' + geneChips(topDense, (p) => { const w = p.sig.slice().sort((a, b) => b[4] - a[4])[0]; return w[3] + '/' + w[0] + ' aa'; }) + '</div>' +
+      '</div></div>', false, 'example searches; the proteins with the most sites, strongest enrichment and clustering');
+    el.innerHTML = !charts
+      // Overview: the selection (when there is one), the interactions card, starting points; the charts have their own tab.
+      ? (selOn ? '<p class="ov-hint sel">Your selection: <b>' + fmt(R.sites.length) + '</b> site' + (R.sites.length === 1 ? '' : 's') + ' on <b>' + fmt(R.prots.length) + '</b> protein' + (R.prots.length === 1 ? '' : 's') + '. Dataset charts with its counts in orange: ' + toCharts + '.' +
+          (one ? ' <button class="linkish" type="button" id="ov-open-one">Open ' + esc(one.label) + ' →</button>' : '') + '</p>' + profileCardHtml()
+          : '<p class="ov-hint">What methylated arginines touch, below; the functional ontology, disease, motif, condensate and other dataset charts are under ' + toCharts + '.</p>') +
+        ixOverviewHtml() + '<div class="fold-list">' + startsHtml + '</div>'
+      : (selOn ? '<p class="ov-hint sel">The charts describe the whole dataset. <span class="sel-key"><i></i>Orange counts</span> are your selection (' + fmt(R.sites.length) + ' site' + (R.sites.length === 1 ? '' : 's') + ' on ' + fmt(R.prots.length) + ' protein' + (R.prots.length === 1 ? '' : 's') + ') in each bar; bars it does not reach are faded. Click a bar to narrow the selection to it.</p>'
         : '<p class="ov-hint">Click any bar to filter the Proteins and Sites views; the charts always show the whole dataset.</p>') +
-      // Only the interactions card starts open; every chart and table sits behind a one-line header.
-      ixOverviewHtml() +
+      // Charts tab: every dataset chart behind a one-line header.
       '<div class="fold-list">' +
       foldHtml('ov-func', func.title, chartCard(func), false, chartSummary(func)) +
       foldHtml('ov-dis', dis.title, chartCard(dis), false, chartSummary(dis)) +
@@ -2655,16 +2670,12 @@
       '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) are reported by two or more' + (selOn ? '; ' + fmt(R.sites.length - repSel[0]) + ' of the ' + fmt(R.sites.length) + ' selected' : '') + '. Databases such as PhosphoSitePlus compile published studies, so two sources can rest on the same measurement. Click a row to keep sites with at least that many.</p></div></div></div>', false,
         fmt(M.n_sites) + ' sites from ' + M.studyOrder.length + ' studies or databases; ' + fmt(multi) + ' (' + pct(multi, M.n_sites) + '%) reported by two or more') +
       foldHtml('ov-treat', 'PRMT inhibitor and knockout response', '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor and knockout response</h3><p class="sub">Sites that changed after GSK591 (PRMT5) or MS023 (type I PRMTs) vs DMSO (Maron et al. 2021, adj. p ≤ 0.05)' + (koMeta() ? ', and in CARM1 knockout vs parental cells (Shishkova et al. 2017, at least twofold with p < 0.05)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable() + '</div>', false, treatSummary()) +
-      foldHtml('ov-start', 'Starting points', '<div class="card wide starts" id="ov-start"><h3>Starting points</h3><div class="starts-grid">' +
-      '<div><h4>Try a search</h4><div class="gene-chips">' + examples.map((e) => '<button class="gene-chip" type="button" data-q="' + esc(e[0]) + '">' + esc(e[0]) + '<span>' + esc(e[1]) + '</span></button>').join('') + '</div></div>' +
-      '<div><h4>Most methyl-R sites</h4>' + geneChips(topSites, (p) => p.sites.length) + '</div>' +
-      '<div><h4>Strongest arginine-methylation enrichment</h4>' + geneChips(topArg, (p) => fmtL2(p.shrink)) + '</div>' +
-      '<div><h4>Strongest methyl-R clustering vs chance</h4>' + geneChips(topDense, (p) => { const w = p.sig.slice().sort((a, b) => b[4] - a[4])[0]; return w[3] + '/' + w[0] + ' aa'; }) + '</div>' +
-      '</div></div>', false, 'example searches; the proteins with the most sites, strongest enrichment and clustering') +
       '</div>';
     bindDocLinks(el);
     bindProfile(el);
-    if (one) $('#ov-open-one', el).addEventListener('click', () => openProtein(one.i));
+    const oo = $('#ov-open-one', el);
+    if (oo) oo.addEventListener('click', () => openProtein(one.i));
+    $$('[data-go-charts]', el).forEach((b) => b.addEventListener('click', () => { go('charts'); window.scrollTo({ top: 0 }); }));
     // With a selection, a bar's term is added to the search (terms must all match), so the click narrows the selection
     // to what the bar's orange count says; without one it starts a new selection.
     const pickTerm = selOn ? addTerm : setTerm;
@@ -2676,6 +2687,9 @@
       if (R.prots.length === 1) openProtein(R.prots[0].i, Q.positions ? Array.from(Q.positions.values())[0].values().next().value : null);
       else go('proteins');
     }));
+    bindIxGo(el);
+    bindCheckSite(el);
+    if (!charts) return;
     bindBars($('#ch-study .hbars:not(.rep-dist)', el), study.rows, (r) => pickTerm('study', termSlug('study', r.key), 'sites'));
     $$('.rep-dist .hb', el).forEach((b) => b.addEventListener('click', () => setFilters((f) => { f.minRep = +b.dataset.rep > 1 ? +b.dataset.rep : 0; }, 'sites')));
     bindBars($('#ch-motif', el), motif.rows, (r) => pickTerm('motif', motifTerm(r.key), 'sites'));
@@ -2687,14 +2701,14 @@
     bindBars($('#ch-cond', el), cond.rows, (r) => { F.condConf = thr; pickTerm('condensate', termSlug('condensate', +r.key), 'proteins'); });
     if (loc) {
       bindBars($('#ch-loc', el), loc.rows, (r) => pickTerm('location', termSlug('location', r.key), 'proteins'));
-      $('#loc-more', el).addEventListener('click', () => { UI.allLoc = !UI.allLoc; renderOverview(el); });
+      $('#loc-more', el).addEventListener('click', () => { UI.allLoc = !UI.allLoc; renderDash(el, page); });
     }
     const ct = $('#cond-thr', el);
-    if (ct) ct.addEventListener('change', () => { UI.condThr = +ct.value; UI.allCond = false; renderOverview(el); });
-    $('#cond-more', el).addEventListener('click', () => { UI.allCond = !UI.allCond; renderOverview(el); });
+    if (ct) ct.addEventListener('change', () => { UI.condThr = +ct.value; UI.allCond = false; renderDash(el, page); });
+    $('#cond-more', el).addEventListener('click', () => { UI.allCond = !UI.allCond; renderDash(el, page); });
     bindBars($('#ch-func', el), func.rows, (r) => (r.kind === 'sub' ? pickTerm('subclass', termSlug('subclass', M.func_subclasses.indexOf(r.key)), 'proteins')
       : pickTerm('class', termSlug('class', M.func_classes.indexOf(r.key)), 'proteins')));
-    $('#func-more', el).addEventListener('click', () => { UI.funcExpanded = !UI.funcExpanded; renderOverview(el); });
+    $('#func-more', el).addEventListener('click', () => { UI.funcExpanded = !UI.funcExpanded; renderDash(el, page); });
     bindBars($('#ch-dis', el), dis.rows, (r) => pickTerm('disease', termSlug('disease', M.disease_families.indexOf(r.key)), 'proteins'));
     bindBars($('#ch-disorder', el), disorder.rows, (r) => setFilters((f) => { const k = M.disorder_classes.indexOf(r.key); f.disorder = new Set(k >= 0 ? [k] : []); }, 'sites'));
     bindBars($('#ch-dom > .hbars', el), domctx.rows, (r) => setFilters((f) => { const k = M.domain_contexts.indexOf(r.key); f.domctx = new Set(k >= 0 ? [k] : []); }, 'sites'));
@@ -2704,8 +2718,6 @@
       tr.addEventListener('click', go2);
       tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') go2(); });
     });
-    bindIxGo(el);
-    bindCheckSite(el);
     bindChartExports(el);
   }
 
@@ -3561,8 +3573,8 @@
     }
   }
 
-  // The audited disease families whose gene sets hold this protein's gene (what each family test on the Overview counts),
-  // in the Overview chart's order: how many of the family's terms name it and how many of those are enriched.
+  // The audited disease families whose gene sets hold this protein's gene (what each family test on the Charts tab counts),
+  // in that chart's order: how many of the family's terms name it and how many of those are enriched.
   function diseaseFamiliesHtml(p, ev) {
     if (!p.disFam) return '';
     const sets = M.disease_family_sets, rows = M.overview.disease_families;
@@ -3580,7 +3592,7 @@
     });
     return '<p class="flabel">Audited disease families (DisGeNET)</p>' +
       (items.length ? '<ul class="term-list fam-list">' + items.join('') + '</ul>' : '<p class="muted">' + esc(p.label) + ' is in none of the audited family gene sets.</p>') +
-      '<p class="note">Families whose gene set (every DisGeNET term of the family) includes ' + esc(p.label) + ', so it counts toward that family\'s test on the Overview' +
+      '<p class="note">Families whose gene set (every DisGeNET term of the family) includes ' + esc(p.label) + ', so it counts toward that family\'s test on the Charts tab' +
       (UI.ctx === 'dataset' ? ' (tags: the family\'s log2 OR; outlined = not significant)' : '') + '. Enriched: terms enriched among all methylarginine proteins (' + dgnTested() + '), listed below.</p>';
   }
 
@@ -4470,10 +4482,11 @@
 
   // ------------------------------------------------------------- 3D structure
   function structureCard(p) {
-    return '<div class="card" id="card-af"><div class="card-head"><div><h3>3D structure</h3><p class="sub" id="af-sub">The AlphaFold DB model, or any experimental structure listed below, in the protein map\'s colours: domains, disordered stretches and RG/RGG segments as on the map, methylarginine side chains in their site colours, other chains by what they are. Click any residue, or a row in the site table, to zoom to it and show its contacts; the options change the style, colouring, surface and lighting.</p></div>' +
+    return '<div class="card" id="card-af"><div class="card-head"><div><h3>3D structure</h3><p class="sub" id="af-sub">The experimental (PDB) chain that resolves most of the protein or the AlphaFold DB model (switch above), or any structure listed below, in the protein map\'s colours: domains, disordered stretches and RG/RGG segments as on the map, methylarginine side chains in their site colours, other chains by what they are. Click any residue, or a row in the site table, to zoom to it and show its contacts; the options change the style, colouring, surface and lighting.</p></div>' +
       '<div class="exp" role="group" aria-label="Structure controls"><button type="button" id="af-reset" disabled>Reset view</button><button type="button" id="af-spin" disabled aria-pressed="false">Spin</button><button type="button" id="af-png" disabled>PNG</button><button type="button" id="af-cxc" disabled title="ChimeraX command script that rebuilds this view">ChimeraX</button><button type="button" id="af-pml" disabled title="PyMOL script that rebuilds this view">PyMOL</button><button type="button" id="af-cif" disabled title="The coordinates shown as mmCIF, with the methylarginines listed">mmCIF</button><button type="button" id="af-pdbf" disabled title="The coordinates shown as PDB, with the methylarginines in REMARK 999">PDB</button></div></div>' +
+      '<div class="af-src" id="af-src"></div>' +
       '<div class="af-controls" id="af-controls"></div>' +
-      '<div class="af-wrap"><div><div class="af-viewer" id="af-viewer"><div class="af-placeholder">Loading the AlphaFold model…</div></div><p class="note af-msg" id="af-msg" aria-live="polite"></p></div><div class="af-side" id="af-side"></div></div>' +
+      '<div class="af-wrap"><div><div class="af-viewer" id="af-viewer"><div class="af-placeholder">Loading the structure…</div></div><p class="note af-msg" id="af-msg" aria-live="polite"></p></div><div class="af-side" id="af-side"></div></div>' +
       foldHtml('p-pdb', 'Experimental structures (PDB)', '<div class="pdb-block"><div class="card-head"><div><h3 class="h4">Experimental structures (PDB)</h3><p class="sub" id="pdb-sub">Looking up PDB entries…</p></div>' +
       '<div class="exp"><a class="exp-link" href="https://www.ebi.ac.uk/pdbe/pdbe-kb/proteins/' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">PDBe-KB ↗</a></div></div><div id="pdb-list"></div></div>', false, 'looking up…', 'sub-fold') +
       foldHtml('p-hom', 'Homologous experimental structures', '<div class="pdb-block" id="hom-block"><div class="card-head"><div><h3 class="h4">Homologous experimental structures</h3><p class="sub" id="hom-sub">Searching the PDB for related proteins…</p></div></div><div id="hom-list"></div></div>', false, 'searching…', 'sub-fold') +
@@ -4520,33 +4533,36 @@
     $$('.af-sites .chip', side).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
   }
 
+  // The 3D card's buttons (reset, spin, PNG, ChimeraX, PyMOL, coordinates), whichever structure loaded first.
+  function bindAfButtons(p) {
+    $('#af-cxc').onclick = () => { if (mol) { const d = sceneData(); download(d.file + '.cxc', chimeraxScene(d)); } };
+    $('#af-pml').onclick = () => { if (mol) { const d = sceneData(); download(d.file + '.pml', pymolScene(d)); } };
+    $('#af-cif').onclick = () => { if (mol) coordsFile(sceneData(), 'cif'); };
+    $('#af-pdbf').onclick = () => { if (mol) coordsFile(sceneData(), 'pdb'); };
+    $('#af-reset').onclick = () => {
+      if (!mol) return;
+      if (mol.label) { mol.viewer.removeLabel(mol.label); mol.label = null; }
+      mol.focus = null;
+      styleStructure(false);
+      mol.viewer.zoomTo();
+      mol.viewer.render();
+      const msg = $('#af-msg');
+      if (msg) msg.textContent = '';
+    };
+    $('#af-spin').onclick = (e) => { if (!mol) return; mol.spin = !mol.spin; mol.viewer.spin(mol.spin ? 'y' : false); e.currentTarget.setAttribute('aria-pressed', String(mol.spin)); };
+    $('#af-png').onclick = () => {
+      if (!mol) return;
+      const src = mol.mode === 'pdb' ? 'PDB ' + mol.pdb.e.id.toUpperCase() : 'AlphaFold DB model';
+      pngWithCredit(mol.viewer.pngURI(), (p.gene || p.acc) + '_' + (mol.mode === 'pdb' ? mol.pdb.e.id.toUpperCase() : 'alphafold') + '_methylarginines.png', p.label + ' (' + p.acc + ') · ' + src + ' · methylarginines highlighted');
+    };
+  }
+
   function initStructure(p) {
     const holder = $('#af-viewer');
     if (!holder) return;
     renderAfSide(p, AFDATA.get(p.acc));
     const enable = () => AF_BUTTONS.forEach((id) => { const b = $(id); if (b) b.disabled = false; });
-    const bindButtons = () => {
-      $('#af-cxc').onclick = () => { if (mol) { const d = sceneData(); download(d.file + '.cxc', chimeraxScene(d)); } };
-      $('#af-pml').onclick = () => { if (mol) { const d = sceneData(); download(d.file + '.pml', pymolScene(d)); } };
-      $('#af-cif').onclick = () => { if (mol) coordsFile(sceneData(), 'cif'); };
-      $('#af-pdbf').onclick = () => { if (mol) coordsFile(sceneData(), 'pdb'); };
-      $('#af-reset').onclick = () => {
-        if (!mol) return;
-        if (mol.label) { mol.viewer.removeLabel(mol.label); mol.label = null; }
-        mol.focus = null;
-        styleStructure(false);
-        mol.viewer.zoomTo();
-        mol.viewer.render();
-        const msg = $('#af-msg');
-        if (msg) msg.textContent = '';
-      };
-      $('#af-spin').onclick = (e) => { if (!mol) return; mol.spin = !mol.spin; mol.viewer.spin(mol.spin ? 'y' : false); e.currentTarget.setAttribute('aria-pressed', String(mol.spin)); };
-      $('#af-png').onclick = () => {
-        if (!mol) return;
-        const src = mol.mode === 'pdb' ? 'PDB ' + mol.pdb.e.id.toUpperCase() : 'AlphaFold DB model';
-        pngWithCredit(mol.viewer.pngURI(), (p.gene || p.acc) + '_' + (mol.mode === 'pdb' ? mol.pdb.e.id.toUpperCase() : 'alphafold') + '_methylarginines.png', p.label + ' (' + p.acc + ') · ' + src + ' · methylarginines highlighted');
-      };
-    };
+    const bindButtons = () => bindAfButtons(p);
     // Re-renders of the same protein keep the live viewer instead of rebuilding it.
     if (mol && mol.p.i === p.i && mol.el) {
       holder.replaceWith(mol.el);
@@ -4558,6 +4574,7 @@
       renderPdbList(p);
       renderHomologList(p);
       renderPredList(p);
+      renderSrcSwitch(p);
       enable(); bindButtons();
       if (mol.spin) $('#af-spin').setAttribute('aria-pressed', 'true');
       UI.startStructure = () => {};
@@ -4565,11 +4582,27 @@
     }
     disposeStructure();
     renderViewControls();
-    const start = () => { renderPdbList(p); renderHomologList(p); renderPredList(p); return startAf(); };
+    // The PDB chain that resolves most of this protein opens first, unless the reader chose AlphaFold (UI.mv.src).
+    const start = () => {
+      renderPdbList(p); renderHomologList(p); renderPredList(p); renderSrcSwitch(p);
+      if (UI.mv.src === 'af') return startAf();
+      if (!mol || mol.p.i !== p.i) holder.innerHTML = '<div class="af-placeholder">Finding the experimental structure that resolves most of ' + esc(p.label) + '…</div>';
+      return bestPdb(p).then((b) => {
+        if (UI.detail !== p.i || !document.body.contains(holder)) return;
+        renderSrcSwitch(p);
+        // The reader switched to AlphaFold, or opened another structure, while the search ran.
+        if (UI.mv.src === 'af' || (mol && mol.p.i === p.i)) return;
+        if (!b) return startAf();
+        renderAfSide(p, AFDATA.get(p.acc));
+        return showPdb(p, b.e, null, true).then(() => { if (!mol || mol.mode !== 'pdb') return startAf(); enable(); bindButtons(); if (UI.highlight != null) focusStructure(UI.highlight); });
+      }, () => startAf());
+    };
     const startAf = () => loadAF(p.acc).then((af) => {
       if (UI.detail !== p.i || !document.body.contains(holder)) return;
       renderAfSide(p, af);
-      sum3d(p, 'af', af ? 'AlphaFold DB model, mean pLDDT ' + (af.entry.globalMetricValue != null ? af.entry.globalMetricValue.toFixed(1) : '—') : 'no AlphaFold DB model');
+      if (!UI.sum3d || UI.sum3d.i !== p.i) UI.sum3d = { i: p.i };
+      UI.sum3d.afText = af ? 'AlphaFold DB model, mean pLDDT ' + (af.entry.globalMetricValue != null ? af.entry.globalMetricValue.toFixed(1) : '—') : 'no AlphaFold DB model';
+      if (!mol || mol.p.i !== p.i || mol.mode === 'af') sum3d(p, 'af', UI.sum3d.afText);
       if (!af) {
         if (!mol || mol.p.i !== p.i) holder.innerHTML = '<div class="af-placeholder">No AlphaFold DB model for ' + esc(p.acc) + '. AlphaFold DB does not cover every isoform, and for human proteins longer than 2,700 residues it offers only fragment downloads. Experimental structures, if any, can be viewed from the list below.</div>';
         return;
@@ -4582,6 +4615,7 @@
         const viewer = lib.createViewer(holder, { backgroundColor: cssVar('--surface-2') || '#eef5f7', antialias: true });
         viewer.addModel(pdb, 'pdb');
         mol = { viewer, p, el: holder, label: null, spin: false, mode: 'af', afPdb: pdb };
+        renderSrcSwitch(p);
         renderViewControls();
         styleStructure();
         viewer.zoomTo();
@@ -4624,12 +4658,12 @@
     ['others', 'Other chains', 'Show the other chains of the PDB entry', 'pdb'],
     ['ligands', 'Ligands', 'Show ligands and other hetero groups (waters are always hidden)', 'pdb'],
   ];
-  const VIEW_DEFAULT = { style: 'cartoon', color: 'auto', surface: 'off', light: 'ao', bright: 'bright', ldir: 'upleft', bg: 'page', contacts: true, labels: false, others: true, ligands: true };
+  const VIEW_DEFAULT = { src: 'pdb', style: 'cartoon', color: 'auto', surface: 'off', light: 'ao', bright: 'bright', ldir: 'upleft', bg: 'page', contacts: true, labels: false, others: true, ligands: true };
   UI.mv = (() => {
     const v = Object.assign({}, VIEW_DEFAULT);
     let saved = {};
     try { saved = JSON.parse(store.get('mx-view') || '{}') || {}; } catch (e) { /* ignore */ }
-    const ok = { style: VIEW_STYLES, color: VIEW_COLORS, surface: VIEW_SURFACES, light: VIEW_LIGHTS, bright: VIEW_BRIGHT, ldir: VIEW_LDIR, bg: VIEW_BGS };
+    const ok = { src: [['pdb'], ['af']], style: VIEW_STYLES, color: VIEW_COLORS, surface: VIEW_SURFACES, light: VIEW_LIGHTS, bright: VIEW_BRIGHT, ldir: VIEW_LDIR, bg: VIEW_BGS };
     for (const k of Object.keys(v)) {
       if (!(k in saved)) continue;
       if (ok[k] ? ok[k].some((o) => o[0] === saved[k]) : typeof saved[k] === 'boolean') v[k] = saved[k];
@@ -5308,7 +5342,7 @@
     });
   }
 
-  function showPdb(p, e, btn) {
+  function showPdb(p, e, btn, quiet) {
     const holder = mol && mol.p.i === p.i ? mol.el : $('#af-viewer');
     if (!holder) return;
     if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
@@ -5322,6 +5356,7 @@
         disposeStructure();
         holder.innerHTML = '';
         mol = { viewer: lib.createViewer(holder, { backgroundColor: cssVar('--surface-2') || '#eef5f7', antialias: true }), p, el: holder, label: null, spin: false, mode: 'af', afPdb: null };
+        bindAfButtons(p);
       }
       const viewer = mol.viewer;
       viewer.removeAllLabels();
@@ -5339,7 +5374,8 @@
       viewer.render();
       AF_BUTTONS.forEach((id) => { const b = $(id); if (b) b.disabled = false; });
       renderPdbSide(p);
-      $('#af-viewer').scrollIntoView({ block: 'center', behavior: 'smooth' });
+      renderSrcSwitch(p);
+      if (!quiet) $('#af-viewer').scrollIntoView({ block: 'center', behavior: 'smooth' });
     }).catch(() => { if (btn) btn.textContent = 'Failed'; })
       .finally(() => { if (btn) { btn.disabled = false; if (btn.textContent === 'Loading…') btn.textContent = 'View'; } });
   }
@@ -5392,6 +5428,82 @@
       renderViewControls();
       styleStructure(); v.zoomTo(); v.render();
       renderAfSide(p, AFDATA.get(p.acc));
+      renderSrcSwitch(p);
+    });
+  }
+
+  // The PDB chain of this protein with the most observed residues: candidates are the chains whose UniProt mapping spans
+  // most of the protein (top 8), each read for the residues it actually models (PDBe polymer coverage); ties go to more
+  // resolved methylarginines, then better resolution.
+  function bestPdb(p) {
+    if (p.iso) return Promise.resolve(null);
+    return live('bestpdb:' + p.acc, () => loadPdb(p.acc).then((res) => {
+      const span = (e) => { const ch = e.maps.length ? e.maps[0].chain : null; return e.maps.filter((m) => m.chain === ch).reduce((n, m) => n + m.unpEnd - m.unpStart + 1, 0); };
+      const cand = res.entries.filter((e) => e.maps.length).sort((a, b) => span(b) - span(a)).slice(0, 8);
+      return Promise.all(cand.map((e) => loadPdbDetail(e, res.methyl.has(e.id)).then((det) => ({ e, det }), () => null))).then((list) => {
+        const scored = list.filter((x) => x && x.det && x.det.coverage).map(({ e, det }) => {
+          let obs = 0;
+          for (const m of e.maps.filter((x) => x.chain === det.chain)) for (const [a, b] of det.coverage) obs += Math.max(0, Math.min(b, m.end) - Math.max(a, m.start) + 1);
+          return { e, det, obs, nSites: pdbSites(p, e, det).filter((x) => x[2]).length };
+        }).filter((x) => x.obs > 0);
+        scored.sort((a, b) => b.obs - a.obs || b.nSites - a.nSites || (a.e.resolution || 99) - (b.e.resolution || 99));
+        return scored[0] || null;
+      });
+    }));
+  }
+
+  // AlphaFold model | best PDB chain. The choice is remembered (UI.mv.src); homologs and predicted complexes opened from
+  // the lists below leave both unpressed.
+  function renderSrcSwitch(p) {
+    const box = $('#af-src');
+    if (!box) return;
+    const best = liveCache.get('bestpdb:' + p.acc);
+    const draw = (b) => {
+      if (UI.detail !== p.i) return;
+      const mode = !mol || mol.p.i !== p.i ? null : mol.mode === 'af' ? 'af' : mol.pdb && !mol.pdb.pred && !mol.pdb.homolog && b && mol.pdb.e.id === b.e.id ? 'pdb' : null;
+      box.innerHTML = '<div class="seg" role="group" aria-label="Structure shown"><span>Show</span>' +
+        '<button type="button" data-src="pdb" aria-pressed="' + (mode === 'pdb') + '"' + (b ? ' title="' + esc(b.e.id.toUpperCase() + ' chain ' + b.det.chain + ': ' + b.obs + ' residues of ' + p.label + ' observed' + (b.e.resolution ? ', ' + b.e.resolution.toFixed(1) + ' Å' : '')) + '"' : ' disabled title="No experimental structure maps to this protein"') + '>' +
+        (b ? 'Experimental · PDB ' + b.e.id.toUpperCase() : 'Experimental (none)') + '</button>' +
+        '<button type="button" data-src="af" aria-pressed="' + (mode === 'af') + '">AlphaFold model</button></div>' +
+        (b ? '<span class="muted small">' + fmt(b.obs) + ' residues observed' + (b.nSites ? ', ' + b.nSites + ' methylarginine' + (b.nSites === 1 ? '' : 's') : '') + '</span>' : '');
+      $$('[data-src]', box).forEach((btn) => btn.addEventListener('click', () => {
+        UI.mv.src = btn.dataset.src;
+        store.set('mx-view', JSON.stringify(UI.mv));
+        if (btn.dataset.src === 'pdb' && b) showPdb(p, b.e, null, true);
+        else if (btn.dataset.src === 'af') showAf(p);
+      }));
+      sum3d(p, 'af', mode === 'pdb' ? 'PDB ' + b.e.id.toUpperCase() + ' chain ' + b.det.chain + ', ' + fmt(b.obs) + ' residues observed' : mode === 'af' ? (UI.sum3d && UI.sum3d.afText) || 'AlphaFold DB model' : (UI.sum3d && UI.sum3d.af) || '');
+    };
+    if (best) best.then(draw); else draw(null);
+  }
+
+  // Switch the viewer to the AlphaFold model (creating the viewer if a PDB entry never loaded).
+  function showAf(p) {
+    return loadAF(p.acc).then((af) => {
+      if (UI.detail !== p.i) return;
+      const msg = $('#af-msg');
+      if (!af) { if (msg) msg.textContent = 'AlphaFold DB has no model for ' + p.acc + '.'; return; }
+      return Promise.all([load3Dmol(), mol && mol.p.i === p.i && mol.afPdb ? mol.afPdb : fetchText(af.entry.pdbUrl)]).then(([lib, pdb]) => {
+        if (UI.detail !== p.i) return;
+        const holder = mol && mol.p.i === p.i ? mol.el : $('#af-viewer');
+        if (!holder) return;
+        if (!mol || mol.p.i !== p.i) {
+          disposeStructure();
+          holder.innerHTML = '';
+          mol = { viewer: lib.createViewer(holder, { backgroundColor: cssVar('--surface-2') || '#eef5f7', antialias: true }), p, el: holder, label: null, spin: false, mode: 'af', afPdb: pdb };
+          bindAfButtons(p);
+          AF_BUTTONS.forEach((id) => { const b = $(id); if (b) b.disabled = false; });
+        }
+        const v = mol.viewer;
+        v.removeAllLabels(); mol.label = null; v.clear(); v.removeAllSurfaces();
+        v.addModel(pdb, 'pdb');
+        Object.assign(mol, { mode: 'af', afPdb: pdb, pdb: null, chains: null, focus: null, siteLabels: [], naKinds: null });
+        renderViewControls();
+        styleStructure(); v.zoomTo(); v.render();
+        renderAfSide(p, af);
+        renderSrcSwitch(p);
+        if (UI.highlight != null) focusStructure(UI.highlight);
+      });
     });
   }
 
@@ -5933,7 +6045,7 @@
     else if (Q.raw) Q = parseQuery(Q.raw);
     renderRail();
     compute();
-    if (['overview', 'proteins', 'sites', 'interactions', 'figures', 'report', 'compare'].includes(UI.view)) renderView();
+    if (['overview', 'proteins', 'sites', 'interactions', 'charts', 'figures', 'report', 'compare'].includes(UI.view)) renderView();
     // The Documentation quotes numbers from the interaction export; redraw it in place.
     else if (UI.view === 'about') { const y = window.scrollY; renderView(); window.scrollTo(0, y); }
     else if (UI.view === 'protein' && UI.detail != null) {
@@ -7663,7 +7775,7 @@
       '<p class="muted small">Reopen: <span class="mono">' + esc(link) + '</span><br>Data exported ' + esc(M.generated) + (IX && IX.meta ? '; interaction data ' + esc(IX.meta.generated || '') : '') + '. Please cite ' + esc(PAPER.cite) + ' doi:' + esc(PAPER.doi) + '</p></header>' +
       '<div class="facts report-facts">' + facts.map(([v, l]) => '<div class="fact"><b>' + v + '</b><span>' + esc(l) + '</span></div>').join('') + '</div>' +
       sec('summary', 'In words', '<p class="report-summary">' + esc(summaryText(currentSelection(), prof)) + '</p><p class="note">Written from the numbers in this report; it states differences, not causes.</p>') +
-      (scoped ? sec('profile', 'What sets this selection apart', sig.length ?
+      (scoped ? sec('profile', 'Enriched features', sig.length ?
         '<div class="tbl-wrap"><table class="tbl compact prof-tbl"><thead><tr><th>Feature</th><th class="r">Here</th><th class="r hide-xs">Other sites</th><th class="r">Ratio</th><th class="r">q</th></tr></thead><tbody>' +
         profUp.concat(profDown).map((r) => '<tr' + (r.fold < 1 ? ' class="depleted"' : '') + '><td><span class="muted small">' + esc(r.ft.group) + '</span> ' + esc(r.ft.label) + '</td><td class="r num">' + fmt(r.a) + ' (' + pc(r.a, r.n1) + ')</td><td class="r num hide-xs">' + pc(r.c, r.n2) + '</td><td class="r num"><b>' + (r.fold >= 10 ? r.fold.toFixed(0) : r.fold.toFixed(1)) + '×</b></td><td class="r num">' + fmtP(r.q) + '</td></tr>').join('') +
         '</tbody></table></div><p class="note">The ' + fmt(sites.length) + ' selected sites against the other ' + fmt(S.length - sites.length) + ': Fisher\'s exact test per feature, Benjamini–Hochberg across the ' + (prof ? prof.length : 0) + ' features tested; q ≤ 0.05 shown. Sites in one protein are not independent, so read this as a pointer.</p>' :
@@ -7862,7 +7974,7 @@
     bindCiteBox(el);
   }
 
-  // ------------------------------------------- what sets this selection apart
+  // ------------------------------------------- enriched features of a selection
   // Site features compared between the current selection and the remaining sites (Fisher's exact test, BH across the
   // features tested). Sites of one protein are not independent, so this points to differences rather than testing them.
   function profileFeatures() {
@@ -7910,14 +8022,18 @@
     const up = sig.filter((r) => r.fold > 1).slice(0, 8), down = sig.filter((r) => r.fold < 1).slice(0, 4);
     const show = up.concat(down);
     const pc = (x, n) => (100 * x / n).toFixed(x / n < 0.1 ? 1 : 0) + '%';
-    return '<div class="card profile-card" id="profile"><div class="card-head"><div><h3>What sets this selection apart</h3><p class="sub">Site features in these ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + '. Click a feature to narrow the selection to it.' + docLink('profile') + '</p></div>' +
+    // A closed fold whose header names the strongest enrichments; the table, statistics and actions sit inside.
+    const ratio = (r) => (r.fold >= 10 ? r.fold.toFixed(0) : r.fold.toFixed(1)) + '×';
+    const sum = (up.length ? up.slice(0, 3).map((r) => r.ft.label + ' ' + ratio(r)).join(', ') + ' · ' : '') +
+      (sig.length ? sig.length + ' of ' + rows.length + ' features differ (q ≤ 0.05)' : 'no feature differs significantly from the other sites');
+    return foldHtml('sel-enriched', 'Enriched features', '<div class="card profile-card" id="profile"><div class="card-head"><div><h3>Enriched features</h3><p class="sub">Site features in these ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + '. Click a feature to narrow the selection to it.' + docLink('profile') + '</p></div>' +
       '<div class="exp"><button type="button" data-prof="figures">Logo and comparison</button><button type="button" data-prof="evidence">Evidence map</button><button type="button" data-prof="report" title="Profile, evidence map, logo and protein comparison of this selection as one PDF">Insight report</button></div></div>' +
       '<div class="cmp-row">' + cmpButtons() + '</div>' +
       (show.length ? '<div class="tbl-wrap"><table class="tbl compact prof-tbl"><thead><tr><th>Feature</th><th class="r">Here</th><th class="r hide-xs">Other sites</th><th class="r">Ratio</th><th class="r">q</th></tr></thead><tbody>' +
         show.map((r) => '<tr class="row' + (r.fold < 1 ? ' depleted' : '') + '" tabindex="0" data-prof-key="' + r.ft.key + '" title="' + (r.fold > 1 ? 'Narrow the selection to sites with this feature' : 'Less common here than in the other sites') + '"><td><span class="muted small">' + esc(r.ft.group) + '</span> ' + esc(r.ft.label) + '</td>' +
           '<td class="r num">' + fmt(r.a) + ' <span class="muted">(' + pc(r.a, r.n1) + ')</span></td><td class="r num hide-xs">' + pc(r.c, r.n2) + '</td><td class="r num"><b>' + (r.fold >= 10 ? r.fold.toFixed(0) : r.fold.toFixed(1)) + '×</b></td><td class="r num">' + fmtP(r.q) + '</td></tr>').join('') + '</tbody></table></div>' :
         '<p class="note">No site feature differs significantly (BH q ≤ 0.05) between this selection and the other sites.</p>') +
-      '<p class="note">Fisher\'s exact test per feature, Benjamini–Hochberg across the ' + rows.length + ' features tested. Sites in one protein are not independent, so read this as a pointer.</p></div>';
+      '<p class="note">Fisher\'s exact test per feature, Benjamini–Hochberg across the ' + rows.length + ' features tested. Sites in one protein are not independent, so read this as a pointer.</p></div>', false, sum);
   }
 
   function bindProfile(el) {
@@ -8966,7 +9082,7 @@
         sub('tables', 'Tables, columns and the site card', '<p>The Proteins, Sites and protein-page tables show their core columns and a <b>Columns</b> menu for the rest (context, next methyl-R, Maron IP, AlphaFold, nearest domain …); the choice is remembered in this browser. On a phone each row becomes a labelled card. ' +
           'Clicking a site, or opening a link with a site in the search (<code>FUS R216</code>), opens the <b>site card</b> under the protein map: its interaction status and evidence with partners, what is known about the whole protein (labelled as such), sequence context, inhibitor response, AlphaFold confidence and reports.</p>') +
         sub('arg-enrich', 'Arginine enrichment of a protein', '<p>Shown on protein pages and in the Proteins table (script 08). For a protein with <i>a</i> methylarginine sites among <i>n</i> arginines of its canonical sequence, and the proteome-wide rate <i>r</i> (all union sites over all arginines of the canonical human sequences), the value is log2 of (<i>a</i> + 200<i>r</i>) / (<i>n</i> + 200) over <i>r</i>: a beta-binomial shrinkage estimate with a prior worth 200 arginines, which pulls proteins with few arginines toward the proteome rate. The q-value is a two-sided Fisher\'s exact test of the protein\'s methylated and other arginines against those of all other proteins, Benjamini–Hochberg across the methylated proteins. Proteins with fewer than 2 sites or 10 arginines are not tested. The filter <i>Arginines methylated more than the proteome rate</i> keeps proteins with q ≤ 0.05 and a positive estimate.</p>')],
-      ['overview', 'Overview charts', '<p>Bars show log2 odds ratios; filled bars have a Benjamini–Hochberg q ≤ 0.05, outlined bars do not. The bars and their statistics always describe the whole dataset; clicking a bar filters the Proteins and Sites views. With a search or filter set, an orange count after each bar gives how many of the selected proteins or sites fall in it (the same test a click on the bar adds), bars the selection does not reach are faded, and “What sets this selection apart” opens the page. Exported charts and their TSV files carry the same counts.</p>' +
+      ['overview', 'Charts', '<p>Bars show log2 odds ratios; filled bars have a Benjamini–Hochberg q ≤ 0.05, outlined bars do not. The bars and their statistics always describe the whole dataset; clicking a bar filters the Proteins and Sites views. With a search or filter set, an orange count after each bar gives how many of the selected proteins or sites fall in it (the same test a click on the bar adds), bars the selection does not reach are faded, and “What sets this selection apart” opens the page. Exported charts and their TSV files carry the same counts.</p>' +
         sub('ov-ontology', 'Functional ontology', '<p>Classes from the lab functional ontology (config/functional_ontology.json); a protein can belong to several. Each class is compared between methylated proteins and the other proteins of the pipeline\'s universe (Fisher, BH): the reviewed human proteome plus the unreviewed entries that carry union sites, which count as methylated (' + fmt(P.filter((p) => p.unrev).length) + ' here). "Show subclasses" lists subclasses under the broad class most of their proteins share; a subclass with its parent\'s name is labelled "(subclass)".</p>') +
         sub('ov-disease', 'Disease families', '<p>DisGeNET terms (the gene–term mapping shipped with DOSE) are assigned to ' + M.disease_families.length + ' audited families by label rules with a fixed precedence (scripts/34); each family\'s gene set is the union of its terms\' genes in the reviewed-human universe, each gene counted once. A bar is that family\'s two-sided Fisher exact test, methylated proteins against the rest of the universe, BH-adjusted across the ' + M.disease_families.length + ' families. This is enrichment of disease gene sets among methylated proteins, not causation, and the families overlap heavily (scripts/34 writes the pairwise gene overlaps), so they are not independent findings.</p>' +
           '<p>Clicking a bar (or <code>disease:cancer</code>, <code>disease:als</code> in the search) lists something narrower: the methylated proteins in that family\'s individually enriched terms (clusterProfiler enrichDGN, ' + dgnTested() + '). Terms with more than ' + DGN_TERMS.max + ' genes, usually the broadest disease names, count in their family\'s test but are never tested on their own, so their genes reach the list only through smaller enriched terms. A family none of whose terms is enriched on its own' + (() => { const e = M.disease_families.filter((_, i) => !diseaseTermCount(i)); return e.length ? ' (' + esc(e.join(', ')) + ' in the current data)' : ''; })() + ' is marked “no enriched term” and lists nothing. <code>disease:als-all</code> lists every methylated protein in the full audited ALS/MN/FTD gene set. Protein pages name every family whose gene set holds the protein, which is what the family test counts, and how many of its terms are enriched.</p>') +
@@ -8993,7 +9109,7 @@
         sub('ix-evmap', 'How the evidence fits together', '<p>Counted per site or per protein. For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink at or possibly at the residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), three IntAct record types (a mutation that changed an interaction, a short binding region, the arginine curated as methylated in an interaction; these do not set the status), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. The protein-context table shows, for the sites with each kind of evidence, the share on proteins annotated as RNA- or DNA-binding (Gene Ontology), in a CD-CODE condensate, physically linked to a PRMT or a Tudor-domain reader (STRING ≥ 0.7) or in a Complex Portal curated complex, against all selected sites; each cell lists those sites. Counted per protein, the same layout combines these protein properties and whether any of the protein\'s sites carries contact evidence. Below the site view, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
         sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a ProMetheusDB dimethylarginine call (the only state calls in the union), the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the plain odds ratio with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ 0.05 are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions are read with care.</p>') +
         sub('ix-wr', 'Writers and readers sharing substrates', '<p>For the proteins in the current selection, each cell counts the methylated proteins that are STRING physical partners (score ≥ 0.7) of both a PRMT (rows) and a Tudor-domain protein (columns, InterPro IPR002999; the 12 with most shared partners are shown). The expected count assumes the two partner lists are independent among the selected methylated proteins that are in STRING; Fisher\'s exact test, Benjamini–Hochberg across the cells; outlined cells have at least two shared partners and q ≤ 0.05 (a single shared partner of two short lists can pass the test alone). Clicking a cell lists the proteins (binds: both partners). A physical link is to the whole protein, not to a site, and several Tudor proteins read methyllysine rather than methylarginine, so a shared partner is a candidate path to test, not a demonstrated one.</p>') +
-        sub('profile', 'What sets this selection apart', '<p>Shown on the Proteins and Sites views whenever a search or filter is set. Each site feature (motifs, disorder, methylation calls and IPs, PRMT inhibitor and CARM1 knockout response, close spacing, number of reporting sources, the interaction evidence types, and the functional class and HPA location of the site\'s protein) is compared between the selected sites and all other sites with Fisher\'s exact test, Benjamini–Hochberg-adjusted across the features tested; up to 8 features more common and 4 less common at q ≤ 0.05 are listed, more common ones first; the card also opens the Overview when a selection is set. The ratio is the share in the selection over the share in the other sites. Clicking a more common feature narrows the selection to it. Sites of the same protein are not independent, so this points to differences rather than testing them; a selection built from a few proteins mostly reflects those proteins.</p>') +
+        sub('profile', 'Enriched features of a selection', '<p>Shown on the Proteins and Sites views whenever a search or filter is set. Each site feature (motifs, disorder, methylation calls and IPs, PRMT inhibitor and CARM1 knockout response, close spacing, number of reporting sources, the interaction evidence types, and the functional class and HPA location of the site\'s protein) is compared between the selected sites and all other sites with Fisher\'s exact test, Benjamini–Hochberg-adjusted across the features tested; up to 8 features more common and 4 less common at q ≤ 0.05 are listed, more common ones first; the card also opens the Overview when a selection is set. The ratio is the share in the selection over the share in the other sites. Clicking a more common feature narrows the selection to it. Sites of the same protein are not independent, so this points to differences rather than testing them; a selection built from a few proteins mostly reflects those proteins.</p>') +
         sub('compare', 'Comparing two selections', '<p>Press <b>Save as A for a comparison</b> on a selection (on the selection profile or the report), change the search or filters, then <b>Compare with A</b> (also in the bar under the search). The comparison shows both selections, their overlap, a paragraph on each, the interaction status split, the site features that differ between them (Fisher\'s exact test, Benjamini–Hochberg across features; up to 16 with q ≤ 0.05, or the 16 closest, faded, when none is), each as the share of A and of B with the ratio, side-by-side logos and the proteins with most sites. ' +
           'Sites in both selections count on both sides, which makes the test conservative. The link keeps both selections (<code>A=</code> holds the first), and the page prints with the same header, citation and page numbers as the report.</p>') +
         sub('report', 'Insight report', '<p>One printable page for the current selection: the selection and a link that reopens it, headline numbers, what sets it apart, the site and protein evidence maps with the protein-context table, the sequence logo and alignment (±7, first 30 sites), the proteins on one residue scale (up to 8, UniProt features fetched live), the proteins with most selected sites with their evidence, and the methods and citation. It opens the browser\'s print dialog; choose Save as PDF.</p>')],
@@ -9373,7 +9489,7 @@
         '<p><button class="btn quiet small" type="button" id="fg-3d">Open the 3D view of ' + esc(fp.label) + '</button></p></div>'
         : '<p class="note">No protein selected.</p>') +
       '<h2 class="fig-sec">Whole dataset</h2>' +
-      '<div class="card fig-card"><h3>Overview charts</h3><p class="sub">The dataset charts of the Overview page. Their bars stay those of the whole dataset; with a selection set, each also counts it (orange).</p><ul class="fig-list">' +
+      '<div class="card fig-card"><h3>Dataset charts</h3><p class="sub">The charts of the Charts tab. Their bars stay those of the whole dataset; with a selection set, each also counts it (orange).</p><ul class="fig-list">' +
       chartList.map((c) => '<li><span>' + esc(c.title) + '</span><span class="exp">' + btn('chart-' + c.id + '-svg', 'SVG') + btn('chart-' + c.id + '-png', 'PNG') + btn('chart-' + c.id + '-tsv', 'TSV') +
         '<button type="button" class="linkish" data-preview="' + c.id + '">Preview</button></span><div class="fig-preview" id="pv-' + c.id + '" hidden></div></li>').join('') + '</ul></div>';
 

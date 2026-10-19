@@ -37,6 +37,65 @@ def load_uniprot_metadata(path: str | Path) -> tuple[pd.DataFrame, dict[str, lis
     return meta, gene_to_accessions
 
 
+def load_accession_history(path: str | Path | None) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
+    """(secondary accession -> current entries, gene synonym -> entries) from uniprot_accession_history.tsv (scripts/00).
+    A merged accession maps to one entry; an accession split into several maps to each of them."""
+    secondary: dict[str, list[str]] = defaultdict(list)
+    synonyms: dict[str, list[str]] = defaultdict(list)
+    if not path:
+        return {}, {}
+    table = pd.read_csv(path, sep='\t', dtype=str).fillna('')
+    for kind, key, acc in zip(table['kind'], table['key'], table['accession']):
+        target = secondary if kind == 'secondary' else synonyms if kind == 'synonym' else None
+        key = key.strip() if kind == 'secondary' else canonical_gene_name(key)
+        if target is not None and key and acc and acc not in target[key]:
+            target[key].append(acc)
+    return {k: sorted(v) for k, v in secondary.items()}, {k: sorted(v) for k, v in synonyms.items()}
+
+
+class ProteomeIndex:
+    """Substring search over every reference sequence at once (for rows whose candidates hold none of their evidence)."""
+
+    def __init__(self, sequences: dict[str, str]):
+        self.order = sorted(sequences)
+        self.offsets: list[int] = []
+        parts, off = [], 0
+        for acc in self.order:
+            self.offsets.append(off)
+            parts.append(sequences[acc] + '#')
+            off += len(sequences[acc]) + 1
+        self.text = ''.join(parts)
+
+    def find(self, token: str) -> list[tuple[str, int]]:
+        """(accession, 1-based start) of every occurrence."""
+        import bisect
+        out, i = [], self.text.find(token)
+        while i != -1:
+            k = bisect.bisect_right(self.offsets, i) - 1
+            out.append((self.order[k], i - self.offsets[k] + 1))
+            i = self.text.find(token, i + 1)
+        return out
+
+
+# Evidence searched across the whole reference set must be long enough to name one place.
+PROTEOME_MIN_ANCHOR = 7
+
+
+def own_accession(row: pd.Series, canonical_sequences: dict[str, str], secondary: dict[str, list[str]],
+                  gene_map: dict[str, list[str]] | None = None) -> str:
+    """The row's own entry: its accession when that is in the reference set, else the current entry UniProt merged it
+    into. A split accession (HSPA1A P08107 -> P0DMV8, P0DMV9) has several; the one named by the row's gene symbol is its
+    own, and with none or several the row keeps no own entry."""
+    acc = canonicalize_uniprot_accession(row.get('canonical_UniProtAC', row.get('substrate_UniProtAC', '')))
+    if acc in canonical_sequences:
+        return acc
+    current = [a for a in secondary.get(acc, []) if a in canonical_sequences]
+    if len(current) > 1:
+        named = [a for a in current if a in (gene_map or {}).get(canonical_gene_name(row.get('substrate_genename', '')), [])]
+        current = named
+    return current[0] if len(current) == 1 else acc
+
+
 def prepare_frame(df: pd.DataFrame, source_name: str) -> pd.DataFrame:
     out = df.copy()
     if 'substrate_UniProtAC_original' not in out.columns:
@@ -69,18 +128,32 @@ def find_all_occurrences(sequence: str, anchor: str) -> list[int]:
     return starts
 
 
-def candidate_accessions(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dict[str, list[str]]) -> list[str]:
+def candidate_accessions(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dict[str, list[str]],
+                         secondary: dict[str, list[str]] | None = None, synonyms: dict[str, list[str]] | None = None) -> list[str]:
+    """Entries to search for the row's evidence: its own accession(s); for an accession UniProt has since merged or split,
+    the current entries (secondary); entries sharing its gene symbol; and, when the symbol names no entry, entries that
+    list it as a synonym (outdated symbols such as MST4 for STK26)."""
     candidates: list[str] = []
+    secondary, synonyms = secondary or {}, synonyms or {}
+
+    def add(acc: str) -> None:
+        if acc and acc in canonical_sequences and acc not in candidates:
+            candidates.append(acc)
+
     for field in ['canonical_UniProtAC', 'substrate_UniProtAC', 'UniProtAC', 'substrate_UniProtAC_original']:
         if field not in row.index:
             continue
         acc = canonicalize_uniprot_accession(row.get(field, ''))
-        if acc and acc in canonical_sequences and acc not in candidates:
-            candidates.append(acc)
+        add(acc)
+        if acc and acc not in canonical_sequences:
+            for current in secondary.get(acc, []):
+                add(current)
     gene = canonical_gene_name(row.get('substrate_genename', ''))
     for acc in gene_map.get(gene, []):
-        if acc in canonical_sequences and acc not in candidates:
-            candidates.append(acc)
+        add(acc)
+    if gene and not any(acc in canonical_sequences for acc in gene_map.get(gene, [])):
+        for acc in synonyms.get(gene, []):
+            add(acc)
     return candidates
 
 
@@ -279,9 +352,26 @@ def resolve_hit(row: pd.Series, hits: list[dict], canonical_acc: str) -> tuple[i
     return None, 'unresolved_ambiguous_hit', '', '', '', len(hits)
 
 
-def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dict[str, list[str]]) -> dict:
-    canonical_acc = canonicalize_uniprot_accession(row.get('canonical_UniProtAC', row.get('substrate_UniProtAC', '')))
-    candidates = candidate_accessions(row, canonical_sequences, gene_map)
+def anchor_hits(anchor: dict, acc: str, start: int, sequence: str, reported: int) -> list[dict]:
+    indices = anchor['indices']
+    if anchor['full_length']:
+        indices = truncated_window_indices(anchor['sequence'], anchor['full_length'], start, len(sequence), reported)
+    return [{
+        'matched_accession': acc,
+        'matched_position': start + idx - 1,
+        'anchor_type': anchor['anchor_type'],
+        'anchor_sequence': anchor['sequence'],
+        'priority': 0 if anchor['anchor_type'] == 'annotated_peptide' else 1,
+    } for idx in indices]
+
+
+def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dict[str, list[str]],
+              secondary: dict[str, list[str]] | None = None, synonyms: dict[str, list[str]] | None = None,
+              proteome: ProteomeIndex | None = None) -> dict:
+    source_acc = canonicalize_uniprot_accession(row.get('canonical_UniProtAC', row.get('substrate_UniProtAC', '')))
+    # A merged accession's current entry counts as the row's own (ties, and peptides keeping their reported arginine).
+    canonical_acc = own_accession(row, canonical_sequences, secondary or {}, gene_map)
+    candidates = candidate_accessions(row, canonical_sequences, gene_map, secondary, synonyms)
     anchors = build_anchors(row)
     reported = int(row.get('position', 0))
     hits: list[dict] = []
@@ -289,22 +379,26 @@ def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dic
         for acc in candidates:
             sequence = canonical_sequences.get(acc, '')
             for start in find_all_occurrences(sequence, anchor['sequence']):
-                indices = anchor['indices']
-                if anchor['full_length']:
-                    indices = truncated_window_indices(anchor['sequence'], anchor['full_length'], start, len(sequence), reported)
-                for idx in indices:
-                    position = start + idx - 1
-                    hits.append({
-                        'matched_accession': acc,
-                        'matched_position': position,
-                        'anchor_type': anchor['anchor_type'],
-                        'anchor_sequence': anchor['sequence'],
-                        'priority': 0 if anchor['anchor_type'] == 'annotated_peptide' else 1,
-                    })
+                hits.extend(anchor_hits(anchor, acc, start, sequence, reported))
+    # No candidate at all (a deleted accession whose symbol names no current entry, such as a readthrough or an old clone
+    # name): search the whole reference set and accept the evidence only if it names exactly one site there. A row with
+    # candidates whose evidence lies elsewhere is left alone: placing it on a paralog is the open policy of issue 9.
+    proteome_search = False
+    if not hits and not candidates and proteome is not None and canonical_acc not in canonical_sequences:
+        found = []
+        for anchor in anchors:
+            if len(anchor['sequence']) < PROTEOME_MIN_ANCHOR:
+                continue
+            for acc, start in proteome.find(anchor['sequence']):
+                found.extend(anchor_hits(anchor, acc, start, canonical_sequences[acc], reported))
+        if len({(h['matched_accession'], h['matched_position']) for h in found}) == 1:
+            hits, proteome_search = found, True
 
     # The position belongs to the accession whose sequence matched. For a candidate found through the gene name (often
     # the reviewed entry behind an unreviewed or mislabelled source accession) that is not the row's own accession.
     corrected_position, remap_status, matched_accession, anchor_type, anchor_sequence, hit_count = resolve_hit(row, hits, canonical_acc)
+    if proteome_search and remap_status == 'sequence_unique_candidate':
+        remap_status = 'sequence_unique_proteome'
 
     # A peptide does not say which of its arginines was modified; the source position does. Keep the reported position
     # when it is an arginine inside an occurrence of one of the row's peptides on the canonical accession. Windows and
@@ -342,6 +436,8 @@ def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dic
             remap_status = fallback_status
 
     corrected_accession = (matched_accession if remap_status.startswith('sequence_') else canonical_acc) if corrected_position is not None and canonical_acc else ''
+    n_current = len([a for a in (secondary or {}).get(source_acc, []) if a in canonical_sequences])
+    history = ('split' if n_current > 1 else 'merged' if n_current == 1 else '') if source_acc not in canonical_sequences else ''
     corrected_site = f'R{corrected_position}' if corrected_position is not None else ''
     remapped = corrected_position is not None
     return {
@@ -358,8 +454,9 @@ def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dic
         'corrected_canonical_UniProtAC': corrected_accession,
         'position_delta': (corrected_position - reported) if corrected_position is not None else pd.NA,
         'is_position_remapped': remapped and corrected_position != reported,
-        'is_accession_remapped': remapped and corrected_accession != canonical_acc,
+        'is_accession_remapped': remapped and corrected_accession != source_acc,
         'is_position_resolved': remapped,
+        'source_accession_history': history,
     }
 
 
@@ -370,11 +467,19 @@ def main() -> None:
     ap.add_argument('--prometheus', required=True)
     ap.add_argument('--canonical-fasta', required=True)
     ap.add_argument('--uniprot-metadata', required=True)
+    ap.add_argument('--accession-history', default='',
+                    help='uniprot_accession_history.tsv from scripts/00: secondary accessions and gene synonyms of the reference set')
     ap.add_argument('--outdir', default='results/remapped')
     args = ap.parse_args()
 
     canonical_sequences = parse_fasta(args.canonical_fasta)
+    proteome = ProteomeIndex(canonical_sequences)
     _, gene_map = load_uniprot_metadata(args.uniprot_metadata)
+    secondary, synonyms = load_accession_history(args.accession_history)
+    if args.accession_history:
+        print(f'accession history: {len(secondary)} secondary accessions, {len(synonyms)} gene synonyms')
+    else:
+        print('no --accession-history: merged or split accessions and outdated gene symbols find no candidate')
 
     base = pd.read_csv(args.base_master, sep='\t', low_memory=False)
     base = base[base['is_arg_methyl'].fillna(False)].copy()
@@ -395,7 +500,7 @@ def main() -> None:
     print(kinds.to_string())
 
     remap_annotations = all_rows.apply(
-        lambda row: pd.Series(remap_row(row, canonical_sequences=canonical_sequences, gene_map=gene_map)),
+        lambda row: pd.Series(remap_row(row, canonical_sequences=canonical_sequences, gene_map=gene_map, secondary=secondary, synonyms=synonyms, proteome=proteome)),
         axis=1,
     )
     remapped = pd.concat([all_rows, remap_annotations], axis=1)

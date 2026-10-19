@@ -1285,3 +1285,8 @@ details.fold.sub-fold > .pdb-block > .card-head h3 { display: none; }
   details.fold > .card { margin-bottom: 0; border: 0; }
   .card-head p.sub, .card > p.sub, .card-pad p.sub { display: block !important; -webkit-line-clamp: unset !important; line-clamp: none !important; overflow: visible !important; }
 }
+
+/* 3D card: which structure is shown (experimental PDB chain or the AlphaFold model). */
+.af-src { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; margin: 0 0 0.6rem; }
+.af-src:empty { display: none; }
+@media print { .af-src { display: none; } }
