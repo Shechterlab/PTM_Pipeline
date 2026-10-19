@@ -128,10 +128,11 @@ EVIDENCE_OTHER = 128
 # Residue classes for structure contacts.
 NUC_RNA = {'A', 'C', 'G', 'U', 'I', 'PSU', '5MC', '7MG', 'OMG', 'OMC', 'OMU', '2MG', 'M2G', 'H2U', '1MA', '5MU', '4SU'}
 NUC_DNA = {'DA', 'DC', 'DG', 'DT', 'DI', 'DU', '5CM'}
-METHYL_R = {'2MR', 'DA2', 'NMM', 'AGM'}
+# AGM (5-methylarginine) is C-methylated, not a guanidino N-methylarginine, so it is not counted.
+METHYL_R = {'2MR', 'DA2', 'NMM'}
 AA3 = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D', 'CYS': 'C', 'GLN': 'Q', 'GLU': 'E', 'GLY': 'G', 'HIS': 'H', 'ILE': 'I', 'LEU': 'L',
        'LYS': 'K', 'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S', 'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'SEP': 'pS', 'TPO': 'pT',
-       'PTR': 'pY', 'MLY': 'Kme2', 'M3L': 'Kme3', 'MLZ': 'Kme1', 'ALY': 'Kac', '2MR': 'Rme2', 'DA2': 'Rme2a', 'NMM': 'Rme1', 'AGM': 'Rme1'}
+       'PTR': 'pY', 'MLY': 'Kme2', 'M3L': 'Kme3', 'MLZ': 'Kme1', 'ALY': 'Kac', '2MR': 'Rme2', 'DA2': 'Rme2a', 'NMM': 'Rme1'}
 WATERS = {'HOH', 'WAT', 'DOD'}
 SIDE_CHAIN = {'NE', 'CZ', 'NH1', 'NH2', 'CD'}
 CONTACT_CUTOFF = 4.0
@@ -683,7 +684,7 @@ def analyze_environment(rows, chain: str, label: int):
 
 
 def load_modelled_methyl_r(cache: Path, refresh: bool, workers: int):
-    """PDB entries that model a methylated arginine (2MR, DA2, NMM, AGM), with chain, SEQRES index and residue name."""
+    """PDB entries that model a methylated arginine (2MR, DA2, NMM), with chain, SEQRES index and residue name."""
     folder = cache / 'modelled_methyl_r'
     folder.mkdir(parents=True, exist_ok=True)
     q = {'query': {'type': 'terminal', 'service': 'text', 'parameters': {'attribute': 'rcsb_polymer_entity_container_identifiers.chem_comp_monomers', 'operator': 'in', 'value': sorted(METHYL_R)}},
