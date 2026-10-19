@@ -695,8 +695,9 @@
         return { raw, proteins: new Set(hits.map((p) => p.i)), positions: null,
           note: '<b>' + fmt(hits.length) + '</b> protein' + (hits.length === 1 ? '' : 's') + ' match “' + esc(raw) + '” by symbol prefix, synonym or protein name.' };
       }
+      const concepts = conceptSuggestions(raw);
       return { raw, proteins: new Set(), positions: null,
-        note: 'No protein in the union matches “' + esc(raw) + '”. Try a gene symbol (PRMT5), a UniProt accession (O14744) or part of a protein name.' };
+        note: 'No protein in the union matches “' + esc(raw) + '”.' + (concepts.length ? ' Did you mean ' + concepts.slice(0, 4).map((c) => '<button class="linkish" type="button" data-setq="' + esc(c.term) + '" title="' + esc(c.sub) + '">' + esc(c.label) + '</button>').join(', ') + '?' : ' Try a gene symbol (PRMT5), a UniProt accession (O14744) or part of a protein name.') };
     }
     const notes = [];
     const matched = tokens.length - missing.length;
@@ -947,6 +948,28 @@
       return list.map(([v, l]) => ({ term: key + ':' + head + v, label: key + ':' + v, sub: l }));
     }
     return list.filter(([v, l]) => !part || v.toLowerCase().startsWith(part) || l.toLowerCase().includes(part)).slice(0, 8).map(([v, l]) => ({ term: key + ':' + head + v, label: key + ':' + v, sub: l }));
+  }
+
+  // Plain words that name a concept rather than a protein ("stress granule", "ALS", "spliceosome", "PRMT5") also
+  // suggest the matching filter term; picking one replaces the words with the term.
+  const CONCEPT_KEYS = [['condensate', 'condensate'], ['disease', 'disease family'], ['complex', 'complex'], ['class', 'functional class'], ['subclass', 'functional subclass'], ['domain', 'domain class']];
+  function conceptSuggestions(phrase) {
+    const t = phrase.trim().toLowerCase();
+    if (t.length < 3) return [];
+    const out = [];
+    if (ixReady()) {
+      const bound = boundBy(F.ixScore);
+      const g = IX.prot.find((x) => x.gene.toLowerCase() === t && bound.get(x.k));
+      if (g) out.push({ term: 'binds:' + g.gene, label: 'binds:' + g.gene, sub: 'methylated proteins that physically bind ' + g.gene + ' (' + fmt(bound.get(g.k)) + ', STRING ≥ ' + (F.ixScore / 1000).toFixed(1) + ')', replacePlain: true });
+      if (/^(rna|dna)( binding)?$/.test(t)) out.push({ term: 'go:' + t.slice(0, 3), label: 'go:' + t.slice(0, 3), sub: t.slice(0, 3).toUpperCase() + ' binding in Gene Ontology', replacePlain: true });
+    }
+    for (const [key, noun] of CONCEPT_KEYS) {
+      const hits = termNames(key).filter((x) => (key !== 'condensate' || M.condensates[x.k][4] > 0) && (x.name.toLowerCase().includes(t) || x.slug.toLowerCase().replace(/-/g, ' ').includes(t)));
+      hits.sort((a, b) => a.name.length - b.name.length).slice(0, key === 'complex' ? 2 : 3).forEach((x) => out.push({ term: key + ':' + quoteTerm(x.slug), label: key + ':' + x.slug, sub: noun + ': ' + x.name, replacePlain: true }));
+    }
+    if ((t === 'als' || t === 'ftd') && !out.some((x) => x.term === 'disease:als')) out.unshift({ term: 'disease:als', label: 'disease:als', sub: 'ALS / motor neuron / FTD disease family (DisGeNET)', replacePlain: true });
+    const seen = new Set();
+    return out.filter((x) => !seen.has(x.term) && seen.add(x.term)).slice(0, 6);
   }
 
   // Links made before terms existed carried numeric filters (motifs=2, disease=3, func=1 …); read them as terms.
@@ -1544,6 +1567,13 @@
   function bindGlobal() {
     // Residues of sequence windows read out on hover (windowHtml with a site index).
     const winRes = (e) => (e.target.closest ? e.target.closest('.win[data-j] [data-o]') : null);
+    // "Did you mean" filter suggestions in the search note replace the search with the term.
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest ? e.target.closest('[data-setq]') : null;
+      if (!b) return;
+      $('#q').value = b.dataset.setq;
+      applyQueryText(b.dataset.setq, termView());
+    });
     document.addEventListener('mouseover', (e) => {
       const r = winRes(e);
       if (!r) return;
@@ -1564,7 +1594,10 @@
       const terms = termSuggestions(w);
       const plainWords = splitTerms(input.value).plain.split(/[\s,;]+/).filter(Boolean);
       const prots = !/:/.test(w) && plainWords.length <= 1 ? suggestions(w) : [];
-      items = terms.map((t) => ({ term: t })).concat(prots.map(([p, alias]) => ({ p, alias }))).slice(0, 10);
+      const concepts = !/:/.test(w) ? conceptSuggestions(plainWords.join(' ')) : [];
+      // An exact protein match stays first; concept filters follow, then the other protein matches.
+      const exactN = prots.length && prots[0][0].gene.toLowerCase() === w.toLowerCase() ? 1 : 0;
+      items = terms.map((t) => ({ term: t })).concat(prots.slice(0, exactN).map(([p, alias]) => ({ p, alias })), concepts.map((t) => ({ term: t })), prots.slice(exactN).map(([p, alias]) => ({ p, alias }))).slice(0, 10);
       if (!items.length || !w) { closeList(); return; }
       list.innerHTML = items.map((it, k) => '<li role="option" id="sg-' + k + '" aria-selected="' + (k === sel) + '" data-k="' + k + '">' + (it.term
         ? '<b class="sg-term">' + esc(it.term.label) + '</b><span>' + esc(it.term.sub || '') + '</span><em>filter</em>'
@@ -1607,8 +1640,10 @@
     const pick = (it) => {
       const w = lastWord(), head = input.value.slice(0, input.value.length - w.length);
       if (it.term) {
-        // A key keeps the list open for its values; a value completes the term and applies it.
-        input.value = head + it.term.term + (it.term.open ? '' : ' ');
+        // A key keeps the list open for its values; a value completes the term and applies it. A concept term
+        // replaces the plain words it was suggested for.
+        if (it.term.replacePlain) input.value = (queryText('', splitTerms(input.value).tokens) + ' ' + it.term.term).trim() + ' ';
+        else input.value = head + it.term.term + (it.term.open ? '' : ' ');
         sel = -1;
         input.focus();
         if (it.term.open) { drawList(); return; }
