@@ -18,6 +18,10 @@ Sources
   ProtVar predicted interfaces (EMBL-EBI, CC BY 4.0) ....... AlphaFold-Multimer interface residues of human pairs
   IntAct features (EMBL-EBI, CC BY 4.0) .................... mutations that change an interaction, binding regions, methylated residues
 
+It also writes docs/data/methylarg_pred_iface.json (--pred-iface-out): every residue of an explorer protein at a ProtVar
+predicted interface, as runs with the number of partners and the best pDockQ, which the explorer loads only when a
+figure draws the predicted lane.
+
 Stages that make many requests cache every answer: the PDBe interface lookup (about 5,000 calls) and the
 structure contacts (about 5,500 calls). Run them alone first with --fetch-interfaces-only / --fetch-contacts-only.
 """
@@ -762,6 +766,27 @@ def load_protvar(cache: Path, refresh: bool, keep: set):
     return out
 
 
+def predicted_interface_runs(pred: dict) -> dict:
+    """acc -> [[start, end, partners, best pDockQ x100], ...]: runs of consecutive residues at the predicted interface
+    with any partner (pDockQ at or above the lowest tier), with the most partners and the best pDockQ along the run."""
+    out = {}
+    for acc, sides in pred.items():
+        partners, best = defaultdict(set), {}
+        for other, score, _, pos_all, _ in sides:
+            for pos in pos_all:
+                partners[pos].add(other)
+                best[pos] = max(best.get(pos, 0.0), score)
+        runs = []
+        for pos in sorted(partners):
+            n, q = len(partners[pos]), round(best[pos] * 100)
+            if runs and pos == runs[-1][1] + 1:
+                runs[-1][1:] = [pos, max(runs[-1][2], n), max(runs[-1][3], q)]
+            else:
+                runs.append([pos, pos, n, q])
+        out[acc] = runs
+    return out
+
+
 def load_protvar_served(cache: Path, refresh: bool):
     """Ordered (uniprot_id1, uniprot_id2) pairs that the ProtVar API serves a model for."""
     path = fetch(PROTVAR_SERVED, cache / Path(PROTVAR_SERVED).name, refresh)
@@ -1314,6 +1339,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--sites-json', default='docs/data/methylarg_sites.json')
     ap.add_argument('--out', default='docs/data/methylarg_interactions.json')
+    ap.add_argument('--pred-iface-out', default='docs/data/methylarg_pred_iface.json',
+                    help='every predicted interface residue of the explorer proteins, loaded by the explorer on demand')
     ap.add_argument('--cache', default='data/interactions_cache')
     ap.add_argument('--string-min-score', type=int, default=700, help='STRING physical score floor (0-1000); 700 = high confidence. Protein pages fetch lower-confidence links live.')
     ap.add_argument('--workers', type=int, default=6, help='parallel PDBe requests')
@@ -1689,6 +1716,7 @@ def main():
             pred_enrich[str(t)][f] = {'pooled': [a, b, c, d, sig(math.log2(odds)) if odds else None, sig(p)],
                                        'mh': [sig(math.log2(mh_or)) if mh_or and math.isfinite(mh_or) else None, sig(mh_p), used]}
     log(f'Predicted interfaces: {len(pred_rows):,} methylated sites at a predicted heterodimer interface')
+    pred_iface = predicted_interface_runs({acc: pred[acc] for acc in meth_accs if '-' not in acc and acc in pred})
 
     # Predicted-contact gallery: every methylarginine within 5 Å of the partner in a served ProtVar model
     # (pDockQ >= 0.5) or an AlphaFold DB human heterodimer, with salt bridges, H-bonds, cation-pi and pLDDT.
@@ -2077,6 +2105,7 @@ def main():
             'intact': {'effects': INTACT_EFFECTS, 'regions': INTACT_REGIONS, 'peptide_max': INTACT_PEPTIDE_MAX,
                        'mutation_max': INTACT_MUT_MAX, 'release': intact_release, 'counts': intact_counts},
             'xl_check': xl_check,
+            'pred_iface': {'file': Path(args.pred_iface_out).name, 'proteins': len(pred_iface), 'pdockq_min': PRED_TIERS[0]},
             'fields': {
                 'proteins': ['accession', 'gene', 'flags', 'ensp'],
                 'string': 'per explorer protein: [delta partner index, score, ...] with partner indices ascending',
@@ -2142,6 +2171,12 @@ def main():
     for k, p in enumerate(prots):
         out['proteins'][k][1] = p[1] or out['proteins'][k][1]
     Path(args.out).write_text(json.dumps(out, separators=(',', ':'), ensure_ascii=False))
+    Path(args.pred_iface_out).write_text(json.dumps({
+        'meta': {'generated': out['meta']['generated'], 'source': out['meta']['sources']['protvar'], 'pdockq_min': PRED_TIERS[0],
+                 'fields': ['start', 'end', 'partners (most along the run)', 'best pDockQ x100']},
+        'prot': pred_iface}, separators=(',', ':')))
+    log(f'wrote {args.pred_iface_out}: predicted interface runs for {len(pred_iface):,} proteins '
+        f'({Path(args.pred_iface_out).stat().st_size / 1e6:.2f} MB)')
     log(f'wrote {args.out}: {len(vocab):,} proteins, {sum(len(r) // 2 for r in string_rows):,} partner links, '
         f'{len(cx_rows):,} complexes with methylated members, {len(site_rows):,} sites at PDB interfaces '
         f'({Path(args.out).stat().st_size / 1e6:.2f} MB)')
