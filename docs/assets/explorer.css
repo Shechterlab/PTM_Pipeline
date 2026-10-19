@@ -1252,3 +1252,9 @@ svg [data-ev]:hover { stroke: var(--ink); stroke-width: 0.8; }
 .net-menu .col-pop .note { margin: 0; font-size: 0.76rem; }
 .net-menu .col-pop select, .net-menu .col-pop input[type="text"] { width: 100%; }
 .net-menu .check.muted { opacity: 0.55; }
+
+/* Site card: writer and reader across the card; variants one per line */
+.sc-wr { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 0.6rem; }
+.sc-wr dl.sc-kv > div { grid-template-columns: 12rem minmax(0, 1fr); }
+@media (max-width: 640px) { .sc-wr dl.sc-kv > div { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; } }
+.var-item a { margin-left: 0.25rem; }

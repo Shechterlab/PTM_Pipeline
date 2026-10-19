@@ -2643,6 +2643,48 @@
       (rows.some((r) => r[9] != null && ev.studies[r[9]] === 'PhosphoSitePlus') ? '<p class="note">' + esc(PSP_NOTICE) + '</p>' : '');
   }
 
+  // A protein named by the interaction data: opens its page when it is in the methylarginine set, else UniProt.
+  function geneRef(k, extra) {
+    const x = IX.prot[k];
+    if (!x) return '';
+    return x.p >= 0 ? '<button class="linkish gene-ref" type="button" data-i="' + x.p + '" title="' + esc('Open ' + x.gene + ' (' + x.acc + ')' + (extra ? ': ' + extra : '')) + '">' + esc(x.gene) + '</button>'
+      : '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(x.acc) + '/entry" target="_blank" rel="noopener" title="' + esc(x.gene + ' in UniProt' + (extra ? ': ' + extra : '')) + '">' + esc(x.gene) + '</a>';
+  }
+  const bindGeneRefs = (root) => $$('.gene-ref[data-i]', root).forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); hideTip(); openProtein(+b.dataset.i); }));
+  // Who probably writes and who might read one methylarginine: the methylation evidence at the site (Maron IPs and
+  // inhibitor responses) and the PRMTs and Tudor-domain proteins that physically bind the whole protein (STRING ≥ 0.7).
+  function writerReaderHtml(s, p) {
+    const ipName = (n) => s.ip & (1 << M.maron_ips.indexOf(n));
+    const site = [];
+    if (ipName('SDMA')) site.push('recovered by the SDMA antibody (symmetric dimethylation, made by PRMT5)');
+    if (ipName('ADMA')) site.push('recovered by the ADMA antibody (asymmetric dimethylation, made by type I PRMTs such as PRMT1 and CARM1)');
+    if (s.trf & 1) site.push('decreased with the PRMT5 inhibitor GSK591');
+    if (s.trf & 4) site.push('decreased with the type I PRMT inhibitor MS023');
+    if (s.trf & 2 || s.trf & 8) site.push('increased with ' + [s.trf & 2 ? 'GSK591' : '', s.trf & 8 ? 'MS023' : ''].filter(Boolean).join(' and ') + ' (when one PRMT is lost, others can methylate its substrates: Dhar et al. 2013)');
+    const guess = (s.trf & 1 || ipName('SDMA')) && !(s.trf & 4 || ipName('ADMA')) ? 'PRMT5' : (s.trf & 4 || ipName('ADMA')) && !(s.trf & 1 || ipName('SDMA')) ? 'type I PRMTs' : (s.trf & 5 || ipName('SDMA') || ipName('ADMA')) ? 'PRMT5 and type I PRMTs' : '';
+    const part = ixReady() ? partnersAt(p, 700) : [];
+    const pr = part.filter(([k]) => bindMatch(1, k)), tu = part.filter(([k]) => bindMatch(2, k));
+    const sc = (k, v) => 'STRING ' + (v / 1000).toFixed(2) + ' with ' + p.label;
+    return '<dl class="sc-kv">' +
+      '<div><dt>Writer</dt><dd>' + (guess ? '<b>' + esc(guess) + '</b> <span class="muted">· ' + esc(site.join('; ')).replace('Dhar et al. 2013', doiLink('10.1038/srep01311', 'Dhar et al. 2013')) + ' (' + doiLink(STUDY_DOI['Maron 2021'], 'Maron et al. 2021') + ')</span>' : '<span class="muted">No site-level writer evidence (not in the Maron IPs and no inhibitor response)</span>') + '</dd></div>' +
+      '<div><dt>PRMTs binding ' + esc(p.label) + '</dt><dd>' + (pr.length ? pr.map(([k, v]) => geneRef(k, sc(k, v))).join(', ') : '<span class="muted">none at STRING ≥ 0.7</span>') + '</dd></div>' +
+      '<div><dt>Tudor proteins binding ' + esc(p.label) + '</dt><dd>' + (tu.length ? tu.slice(0, 8).map(([k, v]) => geneRef(k, sc(k, v))).join(', ') + (tu.length > 8 ? ' +' + (tu.length - 8) : '') : '<span class="muted">none at STRING ≥ 0.7</span>') + '</dd></div></dl>' +
+      '<p class="muted small">Partners bind the whole protein; none is shown to methylate or read this arginine. Several Tudor domains read methyllysine instead.</p>';
+  }
+  // UniProt natural variants and mutagenesis at the residue, with dbSNP and UniProt links.
+  function siteVariantsHtml(s, p) {
+    const u = UNIDATA.get(p.acc);
+    if (!u) return '<span class="muted">' + (u === undefined ? 'loading UniProt…' : '—') + '</span>';
+    const base = encodeURIComponent(p.acc.split('-')[0]);
+    const list = u.variants.filter((f) => f.start === s.pos).map((f) => {
+      const rs = (f.desc.match(/rs\d+/) || [])[0];
+      return '<span class="var-item"><b>' + esc(f.from + rn(s.pos, p) + (f.to || '')) + '</b> ' + esc(f.desc.replace(/;?\s*dbSNP:rs\d+/, '').trim()) +
+        (rs ? ' <a href="https://www.ncbi.nlm.nih.gov/snp/' + rs + '" target="_blank" rel="noopener">' + rs + '</a>' : '') +
+        ' <a href="https://www.uniprot.org/uniprotkb/' + base + '/entry#disease_variants" target="_blank" rel="noopener" title="UniProt ' + esc(f.id || 'variant') + '">' + esc(f.id || 'UniProt') + '</a></span>';
+    }).concat(u.mutagen.filter((f) => f.start === s.pos).map((f) => '<span class="var-item"><b>' + esc(f.from + rn(s.pos, p) + (f.to || '')) + '</b> mutagenesis: ' + esc(f.desc) + ' <a href="https://www.uniprot.org/uniprotkb/' + base + '/entry#function" target="_blank" rel="noopener">UniProt</a></span>'));
+    return list.length ? list.join('<br>') : '<span class="muted">none in UniProt</span>';
+  }
+
   // Site card: one methylarginine at a glance, interaction evidence first. Opens when a site is searched or clicked.
   function renderSiteCard(pos, scroll) {
     const box = $('#site-card');
@@ -2670,12 +2712,14 @@
         (tags ? '<div class="tags">' + tags + '</div>' : '') + contactHtml(s, 6);
       // What is known about the whole protein, labelled as such so it is not read as site evidence.
       const part = partnersAt(p, 700), cls = (v) => part.filter(([k]) => bindMatch(v, k)).map(([k]) => ixGene(k));
-      const pr = cls(1), tu = cls(2), wd = cls(4), cxN = (p.cx || []).filter((k) => !IX.cx[k].pred).length;
+      const wd = cls(4), cxN = (p.cx || []).filter((k) => !IX.cx[k].pred).length;
       const go = [p.ixFlags & IXF.rna ? 'RNA' : '', p.ixFlags & IXF.dna ? 'DNA' : ''].filter(Boolean);
-      const prot = [part.length ? fmt(part.length) + ' STRING physical partner' + (part.length === 1 ? '' : 's') + ' (≥ 0.7)' : 'no STRING physical partner ≥ 0.7',
-        pr.length ? 'PRMTs: ' + pr.join(', ') : '', tu.length ? 'Tudor readers: ' + tu.slice(0, 6).join(', ') + (tu.length > 6 ? ' +' + (tu.length - 6) : '') : '', wd.length ? 'WD40: ' + wd.slice(0, 4).join(', ') : '',
-        cxN ? cxN + ' curated complex' + (cxN === 1 ? '' : 'es') : '', go.length ? 'GO ' + go.join(' and ') + ' binding' : ''].filter(Boolean);
-      ix += '<p class="sc-prot"><span class="flabel">Whole protein (not specific to ' + rl(s.pos, P[s.p]) + ')</span> ' + esc(prot.join(' · ')) + ' <button class="linkish" type="button" data-sc="ixcard">Interactions card</button></p>';
+      const conds = (p.cond || []).map((ci) => M.condensates[ci]).filter(Boolean);
+      const prot = [esc(part.length ? fmt(part.length) + ' STRING physical partner' + (part.length === 1 ? '' : 's') + ' (≥ 0.7)' : 'no STRING physical partner ≥ 0.7'),
+        wd.length ? 'WD40: ' + part.filter(([k]) => bindMatch(4, k)).slice(0, 4).map(([k]) => geneRef(k)).join(', ') : '',
+        cxN ? cxN + ' curated complex' + (cxN === 1 ? '' : 'es') : '', go.length ? 'GO ' + go.join(' and ') + ' binding' : '',
+        conds.length ? 'condensates: ' + conds.slice(0, 5).map((c) => '<a href="https://cd-code.org/condensates/' + encodeURIComponent(c[1]) + '" target="_blank" rel="noopener" title="' + esc(c[0] + ' in CD-CODE') + '">' + esc(c[0]) + '</a>').join(', ') + (conds.length > 5 ? ' +' + (conds.length - 5) : '') : ''].filter(Boolean);
+      ix += '<p class="sc-prot"><span class="flabel">Whole protein (not specific to ' + rl(s.pos, P[s.p]) + ')</span> ' + prot.join(' · ') + ' <button class="linkish" type="button" data-sc="ixcard">Interactions card</button></p>';
     }
     const pub = (k, v) => '<div><dt>' + k + '</dt><dd>' + v + '</dd></div>';
     box.innerHTML = '<div class="card-head"><div><span class="eyebrow">Selected site</span><h3>' + esc(p.label) + ' ' + rl(s.pos, P[s.p]) + ' ' + pill(s.st) + '</h3>' +
@@ -2684,11 +2728,13 @@
       '<button class="btn quiet small" type="button" data-sc="link" title="Copy a link that opens this page with ' + rl(s.pos, P[s.p]) + ' selected">Copy link</button><button class="btn quiet small" type="button" data-sc="close" aria-label="Close the site summary">×</button></div></div>' +
       '<div class="sc-grid"><section class="sc-ix"><h4>Interaction evidence' + docLink('ix-status') + '</h4>' + ix + '</section>' +
       '<section><h4>Site</h4><dl class="sc-kv">' + pub('Window ±7', windowHtml(s.win, 7, s.j)) + pub('Motifs', motifTags(s.mot)) + pub('Context', contextHtml(s).replace('<br>', ' · ')) +
-      pub('Next methyl-R', s.nn == null ? '—' : s.nn + ' aa') + pub('PRMT inhibitors', treatHtml(s)) + pub('Maron IP', ipTags(s.ip) || '—') + pub('AlphaFold', afCell(p, s)) +
+      pub('Next methyl-R', s.nn == null ? '—' : s.nn + ' aa') + pub('PRMT inhibitors', treatHtml(s)) + pub('Maron IP', ipTags(s.ip) || '—') + pub('Variants', siteVariantsHtml(s, p)) + pub('AlphaFold', afCell(p, s)) +
       pub('Reported by', '<ul class="sc-refs">' + M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => { const r = studyRef(k); return '<li>' + (r[1] ? '<a href="https://doi.org/' + r[1] + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">' + esc(M.studies[k][0]) + '</a>' : '<span title="' + esc(r[0]) + '">' + esc(M.studies[k][0]) + '</span>') + '</li>'; }).join('') + '</ul>' +
-        '<p class="muted small">Cite these for ' + rl(s.pos, P[s.p]) + ', with ' + esc(PAPER.short) + ' for the compilation.</p>') + '</dl></section></div>';
+        '<p class="muted small">Cite these for ' + rl(s.pos, P[s.p]) + ', with ' + esc(PAPER.short) + ' for the compilation.</p>') + '</dl></section>' +
+      (ixReady() ? '<section class="sc-wr"><h4>Writer and reader</h4>' + writerReaderHtml(s, p) + '</section>' : '') + '</div>';
     bindDocLinks(box);
     bindContactLinks(box);
+    bindGeneRefs(box);
     $$('[data-sc]', box).forEach((b) => b.addEventListener('click', (e) => {
       const act = b.dataset.sc;
       if (act === '3d') show3d(s.pos);
