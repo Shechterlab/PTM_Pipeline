@@ -365,6 +365,7 @@
   //   interaction partner rna purple, dna gold, protein teal, self pale teal (another copy of the same protein)
   //   evidence level      ev ink: solid = experimental, hollow and dashed = predicted only
   //   sequence features   domain, disorder (dis: the chain's wave), RG/RGG (rg), composition (bias), region, dense window
+  //   3D                  domain3d, rg3d, chain3d: the same hues a step stronger for lit cartoons (features3d)
   //   other marks         kme magenta (lysine methylation), ptm grey, variant grey, mark ink (a feature at a methyl-R)
   //   quantities          seq neutral ramp for counts (4-step scales use its last four); up red / down slate for more
   //                       / less than expected (log2 odds ratios, enrichment bars, matrices)
@@ -378,6 +379,7 @@
       domain: '#B9DDE6', domainInk: '#0F3B47', dis: '#8796A0', rg: '#F5D6DE', rgInk: '#7A2E45',
       bias: '#FDE3D4', region: '#E3ECF6', dense: 'rgba(17,24,39,0.07)',
       kme: '#A21CAF', ptm: '#6B7F88', variant: '#8A99A3', mark: '#111827', arg: '#155E75',
+      domain3d: '#6FB8CF', rg3d: '#E08AA3', chain3d: '#DCE3E7',
       seq: ['#DCE2E5', '#B3BFC5', '#8396A0', '#566A73', '#26343B'], rnaPale: '#CDB8EE', dnaPale: '#EBD3A6',
       up: ['#F6D0CD', '#EF9A94', '#E34948', '#A8302F'], down: ['#DCE3E7', '#A9B7BF', '#6C818C', '#3B4F5A'], mid: '#F0EFEC',
     },
@@ -388,6 +390,7 @@
       domain: '#1F5566', domainInk: '#E3F4F8', dis: '#8FA6B0', rg: '#5A2C3A', rgInk: '#F6C9D6',
       bias: '#4A2A1C', region: '#213847', dense: 'rgba(232,239,242,0.09)',
       kme: '#D46BE0', ptm: '#8FA3AB', variant: '#7E8E95', mark: '#F3F6F7', arg: '#6CC6DB',
+      domain3d: '#4E9DB3', rg3d: '#C06C86', chain3d: '#D0D9DD',
       seq: ['#2E3B41', '#3F5059', '#5C717B', '#8DA2AB', '#C9D6DB'], rnaPale: '#5B4A80', dnaPale: '#6B5530',
       up: ['#5A2523', '#8E3330', '#D2524F', '#F09A95'], down: ['#26343B', '#3D5260', '#6C8592', '#A9BDC7'], mid: '#1A2D35',
     },
@@ -2635,6 +2638,8 @@
     loadUniProt(p.acc).then((u) => {
       if (!current()) return;
       drawMap(p, u);
+      // A 3D model that loaded first gets its feature colours now.
+      if (mol && mol.p.i === p.i && viewColorKey() === 'features') { styleStructure(); mol.viewer.render(); renderViewControls(); }
       loadEvidence().then((ev) => { if (current()) renderDiseaseCard(p, ev); });
       renderSequence(p, u);
       renderConsCard(p, u);
@@ -4166,7 +4171,7 @@
 
   // ------------------------------------------------------------- 3D structure
   function structureCard(p) {
-    return '<div class="card" id="card-af"><div class="card-head"><div><h3>3D structure</h3><p class="sub" id="af-sub">The AlphaFold DB model, or any experimental structure listed below. Methylarginine side chains use the protein-map colours. Click any residue, or a row in the site table, to zoom to it and show its contacts; the options change the style, colouring, surface and lighting.</p></div>' +
+    return '<div class="card" id="card-af"><div class="card-head"><div><h3>3D structure</h3><p class="sub" id="af-sub">The AlphaFold DB model, or any experimental structure listed below, in the protein map\'s colours: domains, disordered stretches and RG/RGG segments as on the map, methylarginine side chains in their site colours, other chains by what they are. Click any residue, or a row in the site table, to zoom to it and show its contacts; the options change the style, colouring, surface and lighting.</p></div>' +
       '<div class="exp" role="group" aria-label="Structure controls"><button type="button" id="af-reset" disabled>Reset view</button><button type="button" id="af-spin" disabled aria-pressed="false">Spin</button><button type="button" id="af-png" disabled>PNG</button><button type="button" id="af-cxc" disabled title="ChimeraX command script that rebuilds this view">ChimeraX</button><button type="button" id="af-pml" disabled title="PyMOL script that rebuilds this view">PyMOL</button><button type="button" id="af-cif" disabled title="The coordinates shown as mmCIF, with the methylarginines listed">mmCIF</button><button type="button" id="af-pdbf" disabled title="The coordinates shown as PDB, with the methylarginines in REMARK 999">PDB</button></div></div>' +
       '<div class="af-controls" id="af-controls"></div>' +
       '<div class="af-wrap"><div><div class="af-viewer" id="af-viewer"><div class="af-placeholder">Loading the AlphaFold model…</div></div><p class="note af-msg" id="af-msg" aria-live="polite"></p></div><div class="af-side" id="af-side"></div></div>' +
@@ -4299,7 +4304,7 @@
   // 3D view options shared by the AlphaFold model and PDB entries; remembered between visits.
   const VIEW_STYLES = [['cartoon', 'Cartoon'], ['trace', 'Trace'], ['sticks', 'Sticks'], ['spheres', 'Spheres']];
   const VIEW_COLORS = [
-    ['plddt', 'Confidence (pLDDT)', 'af'], ['focus', 'This protein\'s chain', 'pdb'], ['chain', 'By chain', 'pdb'],
+    ['features', 'Protein features (as on the map)'], ['plddt', 'Confidence (pLDDT)', 'af'], ['chain', 'By chain', 'pdb'],
     ['rainbow', 'Rainbow (N→C)'], ['ss', 'Secondary structure'], ['charge', 'Charge'], ['hydro', 'Hydrophobicity'], ['xl', 'RNA/DNA crosslinks (cells)'], ['uniform', 'Uniform grey'],
   ];
   // 3D crosslink colouring: the shared RNA/DNA colours, pale for fragments and regions; neutral greys for the rest.
@@ -4357,7 +4362,7 @@
   function viewColorKey() {
     const pdbMode = !!(mol && mol.mode === 'pdb');
     const opt = VIEW_COLORS.find((o) => o[0] === UI.mv.color);
-    if (!opt || !viewColorOk(opt)) return pdbMode ? 'focus' : 'plddt';
+    if (!opt || !viewColorOk(opt)) return 'features';
     return opt[0];
   }
 
@@ -4375,6 +4380,22 @@
     return mol.chains;
   }
 
+  // This protein's residue at an atom in UniProt numbering (AlphaFold and predicted models directly, PDB entries through
+  // SIFTS, homologous entries through their alignment); null on other chains or unmapped residues.
+  function atomToUnp() {
+    const pdbMode = mol.mode === 'pdb', cache = new Map();
+    return (atom) => {
+      if (!pdbMode) return atom.resi;
+      if (atom.chain !== mol.pdb.chain) return null;
+      if (mol.pdb.pred) return atom.resi;
+      if (!cache.has(atom.resi)) cache.set(atom.resi, authToUnp(atom.resi));
+      return cache.get(atom.resi);
+    };
+  }
+  // The map's feature colours in 3D: the same hues a step stronger (domain3d, rg3d), as pale fills read as white on a lit
+  // cartoon; disordered stretches in the disorder grey, the rest of the chain light; other chains in the partner colours
+  // (another protein; another copy of this one).
+  const features3d = (tok) => ({ domain: tok.domain3d, rg: tok.rg3d, dis: tok.dis, chain: tok.chain3d, protein: tok.protein, self: tok.self });
   function viewColorFn(key, tok = TOKENS[themeName()]) {
     const grey = '#9AA6B2';
     if (key === 'plddt' && mol.mode === 'pdb') return (a) => PLDDT_BANDS[plddtBand(a.b)][1];
@@ -4382,7 +4403,19 @@
       const af = AFDATA.get(mol.p.acc);
       return (a) => { const v = af && af.plddt.has(a.resi) ? af.plddt.get(a.resi) : a.b; return v == null ? grey : PLDDT_BANDS[plddtBand(v)][1]; };
     }
-    if (key === 'focus') { const c = mol.pdb.chain, prot = tok.protein; return (a) => (a.chain === c ? prot : '#C7D4D9'); }
+    if (key === 'features') {
+      const u = UNIDATA.get(mol.p.acc), feats = (u && u.feats) || [], C = features3d(tok), unpOf = atomToUnp();
+      const doms = feats.filter((f) => ['Domain', 'Repeat', 'Zinc finger'].includes(f.type)).map((f) => [f.start, f.end]);
+      const dis = disorderRegions(mol.p, u).list, rg = ((u && u.rg) || []).map((b) => [b.start, b.end]);
+      const inR = (pos, list) => list.some(([a, b]) => pos >= a && pos <= b);
+      // Chains that SIFTS maps to this same protein are copies of it (homo-oligomers).
+      const copies = mol.mode === 'pdb' && !mol.pdb.pred && !mol.pdb.homolog ? new Set(mol.pdb.e.maps.map((m) => m.chain)) : new Set();
+      return (a) => {
+        if (mol.mode === 'pdb' && a.chain !== mol.pdb.chain) return copies.has(a.chain) ? C.self : C.protein;
+        const pos = unpOf(a);
+        return pos == null ? C.chain : inR(pos, rg) ? C.rg : inR(pos, doms) ? C.domain : inR(pos, dis) ? C.dis : C.chain;
+      };
+    }
     if (key === 'chain') { const { order } = modelChains(); return (a) => CHAIN_COLORS[(order.get(a.chain) || 0) % CHAIN_COLORS.length]; }
     if (key === 'rainbow') {
       const { ranges } = modelChains();
@@ -4398,15 +4431,7 @@
       const xp = ixReady() ? IX.xlProt.get(mol.p.i) : null;
       const rna = new Set(xp ? xp.rnaPos : []), dna = new Set(xp ? xp.dnaPos : []);
       const inR = (pos, list) => list.some(([a, b]) => pos >= a && pos <= b);
-      const pdbMode = mol.mode === 'pdb';
-      const cache = new Map();
-      const unpOf = (atom) => {
-        if (!pdbMode) return atom.resi;
-        if (atom.chain !== mol.pdb.chain) return null;
-        if (mol.pdb.pred) return atom.resi;
-        if (!cache.has(atom.resi)) cache.set(atom.resi, authToUnp(atom.resi));
-        return cache.get(atom.resi);
-      };
+      const unpOf = atomToUnp();
       const XL = xlColors(tok);
       return (a) => {
         const pos = unpOf(a);
@@ -4425,12 +4450,13 @@
   }
 
   function viewColorKeyHtml(key) {
-    const XL = xlColors(), PROT = TOKENS[themeName()].protein;
+    const XL = xlColors(), C = features3d(TOKENS[themeName()]);
     const sw = (c, l) => '<span><i class="sq" style="background:' + c + '"></i>' + esc(l) + '</span>';
     const grad = (stops, a, b) => '<span>' + esc(a) + '<i class="grad" style="background:linear-gradient(90deg,' + stops.join(',') + ')"></i>' + esc(b) + '</span>';
     const parts = {
       plddt: () => PLDDT_BANDS.map((b) => sw(b[1], b[2])).join(''),
-      focus: () => sw(PROT, 'Chain ' + mol.pdb.chain + (mol.pdb.homolog ? ' (homolog)' : ' (this protein)')) + sw('#C7D4D9', mol.pdb.pred ? 'Partner: ' + mol.pdb.pred.partnerLabel : 'Other chains'),
+      features: () => sw(C.domain, 'Domain, repeat or zinc finger (UniProt)') + sw(C.dis, 'Disordered (' + (mol.p.idr ? 'MobiDB' : 'UniProt') + ')') + sw(C.rg, 'RG/RGG-rich segment') + sw(C.chain, 'Rest of the chain') +
+        (mol.mode === 'pdb' ? sw(C.protein, mol.pdb.pred ? 'Partner: ' + mol.pdb.pred.partnerLabel : 'Another protein') + (mol.pdb.pred || mol.pdb.homolog ? '' : sw(C.self, 'Another copy of this protein')) : ''),
       chain: () => Array.from(modelChains().order.keys()).slice(0, 8).map((c, k) => sw(CHAIN_COLORS[k % CHAIN_COLORS.length], 'Chain ' + c + (mol.pdb && c === mol.pdb.chain ? ' (this protein)' : mol.pdb && mol.pdb.pred && mol.pdb.pred.names[c] ? ' (' + mol.pdb.pred.names[c] + ')' : ''))).join('') + (modelChains().order.size > 8 ? '<span class="muted">+' + (modelChains().order.size - 8) + ' more</span>' : ''),
       rainbow: () => grad(RAINBOW, 'N-terminus', 'C-terminus'),
       ss: () => sw(SS_COLORS.h, 'Helix') + sw(SS_COLORS.s, 'Strand') + sw(SS_COLORS.c, 'Coil'),
@@ -4441,7 +4467,8 @@
       uniform: () => '',
     };
     return '<span class="legend-title">' + esc((VIEW_COLORS.find((o) => o[0] === key) || ['', ''])[1]) + '</span>' + (parts[key] || parts.uniform)() +
-      '<span><i style="background:var(--t-meth)"></i>Methylarginines: map colours (this colour where the map shows grey)</span>' +
+      (() => { const pal = screenPalette(), mode = COLOR_MODES[UI.fig.color] || COLOR_MODES.state, cs = mode.colors(pal);
+        return '<span class="legend-title">Methylarginines, ' + esc(mode.name.toLowerCase()) + '</span>' + mode.cats.map((c, k) => '<span>' + modeDot(mode, k, cs[k] === pal.none ? pal.meth : cs[k]) + esc(c) + '</span>').join(''); })() +
       (mol && mol.mode === 'pdb' && mol.naKinds ? Array.from(mol.naKinds).map((k) => '<span><i class="sq" style="background:' + naColor(k) + '"></i>' + k + '</span>').join('') : '') +
       (UI.mv.contacts && mol && mol.focus ? '<span><i class="sq" style="background:' + ELEM_GREY.map.C + '"></i>Contacts within 5 Å</span>' : '');
   }
@@ -4530,7 +4557,7 @@
     }
     viewer.setStyle({ resn: WATER }, {});
 
-    // Methylarginine side chains (union sites in map colours; methylated residues modelled in the entry in orange).
+    // Methylarginine side chains (union sites in map colours; methylated residues modelled in the entry in the methylated colour).
     const byColor = new Map();
     siteColor.forEach((c, r) => { if (!byColor.has(c)) byColor.set(c, []); byColor.get(c).push(r); });
     const chainSel = pdbMode ? { chain: pdb.chain } : {};
@@ -4690,7 +4717,7 @@
     const scheme = (VIEW_COLORS.find((o) => o[0] === key) || [0, 'grey'])[1];
     const mode = COLOR_MODES[UI.fig.color] || COLOR_MODES.state;
     return {
-      p, src, chains, chain, sites, labels, focus: mol.focus, style: V.style, surface: V.surface, contacts: V.contacts && !!mol.focus,
+      p, src, chains, chain, sites, labels, focus: mol.focus, style: V.style, surface: V.surface, contacts: V.contacts && !!mol.focus, outline: V.light === 'outline' || V.light === 'aoline', light: V.light,
       ligands: pdbMode && V.ligands && ligands.size > 0, others: !pdbMode || V.others, bg: V.bg === 'black' ? 'black' : 'white',
       text: pdbMode ? mol.text : mol.afPdb, fmt: pdbMode ? mol.fmt : 'pdb',
       file: (p.gene || base) + '_' + src.tag + '_methylarginines',
@@ -4708,7 +4735,7 @@
   function chimeraxScene(d) {
     const L = d.header.map((t) => '# ' + t);
     L.push(d.src.id ? 'open ' + d.src.id : 'open ' + d.src.url + (d.src.format ? ' format ' + d.src.format : ''));
-    L.push('set bgColor ' + d.bg, 'lighting soft', 'graphics silhouettes true', 'hide #1 atoms', 'cartoon #1');
+    L.push('set bgColor ' + d.bg, 'lighting ' + (d.light === 'plain' || d.light === 'outline' ? 'simple' : 'soft'), 'graphics silhouettes ' + d.outline, 'hide #1 atoms', 'cartoon #1');
     if (!d.others) L.push('cartoon hide #1 & ~/' + d.chain);
     for (const c of d.chains) byColour(c.ranges).forEach((rs, col) => L.push('color #1/' + c.chain + ':' + cxRes(rs) + ' ' + col + ' target ac'));
     if (d.style === 'sticks' || d.style === 'spheres') L.push('show #1 atoms', 'style #1 ' + (d.style === 'sticks' ? 'stick' : 'sphere'), 'cartoon hide #1');
@@ -4716,7 +4743,7 @@
     L.push('hide #1 & solvent atoms');
     byColour(d.sites.map((x) => [x.resi, x.resi, x.color])).forEach((rs, col) => {
       const spec = '#1/' + d.chain + ':' + cxRes(rs) + '@' + SIDE_CHAIN.join(',').toLowerCase();
-      L.push('show ' + spec + ' atoms', 'style ' + spec + ' stick', 'color ' + spec + ' ' + col + ' target a');
+      L.push('show ' + spec + ' atoms', 'style ' + spec + ' stick', 'color ' + spec + ' ' + col + ' target a', 'style ' + spec.replace(/@.*$/, '@cz') + ' sphere');
     });
     for (const [r, t] of d.labels) L.push('label #1/' + d.chain + ':' + r + ' text "' + t + '" height 1.6');
     if (d.surface !== 'off') L.push('surface #1/' + d.chain);
@@ -4729,7 +4756,7 @@
     const obj = d.src.tag.replace(/[^A-Za-z0-9_]/g, '_'), ch = (c) => (c ? 'chain ' + c : 'chain ""');
     const L = d.header.map((t) => '# ' + t);
     L.push(d.src.id ? 'fetch ' + d.src.id + ', ' + obj + ', async=0' : 'load ' + d.src.url + ', ' + obj + (d.src.format ? ', format=' + d.src.format : ''));
-    L.push('hide everything, ' + obj, 'bg_color ' + d.bg, 'set ray_trace_mode, 1', 'set cartoon_transparency, 0', 'remove solvent');
+    L.push('hide everything, ' + obj, 'bg_color ' + d.bg, 'set ray_trace_mode, ' + (d.outline ? 1 : 0), 'set cartoon_transparency, 0', 'remove solvent');
     L.push(d.style === 'sticks' ? 'show sticks, ' + obj + ' and polymer' : d.style === 'spheres' ? 'show spheres, ' + obj + ' and polymer' : 'show cartoon, ' + obj);
     if (d.style === 'trace') L.push('cartoon tube, ' + obj);
     if (!d.others) L.push('hide everything, ' + obj + ' and not ' + ch(d.chain));
@@ -4740,7 +4767,8 @@
     if (d.ligands) L.push('show sticks, ' + obj + ' and organic', 'color green, ' + obj + ' and organic and elem C');
     byColour(d.sites.map((x) => [x.resi, x.resi, x.color])).forEach((rs, col) => {
       const n = named(col), spec = obj + ' and ' + ch(d.chain) + ' and resi ' + pmRes(rs) + ' and name ' + SIDE_CHAIN.join('+');
-      L.push('show sticks, ' + spec, 'color ' + n + ', ' + spec, 'set stick_radius, 0.3, ' + spec);
+      const cz = spec.replace(/name [A-Z0-9+]+$/, 'name CZ');
+      L.push('show sticks, ' + spec, 'color ' + n + ', ' + spec, 'set stick_radius, 0.3, ' + spec, 'show spheres, ' + cz, 'set sphere_scale, 0.68, ' + cz);
     });
     for (const [r, t] of d.labels) L.push('label ' + obj + ' and ' + ch(d.chain) + ' and resi ' + pmRes([[r, r]]) + ' and name CZ, "' + t + '"');
     if (d.labels.length) L.push('set label_size, 18', 'set label_color, ' + (d.bg === 'black' ? 'white' : 'black'));
@@ -5005,7 +5033,7 @@
     if (pred) {
       side.innerHTML = '<p class="flabel">Showing a predicted complex</p><dl class="kv"><dt>Model</dt><dd><a href="' + esc(pred.link) + '" target="_blank" rel="noopener">' + esc(pred.label) + ' ↗</a></dd>' +
         '<dt>Source</dt><dd>' + esc(pred.method) + '</dd><dt>Scores</dt><dd>' + esc(pred.scores) + '</dd>' +
-        '<dt>Chains</dt><dd>' + Object.keys(pred.names).sort().map((c) => esc(c) + ': ' + esc(pred.names[c]) + (c === pred.chain ? ' (teal)' : '')).join(' · ') + '</dd></dl>' +
+        '<dt>Chains</dt><dd>' + Object.keys(pred.names).sort().map((c) => esc(c) + ': ' + esc(pred.names[c]) + (c === pred.chain ? ' (this protein)' : '')).join(' · ') + '</dd></dl>' +
         '<p class="flabel">Methylarginines in the model</p>' + (sites.length ? chips() : '<p class="note">None of this protein\'s methylarginines are in the modelled range.</p>') +
         predDistHtml() +
         '<p class="note">A predicted model, not an experimental structure: weigh each contact by the pLDDT of both residues and by the model\'s predicted aligned error' + (pred.pae ? ' (<a href="' + esc(pred.pae) + '" target="_blank" rel="noopener">PAE plot ↗</a>)' : '') + '. Colour by pLDDT under Colour.</p>' +
@@ -5015,7 +5043,7 @@
       side.innerHTML = '<p class="flabel">Showing a homologous structure</p><dl class="kv"><dt>Entry</dt><dd><a href="https://www.rcsb.org/structure/' + e.id.toUpperCase() + '" target="_blank" rel="noopener">' + e.id.toUpperCase() + ' ↗</a></dd>' +
         '<dt>Method</dt><dd>' + esc(methodShort(e.method)) + (e.resolution ? ', ' + e.resolution.toFixed(1) + ' Å' : '') + '</dd>' +
         '<dt>Homolog</dt><dd>' + esc(h.desc) + (h.org ? ' <i>(' + esc(h.org) + ')</i>' : '') + (h.uniprot.length ? ' · ' + h.uniprot.map((a) => '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(a) + '/entry" target="_blank" rel="noopener">' + esc(a) + '</a>').join(', ') : '') + '</dd>' +
-        '<dt>Alignment</dt><dd>' + Math.round(100 * h.identity) + '% identity over ' + esc(p.label) + ' ' + h.qBeg + '–' + h.qEnd + '</dd><dt>Chain</dt><dd>' + esc(det.chain) + ' (teal; other chains grey)</dd>' +
+        '<dt>Alignment</dt><dd>' + Math.round(100 * h.identity) + '% identity over ' + esc(p.label) + ' ' + h.qBeg + '–' + h.qEnd + '</dd><dt>Chain</dt><dd>' + esc(det.chain) + ' (coloured by its features; other chains by what they are)</dd>' +
         (h.partners.length ? '<dt>With</dt><dd>' + h.partners.map((x) => esc(x)).join('; ') + '</dd>' : '') + '</dl>' +
         '<p class="flabel">Aligned methylarginines</p>' + (sites.length ? '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '">' + modeDot(mode, mode.cat(s), colors[mode.cat(s)] || pal.none) + rl(s.pos, P[s.p]) + ' ≙ ' + esc(det.chain) + toAuth.get(s.pos) + '</button>').join('') + '</div>' :
           '<p class="note">No methylarginine of ' + esc(p.label) + ' aligns to a resolved arginine in this chain.</p>') +
@@ -5024,7 +5052,7 @@
         '<p class="note">A related protein, not ' + esc(p.label) + ' itself: positions come from the RCSB sequence alignment (MMseqs2), and the contacts are those of the homologous arginine.</p>' +
         (mol.afPdb ? '<p><button class="btn quiet small" type="button" id="back-af">Back to AlphaFold model</button></p>' : '');
     } else side.innerHTML = '<p class="flabel">Showing PDB entry</p><dl class="kv"><dt>Entry</dt><dd><a href="https://www.rcsb.org/structure/' + e.id.toUpperCase() + '" target="_blank" rel="noopener">' + e.id.toUpperCase() + ' ↗</a></dd>' +
-      '<dt>Method</dt><dd>' + esc(methodShort(e.method)) + (e.resolution ? ', ' + e.resolution.toFixed(1) + ' Å' : '') + (/NMR/i.test(e.method || '') ? ' (first model of the ensemble)' : '') + '</dd><dt>Chain</dt><dd>' + esc(det.chain || '—') + ' (teal; other chains grey)</dd></dl>' +
+      '<dt>Method</dt><dd>' + esc(methodShort(e.method)) + (e.resolution ? ', ' + e.resolution.toFixed(1) + ' Å' : '') + (/NMR/i.test(e.method || '') ? ' (first model of the ensemble)' : '') + '</dd><dt>Chain</dt><dd>' + esc(det.chain || '—') + ' (coloured by its features; other chains by what they are)</dd></dl>' +
       (det.modres.length ? '<p class="flabel">Methylated arginines in the model</p><div class="tags">' + det.modres.map((r) => '<span class="tag var" title="' + esc(r.chem_comp_name) + '">' + esc(r.chem_comp_id) + ' ' + esc(r.chain_id) + esc(r.author_residue_number) + '</span>').join('') + '</div><p class="note">Drawn in orange.</p>' : '') +
       '<p class="flabel">Resolved methylarginines from the union</p>' +
       (sites.length ? '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '">' + modeDot(mode, mode.cat(s), colors[mode.cat(s)] || pal.none) + rl(s.pos, P[s.p]) + ' · ' + esc(det.chain) + toAuth.get(s.pos) + '</button>').join('') + '</div>' : '<p class="note">None of this protein\'s methylarginines are resolved in this chain.</p>') +
@@ -8632,7 +8660,7 @@
         '<p><b>Interaction evidence at a glance</b> draws the protein once more as a simple linear cartoon: the methylarginines coloured by interaction status, and under them, on the same residue scale, one lane per kind of evidence, named by partner and then method: <i>RNA crosslink</i> and <i>DNA crosslink</i> (UV crosslinking in living cells), <i>RNA/DNA contact</i> and <i>Protein contact</i> in PDB structures (residues touching RNA, DNA, another protein or another copy of the same protein in an experimentally determined structure; PDBe-KB interface residues, live), <i>IntAct</i> when switched on, and <i>Predicted protein contact</i> (every residue at the partner interface, within 5 Å, of an AlphaFold-Multimer model of a human protein pair from ProtVar with pDockQ ≥ 0.23, pale with a dashed edge and darker where more partners share it; the protein map has the same row). A dashed line drops from each methylarginine with evidence at the residue itself and a ring marks which kind (solid at the residue, dashed when nearby, in a fragment or predicted only; a predicted ring also counts a confident predicted bond to a partner in a served ProtVar or AlphaFold DB complex); magenta ticks on the chain are lysine methylation. The Interactions tab shows the same cartoon for any protein, and the Figures tab adds the same lanes under every protein of the comparison, which can be ordered by interaction evidence, length or name.</p>' +
       '<ul>' +
       '<li><b>UniProt</b>: domains, regions, disordered segments and compositional bias for the map; natural variants and mutagenesis (variants at a methylarginine are highlighted, with their disease notes); and UniProt\'s own modified-residue term for each site (asymmetric, symmetric or monomethylarginine). Methylarginines that UniProt annotates but the union lacks are listed under the site table.</li>' +
-      '<li><b>AlphaFold DB</b>: the predicted model coloured by pLDDT (very high > 90, confident 70–90, low 50–70, very low < 50), the pLDDT at each site, and the mean AlphaMissense pathogenicity of the 19 R→X substitutions at each site (likely benign < 0.34, likely pathogenic ≥ 0.564). Low pLDDT usually marks disordered segments, where most methylarginines sit.</li>' +
+      '<li><b>AlphaFold DB</b>: the predicted model, coloured as on the protein map by default (domains, disordered stretches, RG/RGG segments; other chains of PDB entries as another protein or another copy of this one) or by pLDDT (very high > 90, confident 70–90, low 50–70, very low < 50), the pLDDT at each site, and the mean AlphaMissense pathogenicity of the 19 R→X substitutions at each site (likely benign < 0.34, likely pathogenic ≥ 0.564). Low pLDDT usually marks disordered segments, where most methylarginines sit.</li>' +
       '<li><b>Experimental structures</b>: PDBe SIFTS mappings list the PDB entries for the protein; observed-residue ranges decide which methylarginines are actually resolved in the mapped chain. An RCSB search flags entries whose chain for this protein contains a methylated arginine residue (chemical components 2MR, DA2, NMM or AGM); those residues are drawn in orange when the entry is viewed. NMR entries show the first model of the ensemble.</li>' +
       '</ul>' +
       ''],
