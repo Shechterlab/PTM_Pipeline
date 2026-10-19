@@ -401,6 +401,16 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .chart-key i { width: 14px; height: 9px; border-radius: 2px; background: var(--t-up-3); }
 .chart-key i.neg { background: var(--t-down-3); }
 .chart-key i.ns { background: var(--surface); border: 1.5px solid var(--muted); }
+/* The current selection on dataset charts: an orange count per bar (the Filtered flag's colour); bars it misses fade. */
+.hbars.has-sel .hb, .hb-axis.has-sel { grid-template-columns: minmax(6.5rem, 40%) minmax(0, 1fr) 3.4rem 2.9rem; }
+.hbars.has-extra.has-sel .hb, .hb-axis.has-extra.has-sel { grid-template-columns: minmax(6rem, 30%) 4.6rem minmax(0, 1fr) 3.4rem 2.9rem; }
+.hb-sel { display: inline-flex; align-items: center; justify-content: flex-end; gap: 0.3rem; font-size: 0.76rem; font-weight: 700; color: var(--accent-dark); font-variant-numeric: tabular-nums; }
+.hb-sel i, .sel-key i { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); flex: none; }
+.hb.off, .tbl tr.off { opacity: 0.4; }
+.hb.off:hover, .hb.off:focus-visible, .tbl tr.off:hover { opacity: 1; }
+.chart-key .sel-key i, .ov-hint .sel-key i, .ix-sel .sel-key i { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); }
+.sel-key { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--accent-dark); font-weight: 600; }
+.ix-sel { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin: 0 0 0.8rem; font-size: 0.82rem; }
 .treat-tbl td, .treat-tbl th { padding: 0.45rem 0.5rem; }
 .meter { position: relative; height: 10px; border-radius: 3px; background: var(--surface-2); min-width: 5rem; }
 .meter i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 3px; background: var(--t-seq-3); }
@@ -623,6 +633,9 @@ footer.site a:hover { color: var(--accent); }
   .scope-clear, .scope-link { margin-left: 0; }
   .scope-hint { display: none; }
   .hbars.has-extra .hb, .hb-axis.has-extra { grid-template-columns: minmax(5rem, 38%) 2.8rem minmax(0, 1fr) 3rem; gap: 0.4rem; }
+  /* With the selection's counts, the dataset counts give way (they stay in the hover and the TSV). */
+  .hbars.has-sel .hb, .hb-axis.has-sel, .hbars.has-extra.has-sel .hb, .hb-axis.has-extra.has-sel { grid-template-columns: minmax(4.5rem, 34%) minmax(0, 1fr) 2.8rem 2.6rem; gap: 0.4rem; }
+  .has-sel .hb-extra, .hb-axis.has-extra.has-sel > span:nth-child(2) { display: none; }
   .card-head { flex-wrap: wrap; }
   .brand-links { font-size: 0.8rem; gap: 0.75rem; }
   .hero-art-caption { display: none; }
@@ -870,6 +883,7 @@ details.ix-sec[open] > summary .pm { border-color: var(--accent); }
 
 /* ---- Overview: hint, interactions feature, starting points ---------------- */
 .ov-hint { margin: 0 0 -0.4rem; font-size: 0.85rem; color: var(--muted); }
+.ov-hint.sel { margin-bottom: 1rem; color: var(--ink-2); }
 .tab-feature { color: var(--accent-dark); font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem; }
 .tab-feature svg { width: 15px; height: 15px; flex: none; }
 .ix-feature { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); box-shadow: inset 4px 0 0 var(--accent); }

@@ -369,6 +369,8 @@
   //   other marks         kme magenta (lysine methylation), ptm grey, variant grey, mark ink (a feature at a methyl-R)
   //   quantities          seq neutral ramp for counts (4-step scales use its last four); up red / down slate for more
   //                       / less than expected (log2 odds ratios, enrichment bars, matrices)
+  //   selection           the page's accent orange (pal.accent, --accent): the current search or filter, as in the
+  //                       Filtered flag, wherever a dataset figure marks it
   // Conventions with their own colours stay as published: pLDDT bands, EMBOSS charge (blue +, red -), element and
   // residue-chemistry colours.
   const TOKENS = {
@@ -2282,18 +2284,22 @@
     const sc = niceScale(rows);
     const vfmt = spec.format || fmtL2;
     const tfmt = spec.tick || ((t) => t);
-    return '<div class="hbars' + (spec.extraCol ? ' has-extra' : '') + '" role="list">' + rows.map((r, k) => {
+    const cls = (spec.extraCol ? ' has-extra' : '') + (spec.sel ? ' has-sel' : '');
+    return '<div class="hbars' + cls + '" role="list">' + rows.map((r, k) => {
       const v = r.value == null ? 0 : r.value;
       const a = sc.xp(Math.min(0, v)), b = sc.xp(Math.max(0, v));
-      return '<button class="hb' + (r.sub ? ' sub' : '') + '" type="button" role="listitem" data-k="' + k + '" aria-label="' + esc(r.label + ': ' + (spec.valueLabel || 'log2 OR') + ' ' + vfmt(r.value) + (spec.noSig ? '' : r.sig ? ', significant' : ', not significant')) + '">' +
+      return '<button class="hb' + (r.sub ? ' sub' : '') + (spec.sel && !r.sel ? ' off' : '') + '" type="button" role="listitem" data-k="' + k + '" aria-label="' + esc(r.label + ': ' + (spec.valueLabel || 'log2 OR') + ' ' + vfmt(r.value) + (spec.noSig ? '' : r.sig ? ', significant' : ', not significant') + (spec.sel && r.sel != null ? ', ' + r.sel + ' selected ' + spec.sel.unit : '')) + '">' +
         '<span class="hb-label">' + esc(r.label) + '</span>' + (spec.extraCol ? '<span class="hb-extra">' + esc(r.extra || '') + '</span>' : '') +
         '<span class="hb-track"><span class="hb-zero" style="left:' + sc.xp(0).toFixed(2) + '%"></span>' +
         '<span class="hb-bar' + (r.sig || spec.noSig ? '' : ' ns') + (v < 0 ? ' neg' : '') + '" style="left:' + a.toFixed(2) + '%;width:' + Math.max(0.6, b - a).toFixed(2) + '%"></span></span>' +
-        '<span class="hb-val">' + vfmt(r.value) + '</span></button>';
+        '<span class="hb-val">' + vfmt(r.value) + '</span>' + (spec.sel ? selCell(r.sel) : '') + '</button>';
     }).join('') + '</div>' +
-      '<div class="hb-axis' + (spec.extraCol ? ' has-extra' : '') + '" aria-hidden="true"><span></span>' + (spec.extraCol ? '<span></span>' : '') + '<span class="ticks">' + sc.ticks.map((t) => '<span style="left:' + sc.xp(t).toFixed(2) + '%">' + tfmt(t) + '</span>').join('') + '</span><span></span></div>' +
-      '<div class="chart-key">' + (spec.noSig ? '' : '<span><i></i>More than expected, q ≤ 0.05</span><span><i class="neg"></i>Less than expected, q ≤ 0.05</span><span><i class="ns"></i>Not significant</span>') + '<span>' + esc(spec.axis || 'log2 odds ratio vs background') + '</span></div>';
+      '<div class="hb-axis' + cls + '" aria-hidden="true"><span></span>' + (spec.extraCol ? '<span></span>' : '') + '<span class="ticks">' + sc.ticks.map((t) => '<span style="left:' + sc.xp(t).toFixed(2) + '%">' + tfmt(t) + '</span>').join('') + '</span><span></span>' + (spec.sel ? '<span></span>' : '') + '</div>' +
+      '<div class="chart-key">' + (spec.noSig ? '' : '<span><i></i>More than expected, q ≤ 0.05</span><span><i class="neg"></i>Less than expected, q ≤ 0.05</span><span><i class="ns"></i>Not significant</span>') + (spec.sel ? selKeyHtml(spec.sel) : '') + '<span>' + esc(spec.axis || 'log2 odds ratio vs background') + '</span></div>';
   }
+  // The selection's count in a bar (orange dot, as the Filtered flag), blank where none of it is there.
+  const selCell = (n) => '<span class="hb-sel">' + (n ? '<i></i>' + fmt(n) : '') + '</span>';
+  const selKeyHtml = (sel) => '<span class="sel-key"><i></i>Selected ' + sel.unit + ' in the bar, of ' + fmt(sel.n) + '</span>';
 
   const expButtons = (id) => '<div class="exp" role="group" aria-label="Export chart"><button type="button" data-exp="svg" data-chart="' + id + '">SVG</button><button type="button" data-exp="png" data-chart="' + id + '">PNG</button><button type="button" data-exp="tsv" data-chart="' + id + '">TSV</button></div>';
 
@@ -2306,16 +2312,14 @@
   function chartSvg(spec) {
     const pal = EXPORT_PAL;
     const rows = spec.rows;
-    const W = 760, labelW = 270, extraW = spec.extraCol ? 64 : 0, valW = 64;
-    const x0 = 24 + labelW + extraW, x1 = W - valW - 16;
+    const W = 760, labelW = 270, extraW = spec.extraCol ? 64 : 0, valW = 64, selW = spec.sel ? 52 : 0;
+    const x0 = 24 + labelW + extraW, x1 = W - valW - selW - 16;
     const rowH = 22, top = 74;
     const sc = niceScale(rows);
     const X = (v) => x0 + (sc.xp(v) / 100) * (x1 - x0);
     const vfmt = spec.format || fmtL2;
     const tfmt = spec.tick || ((t) => t);
-    const H = top + rows.length * rowH + (spec.noSig ? 46 : 72);
-    let g = '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' +
-      '<text x="24" y="32" font-size="17" font-weight="700" fill="' + pal.ink + '">' + esc(spec.title) + '</text>' +
+    let g = '<text x="24" y="32" font-size="17" font-weight="700" fill="' + pal.ink + '">' + esc(spec.title) + '</text>' +
       '<text x="24" y="52" font-size="11" fill="' + pal.muted + '">' + esc(spec.subText || '') + '</text>';
     for (const t of sc.ticks) g += '<line x1="' + r1(X(t)) + '" x2="' + r1(X(t)) + '" y1="' + (top - 6) + '" y2="' + (top + rows.length * rowH) + '" stroke="' + pal.grid + '"/>';
     g += '<line x1="' + r1(X(0)) + '" x2="' + r1(X(0)) + '" y1="' + (top - 8) + '" y2="' + (top + rows.length * rowH + 2) + '" stroke="' + pal.backbone + '"/>';
@@ -2325,25 +2329,30 @@
       const a = X(Math.min(0, v)), b = X(Math.max(0, v));
       const fill = spec.counts ? pal.seq[3] : v < 0 ? pal.down[3] : pal.up[3];
       const ns = !spec.noSig && !r.sig;
+      // Bars the selection does not reach fade, as on the page.
+      g += spec.sel && !r.sel ? '<g opacity="0.4">' : '<g>';
       g += '<text x="' + (r.sub ? 40 : 24) + '" y="' + (y + 14) + '" font-size="' + (r.sub ? 10.5 : 11.5) + '" fill="' + (r.sub ? pal.muted : pal.ink) + '">' + esc(r.label.length > 46 ? r.label.slice(0, 44) + '…' : r.label) + '</text>';
       if (spec.extraCol) g += '<text x="' + (24 + labelW + extraW - 6) + '" y="' + (y + 14) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="end">' + esc(r.extra || '') + '</text>';
       g += '<rect x="' + r1(a) + '" y="' + (y + 6) + '" width="' + r1(Math.max(1, b - a)) + '" height="10" rx="2" fill="' + (ns ? pal.bg : fill) + '" stroke="' + fill + '" stroke-width="' + (ns ? 1.4 : 0) + '"/>';
-      g += '<text x="' + (W - 16) + '" y="' + (y + 14) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="end">' + esc(vfmt(r.value)) + '</text>';
+      g += '<text x="' + (W - selW - 16) + '" y="' + (y + 14) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="end">' + esc(vfmt(r.value)) + '</text></g>';
+      if (spec.sel && r.sel) g += '<circle cx="' + (W - selW - 4) + '" cy="' + (y + 11) + '" r="3.5" fill="' + pal.accent + '"/><text x="' + (W - 16) + '" y="' + (y + 14) + '" font-size="10.5" font-weight="700" fill="' + pal.accent + '" text-anchor="end">' + fmt(r.sel) + '</text>';
     });
     const ay = top + rows.length * rowH + 16;
     for (const t of sc.ticks) g += '<text x="' + r1(X(t)) + '" y="' + ay + '" font-size="10" fill="' + pal.muted + '" text-anchor="middle">' + esc(String(tfmt(t))) + '</text>';
     g += '<text x="' + r1((x0 + x1) / 2) + '" y="' + (ay + 16) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="middle">' + esc(spec.axis || 'log2 odds ratio vs background') + '</text>';
-    if (!spec.noSig) {
-      const key = svgLegend(pal, [[SWATCH.fill(pal.up[3]), 'More than expected, q ≤ 0.05'], [SWATCH.fill(pal.down[3]), 'Less than expected, q ≤ 0.05'],
-        [(a, b) => '<rect x="' + r1(a) + '" y="' + r1(b - 5) + '" width="20" height="10" rx="2" fill="' + pal.bg + '" stroke="' + pal.muted + '" stroke-width="1.4"/>', 'Not significant (outline)']], 24, ay + 22, W - 48, { fs: 10 });
-      g += key.svg;
-    }
-    return { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + pal.font + '\'>' + g + '</svg>', W, H };
+    const items = spec.noSig ? [] : [[SWATCH.fill(pal.up[3]), 'More than expected, q ≤ 0.05'], [SWATCH.fill(pal.down[3]), 'Less than expected, q ≤ 0.05'],
+      [(a, b) => '<rect x="' + r1(a) + '" y="' + r1(b - 5) + '" width="20" height="10" rx="2" fill="' + pal.bg + '" stroke="' + pal.muted + '" stroke-width="1.4"/>', 'Not significant (outline)']];
+    if (spec.sel) items.push([(a, b) => '<circle cx="' + r1(a + 10) + '" cy="' + r1(b) + '" r="3.5" fill="' + pal.accent + '"/>', 'Selected ' + spec.sel.unit + ' in the bar, of ' + fmt(spec.sel.n) + ' (' + (spec.sel.what.length > 70 ? spec.sel.what.slice(0, 68) + '…' : spec.sel.what) + ')']);
+    const key = items.length ? svgLegend(pal, items, 24, ay + 22, W - 48, { fs: 10 }) : null;
+    const H = Math.ceil(key ? ay + 22 + key.h + 22 : ay + 30);
+    return { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + pal.font + '\'><rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' + g + (key ? key.svg : '') + '</svg>', W, H };
   }
 
   function chartTsv(spec) {
-    return ['label\t' + (spec.valueLabel || 'log2_odds_ratio') + '\tq_value\t' + (spec.extraName || 'detail'),
-      ...spec.rows.map((r) => [r.label, r.value, r.q == null ? '' : r.q, r.extra || ''].map(cell).join('\t'))].join('\n') + '\n';
+    const sel = spec.sel ? '\tselected_' + spec.sel.unit : '';
+    return (spec.sel ? '# selected: ' + spec.sel.what + ' (' + spec.sel.n + ' ' + spec.sel.unit + ')\n' : '') +
+      ['label\t' + (spec.valueLabel || 'log2_odds_ratio') + '\tq_value\t' + (spec.extraName || 'detail') + sel,
+        ...spec.rows.map((r) => [r.label, r.value, r.q == null ? '' : r.q, r.extra || ''].concat(spec.sel ? [r.sel == null ? '' : r.sel] : []).map(cell).join('\t'))].join('\n') + '\n';
   }
 
   function bindChartExports(root) {
@@ -2456,8 +2465,33 @@
       subText: 'Class of the nearest InterPro domain, methylated vs unmodified arginines', extraCol: true, extraName: 'sites',
       rows: ctxRows(ov.domain_classes || [], {}, {}).sort((a, b) => b.value - a.value),
     };
+    // With a search or filter set, every bar also counts the selection's proteins or sites in it, with the test a click
+    // on the bar adds to the search; the statistics stay those of the whole dataset.
+    const ix = (list, key) => list.indexOf(key);
+    markSelection(study, 'sites', (r) => (s) => s.study & 2 ** r.key);
+    markSelection(motif, 'sites', (r) => ix(M.motifs, r.key) >= 0 && ((s) => s.mot & (1 << ix(M.motifs, r.key))));
+    markSelection(cond, 'proteins', (r) => (thr ? (p) => (cdMemberships(p) || []).some((c) => c.ci === r.key && c.score >= thr) : (p) => p.cond.includes(r.key)));
+    if (loc) markSelection(loc, 'proteins', (r) => (p) => p.hpa.some((x) => x[0] === r.key && x[1] >= HPA_SURE));
+    markSelection(func, 'proteins', (r) => (r.kind === 'sub' ? ix(M.func_subclasses, r.key) >= 0 && ((p) => p.sub & 2 ** ix(M.func_subclasses, r.key))
+      : ix(M.func_classes, r.key) >= 0 && ((p) => p.func & 2 ** ix(M.func_classes, r.key))));
+    markSelection(dis, 'proteins', (r) => ix(M.disease_families, r.key) >= 0 && ((p) => p.dis & 2 ** ix(M.disease_families, r.key)));
+    markSelection(disorder, 'sites', (r) => ix(M.disorder_classes, r.key) >= 0 && ((s) => s.dc === ix(M.disorder_classes, r.key)));
+    markSelection(domctx, 'sites', (r) => ix(M.domain_contexts, r.key) >= 0 && ((s) => s.dctx === ix(M.domain_contexts, r.key)));
+    markSelection(domcls, 'sites', (r) => ix(M.domain_classes, r.key) >= 0 && ((s) => s.dcls === ix(M.domain_classes, r.key)));
 
     return { study, motif, cond, loc, func, dis, disorder, domctx, domcls, thr };
+  }
+
+  // spec.sel {unit, n, what} and row.sel (selected items in the bar, null where the bar has no test) when a selection is
+  // set. test(row) returns the item test or a falsy value.
+  function markSelection(spec, unit, test) {
+    if (!constraints().length) return;
+    const items = unit === 'sites' ? R.sites : R.prots;
+    spec.sel = { unit, n: items.length, what: selectionText() };
+    for (const r of spec.rows) {
+      const t = test(r);
+      r.sel = t ? items.reduce((n, x) => n + (t(x) ? 1 : 0), 0) : null;
+    }
   }
 
   function renderOverview(el) {
@@ -2472,8 +2506,14 @@
     const repDist = [0, 0, 0, 0, 0];
     for (const s of S) repDist[Math.min(5, popcount(s.study)) - 1]++;
     const multi = M.n_sites - repDist[0];
+    // With a selection, the same reports-per-site rows count its sites too (as markSelection does for the charts).
+    const selOn = constraints().length > 0, repSel = [0, 0, 0, 0, 0];
+    if (selOn) for (const s of R.sites) repSel[Math.min(5, popcount(s.study)) - 1]++;
+    const one = R.prots.length === 1 ? R.prots[0] : null;
     el.innerHTML =
-      '<p class="ov-hint">Click any bar to filter the Proteins and Sites views; the charts always show the whole dataset.</p>' +
+      (selOn ? '<p class="ov-hint sel">The charts describe the whole dataset. <span class="sel-key"><i></i>Orange counts</span> are your selection (' + fmt(R.sites.length) + ' site' + (R.sites.length === 1 ? '' : 's') + ' on ' + fmt(R.prots.length) + ' protein' + (R.prots.length === 1 ? '' : 's') + ') in each bar; bars it does not reach are faded. Click a bar to narrow the selection to it.' +
+        (one ? ' <button class="linkish" type="button" id="ov-open-one">Open ' + esc(one.label) + ' →</button>' : '') + '</p>' + profileCardHtml()
+        : '<p class="ov-hint">Click any bar to filter the Proteins and Sites views; the charts always show the whole dataset.</p>') +
       '<div class="ov-grid">' +
       chartCard(func) + chartCard(dis) +
       ixOverviewHtml() +
@@ -2482,9 +2522,9 @@
       '<div class="card-head" style="margin-top:1.1rem"><div><h3 class="h4">Nearest domain class</h3><p class="sub">' + domcls.subHtml + '</p></div>' + expButtons('ch-domcls') + '</div><div id="ch-domcls-bars">' + hbars(domcls) + '</div></div>' +
       '<div class="card wide chart-card" id="ch-study"><div class="card-head"><div><h3>Provenance</h3><p class="sub">' + study.subHtml + '</p></div>' + expButtons('ch-study') + '</div>' +
       '<div class="two-col"><div>' + hbars(study) + '</div>' +
-      '<div><p class="flabel" style="margin:0 0 .5rem">Independent reports per site</p><div class="hbars rep-dist">' +
-      repDist.map((n, k) => '<button class="hb" type="button" data-rep="' + (k + 1) + '"><span class="hb-label">' + (k === 4 ? '5 or more' : (k + 1) + (k ? ' reports' : ' report')) + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / repDist[0]).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span></button>').join('') +
-      '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) have two or more. Click a row to keep sites with at least that many.</p></div></div></div>' +
+      '<div><p class="flabel" style="margin:0 0 .5rem">Independent reports per site</p><div class="hbars rep-dist' + (selOn ? ' has-sel' : '') + '">' +
+      repDist.map((n, k) => '<button class="hb' + (selOn && !repSel[k] ? ' off' : '') + '" type="button" data-rep="' + (k + 1) + '"><span class="hb-label">' + (k === 4 ? '5 or more' : (k + 1) + (k ? ' reports' : ' report')) + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / repDist[0]).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span>' + (selOn ? selCell(repSel[k]) : '') + '</button>').join('') +
+      '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) have two or more' + (selOn ? '; ' + fmt(R.sites.length - repSel[0]) + ' of the ' + fmt(R.sites.length) + ' selected' : '') + '. Click a row to keep sites with at least that many.</p></div></div></div>' +
       '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor and knockout response</h3><p class="sub">Sites that changed after GSK591 (PRMT5) or MS023 (type I PRMTs) vs DMSO (Maron et al. 2021, adj. p ≤ 0.05)' + (koMeta() ? ', and in CARM1 knockout vs parental cells (Shishkova et al. 2017, at least twofold with p < 0.05)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable(ov.treatments) + '</div>' +
       '<div class="card wide starts" id="ov-start"><h3>Starting points</h3><div class="starts-grid">' +
       '<div><h4>Try a search</h4><div class="gene-chips">' + examples.map((e) => '<button class="gene-chip" type="button" data-q="' + esc(e[0]) + '">' + esc(e[0]) + '<span>' + esc(e[1]) + '</span></button>').join('') + '</div></div>' +
@@ -2494,6 +2534,8 @@
       '</div></div>' +
       '</div>';
     bindDocLinks(el);
+    bindProfile(el);
+    if (one) $('#ov-open-one', el).addEventListener('click', () => openProtein(one.i));
     UI.charts['ch-study'] = study; UI.charts['ch-domctx'] = domctx; UI.charts['ch-domcls'] = domcls;
 
     $$('.gene-chip[data-i]', el).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.i)));
@@ -2546,16 +2588,20 @@
     }) : [];
     const all = rows.slice().sort((a, b) => a[0].localeCompare(b[0]) || M.maron_ips.indexOf(a[1]) - M.maron_ips.indexOf(b[1])).concat(koRows);
     const max = Math.max(...all.map((r) => (r[2] ? Math.max(r[3], r[4]) / r[2] : 0)), 0.01);
-    return '<div class="tbl-wrap"><table class="tbl treat-tbl"><thead><tr><th>Perturbation</th><th>Methyl-IP</th><th class="r">Sites</th><th>Decreased</th><th class="hide-xs">Increased</th><th class="r hide-sm">Median change</th></tr></thead><tbody>' +
+    // With a selection: its sites the row's click keeps (decreased with that perturbation, recovered by that IP).
+    const selOn = constraints().length > 0;
+    const selDown = (t, ip) => R.sites.reduce((n, s) => n + ((s.trf & (1 << (t * 2))) && (ip < 0 || s.ip & (1 << ip)) ? 1 : 0), 0);
+    return '<div class="tbl-wrap"><table class="tbl treat-tbl"><thead><tr><th>Perturbation</th><th>Methyl-IP</th><th class="r">Sites</th><th>Decreased</th><th class="hide-xs">Increased</th><th class="r hide-sm">Median change</th>' + (selOn ? '<th class="r" title="Selected sites decreased with this perturbation">Selected, decreased</th>' : '') + '</tr></thead><tbody>' +
       all.map((r) => {
         const ko = r[0] === 'CARM1 KO', t = ko ? 2 : M.maron_treatments.indexOf(r[0]);
         const ip = M.maron_ips.indexOf(r[1]);
         const down = r[2] ? r[3] / r[2] : 0, up = r[2] ? r[4] / r[2] : 0;
-        return '<tr class="row" tabindex="0" data-t="' + t + '" data-ip="' + (ko ? -1 : ip) + '" data-dir="down"><td><b>' + esc(r[0]) + '</b> <span class="muted">' + esc(ko ? r[6] + ' cells' : TREAT_HELP[r[0]] || '') + '</span></td><td><span class="tag ip" title="' + esc(IP_HELP[r[1]] || '') + '">' + esc(ipLabel(r[1])) + '</span></td><td class="r num">' + fmt(r[2]) + '</td>' +
+        const sd = selOn ? selDown(t, ko ? -1 : ip) : 0;
+        return '<tr class="row' + (selOn && !sd ? ' off' : '') + '" tabindex="0" data-t="' + t + '" data-ip="' + (ko ? -1 : ip) + '" data-dir="down"><td><b>' + esc(r[0]) + '</b> <span class="muted">' + esc(ko ? r[6] + ' cells' : TREAT_HELP[r[0]] || '') + '</span></td><td><span class="tag ip" title="' + esc(IP_HELP[r[1]] || '') + '">' + esc(ipLabel(r[1])) + '</span></td><td class="r num">' + fmt(r[2]) + '</td>' +
           '<td><div class="meter-row"><span class="meter down"><i style="width:' + (100 * down / max).toFixed(1) + '%"></i></span><span class="num">' + r[3] + ' (' + (100 * down).toFixed(0) + '%)</span></div></td>' +
           '<td class="hide-xs"><div class="meter-row"><span class="meter up"><i style="width:' + (100 * up / max).toFixed(1) + '%"></i></span><span class="num">' + r[4] + ' (' + (100 * up).toFixed(0) + '%)</span></div></td>' +
-          '<td class="r num hide-sm">' + fmtL2(r[5]) + '</td></tr>';
-      }).join('') + '</tbody></table></div><p class="note">Median change: Maron Table S3 <code>&lt;inhibitor&gt;_vs_DMSO_diff</code> across sites' + (km ? '; CARM1 KO: log2 knockout/parental, union sites measured in that cell line (sites not in the union are not counted)' : '') + '. Click a row for the sites.</p>';
+          '<td class="r num hide-sm">' + fmtL2(r[5]) + '</td>' + (selOn ? '<td class="r">' + (sd ? selCell(sd) : '<span class="muted">0</span>') + '</td>' : '') + '</tr>';
+      }).join('') + '</tbody></table></div><p class="note">Median change: Maron Table S3 <code>&lt;inhibitor&gt;_vs_DMSO_diff</code> across sites' + (km ? '; CARM1 KO: log2 knockout/parental, union sites measured in that cell line (sites not in the union are not counted)' : '') + '. Click a row for the sites' + (selOn ? ' (within the selection)' : '') + '.</p>';
   }
 
   // --------------------------------------------------------------- protein
@@ -6749,8 +6795,15 @@
     if (IX.failed) return '';
     const f = ixFindings();
     const pick = ['cells', 'pdb', 'predicted', 'partners'].map((k) => f.find((x) => x.sec === k)).filter(Boolean);
+    // The selection's sites by interaction status, above the whole-dataset findings.
+    let sel = '';
+    if (constraints().length && ixReady()) {
+      const n = { exp: 0, pred: 0, none: 0 };
+      for (const s of R.sites) n[ixStatus(s)]++;
+      sel = '<p class="ix-sel"><span class="sel-key"><i></i>Your ' + fmt(R.sites.length) + ' site' + (R.sites.length === 1 ? '' : 's') + '</span> <span class="ixs ixs-exp"><i></i>' + fmt(n.exp) + ' experimental</span> <span class="ixs ixs-pred"><i></i>' + fmt(n.pred) + ' predicted only</span> <span class="ixs ixs-none"><i></i>' + fmt(n.none) + ' none</span> <span class="muted small">Below: the whole dataset.</span></p>';
+    }
     return '<div class="card wide ix-feature" id="ch-ix"><div class="card-head"><div><h3>Interactions and binding</h3><p class="sub">What methylated arginines touch: protein partners, complexes, PDB and predicted structures, and RNA or DNA crosslinks in living cells.</p></div>' +
-      '<div class="exp"><button type="button" class="btn" data-ixgo="">Explore interactions →</button></div></div>' + checkSiteHtml('ov-check') + findingsList(pick) + '</div>';
+      '<div class="exp"><button type="button" class="btn" data-ixgo="">Explore interactions →</button></div></div>' + sel + checkSiteHtml('ov-check') + findingsList(pick) + '</div>';
   }
   // One protein drawn as the contacts cartoon, to show what each kind of evidence looks like along a sequence.
   // Default: the protein of the current selection with most experimental-contact sites, else HNRNPA1.
@@ -8586,7 +8639,7 @@
           '<p>Links made before terms existed (numeric <code>motifs=</code>, <code>disease=</code>, <code>func=</code> … parameters) still open and are rewritten as terms.</p>') +
         sub('tables', 'Tables, columns and the site card', '<p>The Proteins, Sites and protein-page tables show their core columns and a <b>Columns</b> menu for the rest (context, next methyl-R, Maron IP, AlphaFold, nearest domain …); the choice is remembered in this browser. On a phone each row becomes a labelled card. ' +
           'Clicking a site, or opening a link with a site in the search (<code>FUS R216</code>), opens the <b>site card</b> under the protein map: its interaction status and evidence with partners, what is known about the whole protein (labelled as such), sequence context, inhibitor response, AlphaFold confidence and reports.</p>')],
-      ['overview', 'Overview charts', '<p>Bars show log2 odds ratios; filled bars have a Benjamini–Hochberg q ≤ 0.05, outlined bars do not. The charts always describe the whole dataset; clicking a bar filters the Proteins and Sites views.</p>' +
+      ['overview', 'Overview charts', '<p>Bars show log2 odds ratios; filled bars have a Benjamini–Hochberg q ≤ 0.05, outlined bars do not. The bars and their statistics always describe the whole dataset; clicking a bar filters the Proteins and Sites views. With a search or filter set, an orange count after each bar gives how many of the selected proteins or sites fall in it (the same test a click on the bar adds), bars the selection does not reach are faded, and “What sets this selection apart” opens the page. Exported charts and their TSV files carry the same counts.</p>' +
         sub('ov-ontology', 'Functional ontology', '<p>Classes from the lab functional ontology (config/functional_ontology.json); a protein can belong to several. Each class is compared between methylated proteins and the reviewed human proteome. "Show subclasses" lists subclasses under the broad class most of their proteins share.</p>') +
         sub('ov-disease', 'Disease families', '<p>Audited DisGeNET disease families (via DOSE/clusterProfiler), genes counted once per family, BH-adjusted across the 8 families. This is enrichment of disease gene sets among methylated proteins, not causation. The ALS/MN/FTD filter uses the full audited family gene set.</p>') +
         sub('ov-motifs', 'Sequence motifs', '<p>Motifs are read from a ±7 window on the canonical sequence and compared between methylated arginines and the other arginines of the same proteins: ' + M.motifs.map((m) => esc(MOTIF_LABEL[m]) + ' (' + esc(MOTIF_HELP[m]) + ')').join('; ') + '.</p>') +
@@ -8991,7 +9044,7 @@
         '<p><button class="btn quiet small" type="button" id="fg-3d">Open the 3D view of ' + esc(fp.label) + '</button></p></div>'
         : '<p class="note">No protein selected.</p>') +
       '<h2 class="fig-sec">Whole dataset</h2>' +
-      '<div class="card fig-card"><h3>Overview charts</h3><p class="sub">The dataset charts of the Overview page; they do not change with the selection.</p><ul class="fig-list">' +
+      '<div class="card fig-card"><h3>Overview charts</h3><p class="sub">The dataset charts of the Overview page. Their bars stay those of the whole dataset; with a selection set, each also counts it (orange).</p><ul class="fig-list">' +
       chartList.map((c) => '<li><span>' + esc(c.title) + '</span><span class="exp">' + btn('chart-' + c.id + '-svg', 'SVG') + btn('chart-' + c.id + '-png', 'PNG') + btn('chart-' + c.id + '-tsv', 'TSV') +
         '<button type="button" class="linkish" data-preview="' + c.id + '">Preview</button></span><div class="fig-preview" id="pv-' + c.id + '" hidden></div></li>').join('') + '</ul></div>';
 
