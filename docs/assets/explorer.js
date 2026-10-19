@@ -60,10 +60,13 @@
   };
   const doiLink = (doi, text) => '<a href="https://doi.org/' + doi + '" target="_blank" rel="noopener">' + (text == null ? 'doi:' + doi : text) + '</a>';
   const PSP_NOTICE = 'PhosphoSitePlus® data (www.phosphosite.org) are licensed under CC BY-NC-SA 3.0: non-commercial use, with attribution, and adaptations shared under the same licence.';
-  // Data sources, versions and licences shown on the Documentation page. [name, used for, version, licence, citation, doi]
+  // Data sources, versions and licences shown on the Documentation page. [name, used for, version, licence, citation, doi];
+  // a version given as a function is read from the export (staged sources record what they were built from).
+  const stagedFile = (m) => (m && m.input_member ? String(typeof m.input_member === 'string' ? m.input_member : Object.values(m.input_member).join('; ')) : '');
   const DATA_SOURCES = [
     ['Site union', [
       ['Maron et al. 2021, Table S5', 'Compiled methylarginine sites; Table S2/S3 state and PRMT inhibitor response', 'Supplementary tables', 'Journal article supplement', 'iScience 24:102971', '10.1016/j.isci.2021.102971'],
+      ['CARM1 knockout (Shishkova et al. 2017)', 'ADMA peptides in parental and CARM1 knockout MCF7 and MDA-MB-231 cells: which sites fall without CARM1 (scripts/41; not used to add sites)', 'Supplementary Data 1', 'CC BY 4.0', 'Shishkova et al., Nat Commun 8:15571 (2017)', '10.1038/ncomms15571'],
       ['PhosphoSitePlus®', 'Sites compiled in Maron Table S5', 'As compiled in Maron et al. 2021', 'CC BY-NC-SA 3.0 (non-commercial)', 'Hornbeck et al., Nucleic Acids Res 43:D512 (2015)', '10.1093/nar/gku1267'],
       ['ProMetheusDB', 'Methyl-proteome table mmc2 (Rme1/Rme2 calls)', 'mmc2, sheet RK-methylsites', 'Journal article supplement', 'Massignani et al., Mol Cell Proteomics 21:100243 (2022)', '10.1016/j.mcpro.2022.100243'],
       ['iPTMnet (PTM master table)', 'Other-PTM sites shown as crosstalk; methylarginine rows', 'Lab export', 'See iPTMnet terms', 'Huang et al., Nucleic Acids Res 46:D542 (2018)', '10.1093/nar/gkx1104'],
@@ -72,7 +75,8 @@
     ['Annotations in the pipeline', [
       ['UniProt', 'Canonical sequences, remapping, gene symbols and synonyms', 'Reviewed human proteome at staging', 'CC BY 4.0', 'UniProt Consortium, Nucleic Acids Res 53:D609 (2025)', '10.1093/nar/gkae1010'],
       ['InterPro', 'Domain context and nearest domain; Tudor, WD40 and PHD classes of interaction partners', 'Current release at staging', 'CC0', 'Blum et al., Nucleic Acids Res 53:D444 (2025)', '10.1093/nar/gkae1082'],
-      ['CPLM 4.0', 'Lysine methylation on protein maps, the contacts cartoon and the Other PTMs card (human sites whose CPLM sequence matches canonical UniProt around the lysine; scripts/39)', 'Methylation download (Methylation.txt of 13 Jun 2021)', 'Not stated (© The CUCKOO Workgroup)', 'Zhang et al., Nucleic Acids Res 50:D451 (2022)', '10.1093/nar/gkab849'],
+      ['CPLM 4.0', 'Lysine methylation on protein maps, the contacts cartoon and the Other PTMs card (human sites whose CPLM sequence matches canonical UniProt around the lysine; scripts/39)', () => 'Methylation download' + (stagedFile(M.cplm4) ? ' (' + stagedFile(M.cplm4) + ')' : ''), 'Not stated (© The CUCKOO Workgroup)', 'Zhang et al., Nucleic Acids Res 50:D451 (2022)', '10.1093/nar/gkab849'],
+      ['Human Protein Atlas', 'Subcellular location of each protein, with HPA reliability (protein pages, location search and filter, enrichment; scripts/42)', () => (M.hpa ? (M.hpa.version ? 'Version ' + M.hpa.version + ' · ' : '') + stagedFile(M.hpa) : 'Not in this export'), 'CC BY 4.0', 'Thul et al., Science 356:eaal3321 (2017)', '10.1126/science.aal3321'],
       ['MobiDB', 'Disorder context (predicted consensus disorder, prediction-disorder-th_50)', 'Human export of 30 Mar 2026', 'Not stated on mobidb.org (CC BY 4.0 reported elsewhere)', 'Piovesan et al., Nucleic Acids Res 53:D495 (2025)', '10.1093/nar/gkae969'],
       ['CD-CODE', 'Condensate membership (filters and enrichment); per-protein confidence on protein pages', 'Export of 18 Mar 2026; API release 2.3', 'Not stated by CD-CODE', 'Rostam et al., Nat Methods 20:673 (2023)', '10.1038/s41592-023-01831-0'],
       ['DisGeNET (via DOSE)', 'Disease enrichment terms and families', 'As bundled with DOSE / clusterProfiler 4.18 (Bioconductor, R 4.5)', 'CC BY-NC-SA 4.0 (non-commercial)', 'Piñero et al., Nucleic Acids Res (2019 update)', '10.1093/nar/gkz1021'],
@@ -83,6 +87,7 @@
       ['Complex Portal', 'Curated human complexes', 'Current release at export', 'CC0', 'Meldal et al., Nucleic Acids Res 50:D578 (2022)', '10.1093/nar/gkab991'],
       ['hu.MAP 3.0', 'Predicted complexes (via Complex Portal)', 'hu.MAP 3.0', 'CC0', 'Fischer et al., Mol Syst Biol 21 (2025)', '10.1038/s44320-025-00121-5'],
       ['Gene Ontology / QuickGO', 'RNA- and DNA-binding annotations', 'Current release at export', 'CC BY 4.0', 'Gene Ontology Consortium, Genetics 224:iyad031 (2023); Binns et al., Bioinformatics 25:3045 (2009)', '10.1093/genetics/iyad031'],
+      ['IntAct', 'Mutations that change an interaction, short binding regions and methylated residues of interaction participants (curated features whose sequence matches canonical UniProt)', () => (IX && IX.meta && IX.meta.intact && IX.meta.intact.release ? IX.meta.intact.release.replace(/^The Release started on date : .*? and finished on /, 'Release finished ') : 'At export'), 'CC BY 4.0', 'del Toro et al., Nucleic Acids Res 50:D648 (2022)', '10.1093/nar/gkab1006'],
       ['PDBe-KB and SIFTS', 'Interface residues; PDB–UniProt residue mapping', 'Current release at export', 'EMBL-EBI terms of use', 'PDBe-KB consortium, Nucleic Acids Res 50:D534 (2022); Dana et al., Nucleic Acids Res 47:D482 (2019)', '10.1093/nar/gkab988'],
       ['RCSB PDB', 'Structure files, ModelServer contacts, search, entity metadata', 'Live / at export', 'CC0 (PDB data)', 'Burley et al., Nucleic Acids Res 51:D488 (2023)', '10.1093/nar/gkac1077'],
       ['ProtVar', 'Predicted interfaces (5 Å) and served AlphaFold-Multimer models', 'Interface table 2024.05.28; served-model list af2complexes_interfaces_v1', 'CC BY 4.0', 'Stephenson et al., Nucleic Acids Res 52:W140 (2024)', '10.1093/nar/gkae413'],
@@ -138,6 +143,7 @@
     PhosphoSitePlus: ['Hornbeck PV et al., Nucleic Acids Res 43:D512 (2015)', '10.1093/nar/gku1267'],
     UniProt: ['UniProt Consortium, Nucleic Acids Res 53:D609 (2025)', '10.1093/nar/gkae1010'],
     IEDB: ['Vita R et al., Nucleic Acids Res 47:D339 (2019)', '10.1093/nar/gky1006'],
+    'Shishkova 2017': ['Shishkova E et al., Nat Commun 8:15571 (2017)', '10.1038/ncomms15571'],
   };
   // Full reference of a study or database behind the union: [text, doi].
   function studyRef(k) {
@@ -155,6 +161,7 @@
     const use = (label, names, count) => { if (count) ev.push({ label, n: count, refs: names.map((x) => (Array.isArray(x) ? x : dsCite(x))) }); };
     const cnt = (f) => sites.reduce((a, s) => a + (f(s) ? 1 : 0), 0);
     use('PRMT inhibitor response and methyl-IP calls (Maron Tables S2–S3)', [SOURCE_CITE['Maron 2021']], cnt((s) => s.tr.length || s.ip || s.s2));
+    use('CARM1 knockout response (Shishkova 2017, Supplementary Data 1)', [SOURCE_CITE['Shishkova 2017']], cnt((s) => s.ko.length));
     if (ixReady()) {
       const sets = new Set();
       for (const s of sites) if (s.xl && (s.xl.r || s.xl.n)) xlSets((s.xl.r || 0) | (s.xl.n || 0)).forEach((x) => sets.add(x));
@@ -163,6 +170,7 @@
       use('RBDmap RNA-bound fragments', ['RBDmap'], cnt((s) => s.xl && s.xl.f));
       use('DNA crosslinks in cells', ['DNA interactome'], cnt((s) => s.xl && s.xl.d & 11));
       use('PDB interfaces and contacts', ['PDBe-KB and SIFTS', 'RCSB PDB'], cnt((s) => s.iface || s.contacts));
+      use('IntAct mutations, binding regions and methylated residues', ['IntAct'], cnt((s) => s.ia));
       use('Predicted complexes', ['ProtVar', 'AlphaFold-Multimer and pDockQ'], cnt((s) => s.pred || (s.gal || []).length));
     }
     return { studies, ev };
@@ -214,7 +222,7 @@
     distal: 'More than 20 aa from any domain and not between two domains',
     no_domain_annotation: 'Protein has no InterPro domain or repeat annotation',
   };
-  const TREAT_HELP = { GSK591: 'PRMT5 inhibitor', MS023: 'type I PRMT inhibitor' };
+  const TREAT_HELP = { GSK591: 'PRMT5 inhibitor', MS023: 'type I PRMT inhibitor', 'CARM1 KO': 'CARM1 (PRMT4) knockout' };
   const PTM_LABEL = ['Phospho', 'Lys acyl', 'Ub/SUMO', 'Lys methyl'];
   const PTM_PREFIX = ['p', 'ac', 'ub', 'me'];
   // An other-PTM entry is [position, group, residue, source bits]: bit 0 the cross-PTM master table, then the CPLM 4.0
@@ -232,6 +240,10 @@
   };
   const ptmSourceNote = (p) => (p.ptms.some(ptmFromCplm) ? 'the PTM master table and CPLM 4.0' : 'the PTM master table');
   const PADJ = 0.05;
+  // Perturbation flags (s.trf): bits 2t (down) and 2t + 1 (up) for Maron treatment t (0 GSK591, 1 MS023, adj. p <= 0.05),
+  // then the CARM1 knockout (Shishkova 2017; >= twofold, p < 0.05 in either cell line) as perturbation 2.
+  const TRF_KO_DOWN = 16, TRF_KO_UP = 32;
+  const koMeta = () => M.carm1_ko || null;
   // Maron 2021 methyl-IP antibodies named by the residue state they recognise.
   const IP_LABEL = { MMA: 'Rme1', ADMA: 'Rme2a', SDMA: 'Rme2s' };
   const IP_HELP = { MMA: 'monomethylarginine (MMA) antibody', ADMA: 'asymmetric dimethylarginine (ADMA) antibody', SDMA: 'symmetric dimethylarginine (SDMA) antibody' };
@@ -243,43 +255,58 @@
     ['1:down', 'Decreased with MS023 (type I PRMTi)'],
     ['0:up', 'Increased with GSK591'],
     ['1:up', 'Increased with MS023'],
+    ['ko', 'Measured in CARM1 KO cells'],
+    ['2:down', 'Decreased in CARM1 KO'],
+    ['2:up', 'Increased in CARM1 KO'],
   ];
   const RG_HELP = 'At least 3 RG dipeptides with ≤12 aa between consecutive RG arginines, found in the UniProt sequence; RGG-rich when ≥2 are RGG';
 
-  // Site colouring for the protein figure. Category order is fixed so a colour always means the same thing.
+  // Site colouring for the protein figures, the 3D view and site chips. Category order is fixed so a colour always
+  // means the same thing; methylation classes run Rme1, Rme2 (a), Rme2s, Rme1 + Rme2, none everywhere. hollow marks
+  // categories drawn as an empty, dashed head (predicted only; measured but unchanged).
   const COLOR_MODES = {
     state: {
       name: 'Methylation state', cats: ['Rme1', 'Rme2', 'Rme1 + Rme2', 'No state call'],
-      cat: (s) => [3, 0, 1, 2][s.st], colors: (pal) => [pal.cat[0], pal.cat[1], pal.cat[2], pal.none],
+      cat: (s) => [3, 0, 1, 2][s.st], colors: (pal) => [pal.st1, pal.st2, pal.stMix, pal.none],
     },
     ip: {
-      name: 'Maron methyl-IP', cats: ['Rme2s IP', 'Rme2a IP (no Rme2s)', 'Rme1 IP only', 'Not in Maron IP'],
-      cat: (s) => (s.ip & 4 ? 0 : s.ip & 2 ? 1 : s.ip & 1 ? 2 : 3), colors: (pal) => [pal.cat[0], pal.cat[1], pal.cat[2], pal.none],
+      name: 'Maron methyl-IP', cats: ['Rme1 IP only', 'Rme2a IP (no Rme2s)', 'Rme2s IP', 'Not in Maron IP'],
+      cat: (s) => (s.ip & 4 ? 2 : s.ip & 2 ? 1 : s.ip & 1 ? 0 : 3), colors: (pal) => [pal.st1, pal.st2, pal.st2s, pal.none],
     },
+    // A decrease is coloured by the methylation the inhibited enzymes make: PRMT5 (GSK591) symmetric, type I (MS023)
+    // and CARM1 asymmetric.
     prmti: {
       name: 'PRMT inhibitor response', cats: ['↓ GSK591 (PRMT5i)', '↓ MS023 (type I PRMTi)', '↓ both', 'Measured, not decreased', 'Not measured'],
       cat: (s) => { if (!s.tr.length) return 4; const g = s.trf & 1, m = s.trf & 4; return g && m ? 2 : g ? 0 : m ? 1 : 3; },
-      colors: (pal) => [pal.cat[0], pal.cat[1], pal.cat[2], pal.dark, pal.none],
+      colors: (pal) => [pal.st2s, pal.st2, pal.mark, pal.none, pal.none], hollow: [false, false, false, true, false],
+    },
+    carm1: {
+      name: 'CARM1 knockout', cats: ['↓ in CARM1 KO', 'Measured, not decreased', 'Not measured'],
+      cat: (s) => (!s.ko.length ? 2 : s.trf & TRF_KO_DOWN ? 0 : 1),
+      colors: (pal) => [pal.st2, pal.none, pal.none], hollow: [false, true, false],
     },
     reports: {
       name: 'Independent reports', cats: ['1 report', '2 reports', '3–4 reports', '5 or more'],
-      cat: (s) => { const n = popcount(s.study); return n >= 5 ? 3 : n >= 3 ? 2 : n === 2 ? 1 : 0; }, colors: (pal) => pal.seq,
+      cat: (s) => { const n = popcount(s.study); return n >= 5 ? 3 : n >= 3 ? 2 : n === 2 ? 1 : 0; }, colors: (pal) => pal.seq.slice(1),
     },
     ixstat: {
-      name: 'Interaction evidence', cats: ['Experimental contact', 'Predicted only', 'None recorded'],
-      cat: (s) => { const st = ixStatus(s); return st === 'exp' ? 0 : st === 'pred' ? 1 : 2; }, colors: (pal) => [pal.ixExp || '#0E7490', pal.ixPred || '#C2410C', pal.none],
+      name: 'Interaction evidence', cats: ['Experimental', 'Predicted only', 'None recorded'],
+      cat: (s) => { const st = ixStatus(s); return st === 'exp' ? 0 : st === 'pred' ? 1 : 2; }, colors: (pal) => [pal.ev, pal.ev, pal.none], hollow: [false, true, false],
     },
-    single: { name: 'Single colour', cats: ['Methylarginine'], cat: () => 0, colors: (pal) => [pal.site] },
+    single: { name: 'Single colour', cats: ['Methylarginine'], cat: () => 0, colors: (pal) => [pal.meth] },
   };
+  const IXS_MODE = COLOR_MODES.ixstat;
+  // A legend or chip dot for a colour-mode category, solid or hollow like the figure marks.
+  const modeDot = (mode, k, color, cls) => '<i class="' + (cls || 'dot') + (mode.hollow && mode.hollow[k] ? ' hollow' : '') + '" style="' + (mode.hollow && mode.hollow[k] ? 'border-color:' : 'background:') + color + '"></i>';
   // Protein map: overlays on the backbone, then rows the reader switches on and reorders in the Rows menu (remembered
   // in this browser). Lysine methylation and the other PTMs come from the pipeline's cross-PTM master table.
   const MAP_OVERLAYS = [['domains', 'Domains'], ['dense', 'Dense methyl-R windows']];
+  // Evidence rows follow the shared order: RNA/DNA crosslinks, then PDB interfaces, then IntAct.
   const MAP_ROWS = [['regions', 'Regions'], ['disorder', 'Disorder'], ['charge', 'Charge (EMBOSS, 5-aa mean)'], ['bias', 'Composition'], ['rg', 'RG/RGG-rich'],
     ['args', 'All arginines'], ['variants', 'Variants and mutagenesis'], ['kme', 'Lys methylation'], ['phospho', 'Phosphorylation'], ['kacyl', 'Lys acylation'],
-    ['ub', 'Ubiquitin / SUMO'], ['iface', 'PDB interfaces'], ['xl', 'RNA/DNA crosslinks']];
+    ['ub', 'Ubiquitin / SUMO'], ['xl', 'RNA/DNA crosslinks'], ['iface', 'PDB interfaces'], ['intact', 'IntAct mutations and binding regions']];
   const MAP_PTM_KEYS = ['phospho', 'kacyl', 'ub', 'kme'];
-  const MAP_DEFAULT_ON = ['domains', 'dense', 'regions', 'disorder', 'charge', 'rg', 'args', 'variants', 'kme', 'phospho', 'kacyl', 'ub', 'iface', 'xl'];
-  const KME_COLOR = '#A21CAF';
+  const MAP_DEFAULT_ON = ['domains', 'dense', 'regions', 'disorder', 'charge', 'rg', 'args', 'variants', 'kme', 'phospho', 'kacyl', 'ub', 'xl', 'iface', 'intact'];
   const mapPrefs = (() => { try { return JSON.parse(store.get('mre-map-rows') || 'null') || {}; } catch (e) { return {}; } })();
   const mapRowOrder = () => {
     const keys = MAP_ROWS.map(([k]) => k), order = (UI.fig.order || []).filter((k) => keys.includes(k));
@@ -312,15 +339,109 @@
   const plddtBand = (v) => PLDDT_BANDS.findIndex((b) => v > b[0]);
   // AlphaMissense thresholds (mean pathogenicity of the 19 R->X substitutions at a position).
   const amClass = (v) => (v >= 0.564 ? 'likely pathogenic' : v >= 0.34 ? 'ambiguous' : 'likely benign');
-  // Light, self-contained palette for exported figures.
-  const EXPORT_PAL = {
+  // ------------------------------------------------------------- graphic language
+  // One definition for every colour that carries a meaning, in both themes. The protein map, the contacts cartoon,
+  // the protein comparison, the network, the matrices, the charts, the 3D viewer, chips and legends all read TOKENS:
+  // figures through a palette (screenPalette() for the page, EXPORT_PAL for downloads and print, always light) and
+  // explorer.css through the --t-* custom properties applyTokens() sets. Each hue has one meaning:
+  //   methylation class   st1 Rme1 blue, st2 Rme2 / Rme2a orange, st2s Rme2s dark orange, stMix Rme1 + Rme2 green,
+  //                       none grey (no call, not measured, nothing recorded); meth crimson = methylated, any class
+  //   interaction partner rna purple, dna gold, protein teal, self pale teal (another copy of the same protein)
+  //   evidence level      ev ink: solid = experimental, hollow and dashed = predicted only
+  //   sequence features   domain, disorder (dis, dashed edge), RG/RGG (rg), composition (bias), region, dense window
+  //   other marks         kme magenta (lysine methylation), ptm grey, variant grey, mark ink (a feature at a methyl-R)
+  //   quantities          seq neutral ramp for counts (4-step scales use its last four); up red / down slate for more
+  //                       / less than expected (log2 odds ratios, enrichment bars, matrices)
+  // Conventions with their own colours stay as published: pLDDT bands, EMBOSS charge (blue +, red -), element and
+  // residue-chemistry colours.
+  const TOKENS = {
+    light: {
+      st1: '#2A78D6', st2: '#EB6834', st2s: '#A23B12', stMix: '#1BAF7A', none: '#A3AEB3', meth: '#B4485F',
+      rna: '#7B4FBF', dna: '#B7791F', protein: '#0E7490', self: '#7FA9B6', other: '#8A99A3', ev: '#0F3B47',
+      rnaBg: 'rgba(123,79,191,0.14)', dnaBg: 'rgba(183,121,31,0.16)', proteinBg: 'rgba(14,116,144,0.12)', rnaInk: '#5B3A96', dnaInk: '#7A4F10', proteinInk: '#0B5A70',
+      domain: '#B9DDE6', domainInk: '#0F3B47', dis: '#D2DBDF', disEdge: '#8E9DA4', rg: '#F5D6DE', rgInk: '#7A2E45',
+      bias: '#FDE3D4', region: '#E3ECF6', dense: 'rgba(17,24,39,0.07)', denseInk: '#374151',
+      kme: '#A21CAF', ptm: '#6B7F88', variant: '#8A99A3', mark: '#111827',
+      seq: ['#DCE2E5', '#B3BFC5', '#8396A0', '#566A73', '#26343B'], rnaPale: '#CDB8EE', dnaPale: '#EBD3A6',
+      up: ['#F6D0CD', '#EF9A94', '#E34948', '#A8302F'], down: ['#DCE3E7', '#A9B7BF', '#6C818C', '#3B4F5A'], mid: '#F0EFEC',
+    },
+    dark: {
+      st1: '#3987E5', st2: '#D95926', st2s: '#F4A26B', stMix: '#199E70', none: '#6D7D84', meth: '#E0708A',
+      rna: '#A98BE0', dna: '#D9A548', protein: '#3FB5CF', self: '#6E98A5', other: '#7E8E95', ev: '#D7EEF3',
+      rnaBg: 'rgba(123,79,191,0.3)', dnaBg: 'rgba(183,121,31,0.3)', proteinBg: 'rgba(63,181,207,0.22)', rnaInk: '#D2BDF5', dnaInk: '#EFCA85', proteinInk: '#9BDDEC',
+      domain: '#1F5566', domainInk: '#E3F4F8', dis: '#31474F', disEdge: '#5B7480', rg: '#5A2C3A', rgInk: '#F6C9D6',
+      bias: '#4A2A1C', region: '#213847', dense: 'rgba(232,239,242,0.09)', denseInk: '#C8D6DB',
+      kme: '#D46BE0', ptm: '#8FA3AB', variant: '#7E8E95', mark: '#F3F6F7',
+      seq: ['#2E3B41', '#3F5059', '#5C717B', '#8DA2AB', '#C9D6DB'], rnaPale: '#5B4A80', dnaPale: '#6B5530',
+      up: ['#5A2523', '#8E3330', '#D2524F', '#F09A95'], down: ['#26343B', '#3D5260', '#6C8592', '#A9BDC7'], mid: '#1A2D35',
+    },
+  };
+  const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const themeName = () => {
+    const t = document.documentElement.getAttribute('data-theme');
+    return t === 'dark' || (t !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  };
+  // --t-<token> (lists: --t-<token>-<k>) on the root element, for explorer.css.
+  function applyTokens(name) {
+    const st = document.documentElement.style;
+    for (const [k, v] of Object.entries(TOKENS[name || themeName()])) {
+      if (Array.isArray(v)) v.forEach((c, i) => st.setProperty('--t-' + k + '-' + i, c));
+      else st.setProperty('--t-' + k, v);
+    }
+  }
+  // Figure chrome: background, text and rules. Exports and print are always light.
+  const EXPORT_PAL = Object.assign({
     bg: '#FFFFFF', ink: '#111827', muted: '#5F6F78', grid: '#E0E8EB', backbone: '#9AA6B2', stem: '#C7D4D9',
-    backboneFill: '#EEF5F7', backboneEdge: '#C7D4D9', domainFill: '#B9DDE6', domainInk: '#0F3B47',
-    disFill: '#D2DBDF', disEdge: '#8E9DA4', regionFill: '#E3ECF6', biasFill: '#FDE3D4', rgFill: '#F5D6DE', rgInk: '#7A2E45',
-    dense: 'rgba(194,65,12,0.12)', denseInk: '#9A3412', ptm: '#6B7F88', rtick: '#C7D4D9', ring: '#FFFFFF',
-    site: '#B4485F', brush: 'rgba(194,65,12,0.16)', accent: '#C2410C', variant: '#9AA6B2',
-    cat: ['#2A78D6', '#EB6834', '#1BAF7A'], none: '#A3AEB3', dark: '#5F6F78', seq: ['#86B6EF', '#3987E5', '#1C5CAB', '#0D366B'],
-    bar: '#0E7490', barNeg: '#5F6F78', font: 'Arial, Helvetica, "Liberation Sans", sans-serif',
+    backboneFill: '#EEF5F7', backboneEdge: '#C7D4D9', rtick: '#C7D4D9', ring: '#FFFFFF', panel: '#EEF5F7',
+    brush: 'rgba(194,65,12,0.16)', accent: '#C2410C', font: 'Arial, Helvetica, "Liberation Sans", sans-serif',
+  }, TOKENS.light);
+  function screenPalette() {
+    const v = cssVar;
+    return Object.assign({
+      bg: v('--surface'), ink: v('--ink'), muted: v('--muted'), grid: v('--line'), backbone: v('--line-strong'), stem: v('--line-strong'),
+      backboneFill: v('--surface-2'), backboneEdge: v('--line-strong'), rtick: v('--line-strong'), ring: v('--surface'), panel: v('--surface-2'),
+      brush: v('--fig-brush'), accent: v('--accent'), font: v('--font-body'),
+    }, TOKENS[themeName()]);
+  }
+  // Shared marks, so a feature looks the same in every figure; sizes come from the figure. attr carries class, data-*
+  // and tooltip attributes.
+  const MARK = {
+    disorder: (pal, x, y, w, h, attr) => '<rect x="' + r1(x) + '" y="' + r1(y) + '" width="' + r1(Math.max(1, w)) + '" height="' + r1(h) + '" rx="3" fill="' + pal.dis + '" stroke="' + pal.disEdge + '" stroke-width="0.8" stroke-dasharray="3 2"' + (attr || '') + '/>',
+    domain: (pal, x, y, w, h, repeat, attr) => '<rect x="' + r1(x) + '" y="' + r1(y) + '" width="' + r1(Math.max(2, w)) + '" height="' + r1(h) + '" rx="3" fill="' + pal.domain + '"' + (repeat ? ' fill-opacity="0.7"' : '') + (attr || '') + '/>',
+    box: (x, y, w, h, fill, attr) => '<rect x="' + r1(x) + '" y="' + r1(y) + '" width="' + r1(Math.max(1.5, w)) + '" height="' + r1(h) + '" rx="1" fill="' + fill + '"' + (attr || '') + '/>',
+    tick: (x, y, h, fill, attr, w) => '<rect x="' + r1(x - (w || 2) / 2) + '" y="' + r1(y - h / 2) + '" width="' + (w || 2) + '" height="' + r1(h) + '" rx="0.6" fill="' + fill + '"' + (attr || '') + '/>',
+    diamond: (x, y, size, fill, stroke, attr) => '<rect x="' + r1(x - size / 2) + '" y="' + r1(y - size / 2) + '" width="' + size + '" height="' + size + '" transform="rotate(45 ' + r1(x) + ' ' + r1(y) + ')" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.1"' + (attr || '') + '/>',
+    // A site head: solid in its colour, or hollow with a dashed rim (predicted only; measured but unchanged).
+    head: (pal, x, y, r, color, hollow, attr, stroke) => '<circle cx="' + r1(x) + '" cy="' + r1(y) + '" r="' + r + '" fill="' + (hollow ? pal.bg : color) + '" stroke="' + (hollow ? color : stroke || pal.ring) + '" stroke-width="' + (hollow ? 1.6 : 1.4) + '"' + (hollow ? ' stroke-dasharray="2.2 1.4"' : '') + (attr || '') + '/>',
+    ring: (x, y, r, color, dashed, attr) => '<circle cx="' + r1(x) + '" cy="' + r1(y) + '" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="1.6"' + (dashed ? ' stroke-dasharray="1.5 1.2"' : '') + (attr || '') + '/>',
+  };
+  // A mark with a native SVG tooltip (exports keep it; the page's own tooltips use data-tip).
+  const titled = (svg, text) => svg.replace(/\/>$/, '><title>' + esc(text) + '</title></' + svg.match(/^<(\w+)/)[1] + '>');
+  // A legend that wraps onto as many lines as the width needs, so nothing is cut off in exports or print.
+  // items: [[draw(x, yMid) -> svg, label], ...] with a 20-px swatch; returns { svg, h }.
+  function svgLegend(pal, items, x0, y0, width, o = {}) {
+    const fs = o.fs || 10.5, lh = fs + 7, cw = fs * 0.56, sw = o.sw || 20;
+    let x = x0, y = y0 + fs * 0.5, svg = '';
+    if (o.title) {
+      svg += '<text x="' + r1(x) + '" y="' + r1(y + fs * 0.36) + '" font-size="' + fs + '" font-weight="700" fill="' + pal.muted + '">' + esc(o.title) + '</text>';
+      x += o.title.length * cw * 1.05 + 10;
+    }
+    for (const [draw, label] of items) {
+      const w = sw + 6 + label.length * cw;
+      if (x > x0 && x + w > x0 + width) { x = x0 + (o.indent || 0); y += lh; }
+      svg += draw(x, y) + '<text x="' + r1(x + sw + 5) + '" y="' + r1(y + fs * 0.36) + '" font-size="' + fs + '" fill="' + pal.ink + '">' + esc(label) + '</text>';
+      x += w + 14;
+    }
+    return { svg, h: y - y0 + fs * 0.5 + 2 };
+  }
+  // Legend swatches for the shared marks.
+  const SWATCH = {
+    head: (pal, color, hollow) => (x, y) => MARK.head(pal, x + 10, y, 4.6, color, hollow),
+    disorder: (pal) => (x, y) => MARK.disorder(pal, x, y - 5, 20, 10),
+    domain: (pal) => (x, y) => MARK.domain(pal, x, y - 6, 20, 12),
+    fill: (color, op) => (x, y) => '<rect x="' + r1(x) + '" y="' + r1(y - 5) + '" width="20" height="10" rx="2" fill="' + color + '"' + (op ? ' fill-opacity="' + op + '"' : '') + '/>',
+    tick: (color) => (x, y) => MARK.tick(x + 10, y, 12, color, '', 2.4),
+    diamond: (fill, stroke) => (x, y) => MARK.diamond(x + 10, y, 6, fill, stroke),
   };
 
   // ------------------------------------------------------------------ model
@@ -531,16 +652,20 @@
     M.studyOrder = M.studies.map((st, k) => k).sort((a, b) => M.studies[b][2] - M.studies[a][2]);
     M.subParent = {};
     for (const r of M.overview.functional_subclasses || []) M.subParent[r[0]] = r[6];
+    // Fields added after the first twenty (protein) or twenty (site) are found by name; older exports lack them.
+    const named = (fields, row, name, empty) => { const k = fields.indexOf(name); return k >= 0 && row[k] != null ? row[k] : empty; };
     P = data.proteins.map((r, i) => ({
       i, acc: r[0], gene: r[1] || '', name: r[2] || '', uid: r[3] || '', func: r[4], sub: r[5], len: r[6],
       argN: r[7], shrink: r[8], argQ: r[9], iso: !!r[10], cond: r[11], dis: r[12], als: !!r[13],
-      dens: r[14], best: r[15], sig: r[16], arch: r[17], ptms: r[18], aliases: r[19] || [], ref: r[20] || '', sites: [],
+      dens: r[14], best: r[15], sig: r[16], arch: r[17], ptms: r[18], aliases: r[19] || [], sites: [],
+      ref: named(M.protein_fields, r, 'reference_md5', ''), hpa: named(M.protein_fields, r, 'hpa_locations', []),
+      idr: named(M.protein_fields, r, 'disorder_intervals', null),
     }));
     for (const p of P) if (p.ref) REFMD5.set(p.acc, p.ref);
     S = data.sites.map((r, j) => ({
       j, p: r[0], pos: r[1], st: r[2], src: r[3], refs: r[4], dc: r[5], dEdge: r[6], dctx: r[7], ipr: r[8],
       dcls: r[9], domDist: r[10], domSide: r[11], win: r[12], mot: r[13], mis: !!r[14], orig: r[15],
-      s2: r[16], ip: r[17], tr: r[18], study: r[19] || 0, nn: null, ptmD: null, trf: 0,
+      s2: r[16], ip: r[17], tr: r[18], study: r[19] || 0, ko: named(M.site_fields, r, 'carm1_ko', []), nn: null, ptmD: null, trf: 0,
       iface: 0, ifP: null, ifPdb: null, ifN: 0, contacts: null, modelledMe: '', geo: null, modelled: null,
     }));
     for (const s of S) P[s.p].sites.push(s.j);
@@ -584,6 +709,7 @@
       for (const [, t, diff, padj] of s.tr) {
         if (padj != null && padj <= PADJ && diff != null) s.trf |= 1 << (t * 2 + (diff < 0 ? 0 : 1));
       }
+      for (const c of s.ko) s.trf |= (c[4] ? TRF_KO_DOWN : 0) | (c[5] ? TRF_KO_UP : 0);
     }
     IDX = { gene: new Map(), acc: new Map(), uid: new Map(), alias: new Map() };
     const add = (map, key, i) => { if (!key) return; key = key.toUpperCase(); if (!map.has(key)) map.set(key, []); if (!map.get(key).includes(i)) map.get(key).push(i); };
@@ -738,7 +864,7 @@
     complex: 'Complex Portal complex, by ID (CPX-1234) or name',
     go: 'Gene Ontology binding: rna or dna',
     binds: 'STRING physical partner: prmt, tudor, wd40, phd, methylated, other, or a gene symbol',
-    interaction: 'Contact evidence at the site: experimental, predicted, predicted-only, any or none',
+    interaction: 'Interaction evidence at the site: experimental, predicted, predicted-only, any or none',
   };
   const TERM_NOUN = { study: 'study or database', domain: 'domain class', class: 'functional class', subclass: 'functional subclass', disease: 'disease family', condensate: 'condensate', complex: 'complex' };
   const MOTIF_TERM = { CARM1_proline_rich: 'CARM1-Pro', CARM1_hydrophobic_proline: 'CARM1-Pro-hydrophobic' };
@@ -746,11 +872,11 @@
   const motifFamily = (v) => M.motifs.findIndex((m) => motifTerm(m).toLowerCase() === String(v).toLowerCase());
   const BIND_TERMS = [['prmt', 1], ['tudor', 2], ['wd40', 4], ['phd', 5], ['methylated', 3], ['other', 6]];
   const IX_STATUS_TERMS = [
-    ['experimental', 'Experimental contact evidence', (m) => m & EV_EXP],
+    ['experimental', 'Experimental interaction evidence', (m) => m & EV_EXP],
     ['predicted', 'Predicted interface or contact', (m) => m & EV_PRED],
     ['predicted-only', 'Predicted only (no experimental evidence)', (m) => (m & EV_PRED) && !(m & EV_EXP)],
-    ['any', 'Any contact evidence', (m) => m],
-    ['none', 'No contact evidence recorded', (m) => !m],
+    ['any', 'Any interaction evidence', (m) => m],
+    ['none', 'No interaction evidence recorded', (m) => !m],
   ];
   const slugify = (s) => String(s).toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9+]+/g, '-').replace(/^-+|-+$/g, '');
   const termNameCache = {};
@@ -999,6 +1125,7 @@
     if (f.minRep && popcount(s.study) < f.minRep) return false;
     if (f.treat) {
       if (f.treat === 'tested') { if (!s.tr.length) return false; }
+      else if (f.treat === 'ko') { if (!s.ko.length) return false; }
       else {
         const [t, dir] = f.treat.split(':');
         if (!(s.trf & (1 << (+t * 2 + (dir === 'down' ? 0 : 1))))) return false;
@@ -1665,7 +1792,9 @@
     window.addEventListener('hashchange', route);
     const home = $('.home-link');
     if (home) home.addEventListener('click', (e) => { e.preventDefault(); go('overview'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-    $$('[data-theme-set]').forEach((b) => b.addEventListener('click', () => { setTheme(b.dataset.themeSet); if (UI.view === 'protein') renderView(); }));
+    // Figures carry the palette they were drawn with: redraw the view when the theme changes.
+    $$('[data-theme-set]').forEach((b) => b.addEventListener('click', () => { setTheme(b.dataset.themeSet); renderView(); }));
+    if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (!document.documentElement.hasAttribute('data-theme')) { applyTokens(); renderView(); } });
     setTheme(store.get('mre-theme') || 'system', true);
     syncToolbar();
     window.addEventListener('resize', debounce(syncToolbar, 150));
@@ -1676,6 +1805,7 @@
   function setTheme(mode, initial) {
     if (mode === 'light' || mode === 'dark') document.documentElement.setAttribute('data-theme', mode);
     else document.documentElement.removeAttribute('data-theme');
+    applyTokens();
     if (!initial) store.set('mre-theme', mode === 'system' ? null : mode);
     $$('[data-theme-set]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeSet === mode)));
   }
@@ -1793,7 +1923,7 @@
       const s = S[j];
       const x = 1 + (s.pos / len) * (W - 2);
       const on = shown.has(j);
-      marks += '<line x1="' + x.toFixed(1) + '" x2="' + x.toFixed(1) + '" y1="' + (on ? 2 : 7) + '" y2="' + (on ? 18 : 13) + '" stroke="' + (on ? 'var(--st-' + ['none', '1', '2', 'mix'][s.st] + ')' : 'var(--line-strong)') + '" stroke-width="' + (on ? 1.6 : 1) + '"/>';
+      marks += '<line x1="' + x.toFixed(1) + '" x2="' + x.toFixed(1) + '" y1="' + (on ? 2 : 7) + '" y2="' + (on ? 18 : 13) + '" stroke="' + (on ? 'var(--t-' + ['none', 'st1', 'st2', 'stMix'][s.st] + ')' : 'var(--line-strong)') + '" stroke-width="' + (on ? 1.6 : 1) + '"/>';
     }
     return '<svg class="minimap" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Site positions along ' + esc(p.label) + '"><line x1="1" x2="' + (W - 1) + '" y1="10" y2="10" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>' + marks + '</svg>';
   }
@@ -1918,8 +2048,8 @@
     { k: 'protein', label: 'Protein', sort: 'gene', td: (p) => '<span class="gene">' + esc(p.label) + '</span> <span class="acc-in">' + esc(p.acc) + '</span><div class="pname" title="' + esc(p.name) + '">' + esc(p.name || '—') + '</div>' },
     { k: 'sites', label: 'Sites', sort: 'sites', cls: 'r', tdCls: 'num', td: (p) => { const n = R.counts[p.i]; return n === p.sites.length ? fmt(n) : fmt(n) + '<span class="muted"> / ' + fmt(p.sites.length) + '</span>'; } },
     { k: 'map', label: 'Site map', cls: 'hide-xs', td: (p) => miniMap(p, R.shown) },
-    { k: 'ix', label: 'Interaction evidence', menu: 'Interaction evidence (sites)', sort: 'ix', opt: true, tip: 'Sites in this selection with experimental contact evidence, and with predicted evidence only',
-      td: (p) => { if (!ixReady()) return '<span class="muted">…</span>'; const c = protIx(p); return c.e || c.pr ? (c.e ? '<span class="ixs ixs-exp" title="Sites with experimental contact evidence"><i></i>' + c.e + ' exp.</span> ' : '') + (c.pr ? '<span class="ixs ixs-pred" title="Sites with predicted evidence only"><i></i>' + c.pr + ' pred.</span>' : '') : '<span class="muted">—</span>'; } },
+    { k: 'ix', label: 'Interaction evidence', menu: 'Interaction evidence (sites)', sort: 'ix', opt: true, tip: 'Sites in this selection with experimental interaction evidence, and with predicted evidence only',
+      td: (p) => { if (!ixReady()) return '<span class="muted">…</span>'; const c = protIx(p); return c.e || c.pr ? (c.e ? '<span class="ixs ixs-exp" title="Sites with experimental interaction evidence"><i></i>' + c.e + ' exp.</span> ' : '') + (c.pr ? '<span class="ixs ixs-pred" title="Sites with predicted evidence only"><i></i>' + c.pr + ' pred.</span>' : '') : '<span class="muted">—</span>'; } },
     { k: 'idr', label: 'In IDR', sort: 'idr', opt: true, cls: 'r hide-xs', tdCls: 'num', td: (p) => pct(p.nIdr, p.sites.length) + '%' },
     { k: 'cond', label: 'Condensates', sort: 'cond', opt: true, cls: 'r hide-sm', tdCls: 'num', td: (p) => (p.cond.length || '<span class="muted">0</span>') },
     { k: 'density', label: 'Densest window', sort: 'density', opt: true, cls: 'hide-sm', tdCls: 'nw', td: (p) => (p.best && p.best[5] != null && p.best[5] <= PADJ ? p.best[3] + ' in ' + p.best[0] + ' aa' : '<span class="muted">—</span>') },
@@ -2098,7 +2228,7 @@
         '<span class="hb-val">' + vfmt(r.value) + '</span></button>';
     }).join('') + '</div>' +
       '<div class="hb-axis' + (spec.extraCol ? ' has-extra' : '') + '" aria-hidden="true"><span></span>' + (spec.extraCol ? '<span></span>' : '') + '<span class="ticks">' + sc.ticks.map((t) => '<span style="left:' + sc.xp(t).toFixed(2) + '%">' + tfmt(t) + '</span>').join('') + '</span><span></span></div>' +
-      '<div class="chart-key">' + (spec.noSig ? '' : '<span><i></i>q ≤ 0.05</span><span><i class="ns"></i>not significant</span>') + '<span>' + esc(spec.axis || 'log2 odds ratio vs background') + '</span></div>';
+      '<div class="chart-key">' + (spec.noSig ? '' : '<span><i></i>More than expected, q ≤ 0.05</span><span><i class="neg"></i>Less than expected, q ≤ 0.05</span><span><i class="ns"></i>Not significant</span>') + '<span>' + esc(spec.axis || 'log2 odds ratio vs background') + '</span></div>';
   }
 
   const expButtons = (id) => '<div class="exp" role="group" aria-label="Export chart"><button type="button" data-exp="svg" data-chart="' + id + '">SVG</button><button type="button" data-exp="png" data-chart="' + id + '">PNG</button><button type="button" data-exp="tsv" data-chart="' + id + '">TSV</button></div>';
@@ -2119,7 +2249,7 @@
     const X = (v) => x0 + (sc.xp(v) / 100) * (x1 - x0);
     const vfmt = spec.format || fmtL2;
     const tfmt = spec.tick || ((t) => t);
-    const H = top + rows.length * rowH + 46;
+    const H = top + rows.length * rowH + (spec.noSig ? 46 : 72);
     let g = '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' +
       '<text x="24" y="32" font-size="17" font-weight="700" fill="' + pal.ink + '">' + esc(spec.title) + '</text>' +
       '<text x="24" y="52" font-size="11" fill="' + pal.muted + '">' + esc(spec.subText || '') + '</text>';
@@ -2129,7 +2259,7 @@
       const y = top + k * rowH;
       const v = r.value == null ? 0 : r.value;
       const a = X(Math.min(0, v)), b = X(Math.max(0, v));
-      const fill = v < 0 ? pal.barNeg : pal.bar;
+      const fill = spec.counts ? pal.seq[3] : v < 0 ? pal.down[3] : pal.up[3];
       const ns = !spec.noSig && !r.sig;
       g += '<text x="' + (r.sub ? 40 : 24) + '" y="' + (y + 14) + '" font-size="' + (r.sub ? 10.5 : 11.5) + '" fill="' + (r.sub ? pal.muted : pal.ink) + '">' + esc(r.label.length > 46 ? r.label.slice(0, 44) + '…' : r.label) + '</text>';
       if (spec.extraCol) g += '<text x="' + (24 + labelW + extraW - 6) + '" y="' + (y + 14) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="end">' + esc(r.extra || '') + '</text>';
@@ -2140,8 +2270,9 @@
     for (const t of sc.ticks) g += '<text x="' + r1(X(t)) + '" y="' + ay + '" font-size="10" fill="' + pal.muted + '" text-anchor="middle">' + esc(String(tfmt(t))) + '</text>';
     g += '<text x="' + r1((x0 + x1) / 2) + '" y="' + (ay + 16) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="middle">' + esc(spec.axis || 'log2 odds ratio vs background') + '</text>';
     if (!spec.noSig) {
-      g += '<rect x="24" y="' + (ay + 6) + '" width="14" height="9" rx="2" fill="' + pal.bar + '"/><text x="42" y="' + (ay + 14) + '" font-size="10" fill="' + pal.muted + '">q ≤ 0.05</text>' +
-        '<rect x="96" y="' + (ay + 6) + '" width="14" height="9" rx="2" fill="' + pal.bg + '" stroke="' + pal.bar + '" stroke-width="1.4"/><text x="114" y="' + (ay + 14) + '" font-size="10" fill="' + pal.muted + '">not significant</text>';
+      const key = svgLegend(pal, [[SWATCH.fill(pal.up[3]), 'More than expected, q ≤ 0.05'], [SWATCH.fill(pal.down[3]), 'Less than expected, q ≤ 0.05'],
+        [(a, b) => '<rect x="' + r1(a) + '" y="' + r1(b - 5) + '" width="20" height="10" rx="2" fill="' + pal.bg + '" stroke="' + pal.muted + '" stroke-width="1.4"/>', 'Not significant (outline)']], 24, ay + 22, W - 48, { fs: 10 });
+      g += key.svg;
     }
     return { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + pal.font + '\'>' + g + '</svg>', W, H };
   }
@@ -2268,7 +2399,7 @@
       '<div class="card wide chart-card" id="ch-study"><div class="card-head"><div><h3>Provenance</h3><p class="sub">' + study.subHtml + '</p></div>' + expButtons('ch-study') + '</div>' +
       '<div class="two-col"><div>' + hbars(study) + '</div>' +
       '<div><p class="flabel" style="margin:0 0 .5rem">Independent reports per site</p><div class="hbars rep-dist">' +
-      repDist.map((n, k) => '<button class="hb" type="button" data-rep="' + (k + 1) + '"><span class="hb-label">' + (k === 4 ? '5 or more' : (k + 1) + (k ? ' reports' : ' report')) + '</span><span class="hb-track"><span class="hb-bar" style="left:0;width:' + (100 * n / repDist[0]).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span></button>').join('') +
+      repDist.map((n, k) => '<button class="hb" type="button" data-rep="' + (k + 1) + '"><span class="hb-label">' + (k === 4 ? '5 or more' : (k + 1) + (k ? ' reports' : ' report')) + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / repDist[0]).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span></button>').join('') +
       '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) have two or more. Click a row to keep sites with at least that many.</p></div></div></div>' +
       '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor response</h3><p class="sub">Maron et al. 2021: sites that changed after GSK591 (PRMT5) or MS023 (type I PRMTs) vs DMSO, adj. p ≤ 0.05.' + docLink('ov-inhibitors') + '</p>' + treatTable(ov.treatments) + '</div>' +
       '<div class="card wide starts" id="ov-start"><h3>Starting points</h3><div class="starts-grid">' +
@@ -2748,8 +2879,8 @@
       const m = s.ev || 0, pt = ixPartners(s);
       const lines = EV_SETS.filter(([b]) => m & b).map(([b, l, , help]) => '<li><i class="ixd ixd-' + (b & EV_EXP ? 'exp' : 'pred') + '"></i><b>' + esc(l) + '</b> <span class="muted">' + esc(help) + '</span></li>').join('');
       const tags = ifaceTags(s, 8) + modelledTag(s) + predTag(s) + xlTags(s);
-      ix = '<p class="sc-status">' + ixBadge(s) + ' ' + (st === 'exp' ? 'This arginine has experimental contact evidence' + (m & EV_PRED ? ' and is also at a predicted interface' : '') + '.'
-        : st === 'pred' ? 'Predicted to sit at a protein interface; no experimental contact recorded yet.' : 'No contact evidence is recorded at this residue. Most proteins were never crystallised or crosslinked, so this is not evidence of no contact.') + '</p>' +
+      ix = '<p class="sc-status">' + ixBadge(s) + ' ' + (st === 'exp' ? 'This arginine has experimental interaction evidence' + (m & EV_PRED ? ' and is also at a predicted interface' : '') + '.'
+        : st === 'pred' ? 'Predicted to sit at a protein interface; no experimental contact recorded yet.' : 'No interaction evidence is recorded at this residue. Most proteins were never crystallised or crosslinked, so this is not evidence of no contact.') + '</p>' +
         (lines ? '<ul class="sc-ev">' + lines + '</ul>' : '') +
         (pt.exp.length ? '<p class="sc-who"><span class="flabel">Contacts (experimental)</span> ' + pt.exp.map(esc).join(', ') + '</p>' : '') +
         (pt.pred.length ? '<p class="sc-who"><span class="flabel">Partners (predicted)</span> ' + pt.pred.map(esc).join(', ') + '</p>' : '') +
@@ -3166,7 +3297,7 @@
   // 60 residues per line in blocks of 10. Every character gets an explicit x so columns line up in any font.
   function seqSvg(p, u) {
     const pal = EXPORT_PAL, seq = u.seq;
-    const stColor = [pal.none, pal.cat[0], pal.cat[1], pal.cat[2]];
+    const stColor = [pal.none, pal.st1, pal.st2, pal.stMix];
     const siteAt = new Map(p.sites.map((j) => [S[j].pos, S[j]]));
     const inRg = new Uint8Array(seq.length + 2);
     for (const b of u.rg || []) for (let k = b.start; k <= b.end; k++) inRg[k] = 1;
@@ -3189,7 +3320,7 @@
     };
     states.sort((a, b) => (a === 0) - (b === 0) || a - b).forEach((st) => item((x, ly) => '<rect x="' + x + '" y="' + (ly - 7) + '" width="12" height="14" rx="2" fill="' + stColor[st] + '"/><text x="' + (x + 6) + '" y="' + (ly + 4) + '" font-size="10" font-weight="700" text-anchor="middle" fill="#FFFFFF"' + monoAttr + '>R</text>', 'Methylated R, ' + STATE_LABEL[st]));
     item((x, ly) => '<text x="' + (x + 6) + '" y="' + (ly + 4) + '" font-size="12" font-weight="700" text-anchor="middle" fill="#155E75"' + monoAttr + '>R</text>', 'Other arginine');
-    if (u.rg && u.rg.length) item((x, ly) => '<line x1="' + x + '" x2="' + (x + 12) + '" y1="' + (ly + 7) + '" y2="' + (ly + 7) + '" stroke="' + pal.site + '" stroke-width="2"/>', 'RG/RGG-rich segment');
+    if (u.rg && u.rg.length) item((x, ly) => '<line x1="' + x + '" x2="' + (x + 12) + '" y1="' + (ly + 7) + '" y2="' + (ly + 7) + '" stroke="' + pal.rgInk + '" stroke-width="2"/>', 'RG/RGG-rich segment');
     // Sequence
     let y = ly + 34;
     for (let start = 0; start < seq.length; start += 60) {
@@ -3199,7 +3330,7 @@
         const ch = seq[k], c = k - start, s = siteAt.get(k + 1);
         const cls = s && ch === 'R' ? 'm' : ch === 'R' ? 'R' : ch === 'G' ? 'G' : 'n';
         if (cls === 'm') g += '<rect x="' + r1(colX(c) - 0.6) + '" y="' + (y - fs + 1) + '" width="' + r1(cw + 1.2) + '" height="' + (fs + 4) + '" rx="2" fill="' + stColor[s.st] + '"/>';
-        if (inRg[k + 1]) g += '<line x1="' + r1(colX(c)) + '" x2="' + r1(colX(c) + cw) + '" y1="' + (y + 4.5) + '" y2="' + (y + 4.5) + '" stroke="' + pal.site + '" stroke-width="2"/>';
+        if (inRg[k + 1]) g += '<line x1="' + r1(colX(c)) + '" x2="' + r1(colX(c) + cw) + '" y1="' + (y + 4.5) + '" y2="' + (y + 4.5) + '" stroke="' + pal.rgInk + '" stroke-width="2"/>';
         const last = runs[runs.length - 1];
         if (last && last.cls === cls) { last.xs.push(colX(c) + cw / 2); last.t += ch; } else runs.push({ cls, xs: [colX(c) + cw / 2], t: ch });
       }
@@ -3222,25 +3353,37 @@
   // and, underneath on the same residue scale, the contact evidence: RNA and DNA crosslinks in cells, PDB interfaces
   // (PDBe-KB, live) and predicted-complex interfaces (assessed at methylarginines only). A dashed guide drops from
   // every methylarginine that has contact evidence at the residue itself, so coincidences read at a glance.
-  const IXS_COLOR = { exp: '#0E7490', pred: '#C2410C' };
-  function contactLanes(p, ifd) {
-    const xp = ixReady() ? IX.xlProt.get(p.i) : null;
+  // Disordered regions drawn on every protein figure: the intervals the pipeline classified the sites with (MobiDB,
+  // exported as disorder_intervals) when the export has them, else UniProt's Disordered regions.
+  function disorderRegions(p, u) {
+    if (p.idr) return { list: p.idr, source: 'MobiDB, as used for the site disorder classes' };
+    const feats = (u && u.feats) || [];
+    return { list: feats.filter((f) => f.type === 'Region' && f.desc === 'Disordered').map((f) => [f.start, f.end]), source: 'UniProt' };
+  }
+  // Evidence lanes under a protein, in the shared order: RNA, DNA, protein; experimental before predicted.
+  function contactLanes(p, ifd, pal) {
+    const xp = ixReady() ? IX.xlProt.get(p.i) : null, ia = ixReady() ? IX.iaProt.get(p.i) : null;
     const sites = p.sites.map((j) => S[j]);
+    const on = (s, mask) => !!((s.ev || 0) & mask);
     return [
-      { key: 'rna', short: 'RNA xl', label: 'RNA crosslink', sub: 'in living cells', color: IFACE_COLOR[4],
+      { key: 'rna', short: 'RNA xl', label: 'RNA crosslink', sub: 'in living cells', color: pal.rna,
         ticks: xp ? xp.rnaPos : [], boxes: xp ? xp.rbd.map(([a, b]) => [a, b, 0.25, 'RBDmap RNA-bound fragment']) : [],
         hit: (s) => !!(s.xl && s.xl.r), weak: (s) => !!(s.xl && (s.xl.f || s.xl.n)) },
-      { key: 'dna', short: 'DNA xl', label: 'DNA crosslink', sub: 'in living cells', color: IFACE_COLOR[8],
+      { key: 'dna', short: 'DNA xl', label: 'DNA crosslink', sub: 'in living cells', color: pal.dna,
         ticks: xp ? xp.dnaPos : [], boxes: xp ? xp.dnaPeps.map(([a, b]) => [a, b, 0.35, 'DNA-crosslinked peptide']).concat(xp.dnaCand.map((c) => [c, c, 0.7, 'DNA crosslink candidate residue'])) : [],
         hit: (s) => !!(s.xl && s.xl.d & 9), weak: (s) => !!(s.xl && s.xl.d & 2) },
-      { key: 'pdbna', short: 'PDB RNA/DNA', label: 'PDB: RNA/DNA', sub: 'interface residues', color: IFACE_COLOR[4],
-        ranges: ifd ? ifd.rna.map((r) => r.concat(IFACE_COLOR[4], 'pdb-rna')).concat(ifd.dna.map((r) => r.concat(IFACE_COLOR[8], 'pdb-dna'))) : null,
+      { key: 'pdbna', short: 'PDB RNA/DNA', label: 'PDB: RNA/DNA', sub: 'interface residues', color: pal.rna,
+        ranges: ifd ? ifd.rna.map((r) => r.concat(pal.rna, 'pdb-rna')).concat(ifd.dna.map((r) => r.concat(pal.dna, 'pdb-dna'))) : null,
         hit: (s) => !!(s.iface & 12) },
-      { key: 'pdbprot', short: 'PDB protein', label: 'PDB: protein', sub: 'interface residues', color: IFACE_COLOR[1],
-        ranges: ifd ? ifd.protein.map((r) => r.concat(IFACE_COLOR[1], 'pdb-protein')).concat(ifd.self.map((r) => r.concat(IFACE_COLOR[2], 'pdb-self'))) : null,
+      { key: 'pdbprot', short: 'PDB protein', label: 'PDB: protein', sub: 'interface residues', color: pal.protein,
+        ranges: ifd ? ifd.protein.map((r) => r.concat(pal.protein, 'pdb-protein')).concat(ifd.self.map((r) => r.concat(pal.self, 'pdb-self'))) : null,
         hit: (s) => !!(s.iface & 3) },
-      { key: 'pred', short: 'Predicted', label: 'Predicted interface', sub: 'checked at methyl-R only', color: IXS_COLOR.pred,
-        ticks: sites.filter((s) => (s.ev || 0) & EV_PRED).map((s) => s.pos), hit: (s) => !!((s.ev || 0) & EV_PRED) },
+      { key: 'intact', short: 'IntAct', label: 'IntAct', sub: 'mutations, binding regions', color: pal.protein,
+        boxes: ia ? ia.regions.map(([a, b]) => [a, b, b - a < 20 ? 0.55 : 0.16, 'IntAct binding region']) : [],
+        diamonds: ia ? ia.muts.filter((m) => m[2] >= 1 && m[2] <= 4).map((m) => m[0]) : [],
+        hit: (s) => on(s, 128 | 512), weak: (s) => on(s, 256) },
+      { key: 'pred', short: 'Predicted', label: 'Predicted interface', sub: 'checked at methyl-R only', color: pal.protein, hollow: true,
+        ticks: sites.filter((s) => on(s, EV_PRED)).map((s) => s.pos), hit: (s) => on(s, EV_PRED) },
     ];
   }
   function contactCartoonSvg(p, u, ifd, o) {
@@ -3249,39 +3392,38 @@
     const len = (u && u.len) || p.len || Math.ceil(p.maxPos * 1.05) || 100;
     const X = (pos) => x0 + ((pos - 0.5) / len) * (x1 - x0);
     const sites = p.sites.map((j) => S[j]);
-    const lanes = contactLanes(p, ifd);
-    const stColor = (s) => { const st = ixStatus(s); return st === 'exp' ? IXS_COLOR.exp : st === 'pred' ? IXS_COLOR.pred : pal.none; };
+    const lanes = contactLanes(p, ifd, pal);
+    const mode = IXS_MODE, colors = mode.colors(pal);
     let g = '', y = 8;
     if (exp && !panel) {
-      g += '<text x="16" y="26" font-size="17" font-weight="700" fill="' + pal.ink + '">' + esc(o.title || p.label + ': contact evidence along the protein') + '</text>' +
+      g += '<text x="16" y="26" font-size="17" font-weight="700" fill="' + pal.ink + '">' + esc(o.title || p.label + ': interaction evidence along the protein') + '</text>' +
         '<text x="16" y="44" font-size="11" fill="' + pal.muted + '">' + esc(o.sub || p.acc + ' · ' + fmt(len) + ' aa · ' + sites.length + ' methylarginines') + '</text>';
       y = 58;
     }
-    // Protein row: disorder shading, backbone, domains, then lollipops stacked to avoid overlap.
+    // Protein row: disorder band, backbone, RG/RGG segments, domains and lysine methylation, then lollipops stacked to
+    // avoid overlap.
     const headTop = y + 17, base = y + 76;
     const feats = (u && u.feats) || [];
+    const dis = disorderRegions(p, u);
     g += '<text x="' + m + '" y="' + (base + 4) + '" font-size="' + r1(Math.min(11.5, (labelW - 4) / (p.label.length * 0.62))) + '" font-weight="700" fill="' + pal.ink + '">' + esc(p.label) + '</text>' +
       '<text x="' + m + '" y="' + (base + 16) + '" font-size="' + (panel ? 8.5 : 9.5) + '" fill="' + pal.muted + '">' + (panel ? '' : esc(p.acc) + ' · ') + fmt(len) + ' aa</text>';
-    for (const f of feats.filter((f) => f.type === 'Region' && /disordered/i.test(f.desc))) {
-      g += '<rect x="' + r1(X(f.start)) + '" y="' + (base - 10) + '" width="' + r1(Math.max(1, X(f.end + 1) - X(f.start))) + '" height="20" fill="' + pal.disFill + '" opacity="0.6"><title>Disordered ' + rn(f.start, p) + '–' + rn(f.end, p) + ' (UniProt)</title></rect>';
-    }
+    for (const [a, b] of dis.list) g += titled(MARK.disorder(pal, X(a), base - 10, X(b + 1) - X(a), 20), 'Disordered ' + rn(a, p) + '–' + rn(b, p) + ' (' + dis.source + ')');
     g += '<rect x="' + r1(X(1)) + '" y="' + (base - 3) + '" width="' + r1(X(len + 1) - X(1)) + '" height="6" rx="3" fill="' + pal.backboneFill + '" stroke="' + pal.backboneEdge + '"/>';
+    for (const b of (u && u.rg) || []) g += '<rect x="' + r1(X(b.start)) + '" y="' + (base - 3) + '" width="' + r1(Math.max(1.5, X(b.end + 1) - X(b.start))) + '" height="6" fill="' + pal.rg + '"><title>' + esc(b.label + ' ' + rn(b.start, p) + '–' + rn(b.end, p)) + '</title></rect>';
     for (const f of feats.filter((f) => ['Domain', 'Repeat', 'Zinc finger'].includes(f.type))) {
       const a = X(f.start), wd = Math.max(2, X(f.end + 1) - a), rep = f.type === 'Repeat';
-      g += '<rect x="' + r1(a) + '" y="' + (base - (rep ? 5 : 8)) + '" width="' + r1(wd) + '" height="' + (rep ? 10 : 16) + '" rx="3" fill="' + pal.domainFill + '"' + (rep ? ' opacity="0.6"' : '') + '><title>' + esc(f.desc + ' ' + rn(f.start, p) + '–' + rn(f.end, p)) + '</title></rect>';
+      g += titled(MARK.domain(pal, a, base - (rep ? 5 : 8), wd, rep ? 10 : 16, rep), f.desc + ' ' + rn(f.start, p) + '–' + rn(f.end, p));
       const lab = rep ? '' : (f.desc || '').replace(/ domain$/i, '');
       if (lab && lab.length * 5.4 < wd - 4) g += '<text x="' + r1(a + wd / 2) + '" y="' + (base + 3.5) + '" font-size="9" text-anchor="middle" fill="' + pal.domainInk + '">' + esc(lab) + '</text>';
     }
-    // Lysine methylation (PTM master table, CPLM 4.0) as diamonds on the backbone, for methyl-R/K-methyl crosstalk.
+    // Lysine methylation (PTM master table, CPLM 4.0) as ticks through the backbone, as in the protein map.
     const kme = p.ptms.filter((x) => x[1] === 3);
-    for (const t of kme) g += '<rect x="' + r1(X(t[0]) - 3) + '" y="' + (base - 3) + '" width="6" height="6" transform="rotate(45 ' + r1(X(t[0])) + ' ' + base + ')" fill="' + KME_COLOR + '" stroke="' + pal.ring + '" stroke-width="0.6"><title>' + esc(p.label + ' K' + rn(t[0], p) + ' methylation (' + ptmSources(t).join(', ') + ')') + '</title></rect>';
+    for (const t of kme) g += titled(MARK.tick(X(t[0]), base, 10, pal.kme), p.label + ' K' + rn(t[0], p) + ' methylation (' + ptmSources(t).join(', ') + ')');
     // Lanes start under the backbone; guides need the lane block's extent first.
     const laneTop = base + 22, laneH = 22;
     const laneY = (k) => laneTop + k * laneH + laneH / 2;
     const bottom = laneTop + lanes.length * laneH;
-    // Guides from methylarginines with evidence, drawn first so marks sit on top.
     const levels = [];
-    const order = sites.slice().sort((a, b) => (ixStatus(a) === 'none') - (ixStatus(b) === 'none') || a.pos - b.pos);
     const heads = [];
     for (const s of sites.slice().sort((a, b) => a.pos - b.pos)) {
       const hx = X(s.pos);
@@ -3290,11 +3432,11 @@
       levels[lv] = hx;
       heads.push({ s, hx, hy: base - 16 - lv * 9 });
     }
+    // Guides from methylarginines with evidence, drawn first so marks sit on top.
     for (const h of heads) {
       const st = ixStatus(h.s);
-      if (st && st !== 'none') g += '<line x1="' + r1(h.hx) + '" x2="' + r1(h.hx) + '" y1="' + (base + 8) + '" y2="' + bottom + '" stroke="' + IXS_COLOR[st] + '" stroke-width="0.9" stroke-dasharray="2 2" opacity="0.75"/>';
+      if (st && st !== 'none') g += '<line x1="' + r1(h.hx) + '" x2="' + r1(h.hx) + '" y1="' + (base + 8) + '" y2="' + bottom + '" stroke="' + pal.ev + '" stroke-width="0.9" stroke-dasharray="2 2" opacity="' + (st === 'exp' ? 0.75 : 0.45) + '"/>';
     }
-    // Lanes.
     lanes.forEach((ln, k) => {
       const cy = laneY(k);
       g += '<line x1="' + x0 + '" x2="' + x1 + '" y1="' + cy + '" y2="' + cy + '" stroke="' + pal.grid + '"/>' +
@@ -3304,22 +3446,23 @@
       // Marks with evidence behind them carry data-ev (kind:start:end); on screen a click lists that evidence.
       const ev = (kind, a, b) => (exp ? '' : ' class="cc-ev" data-ev="' + kind + ':' + a + ':' + b + '"');
       const span = (a, b) => (a === b ? rn(a, p) : rn(a, p) + '–' + rn(b, p));
-      for (const [a, b, op, what] of ln.boxes || []) g += '<rect' + ev(ln.key, a, b) + ' x="' + r1(X(a)) + '" y="' + (cy - 4) + '" width="' + r1(Math.max(1.6, X(b + 1) - X(a))) + '" height="8" rx="1" fill="' + ln.color + '" fill-opacity="' + op + '"><title>' + esc(what + ' ' + span(a, b)) + '</title></rect>';
-      for (const [a, b, name, color, kind] of ln.ranges || []) g += '<rect' + ev(kind, a, b) + ' x="' + r1(X(a)) + '" y="' + (cy - 5) + '" width="' + r1(Math.max(1.6, X(b + 1) - X(a))) + '" height="10" rx="1" fill="' + color + '" fill-opacity="0.85"><title>' + esc(ln.label + ' ' + span(a, b) + (name ? ' · ' + name : '')) + '</title></rect>';
-      for (const t of ln.ticks || []) g += '<rect' + ev(ln.key, t, t) + ' x="' + r1(X(t) - 0.9) + '" y="' + (cy - 6) + '" width="' + r1(Math.max(1.8, X(t + 1) - X(t))) + '" height="12" fill="' + ln.color + '"><title>' + esc(ln.label + ' at residue ' + rn(t, p)) + '</title></rect>';
+      for (const [a, b, op, what] of ln.boxes || []) g += titled(MARK.box(X(a), cy - 4, X(b + 1) - X(a), 8, ln.color, ev(ln.key, a, b) + ' fill-opacity="' + op + '"'), what + ' ' + span(a, b));
+      for (const [a, b, name, color, kind] of ln.ranges || []) g += titled(MARK.box(X(a), cy - 5, X(b + 1) - X(a), 10, color, ev(kind, a, b) + ' fill-opacity="0.85"'), ln.label + ' ' + span(a, b) + (name ? ' · ' + name : ''));
+      for (const t of ln.ticks || []) g += titled(ln.hollow ? MARK.box(X(t) - 0.9, cy - 6, 1.8, 12, pal.bg, ev(ln.key, t, t) + ' stroke="' + ln.color + '" stroke-width="1" stroke-dasharray="2 1"') : MARK.tick(X(t), cy, 12, ln.color, ev(ln.key, t, t), Math.max(1.8, X(t + 1) - X(t))), ln.label + ' at residue ' + rn(t, p));
+      for (const t of ln.diamonds || []) g += titled(MARK.diamond(X(t), cy, 5.5, ln.color, pal.ring, ev(ln.key, t, t)), 'IntAct: a mutation at ' + rn(t, p) + ' changes an interaction');
       if (ln.ranges === null || (ln.key.startsWith('pdb') && ifd && ifd.failed)) g += '<text x="' + ((x0 + x1) / 2) + '" y="' + (cy + 3) + '" font-size="9.5" text-anchor="middle" fill="' + pal.muted + '">' + (ln.ranges === null ? 'loading PDBe-KB…' : 'PDBe-KB did not answer; site-level PDB evidence only') + '</text>';
-      // Rings where a methylarginine itself carries this evidence; a count on the right.
+      // Rings where a methylarginine itself carries this evidence (dotted when only nearby or in a fragment); a count
+      // on the right.
       const hits = sites.filter(ln.hit), weak = ln.weak ? sites.filter((s) => !ln.hit(s) && ln.weak(s)) : [];
-      for (const s of weak) g += '<circle cx="' + r1(X(s.pos)) + '" cy="' + cy + '" r="3.6" fill="none" stroke="' + ln.color + '" stroke-width="1" stroke-dasharray="1.5 1.2"/>';
-      for (const s of hits) g += '<circle cx="' + r1(X(s.pos)) + '" cy="' + cy + '" r="4.2" fill="' + pal.bg + '" stroke="' + ln.color + '" stroke-width="1.8"><title>' + esc(p.label + ' ' + rl(s.pos, P[s.p]) + ': ' + ln.label + ' at this methylarginine') + '</title></circle>';
+      for (const s of weak) g += MARK.ring(X(s.pos), cy, 3.6, ln.color, true);
+      for (const s of hits) g += titled(MARK.ring(X(s.pos), cy, 4.2, ln.color, !!ln.hollow, ' fill="' + pal.bg + '"').replace('fill="none" ', ''), p.label + ' ' + rl(s.pos, P[s.p]) + ': ' + ln.label + ' at this methylarginine');
       if (!panel) g += '<text x="' + (x1 + 10) + '" y="' + (cy + 3.5) + '" font-size="10" fill="' + (hits.length ? pal.ink : pal.muted) + '">' + hits.length + ' methyl-R</text>';
     });
-    // Lollipops last: stems, heads coloured by status, labels for sites with evidence when there is room.
+    // Lollipops last: stems and heads by interaction status (solid experimental, hollow predicted only).
     for (const h of heads) {
-      const st = ixStatus(h.s);
+      const st = ixStatus(h.s), k = st ? mode.cat(h.s) : 2;
       g += '<line x1="' + r1(h.hx) + '" x2="' + r1(h.hx) + '" y1="' + (base - 8) + '" y2="' + h.hy + '" stroke="' + pal.stem + '" stroke-width="1"/>' +
-        '<circle class="cc-site" data-pos="' + h.s.pos + '" cx="' + r1(h.hx) + '" cy="' + h.hy + '" r="' + (st && st !== 'none' ? 4.2 : 3.2) + '" fill="' + stColor(h.s) + '" stroke="' + pal.ring + '" stroke-width="0.8"' + (exp ? '' : ' style="cursor:pointer"') + '>' +
-        '<title>' + esc(p.label + ' ' + rl(h.s.pos, P[h.s.p]) + ' · ' + (st ? IXS[st][0] : 'loading') + ((h.s.ev || 0) ? ': ' + evLabel(h.s.ev) : '')) + '</title></circle>';
+        titled(MARK.head(pal, h.hx, h.hy, st && st !== 'none' ? 4.2 : 3.2, colors[k], mode.hollow[k], ' class="cc-site" data-pos="' + h.s.pos + '"' + (exp ? '' : ' style="cursor:pointer"')), p.label + ' ' + rl(h.s.pos, P[h.s.p]) + ' · ' + (st ? IXS[st][0] : 'loading') + ((h.s.ev || 0) ? ': ' + evLabel(h.s.ev) : ''));
     }
     // Label sites with evidence; neighbours closer than a label's width share one (R179/R181/R183, or R12 +4).
     const groups = [];
@@ -3335,8 +3478,7 @@
       const line = cx - half > lineEnd[0] + 6 ? 0 : cx - half > lineEnd[1] + 6 ? 1 : -1;
       if (line < 0) continue;
       lineEnd[line] = cx + half;
-      const col = grp.some((h) => ixStatus(h.s) === 'exp') ? IXS_COLOR.exp : IXS_COLOR.pred;
-      g += '<text x="' + r1(cx) + '" y="' + (headTop - 2 - line * 11) + '" font-size="9" text-anchor="middle" fill="' + col + '" font-weight="700">' + text + '</text>';
+      g += '<text x="' + r1(cx) + '" y="' + (headTop - 2 - line * 11) + '" font-size="9" text-anchor="middle" fill="' + pal.ev + '" font-weight="' + (grp.some((h) => ixStatus(h.s) === 'exp') ? 700 : 400) + '">' + text + '</text>';
     }
     // Axis and legend.
     let yy = bottom + 6;
@@ -3344,30 +3486,25 @@
     g += '<line x1="' + x0 + '" x2="' + x1 + '" y1="' + yy + '" y2="' + yy + '" stroke="' + pal.backbone + '"/>';
     const hOff = p.hist ? 1 : 0;
     for (let t = 0; t + hOff <= len; t += step) { const tx = r1(X(Math.max(t + hOff, 0.5))); g += '<line x1="' + tx + '" x2="' + tx + '" y1="' + yy + '" y2="' + (yy + 4) + '" stroke="' + pal.backbone + '"/><text x="' + tx + '" y="' + (yy + 15) + '" font-size="9.5" text-anchor="middle" fill="' + pal.muted + '">' + fmt(t) + '</text>'; }
-    yy += 32;
-    let lx = m;
-    const lfs = panel ? 8.5 : 10, lcw = panel ? 4.7 : 5.3;
-    const item = (draw, label) => {
-      const w = 16 + label.length * lcw;
-      if (lx > m && lx + w > W - m) { lx = m; yy += 15; }
-      g += draw(lx, yy) + '<text x="' + (lx + 16) + '" y="' + (yy + 3.5) + '" font-size="' + lfs + '" fill="' + pal.muted + '">' + esc(label) + '</text>';
-      lx += w + 12;
-    };
-    item((a, b) => '<circle cx="' + (a + 5) + '" cy="' + b + '" r="4.2" fill="' + IXS_COLOR.exp + '"/>', 'Methyl-R with experimental contact');
-    item((a, b) => '<circle cx="' + (a + 5) + '" cy="' + b + '" r="4.2" fill="' + IXS_COLOR.pred + '"/>', 'Predicted only');
-    item((a, b) => '<circle cx="' + (a + 5) + '" cy="' + b + '" r="3.2" fill="' + pal.none + '"/>', 'None recorded');
-    item((a, b) => '<circle cx="' + (a + 5) + '" cy="' + b + '" r="4.2" fill="' + pal.bg + '" stroke="' + pal.ink + '" stroke-width="1.6"/>', 'Evidence at that methyl-R');
-    item((a, b) => '<rect x="' + (a + 4) + '" y="' + (b - 6) + '" width="2" height="12" fill="' + pal.muted + '"/>', 'Crosslinked residue');
-    item((a, b) => '<rect x="' + a + '" y="' + (b - 5) + '" width="12" height="10" fill="' + pal.disFill + '" opacity="0.6"/>', 'Disordered');
-    if (kme.length) item((a, b) => '<rect x="' + (a + 2) + '" y="' + (b - 3) + '" width="6" height="6" transform="rotate(45 ' + (a + 5) + ' ' + b + ')" fill="' + KME_COLOR + '"/>', 'Lys methylation');
-    yy += 12;
-    const H = yy + 6;
-    return { W, H, x0, x1, len, svg: '<svg xmlns="http://www.w3.org/2000/svg" class="ccart" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + (pal.font || EXPORT_PAL.font).replace(/'/g, '"') + '\' role="img" aria-label="' + esc(p.label + ': methylarginines and contact evidence along the sequence') + '">' +
+    yy += 26;
+    const items = [
+      [SWATCH.head(pal, pal.ev, false), 'Experimental evidence'], [SWATCH.head(pal, pal.ev, true), 'Predicted only'], [SWATCH.head(pal, pal.none, false), 'None recorded'],
+      [(a, b) => MARK.ring(a + 10, b, 4.2, pal.ink, false), 'Evidence at that methyl-R'],
+      [SWATCH.tick(pal.rna), 'RNA'], [SWATCH.tick(pal.dna), 'DNA'], [SWATCH.fill(pal.protein, 0.85), 'Protein'], [SWATCH.fill(pal.self, 0.85), 'Self-contact'],
+      [SWATCH.diamond(pal.protein, pal.ring), 'Mutation changes an interaction'],
+      [SWATCH.disorder(pal), 'Disordered (' + (p.idr ? 'MobiDB' : 'UniProt') + ')'], [SWATCH.domain(pal), 'Domain'],
+    ];
+    if (u && u.rg && u.rg.length) items.push([SWATCH.fill(pal.rg), 'RG/RGG-rich']);
+    if (kme.length) items.push([SWATCH.tick(pal.kme), 'Lys methylation']);
+    const leg = svgLegend(pal, items, m, yy, W - 2 * m, { fs: panel ? 8.5 : 10 });
+    g += leg.svg;
+    const H = Math.ceil(yy + leg.h + 6);
+    return { W, H, x0, x1, len, svg: '<svg xmlns="http://www.w3.org/2000/svg" class="ccart" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + (pal.font || EXPORT_PAL.font).replace(/'/g, '"') + '\' role="img" aria-label="' + esc(p.label + ': methylarginines and interaction evidence along the sequence') + '">' +
       (exp ? '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' : '') + g + '</svg>' };
   }
   // The card on protein pages, redrawn as UniProt features, interaction data and PDBe-KB interfaces arrive.
   function contactCardHtml() {
-    return '<div class="card" id="card-contacts"><div class="card-head"><div><h3>Contacts at a glance</h3><p class="sub">Each methylarginine, coloured by its interaction status, above the contact evidence on the same residue scale: RNA and DNA crosslinks in living cells, residues at PDB interfaces, and predicted-complex interfaces. A dashed line drops from every methylarginine with evidence at the residue itself; a ring marks which kind. Click a site for its summary.' + docLink('ix-status') + '</p></div>' +
+    return '<div class="card" id="card-contacts"><div class="card-head"><div><h3>Interaction evidence at a glance</h3><p class="sub">Each methylarginine, coloured by its interaction status, above the contact evidence on the same residue scale: RNA and DNA crosslinks in living cells, residues at PDB interfaces, and predicted-complex interfaces. A dashed line drops from every methylarginine with evidence at the residue itself; a ring marks which kind. Click a site for its summary.' + docLink('ix-status') + '</p></div>' +
       '<div class="exp" role="group" aria-label="Export"><button type="button" data-cc="svg">SVG</button><button type="button" data-cc="png">PNG</button></div></div>' +
       '<div class="fig-controls">' + panelControlsHtml() + '</div><div class="cc-box" id="cc-box"><p class="note">Loading…</p></div></div>';
   }
@@ -3443,28 +3580,14 @@
     $('#zoom-reset').addEventListener('click', () => { UI.zoom = null; drawMap(p, UNIDATA.get(p.acc)); });
   }
 
-  const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-
-  function screenPalette() {
-    const v = cssVar;
-    return {
-      bg: v('--surface'), ink: v('--ink'), muted: v('--muted'), grid: v('--line'), backbone: v('--line-strong'), stem: v('--line-strong'),
-      backboneFill: v('--surface-2'), backboneEdge: v('--line-strong'), domainFill: v('--fig-domain'), domainInk: v('--fig-domain-ink'),
-      disFill: v('--fig-dis'), disEdge: v('--line-strong'), regionFill: v('--fig-region'), biasFill: v('--fig-bias'), rgFill: v('--fig-rg'), rgInk: v('--fig-rg-ink'),
-      dense: v('--dense'), denseInk: v('--accent-dark'), ptm: v('--ptm'), rtick: v('--line-strong'), ring: v('--surface'),
-      site: v('--fig-site'), brush: v('--fig-brush'), accent: v('--accent'), variant: v('--muted'),
-      cat: [v('--st-1'), v('--st-2'), v('--st-mix')], none: v('--st-none'), dark: v('--muted'),
-      seq: [v('--seq-1'), v('--seq-2'), v('--seq-3'), v('--seq-4')], font: v('--font-body'),
-    };
-  }
-
-  // Protein map: backbone with domain blocks, methylarginine lollipops and context tracks underneath.
+  // Protein map: backbone with domain blocks, methylarginine lollipops and context rows underneath. Returns the SVG and
+  // the legend items for what it drew, which the page legend and the export legend both use.
   function mapSvg(p, u, o) {
     const pal = o.pal;
     const fig = UI.fig;
     const T = fig.tracks;
     const mode = COLOR_MODES[fig.color] || COLOR_MODES.state;
-    const colors = mode.colors(pal);
+    const colors = mode.colors(pal), hollow = (k) => !!(mode.hollow && mode.hollow[k]);
     const len = (u && u.len) || p.len || Math.ceil(p.maxPos * 1.05) || 100;
     const feats = u ? u.feats : [];
     const z = UI.zoom || [1, len];
@@ -3474,8 +3597,6 @@
     const visible = (a, b) => b >= v0 && a <= v1;
     const cx = (pos) => Math.max(ML, Math.min(W - MR, x(pos)));
     const sites = p.sites.map((j) => S[j]).filter((s) => s.pos >= v0 && s.pos <= v1);
-    const LABEL_GAP = 9.5;
-    const labelsOn = fig.labels === 'all' || (fig.labels === 'auto' && sites.length <= 60 && sites.length * LABEL_GAP <= (W - ML - MR) * 0.9);
     const R0 = 5;
     const levels = [];
     const heads = sites.map((s) => {
@@ -3486,27 +3607,50 @@
       return { s, hx, lv };
     });
     const nLv = Math.max(1, levels.length);
+    // Site labels are horizontal, on up to three lines above the heads; neighbours too close for their own label share
+    // one ("R213 +3"), and every head has a leader line to its label. Zooming in gives each site its own label.
+    const LFS = 9.5, LCW = 5.5, LINES = 3;
+    const labelText = (grp) => (grp.length === 1 ? rl(grp[0].s.pos, p) : grp.length === 2 ? rl(grp[0].s.pos, p) + '/' + rl(grp[1].s.pos, p).replace(/^[A-Z]/, '') : rl(grp[0].s.pos, p) + ' +' + (grp.length - 1));
+    const placed = [];
+    if (fig.labels !== 'none' && heads.length && (fig.labels === 'all' || heads.length <= 120)) {
+      const lineEnd = new Array(LINES).fill(-1e9);
+      const width = (text) => text.length * LCW;
+      for (const h of heads.slice().sort((m, n) => m.hx - n.hx)) {
+        const text = labelText([h]), w = width(text), lx = Math.max(ML + w / 2, Math.min(W - MR - w / 2, h.hx));
+        const line = lineEnd.findIndex((e) => lx - w / 2 > e + 3);
+        if (line >= 0) { lineEnd[line] = lx + w / 2; placed.push({ grp: [h], text, lx, line }); continue; }
+        // No line has room: join the nearest label to the left, which then reads "R472 +3".
+        const last = placed[placed.length - 1];
+        if (!last) continue;
+        last.grp.push(h);
+        last.text = labelText(last.grp);
+        lineEnd[last.line] = Math.max(lineEnd[last.line], last.lx + width(last.text) / 2);
+      }
+    }
+    const nLines = placed.length ? Math.max(...placed.map((q) => q.line)) + 1 : 0;
     const y0 = o.forExport ? 70 : 8;
-    const lift = labelsOn ? 8 : 0;
-    const headTop = y0 + (labelsOn ? 46 : 0);
-    const base = headTop + 18 + lift + nLv * 12 + 12;
+    const headTop = y0 + (nLines ? nLines * 12 + 10 : 0);
+    const base = headTop + 18 + nLv * 12 + 12;
     let g = '';
     let y;
-    const tlabel = (txt, yy) => { g += '<text x="0" y="' + (yy + 4) + '" font-size="10.5" font-weight="600" letter-spacing=".04em" fill="' + pal.muted + '">' + esc(txt.toUpperCase()) + '</text>'; };
+    const legend = [];
+    const tlabel = (txt, yy) => { g += '<text x="0" y="' + (yy + 4) + '" font-size="10" font-weight="600" fill="' + pal.muted + '">' + esc(txt) + '</text>'; };
     const tip = (html) => ' data-tip="' + esc(html) + '"';
     const nspan = (a, b) => (a === b ? '' + rn(a, p) : rn(a, p) + '–' + rn(b, p));
     const gridLine = (yy) => { g += '<line x1="' + ML + '" x2="' + (W - MR) + '" y1="' + yy + '" y2="' + yy + '" stroke="' + pal.grid + '"/>'; };
+    const methylPos = new Set(p.sites.map((j) => S[j].pos));
 
     if (o.forExport) {
       g += '<text x="0" y="26" font-size="19" font-weight="700" fill="' + pal.ink + '">' + esc(mapTitle(p)) + '</text>' +
         '<text x="0" y="46" font-size="11.5" fill="' + pal.muted + '">' + esc(p.acc + ' · ' + fmt(len) + ' aa · ' + p.sites.length + ' methylarginine site' + (p.sites.length === 1 ? '' : 's') + (p.hist ? ' · histone numbering (no initiator Met)' : '') + (UI.zoom ? ' · showing residues ' + rn(v0, p) + '–' + rn(v1, p) : '')) + '</text>';
     }
     if (T.has('dense')) {
-      for (const w of p.sig) {
-        if (!visible(w[1], w[2])) continue;
+      const wins = p.sig.filter((w) => visible(w[1], w[2]));
+      for (const w of wins) {
         const a = cx(w[1]), b = cx(w[2]);
         g += '<rect class="feat" x="' + r1(a) + '" y="' + headTop + '" width="' + r1(Math.max(2, b - a)) + '" height="' + (base - headTop + 12) + '" rx="3" fill="' + pal.dense + '"' + tip('<b>Dense methyl-R window</b><br>' + w[3] + ' sites in ' + w[0] + ' aa (' + rl(w[1], p) + '–' + rn(w[2], p) + '), log2 obs/null ' + fmtL2(w[4]) + ', q ' + fmtP(w[5])) + '/>';
       }
+      if (wins.length) legend.push([SWATCH.fill(pal.dense), 'Dense methyl-R window']);
     }
     tlabel('Sites', headTop + 10);
     g += '<rect x="' + r1(cx(1)) + '" y="' + (base - 4) + '" width="' + r1(cx(len) - cx(1)) + '" height="8" rx="4" fill="' + pal.backboneFill + '" stroke="' + pal.backboneEdge + '"/>';
@@ -3517,40 +3661,33 @@
         const a = cx(f.start), b = cx(f.end), w = Math.max(2, b - a);
         const rep = f.type === 'Repeat';
         const h = rep ? 12 : 18;
-        g += '<rect class="feat" x="' + r1(a) + '" y="' + (base - h / 2) + '" width="' + r1(w) + '" height="' + h + '" rx="4" fill="' + pal.domainFill + '"' + (rep ? ' opacity=".7"' : '') + tip('<b>' + esc(f.type) + '</b> ' + esc(f.desc) + '<br>' + nspan(f.start, f.end)) + '/>';
+        g += MARK.domain(pal, a, base - h / 2, w, h, rep, ' class="feat"' + tip('<b>' + esc(f.type) + '</b> ' + esc(f.desc) + '<br>' + nspan(f.start, f.end)));
         if (!rep) {
           const text = f.desc || f.type;
           if (w > text.length * 6 + 8) g += '<text x="' + r1(a + w / 2) + '" y="' + (base + 4) + '" font-size="10.5" font-weight="600" text-anchor="middle" fill="' + pal.domainInk + '" pointer-events="none">' + esc(text) + '</text>';
           else below.push([a + w / 2, text]);
         }
       }
+      if (doms.length) legend.push([SWATCH.domain(pal), 'Domain, repeat or zinc finger (UniProt)']);
     }
-    // Site labels sit in a row above the heads, spread apart with leader lines so clusters stay readable.
-    const labelX = new Map();
-    if (labelsOn && heads.length) {
-      const order = heads.slice().sort((a, b) => a.hx - b.hx);
-      const gap = Math.min(LABEL_GAP, (W - ML - MR) / order.length);
-      const L = order.map((h) => h.hx);
-      for (let k = 1; k < L.length; k++) L[k] = Math.max(L[k], L[k - 1] + gap);
-      if (L[L.length - 1] > W - MR - 4) {
-        L[L.length - 1] = W - MR - 4;
-        for (let k = L.length - 2; k >= 0; k--) L[k] = Math.min(L[k], L[k + 1] - gap);
-      }
-      order.forEach((h, k) => labelX.set(h, Math.max(ML, L[k])));
-    }
-    const labelY = headTop + 4;
+    const headY = (h) => headTop + 18 + (nLv - 1 - h.lv) * 12;
+    const labelOf = new Map();
+    for (const q of placed) for (const h of q.grp) labelOf.set(h, q);
     for (const h of heads) {
-      const hy = headTop + 18 + lift + (nLv - 1 - h.lv) * 12;
-      const col = colors[mode.cat(h.s)] || pal.none;
+      const hy = headY(h), k = mode.cat(h.s);
       const dim = !R.shown.has(h.s.j);
       const sel = UI.highlight === h.s.pos && !o.forExport;
       g += '<line x1="' + r1(h.hx) + '" x2="' + r1(h.hx) + '" y1="' + (base - 4) + '" y2="' + hy + '" stroke="' + pal.stem + '" stroke-width="1"' + (dim ? ' opacity=".4"' : '') + '/>';
-      g += '<circle class="head" data-j="' + h.s.j + '" data-pos="' + h.s.pos + '" cx="' + r1(h.hx) + '" cy="' + hy + '" r="' + R0 + '" fill="' + col + '" stroke="' + (sel ? pal.ink : pal.ring) + '" stroke-width="' + (sel ? 2.6 : 2) + '"' + (dim ? ' opacity=".28"' : '') + '/>';
-      if (labelsOn) {
-        const lx = labelX.get(h);
-        g += '<line x1="' + r1(h.hx) + '" y1="' + (hy - R0 - 1) + '" x2="' + r1(lx) + '" y2="' + (labelY + 3) + '" stroke="' + pal.stem + '" stroke-width=".7"' + (dim ? ' opacity=".4"' : '') + '/>' +
-          '<text x="' + r1(lx + 1) + '" y="' + labelY + '" font-size="9.5" fill="' + pal.ink + '" transform="rotate(-55 ' + r1(lx + 1) + ' ' + labelY + ')"' + (dim ? ' opacity=".4"' : '') + '>' + rl(h.s.pos, P[h.s.p]) + '</text>';
+      g += MARK.head(pal, h.hx, hy, R0, colors[k] || pal.none, hollow(k), ' class="head" data-j="' + h.s.j + '" data-pos="' + h.s.pos + '"' + (dim ? ' opacity=".28"' : ''), sel ? pal.ink : null).replace(/stroke-width="[\d.]+"/, 'stroke-width="' + (sel ? 2.6 : hollow(k) ? 1.6 : 2) + '"');
+      const q = labelOf.get(h);
+      if (q) {
+        const ly = y0 + 9 + q.line * 12;
+        g += '<line x1="' + r1(h.hx) + '" y1="' + (hy - R0 - 1) + '" x2="' + r1(q.lx) + '" y2="' + (ly + 3) + '" stroke="' + pal.stem + '" stroke-width=".7"' + (dim ? ' opacity=".4"' : '') + '/>';
       }
+    }
+    for (const q of placed) {
+      const ly = y0 + 9 + q.line * 12, dim = q.grp.every((h) => !R.shown.has(h.s.j));
+      g += '<text x="' + r1(q.lx) + '" y="' + ly + '" font-size="' + LFS + '" text-anchor="middle" fill="' + pal.ink + '"' + (dim ? ' opacity=".4"' : '') + '>' + esc(q.text) + (q.grp.length > 1 ? '<title>' + esc(q.grp.map((h) => rl(h.s.pos, p)).join(', ')) + '</title>' : '') + '</text>';
     }
     y = base + 22;
     if (below.length) {
@@ -3563,8 +3700,9 @@
     }
     // A row of interval features. Overlapping features (UniProt regions often nest, e.g. 1-186 and 1-117) are packed
     // onto separate lines so no box or label hides another; a label sits inside its box, else just after it when there
-    // is room on that line, else only in the tooltip. Motifs are outlined to tell them from regions.
-    const boxTrack = (name, list, fill, ink, labelOf, tipOf, dashed) => {
+    // is room on that line, else only in the tooltip. Motifs are outlined to tell them from regions; the disorder row
+    // uses the shared disorder mark.
+    const boxTrack = (name, list, fill, ink, labelOf, tipOf, disorder) => {
       if (!list.length) return;
       const items = list.slice().sort((p1, p2) => p1.start - p2.start || (p2.end - p2.start) - (p1.end - p1.start)).map((f) => {
         const a = cx(f.start), b = Math.max(cx(f.end + 1), a + 2), text = labelOf ? labelOf(f) : '', tw = text.length * 5.6;
@@ -3585,67 +3723,86 @@
         lanes[k] = Math.max(lanes[k], it.label === 'after' ? reach : it.a + it.w);
       }
       tlabel(name, y);
-      if (dashed) gridLine(y);
+      if (disorder) gridLine(y);
       for (const it of items) {
-        const yy = y + it.lane * 14, motif = it.f.type === 'Motif';
-        g += '<rect class="feat" x="' + r1(it.a) + '" y="' + (yy - 5) + '" width="' + r1(it.w) + '" height="10" rx="3" fill="' + (motif ? pal.bg : fill) + '"' +
-          (dashed ? ' stroke="' + pal.disEdge + '" stroke-dasharray="3 2"' : motif ? ' stroke="' + pal.muted + '" stroke-width="1"' : '') + tip(tipOf(it.f)) + '/>';
+        const yy = y + it.lane * 14, motif = it.f.type === 'Motif', attr = ' class="feat"' + tip(tipOf(it.f));
+        g += disorder ? MARK.disorder(pal, it.a, yy - 5, it.w, 10, attr)
+          : '<rect x="' + r1(it.a) + '" y="' + (yy - 5) + '" width="' + r1(it.w) + '" height="10" rx="3" fill="' + (motif ? pal.bg : fill) + '"' + (motif ? ' stroke="' + pal.muted + '" stroke-width="1"' : '') + attr + '/>';
         if (it.label === 'in' || it.label === 'cut') g += '<text x="' + r1(it.a + 3) + '" y="' + (yy + 3.5) + '" font-size="9.5" fill="' + ink + '" pointer-events="none">' + esc(it.text) + '</text>';
         else if (it.label === 'after') g += '<text x="' + r1(it.a + it.w + 4) + '" y="' + (yy + 3.5) + '" font-size="9.5" fill="' + ink + '">' + esc(it.text) + '</text>';
       }
       y += 20 + (lanes.length - 1) * 14;
     };
     // Rows under the backbone, drawn in the order the reader chose (Rows menu); each row skips itself when its data
-    // is missing or still loading.
+    // is missing or still loading, and adds its legend entries when it draws something.
     const rows = {};
-    rows.regions = () => boxTrack('Regions', feats.filter((f) => ((f.type === 'Region' && f.desc !== 'Disordered') || f.type === 'Motif') && visible(f.start, f.end)), pal.regionFill, pal.ink, (f) => f.desc, (f) => '<b>' + esc(f.type) + '</b> ' + esc(f.desc) + '<br>' + nspan(f.start, f.end));
-    rows.disorder = () => {
-      if (!u) return;
-      const dis = feats.filter((f) => f.type === 'Region' && f.desc === 'Disordered' && visible(f.start, f.end));
-      if (dis.length) boxTrack('Disorder', dis, pal.disFill, pal.muted, null, (f) => '<b>Disordered</b> (UniProt)<br>' + nspan(f.start, f.end), true);
-      else { tlabel('Disorder', y); gridLine(y); y += 20; }
+    rows.regions = () => {
+      const list = feats.filter((f) => ((f.type === 'Region' && f.desc !== 'Disordered') || f.type === 'Motif') && visible(f.start, f.end));
+      boxTrack('Regions', list, pal.region, pal.ink, (f) => f.desc, (f) => '<b>' + esc(f.type) + '</b> ' + esc(f.desc) + '<br>' + nspan(f.start, f.end));
+      if (list.some((f) => f.type !== 'Motif')) legend.push([SWATCH.fill(pal.region), 'Region (UniProt)']);
     };
-    rows.bias = () => boxTrack('Composition', feats.filter((f) => f.type === 'Compositional bias' && visible(f.start, f.end)), pal.biasFill, pal.ink, (f) => f.desc.replace(/ residues$/, '-rich').replace('Basic and acidic', 'Charged'), (f) => '<b>Compositional bias</b> ' + esc(f.desc) + '<br>' + nspan(f.start, f.end));
-    rows.rg = () => u && boxTrack('RG/RGG', u.rg.filter((b) => visible(b.start, b.end)).map((b) => Object.assign({}, b)), pal.rgFill, pal.rgInk, (b) => b.label, (b) => '<b>' + b.label + '</b> ' + nspan(b.start, b.end) + '<br>' + b.n + ' RG dipeptides, ' + b.rgg + ' RGG<br>' + RG_HELP);
+    rows.disorder = () => {
+      if (!u && !p.idr) return;
+      const dis = disorderRegions(p, u);
+      const list = dis.list.filter(([a, b]) => visible(a, b)).map(([a, b]) => ({ start: a, end: b, type: 'Disordered' }));
+      if (list.length) {
+        boxTrack('Disorder', list, pal.dis, pal.muted, null, (f) => '<b>Disordered</b> ' + nspan(f.start, f.end) + '<br>' + esc(dis.source), true);
+        legend.push([SWATCH.disorder(pal), 'Disordered (' + (p.idr ? 'MobiDB' : 'UniProt') + ')']);
+      } else { tlabel('Disorder', y); gridLine(y); y += 20; }
+    };
+    rows.bias = () => {
+      const list = feats.filter((f) => f.type === 'Compositional bias' && visible(f.start, f.end));
+      boxTrack('Composition', list, pal.bias, pal.ink, (f) => f.desc.replace(/ residues$/, '-rich').replace('Basic and acidic', 'Charged'), (f) => '<b>Compositional bias</b> ' + esc(f.desc) + '<br>' + nspan(f.start, f.end));
+      if (list.length) legend.push([SWATCH.fill(pal.bias), 'Compositional bias (UniProt)']);
+    };
+    rows.rg = () => {
+      if (!u) return;
+      const list = u.rg.filter((b) => visible(b.start, b.end)).map((b) => Object.assign({}, b));
+      boxTrack('RG/RGG', list, pal.rg, pal.rgInk, (b) => b.label, (b) => '<b>' + b.label + '</b> ' + nspan(b.start, b.end) + '<br>' + b.n + ' RG dipeptides, ' + b.rgg + ' RGG<br>' + RG_HELP);
+      if (list.length) legend.push([SWATCH.fill(pal.rg), 'RG/RGG-rich segment']);
+    };
     rows.args = () => {
       if (!(u && u.seq)) return;
       tlabel('Arginines', y);
-      const methyl = new Set(p.sites.map((j) => S[j].pos));
       for (let k = Math.max(0, v0 - 1); k < Math.min(u.seq.length, v1); k++) {
-        if (u.seq[k] !== 'R' || methyl.has(k + 1)) continue;
+        if (u.seq[k] !== 'R' || methylPos.has(k + 1)) continue;
         g += '<line x1="' + r1(x(k + 1)) + '" x2="' + r1(x(k + 1)) + '" y1="' + (y - 5) + '" y2="' + (y + 5) + '" stroke="' + pal.rtick + '"/>';
       }
       for (const s of sites) g += '<line x1="' + r1(x(s.pos)) + '" x2="' + r1(x(s.pos)) + '" y1="' + (y - 7) + '" y2="' + (y + 7) + '" stroke="' + (colors[mode.cat(s)] || pal.none) + '" stroke-width="2"/>';
+      legend.push([(a, b) => '<line x1="' + (a + 10) + '" x2="' + (a + 10) + '" y1="' + (b - 5) + '" y2="' + (b + 5) + '" stroke="' + pal.rtick + '"/>', 'Unmethylated arginine']);
       y += 20;
+    };
+    // Mutations share one mark in every row: a diamond, filled where an effect is reported, in ink and labelled when it
+    // hits a methylarginine. Natural variants are ticks, likewise inked and labelled at a methylarginine.
+    const labelAt = (xx, yy, text, right) => {
+      const tw = text.length * 5.2, flip = xx + 4 + tw > W - 2;
+      if (xx + 4 <= right.v) return;
+      g += '<text x="' + r1(flip ? xx - 4 : xx + 4) + '" y="' + (yy - 5) + '" font-size="9" fill="' + pal.mark + '"' + (flip ? ' text-anchor="end"' : '') + '>' + esc(text) + '</text>';
+      right.v = flip ? xx : xx + 4 + tw;
     };
     rows.variants = () => {
       if (!(u && (u.variants.length || u.mutagen.length))) return;
-      const methyl = new Set(p.sites.map((j) => S[j].pos));
       const track = (name, list, isMut) => {
         list = list.filter((f) => visible(f.start, f.end));
         if (!list.length) return;
         tlabel(name, y);
         gridLine(y);
-        let right = -1e9;
-        const labelled = new Set();
+        const right = { v: -1e9 }, labelled = new Set();
         for (const f of list.sort((a, b) => a.start - b.start)) {
-          const hit = f.from === 'R' && f.start === f.end && methyl.has(f.start);
-          const xx = r1(x(f.start));
+          const hit = f.from === 'R' && f.start === f.end && methylPos.has(f.start);
+          const xx = x(f.start);
           const label = f.from + rn(f.start, p) + (f.to || '');
-          const tipHtml = '<b>' + (isMut ? 'Mutagenesis' : 'Natural variant') + ' ' + esc(label) + '</b>' + (hit ? ' · at a methylarginine' : '') + '<br>' + esc(f.desc || '');
-          if (isMut) g += '<rect class="feat" x="' + (xx - 3) + '" y="' + (y - 3) + '" width="6" height="6" transform="rotate(45 ' + xx + ' ' + y + ')" fill="' + (hit ? pal.accent : pal.bg) + '" stroke="' + (hit ? pal.accent : pal.variant) + '" stroke-width="1.2"' + tip(tipHtml) + '/>';
-          else g += '<rect class="feat" x="' + (xx - (hit ? 1.5 : 1)) + '" y="' + (y - (hit ? 7 : 4)) + '" width="' + (hit ? 3 : 2) + '" height="' + (hit ? 14 : 8) + '" rx="1" fill="' + (hit ? pal.accent : pal.variant) + '"' + tip(tipHtml) + '/>';
-          if (hit && +xx + 4 > right && !labelled.has(f.start)) {
+          const attr = ' class="feat"' + tip('<b>' + (isMut ? 'Mutagenesis' : 'Natural variant') + ' ' + esc(label) + '</b>' + (hit ? ' · at a methylarginine' : '') + '<br>' + esc(f.desc || ''));
+          g += isMut ? MARK.diamond(xx, y, 6, hit ? pal.mark : pal.variant, hit ? pal.mark : pal.variant, attr) : MARK.tick(xx, y, hit ? 14 : 8, hit ? pal.mark : pal.variant, attr, hit ? 3 : 2);
+          if (hit && !labelled.has(f.start)) {
             // Several substitutions at one site share a label (R514G/S).
             labelled.add(f.start);
             const tos = Array.from(new Set(list.filter((v) => v.start === f.start && v.end === f.end && v.from === 'R').map((v) => v.to).filter(Boolean)));
-            const t = f.from + rn(f.start, p) + tos.join('/') + (shortDisease(f.desc) ? ' ' + shortDisease(f.desc).split(' and ')[0] : '');
-            const tw = t.length * 5.2;
-            const flip = +xx + 4 + tw > W - 2;
-            g += '<text x="' + (flip ? +xx - 4 : +xx + 4) + '" y="' + (y - 5) + '" font-size="9" fill="' + pal.accent + '"' + (flip ? ' text-anchor="end"' : '') + '>' + esc(t) + '</text>';
-            right = flip ? +xx : +xx + 4 + tw;
+            labelAt(xx, y, f.from + rn(f.start, p) + tos.join('/') + (shortDisease(f.desc) ? ' ' + shortDisease(f.desc).split(' and ')[0] : ''), right);
           }
         }
+        legend.push(isMut ? [SWATCH.diamond(pal.variant, pal.variant), 'Mutagenesis (UniProt)'] : [SWATCH.tick(pal.variant), 'Natural variant (UniProt)']);
+        if (labelled.size) legend.push([isMut ? SWATCH.diamond(pal.mark, pal.mark) : SWATCH.tick(pal.mark), (isMut ? 'Mutagenesis' : 'Variant') + ' at a methylarginine']);
         y += 20;
       };
       track('Variants', u.variants, false);
@@ -3653,19 +3810,21 @@
     };
     // Other PTMs from the cross-PTM master table (and CPLM 4.0 for lysine methylation), one row per group.
     const ptmRow = (gi) => {
-        const list = p.ptms.filter((t) => t[1] === gi && t[0] >= v0 && t[0] <= v1);
-        if (!list.length) return;
-        tlabel(PTM_LABEL[gi], y);
-        gridLine(y);
-        for (const t of list) g += '<rect class="feat" x="' + r1(x(t[0]) - 1.5) + '" y="' + (y - 5) + '" width="3" height="10" rx="1" fill="' + (gi === 3 ? KME_COLOR : pal.ptm) + '"' + tip('<b>' + esc(ptmName(t, p)) + '</b> · ' + PTM_LABEL[gi] + (p.hist ? ' · UniProt ' + t[2] + t[0] : '') + '<br>' + esc(ptmSources(t).join(' · '))) + '/>';
-        y += 18;
+      const list = p.ptms.filter((t) => t[1] === gi && t[0] >= v0 && t[0] <= v1);
+      if (!list.length) return;
+      tlabel(PTM_LABEL[gi], y);
+      gridLine(y);
+      const color = gi === 3 ? pal.kme : pal.ptm;
+      for (const t of list) g += MARK.tick(x(t[0]), y, 10, color, ' class="feat"' + tip('<b>' + esc(ptmName(t, p)) + '</b> · ' + PTM_LABEL[gi] + (p.hist ? ' · UniProt ' + t[2] + t[0] : '') + '<br>' + esc(ptmSources(t).join(' · '))), 3);
+      if (gi === 3) legend.push([SWATCH.tick(pal.kme), 'Lys methylation']);
+      else if (!legend.some((it) => it[1] === 'Other PTM')) legend.push([SWATCH.tick(pal.ptm), 'Other PTM']);
+      y += 18;
     };
-    // Residues at interfaces in PDB structures (PDBe-KB), one row per partner type.
+    // Residues at interfaces in PDB structures (PDBe-KB), one row per partner type in the shared order.
     rows.iface = () => {
       const ifd = !p.iso ? IFDATA.get(p.acc.split('-')[0]) : null;
       if (!ifd) return;
-      const methylPos = new Set(p.sites.map((j) => S[j].pos));
-      for (const [key, label, color] of [['rna', 'RNA contact', IFACE_COLOR[4]], ['dna', 'DNA contact', IFACE_COLOR[8]], ['protein', 'Other protein', IFACE_COLOR[1]], ['self', 'Self-contact', IFACE_COLOR[2]]]) {
+      for (const [key, label, color] of [['rna', 'PDB: RNA', pal.rna], ['dna', 'PDB: DNA', pal.dna], ['protein', 'PDB: protein', pal.protein], ['self', 'PDB: self', pal.self]]) {
         const byPos = new Map();
         for (const [a, b, name] of ifd[key]) for (let r = Math.max(a, v0); r <= Math.min(b, v1); r++) { if (!byPos.has(r)) byPos.set(r, new Set()); byPos.get(r).add(name); }
         if (!byPos.size) continue;
@@ -3677,15 +3836,15 @@
           const names = new Set();
           let nm = 0;
           for (let r = a; r <= b; r++) { byPos.get(r).forEach((nme) => names.add(nme)); if (methylPos.has(r)) nm++; }
-          const xa = x(a) - 0.8, w = Math.max(1.6, x(b + 1) - x(a));
-          g += '<rect class="feat" data-ev="pdb-' + key + ':' + a + ':' + b + '" x="' + r1(xa) + '" y="' + (y - 5) + '" width="' + r1(w) + '" height="10" rx="1" fill="' + color + '"' +
-            tip('<b>' + label + '</b> ' + nspan(a, b) + (key === 'self' ? '<br>Touches another copy of this same protein (a homodimer or larger homo-oligomer)' : key === 'protein' ? '<br>Touches a different protein' : '') + '<br>' + esc(Array.from(names).slice(0, 6).join(', ')) + (names.size > 6 ? ' and ' + (names.size - 6) + ' more' : '') + (nm ? '<br>' + nm + ' methylarginine' + (nm === 1 ? '' : 's') + ' here' : '') + '<br>PDBe-KB · <i>click for the PDB entries</i>') + '/>';
+          g += MARK.box(x(a) - 0.8, y - 5, Math.max(1.6, x(b + 1) - x(a)), 10, color, ' class="feat" data-ev="pdb-' + key + ':' + a + ':' + b + '"' +
+            tip('<b>' + label + ' interface</b> ' + nspan(a, b) + (key === 'self' ? '<br>Touches another copy of this same protein (a homodimer or larger homo-oligomer)' : key === 'protein' ? '<br>Touches a different protein' : '') + '<br>' + esc(Array.from(names).slice(0, 6).join(', ')) + (names.size > 6 ? ' and ' + (names.size - 6) + ' more' : '') + (nm ? '<br>' + nm + ' methylarginine' + (nm === 1 ? '' : 's') + ' here' : '') + '<br>PDBe-KB · <i>click for the PDB entries</i>'));
         };
         for (let k = 1; k <= positions.length; k++) {
           if (k < positions.length && positions[k] === prev + 1) { prev = positions[k]; continue; }
           flush(start, prev);
           if (k < positions.length) { start = prev = positions[k]; }
         }
+        legend.push([SWATCH.fill(color), label + ' interface']);
         y += 18;
       }
     };
@@ -3693,25 +3852,55 @@
       const xp = !p.iso && ixReady() ? IX.xlProt.get(p.i) : null;
       if (!xp) return;
       const more = '<br><i>click for the evidence</i>';
-      const tick = (pos, color, label, kind) => '<rect class="feat" data-ev="' + kind + ':' + pos + ':' + pos + '" x="' + r1(x(pos) - 0.9) + '" y="' + (y - 6) + '" width="' + r1(Math.max(1.8, x(pos + 1) - x(pos))) + '" height="12" fill="' + color + '"' + tip(label + more) + '/>';
-      const box = (a, b, color, op, label, kind) => '<rect class="feat" data-ev="' + kind + ':' + a + ':' + b + '" x="' + r1(x(Math.max(a, v0)) - 0.5) + '" y="' + (y - 4) + '" width="' + r1(Math.max(1.5, x(Math.min(b, v1) + 1) - x(Math.max(a, v0)))) + '" height="8" rx="1" fill="' + color + '" fill-opacity="' + op + '"' + tip(label + more) + '/>';
+      const tick = (pos, color, label, kind) => MARK.tick(x(pos), y, 12, color, ' class="feat" data-ev="' + kind + ':' + pos + ':' + pos + '"' + tip(label + more), Math.max(1.8, x(pos + 1) - x(pos)));
+      const box = (a, b, color, op, label, kind) => MARK.box(x(Math.max(a, v0)) - 0.5, y - 4, x(Math.min(b, v1) + 1) - x(Math.max(a, v0)), 8, color, ' class="feat" data-ev="' + kind + ':' + a + ':' + b + '" fill-opacity="' + op + '"' + tip(label + more));
       const inView = (a, b) => b >= v0 && a <= v1;
       if (xp.rnaPos.length || xp.rbd.length) {
         tlabel('RNA crosslinks', y);
         gridLine(y);
-        for (const [a, b] of xp.rbd) if (inView(a, b)) g += box(a, b, IFACE_COLOR[4], 0.28, '<b>RBDmap RNA-bound fragment</b> ' + nspan(a, b) + '<br>Castello et al. 2016, HeLa', 'rna');
-        xp.rnaPos.forEach((pos, k) => { if (pos >= v0 && pos <= v1) g += tick(pos, IFACE_COLOR[4], '<b>RNA-crosslinked residue</b> ' + nspan(pos, pos) + '<br>' + esc(xlSets(xp.rnaBits[k]).join(', ')), 'rna'); });
+        for (const [a, b] of xp.rbd) if (inView(a, b)) g += box(a, b, pal.rna, 0.28, '<b>RBDmap RNA-bound fragment</b> ' + nspan(a, b) + '<br>Castello et al. 2016, HeLa', 'rna');
+        xp.rnaPos.forEach((pos, k) => { if (pos >= v0 && pos <= v1) g += tick(pos, pal.rna, '<b>RNA-crosslinked residue</b> ' + nspan(pos, pos) + '<br>' + esc(xlSets(xp.rnaBits[k]).join(', ')), 'rna'); });
+        legend.push([SWATCH.tick(pal.rna), 'RNA-crosslinked residue']);
+        if (xp.rbd.some(([a, b]) => inView(a, b))) legend.push([SWATCH.fill(pal.rna, 0.28), 'RBDmap RNA-bound fragment']);
         y += 18;
       }
       if (xp.dnaPos.length || xp.dnaCand.length || xp.dnaPeps.length || xp.dnaBind.length) {
         tlabel('DNA crosslinks', y);
         gridLine(y);
-        for (const [a, b] of xp.dnaBind) if (inView(a, b)) g += box(a, b, IFACE_COLOR[8], 0.22, '<b>UniProt DNA-binding region</b> ' + nspan(a, b), 'dna');
-        for (const [a, b] of xp.dnaPeps) if (inView(a, b)) g += box(a, b, IFACE_COLOR[8], 0.45, '<b>DNA-crosslinked peptide</b> ' + nspan(a, b) + '<br>Trendel et al. 2025, MCF7', 'dna');
-        for (const pos of xp.dnaCand) if (pos >= v0 && pos <= v1) g += box(pos, pos, IFACE_COLOR[8], 0.75, '<b>DNA crosslink candidate</b> ' + nspan(pos, pos) + '<br>One of several residues the crosslink may sit on · Trendel et al. 2025, MCF7', 'dna');
-        for (const pos of xp.dnaPos) if (pos >= v0 && pos <= v1) g += tick(pos, IFACE_COLOR[8], '<b>DNA crosslink at this residue</b> ' + nspan(pos, pos) + '<br>Trendel et al. 2025, MCF7', 'dna');
+        for (const [a, b] of xp.dnaBind) if (inView(a, b)) g += box(a, b, pal.dna, 0.22, '<b>UniProt DNA-binding region</b> ' + nspan(a, b), 'dna');
+        for (const [a, b] of xp.dnaPeps) if (inView(a, b)) g += box(a, b, pal.dna, 0.45, '<b>DNA-crosslinked peptide</b> ' + nspan(a, b) + '<br>Trendel et al. 2025, MCF7', 'dna');
+        for (const pos of xp.dnaCand) if (pos >= v0 && pos <= v1) g += box(pos, pos, pal.dna, 0.75, '<b>DNA crosslink candidate</b> ' + nspan(pos, pos) + '<br>One of several residues the crosslink may sit on · Trendel et al. 2025, MCF7', 'dna');
+        for (const pos of xp.dnaPos) if (pos >= v0 && pos <= v1) g += tick(pos, pal.dna, '<b>DNA crosslink at this residue</b> ' + nspan(pos, pos) + '<br>Trendel et al. 2025, MCF7', 'dna');
+        legend.push([SWATCH.tick(pal.dna), 'DNA-crosslinked residue'], [SWATCH.fill(pal.dna, 0.4), 'DNA-crosslinked peptide or DNA-binding region']);
         y += 18;
       }
+    };
+    // IntAct: binding regions mapped for partners (short ones darker) and mutations that change, or do not change, an
+    // interaction. Clicking lists the curated records.
+    rows.intact = () => {
+      const ia = !p.iso && ixReady() ? IX.iaProt.get(p.i) : null;
+      if (!ia) return;
+      const regions = ia.regions.filter(([a, b]) => visible(a, b)), muts = ia.muts.filter(([a, b]) => visible(a, b));
+      if (!regions.length && !muts.length) return;
+      tlabel('IntAct', y);
+      gridLine(y);
+      const who = (list, n) => esc(list.map(ixGene).join(', ')) + (n > list.length ? ' and ' + (n - list.length) + ' more' : '');
+      for (const [a, b, typeBits, partners, n] of regions.sort((m, q) => (q[1] - q[0]) - (m[1] - m[0]))) {
+        g += MARK.box(x(Math.max(a, v0)), y - 4, x(Math.min(b, v1) + 1) - x(Math.max(a, v0)), 8, pal.protein, ' class="feat" data-ev="intact:' + a + ':' + b + '" fill-opacity="' + (b - a < (IX.ia ? IX.ia.peptide_max : 20) ? 0.55 : 0.14) + '"' +
+          tip('<b>IntAct binding region</b> ' + nspan(a, b) + ' (' + bits(typeBits).map((k) => IA_REGION[k]).join(', ') + ')<br>For ' + who(partners, n) + '<br><i>click for the records</i>'));
+      }
+      const right = { v: -1e9 };
+      for (const [a, b, code, partners, n] of muts) {
+        const changes = code >= 1 && code <= 4, hit = a === b && methylPos.has(a);
+        const color = hit ? pal.mark : changes ? pal.protein : pal.variant;
+        g += MARK.diamond(x(a), y, 6, changes ? color : pal.bg, color, ' class="feat" data-ev="intact:' + a + ':' + b + '"' +
+          tip('<b>IntAct mutation</b> ' + nspan(a, b) + (hit ? ' · at a methylarginine' : '') + '<br>' + IA_EFFECT[code].replace(/^./, (c) => c.toUpperCase()) + ' the interaction with ' + who(partners, n) + '<br><i>click for the records</i>'));
+        if (hit && changes) labelAt(x(a), y, rl(a, p), right);
+      }
+      if (regions.length) legend.push([SWATCH.fill(pal.protein, 0.55), 'IntAct binding region (pale: longer than 20 aa)']);
+      if (muts.some((m) => m[2] >= 1 && m[2] <= 4)) legend.push([SWATCH.diamond(pal.protein, pal.protein), 'IntAct mutation changes an interaction']);
+      if (muts.some((m) => m[2] === 0)) legend.push([SWATCH.diamond(pal.bg, pal.variant), 'IntAct mutation, no effect']);
+      y += 18;
     };
     rows.phospho = () => ptmRow(0);
     rows.kacyl = () => ptmRow(1);
@@ -3738,6 +3927,7 @@
         tip('<b>Charge, sliding 5-residue mean</b> (EMBOSS charge: K and R +1, H +0.5, D and E −1)<br>Residues i−2 to i+2, drawn at residue i; near either end the mean is over the residues present. Blue above the line is basic, red below is acidic; full height = ±1') + '/>' +
         '<text x="' + (W - MR + 3) + '" y="' + (mid - amp + 6) + '" font-size="8" fill="' + pal.muted + '">+1</text>' +
         '<text x="' + (W - MR + 3) + '" y="' + (mid + amp) + '" font-size="8" fill="' + pal.muted + '">−1</text>';
+      legend.push([(a, b) => '<rect x="' + a + '" y="' + (b - 6) + '" width="20" height="6" fill="' + CHARGE_COLORS.basic + '"/><rect x="' + a + '" y="' + b + '" width="20" height="6" fill="' + CHARGE_COLORS.acidic + '"/>', 'Charge, 5-aa mean (+ / −)']);
       y += 30;
     };
     for (const k of mapRowOrder()) if (T.has(k) && rows[k]) rows[k]();
@@ -3755,28 +3945,13 @@
     tlabel(p.hist ? 'aa (histone)' : 'aa', y + 11);
     y += 24;
     if (o.forExport) {
-      const ly = y + 8;
-      g += '<text x="0" y="' + (ly + 4) + '" font-size="10.5" font-weight="700" fill="' + pal.muted + '">' + esc(mode.name) + '</text>';
-      let lx = 8 + mode.name.length * 6.2;
-      mode.cats.forEach((c, k) => { g += '<circle cx="' + r1(lx + 6) + '" cy="' + ly + '" r="5" fill="' + colors[k] + '"/><text x="' + r1(lx + 15) + '" y="' + (ly + 4) + '" font-size="10.5" fill="' + pal.ink + '">' + esc(c) + '</text>'; lx += 26 + c.length * 5.9; });
-      let ex = 0;
-      const ey = ly + 22;
-      const item = (draw, lab) => { g += draw(ex, ey) + '<text x="' + (ex + 26) + '" y="' + (ey + 4) + '" font-size="10.5" fill="' + pal.ink + '">' + esc(lab) + '</text>'; ex += 38 + lab.length * 5.9; };
-      const shown = (list) => list.some((f) => visible(f.start, f.end));
-      if (T.has('domains') && shown(feats.filter((f) => ['Domain', 'Zinc finger', 'Repeat'].includes(f.type)))) item((a, b) => '<rect x="' + a + '" y="' + (b - 6) + '" width="20" height="12" rx="3" fill="' + pal.domainFill + '"/>', 'Domain / repeat');
-      if (T.has('charge') && u && u.seq) item((a, b) => '<rect x="' + a + '" y="' + (b - 6) + '" width="20" height="6" fill="' + CHARGE_COLORS.basic + '"/><rect x="' + a + '" y="' + b + '" width="20" height="6" fill="' + CHARGE_COLORS.acidic + '"/>', 'Charge, 5-aa mean (+ / −)');
-      if (T.has('kme') && p.ptms.some((t) => t[1] === 3 && visible(t[0], t[0]))) item((a, b) => '<rect x="' + (a + 8) + '" y="' + (b - 5) + '" width="3" height="10" rx="1" fill="' + KME_COLOR + '"/>', 'Lys methylation');
-      if (T.has('xl') && ixReady() && IX.xlProt.get(p.i)) {
-        item((a, b) => '<rect x="' + (a + 8) + '" y="' + (b - 6) + '" width="3" height="12" fill="' + IFACE_COLOR[4] + '"/>', 'RNA-crosslinked residue');
-        item((a, b) => '<rect x="' + (a + 8) + '" y="' + (b - 6) + '" width="3" height="12" fill="' + IFACE_COLOR[8] + '"/>', 'DNA-crosslinked residue');
-      }
-      if (T.has('disorder') && shown(feats.filter((f) => f.type === 'Region' && f.desc === 'Disordered'))) item((a, b) => '<rect x="' + a + '" y="' + (b - 5) + '" width="20" height="10" rx="3" fill="' + pal.disFill + '" stroke="' + pal.disEdge + '" stroke-dasharray="3 2"/>', 'Disordered (UniProt)');
-      if (T.has('rg') && u && shown(u.rg)) item((a, b) => '<rect x="' + a + '" y="' + (b - 5) + '" width="20" height="10" rx="3" fill="' + pal.rgFill + '"/>', 'RG/RGG-rich');
-      if (T.has('dense') && p.sig.some((w) => visible(w[1], w[2]))) item((a, b) => '<rect x="' + a + '" y="' + (b - 5) + '" width="20" height="10" rx="3" fill="' + pal.dense + '"/>', 'Dense methyl-R window');
-      if (T.has('variants') && u && u.variants.some((f) => f.from === 'R' && p.sites.some((j) => S[j].pos === f.start))) item((a, b) => '<rect x="' + (a + 9) + '" y="' + (b - 7) + '" width="3" height="14" rx="1" fill="' + pal.accent + '"/>', 'Variant at a methylarginine');
-      y = ey;
-      y += 18;
-      g += '<text x="' + (W - MR) + '" y="' + (y + 4) + '" font-size="9" text-anchor="end" fill="' + pal.muted + '">Sites: methylarginine union, PTM_Pipeline · features and variants: UniProt' + (MAP_PTM_KEYS.some((k) => T.has(k)) && p.ptms.length ? ' · other PTMs: ' + ptmSourceNote(p).replace(/^the /, '') + ' (not exhaustive)' : '') + (T.has('iface') && !p.iso && IFDATA.get(p.acc.split('-')[0]) ? ' · interfaces: PDBe-KB' : '') + (T.has('charge') && u && u.seq ? ' · charge: EMBOSS scale, 5-aa mean' : '') + '</text>';
+      // The legend wraps, so every entry stays inside the figure.
+      const modeItems = mode.cats.map((c, k) => [SWATCH.head(pal, colors[k], hollow(k)), c]);
+      const l1 = svgLegend(pal, modeItems, 0, y + 4, W - MR, { title: mode.name });
+      const l2 = svgLegend(pal, legend, 0, y + 4 + l1.h + 6, W - MR);
+      g += l1.svg + l2.svg;
+      y += 4 + l1.h + 6 + l2.h + 10;
+      g += '<text x="' + (W - MR) + '" y="' + (y + 4) + '" font-size="9" text-anchor="end" fill="' + pal.muted + '">Sites: methylarginine union, PTM_Pipeline · features and variants: UniProt' + (p.idr && T.has('disorder') ? ' · disorder: MobiDB' : '') + (MAP_PTM_KEYS.some((k) => T.has(k)) && p.ptms.length ? ' · other PTMs: ' + ptmSourceNote(p).replace(/^the /, '') + ' (not exhaustive)' : '') + (T.has('iface') && !p.iso && IFDATA.get(p.acc.split('-')[0]) ? ' · interfaces: PDBe-KB' : '') + (T.has('intact') && ixReady() && IX.iaProt.get(p.i) ? ' · IntAct' : '') + (T.has('charge') && u && u.seq ? ' · charge: EMBOSS scale, 5-aa mean' : '') + '</text>';
       y += 12;
     }
     const H = Math.ceil(y + 4);
@@ -3785,8 +3960,10 @@
       (o.forExport ? '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' : '') + g +
       (o.forExport ? '' : '<rect id="brush" x="0" y="0" width="0" height="' + H + '" fill="' + pal.brush + '" stroke="' + pal.accent + '" hidden/>' +
         '<line id="xhair" x1="0" x2="0" y1="0" y2="' + H + '" stroke="' + pal.accent + '" stroke-width="0.8" stroke-dasharray="3 2" pointer-events="none" visibility="hidden"/>') + '</svg>';
-    return { svg, W, H, ML, MR, v0, v1, len, mode, colors };
+    return { svg, W, H, ML, MR, v0, v1, len, mode, colors, legend };
   }
+  // A legend swatch as a small inline SVG, so the page legend draws exactly the marks the figure uses.
+  const swatchHtml = (draw, pal) => '<svg class="lg-sw" width="22" height="14" viewBox="0 -7 22 14" aria-hidden="true">' + draw(1, 0, pal) + '</svg>';
 
   function drawMap(p, u) {
     const box = $('#map-box');
@@ -3799,9 +3976,11 @@
         (uniprotCache.has(p.acc) && UNIDATA.has(p.acc) ? 'UniProt features unavailable; showing sites on a ' + (p.len ? fmt(out.len) + ' aa' : 'length-estimated') + ' backbone.' : 'Loading UniProt features…');
     }
     $('#zoom-reset').hidden = !UI.zoom;
-    $('#fig-legend').innerHTML = '<span class="legend-title">' + esc(out.mode.name) + '</span>' + out.mode.cats.map((c, k) => '<span><i style="background:' + out.colors[k] + '"></i>' + esc(c) + '</span>').join('') +
-      '<span><i class="sq" style="background:var(--fig-domain)"></i>Domain</span>' +
-      (UI.fig.tracks.has('iface') && out.svg.includes('>SELF-CONTACT<') ? '<span class="legend-note">Self-contact: the residue touches another copy of this protein (homodimer or homo-oligomer)</span>' : '');
+    // The page legend lists exactly what the map drew, with the same marks (the export legend uses the same list).
+    const pal = screenPalette(), hol = (k) => !!(out.mode.hollow && out.mode.hollow[k]);
+    $('#fig-legend').innerHTML = '<span class="legend-title">' + esc(out.mode.name) + '</span>' +
+      out.mode.cats.map((c, k) => '<span>' + swatchHtml(SWATCH.head(pal, out.colors[k], hol(k))) + esc(c) + '</span>').join('') +
+      (out.legend.length ? '<span class="legend-break"></span>' + out.legend.map(([draw, label]) => '<span>' + swatchHtml(draw) + esc(label) + '</span>').join('') : '');
     box.innerHTML = out.svg;
     bindMap(box, p, u, out);
   }
@@ -3940,7 +4119,8 @@
     ['plddt', 'Confidence (pLDDT)', 'af'], ['focus', 'This protein\'s chain', 'pdb'], ['chain', 'By chain', 'pdb'],
     ['rainbow', 'Rainbow (N→C)'], ['ss', 'Secondary structure'], ['charge', 'Charge'], ['hydro', 'Hydrophobicity'], ['xl', 'RNA/DNA crosslinks (cells)'], ['uniform', 'Uniform grey'],
   ];
-  const XL_COLORS = { rna: '#7B4FBF', dna: '#B7791F', both: '#C2410C', rbd: '#CDB8EE', dnaReg: '#EBD3A6', none: '#C9D2D8', other: '#E6EAED' };
+  // 3D crosslink colouring: the shared RNA/DNA colours, pale for fragments and regions; neutral greys for the rest.
+  const xlColors = () => { const t = TOKENS[themeName()]; return { rna: t.rna, dna: t.dna, both: t.ev, rbd: t.rnaPale, dnaReg: t.dnaPale, none: '#C9D2D8', other: '#E6EAED' }; };
   const VIEW_SURFACES = [['off', 'Off'], ['glass', 'Transparent'], ['solid', 'Opaque']];
   const VIEW_BGS = [['page', 'Page'], ['white', 'White'], ['black', 'Black']];
   const VIEW_LIGHTS = [['ao', 'Ambient occlusion'], ['aoline', 'Occlusion + outline'], ['outline', 'Outline'], ['plain', 'Standard']];
@@ -4019,7 +4199,7 @@
       const af = AFDATA.get(mol.p.acc);
       return (a) => { const v = af && af.plddt.has(a.resi) ? af.plddt.get(a.resi) : a.b; return v == null ? grey : PLDDT_BANDS[plddtBand(v)][1]; };
     }
-    if (key === 'focus') { const c = mol.pdb.chain; return (a) => (a.chain === c ? '#0E7490' : '#C7D4D9'); }
+    if (key === 'focus') { const c = mol.pdb.chain, prot = TOKENS[themeName()].protein; return (a) => (a.chain === c ? prot : '#C7D4D9'); }
     if (key === 'chain') { const { order } = modelChains(); return (a) => CHAIN_COLORS[(order.get(a.chain) || 0) % CHAIN_COLORS.length]; }
     if (key === 'rainbow') {
       const { ranges } = modelChains();
@@ -4044,40 +4224,42 @@
         if (!cache.has(atom.resi)) cache.set(atom.resi, authToUnp(atom.resi));
         return cache.get(atom.resi);
       };
+      const XL = xlColors();
       return (a) => {
         const pos = unpOf(a);
-        if (pos == null) return XL_COLORS.other;
-        if (!xp) return XL_COLORS.none;
+        if (pos == null) return XL.other;
+        if (!xp) return XL.none;
         const r = rna.has(pos), d = dna.has(pos);
-        if (r && d) return XL_COLORS.both;
-        if (r) return XL_COLORS.rna;
-        if (d) return XL_COLORS.dna;
-        if (inR(pos, xp.rbd)) return XL_COLORS.rbd;
-        if (inR(pos, xp.dnaPeps) || inR(pos, xp.dnaBind)) return XL_COLORS.dnaReg;
-        return XL_COLORS.none;
+        if (r && d) return XL.both;
+        if (r) return XL.rna;
+        if (d) return XL.dna;
+        if (inR(pos, xp.rbd)) return XL.rbd;
+        if (inR(pos, xp.dnaPeps) || inR(pos, xp.dnaBind)) return XL.dnaReg;
+        return XL.none;
       };
     }
     return () => grey;
   }
 
   function viewColorKeyHtml(key) {
+    const XL = xlColors(), PROT = TOKENS[themeName()].protein;
     const sw = (c, l) => '<span><i class="sq" style="background:' + c + '"></i>' + esc(l) + '</span>';
     const grad = (stops, a, b) => '<span>' + esc(a) + '<i class="grad" style="background:linear-gradient(90deg,' + stops.join(',') + ')"></i>' + esc(b) + '</span>';
     const parts = {
       plddt: () => PLDDT_BANDS.map((b) => sw(b[1], b[2])).join(''),
-      focus: () => sw('#0E7490', 'Chain ' + mol.pdb.chain + (mol.pdb.homolog ? ' (homolog)' : ' (this protein)')) + sw('#C7D4D9', mol.pdb.pred ? 'Partner: ' + mol.pdb.pred.partnerLabel : 'Other chains'),
+      focus: () => sw(PROT, 'Chain ' + mol.pdb.chain + (mol.pdb.homolog ? ' (homolog)' : ' (this protein)')) + sw('#C7D4D9', mol.pdb.pred ? 'Partner: ' + mol.pdb.pred.partnerLabel : 'Other chains'),
       chain: () => Array.from(modelChains().order.keys()).slice(0, 8).map((c, k) => sw(CHAIN_COLORS[k % CHAIN_COLORS.length], 'Chain ' + c + (mol.pdb && c === mol.pdb.chain ? ' (this protein)' : mol.pdb && mol.pdb.pred && mol.pdb.pred.names[c] ? ' (' + mol.pdb.pred.names[c] + ')' : ''))).join('') + (modelChains().order.size > 8 ? '<span class="muted">+' + (modelChains().order.size - 8) + ' more</span>' : ''),
       rainbow: () => grad(RAINBOW, 'N-terminus', 'C-terminus'),
       ss: () => sw(SS_COLORS.h, 'Helix') + sw(SS_COLORS.s, 'Strand') + sw(SS_COLORS.c, 'Coil'),
       charge: () => sw(CHARGE_COLORS.basic, 'Basic (R, K)') + sw(CHARGE_COLORS.his, 'His') + sw(CHARGE_COLORS.acidic, 'Acidic (D, E)') + sw(CHARGE_COLORS.other, 'Other'),
       hydro: () => grad(HYDRO, 'Hydrophilic', 'Hydrophobic') + '<span class="muted">Kyte–Doolittle</span>',
-      xl: () => (ixReady() && IX.xlProt.get(mol.p.i) ? sw(XL_COLORS.rna, 'RNA-crosslinked residue') + sw(XL_COLORS.dna, 'DNA-crosslinked residue') + sw(XL_COLORS.both, 'Both') + sw(XL_COLORS.rbd, 'RBDmap RNA-bound fragment') + sw(XL_COLORS.dnaReg, 'DNA crosslink candidate, crosslinked peptide or DNA-binding region') + sw(XL_COLORS.none, 'No crosslink') + (mol.mode === 'pdb' && !mol.pdb.pred ? sw(XL_COLORS.other, 'Other chains') : '') :
+      xl: () => (ixReady() && IX.xlProt.get(mol.p.i) ? sw(XL.rna, 'RNA-crosslinked residue') + sw(XL.dna, 'DNA-crosslinked residue') + sw(XL.both, 'Both') + sw(XL.rbd, 'RBDmap RNA-bound fragment') + sw(XL.dnaReg, 'DNA crosslink candidate, crosslinked peptide or DNA-binding region') + sw(XL.none, 'No crosslink') + (mol.mode === 'pdb' && !mol.pdb.pred ? sw(XL.other, 'Other chains') : '') :
         '<span class="muted">No RNA or DNA crosslinks recorded for this protein</span>'),
       uniform: () => '',
     };
     return '<span class="legend-title">' + esc((VIEW_COLORS.find((o) => o[0] === key) || ['', ''])[1]) + '</span>' + (parts[key] || parts.uniform)() +
-      '<span><i style="background:var(--fig-site)"></i>Methylarginines: map colours (this colour where the map shows grey)</span>' +
-      (mol && mol.mode === 'pdb' && mol.naKinds ? Array.from(mol.naKinds).map((k) => '<span><i class="sq" style="background:' + NA_COLOR[k] + '"></i>' + k + '</span>').join('') : '') +
+      '<span><i style="background:var(--t-meth)"></i>Methylarginines: map colours (this colour where the map shows grey)</span>' +
+      (mol && mol.mode === 'pdb' && mol.naKinds ? Array.from(mol.naKinds).map((k) => '<span><i class="sq" style="background:' + naColor(k) + '"></i>' + k + '</span>').join('') : '') +
       (UI.mv.contacts && mol && mol.focus ? '<span><i class="sq" style="background:' + ELEM_GREY.map.C + '"></i>Contacts within 5 Å</span>' : '');
   }
 
@@ -4134,9 +4316,9 @@
       const r = pdbMode ? pdb.toAuth.get(S[j].pos) : S[j].pos;
       // Uncategorised sites take the accent colour in 3D, where the map's neutral grey would vanish against grey chains.
       const c = colors[mode.cat(S[j])] || pal.none;
-      if (r != null) siteColor.set(r, c === pal.none ? pal.site : c);
+      if (r != null) siteColor.set(r, c === pal.none ? pal.meth : c);
     }
-    if (pdbMode) for (const r of pdb.det.modres) if (r.chain_id === pdb.chain && !siteColor.has(+r.author_residue_number)) siteColor.set(+r.author_residue_number, '#C2410C');
+    if (pdbMode) for (const r of pdb.det.modres) if (r.chain_id === pdb.chain && !siteColor.has(+r.author_residue_number)) siteColor.set(+r.author_residue_number, TOKENS[themeName()].meth);
     const siteAt = (a) => (inChain(a) && siteColor.has(a.resi) && baseResn(a.resn) === 'ARG' ? siteColor.get(a.resi) : null);
 
     // Polymer in the chosen representation and colouring; sites tint spheres and surfaces so they stay visible.
@@ -4157,7 +4339,7 @@
       if (mol.naKinds == null) mol.naKinds = new Set(viewer.selectedAtoms({ predicate: isNuc }).map(nucKind));
       for (const kind of mol.naKinds) {
         viewer.setStyle({ predicate: (a) => isNuc(a) && nucKind(a) === kind && (V.others || a.chain === pdb.chain) },
-          { cartoon: { color: NA_COLOR[kind] }, stick: { radius: 0.13, color: NA_COLOR[kind] } });
+          { cartoon: { color: naColor(kind) }, stick: { radius: 0.13, color: naColor(kind) } });
       }
     }
     viewer.setStyle({ resn: WATER }, {});
@@ -4170,7 +4352,7 @@
       viewer.addStyle(Object.assign({ resi: list, atom: ['CB', 'CG', 'CD', 'NE', 'CZ', 'NH1', 'NH2'] }, chainSel), { stick: { radius: 0.28, color: c } });
       viewer.addStyle(Object.assign({ resi: list, atom: 'CZ' }, chainSel), { sphere: { radius: 1.15, color: c } });
     });
-    if (pdbMode) for (const r of pdb.det.modres) viewer.addStyle({ chain: r.chain_id, resi: r.author_residue_number }, { stick: { radius: 0.3, color: '#C2410C' } });
+    if (pdbMode) for (const r of pdb.det.modres) viewer.addStyle({ chain: r.chain_id, resi: r.author_residue_number }, { stick: { radius: 0.3, color: TOKENS[themeName()].meth } });
 
     // Side chains around the focused residue.
     if (V.contacts && mol.focus) {
@@ -4892,8 +5074,7 @@
   const IXF_CLASS = IXF.prmt | IXF.tudor | IXF.wd40 | IXF.phd;
   const IFACE_OPTS = [[4, 'RNA'], [8, 'DNA'], [1, 'Another protein'], [2, 'A copy of itself', 'Self-contact: the arginine touches another copy of the same protein in a homodimer or larger homo-oligomer']];
   const IFACE_NAME = { 4: 'RNA', 8: 'DNA', 1: 'another protein', 2: 'a copy of itself (homo-oligomer)' };
-  const IFACE_COLOR = { 4: '#7B4FBF', 8: '#B7791F', 1: '#0E7490', 2: '#8A99A3' };
-  const NA_COLOR = { RNA: '#7B4FBF', DNA: '#B7791F' };
+  const naColor = (kind) => TOKENS[themeName()][kind === 'RNA' ? 'rna' : 'dna'];
   const BIND_OPTS = [
     [1, 'a PRMT', 'PRMT1, PRMT2, PRMT3, CARM1 (PRMT4), PRMT5, PRMT6, PRMT7, PRMT8 or PRMT9'],
     [2, 'a Tudor-domain protein', 'InterPro IPR002999: methylarginine readers such as SMN1/2, SMNDC1, TDRD3 and SND1 (TDRKH binds methylated PIWI proteins but can also bind PIWIL1 independently of methylation), and methyllysine readers such as PHF1, SETDB1 and KDM4A'],
@@ -4939,7 +5120,6 @@
   const RAIL_SCORES = [[700, 'High (≥ 0.7)'], [900, 'Highest (≥ 0.9)']];
   const PRED_OPTS = [[0, 'Any'], [23, 'pDockQ ≥ 0.23 (acceptable)'], [50, 'pDockQ ≥ 0.5 (confident)']];
   const STRING_CALLER = 'shechterlab_methylarginine_explorer';
-  const IX_WD_COLOR = '#0E7490', IX_PHD_COLOR = '#7B4FBF';
   let IX = null;
   let ixPromise = null;
 
@@ -5029,11 +5209,18 @@
     for (const [j, r, n, dna, f, one] of d.xl || []) { if (S[j]) S[j].xl = { r, n, d: dna, f, one: !!one }; }
     const xlProt = new Map();
     for (const [i, rnaPos, rnaBits, dnaPos, dnaPeps, dnaBind, dnaInt, rbd, dnaCand] of d.xl_prot || []) xlProt.set(i, { rnaPos, rnaBits, dnaPos, dnaPeps, dnaBind, dnaInt: !!dnaInt, rbd: rbd || [], dnaCand: dnaCand || [] });
+    // IntAct curated features: per site, mutations of up to 3 residues, binding regions of up to 20 and methylated
+    // residues of interaction participants; per protein, every binding region and short mutation for the map.
+    for (const [j, recs] of d.intact || []) {
+      if (S[j]) S[j].ia = recs.map(([kind, code, a, b, res, partners, pmids, acs, n]) => ({ kind, code, a, b, res, partners, pmids, acs, n }));
+    }
+    const iaProt = new Map((d.intact_prot || []).map(([i, regions, muts]) => [i, { regions, muts }]));
     const modelledGaps = new Map((d.modelled_gaps || []).map(([k, pos, pdbs]) => [k, { pos, pdbs }]));
     IX = { meta: d.meta, prot, byEnsp, cx, cxOf, enrich: d.enrich || {}, goEnrich: d.go_enrich || {}, strata: d.enrich_strata || {}, cd, wr, nP,
       geoSummary: d.geometry_summary || {}, rg: d.rg_iface || {}, modelledGaps, condConf: d.cond_conf || {}, nModelled: (d.modelled || []).length,
       predEnrich: d.pred_enrich || {}, nPred: (d.pred || []).length, condHist: d.cond_score_hist || {}, gallery,
-      xlProt, xlEnrich: d.xl_enrich || {}, xlSets: d.xl_sets || [], xlTypes: d.xl_types || {}, xlFreq: d.xl_freq || null };
+      xlProt, xlEnrich: d.xl_enrich || {}, xlSets: d.xl_sets || [], xlTypes: d.xl_types || {}, xlFreq: d.xl_freq || null,
+      iaProt, iaEnrich: d.intact_enrich || {}, ia: (d.meta && d.meta.intact) || null };
     IX.byAcc = new Map(prot.map((x) => [x.acc, x.k]));
     IX.prmts = prot.filter((x) => x.flags & IXF.prmt).sort((a, b) => a.gene.localeCompare(b.gene, 'en', { numeric: true }));
     IX.tudors = prot.filter((x) => x.flags & IXF.tudor).sort((a, b) => a.gene.localeCompare(b.gene));
@@ -5071,7 +5258,12 @@
   }
 
   const ixReady = () => IX && !IX.failed;
-  const ixGene = (k) => (k === -1 ? 'RNA' : k === -2 ? 'DNA' : IX.prot[k] ? IX.prot[k].gene : '?');
+  const ixGene = (k) => (k === -1 ? 'RNA' : k === -2 ? 'DNA' : k === -3 ? 'small molecule' : k === -4 ? 'other molecule' : IX.prot[k] ? IX.prot[k].gene : '?');
+  // IntAct record helpers (meta.intact effects: 0 no effect, 1 disrupts, 2 decreases, 3 increases, 4 causes, 5 unspecified).
+  const IA_EFFECT = ['no effect on', 'disrupts', 'decreases', 'increases', 'causes', 'tested in'];
+  const IA_REGION = ['sufficient', 'necessary', 'binding-associated', 'direct'];
+  const iaChanges = (r) => r.kind === 0 && r.code >= 1 && r.code <= 4;
+  const iaLink = (ac) => 'https://www.ebi.ac.uk/intact/details/interaction/' + encodeURIComponent(ac);
   const partnersAt = (p, min) => (p.partners || []).filter(([, sc]) => sc >= min);
 
   function ifaceTags(s, max) {
@@ -5141,19 +5333,24 @@
   }
   // Interaction evidence per site as bits, for the evidence map and its filter. No bit means nothing recorded: most
   // proteins were never crystallised or crosslinked, so it is not evidence of no contact.
+  // Site-level interaction evidence, in the order every list, lane, legend and chart uses: RNA, then DNA, then
+  // protein; experimental before predicted. The bit values are stable (they are stored in shared links).
   const EV_SETS = [
     [1, 'RNA crosslink', 'RNA XL', 'Crosslinked to RNA at this residue in living cells (pepR-MS compendium)', (s) => xlMask(s) & 1],
     [2, 'RNA-bound fragment', 'RBDmap', 'Inside an RBDmap RNA-bound fragment (Castello et al. 2016)', (s) => xlMask(s) & 4],
     [4, 'DNA crosslink', 'DNA XL', 'A DNA crosslink localised to, or with a candidate at, this residue (Trendel et al. 2025)', (s) => xlMask(s) & 40],
-    [8, 'PDB protein interface', 'PDB protein', 'Contacts another protein, or another copy of itself, in a PDB structure (PDBe-KB)', (s) => s.iface & 3],
     [16, 'PDB RNA/DNA interface', 'PDB RNA/DNA', 'Contacts RNA or DNA in a PDB structure (PDBe-KB)', (s) => s.iface & 12],
+    [8, 'PDB protein interface', 'PDB protein', 'Contacts another protein, or another copy of itself, in a PDB structure (PDBe-KB)', (s) => s.iface & 3],
+    [128, 'Mutation changes an interaction', 'IntAct mutation', 'Mutating this arginine (alone or with up to two neighbours) disrupted, weakened, strengthened or created an interaction in a curated experiment (IntAct)', (s) => (s.ia || []).some(iaChanges)],
+    [256, 'Short binding region', 'IntAct region', 'Inside a binding region of at most 20 residues mapped for a partner in a curated experiment (IntAct)', (s) => (s.ia || []).some((r) => r.kind === 1)],
+    [512, 'Methylated in an interaction', 'IntAct methyl', 'IntAct records this arginine as methylated in a curated interaction experiment', (s) => (s.ia || []).some((r) => r.kind === 2)],
     [32, 'Predicted interface', 'Predicted', 'At the partner interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23)', (s) => s.pred && s.pred.hits[0][1] >= 23],
     [64, 'Confident predicted contact', 'Best contact', 'Salt bridge or hydrogen bond to a partner in a confident predicted complex, both residues at pLDDT ≥ 80', (s) => (s.gal || []).some((g) => galPass(g, GAL_DEFAULT))],
   ];
   const evMask = (s) => EV_SETS.reduce((m, [b, , , , t]) => (t(s) ? m | b : m), 0);
-  // Experimental evidence (crosslinks, RBDmap, PDB interfaces) and predicted evidence (predicted-complex interfaces and
-  // confident predicted contacts), the two levels of a site's interaction status.
-  const EV_EXP = 1 | 2 | 4 | 8 | 16, EV_PRED = 32 | 64;
+  // Experimental evidence (crosslinks, RBDmap, PDB interfaces, IntAct) and predicted evidence (predicted-complex
+  // interfaces and confident predicted contacts), the two levels of a site's interaction status.
+  const EV_EXP = 1 | 2 | 4 | 8 | 16 | 128 | 256 | 512, EV_PRED = 32 | 64;
   // A site's interaction status: 'exp' (any experimental evidence), 'pred' (predicted only) or 'none'; null until loaded.
   const ixStatus = (s) => (!ixReady() ? null : s.ev & EV_EXP ? 'exp' : s.ev & EV_PRED ? 'pred' : 'none');
   const IXS = { exp: ['Experimental', 'experimental'], pred: ['Predicted only', 'predicted-only'], none: ['None recorded', 'none'] };
@@ -5167,6 +5364,7 @@
     if (s.iface & 8) exp.add('DNA');
     (s.ifP || []).filter((k) => k >= 0 && k !== s.p).forEach((k) => exp.add(ixGene(k)));
     if (s.iface & 2) exp.add(P[s.p].label + ' (self)');
+    for (const r of s.ia || []) if (r.kind !== 0 || iaChanges(r)) r.partners.forEach((k) => exp.add(k === s.p ? P[s.p].label + ' (self)' : ixGene(k)));
     if (s.pred && s.pred.hits[0][1] >= 23) s.pred.hits.filter((h) => h[1] >= 23).forEach(([k]) => pred.add(ixGene(k)));
     (s.gal || []).filter((g) => galPass(g, GAL_DEFAULT)).forEach((g) => pred.add(ixGene(g.k)));
     return { exp: Array.from(exp), pred: Array.from(pred).filter((g) => !exp.has(g)) };
@@ -5175,7 +5373,7 @@
     const st = ixStatus(s);
     if (!st) return '<span class="ixs ixs-wait">…</span>';
     const m = s.ev || 0, pt = ixPartners(s);
-    const tip = st === 'none' ? 'No contact evidence recorded at this residue. Most proteins were never crystallised or crosslinked, so this is not evidence of no contact.'
+    const tip = st === 'none' ? 'No interaction evidence recorded at this residue. Most proteins were never crystallised, crosslinked or mutated, so this is not evidence of no interaction.'
       : EV_SETS.filter(([b]) => m & b).map(([, l]) => l).join(', ') + (pt.exp.length ? '. Experimental partners: ' + pt.exp.join(', ') : '') + (pt.pred.length ? '. Predicted partners: ' + pt.pred.join(', ') : '');
     const label = st === 'exp' ? 'Experimental' + (m & EV_PRED ? ' + pred.' : '') : st === 'pred' ? 'Predicted' : 'None';
     const who = withPartners && st !== 'none' ? '<span class="ixs-who">' + esc(pt.exp.concat(pt.pred).slice(0, 3).join(', ') + (pt.exp.length + pt.pred.length > 3 ? ' +' + (pt.exp.length + pt.pred.length - 3) : '')) + '</span>' : '';
@@ -5184,7 +5382,7 @@
   // Table cell: the status, then the evidence tags and residue contacts.
   function ixCell(s, max) {
     if (!ixReady()) return '<span class="muted">' + (IX ? '—' : '…') + '</span>';
-    const tags = ifaceTags(s, max) + modelledTag(s) + predTag(s) + xlTags(s);
+    const tags = xlTags(s) + ifaceTags(s, max) + modelledTag(s) + iaTags(s) + predTag(s);
     return ixBadge(s) + (tags ? '<div class="tags ixs-tags">' + tags + '</div>' : '') + contactHtml(s, Math.min(2, max));
   }
   const evLabel = (mask) => EV_SETS.filter(([b]) => mask & b).map(([, l]) => l).join(' + ');
@@ -5196,7 +5394,7 @@
     [8, 'Binds a PRMT', 'PRMT partner', 'STRING physical link ≥ 0.7 to a PRMT', (p) => partnersAt(p, 700).some(([k]) => bindMatch(1, k))],
     [16, 'Binds a Tudor protein', 'Tudor partner', 'STRING physical link ≥ 0.7 to a Tudor-domain protein (methylarginine readers such as SMN1, SMNDC1, TDRD3 and SND1)', (p) => partnersAt(p, 700).some(([k]) => bindMatch(2, k))],
     [32, 'In a curated complex', 'Complex', 'Member of a Complex Portal curated complex', (p) => p.cx.some((k) => !IX.cx[k].pred)],
-    [64, 'Site contact evidence', 'Site contact', 'At least one methylarginine with site-level contact evidence (the site view of this map)', (p) => p.sites.some((j) => S[j].ev)],
+    [64, 'Site interaction evidence', 'Site evidence', 'At least one methylarginine with site-level interaction evidence (the site view of this map)', (p) => p.sites.some((j) => S[j].ev)],
   ];
   const pevMask = (p) => PEV_SETS.reduce((m, [b, , , , t]) => (t(p) ? m | b : m), 0);
   const pevLabel = (mask) => PEV_SETS.filter(([b]) => mask & b).map(([, l]) => l).join(' + ');
@@ -5216,6 +5414,20 @@
     if (x.d & 4) t.push('<button type="button" class="tag na-dna xl-near"' + evChip(s, 'dna', s.pos, s.pos) + ' title="Inside a UniProt DNA-binding region">DNA-binding domain</button>');
     return t.join(' ');
   }
+  // IntAct records at the site: a mutation that changes an interaction, a short binding region, a methylated residue.
+  function iaTags(s) {
+    const recs = s.ia || [];
+    if (!recs.length) return '';
+    const t = [], who = (list) => Array.from(new Set(list.flatMap((r) => r.partners).map(ixGene))).slice(0, 4).join(', ');
+    const chip = (cls, label, title) => '<button type="button" class="tag na-prot' + cls + '"' + evChip(s, 'intact', s.pos, s.pos) + ' title="' + esc(title) + '">' + label + '</button>';
+    const mut = recs.filter(iaChanges), none = recs.filter((r) => r.kind === 0 && r.code === 0), reg = recs.filter((r) => r.kind === 1), me = recs.filter((r) => r.kind === 2);
+    if (mut.length) t.push(chip('', 'mutation alters binding', 'IntAct: mutating this arginine changed an interaction with ' + who(mut)));
+    else if (none.length) t.push(chip(' xl-near', 'mutation: no effect', 'IntAct: mutating this arginine had no effect on the interaction with ' + who(none)));
+    if (reg.length) t.push(chip(' xl-near', 'binding region', 'IntAct: inside a binding region of at most 20 residues mapped for ' + who(reg)));
+    if (me.length) t.push(chip('', 'methylated partner', 'IntAct: curated as methylated in the interaction with ' + who(me)));
+    return t.join(' ');
+  }
+  const iaText = (s) => (s.ia || []).map((r) => (r.kind === 0 ? 'mutation ' + IA_EFFECT[r.code] : r.kind === 1 ? IA_REGION[r.code] + ' region' : 'methylated') + ':' + r.partners.map(ixGene).join('/')).join(';');
   const xlText = (s) => (s.xl ? [s.xl.r ? 'RNA:' + xlSets(s.xl.r).join('/') : '', s.xl.n && !s.xl.r ? 'RNA<=3aa' : '', s.xl.f ? 'RBDmap' : '', s.xl.d & 1 ? 'DNA' : s.xl.d & 8 ? 'DNA candidate' : '', s.xl.d & 2 && !(s.xl.d & 9) ? 'DNA peptide' : '', s.xl.d & 4 ? 'UniProt DNA-binding' : ''].filter(Boolean).join(';') : '');
   const predText = (s) => (s.pred ? s.pred.hits.map(([k, sc]) => ixGene(k) + ':' + (sc / 100).toFixed(2)).join(';') : '');
   const modelledTag = (s) => (s.modelled ? '<span class="tag var" title="' + esc('Modelled as ' + s.modelled.comps.join('/') + ' in ' + s.modelled.pdbs.map((x) => x.toUpperCase()).join(', ')) + '">PDB ' + esc(s.modelled.comps[0]) + '</span>' : '');
@@ -5358,7 +5570,7 @@
     return '<p class="note" style="margin-top:0">Site evidence and crosslink and interface filters keep individual sites; partner and Gene Ontology filters keep whole proteins. <button class="linkish" type="button" data-ixgo="">See the analyses</button></p>' +
       '<div class="fgroup"><span class="flabel" title="Experimental: RNA or DNA crosslink, RBDmap fragment, or a PDB interface at this residue. Predicted: at the interface of an AlphaFold-Multimer model (pDockQ ≥ 0.23) or a confident predicted contact.">Contact evidence at the site</span>' +
       termChips('interaction', [['experimental', 'Experimental', 'Crosslink, RBDmap or PDB interface at this residue'], ['predicted', 'Predicted', 'Predicted interface or confident predicted contact, with or without experimental evidence'],
-        ['predicted-only', 'Predicted only', 'Predicted, with no experimental evidence yet: candidates to test'], ['none', 'None recorded', 'No contact evidence recorded; most proteins were never crystallised or crosslinked']]) + '</div>' +
+        ['predicted-only', 'Predicted only', 'Predicted, with no experimental evidence yet: candidates to test'], ['none', 'None recorded', 'No interaction evidence recorded; most proteins were never crystallised or crosslinked']]) + '</div>' +
       '<div class="fgroup"><span class="flabel" title="STRING v' + esc(IX.meta.string_version) + ' physical subnetwork">Has a physical partner that is (match any)</span>' + termChips('binds', BIND_TERMS.map(([t, v]) => { const o = BIND_OPTS.find((x) => x[0] === v); return [t, o[1], o[2]]; })) +
       more('A specific partner, confidence', !!pt || F.ixScore !== 700,
         '<label class="flabel" for="f-partner">Binds a specific protein (any gene)</label>' +
@@ -5476,13 +5688,14 @@
 
   // ----- protein network
   const NODE_MODES = {
-    meth: { name: 'Methylated', cats: ['In this methylarginine set'], cat: () => 0, colors: (pal) => [pal.site] },
+    meth: { name: 'Methylated', cats: ['In this methylarginine set'], cat: () => 0, colors: (pal) => [pal.meth] },
     sites: {
       name: 'Methyl-R sites', cats: ['1 site', '2–4 sites', '5–9 sites', '10 or more'],
-      cat: (p) => { const n = p.sites.length; return n >= 10 ? 3 : n >= 5 ? 2 : n >= 2 ? 1 : 0; }, colors: (pal) => pal.seq,
+      cat: (p) => { const n = p.sites.length; return n >= 10 ? 3 : n >= 5 ? 2 : n >= 2 ? 1 : 0; }, colors: (pal) => pal.seq.slice(1),
     },
-    state: { name: 'Methylation state', cats: ['Rme1', 'Rme2', 'Rme1 + Rme2', 'No state call'], cat: (p) => p.stCat, colors: (pal) => [pal.cat[0], pal.cat[1], pal.cat[2], pal.none] },
-    prmti: { name: 'PRMT inhibitor response', cats: ['↓ GSK591', '↓ MS023', '↓ both', 'Measured, n.s.', 'Not measured'], cat: (p) => p.trCat, colors: (pal) => [pal.cat[0], pal.cat[1], pal.cat[2], pal.dark, pal.none] },
+    // Same categories, colours and wording as the site colour modes.
+    state: Object.assign({}, COLOR_MODES.state, { cat: (p) => p.stCat }),
+    prmti: Object.assign({}, COLOR_MODES.prmti, { cat: (p) => p.trCat }),
   };
 
   // Radial force layout: the protein is pinned at the centre, partners sit at a distance that shrinks with
@@ -5625,7 +5838,8 @@
     const { p, ids, edges, pos } = net;
     const mode = NODE_MODES[UI.ixColor] || NODE_MODES.meth;
     const colors = mode.colors(pal);
-    const W = net.W, top = forExport ? 54 : 0, H = net.H + top + (forExport ? 70 : 0);
+    const W = net.W, top = forExport ? 54 : 0;
+    let H = net.H + top;
     let g = '';
     if (forExport) {
       g += '<text x="16" y="24" font-size="17" font-weight="700" fill="' + pal.ink + '">' + esc(p.label) + ' ' + (UI.net.type === 'physical' ? 'physical interaction partners' : 'STRING functional partners') + '</text>' +
@@ -5633,7 +5847,7 @@
     }
     g += '<g transform="translate(0,' + top + ')">';
     for (const [a, b] of net.ringEdges || []) {
-      g += '<line x1="' + r1(pos[a].x) + '" y1="' + r1(pos[a].y) + '" x2="' + r1(pos[b].x) + '" y2="' + r1(pos[b].y) + '" stroke="' + pal.accent + '" stroke-width="1" stroke-dasharray="4 3" stroke-opacity="0.55"/>';
+      g += '<line x1="' + r1(pos[a].x) + '" y1="' + r1(pos[a].y) + '" x2="' + r1(pos[b].x) + '" y2="' + r1(pos[b].y) + '" stroke="' + pal.muted + '" stroke-width="1" stroke-dasharray="4 3" stroke-opacity="0.7"/>';
     }
     for (const [a, b, sc] of edges) {
       const w = 0.6 + 2.6 * Math.max(0, (sc - 400) / 600);
@@ -5644,8 +5858,9 @@
       const q = x.p >= 0 ? P[x.p] : null;
       const outer = n >= (net.nCore || ids.length);
       const r = outer ? Math.min(9, nodeRadius(k, false)) : nodeRadius(k, n === 0);
-      const fill = q ? colors[mode.cat(q)] || pal.none : pal.bg;
-      const stroke = q ? pal.ring : pal.backbone;
+      const ck = q ? mode.cat(q) : -1, hol = ck >= 0 && !!(mode.hollow && mode.hollow[ck]);
+      const fill = q && !hol ? colors[ck] || pal.none : pal.bg;
+      const stroke = hol ? colors[ck] : q ? pal.ring : pal.backbone;
       const cxp = r1(pos[n].x), cyp = r1(pos[n].y);
       const binds = outer ? (net.ringEdges || []).filter((e) => e[0] === n).map((e) => IX.prot[ids[e[1]]].gene) : [];
       const tipHtml = '<b>' + esc(x.gene) + '</b> ' + esc(x.acc) + (outer ? '<br>Second ring: binds ' + esc(binds.join(', ')) + ' (STRING ≥ 0.7)' : n ? '<br>STRING physical score ' + (net.edges.find((e) => e[0] === 0 && e[1] === n) || [0, 0, 0])[2] / 1000 : '') +
@@ -5655,28 +5870,30 @@
         (x.flags & IXF.rna ? '<br>RNA binding (GO)' : '') + (x.flags & IXF.dna ? '<br>DNA binding (GO)' : '');
       g += '<g class="nd" data-k="' + k + '"' + (forExport ? '' : ' tabindex="0" role="button" data-tip="' + esc(tipHtml) + '"') + ' style="cursor:pointer">';
       let ringR = r + 4;
-      if (x.flags & IXF.tudor) { g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + ringR + '" fill="none" stroke="' + pal.accent + '" stroke-width="1.4" stroke-dasharray="3 2"/>'; ringR += 3; }
-      if (x.flags & IXF.wd40) { g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + ringR + '" fill="none" stroke="' + IX_WD_COLOR + '" stroke-width="1.4"/>'; ringR += 3; }
-      if (x.flags & IXF.phd) g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + ringR + '" fill="none" stroke="' + IX_PHD_COLOR + '" stroke-width="1.6" stroke-dasharray="1 2" stroke-linecap="round"/>';
-      if (x.flags & IXF.prmt) g += '<rect x="' + r1(pos[n].x - r) + '" y="' + r1(pos[n].y - r) + '" width="' + r1(2 * r) + '" height="' + r1(2 * r) + '" rx="3" transform="rotate(45 ' + cxp + ' ' + cyp + ')" fill="' + fill + '" stroke="' + pal.ink + '" stroke-width="1.6"/>';
-      else g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + r1(r) + '" fill="' + fill + '" stroke="' + (n === 0 ? pal.ink : stroke) + '" stroke-width="' + (n === 0 ? 2 : q ? 1.2 : 1.4) + '"/>';
+      // Reader domains as ink rings told apart by their dash; a PRMT is a square node.
+      for (const [flag, dash] of [[IXF.tudor, '3 2'], [IXF.wd40, ''], [IXF.phd, '1 2']]) {
+        if (!(x.flags & flag)) continue;
+        g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + ringR + '" fill="none" stroke="' + pal.ink + '" stroke-width="1.3"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + (flag === IXF.phd ? ' stroke-linecap="round"' : '') + '/>';
+        ringR += 3;
+      }
+      const dashAttr = hol ? ' stroke-dasharray="2.2 1.4"' : '';
+      if (x.flags & IXF.prmt) g += '<rect x="' + r1(pos[n].x - r * 0.9) + '" y="' + r1(pos[n].y - r * 0.9) + '" width="' + r1(1.8 * r) + '" height="' + r1(1.8 * r) + '" rx="2" fill="' + fill + '" stroke="' + (hol ? stroke : pal.ink) + '" stroke-width="1.6"' + dashAttr + '/>';
+      else g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + r1(r) + '" fill="' + fill + '" stroke="' + (n === 0 ? pal.ink : stroke) + '" stroke-width="' + (n === 0 ? 2 : hol ? 1.6 : q ? 1.2 : 1.4) + '"' + dashAttr + '/>';
       const labelled = n === 0 || UI.net.labels === 'all' || (UI.net.labels === 'methyl' && (q || outer)) || net.pinned.has(k);
       g += (labelled ? '<text x="' + cxp + '" y="' + r1(pos[n].y + r + 12) + '" font-size="' + (n === 0 ? 12.5 : outer ? 9.5 : 10.5) + '" font-weight="' + (n === 0 || (q && !outer) ? 700 : 400) + '" text-anchor="middle" fill="' + (q && !outer ? pal.ink : pal.muted) + '"' + (outer ? ' font-style="italic"' : '') + '>' + esc(x.gene) + '</text>' : '') + '</g>';
     });
     g += '</g>';
     if (forExport) {
-      let lx = 16;
-      const ly = top + net.H + 22;
-      g += '<text x="16" y="' + ly + '" font-size="10.5" font-weight="700" fill="' + pal.muted + '">' + esc(mode.name) + '</text>';
-      lx = 16 + mode.name.length * 6.2 + 12;
-      mode.cats.forEach((c, k) => { g += '<circle cx="' + (lx + 5) + '" cy="' + (ly - 4) + '" r="5" fill="' + colors[k] + '"/><text x="' + (lx + 14) + '" y="' + ly + '" font-size="10.5" fill="' + pal.ink + '">' + esc(c) + '</text>'; lx += 26 + c.length * 5.9; });
-      g += '<circle cx="' + (lx + 5) + '" cy="' + (ly - 4) + '" r="5" fill="' + pal.bg + '" stroke="' + pal.backbone + '"/><text x="' + (lx + 14) + '" y="' + ly + '" font-size="10.5" fill="' + pal.ink + '">Not in this set</text>';
-      const ly2 = ly + 20;
-      g += '<rect x="18" y="' + (ly2 - 10) + '" width="10" height="10" transform="rotate(45 23 ' + (ly2 - 5) + ')" fill="none" stroke="' + pal.ink + '"/><text x="34" y="' + ly2 + '" font-size="10.5" fill="' + pal.ink + '">PRMT</text>' +
-        '<circle cx="90" cy="' + (ly2 - 4) + '" r="7" fill="none" stroke="' + pal.accent + '" stroke-dasharray="3 2"/><text x="102" y="' + ly2 + '" font-size="10.5" fill="' + pal.ink + '">Tudor domain</text>' +
-        '<circle cx="190" cy="' + (ly2 - 4) + '" r="7" fill="none" stroke="' + IX_WD_COLOR + '"/><text x="202" y="' + ly2 + '" font-size="10.5" fill="' + pal.ink + '">WD40 repeat</text>' +
-        '<circle cx="290" cy="' + (ly2 - 4) + '" r="7" fill="none" stroke="' + IX_PHD_COLOR + '" stroke-width="1.6" stroke-dasharray="1 2" stroke-linecap="round"/><text x="302" y="' + ly2 + '" font-size="10.5" fill="' + pal.ink + '">PHD finger</text>' +
-        (net.ring && net.ring.length ? '<line x1="380" y1="' + (ly2 - 4) + '" x2="404" y2="' + (ly2 - 4) + '" stroke="' + pal.accent + '" stroke-dasharray="4 3"/><text x="410" y="' + ly2 + '" font-size="10.5" font-style="italic" fill="' + pal.ink + '">Second ring: PRMTs and Tudor proteins that bind the partners</text>' : '') +
+      const ring = (dash) => (xa, yb) => '<circle cx="' + (xa + 10) + '" cy="' + yb + '" r="6" fill="none" stroke="' + pal.ink + '" stroke-width="1.3"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + '/>';
+      const items = mode.cats.map((c, k) => [SWATCH.head(pal, colors[k], !!(mode.hollow && mode.hollow[k])), c])
+        .concat([[(xa, yb) => '<circle cx="' + (xa + 10) + '" cy="' + yb + '" r="4.6" fill="' + pal.bg + '" stroke="' + pal.backbone + '"/>', 'Not in this set'],
+          [(xa, yb) => '<rect x="' + (xa + 5) + '" y="' + (yb - 5) + '" width="10" height="10" rx="2" fill="none" stroke="' + pal.ink + '" stroke-width="1.4"/>', 'PRMT'],
+          [ring('3 2'), 'Tudor domain'], [ring(''), 'WD40 repeat'], [ring('1 2'), 'PHD finger']]);
+      if (net.ring && net.ring.length) items.push([(xa, yb) => '<line x1="' + xa + '" y1="' + yb + '" x2="' + (xa + 20) + '" y2="' + yb + '" stroke="' + pal.muted + '" stroke-dasharray="4 3"/>', 'Second ring: PRMTs and Tudor proteins that bind the partners']);
+      const leg = svgLegend(pal, items, 16, top + net.H + 12, W - 32, { title: mode.name });
+      const ly2 = top + net.H + 12 + leg.h;
+      H = Math.ceil(ly2 + 26);
+      g += leg.svg +
         '<text x="' + (W - 16) + '" y="' + (ly2 + 18) + '" font-size="9" text-anchor="end" fill="' + pal.muted + '">Edges: STRING physical links (CC BY 4.0) · methylarginine set: PTM_Pipeline</text>';
     }
     return '<svg xmlns="http://www.w3.org/2000/svg" class="ix-net" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + (pal.font || EXPORT_PAL.font).replace(/'/g, '"') + '\'' +
@@ -6166,7 +6383,7 @@
         } else if (s) {
           const m = s.ev || 0;
           out.innerHTML = '<div class="check-res"><b>' + esc(p.label) + ' ' + rl(s.pos, P[s.p]) + '</b> ' + ixBadge(s, true) +
-            '<span class="muted small">' + (m ? esc(EV_SETS.filter(([b]) => m & b).map(([, l]) => l).join(' · ')) : 'no contact evidence recorded') + '</span>' +
+            '<span class="muted small">' + (m ? esc(EV_SETS.filter(([b]) => m & b).map(([, l]) => l).join(' · ')) : 'no interaction evidence recorded') + '</span>' +
             '<button class="btn quiet small" type="button" data-ck-open="' + s.pos + '">Open site →</button></div>';
         } else {
           const n = { exp: 0, pred: 0, none: 0 };
@@ -6269,7 +6486,6 @@
   // the sites with the row feature with the other selected sites: within protein by default (Mantel–Haenszel, each
   // protein a stratum, so a protein with many mapped sites does not dominate), or pooled across proteins. Colour is
   // the log2 odds ratio, shown only where q ≤ 0.05 (Benjamini–Hochberg across the matrix); other cells stay grey.
-  const CM_DIVERGING = { up: ['#f6d0cd', '#ef9a94', '#e34948', '#a8302f'], down: ['#cde2fb', '#86b6ef', '#2a78d6', '#184f95'], mid: '#f0efec' };
   const CM_STEPS = [Math.log2(1.25), 1, Math.log2(3), Math.log2(5)];
   function cmRows() {
     const ft = new Map(profileFeatures().map((f) => [f.key, f]));
@@ -6322,11 +6538,11 @@
     return { rows, cols, cells, n: sites.length, proteins: byP.size, mode };
   }
   function cmColor(l2, sig, pal) {
-    if (l2 == null || !Number.isFinite(l2)) return pal.cmMid;
-    const arm = l2 > 0 ? CM_DIVERGING.up : CM_DIVERGING.down;
+    if (l2 == null || !Number.isFinite(l2)) return pal.mid;
+    const arm = l2 > 0 ? pal.up : pal.down;
     let step = -1;
     CM_STEPS.forEach((t, k) => { if (Math.abs(l2) >= t) step = k; });
-    return step < 0 || !sig ? pal.cmMid : arm[step];
+    return step < 0 || !sig ? pal.mid : arm[step];
   }
   // Ink that reads on a fill: dark text on light cells, white on dark ones.
   const cmInk = (hex) => { const v = parseInt(hex.slice(1), 16), r = v >> 16, g = (v >> 8) & 255, b = v & 255; return 0.299 * r + 0.587 * g + 0.114 * b > 150 ? '#1f2a30' : '#ffffff'; };
@@ -6352,7 +6568,7 @@
     });
     for (const c of cm.cells) {
       const st = cm.mode === 'pooled' ? { or: c.po.or } : c.mh, l2 = st.or != null && st.or > 0 && Number.isFinite(st.or) ? Math.log2(st.or) : null;
-      const sig = c.a >= 3 && c.q != null && c.q <= 0.05, fill = c.a ? cmColor(l2, sig, pal) : pal.cmMid;
+      const sig = c.a >= 3 && c.q != null && c.q <= 0.05, fill = c.a ? cmColor(l2, sig, pal) : pal.mid;
       const x = lw + c.ci * cw, y = rowY(c.ri);
       const r = cm.rows[c.ri], col = cm.cols[c.ci];
       const label = !c.a ? '·' : st.or == null ? 'n/e' : st.or === 0 ? '0×' : !Number.isFinite(st.or) ? '∞' : (st.or >= 10 ? st.or.toFixed(0) : st.or.toFixed(st.or < 1 ? 2 : 1)) + '×';
@@ -6372,7 +6588,7 @@
     let lx = lw;
     g += '<text x="0" y="' + (ly + 9) + '" font-size="10" fill="' + pal.muted + '">Odds ratio</text>';
     const ticks = ['0.2', '0.33', '0.5', '0.8', '', '1.25', '2', '3', '5'];
-    const sw = CM_DIVERGING.down.slice().reverse().concat([pal.cmMid]).concat(CM_DIVERGING.up);
+    const sw = pal.down.slice().reverse().concat([pal.mid]).concat(pal.up);
     sw.forEach((c, k) => { g += '<rect x="' + (lx + k * 30) + '" y="' + ly + '" width="28" height="12" rx="2" fill="' + c + '"/>'; });
     ticks.forEach((t, k) => { if (t) g += '<text x="' + (lx + k * 30 + (k < 4 ? 0 : 28)) + '" y="' + (ly + 25) + '" font-size="9" text-anchor="' + (k < 4 ? 'start' : 'end') + '" fill="' + pal.muted + '">' + (k < 4 ? '≤' : '≥') + t + '</text>'; });
     g += '<text x="' + (lx + sw.length * 30 + 10) + '" y="' + (ly + 10) + '" font-size="10" fill="' + pal.muted + '">coloured where q ≤ 0.05 (Benjamini–Hochberg) and n ≥ 3; other cells grey</text>';
@@ -6384,7 +6600,7 @@
     const scoped = constraints().length > 0, mode = UI.cmMode || 'within';
     return '<div class="card" id="ix-cm"><div class="card-head"><div><h3>Which sites carry which evidence</h3><p class="sub">' +
       (scoped ? 'The ' + fmt(R.sites.length) + ' sites in your selection' : 'All ' + fmt(R.sites.length) + ' methylarginines') +
-      ': each cell asks whether sites with the row feature (the writer evidence, methylation call, motif or context, from the site union) carry each kind of contact evidence (crosslinks, PDB, predicted complexes) more or less often than the other sites. Red is more often, blue less often (coloured where q ≤ 0.05 and at least 3 sites); hover a cell for the counts and both statistics, click it to list the sites.' + docLink('ix-cm') + '</p></div>' +
+      ': each cell asks whether sites with the row feature (the writer evidence, methylation call, motif or context, from the site union) carry each kind of interaction evidence (crosslinks, PDB, predicted complexes) more or less often than the other sites. Red is more often, blue less often (coloured where q ≤ 0.05 and at least 3 sites); hover a cell for the counts and both statistics, click it to list the sites.' + docLink('ix-cm') + '</p></div>' +
       '<div class="exp"><button type="button" data-cmex="svg">SVG</button><button type="button" data-cmex="png">PNG</button><button type="button" data-cmex="tsv">TSV</button></div></div>' +
       '<div class="fig-controls"><div class="seg" role="group" aria-label="Comparison"><span>Compare</span>' +
       [['within', 'Within protein'], ['pooled', 'Pooled']].map(([k, l]) => '<button type="button" data-cmmode="' + k + '" aria-pressed="' + (mode === k) + '">' + l + '</button>').join('') + '</div></div>' +
@@ -6396,7 +6612,7 @@
     if (!box) return;
     const mode = UI.cmMode || 'within';
     const cm = connMatrix(R.sites, mode);
-    const pal = Object.assign(screenPalette(), { cmMid: cssVar('--surface-2') || CM_DIVERGING.mid });
+    const pal = screenPalette();
     box.innerHTML = connMatrixSvg(cm, pal, false, '').svg;
     $$('.cm-cell', box).forEach((c) => {
       c.addEventListener('mouseenter', (e) => showTip(e, c.getAttribute('data-tip')));
@@ -6425,7 +6641,7 @@
             x.mh.or != null && Number.isFinite(x.mh.or) ? x.mh.or.toFixed(3) : '', x.mh.lo != null ? x.mh.lo.toFixed(3) : '', x.mh.hi != null ? x.mh.hi.toFixed(3) : '', x.mh.p != null ? x.mh.p.toExponential(2) : '', x.mh.used, x.q != null ? x.q.toExponential(2) : ''].join('\t'))).join('\n') + '\n');
         return;
       }
-      exportFigure(k, connMatrixSvg(cm, Object.assign({}, EXPORT_PAL, { cmMid: CM_DIVERGING.mid }), true, title), 'methylarginine_connections_matrix');
+      exportFigure(k, connMatrixSvg(cm, EXPORT_PAL, true, title), 'methylarginine_connections_matrix');
     }; });
   }
 
@@ -6433,7 +6649,6 @@
   // PRMTs (rows) against Tudor-domain proteins (columns): each cell counts the methylated proteins of the selection
   // that are STRING physical partners (≥ 0.7) of both, substrates a writer and a possible reader have in common. The
   // hover adds the count expected if the two partner lists were independent (Fisher, Benjamini–Hochberg).
-  const WR_SEQ = ['#cde2fb', '#9ec5f4', '#5598e7', '#256abf', '#104281'];
   function wrMatrix() {
     const sel = new Set(R.prots.map((p) => p.i));
     // Partners the search already requires (binds:PRMT5): their row or column is full by construction.
@@ -6470,7 +6685,7 @@
         const step = !c.a ? -1 : c.a === 1 ? 0 : c.a === 2 ? 1 : c.a <= 4 ? 2 : c.a <= 9 ? 3 : 4;
         // Outline needs two or more shared partners: with short partner lists one shared protein can pass the test alone.
         const inSearch = m.searched.has(IX.prot[w.k].gene.toUpperCase()) || m.searched.has(IX.prot[r.k].gene.toUpperCase());
-        const fill = step < 0 ? pal.cmMid : WR_SEQ[step], sig = !inSearch && c.a >= 2 && c.q != null && c.q <= 0.05;
+        const fill = step < 0 ? pal.mid : pal.seq[step], sig = !inSearch && c.a >= 2 && c.q != null && c.q <= 0.05;
         const genes = c.both.map((i) => P[i].label).sort();
         const tipHtml = '<b>' + esc(IX.prot[w.k].gene) + ' and ' + esc(IX.prot[r.k].gene) + '</b><br>' + fmt(c.a) + ' methylated protein' + (c.a === 1 ? '' : 's') + ' bind both' + (c.a ? ': ' + esc(genes.slice(0, 14).join(', ')) + (genes.length > 14 ? ' and ' + (genes.length - 14) + ' more' : '') : '') +
           (inSearch ? '<br>Your search already requires binding to ' + esc(m.searched.has(IX.prot[w.k].gene.toUpperCase()) ? IX.prot[w.k].gene : IX.prot[r.k].gene) + ', so this count is not tested' : '<br>Expected if independent: ' + c.exp.toFixed(1) + (c.p != null ? ' · Fisher p ' + fmtP(c.p) + ', q ' + fmtP(c.q) : '')) + (c.a ? '<br><i>Click to list their methylarginines</i>' : '');
@@ -6481,7 +6696,7 @@
     });
     const ly = top + ch * m.rows.length + 18;
     g += '<text x="0" y="' + (ly + 9) + '" font-size="10" fill="' + pal.muted + '">Shared</text>';
-    ['1', '2', '3–4', '5–9', '10+'].forEach((t, k) => { g += '<rect x="' + (lw + k * 42) + '" y="' + ly + '" width="40" height="12" rx="2" fill="' + WR_SEQ[k] + '"/><text x="' + (lw + k * 42 + 20) + '" y="' + (ly + 24) + '" font-size="9" text-anchor="middle" fill="' + pal.muted + '">' + t + '</text>'; });
+    ['1', '2', '3–4', '5–9', '10+'].forEach((t, k) => { g += '<rect x="' + (lw + k * 42) + '" y="' + ly + '" width="40" height="12" rx="2" fill="' + pal.seq[k] + '"/><text x="' + (lw + k * 42 + 20) + '" y="' + (ly + 24) + '" font-size="9" text-anchor="middle" fill="' + pal.muted + '">' + t + '</text>'; });
     g += '<text x="' + (lw + 5 * 42 + 10) + '" y="' + (ly + 10) + '" font-size="10" fill="' + pal.muted + '">outlined: ≥ 2 shared and more than expected, q ≤ 0.05</text>';
     return { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + (pal.font || EXPORT_PAL.font).replace(/'/g, '"') + '\' role="img" aria-label="' + esc(title) + '">' +
       (forExport ? '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' : '') + '<g transform="translate(' + (forExport ? 16 : 0) + ',0)">' + g + '</g></svg>', W: W + (forExport ? 16 : 0), H };
@@ -6501,7 +6716,7 @@
     if (!box) return;
     const m = wrMatrix();
     if (!m.rows.length || !m.cols.length) { box.innerHTML = '<p class="note">No methylated protein in the selection binds both a PRMT and a Tudor-domain protein at STRING ≥ 0.7.</p>'; return; }
-    const pal = Object.assign(screenPalette(), { cmMid: cssVar('--surface-2') || CM_DIVERGING.mid });
+    const pal = screenPalette();
     box.innerHTML = wrMatrixSvg(m, pal, false, '').svg;
     $$('.wr-cell', box).forEach((c) => {
       c.addEventListener('mouseenter', (e) => showTip(e, c.getAttribute('data-tip')));
@@ -6527,7 +6742,7 @@
           .concat(m.cells.filter((x) => x.a).sort((x, y) => y.a - x.a).map((x) => [IX.prot[x.w.k].gene, IX.prot[x.r.k].gene, x.a, x.exp.toFixed(2), x.p != null ? x.p.toExponential(2) : '', x.q != null ? x.q.toExponential(2) : '', x.both.map((i) => P[i].label).sort().join(';')].join('\t'))).join('\n') + '\n');
         return;
       }
-      exportFigure(b.dataset.wrex, wrMatrixSvg(m, Object.assign({}, EXPORT_PAL, { cmMid: CM_DIVERGING.mid }), true, title), 'prmt_tudor_shared_partners');
+      exportFigure(b.dataset.wrex, wrMatrixSvg(m, EXPORT_PAL, true, title), 'prmt_tudor_shared_partners');
     }; });
   }
 
@@ -6616,7 +6831,7 @@
       const on = sets.map(([b], k) => (m & b ? k : -1)).filter((k) => k >= 0);
       if (on.length > 1) g += '<line x1="' + (x0 + on[0] * colW + colW / 2) + '" x2="' + (x0 + on[on.length - 1] * colW + colW / 2) + '" y1="' + y + '" y2="' + y + '" stroke="' + pal.ink + '" stroke-width="1.5"/>';
       sets.forEach(([b], k) => { g += '<circle cx="' + (x0 + k * colW + colW / 2) + '" cy="' + y + '" r="4.2" fill="' + (m & b ? pal.ink : pal.grid) + '"/>'; });
-      g += '<rect x="' + barX + '" y="' + (y - 5) + '" width="' + r1(Math.max(1, (n / max) * barW)) + '" height="10" rx="2" fill="' + pal.bar + '"/><text x="' + (barX + (n / max) * barW + 5) + '" y="' + (y + 3.5) + '" font-size="9.5" fill="' + pal.ink + '">' + fmt(n) + '</text>';
+      g += '<rect x="' + barX + '" y="' + (y - 5) + '" width="' + r1(Math.max(1, (n / max) * barW)) + '" height="10" rx="2" fill="' + pal.seq[3] + '"/><text x="' + (barX + (n / max) * barW + 5) + '" y="' + (y + 3.5) + '" font-size="9.5" fill="' + pal.ink + '">' + fmt(n) + '</text>';
     });
     const H = top + rows.length * rh + 24;
     g += '<text x="16" y="' + (H - 8) + '" font-size="9.5" fill="' + pal.muted + '">' + fmt(d.none) + ' ' + noun + ' (' + pctText(d.none, d.n || 1) + '%) carry none of these; absence of evidence is not evidence of no contact.</text>';
@@ -6721,7 +6936,7 @@
       : 'This selection holds ' + fmt(n) + ' methylarginine site' + (n === 1 ? '' : 's') + ' on ' + fmt(sel.prots.length) + ' protein' + (sel.prots.length === 1 ? '' : 's') + ', ' + pc(n, nAll) + ' of the ' + fmt(nAll) + ' sites in the union.'];
     if (ixReady()) {
       const [e, e0] = share((s) => ixStatus(s) === 'exp'), [pr, p0] = share((s) => ixStatus(s) === 'pred');
-      out.push(fmt(e) + ' (' + pc(e, n) + ') have experimental contact evidence at the residue and ' + fmt(pr) + ' (' + pc(pr, n) + ') sit at a predicted interface only' +
+      out.push(fmt(e) + ' (' + pc(e, n) + ') have experimental interaction evidence at the residue and ' + fmt(pr) + ' (' + pc(pr, n) + ') sit at a predicted interface only' +
         (whole ? '' : ', against ' + pc(e0, nAll) + ' and ' + pc(p0, nAll) + ' of all sites') + '.');
     }
     if (prof) {
@@ -6772,7 +6987,7 @@
     const feats = profileFeatures();
     if (ixReady()) {
       feats.unshift({ key: 'ixp', group: 'Interactions', label: 'Predicted only (no experimental evidence)', test: (s) => ixStatus(s) === 'pred' });
-      feats.unshift({ key: 'ixe', group: 'Interactions', label: 'Experimental contact evidence', test: (s) => ixStatus(s) === 'exp' });
+      feats.unshift({ key: 'ixe', group: 'Interactions', label: 'Experimental interaction evidence', test: (s) => ixStatus(s) === 'exp' });
     }
     const nA = A.sites.length, nB = B.sites.length;
     const rows = feats.map((ft) => {
@@ -7032,7 +7247,7 @@
     const groups = [['Protein arginine methyltransferases', prmtRows, prmtRows.length], ['Tudor-domain proteins', tudorAll.slice(0, 12), tudorAll.length],
       ['WD40-repeat proteins', wdAll.slice(0, 12), wdAll.length], ['PHD-finger proteins', phdAll.slice(0, 12), phdAll.length]];
     const maxN = Math.max(1, ...groups.flatMap((gr) => gr[1].map((r) => r.n)));
-    const barList = (list) => '<div class="hbars">' + list.map(({ x, n }) => '<button class="hb" type="button" data-partner="' + x.k + '"><span class="hb-label">' + esc(x.gene) + (x.p >= 0 ? ' <span class="muted">· methylated</span>' : '') + '</span><span class="hb-track"><span class="hb-bar" style="left:0;width:' + (100 * n / maxN).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span></button>').join('') + '</div>';
+    const barList = (list) => '<div class="hbars">' + list.map(({ x, n }) => '<button class="hb" type="button" data-partner="' + x.k + '"><span class="hb-label">' + esc(x.gene) + (x.p >= 0 ? ' <span class="muted">· methylated</span>' : '') + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / maxN).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span></button>').join('') + '</div>';
     let edgesMeth = 0, edgesAll = 0;
     for (const p of P) for (const [k, sc] of p.partners || []) if (sc >= 700) { edgesAll++; if (k < IX.nP) edgesMeth++; }
     return '<div id="ch-readers"><p class="sub">Methylated proteins with a high-confidence (≥ 0.7) STRING physical link to each protein. Tudor domains (InterPro IPR002999) include the methylarginine readers SMN1, SMNDC1, TDRD3 and SND1; WD40 repeats (IPR001680) include WDR77 (MEP50), the PRMT5 cofactor, and WDR5; PHD fingers (IPR001965, IPR019787), many of which read the histone H3 N-terminus. Click a bar to list the methylated proteins it binds; the filter panel also takes any other partner by gene symbol.</p>' +
@@ -7528,6 +7743,9 @@
   }
   function preparePrint() {
     restorePrint();
+    // Print is always light: chips and tables take the light tokens, figures are redrawn with EXPORT_PAL.
+    applyTokens('light');
+    printUndo.push(() => applyTokens());
     const p = UI.view === 'protein' ? P[UI.detail] : null;
     if (!p) return;
     setPrintPageStyle(true, p.label + ' (' + p.acc + ') · ' + new Date().toISOString().slice(0, 10));
@@ -7689,7 +7907,7 @@
     if (o.center != null && o.center !== pos) head += ' · ' + (pos > o.center ? '+' : '−') + Math.abs(pos - o.center) + ' from ' + rl(o.center, p);
     out.push(head);
     const j = p.sites.find((k) => S[k].pos === pos);
-    if (j != null) { const st = ixStatus(S[j]); out.push('Methylarginine · ' + STATE_LABEL[S[j].st] + (st ? ' · contact evidence: ' + IXS[st][0].toLowerCase() : '')); }
+    if (j != null) { const st = ixStatus(S[j]); out.push('Methylarginine · ' + STATE_LABEL[S[j].st] + (st ? ' · interaction evidence: ' + IXS[st][0].toLowerCase() : '')); }
     const ptm = p.ptms.filter((t) => t[0] === pos);
     if (ptm.length) out.push(ptm.map((t) => esc(ptmName(t, p)) + ' (' + esc(ptmSources(t).join(', ')) + ')').join('; '));
     if (u) {
@@ -7729,7 +7947,19 @@
     'pRBS-ID 2021': '10.1038/s41467-021-26317-5', 'pepR-MS 2025': '10.1101/2025.09.05.674461', 'pepR-MS focused site': '10.1101/2025.09.05.674461',
   };
   const PEPR_DOI = '10.1101/2025.09.05.674461', RBDMAP_DOI = '10.1016/j.molcel.2016.06.029', DNAXL_DOI = '10.1016/j.cell.2025.04.037';
-  const EV_TITLE = { rna: 'RNA crosslinks in living cells', dna: 'DNA crosslinks in living cells', 'pdb-rna': 'RNA contacts in PDB structures', 'pdb-dna': 'DNA contacts in PDB structures', 'pdb-protein': 'Protein contacts in PDB structures', 'pdb-self': 'Self-contacts in PDB structures', pdbna: 'RNA/DNA contacts in PDB structures', pdbprot: 'Protein contacts in PDB structures' };
+  const EV_TITLE = { rna: 'RNA crosslinks in living cells', dna: 'DNA crosslinks in living cells', 'pdb-rna': 'RNA contacts in PDB structures', 'pdb-dna': 'DNA contacts in PDB structures', 'pdb-protein': 'Protein contacts in PDB structures', 'pdb-self': 'Self-contacts in PDB structures', pdbna: 'RNA/DNA contacts in PDB structures', pdbprot: 'Protein contacts in PDB structures', intact: 'Interaction features curated in IntAct' };
+  const pmidLink = (id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">PubMed ' + esc(id) + '</a>';
+  const iaPartnerText = (list, n) => esc(list.map(ixGene).join(', ')) + (n > list.length ? ' and ' + (n - list.length) + ' more' : '');
+  // One IntAct record (a site-level record carries PubMed ids and interaction ACs; a map-track record only counts).
+  function iaRecordHtml(r, p) {
+    const span = r.a === r.b ? rn(r.a, p) : rn(r.a, p) + '–' + rn(r.b, p);
+    const who = r.partners.length ? iaPartnerText(r.partners, r.nPartners || r.partners.length) : 'a partner';
+    const refs = (r.pmids || []).slice(0, 3).map(pmidLink).concat((r.acs || []).slice(0, 2).map((ac) => '<a href="' + iaLink(ac) + '" target="_blank" rel="noopener">' + esc(ac) + '</a>'));
+    const tail = refs.length ? ' · ' + refs.join(' · ') : '';
+    if (r.kind === 0) return '<li>Mutation <b>' + span + (r.res ? '→' + esc(r.res) : '') + '</b> ' + IA_EFFECT[r.code] + ' the interaction with ' + who + tail + '</li>';
+    if (r.kind === 1) return '<li>' + IA_REGION[r.code].replace(/^./, (c) => c.toUpperCase()) + ' binding region <b>' + span + '</b> for ' + who + tail + '</li>';
+    return '<li><b>' + span + '</b> methylated in the interaction with ' + who + tail + '</li>';
+  }
   // The evidence behind a contact mark on residues a..b of protein p, with links to the studies and PDB entries.
   function contactEvidenceHtml(p, kind, a, b) {
     const span = a === b ? rn(a, p) : rn(a, p) + '–' + rn(b, p);
@@ -7753,6 +7983,18 @@
       for (const pos of xp.dnaCand.filter(inR)) items.push('<li><b>' + res(pos) + '</b> one of several residues a DNA crosslink may sit on (' + doiLink(DNAXL_DOI, 'Trendel et al. 2025') + ')</li>');
       for (const f of xp.dnaPeps.filter(overlap)) items.push('<li>DNA-crosslinked peptide <b>' + rn(f[0], p) + '–' + rn(f[1], p) + '</b> (' + doiLink(DNAXL_DOI, 'Trendel et al. 2025') + ')</li>');
       for (const f of xp.dnaBind.filter(overlap)) items.push('<li>UniProt DNA-binding region <b>' + rn(f[0], p) + '–' + rn(f[1], p) + '</b> (<a href="https://www.uniprot.org/uniprotkb/' + esc(p.acc.split('-')[0]) + '/entry#function" target="_blank" rel="noopener">UniProt</a>)</li>');
+    } else if (kind === 'intact') {
+      const seen = new Set();
+      for (const j of p.sites.filter((k) => inR(S[k].pos))) for (const r of S[j].ia || []) {
+        seen.add([r.kind, r.code, r.a, r.b].join(':'));
+        items.push(iaRecordHtml(r, p));
+      }
+      const ia = ixReady() ? IX.iaProt.get(p.i) : null;
+      if (ia) {
+        for (const [x, y, code, partners, n] of ia.muts) if (overlap([x, y]) && !seen.has([0, code, x, y].join(':'))) items.push(iaRecordHtml({ kind: 0, code, a: x, b: y, res: '', partners, nPartners: n }, p));
+        for (const [x, y, typeBits, partners, n] of ia.regions) if (overlap([x, y]) && y - x < 400) items.push('<li>' + bits(typeBits).map((k) => IA_REGION[k]).join('/').replace(/^./, (c) => c.toUpperCase()) + ' binding region <b>' + rn(x, p) + '–' + rn(y, p) + '</b> for ' + iaPartnerText(partners, n) + '</li>');
+      }
+      if (items.length) items.push('<li class="muted">Curated by IntAct from the publications listed; every feature here matches the canonical UniProt sequence at its range. <a href="https://www.ebi.ac.uk/intact/search?query=' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">All IntAct interactions of ' + esc(p.label) + ' ↗</a></li>');
     } else if (kind === 'pred') {
       for (const j of p.sites.filter((k) => inR(S[k].pos))) {
         const names = ixPartners(S[j]).pred;
@@ -7781,7 +8023,7 @@
       });
       if (items.length) items.push('<li class="muted">Interface residues from PDBe-KB (EMBL-EBI); "open in 3D" loads the entry focused on that residue.</li>');
     }
-    return '<div class="evpop-head"><b>' + esc(EV_TITLE[kind] || 'Contact evidence') + '</b> · ' + esc(p.label) + ' ' + span +
+    return '<div class="evpop-head"><b>' + esc(EV_TITLE[kind] || 'Interaction evidence') + '</b> · ' + esc(p.label) + ' ' + span +
       '<button class="evpop-x" type="button" aria-label="Close">×</button></div>' +
       (methyl.length ? '<p class="evpop-sub">Methylarginine' + (methyl.length === 1 ? ' ' : 's ') + methyl.map((x) => rl(x, p)).join(', ') + ' in this stretch</p>' : '') +
       (items.length ? '<ul class="evpop-list">' + items.join('') + '</ul>' : '<p class="muted">No record found for this stretch.</p>') +
@@ -7930,7 +8172,7 @@
         'Phosphorylation, lysine acylation and ubiquitin/SUMO sites come from the pipeline\'s cross-PTM master table (iPTMnet sources, UniProt and IEDB). <b>Lysine methylation</b> combines that table (234 lysine-methylation sites on 130 proteins) with CPLM 4.0 (' + doiLink('10.1093/nar/gkab849', 'Zhang et al. 2022') + '): of its human methylation rows, ' + cplmText() + ' Neither source is exhaustive. Tooltips name the source of each mark; CPLM\'s evidence label (Exp., Dat. or both) is shown as CPLM gives it. Composition (UniProt compositional bias) is off by default.</p>' +
         '<p><b>Regions</b> are UniProt Region and Motif features (motifs outlined). Overlapping features, which UniProt often nests (NPM1 1–186 and 1–117), are stacked on separate lines so none hides another; a label sits inside its box, after it, or shortened, and the tooltip always gives the full text and coordinates.</p>' +
         '<p><b>Journal panels.</b> The contacts cartoon and the Figures-tab protein comparison can be exported at a printed column width (85, 114 or 174 mm, the usual Cell Press columns): the layout is narrowed so the smallest labels print at 6 pt, the SVG carries its width in millimetres, and the PNG is rendered at 300, 600 or 1000 dpi with the resolution recorded in the file.</p>' +
-        '<p><b>Contacts at a glance</b> draws the protein once more as a simple linear cartoon: the methylarginines coloured by interaction status, and under them, on the same residue scale, RNA and DNA crosslinks in living cells, PDB interface residues (PDBe-KB, live), and predicted-complex interfaces (assessed at methylarginines only). A dashed line drops from each methylarginine with evidence at the residue itself and a ring marks which kind; diamonds on the backbone are lysine methylation. The Interactions tab shows the same cartoon for any protein, and the Figures tab adds the crosslink and PDB lanes under every protein of the comparison, which can be ordered by contact evidence, length or name.</p>' +
+        '<p><b>Interaction evidence at a glance</b> draws the protein once more as a simple linear cartoon: the methylarginines coloured by interaction status, and under them, on the same residue scale, RNA and DNA crosslinks in living cells, PDB interface residues (PDBe-KB, live), and predicted-complex interfaces (assessed at methylarginines only). A dashed line drops from each methylarginine with evidence at the residue itself and a ring marks which kind; diamonds on the backbone are lysine methylation. The Interactions tab shows the same cartoon for any protein, and the Figures tab adds the crosslink and PDB lanes under every protein of the comparison, which can be ordered by contact evidence, length or name.</p>' +
       '<ul>' +
       '<li><b>UniProt</b>: domains, regions, disordered segments and compositional bias for the map; natural variants and mutagenesis (variants at a methylarginine are highlighted, with their disease notes); and UniProt\'s own modified-residue term for each site (asymmetric, symmetric or monomethylarginine). Methylarginines that UniProt annotates but the union lacks are listed under the site table.</li>' +
       '<li><b>AlphaFold DB</b>: the predicted model coloured by pLDDT (very high > 90, confident 70–90, low 50–70, very low < 50), the pLDDT at each site, and the mean AlphaMissense pathogenicity of the 19 R→X substitutions at each site (likely benign < 0.34, likely pathogenic ≥ 0.564). Low pLDDT usually marks disordered segments, where most methylarginines sit.</li>' +
@@ -7961,7 +8203,7 @@
       ['licences', 'Data sources, versions and licences', '' +
       '<p>Every external source behind the explorer, with the release used and its licence. Please cite the sources you rely on.</p>' +
       DATA_SOURCES.map(([group, rows]) => '<h4>' + esc(group) + '</h4><div class="tbl-wrap"><table class="tbl compact src-tbl"><thead><tr><th>Source</th><th>Used for</th><th>Version</th><th>Licence</th><th>Citation</th></tr></thead><tbody>' +
-        rows.map(([name, use, ver, lic, cite, doi]) => '<tr><td><b>' + esc(name) + '</b></td><td>' + esc(use) + '</td><td>' + esc(ver || '—') + '</td><td>' + esc(lic || '—') + '</td><td>' + (cite ? esc(cite) + (doi ? ' · ' + doiLink(doi) : '') : '—') + '</td></tr>').join('') + '</tbody></table></div>').join('') +
+        rows.map(([name, use, ver, lic, cite, doi]) => '<tr><td><b>' + esc(name) + '</b></td><td>' + esc(use) + '</td><td>' + esc((typeof ver === 'function' ? ver() : ver) || '—') + '</td><td>' + esc(lic || '—') + '</td><td>' + (cite ? esc(cite) + (doi ? ' · ' + doiLink(doi) : '') : '—') + '</td></tr>').join('') + '</tbody></table></div>').join('') +
       '<p><b>Licence of this site.</b> The explorer\'s data, figures and text are licensed CC BY-NC-SA 4.0 and its code MIT (see LICENSE.md in the repository); share-alike, non-commercial terms are what PhosphoSitePlus, DisGeNET and pepR-MS require of the combined data. Third-party data keep the licences listed above.</p>' +
       '<p class="note">Interaction data exported ' + esc((IX && IX.meta && IX.meta.generated) || '—') + '; site data exported ' + esc(M.generated) + '. "At staging" and "at export" mean the release current on those dates. Software licences cover the code, not the data.</p>' +
       ''],
@@ -8144,7 +8386,7 @@
         '<text x="16" y="47" font-size="11" fill="' + pal.muted + '">' + esc(o.sub) + '</text>';
       y = 62;
     }
-    const rowH = o.lanes ? 112 : 78;
+    const rowH = o.lanes ? 78 + 6 * 10 + 6 : 78;
     for (const it of items) {
       const { p, u } = it;
       const len = lenOf(it), span = o.scale === 'fit' ? len : maxLen;
@@ -8156,40 +8398,39 @@
         (panel ? '<text x="' + m + '" y="' + (base + 9) + '" font-size="' + fsSmall + '" fill="' + pal.muted + '">' + fmt(len) + ' aa</text>'
           : '<text x="16" y="' + (base + 12) + '" font-size="10" fill="' + pal.muted + '">' + esc(p.acc) + ' · ' + fmt(len) + ' aa · ' + shown.length + (shown.length === p.sites.length ? '' : '/' + p.sites.length) + ' sites</text>');
       const feats = (u && u.feats) || [];
-      for (const f of feats.filter((f) => f.type === 'Region' && /disordered/i.test(f.desc))) {
-        g += '<rect x="' + r1(X(f.start)) + '" y="' + (base - 9) + '" width="' + r1(Math.max(1, X(f.end) - X(f.start))) + '" height="18" fill="' + pal.disFill + '" opacity="0.55"/>';
-      }
-      g += '<rect x="' + r1(X(1)) + '" y="' + (base - 3) + '" width="' + r1(X(len) - X(1)) + '" height="6" rx="3" fill="' + pal.backboneFill + '" stroke="' + pal.backboneEdge + '"/>';
+      for (const [da, db] of disorderRegions(p, u).list) g += MARK.disorder(pal, X(da), base - 9, X(db + 1) - X(da), 18);
+      g += '<rect x="' + r1(X(1)) + '" y="' + (base - 3) + '" width="' + r1(X(len + 1) - X(1)) + '" height="6" rx="3" fill="' + pal.backboneFill + '" stroke="' + pal.backboneEdge + '"/>';
+      for (const rb of (u && u.rg) || []) g += '<rect x="' + r1(X(rb.start)) + '" y="' + (base - 3) + '" width="' + r1(Math.max(1.4, X(rb.end + 1) - X(rb.start))) + '" height="6" fill="' + pal.rg + '"/>';
       for (const f of feats.filter((f) => ['Domain', 'Repeat', 'Zinc finger'].includes(f.type))) {
-        const a = X(f.start), b = X(f.end), wd = Math.max(2, b - a);
+        const fa = X(f.start), wd = Math.max(2, X(f.end + 1) - fa);
         const rep = f.type === 'Repeat';
-        g += '<rect x="' + r1(a) + '" y="' + (base - (rep ? 5 : 7)) + '" width="' + r1(wd) + '" height="' + (rep ? 10 : 14) + '" rx="' + (rep ? 2 : 3) + '" fill="' + pal.domainFill + '"' + (rep ? ' opacity="0.6"' : '') + ' stroke="' + pal.domainInk + '" stroke-width="0.6"><title>' + esc(f.desc || f.type) + ' ' + f.start + '–' + f.end + '</title></rect>';
+        g += titled(MARK.domain(pal, fa, base - (rep ? 5 : 7), wd, rep ? 10 : 14, rep), (f.desc || f.type) + ' ' + rn(f.start, p) + '–' + rn(f.end, p));
         const lab = rep ? '' : (f.desc || '').replace(/ domain$/i, '');
-        if (lab && lab.length * 5.6 < wd - 4) g += '<text x="' + r1(a + wd / 2) + '" y="' + (base + 3.5) + '" font-size="9" text-anchor="middle" fill="' + pal.domainInk + '">' + esc(lab) + '</text>';
+        if (lab && lab.length * 5.6 < wd - 4) g += '<text x="' + r1(fa + wd / 2) + '" y="' + (base + 3.5) + '" font-size="9" text-anchor="middle" fill="' + pal.domainInk + '">' + esc(lab) + '</text>';
       }
+      for (const t of p.ptms.filter((x) => x[1] === 3)) g += MARK.tick(X(t[0]), base, 9, pal.kme, '', 1.6);
       const levels = [];
       for (const s of shown) {
-        const hx = X(s.pos);
+        const hx = X(s.pos), k = mode.cat(s);
         let lv = 0;
         while (levels[lv] != null && hx - levels[lv] < 7 && lv < 5) lv++;
         levels[lv] = hx;
         const hy = base - 18 - lv * 8;
         g += '<line x1="' + r1(hx) + '" x2="' + r1(hx) + '" y1="' + (base - 7) + '" y2="' + hy + '" stroke="' + pal.stem + '" stroke-width="1"/>' +
-          '<circle cx="' + r1(hx) + '" cy="' + hy + '" r="3.2" fill="' + colors[mode.cat(s)] + '" stroke="#FFFFFF" stroke-width="0.6"><title>' + esc(p.label + ' ' + rl(s.pos, P[s.p])) + '</title></circle>';
+          titled(MARK.head(pal, hx, hy, 3.3, colors[k], !!(mode.hollow && mode.hollow[k])), p.label + ' ' + rl(s.pos, P[s.p]));
       }
-      // Contact lanes under the protein: crosslinks in cells and PDB interface residues, ringed where a methylarginine
-      // itself carries the evidence.
+      // Evidence lanes under the protein, the same lanes as the cartoon on protein pages, ringed where a
+      // methylarginine itself carries the evidence.
       if (o.lanes) {
-        const ln = contactLanes(p, p.iso ? null : IFDATA.get(p.acc.split('-')[0]) || null);
-        const pdb = { ranges: (ln[2].ranges || []).concat(ln[3].ranges || []), hit: (s) => ln[2].hit(s) || ln[3].hit(s), color: IFACE_COLOR[1] };
-        [[panel ? 'RNA xl' : 'RNA crosslink', ln[0]], [panel ? 'DNA xl' : 'DNA crosslink', ln[1]], [panel ? 'PDB' : 'PDB interface', pdb]].forEach(([name, lane], k) => {
-          const cy = base + 19 + k * 11;
+        contactLanes(p, p.iso ? null : IFDATA.get(p.acc.split('-')[0]) || null, pal).forEach((lane, k) => {
+          const cy = base + 19 + k * 10;
           g += '<line x1="' + r1(X(1)) + '" x2="' + r1(X(len + 1)) + '" y1="' + cy + '" y2="' + cy + '" stroke="' + pal.grid + '"/>' +
-            '<text x="' + (x0 - 4) + '" y="' + (cy + 3) + '" font-size="' + fsLane + '" text-anchor="end" fill="' + pal.muted + '">' + name + '</text>';
-          for (const [a, b, op] of lane.boxes || []) g += '<rect x="' + r1(X(a)) + '" y="' + (cy - 3) + '" width="' + r1(Math.max(1.4, X(b + 1) - X(a))) + '" height="6" fill="' + lane.color + '" fill-opacity="' + op + '"/>';
-          for (const [a, b, , color] of lane.ranges || []) g += '<rect x="' + r1(X(a)) + '" y="' + (cy - 3.5) + '" width="' + r1(Math.max(1.4, X(b + 1) - X(a))) + '" height="7" fill="' + color + '" fill-opacity="0.85"/>';
-          for (const t of lane.ticks || []) g += '<rect x="' + r1(X(t) - 0.7) + '" y="' + (cy - 4) + '" width="' + r1(Math.max(1.4, X(t + 1) - X(t))) + '" height="8" fill="' + lane.color + '"/>';
-          for (const s of shown.filter(lane.hit)) g += '<circle cx="' + r1(X(s.pos)) + '" cy="' + cy + '" r="3.1" fill="' + pal.bg + '" stroke="' + (lane.color || pal.ink) + '" stroke-width="1.4"><title>' + esc(p.label + ' ' + rl(s.pos, P[s.p]) + ': ' + name + ' at this methylarginine') + '</title></circle>';
+            '<text x="' + (x0 - 4) + '" y="' + (cy + 3) + '" font-size="' + fsLane + '" text-anchor="end" fill="' + pal.muted + '">' + esc(lane.short) + '</text>';
+          for (const [ba, bb, op] of lane.boxes || []) g += MARK.box(X(ba), cy - 3, X(bb + 1) - X(ba), 6, lane.color, ' fill-opacity="' + op + '"');
+          for (const [ra, rb, , color] of lane.ranges || []) g += MARK.box(X(ra), cy - 3.5, X(rb + 1) - X(ra), 7, color, ' fill-opacity="0.85"');
+          for (const t of lane.ticks || []) g += lane.hollow ? MARK.box(X(t) - 0.7, cy - 4, 1.4, 8, pal.bg, ' stroke="' + lane.color + '" stroke-width="0.8"') : MARK.tick(X(t), cy, 8, lane.color, '', Math.max(1.4, X(t + 1) - X(t)));
+          for (const t of lane.diamonds || []) g += MARK.diamond(X(t), cy, 4.4, lane.color, pal.ring);
+          for (const s of shown.filter(lane.hit)) g += titled(MARK.ring(X(s.pos), cy, 3.1, lane.color, !!lane.hollow, ' fill="' + pal.bg + '"').replace('fill="none" ', ''), p.label + ' ' + rl(s.pos, P[s.p]) + ': ' + lane.label + ' at this methylarginine');
         });
       }
       y += rowH;
@@ -8205,28 +8446,13 @@
       y += 40;
     }
     // Legend, wrapped to the canvas width.
-    const cw = panel ? 4.7 : 5.5;
-    let lx = m;
-    y += 14;
-    const leg = (draw, label) => {
-      const w = 16 + label.length * cw;
-      if (lx > m && lx + w > W - m) { lx = m; y += 15; }
-      g += draw(lx, y - 4) + '<text x="' + (lx + 13) + '" y="' + y + '" font-size="' + fsSmall + '" fill="' + pal.muted + '">' + esc(label) + '</text>';
-      lx += w + 8;
-    };
-    mode.cats.forEach((c, k) => leg((a, b) => '<circle cx="' + (a + 4) + '" cy="' + b + '" r="4" fill="' + colors[k] + '"/>', c));
-    leg((a, b) => '<rect x="' + a + '" y="' + (b - 4) + '" width="10" height="8" rx="2" fill="' + pal.domainFill + '" stroke="' + pal.domainInk + '" stroke-width="0.6"/>', 'UniProt domain or repeat');
-    leg((a, b) => '<rect x="' + a + '" y="' + (b - 4) + '" width="10" height="8" fill="' + pal.disFill + '" opacity="0.55"/>', 'Disordered (UniProt)');
-    if (o.lanes) {
-      leg((a, b) => '<rect x="' + (a + 4) + '" y="' + (b - 4) + '" width="2" height="8" fill="' + IFACE_COLOR[4] + '"/>', 'RNA-crosslinked residue');
-      leg((a, b) => '<rect x="' + (a + 4) + '" y="' + (b - 4) + '" width="2" height="8" fill="' + IFACE_COLOR[8] + '"/>', 'DNA-crosslinked residue');
-      leg((a, b) => '<rect x="' + a + '" y="' + (b - 3.5) + '" width="10" height="7" fill="' + IFACE_COLOR[1] + '"/>', 'PDB protein interface');
-      leg((a, b) => '<rect x="' + a + '" y="' + (b - 3.5) + '" width="10" height="7" fill="' + IFACE_COLOR[4] + '"/>', 'PDB RNA interface');
-      leg((a, b) => '<rect x="' + a + '" y="' + (b - 3.5) + '" width="10" height="7" fill="' + IFACE_COLOR[8] + '"/>', 'PDB DNA interface');
-      leg((a, b) => '<rect x="' + a + '" y="' + (b - 3.5) + '" width="10" height="7" fill="' + IFACE_COLOR[2] + '"/>', 'PDB self-contact');
-      leg((a, b) => '<circle cx="' + (a + 5) + '" cy="' + b + '" r="3.1" fill="' + pal.bg + '" stroke="' + pal.ink + '" stroke-width="1.4"/>', 'Evidence at the methylarginine');
-    }
-    const H = y + 10;
+    const legItems = mode.cats.map((c, k) => [SWATCH.head(pal, colors[k], !!(mode.hollow && mode.hollow[k])), c]).concat([
+      [SWATCH.domain(pal), 'Domain or repeat (UniProt)'], [SWATCH.disorder(pal), 'Disordered (' + (items.some((it) => it.p.idr) ? 'MobiDB' : 'UniProt') + ')'], [SWATCH.fill(pal.rg), 'RG/RGG-rich'], [SWATCH.tick(pal.kme), 'Lys methylation']]);
+    if (o.lanes) legItems.push([SWATCH.tick(pal.rna), 'RNA'], [SWATCH.tick(pal.dna), 'DNA'], [SWATCH.fill(pal.protein, 0.85), 'Protein'], [SWATCH.fill(pal.self, 0.85), 'Self-contact'],
+      [SWATCH.diamond(pal.protein, pal.ring), 'Mutation changes an interaction (IntAct)'], [(xa, yb) => MARK.ring(xa + 10, yb, 3.4, pal.ink, false), 'Evidence at the methylarginine']);
+    const legSvg = svgLegend(pal, legItems, m, y + 4, W - 2 * m, { fs: fsSmall });
+    g += legSvg.svg;
+    const H = Math.ceil(y + 4 + legSvg.h + 8);
     return { W, H, svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + pal.font.replace(/'/g, '"') + '\'><rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' + g + '</svg>' };
   }
 
@@ -8373,7 +8599,7 @@
     for (let k = 0; k < ncol; k++) {
       const q = pos - flank + k;
       if (q === pos || q % 5 === 0) g += '<text x="' + (x0 + k * cw + cw / 2) + '" y="' + (y + 9) + '" font-size="9" text-anchor="middle" fill="' + (q === pos ? pal.ink : pal.muted) + '"' + (q === pos ? ' font-weight="700"' : '') + '>' + q + '</text>';
-      if (sitesSet.has(q) && q !== pos) g += '<circle cx="' + (x0 + k * cw + cw / 2) + '" cy="' + (y + 14) + '" r="2" fill="' + pal.site + '"/>';
+      if (sitesSet.has(q) && q !== pos) g += '<circle cx="' + (x0 + k * cw + cw / 2) + '" cy="' + (y + 14) + '" r="2" fill="' + pal.meth + '"/>';
     }
     y += 18;
     const top = y;
