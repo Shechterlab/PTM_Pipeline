@@ -544,7 +544,7 @@ svg.pmap .feat { cursor: help; }
 .seq { font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.9; display: grid; grid-template-columns: max-content 1fr; column-gap: 1rem; overflow-x: auto; }
 .seq .ln { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
 .seq .line { white-space: pre; }
-.seq span.R { color: var(--brand-ink); font-weight: 600; }
+.seq span.R { color: var(--t-arg); font-weight: 600; }
 .seq span.m { border-radius: 3px; color: #fff; font-weight: 700; padding: 0 1px; cursor: pointer; }
 .seq span.m.st0 { background: var(--t-none); }
 .seq span.m.st1 { background: var(--t-st1); }
@@ -1197,3 +1197,21 @@ button.tag { border: 0; font-family: inherit; line-height: inherit; cursor: poin
 /* Jumps to a card or section land below the sticky search and tabs */
 .card, details.ix-sec, [id^="ch-"], [id^="ix-"], #site-card { scroll-margin-top: 170px; }
 @media (max-width: 760px) { .card, details.ix-sec, [id^="ch-"], [id^="ix-"], #site-card { scroll-margin-top: 120px; } }
+/* Human Protein Atlas locations on protein pages: main locations bold, uncertain ones faded. */
+.sub-h { font-family: var(--font-body); font-size: 0.86rem; font-weight: 700; margin: 0.9rem 0 0.4rem; }
+.sub-h .ext { margin-left: 0.4rem; font-weight: 400; font-size: 0.8rem; }
+.tag.loc { border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); font-weight: 500; cursor: pointer; font: inherit; font-size: 0.76rem; }
+.tag.loc.main { font-weight: 700; color: var(--ink); }
+.tag.loc.unsure { opacity: 0.6; border-style: dashed; }
+.tag.loc:hover, .tag.loc:focus-visible { border-color: var(--accent); }
+/* Print: menus and screen-only controls stay out; figures print as their light, full-width copies; headings stay with
+   what they introduce. */
+@media print {
+  .col-menu, .more-opts, #site-card .actions, #cons-load, #cc-box, .cc-box + .fig-controls { display: none !important; }
+  #content button.linkish[id$="-more"], #content [data-homopen] { display: none !important; }
+  .print-cc svg { display: block; width: 100%; height: auto; }
+  .af-side, .legend, .print-cc, .print-net { break-inside: avoid; }
+  h3, h4, .sub-h { break-after: avoid; }
+  .report { display: block; }
+  .report > * { margin-bottom: 4mm; }
+}
