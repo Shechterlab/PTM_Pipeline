@@ -2,7 +2,8 @@
 
 36_export_site_explorer_data.py calls these on the payload it builds. Each staging script (39 CPLM 4.0, 41 CARM1
 knockout, 42 HPA subcellular locations) calls the same function through --explorer-json to update an existing export
-in place, so both routes give the same file. Fields added here are looked up by name (meta.protein_fields,
+in place, so both routes give the same file. The disorder intervals are the pipeline's own (PTM_MOBIDB_INTERVALS, read
+by 06_annotate_disorder_context.py), so the website draws the regions its disorder classes were computed from. Fields added here are looked up by name (meta.protein_fields,
 meta.site_fields), so their position does not matter.
 """
 from __future__ import annotations
@@ -159,3 +160,20 @@ def merge_hpa(data: dict, locations: pd.DataFrame, summary: dict) -> dict:
     }
     return {'explorer_proteins_with_hpa': sum(1 for _, prot in canonical_rows(data) if prot[field]),
             'universe': len(universe), 'methylated_in_universe': len(meth_u)}
+
+
+def merge_disorder_intervals(data: dict, intervals: pd.DataFrame, summary: dict) -> dict:
+    """Disordered intervals per canonical protein (protein field disorder_intervals: [[start, end], ...])."""
+    names = {'accession': 'canonical_UniProtAC', 'Entry': 'canonical_UniProtAC', 'start': 'fragment_start', 'end': 'fragment_end'}
+    intervals = intervals.rename(columns={k: v for k, v in names.items() if k in intervals.columns and v not in intervals.columns})
+    intervals = intervals.astype({'fragment_start': int, 'fragment_end': int})
+    field = field_index(data, 'proteins', 'disorder_intervals', list)
+    by_acc: dict[str, list] = defaultdict(list)
+    for acc, a, b in intervals[['canonical_UniProtAC', 'fragment_start', 'fragment_end']].itertuples(index=False):
+        by_acc[acc].append([a, b])
+    for prot in data['proteins']:
+        prot[field] = sorted(by_acc.get(prot[0], [])) if '-' not in prot[0] else []
+    with_any = sum(1 for prot in data['proteins'] if prot[field])
+    data['meta']['disorder_intervals'] = {'source': summary.get('source', 'MobiDB disorder intervals (PTM_MOBIDB_INTERVALS)'),
+                                          'input_md5': summary.get('input_md5'), 'proteins': with_any}
+    return {'explorer_proteins_with_intervals': with_any}

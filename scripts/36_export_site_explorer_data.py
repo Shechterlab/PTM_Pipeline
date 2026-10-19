@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from explorer_merge import OTHER_PTM_SOURCES, merge_carm1_ko, merge_cplm4, merge_hpa
+from explorer_merge import OTHER_PTM_SOURCES, merge_carm1_ko, merge_cplm4, merge_disorder_intervals, merge_hpa
 
 
 SOURCES = ['Maron2021', 'ProMetheusDB', 'human_ptm_master']
@@ -26,9 +26,10 @@ MARON_IPS = ['MMA', 'ADMA', 'SDMA']
 MARON_TREATMENTS = ['GSK591', 'MS023']
 OTHER_PTM_GROUPS = ['Phosphorylation', 'Lys acylation', 'Ubiquitin/SUMO', 'Lys methylation']
 # Bit k of an other-PTM entry's source mask (its fourth element) means OTHER_PTM_SOURCES[k] (explorer_merge.py).
-# Staged annotations merged after the export is built: (label, option, default path under the results root, summary
-# file next to it, merge function).
+# Annotations merged after the export is built (explorer_merge.py): (label, option, default path under the results
+# root or None when the option alone names it, summary file next to it, merge function).
 STAGED = [
+    ('MobiDB disorder intervals', 'disorder_intervals', None, '', merge_disorder_intervals),
     ('CPLM 4.0', 'cplm4_sites', 'cplm4/cplm4_human_lys_methyl_validated.tsv', 'cplm4_summary.json', merge_cplm4),
     ('CARM1 knockout', 'carm1_ko_sites', 'carm1_ko/carm1_ko_sites.tsv', 'carm1_ko_summary.json', merge_carm1_ko),
     ('HPA subcellular', 'hpa_locations', 'hpa/hpa_subcellular_locations.tsv', 'hpa_summary.json', merge_hpa),
@@ -279,6 +280,9 @@ def main() -> None:
     ap.add_argument('--cplm4-sites', default=os.environ.get('PTM_CPLM4_SITES', ''),
                     help='Validated CPLM 4.0 lysine methylation table from 39_stage_cplm4_lys_methylation.py '
                          '(default <results-root>/cplm4/cplm4_human_lys_methyl_validated.tsv; skipped if missing).')
+    ap.add_argument('--disorder-intervals', default=os.environ.get('PTM_MOBIDB_INTERVALS', ''),
+                    help='the disorder intervals 06_annotate_disorder_context.py used (PTM_MOBIDB_INTERVALS), drawn on '
+                         'protein maps so they match the sites\' disorder classes (skipped if missing).')
     ap.add_argument('--carm1-ko-sites', default=os.environ.get('PTM_CARM1_KO_SITES', ''),
                     help='CARM1 knockout site table from 41_stage_carm1_ko_sites.py '
                          '(default <results-root>/carm1_ko/carm1_ko_sites.tsv; skipped if missing).')
@@ -729,12 +733,12 @@ def main() -> None:
         'protein_disease_terms': protein_disease_terms,
     }
     for label, option, default, summary_name, merge in STAGED:
-        path = Path(getattr(args, option)) if getattr(args, option) else root / default
-        if not path.exists():
+        path = Path(getattr(args, option)) if getattr(args, option) else root / default if default else None
+        if path is None or not path.exists():
             print(f'no {label} table at {path}; skipped')
             continue
-        summary_path = path.with_name(summary_name)
-        staged = json.loads(summary_path.read_text(encoding='utf-8')) if summary_path.exists() else {}
+        summary_path = path.with_name(summary_name) if summary_name else None
+        staged = json.loads(summary_path.read_text(encoding='utf-8')) if summary_path and summary_path.exists() else {'input_md5': file_md5(path)}
         print(f'{label}: {merge(payload, read_tsv(path), staged)}')
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)

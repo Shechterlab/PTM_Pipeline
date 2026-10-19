@@ -16,6 +16,7 @@ Sources
   CD-CODE condensate membership (cd-code.org API) .......... per-protein confidence score, role and evidence
   RCSB ModelServer + SIFTS chain mapping ................... residues each interface methylarginine touches
   ProtVar predicted interfaces (EMBL-EBI, CC BY 4.0) ....... AlphaFold-Multimer interface residues of human pairs
+  IntAct features (EMBL-EBI, CC BY 4.0) .................... mutations that change an interaction, binding regions, methylated residues
 
 Stages that make many requests cache every answer: the PDBe interface lookup (about 5,000 calls) and the
 structure contacts (about 5,500 calls). Run them alone first with --fetch-interfaces-only / --fetch-contacts-only.
@@ -89,6 +90,18 @@ D_XL, D_PEP, D_BIND, D_CAND = 1, 2, 4, 8  # DNA: crosslink localised to this res
 XL_NEAR = 3                            # "near" = within this many residues of a crosslinked residue
 RINGS = {'PHE': ('CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ'), 'TYR': ('CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ'), 'TRP': ('CD2', 'CE2', 'CE3', 'CZ2', 'CZ3', 'CH2')}
 PDBE_MODRES = 'https://www.ebi.ac.uk/pdbe/api/pdb/entry/modified_AA_or_NA/{pdb}'
+# IntAct curated features of interaction participants (EMBL-EBI, CC BY 4.0): mutations and their effect on the
+# interaction, binding regions mapped for a partner, and modified residues of the participants.
+INTACT_FEATURES = 'https://ftp.ebi.ac.uk/pub/databases/intact/current/psimitab/features/{name}.tsv'
+INTACT_RELEASE = 'https://ftp.ebi.ac.uk/pub/databases/intact/current/various/release_time.txt'
+INTACT_EFFECTS = ['no effect', 'disrupts', 'decreases', 'increases', 'causes', 'unspecified']   # mutation effect codes
+INTACT_EFFECT_MI = {'MI:2226': 0, 'MI:0573': 1, 'MI:1128': 1, 'MI:1129': 1, 'MI:0119': 2, 'MI:1133': 2, 'MI:1130': 2,
+                    'MI:0382': 3, 'MI:1132': 3, 'MI:1131': 3, 'MI:2227': 4}
+INTACT_REGIONS = ['sufficient', 'necessary', 'binding-associated', 'direct']   # binding region type codes
+INTACT_REGION_MI = {'MI:0442': 0, 'MI:0429': 1, 'MI:0117': 2, 'MI:1125': 3}
+INTACT_PEPTIDE_MAX = 20     # a binding region at most this long (peptide-level mapping) counts as evidence at its residues
+INTACT_MUT_MAX = 3          # mutations spanning at most this many residues are kept per residue
+INTACT_PARTNER = re.compile(r'\(([A-Za-z_]+):([^()|]+?)\(psi-mi:"(MI:\d+)"\(([^)]*)\)\)')
 
 # The nine human protein arginine methyltransferases.
 PRMT_GENES = ['PRMT1', 'PRMT2', 'PRMT3', 'CARM1', 'PRMT5', 'PRMT6', 'PRMT7', 'PRMT8', 'PRMT9']
@@ -1155,6 +1168,67 @@ def load_crosslinks(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None
     return rna, rna_n, rbd, dna, dna_peps, dna_interactome, dna_bind, rna_single
 
 
+def load_intact(cache: Path, refresh: bool, seq: dict):
+    """IntAct features on reviewed human proteins whose curated sequence matches the canonical sequence at their range.
+
+    Returns ({accession: [(kind, code, start, end, resulting, partners, pmid, interaction AC)]}, counts, release) with kind
+    0 mutation (code: INTACT_EFFECTS), 1 binding region (INTACT_REGIONS), 2 methylated arginine (code 0); partners are
+    (database, identifier, participant type) of the other participants, or the protein itself for a homomer."""
+    feats, counts = defaultdict(list), Counter()
+    for kind, name in ((0, 'mutations'), (1, 'bindings_regions'), (2, 'ptms')):
+        path = fetch(INTACT_FEATURES.format(name=name), cache / 'intact' / f'{name}.tsv', refresh)
+        with open(path, encoding='utf-8') as fh:
+            next(fh)
+            for line in fh:
+                x = line.rstrip('\n').split('\t')
+                if len(x) < 16 or 'taxid:9606' not in x[10] or not x[7].startswith('uniprotkb:'):
+                    continue
+                acc = x[7][len('uniprotkb:'):]
+                if kind == 2:
+                    label = x[5].lower()
+                    if 'arginine' not in label or 'methyl' not in label:
+                        continue
+                    code = 0
+                else:
+                    mi = re.search(r'MI:\d+', x[5])
+                    code = (INTACT_EFFECT_MI.get(mi.group(0), 5) if kind == 0 else INTACT_REGION_MI.get(mi.group(0))) if mi else None
+                    if code is None:
+                        counts[f'{name}:other_type'] += 1
+                        continue
+                s = seq.get(acc)
+                if s is None:
+                    counts[f'{name}:' + ('isoform_or_chain' if '-' in acc else 'not_reviewed_human')] += 1
+                    continue
+                ranges = x[2].split(',')
+                spans = [tuple(map(int, r.split('-'))) for r in ranges if re.fullmatch(r'\d+-\d+', r)]
+                if len(spans) != len(ranges):
+                    counts[f'{name}:undetermined_range'] += 1
+                    continue
+                original = x[3].split(',') if x[3] not in ('', '-') else []
+                if any(b > len(s) or a < 1 or (k < len(original) and s[a - 1:b] != original[k]) for k, (a, b) in enumerate(spans)):
+                    counts[f'{name}:sequence_mismatch'] += 1
+                    continue
+                if kind == 2 and any(s[a - 1:b] != 'R' for a, b in spans):
+                    counts[f'{name}:not_arginine'] += 1
+                    continue
+                parts = INTACT_PARTNER.findall(x[11])
+                own = [p for p in parts if p[0] == 'uniprotkb' and p[1].split('-')[0] == acc]
+                others = [p for p in parts if not (p[0] == 'uniprotkb' and p[1].split('-')[0] == acc)]
+                partners = tuple((db, ident.strip('"'), ptype) for db, ident, _, ptype in others) if others else (('uniprotkb', acc, 'protein'),) if len(own) > 1 or len(parts) == 1 else ()
+                pmid = next((int(m.group(1)) for m in re.finditer(r'pubmed:(\d+)', x[12])), 0)
+                resulting = x[4] if kind == 0 and x[4] not in ('', '-') else ''
+                for k, (a, b) in enumerate(spans):
+                    feats[acc].append((kind, code, a, b, resulting.split(',')[k] if resulting and len(resulting.split(',')) == len(spans) else resulting, partners, pmid, x[14]))
+                counts[f'{name}:kept'] += 1
+    release = ''
+    try:
+        release = fetch(INTACT_RELEASE, cache / 'intact' / 'release_time.txt', refresh).read_text(encoding='utf-8').strip()
+    except Exception as e:  # noqa: BLE001 - the release note is informative only
+        log(f'IntAct release note not available ({e})')
+    log('IntAct features: ' + ', '.join(f'{k} {v:,}' for k, v in sorted(counts.items())))
+    return feats, dict(counts), release
+
+
 def informative_strata(tables):
     """Strata that carry information for a Mantel-Haenszel analysis (no empty margin, at least two observations)."""
     return [(a, b, c, d) for a, b, c, d in tables if a + b + c + d >= 2 and (a + b) and (c + d) and (a + c) and (b + d)]
@@ -1639,6 +1713,77 @@ def main():
     log(f'Predicted-contact gallery: {len(gallery):,} methylarginine-partner contacts (<= {CONTACT_KEEP} Å) on {len({g[0] for g in gallery}):,} sites; '
         f'{sum(1 for g in gallery if g[8] & (G_SB | G_HB)):,} with a salt bridge or H-bond')
 
+    # IntAct: curated mutations, short binding regions and methylated residues at the sites; per-protein tracks;
+    # within-protein tests of methylated against other arginines.
+    intact, intact_counts, intact_release = load_intact(cache, args.refresh, {a: v[2] for a, v in proteome.items()})
+
+    def intact_partner(p):
+        db, ident, ptype = p
+        t = ptype.lower()
+        if 'deoxyribonucleic' in t or t.endswith('dna'):
+            return -2
+        if 'ribonucleic' in t or t.endswith('rna'):
+            return -1
+        if db == 'uniprotkb' and t in ('protein', 'peptide') and ACC_RE.match(ident.split('-')[0]):
+            return vid(ident)
+        return -3 if 'small molecule' in t else -4
+
+    intact_rows, intact_prot = [], []
+    intact_strata = {k: defaultdict(lambda: [0, 0, 0, 0]) for k in ('mutation', 'peptide', 'peptide_disordered')}
+    for i, acc in enumerate(meth_accs):
+        if prots[i][10] or '-' in acc or acc not in intact:
+            continue
+        site_pos = {sites[j][1]: j for j in by_prot_sites[i]}
+        at_site, regions, muts = defaultdict(dict), {}, {}
+        r_effect = defaultdict(set)       # arginine -> effects of single-residue mutations there
+        peptide_spans = []
+        for kind, code, a, b, res, partners, pmid, ac in intact[acc]:
+            pk = tuple(sorted({intact_partner(x) for x in partners}))
+            span = b - a + 1
+            if kind == 1:
+                r = regions.setdefault((a, b), [0, set(), 0])
+                r[0] |= 1 << code
+                r[1].update(pk)
+                r[2] += 1
+                if span <= INTACT_PEPTIDE_MAX:
+                    peptide_spans.append((a, b))
+            elif kind == 0 and span <= INTACT_MUT_MAX:
+                m = muts.setdefault((a, b, code), [set(), 0])
+                m[0].update(pk)
+                m[1] += 1
+                if span == 1 and code != 5:
+                    r_effect[a].add(code)
+            if (kind == 1 and span > INTACT_PEPTIDE_MAX) or (kind == 0 and span > INTACT_MUT_MAX):
+                continue
+            for q in range(a, b + 1):
+                if q in site_pos:
+                    rec = at_site[site_pos[q]].setdefault((kind, code, a, b, res, pk), [set(), []])
+                    if pmid:
+                        rec[0].add(pmid)
+                    rec[1].append(ac)
+        for j, recs in sorted(at_site.items()):
+            intact_rows.append([j, [[kind, code, a, b, res, list(pk), sorted(pm), sorted(set(acs))[:5], len(acs)]
+                                    for (kind, code, a, b, res, pk), (pm, acs) in sorted(recs.items())]])
+        intact_prot.append([i, [[a, b, bits, sorted(ps)[:8], len(ps), n] for (a, b), (bits, ps, n) in sorted(regions.items())],
+                            [[a, b, code, sorted(ps)[:8], len(ps), n] for (a, b, code), (ps, n) in sorted(muts.items())]])
+        seq_ = proteome.get(acc, ('', '', ''))[2]
+        dis = disordered.get(acc, [])
+        for q in range(1, len(seq_) + 1):
+            if seq_[q - 1] != 'R':
+                continue
+            row = 0 if q in site_pos else 2
+            effects = r_effect.get(q, set())
+            if effects:
+                intact_strata['mutation'][acc][row + (0 if effects - {0} else 1)] += 1
+            if peptide_spans:
+                inside = 0 if any(a <= q <= b for a, b in peptide_spans) else 1
+                intact_strata['peptide'][acc][row + inside] += 1
+                if any(a <= q <= b for a, b in dis):
+                    intact_strata['peptide_disordered'][acc][row + inside] += 1
+    intact_enrich = {k: or_summary(v.values()) for k, v in intact_strata.items()}
+    log(f'IntAct: {len(intact_rows):,} methylated sites with residue-level features on {len(intact_prot):,} proteins; '
+        + ', '.join(f'{k} MH OR {v["mh"][0]} (p {v["mh"][3]})' for k, v in intact_enrich.items()))
+
     # Residue-level RNA and DNA crosslinks: site flags, per-protein tracks and within-protein tests.
     rna_xl, rna_count, rbd_frag, dna_xl, dna_peps, dna_int, dna_bind, rna_single = load_crosslinks(cache, args.refresh, {a: v[2] for a, v in proteome.items()}, proteome)
     xl_rows, xl_prot = [], []
@@ -1927,7 +2072,10 @@ def main():
                 'rbdmap': 'RBDmap (Castello et al. 2016 Mol Cell, HeLa) Table S1 RBDpep: RNA-bound proteolytic fragments (Oxford Research Archive)',
                 'rna_crosslinks': 'pepR-MS (Sha, Kuster & Trendel, bioRxiv 2025, CC BY-NC) Tables S2-S3: RNA-crosslinked residues re-analysed from Kramer 2014, XRNAX 2019, RBS-ID 2020, pRBS-ID 2021 and pepR-MS',
                 'dna_crosslinks': 'Trendel et al. 2025 Cell Tables S1-S2: DNA interactome and DNA-crosslinked peptides with localised residues; UniProt DNA-binding regions (CC BY 4.0)',
+                'intact': f'IntAct curated features (mutations, binding regions, modified residues; EMBL-EBI, CC BY 4.0). {intact_release}',
             },
+            'intact': {'effects': INTACT_EFFECTS, 'regions': INTACT_REGIONS, 'peptide_max': INTACT_PEPTIDE_MAX,
+                       'mutation_max': INTACT_MUT_MAX, 'release': intact_release, 'counts': intact_counts},
             'fields': {
                 'proteins': ['accession', 'gene', 'flags', 'ensp'],
                 'string': 'per explorer protein: [delta partner index, score, ...] with partner indices ascending',
@@ -1954,6 +2102,9 @@ def main():
                 'xl_types': '{rna_xl|rna_xl_single|rna_rbdmap|dna_xl: {rme2s|rme2a|rme1ip|rme2|rme1|nostate|any: or_summary}} each methylation class vs unmethylated arginines of the same proteins',
                 'xl_freq': '{spectra|datasets: {meth: [n, mean, median], other: [...], p (Mann-Whitney)}, multi: or_summary (crosslinked in >= 2 datasets)} among RNA-crosslinked arginines',
                 'pred_enrich': '{pDockQ floor: {all|ordered|disordered: {pooled, mh}}} methylated vs other arginines of the same protein at a predicted interface',
+                'intact': ['site', '[[kind (0 mutation, 1 binding region <= peptide_max aa, 2 methylated arginine), code (meta.intact effects or regions; 0 for kind 2), start, end, resulting sequence, partners (-1 RNA, -2 DNA, -3 small molecule, -4 other, else protein index), PubMed ids, IntAct interaction ACs (first 5), records], ...]'],
+                'intact_prot': ['protein index', '[[start, end, region type bits (1 << meta.intact regions index), partners (first 8), partner count, records], ...] binding regions', '[[start, end, effect code, partners (first 8), partner count, records], ...] mutations of <= mutation_max residues'],
+                'intact_enrich': '{mutation: or_summary of methylated vs other arginines, a single-residue mutation changing an interaction vs only no-effect mutations; peptide|peptide_disordered: methylated vs other arginines inside a binding region of <= peptide_max aa (all, or UniProt-disordered arginines only)}',
             },
         },
         'proteins': [[a, gene_of.get(base_acc(a), ''), flags[k], ensp(a)] for k, a in enumerate(vocab)],
@@ -1982,6 +2133,9 @@ def main():
         'xl_sets': [label for _, label in RNA_XL_SETS],
         'xl_types': xl_types,
         'xl_freq': xl_freq,
+        'intact': intact_rows,
+        'intact_prot': intact_prot,
+        'intact_enrich': intact_enrich,
     }
     # Explorer proteins keep their own gene labels.
     for k, p in enumerate(prots):
