@@ -72,6 +72,10 @@ def text(value) -> str:
     return re.sub(r'\s+', ' ', str(value or '')).replace(';', ',').strip()
 
 
+def rel(release: str, date: str) -> str:
+    return f'UniProt release {release}, downloaded {date}' if release else date
+
+
 def cell(value) -> str:
     if value is None:
         return ''
@@ -143,7 +147,7 @@ class Writer:
 
 
 # ----------------------------------------------------------------------------- UniProt
-def stage_uniprot(w: Writer, c: Path):
+def stage_uniprot(w: Writer, c: Path, release: str, reference: set):
     classes = {}
     for key in ('tudor', 'wd40', 'phd'):
         lines = (c / f'uniprot_human_{key}.tsv').read_text(encoding='utf-8').splitlines()[1:]
@@ -156,22 +160,24 @@ def stage_uniprot(w: Writer, c: Path):
             sid = (r.get('STRING') or '').split(';')[0].strip()
             genes = [g.strip() for g in (r.get('Gene Names (primary)') or '').split(';') if g.strip()]
             rows.append([r['Entry'], genes, sid, len(seq), hashlib.md5(seq.encode()).hexdigest().upper(),
+                         r['Entry'] in reference if reference else None,
                          r['Entry'] in classes['tudor'], r['Entry'] in classes['wd40'], r['Entry'] in classes['phd']])
     rows.sort(key=lambda x: x[0])
     d = dates_of([c / 'uniprot_human_reviewed.tsv.gz'] + [c / f'uniprot_human_{k}.tsv' for k in classes])
     w.table(f'uniprot_human_reviewed_{d[:10]}.tsv',
-            ['uniprot_accession', 'gene_names_primary', 'string_id', 'sequence_length', 'sequence_md5',
+            ['uniprot_accession', 'gene_names_primary', 'string_id', 'sequence_length', 'sequence_md5', 'in_reference_proteome',
              'tudor_domain', 'wd40_repeat', 'phd_finger'], rows,
-            content='Reviewed human UniProtKB entries: primary gene name(s), STRING identifier, sequence length and MD5, and '
+            content='Reviewed human UniProtKB entries: primary gene name(s), STRING identifier, sequence length and MD5, whether the '
+                    'entry is in the reference FASTA (inputs/reference, reference proteome UP000005640), and '
                     'membership of the InterPro Tudor (IPR002999), WD40 repeat (IPR001680) and PHD finger (IPR001965, IPR019787) entries',
             source=f'{x37.UNIPROT_STREAM} (query organism_id:9606 AND reviewed:true; xref:interpro-<entry> for the three classes)',
-            version=d, citation='UniProt Consortium, Nucleic Acids Res 53:D609 (2025); Blum et al., Nucleic Acids Res 53:D444 (2025)',
+            version=rel(release, d), citation='UniProt Consortium, Nucleic Acids Res 53:D609 (2025); Blum et al., Nucleic Acids Res 53:D444 (2025)',
             licence='CC BY 4.0', how='scripts/37a_stage_interactions.py stage_uniprot; the sequences are in the FASTA file of the same date',
             derived=['uniprot_human_reviewed.tsv.gz', 'uniprot_human_tudor.tsv', 'uniprot_human_wd40.tsv', 'uniprot_human_phd.tsv'])
     w.fasta(f'uniprot_human_reviewed_{d[:10]}.fasta', [(r[0], f'GN={r[1][0]}' if r[1] else '', seqs[r[0]]) for r in rows],
             content='Canonical sequences of the reviewed human UniProtKB entries in the download scripts/37 used (header: accession and '
                     'primary gene name); scripts/37 checks crosslinks, IntAct features and RBDmap fragments against these sequences',
-            source=f'{x37.UNIPROT_STREAM} (query organism_id:9606 AND reviewed:true, field sequence)', version=d,
+            source=f'{x37.UNIPROT_STREAM} (query organism_id:9606 AND reviewed:true, field sequence)', version=rel(release, d),
             citation='UniProt Consortium, Nucleic Acids Res 53:D609 (2025)', licence='CC BY 4.0',
             how='scripts/37a_stage_interactions.py stage_uniprot', derived=['uniprot_human_reviewed.tsv.gz'])
 
@@ -190,7 +196,7 @@ def stage_uniprot(w: Writer, c: Path):
     d = dates_of([c / 'uniprot_human_regions.tsv.gz'])
     w.table(f'uniprot_human_regions_{d}.tsv', ['uniprot_accession', 'feature', 'start', 'end', 'note'], reg,
             content='Reviewed human UniProtKB features: disordered regions (Region features noted "Disordered") and domains, repeats and zinc fingers',
-            source=f'{x37.UNIPROT_STREAM} (fields ft_region, ft_domain, ft_repeat, ft_zn_fing)', version=d,
+            source=f'{x37.UNIPROT_STREAM} (fields ft_region, ft_domain, ft_repeat, ft_zn_fing)', version=rel(release, d),
             citation='UniProt Consortium, Nucleic Acids Res 53:D609 (2025)', licence='CC BY 4.0',
             how='scripts/37a_stage_interactions.py stage_uniprot (uncertain ends "<" "?" ">" read as the given position)',
             derived=['uniprot_human_regions.tsv.gz'])
@@ -205,7 +211,7 @@ def stage_uniprot(w: Writer, c: Path):
                 dna.append([acc, int(m.group(1)), int(m.group(2)), text(m.group(3))])
     d = dates_of([path])
     w.table(f'uniprot_human_dna_binding_regions_{d}.tsv', ['uniprot_accession', 'start', 'end', 'note'], dna,
-            content='Reviewed human UniProtKB DNA-binding regions (DNA_BIND features)', source=x37.UNIPROT_DNA_BIND, version=d,
+            content='Reviewed human UniProtKB DNA-binding regions (DNA_BIND features)', source=x37.UNIPROT_DNA_BIND, version=rel(release, d),
             citation='UniProt Consortium, Nucleic Acids Res 53:D609 (2025)', licence='CC BY 4.0',
             how='scripts/37a_stage_interactions.py stage_uniprot', derived=['crosslinks/uniprot_dna_bind.tsv'])
     return seqs, rows
@@ -755,9 +761,9 @@ def stage_crosslinks(w: Writer, c: Path):
     w.table('rbdmap_castello2016_rna_bound_fragments.tsv', ['protein_id', 'gene', 'fragment_start', 'fragment_end', 'fragment_sequence'], rbd,
             content='RBDmap (HeLa) high-confidence RNA-bound fragments (sheet RBDpep): the LysC/ArgC fragment next to the crosslinked peptide, '
                     'as Table S1 gives it', source=x37.RBDMAP_S1, version=f'Table S1, downloaded {d}',
-            citation='Castello et al., Mol Cell 63:696 (2016)', licence='Oxford Research Archive terms; article open access (check before redistribution)',
-            how='scripts/37a_stage_interactions.py stage_crosslinks (one row per table row)', derived=['crosslinks/rbdmap_castello2016_table_s1.xlsx'],
-            redistribution='held_pending_licence')
+            citation='Castello et al., Mol Cell 63:696 (2016), doi:10.1016/j.molcel.2016.06.029',
+            licence='CC BY 4.0 (open access article and its supplement; PMC5003815)',
+            how='scripts/37a_stage_interactions.py stage_crosslinks (one row per table row)', derived=['crosslinks/rbdmap_castello2016_table_s1.xlsx'])
 
     loc, pep, interactome = [], [], []
     p2, p1 = folder / 'trendel2025_mmc2.xlsx', folder / 'trendel2025_mmc1.xlsx'
@@ -779,7 +785,7 @@ def stage_crosslinks(w: Writer, c: Path):
     d = dates_of([p1, p2])
     common = dict(source=x37.TRENDEL_MMC.format(k='{1,2}'), version=f'Tables S1-S2, downloaded {d}',
                   citation='Trendel et al., Cell 188:4424 (2025), doi:10.1016/j.cell.2025.04.037',
-                  licence='Journal supplement (Elsevier); check before redistribution', redistribution='held_pending_licence')
+                  licence='CC BY-NC 4.0 (open access article and its supplement)')
     w.table('trendel2025_dna_crosslink_localisation.tsv', ['uniprot_accession', 'uniprot_id', 'peptide_start', 'sequence_with_localization'], loc,
             content='DNA-crosslinked peptides (MCF7, sheet 4ST-xl-peptides localization): lower-case letters are the residues the crosslink '
                     'may sit on; one lower-case letter localises it to that residue', how='scripts/37a_stage_interactions.py stage_crosslinks',
@@ -832,9 +838,8 @@ def stage_cdcode(w: Writer, c: Path):
                     '(member, driver, client, regulator ...), kinds of experimental evidence ("unspecified" where CD-CODE gives an '
                     'empty value) and the PubMed IDs of the annotations',
             source=f'{x37.CDCODE_API}/condensates/<uid>/proteins', version=f'CD-CODE {version} API, answers saved {d}',
-            citation='Rostam et al., Nat Methods 20:673 (2023)', licence='Not stated by CD-CODE (check before redistribution)',
-            how='scripts/37a_stage_interactions.py stage_cdcode', derived=[f'cdcode/<uid>.json ({len(files)} files)', 'cdcode/release.json'],
-            redistribution='held_pending_licence')
+            citation='Rostam et al., Nat Methods 20:673 (2023)', licence='CC BY-NC 4.0 (stated on cd-code.org)',
+            how='scripts/37a_stage_interactions.py stage_cdcode', derived=[f'cdcode/<uid>.json ({len(files)} files)', 'cdcode/release.json'])
 
 
 # ----------------------------------------------------------------------------- raw cache list
@@ -855,11 +860,16 @@ def main():
     ap.add_argument('--cache', default='data/interactions_cache')
     ap.add_argument('--out', default='inputs/interactions')
     ap.add_argument('--workers', type=int, default=4, help='processes for the interface-geometry measures')
+    ap.add_argument('--uniprot-release', default='2026_03',
+                    help='UniProt release of the cached UniProt downloads, recorded in the MANIFEST (the cache does not store it)')
+    ap.add_argument('--reference-fasta', default='inputs/reference/uniprot_human_reviewed_2026_03.fasta',
+                    help='reference FASTA whose entries are marked in_reference_proteome (empty: leave the column empty)')
     args = ap.parse_args()
     c, out = Path(args.cache), Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     w = Writer(out, c)
-    seqs, uniprot_rows = stage_uniprot(w, c)
+    reference = set(x37.read_fasta(Path(args.reference_fasta))) if args.reference_fasta else set()
+    seqs, uniprot_rows = stage_uniprot(w, c, args.uniprot_release, reference)
     reviewed = set(seqs)
     stage_go(w, c)
     stage_string(w, c, uniprot_rows)
@@ -876,8 +886,11 @@ def main():
     w.write_manifest()
     # Tables whose licence does not yet allow publishing are written but kept out of Git until it is settled.
     held = sorted(Path(r[0]).name for r in w.manifest if r[-1] == 'held_pending_licence')
-    (out / '.gitignore').write_text('# held until their licence is settled (MANIFEST.tsv redistribution = held_pending_licence)\n'
-                                    + ''.join(f'{n}\n' for n in held))
+    if held:
+        (out / '.gitignore').write_text('# held until their licence is settled (MANIFEST.tsv redistribution = held_pending_licence)\n'
+                                        + ''.join(f'{n}\n' for n in held))
+    elif (out / '.gitignore').exists():
+        (out / '.gitignore').unlink()
     list_cache(c, out)
 
 

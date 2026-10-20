@@ -1,0 +1,57 @@
+{
+ "metadata": {
+  "upload_type": "dataset",
+  "publication_date": "2026-10-20",
+  "title": "PTM_Pipeline v1.1.0 inputs: source tables and raw downloads behind the Methylarginine Site Explorer",
+  "creators": [
+   {
+    "name": "DeAngelo, J. D."
+   },
+   {
+    "name": "Silverstein, A. M."
+   },
+   {
+    "name": "Shechter, D."
+   }
+  ],
+  "description": "<p>The inputs of PTM_Pipeline v1.1.0 and of the Methylarginine Site Explorer (https://shechterlab.github.io/PTM_Pipeline/): readable tables and the raw downloads they were made from, so every interaction and annotation layer can be traced to its source and rebuilt offline.</p>\n<ul>\n<li><b>ptm_pipeline_inputs_tables_2026-10-20.tar.gz</b>: the <code>inputs/reference</code>, <code>inputs/interactions</code> and <code>inputs/layers</code> folders of the GitHub repository. These are plain tab-separated tables, one per source, each folder with a README and a MANIFEST.tsv (rows, MD5, source URL, version, licence, how made). The UniProt reference is release 2026_03 (reviewed human reference proteome UP000005640, 20,416 sequences).</li>\n<li><b>ptm_pipeline_interactions_raw_cache_2026-10-16.tar.gz</b>: the download cache of <code>scripts/37_export_interaction_data.py</code> (36,550 files, saved 16 to 19 October 2026). It holds UniProt, QuickGO, STRING v12.5, Complex Portal, PDBe-KB, SIFTS, RCSB ModelServer neighbourhoods, ProtVar, AlphaFold DB, IntAct, pepR-MS, RBDmap, Trendel et al. 2025 and CD-CODE 2.3. Re-running scripts/37 on it without network access rebuilds the website's interaction data unchanged except for the run date.</li>\n<li><b>ptm_pipeline_layers_raw_downloads_2026-10-18.tar.gz</b>: the downloads behind the HPA 25.1 subcellular-location and CARM1-knockout (Shishkova et al. 2017) layers, and the UniProt 2026_03 FASTA with its response headers.</li>\n<li><b>README.md, MD5SUMS, SHA256SUMS</b>: contents, licences and checksums.</li>\n</ul>\n<p>Each source remains under its own licence, listed in README.md and the MANIFEST files: CC0, CC BY 4.0, EMBL-EBI terms, or CC BY-NC 4.0 (pepR-MS, Trendel et al. 2025, CD-CODE). The combined deposit is CC BY-NC-SA 4.0. CPLM 4.0 (all rights reserved) is not included.</p>\n<p>Please cite DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33(10):1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011, and the original sources of any data you use.</p>",
+  "access_right": "open",
+  "license": "cc-by-nc-sa-4.0",
+  "keywords": [
+   "arginine methylation",
+   "post-translational modification",
+   "protein-protein interactions",
+   "protein-nucleic acid interactions",
+   "UniProt",
+   "STRING",
+   "IntAct",
+   "PDBe-KB",
+   "ProtVar",
+   "AlphaFold",
+   "CD-CODE",
+   "Human Protein Atlas"
+  ],
+  "related_identifiers": [
+   {
+    "identifier": "10.1016/j.chembiol.2026.09.011",
+    "relation": "isSupplementTo",
+    "scheme": "doi",
+    "resource_type": "publication-article"
+   },
+   {
+    "identifier": "https://github.com/Shechterlab/PTM_Pipeline",
+    "relation": "isSupplementTo",
+    "scheme": "url",
+    "resource_type": "software"
+   },
+   {
+    "identifier": "https://shechterlab.github.io/PTM_Pipeline/",
+    "relation": "isSourceOf",
+    "scheme": "url"
+   }
+  ],
+  "version": "1.1.0-inputs",
+  "language": "eng",
+  "notes": "Checksums of every raw cached file are in inputs/interactions/raw_cache_files.tsv; the check that the tables hold exactly what the pipeline reads is scripts/37b_check_staged_interactions.py (30 of 30 checks passed on 2026-10-20)."
+ }
+}

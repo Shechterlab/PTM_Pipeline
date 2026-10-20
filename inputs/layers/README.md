@@ -21,9 +21,9 @@ methylarginine sites to the union.
 On 20 October 2026 the three scripts were run again from the downloads in `raw_files.tsv`. All five tables came
 out byte-identical, both times:
 
-- with the FASTA the scripts originally used (the UniProt 2026_03 reviewed human reference proteome,
-  20,416 sequences);
-- with `../interactions/uniprot_human_reviewed_2026-10-16.fasta`, which is in Git.
+- with the FASTA the scripts originally used, the UniProt 2026_03 reviewed human reference proteome
+  (20,416 sequences). That file is now in Git as `../reference/uniprot_human_reviewed_2026_03.fasta`;
+- with `../interactions/uniprot_human_reviewed_2026-10-16.fasta`, also in Git.
 
 ## What each table holds
 
@@ -49,8 +49,14 @@ out byte-identical, both times:
   - whether it is a main (1) or additional (0) location;
   - the HPA reliability (Enhanced, Supported, Approved, Uncertain).
 
-## Held tables
+## CPLM tables are not redistributed
 
-The two CPLM tables are kept out of Git (`.gitignore`) until the PI decides whether they may be redistributed
-(see section 9 of `RELEASE_SPEC_v1.1.0.md`). CPLM does not state a licence. The CPLM summary is in Git, and
-`MANIFEST.tsv` gives the MD5 of both tables.
+CPLM 4.0 states "Copyright © 2010-2026 The CUCKOO Workgroup. All Rights Reserved" and gives no licence
+(cplm.biocuckoo.cn, checked 20 October 2026). For that reason:
+
+- the two CPLM tables stay out of Git (`.gitignore`), and are marked `checksum_only` in `MANIFEST.tsv`, which
+  gives the MD5 of both;
+- the CPLM summary is in Git;
+- anyone who downloads `Methylation.zip` (MD5 in `raw_files.tsv`) can rebuild them with scripts/39.
+
+The offline archive keeps them in a separate, restricted file.

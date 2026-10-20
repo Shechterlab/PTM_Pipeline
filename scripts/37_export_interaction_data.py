@@ -31,6 +31,7 @@ import argparse
 import csv
 import datetime as dt
 import gzip
+import hashlib
 import io
 import json
 import math
@@ -178,6 +179,20 @@ def fetch(url: str, dest: Path, refresh: bool, params: dict | None = None, heade
             log(f'  retry {url[:90]}: {e}')
             time.sleep(2 ** (k + 1))
     return dest
+
+
+def read_fasta(path: Path) -> dict:
+    """UniProt FASTA -> {accession: sequence}; the accession is the second |-field of the header."""
+    out, acc = {}, None
+    with open(path, encoding='utf-8') as fh:
+        for line in fh:
+            if line.startswith('>'):
+                head = line[1:].split()[0]
+                acc = head.split('|')[1] if head.count('|') >= 2 else head
+                out[acc] = []
+            elif acc:
+                out[acc].append(line.strip())
+    return {a: ''.join(v) for a, v in out.items()}
 
 
 def open_text(path: Path):
@@ -1349,6 +1364,9 @@ def main():
     ap.add_argument('--string-min-score', type=int, default=700, help='STRING physical score floor (0-1000); 700 = high confidence. Protein pages fetch lower-confidence links live.')
     ap.add_argument('--workers', type=int, default=6, help='parallel PDBe requests')
     ap.add_argument('--refresh', action='store_true', help='download every source again')
+    ap.add_argument('--reference-fasta', default='',
+                    help='restrict the proteome to the entries of this UniProt FASTA (the release reference, e.g. '
+                         'inputs/reference/uniprot_human_reviewed_2026_03.fasta); stops if a downloaded sequence differs from it')
     ap.add_argument('--fetch-interfaces-only', action='store_true', help='only fill the PDBe interface cache')
     ap.add_argument('--fetch-contacts-only', action='store_true', help='only fill the structure-contact cache (needs the interface cache)')
     ap.add_argument('--contact-entries', type=int, default=2, help='PDB entries examined per site and partner type')
@@ -1370,6 +1388,19 @@ def main():
         return
 
     proteome, domain_classes = load_uniprot(cache, args.refresh)
+    reference = None
+    if args.reference_fasta:
+        ref = read_fasta(Path(args.reference_fasta))
+        differ = sorted(a for a, s in ref.items() if a in proteome and proteome[a][2] != s)
+        missing = sorted(a for a in ref if a not in proteome)
+        if differ or missing:
+            raise SystemExit(f'{args.reference_fasta} is not the UniProt release of the download: {len(differ)} sequences differ '
+                             f'({", ".join(differ[:5])}), {len(missing)} entries missing ({", ".join(missing[:5])})')
+        log(f'Reference FASTA: {len(ref):,} entries; {len(proteome) - len(ref):,} downloaded entries outside it left out')
+        proteome = {a: v for a, v in proteome.items() if a in ref}
+        domain_classes = {k: {a for a in v if a in ref} for k, v in domain_classes.items()}
+        reference = {'fasta': Path(args.reference_fasta).name, 'entries': len(ref),
+                     'md5': hashlib.md5(Path(args.reference_fasta).read_bytes()).hexdigest()}
     tudor = domain_classes['tudor']
     go = load_go(cache, args.refresh)
     sid_to_acc = {}
@@ -2080,6 +2111,7 @@ def main():
             'string_version': STRING_VERSION,
             'string_min_score': args.string_min_score,
             'proteome_size': N,
+            **({'reference': reference} if reference else {}),
             'complexes_tested': {'curated': n_curated, 'predicted': n_predicted},
             'methylated_in_proteome': K,
             'prmt_genes': PRMT_GENES,

@@ -22,7 +22,9 @@ The repository is intentionally code-only. Large source tables, downloaded annot
 | `scripts/37_export_interaction_data.py` | Exports the interaction context (STRING, Complex Portal, GO, PDBe interfaces, RNA/DNA crosslinks, predicted complexes, IntAct residue-level features) as JSON for the explorer. |
 | `scripts/37a_stage_interactions.py` | Turns the download cache of script 37 into readable tables, one per source, in `inputs/interactions/` (with `MANIFEST.tsv` and a checksum list of every cached file). |
 | `scripts/37b_check_staged_interactions.py` | Checks that those tables hold exactly what script 37 reads from the cache, and that the measurement tables match the website data. |
+| `inputs/reference/` | The one UniProt reference: release 2026_03, reviewed human reference proteome (FASTA, entries, accession history, release record). |
 | `inputs/interactions/`, `inputs/layers/` | The sources behind the website's interaction data and its CPLM, CARM1 knockout and HPA layers, as plain tables with a README and MANIFEST in each folder. |
+| `zenodo/` | How the raw downloads are archived offline and on Zenodo: README, deposit metadata, upload script and the archive checksums. |
 | `scripts/explorer_merge.py` | Merges staged annotations (CPLM 4.0, CARM1 knockout, HPA locations, MobiDB disorder intervals) into the explorer export; script 36 and each staging script's `--explorer-json` call the same functions. |
 | `scripts/39_stage_cplm4_lys_methylation.py` | Stages CPLM 4.0 lysine methylation: keeps human sites whose CPLM sequence matches the canonical UniProt sequence around the lysine, for the explorer's Lys methylation marks. |
 | `scripts/40_methylk_methylr_cooccurrence.py` | Tests whether methylated lysines sit near methylarginines more often than the other lysines of the same proteins (Mantel–Haenszel by protein, disorder and local arginine count; distance profile; evidence subsets). |

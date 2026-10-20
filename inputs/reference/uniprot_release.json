@@ -1,0 +1,14 @@
+{
+ "release": "2026_03",
+ "release_date": "02-September-2026",
+ "downloaded": "2026-10-20T12:10:13+00:00",
+ "query": "(proteome:UP000005640) AND (reviewed:true)",
+ "fasta": "uniprot_human_reviewed_2026_03.fasta",
+ "fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+ "metadata": "uniprot_human_reviewed_2026_03_entries.tsv",
+ "metadata_md5": "07057d3bda4051dd23f9f90b0a425916",
+ "accession_history": "uniprot_accession_history_2026_03.tsv",
+ "accession_history_md5": "3ec1af9849a407cd1c60531a1216052a",
+ "entries": 20416,
+ "note": "Release from the X-UniProt-Release response header. The same FASTA, byte for byte, was downloaded on 2026-10-18 and used for inputs/layers/; the interaction download of 2026-10-16 (organism_id:9606 AND reviewed:true) is the same release and has the same sequence for every one of these entries."
+}

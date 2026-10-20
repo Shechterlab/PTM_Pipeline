@@ -1,0 +1,46 @@
+{
+ "metadata": {
+  "upload_type": "dataset",
+  "publication_date": "2026-10-20",
+  "title": "PTM_Pipeline v1.1.0 inputs, restricted part: CPLM 4.0 lysine methylation download and derived tables",
+  "creators": [
+   {
+    "name": "DeAngelo, J. D."
+   },
+   {
+    "name": "Silverstein, A. M."
+   },
+   {
+    "name": "Shechter, D."
+   }
+  ],
+  "description": "<p>The CPLM 4.0 Methylation download (downloaded 2026-10-18; member Methylation.txt dated 2021-06-13) used by PTM_Pipeline for lysine-methylation marks, and the tables scripts/39_stage_cplm4_lys_methylation.py made from it. CPLM 4.0 states \"All Rights Reserved\" and gives no licence, so these files are kept with restricted access for verification only. Cite Zhang W et al., Nucleic Acids Res 50:D451-D459 (2022), doi:10.1093/nar/gkab849.</p>",
+  "access_right": "restricted",
+  "access_conditions": "Access only to verify or reproduce PTM_Pipeline v1.1.0. The data belong to The CUCKOO Workgroup (CPLM 4.0, all rights reserved); obtain them from https://cplm.biocuckoo.cn for any other use.",
+  "keywords": [
+   "CPLM",
+   "lysine methylation"
+  ],
+  "related_identifiers": [
+   {
+    "identifier": "10.1016/j.chembiol.2026.09.011",
+    "relation": "isSupplementTo",
+    "scheme": "doi",
+    "resource_type": "publication-article"
+   },
+   {
+    "identifier": "https://github.com/Shechterlab/PTM_Pipeline",
+    "relation": "isSupplementTo",
+    "scheme": "url",
+    "resource_type": "software"
+   },
+   {
+    "identifier": "https://shechterlab.github.io/PTM_Pipeline/",
+    "relation": "isSourceOf",
+    "scheme": "url"
+   }
+  ],
+  "version": "1.1.0-inputs",
+  "language": "eng"
+ }
+}

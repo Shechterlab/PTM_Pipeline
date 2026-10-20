@@ -52,14 +52,16 @@ unchanged except for the generation date.
 | `uniprot_human_dna_binding_regions_2026-10-16.tsv` | 725 | UniProt DNA-binding regions. |
 | `quickgo_human_rna_dna_binding_2026-10-16.tsv` | 27,656 | GO annotations to RNA binding (GO:0003723) or DNA binding (GO:0003677), or to their descendants. One row per protein, term and evidence code. |
 
-**How these UniProt sequences relate to the others in the repository:**
+**UniProt release.** These UniProt tables are release 2026_03, the release the whole pipeline uses (see
+[`../reference/`](../reference/README.md)).
 
-- **This download:** made on 16 October 2026 with `organism_id:9606 AND reviewed:true`.
-- **The layer FASTA** (used by the tables in `../layers/`): the reviewed human reference proteome (UniProt
-  release 2026_03, downloaded 18 October 2026). All 20,416 of its sequences are identical to the ones here. This
-  file has 15 more entries, which are reviewed human entries outside the reference proteome.
-- **The release branch's reference FASTA** (`inputs/reference/uniprot_human_reviewed_2026-04-07.fasta`): an
-  earlier UniProt release. Thirteen of its sequences differ from these.
+- **This download:** made on 16 October 2026 with `organism_id:9606 AND reviewed:true`. It has 15 more entries
+  than the reference proteome.
+- **Shared entries:** each of the 20,416 entries in both sets has the identical sequence, and
+  `in_reference_proteome` marks them.
+- **Rebuilding on the reference:** `scripts/37_export_interaction_data.py --reference-fasta
+  inputs/reference/uniprot_human_reviewed_2026_03.fasta` restricts the export to the reference entries. It stops
+  if any downloaded sequence differs from the reference.
 
 ### Protein-protein networks and complexes
 
@@ -119,27 +121,30 @@ accessions only.
 |---|---:|---|
 | `pepr_ms_v2_table_s2_rna_crosslinked_peptides.tsv` | 16,799 | pepR-MS compendium, Table S2: RNA-crosslinked peptide-spectrum matches from five datasets, re-analysed with one pipeline. Each row includes the residue carrying the nucleotide mass. |
 | `pepr_ms_v2_table_s3_focused_sites.tsv` | 2,211 | pepR-MS compendium, Table S3: the focused crosslinking site(s) of each crosslink. |
-| `rbdmap_castello2016_rna_bound_fragments.tsv` | 1,610 | RBDmap (HeLa) high-confidence RNA-bound fragments, as Table S1 gives them. scripts/37 keeps 1,376: 83 of these it moves to the place the fragment matches the sequence, and it drops 234. *Held, see below.* |
-| `trendel2025_dna_crosslink_localisation.tsv` | 1,688 | DNA-crosslinked peptides (MCF7). Lower-case letters mark the residues the crosslink may sit on. *Held.* |
-| `trendel2025_dna_crosslinked_peptides.tsv` | 688 | DNA-crosslinked peptide ranges. *Held.* |
-| `trendel2025_mcf7_dna_interactome.tsv` | 1,191 | Proteins in the MCF7 DNA interactome. *Held.* |
+| `rbdmap_castello2016_rna_bound_fragments.tsv` | 1,610 | RBDmap (HeLa) high-confidence RNA-bound fragments, as Table S1 gives them. scripts/37 keeps 1,376: 83 of these it moves to the place the fragment matches the sequence, and it drops 234. |
+| `trendel2025_dna_crosslink_localisation.tsv` | 1,688 | DNA-crosslinked peptides (MCF7). Lower-case letters mark the residues the crosslink may sit on. |
+| `trendel2025_dna_crosslinked_peptides.tsv` | 688 | DNA-crosslinked peptide ranges. |
+| `trendel2025_mcf7_dna_interactome.tsv` | 1,191 | Proteins in the MCF7 DNA interactome. |
 
 ### Condensates
 
 | File | Rows | What it holds |
 |---|---:|---|
-| `cdcode_2.3_condensate_members_2026-10-16.tsv` | 6,992 | CD-CODE 2.3 members of the 147 condensates the pipeline uses. Each row gives:<ul><li>confidence score;</li><li>roles;</li><li>kinds of experimental evidence (`unspecified` where CD-CODE gives an empty value);</li><li>PubMed IDs.</li></ul>*Held.* |
+| `cdcode_2.3_condensate_members_2026-10-16.tsv` | 6,992 | CD-CODE 2.3 members of the 147 condensates the pipeline uses. Each row gives:<ul><li>confidence score;</li><li>roles;</li><li>kinds of experimental evidence (`unspecified` where CD-CODE gives an empty value);</li><li>PubMed IDs.</li></ul> |
 
-## Held tables
+## Licences
 
-Five tables are written by scripts/37a but kept out of Git: the RBDmap, Trendel 2025 and CD-CODE tables. Their
-licence does not yet clearly allow redistribution, so the decision is with the PI (see section 9 of
-`RELEASE_SPEC_v1.1.0.md`). They are:
+Each table carries its source's licence in `MANIFEST.tsv`. Licences verified on 20 October 2026:
 
-- listed in `.gitignore`;
-- marked `held_pending_licence` in `MANIFEST.tsv`, with their MD5.
+- **CC BY 4.0, CC0 or EMBL-EBI terms:** UniProt, GO, STRING, Complex Portal, PDBe-KB and SIFTS, the PDB, ProtVar,
+  AlphaFold DB and IntAct.
+- **RBDmap** (Castello et al. 2016): CC BY 4.0, from the open access article in
+  [PMC5003815](https://pmc.ncbi.nlm.nih.gov/articles/PMC5003815/).
+- **Trendel et al. 2025:** CC BY-NC 4.0, from the open access article.
+- **CD-CODE:** CC BY-NC 4.0, as stated on [cd-code.org](https://cd-code.org/).
+- **pepR-MS:** CC BY-NC.
 
-So anyone holding the same downloads can confirm they have the same data.
+The non-commercial terms are compatible with the repository's CC BY-NC-SA 4.0 for data.
 
 ## What is not here
 

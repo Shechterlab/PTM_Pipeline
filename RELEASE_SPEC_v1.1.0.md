@@ -23,7 +23,24 @@ For the release session (`claude/epic-franklin-oni9ft`) and the website session 
 6. **Disease enrichment moves to Python.**
    - R runs once, to export the DOSE DisGeNET tables (`scripts/34_export_dgn_mapping.R`) and the org.Hs.eg.db Entrez-to-symbol table into `inputs/disease/`.
    - The per-term test (hypergeometric, Benjamini–Hochberg, terms of 10–300 genes) is then Python. It must reproduce the v1.0.0 `all_methyl_proteins_disease_enrichment.tsv` from the v1.0.0 union before it is used (section 6).
-7. **File formats** are those of section 5. The union does not change: 13,358 sites and 10 pending, every placement and every `record_id` as now.
+7. **File formats** are those of section 5. The union does not change: 13,358 sites and 10 pending, and every `record_id` as now. One site is renumbered by decision 8: RAB12 R10 becomes R106.
+8. **One UniProt reference: release 2026_03** (released 2026-09-02), the reviewed human reference proteome UP000005640, in `inputs/reference/` on the website branch:
+   - FASTA, entries, accession history and `uniprot_release.json`, with the release taken from UniProt's response header.
+   - It replaces `uniprot_human_reviewed_2026-04-07.fasta`, whose release was never recorded and is older.
+   - The accession history (already 2026_03), the interaction data and the layers are on 2026_03 already.
+   - v1.1.0 moves to it. 13 sequences differ from the 2026-04-07 FASTA, and they carry 4 v1.1.0 sites:
+     - POLR2A R426, R1603 and R1810 keep their positions;
+     - RAB12 (Q6IQ22) gains 96 N-terminal residues, so its R10 becomes R106.
+   - `inputs/reference/v1.1.0_sites_changed_in_2026_03.tsv` has the new values. Update `protein_length` and `reference_sequence_md5` for both proteins and every table that places the RAB12 site.
+   - scripts/37 takes the same FASTA with `--reference-fasta`.
+9. **Licences checked on 2026-10-20** (open decision 1 in section 9, now settled):
+   - RBDmap: CC BY 4.0 (open access article, PMC5003815).
+   - Trendel et al. 2025: CC BY-NC 4.0 (open access article).
+   - CD-CODE: CC BY-NC 4.0 (cd-code.org).
+   - iPTMnet: CC BY-NC-SA 4.0 (its licence page).
+   - These and pepR-MS and DisGeNET are compatible with CC BY-NC-SA 4.0, so their tidy tables go in Git and their raw downloads in the public archive.
+   - MobiDB states no licence on its own site; CC BY 4.0 is reported elsewhere. Publish its derived intervals with that note.
+   - CPLM 4.0 is "All Rights Reserved" with no licence. Its download and tables are checksum-only, and the archive keeps them in a restricted file.
 
 ## 1. Branch plan
 
@@ -321,7 +338,7 @@ One row per test that the website or the paper reports. The Overview charts and 
 - **`release.json`:**
   - version, previous version, date, DOI, code commit, build time;
   - computed counts;
-  - reference proteome (UP000005640, staged 2026-04-07, release not recorded, before 2026_03);
+  - reference proteome (UP000005640, UniProt release 2026_03; `inputs/reference/uniprot_release.json`);
   - annotation versions (InterPro 108.0, MobiDB 2026-03-30, STRING 12.5, CD-CODE 2.3, HPA 25.1, IntAct release);
   - PhosphoSitePlus (download 2021-05-22, via Maron Table S5, terms archive);
   - licence;
@@ -401,16 +418,15 @@ The website uses each in filters, protein pages and Overview charts. All but dis
 - Git keeps the tidy uncompressed tables, which Git packs well. The current `inputs/` is 134 MB checked out but 28 MB packed. The new tidy interaction tables should add a few tens of MB checked out, and far less packed.
 
 **Open, for the PI:**
-1. **Redistribution of sources whose licence is unclear or restrictive:**
-   - CPLM 4.0 (not stated);
-   - CD-CODE (not stated);
-   - MobiDB (not stated on its site);
-   - RBDmap (ORA terms);
-   - the Trendel 2025 Cell supplement;
-   - the PTM master (iPTMnet terms);
-   - DisGeNET and pepR-MS, which are non-commercial and compatible with the release's CC BY-NC-SA 4.0.
+1. ~~Redistribution of sources whose licence is unclear or restrictive.~~ Settled (decision 9).
 
-   For each: raw in Git, as a release asset, or checksum only. And may its tidy derived table be published? The current website already publishes derived positions from all of them.
+**Archive.** The website branch's `zenodo/` folder describes the offline and Zenodo archive of the raw downloads:
+- a public part (every source whose licence allows it);
+- a restricted part (CPLM);
+- a Git bundle of every branch;
+- checksums, deposit metadata and an upload script.
+
+The raw downloads go there rather than into GitHub release assets.
 2. **Pending splice-junction sites on the website:** shown flagged, or hidden.
 3. **Inhibitor rule:** confirm adjusted p ≤ 0.05 and the per-antibody combination of 5.6.
 4. **Version:** rebuild as v1.1.0 in place, unless v1.1.0 already has a DOI; then v1.1.1.

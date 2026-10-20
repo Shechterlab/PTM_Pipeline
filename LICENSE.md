@@ -46,9 +46,11 @@ Data from other resources remain under their own terms. The explorer's **Documen
 | PhosphoSitePlus® (downloaded 22 May 2021, as compiled in Maron et al. 2021 Table S5) | CC BY-NC-SA 3.0. Acknowledge PhosphoSitePlus®, www.phosphosite.org, and cite Hornbeck et al. 2015, doi:10.1093/nar/gku1267. |
 | DisGeNET | CC BY-NC-SA 4.0 |
 | pepR-MS (Sha, Kuster & Trendel, bioRxiv 2025, doi:10.1101/2025.09.05.674461) | CC BY-NC |
+| Trendel et al., Cell 188:4424 (2025), doi:10.1016/j.cell.2025.04.037 (DNA crosslinks and DNA interactome) | CC BY-NC 4.0 (open access article and supplement) |
+| CD-CODE (Rostam et al., Nat Methods 20:673, 2023) | CC BY-NC 4.0 (stated on cd-code.org) |
 
-Most other sources are CC0 or CC BY 4.0, including UniProt, STRING, Complex Portal, Gene Ontology, AlphaFold DB, AlphaMissense, ProtVar, the PDB, InterPro, Open Targets and ChIP-Atlas. Data reproduced from journal supplements are cited to their articles and remain subject to the publishers' terms. These include:
+Most other sources are CC0 or CC BY 4.0, including UniProt, STRING, Complex Portal, Gene Ontology, AlphaFold DB, AlphaMissense, ProtVar, the PDB, InterPro, Open Targets, ChIP-Atlas, IntAct, the Human Protein Atlas, RBDmap (Castello et al. 2016, CC BY 4.0) and the CARM1 knockout data (Shishkova et al. 2017, CC BY 4.0). Data reproduced from journal supplements are cited to their articles and remain subject to the publishers' terms. These include:
 - Maron et al. 2021
 - ProMetheusDB
-- RBDmap
-- Trendel et al. 2025
+
+CPLM 4.0 states "All Rights Reserved" and no licence. The website shows only lysine positions derived from it. Its download and the tables made from it are not redistributed: `inputs/layers/` records only their checksums.
