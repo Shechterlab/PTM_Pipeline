@@ -369,11 +369,15 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         f'| Protein | Sites in {previous} | Sites in {version} | Removed | Added |',
         '|---|---:|---:|---|---|',
     ]
+    pending_ids = set(pending['site_id'])
     for name, acc in FEATURED.items():
         g = changes[changes['uniprot_accession'] == acc]
-        removed = ', '.join(g.loc[g['change'] == 'removed', 'site_id'].str.split(':').str[1]) or '-'
-        added = ', '.join(g.loc[g['change'] == 'added', 'site_id'].str.split(':').str[1]) or '-'
-        lines.append(f"| {name} ({acc}) | {int(g['in_previous_version'].sum())} | {int(g['in_this_version'].sum())} | {removed} | {added} |")
+        mark = lambda s: s.split(':')[1] + (' (pending)' if s in pending_ids else '')  # noqa: E731
+        removed = ', '.join(map(mark, g.loc[g['change'] == 'removed', 'site_id'])) or '-'
+        added = ', '.join(map(mark, g.loc[g['change'] == 'added', 'site_id'])) or '-'
+        now = g[g['in_this_version'].astype(bool)]
+        n_pending = int(now['site_id'].isin(pending_ids).sum())
+        lines.append(f"| {name} ({acc}) | {int(g['in_previous_version'].sum())} | {len(now) - n_pending}{f', and {n_pending} pending' if n_pending else ''} | {removed} | {added} |")
     lines += [
         '',
         '## Decided in this version',
