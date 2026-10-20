@@ -115,6 +115,7 @@
     ]],
     ['Methods and software', [
       ['3Dmol.js 2.5.3', '3D viewer', '2.5.3', 'BSD-3-Clause', 'Rego & Koes, Bioinformatics 31:1322 (2015)', '10.1093/bioinformatics/btu829'],
+      ['Cytoscape.js 3.30.2', 'Interactive partner network on protein pages', '3.30.2', 'MIT', 'Franz et al., Bioinformatics 32:309 (2016)', '10.1093/bioinformatics/btv557'],
       ['Sequence logos', 'Information content with small-sample correction; WebLogo chemistry colours', '', '', 'Schneider et al., J Mol Biol 188:415 (1986); Crooks et al., Genome Res 14:1188 (2004)', '10.1101/gr.849004'],
       ['Levy interface classes', 'Core, rim and support', '', '', 'Levy, J Mol Biol 403:660 (2010)', '10.1016/j.jmb.2010.09.028'],
       ['EMBOSS charge', 'Sliding 5-residue charge on protein maps (K/R +1, H +0.5, D/E −1)', 'EMBOSS charge scale (Eamino.dat)', 'GPL (software)', 'Rice, Longden & Bleasby, Trends Genet 16:276 (2000)', '10.1016/S0168-9525(00)02024-2'],
@@ -6757,20 +6758,8 @@
       g += '<line x1="' + r1(pos[a].x) + '" y1="' + r1(pos[a].y) + '" x2="' + r1(pos[b].x) + '" y2="' + r1(pos[b].y) + '" stroke="' + (a === 0 ? pal.backbone : pal.grid) + '" stroke-width="' + r1(w) + '"' + (a === 0 ? '' : ' stroke-opacity="0.9"') + '/>';
     }
     ids.forEach((k, n) => {
-      const x = IX.prot[k];
-      const q = x.p >= 0 ? P[x.p] : null;
-      const outer = n >= (net.nCore || ids.length);
-      const r = outer ? Math.min(9, nodeRadius(k, false)) : nodeRadius(k, n === 0);
-      const ck = mode.cat(x, q), hol = ck >= 0 && !!(mode.hollow && mode.hollow[ck]);
-      const fill = ck < 0 ? pal.seq[0] : hol ? pal.bg : colors[ck] || pal.none;
-      const stroke = ck < 0 ? pal.backbone : hol ? colors[ck] : pal.ring;
+      const { x, q, outer, r, hol, fill, stroke, tipHtml, labelled } = netNodeLook(net, n, pal, mode, colors);
       const cxp = r1(pos[n].x), cyp = r1(pos[n].y);
-      const binds = outer ? (net.ringEdges || []).filter((e) => e[0] === n).map((e) => IX.prot[ids[e[1]]].gene) : [];
-      const tipHtml = '<b>' + esc(x.gene) + '</b> ' + esc(x.acc) + (outer ? '<br>Second ring: binds ' + esc(binds.join(', ')) + ' (STRING ≥ 0.7)' : n ? '<br>STRING physical score ' + (net.edges.find((e) => e[0] === 0 && e[1] === n) || [0, 0, 0])[2] / 1000 : '') +
-        '<br>' + (q ? q.sites.length + ' methylarginine site' + (q.sites.length === 1 ? '' : 's') + ' in this set' : 'Not in this methylarginine set') +
-        (x.flags & IXF.prmt ? '<br>Protein arginine methyltransferase' : '') + (x.flags & IXF.tudor ? '<br>Tudor domain' : '') +
-        (x.flags & IXF.wd40 ? '<br>WD40 repeat' : '') + (x.flags & IXF.phd ? '<br>PHD finger' : '') +
-        (x.flags & IXF.rna ? '<br>RNA binding (GO)' : '') + (x.flags & IXF.dna ? '<br>DNA binding (GO)' : '');
       g += '<g class="nd" data-k="' + k + '"' + (forExport ? '' : ' tabindex="0" role="button" data-tip="' + esc(tipHtml) + '"') + ' style="cursor:pointer">';
       let ringR = r + 4;
       // Reader domains as ink rings told apart by their dash; a PRMT is a square node.
@@ -6782,7 +6771,6 @@
       const dashAttr = hol ? ' stroke-dasharray="2.2 1.4"' : '';
       if (x.flags & IXF.prmt) g += '<rect x="' + r1(pos[n].x - r * 0.9) + '" y="' + r1(pos[n].y - r * 0.9) + '" width="' + r1(1.8 * r) + '" height="' + r1(1.8 * r) + '" rx="2" fill="' + fill + '" stroke="' + (hol ? stroke : pal.ink) + '" stroke-width="1.6"' + dashAttr + '/>';
       else g += '<circle cx="' + cxp + '" cy="' + cyp + '" r="' + r1(r) + '" fill="' + fill + '" stroke="' + (n === 0 ? pal.ink : stroke) + '" stroke-width="' + (n === 0 ? 2 : hol ? 1.6 : q ? 1.2 : 1.4) + '"' + dashAttr + '/>';
-      const labelled = n === 0 || UI.net.labels === 'all' || (UI.net.labels === 'methyl' && (q || outer)) || net.pinned.has(k);
       g += (labelled ? '<text x="' + cxp + '" y="' + r1(pos[n].y + r + 12) + '" font-size="' + (n === 0 ? 12.5 : outer ? 9.5 : 10.5) + '" font-weight="' + (n === 0 || (q && !outer) ? 700 : 400) + '" text-anchor="middle" fill="' + (q && !outer ? pal.ink : pal.muted) + '"' + (outer ? ' font-style="italic"' : '') + '>' + esc(x.gene) + '</text>' : '') + '</g>';
     });
     g += '</g>';
@@ -6795,6 +6783,128 @@
     }
     return '<svg xmlns="http://www.w3.org/2000/svg" class="ix-net" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + (pal.font || EXPORT_PAL.font).replace(/'/g, '"') + '\'' +
       ' role="img" aria-label="Physical interaction partners of ' + esc(p.label) + '">' + (forExport ? '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' : '') + g + '</svg>';
+  }
+
+  // How node n of a partner network is drawn: size, colours, label and hover text (SVG and interactive view alike).
+  function netNodeLook(net, n, pal, mode, colors) {
+    const k = net.ids[n], x = IX.prot[k];
+    const q = x.p >= 0 ? P[x.p] : null;
+    const outer = n >= (net.nCore || net.ids.length);
+    const r = outer ? Math.min(9, nodeRadius(k, false)) : nodeRadius(k, n === 0);
+    const ck = mode.cat(x, q), hol = ck >= 0 && !!(mode.hollow && mode.hollow[ck]);
+    const fill = ck < 0 ? pal.seq[0] : hol ? pal.bg : colors[ck] || pal.none;
+    const stroke = ck < 0 ? pal.backbone : hol ? colors[ck] : pal.ring;
+    const binds = outer ? (net.ringEdges || []).filter((e) => e[0] === n).map((e) => IX.prot[net.ids[e[1]]].gene) : [];
+    const tipHtml = '<b>' + esc(x.gene) + '</b> ' + esc(x.acc) + (outer ? '<br>Second ring: binds ' + esc(binds.join(', ')) + ' (STRING ≥ 0.7)' : n ? '<br>STRING ' + UI.net.type + ' score ' + (net.edges.find((e) => e[0] === 0 && e[1] === n) || [0, 0, 0])[2] / 1000 : '') +
+      '<br>' + (q ? q.sites.length + ' methylarginine site' + (q.sites.length === 1 ? '' : 's') + ' in this set' : 'Not in this methylarginine set') +
+      (x.flags & IXF.prmt ? '<br>Protein arginine methyltransferase' : '') + (x.flags & IXF.tudor ? '<br>Tudor domain' : '') +
+      (x.flags & IXF.wd40 ? '<br>WD40 repeat' : '') + (x.flags & IXF.phd ? '<br>PHD finger' : '') +
+      (x.flags & IXF.rna ? '<br>RNA binding (GO)' : '') + (x.flags & IXF.dna ? '<br>DNA binding (GO)' : '');
+    const labelled = n === 0 || UI.net.labels === 'all' || (UI.net.labels === 'methyl' && (q || outer)) || net.pinned.has(k);
+    return { k, x, q, outer, r, ck, hol, fill, stroke, tipHtml, labelled };
+  }
+
+  // ----- interactive partner network (Cytoscape.js, loaded when a network is first drawn). The static SVG stays as
+  // the fallback, the printed version and the source of the exports, which take the arrangement from the screen.
+  const CY_URL = 'https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js';
+  function loadCytoscape() {
+    if (window.cytoscape) return Promise.resolve(window.cytoscape);
+    if (!loadCytoscape.p) {
+      loadCytoscape.p = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = CY_URL;
+        s.async = true;
+        s.onload = () => (window.cytoscape ? resolve(window.cytoscape) : reject(new Error('Cytoscape.js missing')));
+        s.onerror = () => { loadCytoscape.p = null; reject(new Error('Cytoscape.js failed to load')); };
+        document.head.appendChild(s);
+      });
+    }
+    return loadCytoscape.p;
+  }
+  function netCyElements(net, pal) {
+    const mode = NODE_MODES[UI.ixColor] || NODE_MODES.sites, colors = mode.colors(pal);
+    const nodes = net.ids.map((k, n) => {
+      const L = netNodeLook(net, n, pal, mode, colors), prmt = !!(L.x.flags & IXF.prmt);
+      // One reader ring around the node: Tudor dashed, WD40 solid, PHD dotted (as in the SVG legend).
+      const ring = L.x.flags & IXF.tudor ? 'dashed' : L.x.flags & IXF.wd40 ? 'solid' : L.x.flags & IXF.phd ? 'dotted' : '';
+      return { group: 'nodes', data: { id: 'n' + n, k, label: L.labelled ? L.x.gene : '', tip: L.tipHtml, size: r1((prmt ? 1.8 : 2) * L.r), shape: prmt ? 'round-rectangle' : 'ellipse',
+        fill: L.fill, stroke: n === 0 || prmt ? pal.ink : L.stroke, bw: n === 0 ? 2 : prmt ? 1.6 : L.hol ? 1.6 : L.q ? 1.2 : 1.4, bs: L.hol ? 'dashed' : 'solid',
+        ...(ring ? { ring } : {}), fs: n === 0 ? 12.5 : L.outer ? 9.5 : 10.5, fw: n === 0 || (L.q && !L.outer) ? 700 : 400,
+        fc: L.q && !L.outer ? pal.ink : pal.muted, fst: L.outer ? 'italic' : 'normal' }, position: { x: net.pos[n].x, y: net.pos[n].y } };
+    });
+    const edges = net.edges.map(([a, b, sc], k) => ({ group: 'edges', data: { id: 'e' + k, source: 'n' + a, target: 'n' + b, w: r1(0.6 + 2.6 * Math.max(0, (sc - 400) / 600)), c: a === 0 ? pal.backbone : pal.grid, ls: 'solid', op: a === 0 ? 1 : 0.9 } }))
+      .concat((net.ringEdges || []).map(([a, b], k) => ({ group: 'edges', data: { id: 'r' + k, source: 'n' + a, target: 'n' + b, w: 1, c: pal.muted, ls: 'dashed', op: 0.7 } })));
+    return nodes.concat(edges);
+  }
+  function netCyStyle(pal) {
+    return [
+      { selector: 'node', style: { width: 'data(size)', height: 'data(size)', shape: 'data(shape)', 'background-color': 'data(fill)', 'border-color': 'data(stroke)', 'border-width': 'data(bw)', 'border-style': 'data(bs)',
+        label: 'data(label)', 'font-size': 'data(fs)', 'font-weight': 'data(fw)', 'font-style': 'data(fst)', color: 'data(fc)', 'font-family': (pal.font || EXPORT_PAL.font).replace(/['"]/g, ''),
+        'text-valign': 'bottom', 'text-halign': 'center', 'text-margin-y': 3 } },
+      { selector: 'node[ring]', style: { 'outline-style': 'data(ring)', 'outline-width': 1.3, 'outline-color': pal.ink, 'outline-offset': 3, 'text-margin-y': 7 } },
+      { selector: 'node:active, node:selected', style: { 'overlay-opacity': 0, 'border-color': pal.accent, 'border-width': 2.6 } },
+      { selector: 'edge', style: { width: 'data(w)', 'line-color': 'data(c)', 'line-style': 'data(ls)', opacity: 'data(op)', 'curve-style': 'straight' } },
+    ];
+  }
+  // Draw the interactive network into holder (which already shows the SVG); onOpen(k) opens a partner.
+  function mountNetCy(holder, net, onOpen) {
+    const token = String(Math.random());
+    holder.dataset.cy = token;
+    if (holder._cy) { holder._cy.destroy(); holder._cy = null; }
+    loadCytoscape().then((cytoscape) => {
+      if (!document.body.contains(holder) || holder.dataset.cy !== token) return;
+      const pal = screenPalette(), svg = holder.innerHTML, coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+      holder.innerHTML = '<div class="net-cy screen-only"><div class="net-cy-canvas" role="img" aria-label="Interactive partner network of ' + esc(net.p.label) + '"></div>' +
+        '<div class="net-cy-tools" role="group" aria-label="Network view"><button type="button" data-cy="in" title="Zoom in">+</button><button type="button" data-cy="out" title="Zoom out">−</button>' +
+        '<button type="button" data-cy="fit" title="Fit the network in the box">Fit</button><button type="button" data-cy="cose" title="Lay the network out again by force">Re-layout</button>' +
+        '<button type="button" data-cy="reset" title="Back to the original layout">Reset</button></div>' +
+        '<p class="net-cy-hint">Drag nodes to rearrange; hover for details, click to open a protein. Exports keep your arrangement.</p></div>' +
+        '<div class="print-only net-static">' + svg + '</div>';
+      const cy = cytoscape({ container: $('.net-cy-canvas', holder), elements: netCyElements(net, pal), style: netCyStyle(pal), layout: { name: 'preset', fit: true, padding: 28 },
+        userZoomingEnabled: false, userPanningEnabled: !coarse, boxSelectionEnabled: false, autounselectify: true, minZoom: 0.25, maxZoom: 4 });
+      net.cy = cy;
+      holder._cy = cy;
+      // A network drawn inside a closed fold has no size yet: size and fit it when the box first appears or changes.
+      let lastW = 0;
+      if (window.ResizeObserver) {
+        const ro = new ResizeObserver(() => {
+          if (cy.destroyed()) { ro.disconnect(); return; }
+          const w = cy.container().clientWidth;
+          if (!w || w === lastW) return;
+          const first = !lastW;
+          lastW = w;
+          cy.resize();
+          if (first) cy.fit(undefined, 28);
+        });
+        ro.observe(cy.container());
+      }
+      cy.on('mouseover', 'node', (e) => { showTip(e.originalEvent, e.target.data('tip')); holder.style.cursor = 'pointer'; });
+      cy.on('mousemove', 'node', (e) => moveTip(e.originalEvent));
+      cy.on('mouseout', 'node', () => { hideTip(); holder.style.cursor = ''; });
+      cy.on('grab', 'node', hideTip);
+      cy.on('tap', 'node', (e) => { hideTip(); onOpen(+e.target.data('k')); });
+      const zoomBy = (f) => cy.zoom({ level: cy.zoom() * f, renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 } });
+      $$('[data-cy]', holder).forEach((b) => b.addEventListener('click', () => {
+        const a = b.dataset.cy;
+        if (a === 'in') zoomBy(1.25);
+        else if (a === 'out') zoomBy(0.8);
+        else if (a === 'fit') cy.fit(undefined, 28);
+        else if (a === 'cose') cy.layout({ name: 'cose', animate: true, animationDuration: 600, randomize: false, fit: true, padding: 28, nodeRepulsion: () => 9000, idealEdgeLength: () => 80 }).run();
+        else if (a === 'reset') { cy.nodes().forEach((nd) => { const q = net.pos[+nd.id().slice(1)]; nd.position({ x: q.x, y: q.y }); }); cy.fit(undefined, 28); }
+      }));
+    }).catch(() => {});
+  }
+  // The network as arranged on screen (dragged nodes kept), scaled back into its drawing box for the exports.
+  function netFromScreen(net) {
+    const cy = net && net.cy;
+    if (!cy || cy.destroyed()) return net;
+    const pts = net.ids.map((_, n) => { const nd = cy.getElementById('n' + n); return nd.nonempty() ? nd.position() : net.pos[n]; });
+    const xs = pts.map((q) => q.x), ys = pts.map((q) => q.y);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    const padX = 60, padY = 34;
+    const k = Math.min((net.W - 2 * padX) / Math.max(1, x1 - x0), (net.H - 2 * padY) / Math.max(1, y1 - y0), 2);
+    const ox = (net.W - k * (x1 - x0)) / 2, oy = (net.H - k * (y1 - y0)) / 2;
+    return Object.assign({}, net, { pos: pts.map((q) => ({ x: ox + (q.x - x0) * k, y: oy + (q.y - y0) * k })) });
   }
 
   // The partners a network draws, from a partnersFor answer: the Partners filter, the top N of them, plus pinned genes
@@ -6993,6 +7103,8 @@
         const holder = $('#ix-net', box);
         if (!holder) return;
         holder.innerHTML = ixNetSvg(net, screenPalette(), false);
+        const openNode = (k) => { hideTip(); const x = IX.prot[k]; if (x.p >= 0) { if (x.p !== p.i) openProtein(x.p); } else window.open('https://www.uniprot.org/uniprotkb/' + encodeURIComponent(x.acc) + '/entry', '_blank', 'noopener'); };
+        mountNetCy(holder, net, openNode);
         $$('.nd', holder).forEach((nd) => {
           const k = +nd.dataset.k;
           nd.addEventListener('mouseenter', (e) => showTip(e, nd.getAttribute('data-tip')));
@@ -7029,9 +7141,9 @@
           .catch(() => { if (w) w.close(); });
       };
       const name = (p.gene || p.acc) + '_' + UI.net.type + '_partners';
-      $('#ix-svg').onclick = () => { if (UI.ixNet) exportFigure('svg', ixNetSvg(UI.ixNet, EXPORT_PAL, true), name); };
-      $('#ix-png').onclick = () => { if (UI.ixNet) exportFigure('png', ixNetSvg(UI.ixNet, EXPORT_PAL, true), name); };
-      $('#ix-cyjs').onclick = () => { if (UI.ixNet) download(name + '.cyjs', JSON.stringify(netCytoscape(UI.ixNet), null, 1)); };
+      $('#ix-svg').onclick = () => { if (UI.ixNet) exportFigure('svg', ixNetSvg(netFromScreen(UI.ixNet), EXPORT_PAL, true), name); };
+      $('#ix-png').onclick = () => { if (UI.ixNet) exportFigure('png', ixNetSvg(netFromScreen(UI.ixNet), EXPORT_PAL, true), name); };
+      $('#ix-cyjs').onclick = () => { if (UI.ixNet) download(name + '.cyjs', JSON.stringify(netCytoscape(netFromScreen(UI.ixNet)), null, 1)); };
       $('#ix-tsv').onclick = () => download(name + '.tsv', ['partner_gene\tpartner_accession\tstring_score\tmethylarginine_sites\tprmt\ttudor_domain\tgo_rna_binding\tgo_dna_binding\tprotvar_pdockq\tmethylarginines_at_predicted_interface']
         .concat(all.map(([k, sc]) => { const x = IX.prot[k]; const r = predMap.get(k); return [x.gene, x.acc, (sc / 1000).toFixed(3), x.p >= 0 ? P[x.p].sites.length : 0, x.flags & IXF.prmt ? 1 : 0, x.flags & IXF.tudor ? 1 : 0, x.flags & IXF.rna ? (x.flags & IXF.rnaExp ? 'experimental' : 'yes') : '', x.flags & IXF.dna ? (x.flags & IXF.dnaExp ? 'experimental' : 'yes') : '', r ? (r.sc / 100).toFixed(2) : '', r ? r.sites.map((v) => rl(v, p)).join(';') : ''].join('\t'); })).join('\n') + '\n');
     });
@@ -9241,6 +9353,7 @@
       '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two entries with the highest PDB IDs (roughly the most recent) per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were read from the structure itself (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylated arginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
       '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue that touched RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016). DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence' + (IX && IX.meta && IX.meta.xl_check ? ' (' + fmt(IX.meta.xl_check.matched) + ' matched, ' + fmt(IX.meta.xl_check.dropped) + ' dropped)' : '') + '. Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides.</li>' +
       '<li><b>IntAct</b>: curated features of interaction participants (' + doiLink('10.1093/nar/gkab1006', 'del Toro et al. 2022') + '; CC BY 4.0), exported by scripts/37 when their curated sequence matches the canonical UniProt sequence at their range: mutations and their effect on an interaction (disrupts, decreases, increases, causes, no effect), regions mapped as sufficient, necessary, binding-associated or direct-interaction regions for a partner, and methylated arginines of participants. At a site, a mutation of up to 3 residues that changed an interaction, a binding region of up to ' + ((IX && IX.ia && IX.ia.peptide_max) || 20) + ' residues and a methylated-residue record are listed as IntAct evidence and can be filtered on; they do not set the site\'s interaction status. Longer regions appear only on the protein map. The IntAct map row (and its lane in the cartoon and comparison) is off until switched on in the Rows menu. The Interactions tab tests methylated against other arginines of the same proteins.</li>' +
+      '<li><b>Interactive network</b>: on a protein page the partner network is drawn with Cytoscape.js (' + doiLink('10.1093/bioinformatics/btv557', 'Franz et al. 2016') + '): drag nodes, zoom with the + and − buttons, lay it out again or reset it; hover a node for its details and click it to open the protein. SVG, PNG and Cytoscape exports keep the arrangement on screen; print and the Figures tab use the drawn layout.</li>' +
       '<li><b>STRING network options</b>: on a protein page, the network can be physical or functional (all associations), scored on chosen evidence channels (STRING\'s own rule: remove the 0.041 prior from each channel score, combine, add the prior back), limited to methylated partners, PRMTs and reader domains or RNA/DNA binders, labelled and sized as needed, extended with pinned genes, and opened on string-db.org with the same settings. Options are remembered in this browser.</li>' +
       '<li><b>Writer and reader paths</b>: the protein network can add a second ring of PRMTs and Tudor-domain proteins that bind its partners (STRING ≥ 0.7).</li>' +
       '<li><b>Unreviewed UniProt entries</b>: ' + fmt(S.filter((x) => P[x.p].unrev).length) + ' sites in the union sit on entries without a Swiss-Prot entry name (unreviewed TrEMBL entries, and some UniProt has since made obsolete), mostly without a staged sequence, so they lack motif, disorder and domain context. ' + fmt(S.filter((x) => x.dup != null).length) + ' of them repeat a site at the same position on the reviewed entry of the same gene, so the union counts those residues twice. The explorer keeps the union as published, tags these entries and sites, and offers a "Reviewed UniProt entries only" filter (Provenance); the sites TSV has <code>uniprot_reviewed</code> and <code>same_site_on_reviewed_entry</code> columns.</li>' +

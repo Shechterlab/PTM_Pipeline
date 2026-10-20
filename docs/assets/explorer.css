@@ -696,6 +696,13 @@ footer.site a:hover { color: var(--accent); }
 .ix-tabs .n { font-weight: 400; opacity: 0.75; margin-left: 0.1rem; }
 .ix-net-box { border: 1px solid var(--line); border-radius: 0.7rem; background: var(--surface); overflow: hidden; margin-top: 0.4rem; }
 svg.ix-net { display: block; width: 100%; height: auto; }
+.net-cy { position: relative; }
+.net-cy-canvas { width: 100%; aspect-ratio: 5 / 3; min-height: 300px; max-height: 620px; }
+.net-cy-tools { position: absolute; top: 0.5rem; right: 0.5rem; display: flex; gap: 0.25rem; }
+.net-cy-tools button { font: inherit; font-size: 0.78rem; line-height: 1.2; padding: 0.22rem 0.5rem; min-width: 1.9rem; border: 1px solid var(--line-strong); border-radius: 0.4rem; background: var(--surface); color: var(--ink-2); cursor: pointer; }
+.net-cy-tools button:hover, .net-cy-tools button:focus-visible { border-color: var(--accent); color: var(--accent); }
+.net-cy-hint { margin: 0; padding: 0.35rem 0.75rem 0.5rem; font-size: 0.76rem; color: var(--muted); border-top: 1px solid var(--line); }
+@media (max-width: 560px) { .net-cy-tools { position: static; padding: 0.4rem 0.5rem 0; flex-wrap: wrap; } }
 .ix-net .nd { outline: none; }
 .ix-net .nd:hover circle, .ix-net .nd:focus-visible circle, .ix-net .nd:hover rect, .ix-net .nd:focus-visible rect { stroke: var(--accent); stroke-width: 2.6; }
 .legend i.hollow, .chip .dot.hollow, .pill i.hollow, i.dot.hollow { background: var(--surface) !important; border: 1.5px dashed; box-sizing: border-box; }
