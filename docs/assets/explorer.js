@@ -1865,6 +1865,18 @@
       mol.viewer.resize();
       mol.viewer.render();
     }, true);
+    // The protein page's "More links" menu closes on a click elsewhere or on Escape.
+    document.addEventListener('click', (e) => { $$('details.links-more[open]').forEach((d) => { if (!d.contains(e.target)) d.open = false; }); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $$('details.links-more[open]').forEach((d) => { d.open = false; }); });
+    // On a narrow screen the menu shifts left so it stays on the page.
+    document.addEventListener('toggle', (e) => {
+      const d = e.target;
+      if (!d.matches || !d.matches('details.links-more') || !d.open) return;
+      const m = d.querySelector('.links-menu');
+      m.style.left = '0px';
+      const over = m.getBoundingClientRect().right - (document.documentElement.clientWidth - 8);
+      if (over > 0) m.style.left = -over + 'px';
+    }, true);
     // Help text under card titles shows one line; a click on it shows the rest.
     document.addEventListener('click', (e) => {
       const p = e.target.closest ? e.target.closest('p.sub') : null;
@@ -2834,13 +2846,15 @@
       (p.iso ? '<span class="tag" title="Sites were reported on this isoform accession">isoform</span>' : '') +
       (p.unrev ? '<span class="tag warn-tag" title="Unreviewed UniProt entry (TrEMBL)">unreviewed entry</span>' : '') +
       ext('https://www.uniprot.org/uniprotkb/' + encodeURIComponent(p.acc) + '/entry', 'UniProt') +
+      // The other outside resources sit in one menu so the header stays short.
+      '<details class="links-more"><summary class="btn quiet small">More links</summary><div class="links-menu">' +
       ext('https://alphafold.ebi.ac.uk/entry/' + encodeURIComponent(base), 'AlphaFold') +
       ext('https://www.ebi.ac.uk/interpro/protein/UniProt/' + encodeURIComponent(base) + '/', 'InterPro') +
       ext('https://www.ebi.ac.uk/pdbe/pdbe-kb/proteins/' + encodeURIComponent(base), 'PDBe-KB') +
       ext('https://mobidb.org/' + encodeURIComponent(base), 'MobiDB') +
       ext('https://www.ebi.ac.uk/QuickGO/annotations?geneProductId=' + encodeURIComponent(base), 'GO') +
       ext('https://www.ebi.ac.uk/complexportal/home?query=' + encodeURIComponent(base), 'Complex Portal') +
-      ext('https://www.phosphosite.org/uniprotAccAction?id=' + encodeURIComponent(base), 'PhosphoSitePlus') +
+      ext('https://www.phosphosite.org/uniprotAccAction?id=' + encodeURIComponent(base), 'PhosphoSitePlus') + '</div></details>' +
       '<button class="btn small" type="button" id="save-pdf" title="Print this protein page, or save it as a PDF from the print dialog">Save PDF</button></div></div>' +
       (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
       '<div id="drift-note"></div>' +
@@ -2855,12 +2869,12 @@
       fact(p.shrink == null ? '—' : fmtL2(p.shrink), 'Arg enrichment (log2)', p.argQ == null ? 'not tested (needs ≥2 sites and ≥10 arginines on a reviewed canonical sequence)' : 'shrinkage estimate; Fisher q ' + fmtP(p.argQ), 'enrich', 'How the arginine enrichment is computed') +
       fact('<span id="ix-fact">…</span>', 'Sites with experimental interaction evidence', '<span id="ix-fact-sub">loading interaction data</span>', 'ixexp', 'List these sites') +
       '</div>' +
-      // Every card is a fold; the protein map, the evidence cartoon and the partners start open, the rest closed.
+      // Every card is a fold; only the protein map starts open.
       '<div class="fold-list">' +
       foldHtml('p-map', 'Protein map', figureCard(p), true, fmt(p.sites.length) + ' methylarginine site' + (p.sites.length === 1 ? '' : 's')) +
       '<div class="card" id="site-card" hidden></div>' +
-      foldHtml('p-cc', 'Interaction evidence at a glance', contactCardHtml(), true) +
-      foldHtml('p-ix', 'Partners and complexes', '<div class="card" id="card-ix"></div>', true) +
+      foldHtml('p-cc', 'Interaction evidence at a glance', contactCardHtml(), false, 'loading…') +
+      foldHtml('p-ix', 'Partners and complexes', '<div class="card" id="card-ix"></div>', false, 'loading…') +
       foldHtml('p-sites', 'Sites', '<div class="card tbl-card" id="card-sites"><div class="card-pad"><div class="card-head"><div><h3>Sites</h3><p class="sub">Click a row for details of the site.</p></div><div class="actions" id="psites-tools"></div></div><div id="psites-ix"></div></div>' +
       '<div class="tbl-wrap" id="psites"></div><p class="note uni-extra" id="uni-extra" hidden></p><div class="card-pad" id="psites-cite"></div></div>') +
       foldHtml('p-3d', '3D structure', structureCard(p), false, 'AlphaFold DB model and experimental structures; loads when opened') +
@@ -7204,7 +7218,8 @@
     if (xe.rna_xl && xe.rna_xl.or) {
       const [a, b, c, d] = xe.rna_xl.or.pooled, m = xe.rna_xl.or.mh;
       const one = xe.rna_xl_single && xe.rna_xl_single.or ? xe.rna_xl_single.or.mh : null;
-      out.push({ sec: 'cells', html: 'In living cells, methylated arginines are <b>' + dirCi(m[1], m[2]) + '</b> the residue crosslinked to RNA than the other arginines of the same proteins: ' +
+      out.push({ sec: 'cells', head: 'In cells, methylated arginines are <b>' + dirCi(m[1], m[2]) + '</b> the residue crosslinked to RNA (' + pctText(a, a + b || 1) + '% vs ' + pctText(c, c + d || 1) + '% of other arginines of the same proteins).',
+        html: 'In living cells, methylated arginines are <b>' + dirCi(m[1], m[2]) + '</b> the residue crosslinked to RNA than the other arginines of the same proteins: ' +
         pctText(a, a + b || 1) + '% vs ' + pctText(c, c + d || 1) + '% (within-protein ' + orCi(m) + ', ' + fmt(m[4]) + ' informative proteins' + (one ? '; crosslinks localised to a single residue only: ' + orCi(one) : '') + '). ' +
         'The crosslink searches carry no methylation mass, so these crosslinks were caught on unmethylated copies of the peptides.' });
     }
@@ -7212,19 +7227,23 @@
     if (t.rme2s && t.rme2a && t.nostate) {
       const part = (o, label) => label + ', <b>' + (o.mh[1] > 1 ? 'more often' : o.mh[2] < 1 ? 'less often' : 'no significant difference') + '</b> (' + orCi(o.mh) + ', ' + fmt(o.pooled[0]) + ' crosslinked)';
       const s1 = t1.rme2s && t1.rme2s.mh[0] != null ? ' With single-localisation crosslinks only, SDMA-IP sites: ' + orCi(t1.rme2s.mh) + '.' : '';
-      out.push({ sec: 'cells', html: 'RNA crosslinking by methylation class, against unmethylated arginines of the same proteins: ' + part(t.rme2s, 'sites recovered by the SDMA IP (Rme2s)') + '; ' + part(t.rme2a, 'ADMA but not SDMA IP (Rme2a)') + '; ' + part(t.nostate, 'sites with neither a state call nor a methyl-IP recovery') + '.' + s1 +
+      const word = (o) => (o.mh[1] > 1 ? 'more often' : o.mh[2] < 1 ? 'less often' : 'no difference');
+      out.push({ sec: 'cells', head: 'By methylation class, RNA crosslinking: Rme2s <b>' + word(t.rme2s) + '</b>, Rme2a <b>' + word(t.rme2a) + '</b>, sites without a class <b>' + word(t.nostate) + '</b> (few sites; suggestive).',
+        html: 'RNA crosslinking by methylation class, against unmethylated arginines of the same proteins: ' + part(t.rme2s, 'sites recovered by the SDMA IP (Rme2s)') + '; ' + part(t.rme2a, 'ADMA but not SDMA IP (Rme2a)') + '; ' + part(t.nostate, 'sites with neither a state call nor a methyl-IP recovery') + '.' + s1 +
         ' Few residues carry these classes, so treat the class differences as suggestive.' });
     }
     if (xe.dna_cand && xe.dna_cand.or) {
       const one = xe.dna_xl && xe.dna_xl.or ? xe.dna_xl.or.pooled : null, m = xe.dna_cand.or.mh, bind = xe.dna_bind && xe.dna_bind.or ? xe.dna_bind.or.mh : null;
-      out.push({ sec: 'cells', html: 'DNA crosslinks (Trendel et al. 2025, MCF7) are rarely localised to one residue: ' + (one ? fmt(one[0]) + ' methylarginine' + (one[0] === 1 ? ' carries one' : 's carry one') + ' localised to it alone. ' : '') +
+      out.push({ sec: 'cells', head: 'Methylated arginines are <b>' + dirCi(m[1], m[2]) + '</b> a candidate residue of DNA crosslinks in cells.',
+        html: 'DNA crosslinks (Trendel et al. 2025, MCF7) are rarely localised to one residue: ' + (one ? fmt(one[0]) + ' methylarginine' + (one[0] === 1 ? ' carries one' : 's carry one') + ' localised to it alone. ' : '') +
         'Counting every candidate residue, methylated arginines are <b>' + dirCi(m[1], m[2]) + '</b> a candidate than other arginines of the same proteins (' + orCi(m) + ')' +
         (bind && bind[0] != null ? ', and they sit <b>' + dirCi(bind[1], bind[2]) + '</b> inside UniProt DNA-binding regions (' + orCi(bind) + ')' : '') + '.' });
     }
     const st = IX.strata || {};
     if (st.rna && st.protein) {
       const r = st.rna.all, pr = st.protein.all;
-      out.push({ sec: 'pdb', html: 'In PDB structures, methylated arginines sit at RNA interfaces <b>' + dirP(r.mh[0], r.mh[1]) + '</b> than other arginines of the same protein (OR ' + orNum(or2(r.mh[0])) + ', p ' + fmtP(r.mh[1]) +
+      out.push({ sec: 'pdb', head: 'In PDB structures, methylated arginines are at RNA interfaces <b>' + dirP(r.mh[0], r.mh[1]) + '</b> and at protein interfaces <b>' + dirP(pr.mh[0], pr.mh[1]) + '</b> than other arginines of the same proteins.',
+        html: 'In PDB structures, methylated arginines sit at RNA interfaces <b>' + dirP(r.mh[0], r.mh[1]) + '</b> than other arginines of the same protein (OR ' + orNum(or2(r.mh[0])) + ', p ' + fmtP(r.mh[1]) +
         '; pooled across proteins OR ' + orNum(or2(r.pooled[4])) + ') and at protein interfaces <b>' + dirP(pr.mh[0], pr.mh[1]) + '</b> (OR ' + orNum(or2(pr.mh[0])) + ', p ' + fmtP(pr.mh[1]) + ').' });
     }
     const pe = IX.predEnrich && IX.predEnrich['0.23'];
@@ -7232,28 +7251,33 @@
     const ie = IX.iaEnrich || {};
     if (ie.peptide_disordered && ie.peptide_disordered.mh[0] != null && ie.mutation && ie.mutation.mh[0] != null) {
       const pd = ie.peptide_disordered.mh, mu = ie.mutation.mh;
-      out.push({ sec: 'intact', html: 'In IntAct\'s curated literature, disordered methylarginines lie inside short (≤ ' + IX.ia.peptide_max + ' aa) binding regions <b>' + dirCi(pd[1], pd[2]) + '</b> than other disordered arginines of the same proteins (OR ' + orNum(pd[0]) + ' [' + orNum(pd[1]) + '–' + orNum(pd[2]) + '], p ' + fmtP(pd[3]) + '); mutating a methylarginine changed an interaction ' + dirCi(mu[1], mu[2]) + ' than mutating other arginines (OR ' + orNum(mu[0]) + ', ' + mu[4] + ' informative proteins).' });
+      out.push({ sec: 'intact', head: 'Disordered methylarginines lie in short curated binding regions (IntAct) <b>' + dirCi(pd[1], pd[2]) + '</b> than other disordered arginines.',
+        html: 'In IntAct\'s curated literature, disordered methylarginines lie inside short (≤ ' + IX.ia.peptide_max + ' aa) binding regions <b>' + dirCi(pd[1], pd[2]) + '</b> than other disordered arginines of the same proteins (OR ' + orNum(pd[0]) + ' [' + orNum(pd[1]) + '–' + orNum(pd[2]) + '], p ' + fmtP(pd[3]) + '); mutating a methylarginine changed an interaction ' + dirCi(mu[1], mu[2]) + ' than mutating other arginines (OR ' + orNum(mu[0]) + ', ' + mu[4] + ' informative proteins).' });
     }
     if (pe && pe.all && pe.all.mh[0] != null) {
       const m = pe.all.mh;
-      out.push({ sec: 'predicted', html: 'In AlphaFold-Multimer models of human protein pairs (ProtVar, pDockQ ≥ 0.23), methylated arginines sit at the predicted interface <b>' + dirP(m[0], m[1]) + '</b> than other arginines of the same proteins (OR ' + orNum(or2(m[0])) + ', p ' + fmtP(m[1]) + ').' });
+      out.push({ sec: 'predicted', head: 'In predicted complexes, methylated arginines are at the interface <b>' + dirP(m[0], m[1]) + '</b> than other arginines of the same proteins.',
+        html: 'In AlphaFold-Multimer models of human protein pairs (ProtVar, pDockQ ≥ 0.23), methylated arginines sit at the predicted interface <b>' + dirP(m[0], m[1]) + '</b> than other arginines of the same proteins (OR ' + orNum(or2(m[0])) + ', p ' + fmtP(m[1]) + ').' });
     }
     if (IX.gallery && IX.gallery.length) {
       const rows = galRows(Object.assign({}, GAL_DEFAULT));
-      out.push({ sec: 'predicted', html: '<b>' + fmt(new Set(rows.map((r) => r.j)).size) + '</b> methylarginines form a salt bridge or hydrogen bond with a partner in a confident predicted complex, with both residues at pLDDT ≥ ' + GAL_DEFAULT.pl + '.' });
+      out.push({ sec: 'predicted', head: '<b>' + fmt(new Set(rows.map((r) => r.j)).size) + '</b> methylarginines form a salt bridge or hydrogen bond with a partner in a confident predicted complex, with both residues at pLDDT ≥ ' + GAL_DEFAULT.pl + '.' });
     }
     const pm = partnerShare();
     if (pm.distinct) {
-      out.push({ sec: 'partners', html: 'Of the ' + fmt(pm.distinct) + ' distinct proteins that are high-confidence physical partners of methylated proteins (STRING ≥ 0.7), <b>' + pctText(pm.distinctMeth, pm.distinct) + '%</b> are themselves methylated, against ' + pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of reviewed human proteins. Well-studied proteins carry both more mapped sites and more mapped interactions, so this is an association.' });
+      out.push({ sec: 'partners', head: '<b>' + pctText(pm.distinctMeth, pm.distinct) + '%</b> of the physical partners of methylated proteins are themselves methylated (' + pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of human proteins).',
+        html: 'Of the ' + fmt(pm.distinct) + ' distinct proteins that are high-confidence physical partners of methylated proteins (STRING ≥ 0.7), <b>' + pctText(pm.distinctMeth, pm.distinct) + '%</b> are themselves methylated, against ' + pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of reviewed human proteins. Well-studied proteins carry both more mapped sites and more mapped interactions, so this is an association.' });
     }
     const g = IX.goEnrich && IX.goEnrich.rna;
-    if (g) out.push({ sec: 'go', html: '<b>' + pctText(g[0], g[1] || 1) + '%</b> of methylated proteins are annotated as RNA-binding, against ' + pctText(g[2], g[3] || 1) + '% of other reviewed human proteins (Gene Ontology; OR ' + orNum(or2(g[4])) + ', p ' + fmtP(g[5]) + ').' });
+    if (g) out.push({ sec: 'go', head: '<b>' + pctText(g[0], g[1] || 1) + '%</b> of methylated proteins are RNA-binding (Gene Ontology), against ' + pctText(g[2], g[3] || 1) + '% of other human proteins.',
+      html: '<b>' + pctText(g[0], g[1] || 1) + '%</b> of methylated proteins are annotated as RNA-binding, against ' + pctText(g[2], g[3] || 1) + '% of other reviewed human proteins (Gene Ontology; OR ' + orNum(or2(g[4])) + ', p ' + fmtP(g[5]) + ').' });
     return out;
   }
 
-  // The first three findings; the others behind "Show N more".
+  // The first three findings as one-line headlines; a click shows the numbers. The others sit behind "Show N more".
   function findingsList(list, n = 3) {
-    const li = (f) => '<li><span>' + f.html + '</span> <button class="linkish more-link" type="button" data-ixgo="' + f.sec + '" title="Open the analysis">Details ＋</button></li>';
+    const go = (f) => '<button class="linkish more-link" type="button" data-ixgo="' + f.sec + '">Open the analysis →</button>';
+    const li = (f) => (f.html ? '<li><details class="finding"><summary>' + f.head + '</summary><p>' + f.html + ' ' + go(f) + '</p></details></li>' : '<li><span>' + f.head + '</span> ' + go(f) + '</li>');
     return '<ul class="findings">' + list.slice(0, n).map(li).join('') + '</ul>' +
       (list.length > n ? '<details class="findings-more"><summary class="linkish">Show ' + (list.length - n) + ' more finding' + (list.length - n === 1 ? '' : 's') + '</summary><ul class="findings">' + list.slice(n).map(li).join('') + '</ul></details>' : '');
   }
@@ -8146,27 +8170,24 @@
     if (!IX) { el.innerHTML = '<div class="card"><h3>Interactions and binding</h3><p class="note">Loading interaction data…</p></div>'; return; }
     if (IX.failed) { el.innerHTML = '<div class="card"><h3>Interactions and binding</h3><p class="note">Interaction data (<code>data/methylarg_interactions.json</code>) is not available.</p></div>'; return; }
     const body = { cells: ixSecCells, pdb: ixSecPdb, intact: ixSecIntact, predicted: ixSecPredicted, partners: ixSecPartners, complexes: ixSecComplexes, go: ixSecGo };
-    el.innerHTML = '<div class="ix-page"><div class="card ix-intro"><h3>Interactions and binding</h3>' +
-      '<p class="sub">What methylated arginines and their proteins touch. Most tests compare methylated arginines with the other arginines of the same proteins. Click a row in any section to filter the sites.</p>' +
+    const scoped = constraints().length > 0, n = { exp: 0, pred: 0, none: 0 };
+    for (const s of R.sites) n[ixStatus(s)]++;
+    const tile = (k, term, label) => fact(fmt(n[k]), label, pctText(n[k], R.sites.length || 1) + '% of ' + (scoped ? 'your ' : '') + fmt(R.sites.length) + ' sites', term, 'List these sites');
+    el.innerHTML = '<div class="ix-page"><div class="ov-head"><h2>Interactions</h2><span class="muted small">What methylated arginines touch: proteins, RNA and DNA</span></div>' +
+      '<div class="facts ix-facts">' + tile('exp', 'experimental', 'Experimental evidence') + tile('pred', 'predicted-only', 'Predicted only') + tile('none', 'none', 'None recorded') + '</div>' +
       checkSiteHtml('ix-check') +
-      '<h4>Key findings</h4>' + findingsList(ixFindings()) +
-      '<div class="ix-toc"><span class="flabel">Sections</span>' + IX_SECTIONS.map(([k, title]) => '<button class="chip" type="button" data-ixgo="' + k + '">' + esc(title) + '</button>').join('') +
-      '<button class="linkish" type="button" id="ix-all">' + (UI.ixOpen.size === IX_SECTIONS.length ? 'Collapse all' : 'Expand all') + '</button></div></div>' +
-      foldHtml('ix-evmap', 'How the evidence fits together', ixEvidenceMapHtml(), true, 'how crosslink, PDB, predicted and IntAct evidence combine on ' + (constraints().length ? 'your ' + fmt(R.sites.length) + ' sites' : 'all ' + fmt(R.sites.length) + ' sites')) +
+      '<div class="ov-head"><h2>Key findings</h2><span class="muted small">Click one for the numbers</span></div>' + findingsList(ixFindings()) +
+      '<div class="ov-head"><h2>Explore the evidence</h2><span class="muted small">Most tests compare methylated with other arginines of the same proteins</span></div><div class="fold-list">' +
+      foldHtml('ix-evmap', 'How the evidence fits together', ixEvidenceMapHtml(), false, 'how crosslink, PDB, predicted and IntAct evidence combine on ' + (constraints().length ? 'your ' + fmt(R.sites.length) + ' sites' : 'all ' + fmt(R.sites.length) + ' sites')) +
       // The worked example and the two matrices behind one-line headers.
       foldIf('ix-ex', 'What the evidence looks like on one protein', ixExampleHtml(), () => 'drawn for ' + ixExampleProtein().label + '; type any protein to redraw it') +
       foldIf('ix-cm', 'Which sites carry which evidence', ixConnMatrixHtml(), () => 'site features against crosslink, PDB and predicted-complex evidence' + (constraints().length ? ', your selection' : '')) +
       foldIf('ix-wr', 'Writers and readers sharing substrates', ixWrMatrixHtml(), () => 'methylated proteins bound by both a PRMT and a Tudor-domain protein (STRING)') +
-      IX_SECTIONS.map(([k, title, tag]) => '<details class="card ix-sec" id="ixs-' + k + '" data-ixsec="' + k + '"' + (UI.ixOpen.has(k) ? ' open' : '') + '><summary><span class="pm" aria-hidden="true"></span><span class="ix-sec-t"><b>' + esc(title) + '</b><span class="sub">' + esc(tag) + '</span></span></summary>' +
-        '<div class="ix-sec-body">' + body[k]() + '</div></details>').join('') + '</div>';
-    $$('details.ix-sec', el).forEach((d) => d.addEventListener('toggle', () => {
-      if (d.open) UI.ixOpen.add(d.dataset.ixsec); else UI.ixOpen.delete(d.dataset.ixsec);
-      const all = $('#ix-all', el);
-      if (all) all.textContent = UI.ixOpen.size === IX_SECTIONS.length ? 'Collapse all' : 'Expand all';
-    }));
-    $('#ix-all', el).addEventListener('click', () => {
-      const open = UI.ixOpen.size !== IX_SECTIONS.length;
-      $$('details.ix-sec', el).forEach((d) => { d.open = open; });
+      IX_SECTIONS.map(([k, title, tag]) => foldHtml('ixs-' + k, title, '<div class="ix-sec-body" id="ixs-' + k + '">' + body[k]() + '</div>', false, tag)).join('') + '</div></div>';
+    $$('.ix-facts .fact', el).forEach((b) => {
+      const run = () => setTerm('interaction', b.dataset.fact, 'sites');
+      b.addEventListener('click', run);
+      b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); run(); } });
     });
     bindIxGo(el);
     bindIxOverview(el);
@@ -8185,10 +8206,9 @@
   const foldIf = (key, title, html, sum) => (html ? foldHtml(key, title, html, false, sum()) : '');
 
   function openIxSection(k) {
-    const d = $('#ixs-' + k);
+    const b = $('#ixs-' + k), d = b && b.closest('details.fold');
     if (!d) return;
     d.open = true;
-    UI.ixOpen.add(k);
     d.scrollIntoView({ block: 'start', behavior: 'smooth' });
   }
 
@@ -9113,7 +9133,17 @@
 
   // ---------------------------------------------------------------- about
   function renderAbout(el) {
-    const sec = (id, title, html) => '<section class="doc-sec" id="doc-' + id + '"><h3>' + esc(title) + '</h3>' + html + '</section>';
+    // Every section is a fold, closed at first; its summary names the sub-sections, or says what it holds.
+    const DOC_SUM = {
+      about: 'what the explorer is and the paper to cite', cite: 'the original studies, the evidence resources and the paper',
+      sources: 'Maron 2021, ProMetheusDB, the PTM master table and the studies behind them', processing: 'remapping, gene symbols, state, inhibitor response, clustering, enrichment',
+      'protein-pages': 'protein map rows, the evidence cartoon, UniProt, AlphaFold DB and PDB', interactions: 'partners, complexes, binding, interfaces, crosslinks, IntAct, statistics',
+      provenance: 'what the site positions refer to', licences: 'every source with its version, licence and citation', guardrails: 'what the data can and cannot say', downloads: 'TSV downloads and their terms',
+    };
+    const sec = (id, title, html) => {
+      const subs = Array.from(html.matchAll(/<div class="doc-sub" id="doc-[^"]+"><h4>([^<]+)<\/h4>/g), (m) => m[1].replace(/&amp;/g, '&'));
+      return '<section class="doc-sec" id="doc-' + id + '">' + foldHtml('doc-' + id, title, '<div class="card prose doc-body">' + html + '</div>', false, subs.length ? subs.join(' · ') : DOC_SUM[id] || '') + '</section>';
+    };
     const sub = (id, title, html) => '<div class="doc-sub" id="doc-' + id + '"><h4>' + esc(title) + '</h4>' + html + '</div>';
     const parts = [
       ['start', 'Getting started', '<ul>' +
@@ -9247,9 +9277,12 @@
         '<p class="note">Data exported ' + esc(M.generated) + ' · ' + fmt(M.n_sites) + ' sites · ' + fmt(M.n_proteins) + ' proteins.</p>'],
     ];
     el.innerHTML = '<div class="docs"><nav class="docs-toc card" aria-label="Documentation contents"><p class="flabel">Contents</p><ol>' +
-      parts.map(([id, title]) => '<li><button class="linkish" type="button" data-doc="' + id + '">' + esc(title) + '</button></li>').join('') + '</ol></nav>' +
-      '<div class="card prose docs-body">' + parts.map(([id, title, html]) => sec(id, title, html)).join('') + '</div></div>';
+      parts.map(([id, title]) => '<li><button class="linkish" type="button" data-doc="' + id + '">' + esc(title) + '</button></li>').join('') + '</ol>' +
+      '<p class="docs-all"><button class="linkish" type="button" id="docs-open">Open all</button> · <button class="linkish" type="button" id="docs-close">Close all</button></p></nav>' +
+      '<div class="fold-list docs-body">' + parts.map(([id, title, html]) => sec(id, title, html)).join('') + '</div></div>';
     bindDocLinks(el);
+    $('#docs-open', el).addEventListener('click', () => $$('.docs-body details.fold', el).forEach((d) => { d.open = true; }));
+    $('#docs-close', el).addEventListener('click', () => $$('.docs-body details.fold', el).forEach((d) => { d.open = false; }));
     if (UI.docJump) setTimeout(jumpDoc, 0);
   }
 
@@ -9268,6 +9301,10 @@
     const t = UI.docJump && document.getElementById('doc-' + UI.docJump);
     UI.docJump = null;
     if (!t) { window.scrollTo({ top: 0 }); return; }
+    // A section opens its own fold; a sub-section opens the fold it sits in.
+    openFoldOf(t);
+    const own = t.querySelector(':scope > details.fold');
+    if (own) own.open = true;
     t.scrollIntoView({ block: 'start' });
     t.classList.add('flash');
     setTimeout(() => t.classList.remove('flash'), 1600);
@@ -9494,45 +9531,48 @@
     f.prot = fp ? fp.i : null;
     const btn = (fx, label, title) => '<button type="button" data-fx="' + fx + '"' + (title ? ' title="' + esc(title) + '"' : '') + '>' + label + '</button>';
     const img = (fx) => btn(fx + '-svg', 'SVG') + btn(fx + '-png', 'PNG');
-    const card = (id, title, sub, buttons, body) => '<div class="card fig-card" id="' + id + '"><div class="card-head"><div><h3>' + esc(title) + '</h3><p class="sub">' + sub + '</p></div>' +
-      '<div class="exp" role="group" aria-label="' + esc(title) + ' export">' + buttons + '</div></div>' + body + '<p class="print-note" id="' + id + '-note"></p></div>';
+    // Every figure is a fold, closed at first, and draws when it is opened (see whenOpen below).
+    const card = (id, title, sub, buttons, body, sum) => foldHtml(id, title, '<div class="card fig-card" id="' + id + '"><div class="card-head"><div><h3>' + esc(title) + '</h3><p class="sub">' + sub + '</p></div>' +
+      '<div class="exp" role="group" aria-label="' + esc(title) + ' export">' + buttons + '</div></div>' + body + '<p class="print-note" id="' + id + '-note"></p></div>', false, sum);
     const box = (id, note) => '<div class="fig-preview" id="' + id + '"><p class="note">' + (note || 'Loading…') + '</p></div>';
     const charts = overviewCharts();
     const chartList = [charts.func, charts.dis, charts.motif, charts.cond, charts.loc, charts.disorder, charts.domctx, charts.domcls, charts.study].filter(Boolean);
-    el.innerHTML = resultsHead('Figures', 'Every figure of the current selection, ready to export: ' + fmt(R.sites.length) + ' sites on ' + fmt(R.prots.length) + ' proteins. Exports credit this site and ' + esc(PAPER.short) + '.') +
+    const sizeSum = panelState.mm ? PANEL_WIDTHS.find(([v]) => v === panelState.mm)[1] + ', PNG ' + panelState.dpi + ' dpi' : 'screen layout';
+    el.innerHTML = resultsHead('Figures', 'Every figure of the current selection, ready to export: ' + fmt(R.sites.length) + ' sites on ' + fmt(R.prots.length) + ' proteins. Exports credit this site and ' + esc(PAPER.short) + '.',
+      '<button class="btn small" type="button" id="fg-report" title="Profile, evidence map, logo and protein comparison of this selection as one PDF">Insight report (PDF)</button>') +
       (scoped ? '' : '<div class="filter-note">No search or filter is set, so these figures use the whole dataset. Search for proteins or set filters to focus them.</div>') +
-      '<div class="card fig-settings"><div class="card-head"><div><h3>Export size</h3><p class="sub">One size for every figure here and on protein pages.' + docLink('fig-hub') + '</p></div>' +
-      '<div class="exp"><button type="button" id="fg-report" title="Profile, evidence map, logo and protein comparison of this selection as one PDF">Insight report (PDF)</button></div></div>' +
-      '<div class="fig-controls">' + panelControlsHtml() + '</div></div>' +
-      '<h2 class="fig-sec">This selection</h2>' +
+      '<div class="fold-list">' +
+      foldHtml('fg-size', 'Export size', '<div class="card fig-settings"><div class="card-head"><div><h3>Export size</h3><p class="sub">One size for every figure here and on protein pages.' + docLink('fig-hub') + '</p></div></div>' +
+        '<div class="fig-controls">' + panelControlsHtml() + '</div></div>', false, sizeSum) + '</div>' +
+      '<h2 class="fig-sec">This selection</h2><div class="fold-list">' +
       card('fg-align', 'Site alignment and sequence logo', 'Selected sites aligned at the methylarginine; the logo uses all ' + fmt(sel.length) + ' with a sequence window.' + docLink('fig-align'),
         img('align') + btn('align-fasta', 'FASTA') + btn('align-jalview', 'Jalview', 'Jalview features file that colours every methylarginine in that FASTA'),
         '<div class="fig-controls"><label class="fig-ctl">Flank ' + sel2('fg-flank', [[5, '±5'], [7, '±7'], [10, '±10'], [15, '±15']], f.flank) + '</label>' +
         '<label class="fig-ctl">Rows ' + sel2('fg-rows', [[25, '25'], [50, '50'], [100, '100'], [250, '250']], f.rows) + '</label>' +
         '<label class="fig-ctl">Order ' + sel2('fg-order', FIG_ORDERS, f.order) + '</label>' +
-        '<label class="fig-ctl">Logo ' + sel2('fg-logo', [['freq', 'Frequency'], ['bits', 'Information (bits)'], ['none', 'None']], f.logo) + '</label></div>' + box('fg-align-box')) +
+        '<label class="fig-ctl">Logo ' + sel2('fg-logo', [['freq', 'Frequency'], ['bits', 'Information (bits)'], ['none', 'None']], f.logo) + '</label></div>' + box('fg-align-box'), fmt(sel.length) + ' sites with a sequence window') +
       card('fg-cmp', 'Proteins on one scale', (Q.proteins && Q.proteins.size ? 'Proteins in your search order' : 'The proteins with most selected sites') + ', with UniProt domains and disordered regions.' + docLink('fig-compare'), img('cmp'),
         '<div class="fig-controls"><label class="fig-ctl">Proteins ' + sel2('fg-nprot', [[4, '4'], [8, '8'], [12, '12'], [20, '20']], f.nProt) + '</label>' +
         '<label class="fig-ctl">Scale ' + sel2('fg-scale', [['common', 'Same residue scale'], ['fit', 'Fit each protein']], f.scale) + '</label>' +
         '<label class="fig-ctl">Colour sites by ' + sel2('fg-color', Object.keys(COLOR_MODES).map((k) => [k, COLOR_MODES[k].name]), f.color) + '</label>' +
         '<label class="fig-ctl">Order ' + sel2('fg-psort', [['default', Q.proteins && Q.proteins.size ? 'Search order' : 'Most selected sites'], ['evidence', 'Most sites with interaction evidence'], ['length', 'Longest first'], ['name', 'Name']], f.sortP) + '</label>' +
-        '<label class="check fig-ctl"><input type="checkbox" id="fg-lanes"' + (f.lanes ? ' checked' : '') + '> Interaction evidence lanes</label></div>' + box('fg-cmp-box', 'Loading UniProt features for ' + fmt(prots.length) + ' proteins…')) +
-      card('fg-evs', 'Interaction evidence of the sites', 'How the kinds of interaction evidence combine on the selected sites.' + docLink('ix-evmap'), img('evs'), box('fg-evs-box')) +
-      card('fg-evp', 'Evidence of the proteins', 'How protein-level evidence combines on the selected proteins.' + docLink('ix-evmap'), img('evp'), box('fg-evp-box')) +
-      '<h2 class="fig-sec">One protein</h2>' +
+        '<label class="check fig-ctl"><input type="checkbox" id="fg-lanes"' + (f.lanes ? ' checked' : '') + '> Interaction evidence lanes</label></div>' + box('fg-cmp-box', 'Loading UniProt features for ' + fmt(prots.length) + ' proteins…'), fmt(prots.length) + ' protein' + (prots.length === 1 ? '' : 's')) +
+      card('fg-evs', 'Interaction evidence of the sites', 'How the kinds of interaction evidence combine on the selected sites.' + docLink('ix-evmap'), img('evs'), box('fg-evs-box'), fmt(R.sites.length) + ' sites') +
+      card('fg-evp', 'Evidence of the proteins', 'How protein-level evidence combines on the selected proteins.' + docLink('ix-evmap'), img('evp'), box('fg-evp-box'), fmt(R.prots.length) + ' proteins') +
+      '</div><h2 class="fig-sec">One protein</h2>' +
       (fp ? '<div class="fig-controls fig-pick"><label class="fig-ctl">Protein <select id="fg-prot">' + pick.map((p) => '<option value="' + p.i + '"' + (p === fp ? ' selected' : '') + '>' + esc(p.label) + ' (' + fmt(R.counts[p.i]) + ' site' + (R.counts[p.i] === 1 ? '' : 's') + ')</option>').join('') + '</select></label>' +
-        '<button class="linkish" type="button" id="fg-open">Open its page</button></div>' +
-        card('fg-map', 'Protein map', 'The whole protein, with the rows and colours chosen on protein pages.' + docLink('fig-hub'), img('map'), box('fg-map-box')) +
-        card('fg-cc', 'Interaction evidence at a glance', 'The protein as a linear cartoon above its evidence lanes.' + docLink('fig-compare'), img('cc'), box('fg-cc-box')) +
-        card('fg-net', 'Partner network', 'STRING partners with the network options chosen on protein pages.', img('net') + btn('net-cyjs', 'Cytoscape', 'The network with its layout and attributes, for Cytoscape'), box('fg-net-box')) +
-        card('fg-seq', 'Sequence', 'The canonical sequence with its methylarginines.', img('seq'), box('fg-seq-box')) +
-        '<div class="card fig-card"><h3>3D structure and orthologues</h3><p class="sub">Exported from the protein page: 3D snapshot, ChimeraX and PyMOL scripts, coordinates and orthologue alignment.</p>' +
-        '<p><button class="btn quiet small" type="button" id="fg-3d">Open the 3D view of ' + esc(fp.label) + '</button></p></div>'
+        '<button class="linkish" type="button" id="fg-open">Open its page</button></div><div class="fold-list">' +
+        card('fg-map', 'Protein map', 'The whole protein, with the rows and colours chosen on protein pages.' + docLink('fig-hub'), img('map'), box('fg-map-box'), fp.label) +
+        card('fg-cc', 'Interaction evidence at a glance', 'The protein as a linear cartoon above its evidence lanes.' + docLink('fig-compare'), img('cc'), box('fg-cc-box'), fp.label) +
+        card('fg-net', 'Partner network', 'STRING partners with the network options chosen on protein pages.', img('net') + btn('net-cyjs', 'Cytoscape', 'The network with its layout and attributes, for Cytoscape'), box('fg-net-box'), fp.label) +
+        card('fg-seq', 'Sequence', 'The canonical sequence with its methylarginines.', img('seq'), box('fg-seq-box'), fp.label) +
+        foldHtml('fg-3d-fold', '3D structure and orthologues', '<div class="card fig-card"><p class="sub">Exported from the protein page: 3D snapshot, ChimeraX and PyMOL scripts, coordinates and orthologue alignment.</p>' +
+        '<p><button class="btn quiet small" type="button" id="fg-3d">Open the 3D view of ' + esc(fp.label) + '</button></p></div>', false, 'on the protein page') + '</div>'
         : '<p class="note">No protein selected.</p>') +
-      '<h2 class="fig-sec">Whole dataset</h2>' +
-      '<div class="card fig-card"><h3>Overview charts</h3><p class="sub">Bars show the whole dataset; orange counts show your selection.</p><ul class="fig-list">' +
+      '<h2 class="fig-sec">Whole dataset</h2><div class="fold-list">' +
+      foldHtml('fg-charts', 'Overview charts', '<div class="card fig-card"><p class="sub">Bars show the whole dataset; orange counts show your selection.</p><ul class="fig-list">' +
       chartList.map((c) => '<li><span>' + esc(c.title) + '</span><span class="exp">' + btn('chart-' + c.id + '-svg', 'SVG') + btn('chart-' + c.id + '-png', 'PNG') + btn('chart-' + c.id + '-tsv', 'TSV') +
-        '<button type="button" class="linkish" data-preview="' + c.id + '">Preview</button></span><div class="fig-preview" id="pv-' + c.id + '" hidden></div></li>').join('') + '</ul></div>';
+        '<button type="button" class="linkish" data-preview="' + c.id + '">Preview</button></span><div class="fig-preview" id="pv-' + c.id + '" hidden></div></li>').join('') + '</ul></div>', false, fmt(chartList.length) + ' charts') + '</div>';
 
     // What a figure will look like in print at the chosen width.
     const note = (id, out) => {
@@ -9553,6 +9593,14 @@
     };
     const W = () => (panelState.mm ? panelUnits(+panelState.mm) : null);
     const builders = {};
+    // A figure (and the data behind it) loads the first time its fold is open.
+    const whenOpen = (key, fn) => {
+      const d = $('details.fold[data-fold="' + key + '"]', el);
+      if (!d) return;
+      if (d.open) { fn(); return; }
+      const h = () => { if (!d.open) return; d.removeEventListener('toggle', h); fn(); };
+      d.addEventListener('toggle', h);
+    };
 
     // This selection
     const alignOpts = () => ({
@@ -9561,7 +9609,7 @@
       sub: fmt(sel.length) + ' sites with a sequence window · selection: ' + selectionText() + ' · order: ' + FIG_ORDERS.find((x) => x[0] === f.order)[1].toLowerCase(),
     });
     builders.align = () => (sel.length ? alignSvg(sel, alignOpts()) : null);
-    show('fg-align', builders.align(), 'No selected site has a sequence window.');
+    whenOpen('fg-align', () => show('fg-align', builders.align(), 'No selected site has a sequence window.'));
     const cmpOpts = () => ({ scale: f.scale, color: f.color, lanes: f.lanes, title: 'Methylarginine sites on ' + fmt(prots.length) + ' protein' + (prots.length === 1 ? '' : 's'), sub: 'Selection: ' + selectionText() + (f.scale === 'fit' ? ' · each protein scaled to its length' : ' · common residue scale') });
     let items = null;
     // Rows in the chosen order; interaction evidence counts sites of the selection with experimental or predicted status.
@@ -9574,15 +9622,15 @@
     builders.cmp = () => (items && items.length ? compareSvg(sortedItems(), Object.assign(cmpOpts(), panelOpts())) : null);
     const drawCmp = () => { if (items) show('fg-cmp', builders.cmp(), 'No protein selected.'); };
     const ifaces = () => Promise.all(prots.filter((p) => !p.iso).map((p) => loadIface(p.acc).catch(() => null)));
-    Promise.all([Promise.all(prots.map((p) => loadUniProt(p.acc))), f.lanes ? ifaces() : null]).then(([us]) => {
+    whenOpen('fg-cmp', () => Promise.all([Promise.all(prots.map((p) => loadUniProt(p.acc))), f.lanes ? ifaces() : null]).then(([us]) => {
       if (UI.view !== 'figures') return;
       items = prots.map((p, k) => ({ p, u: us[k] }));
       drawCmp();
-    });
+    }));
     builders.evs = () => (ixReady() ? upsetSvg(EV_SETS, evCounts(R.sites), 'Interaction evidence of the selected sites', 'sites') : null);
     builders.evp = () => (ixReady() ? upsetSvg(PEV_SETS, upsetData(R.prots, (p) => p.pev, PEV_SETS), 'Evidence of the selected proteins', 'proteins') : null);
-    show('fg-evs', builders.evs(), 'Loading interaction data…');
-    show('fg-evp', builders.evp(), 'Loading interaction data…');
+    whenOpen('fg-evs', () => show('fg-evs', builders.evs(), 'Loading interaction data…'));
+    whenOpen('fg-evp', () => show('fg-evp', builders.evp(), 'Loading interaction data…'));
 
     // One protein
     let fu = null, fifd = null, fnet = null;
@@ -9591,16 +9639,18 @@
       builders.cc = () => (fu ? contactCartoonSvg(fp, fu, fifd, Object.assign({ forExport: true }, panelOpts())) : null);
       builders.seq = () => (fu && fu.seq ? seqSvg(fp, fu) : null);
       builders.net = () => (fnet ? asFigure(ixNetSvg(fnet, EXPORT_PAL, true)) : null);
-      Promise.all([loadUniProt(fp.acc), fp.iso ? null : loadIface(fp.acc).catch(() => null)]).then(([u]) => {
-        if (UI.view !== 'figures' || f.prot !== fp.i) return;
+      let fpData = null;
+      const fpLoad = () => fpData || (fpData = Promise.all([loadUniProt(fp.acc), fp.iso ? null : loadIface(fp.acc).catch(() => null)]).then(([u]) => {
+        if (UI.view !== 'figures' || f.prot !== fp.i) return false;
         fu = u; fifd = fp.iso ? null : IFDATA.get(fp.acc.split('-')[0]) || null;
-        show('fg-map', builders.map(), 'UniProt features did not load.');
-        show('fg-cc', builders.cc(), 'UniProt features did not load.');
-        show('fg-seq', builders.seq(), 'The sequence did not load.');
-      });
+        return true;
+      }));
+      whenOpen('fg-map', () => fpLoad().then((ok) => { if (ok) show('fg-map', builders.map(), 'UniProt features did not load.'); }));
+      whenOpen('fg-cc', () => fpLoad().then((ok) => { if (ok) show('fg-cc', builders.cc(), 'UniProt features did not load.'); }));
+      whenOpen('fg-seq', () => fpLoad().then((ok) => { if (ok) show('fg-seq', builders.seq(), 'The sequence did not load.'); }));
       const netLoad = () => (ixReady() ? partnerNet(fp).then((net) => { if (UI.view !== 'figures' || f.prot !== fp.i) return; fnet = net; show('fg-net', builders.net(), 'No STRING partner of this kind at this confidence.'); })
         : show('fg-net', null, 'Loading interaction data…'));
-      netLoad();
+      whenOpen('fg-net', netLoad);
     }
 
     // Exports: every button builds the figure as previewed and exports it at the chosen size.

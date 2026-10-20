@@ -543,6 +543,14 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .detail-title h2 { font-size: clamp(1.8rem, 1.4rem + 1.5vw, 2.4rem); }
 .detail-title .pn { font-size: 1.05rem; color: var(--ink-2); }
 .detail-links { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+.links-more { position: relative; }
+.links-more > summary { list-style: none; cursor: pointer; }
+.links-more > summary::-webkit-details-marker { display: none; }
+.links-more > summary::after { content: "▾"; margin-left: 0.35rem; font-size: 0.75em; }
+.links-more[open] > summary::after { content: "▴"; }
+.links-menu { position: absolute; z-index: 30; top: calc(100% + 0.3rem); left: 0; display: grid; gap: 0.3rem; min-width: 12rem; padding: 0.5rem;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 0.6rem; box-shadow: var(--shadow-hover); }
+.links-menu .btn { justify-content: flex-start; }
 .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; }
 .fact { background: var(--surface); border: 1px solid var(--line); border-radius: 0.8rem; padding: 0.8rem 0.95rem; box-shadow: var(--shadow); }
 .fact b { display: block; font-size: 1.45rem; font-weight: 800; color: var(--brand-ink); line-height: 1.15; }
@@ -793,7 +801,7 @@ svg.ix-net { display: block; width: 100%; height: auto; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   html, body { background: #ffffff !important; color: var(--ink); font-size: 9.5pt; }
   .print-only { display: block; }
-  .screen-only, .hero, .toolbar, .rail, footer.site, .tip, #back, .detail-links .btn, .filter-note button,
+  .screen-only, .hero, .toolbar, .rail, footer.site, .tip, #back, .detail-links .btn, .links-more, .filter-note button,
   .exp, .fig-controls, #fig-legend, .map-box, .af-controls .fig-controls, .af-toggles, .af-viewer, .af-msg, #af-sub,
   #back-af, .ev-toggle, .view3d, #pdb-more, #pdb-list th:last-child, #pdb-list td:last-child, .tbl-foot button, #zoom-reset { display: none !important; }
   .wrap { max-width: none; padding: 0; }
@@ -858,6 +866,14 @@ svg.ix-net { display: block; width: 100%; height: auto; }
 .findings { margin: 0.4rem 0 0; padding-left: 1.1rem; display: grid; gap: 0.45rem; }
 .findings li { line-height: 1.45; }
 .findings .more-link { white-space: nowrap; margin-left: 0.2rem; }
+details.finding > summary { list-style: none; cursor: pointer; }
+details.finding > summary::-webkit-details-marker { display: none; }
+details.finding > summary::after { content: "＋"; margin-left: 0.4rem; color: var(--accent); font-size: 0.8em; }
+details.finding[open] > summary::after { content: "−"; }
+details.finding > summary:hover { color: var(--accent); }
+details.finding > p { margin: 0.35rem 0 0.25rem; font-size: 0.88rem; color: var(--ink-2); }
+.ix-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ix-page > .check-site { margin: 0; }
 .findings-more > summary { list-style: none; cursor: pointer; display: inline-block; margin: 0 0 0.5rem 1.25rem; font-size: 0.9rem; }
 .findings-more > summary::-webkit-details-marker { display: none; }
 .findings-more[open] > summary { display: none; }
@@ -877,7 +893,7 @@ details.ix-sec[open] > summary .pm, details.fold[open] > summary .pm { border-co
 .ix-sec-t { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .ix-sec-t b { font-size: 1.02rem; }
 .ix-sec-t .sub { margin: 0; }
-.ix-sec-body { padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--line); padding-top: 0.9rem; min-width: 0; }
+.ix-sec-body { padding: 0.9rem 1.25rem 1.25rem; min-width: 0; }
 .ix-sec-body > h4:first-child { margin-top: 0; }
 @media (max-width: 640px) { details.ix-sec > summary { padding: 0.85rem 1rem; } .ix-sec-body { padding: 0.8rem 1rem 1rem; } .ix-toc .linkish { margin-left: 0; } }
 /* Filter groups: less-used controls behind "+ More". */
@@ -949,8 +965,9 @@ details.ix-sec[open] > summary .pm, details.fold[open] > summary .pm { border-co
 .docs-toc ol { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.35rem; font-size: 0.88rem; }
 .docs-toc .linkish { text-align: left; }
 .docs-body { max-width: none; }
-.doc-sec { scroll-margin-top: calc(var(--toolbar-h) + 1rem); }
-.doc-sec + .doc-sec { border-top: 1px solid var(--line); margin-top: 1.5rem; padding-top: 0.3rem; }
+.doc-sec { scroll-margin-top: calc(var(--toolbar-h) + 1rem); min-width: 0; }
+.doc-body { max-width: none; }
+.docs-all { margin: 0.7rem 0 0; font-size: 0.85rem; color: var(--muted); }
 .doc-sub { scroll-margin-top: calc(var(--toolbar-h) + 1rem); }
 .doc-sub h4 { margin: 1rem 0 0.3rem; font-size: 1rem; }
 .flash { animation: doc-flash 1.6s ease-out; border-radius: 6px; }
@@ -1285,6 +1302,7 @@ details.fold.sub-fold > .pdb-block > .card-head h3 { display: none; }
 @media (max-width: 640px) {
   details.fold > summary { padding: 0.75rem 1rem; flex-wrap: wrap; row-gap: 0.15rem; }
   .fold-sum { flex-basis: 100%; padding-left: 2.25rem; }
+  .fold-title { flex: 1 1 0; min-width: 0; }
   .fold-sum:not(:empty)::before { content: none; }
 }
 
