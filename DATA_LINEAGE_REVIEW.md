@@ -91,3 +91,36 @@ Goal: a repository anyone can rerun, with results unchanged. Each step is checke
 5. **Then** the rerun and the website rebuild (`ISSUES_2026-10-19.md` issue 17), the other-PTM export fix, and a pull request to `main`.
 
 Decisions for the lab: issue 9 (paralog windows, 22 rows), whether the website should show isoform-numbered other-PTM sites after a window check, whether to extend the master beyond iPTMnet (changes cross-PTM results), and which release the website serves by default.
+
+## 6. Effect on the paper's featured proteins (release 2026-10-corrected vs the published union)
+
+| Protein | Published sites | Release sites | Removed | Added |
+|---|---|---|---|---|
+| FUS (P35637) | 30 | 34 | — | R422, R518, R522, R524 (peptide recentred) |
+| FMR1 (Q06787) | 13 | 13 | R562, R564 (evidence mismatch: windows from an isoform-6-only exon) | R483, R558 (peptide recentred) |
+| Histone H3.1 (P68431) | 10 | 10 | — | — (R64 flagged `paralog_window`: its window matches H3.1t exactly) |
+| SmD1 / SNRPD1 (P62314) | 6 | 14 | — | R92, R104, R108, R110, R112, R114, R118, R119 (peptide recentred: the C-terminal RG tail) |
+| SmD3 / SNRPD3 (P62318) | 6 | 7 | — | R125 (peptide recentred) |
+| SmB / SNRPB (P14678) | 13 | 13 | — | — |
+| EWSR1 (Q01844) | 35 | 36 | — | R518 (peptide recentred) |
+
+None of the 117 sites removed by peptide recentring belongs to these proteins. The published architecture figures under-draw SmD1 most: the published union held 6 of its 14 sites.
+
+## 7. The other session's issues and README, checked on the April snapshot (data and provenance only)
+
+`ISSUES_2026-10-19.md` (counted there on UniProt 2026_03):
+
+| Issue | On the April snapshot |
+|---|---|
+| 18. Records on retired accessions whose evidence is in no current entry | Confirmed: 315 unplaced records (Larsen 176, Musiani 106, PhosphoSitePlus 13, Lim 10, Maron 4, Fedoriw 2), all `unresolved_no_anchor`. The UniSave fix would place some of them and change the union. |
+| 19. Deleted accession, one paralog holds the evidence | Confirmed: TMEM189 G3V2F7, CALM2 H0Y7A7, ELMO1 Q5JVZ5 and SMARCA4 Q9HBD4 each have unplaced records. A policy question with issue 9. |
+| 20. Evidence check laxer than step 02 for proteome-wide placements | A future risk, not a present error: all 15 proteome-wide placements agree with the check. |
+| 21. Accession history from a later release than the FASTA | Confirmed and recorded in `inputs/MANIFEST.tsv` (2026_03). Its effect is 3 records: with it HIST2H2BE U3KQK0 and CTAGE5 O15320 are placed and the TMEM189 readthrough row (G3V2F7) is not; without it, the reverse. |
+| 22. Identical paralogs from split accessions | Confirmed (HSPA1A/HSPA1B, the TUBA3C pair, the PRAMEF15 pair are identical in the snapshot). More generally, 593 release sites (4.4%) sit in a 31-residue window that occurs identically in another reviewed entry; the release flags them `shared_sequence` and names the other entries. |
+
+README statements about data and provenance:
+
+- *"The job reuses the staged inputs … so no newer UniProt or InterPro release enters the comparison."* Not so. The first step empties the staged InterPro intervals (reproduced with `main`'s code and its pinned pandas), so step 03 stops unless the intervals are read from elsewhere; the accession history is downloaded from UniProt `current_release` when missing; and the intervals are restaged from `protein2ipr.dat.gz`, or from InterPro's current release if that file is absent.
+- *"Use `hpc/slurm_run_integration.sh` as the authoritative ordered recipe."* The published results did not come from it with its defaults: both clustering steps used 100 permutations, not 100,000 (`clustering_qc.tsv`, the null-permutation tables); step 03 read InterPro intervals that step 00 had not emptied; and the tables were written by pandas 3, not the pinned 2.2 (blank cells written as empty rather than `nan`). `main`'s environment file cannot be installed as written (its Bioconductor packages need the bioconda channel).
+- *"DOSE 4.4.0 with org.Hs.eg.db 3.22.0 reproduces the committed family tables exactly."* Being checked: the cloud rerun uses these versions.
+- *CPLM 4.0 validated against UniProt release 2026_03.* The lysine sites are checked against a different reference than the methylarginine union (the April snapshot), so the lysine-methylation layer and the K/R co-occurrence analysis (`scripts/40`) mix two references; the 13 proteins whose sequence differs between them are the exposure. Validate CPLM against the same FASTA.

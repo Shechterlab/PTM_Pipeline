@@ -28,11 +28,12 @@ Three source tables: Maron et al. 2021 Table S5 (a compilation of ten studies: L
 - window_31: residues -15 to +15 of the reference sequence (_ beyond the ends).
 - protein_length, reference_sequence_md5: the reference sequence the position refers to (MD5 in UniProt's sequence.md5 format, to compare with the current UniProt entry).
 - release_status: placed, or pending a policy decision (see flags).
-- flags: single_study (one study reports the site); paralog_window (a supporting window matches a paralog exactly and this entry within 2 residues; issue 9, open); near_match_only (every supporting record matches the entry within 2 residues, not exactly); pending_splice_junction (a window crossing a splice junction: one full flank matches exactly at the reported arginine, the other does not; the pipeline leaves it unplaced, the release includes it until the policy is decided).
+- flags: single_study (one study reports the site); paralog_window (a supporting window matches a paralog exactly and this entry within 2 residues; issue 9, open); near_match_only (every supporting record matches the entry within 2 residues, not exactly); pending_splice_junction (a window crossing a splice junction: one full flank matches exactly at the reported arginine, the other does not; the pipeline leaves it unplaced, the release includes it until the policy is decided); shared_sequence (residues -15 to +15 occur identically in another reviewed entry, listed in same_window_in: histone variants, identical paralogs such as HSPA1A/HSPA1B; the peptide or window cannot tell the proteins apart, so the gene is the one the source named).
 - methyl_state, methyl_states_reported: methylation state calls, where a source gives them.
 - n_records, n_studies, studies, study_dois, source_tables: the support of the site.
 - n_records_at_reported_position: records whose own accession and position name this site unchanged.
 - in_published_union: whether the published union had this site.
+- same_window_in: other reviewed entries holding the same 31 residues (see shared_sequence).
 - record_ids: the supporting rows of evidence.tsv.
 
 ## evidence.tsv columns
@@ -61,11 +62,11 @@ Three source tables: Maron et al. 2021 Table S5 (a compilation of ten studies: L
 | ambiguous_evidence | 14 | 0 | the evidence supports several sites equally; the release leaves the record unplaced |
 | other |  | 0 | placement changed for a reason not covered by the codes above |
 
-Flags in sites.tsv: single_study 6,450, paralog_window 22, near_match_only 12, pending_splice_junction 10.
+Flags in sites.tsv: single_study 6,450, shared_sequence 593, paralog_window 22, near_match_only 12, pending_splice_junction 10.
 
 ## How it was built
 
-- Code: PTM_Pipeline commit 9bb6716065038467e2ce799f15235ffa006a9a9c (scripts/02, scripts/qc_remap_evidence_check.py, scripts/build_release.py; driver hpc/build_release.sh).
+- Code: PTM_Pipeline commit 443d231a73532a4c4d8f521b38c6ae7e9924ef16 (scripts/02, scripts/qc_remap_evidence_check.py, scripts/build_release.py; driver hpc/build_release.sh).
 - Inputs: inputs/ (checksums in inputs/MANIFEST.tsv). Reference sequences: UniProtKB reviewed human (proteome UP000005640), staged 2026-04-07; release not recorded, earlier than 2026_03. The published union was mapped to the same sequences. Accession history: UniProt 2026_03.
 - Checks passed: every record agrees with its own evidence except the accepted issue-9 rows in config/remap_evidence_allowlist.tsv; every placed site is an arginine of the reference sequence.
 
@@ -76,9 +77,15 @@ PhosphoSitePlus® data (www.phosphosite.org) are licensed under CC BY-NC-SA 3.0:
 ## Run record
 
 ```
-built: 2026-10-20T00:22:35Z
-commit: 9bb6716065038467e2ce799f15235ffa006a9a9c
+built: 2026-10-20T00:39:19Z
+commit: 443d231a73532a4c4d8f521b38c6ae7e9924ef16
 uncommitted changes:
+ D release/2026-10-corrected/README.md
+ D release/2026-10-corrected/changes_from_published.tsv
+ D release/2026-10-corrected/evidence.tsv
+ D release/2026-10-corrected/methylarginine_sites.xlsx
+ D release/2026-10-corrected/release_manifest.tsv
+ D release/2026-10-corrected/sites.tsv
 python: 3.11.17 pandas 2.2.3 numpy 2.2.6
 inputs: inputs (all match MANIFEST.tsv)
 ```
