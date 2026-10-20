@@ -1,7 +1,8 @@
 """Disease families for the DisGeNET enrichment (used by scripts/14_disease_enrichment.py and scripts/34).
 
 Each DisGeNET term is assigned to at most one of eight audited families by the first rule its name matches; a few names
-are assigned by hand (CURATED_OVERRIDES). A term no audited rule matches goes to the first of the additional families
+are assigned by hand (CURATED_OVERRIDES). The rules are those of the paper, except that v1.1.0 adds TDP-43
+proteinopathy, Pick disease and anterior horn cell disease to the ALS / motor neuron / FTD rule. A term no audited rule matches goes to the first of the additional families
 (ADDITIONAL_FAMILY_RULES, rule-based and not audited) whose rule it matches; those are tested apart, so the audited
 families and their tests are those of the paper. Terms that match no rule are "Other / unassigned" and are not tested.
 """
@@ -11,7 +12,10 @@ import re
 
 # First match wins. This precedence is the reproducible primary assignment rule.
 FAMILY_RULES = [
-    ("ALS / motor neuron / FTD", r"amyotrophic|\bals\b|motor neuron|frontotemporal|\bftd\b|bulbar palsy"),
+    # v1.1.0 adds TDP-43 proteinopathy, Pick disease (not Niemann-Pick) and anterior horn cell disease, which the
+    # published rule missed.
+    ("ALS / motor neuron / FTD", r"amyotrophic|\bals\b|motor neuron|frontotemporal|\bftd\b|bulbar palsy"
+                                 r"|tdp-?43 proteinopath|(?<!niemann-)pick(?:'s)? disease|anterior horn"),
     ("Alzheimer / tau / dementia", r"alzheimer|tauopath|\bdementia\b|cognitive disorder"),
     ("Parkinsonism", r"parkinson"),
     ("Ataxia / cerebellar degeneration", r"ataxia|spinocerebellar|friedreich|cerebellar"),

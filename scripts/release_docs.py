@@ -396,7 +396,10 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         'top-level class, grouped for the overview (config/panther_class_groups.json) so that the groups and the proteins '
         'PANTHER leaves unclassified partition the reviewed proteome, with tests of the groups, the 24 top-level classes '
         'and their subclasses (statistics: panther_group, panther_class, panther_subclass). The paper\'s classes are kept.',
-        f'- **More disease families.** The {len(AUDITED_FAMILIES)} audited families of the paper are unchanged. The '
+        f'- **Disease families.** The ALS / motor neuron / FTD rule now also takes TDP-43 proteinopathy, Pick disease '
+        '(not Niemann-Pick) and anterior horn cell disease, which the published rule missed (5 DisGeNET terms, among '
+        'them the enriched terms TDP-43 Proteinopathies, Pick Disease of the Brain and Degeneration of anterior horn '
+        f'cells); the other {len(AUDITED_FAMILIES) - 1} audited families are unchanged. The '
         f'DisGeNET terms none of them takes now go to {len(ADDITIONAL_FAMILIES)} additional, rule-based families '
         '(scripts/disease_families.py ADDITIONAL_FAMILY_RULES: mostly clinical signs, by organ system), tested and '
         'BH-adjusted apart (statistics: disease_family_additional). They are not audited.',

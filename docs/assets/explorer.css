@@ -1409,3 +1409,15 @@ details.fold > summary { padding: 0.95rem 1.35rem; }
 .xl-peps { margin: 0.2rem 0 0.1rem; padding-left: 1rem; font-size: 0.8rem; }
 .xl-peps .mono, .ev-pop .mono { word-break: break-all; }
 .xl-res { color: var(--accent); }
+/* Subclass rows read as part of the row above: a shaded band, a thinner and paler bar, and a smaller, muted count
+   (subclass proteins are part of the parent's, so the counts are not to be added). */
+.hbars.tree .hb:not(.sub) { border-top: 1px solid var(--line); }
+.hbars.tree .hb:not(.sub):first-child { border-top: 0; }
+.hbars.tree .hb:not(.sub) .hb-label { font-weight: 600; color: var(--ink); }
+.hb.sub { background: var(--surface-2); }
+.hb.sub .hb-bar { opacity: 0.55; height: 5px; top: 4.5px; }
+.hb.sub .hb-extra { font-size: 0.68rem; color: var(--muted); font-style: italic; }
+.hb.sub .hb-val { font-size: 0.7rem; }
+.hb.sub2 { background: color-mix(in srgb, var(--surface-2) 55%, var(--surface)); }
+.hb.sub2 .hb-bar { opacity: 0.45; height: 4px; top: 5px; }
+.chart-tree-note { font-size: 0.75rem; color: var(--muted); margin: 0.4rem 0 0; }
