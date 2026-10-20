@@ -315,6 +315,53 @@ def fallback_position(row: pd.Series, canonical_sequences: dict[str, str]) -> tu
     return None, 'unresolved_no_anchor', ''
 
 
+def load_peptide_coordinates(path: str | Path | None, canonical_sequences: dict[str, str]) -> dict[str, set[tuple[str, int, int]]]:
+    """Per entry: (peptide, start in the source's numbering, start in the reference entry), from
+    scripts/01_parse_maron_peptide_coordinates.py. A peptide counts when it lies at its stated start in the entry or
+    occurs there once."""
+    coordinates: dict[str, set[tuple[str, int, int]]] = defaultdict(set)
+    if not path:
+        return coordinates
+    for r in pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False).itertuples():
+        sequence, peptide, start = canonical_sequences.get(r.canonical_UniProtAC, ''), r.peptide, int(r.peptide_start)
+        if not sequence or not peptide:
+            continue
+        if sequence[start - 1:start - 1 + len(peptide)] != peptide:
+            found = find_all_occurrences(sequence, peptide)
+            if len(found) != 1:
+                continue
+            coordinates[r.canonical_UniProtAC].add((peptide, start, found[0]))
+        else:
+            coordinates[r.canonical_UniProtAC].add((peptide, start, start))
+    return coordinates
+
+
+def peptide_start_position(anchors: list[dict], acc: str, reported: int, sequence: str,
+                           coordinates: dict[str, set[tuple[str, int, int]]]) -> tuple[int | None, str]:
+    """The arginine a plain peptide reports, counted from the peptide's start where a coordinate table gives it: the
+    row's peptide equals, contains or lies inside a peptide with a known start on the same entry. Windows and annotated
+    peptides mark their arginine themselves and are not used. Returns (position, peptide) when exactly one arginine
+    results."""
+    found: dict[int, str] = {}
+    for anchor in anchors:
+        peptide = anchor['sequence']
+        if anchor['anchor_type'] != 'peptide':
+            continue
+        for known, source_start, reference_start in coordinates.get(acc, ()):
+            if peptide in known:
+                shift = known.index(peptide)
+                source, reference = source_start + shift, reference_start + shift
+            elif known in peptide:
+                shift = peptide.index(known)
+                source, reference = source_start - shift, reference_start - shift
+            else:
+                continue
+            offset = reported - source
+            if 0 <= offset < len(peptide) and peptide[offset] == 'R' and sequence[reference - 1:reference - 1 + len(peptide)] == peptide:
+                found.setdefault(reference + offset, peptide)
+    return next(iter(found.items())) if len(found) == 1 else (None, '')
+
+
 def resolve_hit(row: pd.Series, hits: list[dict], canonical_acc: str) -> tuple[int | None, str, str, str, str, int]:
     """(position, status, accession, anchor type, anchor sequence, hit count) from the hits of a row's evidence."""
     if not hits:
@@ -367,7 +414,7 @@ def anchor_hits(anchor: dict, acc: str, start: int, sequence: str, reported: int
 
 def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dict[str, list[str]],
               secondary: dict[str, list[str]] | None = None, synonyms: dict[str, list[str]] | None = None,
-              proteome: ProteomeIndex | None = None) -> dict:
+              proteome: ProteomeIndex | None = None, coordinates: dict[str, set[tuple[str, int, int]]] | None = None) -> dict:
     source_acc = canonicalize_uniprot_accession(row.get('canonical_UniProtAC', row.get('substrate_UniProtAC', '')))
     # A merged accession's current entry counts as the row's own (ties, and peptides keeping their reported arginine).
     canonical_acc = own_accession(row, canonical_sequences, secondary or {}, gene_map)
@@ -434,6 +481,13 @@ def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dic
             anchor_sequence = ''
         elif remap_status == 'unresolved_no_hit':
             remap_status = fallback_status
+    if corrected_position is None and coordinates:
+        # A peptide with several arginines, reported in another numbering than the entry's: count the reported position
+        # from the peptide's start, where the source's own coordinate table gives it.
+        position, peptide = peptide_start_position(anchors, canonical_acc, reported, canonical_seq, coordinates)
+        if position is not None:
+            corrected_position, remap_status, matched_accession = position, 'sequence_peptide_start', canonical_acc
+            anchor_type, anchor_sequence, hit_count = 'peptide', peptide, max(hit_count, 1)
 
     corrected_accession = (matched_accession if remap_status.startswith('sequence_') else canonical_acc) if corrected_position is not None and canonical_acc else ''
     n_current = len([a for a in (secondary or {}).get(source_acc, []) if a in canonical_sequences])
@@ -469,11 +523,16 @@ def main() -> None:
     ap.add_argument('--uniprot-metadata', required=True)
     ap.add_argument('--accession-history', default='',
                     help='uniprot_accession_history.tsv from scripts/00: secondary accessions and gene synonyms of the reference set')
+    ap.add_argument('--peptide-coordinates', default='',
+                    help='maron_peptide_coordinates.tsv from scripts/01_parse_maron_peptide_coordinates.py: peptide starts in the source numbering')
     ap.add_argument('--outdir', default='results/remapped')
     args = ap.parse_args()
 
     canonical_sequences = parse_fasta(args.canonical_fasta)
     proteome = ProteomeIndex(canonical_sequences)
+    coordinates = load_peptide_coordinates(args.peptide_coordinates, canonical_sequences)
+    if args.peptide_coordinates:
+        print(f'peptide coordinates: {sum(map(len, coordinates.values()))} peptides on {len(coordinates)} entries')
     _, gene_map = load_uniprot_metadata(args.uniprot_metadata)
     secondary, synonyms = load_accession_history(args.accession_history)
     if args.accession_history:
@@ -500,7 +559,8 @@ def main() -> None:
     print(kinds.to_string())
 
     remap_annotations = all_rows.apply(
-        lambda row: pd.Series(remap_row(row, canonical_sequences=canonical_sequences, gene_map=gene_map, secondary=secondary, synonyms=synonyms, proteome=proteome)),
+        lambda row: pd.Series(remap_row(row, canonical_sequences=canonical_sequences, gene_map=gene_map, secondary=secondary, synonyms=synonyms,
+                                        proteome=proteome, coordinates=coordinates)),
         axis=1,
     )
     remapped = pd.concat([all_rows, remap_annotations], axis=1)

@@ -25,3 +25,4 @@
 inputs/sources/** -text -diff
 inputs/reference/** -text -diff
 inputs/annotation/** -text -diff
+inputs/licences/** -text -diff

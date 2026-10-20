@@ -8,8 +8,9 @@ run when a file differs from it.
 |---|---|
 | `sources/` | the site sources: Maron et al. 2021 Tables S2, S3 and S5, ProMetheusDB (Massignani et al. 2022) and the iPTMnet-format PTM master table |
 | `reference/` | the UniProtKB reviewed human sequences every position refers to (staged 2026-04-07), their entry table, and the UniProt 2026_03 accession history |
-| `annotation/` | MobiDB disorder intervals, InterPro domain intervals and CD-CODE condensate tables |
+| `annotation/` | MobiDB disorder intervals, InterPro 108.0 domain intervals for all reviewed entries, and CD-CODE condensate tables |
+| `licences/` | the PhosphoSitePlus terms as of July 2021 (web archive capture), when the PhosphoSitePlus records in Maron et al. 2021 Table S5 were downloaded |
 
 The dates in the names are the staging or export dates; UniProt did not record a release number for the 2026-04-07
 sequences (they predate 2026_03; see `DATA_LINEAGE_REVIEW.md`). Each file keeps its own licence (`MANIFEST.tsv`);
-PhosphoSitePlus records inside Maron Table S5 are CC BY-NC-SA 3.0.
+PhosphoSitePlus records inside Maron Table S5 are CC BY-NC-SA 3.0 Unported, per `licences/`.

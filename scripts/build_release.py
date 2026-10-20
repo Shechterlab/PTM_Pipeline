@@ -5,14 +5,14 @@ Reads a corrected run made from the frozen inputs (remap rows, union, evidence c
 previous version (the published union, PTM_results/) and the frozen inputs (inputs/), and writes to --outdir, for
 version V and previous version P:
 
-  human_methylarginine_sites_V.tsv            one row per site: identity, sequence, methylation evidence, structural
-                                              context, provenance, flags and change since P
-  human_methylarginine_sites_V.xlsx           the same and the tables below, as one annotated workbook
-  human_methylarginine_source_records_V.tsv   one row per source record: what the study reported, where it was placed
-  human_methylarginine_changes_P_to_V.tsv     every site of P or V: kept, removed or added, and why
-  human_methylarginine_studies_V.tsv          one row per study or database: citation, DOI, records and sites
-  README.md                                   what the files hold and how they were built
-  MD5SUMS                                     checksums of the files above (check with: md5sum -c MD5SUMS)
+  human_methylarginine_sites_V.tsv          the release: one row per site, with its sequence, methylation evidence,
+                                            structural context, sources, flags and change since P
+  human_methylarginine_sites_V.xlsx         the same table as a spreadsheet
+  README.md                                 the columns, the sources and how the release was built
+  CHANGES.md                                what changed since P and why
+  supporting/source_records_V.tsv           one row per source record: what the study reported, where it was placed
+  supporting/site_changes_P_to_V.tsv        one row per site of P or V: kept, removed or added, and why
+  MD5SUMS                                   checksums (check with: md5sum -c MD5SUMS)
 
 Structural context and motifs reuse the pipeline's own code (scripts/05, 06, 08), so they match the published analyses.
 """
@@ -51,7 +51,9 @@ INPUT = {
     'fasta': 'reference/uniprot_human_reviewed_2026-04-07.fasta',
     'entries': 'reference/uniprot_human_reviewed_2026-04-07_entries.tsv',
     'disorder': 'annotation/mobidb_disorder_intervals_2026-03-30.tsv',
-    'domains': 'annotation/interpro_domain_intervals_2026-04-07.tsv',
+    'domains': 'annotation/interpro_108.0_domain_intervals.tsv',
+    'all_entries': 'annotation/interpro_108.0_all_entry_intervals.tsv',
+    'all_entries_v1': 'annotation/interpro_all_entry_intervals_2026-04-07.tsv',  # as staged for the published analyses
     'maron_s2': 'sources/maron2021_tableS2_methylarginine_ip_sites.xlsx',
     'maron_s3': 'sources/maron2021_tableS3_methylpeptides_prmt_inhibitors.xlsx',
 }
@@ -63,7 +65,7 @@ SIGNIFICANT = 0.05   # adjusted p value for an inhibitor response call
 STUDIES = {
     'Maron 2021': ('10.1016/j.isci.2021.102971', 'Maron et al., iScience 24:102971 (2021)'),
     'ProMetheusDB': ('10.1016/j.mcpro.2022.100243', 'Massignani et al., Mol Cell Proteomics 21:100243 (2022)'),
-    'PhosphoSitePlus': ('10.1093/nar/gku1267', 'Hornbeck et al., Nucleic Acids Res 43:D512-D520 (2015)'),
+    'PhosphoSitePlus (PSP)': ('10.1093/nar/gku1267', 'Hornbeck et al., Nucleic Acids Res 43:D512-D520 (2015)'),
     'Larsen 2016': ('10.1126/scisignal.aaf7329', 'Larsen et al., Sci Signal 9 (2016)'),
     'Musiani 2019': ('10.1126/scisignal.aat8388', 'Musiani et al., Sci Signal 12:eaat8388 (2019)'),
     'Fong 2019': ('10.1016/j.ccell.2019.07.003', 'Fong et al., Cancer Cell 36:194-209 (2019)'),
@@ -76,12 +78,6 @@ STUDIES = {
     'UniProt': ('10.1093/nar/gkae1010', 'UniProt Consortium, Nucleic Acids Res 53:D609-D617 (2025)'),
 }
 SOURCE_TABLE = {'maron_s5': 'Maron 2021 Table S5', 'prometheus_mmc2': 'ProMetheusDB mmc2', 'human_ptm_master': 'PTM master table'}
-SOURCE_TABLE_ABOUT = {
-    'Maron 2021 Table S5': 'compilation of ten studies, with Maron 2021\'s own sites (inputs/sources/maron2021_tableS5_*)',
-    'ProMetheusDB mmc2': 'ProMetheusDB methyl-site table (inputs/sources/massignani2022_prometheusdb_mmc2_*)',
-    'PTM master table': 'UniProt and IEDB arginine methylation rows of the iPTMnet-format master table (inputs/sources/ptm_master_iptmnet_human.tsv)',
-}
-PSP_TERMS = 'PhosphoSitePlus data: CC BY-NC-SA 3.0 (non-commercial, share alike)'
 
 # How each record was placed, in words (scripts/02 remap_status).
 PLACEMENT = {
@@ -90,6 +86,7 @@ PLACEMENT = {
     'sequence_closest_supported': 'evidence sequence found more than once; the occurrence nearest the reported position',
     'sequence_position_verified': 'reported arginine lies inside the peptide in the reference sequence',
     'sequence_unique_proteome': 'evidence sequence found once in the whole reference proteome (no candidate entry held it)',
+    'sequence_peptide_start': 'peptide with several arginines: the reported position counted from the peptide\'s start in Maron 2021 Tables S2/S3',
     'same_accession_position_verified': 'position-only record; the reported residue is an arginine of the entry',
     'canonical_position_fallback': 'position-only record; the reported residue is an arginine of the canonical entry',
     'same_accession_evidence_near_match': 'evidence not in the entry, but matches it at the reported arginine within 2 residues (variant or conflict)',
@@ -108,6 +105,7 @@ REASONS = {
     'lysine_window': ('3', 'the source window is centred on a lysine; the published run turned it into a nearby arginine site'),
     'truncated_window': ('4', 'the window is cut short at a protein end; the published run read it from the wrong end'),
     'multi_arginine_peptide': ('5', 'a peptide with several arginines that does not cover the reported position; the published run guessed one'),
+    'peptide_start': ('5', 'a peptide with several arginines, numbered differently from the entry; the published run took the arginine nearest its middle; this version counts the reported position from the peptide\'s start in Maron 2021 Tables S2/S3'),
     'wrong_protein': ('6', 'the published run filed the position under another reviewed protein than the one whose sequence matched'),
     'outdated_accession_or_symbol': ('7', 'the source accession is merged or obsolete, or its gene symbol outdated; the release reaches the current entry'),
     'evidence_mismatch': ('8', 'the published run kept the reported arginine although the source peptide or window does not match the entry there'),
@@ -146,22 +144,19 @@ SITE_COLUMNS = [
     ('motifs', 'Context', 'sequence motifs around the site, as defined by scripts/08: RG, RGG, GRG (G at -1 and +1), GAR (G at -2, A at -1), RXR (R at -2 or +2), CARM1_proline_rich (P within -5..+5), CARM1_hydrophobic_proline (P within -5..+5 and a hydrophobic residue within -3..+3), DR, ER (D or E at -1), RD, RE (D or E at +1)'),
     ('disorder', 'Context', f'MobiDB predicted disorder at the site (scripts/06): disordered; disorder boundary (outside, within {CONTEXT_WINDOW} residues of a disordered region); ordered; no disorder annotation'),
     ('disorder_edge_distance', 'Context', 'residues to the nearest edge of a predicted disordered region'),
-    ('domain', 'Context', f'InterPro domain or repeat context (scripts/05): in domain; boundary (within {CONTEXT_WINDOW} residues of one); inter-domain linker; distal; no domain annotation; not staged (protein outside the InterPro intervals staged for the published union)'),
+    ('domain', 'Context', f'InterPro 108.0 domain or repeat context (scripts/05): in domain; boundary (within {CONTEXT_WINDOW} residues of one); inter-domain linker; distal; no domain annotation (InterPro has no domain or repeat on the protein)'),
     ('nearest_domain', 'Context', 'InterPro entry nearest the site (the innermost when inside several), with its accession and span'),
     ('domain_edge_distance', 'Context', 'residues to the nearest domain edge (0 inside a domain)'),
     ('n_studies', 'Provenance', 'number of studies or databases reporting the site'),
-    ('studies', 'Provenance', 'the studies or databases (one row each in the Studies table)'),
+    ('studies', 'Provenance', 'the studies or databases reporting the site; PhosphoSitePlus is listed as PSP, as its terms require (see Sources)'),
     ('study_dois', 'Provenance', 'their DOIs, in the same order'),
     ('n_records', 'Provenance', 'number of source records placed on the site'),
-    ('n_records_at_reported_position', 'Provenance', 'records whose own accession and position name this site unchanged'),
-    ('source_tables', 'Provenance', 'source tables of the records: Maron 2021 Table S5, ProMetheusDB mmc2, PTM master table'),
-    ('record_ids', 'Provenance', 'the supporting rows of the source records table (record_id)'),
-    ('release_status', 'Status', 'placed, or included pending a policy decision (see flags)'),
-    ('flags', 'Status', 'cautions, separated by ";": ' + '; '.join(FLAGS)),
+    ('record_ids', 'Provenance', 'the records behind the site: record_id in supporting/source_records'),
+    ('flags', 'Status', 'cautions, separated by ";" (see Flags)'),
     ('same_window_in', 'Status', 'other reviewed entries holding the same 31 residues (see the shared_sequence flag)'),
     ('in_previous_version', 'Change', 'whether the previous version (the published union) had this site'),
-    ('change_since_previous_version', 'Change', 'kept or added; removed sites are listed in the changes table'),
-    ('change_reasons', 'Change', 'for an added site, why (reason codes, see the Reason codes table)'),
+    ('change_since_previous_version', 'Change', 'kept or added; removed sites are listed in supporting/site_changes'),
+    ('change_reasons', 'Change', 'for an added site, why (reason codes, see CHANGES.md)'),
 ]
 RECORD_COLUMNS = [
     ('record_id', 'row number of the record, cited by record_ids in the other tables'),
@@ -185,7 +180,7 @@ RECORD_COLUMNS = [
     ('accepted_exception', 'why a contradiction is accepted for now (open issue 9)'),
     ('previous_site', 'where the previous version placed the record'),
     ('change_since_previous_version', 'same, moved, newly placed, no longer placed, or not placed in either'),
-    ('reason_code', 'why the placement changed (Reason codes table)'),
+    ('reason_code', 'why the placement changed (CHANGES.md)'),
     ('issue', 'the issue number of DATA_PROVENANCE_REVIEW.md behind the reason'),
 ]
 CHANGE_COLUMNS = [
@@ -196,27 +191,10 @@ CHANGE_COLUMNS = [
     ('in_previous_version', 'site of the previous version'),
     ('in_this_version', 'site of this version'),
     ('change', 'kept, removed or added'),
-    ('reason_codes', 'why it was removed or added (Reason codes table)'),
+    ('reason_codes', 'why it was removed or added (CHANGES.md)'),
     ('issues', 'issue numbers of DATA_PROVENANCE_REVIEW.md'),
     ('records_now_at_or_previously_at', 'for a removed site, where its records are placed now; for an added site, where they were placed before'),
     ('record_ids', 'the records involved (source records table)'),
-]
-STUDY_COLUMNS = [
-    ('study', 'study or database, as named in the other tables'),
-    ('citation', 'short citation'),
-    ('doi', 'DOI (linked in the workbook)'),
-    ('source_tables', 'source tables its records come from'),
-    ('n_records', 'source records'),
-    ('n_records_placed', 'source records placed on a site'),
-    ('n_sites', 'sites of this version it supports'),
-    ('n_sites_only_this_study', 'sites no other study or database reports'),
-    ('terms', 'terms beyond citation, where they apply'),
-]
-REASON_COLUMNS = [
-    ('reason_code', 'code used in the records and changes tables'),
-    ('issue', 'issue number in DATA_PROVENANCE_REVIEW.md'),
-    ('records', 'records with this reason'),
-    ('meaning', 'what the previous version did and what this version does'),
 ]
 
 
@@ -242,7 +220,7 @@ def study_of(row) -> str:
     if ref.lower().startswith('this study'):
         return 'Maron 2021'
     if 'PhosphoSitePlus' in ref:
-        return 'PhosphoSitePlus'
+        return 'PhosphoSitePlus (PSP)'
     author = ref.split(' et al.')[0].split()[-1] if ' et al.' in ref else ref[:24]
     years = re.findall(r'\((\d{4})\)', ref)
     return f'{author} {years[-1]}' if years else author
@@ -269,6 +247,8 @@ def evidence_summary(row: pd.Series) -> tuple[str, str]:
 def record_reason(row: pd.Series, old: str, new: str, reference: dict, typed: pd.Series) -> str:
     """Reason code for a record whose placement differs between the previous version and this one."""
     status = row['remap_status']
+    if status == 'sequence_peptide_start':
+        return 'peptide_start'
     evidence = remap.row_evidence(typed)
     windows = [e for e in evidence if e['anchor_type'] in ('centered_window', 'truncated_window')]
     if new and not old:
@@ -409,7 +389,7 @@ def maron_annotations(inputs: Path, reference: dict) -> tuple[dict, dict]:
 
 # ---- Structural context and motifs (the pipeline's own classifiers) ----------------------------------------------
 
-def context_annotations(sites: pd.DataFrame, inputs: Path, staged_for_interpro: set) -> pd.DataFrame:
+def context_annotations(sites: pd.DataFrame, inputs: Path) -> pd.DataFrame:
     frame = sites[['uniprot_accession', 'position']].rename(columns={'uniprot_accession': 'canonical_UniProtAC', 'position': 'corrected_position'})
     disorder = disorder_context.normalize_disorder_intervals(pd.read_csv(inputs / INPUT['disorder'], sep='\t', low_memory=False))
     by_acc = {a: g.reset_index(drop=True) for a, g in disorder.groupby('canonical_UniProtAC')}
@@ -434,12 +414,10 @@ def context_annotations(sites: pd.DataFrame, inputs: Path, staged_for_interpro: 
     out['motifs'] = [', '.join(k.removeprefix('motif_') for k, v in motif_odds.family_flags(w).items() if v) for w in sites['window_15']]
     out['disorder'] = dis['disorder_context_class'].map(words)
     out['disorder_edge_distance'] = pd.to_numeric(dis['nearest_disorder_edge_distance'], errors='coerce').astype('Int64')
-    staged = sites['uniprot_accession'].isin(staged_for_interpro)
-    out['domain'] = dom['domain_context_class'].map(domain_words).where(staged, 'not staged')
-    out['nearest_domain'] = [f"{n} ({a}, {s}-{e})" if st and a else '' for n, a, s, e, st in
-                             zip(dom['nearest_interpro_name'], dom['nearest_interpro_accession'], dom['nearest_domain_start'],
-                                 dom['nearest_domain_end'], staged)]
-    out['domain_edge_distance'] = pd.to_numeric(dom['nearest_domain_edge_distance'], errors='coerce').astype('Int64').where(staged)
+    out['domain'] = dom['domain_context_class'].map(domain_words)
+    out['nearest_domain'] = [f'{n} ({a}, {s}-{e})' if a else '' for n, a, s, e in
+                             zip(dom['nearest_interpro_name'], dom['nearest_interpro_accession'], dom['nearest_domain_start'], dom['nearest_domain_end'])]
+    out['domain_edge_distance'] = pd.to_numeric(dom['nearest_domain_edge_distance'], errors='coerce').astype('Int64')
     return out
 
 
@@ -451,13 +429,12 @@ def main() -> None:
     ap.add_argument('--published-root', default='PTM_results', help='results root of the previous version')
     ap.add_argument('--inputs', default='inputs', help='frozen inputs with MANIFEST.tsv')
     ap.add_argument('--allow', default='config/remap_evidence_allowlist.tsv')
-    ap.add_argument('--version', required=True, help='version of this release, e.g. v2.0')
-    ap.add_argument('--previous-version', default='v1.0', help='version of the published union')
+    ap.add_argument('--version', required=True, help='version of this release, e.g. v1.1.0')
+    ap.add_argument('--previous-version', default='v1.0.0', help='version of the published union (repository tag)')
     ap.add_argument('--outdir', required=True)
     args = ap.parse_args()
     root, pub_root, inputs, outdir = Path(args.release_root), Path(args.published_root), Path(args.inputs), Path(args.outdir)
     version, previous = args.version, args.previous_version
-    outdir.mkdir(parents=True, exist_ok=True)
 
     reference = remap.parse_fasta(inputs / INPUT['fasta'])
     meta = read_tsv(inputs / INPUT['entries']).set_index('Entry')
@@ -575,10 +552,7 @@ def main() -> None:
             'studies': '; '.join(studies),
             'study_dois': '; '.join(STUDIES[s][0] for s in studies if s in STUDIES),
             'n_records': len(group),
-            'n_records_at_reported_position': int(((group['reported_accession'].map(remap.canonicalize_uniprot_accession) == acc) & (group['reported_position'] == str(pos))).sum()),
-            'source_tables': '; '.join(sorted(set(group['source_table']))),
             'record_ids': ';'.join(map(str, group['record_id'])),
-            'release_status': 'pending policy decision: not placed by the pipeline' if site in pending else 'placed',
             'flags': ';'.join(flags),
             'same_window_in': '; '.join(shared[:10]) + (f'; and {len(shared) - 10} more' if len(shared) > 10 else ''),
             'in_previous_version': not added,
@@ -592,8 +566,7 @@ def main() -> None:
     maron, maron_counts = maron_annotations(inputs, reference)
     for column in ('maron2021_ip_states', 'maron2021_ip_antibodies', 'maron2021_GSK591_PRMT5i', 'maron2021_MS023_typeIi', 'maron2021_inhibitor_detail'):
         sites[column] = [maron.get(s.replace(':R', ':'), {}).get(column, '') for s in sites['site_id']]
-    staged_for_interpro = set(pub_union['canonical_UniProtAC'])
-    sites = pd.concat([sites, context_annotations(sites, inputs, staged_for_interpro)], axis=1)
+    sites = pd.concat([sites, context_annotations(sites, inputs)], axis=1)
     sites = sites[[c for c, _, _ in SITE_COLUMNS]]
 
     # ---- Changes since the previous version --------------------------------------------------------------------
@@ -628,73 +601,97 @@ def main() -> None:
     changes = pd.DataFrame(changes)
 
     # ---- Studies -----------------------------------------------------------------------------------------------
-    site_studies = sites.set_index('site_id')['studies'].str.split('; ')
+    site_studies = sites['studies'].str.split('; ')
     study_rows = []
     for study, group in records.groupby('study'):
         supported = site_studies[site_studies.map(lambda s: study in s)]
         doi, citation = STUDIES.get(study, ('', ''))
-        texts = group['reference_text'].replace('', pd.NA).dropna()
-        study_rows.append({
-            'study': study,
-            'citation': citation or (texts.mode().iloc[0] if len(texts) else ''),
-            'doi': doi,
-            'source_tables': '; '.join(sorted(set(group['source_table']))),
-            'n_records': len(group),
-            'n_records_placed': int((group['placed_site'] != '').sum()),
-            'n_sites': len(supported),
-            'n_sites_only_this_study': int((supported.map(len) == 1).sum()),
-            'terms': PSP_TERMS if study == 'PhosphoSitePlus' else '',
-        })
-    studies = pd.DataFrame(study_rows).sort_values('n_sites', ascending=False).reset_index(drop=True)
-    reason_counts = records['reason_code'].replace('', pd.NA).dropna().value_counts()
-    reasons = pd.DataFrame([{'reason_code': c, 'issue': i, 'records': int(reason_counts.get(c, 0)), 'meaning': t}
-                            for c, (i, t) in REASONS.items()])
+        study_rows.append({'study': study, 'citation': citation, 'doi': doi, 'records': len(group),
+                           'records_placed': int((group['placed_site'] != '').sum()), 'sites': len(supported),
+                           'sites_only_here': int((supported.map(len) == 1).sum())})
+    studies = pd.DataFrame(study_rows).sort_values('sites', ascending=False).reset_index(drop=True)
     records = records[[c for c, _ in RECORD_COLUMNS]]
 
     # ---- Write -------------------------------------------------------------------------------------------------
-    stem = 'human_methylarginine'
     files = {
-        'sites': outdir / f'{stem}_sites_{version}.tsv',
-        'xlsx': outdir / f'{stem}_sites_{version}.xlsx',
-        'records': outdir / f'{stem}_source_records_{version}.tsv',
-        'changes': outdir / f'{stem}_changes_{previous}_to_{version}.tsv',
-        'studies': outdir / f'{stem}_studies_{version}.tsv',
+        'sites': outdir / f'human_methylarginine_sites_{version}.tsv',
+        'xlsx': outdir / f'human_methylarginine_sites_{version}.xlsx',
+        'records': outdir / 'supporting' / f'source_records_{version}.tsv',
+        'changes': outdir / 'supporting' / f'site_changes_{previous}_to_{version}.tsv',
     }
-    for p in outdir.iterdir():
-        if p.is_file():
-            p.unlink()
+    for folder in (outdir / 'supporting', outdir):
+        if folder.is_dir():
+            for p in folder.iterdir():
+                if p.is_file():
+                    p.unlink()
+    (outdir / 'supporting').mkdir(parents=True, exist_ok=True)
     sites.to_csv(files['sites'], sep='\t', index=False)
     records.to_csv(files['records'], sep='\t', index=False)
     changes.to_csv(files['changes'], sep='\t', index=False)
-    studies.to_csv(files['studies'], sep='\t', index=False)
+    import release_workbook
+    release_workbook.write(files['xlsx'], sites)
     counts = summary_counts(sites, records, changes, pending)
     counts.update(maron_counts)
+    counts['previous_records_placed'] = int((pub['is_position_resolved'] == 'True').sum())
+    counts['previous_proteins'] = int(pub_union['canonical_UniProtAC'].nunique())
+    counts.update(peptide_start_agreement(rows, typed, reference, root / 'parsed_maron' / 'maron_peptide_coordinates.tsv'))
+    counts.update(domain_staging_gap(inputs, pub_root, pub_union, sites))
     build = build_record(root, inputs)
-    write_readme(outdir, version, previous, files, counts, sites, reasons, build)
-    import release_workbook
-    release_workbook.write(files['xlsx'], version, previous, counts, build, sites, records, changes, studies, reasons,
-                           {'Sites': SITE_COLUMNS, 'Source records': RECORD_COLUMNS, 'Changes': CHANGE_COLUMNS,
-                            'Studies': STUDY_COLUMNS, 'Reason codes': REASON_COLUMNS}, FLAGS, SOURCE_TABLE_ABOUT)
+    write_readme(outdir, version, previous, files, counts, studies, build)
+    write_changes(outdir, version, previous, files, counts, records, changes, sites)
     with open(outdir / 'MD5SUMS', 'w') as fh:
-        for p in sorted(outdir.iterdir()):
+        for p in sorted(outdir.rglob('*')):
             if p.is_file() and p.name != 'MD5SUMS':
-                fh.write(f'{md5_bytes(p)}  {p.name}\n')
-    print(counts)
+                fh.write(f'{md5_bytes(p)}  {p.relative_to(outdir).as_posix()}\n')
+    print({k: v for k, v in counts.items() if k != 'flags'})
+
+
+def peptide_start_agreement(rows: pd.DataFrame, typed: pd.DataFrame, reference: dict, path: Path) -> dict:
+    """How often counting from a known peptide start agrees with placements the pipeline made from plain peptides by
+    other means (a single arginine, or the reported arginine inside the peptide)."""
+    coordinates = remap.load_peptide_coordinates(path if path.exists() else None, reference)
+    agree = disagree = 0
+    for i in rows.index[(rows['is_position_resolved'] == 'True') & (rows['remap_status'] != 'sequence_peptide_start')]:
+        peptides = [a for a in remap.build_anchors(typed.loc[i]) if a['anchor_type'] == 'peptide']
+        acc = rows.at[i, 'corrected_canonical_UniProtAC']
+        position, _ = remap.peptide_start_position(peptides, acc, int(float(rows.at[i, 'position'])), reference.get(acc, ''), coordinates) if peptides else (None, '')
+        if position is not None:
+            agree += position == int(float(rows.at[i, 'corrected_position']))
+            disagree += position != int(float(rows.at[i, 'corrected_position']))
+    return {'start_rule_agree': agree, 'start_rule_disagree': disagree}
+
+
+def domain_staging_gap(inputs: Path, pub_root: Path, pub_union: pd.DataFrame, sites: pd.DataFrame) -> dict:
+    """Reviewed proteins of the published union that the published InterPro staging missed, and what that changed."""
+    full = pd.read_csv(inputs / INPUT['all_entries'], sep='\t', usecols=['canonical_UniProtAC'], dtype=str)
+    domains = pd.read_csv(inputs / INPUT['domains'], sep='\t', usecols=['canonical_UniProtAC', 'interpro_type'], dtype=str)
+    april_all = pd.read_csv(inputs / INPUT['all_entries_v1'], sep='\t', usecols=['canonical_UniProtAC'], dtype=str)
+    missed = set(full['canonical_UniProtAC']) & set(pub_union['canonical_UniProtAC']) - set(april_all['canonical_UniProtAC'])
+    with_domain = missed & set(domains.loc[domains['interpro_type'].isin(['domain', 'repeat']), 'canonical_UniProtAC'])
+    published = pd.read_csv(pub_root / 'domain_context' / 'sites_with_domain_context.tsv', sep='\t', dtype=str, keep_default_na=False)
+    published['site_id'] = published['canonical_UniProtAC'] + ':R' + published['corrected_position'].astype(float).astype(int).astype(str)
+    words = {'in_domain': 'in domain', 'boundary': 'boundary', 'inter_domain_linker': 'inter-domain linker', 'distal': 'distal',
+             'no_domain_annotation': 'no domain annotation'}
+    before = published.set_index('site_id')['domain_context_class'].map(words)
+    now = sites.set_index('site_id')['domain']
+    kept = before.index.intersection(now.index)
+    return {'unstaged_proteins': len(missed), 'unstaged_sites': int(pub_union['canonical_UniProtAC'].isin(missed).sum()),
+            'unstaged_with_domain_proteins': len(with_domain), 'unstaged_with_domain_sites': int(pub_union['canonical_UniProtAC'].isin(with_domain).sum()),
+            'domain_changed_kept': int((before[kept] != now[kept]).sum())}
 
 
 def summary_counts(sites, records, changes, pending) -> dict:
-    placed = sites[sites['release_status'] == 'placed']
+    placed = sites[~sites['flags'].str.contains(PENDING_JUNCTION)]
     return {
         'sites_placed': len(placed), 'proteins_placed': placed['uniprot_accession'].nunique(),
         'sites_pending': len(pending), 'records': len(records),
         'records_placed': int((records['placed_site'] != '').sum()),
         'kept': int((changes['change'] == 'kept').sum()), 'removed': int((changes['change'] == 'removed').sum()),
-        'added': int((changes['change'] == 'added').sum()),
+        'added': int((changes['change'] == 'added').sum()), 'previous_sites': int(changes['in_previous_version'].sum()),
         'flags': {k: int(v) for k, v in sites['flags'].str.split(';').explode().value_counts().items() if k},
         'with_maron_ip': int((sites['maron2021_ip_antibodies'] != '').sum()),
         'with_state': int(((sites['methyl_states_reported'] != '') | (sites['maron2021_ip_states'] != '')).sum()),
-        'not_staged_interpro': int((sites['domain'] == 'not staged').sum()),
-        'not_staged_proteins': int(sites.loc[sites['domain'] == 'not staged', 'uniprot_accession'].nunique()),
+        'no_domain': int((sites['domain'] == 'no domain annotation').sum()),
         'studies': int(records['study'].nunique()),
     }
 
@@ -710,94 +707,192 @@ def build_record(root: Path, inputs: Path) -> dict:
     return {'commit': commit or 'unknown', 'inputs': str(shown), 'run_info': run_info.strip()}
 
 
-def write_readme(outdir: Path, version: str, previous: str, files: dict, counts: dict, sites: pd.DataFrame,
-                 reasons: pd.DataFrame, build: dict) -> None:
+PAPER = ('DeAngelo, Silverstein & Shechter, Protein arginine methylation rewires molecular interactions. '
+         'Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011')
+
+
+def write_readme(outdir: Path, version: str, previous: str, files: dict, counts: dict, studies: pd.DataFrame, build: dict) -> None:
     n = {k: f'{v:,}' if isinstance(v, int) else v for k, v in counts.items()}
+    rel = lambda p: p.relative_to(outdir).as_posix()  # noqa: E731
     lines = [
         f'# Human methylarginine sites, {version}',
         '',
-        'The corrected union of human protein arginine methylation sites behind DeAngelo, Silverstein & Shechter, '
-        'Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011, with the provenance of every site and of '
-        f'every source record. It replaces {previous}, the published union (PTM_results/, tag v1.0.0: 13,719 sites on '
-        '5,090 accessions), after the remapping corrections described in DATA_PROVENANCE_REVIEW.md.',
-        '',
-        f"- {n['sites_placed']} sites on {n['proteins_placed']} reviewed human proteins, plus {n['sites_pending']} sites "
-        f'included pending a policy decision (flag {PENDING_JUNCTION}).',
-        f"- {n['records']} source records from {n['studies']} studies and databases, {n['records_placed']} of them placed.",
-        f"- Since {previous}: {n['kept']} sites kept, {n['removed']} removed, {n['added']} added.",
+        f"{n['sites_placed']} arginine methylation sites on {n['proteins_placed']} reviewed human proteins, each with its "
+        'sequence, methylation evidence, structural context and the studies that report it. This is the site union behind '
+        f'{PAPER}, corrected: {version} replaces {previous} (the published union); CHANGES.md says what changed and why.',
         '',
         '## Files',
         '',
-        '| File | One row per | Use it for |',
-        '|---|---|---|',
-        f"| {files['sites'].name} | site | the site list: sequence, methylation evidence, context, provenance |",
-        f"| {files['xlsx'].name} | (workbook) | all tables, with column notes, links and highlighting |",
-        f"| {files['records'].name} | source record (one study's report of one site) | what each study reported and where it was placed |",
-        f"| {files['changes'].name} | site of {previous} or {version} | what changed and why |",
-        f"| {files['studies'].name} | study or database | citations, DOIs and how much each contributes |",
-        '| MD5SUMS | file | checksums (`md5sum -c MD5SUMS`) |',
+        '| File | Holds |',
+        '|---|---|',
+        f"| {rel(files['sites'])} | the release: one row per site |",
+        f"| {rel(files['xlsx'])} | the same table as a spreadsheet |",
+        '| CHANGES.md | what changed since the published version and why |',
+        f"| {rel(files['records'])} | one row per source record: what each study reported and where it was placed |",
+        f"| {rel(files['changes'])} | one row per site of either version: kept, removed or added, and why |",
+        '| MD5SUMS | checksums (`md5sum -c MD5SUMS`) |',
         '',
-        '## Where the sites come from',
-        '',
-        'Three source tables: Maron et al. 2021 Table S5 (a compilation of ten studies: Larsen 2016, PhosphoSitePlus, '
-        'Musiani 2019, Guo 2014, Fong 2019, Maron 2021\'s own data, Li 2021, Fedoriw 2019, Lim 2020, Wei 2020), ProMetheusDB '
-        '(Massignani et al. 2022) and the arginine methylation rows of the PTM master table (UniProt and IEDB records). '
-        'Each record\'s peptide, window or position was placed on the reviewed canonical UniProt sequence by '
-        'scripts/02_remap_arg_methyl_to_canonical.py and checked against its own evidence by scripts/qc_remap_evidence_check.py. '
-        'Maron 2021 Tables S2 and S3 add methylation-degree calls, the antibodies that recovered each site and its response '
-        'to PRMT inhibitors; they annotate sites but add none. A Table S2 or S3 site is attached only when its peptide sits '
-        'on the reference entry at the reported start, or occurs once in the entry '
-        f"({n['maron_s2_rows_placed']} of {n['maron_s2_rows']} Table S2 rows, {n['maron_s3_site_rows_placed']} of "
-        f"{n['maron_s3_site_rows']} Table S3 site rows).",
-        '',
-        '## Site table columns',
-        '',
+        '## Columns',
     ]
     group = ''
     for column, g, text in SITE_COLUMNS:
         if g != group:
-            lines += ['', f'**{g}**', ''] if group else [f'**{g}**', '']
+            lines += ['', f'**{g}**', '']
             group = g
         lines.append(f'- `{column}`: {text}.')
     lines += ['', '## Flags', '']
     lines += [f"- `{k}` ({counts['flags'].get(k, 0):,} sites): {v}." for k, v in FLAGS.items()]
     lines += [
         '',
-        f"Methylation degree is known for {n['with_state']} sites (sources or Maron Table S2); {n['with_maron_ip']} sites "
-        'have Maron 2021 antibody and inhibitor data. Domain context is "not staged" for '
-        f"{n['not_staged_interpro']} sites on {n['not_staged_proteins']} proteins that were not in the published union, "
-        'because the frozen InterPro intervals were staged for that union only.',
+        '## Sources',
         '',
-        '## Source records, changes and studies',
+        'Sites come from three source tables: Maron et al. 2021 Table S5 (a compilation of ten studies), ProMetheusDB '
+        '(Massignani et al. 2022) and the arginine methylation rows of an iPTMnet-format PTM master table (UniProt and IEDB '
+        'records). Cite the studies of the sites you use:',
         '',
-        'The columns of the other tables are listed on the workbook\'s Columns sheet. Every record carries the code of '
-        'the reason its placement changed; every removed or added site carries the codes of its records:',
-        '',
-        '| reason_code | issue | records | meaning |',
-        '|---|---|---|---|',
+        '| Study or database | Citation | DOI | Records | Sites | Sites only here |',
+        '|---|---|---|---|---|---|',
     ]
-    lines += [f'| {r.reason_code} | {r.issue} | {r.records:,} | {r.meaning} |' for r in reasons.itertuples()]
+    lines += [f'| {s.study} | {s.citation} | [{s.doi}](https://doi.org/{s.doi}) | {s.records:,} | {s.sites:,} | {s.sites_only_here:,} |'
+              for s in studies.itertuples()]
     lines += [
+        '',
+        f"Maron et al. 2021 Tables S2 and S3 annotate sites but add none: methylation degree, the antibodies that recovered "
+        f"each site and its response to PRMT inhibitors ({n['with_maron_ip']} sites). A Table S2 or S3 site is attached only "
+        'when its peptide lies on the reference entry at its stated start, or occurs there once '
+        f"({n['maron_s2_rows_placed']} of {n['maron_s2_rows']} Table S2 rows, {n['maron_s3_site_rows_placed']} of "
+        f"{n['maron_s3_site_rows']} Table S3 site rows).",
         '',
         '## How it was built',
         '',
-        f"- Code: PTM_Pipeline commit {build['commit']}; driver hpc/build_release.sh (parse, place, union, the evidence "
-        'check and the residue audit, which stop the build on any failure), then scripts/build_release.py.',
-        f"- Inputs: {build['inputs']}/, checked against {build['inputs']}/MANIFEST.tsv. Reference sequences: UniProtKB "
-        'reviewed human (proteome UP000005640), staged 2026-04-07; release not recorded, earlier than 2026_03. The '
-        'published union was mapped to the same sequences. Accession history: UniProt 2026_03.',
-        '- Context: MobiDB disorder (export of 2026-03-30), InterPro domains and repeats (staged 2026-04-07), motifs, '
-        'with the classifiers of scripts/06, scripts/05 and scripts/08.',
+        f"`bash hpc/build_release.sh {version}` at PTM_Pipeline commit {build['commit']}: it parses the source tables, places "
+        'each record on the reference sequence (scripts/02_remap_arg_methyl_to_canonical.py), stops if any record is placed '
+        'against its own evidence (scripts/qc_remap_evidence_check.py, 22 accepted paralog rows aside) or any site is not an '
+        'arginine, then writes this folder (scripts/build_release.py).',
+        '',
+        f"- Inputs: {build['inputs']}/, checked against {build['inputs']}/MANIFEST.tsv before the build.",
+        '- Reference sequences: UniProtKB reviewed human canonical (proteome UP000005640), staged 2026-04-07; the UniProt '
+        'release was not recorded and predates 2026_03. Positions refer to these sequences; reference_sequence_md5 tells '
+        'whether a later UniProt entry still has the same sequence. Accession history: UniProt 2026_03.',
+        '- Context: MobiDB predicted disorder (export of 2026-03-30), InterPro 108.0 domains and repeats, sequence motifs; '
+        'the classifiers of scripts/06, scripts/05 and scripts/08.',
         '',
         '## Licences',
         '',
-        'PhosphoSitePlus® data (www.phosphosite.org) are licensed under CC BY-NC-SA 3.0: non-commercial use, with '
-        'attribution, adaptations shared under the same licence. The release as a whole is CC BY-NC-SA 4.0 (LICENSE.md). '
-        'Cite the studies in study_dois for the sites you use, and the paper above for the union.',
+        'The release is CC BY-NC-SA 4.0 (LICENSE.md). It includes PhosphoSitePlus® (PSP, www.phosphosite.org) records '
+        'compiled in Maron et al. 2021 Table S5. PhosphoSite, created by Cell Signaling Technology, was licensed under CC '
+        'BY-NC-SA 3.0 Unported in 2021, when those records were downloaded (inputs/licences/phosphositeplus_terms_2021-07-11_web-archive.pdf). '
+        'Those terms ask that PSP be cited as Hornbeck et al., Nucleic Acids Res 43:D512-D520 (2015), and that bulk '
+        'downloads list PSP as the source (the studies column does), and that web pages showing PSP-derived sites link them '
+        'to the PSP protein page (www.phosphosite.org/uniprotAccAction?id=<UniProt accession>).',
     ]
     if build['run_info']:
         lines += ['', '## Run record', '', '```', build['run_info'], '```']
     (outdir / 'README.md').write_text('\n'.join(lines) + '\n')
+
+
+FEATURED = {'FUS': 'P35637', 'EWSR1': 'Q01844', 'FMR1': 'Q06787', 'Histone H3.1': 'P68431', 'SmB/SNRPB': 'P14678',
+            'SmD1/SNRPD1': 'P62314', 'SmD3/SNRPD3': 'P62318'}
+
+
+def write_changes(outdir: Path, version: str, previous: str, files: dict, counts: dict, records: pd.DataFrame,
+                  changes: pd.DataFrame, sites: pd.DataFrame) -> None:
+    n = {k: f'{v:,}' if isinstance(v, int) else v for k, v in counts.items()}
+    rel = lambda p: p.relative_to(outdir).as_posix()  # noqa: E731
+    reason_records = records['reason_code'].replace('', pd.NA).dropna().value_counts()
+    started = records[records['placement_code'] == 'sequence_peptide_start']
+    gene_of = sites.set_index('site_id')['gene']
+    start_sites = ', '.join(f"{gene_of.get(s, '') or s.split(':')[0]} {s.split(':')[1]}" for s in sorted(set(started['placed_site']), key=lambda s: (gene_of.get(s, ''), int(s.split(':R')[1]))))
+    agreement = (f"all {counts['start_rule_agree']:,} placements the pipeline made from plain peptides by other means"
+                 if not counts['start_rule_disagree'] else
+                 f"{counts['start_rule_agree']:,} placements made from plain peptides by other means and disagrees with {counts['start_rule_disagree']:,}")
+    code_sites = changes.assign(code=changes['reason_codes'].str.split(';')).explode('code')
+    lines = [
+        f'# Changes from {previous} to {version}',
+        '',
+        f'{version} corrects how source records were placed on the reference protein sequences. The sources, the reference '
+        f'sequences and the analysis are those of {previous}, the published union (repository tag v1.0.0).',
+        '',
+        f'| | {previous} | {version} |',
+        '|---|---|---|',
+        f"| Sites | {n['previous_sites']} | {n['sites_placed']} (and {n['sites_pending']} pending, flagged) |",
+        f"| Proteins | {n['previous_proteins']} | {n['proteins_placed']} |",
+        f"| Source records placed | {n['previous_records_placed']} of {n['records']} | {n['records_placed']} of {n['records']} |",
+        '',
+        f"{n['kept']} sites are kept, {n['removed']} removed and {n['added']} added. A site moves when its records now "
+        'point at another arginine: the old one is removed and the new one added.',
+        '',
+        '## What was corrected',
+        '',
+        'Each record whose placement changed carries one reason code. Issue numbers refer to DATA_PROVENANCE_REVIEW.md.',
+        '',
+        '| Reason code | Issue | What changed | Records | Sites removed | Sites added |',
+        '|---|---|---|---|---|---|',
+    ]
+    for code, (issue, text) in REASONS.items():
+        r = int(reason_records.get(code, 0))
+        removed = int(((code_sites['code'] == code) & (code_sites['change'] == 'removed')).sum())
+        added = int(((code_sites['code'] == code) & (code_sites['change'] == 'added')).sum())
+        if r or removed or added:
+            lines.append(f'| {code} | {issue} | {text} | {r:,} | {removed:,} | {added:,} |')
+    pending = sites[sites['flags'].str.contains(PENDING_JUNCTION)]
+    lines += [
+        '',
+        'A site can carry several codes when its records changed for different reasons.',
+        '',
+        '## Proteins featured in the paper',
+        '',
+        f'| Protein | Sites in {previous} | Sites in {version} | Removed | Added |',
+        '|---|---|---|---|---|',
+    ]
+    for name, acc in FEATURED.items():
+        g = changes[changes['uniprot_accession'] == acc]
+        removed = ', '.join(g.loc[g['change'] == 'removed', 'site_id'].str.split(':').str[1]) or '-'
+        added = ', '.join(g.loc[g['change'] == 'added', 'site_id'].str.split(':').str[1]) or '-'
+        lines.append(f"| {name} ({acc}) | {int(g['in_previous_version'].sum())} | {int(g['in_this_version'].sum())} | {removed} | {added} |")
+    lines += [
+        '',
+        '## Decided in this version',
+        '',
+        '- **Peptides with several arginines.** A peptide does not say which of its arginines is methylated, and the '
+        'position the source reports may follow an older numbering. Where Maron et al. 2021 Tables S2 and S3 give the '
+        "peptide's start in the same numbering, the reported position is counted from that start (reason peptide_start): "
+        f"{int((records['placement_code'] == 'sequence_peptide_start').sum())} records, on {start_sites}. Without such a "
+        'start the record stays unplaced (reason multi_arginine_peptide). Where a start is known, counting from it agrees '
+        f'with {agreement}.',
+        '- **Domain context for every protein.** The published analyses used InterPro intervals staged for only part of '
+        f"the published union: {n['unstaged_proteins']} of its reviewed proteins had none, so their {n['unstaged_sites']} "
+        'sites were classed "no domain annotation", although InterPro has a domain or repeat on '
+        f"{n['unstaged_with_domain_proteins']} of these proteins ({n['unstaged_with_domain_sites']} sites). This version "
+        'stages InterPro 108.0, the release current when the reference sequences were staged, for all 20,416 reviewed '
+        'entries; for the proteins the published file covers it gives the same intervals. The domain context of '
+        f"{n['domain_changed_kept']} kept sites changes as a result.",
+        '',
+        '## Still open',
+        '',
+        f"- **Windows crossing a splice junction** ({n['sites_pending']} sites, flag {PENDING_JUNCTION}; "
+        f"{int(pending['in_previous_version'].sum())} of them in {previous}): one full flank of the window matches the entry "
+        'at the reported arginine and the other does not, and no other entry holds the window. The pipeline leaves these '
+        'records unplaced; the release keeps the sites, flagged, until the policy is decided: '
+        + ', '.join(f"{g} {s.split(':')[1]}" for g, s in zip(pending['gene'], pending['site_id'])) + '.',
+        f"- **Paralog windows** ({counts['flags'].get('paralog_window', 0)} sites, flag paralog_window; issue 9): a window "
+        'matches a paralog exactly and the named entry within 2 residues. The records stay on the entry the source named, '
+        'accepted in config/remap_evidence_allowlist.tsv.',
+        '',
+        '## Tracing a change',
+        '',
+        f"- {rel(files['changes'])}: one row per site of either version, with its change, reason codes, the records "
+        'involved and, for a removed site, where those records are now (for an added site, where they were).',
+        f"- {rel(files['records'])}: one row per source record, with what the study reported, the evidence sequence, where "
+        f'each version placed it, the independent evidence check and the reason code.',
+        '',
+        'Columns of the source records table:',
+        '',
+    ]
+    lines += [f'- `{c}`: {t}.' for c, t in RECORD_COLUMNS]
+    lines += ['', 'Columns of the site changes table:', '']
+    lines += [f'- `{c}`: {t}.' for c, t in CHANGE_COLUMNS]
+    (outdir / 'CHANGES.md').write_text('\n'.join(lines) + '\n')
 
 
 if __name__ == '__main__':

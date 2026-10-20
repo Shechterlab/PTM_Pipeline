@@ -20,6 +20,10 @@ longer entry gives the reading that lands on an arginine, the reported position 
 is not in the reported entry still supports the reported arginine when, laid with its site there, it differs at no
 more than 2 residues and no more than a fifth of them.
 
+With --peptide-coordinates (scripts/01_parse_maron_peptide_coordinates.py) a plain peptide with several arginines also
+names the arginine at the reported position counted from the peptide's start, when the table gives the start of that
+peptide, or of one containing it or inside it, on the same entry.
+
 With --fail-on-contradictions the exit status is 1 when a row is placed against its evidence, without evidence, or on an
 accession outside --fasta, unless --allow lists it (TSV: source_table, reported_accession, reported_position,
 placed_site, reason). Such rows are written to remap_evidence_check_failures.tsv.
@@ -33,7 +37,7 @@ import bisect
 import gzip
 import re
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 import pandas as pd
@@ -156,7 +160,40 @@ def near_match(s: str, pos: int, tokens: list[tuple[str, list[int]]]) -> bool:
     return False
 
 
-def check_row(r, seqs: dict, genes: dict, proteome: Proteome) -> tuple[str, set]:
+def read_coordinates(path: str | None, seqs: dict) -> dict:
+    """Per entry: (peptide, 1-based start in the source numbering, 1-based start in the entry). A peptide counts when it
+    lies at its stated start in the entry or occurs there once."""
+    coords = defaultdict(set)
+    if not path:
+        return coords
+    for r in pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False).itertuples():
+        s, t, start = seqs.get(r.canonical_UniProtAC, ''), letters(r.peptide), int(r.peptide_start)
+        at = [start - 1] if s[start - 1:start - 1 + len(t)] == t else occurrences(s, t)
+        if s and t and len(at) == 1:
+            coords[r.canonical_UniProtAC].add((t, start, at[0] + 1))
+    return coords
+
+
+def coordinate_sites(s: str, acc: str, pos: int, peptides: list[str], coords: dict) -> set[int]:
+    """0-based arginines that plain peptides name when counted from a start the coordinate table gives."""
+    out = set()
+    for t in peptides:
+        for known, src, ref in coords.get(acc, ()):
+            if t in known:
+                k = known.index(t)
+                src_t, ref_t = src + k, ref + k
+            elif known in t:
+                k = t.index(known)
+                src_t, ref_t = src - k, ref - k
+            else:
+                continue
+            off = pos - src_t
+            if 0 <= off < len(t) and t[off] == 'R' and s[ref_t - 1:ref_t - 1 + len(t)] == t:
+                out.add(ref_t - 1 + off)
+    return out
+
+
+def check_row(r, seqs: dict, genes: dict, proteome: Proteome, coords: dict | None = None) -> tuple[str, set]:
     """Drift class and the evidence-implied sites (accession, position) on reviewed entries."""
     m = ACC.search(str(r.substrate_UniProtAC_original))
     acc = (m.group(1) + (m.group(2) or '')) if m else ''
@@ -181,6 +218,7 @@ def check_row(r, seqs: dict, genes: dict, proteome: Proteome) -> tuple[str, set]
         else:
             # A peptide with a single arginine names it wherever the peptide lies.
             sites |= {i + t.index('R') for t in peptides if t.count('R') == 1 for i in occurrences(s, t)}
+            sites |= coordinate_sites(s, acc, pos, peptides, coords or {})
             implied = {(acc, c + 1) for c in sites}
             found = any(occurrences(s, t) for t, _, _ in windows) or any(occurrences(s, p) for p, _ in marks) or any(occurrences(s, t) for t in peptides)
             cls = 'E' if covers else 'B' if found else 'D'
@@ -223,6 +261,7 @@ def main() -> None:
     ap.add_argument('--extra-fasta', action='append', default=[], help='more sequences (unreviewed or isoform entries) for the drift class')
     ap.add_argument('--outdir', help='default: <results-root>/qc/remap_evidence_check')
     ap.add_argument('--fail-on-contradictions', action='store_true', help='exit 1 when a row is placed against or without its evidence')
+    ap.add_argument('--peptide-coordinates', help='peptide starts in the source numbering (scripts/01_parse_maron_peptide_coordinates.py)')
     ap.add_argument('--allow', help='TSV of accepted exceptions (source_table, reported_accession, reported_position, placed_site, reason)')
     args = ap.parse_args()
     root = Path(args.results_root)
@@ -235,6 +274,7 @@ def main() -> None:
         extra, _ = read_fasta(p)
         seqs.update({a: v for a, v in extra.items() if a not in reviewed})
     proteome = Proteome(reviewed)
+    coords = read_coordinates(args.peptide_coordinates, reviewed)
 
     rows = pd.read_csv(root / 'remapped' / 'human_arg_methyl_source_rows_with_remap.tsv', sep='\t', low_memory=False)
     for field in ('seq_window', 'peptide_sequence', 'peptides', 'reference'):
@@ -248,7 +288,7 @@ def main() -> None:
 
     out = []
     for r in rows.itertuples():
-        cls, implied = check_row(r, seqs, genes, proteome)
+        cls, implied = check_row(r, seqs, genes, proteome, coords)
         placed = f'{r.corrected_canonical_UniProtAC}:{int(r.corrected_position)}' if bool(r.is_position_resolved) and pd.notna(r.corrected_position) else ''
         evidence = sorted(f'{a}:{p}' for a, p in implied if a in reviewed)
         if placed and placed.split(':')[0] not in reviewed:

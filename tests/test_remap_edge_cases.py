@@ -188,6 +188,59 @@ def test_merged_accession_without_evidence_keeps_no_position():
     assert place_history(r, {'P2': 'MAAAR' + FILLER}, secondary={'T9': ['P2']})[0] == ''
 
 
+# ---- peptide starts from the source's coordinate table (Maron 2021 Tables S2/S3) ----------------------------------
+
+COORD_PEPTIDE = 'GSRGSAAPRGS'  # arginines at offsets 2 and 8
+COORD_SEQ = FILLER + COORD_PEPTIDE + FILLER
+COORD_START = len(FILLER) + 1  # where the peptide starts in the entry; the source numbers it from 100
+
+
+def write_coordinates(path: Path, rows: list[tuple[str, str, int]]) -> Path:
+    pd.DataFrame([{'source': 'test', 'accession': a, 'gene': 'G', 'peptide': p, 'peptide_start': s, 'canonical_UniProtAC': a}
+                  for a, p, s in rows]).to_csv(path, sep='\t', index=False)
+    return path
+
+
+def test_multi_arginine_peptide_is_counted_from_its_start(tmp_path):
+    coords = remap.load_peptide_coordinates(write_coordinates(tmp_path / 'c.tsv', [('P1', COORD_PEPTIDE, 100)]), {'P1': COORD_SEQ})
+    assert coords == {'P1': {(COORD_PEPTIDE, 100, COORD_START)}}  # found once in the entry, away from its stated start
+    out = remap.remap_row(row(position=108, peptide_sequence=COORD_PEPTIDE), {'P1': COORD_SEQ}, {}, coordinates=coords)
+    assert (out['remap_status'], out['corrected_position']) == ('sequence_peptide_start', COORD_START + 8)
+    # a peptide inside the known one, or containing it, is counted from its own place
+    out = remap.remap_row(row(position=108, peptide_sequence=COORD_PEPTIDE[1:]), {'P1': COORD_SEQ}, {}, coordinates=coords)
+    assert out['corrected_position'] == COORD_START + 8
+    longer = COORD_SEQ[COORD_START - 4:COORD_START + len(COORD_PEPTIDE)]
+    out = remap.remap_row(row(position=102, peptide_sequence=longer), {'P1': COORD_SEQ}, {}, coordinates=coords)
+    assert out['corrected_position'] == COORD_START + 2
+
+
+def test_peptide_start_needs_an_arginine_at_the_reported_offset_and_a_known_peptide(tmp_path):
+    coords = {'P1': {(COORD_PEPTIDE, 100, COORD_START)}}
+    assert not remap.remap_row(row(position=105, peptide_sequence=COORD_PEPTIDE), {'P1': COORD_SEQ}, {}, coordinates=coords)['is_position_resolved']
+    other = 'GSRGSAAPRGT'  # not the known peptide, nor inside or around it
+    seq = COORD_SEQ + other
+    assert not remap.remap_row(row(position=108, peptide_sequence=other), {'P1': seq}, {}, coordinates=coords)['is_position_resolved']
+    # a peptide found twice in the entry and not at its stated start gives no coordinates
+    assert remap.load_peptide_coordinates(write_coordinates(tmp_path / 'c.tsv', [('P1', COORD_PEPTIDE, 100)]),
+                                          {'P1': COORD_SEQ + COORD_PEPTIDE}) == {}
+
+
+def test_evidence_check_accepts_a_peptide_start_placement_only_with_the_coordinates(tmp_path):
+    remapped = tmp_path / 'root' / 'remapped'
+    remapped.mkdir(parents=True)
+    pd.DataFrame([{
+        'source_table': 'maron_s5', 'reference': 'This study.', 'substrate_UniProtAC_original': 'P12345', 'substrate_genename': 'GP12345',
+        'position': 108, 'seq_window': '', 'peptide_sequence': COORD_PEPTIDE, 'peptides': '', 'corrected_canonical_UniProtAC': 'P12345',
+        'corrected_position': COORD_START + 8, 'is_position_resolved': True, 'remap_status': 'sequence_peptide_start',
+    }]).to_csv(remapped / 'human_arg_methyl_source_rows_with_remap.tsv', sep='\t', index=False)
+    write_fasta(tmp_path / 'ref.fasta', {'P12345': COORD_SEQ})
+    args = ['--results-root', str(tmp_path / 'root'), '--fasta', str(tmp_path / 'ref.fasta'), '--fail-on-contradictions']
+    assert run('qc_remap_evidence_check.py', *args).returncode == 1  # a peptide with two arginines names neither
+    coords = write_coordinates(tmp_path / 'c.tsv', [('P12345', COORD_PEPTIDE, 100)])
+    checked = run('qc_remap_evidence_check.py', *args, '--peptide-coordinates', str(coords))
+    assert checked.returncode == 0, checked.stdout + checked.stderr
+
+
 # ---- the validation gates fail the run -----------------------------------------------------------------------------
 
 def write_fasta(path: Path, sequences: dict) -> None:
