@@ -26,4 +26,5 @@ inputs/sources/** -text -diff
 inputs/reference/** -text -diff
 inputs/annotation/** -text -diff
 inputs/interactions/** -text -diff
+inputs/layers/** -text -diff
 inputs/licences/** -text -diff

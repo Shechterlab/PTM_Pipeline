@@ -1,0 +1,41 @@
+table	accession	old_length	new_length	change	shift	intervals	action
+interpro_108.0_domain_intervals.tsv	P24928	1970	1970	substitutions	0	52	kept
+interpro_108.0_domain_intervals.tsv	P59510	1910	1910	substitutions	0	58	kept
+interpro_108.0_domain_intervals.tsv	Q0P651	414	464	other_change	0	2	dropped
+interpro_108.0_domain_intervals.tsv	Q5JSJ4	861	898	other_change	0	6	dropped
+interpro_108.0_domain_intervals.tsv	Q6IQ22	244	340	n_terminal_extension	96	3	shifted by 96
+interpro_108.0_domain_intervals.tsv	Q6NVH7	229	250	n_terminal_extension	21	2	shifted by 21
+interpro_108.0_domain_intervals.tsv	Q6ZTK2	550	3320	other_change	0	1	dropped
+interpro_108.0_domain_intervals.tsv	Q96FN5	646	651	other_change	0	9	dropped
+interpro_108.0_domain_intervals.tsv	Q96NW7	1537	1575	n_terminal_extension	38	25	shifted by 38
+interpro_108.0_domain_intervals.tsv	Q9H628	205	204	other_change	0	2	dropped
+interpro_108.0_domain_intervals.tsv	Q9UBF9	498	498	substitutions	0	12	kept
+interpro_108.0_domain_intervals.tsv	O43930	277	0	not_in_new_reference	0	4	dropped
+interpro_108.0_all_entry_intervals.tsv	P24928	1970	1970	substitutions	0	53	kept
+interpro_108.0_all_entry_intervals.tsv	P59510	1910	1910	substitutions	0	62	kept
+interpro_108.0_all_entry_intervals.tsv	Q0P651	414	464	other_change	0	3	dropped
+interpro_108.0_all_entry_intervals.tsv	Q13421	630	622	other_change	0	2	dropped
+interpro_108.0_all_entry_intervals.tsv	Q5JSJ4	861	898	other_change	0	7	dropped
+interpro_108.0_all_entry_intervals.tsv	Q6IQ22	244	340	n_terminal_extension	96	8	shifted by 96
+interpro_108.0_all_entry_intervals.tsv	Q6NVH7	229	250	n_terminal_extension	21	2	shifted by 21
+interpro_108.0_all_entry_intervals.tsv	Q6ZTK2	550	3320	other_change	0	1	dropped
+interpro_108.0_all_entry_intervals.tsv	Q8WX92	580	628	n_terminal_extension	48	2	shifted by 48
+interpro_108.0_all_entry_intervals.tsv	Q96FN5	646	651	other_change	0	11	dropped
+interpro_108.0_all_entry_intervals.tsv	Q96NW7	1537	1575	n_terminal_extension	38	26	shifted by 38
+interpro_108.0_all_entry_intervals.tsv	Q9H628	205	204	other_change	0	5	dropped
+interpro_108.0_all_entry_intervals.tsv	Q9UBF9	498	498	substitutions	0	12	kept
+interpro_108.0_all_entry_intervals.tsv	O43930	277	0	not_in_new_reference	0	5	dropped
+mobidb_disorder_intervals_2026-03-30.tsv	P24928	1970	1970	substitutions	0	16	kept
+mobidb_disorder_intervals_2026-03-30.tsv	P59510	1910	1910	substitutions	0	15	kept
+mobidb_disorder_intervals_2026-03-30.tsv	Q0P651	414	464	other_change	0	4	dropped
+mobidb_disorder_intervals_2026-03-30.tsv	Q13421	630	622	other_change	0	13	dropped
+mobidb_disorder_intervals_2026-03-30.tsv	Q5JSJ4	861	898	other_change	0	17	dropped
+mobidb_disorder_intervals_2026-03-30.tsv	Q6IQ22	244	340	n_terminal_extension	96	2	shifted by 96
+mobidb_disorder_intervals_2026-03-30.tsv	Q6NVH7	229	250	n_terminal_extension	21	6	shifted by 21
+mobidb_disorder_intervals_2026-03-30.tsv	Q6ZTK2	550	3320	other_change	0	4	dropped
+mobidb_disorder_intervals_2026-03-30.tsv	Q8WX92	580	628	n_terminal_extension	48	8	shifted by 48
+mobidb_disorder_intervals_2026-03-30.tsv	Q96FN5	646	651	other_change	0	9	dropped
+mobidb_disorder_intervals_2026-03-30.tsv	Q96NW7	1537	1575	n_terminal_extension	38	48	shifted by 38
+mobidb_disorder_intervals_2026-03-30.tsv	Q9H628	205	204	other_change	0	3	dropped
+mobidb_disorder_intervals_2026-03-30.tsv	Q9UBF9	498	498	substitutions	0	7	kept
+mobidb_disorder_intervals_2026-03-30.tsv	O43930	277	0	not_in_new_reference	0	2	dropped
