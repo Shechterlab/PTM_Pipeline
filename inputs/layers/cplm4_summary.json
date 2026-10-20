@@ -1,0 +1,27 @@
+{
+  "generated": "2026-10-18",
+  "input": "Methylation.zip",
+  "input_sha256": "80160a4a8a9aff1a98cbb2de2b1d22be063e9bdb2da6aefe09716c3cf724b47c",
+  "input_member": "Methylation.txt (2021-06-13T21:24:18)",
+  "canonical_fasta": "uniprot_human_reviewed_canonical.fasta",
+  "canonical_sequences": 20416,
+  "organism": "Homo sapiens",
+  "input_rows": 10914,
+  "rows_in_scope": 5915,
+  "checks": {
+    "identical_sequence": 5292,
+    "window_match": 64,
+    "canonical_not_K": 60,
+    "accession_not_in_canonical_fasta": 494,
+    "window_mismatch": 5
+  },
+  "validated_sites": 5356,
+  "validated_proteins": 2939,
+  "validated_evidence": {
+    "Dat.": 2858,
+    "Exp.": 618,
+    "Exp./Dat.": 1880
+  },
+  "explorer_sites": 3247,
+  "explorer_proteins": 1484
+}

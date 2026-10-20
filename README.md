@@ -20,6 +20,9 @@ The repository is intentionally code-only. Large source tables, downloaded annot
 | `scripts/common.py`, `scripts/clustering_utils.py` | Shared utilities. |
 | `scripts/36_export_site_explorer_data.py` | Exports the site union and its annotations as JSON for the static site explorer. |
 | `scripts/37_export_interaction_data.py` | Exports the interaction context (STRING, Complex Portal, GO, PDBe interfaces, RNA/DNA crosslinks, predicted complexes, IntAct residue-level features) as JSON for the explorer. |
+| `scripts/37a_stage_interactions.py` | Turns the download cache of script 37 into readable tables, one per source, in `inputs/interactions/` (with `MANIFEST.tsv` and a checksum list of every cached file). |
+| `scripts/37b_check_staged_interactions.py` | Checks that those tables hold exactly what script 37 reads from the cache, and that the measurement tables match the website data. |
+| `inputs/interactions/`, `inputs/layers/` | The sources behind the website's interaction data and its CPLM, CARM1 knockout and HPA layers, as plain tables with a README and MANIFEST in each folder. |
 | `scripts/explorer_merge.py` | Merges staged annotations (CPLM 4.0, CARM1 knockout, HPA locations, MobiDB disorder intervals) into the explorer export; script 36 and each staging script's `--explorer-json` call the same functions. |
 | `scripts/39_stage_cplm4_lys_methylation.py` | Stages CPLM 4.0 lysine methylation: keeps human sites whose CPLM sequence matches the canonical UniProt sequence around the lysine, for the explorer's Lys methylation marks. |
 | `scripts/40_methylk_methylr_cooccurrence.py` | Tests whether methylated lysines sit near methylarginines more often than the other lysines of the same proteins (Mantel–Haenszel by protein, disorder and local arginine count; distance profile; evidence subsets). |
@@ -355,6 +358,8 @@ The same export adds residue-level RNA and DNA contact in living human cells:
 It also adds IntAct residue-level features (mutations with their effect on an interaction, binding regions and modified residues; EMBL-EBI, CC BY 4.0), kept only where IntAct's sequence matches the canonical sequence over the feature. A methylarginine carries IntAct evidence when mutating it (alone or with up to two neighbours) changed an interaction, when it lies in a binding region of at most 20 residues, or when IntAct records it as methylated; the export tests each against the other arginines of the same proteins (Mantel–Haenszel). The feature files are cached in `data/interactions_cache/intact/`. Script 37 also writes `docs/data/methylarg_pred_iface.json` (`--pred-iface-out`): every residue of an explorer protein at a ProtVar predicted interface, as runs with the number of partners and the best pDockQ; the explorer reads it only when a figure draws the predicted lane or map row.
 
 bioRxiv often refuses scripted downloads (HTTP 429). If it does, save the pepR-MS supplementary zip as `data/interactions_cache/crosslinks/pepr_media-1.zip`.
+
+The cache itself is not in Git. `scripts/37a_stage_interactions.py` writes what it holds as plain tables in [`inputs/interactions/`](inputs/interactions/README.md), one per source, and `scripts/37b_check_staged_interactions.py` confirms that the tables hold exactly what script 37 reads. The cache of 16–19 October 2026 rebuilds the current website files unchanged.
 
 **Licence.** Code is MIT, and data, figures and text are CC BY-NC-SA 4.0; see [LICENSE.md](LICENSE.md). The share-alike, non-commercial terms follow from PhosphoSitePlus, DisGeNET and pepR-MS.
 

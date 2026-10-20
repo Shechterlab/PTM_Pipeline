@@ -1,0 +1,35 @@
+{
+  "generated": "2026-10-19",
+  "version": "25.1",
+  "input": {
+    "subcellular": "subcellular_location.tsv.zip",
+    "atlas": "proteinatlas.tsv.zip"
+  },
+  "input_sha256": {
+    "subcellular": "a9466882bd3328416bcde77c32a6bcb2a17d70183af90e98d032f6f5f781d504",
+    "atlas": "ad401f8519ecdee5b67b0ad3bf28175d402d1ea0ad6c542b90fcab2bee39b470"
+  },
+  "input_member": {
+    "subcellular": "subcellular_location.tsv (2025-11-06)",
+    "atlas": "proteinatlas.tsv (2026-06-03)"
+  },
+  "canonical_fasta": "uniprot_human_reviewed_canonical.fasta",
+  "genes": {
+    "kept": 13341,
+    "no_uniprot": 261,
+    "not_in_canonical_fasta": 1
+  },
+  "proteins": 13301,
+  "locations": 49,
+  "reliability": {
+    "Approved": 14456,
+    "Uncertain": 3826,
+    "Supported": 7191,
+    "Enhanced": 1677
+  },
+  "explorer": {
+    "explorer_proteins_with_hpa": 3941,
+    "universe": 12685,
+    "methylated_in_universe": 3835
+  }
+}

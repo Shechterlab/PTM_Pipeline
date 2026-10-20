@@ -1,0 +1,53 @@
+{
+  "generated": "2026-10-19",
+  "study": "Shishkova 2017",
+  "doi": "10.1038/ncomms15571",
+  "rule": "peptide log2 KO/WT <= -1 (down) or >= 1 (up) with p < 0.05",
+  "input": "MOESM422_ESM.xlsx",
+  "input_sha256": "4cec7cdf6cbe25a4a49936879858304a98ada9fb09e5b2a39f8a2846b3f075f1",
+  "canonical_fasta": "uniprot_human_reviewed_canonical.fasta",
+  "cell_lines": [
+    "MCF7",
+    "MDA-MB-231"
+  ],
+  "peptides": {
+    "MCF7": 375,
+    "MDA-MB-231": 140
+  },
+  "placement": {
+    "position_verified": 393,
+    "placed_by_sequence": 99,
+    "peptide_not_in_canonical": 18,
+    "accession_not_in_canonical_fasta": 3,
+    "peptide_ambiguous": 2
+  },
+  "peptide_calls": {
+    "MCF7": {
+      "unchanged": 117,
+      "down": 253,
+      "up": 5
+    },
+    "MDA-MB-231": {
+      "down": 82,
+      "unchanged": 58
+    }
+  },
+  "sites": {
+    "MCF7": {
+      "unchanged": 125,
+      "down": 283,
+      "up": 3,
+      "mixed": 1
+    },
+    "MDA-MB-231": {
+      "unchanged": 73,
+      "down": 118
+    }
+  },
+  "unique_sites": 431,
+  "explorer": {
+    "union_sites": 370,
+    "union_sites_down": 251,
+    "not_in_union": 61
+  }
+}

@@ -1,0 +1,31 @@
+feature_ac	feature_type_mi	feature_type	uniprot_accession	ranges	sequence_check	curated_sequence	resulting_sequence	interaction_participants	pubmed	interaction_ac
+EBI-10039008	MI:0160	asymmetric dimethyl-L-arginine	P62805	4-4	matches		-	ensembl:ENSG00000039068 (gene); uniprotkb:P62805 (protein)	25314079	EBI-10038913
+EBI-16189537		psi-mod:"MOD:00783"(dimethylated L-arginine)	P24928	1810-1810	matches		-	uniprotkb:Q16637 (protein); uniprotkb:P24928 (protein)	26700805	EBI-16189527
+EBI-16189511		psi-mod:"MOD:00783"(dimethylated L-arginine)	P24928	1810-1810	matches		-	uniprotkb:Q16637 (protein); uniprotkb:P24928 (protein)	26700805	EBI-16189501
+EBI-16189658		psi-mod:"MOD:00783"(dimethylated L-arginine)	P24928	1603-1603	matches		-	uniprotkb:Q16637 (protein); uniprotkb:P24928 (protein)	26700805	EBI-16189648
+EBI-9078963		psi-mod:"MOD:00414"(monomethylated L-arginine)	P62805	4-4	matches		-	uniprotkb:Q9H9V9 (protein); uniprotkb:P62805 (protein)	24360279	EBI-9078929
+EBI-9078985	MI:0160	asymmetric dimethyl-L-arginine	P62805	4-4	matches		-	uniprotkb:Q9H9V9 (protein); uniprotkb:P62805 (protein)	24360279	EBI-9078978
+EBI-9078972		psi-mod:"MOD:00783"(dimethylated L-arginine)	P62805	4-4	matches		-	uniprotkb:Q9H9V9 (protein); uniprotkb:P62805 (protein)	24360279	EBI-9078965
+EBI-16803635	MI:0160	asymmetric dimethyl-L-arginine	P62805	4-4	matches		-	ensembl:ENSG00000163207 (gene); uniprotkb:P62805 (protein)	26763441	EBI-16803629
+EBI-2941518	MI:0160	asymmetric dimethyl-L-arginine	P62805	4-4	matches		-	ensembl:ENSG00000139842 (gene); uniprotkb:P62805 (protein)	20951943	EBI-2941510
+EBI-16101309		psi-mod:"MOD:00414"(monomethylated L-arginine)	P62805	4-4	matches		-	uniprotkb:Q582G4 (protein); uniprotkb:P62805 (protein)	24726341	EBI-16101296
+EBI-9095909	MI:0160	asymmetric dimethyl-L-arginine	Q92922	1064-1064	matches		-	uniprotkb:Q92922 (protein); ensembl:ENSG00000164692 (gene)	24434208	EBI-9095903
+EBI-9095921	MI:0160	asymmetric dimethyl-L-arginine	Q92922	1064-1064	matches		-	ensembl:ENSG00000116717 (gene); uniprotkb:Q92922 (protein)	24434208	EBI-9095915
+EBI-9079178	MI:0160	asymmetric dimethyl-L-arginine	P62805	4-4	matches		-	ensembl:ENST00000365328 (small nuclear rna); uniprotkb:P62805 (protein)	24360279	EBI-9079170
+EBI-16101282		psi-mod:"MOD:00414"(monomethylated L-arginine)	P62805	4-4	matches		-	uniprotkb:Q582G4 (protein); uniprotkb:P62805 (protein)	24726341	EBI-16101274
+EBI-16101238		psi-mod:"MOD:00414"(monomethylated L-arginine)	P62805	4-4	matches		-	uniprotkb:P46580 (protein); uniprotkb:P62805 (protein)	24726341	EBI-16101229
+EBI-16101236		psi-mod:"MOD:00783"(dimethylated L-arginine)	P62805	4-4	matches		-	uniprotkb:P46580 (protein); uniprotkb:P62805 (protein)	24726341	EBI-16101229
+EBI-21942601		psi-mod:"MOD:00076"(symmetric dimethyl-L-arginine)	P24928	1810-1810	matches		-	uniprotkb:Q9H7E2 (protein); uniprotkb:P24928 (protein)	23066109	EBI-21942584
+EBI-16101196		psi-mod:"MOD:00414"(monomethylated L-arginine)	P62805	4-4	matches		-	uniprotkb:Q582G4 (protein); uniprotkb:P62805 (protein)	24726341	EBI-16101188
+EBI-21942629	MI:0160	asymmetric dimethyl-L-arginine	P24928	1810-1810	matches		-	uniprotkb:Q9H7E2 (protein); uniprotkb:P24928 (protein)	23066109	EBI-21942612
+EBI-16101157		psi-mod:"MOD:00783"(dimethylated L-arginine)	P62805	4-4	matches		-	uniprotkb:Q99873 (protein); uniprotkb:P62805 (protein)	24726341	EBI-16101150
+EBI-2942262	MI:0160	asymmetric dimethyl-L-arginine	P62805	4-4	matches		-	ensembl:ENSG00000158290 (gene); uniprotkb:P62805 (protein)	20951943	EBI-2942256
+EBI-1382588		psi-mod:"MOD:00658"(methylated arginine)	P62805	20-20	matches		-	uniprotkb:O82210 (protein); uniprotkb:P62805 (protein)	17666011	EBI-1382486
+EBI-21942581	MI:0160	asymmetric dimethyl-L-arginine	P24928	1810-1810	matches		-	uniprotkb:Q9H7E2 (protein); uniprotkb:P24928 (protein)	23066109	EBI-21942565
+EBI-16745153		psi-mod:"MOD:00658"(methylated arginine)	P03372	260-260	matches		-	uniprotkb:Q6NYC1 (protein); uniprotkb:P03372 (protein)	24498420	EBI-16745147
+EBI-1382614		psi-mod:"MOD:00658"(methylated arginine)	P62805	20-20	matches		-	uniprotkb:Q9SU94 (protein); uniprotkb:P62805 (protein)	17666011	EBI-1382606
+EBI-16745204		psi-mod:"MOD:00658"(methylated arginine)	P03372	260-260	matches		-	uniprotkb:Q6NYC1 (protein); uniprotkb:P03372 (protein)	24498420	EBI-16745199
+EBI-16745028		psi-mod:"MOD:00658"(methylated arginine)	P03372	260-260	matches		-	uniprotkb:Q6NYC1 (protein); uniprotkb:P03372 (protein)	24498420	EBI-16741830
+EBI-16745078		psi-mod:"MOD:00658"(methylated arginine)	P03372	260-260	matches		-	uniprotkb:Q6NYC1 (protein); uniprotkb:P03372 (protein)	24498420	EBI-16745069
+EBI-25821122		psi-mod:"MOD:00783"(dimethylated L-arginine)	Q13435	508-508	matches		-	uniprotkb:Q13435 (protein); uniprotkb:Q6P2P2 (protein)	25737013	EBI-25821088
+EBI-25821078		psi-mod:"MOD:00783"(dimethylated L-arginine)	Q13435	508-508	matches		-	uniprotkb:Q13435 (protein); uniprotkb:Q6P2P2 (protein)	25737013	EBI-25689689
