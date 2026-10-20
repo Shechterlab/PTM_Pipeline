@@ -28,6 +28,9 @@ venv/
 
 # Local archives should not be committed; regenerate from Git when needed.
 *.zip
+!inputs/**/*.zip
+# Not redistributable (All Rights Reserved): download it yourself, see inputs/README.md
+inputs/annotation/cplm4_lysine_methylation_*.zip
 *.tar
 *.tar.gz
 *.tgz

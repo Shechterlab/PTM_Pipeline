@@ -8,10 +8,12 @@ run when a file differs from it.
 |---|---|
 | `sources/` | the site sources: Maron et al. 2021 Tables S2, S3 and S5, ProMetheusDB (Massignani et al. 2022) and the iPTMnet-format PTM master table |
 | `reference/` | the UniProtKB reviewed human sequences every position refers to (staged 2026-04-07), their entry table, and the UniProt 2026_03 accession history |
-| `annotation/` | per-protein and per-site context: MobiDB disorder intervals, InterPro 108.0 domain intervals for all reviewed entries, CD-CODE condensates, CPLM 4.0 lysine methylation, the CARM1 knockout response (Shishkova et al. 2017) and Human Protein Atlas locations |
+| `annotation/` | per-protein and per-site context: MobiDB disorder intervals, InterPro 108.0 domain intervals for all reviewed entries, CD-CODE condensates, the CARM1 knockout response (Shishkova et al. 2017) and Human Protein Atlas locations |
 | `interactions/` | what the website's interaction view is built from: STRING, Complex Portal, SIFTS, ProtVar, IntAct features, RNA and DNA crosslinks (pepR-MS, Trendel et al. 2025) and RBDmap |
 | `licences/` | the PhosphoSitePlus terms as of July 2021 (web archive capture), when the PhosphoSitePlus records in Maron et al. 2021 Table S5 were downloaded |
 
 The dates in the names are the staging or export dates; UniProt did not record a release number for the 2026-04-07
 sequences (they predate 2026_03; see `DATA_LINEAGE_REVIEW.md`). Each file keeps its own licence (`MANIFEST.tsv`);
 PhosphoSitePlus records inside Maron Table S5 are CC BY-NC-SA 3.0 Unported, per `licences/`.
+
+Not redistributed: CPLM 4.0 (`https://cplm.biocuckoo.cn/Download/Methylation.zip`, lysine methylation for the website) states "All Rights Reserved" and no licence. Download it yourself; the copy behind the website has md5 `fb1acb78e6f256dff31ebf3928181fa8` (sha256 beginning `80160a4a`), with `Methylation.txt` dated 2021-06-13.
