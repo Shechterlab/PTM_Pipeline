@@ -127,12 +127,15 @@ button, input, select { font: inherit; color: inherit; }
   border-bottom: 4px solid var(--accent);
 }
 .hero .wrap { position: relative; z-index: 1; padding-block: 1.25rem 1.5rem; display: grid; gap: 1.1rem; }
-.brand { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-.brand-mark { display: inline-flex; align-items: center; gap: 0.6rem; color: #fff; text-decoration: none; font-weight: 600; }
+.brand { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem 1.5rem; flex-wrap: wrap; }
+.brand h1 { margin: 0; }
+/* The lab's mark and the site links sit on the right, so the title on the left is the one way home. */
+.brand-side { display: grid; justify-items: end; gap: 0.5rem; }
+.brand-mark { display: inline-flex; align-items: center; gap: 0.55rem; color: #fff; text-decoration: none; font-weight: 600; font-size: 0.9rem; text-align: right; }
 .brand-mark:hover { color: #fff; }
-.brand-mark img { width: 34px; height: 34px; padding: 3px; border-radius: 8px; background: #fff; }
-.brand-mark small { display: block; font-weight: 400; font-size: 0.75rem; opacity: 0.75; }
-.brand-links { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.85rem; }
+.brand-mark img { order: 1; width: 30px; height: 30px; padding: 3px; border-radius: 7px; background: #fff; }
+.brand-mark small { display: block; font-weight: 400; font-size: 0.72rem; opacity: 0.75; }
+.brand-links { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-end; font-size: 0.85rem; }
 .brand-links a { color: #fff; text-decoration-color: rgba(255, 255, 255, 0.45); }
 .brand-links a:hover { color: #fdba74; text-decoration-color: #fdba74; }
 .hero h1 { font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem); line-height: 1.15; }
@@ -168,7 +171,7 @@ button, input, select { font: inherit; color: inherit; }
 .stat:hover { background: rgba(255, 255, 255, 0.14); border-color: #fdba74; }
 .stat b { font-size: 1.45rem; font-weight: 800; line-height: 1.1; }
 .stat span { font-size: 0.75rem; opacity: 0.8; }
-.hero-art { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: 4.6rem; width: min(30rem, 33%); height: 8.5rem; pointer-events: none; color: rgba(255, 255, 255, 0.85); }
+.hero-art { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: 7.2rem; width: min(30rem, 33%); height: 8.5rem; pointer-events: none; color: rgba(255, 255, 255, 0.85); }
 .hero-art svg { display: block; width: 100%; height: 100%; }
 
 /* ---- Sticky toolbar ----------------------------------------------------- */
@@ -222,6 +225,13 @@ button, input, select { font: inherit; color: inherit; }
 .tab:hover { color: var(--brand-ink); }
 .tab[aria-selected="true"] { color: var(--brand-ink); border-bottom-color: var(--accent); }
 .tab .count { font-weight: 500; font-size: 0.75rem; padding: 0.05rem 0.45rem; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+/* The views of the selection follow their label: "All data", or "Selection" in orange once anything narrows it. The
+   protein tab appears on a protein page, or when the selection is one protein. */
+.sel-label { flex: none; align-self: center; margin: 0 0.1rem 0 0.45rem; padding-left: 0.8rem; border-left: 1px solid var(--line-strong); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.tabs.filtered .sel-label { color: var(--accent); }
+.tabs.filtered .tab.in-sel { color: var(--accent-dark); }
+.tabs.filtered .tab.in-sel .count { background: var(--accent); color: #fff; }
+.tabs.filtered .tab.in-sel:hover { color: var(--accent); }
 
 /* ---- Layout ------------------------------------------------------------ */
 main.wrap { padding-block: 1.5rem 3rem; }
@@ -238,6 +248,23 @@ main.wrap { padding-block: 1.5rem 3rem; }
   display: grid; gap: 0.25rem; padding-right: 0.25rem;
 }
 .rail-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--line); }
+/* The selection heads the filters: what is applied, in orange, above where filters are added. */
+.rail-sel { display: grid; gap: 0.45rem; margin-bottom: 0.8rem; padding: 0.65rem 0.7rem; min-width: 0; }
+.rail-sel .scope-chips { min-width: 0; }
+.rail-sel .af { max-width: 100%; }
+.rail-sel .saved-new { flex-wrap: wrap; }
+.rail-sel .scope-count { line-height: 1.45; }
+.rail-sel .scope-hint { display: block; }
+.rail-sel .scope-tools { margin-left: 0; flex-wrap: wrap; }
+.rail-sel .saved-menu[open] { order: 9; width: 100%; }
+.rail-sel .saved-pop { position: static; width: auto; margin-top: 0.45rem; box-shadow: none; }
+.rail-note { margin: 0.35rem 0 0.1rem; font-size: 0.75rem; color: var(--muted); }
+.scope.on .af { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); color: var(--accent-dark); }
+.scope.on .af.search { background: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
+.scope.on .af button:hover { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+.rail .saved-menu { border: 0; padding: 0; }
+.rail .saved-menu > summary { display: inline-flex; font-size: 0.8rem; font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--ink-2); }
+.rail .saved-menu > summary::after { content: none; }
 .rail-head h2 { font-size: 1.1rem; }
 .rail details { border-bottom: 1px solid var(--line); padding-block: 0.6rem; }
 .rail summary {
@@ -303,8 +330,7 @@ main.wrap { padding-block: 1.5rem 3rem; }
 .scope-flag { display: inline-block; margin-right: 0.45rem; padding: 0.05rem 0.45rem; border-radius: 0.3rem; background: var(--accent); color: #fff; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 .scope-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; flex: 1 1 auto; min-width: 0; }
 .scope-hint { font-size: 0.78rem; }
-.scope-link { margin-left: auto; }
-.scope-clear { margin-left: 0.35rem; }
+
 
 /* ---- Cards & tables ------------------------------------------------------ */
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); box-shadow: var(--shadow); padding: 1.25rem; min-width: 0; }
@@ -632,7 +658,7 @@ footer.site a:hover { color: var(--accent); }
 @media (max-width: 1180px) {
   .layout { grid-template-columns: minmax(0, 1fr); gap: 1.1rem; }
   .rail { position: static; max-height: none; overflow: visible; padding: 0.75rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); }
-  .rail[data-collapsed="true"] > :not(.rail-head) { display: none; }
+  .rail[data-collapsed="true"] > :not(.rail-head):not(.rail-sel) { display: none; }
   .rail-toggle { display: inline-flex; }
   .rail-head { border-bottom: 0; padding-bottom: 0; }
   .rail[data-collapsed="false"] .rail-head { border-bottom: 1px solid var(--line); padding-bottom: 0.5rem; }
@@ -652,7 +678,6 @@ footer.site a:hover { color: var(--accent); }
   .stat b { font-size: 1.05rem; }
   .stat span { font-size: 0.66rem; line-height: 1.25; }
   .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .scope-clear, .scope-link { margin-left: 0; }
   .scope-hint { display: none; }
   .hbars.has-extra .hb, .hb-axis.has-extra { grid-template-columns: minmax(5rem, 38%) 2.8rem minmax(0, 1fr) 3rem; gap: 0.4rem; }
   /* With the selection's counts, the dataset counts give way (they stay in the hover and the TSV). */
@@ -927,7 +952,7 @@ details.ix-sec[open] > summary .pm, details.fold[open] > summary .pm { border-co
 /* ---- Overview: hint, interactions feature, starting points ---------------- */
 .ov-hint { margin: 0 0 -0.4rem; font-size: 0.85rem; color: var(--muted); }
 .ov-hint.sel { margin-bottom: 1rem; color: var(--ink-2); }
-.tab-feature { color: var(--accent-dark); font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem; }
+.tab-feature { display: inline-flex; align-items: center; gap: 0.35rem; }
 .tab-feature svg { width: 15px; height: 15px; flex: none; }
 .ix-feature { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); box-shadow: inset 4px 0 0 var(--accent); }
 .ix-feature h3 { font-size: 1.35rem; }
@@ -1333,16 +1358,31 @@ details.fold.sub-fold > .pdb-block > .card-head h3 { display: none; }
 
 /* Landing page: one statement, three numbers, the search, then two open charts and everything else behind + headers.
    Every other view shows the header as one line, so a shared protein link opens on the protein. */
-body.slim .hero .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 1.25rem; padding-block: 0.55rem; }
-body.slim .hero .brand { display: contents; }
-body.slim .hero .brand-mark { order: 0; }
+body.slim .hero .wrap { display: block; padding-block: 0.55rem; }
+body.slim .hero .brand { align-items: center; }
+body.slim .hero h1 { font-size: 1.2rem; }
+body.slim .hero .brand-side { display: flex; align-items: center; gap: 1.25rem; }
+body.slim .hero .brand-mark { font-size: 0.82rem; }
 body.slim .hero .brand-mark small { display: none; }
-body.slim .hero .brand-mark img { width: 28px; height: 28px; }
-body.slim .hero h1 { order: 1; font-size: 1.2rem; }
-body.slim .hero .brand-links { order: 2; margin-left: auto; }
+body.slim .hero .brand-mark img { width: 24px; height: 24px; padding: 2px; border-radius: 6px; }
 body.slim .hero .lede, body.slim .hero-stats, body.slim .hero-art { display: none; }
 body.slim .hero { border-bottom-width: 3px; }
 .scope-try { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.4rem; }
+/* The selection: every search term and filter, joined by "and" because a site must match them all. */
+.scope .and { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.scope-tools { display: flex; align-items: center; gap: 0.35rem; margin-left: auto; }
+.saved-menu { position: relative; }
+.saved-menu > summary { list-style: none; }
+.saved-menu > summary::-webkit-details-marker { display: none; }
+.saved-pop { position: absolute; right: 0; top: calc(100% + 0.35rem); z-index: 40; width: min(25rem, calc(100vw - 2rem)); display: grid; gap: 0.6rem; padding: 0.8rem; border: 1px solid var(--line-strong); border-radius: 0.6rem; background: var(--surface); box-shadow: var(--shadow-hover); color: var(--ink-2); font-size: 0.82rem; }
+.saved-pop h4 { margin: 0; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.saved-new { display: flex; gap: 0.4rem; }
+.saved-new input { flex: 1; min-width: 0; padding: 0.3rem 0.5rem; border: 1px solid var(--line-strong); border-radius: 0.4rem; background: var(--surface); color: var(--ink); font: inherit; }
+.saved-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.2rem; max-height: 16rem; overflow-y: auto; }
+.saved-list li { display: flex; align-items: center; gap: 0.5rem; padding: 0.2rem 0; border-top: 1px solid var(--line); }
+.saved-list .saved-open { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+.saved-list .saved-del { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 1rem; line-height: 1; padding: 0 0.2rem; }
+.saved-list .saved-del:hover { color: var(--accent); }
 .scope-try .scope-hint { margin-right: 0.2rem; }
 .try-chip { font: inherit; font-family: var(--font-mono); font-size: 0.78rem; padding: 0.12rem 0.55rem; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--ink-2); cursor: pointer; }
 .try-chip:hover, .try-chip:focus-visible { border-color: var(--accent); color: var(--accent); }
@@ -1356,3 +1396,10 @@ details.fold > summary { padding: 0.95rem 1.35rem; }
   body.slim .hero .brand-links { display: none; }
   .ov-head h2 { font-size: 1.12rem; }
 }
+
+/* The enriched DisGeNET terms under the Disease families chart. */
+.dis-terms { display: grid; gap: 0.5rem; margin-top: 0.6rem; }
+.dis-terms .note { margin: 0; }
+.dis-terms select { margin-left: 0.3rem; max-width: 16rem; }
+.dis-terms-tbl { max-height: 22rem; overflow-y: auto; }
+@media print { .dis-terms-tbl { max-height: none; overflow: visible; } }

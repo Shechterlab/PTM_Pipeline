@@ -818,7 +818,7 @@
     const params = new URLSearchParams(location.search);
     F = filtersFromParams(params);
     const q0 = [params.get('q') || ''].concat(legacyTerms(params)).join(' ').trim();
-    if (params.get('A') != null) UI.cmpA = { qs: params.get('A'), label: '' };
+    if (params.get('A') != null) UI.cmpA = { qs: params.get('A'), label: params.get('An') || '' };
     if (q0) { $('#q').value = q0; $('#q-clear').hidden = false; Q = parseQuery(q0); }
     renderRail();
     bindGlobal();
@@ -1004,6 +1004,22 @@
   const dgnTested = () => 'terms of ' + DGN_TERMS.min + '–' + DGN_TERMS.max + ' genes, p.adjust ≤ ' + DGN_TERMS.padj;
   // Methylated proteins in the enriched DisGeNET terms of disease family k (what disease:<family> lists).
   const diseaseTermCount = (k) => (k >= 0 ? P.reduce((n, p) => n + (p.dis & 2 ** k ? 1 : 0), 0) : 0);
+  // Every enriched DisGeNET term, the ones in no audited family included, for the Disease families card.
+  function disTermsHtml() {
+    const ev = UI.evd;
+    if (!ev) return '<p class="muted small">Loading the terms…</p>';
+    const terms = ev.disease_terms, fam = UI.disFam == null ? '' : UI.disFam;
+    const none = terms.filter((t) => t[2] < 0).length;
+    const shown = terms.filter((t) => fam === '' || (fam === 'none' ? t[2] < 0 : t[2] === +fam));
+    const famName = (k) => (k >= 0 ? M.disease_families[k] : '');
+    return '<div class="dis-terms"><p class="note">' + fmt(terms.length) + ' DisGeNET terms are enriched among methylated proteins (' + dgnTested() + '); ' +
+      fmt(none) + ' of them belong to none of the ' + M.disease_families.length + ' audited families.</p>' +
+      '<label class="small">Show <select id="dis-fam"><option value="">all terms</option><option value="none"' + (fam === 'none' ? ' selected' : '') + '>terms in no family (' + fmt(none) + ')</option>' +
+      M.disease_families.map((f, k) => '<option value="' + k + '"' + (fam === String(k) ? ' selected' : '') + '>' + esc(f) + '</option>').join('') + '</select></label>' +
+      '<div class="tbl-wrap dis-terms-tbl"><table class="tbl compact"><thead><tr><th>Term</th><th>Family</th><th class="r">Methylated genes</th><th class="r">Adj. p</th></tr></thead><tbody>' +
+      shown.map((t) => '<tr><td>' + esc(t[1]) + ' <span class="muted mono small">' + esc(t[0]) + '</span></td><td class="muted">' + esc(famName(t[2])) + '</td><td class="r num">' + fmt(t[3]) +
+        '</td><td class="r num">' + fmtP(t[4]) + '</td></tr>').join('') + '</tbody></table></div></div>';
+  }
   // In the full audited ALS/MN/FTD gene set (disease:als-all): the family-membership export when present, else the
   // older symbol-and-alias flag.
   const alsMember = (p) => (p.disFam ? p.disFam.some((x) => M.disease_families[x[0]] === 'ALS / motor neuron / FTD') : p.als);
@@ -1341,7 +1357,7 @@
     const qs = new URLSearchParams();
     if (Q.raw) qs.set('q', Q.raw);
     for (const [k, v] of filterParams(F)) qs.set(k, v);
-    if (UI.cmpA) qs.set('A', UI.cmpA.qs);
+    if (UI.cmpA) { qs.set('A', UI.cmpA.qs); if (UI.cmpA.label) qs.set('An', UI.cmpA.label); }
     const s = qs.toString();
     const next = location.pathname + (s ? '?' + s : '') + location.hash;
     if (next !== location.pathname + location.search + location.hash) history.replaceState(null, '', next);
@@ -1413,40 +1429,144 @@
     if (view && view !== UI.view) go(view); else renderView();
   }
 
-  // The scope bar sits under the search box on every view and lists everything that narrows the results.
+  // The selection: everything that narrows the sites (search terms and filters, which must all match), with its counts
+  // and tools. It heads the filter panel, where filters are added; pages without the panel show it in the bar under the
+  // search box instead. Orange marks a selection everywhere: here, the views of the tab bar and the active filter groups.
+  function selectionHtml(cons) {
+    const tools = (more) => '<span class="scope-tools">' + savedMenuHtml(cons.length > 0) + more + '</span>';
+    if (!cons.length) {
+      return '<span class="scope-count">All <b>' + fmt(S.length) + '</b> sites on <b>' + fmt(P.length) + '</b> proteins</span>' +
+        '<span class="scope-hint">Search, or add filters, to make a selection</span>' + tools('');
+    }
+    return '<span class="scope-count"><span class="scope-flag">Selection</span><b>' + fmt(R.sites.length) + '</b> of ' + fmt(S.length) + ' sites on <b>' +
+      fmt(R.prots.length) + '</b> protein' + (R.prots.length === 1 ? '' : 's') + (cons.length > 1 ? ', matching all of' : '') + '</span>' +
+      '<span class="scope-chips">' + cons.map((c, k) => (k ? '<span class="and">and</span>' : '') + '<span class="af' + (c.group === 'search' ? ' search' : '') + '">' +
+        esc(c.label) + '<button type="button" data-k="' + k + '" aria-label="Remove ' + esc(c.label) + '">×</button></span>').join('') + '</span>' +
+      tools((UI.cmpA ? '<button class="btn small quiet" type="button" data-scope="cmp" title="Compare this selection with ' + esc(UI.cmpA.label || 'the saved one') + '">Compare</button>' : '') +
+        '<button class="btn small quiet" type="button" data-scope="link" title="Copy a link that reopens this page with the same selection">Copy link</button>' +
+        '<button class="btn small" type="button" data-scope="clear">Clear all</button>');
+  }
+  function bindSelection(box, cons) {
+    $$('.af button', box).forEach((b) => b.addEventListener('click', () => { cons[+b.dataset.k].clear(); afterFilterChange(); }));
+    $$('[data-scope]', box).forEach((b) => b.addEventListener('click', () => {
+      if (b.dataset.scope === 'link') copyLink(b);
+      else if (b.dataset.scope === 'clear') clearAll();
+      else { go('compare'); window.scrollTo({ top: 0 }); }
+    }));
+    bindSaved(box);
+  }
   function renderScope() {
     const box = $('#scope');
-    if (!box) return;
+    if (!box || !R) return;   // compute() draws it once the results exist
     const cons = constraints();
-    box.classList.toggle('on', cons.length > 0);
-    const cmp = UI.cmpA ? '<button class="btn small quiet scope-cmp" type="button" id="scope-cmp" title="A: ' + esc(UI.cmpA.label || '') + '">Compare with A</button>' : '';
-    const bindCmp = () => { const b = $('#scope-cmp', box); if (b) b.addEventListener('click', () => { go('compare'); window.scrollTo({ top: 0 }); }); };
-    if (!cons.length) {
-      // On the landing page the bar offers searches to try (the header already gives the totals).
-      if (UI.view === 'overview') {
-        const tries = [['FUS', 'a protein'], ['FUS R216', 'a site'], ['TAF15 EWSR1 FUS', 'a gene list'], ['disease:als', 'a disease family'], ['motif:RGG', 'a motif']];
-        box.innerHTML = '<span class="scope-try"><span class="scope-hint">Try</span>' + tries.map(([q, what]) => '<button type="button" class="try-chip" data-try="' + esc(q) + '" title="Search for ' + esc(what) + '">' + esc(q) + '</button>').join('') + '</span>' + cmp;
-        $$('[data-try]', box).forEach((b) => b.addEventListener('click', () => {
-          setPlain(b.dataset.try); compute();
-          if (R.prots.length === 1) openProtein(R.prots[0].i, Q.positions ? Array.from(Q.positions.values())[0].values().next().value : null);
-          else go(Q.tokens && Q.tokens.length && !Q.plain ? termView() : 'proteins');
-        }));
-        bindCmp();
-        return;
-      }
-      box.innerHTML = '<span class="scope-count">Showing all <b>' + fmt(S.length) + '</b> sites on <b>' + fmt(P.length) + '</b> proteins</span><span class="scope-hint">Search or use the filters to narrow this down</span>' + cmp;
-      bindCmp();
-      return;
+    const rs = $('#rail-sel');
+    if (rs) {
+      rs.classList.toggle('on', cons.length > 0);
+      rs.innerHTML = selectionHtml(cons);
+      bindSelection(rs, cons);
     }
-    box.innerHTML = '<span class="scope-count"><span class="scope-flag">Filtered</span><b>' + fmt(R.sites.length) + '</b> of ' + fmt(S.length) + ' sites · <b>' + fmt(R.prots.length) + '</b> proteins</span>' +
-      '<span class="scope-chips">' + cons.map((c, k) => '<span class="af' + (c.group === 'search' ? ' search' : '') + '">' + esc(c.label) + '<button type="button" data-k="' + k + '" aria-label="Remove ' + esc(c.label) + '">×</button></span>').join('') + '</span>' +
-      cmp + '<button class="btn small quiet scope-link" type="button" id="scope-link" title="Copy a link that reopens this page with the same search and filters">Copy link</button>' +
-      '<button class="btn small scope-clear" type="button" id="scope-clear">Clear all</button>';
-    $$('.af button', box).forEach((b) => b.addEventListener('click', () => { cons[+b.dataset.k].clear(); afterFilterChange(); }));
-    $('#scope-link', box).addEventListener('click', (e) => copyLink(e.currentTarget));
-    bindCmp();
-    $('#scope-clear', box).addEventListener('click', clearAll);
+    updateSelectionTabs(cons);
+    const withRail = !$('#layout').classList.contains('no-rail');
+    box.classList.toggle('on', cons.length > 0 && !withRail);
+    if (cons.length && !withRail) {
+      box.hidden = false;
+      box.innerHTML = selectionHtml(cons);
+      bindSelection(box, cons);
+    } else if (!cons.length && UI.view === 'overview') {
+      // On the landing page the bar offers searches to try (the header already gives the totals).
+      box.hidden = false;
+      const tries = [['FUS', 'a protein'], ['FUS R216', 'a site'], ['TAF15 EWSR1 FUS', 'a gene list'], ['disease:als', 'a disease family'], ['motif:RGG', 'a motif']];
+      box.innerHTML = '<span class="scope-try"><span class="scope-hint">Try</span>' + tries.map(([q, what]) => '<button type="button" class="try-chip" data-try="' + esc(q) + '" title="Search for ' + esc(what) + '">' + esc(q) + '</button>').join('') + '</span>' +
+        '<span class="scope-tools">' + savedMenuHtml(false) + '</span>';
+      $$('[data-try]', box).forEach((b) => b.addEventListener('click', () => {
+        setPlain(b.dataset.try); compute();
+        if (R.prots.length === 1) openProtein(R.prots[0].i, Q.positions ? Array.from(Q.positions.values())[0].values().next().value : null);
+        else go(Q.tokens && Q.tokens.length && !Q.plain ? termView() : 'proteins');
+      }));
+      bindSaved(box);
+    } else {
+      box.hidden = true;
+      box.innerHTML = '';
+    }
     syncToolbar();
+  }
+
+  // The tab bar names what its views show: all data, or the selection (in orange). The protein tab is there on a
+  // protein page, and when the selection is one protein (then in orange too).
+  function updateSelectionTabs(cons) {
+    const tabs = $('#tabs');
+    if (!tabs) return;
+    const on = (cons || constraints()).length > 0;
+    tabs.classList.toggle('filtered', on);
+    $('#sel-label').textContent = on ? 'Selection' : 'All data';
+    const ptab = $('#tab-protein');
+    const one = on && R && R.prots.length === 1 ? R.prots[0].i : null;
+    const i = UI.view === 'protein' && UI.detail != null ? UI.detail : one;
+    ptab.hidden = i == null;
+    ptab.classList.toggle('in-sel', i != null && i === one);
+    if (i != null) { ptab.textContent = P[i].label; ptab.dataset.p = i; }
+  }
+
+  // Saved selections: named searches and filters kept in this browser, to restore or to compare with.
+  const SAVED_KEY = 'mre-saved-selections';
+  function savedSelections() {
+    try { const v = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+  }
+  function storeSelections(list) {
+    try { localStorage.setItem(SAVED_KEY, JSON.stringify(list.slice(0, 40))); } catch (e) { /* storage blocked: nothing kept */ }
+  }
+  function currentQs() {
+    const qs = new URLSearchParams();
+    if (Q.raw) qs.set('q', Q.raw);
+    for (const [k, v] of filterParams(F)) qs.set(k, v);
+    return qs.toString();
+  }
+  function saveNamed(name) {
+    const list = savedSelections().filter((x) => x.name !== name);
+    list.unshift({ name, qs: currentQs(), n: R.sites.length });
+    storeSelections(list);
+  }
+  function restoreSaved(x) {
+    const params = new URLSearchParams(x.qs);
+    F = filtersFromParams(params);
+    setQuery(params.get('q') || '');
+    afterFilterChange();
+  }
+  function compareWithSaved(x) {
+    UI.cmpA = { qs: x.qs, label: x.name };
+    syncUrl();
+    go('compare');
+    window.scrollTo({ top: 0 });
+  }
+  function savedMenuHtml(canSave) {
+    const list = savedSelections();
+    if (!canSave && !list.length) return '';
+    return '<details class="saved-menu"><summary class="btn small quiet">' + (list.length ? 'Saved (' + list.length + ')' : 'Save') + '</summary><div class="saved-pop">' +
+      (canSave ? '<h4>Save this selection</h4><form class="saved-new"><input type="text" name="name" maxlength="80" value="' + esc(selectionText().slice(0, 80)) +
+        '" aria-label="Name for this selection"><button class="btn small" type="submit">Save</button></form>' : '') +
+      (list.length ? '<h4>Saved in this browser</h4><ul class="saved-list">' + list.map((x, k) => '<li><button class="linkish saved-open" type="button" data-saved-open="' + k +
+        '" title="Open this selection">' + esc(x.name) + '</button><span class="muted small">' + fmt(x.n || 0) + ' sites</span>' +
+        '<button class="linkish small" type="button" data-saved-cmp="' + k + '" title="Compare the current selection with this one">Compare</button>' +
+        '<button class="saved-del" type="button" data-saved-del="' + k + '" aria-label="Delete ' + esc(x.name) + '">×</button></li>').join('') + '</ul>' :
+        '<p class="muted small">Saved selections stay in this browser. Open one again later, or compare another selection with it.</p>') +
+      '</div></details>';
+  }
+  function bindSaved(root) {
+    const list = savedSelections();
+    $$('.saved-new', root).forEach((form) => form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = form.elements.name.value.trim();
+      if (!name) return;
+      saveNamed(name);
+      renderScope();
+      if (['report', 'compare'].includes(UI.view)) renderView();
+    }));
+    $$('[data-saved-open]', root).forEach((b) => b.addEventListener('click', () => restoreSaved(list[+b.dataset.savedOpen])));
+    $$('[data-saved-cmp]', root).forEach((b) => b.addEventListener('click', () => compareWithSaved(list[+b.dataset.savedCmp])));
+    $$('[data-saved-del]', root).forEach((b) => b.addEventListener('click', () => {
+      storeSelections(list.filter((_, k) => k !== +b.dataset.savedDel));
+      renderScope();
+    }));
   }
 
   // --------------------------------------------------------------- routing
@@ -1485,9 +1605,6 @@
     setDocTitle();
     if (view !== 'report' && view !== 'compare') setPrintPageStyle(false);
     $$('.tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.view === view)));
-    const ptab = $('#tab-protein');
-    ptab.hidden = UI.detail == null;
-    if (UI.detail != null) ptab.textContent = P[UI.detail].label;
     tabsInView();
     $('#layout').classList.toggle('no-rail', view === 'about' || view === 'report' || view === 'compare' || view === 'overview');
     document.body.classList.toggle('slim', view !== 'overview');
@@ -1689,16 +1806,17 @@
     const rail = $('#rail');
     const open = new Set($$('details[open]', rail).map((d) => d.dataset.sec));
     const firstRender = !rail.children.length;
-    const n = constraints().filter((c) => c.group !== 'search').length;
     rail.innerHTML =
-      '<div class="rail-head"><h2>Filters</h2><div class="actions">' +
-      '<button class="btn small" type="button" id="reset-filters"' + (n ? '' : ' disabled') + '>Clear filters' + (n ? ' (' + n + ')' : '') + '</button>' +
+      '<div class="rail-sel scope" id="rail-sel" aria-live="polite"></div>' +
+      '<div class="rail-head"><h2>Add filters</h2><div class="actions">' +
       '<button class="btn quiet small rail-toggle" type="button" id="rail-toggle" aria-expanded="' + (rail.dataset.collapsed === 'false') + '">' + (rail.dataset.collapsed === 'false' ? 'Hide' : 'Show') + '</button></div></div>' +
+      '<p class="rail-note">Each filter narrows the selection above; a site must match all of them.</p>' +
       SECTIONS.map(([key, title, dflt]) => '<details data-sec="' + key + '"' + ((firstRender ? dflt : open.has(key)) ? ' open' : '') + '><summary><span>' + esc(title) + '</span>' +
         '<span class="sec-count" data-count="' + key + '" hidden></span><span class="sec-clear" role="button" tabindex="0" data-clear="' + key + '" hidden>Clear</span></summary>' +
         sectionBody(key) + '</details>').join('');
     bindRail();
     renderRailState();
+    renderScope();
   }
 
   function renderRailState() {
@@ -1733,12 +1851,6 @@
     $$('[data-count]').forEach((el) => { const n = counts[el.dataset.count] || 0; el.hidden = !n; el.textContent = n; });
     $$('[data-clear]').forEach((el) => { el.hidden = !counts[el.dataset.clear]; });
     $$('#rail details').forEach((d) => d.classList.toggle('active', !!counts[d.dataset.sec]));
-    const reset = $('#reset-filters');
-    if (reset) {
-      const n = Object.keys(counts).filter((g) => g !== 'search').reduce((a, g) => a + counts[g], 0);
-      reset.disabled = !n;
-      reset.textContent = 'Clear filters' + (n ? ' (' + n + ')' : '');
-    }
   }
 
   function bindRail() {
@@ -1780,7 +1892,6 @@
     const mq = $('#f-motifq', rail);
     if (mq) bindMotifBox(mq, $('#f-motifwhere', rail), $('#f-motifgo', rail), $('#f-motifmsg', rail));
     bindIxRail(rail, () => { UI.pageP = 50; UI.pageS = 100; compute(); renderView(); });
-    $('#reset-filters').addEventListener('click', clearFilters);
     $$('[data-clear]', rail).forEach((el) => {
       const run = (e) => {
         e.preventDefault(); e.stopPropagation();
@@ -1955,7 +2066,7 @@
     };
     $('#q-clear').addEventListener('click', () => { setQuery(''); compute(); renderView(); input.focus(); });
     $$('.tab').forEach((t) => t.addEventListener('click', () => {
-      if (t.dataset.view === 'protein') { if (UI.detail != null) openProtein(UI.detail); }
+      if (t.dataset.view === 'protein') { const i = t.dataset.p != null ? +t.dataset.p : UI.detail; if (i != null) openProtein(i); }
       else go(t.dataset.view);
     }));
     window.addEventListener('hashchange', route);
@@ -2179,7 +2290,9 @@
         const r = ov.disease_families.find((x) => x[0] === name);
         const n = diseaseTermCount(one('disease'));
         if (r) card('Audited disease family (DisGeNET)', name, (n ? 'Listed here: the <b>' + fmt(n) + '</b> methylated proteins in this family\'s enriched DisGeNET terms (DOSE enrichDGN, ' + dgnTested() + ').' : 'No DisGeNET term of this family is enriched on its own (DOSE enrichDGN, ' + dgnTested() + '), so no proteins are listed.') + ' For context, the whole family holds ' + fmt(r[1]) + ' methylarginine genes among ' + fmt(r[2]) + ' family genes; OR <b>' + (r[3] || 0).toFixed(2) + '</b>, BH-adjusted p ' + fmtP(r[4]) + '.' +
-          (M.disease_families[one('disease')] === 'ALS / motor neuron / FTD' ? (() => { const a = P.filter(alsMember); return ' <code>disease:als-all</code> lists all ' + fmt(a.length) + ' methylated UniProt entries (' + fmt(new Set(a.map((p) => p.gene.toUpperCase())).size) + ' genes, with isoform and unreviewed entries) of the full audited gene set.'; })() : ''));
+          (M.disease_families[one('disease')] === 'ALS / motor neuron / FTD' ? (() => { const a = P.filter(alsMember); const iso = a.filter((p) => p.iso).length, unrev = a.filter((p) => p.unrev).length;
+            const also = [iso ? fmt(iso) + ' isoform entr' + (iso === 1 ? 'y' : 'ies') : '', unrev ? fmt(unrev) + ' unreviewed' : ''].filter(Boolean);
+            return ' <code>disease:als-all</code> lists all ' + fmt(a.length) + ' methylated UniProt entries (' + fmt(new Set(a.map((p) => p.gene.toUpperCase())).size) + ' genes' + (also.length ? '; ' + also.join(' and ') + ' included' : '') + ') of the full audited gene set.'; })() : ''));
       }
     }
     if (one('study') != null) {
@@ -2362,7 +2475,7 @@
     });
     const shownRows = rows.slice(0, UI.pageS);
     const cols = colsShown('sites', SITE_COLS);
-    el.innerHTML = resultsHead('Sites', fmt(rows.length) + ' of ' + fmt(S.length) + ' methylarginine sites on ' + fmt(R.prots.length) + ' proteins',
+    el.innerHTML = resultsHead('Sites', fmt(rows.length) + ' of ' + fmt(S.length) + ' methylarginine sites on ' + fmt(R.prots.length) + ' protein' + (R.prots.length === 1 ? '' : 's'),
       '<button class="btn quiet small" type="button" data-go-figs>Make figures</button><button class="btn small" type="button" id="dl-sites">Download TSV</button>') +
       contextCards() + profileCardHtml() + ixSegHtml() +
       (rows.length ? '<div class="card tbl-card"><div class="tbl-tools"><span class="muted small">Click a site to open it on its protein.</span>' + colMenu('sites', SITE_COLS) + '</div><div class="tbl-wrap"><table class="tbl stackable">' + colHead(cols, UI.sortS, key) + '<tbody>' +
@@ -2584,6 +2697,8 @@
           title: '<b>' + esc(r[0]) + '</b><br>Family: ' + fmt(r[1]) + ' methylarginine genes of ' + fmt(r[2]) + ' family genes, OR ' + (r[3] || 0).toFixed(2) + ', BH-adjusted p ' + fmtP(r[4]) +
             '<br>' + (inTerms ? 'Click: the ' + fmt(inTerms) + ' methylated proteins in this family\'s enriched DisGeNET terms (' + dgnTested() + ')' : 'No term of this family is enriched on its own (' + dgnTested() + '), so there are no proteins to list') };
       }).sort((a, b) => b.value - a.value),
+      footHtml: '<button class="linkish" type="button" id="dis-more" style="margin-top:.5rem">' + (UI.disTerms ? 'Hide the enriched terms' : 'Show every enriched DisGeNET term') + '</button>' +
+        (UI.disTerms ? disTermsHtml() : ''),
     };
     // Fixed categories keep their logical order (inside to outside); ranked lists say so and sort by value.
     const ctxOrder = (table, order) => table.slice().sort((a, b) => (order.indexOf(a[0]) + 99) % 99 - (order.indexOf(b[0]) + 99) % 99);
@@ -2728,6 +2843,13 @@
       : pickTerm('class', termSlug('class', M.func_classes.indexOf(r.key)), 'proteins')));
     $('#func-more', el).addEventListener('click', () => { UI.funcExpanded = !UI.funcExpanded; renderDash(el, page); });
     bindBars($('#ch-dis', el), dis.rows, (r) => pickTerm('disease', termSlug('disease', M.disease_families.indexOf(r.key)), 'proteins'));
+    $('#dis-more', el).addEventListener('click', () => {
+      UI.disTerms = !UI.disTerms;
+      if (UI.disTerms && !UI.evd) loadEvidence().then((ev) => { UI.evd = ev; renderDash(el, page); });
+      renderDash(el, page);
+    });
+    const df = $('#dis-fam', el);
+    if (df) df.addEventListener('change', () => { UI.disFam = df.value; renderDash(el, page); });
     bindBars($('#ch-disorder', el), disorder.rows, (r) => setFilters((f) => { const k = M.disorder_classes.indexOf(r.key); f.disorder = new Set(k >= 0 ? [k] : []); }, 'sites'));
     bindBars($('#ch-dom > .hbars', el), domctx.rows, (r) => setFilters((f) => { const k = M.domain_contexts.indexOf(r.key); f.domctx = new Set(k >= 0 ? [k] : []); }, 'sites'));
     bindBars($('#ch-domcls-bars', el), domcls.rows, (r) => pickTerm('domain', termSlug('domain', M.domain_classes.indexOf(r.key)), 'sites'));
@@ -2832,7 +2954,8 @@
       ext('https://www.ebi.ac.uk/QuickGO/annotations?geneProductId=' + encodeURIComponent(base), 'GO') +
       ext('https://www.ebi.ac.uk/complexportal/home?query=' + encodeURIComponent(base), 'Complex Portal') +
       ext('https://www.phosphosite.org/uniprotAccAction?id=' + encodeURIComponent(base), 'PhosphoSitePlus') + '</div></details>' +
-      '<button class="btn small" type="button" id="save-pdf" title="Print this protein page, or save it as a PDF from the print dialog">Save PDF</button></div></div>' +
+      '<button class="btn small" type="button" id="save-pdf" title="Download this protein page as a PDF file">Download PDF</button>' +
+      '<button class="btn small quiet" type="button" id="print-page" title="Print this protein page (the print dialog can also save a PDF with selectable text)">Print</button></div></div>' +
       (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
       '<div id="drift-note"></div>' +
       (p.unrev ? (() => {
@@ -2871,7 +2994,8 @@
       '<div class="print-only print-foot"><p>' + esc(siteName()) + ' · ' + esc(siteUrl()) + '</p><p>Cite: ' + esc(PAPER.cite) + ' https://doi.org/' + esc(PAPER.doi) + '</p><p>Sites: methylarginine union from PTM_Pipeline. Features, variants and sequence: UniProt. Predicted structure, pLDDT and AlphaMissense: AlphaFold DB. Experimental structures: RCSB PDB and PDBe (SIFTS). Condensates: CD-CODE. Partners: STRING; complexes: Complex Portal and hu.MAP; predicted complexes: ProtVar and AlphaFold DB; crosslinks: pepR-MS compendium, RBDmap, Trendel et al. 2025; IntAct; locations: Human Protein Atlas; disease: DisGeNET (via DOSE), UniProt and Open Targets; orthologues: Ensembl Compara. Licences and citations: the Documentation page.</p></div>';
 
     $$('[data-crumb]', el).forEach((b) => b.addEventListener('click', () => { go(b.dataset.crumb); window.scrollTo({ top: 0 }); }));
-    $('#save-pdf', el).addEventListener('click', (e) => savePdf(p, e.currentTarget));
+    $('#save-pdf', el).addEventListener('click', (e) => savePdf(p, e.currentTarget, 'file'));
+    $('#print-page', el).addEventListener('click', (e) => savePdf(p, e.currentTarget, 'print'));
     bindCtx(p);
     bindFacts(p);
     $$('[data-open-p]', el).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.openP)));
@@ -7931,7 +8055,7 @@
     setPrintPageStyle(true, 'Insight report · ' + date);
     el.innerHTML = '<div class="report' + (marginBoxes ? '' : ' runfoot') + '">' +
       '<div class="print-only report-runfoot">' + esc(siteName() + ' · ' + siteUrl() + ' · ' + reportCite()) + '</div>' +
-      '<div class="report-bar screen-only"><button class="linkish" type="button" id="rep-back">← Back</button><button class="btn" type="button" id="rep-print">Save as PDF</button>' + cmpButtons() + '<span class="muted small">Opens the print dialog; choose “Save as PDF”. The link below reopens this selection.</span></div>' +
+      '<div class="report-bar screen-only"><button class="linkish" type="button" id="rep-back">← Back</button><button class="btn" type="button" id="rep-pdf">Download PDF</button><button class="btn quiet small" type="button" id="rep-print">Print</button>' + cmpButtons() + '<span class="muted small">Opens the print dialog; choose “Save as PDF”. The link below reopens this selection.</span></div>' +
       '<header class="report-head"><p class="report-kicker">' + esc(siteName()) + ' · insight report · ' + date + '</p><h2>' + esc(scoped ? selectionText() : 'The whole methylarginine union') + '</h2>' +
       '<p class="muted small">Reopen: <span class="mono">' + esc(link) + '</span><br>Data exported ' + esc(M.generated) + (IX && IX.meta ? '; interaction data ' + esc(IX.meta.generated || '') : '') + '. Please cite ' + esc(PAPER.cite) + ' doi:' + esc(PAPER.doi) + '</p></header>' +
       '<div class="facts report-facts">' + facts.map(([v, l]) => '<div class="fact"><b>' + v + '</b><span>' + esc(l) + '</span></div>').join('') + '</div>' +
@@ -7968,6 +8092,7 @@
       document.title = t;
     };
     $('#rep-print', el).addEventListener('click', print);
+    $('#rep-pdf', el).addEventListener('click', (e) => reportPdf(e.currentTarget, 'Insight report · ' + date, siteName() + ' insight report ' + date + '.pdf'));
     bindCmpButtons(el);
     bindCiteBox(el);
     let printed = false;
@@ -8029,15 +8154,7 @@
     return out.join(' ');
   }
 
-  // Selection A for the comparison view: the search and filters saved from an earlier selection.
-  function saveSelectionA() {
-    const qs = new URLSearchParams();
-    if (Q.raw) qs.set('q', Q.raw);
-    for (const [k, v] of filterParams(F)) qs.set(k, v);
-    UI.cmpA = { qs: qs.toString(), label: selectionText() };
-    syncUrl();
-    renderScope();
-  }
+  // Selection A of the comparison: a saved selection (its search and filters), set by Compare in the saved list.
   function selectionA() {
     if (!UI.cmpA) return null;
     const params = new URLSearchParams(UI.cmpA.qs);
@@ -8068,16 +8185,14 @@
     return bhAdjust(rows);
   }
 
-  // Save as A / Compare with A, offered wherever a selection is summarised.
+  // Save the selection, or compare it with a saved one, wherever a selection is summarised.
   function cmpButtons() {
-    return '<span class="cmp-btns"><button class="btn quiet small" type="button" data-cmp="save" title="Keep this selection as A, then change the search or filters to compare another selection with it">' + (UI.cmpA ? 'Replace A with this' : 'Save as A for a comparison') + '</button>' +
-      (UI.cmpA ? '<button class="btn small" type="button" data-cmp="open" title="A: ' + esc(UI.cmpA.label || '') + '">Compare with A</button>' : '') + '</span>';
+    return '<span class="cmp-btns">' + savedMenuHtml(constraints().length > 0) +
+      (UI.cmpA ? '<button class="btn small" type="button" data-cmp="open" title="Compare this selection with ' + esc(UI.cmpA.label || 'the saved one') + '">Compare with ' + esc((UI.cmpA.label || 'saved').slice(0, 40)) + '</button>' : '') + '</span>';
   }
   function bindCmpButtons(root) {
-    $$('[data-cmp]', root).forEach((b) => b.addEventListener('click', () => {
-      if (b.dataset.cmp === 'save') { saveSelectionA(); b.textContent = 'Saved as A'; setTimeout(() => renderView(), 700); }
-      else { go('compare'); window.scrollTo({ top: 0 }); }
-    }));
+    bindSaved(root);
+    $$('[data-cmp="open"]', root).forEach((b) => b.addEventListener('click', () => { go('compare'); window.scrollTo({ top: 0 }); }));
   }
   function renderCompare(el) {
     const A = selectionA(), B = Object.assign(currentSelection(), { label: selectionText() });
@@ -8085,9 +8200,9 @@
     if (!A) {
       setPrintPageStyle(false);
       el.innerHTML = '<div class="card"><h3>Compare two selections</h3><p class="sub">Two selections side by side: features, evidence, logos and proteins.</p>' +
-        '<ol class="steps"><li>Search or filter to the first selection, e.g. <code>binds:PRMT1</code>, and press <b>Save as A</b>.</li><li>Change the search or filters to the second selection, e.g. <code>binds:PRMT5</code>.</li><li>Open <b>Compare</b>; the current selection is B.</li></ol>' +
-        '<p><button class="btn" type="button" id="cmp-save">Save the current selection as A</button> <span class="muted small">Current: ' + esc(B.label) + '</span></p></div>';
-      $('#cmp-save', el).addEventListener('click', () => { saveSelectionA(); renderCompare(el); });
+        '<ol class="steps"><li>Search or filter to the first selection, e.g. <code>binds:PRMT1</code>, and save it with a name (<b>Save</b>, next to the selection).</li><li>Change the search or filters to the second selection, e.g. <code>binds:PRMT5</code>.</li><li>Open <b>Saved</b> and press <b>Compare</b> next to the first one; the current selection is B.</li></ol>' +
+        '<p class="cmp-row">' + cmpButtons() + ' <span class="muted small">Current: ' + esc(B.label) + '</span></p></div>';
+      bindCmpButtons(el);
       return;
     }
     setPrintPageStyle(true, 'Comparison report · ' + date);
@@ -8106,9 +8221,9 @@
     const marginBoxes = /Chrome\/|Chromium\/|Edg\//.test(navigator.userAgent);
     el.innerHTML = '<div class="report cmp' + (marginBoxes ? '' : ' runfoot') + '">' +
       '<div class="print-only report-runfoot">' + esc(siteName() + ' · ' + siteUrl() + ' · ' + reportCite()) + '</div>' +
-      '<div class="report-bar screen-only"><button class="linkish" type="button" id="cmp-back">← Back</button><button class="btn" type="button" id="cmp-print">Save as PDF</button>' +
-      '<button class="btn quiet small" type="button" id="cmp-swap" title="Make the current selection A">Save current as A</button><button class="btn quiet small" type="button" id="cmp-clear">Clear A</button>' +
-      '<span class="muted small">B is the current search and filters; change them to compare something else with A.</span></div>' +
+      '<div class="report-bar screen-only"><button class="linkish" type="button" id="cmp-back">← Back</button><button class="btn" type="button" id="cmp-pdf">Download PDF</button><button class="btn quiet small" type="button" id="cmp-print">Print</button>' +
+      '<button class="btn quiet small" type="button" id="cmp-clear">Stop comparing</button>' +
+      '<span class="muted small">A is the saved selection; B is the current search and filters, so change them to compare something else with A.</span></div>' +
       '<header class="report-head"><p class="report-kicker">' + esc(siteName()) + ' · comparison report · ' + date + '</p><h2>A vs B</h2>' +
       '<div class="cmp-sides">' + side(A, 'A') + side(B, 'B') + '</div>' +
       '<p class="muted small">Overlap: ' + fmt(both) + ' site' + (both === 1 ? '' : 's') + ' and ' + fmt(protBoth) + ' protein' + (protBoth === 1 ? '' : 's') + ' are in both. Reopen: <span class="mono">' + esc(siteUrl() + location.search + '#compare') + '</span></p></header>' +
@@ -8129,7 +8244,7 @@
       '</div>';
     $('#cmp-back', el).addEventListener('click', () => { if (history.length > 1) history.back(); else go('sites'); });
     $('#cmp-print', el).addEventListener('click', () => { const t = document.title; document.title = siteName() + ' comparison ' + date; window.print(); document.title = t; });
-    $('#cmp-swap', el).addEventListener('click', () => { saveSelectionA(); renderCompare(el); });
+    $('#cmp-pdf', el).addEventListener('click', (e) => reportPdf(e.currentTarget, 'Comparison report · ' + date, siteName() + ' comparison ' + date + '.pdf'));
     $('#cmp-clear', el).addEventListener('click', () => { UI.cmpA = null; syncUrl(); renderScope(); renderCompare(el); });
     $$('[data-open-p]', el).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.openP)));
     bindCiteBox(el);
@@ -8917,8 +9032,10 @@
   window.addEventListener('beforeprint', () => { if (!printReady) preparePrint(); });
   window.addEventListener('afterprint', restorePrint);
 
-  // Load what the page fetches lazily (UniProt, AlphaFold, the 3D view) before opening the print dialog.
-  function savePdf(p, btn) {
+  // Load what the page fetches lazily (UniProt, AlphaFold, the 3D view), then write the PDF file (mode 'file') or open
+  // the print dialog (mode 'print').
+  function savePdf(p, btn, mode) {
+    const label = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Preparing…';
     if (UI.startStructure) UI.startStructure();
@@ -8943,12 +9060,133 @@
         return img && img.decode ? settle(img.decode(), 5000) : null;
       })
       .then(() => {
-        btn.disabled = false;
-        btn.textContent = 'Save PDF';
-        if (UI.detail === p.i && printReady) {
-          window.print();
-        }
-      });
+        if (UI.detail !== p.i || !printReady) return null;
+        if (mode === 'print') { window.print(); return null; }
+        btn.textContent = 'Writing PDF…';
+        return downloadPdf($('#content'), p.label + ' (' + p.acc + ') · ' + new Date().toISOString().slice(0, 10),
+          (p.gene || p.acc) + '_' + p.acc + '_methylarginines.pdf').finally(restorePrint);
+      })
+      .catch((e) => { restorePrint(); alert('The PDF could not be written (' + e.message + '). Print can save one instead.'); })
+      .finally(() => { btn.disabled = false; btn.textContent = label; });
+  }
+
+  // ---- PDF files --------------------------------------------------------------------------------------------------
+  // Download PDF writes an A4 file without the print dialog: the page in its print layout (explorer.css's @media print
+  // rules, applied to a copy of the page under html.pdf-export), drawn by html2canvas-pro and cut into pages by jsPDF at
+  // the ends of cards, table rows and paragraphs, with a running head and page numbers. The pages are images; Print
+  // keeps the vector route (selectable text) through the browser. html2canvas-pro is the maintained fork of html2canvas
+  // that reads the colour functions explorer.css uses (color-mix, computed as color(srgb ...)).
+  const PDF_LIBS = ['https://cdn.jsdelivr.net/npm/html2canvas-pro@1.5.8/dist/html2canvas-pro.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'];
+  const PDF_PAGE = { w: 210, h: 297, side: 11, top: 16, bottom: 15 };   // mm, as the print layout's @page
+  const PDF_WIDTH = 710;   // CSS px across the printed width (188 mm at 96 px per inch)
+  function loadScript(url) {
+    loadScript.p = loadScript.p || new Map();
+    if (!loadScript.p.has(url)) {
+      loadScript.p.set(url, new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = url;
+        s.async = true;
+        s.onload = resolve;
+        s.onerror = () => { loadScript.p.delete(url); reject(new Error(url.split('/').pop() + ' did not load')); };
+        document.head.appendChild(s);
+      }));
+    }
+    return loadScript.p.get(url);
+  }
+  // The @media print rules of the page's own style sheets, rewritten to apply under html.pdf-export.
+  function printRulesCss() {
+    if (printRulesCss.css != null) return printRulesCss.css;
+    const scope = (sel) => sel.split(',').map((x) => {
+      const t = x.trim();
+      if (t.startsWith(':root')) return 'html.pdf-export' + t.slice(5);
+      if (/^html\b/.test(t)) return 'html.pdf-export' + t.slice(4);
+      return 'html.pdf-export ' + t;
+    }).join(', ');
+    const out = [];
+    const walk = (rules, inPrint) => {
+      for (const r of rules) {
+        if (r.type === CSSRule.MEDIA_RULE) walk(r.cssRules, inPrint || /\bprint\b/.test(r.media.mediaText));
+        else if (inPrint && r.type === CSSRule.STYLE_RULE) out.push(scope(r.selectorText) + ' { ' + r.style.cssText + ' }');
+      }
+    };
+    for (const sheet of document.styleSheets) {
+      try { walk(sheet.cssRules, false); } catch (e) { /* a style sheet from another origin (fonts) */ }
+    }
+    out.push('html.pdf-export .report-runfoot { display: none !important; }');
+    return (printRulesCss.css = out.join('\n'));
+  }
+  // jsPDF's built-in fonts cover Latin-1 only.
+  const pdfText = (t) => String(t).replace(/[–—]/g, '-').replace(/[≥]/g, '>=').replace(/[≤]/g, '<=').replace(/[^\x20-\xff]/g, '');
+  async function downloadPdf(root, label, filename) {
+    await Promise.all(PDF_LIBS.map(loadScript));
+    const pg = PDF_PAGE, mmPerPx = (pg.w - 2 * pg.side) / PDF_WIDTH, pageH = (pg.h - pg.top - pg.bottom) / mmPerPx;
+    // Two canvas pixels per CSS pixel, fewer for very long pages (browsers cap a canvas at about 32,000 pixels).
+    const guess = root.scrollHeight * Math.max(1, root.clientWidth / PDF_WIDTH);
+    const scale = Math.max(1, Math.min(2, 30000 / Math.max(guess, 1)));
+    let cuts = [], avoid = [];
+    if (!root.id) root.id = 'pdf-root';
+    const canvas = await window.html2canvas(root, {
+      scale, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: PDF_WIDTH,
+      onclone: (doc) => {
+        doc.documentElement.classList.add('pdf-export');
+        const st = doc.createElement('style');
+        st.textContent = printRulesCss();
+        doc.head.appendChild(st);
+        return (doc.fonts ? doc.fonts.ready : Promise.resolve()).then(() => {
+          const el = doc.getElementById(root.id), top = el.getBoundingClientRect().top;
+          const rect = (x) => { const r = x.getBoundingClientRect(); return [r.top - top, r.bottom - top]; };
+          cuts = Array.from(el.querySelectorAll('.card, section, header, figure, tr, p, li, .fact, .facts, .tbl-wrap, .fig-preview, .print-map, .print-cc, .print-net, .print-3d'))
+            .map((x) => rect(x)[1]).filter((y) => y > 0).sort((a, b) => a - b);
+          avoid = Array.from(el.querySelectorAll('.card:not(.tbl-card), figure, .fact, .facts, svg, img, tr'))
+            .map(rect).filter(([a, b]) => b - a > 0 && b - a < pageH * 0.9);
+          // A heading stays with the first lines under it.
+          avoid.push(...Array.from(el.querySelectorAll('h2, h3, h4, .card-head')).map(rect).filter(([a, b]) => b > a).map(([a, b]) => [a, b + 60]));
+        });
+      },
+    });
+    const H = canvas.height / scale, Wc = canvas.width / scale;
+    const free = (y) => !avoid.some(([a, b]) => a < y - 0.5 && y + 0.5 < b);
+    const pages = [];
+    for (let y = 0; y < H - 2;) {
+      const limit = y + pageH;
+      let cut = limit >= H ? H : 0;
+      if (!cut) for (const c of cuts) { if (c > y + pageH * 0.3 && c <= limit && free(c)) cut = c; }
+      if (!cut) cut = limit;
+      pages.push([y, cut]);
+      y = cut;
+    }
+    const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', compress: true });
+    const head = pdfText(siteName() + ' · ' + siteUrl().replace(/^https?:\/\//, '')), cite = pdfText(reportCite());
+    pages.forEach(([a, b], n) => {
+      if (n) pdf.addPage();
+      const c = document.createElement('canvas');
+      c.width = canvas.width;
+      c.height = Math.max(1, Math.round((b - a) * scale));
+      const g = c.getContext('2d');
+      g.fillStyle = '#ffffff';
+      g.fillRect(0, 0, c.width, c.height);
+      g.drawImage(canvas, 0, Math.round(a * scale), c.width, c.height, 0, 0, c.width, c.height);
+      pdf.addImage(c.toDataURL('image/jpeg', 0.92), 'JPEG', pg.side, pg.top, Wc * mmPerPx, (b - a) * mmPerPx);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(7);
+      pdf.setTextColor(95, 111, 120);
+      pdf.text(head, pg.side, 9);
+      pdf.text(pdfText(label), pg.w - pg.side, 9, { align: 'right' });
+      pdf.text(cite, pg.side, pg.h - 7);
+      pdf.text('Page ' + (n + 1) + ' of ' + pages.length, pg.w - pg.side, pg.h - 7, { align: 'right' });
+    });
+    pdf.save(filename);
+  }
+  // Report and comparison pages: the same, with the page's own preparation for print.
+  function reportPdf(btn, label, filename) {
+    const text = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Writing PDF…';
+    preparePrint();
+    return downloadPdf($('#content'), label, filename)
+      .catch((e) => alert('The PDF could not be written (' + e.message + '). Print can save one instead.'))
+      .finally(() => { restorePrint(); btn.disabled = false; btn.textContent = text; });
   }
 
   function bindMap(box, p, u, g) {
@@ -9274,7 +9512,7 @@
         sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a ProMetheusDB dimethylarginine call (the only state calls in the union), the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the plain odds ratio with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ 0.05 are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions are read with care.</p>') +
         sub('ix-wr', 'Writers and readers sharing substrates', '<p>For the proteins in the current selection, each cell counts the methylated proteins that are STRING physical partners (score ≥ 0.7) of both a PRMT (rows) and a Tudor-domain protein (columns, InterPro IPR002999; the 12 with most shared partners are shown). The expected count assumes the two partner lists are independent among the selected methylated proteins that are in STRING; Fisher\'s exact test, Benjamini–Hochberg across the cells; outlined cells have at least two shared partners and q ≤ 0.05 (a single shared partner of two short lists can pass the test alone). Clicking a cell lists the proteins (binds: both partners). A physical link is to the whole protein, not to a site, and several Tudor proteins read methyllysine rather than methylarginine, so a shared partner is a candidate path to test, not a demonstrated one.</p>') +
         sub('profile', 'Enriched features of a selection', '<p>Shown on the Overview, Proteins and Sites views whenever a search or filter is set. Each site feature (motifs, disorder, methylation calls and IPs, PRMT inhibitor and CARM1 knockout response, close spacing, number of reporting sources, the interaction evidence types, and the functional class and HPA location of the site\'s protein) is compared between the selected sites and all other sites with Fisher\'s exact test, Benjamini–Hochberg-adjusted across the features tested; up to 8 features more common and 4 less common at q ≤ 0.05 are listed, more common ones first. The ratio is the share in the selection over the share in the other sites. Clicking a more common feature narrows the selection to it. Sites of the same protein are not independent, so this points to differences rather than testing them; a selection built from a few proteins mostly reflects those proteins.</p>') +
-        sub('compare', 'Comparing two selections', '<p>Press <b>Save as A for a comparison</b> on a selection (on the Enriched features card or the report), change the search or filters, then <b>Compare with A</b> (also in the bar under the search). The comparison shows both selections, their overlap, a paragraph on each, the interaction status split, the site features that differ between them (Fisher\'s exact test, Benjamini–Hochberg across features; up to 16 with q ≤ 0.05, or the 16 closest, faded, when none is), each as the share of A and of B with the ratio, side-by-side logos and the proteins with most sites. ' +
+        sub('compare', 'Comparing two selections', '<p>Save a selection with a name (<b>Save</b>, next to the selection at the top of the filters, on the Enriched features card or on the report); saved selections stay in this browser. Change the search or filters, open <b>Saved</b> and press <b>Compare</b> next to the saved one: it is A, and the current selection is B. The comparison shows both selections, their overlap, a paragraph on each, the interaction status split, the site features that differ between them (Fisher\'s exact test, Benjamini–Hochberg across features; up to 16 with q ≤ 0.05, or the 16 closest, faded, when none is), each as the share of A and of B with the ratio, side-by-side logos and the proteins with most sites. ' +
           'Sites in both selections count on both sides, which makes the test conservative. The link keeps both selections (<code>A=</code> holds the first), and the page prints with the same header, citation and page numbers as the report.</p>') +
         sub('report', 'Insight report', '<p>One printable page for the current selection: the selection and a link that reopens it, headline numbers, what sets it apart, the site and protein evidence maps with the protein-context table, the sequence logo and alignment (±7, first 30 sites), the proteins on one residue scale (up to 8, UniProt features fetched live), the proteins with most selected sites with their evidence, and the methods and citation. It opens the browser\'s print dialog; choose Save as PDF.</p>')],
       ['about', 'About', '<p>The explorer indexes the integrated human methylarginine union assembled by the <a href="https://github.com/Shechterlab/PTM_Pipeline">PTM_Pipeline</a> for the review below. It runs entirely in your browser; UniProt, AlphaFold DB, PDB, Ensembl and other annotations on protein pages are fetched live.</p>' +
@@ -9629,7 +9867,7 @@
     const charts = overviewCharts();
     const chartList = [charts.func, charts.dis, charts.motif, charts.cond, charts.loc, charts.disorder, charts.domctx, charts.domcls, charts.study].filter(Boolean);
     const sizeSum = panelState.mm ? PANEL_WIDTHS.find(([v]) => v === panelState.mm)[1] + ', PNG ' + panelState.dpi + ' dpi' : 'screen layout';
-    el.innerHTML = resultsHead('Figures', 'Every figure of the current selection, ready to export: ' + fmt(R.sites.length) + ' sites on ' + fmt(R.prots.length) + ' proteins. Exports credit this site and ' + esc(PAPER.short) + '.',
+    el.innerHTML = resultsHead('Figures', 'Every figure of the current selection, ready to export: ' + fmt(R.sites.length) + ' sites on ' + fmt(R.prots.length) + ' protein' + (R.prots.length === 1 ? '' : 's') + '. Exports credit this site and ' + esc(PAPER.short) + '.',
       '<button class="btn small" type="button" id="fg-report" title="Profile, evidence map, logo and protein comparison of this selection as one PDF">Insight report (PDF)</button>') +
       (scoped ? '' : '<div class="filter-note">No search or filter is set, so these figures use the whole dataset. Search for proteins or set filters to focus them.</div>') +
       '<div class="fold-list">' +
