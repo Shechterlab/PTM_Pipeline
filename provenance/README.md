@@ -7,7 +7,7 @@ What the methylarginine site union is made from, and where each version is.
 | Version | Sites | Where |
 |---|---|---|
 | v1.0.0 | 13,719 sites on 5,090 accessions | Published with DeAngelo, Silverstein & Shechter, Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011. Tables in `releases/v1.0.0/`; the full analysis output at git tag `v1.0.0` and in branch `v1.0.0_archive`; the website as published in `docs/v1.0.0/`. |
-| v1.1.0 | 13,358 sites on 4,722 proteins, and 10 pending sites | `releases/v1.1.0/`, and the website in `docs/`. Same sources and methods, mapped to UniProt release 2026_03, with corrections to how some source records were placed on UniProt sequences (`releases/v1.1.0/CHANGES.md`). |
+| v1.1.0 | 13,365 sites on 4,723 proteins, and 6 pending sites | `releases/v1.1.0/`, and the website in `docs/`. Same sources and methods, mapped to UniProt release 2026_03, with corrections to how some source records were placed on UniProt sequences (`releases/v1.1.0/CHANGES.md`). |
 
 ## Sources of the sites
 

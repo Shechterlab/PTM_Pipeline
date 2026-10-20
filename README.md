@@ -9,7 +9,7 @@ them, and the [Methylarginine Site Explorer](https://shechterlab.github.io/PTM_P
 
 | Version | Sites | Data | Website |
 |---|---|---|---|
-| **v1.1.0** (current) | 13,358 sites on 4,722 proteins, and 10 pending | [`releases/v1.1.0/`](releases/v1.1.0/) ([what changed](releases/v1.1.0/CHANGES.md)) | [`docs/`](docs/) |
+| **v1.1.0** (current) | 13,365 sites on 4,723 proteins, and 6 pending | [`releases/v1.1.0/`](releases/v1.1.0/) ([what changed](releases/v1.1.0/CHANGES.md)) | [`docs/`](docs/) |
 | v1.0.0 (published with the paper) | 13,719 sites on 5,090 accessions | [`releases/v1.0.0/`](releases/v1.0.0/) | [`docs/v1.0.0/`](docs/v1.0.0/) |
 
 v1.1.0 uses the sources and methods of the paper, mapped to UniProt release 2026_03, with corrections to how some

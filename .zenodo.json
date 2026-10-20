@@ -2,7 +2,7 @@
   "title": "Human methylarginine sites, v1.1.0 (PTM_Pipeline)",
   "upload_type": "dataset",
   "version": "v1.1.0",
-  "description": "<p>The human protein arginine methylation sites of DeAngelo, Silverstein &amp; Shechter, Cell Chem Biol 33:1404-1421 (2026), with the code that builds them and the Methylarginine Site Explorer website. v1.1.0 uses the sources and methods of the paper, mapped to UniProt release 2026_03, with corrections to how some source records were placed on UniProt sequences: 13,358 sites on 4,722 proteins, and 10 pending sites. releases/v1.1.0/CHANGES.md says what changed since the published version (v1.0.0, also included).</p>",
+  "description": "<p>The human protein arginine methylation sites of DeAngelo, Silverstein &amp; Shechter, Cell Chem Biol 33:1404-1421 (2026), with the code that builds them and the Methylarginine Site Explorer website. v1.1.0 uses the sources and methods of the paper, mapped to UniProt release 2026_03, with corrections to how some source records were placed on UniProt sequences: 13,365 sites on 4,723 proteins, and 6 pending sites. releases/v1.1.0/CHANGES.md says what changed since the published version (v1.0.0, also included).</p>",
   "creators": [
     {"name": "DeAngelo, J. D."},
     {"name": "Silverstein, A. M."},
