@@ -72,7 +72,7 @@ def main() -> None:
     ap.add_argument('--condensate-enrichment', required=True)
     ap.add_argument('--condensate-membership', required=True)
     ap.add_argument('--functional-labels', required=True)
-    ap.add_argument('--outdir', default='results/assembly_clustering')
+    ap.add_argument('--outdir', required=True)
     ap.add_argument('--q-cutoff', type=float, default=0.1)
     ap.add_argument('--min-member-count', type=int, default=6)
     ap.add_argument('--top-assemblies', type=int, default=14)

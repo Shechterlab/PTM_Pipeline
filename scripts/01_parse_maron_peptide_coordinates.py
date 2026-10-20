@@ -21,7 +21,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--table-s2', required=True)
     ap.add_argument('--table-s3', required=True)
-    ap.add_argument('--outdir', default='results/parsed_maron')
+    ap.add_argument('--outdir', required=True)
     args = ap.parse_args()
 
     frames = [pd.read_excel(args.table_s2, sheet_name=0).assign(source='Maron2021_TableS2')]

@@ -2,7 +2,7 @@
 """Export interaction context for the Site Explorer to docs/data/methylarg_interactions.json.
 
 Run after 36_export_site_explorer_data.py (it reads docs/data/methylarg_sites.json for the protein and
-site lists). Public sources are downloaded once into --cache (default data/interactions_cache, which Git
+site lists). Public sources are downloaded once into --cache (default PTM_data/interactions_cache, which Git
 ignores) and reused; pass --refresh to download them again.
 
 Sources
@@ -1345,7 +1345,7 @@ def main():
     ap.add_argument('--out', default='docs/data/methylarg_interactions.json')
     ap.add_argument('--pred-iface-out', default='docs/data/methylarg_pred_iface.json',
                     help='every predicted interface residue of the explorer proteins, loaded by the explorer on demand')
-    ap.add_argument('--cache', default='data/interactions_cache')
+    ap.add_argument('--cache', default='PTM_data/interactions_cache')
     ap.add_argument('--string-min-score', type=int, default=700, help='STRING physical score floor (0-1000); 700 = high confidence. Protein pages fetch lower-confidence links live.')
     ap.add_argument('--workers', type=int, default=6, help='parallel PDBe requests')
     ap.add_argument('--refresh', action='store_true', help='download every source again')

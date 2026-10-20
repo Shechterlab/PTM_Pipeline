@@ -541,7 +541,7 @@ def build_rows_from_bulk_pandas(
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument('--outdir', default='data/context')
+    ap.add_argument('--outdir', default='PTM_data/context')
     ap.add_argument('--workers', type=int, default=8)
     ap.add_argument('--page-size', type=int, default=200)
     ap.add_argument('--timeout', type=int, default=120)

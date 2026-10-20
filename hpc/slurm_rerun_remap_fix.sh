@@ -171,7 +171,7 @@ if [ "${PTM_RERUN_INTERACTIONS:-0}" = "1" ]; then
   python "$BASE_DIR/scripts/37_export_interaction_data.py" \
     --sites-json "$NEW_ROOT/site_explorer_data/methylarg_sites.json" \
     --out "$NEW_ROOT/site_explorer_data/methylarg_interactions.json" \
-    --cache "${PTM_INTERACTIONS_CACHE:-$BASE_DIR/data/interactions_cache}"
+    --cache "${PTM_INTERACTIONS_CACHE:-$PTM_DATA_ROOT/interactions_cache}"
 fi
 
 echo "[ptm_remapfix] comparing $OLD_ROOT with $NEW_ROOT"

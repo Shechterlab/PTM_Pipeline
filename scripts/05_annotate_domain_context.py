@@ -152,7 +152,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--sites', required=True)
     ap.add_argument('--interpro-intervals', required=True)
-    ap.add_argument('--outdir', default='results/domain_context')
+    ap.add_argument('--outdir', required=True)
     ap.add_argument('--accession-col', default='canonical_UniProtAC')
     ap.add_argument('--position-col', default='corrected_position')
     ap.add_argument('--boundary-window', type=int, default=20)

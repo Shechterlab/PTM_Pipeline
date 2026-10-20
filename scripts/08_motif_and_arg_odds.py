@@ -175,7 +175,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--integrated-sites', required=True)
     ap.add_argument('--canonical-fasta', required=True)
-    ap.add_argument('--outdir', default='results/motif_arg_odds')
+    ap.add_argument('--outdir', required=True)
     ap.add_argument('--window-flank', type=int, default=7)
     ap.add_argument('--window-flank-wide', type=int, default=15)
     ap.add_argument('--min-arg-count', type=int, default=10)

@@ -338,7 +338,7 @@ def main() -> None:
     ap.add_argument('--interpro-intervals', default='')
     ap.add_argument('--ontology', default='config/functional_ontology.json')
     ap.add_argument('--domain-ontology', default='config/domain_class_ontology.json')
-    ap.add_argument('--outdir', default='results/functional_class_union')
+    ap.add_argument('--outdir', required=True)
     args = ap.parse_args()
 
     master = pd.read_csv(args.base_master, sep='\t', low_memory=False)

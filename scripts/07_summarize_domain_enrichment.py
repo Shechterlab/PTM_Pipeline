@@ -300,7 +300,7 @@ def main() -> None:
     ap.add_argument('--include-types', nargs='*', default=['domain', 'repeat'])
     ap.add_argument('--disorder-sites', default='')
     ap.add_argument('--disorder-intervals', default='')
-    ap.add_argument('--outdir', default='results/domain_context')
+    ap.add_argument('--outdir', required=True)
     args = ap.parse_args()
 
     annotated_path = Path(args.annotated_sites)

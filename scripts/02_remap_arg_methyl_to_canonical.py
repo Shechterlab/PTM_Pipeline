@@ -525,7 +525,7 @@ def main() -> None:
                     help='uniprot_accession_history.tsv from scripts/00: secondary accessions and gene synonyms of the reference set')
     ap.add_argument('--peptide-coordinates', default='',
                     help='maron_peptide_coordinates.tsv from scripts/01_parse_maron_peptide_coordinates.py: peptide starts in the source numbering')
-    ap.add_argument('--outdir', default='results/remapped')
+    ap.add_argument('--outdir', required=True)
     args = ap.parse_args()
 
     canonical_sequences = parse_fasta(args.canonical_fasta)

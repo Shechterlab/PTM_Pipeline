@@ -2,25 +2,20 @@
 
 ptm_choose_default_root() {
   primary="$1"
-  secondary="$2"
-  legacy="$3"
+  fallback="$2"
   if [ -n "$primary" ] && [ -e "$primary" ]; then
     printf '%s\n' "$primary"
     return
   fi
-  if [ -n "$secondary" ] && [ -e "$secondary" ]; then
-    printf '%s\n' "$secondary"
-    return
-  fi
-  printf '%s\n' "$legacy"
+  printf '%s\n' "$fallback"
 }
 
 PTM_ENV_SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PTM_CODE_ROOT=${PTM_CODE_ROOT:-$(cd "$PTM_ENV_SCRIPT_DIR/.." && pwd)}
 PTM_PROJECT_ROOT=${PTM_PROJECT_ROOT:-$(cd "$PTM_CODE_ROOT/.." && pwd)}
 
-DEFAULT_DATA_ROOT=$(ptm_choose_default_root "$PTM_PROJECT_ROOT/PTM_data" "$PTM_CODE_ROOT/PTM_data" "$PTM_CODE_ROOT/data")
-DEFAULT_RESULTS_ROOT=$(ptm_choose_default_root "$PTM_PROJECT_ROOT/PTM_results" "$PTM_CODE_ROOT/PTM_results" "$PTM_CODE_ROOT/results")
+DEFAULT_DATA_ROOT=$(ptm_choose_default_root "$PTM_PROJECT_ROOT/PTM_data" "$PTM_CODE_ROOT/PTM_data")
+DEFAULT_RESULTS_ROOT=$(ptm_choose_default_root "$PTM_PROJECT_ROOT/PTM_results" "$PTM_CODE_ROOT/PTM_results")
 
 PTM_DATA_ROOT=${PTM_DATA_ROOT:-$DEFAULT_DATA_ROOT}
 PTM_RESULTS_ROOT=${PTM_RESULTS_ROOT:-$DEFAULT_RESULTS_ROOT}

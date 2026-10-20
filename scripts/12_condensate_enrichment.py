@@ -114,7 +114,7 @@ def main() -> None:
     ap.add_argument('--staged-membership', default='')
     ap.add_argument('--proteins-table', default='')
     ap.add_argument('--condensates-table', default='')
-    ap.add_argument('--outdir', default='results/condensates')
+    ap.add_argument('--outdir', required=True)
     ap.add_argument('--min-condensate-size', type=int, default=5)
     ap.add_argument('--include-synthetic', action='store_true')
     args = ap.parse_args()

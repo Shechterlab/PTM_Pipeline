@@ -27,7 +27,7 @@ URLS = {
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument('--outdir', default='data/static_downloads')
+    ap.add_argument('--outdir', default='PTM_data/external')
     ap.add_argument('--only', nargs='*', default=[])
     args = ap.parse_args()
 

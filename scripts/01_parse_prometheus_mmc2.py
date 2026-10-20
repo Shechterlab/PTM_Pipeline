@@ -19,7 +19,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--input', required=True)
     ap.add_argument('--sheet', default='RK-methylsites')
-    ap.add_argument('--outdir', default='results/parsed_prometheus')
+    ap.add_argument('--outdir', required=True)
     args = ap.parse_args()
 
     df = pd.read_excel(args.input, sheet_name=args.sheet, header=6)

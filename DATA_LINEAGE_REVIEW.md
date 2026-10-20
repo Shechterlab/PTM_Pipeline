@@ -40,7 +40,7 @@ Where every input of the methylarginine analysis and its website comes from, wha
 | MobiDB `mobidb_human_2026-03-30.json` (611 MB) | `00_stage_mobidb_disorder.py`, which no driver calls | only to rebuild the frozen intervals | your local copy |
 | Maron Table S2/S3 | `scripts/16` (methyl state, IP, inhibitor response) | website annotations | nothing stages them; the rerun copies the published `maron_state_treatment/` tables |
 | CPLM 4.0 methylation, CARM1 knockout table, Human Protein Atlas | scripts 39–42 | website layers and `scripts/40` | downloaded from moving URLs; checksums recorded in the export, files not kept |
-| Everything behind `methylarg_interactions.json` | `scripts/37` | website interactions | cached in `data/interactions_cache`, which Git ignores and no branch holds |
+| Everything behind `methylarg_interactions.json` | `scripts/37` | website interactions | cached in `PTM_data/interactions_cache`, which Git ignores and no branch holds |
 | GO, DisGeNET, org.Hs.eg.db | scripts 13, 14, 34 | GO and disease enrichment | R packages; `envs/ptm_pipeline_hpc.yml` pins minor versions only (DOSE 4.4.*, org.Hs.eg.db 3.22.*; GO.db and HDO.db unpinned); no run records `sessionInfo()` |
 
 ## 3. The PTM master
@@ -92,7 +92,9 @@ Goal: a repository anyone can rerun, with results unchanged. Each step is checke
 1. **Inputs.** Point `hpc/ptm_env.sh` at `inputs/` (the files now have their final names), add a step that refuses to run when a file's checksum differs from `inputs/MANIFEST.tsv`, and let the hygiene guard accept exactly the manifest's files. Stage working copies elsewhere so no step writes into `inputs/`.
 2. **Complete the frozen set.** The InterPro 108.0 intervals for all reviewed proteins, the accession history and Maron Tables S2/S3 are now in `inputs/`. Put the large raw files (InterPro 16 GB, MobiDB JSON, CPLM, the `scripts/37` cache) in a Zenodo record and list them in the manifest by checksum.
 3. **Fix the hazards** above: no empty InterPro files from step 00; explicit inputs for script 24; a run record (input checksums, commit, R `sessionInfo()`) written by every run; pin the R data packages.
-4. **Layout.** One provenance document (this file, `DATA_PROVENANCE_REVIEW.md` and `ISSUES_2026-10-19.md` merged), the README reduced to how to run; retire the legacy `data/` and `results/` stubs; keep `PTM_results/` as the published release, labelled as such.
+4. **Layout.** One provenance document (this file, `DATA_PROVENANCE_REVIEW.md` and `ISSUES_2026-10-19.md` merged), the README reduced to how to run; keep `PTM_results/` as the published release, labelled as such.
+Done: the empty `data/` and `results/` stubs are gone; analysis scripts now require `--outdir`, and downloads default to the gitignored `PTM_data/`.
+
 5. **Then** the rerun and the website rebuild (`ISSUES_2026-10-19.md` issue 17), the other-PTM export fix, and a pull request to `main`.
 
 Decisions for the lab: issue 9 (paralog windows, 22 rows), whether the website should show isoform-numbered other-PTM sites after a window check, whether to extend the master beyond iPTMnet (changes cross-PTM results), and which release the website serves by default.

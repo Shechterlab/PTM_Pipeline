@@ -334,7 +334,7 @@ python scripts/40_methylk_methylr_cooccurrence.py \
 
 Each lysine of each canonical methylarginine protein is one observation (methylated or not, from the export's Lys methylation entries); the exposure is a methylarginine within ±10 residues. It writes Mantel–Haenszel odds ratios within protein, protein × MobiDB disorder and protein × disorder × arginines within the window (`cmh_models.tsv`), the odds ratio by distance to the nearest methylarginine against lysines more than 50 residues away (`distance_profile.tsv`), the per-lysine table and a forest plot. Sensitivity rows use ±5 and ±20 windows, leave out histones, split methyl-K by source, and keep only "independent" CPLM experimental sites that cite none of the union's studies or PhosphoSitePlus (which feeds both), against co-detection of both marks on one peptide. On the current export (UniProt 2026_03 sequences, MobiDB consensus disorder fetched October 2026): 216,605 lysines on 4,646 proteins, 3,259 methylated; main model OR 2.17 (95% CI 1.86–2.52), independent CPLM sites OR 3.73 (2.55–5.48), falling from 2.81 at 1–5 residues to 1.21 at 21–50.
 
-Then export the interaction context (downloads are cached in `data/interactions_cache/`, which Git ignores; the first run makes about 5,000 PDBe requests and takes roughly 25 minutes, later runs reuse the cache, and `--refresh` downloads everything again):
+Then export the interaction context (downloads are cached in `PTM_data/interactions_cache/`, which Git ignores; the first run makes about 5,000 PDBe requests and takes roughly 25 minutes, later runs reuse the cache, and `--refresh` downloads everything again):
 
 ```bash
 python scripts/37_export_interaction_data.py
@@ -352,7 +352,7 @@ The same export adds residue-level RNA and DNA contact in living human cells:
 
 It also adds IntAct residue-level features (mutations with their effect on an interaction, binding regions and modified residues; EMBL-EBI, CC BY 4.0), kept only where IntAct's sequence matches the canonical sequence over the feature. A methylarginine carries IntAct evidence when mutating it (alone or with up to two neighbours) changed an interaction, when it lies in a binding region of at most 20 residues, or when IntAct records it as methylated; the export tests each against the other arginines of the same proteins (Mantel–Haenszel). The feature files are cached in `data/interactions_cache/intact/`. Script 37 also writes `docs/data/methylarg_pred_iface.json` (`--pred-iface-out`): every residue of an explorer protein at a ProtVar predicted interface, as runs with the number of partners and the best pDockQ; the explorer reads it only when a figure draws the predicted lane or map row.
 
-bioRxiv often refuses scripted downloads (HTTP 429). If it does, save the pepR-MS supplementary zip as `data/interactions_cache/crosslinks/pepr_media-1.zip`.
+bioRxiv often refuses scripted downloads (HTTP 429). If it does, save the pepR-MS supplementary zip as `PTM_data/interactions_cache/crosslinks/pepr_media-1.zip`.
 
 **Licence.** Code is MIT, and data, figures and text are CC BY-NC-SA 4.0; see [LICENSE.md](LICENSE.md). The share-alike, non-commercial terms follow from PhosphoSitePlus, DisGeNET and pepR-MS.
 
