@@ -414,7 +414,8 @@ def main() -> None:
         methyl_protein_arg = annotate_disorder_background(methyl_protein_arg, disorder_intervals_by_acc, args.boundary_window)
 
     # The tests compare sites with the other arginines of the same sequences, so they count only sites on proteins with
-    # background arginines (as scripts/08 does); sites on entries outside the FASTA have none. The site table keeps all.
+    # background arginines (as scripts/08 does): not a protein whose every arginine is a site (MIF in v1.1.0, 5 sites),
+    # nor one outside the FASTA. The site table keeps all.
     has_background = annotated_sites['canonical_UniProtAC'].isin(set(methyl_protein_arg['canonical_UniProtAC']))
     tested_sites = annotated_sites[has_background]
     context_enrichment = fisher_like_enrichment(

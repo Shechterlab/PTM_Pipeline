@@ -489,7 +489,9 @@ def remap_row(row: pd.Series, canonical_sequences: dict[str, str], gene_map: dic
             corrected_position, remap_status, matched_accession = position, 'sequence_peptide_start', canonical_acc
             anchor_type, anchor_sequence, hit_count = 'peptide', peptide, max(hit_count, 1)
 
-    corrected_accession = (matched_accession if remap_status.startswith('sequence_') else canonical_acc) if corrected_position is not None and canonical_acc else ''
+    # A row without a source accession (Maron S5 rows whose accession reads NA) is placed only through its gene symbol's
+    # candidates, so its accession is the matched one.
+    corrected_accession = (matched_accession if remap_status.startswith('sequence_') else canonical_acc) if corrected_position is not None else ''
     n_current = len([a for a in (secondary or {}).get(source_acc, []) if a in canonical_sequences])
     history = ('split' if n_current > 1 else 'merged' if n_current == 1 else '') if source_acc not in canonical_sequences else ''
     corrected_site = f'R{corrected_position}' if corrected_position is not None else ''
@@ -519,6 +521,7 @@ def main() -> None:
     ap.add_argument('--base-master', required=True)
     ap.add_argument('--maron', required=True)
     ap.add_argument('--prometheus', required=True)
+    ap.add_argument('--maron-extra', default='', help='Table S5 rows read for the first time in this version (maron_s5_rows_accession_na.tsv); they come after all other rows')
     ap.add_argument('--canonical-fasta', required=True)
     ap.add_argument('--uniprot-metadata', required=True)
     ap.add_argument('--accession-history', default='',
@@ -550,6 +553,8 @@ def main() -> None:
         prepare_frame(maron, 'maron_s5'),
         prepare_frame(prom, 'prometheus_mmc2'),
     ]
+    if args.maron_extra and Path(args.maron_extra).exists():
+        frames.append(prepare_frame(pd.read_csv(args.maron_extra, sep='\t', low_memory=False, keep_default_na=False, na_values=['']), 'maron_s5'))
     all_rows = pd.concat(frames, ignore_index=True, sort=False)
     all_rows['canonical_UniProtAC'] = all_rows['canonical_UniProtAC'].astype(str).map(canonicalize_uniprot_accession)
     all_rows = annotate_window_lengths(all_rows)

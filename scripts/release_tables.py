@@ -20,7 +20,7 @@ from pathlib import Path
 import pandas as pd
 
 import release_codes as rc
-from disease_families import FAMILY_RULES
+from disease_families import ALL_FAMILIES
 
 OTHER_PTM = {'Phosphorylation': 'phospho', 'Lys acylation': 'lys_acyl', 'Ubiquitin/SUMO': 'ub_sumo', 'Lys methylation': 'lys_methyl'}
 TARGET_RESIDUES = {'phospho': set('STY'), 'lys_acyl': {'K'}, 'ub_sumo': {'K'}, 'lys_methyl': {'K'}}
@@ -66,8 +66,18 @@ def from_fractions(df: pd.DataFrame, label: str, analysis: str, background: str,
     return rows
 
 
-def statistics(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
+def panther_rows(root: Path) -> list[dict]:
     rows = []
+    for r in read(root / 'panther_class' / 'panther_class_enrichment.tsv').to_dict('records'):
+        rows.append({'analysis': r['analysis'], 'category': r['category'], 'stratum': 'all',
+                     **{k: int(r[k]) for k in 'abcd'}, 'odds_ratio': num(r['odds_ratio']),
+                     'log2_odds_ratio': num(r['log2_odds_ratio']), 'p': num(r['p_value']), 'q': num(r['q_value']),
+                     'method': 'fisher', 'background': 'other reviewed human proteins', 'n_strata': ''})
+    return rows
+
+
+def statistics(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
+    rows = panther_rows(root)
     rows += from_fractions(read(root / 'functional_class_union' / 'arg_methyl_functional_class_broad_enrichment.tsv'), 'category',
                            'functional_class', 'other reviewed human proteins')
     rows += from_fractions(read(root / 'functional_class_union' / 'arg_methyl_functional_class_subclass_enrichment.tsv'), 'category',
@@ -82,9 +92,11 @@ def statistics(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
                            'domain_class', 'other arginines of the methylated proteins')
     for r in read(root / 'disease' / 'disease_families.tsv').to_dict('records'):
         a, c = int(r['methylarginine_protein_count']), int(r['background_count'])
-        rows.append({'analysis': 'disease_family', 'category': r['disease_family'], 'stratum': 'all', 'a': a,
+        odds = float(r['odds_ratio'])
+        rows.append({'analysis': 'disease_family' if r['audited'] == 'True' else 'disease_family_additional',
+                     'category': r['disease_family'], 'stratum': 'all', 'a': a,
                      'b': int(r['methylarginine_denominator']) - a, 'c': c, 'd': int(r['background_denominator']) - c,
-                     'odds_ratio': num(r['odds_ratio']), 'log2_odds_ratio': math.log2(float(r['odds_ratio'])),
+                     'odds_ratio': odds, 'log2_odds_ratio': math.log2(odds) if odds > 0 else None,
                      'p': num(r['p_value']), 'q': num(r['BH_adjusted_p']), 'method': 'fisher',
                      'background': 'other reviewed human genes (Entrez) with a DisGeNET term', 'n_strata': ''})
     rows += condensate_rows(root)
@@ -146,6 +158,7 @@ def proteins_table(root: Path, inputs: Path, sites: pd.DataFrame, records: pd.Da
     reported = records.assign(acc=site_of.str.split(':').str[0]).groupby('acc')['reported_gene'].agg(lambda g: Counter(x for x in g if x))
 
     functional = read(root / 'functional_class_union' / 'protein_functional_labels.tsv').drop_duplicates('canonical_UniProtAC').set_index('canonical_UniProtAC')
+    panther = read(root / 'panther_class' / 'protein_panther_classes.tsv').set_index('uniprot_accession')
     odds = read(root / 'motif_arg_odds' / 'per_protein_arg_odds.tsv').drop_duplicates('canonical_UniProtAC').set_index('canonical_UniProtAC')
     density = read(root / 'methyl_arg_clustering' / 'protein_local_density_summary.tsv').drop_duplicates('canonical_UniProtAC').set_index('canonical_UniProtAC')
     best = read(root / 'methyl_arg_clustering' / 'arg_methyl_multiscale_density_best_region_per_protein.tsv').drop_duplicates('canonical_UniProtAC').set_index('canonical_UniProtAC')
@@ -159,7 +172,7 @@ def proteins_table(root: Path, inputs: Path, sites: pd.DataFrame, records: pd.Da
     families = defaultdict(dict)
     for r in family_rows.to_dict('records'):
         families[r['canonical_UniProtAC']][r['disease_family']] = int(r['contributing_term_count'])
-    family_order = [f for f, _ in FAMILY_RULES]
+    family_order = ALL_FAMILIES
     other = other_ptm_sites(inputs, set(accs), sequences)
     other_counts = other.groupby(['uniprot_accession', 'ptm_type']).size()
 
@@ -170,6 +183,7 @@ def proteins_table(root: Path, inputs: Path, sites: pd.DataFrame, records: pd.Da
         gene = entry(acc, 'Gene Names (primary)')
         rep = [g for g, _ in reported.get(acc, Counter()).most_common() if g not in split(gene)]
         f = functional.loc[acc] if acc in functional.index else None
+        pc = panther.loc[acc]
         o = odds.loc[acc] if acc in odds.index else None
         d = density.loc[acc] if acc in density.index else None
         b = best.loc[acc] if acc in best.index else None
@@ -189,6 +203,10 @@ def proteins_table(root: Path, inputs: Path, sites: pd.DataFrame, records: pd.Da
             'n_sites': int((~pending[group.index]).sum()),
             'n_pending': int(pending[group.index].sum()),
             'studies': join(studies),
+            'panther_group': pc['panther_group'],
+            'panther_class': pc['panther_class'],
+            'panther_classes': join(split(pc['panther_leaf_classes'])),
+            'panther_family': pc['panther_family'],
             'functional_classes': join(split(f['functional_class_broad'])) if f is not None else '',
             'functional_subclasses': join(split(f['functional_class_subclass'])) if f is not None else '',
             'arginine_count': seq.count('R'),
@@ -300,5 +318,5 @@ def condensates_table(root: Path, accs: set) -> pd.DataFrame:
 
 def disease_families_table(root: Path) -> pd.DataFrame:
     f = read(root / 'disease' / 'disease_families.tsv')
-    return pd.DataFrame({'family': f['disease_family'], 'n_terms': f['contributing_ontology_terms'].astype(int),
+    return pd.DataFrame({'family': f['disease_family'], 'audited': f['audited'] == 'True', 'n_terms': f['contributing_ontology_terms'].astype(int),
                          'n_genes': f['family_gene_count'].astype(int), 'n_methylated_genes': f['methylarginine_protein_count'].astype(int)})

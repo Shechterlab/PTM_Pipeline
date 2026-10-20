@@ -1,0 +1,17 @@
+{
+  "description": "Groups of the 24 top-level PANTHER protein classes (PANTHER 19.0, ontology of 17.0) for the website's overview. Every top-level class is in exactly one group, and PANTHER gives each classified protein one top-level class, so the groups and the proteins without a class partition the reviewed human proteome. scripts/03b_panther_class_enrichment.py checks both.",
+  "panther_version": "19.0",
+  "unclassified": "No PANTHER protein class",
+  "groups": [
+    {"name": "Transcription, chromatin and DNA", "classes": ["PC00264", "PC00077", "PC00009"]},
+    {"name": "RNA processing and translation", "classes": ["PC00031", "PC00263"]},
+    {"name": "Metabolic enzymes", "classes": ["PC00262"]},
+    {"name": "Protein-modifying enzymes", "classes": ["PC00260"]},
+    {"name": "Signalling: receptors, ligands and modulators", "classes": ["PC00197", "PC00207", "PC00095", "PC00060"]},
+    {"name": "Transport and membrane traffic", "classes": ["PC00227", "PC00219", "PC00150"]},
+    {"name": "Cytoskeleton, adhesion and matrix", "classes": ["PC00085", "PC00211", "PC00069", "PC00070", "PC00102"]},
+    {"name": "Scaffolds, adaptors and chaperones", "classes": ["PC00226", "PC00072"]},
+    {"name": "Immunity and defence", "classes": ["PC00090"]},
+    {"name": "Other PANTHER classes", "classes": ["PC00237", "PC00210"]}
+  ]
+}

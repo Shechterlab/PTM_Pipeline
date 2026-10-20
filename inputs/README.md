@@ -7,7 +7,7 @@ downloaded at build time: `hpc/build_release.sh` checks each file against `MANIF
 |---|---|
 | `sources/` | where the sites come from: Maron et al. 2021 Tables S2, S3 and S5, ProMetheusDB (Massignani et al. 2022) and the iPTMnet-format PTM master table |
 | `reference/` | the one UniProt reference: release 2026_03, reviewed human reference proteome UP000005640 (sequences, entries, accession history, release record); see its README |
-| `annotation/` | InterPro 108.0 domain intervals and MobiDB disorder intervals for every reviewed entry, and the CD-CODE condensate tables |
+| `annotation/` | InterPro 108.0 domain intervals and MobiDB disorder intervals for every reviewed entry, the PANTHER 19.0 protein classes, and the CD-CODE condensate tables |
 | `layers/` | the CARM1 knockout response (Shishkova et al. 2017), Human Protein Atlas 25.1 locations, and the CPLM 4.0 summary; see its README |
 | `interactions/` | the data behind the website's interaction views (STRING, Complex Portal, GO, PDBe-KB and SIFTS, PDB contacts, ProtVar, AlphaFold DB, IntAct, RNA and DNA crosslinks, RBDmap, CD-CODE 2.3), one table per source; see its README |
 | `disease/` | DisGeNET term-gene sets as bundled with DOSE 4.4.0, and org.Hs.eg.db 3.22.0's gene symbol to Entrez map, for the disease enrichment |
@@ -22,7 +22,7 @@ Staging is done once, before a build; the build itself reads only these files. E
 |---|---|
 | `sources/` | the journal supplements as published (checked against the publishers' files), and the lab's PTM master table |
 | `reference/` | UniProt REST downloads (query and release in `uniprot_release.json`); the accession history with `scripts/00_stage_context_sources.py` |
-| `annotation/` | InterPro: `scripts/00_stage_context_sources.py --interpro-source bulk` on InterPro 108.0 `protein2ipr.dat.gz`. MobiDB: `scripts/00_stage_mobidb_disorder.py`. Both moved to the 2026_03 sequences by `scripts/00_lift_intervals_to_reference.py`. CD-CODE: exports as downloaded |
+| `annotation/` | InterPro: `scripts/00_stage_context_sources.py --interpro-source bulk` on InterPro 108.0 `protein2ipr.dat.gz`. MobiDB: `scripts/00_stage_mobidb_disorder.py`. Both moved to the 2026_03 sequences by `scripts/00_lift_intervals_to_reference.py`. PANTHER: `scripts/00_stage_panther_classes.py` on the three PANTHER 19.0 downloads (kept at their release URLs). UniProt methylarginine annotations: `scripts/00_stage_uniprot_methylarginine.py` (UniProt REST, release 2026_03). CD-CODE: exports as downloaded |
 | `layers/` | downloads by `scripts/00_fetch_static_sources.py`, then `scripts/41_stage_carm1_ko_sites.py`, `scripts/42_stage_hpa_subcellular.py` and `scripts/39_stage_cplm4_lys_methylation.py` |
 | `interactions/` | `scripts/37_export_interaction_data.py` downloads into a cache, and `scripts/37a_stage_interactions.py` turns the cache into these tables. For proteins and sites a release adds, `scripts/37 --tables` fetches what the tables lack into a top-up cache, and `scripts/37a_stage_interactions.py --topup` stages it as dated tables next to the others |
 | `disease/` | `scripts/00_export_disease_tables.R` (Bioconductor DOSE 4.4.0 and org.Hs.eg.db 3.22.0, from bioconda) |

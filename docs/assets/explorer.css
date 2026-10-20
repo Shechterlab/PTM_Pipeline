@@ -1403,3 +1403,9 @@ details.fold > summary { padding: 0.95rem 1.35rem; }
 .dis-terms select { margin-left: 0.3rem; max-width: 16rem; }
 .dis-terms-tbl { max-height: 22rem; overflow-y: auto; }
 @media print { .dis-terms-tbl { max-height: none; overflow: visible; } }
+.hb.sub2 .hb-label { padding-left: 2.2rem; }
+.hb.sub2 .hb-label::before { left: 1.45rem; }
+.pan-more { margin-top: 0.5rem; }
+.xl-peps { margin: 0.2rem 0 0.1rem; padding-left: 1rem; font-size: 0.8rem; }
+.xl-peps .mono, .ev-pop .mono { word-break: break-all; }
+.xl-res { color: var(--accent); }

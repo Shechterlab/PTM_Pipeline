@@ -1061,6 +1061,12 @@ def measure_afdb_complexes(cache: Path, refresh: bool, workers: int, sites_by_ac
     return out
 
 
+def load_crosslink_sequences(seq: dict, proteome: dict) -> dict:
+    """The crosslinked peptides and RBDmap fragments, for display; read from the frozen tables (use_frozen_tables)."""
+    log('crosslink peptides are shown only when the frozen tables are read (--tables)')
+    return {'rna': {}, 'dna': {}, 'rbd': {}}
+
+
 def load_crosslinks(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None = None):
     """Residue-level RNA and DNA crosslinks in canonical UniProt numbering, each checked against the sequence.
 
@@ -1395,6 +1401,7 @@ def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
         return feats, counts, intact_release
     g['load_intact'] = load_intact_
     g['load_crosslinks'] = lambda cache, refresh, seq, seq_meta=None: ii.crosslinks(t, seq, seq_meta, RNA_XL_SETS, RNA_FOCUSED, D_XL, D_CAND)
+    g['load_crosslink_sequences'] = lambda seq, proteome: ii.crosslink_sequences(t, seq, proteome, RNA_XL_SETS)
 
     queried = ii.queried_interfaces(t)
 
@@ -1620,20 +1627,37 @@ def write_release_tables(outdir: Path, d: dict):
         else:
             ev, kind, pa, pg = 'pdb_protein', 'protein', base_acc(key), gene(key)
         rows.append([sid(j), ev, 'at_residue', kind, pa, pg, 'PDBe-KB', '; '.join(pdbs), '', '', f'{len(pdbs)} PDB entries', True])
+    xs = d.get('xl_seq') or {'rna': {}, 'dna': {}, 'rbd': {}}
+
+    def marked(pep, k):
+        return pep[:k] + '[' + pep[k] + ']' + pep[k + 1:]
+
+    def rna_peptides(acc, positions, bit):
+        # Crosslinked peptides of one dataset at these residues: the crosslinked residue in brackets, with its RNA masses.
+        return '; '.join(f'{marked(pep, k)} at {q} ({masses} Da)' for q in positions for b, pep, k, masses in xs['rna'].get(acc, {}).get(q, []) if b == bit)
+
     for j, rb, nb, db, fb, single in d['xl_rows']:
+        acc, pos = prots[sites[j][0]][0], sites[j][1]
         for k, src in enumerate(XL_SOURCE):
             if rb >> k & 1:
-                rows.append([sid(j), 'rna_crosslink', 'at_residue' if single else 'candidate_residue', 'rna', '', '', src, '', '', '', '', True])
+                rows.append([sid(j), 'rna_crosslink', 'at_residue' if single else 'candidate_residue', 'rna', '', '', src, '', '', '',
+                             rna_peptides(acc, [pos], k), True])
             elif not rb and nb >> k & 1:
-                rows.append([sid(j), 'rna_crosslink', 'within_3', 'rna', '', '', src, '', '', '', 'a crosslinked residue within 3 residues', False])
+                close = [q for q in range(pos - XL_NEAR, pos + XL_NEAR + 1) if q != pos]
+                rows.append([sid(j), 'rna_crosslink', 'within_3', 'rna', '', '', src, '', '', '',
+                             '. '.join(x for x in ('a crosslinked residue within 3 residues', rna_peptides(acc, close, k)) if x), False])
         if fb:
-            rows.append([sid(j), 'rbdmap_fragment', 'in_fragment', 'rna', '', '', 'RBDmap', '', '', '', '', True])
+            frags = [f'{a}-{b} {frag}' for a, b, frag in xs['rbd'].get(acc, []) if a <= pos <= b]
+            rows.append([sid(j), 'rbdmap_fragment', 'in_fragment', 'rna', '', '', 'RBDmap', '', '', '', '; '.join(frags), True])
+        dna_peps = '; '.join(f'{a}-{a + len(pep) - 1} {pep}' for a, pep in xs['dna'].get(acc, []) if a <= pos <= a + len(pep) - 1)
+        dna_note = (f'peptide {dna_peps} (lower case: the residues the crosslink may sit on)') if dna_peps else ''
         if db & D_XL:
-            rows.append([sid(j), 'dna_crosslink', 'at_residue', 'dna', '', '', 'Trendel2025', '', '', '', '', True])
+            rows.append([sid(j), 'dna_crosslink', 'at_residue', 'dna', '', '', 'Trendel2025', '', '', '', dna_note, True])
         if db & D_CAND:
-            rows.append([sid(j), 'dna_crosslink', 'candidate_residue', 'dna', '', '', 'Trendel2025', '', '', '', '', True])
+            rows.append([sid(j), 'dna_crosslink', 'candidate_residue', 'dna', '', '', 'Trendel2025', '', '', '', dna_note, True])
         if db & D_PEP:
-            rows.append([sid(j), 'dna_crosslink', 'in_peptide', 'dna', '', '', 'Trendel2025', '', '', '', 'inside a DNA-crosslinked peptide', False])
+            rows.append([sid(j), 'dna_crosslink', 'in_peptide', 'dna', '', '', 'Trendel2025', '', '', '',
+                         '. '.join(x for x in ('inside a DNA-crosslinked peptide', dna_note) if x), False])
         if db & D_BIND:
             rows.append([sid(j), 'dna_binding_region', 'in_region', 'dna', '', '', 'UniProt', '', '', '', '', False])
     for j, hits in d['pred_all']:
@@ -2288,7 +2312,8 @@ def main():
 
     # Residue-level RNA and DNA crosslinks: site flags, per-protein tracks and within-protein tests.
     rna_xl, rna_count, rbd_frag, dna_xl, dna_peps, dna_int, dna_bind, rna_single, xl_check = load_crosslinks(cache, args.refresh, {a: v[2] for a, v in proteome.items()}, proteome)
-    xl_rows, xl_prot = [], []
+    xl_seq_all = load_crosslink_sequences({a: v[2] for a, v in proteome.items()}, proteome)
+    xl_rows, xl_prot, xl_seq = [], [], []
     xl_strata = {k: defaultdict(lambda: [0, 0, 0, 0]) for k in ('rna_xl', 'rna_xl_single', 'rna_near', 'rna_rbdmap', 'dna_xl', 'dna_cand', 'dna_pep', 'dna_bind', 'rna_xl_nonrg', 'rna_rbdmap_nonrg')}
     for i, acc in enumerate(meth_accs):
         if '-' in acc:
@@ -2309,6 +2334,13 @@ def main():
             fb = 1 if any(a <= pos <= b for a, b in frags) else 0
             if rb or nb or db or fb:
                 xl_rows.append([j, rb, nb, db, fb, 1 if pos in r_single else 0])
+        # The peptides and fragments behind the evidence near each site (what the evidence pop-ups show).
+        near = lambda a, b: any(a - XL_NEAR <= q <= b + XL_NEAR for q in site_pos)  # noqa: E731
+        seq_rna = [[q, bit, pep, k, masses] for q, hits in sorted(xl_seq_all['rna'].get(acc, {}).items()) if near(q, q) for bit, pep, k, masses in hits]
+        seq_dna = [[a, pep] for a, pep in xl_seq_all['dna'].get(acc, []) if near(a, a + len(pep) - 1)]
+        seq_rbd = [[a, b, frag] for a, b, frag in xl_seq_all['rbd'].get(acc, []) if near(a, b)]
+        if seq_rna or seq_dna or seq_rbd:
+            xl_seq.append([i, seq_rna, seq_dna, seq_rbd])
         if r_map or d_map or peps or binds or frags or acc in dna_int:
             xl_prot.append([i, sorted(r_map), [r_map[q] for q in sorted(r_map)], sorted(q for q, v in d_map.items() if v & D_XL), sorted(set(peps)), sorted(set(binds)),
                             1 if acc in dna_int else 0, sorted(set(frags)), sorted(q for q, v in d_map.items() if v == D_CAND)])
@@ -2639,6 +2671,7 @@ def main():
         'gallery': gallery,
         'xl': xl_rows,
         'xl_prot': xl_prot,
+        'xl_seq': xl_seq,
         'xl_enrich': xl_enrich,
         'xl_sets': [label for _, label in RNA_XL_SETS],
         'xl_types': xl_types,
@@ -2662,7 +2695,8 @@ def main():
             'prots': prots, 'sites': sites, 'vocab': vocab, 'gene_of': gene_of, 'iface_detail': iface_detail, 'xl_rows': xl_rows,
             'pred_all': pred_all, 'gallery': gallery, 'intact_rows': intact_rows, 'partners': partners, 'domain_classes': domain_classes,
             'meth_base': meth_base, 'cx_rows': cx_rows, 'iface_residues': iface_residues, 'pred_iface': pred_iface, 'xl_prot': xl_prot,
-            'intact_prot': intact_prot, 'tests': release_tests, 'complexes': cx_release, 'go': go})
+            'intact_prot': intact_prot, 'tests': release_tests, 'complexes': cx_release, 'go': go, 'xl_seq': xl_seq_all,
+            'proteome': proteome})
     log(f'wrote {args.out}: {len(vocab):,} proteins, {sum(len(r) // 2 for r in string_rows):,} partner links, '
         f'{len(cx_rows):,} complexes with methylated members, {len(site_rows):,} sites at PDB interfaces '
         f'({Path(args.out).stat().st_size / 1e6:.2f} MB)')

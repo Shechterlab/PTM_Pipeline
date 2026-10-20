@@ -12,6 +12,7 @@ from pathlib import Path
 import pandas as pd
 
 import release_codes as rc
+from disease_families import ADDITIONAL_FAMILIES, AUDITED_FAMILIES
 
 REPO = Path(__file__).resolve().parent.parent
 GITHUB = 'https://github.com/Shechterlab/PTM_Pipeline'
@@ -24,6 +25,13 @@ FEATURED = {'FUS': 'P35637', 'EWSR1': 'Q01844', 'FMR1': 'Q06787', 'Histone H3.1'
 def split_key(site: str) -> tuple[str, int]:
     acc, pos = site.split(':R')
     return acc, int(pos)
+
+
+def clean_int(x) -> int | None:
+    try:
+        return int(float(x))
+    except (TypeError, ValueError):
+        return None
 
 
 def counts(sites, records, changes, studies, maron_counts, prev_sites) -> dict:
@@ -40,10 +48,15 @@ def counts(sites, records, changes, studies, maron_counts, prev_sites) -> dict:
         'kept': int((changes['change'] == 'kept').sum()), 'removed': int((changes['change'] == 'removed').sum()),
         'added': int((changes['change'] == 'added').sum()),
         'renumbered': int(changes['reason_codes'].str.contains('reference_renumbered').sum()),
+        'kept_pending': int(changes.loc[changes['change'] == 'kept', 'site_id'].isin(sites.loc[pending_rows, 'site_id']).sum()),
+        'kept_records_changed': int((changes['records_change'] == 'changed').sum()),
+        'kept_records_replaced': int((changes['records_change'] == 'replaced').sum()),
         'flags': {k: int(v) for k, v in flags[flags != ''].value_counts().items()},
         'studies': len(studies),
         'with_maron_s3': int((sites['maron2021_s3_antibodies'] != '').sum()),
-        'with_state': int(((sites['methyl_states_reported'] != '') | (sites['maron2021_s2_states'] != '')).sum()),
+        'with_state': int((placed['methyl_state'] != '').sum()),
+        'state': {k: int(v) for k, v in placed['methyl_state'].replace('', 'none').value_counts().items()},
+        'state_evidence': {k: int(v) for k, v in placed['methyl_state_evidence'].str.split('; ').explode().replace('', pd.NA).dropna().value_counts().items()},
         'no_domain': int((placed['domain'] == 'no_domain_annotation').sum()),
         'peptide_start_records': int((records['placement_code'] == 'sequence_peptide_start').sum()),
     }
@@ -292,6 +305,13 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
                  if not c['start_rule_disagree'] else
                  f"{c['start_rule_agree']:,} placements made from plain peptides by other means, and disagrees with {c['start_rule_disagree']:,}")
     pending = sites[sites['flags'].str.contains('one_sided_window')]
+    gene_or_acc = {r.site_id: (r.gene.split(';')[0] or r.uniprot_accession) for r in pending.itertuples()}
+    shifted = [f"{gene_or_acc[r.pending_site]} R{split_key(r.pending_site)[1]} (reported at R{int(float(r.reported_position))})"
+               for r in records[records['pending_site'] != ''].itertuples()
+               if clean_int(r.reported_position) not in (None, split_key(r.pending_site)[1])]
+    corrected = records[records['source_correction'] != '']
+    nan_rows = corrected[corrected['source_correction'] == 'nan_restored']
+    na_rows = corrected[corrected['source_correction'] == 'accession_na']
     lines = [
         f'# Changes from {previous} to {version}',
         '',
@@ -305,9 +325,12 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         f"| Proteins | {n(c['previous_proteins'])} | {n(c['proteins'])} |",
         f"| Source records placed | {n(c['previous_records_placed'])} of {n(c['records'])} | {n(c['records_placed'])} of {n(c['records'])} |",
         '',
-        f"Of the {n(c['previous_sites'])} published sites, {n(c['kept'])} are unchanged and {n(c['removed'])} were "
-        f"removed; {n(c['added'])} sites were added. A site moves when its records now point at another arginine: the "
-        'old one is removed and the new one added.'
+        f"Of the {n(c['previous_sites'])} published sites, {n(c['kept'])} are kept (sites of {version} too, "
+        f"{n(c['kept_pending'])} of them pending) and {n(c['removed'])} were removed; {n(c['added'])} sites were added. "
+        'A site moves when its records now point at another arginine: the old one is removed and the new one added. '
+        f"A kept site can still have gained or lost records: {n(c['kept_records_changed'])} did, and at "
+        f"{n(c['kept_records_replaced'])} none of the previous records remain, other records now naming the same "
+        'arginine (supporting/site_changes, column records_change).'
         + (f" One kept site has a new number only: RAB12 R10 is R106 in UniProt {ctx['uniprot_release']['release']}, which adds 96 residues at its N-terminus." if c['renumbered'] == 1 else ''),
         '',
         '## What was corrected',
@@ -326,6 +349,20 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
     lines += [
         '',
         'A site can carry several codes when its records changed for different reasons.',
+        '',
+        '## Corrections to the source tables',
+        '',
+        f"- **Windows missing NAN** ({len(nan_rows)} records, `source_correction` `nan_restored`). Maron et al. 2021 Table "
+        'S5 gives these Larsen 2016 windows 28 residues long, where every other Larsen window has 31, and no Larsen window '
+        'there holds the tripeptide NAN: the letters were read as a missing value when the table was made. The parser '
+        'restores NAN where inserting it at exactly one place gives the window centred on the reported position of the '
+        f"reported entry; the window as the table gives it is kept in `evidence_as_reported`. {previous} placed "
+        f"{int((nan_rows['previous_site'] != '').sum())} of these records; this version places "
+        f"{int((nan_rows['placed_site'] != '').sum())}.",
+        f"- **Records without an accession** ({len(na_rows)} records, `source_correction` `accession_na`). Table S5 gives "
+        f"them a gene symbol and a window, and the accession NA; {previous} left them out. They are placed from their gene "
+        f"symbol and window ({int((na_rows['placed_site'] != '').sum())} placed) and numbered after the records of "
+        f'{previous}, so that every other record keeps its record_id.',
         '',
         '## Proteins featured in the paper',
         '',
@@ -354,6 +391,22 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         'the union, so some proteins had no domain annotation. This version uses InterPro 108.0 for all reviewed '
         f"entries: {c['previously_unannotated_now_annotated']:,} proteins whose published sites were all \"no domain "
         f"annotation\" now have a domain or repeat, and the domain context of {c['domain_changed_kept']:,} kept sites changes.",
+        '- **Protein classes from PANTHER.** The paper\'s functional classes are keyword classes that overlap and leave '
+        'much of the proteome out. This version adds the PANTHER 19.0 protein classes (scripts/03b): each protein\'s '
+        'top-level class, grouped for the overview (config/panther_class_groups.json) so that the groups and the proteins '
+        'PANTHER leaves unclassified partition the reviewed proteome, with tests of the groups, the 24 top-level classes '
+        'and their subclasses (statistics: panther_group, panther_class, panther_subclass). The paper\'s classes are kept.',
+        f'- **More disease families.** The {len(AUDITED_FAMILIES)} audited families of the paper are unchanged. The '
+        f'DisGeNET terms none of them takes now go to {len(ADDITIONAL_FAMILIES)} additional, rule-based families '
+        '(scripts/disease_families.py ADDITIONAL_FAMILY_RULES: mostly clinical signs, by organ system), tested and '
+        'BH-adjusted apart (statistics: disease_family_additional). They are not audited.',
+        f"- **Methylation degree at each site** (`methyl_state`, {n(c['with_state'])} of {n(c['sites'])} sites). "
+        f"{previous} gave a degree only from ProMetheusDB. This version also counts Maron et al. 2021 Table S2, UniProt's "
+        'modified-residue annotations with experimental evidence (inferred ones are listed apart) and the two studies that '
+        'looked for one degree only: Larsen 2016 (monomethylation) and Wei 2020 (ADMA antibody, dimethylation). Mass '
+        'spectrometry tells mono- from dimethylation, but asymmetric from symmetric mostly by the antibody used, so '
+        '`methyl_state` gives Rme1, Rme2 or both, and the columns it is drawn from keep the detail: '
+        + ', '.join(f"{n(v)} {k.replace('_', ' + ')}" for k, v in c['state'].items() if k != 'none') + '.',
         f'- **PRMT inhibitor calls** (Maron et al. 2021 Table S3). A peptide changes when its adjusted p value is at most '
         f'{rc.PADJ_CUTOFF}. Each site, antibody and inhibitor gets a call over its peptides, and each site and inhibitor a '
         f'call over its antibodies (`{files["maron_inhibitors"][0]}`). The same combination gives the CARM1 knockout call '
@@ -363,19 +416,29 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         '',
         f"- **Windows that match on one side only** ({n(c['pending'])} sites, flag `one_sided_window`; "
         f"{int(pending['in_previous_version'].sum())} of them in {previous}): the source window matches the entry exactly on "
-        'one side of the reported arginine and not on the other, and no other reviewed entry holds it. Three of the ten '
-        'windows occur in full in another UniProt isoform of the protein (GANAB R185, TCF7L2 R126, SNX12 R153; checked '
-        '2026-10-20), so they come from a splice variant. The pipeline leaves these records unplaced; the release keeps the '
-        'sites, flagged and left out of every analysis, until the policy is decided: '
+        'one side of the arginine and not on the other, and no other reviewed entry holds it. Three of these windows occur '
+        'in full in another UniProt isoform of the protein (GANAB R185, TCF7L2 R126, SNX12 R153; checked 2026-10-20), so '
+        'they come from a splice variant. '
+        + (('Some are reported at another position, in the numbering of an isoform, and match one complete flank (15 '
+            'residues and the arginine) here: ' + ', '.join(shifted) + '. ') if shifted else '')
+        + 'The pipeline leaves these records unplaced; the release keeps the sites, flagged and left out of every '
+        'analysis, until the policy is decided: '
         + ', '.join(f"{g} R{split_key(s)[1]}" for g, s in zip(pending['gene'], pending['site_id'])) + '.',
-        f"- **Paralog windows** ({c['flags'].get('paralog_window', 0)} sites, flag `paralog_window`): a window "
-        'matches a paralog exactly and the named entry within 2 residues. The records stay on the entry the source named, '
-        'accepted in `config/remap_evidence_allowlist.tsv`.',
+        f"- **Paralog windows** ({c['flags'].get('paralog_window', 0)} sites, flag `paralog_window`): a window or "
+        'peptide matches another reviewed entry exactly and the named entry within 2 residues. The other entry is a '
+        'paralog, except at RBM39 R109, where the 6-residue peptide SALRGK reads SAIRGK in RBM39 (I and L have the same '
+        'mass) and also occurs in CCDC13. The records stay on the entry the source named, accepted in '
+        '`config/remap_evidence_allowlist.tsv`.',
+        f"- **Arginine picked by the reported position** ({c['flags'].get('arginine_from_position', 0)} sites, flag "
+        '`arginine_from_position`): every record of the site has a peptide with several arginines, or a window or peptide '
+        'found more than once in the entry, so the evidence alone does not single out this arginine; the positions the '
+        'sources report do.',
         '',
         '## Tracing a change',
         '',
         f"- `{files['changes'][0]}`: one row per site of either version, with its change, reason codes, the records "
-        'involved and, for a removed site, where those records are now (for an added site, where they were).',
+        'involved and, for a removed site, where those records are now (for an added site, where they were; for a kept '
+        'site, the records that moved onto or off it, and both).',
         f"- `{files['records'][0]}`: one row per source record, with what the study reported, the evidence sequence, where "
         'each version placed it, the independent evidence check and the reason code.',
         '',

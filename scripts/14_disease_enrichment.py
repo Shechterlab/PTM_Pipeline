@@ -15,7 +15,8 @@ ran it in R (scripts/14_disease_enrichment.R), computed here from tables exporte
 
 Families: each DisGeNET term is assigned to at most one family (scripts/disease_families.py); a family's genes are the
 union of its terms' universe genes, and each family is tested with a two-sided Fisher exact test of target against the
-other universe genes, with Benjamini-Hochberg over the eight families (as scripts/34).
+other universe genes, with Benjamini-Hochberg over the eight audited families (as scripts/34), and apart over the
+additional, rule-based families (column audited False).
 
     python scripts/14_disease_enrichment.py --labels RESULTS/functional_class_union/protein_functional_labels.tsv \\
         --term-genes inputs/disease/dose_4.4.0_disgenet_term_genes.tsv \\
@@ -23,7 +24,7 @@ other universe genes, with Benjamini-Hochberg over the eight families (as script
 
 Writes to --outdir:
   disease_terms.tsv             enriched terms (DOSE's columns, gene symbols in geneID)
-  disease_families.tsv          the eight family tests
+  disease_families.tsv          the family tests: the eight audited families, then the additional ones
   disease_family_proteins.tsv   for each methylarginine protein, the families its gene is in
   disease_term_families.tsv     every DisGeNET term with its family assignment
   disease_input_summary.tsv     proteins, symbols and Entrez genes of the universe and the target
@@ -38,7 +39,7 @@ from pathlib import Path
 import pandas as pd
 from scipy.stats import fisher_exact, hypergeom
 
-from disease_families import FAMILY_RULES, classify
+from disease_families import ADDITIONAL_FAMILIES, ALL_FAMILIES, AUDITED_FAMILIES, classify
 
 MIN_SIZE, MAX_SIZE, CUTOFF = 10, 300, 0.05
 
@@ -158,7 +159,7 @@ def main() -> None:
             family_terms[fam].append(t)
     pd.DataFrame(audit).to_csv(outdir / 'disease_term_families.tsv', sep='\t', index=False, lineterminator='\n')
     fam_rows, fam_genes = [], {}
-    for fam, _ in FAMILY_RULES:
+    for fam in ALL_FAMILIES:
         g = set().union(*(term_genes_all[t] & universe for t in family_terms[fam])) if family_terms[fam] else set()
         fam_genes[fam] = g
         a, c = len(target & g), len(background & g)
@@ -167,14 +168,17 @@ def main() -> None:
         fam_rows.append({'disease_family': fam, 'contributing_ontology_terms': len(family_terms[fam]),
                          'methylarginine_protein_count': a, 'background_count': c, 'family_gene_count': a + c,
                          'methylarginine_denominator': len(target), 'background_denominator': len(background),
-                         'odds_ratio': odds, 'p_value': float(fisher_exact([[a, b], [c, d]]).pvalue)})
-    for r, q in zip(fam_rows, bh([r['p_value'] for r in fam_rows])):
-        r['BH_adjusted_p'] = q
-    pd.DataFrame(fam_rows).sort_values('p_value', kind='stable').to_csv(outdir / 'disease_families.tsv', sep='\t', index=False, lineterminator='\n')
+                         'odds_ratio': odds, 'p_value': float(fisher_exact([[a, b], [c, d]]).pvalue),
+                         'audited': fam in AUDITED_FAMILIES})
+    for names in (AUDITED_FAMILIES, ADDITIONAL_FAMILIES):
+        part = [r for r in fam_rows if r['disease_family'] in names]
+        for r, q in zip(part, bh([r['p_value'] for r in part])):
+            r['BH_adjusted_p'] = q
+    pd.DataFrame(fam_rows).sort_values(['audited', 'p_value'], ascending=[False, True], kind='stable').to_csv(outdir / 'disease_families.tsv', sep='\t', index=False, lineterminator='\n')
     prot = []
     for acc, s in zip(target_rows['canonical_UniProtAC'], target_rows['gene_symbol']):
         ents = set(entrez_of.get(s, []))
-        for fam, _ in FAMILY_RULES:
+        for fam in ALL_FAMILIES:
             hit = sorted(ents & fam_genes[fam])
             if hit:
                 prot.append({'canonical_UniProtAC': acc, 'gene_symbol': s, 'entrez_ids': ';'.join(hit), 'disease_family': fam,

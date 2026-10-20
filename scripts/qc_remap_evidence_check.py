@@ -12,6 +12,10 @@ Each row also gets a drift class, which says whether the source position still f
   B  the evidence is in the same entry, elsewhere            C  the reported accession has no sequence in --fasta
   D  the evidence is not in that entry                       E  the reported residue is not R
 
+A row placed on the one site its evidence implies agrees. It reads 'agrees: reported arginine' when the evidence covers
+other arginines of the entry too (a peptide with several, or a window found more than once), so that the reported
+position picks the site, and 'agrees: position only' when the row gives no sequence.
+
     python scripts/qc_remap_evidence_check.py --results-root PTM_results --fasta canonical_human.fasta
     python scripts/qc_remap_evidence_check.py --results-root PTM_results_remapfix --fasta ... --extra-fasta unreviewed.fasta
 
@@ -46,6 +50,7 @@ WINDOW_LENGTHS = (13, 15, 31)
 PADDING = '_-X'
 NEAR_MAX_MISMATCHES, NEAR_MAX_FRACTION = 2, 0.2
 FAIL_VERDICTS = ('contradicts evidence', 'placed without evidence', 'filed under an accession outside --fasta')
+AGREES = {'evidence': 'agrees', 'position': 'agrees: reported arginine', 'position_only': 'agrees: position only'}
 ACC = re.compile(r'([OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2})(-\d+)?')
 
 
@@ -193,8 +198,10 @@ def coordinate_sites(s: str, acc: str, pos: int, peptides: list[str], coords: di
     return out
 
 
-def check_row(r, seqs: dict, genes: dict, proteome: Proteome, coords: dict | None = None) -> tuple[str, set]:
-    """Drift class and the evidence-implied sites (accession, position) on reviewed entries."""
+def check_row(r, seqs: dict, genes: dict, proteome: Proteome, coords: dict | None = None) -> tuple[str, set, str]:
+    """Drift class, the evidence-implied sites (accession, position) on reviewed entries, and what singles the site
+    out: 'evidence', 'position' (the evidence covers other arginines of the entry too, and the reported position picks
+    one) or 'position_only' (no sequence)."""
     m = ACC.search(str(r.substrate_UniProtAC_original))
     acc = (m.group(1) + (m.group(2) or '')) if m else ''
     s, pos = seqs.get(acc, ''), int(r.position)
@@ -206,15 +213,19 @@ def check_row(r, seqs: dict, genes: dict, proteome: Proteome, coords: dict | Non
     marks = marked_peptides(r.peptides) if str(r.peptides) not in ('', 'nan') else []
 
     if not windows and not peptides and not marks:  # positions only
-        return ('C' if not s else 'A' if at_r else 'E'), ({(acc, pos)} if at_r else set())
+        return ('C' if not s else 'A' if at_r else 'E'), ({(acc, pos)} if at_r else set()), 'position_only'
 
-    cls, implied = 'C', set()
+    cls, implied, basis = 'C', set(), 'evidence'
     if s:
         sites = {c for t, off, w in windows for i in occurrences(s, t) for c in window_sites(s, i, t, w, off, pos)}
         sites |= {i + j for p, idx in marks for i in occurrences(s, p) for j in idx}
         covers = [(i, t) for t in peptides for i in occurrences(s, t) if i <= pos - 1 < i + len(t)]
         if pos - 1 in sites or (covers and at_r):
             cls, implied = 'A', {(acc, pos)}
+            # A window or marked peptide found more than once, or a peptide with several arginines, names more than
+            # the reported arginine: the reported position picks it.
+            named = sites or {i + k for t in peptides for i in occurrences(s, t) for k, aa in enumerate(t) if aa == 'R'}
+            basis = 'evidence' if named == {pos - 1} else 'position'
         else:
             # A peptide with a single arginine names it wherever the peptide lies.
             sites |= {i + t.index('R') for t in peptides if t.count('R') == 1 for i in occurrences(s, t)}
@@ -244,7 +255,7 @@ def check_row(r, seqs: dict, genes: dict, proteome: Proteome, coords: dict | Non
                     cand.add((a, i + t.index('R') + 1))
         same_gene = {c for c in cand if genes.get(c[0]) == str(r.substrate_genename).upper()}
         implied = same_gene or cand or implied
-    return cls, implied
+    return cls, implied, basis
 
 
 def read_allow(path: str | None) -> set:
@@ -288,7 +299,7 @@ def main() -> None:
 
     out = []
     for r in rows.itertuples():
-        cls, implied = check_row(r, seqs, genes, proteome, coords)
+        cls, implied, basis = check_row(r, seqs, genes, proteome, coords)
         placed = f'{r.corrected_canonical_UniProtAC}:{int(r.corrected_position)}' if bool(r.is_position_resolved) and pd.notna(r.corrected_position) else ''
         evidence = sorted(f'{a}:{p}' for a, p in implied if a in reviewed)
         if placed and placed.split(':')[0] not in reviewed:
@@ -296,7 +307,7 @@ def main() -> None:
         elif not evidence:
             verdict = 'agrees: no site' if not placed else 'placed without evidence'
         elif placed in evidence:
-            verdict = 'agrees' if len(evidence) == 1 else 'one of several evidence sites'
+            verdict = 'one of several evidence sites' if len(evidence) > 1 else AGREES[basis]
         elif placed:
             verdict = 'contradicts evidence'
         else:

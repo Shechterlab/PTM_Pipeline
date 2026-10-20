@@ -56,11 +56,11 @@ stops if a record is placed against its own evidence or a site is not an arginin
 
 | Scripts | Step |
 |---|---|
-| `00_*` | staging inputs: UniProt, InterPro, MobiDB, the disease tables |
+| `00_*` | staging inputs: UniProt, InterPro, MobiDB, PANTHER, the disease tables |
 | `01_*` | parsing the source tables |
 | `02_*` | placing records on reference sequences, the union, the sites kept pending |
 | `qc_*`, `38_*` | the evidence check, the residue audit, and comparing two results roots |
-| `03_*` to `16_*` | analyses: functional classes, domains, disorder, motifs, other PTMs, clustering, condensates, disease, Maron et al. 2021 summaries |
+| `03_*` to `16_*` | analyses: functional classes (the paper's and PANTHER's), domains, disorder, motifs, other PTMs, clustering, condensates, disease, Maron et al. 2021 summaries |
 | `17_*` to `35_*` | extended analyses and the paper's figures |
 | `36_*`, `37_*` | the website's data: sites, evidence and interactions (`37a` stages the interaction inputs) |
 | `39_*` to `42_*` | the website's annotation layers (CARM1 knockout, Human Protein Atlas; CPLM 4.0 for v1.0.0) and the lysine and arginine methylation co-occurrence |

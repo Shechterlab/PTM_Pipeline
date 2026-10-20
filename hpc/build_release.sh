@@ -51,7 +51,8 @@ EOF
 } > "$WORK/RUN_INFO.txt"
 
 echo "[release] parsing source tables"
-python "$CODE/scripts/01_parse_maron_s5.py" --input "$IN/sources/maron2021_tableS5_compiled_methylarginine_sites.xlsx" --outdir "$WORK/parsed_maron"
+python "$CODE/scripts/01_parse_maron_s5.py" --input "$IN/sources/maron2021_tableS5_compiled_methylarginine_sites.xlsx" \
+  --canonical-fasta "$FASTA" --outdir "$WORK/parsed_maron"
 python "$CODE/scripts/01_parse_prometheus_mmc2.py" --input "$IN/sources/massignani2022_prometheusdb_mmc2_methylsites.xlsx" --outdir "$WORK/parsed_prometheus"
 python "$CODE/scripts/01_parse_maron_peptide_coordinates.py" --table-s2 "$IN/sources/maron2021_tableS2_methylarginine_ip_sites.xlsx" \
   --table-s3 "$IN/sources/maron2021_tableS3_methylpeptides_prmt_inhibitors.xlsx" --outdir "$WORK/parsed_maron"
@@ -62,6 +63,7 @@ python "$CODE/scripts/02_remap_arg_methyl_to_canonical.py" \
   --base-master "$IN/sources/ptm_master_iptmnet_human.tsv" \
   --maron "$WORK/parsed_maron/maron_s5_arg_methyl_sites.tsv" \
   --prometheus "$WORK/parsed_prometheus/prometheus_mmc2_arg_methyl_sites.tsv" \
+  --maron-extra "$WORK/parsed_maron/maron_s5_rows_accession_na.tsv" \
   --canonical-fasta "$FASTA" \
   --uniprot-metadata "$ENTRIES" \
   --accession-history "$IN/reference/uniprot_accession_history_2026_03.tsv" \
@@ -98,6 +100,10 @@ step "functional classes (scripts/03)" python "$CODE/scripts/03_functional_class
   --integrated-sites "$U" --uniprot-metadata "$ENTRIES" --interpro-intervals "$DOMAINS" \
   --ontology "$CODE/config/functional_ontology.json" --domain-ontology "$CODE/config/domain_class_ontology.json" \
   --outdir "$WORK/functional_class_union"
+step "PANTHER protein classes (scripts/03b)" python "$CODE/scripts/03b_panther_class_enrichment.py" --integrated-sites "$U" \
+  --uniprot-metadata "$ENTRIES" --protein-classes "$IN/annotation/panther_19.0_protein_classes.tsv" \
+  --ontology "$IN/annotation/panther_19.0_protein_class_ontology.tsv" --groups "$CODE/config/panther_class_groups.json" \
+  --outdir "$WORK/panther_class"
 step "motifs and arginine enrichment (scripts/08)" python "$CODE/scripts/08_motif_and_arg_odds.py" --integrated-sites "$U" \
   --canonical-fasta "$FASTA" --outdir "$WORK/motif_arg_odds"
 step "disorder context (scripts/06)" python "$CODE/scripts/06_annotate_disorder_context.py" --sites "$U" \

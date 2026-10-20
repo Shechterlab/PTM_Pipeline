@@ -26,6 +26,9 @@ SOURCES = ['Maron2021', 'ProMetheusDB', 'human_ptm_master']
 SOURCE_OF_TABLE = {'maron2021_s5': 'Maron2021', 'prometheusdb_mmc2': 'ProMetheusDB', 'ptm_master': 'human_ptm_master'}
 RAW_TABLE = {'maron2021_s5': 'maron_s5', 'prometheusdb_mmc2': 'prometheus_mmc2', 'ptm_master': 'human_ptm_master'}
 STATES = ['', 'Rme1', 'Rme2', 'mixed']
+STATE_SOURCES = [('methyl_states_reported', 'ProMetheusDB'), ('maron2021_s2_states', 'Maron 2021 Table S2'),
+                 ('uniprot_states', 'UniProt'), ('uniprot_states_inferred', 'UniProt, by similarity (not counted)')]
+DESIGN_LABEL = {'Rme1': 'Larsen 2016 (looked for Rme1 only)', 'Rme2': 'Wei 2020 (ADMA antibody, Rme2 only)'}
 MOTIFS = ['RG', 'RGG', 'GRG', 'GAR', 'RXR', 'CARM1_proline_rich', 'CARM1_hydrophobic_proline', 'DR', 'RD', 'ER', 'RE']
 MARON_IPS = ['MMA', 'ADMA', 'SDMA']
 MARON_TREATMENTS = ['GSK591', 'MS023']
@@ -99,6 +102,8 @@ def main() -> None:
     ap.add_argument('--release', required=True, help='the release folder, e.g. releases/v1.1.0')
     ap.add_argument('--inputs', default='inputs', help='frozen inputs (MobiDB intervals, layer notes)')
     ap.add_argument('--disorder-intervals', default='annotation/mobidb_disorder_intervals_2026-03-30.tsv', help='relative to --inputs')
+    ap.add_argument('--panther-ontology', default='annotation/panther_19.0_protein_class_ontology.tsv', help='relative to --inputs')
+    ap.add_argument('--panther-groups', default='config/panther_class_groups.json')
     ap.add_argument('--outdir', default='docs/data')
     ap.add_argument('--check', action='store_true', help='decode the written files and compare them with the release tables')
     args = ap.parse_args()
@@ -209,8 +214,10 @@ def main() -> None:
     site_rows, evidence = [], []
     for s in sites.to_dict('records'):
         sid = s['site_id']
-        states = set(L(s['methyl_states_reported']))
-        state = 3 if {'Rme1', 'Rme2'} <= states else 1 if 'Rme1' in states else 2 if 'Rme2' in states else 0
+        state = {'': 0, 'Rme1': 1, 'Rme2': 2, 'Rme1_Rme2': 3}[s['methyl_state']]
+        # Where the degree comes from: [source, degrees] for each source that gives one.
+        state_detail = [[label, s[col]] for col, label in STATE_SOURCES if s[col]]
+        state_detail += [[DESIGN_LABEL[x], x] for x in L(s['states_by_study_design'])]
         ipr = -1
         if s['nearest_domain_interpro']:
             if s['nearest_domain_interpro'] not in interpro_idx:
@@ -240,6 +247,7 @@ def main() -> None:
             sum(1 << k for k, st in enumerate(('Rme1', 'Rme2')) if st in L(s['maron2021_s2_states'])),
             sum(1 << MARON_IPS.index(x) for x in L(s['maron2021_s3_antibodies'])),
             sorted(tr.get(sid, [])), studies_vocab.mask(web_name[x] for x in L(s['studies'])), sorted(ko.get(sid, [])),
+            state_detail or None,
         ])
     # evidence rows: table and study codes as vocabularies
     source_tables, remap_statuses = Vocab(), Vocab()
@@ -263,7 +271,7 @@ def main() -> None:
         for sub in L(p['functional_subclasses']):
             for broad in L(p['functional_classes']):
                 parent[sub][broad] += 1
-    fam_stats = stats[stats['analysis'] == 'disease_family'].set_index('category')
+    fam_stats = stats[stats['analysis'].isin(['disease_family', 'disease_family_additional'])].set_index('category')
     treatments = []
     for drug in MARON_TREATMENTS:
         for ip in ('SDMA', 'ADMA', 'MMA'):
@@ -293,6 +301,29 @@ def main() -> None:
     for a, row in zip(acc_list, protein_rows):
         row.append(sorted(intervals.get(a, [])))
 
+    # PANTHER protein classes: [group, top-level class (-1: none), the tested subclasses the protein is in]. The
+    # release gives each protein's most specific classes; a protein is in every class above them too.
+    ontology = read(inputs / args.panther_ontology).set_index('class_id')
+    panther_config = json.loads(Path(args.panther_groups).read_text())
+    by_name = {n: c for c, n in ontology['name'].items()}
+
+    def above(name: str) -> list[str]:
+        out, c = [], by_name[name]
+        while c in ontology.index and c != 'PC00000':
+            out.append(ontology.at[c, 'name'])
+            c = ontology.at[c, 'parent_id']
+        return out
+    pg = [r['category'] for r in stats[stats['analysis'] == 'panther_group'].to_dict('records')]
+    pc = [r['category'] for r in stats[stats['analysis'] == 'panther_class'].to_dict('records')]
+    ps = [r['category'] for r in stats[stats['analysis'] == 'panther_subclass'].to_dict('records')]
+    for p, row in zip(proteins.to_dict('records'), protein_rows):
+        inside = {x for leaf in L(p['panther_classes']) for x in above(leaf)}
+        row.append([pg.index(p['panther_group']), pc.index(p['panther_class']) if p['panther_class'] else -1,
+                    sorted(k for k, x in enumerate(ps) if x in inside)])
+    group_of = {ontology.at[c, 'name']: g['name'] for g in panther_config['groups'] for c in g['classes']}
+    top_of = {n: ontology.at[ontology.at[by_name[n], 'top_level_id'], 'name'] for n in ps}
+    totals = lambda r: [int(r['a']) + int(r['c'])]  # noqa: E731
+
     payload = {
         'meta': {
             'title': 'Human methylarginine site union',
@@ -320,6 +351,8 @@ def main() -> None:
             'func_classes': func_classes.values, 'func_subclasses': func_subclasses.values,
             'disorder_classes': disorder_classes.values, 'domain_contexts': domain_contexts.values, 'domain_classes': domain_classes.values,
             'disease_families': families,
+            # the eight audited families of the paper come first; the others are rule-based additions (scripts/disease_families.py)
+            'disease_family_audited': [r['audited'] == 'true' for r in disease_families.to_dict('records')],
             'condensates': cond_rows,
             'condensate_fields': ['name', 'cdcode_id', 'type', 'members', 'methyl_members', 'log2_odds_ratio', 'q_value'],
             'condensate_summary': {'methyl_proteins_total': str(len(methylated)), 'condensate_universe_proteins': str(universe),
@@ -335,6 +368,10 @@ def main() -> None:
                 'disease_families': [[f, int(fam_stats.at[f, 'a']), int(fam_stats.at[f, 'a']) + int(fam_stats.at[f, 'c']),
                                       num(fam_stats.at[f, 'odds_ratio']), sig(fam_stats.at[f, 'q'])] for f in families],
                 'treatments': treatments,
+                # [category, methylated, fraction of methylated, fraction of others, log2 OR, q, (parent,) proteins]
+                'panther_groups': overview_rows(stats, 'panther_group', totals),
+                'panther_classes': overview_rows(stats, 'panther_class', lambda r: [group_of.get(r['category'], ''), *totals(r)]),
+                'panther_subclasses': overview_rows(stats, 'panther_subclass', lambda r: [top_of[r['category']], *totals(r)]),
                 'functional_subclasses': overview_rows(stats, 'functional_subclass',
                                                        lambda r: [parent[r['category']].most_common(1)[0][0] if parent[r['category']] else '']),
             },
@@ -342,11 +379,14 @@ def main() -> None:
                                'arginine_count', 'shrinkage_log2_enrichment', 'arg_odds_q', 'is_isoform', 'condensates',
                                'disease_family_mask', 'als_ftd_audited_gene', 'local_density', 'best_density_window',
                                'significant_density_windows', 'cluster_architecture', 'other_ptms', 'gene_aliases', 'reference_md5',
-                               'hpa_locations', 'disease_families', 'disorder_intervals'],
+                               'hpa_locations', 'disease_families', 'disorder_intervals', 'panther'],
+            'panther': {'version': panther_config['panther_version'], 'unclassified': panther_config['unclassified'],
+                        'groups': pg, 'classes': pc, 'subclasses': ps,
+                        'universe': int(stats[stats['analysis'] == 'panther_group'][['a', 'c']].astype(int).sum().sum())},
             'site_fields': ['protein', 'position', 'state', 'source_mask', 'refs', 'disorder_class', 'disorder_edge_distance',
                             'domain_context', 'interpro', 'domain_class', 'domain_edge_distance', 'domain_side', 'window_31',
                             'motif_mask', 'window_center_mismatch', 'source_positions_original', 'maron_s2_state_mask',
-                            'maron_ip_mask', 'maron_treatment', 'study_mask', 'carm1_ko'],
+                            'maron_ip_mask', 'maron_treatment', 'study_mask', 'carm1_ko', 'state_detail'],
             'maron_treatment_fields': ['ip', 'treatment', 'median change', 'lowest adj. p', 'peptide rows',
                                        f'peptides down at adj. p <= {PADJ:g}', f'peptides up at adj. p <= {PADJ:g}'],
             'carm1_ko': {'study': ko_note.get('study', 'Shishkova 2017'), 'doi': ko_note.get('doi', '10.1038/ncomms15571'),
@@ -362,7 +402,7 @@ def main() -> None:
                                     sig(r['p']), sig(r['q'])] for n, r in hpa_stats.iterrows()]},
             'disease_family_sets': {'version': 'audited_v1', 'fields': ['terms', 'genes', 'methylarginine_genes'],
                                     'families': [[int(r['n_terms']), int(r['n_genes']), int(r['n_methylated_genes'])] for r in disease_families.to_dict('records')]},
-            'disorder_intervals': {'source': f'MobiDB disorder intervals ({args.disorder_intervals})', 'proteins': sum(1 for r in protein_rows if r[-1])},
+            'disorder_intervals': {'source': f'MobiDB disorder intervals ({args.disorder_intervals})', 'proteins': sum(1 for r in protein_rows if r[-2])},
         },
         'proteins': protein_rows,
         'sites': site_rows,

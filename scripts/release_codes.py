@@ -53,6 +53,18 @@ CODES: dict[str, dict[str, str]] = {
         'Rme2': 'dimethylarginine, asymmetric or symmetric not stated',
         'Rme2a': 'asymmetric dimethylarginine',
         'Rme2s': 'symmetric dimethylarginine',
+        'Rme': 'methylarginine, degree not stated (UniProt "Omega-N-methylated arginine")',
+    },
+    'state_summary': {
+        'Rme1': 'monomethylarginine only',
+        'Rme2': 'dimethylarginine only (asymmetric, symmetric or not stated)',
+        'Rme1_Rme2': 'both mono- and dimethylarginine reported at the site',
+    },
+    'state_evidence': {
+        'source_records': 'the source records (ProMetheusDB me/di; methyl_states_reported)',
+        'maron2021_s2': 'Maron et al. 2021 Table S2 (maron2021_s2_states)',
+        'uniprot': 'UniProt MOD_RES with experimental evidence (uniprot_states)',
+        'study_design': 'a study that looked for one degree only (states_by_study_design)',
     },
     'antibody': {
         'MMA': 'anti-monomethylarginine immunoprecipitation',
@@ -157,10 +169,17 @@ CODES: dict[str, dict[str, str]] = {
     },
     'flag': {
         'one_sided_window': "the site's only records are windows that match the entry exactly on one side of the reported arginine (at least 6 residues, the arginine included) and not on the other, and no other reviewed entry holds the window. Some come from another isoform of the protein. The pipeline leaves these records unplaced: the site is kept, and left out of the analyses, until the policy is decided",
-        'paralog_window': 'a supporting window matches a paralog exactly and this entry within 2 residues (open, accepted in config/remap_evidence_allowlist.tsv)',
+        'paralog_window': 'a supporting window or peptide matches another reviewed entry exactly and this entry within 2 residues (open, accepted in config/remap_evidence_allowlist.tsv). The other entry is a paralog, except at RBM39 R109, where a 6-residue peptide differs from RBM39 only at an isobaric I/L and also occurs in CCDC13',
         'near_match_only': 'every supporting record matches the entry within 2 residues, not exactly (a variant or sequence conflict)',
+        'arginine_from_position': 'the evidence of every supporting record covers other arginines of the entry too (a peptide with several arginines, or a window or peptide found more than once): the positions the sources report pick this one (evidence_check agrees_reported_arginine)',
         'shared_sequence': 'residues -15 to +15 occur identically in another reviewed entry (same_window_accessions): histone variants, identical paralogs. The evidence cannot tell them apart: the protein is the one the source named',
         'single_study': 'one study or database reports the site',
+    },
+    'residue': {'R': 'arginine'},
+    'records_change': {
+        'same': 'the same records support the site in both versions',
+        'changed': 'some records moved onto or off the site; others support it in both versions',
+        'replaced': 'none of the records that supported the site before support it now; other records do',
     },
     'site_change': {
         'kept': 'a site of the previous version too',
@@ -173,16 +192,18 @@ CODES: dict[str, dict[str, str]] = {
         'newly_placed': 'placed now, not placed in the previous version',
         'no_longer_placed': 'placed in the previous version, not placed now',
         'not_placed': 'placed in neither version',
+        'new_record': 'a source record the previous version did not read (source_correction accession_na)',
     },
     'reason': {
         'peptide_recentred': 'the previous version moved the peptide to the arginine nearest its middle. This version keeps the reported arginine inside the peptide',
         'unreviewed_accession': "the previous version filed reviewed-entry numbering under the source's unreviewed or obsolete accession. This version files it under the reviewed entry",
         'lysine_window': 'the source window is centred on a lysine. The previous version turned it into a nearby arginine site',
-        'truncated_window': 'the window is cut short at a protein end. The previous version read it from the wrong end',
+        'truncated_window': 'the window is cut short at a protein end. The previous version read it as if centred, taking the arginine at or nearest the middle of the short window. This version counts from its intact end',
         'multi_arginine_peptide': 'a peptide with several arginines that does not cover the reported position. The previous version guessed one',
         'peptide_start': "a peptide with several arginines, numbered differently from the entry. The previous version took the arginine nearest its middle. This version counts the reported position from the peptide's start in Maron 2021 Tables S2/S3",
         'wrong_protein': 'the previous version filed the position under another reviewed protein than the one whose sequence matched',
         'outdated_accession_or_symbol': 'the source accession is merged or obsolete, or its gene symbol outdated. This version reaches the current entry',
+        'entry_not_in_reference': 'no reviewed entry has the source accession or gene symbol (an entry deleted from Swiss-Prot, a readthrough or an unreviewed entry). The evidence occurs once in the reviewed proteome, and this version places it there. For the deleted duplicate genes CBSL, OVOS2 and SIK1B that is the paralog holding the same sequence (CBS, OVOS1, SIK1)',
         'evidence_mismatch': 'the previous version kept the reported arginine although the source peptide or window does not match the entry there',
         'window_padding': 'the window is padded where it runs off a protein end. The padding now gives the cut side',
         'ambiguous_evidence': 'the evidence supports several sites equally. This version leaves the record unplaced',
@@ -215,8 +236,14 @@ CODES: dict[str, dict[str, str]] = {
         'marked_peptide': 'the peptide with the methylated residue marked',
         'position_only': 'no sequence: the reported position only',
     },
+    'source_correction': {
+        'nan_restored': 'Maron 2021 Table S5 gives this Larsen 2016 window without the tripeptide NAN (28 residues, where every other Larsen window has 31; no Larsen window holds NAN, so the letters were read as a missing value when the table was made). Restored where inserting NAN at exactly one place gives the window centred on the reported position of the reported entry',
+        'accession_na': 'Table S5 gives no accession (NA), only a gene symbol and a window; the previous version left the record out. It is placed from its gene symbol and window, and numbered after the records of the previous version',
+    },
     'evidence_check': {
         'agrees': 'placed on the one site its evidence names',
+        'agrees_reported_arginine': 'placed at the reported arginine, which its peptide or window covers; the evidence covers other arginines of the entry too (a peptide with several arginines, or a window or peptide found more than once), so the reported position picks this one',
+        'agrees_position_only': 'a record with a position and no sequence, placed at that arginine',
         'agrees_no_site': 'not placed, and its evidence names no site on a reviewed entry',
         'one_of_several': 'placed on one of several sites its evidence names',
         'ambiguous': 'not placed: its evidence names several sites',
@@ -227,10 +254,13 @@ CODES: dict[str, dict[str, str]] = {
 CODES['source_table'] = {code: text for code, (_, text) in SOURCE_TABLES.items()}
 CODES['study'] = {sid: f'{label}: {citation}' for sid, label, citation, _ in STUDIES}
 VERDICT_CODE = {
-    'agrees': 'agrees', 'agrees: no site': 'agrees_no_site', 'one of several evidence sites': 'one_of_several',
+    'agrees': 'agrees', 'agrees: reported arginine': 'agrees_reported_arginine', 'agrees: position only': 'agrees_position_only',
+    'agrees: no site': 'agrees_no_site', 'one of several evidence sites': 'one_of_several',
     'evidence ambiguous': 'ambiguous', 'dropped, evidence has a site': 'dropped_evidence_has_site',
     'contradicts evidence': 'contradicts',
 }
+# Studies that looked for one degree of methylation only: their records report that degree by design.
+STUDY_DESIGN_STATE = {'Larsen2016': 'Rme1', 'Wei2020': 'Rme2'}
 FLAG_ORDER = list(CODES['flag'])
 MOTIF_ORDER = list(CODES['motif'])
 ANTIBODY_ORDER = list(CODES['antibody'])
@@ -246,13 +276,18 @@ SITE_COLUMNS = [
     ('gene', 'list<string>', '', 'primary gene name of the UniProt entry (several for a few entries, e.g. histone genes), empty when UniProt gives none'),
     ('protein_name', 'string', '', 'recommended protein name of the UniProt entry'),
     ('position', 'integer', '', 'position of the arginine in the reference sequence (1-based, initiator methionine = 1)'),
-    ('residue', 'code', '', 'residue at that position in the reference sequence: always R'),
+    ('residue', 'code', 'residue', 'residue at that position in the reference sequence: always R'),
     ('window_15', 'string', '', 'residues -7 to +7 around the site, _ beyond a protein end'),
     ('window_31', 'string', '', 'residues -15 to +15 around the site, _ beyond a protein end'),
     ('protein_length', 'integer', '', 'length of the reference sequence'),
     ('reference_sequence_md5', 'string', '', 'MD5 of the reference sequence, uppercase hex as UniProt gives it (a later UniProt entry with the same MD5 has the same numbering)'),
     ('methyl_states_reported', 'list<code>', 'methyl_state', 'methylation degrees given by the source records, in code order, empty where they give none'),
     ('maron2021_s2_states', 'list<code>', 'methyl_state', 'degrees called at the site in Maron et al. 2021 Table S2'),
+    ('uniprot_states', 'list<code>', 'methyl_state', 'degrees UniProt release 2026_03 annotates at the site (MOD_RES) with experimental evidence: ECO:0000269, or ECO:0007744 (large-scale proteomics). ADMA and SDMA calls in UniProt mostly follow the antibody of the experiment'),
+    ('uniprot_states_inferred', 'list<code>', 'methyl_state', 'degrees UniProt annotates at the site only by similarity to another species (ECO:0000250) or without experimental evidence; not counted in methyl_state'),
+    ('states_by_study_design', 'list<code>', 'methyl_state', 'the one degree a study looked for: Rme1 for Larsen 2016 (monomethylarginine antibodies; only monomethylation searched, PRIDE PXD003700), Rme2 for Wei 2020 (ADMA antibody, PTMScan #13474; only dimethylation searched)'),
+    ('methyl_state', 'code', 'state_summary', 'the degrees reported at the site by any of methyl_states_reported, maron2021_s2_states, uniprot_states and states_by_study_design; empty when none gives one. Mass spectrometry tells mono- from dimethylation, but asymmetric from symmetric mostly by the antibody used'),
+    ('methyl_state_evidence', 'list<code>', 'state_evidence', 'which of these give a degree, in code order'),
     ('maron2021_s3_antibodies', 'list<code>', 'antibody', 'antibodies whose immunoprecipitation recovered the site in Maron et al. 2021 Table S3 (supporting/maron2021_detection)'),
     ('maron2021_GSK591_call', 'code', 'call', f'response to GSK591 in Maron et al. 2021 Table S3, combined over antibodies (supporting/maron2021_inhibitors: a peptide changes at adjusted p <= {PADJ_CUTOFF}), empty when not measured'),
     ('maron2021_MS023_call', 'code', 'call', 'response to MS023, as for GSK591'),
@@ -309,10 +344,13 @@ RECORD_COLUMNS = [
     ('reported_accession', 'list<string>', '', 'accession as reported (a few records give two)'),
     ('reported_gene', 'string', '', 'gene as reported'),
     ('reported_position', 'string', '', 'position as reported'),
-    ('reported_methyl_state', 'string', '', 'methylation state as reported, verbatim'),
+    ('reported_methyl_state', 'string', '', 'methylation state as reported, in the codes of the site table (ProMetheusDB me = Rme1, di = Rme2)'),
     ('reported_enzyme', 'string', '', 'methyltransferase as reported (PTM master table only)'),
     ('evidence_kind', 'code', 'evidence_kind', 'kind of sequence evidence'),
-    ('evidence_sequence', 'list<string>', '', 'the window, peptide or marked peptide, verbatim (a few records give several)'),
+    ('evidence_sequence', 'list<string>', '', 'the window, peptide or marked peptide (a few records give several), as the pipeline reads it: modifications other than methylation, e.g. (ox), are left out, and source_correction says when it was corrected'),
+    ('evidence_window', 'list<string>', '', 'the sequence window a marked-peptide record also carries (ProMetheusDB SeqWindow), which the placement uses as well'),
+    ('source_correction', 'code', 'source_correction', 'a fault of the source row this version corrects before placing the record'),
+    ('evidence_as_reported', 'string', '', 'the evidence as the source gives it, when source_correction changed it'),
     ('placed_site', 'string', '', 'the site this version places the record on, empty when not placed'),
     ('placement_code', 'code', 'placement', 'how the record was placed (scripts/02 remap_status)'),
     ('evidence_check', 'code', 'evidence_check', "independent check of the placement against the record's own evidence (scripts/qc_remap_evidence_check.py)"),
@@ -332,9 +370,10 @@ CHANGE_COLUMNS = [
     ('in_previous_version', 'boolean', '', 'a site of the previous version'),
     ('in_this_version', 'boolean', '', 'a site of this version'),
     ('change', 'code', 'site_change', 'kept, removed or added'),
-    ('reason_codes', 'list<code>', 'reason', 'why it was removed, added or renumbered'),
-    ('records_now_at_or_previously_at', 'list<string>', '', 'for a removed site, where its records are placed now, for an added site, where they were placed before'),
-    ('record_ids', 'list<integer>', '', 'the records involved (supporting/source_records)'),
+    ('reason_codes', 'list<code>', 'reason', 'why it was removed, added or renumbered, or, for a kept site, why records moved onto or off it'),
+    ('records_change', 'code', 'records_change', 'for a kept site, whether its records changed'),
+    ('records_now_at_or_previously_at', 'list<string>', '', 'for a removed site, where its records are placed now; for an added site, where they were placed before; for a kept site, both, for the records that moved'),
+    ('record_ids', 'list<integer>', '', 'the records involved (supporting/source_records): those placed on a removed site before, or on an added site now, and for a kept site those that moved onto or off it'),
 ]
 
 MARON_DETECTION_COLUMNS = [
@@ -370,13 +409,17 @@ CARM1_COLUMNS = [
 ]
 
 CODES['analysis'] = {
-    'functional_class': 'methylated proteins in a broad functional class (config/functional_ontology.json, scripts/03), against the other reviewed human proteins',
+    'panther_group': 'methylated proteins in a group of PANTHER 19.0 top-level protein classes (config/panther_class_groups.json, scripts/03b), against the other reviewed human proteins. The groups and No PANTHER protein class partition the reviewed proteome: a + c sums to every reviewed entry',
+    'panther_class': 'the same for the 24 PANTHER top-level protein classes and No PANTHER protein class (again a partition)',
+    'panther_subclass': 'the same for every PANTHER class below the top level with at least 10 reviewed proteins (a protein counts in a class when PANTHER gives it that class or one under it)',
+    'functional_class': 'methylated proteins in a broad functional class (config/functional_ontology.json, scripts/03; the paper\'s keyword classes, which overlap), against the other reviewed human proteins',
     'functional_subclass': 'the same for functional subclasses',
     'motif': 'methylarginines with a sequence motif (scripts/08), against the other arginines of the methylated proteins',
     'disorder': 'methylarginines in a disorder class (scripts/06), against the other arginines of the methylated proteins',
-    'domain_context': 'methylarginines in a domain context (scripts/05, 07), against the other arginines of the methylated proteins',
-    'domain_class': 'methylarginines whose nearest domain is of a class (scripts/07), against the other arginines of the methylated proteins',
-    'disease_family': 'genes of methylated proteins in a disease family (scripts/14), against the other genes with a DisGeNET term',
+    'domain_context': 'methylarginines in a domain context (scripts/05, 07), against the other arginines of the methylated proteins. A protein whose every arginine is a site has no background and is left out (MIF, 5 sites)',
+    'domain_class': 'methylarginines whose nearest domain is of a class (scripts/07), against the other arginines of the methylated proteins (MIF left out, as for domain_context)',
+    'disease_family': 'genes of methylated proteins in one of the eight audited disease families (scripts/14), against the other genes with a DisGeNET term; q over the eight',
+    'disease_family_additional': 'the same for the additional disease families (scripts/disease_families.py ADDITIONAL_FAMILY_RULES: rule-based, not audited, applied only to the terms no audited family takes); q over these families',
     'condensate': 'methylated proteins among the members of a CD-CODE condensate (scripts/12), against the other condensate proteins',
     'hpa_location': 'methylated proteins at a Human Protein Atlas location, against the other proteins HPA locates (Approved or better)',
     'pdb_interface': 'methylarginines at a PDB interface of a kind (category: rna, dna, protein including self, any), against the other arginines of the same proteins that a PDB structure covers (scripts/37). Strata: all, ordered (outside MobiDB disorder), domain (inside an InterPro domain)',
@@ -386,7 +429,7 @@ CODES['analysis'] = {
     'go_binding': 'methylated proteins with a Gene Ontology RNA- or DNA-binding annotation (category; _experimental: experimental evidence codes only), against the other reviewed human proteins',
 }
 CODES['method'] = {
-    'fisher': 'two-sided Fisher exact test, q = Benjamini-Hochberg within the analysis. The odds ratio adds 0.5 to each cell (Haldane-Anscombe), except for disease families (plain ratio, as scripts/34)',
+    'fisher': 'two-sided Fisher exact test, q = Benjamini-Hochberg within the analysis and method. The odds ratio adds 0.5 to each cell (Haldane-Anscombe), except for disease families (plain ratio, as scripts/34)',
     'mantel_haenszel': 'Mantel-Haenszel common odds ratio with each protein a stratum, and the continuity-corrected Cochran-Mantel-Haenszel test (statsmodels); a b c d are the pooled counts. q = Benjamini-Hochberg within the analysis and method',
 }
 CODES['ptm_type'] = {'phospho': 'phosphorylation (S, T, Y)', 'lys_acyl': 'lysine acylation', 'ub_sumo': 'ubiquitination or SUMOylation (K)', 'lys_methyl': 'lysine methylation'}
@@ -403,6 +446,10 @@ PROTEIN_COLUMNS = [
     ('n_sites', 'integer', '', 'methylarginine sites, not counting the sites kept pending'),
     ('n_pending', 'integer', '', 'sites kept pending (flag one_sided_window)'),
     ('studies', 'list<code>', 'study', 'studies or databases reporting its sites, in the order of the studies file'),
+    ('panther_group', 'string', '', 'group of its PANTHER 19.0 top-level protein class (config/panther_class_groups.json, scripts/03b), or No PANTHER protein class'),
+    ('panther_class', 'string', '', 'its PANTHER top-level protein class, empty when PANTHER gives none'),
+    ('panther_classes', 'list<string>', '', 'its most specific PANTHER protein classes'),
+    ('panther_family', 'string', '', 'its PANTHER family (PTHR id)'),
     ('functional_classes', 'list<string>', '', 'broad functional classes (config/functional_ontology.json, scripts/03)'),
     ('functional_subclasses', 'list<string>', '', 'functional subclasses'),
     ('arginine_count', 'integer', '', 'arginines in the reference sequence'),
@@ -453,7 +500,7 @@ STATISTICS_COLUMNS = [
     ('odds_ratio', 'number', '', 'odds ratio (method)'),
     ('log2_odds_ratio', 'number', '', 'its log2'),
     ('p', 'number', '', 'p value'),
-    ('q', 'number', '', 'Benjamini-Hochberg adjusted p value within the analysis'),
+    ('q', 'number', '', 'Benjamini-Hochberg adjusted p value within the analysis and method, over all its strata and categories'),
     ('method', 'code', 'method', 'the test'),
     ('background', 'string', '', 'what the targets are compared with'),
     ('n_strata', 'integer', '', 'strata of a stratified test, empty otherwise'),
@@ -462,7 +509,7 @@ STATISTICS_COLUMNS = [
 DISEASE_TERM_COLUMNS = [
     ('term_id', 'string', '', 'DisGeNET term (UMLS CUI)'),
     ('term_name', 'string', '', 'its name'),
-    ('family', 'string', '', 'its disease family (scripts/disease_families.py), empty when none'),
+    ('family', 'string', '', 'its disease family (scripts/disease_families.py): audited, or else additional; empty when none'),
     ('n_genes_term', 'integer', '', 'genes of the term in the universe'),
     ('n_methylated', 'integer', '', 'of these, genes of methylated proteins'),
     ('fold_enrichment', 'number', '', 'observed over expected'),
@@ -515,7 +562,8 @@ CONDENSATE_COLUMNS = [
 ]
 
 DISEASE_FAMILY_COLUMNS = [
-    ('family', 'string', '', 'disease family (scripts/disease_families.py), in order of significance'),
+    ('family', 'string', '', 'disease family (scripts/disease_families.py): the eight audited families, then the additional ones, each in order of significance'),
+    ('audited', 'boolean', '', 'one of the eight audited families of the paper (otherwise an additional, rule-based family)'),
     ('n_terms', 'integer', '', 'DisGeNET terms assigned to it'),
     ('n_genes', 'integer', '', 'genes of the universe in at least one of its terms'),
     ('n_methylated_genes', 'integer', '', 'of these, genes of methylated proteins'),
@@ -532,7 +580,7 @@ SITE_INTERACTION_COLUMNS = [
     ('structures', 'list<string>', '', 'PDB entries (PDB rows), or the predicted model (ProtVar pair or AlphaFold DB model id)'),
     ('score', 'number', '', 'pDockQ (ProtVar) or ipTM (AlphaFold DB) of the predicted complex'),
     ('distance_a', 'number', '', 'closest distance in the predicted model between the arginine and the partner, in angstroms'),
-    ('detail', 'string', '', 'bonds, pLDDT and partner residues of a predicted contact; effect, residues, PubMed and IntAct ids of an IntAct record'),
+    ('detail', 'string', '', 'for an RNA crosslink, the crosslinked peptides of that dataset with the crosslinked residue in brackets, its position and the RNA adduct masses (pepR-MS compendium Table S2); for an RBDmap fragment, its range and sequence; for a DNA crosslink, the crosslinked peptide with the residues the crosslink may sit on in lower case (Trendel et al. 2025); bonds, pLDDT and partner residues of a predicted contact; effect, residues, PubMed and IntAct ids of an IntAct record'),
     ('counts_as_evidence', 'boolean', '', 'the record is site-level evidence: crosslinks at or as a candidate residue, RBDmap fragments, PDB interfaces, predicted interfaces, confident predicted contacts, and IntAct mutations that change an interaction, short binding regions and methylated residues. interaction_status counts all of these except IntAct'),
 ]
 

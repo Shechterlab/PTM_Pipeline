@@ -273,6 +273,50 @@ def crosslinks(t: Tables, seq: dict, proteome: dict, rna_sets: list, focused_bit
     return rna, rna_n, rbd, dna, dna_peps, dna_int, dna_bind, rna_single, {'matched': checked['ok'], 'dropped': checked['mismatch']}
 
 
+def crosslink_sequences(t: Tables, seq: dict, proteome: dict, rna_sets: list) -> dict:
+    """The peptides behind the crosslinks, for showing them: rna[acc][pos] -> [(dataset bit, peptide, index of the
+    crosslinked residue in it, RNA masses)], dna[acc] -> [(start, peptide with the candidate residues in lower case)]
+    and rbd[acc] -> [(start, end, fragment)], each only where it matches the reference sequence."""
+    bit_of = {label: bit for bit, (_, label) in enumerate(rna_sets)}
+    rna = defaultdict(lambda: defaultdict(dict))
+    for r in t.rows('pepr_ms_v2_table_s2_'):
+        if not r['position'] or not r['crosslinked_residue']:
+            continue
+        a, pos, pep = r['uniprot_accession'], int(r['position']), r['peptide']
+        plain = re.sub(r'([A-Z])\[(57\.02\d*|15\.99\d*)\]', r'\1', r['modified_sequence'])
+        m = re.search(r'([A-Z])\[\d+\.\d+\]', plain)
+        k = len(re.sub(r'\[[^\]]*\]', '', plain[:m.start()])) if m else -1
+        s = seq.get(a, '')
+        if k < 0 or pep[k:k + 1] != r['crosslinked_residue'] or not s or s[pos - 1 - k:pos - 1 - k + len(pep)] != pep:
+            continue
+        masses = rna[a][pos].setdefault((bit_of[r['dataset']], pep, k), [])
+        if r['rna_mass'] not in masses:
+            masses.append(r['rna_mass'])
+    rna_out = {a: {pos: [(bit, pep, k, '/'.join(m)) for (bit, pep, k), m in sorted(v.items())] for pos, v in by.items()} for a, by in rna.items()}
+    dna = defaultdict(set)
+    for r in t.rows('trendel2025_dna_crosslink_localisation'):
+        try:
+            start = int(r['peptide_start'])
+        except ValueError:
+            continue
+        pep, a = r['sequence_with_localization'], r['uniprot_accession']
+        if seq.get(a, '')[start - 1:start - 1 + len(pep)] == pep.upper():
+            dna[a].add((start, pep))
+    gene_acc = {v[0]: a for a, v in sorted(proteome.items())}
+    rbd = defaultdict(set)
+    for r in t.rows('rbdmap_'):
+        frag, a = r['fragment_sequence'], r['protein_id'].split('-')[0]
+        if a not in seq and r['gene']:
+            a = gene_acc.get(r['gene'], a)
+        s = seq.get(a, '')
+        if not s or not frag:
+            continue
+        hit = s.find(frag)
+        if hit >= 0 and s.find(frag, hit + 1) < 0:
+            rbd[a].add((hit + 1, hit + len(frag), frag))
+    return {'rna': rna_out, 'dna': {a: sorted(v) for a, v in dna.items()}, 'rbd': {a: sorted(v) for a, v in rbd.items()}}
+
+
 def cdcode(t: Tables, role_bits: dict, role_other: int, evidence_bits: dict, evidence_other: int):
     out = defaultdict(dict)
     for r in t.rows('cdcode_'):

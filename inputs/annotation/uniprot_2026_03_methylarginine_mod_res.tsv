@@ -1,0 +1,1672 @@
+uniprot_accession	position	term	state	alternate	evidence	evidence_class
+A0A2R8Y619	76	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+A0A2R8Y619	83	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+A0A2R8Y619	89	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+A0AV96	332	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+A0AV96	394	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+A0AV96	394	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+A0AV96	405	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+A0AV96	405	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+A1L390	1107	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+A2RUH7	321	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+A4D1U4	41	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+A6NEE1	503	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+A6NFN3	223	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+A6NFN3	223	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+A6NFN3	272	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+A6NGB9	46	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+A6NHQ2	8	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+A6NHQ2	15	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+A6NHQ2	27	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+A6NHQ4	52	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+A7KAX9	1523	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+A7KAX9	1533	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+A7KAX9	2037	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+A7MBM2	1366	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+A8MVX0	757	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+C9J069	322	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+C9J069	749	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+C9J069	749	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+D6RIA3	1774	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O00192	170	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O00220	52	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O00267	681	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+O00267	681	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+O00267	696	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+O00267	696	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+O00267	698	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+O00267	698	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+O00267	698	Symmetric dimethylarginine	Rme2s	True	ECO:0000269	experimental
+O00268	424	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O00268	435	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O00305	506	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O00401	307	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O00512	801	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+O00515	424	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O00562	1211	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O00562	1218	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O00567	359	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O00571	101	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O00571	110	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O00571	592	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O00571	617	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O00571	632	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O00712	335	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+O00712	388	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+O14497	429	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O14497	1276	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O14525	337	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O14559	1244	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O14686	2535	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+O14686	2836	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+O14686	3727	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O14686	4198	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+O14776	20	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O14776	28	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O14776	30	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O14776	41	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O14776	48	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O14924	524	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O14924	633	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O14976	1123	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O14979	25	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O14979	408	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+O14979	408	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+O15061	1487	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O15164	469	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O15232	198	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O15355	22	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O15399	1316	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O15523	100	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O15523	109	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O15523	590	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O15523	615	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O15523	630	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O15550	519	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O15550	549	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O43166	1601	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+O43237	397	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O43251	281	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O43251	297	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+O43251	329	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O43251	381	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+O43251	381	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+O43251	386	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+O43251	386	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+O43426	1201	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O43516	33	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+O43516	125	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O43516	134	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O43541	75	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+O43541	75	Dimethylated arginine	Rme2	True	ECO:0000250	by_similarity
+O43541	82	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+O43541	82	Dimethylated arginine	Rme2	True	ECO:0000250	by_similarity
+O43809	15	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O43818	10	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O43823	109	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+O43823	109	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+O43823	233	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O43823	277	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O43896	1041	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O60318	32	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+O60331	459	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+O60331	459	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+O60343	577	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O60493	43	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O60506	444	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+O60506	444	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+O60506	496	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+O60506	510	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+O60506	518	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+O60506	518	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+O60506	526	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+O60506	526	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+O60506	536	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+O60506	536	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+O60506	539	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+O60506	539	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+O60641	865	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+O60641	865	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+O60814	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+O60814	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O60814	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O75044	927	Symmetric dimethylarginine	Rme2s	False	ECO:0000269	experimental
+O75069	163	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O75112	219	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O75112	516	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O75112	533	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O75179	1874	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+O75190	135	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O75306	118	Symmetric dimethylarginine	Rme2s	False	ECO:0000269	experimental
+O75326	135	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+O75400	9	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O75607	27	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O75815	442	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O75970	1170	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O76041	795	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O94826	71	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O94842	481	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O94874	433	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O94910	1194	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O94913	805	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O94913	820	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O94913	833	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O94913	929	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O94913	942	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O94913	955	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O94913	981	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O94913	994	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O94913	1007	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O94913	1093	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O94913	1104	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O94929	631	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O94941	451	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O95208	170	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O95425	1203	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O95429	40	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O95429	53	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O95429	108	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O95429	185	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+O95622	23	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O95628	475	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O95628	483	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O95628	497	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O95793	108	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+O95793	115	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+O95793	115	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+O95817	139	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+O95817	261	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P00505	313	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P00533	1199	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+P02686	177	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P02686	183	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P02686	241	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+P02686	241	Symmetric dimethylarginine	Rme2s	True	ECO:0000269	experimental
+P02753	139	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P02787	42	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+P03372	260	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P04049	563	Symmetric dimethylarginine	Rme2s	False	ECO:0000269	experimental
+P04150	23	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P04264	12	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P04264	45	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P04264	82	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+P04264	518	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P04264	588	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P04637	333	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+P04637	335	Symmetric dimethylarginine	Rme2s	False	ECO:0000269	experimental
+P04637	337	Symmetric dimethylarginine	Rme2s	False	ECO:0000269	experimental
+P04792	12	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P04908	4	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+P05423	95	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P05423	97	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P05423	99	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P05783	45	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P05783	55	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P05787	23	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P05787	32	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P05787	40	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P05787	47	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P05787	47	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+P06746	83	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+P06746	152	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+P06899	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+P06899	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P06899	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P07099	295	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+P07196	23	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P07196	23	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P07196	30	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P07197	42	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P07437	318	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+P07814	1152	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P08651	365	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P08651	365	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+P08651	395	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+P08651	451	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P08727	7	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P08727	24	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P08727	24	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+P08727	32	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P08727	43	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P08727	51	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P08729	20	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+P08729	20	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+P08913	368	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P09012	152	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P09038	108	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P09038	108	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+P09038	110	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P09038	110	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+P09038	112	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P09038	112	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+P09651	194	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P09651	194	Dimethylated arginine	Rme2	True	ECO:0007744	experimental
+P09651	194	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P09651	206	Omega-N-methylarginine	Rme1	True	ECO:0000269;ECO:0007744	experimental
+P09651	206	Dimethylated arginine	Rme2	True	ECO:0007744	experimental
+P09651	206	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269;ECO:0007744	experimental
+P09651	218	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P09651	218	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+P09651	225	Omega-N-methylarginine	Rme1	True	ECO:0000269;ECO:0007744	experimental
+P09651	225	Dimethylated arginine	Rme2	True	ECO:0007744	experimental
+P09651	225	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269;ECO:0007744	experimental
+P09651	232	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P09651	232	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P09651	336	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P09651	352	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P09651	370	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P0C0S8	4	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+P0CG12	364	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P0CG12	387	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P0DMV8	469	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P0DMV9	469	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P0DPK2	3	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P0DPK2	9	Symmetric dimethylarginine	Rme2s	False	ECO:0000250	by_similarity
+P0DPK2	18	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P0DPK5	3	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P0DPK5	9	Symmetric dimethylarginine	Rme2s	False	ECO:0000250	by_similarity
+P0DPK5	18	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P10071	175	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P10636	472	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P10636	666	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P11021	492	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P11142	469	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P11274	471	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P11717	2425	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P11912	204	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P11940	385	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P11940	419	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P11940	432	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P11940	436	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P11940	455	Omega-N-methylated arginine	Rme	False	ECO:0000305	other
+P11940	460	Omega-N-methylated arginine	Rme	False	ECO:0000305	other
+P11940	475	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P11940	481	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P11940	493	Omega-N-methylarginine	Rme1	True	ECO:0000269;ECO:0007744	experimental
+P11940	493	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+P11940	493	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+P11940	506	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P11940	518	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P12270	2106	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P12270	2111	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P12270	2163	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P12270	2343	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P12270	2345	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P12270	2354	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P13497	934	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P13497	937	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P13631	34	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P13646	27	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P13646	35	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P14136	12	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P14678	108	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P14678	108	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+P14678	108	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+P14678	112	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P14678	112	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+P14678	112	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+P14678	147	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+P14678	172	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P14866	354	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P14866	358	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P15056	671	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+P15923	371	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P15924	2826	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P15924	2834	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P15924	2838	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P15924	2846	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P15924	2847	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P16989	251	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P16989	326	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P17096	26	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+P17096	26	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+P17096	26	Symmetric dimethylarginine	Rme2s	True	ECO:0000269	experimental
+P17096	58	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+P17096	58	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+P17096	60	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+P17096	60	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+P17600	430	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P17600	476	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P17600	534	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P17600	547	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P17600	556	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P17600	622	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P17600	679	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P17661	16	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P17661	37	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P17661	37	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P17661	70	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P17676	3	Asymmetric dimethylarginine	Rme2a	False	ECO:0000305	other
+P18583	950	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P18583	1007	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P18583	1022	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P19013	13	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P19338	656	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P19338	660	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P19338	666	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P19338	670	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P19338	673	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P19338	679	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P19338	681	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P19338	687	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P19338	691	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P19338	694	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P19338	694	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P19532	188	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P20290	19	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P20671	4	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+P20700	14	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P20700	413	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P20839	341	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P20839	355	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P22087	8	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P22087	15	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P22087	21	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P22087	24	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P22087	27	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P22626	38	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P22626	203	Omega-N-methylarginine	Rme1	True	ECO:0000269;ECO:0007744	experimental
+P22626	203	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+P22626	203	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P22626	213	Omega-N-methylarginine	Rme1	True	ECO:0000269;ECO:0007744	experimental
+P22626	213	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+P22626	213	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P22626	228	Omega-N-methylarginine	Rme1	False	ECO:0000269;ECO:0007744	experimental
+P22626	238	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P22626	266	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P22626	266	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P22626	325	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P22626	350	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P23246	9	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P23246	9	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P23246	236	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P23246	242	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P23246	245	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P23246	571	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+P23246	681	Omega-N-methylarginine	Rme1	False	ECO:0000269;ECO:0007744	experimental
+P23246	693	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P23246	693	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+P23246	695	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P23396	64	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P23396	65	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P23396	67	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P23527	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+P23527	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P23527	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P23677	35	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P23677	55	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P23677	62	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P23769	86	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+P24928	1603	Omega-N-methylated arginine	Rme	False	ECO:0000269	experimental
+P24928	1810	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+P24928	1810	Symmetric dimethylarginine	Rme2s	True	ECO:0000269	experimental
+P25705	204	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P26378	248	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+P26378	248	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+P28340	19	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P28702	25	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P31269	140	Symmetric dimethylarginine	Rme2s	False	ECO:0000269	experimental
+P31321	97	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P31942	121	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P31942	174	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P31942	287	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+P31942	323	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P31942	343	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P31943	233	Omega-N-methylarginine	Rme1	True	ECO:0000269;ECO:0007744	experimental
+P31943	233	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+P33176	956	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P33240	308	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P33240	468	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P33240	475	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P33778	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+P33778	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P33778	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P35579	1923	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P35580	18	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P35580	1930	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P35580	1940	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P35637	216	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P35637	216	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+P35637	218	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P35637	218	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+P35637	242	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	244	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	248	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	251	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	259	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	377	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	383	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	386	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	388	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	394	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	407	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P35637	407	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+P35637	473	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	476	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	481	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	485	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	487	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	491	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	495	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	498	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P35637	503	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P35637	503	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+P35908	12	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P35908	20	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P36578	97	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P37802	182	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P37802	196	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P38159	125	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P38159	144	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P38159	164	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P38159	172	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P38646	513	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P39019	67	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P39748	19	Symmetric dimethylarginine	Rme2s	False	ECO:0000255;ECO:0000269	experimental
+P39748	100	Symmetric dimethylarginine	Rme2s	False	ECO:0000255;ECO:0000269	experimental
+P39748	104	Symmetric dimethylarginine	Rme2s	False	ECO:0000255;ECO:0000269	experimental
+P39748	192	Symmetric dimethylarginine	Rme2s	False	ECO:0000255;ECO:0000269	experimental
+P40145	55	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P40925	230	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P40939	399	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P41594	869	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P41594	925	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P42166	86	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P42166	88	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P42167	86	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P42167	88	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P42694	1245	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P45985	58	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P45985	58	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+P46100	2474	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P46100	2480	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P46783	153	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P46783	158	Symmetric dimethylarginine	Rme2s	False	ECO:0000269	experimental
+P46783	160	Symmetric dimethylarginine	Rme2s	False	ECO:0000269	experimental
+P48634	272	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+P48634	296	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P48634	904	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P48634	1066	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P48730	375	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P48751	295	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P49247	52	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P49326	5	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+P49674	382	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P49750	814	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P49750	831	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P49755	171	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+P49755	176	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+P49792	945	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+P49792	1016	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P49792	1016	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P49796	448	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P49821	257	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P49848	524	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P49918	107	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P49959	570	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P49959	572	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P49959	574	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P49959	576	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P49959	577	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P49959	580	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P49959	587	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P49959	592	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P49959	594	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+P50238	68	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P50991	19	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P51114	447	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P51114	447	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P51114	453	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P51114	453	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P51114	455	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P51114	455	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P51608	162	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P51610	504	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P51610	524	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P51610	1219	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P51991	52	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+P51991	52	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+P51991	76	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P51991	214	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P51991	214	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P51991	216	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P51991	216	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P51991	226	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P51991	226	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P51991	239	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P51991	239	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+P51991	246	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P51991	246	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269;ECO:0007744	experimental
+P51991	257	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P51991	286	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P51991	354	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P52272	496	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P52298	146	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P52799	277	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P53621	965	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P54259	1115	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+P55042	24	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P55265	26	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+P55345	61	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+P55345	72	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+P55795	233	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P55795	233	Dimethylated arginine	Rme2	True	ECO:0000250	by_similarity
+P56545	22	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+P57053	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+P57053	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P57053	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P57740	60	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P57740	60	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P57740	68	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P57772	556	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P58876	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+P58876	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P58876	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P61081	169	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P61081	169	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P61978	316	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P61978	377	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P62273	12	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P62280	69	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P62633	25	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+P62633	27	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+P62633	79	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P62805	4	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+P62805	4	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+P62805	4	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+P62807	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+P62807	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P62807	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P62995	241	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P62995	241	Dimethylated arginine	Rme2	True	ECO:0000269;ECO:0007744	experimental
+P62995	241	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+P63162	108	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P63162	108	Dimethylated arginine	Rme2	True	ECO:0000250	by_similarity
+P63162	108	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P63162	112	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+P63162	112	Dimethylated arginine	Rme2	True	ECO:0000250	by_similarity
+P63162	112	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P63162	147	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P63162	172	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P68363	339	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+P68431	3	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+P68431	9	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+P68431	18	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+P78344	360	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P78344	505	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P78426	189	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+P83369	41	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+P84243	3	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+P84243	9	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+P84243	18	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+P85037	161	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P85037	191	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P98175	902	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P98179	47	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P98179	105	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+P98179	105	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+P98179	105	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+P98179	121	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+P98179	131	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q00587	53	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q00839	702	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q00839	715	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q00839	720	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q00839	727	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q00839	733	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q00839	733	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q00839	739	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q00839	739	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+Q00839	739	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q00839	755	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q00839	762	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q00975	22	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q01081	165	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q01167	144	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q01201	16	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q01433	45	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q01546	85	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q01546	110	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q01546	584	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q01844	300	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	302	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	304	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	309	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	314	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	317	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	321	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	455	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	464	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	471	Omega-N-methylarginine	Rme1	True	ECO:0000269;ECO:0007744	experimental
+Q01844	471	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q01844	486	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q01844	490	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	494	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	500	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	503	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	506	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q01844	506	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q01844	563	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	565	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	572	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q01844	572	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q01844	575	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	581	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	589	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	592	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	596	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q01844	596	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q01844	600	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	603	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	607	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q01844	607	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q01844	615	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q01844	615	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q01844	633	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01844	636	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q01974	785	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q01995	183	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q02779	857	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q02790	373	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q03252	433	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q04637	73	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q04637	110	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q04637	685	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q04637	694	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q04637	1032	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q04637	1042	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q05193	796	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q06787	471	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q06787	534	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q06787	534	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q06787	539	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q06787	539	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q06787	544	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q06787	544	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q06787	544	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q06787	546	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q06787	546	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q07666	45	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q07666	52	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q07666	282	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q07666	284	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q07666	291	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q07666	304	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q07666	310	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q07666	315	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q07666	320	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q07666	320	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+Q07666	325	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q07666	331	Omega-N-methylarginine	Rme1	True	ECO:0000269;ECO:0007744	experimental
+Q07666	331	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+Q07666	331	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q07666	340	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q07666	340	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+Q07890	1321	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q07912	839	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q07955	93	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q07955	93	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q07955	97	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q07955	97	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q07955	109	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q07955	109	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q07955	111	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q08211	1166	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q08211	1175	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q08211	1219	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q08211	1235	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q08211	1242	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q08211	1249	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q08211	1265	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q08379	18	Dimethylated arginine	Rme2	False	ECO:0000305	other
+Q08379	30	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+Q08379	35	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+Q09019	551	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q09472	580	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q09472	604	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q09472	2142	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q09666	270	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q12770	1051	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q12774	866	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q12778	251	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q12778	253	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q12809	1014	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q12830	2155	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q12830	2162	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q12830	2184	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q12830	2191	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q12857	389	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q12888	1355	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q12905	16	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q12905	16	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q12905	24	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13144	19	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q13148	293	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13151	139	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13151	284	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13151	291	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q13151	291	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+Q13151	291	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q13227	312	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q13227	323	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q13227	323	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269;ECO:0007744	experimental
+Q13283	429	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q13283	435	Omega-N-methylarginine	Rme1	True	ECO:0000269;ECO:0007744	experimental
+Q13283	435	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+Q13283	435	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q13283	447	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13283	460	Omega-N-methylarginine	Rme1	True	ECO:0000269;ECO:0007744	experimental
+Q13283	460	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+Q13283	465	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13303	28	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q13303	28	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q13310	419	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13310	432	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13310	436	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13310	454	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13310	518	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+Q13310	530	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13351	184	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q13435	222	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13435	245	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13435	247	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13435	508	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q13435	508	Symmetric dimethylarginine	Rme2s	True	ECO:0000269	experimental
+Q13435	515	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13563	137	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q13595	232	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q13608	119	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13616	63	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13671	692	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13885	318	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q13895	40	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q13950	267	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q14003	625	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q14103	272	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q14103	278	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q14103	280	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q14103	282	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q14103	345	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q14103	345	Dimethylated arginine	Rme2	True	ECO:0007744	experimental
+Q14103	345	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q14112	1308	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q14151	897	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q14151	903	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q14157	187	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q14157	190	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q14247	119	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q14315	1002	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q14444	165	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q14444	626	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q14444	633	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q14444	640	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q14444	698	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q14444	698	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q14524	513	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q14524	513	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+Q14524	526	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q14524	526	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+Q14524	680	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q14524	680	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+Q14526	159	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q14527	27	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q14671	796	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q14676	1943	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q14686	95	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q14686	1047	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q14686	1058	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q14686	1096	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q14687	305	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q14781	247	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q14781	247	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q14896	1241	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q14938	343	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q14938	390	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q14966	47	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q14966	49	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q14966	54	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q14978	683	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15020	906	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15025	571	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q15025	599	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q15025	599	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q15032	929	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q15032	929	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q15056	19	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q15056	22	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q15056	136	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q15056	166	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15056	175	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q15149	4627	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q15149	4640	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15233	456	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15424	811	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15424	868	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q15424	874	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q15424	884	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q15466	57	Symmetric dimethylarginine	Rme2s	False	ECO:0000250	by_similarity
+Q15554	59	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q15554	60	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q15569	338	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q15596	338	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q15596	864	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q15596	874	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q15596	1173	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q15596	1177	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q15596	1190	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q15596	1196	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q15596	1203	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q15596	1221	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q15596	1240	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q15596	1261	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15596	1266	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q15654	25	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q15654	25	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q15654	111	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15654	179	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15654	186	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15654	205	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15654	236	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15654	238	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15717	206	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q15717	217	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q15717	217	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q15723	494	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q15735	56	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q15735	56	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q15735	65	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q15735	76	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q15735	83	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q15735	83	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q15768	271	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q15772	2055	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q15772	2055	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q15772	2139	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q15788	1073	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q15788	1091	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q15788	1124	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q15788	1131	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q15942	253	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q16204	387	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q16555	565	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q16695	3	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q16695	9	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q16695	18	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q16777	4	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q16778	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q16778	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q16778	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q16890	133	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q1ED39	430	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q1KMD3	656	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q1KMD3	684	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q1KMD3	738	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q1KMD3	747	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q2M2I8	391	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q2MJR0	240	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q2MJR0	248	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q32P51	194	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q32P51	194	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q32P51	206	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q32P51	206	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q32P51	218	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q32P51	218	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q32P51	225	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q32P51	225	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q32P51	284	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q4KMP7	186	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q53ET0	51	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q53ET0	99	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q53ET0	120	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q53ET0	123	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q53ET0	161	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q53ET0	168	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q5BKZ1	173	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q5BKZ1	235	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q5DX21	378	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q5FWE3	780	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q5JRA6	1784	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q5JU85	1345	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q5JVS0	70	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q5PRF9	602	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q5QNW6	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q5QNW6	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q5QNW6	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q5QP82	134	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q5SQI0	305	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q5SQI0	323	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q5T0Z8	1044	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q5T0Z8	1073	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q5T0Z8	1084	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q5T0Z8	1157	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q5T5U3	554	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q5T5U3	575	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q5T6F2	166	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q5TA31	98	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q5TA31	109	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q5TAQ9	204	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q5TAX3	1624	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q5TEC6	3	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q5TEC6	9	Symmetric dimethylarginine	Rme2s	False	ECO:0000250	by_similarity
+Q5TEC6	18	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q5TGY3	891	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q5U651	94	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q5VT52	1366	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q5VT52	1424	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q5VT52	1430	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q5VWX1	230	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q5VWX1	240	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q5XPI4	683	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q63HR2	555	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q63ZY3	105	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q69YN4	1723	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q69YN4	1741	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q69YN4	1741	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q69YN4	1773	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q69YN4	1775	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q69YN4	1793	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q6DN03	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q6DN03	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q6DN03	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q6DRA6	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q6DRA6	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q6DRA6	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q6F5E8	1303	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q6FI13	4	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q6N021	1682	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q6NXG1	582	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q6NXT2	3	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q6NXT2	9	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q6NXT2	18	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q6NZY7	38	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q6P0Q8	1004	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q6P6C2	359	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q6PID8	13	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q6PJG2	193	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q6PJG2	447	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q6PKG0	240	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q6Y7W6	107	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q6Y7W6	118	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q6Y7W6	120	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q6Y7W6	149	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q6ZN55	832	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q6ZTI6	163	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q6ZWB6	80	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q709C8	3519	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q709C8	3526	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q70EL1	12	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q70EL4	746	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q71DI3	3	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q71DI3	9	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q71DI3	18	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q71H61	544	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q71RC2	368	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q71RC2	686	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q71SY5	725	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q76L83	641	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q7L2J0	117	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q7L7L0	4	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q7Z309	122	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q7Z403	94	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q7Z417	291	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q7Z434	236	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q7Z4W1	21	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q7Z6G3	10	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q7Z6G3	42	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q7Z6J2	270	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q7Z6J9	316	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q7Z6L0	240	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q7Z6Z7	3149	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q7Z736	638	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q7Z736	642	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q7Z794	95	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q7Z794	523	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q7Z7K6	43	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q86TB9	217	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q86TB9	223	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q86TB9	263	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q86TB9	284	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86TB9	385	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q86TG7	507	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q86TG7	598	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q86TG7	611	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q86U42	17	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q86U42	238	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q86U42	238	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q86U42	259	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q86U42	259	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q86U42	263	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q86U42	263	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q86U42	265	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86U42	267	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86U42	269	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86U42	277	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86U42	279	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86U42	287	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86U42	289	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86U42	291	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86U42	294	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86U42	296	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86U42	298	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86US8	406	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q86US8	433	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q86UU0	680	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86UU1	131	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q86UU1	512	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q86UW9	213	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q86UW9	215	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q86UW9	233	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q86UW9	256	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86V81	38	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q86V81	38	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q86V81	58	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86V81	63	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86V81	71	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86V81	197	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q86V81	197	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q86V81	204	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q86V81	204	Dimethylated arginine	Rme2	True	ECO:0000269;ECO:0007744	experimental
+Q86V81	204	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q86V81	220	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q86VQ6	26	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q86VQ6	26	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q86WJ1	9	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86WP2	87	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86WR7	252	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q86WR7	252	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q86WR7	320	Omega-N-methylarginine	Rme1	True	ECO:0000269;ECO:0007744	experimental
+Q86WR7	320	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+Q86WR7	378	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86WR7	414	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86X55	550	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q86XP3	12	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86YP4	225	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q86YP4	249	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86YP4	258	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86YP4	273	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86YP4	285	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q86YP4	539	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q86YP4	539	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q86YR5	421	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q86YZ3	1205	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8IU81	177	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8IUE6	4	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q8IVW6	361	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8IWD4	48	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8IWI9	2265	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8IZ40	479	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8IZS5	113	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q8N163	180	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8N1G0	1060	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8N1G0	1101	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8N1G1	191	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8N257	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q8N257	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8N257	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8N3J3	285	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q8N3J3	295	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q8N3J3	329	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q8N3J3	337	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q8N461	92	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8N4B5	83	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8N4B5	172	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8N4B5	188	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8N4C8	501	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8N4C8	509	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8N5S9	78	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8N6I1	59	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8N6I1	75	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8N884	124	Symmetric dimethylarginine	Rme2s	False	ECO:0000269	experimental
+Q8NAF0	92	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8NB15	240	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8NBF6	588	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8NC51	165	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8NC51	188	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8NC51	216	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8NC51	364	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8NC51	367	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8NC51	370	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8NC96	180	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8NCE2	638	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8ND04	898	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8ND56	401	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8ND83	471	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8ND83	543	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8NDA2	912	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8NDA2	917	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8NE35	308	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8NEY1	688	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8NEZ4	2454	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8NEZ4	2571	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8NEZ4	4139	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8NF64	111	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8NF64	245	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q8NF64	262	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q8NFD5	487	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8NFD5	608	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8NFD5	640	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q8NFW8	37	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8NFW8	52	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TAE6	27	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TAP9	37	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8TAP9	57	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8TAP9	59	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q8TAP9	68	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q8TAP9	77	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q8TAP9	117	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8TAX0	116	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8TB03	61	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TB72	674	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TBA6	89	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q8TC59	47	Symmetric dimethylarginine	Rme2s	False	ECO:0000250	by_similarity
+Q8TC59	76	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q8TC59	76	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q8TC59	97	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q8TC59	97	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q8TC59	102	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q8TC59	102	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q8TC59	146	Symmetric dimethylarginine	Rme2s	False	ECO:0000250	by_similarity
+Q8TC59	158	Symmetric dimethylarginine	Rme2s	False	ECO:0000250	by_similarity
+Q8TC59	165	Symmetric dimethylarginine	Rme2s	False	ECO:0000250	by_similarity
+Q8TC59	551	Symmetric dimethylarginine	Rme2s	False	ECO:0000250	by_similarity
+Q8TD08	449	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8TDC3	466	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TDC3	481	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TDC3	484	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TDC3	498	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TDC3	525	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TDC3	550	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TDW7	4510	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TE49	880	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TF61	360	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8TF74	37	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q8WTW4	78	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q8WUF5	137	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8WUF5	142	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8WUF5	144	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8WUF5	160	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8WUF5	167	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8WUF5	180	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8WUF5	205	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8WUM0	17	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8WUM0	30	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q8WUM4	745	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8WWM7	361	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q8WXD9	398	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8WXF1	507	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8WYH8	126	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q8WZ74	498	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q92502	169	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q92530	205	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q92530	219	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q92530	231	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92558	341	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q92558	341	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q92567	102	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q92576	1867	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q92576	1877	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q92615	404	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92615	419	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92615	493	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q92686	68	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92734	385	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92734	400	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92793	220	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92793	601	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q92793	625	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q92804	206	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q92804	206	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q92804	431	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92804	459	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92804	475	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92804	483	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+Q92804	528	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q92804	535	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q92804	562	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92804	570	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q92804	570	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q92841	684	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92900	1019	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92903	7	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q92922	1064	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q92925	81	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q92925	104	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q92934	94	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q92934	96	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q92934	161	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92945	40	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q92945	411	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92945	413	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92945	415	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92945	442	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q92997	27	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q92997	212	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q92997	271	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q92997	271	Symmetric dimethylarginine	Rme2s	True	ECO:0000269	experimental
+Q92997	342	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q92997	342	Symmetric dimethylarginine	Rme2s	True	ECO:0000269	experimental
+Q92997	614	Symmetric dimethylarginine	Rme2s	False	ECO:0000269	experimental
+Q92997	698	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q92997	698	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+Q93074	1899	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q93074	1899	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q93074	1910	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q93074	1994	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q93074	2015	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q93077	4	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q93079	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q93079	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q93079	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q969G3	4	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q969G3	40	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q969W3	4	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96A08	81	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+Q96A08	88	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q96A08	94	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q96AE4	321	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96AE4	359	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96AE4	361	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96AE4	363	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96B18	258	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96B23	347	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96B36	51	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96DH6	228	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96DH6	261	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96DI7	21	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q96DT7	126	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96EK7	885	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96EP5	253	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96EV2	470	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q96EV2	1028	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q96EV2	1028	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q96EY1	58	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q96EY1	238	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q96EY1	293	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q96F45	636	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96GM5	68	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q96GM5	88	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q96H20	4	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96HA7	797	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96HB5	435	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96HP0	865	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96J94	14	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q96J94	14	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q96J94	49	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96J94	53	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q96J94	53	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q96J94	370	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96K80	185	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96K80	186	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96KK5	4	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q96KQ4	554	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q96LA8	29	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q96LA8	35	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q96LA8	37	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q96LB3	51	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96LD4	582	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96LJ7	21	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96NL0	13	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96NW7	1187	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96PU8	227	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96PU8	242	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q96PU8	242	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q96PU8	256	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96PX6	541	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q96Q04	490	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96QC0	665	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96QC0	693	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96QC0	738	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96QR8	24	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96QR8	152	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96QR8	294	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96QV6	4	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q96RK0	1099	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96RK0	1772	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q96RK0	1843	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q96RN5	349	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q96SI9	612	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q96SI9	617	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q96T37	578	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q96T37	578	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q96T58	108	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q96T58	3113	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q96T58	3121	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q99501	487	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99501	504	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99501	633	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99569	254	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99569	270	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99590	1151	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q99683	78	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q99683	80	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q99700	640	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q99700	640	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q99719	168	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99729	245	Omega-N-methylarginine	Rme1	True	ECO:0000269	experimental
+Q99729	245	Dimethylated arginine	Rme2	True	ECO:0000269	experimental
+Q99729	250	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99729	253	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99729	322	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q99729	322	Dimethylated arginine	Rme2	True	ECO:0007744	experimental
+Q99729	322	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q99832	535	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q99877	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q99877	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99877	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99878	4	Symmetric dimethylarginine	Rme2s	True	ECO:0000250	by_similarity
+Q99879	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q99879	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99879	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99880	80	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q99880	87	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99880	93	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99958	279	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99958	293	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q99958	458	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q99959	46	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BPU6	559	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9BPX6	455	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q9BQ75	167	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BQG1	284	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9BST9	14	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BST9	230	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9BTC0	1835	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BTC0	1893	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BTC0	1894	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BTC0	1977	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BTC0	1982	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BTC0	1993	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BTC0	2008	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BTC0	2024	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BTD8	153	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BTD8	158	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BTD8	168	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BTD8	181	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BTL3	85	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BTV5	310	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9BTV5	320	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BUH8	381	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9BUJ2	639	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BUJ2	645	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q9BUJ2	645	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q9BUJ2	656	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q9BUJ2	656	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q9BUJ2	661	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9BUJ2	671	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BUT9	35	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BUT9	65	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BUV0	135	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9BVA1	318	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9BWW4	155	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BWW4	161	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BWW4	165	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9BX40	351	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9BXB5	38	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BXF3	1197	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9BXF3	1203	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9BXP5	833	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BXP5	840	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BXP5	850	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BXY8	50	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9BY77	33	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BYB0	1041	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9BYD3	147	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BYG3	114	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q9BYG3	244	Omega-N-methylated arginine	Rme	False	ECO:0000269	experimental
+Q9BYG3	245	Omega-N-methylated arginine	Rme	False	ECO:0000269	experimental
+Q9BYG3	284	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q9BYN0	11	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BYN0	16	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BYV8	343	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9BZ72	828	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9BZI7	447	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9BZZ5	500	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9C0B5	617	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9C0B5	697	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9C0C7	747	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9C0H9	329	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9C0H9	336	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9C0H9	501	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9C0J8	782	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9C0J8	915	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9C0J8	987	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9C0J8	1035	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9C0J8	1262	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9C0J8	1315	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9C0J8	1315	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q9C0K0	293	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9C0K0	322	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9H074	21	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9H0C5	79	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9H0D6	824	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9H0D6	824	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q9H0D6	847	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9H0D6	847	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q9H0D6	851	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9H0D6	851	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q9H0D6	880	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9H0D6	883	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9H0D6	883	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q9H0D6	895	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9H0D6	946	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9H0D6	946	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q9H0E3	232	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9H165	271	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9H1Z4	114	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9H1Z4	114	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q9H270	904	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H2D6	1930	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H2H8	61	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H2P0	348	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9H307	54	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H361	426	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H361	430	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H361	449	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H361	501	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q9H361	513	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H3H3	29	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9H3S7	950	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9H3S7	1615	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9H3T3	665	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H7E9	27	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9H7S9	580	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H8H2	828	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9H8Y8	30	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q9H8Y8	47	Dimethylated arginine	Rme2	False	ECO:0000250	by_similarity
+Q9H987	386	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H987	466	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H987	469	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H987	479	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H987	757	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H987	806	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H987	826	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H987	889	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H987	910	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H987	921	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q9H987	921	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q9H987	955	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H987	957	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9H9H4	218	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9HAH7	229	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9HAH7	239	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9HB09	60	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9HBZ2	42	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9HCD6	1563	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9HCD6	1576	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9HCE9	1020	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q9HCE9	1020	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q9HCJ0	523	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9NPC6	53	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9NPI6	376	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9NQZ2	8	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9NR12	103	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9NR22	58	Omega-N-methylarginine	Rme1	False	ECO:0000269	experimental
+Q9NR22	73	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q9NRC8	388	Omega-N-methylarginine	Rme1	True	ECO:0000269;ECO:0007744	experimental
+Q9NRC8	388	Asymmetric dimethylarginine	Rme2a	True	ECO:0000269	experimental
+Q9NRF2	270	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9NRH2	534	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9NRJ4	945	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9NRJ4	950	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9NRS6	105	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9NS23	36	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9NUQ3	12	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9NUQ3	24	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9NVM4	32	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9NWB1	317	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9NWB1	388	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9NWH9	1017	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9NX05	58	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9NX05	977	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9NYF8	809	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9NYJ8	173	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9NZB2	873	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9NZB2	884	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9NZB2	886	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9NZB2	982	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9NZB2	986	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9NZJ7	29	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9P206	320	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9P242	81	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9P270	538	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9P270	551	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9P2D1	148	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9P2D1	286	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9P2K3	445	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9P2K3	457	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9P2K5	406	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9P2N5	455	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UBB4	10	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UBB6	75	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9UBF9	20	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UBL0	655	Asymmetric dimethylarginine	Rme2a	False	ECO:0000305	other
+Q9UBL3	296	Asymmetric dimethylarginine	Rme2a	False	ECO:0000269	experimental
+Q9UBN7	33	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UBU9	42	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q9UBU9	42	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q9UEU0	107	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UG01	672	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UGU0	60	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UGU0	1024	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UJY1	71	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9UJY1	78	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9UKA2	28	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9UKK3	1476	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9UKZ1	41	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UL51	756	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9ULC8	441	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9ULR3	213	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9ULX6	208	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9ULX6	208	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q9ULX6	217	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9ULX6	237	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9ULX6	247	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UM47	2174	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UN86	457	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UN86	468	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UPA5	148	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UPA5	867	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UPA5	1787	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UPA5	1791	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UPA5	1801	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q9UPA5	1801	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q9UPA5	1813	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UPA5	2046	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UPA5	2076	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UPA5	2250	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9UPA5	2260	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9UPA5	2266	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9UPA5	3492	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UPA5	3808	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UPN6	917	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9UPN6	927	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9UPN6	938	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9UPN6	1073	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9UPN9	515	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9UPN9	515	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q9UPN9	535	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UPN9	577	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9UPN9	591	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9UPN9	591	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q9UPN9	598	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9UPN9	604	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9UPT8	601	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9UPU9	573	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UPV7	36	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UPX0	1136	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UQ35	2194	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UQ35	2207	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UQ35	2231	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UQ35	2246	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UQ35	2274	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UQ35	2288	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UQ35	2342	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9UQ35	2384	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9UQ35	2384	Asymmetric dimethylarginine	Rme2a	True	ECO:0007744	experimental
+Q9UQB3	209	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UQB3	264	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UQB3	282	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9UQB3	296	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y2G7	75	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9Y2H0	291	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y2J0	226	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y2K2	986	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y2K9	709	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y2W1	17	Dimethylated arginine	Rme2	False	ECO:0000269	experimental
+Q9Y2W1	66	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y2W1	101	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y2W1	108	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y2W1	845	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9Y2W2	192	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9Y3I1	432	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y3I1	451	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y3I1	518	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9Y3S1	19	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y3S1	30	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y3X0	107	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y3X0	121	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y3X0	128	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y3X0	130	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y3X0	131	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y3X0	133	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y3X0	135	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y446	81	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9Y446	261	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9Y4E5	158	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9Y4H2	412	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9Y520	242	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9Y520	242	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q9Y520	255	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y520	266	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y520	279	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9Y520	281	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9Y520	2814	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y520	2823	Omega-N-methylarginine	Rme1	True	ECO:0000250	by_similarity
+Q9Y520	2823	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q9Y566	544	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y566	950	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y566	1051	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y566	1090	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y566	1101	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y566	1253	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9Y566	1423	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y566	1895	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y566	2016	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y566	2036	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y566	2074	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y570	16	Omega-N-methylarginine	Rme1	True	ECO:0007744	experimental
+Q9Y570	16	Asymmetric dimethylarginine	Rme2a	True	ECO:0000250	by_similarity
+Q9Y580	152	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9Y5S2	671	Omega-N-methylarginine	Rme1	False	ECO:0007744	experimental
+Q9Y618	18	Asymmetric dimethylarginine	Rme2a	False	ECO:0000250	by_similarity
+Q9Y618	1653	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y6I3	534	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y6J9	555	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y6J9	561	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y6J9	593	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y6K1	171	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y6L7	963	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y6L7	966	Omega-N-methylarginine	Rme1	False	ECO:0000250	by_similarity
+Q9Y6Q9	1171	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y6Q9	1177	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental
+Q9Y6Q9	1188	Asymmetric dimethylarginine	Rme2a	False	ECO:0007744	experimental

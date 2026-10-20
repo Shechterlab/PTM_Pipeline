@@ -1,0 +1,211 @@
+class_id	name	parent_id	top_level_id	code	definition
+PC00000	protein class			1.00.00.00.00	
+PC00197	transmembrane signal receptor	PC00000	PC00197	1.01.00.00.00	A protein or complex that spans the plasma membrane, that binds to an signal molecule in the extracellular space and transduces the signal to the cytoplasm. Note that the term RECEPTOR is used in several different ways in biology, and other receptors are found in other categories.  Nuclear receptors are classified under DNA-BINDING TRANSCRIPTION FACTOR, cargo receptors are classified under MEMBRANE TRAFFICKING REGULATORY PROTEIN, ligand-gated ion channels (e.g. acetylcholine receptors) are classified under ION CHANNEL, and T-cell receptors are classified under DEFENSE/IMMUNITY PROTEIN.
+PC00021	G-protein coupled receptor	PC00197	PC00197	1.01.01.00.00	Cell surface receptors that are coupled to G proteins and have 7 transmembrane spanning domains.
+PC00233	tyrosine protein kinase receptor	PC00197	PC00197	1.01.02.00.00	A protein that has an extracellular ligand binding domain, a single transmembrane domain and an intracellular tyrosine kinase domain that phosphorylates protein tyrosine residues.
+PC00205	serine/threonine protein kinase receptor	PC00197	PC00197	1.01.03.00.00	A protein that has an extracellular ligand binding domain, a single transmembrane domain and an intracellular serine or threonine kinase domain that phosphorylates protein serine or threonine residues.
+PC00265	histidine kinase receptor of two-component system	PC00197	PC00197	1.01.04.00.00	A protein that binds to a signal and phosphorylates a response regulator protein on a histidine residue to activate it.
+PC00207	intercellular signal molecule	PC00000	PC00207	1.02.00.00.00	A molecule that is secreted by one cell and received as a signal by a receptor on another cell.
+PC00083	cytokine	PC00207	PC00207	1.02.01.00.00	A small protein or biological factor that is released by cells and have specific effects on cell-cell interaction, communication and behavior of other cells.  It contains interleukins, lymphokines, TNF-alpha and interferons.  Growth factors are generally not included here, although TGF-beta family members, CNTF and LIF are exceptions.
+PC00128	interleukin superfamily	PC00083	PC00207	1.02.01.01.00	A cytokine produced by lymphocytes, monocytes and various other cell types and are released by cells in response to antigenic and non-antigenic stimuli. To date, there are 12 interleukins identified.  Their function is to modulate inflammation and immunity by regulating growth, mobility and differentiation of lymphoid and other cells.
+PC00127	interferon superfamily	PC00083	PC00207	1.02.01.02.00	A family of glycoproteins that plays an important role in fighting viral infections by preventing viral multiplication in cells.
+PC00074	chemokine	PC00083	PC00207	1.02.01.05.00	Proteins that are chemotactic for leucocytes.  They are regarded as cytokines by some people.
+PC00112	growth factor	PC00207	PC00207	1.02.03.00.00	A complex family of biological factors that are produced by the body to control growth, division and maturation of various cell types.
+PC00163	neurotrophic factor	PC00112	PC00207	1.02.03.01.00	A signaling molecule involved in the nutrition (or maintenance) of neural tissue.  The classic example is the nerve growth factor.
+PC00179	peptide hormone	PC00207	PC00207	1.02.04.00.00	A protein or peptide that acts as a hormone.
+PC00162	neuropeptide	PC00179	PC00207	1.02.04.01.00	A peptide with direct synaptic effects (peptide neurotransmitters) or indirect modulatory effects on the nervous system (peptide neuromodulators).
+PC00152	membrane-bound signaling molecule	PC00207	PC00207	1.02.07.00.00	A signaling molecule that is membrane-bound and not secreted.
+PC00095	protein-binding activity modulator	PC00000	PC00095	1.06.00.00.00	A protein that binds to, and modulates the activity of another protein.
+PC00140	kinase modulator	PC00095	PC00095	1.06.01.00.00	A protein that directly interacts with a kinase and affects its activity.
+PC00138	kinase activator	PC00140	PC00095	1.06.01.01.00	A protein that directly interacts with a kinase and activates or enhance its activity.
+PC00139	kinase inhibitor	PC00140	PC00095	1.06.01.02.00	A protein that directly interacts with a kinase and inhibits its activity.
+PC00184	phosphatase modulator	PC00095	PC00095	1.06.02.00.00	A protein that directly interacts with a phosphatase and affects its activity.
+PC00182	phosphatase activator	PC00184	PC00095	1.06.02.01.00	A protein that directly interacts with a phosphatase and activates or enhance its activity.
+PC00183	phosphatase inhibitor	PC00184	PC00095	1.06.02.02.00	A protein that directly interacts with a phosphatase and inhibits its activity.
+PC00020	G-protein	PC00095	PC00095	1.06.03.00.00	A GTP-binding protein that is either part of the heterotrimeric G protein class or of the small GTP-binding class.
+PC00117	heterotrimeric G-protein	PC00020	PC00095	1.06.03.01.00	the heterotrimeric G proteins that associate with receptors of the seven transmembrane domain superfamily and are involved in signal transduction.
+PC00208	small GTPase	PC00020	PC00095	1.06.03.02.00	The small G proteins are a diverse group of monomeric GTPases that include ras, rab, rac and rho and that play an important part in regulating many intracellular processes including cytoskeletal organization and secretion.
+PC00022	G-protein modulator	PC00095	PC00095	1.06.04.00.00	A protein that directly interacts with a G-protein and affects its activity.
+PC00113	guanyl-nucleotide exchange factor	PC00022	PC00095	1.06.04.01.00	An enzyme that catalyzes the exchange of GDP and GTP in a G-protein.
+PC00257	GTPase-activating protein	PC00022	PC00095	1.06.04.02.00	A protein that binds to a GTPase to stimulate its GTPase activity, converting it to the GDP-bound form.
+PC00191	protease inhibitor	PC00095	PC00095	1.06.05.00.00	Compounds which inhibit or antagonize the biosynthesis or actions of proteases.
+PC00060	calcium-binding protein	PC00000	PC00060	1.07.00.00.00	A protein with the primary function of binding to calcium, either to store calcium or to participate in calcium cell signalling pathways by modulating its function after binding to Ca2+.
+PC00061	calmodulin-related	PC00060	PC00060	1.07.01.00.00	A calcium binding protein that are similar to calmodulin and are called EF hand proteins.
+PC00264	gene-specific transcriptional regulator	PC00000	PC00264	1.08.00.00.00	A protein that regulates transcription of a set of specific genes.
+PC00218	DNA-binding transcription factor	PC00264	PC00264	1.08.01.00.00	A protein required for the regulation of RNA polymerase by specific regulatory sequences in or near a gene.
+PC00244	zinc finger transcription factor	PC00218	PC00264	1.08.01.01.00	A transcription factor containing zinc finger domain(s), which is composed of conserved cysteines and histidines co-ordinate with zinc ion(s).  Examples of zinc finger domains are C2H2 zinc finger, C3HC4 zinc finger, CHC2 zinc finger, etc.
+PC00169	C4 zinc finger nuclear receptor	PC00244	PC00264	1.08.01.01.01	A receptor of steroid hormones that traverses the nuclear membrane to activate transcription.
+PC00248	C2H2 zinc finger transcription factor	PC00244	PC00264	1.08.01.01.02	A zinc-coordinating transcription factor with C2H2 zinc finger DNA binding domains.
+PC00249	C6 zinc finger transcription factor	PC00244	PC00264	1.08.01.01.03	A zinc-coordinating transcription factor with a C6 zinc finger DNA binding domain.
+PC00024	HMG box transcription factor	PC00218	PC00264	1.08.01.02.00	A transcription factor containing high mobility group protein (HMG) box.
+PC00055	basic helix-loop-helix transcription factor	PC00218	PC00264	1.08.01.03.00	A transcription factor containing helix-loop-helix (HLH) DNA binding domain.
+PC00056	basic leucine zipper transcription factor	PC00218	PC00264	1.08.01.04.00	A transcription factor that contains the basic leucine zipper (bZIP) domain, where one part of the domain contains a region that mediates sequence specific DNA binding properties and the leucine zipper that is required for the dimerization of two DNA binding regions.
+PC00006	CREB-related transcription factor	PC00056	PC00264	1.08.01.04.01	A transcription factor that regulates transcription by binding to the cyclic AMP response element (CRE).
+PC00116	helix-turn-helix transcription factor	PC00218	PC00264	1.08.01.05.00	A transcription factor that has the helix-turn-helix (HTH) domain, a major DNA-binding structural motif composed of two _ helices joined by a short strand of amino acids.
+PC00119	homeodomain transcription factor	PC00116	PC00264	1.08.01.05.01	A transcription factor containing the homeobox domain. It is usually involved in the control of gene expression during morphogenesis and development.
+PC00178	paired box transcription factor	PC00116	PC00264	1.08.01.05.02	A tissue specific transcription factor that contains a paired domain and usually a partial or complete homeodomain.
+PC00245	Lambda repressor-like transcription factor	PC00116	PC00264	1.08.01.05.03	A helix-turn-helix transcription factor with a similar DNA binding domain fold to the Lambda repressor in bacteria.
+PC00246	winged helix/forkhead transcription factor	PC00116	PC00264	1.08.01.05.04	A helix-turn-helix transcription factor with a forkhead DNA binding domain.
+PC00247	Trp repressor-like transcription factor	PC00116	PC00264	1.08.01.05.05	A helix-turn-helix transcription factor with a similar DNA binding domain fold to the Trp repressor in bacteria.
+PC00266	Tet repressor-like transcription factor	PC00116	PC00264	1.08.01.05.06	A helix-turn-helix transcription factor with a similar DNA binding domain fold to the Tet repressor in bacteria.
+PC00267	Sigma factor	PC00116	PC00264	1.08.01.05.07	A specific DNA sequence binding transcription initiation factor.
+PC00250	MADS box transcription factor	PC00218	PC00264	1.08.01.06.00	A transcription factor with a MADS box DNA binding domain.
+PC00251	immunoglobulin fold transcription factor	PC00218	PC00264	1.08.01.07.00	A transcription factor with a DNA binding domain with a fold similar to immunoglobulins.
+PC00252	Rel homology transcription factor	PC00251	PC00264	1.08.01.07.01	An immunoglobulin fold transcription factor with a Rel homology region (RHR) DNA binding domain.
+PC00253	P53-like transcription factor	PC00251	PC00264	1.08.01.07.02	An immunoglobulin fold transcription factor with a DNA binding domain with a fold similar to p53.
+PC00254	Runt transcription factor	PC00251	PC00264	1.08.01.07.03	An immunoglobulin fold transcription factor with a Runt domain.
+PC00256	SMAD-like transcription factor	PC00218	PC00264	1.08.01.09.00	A transcription factor with a similar DNA binding domain alpha/beta fold to the SMAD (related to Drosophila “mothers against decapentaplegic” gene product) proteins.
+PC00217	transcription cofactor	PC00264	PC00264	1.08.02.00.00	A protein that has no DNA binding domains, but regulates transcription by binding to other transcription factors.
+PC00009	DNA metabolism protein	PC00000	PC00009	1.17.01.00.00	A protein that acts on DNA to modify it either topologically (e.g. bending), its base-pairing, or covalently.
+PC00189	primase	PC00009	PC00009	1.17.01.00.00	The enzyme that polymerizes ribonucleoside triphosphates to form oligoribonucleotides in a 5 prime to 3 prime direction.
+PC00018	DNA-directed DNA polymerase	PC00009	PC00009	1.17.02.00.00	An enzyme involved in template directed synthesis of DNA from deoxyribonucleotide triphosphates.
+PC00015	DNA polymerase processivity factor	PC00009	PC00009	1.17.03.00.00	A protein that enhances the processivity of DNA polymerase.
+PC00199	replication origin binding protein	PC00009	PC00009	1.17.04.00.00	A protein that binds specifically to the origin of replication.
+PC00014	DNA photolyase	PC00009	PC00009	1.17.05.00.00	A DNA repair enzyme that recognizes and monomerizes pyrimidine dimers using visible light.
+PC00012	DNA ligase	PC00009	PC00009	1.17.06.00.00	An enzyme that seals nicks in one strand of double stranded DNA, by forming a phosphodiester linkage between a free 3 prime OH and 5 prime phosphate groups of two adjacent nucleotide residues.
+PC00010	DNA glycosylase	PC00009	PC00009	1.17.07.00.00	An enzyme that recognizes altered bases in DNA and catalyzes their removal by cleaving the glycosidic bond between the base and the deoxyribose sugar.
+PC00013	DNA methyltransferase	PC00009	PC00009	1.17.08.00.00	An enzyme that methylates specific bases in DNA.
+PC00017	DNA topoisomerase	PC00009	PC00009	1.17.09.00.00	Enzymes that change the degree of supercoiling in DNA by cutting one or both strands.
+PC00086	damaged DNA-binding protein	PC00009	PC00009	1.17.11.00.00	A protein that binds specifically to damaged DNA.
+PC00016	DNA strand-pairing protein	PC00009	PC00009	1.17.12.00.00	An enzyme that pairs complementary DNA molecules during genetic recombination.
+PC00098	exodeoxyribonuclease	PC00009	PC00009	1.17.15.00.00	An enzyme that cleaves DNA sequentially from the free ends of a linear nucleic acid substrate.
+PC00093	endodeoxyribonuclease	PC00009	PC00009	1.17.16.00.00	One of a large group of enzymes that cleaves DNA at an internal position in the chain.
+PC00011	DNA helicase	PC00009	PC00009	1.17.17.00.00	An enzyme that promotes the unwinding of duplex DNA.
+PC00031	RNA metabolism protein	PC00000	PC00031	1.18.00.00.00	A protein that binds RNA and is involved in RNA processing or metabolism.
+PC00019	DNA-directed RNA polymerase	PC00031	PC00031	1.18.02.00.00	An enzyme that polymerizes ribonucleotides using a DNA template.  Factors involved in REGULATING this process are categorized under TRANSCRIPTION FACTOR.
+PC00033	RNA methyltransferase	PC00031	PC00031	1.18.04.00.00	An enzyme that methylates specific bases in RNA.
+PC00147	RNA processing factor	PC00031	PC00031	1.18.05.00.00	A factor involved in RNA processing, including capping, polyadenylation and splicing.
+PC00145	mRNA capping factor	PC00147	PC00031	1.18.05.01.00	A factor involved in mRNA capping.
+PC00146	mRNA polyadenylation factor	PC00147	PC00031	1.18.05.02.00	A factor involved in mRNA polyadenylation.
+PC00148	RNA splicing factor	PC00147	PC00031	1.18.05.03.00	A factor involved in RNA splicing.
+PC00099	exoribonuclease	PC00031	PC00031	1.18.09.00.00	An enzyme that cleaves RNA sequentially from the free ends of a linear nucleic acid substrate.
+PC00094	endoribonuclease	PC00031	PC00031	1.18.10.00.00	One of a large group of enzymes that cleaves RNA at an internal position in the chain.
+PC00032	RNA helicase	PC00031	PC00031	1.18.11.00.00	An enzyme that promotes the unwinding of RNA.
+PC00259	general transcription factor	PC00031	PC00031	1.18.12.00.00	A protein involved in the general (non-gene-specific) transcription process.
+PC00263	translational protein	PC00000	PC00263	1.20.00.00.00	A protein involved in translation of mRNA to protein.
+PC00202	ribosomal protein	PC00263	PC00263	1.20.01.00.00	A protein that comprises part of the ribosome.
+PC00223	translation factor	PC00263	PC00263	1.20.02.00.00	A non-ribosomal protein involved in translation initiation, elongation or termination.
+PC00224	translation initiation factor	PC00223	PC00263	1.20.02.01.00	A non-ribosomal protein involved in translation initiation.
+PC00222	translation elongation factor	PC00223	PC00263	1.20.02.02.00	A non-ribosomal protein involved in translation elongation.
+PC00225	translation release factor	PC00223	PC00263	1.20.02.03.00	A non-ribosomal protein involved in translation release.
+PC00047	aminoacyl-tRNA synthetase	PC00263	PC00263	1.20.03.00.00	Any of the group of ligases that catalyzes the ATP-driven formation of a bond between an amino acid and a tRNA.   Also called aminoacyl-tRNA ligase.
+PC00227	transporter	PC00000	PC00227	1.10.00.00.00	A class of transmembrane proteins that allows substances to cross plasma membranes far faster than would be possible by diffusion alone.
+PC00133	ion channel	PC00227	PC00227	1.10.01.00.00	A protein creating a highly selective transmembrane pore that presents a hydrophilic channel for specific ions to cross a lipid bilayer.
+PC00141	ligand-gated ion channel	PC00133	PC00227	1.10.01.05.00	A transmembrane ion channel whose permeability is increased by the binding of a specific ligand.
+PC00241	voltage-gated ion channel	PC00133	PC00227	1.10.01.06.00	A transmembrane ion channel whose permeability to ions is sensitive to the transmembrane potential difference.
+PC00068	primary active transporter	PC00227	PC00227	1.10.02.00.00	A major class of transporters that transport by using a primary energy source (e.g. ATP hydrolysis or decarboxylation) to drive transport against a concentration gradient.
+PC00002	ATP synthase	PC00068	PC00227	1.10.02.01.00	An integral membrane protein that transport protons across a membrane against a concentration gradient. This transport is driven by hydrolysis of ATP by hydrogen-transporting ATP synthase.
+PC00003	ATP-binding cassette (ABC) transporter	PC00068	PC00227	1.10.02.02.00	A superfamily of oligopeptide permease proteins responsible for transporting a wide range of substrates across membranes.
+PC00258	secondary carrier transporter	PC00227	PC00227	1.10.03.00.00	A major class of transport proteins that transport via facilitated diffusion or by transport of more than one species in either one direction (symporter) or opposite directions (antiporter).
+PC00046	amino acid transporter	PC00258	PC00227	1.10.03.02.00	A class of transport proteins that transport amino acid across the plasma membrane.
+PC00158	mitochondrial carrier protein	PC00258	PC00227	1.10.03.03.00	A protein that is located in the inner membrane of mitochondria and transports small molecules or protons within the membrane bilayer.
+PC00219	transfer/carrier protein	PC00000	PC00219	1.11.00.00.00	Proteins that carry specific substances in the blood or in the cell. They usually are not involved in transmembrane transport.
+PC00052	apolipoprotein	PC00219	PC00219	1.11.01.00.00	The protein component of serum lipoproteins.
+PC00107	globin	PC00219	PC00219	1.11.02.00.00	The polypeptide moiety of hemoglobin.  Both hemaglobin and myoblogin belong to this category.
+PC00069	cell adhesion molecule	PC00000	PC00069	1.12.00.00.00	A protein that mediates cell-to-cell adhesion.
+PC00125	immunoglobulin superfamily cell adhesion molecule	PC00069	PC00069	1.12.01.00.00	Immunoglobulin superfamily CAMs (IgSF CAMs) are either homophilic or heterophilic and bind integrins or different IgSF CAMs.  Examples are NCAMs, ICAMs, and PECAM.
+PC00057	cadherin	PC00069	PC00069	1.12.02.00.00	An integral membrane protein involved in calcium dependent cell adhesion.
+PC00126	integrin	PC00069	PC00069	1.12.03.00.00	The integrins are a family of heterophilic CAMs that bind IgSF CAMs or the extracellular matrix. They are heterodimers, consisting in two noncovalently-linked subunits, called alpha and beta
+PC00085	cytoskeletal protein	PC00000	PC00085	1.13.00.00.00	Major constituent of the cytoskeleton found in the cytoplasm of eukaryotic cells. They form a flexible framework for the cell, provide attachment points for organelles and formed bodies, and make communication between parts of the cell possible.
+PC00041	actin or actin-binding cytoskeletal protein	PC00085	PC00085	1.13.01.00.00	A protein that is either actin itself or binds to actin to form the cytoskeleton of the cell.
+PC00039	actin and actin related protein	PC00041	PC00085	1.13.01.01.00	An actin protein or a protein that is related to actin.
+PC00165	non-motor actin binding protein	PC00041	PC00085	1.13.01.02.00	An actin binding protein that is not involved in motor function.
+PC00040	actin binding motor protein	PC00041	PC00085	1.13.01.03.00	A family of motor ATPases that interact with F actin filaments.  A typical member in this category is myosin.
+PC00157	microtubule or microtubule-binding cytoskeletal protein	PC00085	PC00085	1.13.02.00.00	A protein that is either microtubule itself or binds to microtubule to form the cytoskeleton of the cell.
+PC00228	tubulin	PC00157	PC00085	1.13.02.01.00	An abundant cytoplasmic protein in the microtubule family that is involved in nucleation of microtubule assembly during the cell cycle.
+PC00166	non-motor microtubule binding protein	PC00157	PC00085	1.13.02.02.00	A nonmotor protein that binds to microtubule cytoskeletal protein.
+PC00156	microtubule binding motor protein	PC00157	PC00085	1.13.02.03.00	A family of motor proteins that are responsible for moving vesicles and particles along the microtubule.  Typical examples are dynein and kinesin.
+PC00129	intermediate filament	PC00085	PC00085	1.13.03.00.00	A cytoplasmic filament protein so named originally because their diameter (nominally 10 nm) in muscle cells was intermediate between thick and thin filaments.
+PC00130	intermediate filament binding protein	PC00129	PC00085	1.13.03.01.00	A protein that binds to intermediate filament.
+PC00102	extracellular matrix protein	PC00000	PC00102	1.14.00.00.00	A protein that is produced and secreted by cells and forms an intricate extracellular meshwork in which cells are embedded to construct tissues.
+PC00103	extracellular matrix structural protein	PC00102	PC00102	1.14.01.00.00	A protein that forms the structural backbone of  extracellular matrix in which cells are embedded to construct tissues.
+PC00100	extracellular matrix glycoprotein	PC00102	PC00102	1.14.02.00.00	An extracellular matrix protein which is conjugated with one or more covalently linked carbohydrate residues.
+PC00101	extracellular matrix linker protein	PC00102	PC00102	1.14.03.00.00	An extracellular matrix protein which has multiple domains that confer the ability to interact with many extracellular substances.
+PC00070	cell junction protein	PC00000	PC00070	1.16.00.00.00	Proteins that form specialized junctions between cells.
+PC00105	gap junction	PC00070	PC00070	1.16.01.00.00	A protein that creates a gap junction.  A gap junction is a junction between two cells consisting of many pores that allow the passage of molecules.
+PC00214	tight junction	PC00070	PC00070	1.16.02.00.00	A tight junction is a specialized intercellular junction in which the two plasma membranes are separated by only 1-2nm.  It is found near the apical surface of cells in simple epithelia, and forms a sealing gasket around the cell.
+PC00262	metabolite interconversion enzyme	PC00000	PC00262	1.19.00.00.00	An enzyme that acts to convert one small molecule to another.  This class includes all enzymes except those that act on DNA, RNA or a protein.
+PC00176	oxidoreductase	PC00262	PC00262	1.19.01.00.00	An enzyme that catalyzes a redox reaction.
+PC00177	oxygenase	PC00176	PC00262	1.19.01.01.00	An enzyme that catalyzes the incorporation of molecular oxygen into organic substrates.
+PC00180	peroxidase	PC00176	PC00262	1.19.01.02.00	A heme enzyme that catalyzes reduction of hydrogen peroxide by a substrate that loses two hydrogen atoms.
+PC00092	dehydrogenase	PC00176	PC00262	1.19.01.03.00	An enzyme that oxidizes a substrate by transferring hydrogen to an acceptor that is either NAD/NADP or a flavin enzyme.
+PC00198	reductase	PC00176	PC00262	1.19.01.04.00	An enzyme that introduces an electron into its substrate from an electron donor.  The reaction is usually coupled with an oxidation reaction.
+PC00175	oxidase	PC00176	PC00262	1.19.01.05.00	An enzyme that removes an electron from its substrate to an electron acceptor.  The reaction is usually coupled with a reduction reaction.
+PC00122	hydroxylase	PC00176	PC00262	1.19.01.06.00	A type of enzyme that adds -OH groups to its substrate during hydroxylation by attaching oxygen atoms to it.
+PC00220	transferase	PC00262	PC00262	1.19.02.00.00	Enzymes transferring a group from one compound (donor) to another compound (acceptor).  
+PC00137	kinase	PC00220	PC00262	1.19.02.01.00	An enzyme that catalyzes the transfer of a phosphate from ATP to a second substrate (EC2.7).
+PC00065	carbohydrate kinase	PC00137	PC00262	1.19.02.01.02	An enzyme that catalyzes the phosphorylation of a sugar or carbohydrate.
+PC00172	nucleotide kinase	PC00137	PC00262	1.19.02.01.03	An enzyme that catalyzes the phosphorylation of a nucleotide.
+PC00045	amino acid kinase	PC00137	PC00262	1.19.02.01.04	An enzyme that catalyzes the phosphorylation of an amino acid.
+PC00174	nucleotidyltransferase	PC00220	PC00262	1.19.02.02.02	A class of enzymes that transfers nucleotidyl residues.
+PC00155	methyltransferase	PC00220	PC00262	1.19.02.03.03	A class of enzymes that transfers methyl groups (EC2.1).
+PC00221	transketolase	PC00220	PC00262	1.19.02.04.00	Together with transaldolase, links the pentose phosphate pathway with glycolysis by converting pentoses to hexoses.
+PC00215	transaldolase	PC00220	PC00262	1.19.02.05.00	Together with transketolase, links the pentose phosphate pathway with glycolysis by converting pentoses to hexoses.
+PC00038	acetyltransferase	PC00220	PC00262	1.19.02.06.00	An enzyme that catalyzes the transfer of an acetyl group, usually from acetyl coenzyme A, to another compound.
+PC00111	glycosyltransferase	PC00220	PC00262	1.19.02.07.00	An enzyme that catalyzes the transfer of a sugar (monosaccharide) unit from a sugar nucleotide derivative to a sugar or amino acid acceptor (EC2.4).
+PC00216	transaminase	PC00220	PC00262	1.19.02.08.00	A subclass of enzymes that catalyze the transfer of an amino group from a donor (generally an amino acid) to an acceptor (generally 2 keto acid) in a cyclic process using pyridoxal phosphate as a cofactor (EC2.6).
+PC00042	acyltransferase	PC00220	PC00262	1.19.02.09.00	An enzyme of the transferase class that catalyzes the transfer of an acyl group from a donor (often the corresponding acyl coenzyme A derivative) to an acceptor compound (EC2.3).
+PC00121	hydrolase	PC00262	PC00262	1.19.03.00.00	Enzymes catalyzing hydrolysis of a variety of bonds, such as esters, glycosides, or peptides.
+PC00143	lipase	PC00121	PC00262	1.19.03.01.00	Enzymes that catalyze the hydrolysis of fats (monoglycerides, diglycerides and triglycerides) to glycerol and fatty acids. Calcium ions are usually required.
+PC00186	phospholipase	PC00143	PC00262	1.19.03.01.01	Enzymes that hydrolyze ester bonds in phospholipids. They comprise two types: aliphatic esterases (phospholipase A1, A2 and B) that release fatty acids, and phosphodiesterases (types C and D) that release diacyl glycerol or phosphatidic acid respectively.
+PC00097	esterase	PC00121	PC00262	1.19.03.02.00	Enzymes that catalyze the hydrolysis of organic esters to release an alcohol or thiol and acid.
+PC00185	phosphodiesterase	PC00121	PC00262	1.19.03.03.00	Enzymes that cleave phosphodiesters to give a phosphomonoester and a free hydroxyl group.
+PC00181	phosphatase	PC00121	PC00262	1.19.03.04.00	An enzyme that hydrolyzes phosphomonoesters.
+PC00066	carbohydrate phosphatase	PC00181	PC00262	1.19.03.04.01	An enzyme that hydrolyzes phosphomonoesters in carbohydrate.
+PC00173	nucleotide phosphatase	PC00181	PC00262	1.19.03.04.02	An enzyme that hydrolyzes phosphomonoesters in nucleotides.
+PC00048	amylase	PC00121	PC00262	1.19.03.05.00	A group of amylolytic enzymes that cleave starch, glycogen, and related alpha-1,4-glucans.
+PC00087	deacetylase	PC00121	PC00262	1.19.03.06.00	An enzyme that removes acetate from a molecule.
+PC00088	deaminase	PC00121	PC00262	1.19.03.07.00	An enzyme that removes amino groups from compounds, producing ammonia in the process.
+PC00196	pyrophosphatase	PC00121	PC00262	1.19.03.08.00	Enzymes that catalyze the hydrolysis of diphosphate bonds, chiefly in nucleoside di- and triphosphates. They may liberate either a mono- or diphosphate.
+PC00110	glycosidase	PC00121	PC00262	1.19.03.09.00	An enzyme that breaks up and degrades complex sugar subunits of a polysaccharide such as starch or sucrose into simple ones, such as glucose or fructose.
+PC00108	glucosidase	PC00121	PC00262	1.19.03.10.00	Enzymes that hydrolyze o-glucosyl-compounds.
+PC00104	galactosidase	PC00121	PC00262	1.19.03.11.00	One of a class of enzymes that cuts the glycosidic bond between the sugar galactose and another sugar molecule (of a different type than galactose).
+PC00144	lyase	PC00262	PC00262	1.19.04.00.00	Enzymes that either strip a group from a molecule to form a double bond or add a group to a double bond.
+PC00044	aldolase	PC00144	PC00262	1.19.04.01.00	An enzyme that catalyses an aldol condensation, i.e. a base-catalyzed addition reaction of two aldehydes or an aldehyde and a ketone to form an aldol (an organic compound that is both an aldehyde and an alcohol) and its reversal.
+PC00091	dehydratase	PC00144	PC00262	1.19.04.02.00	Enzymes that remove hydroxyl groups from compounds, producing water in the process.
+PC00120	hydratase	PC00144	PC00262	1.19.04.03.00	Enzymes that add hydroxyl groups to compounds, using water in the process.
+PC00089	decarboxylase	PC00144	PC00262	1.19.04.04.00	Enzymes that remove carboxyl groups from compounds, producing carbonate in the process.
+PC00079	cyclase	PC00144	PC00262	1.19.04.05.00	Enzymes responsible for converting a linear molecule into a cyclic molecule, such as a nucleoside triphosphate to cyclic nucleoside monophosphate.
+PC00043	adenylate cyclase	PC00079	PC00262	1.19.04.05.01	An enzyme that is responsible for catalyzing the synthesis of adenosine 3', 5' cyclic monophosphate from adenosine 5' triphosphate.
+PC00114	guanylate cyclase	PC00079	PC00262	1.19.04.05.02	An enzyme that is responsible for catalyzing the synthesis of guanosine 3', 5' cyclic monophosphate from guanosine 5' triphosphate.
+PC00135	isomerase	PC00262	PC00262	1.19.05.00.00	A class of enzymes that catalyze geometric or structural changes within a molecule to form a single product. The reactions do not involve a net change in the concentrations of compounds other than the substrate and the product.
+PC00096	epimerase/racemase	PC00135	PC00262	1.19.05.01.00	Enzymes that catalyze inversion of the configuration around an asymmetric carbon in a substrate having one (racemase) or more (epimerase) center(s) of asymmetry (EC5.1).
+PC00160	mutase	PC00135	PC00262	1.19.05.02.00	An enzyme that catalyzes the switching of functional groups on a molecule.
+PC00142	ligase	PC00262	PC00262	1.19.06.00.00	A class of enzymes that catalyze the formation of a bond between two substrate molecules, coupled with the hydrolysis of a pyrophosphate bond in ATP or a similar energy donor.
+PC00090	defense/immunity protein	PC00000	PC00090	1.25.00.00.00	A specific protein substance that is produced to take part in various defense and immune responses of the body.
+PC00078	complement component	PC00090	PC00090	1.25.01.00.00	One of 20 distinct serum proteins that is the effector of immune cytolysis.
+PC00149	major histocompatibility complex protein	PC00090	PC00090	1.25.02.00.00	A set of plasmalemmal glycoproteins on the surface of all nucleated cells that are crucial for T-cell recognition of antigens.  They are the major antigens responsible for tissue recognition. There are two classes of histocompatibility antigens: Class I and Class II.
+PC00051	antimicrobial response protein	PC00090	PC00090	1.25.03.00.00	A peptide, e.g. defensin, that has antimicrobial function.
+PC00123	immunoglobulin	PC00090	PC00090	1.25.04.00.00	A specific protein substance that is produced by plasma cells to aid in fighting infection by taking part in various immune responses of the body to bacteria or foreign substances.
+PC00124	immunoglobulin receptor superfamily	PC00090	PC00090	1.25.05.00.00	A receptor that contains an immunoglobulin domain.  It is often involved in immune response.  Some of the common members in this category are T cell receptors and IgG receptors.
+PC00150	membrane traffic protein	PC00000	PC00150	1.26.00.00.00	A protein that is located on an intracellular vesicle membrane, and is responsible for the docking or fusion of the vesicle to the cytoplasma membrane.
+PC00235	vesicle coat protein	PC00150	PC00150	1.26.01.00.00	A protein that is found in the secretory vesicle membrane.
+PC00034	SNARE protein	PC00150	PC00150	1.26.02.00.00	A protein responsible for fusion of vesicle membrane and the plasma membrane, so as to release the content of the vesicle to the extracellular environment.
+PC00151	membrane trafficking regulatory protein	PC00150	PC00150	1.26.03.00.00	A protein that regulates the release of secretory vesicle.
+PC00072	chaperone	PC00000	PC00072	1.27.00.00.00	A cytoplasmic protein that binds to nascent or unfolded polypeptides and ensures correct folding or transport.
+PC00073	chaperonin	PC00072	PC00072	1.27.01.00.00	Subset of chaperone proteins found in prokaryotes, mitochondria and plastids.
+PC00026	Hsp60 family chaperone	PC00072	PC00072	1.27.02.00.00	Hsp60 (GroEL/GroES complex in E. coli) is a mitochondrial chaperonin that is typically held responsible for the transportation and refolding of proteins from the cytoplasm into the mitochondrial matrix. In addition to its role as a heat shock protein, HSP60 functions as a chaperonin to assist in folding linear amino acid chains into their respective three-dimensional structure.
+PC00027	Hsp70 family chaperone	PC00072	PC00072	1.27.03.00.00	Widely distributed group of conserved heat-shock proteins of average weight 70 kD (DnaK in E. coli). Possess ATP binding domains and may be involved in protein folding or export.  
+PC00028	Hsp90 family chaperone	PC00072	PC00072	1.27.04.00.00	Widely distributed group of conserved heat-shock proteins of average weight 90 kD (HtpG in E. coli). Exact function unknown, but are found associated with steroid hormone receptors and tyrosine kinase oncogene products. May also bind actin and tubulin.
+PC00025	Hsp100 family chaperone	PC00072	PC00072	1.27.05.00.00	Hsp100 (Clp family in E. coli) proteins form large hexameric structures with unfoldase activity in the presence of ATP. These proteins are thought to function as chaperones by processively threading client proteins through a small 2 nm pore, thereby giving each client protein a second chance to fold.
+PC00237	viral or transposable element protein	PC00000	PC00237	1.28.00.00.00	A protein specific to a virus, endogenous protein of viral origin, or transposable element.
+PC00200	reverse transcriptase	PC00237	PC00237	1.28.01.00.00	A DNA polymerase that uses RNA as a template.
+PC00226	scaffold/adaptor protein	PC00000	PC00226	1.29.00.00.00	An intracellular protein that interacts with one or more other proteins, serving as either a regulator or adaptor for one protein to act on another, or to localize a protein to a specific location in the cell.
+PC00211	structural protein	PC00000	PC00211	1.30.00.00.00	Extracellular proteins that form a structure for an organ or organism, such as the cuticle.
+PC00161	myelin protein	PC00211	PC00211	1.30.01.00.00	Proteins found in the myelin sheath, which wraps around the nerve fibers serving as an insulator in both central and peripheral nervous system.
+PC00212	surfactant	PC00211	PC00211	1.30.02.00.00	A surface active agent, the best known example of which is the lung surfactant that renders the alveolar surfaces hydrophobic and prevents the lung filling with water by capillary action.
+PC00210	storage protein	PC00000	PC00210	1.31.00.00.00	A protein that stores nutrients.  Usually these are serum or milk proteins.
+PC00260	protein modifying enzyme	PC00000	PC00260	1.33.00.00.00	A protein that directly covalently modifies another protein, e.g. a protein kinase or protease. Note that this category excludes receptor protein kinases (found under TRANSMEMBRANE SIGNAL RECEPTOR), and histone-modifying enzymes (found under CHROMATIN-REGULATING PROTEIN).
+PC00168	non-receptor tyrosine protein kinase	PC00260	PC00260	1.33.01.02.00	A soluble protein catalyzing transfer of phosphate from ATP to tyrosine residue.
+PC00167	non-receptor serine/threonine protein kinase	PC00260	PC00260	1.33.01.04.00	A soluble protein catalyzing transfer of phosphate from ATP to serine or threonine residue.
+PC00195	protein phosphatase	PC00260	PC00260	1.33.02.00.00	An enzyme that hydrolyzes phosphomonoesters in proteins.
+PC00190	protease	PC00260	PC00260	1.33.03.00.00	Enzymes that hydrolyze peptide bonds.
+PC00153	metalloprotease	PC00190	PC00260	1.33.03.01.00	A protease whose catalytic activity requires a transition metal.
+PC00081	cysteine protease	PC00190	PC00260	1.33.03.02.00	Peptide hydrolases that have a creaction mechanism in which an active site cysteine acts as a nucleophile.
+PC00203	serine protease	PC00190	PC00260	1.33.03.03.00	An endoprotease that has a reaction mechanism in which an active site serine acts as a nucleophile.
+PC00053	aspartic protease	PC00190	PC00260	1.33.03.05.00	Peptide hydrolases that have two aspartyl residues in the active site.
+PC00234	ubiquitin-protein ligase	PC00260	PC00260	1.33.04.00.00	An enzyme that couples ubiquitin to protein by a peptide bond between the C-terminal glycine of ubiquitin and a-amino groups of lysine residues in the protein.
+PC00077	chromatin/chromatin-binding, or -regulatory protein	PC00000	PC00077	1.34.00.00.00	A protein that either binds DNA to comprise chromatin or which binds chromatin.
+PC00118	histone	PC00077	PC00077	1.34.01.00.00	A protein found in the nuclei of all eukaryotic cells where it is complexed to DNA to form chromatin.
+PC00261	histone modifying enzyme	PC00077	PC00077	1.34.02.00.00	A protein that directly covalently modifies a histone, to affect chromatin structure.
+PC00071	centromere DNA-binding protein	PC00077	PC00077	1.34.03.00.00	A protein that binds specifically to centromeric DNA.

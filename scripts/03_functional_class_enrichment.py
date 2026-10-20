@@ -59,7 +59,8 @@ SUBCLASS_TO_BROAD = {
 def extract_gene_tokens(values: list[str]) -> list[str]:
     tokens: list[str] = []
     seen: set[str] = set()
-    reserved = {'NAN', 'NONE', 'NAME', 'ORFNAMES', 'SYNONYMS', 'GENE', 'PROTEIN'}
+    # Words of UniProt's gene-name text, not genes: "Name: PRH1; and Name: PRH2" lists two genes, and AND is neither.
+    reserved = {'NAN', 'NONE', 'NAME', 'ORFNAMES', 'SYNONYMS', 'GENE', 'PROTEIN', 'AND'}
     for value in values:
         text = str(value or '').strip()
         if text.lower() in {'', 'nan', 'none'}:
@@ -355,6 +356,11 @@ def main() -> None:
 
     master['canonical_UniProtAC'] = master['substrate_UniProtAC'].astype(str).map(canonicalize_uniprot_accession)
     protein_meta = build_combined_protein_metadata(master, sites, metadata=metadata, interpro=interpro, domain_ontology=domain_ontology)
+    if metadata is not None:
+        # The universe is the reference proteome: the entries of --uniprot-metadata (and the methylated proteins). The
+        # PTM master table also names unreviewed and obsolete entries; they are not part of it.
+        keep = set(metadata['Entry'].astype(str)) | set(sites['canonical_UniProtAC'].dropna().astype(str))
+        protein_meta = protein_meta[protein_meta['canonical_UniProtAC'].isin(keep)].copy()
     target_column = 'canonical_UniProtAC' if 'canonical_UniProtAC' in sites.columns else 'substrate_UniProtAC'
     target_acc = set(sites[target_column].dropna().astype(str).map(canonicalize_uniprot_accession))
 
