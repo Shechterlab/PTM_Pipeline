@@ -34,8 +34,17 @@ if git -C "$CODE_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     exit 1
   fi
 
+  # Frozen inputs and release files are tracked on purpose: each is listed, with its checksum, in a manifest.
+  MANIFESTED=$(for manifest in "$CODE_ROOT"/inputs/MANIFEST.tsv "$CODE_ROOT"/release/*/release_manifest.tsv; do
+    [ -f "$manifest" ] || continue
+    dir=$(dirname "${manifest#"$CODE_ROOT"/}")
+    tail -n +2 "$manifest" | cut -f1 | sed "s|^|$dir/|"
+  done)
   LARGE_TRACKED=$(git -C "$CODE_ROOT" ls-files -z | while IFS= read -r -d '' file; do
     path="$CODE_ROOT/$file"
+    if printf '%s\n' "$MANIFESTED" | grep -Fxq "$file"; then
+      continue
+    fi
     if [ -f "$path" ]; then
       size=$(wc -c < "$path")
       if [ "$size" -gt 10000000 ]; then
