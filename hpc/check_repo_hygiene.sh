@@ -17,11 +17,23 @@ if "${SEARCH_CMD[@]}" >/tmp/ptm_conflict_markers.txt 2>/dev/null; then
 fi
 
 if git -C "$CODE_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  # Frozen inputs and release files are tracked on purpose: each is listed, with its checksum, in a manifest. PTM_results/
+  # holds the published analysis (v1.0.0), also tracked on purpose.
+  MANIFESTED=$(
+    [ -f "$CODE_ROOT/inputs/MANIFEST.tsv" ] && tail -n +2 "$CODE_ROOT/inputs/MANIFEST.tsv" | cut -f1 | sed 's|^|inputs/|'
+    for sums in "$CODE_ROOT"/releases/*/MD5SUMS; do
+      [ -f "$sums" ] || continue
+      dir=$(dirname "${sums#"$CODE_ROOT"/}")
+      awk '{print $2}' "$sums" | sed "s|^|$dir/|"
+    done)
   FORBIDDEN_TRACKED=$(git -C "$CODE_ROOT" ls-files \
     '.codex' '.codex/*' '.agents/*' 'scripts.zip' '*.zip' '*.pyc' 'scripts/__pycache__/*' \
-    'PTM_data/*' 'PTM_results/*' 2>/dev/null | while IFS= read -r file; do
+    'PTM_data/*' 2>/dev/null | while IFS= read -r file; do
       status=$(git -C "$CODE_ROOT" status --porcelain -- "$file" || true)
       if printf '%s\n' "$status" | grep -Eq '^( D|D )'; then
+        continue
+      fi
+      if printf '%s\n' "$MANIFESTED" | grep -Fxq "$file"; then
         continue
       fi
       if [ -e "$CODE_ROOT/$file" ]; then
@@ -36,6 +48,10 @@ if git -C "$CODE_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
 
   LARGE_TRACKED=$(git -C "$CODE_ROOT" ls-files -z | while IFS= read -r -d '' file; do
     path="$CODE_ROOT/$file"
+    if printf '%s\n' "$MANIFESTED" | grep -Fxq "$file"; then
+      continue
+    fi
+    case "$file" in PTM_results/*) continue ;; esac
     if [ -f "$path" ]; then
       size=$(wc -c < "$path")
       if [ "$size" -gt 10000000 ]; then

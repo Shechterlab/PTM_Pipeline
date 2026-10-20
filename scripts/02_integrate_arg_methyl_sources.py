@@ -149,7 +149,7 @@ def main() -> None:
     ap.add_argument('--maron')
     ap.add_argument('--prometheus')
     ap.add_argument('--premerged-remapped', default='')
-    ap.add_argument('--outdir', default='results/integrated')
+    ap.add_argument('--outdir', required=True)
     ap.add_argument('--fuzzy-tolerance', type=int, default=2)
     args = ap.parse_args()
 

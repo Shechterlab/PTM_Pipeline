@@ -26,7 +26,12 @@ require_file() {
   fi
 }
 
-run_step "repo hygiene guard" bash "$PTM_CODE_ROOT/hpc/check_repo_hygiene.sh" "$PTM_CODE_ROOT"
+# PTM_SKIP_HYGIENE=1 skips the guard, e.g. for a checkout that tracks published PTM_results/ tables.
+if [ "${PTM_SKIP_HYGIENE:-0}" = "1" ]; then
+  echo "[ptm_extended] repo hygiene guard skipped (PTM_SKIP_HYGIENE=1)"
+else
+  run_step "repo hygiene guard" bash "$PTM_CODE_ROOT/hpc/check_repo_hygiene.sh" "$PTM_CODE_ROOT"
+fi
 
 require_file "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv"
 require_file "$PTM_RESULTS_ROOT/domain_context/sites_with_domain_context.tsv"

@@ -66,7 +66,7 @@ def load_accessions(path: str | Path) -> set[str]:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--input', required=True)
-    ap.add_argument('--outdir', default='data/context')
+    ap.add_argument('--outdir', default='PTM_data/context')
     ap.add_argument('--annotation-key', default='prediction-disorder-th_50')
     ap.add_argument('--proteome', default='UP000005640')
     ap.add_argument('--reviewed-only', action='store_true')

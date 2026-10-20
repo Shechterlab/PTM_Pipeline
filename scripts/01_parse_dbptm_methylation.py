@@ -12,7 +12,7 @@ from common import save_table
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--input', required=True)
-    ap.add_argument('--outdir', default='results/parsed_dbptm')
+    ap.add_argument('--outdir', required=True)
     args = ap.parse_args()
 
     path = Path(args.input)

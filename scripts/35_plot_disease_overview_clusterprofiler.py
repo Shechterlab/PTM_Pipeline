@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """ClusterProfiler-style disease-family dot plot from the audited family table."""
 
+import argparse
 import csv
 import math
 from pathlib import Path
@@ -149,7 +150,11 @@ def draw_pdf(rows):
 
 
 def main():
-    global PREFIX, SIZE_MODE
+    global OUT, SOURCE, PREFIX, SIZE_MODE
+    ap = argparse.ArgumentParser(description="Disease-family dot plots from the audited family table (scripts/34).")
+    ap.add_argument("--disease-dir", type=Path, default=OUT, help="disease_enrichment folder of a results root")
+    OUT = ap.parse_args().disease_dir
+    SOURCE = OUT / SOURCE.name
     rows=load_rows()
     for SIZE_MODE, suffix in (("equal", "audited_v3_equal_size"), ("compressed", "audited_v3_compressed_count")):
         PREFIX = OUT / f"all_methyl_proteins_disease_overview_{suffix}"

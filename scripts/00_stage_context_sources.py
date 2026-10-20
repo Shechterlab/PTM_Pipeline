@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import gzip
+import hashlib
 import io
 import json
 import re
@@ -26,6 +28,8 @@ from common import canonicalize_uniprot_accession
 UNIPROT_QUERY = '(proteome:UP000005640) AND (reviewed:true)'
 UNIPROT_FASTA_URL = 'https://rest.uniprot.org/uniprotkb/stream'
 UNIPROT_TSV_URL = 'https://rest.uniprot.org/uniprotkb/stream'
+# Secondary accessions of every UniProtKB entry (merged or split entries keep their old accessions here).
+UNIPROT_SEC_AC_URL = 'https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/docs/sec_ac.txt'
 INTERPRO_ENTRY_URL = 'https://www.ebi.ac.uk/interpro/api/entry/interpro/protein/reviewed/{accession}'
 INTERPRO_ENTRY_LIST_URL = 'https://ftp.ebi.ac.uk/pub/databases/interpro/current_release/entry.list'
 INTERPRO_PROTEIN2IPR_URL = 'https://ftp.ebi.ac.uk/pub/databases/interpro/current_release/protein2ipr.dat.gz'
@@ -77,12 +81,96 @@ def fetch_json(url: str, params: dict[str, str] | None = None, timeout: int = 30
         return json.loads(response.read().decode('utf-8'))
 
 
-def download_file(url: str, params: dict[str, str], dest: Path, timeout: int = 300) -> None:
+def download_file(url: str, params: dict[str, str], dest: Path, timeout: int = 300) -> dict[str, str]:
+    """Download to dest; returns the response headers (UniProt names its release in X-UniProt-Release)."""
     dest.parent.mkdir(parents=True, exist_ok=True)
     with http_open(url, params=params, timeout=timeout) as response:
         with open(dest, 'wb') as fh:
             for chunk in iter_response_chunks(response, chunk_size=1024 * 1024):
                 fh.write(chunk)
+        return {key.lower(): value for key, value in response.headers.items()}
+
+
+def file_md5(path: Path) -> str:
+    digest = hashlib.md5()
+    with open(path, 'rb') as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def stage_accession_history(path: Path, fasta_path: Path, timeout: int) -> None:
+    """Write uniprot_accession_history.tsv: how source accessions and gene symbols that are no longer current reach an
+    entry of the staged FASTA. kind=secondary: an accession UniProt merged into (or split into) that entry, from
+    sec_ac.txt; kind=synonym: a gene-name synonym of that entry. Only entries of the staged FASTA are kept, so the file
+    never points outside the reference set; scripts/02 reads it as extra candidates (--accession-history)."""
+    accessions = set(parse_fasta_accessions(fasta_path))
+    rows: list[tuple[str, str, str]] = []
+    tmp = path.with_suffix('.sec_ac.tmp')
+    headers = download_file(UNIPROT_SEC_AC_URL, {}, tmp, timeout=max(timeout, 600))
+    started = False
+    with open(tmp, encoding='utf-8', errors='replace') as handle:
+        for line in handle:
+            if not started:
+                started = line.startswith('____')
+                continue
+            parts = line.split()
+            if len(parts) == 2 and parts[1] in accessions:
+                rows.append(('secondary', parts[0], parts[1]))
+    tmp.unlink()
+    syn = path.with_suffix('.synonyms.tmp')
+    syn_headers = download_file(UNIPROT_TSV_URL, {'format': 'tsv', 'query': UNIPROT_QUERY, 'fields': 'accession,gene_synonym'}, syn, timeout=max(timeout, 300))
+    table = pd.read_csv(syn, sep='\t', dtype=str).fillna('')
+    syn.unlink()
+    for acc, names in zip(table['Entry'], table['Gene Names (synonym)']):
+        for name in names.split():
+            if acc in accessions:
+                rows.append(('synonym', name.strip(), acc))
+    out = pd.DataFrame(rows, columns=['kind', 'key', 'accession']).drop_duplicates()
+    # sec_ac.txt (FTP) and the synonyms (REST) come from the current release, which can be later than the staged FASTA;
+    # entries missing from the FASTA were dropped above, so a later release only adds accessions that point into it.
+    out['uniprot_release'] = syn_headers.get('x-uniprot-release', '') or headers.get('x-uniprot-release', '')
+    out.to_csv(path, sep='\t', index=False)
+    print(f'accession history: {int((out["kind"] == "secondary").sum())} secondary accessions, '
+          f'{int((out["kind"] == "synonym").sum())} gene synonyms -> {path}')
+
+
+def parse_fasta_accessions(path: Path) -> list[str]:
+    out = []
+    with open(path, encoding='utf-8') as handle:
+        for line in handle:
+            if line.startswith('>'):
+                parts = line[1:].split('|')
+                out.append(parts[1] if len(parts) > 2 else line[1:].split()[0])
+    return out
+
+
+def record_uniprot_release(record_path: Path, fasta_path: Path, metadata_path: Path, headers: dict[str, str] | None) -> None:
+    """Write which UniProt release the staged FASTA and metadata are, next to them (uniprot_release.json). Site positions
+    refer to these sequences, so the release must be known to compare them with later UniProt data. A FASTA staged before
+    this record existed gets an entry with its checksum and an unknown release; the FASTA itself is never changed."""
+    previous = json.loads(record_path.read_text()) if record_path.exists() else None
+    fasta_md5, metadata_md5 = file_md5(fasta_path), file_md5(metadata_path)
+    if headers is None and previous is not None:
+        if previous.get('fasta_md5') != fasta_md5:
+            print(f'WARNING: {fasta_path} changed since {record_path} was written (release {previous.get("release")}); '
+                  'positions computed from it no longer refer to that release')
+        return
+    record = {
+        'release': (headers or {}).get('x-uniprot-release'),
+        'release_date': (headers or {}).get('x-uniprot-release-date', ''),
+        'downloaded': dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds') if headers else '',
+        'query': UNIPROT_QUERY,
+        'fasta': fasta_path.name,
+        'fasta_md5': fasta_md5,
+        'fasta_modified': dt.datetime.fromtimestamp(fasta_path.stat().st_mtime, dt.timezone.utc).isoformat(timespec='seconds'),
+        'metadata': metadata_path.name,
+        'metadata_md5': metadata_md5,
+    }
+    if headers is None:
+        record['note'] = 'FASTA staged before releases were recorded; the release is unknown (fasta_modified is the file date)'
+    record_path.write_text(json.dumps(record, indent=1) + '\n')
+    print(f'UniProt release record -> {record_path} (release {record["release"] or "unknown"})')
 
 
 def parse_accessions_from_tsv(path: Path) -> list[str]:
@@ -453,7 +541,7 @@ def build_rows_from_bulk_pandas(
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument('--outdir', default='data/context')
+    ap.add_argument('--outdir', default='PTM_data/context')
     ap.add_argument('--workers', type=int, default=8)
     ap.add_argument('--page-size', type=int, default=200)
     ap.add_argument('--timeout', type=int, default=120)
@@ -462,6 +550,8 @@ def main() -> None:
     ap.add_argument('--force-interpro', action='store_true')
     ap.add_argument('--force-uniprot', action='store_true')
     ap.add_argument('--skip-interpro', action='store_true')
+    ap.add_argument('--skip-accession-history', action='store_true',
+                    help='do not stage uniprot_accession_history.tsv (secondary accessions and gene synonyms for scripts/02)')
     ap.add_argument('--accessions', default='')
     ap.add_argument('--domain-types', nargs='*', default=list(DEFAULT_DOMAIN_TYPES))
     ap.add_argument('--interpro-source', choices=['auto', 'api', 'bulk'], default='auto')
@@ -479,9 +569,10 @@ def main() -> None:
     fasta_path = outdir / 'uniprot_human_reviewed_canonical.fasta'
     metadata_path = outdir / 'uniprot_human_reviewed_canonical_metadata.tsv'
 
+    release_headers = None
     if args.force_uniprot or not fasta_path.exists():
         print(f'downloading UniProt FASTA -> {fasta_path}')
-        download_file(
+        release_headers = download_file(
             UNIPROT_FASTA_URL,
             {'format': 'fasta', 'query': UNIPROT_QUERY},
             fasta_path,
@@ -491,14 +582,25 @@ def main() -> None:
         print(f'reusing UniProt FASTA -> {fasta_path}')
     if args.force_uniprot or not metadata_path.exists():
         print(f'downloading UniProt metadata -> {metadata_path}')
-        download_file(
+        metadata_headers = download_file(
             UNIPROT_TSV_URL,
             {'format': 'tsv', 'query': UNIPROT_QUERY, 'fields': 'accession,id,gene_primary,protein_name,length'},
             metadata_path,
             timeout=max(args.timeout, 300),
         )
+        if release_headers and metadata_headers.get('x-uniprot-release') != release_headers.get('x-uniprot-release'):
+            raise SystemExit('UniProt released between the FASTA and metadata downloads; rerun with --force-uniprot')
     else:
         print(f'reusing UniProt metadata -> {metadata_path}')
+        if release_headers:
+            print('WARNING: new UniProt FASTA but reused metadata; rerun with --force-uniprot so both come from one release')
+    record_uniprot_release(outdir / 'uniprot_release.json', fasta_path, metadata_path, release_headers)
+    history_path = outdir / 'uniprot_accession_history.tsv'
+    if not args.skip_accession_history and (args.force_uniprot or not history_path.exists()):
+        print(f'downloading UniProt secondary accessions and gene synonyms -> {history_path}')
+        stage_accession_history(history_path, fasta_path, args.timeout)
+    elif history_path.exists():
+        print(f'reusing UniProt accession history -> {history_path}')
 
     if args.accessions:
         accessions = load_accessions(Path(args.accessions))

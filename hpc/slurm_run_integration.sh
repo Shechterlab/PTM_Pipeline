@@ -68,7 +68,12 @@ export MPLCONFIGDIR="${TMPDIR:-/tmp}/matplotlib-${SLURM_JOB_ID:-manual}"
 mkdir -p "$MPLCONFIGDIR"
 mkdir -p "$PTM_RESULTS_ROOT"
 
-run_step "repo hygiene guard" bash "$PTM_CODE_ROOT/hpc/check_repo_hygiene.sh" "$PTM_CODE_ROOT"
+# PTM_SKIP_HYGIENE=1 skips the guard, e.g. for a checkout that tracks published PTM_results/ tables.
+if [ "${PTM_SKIP_HYGIENE:-0}" = "1" ]; then
+  echo "[ptm_pipeline] repo hygiene guard skipped (PTM_SKIP_HYGIENE=1)"
+else
+  run_step "repo hygiene guard" bash "$PTM_CODE_ROOT/hpc/check_repo_hygiene.sh" "$PTM_CODE_ROOT"
+fi
 echo "[ptm_pipeline] code=$PTM_CODE_ROOT"
 echo "[ptm_pipeline] data=$PTM_DATA_ROOT"
 echo "[ptm_pipeline] results=$PTM_RESULTS_ROOT"
@@ -90,17 +95,39 @@ run_step "parse ProMetheus mmc2" python "$PTM_CODE_ROOT/scripts/01_parse_prometh
   --input "$PTM_PROMETHEUS_MMC2" \
   --outdir "$PTM_RESULTS_ROOT/parsed_prometheus"
 
+# Accessions UniProt has merged or split, and outdated gene symbols, reach their current entry through the staged
+# accession history (scripts/00 writes it beside the FASTA); without it those rows find no candidate.
+HISTORY_ARGS=()
+if [ -s "$PTM_ACCESSION_HISTORY" ]; then
+  HISTORY_ARGS=(--accession-history "$PTM_ACCESSION_HISTORY")
+else
+  echo "[ptm_pipeline] no accession history at $PTM_ACCESSION_HISTORY; merged accessions and outdated symbols stay unplaced"
+fi
 run_step "remap to canonical coordinates" python "$PTM_CODE_ROOT/scripts/02_remap_arg_methyl_to_canonical.py" \
   --base-master "$PTM_MASTER_TSV" \
   --maron "$PTM_RESULTS_ROOT/parsed_maron/maron_s5_arg_methyl_sites.tsv" \
   --prometheus "$PTM_RESULTS_ROOT/parsed_prometheus/prometheus_mmc2_arg_methyl_sites.tsv" \
   --canonical-fasta "$PTM_CANONICAL_FASTA" \
   --uniprot-metadata "$PTM_UNIPROT_METADATA" \
+  "${HISTORY_ARGS[@]}" \
   --outdir "$PTM_RESULTS_ROOT/remapped"
 
 run_step "integrate remapped sites" python "$PTM_CODE_ROOT/scripts/02_integrate_arg_methyl_sources.py" \
   --premerged-remapped "$PTM_RESULTS_ROOT/remapped/human_arg_methyl_source_rows_remapped_resolved.tsv" \
   --outdir "$PTM_RESULTS_ROOT/integrated"
+
+# Stop unless every source row sits where its own evidence puts it and every union site is an arginine of the run's
+# FASTA. Accepted exceptions are listed, each with its reason, in config/remap_evidence_allowlist.tsv.
+run_step "check remapped rows against their evidence" python "$PTM_CODE_ROOT/scripts/qc_remap_evidence_check.py" \
+  --results-root "$PTM_RESULTS_ROOT" \
+  --fasta "$PTM_CANONICAL_FASTA" \
+  --fail-on-contradictions \
+  --allow "${PTM_REMAP_ALLOWLIST:-$PTM_CODE_ROOT/config/remap_evidence_allowlist.tsv}"
+run_step "check that union sites are arginines" python "$PTM_CODE_ROOT/scripts/qc_remap_hand_check.py" \
+  --audit-union \
+  --results-root "$PTM_RESULTS_ROOT" \
+  --fasta "$PTM_CANONICAL_FASTA" \
+  --audit-out "$PTM_RESULTS_ROOT/qc/remap_evidence_check/union_site_residue_audit.tsv"
 
 run_step "functional enrichment" python "$PTM_CODE_ROOT/scripts/03_functional_class_enrichment.py" \
   --base-master "$PTM_MASTER_TSV" \

@@ -169,7 +169,7 @@ def main() -> None:
     ap.add_argument('--base-master', required=True)
     ap.add_argument('--integrated-arg-sites', required=True)
     ap.add_argument('--canonical-fasta', required=True)
-    ap.add_argument('--outdir', default='results/ptm_clustering')
+    ap.add_argument('--outdir', required=True)
     ap.add_argument('--ptm-groups', nargs='*', default=list(DEFAULT_PTM_GROUPS))
     ap.add_argument('--max-distance', type=int, default=100)
     ap.add_argument('--permutations', type=int, default=100000)

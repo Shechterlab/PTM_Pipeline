@@ -1,20 +1,32 @@
 #!/usr/bin/env python3
-"""Audited, mutually exclusive disease-family enrichment and figure export."""
+"""Audited, mutually exclusive disease-family enrichment and figure export.
+
+Besides the family tests and figures, it writes which families hold each methylarginine protein's gene
+(all_methyl_proteins_disease_family_proteins_<version>.tsv, with disease_family_summary.json): the same symbol-to-Entrez
+mapping and family gene unions as the tests. With --explorer-json that table is merged into an existing Site Explorer
+export (protein field disease_families); 36_export_site_explorer_data.py applies the same merge (explorer_merge.py)
+when it builds the export.
+"""
 
 from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import html
+import json
 import math
 import re
 import sqlite3
 from collections import defaultdict
 from pathlib import Path
 
+import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen import canvas
+
+from explorer_merge import merge_disease_families, update_export
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -82,6 +94,7 @@ def args_parser():
     p.add_argument("--term-results", type=Path, default=DEFAULT_OUT / "all_methyl_proteins_disease_enrichment.tsv")
     p.add_argument("--input-summary", type=Path, default=DEFAULT_OUT / "disease_input_summary.tsv")
     p.add_argument("--outdir", type=Path, default=DEFAULT_OUT)
+    p.add_argument("--explorer-json", type=Path, help="Site Explorer export (website/data/methylarg_sites.json) to merge the per-protein family table into")
     return p.parse_args()
 
 
@@ -265,6 +278,29 @@ def main():
         tids=[t for t in family_terms[als] if e in term_genes[t]]
         gene_rows.append({"entrez_id":e,"gene_symbol":entrez_to_symbol.get(e,""),"is_methylarginine_protein":e in target,"contributing_term_count":len(tids),"contributing_term_ids":";".join(tids),"contributing_term_names":";".join(term_names[t] for t in tids)})
     write_tsv(a.outdir/f"all_methyl_proteins_als_ftd_contributing_genes_{VERSION}.tsv",gene_rows,list(gene_rows[0]))
+
+    # Each methylarginine protein (labels accession) with every family whose gene union holds its gene, and how many of
+    # the family's terms name that gene: what the Site Explorer's protein pages show beside the enriched terms.
+    fam_gene_terms={fam:defaultdict(set) for fam,_ in FAMILY_RULES}
+    for fam,_ in FAMILY_RULES:
+        for t in family_terms[fam]:
+            for e in term_genes[t]: fam_gene_terms[fam][e].add(t)
+    prot_rows=[]
+    for r in labels:
+        if str(r.get("is_arg_methyl_protein","")).strip().lower() not in {"1","true","t","yes","y"}: continue
+        s=primary_gene(r.get("substrate_genename")) or primary_gene(r.get("genename")); ents=smap.get(s,set()) if s else set()
+        for fam,_ in FAMILY_RULES:
+            hit=sorted(ents&fam_gene_sets[fam])
+            if hit: prot_rows.append({"canonical_UniProtAC":r["canonical_UniProtAC"],"gene_symbol":s,"entrez_ids":";".join(hit),"disease_family":fam,"contributing_term_count":len(set().union(*(fam_gene_terms[fam][e] for e in hit)))})
+    prot_path=a.outdir/f"all_methyl_proteins_disease_family_proteins_{VERSION}.tsv"
+    write_tsv(prot_path,prot_rows,["canonical_UniProtAC","gene_symbol","entrez_ids","disease_family","contributing_term_count"])
+    summary={"version":VERSION,"input_sha256":{"term_gene":hashlib.sha256(a.term_gene.read_bytes()).hexdigest()},
+             "families":[{"family":r["disease_family"],"terms":r["contributing_ontology_terms"],"genes":r["family_gene_count"],"methylarginine_genes":r["methylarginine_protein_count"]} for r in fam_rows],
+             "proteins":len({r["canonical_UniProtAC"] for r in prot_rows})}
+    if a.explorer_json:
+        summary["explorer"]=update_export(a.explorer_json,merge_disease_families,pd.read_csv(prot_path,sep="\t",dtype=str,keep_default_na=False),summary)
+    (a.outdir/"disease_family_summary.json").write_text(json.dumps(summary,indent=1)+"\n",encoding="utf-8")
+    print(f"family membership: {summary['proteins']} methylarginine proteins in at least one family; {prot_path.name}")
 
     term_results={r["ID"]:r for r in read_tsv(a.term_results)}; focus=[]
     for tid,label in FOCUS_TERMS:

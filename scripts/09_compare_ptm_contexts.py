@@ -185,7 +185,7 @@ def main() -> None:
     ap.add_argument('--boundary-window', type=int, default=20)
     ap.add_argument('--ptm-groups', nargs='*', default=list(DEFAULT_PTM_GROUPS))
     ap.add_argument('--make-detailed-context-plots', action='store_true')
-    ap.add_argument('--outdir', default='results/ptm_compare')
+    ap.add_argument('--outdir', required=True)
     args = ap.parse_args()
 
     sequences = parse_fasta(args.canonical_fasta)

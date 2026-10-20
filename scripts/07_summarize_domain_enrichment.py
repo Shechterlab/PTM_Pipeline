@@ -300,7 +300,7 @@ def main() -> None:
     ap.add_argument('--include-types', nargs='*', default=['domain', 'repeat'])
     ap.add_argument('--disorder-sites', default='')
     ap.add_argument('--disorder-intervals', default='')
-    ap.add_argument('--outdir', default='results/domain_context')
+    ap.add_argument('--outdir', required=True)
     args = ap.parse_args()
 
     annotated_path = Path(args.annotated_sites)
@@ -413,16 +413,20 @@ def main() -> None:
     if disorder_intervals_by_acc:
         methyl_protein_arg = annotate_disorder_background(methyl_protein_arg, disorder_intervals_by_acc, args.boundary_window)
 
+    # The tests compare sites with the other arginines of the same sequences, so they count only sites on proteins with
+    # background arginines (as scripts/08 does); sites on entries outside the FASTA have none. The site table keeps all.
+    has_background = annotated_sites['canonical_UniProtAC'].isin(set(methyl_protein_arg['canonical_UniProtAC']))
+    tested_sites = annotated_sites[has_background]
     context_enrichment = fisher_like_enrichment(
-        annotated_sites['domain_context_class'],
+        tested_sites['domain_context_class'],
         methyl_protein_arg['domain_context_class'],
     )
     domain_class_enrichment = fisher_like_enrichment(
-        annotated_sites['nearest_domain_class'],
+        tested_sites['nearest_domain_class'],
         methyl_protein_arg['nearest_domain_class'],
     )
     edge_summary = annotated_sites[['nearest_domain_edge_distance', 'domain_context_class']].copy()
-    observed_edge = annotated_sites['nearest_domain_edge_distance'].dropna().astype(float)
+    observed_edge = tested_sites['nearest_domain_edge_distance'].dropna().astype(float)
     background_edge = methyl_protein_arg['nearest_domain_edge_distance'].dropna().astype(float)
     edge_comparison = pd.DataFrame([{
         'observed_n': len(observed_edge),
@@ -433,15 +437,15 @@ def main() -> None:
         if not observed_edge.empty and not background_edge.empty else pd.NA,
     }])
     edge_bin_enrichment = fisher_like_enrichment(
-        annotated_sites[annotated_sites['domain_edge_bin'].notna()]['domain_edge_bin'],
+        tested_sites[tested_sites['domain_edge_bin'].notna()]['domain_edge_bin'],
         methyl_protein_arg[methyl_protein_arg['domain_edge_bin'].notna()]['domain_edge_bin'],
     )
     edge_bin_compact_enrichment = fisher_like_enrichment(
-        annotated_sites[annotated_sites['domain_edge_bin_compact'].notna()]['domain_edge_bin_compact'],
+        tested_sites[tested_sites['domain_edge_bin_compact'].notna()]['domain_edge_bin_compact'],
         methyl_protein_arg[methyl_protein_arg['domain_edge_bin_compact'].notna()]['domain_edge_bin_compact'],
     )
     edge_curve = cumulative_edge_curve(
-        annotated_sites.loc[annotated_domain_edge_mask, 'nearest_domain_edge_distance'],
+        annotated_sites.loc[annotated_domain_edge_mask & has_background, 'nearest_domain_edge_distance'],
         methyl_protein_arg.loc[background_domain_edge_mask, 'nearest_domain_edge_distance'],
         max_distance=40,
     )
@@ -450,7 +454,7 @@ def main() -> None:
     disordered_edge_curve = pd.DataFrame()
     disordered_edge_qc = pd.DataFrame()
     if 'disorder_context_class' in annotated_sites.columns and 'disorder_context_class' in methyl_protein_arg.columns:
-        annotated_disordered_edge_mask = annotated_domain_edge_mask & (annotated_sites['disorder_context_class'] == 'disordered')
+        annotated_disordered_edge_mask = annotated_domain_edge_mask & has_background & (annotated_sites['disorder_context_class'] == 'disordered')
         background_disordered_edge_mask = background_domain_edge_mask & (methyl_protein_arg['disorder_context_class'] == 'disordered')
         if int(annotated_disordered_edge_mask.sum()) > 0 and int(background_disordered_edge_mask.sum()) > 0:
             disordered_edge_bin_enrichment = fisher_like_enrichment(

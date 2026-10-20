@@ -21,7 +21,7 @@ def protein_label(row: pd.Series) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--integrated-sites', required=True)
-    ap.add_argument('--outdir', default='results/qc/source_provenance')
+    ap.add_argument('--outdir', required=True)
     args = ap.parse_args()
 
     df = pd.read_csv(args.integrated_sites, sep='\t', low_memory=False)

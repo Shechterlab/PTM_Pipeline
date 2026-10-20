@@ -11,19 +11,6 @@ __pycache__/
 
 PTM_data/
 
-# Legacy in-repo layout stubs
-data/*
-!data/.gitkeep
-results/*
-!results/.gitkeep
-
-# Large staged source files should stay local / HPC-staged, not in Git
-data/external/*.xlsx
-data/external/*.json
-data/external/*.gz
-data/external/*.zip
-data/external/*.pdf
-
 # Cluster logs and local transfer scratch
 slurm-*.out
 slurm-*.err
@@ -36,12 +23,14 @@ slurm-*.err
 .conda/
 .venv/
 venv/
-.pytest_cache/
 .ipynb_checkpoints/
 .DS_Store
 
 # Local archives should not be committed; regenerate from Git when needed.
 *.zip
+!inputs/**/*.zip
+# Not redistributable (All Rights Reserved): download it yourself, see inputs/README.md
+inputs/annotation/cplm4_lysine_methylation_*.zip
 *.tar
 *.tar.gz
 *.tgz
