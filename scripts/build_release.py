@@ -266,6 +266,18 @@ def main() -> None:
     pub_keys = {f'{a}:{int(float(p))}' for a, p in zip(pub_union['canonical_UniProtAC'], pub_union['corrected_position'])}
     state = {f'{a}:{int(float(p))}': (c, o) for a, p, c, o in zip(union['canonical_UniProtAC'], union['corrected_position'], union['arg_methyl_state_consensus'], union['arg_methyl_states_observed'])}
 
+    # A site whose surrounding sequence occurs identically in another reviewed entry (histone variants, identical
+    # paralogs such as HSPA1A/HSPA1B) cannot be told apart by its peptide or window: the gene is the one the source named.
+    proteome = remap.ProteomeIndex(reference)
+
+    def same_window_in(acc: str, pos: int) -> list[str]:
+        seq = reference.get(acc, '')
+        window = seq[max(0, pos - 16):pos + 15]
+        if len(window) < 15:
+            return []
+        others = sorted({a for a, _ in proteome.find(window) if a != acc})
+        return [f"{clean(meta['Gene Names (primary)'].get(a, '')) or a} ({a})" for a in others]
+
     sites = []
     for site, group in records[records['site'] != ''].groupby('site', sort=False):
         acc, pos = site.split(':')[0], int(site.split(':')[1])
@@ -280,6 +292,9 @@ def main() -> None:
             flags.append('single_study')
         if site not in pending and group['placement_code'].str.contains('near_match').all():
             flags.append('near_match_only')
+        shared = same_window_in(acc, pos)
+        if shared:
+            flags.append('shared_sequence')
         consensus, observed = state.get(site, ('', ''))
         sites.append({
             'site': f'{acc}:R{pos}',
@@ -303,6 +318,7 @@ def main() -> None:
             'source_tables': '; '.join(sorted(set(group['source_table']))),
             'n_records_at_reported_position': int(((group['reported_accession'].map(remap.canonicalize_uniprot_accession) == acc) & (group['reported_position'] == str(pos))).sum()),
             'in_published_union': site in pub_keys,
+            'same_window_in': '; '.join(shared[:10]) + (f'; and {len(shared) - 10} more' if len(shared) > 10 else ''),
             'record_ids': ';'.join(map(str, group['record_id'])),
         })
     sites = pd.DataFrame(sites).sort_values(['gene', 'accession', 'position']).reset_index(drop=True)
@@ -426,11 +442,14 @@ def write_readme(outdir: Path, name: str, sites: pd.DataFrame, records: pd.DataF
         'exactly and this entry within 2 residues; issue 9, open); near_match_only (every supporting record matches the '
         f'entry within 2 residues, not exactly); {PENDING_JUNCTION} (a window crossing a splice junction: one full flank '
         'matches exactly at the reported arginine, the other does not; the pipeline leaves it unplaced, the release '
-        'includes it until the policy is decided).',
+        'includes it until the policy is decided); shared_sequence (residues -15 to +15 occur identically in another '
+        'reviewed entry, listed in same_window_in: histone variants, identical paralogs such as HSPA1A/HSPA1B; the '
+        'peptide or window cannot tell the proteins apart, so the gene is the one the source named).',
         '- methyl_state, methyl_states_reported: methylation state calls, where a source gives them.',
         '- n_records, n_studies, studies, study_dois, source_tables: the support of the site.',
         '- n_records_at_reported_position: records whose own accession and position name this site unchanged.',
         '- in_published_union: whether the published union had this site.',
+        '- same_window_in: other reviewed entries holding the same 31 residues (see shared_sequence).',
         '- record_ids: the supporting rows of evidence.tsv.',
         '',
         '## evidence.tsv columns',
