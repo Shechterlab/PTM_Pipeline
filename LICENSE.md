@@ -39,11 +39,11 @@ CC BY-NC-SA 4.0 is the licence under which the combined data can be redistribute
 
 ## Third-party data
 
-Data from other resources remain under their own terms. The explorer's **Data & methods** page lists each source with its version, licence and citation. Those with non-commercial terms:
+Data from other resources remain under their own terms. The explorer's **Documentation** page lists each source with its version, licence and citation. Those with non-commercial terms:
 
 | Source | Licence |
 |---|---|
-| PhosphoSitePlus® | CC BY-NC-SA 3.0. Acknowledge PhosphoSitePlus®, www.phosphosite.org, and cite Hornbeck et al. 2015, doi:10.1093/nar/gku1267. |
+| PhosphoSitePlus® (downloaded 22 May 2021, as compiled in Maron et al. 2021 Table S5) | CC BY-NC-SA 3.0. Acknowledge PhosphoSitePlus®, www.phosphosite.org, and cite Hornbeck et al. 2015, doi:10.1093/nar/gku1267. |
 | DisGeNET | CC BY-NC-SA 4.0 |
 | pepR-MS (Sha, Kuster & Trendel, bioRxiv 2025, doi:10.1101/2025.09.05.674461) | CC BY-NC |
 

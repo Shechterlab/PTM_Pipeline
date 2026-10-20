@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Serif:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="assets/explorer.css?v=20261019za">
+  <link rel="stylesheet" href="assets/explorer.css?v=20261020b">
   <script>
     try { var t = localStorage.getItem('mre-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
   </script>
@@ -32,7 +32,7 @@
         </nav>
       </div>
       <h1><a class="home-link" href="#overview" title="Back to the overview">Methylarginine Site Explorer</a></h1>
-      <p class="lede" id="lede">The human arginine methylome. Please cite DeAngelo, Silverstein &amp; Shechter, <a href="https://doi.org/10.1016/j.chembiol.2026.09.011"><i>Protein arginine methylation rewires molecular interactions</i></a>, Cell Chemical Biology (2026), and the original data sources listed under <button class="linkish" type="button" data-doc="cite">citations</button>.</p>
+      <div class="lede" id="lede"><p class="lede-cite"><span class="cite-long">Please cite DeAngelo, Silverstein &amp; Shechter, <a href="https://doi.org/10.1016/j.chembiol.2026.09.011"><i>Protein arginine methylation rewires molecular interactions</i></a>, Cell Chem Biol 2026, and the original data sources</span><span class="cite-short">Cite <a href="https://doi.org/10.1016/j.chembiol.2026.09.011">DeAngelo <i>et al.</i>, Cell Chem Biol 2026</a> and the data sources</span> (<button class="linkish" type="button" data-doc="cite">how to cite</button>).</p></div>
       <div class="hero-stats" id="hero-stats" aria-label="Dataset summary"></div>
     </div>
     <div class="hero-art-caption" id="hero-art-caption"></div>
@@ -58,7 +58,6 @@
         <button class="tab" role="tab" id="tab-proteins" data-view="proteins" aria-selected="false">Proteins <span class="count" id="count-proteins">–</span></button>
         <button class="tab" role="tab" id="tab-sites" data-view="sites" aria-selected="false">Sites <span class="count" id="count-sites">–</span></button>
         <button class="tab tab-feature" role="tab" id="tab-interactions" data-view="interactions" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="7" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><path d="M8.3 7.2 15.6 7M7.3 8.2l3.6 7.6M16.8 9.2l-3.6 6.6"></path></svg>Interactions</button>
-        <button class="tab" role="tab" id="tab-charts" data-view="charts" aria-selected="false">Charts</button>
         <button class="tab" role="tab" id="tab-figures" data-view="figures" aria-selected="false">Figures</button>
         <button class="tab" role="tab" id="tab-protein" data-view="protein" aria-selected="false" hidden>Protein</button>
         <button class="tab" role="tab" id="tab-about" data-view="about" aria-selected="false"><span class="tab-long">Documentation</span><span class="tab-short">Docs</span></button>
@@ -90,6 +89,6 @@
   </footer>
 
   <div class="tip" id="tip" hidden></div>
-  <script src="assets/explorer.js?v=20261019za"></script>
+  <script src="assets/explorer.js?v=20261020b"></script>
 </body>
 </html>
