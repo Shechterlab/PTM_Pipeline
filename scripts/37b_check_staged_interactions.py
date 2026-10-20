@@ -95,7 +95,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--cache', default='PTM_data/interactions_cache')
     ap.add_argument('--tables', default='inputs/interactions')
-    ap.add_argument('--site-json', default='website/data/methylarg_interactions.json')
+    ap.add_argument('--site-json', default='docs/data/methylarg_interactions.json')
     args = ap.parse_args()
     c, t = Path(args.cache), Tables(Path(args.tables))
     site = json.loads(Path(args.site_json).read_text())

@@ -20,7 +20,7 @@ Outputs (in --outdir, default $PTM_RESULTS_ROOT/cplm4)
   cplm4_summary.json                     input checksum, counts per check, sites and proteins kept
 
 With --explorer-json, the validated sites are also merged into an existing Site Explorer export
-(website/data/methylarg_sites.json) as Lys methylation entries with their CPLM source bits, replacing any CPLM
+(docs/data/methylarg_sites.json) as Lys methylation entries with their CPLM source bits, replacing any CPLM
 entries already there; 36_export_site_explorer_data.py applies the same merge (explorer_merge.py) when it builds the export.
 """
 from __future__ import annotations

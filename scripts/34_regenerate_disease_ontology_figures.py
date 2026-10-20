@@ -94,7 +94,7 @@ def args_parser():
     p.add_argument("--term-results", type=Path, default=DEFAULT_OUT / "all_methyl_proteins_disease_enrichment.tsv")
     p.add_argument("--input-summary", type=Path, default=DEFAULT_OUT / "disease_input_summary.tsv")
     p.add_argument("--outdir", type=Path, default=DEFAULT_OUT)
-    p.add_argument("--explorer-json", type=Path, help="Site Explorer export (website/data/methylarg_sites.json) to merge the per-protein family table into")
+    p.add_argument("--explorer-json", type=Path, help="Site Explorer export (docs/data/methylarg_sites.json) to merge the per-protein family table into")
     return p.parse_args()
 
 

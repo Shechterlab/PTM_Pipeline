@@ -15,7 +15,7 @@ names follow later releases.
 
 **Where the full published results are.** The analysis outputs, figures and website data of v1.0.0 are in the
 repository at git tag `v1.0.0` (folder `PTM_results/`) and in the `v1.0.0_archive` branch, and the frozen website is
-in `website/v1.0.0/`. `scripts/build_release_v1_0_0.py` wrote these tables from that folder.
+in `docs/v1.0.0/`. `scripts/build_release_v1_0_0.py` wrote these tables from that folder.
 
 **Reference sequences.** Positions refer to the UniProtKB reviewed human sequences staged on 2026-04-07, whose
 UniProt release was not recorded (it predates 2026_03). Some published sites sit on unreviewed or obsolete

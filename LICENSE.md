@@ -6,8 +6,8 @@ This repository holds two kinds of material under two licences:
 
 | Material | Licence |
 |---|---|
-| Source code: `scripts/`, `hpc/`, `envs/`, `config/`, and the explorer's `website/**/index.html`, `website/**/assets/*.js` and `website/**/assets/*.css` | [MIT](#code-mit-license) |
-| Data, figures and text: the releases in `releases/`, the explorer's data (`website/**/data/`) and written content, and the documents in `provenance/` | [CC BY-NC-SA 4.0](#data-and-content-cc-by-nc-sa-40) |
+| Source code: `scripts/`, `hpc/`, `envs/`, `config/`, and the explorer's `docs/**/index.html`, `docs/**/assets/*.js` and `docs/**/assets/*.css` | [MIT](#code-mit-license) |
+| Data, figures and text: the releases in `releases/`, the explorer's data (`docs/**/data/`) and written content, and `provenance/` | [CC BY-NC-SA 4.0](#data-and-content-cc-by-nc-sa-40) |
 | The frozen inputs in `inputs/` | each its source's licence, listed in `inputs/MANIFEST.tsv` |
 
 Third-party data keep their own licences (see [below](#third-party-data)).

@@ -21,7 +21,7 @@ With --cplm4-sites, one more comparison keeps only "independent" methyl-K: CPLM 
 Exp.) none of whose references is a study or database that also contributed methylarginines to the union
 (UNION_STUDY_PMIDS, including PhosphoSitePlus, which feeds both).
 
-Inputs: the explorer export (website/data/methylarg_sites.json), the canonical FASTA its positions refer to, and
+Inputs: the explorer export (docs/data/methylarg_sites.json), the canonical FASTA its positions refer to, and
 disorder intervals (canonical_UniProtAC, fragment_start, fragment_end; PTM_MOBIDB_INTERVALS). Proteins whose
 FASTA length differs from the export's are skipped, and so are methylarginines without an R and Lys-methyl
 entries without a K in the FASTA.
@@ -195,7 +195,7 @@ def plot(models: pd.DataFrame, prof: pd.DataFrame, window: int, path_prefix: Pat
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('--sites-json', default='website/data/methylarg_sites.json')
+    ap.add_argument('--sites-json', default='docs/data/methylarg_sites.json')
     ap.add_argument('--fasta', default=os.environ.get('PTM_CANONICAL_FASTA', ''))
     ap.add_argument('--disorder-intervals', default=os.environ.get('PTM_MOBIDB_INTERVALS', ''))
     ap.add_argument('--cplm4-sites', default='',

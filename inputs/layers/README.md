@@ -13,7 +13,7 @@ methylarginine sites to the union.
   was made.
 - `raw_files.tsv` lists the downloads the tables were made from, with URL, size, MD5, SHA-256 and download date.
 - The summary JSON files are the scripts' own summaries, with paths shortened to file names. Their input
-  checksums equal those stored in the website data (`website/data/methylarg_sites.json`, `meta.cplm4`, `meta.hpa`,
+  checksums equal those stored in the website data (`docs/data/methylarg_sites.json`, `meta.cplm4`, `meta.hpa`,
   `meta.carm1_ko`).
 
 ## Checks

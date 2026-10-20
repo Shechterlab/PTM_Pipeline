@@ -1,4 +1,4 @@
-"""Merge staged annotations into a Site Explorer export (the dict written to website/data/methylarg_sites.json).
+"""Merge staged annotations into a Site Explorer export (the dict written to docs/data/methylarg_sites.json).
 
 36_export_site_explorer_data.py calls these on the payload it builds. Each staging script (39 CPLM 4.0, 41 CARM1
 knockout, 42 HPA subcellular locations) calls the same function through --explorer-json to update an existing export
@@ -287,11 +287,11 @@ def merge_disorder_intervals(data: dict, intervals: pd.DataFrame, summary: dict)
 
 if __name__ == '__main__':
     # Re-apply the merges that read pipeline result tables to an existing export, without rebuilding it:
-    #   python scripts/explorer_merge.py --results-root PTM_results --explorer-dir website/data
+    #   python scripts/explorer_merge.py --results-root PTM_results --explorer-dir docs/data
     import argparse
     ap = argparse.ArgumentParser(description=__doc__.split('\n', 1)[0])
     ap.add_argument('--results-root', default='PTM_results')
-    ap.add_argument('--explorer-dir', default='website/data')
+    ap.add_argument('--explorer-dir', default='docs/data')
     args = ap.parse_args()
     root, out = Path(args.results_root), Path(args.explorer_dir)
     sites_path, ev_path = out / 'methylarg_sites.json', out / 'methylarg_evidence.json'

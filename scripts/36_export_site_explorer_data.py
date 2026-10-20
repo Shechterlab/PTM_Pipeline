@@ -276,7 +276,7 @@ def enrichment_rows(df: pd.DataFrame, label_col: str = 'category') -> list[list]
 def main() -> None:
     ap = argparse.ArgumentParser(
         description='Export the integrated methylarginine union and its site/protein annotations as compact JSON '
-                    'for the static site explorer in website/.',
+                    'for the static site explorer in docs/.',
     )
     ap.add_argument('--results-root', default=os.environ.get('PTM_RESULTS_ROOT', 'PTM_results'))
     ap.add_argument('--uniprot-metadata', default=os.environ.get('PTM_UNIPROT_METADATA', ''),
@@ -302,7 +302,7 @@ def main() -> None:
                     help='label of this dataset release, shown on the website and in downloads')
     ap.add_argument('--strict', action='store_true',
                     help='fail on a missing input or a protein without a reference sequence instead of leaving it out')
-    ap.add_argument('--outdir', default='website/data')
+    ap.add_argument('--outdir', default='docs/data')
     args = ap.parse_args()
     global STRICT
     STRICT = args.strict

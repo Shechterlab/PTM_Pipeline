@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Export interaction context for the Site Explorer to website/data/methylarg_interactions.json.
+"""Export interaction context for the Site Explorer to docs/data/methylarg_interactions.json.
 
-Run after 36_export_site_explorer_data.py (it reads website/data/methylarg_sites.json for the protein and
+Run after 36_export_site_explorer_data.py (it reads docs/data/methylarg_sites.json for the protein and
 site lists). Public sources are downloaded once into --cache (default PTM_data/interactions_cache, which Git
 ignores) and reused; pass --refresh to download them again.
 
@@ -18,7 +18,7 @@ Sources
   ProtVar predicted interfaces (EMBL-EBI, CC BY 4.0) ....... AlphaFold-Multimer interface residues of human pairs
   IntAct features (EMBL-EBI, CC BY 4.0) .................... mutations that change an interaction, binding regions, methylated residues
 
-It also writes website/data/methylarg_pred_iface.json (--pred-iface-out): every residue of an explorer protein at a ProtVar
+It also writes docs/data/methylarg_pred_iface.json (--pred-iface-out): every residue of an explorer protein at a ProtVar
 predicted interface, as runs with the number of partners and the best pDockQ, which the explorer loads only when a
 figure draws the predicted lane.
 
@@ -116,12 +116,12 @@ GO_TERMS = {'rna': 'GO:0003723', 'dna': 'GO:0003677'}
 # GO evidence codes counted as experimental support.
 GO_EXPERIMENTAL = {'EXP', 'IDA', 'IPI', 'IMP', 'IGI', 'IEP', 'HTP', 'HDA', 'HMP', 'HGI', 'HEP'}
 
-# Partner flag bits (shared with website/assets/explorer.js).
+# Partner flag bits (shared with docs/assets/explorer.js).
 F_PRMT, F_TUDOR, F_RNA, F_DNA, F_RNA_EXP, F_DNA_EXP, F_WD40, F_PHD = 1, 2, 4, 8, 16, 32, 64, 128
 F_DOMAIN = {'tudor': F_TUDOR, 'wd40': F_WD40, 'phd': F_PHD}
 # Site interface bits.
 I_PROTEIN, I_SELF, I_RNA, I_DNA = 1, 2, 4, 8
-# CD-CODE role and evidence bits (shared with website/assets/explorer.js).
+# CD-CODE role and evidence bits (shared with docs/assets/explorer.js).
 ROLE_BITS = {'member': 1, 'driver': 2, 'client': 4, 'regulator': 8}
 ROLE_OTHER = 16
 EVIDENCE_BITS = {'in_vivo': 1, 'in_cellulo': 2, 'in_vitro': 4, 'frap': 8, 'colocalization': 16, 'mass_spectrometry': 32, 'emergent properties': 64}
@@ -1356,9 +1356,9 @@ def sig(x, d=3):
 # ----------------------------------------------------------------------------- main
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--sites-json', default='website/data/methylarg_sites.json')
-    ap.add_argument('--out', default='website/data/methylarg_interactions.json')
-    ap.add_argument('--pred-iface-out', default='website/data/methylarg_pred_iface.json',
+    ap.add_argument('--sites-json', default='docs/data/methylarg_sites.json')
+    ap.add_argument('--out', default='docs/data/methylarg_interactions.json')
+    ap.add_argument('--pred-iface-out', default='docs/data/methylarg_pred_iface.json',
                     help='every predicted interface residue of the explorer proteins, loaded by the explorer on demand')
     ap.add_argument('--cache', default='PTM_data/interactions_cache')
     ap.add_argument('--string-min-score', type=int, default=700, help='STRING physical score floor (0-1000); 700 = high confidence. Protein pages fetch lower-confidence links live.')

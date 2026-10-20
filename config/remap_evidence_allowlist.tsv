@@ -1,26 +1,26 @@
 # Rows that scripts/qc_remap_evidence_check.py --fail-on-contradictions accepts although the evidence points
-# elsewhere. Each needs a reason; remove a row once its issue is decided (DATA_PROVENANCE_REVIEW.md).
+# elsewhere. Each needs a reason; remove a row once the paralog-window policy is decided (flag paralog_window in the release).
 # Built from a check on UniProt release 2026_03; a run on another release may differ by a few rows.
 source_table	reported_accession	reported_position	placed_site	reason
-maron_s5	O43865	418	O43865:418	issue 9 (open): the source sequence matches AHCYL2 exactly; kept on the reported entry within 2 differences
-maron_s5	P07437	276	P07437:276	issue 9 (open): the source sequence matches TUBB8, TUBB8B exactly; kept on the reported entry within 2 differences
-maron_s5	P07437	282	P07437:282	issue 9 (open): the source sequence matches TUBB8, TUBB8B exactly; kept on the reported entry within 2 differences
-maron_s5	P08238	502	P08238:502	issue 9 (open): the source sequence matches HSP90AB3P exactly; kept on the reported entry within 2 differences
-maron_s5	P08238	612	P08238:612	issue 9 (open): the source sequence matches HSP90AB3P exactly; kept on the reported entry within 2 differences
-maron_s5	P09104	50	P09104:50	issue 9 (open): the source sequence matches ENO3 exactly; kept on the reported entry within 2 differences
-maron_s5	P10644	342	P10644:342	issue 9 (open): the source sequence matches PRKAR1B exactly; kept on the reported entry within 2 differences
-maron_s5	P15311	273	P15311:273	issue 9 (open): the source sequence matches MSN, RDX exactly; kept on the reported entry within 2 differences
-maron_s5	P15311	275	P15311:275	issue 9 (open): the source sequence matches MSN, RDX exactly; kept on the reported entry within 2 differences
-maron_s5	P20340	112	P20340:112	issue 9 (open): the source sequence matches RAB6B exactly; kept on the reported entry within 2 differences
-maron_s5	P20700	387	P20700:387	issue 9 (open): the source sequence matches LMNB2 exactly; kept on the reported entry within 2 differences
-maron_s5	P60842	255	P60842:255	issue 9 (open): the source sequence matches EIF4A2 exactly; kept on the reported entry within 2 differences
-maron_s5	P60842	316	P60842:316	issue 9 (open): the source sequence matches EIF4A2 exactly; kept on the reported entry within 2 differences
-maron_s5	P62136	132	P62136:132	issue 9 (open): the source sequence matches PPP1CB exactly; kept on the reported entry within 2 differences
-maron_s5	P68431	64	P68431:64	issue 9 (open): the source sequence matches H3-4 exactly; kept on the reported entry within 2 differences
-maron_s5	Q13547	212	Q13547:212	issue 9 (open): the source sequence matches HDAC2 exactly; kept on the reported entry within 2 differences
-maron_s5	Q14320	309	Q14320:309	issue 9 (open): the source sequence matches FAM50B exactly; kept on the reported entry within 2 differences
-maron_s5	Q6FI13	89	Q6FI13:89	issue 9 (open): the source sequence matches H2AC1, H2AX exactly; kept on the reported entry within 2 differences
-maron_s5	Q6FI13	30	Q6FI13:30	issue 9 (open): the source sequence matches H2AX exactly; kept on the reported entry within 2 differences
-maron_s5	Q6NZ67	108	Q6NZ67:108	issue 9 (open): the source sequence matches MZT2A exactly; kept on the reported entry within 2 differences
-maron_s5	Q9Y490	2197	Q9Y490:2197	issue 9 (open): the source sequence matches TLN2 exactly; kept on the reported entry within 2 differences
-maron_s5	Q14498	109	Q14498:109	issue 9 (open): the source sequence matches CCDC13 exactly; kept on the reported entry within 2 differences
+maron_s5	O43865	418	O43865:418	paralog window (open): the source sequence matches AHCYL2 exactly, kept on the reported entry, within 2 differences
+maron_s5	P07437	276	P07437:276	paralog window (open): the source sequence matches TUBB8, TUBB8B exactly, kept on the reported entry, within 2 differences
+maron_s5	P07437	282	P07437:282	paralog window (open): the source sequence matches TUBB8, TUBB8B exactly, kept on the reported entry, within 2 differences
+maron_s5	P08238	502	P08238:502	paralog window (open): the source sequence matches HSP90AB3P exactly, kept on the reported entry, within 2 differences
+maron_s5	P08238	612	P08238:612	paralog window (open): the source sequence matches HSP90AB3P exactly, kept on the reported entry, within 2 differences
+maron_s5	P09104	50	P09104:50	paralog window (open): the source sequence matches ENO3 exactly, kept on the reported entry, within 2 differences
+maron_s5	P10644	342	P10644:342	paralog window (open): the source sequence matches PRKAR1B exactly, kept on the reported entry, within 2 differences
+maron_s5	P15311	273	P15311:273	paralog window (open): the source sequence matches MSN, RDX exactly, kept on the reported entry, within 2 differences
+maron_s5	P15311	275	P15311:275	paralog window (open): the source sequence matches MSN, RDX exactly, kept on the reported entry, within 2 differences
+maron_s5	P20340	112	P20340:112	paralog window (open): the source sequence matches RAB6B exactly, kept on the reported entry, within 2 differences
+maron_s5	P20700	387	P20700:387	paralog window (open): the source sequence matches LMNB2 exactly, kept on the reported entry, within 2 differences
+maron_s5	P60842	255	P60842:255	paralog window (open): the source sequence matches EIF4A2 exactly, kept on the reported entry, within 2 differences
+maron_s5	P60842	316	P60842:316	paralog window (open): the source sequence matches EIF4A2 exactly, kept on the reported entry, within 2 differences
+maron_s5	P62136	132	P62136:132	paralog window (open): the source sequence matches PPP1CB exactly, kept on the reported entry, within 2 differences
+maron_s5	P68431	64	P68431:64	paralog window (open): the source sequence matches H3-4 exactly, kept on the reported entry, within 2 differences
+maron_s5	Q13547	212	Q13547:212	paralog window (open): the source sequence matches HDAC2 exactly, kept on the reported entry, within 2 differences
+maron_s5	Q14320	309	Q14320:309	paralog window (open): the source sequence matches FAM50B exactly, kept on the reported entry, within 2 differences
+maron_s5	Q6FI13	89	Q6FI13:89	paralog window (open): the source sequence matches H2AC1, H2AX exactly, kept on the reported entry, within 2 differences
+maron_s5	Q6FI13	30	Q6FI13:30	paralog window (open): the source sequence matches H2AX exactly, kept on the reported entry, within 2 differences
+maron_s5	Q6NZ67	108	Q6NZ67:108	paralog window (open): the source sequence matches MZT2A exactly, kept on the reported entry, within 2 differences
+maron_s5	Q9Y490	2197	Q9Y490:2197	paralog window (open): the source sequence matches TLN2 exactly, kept on the reported entry, within 2 differences
+maron_s5	Q14498	109	Q14498:109	paralog window (open): the source sequence matches CCDC13 exactly, kept on the reported entry, within 2 differences
