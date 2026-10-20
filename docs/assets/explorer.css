@@ -168,9 +168,8 @@ button, input, select { font: inherit; color: inherit; }
 .stat:hover { background: rgba(255, 255, 255, 0.14); border-color: #fdba74; }
 .stat b { font-size: 1.45rem; font-weight: 800; line-height: 1.1; }
 .stat span { font-size: 0.75rem; opacity: 0.8; }
-.hero-art { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: 4.6rem; width: min(30rem, 33%); height: 8.5rem; pointer-events: none; opacity: 0.3; }
+.hero-art { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: 4.6rem; width: min(30rem, 33%); height: 8.5rem; pointer-events: none; color: rgba(255, 255, 255, 0.85); }
 .hero-art svg { display: block; width: 100%; height: 100%; }
-.hero-art-caption { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: 13.4rem; z-index: 1; font-size: 0.7rem; color: rgba(255, 255, 255, 0.62); font-family: var(--font-mono); }
 
 /* ---- Sticky toolbar ----------------------------------------------------- */
 .toolbar {
@@ -627,7 +626,7 @@ footer.site a:hover { color: var(--accent); }
 /* ---- Responsive ------------------------------------------------------------- */
 @media (max-width: 1080px) {
   .ov-grid, .two-col { grid-template-columns: minmax(0, 1fr); }
-  .hero-art, .hero-art-caption { display: none; }
+  .hero-art { display: none; }
 }
 /* Laptops and tablets: the filters fold into a panel above the results, so tables get the full width. */
 @media (max-width: 1180px) {
@@ -662,7 +661,6 @@ footer.site a:hover { color: var(--accent); }
   .card-head { flex-wrap: wrap; }
   .exp { flex-wrap: wrap; max-width: 100%; }
   .brand-links { font-size: 0.8rem; gap: 0.75rem; }
-  .hero-art-caption { display: none; }
   .hide-xs { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1342,7 +1340,7 @@ body.slim .hero .brand-mark small { display: none; }
 body.slim .hero .brand-mark img { width: 28px; height: 28px; }
 body.slim .hero h1 { order: 1; font-size: 1.2rem; }
 body.slim .hero .brand-links { order: 2; margin-left: auto; }
-body.slim .hero .lede, body.slim .hero-stats, body.slim .hero-art, body.slim .hero-art-caption { display: none; }
+body.slim .hero .lede, body.slim .hero-stats, body.slim .hero-art { display: none; }
 body.slim .hero { border-bottom-width: 3px; }
 .scope-try { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.4rem; }
 .scope-try .scope-hint { margin-right: 0.2rem; }

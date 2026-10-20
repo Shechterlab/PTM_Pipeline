@@ -1581,26 +1581,6 @@
     const box = $('#hero-stats');
     box.innerHTML = stats.map((s, k) => '<button class="stat" type="button" data-k="' + k + '"><b>' + s[0] + '</b><span>' + s[1] + '</span></button>').join('');
     $$('.stat', box).forEach((b) => b.addEventListener('click', () => { stats[+b.dataset.k][2](); document.getElementById('toolbar').scrollIntoView({ behavior: 'smooth' }); }));
-
-    // Decorative lollipop silhouette of a real substrate (FUS when present).
-    const hit = lookupExact('FUS');
-    const p = hit ? P[hit[0]] : P.slice().sort((a, b) => b.sites.length - a.sites.length)[0];
-    const len = p.len || p.maxPos * 1.05;
-    const W = 600, H = 160, base = 150;
-    const x = (pos) => 6 + (pos / len) * (W - 12);
-    const levels = [];
-    let marks = '';
-    for (const j of p.sites) {
-      const cx = x(S[j].pos);
-      let lv = 0;
-      while (levels[lv] != null && cx - levels[lv] < 11 && lv < 8) lv++;
-      levels[lv] = cx;
-      const cy = base - 24 - lv * 12;
-      marks += '<line x1="' + cx.toFixed(1) + '" y1="' + base + '" x2="' + cx.toFixed(1) + '" y2="' + cy + '" stroke="#fff" stroke-width="1.2"/>' +
-        '<circle cx="' + cx.toFixed(1) + '" cy="' + cy + '" r="4.5" fill="#fff"/>';
-    }
-    $('#hero-art').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMaxYMax meet"><rect x="6" y="' + (base - 3) + '" width="' + (W - 12) + '" height="6" rx="3" fill="#fff"/>' + marks + '</svg>';
-    $('#hero-art-caption').textContent = p.label + ' · ' + p.sites.length + ' methylated arginines';
   }
 
   // ------------------------------------------------------------------ rail
@@ -9299,6 +9279,8 @@
         sub('report', 'Insight report', '<p>One printable page for the current selection: the selection and a link that reopens it, headline numbers, what sets it apart, the site and protein evidence maps with the protein-context table, the sequence logo and alignment (±7, first 30 sites), the proteins on one residue scale (up to 8, UniProt features fetched live), the proteins with most selected sites with their evidence, and the methods and citation. It opens the browser\'s print dialog; choose Save as PDF.</p>')],
       ['about', 'About', '<p>The explorer indexes the integrated human methylarginine union assembled by the <a href="https://github.com/Shechterlab/PTM_Pipeline">PTM_Pipeline</a> for the review below. It runs entirely in your browser; UniProt, AlphaFold DB, PDB, Ensembl and other annotations on protein pages are fetched live.</p>' +
         '<p><b>Cite:</b> ' + esc(PAPER.cite) + ' <a href="https://doi.org/' + PAPER.doi + '">doi:' + PAPER.doi + '</a>, and the original studies and resources (see How to cite).</p>'],
+      ['versions', 'Versions', '<p><b>' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>. This explorer was reorganised after its first release. It uses the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences: 12,495 of the 13,719 published sites are unchanged, 1,224 were removed and 873 added (see <a href="https://github.com/Shechterlab/PTM_Pipeline/blob/main/releases/v1.1.0/CHANGES.md" target="_blank" rel="noopener">what changed</a>). The published version (<a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases/v1.0.0" target="_blank" rel="noopener">v1.0.0</a>) remains available <a href="v1.0.0/">here</a>. The repository as it stood before the reorganisation is kept in the <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/v1.0.0_archive" target="_blank" rel="noopener">v1.0.0_archive</a> branch.</p>' +
+        '<p>The data of each version, with every table and column described, are in <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases" target="_blank" rel="noopener">releases/</a>.</p>'],
       ['cite', 'How to cite', '<p>The sites here were measured and first reported by other groups; this explorer compiles them. When you use sites or evidence from it, please cite:</p><ol>' +
         '<li><b>The original studies or databases that reported the sites you use.</b> Every list of sites (Proteins, Sites, protein pages, the insight report and the comparison) ends with <i>How to cite these sites</i>: the reporting studies with how many of the sites each reported, full references and DOIs, and a <i>Copy references</i> button. The site card lists the studies behind one site, and the Sites TSV has a <code>reported_by_doi</code> column.</li>' +
         '<li><b>The resources behind any evidence you rely on</b>: for example the pepR-MS compendium and the datasets it re-analyses for RNA crosslinks, Trendel et al. 2025 for DNA crosslinks, PDBe-KB for interfaces, ProtVar and AlphaFold for predicted complexes, CD-CODE for condensates and STRING or Complex Portal for partners. The same lists name them for the sites in view; every resource is in <i>Data sources, versions and licences</i> below with its citation and licence.</li>' +
