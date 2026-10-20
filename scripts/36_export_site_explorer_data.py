@@ -338,6 +338,7 @@ def main() -> None:
                                         'uniprot_release_date': info['reference']['release_date']},
                 'inputs': [{'file': x['file'].split('/')[-1], 'md5': x['md5']} for x in info['inputs'] if x['file'].startswith('inputs/sources/')],
                 'validation': info.get('validation', {}),
+                'changes': {k: info['counts'].get(k) for k in ('previous_sites', 'kept', 'kept_pending', 'removed', 'added')},
                 'coordinates': 'Positions are 1-based on the reference sequences (canonical UniProt entries, initiator methionine = 1). '
                                'Protein field reference_md5 is the checksum of each reference sequence in UniProt\'s format; current UniProt '
                                'annotations line up with the positions only where the current sequence has the same checksum.',
