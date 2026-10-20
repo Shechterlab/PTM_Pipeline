@@ -1421,3 +1421,8 @@ details.fold > summary { padding: 0.95rem 1.35rem; }
 .hb.sub2 { background: color-mix(in srgb, var(--surface-2) 55%, var(--surface)); }
 .hb.sub2 .hb-bar { opacity: 0.45; height: 4px; top: 5px; }
 .chart-tree-note { font-size: 0.75rem; color: var(--muted); margin: 0.4rem 0 0; }
+.hb-head { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: var(--muted); padding: 0.7rem 0.4rem 0.25rem; border-top: 1px solid var(--line); margin-top: 0.3rem; }
+.hb.extra-row .hb-label { color: var(--ink-2); }
+.hb.extra-row .hb-bar { opacity: 0.7; }
+/* The two headline charts sit side by side only where each still has room for its labels. */
+.ov-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 42rem), 1fr)); }

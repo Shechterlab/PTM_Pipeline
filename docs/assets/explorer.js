@@ -2599,7 +2599,7 @@
     return '<div class="hbars' + cls + '" role="list">' + rows.map((r, k) => {
       const v = r.value == null ? 0 : r.value;
       const a = sc.xp(Math.min(0, v)), b = sc.xp(Math.max(0, v));
-      return '<button class="hb' + (r.sub ? ' sub' : '') + (r.depth === 2 ? ' sub2' : '') + (spec.sel && !r.sel ? ' off' : '') + (r.noClick ? ' noclick' : '') + '" type="button" role="listitem" data-k="' + k + '"' + (r.noClick ? ' aria-disabled="true"' : '') + ' aria-label="' + esc(r.label + (r.note ? ' (' + r.note + ')' : '') + ': ' + (spec.valueLabel || 'log2 OR') + ' ' + vfmt(r.value) + (spec.noSig ? '' : r.sig ? ', significant' : ', not significant') + (spec.sel && r.sel != null ? ', ' + r.sel + ' selected ' + spec.sel.unit : '')) + '">' +
+      return (r.head ? '<div class="hb-head" role="presentation">' + esc(r.head) + '</div>' : '') + '<button class="hb' + (r.sub ? ' sub' : '') + (r.depth === 2 ? ' sub2' : '') + (r.extraRow ? ' extra-row' : '') + (spec.sel && !r.sel ? ' off' : '') + (r.noClick ? ' noclick' : '') + '" type="button" role="listitem" data-k="' + k + '"' + (r.noClick ? ' aria-disabled="true"' : '') + ' aria-label="' + esc(r.label + (r.note ? ' (' + r.note + ')' : '') + ': ' + (spec.valueLabel || 'log2 OR') + ' ' + vfmt(r.value) + (spec.noSig ? '' : r.sig ? ', significant' : ', not significant') + (spec.sel && r.sel != null ? ', ' + r.sel + ' selected ' + spec.sel.unit : '')) + '">' +
         '<span class="hb-label">' + esc(r.label) + (r.note ? '<span class="hb-note">' + esc(r.note) + '</span>' : '') + '</span>' + (spec.extraCol ? '<span class="hb-extra">' + esc(r.extra || '') + '</span>' : '') +
         '<span class="hb-track"><span class="hb-zero" style="left:' + sc.xp(0).toFixed(2) + '%"></span>' +
         '<span class="hb-bar' + (r.sig || spec.noSig ? '' : ' ns') + (v < 0 ? ' neg' : '') + '" style="left:' + a.toFixed(2) + '%;width:' + Math.max(0.6, b - a).toFixed(2) + '%"></span></span>' +
@@ -2811,10 +2811,10 @@
         const fk = M.disease_families.indexOf(r[0]), audited = famAudited(fk);
         const inTerms = diseaseTermCount(fk);
         return { label: r[0], value: r[3] ? Math.log2(r[3]) : null, q: r[4], sig: sigq(r[4]), key: r[0], extra: fmt(r[1]) + '/' + compact(r[2]), inTerms,
-          note: (audited ? '' : 'additional') + (inTerms ? '' : (audited ? '' : ' · ') + 'no enriched term'), sub: !audited, audited, fk,
+          note: inTerms ? '' : 'no enriched term', extraRow: !audited, audited, fk,
           title: '<b>' + esc(r[0]) + '</b><br>Family: ' + fmt(r[1]) + ' methylarginine genes of ' + fmt(r[2]) + ' family genes, OR ' + (r[3] || 0).toFixed(2) + ', BH-adjusted p ' + fmtP(r[4]) +
             '<br>' + (inTerms ? 'Click: the ' + fmt(inTerms) + ' methylated proteins in this family\'s enriched DisGeNET terms (' + dgnTested() + ')' : 'No term of this family is enriched on its own (' + dgnTested() + '). Click: the ' + fmt(P.filter(fk >= 0 ? familyMember(fk) : () => false).length) + ' methylated proteins of its full gene set') };
-      }).sort((a, b) => (b.audited - a.audited) || b.value - a.value),
+      }).sort((a, b) => (b.audited - a.audited) || b.value - a.value).map((r, k, all) => (!r.audited && (k === 0 || all[k - 1].audited) ? Object.assign(r, { head: 'Additional families (rule-based, not audited; tested apart)' }) : r)),
       footHtml: (M.disease_family_audited && M.disease_families.length > nAudited() ? '<button class="linkish" type="button" id="dis-fams" style="margin-top:.5rem">' +
         (UI.disMore ? 'Show the ' + nAudited() + ' audited families only' : 'Show ' + (M.disease_families.length - nAudited()) + ' more families (rule-based, not audited)') + '</button> · ' : '') +
         '<button class="linkish" type="button" id="dis-more" style="margin-top:.5rem">' + (UI.disTerms ? 'Hide the enriched terms' : 'Show every enriched DisGeNET term') + '</button>' +
@@ -2849,7 +2849,8 @@
     if (pan) markSelection(pan, 'proteins', (r) => pantherTest(r.key));
     markSelection(func, 'proteins', (r) => (r.kind === 'sub' ? ix(M.func_subclasses, r.key) >= 0 && ((p) => p.sub & 2 ** ix(M.func_subclasses, r.key))
       : ix(M.func_classes, r.key) >= 0 && ((p) => p.func & 2 ** ix(M.func_classes, r.key))));
-    markSelection(dis, 'proteins', (r) => ix(M.disease_families, r.key) >= 0 && ((p) => p.dis & 2 ** ix(M.disease_families, r.key)), 'Selected proteins in the family\'s enriched terms');
+    // A family with enriched terms counts the proteins in them; one without counts its full gene set (what a click lists).
+    markSelection(dis, 'proteins', (r) => r.fk >= 0 && (r.inTerms ? (p) => p.dis & 2 ** r.fk : familyMember(r.fk)), 'Selected proteins in the family\'s enriched terms (its gene set where none is enriched)');
     markSelection(disorder, 'sites', (r) => ix(M.disorder_classes, r.key) >= 0 && ((s) => s.dc === ix(M.disorder_classes, r.key)));
     markSelection(domctx, 'sites', (r) => ix(M.domain_contexts, r.key) >= 0 && ((s) => s.dctx === ix(M.domain_contexts, r.key)));
     markSelection(domcls, 'sites', (r) => ix(M.domain_classes, r.key) >= 0 && ((s) => s.dcls === ix(M.domain_classes, r.key)));

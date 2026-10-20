@@ -1634,7 +1634,7 @@ def write_release_tables(outdir: Path, d: dict):
 
     def rna_peptides(acc, positions, bit):
         # Crosslinked peptides of one dataset at these residues: the crosslinked residue in brackets, with its RNA masses.
-        return '; '.join(f'{marked(pep, k)} at {q} ({masses} Da)' for q in positions for b, pep, k, masses in xs['rna'].get(acc, {}).get(q, []) if b == bit)
+        return ', '.join(f'{marked(pep, k)} at {q} ({masses} Da)' for q in positions for b, pep, k, masses in xs['rna'].get(acc, {}).get(q, []) if b == bit)
 
     for j, rb, nb, db, fb, single in d['xl_rows']:
         acc, pos = prots[sites[j][0]][0], sites[j][1]
@@ -1648,8 +1648,8 @@ def write_release_tables(outdir: Path, d: dict):
                              '. '.join(x for x in ('a crosslinked residue within 3 residues', rna_peptides(acc, close, k)) if x), False])
         if fb:
             frags = [f'{a}-{b} {frag}' for a, b, frag in xs['rbd'].get(acc, []) if a <= pos <= b]
-            rows.append([sid(j), 'rbdmap_fragment', 'in_fragment', 'rna', '', '', 'RBDmap', '', '', '', '; '.join(frags), True])
-        dna_peps = '; '.join(f'{a}-{a + len(pep) - 1} {pep}' for a, pep in xs['dna'].get(acc, []) if a <= pos <= a + len(pep) - 1)
+            rows.append([sid(j), 'rbdmap_fragment', 'in_fragment', 'rna', '', '', 'RBDmap', '', '', '', ', '.join(frags), True])
+        dna_peps = ', '.join(f'{a}-{a + len(pep) - 1} {pep}' for a, pep in xs['dna'].get(acc, []) if a <= pos <= a + len(pep) - 1)
         dna_note = (f'peptide {dna_peps} (lower case: the residues the crosslink may sit on)') if dna_peps else ''
         if db & D_XL:
             rows.append([sid(j), 'dna_crosslink', 'at_residue', 'dna', '', '', 'Trendel2025', '', '', '', dna_note, True])

@@ -23,4 +23,4 @@ maron_s5	Q6FI13	89	Q6FI13:89	paralog window (open): the source sequence matches 
 maron_s5	Q6FI13	30	Q6FI13:30	paralog window (open): the source sequence matches H2AX exactly, kept on the reported entry, within 2 differences
 maron_s5	Q6NZ67	108	Q6NZ67:108	paralog window (open): the source sequence matches MZT2A exactly, kept on the reported entry, within 2 differences
 maron_s5	Q9Y490	2197	Q9Y490:2197	paralog window (open): the source sequence matches TLN2 exactly, kept on the reported entry, within 2 differences
-maron_s5	Q14498	109	Q14498:109	isobaric I/L (open): the peptide SALRGK reads SAIRGK in RBM39 (I and L have the same mass) and occurs in CCDC13, not a paralog; kept on the reported entry, within 2 differences
+maron_s5	Q14498	109	Q14498:109	isobaric I/L (open): the peptide SALRGK reads SAIRGK in RBM39 (I and L have the same mass) and occurs in CCDC13, not a paralog, kept on the reported entry, within 2 differences

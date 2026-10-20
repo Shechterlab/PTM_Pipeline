@@ -184,10 +184,12 @@ def main() -> None:
         all_sites['integration_accession'] = all_sites['substrate_UniProtAC']
         all_sites['source_accessions_original'] = all_sites['substrate_UniProtAC'].astype(str)
 
-    all_sites = all_sites[all_sites['substrate_UniProtAC'].astype(str).ne('')].copy()
-    all_sites['source_family'] = all_sites['source_family'].astype(str)
     if 'integration_accession' not in all_sites.columns:
         all_sites['integration_accession'] = all_sites['substrate_UniProtAC']
+    # A row counts under the accession it is integrated by: for remapped rows the entry it was placed on, which a
+    # row without a source accession (Maron Table S5 "NA") has too.
+    all_sites = all_sites[all_sites['integration_accession'].astype(str).ne('')].copy()
+    all_sites['source_family'] = all_sites['source_family'].astype(str)
 
     exact = all_sites.groupby(['integration_accession', 'site'], as_index=False).agg(
         substrate_UniProtAC_original=('substrate_UniProtAC_original', summarize_sources),
