@@ -23,7 +23,6 @@ slurm-*.err
 .conda/
 .venv/
 venv/
-.pytest_cache/
 .ipynb_checkpoints/
 .DS_Store
 

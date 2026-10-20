@@ -6,7 +6,7 @@ An interactive, searchable version of the methylarginine site union lives in [`d
 
 The pipeline assembles, remaps, annotates, and analyzes a human methylarginine site union with an emphasis on questions that should be broadly useful to investigators studying methylarginine biology: source provenance, canonical residue mapping, sequence motifs, disorder/domain context, local site density, condensate/RNP-associated classes, and representative substrate architectures.
 
-The repository is intentionally code-only. Large source tables, downloaded annotations, and generated outputs are staged outside Git.
+Besides the code, the repository holds the frozen inputs the site tables are built from (`inputs/`, every file listed with its checksum, source and licence in `inputs/MANIFEST.tsv`), the corrected site releases (`releases/`), the results and figures of the published analysis (`PTM_results/`, version v1.0.0) and the website (`docs/`). Downloads too large or too changeable to freeze (InterPro's full protein table, the MobiDB export, CPLM, Human Protein Atlas and the website's interaction caches) stay outside Git, under `PTM_data/`.
 
 ## Repository Layout
 
@@ -25,10 +25,13 @@ The repository is intentionally code-only. Large source tables, downloaded annot
 | `scripts/40_methylk_methylr_cooccurrence.py` | Tests whether methylated lysines sit near methylarginines more often than the other lysines of the same proteins (Mantel–Haenszel by protein, disorder and local arginine count; distance profile; evidence subsets). |
 | `scripts/41_stage_carm1_ko_sites.py` | Stages the CARM1 knockout methylarginine response (Shishkova et al. 2017) on canonical sites, per cell line. |
 | `scripts/42_stage_hpa_subcellular.py` | Stages Human Protein Atlas subcellular locations (with reliability) for reviewed canonical accessions. |
+| `inputs/` | Frozen inputs of the release build: the source tables, the UniProt reference sequences, annotation intervals and licence terms, with `MANIFEST.tsv` (checksum, source, version, licence, how each was checked). |
+| `releases/` | Corrected site tables, one folder per version (`releases/v1.1.0/`: TSV, spreadsheet, README, CHANGES), built by `hpc/build_release.sh`. |
+| `PTM_results/` | Results and figures of the published analysis (v1.0.0, git tag `v1.0.0`); each release is compared with it. |
 | `docs/` | Static Methylarginine Site Explorer (HTML/CSS/JS plus exported JSON data), served by GitHub Pages or Netlify. |
 | `config/` | JSON ontologies used for functional and domain-class annotation. |
 | `envs/` | Conda environment definition for the full Python/R workflow. |
-| `hpc/` | Environment, hygiene, and Slurm runner scripts. |
+| `hpc/` | Environment, hygiene and Slurm runner scripts, and the release build (`build_release.sh`). |
 
 ## Staged Inputs
 
@@ -400,7 +403,7 @@ Deploy either way; neither needs a build step:
 - Site explorer data checks (applied to the current export with `python scripts/explorer_merge.py --results-root PTM_results --explorer-dir docs/data`; `scripts/36` applies the same merges): enriched DisGeNET terms are linked to a protein by the gene symbol the enrichment counted for its accession, not by aliases (aliases linked 68 proteins to 742 terms of other genes, e.g. GET3 to ARSA's); and each site's Maron Table S3 entry carries how many of its peptides fell or rose at adj. p ≤ 0.05, so the explorer calls a site decreased or increased only when its significant peptides agree (the collapsed table's median points the other way for 72 entries; `scripts/16`'s own summary is unchanged).
 - `scripts/37`: complex members are counted once per protein (two PRO chains of one precursor were two members; 32 complexes change), the CD-CODE confidence modes use the same background as `scripts/12` (proteins in any human CD-CODE condensate, not the whole proteome), contact frequency compares only residues crosslinked in pepR-MS Table S2 (Table S3 focused sites have no dataset or spectrum count and entered as zeros), and isoform entries are recognised by their accession.
 - The stars on the positional heatmaps (`scripts/08`, `arg_methyl_positional_enrichment_*`) now use BH q-values (*q < 0.05, **q < 1e-5, ***q < 1e-20), as the Figure 3A legend of DeAngelo et al. (2026) states and as the printed panel shows. They used raw p-values, which differ from the printed panel at one cell (P +1: p = 0.048, q = 0.071).
-- Both checks are pipeline steps: `hpc/slurm_run_integration.sh` runs them right after the union is built and stops the run if either fails. `python -m pytest tests/` (or `python tests/test_remap_edge_cases.py`) runs the remapping edge cases and the gates on small hand-made sequences.
+- Both checks are pipeline steps: `hpc/slurm_run_integration.sh` runs them right after the union is built and stops the run if either fails.
 - Provenance: `scripts/00_stage_context_sources.py` writes `uniprot_release.json` next to the staged FASTA (release and date from UniProt's response headers, checksums; a FASTA staged earlier gets its checksum and an unknown release). `scripts/36_export_site_explorer_data.py --canonical-fasta ... --dataset-version ...` puts the dataset version, pipeline commit, UniProt release, input and FASTA checksums and the gate results in `meta.provenance`, and each protein's reference-sequence MD5 (UniProt's `sequence.md5` format) in the protein rows. The explorer compares that checksum with the live UniProt entry and, when they differ, does not draw current UniProt positional annotations against the sites; `--strict` stops the export when an input table or a reference sequence is missing.
 - Motif and clustering modules can analyze fewer sites than the integrated union because they require sequence-confirmed canonical residues in the staged FASTA. Use each module's audit TSV when reporting counts.
 
@@ -413,6 +416,6 @@ bash hpc/check_repo_hygiene.sh "$PWD"
 git status --short --ignored
 ```
 
-The hygiene check fails on merge-conflict markers, tracked local app artifacts, tracked bytecode, tracked archives, tracked staged data/results, or tracked files larger than 10 MB.
+The hygiene check fails on merge-conflict markers, tracked local app artifacts, tracked bytecode, tracked archives, tracked files under `PTM_data/`, or tracked files larger than 10 MB outside `inputs/`, `releases/` and `PTM_results/` (frozen inputs and releases are listed with checksums in their manifests).
 
-Ignored local paths include `PTM_data/`, `PTM_results/`, bytecode caches, local archives, editor artifacts, and cluster logs. The tracked repository should contain only source code, lightweight configuration, environment files, and documentation.
+Ignored local paths include `PTM_data/`, bytecode caches, local archives, editor artifacts and cluster logs. Tracked data are limited to `inputs/` and `releases/`, the published results in `PTM_results/` and the website export in `docs/data/`.

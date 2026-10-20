@@ -19,7 +19,7 @@ fi
 if git -C "$CODE_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   FORBIDDEN_TRACKED=$(git -C "$CODE_ROOT" ls-files \
     '.codex' '.codex/*' '.agents/*' 'scripts.zip' '*.zip' '*.pyc' 'scripts/__pycache__/*' \
-    'PTM_data/*' 'PTM_results/*' 2>/dev/null | while IFS= read -r file; do
+    'PTM_data/*' 2>/dev/null | while IFS= read -r file; do
       status=$(git -C "$CODE_ROOT" status --porcelain -- "$file" || true)
       if printf '%s\n' "$status" | grep -Eq '^( D|D )'; then
         continue
@@ -34,7 +34,8 @@ if git -C "$CODE_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     exit 1
   fi
 
-  # Frozen inputs and release files are tracked on purpose: each is listed, with its checksum, in a manifest.
+  # Frozen inputs and release files are tracked on purpose: each is listed, with its checksum, in a manifest. PTM_results/
+  # holds the published analysis (v1.0.0), also tracked on purpose.
   MANIFESTED=$(
     [ -f "$CODE_ROOT/inputs/MANIFEST.tsv" ] && tail -n +2 "$CODE_ROOT/inputs/MANIFEST.tsv" | cut -f1 | sed 's|^|inputs/|'
     for sums in "$CODE_ROOT"/releases/*/MD5SUMS; do
@@ -47,6 +48,7 @@ if git -C "$CODE_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     if printf '%s\n' "$MANIFESTED" | grep -Fxq "$file"; then
       continue
     fi
+    case "$file" in PTM_results/*) continue ;; esac
     if [ -f "$path" ]; then
       size=$(wc -c < "$path")
       if [ "$size" -gt 10000000 ]; then

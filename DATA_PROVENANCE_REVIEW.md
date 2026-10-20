@@ -140,7 +140,7 @@ The figures above compare the published union with the 2026-10-17 code; the foll
 
 ## Follow-up review (2026-10-18)
 
-An outside review of `2b13e0a` found five gaps; each was reproduced on small fixtures, measured on the 28,960 real rows (UniProt 2026_03) and fixed. `tests/test_remap_edge_cases.py` holds the fixtures; 8 of its 11 remapping cases and all 3 gate cases fail on the 2026-10-17 code.
+An outside review of `2b13e0a` found five gaps; each was reproduced on small fixtures, measured on the 28,960 real rows (UniProt 2026_03) and fixed. `tests/test_remap_edge_cases.py` (removed in v1.1.0; in git history) held the fixtures; 8 of its 11 remapping cases and all 3 gate cases fail on the 2026-10-17 code.
 
 | Finding | Confirmed | On real rows | Fix |
 |---|---|---|---|
