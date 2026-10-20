@@ -1,141 +1,233 @@
-# Release v1.1.0: file specification
+# v1.1.0: release plan and file specification
 
-For the session working on `claude/epic-franklin-oni9ft`. Written 2026-10-20 from a review of `releases/v1.1.0/` at `4133e56`.
+For the release session (`claude/epic-franklin-oni9ft`) and the website session (`claude/awesome-thompson-7j9n92`). This is draft 2, of 2026-10-20. It replaces draft 1 (commit `f362340`), merges in the release session's proposed layout, and answers its two questions (section 9).
 
-The website (`docs/` on `claude/awesome-thompson-7j9n92`, served at shechterlab.github.io/PTM_Pipeline) will read the release directly as its only source of site-level data, so that the table people download and the website can never disagree. For that, the release needs codes instead of prose in its columns, complete lists, and the numbers that are now packed into text. This document says what each file holds. **The union itself does not change.**
+## Decisions
 
-## Version
+1. **One clean branch.** All of v1.1.0 is assembled on one new branch, `release-v1.1.0`, cut from `main`. The two working branches are archived as tags, not merged (section 1).
+2. **The release is the single source of truth.** `releases/v1.1.0/` holds every table: sites, proteins, interactions, statistics. The website files in `docs/data/` are generated only from those tables. The only exception is what protein pages look up live in the browser (section 7).
+3. **What goes in Git.**
+   - Git holds the readable tables the build reads (uncompressed TSV, which Git packs about five-fold: the current 134 MB of `inputs/` is 28 MB packed).
+   - Raw bulk downloads (`.gz`, `.zip`, `.xlsx` dumps, API responses) are attached to the `v1.1.0` GitHub release, and later to Zenodo with the paper's data DOI.
+   - Each raw file is listed in `inputs/MANIFEST.tsv` with its URL, date, licence and MD5, and each tidy table names the raw file it came from.
+4. **Interaction data is frozen, not downloaded again.**
+   - The cache that built the current website is in the website session's container: `data/interactions_cache/`, 658 MB, 36,550 files. Its file dates are 2026-10-16, and 2026-10-19 for 6 files; the export that used it ran on 2026-10-19.
+   - It also holds the pepR-MS supplement (`crosslinks/pepr_media-1.zip`), so nothing needs saving from bioRxiv by hand.
+   - The website session turns it into tidy tables **first**, because that container is temporary.
+5. **Keep every per-protein result the website shows:**
+   - functional classes and subclasses;
+   - arginine enrichment;
+   - density clustering with its architecture classes;
+   - disease families and terms;
+   - CD-CODE condensates, HPA locations, other PTMs, the CARM1 knockout and interactions.
+6. **Disease enrichment moves to Python.**
+   - R runs once, to export the DOSE DisGeNET tables (`scripts/34_export_dgn_mapping.R`) and the org.Hs.eg.db Entrez-to-symbol table into `inputs/disease/`.
+   - The per-term test (hypergeometric, Benjamini–Hochberg, terms of 10–300 genes) is then Python. It must reproduce the v1.0.0 `all_methyl_proteins_disease_enrichment.tsv` from the v1.0.0 union before it is used (section 6).
+7. **File formats** are those of section 5. The union does not change: 13,358 sites and 10 pending, every placement and every `record_id` as now.
 
-Rebuild as **v1.1.0** in place, unless v1.1.0 has already been deposited with a DOI (Zenodo or elsewhere). In that case build **v1.1.1**, and say in CHANGES.md that only the file format changed.
+## 1. Branch plan
 
-## Do not change
+`main` (`36bc966`) is an ancestor of both working branches, so the clean branch can later fast-forward `main`.
 
-- The site set: 13,358 sites plus the 10 pending splice-junction sites. Also keep every placement, the evidence check, the reason codes and their meaning.
-- `record_id` values. The other files cite them.
-- The reference sequences (UniProt snapshot of 2026-04-07) and the annotations (InterPro 108.0, MobiDB export of 2026-03-30).
+1. **Freeze first** (website session, on its own branch). Write the tidy interaction tables and the staged layers (CPLM 4.0, HPA, CARM1 knockout) into `inputs/interactions/` and `inputs/layers/`, with MANIFEST rows. Record the MD5 of every cached file. If the PI wants the raw cache itself kept, the website session packs it as split archives and hands them over to attach to the GitHub release (it cannot upload release assets itself); otherwise those raw files are `checksum_only`.
+2. **Cut `release-v1.1.0` from `main`.** Bring in the final files of both branches with `git checkout <branch> -- <paths>`, not a merge, so the branch history doesn't carry intermediate large files. Use one commit per area:
+   1. code: `scripts/`, `config/`, `hpc/`, `envs/`, `tests/`;
+   2. `inputs/`: tidy tables and MANIFEST;
+   3. website code: `docs/index.html` and `docs/assets/`, without `docs/data/`.
+3. **Remove from the tree:**
+   - `PTM_results/` (v1.0.0 outputs, kept at tag `v1.0.0`);
+   - `data/` and `results/`;
+   - the April 2026 InterPro intervals, which only reproduce v1.0.0 and go to the v1.0.0 assets.
 
-## Conventions for every TSV
+   Put what the change tracking needs (the v1.0.0 site table and source records) in `releases/v1.0.0/`.
+4. **Build on the clean branch.** `bash hpc/build_release.sh v1.1.0` writes `releases/v1.1.0/`; then `scripts/36` and `37` write `docs/data/`. Nothing is copied from another branch's outputs.
+5. **Preview.** Point GitHub Pages at `release-v1.1.0` `/docs` (Settings → Pages). Until then the live site stays on `claude/awesome-thompson-7j9n92`.
+6. **Publish.**
+   - Fast-forward `main` to `release-v1.1.0`, serve Pages from `main` `/docs`, and tag `v1.1.0`.
+   - Attach the raw input parts to the GitHub release; deposit the release folder and the raw inputs on Zenodo.
+7. **Archive.** Tag the working branches (`archive/awesome-thompson-2026-10`, `archive/epic-franklin-2026-10`), then delete the branches.
 
-- UTF-8, tab-separated, LF line endings, one header row, no quoting. No value contains a tab, a newline or `;`.
-- A missing value is the empty string. Never write `NA`, `nan`, `None` or `-`.
-- **Lists:** items are joined with `; ` (semicolon and one space), in the order the column states. Readers split on `;` and trim.
-- **Booleans:** `true` or `false`.
-- **Coded columns hold codes only.** Codes are lowercase snake_case, unless the code is a name such as `Rme1`, `ADMA` or `GSK591`. The wording of each code goes in `data_dictionary.tsv`.
-- **Methylation:**
-  - `Rme1` (monomethyl);
-  - `Rme2` (dimethyl, type not stated);
-  - `Rme2a` (asymmetric);
-  - `Rme2s` (symmetric).
+Each session pushes only its own branch. The PI creates `release-v1.1.0`, or says which session may push to it.
 
-  Antibodies keep their names, always in this order: `MMA`, `ADMA`, `SDMA`.
-- **Studies** are referred to by `study_id` (see `studies_v1.1.0.tsv`) in every file.
-- **Positions** are 1-based integers on the reference sequence.
+## 2. Layout
 
-## Files
+```
+inputs/
+  MANIFEST.tsv           one row per file: path, bytes, md5, source URL, version or download date, licence,
+                         redistribution (git | release_asset | checksum_only), derived_from (for tidy tables)
+  reference/             UniProt FASTA, entries, accession history
+  sources/               Maron S2, S3, S5; ProMetheusDB; PTM master; licences/
+  annotation/            InterPro 108.0 intervals, MobiDB intervals, CD-CODE tables
+  interactions/          NEW: tidy tables frozen from the website cache (section 4)
+  layers/                NEW: CPLM 4.0 lysine methylation, HPA locations, CARM1 knockout (tidy, as staged)
+  disease/               NEW: DOSE DisGeNET term-gene table, Entrez-symbol table (exported from R once)
+config/                  ontologies, allow-list
+scripts/                 pipeline; build_release.py; 36 and 37 read releases/ only
+releases/
+  v1.0.0/                published union: sites and source records (for change tracking)
+  v1.1.0/                section 5
+docs/                    website; docs/data/ generated from releases/v1.1.0/
+```
+
+## 3. Inputs
+
+**Rules for every input file:**
+- Named `<source>_<content>_<version or YYYY-MM-DD>.<ext>`.
+- Listed in `MANIFEST.tsv`, with checksums verified before every build (as `hpc/build_release.sh` does now).
+- **A tidy table** (filtered or reshaped from a raw download) names its raw file in `derived_from`, and is written by a script in `scripts/` that runs from the raw file.
+- **A raw file not in Git** has `redistribution` = `release_asset` (attached to the GitHub release) or `checksum_only` (when its licence doesn't allow redistribution; the tidy table may still be in Git, see section 9).
+
+**What exists and stays:**
+- the reference sequences;
+- the three source tables and Maron S2/S3;
+- InterPro 108.0 and MobiDB intervals;
+- the CD-CODE tables;
+- the accession history;
+- the PTM master.
+
+## 4. Inputs to freeze from the website cache
+
+Written by a new `scripts/37a_stage_interactions.py`, the parsing half of today's `scripts/37`. It runs once on the cache; download dates are the cache file dates.
+
+| Tidy table (`inputs/interactions/`) | From (cache) | Licence |
+|---|---|---|
+| `string_v12.5_physical_links_ge400.tsv` | `9606.protein.physical.links.v12.5.txt.gz` | CC BY 4.0 |
+| `complexportal_complexes_<date>.tsv` (curated and hu.MAP 3.0 predicted, one row per complex and member) | `9606.tsv`, `9606_predicted.tsv` | CC0 |
+| `quickgo_rna_dna_binding_<date>.tsv` | `quickgo_rna.tsv`, `quickgo_dna.tsv` | CC BY 4.0 |
+| `uniprot_reader_writer_domains_<date>.tsv` (PRMT, Tudor, WD40, PHD) | `uniprot_human_*.tsv` | CC BY 4.0 |
+| `uniprot_dna_binding_regions_<date>.tsv` | `crosslinks/uniprot_dna_bind.tsv` | CC BY 4.0 |
+| `pdbe_interface_residues_<date>.tsv` (accession, residue, partner kind, PDB entries) | `pdbe_interfaces/` | EMBL-EBI terms |
+| `sifts_observed_segments_<date>.tsv` | `uniprot_segments_observed.tsv.gz`, `pdb_chain_uniprot.tsv.gz` | EMBL-EBI terms |
+| `pdb_site_contacts_<date>.tsv` (residues within 4 Å of each interface methylarginine) | `contacts_seqres/` | CC0 |
+| `pdb_interface_environments_<date>.tsv` (solvent accessibility, Levy class, base or backbone H-bonds) | `environments/` | CC0 |
+| `pdb_methylarginine_residues_<date>.tsv` (2MR, DA2, NMM) | `modelled_methyl_r/` | CC0 |
+| `protvar_interface_residues_2024.05.28.tsv` (accession, residue, partner, pDockQ) | `2024.05.28_interface_summary_5A.tsv.gz` | CC BY 4.0 |
+| `predicted_model_contacts_<date>.tsv` (measured salt bridges and H-bonds; ProtVar served models and AlphaFold DB complexes) | `protvar_measure/`, `afdb_measure/`, `afdb_complex/`, `af2complexes_interfaces_v1.tsv.gz` | CC BY 4.0 |
+| `intact_features_<release>.tsv` (human participants, sequence-checked) | `intact/` | CC BY 4.0 |
+| `pepr_ms_rna_crosslinks_v2.tsv` | `crosslinks/pepr_media-1.zip` | CC BY-NC |
+| `rbdmap_fragments_castello2016.tsv` | `crosslinks/rbdmap_castello2016_table_s1.xlsx` | ORA terms; check |
+| `trendel2025_dna_crosslinks.tsv` | `crosslinks/trendel2025_mmc1.xlsx`, `mmc2.xlsx` | Elsevier supplement; check |
+| `cdcode_confidence_api2.3_<date>.tsv` | `cdcode/` | not stated; check |
+
+**Layers** (`inputs/layers/`), from the staged files in the same container:
+- `cplm4_lys_methyl_validated.tsv` (and `_rejected`; CPLM licence not stated);
+- `hpa_subcellular_locations_v25.1.tsv` (CC BY 4.0);
+- `carm1_ko_shishkova2017_peptides.tsv` and `_sites.tsv` (CC BY 4.0).
+
+**Disease** (`inputs/disease/`, exported from R once and recorded with the package versions):
+- `dose_<version>_disgenet_term_gene.tsv`;
+- `orghsegdb_<version>_entrez_symbol.tsv`.
+
+## 5. Release files (`releases/v1.1.0/`)
+
+### Conventions for every TSV
+
+- UTF-8, tab-separated, LF, one header row, no quoting; no value contains a tab, newline or `;`.
+- Missing is the empty string, never `NA`, `nan`, `None` or `-`.
+- **Lists:** `; `-separated, in the order the column states.
+- **Booleans:** `true`/`false`.
+- **Coded columns** hold codes only (lowercase snake_case, or a name such as `Rme1`, `ADMA`, `GSK591`); meanings go in `data_dictionary.tsv`.
+- **Methylation:** `Rme1`, `Rme2` (type not stated), `Rme2a`, `Rme2s`.
+- **Antibodies:** `MMA`, `ADMA`, `SDMA`, in that order.
+- **Studies** by `study_id`. **Positions** 1-based on the reference sequence.
+
+### Files
 
 | File | Status | One row per |
 |---|---|---|
 | `human_methylarginine_sites_v1.1.0.tsv` | revised | site (including the 10 pending) |
-| `human_methylarginine_proteins_v1.1.0.tsv` | **new** | protein with at least one row in the site table |
+| `human_methylarginine_proteins_v1.1.0.tsv` | **new** | protein |
 | `studies_v1.1.0.tsv` | **new** | study or database |
+| `site_interactions_v1.1.0.tsv` | **new** | site × piece of interaction evidence |
+| `protein_partners_v1.1.0.tsv` | **new** | protein × STRING physical partner (score ≥ 0.7) |
+| `protein_complexes_v1.1.0.tsv` | **new** | protein × complex |
+| `statistics_v1.1.0.tsv` | **new** | statistical test the website or the paper reports |
 | `supporting/source_records_v1.1.0.tsv` | revised | source record |
 | `supporting/maron2021_detection_v1.1.0.tsv` | **new** | site × Maron table × antibody |
 | `supporting/maron2021_inhibitors_v1.1.0.tsv` | **new** | site × antibody × inhibitor |
+| `supporting/carm1_ko_v1.1.0.tsv` | **new** | site × cell line |
+| `supporting/disease_terms_v1.1.0.tsv` | **new** | enriched DisGeNET term |
+| `supporting/residue_evidence_v1.1.0.tsv` | **new** | protein residue with interface, crosslink or predicted-interface evidence (all residues, for protein maps) |
+| `supporting/other_ptm_sites_v1.1.0.tsv` | **new** | other modification on a protein of the union |
 | `supporting/site_changes_v1.0.0_to_v1.1.0.tsv` | revised | site of either version |
 | `data_dictionary.tsv` | **new** | column of any TSV |
-| `release.json` | **new** | the release (one object) |
-| `human_methylarginine_sites_v1.1.0.xlsx` | revised | one sheet per TSV, plus README and dictionary sheets |
+| `release.json` | **new** | the release |
+| `human_methylarginine_sites_v1.1.0.xlsx` | revised | sheets: README, sites, proteins, studies, data_dictionary |
 | `README.md`, `CHANGES.md`, `MD5SUMS` | revised | |
 
-## 1. `human_methylarginine_sites_v1.1.0.tsv`
+### 5.1 Sites
 
-Sorted by `uniprot_accession`, then `position`. The "Change" column says what differs from the current file.
+Sorted by `uniprot_accession`, then `position`. "Change" compares with the current file.
 
 | Column | Type | Values and rule | Change |
 |---|---|---|---|
 | `site_id` | string | `{uniprot_accession}:R{position}` | |
-| `status` | code | `site`, `pending` (the pending splice-junction rows) | **new** |
-| `uniprot_accession` | string | reviewed canonical accession | |
-| `uniprot_entry_name` | string | | |
-| `gene` | string | primary gene name; empty when UniProt gives none (9 entries now). Never fill it with the entry name. | |
-| `protein_name` | string | recommended name | |
+| `status` | code | `site`, `pending` | **new** |
+| `uniprot_accession`, `uniprot_entry_name` | string | | |
+| `gene` | string | primary gene name; empty when UniProt gives none (9 entries); never the entry name | |
+| `protein_name` | string | | |
 | `position` | integer | | |
 | `residue` | code | always `R` | |
-| `window_15`, `window_31` | string | as now; `_` beyond a protein end | |
+| `window_15`, `window_31` | string | `_` beyond a protein end | |
 | `protein_length` | integer | | |
-| `reference_sequence_md5` | string | as now (uppercase hex, UniProt format) | |
-| `methyl_states_reported` | list<code> | `Rme1; Rme2`: degrees given by the source records (now ProMetheusDB only) | **codes** (was me1/me2) |
-| `maron2021_s2_states` | list<code> | `Rme1; Rme2`: degree called in Maron 2021 Table S2 | **renamed** from `maron2021_ip_states`; codes |
-| `maron2021_s3_antibodies` | list<code> | `MMA; ADMA; SDMA`, in that order: antibodies whose IP recovered the site in Table S3 | **renamed** from `maron2021_ip_antibodies` |
-| `maron2021_GSK591_call` | code | `decreased`, `increased`, `mixed`, `no_change`; empty when not measured. Rule in section 6 | **renamed**; `no significant change` becomes `no_change` |
-| `maron2021_MS023_call` | code | as for GSK591 | **renamed** |
-| `motifs` | list<code> | in this order: `RG; RGG; GRG; GAR; RXR; CARM1_proline_rich; CARM1_hydrophobic_proline; DR; RD; ER; RE` | separator `; ` (was `, `) |
+| `reference_sequence_md5` | string | uppercase hex, UniProt format | |
+| `methyl_states_reported` | list<code> | `Rme1; Rme2` from the source records | **codes** (was me1/me2) |
+| `maron2021_s2_states` | list<code> | `Rme1; Rme2` (Table S2) | **renamed** from `maron2021_ip_states` |
+| `maron2021_s3_antibodies` | list<code> | `MMA; ADMA; SDMA` (Table S3) | **renamed** from `maron2021_ip_antibodies` |
+| `maron2021_GSK591_call`, `maron2021_MS023_call` | code | `decreased`, `increased`, `mixed`, `no_change`; empty when not measured (rule in 5.6) | **renamed**; new rule |
+| `carm1_ko_call` | code | as above, over cell lines (5.7) | **new** |
+| `motifs` | list<code> | order: `RG; RGG; GRG; GAR; RXR; CARM1_proline_rich; CARM1_hydrophobic_proline; DR; RD; ER; RE` | separator |
 | `disorder` | code | `disordered`, `disorder_boundary`, `ordered`, `no_disorder_annotation` | **codes** |
-| `disorder_edge_distance` | integer | as now (scripts/06); empty with `no_disorder_annotation` | |
+| `disorder_edge_distance` | integer | scripts/06; empty with no annotation | |
 | `domain` | code | `in_domain`, `boundary`, `inter_domain_linker`, `distal`, `no_domain_annotation` | **codes** |
-| `nearest_domain_interpro` | string | InterPro accession of the nearest domain or repeat (the innermost when inside several) | **split** from `nearest_domain` |
-| `nearest_domain_name` | string | its InterPro name | **split** |
-| `nearest_domain_start`, `nearest_domain_end` | integer | its span on the reference sequence | **split** |
-| `nearest_domain_class` | string | the class from `config/domain_class_ontology.json`, assigned as `scripts/07_summarize_domain_enrichment.py` `classify_residue` does; `No domain annotation` when there is none | **new** |
-| `domain_side` | code | `inside`, `N_terminal_to_domain`, `C_terminal_to_domain`; empty when there is no domain (scripts/05 `nearest_domain_side`) | **new** |
-| `domain_edge_distance` | integer | as now; 0 inside a domain | |
+| `nearest_domain_interpro`, `nearest_domain_name` | string | | **split** from `nearest_domain` |
+| `nearest_domain_start`, `nearest_domain_end` | integer | | **split** |
+| `nearest_domain_class` | string | `config/domain_class_ontology.json` as `scripts/07` `classify_residue` assigns it; `No domain annotation` when none | **new** |
+| `domain_side` | code | `inside`, `N_terminal_to_domain`, `C_terminal_to_domain`; empty when none (scripts/05) | **new** |
+| `domain_edge_distance` | integer | 0 inside | |
+| `interaction_status` | code | `experimental`, `predicted_only`, `none` (rule in 5.4) | **new** |
+| `interaction_evidence` | list<code> | evidence types at the site, in the order of 5.4 | **new** |
 | `n_studies` | integer | | |
-| `studies` | list<study_id> | in `studies_v1.1.0.tsv` order (most sites first) | **study_id codes** |
-| `study_dois` | list<string> | same order as `studies` | |
-| `source_tables` | list<code> | `maron2021_s5; prometheusdb_mmc2; ptm_master` (the tables its records come from) | **new** |
+| `studies` | list<study_id> | studies-file order | **codes** |
+| `study_dois` | list<string> | same order | |
+| `source_tables` | list<code> | `maron2021_s5; prometheusdb_mmc2; ptm_master` | **new** |
 | `n_records` | integer | | |
-| `record_ids` | list<integer> | ascending | separator `; ` (was `;`) |
-| `reported_positions` | list<integer> | positions the records report, ascending; only when at least one differs from `position`, otherwise empty | **new** |
-| `flags` | list<code> | in this order: `pending_splice_junction; paralog_window; near_match_only; shared_sequence; single_study` | separator `; ` |
-| `same_window_accessions` | list<string> | **every** other reviewed entry whose sequence holds `window_31`, sorted. No "and N more". | **replaces** `same_window_in` |
-| `same_window_genes` | list<string> | primary gene of each accession above, same order; empty item when there is none | **new** |
-| `in_previous_version` | boolean | `true`/`false` | lowercase |
+| `record_ids` | list<integer> | ascending | separator |
+| `reported_positions` | list<integer> | only when one differs from `position` | **new** |
+| `flags` | list<code> | order: `pending_splice_junction; paralog_window; near_match_only; shared_sequence; single_study` | separator |
+| `same_window_accessions` | list<string> | every other reviewed entry holding `window_31`, sorted; never truncated | **replaces** `same_window_in` |
+| `same_window_genes` | list<string> | primary gene of each, same order | **new** |
+| `in_previous_version` | boolean | | lowercase |
 | `change_since_previous_version` | code | `kept`, `added` | |
-| `change_reasons` | list<code> | reason codes (CHANGES.md) | separator `; ` |
+| `change_reasons` | list<code> | CHANGES.md codes | separator |
 
-**Removed:** `maron2021_inhibitor_detail`. Its numbers move to `supporting/maron2021_inhibitors_v1.1.0.tsv`.
+Removed: `maron2021_inhibitor_detail`; its numbers move to `maron2021_inhibitors`.
 
-Example, FUS R216 (selected columns):
+Example (selected columns): `P35637:R216  site  FUS  216  Rme1; Rme2  Rme1; Rme2  MMA; SDMA  no_change  RG; GRG; RXR  disordered  distal  IPR000504  RNA recognition motif domain  285  371  N_terminal_to_domain  Larsen2016; PSP; Maron2021; Fong2019; ProMetheusDB; Fedoriw2019; UniProt; Lim2020`.
 
-```
-site_id	status	gene	position	methyl_states_reported	maron2021_s2_states	maron2021_s3_antibodies	maron2021_GSK591_call	motifs	disorder	domain	nearest_domain_interpro	nearest_domain_name	nearest_domain_start	nearest_domain_end	domain_side	studies
-P35637:R216	site	FUS	216	Rme1; Rme2	Rme1; Rme2	MMA; SDMA	no_change	RG; GRG; RXR	disordered	distal	IPR000504	RNA recognition motif domain	285	371	N_terminal_to_domain	Larsen2016; PSP; Maron2021; Fong2019; ProMetheusDB; Fedoriw2019; UniProt; Lim2020
-```
+### 5.2 Proteins
 
-## 2. `human_methylarginine_proteins_v1.1.0.tsv` (new)
+Sorted by accession; one row for each accession in the site table.
 
-Sorted by `uniprot_accession`. One row for each accession in the site table.
+| Group | Columns |
+|---|---|
+| Identity | `uniprot_accession`, `uniprot_entry_name`, `gene`, `gene_synonyms` (UniProt synonyms from the accession history), `reported_genes` (other symbols the records used), `protein_name`, `protein_length`, `reference_sequence_md5` |
+| Sites | `n_sites`, `n_pending`, `studies`, `n_sites_experimental`, `n_sites_predicted_only` |
+| Function | `functional_classes`, `functional_subclasses` (lab ontology, scripts/03), `go_rna_binding`, `go_dna_binding` (code: `experimental`, `other_evidence` or empty; QuickGO GO:0003723 and GO:0003677 with child terms; experimental = EXP, IDA, IPI, IMP, IGI, IEP and their high-throughput forms) |
+| Arginine enrichment | `arginine_count`, `arg_enrichment_log2` (shrinkage estimate, scripts/08), `arg_enrichment_q` (empty when not tested) |
+| Clustering (scripts/10, 15, 25) | `nearest_spacing_min`, `nearest_spacing_median`, `max_sites_3aa`, `max_sites_5aa`, `max_sites_10aa`, `max_sites_20aa`, `max_sites_50aa`, `best_window_aa`, `best_window_start`, `best_window_end`, `best_window_sites`, `best_window_log2_obs_null`, `best_window_q`, `dense_windows` (list of `start-end`, q ≤ 0.05), `architecture_class` |
+| Context | `condensates` (CD-CODE ids), `hpa_locations` (`location (reliability)`), `disease_families`, `als_ftd_audited` (boolean) |
+| Interactions | `n_string_partners` (≥ 0.7), `n_partners_methylated`, `n_complexes` |
+| Other PTMs | `n_phospho`, `n_lys_acyl`, `n_ub_sumo`, `n_lys_methyl` (positions in `other_ptm_sites`) |
 
-| Column | Type | Rule |
-|---|---|---|
-| `uniprot_accession` | string | |
-| `uniprot_entry_name` | string | |
-| `gene` | string | primary gene name; empty when there is none |
-| `gene_synonyms` | list<string> | UniProt gene synonyms (the `synonym` rows of `inputs/reference/uniprot_accession_history_2026_03.tsv` for this accession), excluding `gene` |
-| `reported_genes` | list<string> | gene symbols the source records placed on this protein used, excluding `gene` and `gene_synonyms`; sorted |
-| `protein_name` | string | |
-| `protein_length` | integer | |
-| `reference_sequence_md5` | string | |
-| `n_sites` | integer | rows with `status` = `site` |
-| `n_pending` | integer | rows with `status` = `pending` |
-| `studies` | list<study_id> | union over its sites, in studies-file order |
+### 5.3 Studies
 
-The website uses `gene_synonyms` and `reported_genes` as search aliases.
+Columns:
+- `study_id`, `label`, `source_table`, `citation`, `doi`, `licence`;
+- `n_records`, `n_sites`, `n_sites_only_here`;
+- `note`, with the PSP note: "downloaded 22 May 2021 (date from the Shechter lab), as compiled in Maron et al. 2021 Table S5".
 
-## 3. `studies_v1.1.0.tsv` (new)
-
-Sorted by `n_sites`, descending. Every `study_id` used in any file appears here.
-
-| Column | Type | Rule |
-|---|---|---|
-| `study_id` | code | see the list below |
-| `label` | string | how people should see it |
-| `source_table` | code | `maron2021_s5`, `prometheusdb_mmc2` or `ptm_master` |
-| `citation` | string | short form, below |
-| `doi` | string | |
-| `licence` | string | e.g. `CC BY-NC-SA 3.0` for PSP; `see article` for journal supplements |
-| `n_records`, `n_sites`, `n_sites_only_here` | integer | over `status` = `site` rows |
-| `note` | string | PSP: `downloaded 22 May 2021 (date from the Shechter lab), as compiled in Maron et al. 2021 Table S5`. Maron2021: `sites detected in Maron et al.'s own data (Table S5 reference "This study")` |
+The ids, labels and Crossref-checked citations, in site-count order:
 
 | study_id | label | citation | doi |
 |---|---|---|---|
@@ -153,165 +245,173 @@ Sorted by `n_sites`, descending. Every `study_id` used in any file appears here.
 | `Wei2020` | Wei 2020 | Wei M et al., Front Cell Dev Biol 8:545934 (2020) | 10.3389/fcell.2020.545934 |
 | `IEDB` | IEDB | Vita R et al., Nucleic Acids Res 47:D339 (2019) | 10.1093/nar/gky1006 |
 
-The citations were checked against Crossref on 2026-10-20. The rows above are already in v1.1.0 site-count order. `PSP` as the code satisfies the PSP terms' requirement that bulk downloads name PSP as the source.
+### 5.4 Site interactions
 
-## 4. `supporting/source_records_v1.1.0.tsv` (revised)
-
-Keep every column and its order. Change these columns:
-
-| Column | Change |
-|---|---|
-| `source_table` | codes `maron2021_s5`, `prometheusdb_mmc2`, `ptm_master` |
-| `study` | `study_id` code |
-| `evidence_kind` | codes `window_13`, `window_15`, `window_31`, `peptide`, `marked_peptide`, `position_only` |
-| `evidence_check` | codes: `agrees`, `agrees_no_site` (was "agrees: no site"), `one_of_several` ("one of several evidence sites"), `ambiguous` ("evidence ambiguous"), `dropped_evidence_has_site` ("dropped, evidence has a site"), `contradicts` ("contradicts evidence") |
-| `change_since_previous_version` | codes `same`, `moved`, `newly_placed`, `no_longer_placed`, `not_placed` |
-| `pending_site` | **new**: the `site_id` of the pending row this record supports; empty otherwise. The 10 pending rows' `record_ids` point at records with an empty `placed_site`; this column links them back. |
-
-`placement` (words) and `placement_code` stay as they are.
-
-## 5. `supporting/maron2021_detection_v1.1.0.tsv` (new)
-
-One row per site × Maron table × antibody, for every row of the site table that Table S2 or S3 reaches.
-
-| Column | Type | Rule |
-|---|---|---|
-| `site_id` | string | |
-| `maron_table` | code | `S2` or `S3` |
-| `antibody` | code | S3: `MMA`, `ADMA`, `SDMA`; S2: empty |
-| `methyl_states` | list<code> | S2: `Rme1; Rme2` as called; S3: empty |
-| `n_peptides` | integer | peptides of that table (and antibody) placed on the site |
-
-## 6. `supporting/maron2021_inhibitors_v1.1.0.tsv` (new)
-
-One row per site × antibody × inhibitor (Maron 2021 Table S3).
-
-| Column | Type | Rule |
-|---|---|---|
-| `site_id` | string | |
-| `antibody` | code | `MMA`, `ADMA`, `SDMA` |
-| `inhibitor` | code | `GSK591` (PRMT5), `MS023` (type I PRMTs) |
-| `n_peptides` | integer | peptides measured |
-| `n_decreased` | integer | peptides with adjusted p ≤ 0.05 and log2 difference < 0 |
-| `n_increased` | integer | peptides with adjusted p ≤ 0.05 and log2 difference > 0 |
-| `log2_diff_median` | float | median `<inhibitor>_vs_DMSO_diff` over the peptides, 3 decimals |
-| `log2_diff_strongest` | float | difference of the peptide with the lowest adjusted p, 3 decimals |
-| `adj_p_min` | float | lowest `<inhibitor>_vs_DMSO_p.adj`, 3 significant digits |
-| `call` | code | `decreased` when n_decreased > 0 and n_increased = 0; `increased` when the reverse; `mixed` when both > 0; `no_change` when both are 0 |
-
-**Site-level call** (`maron2021_<inhibitor>_call` in the site table): combine the site's antibody rows for that inhibitor:
-
-- `decreased` when at least one row is `decreased` and none is `increased` or `mixed`;
-- `increased` likewise;
-- `mixed` when rows disagree or any row is `mixed`;
-- `no_change` when every row is `no_change`;
-- empty when the site was not measured.
-
-Significance is adjusted p **≤ 0.05**, as in scripts/16 (`--padj-cutoff`). The current release uses < 0.05; change it.
-
-A peptide carrying several arginines gives each of them the same values. Say so in the dictionary.
-
-## 7. `supporting/site_changes_v1.0.0_to_v1.1.0.tsv` (revised)
-
-- `in_previous_version` and `in_this_version` become `true`/`false`.
-- `reason_codes`, `issues`, `records_now_at_or_previously_at` and `record_ids` use the `; ` separator.
-- `gene` is blank on 882 rows now, mostly removed sites on accessions that are not in the reference. Fill it from the records' `reported_gene` (most frequent) when the accession has no reference entry.
-
-## 8. `data_dictionary.tsv` (new)
+One row per site and piece of evidence. Columns:
 
 | Column | Rule |
 |---|---|
-| `file` | file name |
-| `column` | column name |
-| `type` | `string`, `integer`, `float`, `boolean`, `code`, `list<code>`, `list<integer>`, `list<string>` |
-| `values` | for `code` and `list<code>`: every allowed code, joined with `; `; otherwise empty |
-| `value_meanings` | for coded columns: `code = meaning` pairs joined with `; ` |
-| `description` | one or two sentences, as in the README now |
+| `site_id` | |
+| `evidence_type` | `rna_crosslink`, `rbdmap_fragment`, `dna_crosslink`, `pdb_protein`, `pdb_rna`, `pdb_dna`, `pdb_self`, `predicted_interface`, `predicted_contact`, `intact_mutation`, `intact_binding_region`, `intact_methylated` (this order is the order of `interaction_evidence` in 5.1) |
+| `localisation` | `at_residue`, `candidate_residue`, `within_3`, `in_fragment`, `in_peptide`, `in_region` |
+| `partner_kind` | `protein`, `rna`, `dna`, `self` |
+| `partner_accession`, `partner_gene` | for protein partners |
+| `source` | `pepR-MS`, `Kramer2014`, `XRNAX`, `RBS-ID`, `pRBS-ID`, `RBDmap`, `Trendel2025`, `PDBe-KB`, `ProtVar`, `AFDB`, `IntAct` |
+| `structures` | list of PDB ids or model ids |
+| `score` | pDockQ or ipTM for models |
+| `distance_a` | for measured contacts |
+| `detail` | short text (e.g. the IntAct effect, the bond type) |
 
-Every column of every TSV appears exactly once, and nothing else does.
+Rule for `interaction_status`, as on the website now:
+- **experimental:** any row of `rna_crosslink` (at the residue or as a candidate residue), `rbdmap_fragment`, `dna_crosslink` (at or candidate), or `pdb_*`;
+- **predicted_only:** otherwise, any `predicted_*` row;
+- **none:** neither.
 
-## 9. `release.json` (new)
+IntAct rows never set the status.
 
-```json
-{
-  "version": "v1.1.0",
-  "previous_version": "v1.0.0",
-  "release_date": "YYYY-MM-DD",
-  "doi": "",
-  "code_commit": "<40-character commit>",
-  "build_time_utc": "YYYY-MM-DDTHH:MM:SSZ",
-  "counts": {"sites": 13358, "pending_sites": 10, "proteins": 4722, "proteins_with_pending": 4723,
-             "source_records": 28960, "records_placed": 27983, "studies": 13,
-             "kept": 12495, "removed": 1224, "added": 873},
-  "reference": {"proteome": "UP000005640", "staged": "2026-04-07", "uniprot_release": "not recorded; before 2026_03",
-                "accession_history": "2026_03"},
-  "annotations": {"interpro": "108.0", "mobidb_export": "2026-03-30"},
-  "phosphositeplus": {"download_date": "2021-05-22", "via": "Maron et al. 2021 Table S5",
-                      "terms_archive": "inputs/licences/phosphositeplus_terms_2021-07-11_web-archive.pdf"},
-  "licence": "CC BY-NC-SA 4.0",
-  "files": [{"name": "human_methylarginine_sites_v1.1.0.tsv", "rows": 13368, "md5": "..."}],
-  "inputs": [{"file": "sources/maron2021_tableS5_compiled_methylarginine_sites.xlsx", "md5": "..."}]
-}
-```
+### 5.5 Partners, complexes and residue evidence
 
-The counts must be computed, not typed in. `inputs` copies `inputs/MANIFEST.tsv`. The website reads this file for its version, counts and provenance.
+- **`protein_partners`:** `uniprot_accession`, `partner_accession`, `partner_gene`, `string_score`, `partner_in_union`, `partner_classes` (`prmt; tudor; wd40; phd`).
+- **`protein_complexes`:** `uniprot_accession`, `complex_id`, `complex_name`, `curation` (`curated`, `predicted`), `n_members`, `n_members_methylated`.
+- **`residue_evidence`:** every residue of a union protein with evidence, for the protein maps.
+  - Columns: `uniprot_accession`, `position`, `evidence_type` (codes of 5.4), `n_partners`, `best_score`, `sources`.
+  - It replaces today's `methylarg_pred_iface.json` and the residue lists inside `methylarg_interactions.json`.
 
-## 10. README, CHANGES, workbook, checksums
+### 5.6 Maron 2021 tables
 
-- **Counts.** State them one way everywhere: "13,358 sites on 4,722 proteins, and 10 pending sites (`status` = `pending`), 13,368 rows". Now the README and CHANGES give 13,358 while the table has 13,368 rows.
-- **PhosphoSitePlus.** State the download date: "PhosphoSitePlus data downloaded 22 May 2021 (date from the Shechter lab), as compiled in Maron et al. 2021 Table S5; terms of use as archived on 2021-07-11 (inputs/licences/…)".
-- **Columns section.** Generate it from `data_dictionary.tsv`, so the two can't drift.
-- **Workbook.** One sheet per TSV, plus `README` and `data_dictionary` sheets. Each data sheet must equal its TSV.
-- **MD5SUMS** lists every file in the folder.
-- **v1.1.1 only:** if this becomes v1.1.1, CHANGES.md opens with "Format changes only; the sites, records and placements are those of v1.1.0" and lists the renamed and new columns.
+- **`maron2021_detection`:** `site_id`, `maron_table` (`S2`, `S3`), `antibody` (S3 only), `methyl_states` (S2 only), `n_peptides`.
+- **`maron2021_inhibitors`:** `site_id`, `antibody`, `inhibitor` (`GSK591`, `MS023`), `n_peptides`, `n_decreased`, `n_increased`, `log2_diff_median`, `log2_diff_strongest`, `adj_p_min`, `call`.
 
-## Checks the build must pass (stop on any failure)
+**Rule:**
+- A peptide is significant at adjusted p **≤ 0.05** (scripts/16 `--padj-cutoff`).
+- Per row: `decreased` when it has decreased and no increased peptides, `increased` the reverse, `mixed` both, `no_change` neither.
+- Site call (per inhibitor, over its antibody rows): `decreased` when at least one row is decreased and none is increased or mixed; `increased` likewise; `mixed` when rows disagree or any is mixed; `no_change` when all are.
+- Peptides with several arginines give each the same values.
 
-1. `site_id` is unique and equals `{uniprot_accession}:R{position}`.
-2. `residue` = `R` = `window_31`[16th character] = `window_15`[8th character]. Both windows match the reference sequence, and `reference_sequence_md5` matches it.
-3. Rows with `status` = `site` plus rows with `status` = `pending` equal the row count. README, CHANGES and `release.json` give the same counts.
-4. **Record links:**
-   - every `record_ids` entry exists in `source_records`;
-   - for `status` = `site`, every record's `placed_site` equals the `site_id`;
-   - for `status` = `pending`, every record has an empty `placed_site` and `pending_site` equal to the `site_id`;
-   - every placed record appears in exactly one site row.
-5. Every study is in `studies_v1.1.0.tsv`. `n_studies` equals the length of `studies`; `study_dois` is aligned with `studies`; the counts in `studies_v1.1.0.tsv` recompute.
-6. The accessions in `proteins` equal the site-table accessions; `n_sites` and `n_pending` recompute.
-7. **Every coded column holds only its dictionary values.** The dictionary lists every column of every TSV and nothing else.
-8. **No forbidden strings:** no `nan`, `None`, `NA`, `True`/`False` (capitalised), "and … more", or `, ` inside a list column.
-9. **Maron tables:**
-   - every `site_id` exists in the site table;
-   - the site table's `maron2021_s3_antibodies` and `maron2021_s2_states` recompute from the detection table;
-   - the two inhibitor calls recompute from the inhibitor table.
-10. Every accession in `same_window_accessions` holds `window_31` in the reference FASTA. No other reviewed entry holds it.
-11. MD5SUMS covers every file, and the workbook sheets equal the TSVs.
-12. A second build from the same commit gives byte-identical TSVs.
+### 5.7 CARM1 knockout, disease terms, other PTMs
 
-## What the website will do with each file
+- **`carm1_ko`:** `site_id`, `cell_line` (`MCF7`, `MDA-MB-231`), `n_peptides`, `log2_ko_over_wt`, `p`, `call`. The rule is that of scripts/41: |log2| ≥ 1 and p < 0.05. Combine over cell lines as in 5.6.
+- **`disease_terms`:** `term_id`, `term_name`, `family`, `n_genes_term`, `n_methylated`, `p`, `p_adjust`, `genes` (symbols). Terms of 10–300 genes with p_adjust ≤ 0.05; families by the audited rules of scripts/34.
+- **`other_ptm_sites`:** `uniprot_accession`, `position`, `residue`, `ptm_type` (`phospho`, `lys_acyl`, `ub_sumo`, `lys_methyl`), `source` (`ptm_master`, `cplm4`), `evidence`.
+  - The PTM master rows on union proteins are included, not only half of them as the website shows now (see `DATA_LINEAGE_REVIEW.md`).
+  - CPLM rows only if their licence allows (section 9).
 
-| File | Website use |
+### 5.8 Statistics
+
+One row per test that the website or the paper reports. The Overview charts and the Interactions findings read only this table.
+
+| Column | Rule |
 |---|---|
-| sites | every site, its windows, context, methylation evidence, flags (as badges and a filter) and "new in v1.1.0" |
-| proteins | protein list, search aliases, lengths, sequence checksums (compared with live UniProt) |
-| studies | study filter, "How to cite these sites", the PSP licence notice |
-| source_records | the site card's reports: what each study reported, how it was placed, the independent check |
-| maron2021_detection, maron2021_inhibitors | antibody and inhibitor panels and filters, per-antibody numbers on the site card |
-| site_changes | an old link to a removed site (e.g. FMR1 R562) explains why it was removed |
-| release.json | version, counts and the Dataset provenance section |
+| `analysis` | code, e.g. `functional_class`, `functional_subclass`, `disease_family`, `motif`, `disorder`, `domain_context`, `domain_class`, `condensate_conf3`, `hpa_location`, `rna_crosslink`, `dna_crosslink_candidate`, `pdb_interface_rna`, `pdb_interface_protein`, `predicted_interface`, `intact_binding_region`, `go_rna_binding`, `partners_methylated`, `complex` |
+| `category` | the bar or row (e.g. `RNA-binding / RNP`) |
+| `stratum` | e.g. `all`, `ordered_only`, `in_domain`, `no_rg` |
+| `a`, `b`, `c`, `d` | the 2×2 counts (target with, target without, background with, background without) |
+| `odds_ratio`, `ci_low`, `ci_high`, `p`, `q` | |
+| `method` | `fisher`, `mantel_haenszel`, `hypergeometric` |
+| `background` | what was compared (e.g. `other arginines of the same proteins`) |
+| `n_strata` | for Mantel–Haenszel |
 
-## After the release
+### 5.9 Source records, site changes, dictionary, release.json
 
-The analyses the website shows are still those of v1.0.0 and must be re-run on this union, on `status` = `site` rows only:
+- **`source_records`:**
+  - columns as now, with codes for `source_table`, `study` (study_id), `evidence_kind` (`window_13`, `window_15`, `window_31`, `peptide`, `marked_peptide`, `position_only`), `evidence_check` (`agrees`, `agrees_no_site`, `one_of_several`, `ambiguous`, `dropped_evidence_has_site`, `contradicts`) and `change_since_previous_version` (`same`, `moved`, `newly_placed`, `no_longer_placed`, `not_placed`);
+  - a new `pending_site` column.
+- **`site_changes`:** booleans `true`/`false`, lists `; `. Fill the 882 blank `gene` values from the records' `reported_gene`.
+- **`data_dictionary.tsv`:** `file`, `column`, `type`, `values` (allowed codes), `value_meanings`, `description`. It lists every column of every TSV, and nothing else.
+- **`release.json`:**
+  - version, previous version, date, DOI, code commit, build time;
+  - computed counts;
+  - reference proteome (UP000005640, staged 2026-04-07, release not recorded, before 2026_03);
+  - annotation versions (InterPro 108.0, MobiDB 2026-03-30, STRING 12.5, CD-CODE 2.3, HPA 25.1, IntAct release);
+  - PhosphoSitePlus (download 2021-05-22, via Maron Table S5, terms archive);
+  - licence;
+  - files with rows and MD5;
+  - inputs copied from MANIFEST.
+- **README and CHANGES:**
+  - State the counts one way everywhere: "13,358 sites on 4,722 proteins, and 10 pending sites, 13,368 rows".
+  - Generate the column sections from the dictionary.
 
-- functional classes (scripts/03);
-- domain, disorder and motif tests (05–08);
-- other PTMs (09);
-- clustering (10);
-- condensates (12);
-- cluster architecture (15, 25);
-- the Maron summary (16);
-- disease terms (34; needs R).
+## 6. Analyses to compute on v1.1.0
 
-Before that, fix the re-run hazards listed in `DATA_LINEAGE_REVIEW.md`. The first: step 00 overwrites the staged InterPro intervals with empty files, and step 03 then stops.
+Run on `status` = `site` rows only. **Before** a step runs on v1.1.0, it must reproduce its v1.0.0 output from the v1.0.0 union and inputs; a step that differs stops the build. This catches changes from the re-run itself, as distinct from changes from the union.
 
-The website export will refuse analysis tables whose site set differs from this release's `status` = `site` rows.
+| Result | Script | Inputs | Check against v1.0.0 |
+|---|---|---|---|
+| Functional classes and enrichment | 03 | PTM master, InterPro, `config/functional_ontology.json` | class tables identical |
+| Domain and disorder context, enrichment | 05, 06, 07 | InterPro 108.0, MobiDB | identical with the April intervals; then 108.0 (658 kept sites change, as CHANGES.md says) |
+| Motifs and arginine enrichment | 08 | FASTA | identical |
+| Other PTMs | 09 | PTM master | identical |
+| Clustering and architecture | 10, 15, 25 | union, FASTA | identical with the same seed and permutations |
+| Condensates | 12, 37b | CD-CODE tables and API 2.3 table | identical |
+| Maron summary | 16 | Maron S2/S3 | identical |
+| Disease terms and families | new Python step, 34 | `inputs/disease/` | same terms, counts and p.adjust (to 1e-9) as the R run |
+| Interactions | 37b | `inputs/interactions/` | the v1.0.0 site export gives today's `methylarg_interactions.json` content |
+| CARM1, HPA, CPLM layers | 39, 41, 42 merge | `inputs/layers/` | identical |
+
+`DATA_LINEAGE_REVIEW.md` lists re-run hazards that must be fixed first. Among them: step 00 overwrites the InterPro intervals with empty files; one plot reads the published tables; several steps fetch from moving URLs. Every step reads `inputs/`, never the network.
+
+## 7. Website generation
+
+- **`scripts/36`** reads only `releases/v1.1.0/`. It writes `docs/data/methylarg_sites.json` and `methylarg_evidence.json` as compact encodings of the release tables: vocabularies, bit masks, arrays.
+- **`scripts/37b`** (the computing half of today's 37) reads `inputs/interactions/` and the release sites, and writes the interaction tables of section 5. `docs/data/methylarg_interactions.json` is then encoded from those tables.
+- **A round-trip check** decodes each JSON and compares it with the tables. The build fails if any site, protein, statistic or label differs, or if a JSON value has no table behind it.
+- **What stays live** in the browser, as now, documented on the Documentation page:
+  - UniProt features;
+  - AlphaFold DB models and complexes;
+  - PDBe and RCSB structure lists and files;
+  - STRING partners below 0.7 and links among partners;
+  - ENCODE, ChIP-Atlas, Open Targets, Ensembl Compara, NCBI titles.
+
+## 8. Checks
+
+Draft 1's twelve checks stay:
+1. unique `site_id`;
+2. residue, windows and MD5 match the FASTA;
+3. counts agree everywhere;
+4. record links;
+5. studies;
+6. proteins;
+7. codes only from the dictionary;
+8. no forbidden strings;
+9. the Maron calls recompute;
+10. complete same-window lists;
+11. MD5SUMS and workbook;
+12. byte-identical rebuild.
+
+New checks:
+
+13. `interaction_status` and `interaction_evidence` recompute from `site_interactions`.
+14. Every protein in `protein_partners`, `protein_complexes`, `residue_evidence` and `other_ptm_sites` is in the proteins table.
+15. Every `analysis` code in `statistics` is in the dictionary, and its counts recompute from the release tables.
+16. The website round-trip of section 7.
+17. Every file under `inputs/` matches MANIFEST, and every tidy table regenerates byte-identically from its `derived_from` file when that file is available.
+
+## 9. Answers to the release session's two questions, and open decisions
+
+**Which per-protein statistics to keep:** all four:
+- functional classes;
+- arginine enrichment;
+- density clustering with the architecture classes;
+- disease families.
+
+The website uses each in filters, protein pages and Overview charts. All but disease are Python and cheap. Disease needs the one-time R export above, then Python.
+
+**70 MB more raw downloads in Git?** No.
+- Raw downloads (mostly already compressed, so Git can't shrink them) go to the GitHub release assets and Zenodo.
+- Git keeps the tidy uncompressed tables, which Git packs well. The current `inputs/` is 134 MB checked out but 28 MB packed. The new tidy interaction tables should add a few tens of MB checked out, and far less packed.
+
+**Open, for the PI:**
+1. **Redistribution of sources whose licence is unclear or restrictive:**
+   - CPLM 4.0 (not stated);
+   - CD-CODE (not stated);
+   - MobiDB (not stated on its site);
+   - RBDmap (ORA terms);
+   - the Trendel 2025 Cell supplement;
+   - the PTM master (iPTMnet terms);
+   - DisGeNET and pepR-MS, which are non-commercial and compatible with the release's CC BY-NC-SA 4.0.
+
+   For each: raw in Git, as a release asset, or checksum only. And may its tidy derived table be published? The current website already publishes derived positions from all of them.
+2. **Pending splice-junction sites on the website:** shown flagged, or hidden.
+3. **Inhibitor rule:** confirm adjusted p ≤ 0.05 and the per-antibody combination of 5.6.
+4. **Version:** rebuild as v1.1.0 in place, unless v1.1.0 already has a DOI; then v1.1.1.
+5. **Branch:** who creates `release-v1.1.0`, and which session pushes to it.
