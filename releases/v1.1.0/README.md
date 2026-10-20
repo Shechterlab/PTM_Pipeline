@@ -1,6 +1,6 @@
 # Human methylarginine sites, v1.1.0
 
-13,358 sites on 4,722 proteins, and 10 pending sites, 13,368 rows: the human protein arginine methylation sites of DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011, with corrections to how some source records were placed on UniProt sequences. [CHANGES.md](CHANGES.md) says what changed since v1.0.0 (the published version) and why.
+13,365 sites on 4,723 proteins, and 6 pending sites, 13,371 rows: the human protein arginine methylation sites of DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011, with corrections to how some source records were placed on UniProt sequences. [CHANGES.md](CHANGES.md) says what changed since v1.0.0 (the published version) and why.
 
 Every site has its sequence, methylation evidence, structural context, the studies that report it, and the source records behind it. Positions are on UniProt release 2026_03 (reviewed human reference proteome UP000005640).
 
@@ -8,7 +8,7 @@ Every site has its sequence, methylation evidence, structural context, the studi
 
 | File | One row per |
 |---|---|
-| `human_methylarginine_sites_v1.1.0.tsv` | site, including the 10 sites kept pending (flag `one_sided_window`) |
+| `human_methylarginine_sites_v1.1.0.tsv` | site, including the 6 sites kept pending (flag `one_sided_window`) |
 | `human_methylarginine_sites_v1.1.0.xlsx` | the same table as a spreadsheet |
 | `human_methylarginine_proteins_v1.1.0.tsv` | protein: names, site counts, functional classes, arginine enrichment, site density and clusters, condensates, locations, disease families, other PTMs, interactions |
 | `studies_v1.1.0.tsv` | study or database: citation, DOI, terms, counts |
@@ -41,17 +41,17 @@ Cite DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewir
 
 | Study or database | Citation | DOI | Records | Sites | Only here |
 |---|---|---|---:|---:|---:|
-| Larsen 2016 (`Larsen2016`) | Larsen SC et al., Sci Signal 9:rs9 (2016) | [10.1126/scisignal.aaf7329](https://doi.org/10.1126/scisignal.aaf7329) | 8,881 | 8,491 | 2,609 |
-| PhosphoSitePlus (PSP) | Hornbeck PV et al., Nucleic Acids Res 43:D512-D520 (2015) | [10.1093/nar/gku1267](https://doi.org/10.1093/nar/gku1267) | 8,375 | 8,171 | 2,086 |
+| Larsen 2016 (`Larsen2016`) | Larsen SC et al., Sci Signal 9:rs9 (2016) | [10.1126/scisignal.aaf7329](https://doi.org/10.1126/scisignal.aaf7329) | 8,884 | 8,502 | 2,615 |
+| PhosphoSitePlus (PSP) | Hornbeck PV et al., Nucleic Acids Res 43:D512-D520 (2015) | [10.1093/nar/gku1267](https://doi.org/10.1093/nar/gku1267) | 8,375 | 8,171 | 2,083 |
 | Maron 2021 (`Maron2021`) | Maron MI et al., iScience 24:102971 (2021) | [10.1016/j.isci.2021.102971](https://doi.org/10.1016/j.isci.2021.102971) | 1,829 | 1,821 | 599 |
 | Guo 2014 (`Guo2014`) | Guo A et al., Mol Cell Proteomics 13:372-387 (2014) | [10.1074/mcp.O113.027870](https://doi.org/10.1074/mcp.O113.027870) | 1,471 | 1,443 | 67 |
-| Musiani 2019 (`Musiani2019`) | Musiani D et al., Sci Signal 12:eaat8388 (2019) | [10.1126/scisignal.aat8388](https://doi.org/10.1126/scisignal.aat8388) | 1,712 | 1,395 | 253 |
-| Fong 2019 (`Fong2019`) | Fong JY et al., Cancer Cell 36:194-209 (2019) | [10.1016/j.ccell.2019.07.003](https://doi.org/10.1016/j.ccell.2019.07.003) | 1,298 | 1,297 | 182 |
+| Musiani 2019 (`Musiani2019`) | Musiani D et al., Sci Signal 12:eaat8388 (2019) | [10.1126/scisignal.aat8388](https://doi.org/10.1126/scisignal.aat8388) | 1,712 | 1,395 | 252 |
+| Fong 2019 (`Fong2019`) | Fong JY et al., Cancer Cell 36:194-209 (2019) | [10.1016/j.ccell.2019.07.003](https://doi.org/10.1016/j.ccell.2019.07.003) | 1,298 | 1,297 | 181 |
 | ProMetheusDB | Massignani E et al., Mol Cell Proteomics 21:100243 (2022) | [10.1016/j.mcpro.2022.100243](https://doi.org/10.1016/j.mcpro.2022.100243) | 1,598 | 1,275 | 143 |
 | Li 2021 (`Li2021`) | Li WJ et al., Nat Commun 12:1946 (2021) | [10.1038/s41467-021-21963-1](https://doi.org/10.1038/s41467-021-21963-1) | 1,059 | 1,055 | 180 |
 | Fedoriw 2019 (`Fedoriw2019`) | Fedoriw A et al., Cancer Cell 36:100-114 (2019) | [10.1016/j.ccell.2019.05.014](https://doi.org/10.1016/j.ccell.2019.05.014) | 951 | 925 | 86 |
 | UniProt | UniProt Consortium, Nucleic Acids Res 53:D609-D617 (2025) | [10.1093/nar/gkae1010](https://doi.org/10.1093/nar/gkae1010) | 762 | 739 | 33 |
-| Lim 2020 (`Lim2020`) | Lim Y et al., Proteome Sci 18:6 (2020) | [10.1186/s12953-020-00162-8](https://doi.org/10.1186/s12953-020-00162-8) | 650 | 602 | 113 |
+| Lim 2020 (`Lim2020`) | Lim Y et al., Proteome Sci 18:6 (2020) | [10.1186/s12953-020-00162-8](https://doi.org/10.1186/s12953-020-00162-8) | 651 | 603 | 114 |
 | Wei 2020 (`Wei2020`) | Wei M et al., Front Cell Dev Biol 8:545934 (2020) | [10.3389/fcell.2020.545934](https://doi.org/10.3389/fcell.2020.545934) | 289 | 279 | 55 |
 | IEDB | Vita R et al., Nucleic Acids Res 47:D339-D343 (2019) | [10.1093/nar/gky1006](https://doi.org/10.1093/nar/gky1006) | 85 | 84 | 36 |
 
@@ -65,7 +65,7 @@ The annotation and interaction sources keep their own terms too (`licence` in `i
 
 ## How it was built
 
-`bash hpc/build_release.sh v1.1.0` at commit `9af7bb9550f5a73dc9af85f16a6777a268e59163` of https://github.com/Shechterlab/PTM_Pipeline:
+`bash hpc/build_release.sh v1.1.0` at commit `cd328a92465ce519248e789ba467b3294524a2d0` of https://github.com/Shechterlab/PTM_Pipeline:
 
 1. checks every input against `inputs/MANIFEST.tsv`;
 2. parses the source tables and places each record on the reference sequence (`scripts/02_remap_arg_methyl_to_canonical.py`);
@@ -92,13 +92,18 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `gene` | list&lt;string&gt; | primary gene name of the UniProt entry (several for a few entries, e.g. histone genes), empty when UniProt gives none. |
 | `protein_name` | string | recommended protein name of the UniProt entry. |
 | `position` | integer | position of the arginine in the reference sequence (1-based, initiator methionine = 1). |
-| `residue` | code | residue at that position in the reference sequence: always R. |
+| `residue` | code | residue at that position in the reference sequence: always R. Codes: `R`. |
 | `window_15` | string | residues -7 to +7 around the site, _ beyond a protein end. |
 | `window_31` | string | residues -15 to +15 around the site, _ beyond a protein end. |
 | `protein_length` | integer | length of the reference sequence. |
 | `reference_sequence_md5` | string | MD5 of the reference sequence, uppercase hex as UniProt gives it (a later UniProt entry with the same MD5 has the same numbering). |
-| `methyl_states_reported` | list&lt;code&gt; | methylation degrees given by the source records, in code order, empty where they give none. Codes: `Rme1`, `Rme2`, `Rme2a`, `Rme2s`. |
-| `maron2021_s2_states` | list&lt;code&gt; | degrees called at the site in Maron et al. 2021 Table S2. Codes: `Rme1`, `Rme2`, `Rme2a`, `Rme2s`. |
+| `methyl_states_reported` | list&lt;code&gt; | methylation degrees given by the source records, in code order, empty where they give none. Codes: `Rme1`, `Rme2`, `Rme2a`, `Rme2s`, `Rme`. |
+| `maron2021_s2_states` | list&lt;code&gt; | degrees called at the site in Maron et al. 2021 Table S2. Codes: `Rme1`, `Rme2`, `Rme2a`, `Rme2s`, `Rme`. |
+| `uniprot_states` | list&lt;code&gt; | degrees UniProt release 2026_03 annotates at the site (MOD_RES) with experimental evidence: ECO:0000269, or ECO:0007744 (large-scale proteomics). ADMA and SDMA calls in UniProt mostly follow the antibody of the experiment. Codes: `Rme1`, `Rme2`, `Rme2a`, `Rme2s`, `Rme`. |
+| `uniprot_states_inferred` | list&lt;code&gt; | degrees UniProt annotates at the site only by similarity to another species (ECO:0000250) or without experimental evidence; not counted in methyl_state. Codes: `Rme1`, `Rme2`, `Rme2a`, `Rme2s`, `Rme`. |
+| `states_by_study_design` | list&lt;code&gt; | the one degree a study looked for: Rme1 for Larsen 2016 (monomethylarginine antibodies; only monomethylation searched, PRIDE PXD003700), Rme2 for Wei 2020 (ADMA antibody, PTMScan #13474; only dimethylation searched). Codes: `Rme1`, `Rme2`, `Rme2a`, `Rme2s`, `Rme`. |
+| `methyl_state` | code | the degrees reported at the site by any of methyl_states_reported, maron2021_s2_states, uniprot_states and states_by_study_design; empty when none gives one. Mass spectrometry tells mono- from dimethylation, but asymmetric from symmetric mostly by the antibody used. Codes: `Rme1`, `Rme2`, `Rme1_Rme2`. |
+| `methyl_state_evidence` | list&lt;code&gt; | which of these give a degree, in code order. Codes: `source_records`, `maron2021_s2`, `uniprot`, `study_design`. |
 | `maron2021_s3_antibodies` | list&lt;code&gt; | antibodies whose immunoprecipitation recovered the site in Maron et al. 2021 Table S3 (supporting/maron2021_detection). Codes: `MMA`, `ADMA`, `SDMA`. |
 | `maron2021_GSK591_call` | code | response to GSK591 in Maron et al. 2021 Table S3, combined over antibodies (supporting/maron2021_inhibitors: a peptide changes at adjusted p <= 0.05), empty when not measured. Codes: `decreased`, `increased`, `mixed`, `no_change`. |
 | `maron2021_MS023_call` | code | response to MS023, as for GSK591. Codes: `decreased`, `increased`, `mixed`, `no_change`. |
@@ -123,12 +128,12 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `n_records` | integer | number of source records placed on the site. |
 | `record_ids` | list&lt;integer&gt; | the records behind the site (record_id in supporting/source_records), ascending. |
 | `reported_positions` | list&lt;integer&gt; | positions the records report, ascending, only when one differs from position. |
-| `flags` | list&lt;code&gt; | cautions, in code order. Codes: `one_sided_window`, `paralog_window`, `near_match_only`, `shared_sequence`, `single_study`. |
+| `flags` | list&lt;code&gt; | cautions, in code order. Codes: `one_sided_window`, `paralog_window`, `near_match_only`, `arginine_from_position`, `shared_sequence`, `single_study`. |
 | `same_window_accessions` | list&lt;string&gt; | every other reviewed entry holding the 31 residues of window_31, sorted. |
 | `same_window_genes` | list&lt;string&gt; | the first primary gene of each (the accession when UniProt gives no gene), same order. |
 | `in_previous_version` | boolean | whether the previous version had this site. |
 | `change_since_previous_version` | code | kept or added (removed sites are in supporting/site_changes). Codes: `kept`, `added`, `removed`. |
-| `change_reasons` | list&lt;code&gt; | why the site was added, or renumbered (CHANGES.md). Codes: `peptide_recentred`, `unreviewed_accession`, `lysine_window`, `truncated_window`, `multi_arginine_peptide`, `peptide_start`, `wrong_protein`, `outdated_accession_or_symbol`, `evidence_mismatch`, `window_padding`, `ambiguous_evidence`, `one_sided_window`, `reference_renumbered`, `other`. |
+| `change_reasons` | list&lt;code&gt; | why the site was added, or renumbered (CHANGES.md). Codes: see `data_dictionary.tsv`. |
 
 ### `human_methylarginine_proteins_v1.1.0.tsv`
 
@@ -145,6 +150,10 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `n_sites` | integer | methylarginine sites, not counting the sites kept pending. |
 | `n_pending` | integer | sites kept pending (flag one_sided_window). |
 | `studies` | list&lt;code&gt; | studies or databases reporting its sites, in the order of the studies file. Codes: `Larsen2016`, `PSP`, `Maron2021`, `Guo2014`, `Musiani2019`, `Fong2019`, `ProMetheusDB`, `Li2021`, `Fedoriw2019`, `UniProt`, `Lim2020`, `Wei2020`, `IEDB`. |
+| `panther_group` | string | group of its PANTHER 19.0 top-level protein class (config/panther_class_groups.json, scripts/03b), or No PANTHER protein class. |
+| `panther_class` | string | its PANTHER top-level protein class, empty when PANTHER gives none. |
+| `panther_classes` | list&lt;string&gt; | its most specific PANTHER protein classes. |
+| `panther_family` | string | its PANTHER family (PTHR id). |
 | `functional_classes` | list&lt;string&gt; | broad functional classes (config/functional_ontology.json, scripts/03). |
 | `functional_subclasses` | list&lt;string&gt; | functional subclasses. |
 | `arginine_count` | integer | arginines in the reference sequence. |
@@ -203,7 +212,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 
 | Column | Type | Description |
 |---|---|---|
-| `analysis` | code | what was tested. Codes: `functional_class`, `functional_subclass`, `motif`, `disorder`, `domain_context`, `domain_class`, `disease_family`, `condensate`, `hpa_location`, `pdb_interface`, `predicted_interface`, `crosslink`, `intact`, `go_binding`. |
+| `analysis` | code | what was tested. Codes: see `data_dictionary.tsv`. |
 | `category` | string | the class, motif, family, condensate (CD-CODE id) or location tested. |
 | `stratum` | string | all, or the subset the test is restricted to. |
 | `a` | integer | targets in the category. |
@@ -213,7 +222,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `odds_ratio` | number | odds ratio (method). |
 | `log2_odds_ratio` | number | its log2. |
 | `p` | number | p value. |
-| `q` | number | Benjamini-Hochberg adjusted p value within the analysis. |
+| `q` | number | Benjamini-Hochberg adjusted p value within the analysis and method, over all its strata and categories. |
 | `method` | code | the test. Codes: `fisher`, `mantel_haenszel`. |
 | `background` | string | what the targets are compared with. |
 | `n_strata` | integer | strata of a stratified test, empty otherwise. |
@@ -231,18 +240,21 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `reported_accession` | list&lt;string&gt; | accession as reported (a few records give two). |
 | `reported_gene` | string | gene as reported. |
 | `reported_position` | string | position as reported. |
-| `reported_methyl_state` | string | methylation state as reported, verbatim. |
+| `reported_methyl_state` | string | methylation state as reported, in the codes of the site table (ProMetheusDB me = Rme1, di = Rme2). |
 | `reported_enzyme` | string | methyltransferase as reported (PTM master table only). |
 | `evidence_kind` | code | kind of sequence evidence. Codes: `window_13`, `window_15`, `window_31`, `peptide`, `marked_peptide`, `position_only`. |
-| `evidence_sequence` | list&lt;string&gt; | the window, peptide or marked peptide, verbatim (a few records give several). |
+| `evidence_sequence` | list&lt;string&gt; | the window, peptide or marked peptide (a few records give several), as the pipeline reads it: modifications other than methylation, e.g. (ox), are left out, and source_correction says when it was corrected. |
+| `evidence_window` | list&lt;string&gt; | the sequence window a marked-peptide record also carries (ProMetheusDB SeqWindow), which the placement uses as well. |
+| `source_correction` | code | a fault of the source row this version corrects before placing the record. Codes: `nan_restored`, `accession_na`. |
+| `evidence_as_reported` | string | the evidence as the source gives it, when source_correction changed it. |
 | `placed_site` | string | the site this version places the record on, empty when not placed. |
 | `placement_code` | code | how the record was placed (scripts/02 remap_status). Codes: see `data_dictionary.tsv`. |
-| `evidence_check` | code | independent check of the placement against the record's own evidence (scripts/qc_remap_evidence_check.py). Codes: `agrees`, `agrees_no_site`, `one_of_several`, `ambiguous`, `dropped_evidence_has_site`, `contradicts`. |
+| `evidence_check` | code | independent check of the placement against the record's own evidence (scripts/qc_remap_evidence_check.py). Codes: `agrees`, `agrees_reported_arginine`, `agrees_position_only`, `agrees_no_site`, `one_of_several`, `ambiguous`, `dropped_evidence_has_site`, `contradicts`. |
 | `accepted_exception` | string | why a contradiction is accepted for now (config/remap_evidence_allowlist.tsv). |
 | `pending_site` | string | the site a one-sided window record supports (flag one_sided_window), empty otherwise. |
 | `previous_site` | string | the site the previous version placed the record on, in its numbering. |
-| `change_since_previous_version` | code | how the placement changed. Codes: `same`, `moved`, `newly_placed`, `no_longer_placed`, `not_placed`. |
-| `reason_code` | code | why it changed. Codes: `peptide_recentred`, `unreviewed_accession`, `lysine_window`, `truncated_window`, `multi_arginine_peptide`, `peptide_start`, `wrong_protein`, `outdated_accession_or_symbol`, `evidence_mismatch`, `window_padding`, `ambiguous_evidence`, `one_sided_window`, `reference_renumbered`, `other`. |
+| `change_since_previous_version` | code | how the placement changed. Codes: `same`, `moved`, `newly_placed`, `no_longer_placed`, `not_placed`, `new_record`. |
+| `reason_code` | code | why it changed. Codes: see `data_dictionary.tsv`. |
 
 ### `supporting/site_changes_v1.0.0_to_v1.1.0.tsv`
 
@@ -256,9 +268,10 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `in_previous_version` | boolean | a site of the previous version. |
 | `in_this_version` | boolean | a site of this version. |
 | `change` | code | kept, removed or added. Codes: `kept`, `added`, `removed`. |
-| `reason_codes` | list&lt;code&gt; | why it was removed, added or renumbered. Codes: `peptide_recentred`, `unreviewed_accession`, `lysine_window`, `truncated_window`, `multi_arginine_peptide`, `peptide_start`, `wrong_protein`, `outdated_accession_or_symbol`, `evidence_mismatch`, `window_padding`, `ambiguous_evidence`, `one_sided_window`, `reference_renumbered`, `other`. |
-| `records_now_at_or_previously_at` | list&lt;string&gt; | for a removed site, where its records are placed now, for an added site, where they were placed before. |
-| `record_ids` | list&lt;integer&gt; | the records involved (supporting/source_records). |
+| `reason_codes` | list&lt;code&gt; | why it was removed, added or renumbered, or, for a kept site, why records moved onto or off it. Codes: see `data_dictionary.tsv`. |
+| `records_change` | code | for a kept site, whether its records changed. Codes: `same`, `changed`, `replaced`. |
+| `records_now_at_or_previously_at` | list&lt;string&gt; | for a removed site, where its records are placed now; for an added site, where they were placed before; for a kept site, both, for the records that moved. |
+| `record_ids` | list&lt;integer&gt; | the records involved (supporting/source_records): those placed on a removed site before, or on an added site now, and for a kept site those that moved onto or off it. |
 
 ### `supporting/maron2021_detection_v1.1.0.tsv`
 
@@ -267,7 +280,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `site_id` | string | the site. |
 | `maron_table` | code | the table. Codes: `S2`, `S3`. |
 | `antibody` | code | the immunoprecipitation (Table S3 only). Codes: `MMA`, `ADMA`, `SDMA`. |
-| `methyl_states` | list&lt;code&gt; | the degrees called (Table S2 only). Codes: `Rme1`, `Rme2`, `Rme2a`, `Rme2s`. |
+| `methyl_states` | list&lt;code&gt; | the degrees called (Table S2 only). Codes: `Rme1`, `Rme2`, `Rme2a`, `Rme2s`, `Rme`. |
 | `n_peptides` | integer | distinct peptides (sequence and modifications) carrying the site. |
 
 ### `supporting/maron2021_inhibitors_v1.1.0.tsv`
@@ -312,7 +325,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `structures` | list&lt;string&gt; | PDB entries (PDB rows), or the predicted model (ProtVar pair or AlphaFold DB model id). |
 | `score` | number | pDockQ (ProtVar) or ipTM (AlphaFold DB) of the predicted complex. |
 | `distance_a` | number | closest distance in the predicted model between the arginine and the partner, in angstroms. |
-| `detail` | string | bonds, pLDDT and partner residues of a predicted contact; effect, residues, PubMed and IntAct ids of an IntAct record. |
+| `detail` | string | for an RNA crosslink, the crosslinked peptides of that dataset with the crosslinked residue in brackets, its position and the RNA adduct masses (pepR-MS compendium Table S2); for an RBDmap fragment, its range and sequence; for a DNA crosslink, the crosslinked peptide with the residues the crosslink may sit on in lower case (Trendel et al. 2025); bonds, pLDDT and partner residues of a predicted contact; effect, residues, PubMed and IntAct ids of an IntAct record. |
 | `counts_as_evidence` | boolean | the record is site-level evidence: crosslinks at or as a candidate residue, RBDmap fragments, PDB interfaces, predicted interfaces, confident predicted contacts, and IntAct mutations that change an interaction, short binding regions and methylated residues. interaction_status counts all of these except IntAct. |
 
 ### `supporting/residue_evidence_v1.1.0.tsv`
@@ -359,7 +372,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 |---|---|---|
 | `term_id` | string | DisGeNET term (UMLS CUI). |
 | `term_name` | string | its name. |
-| `family` | string | its disease family (scripts/disease_families.py), empty when none. |
+| `family` | string | its disease family (scripts/disease_families.py): audited, or else additional; empty when none. |
 | `n_genes_term` | integer | genes of the term in the universe. |
 | `n_methylated` | integer | of these, genes of methylated proteins. |
 | `fold_enrichment` | number | observed over expected. |
@@ -373,7 +386,8 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 
 | Column | Type | Description |
 |---|---|---|
-| `family` | string | disease family (scripts/disease_families.py), in order of significance. |
+| `family` | string | disease family (scripts/disease_families.py): the eight audited families, then the additional ones, each in order of significance. |
+| `audited` | boolean | one of the eight audited families of the paper (otherwise an additional, rule-based family). |
 | `n_terms` | integer | DisGeNET terms assigned to it. |
 | `n_genes` | integer | genes of the universe in at least one of its terms. |
 | `n_methylated_genes` | integer | of these, genes of methylated proteins. |

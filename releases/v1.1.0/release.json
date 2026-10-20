@@ -2,37 +2,53 @@
  "title": "Human methylarginine sites",
  "version": "v1.1.0",
  "previous_version": "v1.0.0",
- "code_commit": "9af7bb9550f5a73dc9af85f16a6777a268e59163",
+ "code_commit": "cd328a92465ce519248e789ba467b3294524a2d0",
  "repository": "https://github.com/Shechterlab/PTM_Pipeline",
  "release_date": "2026-10-20",
  "paper": "DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011",
  "doi": null,
  "licence": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (studies file, inputs/MANIFEST.tsv)",
  "counts": {
-  "rows": 13368,
-  "sites": 13358,
-  "proteins": 4722,
-  "pending": 10,
+  "rows": 13371,
+  "sites": 13365,
+  "proteins": 4723,
+  "pending": 6,
   "proteins_all_rows": 4723,
-  "records": 28960,
-  "records_placed": 27983,
+  "records": 28964,
+  "records_placed": 27996,
   "previous_sites": 13719,
   "previous_proteins": 5090,
   "previous_records_placed": 28134,
   "kept": 12495,
   "removed": 1224,
-  "added": 873,
+  "added": 876,
   "renumbered": 1,
+  "kept_pending": 4,
+  "kept_records_changed": 2384,
+  "kept_records_replaced": 31,
   "flags": {
-   "single_study": 6452,
+   "single_study": 6450,
+   "arginine_from_position": 859,
    "shared_sequence": 593,
    "paralog_window": 22,
    "near_match_only": 12,
-   "one_sided_window": 10
+   "one_sided_window": 6
   },
   "studies": 13,
   "with_maron_s3": 957,
-  "with_state": 2477,
+  "with_state": 9967,
+  "state": {
+   "Rme1": 8230,
+   "none": 3398,
+   "Rme1_Rme2": 1049,
+   "Rme2": 688
+  },
+  "state_evidence": {
+   "study_design": 8629,
+   "maron2021_s2": 1821,
+   "source_records": 1275,
+   "uniprot": 758
+  },
   "no_domain": 1858,
   "peptide_start_records": 15,
   "maron_s2_rows": 2884,
@@ -42,16 +58,18 @@
   "maron_s3_GSK591_site_rows_placed": 12340,
   "maron_s3_MS023_site_rows": 12348,
   "maron_s3_MS023_site_rows_placed": 12340,
-  "domain_changed_kept": 654,
-  "previously_unannotated_now_annotated": 453,
+  "domain_changed_kept": 656,
+  "previously_unannotated_now_annotated": 454,
   "start_rule_agree": 2949,
   "start_rule_disagree": 0
  },
  "validation": {
   "evidence_check": {
-   "agrees": 27944,
-   "agrees_no_site": 923,
-   "dropped_evidence_has_site": 46,
+   "agrees": 22894,
+   "agrees_reported_arginine": 4219,
+   "agrees_no_site": 913,
+   "agrees_position_only": 844,
+   "dropped_evidence_has_site": 47,
    "contradicts": 22,
    "one_of_several": 17,
    "ambiguous": 8
@@ -81,23 +99,23 @@
  "files": [
   {
    "file": "human_methylarginine_sites_v1.1.0.tsv",
-   "rows": 13368,
-   "md5": "8b9cd095a8c8bf9e3be9e9f496e819a1"
+   "rows": 13371,
+   "md5": "5c17620a8cfafab708578e5cd43469e4"
   },
   {
    "file": "studies_v1.1.0.tsv",
    "rows": 13,
-   "md5": "9492e733e574e91a76617dda4fffb1e8"
+   "md5": "032748a6fc3afdce369b01e450b0d31a"
   },
   {
    "file": "supporting/source_records_v1.1.0.tsv",
-   "rows": 28960,
-   "md5": "ef2ee2efddb84e9d2447fd3c8a88718b"
+   "rows": 28964,
+   "md5": "d58018822a5abe46d8f03d8c95691a5d"
   },
   {
    "file": "supporting/site_changes_v1.0.0_to_v1.1.0.tsv",
-   "rows": 14592,
-   "md5": "57d21421254eccc8e441efd19185e584"
+   "rows": 14595,
+   "md5": "298a1b9ce5611104aefa2a562c0eb672"
   },
   {
    "file": "supporting/maron2021_detection_v1.1.0.tsv",
@@ -117,22 +135,22 @@
   {
    "file": "human_methylarginine_proteins_v1.1.0.tsv",
    "rows": 4723,
-   "md5": "00e326d24d33fa9e8a07e38c51587e96"
+   "md5": "1615ff87ee329cebeecdc47c1f73b8aa"
   },
   {
    "file": "statistics_v1.1.0.tsv",
-   "rows": 237,
-   "md5": "7302542a465fe8635c0f9bb8e8388827"
+   "rows": 422,
+   "md5": "66700d09ca5809975c232b449fc2d1bb"
   },
   {
    "file": "supporting/disease_terms_v1.1.0.tsv",
-   "rows": 645,
-   "md5": "60a090b8106b479500e9e1f373ec19cf"
+   "rows": 641,
+   "md5": "d2a05b4ed04ff0375289ed7c29c826d4"
   },
   {
    "file": "supporting/density_windows_v1.1.0.tsv",
-   "rows": 707,
-   "md5": "4f553d1e1c006e68505321f954771010"
+   "rows": 601,
+   "md5": "783fdb1f68ef5eb21ba4a5d71c2ffddc"
   },
   {
    "file": "supporting/hpa_locations_v1.1.0.tsv",
@@ -151,38 +169,38 @@
   },
   {
    "file": "supporting/disease_families_v1.1.0.tsv",
-   "rows": 8,
-   "md5": "af973601647a30088b985cd3d9629493"
+   "rows": 23,
+   "md5": "922b78ff5ecd787aa7ab724df8d6aa8e"
   },
   {
    "file": "supporting/site_interactions_v1.1.0.tsv",
    "rows": 23078,
-   "md5": "ce4d93efcd0b9825d961c6aa4845228c"
+   "md5": "1d85a5a5bf39ef4c2680dce464dca09d"
   },
   {
    "file": "supporting/residue_evidence_v1.1.0.tsv",
-   "rows": 220383,
-   "md5": "dab16e97e13d2cade216a1876c0212b7"
+   "rows": 220408,
+   "md5": "c39ee82070b58678b07229d7e656bb94"
   },
   {
    "file": "supporting/protein_partners_v1.1.0.tsv",
-   "rows": 132024,
-   "md5": "b42973bb6726e9dd49075f13a8744420"
+   "rows": 132052,
+   "md5": "f3f7ff67366a74ae4620bebf0a9bf52f"
   },
   {
    "file": "supporting/complexes_v1.1.0.tsv",
    "rows": 11166,
-   "md5": "1eb9a8c4b079e135d734c29fcf0e494a"
+   "md5": "c8cbffe873f2b907e1564149205129ab"
   },
   {
    "file": "data_dictionary.tsv",
-   "rows": 256,
-   "md5": "549ae2d3fd8a7d45fe2e499a922c25e1"
+   "rows": 270,
+   "md5": "139e66294140c2c8d600f1619c78a2f5"
   },
   {
    "file": "human_methylarginine_sites_v1.1.0.xlsx",
-   "rows": 13368,
-   "md5": "c219ca330d3aeaf6cf6a27db2620b4c0"
+   "rows": 13371,
+   "md5": "5d55ef91b7799ca314b22befc109fd37"
   }
  ],
  "inputs": [
@@ -692,17 +710,66 @@
   },
   {
    "file": "inputs/interactions/predicted_model_measured_positions_2026-10-20.tsv",
-   "md5": "6bfb02ce09a030bce3566b6f480ea7ee",
+   "md5": "f1a71b51da52fdd5b3464d2121be548b",
    "version_or_date": "models read 2026-10-20",
    "licence": "CC BY 4.0",
    "redistribution": "git"
   },
   {
    "file": "inputs/interactions/raw_topup_files_2026-10-20.tsv",
-   "md5": "804287de307dfd1f56f80e77ae1ea9ee",
+   "md5": "7264b25348b3479f930c0194761e56b3",
    "version_or_date": "2026-10-20",
    "licence": "",
    "redistribution": "git"
+  },
+  {
+   "file": "inputs/annotation/panther_19.0_protein_classes.tsv",
+   "md5": "dd0f2ba0f30df033412c7a4c6bca96e1",
+   "version_or_date": "PANTHER 19.0; downloaded 2026-10-20",
+   "licence": "CC BY 4.0 (PANTHER data and data products, https://www.pantherdb.org/tou.jsp)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/annotation/panther_19.0_protein_class_ontology.tsv",
+   "md5": "d2b7c752a4772716e8ba41f6ccc0468b",
+   "version_or_date": "PANTHER 19.0; downloaded 2026-10-20",
+   "licence": "CC BY 4.0 (PANTHER data and data products, https://www.pantherdb.org/tou.jsp)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/PTHR19.0_human",
+   "md5": "3b8a941320f78cf7537f9e502d6a1e6c",
+   "version_or_date": "PANTHER 19.0; downloaded 2026-10-20",
+   "licence": "CC BY 4.0 (PANTHER data and data products, https://www.pantherdb.org/tou.jsp)",
+   "redistribution": "checksum_only"
+  },
+  {
+   "file": "inputs/Protein_Class_19.0",
+   "md5": "429678c5512d51bf3dbf76b18894fa17",
+   "version_or_date": "PANTHER 19.0; downloaded 2026-10-20",
+   "licence": "CC BY 4.0 (PANTHER data and data products, https://www.pantherdb.org/tou.jsp)",
+   "redistribution": "checksum_only"
+  },
+  {
+   "file": "inputs/Protein_class_relationship",
+   "md5": "f02fb821615de696fa544dfda71c370b",
+   "version_or_date": "PANTHER 19.0; downloaded 2026-10-20",
+   "licence": "CC BY 4.0 (PANTHER data and data products, https://www.pantherdb.org/tou.jsp)",
+   "redistribution": "checksum_only"
+  },
+  {
+   "file": "inputs/annotation/uniprot_2026_03_methylarginine_mod_res.tsv",
+   "md5": "0987dbe689a4c3e9e85af98b8c9b1ae6",
+   "version_or_date": "UniProt release 2026_03 (X-UniProt-Release header); downloaded 2026-10-20",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/uniprot_human_reviewed_mod_res_2026_03.tsv",
+   "md5": "bd9c272c0ba73c3c72740f6fe0fe4533",
+   "version_or_date": "UniProt release 2026_03; downloaded 2026-10-20",
+   "licence": "CC BY 4.0",
+   "redistribution": "zenodo"
   }
  ]
 }

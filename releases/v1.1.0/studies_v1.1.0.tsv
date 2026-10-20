@@ -1,14 +1,14 @@
 study_id	label	source_table	citation	doi	licence	n_records	n_records_placed	n_sites	n_sites_only_here	note
-Larsen2016	Larsen 2016	maron2021_s5	Larsen SC et al., Sci Signal 9:rs9 (2016)	10.1126/scisignal.aaf7329	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	8881	8531	8491	2609	
-PSP	PhosphoSitePlus (PSP)	maron2021_s5	Hornbeck PV et al., Nucleic Acids Res 43:D512-D520 (2015)	10.1093/nar/gku1267	CC BY-NC-SA 3.0 Unported (PhosphoSitePlus terms of 2021, inputs/licences/), compiled in Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	8375	8215	8171	2086	downloaded 22 May 2021 (date from the Shechter lab), as compiled in Maron et al. 2021 Table S5
+Larsen2016	Larsen 2016	maron2021_s5	Larsen SC et al., Sci Signal 9:rs9 (2016)	10.1126/scisignal.aaf7329	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	8884	8543	8502	2615	
+PSP	PhosphoSitePlus (PSP)	maron2021_s5	Hornbeck PV et al., Nucleic Acids Res 43:D512-D520 (2015)	10.1093/nar/gku1267	CC BY-NC-SA 3.0 Unported (PhosphoSitePlus terms of 2021, inputs/licences/), compiled in Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	8375	8215	8171	2083	downloaded 22 May 2021 (date from the Shechter lab), as compiled in Maron et al. 2021 Table S5
 Maron2021	Maron 2021	maron2021_s5	Maron MI et al., iScience 24:102971 (2021)	10.1016/j.isci.2021.102971	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	1829	1825	1821	599	"the study's own sites in Table S5 (reference ""This study"")"
 Guo2014	Guo 2014	maron2021_s5	Guo A et al., Mol Cell Proteomics 13:372-387 (2014)	10.1074/mcp.O113.027870	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	1471	1446	1443	67	
-Musiani2019	Musiani 2019	maron2021_s5	Musiani D et al., Sci Signal 12:eaat8388 (2019)	10.1126/scisignal.aat8388	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	1712	1399	1395	253	
-Fong2019	Fong 2019	maron2021_s5	Fong JY et al., Cancer Cell 36:194-209 (2019)	10.1016/j.ccell.2019.07.003	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	1298	1297	1297	182	
+Musiani2019	Musiani 2019	maron2021_s5	Musiani D et al., Sci Signal 12:eaat8388 (2019)	10.1126/scisignal.aat8388	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	1712	1399	1395	252	
+Fong2019	Fong 2019	maron2021_s5	Fong JY et al., Cancer Cell 36:194-209 (2019)	10.1016/j.ccell.2019.07.003	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	1298	1297	1297	181	
 ProMetheusDB	ProMetheusDB	prometheusdb_mmc2	Massignani E et al., Mol Cell Proteomics 21:100243 (2022)	10.1016/j.mcpro.2022.100243	CC BY-NC-ND 4.0 (open-access supplement mmc2)	1598	1562	1275	143	
 Li2021	Li 2021	maron2021_s5	Li WJ et al., Nat Commun 12:1946 (2021)	10.1038/s41467-021-21963-1	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	1059	1055	1055	180	
 Fedoriw2019	Fedoriw 2019	maron2021_s5	Fedoriw A et al., Cancer Cell 36:100-114 (2019)	10.1016/j.ccell.2019.05.014	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	951	926	925	86	
 UniProt	UniProt	ptm_master	UniProt Consortium, Nucleic Acids Res 53:D609-D617 (2025)	10.1093/nar/gkae1010	CC BY 4.0, via the iPTMnet-format PTM master table (iPTMnet: CC BY-NC-SA 4.0)	762	760	739	33	
-Lim2020	Lim 2020	maron2021_s5	Lim Y et al., Proteome Sci 18:6 (2020)	10.1186/s12953-020-00162-8	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	650	604	602	113	
+Lim2020	Lim 2020	maron2021_s5	Lim Y et al., Proteome Sci 18:6 (2020)	10.1186/s12953-020-00162-8	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	651	605	603	114	
 Wei2020	Wei 2020	maron2021_s5	Wei M et al., Front Cell Dev Biol 8:545934 (2020)	10.3389/fcell.2020.545934	Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)	289	279	279	55	
 IEDB	IEDB	ptm_master	Vita R et al., Nucleic Acids Res 47:D339-D343 (2019)	10.1093/nar/gky1006	via the iPTMnet-format PTM master table (iPTMnet: CC BY-NC-SA 4.0)	85	84	84	36	

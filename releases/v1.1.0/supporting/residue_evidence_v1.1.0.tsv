@@ -160624,6 +160624,31 @@ Q8WZ73	343	344	predicted_interface	at_residue	2	0.53	ProtVar
 Q8WZ73	348	349	predicted_interface	at_residue	3	0.59	ProtVar
 Q8WZ73	351	352	predicted_interface	at_residue	3	0.59	ProtVar
 Q8WZ73	358	362	predicted_interface	at_residue	1	0.59	ProtVar
+Q8WZ74	15	29	dna_crosslink	in_peptide			Trendel2025
+Q8WZ74	26	26	dna_crosslink	candidate_residue			Trendel2025
+Q8WZ74	27	27	dna_crosslink	candidate_residue			Trendel2025
+Q8WZ74	28	28	dna_crosslink	candidate_residue			Trendel2025
+Q8WZ74	143	143	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	145	146	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	149	150	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	152	153	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	156	157	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	159	160	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	164	164	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	170	171	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	174	175	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	177	178	predicted_interface	at_residue	2	0.38	ProtVar
+Q8WZ74	181	182	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	184	185	predicted_interface	at_residue	2	0.38	ProtVar
+Q8WZ74	188	189	predicted_interface	at_residue	2	0.38	ProtVar
+Q8WZ74	191	192	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	195	196	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	199	199	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	202	203	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	205	206	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	209	210	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	212	212	predicted_interface	at_residue	1	0.38	ProtVar
+Q8WZ74	1194	1194	rna_crosslink	at_residue			XRNAX
 Q8WZA0	12	12	predicted_interface	at_residue	1	0.39	ProtVar
 Q8WZA0	15	16	predicted_interface	at_residue	2	0.39	ProtVar
 Q8WZA0	18	19	predicted_interface	at_residue	2	0.39	ProtVar

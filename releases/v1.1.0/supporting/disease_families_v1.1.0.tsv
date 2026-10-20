@@ -1,9 +1,24 @@
-family	n_terms	n_genes	n_methylated_genes
-Cancer / neoplasia	3256	13566	3751
-Developmental / congenital syndromes	3233	8677	2470
-Ataxia / cerebellar degeneration	304	1827	644
-Myopathy / muscle / cardiomyopathy	455	2796	867
-Alzheimer / tau / dementia	73	3435	1014
-ALS / motor neuron / FTD	81	1474	490
-Immune / inflammatory	521	6521	1728
-Parkinsonism	62	2104	621
+family	audited	n_terms	n_genes	n_methylated_genes
+Cancer / neoplasia	true	3256	13566	3752
+Developmental / congenital syndromes	true	3233	8677	2470
+Ataxia / cerebellar degeneration	true	304	1827	644
+Myopathy / muscle / cardiomyopathy	true	455	2796	867
+Alzheimer / tau / dementia	true	73	3435	1014
+ALS / motor neuron / FTD	true	86	1504	502
+Immune / inflammatory	true	521	6520	1729
+Parkinsonism	true	62	2104	621
+Neurodevelopmental and behavioural	false	594	5863	1805
+Cancer-related (other)	false	344	5597	1720
+Neurological signs	false	439	3316	1093
+Neurodegeneration and neuromuscular (other)	false	910	4712	1444
+Craniofacial, skeletal and limb features	false	2158	6879	1969
+Pregnancy, birth and growth	false	182	3395	1069
+Digestive and liver	false	543	5959	1715
+Cardiovascular	false	654	5624	1613
+Eye and ear	false	501	3797	1144
+Infection	false	475	4625	1353
+Blood and haematological	false	314	3502	1059
+Skin, hair and nails	false	546	3415	1029
+Kidney, urinary and reproductive	false	453	4313	1245
+Metabolic and mitochondrial	false	465	5653	1531
+Respiratory	false	172	2572	746
