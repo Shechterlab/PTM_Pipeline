@@ -1,0 +1,148 @@
+condensate_id	condensate_name	condensate_type	n_members	n_members_methylated
+462A97B5	Leucocyte nuclear body	biomolecular	21	14
+C5843A5F	miRISC condensate	biomolecular	2	1
+9F779CC8	Nuclear body	biomolecular	4	2
+38EC0B30	Transcriptional condensate	biomolecular	41	23
+353F5E6C	MORC3 nuclear body	biomolecular	1	0
+62EA6512	Sam68 nuclear body	biomolecular	15	13
+718A9EC3	P62 body	biomolecular	3	2
+9DBB3093	GW-body	biomolecular	3	2
+BB244C6C	Elastin granule	biomolecular	1	0
+ACCC2039	TIS granule	biomolecular	1	1
+36896B46	T-cell signalosome	biomolecular	3	2
+B57B8AD8	Heterochromatin	biomolecular	2	2
+03D56D03	Tau Condensate	biomolecular	4	2
+CA00D4B7	MEX3B granule	biomolecular	1	0
+B75B0A5E	SMN-Rpp20 complex	biomolecular	1	1
+F345034F	Signaling cluster	biomolecular	23	10
+D6A53B8E	Nuclear pore complex	biomolecular	25	18
+2B1872D5	Balbiani body	biomolecular	3	1
+6F9FB6EF	Cleavage body	biomolecular	3	3
+5B6CCA73	DDX1 body	biomolecular	2	2
+278829DE	Chromatoid body	biomolecular	5	3
+975B8A70	Inflammasome	biomolecular	2	1
+45FBF2D1	Nuage	biomolecular	1	0
+A0DCDA94	DNA damage foci	biomolecular	22	13
+24B72B50	Histone Locus Body	biomolecular	8	4
+F85A2E29	IMP1 RNP granule	biomolecular	38	35
+F659AEC6	Pericentriolar compartment	biomolecular	1	1
+91E14AE1	U-body	biomolecular	1	1
+F701F3BC	PcG body	biomolecular	14	5
+D8E9712B	Neuronal RNP granule	biomolecular	16	15
+6F24707C	Cajal body	biomolecular	76	41
+1A18FFC4	Paraspeckle	biomolecular	71	47
+5965E019	mtRNA granule	biomolecular	42	16
+B5B9A610	PML body	biomolecular	542	281
+804901D1	Nuclear speckle	biomolecular	207	138
+81D2A7B6	Nuclear stress body	biomolecular	11	8
+ECBAC048	MegaTrans enhancer complex	biomolecular	2	2
+8908B6CB	DYRK3 speckle	biomolecular	1	0
+CCFFAF5A	Junctional condensate	biomolecular	5	3
+BEB5E62D	Anisosome	biomolecular	6	6
+518B4F3F	Htt inclusion	biomolecular	1	0
+1DAEF59B	Pericentriolar matrix	biomolecular	4	2
+1A0B17A6	cGAS foci	biomolecular	3	1
+7F558BCC	STING phase-separator	biomolecular	2	0
+E8F4C1F2	Sint speckle	biomolecular	4	2
+550E224B	Proteasome condensate	biomolecular	4	4
+8C2F96ED	Centrosome	biomolecular	552	247
+927B5294	Nur77 condensate	biomolecular	1	0
+936CAA69	Slit diaphragm condensate	biomolecular	3	1
+3EAB04FE	Rapsn condensate	biomolecular	7	4
+28619EF7	NP bodies	biomolecular	2	2
+D3EAE6DE	EWS-FLI1	biomolecular	2	2
+634C353E	BRD4 condensate	biomolecular	3	3
+C4912696	TopBP1 condensate	biomolecular	1	1
+6A1B29D1	A-bodies	biomolecular	2	1
+232F8A39	P-body	biomolecular	829	557
+FB4E32DD	Presynaptic clusters and postsynaptic densities	biomolecular	1365	706
+DEE660B4	Stress granule	biomolecular	1194	787
+91857CE7	Nucleolus	biomolecular	1413	833
+1C4BF022	Cytoplasmic bodies	biomolecular	3	0
+03E7CE7B	NEDD4 condensates	biomolecular	3	2
+8DB3D246	SCOTIN condensate	biomolecular	3	3
+1EF72FBA	ERES	biomolecular	8	5
+51FB48F6	MARDO	biomolecular	2	0
+53379B70	LEF1/Beta-catenin condensate	biomolecular	2	2
+1041FAE8	Insulin/IGF-1 signalosomes	biomolecular	1	1
+DA9A581A	DVL2 condensates	biomolecular	1	1
+D02F3EC8	Peri-nucleolar condensate	biomolecular	2	2
+D1D0EBED	Large dense-core vesicles	biomolecular	1	0
+44A42CE7	RBM15 condensate	biomolecular	2	2
+4E66F2E3	BAG2	biomolecular	1	0
+7FF4107C	Beta-Catenin Destruction Complex	biomolecular	6	4
+2ECFBB9C	Chromogranin condensates	biomolecular	1	0
+ECAD3DEA	Ferritin-NCOA4 condensate	biomolecular	3	1
+EEA9CF61	Dishevelled condensate	biomolecular	1	1
+02F8D883	IFN-I transcriptional condensate	biomolecular	2	0
+4DFA2D97	ArgBP2 dendritic spine condensate	biomolecular	1	0
+7F36219C	Enhancer cluster	biomolecular	1	0
+E12AB6E0	53BP1 Mitotic Stress Body (MSBs)	biomolecular	3	3
+BBD7F84D	PB-like Assembly	biomolecular	3	3
+4749EA78	cBAF condensate	biomolecular	4	4
+80CC731F	RPSA-VIM-ENO Condensate	infectious	2	2
+48B2925C	Inclusion body	infectious	1	1
+21EC1620	Inclusion body	infectious	1	1
+70C83BD2	Assemblysome	biomolecular	1	1
+EA3337F5	+TIP	biomolecular	3	1
+7C2F7184	Transcription Elongation Condensate	biomolecular	8	5
+BE404912	ATG4B condensate	biomolecular	1	1
+AF4EAC9D	BMP2K condensate	biomolecular	1	1
+D1F4711B	PARP1-DNA condensate	biomolecular	3	2
+2F083DFF	Actin nucleator	biomolecular	1	0
+507A56A0	Arsenite-induced Necrosome	biomolecular	3	1
+54D84D15	Viral factory	infectious	1	0
+437BC32B	TIFA-TRAF6 Condensate	biomolecular	7	2
+373365D7	p62-dependent P-bodies (pd-PBs)	biomolecular	6	6
+CD2044AE	FXR-driven SARS-CoV-2 condensate	infectious	3	3
+BB266630	TAZ Condensate	biomolecular	8	5
+A40D6D0A	DHX9 Stress Granules	biomolecular	12	12
+3190BB68	inclusion body-associated granule (IBAG)	infectious	6	6
+38D1B6BE	SARS-CoV-2 condensate	infectious	1	1
+57A56005	ORF8/p62 condensate	infectious	3	1
+3625CB60	SOSS-INTAC Condensate	biomolecular	5	1
+39517448	eIF5B granules	biomolecular	1	1
+6D9DF426	Purinosome	biomolecular	4	2
+B3A0EABC	Midbody Granule	biomolecular	7	5
+335D4357	SGF29 condensate	biomolecular	4	1
+4F6C34C9	senescence-associated nuclear proteasome foci	biomolecular	5	4
+2EABBFCD	TBC1D2B condensate	biomolecular	1	1
+B15FE1AF	Hippo signalosome	biomolecular	7	3
+08386919	Dense Fibrillar Component	biomolecular	8	6
+AD8D327D	Golgi ribbon	biomolecular	1	1
+AA62C26E	ORC1 bodies	infectious	5	3
+225F9C97	IMC (intermitochondrial cement)	biomolecular	1	0
+2AFE1BD8	RdRp condensates	infectious	1	0
+D19EB1EA	SDC4 exosomal condensate	biomolecular	1	0
+75451661	Viral Factory	infectious	1	1
+0C658009	nYAC	biomolecular	1	1
+DABB4E53	LANA body	infectious	1	0
+F3208D05	Golgin condensate	biomolecular	7	3
+EB3EADD3	Ubqln puncta	biomolecular	3	3
+009021FA	focal adhesion (FA) condensate	biomolecular	3	2
+F47B63CC	Galectin complex	biomolecular	1	0
+F5FE5C72	Euchromatin	biomolecular	1	1
+E603CCA4	Germ granule	biomolecular	2	1
+ED61D366	FATZ-1 condensate	biomolecular	1	0
+FF3FC04D	sex body	biomolecular	1	0
+FF7BB011	KAT8-IRF1 condensate	biomolecular	2	0
+FF4792F2	Row 1-specific tip complex condensates	biomolecular	4	2
+80B4651A	Granular component	biomolecular	1	1
+C4C56ED2	TDP-25 inclusions	biomolecular	1	1
+5253F164	YBX1 condensate	biomolecular	1	1
+200B29C3	EML4-ALK condensates	biomolecular	1	0
+DAD1D2C8	SPOP/DAXX body	biomolecular	2	0
+19D3735D	EWSR1 condensates	biomolecular	1	1
+904EB3AA	CEBPZ condensates	biomolecular	3	3
+7954D4A1	c‐Maf condensates	biomolecular	3	0
+11D28AF1	GAS2L3 condensates	biomolecular	1	0
+EF01EA24	TFAP2β condensates	biomolecular	3	3
+5A5D4A50	AFAP1-AS1 condensates	biomolecular	2	2
+1AE015A9	ALYREF condensates	biomolecular	1	1
+940DCD6E	INAVA condensates	biomolecular	1	1
+40C311B2	Stress granule	infectious	1	1
+B4E97D43	α-synuclein condensates	biomolecular	3	0
+9EE57072	PCBP2 condensates	biomolecular	4	4
+D5A5F0CB	TRIM45 bodies	biomolecular	1	0
+923DEEBC	IL-1b-induced INAVA condensates	biomolecular	1	1
+6ECDA717	α-synnuclein condensates	biomolecular	1	0

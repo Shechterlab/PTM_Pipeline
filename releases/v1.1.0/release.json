@@ -1,0 +1,708 @@
+{
+ "title": "Human methylarginine sites",
+ "version": "v1.1.0",
+ "previous_version": "v1.0.0",
+ "code_commit": "9af7bb9550f5a73dc9af85f16a6777a268e59163",
+ "repository": "https://github.com/Shechterlab/PTM_Pipeline",
+ "release_date": "2026-10-20",
+ "paper": "DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011",
+ "doi": null,
+ "licence": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (studies file, inputs/MANIFEST.tsv)",
+ "counts": {
+  "rows": 13368,
+  "sites": 13358,
+  "proteins": 4722,
+  "pending": 10,
+  "proteins_all_rows": 4723,
+  "records": 28960,
+  "records_placed": 27983,
+  "previous_sites": 13719,
+  "previous_proteins": 5090,
+  "previous_records_placed": 28134,
+  "kept": 12495,
+  "removed": 1224,
+  "added": 873,
+  "renumbered": 1,
+  "flags": {
+   "single_study": 6452,
+   "shared_sequence": 593,
+   "paralog_window": 22,
+   "near_match_only": 12,
+   "one_sided_window": 10
+  },
+  "studies": 13,
+  "with_maron_s3": 957,
+  "with_state": 2477,
+  "no_domain": 1858,
+  "peptide_start_records": 15,
+  "maron_s2_rows": 2884,
+  "maron_s2_rows_placed": 2880,
+  "maron_s2_rows_on_release_sites": 2880,
+  "maron_s3_GSK591_site_rows": 12348,
+  "maron_s3_GSK591_site_rows_placed": 12340,
+  "maron_s3_MS023_site_rows": 12348,
+  "maron_s3_MS023_site_rows_placed": 12340,
+  "domain_changed_kept": 654,
+  "previously_unannotated_now_annotated": 453,
+  "start_rule_agree": 2949,
+  "start_rule_disagree": 0
+ },
+ "validation": {
+  "evidence_check": {
+   "agrees": 27944,
+   "agrees_no_site": 923,
+   "dropped_evidence_has_site": 46,
+   "contradicts": 22,
+   "one_of_several": 17,
+   "ambiguous": 8
+  },
+  "rows_against_evidence_not_accepted": 0,
+  "union_sites_not_arginine": 0
+ },
+ "reference": {
+  "proteome": "UP000005640",
+  "reviewed": true,
+  "release": "2026_03",
+  "release_date": "02-September-2026",
+  "entries": 20416,
+  "fasta": "uniprot_human_reviewed_2026_03.fasta",
+  "fasta_md5": "c75aad9d197cbba00f51063f65a96ac4"
+ },
+ "annotation": {
+  "InterPro": "108.0",
+  "MobiDB": "export of 2026-03-30",
+  "domain_ontology": "config/domain_class_ontology.json"
+ },
+ "phosphositeplus": {
+  "downloaded": "2021-05-22",
+  "via": "Maron et al. 2021 Table S5",
+  "terms": "CC BY-NC-SA 3.0 Unported, inputs/licences/phosphositeplus_terms_2021-07-11_web-archive.pdf"
+ },
+ "files": [
+  {
+   "file": "human_methylarginine_sites_v1.1.0.tsv",
+   "rows": 13368,
+   "md5": "8b9cd095a8c8bf9e3be9e9f496e819a1"
+  },
+  {
+   "file": "studies_v1.1.0.tsv",
+   "rows": 13,
+   "md5": "9492e733e574e91a76617dda4fffb1e8"
+  },
+  {
+   "file": "supporting/source_records_v1.1.0.tsv",
+   "rows": 28960,
+   "md5": "ef2ee2efddb84e9d2447fd3c8a88718b"
+  },
+  {
+   "file": "supporting/site_changes_v1.0.0_to_v1.1.0.tsv",
+   "rows": 14592,
+   "md5": "57d21421254eccc8e441efd19185e584"
+  },
+  {
+   "file": "supporting/maron2021_detection_v1.1.0.tsv",
+   "rows": 3582,
+   "md5": "446a4e0ca53d61e80c313826ac21d334"
+  },
+  {
+   "file": "supporting/maron2021_inhibitors_v1.1.0.tsv",
+   "rows": 3522,
+   "md5": "5e02126e54ed2addebd48e9efe41ce7f"
+  },
+  {
+   "file": "supporting/carm1_ko_v1.1.0.tsv",
+   "rows": 543,
+   "md5": "46c7e066651452f8a98279de30942ea6"
+  },
+  {
+   "file": "human_methylarginine_proteins_v1.1.0.tsv",
+   "rows": 4723,
+   "md5": "00e326d24d33fa9e8a07e38c51587e96"
+  },
+  {
+   "file": "statistics_v1.1.0.tsv",
+   "rows": 237,
+   "md5": "7302542a465fe8635c0f9bb8e8388827"
+  },
+  {
+   "file": "supporting/disease_terms_v1.1.0.tsv",
+   "rows": 645,
+   "md5": "60a090b8106b479500e9e1f373ec19cf"
+  },
+  {
+   "file": "supporting/density_windows_v1.1.0.tsv",
+   "rows": 707,
+   "md5": "4f553d1e1c006e68505321f954771010"
+  },
+  {
+   "file": "supporting/hpa_locations_v1.1.0.tsv",
+   "rows": 8552,
+   "md5": "8717922fc6e6a5d77d76eb76caf92936"
+  },
+  {
+   "file": "supporting/other_ptm_sites_v1.1.0.tsv",
+   "rows": 28530,
+   "md5": "ec263860a1194a31314a4bcd194b6f51"
+  },
+  {
+   "file": "supporting/condensates_v1.1.0.tsv",
+   "rows": 147,
+   "md5": "6a587edbdcd008320f28a6c046df3404"
+  },
+  {
+   "file": "supporting/disease_families_v1.1.0.tsv",
+   "rows": 8,
+   "md5": "af973601647a30088b985cd3d9629493"
+  },
+  {
+   "file": "supporting/site_interactions_v1.1.0.tsv",
+   "rows": 23078,
+   "md5": "ce4d93efcd0b9825d961c6aa4845228c"
+  },
+  {
+   "file": "supporting/residue_evidence_v1.1.0.tsv",
+   "rows": 220383,
+   "md5": "dab16e97e13d2cade216a1876c0212b7"
+  },
+  {
+   "file": "supporting/protein_partners_v1.1.0.tsv",
+   "rows": 132024,
+   "md5": "b42973bb6726e9dd49075f13a8744420"
+  },
+  {
+   "file": "supporting/complexes_v1.1.0.tsv",
+   "rows": 11166,
+   "md5": "1eb9a8c4b079e135d734c29fcf0e494a"
+  },
+  {
+   "file": "data_dictionary.tsv",
+   "rows": 256,
+   "md5": "549ae2d3fd8a7d45fe2e499a922c25e1"
+  },
+  {
+   "file": "human_methylarginine_sites_v1.1.0.xlsx",
+   "rows": 13368,
+   "md5": "c219ca330d3aeaf6cf6a27db2620b4c0"
+  }
+ ],
+ "inputs": [
+  {
+   "file": "inputs/sources/maron2021_tableS5_compiled_methylarginine_sites.xlsx",
+   "md5": "529feae668f34dc3e3dedf4c3369c642",
+   "version_or_date": "As published",
+   "licence": "CC BY-NC-ND 4.0 (open-access article; supplement redistributed unmodified, with attribution)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/sources/maron2021_tableS2_methylarginine_ip_sites.xlsx",
+   "md5": "07bccb70b0e3e9b25aed18511c933c86",
+   "version_or_date": "As published; downloaded 2026-10-20",
+   "licence": "CC BY-NC-ND 4.0 (open-access article; supplement redistributed unmodified, with attribution)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/sources/maron2021_tableS3_methylpeptides_prmt_inhibitors.xlsx",
+   "md5": "7a763fd22687c3222dc6e69b1540ae66",
+   "version_or_date": "As published; downloaded 2026-10-20",
+   "licence": "CC BY-NC-ND 4.0 (open-access article; supplement redistributed unmodified, with attribution)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/sources/massignani2022_prometheusdb_mmc2_methylsites.xlsx",
+   "md5": "4664be1fabb2fd418903f4f8a6840bb2",
+   "version_or_date": "As published",
+   "licence": "CC BY-NC-ND 4.0 (open-access article; supplement redistributed unmodified, with attribution)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/sources/ptm_master_iptmnet_human.tsv",
+   "md5": "e9b4e5bf505c6e228dc83a9b7de02251",
+   "version_or_date": "iPTMnet release and download date not recorded; newest PMID about late 2023; first committed 2026-04-07 (cd56dd0)",
+   "licence": "iPTMnet: CC BY-NC-SA 4.0 (iPTMnet licence page); component databases keep their own terms",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+   "md5": "c75aad9d197cbba00f51063f65a96ac4",
+   "version_or_date": "UniProt release 2026_03 (released 2026-09-02), downloaded 2026-10-20; byte-identical to the download of 2026-10-18 used for inputs/layers",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/reference/uniprot_human_reviewed_2026_03_entries.tsv",
+   "md5": "07057d3bda4051dd23f9f90b0a425916",
+   "version_or_date": "UniProt release 2026_03, downloaded 2026-10-20",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/reference/uniprot_accession_history_2026_03.tsv",
+   "md5": "3ec1af9849a407cd1c60531a1216052a",
+   "version_or_date": "UniProt release 2026_03, built 2026-10-20",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/reference/uniprot_release.json",
+   "md5": "51fa7275f4fabdfde2db981193436140",
+   "version_or_date": "UniProt release 2026_03",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/annotation/mobidb_disorder_intervals_2026-03-30.tsv",
+   "md5": "169fd964a204adb8bb6d385ed2a33558",
+   "version_or_date": "MobiDB export of 2026-03-30; derived 2026-04-07",
+   "licence": "CC BY 4.0 (as listed for MobiDB; not confirmed on mobidb.org)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/annotation/interpro_108.0_domain_intervals.tsv",
+   "md5": "390a8429f7c5425ae06ef1fc4ffcb268",
+   "version_or_date": "InterPro 108.0",
+   "licence": "CC0 1.0 (InterPro documentation)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/annotation/interpro_108.0_all_entry_intervals.tsv",
+   "md5": "e9210822dfcd5217ae9497095cfc4a4f",
+   "version_or_date": "InterPro 108.0",
+   "licence": "CC0 1.0 (InterPro documentation)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/annotation/cdcode_protein_membership_v2.2.tsv",
+   "md5": "7e56dc6d3595c23537bc3ed373dbb1dd",
+   "version_or_date": "v2.2 (from the file name)",
+   "licence": "CC BY-NC 4.0 (stated on cd-code.org)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/annotation/cdcode_proteins_2026-03-18.csv",
+   "md5": "67a62603abb55cc1352af5a28c3976a5",
+   "version_or_date": "2026-03-18 16:53 (from the file name)",
+   "licence": "CC BY-NC 4.0 (stated on cd-code.org)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/annotation/cdcode_condensates_2026-03-18.csv",
+   "md5": "357558769a08b0798aed86064b5aefb9",
+   "version_or_date": "2026-03-18 16:47 (from the file name)",
+   "licence": "CC BY-NC 4.0 (stated on cd-code.org)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/annotation/interval_lift_to_uniprot_2026_03.tsv",
+   "md5": "440ce0519a34f0e82c1d45fe225396ab",
+   "version_or_date": "2026-10-20",
+   "licence": "CC BY-NC-SA 4.0 (this repository)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/layers/cplm4_human_lys_methyl_validated.tsv",
+   "md5": "22dc67eb7a66cfc527ac1359132b642d",
+   "version_or_date": "CPLM 4.0 (Methylation.txt dated 2021-06-13), downloaded 2026-10-18",
+   "licence": "All rights reserved (© The CUCKOO Workgroup; no licence stated on cplm.biocuckoo.cn)",
+   "redistribution": "checksum_only"
+  },
+  {
+   "file": "inputs/layers/cplm4_human_lys_methyl_rejected.tsv",
+   "md5": "170b28899366bdee2b5945de2dd40467",
+   "version_or_date": "CPLM 4.0 (Methylation.txt dated 2021-06-13), downloaded 2026-10-18",
+   "licence": "All rights reserved (© The CUCKOO Workgroup; no licence stated on cplm.biocuckoo.cn)",
+   "redistribution": "checksum_only"
+  },
+  {
+   "file": "inputs/layers/cplm4_summary.json",
+   "md5": "253cb4781ee6d0929efba10e908e67d0",
+   "version_or_date": "CPLM 4.0 (Methylation.txt dated 2021-06-13), downloaded 2026-10-18",
+   "licence": "All rights reserved (© The CUCKOO Workgroup; no licence stated on cplm.biocuckoo.cn)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/layers/hpa_subcellular_locations.tsv",
+   "md5": "b76cfaa0e0808b6d098ed9e9671b082e",
+   "version_or_date": "Human Protein Atlas 25.1, downloaded 2026-10-19",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/layers/hpa_summary.json",
+   "md5": "e63e283aa84c5c0cca85bba0d56028e3",
+   "version_or_date": "Human Protein Atlas 25.1, downloaded 2026-10-19",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/layers/carm1_ko_peptides.tsv",
+   "md5": "44307f700e5a93a59c4e3cba7e647610",
+   "version_or_date": "Supplementary Data 1, downloaded 2026-10-19",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/layers/carm1_ko_sites.tsv",
+   "md5": "885771dbac1e7b4dea29c77f15f34699",
+   "version_or_date": "Supplementary Data 1, downloaded 2026-10-19",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/layers/carm1_ko_summary.json",
+   "md5": "3201b01492d637341a44f0a0faf1343c",
+   "version_or_date": "Supplementary Data 1, downloaded 2026-10-19",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/layers/raw_files.tsv",
+   "md5": "a2a233882ba62a6fe55babd609ff6c13",
+   "version_or_date": "",
+   "licence": "",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/uniprot_human_reviewed_2026-10-16.tsv",
+   "md5": "db7f56ec66218744d5452fa77479aa17",
+   "version_or_date": "UniProt release 2026_03, downloaded 2026-10-16",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/uniprot_human_reviewed_2026-10-16.fasta",
+   "md5": "f8de0a41cfa4d9997c74ecd50f0da376",
+   "version_or_date": "UniProt release 2026_03, downloaded 2026-10-16",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/uniprot_human_regions_2026-10-16.tsv",
+   "md5": "97667601b93c986c7efb83c1ff6c650e",
+   "version_or_date": "UniProt release 2026_03, downloaded 2026-10-16",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/uniprot_human_dna_binding_regions_2026-10-16.tsv",
+   "md5": "3787ee11b127c3e624423afc9a258e34",
+   "version_or_date": "UniProt release 2026_03, downloaded 2026-10-16",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/quickgo_human_rna_dna_binding_2026-10-16.tsv",
+   "md5": "82d4b9a0d114a040e991c8b650cc98b9",
+   "version_or_date": "2026-10-16",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/string_v12.5_human_physical_links_score400.tsv",
+   "md5": "ef4f1cb4b52c9e9a74c75757950a2ee9",
+   "version_or_date": "v12.5, downloaded 2026-10-16",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/complex_portal_human_complexes_2026-10-16.tsv",
+   "md5": "c0e9e392f0ba6d15a746af345ebe06ca",
+   "version_or_date": "current release, downloaded 2026-10-16",
+   "licence": "CC0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/pdbe_kb_interface_residues_2026-10-16.tsv",
+   "md5": "f105ffa11c507c7aeada79fb2637002d",
+   "version_or_date": "PDBe-KB graph API, answers saved 2026-10-16 to 2026-10-19",
+   "licence": "EMBL-EBI terms of use (free use with attribution)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/pdbe_kb_interface_queries_2026-10-16.tsv",
+   "md5": "7c31ae44262f44353c25c896c8da6767",
+   "version_or_date": "2026-10-16 to 2026-10-19",
+   "licence": "EMBL-EBI terms of use",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/sifts_observed_ranges_human_2026-10-16.tsv",
+   "md5": "f3650bb31a6efc5a6bcba84c7be16a9c",
+   "version_or_date": "SIFTS, downloaded 2026-10-16",
+   "licence": "EMBL-EBI terms of use",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/sifts_pdb_chain_uniprot_human_2026-10-16.tsv",
+   "md5": "1c05c2c744d508a872d4074524cb0670",
+   "version_or_date": "SIFTS, downloaded 2026-10-16",
+   "licence": "EMBL-EBI terms of use",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/sifts_pdb_chain_uniprot_other_2026-10-16.tsv",
+   "md5": "90e1d168be93ce032dc28c7c415b4961",
+   "version_or_date": "SIFTS, downloaded 2026-10-16",
+   "licence": "EMBL-EBI terms of use",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/pdb_methylarginine_residues_2026-10-16.tsv",
+   "md5": "d49ae6ca57920b0a291792e1a3040e07",
+   "version_or_date": "2026-10-16",
+   "licence": "CC0 (PDB data)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/pdb_arginine_contacts_2026-10-16.tsv",
+   "md5": "4ba8a6a34a59050d101ea6333577d023",
+   "version_or_date": "RCSB ModelServer, read 2026-10-16",
+   "licence": "CC0 (PDB data)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/pdb_arginine_interface_environments_2026-10-16.tsv",
+   "md5": "f90613d4c622337700f5f8bd96a37ead",
+   "version_or_date": "RCSB ModelServer, read 2026-10-16",
+   "licence": "CC0 (PDB data)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/protvar_predicted_interfaces_2024.05.28_pdockq0.23.tsv",
+   "md5": "1706c5dad8ea3a7350a925a57cd2337a",
+   "version_or_date": "2024.05.28_interface_summary_5A, downloaded 2026-10-16",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/protvar_served_models_af2complexes_v1.tsv",
+   "md5": "9e8d735152d08df65056d611e85ec338",
+   "version_or_date": "af2complexes_interfaces_v1, downloaded 2026-10-16",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/predicted_model_arginine_contacts_2026-10-16.tsv",
+   "md5": "f8598894259050f8e14b62ad165dab57",
+   "version_or_date": "models read 2026-10-16",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/alphafold_db_human_heterodimers_2026-10-16.tsv",
+   "md5": "4bff8c150dc7de319480efcaa6efa6c9",
+   "version_or_date": "AlphaFold DB API, answers saved 2026-10-16",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/alphafold_db_complex_queries_2026-10-16.tsv",
+   "md5": "92cd16ddc45b4f1ed44a6a64f8c26d50",
+   "version_or_date": "2026-10-16",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/intact_mutations_human_2026-10-19.tsv",
+   "md5": "f41f6198b43b723ae0271447b0cdbb84",
+   "version_or_date": "IntAct release finished Mon 12 Jan 21:28:56 GMT 2026; downloaded 2026-10-19",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/intact_binding_regions_human_2026-10-19.tsv",
+   "md5": "633149a91e85d6c005deb134d066071a",
+   "version_or_date": "IntAct release finished Mon 12 Jan 21:28:56 GMT 2026; downloaded 2026-10-19",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/intact_methylarginines_human_2026-10-19.tsv",
+   "md5": "837cf608ed2d9cc6ad0ecfbb9da2354b",
+   "version_or_date": "IntAct release finished Mon 12 Jan 21:28:56 GMT 2026; downloaded 2026-10-19",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/pepr_ms_v2_table_s2_rna_crosslinked_peptides.tsv",
+   "md5": "dbaa86d0da61cc4b37b1de02b93bb2d2",
+   "version_or_date": "bioRxiv v2 (2026) supplement, downloaded 2026-10-16",
+   "licence": "CC BY-NC",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/pepr_ms_v2_table_s3_focused_sites.tsv",
+   "md5": "f90b7461d7d49bc8d25b3f0fbf5fa5bb",
+   "version_or_date": "bioRxiv v2 (2026) supplement, downloaded 2026-10-16",
+   "licence": "CC BY-NC",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/rbdmap_castello2016_rna_bound_fragments.tsv",
+   "md5": "dad2ab8d0557114a153671786e342bcd",
+   "version_or_date": "Table S1, downloaded 2026-10-16",
+   "licence": "CC BY 4.0 (open access article and its supplement; PMC5003815)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/trendel2025_dna_crosslink_localisation.tsv",
+   "md5": "19c32200f9241755121db8a140b2dfd8",
+   "version_or_date": "Tables S1-S2, downloaded 2026-10-16",
+   "licence": "CC BY-NC 4.0 (open access article and its supplement)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/trendel2025_dna_crosslinked_peptides.tsv",
+   "md5": "bef8fe7413ad6f423aa96b13725b6ec8",
+   "version_or_date": "Tables S1-S2, downloaded 2026-10-16",
+   "licence": "CC BY-NC 4.0 (open access article and its supplement)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/trendel2025_mcf7_dna_interactome.tsv",
+   "md5": "c13632c51df55e48a717e13c230920f4",
+   "version_or_date": "Tables S1-S2, downloaded 2026-10-16",
+   "licence": "CC BY-NC 4.0 (open access article and its supplement)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/cdcode_2.3_condensate_members_2026-10-16.tsv",
+   "md5": "b4a8fcc59ba881d8a239520a6b037fc7",
+   "version_or_date": "CD-CODE 2.3 API, answers saved 2026-10-16",
+   "licence": "CC BY-NC 4.0 (stated on cd-code.org)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/raw_cache_files.tsv",
+   "md5": "7f7e1d63648cf138563dd87dd805bd1a",
+   "version_or_date": "",
+   "licence": "",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/licences/phosphositeplus_terms_2021-07-11_web-archive.pdf",
+   "md5": "802f0a992b31785f948e239f30455a62",
+   "version_or_date": "Captured 2021-07-11",
+   "licence": "n/a (terms document)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/uniprot_human_reviewed_2026-04-07.fasta",
+   "md5": "f6c592be0e543cb46d2efc48e3a1e958",
+   "version_or_date": "Staged 2026-04-07",
+   "licence": "CC BY 4.0",
+   "redistribution": "zenodo"
+  },
+  {
+   "file": "inputs/uniprot_human_reviewed_2026-04-07_entries.tsv",
+   "md5": "ddf9b93492ac931ace5bbfcf5418b805",
+   "version_or_date": "Staged 2026-04-07",
+   "licence": "CC BY 4.0",
+   "redistribution": "zenodo"
+  },
+  {
+   "file": "inputs/interpro_domain_intervals_2026-04-07.tsv",
+   "md5": "4c47bca07509696ddc2182b63546f429",
+   "version_or_date": "InterPro 108.0; staged 2026-04-07",
+   "licence": "CC0 1.0",
+   "redistribution": "zenodo"
+  },
+  {
+   "file": "inputs/interpro_all_entry_intervals_2026-04-07.tsv",
+   "md5": "767b1da77420263dccd0910b2eb053f7",
+   "version_or_date": "InterPro 108.0; staged 2026-04-07",
+   "licence": "CC0 1.0",
+   "redistribution": "zenodo"
+  },
+  {
+   "file": "inputs/protein2ipr.dat.gz",
+   "md5": "d722648460460c6259bfd3a05ad00fef",
+   "version_or_date": "InterPro 108.0 (29 January 2026)",
+   "licence": "CC0 1.0",
+   "redistribution": "checksum_only"
+  },
+  {
+   "file": "inputs/entry.list",
+   "md5": "88e04c93f65531f81e297f1688f09b42",
+   "version_or_date": "InterPro 108.0",
+   "licence": "CC0 1.0",
+   "redistribution": "checksum_only"
+  },
+  {
+   "file": "inputs/disease/dose_4.4.0_disgenet_term_genes.tsv",
+   "md5": "4e01948e570a275c0d906837a71a6f7b",
+   "version_or_date": "DOSE 4.4.0",
+   "licence": "DisGeNET data: CC BY-NC-SA 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/disease/orghsegdb_3.22.0_symbol_entrez.tsv",
+   "md5": "23729b6f0e4132a6d2833704265c99d1",
+   "version_or_date": "org.Hs.eg.db 3.22.0",
+   "licence": "Artistic-2.0 (package); NCBI Gene data are public domain",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/pdbe_kb_interface_residues_2026-10-20.tsv",
+   "md5": "cf1fd3091f35e94eb6a94c45b432eeb0",
+   "version_or_date": "PDBe-KB graph API, answers saved 2026-10-20",
+   "licence": "EMBL-EBI terms of use (free use with attribution)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/pdbe_kb_interface_queries_2026-10-20.tsv",
+   "md5": "3039877179e8e80b10aa8a686d13eeaa",
+   "version_or_date": "2026-10-20",
+   "licence": "EMBL-EBI terms of use",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/pdb_arginine_contacts_2026-10-20.tsv",
+   "md5": "b519e7348559017f4b9cd315bec9d8f5",
+   "version_or_date": "RCSB ModelServer, read 2026-10-20",
+   "licence": "CC0 (PDB data)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/pdb_arginine_interface_environments_2026-10-20.tsv",
+   "md5": "5e352e658712ed584c74bb42241612eb",
+   "version_or_date": "RCSB ModelServer, read 2026-10-20",
+   "licence": "CC0 (PDB data)",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/predicted_model_arginine_contacts_2026-10-20.tsv",
+   "md5": "2b5c25ddcfa3a9ad6edb756d26486713",
+   "version_or_date": "models read 2026-10-20",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/alphafold_db_human_heterodimers_2026-10-20.tsv",
+   "md5": "7b502503ed63e8ab03e87a2301912a5b",
+   "version_or_date": "AlphaFold DB API, answers saved 2026-10-20",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/alphafold_db_complex_queries_2026-10-20.tsv",
+   "md5": "fa2a27f5e3367f7c027f8944ba1e5ff3",
+   "version_or_date": "2026-10-20",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/predicted_model_measured_positions_2026-10-20.tsv",
+   "md5": "6bfb02ce09a030bce3566b6f480ea7ee",
+   "version_or_date": "models read 2026-10-20",
+   "licence": "CC BY 4.0",
+   "redistribution": "git"
+  },
+  {
+   "file": "inputs/interactions/raw_topup_files_2026-10-20.tsv",
+   "md5": "804287de307dfd1f56f80e77ae1ea9ee",
+   "version_or_date": "2026-10-20",
+   "licence": "",
+   "redistribution": "git"
+  }
+ ]
+}
