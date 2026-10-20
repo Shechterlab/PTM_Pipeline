@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- The site's name: change it here, in <title> and in the h1 below. Figure credits read application-name. -->
+  <title>Methylarginine Site Explorer · Shechter Lab</title>
+  <meta name="application-name" content="Methylarginine Site Explorer">
+  <meta name="description" content="Human protein arginine methylation sites from DeAngelo, Silverstein &amp; Shechter, Cell Chemical Biology 2026: interactions, structures, ontology, disease, condensates, motifs and provenance, with exportable figures.">
+  <link rel="icon" href="assets/shechterlab-icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Serif:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="assets/explorer.css?v=20261020d">
+  <script>
+    try { var t = localStorage.getItem('mre-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+  </script>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-art" aria-hidden="true" id="hero-art"></div>
+    <div class="wrap">
+      <div class="brand">
+        <a class="brand-mark" href="https://www.shechterlab.org/">
+          <img src="assets/shechterlab-icon.svg" alt="" width="34" height="34">
+          <span>Shechter Lab<small>Albert Einstein College of Medicine</small></span>
+        </a>
+        <nav class="brand-links" aria-label="Lab links">
+          <a href="https://www.shechterlab.org/research/"><span class="bl-long">Shechter Lab research</span><span class="bl-short">Research</span></a>
+          <a href="https://www.shechterlab.org/publications/"><span class="bl-long">Shechter Lab publications</span><span class="bl-short">Publications</span></a>
+          <a href="https://github.com/Shechterlab/PTM_Pipeline">Code &amp; data</a>
+        </nav>
+      </div>
+      <h1><a class="home-link" href="#overview" title="Back to the overview">Methylarginine Site Explorer</a></h1>
+      <div class="lede" id="lede"><p class="lede-cite"><span class="cite-long">Please cite DeAngelo, Silverstein &amp; Shechter, <a href="https://doi.org/10.1016/j.chembiol.2026.09.011"><i>Protein arginine methylation rewires molecular interactions</i></a>, Cell Chem Biol 2026, and the original data sources</span><span class="cite-short">Cite <a href="https://doi.org/10.1016/j.chembiol.2026.09.011">DeAngelo <i>et al.</i>, Cell Chem Biol 2026</a> and the data sources</span> (<button class="linkish" type="button" data-doc="cite">how to cite</button>).</p></div>
+      <div class="hero-stats" id="hero-stats" aria-label="Dataset summary"></div>
+    </div>
+    <div class="hero-art-caption" id="hero-art-caption"></div>
+  </header>
+
+  <div class="toolbar" id="toolbar">
+    <div class="wrap">
+      <div class="search" role="search">
+        <div class="search-field">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <label class="sr-only" for="q">Search genes, UniProt accessions, protein names or sites</label>
+          <input id="q" type="search" autocomplete="off" spellcheck="false"
+            placeholder="Gene, accession, site (FUS R216), gene list, or a filter such as motif:RGG or disease:als"
+            aria-controls="suggest" aria-autocomplete="list" aria-expanded="false">
+          <button class="search-clear" id="q-clear" type="button" aria-label="Clear search" hidden>×</button>
+          <ul class="suggest" id="suggest" role="listbox" hidden></ul>
+        </div>
+      </div>
+      <div class="scope" id="scope" aria-live="polite"></div>
+      <div class="query-note" id="query-note" aria-live="polite"></div>
+      <div class="tabs" role="tablist" aria-label="Views">
+        <button class="tab" role="tab" id="tab-overview" data-view="overview" aria-selected="true">Overview</button>
+        <button class="tab" role="tab" id="tab-proteins" data-view="proteins" aria-selected="false">Proteins <span class="count" id="count-proteins">–</span></button>
+        <button class="tab" role="tab" id="tab-sites" data-view="sites" aria-selected="false">Sites <span class="count" id="count-sites">–</span></button>
+        <button class="tab tab-feature" role="tab" id="tab-interactions" data-view="interactions" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="7" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><path d="M8.3 7.2 15.6 7M7.3 8.2l3.6 7.6M16.8 9.2l-3.6 6.6"></path></svg>Interactions</button>
+        <button class="tab" role="tab" id="tab-figures" data-view="figures" aria-selected="false">Figures</button>
+        <button class="tab" role="tab" id="tab-protein" data-view="protein" aria-selected="false" hidden>Protein</button>
+        <button class="tab" role="tab" id="tab-about" data-view="about" aria-selected="false"><span class="tab-long">Documentation</span><span class="tab-short">Docs</span></button>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <div class="layout" id="layout">
+      <aside class="rail" id="rail" aria-label="Filters" data-collapsed="true"></aside>
+      <div class="content" id="content">
+        <div class="loading" id="loading"><div class="spinner"></div><p>Loading methylarginine sites…</p></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <p>© <span id="year">2026</span> Shechter Lab · <a href="https://einsteinmed.edu/departments/biochemistry">Department of Biochemistry</a>, <a href="https://einsteinmed.edu">Albert Einstein College of Medicine</a><br>
+        Cite: DeAngelo, Silverstein &amp; Shechter, <i>Cell Chem Biol</i> 33:1404–1421 (2026), <a href="https://doi.org/10.1016/j.chembiol.2026.09.011">doi:10.1016/j.chembiol.2026.09.011</a>, and the original studies that reported the sites you use (<button class="linkish" type="button" data-doc="cite">How to cite</button>)<br>
+        Built from <a href="https://github.com/Shechterlab/PTM_Pipeline">Shechterlab/PTM_Pipeline</a> · <span id="data-version"></span><br>
+        Data and content <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> · code MIT · third-party data under their own licences (<a href="https://github.com/Shechterlab/PTM_Pipeline/blob/main/LICENSE.md">LICENSE</a>, <a href="#about">Documentation</a>)</p>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" data-theme-set="light">Light</button>
+        <button type="button" data-theme-set="system">System</button>
+        <button type="button" data-theme-set="dark">Dark</button>
+      </div>
+    </div>
+  </footer>
+
+  <div class="tip" id="tip" hidden></div>
+  <script src="assets/explorer.js?v=20261020d"></script>
+</body>
+</html>
