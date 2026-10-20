@@ -13,18 +13,21 @@ Where every input of the methylarginine analysis and its website comes from, wha
 
 ## 1. Frozen inputs (`inputs/`)
 
-| File | What it is | Status |
+| File (former name) | What it is | Status |
 |---|---|---|
-| `human_ptm_master.tsv` | Cross-PTM master (section 3) | identical to `cd56dd0`; origin undocumented |
-| `maron2021_TableS5_Compiled_Methylarginine_Data.xlsx` | Maron et al. 2021 Table S5 | identical to `cd56dd0` |
-| `promteheusdb_supplement_mmc2.xlsx` | ProMetheusDB mmc2 (Massignani et al. 2022) | identical to `cd56dd0`; file name misspelled |
-| `uniprot_human_reviewed_canonical.fasta`, `_metadata.tsv` | Reference sequences, staged 2026-04-07 | proven to be the published run's snapshot; release unknown |
-| `mobidb_human_reviewed_disorder_intervals.tsv` | Disorder intervals from the MobiDB export of 2026-03-30 | covers all reviewed proteins; the source JSON is not frozen |
-| `interpro_human_reviewed_domain_like_intervals.tsv` | Domain intervals from InterPro `protein2ipr.dat.gz` (current release on 2026-04-07) | **covers only the published union's 5,090 accessions**; 81 proteins of the corrected union (111 sites), 94 with the current code (126 sites), are missing; release number unknown |
-| `interpro_human_reviewed_all_entry_intervals.tsv` | All InterPro entries, same accessions | read by no script |
-| `protein2cdcode_v2.2.tsv`, `proteins_202603181653.csv`, `condensates_202603181647.csv` | CD-CODE v2.2 membership and the 2026-03-18 export tables | version and date only in the file names |
+| `sources/ptm_master_iptmnet_human.tsv` (`human_ptm_master.tsv`) | Cross-PTM master (section 3) | identical to `cd56dd0`; origin undocumented |
+| `sources/maron2021_tableS5_compiled_methylarginine_sites.xlsx` (`maron2021_TableS5_Compiled_Methylarginine_Data.xlsx`) | Maron et al. 2021 Table S5 | identical to `cd56dd0`; same cells as the publisher's mmc6.xlsx (re-saved, so the bytes differ) |
+| `sources/maron2021_tableS2_methylarginine_ip_sites.xlsx` (new) | Maron et al. 2021 Table S2 (PTMScan IP sites, me1/me2) | the publisher's mmc3.xlsx; `scripts/16` on it reproduces `PTM_results/maron_state_treatment/` |
+| `sources/maron2021_tableS3_methylpeptides_prmt_inhibitors.xlsx` (new) | Maron et al. 2021 Table S3 (ADMA/SDMA/MMA IP after GSK591 or MS023) | the publisher's mmc4.xlsx; same check |
+| `sources/massignani2022_prometheusdb_mmc2_methylsites.xlsx` (`promteheusdb_supplement_mmc2.xlsx`) | ProMetheusDB mmc2 (Massignani et al. 2022) | identical to `cd56dd0` and byte-identical to the publisher's mmc2.xlsx |
+| `reference/uniprot_human_reviewed_2026-04-07.fasta`, `_entries.tsv` (`uniprot_human_reviewed_canonical.fasta`, `_metadata.tsv`) | Reference sequences, staged 2026-04-07 | proven to be the published run's snapshot; release unknown |
+| `reference/uniprot_accession_history_2026_03.tsv` (`uniprot_accession_history.tsv`) | Secondary accessions and gene synonyms, UniProt 2026_03 | built 2026-10-19 against the reference FASTA |
+| `annotation/mobidb_disorder_intervals_2026-03-30.tsv` (`mobidb_human_reviewed_disorder_intervals.tsv`) | Disorder intervals from the MobiDB export of 2026-03-30 | covers all reviewed proteins; the source JSON is not frozen |
+| `annotation/interpro_domain_intervals_2026-04-07.tsv` (`interpro_human_reviewed_domain_like_intervals.tsv`) | Domain intervals from InterPro `protein2ipr.dat.gz` (current release on 2026-04-07) | **covers only the published union's 5,090 accessions**; 81 proteins of the corrected union (111 sites), 94 with the current code (126 sites), are missing; release number unknown |
+| `annotation/interpro_all_entry_intervals_2026-04-07.tsv` (`interpro_human_reviewed_all_entry_intervals.tsv`) | All InterPro entries, same accessions | read by no script |
+| `annotation/cdcode_protein_membership_v2.2.tsv`, `cdcode_proteins_2026-03-18.csv`, `cdcode_condensates_2026-03-18.csv` (`protein2cdcode_v2.2.tsv`, `proteins_202603181653.csv`, `condensates_202603181647.csv`) | CD-CODE v2.2 membership and the 2026-03-18 export tables | version and date only in the file names |
 
-The code does not read `inputs/` yet: `hpc/ptm_env.sh` still points at `PTM_DATA_ROOT/{base,external,context,condensates}` with the old file names.
+`inputs/MANIFEST.tsv` gives each file's checksum, former name, source URL, version, citation, licence and how it was checked. Only `hpc/build_release.sh` reads `inputs/`; `hpc/ptm_env.sh` still points at `PTM_DATA_ROOT/{base,external,context,condensates}` with the old file names.
 
 ## 2. Inputs that are not frozen
 
@@ -84,15 +87,15 @@ No code builds it on any branch or in any commit (including the `scripts.zip` on
 
 Goal: a repository anyone can rerun, with results unchanged. Each step is checked by two tests that must keep passing: (a) the pre-fix remapping on `inputs/` reproduces the published remapping on 28,960 of 28,960 rows; (b) the corrected pipeline on `inputs/` gives the same union and the same downstream tables as the run being kept.
 
-1. **Inputs.** Point `hpc/ptm_env.sh` at `inputs/` (fix the `promteheusdb` spelling in the same change), add a step that refuses to run when a file's checksum differs from `inputs/MANIFEST.tsv`, and let the hygiene guard accept exactly the manifest's files. Stage working copies elsewhere so no step writes into `inputs/`.
-2. **Complete the frozen set.** Rebuild the InterPro intervals for all reviewed proteins from the April `protein2ipr.dat.gz` and add them; add the accession history with its UniProt release; add Maron Table S2/S3. Put the large raw files (InterPro 16 GB, MobiDB JSON, CPLM, the `scripts/37` cache) in a Zenodo record and list them in the manifest by checksum.
+1. **Inputs.** Point `hpc/ptm_env.sh` at `inputs/` (the files now have their final names), add a step that refuses to run when a file's checksum differs from `inputs/MANIFEST.tsv`, and let the hygiene guard accept exactly the manifest's files. Stage working copies elsewhere so no step writes into `inputs/`.
+2. **Complete the frozen set.** Rebuild the InterPro intervals for all reviewed proteins from the April `protein2ipr.dat.gz` and add them; the accession history and Maron Tables S2/S3 are now in `inputs/`. Put the large raw files (InterPro 16 GB, MobiDB JSON, CPLM, the `scripts/37` cache) in a Zenodo record and list them in the manifest by checksum.
 3. **Fix the hazards** above: no empty InterPro files from step 00; explicit inputs for script 24; a run record (input checksums, commit, R `sessionInfo()`) written by every run; pin the R data packages.
 4. **Layout.** One provenance document (this file, `DATA_PROVENANCE_REVIEW.md` and `ISSUES_2026-10-19.md` merged), the README reduced to how to run; retire the legacy `data/` and `results/` stubs; keep `PTM_results/` as the published release, labelled as such.
 5. **Then** the rerun and the website rebuild (`ISSUES_2026-10-19.md` issue 17), the other-PTM export fix, and a pull request to `main`.
 
 Decisions for the lab: issue 9 (paralog windows, 22 rows), whether the website should show isoform-numbered other-PTM sites after a window check, whether to extend the master beyond iPTMnet (changes cross-PTM results), and which release the website serves by default.
 
-## 6. Effect on the paper's featured proteins (release 2026-10-corrected vs the published union)
+## 6. Effect on the paper's featured proteins (release v2.0 vs the published union, v1.0)
 
 | Protein | Published sites | Release sites | Removed | Added |
 |---|---|---|---|---|

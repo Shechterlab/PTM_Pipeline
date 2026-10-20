@@ -22,4 +22,6 @@
 *.png binary
 
 # Frozen pipeline inputs: store byte-for-byte, no line-ending changes or diffs
-inputs/** -text -diff
+inputs/sources/** -text -diff
+inputs/reference/** -text -diff
+inputs/annotation/** -text -diff
