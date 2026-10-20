@@ -1354,6 +1354,417 @@ def sig(x, d=3):
 
 
 # ----------------------------------------------------------------------------- main
+# ----------------------------------------------------------------------------- frozen tables (--tables)
+class Measured:
+    """A residue environment already measured (inputs/interactions/pdb_arginine_interface_environments_*): its result."""
+
+    def __init__(self, result):
+        self.result = result
+
+
+def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
+    """Read the frozen tables in folder (scripts/interaction_inputs.py) instead of the download cache. Anything the
+    tables do not cover (proteins never looked up, structure neighbourhoods and model positions never measured) is
+    fetched as before, into topup. measured_sites: {accession: positions} measured when the tables were made."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import interaction_inputs as ii
+    t = ii.Tables(folder)
+    g = globals()
+    orig = {k: g[k] for k in ('fetch_interfaces', 'site_contacts', 'residue_environment', 'analyze_environment')}
+    manifest = folder.parent / 'MANIFEST.tsv'
+    intact_release = ''
+    if manifest.exists():
+        with open(manifest, encoding='utf-8') as fh:
+            for r in csv.DictReader(fh, delimiter='\t'):
+                if r['file'].startswith('interactions/intact_mutations_human_'):
+                    intact_release = r['version_or_date']
+    g['load_uniprot'] = lambda cache, refresh: ii.uniprot(t)
+    g['load_go'] = lambda cache, refresh: ii.go(t)
+    g['load_string'] = lambda cache, refresh, sid_to_acc, keep, min_score: ii.string(t, keep, min_score, sid_to_acc)
+    g['load_complexes'] = lambda cache, refresh: ii.complexes(t)
+    g['load_observed'] = lambda cache, refresh, keep: ii.observed(t, keep)
+    g['load_uniprot_regions'] = lambda cache, refresh: ii.regions(t)
+    g['load_sifts_chains'] = lambda cache, refresh, keep_pdbs: ii.sifts_chains(t, keep_pdbs)
+    g['load_modelled_methyl_r'] = lambda cache, refresh, workers: ii.modelled_methyl_r(t)
+    g['load_protvar'] = lambda cache, refresh, keep: ii.protvar(t, keep, PRED_TIERS[0])
+    g['load_protvar_served'] = lambda cache, refresh: {(r['uniprot_id1'], r['uniprot_id2']) for r in ii.protvar_served_rows(t)}
+    g['load_cdcode'] = lambda cache, refresh, uids, workers: ii.cdcode(t, ROLE_BITS, ROLE_OTHER, EVIDENCE_BITS, EVIDENCE_OTHER)
+
+    def load_intact_(cache, refresh, seq):
+        feats, counts = ii.intact(t, INTACT_EFFECT_MI, INTACT_REGION_MI)
+        return feats, counts, intact_release
+    g['load_intact'] = load_intact_
+    g['load_crosslinks'] = lambda cache, refresh, seq, seq_meta=None: ii.crosslinks(t, seq, seq_meta, RNA_XL_SETS, RNA_FOCUSED, D_XL, D_CAND)
+
+    queried = ii.queried_interfaces(t)
+
+    def fetch_interfaces_(cache, accs, refresh, workers):
+        out = ii.interfaces(t, [a for a in accs if a in queried])
+        missing = [a for a in accs if a not in queried]
+        if missing:
+            log(f'PDBe interfaces: {len(missing):,} proteins not in the frozen tables, fetched into {topup}')
+            out.update(orig['fetch_interfaces'](topup, missing, False, workers))
+        return out
+    g['fetch_interfaces'] = fetch_interfaces_
+
+    contacts = ii.contacts(t)
+
+    def site_contacts_(cache, pdb, chain, label, refresh):
+        hit = contacts.get((pdb, chain, int(label)))
+        return {'resn': hit['resn'], 'hits': [list(h) for h in hit['hits']]} if hit else orig['site_contacts'](topup, pdb, chain, label, False)
+    g['site_contacts'] = site_contacts_
+
+    envs = ii.environments(t)
+
+    def residue_environment_(cache, pdb, chain, label, refresh):
+        key = (pdb, chain, int(label))
+        return Measured(envs[key]) if key in envs else orig['residue_environment'](topup, pdb, chain, label, False)
+    g['residue_environment'] = residue_environment_
+    g['analyze_environment'] = lambda rows, chain, label: rows.result if isinstance(rows, Measured) else orig['analyze_environment'](rows, chain, label)
+
+    measured = ii.model_contacts(t, G_CLASH, G_SB, G_HB, G_CATPI)
+    measured_at = ii.model_positions(t)
+    served_rows = ii.protvar_served_rows(t)
+    heterodimers = ii.afdb_heterodimers(t)
+    afdb_queried = ii.afdb_queried(t)
+
+    def measure_new(folder_name, key, data, want):
+        """Measure positions the tables do not have, in a model downloaded now; cached in topup/folder_name/key.json."""
+        dest = topup / folder_name / f'{key}.json'
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        if dest.exists():
+            return json.loads(dest.read_text()).get('chains', {})
+        raw = data() if callable(data) else data
+        res = {}
+        if raw:
+            chains = parse_model_chains(raw.decode('utf-8', 'replace'))
+            for ch, (acc, pos) in want.items():
+                m = measure_methyl_r(chains, ch, pos)
+                if m:
+                    res[ch] = {str(k): v for k, v in m.items()}
+        dest.write_text(json.dumps({'served': bool(raw), 'chains': res, 'positions': {ch: [acc, pos] for ch, (acc, pos) in want.items()}}))
+        return res
+
+    def measure_protvar_models_(cache, refresh, workers, sites_by_acc):
+        jobs = []
+        for r in served_rows:
+            a, b = r['uniprot_id1'], r['uniprot_id2']
+            if '-' in a or '-' in b or a == b:
+                continue
+            sc = float(r['pdockq'])
+            if sc < GALLERY_PDOCKQ:
+                continue
+            want, new = {}, {}
+            for acc, ch, col in ((a, r['chain1'] or 'A', 'ifresid1_ranges'), (b, r['chain2'] or 'B', 'ifresid2_ranges')):
+                near = sites_by_acc.get(acc, set()) & ii.expand(r[col])
+                if near:
+                    want[ch] = (acc, sorted(near))
+                    fresh = sorted(near - measured_sites.get(acc, set()) - measured_at.get(('ProtVar', f'{a}_{b}', acc), set()))
+                    if fresh:
+                        new[ch] = (acc, fresh)
+            if want:
+                jobs.append((a, b, sc, want, new))
+        todo = [j for j in jobs if j[4]]
+        log(f'ProtVar served models (pDockQ >= {GALLERY_PDOCKQ}) with a methylarginine at the interface: {len(jobs):,} pairs; '
+            f'{len(todo):,} have positions the tables do not, measured into {topup}')
+        fresh = {}
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            for (a, b, *_), res in zip(todo, pool.map(lambda j: measure_new('protvar_measure', f'{j[0]}_{j[1]}', lambda: get_bytes(PROTVAR_MODEL.format(a=j[0], b=j[1])), j[4]), todo)):
+                fresh[(a, b)] = res
+        out = []
+        for a, b, sc, want, new in jobs:
+            chains = {ch: dict(v) for ch, v in measured.get(('ProtVar', f'{a}_{b}'), {}).items()}
+            for ch, sites in fresh.get((a, b), {}).items():
+                chains.setdefault(ch, {}).update(sites)
+            for ch, sites in chains.items():
+                if ch not in want:
+                    continue
+                acc = want[ch][0]
+                other = b if acc == a else a
+                for pos, m in sites.items():
+                    if int(pos) in want[ch][1]:
+                        out.append({'acc': acc, 'pos': int(pos), 'partner': other, 'src': 0, 'score': sc, 'pdockq': sc, 'm': m, 'ref': 1 if acc == a else 2, 'chain': ch})
+        return out
+    g['measure_protvar_models'] = measure_protvar_models_
+
+    def measure_afdb_complexes_(cache, refresh, workers, sites_by_acc):
+        accs = sorted(sites_by_acc)
+        lists = topup / 'afdb_complex'
+        lists.mkdir(parents=True, exist_ok=True)
+        new_accs = [a for a in accs if a not in afdb_queried]
+
+        def get_list(acc):
+            dest = lists / f'{acc}.json'
+            if not dest.exists():
+                data = get_bytes(AFDB_COMPLEX.format(acc=acc))
+                dest.write_text(data.decode() if data else '[]')
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            list(pool.map(get_list, new_accs))
+        models = {mid: dict(x, scores=(x['iptm'], x['pdockq'])) for mid, x in heterodimers.items()}
+        for acc in new_accs:
+            for x in ii.read_json(lists / f'{acc}.json', []):
+                if isinstance(x, dict) and x.get('assemblyType') == 'Hetero' and set(x.get('taxId') or []) == {9606} and x.get('modelEntityId'):
+                    models.setdefault(x['modelEntityId'], {'accessions': list(x.get('uniprotAccessions') or []), 'chains': [],
+                                                          'scores': (x.get('complexPredictionAccuracy_ipTM'), x.get('complexPredictionAccuracy_pDockQ'))})
+        models = {mid: x for mid, x in models.items() if set(x['accessions']) & set(accs)}
+        preds = topup / 'afdb_prediction'
+        preds.mkdir(parents=True, exist_ok=True)
+
+        def meta_of(mid, x):
+            if x['chains']:
+                return list(zip(x['chains'], x['accessions']))
+            pf = preds / f'{mid}.json'
+            if not pf.exists():
+                data = get_bytes(AFDB_PREDICTION.format(id=mid))
+                pf.write_text(data.decode() if data else '[]')
+            return [(c.get('chainId'), c.get('uniprotAccession')) for c in ii.read_json(pf, [])]
+
+        def job(item):
+            mid, x = item
+            meta = meta_of(mid, x)
+            new = {ch: (acc, sorted(sites_by_acc[acc] - (measured_sites.get(acc, set()) if mid in heterodimers else set())
+                                    - measured_at.get(('AlphaFold DB', mid, acc), set())))
+                   for ch, acc in meta if acc in sites_by_acc}
+            new = {ch: v for ch, v in new.items() if v[1]}
+            if not new:
+                return mid, meta, {}
+
+            def model_bytes():
+                pf = preds / f'{mid}.json'
+                if not pf.exists():
+                    data = get_bytes(AFDB_PREDICTION.format(id=mid))
+                    pf.write_text(data.decode() if data else '[]')
+                info = ii.read_json(pf, [])
+                return get_bytes(info[0]['pdbUrl']) if info and info[0].get('pdbUrl') else None
+            return mid, meta, measure_new('afdb_measure', mid, model_bytes, new)
+        log(f'AlphaFold DB: {len(models):,} human heterodimer models with a methylated protein '
+            f'({len(new_accs):,} proteins not in the tables looked up into {topup})')
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            results = list(pool.map(job, sorted(models.items())))
+        out = []
+        for mid, meta, fresh in results:
+            chains = {ch: dict(v) for ch, v in measured.get(('AlphaFold DB', mid), {}).items()}
+            for ch, sites in fresh.items():
+                chains.setdefault(ch, {}).update(sites)
+            acc_of = dict(meta)
+            iptm, pdockq = models[mid]['scores']
+            for ch, sites in chains.items():
+                acc = acc_of.get(ch)
+                others = [a for c, a in meta if c != ch]
+                if not acc or not others or acc not in sites_by_acc:
+                    continue
+                for pos, m in sites.items():
+                    if int(pos) in sites_by_acc[acc]:
+                        out.append({'acc': acc, 'pos': int(pos), 'partner': others[0], 'src': 1, 'score': iptm, 'pdockq': pdockq,
+                                    'm': m, 'ref': mid, 'chain': ch})
+        return out
+    g['measure_afdb_complexes'] = measure_afdb_complexes_
+
+
+# ----------------------------------------------------------------------------- release tables (--tables-out)
+XL_SOURCE = ['Kramer2014', 'XRNAX', 'RBS-ID', 'pRBS-ID', 'pepR-MS', 'pepR-MS_focused']
+# Categories of the release statistics for the crosslink and IntAct tests.
+XL_TEST = {'rna_xl': 'rna_crosslink', 'rna_xl_single': 'rna_crosslink_single_residue', 'rna_near': 'rna_crosslink_within_3',
+           'rna_rbdmap': 'rbdmap_fragment', 'dna_xl': 'dna_crosslink', 'dna_cand': 'dna_crosslink_or_candidate',
+           'dna_pep': 'dna_crosslinked_peptide', 'dna_bind': 'dna_binding_region', 'rna_xl_nonrg': 'rna_crosslink_outside_rg',
+           'rna_rbdmap_nonrg': 'rbdmap_fragment_outside_rg'}
+INTACT_TEST = {'mutation': 'mutation_changes_interaction', 'peptide': 'binding_region', 'peptide_disordered': 'binding_region_disordered'}
+
+
+def runs(positions):
+    """Consecutive positions as [start, end] runs."""
+    out = []
+    for q in sorted(positions):
+        if out and q == out[-1][1] + 1:
+            out[-1][1] = q
+        else:
+            out.append([q, q])
+    return out
+
+
+def write_release_tables(outdir: Path, d: dict):
+    """The interaction tables of a release, from what main() computed: site_interactions, residue_evidence,
+    protein_partners, complexes, interaction_statistics and protein_interaction_summary (one row per protein: GO
+    binding, partners, complexes). Written in the release's conventions; scripts/build_release.py adds them."""
+    outdir.mkdir(parents=True, exist_ok=True)
+    prots, sites, vocab, gene_of = d['prots'], d['sites'], d['vocab'], d['gene_of']
+    sid = lambda j: f'{prots[sites[j][0]][0]}:R{sites[j][1]}'  # noqa: E731
+    gene = lambda a: (gene_of.get(base_acc(a), '') or '').split(';')[0].strip()  # noqa: E731
+
+    def write(name, header, rows):
+        with open(outdir / name, 'w', encoding='utf-8', newline='') as fh:
+            w = csv.writer(fh, delimiter='\t', lineterminator='\n')
+            w.writerow(header)
+            for r in rows:
+                w.writerow(['true' if v is True else 'false' if v is False else '' if v is None else v for v in r])
+
+    def partner(k, own):
+        if k == -1:
+            return 'rna', '', ''
+        if k == -2:
+            return 'dna', '', ''
+        if k < 0:
+            return 'other', '', ''
+        a = base_acc(vocab[k])
+        return ('self' if a == base_acc(own) else 'protein'), a, gene(a)
+
+    # One row per piece of evidence at a site. counts_as_evidence: the row is one of the website's evidence classes
+    # (the evidence map); interaction_status in the site table then counts only the crosslink, PDB and predicted rows.
+    rows = []
+    for j, key, pdbs in d['iface_detail']:
+        own = prots[sites[j][0]][0]
+        if key in ('RNA', 'DNA'):
+            ev, kind, pa, pg = f'pdb_{key.lower()}', key.lower(), '', ''
+        elif base_acc(key) == base_acc(own):
+            ev, kind, pa, pg = 'pdb_self', 'self', '', ''
+        else:
+            ev, kind, pa, pg = 'pdb_protein', 'protein', base_acc(key), gene(key)
+        rows.append([sid(j), ev, 'at_residue', kind, pa, pg, 'PDBe-KB', '; '.join(pdbs), '', '', f'{len(pdbs)} PDB entries', True])
+    for j, rb, nb, db, fb, single in d['xl_rows']:
+        for k, src in enumerate(XL_SOURCE):
+            if rb >> k & 1:
+                rows.append([sid(j), 'rna_crosslink', 'at_residue' if single else 'candidate_residue', 'rna', '', '', src, '', '', '', '', True])
+            elif not rb and nb >> k & 1:
+                rows.append([sid(j), 'rna_crosslink', 'within_3', 'rna', '', '', src, '', '', '', 'a crosslinked residue within 3 residues', False])
+        if fb:
+            rows.append([sid(j), 'rbdmap_fragment', 'in_fragment', 'rna', '', '', 'RBDmap', '', '', '', '', True])
+        if db & D_XL:
+            rows.append([sid(j), 'dna_crosslink', 'at_residue', 'dna', '', '', 'Trendel2025', '', '', '', '', True])
+        if db & D_CAND:
+            rows.append([sid(j), 'dna_crosslink', 'candidate_residue', 'dna', '', '', 'Trendel2025', '', '', '', '', True])
+        if db & D_PEP:
+            rows.append([sid(j), 'dna_crosslink', 'in_peptide', 'dna', '', '', 'Trendel2025', '', '', '', 'inside a DNA-crosslinked peptide', False])
+        if db & D_BIND:
+            rows.append([sid(j), 'dna_binding_region', 'in_region', 'dna', '', '', 'UniProt', '', '', '', '', False])
+    for j, hits in d['pred_all']:
+        own = prots[sites[j][0]][0]
+        for k, score, first, served in hits:
+            kind, pa, pg = partner(k, own)
+            rows.append([sid(j), 'predicted_interface', 'at_residue', kind, pa, pg, 'ProtVar', '', f'{score / 100:.2f}', '',
+                         'model served by ProtVar' if served else '', True])
+    for g in d['gallery']:
+        j, k, src, score, pdockq, pl_r, pl_p, dmin, flags, labels, ref, chain = g
+        own = prots[sites[j][0]][0]
+        kind, pa, pg = partner(k, own)
+        bonds = ', '.join(n for bit, n in ((G_SB, 'salt bridge'), (G_HB, 'hydrogen bond'), (G_CATPI, 'cation-pi'), (G_CLASH, 'clash')) if flags & bit)
+        confident = not flags & G_CLASH and (src == 0 or (score or 0) >= 80) and (pl_r or 0) >= 80 and (pl_p or 0) >= 80 and bool(flags & (G_SB | G_HB))
+        model = (f'{base_acc(own)}_{pa}' if ref == 1 else f'{pa}_{base_acc(own)}') if src == 0 else ref
+        rows.append([sid(j), 'predicted_contact', 'at_residue', kind, pa, pg, 'ProtVar' if src == 0 else 'AFDB', model,
+                     f'{(score or 0) / 100:.2f}', f'{dmin / 10:.1f}',
+                     '. '.join(x for x in (bonds.capitalize(), f'pLDDT {pl_r} (arginine), {pl_p} (partner)', 'Partner residues ' + ', '.join(labels)) if x), confident])
+    for j, recs in d['intact_rows']:
+        own = prots[sites[j][0]][0]
+        for kind_, code, a, b, res, pk, pmids, acs, n in recs:
+            ev = ('intact_mutation', 'intact_binding_region', 'intact_methylated')[kind_]
+            what = (INTACT_EFFECTS[code] if kind_ == 0 else INTACT_REGIONS[code] if kind_ == 1 else 'methylated arginine')
+            detail = f'{what}, residues {a}-{b}' + (f' to {res}' if res else '') + (f', PubMed {", ".join(map(str, pmids))}' if pmids else '') + f', IntAct {", ".join(acs)}'
+            counted = (1 <= code <= 4) if kind_ == 0 else True
+            for k in (pk or [None]):
+                kind, pa, pg = partner(k, own) if k is not None else ('', '', '')
+                rows.append([sid(j), ev, 'in_region' if a != b else 'at_residue', kind, pa, pg, 'IntAct', '', '', '', detail, counted])
+    order = {e: k for k, e in enumerate(SITE_EVIDENCE)}
+    site_order = {sid(j): j for j in range(len(sites))}
+    rows.sort(key=lambda r: (site_order[r[0]], order[r[1]], r[2], r[6], r[4], r[7]))
+    write('site_interactions.tsv', ['site_id', 'evidence_type', 'localisation', 'partner_kind', 'partner_accession', 'partner_gene',
+                                    'source', 'structures', 'score', 'distance_a', 'detail', 'counts_as_evidence'], rows)
+
+    # Evidence along each protein, as runs of consecutive residues
+    rows = []
+    for acc, res in d['iface_residues'].items():
+        by_type = defaultdict(dict)
+        for pos, keys in res.items():
+            for key in keys:
+                t = 'pdb_rna' if key == 'RNA' else 'pdb_dna' if key == 'DNA' else 'pdb_self' if base_acc(key) == base_acc(acc) else 'pdb_protein'
+                by_type[t].setdefault(pos, set()).add(key)
+        for t, at in by_type.items():
+            for a, b in runs(at):
+                rows.append([acc, a, b, t, 'at_residue', max(len(at[q]) for q in range(a, b + 1)) if t == 'pdb_protein' else '', '', 'PDBe-KB'])
+    for acc, rs in d['pred_iface'].items():
+        for a, b, n, q in rs:
+            rows.append([acc, a, b, 'predicted_interface', 'at_residue', n, f'{q / 100:.2f}', 'ProtVar'])
+    for i, r_pos, r_bits, d_xl, d_peps, d_bind, _in_int, frags, d_cand in d['xl_prot']:
+        acc = prots[i][0]
+        for q, bits in zip(r_pos, r_bits):
+            rows.append([acc, q, q, 'rna_crosslink', 'at_residue', '', '', '; '.join(src for k, src in enumerate(XL_SOURCE) if bits >> k & 1)])
+        for q in d_xl:
+            rows.append([acc, q, q, 'dna_crosslink', 'at_residue', '', '', 'Trendel2025'])
+        for q in d_cand:
+            rows.append([acc, q, q, 'dna_crosslink', 'candidate_residue', '', '', 'Trendel2025'])
+        for a, b in d_peps:
+            rows.append([acc, a, b, 'dna_crosslink', 'in_peptide', '', '', 'Trendel2025'])
+        for a, b in d_bind:
+            rows.append([acc, a, b, 'dna_binding_region', 'in_region', '', '', 'UniProt'])
+        for a, b in frags:
+            rows.append([acc, a, b, 'rbdmap_fragment', 'in_fragment', '', '', 'RBDmap'])
+    for i, regions, muts in d['intact_prot']:
+        acc = prots[i][0]
+        for a, b, bits, _ps, n, _rec in regions:
+            rows.append([acc, a, b, 'intact_binding_region', 'in_region', n, '', 'IntAct'])
+        for a, b, code, _ps, n, _rec in muts:
+            rows.append([acc, a, b, 'intact_mutation', 'in_region' if a != b else 'at_residue', n, '', 'IntAct'])
+    rows.sort(key=lambda r: (r[0], r[1], r[2], order[r[3]], r[4]))
+    write('residue_evidence.tsv', ['uniprot_accession', 'start', 'end', 'evidence_type', 'localisation', 'n_partners', 'best_score', 'sources'], rows)
+
+    # STRING partners of each methylated protein
+    rows = []
+    for i, lst in sorted(d['partners'].items()):
+        own = prots[i][0]
+        for k, sc in sorted(lst, key=lambda x: (-x[1], vocab[x[0]])):
+            a = base_acc(vocab[k])
+            classes = [c for c, ok in (('prmt', gene(a) in PRMT_GENES), ('tudor', a in d['domain_classes']['tudor']),
+                                       ('wd40', a in d['domain_classes']['wd40']), ('phd', a in d['domain_classes']['phd'])) if ok]
+            rows.append([own, a, gene(a), f'{sc / 1000:.3f}', a in d['meth_base'], '; '.join(classes)])
+    write('protein_partners.tsv', ['uniprot_accession', 'partner_accession', 'partner_gene', 'string_score', 'partner_methylated', 'partner_classes'], rows)
+
+    # Complexes with a methylated member (Complex Portal curated, hu.MAP predicted)
+    rows, n_cx = [], Counter()
+    for cid, name, predicted, slots, n, k, fold, p, q in d['complexes']:
+        methylated = sorted({a for s in slots for a in s if a in d['meth_base']})
+        n_cx.update(methylated)
+        rows.append([cid, '' if name in ('', '-') else name, 'predicted' if predicted else 'curated', n, k, '; '.join(methylated),
+                     f'{fold:.4g}', f'{p:.4g}', f'{q:.4g}'])
+    write('complexes.tsv', ['complex_id', 'complex_name', 'curation', 'n_members', 'n_members_methylated', 'methylated_members',
+                            'fold_enrichment', 'p', 'q'], rows)
+
+    # Statistics, in the columns of the release's statistics table. Pooled Fisher (Haldane-Anscombe odds ratio) and,
+    # for the within-protein tests, Mantel-Haenszel with each protein as a stratum; q within each analysis and method.
+    st = []
+    for an, cat, stratum, tabs, background in d['tests']:
+        a, b, c, dd = (sum(t[k] for t in tabs) for k in range(4))
+        if not a + b + c + dd:
+            continue
+        p, odds = fisher_2x2(a, b, c, dd)
+        st.append([an, cat, stratum, a, b, c, dd, odds, math.log2(odds), p, None, 'fisher', background, None])
+        if len(tabs) > 1:
+            mh_or, mh_p, used = mantel_haenszel(tabs)
+            ok = mh_or is not None and math.isfinite(mh_or) and mh_or > 0
+            st.append([an, cat, stratum, a, b, c, dd, mh_or if ok else None, math.log2(mh_or) if ok else None, mh_p,
+                       None, 'mantel_haenszel', background + ', each protein a stratum', used])
+    for key in dict.fromkeys((r[0], r[11]) for r in st):
+        idx = [k for k, r in enumerate(st) if (r[0], r[11]) == key and r[9] is not None]
+        for k, q in zip(idx, bh([st[k][9] for k in idx])):
+            st[k][10] = q
+    fmt = lambda x: '' if x is None else f'{x:.6g}' if isinstance(x, float) else x  # noqa: E731
+    write('interaction_statistics.tsv', ['analysis', 'category', 'stratum', 'a', 'b', 'c', 'd', 'odds_ratio', 'log2_odds_ratio', 'p', 'q',
+                                         'method', 'background', 'n_strata'], [[fmt(x) for x in r] for r in st])
+
+    # One row per methylated protein
+    rows = []
+    for i, p in enumerate(prots):
+        a = base_acc(p[0])
+        go_ = d['go'].get(a)
+        lvl = lambda key: ('experimental' if go_[key] & GO_EXPERIMENTAL else 'other_evidence' if go_[key] else 'none') if go_ else 'none'  # noqa: E731
+        lst = d['partners'].get(i, [])
+        rows.append([p[0], lvl('rna'), lvl('dna'), len(lst), sum(1 for k, _ in lst if base_acc(vocab[k]) in d['meth_base']), n_cx.get(a, 0)])
+    write('protein_interaction_summary.tsv', ['uniprot_accession', 'go_rna_binding', 'go_dna_binding', 'n_string_partners',
+                                              'n_partners_methylated', 'n_complexes'], rows)
+    log(f'wrote the release interaction tables to {outdir}')
+
+
+SITE_EVIDENCE = ['rna_crosslink', 'rbdmap_fragment', 'dna_crosslink', 'dna_binding_region', 'pdb_protein', 'pdb_rna', 'pdb_dna',
+                 'pdb_self', 'predicted_interface', 'predicted_contact', 'intact_mutation', 'intact_binding_region', 'intact_methylated']
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--sites-json', default='docs/data/methylarg_sites.json')
@@ -1374,8 +1785,20 @@ def main():
     ap.add_argument('--controls-per-protein', type=int, default=12, help='non-methylated interface arginines sampled per protein for the geometry comparison')
     ap.add_argument('--fetch-models-only', action='store_true', help='only measure methylarginines in predicted complex models (ProtVar, AlphaFold DB)')
     ap.add_argument('--model-workers', type=int, default=8, help='parallel model downloads for the predicted-contact gallery')
+    ap.add_argument('--tables', default='', help='read the frozen tables in this folder (inputs/interactions) instead of --cache')
+    ap.add_argument('--topup-cache', default='PTM_data/interactions_topup',
+                    help='with --tables: where to save what the tables do not cover (scripts/interaction_inputs.py topup_tables stages it)')
+    ap.add_argument('--measured-sites', default='releases/v1.0.0/human_methylarginine_sites_v1.0.0.tsv',
+                    help='with --tables: the sites the frozen model measurements were made at (the published union)')
+    ap.add_argument('--tables-out', default='', help='also write the interaction tables of a release into this folder')
     args = ap.parse_args()
     cache = Path(args.cache)
+    if args.tables:
+        measured_sites = defaultdict(set)
+        with open(args.measured_sites, encoding='utf-8') as fh:
+            for r in csv.DictReader(fh, delimiter='\t'):
+                measured_sites[r['uniprot_accession']].add(int(r['position']))
+        use_frozen_tables(Path(args.tables), Path(args.topup_cache), measured_sites)
 
     explorer = json.loads(Path(args.sites_json).read_text())
     prots, sites = explorer['proteins'], explorer['sites']
@@ -1453,7 +1876,7 @@ def main():
     # Complexes: membership, methylated share and enrichment against the reviewed proteome.
     N = len(proteome)
     K = sum(1 for a in proteome if a in meth_base)
-    cx_rows, cx_p = [], []
+    cx_rows, cx_p, cx_release = [], [], []
     for c in complexes:
         slots = [[a for a in s if a in proteome] or s for s in c['slots']]
         n = len(slots)
@@ -1462,11 +1885,13 @@ def main():
             # Tested for the BH correction, but only complexes with a methylated member are exported.
             cx_p.append(hypergeom_sf(0, N, K, n) if n >= 2 else 1.0)
             cx_rows.append(None)
+            cx_release.append(None)
             continue
         members = [vid(s[0]) if len(s) == 1 else [vid(a) for a in s] for s in slots]
         p = hypergeom_sf(k, N, K, n) if n >= 2 else 1.0
         fold = (k / n) / (K / N) if n else 0
         cx_rows.append([c['id'], c['name'], int(c['predicted']), members, n, k, sig(fold), sig(p)])
+        cx_release.append([c['id'], c['name'], bool(c['predicted']), slots, n, k, fold, p])
         cx_p.append(p)
     kinds = [int(c['predicted']) for c in complexes]
     for kind in (0, 1):
@@ -1474,8 +1899,10 @@ def main():
         for i, q in zip(idx, bh([cx_p[i] for i in idx])):
             if cx_rows[i] is not None:
                 cx_rows[i].append(sig(q))
+                cx_release[i].append(q)
     n_curated, n_predicted = kinds.count(0), kinds.count(1)
     cx_rows = [r for r in cx_rows if r is not None]
+    cx_release = [r for r in cx_release if r is not None]
 
     # Interfaces at methylarginine sites, plus all-arginine counts for the enrichment test.
     site_rows = []
@@ -1492,6 +1919,9 @@ def main():
     by_prot_sites = defaultdict(list)
     for j, s in enumerate(sites):
         by_prot_sites[s[0]].append(j)
+    iface_detail = []      # (site j, partner key, PDB entries) for the release tables
+    release_tests = []     # (analysis, category, stratum, per-protein 2x2 tables, background) for the release statistics
+    iface_residues = {}    # accession -> {position: {partner key: PDB entries}}
     for i, acc in enumerate(meth_accs):
         data = ifaces.get(acc)
         if not data:
@@ -1519,10 +1949,13 @@ def main():
             return m
 
         site_pos = {sites[j][1]: j for j in by_prot_sites[i]}
+        iface_residues[acc] = res_partners
         for pos, j in site_pos.items():
             hit = res_partners.get(pos)
             if not hit:
                 continue
+            for key, ids in hit.items():
+                iface_detail.append((j, key, sorted(ids)))
             plist, pdbs = [], set()
             for key, ids in hit.items():
                 plist.append(-1 if key == 'RNA' else -2 if key == 'DNA' else vid(key))
@@ -1585,6 +2018,7 @@ def main():
         enrich_strata[key] = {}
         for f in STRATA:
             tabs = list(strata[(key, f)].values())
+            release_tests.append(('pdb_interface', key, f, tabs, 'other arginines of the same proteins observed in a PDB structure'))
             a, b, c, d = (sum(t[k] for t in tabs) for k in range(4))
             p, odds = fisher_2x2(a, b, c, d) if a + b + c + d else (None, None)
             mh_or, mh_p, used = mantel_haenszel(tabs)
@@ -1711,7 +2145,7 @@ def main():
         a, b = (acc, other) if first else (other, acc)
         return 1 if (a, b) in served else 2 if (b, a) in served else 0
 
-    pred_rows = []
+    pred_rows, pred_all = [], []
     pred_strata = {(t, f): defaultdict(lambda: [0, 0, 0, 0]) for t in PRED_TIERS for f in ('all', 'ordered', 'disordered')}
     for i, acc in enumerate(meth_accs):
         if '-' in acc or acc not in pred:
@@ -1722,6 +2156,7 @@ def main():
             hits = sorted(((vid(o), round(sc * 100), int(first), model_order(acc, o, first)) for o, sc, pos_r, _, first in pairs if pos in pos_r), key=lambda h: -h[1])
             if hits:
                 pred_rows.append([j, [list(h) for h in hits[:12]], len(hits)])
+                pred_all.append((j, hits))
         seq = proteome.get(acc, ('', '', ''))[2]
         if not seq:
             continue
@@ -1745,6 +2180,7 @@ def main():
         pred_enrich[str(t)] = {}
         for f in ('all', 'ordered', 'disordered'):
             tabs = list(pred_strata[(t, f)].values())
+            release_tests.append(('predicted_interface', f'pdockq_{t}', f, tabs, 'other arginines of the same proteins'))
             a, b, c, d = (sum(x[k] for x in tabs) for k in range(4))
             p, odds = fisher_2x2(a, b, c, d) if a + b + c + d else (None, None)
             mh_or, mh_p, used = mantel_haenszel(tabs)
@@ -1800,8 +2236,8 @@ def main():
         at_site, regions, muts = defaultdict(dict), {}, {}
         r_effect = defaultdict(set)       # arginine -> effects of single-residue mutations there
         peptide_spans = []
-        for kind, code, a, b, res, partners, pmid, ac in intact[acc]:
-            pk = tuple(sorted({intact_partner(x) for x in partners}))
+        for kind, code, a, b, res, participants, pmid, ac in intact[acc]:
+            pk = tuple(sorted({intact_partner(x) for x in participants}))
             span = b - a + 1
             if kind == 1:
                 r = regions.setdefault((a, b), [0, set(), 0])
@@ -1844,6 +2280,9 @@ def main():
                 if any(a <= q <= b for a, b in dis):
                     intact_strata['peptide_disordered'][acc][row + inside] += 1
     intact_enrich = {k: or_summary(v.values()) for k, v in intact_strata.items()}
+    for k, v in intact_strata.items():
+        release_tests.append(('intact', INTACT_TEST[k], 'all', list(v.values()),
+                              'other arginines of the same proteins' + (' with an IntAct mutation' if k == 'mutation' else ' with an IntAct binding region')))
     log(f'IntAct: {len(intact_rows):,} methylated sites with residue-level features on {len(intact_prot):,} proteins; '
         + ', '.join(f'{k} MH OR {v["mh"][0]} (p {v["mh"][3]})' for k, v in intact_enrich.items()))
 
@@ -1901,6 +2340,7 @@ def main():
                           'mh': [sig(math.log2(mh_or)) if mh_or and math.isfinite(mh_or) else None, sig(mh_p), used], 'proteins': len(tabs)}
     for key, tabs in xl_strata.items():
         xl_enrich[key]['or'] = or_summary(tabs.values())
+        release_tests.append(('crosslink', XL_TEST[key], 'all', list(tabs.values()), 'other arginines of the same proteins (proteins with that evidence)'))
 
     # By methylation type: each class of methylated arginine vs the unmethylated arginines (not in the union) of the
     # same proteins. Maron IP classes come from methyl-specific immunoprecipitation; state calls from the sources.
@@ -2098,6 +2538,8 @@ def main():
                 c, d = c + has, d + (not has)
         p, odds = fisher_2x2(a, b, c, d)
         go_enrich[key] = [a, a + b, c, c + d, sig(math.log2(odds)), sig(p)]
+        release_tests.append(('go_binding', key.replace('_exp', '') + '_binding' + ('_experimental' if key.endswith('_exp') else ''), 'all',
+                              [[a, b, c, d]], 'other reviewed human proteins'))
 
     # STRING ids (numeric ENSP part) let the browser ask STRING for edges among a protein's partners.
     def ensp(acc):
@@ -2215,6 +2657,12 @@ def main():
         'prot': pred_iface}, separators=(',', ':')))
     log(f'wrote {args.pred_iface_out}: predicted interface runs for {len(pred_iface):,} proteins '
         f'({Path(args.pred_iface_out).stat().st_size / 1e6:.2f} MB)')
+    if args.tables_out:
+        write_release_tables(Path(args.tables_out), {
+            'prots': prots, 'sites': sites, 'vocab': vocab, 'gene_of': gene_of, 'iface_detail': iface_detail, 'xl_rows': xl_rows,
+            'pred_all': pred_all, 'gallery': gallery, 'intact_rows': intact_rows, 'partners': partners, 'domain_classes': domain_classes,
+            'meth_base': meth_base, 'cx_rows': cx_rows, 'iface_residues': iface_residues, 'pred_iface': pred_iface, 'xl_prot': xl_prot,
+            'intact_prot': intact_prot, 'tests': release_tests, 'complexes': cx_release, 'go': go})
     log(f'wrote {args.out}: {len(vocab):,} proteins, {sum(len(r) // 2 for r in string_rows):,} partner links, '
         f'{len(cx_rows):,} complexes with methylated members, {len(site_rows):,} sites at PDB interfaces '
         f'({Path(args.out).stat().st_size / 1e6:.2f} MB)')

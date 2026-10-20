@@ -7,7 +7,8 @@ One sheet with the same rows and columns as the TSV, as an Excel table (filters,
 - the header and the first two columns stay in view;
 - integer columns are numbers, accessions link to UniProt, and sequence windows are in a fixed-width font with the
   site's arginine in bold red;
-- every other row is shaded grey and pending sites orange (by formula, so the shading follows sorting and filtering).
+- every other row is shaded grey, and sites kept pending (flag one_sided_window) orange, by formula, so the shading
+  follows sorting and filtering.
 
 The file's internal times are fixed, so the same table always gives the same bytes.
 """
@@ -109,8 +110,8 @@ def write(path, sites: pd.DataFrame, columns: list[tuple] | None = None, title: 
     # Row shading by formula, so it follows the rows when the table is sorted or filtered: pending sites in orange,
     # every other row in light grey.
     rows = f'A2:{last_col}{last_row}'
-    if 'status' in letter:
-        ws.conditional_formatting.add(rows, FormulaRule(formula=[f'${letter["status"]}2="pending"'], stopIfTrue=True,
+    if 'flags' in letter:
+        ws.conditional_formatting.add(rows, FormulaRule(formula=[f'ISNUMBER(SEARCH("one_sided_window",${letter["flags"]}2))'], stopIfTrue=True,
                                                         fill=PatternFill('solid', fgColor='FDEBD3', bgColor='FDEBD3')))
     ws.conditional_formatting.add(rows, FormulaRule(formula=['MOD(ROW(),2)=0'],
                                                     fill=PatternFill('solid', fgColor='EEF3F5', bgColor='EEF3F5')))

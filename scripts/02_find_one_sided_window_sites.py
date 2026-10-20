@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""List the sites a release includes pending a policy decision: windows that cross a splice junction.
+"""List the sites a release keeps pending a policy decision: windows that match the entry on one side of the site only.
 
 scripts/02_remap_arg_methyl_to_canonical.py leaves a window record unplaced when its window does not match the entry
 at the reported arginine. Some of these windows match one full flank (at least 6 residues) and the site exactly, and
-the other flank not at all, and no other reviewed entry holds the window: the source peptide spans an exon junction
-of another isoform. The release keeps these sites, flagged pending_splice_junction, until the policy is decided.
+the other flank not at all, and no other reviewed entry holds the window. Some are windows of another isoform of the
+protein (a different exon after the site). The release keeps these sites, flagged one_sided_window, until the policy
+is decided.
 
-    python scripts/02_find_junction_window_sites.py --results-root WORK --fasta inputs/reference/....fasta
+    python scripts/02_find_one_sided_window_sites.py --results-root WORK --fasta inputs/reference/....fasta
 
-Writes WORK/integrated/pending_junction_sites.tsv: one row per site (accession, position) with the source records
+Writes WORK/integrated/pending_one_sided_window_sites.tsv: one row per site (accession, position) with the source records
 (record_id = row number of remapped/human_arg_methyl_source_rows_with_remap.tsv, from 1).
 """
 from __future__ import annotations
@@ -34,7 +35,7 @@ remap = load_script('remap', '02_remap_arg_methyl_to_canonical.py')
 MIN_FLANK = 6
 
 
-def junction_sites(typed: pd.DataFrame, reference: dict, union_keys: set) -> dict[tuple[str, int], list[int]]:
+def one_sided_window_sites(typed: pd.DataFrame, reference: dict, union_keys: set) -> dict[tuple[str, int], list[int]]:
     proteome = remap.ProteomeIndex(reference)
     out: dict[tuple[str, int], list[int]] = defaultdict(list)
     for i in typed.index[typed['remap_status'] == 'unresolved_evidence_mismatch']:
@@ -75,10 +76,10 @@ def main() -> None:
     typed = remap.annotate_window_lengths(typed) if 'seq_window_window_length' not in typed else typed
     union = pd.read_csv(root / 'integrated' / 'human_arg_methyl_union_dedup_by_site.tsv', sep='\t', low_memory=False)
     union_keys = {(a, int(float(p))) for a, p in zip(union['canonical_UniProtAC'], union['corrected_position'])}
-    found = junction_sites(typed, reference, union_keys)
+    found = one_sided_window_sites(typed, reference, union_keys)
     table = pd.DataFrame([{'canonical_UniProtAC': a, 'position': p, 'record_ids': '; '.join(str(i + 1) for i in ids)}
                           for (a, p), ids in sorted(found.items())], columns=['canonical_UniProtAC', 'position', 'record_ids'])
-    table.to_csv(root / 'integrated' / 'pending_junction_sites.tsv', sep='\t', index=False, lineterminator='\n')
+    table.to_csv(root / 'integrated' / 'pending_one_sided_window_sites.tsv', sep='\t', index=False, lineterminator='\n')
     print(f'{len(table)} pending sites from {sum(len(v) for v in found.values())} records')
 
 

@@ -21,6 +21,7 @@ Dates are the cache file dates (the day each download was saved). Conventions: U
 lists joined with "; ", booleans true/false, empty for missing.
 
     python scripts/37a_stage_interactions.py --cache PTM_data/interactions_cache --out inputs/interactions
+    python scripts/37a_stage_interactions.py --topup PTM_data/interactions_topup --out inputs/interactions
 """
 from __future__ import annotations
 
@@ -315,6 +316,11 @@ def stage_complexes(w: Writer, c: Path):
 
 # ----------------------------------------------------------------------------- PDBe-KB and SIFTS
 def stage_pdbe(w: Writer, c: Path, reviewed: set):
+    stage_pdbe_interfaces(w, c)
+    stage_sifts(w, c, reviewed)
+
+
+def stage_pdbe_interfaces(w: Writer, c: Path):
     folder = c / 'pdbe_interfaces'
     files = sorted(folder.glob('*.json'))
     rows, queries = [], []
@@ -362,6 +368,8 @@ def stage_pdbe(w: Writer, c: Path, reviewed: set):
             licence='EMBL-EBI terms of use', how='scripts/37a_stage_interactions.py stage_pdbe',
             derived=[f'pdbe_interfaces/<accession>.json ({len(files):,} files)'])
 
+
+def stage_sifts(w: Writer, c: Path, reviewed: set):
     path = c / Path(x37.SIFTS_OBSERVED).name
     obs = defaultdict(list)
     with x37.open_text(path) as fh:
@@ -548,12 +556,14 @@ def stage_protvar(w: Writer, c: Path):
                 derived=[path.name], redistribution='git')
 
 
-def stage_model_contacts(w: Writer, c: Path):
+def stage_model_contacts(w: Writer, c: Path, served: Path | None = None, measured: str = 'the methylarginines of the published union'):
+    """served: the ProtVar served-models list (default: the raw download in the cache, else a staged table with the same
+    uniprot_id1, uniprot_id2, chain1 and chain2 columns); measured: whose positions were measured, for the MANIFEST."""
     flags = lambda f: [bool(f & x37.G_CLASH), bool(f & x37.G_SB), bool(f & x37.G_HB), bool(f & x37.G_CATPI)]
     rows, files = [], []
     # ProtVar: the chain of each accession comes from the served-models table, as in scripts/37.
     chain_of = {}
-    with x37.open_text(c / Path(x37.PROTVAR_SERVED).name) as fh:
+    with x37.open_text(served or c / Path(x37.PROTVAR_SERVED).name) as fh:
         r = csv.reader(fh, delimiter='\t')
         ix = {h: k for k, h in enumerate(next(r))}
         for row in r:
@@ -588,13 +598,15 @@ def stage_model_contacts(w: Writer, c: Path):
                     'AlphaFold DB human heterodimers): arginines within 5 Å of the partner, the closest distance, bonds (salt bridge to '
                     'Asp/Glu carboxylate O <= 4 Å, hydrogen bond to an acceptor O or His ND1/NE2 <= 3.5 Å, cation-pi to an aromatic ring '
                     '<= 5 Å), a clash (< 2.2 Å), pLDDT, and the partner residues named as chain:residue:bonds; measured at the positions of '
-                    f'the methylarginines of the published union; {not_served:,} ProtVar pairs listed as served returned no model',
+                    f'{measured}; {not_served:,} ProtVar pairs listed as served returned no model',
             source=f'{x37.PROTVAR_MODEL}; {x37.AFDB_PREDICTION}', version=f'models read {d}',
             citation='Stephenson et al., Nucleic Acids Res 52:W140 (2024); Han et al., bioRxiv (2026), doi:10.64898/2026.03.27.714458',
             licence='CC BY 4.0', how='scripts/37 measure_protvar_models and measure_afdb_complexes (measure_methyl_r); collected here',
             derived=[f'protvar_measure/ and afdb_measure/ ({len(files):,} files)'])
 
     lists = sorted((c / 'afdb_complex').glob('*.json'))
+    if not lists:
+        return
     het, queries = {}, []
     for p in lists:
         try:
@@ -855,16 +867,74 @@ def list_cache(c: Path, out: Path):
     print(f'raw_cache_files.tsv: {len(rows):,} files, {sum(r[1] for r in rows) / 1e6:.0f} MB')
 
 
+def stage_measured_positions(w: Writer, c: Path):
+    """Which positions the top-up measured in each predicted model (the contacts table lists only those near the partner)."""
+    rows, files = [], []
+    for source, folder in (('ProtVar', 'protvar_measure'), ('AlphaFold DB', 'afdb_measure')):
+        for p in sorted((c / folder).glob('*.json')):
+            files.append(p)
+            for ch, (acc, positions) in sorted(json.loads(p.read_text()).get('positions', {}).items()):
+                rows.append([source, p.stem, ch, acc, sorted(positions)])
+    d = dates_of(files)
+    w.table(f'predicted_model_measured_positions_{d[:10]}.tsv', ['source', 'model', 'chain', 'uniprot_accession', 'positions'], rows,
+            content='The methylarginine positions measured in each predicted model by the top-up (predicted_model_arginine_contacts '
+                    'lists only those within 5 Å of the partner), so scripts/37 --tables does not measure them again',
+            source=f'{x37.PROTVAR_MODEL}; {x37.AFDB_PREDICTION}', version=f'models read {d}', citation='', licence='CC BY 4.0',
+            how='scripts/37a_stage_interactions.py stage_measured_positions', derived=[f'protvar_measure/ and afdb_measure/ ({len(files):,} files)'])
+
+
+def stage_topup(c: Path, out: Path, workers: int, manifest: Path, measured: str):
+    """What scripts/37 --tables fetched into its top-up cache (proteins and sites the frozen tables do not cover), as dated
+    tables next to the frozen ones; scripts/37 --tables reads every dated table of a kind. Adds their rows to the
+    inputs MANIFEST and lists the fetched files in raw_topup_files_DATE.tsv."""
+    w = Writer(out, c)
+    if (c / 'pdbe_interfaces').is_dir():
+        stage_pdbe_interfaces(w, c)
+    if (c / 'contacts_seqres').is_dir():
+        stage_contacts(w, c)
+    if (c / 'environments').is_dir():
+        stage_environments(w, c, workers)
+    if any((c / x).is_dir() for x in ('protvar_measure', 'afdb_measure', 'afdb_complex')):
+        stage_model_contacts(w, c, served=out / 'protvar_served_models_af2complexes_v1.tsv', measured=measured)
+        stage_measured_positions(w, c)
+    files = [p for p in sorted(c.rglob('*')) if p.is_file()]
+    raw = out / f'raw_topup_files_{dates_of(files)[:10]}.tsv'
+    with open(raw, 'w', encoding='utf-8', newline='\n') as fh:
+        fh.write('path\tbytes\tmd5\tsaved\n')
+        for p in files:
+            fh.write(f'{p.relative_to(c)}\t{p.stat().st_size}\t{md5_file(p)}\t{file_date(p)}\n')
+    w._add(raw, len(files), f'Every file the top-up fetched ({c.name}/), with its size, MD5 and date', 'the sources above', dates_of(files),
+           '', '', 'scripts/37a_stage_interactions.py --topup', [], 'git')
+    # the inputs MANIFEST has its own column order
+    m = manifest.read_text(encoding='utf-8').splitlines()
+    head = m[0].split('\t')
+    names = {r[0] for r in w.manifest}
+    keep = [line for line in m[1:] if line.split('\t')[0] not in names]
+    for r in w.manifest:
+        rec = dict(zip(MANIFEST_COLUMNS, r))
+        rec['how_made_or_checked'] = rec.pop('how_made')
+        keep.append('\t'.join(cell(rec.get(h, '')) for h in head))
+    manifest.write_text('\n'.join([m[0]] + keep) + '\n', encoding='utf-8')
+    print(f'{len(w.manifest)} rows in {manifest}')
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--cache', default='PTM_data/interactions_cache')
     ap.add_argument('--out', default='inputs/interactions')
+    ap.add_argument('--topup', default='', help='stage only this top-up cache of scripts/37 --tables (e.g. PTM_data/interactions_topup)')
+    ap.add_argument('--manifest', default='inputs/MANIFEST.tsv', help='with --topup: the inputs MANIFEST to add the new tables to')
+    ap.add_argument('--measured', default='the v1.1.0 sites that the published union does not have',
+                    help='with --topup: whose positions the top-up measured, for the MANIFEST')
     ap.add_argument('--workers', type=int, default=4, help='processes for the interface-geometry measures')
     ap.add_argument('--uniprot-release', default='2026_03',
                     help='UniProt release of the cached UniProt downloads, recorded in the MANIFEST (the cache does not store it)')
     ap.add_argument('--reference-fasta', default='inputs/reference/uniprot_human_reviewed_2026_03.fasta',
                     help='reference FASTA whose entries are marked in_reference_proteome (empty: leave the column empty)')
     args = ap.parse_args()
+    if args.topup:
+        stage_topup(Path(args.topup), Path(args.out), args.workers, Path(args.manifest), args.measured)
+        return
     c, out = Path(args.cache), Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     w = Writer(out, c)

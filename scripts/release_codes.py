@@ -48,10 +48,6 @@ SOURCE_TABLES = {
 SOURCE_TABLE_CODE = {raw: code for code, (raw, _) in SOURCE_TABLES.items()}
 
 CODES: dict[str, dict[str, str]] = {
-    'status': {
-        'site': 'a site of the union: at least one source record is placed on it',
-        'pending': 'a site whose only records are windows crossing a splice junction (flag pending_splice_junction). Kept until the policy is decided, and left out of every analysis',
-    },
     'methyl_state': {
         'Rme1': 'monomethylarginine',
         'Rme2': 'dimethylarginine, asymmetric or symmetric not stated',
@@ -111,13 +107,14 @@ CODES: dict[str, dict[str, str]] = {
     },
     'interaction_status': {
         'experimental': 'the site has experimental interaction evidence: an RNA or DNA crosslink at the residue or as a candidate residue, an RBDmap fragment, or a PDB interface',
-        'predicted_only': 'only predicted interface or contact evidence',
-        'none': 'no interaction evidence',
+        'predicted_only': 'only predicted evidence: a predicted interface (ProtVar, pDockQ >= 0.23) or a confident predicted contact (a salt bridge or hydrogen bond, no clash, both residues at pLDDT >= 80, AlphaFold DB models at ipTM >= 0.8)',
+        'none': 'none recorded. Most proteins were never crystallised or crosslinked, so this is not evidence of no interaction. IntAct records do not set the status',
     },
     'evidence_type': {
         'rna_crosslink': 'RNA-protein crosslink (pepR-MS re-analysis of Kramer 2014, XRNAX, RBS-ID, pRBS-ID, pepR-MS focused sites)',
         'rbdmap_fragment': 'inside an RNA-bound proteolytic fragment (RBDmap, Castello et al. 2016)',
         'dna_crosslink': 'DNA-protein crosslink (Trendel et al. 2025)',
+        'dna_binding_region': 'inside a UniProt DNA-binding region (annotation, not evidence of contact)',
         'pdb_protein': 'at a protein-protein interface in the PDB (PDBe-KB)',
         'pdb_rna': 'at a protein-RNA interface in the PDB',
         'pdb_dna': 'at a protein-DNA interface in the PDB',
@@ -128,8 +125,38 @@ CODES: dict[str, dict[str, str]] = {
         'intact_binding_region': 'inside an IntAct binding region',
         'intact_methylated': 'IntAct records the residue as methylated',
     },
+    'localisation': {
+        'at_residue': 'at this residue',
+        'candidate_residue': 'a crosslink whose candidate residues include this one',
+        'within_3': 'a crosslinked residue within 3 residues (not this one)',
+        'in_fragment': 'inside the fragment',
+        'in_peptide': 'inside a crosslinked peptide, residue not localised',
+        'in_region': 'inside the region',
+    },
+    'partner_kind': {
+        'protein': 'another protein (partner_accession)',
+        'self': 'another copy of the same protein',
+        'rna': 'RNA',
+        'dna': 'DNA',
+        'other': 'a small molecule or another participant type (IntAct)',
+    },
+    'go_binding': {
+        'experimental': 'a Gene Ontology annotation with an experimental evidence code',
+        'other_evidence': 'annotated with other evidence codes only',
+        'none': 'no annotation',
+    },
+    'curation': {
+        'curated': 'Complex Portal curated complex',
+        'predicted': 'hu.MAP 3.0 predicted complex (via Complex Portal)',
+    },
+    'partner_class': {
+        'prmt': 'a protein arginine methyltransferase (PRMT1-9)',
+        'tudor': 'has a Tudor domain (InterPro IPR002999)',
+        'wd40': 'has WD40 repeats',
+        'phd': 'has a PHD finger',
+    },
     'flag': {
-        'pending_splice_junction': 'a window crossing a splice junction: one full flank (at least 6 residues) matches the entry at the reported arginine, the other does not, and no other entry holds the window. The pipeline leaves it unplaced and the release keeps it as a pending site',
+        'one_sided_window': "the site's only records are windows that match the entry exactly on one side of the reported arginine (at least 6 residues, the arginine included) and not on the other, and no other reviewed entry holds the window. Some come from another isoform of the protein. The pipeline leaves these records unplaced: the site is kept, and left out of the analyses, until the policy is decided",
         'paralog_window': 'a supporting window matches a paralog exactly and this entry within 2 residues (open, accepted in config/remap_evidence_allowlist.tsv)',
         'near_match_only': 'every supporting record matches the entry within 2 residues, not exactly (a variant or sequence conflict)',
         'shared_sequence': 'residues -15 to +15 occur identically in another reviewed entry (same_window_accessions): histone variants, identical paralogs. The evidence cannot tell them apart: the protein is the one the source named',
@@ -159,7 +186,7 @@ CODES: dict[str, dict[str, str]] = {
         'evidence_mismatch': 'the previous version kept the reported arginine although the source peptide or window does not match the entry there',
         'window_padding': 'the window is padded where it runs off a protein end. The padding now gives the cut side',
         'ambiguous_evidence': 'the evidence supports several sites equally. This version leaves the record unplaced',
-        'pending_splice_junction': 'the site is kept as pending (flag pending_splice_junction)',
+        'one_sided_window': 'the site is kept pending a decision (flag one_sided_window)',
         'reference_renumbered': 'the same residue under a new number: UniProt 2026_03 extends the sequence at the N-terminus (RAB12, +96)',
         'other': 'placement changed for a reason not covered by the codes above',
     },
@@ -214,7 +241,6 @@ CALL_ORDER = list(CODES['call'])
 
 SITE_COLUMNS = [
     ('site_id', 'string', '', 'UniProt accession and arginine position, e.g. P35637:R216'),
-    ('status', 'code', 'status', 'site, or pending'),
     ('uniprot_accession', 'string', '', 'reviewed UniProtKB accession of the canonical sequence'),
     ('uniprot_entry_name', 'string', '', 'UniProtKB entry name'),
     ('gene', 'list<string>', '', 'primary gene name of the UniProt entry (several for a few entries, e.g. histone genes), empty when UniProt gives none'),
@@ -242,7 +268,7 @@ SITE_COLUMNS = [
     ('nearest_domain_class', 'string', '', 'its class in config/domain_class_ontology.json, as scripts/07 assigns it, No domain annotation when none'),
     ('domain_side', 'code', 'domain_side', 'where the site lies relative to the nearest domain, empty when none'),
     ('domain_edge_distance', 'integer', '', 'residues to the nearest domain edge (0 inside a domain), empty when none'),
-    ('interaction_status', 'code', 'interaction_status', 'interaction evidence at the site (site_interactions)'),
+    ('interaction_status', 'code', 'interaction_status', 'interaction evidence at the site (supporting/site_interactions), empty for the sites kept pending'),
     ('interaction_evidence', 'list<code>', 'evidence_type', 'the evidence types at the site, in code order'),
     ('n_studies', 'integer', '', 'number of studies or databases reporting the site'),
     ('studies', 'list<code>', 'study', 'the studies or databases reporting the site, in the order of the studies file, PhosphoSitePlus is PSP, as its terms ask'),
@@ -284,13 +310,14 @@ RECORD_COLUMNS = [
     ('reported_gene', 'string', '', 'gene as reported'),
     ('reported_position', 'string', '', 'position as reported'),
     ('reported_methyl_state', 'string', '', 'methylation state as reported, verbatim'),
+    ('reported_enzyme', 'string', '', 'methyltransferase as reported (PTM master table only)'),
     ('evidence_kind', 'code', 'evidence_kind', 'kind of sequence evidence'),
     ('evidence_sequence', 'list<string>', '', 'the window, peptide or marked peptide, verbatim (a few records give several)'),
     ('placed_site', 'string', '', 'the site this version places the record on, empty when not placed'),
     ('placement_code', 'code', 'placement', 'how the record was placed (scripts/02 remap_status)'),
     ('evidence_check', 'code', 'evidence_check', "independent check of the placement against the record's own evidence (scripts/qc_remap_evidence_check.py)"),
     ('accepted_exception', 'string', '', 'why a contradiction is accepted for now (config/remap_evidence_allowlist.tsv)'),
-    ('pending_site', 'string', '', 'the pending site the record supports (flag pending_splice_junction), empty otherwise'),
+    ('pending_site', 'string', '', 'the site a one-sided window record supports (flag one_sided_window), empty otherwise'),
     ('previous_site', 'string', '', 'the site the previous version placed the record on, in its numbering'),
     ('change_since_previous_version', 'code', 'record_change', 'how the placement changed'),
     ('reason_code', 'code', 'reason', 'why it changed'),
@@ -303,7 +330,7 @@ CHANGE_COLUMNS = [
     ('uniprot_accession', 'string', '', 'accession'),
     ('position', 'integer', '', 'arginine position, in this version\'s numbering when the site is in this version'),
     ('in_previous_version', 'boolean', '', 'a site of the previous version'),
-    ('in_this_version', 'boolean', '', 'a site of this version (status site or pending)'),
+    ('in_this_version', 'boolean', '', 'a site of this version'),
     ('change', 'code', 'site_change', 'kept, removed or added'),
     ('reason_codes', 'list<code>', 'reason', 'why it was removed, added or renumbered'),
     ('records_now_at_or_previously_at', 'list<string>', '', 'for a removed site, where its records are placed now, for an added site, where they were placed before'),
@@ -337,5 +364,206 @@ CARM1_COLUMNS = [
     ('n_peptides', 'integer', '', 'peptides carrying the site'),
     ('log2_ko_over_wt', 'number', '', 'median log2 knockout / parental intensity over the peptides'),
     ('p', 'number', '', 'the lowest p value over the peptides (Shishkova et al. 2017)'),
+    ('n_decreased', 'integer', '', 'peptides at log2 <= -1 and p < 0.05'),
+    ('n_increased', 'integer', '', 'peptides at log2 >= 1 and p < 0.05'),
     ('call', 'code', 'call', 'a peptide decreases at log2 <= -1 and p < 0.05, increases at log2 >= 1 and p < 0.05 (scripts/41), combined over peptides'),
+]
+
+CODES['analysis'] = {
+    'functional_class': 'methylated proteins in a broad functional class (config/functional_ontology.json, scripts/03), against the other reviewed human proteins',
+    'functional_subclass': 'the same for functional subclasses',
+    'motif': 'methylarginines with a sequence motif (scripts/08), against the other arginines of the methylated proteins',
+    'disorder': 'methylarginines in a disorder class (scripts/06), against the other arginines of the methylated proteins',
+    'domain_context': 'methylarginines in a domain context (scripts/05, 07), against the other arginines of the methylated proteins',
+    'domain_class': 'methylarginines whose nearest domain is of a class (scripts/07), against the other arginines of the methylated proteins',
+    'disease_family': 'genes of methylated proteins in a disease family (scripts/14), against the other genes with a DisGeNET term',
+    'condensate': 'methylated proteins among the members of a CD-CODE condensate (scripts/12), against the other condensate proteins',
+    'hpa_location': 'methylated proteins at a Human Protein Atlas location, against the other proteins HPA locates (Approved or better)',
+    'pdb_interface': 'methylarginines at a PDB interface of a kind (category: rna, dna, protein including self, any), against the other arginines of the same proteins that a PDB structure covers (scripts/37). Strata: all, ordered (outside MobiDB disorder), domain (inside an InterPro domain)',
+    'predicted_interface': 'methylarginines at a predicted interface residue (ProtVar, category the pDockQ floor), against the other arginines of the proteins with a predicted interface. Strata: all, ordered, disordered',
+    'crosslink': 'methylarginines with RNA or DNA crosslink evidence of a kind (category), against the other arginines of the proteins with that evidence; the _outside_rg categories leave out arginines in an RG or GR dipeptide',
+    'intact': 'IntAct: methylarginines whose mutation changes an interaction (against other mutated arginines), and methylarginines inside a binding region of at most 20 residues (against the other arginines of proteins with one)',
+    'go_binding': 'methylated proteins with a Gene Ontology RNA- or DNA-binding annotation (category; _experimental: experimental evidence codes only), against the other reviewed human proteins',
+}
+CODES['method'] = {
+    'fisher': 'two-sided Fisher exact test, q = Benjamini-Hochberg within the analysis. The odds ratio adds 0.5 to each cell (Haldane-Anscombe), except for disease families (plain ratio, as scripts/34)',
+    'mantel_haenszel': 'Mantel-Haenszel common odds ratio with each protein a stratum, and the continuity-corrected Cochran-Mantel-Haenszel test (statsmodels); a b c d are the pooled counts. q = Benjamini-Hochberg within the analysis and method',
+}
+CODES['ptm_type'] = {'phospho': 'phosphorylation (S, T, Y)', 'lys_acyl': 'lysine acylation', 'ub_sumo': 'ubiquitination or SUMOylation (K)', 'lys_methyl': 'lysine methylation'}
+
+PROTEIN_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'reviewed UniProtKB accession'),
+    ('uniprot_entry_name', 'string', '', 'UniProtKB entry name'),
+    ('gene', 'list<string>', '', 'primary gene name of the UniProt entry (several for a few entries)'),
+    ('gene_synonyms', 'list<string>', '', 'other gene names UniProt gives the entry (release 2026_03)'),
+    ('reported_genes', 'list<string>', '', 'other gene symbols the source records used, most frequent first'),
+    ('protein_name', 'string', '', 'recommended protein name'),
+    ('protein_length', 'integer', '', 'length of the reference sequence'),
+    ('reference_sequence_md5', 'string', '', 'MD5 of the reference sequence, uppercase hex as UniProt gives it'),
+    ('n_sites', 'integer', '', 'methylarginine sites, not counting the sites kept pending'),
+    ('n_pending', 'integer', '', 'sites kept pending (flag one_sided_window)'),
+    ('studies', 'list<code>', 'study', 'studies or databases reporting its sites, in the order of the studies file'),
+    ('functional_classes', 'list<string>', '', 'broad functional classes (config/functional_ontology.json, scripts/03)'),
+    ('functional_subclasses', 'list<string>', '', 'functional subclasses'),
+    ('arginine_count', 'integer', '', 'arginines in the reference sequence'),
+    ('arg_enrichment_log2', 'number', '', 'shrinkage estimate of the log2 enrichment of methylarginines over the proteome-wide rate (scripts/08)'),
+    ('arg_enrichment_q', 'number', '', 'q value of the per-protein test (scripts/08), empty when not tested'),
+    ('nearest_spacing_min', 'number', '', 'smallest distance in residues from a site to the nearest other site (scripts/10)'),
+    ('nearest_spacing_median', 'number', '', 'median of these distances'),
+    ('max_sites_3aa', 'integer', '', 'most sites in any 3-residue window (scripts/10)'),
+    ('max_sites_5aa', 'integer', '', 'most sites in any 5-residue window'),
+    ('max_sites_10aa', 'integer', '', 'most sites in any 10-residue window'),
+    ('max_sites_20aa', 'integer', '', 'most sites in any 20-residue window'),
+    ('max_sites_50aa', 'integer', '', 'most sites in any 50-residue window'),
+    ('best_window_aa', 'integer', '', 'width of the protein\'s most significant density window: scripts/28 compares the most sites in any window of 5 to 100 residues with a null that places the sites on the protein\'s own arginines at random (1,000 permutations, proteins with at least 3 sites), and this is the window with the lowest q value (then the largest excess)'),
+    ('best_window_start', 'integer', '', 'its first residue'),
+    ('best_window_end', 'integer', '', 'its last residue'),
+    ('best_window_sites', 'integer', '', 'sites in it'),
+    ('best_window_log2_obs_null', 'number', '', 'log2 of observed over null mean sites'),
+    ('best_window_q', 'number', '', 'its q value'),
+    ('n_dense_windows', 'integer', '', 'windows with q <= 0.05 (supporting/density_windows)'),
+    ('architecture_class', 'string', '', 'domain-cluster architecture of the clustered disordered sites (scripts/25: at least 3 sites within 20 residues), empty when none'),
+    ('architecture_clusters', 'list<string>', '', 'the site positions of each cluster, comma-separated'),
+    ('condensates', 'list<string>', '', 'CD-CODE condensates the protein belongs to (CD-CODE ids, export of 2026-03-18, scripts/12)'),
+    ('hpa_locations', 'list<string>', '', 'Human Protein Atlas 25.1 subcellular locations, main locations first (supporting/hpa_locations)'),
+    ('disease_families', 'list<string>', '', 'disease families whose genes include the protein\'s gene (scripts/14)'),
+    ('disease_family_terms', 'list<integer>', '', 'for each of these families, how many of its DisGeNET terms name the gene'),
+    ('als_ftd_family_gene', 'boolean', '', 'the gene is in the ALS / motor neuron / FTD family'),
+    ('n_phospho', 'integer', '', 'phosphorylation sites in the PTM master table (supporting/other_ptm_sites)'),
+    ('n_lys_acyl', 'integer', '', 'lysine acylation sites'),
+    ('n_ub_sumo', 'integer', '', 'ubiquitination or SUMOylation sites'),
+    ('n_lys_methyl', 'integer', '', 'lysine methylation sites'),
+    ('n_sites_experimental', 'integer', '', 'sites with interaction_status experimental'),
+    ('n_sites_predicted_only', 'integer', '', 'sites with interaction_status predicted_only'),
+    ('go_rna_binding', 'code', 'go_binding', 'Gene Ontology RNA binding (GO:0003723 or a child term)'),
+    ('go_dna_binding', 'code', 'go_binding', 'Gene Ontology DNA binding (GO:0003677 or a child term)'),
+    ('n_string_partners', 'integer', '', 'STRING 12.5 physical partners at score >= 0.7 (supporting/protein_partners)'),
+    ('n_partners_methylated', 'integer', '', 'of these, proteins of the site table'),
+    ('n_complexes', 'integer', '', 'Complex Portal and hu.MAP complexes the protein is in (supporting/complexes)'),
+]
+
+STATISTICS_COLUMNS = [
+    ('analysis', 'code', 'analysis', 'what was tested'),
+    ('category', 'string', '', 'the class, motif, family, condensate (CD-CODE id) or location tested'),
+    ('stratum', 'string', '', 'all, or the subset the test is restricted to'),
+    ('a', 'integer', '', 'targets in the category'),
+    ('b', 'integer', '', 'targets not in the category'),
+    ('c', 'integer', '', 'background in the category'),
+    ('d', 'integer', '', 'background not in the category'),
+    ('odds_ratio', 'number', '', 'odds ratio (method)'),
+    ('log2_odds_ratio', 'number', '', 'its log2'),
+    ('p', 'number', '', 'p value'),
+    ('q', 'number', '', 'Benjamini-Hochberg adjusted p value within the analysis'),
+    ('method', 'code', 'method', 'the test'),
+    ('background', 'string', '', 'what the targets are compared with'),
+    ('n_strata', 'integer', '', 'strata of a stratified test, empty otherwise'),
+]
+
+DISEASE_TERM_COLUMNS = [
+    ('term_id', 'string', '', 'DisGeNET term (UMLS CUI)'),
+    ('term_name', 'string', '', 'its name'),
+    ('family', 'string', '', 'its disease family (scripts/disease_families.py), empty when none'),
+    ('n_genes_term', 'integer', '', 'genes of the term in the universe'),
+    ('n_methylated', 'integer', '', 'of these, genes of methylated proteins'),
+    ('fold_enrichment', 'number', '', 'observed over expected'),
+    ('p', 'number', '', 'hypergeometric p value (DOSE enrichDGN)'),
+    ('p_adjust', 'number', '', 'Benjamini-Hochberg adjusted p value over the tested terms'),
+    ('q', 'number', '', 'q value (qvalue, lambda 0.05, as DOSE)'),
+    ('genes', 'list<string>', '', 'the methylated genes in the term (symbols, org.Hs.eg.db)'),
+    ('uniprot_accessions', 'list<string>', '', 'the proteins of the site table those genes stand for'),
+]
+
+DENSITY_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'protein'),
+    ('window_aa', 'integer', '', 'window width in residues'),
+    ('start', 'integer', '', 'first residue of the densest window of that width'),
+    ('end', 'integer', '', 'last residue'),
+    ('sites', 'integer', '', 'methylarginine sites in it'),
+    ('arginines', 'integer', '', 'arginines in it'),
+    ('null_mean_sites', 'number', '', 'mean of the most sites in a window under the null (sites placed on the protein\'s arginines at random)'),
+    ('log2_obs_over_null', 'number', '', 'log2 of observed over null mean'),
+    ('p', 'number', '', 'empirical p value (1,000 permutations)'),
+    ('q', 'number', '', 'Benjamini-Hochberg q value over all protein-window tests. Only windows with q <= 0.05 are listed'),
+    ('site_positions', 'list<integer>', '', 'the sites in the window'),
+]
+
+HPA_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'protein'),
+    ('gene', 'string', '', 'gene as HPA gives it'),
+    ('ensembl_gene', 'string', '', 'Ensembl gene HPA maps to the protein'),
+    ('location', 'string', '', 'subcellular location'),
+    ('main', 'boolean', '', 'a main location (otherwise additional)'),
+    ('reliability', 'string', '', 'HPA reliability: Enhanced, Supported, Approved or Uncertain'),
+]
+
+OTHER_PTM_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'protein'),
+    ('position', 'integer', '', 'position on the reference sequence'),
+    ('residue', 'string', '', 'the modified residue'),
+    ('ptm_type', 'code', 'ptm_type', 'the modification'),
+    ('source', 'string', '', 'ptm_master: the iPTMnet-format PTM master table (rows on the canonical accession, residue checked against the reference sequence)'),
+    ('evidence', 'list<string>', '', 'the databases the rows come from, as the master table names them'),
+    ('n_records', 'integer', '', 'rows of the master table'),
+]
+
+CONDENSATE_COLUMNS = [
+    ('condensate_id', 'string', '', 'CD-CODE condensate id'),
+    ('condensate_name', 'string', '', 'its name'),
+    ('condensate_type', 'string', '', 'its type in CD-CODE'),
+    ('n_members', 'integer', '', 'human proteins CD-CODE lists as members'),
+    ('n_members_methylated', 'integer', '', 'of these, proteins of the site table'),
+]
+
+DISEASE_FAMILY_COLUMNS = [
+    ('family', 'string', '', 'disease family (scripts/disease_families.py), in order of significance'),
+    ('n_terms', 'integer', '', 'DisGeNET terms assigned to it'),
+    ('n_genes', 'integer', '', 'genes of the universe in at least one of its terms'),
+    ('n_methylated_genes', 'integer', '', 'of these, genes of methylated proteins'),
+]
+
+SITE_INTERACTION_COLUMNS = [
+    ('site_id', 'string', '', 'the site (site table)'),
+    ('evidence_type', 'code', 'evidence_type', 'the kind of evidence'),
+    ('localisation', 'code', 'localisation', 'where the evidence falls relative to the site'),
+    ('partner_kind', 'code', 'partner_kind', 'what the arginine contacts, empty when the record names no partner'),
+    ('partner_accession', 'string', '', 'the partner protein (reviewed UniProtKB accession)'),
+    ('partner_gene', 'string', '', 'its primary gene name'),
+    ('source', 'string', '', 'PDBe-KB, ProtVar, AFDB (AlphaFold DB), IntAct, RBDmap, Trendel2025, UniProt, or the RNA crosslink dataset (Kramer2014, XRNAX, RBS-ID, pRBS-ID, pepR-MS, pepR-MS_focused)'),
+    ('structures', 'list<string>', '', 'PDB entries (PDB rows), or the predicted model (ProtVar pair or AlphaFold DB model id)'),
+    ('score', 'number', '', 'pDockQ (ProtVar) or ipTM (AlphaFold DB) of the predicted complex'),
+    ('distance_a', 'number', '', 'closest distance in the predicted model between the arginine and the partner, in angstroms'),
+    ('detail', 'string', '', 'bonds, pLDDT and partner residues of a predicted contact; effect, residues, PubMed and IntAct ids of an IntAct record'),
+    ('counts_as_evidence', 'boolean', '', 'the record is site-level evidence: crosslinks at or as a candidate residue, RBDmap fragments, PDB interfaces, predicted interfaces, confident predicted contacts, and IntAct mutations that change an interaction, short binding regions and methylated residues. interaction_status counts all of these except IntAct'),
+]
+
+RESIDUE_EVIDENCE_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'protein of the site table'),
+    ('start', 'integer', '', 'first residue of a run of consecutive residues with the same evidence'),
+    ('end', 'integer', '', 'last residue'),
+    ('evidence_type', 'code', 'evidence_type', 'the kind of evidence'),
+    ('localisation', 'code', 'localisation', 'at the residues, or a region or peptide that holds them'),
+    ('n_partners', 'integer', '', 'partners: most along the run (PDB protein, predicted interface) or records (IntAct)'),
+    ('best_score', 'number', '', 'best pDockQ along the run (predicted interfaces)'),
+    ('sources', 'list<string>', '', 'sources of the evidence'),
+]
+
+PARTNER_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'protein of the site table'),
+    ('partner_accession', 'string', '', 'STRING 12.5 physical partner at score >= 0.7 (reviewed UniProtKB accession)'),
+    ('partner_gene', 'string', '', 'its primary gene name'),
+    ('string_score', 'number', '', 'STRING physical interaction score (0-1)'),
+    ('partner_methylated', 'boolean', '', 'the partner is a protein of the site table'),
+    ('partner_classes', 'list<code>', 'partner_class', 'reader or writer classes of the partner'),
+]
+
+COMPLEX_COLUMNS = [
+    ('complex_id', 'string', '', 'Complex Portal id'),
+    ('complex_name', 'string', '', 'its name (empty for most predicted complexes)'),
+    ('curation', 'code', 'curation', 'curated or predicted'),
+    ('n_members', 'integer', '', 'member slots (alternative members of a slot count once)'),
+    ('n_members_methylated', 'integer', '', 'slots with a protein of the site table'),
+    ('methylated_members', 'list<string>', '', 'those proteins'),
+    ('fold_enrichment', 'number', '', 'methylated share of the members over the methylated share of reviewed human proteins'),
+    ('p', 'number', '', 'hypergeometric p value, P(X >= n_members_methylated)'),
+    ('q', 'number', '', 'Benjamini-Hochberg over all complexes of the same curation, those without a methylated member included. Only complexes with a methylated member are listed'),
 ]

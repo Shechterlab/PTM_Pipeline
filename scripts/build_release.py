@@ -8,7 +8,7 @@ Reads
   --inputs         the frozen inputs (checked against inputs/MANIFEST.tsv by hpc/build_release.sh)
 and writes --outdir (releases/VERSION), for version V and previous version P:
 
-  human_methylarginine_sites_V.tsv      one row per site, including the pending sites
+  human_methylarginine_sites_V.tsv      one row per site, including the sites kept pending (flag one_sided_window)
   human_methylarginine_sites_V.xlsx     the same table as a spreadsheet
   studies_V.tsv                         one row per study or database behind the sites
   supporting/source_records_V.tsv       one row per source record: what the study reported, where it is placed
@@ -16,6 +16,9 @@ and writes --outdir (releases/VERSION), for version V and previous version P:
   supporting/maron2021_detection_V.tsv  Maron et al. 2021 Tables S2 and S3: which sites each table detects
   supporting/maron2021_inhibitors_V.tsv Maron et al. 2021 Table S3: response to the PRMT inhibitors
   supporting/carm1_ko_V.tsv             response to CARM1 knockout (Shishkova et al. 2017)
+  human_methylarginine_proteins_V.tsv   one row per protein: identity, function, enrichment, clustering, context
+  statistics_V.tsv                      every enrichment test the website or the paper reports, with its 2x2 counts
+  supporting/disease_terms_V.tsv, density_windows_V.tsv, hpa_locations_V.tsv, other_ptm_sites_V.tsv
   data_dictionary.tsv                   every column of every table, with its codes
   release.json                          version, counts, inputs and files
   README.md, CHANGES.md, MD5SUMS
@@ -26,12 +29,13 @@ classifiers (scripts/05, 06, 07, 08), so they match the analyses.
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import hashlib
 import importlib.util
 import json
 import re
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 import pandas as pd
@@ -41,6 +45,7 @@ sys.path.insert(0, str(SCRIPTS))
 
 import release_codes as rc  # noqa: E402
 import release_docs  # noqa: E402
+import release_tables  # noqa: E402
 from common import classify_by_patterns  # noqa: E402
 
 
@@ -222,6 +227,7 @@ def build_records(rows, typed, check, allowed, previous, pending_of, shift, refe
             'reported_gene': clean(r['substrate_genename']),
             'reported_position': clean(r['position']),
             'reported_methyl_state': clean(r['arg_methyl_state']),
+            'reported_enzyme': clean(r.get('enzyme_genename', '')),
             'evidence_kind': kind,
             'evidence_sequence': text,
             'placed_site': new,
@@ -337,6 +343,8 @@ def carm1_table(inputs: Path, site_ids: set) -> pd.DataFrame:
         'n_peptides': layer['peptides'].astype(int),
         'log2_ko_over_wt': layer['median_log2_ko_wt'].astype(float),
         'p': layer['min_p'].astype(float),
+        'n_decreased': layer['peptides_down'].astype(int),
+        'n_increased': layer['peptides_up'].astype(int),
         'call': layer['call'].map(words),
     })
     if out['call'].isna().any():
@@ -404,7 +412,7 @@ def build_sites(records, union, pending, reference, entry, previous_sites) -> pd
         shared = sorted({a for a, _ in proteome.find(seq[max(0, pos - 16):pos + 15]) if a != acc}) if len(seq[max(0, pos - 16):pos + 15]) >= 15 else []
         flags = []
         if site in pending:
-            flags.append('pending_splice_junction')
+            flags.append('one_sided_window')
         if (group['accepted_exception'] != '').any():
             flags.append('paralog_window')
         if site not in pending and group['placement_code'].str.contains('near_match').all():
@@ -419,10 +427,9 @@ def build_sites(records, union, pending, reference, entry, previous_sites) -> pd
         if in_previous:
             reasons = ['reference_renumbered'] if renumbered else []
         else:
-            reasons = (['pending_splice_junction'] if site in pending else []) + sorted(set(group.loc[group['_previous_lifted'] != site, 'reason_code']) - {''})
+            reasons = (['one_sided_window'] if site in pending else []) + sorted(set(group.loc[group['_previous_lifted'] != site, 'reason_code']) - {''})
         rows.append({
             'site_id': site,
-            'status': 'pending' if site in pending else 'site',
             'uniprot_accession': acc,
             'uniprot_entry_name': entry(acc, 'Entry Name'),
             'gene': entry(acc, 'Gene Names (primary)'),
@@ -478,7 +485,7 @@ def build_changes(records, sites, previous_sites, shift, entry) -> pd.DataFrame:
             change = 'added'
             rows = records.loc[at_now.get(site, [])]
             involved = rows[rows['_previous_lifted'] != site]
-            codes = (['pending_splice_junction'] if site in pending else []) + sorted(set(involved['reason_code']) - {''})
+            codes = (['one_sided_window'] if site in pending else []) + sorted(set(involved['reason_code']) - {''})
         elsewhere = sorted(set(site_of[involved.index] if change == 'removed' else involved['previous_site']) - {'', site}, key=split_key)
         out.append({
             'site_id': site,
@@ -499,7 +506,7 @@ def build_changes(records, sites, previous_sites, shift, entry) -> pd.DataFrame:
 # ---- Studies ---------------------------------------------------------------------------------------------------------
 
 def build_studies(records, sites) -> pd.DataFrame:
-    placed = sites[sites['status'] == 'site']
+    placed = sites[~sites['flags'].str.contains('one_sided_window')]
     per_site = placed['studies'].str.split('; ')
     out = []
     for sid, label, citation, doi in rc.STUDIES:
@@ -514,6 +521,15 @@ def build_studies(records, sites) -> pd.DataFrame:
     if unknown:
         raise SystemExit(f'studies missing from scripts/release_codes.py: {sorted(unknown)}')
     return pd.DataFrame(out)
+
+
+def validation(root: Path, check: pd.DataFrame) -> dict:
+    """The outcome of the build's two gates (hpc/build_release.sh stops on either)."""
+    audit = root / 'qc' / 'remap_evidence_check' / 'union_site_residue_audit.tsv'
+    failures = root / 'qc' / 'remap_evidence_check' / 'remap_evidence_check_failures.tsv'
+    return {'evidence_check': {rc.VERDICT_CODE[k]: int(n) for k, n in check['verdict'].value_counts().items()},
+            'rows_against_evidence_not_accepted': len(read_tsv(failures)) if failures.exists() else 0,
+            'union_sites_not_arginine': len(read_tsv(audit)) if audit.exists() else 0}
 
 
 def peptide_start_agreement(rows: pd.DataFrame, typed: pd.DataFrame, reference: dict, path: Path) -> dict:
@@ -532,6 +548,31 @@ def peptide_start_agreement(rows: pd.DataFrame, typed: pd.DataFrame, reference: 
 
 
 # ---- Writing ---------------------------------------------------------------------------------------------------------
+
+def interaction_tables(folder: Path, sites: pd.DataFrame) -> dict:
+    """The tables scripts/37 wrote for these sites (--tables-out), with each site's interaction status: experimental
+    when a crosslink, RBDmap fragment or PDB interface counts as evidence there, predicted_only when only a predicted
+    interface or confident predicted contact does, none otherwise (IntAct records never set it, as on the website)."""
+    t = {name: read_tsv(folder / f'{name}.tsv') for name in ('site_interactions', 'residue_evidence', 'protein_partners', 'complexes',
+                                                            'interaction_statistics', 'protein_interaction_summary')}
+    ev = t['site_interactions']
+    analysed = sites[~sites['flags'].str.contains('one_sided_window', regex=False)]
+    unknown = set(ev['site_id']) - set(analysed['site_id'])
+    if unknown:
+        raise SystemExit(f'{folder}: interaction rows for sites that are not analysed in the release: {sorted(unknown)[:5]}')
+    if set(t['protein_interaction_summary']['uniprot_accession']) != set(analysed['uniprot_accession']):
+        raise SystemExit(f'{folder}: the interaction tables are for another set of proteins')
+    for frame, column in ((ev, 'counts_as_evidence'), (t['protein_partners'], 'partner_methylated')):
+        frame[column] = frame[column] == 'true'
+    counted = ev[ev['counts_as_evidence']]
+    experimental = {'rna_crosslink', 'rbdmap_fragment', 'dna_crosslink', 'pdb_protein', 'pdb_rna', 'pdb_dna', 'pdb_self'}
+    predicted = {'predicted_interface', 'predicted_contact'}
+    kinds = counted.groupby('site_id')['evidence_type'].agg(set)
+    status = {s: 'experimental' if k & experimental else 'predicted_only' if k & predicted else 'none' for s, k in kinds.items()}
+    evidence = {s: join(ordered(k, rc.EVIDENCE_ORDER)) for s, k in kinds.items()}
+    return {'sites': ev, 'residues': t['residue_evidence'], 'partners': t['protein_partners'], 'complexes': t['complexes'],
+            'statistics': t['interaction_statistics'], 'proteins': t['protein_interaction_summary'], 'status': status, 'evidence': evidence}
+
 
 def write_table(df: pd.DataFrame, columns: list[tuple], path: Path) -> None:
     """Write a release TSV in the declared column order and types: integers without decimals, numbers in up to 6
@@ -565,6 +606,8 @@ def main() -> None:
     ap.add_argument('--allow', default='config/remap_evidence_allowlist.tsv')
     ap.add_argument('--version', required=True, help='version of this release, e.g. v1.1.0')
     ap.add_argument('--outdir', required=True)
+    ap.add_argument('--date', default=dt.date.today().isoformat(), help='release date (default today)')
+    ap.add_argument('--interactions', default='', help='the interaction tables scripts/37 wrote for these sites (--tables-out)')
     args = ap.parse_args()
     root, inputs, outdir, prev_dir = Path(args.results_root), Path(args.inputs), Path(args.outdir), Path(args.previous)
     version, previous = args.version, prev_dir.name
@@ -580,7 +623,7 @@ def main() -> None:
     typed = remap.annotate_window_lengths(typed) if 'seq_window_window_length' not in typed else typed
     check = read_tsv(root / 'qc' / 'remap_evidence_check' / 'remap_evidence_check_rows.tsv')
     union = read_tsv(root / 'integrated' / 'human_arg_methyl_union_dedup_by_site.tsv')
-    pending_table = read_tsv(root / 'integrated' / 'pending_junction_sites.tsv')
+    pending_table = read_tsv(root / 'integrated' / 'pending_one_sided_window_sites.tsv')
     pending = {key(a, p) for a, p in zip(pending_table['canonical_UniProtAC'], pending_table['position'])}
     pending_of = {int(i): key(a, p) for a, p, ids in zip(pending_table['canonical_UniProtAC'], pending_table['position'], pending_table['record_ids'])
                   for i in ids.split('; ')}
@@ -623,12 +666,28 @@ def main() -> None:
     carm1_calls = carm1.groupby('site_id')['call'].agg(list)
     sites['carm1_ko_call'] = sites['site_id'].map(lambda s: combine_calls(carm1_calls.get(s, [])))
     sites = pd.concat([sites, context_annotations(sites, inputs)], axis=1)
-    sites['interaction_status'] = ''
-    sites['interaction_evidence'] = ''
+    ix = interaction_tables(Path(args.interactions), sites) if args.interactions else None
+    analysed = ~sites['flags'].str.contains('one_sided_window', regex=False)   # sites kept pending are left out
+    sites['interaction_status'] = sites['site_id'].map(ix['status']).fillna('none').where(analysed, '') if ix else ''
+    sites['interaction_evidence'] = sites['site_id'].map(ix['evidence']).fillna('') if ix else ''
     sites = sites[[c for c, *_ in rc.SITE_COLUMNS]]
 
     changes = build_changes(records, sites, list(prev_sites['site_id']), shift, entry)
     studies = build_studies(records, sites)
+    proteins, extra = release_tables.proteins_table(root, inputs, sites, records, entry, reference)
+    statistics = release_tables.statistics(root, proteins)
+    if ix:
+        status = sites.groupby('uniprot_accession')['interaction_status'].agg(Counter)
+        proteins['n_sites_experimental'] = proteins['uniprot_accession'].map(lambda a: status[a]['experimental'])
+        proteins['n_sites_predicted_only'] = proteins['uniprot_accession'].map(lambda a: status[a]['predicted_only'])
+        summary = ix['proteins'].set_index('uniprot_accession')
+        for column in ('go_rna_binding', 'go_dna_binding', 'n_string_partners', 'n_partners_methylated', 'n_complexes'):
+            proteins[column] = proteins['uniprot_accession'].map(summary[column]).fillna('')   # empty: only pending sites
+        statistics = pd.concat([statistics, ix['statistics']], ignore_index=True)
+    else:
+        for column, *_ in rc.PROTEIN_COLUMNS[-7:]:
+            proteins[column] = ''
+    disease_terms = release_tables.disease_terms_table(root, proteins)
 
     files = {
         'sites': (f'human_methylarginine_sites_{version}.tsv', sites, rc.SITE_COLUMNS),
@@ -638,7 +697,22 @@ def main() -> None:
         'maron_detection': (f'supporting/maron2021_detection_{version}.tsv', detection, rc.MARON_DETECTION_COLUMNS),
         'maron_inhibitors': (f'supporting/maron2021_inhibitors_{version}.tsv', inhibitors, rc.MARON_INHIBITOR_COLUMNS),
         'carm1_ko': (f'supporting/carm1_ko_{version}.tsv', carm1, rc.CARM1_COLUMNS),
+        'proteins': (f'human_methylarginine_proteins_{version}.tsv', proteins, rc.PROTEIN_COLUMNS),
+        'statistics': (f'statistics_{version}.tsv', statistics, rc.STATISTICS_COLUMNS),
+        'disease_terms': (f'supporting/disease_terms_{version}.tsv', disease_terms, rc.DISEASE_TERM_COLUMNS),
+        'density_windows': (f'supporting/density_windows_{version}.tsv', extra['density_windows'], rc.DENSITY_COLUMNS),
+        'hpa_locations': (f'supporting/hpa_locations_{version}.tsv', extra['hpa'], rc.HPA_COLUMNS),
+        'other_ptm_sites': (f'supporting/other_ptm_sites_{version}.tsv', extra['other_ptm_sites'], rc.OTHER_PTM_COLUMNS),
+        'condensates': (f'supporting/condensates_{version}.tsv', release_tables.condensates_table(root, set(sites['uniprot_accession'])), rc.CONDENSATE_COLUMNS),
+        'disease_families': (f'supporting/disease_families_{version}.tsv', release_tables.disease_families_table(root), rc.DISEASE_FAMILY_COLUMNS),
     }
+    if ix:
+        files.update({
+            'site_interactions': (f'supporting/site_interactions_{version}.tsv', ix['sites'], rc.SITE_INTERACTION_COLUMNS),
+            'residue_evidence': (f'supporting/residue_evidence_{version}.tsv', ix['residues'], rc.RESIDUE_EVIDENCE_COLUMNS),
+            'protein_partners': (f'supporting/protein_partners_{version}.tsv', ix['partners'], rc.PARTNER_COLUMNS),
+            'complexes': (f'supporting/complexes_{version}.tsv', ix['complexes'], rc.COMPLEX_COLUMNS),
+        })
     for folder in (outdir / 'supporting', outdir):
         if folder.is_dir():
             for p in folder.iterdir():
@@ -654,7 +728,8 @@ def main() -> None:
     counts.update(peptide_start_agreement(rows, typed, reference, root / 'parsed_maron' / 'maron_peptide_coordinates.tsv'))
     context = {'version': version, 'previous': previous, 'files': files, 'counts': counts, 'inputs': inputs, 'root': root,
                'uniprot_release': json.loads((inputs / INPUT['uniprot_release']).read_text()), 'records': records,
-               'sites': sites, 'changes': changes, 'studies': studies}
+               'sites': sites, 'changes': changes, 'studies': studies, 'release_date': args.date,
+               'validation': validation(root, check)}
     release_docs.write_all(outdir, context)
     print(json.dumps({k: v for k, v in counts.items() if not isinstance(v, dict)}))
 

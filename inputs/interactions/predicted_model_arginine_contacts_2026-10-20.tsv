@@ -1,0 +1,259 @@
+source	model	uniprot_accession	chain	position	partner_accession	min_distance_a	clash	salt_bridge	hydrogen_bond	cation_pi	plddt_arginine	plddt_partner_min	partner_residues
+ProtVar	A0AVT1_P62979	P62979	B	74	A0AVT1	0.9	true	false	true	false	66	70	A:D616:hb; A:P617:hb; A:P618:hb
+ProtVar	E9PJD7_P61086	P61086	B	8	E9PJD7	1.6	true	false	true	false	97	98	A:V113:hb
+ProtVar	O00161_Q9BV40	Q9BV40	B	12	O00161	4.9	false	false	false	false	89	94	A:E153
+ProtVar	O00194_Q96C24	Q96C24	B	130	O00194	4	false	false	false	false	74	92	A:R90
+ProtVar	O14576_Q9NP97	Q9NP97	B	72	O14576	3.9	false	false	false	false	88	63	A:S249
+ProtVar	O14787_Q13555	O14787	A	809	Q13555	3.2	false	false	false	false	76	69	B:G503
+ProtVar	O14948_P19484	P19484	B	286	O14948	2.3	false	true	true	false	98	98	A:E161:hb+sb
+ProtVar	O15155_Q9BV40	Q9BV40	B	12	O15155	3.7	false	true	false	false	80	82	A:E33:sb
+ProtVar	O43237_Q96AH8	Q96AH8	B	69	O43237	4.8	false	false	false	false	83	76	A:A77
+ProtVar	O43670_O43684	O43670	A	375	O43684	2	true	true	true	false	93	83	B:D302:hb+sb
+ProtVar	O43670_O43684	O43670	A	376	O43684	2.6	false	true	true	true	94	91	B:D15:hb+sb; B:W35:pi; B:Y299:pi
+ProtVar	O43716_Q9H0R6	O43716	A	66	Q9H0R6	4	false	false	false	false	95	97	B:V325
+ProtVar	O43752_Q9BV40	Q9BV40	B	12	O43752	3.8	false	false	false	false	78	79	A:D170
+ProtVar	O60499_Q9BV40	Q9BV40	B	12	O60499	3.7	false	true	false	false	84	80	A:D164:sb
+ProtVar	O75030_P19484	P19484	B	286	O75030	2.2	false	true	true	false	98	96	A:E333:hb+sb
+ProtVar	O75030_P19532	P19532	B	365	O75030	3.7	false	false	false	false	93	95	A:L354
+ProtVar	O76094_Q8IYB3	Q8IYB3	B	7	O76094	2	true	true	true	false	67	82	A:E224:hb+sb
+ProtVar	O76094_Q8IYB3	Q8IYB3	B	16	O76094	3	false	true	true	true	56	80	A:E113:hb+sb; A:Y143:pi
+ProtVar	O95059_P78346	P78346	B	166	O95059	3.6	false	false	false	false	95	98	A:L51
+ProtVar	O95183_Q9BV40	Q9BV40	B	12	O95183	4.8	false	false	false	false	82	88	A:L6
+ProtVar	O95352_P60520	P60520	B	47	O95352	2	true	true	true	false	91	73	A:D699:hb+sb
+ProtVar	O95352_P60520	P60520	B	67	O95352	2.2	true	true	true	false	87	84	A:D696:hb+sb
+ProtVar	O95630_P62979	P62979	B	74	O95630	2.1	true	true	true	false	68	76	A:E280:hb+sb; A:D309:hb; A:D348:hb+sb
+ProtVar	O95716_Q96C24	Q96C24	B	130	O95716	4.8	false	false	false	false	77	83	A:R93
+ProtVar	O95721_Q9BV40	Q9BV40	B	12	O95721	4.3	false	false	false	false	77	89	A:D207
+ProtVar	O95817_P54652	O95817	A	477	P54652	4.2	false	false	false	false	92	93	B:E286
+ProtVar	O95817_P54652	O95817	A	480	P54652	2.8	false	true	true	false	95	90	B:E286:hb+sb; B:D288:hb+sb
+ProtVar	O95817_P54652	O95817	A	481	P54652	3	false	true	true	false	93	91	B:D295:hb+sb
+ProtVar	O95833_Q86WR7	Q86WR7	B	422	O95833	4.2	false	false	false	false	94	96	A:K213
+ProtVar	O96019_Q9Y3F4	Q9Y3F4	B	290	O96019	4.6	false	false	false	false	87	87	A:D261
+ProtVar	P01920_P10321	P10321	B	41	P01920	0.6	true	false	true	false	76	87	A:Y69:hb; A:T83:hb; A:P84:hb; A:L85:hb; A:G86:hb
+ProtVar	P05783_P08670	P08670	B	196	P05783	2	true	true	false	false	93	94	A:E171:sb
+ProtVar	P05787_P08670	P08670	B	196	P05787	2.7	false	true	true	false	89	90	A:E182:hb+sb
+ProtVar	P06753_P07951	P06753	A	183	P07951	2.3	false	true	true	false	96	97	B:E187:hb+sb
+ProtVar	P06753_P17661	P06753	A	183	P17661	4.3	false	false	false	false	80	81	B:L377
+ProtVar	P06753_P67936	P06753	A	183	P67936	2.3	false	true	true	false	96	96	B:E151:hb+sb
+ProtVar	P06753_Q9BT49	P06753	A	183	Q9BT49	3.6	false	false	false	false	94	96	B:R264
+ProtVar	P06753_Q9UJT2	P06753	A	183	Q9UJT2	4.9	false	false	false	false	79	72	B:I147
+ProtVar	P07197_P08670	P08670	B	196	P07197	2.3	false	true	true	false	93	95	A:E192:hb+sb
+ProtVar	P07738_P18669	P18669	B	140	P07738	2.3	false	true	true	true	98	98	A:E51:sb; A:F52:hb; A:Q76:hb; A:W78:pi
+ProtVar	P07738_P18669	P18669	B	141	P07738	2.7	false	false	false	false	98	99	A:W78
+ProtVar	P08670_P14136	P08670	A	196	P14136	3.4	false	true	true	false	94	91	B:E158:hb+sb
+ProtVar	P08670_P17661	P08670	A	196	P17661	2.5	false	true	true	false	93	89	B:E197:hb+sb
+ProtVar	P08670_P35900	P08670	A	196	P35900	3.1	false	true	true	false	96	88	B:E162:hb+sb
+ProtVar	P08670_P48681	P08670	A	196	P48681	2	true	false	false	false	91	91	B:A101
+ProtVar	P08670_P67936	P08670	A	196	P67936	3.2	false	false	false	false	79	81	B:L35
+ProtVar	P08670_Q04695	P08670	A	196	Q04695	3.1	false	true	true	false	97	89	B:E176:hb+sb
+ProtVar	P08670_Q16352	P08670	A	196	Q16352	1	true	false	false	false	86	78	B:R189
+ProtVar	P08670_Q96DX4	P08670	A	196	Q96DX4	2.5	false	false	false	false	86	87	B:R562
+ProtVar	P09651_Q8IYB3	Q8IYB3	B	16	P09651	3.4	false	true	false	false	62	94	A:D123:sb
+ProtVar	P10321_P13726	P10321	A	86	P13726	1	true	false	false	false	95	93	B:K52
+ProtVar	P10321_P15907	P10321	A	86	P15907	2.4	false	false	true	false	82	82	B:T239:hb
+ProtVar	P10321_P20337	P10321	A	41	P20337	3.4	false	false	false	false	82	91	B:N106
+ProtVar	P10321_P28070	P10321	A	41	P28070	1.5	true	false	false	false	69	60	B:R227
+ProtVar	P10321_P30466	P10321	A	41	P30466	3.1	false	true	true	false	83	94	B:S62:hb; B:D63:hb+sb
+ProtVar	P10321_P41273	P10321	A	41	P41273	4.3	false	false	false	false	84	88	B:H205
+ProtVar	P10321_P79483	P10321	A	41	P79483	0.9	true	true	true	false	82	86	B:T80:hb; B:E81:sb
+ProtVar	P10321_Q71U36	P10321	A	41	Q71U36	3.9	false	false	false	false	83	93	B:S419
+ProtVar	P10321_Q8TB96	P10321	A	41	Q8TB96	1.3	true	false	false	false	80	95	B:P368
+ProtVar	P10321_Q8WXG1	P10321	A	86	Q8WXG1	4.3	false	false	false	false	77	73	B:E186
+ProtVar	P10321_Q93063	P10321	A	41	Q93063	4.5	false	false	false	false	77	93	B:Q384
+ProtVar	P10321_Q969N2	P10321	A	41	Q969N2	3.5	false	false	true	false	80	82	B:G360:hb
+ProtVar	P10321_Q96G97	P10321	A	41	Q96G97	4.1	false	false	false	false	82	92	B:H203
+ProtVar	P10321_Q96HW7	P10321	A	41	Q96HW7	3.1	false	false	false	false	78	89	B:E425
+ProtVar	P10321_Q96S06	P10321	A	41	Q96S06	4	false	false	false	false	84	86	B:S430
+ProtVar	P11310_P38117	P11310	A	80	P38117	3.1	false	false	false	false	98	90	B:Y192
+ProtVar	P15259_P18669	P18669	B	140	P15259	2.3	false	true	true	true	98	99	A:E51:sb; A:F52:hb; A:D53:sb; A:Q76:hb; A:W78:pi
+ProtVar	P15259_P18669	P18669	B	141	P15259	2.8	false	false	false	false	99	99	A:W78
+ProtVar	P15374_P62979	P62979	B	74	P15374	2.7	false	false	true	false	97	93	A:P8:hb; A:A152:hb; A:E154:hb; A:T157:hb
+ProtVar	P16383_P68400	P68400	B	191	P16383	3.5	false	false	false	false	85	90	A:K452
+ProtVar	P18085_Q8N6T3	P18085	A	99	Q8N6T3	4.3	false	false	false	false	95	93	B:K68
+ProtVar	P18124_P62857	P62857	B	67	P18124	2.7	false	false	false	false	35	96	A:R134
+ProtVar	P18754_Q9H334	Q9H334	B	544	P18754	5	false	false	false	false	45	84	A:N268
+ProtVar	P19484_P19532	P19484	A	286	P19532	2.4	false	true	true	false	98	98	B:E368:hb+sb
+ProtVar	P19484_P19532	P19532	B	365	P19484	3.7	false	false	false	false	98	98	A:L278
+ProtVar	P19532_Q9HB71	P19532	A	365	Q9HB71	2.7	false	true	true	false	90	89	B:K197:hb; B:D201:hb+sb
+ProtVar	P20336_Q96C24	Q96C24	B	130	P20336	1.2	true	false	false	false	72	86	A:R93
+ProtVar	P22314_P62979	P62979	B	74	P22314	1.7	true	true	true	false	78	79	A:D623:hb+sb; A:P624:hb
+ProtVar	P22626_P62136	P22626	A	54	P62136	4.3	false	false	false	false	87	89	B:R188
+ProtVar	P22626_Q9Y6A4	P22626	A	12	Q9Y6A4	3.2	false	false	false	false	56	80	B:Y184
+ProtVar	P24386_Q96AH8	Q96AH8	B	69	P24386	4.2	false	false	false	false	48	78	A:Y398
+ProtVar	P25325_Q7Z7A3	P25325	A	293	Q7Z7A3	2.2	true	false	true	false	47	65	B:P241:hb
+ProtVar	P26641_P29692	P29692	B	23	P26641	3.5	false	false	false	false	79	86	A:F40
+ProtVar	P28340_P49005	P28340	A	1097	P49005	2	true	true	true	false	89	80	B:E43:hb+sb
+ProtVar	P36578_Q07020	P36578	A	303	Q07020	2.5	false	false	true	false	91	95	B:R37:hb
+ProtVar	P40818_P62979	P62979	B	74	P40818	3.7	false	false	false	false	57	74	A:S865
+ProtVar	P41223_Q01130	Q01130	B	91	P41223	3.3	false	false	false	false	88	93	A:R67
+ProtVar	P45974_P62979	P62979	B	74	P45974	2.6	false	true	false	false	67	84	A:E427:sb
+ProtVar	P46736_P62979	P62979	B	74	P46736	1.3	true	true	true	false	84	84	A:E91:hb+sb
+ProtVar	P51159_Q96C24	Q96C24	B	130	P51159	3.9	false	false	false	false	76	93	A:R90
+ProtVar	P52298_Q09161	Q09161	B	458	P52298	3.4	false	false	false	false	99	99	A:Q55
+ProtVar	P58215_Q14677	Q14677	B	146	P58215	3.1	false	false	true	false	88	86	A:Y610:hb
+ProtVar	P59998_P61160	P59998	A	105	P61160	3.1	false	true	true	false	98	97	B:E236:hb+sb
+ProtVar	P60520_Q6P9H5	P60520	A	67	Q6P9H5	3.5	false	true	true	false	88	84	B:E7:hb+sb
+ProtVar	P60520_Q86VP1	P60520	A	47	Q86VP1	4.9	false	false	false	false	93	85	B:D139
+ProtVar	P60520_Q86VP1	P60520	A	67	Q86VP1	3.1	false	false	true	false	86	90	B:T131:hb
+ProtVar	P60520_Q8WYN0	P60520	A	67	Q8WYN0	2.9	false	true	true	false	90	86	B:E394:hb+sb
+ProtVar	P60520_Q969E8	P60520	A	67	Q969E8	2.8	false	false	true	false	88	88	B:T185:hb
+ProtVar	P60520_Q96DT6	P60520	A	67	Q96DT6	2.2	false	false	false	false	86	77	B:V456
+ProtVar	P60520_Q9NT62	P60520	A	47	Q9NT62	4.2	false	false	false	false	92	62	B:D104
+ProtVar	P60520_Q9NT62	P60520	A	67	Q9NT62	2.7	false	true	true	false	88	73	B:E95:hb+sb
+ProtVar	P60520_Q9Y4P1	P60520	A	67	Q9Y4P1	3.9	false	true	false	false	86	83	B:E389:sb
+ProtVar	P60880_Q9BV40	Q9BV40	B	12	P60880	3.8	false	false	false	false	87	83	A:F133
+ProtVar	P61086_P78317	P61086	A	8	P78317	2.3	false	false	true	false	97	97	B:P133:hb; B:I134:hb
+ProtVar	P61086_Q5VTB9	P61086	A	8	Q5VTB9	2.1	true	false	true	false	96	95	B:L515:hb; B:I516:hb
+ProtVar	P61086_Q7Z6J0	P61086	A	8	Q7Z6J0	2.1	true	false	true	false	90	90	B:P13:hb; B:V14:hb
+ProtVar	P61086_Q8IUQ4	P61086	A	8	Q8IUQ4	2.1	true	false	true	false	94	95	B:V43:hb
+ProtVar	P61086_Q969K3	P61086	A	8	Q969K3	2.2	false	false	true	false	83	78	B:R326:hb; B:I327:hb
+ProtVar	P61086_Q96BH1	P61086	A	8	Q96BH1	2.4	false	false	true	false	94	97	B:V136:hb; B:I137:hb
+ProtVar	P61086_Q96PM5	P61086	A	8	Q96PM5	2.1	true	false	true	false	94	95	B:P146:hb; B:I147:hb
+ProtVar	P61086_Q99942	P61086	A	8	Q99942	1.7	true	false	true	false	93	95	B:I29:hb
+ProtVar	P61086_Q9BV68	P61086	A	8	Q9BV68	1	true	false	true	false	96	96	B:P230:hb; B:V231:hb
+ProtVar	P61086_Q9NV58	P61086	A	8	Q9NV58	2.3	false	false	true	false	94	90	B:P133:hb; B:L134:hb
+ProtVar	P61086_Q9UHC7	P61086	A	8	Q9UHC7	1.4	true	false	true	false	96	97	B:I283:hb
+ProtVar	P61353_Q12906	Q12906	B	274	P61353	4.1	false	false	false	false	95	89	A:F4
+ProtVar	P62851_Q9H0S4	P62851	A	111	Q9H0S4	4	false	false	false	false	91	95	B:R402
+ProtVar	P62979_Q5T2D3	P62979	A	74	Q5T2D3	2.8	false	false	false	false	75	67	B:G180
+ProtVar	P62979_Q5T447	P62979	A	74	Q5T447	2.5	false	true	true	false	91	88	B:D546:hb+sb; B:F791:hb; B:V850:hb
+ProtVar	P62979_Q70CQ3	P62979	A	74	Q70CQ3	2.7	false	false	false	false	93	97	B:H444
+ProtVar	P62979_Q70EL2	P62979	A	74	Q70EL2	3.7	false	false	false	false	64	74	B:M742
+ProtVar	P62979_Q8WVN8	P62979	A	74	Q8WVN8	2.8	false	false	true	false	81	74	B:T369:hb
+ProtVar	P62979_Q92905	P62979	A	74	Q92905	2.6	false	false	false	false	89	83	B:N108
+ProtVar	P62979_Q93009	P62979	A	74	Q93009	3.1	false	false	false	false	56	69	B:N460
+ProtVar	P62979_Q96AP4	P62979	A	74	Q96AP4	2.7	false	true	true	false	97	97	B:Q412:hb; B:E428:hb+sb
+ProtVar	P62979_Q96FJ0	P62979	A	74	Q96FJ0	0.9	true	true	true	false	73	70	B:E292:hb+sb; B:D321:hb; B:D360:hb+sb
+ProtVar	P62979_Q9GZP9	P62979	A	74	Q9GZP9	2	true	false	true	false	80	90	B:Q122:hb; B:S162:hb
+ProtVar	P62979_Q9NQC7	P62979	A	74	Q9NQC7	0.7	true	true	true	true	66	83	B:Y602:pi; B:E679:hb; B:K680:hb; B:D681:hb+sb
+ProtVar	P62979_Q9Y5K5	P62979	A	74	Q9Y5K5	0.7	true	false	false	false	85	74	B:R145
+ProtVar	P62979_Q9Y5T5	P62979	A	74	Q9Y5T5	3.2	false	false	false	false	61	70	B:M754
+ProtVar	P62979_Q9Y6I4	P62979	A	74	Q9Y6I4	2.8	false	true	true	false	59	73	B:N252:hb; B:Q259:hb; B:E263:hb+sb
+ProtVar	P63165_P63279	P63165	A	63	P63279	2.9	false	false	true	false	96	73	B:S158:hb
+ProtVar	P63165_Q96EE3	P63165	A	63	Q96EE3	2.1	true	true	true	false	94	90	B:D13:hb+sb
+ProtVar	P63165_Q96HI0	P63165	A	63	Q96HI0	2.9	false	true	true	false	96	97	B:D585:hb+sb
+ProtVar	P63165_Q96MF7	P63165	A	63	Q96MF7	4.7	false	false	false	false	94	82	B:S216
+ProtVar	P63165_Q9BQF6	P63165	A	63	Q9BQF6	3.3	false	true	true	false	94	97	B:D778:hb+sb
+ProtVar	P63165_Q9GZR1	P63165	A	63	Q9GZR1	3.1	false	true	true	false	95	97	B:D684:hb+sb
+ProtVar	P63165_Q9H4L4	P63165	A	63	Q9H4L4	2.7	false	true	true	false	97	98	B:D404:hb+sb
+ProtVar	P63165_Q9HC62	P63165	A	63	Q9HC62	2.4	false	true	true	false	98	99	B:D413:hb+sb; B:E414:hb+sb
+ProtVar	P63165_Q9P0U3	P63165	A	63	Q9P0U3	2.9	false	true	true	false	97	98	B:D468:hb+sb; B:E469:hb+sb
+ProtVar	P63165_Q9UBT2	P63165	A	63	Q9UBT2	2.7	false	true	true	false	92	97	B:E157:hb+sb
+ProtVar	P68400_Q15287	P68400	A	191	Q15287	0.9	true	false	true	false	88	89	B:H176:hb
+ProtVar	P68400_Q92688	P68400	A	191	Q92688	2.7	false	false	false	false	86	68	B:P156
+ProtVar	P68400_Q9H063	P68400	A	191	Q9H063	2.2	false	false	true	false	85	73	B:D109:hb; B:S174:hb
+ProtVar	P78346_Q969H6	P78346	A	166	Q969H6	2.9	false	false	false	true	95	99	B:F83:pi
+ProtVar	P78346_Q9BUL9	P78346	A	166	Q9BUL9	2.8	false	false	true	false	91	93	B:T75:hb
+ProtVar	P78346_Q9Y324	P78346	A	166	Q9Y324	4.1	false	false	false	true	90	71	B:F57:pi
+ProtVar	Q01130_Q96A72	Q01130	A	91	Q96A72	1.1	true	true	true	false	87	98	B:E25:hb+sb; B:E89:sb
+ProtVar	Q01968_Q13492	Q13492	B	125	Q01968	2.2	true	false	true	false	96	88	A:N559:hb
+ProtVar	Q09161_Q8IYD1	Q09161	A	458	Q8IYD1	3.2	false	false	false	false	95	85	B:E499
+ProtVar	Q12824_Q8TAQ2	Q8TAQ2	B	487	Q12824	1.8	true	true	true	true	91	90	A:D202:hb+sb; A:F204:pi
+ProtVar	Q12905_Q12906	Q12906	B	274	Q12905	3.1	false	false	true	false	98	97	A:I30:hb
+ProtVar	Q13330_Q16576	Q16576	B	339	Q13330	4.7	false	false	false	false	94	91	A:Y500
+ProtVar	Q13409_Q9NP97	Q9NP97	B	72	Q13409	4	false	false	false	false	84	57	A:I241
+ProtVar	Q14331_Q96DI7	Q14331	A	248	Q96DI7	2.2	false	true	true	false	81	90	B:D236:hb+sb; B:S237:hb
+ProtVar	Q15003_Q15021	Q15021	B	677	Q15003	4.9	false	false	false	false	74	50	A:E240
+ProtVar	Q15022_Q16576	Q16576	B	339	Q15022	3.6	false	false	false	false	96	94	A:R103
+ProtVar	Q53ET0_Q9H0K1	Q53ET0	A	168	Q9H0K1	2.5	false	true	true	false	81	91	B:D106:hb+sb
+ProtVar	Q5SQN1_Q9BV40	Q9BV40	B	12	Q5SQN1	3.8	false	false	false	false	76	80	A:T411
+ProtVar	Q7Z422_Q9Y3F4	Q9Y3F4	B	290	Q7Z422	3.4	false	false	false	false	98	63	A:I102
+ProtVar	Q86V81_Q9P258	Q86V81	A	141	Q9P258	5	false	false	false	false	78	94	B:K368
+ProtVar	Q86V88_Q96Q07	Q86V88	A	125	Q96Q07	3.4	false	true	false	false	92	93	B:E425:sb
+ProtVar	Q8TAQ2_Q96GM5	Q8TAQ2	A	487	Q96GM5	3.3	false	false	true	false	95	91	B:Q415:hb
+ProtVar	Q8TC07_Q96AH8	Q96AH8	B	69	Q8TC07	0.9	true	false	true	false	78	94	A:Y452:hb; A:V453:hb
+ProtVar	Q8TF09_Q9NP97	Q9NP97	B	72	Q8TF09	2.8	false	false	false	false	92	90	A:F68
+ProtVar	Q99961_Q99963	Q99963	B	252	Q99961	3.9	false	false	false	false	65	90	A:T207
+ProtVar	Q99962_Q99963	Q99963	B	252	Q99962	3.7	false	false	false	false	72	90	A:M207
+ProtVar	Q9BV40_Q9UNK0	Q9BV40	A	12	Q9UNK0	3.5	false	true	false	false	87	83	B:D152:sb; B:D156:sb
+ProtVar	Q9H840_Q9Y3F4	Q9Y3F4	B	290	Q9H840	4	false	false	false	false	98	64	A:D98
+ProtVar	Q9NQ55_Q9Y3B9	Q9NQ55	A	41	Q9Y3B9	2.7	false	false	false	false	96	94	B:E143
+ProtVar	Q9NQ55_Q9Y3B9	Q9NQ55	A	278	Q9Y3B9	3.3	false	true	false	false	98	96	B:E159:sb
+AlphaFold DB	AF-0000000203704647		A	1097		3.3	false	false	false	false	90	79	B:E43
+AlphaFold DB	AF-0000000203834307		B	32		4.3	false	false	false	false	52	34	A:Q105
+AlphaFold DB	AF-0000000203834688		B	32		4.7	false	false	false	false	51	32	A:P110
+AlphaFold DB	AF-0000000203834788		B	32		3.1	false	false	false	false	51	34	A:Q105
+AlphaFold DB	AF-0000000203835358		A	32		4.7	false	false	false	false	52	31	B:P110
+AlphaFold DB	AF-0000000203835564		B	32		4.1	false	false	false	false	51	29	A:Q105
+AlphaFold DB	AF-0000000203835984		B	32		4.5	false	false	false	false	51	34	A:Q105
+AlphaFold DB	AF-0000000203835993		B	32		3.7	false	false	false	false	52	33	A:Q105
+AlphaFold DB	AF-0000000203838655		B	32		4	false	false	false	false	52	41	A:H113
+AlphaFold DB	AF-0000000203840660		B	32		4	false	false	false	false	52	33	A:Q105
+AlphaFold DB	AF-0000000203840664		A	32		2.1	true	false	true	false	52	41	B:Q106:hb
+AlphaFold DB	AF-0000000203842718		B	32		4.1	false	false	false	false	50	35	A:Q105
+AlphaFold DB	AF-0000000204037563		A	458		3.2	false	true	false	false	96	96	B:E57:sb
+AlphaFold DB	AF-0000000204060532		A	51		0.8	true	false	true	true	59	91	B:F45:pi; B:E57:hb; B:W60:pi
+AlphaFold DB	AF-0000000204137618		B	141		3.5	false	false	false	false	88	41	A:F101
+AlphaFold DB	AF-0000000204137622		A	140		1.9	true	true	true	false	95	97	B:E51:hb+sb; B:F52:hb; B:D53:sb
+AlphaFold DB	AF-0000000204137622		A	141		2.9	false	false	false	false	95	98	B:W78
+AlphaFold DB	AF-0000000204137623		A	140		1.8	true	true	true	false	95	97	B:E51:hb+sb; B:F52:hb; B:D53:hb+sb
+AlphaFold DB	AF-0000000204137623		A	141		3	false	false	false	false	95	98	B:W78
+AlphaFold DB	AF-0000000204137694		B	140		2	true	true	true	false	95	97	A:E51:hb+sb; A:F52:hb; A:D53:sb; A:Q76:hb
+AlphaFold DB	AF-0000000204137694		B	141		3	false	false	false	false	95	98	A:W78
+AlphaFold DB	AF-0000000204523561		A	74		2.9	false	true	true	false	92	86	B:M69:hb; B:D70:hb+sb; B:F74:hb
+AlphaFold DB	AF-0000000204523565		A	74		2.2	false	true	false	false	90	94	B:E9:sb
+AlphaFold DB	AF-0000000204523775		A	74		1.8	true	true	true	false	55	27	B:D54:hb+sb
+AlphaFold DB	AF-0000000204523961		A	74		2.8	false	false	false	false	90	89	B:C330
+AlphaFold DB	AF-0000000204523968		A	74		5	false	false	false	false	45	81	B:N60
+AlphaFold DB	AF-0000000204523981		A	74		2.7	false	false	false	false	94	89	B:P313
+AlphaFold DB	AF-0000000204523982		A	74		2.9	false	false	false	false	94	90	B:I589
+AlphaFold DB	AF-0000000204523983		A	74		2.8	false	true	false	false	94	89	B:E377:sb
+AlphaFold DB	AF-0000000204523989		A	74		2.5	false	false	true	false	94	89	B:P8:hb; B:A152:hb; B:E154:hb; B:T157:hb; B:E158:hb
+AlphaFold DB	AF-0000000204642350		B	74		2.1	true	false	false	false	63	96	A:Y482
+AlphaFold DB	AF-0000000204785790		B	74		2.8	false	false	false	false	91	97	A:H444
+AlphaFold DB	AF-0000000210374655		B	4		3.1	false	false	true	false	33	90	A:M44:hb
+AlphaFold DB	AF-0000000210396619		B	22		2.7	false	false	true	false	84	89	A:Y199:hb
+AlphaFold DB	AF-0000000210396619		B	24		3.1	false	false	true	false	87	89	A:Y199:hb
+AlphaFold DB	AF-0000000210439728		B	375		2.1	true	true	true	false	94	84	A:D302:hb+sb
+AlphaFold DB	AF-0000000210439728		B	376		2.4	false	true	true	true	95	96	A:D15:hb+sb; A:W35:pi
+AlphaFold DB	AF-0000000210441054		B	66		4	false	false	false	false	94	96	A:V325
+AlphaFold DB	AF-0000000210477329		B	339		4.2	false	false	false	false	95	81	A:K1011
+AlphaFold DB	AF-0000000210482959		A	396		4.9	false	false	false	false	91	83	B:D186
+AlphaFold DB	AF-0000000210486179		B	74		2.8	false	false	false	false	94	97	A:H549
+AlphaFold DB	AF-0000000210489919		A	22		3.8	false	false	false	false	96	97	B:Q375
+AlphaFold DB	AF-0000000210508679		A	166		3.3	false	false	true	false	94	96	B:L91:hb
+AlphaFold DB	AF-0000000210521166		B	293		2.1	true	false	false	false	63	90	A:R55
+AlphaFold DB	AF-0000000210618343		A	74		2.7	false	false	true	false	91	78	B:P5:hb; B:A147:hb; B:C152:hb
+AlphaFold DB	AF-0000000210671913		A	8		1.3	true	false	true	false	93	96	B:V113:hb
+AlphaFold DB	AF-0000000210683678		B	80		4.5	false	false	false	false	98	89	A:Y192
+AlphaFold DB	AF-0000000210859145		A	303		2.4	false	false	true	false	87	81	B:R37:hb; B:N40:hb
+AlphaFold DB	AF-0000000210864329		B	4		3.2	false	true	true	false	33	97	A:E104:hb+sb
+AlphaFold DB	AF-0000000210906385		B	22		3.6	false	false	false	false	92	89	A:I19
+AlphaFold DB	AF-0000000210906397		B	22		2.5	false	true	true	false	95	85	A:E23:hb+sb
+AlphaFold DB	AF-0000000210906397		B	24		3.4	false	true	true	false	97	85	A:E23:hb+sb
+AlphaFold DB	AF-0000000210906450		B	22		3.4	false	false	true	false	93	95	A:I229:hb
+AlphaFold DB	AF-0000000210906450		B	24		4.8	false	false	false	false	93	95	A:I229
+AlphaFold DB	AF-0000000210925714		A	74		2.7	false	true	true	false	90	91	B:E91:hb+sb
+AlphaFold DB	AF-0000000210956569		A	130		3.2	false	false	false	false	72	88	B:R90
+AlphaFold DB	AF-0000000210963132		B	458		3.3	false	true	false	false	97	98	A:E58:sb
+AlphaFold DB	AF-0000000210997687		A	74		3	false	true	true	false	58	56	B:Y103:hb; B:E108:sb
+AlphaFold DB	AF-0000000211002819		A	8		1.4	true	false	true	false	95	96	B:T295:hb; B:I296:hb
+AlphaFold DB	AF-0000000211002820		A	8		1.5	true	false	true	true	93	93	B:V381:hb; B:V382:hb; B:F384:pi
+AlphaFold DB	AF-0000000211002829		A	8		1.7	true	false	true	true	91	92	B:P42:hb; B:V43:hb; B:F45:pi
+AlphaFold DB	AF-0000000211002833		A	8		1.2	true	false	true	false	93	94	B:P165:hb; B:I166:hb
+AlphaFold DB	AF-0000000211002842		A	8		1.6	true	false	true	false	91	92	B:P19:hb; B:V20:hb; B:Q22:hb
+AlphaFold DB	AF-0000000211002849		B	8		1.7	true	false	true	false	92	94	A:A38:hb; A:V39:hb
+AlphaFold DB	AF-0000000211002851		A	8		1.5	true	false	true	false	94	96	B:I41:hb
+AlphaFold DB	AF-0000000211002870		A	8		1.4	true	false	true	false	92	93	B:P19:hb; B:I20:hb; B:S22:hb
+AlphaFold DB	AF-0000000211002886		A	8		1.4	true	false	true	false	94	96	B:P77:hb; B:V78:hb
+AlphaFold DB	AF-0000000211002960		A	145		2.3	false	false	false	false	94	30	B:L765
+AlphaFold DB	AF-0000000211030240		A	74		3	false	false	false	false	75	96	B:Y263
+AlphaFold DB	AF-0000000211030282		B	267		2.9	false	false	false	false	95	95	A:Q2
+AlphaFold DB	AF-0000000211030282		A	74		2.2	false	true	false	false	88	79	B:E1024:sb
+AlphaFold DB	AF-0000000211030331		A	74		1.8	true	false	true	false	93	88	B:P58:hb
+AlphaFold DB	AF-0000000211030360		A	74		0.5	true	true	true	false	80	42	B:E1095:hb+sb
+AlphaFold DB	AF-0000000211030368		A	74		2.8	false	true	true	false	91	95	B:W423:hb; B:E428:hb+sb
+AlphaFold DB	AF-0000000211030377		B	74		2.8	false	true	true	false	91	93	A:E167:hb+sb; A:E174:hb+sb
+AlphaFold DB	AF-0000000211030385		A	74		3	false	true	true	false	91	93	B:E207:sb; B:E214:hb+sb
+AlphaFold DB	AF-0000000211030471		A	74		2	true	true	true	false	56	82	B:E229:hb+sb
+AlphaFold DB	AF-0000000211030541		A	74		2.8	false	false	false	false	93	97	B:H510
+AlphaFold DB	AF-0000000211030559		B	74		2.8	false	true	false	false	93	88	A:E476:sb
+AlphaFold DB	AF-0000000211030585		A	74		2.8	false	false	false	false	90	94	B:H462
+AlphaFold DB	AF-0000000211053753		B	166		3.2	false	false	false	true	90	93	A:F83:pi
+AlphaFold DB	AF-0000000211138850		B	487		2.1	true	true	true	false	92	90	A:D277:hb+sb; A:Q278:hb
+AlphaFold DB	AF-0000000211147443		A	72		3.2	false	false	false	true	87	63	B:F244:pi
+AlphaFold DB	AF-0000000211663094		B	32		3.7	false	false	false	false	51	46	A:H113
+AlphaFold DB	AF-0000000211685441		B	408		3.3	false	false	false	false	28	16	A:P53
+AlphaFold DB	AF-0000000211686415		B	488		2.8	false	false	true	false	87	89	A:L523:hb; A:Q524:hb; A:E526:hb
+AlphaFold DB	AF-0000000211791180		B	252		2.6	false	false	false	false	73	84	A:T207
+AlphaFold DB	AF-0000000211791194		A	252		3	false	false	false	false	74	83	B:M207

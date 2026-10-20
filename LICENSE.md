@@ -54,4 +54,4 @@ Most other sources are CC0 or CC BY 4.0, including UniProt, STRING, Complex Port
 - Maron et al. 2021
 - ProMetheusDB
 
-CPLM 4.0 states "All Rights Reserved" and no licence. The website shows only lysine positions derived from it. Its download and the tables made from it are not redistributed: `inputs/layers/` records only their checksums.
+CPLM 4.0 states "All Rights Reserved" and no licence. The current website (v1.1.0) does not use it; the published explorer kept in `docs/v1.0.0/` shows lysine positions derived from it. Its download and the tables made from it are not redistributed: `inputs/MANIFEST.tsv` records only their checksums.

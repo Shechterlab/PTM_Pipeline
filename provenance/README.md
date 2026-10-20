@@ -31,7 +31,8 @@ et al. 2017 annotate sites but add none.
 - **Interactions:** STRING 12.5, Complex Portal, QuickGO, PDBe-KB and SIFTS, PDB contacts, ProtVar, AlphaFold DB
   complexes, IntAct, pepR-MS, RBDmap, Trendel et al. 2025 (`inputs/interactions/`).
 
-`inputs/MANIFEST.tsv` lists every input file with its source, version or download date, licence and MD5.
+`inputs/MANIFEST.tsv` lists every input file with its source, version or download date, licence and MD5, and
+`inputs/README.md` says how each folder was staged.
 
 ## How records become sites
 

@@ -27,4 +27,5 @@ inputs/reference/** -text -diff
 inputs/annotation/** -text -diff
 inputs/interactions/** -text -diff
 inputs/layers/** -text -diff
+inputs/disease/** -text -diff
 inputs/licences/** -text -diff

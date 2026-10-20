@@ -27,11 +27,12 @@ def split_key(site: str) -> tuple[str, int]:
 
 
 def counts(sites, records, changes, studies, maron_counts, prev_sites) -> dict:
-    placed = sites[sites['status'] == 'site']
+    pending_rows = sites['flags'].str.contains('one_sided_window')
+    placed = sites[~pending_rows]
     flags = sites['flags'].str.split('; ').explode()
     out = {
         'rows': len(sites), 'sites': len(placed), 'proteins': placed['uniprot_accession'].nunique(),
-        'pending': int((sites['status'] == 'pending').sum()),
+        'pending': int(pending_rows.sum()),
         'proteins_all_rows': sites['uniprot_accession'].nunique(),
         'records': len(records), 'records_placed': int((records['placed_site'] != '').sum()),
         'previous_sites': len(prev_sites), 'previous_proteins': prev_sites['uniprot_accession'].nunique(),
@@ -125,10 +126,12 @@ def write_release_json(outdir: Path, ctx: dict, files: dict) -> None:
         'previous_version': ctx['previous'],
         'code_commit': commit(),
         'repository': GITHUB,
+        'release_date': ctx['release_date'],
         'paper': PAPER,
         'doi': None,
         'licence': 'CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (studies file, inputs/MANIFEST.tsv)',
         'counts': {k: v for k, v in ctx['counts'].items()},
+        'validation': ctx['validation'],
         'reference': {'proteome': 'UP000005640', 'reviewed': True, **{k: ctx['uniprot_release'][k] for k in ('release', 'release_date', 'entries', 'fasta', 'fasta_md5')}},
         'annotation': {'InterPro': '108.0', 'MobiDB': 'export of 2026-03-30', 'domain_ontology': 'config/domain_class_ontology.json'},
         'phosphositeplus': {'downloaded': '2021-05-22', 'via': 'Maron et al. 2021 Table S5',
@@ -145,6 +148,29 @@ def write_release_json(outdir: Path, ctx: dict, files: dict) -> None:
     xlsx = outdir / f"human_methylarginine_sites_{ctx['version']}.xlsx"
     record['files'].append({'file': xlsx.name, 'rows': ctx['counts']['rows'], 'md5': md5(xlsx)})
     (outdir / 'release.json').write_text(json.dumps(record, indent=1, ensure_ascii=False) + '\n')
+
+
+# What one row of each release file is, in the order the README lists them.
+FILE_ROWS = {
+    'proteins': 'protein: names, site counts, functional classes, arginine enrichment, site density and clusters, condensates, locations, disease families, other PTMs, interactions',
+    'studies': 'study or database: citation, DOI, terms, counts',
+    'statistics': 'enrichment test behind the summaries: classes, motifs, disorder, domains, disease families, condensates, locations, interactions',
+    'records': 'source record: what the study reported, its evidence, where each version placed it',
+    'changes': 'site of either version: kept, removed or added, and why',
+    'maron_detection': 'site detected in Maron et al. 2021 Table S2 or S3 (per antibody)',
+    'maron_inhibitors': 'site, antibody and PRMT inhibitor in Maron et al. 2021 Table S3',
+    'carm1_ko': 'site and cell line in the CARM1 knockout data of Shishkova et al. 2017',
+    'site_interactions': 'piece of interaction evidence at a site: crosslinks, PDB interfaces, predicted interfaces and contacts, IntAct records',
+    'residue_evidence': 'run of residues of a protein with the same interaction evidence',
+    'protein_partners': 'protein and STRING physical partner (score >= 0.7)',
+    'complexes': 'Complex Portal or hu.MAP complex with a methylated member',
+    'disease_terms': 'enriched DisGeNET term (DOSE enrichDGN)',
+    'disease_families': 'disease family: terms and genes',
+    'density_windows': 'protein and window width with significantly dense sites (q <= 0.05)',
+    'condensates': 'CD-CODE condensate: name, type, members and methylated members',
+    'hpa_locations': 'protein and Human Protein Atlas location',
+    'other_ptm_sites': 'other modification on a protein of the release (PTM master table)',
+}
 
 
 def column_section(name: str, columns: list[tuple]) -> list[str]:
@@ -175,14 +201,12 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         '',
         '| File | One row per |',
         '|---|---|',
-        f"| `{files['sites'][0]}` | site, including the pending sites (`status`) |",
+        f"| `{files['sites'][0]}` | site, including the {n(c['pending'])} sites kept pending (flag `one_sided_window`) |",
         f"| `human_methylarginine_sites_{version}.xlsx` | the same table as a spreadsheet |",
-        f"| `{files['studies'][0]}` | study or database: citation, DOI, terms, counts |",
-        f"| `{files['records'][0]}` | source record: what the study reported, its evidence, where each version placed it |",
-        f"| `{files['changes'][0]}` | site of either version: kept, removed or added, and why |",
-        f"| `{files['maron_detection'][0]}` | site detected in Maron et al. 2021 Table S2 or S3 (per antibody) |",
-        f"| `{files['maron_inhibitors'][0]}` | site, antibody and PRMT inhibitor in Maron et al. 2021 Table S3 |",
-        f"| `{files['carm1_ko'][0]}` | site and cell line in the CARM1 knockout data of Shishkova et al. 2017 |",
+    ]
+    rows = dict(FILE_ROWS, sites=None)
+    lines += [f"| `{files[k][0]}` | {text} |" for k, text in rows.items() if text and k in files]
+    lines += [
         '| `data_dictionary.tsv` | column of every table, with its codes and their meanings |',
         '| `release.json` | the release: version, counts, reference, inputs, files with MD5 |',
         '| `CHANGES.md` | what changed since the previous version |',
@@ -218,6 +242,10 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'source (the `studies` column does), and that web pages showing PSP-derived sites link them to the PSP protein '
         'page (www.phosphosite.org/uniprotAccAction?id=<UniProt accession>).',
         '',
+        'The annotation and interaction sources keep their own terms too (`licence` in `inputs/MANIFEST.tsv`). Three are '
+        'non-commercial: the DisGeNET terms behind the disease tables (CC BY-NC-SA 4.0), CD-CODE condensates (CC BY-NC 4.0) '
+        'and the pepR-MS RNA crosslink compendium (CC BY-NC).',
+        '',
         '## How it was built',
         '',
         f"`bash hpc/build_release.sh {version}` at commit `{commit()}` of {GITHUB}:",
@@ -227,7 +255,12 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         '(`scripts/02_remap_arg_methyl_to_canonical.py`);',
         '3. stops if any record is placed against its own evidence (`scripts/qc_remap_evidence_check.py`; the 22 '
         'accepted paralog rows of `config/remap_evidence_allowlist.tsv` aside) or any site is not an arginine;',
-        '4. writes this folder (`scripts/build_release.py`).',
+        '4. runs the analyses on the union: functional classes (`scripts/03`), motifs and arginine enrichment (`08`), '
+        'disorder and domain context (`06`, `05`, `07`), other PTMs (`09`), site density and clusters (`10`, `28`, `25`), '
+        'condensates (`12`), Maron et al. 2021 summaries (`16`) and disease enrichment (`14`);',
+        '5. encodes the release for the website (`scripts/36`) and computes the interaction evidence of its sites from '
+        '`inputs/interactions/` (`scripts/37`);',
+        '6. writes this folder (`scripts/build_release.py`).',
         '',
         f'- **Reference sequences:** UniProt release {ur["release"]} ({ur["release_date"]}), the {ur["entries"]:,} reviewed '
         f'entries of the human reference proteome UP000005640 (`inputs/reference/`). `reference_sequence_md5` tells '
@@ -241,10 +274,9 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         '',
         'The same definitions, with every code and its meaning, are in `data_dictionary.tsv`.',
     ]
-    for name, _frame, columns in files.values():
-        if name == 'data_dictionary.tsv':
-            continue
-        lines += column_section(name, columns)
+    for k in ['sites'] + list(FILE_ROWS):
+        if k in files:
+            lines += column_section(files[k][0], files[k][2])
     (outdir / 'README.md').write_text('\n'.join(lines) + '\n')
 
 
@@ -259,7 +291,7 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
     agreement = (f"all {c['start_rule_agree']:,} placements the pipeline made from plain peptides by other means"
                  if not c['start_rule_disagree'] else
                  f"{c['start_rule_agree']:,} placements made from plain peptides by other means, and disagrees with {c['start_rule_disagree']:,}")
-    pending = sites[sites['status'] == 'pending']
+    pending = sites[sites['flags'].str.contains('one_sided_window')]
     lines = [
         f'# Changes from {previous} to {version}',
         '',
@@ -289,7 +321,7 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         r = int(reason_records.get(code, 0))
         removed = int(((code_sites['code'] == code) & (code_sites['change'] == 'removed')).sum())
         added = int(((code_sites['code'] == code) & (code_sites['change'] == 'added')).sum())
-        if (r or removed or added) and code not in ('reference_renumbered', 'pending_splice_junction'):
+        if (r or removed or added) and code not in ('reference_renumbered', 'one_sided_window'):
             lines.append(f"| `{code}` | {text} | {r:,} | {removed:,} | {added:,} |")
     lines += [
         '',
@@ -329,11 +361,12 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         '',
         '## Still open',
         '',
-        f"- **Windows crossing a splice junction** ({n(c['pending'])} sites, `status` pending, flag "
-        f"`pending_splice_junction`; {int(pending['in_previous_version'].sum())} of them in {previous}): one full flank "
-        'of the window matches the entry at the reported arginine and the other does not, and no other entry holds the '
-        'window. The pipeline leaves these records unplaced; the release keeps the sites, marked pending and left out of '
-        'every analysis, until the policy is decided: '
+        f"- **Windows that match on one side only** ({n(c['pending'])} sites, flag `one_sided_window`; "
+        f"{int(pending['in_previous_version'].sum())} of them in {previous}): the source window matches the entry exactly on "
+        'one side of the reported arginine and not on the other, and no other reviewed entry holds it. Three of the ten '
+        'windows occur in full in another UniProt isoform of the protein (GANAB R185, TCF7L2 R126, SNX12 R153; checked '
+        '2026-10-20), so they come from a splice variant. The pipeline leaves these records unplaced; the release keeps the '
+        'sites, flagged and left out of every analysis, until the policy is decided: '
         + ', '.join(f"{g} R{split_key(s)[1]}" for g, s in zip(pending['gene'], pending['site_id'])) + '.',
         f"- **Paralog windows** ({c['flags'].get('paralog_window', 0)} sites, flag `paralog_window`): a window "
         'matches a paralog exactly and the named entry within 2 residues. The records stay on the entry the source named, '

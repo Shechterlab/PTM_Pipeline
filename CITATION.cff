@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: >-
+  If you use these data or this code, please cite the paper below, and the original studies that reported the
+  sites you use (each release's studies table lists them).
+title: "PTM_Pipeline: human methylarginine sites and the Methylarginine Site Explorer"
+version: v1.1.0
+authors:
+  - family-names: DeAngelo
+    given-names: J. D.
+  - family-names: Silverstein
+    given-names: A. M.
+  - family-names: Shechter
+    given-names: D.
+license:
+  - MIT
+  - CC-BY-NC-SA-4.0
+repository-code: "https://github.com/Shechterlab/PTM_Pipeline"
+url: "https://shechterlab.github.io/PTM_Pipeline/"
+keywords:
+  - arginine methylation
+  - post-translational modification
+  - proteomics
+  - PRMT
+preferred-citation:
+  type: article
+  title: Protein arginine methylation rewires molecular interactions
+  authors:
+    - family-names: DeAngelo
+      given-names: J. D.
+    - family-names: Silverstein
+      given-names: A. M.
+    - family-names: Shechter
+      given-names: D.
+  journal: Cell Chemical Biology
+  volume: 33
+  issue: 10
+  start: 1404
+  end: 1421
+  year: 2026
+  doi: 10.1016/j.chembiol.2026.09.011
