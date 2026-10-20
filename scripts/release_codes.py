@@ -418,7 +418,7 @@ CODES['analysis'] = {
     'disorder': 'methylarginines in a disorder class (scripts/06), against the other arginines of the methylated proteins',
     'domain_context': 'methylarginines in a domain context (scripts/05, 07), against the other arginines of the methylated proteins. A protein whose every arginine is a site has no background and is left out (MIF, 5 sites)',
     'domain_class': 'methylarginines whose nearest domain is of a class (scripts/07), against the other arginines of the methylated proteins (MIF left out, as for domain_context)',
-    'disease_family': 'genes of methylated proteins in one of the eight audited disease families (scripts/14), against the other genes with a DisGeNET term; q over the eight',
+    'disease_family': 'methylarginine-containing proteins (counted by gene) in one of the eight audited disease families (scripts/14), against the other genes with a DisGeNET term; q over the eight',
     'disease_family_additional': 'the same for the additional disease families (scripts/disease_families.py ADDITIONAL_FAMILY_RULES: rule-based, not audited, applied only to the terms no audited family takes); q over these families',
     'condensate': 'methylated proteins among the members of a CD-CODE condensate (scripts/12), against the other condensate proteins',
     'hpa_location': 'methylated proteins at a Human Protein Atlas location, against the other proteins HPA locates (Approved or better)',
@@ -511,12 +511,12 @@ DISEASE_TERM_COLUMNS = [
     ('term_name', 'string', '', 'its name'),
     ('family', 'string', '', 'its disease family (scripts/disease_families.py): audited, or else additional; empty when none'),
     ('n_genes_term', 'integer', '', 'genes of the term in the universe'),
-    ('n_methylated', 'integer', '', 'of these, genes of methylated proteins'),
+    ('n_methylated', 'integer', '', 'of these, the genes of methylarginine-containing proteins'),
     ('fold_enrichment', 'number', '', 'observed over expected'),
     ('p', 'number', '', 'hypergeometric p value (DOSE enrichDGN)'),
     ('p_adjust', 'number', '', 'Benjamini-Hochberg adjusted p value over the tested terms'),
     ('q', 'number', '', 'q value (qvalue, lambda 0.05, as DOSE)'),
-    ('genes', 'list<string>', '', 'the methylated genes in the term (symbols, org.Hs.eg.db)'),
+    ('genes', 'list<string>', '', 'the genes of the methylarginine-containing proteins in the term (symbols, org.Hs.eg.db)'),
     ('uniprot_accessions', 'list<string>', '', 'the proteins of the site table those genes stand for'),
 ]
 
@@ -566,7 +566,7 @@ DISEASE_FAMILY_COLUMNS = [
     ('audited', 'boolean', '', 'one of the eight audited families of the paper (otherwise an additional, rule-based family)'),
     ('n_terms', 'integer', '', 'DisGeNET terms assigned to it'),
     ('n_genes', 'integer', '', 'genes of the universe in at least one of its terms'),
-    ('n_methylated_genes', 'integer', '', 'of these, genes of methylated proteins'),
+    ('n_methylated_genes', 'integer', '', 'of these, the genes of methylarginine-containing proteins'),
 ]
 
 SITE_INTERACTION_COLUMNS = [
