@@ -515,15 +515,17 @@
     diamond: (x, y, size, fill, stroke, attr) => '<rect x="' + r1(x - size / 2) + '" y="' + r1(y - size / 2) + '" width="' + size + '" height="' + size + '" transform="rotate(45 ' + r1(x) + ' ' + r1(y) + ')" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.1"' + (attr || '') + '/>',
     // A lower-confidence site head: a rim in its colour, hatched with diagonal chords, so it reads apart from a site in
     // print and in grey as well.
+    // A site's head draws a light outline around its disc, so its colour reads at about r - 1; the hatched head stays
+    // inside that (0.68 r) and is drawn semi-transparent, so it reads as the weaker mark next to a site.
     hatch: (pal, x, y, r0, color, attr, stroke) => {
-      const r = Math.max(2, r0 - 0.6);   // a little smaller than a site's head, so it reads as the weaker mark
+      const r = Math.max(1.8, r0 * 0.68);
       let d = '';
       for (const off of [-r * 0.5, 0, r * 0.5]) {
-        const h = (Math.sqrt(r * r - off * off) - 0.5) / Math.SQRT2, cx0 = x + off / Math.SQRT2, cy0 = y + off / Math.SQRT2;
+        const h = (Math.sqrt(r * r - off * off) - 0.4) / Math.SQRT2, cx0 = x + off / Math.SQRT2, cy0 = y + off / Math.SQRT2;
         d += 'M' + r1(cx0 - h) + ' ' + r1(cy0 + h) + 'L' + r1(cx0 + h) + ' ' + r1(cy0 - h);
       }
-      return '<g' + (attr || '') + '><circle cx="' + r1(x) + '" cy="' + r1(y) + '" r="' + r1(r) + '" fill="' + pal.bg + '" stroke="' + (stroke || color) + '" stroke-width="1.1"/>' +
-        '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="0.9" stroke-linecap="round"/></g>';
+      return '<g' + (attr || '') + '><circle cx="' + r1(x) + '" cy="' + r1(y) + '" r="' + r1(r) + '" fill="' + pal.bg + '" fill-opacity="0.6" stroke="' + (stroke || color) + '" stroke-opacity="0.8" stroke-width="0.9"/>' +
+        '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-opacity="0.7" stroke-width="0.75" stroke-linecap="round"/></g>';
     },
     // A site head: solid in its colour, or hollow with a dashed rim (predicted only; measured but unchanged).
     head: (pal, x, y, r, color, hollow, attr, stroke) => '<circle cx="' + r1(x) + '" cy="' + r1(y) + '" r="' + r + '" fill="' + (hollow ? pal.bg : color) + '" stroke="' + (hollow ? color : stroke || pal.ring) + '" stroke-width="' + (hollow ? 1.6 : 1.4) + '"' + (hollow ? ' stroke-dasharray="2.2 1.4"' : '') + (attr || '') + '/>',
@@ -4974,7 +4976,7 @@
       const dim = !R.shown.has(h.s.j);
       const sel = UI.highlight === h.s.pos && (!o.forExport || o.print);
       g += '<line x1="' + r1(h.hx) + '" x2="' + r1(h.hx) + '" y1="' + (base - 4) + '" y2="' + hy + '" stroke="' + pal.stem + '" stroke-width="1"' + (dim ? ' opacity=".4"' : '') + '/>';
-      g += siteHead(h.s, pal, h.hx, hy, R0, colors[k] || pal.none, hollow(k), ' class="head" data-j="' + h.s.j + '" data-pos="' + h.s.pos + '"' + (dim ? ' opacity=".28"' : ''), sel ? pal.ink : null).replace(/stroke-width="[\d.]+"/, 'stroke-width="' + (sel ? 2.6 : h.s.lc ? 1.1 : hollow(k) ? 1.6 : 2) + '"');
+      g += siteHead(h.s, pal, h.hx, hy, R0, colors[k] || pal.none, hollow(k), ' class="head" data-j="' + h.s.j + '" data-pos="' + h.s.pos + '"' + (dim ? ' opacity=".28"' : ''), sel ? pal.ink : null).replace(/stroke-width="[\d.]+"/, 'stroke-width="' + (sel ? 2.6 : h.s.lc ? 0.9 : hollow(k) ? 1.6 : 2) + '"');
       const q = labelOf.get(h);
       if (q) {
         const ly = y0 + 9 + q.line * 12;
