@@ -43,6 +43,9 @@ HERE = Path(__file__).resolve().parent
 _spec = importlib.util.spec_from_file_location('export37', HERE / '37_export_interaction_data.py')
 x37 = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(x37)
+_spec = importlib.util.spec_from_file_location('interaction_inputs', HERE / 'interaction_inputs.py')
+ii = importlib.util.module_from_spec(_spec)   # the readers of the staged tables
+_spec.loader.exec_module(ii)
 
 HEADER_CHECK = re.compile(r'[\t\r\n]')
 MANIFEST_COLUMNS = ['file', 'bytes', 'md5', 'rows', 'content', 'source', 'version_or_date', 'citation', 'licence',
@@ -593,12 +596,18 @@ def stage_model_contacts(w: Writer, c: Path, served: Path | None = None, measure
             for pos, m in sorted(sites.items(), key=lambda kv: int(kv[0])):
                 rows.append(['ProtVar', f'{a}_{b}', acc, ch, int(pos), other, m[0], *flags(m[1]), m[2], m[3],
                              [f'{x}:{lab}' for x, lab in m[4]]])
+    # AlphaFold DB: the chain of each accession from the model's metadata in the cache (afdb_prediction), else from the
+    # heterodimer tables already staged, with the measured chains' own accessions (positions) over both.
+    staged = ii.afdb_heterodimers(ii.Tables(w.out)) if any(w.out.glob('alphafold_db_human_heterodimers_*.tsv')) else {}
     for p in sorted((c / 'afdb_measure').glob('*.json')):
         files.append(p)
         rec = json.loads(p.read_text())
-        acc_of = {ch: acc for ch, acc in rec.get('meta', [])}
+        pf = c / 'afdb_prediction' / f'{p.stem}.json'
+        meta = [[m.get('chainId'), m.get('uniprotAccession')] for m in (ii.read_json(pf, []) if pf.exists() else []) if isinstance(m, dict)]
+        acc_of = {**dict(zip(staged.get(p.stem, {}).get('chains', []), staged.get(p.stem, {}).get('accessions', []))),
+                  **{ch: acc for ch, acc in rec.get('meta', []) or meta}, **{ch: v[0] for ch, v in rec.get('positions', {}).items()}}
         for ch, sites in rec.get('chains', {}).items():
-            others = [acc for c2, acc in rec.get('meta', []) if c2 != ch]
+            others = [acc for c2, acc in acc_of.items() if c2 != ch]
             for pos, m in sorted(sites.items(), key=lambda kv: int(kv[0])):
                 rows.append(['AlphaFold DB', p.stem, acc_of.get(ch, ''), ch, int(pos), others[0] if others else '', m[0], *flags(m[1]),
                              m[2], m[3], [f'{x}:{lab}' for x, lab in m[4]]])

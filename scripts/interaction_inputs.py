@@ -389,9 +389,19 @@ def model_contacts(t: Tables, g_clash: int, g_sb: int, g_hb: int, g_catpi: int, 
     """(source, model) -> {chain: {position: measure}} with measure = (min distance, flags, pLDDT R, lowest partner pLDDT,
     [[partner chain, residue label], ...]), as scripts/37 measure_methyl_r gives it. With seqs (the reviewed proteome), a
     measure is left out when its partner is outside it or its partner residues disagree with the partner's reference
-    sequence: the chain named for the partner is another protein, or numbers another sequence."""
+    sequence: the chain named for the partner is another protein, or numbers another sequence. An AlphaFold DB row staged
+    without its accessions (the top-ups before 2026-10-22 did not write them) takes them from the model's chains in the
+    heterodimer tables."""
     out = defaultdict(lambda: defaultdict(dict))
+    models = None
     for r in t.rows('predicted_model_arginine_contacts_'):
+        if r['source'] == 'AlphaFold DB' and not (r['uniprot_accession'] and r['partner_accession']):
+            models = afdb_heterodimers(t) if models is None else models
+            x = models.get(r['model'], {})
+            acc_of = dict(zip(x.get('chains', []), x.get('accessions', [])))
+            if r['chain'] in acc_of and len(acc_of) == 2:
+                r = dict(r, uniprot_accession=r['uniprot_accession'] or acc_of[r['chain']],
+                         partner_accession=r['partner_accession'] or next(a for c, a in acc_of.items() if c != r['chain']))
         if seqs is not None:
             partner = seqs.get(r['partner_accession'], '')
             labels = [x.split(':')[1] for x in L(r['partner_residues']) if x.count(':') >= 1]   # 'A:E240:hb+sb' -> 'E240'
