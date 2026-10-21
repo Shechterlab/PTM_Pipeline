@@ -1,0 +1,1107 @@
+study_id	reported_accession	reported_gene	reported_position	peptide	window	methyl_degree	rme2_type	cell_type	enrichment	localisation_probability	n_source_rows	source_tables	note
+Sylvestersen2014	A0A5E8	GAS2L1	421	GAPGGR(me1)GAQISVPSPAR	RGAPGGRGAQISV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	A0A5E8	GAS2L1	642	MDTQPDR(me1)KPSR	MDTQPDRKPSRIP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9446	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A0AV56	SAFB	754	FHDFDHRDR(me1)GR	DFDHRDRGRYPDH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.962	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A0AV56	SAFB	811	MSEGR(me1)GIPPPPRGR	KRMSEGRGIPPPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A0AV56	SAFB	818	MSEGRGIPPPPR(me1)GR	GIPPPPRGRRDWG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A0AV56	SAFB	820	MSEGRGIPPPPRGR(me1)	PPPPRGRRDWGDH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A0AV56	SAFB	912	GSRPSDAR(me1)FTR	SRPSDARFTRRY_	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A0AV96	RBM47	405	GSYIGGYSAGR(me1)GIYSR	GGYSAGRGIYSRY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	A1JUI9	WASL	284	QAPPPPPPSR(me1)GGPPPPPPPPHNSGPPPPPAR	PPPPPSRGGPPPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A1JUI9	WASL	307	GR(me1)GAPPPPPSR	PPPARGRGAPPPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A2RRP1	NBAS	2207	IATVMITR(me2)CTMENKEGIGNEVIK	ATVMITRCTMENK	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.8527	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	A4D0Z6	IMPDH1	407	NIIDAGVDGIR(me1)	AGVDGIRVGMGCG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	A4D1U4	LCHN	34	WAEGPAVSIPQAPQPQAGGWGR(me1)GGGGGARPAAEPPR	QAGGWGRGGGGGA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9775	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A4D1W6	C7orf11	57	DGYGSPHHTPPYGPR(me1)	TPPYGPRSRPYGS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A4D1W6	C7orf11	117	SPAGSQQQFGYSPGQQQTHPQGSPR(me1)TSTPFGSGR	HPQGSPRTSTPFG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A4D1W6	C7orf11	126	SPAGSQQQFGYSPGQQQTHPQGSPRTSTPFGSGR(me1)	TPFGSGRVREKRM	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A4PIV7	SYT-SSX1	9	SVAFAAPR(me1)	VAFAAPRQRGKGE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A5YM63	NEFM	26	SSFSR(me1)VSGSPSSGFR	TRSSFSRVSGSPS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A5YM63	NEFM	42	SQSWSR(me1)GSPSTVSSSYKR	RSQSWSRGSPSTV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A5YM63	NEFM	54	R(me1)SMIAPR	VSSSYKRSMIAPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A6MW40	PKDREJ	60	AIISIR(me1)PSAVR	RAIISIRPSAVRA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	A6MW40	PKDREJ	65	AIISIRPSAVR(me1)	IRPSAVRAGGAVI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	A6NC98-5		535	TPIR(me2)PCRNTKQMPTER	DGRTPIRPCRNTK	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	A6NC98-5		538	TPIRPCR(me2)NTKQMPTER	TPIRPCRNTKQMP	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	A6NC98-5		547	TPIRPCRNTKQMPTER(me2)	KQMPTERAIRYRN	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	A6NEM2	HCFC1	504	VTGPQATTGTPIVTMR(me1)PASQAGK	TPIVTMRPASQAG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A6NEM2	HCFC1	524	APVTVTSIPAGVR(me1)	SIPAGVRMVVPTQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A6NEM2	HCFC1	847	GAPGQPGTIIR(me1)TVPMGGVR	QPGTIIRTVPMGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	A6NEM2	HCFC1	855	GAPGQPGTIIRTVPMGGVR(me1)	VPMGGVRIVTPVT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	A6NEM2	HCFC1	1219	VR(me1)ISSPSIK	PISSKVRISSPSI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A7E2V4	KIAA0913	1120	IAIGSR(me1)GGYNGR	RIAIGSRGGYNGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A7E2V4	KIAA0913	1454	AGGEAGR(me1)GMPEGR	AGGEAGRGMPEGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9998	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A7E2V4-2	KIAA0913	1120	IAIGSR(me1)GGYNGR	RIAIGSRGGYNGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	A7E2V4-2	KIAA0913	1454	AGGEAGR(me1)GMPEGR	AGGEAGRGMPEGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9998	1	032748-4 All identified MMA sites	
+Sylvestersen2014	A7XAK3	CIC/DUX4 fusion	599	FIPMDPATFR(me1)R	MDPATFRRKRPES	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8688	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A8CG34	POM121C	200	DRGTIPDR(me1)FVITPR	RGTIPDRFVITPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A8K455	MAT1A	264	FVIGGPQGDAGVTGR(me1)	DAGVTGRKIIVDT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A8K525	NONO	456	FGQAATMEGIGAIGGTPPAFNR(me1)AAPGAEFAPNK	TPPAFNRAAPGAE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A8K5Q1	MEPCE	86	ESPGAAATSSSGPQAQQHR(me1)GGGPQAQSHGEAR	PQAQQHRGGGPQA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A8K6U7	HNRNPUL1	645	GGFQNR(me1)GGGSGGGGNYR	RGGFQNRGGGSGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A8K6U7	HNRNPUL1	671	SGGGGYSQNR(me1)WGNNNR	GGYSQNRWGNNNR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.899	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A8K6U7	HNRNPUL1	685	DNNNSNNR(me1)GSYNR	NNNSNNRGSYNRA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A8K724	PAK4	126	ARQENGMPEEPATTAR(me1)GGPGK	EPATTARGGPGKA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9998	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A8KA30	OSBPL1A	637	TGKPFNPIIGETYEIVR(me1)	ETYEIVRDDIGFR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A8KAK5	MED14	1123	AGNWPGSPQVSGPSPAAR(me1)MPGMSPANPSIHSPVPDASHSPR	GPSPAARMPGMSP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A8MTC3	RAI1	249	SCTAPTAQPHDR(me1)PITASSSIAPGQR	TAQPHDRPITASS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	A8MVJ9		265	TIVEAASDDER(me1)	AASDDERRKAFAP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	A8MXD5	GRXCR1	14	REMKPESDRPR(me2)K	PESDRPRKVRFRI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9402	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	A9CQZ4	DPYSL2	59	TIDFDSISVGR(me1)GSGQVVAQQR	DSISVGRGSGQVV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B2R4P9	H3F3A	41	SAPSTGGVKKPHR(me1)	GVKKPHRYRPGTV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B2R4R0	HIST1H4L	24	KVIR(me1)DNIQGITKPAIR	RHRKVIRDNIQGI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B2R532	REXO2	12	IIR(me1)GVGGSHGR	IGSRIIRGVGGSH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	B2R694	LSS	10	R(me1)GGPYKTEPATDIGR	GTCIRRRGGPYKT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9828	1	032748-4 All identified MMA sites	
+Sylvestersen2014	B2R6U8	NUDT21	8	SVVPPNR(me1)SQTGWPR	SVVPPNRSQTGWP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B2R6U8	NUDT21	15	SQTGWPR(me1)GVTQFGNK	SQTGWPRGVTQFG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B2R6X5	HSPA6	51	TTPSYVAFTDTER(me1)IVGDAAK	AFTDTERIVGDAA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9952	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B2R8Z8	SYNCRIP	526	AGYSQR(me1)GGPGSAR	RAGYSQRGGPGSA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B2RA03	KRT18	55	STSFR(me1)GGMGSGGIATGIAGGIAGMGGIQNEK	SRSTSFRGGMGSG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B2RDE1	DKFZp686J1372	142	IVIIEGDIER(me1)	IEGDIERTEERAE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	B2RDK8	TRPC4AP	14	AAAPVAAGSGAGR(me1)GR	AGSGAGRGRRSAA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9848	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B2RDK8	TRPC4AP	16	AAAPVAAGSGAGRGR(me1)	SGAGRGRRSAATV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.7834	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B2RDQ3	TRA2B	224	DYYDR(me1)GYDR	RRDYYDRGYDRGY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B2RDQ3	TRA2B	241	SYR(me1)GGGGGGGGWR	YYSRSYRGGGGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B2RDQ3	TRA2B	271	SPSPYYSR(me1)GGYR	PSPYYSRGGYRSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9978	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B3KM78	WHSC2	249	SPTAPSVFSPTGNR(me1)TPIPPSR	FSPTGNRTPIPPS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9957	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B3KMR5	RRP12	1138	VIATQPGPGR(me1)GR	TQPGPGRGRKKDH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9856	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B3KQI5	NEFL	23	YVETPR(me1)VHISSVR	RYVETPRVHISSV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B3KQI5	NEFL	37	SGYSTAR(me1)SAYSSYSAPVSSSISVR	SGYSTARSAYSSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B3KQI5	NEFL	54	SAYSSYSAPVSSSISVR(me1)R	SSSISVRRSYSSS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.754	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B3KVF0		280	SFAGAVSPQEEDEFR(me1)R	QEEDEFRRIAAIP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9239	1	032748-4 All identified MMA sites	
+Sylvestersen2014	B3KVR1	SNRPN	112	VPIAGAAGGPGVGR(me2)AAGRGVPAGVPIPQAPAGIAGPVR	GGPGVGRAAGRGV	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	B3KVR1	SNRPN	116	VPIAGAAGGPGVGRAAGR(me2)GVPAGVPIPQAPAGIAGPVR	VGRAAGRGVPAGV	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	B4DFI3	CELF5	15	MARPIQVKPADSESR(me2)GGR	PADSESRGGRDRK	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9957	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	B4DFI3	CELF5	18	MARPIQVKPADSESRGGR(me2)	SESRGGRDRKIFV	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9957	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	B4DGT8	MKL2	817	VFTNSASSNTVIPYQR(me1)HPAPAVQQPFINK	TVIPYQRHPAPAV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B4DI36	RPAIN	6	AESIR(me1)SPR	_MAESIRSPRRSI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B4DI56	SMTN	475	GR(me1)GIAARPIENR	EEGPRGRGIAARP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	B4DMG8		459	DIVHSGIAYAMER(me1)	IAYAMERSARQIM	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B4DR36	PELP1	82	AAAVISGPSAGSAAGVPGGTGGISAVSSGPR(me1)IR	AVSSGPRIRIIII	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8794	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B4DRM3	EIF4B	70	APPIDR(me1)SIIPTAPR	RAPPIDRSIIPTA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	B4DRM3	EIF4B	261	DRYDDR(me1)GSR	RDRYDDRGSRDYD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9994	1	032748-4 All identified MMA sites	
+Sylvestersen2014	B4DRM3	EIF4B	268	DYDR(me1)GYDSR	GSRDYDRGYDSRI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B4DRM3	EIF4B	292	RDDDYR(me1)GGGDRYEDR	RRDDDYRGGGDRY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B4DRM3	EIF4B	308	RDDR(me1)SWSSR	YDRRDDRSWSSRD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	B4DSS4	FAM120B	908	TGSGYSR(me1)SSQGQPWR	TGSGYSRSSQGQP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B5MC40	GATAD2A	244	MPGSVIPPPIVR(me1)GGQQASSK	IPPPIVRGGQQAS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9964	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B5MC40	GATAD2A	277	GAQQIHSIR(me1)QHSSTGPPPIIIAPR	QQIHSIRQHSSTG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B5MC40	GATAD2A	292	QHSSTGPPPIIIAPR(me1)	PIIIAPRASVPSV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B5MC40	GATAD2A	559	GSATTPR(me1)GVIHTFSPSPK	GSATTPRGVIHTF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B5MDQ6	ZNF74	198	SR(me1)GGTIAGHTQERPGH	RPATRSRGGTIAG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B6ZGS7	NR1H2	126	YACR(me1)GGGTCQMDAFMR	ARRYACRGGGTCQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B7Z209	SLAIN1	9	VGVGICIR(me2)	GVGICIRIIIFFR	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	B7Z3A4	SCAF8	1217	SGPWNR(me1)GFGQEVHR	RSGPWNRGFGQEV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B7Z4B0	APPL2	561	IIDPQTQVSR(me1)	PQTQVSRANFEIT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B7Z6Z4	MYL6	24	IGDERQEETGGGR(me1)GEGRGR	EETGGGRGEGRGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B7Z6Z4	MYL6	28	IGDERQEETGGGRGEGR(me1)GR	GGRGEGRGRRQRE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9994	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B7Z6Z4	MYL6	30	IGDERQEETGGGRGEGRGR(me1)	RGEGRGRRQRESE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9216	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B7ZB91	TNRC6B	126	ISQAVR(me1)QQQEQQIAR	KISQAVRQQQEQQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	B7ZB91	TNRC6B	135	ISQAVRQQQEQQIAR(me1)	QEQQIARMVSAIQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	B7ZB91	TNRC6B	443	SVR(me1)GWGTQDSR	TAPRSVRGWGTQD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B8QFA1	PKP2	46	IAGSSGR(me1)GGQTVK	IAGSSGRGGQTVK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B8QFA1	PKP2	125	WGR(me1)GTAQYSSQK	YEGRWGRGTAQYS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B8XCX8	ASXL2	1024	QHQQPFQVSPQPFINR(me1)GDR	PQPFINRGDRIQV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9117	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	B9EGQ8	SMARCA4	181	GPTPFNQNQIHQIR(me1)	NQIHQIRAQIMAY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	B9VP24	HSPD1	106	FDR(me1)GYVSPYFINTSK	ESIKFDRGYVSPY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	C9J9C1	PPP2R1A	37	R(me1)GGVPGGTGGPR	RGTWGRRGGVPGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	C9JDG0	DIAPH3	28	IHHPAQGSAAGTPYPSSASIR(me1)GCR	PSSASIRGCRESK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8928	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	C9JDG0	DIAPH3	31	IHHPAQGSAAGTPYPSSASIRGCR(me1)	ASIRGCRESKMPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9224	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	C9JLR9	C11orf95	15	SSGGR(me1)GGPGPAVASAR	SRSSGGRGGPGPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	C9JRI6	CDH13	167	DVGKVVDSDR(me2)PERSK	KVVDSDRPERSKF	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9968	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	C9JRI6	CDH13	170	DVGKVVDSDRPER(me2)SK	DSDRPERSKFRIT	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9994	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	D2T2J5	SLC25A42	56	TAVAPIDR(me1)	AVAPIDRTKIIFQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	D3DNT2	EIF4G1	48	MNTPSQPR(me1)QHFYPSRAQPPSSAASR	NTPSQPRQHFYPS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	D3DNT2	EIF4G1	55	QHFYPSR(me1)AQPPSSAASR	QHFYPSRAQPPSS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	D3DNT2	EIF4G1	65	MNTPSQPRQHFYPSRAQPPSSAASR(me1)	PSSAASRVQSAAP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	D3DNT2	EIF4G1	681	TTISTR(me1)GPPRGGPGGEIPR	RTTISTRGPPRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	D3DNT2	EIF4G1	685	TTISTRGPPR(me1)GGPGGEIPR	STRGPPRGGPGGE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	D3DNT2	EIF4G1	694	GPPRGGPGGEIPR(me1)GPQAGIGPR	PGGEIPRGPQAGI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	D3DNT2	EIF4G1	703	GPPRGGPGGEIPRGPQAGIGPR(me1)	QAGIGPRRSQQGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	D3DNT2	EIF4G1	1033	R(me1)GGPPGPPISRGIPIVDDGGWNTVPISK	KGSDKRRGGPPGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	D3DNT2	EIF4G1	1043	RGGPPGPPISR(me1)GIPIVDDGGWNTVPISK	PGPPISRGIPIVD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	D4PHA4	GPBP1	87	NGTENINHR(me1)GGYHGGSSR	TENINHRGGYHGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	D6RIB8	CCDC99	154	VMSER(me1)VQES	IRVMSERVQES__	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	E5KQF6	NR3C1	34	TIR(me1)GGATVK	DFYKTIRGGATVK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	E5RFK7	UBR5	15	GMVISHDMIIGRWR(me2)	MIIGRWRISIEIF	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.976	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	E5RH78		11	MTGIIQKSDTR(me2)GTERPR	IQKSDTRGTERPR	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.7859	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	E5RH78		15	MTGIIQKSDTRGTER(me2)PR	DTRGTERPRYGGF	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.8176	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	E7EN37	ZNF643	62	R(me2)PWIMERDISGVPSSDIKSK	PVGERRRPWIMER	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9961	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	E7EN37	ZNF643	68	RPWIMER(me2)DISGVPSSDIKSK	RPWIMERDISGVP	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9563	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	E7EP14	DLGAP5	119	EQRKIDNESDVR(me2)	DNESDVRAIRPGP	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9999	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	E7ERR3	HECTD2	411	R(me2)QRPDMNIIFINMK	VDKVSRRQRPDMN	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9201	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	E7ERR3	HECTD2	413	RQR(me2)PDMNIIFINMK	KVSRRQRPDMNII	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.8876	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	E9KL24	CAND2	1087	HTVDDGIDVR(me1)K	DDGIDVRKAAFEC	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9958	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9KL39	TAGLN2	4	ANR(me1)GPAYGISR	___MANRGPAYGI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9KL39	TAGLN2	182	NVIGIQMGTNR(me1)GASQAGMTGYGMPR	IQMGTNRGASQAG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9KL39	TAGLN2	196	NVIGIQMGTNRGASQAGMTGYGMPR(me1)	TGYGMPRQII___	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9PB61	ALYREF	45	AGSQGGR(me1)GGGAQAAAR	AGSQGGRGGGAQA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9PB61	ALYREF	54	AGSQGGRGGGAQAAAR(me1)	GAQAAARVNRGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9PB61	ALYREF	57	VNR(me1)GGGPIR	AAARVNRGGGPIR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9PB61	ALYREF	80	NR(me1)PAPYSRPK	GGGGRNRPAPYSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9PB61	ALYREF	204	RPAQSVNR(me1)GGMTR	PAQSVNRGGMTRN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9992	1	032748-4 All identified MMA sites	
+Sylvestersen2014	E9PB61	ALYREF	211	NR(me1)GAGGFGGGGGTR	GGMTRNRGAGGFG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9PC62	CELF2	189	GCAFVTFSTR(me1)	FVTFSTRAMAQNA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9PEH2	SMG7	864	RSPGVFRPEQDPVPR(me1)	EQDPVPRMPFEDP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9PF02	FAM120AOS	2	MR(me2)IIINICR	_____MRIIINIC	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	E9PF26	STAU2	131	ANYNFR(me1)GMYNQR	RANYNFRGMYNQR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9PHX7	AGFG1	18	IR(me2)DMTGIPHNR	KHIKMIRDMTGIP	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9979	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	E9PK91	BCLAF1	352	VFIIDR(me1)GNTR	RVFIIDRGNTRDK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9908	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	E9PNP3	C11orf67	88	GVQTIVIGR(me1)GMSEAIK	QTIVIGRGMSEAI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	F0VRW1	HLA-B	201	THVTHHPISDHEASIR(me1)	DHEASIRCWAIGF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	F1T0I1	SEC16A	1214	YRPYDGAASAYAQNYR(me1)YPEPERPSSR	AYAQNYRYPEPER	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	F1T0L5	DDX51	8	AIFYVAR(me1)YPGPDAAAAAGPEGAEAGAHGR	AIFYVARYPGPDA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	F5GYX6		54	QIEDGR(me1)SISDYNIQK	KQIEDGRSISDYN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	F5H156	ARMC5	3	MHR(me2)PHVPGCAAIK	____MHRPHVPGC	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9918	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	F5H1R7		99	NPASRPPASGR(me1)GER	RPPASGRGERAPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9607	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	F6IR08	HLA-A	169	SWTAADMAAQITNR(me1)	AAQITNRKWEAAH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	F6IR40	HLA-A	226	THMTHHAVSDHEGTIR(me1)	DHEGTIRCWAISF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	F8J390	PKP3	276	SR(me1)GVGGAVPGAVIEPVAR	QSSHRSRGVGGAV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	F8W130	TROAP	13	DPIIR(me1)GVSPTPSKIPVR	TKDPIIRGVSPTP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	F8W1H5	RAB5C	37	AGR(me1)GGAARPNGPAAGNK	GRAMAGRGGAARP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9995	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	F8W1H5	RAB5C	42	AGRGGAAR(me1)PNGPAAGNK	GRGGAARPNGPAA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8175	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	F8W7P8	ARHGEF9	14	MRANVINEIMSTER(me2)	EIMSTERHYIKHI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9971	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	F8W8D3	SLBP	160	NTIAYDR(me1)YIK	NTIAYDRYIKEVP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9998	1	032748-4 All identified MMA sites	
+Sylvestersen2014	F8W8S3	TLE3	6	MYPQGR(me1)HPAPHQPGQPGFK	_MYPQGRHPAPHQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	F8WB02	ACSS2	22	IPTSATMYWIEMSMR(me2)K	WIEMSMRKSIEIK	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	F8WCP6	KIF21A	949	VTDIIMQKMTISNMEADMNR(me2)	MEADMNRIIKQRE	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.8141	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	F8WE78	GNAI2	44	IIIIGSSTR(me1)	IIGSSTRMATPRR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	G3V0I6	OTUD4	1050	QFYNQTYGSR(me1)K	NQTYGSRKYKSDW	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9881	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	G3V0I6	OTUD4	1061	SDWGYSGR(me1)GGYQHVR	DWGYSGRGGYQHV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	G3V0I6	OTUD4	1068	SDWGYSGRGGYQHVR(me1)	GGYQHVRSEESWK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	G3V2S9	SLIRP	7	AASAAR(me1)GAAAIR	MAASAARGAAAIR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	G3V5Z7	PSMA6	3	SR(me1)GSSAGFDR	____MSRGSSAGF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	G5E9M5	ILF3	613	RAPVPVR(me1)GGPK	RAPVPVRGGPKFA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	G8JLB6	HNRNPH1	224	GYNSIGR(me1)GAGFER	GYNSIGRGAGFER	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	G8JLB6	HNRNPH1	233	R(me1)GAYGGGYGGYDDYNGYNDGYGFGSDRFGR	GFERMRRGAYGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H0UI63	ZNFX1	44	NQANNPPANAIR(me1)GGASHPGR	PPANAIRGGASHP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	1	032748-4 All identified MMA sites	
+Sylvestersen2014	H0Y494	SIK3	926	HSITGHSDIR(me1)IPPTEFAQIIK	TGHSDIRIPPTEF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H0Y7A7	CALM2	165	HVMTNIGEKITDEEVDEMIR(me2)	EVDEMIREADIDG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.8725	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	H0Y8C3	MTCH1	13	AGAGAGAGAR(me1)GGAAAGVEAR	GAGAGARGGAAAG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H0YCG1	SF3B2	217	MGTPVPRPPQDMGQIGVRTPIGPR(me1)	RTPIGPRAAPVGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H0YCG1	SF3B2	239	AAPVGPVGPTPTVIPMGAPVPR(me1)PR	MGAPVPRPRGPPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H0YCG1	SF3B2	241	AAPVGPVGPTPTVIPMGAPVPRPR(me1)	APVPRPRGPPPPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H0YG33	HSPA1B	483	R(me1)NSTIPTK	MTAIIKRNSTIPT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H0YG33	HSPA1B	536	FEISGIPPAPR(me1)	GIPPAPRGVPQIE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H0YKT2	POU2F2	303	TSIETNVR(me1)	SIETNVRFAIEKS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	H3BPQ4		236	VSGPGSSGGR(me1)GSAQPAAR	PGSSGGRGSAQPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9892	1	032748-4 All identified MMA sites	
+Sylvestersen2014	H6QX63	CCDC137	22	AGAGR(me1)GAAVSR	EMAGAGRGAAVSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	H7BY58	PCMT1	182	EIVDDSVNNVR(me1)	DSVNNVRKDDPTI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H7BYM7	SPATS2	449	R(me1)GGQGYRPQGQK	VIPGNRRGGQGYR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9993	1	032748-4 All identified MMA sites	
+Sylvestersen2014	H7BYW0	EIF4G3	888	QTPGGR(me1)GVPIINVGSR	RQTPGGRGVPIIN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H7BZ14	PPIL3	161	TYR(me1)PINDVHIK	VNEKTYRPINDVH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.981	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H7C0J3		275	YTSGVR(me1)GGIQR	RYTSGVRGGIQRR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9793	1	032748-4 All identified MMA sites	
+Sylvestersen2014	H7C0J3		336	AGSEGAPSR(me1)GGDIYRR	SEGAPSRGGDIYR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9899	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H7C0J3		342	AGSEGAPSRGGDIYR(me1)R	RGGDIYRRITGSQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9155	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H7C561		271	VHPAMATAAGGCR(me1)SFSR	TAAGGCRSFSRSP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9679	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H7C605		8	SGEISNR(me1)FQGR	SGEISNRFQGRIF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	H9SYF8		151	VVIPIEAPVR(me1)	PIEAPVRMMITSQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O00159	MYO1C	33	AIGSDGVR(me2)	IGSDGVRVTMESA	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	O00267	SUPT5H	681	ISSPMHPSAGGQR(me1)GGFGSPGGGSGGMSR	PSAGGQRGGFGSP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O00267	SUPT5H	696	ISSPMHPSAGGQRGGFGSPGGGSGGMSR(me1)	GSGGMSRGRGRRD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O00512	BCL9	1254	IIPSEKPSQTIQYFPR(me1)GEVPGR	TIQYFPRGEVPGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9809	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O00716	E2F3	121	AGIIQQPPAIGR(me1)GGSGGGGGPPAK	QPPAIGRGGSGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9811	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O14497	ARID1A	1276	AAGPGIGNVAMGPR(me1)QHYPYGGPYDR	NVAMGPRQHYPYG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O14654	IRS4	839	FIGR(me1)GIDK	PGKFIGRGIDKEV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O14776	TCERG1	20	GGDGGESERFNPGEIR(me1)	FNPGEIRMAQQQA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O14979	HNRPDL	25	ISHVPPPIFPSAPATIASR(me1)	PATIASRSISHWR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O14979	HNRPDL	408	ASR(me1)GGGNHQNNYQPY	TYGKASRGGGNHQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O14979	HNRPDL	408	ASR(me2)GGGNHQNNYQPY	TYGKASRGGGNHQ	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	O15014	ZNF609	1139	QEAEPR(me2)MWTYVYPAK	RQEAEPRMWTYVY	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	O15047	SETD1A	375	SSDANYPAYYESWNR(me1)YQR	YYESWNRYQRHTS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8756	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O15231	ZNF185	295	AGIR(me1)IVAPDVEGMR	TPRAGIRIVAPDV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O15234	CASC3	490	EIR(me1)GMPNHIHMGAGPPPQFNR	IQPREIRGMPNHI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O43237	DYNC1LI2	397	TQGR(me1)GGPASVPSSSPGTSVKKPDPNIK	SPRTQGRGGPASV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O43251-8	RBFOX2	442	VYTADPYHAIAPAASYGVGAVASIYR(me1)GGYSR	AVASIYRGGYSRF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9976	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O43347	MSI1	197	EVMSPTGSAR(me1)GR	SPTGSARGRSRVM	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O43347	MSI1	199	EVMSPTGSARGR(me1)	TGSARGRSRVMPY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O43516-3	WIPF1	33	TEQAGR(me1)NAIISDISK	KTEQAGRNAIISD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9996	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O43572	AKAP10	2	MR(me1)GAGPSPR	_____MRGAGPSP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O43823	AKAP8	109	EGGR(me1)GGSGGGGEGIQDR	MSKEGGRGGSGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O43823	AKAP8	188	GSIDGFMR(me1)	SIDGFMRGRGQGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O43824	GTPBP6	55	SPGNIEGPWGGGR(me1)GIR	GPWGGGRGIRADG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9976	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O43824	GTPBP6	242	DVAHIYR(me1)GVGSR	DVAHIYRGVGSRY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9974	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O43896	KIF1C	948	QEQIR(me1)IQGIQGSGGRGGGIR	IKQEQIRIQGIQG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O43896	KIF1C	958	QEQIRIQGIQGSGGR(me1)GGGIR	IQGSGGRGGGIRR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O43896	KIF1C	963	QEQIRIQGIQGSGGRGGGIR(me1)	GRGGGIRRPPARF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O43896	KIF1C	1041	SR(me1)GAGSAQPEPQHFQPK	DGGGRSRGAGSAQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O60218	AKR1B10	70	R(me1)EDIFIVSK	QEKAVKREDIFIV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O60293	ZFC3H1	143	SHIAIDR(me1)FR	SHIAIDRFRFRGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9991	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O60315	ZEB2	11	KQPIMADGPR(me2)	IMADGPRCKRRKQ	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9979	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	O60333-3		915	VSQIMNGDPAFR(me1)R	NGDPAFRRGRIRW	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O60333-3		916	VSQIMNGDPAFRR(me1)	GDPAFRRGRIRWM	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O60566-3	BUB1B	933	NNQAIKIVDFSYSVDIR(me2)	SYSVDIRVQIDVF	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	O75027-2	ABCB7	10	MAIIAMHSWR(me2)	IAMHSWRWAAAAA	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	O75113	N4BP1	509	EVNFVSR(me1)GASSHQPR	EVNFVSRGASSHQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9997	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O75182	SIN3B	19	AHAGGGSGGSGAGGPAGR(me1)GISGAR	AGGPAGRGISGAR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O75306	NDUFS2	118	KCDPHIGIIHR(me1)GTEK	HIGIIHRGTEKII	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O75369	FLNB	36	R(me1)IGNIQTDISDGIR	IKCVNKRIGNIQT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O75369-8	FLNB	36	R(me1)IGNIQTDISDGIR	IKCVNKRIGNIQT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O75467	ZNF324	219	TFGSAQDIEAAGGR(me1)GHHR	IEAAGGRGHHRMG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9996	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O75525	KHDRBS3	187	QAQIQEITYINGGSENADVPVVR(me1)GKPTIR	ADVPVVRGKPTIR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9102	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O75525	KHDRBS3	193	QAQIQEITYINGGSENADVPVVRGKPTIR(me1)	RGKPTIRTRGVPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9538	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O75525	KHDRBS3	195	TR(me1)GVPAPAITR	KPTIRTRGVPAPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O75525	KHDRBS3	204	TRGVPAPAITR(me1)	PAPAITRGRGGVT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O75638	CTAG2	57	ASGPR(me1)GGAPR	ARASGPRGGAPRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O75937	DNAJC8	118	IIIDQEQKKR(me2)	DQEQKKRAIDVIQ	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	O75940	SMNDC1	184	WQQFNNR(me1)AYSK	WQQFNNRAYSKNK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9967	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O76041	NEBL	96	GR(me1)GFSIVTDTPEIQR	FEESKGRGFSIVT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O76041	NEBL	132	GR(me1)GFTPVVDDPVTER	FEKTKGRGFTPVV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O76041-2	NEBL	96	GR(me1)GFSIVTDTPEIQR	FEESKGRGFSIVT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O76041-2	NEBL	132	GR(me1)GFTPVVDDPVTER	FEKTKGRGFTPVV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O94805	ACTL6B	204	SPIAGDFISMQCR(me1)	FISMQCREIFQEM	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O94826	TOMM70A	71	GR(me1)GDASGIKR	RREARGRGDASGI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O94874	UFL1	433	ATEGSGSMR(me1)GGGGGNAR	EGSGSMRGGGGGN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O95014	WUGSC:H_DJ0855D21.2	28	R(me1)GCRPIR	KTDIGRRGCRPIR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O95014	WUGSC:H_DJ0855D21.2	31	RGCR(me1)PIR	IGRRGCRPIRKTA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O95014	WUGSC:H_DJ0855D21.2	34	RGCRPIR(me1)	RGCRPIRKTAPKA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O95049-2	TJP3	385	TISEPDEQR(me1)SEIPR	SEPDEQRSEIPRE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O95049-2	TJP3	390	TISEPDEQRSEIPR(me1)	QRSEIPRESSYDI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O95147	DUSP14	4	SSR(me1)GHSTIPR	___MSSRGHSTIP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O95147	DUSP14	11	SSRGHSTIPR(me1)	GHSTIPRTIMAPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	O95425	SVIL	157	GR(me1)GAANDSTQFTVAGR	AWKTRGRGAANDS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O95429	BAG4	53	VR(me1)GGGPAETTWIGEGGGGDGYYPSGGAWPEPGR	PISWRVRGGGPAE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O95429	BAG4	108	AGGSHQEQPPYPSYNSNYWNSTAR(me1)	YWNSTARSRAPYP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O95721	SNAP29	41	DIPDGPDAPADR(me1)QQYIR	PDAPADRQQYIRQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.997	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	O95954-2	FTCD	436	R(me2)TAAIQEGIR	PEEKDRRTAAIQE	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	O95954-2	FTCD	445	RTAAIQEGIR(me2)	AIQEGIRRAVSVP	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P01570	IFNA14	45	TIMIMAQMR(me2)R	MIMAQMRRISPFS	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P01570	IFNA14	46	TIMIMAQMRR(me2)	IMAQMRRISPFSC	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P04114	APOB	567	IAAYIMIMR(me2)	AYIMIMRSPSQAD	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P04792	HSPB1	89	QISSGVSEIR(me1)HTADR	SGVSEIRHTADRW	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9891	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P07437	TUBB	2	R(me1)EIVHIQAGQCGNQIGAK	_____MREIVHIQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P07900-2	HSP90AA1	421	TKPIWTR(me1)NPDDITNEEYGEFYK	TKPIWTRNPDDIT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9854	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P08151	GLI1	597	YASAR(me1)GGGTSPTAASSIDR	ARYASARGGGTSP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P08621	SNRNP70	180	RVIVDVER(me1)GR	VIVDVERGRTVKG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9997	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P08621	SNRNP70	182	VIVDVERGR(me1)	VDVERGRTVKGWR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.7514	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P08621	SNRNP70	201	R(me1)GGADVNIR	GIGGTRRGGADVN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P08670	VIM	4	STR(me1)SVSSSSYRR	___MSTRSVSSSS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P08670	VIM	12	STRSVSSSSYR(me1)R	VSSSSYRRMFGGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9916	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P08670	VIM	45	TYSIGSAIR(me1)PSTSR	SIGSAIRPSTSRS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P08670	VIM	50	TYSIGSAIRPSTSR(me1)	IRPSTSRSIYASS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P08670	VIM	64	SIYASSPGGVYATR(me1)SSAVR	GGVYATRSSAVRI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P08670	VIM	69	SIYASSPGGVYATRSSAVR(me1)	TRSSAVRIRSSVP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P09651	HNRNPA1	140	IEVIEIMTDR(me1)GSGK	IEIMTDRGSGKKR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P09651	HNRNPA1	194	QEMASASSSQR(me1)GR	SASSSQRGRSGSG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P09651	HNRNPA1	196	QEMASASSSQRGR(me1)	SSSQRGRSGSGNF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P09651	HNRNPA1	206	SGSGNFGGGR(me1)GGGFGGNDNFGR	GNFGGGRGGGFGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P09651	HNRNPA1	218	SGSGNFGGGRGGGFGGNDNFGR(me1)	GNDNFGRGGNFSG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P09651	HNRNPA1	225	GGNFSGR(me1)GGFGGSR	GGNFSGRGGFGGS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P09651	HNRNPA1	232	GGNFSGRGGFGGSR(me1)	GGFGGSRGGGGYG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P09651	HNRNPA1	352	SSGPYGGGGQYFAKPR(me1)	QYFAKPRNQGGYG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9194	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P09651	HNRNPA1	370	NQGGYGGSSSSSSYGSGR(me1)RF	SSYGSGRRF____	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P09651	HNRNPA1	371	NQGGYGGSSSSSSYGSGRR(me1)F	SYGSGRRF_____	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P0C1Z6	TFPT	68	ERDEEEEAAR(me1)GR	EEEEAARGRRRRQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9921	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P0CG12	CHTF8	5	MKEPR(me1)IFPR	__MKEPRIFPRER	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9471	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P0CG12	CHTF8	172	AGGIIGAGPDPR(me1)GGGPMGPGSGPNIR	GAGPDPRGGGPMG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P0CG12	CHTF8	201	AGVIITSGNGPPNPR(me1)PVGIGPGPNPNIR	NGPPNPRPVGIGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P0CG12	CHTF8	214	AGVIITSGNGPPNPRPVGIGPGPNPNIR(me1)	GPNPNIRSGFIGT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P0CG12	CHTF8	225	SGFIGTNPAPR(me1)	GTNPAPRSGVFPG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P0CG12	CHTF8	239	SGVFPGPGIGPNPR(me1)PSGIGPGPNIDAR	GIGPNPRPSGIGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P0CG12	CHTF8	252	SGVFPGPGIGPNPRPSGIGPGPNIDAR(me1)	GPNIDARAGGIIG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P0DI83	RAB34	186	HIR(me1)IPGAPDR	PPPRHIRIPGAPD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P10070	GLI2	1008	GIR(me1)IQSHPSTDGGIAR	ADRRGIRIQSHPS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P10070	GLI2	1021	GIRIQSHPSTDGGIAR(me1)	TDGGIARGAYSPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P11142	HSPA8	469	FEITGIPPAPR(me1)	GIPPAPRGVPQIE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P11217	PYGM	11	MSRPISDQEKR(me2)	ISDQEKRKQISVR	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9976	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P11940	PABPC1	254	QAHITNQYMQR(me1)	TNQYMQRMASVRA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P11940	PABPC1	481	VMSTQR(me1)VANTSTQTMGPRPAAAAAAATPAVR	RVMSTQRVANTST	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P11940	PABPC1	493	VMSTQRVANTSTQTMGPR(me1)PAAAAAAATPAVR	TQTMGPRPAAAAA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P11940	PABPC1	506	VMSTQRVANTSTQTMGPRPAAAAAAATPAVR(me1)	AATPAVRTVPQYK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P12270	TPR	2111	QSVGR(me1)GIQITPGIGGMQQHFFDDEDRTVPSTPTIVVPHR	RRQSVGRGIQITP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P13804	ETFA	223	VVVSGGR(me1)GIK	VVVSGGRGIKSGE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9984	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P14678	SNRPB	29	VPIAGAAGGPGIGR(me1)	GGPGIGRAAGRGI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P14678	SNRPB	33	AAGR(me1)GIPAGVPMPQAPAGIAGPVR	IGRAAGRGIPAGV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P14678-3	SNRPB	29	VPIAGAAGGPGIGR(me1)	GGPGIGRAAGRGI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P14678-3	SNRPB	29	VPIAGAAGGPGIGR(me2)AAGRGIPAGVPMPQAPAGIAGPVR	GGPGIGRAAGRGI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P14678-3	SNRPB	33	AAGR(me1)GIPAGVPMPQAPAGIAGPVR	IGRAAGRGIPAGV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P14678-3	SNRPB	33	VPIAGAAGGPGIGRAAGR(me2)GIPAGVPMPQAPAGIAGPVR	IGRAAGRGIPAGV	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P14866	HNRNPL	15	MAAAGGGGGGGR(me1)YYGGGSEGGR	GGGGGGRYYGGGS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P15880	RPS2	22	ADDAGAAGGPGGPGGPGMGNR(me1)GGFR	GPGMGNRGGFRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8928	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P15924	DSP	2826	GIPSPYNMSSAPGSR(me1)SGSR	SSAPGSRSGSRSG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8253	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P16989	CSDA	169	GAEAANVTGPDGVPVEGSR(me1)YAADRRR	VPVEGSRYAADRR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P16989	CSDA	174	GAEAANVTGPDGVPVEGSRYAADR(me1)RR	SRYAADRRRYRRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P16989	CSDA	175	GAEAANVTGPDGVPVEGSRYAADRR(me1)R	RYAADRRRYRRGY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P16989	CSDA	176	GAEAANVTGPDGVPVEGSRYAADRRR(me1)	YAADRRRYRRGYY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P16989	CSDA	283	DGVPEGAQIQGPVHR(me1)NPTYRPR	IQGPVHRNPTYRP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P16989	CSDA	288	NPTYR(me1)PR	HRNPTYRPRYRSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P16989	CSDA	290	NPTYRPR(me1)	NPTYRPRYRSRGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P16989	CSDA	326	ENQQATSGPNQPSVR(me1)RGYR	PNQPSVRRGYRRP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P16989	CSDA	327	ENQQATSGPNQPSVRR(me1)GYR	NQPSVRRGYRRPY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P16989	CSDA	330	ENQQATSGPNQPSVRRGYR(me1)	SVRRGYRRPYNYR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P17844	DDX5	10	SGYSSDRDR(me1)GR	YSSDRDRGRDRGF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P17844	DDX5	478	IIQIVEDR(me1)GSGR	IQIVEDRGSGRSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9989	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P17844	DDX5	502	R(me1)GGFNTFR	RYSAGKRGGFNTF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P17844	DDX5	516	DRENYDR(me1)GYSSIIK	DRENYDRGYSSII	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9783	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P18583	SON	950	IGQDPYR(me1)IGHDPYR	IGQDPYRIGHDPY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P18583	SON	997	R(me1)SMMMSYAAER	IMIASRRSMMMSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P18583	SON	1081	SMMSPMADR(me1)	MSPMADRSMMSMG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P18583	SON	1090	SMMSMGADR(me1)SMMSSYSAADR	MSMGADRSMMSSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P18583	SON	1101	SMMSSYSAADR(me1)SMMSSYSAADR	SYSAADRSMMSSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P18583	SON	1112	SMMSSYSAADR(me1)SMMSSYTADR	SYSAADRSMMSSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P18583-5	SON	950	IGQDPYR(me1)IGHDPYR	IGQDPYRIGHDPY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P18583-5	SON	997	R(me1)SMMMSYAAER	IMIASRRSMMMSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P18583-5	SON	1081	SMMSPMADR(me1)	MSPMADRSMMSMG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P18583-5	SON	1090	SMMSMGADR(me1)SMMSSYSAADR	MSMGADRSMMSSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P18583-5	SON	1101	SMMSSYSAADR(me1)SMMSSYSAADR	SYSAADRSMMSSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P18583-5	SON	1112	SMMSSYSAADR(me1)SMMSSYTADR	SYSAADRSMMSSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P19338	NCL	281	GEGGFGGR(me1)GGGR	EGGFGGRGGGRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P19338	NCL	285	GEGGFGGRGGGR(me1)	GGRGGGRGGFGGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P20290	BTF3	13	TGAPAQADSR(me1)GRGR	PAQADSRGRGRAR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P20290	BTF3	15	TGAPAQADSRGR(me1)GR	QADSRGRGRARGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P20290	BTF3	17	TGAPAQADSRGRGR(me1)	DSRGRGRARGGCP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P20290	BTF3	19	AR(me1)GGCPGGEATISQPPPR	RGRGRARGGCPGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P20700	LMNB1	14	MGSR(me1)AGGPTTPISPTR	PPRMGSRAGGPTT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P22626	HNRNPA2B1	153	R(me1)GFGFVTFDDHDPVDK	RQSGKKRGFGFVT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P22626	HNRNPA2B1	203	SGR(me1)GGNFGFGDSRGGGGNFGPGPGSNFR	QSSRSGRGGNFGF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P22626	HNRNPA2B1	213	SGRGGNFGFGDSR(me1)GGGGNFGPGPGSNFR	FGFGDSRGGGGNF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P22626	HNRNPA2B1	228	GGNFGFGDSRGGGGNFGPGPGSNFR(me1)GGSDGYGSGR	GPGSNFRGGSDGY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P22626	HNRNPA2B1	238	GGSDGYGSGR(me1)GFGDGYNGYGGGPGGGNFGGSPGYGGGR	DGYGSGRGFGDGY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P22626	HNRNPA2B1	325	SGNFGGSR(me1)NMGGPYGGGNYGPGGSGGSGGYGGR	GNFGGSRNMGGPY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P22626	HNRNPA2B1	350	NMGGPYGGGNYGPGGSGGSGGYGGR(me1)	SGGYGGRSRY___	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P23246	SFPQ	19	R(me2)GGGGGRGGIHDFR	GGGFHRRGGGGGR	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P23246	SFPQ	25	GGGGGR(me1)GGIHDFR	RGGGGGRGGIHDF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P23246	SFPQ	25	RGGGGGR(me2)GGIHDFR	RGGGGGRGGIHDF	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P23246	SFPQ	681	FGQGGAGPVGGQGPR(me1)GMGPGTPAGYGRGREEYEGPNK	VGGQGPRGMGPGT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P23246	SFPQ	693	GMGPGTPAGYGR(me1)	TPAGYGRGREEYE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P23246	SFPQ	695	FGQGGAGPVGGQGPRGMGPGTPAGYGRGR(me1)EEYEGPNK	AGYGRGREEYEGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9903	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P30046	DDT	14	PFIEIDTNIPANR(me1)VPAGIEK	TNIPANRVPAGIE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8684	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P30479	HLA-B	135	IIR(me2)GHNQYAYDGK	PDGRIIRGHNQYA	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9881	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P31040	SDHA	662	TINEADCATVPPAIR(me1)	TVPPAIRSY____	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P31942	HNRNPH3	129	GGYYGAGR(me1)GSMYDR	GYYGAGRGSMYDR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P31942		129	GGYYGAGR(me1)GSYGGFDDYGGYNNYGYGNDGFDDRMR	GYYGAGRGSYGGF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P31942	HNRNPH3	323	MGMGNNYSGGYGTPDGIGGYGR(me1)GGGGSGGYYGQGGMSGGGWRGMY	GIGGYGRGGGGSG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P31942	HNRNPH3	343	MGMGNNYSGGYGTPDGIGGYGRGGGGSGGYYGQGGMSGGGWR(me1)GMY	MSGGGWRGMY___	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P31942-2		129	GGYYGAGR(me1)GSYGGFDDYGGYNNYGYGNDGFDDRMR	GYYGAGRGSYGGF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P31942-2	HNRNPH3	174	DGR(me1)GMGGHGYGGAGDASSGFHGGHFVHMR	DRMRDGRGMGGHG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9978	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P31942-2	HNRNPH3	323	MGMGNNYSGGYGTPDGIGGYGR(me1)GGGGSGGYYGQGGMSGGGWRGMY	GIGGYGRGGGGSG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P31942-2	HNRNPH3	343	MGMGNNYSGGYGTPDGIGGYGRGGGGSGGYYGQGGMSGGGWR(me1)GMY	MSGGGWRGMY___	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P31944	CASP14	5	MSNPR(me2)SIEEEK	__MSNPRSIEEEK	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P33240	CSTF2	373	GPPPHEIR(me1)GGPIPEPRPIMAEPR	PPPHEIRGGPIPE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P33240	CSTF2	381	GPPPHEIRGGPIPEPR(me1)PIMAEPR	GPIPEPRPIMAEP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9592	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P33240	CSTF2	388	GGPIPEPRPIMAEPR(me1)GPMIDQR	PIMAEPRGPMIDQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.988	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P33240	CSTF2	402	GPPIDGR(me1)GGRDPR	GPPIDGRGGRDPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9981	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P33240	CSTF2	468	GMDTR(me1)GPVPGPRGPIPSGMQGPSPINMGAVVPQGSR	ARGMDTRGPVPGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P33240	CSTF2	468	GMDTR(me2)GPVPGPRGPIPSGMQGPSPINMGAVVPQGSR	ARGMDTRGPVPGP	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P33240	CSTF2	475	GPVPGPR(me1)GPIPSGMQGPSPINMGAVVPQGSR	GPVPGPRGPIPSG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P33240	CSTF2	475	GMDTRGPVPGPR(me2)GPIPSGMQGPSPINMGAVVPQGSR	GPVPGPRGPIPSG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P35228	NOS2	670	ISHIGASQITPMGEGDEISGQEDAFR(me2)	GQEDAFRSWAVQT	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P35251	RFC1	986	IVQDIAIHMSIR(me2)	AIHMSIRTYSSKR	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P35580	MYH10	1951	R(me1)GGPISFSSSR	IKNRIRRGGPISF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P35580-3	MYH10	1951	R(me1)GGPISFSSSR	IKNRIRRGGPISF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P35637	FUS	216	GGR(me2)GRGGSGGGGGGGGGGYNR	QQDRGGRGRGGSG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P35637	FUS	218	GR(me1)GGSGGGGGGGGGGYNR	DRGGRGRGGSGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P35637	FUS	218	GGRGR(me2)GGSGGGGGGGGGGYNR	DRGGRGRGGSGGG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P35637	FUS	394	GGPMGR(me1)GGYGGGGSGGGGR	RGGPMGRGGYGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P35637	FUS	503	GGGDR(me1)GGFGPGK	GRGGGDRGGFGPG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P38159	RBMX	36	R(me1)SAPSGPVR	GGPPPKRSAPSGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P38159	RBMX	44	SAPSGPVR(me1)SSSGMGGR	APSGPVRSSSGMG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P38159	RBMX	125	GPPSR(me1)GGHMDDGGYSMNFNMSSSRGPIPVK	TRGPPSRGGHMDD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P38159	RBMX	144	GPPSRGGHMDDGGYSMNFNMSSSR(me1)GPIPVK	FNMSSSRGPIPVK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P38159	RBMX	170	SAPPTR(me1)GPPPSYGGSSR	RSAPPTRGPPPSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P39687	ANP32A	132	SIDIFNCEVTNINDYR(me2)ENVFK	TNINDYRENVFKI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P41252	IARS	81	YAHQSGFHVDR(me2)R	SGFHVDRRFGWDC	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P41252	IARS	82	YAHQSGFHVDRR(me2)	GFHVDRRFGWDCH	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P42575	CASP2	22	EIMAADR(me1)GR	EIMAADRGRRIIG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9977	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P45985	MAP2K4	69	STAR(me1)FTINPNPTGVQNPHIER	PFKSTARFTINPN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P45985-2	MAP2K4	69	STAR(me1)FTINPNPTGVQNPHIER	PFKSTARFTINPN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P46783	RPS10	119	ITR(me1)GEADRDTYRR	RPARITRGEADRD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P46783	RPS10	158	GGFGR(me1)GRGQPPQ	FRGGFGRGRGQPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P46783	RPS10	158	GGFGR(me2)GRGQPPQ	FRGGFGRGRGQPP	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P46783	RPS10	160	GGFGRGR(me1)GQPPQ	GGFGRGRGQPPQ_	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P46783	RPS10	160	GGFGRGR(me2)GQPPQ	GGFGRGRGQPPQ_	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P48634	PRRC2A	1223	IIPGPISPVAR(me1)GGSNGGSNVGMEDGERPR	PISPVARGGSNGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P49247	RPIA	42	AGGAASGGGGNSWDIPGSHVR(me1)IPGR	IPGSHVRIPGRAQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9709	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P49247	RPIA	52	AQSGTR(me1)GGAGNTSTSCGDSNSICPAPSTMSK	RAQSGTRGGAGNT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P49736	MCM2	126	DREAGR(me1)GIGR	RDREAGRGIGRMR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P49750	YLPM1	758	SSYIESPR(me1)GPRFDGPR	SYIESPRGPRFDG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P49750	YLPM1	761	SSYIESPRGPR(me1)FDGPR	ESPRGPRFDGPRR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P49750	YLPM1	766	SSYIESPRGPRFDGPR(me1)	PRFDGPRRFEDIG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P49750	YLPM1	831	GPASQFYITPSTSISPR(me1)	STSISPRQSGPQW	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P49750	YLPM1	1103	VPGGIQGSQDR(me1)GAAGSR	IQGSQDRGAAGSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9903	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P49750	YLPM1	1758	R(me1)GGFDRPSYDR	DHSSSRRGGFDRP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P49750-4	YLPM1	758	SSYIESPR(me1)GPRFDGPR	SYIESPRGPRFDG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P49750-4	YLPM1	761	SSYIESPRGPR(me1)FDGPR	ESPRGPRFDGPRR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P49750-4	YLPM1	766	SSYIESPRGPRFDGPR(me1)	PRFDGPRRFEDIG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P49750-4	YLPM1	831	GPASQFYITPSTSISPR(me1)	STSISPRQSGPQW	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P49750-4	YLPM1	1103	VPGGIQGSQDR(me1)GAAGSR	IQGSQDRGAAGSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9903	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P49750-4	YLPM1	1758	R(me1)GGFDRPSYDR	DHSSSRRGGFDRP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P49792	RANBP2	1016	TNFVQPMPGEGIR(me1)PSIPTQAHTTQPTPFK	MPGEGIRPSIPTQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P50238	CRIP1	68	GFGR(me1)GGAESHTFK	GPKGFGRGGAESH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P51991	HNRPA3	30	IFIGGISFETTDDSIR(me1)	TTDDSIREHFEKW	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P51991	HNRPA3	224	GGNFGGR(me1)GGYGGGGGGSR	GGNFGGRGGYGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P51991	HNRPA3	332	GGSFGGR(me1)SSGSPYGGGYGSGGGSGGYGSR	GGSFGGRSSGSPY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P51991	HNRPA3	354	SSGSPYGGGYGSGGGSGGYGSR(me1)RF	SGGYGSRRF____	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P51991	HNRPA3	355	SSGSPYGGGYGSGGGSGGYGSRR(me1)F	GGYGSRRF_____	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P52272	HNRNPM	496	MGAGMGFGIER(me1)	MGFGIERMAAPID	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P52272	HNRNPM	503	MAAPIDR(me1)VGQTIER	MAAPIDRVGQTIE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P52298	NCBP2	146	SGGQVRDEYRQDYDAGR(me1)GGYGK	QDYDAGRGGYGKI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P52597	HNRNPF	212	FMSVQRPGPYDR(me1)PGTAR	RPGPYDRPGTARR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9995	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P53621	COPA	965	QIFIQTYAR(me1)	FIQTYARGRTTYQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P54652	HSPA2	520	ISKDDIDR(me2)MVQEAER	SKDDIDRMVQEAE	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P54652	HSPA2	527	ISKDDIDRMVQEAER(me2)	MVQEAERYKSEDE	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P55795	HNRNPH2	233	R(me1)GAYGGGYGGYDDYGGYNDGYGFGSDRFGR	GFERMRRGAYGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P55884-2	EIF3B	758	RRTMMEDFR(me2)	TMMEDFRKYRKMA	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P57740	NUP107	60	TPSSFR(me1)QPFTPTSR	RTPSSFRQPFTPT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P59036	LINC00310	8	MRQGCKFR(me2)	RQGCKFRGSSQKI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9909	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P59047	NLRP5	20	KVAGGIEIGAAAIISASPR(me2)	IISASPRAIVTIS	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9961	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P61011	SRP54	8	MVIADIGR(me2)K	VIADIGRKITSAI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	P61081	UBE2M	169	SMR(me1)GGYIGSTYFER	NVQRSMRGGYIGS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P61978	HNRPK	262	DYDDMSPR(me1)R	YDDMSPRRGPPPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9842	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P61978	HNRPK	292	NIPIPPPPPPR(me1)GGDIMAYDRR	PPPPPPRGGDIMA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P61978	HNRPK	301	NIPIPPPPPPRGGDIMAYDR(me1)R	DIMAYDRRGRPGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P61978	HNRPK	302	NIPIPPPPPPRGGDIMAYDRR(me1)	IMAYDRRGRPGDR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P61978-3	HNRPK	262	DYDDMSPR(me1)R	YDDMSPRRGPPPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9842	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P61978-3	HNRPK	292	NIPIPPPPPPR(me1)GGDIMAYDRR	PPPPPPRGGDIMA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P61978-3	HNRPK	301	NIPIPPPPPPRGGDIMAYDR(me1)R	DIMAYDRRGRPGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P61978-3	HNRPK	302	NIPIPPPPPPRGGDIMAYDRR(me1)	IMAYDRRGRPGDR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P62304	SNRPE	4	AYR(me1)GQGQKVQK	___MAYRGQGQKV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P62633	CNBP	34	GR(me1)GGFTSDR	GMRSRGRGGFTSD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P62633	CNBP	79	DCDIQEDACYNCGR(me1)GGHIAK	ACYNCGRGGHIAK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P62633-3		34	GR(me1)GGFTSDR	GMRSRGRGGFTSD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P67809	YBX1	142	YAADR(me1)NHYR	SKYAADRNHYRRY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	P68104	EEF1A1	37	STTTGHIIYKCGGIDKR(me1)	CGGIDKRTIEKFE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P68104	EEF1A1	166	MDSTEPPYSQKR(me1)YEEIVK	PPYSQKRYEEIVK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P78344	EIF4G2	23	FSASSGGGGSR(me1)GAPQHYPK	SGGGGSRGAPQHY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P78344	EIF4G2	360	SDFFIEGPFMPPR(me1)MK	GPFMPPRMKMDRD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.7634	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P83369	LSM11	279	SR(me1)SVPSSIQASAR	GSHKRSRSVPSSI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P98179	RBM3	105	SYSR(me1)GGGDQGYGSGR	RGRSYSRGGGDQG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P98179	RBM3	121	YYDSR(me1)PGGYGYGYGRSR	GRYYDSRPGGYGY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P98179	RBM3	131	YYDSRPGGYGYGYGR(me1)	YGYGYGRSRDYNG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P98179	RBM3	138	SRDYNGR(me1)NQGGYDR	SRDYNGRNQGGYD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	P98179	RBM3	145	NQGGYDR(me1)YSGGNYRDNYDN	NQGGYDRYSGGNY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q00587	CDC42EP1	8	PGPQGGR(me1)GAATMSIGK	PGPQGGRGAATMS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9996	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q00587	CDC42EP1	53	HTMHVGR(me1)GGDVFGDTSFISNHGGSSGSTHR	HTMHVGRGGDVFG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q00839	HNRNPU	733	R(me2)GNMPQRGGGGGGSGGIGYPYPR	RGGYNRRGNMPQR	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q00839	HNRNPU	739	GNMPQR(me1)GGGGGGSGGIGYPYPR	RGNMPQRGGGGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q00839	HNRNPU	739	RGNMPQR(me2)GGGGGGSGGIGYPYPR	RGNMPQRGGGGGG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q01433	AMPD2	6	ASEAR(me1)GGIGAPPIQSAR	_MASEARGGIGAP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q01433	AMPD2	18	ASEARGGIGAPPIQSAR(me1)	PPIQSARSIPGPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q01433-2	AMPD2	6	ASEAR(me1)GGIGAPPIQSAR	_MASEARGGIGAP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q01433-2	AMPD2	18	ASEARGGIGAPPIQSAR(me1)	PPIQSARSIPGPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q01844	EWSR1	476	GMPPPIR(me1)GGPGGPGGPGGPMGR	GMPPPIRGGPGGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q01844	EWSR1	491	GMPPPIRGGPGGPGGPGGPMGR(me1)	PGGPMGRMGGRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q01844	EWSR1	620	R(me1)GGPGGPPGPIMEQMGGR	GFGGGRRGGPGGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q01844-5	EWSR1	476	GMPPPIR(me1)GGPGGPGGPGGPMGR	GMPPPIRGGPGGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q01844-5	EWSR1	491	GMPPPIRGGPGGPGGPGGPMGR(me1)	PGGPMGRMGGRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q01844-5	EWSR1	620	R(me1)GGPGGPPGPIMEQMGGR	GFGGGRRGGPGGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q02447	SP3	611	EGGGR(me1)GTNIGK	CKEGGGRGTNIGK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q02641	CACNB1	593	NKNEIEGWGR(me1)GVYIR	EIEGWGRGVYIR_	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9984	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q04637	EIF4G1	685	TTISTRGPPR(me1)GGPGGEIPR	STRGPPRGGPGGE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q04637	EIF4G1	694	GPPRGGPGGEIPR(me1)GPAGIGPR	PGGEIPRGPAGIG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q06323	PSME1	213	DIR(me2)IMVMEIR	AEYRDIRIMVMEI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q06323	PSME1	220	DIRIMVMEIR(me2)	IMVMEIRNAYAVI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q06787	FMR1	471	SYVTDDGQGMGR(me1)GSRPYR	DGQGMGRGSRPYR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q06787	FMR1	474	SYVTDDGQGMGRGSR(me1)PYR	GMGRGSRPYRNRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q06787	FMR1	477	SYVTDDGQGMGRGSRPYR(me1)	RGSRPYRNRGHGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q07283	TCHH	1404	QER(me1)EQQIR	QIRCQEREQQIRQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q07666	KHDRBS1	291	GR(me1)GAAPPPPPVPR	GVPVRGRGAAPPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q07666	KHDRBS1	302	GRGAAPPPPPVPR(me1)	PPPPVPRGRGVGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q07666	KHDRBS1	320	GTPVR(me1)GAITR	VRGTPVRGAITRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q07666	KHDRBS1	331	GATVTR(me1)GVPPPPTVR	RGATVTRGVPPPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q07666	KHDRBS1	340	GVPPPPTVR(me1)GAPAPRAR	PPPPTVRGAPAPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q07666	KHDRBS1	340	GVPPPPTVR(me2)GAPAPRAR	PPPPTVRGAPAPR	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.8603	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q07666	KHDRBS1	346	GVPPPPTVRGAPAPR(me1)AR	RGAPAPRARTAGI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q07666	KHDRBS1	346	GVPPPPTVRGAPAPR(me2)AR	RGAPAPRARTAGI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.8603	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q07666	KHDRBS1	348	GVPPPPTVRGAPAPRAR(me2)	APAPRARTAGIQR	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.8685	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q07955	SRSF1	93	SGR(me1)GTGRGGGGGGGGGAPR	EFPRSGRGTGRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q07955	SRSF1	97	SGRGTGR(me1)GGGGGGGGGAPR	SGRGTGRGGGGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q07955	SRSF1	109	GTGRGGGGGGGGGAPR(me1)GR	GGGGAPRGRYGPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q07955	SRSF1	111	GTGRGGGGGGGGGAPRGR(me1)	GGAPRGRYGPPSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q08211	DHX9	1175	R(me1)GGSSYSGGGYGGGYSSGGYGSGGYGGSANSFR	NGSGYRRGGSSYS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q08211	DHX9	1265	GAYGTGYFGQGR(me1)GGGGY	GYFGQGRGGGGY_	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q08AM8	SH3RF2	84	SGQSSGR(me1)GGSFR	SGQSSGRGGSFRR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q0VAM0	CTNNBL1	13	MDVGEIISYQPNR(me1)GTK	ISYQPNRGTKRPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9984	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q0Z7S8	FABP9	53	NMAGIVKPTVTISVDGKMMTIR(me2)	GKMMTIRTESSFQ	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q12830	BPTF	68	ISSPR(me1)GGSSSR	TRISSPRGGSSSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q12830	BPTF	2155	VIGIIPSSTGTSQQTFTSFQPR(me1)	FTSFQPRTATVTI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q12888	TP53BP1	1360	TSGTEPADFAIPSSR(me1)GGPGK	FAIPSSRGGPGKI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9893	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q12888-2	TP53BP1	1360	TSGTEPADFAIPSSR(me1)GGPGK	FAIPSSRGGPGKI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9893	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q13065	GAGE1	13	STYYWPR(me1)PRR	STYYWPRPRRYVQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13065	GAGE1	15	STYYWPRPR(me1)R	YYWPRPRRYVQPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13148	TARDBP	293	FGGNPGGFGNQGGFGNSR(me1)	GGFGNSRGGGAGI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13148-2	TARDBP	293	FGGNPGGFGNQGGFGNSR(me1)	GGFGNSRGGGAGI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q13151	HNRNPA0	291	SNSGPYR(me1)GGYGGGGGYGGSSF	SNSGPYRGGYGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13151	HNRNPA0	291	SNSGPYR(me2)GGYGGGGGYGGSSF	SNSGPYRGGYGGG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q13155	AIMP2	26	VEIPTCMYR(me1)IPNVHGR	IPTCMYRIPNVHG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13242	SRSF9	93	TYGGR(me1)GGWPR	PRTYGGRGGWPRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13242	SRSF9	98	TYGGRGGWPR(me1)	GRGGWPRGGRNGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13242	SRSF9	194	STSYGYSR(me1)SR	TSYGYSRSRSGSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.995	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13242	SRSF9	209	DSPYQSR(me1)GSPHYFSPFRPY	DSPYQSRGSPHYF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13243	SRSF5	5	SGCR(me1)VFIGR	__MSGCRVFIGRI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13243	SRSF5	88	YSDR(me1)FSSR	RGRYSDRFSSRRP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13263	TRIM28	427	IVAERPGTNSTGPAPMAPPR(me1)APGPISK	APMAPPRAPGPIS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9869	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13283	G3BP1	435	GPGGPR(me1)GGIGGGMR	RGPGGPRGGIGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13283	G3BP1	443	GPGGPRGGIGGGMR(me1)	GIGGGMRGPPRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13310	PABPC4	227	AAVAAAAPR(me1)AVAPYK	VAAAAPRAVAPYK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13310	PABPC4	546	YASSVR(me1)SPHPAIQPIQAPQPAVHVQGQEPITASMIAAAPPQEQK	KYASSVRSPHPAI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13310-2	PABPC4	496	VGVPTAVQNIAPR(me2)AAVAAAAPRAVAPYK	VQNIAPRAAVAAA	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q13310-2	PABPC4	505	VGVPTAVQNIAPRAAVAAAAPR(me2)AVAPYK	VAAAAPRAVAPYK	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9959	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q13310-3	PABPC4	227	AAVAAAAPR(me1)AVAPYK	VAAAAPRAVAPYK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q13310-3	PABPC4	546	YASSVR(me1)SPHPAIQPIQAPQPAVHVQGQEPITASMIAAAPPQEQK	KYASSVRSPHPAI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q13435	SF3B2	200	MGTPVPR(me1)PPQDMGQIGVRTPIGPR	MGTPVPRPPQDMG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13435	SF3B2	211	MGTPVPRPPQDMGQIGVR(me1)TPIGPR	MGQIGVRTPIGPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13435	SF3B2	222	MGTPVPRPPQDMGQIGVRTPIGPR(me1)	RTPIGPRVAAPVG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13435	SF3B2	222	TPIGPR(me2)VAAPVGPVGPTPTVIPMGAPVPRPR	RTPIGPRVAAPVG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q13435	SF3B2	245	VAAPVGPVGPTPTVIPMGAPVPR(me1)PR	MGAPVPRPRGPPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13435	SF3B2	247	VAAPVGPVGPTPTVIPMGAPVPRPR(me1)	APVPRPRGPPPPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13435	SF3B2	502	NSVPVPR(me1)HWCFK	NSVPVPRHWCFKR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9922	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13443	ADAM9	772	EVPIYANR(me1)FAVPTYAAK	VPIYANRFAVPTY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13509	TUBB3	156	VR(me1)EEYPDRIMNTFSVVPSPK	IIISKVREEYPDR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13608	PEX6	161	IAVTEIR(me1)GR	IAVTEIRGRARIC	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9939	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q13733	ATP1A4	235	VDNSSITGESEPQSR(me1)	ESEPQSRSPDFTH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q13748	TUBA3C	79	AVFVDIEPTVVDEVR(me1)	TVVDEVRTGTYRQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q13748	TUBA3C	79	AVFVDIEPTVVDEVR(me2)	TVVDEVRTGTYRQ	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q13895	BYSL	40	GR(me1)GTGEAEEEYVGPR	REKRRGRGTGEAE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14011	CIRBP	131	FESR(me1)SGGYGGSRDYYSSR	GNRFESRSGGYGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14011	CIRBP	139	SGGYGGSR(me1)DYYSSR	GGYGGSRDYYSSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14011	CIRBP	154	SQSGGYSDR(me1)SSGGSYR	SGGYSDRSSGGSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14093	CYLC2	87	ISER(me1)PSVYIAARR	IMRISERPSVYIA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14093	CYLC2	95	ISERPSVYIAAR(me1)R	SVYIAARRQPIKP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14093	CYLC2	96	ISERPSVYIAARR(me1)	VYIAARRQPIKPT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14103	HNRNPD	272	EQYQQQQQWGSR(me1)GGFAGRAR	QQQWGSRGGFAGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14103	HNRNPD	278	EQYQQQQQWGSRGGFAGR(me1)AR	RGGFAGRARGRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14103	HNRNPD	280	EQYQQQQQWGSRGGFAGRAR(me1)	GFAGRARGRGGDQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14103	HNRNPD	282	GR(me1)GGDQQSGYGKVSR	AGRARGRGGDQQS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14103	HNRNPD	296	R(me1)GGHQNSYKPY	YGKVSRRGGHQNS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14103-3	HNRNPD	272	EQYQQQQQWGSR(me1)GGFAGRAR	QQQWGSRGGFAGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14103-3	HNRNPD	272	EQYQQQQQWGSR(me2)GGFAGR	QQQWGSRGGFAGR	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q14103-3	HNRNPD	278	EQYQQQQQWGSRGGFAGR(me1)AR	RGGFAGRARGRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14103-3	HNRNPD	278	EQYQQQQQWGSRGGFAGR(me2)	RGGFAGRARGRGG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q14103-3	HNRNPD	280	EQYQQQQQWGSRGGFAGRAR(me1)	GFAGRARGRGGDQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14103-3	HNRNPD	280	AR(me2)GRGGDQQSGYGK	GFAGRARGRGGDQ	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q14103-3	HNRNPD	282	GR(me1)GGDQQSGYGKVSR	AGRARGRGGDQQS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14103-3	HNRNPD	282	ARGR(me2)GGDQQSGYGK	AGRARGRGGDQQS	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q14103-3	HNRNPD	296	R(me1)GGHQNSYKPY	YGKVSRRGGHQNS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14151	SAFB2	835	RISEGR(me1)GIPPPPR	KRISEGRGIPPPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14151	SAFB2	903	GISGPSGPGHMASRGGVAGR(me1)GGFAQGGHSQGHVVPGGGIEGGGVASQDR	RGGVAGRGGFAQG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14151	SAFB2	932	GISGPSGPGHMASRGGVAGRGGFAQGGHSQGHVVPGGGIEGGGVASQDR(me1)	GVASQDRGSRVPH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14152	EIF3A	1026	RGIDEDR(me1)GSWR	RGIDEDRGSWRTA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14157	UBAP2L	168	SGGPSGR(me1)GTERGR	SGGPSGRGTERGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14157	UBAP2L	172	SGGPSGRGTER(me1)GR	SGRGTERGRRGRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14157	UBAP2L	174	SGGPSGRGTERGR(me1)	RGTERGRRGRGRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14157-5	UBAP2L	168	SGGPSGR(me1)GTERGR	SGGPSGRGTERGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14157-5	UBAP2L	172	SGGPSGRGTER(me1)GR	SGRGTERGRRGRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14157-5	UBAP2L	174	SGGPSGRGTERGR(me1)	RGTERGRRGRGRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14195	DPYSL3	60	TIDFDAISVGQR(me1)GAK	AISVGQRGAKTPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14195	DPYSL3	73	SGQGSDR(me1)GSGSRPGIEGDTPR	SGQGSDRGSGSRP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9997	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14195-2	DPYSL3	60	TIDFDAISVGQR(me1)GAK	AISVGQRGAKTPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14195-2	DPYSL3	73	SGQGSDR(me1)GSGSRPGIEGDTPR	SGQGSDRGSGSRP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9997	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14247	CTTN	119	HCSQVDSVR(me1)GFGGK	SQVDSVRGFGGKF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14315	FLNC	1002	GAGGQGQIDVR(me1)MTSPSR	QGQIDVRMTSPSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9968	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q14444	CAPRIN1	633	GPANGFR(me1)GGYDGYRPSFSNTPNSGYTQSQFSAPR	GPANGFRGGYDGY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14444	CAPRIN1	640	GPANGFRGGYDGYR(me1)PSFSNTPNSGYTQSQFSAPR	GGYDGYRPSFSNT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14686	NCOA6	148	SQDVR(me1)MNGPMGAGNSVR	NRSQDVRMNGPMG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q14746	COG2	5	MEKSR(me2)MNIPK	__MEKSRMNIPKG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q14966	ZNF638	1465	FKPTQSSITR(me1)GGSGR	TQSSITRGGSGRI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9985	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q15020	SART3	906	KAPGGPMIIPQTYGAR(me1)GK	PQTYGARGKGRTQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15056	EIF4H	10	ADFDTYDDR(me1)AYSSFGGGRGSR	FDTYDDRAYSSFG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15056	EIF4H	19	AYSSFGGGR(me1)GSR	SSFGGGRGSRGSA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15056	EIF4H	22	AYSSFGGGRGSR(me1)	GGGRGSRGSAGGH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15056	EIF4H	136	GGPDDR(me1)GMGSSR	KGGPDDRGMGSSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q15056	EIF4H	166	DDFIGGR(me1)GGSRPGDRR	DDFIGGRGGSRPG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15056	EIF4H	170	DDFIGGRGGSR(me1)PGDRR	GGRGGSRPGDRRT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15056	EIF4H	174	DDFIGGRGGSRPGDR(me1)R	GSRPGDRRTGPPM	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9818	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15056	EIF4H	191	FRDGPPIR(me1)GSNMDFREPTEEER	RDGPPIRGSNMDF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15056	EIF4H	237	TVATPINQVANPNSAIFGGAR(me1)PREEVVQK	AIFGGARPREEVV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.96	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q15056	EIF4H	239	TVATPINQVANPNSAIFGGARPR(me1)EEVVQK	FGGARPREEVVQK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.96	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q15149	PLEC	650	AGVAAPATQVAQVTIQSVQR(me2)	TIQSVQRRPEIED	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q15149-4		7	SQHQIR(me1)VPQPEGIGR	MSQHQIRVPQPEG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q15274	QPRT	161	YGIIVGGAASHR(me2)	GGAASHRYDIGGI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q15652	JMJD1C	897	WVHPENAVNAEASIR(me1)R	NAEASIRRNSPSP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8905	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15652	JMJD1C	2425	EQGIEVIPEHDPIR(me2)	PEHDPIRDQSWYV	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q15654	TRIP6	21	APQGR(me1)AIPR	ARAPQGRAIPRGT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q15654	TRIP6	25	APQGRAIPR(me1)	QGRAIPRGTPGPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15654	TRIP6	43	AIPRGTPGPPPAHGAAIQPHPR(me1)	AIQPHPRVNFCPI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15654	TRIP6	179	VAQPVR(me1)GCGPPR	KVAQPVRGCGPPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9998	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15654	TRIP6	205	GASQASGPIPGPHFPIPGR(me1)GEVWGPGYR	HFPIPGRGEVWGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.806	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q15654	TRIP6	217	SQR(me1)EPGPGAKEEAAGVSGPAGRGR	PGYRSQREPGPGA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15654	TRIP6	236	SQREPGPGAKEEAAGVSGPAGR(me1)GR	VSGPAGRGRGGEH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15654	TRIP6	238	GR(me1)GGEHGPQVPISQPPEDEIDRITK	GPAGRGRGGEHGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15654	TRIP6	258	EEAAGVSGPAGRGRGGEHGPQVPISQPPEDEIDR(me1)ITK	PEDEIDRITKKIV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9981	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15735	INPP5J	56	NAAIGPSEPR(me1)IAIAPVGPR	IGPSEPRIAIAPV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q15735	INPP5J	65	NAAIGPSEPRIAIAPVGPR(me1)	IAPVGPRAAMSAS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q16475		19	IFEVGGSPSNAR(me1)	GSPSNARYIFIG_	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q16512-2	PKN1	853	FISAEAIGIMR(me2)	EAIGIMRRIIRRN	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q16630-2	CPSF6	202	AAFPQGGR(me1)GR	AFPQGGRGRGRFP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q16630-2	CPSF6	204	AAFPQGGRGR(me1)	PQGGRGRGRFPGA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q1KMD3	HNRNPUL2	656	SR(me1)GQGYVGGQR	NRQNRSRGQGYVG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q1KMD3	HNRNPUL2	671	GYDNR(me1)AYGQQYWGQPGNRGGYR	RRGYDNRAYGQQY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q1KMD3	HNRNPUL2	684	GYDNRAYGQQYWGQPGNR(me1)GGYR	WGQPGNRGGYRNF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q1KMD3	HNRNPUL2	688	GYDNRAYGQQYWGQPGNRGGYR(me1)	GNRGGYRNFYDRY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q1KMD3	HNRNPUL2	695	YR(me1)GDYDRFYGR	NFYDRYRGDYDRF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q1KMD3	HNRNPUL2	700	YRGDYDR(me1)FYGR	YRGDYDRFYGRDY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9996	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q1KMD3	HNRNPUL2	738	YYR(me1)NYYGYQGYR	DRDRYYRNYYGYQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q1KMD3	HNRNPUL2	747	NYYGYQGYR(me1)	YGYQGYR______	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q2L6I0	PPP1R10	693	GGPMR(me1)GGPGPGPGPYHR	MRGGPMRGGPGPG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q2LD37	KIAA1109	3625	SISASGR(me2)PPIKRMER	SISASGRPPIKRM	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q2LD37	KIAA1109	3630	SISASGRPPIKR(me2)MER	GRPPIKRMERASS	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q2LD37	KIAA1109	3633	SISASGRPPIKRMER(me2)	PIKRMERASSRVG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q2QGD7	ZXDC	13	MDIPAIIPAPTAR(me1)GGQHGGGPGPIR	IPAPTARGGQHGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9475	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q3KP66	C1orf106	578	DSPAGR(me1)GISK	KDSPAGRGISKAA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q3SX64	ODF3L2	267	R(me1)ASTMAATTPSRPAGHR	GIRHSKRASTMAA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q3SX64	ODF3L2	278	RASTMAATTPSR(me1)PAGHR	AATTPSRPAGHRI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q3SX64	ODF3L2	283	RASTMAATTPSRPAGHR(me1)	SRPAGHRIPGRCC	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q495W5	FUT11	489	FWDYIHEIFMKR(me2)	HEIFMKRQHI___	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.8199	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q4LE69	PIK4CA variant protein	26	AAAPAR(me1)GGGGGGGGGGGCSGSGSSASR	MAAAPARGGGGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q53HV2	CCT7	535	STVDAPTAAGR(me1)GRGR	APTAAGRGRGRGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q53HV2	CCT7	537	STVDAPTAAGRGR(me1)GR	TAAGRGRGRGRPH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q53HV2	CCT7	539	STVDAPTAAGRGRGR(me1)	AGRGRGRGRPH__	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q58WW2	DCAF6	3	SR(me1)GGSYPHIIWDVR	____MSRGGSYPH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q58WW2	DCAF6	364	WFEEASEVAQSNR(me1)GRGR	EVAQSNRGRGRSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9725	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q58WW2	DCAF6	366	WFEEASEVAQSNRGR(me1)GR	AQSNRGRGRSRPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9725	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q58WW2	DCAF6	368	WFEEASEVAQSNRGRGR(me1)	SNRGRGRSRPRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9664	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q58WW2-3	DCAF6	3	SR(me1)GGSYPHIIWDVR	____MSRGGSYPH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q58WW2-3	DCAF6	235	ATGNYAGR(me1)GTTGMVAR	TGNYAGRGTTGMV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q58WW2-3	DCAF6	364	WFEEASEVAQSNR(me1)GRGR	EVAQSNRGRGRSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9725	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q58WW2-3	DCAF6	366	WFEEASEVAQSNRGR(me1)GR	AQSNRGRGRSRPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9725	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q58WW2-3	DCAF6	368	WFEEASEVAQSNRGRGR(me1)	SNRGRGRSRPRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9664	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q59EC0	ADAR	134	QVDIR(me1)GVPR	GRQVDIRGVPRGV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q59EC0	ADAR	138	QVDIRGVPR(me1)	DIRGVPRGVHIGS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q59EF7		20	IEIPGNR(me1)APAAAR	IEIPGNRAPAAAR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9986	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q59F99	STAU1	122	MQSTYNYNMR(me1)GGAYPPR	TYNYNMRGGAYPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q59GX6	DDX3X	91	SDSR(me1)GKSSFFSDRGSGSR	GSRSDSRGKSSFF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q59GX6	DDX3X	100	SSFFSDR(me1)GSGSRGR	SSFFSDRGSGSRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q59GX6	DDX3X	105	SSFFSDRGSGSR(me1)GR	DRGSGSRGRFDDR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q59GX6	DDX3X	629	QSSGASSSSFSSSR(me1)ASSSR	SSFSSSRASSSRS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q59GX6	DDX3X	634	QSSGASSSSFSSSRASSSR(me1)	SRASSSRSGGGGH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q59GY2	RPL4	111	SGQGAFGNMCR(me1)GGR	AFGNMCRGGRMFA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q59H77	CCT3	37	MMGHR(me1)PVIVISQNTK	VAMMGHRPVIVIS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5BJH7		15	MHPAGIAAAAAGTPR(me1)IPSK	AAAGTPRIPSKRR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9994	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5BJH7-3		15	MHPAGIAAAAAGTPR(me1)IPSK	AAAGTPRIPSKRR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9994	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q5BKZ1	ZNF326	149	IRPGFMEDR(me1)GR	PGFMEDRGRENYS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9989	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5BKZ1	ZNF326	235	STNVTVAAAR(me1)GIK	VTVAAARGIKRKM	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5JSZ5	DKFZp781F05101	593	SFFQDEHVADSENAENR(me1)PFR	SENAENRPFRRRR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9928	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5QP82	DCAF10	134	SIGR(me1)GIFVDPAR	KERSIGRGIFVDP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5QPM7	PSMF1	205	R(me1)GGMIVDPIR	DPFGPRRGGMIVD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5QPM7	PSMF1	231	AIIDPSSGIPNR(me1)IPPGAVPPGAR	SSGIPNRIPPGAV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5QPM7	PSMF1	257	FDPFGPIGTSPPGPR(me1)PDRR	TSPPGPRPDRRGQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5QPM7	PSMF1	260	FDPFGPIGTSPPGPRPDR(me1)R	PGPRPDRRGQ___	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5QPM7	PSMF1	261	FDPFGPIGTSPPGPRPDRR(me1)	GPRPDRRGQ____	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5R2V8	C2orf4	5	MPIWR(me1)ADK	__MPIWRADKCQD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q5RKV6	EXOSC6	93	GGGPAGAGGEAPAAIR(me1)GR	EAPAAIRGRIICD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8634	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5T170	PYGO2	130	VQGGMAGQVPPGYSTGGGGGPQPIR(me1)R	GGPQPIRRQPPPF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9029	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5T200	ZC3H13	66	FVHGPSPR(me1)GK	VHGPSPRGKGYSS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9361	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5T5U3	ARHGAP21	574	MSGR(me1)GVGSVSQFK	NRRMSGRGVGSVS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5T6F2	UBAP2	166	GREFRGEENGIDCNQVDKPSDR(me1)GK	VDKPSDRGKRARG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8205	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5T802	RUNX2	405	GTGIPAITDVPR(me1)R	AITDVPRRISDDD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8776	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q5TAX3	ZCCHC11	1624	FQPNKPFYTQDR(me1)CATR	PFYTQDRCATRRC	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9485	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5TAX3	ZCCHC11	1628	FQPNKPFYTQDRCATR(me1)	QDRCATRRCRERC	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8957	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q5TD97	FHL5	114	TIMPGSR(me1)	TIMPGSRKMEFKG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q5TF21	C6orf174	206	AQQR(me1)GGSGGEGASPSPSSSSAGK	GVRAQQRGGSGGE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q5VWM5	PRAMEF9	248	IVISHMDVSR(me2)	SHMDVSRYVSPEQ	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q63ZY3	KANK2	105	HSAYSYCGR(me1)GFYPQYGAIETR	AYSYCGRGFYPQY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q63ZY3	KANK2	117	GFYPQYGAIETR(me1)GGFNPR	YGAIETRGGFNPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9985	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q63ZY3-2	KANK2	105	HSAYSYCGR(me1)GFYPQYGAIETR	AYSYCGRGFYPQY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q63ZY3-2	KANK2	117	GFYPQYGAIETR(me1)GGFNPR	YGAIETRGGFNPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9985	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q69YN4	KIAA1429	1741	GNYNESR(me1)GGQSNFNR	GNYNESRGGQSNF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q6EEV4	POLR2M	45	QPQPAQNVIAAPR(me1)IR	NVIAAPRIRAPSS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8948	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q6FH21	BAD	161	NIGR(me1)GSSAPSQ	WDRNIGRGSSAPS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q6FI13	HIST2H2AA3	72	VGAGAPVYMAAVIEYITAEIIEIAGNAAR(me2)	IAGNAARDNKKTR	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q6FIF1	DNAJB9	136	R(me1)FENHFQTR	NTGSKKRFENHFQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q6NZY7	CDC42EP5	38	HTIHVGR(me1)GGDAFGDTSFISR	HTIHVGRGGDAFG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q6P0Q8	MAST2	1004	GR(me1)GTSQIAEGATAK	AMETRGRGTSQIA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q6P1N0	CC2D1A	13	GPPGPPGR(me1)GAAAAR	PPGPPGRGAAAAR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9995	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q6P2Q9	PRPF8	1151	IMKHDVNIGR(me2)	HDVNIGRAVFWDI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9998	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q6P6C2	ALKBH5	359	R(me1)GSFSSENYWR	IPTHRRRGSFSSE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q6PID8	KLHDC10	13	R(me1)GGGAAGAGGGGSGAGGGSGGSGGR	WDRNRRRGGGAAG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q6PJG2	C14orf43	177	AGGPQIDR(me1)YVRPMMPQK	GGPQIDRYVRPMM	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q6PJG2	C14orf43	180	AGGPQIDRYVR(me1)PMMPQK	QIDRYVRPMMPQK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q6PK04	CCDC137	223	DQPGR(me2)RSQMIR	SKDQPGRRSQMIR	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9997	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q6PK04	CCDC137	224	DQPGRR(me2)SQMIR	KDQPGRRSQMIRM	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9997	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q6PKG0	LARP1	80	HIPANR(me1)GEIK	RHIPANRGEIKGS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9981	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q6RI45	BRWD3	1740	IADDEFDTMFSGR(me1)FSR	DTMFSGRFSRIPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8782	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q6TXQ4		49	STEIIVR(me1)K	STEIIVRKIPFQR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8963	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q6XUX3	DSTYK	29	EICR(me1)GFGR	MIREICRGFGRYR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q6Y7W6	GIGYF2	149	SFDEVEGVFGR(me1)GGGR	VEGVFGRGGGREM	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q6Y7W6	GIGYF2	153	SFDEVEGVFGRGGGR(me1)	FGRGGGREMHRSQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q6ZSB9	ZBTB49	459	HSGEKPYICEICGKR(me2)	CEICGKRFAASGD	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q6ZUT6	C15orf52	311	GR(me1)GGQASRPSVAPATGSK	IPDGKGRGGQASR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9996	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q6ZUT6	C15orf52	504	SGAQQGIAPR(me1)	QQGIAPRSRPTRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q6ZW31	SYDE1	640	GR(me1)GGPESPPSNR	VTRPRGRGGPESP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q709C8	VPS13C	3519	DFGDSIAR(me1)GGK	FGDSIARGGKGFI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q71DI3	HIST1H3A	41	SAPATGGVKKPHR(me1)	GVKKPHRYRPGTV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q71F56	MED13L	1061	TPR(me1)GGGTASGQGSVK	RTPRTPRGGGTAS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q71RC2	LARP4	374	TNAAAMNMGR(me1)PFQK	AAMNMGRPFQKNR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q71RC2	LARP4	449	ETSTIQVEQNGDYGR(me1)GR	QNGDYGRGRRTIF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9994	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q71RC2	LARP4	692	GNIIPR(me1)GAAGK	RGNIIPRGAAGKI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q71RC2-4	LARP4	374	TNAAAMNMGR(me1)PFQK	AAMNMGRPFQKNR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q71RC2-4	LARP4	449	ETSTIQVEQNGDYGR(me1)GR	QNGDYGRGRRTIF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9994	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q71RC2-4	LARP4	686	DYSGFR(me1)GNIIPR	KDYSGFRGNIIPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q71RC2-4	LARP4	692	GNIIPR(me1)GAAGK	RGNIIPRGAAGKI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q75N03	CBLL1	23	MDHTDNEIQGTNSSGSIGGIDVR(me1)R	IGGIDVRRRIPIK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8987	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q7Z3D7	DKFZp686E2459	960	VR(me1)GSGIGARGSSYGVTSTESYK	EAQTRVRGSGIGA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q7Z3D7	DKFZp686E2459	967	GSGIGAR(me1)GSSYGVTSTESYK	GSGIGARGSSYGV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q7Z460	CLASP1	660	QSSGSATNVASTPDNR(me1)GR	ASTPDNRGRSRAK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q7Z460	CLASP1	662	QSSGSATNVASTPDNRGR(me1)	TPDNRGRSRAKVV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q7Z4W1	DCXR	21	GIGR(me1)GTVQAIHATGAR	AGKGIGRGTVQAI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q7Z5V6	PPP1R32	108	HPIPWSMR(me2)	PIPWSMRQTSSGY	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q7Z614-3		99	SR(me1)PGEMTYPGSR	FVMGKSRPGEMTY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q7Z6B7	SRGAP1	900	GIIQNR(me1)GINNDSPER	RGIIQNRGINNDS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9998	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q7Z6J9	TSEN54	316	HTIIR(me1)APAPEIIPANVAGR	SRHTIIRAPAPEI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q7Z739	YTHDF1	493	HIR(me1)IENNDNKPVTNSR	NQIRHIRIENNDN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9683	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86TB9	PATL1	385	NINGAGDR(me1)GSHR	INGAGDRGSHRSS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9996	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q86U42	PABPN1	17	AAAAAAAAAAGAAGGR(me1)GSGPGR	AGAAGGRGSGPGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86U42	PABPN1	23	AAAAAAAAAAGAAGGRGSGPGR(me1)	RGSGPGRRRHIVP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9486	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86U42	PABPN1	238	TSIAIDESIFR(me1)GR	IDESIFRGRQIKV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86U42	PABPN1	240	TSIAIDESIFRGR(me1)	ESIFRGRQIKVIP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86UU0	BCL9L	680	VREEIIR(me1)HQIIEK	VREEIIRHQIIEK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86UU1	PHLDB1	401	IGTIQDR(me1)PPSPFR	IGTIQDRPPSPFR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q86VH2	KIF27	727	MR(me1)EITINIK	EAKQKMREITINI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86WJ1	CHD1L	9	AGATSR(me1)GGQAPGFIIR	RAGATSRGGQAPG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86WR7	C10orf47	28	AFSR(me1)GGSIESR	RIRAFSRGGSIES	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86WR7	C10orf47	320	GR(me1)GIPGPAESIR	ERVARGRGIPGPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X51	CXorf67	227	R(me1)ASGPGPVIR	ASAIRRRASGPGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q86X51	CXorf67	236	RASGPGPVIR(me1)	GPGPVIRGCTAQP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q86X51	CXorf67	302	DSAPVSAPR(me1)GR	APVSAPRGRDSAP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9094	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q86X51	CXorf67	324	DSAPGPAIR(me1)VR	APGPAIRVRTARS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.998	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q86X51	CXorf67	335	SDAGHR(me1)STSTTPGTGIRSR	RSDAGHRSTSTTP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q86X51	CXorf67	346	STSTTPGTGIR(me1)	TPGTGIRSRSTQQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q86X51	CXorf67	353	STQQR(me1)SAIISR	SRSTQQRSAIISR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q86X94	TAF15	164	ENYSHHTQDDR(me1)R	HHTQDDRRDVSRY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.991	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	175	YGEDNR(me1)GYGGSQGGGRGRGGYDK	RYGEDNRGYGGSQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	185	YGEDNRGYGGSQGGGR(me1)GRGGYDK	GSQGGGRGRGGYD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	187	YGEDNRGYGGSQGGGRGR(me1)GGYDK	QGGGRGRGGYDKD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	195	DGR(me1)GPMTGSSGGDRGGFK	GYDKDGRGPMTGS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	206	GPMTGSSGGDR(me1)GGFK	GSSGGDRGGFKNF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	395	NSCNQCNEPRPEDSRPSGGDFR(me1)GRGYGGER	PSGGDFRGRGYGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9383	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	397	NSCNQCNEPRPEDSRPSGGDFRGR(me1)GYGGER	GGDFRGRGYGGER	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9383	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	403	NSCNQCNEPRPEDSRPSGGDFRGRGYGGER(me1)	RGYGGERGYRGRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9383	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	431	SGGGYGGDR(me1)SSGGGYSGDR	GGYGGDRSSGGGY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	459		GGYGGDRGGGYGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	467		GGYGGDRGGGYGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	475		GGYGGDRGGGYGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	483		GGYGGDRGGYGGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	490		GGYGGDRGGGYGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	498		GGYGGDRGGYGGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	505		GGYGGDRGGYGGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	512		GGYGGDRGGYGGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	519		GGYGGDRGGYGGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	528	SR(me1)GGYGGDRGGGSGYGGDR	YGGDRSRGGYGGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	535	SRGGYGGDR(me1)GGGSGYGGDR	GGYGGDRGGGSGY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	545	SRGGYGGDRGGGSGYGGDR(me1)	SGYGGDRSGGYGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	553	SGGYGGDR(me1)SGGGYGGDRGGGYGGDRGGYGGK	GGYGGDRSGGGYG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	562	SGGYGGDRSGGGYGGDR(me1)GGGYGGDRGGYGGK	GGYGGDRGGGYGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	570	SGGYGGDRSGGGYGGDRGGGYGGDR(me1)GGYGGK	GGYGGDRGGYGGK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86X94	TAF15	580	SGGGYGGDRGGGYGGDRGGYGGKMGGR(me1)	GGKMGGRNDYRND	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.7564	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q86XN8	MEX3D	524	HSPTIPEPGGIR(me1)IEIPISR	PEPGGIRIEIPIS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9995	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8IUD2	ERC1	6	MYGSAR(me1)SVGK	_MYGSARSVGKVE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8IUE6	HIST2H2AB	89	HIQIAVR(me1)NDEEINK	HIQIAVRNDEEIN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8IVF2	AHNAK2	344	TGSGQGPSSTGQPGR(me1)GFQSGVGR	STGQPGRGFQSGV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8564	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8IVF4	DNAH10	2495	TTSMDIQR(me1)	TSMDIQRNIEANV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8IVL0	NAV3	1152	SSTSGIPGR(me1)GGHR	TSGIPGRGGHRSS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8IVW6	ARID3B	402	KGDGAPVTTVPVPNR(me1)IAVPVTIASQQAGTR	TVPVPNRIAVPVT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9419	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8IWD4	CCDC117	60	AVPSSPAGSAAR(me1)GR	PAGSAARGRVSVH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8277	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8IWD4	CCDC117	62	AVPSSPAGSAARGR(me1)	GSAARGRVSVHCK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9685	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8IWQ3	BRSK2	457	SR(me1)SISGASSGISTSPISSPR	QHGQRSRSISGAS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8IWQ3-5	BRSK2	457	SR(me1)SISGASSGISTSPISSPR	QHGQRSRSISGAS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8IXQ5	KLHL7	38	IIAGFMGVMNNMR(me2)K	GVMNNMRKQKTIC	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8IY92	SLX4	1062	SR(me1)GGTSQVGSPTIISPAVPSK	ISTPRSRGGTSQV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8N1G1	REXO1	191	GQGR(me1)GGGGGGAIEYVPK	IDRGQGRGGGGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8N3D4	EHBP1L1	134	HAGPVPVQVPVR(me1)	PVQVPVRIRIKPK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8N414	PGBD5	138	SIAIVMSQAR(me1)	IVMSQARFEKIIK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8N6I1	EID2	51	GRREPAPAQPEEAGEGAMAAAR(me1)GGPVPAAR	GAMAAARGGPVPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8N6I1	EID2	75	AAPAAAAR(me1)GAPVAAAAIAR	APAAAARGAPVAA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8N715	C1orf65	515	IIVEIADEKIR(me2)	IADEKIRQARSHV	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8N8Q3-4		4	MAIR(me2)SHDR	___MAIRSHDRST	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8N8Q3-4		8	MAIRSHDR(me2)	AIRSHDRSTRPIY	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8NAF0	ZNF579	92	HIR(me1)GHGPQPPIR	HISRHIRGHGPQP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8NB15		240	IPSTICFGQGAAR(me1)GFK	FGQGAARGFKSNK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9456	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8NB15-2		240	IPSTICFGQGAAR(me1)GFK	FGQGAARGFKSNK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9456	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8NC51	SERBP1	177	GR(me1)GMGRGDGFDSR	GRGGRGRGMGRGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8NC51	SERBP1	181	GRGMGR(me1)GDGFDSR	RGRGMGRGDGFDS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8NC51	SERBP1	201	HSGSDR(me1)SSFSHYSGIK	RHSGSDRSSFSHY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8NC51	SERBP1	216	R(me1)GGSGSHNWGTVKDEITDIDQSNVTEETPEGEEHHPVADTENK	IKHEDKRGGSGSH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8NC51	SERBP1	216	R(me1)GGSGSHNWGTVKDEITESPKYIQK	IKHEDKRGGSGSH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8NC51-3	SERBP1	216	R(me1)GGSGSHNWGTVKDEITDIDQSNVTEETPEGEEHHPVADTENK	IKHEDKRGGSGSH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8NC81	CARD10	12	GVGVGIGNGIR(me2)IIPWMEASRPGAPGSER	GIGNGIRIIPWME	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8NC81	CARD10	21	GVGVGIGNGIRIIPWMEASR(me2)PGAPGSER	PWMEASRPGAPGS	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8NC81	CARD10	29	GVGVGIGNGIRIIPWMEASRPGAPGSER(me2)	GAPGSERIIIDII	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8NCA5	FAM98A	337	RQDGPQQQTGGR(me1)GGGR	QQQTGGRGGGRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9995	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8ND56	LSM14A	389	RPTWAEER(me1)R	PTWAEERRINAET	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.997	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8NDT2	RBM15B	220	VEPVYIR(me1)GGGGSSR	VEPVYIRGGGGSS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9799	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8NDV7		6	IQDKR(me1)MEIDK	_MIQDKRMEIDKH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8NDV7-3		6	IQDKR(me1)MEIDK	_MIQDKRMEIDKH	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8NEY1	NAV1	688	SSSMSVTGGR(me1)GGPRPVSSSIDPSIISTK	MSVTGGRGGPRPV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.7512	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8NEY1	NAV1	692	SSSMSVTGGRGGPR(me1)PVSSSIDPSIISTK	GGRGGPRPVSSSI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8403	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8NFD5	ARID1B	1606	SIENR(me1)MSPSK	QRSIENRMSPSKS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8NFD5-3	ARID1B	1606	SIENR(me1)MSPSK	QRSIENRMSPSKS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8NFW1	COL22A1	1039	GAPGIPGSPGSR(me2)GDPGIGVAGPPGPSGPPGDK	PGSPGSRGDPGIG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8NHM5	KDM2B	1231	IAGIDITDASIR(me1)	ITDASIRIIIRHM	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8TAE6	PPP1R14C	27	VFFQSPR(me1)GGAGGSPGSSSGSGSSR	VFFQSPRGGAGGS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9994	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8TDC3	BRSK1	447	SR(me1)SVSGASTGISSSPISSPR	QHSQRSRSVSGAS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8TDC3	BRSK1	514	TQTIPSRGPRGGGAGEQPPPPSAR(me1)	PPPPSARSTPIPG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8TDC3	BRSK1	526	GGGAGEQPPPPSARSTPIPGPPGSPR(me1)	GPPGSPRSSGGTP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8TDC3-2	BRSK1	447	SR(me1)SVSGASTGISSSPISSPR	QHSQRSRSVSGAS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8TDC3-2	BRSK1	514	TQTIPSRGPRGGGAGEQPPPPSAR(me1)	PPPPSARSTPIPG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8TDC3-2	BRSK1	526	GGGAGEQPPPPSARSTPIPGPPGSPR(me1)	GPPGSPRSSGGTP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8TDD1	DDX54	868	VQEIQQGAFGR(me1)GAR	QQGAFGRGARSKK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9997	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8TDN6	BRIX1	9	R(me1)GGFAVQAK	ATKRKRRGGFAVQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8TDY2	RB1CC1	210	IPIIECITR(me2)HSYR	IIECITRHSYREC	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8TDY2	RB1CC1	214	IPIIECITRHSYR(me2)	ITRHSYRECIGRI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8TE73	DNAH5	1226	KYR(me2)SEMENIFMIIEEFNK	HCNKKYRSEMENI	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8TE82	SH3TC1	1294	IATIYHNFIIDR(me2)EK	HNFIIDREKSIFF	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8TEM1	NUP210	1246	IPSQYNFAMNVIGR(me2)	AMNVIGRVKGRTG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8TF17	SH3TC2	529	KSHMTWAHAR(me2)	MTWAHARICFIIG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8TF74	WIPF2	310	GIAPPPPTSASPSIISNR(me1)PPPPARDPPSR	PSIISNRPPPPAR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9983	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8WTQ1	DEFB104A	47	CRSQEYR(me1)IGRCPNTYACCIR	CRSQEYRIGRCPN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9776	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8WTQ1	DEFB104A	50	CRSQEYRIGR(me1)CPNTYACCIR	QEYRIGRCPNTYA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.973	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8WUF5	PPP1R13L	82	YSSSSIPEPFGSR(me1)GSPR	PEPFGSRGSPRKA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8869	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8WUF5	PPP1R13L	137	TPIYIQPDAYGSIDR(me1)ATSPRPR	AYGSIDRATSPRP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8WUF5	PPP1R13L	142	TPIYIQPDAYGSIDRATSPR(me1)PR	DRATSPRPRAFDG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8WUF5	PPP1R13L	144	TPIYIQPDAYGSIDRATSPRPR(me1)	ATSPRPRAFDGAG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8WUF5	PPP1R13L	243	AQDDITIR(me1)R	QDDITIRRRPPKA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9885	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8WUM0	NUP133	17	R(me1)GPIAGIGPGSTPR	PGTGSRRGPIAGI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8WUZ0	BCL7C	82	GASPR(me1)GGGPIIIIDINDENSNQSFHSEGSIQK	GRGASPRGGGPII	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8WUZ0-2	BCL7C	82	GASPR(me1)GGGPIIIIDINDENSNQSFHSEGSIQK	GRGASPRGGGPII	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8WVX7	RPS19	79	HIYIR(me1)GGAGVGSMTK	ARHIYIRGGAGVG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9531	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8WWM7	ATXN2L	361	EGPR(me1)GGVR	RVREGPRGGVRCS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8WXD9	CASKIN1	398	SGSISGMAGGR(me1)GSGGHAIHAGSEGVK	SGMAGGRGSGGHA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9989	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8WXF1	PSPC1	4	MMIR(me1)GNIK	___MMIRGNIKQV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8WXF1	PSPC1	507	TGSETPQAPMSGVGPVSGGPGGFGR(me1)GSQGGNFEGPNK	GPGGFGRGSQGGN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q8WXI9	GATAD2B	10	MTEDAIR(me1)INIIK	MTEDAIRINIIKR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9932	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8WXI9	GATAD2B	520	QAPQPQSSIQR(me1)GIPTSAR	PQSSIQRGIPTSA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8WXI9	GATAD2B	527	QAPQPQSSIQRGIPTSAR(me1)	GIPTSARSMISNF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q8WY36	BBX	837	ITHIVR(me2)TADGRVSPAGGTIDDKPK	KITHIVRTADGRV	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.8332	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q8WYH8	ING5	126	DKMEGSDFESSGGR(me1)GIK	FESSGGRGIKKGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9998	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92576	PHF3	1911	QDQQQIDR(me1)PFNRGK	DQQQIDRPFNRGK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92576	PHF3	1915	QDQQQIDRPFNR(me1)GK	IDRPFNRGKGDRQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92615	LARP4B	419	SHIR(me1)HAIPSAER	PSKSHIRHAIPSA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92615	LARP4B	493	REAGPGRVEPGSIESSPGIGR(me1)GR	SSPGIGRGRKNSF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.933	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92630	DYRK2	18	KPSAAAPAAYPTGR(me1)GGDSAVR	AAYPTGRGGDSAV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9793	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q92686	NRGN	68	KGPGPGGPGGAGVAR(me1)GGAGGGPSGD	GGAGVARGGAGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92734	TFG	385	NR(me1)PPFGQGYTQPGPGYR	NPYARNRPPFGQG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92734	TFG	385	NR(me2)PPFGQGYTQPGPGYR	NPYARNRPPFGQG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q92734	TFG	400	NRPPFGQGYTQPGPGYR(me1)	QPGPGYR______	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92794	KAT6A	2003	QSINGPYMR(me1)R	INGPYMRR_____	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8456	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q92804	TAF15	185	GYGGSQGGGR(me2)GRGGYDK	GSQGGGRGRGGYD	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q92804	TAF15	187	GYGGSQGGGRGR(me2)GGYDK	QGGGRGRGGYDKD	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9992	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q92804	TAF15	528	SR(me2)GGYGGDRGGGSGYGGDR	YGGDRSRGGYGGD	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q92804	TAF15	535	SRGGYGGDR(me2)GGGSGYGGDR	GGYGGDRGGGSGY	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q92804	TAF15	562	SGGGYGGDR(me2)GGGYGGDRGGYGGK	GGYGGDRGGGYGG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q92804	TAF15	570	SGGGYGGDRGGGYGGDR(me2)GGYGGK	GGYGGDRGGYGGK	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q92841	DDX17	2	MR(me1)GGGFGDRDRDR	_____MRGGGFGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92841	DDX17	83	APIPDIYPFGTMR(me1)GGGFGDR	YPFGTMRGGGFGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8323	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q92841	DDX17	96	DR(me1)GGFGAR	RDRDRDRGGFGAR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q92841	DDX17	102	GGFGAR(me1)GGGGIPPK	RGGFGARGGGGIP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92841	DDX17	507	FVINYDYPNSSEDYVHR(me1)	SEDYVHRIGRTAR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q92841	DDX17	555	IMQIVDHR(me1)GGGGGGGGR	MQIVDHRGGGGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92841	DDX17	609	DSASYRDR(me1)SETDR	SASYRDRSETDRA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9864	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q92841	DDX17	688	SSQSSSQQFSGIGR(me1)	QFSGIGRSGQQPQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92841-2	DDX17	2	MR(me1)GGGFGDRDRDR	_____MRGGGFGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q92945	KHSRP	216	GR(me1)GGPPGQFHDGGQNGTVQEIMIPAGK	DIVSRGRGGPPGQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92945	KHSRP	411	SGPPGPPGGPGMPPGGR(me1)GR	GMPPGGRGRGRGQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92945	KHSRP	413	SGPPGPPGGPGMPPGGRGR(me1)	PPGGRGRGRGQGN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q92945	KHSRP	442	CGIVIGR(me1)GGENVK	CGIVIGRGGENVK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q93074-2	MED12	1899	TSVYR(me1)QQQPAVPQGQR	YKTSVYRQQQPAV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q93074-2	MED12	1910	TSVYRQQQPAVPQGQR(me1)	AVPQGQRIRQQIQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q969E4	TCEAL3	176	DVQDPFAPR(me1)GQR	QDPFAPRGQRGVR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q969E4	TCEAL3	179	DVQDPFAPRGQR(me1)	FAPRGQRGVRGVR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q969S3	ZNF622	166	NVVAVGTGGR(me1)GTHDRDPSEKPPR	AVGTGGRGTHDRD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q969W3-2	FAM104A	4	GGR(me1)GADAGSSGGTGPTEGYSPPAASTRAAAR	___MGGRGADAGS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q969W3-2	FAM104A	28	GGRGADAGSSGGTGPTEGYSPPAASTR(me1)AAAR	PPAASTRAAARAK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.883	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q969W3-2	FAM104A	54	NTTPSVPSIR(me1)GAAPR	PSVPSIRGAAPRS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.938	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q96A08	HIST1H2BA	88	R(me1)STISSREIQTAVRIIIPGEIAK	IAHYSKRSTISSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9894	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q96AE4	FUBP1	359	SVQAGNPGGPGPGGR(me1)GR	GPGPGGRGRGRGQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96AE4	FUBP1	361	SVQAGNPGGPGPGGRGR(me1)	GPGGRGRGRGQGN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96B54	ZNF428	75	IGGGR(me1)GGPSR	QRIGGGRGGPSRR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96DT7	ZBTB10	126	TIAFR(me1)GGGGGGIGNNGSSR	RRTIAFRGGGGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96E39	RBMXL1	368	DSYSSSSR(me1)GAPRGAGPGGSR	SYSSSSRGAPRGA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96E39	RBMXL1	368	DSYSSSSR(me2)GAPRGAGPGGSR	SYSSSSRGAPRGA	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q96E39	RBMXL1	372	DSYSSSSRGAPR(me1)GAGPGGSR	SSRGAPRGAGPGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96E39	RBMXL1	372	DSYSSSSRGAPR(me2)GAGPGGSR	SSRGAPRGAGPGG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9999	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q96E39	RBMXL1	380	DSYSSSSRGAPRGAGPGGSR(me1)	AGPGGSRSDRGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96EV2	RBM33	682	QGIR(me1)HNTTSQNVSK	PQRQGIRHNTTSQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q96EV2	RBM33	1028	VTITR(me1)GGIQQPPHIPAGPHAHSPVPPGIK	RKVTITRGGIQQP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96F88	POP1	30	NQPTNVTISSGFVADR(me1)GVK	SGFVADRGVKHHS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.997	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96G74	OTUD5	32	R(me1)GGGVGVGGGGTGVGGGDRDR	MPPAPRRGGGVGV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96H20	SNF8	4	R(me1)GVGAGAIAK	___MHRRGVGAGA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96HA1	POM121	223	DCGTIPNR(me1)FVITPR	CGTIPNRFVITPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96HA7	TONSL	797	AAYQAAIR(me1)GVGSAQSR	AYQAAIRGVGSAQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96JM3	CHAMP1	398	SGPPEIR(me1)K	SGPPEIRKTAPTI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.84	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q96LD4	TRIM47	582	R(me1)GGIPASPIDPFQSR	KASRPRRGGIPAS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q96ME1	FBXL18	446	APAQPAMHAVPR(me1)GFGK	AMHAVPRGFGKKV	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8712	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96N11	C7orf26	5	SDIR(me1)HSIIR	__MSDIRHSIIRR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q96N46	TTC14	282	IGIDESNPPSIMR(me2)	NPPSIMRGIQSKN	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q96PU8	QKI	242	IITGPAPVIPPAAIR(me1)TPTPAGPTIMPIIR	IPPAAIRTPTPAG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8743	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q96PU8	QKI	336	IVTADR(me1)AATGN	RIVTADRAATGN_	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96Q15	SMG1	50	DR(me1)GGSSSYGIQPSNSAVVSR	YSSSRDRGGSSSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96T17	MAP7D2	19	GGGGSGTGSRPEGTAR(me1)GTSIPGK	RPEGTARGTSIPG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96T17-2	MAP7D2	19	GGGGSGTGSRPEGTAR(me1)GTSIPGK	RPEGTARGTSIPG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q96T58	SPEN	108	EVSGFR(me1)GGGGGPAYGPPPSIHAR	REVSGFRGGGGGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q96T58	SPEN	3312	YGDIR(me1)TYHPPAQITHTQFPAASSVGIPSR	YRYGDIRTYHPPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q99590	SCAF11	965	IDRDSYSPR(me1)WK	RDSYSPRWKGRWA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9984	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q99700	ATXN2	640	VSAGR(me1)GSISSGIEFVSHNPPSEAATPPVAR	HRVSAGRGSISSG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q99700	ATXN2	998	TYR(me1)AVPNMPQQR	NQAKTYRAVPNMP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q99729	HNRNPAB	245	VAQPKEVYQQQQYGSGGR(me1)GNR	QYGSGGRGNRNRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q99729	HNRNPAB	248	VAQPKEVYQQQQYGSGGRGNR(me1)	SGGRGNRNRGNRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q99729	HNRNPAB	275	R(me1)GGHQNNYKPY	YGKSQRRGGHQNN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q99729-3	HNRNPAB	245	VAQPKEVYQQQQYGSGGR(me1)GNR	QYGSGGRGNRNRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q99729-3	HNRNPAB	248	VAQPKEVYQQQQYGSGGRGNR(me1)	SGGRGNRNRGNRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q99729-3		250	NR(me1)GNRGSGGGGGGGGQGSTNYGK	GRGNRNRGNRGSG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q99729-3		253	GNR(me1)GSGGGGGGGGQGSTNYGK	NRNRGNRGSGGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q99729-3	HNRNPAB	275	R(me1)GGHQNNYKPY	YGKSQRRGGHQNN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q99959-2	PKP2	390	R(me2)VNQIRGIIK	KSEARKRVNQIRG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q99959-2	PKP2	395	RVNQIR(me2)GIIK	KRVNQIRGIIKII	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q9BQI0-2	AIF1L	8	SGEISNR(me1)FQGGK	SGEISNRFQGGKA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9BRJ9	MESP1	187	TQAEGQGQGR(me1)GIGIVSAVR	EGQGQGRGIGIVS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BSI4	TINF2	276	VQSQWASTR(me1)GGHK	SQWASTRGGHKER	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9995	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BT25	HAUS8	7	ADSSGR(me1)GAGKPATGPTNSSSAK	MADSSGRGAGKPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9994	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BT25	HAUS8	59	APAGDGSQTR(me2)GKMSEGGR	GDGSQTRGKMSEG	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q9BT25	HAUS8	67	APAGDGSQTRGKMSEGGR(me2)	KMSEGGRKSSIIQ	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q9BTC0	DIDO1	1775	EPGPHAIGMSGIHGPNFPGPR(me1)GPAPPFPEENIASNDGPRGPPPAR	PNFPGPRGPAPPF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BTC0	DIDO1	1793	EPGPHAIGMSGIHGPNFPGPRGPAPPFPEENIASNDGPR(me1)GPPPAR	ASNDGPRGPPPAR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9907	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BTC0	DIDO1	1824	GPIPSIFSGQHGPPPYGDSR(me1)GPSPSYIGGPRGVAPSQFEER	PPYGDSRGPSPSY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9BTC0	DIDO1	1835	GPSPSYIGGPR(me1)GVAPSQFEER	SYIGGPRGVAPSQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BTC0	DIDO1	1845	GPIPSIFSGQHGPPPYGDSRGPSPSYIGGPRGVAPSQFEER(me1)	PSQFEERKDPHGE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BTC0	DIDO1	1882	REFQDAPYNEVTGAPAQFEGTEQAPFIGSR(me1)GGAPFQFGGQR	APFIGSRGGAPFQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8395	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BTC0	DIDO1	1904	GPR(me1)GGPPPSQFGGQR	SQIKGPRGGPPPS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BTC0	DIDO1	1993	APAPIQFGGIR(me1)GSAPFSEK	IQFGGIRGSAPFS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9998	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BTD8	RBM42	130	AAAAATVVPPMVGGPPFVGPVGFGPGDR(me1)SHIDSPEAR	GFGPGDRSHIDSP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9848	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BTD8	RBM42	145	EAMFIR(me1)R	REAMFIRRAAVAP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.99	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BTL3	FAM103A1	54	NR(me1)GNRIQDNR	GGNQRNRGNRIQD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9BTL3	FAM103A1	57	NRGNR(me1)IQDNR	QRNRGNRIQDNRQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9BTL3	FAM103A1	62	IQDNR(me1)QFRGR	NRIQDNRQFRGRD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BTL3	FAM103A1	65	IQDNRQFR(me1)GR	QDNRQFRGRDNRW	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BTV5	FSD1	320	TASPINSPAR(me1)GTPSPK	PINSPARGTPSPK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9481	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9BU76	MMTAG2	6	MFGSSR(me1)GGVR	_MFGSSRGGVRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BUN8	DERL1	214	R(me1)GGVSGFGVPPASMR	RWIPSRRGGVSGF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9BWF3	RBM4	358	YEREQYADR(me1)AR	REQYADRARYSAF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BXB5	OSBPL10	38	ATSAGSSPSCSIAGR(me1)GVSSR	SCSIAGRGVSSRS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9966	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BXB5	OSBPL10	43	ATSAGSSPSCSIAGRGVSSR(me1)	GRGVSSRSAAAGI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9326	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BXP5	SRRT	52	RGDDWNDREWDR(me1)GR	NDREWDRGRERRS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BXP5	SRRT	840	GNYDAFR(me1)GQGGYPGKPR	GNYDAFRGQGGYP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BYN0	SRXN1	16	AGAGR(me1)GAPEGPGPSGGAQGGSIHSGR	GRAGAGRGAPEGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BYN0	SRXN1	37	AGAGRGAPEGPGPSGGAQGGSIHSGR(me1)	GSIHSGRIAAVHN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9BZQ2	SHCBP1L	47	R(me1)APIGQSGR	RCGPERRAPIGQS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9BZQ2	SHCBP1L	55	RAPIGQSGR(me1)	PIGQSGRGREKWP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9BZZ5	API5	500	YSSNIGNFNYEQR(me1)	NFNYEQRGAFRGS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0B5	ZDHHC5	617	GR(me1)GVGSPEPGPTAPYIGR	PDGIRGRGVGSPE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0C7	AMBRA1	302	NISIGPTR(me1)R	ISIGPTRRSIGGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9908	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0C7-5	AMBRA1	302	NISIGPTR(me1)R	ISIGPTRRSIGGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9908	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9C0J8	WDR33	10	ATEIGSPPR(me1)FFHMPR	EIGSPPRFFHMPR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0J8	WDR33	915	TPIIGDGPR(me1)APFNQEGQSTGPPPIIPGIGQQGAQGR	IIGDGPRAPFNQE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0J8	WDR33	1030	IR(me1)EFEGRGGPIPQEEK	RFGHRIREFEGRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0J8	WDR33	1035	IREFEGR(me1)GGPIPQEEK	IREFEGRGGPIPQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0J8	WDR33	1047	R(me1)GGPGPPFPPDHREFSEGDGRGAAR	QEEKWRRGGPGPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0J8	WDR33	1067	EFSEGDGR(me1)GAAR	FSEGDGRGAARGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0J8	WDR33	1071	EFSEGDGRGAAR(me1)GPPGAWEGR	DGRGAARGPPGAW	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9998	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0J8	WDR33	1144	DGFPGPEDFGPEENFDASEEAAR(me1)GR	ASEEAARGRDIRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9663	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0J8	WDR33	1257	EMEAPGGPSEDR(me1)GGKGRGGPGPAQR	GGPSEDRGGKGRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9097	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0J8	WDR33	1262	GR(me1)GGPGPAQRVPK	DRGGKGRGGPGPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0J8	WDR33	1315	SGSNWGR(me1)GSNMNSGPPR	SGSNWGRGSNMNS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9C0J8	WDR33	1325	SGSNWGRGSNMNSGPPR(me1)	MNSGPPRRGASRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9GIX4	HLA-B	144	SWTAADTAAQISQR(me1)	AAQISQRKIEAAR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9GZU2	PEG3	372	VYEGNAFR(me1)GGFR	YEGNAFRGGFRFN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9H074	PAIP1	17	SR(me1)GIGRGGGGPEGGGFPNGAGPAER	AGRGRSRGIGRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9967	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9H074	PAIP1	21	GIGR(me1)GGGGPEGGGFPNGAGPAER	RSRGIGRGGGGPE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H089	LSG1	5	R(me1)APAGGSIGR	__MGRRRAPAGGS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H089	LSG1	14	RAPAGGSIGR(me1)	AGGSIGRAIMRHQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H0D6	XRN2	883	FDR(me1)GVGAEPIIPWNR	QQQRFDRGVGAEP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H0D6	XRN2	895	GVGAEPIIPWNR(me1)	PIIPWNRMIQTQN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H0D6	XRN2	921	MIQTQNAAFQPNQYQMIAGPGGYPPR(me1)R	PGGYPPRRDDRGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8847	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H0D6	XRN2	946	YPIPPPSGR(me1)YNWN	IPPPSGRYNWN__	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H0L4	CSTF2T	311	GQVQMSDPR(me1)APIPR	VQMSDPRAPIPRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H0L4	CSTF2T	316	GQVQMSDPRAPIPR(me1)	PRAPIPRGPVTPG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H0L4	CSTF2T	396	IIIGEPR(me1)GPMIDQR	IIIGEPRGPMIDQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H0L4	CSTF2T	461	GIEMR(me1)GPVPSSR	ARGIEMRGPVPSS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9H307	PNN	63	R(me1)GFSDSGGGPPAK	GSIIIRRGFSDSG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H3H3		14	AAAAAAAVAGVGR(me1)GGGGAEPR	AVAGVGRGGGGAE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H3H3		29	AR(me1)GWAGVER	QERSRARGWAGVE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H3H3-3		14	AAAAAAAVAGVGR(me1)GGGGAEPR	AVAGVGRGGGGAE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9H3H3-3		29	AR(me1)GWAGVER	QERSRARGWAGVE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9H6A9	PCNXL3	274	R(me1)GAGGYQPIDRR	SRREQRRGAGGYQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H7E9	C8orf33	24	AAIGHIAGEAAAAPGPGTPCASR(me1)GAR	GTPCASRGARIPG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8156	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H7E9-2	C8orf33	24	AAIGHIAGEAAAAPGPGTPCASR(me1)GAR	GTPCASRGARIPG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8156	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9H8Y5	ANKZF1	252	DAR(me1)GGPSHSAGANIRR	QGIRDARGGPSHS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H9A6	LRRC40	6	R(me1)IAGQDIRAGFK	_MSRIKRIAGQDI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9H9A6	LRRC40	13	RIAGQDIR(me1)AGFK	IAGQDIRAGFKAG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9HCD6	TANC2	1710	EDIPQR(me1)PSSAYRGGVR	KEDIPQRPSSAYR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9008	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9HCD6	TANC2	1716	EDIPQRPSSAYR(me1)GGVR	RPSSAYRGGVRYS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9891	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9HCD6-2	TANC2	1710	EDIPQR(me1)PSSAYRGGVR	KEDIPQRPSSAYR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9008	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9HCD6-2	TANC2	1716	EDIPQRPSSAYR(me1)GGVR	RPSSAYRGGVRYS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9891	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9NQ92	COPR5	18	MDIQAAGAQAQGAAEPSR(me1)GPPIPSAR	GAAEPSRGPPIPS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9NQ92	COPR5	26	MDIQAAGAQAQGAAEPSRGPPIPSAR(me1)	PPIPSARGAPPSP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9NQS1	AVEN	28	HSER(me1)PGAAAAVARGGGGGGGGDGGGR	GDRHSERPGAAAA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9981	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NQS1	AVEN	37	HSERPGAAAAVAR(me1)GGGGGGGGDGGGR	AAAAVARGGGGGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NQS1	AVEN	50	HSERPGAAAAVARGGGGGGGGDGGGR(me1)	GGDGGGRRGRGRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9992	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NR12	PDLIM7	137	TARPFGAPPPADSAPQQNGQPIR(me1)PIVPDASK	QNGQPIRPIVPDA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9953	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NR99	MXRA5	186	ISTIR(me2)HIYIAENMVR	FRISTIRHIYIAE	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q9NR99	MXRA5	196	ISTIRHIYIAENMVR(me2)	IAENMVRTIPASM	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q9NUQ3	TXLNG	10	VEEAAR(me1)GRGGGAEEATEAGRGGR	RVEEAARGRGGGA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NUQ3	TXLNG	12	GR(me1)GGGAEEATEAGRGGR	EEAARGRGGGAEE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NUQ3	TXLNG	24	GRGGGAEEATEAGR(me1)GGR	EATEAGRGGRRRS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NUQ3	TXLNG	27	GRGGGAEEATEAGRGGR(me1)	EAGRGGRRRSPRQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NVW2	RLIM	360	SQTPNNTVTYESER(me1)GGFR	VTYESERGGFRRT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9876	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NW82	WDR70	573	SHKPEPPVAGPGR(me1)GGR	PVAGPGRGGRVGT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NW82	WDR70	576	SHKPEPPVAGPGRGGR(me1)	GPGRGGRVGTHGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NWM3	CUEDC1	21	SSSGSGGGGTAGAR(me1)GGGGGTAAPQEINNSRPAR	GGTAGARGGGGGT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9956	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9NXW9	ALKBH4	249	SIIVITGAAR(me2)	VITGAARHQWKHA	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q9NXZ2	DDX43	47	TGPEGYSVGR(me1)GGR	EGYSVGRGGRWRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9NYL2	MLTK	693	GSISINSSPR(me1)GR	SINSSPRGRYSGK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9697	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NYV6	RRN3	9	AAPIIHTR(me1)IPGDAAASSSAVK	APIIHTRIPGDAA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NZN5	ARHGEF12	11	SGTQSTITDR(me1)FPIK	QSTITDRFPIKKP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9NZU7	CABP1	87	AAAAAASGGSRAPR(me2)HGPAR	GGSRAPRHGPARD	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9515	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q9NZU7	CABP1	92	AAAAAASGGSRAPRHGPAR(me2)	PRHGPARDPGIPS	Rme2		HEK293T	RMe and RMeGG MMA antibodies	0.9515	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q9P013	CWC15	6	TTAAR(me1)PTFEPARGGR	_MTTAARPTFEPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9P013	CWC15	13	TTAARPTFEPAR(me1)GGR	PTFEPARGGRGKG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9P013	CWC15	16	TTAARPTFEPARGGR(me1)	EPARGGRGKGEGD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9P227	ARHGAP23	1335	GRPDGEGAGR(me1)GGPR	DGEGAGRGGPRAP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9P270	SLAIN2	472	SPAAPSPIAIR(me1)QPVK	PSPIAIRQPVKAF	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8999	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9P270	SLAIN2	538	SGIPR(me1)PSAPSAGGIPVPR	MRSGIPRPSAPSA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9P270	SLAIN2	551	SGIPRPSAPSAGGIPVPR(me1)	GGIPVPRSKIAQP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9P2K1	CC2D2A	101	TGFAEFSMR(me1)GR	FAEFSMRGRMREK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9985	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9P2N5	RBM27	442	EHGAAASER(me1)IQIGTPPPIIAAR	GAAASERIQIGTP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9P2N5	RBM27	455	IQIGTPPPIIAAR(me1)	PPIIAARIVPPRN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UBU9	NXF1	21	SYSEHDDERVNFPQR(me1)K	RVNFPQRKKKGRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8645	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UHR3		338	R(me1)PRPPSRTSMSIMR	RTQSHRRPRPPSR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9993	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UHR3		340	RPR(me1)PPSRTSMSIMR	QSHRRPRPPSRTS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9993	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UHR3		344	RPRPPSR(me1)TSMSIMR	RPRPPSRTSMSIM	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9993	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UI15	TAGLN3	196	GASQAGMTGYGMPR(me1)	TGYGMPRQIM___	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UJY1	HSPB8	71	SGMVPR(me1)GPTATAR	RSGMVPRGPTATA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9UJY1	HSPB8	78	SGMVPRGPTATAR(me1)	GPTATARFGVPAE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9UKZ1	C2orf29	41	SGFGGSGGGR(me1)GGASGPGSGSGGPGGPAGR	GGSGGGRGGASGP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9ULX6	AKAP8L	171	MR(me1)GNDTFGPR	RDQFRMRGNDTFG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9ULX6	AKAP8L	179	MRGNDTFGPR(me1)	NDTFGPRAQGWAR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9ULX6	AKAP8L	208	MWEDPMGAR(me1)GQCMSGASR	EDPMGARGQCMSG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9945	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UMN6	WBP7	49	R(me1)GGGATGPGGAEPGEDTAIIR	VRVAIRRGGGATG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9UN86	G3BP2	457	DRDGRGPPPR(me1)GGMAQK	GRGPPPRGGMAQK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UN86	G3BP2	468	IGSGR(me1)GTGQMEGR	QKIGSGRGTGQME	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UP83	COG5	309	VITQPSQSAVR(me1)GGPGR	PSQSAVRGGPGRS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UP83-2	COG5	309	VITQPSQSAVR(me1)GGPGR	PSQSAVRGGPGRS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9UPN9	TRIM33	515	TPGQINIAQIR(me1)	INIAQIRIQHMQQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UPN9	TRIM33	535	HQQIQQMR(me1)	QQIQQMRMQQPPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9UPU9	SAMD4A	573	NR(me1)GFGQSNSIPTAGSVGGGMGR	YRQQRNRGFGQSN	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9UQ35	SRRM2	30	R(me1)GERPDYKGEEEIR	SIVRGRRGERPDY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.769	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UQ35	SRRM2	2274	TPAAAAAMNIASPR(me1)TAVAPSAVNIADPR	MNIASPRTAVAPS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9986	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UQ35	SRRM2	2288	TAVAPSAVNIADPR(me1)TPTAPAVNIAGAR	VNIADPRTPTAPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9997	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UQ35	SRRM2	2301	TAVAPSAVNIADPRTPTAPAVNIAGAR(me1)	VNIAGARTPAAIA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.8651	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UQ35	SRRM2	2342	TPQAPASANIVGPR(me1)SAHATAPVNIAGSR	ANIVGPRSAHATA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UQ35	SRRM2	2356	TPQAPASANIVGPRSAHATAPVNIAGSR(me1)	VNIAGSRTAAAIA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9UQ35	SRRM2	2370	TAAAIAPASITSAR(me1)	ASITSARMAPAIS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9UQ35	SRRM2	2384	MAPAISGANITSPR(me1)VPISAYER	ANITSPRVPISAY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9937	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y2W1	THRAP3	66	NHPR(me1)VYQNR	RERNHPRVYQNRD	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y2W1	THRAP3	825	DFVGPSER(me1)GGGR	FVGPSERGGGRAR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9738	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9Y3M8	STARD13	267	RMETIR(me1)GK	KRMETIRGKGAHG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9985	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9Y3X0	CCDC9	121	SWEGSPGEQPR(me1)GGGAGGRGR	SPGEQPRGGGAGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y3X0	CCDC9	128	SWEGSPGEQPRGGGAGGR(me1)GR	GGGAGGRGRRGRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y3X0	CCDC9	130	SWEGSPGEQPRGGGAGGRGR(me1)	GAGGRGRRGRGRG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y4H2	IRS2	569	VSGDAAQDIDR(me1)GIR	AAQDIDRGIRKRT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9993	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y4Z0	LSM4	117	GR(me1)GGIPGTGRGQPEK	VFGGRGRGGIPGT	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y4Z0	LSM4	125	GRGGIPGTGR(me1)GQPEK	GIPGTGRGQPEKK	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y520	PRRC2C	283	GR(me1)GPPPSWASEPERPSIISASEIK	NKGIRGRGPPPSW	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y520	PRRC2C	424	IIAQQHPPPDR(me1)QAVPGRPGPFPSK	QHPPPDRQAVPGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9818	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y520	PRRC2C	2691	STTPTSSPFR(me1)ATSTSPNSQSSK	PTSSPFRATSTSP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9995	1	032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y520-7	PRRC2C	244	INGQQAAIASQYR(me1)	AIASQYRAMMPPY	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9Y520-7	PRRC2C	257	AMMPPYMFQQYPR(me1)	MFQQYPRMTYPPI	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9Y520-7	PRRC2C	283	GR(me1)GPPPSWASEPERPSIISASEIK	NKGIRGRGPPPSW	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9Y520-7	PRRC2C	424	IIAQQHPPPDR(me1)QAVPGRPGPFPSK	QHPPPDRQAVPGR	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9818	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9Y520-7	PRRC2C	2691	STTPTSSPFR(me1)ATSTSPNSQSSK	PTSSPFRATSTSP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9995	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9Y520-7	PRRC2C	2816	QR(me1)AEVIQSTQRFFSEQQQSK	DMKAKQRAEVIQS	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9Y520-7	PRRC2C	2825	QRAEVIQSTQR(me1)FFSEQQQSK	VIQSTQRFFSEQQ	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9Y580	RBM7	152	QAVMNSAIR(me1)QMSYGGK	VMNSAIRQMSYGG	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-4 All identified MMA sites	
+Sylvestersen2014	Q9Y5R2	MMP24	8	GGR(me1)AAPGPPPPPPPPGQAPRWSR	PRSRGGRAAPGPP	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y5U2	TSSC4	139	SPVEGIGR(me1)AHR	PVEGIGRAHRSPA	Rme1		HEK293T	RMe and RMeGG MMA antibodies	0.9999	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y618	NCOR2	1719	ADMIR(me1)GISPR	QRADMIRGISPRE	Rme1		HEK293T	RMe and RMeGG MMA antibodies	1	2	032748-4 All identified MMA sites; 032748-4 Triplicate experiment - MMA	
+Sylvestersen2014	Q9Y6Z4-2		67	R(me2)MVPGDVAMSGHR	SAWQPRRMVPGDV	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	
+Sylvestersen2014	Q9Y6Z4-2		79	RMVPGDVAMSGHR(me2)	VAMSGHRVGAIDE	Rme2		HEK293T	RMe and RMeGG MMA antibodies	1	1	032748-6 Dimethyl (KR)Sites	

@@ -59,6 +59,11 @@
     UniProt: 'UniProt methylarginine annotation, via the cross-PTM master table',
     IEDB: 'Immune Epitope Database record with a methylated arginine, via the cross-PTM master table',
     'Maron 2021': 'Sites Maron et al. 2021 detected in their own data (Table S5 reference "This study"); many were also reported earlier',
+    'Hartel 2019': 'HEK293T and LN229 cells, antibody and SCX enrichment; ADMA and SDMA told apart by neutral losses (added in v1.1.1)',
+    'Geoghegan 2015': 'Jurkat cells and primary T cells, heavy-methyl SILAC with monomethylarginine antibodies (added in v1.1.1)',
+    'Sylvestersen 2014': 'HEK293T cells, monomethylarginine antibodies (added in v1.1.1)',
+    'Lu 2025': 'HeLa cells, peptides enriched with the SMN Tudor domain (added in v1.1.1)',
+    'Ma 2023': 'Breast cancer xenografts grown in mice, ADMA antibody (added in v1.1.1)',
   };
   // DOIs of the studies and databases behind the union (each checked against Crossref).
   const STUDY_DOI = {

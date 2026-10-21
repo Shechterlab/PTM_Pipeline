@@ -1,0 +1,744 @@
+study_id	reported_accession	reported_gene	reported_position	peptide	window	methyl_degree	rme2_type	cell_type	enrichment	localisation_probability	n_source_rows	source_tables	note
+Lu2025	A0A3B3IS91		205			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	A0A3B3IS91		209			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	A0AV96		379			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	A0AV96		381			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	A0AV96		383			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	A0AV96		394			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	A0AV96		405			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	A1L429		13			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	A6NHQ2		55			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O00267		681			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O00267		696			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O00267		698			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O14497		391			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O14686		1315			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O14686		1322			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O14686		1324			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O14979		325			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O14979		332			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O14979		336			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O14979		338			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O14979		408			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O15371		95			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O15371		97			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O15371		99			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O15371		103			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O15371		106			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O43390		447			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O43390		449			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O43390		451			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O43390		543			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O43390		546			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O43390		554			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O43390		556			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O43432		692			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O43823		188			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O43823		190			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O60293		62			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O60293		95			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O60293		99			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O60293		147			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	O60293		149			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	O60293		152			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	O60506		536			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O60506		539			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O60506		546			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	O75420		124			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O75420		126			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O75420		128			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	O94906		23			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P08729		20			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P08729		25			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P08729		46			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P09038		108			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P09038		110			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P09038		112			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P09651		194			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P09651		206			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P09651		218			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P09651		225			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0CG12		186			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0CG12		201			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0CG12		225			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0CG12		239			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0DI83		24			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0DI83		26			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0DI83		33			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0DI83		42			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0DI83		44			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0DI83		52			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0DI83		62			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0DI83		71			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0DI83		73			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0DI83		80			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0DI83		109			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P0DI83		116			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P11940		419			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P11940		432			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P11940		443			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P11940		455			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P11940		460			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P11940		467			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P11940		475			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P11940		493			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P12270		2337			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P12270		2343			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P12270		2345			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P12270		2354			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P14618		526			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P14678		108			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P14678		112			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P15880		26			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P15880		34			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P15880		36			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P15880		38			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P16989		178			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P16989		179			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P16989		184			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P16989		224			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P16989		225			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P16989		229			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P16989		233			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P16989		288			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P16989		290			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P16989		292			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P16989		327			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P16989		330			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P16989		331			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P16989		336			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P16989		337			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P17844		502			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P18583		975			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P18583		978			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P18583		982			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P18583		985			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P18583		989			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P18583		996			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P19338		660			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P19338		666			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P19338		670			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P19338		673			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P19338		679			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P19338		681			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P19338		687			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P19338		691			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P19338		694			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P22087		24			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P22087		27			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P22087		34			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P22087		36			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P22087		70			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P22087		72			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P22087		74			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P22626		203			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P22626		213			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P23246		5			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P23246		7			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P23246		9			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P23246		18			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P23246		19			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P23246		25			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P23246		32			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P23246		242			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P23246		681			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P23246		693			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P31942		116			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P31942		121			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P31942		129			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P31943		206			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P31943		212			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P31943		217			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P31943		224			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P35637		216			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		218			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		242			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		244			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		248			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		251			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		259			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		383			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		386			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		388			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		394			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		473			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		476			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		481			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		491			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		495			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		498			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P35637		503			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P38159		103			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P38159		107			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P38159		110			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P38159		113			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P38159		185			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P38159		369			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P38159		373			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P38159		377			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P38432		393			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P38432		413			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P38432		415			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P38432		417			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P46100		2474			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P46100		2480			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P46783		158			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P46783		160			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P48634		284			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P48634		289			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P48634		296			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P48634		1024			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P48634		1026			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P48634		1045			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P48634		1047			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P48634		1156			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P48634		1164			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P48634		1170			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P48634		1172			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P49750		784			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P49750		789			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P49750		794			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P49750		796			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P49959		577			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P49959		580			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P49959		587			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P49959		592			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P51114		453			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P51114		455			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P51114		459			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P51116		432			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P51116		434			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P51991		214			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P51991		216			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P51991		226			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P51991		239			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P51991		246			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P55265		72			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P55265		74			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P55265		84			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P61978		249			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P61978		256			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P61978		258			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P61978		268			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P61978		287			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P61978		296			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P61978		299			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P61978		303			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P62314		98			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P62314		100			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P62314		102			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P62314		104			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P62314		108			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P62314		110			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P62314		112			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P62314		114			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P62318		110			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P62318		112			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P62318		114			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P62318		118			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P62633		25			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P62633		27			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P62633		30			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P62633		32			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P62633		34			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P62995		241			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P67809		199			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P67809		200			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P68431		41			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P79522		88			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P79522		93			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P79522		99			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P79522		120			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P83369		72			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P83369		74			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P83369		76			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P83369		78			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P84243		41			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P98179		87			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	P98179		90			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P98179		99			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P98179		101			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	P98179		105			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q00839		702			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q00839		707			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q00839		709			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q00839		715			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q00839		720			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q00839		727			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q00839		733			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q00839		739			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q00839		762			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q00839		768			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q00839		773			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q00839		779			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q00839		787			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q00839		789			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q00839		793			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01804		1092			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01804		1094			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01804		1097			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		455			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		471			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		494			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		500			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		503			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		506			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		563			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		565			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		572			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		575			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		596			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		600			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		603			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		607			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		615			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		632			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q01844		633			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q06787		534			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q06787		539			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q06787		544			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q06787		546			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07666		45			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07666		52			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07666		284			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07666		289			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07666		291			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07666		302			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q07666		304			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q07666		310			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q07666		315			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07666		320			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07666		325			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07666		331			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07666		340			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07666		346			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07955		93			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07955		97			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q07955		109			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q08211		1175			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q08211		1219			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q08211		1223			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q08211		1227			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q08211		1242			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q08211		1249			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q08211		1253			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q08211		1265			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q12830		92			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q12830		95			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q12830		2162			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q12830		2184			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q12830		2191			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q12888		1396			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q12888		1398			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q12905		2			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q12905		5			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q12905		7			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q12905		9			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q12905		12			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q12906		609			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q13151		192			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13151		195			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13151		198			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13151		200			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13227		312			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q13227		323			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q13242		93			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13242		98			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13243		77			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13243		80			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13243		82			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13283		435			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13283		443			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13283		447			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13283		460			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13310		442			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13310		454			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13310		459			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13310		463			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13435		216			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13435		222			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13435		245			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q13435		502			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14004		1504			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14004		1506			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14004		1508			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14103		272			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14103		278			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14103		280			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14103		345			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q14151		897			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14151		903			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14157		168			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14157		172			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14157		175			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q14157		177			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q14157		179			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q14157		181			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q14444		608			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14444		612			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14444		616			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14444		619			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14444		633			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q14444		640			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14444		676			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14444		684			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14444		688			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14444		690			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q14498		109			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q15056		19			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q15654		186			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q15654		205			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q16630		202			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q16630		204			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q1KMD3		654			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q1KMD3		656			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q1KMD3		684			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q1ZZU3		133			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q1ZZU3		136			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q1ZZU3		140			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q52LJ0		396			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q52LJ0		402			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q52LJ0		408			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5BKZ1		173			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5BKZ1		175			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5BKZ1		200			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5BKZ1		202			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5BKZ1		204			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5JRA6		1833			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5JRA6		1843			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5JSZ5		1065			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q5JSZ5		1067			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q5JSZ5		1069			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q5JSZ5		1108			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5JSZ5		1110			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5T2E6		203			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5T6F2		173			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5T6F2		177			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q5T6F2		179			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q5T6F2		181			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q5T8P6		855			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5T8P6		857			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5VT52		1418			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5VT52		1422			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5VT52		1424			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5VT52		1430			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q5VT52		1438			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q5VT52		1440			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q5VT52		1445			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q63ZY3		105			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q63ZY3		117			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q69YN4		1622			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q69YN4		1624			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q69YN4		1626			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q69YN4		1687			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q69YN4		1694			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q69YN4		1697			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q69YN4		1773			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q69YN4		1775			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q69YN4		1793			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6NUQ4		29			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6Y7W6		124			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6Y7W6		126			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6Y7W6		128			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6Y7W6		130			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6ZNB6		12			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6ZNB6		14			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6ZNB6		16			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6ZNB6		18			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6ZUT6		509			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6ZUT6		514			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6ZUT6		516			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q6ZUT6		522			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q76L83		639			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q76L83		641			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q7L2J0		140			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q7L2J0		149			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q7Z6E9		530			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q7Z6E9		534			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86U42		259			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86U42		263			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86U42		265			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q86U42		267			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q86U42		269			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q86U42		279			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86U42		287			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86U42		289			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86U42		294			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q86U42		296			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q86U42		298			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q86UK7		320			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86UK7		324			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86US8		404			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86US8		406			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		20			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		23			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		27			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		29			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		38			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		47			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		50			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		56			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		58			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		63			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		71			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		197			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q86V81		204			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		217			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86V81		220			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q86V81		224			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q86V81		226			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q86V81		228			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q86YP4		258			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q86YP4		273			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NC51		163			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NC51		165			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NC51		170			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NC51		172			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NC51		175			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NC51		177			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NC51		181			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NC51		373			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NC51		376			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NC51		378			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NCF5		19			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NCF5		22			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NCF5		28			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NEZ4		897			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NEZ4		904			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NEZ4		907			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NFD5		608			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8NFD5		640			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8TAP9		7			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8TAP9		28			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8TAP9		37			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8TAP9		57			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8TAP9		59			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8TAP9		68			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8TAP9		77			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8TAP9		117			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8WUF5		160			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q8WUF5		167			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92576		1785			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92576		1790			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92576		1799			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92734		385			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		185			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		187			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		326			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		334			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		335			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q92804		337			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q92804		341			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q92804		343			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q92804		403			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		406			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		408			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		411			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		415			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		498			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		505			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		512			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		519			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		528			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92804		535			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92945		411			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92945		413			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q92945		415			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q93074		1854			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q93074		1859			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q93074		1862			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96AE4		359			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96AE4		361			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96AE4		363			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96BH1		437			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96DN6		347			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96DN6		360			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96E39		107			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q96E39		113			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q96E39		368			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96E39		372			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96EV2		1068			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96EV2		1070			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96EV2		1078			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96GM5		50			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96GM5		60			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96HR8		375			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96HR8		379			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96I24		337			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96I24		339			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96I24		341			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96PV6		374			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96PV6		382			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96PV6		392			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96PV6		394			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96PV6		463			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96PV6		466			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96PV6		472			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96PV6		474			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96QC0		693			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96QC0		705			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q96QC0		707			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q99700		244			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q99729		322			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q99832		535			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q99832		537			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q99832		539			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BTC0		1893			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9BTC0		1894			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9BTC0		1977			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BTC0		1982			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BTC0		1993			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BTC0		2008			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BTC0		2024			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BUJ2		612			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BUJ2		618			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9BUJ2		620			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9BUJ2		639			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BUJ2		645			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BUJ2		656			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BV68		128			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BV68		130			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BX40		351			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BX40		354			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BX40		359			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BX40		363			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BX40		366			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BZZ5		500			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BZZ5		504			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BZZ5		507			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BZZ5		515			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BZZ5		518			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9BZZ5		520			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9C086		251			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9C086		254			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9C086		258			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9C0J8		1149			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9C0J8		1151			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9C0J8		1153			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9C0J8		1157			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9H074		13			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9H074		15			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9H074		17			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9H074		21			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9H0D6		824			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9H0D6		847			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9H0D6		851			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9H2U1		34			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9H2U1		47			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9H2U1		50			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9H307		54			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9H307		56			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9H361		437			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9H5H4		248			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9H5H4		251			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9H5H4		253			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9HCE5		408			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9HCE5		414			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9HCE5		418			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9HCE5		425			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9HCE5		438			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9HCE5		442			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9HCE5		445			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9HCE5		450			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NQ55		461			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9NQ55		463			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9NQ55		465			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9NQS1		57			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NQS1		60			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NW82		573			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NX05		975			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NX05		977			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NY12		194			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NY12		197			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NYF8		794			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NYF8		796			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NYF8		803			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NYF8		805			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NYF8		807			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NYF8		809			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NYL2		683			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NYL2		693			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NYP3		64			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NYV4		1481			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NYV4		1484			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NYV4		1486			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NZB2		884			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9NZB2		886			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9NZB2		964			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NZB2		967			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NZB2		982			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NZB2		1002			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9NZB2		1006			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9P0J7		159			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9P0J7		165			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9P2N5		943			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9UBB5		55			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9UBB5		59			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9UBB5		61			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9UBB5		63			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9UBB5		90			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9UBB5		92			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9UBB5		94			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9UKV3		8			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9UKV3		14			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9UN86		468			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9UPN9		598			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9UPN9		604			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9UPT8		341			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9UPT8		343			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9UPT8		345			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9UPT8		349			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y2W1		66			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y2W1		91			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y2W1		101			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y2W1		825			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y2W1		829			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y2W1		831			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y2W1		839			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y2W1		841			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y2W1		845			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3I1		504			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3I1		508			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3I1		511			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3T6		120			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3X0		131			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3X0		133			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3X0		135			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3Y2		97			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3Y2		110			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3Y2		114			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3Y2		118			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3Y2		121			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3Y2		128			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3Y2		134			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3Y2		140			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3Y2		143			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3Y2		153			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3Y2		157			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3Y2		159			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3Y2		164			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y3Y2		174			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3Y2		180			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3Y2		189			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3Y2		195			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3Y2		197			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y3Y2		199			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y4Z0		88			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y4Z0		90			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y520		255			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y520		279			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y520		1186			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y520		1188			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y520		1190			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y520		1196			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y520		1201			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y520		1207			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y520		1209			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y520		1212			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y520		1342			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y520		1344			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y520		1349			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y520		1350			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y520		1353			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	hmSILAC validated peptide (EV1)
+Lu2025	Q9Y5B0		913			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	
+Lu2025	Q9Y5B0		916			Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites	

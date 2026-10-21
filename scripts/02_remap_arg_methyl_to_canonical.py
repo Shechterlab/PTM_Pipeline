@@ -147,8 +147,77 @@ def study_frame(path: str | Path) -> pd.DataFrame:
         'study_rows': t['n_source_rows'],
         'study_tables': t['source_tables'],
         'study_note': t['note'],
+        'staged_study': True,
     })
     return prepare_frame(out, study.lower())
+
+
+# Sources whose export writes every leucine as isoleucine (isobaric in mass spectrometry).
+LEUCINE_AS_ISOLEUCINE = {'sylvestersen2014'}
+
+
+def restore_leucines(rows: pd.DataFrame, canonical_sequences: dict[str, str]) -> pd.DataFrame:
+    """For a source of LEUCINE_AS_ISOLEUCINE, write back L where the export wrote I: in the window and the marked peptide
+    of a row whose reported entry, read at the reported position, agrees with them once I and L are taken as one
+    residue. The row's evidence as reported goes to peptide_sequence_reported and source_correction says
+    leucine_restored; other rows are left as given."""
+    rows = rows.copy()
+    for col in ('source_correction', 'peptide_sequence_reported'):
+        if col not in rows.columns:
+            rows[col] = ''
+    for i in rows.index[rows['source_table'].isin(LEUCINE_AS_ISOLEUCINE)]:
+        r = rows.loc[i]
+        seq = canonical_sequences.get(canonicalize_uniprot_accession(r['substrate_UniProtAC']), '')
+        pos = int(r['position'])
+        if not seq:
+            continue
+        fixed = {}
+        window = str(r.get('seq_window', '') or '')
+        if window:
+            half = len(window) // 2
+            ref = ''.join(seq[k] if 0 <= k < len(seq) else '_' for k in range(pos - 1 - half, pos - 1 - half + len(window)))
+            if ref.replace('I', 'L') == window.replace('I', 'L') and ref != window:
+                fixed['seq_window'] = ''.join('L' if w == 'I' and c == 'L' else w for w, c in zip(window, ref))
+        peptide = str(r.get('peptides', '') or '')
+        if peptide:
+            plain, marked = parse_modified_peptide(peptide)
+            start = pos - marked[0] if len(marked) == 1 else -1
+            ref = seq[start:start + len(plain)] if start >= 0 else ''
+            if ref and ref.replace('I', 'L') == plain.replace('I', 'L') and ref != plain:
+                out, k = [], 0
+                for ch in peptide:
+                    if 'A' <= ch <= 'Z' and k < len(ref):
+                        out.append('L' if ch == 'I' and ref[k] == 'L' else ch)
+                        k += 1
+                    else:
+                        out.append(ch)
+                fixed['peptides'] = ''.join(out)
+        if fixed:
+            rows.at[i, 'peptide_sequence_reported'] = ', '.join(x for x in (peptide, window) if x)
+            rows.at[i, 'source_correction'] = 'leucine_restored'
+            for col, value in fixed.items():
+                rows.at[i, col] = value
+    return rows
+
+
+def lead_reviewed_accession(rows: pd.DataFrame, canonical_sequences: dict[str, str], gene_map: dict[str, list[str]]) -> pd.DataFrame:
+    """A staged study's record lists every accession of its protein group, led by the one its position numbers, which can
+    be an unreviewed entry (Geoghegan 2015 numbers the alphabetically first). When that one is not a reviewed entry, the
+    record is searched from a listed reviewed accession instead: the one of the record's gene, or else the first listed;
+    the list as reported stays in substrate_UniProtAC_original."""
+    rows = rows.copy()
+    staged = rows['staged_study'].fillna(False).astype(bool) if 'staged_study' in rows.columns else pd.Series(False, index=rows.index)
+    for i in rows.index[staged]:
+        listed = [canonicalize_uniprot_accession(a) for a in str(rows.at[i, 'substrate_UniProtAC_original']).split('; ')]
+        if not listed or listed[0] in canonical_sequences:
+            continue
+        reviewed = [a for a in listed if a in canonical_sequences]
+        if reviewed:
+            own = set(gene_map.get(canonical_gene_name(rows.at[i, 'substrate_genename']), []))
+            lead = next((a for a in reviewed if a in own), reviewed[0])
+            rows.at[i, 'substrate_UniProtAC'] = lead
+            rows.at[i, 'canonical_UniProtAC'] = lead
+    return rows
 
 
 def find_all_occurrences(sequence: str, anchor: str) -> list[int]:
@@ -596,6 +665,8 @@ def main() -> None:
         frames.append(prepare_frame(pd.read_csv(args.maron_extra, sep='\t', low_memory=False, keep_default_na=False, na_values=['']), 'maron_s5'))
     frames += [study_frame(path) for path in args.study_records]
     all_rows = pd.concat(frames, ignore_index=True, sort=False)
+    all_rows = restore_leucines(all_rows, canonical_sequences)
+    all_rows = lead_reviewed_accession(all_rows, canonical_sequences, gene_map)
     all_rows['canonical_UniProtAC'] = all_rows['canonical_UniProtAC'].astype(str).map(canonicalize_uniprot_accession)
     all_rows = annotate_window_lengths(all_rows)
     kinds = all_rows.assign(reference=all_rows.get('reference', pd.Series('', index=all_rows.index)).fillna('')).groupby(

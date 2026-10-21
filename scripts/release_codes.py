@@ -266,6 +266,7 @@ CODES: dict[str, dict[str, str]] = {
     'source_correction': {
         'nan_restored': 'Maron 2021 Table S5 gives this Larsen 2016 window without the tripeptide NAN (28 residues, where every other Larsen window has 31; no Larsen window holds NAN, so the letters were read as a missing value when the table was made). Restored where inserting NAN at exactly one place gives the window centred on the reported position of the reported entry',
         'accession_na': 'Table S5 gives no accession (NA), only a gene symbol and a window; the previous version left the record out. It is placed from its gene symbol and window, and numbered after the records of the previous version',
+        'leucine_restored': "Sylvestersen et al. 2014's export writes every leucine as isoleucine (the two have the same mass). L is written back in the window and peptide where the reported entry, read at the reported position, agrees with them once I and L are taken as one residue; the evidence as given is in evidence_as_reported",
     },
     'evidence_check': {
         'agrees': 'placed on the one site its evidence names',
