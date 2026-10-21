@@ -2057,8 +2057,9 @@
         '<div class="fgroup"><span class="flabel" title="Maron et al. 2021 Table S3: methyl-specific immunoprecipitation that recovered the peptide">Maron methyl-IP</span>' +
         chipRow('ips', M.maron_ips.map((n, k) => [k, ipLabel(n), 'Recovered by the ' + (IP_HELP[n] || n) + ' IP']), F.ips) + '</div>' +
         '<div class="fgroup"><span class="flabel" title="Maron et al. 2021 Table S2 Rme1/Rme2 site calls">Maron Table S2 call</span>' + chipRow('s2', [[0, 'Rme1'], [1, 'Rme2']], F.s2) + '</div>';
-      case 'prov': return (M.lower_confidence_sites ? '<div class="fgroup"><span class="flabel" title="Sites pass every site test; lower-confidence sites fail at least one (counted: in the statistics with lower-confidence sites)">Confidence</span>' +
-        termChips('confidence', CONF_TIERS.map(([n], k) => [termSlug('confidence', k), n, ''])) + '</div>' : '') +
+      case 'prov': return (M.lower_confidence_sites || M.lower_confidence_view ? '<div class="fgroup"><span class="flabel" title="Sites pass every site test; lower-confidence sites fail at least one (counted: in the statistics with lower-confidence sites)">Confidence</span>' +
+        '<label class="check"><input type="checkbox" id="f-lc"' + (LC_ON ? ' checked' : '') + '> Show lower-confidence sites (hatched)</label>' +
+        (M.lower_confidence_sites ? termChips('confidence', CONF_TIERS.map(([n], k) => [termSlug('confidence', k), n, ''])) : '') + '</div>' : '') +
         '<div class="fgroup"><span class="flabel">Reported by study or database (match any)</span>' +
         termChips('study', M.studyOrder.map((k) => [termSlug('study', k), M.studies[k][0] + ' · ' + compact(M.studies[k][2]), M.studies[k][1] || STUDY_HELP[M.studies[k][0]] || ''])) + '</div>' +
         '<div class="fgroup"><label class="flabel" for="f-minrep">Sources reporting the site</label>' + sel('f-minrep', options(withCurrent([[2, '≥2 studies or databases'], [3, '≥3'], [4, '≥4'], [5, '≥5']], F.minRep, (v) => '≥' + v), F.minRep || '', 'Any'), !!F.minRep) + '</div>' +
@@ -9978,6 +9979,8 @@
   // export has the view with lower-confidence sites (M.lower_confidence_view), or is it.
   function renderLcSwitch() {
     const sw = $('#lc-switch'), box = $('#lc-toggle'), note = $('#lc-note');
+    // the same switch in the filter panel (Provenance), which re-renders: one listener for it
+    document.addEventListener('change', (e) => { if (e.target && e.target.id === 'f-lc') location.assign(lcUrl(e.target.checked)); });
     if (!sw) return;
     const show = () => {
       sw.hidden = false;
@@ -11038,6 +11041,8 @@
       'window_15', 'window_31', 'motifs', 'disorder_context', 'disorder_edge_distance', 'domain_context', 'nearest_interpro', 'nearest_domain_class',
       'domain_edge_distance', 'domain_side', 'nearest_methyl_r_distance', 'GSK591_decreased', 'GSK591_increased', 'MS023_decreased', 'MS023_increased',
       'maron_s3_measurements', 'CARM1_KO_decreased', 'CARM1_KO_increased', 'carm1_ko_measurements', 'condensates', 'functional_classes', 'reported_by', 'reporting_sources', 'references', 'reported_by_doi', 'pdb_interface_partners', 'pdb_interface_entries', 'pdb_interface_entries_total', 'pdb_contacts', 'predicted_interface_partners_pdockq', 'predicted_interface_partners_total', 'rna_dna_crosslinks', 'intact_records'];
+    // With lower-confidence sites shown: which tier, whether the statistics with them count it, and the tests it fails.
+    if (M.lower_confidence_sites) head.push('confidence', 'in_statistics_with_lower_confidence', 'tests_failed');
     const out = [head.join('\t')];
     for (const s of rows) {
       const p = P[s.p];
@@ -11056,7 +11061,8 @@
         s.refs.map((k) => M.refs[k]).join(' | '), bits(s.study).map((b) => studyRef(b)[1]).filter(Boolean).join(';'),
         ixReady() ? ifaceText(s) : '', (s.ifPdb || []).join(';'), ixReady() ? (s.ifN || (s.ifPdb || []).length) : '', ixReady() ? contactText(s) : '',
         ixReady() ? predText(s) : '', ixReady() ? (s.pred ? s.pred.n || s.pred.hits.length : 0) : '', ixReady() ? xlText(s) : '', ixReady() ? iaText(s) : '',
-      ].map(cell).join('\t'));
+      ].concat(M.lower_confidence_sites ? [s.lc ? 'lower_confidence' : 'site', !s.lc || s.lcAn ? 'yes' : 'no',
+        s.lc ? lcResults(s).filter(([, r]) => r === 'fail').map(([l]) => l).join(';') : ''] : []).map(cell).join('\t'));
     }
     return out.join('\n') + '\n';
   }
