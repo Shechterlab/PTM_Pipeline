@@ -51,7 +51,7 @@
     hartel2019: 'Hartel et al. 2019 (Mol Cell Proteomics) supplementary tables: HEK293T and LN229, antibody and SCX enrichment; ADMA and SDMA from neutral losses (added in v1.1.1)',
     geoghegan2015: 'Geoghegan et al. 2015 (Nat Commun) Supplementary Table 1: Jurkat and primary T cells, heavy-methyl SILAC (added in v1.1.1)',
     sylvestersen2014: 'Sylvestersen et al. 2014 (Mol Cell Proteomics): HEK293T, monomethylarginine antibody (added in v1.1.1)',
-    lu2025: 'Lu et al. 2025 (EMBO Rep) Dataset EV1: HeLa, SMN Tudor-domain enrichment (added in v1.1.1)',
+    lu2025: 'Lu et al. 2025 (EMBO Rep) Dataset EV1: HeLa, SMN Tudor-domain enrichment; the dimethylarginine sites a peptide localises by mass (added in v1.1.1)',
     ma2023: 'Ma et al. 2023 (J Am Soc Mass Spectrom) Table S1: breast cancer xenografts in mice, ADMA antibody (added in v1.1.1)',
   };
   const STUDY_HELP = {
@@ -62,7 +62,7 @@
     'Hartel 2019': 'HEK293T and LN229 cells, antibody and SCX enrichment; ADMA and SDMA told apart by neutral losses (added in v1.1.1)',
     'Geoghegan 2015': 'Jurkat cells and primary T cells, heavy-methyl SILAC with monomethylarginine antibodies (added in v1.1.1)',
     'Sylvestersen 2014': 'HEK293T cells, monomethylarginine antibodies (added in v1.1.1)',
-    'Lu 2025': 'HeLa cells, peptides enriched with the SMN Tudor domain (added in v1.1.1)',
+    'Lu 2025': 'HeLa cells, peptides enriched with the SMN Tudor domain; the dimethylarginine sites a peptide localises by mass (added in v1.1.1)',
     'Ma 2023': 'Breast cancer xenografts grown in mice, ADMA antibody (added in v1.1.1)',
   };
   // DOIs of the studies and databases behind the union (each checked against Crossref).
@@ -88,7 +88,7 @@
       ['Hartel et al. 2019', 'Sites from HEK293T and LN229 cells; ADMA and SDMA from neutral losses (added in v1.1.1)', 'Supplementary Tables S1–S15', 'CC BY 4.0', 'Hartel et al., Mol Cell Proteomics 18:2149 (2019)', '10.1074/mcp.RA119.001625'],
       ['Geoghegan et al. 2015', 'Sites from Jurkat and primary T cells, heavy-methyl SILAC (added in v1.1.1)', 'Supplementary Table 1', 'CC BY 4.0', 'Geoghegan et al., Nat Commun 6:6758 (2015)', '10.1038/ncomms7758'],
       ['Sylvestersen et al. 2014', 'Monomethylarginine sites from HEK293T cells (added in v1.1.1)', 'Supplementary tables', 'CC BY 4.0', 'Sylvestersen et al., Mol Cell Proteomics 13:2072 (2014)', '10.1074/mcp.O113.032748'],
-      ['Lu et al. 2025', 'Sites from HeLa cells, SMN Tudor-domain enrichment (added in v1.1.1)', 'Dataset EV1', 'CC BY 4.0', 'Lu et al., EMBO Rep 26:5649 (2025)', '10.1038/s44319-025-00599-y'],
+      ['Lu et al. 2025', 'Dimethylarginine sites from HeLa cells, SMN Tudor-domain enrichment; only the sites a peptide with every arginine dimethylated localises (added in v1.1.1)', 'Dataset EV1', 'CC BY 4.0', 'Lu et al., EMBO Rep 26:5649 (2025)', '10.1038/s44319-025-00599-y'],
       ['Ma et al. 2023', 'ADMA sites from breast cancer xenografts grown in mice (added in v1.1.1; flag xenograft_only where no other source reports the site)', 'PRIDE PXD038203 Table S1', 'CC0 (PRIDE)', 'Ma et al., J Am Soc Mass Spectrom 34:1692 (2023)', '10.1021/jasms.3c00154'],
       ['iPTMnet (PTM master table)', 'Other-PTM sites shown as crosstalk; methylarginine rows', 'Lab export', 'See iPTMnet terms', 'Huang et al., Nucleic Acids Res 46:D542 (2018)', '10.1093/nar/gkx1104'],
       ['IEDB (PTM master table)', 'Epitope records with a methylated arginine', 'Lab export', 'IEDB terms of use', 'Vita et al., Nucleic Acids Res 47:D339 (2019)', '10.1093/nar/gky1006'],
@@ -1138,6 +1138,18 @@
   // The short list: enriched terms of at least DO_SHORT genes, and DO_COMPARE classes that are not enriched.
   const DO_SHORT = 50, DO_COMPARE = 4;
   const DO_TERMS = { min: 10 };
+  // The eight classes directly under "disease": a plain gloss (shown after the name) and the Disease Ontology's own
+  // definition (in the tooltip; DOID:0050117 has none).
+  const DO_TOP = {
+    'DOID:14566': ['cancers and other neoplasms', 'A disease that is characterized by abnormally rapid cell division.'],
+    'DOID:0080015': ['congenital and developmental', 'A disease that has_material_basis_in a genetic abnormality, error with embryonic development, infection or compromised intrauterine environment.'],
+    'DOID:225': ['named sets of signs and symptoms', 'A disease characterized by a group of signs and symptoms that occur together and characterize a particular abnormality.'],
+    'DOID:150': ['psychiatric, cognitive, developmental', 'A disease that involves a psychological or behavioral pattern generally associated with subjective distress or disability that occurs in an individual, and which are not a part of normal development or culture.'],
+    'DOID:630': ['chromosomal and other genetic variation', 'A disease that has_material_basis_in genetic variations in the human genome.'],
+    'DOID:7': ['by organ system', 'A disease that manifests in a defined anatomical structure.'],
+    'DOID:0014667': ['inherited and acquired metabolic', 'A disease that involves errors in metabolic processes of building or degradation of molecules.'],
+    'DOID:0050117': ['viral, bacterial, parasitic, fungal', ''],
+  };
   // Methods text for the protein-set tests (v1.1.1 exports): what the test is, its numbers and its backgrounds.
   function setTestDocHtml() {
     const v = M.enrichment_tools || {};
@@ -1162,7 +1174,7 @@
     const bg = dm.background, nTested = dm.terms.length - 1;
     return '<p><b>Disease Ontology</b> (the default view). The Human Disease Ontology (' + doiLink('10.1093/nar/gkad1051', 'Baron et al. 2024') + '; CC0)' + (dm.release ? ', release ' + esc(dm.release) : '') + ', with the gene sets DOSE uses for <code>enrichDO</code>: each term holds the genes annotated to it and to every term under it. ' +
       'The background is the ' + fmt(bg[1]) + ' reviewed human genes with a Disease Ontology term, ' + fmt(bg[0]) + ' of them (' + pct(bg[0], bg[1]) + '%) genes of methylarginine-containing proteins. Every term of at least ' + DO_TERMS.min + ' genes with a methylated protein is tested (' + fmt(nTested) + ' terms; clusterProfiler enricher on DOSE\'s gene sets, which is the test of enrichDO; BH over all of them). ' +
-      'A term holds the genes of every term under it, so a broad term (cancer, nervous system disease) repeats the narrower ones. The chart therefore lists the narrowest enriched terms of at least ' + DO_SHORT + ' genes (a term is left out when an enriched term under it is listed), then, for comparison, the ' + DO_COMPARE + ' largest terms two levels below “disease” that are not enriched. “Show the whole ontology” draws the eight classes under “disease” with their terms of at least ' + DO_ROW + ' genes, and “Show the terms under them” adds the next level. The term table lists the enriched terms, or every tested term. A click on a bar or a term (or <code>doterm:</code> in the search, e.g. <code>doterm:DOID:332</code> for amyotrophic lateral sclerosis) lists the methylated proteins whose gene is in the term. Protein pages list each protein\'s most specific terms.</p>' +
+      'A term holds the genes of every term under it, so a broad term (cancer, nervous system disease) repeats the narrower ones. The chart therefore lists the narrowest enriched terms of at least ' + DO_SHORT + ' genes (a term is left out when an enriched term under it is listed), then, for comparison, the ' + DO_COMPARE + ' largest terms two levels below “disease” that are not enriched. “Show the whole ontology” draws the eight classes under “disease” with their terms of at least ' + DO_ROW + ' genes, and “Show the terms under them” adds the next level. The classes keep the ontology\'s names, each followed by a short gloss, and their tooltips give its definition: “physical disorder”, for example, is its class of congenital and developmental conditions (congenital heart disease, congenital nervous system abnormality, orofacial cleft), defined as a disease with a material basis in a genetic abnormality, an error in embryonic development, infection or a compromised intrauterine environment. The term table lists the enriched terms, or every tested term. A click on a bar or a term (or <code>doterm:</code> in the search, e.g. <code>doterm:DOID:332</code> for amyotrophic lateral sclerosis) lists the methylated proteins whose gene is in the term. Protein pages list each protein\'s most specific terms.</p>' +
       '<p><b>DisGeNET families.</b> ' + famRules + 'Each family is tested against the reviewed human genes with a DisGeNET term (clusterProfiler enricher; q over the audited families). Most enriched DisGeNET terms are clinical signs (facial features, for example), which the additional families take; the term table opens on the terms of the audited families. ' + clicks + '</p>' + caveat;
   }
   // The Disease Ontology term table: the enriched terms (q ≤ 0.05) or every tested term (UI.doAll), by q.
@@ -3032,8 +3044,9 @@
       const T = dm.terms, rows = [], tree = UI.doView === 'tree';
       const row = (k, depth, parent) => {
         const t = T[k], under = parent != null ? [parent] : t[2];
-        return { label: t[1], value: t[5] ? +Math.log2(t[5]).toFixed(3) : null, q: t[6], sig: sigq(t[6]), key: t[0], dok: k, sub: depth > 0, depth, extra: ofTotal(t[3], t[4]), nums: [t[3], t[4]],
-          title: '<b>' + esc(t[1]) + '</b> (' + esc(t[0]) + (under.length ? ', under ' + under.map((q) => esc(T[q][1])).join(', ') : '') + ')<br>' + fmt(t[3]) + ' of its ' + fmt(t[4]) + ' genes are those of methylarginine-containing proteins (' + pct(t[3], t[4]) + '%, against ' + pct(dm.background[0], dm.background[1]) + '% of all genes with a Disease Ontology term)<br>fold enrichment ' + (t[5] || 0).toFixed(2) + ', q ' + fmtP(t[6]) + '<br>Click: the methylated proteins in the term' };
+        const top = DO_TOP[t[0]];
+        return { label: t[1], note: top ? top[0] : '', value: t[5] ? +Math.log2(t[5]).toFixed(3) : null, q: t[6], sig: sigq(t[6]), key: t[0], dok: k, sub: depth > 0, depth, extra: ofTotal(t[3], t[4]), nums: [t[3], t[4]],
+          title: '<b>' + esc(t[1]) + '</b> (' + esc(t[0]) + (under.length ? ', under ' + under.map((q) => esc(T[q][1])).join(', ') : '') + ')<br>' + (top && top[1] ? '<i>' + esc(top[1]) + '</i> (Disease Ontology)<br>' : '') + fmt(t[3]) + ' of its ' + fmt(t[4]) + ' genes are those of methylarginine-containing proteins (' + pct(t[3], t[4]) + '%, against ' + pct(dm.background[0], dm.background[1]) + '% of all genes with a Disease Ontology term)<br>fold enrichment ' + (t[5] || 0).toFixed(2) + ', q ' + fmtP(t[6]) + '<br>Click: the methylated proteins in the term' };
       };
       const byValue = (a, b) => (T[b][5] || 0) - (T[a][5] || 0);
       const enriched = (k) => k !== dm.root && T[k][6] != null && T[k][6] <= PADJ;
@@ -4280,6 +4293,27 @@
     const prev = M.provenance.previous_version, of = prev && prev !== 'v1.0.0' ? ' sites of ' + prev : ' published sites';
     const t = fmt(c.kept) + ' of the ' + fmt(c.previous_sites) + of + ' are kept' + (c.kept_pending ? ' (' + fmt(c.kept_pending) + ' of them pending)' : '') + ', ' + fmt(c.removed) + ' were removed and ' + fmt(c.added) + ' added';
     return lead + (sentence ? t.charAt(0).toUpperCase() + t.slice(1) : t);
+  }
+  // Data quality of the studies added in v1.1.1, one card each (the release's studies table: column quality and the
+  // record and site counts); the bar splits the records into placed, evidence naming several sites, and naming none.
+  function studyQualityHtml() {
+    const Q = M.study_quality || {};
+    const names = addedStudies().filter((name) => Q[name]);
+    if (!names.length) return '';
+    const prev = (M.provenance && M.provenance.previous_version) || 'the previous version';
+    const seg = (n, cls, label) => (n ? '<span class="sq-seg ' + cls + '" style="flex:' + n + '" title="' + esc(label) + '"></span>' : '');
+    return '<h4 id="doc-study-quality">Studies added in v1.1.1: data quality</h4>' +
+      '<p>A record of these studies is kept when it passes the study\'s false discovery rate and its methyl group is localised to one arginine (the thresholds are on each card), and placed only where its peptide or window names exactly one arginine in the reviewed human proteome, in a protein the record names. The bar splits each study\'s records: <span class="sq-key sq-placed"></span> placed, <span class="sq-key sq-several"></span> evidence naming several sites (paralogs, repeats), <span class="sq-key sq-other"></span> naming one site in a protein the record does not name (an isoform or fusion the reviewed proteome does not hold), <span class="sq-key sq-none"></span> naming none (isoform-specific or changed sequences).</p>' +
+      '<div class="sq-grid">' + names.map((name) => {
+        const q = Q[name], r = studyRef(M.studies.findIndex((x) => x[0] === name));
+        return '<div class="sq-card"><div class="sq-head"><b>' + esc(name) + '</b>' + (r[1] ? ' <a class="small" href="https://doi.org/' + esc(r[1]) + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">doi:' + esc(r[1]) + '</a>' : '') + '</div>' +
+          '<p class="sq-text">' + esc(q.quality) + '</p>' +
+          '<div class="sq-bar" role="img" aria-label="' + esc(fmt(q.n_records_placed) + ' of ' + fmt(q.n_records) + ' records placed') + '">' +
+          seg(q.n_records_placed, 'sq-placed', fmt(q.n_records_placed) + ' placed') + seg(q.n_records_several_sites, 'sq-several', fmt(q.n_records_several_sites) + ' name several sites') + seg(q.n_records_other_protein, 'sq-other', fmt(q.n_records_other_protein) + ' name one site in another protein') + seg(q.n_records_no_site, 'sq-none', fmt(q.n_records_no_site) + ' name none') + '</div>' +
+          '<p class="sq-nums">' + fmt(q.n_records) + ' records: <b>' + fmt(q.n_records_placed) + ' placed</b> (' + pct(q.n_records_placed, q.n_records) + '%), ' + fmt(q.n_records_several_sites) + ' naming several sites, ' + fmt(q.n_records_other_protein) + ' one in another protein, ' + fmt(q.n_records_no_site) + ' none.<br>' +
+          fmt(q.n_sites) + ' sites: ' + fmt(q.n_sites_in_previous_version) + ' already in ' + esc(prev) + ', ' + fmt(q.n_sites_only_here) + ' reported by no other source.</p></div>';
+      }).join('') + '</div>' +
+      '<p class="note">Records traced from each source table to the reviewed proteome, with the site marked in the peptide and in the reference sequence: <a href="' + changesLink() + '#data-quality-study-by-study" target="_blank" rel="noopener">CHANGES.md, Data quality study by study</a>.</p>';
   }
   // The studies added in v1.1.1 that this export holds, by name.
   const ADDED_STUDIES = ['Hartel 2019', 'Geoghegan 2015', 'Sylvestersen 2014', 'Lu 2025', 'Ma 2023'];
@@ -10075,11 +10109,12 @@
       '<p class="note"><b>Licence notice.</b> ' + fmt((M.studies.find((x) => x[0] === 'PhosphoSitePlus') || [0, 0, 0])[2]) + ' sites in the union are reported by PhosphoSitePlus® (via Maron et al. 2021 Table S5). ' + esc(PSP_NOTICE) + ' Please acknowledge PhosphoSitePlus® and cite Hornbeck et al. 2015 (' + doiLink('10.1093/nar/gku1267') + ') when using these sites, including in downloads.</p>' +
       '<h4>Studies and databases behind the sites</h4><ul class="cite-list">' +
       M.studyOrder.map((k) => '<li><b>' + esc(M.studies[k][0]) + '</b>: ' + fmt(M.studies[k][2]) + ' sites, ' + fmt(M.studies[k][3]) + ' reported only there<br><span class="muted">' + (STUDY_HELP[M.studies[k][0]] ? esc(STUDY_HELP[M.studies[k][0]]) + '. ' : '') + refLine(studyRef(k)) + '</span></li>').join('') + '</ul>' +
-      ''],
+      studyQualityHtml()],
       ['processing', 'How sites were processed', '' +
       '<ul>' +
       '<li>Source rows were remapped to canonical UniProt sequences by their reported windows, peptides or positions and deduplicated by canonical accession and position. The original reported accession and position are kept in each site\'s evidence.</li>' +
       '<li><b>This is version ' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>: the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences (v1.1.0)' + (addedStudies().length ? ' and the sites of ' + addedStudies().length + ' more studies (v1.1.1: ' + esc(addedStudies().join(', ')) + ')' : '') + '. Peptides keep the reported arginine instead of being moved to the arginine nearest their middle, rows are filed under the reviewed entry their sequence matches, and windows centred on a lysine or cut short at a protein end are read correctly. ' + changesText('', true) + ' (<a href="' + changesLink() + '" target="_blank" rel="noopener">what changed</a>). Every record is checked against its own evidence and every site is an arginine of the reference sequence. ' + (M.n_pending_not_shown ? fmt(M.n_pending_not_shown) + ' sites whose source windows match the entry on one side of the arginine only are kept pending in the release (flag <code>one_sided_window</code>) and are not shown here. ' : '') + 'The published version is at <a href="v1.0.0/">v1.0.0</a>.</li>' +
+      (addedStudies().length ? '<li><b>The studies added in v1.1.1</b> add a record only when it passes the study\'s false discovery rate, its methyl group is localised to one arginine (by the study\'s localisation score, or, for Lu 2025, which gives none, by a peptide whose every arginine is dimethylated), and its peptide or window names exactly one arginine in the whole reviewed human proteome, in a protein the record names. A peptide shared by paralogs, repeated within a protein, or found only in another protein adds no site. <button class="linkish" type="button" data-doc="study-quality">Data quality, study by study</button>.</li>' : '') +
       '<li><b>Gene symbols</b> follow current UniProt. Symbols reported by the sources (some outdated, a few belonging to paralogs with near-identical sequence, such as SNRPN on SmB/B′ rows) and UniProt synonyms are kept as searchable aliases.</li>' +
       '<li><b>State</b> is the degree reported at the site (Rme1, Rme2, or Rme1 + Rme2 when both are): by the source records (ProMetheusDB' + (addedStudies().length ? ' and the studies added in v1.1.1' : '') + '), by Maron et al. 2021 Table S2, by UniProt with experimental evidence, or by a study that looked for one degree only (Larsen 2016, monomethylation; Wei 2020, ADMA antibody and dimethylation). The site summary lists each source; UniProt annotations made only by similarity are shown there but not counted. Asymmetric and symmetric dimethylarginine have the same mass, so most sources tell them apart by the antibody used. ' +
         (addedStudies().includes('Hartel 2019') ? 'Hartel et al. 2019 tell them apart in the fragment spectra instead: asymmetric dimethylarginine loses dimethylamine (45.058 Da) and symmetric dimethylarginine methylamine (31.042 Da); the site summary gives that call as “Hartel 2019, neutral loss” (release column dimethyl_type_neutral_loss). ' : '') +

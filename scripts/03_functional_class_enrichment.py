@@ -11,7 +11,6 @@ import pandas as pd
 
 from common import (
     BREWER_COLORS,
-    add_q_values,
     annotate_barh,
     apply_paper_style,
     balanced_category_subset,

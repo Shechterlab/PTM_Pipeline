@@ -537,9 +537,13 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
             f'## Studies added ({len(added)})',
             '',
             'Each study\'s supplementary table is staged by `scripts/00_stage_study_sites.py` into '
-            '`inputs/sources/<study>_methylarginine_records.tsv`: one record per reported peptide and arginine, with the '
-            'filters of the study\'s own methods (stated in the script). The records are placed and checked against their '
-            'evidence like those of the other source tables.',
+            '`inputs/sources/<study>_methylarginine_records.tsv`: one record per reported peptide and arginine, kept when '
+            'it passes the study\'s false discovery rate and the methyl group is localised to that arginine (the thresholds '
+            'are below and in the script). A record is then placed only where its peptide or window names exactly one '
+            'arginine in the whole reviewed proteome, in a protein the record names (its accession, the current entry of a '
+            'merged accession, or an entry of its gene); a peptide shared by paralogs, repeated in a protein, found only in '
+            'an isoform or an unreviewed entry, or found only in another protein adds no site. Placed records are checked '
+            'against their evidence like those of the other source tables.',
             '',
             '| Study | Sample | Records | Placed | Sites | Sites new to the union | Proteins new to the union |',
             '|---|---|---:|---:|---:|---:|---:|',
@@ -561,7 +565,36 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
             f"({n(len({a for a in only_new['uniprot_accession']} - prev_proteins))} of them new). "
             'A site the new studies report that an earlier source reports too gains their records.',
             '',
+            '### Data quality, study by study',
+            '',
+            'For each study: what its records hold and how they were filtered, what became of them, and records traced from '
+            'the source table to the reviewed proteome: the placed record merged from most source rows (brackets mark the '
+            'site in its evidence and in the reference sequence), the first record left out because its evidence names '
+            'several sites, and the first left out because it names one in a protein the record does not name.',
+            '',
         ]
+        st = studies.set_index('study_id')
+        examples = ctx.get('study_examples', {})
+        for sid, label, citation, doi in added:
+            r = st.loc[sid]
+            lines += [
+                f'#### {label}',
+                '',
+                f'{citation}, [doi:{doi}](https://doi.org/{doi}). {r["note"]}.',
+                '',
+                f'> {r["quality"]}',
+                '',
+                f"{n(int(r['n_records']))} records: {n(int(r['n_records_placed']))} placed on {n(int(r['n_sites']))} sites "
+                f"({n(int(r['n_sites_in_previous_version']))} of them already in {previous}, {n(int(r['n_sites_only_here']))} "
+                f"reported by no other source). Not placed: {n(int(r['n_records_several_sites']))} whose evidence names several "
+                f"arginines of the reviewed proteome (paralogs, repeats), {n(int(r['n_records_other_protein']))} whose evidence "
+                f"names one, in a protein the record does not name (an isoform or fusion the reviewed proteome does not hold), and "
+                f"{n(int(r['n_records_no_site']))} whose evidence names none (isoform-specific or changed sequences).",
+                '',
+            ]
+            for block in examples.get(sid, []):
+                lines += ['```text', *block, '```', '']
+
         nl = placed[placed['dimethyl_type_neutral_loss'] != '']
         if len(nl):
             ab = nl['maron2021_s3_antibodies'].str.split('; ').map(lambda v: {x for x in v if x in ('ADMA', 'SDMA')})

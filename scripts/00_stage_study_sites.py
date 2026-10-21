@@ -9,7 +9,7 @@
     python scripts/00_stage_study_sites.py --study sylvestersen2014 --input mcp.O113.032748-4.xlsx mcp.O113.032748-6.xlsx \
         --out inputs/sources/sylvestersen2014_methylarginine_records.tsv
     python scripts/00_stage_study_sites.py --study lu2025 --input 44319_2025_599_MOESM3_ESM.xlsx \
-        --out inputs/sources/lu2025_methylarginine_records.tsv
+        --reference inputs/reference/uniprot_human_reviewed_2026_03.fasta --out inputs/sources/lu2025_methylarginine_records.tsv
     python scripts/00_stage_study_sites.py --study ma2023 \
         --input Table_S1_Identified_and_quantified_ADMA_methylation_sites_06012022.xlsx \
         --out inputs/sources/ma2023_methylarginine_records.tsv
@@ -48,11 +48,13 @@ Geoghegan et al. 2015, Nat Commun 6:6758, doi:10.1038/ncomms7758 (CC BY 4.0). Su
 paired PSMs from Jurkat cells and PBMCs, anti-MMA antibodies D5A12 (CST #8015) and MeR4100 (CST #8711), light and
 heavy methyl masses, and positions in 'Site description'. The positions number the first accession, in alphabetical
 order, of 'Protein' and 'Alternative.Proteins' (for every row the accession Supplementary Table 2 lists the site
-under), not always 'Protein'; that accession leads reported_accession, followed by the others as written. Kept, per
-the methods: q.value <= 0.05 (5 % peptide FDR; with the methyl-SILAC pair the set's FDR is 0.93 %), IP.Prob > 0.25,
-and ModLS > 8 or, below it, every arginine methylated, every methylated arginine missed by trypsin or every methylated
-arginine with PTMscore >= 0.95 (every row meets them). PTM.Localization.Probs is reported as localisation_probability
-but not used as a filter: it gives < 0.75 to many arginines of peptides whose every arginine is methylated. Rows whose
+under), not always 'Protein'; that accession leads reported_accession, followed by the others as written. Kept: the
+methods' q.value <= 0.05 (5 % peptide FDR; with the methyl-SILAC pair the set's FDR is 0.93 %) and IP.Prob > 0.25
+(every row meets them), and the localisation threshold ModLS > 8 or 'Unambiguous'. The methods also accept rows at
+ModLS 8 or below whose every arginine is methylated, whose methylated arginines trypsin missed, or whose PTMscore is
+>= 0.95; those rows do not fix which arginine carries which methyl group, and are dropped. The note gives the record's
+best ModLS. localisation_probability is left empty: PTM.Localization.Probs gives 0 to many marked arginines that ModLS
+localises (NRPAIAR(+28.03)GAAGGGGR(+14.02), ModLS 138, has 0 at all three arginines). Rows whose
 protein list holds a decoy (DECOY1_, DECOY2_) are dropped; their site description is UNMAPPED or doubtful.
 
 Sylvestersen et al. 2014, Mol Cell Proteomics 13:2072, doi:10.1074/mcp.O113.032748 (CC BY 4.0 from 2020-10-12 per
@@ -65,8 +67,13 @@ writes every L as I in both; they are kept as given.
 
 Lu et al. 2025, EMBO Rep, doi:10.1038/s44319-025-00599-y (CC BY 4.0). Dataset EV1 sheet 'Arginine dimethylation
 sites': the 743 dimethylarginine sites (accession and position, no peptide) from HeLa peptides enriched with the SMN
-Tudor domain (Proteome Discoverer, 1 % FDR). EV1 has no list of monomethylarginine sites, only PSMs without protein
-positions, so only the dimethyl list is staged. Sites of the 'Validated peptides' sheet (hmSILAC) are noted.
+Tudor domain (Proteome Discoverer, 1 % FDR). The tables give no localisation score (SEQUEST HT and Percolator), and
+most of the peptides hold several arginines, so a site is kept only where a PSM localises it by mass: a PSM of the
+three replicates' PSM sheets (unambiguous, Percolator q <= 0.01) of the same protein, whose every arginine is
+dimethylated, with a dimethylated R at the site's position in the reference sequence (--reference); the record takes
+the peptide with most such PSMs. The other sites are dropped. EV1 has no list of monomethylarginine sites, only PSMs
+without protein positions, so only the dimethyl list is staged. Sites of the 'Validated peptides' sheet (hmSILAC) are
+noted.
 
 Ma et al. 2023, J Am Soc Mass Spectrom, doi:10.1021/jasms.3c00154 (ACS; PRIDE PXD038203 tables CC0). PRIDE Table S1
 sheet 'Identified ADMA sites': 403 MaxQuant sites from ADMA-antibody (PTMScan adme-R) enrichments of five breast cancer
@@ -113,6 +120,18 @@ def text(value) -> str:
 
 def accessions(value, sep: str = ';') -> list[str]:
     return [a.strip() for a in text(value).split(sep) if a.strip()]
+
+
+def read_fasta(path: Path) -> dict[str, str]:
+    """Sequences of a UniProt FASTA by accession."""
+    seqs, acc = {}, ''
+    for line in path.read_text().splitlines():
+        if line.startswith('>'):
+            acc = line.split('|')[1] if '|' in line else line[1:].split()[0]
+            seqs[acc] = []
+        elif acc:
+            seqs[acc].append(line.strip())
+    return {a: ''.join(v) for a, v in seqs.items()}
 
 
 def site_row(accs, gene, position, degree, cell, enrichment, table, peptide='', offset=None, window='', loc=None,
@@ -394,7 +413,7 @@ def hartel_merge_note(rows: list[dict]) -> list[str]:
 
 
 # ------------------------------------------------------------------------------------------------ Geoghegan 2015
-GEOGHEGAN_MAX_Q, GEOGHEGAN_MIN_IP, GEOGHEGAN_MIN_MODLS, GEOGHEGAN_MIN_PTMSCORE = 0.05, 0.25, 8, 0.95
+GEOGHEGAN_MAX_Q, GEOGHEGAN_MIN_IP, GEOGHEGAN_MIN_MODLS = 0.05, 0.25, 8
 GEOGHEGAN_ANTIBODY = {'D5A12': ['anti-MMA antibody D5A12'], 'MeR4100': ['anti-MMA antibody MeR4100'],
                       'D5A12+MeR4100': ['anti-MMA antibody D5A12', 'anti-MMA antibody MeR4100']}
 
@@ -407,16 +426,19 @@ def geoghegan_degree(mass: float) -> str:
     return ''
 
 
-def geoghegan_localised(modls, peptide: str, sites: list[int], probs: dict[int, float], protease: str) -> bool:
-    """The paper's rule: ModLS > 8, or every arginine methylated, every methylated arginine missed by trypsin, or
-    every methylated arginine with PTMscore >= 0.95."""
-    if modls == 'Unambiguous' or float(modls) > GEOGHEGAN_MIN_MODLS:
-        return True
-    if all(off in sites for off, aa in enumerate(peptide, 1) if aa == 'R'):
-        return True
-    if protease == 'Trypsin' and all(off < len(peptide) for off in sites):
-        return True
-    return all(probs.get(off, 0) >= GEOGHEGAN_MIN_PTMSCORE for off in sites)
+def geoghegan_modls(modls) -> str:
+    """The row's localisation as the note gives it ('ModLS unambiguous', 'ModLS 138'), empty at ModLS 8 or below."""
+    if modls == 'Unambiguous':
+        return 'ModLS unambiguous'
+    return f'ModLS {float(modls):g}' if float(modls) > GEOGHEGAN_MIN_MODLS else ''
+
+
+def geoghegan_merge_note(grp: list[dict]) -> list[str]:
+    """The best localisation of the record's rows: unambiguous, else the highest ModLS."""
+    def rank(note):
+        score = note.split()[-1]
+        return (score == 'unambiguous', 0.0 if score == 'unambiguous' else float(score))
+    return [max((n for r in grp for n in r['note']), key=rank)]
 
 
 def read_geoghegan(paths: list[Path], stats: Counter) -> list[dict]:
@@ -449,11 +471,6 @@ def read_geoghegan(paths: list[Path], stats: Counter) -> list[dict]:
             residues += aa
             if mass:
                 marks[len(residues)] = (aa, float(mass))
-        probs, i = {}, 0
-        for aa, p in re.findall(r'([A-Z])(?:\(([\d.]+)\))?', text(r[H['PTM.Localization.Probs']])):
-            i += 1
-            if p:
-                probs[i] = float(p)
         peptide = text(r[H['Peptide']]).upper()
         if residues != peptide:
             stats['rows_dropped:modified_peptide_differs_from_peptide'] += 1
@@ -476,13 +493,14 @@ def read_geoghegan(paths: list[Path], stats: Counter) -> list[dict]:
         if len(shifts) > 1 or min(shifts) < 0:  # e.g. rows with a methyllysine before the arginine
             stats['site_rows_dropped:position_inconsistent_with_peptide'] += len(sites)
             continue
-        if not geoghegan_localised(r[H['ModLS']], peptide, [off for off, _ in sites], probs, text(r[H['Protease']])):
-            stats['site_rows_dropped:modls_rule_not_met'] += len(sites)
+        localised = geoghegan_modls(r[H['ModLS']])
+        if not localised:
+            stats['site_rows_dropped:modls_8_or_less'] += len(sites)
             continue
         cell = text(r[H['Cell']])
         enrichment = GEOGHEGAN_ANTIBODY[text(r[H['Antibody']])]
         for m, (off, degree) in zip(reported, sites):
-            row = site_row(accs, gene, int(m.group(1)), degree, cell, '', 'ST1', peptide, off, loc=probs.get(off))
+            row = site_row(accs, gene, int(m.group(1)), degree, cell, '', 'ST1', peptide, off, note=[localised])
             row['enrichments'] = enrichment
             out.append(row)
     return out
@@ -566,8 +584,39 @@ def read_sylvestersen(paths: list[Path], stats: Counter) -> list[dict]:
 
 
 # ------------------------------------------------------------------------------------------------------ Lu 2025
-def read_lu(paths: list[Path], stats: Counter) -> list[dict]:
+LU_MAX_Q = 0.01
+
+
+def lu_psms(wb, stats: Counter) -> dict[str, Counter]:
+    """Dimethylarginine PSMs of the three replicates: {accession: Counter((peptide, 1-based offset of the dimethyl R))},
+    for unambiguous PSMs at Percolator q <= 0.01 (the methods' 1 % FDR) whose every arginine is dimethylated, under each
+    accession of their protein group. The tables give no localisation score; in such a PSM the mass alone puts a
+    dimethyl group on each arginine."""
+    out = defaultdict(Counter)
+    for name in ('PSMs of replicate1', 'PSMs of replicate2', 'PSMs of replicate3'):
+        rows = list(wb[name].iter_rows(values_only=True))
+        head = {h: k for k, h in enumerate(rows[1])}
+        for r in rows[2:]:
+            if text(r[head['PSM Ambiguity']]) != 'Unambiguous' or r[head['Percolator q-Value']] is None or float(r[head['Percolator q-Value']]) > LU_MAX_Q:
+                stats['psm_rows_dropped:ambiguous_or_q'] += 1
+                continue
+            peptide = text(r[head['Annotated Sequence']]).upper()
+            offsets = [int(x) for x in re.findall(r'R(\d+)\(Dimethyl\)', text(r[head['Modifications']]))]
+            if not offsets:
+                continue
+            stats['psm_rows_read:dimethyl'] += 1
+            if len(offsets) != peptide.count('R'):
+                stats['psm_rows_dropped:not_every_arginine_dimethylated'] += 1
+                continue
+            for acc in accessions(r[head['Protein Accessions']]):
+                for off in offsets:
+                    out[acc.split('-')[0]][(peptide, off)] += 1
+    return out
+
+
+def read_lu(paths: list[Path], stats: Counter, reference: dict[str, str]) -> list[dict]:
     wb = load_workbook(paths[0], read_only=True, data_only=True)
+    psms = lu_psms(wb, stats)
     rows = [text(r[0]) for r in wb['Arginine dimethylation sites'].iter_rows(values_only=True)]
     title, sites = rows[0], [v for v in rows[1:] if v]
     stats['rows_read:EV1 Arginine dimethylation sites'] += len(sites)
@@ -590,7 +639,21 @@ def read_lu(paths: list[Path], stats: Counter) -> list[dict]:
             stats['rows_dropped:not_uniprot_accession'] += 1
             continue
         note = ['hmSILAC validated peptide (EV1)'] if (acc, pos) in validated else []
-        out.append(site_row([acc], '', pos, 'Rme2', 'HeLa', 'SMN Tudor', 'EV1 Arginine dimethylation sites', note=note))
+        # The site's peptide: a localised dimethylarginine PSM of the same protein whose marked R lies at this position
+        # of the reference sequence (most PSMs, then the shorter peptide). Without one the site is dropped.
+        seq, found = reference.get(acc.split('-')[0], ''), []
+        for (peptide, off), n in psms.get(acc.split('-')[0], {}).items():
+            start = pos - off
+            if start >= 0 and seq[start:start + len(peptide)] == peptide:
+                found.append((-n, len(peptide), peptide, off))
+        if found:
+            _, _, peptide, off = sorted(found)[0]
+            stats['sites_with_psm_peptide'] += 1
+            note.append(f'{-sorted(found)[0][0]} PSMs with every arginine dimethylated')
+            out.append(site_row([acc], '', pos, 'Rme2', 'HeLa', 'SMN Tudor', 'EV1 Arginine dimethylation sites; EV1 PSMs',
+                                peptide=peptide, offset=off, note=note))
+        else:
+            stats['sites_dropped:no_localised_psm'] += 1
     return out
 
 
@@ -671,7 +734,8 @@ def merge(study_id: str, rows: list[dict]) -> list[dict]:
         calls = hartel_rme2_type(grp) if study_id == 'Hartel2019' else set()
         locs = [r['loc'] for r in grp if r['loc'] is not None]
         enrich = sorted({e for r in grp for e in (r.get('enrichments') or [r['enrichment']]) if e})
-        notes = hartel_merge_note(grp) if study_id == 'Hartel2019' else [n for r in grp for n in r['note']]
+        notes = (hartel_merge_note(grp) if study_id == 'Hartel2019' else geoghegan_merge_note(grp) if study_id == 'Geoghegan2015'
+                 else [n for r in grp for n in r['note']])
         records.append({
             'study_id': study_id, 'reported_accession': '; '.join(accs),
             'reported_gene': next((r['gene'] for r in grp if r['gene']), ''), 'reported_position': pos,
@@ -692,12 +756,18 @@ def main() -> None:
     ap.add_argument('--study', required=True, choices=sorted(STUDIES))
     ap.add_argument('--input', required=True, nargs='+', help='the study supplementary table(s), as in the usage above')
     ap.add_argument('--out', required=True)
+    ap.add_argument('--reference', default='', help='the reference FASTA (lu2025 only: pairs each listed site with its PSM peptide)')
     args = ap.parse_args()
 
     study_id, reader = STUDIES[args.study]
     paths = [Path(p) for p in args.input]
     stats = Counter()
-    rows = reader(paths, stats)
+    if args.study == 'lu2025':
+        if not args.reference:
+            raise SystemExit('lu2025 needs --reference (the reference FASTA)')
+        rows = reader(paths, stats, read_fasta(Path(args.reference)))
+    else:
+        rows = reader(paths, stats)
     records = merge(study_id, rows)
     for rec in records:
         if any(ch in rec['peptide'] for ch in ',;'):

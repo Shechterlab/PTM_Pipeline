@@ -606,15 +606,83 @@ def build_studies(records, sites) -> pd.DataFrame:
         if group.empty:
             continue   # a study this build does not read (the studies added in v1.1.1, when rebuilding v1.1.0)
         supported = per_site[per_site.map(lambda s: sid in s)]
+        unplaced = group[group['placed_site'] == '']
+        several = int(unplaced['placement_code'].isin(rc.PLACEMENT_SEVERAL).sum())
+        other = int(unplaced['placement_code'].isin(rc.PLACEMENT_OTHER_PROTEIN).sum())
         out.append({'study_id': sid, 'label': label, 'source_table': join(ordered(group['source_table'], list(rc.SOURCE_TABLES))),
                     'citation': citation, 'doi': doi, 'licence': rc.STUDY_LICENCE.get(sid, rc.MARON_S5),
                     'n_records': len(group), 'n_records_placed': int((group['placed_site'] != '').sum()),
                     'n_sites': len(supported), 'n_sites_only_here': int((supported.map(len) == 1).sum()),
-                    'note': rc.STUDY_NOTE.get(sid, '')})
+                    'n_sites_in_previous_version': int(placed.loc[supported.index, 'in_previous_version'].sum()),
+                    'n_records_several_sites': several, 'n_records_other_protein': other, 'n_records_no_site': len(unplaced) - several - other,
+                    'note': rc.STUDY_NOTE.get(sid, ''), 'quality': rc.STUDY_QUALITY.get(sid, '')})
     unknown = set(records['study']) - set(rc.STUDY_ORDER)
     if unknown:
         raise SystemExit(f'studies missing from scripts/release_codes.py: {sorted(unknown)}')
     return pd.DataFrame(out)
+
+
+def marked_evidence(record: pd.Series) -> tuple[str, int]:
+    """The record's first sequence without marks, and the 0-based offset of its site: the marked arginine of a marked
+    peptide, the centre of a window (padding left out); (sequence, -1) when neither names one."""
+    token = clean(record['evidence_sequence']).split('; ')[0]
+    if record['evidence_kind'] == 'marked_peptide':
+        plain, marked = remap.parse_modified_peptide(token)
+        return plain, marked[0] - 1 if len(marked) == 1 else -1
+    if record['evidence_kind'].startswith('window_'):
+        core, lead, _ = remap.split_window_padding(token)
+        return core, int(record['evidence_kind'].split('_')[1]) // 2 - lead
+    return token, -1
+
+
+def traced(sequence: str, offset: int, reference: str, start: int, flank: int = 6) -> list[str]:
+    """Two aligned lines: the evidence with its site in brackets, and the reference around it (start is 1-based)."""
+    site = start + offset
+    lo, hi = max(1, start - flank), min(len(reference), start + len(sequence) - 1 + flank)
+    ref = reference[lo - 1:site - 1] + '[' + reference[site - 1] + ']' + reference[site:hi]
+    ev = ' ' * (start - lo) + sequence[:offset] + '[' + sequence[offset] + ']' + sequence[offset + 1:]
+    return [f'evidence    {" " * len(str(lo))} {ev}', f'reference   {lo} {ref} {hi}']
+
+
+def study_examples(records: pd.DataFrame, reference: dict) -> dict:
+    """For each study added in v1.1.1 (rc.STUDY_QUALITY), records traced from the source to the reviewed proteome: the
+    placed record merged from most source rows, the first record not placed because its evidence names several sites,
+    and the first not placed because it names one in a protein the record does not name, with those sites. Text lines,
+    for CHANGES.md."""
+    proteome = remap.ProteomeIndex(reference)
+    out = {}
+    for sid in rc.STUDY_QUALITY:
+        g = records[records['study'] == sid]
+        if g.empty:
+            continue
+        rows = pd.to_numeric(g['reported_detail'].str.extract(r'(\d+) source rows')[0], errors='coerce').fillna(1)
+        blocks = []
+        placed = g[(g['placed_site'] != '') & (g['evidence_kind'] != 'position_only')]
+        if len(placed):
+            r = placed.loc[rows[placed.index].sort_values(ascending=False, kind='stable').index[0]]
+            seq, off = marked_evidence(r)
+            acc, pos = split_key(r['placed_site'])
+            hits = proteome.find(seq)
+            lines = [f"record {r['record_id']}: reported {r['reported_accession']} at R{r['reported_position']}"
+                     + (f" ({r['reported_detail']})" if r['reported_detail'] else ''),
+                     f"placed on {r['placed_site']} ({r['placement_code']}; evidence check: {r['evidence_check']}); "
+                     f"the {r['evidence_kind'].replace('_', ' ')} occurs {len(hits)} time{'s' if len(hits) != 1 else ''} in the reviewed proteome"]
+            if off >= 0 and seq:
+                lines += traced(seq, off, reference[acc], pos - off)
+            blocks.append(lines)
+        for code in ('unresolved_study_not_unique', 'unresolved_study_other_entry'):
+            left = g[g['placement_code'] == code]
+            if not len(left):
+                continue
+            r = left.iloc[0]
+            seq, off = marked_evidence(r)
+            sites = sorted({key(a, start + off) for a, start in proteome.find(seq)}) if off >= 0 else []
+            blocks.append([f"record {r['record_id']}: reported {r['reported_accession']} at R{r['reported_position']}, "
+                           f"{r['evidence_kind'].replace('_', ' ')} {r['evidence_sequence']}",
+                           f"not placed ({code}): the evidence names {len(sites)} site{'s' if len(sites) != 1 else ''} in the "
+                           'reviewed proteome, ' + ', '.join(sites[:6]) + (', ...' if len(sites) > 6 else '')])
+        out[sid] = blocks
+    return out
 
 
 def validation(root: Path, check: pd.DataFrame) -> dict:
@@ -843,7 +911,8 @@ def main() -> None:
     context = {'version': version, 'previous': previous, 'files': files, 'counts': counts, 'inputs': inputs, 'root': root,
                'uniprot_release': json.loads((inputs / INPUT['uniprot_release']).read_text()), 'records': records,
                'sites': sites, 'changes': changes, 'studies': studies, 'release_date': args.date, 'previous_sites': prev_sites,
-               'validation': validation(root, check), 'enrichment_tools': enrichment_tools(root)}
+               'validation': validation(root, check), 'enrichment_tools': enrichment_tools(root),
+               'study_examples': study_examples(records, reference)}
     release_docs.write_all(outdir, context)
     print(json.dumps({k: v for k, v in counts.items() if not isinstance(v, dict)}))
 

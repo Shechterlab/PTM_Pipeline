@@ -57,6 +57,30 @@ STUDY_NOTE = {
     'Maron2021': "the study's own sites in Table S5 (reference \"This study\")",
 }
 
+# The studies added in v1.1.1: what a record holds, how the study localised the methyl group and what was kept
+# (scripts/00_stage_study_sites.py), and what to keep in mind. Each record is then placed only where its peptide or
+# window names exactly one arginine in the reviewed proteome (scripts/02 place_study_records).
+STUDY_QUALITY = {
+    'Hartel2019': 'Peptide-spectrum matches and peptide groups (Proteome Discoverer) with the methylated arginine marked, '
+                  'Percolator q <= 0.01 and ptmRS localisation >= 75 %. LN229 Tables S1-S2 give no positions: their rows '
+                  'take the position Tables S3-S15 give for the same protein, peptide and residue, and are dropped without one.',
+    'Geoghegan2015': 'Heavy-methyl SILAC peptide pairs with the methylated arginine marked, q <= 0.05 (0.93 % FDR for the paired '
+                     'set), localised at ModLS > 8 or unambiguously; rows at ModLS 8 or below are left out. Positions number '
+                     'the first accession of the protein group, often an unreviewed entry; the site is placed from the peptide.',
+    'Sylvestersen2014': 'MaxQuant site tables with a 13-residue window and the peptide, localisation probability >= 0.75. '
+                        'The export writes every leucine as isoleucine; L is written back where the reported entry, or else '
+                        'one site of the reviewed proteome, matches with I and L taken as one.',
+    'Lu2025': 'The 743 dimethylarginine sites of Dataset EV1 come without peptides or localisation scores (SEQUEST HT, '
+              'Percolator 1 % FDR). A site is kept only where a PSM localises it by mass, every arginine of its peptide '
+              'dimethylated (155 sites); the other 588 are left out.',
+    'Ma2023': 'MaxQuant ADMA-antibody sites with a 31-residue window, localisation probability >= 0.75, 1 % FDR. Tumours '
+              'grown in mice: a peptide identical in mouse and human can come from mouse stroma (flag xenograft_only).',
+}
+# Placement codes of records not placed because their evidence names several sites, or one site in a protein the
+# record does not name (the studies table counts each; the others not placed name none).
+PLACEMENT_SEVERAL = {'unresolved_study_not_unique', 'unresolved_ambiguous_hit'}
+PLACEMENT_OTHER_PROTEIN = {'unresolved_study_other_entry'}
+
 SOURCE_TABLES = {
     'maron2021_s5': ('maron_s5', 'Maron et al. 2021 Table S5: methylarginine sites compiled from ten studies'),
     'prometheusdb_mmc2': ('prometheus_mmc2', 'ProMetheusDB (Massignani et al. 2022) supplementary table mmc2'),
@@ -254,6 +278,9 @@ CODES: dict[str, dict[str, str]] = {
         'unresolved_ambiguous_hit': 'not placed: evidence supports several sites equally',
         'unresolved_evidence_elsewhere': 'not placed: the evidence lies elsewhere in the entry, not at the reported position',
         'unresolved_evidence_mismatch': 'not placed: the evidence does not match the entry at the reported position',
+        'unresolved_study_not_unique': 'not placed (study added in v1.1.1): the evidence names more than one site in the reference proteome',
+        'unresolved_study_not_found': 'not placed (study added in v1.1.1): the evidence names no arginine anywhere in the reference proteome',
+        'unresolved_study_other_entry': 'not placed (study added in v1.1.1): the evidence names one site, in a protein the record does not name (the study may have seen the sequence in an isoform or fusion the reference proteome does not hold)',
     },
     'evidence_kind': {
         'window_13': 'a 13-residue window centred on the site',
@@ -360,7 +387,12 @@ STUDY_COLUMNS = [
     ('n_records_placed', 'integer', '', 'of these, placed on a site'),
     ('n_sites', 'integer', '', 'sites (status site) it reports'),
     ('n_sites_only_here', 'integer', '', 'sites no other study or database reports'),
+    ('n_sites_in_previous_version', 'integer', '', 'of its sites, those the previous version had'),
+    ('n_records_several_sites', 'integer', '', 'records not placed because their evidence names several sites'),
+    ('n_records_other_protein', 'integer', '', 'records not placed because their evidence names one site, in a protein the record does not name'),
+    ('n_records_no_site', 'integer', '', 'records not placed for another reason (placement_code in supporting/source_records)'),
     ('note', 'string', '', ''),
+    ('quality', 'string', '', 'for the studies added in v1.1.1: what a record holds, how the study localised the methyl group, and what was kept'),
 ]
 
 RECORD_COLUMNS = [

@@ -405,6 +405,10 @@ def main() -> None:
             # [name, citation, sites, sites reported only there, DOI]
             'studies': [[name, study_citation.get(name, '') or study_info.get(name, ('', ''))[0], study_counts[k], study_unique[k],
                          study_info.get(name, ('', ''))[1]] for k, name in enumerate(studies_vocab.values)],
+            # The studies added in v1.1.1, by name: their data quality as the release's studies table gives it.
+            'study_quality': {web_name[r['study_id']]: {k: (int(r[k]) if k.startswith('n_') else r[k]) for k in (
+                'quality', 'n_records', 'n_records_placed', 'n_sites', 'n_sites_in_previous_version', 'n_sites_only_here',
+                'n_records_several_sites', 'n_records_other_protein', 'n_records_no_site')} for r in studies.to_dict('records') if r.get('quality')},
             'states': STATES, 'motifs': MOTIFS, 'maron_ips': MARON_IPS, 'maron_treatments': MARON_TREATMENTS,
             'other_ptm_groups': OTHER_PTM_GROUPS, 'other_ptm_sources': ['Cross-PTM master table'],
             'func_classes': func_classes.values, 'func_subclasses': func_subclasses.values,

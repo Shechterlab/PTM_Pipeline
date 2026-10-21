@@ -1507,3 +1507,17 @@ body.slim .hero .brand-mark img { order: 0; }
 .chart-tools { margin: 0 0 0.7rem; }
 .dis-terms-tbl td.num { white-space: nowrap; }
 .dis-terms-tbl tr.dis-term-group th { text-align: left; font-weight: 600; padding-top: 0.7rem; background: var(--surface-2); }
+
+/* Data quality cards of the studies added in v1.1.1 (Docs, Sources in the union) */
+.sq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 0.7rem; margin: 0.6rem 0; }
+.sq-card { border: 1px solid var(--line); border-radius: 8px; padding: 0.65rem 0.8rem; background: var(--surface-2); }
+.sq-head { display: flex; flex-wrap: wrap; gap: 0.2rem 0.5rem; align-items: baseline; margin-bottom: 0.3rem; }
+.sq-text { font-size: 0.85rem; line-height: 1.45; margin: 0 0 0.5rem; }
+.sq-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; gap: 1px; background: var(--line); }
+.sq-seg { display: block; min-width: 2px; }
+.sq-placed { background: var(--accent); }
+.sq-several { background: var(--muted); }
+.sq-other { background: color-mix(in srgb, var(--muted) 55%, var(--line-strong)); }
+.sq-none { background: var(--line-strong); }
+.sq-key { display: inline-block; width: 0.75em; height: 0.75em; border-radius: 2px; vertical-align: -0.05em; }
+.sq-nums { font-size: 0.8rem; color: var(--muted); margin: 0.45rem 0 0; line-height: 1.45; }

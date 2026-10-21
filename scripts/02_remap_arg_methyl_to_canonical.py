@@ -159,45 +159,96 @@ LEUCINE_AS_ISOLEUCINE = {'sylvestersen2014'}
 def restore_leucines(rows: pd.DataFrame, canonical_sequences: dict[str, str]) -> pd.DataFrame:
     """For a source of LEUCINE_AS_ISOLEUCINE, write back L where the export wrote I: in the window and the marked peptide
     of a row whose reported entry, read at the reported position, agrees with them once I and L are taken as one
-    residue. The row's evidence as reported goes to peptide_sequence_reported and source_correction says
-    leucine_restored; other rows are left as given."""
+    residue, or else, for a row whose reported entry is not in the reference set or does not agree, from the one site
+    of the whole reference set that the peptide and window name when I and L are taken as one. The row's evidence as
+    reported goes to peptide_sequence_reported and source_correction says leucine_restored; other rows are left as
+    given."""
     rows = rows.copy()
     for col in ('source_correction', 'peptide_sequence_reported'):
         if col not in rows.columns:
             rows[col] = ''
-    for i in rows.index[rows['source_table'].isin(LEUCINE_AS_ISOLEUCINE)]:
+    targets = rows.index[rows['source_table'].isin(LEUCINE_AS_ISOLEUCINE)]
+    collapsed = ProteomeIndex({acc: seq.replace('I', 'L') for acc, seq in canonical_sequences.items()}) if len(targets) else None
+    for i in targets:
         r = rows.loc[i]
         seq = canonical_sequences.get(canonicalize_uniprot_accession(r['substrate_UniProtAC']), '')
         pos = int(r['position'])
-        if not seq:
-            continue
-        fixed = {}
-        window = str(r.get('seq_window', '') or '')
-        if window:
-            half = len(window) // 2
-            ref = ''.join(seq[k] if 0 <= k < len(seq) else '_' for k in range(pos - 1 - half, pos - 1 - half + len(window)))
-            if ref.replace('I', 'L') == window.replace('I', 'L') and ref != window:
-                fixed['seq_window'] = ''.join('L' if w == 'I' and c == 'L' else w for w, c in zip(window, ref))
-        peptide = str(r.get('peptides', '') or '')
-        if peptide:
-            plain, marked = parse_modified_peptide(peptide)
-            start = pos - marked[0] if len(marked) == 1 else -1
-            ref = seq[start:start + len(plain)] if start >= 0 else ''
-            if ref and ref.replace('I', 'L') == plain.replace('I', 'L') and ref != plain:
-                out, k = [], 0
-                for ch in peptide:
-                    if 'A' <= ch <= 'Z' and k < len(ref):
-                        out.append('L' if ch == 'I' and ref[k] == 'L' else ch)
-                        k += 1
-                    else:
-                        out.append(ch)
-                fixed['peptides'] = ''.join(out)
+        fixed = leucines_from_entry(r, seq, pos) if seq else {}
+        if not fixed:
+            fixed = leucines_from_proteome(r, canonical_sequences, collapsed)
         if fixed:
+            peptide, window = str(r.get('peptides', '') or ''), str(r.get('seq_window', '') or '')
             rows.at[i, 'peptide_sequence_reported'] = ', '.join(x for x in (peptide, window) if x)
             rows.at[i, 'source_correction'] = 'leucine_restored'
             for col, value in fixed.items():
                 rows.at[i, col] = value
     return rows
+
+
+def with_leucines(marked: str, ref: str) -> str:
+    """marked (a peptide, its marks kept, or a window, its padding kept) with L written where ref, aligned residue by
+    residue, has L and marked has I."""
+    out, k = [], 0
+    for ch in marked:
+        if 'A' <= ch <= 'Z' and ch != 'X' and k < len(ref):
+            out.append('L' if ch == 'I' and ref[k] == 'L' else ch)
+            k += 1
+        else:
+            out.append(ch)
+    return ''.join(out)
+
+
+def leucines_from_proteome(r: pd.Series, canonical_sequences: dict[str, str], collapsed: ProteomeIndex) -> dict[str, str]:
+    """The row's peptide and window with L written back from the one site they name in the reference set when I and L
+    are taken as one residue; empty when they name none or several, or nothing changes."""
+    peptide, window = str(r.get('peptides', '') or ''), str(r.get('seq_window', '') or '')
+    pieces = []
+    if peptide:
+        plain, marked = parse_modified_peptide(peptide)
+        if len(marked) == 1:
+            pieces.append(('peptides', peptide, plain, marked[0] - 1))
+    if window:
+        core, lead, _ = split_window_padding(window)
+        if core:
+            pieces.append(('seq_window', window, core, len(window) // 2 - lead))
+    sites, hits = set(), {}
+    for col, given, plain, centre in pieces:
+        if len(plain) < PROTEOME_MIN_ANCHOR:
+            continue
+        found = collapsed.find(plain.replace('I', 'L'))
+        if found:
+            hits[col] = (given, plain, centre)
+            sites |= {(acc, start + centre) for acc, start in found}
+    if len(sites) != 1:
+        return {}
+    acc, pos = next(iter(sites))
+    seq, fixed = canonical_sequences[acc], {}
+    for col, (given, plain, centre) in hits.items():
+        start = pos - centre - 1
+        restored = with_leucines(given, seq[start:start + len(plain)])
+        if restored != given:
+            fixed[col] = restored
+    return fixed
+
+
+def leucines_from_entry(r: pd.Series, seq: str, pos: int) -> dict[str, str]:
+    """The row's window and peptide with L written back from its reported entry, read at the reported position, where
+    they agree with it once I and L are taken as one residue."""
+    fixed = {}
+    window = str(r.get('seq_window', '') or '')
+    if window:
+        half = len(window) // 2
+        ref = ''.join(seq[k] if 0 <= k < len(seq) else '_' for k in range(pos - 1 - half, pos - 1 - half + len(window)))
+        if ref.replace('I', 'L') == window.replace('I', 'L') and ref != window:
+            fixed['seq_window'] = ''.join('L' if w == 'I' and c == 'L' else w for w, c in zip(window, ref))
+    peptide = str(r.get('peptides', '') or '')
+    if peptide:
+        plain, marked = parse_modified_peptide(peptide)
+        start = pos - marked[0] if len(marked) == 1 else -1
+        ref = seq[start:start + len(plain)] if start >= 0 else ''
+        if ref and ref.replace('I', 'L') == plain.replace('I', 'L') and ref != plain:
+            fixed['peptides'] = with_leucines(peptide, ref)
+    return fixed
 
 
 def lead_reviewed_accession(rows: pd.DataFrame, canonical_sequences: dict[str, str], gene_map: dict[str, list[str]]) -> pd.DataFrame:
@@ -206,7 +257,7 @@ def lead_reviewed_accession(rows: pd.DataFrame, canonical_sequences: dict[str, s
     record is searched from a listed reviewed accession instead: the one of the record's gene, or else the first listed;
     the list as reported stays in substrate_UniProtAC_original."""
     rows = rows.copy()
-    staged = rows['staged_study'].fillna(False).astype(bool) if 'staged_study' in rows.columns else pd.Series(False, index=rows.index)
+    staged = rows['staged_study'].astype('boolean').fillna(False).astype(bool) if 'staged_study' in rows.columns else pd.Series(False, index=rows.index)
     for i in rows.index[staged]:
         listed = [canonicalize_uniprot_accession(a) for a in str(rows.at[i, 'substrate_UniProtAC_original']).split('; ')]
         if not listed or listed[0] in canonical_sequences:
@@ -218,6 +269,43 @@ def lead_reviewed_accession(rows: pd.DataFrame, canonical_sequences: dict[str, s
             rows.at[i, 'substrate_UniProtAC'] = lead
             rows.at[i, 'canonical_UniProtAC'] = lead
     return rows
+
+
+def proteome_sites(row: pd.Series, proteome: ProteomeIndex) -> set[tuple[str, int]]:
+    """Every site the row's evidence names anywhere in the reference set: each occurrence of its marked peptide or
+    centred window (of PROTEOME_MIN_ANCHOR residues or more), at the marked or central arginine."""
+    sites = set()
+    for anchor in build_anchors(row):
+        if len(anchor['sequence']) < PROTEOME_MIN_ANCHOR:
+            continue
+        for acc, start in proteome.find(anchor['sequence']):
+            sites |= {(acc, start + k - 1) for k in anchor['indices']}
+    return sites
+
+
+def place_study_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> pd.DataFrame:
+    """The studies added in v1.1.1 add a site only where the evidence is unequivocal: a record stays placed when its
+    marked peptide or window, searched in the whole reviewed proteome, names exactly one site, and remap_row placed it
+    there in an entry the record names (its accession, the current entry of a merged accession, or an entry of its
+    gene). Paralogs or repeats sharing the sequence, isoform-specific or changed sequences, a sequence found only in
+    another protein (which the study may have seen in an isoform or fusion the reviewed proteome does not hold), near
+    matches and position-only records stay unplaced."""
+    remapped = remapped.copy()
+    staged = remapped['staged_study'].astype('boolean').fillna(False).astype(bool) if 'staged_study' in remapped.columns else pd.Series(False, index=remapped.index)
+    for i in remapped.index[staged]:
+        sites = proteome_sites(remapped.loc[i], proteome)
+        if len(sites) == 1:
+            acc, pos = next(iter(sites))
+            placed = remapped.at[i, 'is_position_resolved'] and remapped.at[i, 'remap_status'] != 'sequence_unique_proteome'
+            if placed and (remapped.at[i, 'corrected_canonical_UniProtAC'], int(float(remapped.at[i, 'corrected_position']))) == (acc, pos):
+                continue
+            status = 'unresolved_study_other_entry'
+        else:
+            status = 'unresolved_study_not_unique' if sites else 'unresolved_study_not_found'
+        remapped.loc[i, ['is_position_resolved', 'corrected_canonical_UniProtAC', 'corrected_position', 'corrected_site']] = [False, '', None, '']
+        remapped.at[i, 'is_position_remapped'] = False
+        remapped.at[i, 'remap_status'] = status
+    return remapped
 
 
 def find_all_occurrences(sequence: str, anchor: str) -> list[int]:
@@ -680,6 +768,7 @@ def main() -> None:
         axis=1,
     )
     remapped = pd.concat([all_rows, remap_annotations], axis=1)
+    remapped = place_study_records(remapped, proteome)
 
     resolved = remapped[remapped['is_position_resolved'].fillna(False)].copy()
     resolved['canonical_UniProtAC'] = resolved['corrected_canonical_UniProtAC']
