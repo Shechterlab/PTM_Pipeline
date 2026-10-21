@@ -2,12 +2,12 @@
 """Stage the methylarginine records of each study and database from its own tables (inputs/sources/).
 
     python scripts/00_stage_study_sites.py --study STUDY --input TABLE [TABLE ...] [--reference FASTA] \
-        [--entries ENTRIES --history HISTORY] [--s5 TABLE_S5] --out inputs/sources/STUDY_methylarginine_records.tsv
+        [--entries ENTRIES --history HISTORY] --out inputs/sources/STUDY_methylarginine_records.tsv
 
 STUDY is one of the keys of STUDIES below; the command that staged each table, with its inputs and their MD5s, is in
-inputs/MANIFEST.tsv (how_made_or_checked, derived_from). --reference is the reviewed FASTA (lu2025, fedoriw2019),
---entries and --history the reference entries and accession history (guo2014, fedoriw2019: gene symbols to entries),
---s5 Maron et al. 2021 Table S5 (musiani2019: the sites the study reports).
+inputs/MANIFEST.tsv (how_made_or_checked, derived_from). --reference is the reviewed FASTA (lu2025, fedoriw2019, musiani2019),
+--entries and --history the reference entries and accession history (guo2014, fedoriw2019, musiani2019: gene symbols to
+entries).
 
 Every record says how the methyl group is localised to its arginine (localised_by): localisation_score (the study's
 score passes its threshold), one_methylatable_residue or every_arginine_dimethylated (the peptide's mass leaves one
@@ -1179,68 +1179,101 @@ def read_maron(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
     return out
 
 
-# ------------------------------------------------------------------- Musiani 2019 (PRIDE deposit), Larsen 2016
-DEPOSIT_MIN_LOC = 0.75
+# ------------------------------------------------------------------------------------- Musiani 2019, Larsen 2016
+MIN_LOC = 0.75   # MaxQuant localisation probability (class I sites)
+MUSIANI_ENRICHMENT = {'Mono': 'monomethylarginine antibody', 'Sym': 'SDMA antibody', 'Input': 'no enrichment (input)'}
 
 
-def s5_rows(path: Path, author: str) -> tuple[set, set]:
-    """(accession, position) pairs and windows (padding removed) of the Maron 2021 Table S5 rows of one study."""
-    H, data = sheet_rows(path, load_workbook(path, read_only=True).sheetnames[0], 1)
-    pairs, windows = set(), set()
-    for r in data:
-        if author in text(r[H['Reference']]):
-            acc, pos = text(r[H['Accession']]), text(r[H['Position In Protein']])
-            if re.fullmatch(r'\d+(\.0)?', pos):
-                pairs.add((acc.split('-')[0], int(float(pos))))
-            windows.add(text(r[H['Peptide Sequence']]).replace('_', '').upper())
-    return pairs, windows
+def musiani_site(peptide: str, marks: dict, window: str, degree: str) -> int | None:
+    """The offset of the arginine a 15- or 13-residue window ('z' or '_' padding) centres on, among the peptide's marks
+    of that degree."""
+    candidates = [off for off, m in marks.items() if peptide[off - 1] == 'R' and MAXQUANT_MARK.get(m) == degree]
+    return window_offset(peptide, candidates, window.replace('z', '_')) if candidates else None
 
 
-def read_deposit(paths: list[Path], stats: Counter, ctx: dict, author: str, cell: str, enrichment: str) -> list[dict]:
-    """MaxQuant site tables of a study's PRIDE deposit, kept where the arginine site has localisation probability
-    >= 0.75 and the study reports it (its Maron 2021 Table S5 rows, matched by accession and position or by window):
-    the deposit localises the sites the paper lists, which the paper's own table (not retrievable) would."""
-    pairs, windows = s5_rows(ctx['s5'], author)
-    stats['s5_rows_of_study'] = len(pairs)
+def read_musiani(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
+    """The article's tables. Table S1 (Spreadsheet 1): every methyl site of the HeLa GSK591 SILAC experiments (MaxQuant;
+    monomethylarginine and SDMA antibodies, and the input), one row per site and identification, with the leading protein,
+    the position, the 15-residue window and the PTM localisation probability. Table S2: the heavy-methyl SILAC pairs of
+    the orthogonal validation, Spreadsheet 1 with the leading protein list, LcPrb of the heavy and light peptides and a
+    15-residue window (rows of class Mismatched, whose heavy and light peptides differ, are left out), and Spreadsheet 2
+    with the gene only, a 13-residue window and LcPrb '> 0.75' (its entry is the one reviewed entry of the gene that holds
+    the peptide once, --entries, --reference). Kept: arginine sites at localisation probability >= 0.75 (in Table S2,
+    the best of the heavy and light peptides)."""
     out = []
     for path in paths:
-        degree = 'Rme2' if path.name.startswith('Dimethyl') else 'Rme1'
-        with path.open(encoding='utf-8') as fh:
-            rows = list(csv.DictReader(fh, delimiter='\t'))
-        stats[f'rows_read:{path.name}'] += len(rows)
-        for r in rows:
-            if r['Amino acid'] != 'R':
-                stats['rows_dropped:not_arginine'] += 1
-                continue
-            if r.get('Reverse') == '+' or r.get('Potential contaminant', r.get('Contaminant')) == '+':
-                stats['rows_dropped:decoy_or_contaminant'] += 1
-                continue
-            if float(r['Localization prob']) < DEPOSIT_MIN_LOC:
-                stats['rows_dropped:localisation_below_0.75'] += 1
-                continue
-            accs = [a for a in r['Proteins'].split(';') if a]
-            positions = [int(x) for x in r['Positions within proteins'].split(';') if x]
-            if not accs or len(accs) != len(positions) or not all(ACCESSION.fullmatch(a) for a in accs):
-                stats['rows_dropped:protein_list_unreadable_or_not_uniprot'] += 1
-                continue
-            window = r['Sequence window'].split(';')[0]
-            reported = (any((a.split('-')[0], q) in pairs for a, q in zip(accs, positions))
-                        or window.replace('_', '') in windows or window[8:23].replace('_', '') in windows)
-            if not reported:
-                stats['rows_dropped:not_among_the_sites_the_study_reports'] += 1
-                continue
-            peptide, marks = maxquant_peptide(r.get('Modified sequence', ''))
-            off = int(r['Position in peptide']) if r.get('Position in peptide') else None
-            if not peptide or off is None or not 1 <= off <= len(peptide) or peptide[off - 1] != 'R':
-                peptide, off = '', None
-            gene = (r.get('Gene names') or '').split(';')[0]
-            out.append(site_row(accs, gene, positions[0], degree, cell, enrichment, path.name.removesuffix('.txt'),
-                                peptide, off, window=window, loc=float(r['Localization prob'])))
+        wb = load_workbook(path, read_only=True, data_only=True)
+        if 'table_s1' in path.name.lower():
+            rows = list(wb['Spreadsheet 1'].iter_rows(values_only=True))
+            head = next(k for k, r in enumerate(rows) if r and text(r[0]) == 'Modified sequence')
+            H = {text(h): k for k, h in enumerate(rows[head]) if h is not None}
+            for r in rows[head + 1:]:
+                if not r or not text(r[0]):
+                    continue
+                stats['rows_read:Table S1'] += 1
+                if text(r[H['Residue']]) != 'R':
+                    stats['rows_dropped:not_arginine'] += 1
+                    continue
+                loc = float(r[H['PTM Localization Probability']])
+                if loc < MIN_LOC:
+                    stats['rows_dropped:localisation_below_0.75'] += 1
+                    continue
+                acc, degree = text(r[H['Leading UniprotID']]), MAXQUANT_MARK[text(r[H['Modification']])]
+                peptide, marks = maxquant_peptide(text(r[H['Modified sequence']]))
+                window = text(r[H['Modification Window']])
+                off = musiani_site(peptide, marks, window, degree)
+                if not ACCESSION.fullmatch(acc) or off is None:
+                    stats['rows_dropped:accession_unreadable_or_window_not_on_one_mark'] += 1
+                    continue
+                exp = text(r[H['Experiment']])
+                out.append(site_row([acc], text(r[H['Gene Names']]).split(';')[0], int(float(r[H['Position in protein']])), degree,
+                                    'HeLa', MUSIANI_ENRICHMENT.get(exp.split('_')[-1], exp), 'Table S1', peptide, off,
+                                    window=window.replace('z', '_'), loc=loc, note=[f'SILAC {exp}']))
+            continue
+        for sheet in ('Spreadsheet 1', 'Spreadsheet 2'):
+            rows = list(wb[sheet].iter_rows(values_only=True))
+            head = next(k for k, r in enumerate(rows) if r and text(r[0]).startswith(('Sequence H', 'Modified Sequence H')))
+            H = {text(h).lower(): k for k, h in enumerate(rows[head]) if h is not None}
+            get = lambda r, name, side: r[H[f'{name} {side}'.lower()]] if f'{name} {side}'.lower() in H else None
+            for r in rows[head + 1:]:
+                if not r or not any(v not in (None, '') for v in r):
+                    continue
+                stats[f'rows_read:Table S2 {sheet}'] += 1
+                if 'class' in H and text(r[H['class']]) == 'Mismatched':
+                    stats['rows_dropped:heavy_and_light_mismatched'] += 1
+                    continue
+                side = next((x for x in ('H', 'L') if text(get(r, 'Residue', x)) == 'R'), None)
+                if side is None:
+                    stats['rows_dropped:not_arginine'] += 1
+                    continue
+                probs = [text(get(r, 'LcPrb', f'{x} (best)')) for x in ('H', 'L')]
+                loc = max((float(v) for v in probs if re.fullmatch(r'[\d.]+', v)), default=None)
+                if not (loc is not None and loc >= MIN_LOC or any(v == '> 0.75' for v in probs)):
+                    stats['rows_dropped:localisation_below_0.75'] += 1
+                    continue
+                degree = MAXQUANT_MARK.get(text(get(r, 'Modification', side)))
+                peptide, marks = maxquant_peptide(text(get(r, 'Modified Sequence', side)))
+                window, pos = text(get(r, 'Window', side)), int(float(get(r, 'Position', side)))
+                off = musiani_site(peptide, marks, window, degree) if degree else None
+                if off is None:
+                    stats['rows_dropped:window_not_on_one_mark'] += 1
+                    continue
+                gene = text(get(r, 'Gene', side)).split(';')[0]
+                accs = [a for a in text(get(r, 'All Proteins', side) or get(r, 'All proteins', side)).split(';') if a]
+                if not accs:   # Spreadsheet 2: the gene's reviewed entry that holds the peptide once
+                    entries = ctx['genes'].get(gene.upper(), [])
+                    hits = [(a, m.start() + 1) for a in entries for m in re.finditer(f'(?={peptide})', ctx['reference'].get(a, ''))]
+                    if len(hits) != 1:
+                        stats['rows_dropped:peptide_not_once_in_gene_entries'] += 1
+                        continue
+                    accs = [hits[0][0]]
+                if not all(ACCESSION.fullmatch(a) for a in accs):
+                    stats['rows_dropped:accession_unreadable'] += 1
+                    continue
+                out.append(site_row(accs, gene, pos, degree, 'HeLa', 'heavy-methyl SILAC, methylarginine antibodies',
+                                    f'Table S2 {sheet}', peptide, off, window=window, loc=loc,
+                                    note=['LcPrb > 0.75 (as given)'] if loc is None else []))
     return out
-
-
-def read_musiani(paths, stats, ctx):
-    return read_deposit(paths, stats, ctx, 'Musiani', 'HeLa', 'SDMA then MMA antibodies (PTMScan)')
 
 
 def read_larsen(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
@@ -1260,7 +1293,7 @@ def read_larsen(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
             stats['rows_dropped:not_uniprot_accession'] += 1
             continue
         loc = float(r[H['Localization prob']])
-        if loc < DEPOSIT_MIN_LOC:
+        if loc < MIN_LOC:
             stats['rows_dropped:localisation_below_0.75'] += 1
             continue
         gene = text(r[H['Gene names']]).split(';')[0]
@@ -1323,7 +1356,7 @@ STUDIES = {'hartel2019': ('Hartel2019', read_hartel, ()), 'geoghegan2015': ('Geo
            'ma2023': ('Ma2023', read_ma, ()), 'guo2014': ('Guo2014', read_guo, ('genes',)), 'fong2019': ('Fong2019', read_fong, ()),
            'li2021': ('Li2021', read_li, ()), 'fedoriw2019': ('Fedoriw2019', read_fedoriw, ('reference', 'genes')),
            'lim2020': ('Lim2020', read_lim, ()), 'wei2020': ('Wei2020', read_wei, ()), 'maron2021': ('Maron2021', read_maron, ()),
-           'musiani2019': ('Musiani2019', read_musiani, ('s5',)), 'larsen2016': ('Larsen2016', read_larsen, ()),
+           'musiani2019': ('Musiani2019', read_musiani, ('reference', 'genes')), 'larsen2016': ('Larsen2016', read_larsen, ()),
            'uniprot': ('UniProt', read_uniprot, ()), 'iedb': ('IEDB', read_iedb, ())}
 
 
@@ -1374,25 +1407,22 @@ def main() -> None:
     ap.add_argument('--study', required=True, choices=sorted(STUDIES))
     ap.add_argument('--input', required=True, nargs='+', help='the study supplementary table(s), as in the usage above')
     ap.add_argument('--out', required=True)
-    ap.add_argument('--reference', default='', help='the reference FASTA (lu2025: pairs each listed site with its PSM peptide; fedoriw2019: places peptides)')
-    ap.add_argument('--entries', default='', help='the reference entries table (guo2014, fedoriw2019: gene symbols to entries)')
+    ap.add_argument('--reference', default='', help='the reference FASTA (lu2025: pairs each listed site with its PSM peptide; fedoriw2019, musiani2019: places peptides named by gene only)')
+    ap.add_argument('--entries', default='', help='the reference entries table (guo2014, fedoriw2019, musiani2019: gene symbols to entries)')
     ap.add_argument('--history', default='', help='the accession history table (gene synonyms, with --entries)')
-    ap.add_argument('--s5', default='', help='Maron 2021 Table S5 (musiani2019: the sites the study reports)')
     args = ap.parse_args()
 
     study_id, reader, needs = STUDIES[args.study]
     paths = [Path(p) for p in args.input]
     stats = Counter()
     ctx = {}
-    for need, given in (('reference', args.reference), ('genes', args.entries and args.history), ('s5', args.s5)):
+    for need, given in (('reference', args.reference), ('genes', args.entries and args.history)):
         if need in needs and not given:
             raise SystemExit(f'{args.study} needs --{ {"genes": "entries and --history"}.get(need, need) }')
     if 'reference' in needs:
         ctx['reference'] = read_fasta(Path(args.reference))
     if 'genes' in needs:
         ctx['genes'] = gene_index(Path(args.entries), Path(args.history))
-    if 's5' in needs:
-        ctx['s5'] = Path(args.s5)
     rows = reader(paths, stats, ctx)
     records = merge(study_id, rows)
     for rec in records:

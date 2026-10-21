@@ -739,9 +739,9 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
           'out of every analysis.'] if c['pending'] else []) + ([
         f"- **Paralog windows** ({c['flags'].get('paralog_window', 0)} sites, flag `paralog_window`), accepted in "
         '`config/remap_evidence_allowlist.tsv`.'] if c['flags'].get('paralog_window', 0) else []) + [
-        '- **Sites without a readable localisation** (above): the article tables of Musiani et al. 2019 (Science '
-        'Signaling Data files) and the Proteome Discoverer exports of the Maron et al. 2021 GluC digests, and of runs the '
-        'two exports read do not hold, would bring more localised sites back.',
+        '- **Sites without a readable localisation** (above): Proteome Discoverer exports with site probabilities for the '
+        'Maron et al. 2021 GluC digests, and for the tryptic runs of Table S2 the two exports read do not hold, would bring '
+        'more of its sites back.',
         '',
         '## Tracing a change',
         '',

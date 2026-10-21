@@ -54,7 +54,7 @@
     larsen2016: 'Larsen et al. 2016 (Sci Signal) Table S1: HEK293, localisation probability ≥ 0.75',
     maron2021: 'Maron et al. 2021 (iScience) Tables S2 and S3: A549, Rme1/Rme2a/Rme2s antibodies; sites the lab\'s Proteome Discoverer exports localise (ptmRS ≥ 75 %) or whose peptide localises the methyl group by mass',
     guo2014: 'Guo et al. 2014 (Mol Cell Proteomics) Tables S2–S3: HCT116, sites a PSM localises at ModScore > 13',
-    musiani2019: 'Musiani et al. 2019 (Sci Signal): HeLa heavy-methyl SILAC, MaxQuant site tables deposited in PRIDE PXD009070, localisation probability ≥ 0.75',
+    musiani2019: 'Musiani et al. 2019 (Sci Signal) Tables S1 and S2: HeLa, GSK591 SILAC and heavy-methyl SILAC, localisation probability ≥ 0.75',
     fong2019: 'Fong et al. 2019 (Cancer Cell) Table S4: NB4, localisation probability ≥ 0.75 and Andromeda score ≥ 25',
     li2021: 'Li et al. 2021 (Nat Commun) Supplementary Data 1, 3, 5, 6: HEK293, PRMT knockdowns; sites whose peptide holds no other arginine or lysine',
     fedoriw2019: 'Fedoriw et al. 2019 (Cancer Cell) Tables S5 and S7: type I PRMT inhibitor; sites whose peptide localises the methyl group by mass',
@@ -75,7 +75,7 @@
     'Maron 2021': 'A549 cells, Rme1/Rme2a/Rme2s antibodies (Tables S2–S3); sites the lab\'s Proteome Discoverer exports localise (ptmRS ≥ 75 %) or whose peptide localises the methyl group by mass',
     PhosphoSitePlus: 'Curated database (www.phosphosite.org): the sites it listed when downloaded on 22 May 2021, as compiled in Maron et al. 2021 Table S5; trusted as curated and placed from their 15-residue window',
     'Larsen 2016': 'HEK293 cells, monomethylarginine antibodies; Table S1, localisation probability ≥ 0.75',
-    'Musiani 2019': 'HeLa cells, heavy-methyl SILAC; the sites the PRIDE site tables localise',
+    'Musiani 2019': 'HeLa cells, GSK591 SILAC and heavy-methyl SILAC; Tables S1 and S2, localisation probability ≥ 0.75',
     'Guo 2014': 'HCT116 cells; sites a PSM localises at ModScore > 13',
     'Fong 2019': 'NB4 cells; localisation probability ≥ 0.75',
     'Li 2021': 'HEK293 cells after PRMT knockdown; peptides with no other arginine or lysine',
@@ -104,10 +104,10 @@
   const stagedFile = (m) => (m && m.input_member ? String(typeof m.input_member === 'string' ? m.input_member : Object.values(m.input_member).join('; ')) : '');
   const DATA_SOURCES = [
     ['Site union', [
-      ['Maron et al. 2021, Tables S2, S3 and S5', 'The study\'s own sites (S2–S3, localised with the lab\'s Proteome Discoverer exports or by mass), state and PRMT inhibitor response; S5, the compiled list, names the sites of Musiani 2019 and carries PhosphoSitePlus', 'Supplementary tables', 'CC BY-NC-ND 4.0', 'Maron et al., iScience 24:102971 (2021)', '10.1016/j.isci.2021.102971'],
+      ['Maron et al. 2021, Tables S2, S3 and S5', 'The study\'s own sites (S2–S3, localised with the lab\'s Proteome Discoverer exports or by mass), state and PRMT inhibitor response; S5, the compiled list, carries PhosphoSitePlus', 'Supplementary tables', 'CC BY-NC-ND 4.0', 'Maron et al., iScience 24:102971 (2021)', '10.1016/j.isci.2021.102971'],
       ['Larsen et al. 2016', 'Monomethylarginine sites from HEK293 cells, localisation probability ≥ 0.75 (derived records only)', 'Supplementary Table S1', 'AAAS (Science Signaling)', 'Larsen et al., Sci Signal 9:rs9 (2016)', '10.1126/scisignal.aaf7329'],
       ['Guo et al. 2014', 'Sites from HCT116 cells that a PSM localises at ModScore > 13', 'Supplementary Tables S2–S3', 'CC BY 4.0', 'Guo et al., Mol Cell Proteomics 13:372 (2014)', '10.1074/mcp.O113.027870'],
-      ['Musiani et al. 2019', 'Sites from HeLa cells (heavy-methyl SILAC): the MaxQuant site tables deposited in PRIDE, localisation probability ≥ 0.75', 'PRIDE PXD009070', 'CC0 (PRIDE)', 'Musiani et al., Sci Signal 12:eaat8388 (2019)', '10.1126/scisignal.aat8388'],
+      ['Musiani et al. 2019', 'Sites from HeLa cells (GSK591 SILAC, heavy-methyl SILAC validation), localisation probability ≥ 0.75 (derived records only)', 'Supplementary Tables S1–S2', 'AAAS (Science Signaling)', 'Musiani et al., Sci Signal 12:eaat8388 (2019)', '10.1126/scisignal.aat8388'],
       ['Fong et al. 2019', 'Sites from NB4 cells, localisation probability ≥ 0.75 and Andromeda score ≥ 25 (derived records only)', 'Supplementary Table S4', 'Elsevier user licence; PRIDE PXD012007 CC0', 'Fong et al., Cancer Cell 36:194 (2019)', '10.1016/j.ccell.2019.07.003'],
       ['Li et al. 2021', 'Sites from HEK293 cells after PRMT knockdown whose peptide holds no other arginine or lysine', 'Supplementary Data 1, 3, 5, 6', 'CC BY 4.0', 'Li et al., Nat Commun 12:1946 (2021)', '10.1038/s41467-021-21963-1'],
       ['Fedoriw et al. 2019', 'Sites changed by a type I PRMT inhibitor whose peptide localises the methyl group by mass (derived records only)', 'Supplementary Tables S5 and S7', 'Elsevier user licence', 'Fedoriw et al., Cancer Cell 36:100 (2019)', '10.1016/j.ccell.2019.05.014'],

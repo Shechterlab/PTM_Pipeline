@@ -70,7 +70,7 @@ STUDY_LICENCE = {
     'UniProt': 'CC BY 4.0 (UniProt release 2026_03 MOD_RES)',
     'IEDB': 'IEDB query API, terms at www.iedb.org/terms_of_use_v3.php (epitopes the iPTMnet-format master table cites)',
     'Larsen2016': 'AAAS (Sci Signal supplementary Table S1: derived records only, the table is not redistributed)',
-    'Musiani2019': 'PRIDE PXD009070 MaxQuant output (CC0), with the site list of ' + MARON_S5,
+    'Musiani2019': 'AAAS (Sci Signal supplementary Tables S1 and S2: derived records only, the tables are not redistributed)',
     'Maron2021': 'CC BY-NC-ND 4.0 (open-access supplement, Tables S2 and S3)',
     'Guo2014': 'CC BY 4.0 (supplementary Tables S2 and S3)',
     'Fong2019': 'Elsevier user licence (supplementary Table S4: derived records only, the table is not redistributed), PRIDE PXD012007 CC0',
@@ -113,8 +113,8 @@ STUDY_QUALITY = {
     'Ma2023': 'MaxQuant ADMA-antibody sites with a 31-residue window, localisation probability >= 0.75, 1 % FDR. Tumours '
               'grown in mice: a peptide identical in mouse and human can come from mouse stroma (flag xenograft_only).',
     # The studies compiled in Maron et al. 2021 Table S5, and the databases, now read from their own tables: the
-    # study's methods (from the article, or for Musiani 2019, whose article could not be retrieved, from the PRIDE record
-    # and deposited search), and what was kept. The compiled rows of a study read here add no site of their own.
+    # study's methods (from the article and its tables), and what was kept. The compiled rows of a study read here add
+    # no site of their own.
     'Larsen2016': 'HEK293 cells, peptides fractionated at high pH and enriched with methylarginine antibodies, MaxQuant with '
                   'peptide, protein and site FDR 0.01, monomethylation of R and K searched. Read from the article\'s Table S1 '
                   '(8,900 sites, each with the leading protein, the position, the localisation probability and a 31-residue '
@@ -136,10 +136,13 @@ STUDY_QUALITY = {
                'and S3 (sites with a 13-residue window): a site is kept where a PSM matching its window localises it at '
                'ModScore > 13, the paper\'s threshold, the degree read from the precursor mass. The positions number RefSeq '
                'proteins, so the record is placed from its peptide.',
-    'Musiani2019': 'HeLa cells (heavy-methyl SILAC), SDMA then monomethylarginine antibody enrichment, MaxQuant 1.6.1.0 with '
-                   'a 1 % FDR. Read from the MaxQuant site tables deposited in PRIDE PXD009070: arginine sites at '
-                   'localisation probability >= 0.75 that the study reports (listed in Maron Table S5, the article\'s own '
-                   'table could not be retrieved). The 268 Table S5 windows centred on a lysine are not among them.',
+    'Musiani2019': 'HeLa cells, SILAC with GSK591, SDMA then monomethylarginine antibody enrichment and the input, MaxQuant '
+                   '(1.6.1.0 in the PRIDE PXD009070 deposit) with a 1 % FDR; heavy-methyl SILAC for the orthogonal validation. '
+                   'Read from the article\'s Table S1 (every site and identification, with the leading protein, position, '
+                   '15-residue window and localisation probability) and Table S2 (the heavy-methyl SILAC pairs; Spreadsheet 2 '
+                   'names the gene only, so its entry is the gene\'s reviewed entry that holds the peptide once): arginine '
+                   'sites at localisation probability >= 0.75, the best of the heavy and light peptides in Table S2. The '
+                   'window must centre on one marked arginine of the peptide, so repeats such as the TAF15 RGG repeats drop out.',
     'Fong2019': 'NB4 acute promyelocytic leukaemia cells, SDMA and monomethylarginine (and, with MS023, ADMA) antibody '
                 'enrichment, MaxQuant with a 1 % FDR. Read from Table S4: arginine sites at localisation probability >= 0.75 '
                 'and Andromeda score >= 25 (the paper accepted localisation >= 0.5), with the marked peptide and degree.',
@@ -193,7 +196,7 @@ SOURCE_TABLES = {
     'larsen2016': ('larsen2016', 'Larsen et al. 2016 Table S1, staged (scripts/00_stage_study_sites.py)'),
     'maron2021': ('maron2021', 'Maron et al. 2021 Tables S2 and S3 with the lab\'s Proteome Discoverer exports, staged (scripts/00_stage_study_sites.py)'),
     'guo2014': ('guo2014', 'Guo et al. 2014 supplementary Tables S2 and S3, staged (scripts/00_stage_study_sites.py)'),
-    'musiani2019': ('musiani2019', 'Musiani et al. 2019 MaxQuant site tables (PRIDE PXD009070), staged (scripts/00_stage_study_sites.py)'),
+    'musiani2019': ('musiani2019', 'Musiani et al. 2019 Tables S1 and S2, staged (scripts/00_stage_study_sites.py)'),
     'fong2019': ('fong2019', 'Fong et al. 2019 supplementary Table S4, staged (scripts/00_stage_study_sites.py)'),
     'li2021': ('li2021', 'Li et al. 2021 Supplementary Data 1, 3, 5 and 6, staged (scripts/00_stage_study_sites.py)'),
     'fedoriw2019': ('fedoriw2019', 'Fedoriw et al. 2019 supplementary Tables S5 and S7, staged (scripts/00_stage_study_sites.py)'),
