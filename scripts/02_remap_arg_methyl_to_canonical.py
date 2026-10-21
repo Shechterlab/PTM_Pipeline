@@ -61,6 +61,7 @@ class ProteomeIndex:
     """Substring search over every reference sequence at once (for rows whose candidates hold none of their evidence)."""
 
     def __init__(self, sequences: dict[str, str]):
+        self.sequences = sequences
         self.order = sorted(sequences)
         self.offsets: list[int] = []
         parts, off = [], 0
@@ -349,6 +350,58 @@ def candidate_sites(r: pd.Series, proteome: ProteomeIndex, peptides: list[str] |
     return [f'{a}:R{pos}' for a, pos in sorted(sites)[:MAX_CANDIDATES]]
 
 
+def record_tests(r: pd.Series, proteome: ProteomeIndex, how: str, peptides: list[str] | None = None,
+                 residues: bool = False, sites: set | None = None) -> dict:
+    """The site tests of a record (release_codes.CODES['site_test']), at the site its study reports.
+
+    reported_site: where remap_row placed the record from what the study reports (its accession or an entry it names,
+    the reported position, the evidence), an arginine of the reference; empty when it could not. evidence_sites: every
+    arginine its evidence names in the reviewed proteome (the marked or centred arginine wherever the peptide or window
+    occurs; residues True, a peptide that leaves several residues: every arginine of every occurrence). Each test is
+    pass, fail or untested:
+      evidence_at_site       the peptide or window occurs in the reported entry and covers the reported arginine
+      named_entry            the reported entry is one the record names (remap_row placed it there, not in another
+                             entry the whole-proteome search found: sequence_unique_proteome)
+      unique_in_proteome     the evidence names one site in the reviewed proteome (residues True: the peptide occurs
+                             once)
+      methyl_on_arginine     the methyl group can only be on an arginine: localised, or the peptide holds no lysine
+                             (fail: it holds one, which could carry the methyl group); untested without a peptide
+      localised              the study localises the methyl group to the arginine (site_localisation)
+    sites: proteome_sites(r, proteome, peptides) when the caller has it."""
+    reported = ''
+    acc, pos = r['corrected_canonical_UniProtAC'], r['corrected_position']
+    if str(r['is_position_resolved']) == 'True' and isinstance(acc, str) and acc and pd.notna(pos):
+        seq = proteome.sequences.get(acc, '')
+        if 0 < int(float(pos)) <= len(seq) and seq[int(float(pos)) - 1] == 'R':
+            reported = (acc, int(float(pos)))
+    plains = [plain for plain, _ in (marked_arginines(t.strip()) for t in str(r.get('peptides', '') or '').split(',')) if plain]
+    if not plains and str(r.get('peptide_sequence', '') or '') not in ('', 'nan'):
+        plains = [re.sub(r'[^A-Z]', '', str(r['peptide_sequence']).upper())]
+    if residues:
+        plain = next((x for x in plains if len(x) >= PROTEOME_MIN_ANCHOR), '')
+        hits = proteome.find(plain) if plain else []
+        sites = {(a, st + k) for a, st in hits for k, aa in enumerate(plain) if aa == 'R'}
+        unique = len(hits) == 1
+    else:
+        sites = proteome_sites(r, proteome, peptides) if sites is None else sites
+        unique = len(sites) == 1
+    curated = how in ('curated_experimental',) and not sites
+    test = lambda ok: 'pass' if ok else 'fail'  # noqa: E731
+    return {
+        'reported_site': f'{reported[0]}:R{reported[1]}' if reported else '',
+        'evidence_sites': '; '.join(f'{a}:R{p}' for a, p in sorted(sites)),
+        'test_evidence_at_site': 'curated' if curated else test(bool(reported) and reported in sites),
+        'test_named_entry': test(bool(reported) and r['remap_status'] != 'sequence_unique_proteome'),
+        'test_unique_in_proteome': 'curated' if curated else test(unique),
+        'test_methyl_on_arginine': 'pass' if how else (test('K' not in ''.join(plains)) if plains else 'untested'),
+        'test_localised': test(bool(how)),
+    }
+
+
+TEST_COLUMNS = ['reported_site', 'evidence_sites', 'test_evidence_at_site', 'test_named_entry', 'test_unique_in_proteome',
+                'test_methyl_on_arginine', 'test_localised']
+
+
 def unplace(remapped: pd.DataFrame, i, status: str) -> None:
     remapped.loc[i, ['is_position_resolved', 'corrected_canonical_UniProtAC', 'corrected_position', 'corrected_site']] = [False, '', None, '']
     remapped.at[i, 'is_position_remapped'] = False
@@ -378,6 +431,8 @@ def place_localised_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> 
         remapped['site_localisation'] = ''
     remapped['site_localisation'] = remapped['site_localisation'].fillna('').astype(str)
     remapped['candidate_sites'] = ''
+    for column in TEST_COLUMNS:
+        remapped[column] = ''
     staged = remapped['staged_study'].astype('boolean').fillna(False).astype(bool) if 'staged_study' in remapped.columns else pd.Series(False, index=remapped.index)
     read = {rc.STUDY_TABLES[t] for t in remapped.loc[staged, 'source_table'].unique()}
     for i in remapped.index:
@@ -397,14 +452,17 @@ def place_localised_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> 
             how = ''
         if not how:
             superseded = not staged[i] and rc.study_of(r['source_table'], r.get('source', ''), r.get('reference', '')) in read
+            why = str(r.get('study_not_localised', '') or '') if staged[i] else 'several_residues'
+            residues = why in ('several_residues', 'search_disagrees')
+            remapped.loc[i, TEST_COLUMNS] = list(record_tests(r, proteome, how, residues=residues).values())
             if not superseded:   # lower-confidence evidence: where the methyl group could be
-                why = str(r.get('study_not_localised', '') or '') if staged[i] else 'several_residues'
-                remapped.at[i, 'candidate_sites'] = '; '.join(candidate_sites(r, proteome, residues=why in ('several_residues', 'search_disagrees')))
+                remapped.at[i, 'candidate_sites'] = '; '.join(candidate_sites(r, proteome, residues=residues))
             unplace(remapped, i, 'superseded_by_study_table' if superseded else 'unresolved_not_localised')
             continue
+        sites = proteome_sites(r, proteome, peptides)
+        remapped.loc[i, TEST_COLUMNS] = list(record_tests(r, proteome, how, peptides, sites=sites).values())
         if how == 'curated_experimental':
             continue
-        sites = proteome_sites(r, proteome, peptides)
         if len(sites) == 1:
             acc, pos = next(iter(sites))
             placed = r['is_position_resolved'] and r['remap_status'] != 'sequence_unique_proteome'

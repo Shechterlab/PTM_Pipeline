@@ -8,7 +8,17 @@
   // Version stamp from this script's own address (index.html loads explorer.js?v=...). Data requests carry it too, so
   // a new deploy never runs against cached code or data; bump it in index.html whenever docs/ changes.
   const ASSET_V = (() => { try { return new URL(document.currentScript.src).searchParams.get('v') || ''; } catch (e) { return ''; } })();
-  const dataUrl = (name) => 'data/' + name + (ASSET_V ? '?v=' + encodeURIComponent(ASSET_V) : '');
+  // Lower-confidence sites (?lc=1, the switch in the toolbar; off by default): the view with both tiers, read from its
+  // own data files (data/methylarg_*_all.json), its statistics computed with the lower-confidence sites whose methyl
+  // group is on an arginine. Off, the page is the release as it stands.
+  const LC_ON = (() => { try { return new URLSearchParams(location.search).get('lc') === '1'; } catch (e) { return false; } })();
+  const dataUrl = (name) => 'data/' + (LC_ON ? name.replace(/\.json$/, '_all.json') : name) + (ASSET_V ? '?v=' + encodeURIComponent(ASSET_V) : '');
+  // The page with lower-confidence sites on or off, at the same view and search.
+  function lcUrl(on) {
+    const url = new URL(location.href);
+    if (on) url.searchParams.set('lc', '1'); else url.searchParams.delete('lc');
+    return url.pathname + url.search + url.hash;
+  }
 
   // ---------------------------------------------------------------- helpers
   const $ = (sel, root = document) => root.querySelector(sel);
@@ -503,12 +513,27 @@
     box: (x, y, w, h, fill, attr) => '<rect x="' + r1(x) + '" y="' + r1(y) + '" width="' + r1(Math.max(1.5, w)) + '" height="' + r1(h) + '" rx="1" fill="' + fill + '"' + (attr || '') + '/>',
     tick: (x, y, h, fill, attr, w) => '<rect x="' + r1(x - (w || 2) / 2) + '" y="' + r1(y - h / 2) + '" width="' + (w || 2) + '" height="' + r1(h) + '" rx="0.6" fill="' + fill + '"' + (attr || '') + '/>',
     diamond: (x, y, size, fill, stroke, attr) => '<rect x="' + r1(x - size / 2) + '" y="' + r1(y - size / 2) + '" width="' + size + '" height="' + size + '" transform="rotate(45 ' + r1(x) + ' ' + r1(y) + ')" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.1"' + (attr || '') + '/>',
+    // A lower-confidence site head: a rim in its colour, hatched with diagonal chords, so it reads apart from a site in
+    // print and in grey as well.
+    hatch: (pal, x, y, r0, color, attr, stroke) => {
+      const r = Math.max(2, r0 - 0.6);   // a little smaller than a site's head, so it reads as the weaker mark
+      let d = '';
+      for (const off of [-r * 0.5, 0, r * 0.5]) {
+        const h = (Math.sqrt(r * r - off * off) - 0.5) / Math.SQRT2, cx0 = x + off / Math.SQRT2, cy0 = y + off / Math.SQRT2;
+        d += 'M' + r1(cx0 - h) + ' ' + r1(cy0 + h) + 'L' + r1(cx0 + h) + ' ' + r1(cy0 - h);
+      }
+      return '<g' + (attr || '') + '><circle cx="' + r1(x) + '" cy="' + r1(y) + '" r="' + r1(r) + '" fill="' + pal.bg + '" stroke="' + (stroke || color) + '" stroke-width="1.1"/>' +
+        '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="0.9" stroke-linecap="round"/></g>';
+    },
     // A site head: solid in its colour, or hollow with a dashed rim (predicted only; measured but unchanged).
     head: (pal, x, y, r, color, hollow, attr, stroke) => '<circle cx="' + r1(x) + '" cy="' + r1(y) + '" r="' + r + '" fill="' + (hollow ? pal.bg : color) + '" stroke="' + (hollow ? color : stroke || pal.ring) + '" stroke-width="' + (hollow ? 1.6 : 1.4) + '"' + (hollow ? ' stroke-dasharray="2.2 1.4"' : '') + (attr || '') + '/>',
     ring: (x, y, r, color, dashed, attr) => '<circle cx="' + r1(x) + '" cy="' + r1(y) + '" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="1.6"' + (dashed ? ' stroke-dasharray="1.5 1.2"' : '') + (attr || '') + '/>',
   };
   // A mark with a native SVG tooltip (exports keep it; the page's own tooltips use data-tip).
-  const titled = (svg, text) => svg.replace(/\/>$/, '><title>' + esc(text) + '</title></' + svg.match(/^<(\w+)/)[1] + '>');
+  const titled = (svg, text) => (svg.endsWith('</g>') ? svg.slice(0, -4) + '<title>' + esc(text) + '</title></g>'
+    : svg.replace(/\/>$/, '><title>' + esc(text) + '</title></' + svg.match(/^<(\w+)/)[1] + '>'));
+  // A site's head: hatched for a lower-confidence site, else solid or hollow (MARK.head).
+  const siteHead = (s, pal, x, y, r, color, hollow, attr, stroke) => (s.lc ? MARK.hatch(pal, x, y, r, color, attr, stroke) : MARK.head(pal, x, y, r, color, hollow, attr, stroke));
   // Width of a label in a figure's font (pal.font; exports use EXPORT_PAL's), so labels are spaced and wrapped by
   // what they occupy rather than by character count.
   const measureCtx = document.createElement('canvas').getContext('2d');
@@ -537,6 +562,7 @@
   // Legend swatches for the shared marks.
   const SWATCH = {
     head: (pal, color, hollow) => (x, y) => MARK.head(pal, x + 10, y, 4.6, color, hollow),
+    hatch: (pal, color) => (x, y) => MARK.hatch(pal, x + 10, y, 4.6, color),
     disorder: (pal) => (x, y) => '<rect x="' + r1(x) + '" y="' + r1(y - 3) + '" width="5" height="6" rx="2" fill="' + pal.backboneFill + '" stroke="' + pal.backboneEdge + '"/>' +
       MARK.wave(pal, x + 5, y, 15, 2.5),
     domain: (pal) => (x, y) => MARK.domain(pal, x, y - 6, 20, 12),
@@ -612,6 +638,11 @@
     .then((r) => { if (!r.ok) throw new Error(r.status + ' ' + r.statusText); return r.json(); })
     .then(init)
     .catch((err) => {
+      if (LC_ON) {
+        $('#loading').innerHTML = '<div class="empty"><b>The data with lower-confidence sites did not load</b>' +
+          'Could not read <code>data/methylarg_sites_all.json</code> (' + esc(err.message) + '). <a href="' + esc(lcUrl(false)) + '">Open the page without them</a>.</div>';
+        return;
+      }
       $('#loading').innerHTML = '<div class="empty"><b>The site data did not load</b>' +
         'Could not read <code>data/methylarg_sites.json</code> (' + esc(err.message) + '). ' +
         'If you opened index.html from disk, serve the folder instead, for example <code>python -m http.server</code> inside <code>docs/</code>.</div>';
@@ -825,6 +856,9 @@
       iface: 0, ifP: null, ifPdb: null, ifN: 0, contacts: null, modelledMe: '', geo: null, modelled: null,
     }));
     for (const s of S) P[s.p].sites.push(s.j);
+    // The view with lower-confidence sites marks them, with what the tests found (M.lower_confidence_sites).
+    const LCS = M.lower_confidence_sites;
+    if (LCS) for (const [j, an, res, why, earlier] of LCS.sites) Object.assign(S[j], { lc: true, lcAn: !!an, lcRes: res, lcWhy: why, lcEarlier: earlier || [] });
     // Unreviewed (TrEMBL) entries have no Swiss-Prot entry name. Their sites often repeat a site of the reviewed entry
     // of the same gene at the same position; keep both (the union as published) but flag the repeat.
     const reviewedByGene = new Map();
@@ -890,6 +924,7 @@
     if (q0) { $('#q').value = q0; $('#q-clear').hidden = false; Q = parseQuery(q0); }
     renderRail();
     bindGlobal();
+    renderLcSwitch();
     bindDocLinks($('footer.site'));
     bindDocLinks($('#lede'));
     compute();
@@ -1012,7 +1047,7 @@
   // interaction:predicted. A comma inside a term means any of its values (motif:RGG,GAR); separate terms must all
   // match. Every other word still searches genes, accessions and sites, so the search box and the link say exactly
   // what is selected.
-  const TERM_KEYS = ['motif', 'window', 'study', 'domain', 'panther', 'class', 'subclass', 'disease', 'dterm', 'doterm', 'condensate', 'location', 'complex', 'go', 'binds', 'interaction'];
+  const TERM_KEYS = ['motif', 'window', 'study', 'domain', 'panther', 'class', 'subclass', 'disease', 'dterm', 'doterm', 'condensate', 'location', 'complex', 'go', 'binds', 'interaction', 'confidence'];
   const TERM_GROUP = { motif: 'motif', window: 'motif', study: 'prov', domain: 'struct', panther: 'protein', class: 'protein', subclass: 'protein', disease: 'protein', dterm: 'protein', doterm: 'protein', condensate: 'protein', location: 'protein', complex: 'ix', go: 'ix', binds: 'ix', interaction: 'ix' };
   const TERM_HELP = {
     motif: 'Motif covering the methyl-R: a family (RG, RGG, GRG, GAR, RXR, DR, RD, ER, RE, CARM1-Pro) or a pattern such as GXRG or [RK]XR',
@@ -1032,7 +1067,9 @@
     binds: 'STRING physical partner: prmt, tudor, wd40, phd, methylated, other, or a gene symbol',
     interaction: 'Interaction evidence at the site: experimental, predicted, predicted-only, any or none',
   };
-  const TERM_NOUN = { study: 'study or database', domain: 'domain class', panther: 'PANTHER protein class', class: 'functional class', subclass: 'functional subclass', disease: 'disease family', condensate: 'condensate', location: 'HPA location', complex: 'complex' };
+  const TERM_NOUN = { confidence: 'confidence tier', study: 'study or database', domain: 'domain class', panther: 'PANTHER protein class', class: 'functional class', subclass: 'functional subclass', disease: 'disease family', condensate: 'condensate', location: 'HPA location', complex: 'complex' };
+  // confidence: (the view with lower-confidence sites): [name, test]
+  const CONF_TIERS = [['Site', (s) => !s.lc], ['Lower', (s) => !!s.lc], ['Lower counted', (s) => !!s.lc && s.lcAn], ['Lower shown only', (s) => !!s.lc && !s.lcAn]];
   const MOTIF_TERM = { CARM1_proline_rich: 'CARM1-Pro', CARM1_hydrophobic_proline: 'CARM1-Pro-hydrophobic' };
   const motifTerm = (m) => MOTIF_TERM[m] || m;
   const motifFamily = (v) => M.motifs.findIndex((m) => motifTerm(m).toLowerCase() === String(v).toLowerCase());
@@ -1057,6 +1094,7 @@
           : key === 'condensate' ? M.condensates.map((c, k) => [k, c[0]])
           : key === 'location' ? ((M.hpa && M.hpa.locations) || []).map((n, k) => [k, n])
             : key === 'study' ? M.studies.map((st, k) => [k, st[0]])
+            : key === 'confidence' ? (M.lower_confidence_sites ? CONF_TIERS.map(([n], k) => [k, n]) : [])
               : key === 'domain' ? M.domain_classes.map((n, k) => [k, n])
                 : key === 'complex' ? IX.cx.map((c) => [c.k, c.name]) : [];
     let out;
@@ -1260,6 +1298,7 @@
       if (!x) return { error: 'No ' + TERM_NOUN[key] + ' matches “' + v + '”.' };
       const k = x.k, bit = typeof k === 'number' ? 2 ** k : 0;
       const test = key === 'study' ? (s) => s.study & bit
+        : key === 'confidence' ? CONF_TIERS[k][1]
         : key === 'domain' ? (s) => s.dcls === k
           : key === 'panther' ? pantherTest(k)
           : key === 'class' ? (p) => p.func & bit
@@ -1268,7 +1307,7 @@
                 : key === 'complex' ? (p) => (p.cx || []).includes(k)
                   : key === 'location' ? (p) => p.hpa.some((x) => x[0] === k && x[1] >= HPA_SURE)
                   : (p, f) => (f.condConf ? (cdMemberships(p) || []).some((c) => c.ci === k && c.score >= f.condConf) : p.cond.includes(k));
-      return { text: x.slug, label: key === 'complex' ? x.name + ' (' + x.slug + ')' : x.name, kind: key === 'study' || key === 'domain' ? 'site' : 'prot', k, test };
+      return { text: x.slug, label: key === 'complex' ? x.name + ' (' + x.slug + ')' : x.name, kind: key === 'study' || key === 'domain' || key === 'confidence' ? 'site' : 'prot', k, test };
     }
     if (key === 'doterm') {
       const dm = doMeta();
@@ -1347,6 +1386,7 @@
       case 'motif': return 'Motif ' + any(t.vals) + (t.vals.every((v) => v.family) ? '' : ' at the site');
       case 'window': return 'Motif ' + any(t.vals) + ' within ±15 aa';
       case 'study': return 'Reported by ' + any(t.vals);
+      case 'confidence': return 'Confidence: ' + any(t.vals);
       case 'domain': return 'Nearest domain: ' + any(t.vals);
       case 'panther': return 'PANTHER: ' + any(t.vals);
       case 'class': return 'Class: ' + any(t.vals);
@@ -1594,6 +1634,7 @@
     if (Q.raw) qs.set('q', Q.raw);
     for (const [k, v] of filterParams(F)) qs.set(k, v);
     if (UI.cmpA) { qs.set('A', UI.cmpA.qs); if (UI.cmpA.label) qs.set('An', UI.cmpA.label); }
+    if (LC_ON) qs.set('lc', '1');
     const s = qs.toString();
     const next = location.pathname + (s ? '?' + s : '') + location.hash;
     if (next !== location.pathname + location.search + location.hash) history.replaceState(null, '', next);
@@ -1920,9 +1961,10 @@
     const inCond = P.filter((p) => p.cond.length).length;
     const measured = S.filter((s) => s.tr.length).length;
     const dense = P.filter((p) => p.sig.length).length;
+    const nLc = M.lower_confidence_sites ? M.lower_confidence_sites.sites.length : 0;
     // Three numbers say how big the set is; the other shortcuts live under Starting points on the Overview.
     const stats = [
-      [fmt(M.n_sites), 'methylarginine sites', () => { F = DEFAULT_FILTERS(); setQuery(''); setFilters(() => {}, 'sites'); }],
+      [fmt(M.n_sites - nLc), nLc ? 'methylarginine sites + ' + fmt(nLc) + ' lower-confidence' : 'methylarginine sites', () => { F = DEFAULT_FILTERS(); setQuery(''); setFilters(() => {}, 'sites'); }],
       [fmt(M.n_proteins), 'proteins', () => { F = DEFAULT_FILTERS(); setQuery(''); setFilters(() => {}, 'proteins'); }],
       [fmt(M.studyOrder.length), 'studies and databases', () => { go('overview'); setTimeout(() => revealCard($('#ch-study')), 60); }],
     ];
@@ -2015,7 +2057,9 @@
         '<div class="fgroup"><span class="flabel" title="Maron et al. 2021 Table S3: methyl-specific immunoprecipitation that recovered the peptide">Maron methyl-IP</span>' +
         chipRow('ips', M.maron_ips.map((n, k) => [k, ipLabel(n), 'Recovered by the ' + (IP_HELP[n] || n) + ' IP']), F.ips) + '</div>' +
         '<div class="fgroup"><span class="flabel" title="Maron et al. 2021 Table S2 Rme1/Rme2 site calls">Maron Table S2 call</span>' + chipRow('s2', [[0, 'Rme1'], [1, 'Rme2']], F.s2) + '</div>';
-      case 'prov': return '<div class="fgroup"><span class="flabel">Reported by study or database (match any)</span>' +
+      case 'prov': return (M.lower_confidence_sites ? '<div class="fgroup"><span class="flabel" title="Sites pass every site test; lower-confidence sites fail at least one (counted: in the statistics with lower-confidence sites)">Confidence</span>' +
+        termChips('confidence', CONF_TIERS.map(([n], k) => [termSlug('confidence', k), n, ''])) + '</div>' : '') +
+        '<div class="fgroup"><span class="flabel">Reported by study or database (match any)</span>' +
         termChips('study', M.studyOrder.map((k) => [termSlug('study', k), M.studies[k][0] + ' · ' + compact(M.studies[k][2]), M.studies[k][1] || STUDY_HELP[M.studies[k][0]] || ''])) + '</div>' +
         '<div class="fgroup"><label class="flabel" for="f-minrep">Sources reporting the site</label>' + sel('f-minrep', options(withCurrent([[2, '≥2 studies or databases'], [3, '≥3'], [4, '≥4'], [5, '≥5']], F.minRep, (v) => '≥' + v), F.minRep || '', 'Any'), !!F.minRep) + '</div>' +
         '<div class="fgroup"><span class="flabel">Pipeline source table</span>' + chipRow('sources', M.sources.map((n, k) => [k, SOURCE_LABEL[n], SOURCE_HELP[n]]), F.sources) +
@@ -2732,7 +2776,7 @@
     (bits(s.mot).some((b) => !M.motifs[b].startsWith('CARM1')) ? '<div class="tags win-mot">' + motifTags(s.mot) + '</div>' : '');
   const SITE_COLS = [
     { k: 'protein', label: 'Protein', sort: 'gene', td: (s) => '<span class="gene">' + esc(P[s.p].label) + '</span><span class="acc">' + esc(P[s.p].acc) + '</span>' },
-    { k: 'site', label: 'Site', sort: 'pos', tdCls: 'num', td: (s) => '<b>' + rl(s.pos, P[s.p]) + '</b>' + (P[s.p].hist ? '<span class="acc">UniProt R' + s.pos + '</span>' : '') },
+    { k: 'site', label: 'Site', sort: 'pos', tdCls: 'num', td: (s) => '<b>' + rl(s.pos, P[s.p]) + '</b>' + (P[s.p].hist ? '<span class="acc">UniProt R' + s.pos + '</span>' : '') + lcTag(s) },
     { k: 'state', label: 'State', sort: 'state', td: (s) => pill(s.st) },
     { k: 'win', label: 'Window ±7 · motifs', sort: 'win', td: winCell },
     { k: 'ix', label: 'Interaction evidence', sort: 'ix', opt: true, tdCls: 'ix-col', tip: STATUS_HELP, td: (s) => ixCell(s, 2) },
@@ -3589,7 +3633,7 @@
     return [
       { k: 'site', label: 'Site', tdCls: 'num site-col', td: (s) => {
         const vs = (varsAt.get(s.pos) || []).filter((v) => v.from === 'R');
-        return '<b>' + rl(s.pos, P[s.p]) + '</b>' + (p.hist ? '<br><span class="muted small">UniProt R' + s.pos + '</span>' : '') +
+        return '<b>' + rl(s.pos, P[s.p]) + '</b>' + (p.hist ? '<br><span class="muted small">UniProt R' + s.pos + '</span>' : '') + lcTag(s, true) +
           (s.dup != null ? '<br><span class="tag" title="The same gene and position is also a site on the reviewed UniProt entry ' + esc(P[S[s.dup].p].acc) + '">also on ' + esc(P[S[s.dup].p].acc) + '</span>' : '') +
           (s.orig ? '<br><span class="muted small" title="Positions given by the source studies before mapping to the current canonical UniProt sequence. Several can land on one site when a source used another isoform or its peptide fits more than one arginine; expand the row to see how each record was mapped.">source position' + (new Set(s.orig.split(';')).size > 1 ? 's ' : ' ') + esc(Array.from(new Set(s.orig.split(';'))).join(', ')) + '</span>' : '') +
           vs.map((v) => '<br><span class="tag var" title="UniProt natural variant ' + esc(v.id) + ': ' + rl(s.pos, P[s.p]) + v.to + ' · ' + esc(v.desc) + '">' + rl(s.pos, P[s.p]) + esc(v.to) + (shortDisease(v.desc) ? ' · ' + esc(shortDisease(v.desc).slice(0, 18)) : '') + '</span>').join('');
@@ -3959,9 +4003,9 @@
     const tr = $('#psites tr.row[data-pos="' + pos + '"]');
     if (tr) tr.classList.add('sel');
     $$('.pmap .head').forEach((h) => {
-      const sel = +h.dataset.pos === pos;
-      h.setAttribute('stroke-width', sel ? 2.6 : 2);
-      h.setAttribute('stroke', sel ? getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() : getComputedStyle(document.documentElement).getPropertyValue('--surface').trim());
+      const sel = +h.dataset.pos === pos, rim = h.tagName.toLowerCase() === 'g' ? h.querySelector('circle') : h;
+      rim.setAttribute('stroke-width', sel ? 2.6 : 2);
+      if (rim === h || sel) rim.setAttribute('stroke', sel ? getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() : getComputedStyle(document.documentElement).getPropertyValue('--surface').trim());
     });
     focusStructure(pos);
     if (!tr) return;
@@ -4692,7 +4736,7 @@
     for (const h of heads) {
       const st = ixStatus(h.s), k = st ? mode.cat(h.s) : 2;
       g += '<line x1="' + r1(h.hx) + '" x2="' + r1(h.hx) + '" y1="' + (base - 8) + '" y2="' + h.hy + '" stroke="' + pal.stem + '" stroke-width="1"/>' +
-        titled(MARK.head(pal, h.hx, h.hy, st && st !== 'none' ? 4.2 : 3.2, colors[k], mode.hollow[k], ' class="cc-site" data-pos="' + h.s.pos + '"' + (exp ? '' : ' style="cursor:pointer"')), p.label + ' ' + rl(h.s.pos, P[h.s.p]) + ' · ' + (st ? IXS[st][0] : 'loading') + ((h.s.ev || 0) ? ': ' + evLabel(h.s.ev) : ''));
+        titled(siteHead(h.s, pal, h.hx, h.hy, st && st !== 'none' ? 4.2 : 3.2, colors[k], mode.hollow[k], ' class="cc-site" data-pos="' + h.s.pos + '"' + (exp ? '' : ' style="cursor:pointer"')), p.label + ' ' + rl(h.s.pos, P[h.s.p]) + (h.s.lc ? ' (lower confidence)' : '') + ' · ' + (st ? IXS[st][0] : 'loading') + ((h.s.ev || 0) ? ': ' + evLabel(h.s.ev) : ''));
     }
     // Label sites with evidence; neighbours closer than a label's width share one (R179/R181/R183, or R12 +4).
     const groups = [];
@@ -4929,13 +4973,14 @@
       const dim = !R.shown.has(h.s.j);
       const sel = UI.highlight === h.s.pos && (!o.forExport || o.print);
       g += '<line x1="' + r1(h.hx) + '" x2="' + r1(h.hx) + '" y1="' + (base - 4) + '" y2="' + hy + '" stroke="' + pal.stem + '" stroke-width="1"' + (dim ? ' opacity=".4"' : '') + '/>';
-      g += MARK.head(pal, h.hx, hy, R0, colors[k] || pal.none, hollow(k), ' class="head" data-j="' + h.s.j + '" data-pos="' + h.s.pos + '"' + (dim ? ' opacity=".28"' : ''), sel ? pal.ink : null).replace(/stroke-width="[\d.]+"/, 'stroke-width="' + (sel ? 2.6 : hollow(k) ? 1.6 : 2) + '"');
+      g += siteHead(h.s, pal, h.hx, hy, R0, colors[k] || pal.none, hollow(k), ' class="head" data-j="' + h.s.j + '" data-pos="' + h.s.pos + '"' + (dim ? ' opacity=".28"' : ''), sel ? pal.ink : null).replace(/stroke-width="[\d.]+"/, 'stroke-width="' + (sel ? 2.6 : h.s.lc ? 1.1 : hollow(k) ? 1.6 : 2) + '"');
       const q = labelOf.get(h);
       if (q) {
         const ly = y0 + 9 + q.line * 12;
         g += '<line x1="' + r1(h.hx) + '" y1="' + (hy - R0 - 1) + '" x2="' + r1(q.lx) + '" y2="' + (ly + 3) + '" stroke="' + pal.stem + '" stroke-width=".7"' + (dim ? ' opacity=".4"' : '') + '/>';
       }
     }
+    if (heads.some((h) => h.s.lc)) legend.push([SWATCH.hatch(pal, pal.muted), 'Lower-confidence site (hatched), not counted as a site']);
     for (const q of placed) {
       const ly = y0 + 9 + q.line * 12, dim = q.grp.every((h) => !R.shown.has(h.s.j));
       g += '<text x="' + r1(q.lx) + '" y="' + ly + '" font-size="' + LFS + '" text-anchor="middle" fill="' + pal.ink + '"' + (dim ? ' opacity=".4"' : '') + '>' + esc(q.text) + (q.grp.length > 1 ? '<title>' + esc(q.grp.map((h) => rl(h.s.pos, p)).join(', ')) + '</title>' : '') + '</text>';
@@ -7010,7 +7055,7 @@
     [4, 'In a condensate', 'Condensate', 'Member of a CD-CODE condensate, any confidence', (p) => p.cond.length > 0],
     [8, 'Binds a PRMT', 'PRMT partner', 'STRING physical link ≥ 0.7 to a PRMT', (p) => partnersAt(p, 700).some(([k]) => bindMatch(1, k))],
     [16, 'Binds a Tudor protein', 'Tudor partner', 'STRING physical link ≥ 0.7 to a Tudor-domain protein (InterPro IPR002999: methylarginine readers such as SMN1, SMNDC1, TDRD3 and SND1, and also methyllysine readers such as PHF1, PHF19 and PHF20)', (p) => partnersAt(p, 700).some(([k]) => bindMatch(2, k))],
-    [32, 'In a curated complex', 'Complex', 'Member of a Complex Portal curated complex', (p) => p.cx.some((k) => !IX.cx[k].pred)],
+    [32, 'In a curated complex', 'Complex', 'Member of a Complex Portal curated complex', (p) => (p.cx || []).some((k) => !IX.cx[k].pred)],
     [64, 'Site interaction evidence', 'Site evidence', 'At least one methylarginine with site-level interaction evidence (the site view of this map)', (p) => p.sites.some((j) => S[j].ev)],
   ];
   const pevMask = (p) => PEV_SETS.reduce((m, [b, , , , t]) => (t(p) ? m | b : m), 0);
@@ -9928,9 +9973,67 @@
     });
   }
 
+  // ------------------------------------------------- lower-confidence sites
+  // The switch reopens the page with or without them (?lc=1), at the same view and search. It shows only where the
+  // export has the view with lower-confidence sites (M.lower_confidence_view), or is it.
+  function renderLcSwitch() {
+    const sw = $('#lc-switch'), box = $('#lc-toggle'), note = $('#lc-note');
+    if (!sw) return;
+    const show = () => {
+      sw.hidden = false;
+      box.checked = LC_ON;
+      box.addEventListener('change', () => { location.assign(lcUrl(box.checked)); });
+    };
+    if (LC_ON) {
+      show();
+      const lc = M.lower_confidence_sites;
+      if (note && lc) {
+        const n = lc.sites.length, nAn = lc.n_analysed, nSites = S.length - n;
+        note.hidden = false;
+        note.innerHTML = '<span class="lc-swatch" aria-hidden="true"></span><span><b>' + fmt(n) + ' lower-confidence sites</b> shown, hatched, beside the ' + fmt(nSites) +
+          ' sites. Counts, charts and tests include the ' + fmt(nAn) + ' whose own evidence covers the arginine and leaves the methyl group on an arginine; the other ' +
+          fmt(n - nAn) + ' are shown only. <button class="linkish" type="button" data-doc="site-tests">The site tests</button> · <button class="linkish" type="button" id="lc-hide">Hide them</button></span>';
+        bindDocLinks(note);
+        $('#lc-hide').addEventListener('click', () => { location.assign(lcUrl(false)); });
+      }
+      return;
+    }
+    // Off: offer the switch when the view with lower-confidence sites was exported.
+    if (M.lower_confidence_view) show();
+  }
+  // The tests every record is put to at a site (release_codes CODES['site_test']); a site needs a record that passes
+  // all five. Labels and meanings as the release's data dictionary gives them.
+  const SITE_TESTS = [
+    ['evidence_at_site', 'Evidence at the site', "The record's own peptide or window occurs in this protein and covers this arginine, where the study puts the methyl group (for a peptide with several arginines: one of them)."],
+    ['named_entry', 'In a named protein', 'The arginine is in a protein the record names: its accession, the current entry of a merged accession, or an entry of its gene (not another protein that alone holds the sequence).'],
+    ['unique_in_proteome', 'Unique in the proteome', 'The peptide or window names one site in the reviewed human proteome (UniProt 2026_03): no paralog, repeat or other protein holds it (for a peptide with several arginines: the peptide occurs once).'],
+    ['methyl_on_arginine', 'Methyl group on an arginine', 'The methyl group can only be on an arginine: the record is localised to one, or its peptide holds no lysine (a lysine could carry the methyl group instead). Untested when the study gives a window but no peptide.'],
+    ['localised', 'Localised', 'The study localises the methyl group to this arginine: a localisation score over its threshold, a peptide whose mass leaves one arrangement, or a curated annotation.'],
+  ];
+  const TEST_RESULT = { pass: 'passes', fail: 'fails', untested: 'untested', curated: 'curated annotation' };
+  function lcResults(s) {
+    const lc = M.lower_confidence_sites;
+    return SITE_TESTS.map(([k, label]) => [label, lc.results[s.lcRes[lc.tests.indexOf(k)]]]).filter(([, r]) => r);
+  }
+  // One line: the tests failed, and whether the statistics with lower-confidence sites count it.
+  function lcSummary(s) {
+    const res = lcResults(s), failed = res.filter(([, r]) => r === 'fail').map(([l]) => l.toLowerCase());
+    return (failed.length ? 'fails ' + failed.join(', ') : 'no test passed or failed with a record of this run') +
+      (s.lcAn ? '; counted in the statistics with lower-confidence sites' : '; not counted in any statistics (its evidence does not show a methylarginine here)') +
+      (s.lcEarlier.length ? '; a site of ' + s.lcEarlier.join(' and ') : '');
+  }
+  function lcTag(s, br) {
+    if (!s.lc) return '';
+    const tip = 'Lower-confidence site, not counted as a site. Tests (the record that passes most): ' +
+      lcResults(s).map(([l, r]) => l + ' ' + TEST_RESULT[r]).join('; ') + '. ' + (s.lcAn ? 'Counted in the statistics with lower-confidence sites.' : 'Not counted in any statistics.') +
+      (s.lcEarlier.length ? ' A site of ' + s.lcEarlier.join(' and ') + '.' : '');
+    return (br ? '<br>' : ' ') + '<span class="tag lc-tag" title="' + esc(tip) + '">lower confidence</span>';
+  }
+
   function siteTip(s) {
     const ipr = s.ipr >= 0 ? M.interpro[s.ipr][1] : null;
     return '<b>' + rl(s.pos, P[s.p]) + '</b> · ' + STATE_LABEL[s.st] + (s.ip ? ' · ' + bits(s.ip).map((b) => ipLabel(M.maron_ips[b])).join('/') + ' IP' : '') + '<br>' +
+      (s.lc ? '<b>Lower-confidence site</b>: ' + esc(lcSummary(s)) + '<br>' : '') +
       (s.win ? windowHtml(s.win, 7) + '<br>' : '') +
       esc(DISORDER_LABEL[M.disorder_classes[s.dc]] || '') + ' · ' + esc(DOMAIN_LABEL[M.domain_contexts[s.dctx]] || '') + (ipr ? ' (' + esc(ipr) + ')' : '') + '<br>' +
       'Reported by ' + M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => esc(M.studies[k][0])).join(', ') +
@@ -9950,7 +10053,7 @@
     if (o.center != null && o.center !== pos) head += ' · ' + (pos > o.center ? '+' : '−') + Math.abs(pos - o.center) + ' from ' + rl(o.center, p);
     out.push(head);
     const j = p.sites.find((k) => S[k].pos === pos);
-    if (j != null) { const st = ixStatus(S[j]); out.push('Methylarginine · ' + STATE_LABEL[S[j].st] + (st ? ' · interaction evidence: ' + IXS[st][0].toLowerCase() : '')); }
+    if (j != null) { const st = ixStatus(S[j]); out.push((S[j].lc ? 'Lower-confidence methylarginine' : 'Methylarginine') + ' · ' + STATE_LABEL[S[j].st] + (st ? ' · interaction evidence: ' + IXS[st][0].toLowerCase() : '')); }
     const ptm = p.ptms.filter((t) => t[0] === pos);
     if (ptm.length) out.push(ptm.map((t) => esc(ptmName(t, p)) + ' (' + esc(ptmSources(t).join(', ')) + ')').join('; '));
     if (u) {
@@ -10264,7 +10367,11 @@
       '<ul>' +
       '<li>Source rows were remapped to canonical UniProt sequences by their reported windows, peptides or positions and deduplicated by canonical accession and position. The original reported accession and position are kept in each site\'s evidence.</li>' +
       '<li><b>This is version ' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>: the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences (v1.1.0)' + (localisedOnly() ? ', each study read from its own tables (v1.2.0)' : '') + (addedStudies().length ? ' and the sites of ' + addedStudies().length + ' more studies (v1.2.0: ' + esc(addedStudies().join(', ')) + ')' : '') + '. Peptides keep the reported arginine instead of being moved to the arginine nearest their middle, rows are filed under the reviewed entry their sequence matches, and windows centred on a lysine or cut short at a protein end are read correctly. ' + changesText('', true) + ' (<a href="' + changesLink() + '" target="_blank" rel="noopener">what changed</a>). Every record is checked against its own evidence and every site is an arginine of the reference sequence. ' + (M.n_pending_not_shown ? fmt(M.n_pending_not_shown) + ' sites whose source windows match the entry on one side of the arginine only are kept pending in the release (flag <code>one_sided_window</code>) and are not shown here. ' : '') + 'The published version is at <a href="v1.0.0/">v1.0.0</a>.</li>' +
-      (localisedOnly() ? '<li><b>Site specificity.</b> Each study is read from its own tables, and ' + LOCALISED_RULE + '. A record must also pass the study\'s false discovery rate. A peptide shared by paralogs, repeated within a protein, or found only in another protein adds no site. Where a study gives no localisation score, the peptide decides: it localises the site when it holds no other residue the search could methylate (no other arginine, and no lysine where lysine methylation was searched), or when every such residue is a dimethylated arginine. PhosphoSitePlus sites (downloaded 22 May 2021, as compiled in Maron et al. 2021 Table S5) are trusted as curated and placed from their window under the same rule. The other compiled rows of Table S5 give way to each study\'s own table and stay in the release\'s source records. Records that are not localised (a score below the study\'s threshold, a peptide that leaves several residues, spectra that disagree) or that are localised but not to one site of a protein they name are kept as <b>lower-confidence evidence</b>: never a site, never in a count or test, shown on protein maps only when the reader switches on the row Lower-confidence evidence (Rows menu), and listed in the release (supporting/lower_confidence_evidence). <button class="linkish" type="button" data-doc="study-quality">Data quality, study by study</button>.</li>'
+      (localisedOnly() ? '<li><b>Site specificity.</b> Each study is read from its own tables, and ' + LOCALISED_RULE + '. A record must also pass the study\'s false discovery rate. A peptide shared by paralogs, repeated within a protein, or found only in another protein adds no site. Where a study gives no localisation score, the peptide decides: it localises the site when it holds no other residue the search could methylate (no other arginine, and no lysine where lysine methylation was searched), or when every such residue is a dimethylated arginine. PhosphoSitePlus sites (downloaded 22 May 2021, as compiled in Maron et al. 2021 Table S5) are trusted as curated and placed from their window under the same rule. The other compiled rows of Table S5 give way to each study\'s own table and stay in the release\'s source records. Records that fail a test are kept. The arginine each reports is a <b>lower-confidence site</b>, as is every site of an earlier release that no longer passes: never in the release\'s counts and tests, shown hatched only when the reader switches Lower-confidence sites on (<button class="linkish" type="button" data-doc="site-tests">site tests</button>). Where a record leaves its methyl group on one of several residues, the candidates are its <b>lower-confidence evidence</b> (protein map row Lower-confidence evidence, Rows menu; release file supporting/lower_confidence_evidence). <button class="linkish" type="button" data-doc="study-quality">Data quality, study by study</button>.</li>' +
+        '<li id="doc-site-tests"><b>Site tests.</b> Every record has passed its study\'s identification filter (false discovery rate or score) before it is read. It is then put to five tests at the arginine its study reports: ' +
+        SITE_TESTS.map(([, label, help]) => '<i>' + esc(label) + '</i>: ' + esc(help)).join(' ') +
+        ' A <b>site</b> needs a record that passes all five; the release\'s counts, charts and tests use sites only. A <b>lower-confidence site</b> is an arginine a study reports as methylated, or a site of v1.0.0 or v1.1.0, whose records each fail at least one test. The release lists each with the results of the record that passes most tests (human_methylarginine_lower_confidence_sites), and supporting/published_sites says what became of every site of the earlier releases. ' +
+        'With Lower-confidence sites switched on, the page shows them hatched, and its counts, charts and tests come from the analyses run again with the lower-confidence sites whose own evidence covers the arginine and leaves the methyl group on an arginine (<i>Evidence at the site</i> passes, <i>Methyl group on an arginine</i> does not fail; release file statistics_with_lower_confidence). The others are shown, never counted.</li>'
         : addedStudies().length ? '<li><b>The studies added in v1.2.0</b> add a record only when it passes the study\'s false discovery rate, its methyl group is localised to one arginine (by the study\'s localisation score, or, for Lu 2025, which gives none, by a peptide whose every arginine is dimethylated), and its peptide or window names exactly one arginine in the whole reviewed human proteome, in a protein the record names. A peptide shared by paralogs, repeated within a protein, or found only in another protein adds no site. <button class="linkish" type="button" data-doc="study-quality">Data quality, study by study</button>.</li>' : '') +
       '<li><b>Gene symbols</b> follow current UniProt. Symbols reported by the sources (some outdated, a few belonging to paralogs with near-identical sequence, such as SNRPN on SmB/B′ rows) and UniProt synonyms are kept as searchable aliases.</li>' +
       '<li><b>State</b> is the degree reported at the site (Rme1, Rme2, or Rme1 + Rme2 when both are): by the source records (ProMetheusDB' + (localisedOnly() ? ' and the studies\' own tables' : addedStudies().length ? ' and the studies added in v1.2.0' : '') + '), by Maron et al. 2021 Table S2, by UniProt with experimental evidence, or by a study that looked for one degree only (Larsen 2016, monomethylation; Wei 2020, ADMA antibody and dimethylation). The site summary lists each source; UniProt annotations made only by similarity are shown there but not counted. Asymmetric and symmetric dimethylarginine have the same mass, so most sources tell them apart by the antibody used. ' +
@@ -10535,7 +10642,7 @@
         levels[lv] = hx;
         const hy = base - 18 - lv * 8;
         g += '<line x1="' + r1(hx) + '" x2="' + r1(hx) + '" y1="' + (base - 7) + '" y2="' + hy + '" stroke="' + pal.stem + '" stroke-width="1"/>' +
-          titled(MARK.head(pal, hx, hy, 3.3, colors[k], !!(mode.hollow && mode.hollow[k])), p.label + ' ' + rl(s.pos, P[s.p]));
+          titled(siteHead(s, pal, hx, hy, 3.3, colors[k], !!(mode.hollow && mode.hollow[k])), p.label + ' ' + rl(s.pos, P[s.p]) + (s.lc ? ' (lower confidence)' : ''));
       }
       // Evidence lanes under the protein, the same lanes as the cartoon on protein pages, ringed where a
       // methylarginine itself carries the evidence.

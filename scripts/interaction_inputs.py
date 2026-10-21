@@ -417,10 +417,18 @@ def model_positions(t: Tables) -> dict:
 
 
 def afdb_heterodimers(t: Tables) -> dict:
+    """Model id -> accessions, chains and scores, the later tables over the earlier. A top-up lists the models of a
+    query without reading each, so a later row can lack the chains an earlier table gave: the model keeps those (with
+    the accessions in their order), else scripts/37 would look its chains up again on every run."""
     out = {}
     for r in t.rows('alphafold_db_human_heterodimers_'):
-        out[r['model_id']] = {'accessions': L(r['uniprot_accessions']), 'chains': L(r['chains']),
-                              'iptm': float(r['iptm']) if r['iptm'] else None, 'pdockq': float(r['pdockq']) if r['pdockq'] else None}
+        new = {'accessions': L(r['uniprot_accessions']), 'chains': L(r['chains']),
+               'iptm': float(r['iptm']) if r['iptm'] else None, 'pdockq': float(r['pdockq']) if r['pdockq'] else None}
+        old = out.get(r['model_id'])
+        if old and old['chains'] and not new['chains']:
+            new.update(accessions=old['accessions'], chains=old['chains'], iptm=new['iptm'] if new['iptm'] is not None else old['iptm'],
+                       pdockq=new['pdockq'] if new['pdockq'] is not None else old['pdockq'])
+        out[r['model_id']] = new
     return out
 
 

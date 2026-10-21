@@ -10,7 +10,9 @@ prepare writes the site union the analysis scripts read (WORK/integrated/human_a
 release's site table: one row per site, on the reviewed reference sequences, without the sites kept pending (flag
 one_sided_window). v1.0.0 numbered its sites on an earlier UniProt release; --map (site_changes_v1.0.0_to_v1.1.0.tsv)
 takes each v1.0.0 site to where v1.1.0 placed its records on the reference, and leaves out the sites v1.1.0 could not
-place. collect writes the analyses' result tables, the statistics table of every test (release_tables.statistics), a
+place. --lower-confidence adds the release's lower-confidence sites counted in the analyses with lower-confidence
+sites (in_analyses_with_lower_confidence: their own evidence covers the arginine, and it leaves the methyl group on an
+arginine), for the view with both tiers. collect writes the analyses' result tables, the statistics table of every test (release_tables.statistics), a
 README and MD5SUMS into --out, so every release can be compared with the same code.
 """
 from __future__ import annotations
@@ -68,11 +70,15 @@ def md5(path: Path) -> str:
     return hashlib.md5(path.read_bytes()).hexdigest()
 
 
-def release_sites(sites_path: Path, map_path: str) -> pd.DataFrame:
-    """(accession, position, gene, studies) of the release's sites on the reference, pending sites left out."""
+def release_sites(sites_path: Path, map_path: str, lower_path: str = '') -> pd.DataFrame:
+    """(accession, position, gene, studies) of the release's sites on the reference, pending sites left out, with the
+    lower-confidence sites the analyses with lower-confidence sites count when lower_path is given."""
     sites = pd.read_csv(sites_path, sep='\t', dtype=str, keep_default_na=False)
     if 'flags' in sites.columns:
         sites = sites[~sites['flags'].str.contains('one_sided_window')]
+    if lower_path:
+        lower = pd.read_csv(lower_path, sep='\t', dtype=str, keep_default_na=False)
+        sites = pd.concat([sites, lower[lower['in_analyses_with_lower_confidence'] == 'true']], ignore_index=True)
     studies = sites['studies'] if 'studies' in sites.columns else sites['source_families'].str.replace(';', '; ')
     out = pd.DataFrame({'site_id': sites['site_id'], 'gene': sites['gene'], 'studies': studies})
     if map_path:
@@ -85,7 +91,7 @@ def release_sites(sites_path: Path, map_path: str) -> pd.DataFrame:
 
 
 def prepare(args) -> None:
-    sites = release_sites(Path(args.sites), args.map)
+    sites = release_sites(Path(args.sites), args.map, args.lower_confidence)
     entries = pd.read_csv(args.entries, sep='\t', dtype=str, keep_default_na=False).set_index('Entry')
     gene = sites['accession'].map(lambda a: entries['Gene Names (primary)'].get(a, '')).where(lambda g: g != '', sites['gene'])
     fam = sites['studies'].str.replace('; ', ';')
@@ -106,7 +112,7 @@ def prepare(args) -> None:
 def collect(args) -> None:
     work, out = Path(args.work), Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    sites = release_sites(Path(args.sites), args.map)
+    sites = release_sites(Path(args.sites), args.map, args.lower_confidence)
     proteins = pd.DataFrame({'uniprot_accession': sorted(set(sites['accession']))})
     proteins.attrs['hpa_all'] = rt.read(Path(args.inputs) / 'layers' / 'hpa_subcellular_locations.tsv')
     stats = rt.statistics(work, proteins)
@@ -122,14 +128,18 @@ def collect(args) -> None:
     commit = subprocess.run(['git', '-C', str(CODE), 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True).stdout.strip()
     dirty = subprocess.run(['git', '-C', str(CODE), 'status', '--porcelain', '--untracked-files=no'], capture_output=True, text=True).stdout.strip()
     n_sites, n_prot = len(sites), sites['accession'].nunique()
-    lines = [f'# Analyses of {args.version}, rerun with the current pipeline', '',
+    tier = (' with its lower-confidence sites' if args.lower_confidence else '')
+    lines = [f'# Analyses of {args.version}{tier}, rerun with the current pipeline', '',
              f'The analyses of the release, run on its {n_sites:,} sites on {n_prot:,} proteins with the code of commit '
              f'`{commit}{"+uncommitted" if dirty else ""}` ({dt.date.today().isoformat()}), so that every release is analysed the same '
              'way (hpc/release_analyses.sh). ' + (
                  'v1.0.0 numbered its sites on an earlier UniProt release: each site is taken to where v1.1.0 placed its records on '
                  'UniProt 2026_03, and the sites v1.1.0 could not place are left out. The analyses of the published run are in the '
                  'v1.0.0_archive branch. ' if args.map else '') +
-             'The sites kept pending (flag one_sided_window) are left out, as in the release build.', '',
+             'The sites kept pending (flag one_sided_window) are left out, as in the release build.' + (
+                 ' The lower-confidence sites whose own evidence covers the arginine and leaves the methyl group on an arginine '
+                 '(in_analyses_with_lower_confidence in the release\'s lower-confidence site table) are counted as sites; the others '
+                 'are left out.' if args.lower_confidence else ''), '',
              f'`statistics_{args.version}.tsv` holds every test in one table (columns as in the release\'s statistics table: analysis, '
              'category, the 2x2 counts a-d, effect, p, BH q, background). The folders hold the result tables:', '',
              '| File | Holds |', '|---|---|'] + [f'| `{f}` | {w} |' for f, w in kept] + ['']
@@ -146,6 +156,7 @@ def main() -> None:
         p = sub.add_parser(name)
         p.add_argument('--sites', required=True, help="the release's site table")
         p.add_argument('--map', default='', help='v1.0.0 only: site_changes_v1.0.0_to_v1.1.0.tsv')
+        p.add_argument('--lower-confidence', default='', help="the release's lower-confidence site table, to count its sites too")
         p.add_argument('--work', required=True)
         if name == 'prepare':
             p.add_argument('--entries', required=True)

@@ -182,7 +182,7 @@ def proteins_table(root: Path, inputs: Path, sites: pd.DataFrame, records: pd.Da
         gene = entry(acc, 'Gene Names (primary)')
         rep = [g for g, _ in reported.get(acc, Counter()).most_common() if g not in split(gene)]
         f = functional.loc[acc] if acc in functional.index else None
-        pc = panther.loc[acc]
+        pc = panther.loc[acc] if acc in panther.index else None   # None: a protein the analyses did not see (lower-confidence sites only)
         o = odds.loc[acc] if acc in odds.index else None
         d = density.loc[acc] if acc in density.index else None
         b = best.loc[acc] if acc in best.index else None
@@ -202,10 +202,10 @@ def proteins_table(root: Path, inputs: Path, sites: pd.DataFrame, records: pd.Da
             'n_sites': int((~pending[group.index]).sum()),
             'n_pending': int(pending[group.index].sum()),
             'studies': join(studies),
-            'panther_group': pc['panther_group'],
-            'panther_class': pc['panther_class'],
-            'panther_classes': join(split(pc['panther_leaf_classes'])),
-            'panther_family': pc['panther_family'],
+            'panther_group': pc['panther_group'] if pc is not None else '',
+            'panther_class': pc['panther_class'] if pc is not None else '',
+            'panther_classes': join(split(pc['panther_leaf_classes'])) if pc is not None else '',
+            'panther_family': pc['panther_family'] if pc is not None else '',
             'functional_classes': join(split(f['functional_class_broad'])) if f is not None else '',
             'functional_subclasses': join(split(f['functional_class_subclass'])) if f is not None else '',
             'arginine_count': seq.count('R'),

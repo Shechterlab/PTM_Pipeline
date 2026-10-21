@@ -214,6 +214,18 @@ button, input, select { font: inherit; color: inherit; }
 .query-note:empty { display: none; }
 .query-note b { color: var(--ink-2); }
 .tabs { display: flex; gap: 0.25rem; overflow-x: auto; scrollbar-width: none; }
+/* Lower-confidence sites: hatched wherever they show (the switch, the note, table tags; figures draw MARK.hatch). */
+.lc-switch { flex: none; margin-left: auto; align-self: center; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.4rem 0.3rem 0.8rem; font-size: 0.8rem; font-weight: 600; color: var(--muted); cursor: pointer; white-space: nowrap; }
+.lc-switch[hidden] { display: none; }
+.lc-switch input { margin: 0; accent-color: var(--accent); }
+.lc-switch:has(input:checked) { color: var(--ink-2); }
+.lc-swatch { flex: none; display: inline-block; width: 0.85rem; height: 0.85rem; border-radius: 50%; border: 1.4px solid var(--muted);
+  background: repeating-linear-gradient(-45deg, var(--muted) 0 1.2px, transparent 1.2px 3.4px); }
+.lc-note { display: flex; gap: 0.5rem; align-items: baseline; font-size: 0.82rem; color: var(--ink-2); padding: 0.35rem 0.6rem; margin: 0.25rem 0; border-radius: 0.45rem;
+  background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--muted) 9%, transparent) 0 6px, transparent 6px 12px); border: 1px dashed var(--line-strong); }
+.lc-note[hidden] { display: none; }
+.tag.lc-tag { margin-left: 0.3rem; color: var(--ink-2); border: 1px dashed var(--muted);
+  background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--muted) 16%, transparent) 0 2px, transparent 2px 5px); }
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
   flex: none;

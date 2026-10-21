@@ -253,10 +253,10 @@ def main() -> None:
     for r in records.to_dict('records'):
         if r['source_table'] == 'maron2021_s5' and r['reference_text']:
             study_citation.setdefault(web_name[r['study']], r['reference_text'])
-    by_site = defaultdict(list)
-    for i, s in zip(records.index, records['_site']):
-        if s:
-            by_site[s].append(i)
+    # each site's records, as the site table lists them (a record supports one site, or, in the view with
+    # lower-confidence sites, every lower-confidence site it reports)
+    row_of = {int(r): i for i, r in enumerate(records['record_id'])}
+    by_site = {r['site_id']: [row_of[int(x)] for x in L(r['record_ids'])] for r in sites.to_dict('records')}
     rec = records.to_dict('records')
     tr = defaultdict(list)
     for r in inhibitors.to_dict('records'):
@@ -411,6 +411,19 @@ def main() -> None:
                                'annotations line up with the positions only where the current sequence has the same checksum.',
             },
             'n_sites': len(site_rows), 'n_proteins': len(protein_rows), 'n_pending_not_shown': n_pending,
+            # The view with lower-confidence sites only (its site table has the column tier): which sites are lower-confidence
+            # sites and what the tests found, [site index, counted in the analyses (1/0), [result index per test], reason
+            # mask, earlier releases that had it].
+            'lower_confidence_sites': {
+                'tests': list(rc.CODES['site_test']), 'results': list(rc.CODES['test_result']), 'reasons': list(rc.CODES['lower_confidence']),
+                'n_analysed': int((sites['in_analyses_with_lower_confidence'] == 'true').sum() - (sites['tier'] == 'site').sum()),
+                'sites': [[k, int(r['in_analyses_with_lower_confidence'] == 'true'),
+                           [list(rc.CODES['test_result']).index(r[f'test_{t}']) for t in rc.CODES['site_test']],
+                           sum(1 << list(rc.CODES['lower_confidence']).index(x) for x in L(r['reasons'])), L(r['in_earlier_versions'])]
+                          for k, r in enumerate(sites.to_dict('records')) if r['tier'] == 'lower_confidence'],
+            } if 'tier' in sites.columns else None,
+            # the release has lower-confidence sites, so the build also exported the view with them (methylarg_*_all.json)
+            'lower_confidence_view': (rel / f'human_methylarginine_lower_confidence_sites_{v}.tsv').exists(),
             'window_flank': WINDOW_FLANK, 'window_flags': window_flags,
             'sources': SOURCES,
             # [name, citation, sites, sites reported only there, DOI]
@@ -555,8 +568,7 @@ def check(outdir: Path, sites: pd.DataFrame, proteins: pd.DataFrame, records: pd
                 or {m['studies'][k][0] for k in range(len(m['studies'])) if s[19] >> k & 1} != {web_name[x] for x in L(r['studies'])}:
             bad.append(r['site_id'])
     n_records = sum(len(x) for x in e['sites'])
-    shown = set(sites['site_id'])
-    expected = int(records['placed_site'].isin(shown).sum() + records['pending_site'].isin(shown).sum())
+    expected = sum(len(L(x)) for x in sites['record_ids'])
     if n_records != expected:
         bad.append(f'evidence rows {n_records} vs {expected}')
     if len(d['sites']) != len(sites) or len(e['disease_terms']) != len(disease_terms):

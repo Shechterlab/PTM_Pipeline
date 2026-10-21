@@ -260,6 +260,9 @@ def build_records(rows, typed, check, allowed, previous, pending_of, shift, refe
             'localised_by': clean(r.get('site_localisation', '')),
             'not_localised': '' if clean(r.get('site_localisation', '')) else clean(r.get('study_not_localised', '')),
             'candidate_sites': as_list(r.get('candidate_sites', '')),
+            'reported_site': clean(r.get('reported_site', '')),
+            **{t: clean(r.get(t, '')) for t in TEST_FIELDS},
+            '_evidence_sites': clean(r.get('evidence_sites', '')),
             'placed_site': new,
             'placement_code': r['remap_status'],
             'evidence_check': rc.VERDICT_CODE[c['verdict']],
@@ -276,23 +279,130 @@ def build_records(rows, typed, check, allowed, previous, pending_of, shift, refe
     return pd.DataFrame(out)
 
 
+TEST_FIELDS = ['test_evidence_at_site', 'test_named_entry', 'test_unique_in_proteome', 'test_methyl_on_arginine', 'test_localised']
+AMBIGUOUS = {**{c: 'several_sites' for c in rc.PLACEMENT_SEVERAL}, **{c: 'other_protein' for c in rc.PLACEMENT_OTHER_PROTEIN},
+             'unresolved_study_not_found': 'not_in_reference'}
+
+
+def lower_confidence_reason(localised: str, why: str, code: str) -> str:
+    """Why a record that is not placed adds no site (CODES['lower_confidence']), empty when it says nothing."""
+    if localised:
+        return AMBIGUOUS.get(code, '')
+    return why or ('several_residues' if code == 'unresolved_not_localised' else '')
+
+
 def lower_confidence(records: pd.DataFrame, sites: set) -> pd.DataFrame:
     """The records that add no site but say where a methyl group could be (supporting/lower_confidence_evidence): not
     localised (a study's own record, or a compiled record no study table stands in for), or localised but not on one
     site of a protein the record names. Rows of the compiled tables a study's own table supersedes are left out."""
-    ambiguous = {**{c: 'several_sites' for c in rc.PLACEMENT_SEVERAL}, **{c: 'other_protein' for c in rc.PLACEMENT_OTHER_PROTEIN},
-                 'unresolved_study_not_found': 'not_in_reference'}
     keep = (records['placed_site'] == '') & (records['pending_site'] == '') & (records['placement_code'] != 'superseded_by_study_table')
     rows = records[keep].copy()
-
-    def reason(localised: str, why: str, code: str) -> str:
-        if localised:
-            return ambiguous.get(code, '')
-        return why or ('several_residues' if code == 'unresolved_not_localised' else '')
-    rows['reason'] = [reason(*v) for v in zip(rows['localised_by'], rows['not_localised'], rows['placement_code'])]
+    rows['reason'] = [lower_confidence_reason(*v) for v in zip(rows['localised_by'], rows['not_localised'], rows['placement_code'])]
     rows = rows[rows['reason'] != '']
     rows['candidates_in_release'] = rows['candidate_sites'].map(lambda c: '; '.join(x for x in c.split('; ') if x in sites) if c else '')
     return rows[[c for c, *_ in rc.LOWER_CONFIDENCE_COLUMNS]]
+
+
+def earlier_sites(prev_dir: Path, previous: str, prev_sites: pd.DataFrame, records: pd.DataFrame, shift: dict) -> tuple[dict, list]:
+    """The sites of the earlier releases, in this release's numbering. Returns ({version: {site: record_ids}}, [(version,
+    site as published, [sites now])]). The previous release's sites carry the records it placed there. The release
+    before it is read from the previous release's site_changes table: its kept sites are sites of the previous release;
+    a site it removed carries the records the table gives, at the sites they were moved to, or, when they were moved
+    nowhere, at the site as published."""
+    members, published = defaultdict(dict), []
+    at = records[records['_previous_at'] != ''].groupby('_previous_at')['record_id'].agg(list)
+    for site in prev_sites['site_id']:
+        now = lifted(site, shift)
+        members[previous][now] = at.get(now, [])
+        published.append((previous, site, [now]))
+    for path in sorted((prev_dir / 'supporting').glob(f'site_changes_*_to_{previous}.tsv')):
+        version = path.name[len('site_changes_'):-len(f'_to_{previous}.tsv')]
+        for r in read_tsv(path).to_dict('records'):
+            if r['in_previous_version'] != 'true':
+                continue
+            if r['change'] == 'kept':
+                published.append((version, r['previous_site_id'], [lifted(r['site_id'], shift)]))
+                continue
+            ids = [int(x) for x in r['record_ids'].split('; ') if x]
+            now = [lifted(x, shift) for x in r['records_now_at_or_previously_at'].split('; ') if x] or [r['site_id']]
+            for site in now:
+                members[version][site] = sorted(set(members[version].get(site, [])) | set(ids))
+            published.append((version, r['site_id'], now))
+    return dict(members), published
+
+
+def is_arginine(site: str, reference: dict) -> bool:
+    acc, pos = split_key(site)
+    return acc in reference and 0 < pos <= len(reference[acc]) and reference[acc][pos - 1] == 'R'
+
+
+def lower_confidence_sites(records: pd.DataFrame, site_ids: set, reference: dict, members: dict) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """The lower-confidence sites (CODES['tier']): every arginine that is not a site of this release and that a record
+    not placed reports (reported_site, the compiled records a study's own table supersedes left out), or that an earlier
+    release had (members). Returns the records exploded to these sites (one row per record and site, placed_site set
+    to the site, for build_sites) and, per site, the tests of the record that passes most of them at it: a record's
+    evidence_at_site is read again at each site (is the site among the arginines its evidence names), its other tests
+    are its own. A site is counted in the analyses with lower-confidence sites when a record covers it with its own
+    evidence and leaves the methyl group on an arginine (evidence_at_site pass or curated, methyl_on_arginine not
+    fail)."""
+    unplaced = (records['placed_site'] == '') & (records['pending_site'] == '') & (records['placement_code'] != 'superseded_by_study_table')
+    at, versions = defaultdict(set), defaultdict(set)
+    for i, site in zip(records.index[unplaced], records.loc[unplaced, 'reported_site']):
+        if site and site not in site_ids:
+            at[site].add(i)
+    index_of = dict(zip(records['record_id'].astype(int), records.index))
+    for version, sites in members.items():
+        for site, ids in sites.items():
+            if site not in site_ids and is_arginine(site, reference):
+                at[site] |= {index_of[int(x)] for x in ids if int(x) in index_of}
+                versions[site].add(version)
+    rows, exploded = [], []
+    for site, idx in at.items():
+        tested = []
+        for i in sorted(idx):
+            r = records.loc[i]
+            if not r['test_localised']:
+                tests = dict.fromkeys(TEST_FIELDS, 'untested')
+            else:
+                evidence = set(r['_evidence_sites'].split('; ')) - {''}
+                here = 'curated' if r['test_evidence_at_site'] == 'curated' and site == r['reported_site'] else 'pass' if site in evidence else 'fail'
+                # named_entry at another site than the record reports: the same entry, or one of its reported accessions
+                acc = split_key(site)[0]
+                named = r['test_named_entry'] if site == r['reported_site'] else 'pass' if (
+                    (r['test_named_entry'] == 'pass' and r['reported_site'].startswith(acc + ':R'))
+                    or acc in {a.split('-')[0] for a in r['reported_accession'].split('; ')}) else 'fail'
+                tests = {'test_evidence_at_site': here, 'test_named_entry': named, **{t: r[t] for t in TEST_FIELDS[2:]}}
+            tested.append((i, tests))
+        def rank(item):
+            i, t = item
+            return (t['test_evidence_at_site'] in ('pass', 'curated'), t['test_methyl_on_arginine'] != 'fail', t['test_named_entry'] == 'pass',
+                    t['test_unique_in_proteome'] == 'pass', t['test_localised'] == 'pass',
+                    records.at[i, 'placement_code'] != 'superseded_by_study_table', -int(records.at[i, 'record_id']))
+        best = max(tested, key=rank)[1] if tested else dict.fromkeys(TEST_FIELDS, 'untested')
+        reasons = {lower_confidence_reason(records.at[i, 'localised_by'], records.at[i, 'not_localised'], records.at[i, 'placement_code']) for i in idx}
+        rows.append({'site_id': site,
+                     'in_analyses_with_lower_confidence': any(t['test_evidence_at_site'] in ('pass', 'curated') and t['test_methyl_on_arginine'] != 'fail' for _, t in tested),
+                     **best,
+                     'tests_failed': join(k.removeprefix('test_') for k in TEST_FIELDS if best[k] == 'fail'),
+                     'reasons': join(ordered(reasons - {''}, list(rc.CODES['lower_confidence']))),
+                     'in_earlier_versions': join(sorted(versions.get(site, set())))})
+        if idx:
+            exploded.append(records.loc[sorted(idx)].assign(placed_site=site, pending_site=''))
+    tests = pd.DataFrame(rows, columns=['site_id', 'in_analyses_with_lower_confidence', *TEST_FIELDS, 'tests_failed', 'reasons', 'in_earlier_versions'])
+    exploded = pd.concat(exploded, ignore_index=True) if exploded else records.iloc[:0]
+    return exploded, tests
+
+
+def published_sites(published: list, site_ids: set, tests: pd.DataFrame) -> pd.DataFrame:
+    """Every site of the earlier releases and what it is in this release (supporting/published_sites)."""
+    failed = dict(zip(tests['site_id'], tests['tests_failed']))
+    rows = []
+    for version, site, now in published:
+        status = 'site' if any(x in site_ids for x in now) else 'lower_confidence' if any(x in failed for x in now) else 'not_in_reference'
+        rows.append({'version': version, 'published_site_id': site, 'site_ids': join(x for x in now if x in site_ids or x in failed),
+                     'status': status, 'tests_failed': join(sorted({f for x in now if x not in site_ids for f in failed.get(x, '').split('; ') if f},
+                                                                    key=list(rc.CODES['site_test']).index))})
+    return pd.DataFrame(rows)
 
 
 def record_detail(r: pd.Series) -> str:
@@ -863,8 +973,15 @@ def main() -> None:
     ap.add_argument('--outdir', required=True)
     ap.add_argument('--date', default=dt.date.today().isoformat(), help='release date (default today)')
     ap.add_argument('--interactions', default='', help='the interaction tables scripts/37 wrote for these sites (--tables-out)')
+    ap.add_argument('--analyses-root', default='', help='where the analyses ran (default --results-root)')
+    ap.add_argument('--with-lower-confidence', action='store_true',
+                    help='write the view with lower-confidence sites: the site table holds both tiers (column tier), and the '
+                         'proteins and statistics come from --analyses-root, the analyses of both (the website reads it)')
+    ap.add_argument('--statistics-with-lower-confidence', default='',
+                    help="the statistics table of that view, kept in the release as statistics_with_lower_confidence")
     args = ap.parse_args()
     root, inputs, outdir, prev_dir = Path(args.results_root), Path(args.inputs), Path(args.outdir), Path(args.previous)
+    aroot = Path(args.analyses_root) if args.analyses_root else root
     version, previous = args.version, prev_dir.name
 
     reference = remap.parse_fasta(inputs / INPUT['fasta'])
@@ -926,32 +1043,58 @@ def main() -> None:
     union_keys = {key(a, p) for a, p in zip(union['canonical_UniProtAC'], union['corrected_position'])}
     if union_keys != set(records['placed_site']) - {''}:
         raise SystemExit('the placed records and the union disagree')
-    sites = build_sites(records, union, pending, reference, entry, {lifted(x, shift) for x in prev_sites['site_id']})
+    previous_lifted = {lifted(x, shift) for x in prev_sites['site_id']}
+    sites = build_sites(records, union, pending, reference, entry, previous_lifted)
     site_ids = set(sites['site_id'])
+    # The lower-confidence sites go through the same annotation as the sites, then apart.
+    members, published = earlier_sites(prev_dir, previous, prev_sites, records, shift)
+    lc_records, lc_tests = lower_confidence_sites(records, site_ids, reference, members)
+    lc_sites = build_sites(lc_records, union.iloc[:0], set(), reference, entry, previous_lifted) if len(lc_records) else sites.iloc[:0]
+    lc_tests = lc_tests[lc_tests['site_id'].isin(set(lc_sites['site_id']))]
+    n_main = len(sites)
+    sites = pd.concat([sites, lc_sites], ignore_index=True)
+    all_ids = set(sites['site_id'])
 
-    detection, inhibitors, maron_counts = maron_tables(inputs, reference, site_ids)
+    detection, inhibitors, _ = maron_tables(inputs, reference, all_ids)
+    maron_counts = maron_tables(inputs, reference, site_ids)[2]
     s2 = detection[detection['maron_table'] == 'S2'].set_index('site_id')['methyl_states']
     s3 = detection[detection['maron_table'] == 'S3'].groupby('site_id')['antibody'].agg(lambda a: join(ordered(a, rc.ANTIBODY_ORDER)))
     sites['maron2021_s2_states'] = sites['site_id'].map(s2).fillna('')
     sites['maron2021_s3_antibodies'] = sites['site_id'].map(s3).fillna('')
-    sites = pd.concat([sites, state_calls(sites, records, inputs)], axis=1)
+    sites = pd.concat([sites, state_calls(sites, pd.concat([records, lc_records], ignore_index=True), inputs)], axis=1)
     for drug in rc.CODES['inhibitor']:
         calls = inhibitors[inhibitors['inhibitor'] == drug].groupby('site_id')['call'].agg(list)
         sites[f'maron2021_{drug}_call'] = sites['site_id'].map(lambda s: combine_calls(calls.get(s, [])))
-    carm1 = carm1_table(inputs, site_ids)
+    carm1 = carm1_table(inputs, all_ids)
     carm1_calls = carm1.groupby('site_id')['call'].agg(list)
     sites['carm1_ko_call'] = sites['site_id'].map(lambda s: combine_calls(carm1_calls.get(s, [])))
     sites = pd.concat([sites, context_annotations(sites, inputs)], axis=1)
-    ix = interaction_tables(Path(args.interactions), sites) if args.interactions else None
+    ix = interaction_tables(Path(args.interactions), sites if args.with_lower_confidence else sites.iloc[:n_main]) if args.interactions else None
     analysed = ~sites['flags'].str.contains('one_sided_window', regex=False)   # sites kept pending are left out
     sites['interaction_status'] = sites['site_id'].map(ix['status']).fillna('none').where(analysed, '') if ix else ''
     sites['interaction_evidence'] = sites['site_id'].map(ix['evidence']).fillna('') if ix else ''
     sites = sites[[c for c, *_ in rc.SITE_COLUMNS]]
+    lc_sites = sites.iloc[n_main:].merge(lc_tests, on='site_id', how='left')
+    lc_sites = lc_sites[[c for c, *_ in rc.LOWER_CONFIDENCE_SITE_COLUMNS]].reset_index(drop=True)
+    published = published_sites(published, site_ids, lc_tests)
+    if args.with_lower_confidence:
+        # both tiers in one site table, the sites' tests all passed
+        tier = pd.DataFrame({'tier': ['site'] * n_main + ['lower_confidence'] * len(lc_sites)})
+        main_tests = pd.DataFrame({'site_id': sites['site_id'].iloc[:n_main], 'in_analyses_with_lower_confidence': True,
+                                   **dict.fromkeys(TEST_FIELDS, 'pass'), 'tests_failed': '', 'reasons': '', 'in_earlier_versions': ''})
+        tier_tests = pd.concat([main_tests, lc_tests.set_index('site_id').loc[sites['site_id'].iloc[n_main:]].reset_index()], ignore_index=True)
+        sites = pd.concat([sites.reset_index(drop=True), tier, tier_tests.drop(columns='site_id')], axis=1)
+        placed = pd.concat([records, lc_records], ignore_index=True)   # each record at every lower-confidence site it supports
+    else:
+        placed = records
+        sites = sites.iloc[:n_main]
+        detection, inhibitors, carm1 = (t[t['site_id'].isin(site_ids)] for t in (detection, inhibitors, carm1))
 
-    changes = build_changes(records, sites, list(prev_sites['site_id']), shift, entry)
-    studies = build_studies(records, sites)
-    proteins, extra = release_tables.proteins_table(root, inputs, sites, records, entry, reference)
-    statistics = release_tables.statistics(root, proteins)
+    main_sites = sites.iloc[:n_main]
+    changes = build_changes(records, main_sites, list(prev_sites['site_id']), shift, entry)
+    studies = build_studies(records, main_sites)
+    proteins, extra = release_tables.proteins_table(aroot, inputs, sites, placed, entry, reference)
+    statistics = release_tables.statistics(aroot, proteins)
     if ix:
         status = sites.groupby('uniprot_accession')['interaction_status'].agg(Counter)
         proteins['n_sites_experimental'] = proteins['uniprot_accession'].map(lambda a: status[a]['experimental'])
@@ -963,13 +1106,15 @@ def main() -> None:
     else:
         for column, *_ in rc.PROTEIN_COLUMNS[-7:]:
             proteins[column] = ''
-    disease_terms = release_tables.disease_terms_table(root, proteins)
+    disease_terms = release_tables.disease_terms_table(aroot, proteins)
 
     files = {
-        'sites': (f'human_methylarginine_sites_{version}.tsv', sites, rc.SITE_COLUMNS),
+        'sites': (f'human_methylarginine_sites_{version}.tsv', sites, rc.VIEW_SITE_COLUMNS if args.with_lower_confidence else rc.SITE_COLUMNS),
+        'lower_confidence_sites': (f'human_methylarginine_lower_confidence_sites_{version}.tsv', lc_sites, rc.LOWER_CONFIDENCE_SITE_COLUMNS),
         'studies': (f'studies_{version}.tsv', studies, rc.STUDY_COLUMNS),
         'records': (f'supporting/source_records_{version}.tsv', records, rc.RECORD_COLUMNS),
-        'lower_confidence': (f'supporting/lower_confidence_evidence_{version}.tsv', lower_confidence(records, set(sites['site_id'])), rc.LOWER_CONFIDENCE_COLUMNS),
+        'lower_confidence': (f'supporting/lower_confidence_evidence_{version}.tsv', lower_confidence(records, site_ids), rc.LOWER_CONFIDENCE_COLUMNS),
+        'published_sites': (f'supporting/published_sites_{version}.tsv', published, rc.PUBLISHED_SITE_COLUMNS),
         'changes': (f'supporting/site_changes_{previous}_to_{version}.tsv', changes, rc.CHANGE_COLUMNS),
         'maron_detection': (f'supporting/maron2021_detection_{version}.tsv', detection, rc.MARON_DETECTION_COLUMNS),
         'maron_inhibitors': (f'supporting/maron2021_inhibitors_{version}.tsv', inhibitors, rc.MARON_INHIBITOR_COLUMNS),
@@ -977,15 +1122,18 @@ def main() -> None:
         'proteins': (f'human_methylarginine_proteins_{version}.tsv', proteins, rc.PROTEIN_COLUMNS),
         'statistics': (f'statistics_{version}.tsv', statistics, rc.STATISTICS_COLUMNS),
         'disease_terms': (f'supporting/disease_terms_{version}.tsv', disease_terms, rc.DISEASE_TERM_COLUMNS),
-        'disease_terms_tested': (f'supporting/disease_terms_tested_{version}.tsv', release_tables.disease_terms_tested_table(root, proteins),
+        'disease_terms_tested': (f'supporting/disease_terms_tested_{version}.tsv', release_tables.disease_terms_tested_table(aroot, proteins),
                                  rc.DISEASE_TERM_TESTED_COLUMNS),
-        'disease_ontology': (f'supporting/disease_ontology_{version}.tsv', release_tables.disease_ontology_table(root, proteins), rc.DISEASE_ONTOLOGY_COLUMNS),
+        'disease_ontology': (f'supporting/disease_ontology_{version}.tsv', release_tables.disease_ontology_table(aroot, proteins), rc.DISEASE_ONTOLOGY_COLUMNS),
         'density_windows': (f'supporting/density_windows_{version}.tsv', extra['density_windows'], rc.DENSITY_COLUMNS),
         'hpa_locations': (f'supporting/hpa_locations_{version}.tsv', extra['hpa'], rc.HPA_COLUMNS),
         'other_ptm_sites': (f'supporting/other_ptm_sites_{version}.tsv', extra['other_ptm_sites'], rc.OTHER_PTM_COLUMNS),
-        'condensates': (f'supporting/condensates_{version}.tsv', release_tables.condensates_table(root, set(sites['uniprot_accession'])), rc.CONDENSATE_COLUMNS),
-        'disease_families': (f'supporting/disease_families_{version}.tsv', release_tables.disease_families_table(root), rc.DISEASE_FAMILY_COLUMNS),
+        'condensates': (f'supporting/condensates_{version}.tsv', release_tables.condensates_table(aroot, set(sites['uniprot_accession'])), rc.CONDENSATE_COLUMNS),
+        'disease_families': (f'supporting/disease_families_{version}.tsv', release_tables.disease_families_table(aroot), rc.DISEASE_FAMILY_COLUMNS),
     }
+    if args.statistics_with_lower_confidence:
+        files['statistics_with_lower_confidence'] = (f'statistics_with_lower_confidence_{version}.tsv',
+                                                     read_tsv(Path(args.statistics_with_lower_confidence)), rc.STATISTICS_COLUMNS)
     if ix:
         files.update({
             'site_interactions': (f'supporting/site_interactions_{version}.tsv', ix['sites'], rc.SITE_INTERACTION_COLUMNS),
@@ -1004,12 +1152,14 @@ def main() -> None:
     release_workbook.write(outdir / f'human_methylarginine_sites_{version}.xlsx', read_tsv(outdir / files['sites'][0]),
                            rc.SITE_COLUMNS, title=f'Sites {version}')
 
-    counts = release_docs.counts(sites, records, changes, studies, maron_counts, prev_sites)
+    counts = release_docs.counts(main_sites, records, changes, studies, maron_counts, prev_sites)
+    counts['lower_confidence_sites'] = len(lc_sites)
+    counts['lower_confidence_sites_analysed'] = int(lc_sites['in_analyses_with_lower_confidence'].astype(bool).sum())
     counts.update(peptide_start_agreement(rows, typed, reference, root / 'parsed_maron' / 'maron_peptide_coordinates.tsv'))
     context = {'version': version, 'previous': previous, 'files': files, 'counts': counts, 'inputs': inputs, 'root': root,
                'uniprot_release': json.loads((inputs / INPUT['uniprot_release']).read_text()), 'records': records,
                'sites': sites, 'changes': changes, 'studies': studies, 'release_date': args.date, 'previous_sites': prev_sites,
-               'validation': validation(root, check), 'enrichment_tools': enrichment_tools(root),
+               'validation': validation(root, check), 'enrichment_tools': enrichment_tools(aroot),
                'study_examples': study_examples(records, reference)}
     release_docs.write_all(outdir, context)
     print(json.dumps({k: v for k, v in counts.items() if not isinstance(v, dict)}))

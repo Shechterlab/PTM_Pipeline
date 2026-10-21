@@ -422,6 +422,25 @@ CODES: dict[str, dict[str, str]] = {
         'other_protein': 'localised, but its peptide or window names one site, in a protein the record does not name',
         'not_in_reference': 'localised, but its peptide or window is not in the reviewed proteome (an isoform or another sequence)',
     },
+    # The tests every record is put to at a site (scripts/02 record_tests). A site of the release needs a record that
+    # passes all five; a lower-confidence site is an arginine a study reports whose records each fail at least one.
+    'site_test': {
+        'evidence_at_site': "the record's own peptide or window occurs in this entry and covers this arginine, where the study puts the methyl group (for a peptide with several arginines: one of them)",
+        'named_entry': 'the arginine is in a protein the record names: its accession, the current entry of a merged accession, or an entry of its gene (not another protein that alone holds the sequence)',
+        'unique_in_proteome': 'the peptide or window names one site in the reviewed human proteome (UniProt 2026_03, UP000005640): no paralog, repeat or other protein holds it (for a peptide with several arginines: the peptide occurs once)',
+        'methyl_on_arginine': 'the methyl group can only be on an arginine: the record is localised to one, or its peptide holds no lysine (a lysine could carry the methyl group instead), untested when the study gives a window but no peptide',
+        'localised': 'the study localises the methyl group to this arginine (localised_by: a localisation score over its threshold, a peptide whose mass leaves one arrangement, or a curated annotation)',
+    },
+    'test_result': {
+        'pass': 'the record passes the test',
+        'fail': 'the record fails it',
+        'untested': 'the record holds nothing to test it on (methyl_on_arginine: a window but no peptide)',
+        'curated': 'a curated annotation without sequence evidence (UniProt, experimental): the curation stands in for the test',
+    },
+    'tier': {
+        'site': 'a site: one of its records passes every test (site_test)',
+        'lower_confidence': 'a lower-confidence site: an arginine a study reports as methylated, or a site of an earlier release, whose records each fail at least one test, shown on request and never in the counts and tests of the release',
+    },
     'localised_by': {
         'localisation_score': "the study's localisation score passes its threshold (MaxQuant localisation probability >= 0.75, ptmRS >= 75 %, Ascore or ModScore > 13, ModLS > 8, Byonic Delta Mod > 20 with every confident PSM agreeing)",
         'one_methylatable_residue': 'the peptide holds one residue the search could methylate (no other arginine, and no lysine where lysine methylation was searched)',
@@ -566,6 +585,12 @@ RECORD_COLUMNS = [
     ('localised_by', 'code', 'localised_by', 'what localises the methyl group to one residue, empty when nothing does (the record is then not placed)'),
     ('not_localised', 'code', 'not_localised', 'for a record of a study read from its own tables and not localised: why'),
     ('candidate_sites', 'list<string>', '', 'for a record that adds no site (not localised, or localised but not on one site of a protein it names): where its methyl group could be (at most 12; supporting/lower_confidence_evidence)'),
+    ('reported_site', 'string', '', 'the arginine the record reports, on the reference sequences: its accession (or an entry it names), its position and its evidence as the placement reads them, before the tests; empty when it names no arginine of an entry the record names'),
+    ('test_evidence_at_site', 'code', 'test_result', 'site test evidence_at_site, at reported_site'),
+    ('test_named_entry', 'code', 'test_result', 'site test named_entry'),
+    ('test_unique_in_proteome', 'code', 'test_result', 'site test unique_in_proteome'),
+    ('test_methyl_on_arginine', 'code', 'test_result', 'site test methyl_on_arginine'),
+    ('test_localised', 'code', 'test_result', 'site test localised'),
     ('placed_site', 'string', '', 'the site this version places the record on, empty when not placed'),
     ('placement_code', 'code', 'placement', 'how the record was placed (scripts/02 remap_status)'),
     ('evidence_check', 'code', 'evidence_check', "independent check of the placement against the record's own evidence (scripts/qc_remap_evidence_check.py)"),
@@ -591,6 +616,40 @@ LOWER_CONFIDENCE_COLUMNS = [
     ('evidence_kind', 'code', 'evidence_kind', 'the sequence evidence'),
     ('evidence_sequence', 'list<string>', '', 'the peptide (marked) or window'),
 ]
+
+# human_methylarginine_lower_confidence_sites: the arginines a study reports as methylated, or an earlier release had as
+# sites, that no record passes every test for. The site table's columns, then what the tests found.
+LOWER_CONFIDENCE_SITE_EXTRA = [
+    ('in_analyses_with_lower_confidence', 'boolean', '', 'counted in the analyses with lower-confidence sites (statistics_with_lower_confidence): a record covers this arginine with its own evidence (evidence_at_site pass) and leaves the methyl group on an arginine (methyl_on_arginine not fail)'),
+    ('test_evidence_at_site', 'code', 'test_result', 'site test evidence_at_site, for the record that passes most tests'),
+    ('test_named_entry', 'code', 'test_result', 'site test named_entry, same record'),
+    ('test_unique_in_proteome', 'code', 'test_result', 'site test unique_in_proteome, same record'),
+    ('test_methyl_on_arginine', 'code', 'test_result', 'site test methyl_on_arginine, same record'),
+    ('test_localised', 'code', 'test_result', 'site test localised, same record'),
+    ('tests_failed', 'list<code>', 'site_test', 'the tests that record fails, in code order'),
+    ('reasons', 'list<code>', 'lower_confidence', 'why its records add no site, in code order'),
+    ('in_earlier_versions', 'list<string>', '', 'the earlier releases that had this site (v1.0.0, v1.1.0)'),
+]
+
+LOWER_CONFIDENCE_SITE_COLUMNS = [c for c in SITE_COLUMNS if c[0] not in ('interaction_status', 'interaction_evidence', 'in_previous_version',
+                                                                         'change_since_previous_version', 'change_reasons')] \
+    + LOWER_CONFIDENCE_SITE_EXTRA
+# The site table of the view with lower-confidence sites (the website's, when it shows them): both tiers.
+VIEW_SITE_COLUMNS = SITE_COLUMNS + [('tier', 'code', 'tier', 'site or lower-confidence site')] + LOWER_CONFIDENCE_SITE_EXTRA
+
+# supporting/published_sites: every site of the earlier releases, and what it is now.
+PUBLISHED_SITE_COLUMNS = [
+    ('version', 'string', '', 'the release that had the site'),
+    ('published_site_id', 'string', '', 'the site as that release gave it'),
+    ('site_ids', 'list<string>', '', 'the same arginine in this release\'s numbering (several when its records now point at several), empty when none'),
+    ('status', 'code', 'published_status', 'what it is in this release'),
+    ('tests_failed', 'list<code>', 'site_test', 'for a lower-confidence site, the tests its best record fails'),
+]
+CODES['published_status'] = {
+    'site': 'a site of this release',
+    'lower_confidence': 'a lower-confidence site of this release (human_methylarginine_lower_confidence_sites)',
+    'not_in_reference': 'the accession is not a reviewed entry of the reference (an unreviewed or retired entry), or the position is not an arginine of it, and its records now name no arginine of the reference',
+}
 
 CHANGE_COLUMNS = [
     ('site_id', 'string', '', 'the site: in this version\'s numbering when the site is in this version'),

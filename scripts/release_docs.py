@@ -189,11 +189,14 @@ def write_release_json(outdir: Path, ctx: dict, files: dict) -> None:
 # What one row of each release file is, in the order the README lists them.
 FILE_ROWS = {
     'proteins': 'protein: names, site counts, functional classes, arginine enrichment, site density and clusters, condensates, locations, disease families, other PTMs, interactions',
+    'lower_confidence_sites': 'lower-confidence site: an arginine a study reports as methylated, or an earlier release had as a site, whose records each fail a site test, with the results of the tests',
     'studies': 'study or database: citation, DOI, terms, counts',
     'statistics': 'enrichment test behind the summaries: classes, motifs, disorder, domains, disease families, condensates, locations, interactions',
+    'statistics_with_lower_confidence': 'the same tests, run again with the lower-confidence sites whose own evidence covers the arginine and leaves the methyl group on an arginine',
     'records': 'source record: what the study reported, its evidence, where each version placed it',
     'lower_confidence': 'source record that adds no site (not localised, or not on one site of a protein it names), with where its methyl group could be',
     'changes': 'site of either version: kept, removed or added, and why',
+    'published_sites': 'site of v1.0.0 or v1.1.0: what it is in this release (a site, a lower-confidence site, or not on the reference)',
     'maron_detection': 'site detected in Maron et al. 2021 Table S2 or S3 (per antibody)',
     'maron_inhibitors': 'site, antibody and PRMT inhibitor in Maron et al. 2021 Table S3',
     'carm1_ko': 'site and cell line in the CARM1 knockout data of Shishkova et al. 2017',
@@ -610,6 +613,43 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
             "`supporting/source_records` (`superseded_by_study_table`, or `unresolved_not_localised` for ProMetheusDB).",
             '',
         ]
+        # ---- Lower-confidence sites: the arginines reported or published that no record passes every test for
+        lc_sites = files['lower_confidence_sites'][1] if 'lower_confidence_sites' in files else None
+        published = files['published_sites'][1] if 'published_sites' in files else None
+        if lc_sites is not None and len(lc_sites):
+            analysed = int(lc_sites['in_analyses_with_lower_confidence'].astype(str).str.lower().eq('true').sum())
+            failed = lc_sites['tests_failed'].str.split('; ').explode()
+            lines += [
+                '## Lower-confidence sites',
+                '',
+                f"{n(len(lc_sites))} arginines that a study reports as methylated, or that v1.0.0 or v1.1.0 had as sites, are not sites "
+                'of this release: each of their records fails at least one site test. They are kept as lower-confidence sites '
+                f"(`human_methylarginine_lower_confidence_sites_{ctx['version']}.tsv`), with the results of the record that passes most "
+                "tests, and are never in this release's counts and tests. The analyses were run a second time with the "
+                f"{n(analysed)} whose own evidence covers the arginine and leaves the methyl group on an arginine "
+                f"(`statistics_with_lower_confidence_{ctx['version']}.tsv`, `analyses_with_lower_confidence/`). The website shows "
+                'them, hatched, when the reader switches Lower-confidence sites on, and its counts and charts then come from that '
+                'second run.',
+                '',
+                "Every record has passed its study's identification filter (false discovery rate or score) before it is read. It "
+                'is then put to five tests at the arginine its study reports; a site needs a record that passes all five.',
+                '',
+                '| Test | Passes when | Lower-confidence sites whose best record fails it |',
+                '|---|---|---:|',
+            ] + [f"| `{t}` | {rc.CODES['site_test'][t]} | {n(int((failed == t).sum()))} |" for t in rc.CODES['site_test']] + ['']
+            if published is not None and len(published):
+                status = list(rc.CODES['published_status'])
+                tab = pd.crosstab(published['version'], published['status']).reindex(columns=status, fill_value=0)
+                lines += [
+                    'What became of every site of the earlier releases (`supporting/published_sites`):',
+                    '',
+                    '| Release | Sites | ' + ' | '.join(f'`{x}`' for x in status) + ' |',
+                    '|---|---:|' + '---:|' * len(status),
+                ] + [f'| {v} | {n(int(row.sum()))} | ' + ' | '.join(n(int(row[x])) for x in status) + ' |' for v, row in tab.iterrows()] + [
+                    '',
+                    '`' + '`, `'.join(status) + '`: ' + '; '.join(rc.CODES['published_status'][x] for x in status) + '.',
+                    '',
+                ]
         # ---- Lower-confidence evidence: the records that add no site but say where a methyl group could be
         ambiguous = rc.PLACEMENT_SEVERAL | rc.PLACEMENT_OTHER_PROTEIN | {'unresolved_study_not_found'}
         lower = records[(records['placed_site'] == '') & (records['pending_site'] == '')

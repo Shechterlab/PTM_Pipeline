@@ -1,0 +1,854 @@
+uniprot_accession	start	end	partner	partner_name	pdb_entries
+O43660	10	11	Q99459	Cell division cycle 5-like protein	8ro2
+O43660	15	15	Q99459	Cell division cycle 5-like protein	9xtt
+O43660	18	19	Q99459	Cell division cycle 5-like protein	8ro2
+O43660	22	22	Q99459	Cell division cycle 5-like protein	9xtt; 9xu3
+O43660	23	23	Q99459	Cell division cycle 5-like protein	8ro2
+O43660	24	24	Q99459	Cell division cycle 5-like protein	8ro2; 9xtt
+O43660	25	26	Q99459	Cell division cycle 5-like protein	8c6j
+O43660	27	27	Q99459	Cell division cycle 5-like protein	8ro2; 9xtt; 9xu3
+O43660	28	28	Q99459	Cell division cycle 5-like protein	8ro2
+O43660	31	31	Q99459	Cell division cycle 5-like protein	8ro2
+O43660	93	98	Q13573	SNW domain-containing protein 1	9xtt; 9xu3
+O43660	97	108	Q5RL73	RNA-binding protein 48	9xtt; 9xu3
+O43660	102	102	Q96DI7	U5 small nuclear ribonucleoprotein 40 kDa protein	9xtt; 9xu3
+O43660	103	103	Q96DI7	U5 small nuclear ribonucleoprotein 40 kDa protein	9xtt
+O43660	104	104	Q96DI7	U5 small nuclear ribonucleoprotein 40 kDa protein	9xu3
+O43660	105	107	Q96DI7	U5 small nuclear ribonucleoprotein 40 kDa protein	9xtt; 9xu3
+O43660	109	109	Q96DI7	U5 small nuclear ribonucleoprotein 40 kDa protein	9xtt
+O43660	111	111	Q96DI7	U5 small nuclear ribonucleoprotein 40 kDa protein	9xu3
+O43660	112	112	Q96DI7	U5 small nuclear ribonucleoprotein 40 kDa protein	9xtt
+O43660	116	116	Q13573	SNW domain-containing protein 1	9xtt; 9xu3
+O43660	116	116	Q5RL73	RNA-binding protein 48	9xtt; 9xu3
+O43660	118	118	Q13573	SNW domain-containing protein 1	9xtt; 9xu3
+O43660	184	184	Q13573	SNW domain-containing protein 1	8i0p; 9xu3
+O43660	185	185	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6icz; 6id1; 7w5a; 7w5b; 8i0r
+O43660	186	186	Q13573	SNW domain-containing protein 1	6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 9xu3
+O43660	190	191	O43660	Pleiotropic regulator 1	4yvd
+O43660	195	195	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	8c6j
+O43660	196	196	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	197	198	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	197	197	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	198	198	Q9P013	Spliceosome-associated protein CWC15 homolog	6id0; 6id1; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8ro2; 9xtt
+O43660	199	199	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	200	200	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0r; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	201	202	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	201	201	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0r; 8i0w; 8ro2; 9xu3
+O43660	202	202	Q9P013	Spliceosome-associated protein CWC15 homolog	5mqf
+O43660	203	203	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6qdv; 6zym; 7dvq; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0w; 9xtt; 9xu3
+O43660	204	204	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8ro2; 9xtt; 9xu3
+O43660	204	204	Q9P013	Spliceosome-associated protein CWC15 homolog	6qdv; 9xtt
+O43660	205	205	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5z56; 5z57; 5z58
+O43660	206	206	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	213	213	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	6qdv
+O43660	213	213	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w5a; 7w5b; 8c6j; 8ch6; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	214	214	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	215	215	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	216	217	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	218	218	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	225	225	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	8ch6
+O43660	226	226	Q13356	RING-type E3 ubiquitin-protein ligase PPIL2	7dvq
+O43660	226	226	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	6zym; 7dvq; 9xu3
+O43660	229	229	Q13356	RING-type E3 ubiquitin-protein ligase PPIL2	7dvq
+O43660	230	230	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6qdv; 7w59; 7w5a; 7w5b; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	231	231	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	232	232	Q9P013	Spliceosome-associated protein CWC15 homolog	6id0; 6id1; 9xtt
+O43660	233	233	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6icz; 6id0; 6id1; 6qdv; 6zym; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0w; 9xu3
+O43660	234	234	Q9P013	Spliceosome-associated protein CWC15 homolog	5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	235	235	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	235	235	Q9P013	Spliceosome-associated protein CWC15 homolog	5mqf; 6ff4; 6icz; 6id0; 6id1; 6qdv; 7w59; 7w5a; 7w5b; 8c6j; 8i0u; 8i0v; 9xtt; 9xu3
+O43660	236	236	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 8c6j; 8ch6; 8i0p; 8i0r; 8ro2
+O43660	237	237	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6qdv; 7dvq; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0s; 8i0t; 8ro2; 9xtt; 9xu3
+O43660	237	237	Q9P013	Spliceosome-associated protein CWC15 homolog	6id0; 6id1; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w
+O43660	238	239	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	240	240	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	241	241	Q13356	RING-type E3 ubiquitin-protein ligase PPIL2	7dvq
+O43660	241	241	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	242	242	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	6icz; 6qdv; 8c6j; 8ch6; 8i0u; 8i0v; 9xu3
+O43660	243	246	Q13356	RING-type E3 ubiquitin-protein ligase PPIL2	7dvq
+O43660	243	243	RNA	RNA	5mqf; 6ff4; 6id1; 6qdv; 6zym; 8i0u; 8i0v
+O43660	244	244	RNA	RNA	5mqf; 6ff4; 6id0; 6id1; 6qdv; 7qtt; 8c6j; 8ro2; 9xtt
+O43660	246	246	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 9xtt; 9xu3
+O43660	247	247	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 8ch6
+O43660	254	254	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6icz; 6id0; 6id1; 6qdv; 6zym; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8ro2; 9xtt; 9xu3
+O43660	255	255	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	256	258	Q9P013	Spliceosome-associated protein CWC15 homolog	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	259	259	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 5z56; 5z57; 5z58; 6zym; 7dvq; 7w59; 8c6j; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8ro2; 9xtt; 9xu3
+O43660	259	259	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	260	260	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	266	266	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	267	267	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0w; 8ro2; 9xtt
+O43660	268	268	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	269	269	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	6id0; 6id1
+O43660	274	274	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 6ff4; 6icz; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	275	276	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	276	276	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	277	277	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 6icz; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8ro2; 9xtt
+O43660	277	277	RNA	RNA	5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8ro2; 9xtt; 9xu3
+O43660	278	278	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	279	279	RNA	RNA	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	280	280	RNA	RNA	5xjc; 5yzg; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0r; 8i0s; 8i0u; 8i0v; 8ro2; 9xtt; 9xu3
+O43660	281	282	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	281	281	RNA	RNA	5z56; 5z57; 6qdv; 8c6j; 8ch6
+O43660	283	283	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 6icz; 6id0; 6id1; 7w59; 7w5a; 7w5b; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w
+O43660	283	283	RNA	RNA	5xjc; 5yzg; 5z56; 5z57; 5z58; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	285	285	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	285	285	RNA	RNA	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	286	286	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	6id0; 6id1; 6qdv; 8i0r; 8ro2
+O43660	287	287	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	288	288	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id1; 6qdv; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w
+O43660	288	288	Q9NW64	Pre-mRNA-splicing factor RBM22	7qtt; 8ch6
+O43660	288	288	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 6icz; 6qdv; 7w59; 7w5a; 7w5b
+O43660	289	289	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5yzg; 5z56; 5z57; 5z58; 6ff4; 6id0; 6id1; 6zym; 7w59; 7w5a; 7w5b; 8ro2
+O43660	290	290	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	292	292	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 8c6j; 8ch6; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	299	299	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	300	300	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	301	301	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	302	302	Q13573	SNW domain-containing protein 1	6ff4; 6id0; 6id1; 6qdv; 8c6j; 8i0r; 9xtt
+O43660	308	308	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	308	308	Q9P013	Spliceosome-associated protein CWC15 homolog	6icz; 6id0; 6id1; 6qdv; 7w59; 7w5a; 7w5b; 8c6j
+O43660	309	309	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 6icz; 6id0; 6id1; 6qdv; 7w59; 7w5a; 7w5b; 8c6j
+O43660	310	310	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 6id0; 6id1; 6qdv; 7w59; 7w5a; 7w5b; 8c6j
+O43660	311	311	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 6icz; 6id0; 6id1; 6qdv; 7w59; 7w5a; 7w5b; 8c6j
+O43660	313	313	Q9NW64	Pre-mRNA-splicing factor RBM22	7qtt
+O43660	313	313	Q9P013	Spliceosome-associated protein CWC15 homolog	6id0; 6id1; 6qdv; 8c6j
+O43660	316	316	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	317	317	Q9P013	Spliceosome-associated protein CWC15 homolog	6ff4; 6icz; 6qdv; 6zym; 8c6j; 8ch6; 8i0t; 8i0u; 8i0v; 9xu3
+O43660	318	318	Q13573	SNW domain-containing protein 1	6qdv
+O43660	318	318	Q9P013	Spliceosome-associated protein CWC15 homolog	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	318	318	RNA	RNA	8i0p
+O43660	319	319	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7w59; 7w5a; 7w5b; 8i0s; 8i0t; 8i0w; 9xtt; 9xu3
+O43660	320	320	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	320	320	RNA	RNA	8i0p; 8i0r
+O43660	321	321	Q13573	SNW domain-containing protein 1	8c6j
+O43660	322	322	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6qdv; 7dvq; 7w59; 7w5a; 7w5b; 8c6j; 8i0s; 8i0t; 8i0u; 8i0v; 9xtt; 9xu3
+O43660	323	323	Other	Other	5z56; 5z57
+O43660	323	323	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 5z58; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	324	324	Q13573	SNW domain-containing protein 1	6qdv; 8ch6
+O43660	325	325	Q9P013	Spliceosome-associated protein CWC15 homolog	6id0; 6id1; 6qdv; 7w59; 7w5a; 7w5b; 8c6j
+O43660	328	328	Q13573	SNW domain-containing protein 1	6qdv; 8c6j
+O43660	329	329	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 6icz; 6id0; 6id1; 6qdv; 7w5a; 7w5b
+O43660	330	330	Q9P013	Spliceosome-associated protein CWC15 homolog	6icz; 6id0; 6id1; 6qdv; 8c6j
+O43660	331	331	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	6id0; 6id1; 6qdv; 8c6j; 8ch6
+O43660	332	332	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 8c6j; 8ch6; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8ro2; 9xtt; 9xu3
+O43660	339	339	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6zym; 8ch6; 8i0r; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	340	340	Q13573	SNW domain-containing protein 1	5mqf; 5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7abf; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 9xtt; 9xu3
+O43660	341	342	Other	Other	5z56; 5z57
+O43660	341	341	Q13573	SNW domain-containing protein 1	5yzg; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 7aav; 7w59; 8c6j; 8ch6; 8i0w
+O43660	342	342	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 7dvq; 7w5a; 7w5b; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v
+O43660	344	344	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	350	350	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8ro2; 9xtt
+O43660	351	351	Q9BZJ0	Crooked neck-like protein 1	6id0; 6id1; 6qdv; 6zym; 7w59; 7w5a; 7w5b; 8i0s; 8i0t; 9xu3
+O43660	352	352	Q9BZJ0	Crooked neck-like protein 1	6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	353	353	Q9BZJ0	Crooked neck-like protein 1	5xjc; 5yzg; 6icz; 6id0; 6id1; 6qdv; 7dvq; 7w59; 7w5a; 7w5b; 8c6j; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	355	355	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6icz; 6id0; 6id1; 6qdv; 7w59; 7w5a; 7w5b; 8c6j; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	359	359	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	360	360	Other	Other	5z56; 5z57
+O43660	360	360	Q13573	SNW domain-containing protein 1	5mqf; 5xjc; 5yzg; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	363	363	Q9NW64	Pre-mRNA-splicing factor RBM22	5xjc; 6icz; 6id0; 7w59; 7w5a; 7w5b; 8ro2
+O43660	364	364	Q13573	SNW domain-containing protein 1	6id0; 6qdv; 6zym; 7w59; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 9xtt; 9xu3
+O43660	365	365	Q13573	SNW domain-containing protein 1	5mqf; 5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt
+O43660	366	366	Q13573	SNW domain-containing protein 1	5xjc; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0u; 8i0v; 8i0w; 9xu3
+O43660	367	367	Q13573	SNW domain-containing protein 1	6ff4; 6zym; 8i0r; 8i0s; 8i0t
+O43660	368	368	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6id1; 6qdv; 7w59; 7w5a; 7w5b; 8c6j; 8i0u; 8i0v; 8i0w
+O43660	369	370	Other	Other	5z56; 5z57
+O43660	369	370	Q13573	SNW domain-containing protein 1	5mqf; 5xjc; 5yzg; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	369	369	Q9BZJ0	Crooked neck-like protein 1	6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7w59; 7w5a; 7w5b; 8c6j; 9xtt; 9xu3
+O43660	371	371	Q13573	SNW domain-containing protein 1	5xjc; 6ff4; 6icz; 6id0; 6id1; 6qdv; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	372	372	Other	Other	5z56; 5z57
+O43660	372	372	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	372	372	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5yzg; 6ff4; 6qdv; 6zym; 8c6j; 8i0w; 9xtt
+O43660	373	373	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	374	374	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7abf; 7dvq; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	376	376	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	380	380	Q13573	SNW domain-containing protein 1	6zym
+O43660	381	381	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 8c6j; 8ch6; 8i0p; 8i0r; 8i0t; 8i0w; 9xtt; 9xu3
+O43660	382	382	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	383	383	Q13573	SNW domain-containing protein 1	5mqf; 5xjc; 5yzg; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0w; 9xu3
+O43660	384	386	Other	Other	5z56; 5z57
+O43660	384	385	Q13573	SNW domain-containing protein 1	5mqf; 5xjc; 5yzg; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	386	386	Q13573	SNW domain-containing protein 1	5z58; 6ff4; 6id0; 6qdv; 6zym; 7qtt; 7w5a; 7w5b; 8c6j; 8i0r; 9xu3
+O43660	392	392	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6qdv; 6zym; 8c6j; 8ch6; 8i0w
+O43660	393	393	Q13573	SNW domain-containing protein 1	5yzg; 9xu3
+O43660	393	393	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	6qdv
+O43660	394	394	Q13573	SNW domain-containing protein 1	5xjc; 6icz; 6id1; 6qdv; 7w59; 7w5a; 7w5b; 8c6j; 9xu3
+O43660	396	396	Q13573	SNW domain-containing protein 1	6qdv
+O43660	399	399	Other	Other	5z56; 5z57
+O43660	399	399	Q13573	SNW domain-containing protein 1	5xjc; 5z58; 6ff4; 6icz; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	400	400	Q13573	SNW domain-containing protein 1	6id0; 6id1; 8ch6
+O43660	402	402	Other	Other	5z56; 5z57
+O43660	402	402	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	403	403	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6ff4; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	404	404	Other	Other	5z56; 5z57
+O43660	404	404	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 5z58; 6icz; 6id1; 6qdv; 6zym; 7qtt; 7w5a; 7w5b; 8c6j; 8ch6; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	405	405	Q13573	SNW domain-containing protein 1	5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	406	406	Other	Other	5z56; 5z57
+O43660	406	406	Q13573	SNW domain-containing protein 1	5mqf; 5xjc; 5yzg; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	407	407	Q13573	SNW domain-containing protein 1	5mqf; 5xjc; 6qdv; 7dvq; 8i0r; 9xtt; 9xu3
+O43660	408	408	Q13573	SNW domain-containing protein 1	6qdv
+O43660	415	415	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	432	432	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	440	440	O43660	Pleiotropic regulator 1	4yvd
+O43660	442	442	Q13573	SNW domain-containing protein 1	5mqf; 5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	443	443	Q13573	SNW domain-containing protein 1	6id0; 6qdv; 7dvq; 8c6j; 8ch6
+O43660	445	447	O43660	Pleiotropic regulator 1	4yvd
+O43660	449	449	O43660	Pleiotropic regulator 1	4yvd
+O43660	453	453	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	454	454	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	455	455	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	455	455	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	456	456	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	456	456	Q9P013	Spliceosome-associated protein CWC15 homolog	5mqf; 5yzg; 5z56; 5z57; 5z58; 6qdv; 6zym; 7w59; 7w5a; 7w5b; 8c6j; 8i0w
+O43660	457	457	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0t; 8i0v; 8i0w; 8ro2
+O43660	457	457	Q9P013	Spliceosome-associated protein CWC15 homolog	5mqf; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	458	458	Q13356	RING-type E3 ubiquitin-protein ligase PPIL2	7dvq; 7qtt; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t
+O43660	458	458	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5mqf; 6icz; 7w59; 7w5a; 7w5b
+O43660	458	458	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7w59; 7w5a; 7w5b; 8c6j; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	459	459	Q13356	RING-type E3 ubiquitin-protein ligase PPIL2	7qtt; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t
+O43660	459	459	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	6qdv; 6zym; 7qtt; 8c6j; 8ch6; 9xtt
+O43660	459	459	Q9P013	Spliceosome-associated protein CWC15 homolog	5mqf; 5z56; 5z57; 5z58
+O43660	460	460	Q13356	RING-type E3 ubiquitin-protein ligase PPIL2	7dvq; 7qtt; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t
+O43660	461	461	Q13356	RING-type E3 ubiquitin-protein ligase PPIL2	8ch6
+O43660	461	461	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7aav; 7abf; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	462	462	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5mqf; 5xjc; 5yzg; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	462	462	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6id0; 6qdv; 8c6j; 8i0w; 8ro2; 9xu3
+O43660	463	463	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6icz; 6id0; 6id1; 6qdv; 7dvq; 7qtt; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	464	464	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	6id0; 6qdv; 7qtt; 7w59; 8ch6; 9xu3
+O43660	466	466	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	6ff4; 6icz; 6qdv; 6zym; 7w59; 7w5a; 7w5b; 9xu3
+O43660	471	471	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	472	472	Q9P013	Spliceosome-associated protein CWC15 homolog	5yzg; 5z56; 5z57; 5z58; 6ff4; 6id0; 6id1; 6qdv; 6zym; 7qtt; 8c6j; 8ch6; 8i0s; 8i0t; 8ro2; 9xtt; 9xu3
+O43660	473	473	Q9P013	Spliceosome-associated protein CWC15 homolog	5mqf; 5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	474	474	Q9P013	Spliceosome-associated protein CWC15 homolog	6ff4; 8ch6; 8i0w; 9xu3
+O43660	475	475	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 9xtt; 9xu3
+O43660	476	476	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	482	482	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	6ff4; 6icz; 6qdv; 6zym; 7w59; 7w5a; 7w5b; 8ch6; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 9xtt
+O43660	482	482	Q9P013	Spliceosome-associated protein CWC15 homolog	5z56; 5z57; 5z58
+O43660	483	483	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 5z56; 5z57; 5z58; 6id1; 6qdv; 7qtt; 8c6j; 8ch6; 8i0w
+O43660	483	483	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8ro2; 9xtt; 9xu3
+O43660	484	484	Q6P2Q9	Pre-mRNA-processing-splicing factor 8	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	484	484	Q9P013	Spliceosome-associated protein CWC15 homolog	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	485	485	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	8ch6
+O43660	487	487	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	5xjc; 5yzg; 5z56; 5z57; 5z58; 6ff4; 6icz; 6id0; 6id1; 6qdv; 6zym; 7dvq; 7qtt; 7w59; 7w5a; 7w5b; 8c6j; 8ch6; 8i0p; 8i0r; 8i0s; 8i0t; 8i0u; 8i0v; 8i0w; 8ro2; 9xtt; 9xu3
+O43660	490	490	Q15029	116 kDa U5 small nuclear ribonucleoprotein component	8c6j; 9xu3
+O43660	490	490	Q9P013	Spliceosome-associated protein CWC15 homolog	6qdv; 8i0u; 8i0v
+O43660	491	491	Q9P013	Spliceosome-associated protein CWC15 homolog	6qdv; 6zym; 8c6j; 8i0s; 8i0t
+P02461	552	556	P02461	Collagen alpha-1(III) chain	2v53
+P02461	563	590	P02461	Collagen alpha-1(III) chain	2v53
+P02461	574	584	P09486	SPARC	2v53
+P02461	922	948	P02461	Collagen alpha-1(III) chain	7xan
+P02461	973	975	P02461	Collagen alpha-1(III) chain	7wwr
+P02461	976	1002	P02461	Collagen alpha-1(III) chain	7wwr; 7wws
+P02461	1158	1158	P02461	Collagen alpha-1(III) chain	4gyx
+P02461	1159	1166	P02461	Collagen alpha-1(III) chain	3dmw; 4gyx
+P02461	1167	1178	P02461	Collagen alpha-1(III) chain	3dmw
+P02461	1179	1197	P02461	Collagen alpha-1(III) chain	3dmw; 4gyx
+P02461	1226	1229	Q15113	Procollagen C-endopeptidase enhancer 1	6fzv; 6fzw
+P02461	1228	1229	P02461	Collagen alpha-1(III) chain	6fzv; 6fzw
+P02461	1231	1231	P02461	Collagen alpha-1(III) chain	6fzv; 6fzw
+P02461	1232	1233	Q15113	Procollagen C-endopeptidase enhancer 1	6fzv; 6fzw
+P02461	1233	1235	P02461	Collagen alpha-1(III) chain	6fzv; 6fzw
+P02461	1235	1237	Q15113	Procollagen C-endopeptidase enhancer 1	6fzv; 6fzw
+P02461	1237	1238	P02461	Collagen alpha-1(III) chain	6fzv; 6fzw
+P02461	1239	1240	Q15113	Procollagen C-endopeptidase enhancer 1	6fzv; 6fzw
+P02461	1241	1242	P02461	Collagen alpha-1(III) chain	6fzv; 6fzw
+P02461	1242	1242	Q15113	Procollagen C-endopeptidase enhancer 1	6fzv; 6fzw
+P02461	1244	1245	P02461	Collagen alpha-1(III) chain	4ak3; 6fzv; 6fzw
+P02461	1244	1244	Q15113	Procollagen C-endopeptidase enhancer 1	6fzv; 6fzw
+P02461	1246	1246	Q15113	Procollagen C-endopeptidase enhancer 1	6fzv; 6fzw
+P02461	1248	1248	P02461	Collagen alpha-1(III) chain	4ak3; 6fzw
+P02461	1249	1249	P02461	Collagen alpha-1(III) chain	4ak3; 6fzv; 6fzw
+P02461	1256	1256	Q15113	Procollagen C-endopeptidase enhancer 1	6fzv; 6fzw
+P02461	1260	1260	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzv; 6fzw
+P02461	1263	1263	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzv; 6fzw
+P02461	1264	1264	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 4ak3; 6fzv; 6fzw
+P02461	1267	1267	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzv; 6fzw
+P02461	1268	1268	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 4ak3; 6fzv; 6fzw
+P02461	1282	1284	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzv; 6fzw
+P02461	1285	1285	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 4ak3; 6fzv; 6fzw
+P02461	1286	1286	P02461	Collagen alpha-1(III) chain	6fzv; 6fzw
+P02461	1287	1288	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzv; 6fzw
+P02461	1345	1345	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzw
+P02461	1346	1347	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzv; 6fzw
+P02461	1348	1348	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 4ak3; 6fzv; 6fzw
+P02461	1349	1349	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzv; 6fzw
+P02461	1351	1351	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzv; 6fzw
+P02461	1352	1352	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 4ak3; 6fzv; 6fzw
+P02461	1355	1356	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzv; 6fzw
+P02461	1359	1359	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzv; 6fzw
+P02461	1360	1360	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 4ak3; 6fzv; 6fzw
+P02461	1361	1361	P02461	Collagen alpha-1(III) chain	4ae2; 4aej
+P02461	1362	1362	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 4ak3; 6fzv; 6fzw
+P02461	1363	1363	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzw
+P02461	1395	1395	P02461	Collagen alpha-1(III) chain	4ae2
+P02461	1396	1396	P02461	Collagen alpha-1(III) chain	4aej
+P02461	1397	1397	P02461	Collagen alpha-1(III) chain	4ae2; 6fzv; 6fzw
+P02461	1407	1407	P02461	Collagen alpha-1(III) chain	4ae2; 6fzv; 6fzw
+P02461	1434	1434	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzv; 6fzw
+P02461	1435	1435	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzw
+P02461	1438	1438	P02461	Collagen alpha-1(III) chain	4ae2
+P02461	1466	1466	P02461	Collagen alpha-1(III) chain	4ae2; 4aej; 6fzv; 6fzw
+Q03468	133	133	Q03468	DNA excision repair protein ERCC-6	4cvo
+Q03468	136	136	Q03468	DNA excision repair protein ERCC-6	4cvo
+Q03468	139	140	Q03468	DNA excision repair protein ERCC-6	4cvo
+Q03468	143	144	Q03468	DNA excision repair protein ERCC-6	4cvo
+Q03468	147	147	Q03468	DNA excision repair protein ERCC-6	4cvo
+Q03468	492	492	Q16531	DNA damage-binding protein 1	9fd2
+Q03468	523	523	Q13216	DNA excision repair protein ERCC-8	9fd2
+Q03468	524	524	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9fd2
+Q03468	525	525	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	526	526	Q13216	DNA excision repair protein ERCC-8	7oop; 7opc; 8b3d; 9fd2
+Q03468	555	555	Q16531	DNA damage-binding protein 1	7oo3; 8b3f; 9er2
+Q03468	557	557	Q9BW61	DET1- and DDB1-associated protein 1	9bz0
+Q03468	564	564	Q16531	DNA damage-binding protein 1	9bz0
+Q03468	574	574	DNA	DNA	7oo3; 7oop; 9bz0; 9fd2
+Q03468	575	575	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	576	576	DNA	DNA	7oop
+Q03468	598	598	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	599	599	DNA	DNA	8b3d; 9er2; 9fd2
+Q03468	607	607	DNA	DNA	9bz0
+Q03468	624	624	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	626	627	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	629	629	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 9bz0; 9er2; 9fd2
+Q03468	630	630	DNA	DNA	7oob; 7oop; 9fd2; 9hwg
+Q03468	650	650	DNA	DNA	7oo3; 7oop; 9er2
+Q03468	652	652	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	653	653	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	654	654	P11414	DNA-directed RNA polymerase II subunit RPB1	7oo3
+Q03468	655	655	A0A8D1DPV6	DNA-directed RNA polymerase subunit	7opc; 8b3d; 8b3f; 9hwg
+Q03468	655	655	P11414	DNA-directed RNA polymerase II subunit RPB1	7oo3; 7oop; 7opd
+Q03468	656	656	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9er2; 9fd2; 9hwg
+Q03468	657	657	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	658	658	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 9bz0; 9er2; 9fd2
+Q03468	660	660	A0A8D1DPV6	DNA-directed RNA polymerase subunit	9hwg
+Q03468	663	663	A0A7M4DUC2	DNA-directed RNA polymerase subunit	9bz0
+Q03468	668	668	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 9fd2
+Q03468	670	670	Q13216	DNA excision repair protein ERCC-8	7oob; 9er2
+Q03468	679	679	DNA	DNA	7oop
+Q03468	680	680	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	683	683	A0A8D1DPV6	DNA-directed RNA polymerase subunit	7opc
+Q03468	683	683	P11414	DNA-directed RNA polymerase II subunit RPB1	7opd
+Q03468	684	684	DNA	DNA	7oo3; 7oop
+Q03468	692	692	Q13216	DNA excision repair protein ERCC-8	7oob
+Q03468	693	693	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	694	694	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9fd2; 9hwg
+Q03468	695	696	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	697	697	Q13216	DNA excision repair protein ERCC-8	7oob; 7oop; 7opc; 7opd; 8b3f; 9bz0; 9fd2
+Q03468	698	698	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	699	699	A0A8D1DPV6	DNA-directed RNA polymerase subunit	8b3d
+Q03468	699	699	Q13216	DNA excision repair protein ERCC-8	7oob; 8b3d; 8b3f; 9bz0; 9er2; 9hwg
+Q03468	700	700	A0A8D1DPV6	DNA-directed RNA polymerase subunit	7oob; 7opc
+Q03468	700	700	P11414	DNA-directed RNA polymerase II subunit RPB1	7oo3; 7oop; 7opd
+Q03468	701	701	A0A8D1DPV6	DNA-directed RNA polymerase subunit	7oob
+Q03468	701	701	P11414	DNA-directed RNA polymerase II subunit RPB1	7oop
+Q03468	702	702	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oop; 9fd2
+Q03468	704	704	A0A8D1DPV6	DNA-directed RNA polymerase subunit	7opc
+Q03468	704	704	P11414	DNA-directed RNA polymerase II subunit RPB1	7opd
+Q03468	706	706	Q13216	DNA excision repair protein ERCC-8	8b3f; 9fd2; 9hwg
+Q03468	707	707	Q13216	DNA excision repair protein ERCC-8	8b3d; 9fd2; 9hwg
+Q03468	713	713	I3LGP4	DNA-directed RNA polymerase subunit beta	9er2
+Q03468	718	718	A0A0B8RVL1	DNA-directed RNA polymerase subunit beta	9hwg
+Q03468	718	718	I3LGP4	DNA-directed RNA polymerase subunit beta	8b3d; 9bz0; 9er2; 9fd2
+Q03468	732	732	Q13216	DNA excision repair protein ERCC-8	9hwg
+Q03468	733	733	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	736	736	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	737	737	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9hwg
+Q03468	741	741	Q13216	DNA excision repair protein ERCC-8	8b3f
+Q03468	761	767	Other	Other	7oo3
+Q03468	781	781	I3LGP4	DNA-directed RNA polymerase subunit beta	7oo3; 7oop
+Q03468	783	783	A0A0B8RVL1	DNA-directed RNA polymerase subunit beta	9hwg
+Q03468	783	783	I3LGP4	DNA-directed RNA polymerase subunit beta	7oo3; 9er2
+Q03468	784	784	I3LGP4	DNA-directed RNA polymerase subunit beta	8b3d; 8b3f; 9er2
+Q03468	786	786	I3LGP4	DNA-directed RNA polymerase subunit beta	7oo3; 7oop
+Q03468	787	787	DNA	DNA	7oop; 7opc; 7opd
+Q03468	787	787	I3LGP4	DNA-directed RNA polymerase subunit beta	8b3d; 9er2; 9fd2
+Q03468	789	789	I3LGP4	DNA-directed RNA polymerase subunit beta	7oop
+Q03468	790	790	I3LGP4	DNA-directed RNA polymerase subunit beta	9bz0
+Q03468	792	792	DNA	DNA	7oop; 7opc; 7opd
+Q03468	792	792	I3LGP4	DNA-directed RNA polymerase subunit beta	9bz0
+Q03468	793	793	DNA	DNA	7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9er2
+Q03468	794	794	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 9er2; 9fd2
+Q03468	795	795	DNA	DNA	7oo3; 7oob; 8b3d; 8b3f; 9bz0; 9er2; 9hwg
+Q03468	796	796	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	797	797	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9er2; 9fd2; 9hwg
+Q03468	799	799	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3f; 9bz0; 9hwg
+Q03468	800	800	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	804	804	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	842	843	Other	Other	7oo3
+Q03468	850	850	Other	Other	7oo3
+Q03468	854	854	Other	Other	7oo3
+Q03468	863	863	DNA	DNA	7oo3; 7oob; 7oop; 8b3d; 8b3f; 9bz0; 9er2; 9hwg
+Q03468	864	864	DNA	DNA	7oo3; 7oob; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9hwg
+Q03468	865	866	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	886	886	DNA	DNA	7oop; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	887	887	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	888	888	DNA	DNA	9hwg
+Q03468	890	890	DNA	DNA	7oob; 7oop
+Q03468	891	891	DNA	DNA	7oob; 7opc; 7opd; 8b3d; 8b3f; 9er2
+Q03468	892	892	DNA	DNA	7oop
+Q03468	894	894	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	913	913	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	915	916	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	917	917	DNA	DNA	7oo3; 7oop; 9bz0; 9fd2
+Q03468	918	918	DNA	DNA	7oop
+Q03468	928	928	Other	Other	7oo3
+Q03468	935	935	DNA	DNA	8b3f; 9hwg
+Q03468	936	937	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	960	961	Other	Other	7oo3
+Q03468	971	971	DNA	DNA	8b3f
+Q03468	973	973	Other	Other	7oo3
+Q03468	975	975	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	979	979	DNA	DNA	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	981	981	Other	Other	7oo3
+Q03468	991	993	Other	Other	7oo3
+Q03468	995	995	Other	Other	7oo3
+Q03468	997	997	I3LGP4	DNA-directed RNA polymerase subunit beta	9fd2
+Q03468	998	998	I3LGP4	DNA-directed RNA polymerase subunit beta	8b3f; 9bz0
+Q03468	999	999	I3LGP4	DNA-directed RNA polymerase subunit beta	8b3f; 9bz0; 9fd2
+Q03468	1000	1000	DNA	DNA	7oob
+Q03468	1001	1001	DNA	DNA	8b3d; 8b3f; 9hwg
+Q03468	1002	1002	DNA	DNA	7oob; 7oop; 7opc; 7opd; 8b3f; 9hwg
+Q03468	1002	1002	I3LGP4	DNA-directed RNA polymerase subunit beta	9bz0
+Q03468	1003	1003	DNA	DNA	8b3f
+Q03468	1004	1004	DNA	DNA	8b3f; 9hwg
+Q03468	1006	1006	I3LGP4	DNA-directed RNA polymerase subunit beta	7oop
+Q03468	1008	1008	I3LGP4	DNA-directed RNA polymerase subunit beta	7oop
+Q03468	1010	1010	Other	Other	7oo3
+Q03468	1016	1016	Other	Other	7oo3
+Q03468	1022	1022	Other	Other	7oo3
+Q03468	1025	1025	Other	Other	7oo3
+Q03468	1329	1329	Q13216	DNA excision repair protein ERCC-8	9bz0
+Q03468	1330	1332	Q13216	DNA excision repair protein ERCC-8	9bz0; 9fd2
+Q03468	1330	1330	Q16531	DNA damage-binding protein 1	9bz0
+Q03468	1334	1334	Q13216	DNA excision repair protein ERCC-8	9bz0; 9fd2
+Q03468	1335	1335	Q13216	DNA excision repair protein ERCC-8	9bz0
+Q03468	1336	1336	Q13216	DNA excision repair protein ERCC-8	9bz0; 9fd2
+Q03468	1383	1386	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	1389	1390	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	1392	1392	Q13216	DNA excision repair protein ERCC-8	7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9er2; 9fd2
+Q03468	1393	1393	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q03468	1394	1394	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9fd2; 9hwg
+Q03468	1396	1397	Q13216	DNA excision repair protein ERCC-8	7oo3; 7oob; 7oop; 7opc; 7opd; 8b3d; 8b3f; 9bz0; 9er2; 9fd2; 9hwg
+Q13698	749	753	Q6ZMT1	SH3 and cysteine-rich domain-containing protein 2	6b27
+Q13698	755	758	Q6ZMT1	SH3 and cysteine-rich domain-containing protein 2	6b27
+Q13698	1522	1537	P0DP23	Calmodulin-1	2vay
+Q13698	1539	1539	P0DP23	Calmodulin-1	2vay
+Q13885	2	2	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	2	2	P50990	T-complex protein 1 subunit theta	7nvn
+Q13885	33	33	P50990	T-complex protein 1 subunit theta	7nvn
+Q13885	44	44	P50990	T-complex protein 1 subunit theta	7nvn
+Q13885	53	55	P50990	T-complex protein 1 subunit theta	7nvn
+Q13885	54	55	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	74	74	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	74	74	P50990	T-complex protein 1 subunit theta	7nvn
+Q13885	77	77	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	94	94	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	99	99	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	100	100	P49368	T-complex protein 1 subunit gamma	7nvn
+Q13885	103	103	P49368	T-complex protein 1 subunit gamma	7nvn
+Q13885	106	106	P49368	T-complex protein 1 subunit gamma	7nvn
+Q13885	118	118	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	121	122	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	124	130	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	157	157	P49368	T-complex protein 1 subunit gamma	7nvn
+Q13885	158	159	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	161	162	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	177	180	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	194	194	P49368	T-complex protein 1 subunit gamma	7nvn
+Q13885	259	261	P49368	T-complex protein 1 subunit gamma	7nvn
+Q13885	260	260	P17987	T-complex protein 1 subunit alpha	7nvn
+Q13885	391	392	P49368	T-complex protein 1 subunit gamma	7nvn
+Q13885	392	392	P17987	T-complex protein 1 subunit alpha	7nvn
+Q13885	394	394	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	396	397	P49368	T-complex protein 1 subunit gamma	7nvn
+Q13885	397	397	P40227	T-complex protein 1 subunit zeta	7nvn
+Q13885	400	400	P49368	T-complex protein 1 subunit gamma	7nvn
+Q13885	404	407	P49368	T-complex protein 1 subunit gamma	7nvn
+Q13885	410	410	P49368	T-complex protein 1 subunit gamma	7nvn
+Q13885	413	413	P17987	T-complex protein 1 subunit alpha	7nvn
+Q13885	416	417	P17987	T-complex protein 1 subunit alpha	7nvn
+Q13885	420	420	P17987	T-complex protein 1 subunit alpha	7nvn
+Q13885	424	425	P17987	T-complex protein 1 subunit alpha	7nvn
+Q13885	439	443	Q8NDL9	Cytosolic carboxypeptidase-like protein 5	8v3o
+Q14050	496	496	P02452	Collagen alpha-1(I) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	496	496	P08123	Collagen alpha-2(I) chain	5ctd; 5cti; 5cva
+Q14050	496	496	P20849	Collagen alpha-1(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	496	496	Q14055	Collagen alpha-2(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	517	518	P02452	Collagen alpha-1(I) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	517	518	P08123	Collagen alpha-2(I) chain	5ctd; 5cti; 5cva
+Q14050	517	518	P20849	Collagen alpha-1(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	517	520	Q14055	Collagen alpha-2(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	519	519	P02452	Collagen alpha-1(I) chain	5cva; 5cvb
+Q14050	519	519	P08123	Collagen alpha-2(I) chain	5ctd; 5cti
+Q14050	520	520	P02452	Collagen alpha-1(I) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	520	520	P08123	Collagen alpha-2(I) chain	5ctd; 5cti; 5cva
+Q14050	520	520	P20849	Collagen alpha-1(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	522	522	P02452	Collagen alpha-1(I) chain	5cva; 5cvb
+Q14050	522	522	P08123	Collagen alpha-2(I) chain	5ctd; 5cti
+Q14050	522	522	Q14055	Collagen alpha-2(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	524	524	P02452	Collagen alpha-1(I) chain	5ctd; 5cti; 5cvb
+Q14050	524	524	P08123	Collagen alpha-2(I) chain	5cva
+Q14050	524	524	P20849	Collagen alpha-1(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	525	525	P02452	Collagen alpha-1(I) chain	5ctd; 5cva; 5cvb
+Q14050	525	526	P08123	Collagen alpha-2(I) chain	5ctd; 5cti
+Q14050	525	525	P20849	Collagen alpha-1(IX) chain	5ctd
+Q14050	525	526	Q14055	Collagen alpha-2(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	526	526	P02452	Collagen alpha-1(I) chain	5cva; 5cvb
+Q14050	528	528	P02452	Collagen alpha-1(I) chain	5ctd; 5cti; 5cvb
+Q14050	528	528	P08123	Collagen alpha-2(I) chain	5cva
+Q14050	528	529	P20849	Collagen alpha-1(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	529	529	P02452	Collagen alpha-1(I) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	529	529	P08123	Collagen alpha-2(I) chain	5ctd; 5cti; 5cva
+Q14050	529	530	Q14055	Collagen alpha-2(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	530	530	P02452	Collagen alpha-1(I) chain	5cva; 5cvb
+Q14050	530	530	P08123	Collagen alpha-2(I) chain	5ctd; 5cti
+Q14050	532	532	P02452	Collagen alpha-1(I) chain	5ctd; 5cti; 5cvb
+Q14050	532	532	P08123	Collagen alpha-2(I) chain	5cva
+Q14050	532	533	P20849	Collagen alpha-1(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	533	533	P02452	Collagen alpha-1(I) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	533	533	P08123	Collagen alpha-2(I) chain	5ctd; 5cti; 5cva
+Q14050	533	534	Q14055	Collagen alpha-2(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	534	534	P02452	Collagen alpha-1(I) chain	5cva; 5cvb
+Q14050	534	534	P08123	Collagen alpha-2(I) chain	5ctd; 5cti
+Q14050	536	536	P02452	Collagen alpha-1(I) chain	5ctd; 5cti; 5cvb
+Q14050	536	536	P08123	Collagen alpha-2(I) chain	5cva
+Q14050	536	537	P20849	Collagen alpha-1(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	537	537	P02452	Collagen alpha-1(I) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	537	537	P08123	Collagen alpha-2(I) chain	5ctd; 5cti; 5cva
+Q14050	537	537	Q14055	Collagen alpha-2(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	540	540	P02452	Collagen alpha-1(I) chain	5ctd; 5cti; 5cvb
+Q14050	540	541	P08123	Collagen alpha-2(I) chain	5cva
+Q14050	540	540	P20849	Collagen alpha-1(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	541	541	P02452	Collagen alpha-1(I) chain	5cvb
+Q14050	541	541	P20849	Collagen alpha-1(IX) chain	5cva; 5cvb
+Q14050	544	544	P02452	Collagen alpha-1(I) chain	5ctd; 5cti; 5cvb
+Q14050	544	546	P08123	Collagen alpha-2(I) chain	5cva
+Q14050	544	544	P20849	Collagen alpha-1(IX) chain	5ctd; 5cti; 5cva; 5cvb
+Q14050	545	545	P02452	Collagen alpha-1(I) chain	5cvb
+Q14050	545	545	P20849	Collagen alpha-1(IX) chain	5cva; 5cvb
+Q14050	546	546	P02452	Collagen alpha-1(I) chain	5ctd; 5cti
+Q14050	546	546	P20849	Collagen alpha-1(IX) chain	5ctd; 5cti; 5cva
+Q14050	548	548	P08123	Collagen alpha-2(I) chain	5ctd; 5cti
+Q14050	548	548	Q14055	Collagen alpha-2(IX) chain	5ctd; 5cti
+Q71U36	1	2	P68371	Tubulin beta-4B chain	7un1
+Q71U36	1	2	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	1	1	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	11	11	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	11	11	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	11	11	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	15	15	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	15	15	Q13509	Tubulin beta-3 chain	22ak; 5jco; 6wsl; 9wd9
+Q71U36	15	15	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	32	33	Q96E40	Sperm acrosome-associated protein 9	7un1
+Q71U36	35	35	Q71U36	Tubulin alpha-1A chain	7un1
+Q71U36	35	35	Q96E40	Sperm acrosome-associated protein 9	7un1
+Q71U36	54	54	Q71U36	Tubulin alpha-1A chain	7un1; 9ox7
+Q71U36	55	56	P68371	Tubulin beta-4B chain	7un1
+Q71U36	55	56	Q71U36	Tubulin alpha-1A chain	5jco; 6wsl; 7un1; 9ox7
+Q71U36	57	59	Q71U36	Tubulin alpha-1A chain	7un1
+Q71U36	60	60	P68371	Tubulin beta-4B chain	7un1
+Q71U36	60	60	Q71U36	Tubulin alpha-1A chain	5jco; 6wsl; 7un1; 9ox7
+Q71U36	60	60	Q96E40	Sperm acrosome-associated protein 9	7un1
+Q71U36	62	62	P68371	Tubulin beta-4B chain	7un1
+Q71U36	62	62	Q71U36	Tubulin alpha-1A chain	5jco; 6wsl; 7un1; 9ox7
+Q71U36	71	73	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	71	71	Q13509	Tubulin beta-3 chain	22aj; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	71	73	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	72	72	Q13509	Tubulin beta-3 chain	22aj; 22ak; 6wsl; 9wd9; 9wda; 9wdb
+Q71U36	73	73	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	74	74	P68371	Tubulin beta-4B chain	7un1
+Q71U36	74	74	Q13509	Tubulin beta-3 chain	9wd7; 9wd9; 9wda; 9wdb
+Q71U36	76	77	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	76	76	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	76	77	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	77	77	Q13509	Tubulin beta-3 chain	22aj; 22ak; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	80	80	P68371	Tubulin beta-4B chain	7un1
+Q71U36	80	82	Q96E40	Sperm acrosome-associated protein 9	7un1
+Q71U36	84	90	P68371	Tubulin beta-4B chain	7un1
+Q71U36	84	84	Q71U36	Tubulin alpha-1A chain	7un1
+Q71U36	84	85	Q96E40	Sperm acrosome-associated protein 9	7un1
+Q71U36	85	85	Q71U36	Tubulin alpha-1A chain	5jco; 6wsl; 7un1; 9ox7
+Q71U36	86	86	Q71U36	Tubulin alpha-1A chain	5jco; 7un1
+Q71U36	87	87	Q71U36	Tubulin alpha-1A chain	6wsl; 7un1; 9ox7
+Q71U36	88	88	Q71U36	Tubulin alpha-1A chain	5jco; 6wsl; 7un1; 9ox7
+Q71U36	89	89	Q71U36	Tubulin alpha-1A chain	6wsl; 7un1; 9ox7
+Q71U36	90	90	Q71U36	Tubulin alpha-1A chain	6wsl; 7un1
+Q71U36	95	95	P68371	Tubulin beta-4B chain	7un1
+Q71U36	95	95	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	96	98	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	96	96	Q13509	Tubulin beta-3 chain	22aj; 22ak; 6wsl; 9wd7; 9wd9; 9wda
+Q71U36	96	98	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	97	97	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wda; 9wdb
+Q71U36	98	98	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	100	101	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	100	101	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	100	101	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	102	102	P68371	Tubulin beta-4B chain	7un1
+Q71U36	102	102	Q13509	Tubulin beta-3 chain	6wsl
+Q71U36	105	105	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	105	105	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	105	105	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	108	108	Q7L8A9	Tubulinyl-Tyr carboxypeptidase 1	6wsl
+Q71U36	112	112	Q7L8A9	Tubulinyl-Tyr carboxypeptidase 1	6wsl
+Q71U36	120	120	Q71U36	Tubulin alpha-1A chain	5jco; 7un1
+Q71U36	121	121	Q71U36	Tubulin alpha-1A chain	7un1
+Q71U36	123	123	P68371	Tubulin beta-4B chain	7un1
+Q71U36	123	123	Q71U36	Tubulin alpha-1A chain	7un1
+Q71U36	124	124	Q71U36	Tubulin alpha-1A chain	7un1; 9ox7
+Q71U36	127	127	Q71U36	Tubulin alpha-1A chain	7un1
+Q71U36	128	128	Q71U36	Tubulin alpha-1A chain	5jco; 6wsl; 7un1; 9ox7
+Q71U36	130	131	P68371	Tubulin beta-4B chain	7un1
+Q71U36	130	130	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	133	133	P68371	Tubulin beta-4B chain	7un1
+Q71U36	155	156	Q7L8A9	Tubulinyl-Tyr carboxypeptidase 1	6wsl
+Q71U36	175	175	P68371	Tubulin beta-4B chain	7un1
+Q71U36	175	175	Q13509	Tubulin beta-3 chain	5jco; 6wsl
+Q71U36	176	182	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	176	176	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wda; 9wdb
+Q71U36	176	182	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	177	179	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	180	180	Q13509	Tubulin beta-3 chain	22aj; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	181	181	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	182	182	Q13509	Tubulin beta-3 chain	6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	183	183	P68371	Tubulin beta-4B chain	7un1
+Q71U36	184	184	Q13509	Tubulin beta-3 chain	9wda
+Q71U36	207	207	P68371	Tubulin beta-4B chain	7un1
+Q71U36	209	209	P68371	Tubulin beta-4B chain	7un1
+Q71U36	210	210	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	210	210	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	210	211	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	213	214	P68371	Tubulin beta-4B chain	7un1
+Q71U36	214	214	Q13509	Tubulin beta-3 chain	5jco; 9wda
+Q71U36	214	214	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	215	215	Q71U36	Tubulin alpha-1A chain	6wsl
+Q71U36	218	218	Q71U36	Tubulin alpha-1A chain	7un1
+Q71U36	219	220	P68371	Tubulin beta-4B chain	7un1
+Q71U36	220	220	Q13509	Tubulin beta-3 chain	22ak; 5jco; 6wsl
+Q71U36	221	224	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	221	224	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	221	224	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	227	227	P68371	Tubulin beta-4B chain	7un1
+Q71U36	242	242	P68371	Tubulin beta-4B chain	7un1
+Q71U36	245	251	P68371	Tubulin beta-4B chain	7un1
+Q71U36	247	249	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	247	248	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	251	251	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	251	251	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	253	254	P68371	Tubulin beta-4B chain	7un1
+Q71U36	253	254	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	253	254	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	256	263	P68371	Tubulin beta-4B chain	7un1
+Q71U36	256	258	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	256	258	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	260	262	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	260	263	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	278	279	Q96E40	Sperm acrosome-associated protein 9	7un1
+Q71U36	279	279	Q71U36	Tubulin alpha-1A chain	6wsl; 7un1
+Q71U36	280	280	P68371	Tubulin beta-4B chain	7un1
+Q71U36	280	280	Q71U36	Tubulin alpha-1A chain	6wsl; 7un1; 9ox7
+Q71U36	281	281	Q71U36	Tubulin alpha-1A chain	7un1
+Q71U36	282	286	P68371	Tubulin beta-4B chain	7un1
+Q71U36	282	285	Q71U36	Tubulin alpha-1A chain	5jco; 6wsl; 7un1; 9ox7
+Q71U36	282	283	Q96E40	Sperm acrosome-associated protein 9	7un1
+Q71U36	290	290	P68371	Tubulin beta-4B chain	7un1
+Q71U36	290	290	Q71U36	Tubulin alpha-1A chain	6wsl; 7un1
+Q71U36	293	293	Q71U36	Tubulin alpha-1A chain	7un1
+Q71U36	297	297	Q71U36	Tubulin alpha-1A chain	5jco; 7un1; 9ox7
+Q71U36	309	310	Q7L8A9	Tubulinyl-Tyr carboxypeptidase 1	6wsl
+Q71U36	313	315	P68371	Tubulin beta-4B chain	7un1
+Q71U36	324	326	P68371	Tubulin beta-4B chain	7un1
+Q71U36	324	326	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	325	326	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	329	329	P68371	Tubulin beta-4B chain	7un1
+Q71U36	329	329	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	329	329	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	332	333	P68371	Tubulin beta-4B chain	7un1
+Q71U36	336	336	P68371	Tubulin beta-4B chain	7un1
+Q71U36	336	336	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	338	338	Q71U36	Tubulin alpha-1A chain	7un1
+Q71U36	345	353	P68371	Tubulin beta-4B chain	7un1
+Q71U36	346	349	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	346	353	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	351	353	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	355	355	P68371	Tubulin beta-4B chain	7un1
+Q71U36	357	357	P68371	Tubulin beta-4B chain	7un1
+Q71U36	364	365	Q96E40	Sperm acrosome-associated protein 9	7un1
+Q71U36	385	386	Q7L8A9	Tubulinyl-Tyr carboxypeptidase 1	6wsl
+Q71U36	389	390	Q7L8A9	Tubulinyl-Tyr carboxypeptidase 1	6wsl
+Q71U36	393	393	Q7L8A9	Tubulinyl-Tyr carboxypeptidase 1	6wsl
+Q71U36	394	394	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	394	394	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	394	394	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	397	398	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	397	397	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wda; 9wdb
+Q71U36	397	398	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	398	398	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	401	404	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	401	401	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	401	404	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	402	402	Q13509	Tubulin beta-3 chain	6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	403	404	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	406	407	P68371	Tubulin beta-4B chain	7un1; 8sh7
+Q71U36	406	407	Q13509	Tubulin beta-3 chain	22aj; 22ak; 5jco; 6wsl; 9wd7; 9wd9; 9wda; 9wdb
+Q71U36	406	407	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	411	411	P68371	Tubulin beta-4B chain	7un1
+Q71U36	414	414	Q7L8A9	Tubulinyl-Tyr carboxypeptidase 1	6wsl
+Q71U36	429	430	Q7L8A9	Tubulinyl-Tyr carboxypeptidase 1	6wsl
+Q71U36	433	433	Q7L8A9	Tubulinyl-Tyr carboxypeptidase 1	6wsl
+Q71U36	434	435	P68371	Tubulin beta-4B chain	7un1
+Q71U36	434	435	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	435	435	Q13509	Tubulin beta-3 chain	5jco
+Q71U36	437	439	P68371	Tubulin beta-4B chain	7un1
+Q71U36	437	437	Q7L8A9	Tubulinyl-Tyr carboxypeptidase 1	6wsl
+Q71U36	437	437	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	439	439	Q9BVA1	Tubulin beta-2B chain	9ox7
+Q71U36	442	449	Other	Other	7c1m
+Q71U36	447	451	Q7L8A9	Tubulinyl-Tyr carboxypeptidase 1	6j8f
+Q71U36	451	451	Other	Other	7c1m
+Q8IV16	69	70	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	92	92	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	94	94	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	95	95	P06858	Lipoprotein lipase	6e7k; 6oau; 6ob0
+Q8IV16	96	96	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	98	98	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	99	99	P06858	Lipoprotein lipase	6e7k; 6oau; 6ob0
+Q8IV16	100	100	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	103	103	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	104	104	P06858	Lipoprotein lipase	6e7k
+Q8IV16	105	105	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	107	107	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	109	109	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	111	112	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	113	113	P06858	Lipoprotein lipase	6ob0
+Q8IV16	117	117	P06858	Lipoprotein lipase	6oau; 6ob0
+Q8IV16	119	119	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	121	122	P06858	Lipoprotein lipase	6e7k; 6oau; 6oaz; 6ob0
+Q8IV16	124	124	P06858	Lipoprotein lipase	6e7k; 6oaz
+Q8IV16	126	126	P06858	Lipoprotein lipase	6oau
+Q8IV16	128	128	P06858	Lipoprotein lipase	6e7k; 6oau; 6ob0
+Q8NHY2	138	138	Q96LR5	Ubiquitin-conjugating enzyme E2 E2	9lul
+Q8NHY2	140	140	Q96LR5	Ubiquitin-conjugating enzyme E2 E2	9lul
+Q8NHY2	152	152	Q8NHY2	E3 ubiquitin-protein ligase COP1	9lul; 9m0y
+Q8NHY2	171	171	Q96LR5	Ubiquitin-conjugating enzyme E2 E2	9lul; 9m0y
+Q8NHY2	185	185	Q8NHY2	E3 ubiquitin-protein ligase COP1	9lul; 9m0y
+Q8NHY2	186	186	Q8NHY2	E3 ubiquitin-protein ligase COP1	9lul
+Q8NHY2	187	187	Q8NHY2	E3 ubiquitin-protein ligase COP1	9lul; 9m0y
+Q8NHY2	223	224	Q8NHY2	E3 ubiquitin-protein ligase COP1	9m0y
+Q8NHY2	226	226	Q8NHY2	E3 ubiquitin-protein ligase COP1	9m0y
+Q8NHY2	229	230	Q8NHY2	E3 ubiquitin-protein ligase COP1	9m0y
+Q8NHY2	231	231	Q8NHY2	E3 ubiquitin-protein ligase COP1	9lul; 9m0y
+Q8NHY2	235	237	Q8NHY2	E3 ubiquitin-protein ligase COP1	9m0y
+Q8NHY2	239	239	Q8NHY2	E3 ubiquitin-protein ligase COP1	9lul
+Q8NHY2	240	240	Q8NHY2	E3 ubiquitin-protein ligase COP1	9m0y
+Q8NHY2	242	242	Q8NHY2	E3 ubiquitin-protein ligase COP1	9lul
+Q8NHY2	243	243	Q8NHY2	E3 ubiquitin-protein ligase COP1	9lul; 9m0y
+Q8NHY2	245	245	Q8NHY2	E3 ubiquitin-protein ligase COP1	9lul
+Q8NHY2	250	251	Q8NHY2	E3 ubiquitin-protein ligase COP1	9m0y
+Q8NHY2	255	255	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	259	268	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	270	272	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	274	276	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	278	279	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	282	282	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	285	286	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	289	289	Q8NHY2	E3 ubiquitin-protein ligase COP1	9m0y; 9w90
+Q8NHY2	290	290	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	292	293	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	296	296	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	299	299	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	348	349	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	351	351	Q8NHY2	E3 ubiquitin-protein ligase COP1	9m0y
+Q8NHY2	352	352	Q8NHY2	E3 ubiquitin-protein ligase COP1	9lul; 9m0y
+Q8NHY2	353	353	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	356	357	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	360	360	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	364	364	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	367	368	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	372	372	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	378	378	Q8NHY2	E3 ubiquitin-protein ligase COP1	9lul
+Q8NHY2	392	393	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	396	397	Q8NHY2	E3 ubiquitin-protein ligase COP1	9w90
+Q8NHY2	415	418	Q7L5Y6	DET1 homolog	9lu1
+Q8NHY2	423	423	Q96RU8	Tribbles homolog 1	5igq
+Q8NHY2	425	425	Q96RU8	Tribbles homolog 1	5igq
+Q8NHY2	441	441	Q96RU8	Tribbles homolog 1	5igq
+Q8NHY2	458	458	Q7L5Y6	DET1 homolog	9lu1
+Q8NHY2	462	462	Q7L5Y6	DET1 homolog	9lu1
+Q8NHY2	462	462	Q96LR5	Ubiquitin-conjugating enzyme E2 E2	9lu1; 9lul
+Q8NHY2	472	472	Q96RU8	Tribbles homolog 1	5igq
+Q8NHY2	491	491	Q96RU8	Tribbles homolog 1	5igq
+Q8NHY2	492	492	Q7L5Y6	DET1 homolog	9lu1; 9m0y
+Q8NHY2	510	510	Q7L5Y6	DET1 homolog	9lu1; 9m0y
+Q8NHY2	511	511	Q7L5Y6	DET1 homolog	9lu1
+Q8NHY2	512	513	Q7L5Y6	DET1 homolog	9lu1; 9lul
+Q8NHY2	517	517	Q96RU8	Tribbles homolog 1	5igq
+Q8NHY2	547	547	Q7L5Y6	DET1 homolog	9lu1; 9lul
+Q8NHY2	548	549	Q7L5Y6	DET1 homolog	9lu1; 9lul; 9m0y
+Q8NHY2	549	549	Q8NHY2	E3 ubiquitin-protein ligase COP1	9lul
+Q8NHY2	550	550	Q7L5Y6	DET1 homolog	9lul
+Q8NHY2	559	559	Q96RU8	Tribbles homolog 1	5igq
+Q8NHY2	576	578	Q96RU8	Tribbles homolog 1	5igq
+Q8NHY2	585	585	Q7L5Y6	DET1 homolog	9lul
+Q8NHY2	601	601	Q96RU8	Tribbles homolog 1	5igq
+Q8NHY2	603	603	Q96RU8	Tribbles homolog 1	5igq
+Q8NHY2	618	618	Q96RU8	Tribbles homolog 1	5igq
+Q8NHY2	643	645	Q96RU8	Tribbles homolog 1	5igq
+Q8NHY2	686	686	Q7L5Y6	DET1 homolog	9lu1
+Q8NHY2	694	694	Q7L5Y6	DET1 homolog	9lu1
+Q96A72	13	15	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	15	19	O15234	Protein CASC3	5xjc; 5yzg
+Q96A72	19	19	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	22	23	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	31	31	Q9Y5S9	RNA-binding protein 8A	5xjc; 5yzg; 6qdv
+Q96A72	36	36	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	38	40	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	42	43	O15234	Protein CASC3	5xjc; 5yzg
+Q96A72	42	46	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	48	48	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	50	50	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	53	55	Q9Y5S9	RNA-binding protein 8A	5xjc; 5yzg; 6qdv
+Q96A72	57	58	Q9Y5S9	RNA-binding protein 8A	5xjc; 5yzg; 6qdv
+Q96A72	61	61	Q9Y5S9	RNA-binding protein 8A	5xjc; 5yzg; 6qdv
+Q96A72	64	65	Q9Y5S9	RNA-binding protein 8A	5xjc; 5yzg; 6qdv
+Q96A72	84	85	O15234	Protein CASC3	5xjc; 5yzg
+Q96A72	85	85	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	105	105	O15234	Protein CASC3	5xjc; 5yzg
+Q96A72	105	105	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	107	109	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	125	125	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	126	126	Q9Y5S9	RNA-binding protein 8A	5xjc; 5yzg; 6qdv
+Q96A72	129	129	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	129	130	Q9Y5S9	RNA-binding protein 8A	5xjc; 5yzg; 6qdv
+Q96A72	132	133	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	133	134	Q9Y5S9	RNA-binding protein 8A	5xjc; 5yzg; 6qdv
+Q96A72	136	136	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q96A72	137	138	Q9Y5S9	RNA-binding protein 8A	5xjc; 5yzg; 6qdv
+Q96A72	141	146	Q9Y5S9	RNA-binding protein 8A	5xjc; 5yzg; 6qdv
+Q96A72	144	148	P38919	Eukaryotic initiation factor 4A-III	5xjc; 5yzg; 6qdv
+Q99697	86	90	DNA	DNA	2lkx
+Q99697	92	92	DNA	DNA	2lkx
+Q99697	109	109	DNA	DNA	2lkx
+Q99697	111	112	DNA	DNA	2lkx
+Q99697	115	115	DNA	DNA	2lkx
+Q99697	131	131	DNA	DNA	2lkx
+Q99697	134	137	DNA	DNA	2lkx
+Q99697	139	139	DNA	DNA	2lkx
+Q99697	141	141	DNA	DNA	2lkx
+Q99697	143	143	DNA	DNA	2lkx
+Q9BWT1	232	232	DNA	DNA	8tlk
+Q9BWT1	234	235	DNA	DNA	8tlk
+Q9BWT1	255	258	DNA	DNA	8tlk
+Q9BWT1	264	264	DNA	DNA	8tlk; 8yv8
+Q9BWT1	264	264	O60814	Histone H2B type 1-K	8yv8
+Q9BWT1	264	264	P04908	Histone H2A type 1-B/E	8yv8
+Q9BWT1	269	269	DNA	DNA	8tlk; 8yv8
+Q9BWT1	273	273	DNA	DNA	8tlk
+Q9BWT1	274	276	DNA	DNA	8tlk; 8yv8
+Q9BWT1	288	288	DNA	DNA	8tlk
+Q9BWT1	290	292	DNA	DNA	8tlk
+Q9BWT1	299	299	DNA	DNA	8tlk
+Q9BWT1	303	303	DNA	DNA	8tlk
+Q9BWT1	304	304	DNA	DNA	8tlk; 8yv8
+Q9BWT1	342	346	DNA	DNA	8yv8
+Q9ULI3	1376	1376	O00522	Krev interaction trapped protein 1	3u7d
+Q9ULI3	1377	1381	O00522	Krev interaction trapped protein 1	3u7d; 4hdq
