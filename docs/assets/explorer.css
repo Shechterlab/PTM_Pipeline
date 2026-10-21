@@ -1396,7 +1396,6 @@ body.slim .hero { border-bottom-width: 3px; }
 .fold-list { gap: 0.7rem; }
 details.fold > summary { padding: 0.95rem 1.35rem; }
 @media (max-width: 640px) {
-  body.slim .hero .brand-links { display: none; }
   .ov-head h2 { font-size: 1.12rem; }
 }
 
@@ -1436,22 +1435,40 @@ details.fold > summary { padding: 0.95rem 1.35rem; }
 .hb-cols { display: grid; padding: 0 0.4rem 0.25rem; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.02em; color: var(--muted); border-bottom: 1px solid var(--line); margin-bottom: 0.2rem; }
 .hb-cols > span { white-space: nowrap; }
 .hb-cols > span:nth-child(2), .hb-cols > span:nth-child(n+4) { text-align: right; }
-/* Narrow windows and phones: the title on its own line, then the lab mark (logo first) and the links on one row,
-   left-aligned under it, instead of the right-hand column wrapping into the middle. */
+/* The site's mark beside the title: the methylarginine glass on the landing page, the plain mark (the favicon) in
+   the one-line header of the other views. */
+.hero h1 .home-link { display: inline-flex; align-items: center; gap: 0.75rem; }
+.site-mark { flex: none; display: block; width: 50px; height: 50px; border-radius: 11px; box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.3); }
+.site-mark.small { display: none; }
+body.slim .site-mark.full { display: none; }
+body.slim .site-mark.small { display: block; width: 26px; height: 26px; border-radius: 6px; }
+body.slim .hero h1 .home-link { gap: 0.55rem; }
+body.slim .hero .brand-mark img { order: 0; }
+.menu-btn { display: none; }
+/* Narrow windows and phones: the mark, the title and a menu button; the lab and the links open from the button. */
 @media (max-width: 1080px) {
-  .brand { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-  .brand-side { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 1.25rem; justify-items: start; }
-  .brand-mark { text-align: left; }
-  .brand-mark img { order: 0; }
-  .brand-links { justify-content: flex-start; }
-  body.slim .hero .brand { flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .hero { overflow: visible; }
+  body.menu-open .hero { z-index: 40; }
+  .hero .brand, body.slim .hero .brand { flex-wrap: nowrap; align-items: center; justify-content: space-between; position: relative; }
+  .menu-btn { display: inline-grid; place-items: center; flex: none; width: 2.6rem; height: 2.6rem; padding: 0; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 0.6rem; background: rgba(255, 255, 255, 0.08); color: #fff; cursor: pointer; }
+  .menu-btn:hover, .menu-btn[aria-expanded="true"] { background: rgba(255, 255, 255, 0.18); }
+  .menu-btn svg { width: 20px; height: 20px; }
+  body.slim .menu-btn { width: 2.2rem; height: 2.2rem; }
+  .hero .brand-side, body.slim .hero .brand-side { display: none; position: absolute; right: 0; top: calc(100% + 0.5rem); z-index: 60; width: min(19rem, calc(100vw - 2rem));
+    padding: 0.9rem 1rem 1rem; gap: 0.75rem; justify-items: stretch; background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: 0.75rem; box-shadow: var(--shadow-hover); }
+  .hero .brand.open .brand-side { display: grid; }
+  .hero .brand-side .brand-mark { color: var(--ink); text-align: left; font-size: 0.92rem; padding-bottom: 0.7rem; border-bottom: 1px solid var(--line); }
+  .hero .brand-side .brand-mark img { order: 0; width: 30px; height: 30px; padding: 3px; border-radius: 7px; box-shadow: 0 0 0 1px var(--line); }
+  .hero .brand-side .brand-mark small, body.slim .hero .brand-side .brand-mark small { display: block; color: var(--muted); opacity: 1; }
+  .hero .brand-side .brand-links, body.slim .hero .brand-side .brand-links { display: grid; gap: 0.15rem; justify-content: stretch; font-size: 0.92rem; }
+  .hero .brand-side .brand-links a { display: block; padding: 0.4rem 0.5rem; border-radius: 0.45rem; color: var(--ink-2); text-decoration: none; }
+  .hero .brand-side .brand-links a:hover, .hero .brand-side .brand-links a:focus-visible { background: var(--teal-wash); color: var(--brand-ink); }
+  .hero h1 { min-width: 0; }
 }
 @media (max-width: 560px) {
-  .brand-mark small { display: none; }
-  .brand-mark img { width: 24px; height: 24px; padding: 2px; border-radius: 6px; }
-  .brand-side { gap: 0.35rem 0.9rem; }
-  .brand-links { gap: 0.3rem 0.8rem; }
-  body.slim .hero .brand-links { display: none; }
+  .site-mark { width: 40px; height: 40px; border-radius: 9px; }
+  .hero h1 .home-link { gap: 0.6rem; }
+  body.slim .hero h1 { font-size: 1.08rem; }
   /* The search bar: a shorter field, the Try chips on one line that scrolls, and no "All data" label in the tabs,
      so the sticky bar takes less of the screen. */
   .toolbar .wrap { gap: 0.35rem; padding-block: 0.45rem 0; }

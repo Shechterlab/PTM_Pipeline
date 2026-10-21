@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!--
+    The same methylarginine mark inside a magnifying glass, for a search
+    site's header or app icon. Busier than methylarginine-icon.svg, so use
+    that one for the 16px favicon and this where there is room.
+  -->
+  <rect width="32" height="32" rx="7" fill="#155e75"/>
+  <circle cx="14" cy="14" r="8" fill="none" stroke="#f8fafc" stroke-width="3"/>
+  <path d="M20.2,20.2 L27,27" stroke="#f97316" stroke-width="4.4" stroke-linecap="round"/>
+  <g stroke="#f8fafc" stroke-width="1.8" stroke-linecap="round" fill="none">
+    <path d="M14,18.4 L14,13.6"/>
+    <path d="M14,13.6 L10,11.3"/>
+    <path d="M14,13.6 L18,11.3"/>
+  </g>
+  <circle cx="10" cy="11.3" r="2.3" fill="#f97316"/>
+  <circle cx="18" cy="11.3" r="2.3" fill="#f97316"/>
+</svg>

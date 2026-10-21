@@ -2135,6 +2135,15 @@
     window.addEventListener('hashchange', route);
     const home = $('.home-link');
     if (home) home.addEventListener('click', (e) => { e.preventDefault(); go('overview'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    // Narrow windows: the lab and the links open from the menu button, and close on a link, outside or Escape.
+    const menuBtn = $('#menu-btn'), brand = menuBtn && menuBtn.closest('.brand');
+    if (menuBtn) {
+      const setMenu = (open) => { brand.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', String(open)); document.body.classList.toggle('menu-open', open); };
+      menuBtn.addEventListener('click', (e) => { e.stopPropagation(); setMenu(!brand.classList.contains('open')); });
+      document.addEventListener('click', (e) => { if (brand.classList.contains('open') && (!e.target.closest('.brand-side') || e.target.closest('a'))) setMenu(false); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && brand.classList.contains('open')) { setMenu(false); menuBtn.focus(); } });
+      window.addEventListener('resize', debounce(() => { if (getComputedStyle(menuBtn).display === 'none') setMenu(false); }, 150));
+    }
     // Figures carry the palette they were drawn with: redraw the view when the theme changes.
     $$('[data-theme-set]').forEach((b) => b.addEventListener('click', () => { setTheme(b.dataset.themeSet); renderView(); }));
     if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (!document.documentElement.hasAttribute('data-theme')) { applyTokens(); renderView(); } });
