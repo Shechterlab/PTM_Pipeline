@@ -2622,7 +2622,7 @@
     }).join('') + '</div>' +
       '<div class="hb-axis' + cls + '" aria-hidden="true"><span></span>' + (spec.extraCol ? '<span></span>' : '') + '<span class="ticks">' + sc.ticks.map((t) => '<span style="left:' + sc.xp(t).toFixed(2) + '%">' + tfmt(t) + '</span>').join('') + '</span><span></span>' + (spec.sel ? '<span></span>' : '') + '</div>' +
       (spec.treeNote && rows.some((r) => r.sub) ? '<p class="chart-tree-note">' + spec.treeNote + '</p>' : '') +
-      '<div class="chart-key">' + (spec.noSig ? '' : spec.compact ? '<span><i></i>Enriched</span><span><i class="neg"></i>Depleted (q ≤ 0.05)</span><span><i class="ns"></i>Not significant</span>' :
+      '<div class="chart-key">' + (spec.noSig ? '' : spec.compact ? '<span><i></i>Enriched (q ≤ 0.05)</span><span><i class="neg"></i>Depleted (q ≤ 0.05)</span><span><i class="ns"></i>Not significant</span>' :
         '<span><i></i>More than expected, q ≤ 0.05</span><span><i class="neg"></i>Less than expected, q ≤ 0.05</span><span><i class="ns"></i>Not significant</span>') + (spec.sel ? selKeyHtml(spec.sel) : '') + '<span>' + esc(spec.axis || 'log2 odds ratio vs background') + '</span></div>';
   }
   // The selection's count in a bar (orange dot, as the Filtered flag), blank where none of it is there.
@@ -2792,14 +2792,14 @@
       const sum = ov.panther_groups.reduce((n, r) => n + total(r), 0), sumMe = ov.panther_groups.reduce((n, r) => n + r[1], 0);
       const unc = ov.panther_groups.find((r) => r[0] === pm.unclassified);
       return {
-        id: 'ch-pan', title: 'Protein classes', subHtml: 'PANTHER protein classes ranked by enrichment among methylated proteins, grouped; every reviewed human protein is in one row.' + docLink('ov-ontology'),
+        id: 'ch-pan', title: 'Protein classes', subHtml: 'Methylated proteins vs the reviewed human proteome, by PANTHER protein class (grouped); every protein is in one row.' + docLink('ov-ontology'),
         subText: 'PANTHER ' + pm.version + ' protein class groups' + (UI.panLevel ? ', classes' + (UI.panLevel > 1 ? ' and subclasses' : '') : '') + ' vs the other reviewed human proteins',
         rows, extraCol: true, extraName: 'methylated_of_proteins', compact: true, format: fmtL1, heads: ['PANTHER group', 'methyl-R/all', '', 'log2 OR'],
         treeNote: 'Shaded, indented rows belong to the row above: the PANTHER classes of a group add up to it; subclasses (shaded further) are parts of their class and overlap, so they do not add up.',
         footHtml: '<p class="note">The groups add up to the reviewed proteome: ' + fmt(sumMe) + ' methylated of ' + fmt(sum) + ' proteins' +
           (unc ? ', ' + fmt(total(unc)) + ' of which PANTHER gives no class' : '') + '. Subclasses overlap (a protein is in each class above its own).</p>' +
-          '<div class="pan-more"><button class="linkish" type="button" data-pan="' + (UI.panLevel ? 0 : 1) + '">' + (UI.panLevel ? 'Show the groups only' : 'Show the ' + nClass + ' PANTHER classes') + '</button>' +
-          (UI.panLevel ? ' · <button class="linkish" type="button" data-pan="' + (UI.panLevel > 1 ? 1 : 2) + '">' + (UI.panLevel > 1 ? 'Hide the subclasses' : 'Show the ' + nSub + ' subclasses') + '</button>' : '') + '</div>',
+          '<div class="chart-links"><button class="linkish" type="button" data-pan="' + (UI.panLevel ? 0 : 1) + '">' + (UI.panLevel ? 'Show the groups only' : 'Show the ' + nClass + ' PANTHER classes') + '</button>' +
+          (UI.panLevel ? '<button class="linkish" type="button" data-pan="' + (UI.panLevel > 1 ? 1 : 2) + '">' + (UI.panLevel > 1 ? 'Hide the subclasses' : 'Show the ' + nSub + ' subclasses') + '</button>' : '') + '</div>',
       };
     })() : null;
     // Functional ontology: broad classes, each optionally expanded into its subclasses.
@@ -2820,7 +2820,7 @@
       footHtml: '<button class="linkish" type="button" id="func-more" style="margin-top:.5rem">' + (UI.funcExpanded ? 'Hide subclasses' : 'Show ' + subs.length + ' subclasses') + '</button>',
     };
     const dis = {
-      id: 'ch-dis', title: 'Disease families', subHtml: 'Disease gene sets enriched among methylated proteins. Association, not causation.' + docLink('ov-disease'),
+      id: 'ch-dis', title: 'Disease families', subHtml: 'Methylated proteins vs the reviewed human proteome, by DisGeNET disease family. Association, not causation.' + docLink('ov-disease'),
       subText: (UI.disMore ? 'Audited and additional' : 'Audited') + ' DisGeNET disease families vs the reviewed background', axis: 'log2 odds ratio vs reviewed background', extraCol: true, extraName: 'methylarginine_proteins_of_family',
       tsvCols: [['methylated_proteins_in_enriched_terms', (r) => r.inTerms]], compact: true, format: fmtL1, heads: ['Family', 'methyl-R/all', '', 'log2 OR'],
       rows: ov.disease_families.filter((r) => UI.disMore || famAudited(M.disease_families.indexOf(r[0]))).map((r) => {
@@ -2831,9 +2831,9 @@
           title: '<b>' + esc(r[0]) + '</b><br>' + fmt(r[1]) + ' of the ' + fmt(r[2]) + ' proteins in the family\'s gene set contain a methylarginine (counted by gene), OR ' + (r[3] || 0).toFixed(2) + ', BH-adjusted p ' + fmtP(r[4]) +
             '<br>' + (inTerms ? 'Click: the ' + fmt(inTerms) + ' methylated proteins in this family\'s enriched DisGeNET terms (' + dgnTested() + ')' : 'No term of this family is enriched on its own (' + dgnTested() + '). Click: the ' + fmt(P.filter(fk >= 0 ? familyMember(fk) : () => false).length) + ' methylated proteins of its full gene set') };
       }).sort((a, b) => (b.audited - a.audited) || b.value - a.value).map((r, k, all) => (!r.audited && (k === 0 || all[k - 1].audited) ? Object.assign(r, { head: 'Additional families (rule-based, not audited; tested apart)' }) : r)),
-      footHtml: (M.disease_family_audited && M.disease_families.length > nAudited() ? '<button class="linkish" type="button" id="dis-fams" style="margin-top:.5rem">' +
-        (UI.disMore ? 'Show the ' + nAudited() + ' audited families only' : 'Show ' + (M.disease_families.length - nAudited()) + ' more families (rule-based, not audited)') + '</button> · ' : '') +
-        '<button class="linkish" type="button" id="dis-more" style="margin-top:.5rem">' + (UI.disTerms ? 'Hide the enriched terms' : 'Show every enriched DisGeNET term') + '</button>' +
+      footHtml: '<div class="chart-links">' + (M.disease_family_audited && M.disease_families.length > nAudited() ? '<button class="linkish" type="button" id="dis-fams">' +
+        (UI.disMore ? 'Show the ' + nAudited() + ' audited families only' : 'Show ' + (M.disease_families.length - nAudited()) + ' more families (rule-based, not audited)') + '</button>' : '') +
+        '<button class="linkish" type="button" id="dis-more">' + (UI.disTerms ? 'Hide the enriched terms' : 'Show every enriched DisGeNET term') + '</button></div>' +
         (UI.disTerms ? disTermsHtml() : ''),
     };
     // Fixed categories keep their logical order (inside to outside); ranked lists say so and sort by value.
@@ -2926,7 +2926,7 @@
       '<div class="ov-grid">' + chartCard(pan || func) + chartCard(dis) + '</div>' +
       '<div class="ov-head"><h2>Explore further</h2></div>' +
       '<div class="fold-list">' +
-      (pan ? foldHtml('ov-func', 'Functional ontology (DeAngelo et al., 2026)', chartCard(func), false, chartSummary(func)) : '') +
+      startsHtml +
       foldHtml('ov-ix', 'Interactions and binding', ixOverviewHtml(), false, ixSum) +
       foldHtml('ov-motif', motif.title, chartCard(motif), false, chartSummary(motif)) +
       foldHtml('ov-cond', cond.title, chartCard(cond), false, chartSummary(cond) + (thr ? ' (CD-CODE confidence ≥ ' + thr + ')' : '')) +
@@ -2942,7 +2942,6 @@
       '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) are reported by two or more' + (selOn ? '; ' + fmt(R.sites.length - repSel[0]) + ' of the ' + fmt(R.sites.length) + ' selected' : '') + '. Databases such as PhosphoSitePlus compile published studies, so two sources can rest on the same measurement. Click a row to keep sites with at least that many.</p></div></div></div>', false,
         fmt(M.n_sites) + ' sites from ' + M.studyOrder.length + ' studies or databases; ' + fmt(multi) + ' (' + pct(multi, M.n_sites) + '%) reported by two or more') +
       foldHtml('ov-treat', 'PRMT inhibitor and knockout response', '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor and knockout response</h3><p class="sub">Sites that change when PRMT5 or type I PRMTs are inhibited (Maron et al. 2021)' + (koMeta() ? ' or CARM1 is knocked out (Shishkova et al. 2017)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable() + '</div>', false, treatSummary()) +
-      startsHtml +
       '</div>';
     bindDocLinks(el);
     bindProfile(el);
@@ -2982,9 +2981,12 @@
       bindBars($('#ch-pan', el), pan.rows, (r) => pickTerm('panther', termSlug('panther', r.key), 'proteins'));
       $$('#ch-pan [data-pan]', el).forEach((b) => b.addEventListener('click', () => { UI.panLevel = +b.dataset.pan; renderDash(el, page); }));
     }
-    bindBars($('#ch-func', el), func.rows, (r) => (r.kind === 'sub' ? pickTerm('subclass', termSlug('subclass', M.func_subclasses.indexOf(r.key)), 'proteins')
-      : pickTerm('class', termSlug('class', M.func_classes.indexOf(r.key)), 'proteins')));
-    $('#func-more', el).addEventListener('click', () => { UI.funcExpanded = !UI.funcExpanded; renderDash(el, page); });
+    // The functional ontology chart is on the overview only when there are no PANTHER classes to show instead.
+    if (!pan) {
+      bindBars($('#ch-func', el), func.rows, (r) => (r.kind === 'sub' ? pickTerm('subclass', termSlug('subclass', M.func_subclasses.indexOf(r.key)), 'proteins')
+        : pickTerm('class', termSlug('class', M.func_classes.indexOf(r.key)), 'proteins')));
+      $('#func-more', el).addEventListener('click', () => { UI.funcExpanded = !UI.funcExpanded; renderDash(el, page); });
+    }
     // A family none of whose terms is enriched lists the methylated proteins of its full gene set instead.
     bindBars($('#ch-dis', el), dis.rows, (r) => pickTerm('disease', r.inTerms ? termSlug('disease', r.fk) : M.disease_families[r.fk] === 'ALS / motor neuron / FTD' ? 'als-all' : termSlug('disease', 'all' + r.fk), 'proteins'));
     $$('[data-dterm]', el).forEach((b) => b.addEventListener('click', () => pickTerm('dterm', b.dataset.dterm, 'proteins')));
@@ -4603,7 +4605,7 @@
     // hits a methylarginine. Natural variants are ticks, likewise inked and labelled at a methylarginine.
     const labelAt = (xx, yy, text, right) => {
       const tw = textW(text, 9, pal), flip = xx + 4 + tw > W - 2;
-      if (xx + 4 <= right.v) return;
+      if ((flip ? xx - 4 - tw : xx + 4) <= right.v) return;
       // A halo in the background colour keeps the label legible where it crosses the row's ticks.
       g += '<text x="' + r1(flip ? xx - 4 : xx + 4) + '" y="' + (yy - 5) + '" font-size="9" fill="' + pal.mark + '" stroke="' + pal.bg + '" stroke-width="2.5" paint-order="stroke"' + (flip ? ' text-anchor="end"' : '') + '>' + esc(text) + '</text>';
       right.v = flip ? xx : xx + 4 + tw;
@@ -9727,7 +9729,7 @@
         sub('arg-enrich', 'Arginine enrichment of a protein', '<p>Shown on protein pages and in the Proteins table (script 08). For a protein with <i>a</i> methylarginine sites among <i>n</i> arginines of its canonical sequence, and the proteome-wide rate <i>r</i> (all union sites over all arginines of the canonical human sequences), the value is log2 of (<i>a</i> + 200<i>r</i>) / (<i>n</i> + 200) over <i>r</i>: a beta-binomial shrinkage estimate with a prior worth 200 arginines, which pulls proteins with few arginines toward the proteome rate. The q-value is a two-sided Fisher\'s exact test of the protein\'s methylated and other arginines against those of all other proteins, Benjamini–Hochberg across the methylated proteins. Proteins with fewer than 2 sites or 10 arginines are not tested. The filter <i>Arginines methylated more than the proteome rate</i> keeps proteins with q ≤ 0.05 and a positive estimate.</p>')],
       ['overview', 'Overview charts', '<p>Bars show log2 odds ratios; filled bars have a Benjamini–Hochberg q ≤ 0.05, outlined bars do not. The bars and their statistics always describe the whole dataset; clicking a bar filters the Proteins and Sites views. With a search or filter set, an orange count after each bar gives how many of the selected proteins or sites fall in it, bars the selection does not reach are faded, and the Enriched features card at the top lists what sets the selection apart. Exported charts and their TSV files carry the same counts.</p>' +
         sub('ov-ontology', 'Protein classes', (pantherMeta() ? '<p><b>Protein classes (PANTHER ' + esc(pantherMeta().version) + ').</b> PANTHER gives each protein it classifies one top-level protein class (24 in all), and the overview groups these into ' + pantherMeta().groups.filter((g) => g !== pantherMeta().unclassified).length + ' (config/panther_class_groups.json). With the proteins PANTHER leaves unclassified, the groups partition the ' + fmt(pantherMeta().universe) + ' reviewed human proteins (' + esc(referenceLabel()) + '), so their counts add up to it. Each row compares methylated proteins with the other reviewed proteins (two-sided Fisher test; odds ratio with 0.5 added to each cell; Benjamini-Hochberg q within the groups, the classes or the subclasses). <i>Show the PANTHER classes</i> lists the top-level classes of each group; <i>Show the subclasses</i> lists every class below them with at least 10 proteins. A protein counts in every class above its own, so subclasses overlap. Search <code>panther:</code> for any of them. The release gives each protein\'s group, class, most specific classes and family (scripts/03b).</p>' : '') +
-          '<p><b>Functional ontology (DeAngelo et al., 2026).</b> The keyword classes represented in DeAngelo et al., 2026 (config/functional_ontology.json, scripts/03), assigned from UniProt names, keywords and domains; a protein can belong to several, so these classes overlap and do not add up. Each class is compared between methylated proteins and the other reviewed human proteins (Fisher, BH). "Show subclasses" lists subclasses under the broad class most of their proteins share; a subclass with its parent\'s name is labelled "(subclass)".</p>') +
+          '<p><b>Functional ontology (DeAngelo et al., 2026).</b> The keyword classes represented in DeAngelo et al., 2026 (config/functional_ontology.json, scripts/03), assigned from UniProt names, keywords and domains; a protein can belong to several, so these classes overlap and do not add up. The overview charts the PANTHER classes instead; the keyword classes stay as a filter (<code>class:</code>, <code>subclass:</code>), on protein pages, as an optional column of the Proteins table and in the release statistics (analyses functional_class and functional_subclass). Each class is compared between methylated proteins and the other reviewed human proteins (Fisher, BH).</p>') +
         sub('ov-disease', 'Disease families', '<p>DisGeNET terms (the gene–term mapping shipped with DOSE) are assigned to ' + nAudited() + ' audited families by label rules with a fixed precedence (scripts/34)' + (M.disease_families.length > nAudited() ? ', and the terms none of them takes to ' + (M.disease_families.length - nAudited()) + ' additional families by further rules (scripts/disease_families.py ADDITIONAL_FAMILY_RULES; rule-based and not audited, mostly clinical signs). The chart shows the audited families, ranked by enrichment; “Show more families” adds the others, tested and BH-adjusted apart so that the audited results are those of the paper' : '') + '. Each family\'s gene set is the union of its terms\' genes in the reviewed-human universe, each gene counted once. A bar is that family\'s two-sided Fisher exact test, methylated proteins against the rest of the universe, BH-adjusted across the ' + nAudited() + ' audited families (the additional families among themselves). This is enrichment of disease gene sets among methylated proteins, not causation, and the families overlap heavily (scripts/34 writes the pairwise gene overlaps), so they are not independent findings.</p>' +
           '<p>Clicking a bar (or <code>disease:cancer</code>, <code>disease:als</code> in the search) lists something narrower: the methylated proteins in that family\'s individually enriched terms (DOSE enrichDGN, ' + dgnTested() + '). Terms with more than ' + DGN_TERMS.max + ' genes, usually the broadest disease names, count in their family\'s test but are never tested on their own, so their genes reach the list only through smaller enriched terms. A family none of whose terms is enriched on its own' + (() => { const e = M.disease_families.filter((_, i) => !diseaseTermCount(i)); return e.length ? ' (' + esc(e.join(', ')) + ' in the current data)' : ''; })() + ' is marked “no enriched term”, and a click on it lists the methylated proteins of its full gene set instead (<code>disease:&lt;family&gt;-all</code>). In the term table, a click on a term lists the methylated proteins it names (<code>dterm:</code>). <code>disease:als-all</code> lists every methylated protein in the full audited ALS/MN/FTD gene set. Protein pages name every family whose gene set holds the protein, which is what the family test counts, and how many of its terms are enriched.</p>') +
         sub('ov-motifs', 'Sequence motifs', '<p>Motifs are read from a ±7 window on the canonical sequence and compared between methylated arginines and the other arginines of the same proteins: ' + M.motifs.map((m) => esc(MOTIF_LABEL[m]) + ' (' + esc(MOTIF_HELP[m]) + ')').join('; ') + '.</p>') +
