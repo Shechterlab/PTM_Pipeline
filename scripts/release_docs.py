@@ -739,9 +739,8 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
           'out of every analysis.'] if c['pending'] else []) + ([
         f"- **Paralog windows** ({c['flags'].get('paralog_window', 0)} sites, flag `paralog_window`), accepted in "
         '`config/remap_evidence_allowlist.tsv`.'] if c['flags'].get('paralog_window', 0) else []) + [
-        '- **Sites without a readable localisation** (above): Proteome Discoverer exports with site probabilities for the '
-        'Maron et al. 2021 GluC digests, and for the tryptic runs of Table S2 the two exports read do not hold, would bring '
-        'more of its sites back.',
+        '- **Sites without a readable localisation** (above): mostly sites whose study gives them below its localisation '
+        'threshold, or whose search placed the methyl group differently from one confident spectrum to the next.',
         '',
         '## Tracing a change',
         '',

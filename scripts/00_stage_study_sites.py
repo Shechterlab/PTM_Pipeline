@@ -105,7 +105,8 @@ COLUMNS = ['study_id', 'reported_accession', 'reported_gene', 'reported_position
            'localised_by']
 # How a record localises its methyl group to the one arginine (every staged record does, or it is dropped):
 #   localisation_score          the study's localisation score passes a standard threshold (MaxQuant localisation
-#                               probability >= 0.75, ptmRS >= 75 %, Ascore/ModScore > 13, Geoghegan's ModLS > 8)
+#                               probability >= 0.75, ptmRS >= 75 %, Ascore/ModScore > 13, Geoghegan's ModLS > 8,
+#                               Byonic Delta Mod > 20 for Maron 2021)
 #   one_methylatable_residue    the peptide holds no other residue the search could methylate
 #   every_arginine_dimethylated every arginine of the peptide carries a dimethyl group and the search methylated
 #                               arginines only, so the mass allows no other arrangement
@@ -1120,22 +1121,72 @@ def pd_site_calls(path: Path, stats: Counter) -> dict[str, dict[int, dict[str, f
 
 
 MARON_MIN_PTMRS = 75.0
+# Byonic Delta Mod: the score drop to the next-best match that differs in any way, mark positions included. The Byonic
+# paper calls placements above 10 very likely correct (Bern et al., Curr Protoc Bioinformatics 2012); Protein Metrics'
+# later guidance calls values below about 20 uncertain. In these data, PSMs above 10 of one peptide and set of marks
+# often disagree on where the marks sit, so the threshold is 20, and every PSM above it must agree.
+MARON_MIN_DELTA_MOD = 20.0
+BYONIC_MARK = re.compile(r'([A-Z])(\d+)\((Methyl|Dimethyl)\)')
+
+
+def byonic_site_calls(path: Path, stats: Counter, psms: dict) -> None:
+    """A Proteome Discoverer PSM table of the lab's Byonic searches (GluC and trypsin immunoprecipitations): adds to psms,
+    per unmodified peptide, each high-confidence unambiguous PSM's set of methyl marks (offset, residue, degree) and its
+    Delta Mod score."""
+    with path.open(encoding='utf-8', newline='') as fh:
+        for r in csv.DictReader(fh, delimiter='\t'):
+            marks = frozenset((int(o), aa, DEGREE[k]) for aa, o, k in BYONIC_MARK.findall(r['Modifications']))
+            if not marks:
+                continue
+            stats[f'psm_rows_with_methyl:{path.name}'] += 1
+            if r['Confidence'] != 'High' or r['PSM Ambiguity'] != 'Unambiguous':
+                stats['psms_dropped:not_high_confidence_or_ambiguous'] += 1
+                continue
+            psms[r['Sequence'].upper()].append((marks, float(r['Delta Mod Score'] or 0)))
+
+
+def byonic_consensus(psms: dict, stats: Counter) -> dict[str, dict[int, dict[str, float]]]:
+    """Unmodified peptide -> {offset: {degree: best Delta Mod}} for the arginine marks every PSM above
+    MARON_MIN_DELTA_MOD of that peptide and set of marks (how many of each degree on R and K) places there."""
+    calls = defaultdict(lambda: defaultdict(dict))
+    for peptide, found in psms.items():
+        groups = defaultdict(list)
+        for marks, dm in found:
+            if dm > MARON_MIN_DELTA_MOD:
+                groups[tuple(sorted(Counter((aa, d) for _, aa, d in marks).items()))].append((marks, dm))
+        for group in groups.values():
+            for off, aa, degree in set().union(*(m for m, _ in group)):
+                if aa != 'R':
+                    continue
+                if all((off, aa, degree) in m for m, _ in group):
+                    best = max(dm for m, dm in group)
+                    calls[peptide][off][degree] = max(best, calls[peptide][off].get(degree, 0.0))
+                else:
+                    stats['byonic_marks_dropped:confident_psms_disagree'] += 1
+    return calls
 
 
 def read_maron(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
     """Tables S2 (each methylated residue with a peptide that carries it) and S3 (each peptide with all its methyl
     marks) of the A549 PTMScan data (sequential Rme1, Rme2a and Rme2s immunoprecipitation; Proteome Discoverer 2.4 with
-    Byonic, 1 % FDR), with the lab's Proteome Discoverer peptide-group exports of the same immunoprecipitations ('IP
-    MethylatedPeptide Groups', 'OG IP MethylatedPeptide Groups'; pd_site_calls). The tables give no localisation score
-    and the search methylated lysines as well as arginines (mono- and dimethyl). A mark of the tables is kept where its
-    peptide holds no other arginine or lysine (one_methylatable_residue), or where an export localises a methyl group to
-    that arginine of the same peptide at ptmRS >= 75 % (localisation_score). When the export places the other degree
-    there, the record takes the export's degree and the note says what the table gives. The exports' accessions (NCBI
-    GI numbers in the earlier export) are not used: the tables name the protein. GluC peptides and the runs the exports
-    do not hold are kept only by mass."""
+    Byonic, 1 % FDR), with the lab's search results of the same immunoprecipitations: the Proteome Discoverer
+    peptide-group exports with ptmRS site probabilities ('IP MethylatedPeptide Groups', 'OG IP MethylatedPeptide
+    Groups'; pd_site_calls) and the Byonic PSM tables of the GluC and trypsin searches (PD_Results_Jan2021: GluC_MethylIP,
+    TrypsinMethyl_IP and OddReplicates PSMs; byonic_consensus). The tables give no localisation score and the search
+    methylated lysines as well as arginines (mono- and dimethyl). A mark of the tables is kept where its peptide holds no
+    other arginine or lysine (one_methylatable_residue), or where the search localises a methyl group to that arginine
+    of the same peptide (localisation_score): ptmRS >= 75 %, or Byonic Delta Mod > 20 in every high-confidence PSM above
+    it. When the search places the other degree there, the record takes the search's degree and the note says what the
+    table gives; when it places both degrees, the mark is dropped. The search tables' accessions (NCBI GI numbers in the
+    earlier export) are not used: the tables name the protein."""
     tables = [p for p in paths if p.name.startswith('maron2021_table')]
+    psm_tables = [p for p in paths if p.name.endswith('_PSMs.txt')]
+    psms = defaultdict(list)
+    for path in sorted(psm_tables, key=lambda p: p.name):
+        byonic_site_calls(path, stats, psms)
+    byonic = byonic_consensus(psms, stats)
     calls = {}
-    for path in sorted(set(paths) - set(tables), key=lambda p: p.name):
+    for path in sorted(set(paths) - set(tables) - set(psm_tables), key=lambda p: p.name):
         for peptide, sites in pd_site_calls(path, stats).items():
             for off, degrees in sites.items():
                 for degree, prob in degrees.items():
@@ -1160,19 +1211,26 @@ def read_maron(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
                 for off, degree in marks.items():
                     note, loc, localised = [f'{text(r[H["Protease"]])} peptide'], None, by_mass
                     if not localised:
-                        placed = calls.get(peptide, {}).get(off, {})
+                        ptmrs, delta = calls.get(peptide, {}).get(off, {}), byonic.get(peptide, {}).get(off, {})
+                        placed = set(ptmrs) | set(delta)
                         if not placed:
-                            stats['site_marks_dropped:not_localised_by_mass_or_ptmrs'] += 1
+                            stats['site_marks_dropped:not_localised_by_mass_ptmrs_or_byonic'] += 1
                             continue
                         if degree not in placed:
                             if len(placed) > 1:
-                                stats['site_marks_dropped:ptmrs_places_both_degrees'] += 1
+                                stats['site_marks_dropped:search_places_both_degrees'] += 1
                                 continue
-                            note.append(f'{table} gives {MARK[degree][2:-1]}; the Proteome Discoverer export localises {MARK[next(iter(placed))][2:-1]}')
+                            note.append(f'{table} gives {MARK[degree][2:-1]}; the search localises {MARK[next(iter(placed))][2:-1]}')
                             degree = next(iter(placed))
-                            stats['site_marks_degree_from_ptmrs'] += 1
-                        localised, loc = 'localisation_score', placed[degree] / 100
-                        stats['site_marks_localised_by_ptmrs'] += 1
+                            stats['site_marks_degree_from_search'] += 1
+                        localised = 'localisation_score'
+                        if degree in ptmrs:
+                            loc = ptmrs[degree] / 100
+                            stats['site_marks_localised_by_ptmrs'] += 1
+                        else:
+                            stats['site_marks_localised_by_byonic_only'] += 1
+                        if degree in delta:
+                            note.append(f'Byonic Delta Mod {delta[degree]:g}')
                     out.append(site_row([acc], text(r[H['Gene.Symbol']]), begin + off - 1, degree, 'A549',
                                         'Rme1, Rme2a and Rme2s antibodies (sequential)', table, peptide, off,
                                         note=note, loc=loc, localised=localised))

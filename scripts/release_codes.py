@@ -91,7 +91,7 @@ STUDY_NOTE = {
     'Lu2025': 'HeLa cells, enrichment with the SMN Tudor domain',
     'Ma2023': 'breast cancer patient-derived xenografts grown in mice, ADMA antibody enrichment. A peptide assigned to a human protein can come from the mouse stroma where the two sequences agree',
     'PSP': 'downloaded 22 May 2021 (date from the Shechter lab), as compiled in Maron et al. 2021 Table S5',
-    'Maron2021': "the study's own data: Tables S2 and S3, localised with the lab's Proteome Discoverer exports",
+    'Maron2021': "the study's own data: Tables S2 and S3, localised with the lab's Proteome Discoverer and Byonic search results",
 }
 
 # What a record holds, how the study localised the methyl group and what was kept (scripts/00_stage_study_sites.py),
@@ -125,12 +125,14 @@ STUDY_QUALITY = {
            'record is placed where its window names exactly one arginine in the reviewed proteome, in an entry the record '
            'names.',
     'Maron2021': 'A549 cells treated with GSK591 or MS023, sequential Rme1, Rme2a and Rme2s antibody immunoprecipitation, '
-                 'Byonic in Proteome Discoverer 2.4 with mono- and dimethylation of R and K searched, 1 % FDR. Tables S2 and '
-                 'S3 give no localisation score; the lab\'s Proteome Discoverer peptide-group exports of the same '
-                 'immunoprecipitations do (ptmRS site probability, a residue named only at >= 75 %). A mark of the tables is '
-                 'kept where an export localises a methyl group to that arginine of the same peptide (with the export\'s '
-                 'degree when it differs, noted), or where its peptide holds no other arginine or lysine. GluC peptides and '
-                 'runs the exports do not hold are kept by mass only.',
+                 'Byonic in Proteome Discoverer 2.4 with mono- and dimethylation of R and K searched, 1 % FDR, trypsin and '
+                 'GluC digests. Tables S2 and S3 give no localisation score; the lab\'s search results of the same '
+                 'immunoprecipitations do: Proteome Discoverer peptide groups with ptmRS site probabilities (a residue named '
+                 'only at >= 75 %), and the Byonic PSMs of the GluC and trypsin searches with their Delta Mod score. A mark '
+                 'of the tables is kept where the search localises a methyl group to that arginine of the same peptide '
+                 '(ptmRS >= 75 %, or Delta Mod > 20 in every high-confidence PSM of that peptide and set of marks above it; '
+                 'the search\'s degree when it differs, noted), or where its peptide holds no other arginine or lysine. '
+                 'Marks the confident PSMs disagree on are left out.',
     'Guo2014': 'HCT116 cells, monomethylarginine (Me-R4-100, D5A12) and ADMA antibodies, SEQUEST with a 1 % PSM FDR, mono- '
                'and dimethylation of R and K searched. Read from Tables S2 (peptide-spectrum matches with their ModScore) '
                'and S3 (sites with a 13-residue window): a site is kept where a PSM matching its window localises it at '
@@ -194,7 +196,7 @@ SOURCE_TABLES = {
     'lu2025': ('lu2025', 'Lu et al. 2025 Dataset EV1, staged (scripts/00_stage_study_sites.py)'),
     'ma2023': ('ma2023', 'Ma et al. 2023 Table S1 (PRIDE PXD038203), staged (scripts/00_stage_study_sites.py)'),
     'larsen2016': ('larsen2016', 'Larsen et al. 2016 Table S1, staged (scripts/00_stage_study_sites.py)'),
-    'maron2021': ('maron2021', 'Maron et al. 2021 Tables S2 and S3 with the lab\'s Proteome Discoverer exports, staged (scripts/00_stage_study_sites.py)'),
+    'maron2021': ('maron2021', 'Maron et al. 2021 Tables S2 and S3 with the lab\'s Proteome Discoverer and Byonic search results, staged (scripts/00_stage_study_sites.py)'),
     'guo2014': ('guo2014', 'Guo et al. 2014 supplementary Tables S2 and S3, staged (scripts/00_stage_study_sites.py)'),
     'musiani2019': ('musiani2019', 'Musiani et al. 2019 Tables S1 and S2, staged (scripts/00_stage_study_sites.py)'),
     'fong2019': ('fong2019', 'Fong et al. 2019 supplementary Table S4, staged (scripts/00_stage_study_sites.py)'),
@@ -403,7 +405,7 @@ CODES: dict[str, dict[str, str]] = {
         'unresolved_not_localised': 'not placed: the source gives nothing that localises the methyl group to one residue (no localisation score, and a peptide that leaves several residues it could be on, or no peptide)',
     },
     'localised_by': {
-        'localisation_score': "the study's localisation score passes its threshold (MaxQuant localisation probability >= 0.75, ptmRS >= 75 %, Ascore or ModScore > 13, ModLS > 8)",
+        'localisation_score': "the study's localisation score passes its threshold (MaxQuant localisation probability >= 0.75, ptmRS >= 75 %, Ascore or ModScore > 13, ModLS > 8, Byonic Delta Mod > 20 with every confident PSM agreeing)",
         'one_methylatable_residue': 'the peptide holds one residue the search could methylate (no other arginine, and no lysine where lysine methylation was searched)',
         'every_arginine_dimethylated': 'every residue of the peptide the search could methylate is an arginine and every one is dimethylated, so the mass leaves no other arrangement',
         'curated_experimental': 'UniProt annotates the residue with experimental evidence from the literature (ECO:0000269)',
