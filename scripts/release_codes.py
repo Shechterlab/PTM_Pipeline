@@ -71,7 +71,7 @@ STUDY_LICENCE = {
     'IEDB': 'IEDB query API, terms at www.iedb.org/terms_of_use_v3.php (epitopes the iPTMnet-format master table cites)',
     'Larsen2016': 'AAAS (Sci Signal supplementary Table S1: derived records only, the table is not redistributed)',
     'Musiani2019': 'AAAS (Sci Signal supplementary Tables S1 and S2: derived records only, the tables are not redistributed)',
-    'Maron2021': 'CC BY-NC-ND 4.0 (open-access supplement, Tables S2 and S3)',
+    'Maron2021': 'CC BY-NC-ND 4.0 (open-access supplement, Tables S2 and S3); localisation from the authors\' search results (derived records only, the files are not redistributed)',
     'Guo2014': 'CC BY 4.0 (supplementary Tables S2 and S3)',
     'Fong2019': 'Elsevier user licence (supplementary Table S4: derived records only, the table is not redistributed), PRIDE PXD012007 CC0',
     'Li2021': 'CC BY 4.0 (Supplementary Data 1, 3, 5 and 6)',
@@ -91,7 +91,7 @@ STUDY_NOTE = {
     'Lu2025': 'HeLa cells, enrichment with the SMN Tudor domain',
     'Ma2023': 'breast cancer patient-derived xenografts grown in mice, ADMA antibody enrichment. A peptide assigned to a human protein can come from the mouse stroma where the two sequences agree',
     'PSP': 'downloaded 22 May 2021 (date from the Shechter lab), as compiled in Maron et al. 2021 Table S5',
-    'Maron2021': "the study's own data: Tables S2 and S3, localised with the lab's Proteome Discoverer and Byonic search results",
+    'Maron2021': "the study's own data: Tables S2 and S3, localised with the authors' Proteome Discoverer and Byonic search results",
 }
 
 # What a record holds, how the study localised the methyl group and what was kept (scripts/00_stage_study_sites.py),
@@ -126,7 +126,7 @@ STUDY_QUALITY = {
            'names.',
     'Maron2021': 'A549 cells treated with GSK591 or MS023, sequential Rme1, Rme2a and Rme2s antibody immunoprecipitation, '
                  'Byonic in Proteome Discoverer 2.4 with mono- and dimethylation of R and K searched, 1 % FDR, trypsin and '
-                 'GluC digests. Tables S2 and S3 give no localisation score; the lab\'s search results of the same '
+                 'GluC digests. Tables S2 and S3 give no localisation score; the authors\' search results of the same '
                  'immunoprecipitations do: Proteome Discoverer peptide groups with ptmRS site probabilities (a residue named '
                  'only at >= 75 %), and the Byonic PSMs of the GluC and trypsin searches with their Delta Mod score. A mark '
                  'of the tables is kept where the search localises a methyl group to that arginine of the same peptide '
@@ -196,7 +196,7 @@ SOURCE_TABLES = {
     'lu2025': ('lu2025', 'Lu et al. 2025 Dataset EV1, staged (scripts/00_stage_study_sites.py)'),
     'ma2023': ('ma2023', 'Ma et al. 2023 Table S1 (PRIDE PXD038203), staged (scripts/00_stage_study_sites.py)'),
     'larsen2016': ('larsen2016', 'Larsen et al. 2016 Table S1, staged (scripts/00_stage_study_sites.py)'),
-    'maron2021': ('maron2021', 'Maron et al. 2021 Tables S2 and S3 with the lab\'s Proteome Discoverer and Byonic search results, staged (scripts/00_stage_study_sites.py)'),
+    'maron2021': ('maron2021', 'Maron et al. 2021 Tables S2 and S3 with the authors\' Proteome Discoverer and Byonic search results, staged (scripts/00_stage_study_sites.py)'),
     'guo2014': ('guo2014', 'Guo et al. 2014 supplementary Tables S2 and S3, staged (scripts/00_stage_study_sites.py)'),
     'musiani2019': ('musiani2019', 'Musiani et al. 2019 Tables S1 and S2, staged (scripts/00_stage_study_sites.py)'),
     'fong2019': ('fong2019', 'Fong et al. 2019 supplementary Table S4, staged (scripts/00_stage_study_sites.py)'),

@@ -1092,7 +1092,7 @@ PD_MODS = re.compile(r'\d+x(Methyl|Dimethyl)\s*\[([^\]]*)\]')
 
 
 def pd_site_calls(path: Path, stats: Counter) -> dict[str, dict[int, dict[str, float]]]:
-    """A Proteome Discoverer 2.4 peptide-group export of the lab's immunoprecipitations (Byonic search, ptmRS site
+    """A Proteome Discoverer 2.4 peptide-group export of the study's immunoprecipitations (Byonic search, ptmRS site
     probabilities): unmodified peptide -> {offset: {degree: best site probability}} for every arginine whose methyl
     group PD places. PD names a residue in the Modifications column only at site probability >= 75 ('R8(96)'); a methyl
     group it cannot place reads '[R]', and 'R/K' is a group it cannot tell between an arginine and a lysine."""
@@ -1130,7 +1130,7 @@ BYONIC_MARK = re.compile(r'([A-Z])(\d+)\((Methyl|Dimethyl)\)')
 
 
 def byonic_site_calls(path: Path, stats: Counter, psms: dict) -> None:
-    """A Proteome Discoverer PSM table of the lab's Byonic searches (GluC and trypsin immunoprecipitations): adds to psms,
+    """A Proteome Discoverer PSM table of the study's Byonic searches (GluC and trypsin immunoprecipitations): adds to psms,
     per unmodified peptide, each high-confidence unambiguous PSM's set of methyl marks (offset, residue, degree) and its
     Delta Mod score."""
     with path.open(encoding='utf-8', newline='') as fh:
@@ -1169,10 +1169,10 @@ def byonic_consensus(psms: dict, stats: Counter) -> dict[str, dict[int, dict[str
 def read_maron(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
     """Tables S2 (each methylated residue with a peptide that carries it) and S3 (each peptide with all its methyl
     marks) of the A549 PTMScan data (sequential Rme1, Rme2a and Rme2s immunoprecipitation; Proteome Discoverer 2.4 with
-    Byonic, 1 % FDR), with the lab's search results of the same immunoprecipitations: the Proteome Discoverer
+    Byonic, 1 % FDR), with the authors' search results of the same immunoprecipitations: the Proteome Discoverer
     peptide-group exports with ptmRS site probabilities ('IP MethylatedPeptide Groups', 'OG IP MethylatedPeptide
-    Groups'; pd_site_calls) and the Byonic PSM tables of the GluC and trypsin searches (PD_Results_Jan2021: GluC_MethylIP,
-    TrypsinMethyl_IP and OddReplicates PSMs; byonic_consensus). The tables give no localisation score and the search
+    Groups'; pd_site_calls) and the Byonic PSM tables of the GluC and trypsin searches (GluC_MethylIP, TrypsinMethyl_IP
+    and OddReplicates PSMs; byonic_consensus). The tables give no localisation score and the search
     methylated lysines as well as arginines (mono- and dimethyl). A mark of the tables is kept where its peptide holds no
     other arginine or lysine (one_methylatable_residue), or where the search localises a methyl group to that arginine
     of the same peptide (localisation_score): ptmRS >= 75 %, or Byonic Delta Mod > 20 in every high-confidence PSM above

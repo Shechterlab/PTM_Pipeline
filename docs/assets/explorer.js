@@ -52,7 +52,7 @@
     ProMetheusDB: 'ProMetheusDB methyl-proteome (mmc2), with Rme1/Rme2 calls; a record counts where one of its peptides localises the methyl group by mass',
     human_ptm_master: 'Cross-PTM human master table (UniProt and IEDB rows; from v1.2.0 both are read from their own sources)',
     larsen2016: 'Larsen et al. 2016 (Sci Signal) Table S1: HEK293, localisation probability ≥ 0.75',
-    maron2021: 'Maron et al. 2021 (iScience) Tables S2 and S3: A549, Rme1/Rme2a/Rme2s antibodies, trypsin and GluC; sites the lab\'s search results localise (ptmRS ≥ 75 %, or Byonic Delta Mod > 20 in every confident PSM) or whose peptide localises the methyl group by mass',
+    maron2021: 'Maron et al. 2021 (iScience) Tables S2 and S3: A549, Rme1/Rme2a/Rme2s antibodies, trypsin and GluC; sites the authors\' search results localise (ptmRS ≥ 75 %, or Byonic Delta Mod > 20 in every confident PSM) or whose peptide localises the methyl group by mass',
     guo2014: 'Guo et al. 2014 (Mol Cell Proteomics) Tables S2–S3: HCT116, sites a PSM localises at ModScore > 13',
     musiani2019: 'Musiani et al. 2019 (Sci Signal) Tables S1 and S2: HeLa, GSK591 SILAC and heavy-methyl SILAC, localisation probability ≥ 0.75',
     fong2019: 'Fong et al. 2019 (Cancer Cell) Table S4: NB4, localisation probability ≥ 0.75 and Andromeda score ≥ 25',
@@ -72,7 +72,7 @@
     ProMetheusDB: 'ProMetheusDB methyl-proteome table (mmc2)',
     UniProt: 'UniProt methylarginine annotation with experimental evidence from the literature (ECO:0000269)',
     IEDB: 'Immune Epitope Database epitope with a methylated arginine, localised by its sequence',
-    'Maron 2021': 'A549 cells, Rme1/Rme2a/Rme2s antibodies, trypsin and GluC (Tables S2–S3); sites the lab\'s search results localise (ptmRS ≥ 75 %, or Byonic Delta Mod > 20 in every confident PSM) or whose peptide localises the methyl group by mass',
+    'Maron 2021': 'A549 cells, Rme1/Rme2a/Rme2s antibodies, trypsin and GluC (Tables S2–S3); sites the authors\' search results localise (ptmRS ≥ 75 %, or Byonic Delta Mod > 20 in every confident PSM) or whose peptide localises the methyl group by mass',
     PhosphoSitePlus: 'Curated database (www.phosphosite.org): the sites it listed when downloaded on 22 May 2021, as compiled in Maron et al. 2021 Table S5; trusted as curated and placed from their 15-residue window',
     'Larsen 2016': 'HEK293 cells, monomethylarginine antibodies; Table S1, localisation probability ≥ 0.75',
     'Musiani 2019': 'HeLa cells, GSK591 SILAC and heavy-methyl SILAC; Tables S1 and S2, localisation probability ≥ 0.75',
@@ -104,7 +104,7 @@
   const stagedFile = (m) => (m && m.input_member ? String(typeof m.input_member === 'string' ? m.input_member : Object.values(m.input_member).join('; ')) : '');
   const DATA_SOURCES = [
     ['Site union', [
-      ['Maron et al. 2021, Tables S2, S3 and S5', 'The study\'s own sites (S2–S3, localised with the lab\'s Proteome Discoverer and Byonic search results or by mass), state and PRMT inhibitor response; S5, the compiled list, carries PhosphoSitePlus', 'Supplementary tables', 'CC BY-NC-ND 4.0', 'Maron et al., iScience 24:102971 (2021)', '10.1016/j.isci.2021.102971'],
+      ['Maron et al. 2021, Tables S2, S3 and S5', 'The study\'s own sites (S2–S3, localised with the authors\' Proteome Discoverer and Byonic search results or by mass), state and PRMT inhibitor response; S5, the compiled list, carries PhosphoSitePlus', 'Supplementary tables', 'CC BY-NC-ND 4.0', 'Maron et al., iScience 24:102971 (2021)', '10.1016/j.isci.2021.102971'],
       ['Larsen et al. 2016', 'Monomethylarginine sites from HEK293 cells, localisation probability ≥ 0.75 (derived records only)', 'Supplementary Table S1', 'AAAS (Science Signaling)', 'Larsen et al., Sci Signal 9:rs9 (2016)', '10.1126/scisignal.aaf7329'],
       ['Guo et al. 2014', 'Sites from HCT116 cells that a PSM localises at ModScore > 13', 'Supplementary Tables S2–S3', 'CC BY 4.0', 'Guo et al., Mol Cell Proteomics 13:372 (2014)', '10.1074/mcp.O113.027870'],
       ['Musiani et al. 2019', 'Sites from HeLa cells (GSK591 SILAC, heavy-methyl SILAC validation), localisation probability ≥ 0.75 (derived records only)', 'Supplementary Tables S1–S2', 'AAAS (Science Signaling)', 'Musiani et al., Sci Signal 12:eaat8388 (2019)', '10.1126/scisignal.aat8388'],
