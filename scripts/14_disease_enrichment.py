@@ -1,62 +1,48 @@
 #!/usr/bin/env python3
-"""Disease enrichment of the methylarginine proteins: DisGeNET terms, and eight audited disease families.
+"""Disease enrichment of the methylarginine proteins, with published tools (scripts/enrichment.py runs them in R):
 
-The term test is the one of DOSE 4.4.0 enrichDGN (Yu et al., Bioinformatics 31:608, 2015), as the published analysis
-ran it in R (scripts/14_disease_enrichment.R), computed here from tables exported once from R
-(scripts/00_export_disease_tables.R): DOSE's DisGeNET term-gene table and org.Hs.eg.db's symbol-to-Entrez map.
+- DisGeNET terms: DOSE::enrichDGN (Yu et al., Bioinformatics 31:608, 2015), as the published analysis ran it
+  (scripts/14_disease_enrichment.R): the target is the Entrez genes of the methylarginine proteins, the universe the
+  Entrez genes of every reviewed protein (DOSE keeps those with a DisGeNET term), terms of 10 to 300 genes. Enriched:
+  pvalue, p.adjust and qvalue at most 0.05, as the published run cut them.
+- Disease Ontology: clusterProfiler::enricher on the gene sets DOSE's enrichDO tests (each Disease Ontology term with
+  the genes of the terms under it; inputs/disease/hdo_<release>_term_genes.tsv, exported by
+  scripts/00_export_disease_ontology.R; the same results as enrichDO), the same target and universe (the background is
+  the universe genes with a Disease Ontology term), terms of at least 10 genes and no upper limit, so the broad classes
+  are tested too.
+- Disease families: each DisGeNET term is assigned to at most one family (scripts/disease_families.py); a family's
+  genes are the union of its terms' genes. clusterProfiler::enricher tests the families against the genes with a
+  DisGeNET term (DOSE's background for the terms), the eight audited families apart from the additional, rule-based
+  ones (column audited False).
 
-- Universe: the Entrez genes of the primary gene symbols of every reviewed protein in --labels
-  (scripts/03 protein_functional_labels.tsv), restricted to genes with a DisGeNET term.
-- Target: the Entrez genes of the methylarginine proteins (is_arg_methyl_protein).
-- A term is tested when it has 10 to 300 universe genes and at least one target gene. p = P(X >= k) for the
-  hypergeometric distribution (k target genes in the term, M universe genes in the term, N universe genes, n target
-  genes with a term); Benjamini-Hochberg over the tested terms; q values as DOSE computes them (qvalue, lambda 0.05).
-- Kept: p, adjusted p and q at most 0.05.
-
-Families: each DisGeNET term is assigned to at most one family (scripts/disease_families.py); a family's genes are the
-union of its terms' universe genes. Each family is tested against every reviewed gene (the universe without the
-restriction to genes with a term), with Benjamini-Hochberg over the eight audited families and apart over the
-additional, rule-based families (column audited False), in four ways:
-
-- uncorrected: a two-sided Fisher exact test of target against the other genes (as scripts/34, and v1.1.0).
-- corrected for expression (--expression): a Mantel-Haenszel odds ratio and test (chi-square with continuity
-  correction) over strata of the gene's expression, the deciles of its HPA cell-line median nTPM (the highest of its
-  reviewed proteins), and one stratum for genes without HPA RNA data. Proteins expressed highly in cell lines are the
-  ones mass spectrometry finds methylated, and they are also the better studied ones.
-- corrected for annotation: the same over strata of how many DisGeNET terms outside the family name the gene (none,
-  then the quintiles of the others). Well-studied genes carry more disease terms of every kind, so every family gene
-  set favours them; counting only the terms outside the family keeps the family's own membership out of it.
-- corrected: both, over the joint strata (the default on the website from v1.1.1).
-
-Terms: every term with 10 to 300 universe genes and at least one target gene is also tested with the corrected test
-(strata of expression and of the gene's other terms), Benjamini-Hochberg over them; disease_terms_corrected.tsv lists
-them all, enriched or not.
+All three are one-sided over-representation tests (hypergeometric), with Benjamini-Hochberg within each.
 
     python scripts/14_disease_enrichment.py --labels RESULTS/functional_class_union/protein_functional_labels.tsv \\
         --term-genes inputs/disease/dose_4.4.0_disgenet_term_genes.tsv \\
         --symbol-entrez inputs/disease/orghsegdb_3.22.0_symbol_entrez.tsv \\
-        --expression inputs/annotation/hpa_25.1_rna_expression.tsv --outdir RESULTS/disease
+        --ontology-genes inputs/disease/hdo_2026-09-30_term_genes.tsv --ontology-terms inputs/disease/hdo_2026-09-30_terms.tsv \\
+        --outdir RESULTS/disease
 
 Writes to --outdir:
-  disease_terms.tsv             enriched terms (DOSE's columns, gene symbols in geneID)
-  disease_terms_corrected.tsv   every tested term with the corrected test, and whether DOSE finds it enriched
+  disease_terms.tsv             enriched DisGeNET terms (DOSE's columns, gene symbols in geneID)
+  disease_terms_tested.tsv      every DisGeNET term DOSE tested, enriched or not, with its family
+  disease_ontology.tsv          every Disease Ontology term tested, with its parents and the methylated genes in it
   disease_families.tsv          the family tests: the eight audited families, then the additional ones
   disease_family_proteins.tsv   for each methylarginine protein, the families its gene is in
   disease_term_families.tsv     every DisGeNET term with its family assignment
   disease_input_summary.tsv     proteins, symbols and Entrez genes of the universe and the target
+Needs Rscript with clusterProfiler and DOSE on PATH.
 """
 from __future__ import annotations
 
 import argparse
-import math
 from collections import defaultdict
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
-from scipy.stats import chi2, fisher_exact, hypergeom
 
 from disease_families import ADDITIONAL_FAMILIES, ALL_FAMILIES, AUDITED_FAMILIES, classify
+from enrichment import Job, run
 
 MIN_SIZE, MAX_SIZE, CUTOFF = 10, 300, 0.05
 
@@ -69,56 +55,13 @@ def is_true(value) -> bool:
     return str(value).strip().lower() in {'1', 'true', 't', 'yes', 'y'}
 
 
-def bh(p: list[float]) -> list[float]:
-    """R's p.adjust(p, 'BH')."""
-    m = len(p)
-    order = sorted(range(m), key=lambda i: p[i], reverse=True)
-    out, running = [0.0] * m, 1.0
-    for rank, i in enumerate(order):
-        running = min(running, p[i] * m / (m - rank))
-        out[i] = min(1.0, running)
-    return out
-
-
-def qvalues(p: list[float], lam: float = 0.05) -> list[float]:
-    """qvalue(p, lambda = 0.05) as DOSE calls it: with one lambda, pi0 = #(p >= lambda) / (m (1 - lambda)), at most 1."""
-    pi0 = min(1.0, sum(x >= lam for x in p) / (len(p) * (1 - lam)))
-    return [pi0 * q for q in bh(p)]
-
-
-def mantel_haenszel(a: np.ndarray, b: np.ndarray, c: np.ndarray, d: np.ndarray) -> tuple[float, float]:
-    """Mantel-Haenszel odds ratio over strata of 2x2 tables (a: target in the set, b: target outside it, c: other genes
-    in the set, d: other genes outside it) and the p of the Mantel-Haenszel chi-square with continuity correction."""
-    n = a + b + c + d
-    ok = n > 1
-    a, b, c, d, n = (x[ok].astype(float) for x in (a, b, c, d, n))
-    num, den = float(np.sum(a * d / n)), float(np.sum(b * c / n))
-    expected = np.sum((a + b) * (a + c) / n)
-    variance = np.sum((a + b) * (c + d) * (a + c) * (b + d) / (n * n * (n - 1)))
-    p = float(chi2.sf((abs(a.sum() - expected) - 0.5) ** 2 / variance, 1)) if variance > 0 else 1.0
-    return (num / den if den else math.inf), p
-
-
-def quantile_bins(values: np.ndarray, k: int, missing: np.ndarray | None = None) -> np.ndarray:
-    """0..k-1 by the k-quantiles of values (over the non-missing ones); k for the missing."""
-    have = ~missing if missing is not None else np.ones(len(values), bool)
-    edges = np.quantile(values[have], np.linspace(0, 1, k + 1)[1:-1])
-    out = np.searchsorted(edges, values, side='right')
-    return np.where(have, out, k)
-
-
-def depth_bins(depth: np.ndarray, reference: np.ndarray) -> np.ndarray:
-    """0 for genes no other term names, then 1..5 by the quintiles of the reference counts above 0."""
-    edges = np.quantile(reference[reference > 0], [0.2, 0.4, 0.6, 0.8])
-    return np.where(depth > 0, 1 + np.searchsorted(edges, depth, side='right'), 0)
-
-
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--labels', required=True)
-    ap.add_argument('--term-genes', required=True)
+    ap.add_argument('--term-genes', required=True, help="DOSE's DisGeNET term-gene table (for the family gene sets)")
     ap.add_argument('--symbol-entrez', required=True)
-    ap.add_argument('--expression', required=True, help='HPA RNA expression per reviewed accession (scripts/00_stage_hpa_rna_expression.py)')
+    ap.add_argument('--ontology-genes', required=True, help='Disease Ontology term-gene table (scripts/00_export_disease_ontology.R)')
+    ap.add_argument('--ontology-terms', required=True, help='Disease Ontology terms with names and parents')
     ap.add_argument('--outdir', required=True)
     args = ap.parse_args()
     outdir = Path(args.outdir)
@@ -144,7 +87,8 @@ def main() -> None:
 
     universe_list = genes(labels['gene_symbol'])
     targeted = set(genes(target_rows['gene_symbol']))
-    target_list = [g for g in universe_list if g in targeted]  # in universe order, as DOSE receives them from R
+    target_list = [g for g in universe_list if g in targeted]
+    universe, target = set(universe_list), set(target_list)
     summary = pd.DataFrame([
         {'target': 'Universe', 'protein_count': labels['canonical_UniProtAC'].nunique(),
          'symbol_count': labels['gene_symbol'].nunique(), 'entrez_count': len(universe_list)},
@@ -152,48 +96,12 @@ def main() -> None:
          'symbol_count': target_rows['gene_symbol'].nunique(), 'entrez_count': len(target_list)},
     ])
     summary.to_csv(outdir / 'disease_input_summary.tsv', sep='\t', index=False, lineterminator='\n')
+    symbols = lambda ids: '/'.join(name_of.get(g, g) for g in str(ids or '').split('/') if g)  # noqa: E731
 
+    # ---- Family assignment of every DisGeNET term --------------------------------------------------------------------
     tg = pd.read_csv(args.term_genes, sep='\t', dtype=str, keep_default_na=False, quoting=3)
     term_name = dict(zip(tg['term_id'], tg['term_name']))
     term_genes_all = tg.groupby('term_id')['entrez_id'].agg(set).to_dict()
-    gene_terms = tg.groupby('entrez_id')['term_id'].agg(set).to_dict()
-
-    # ---- Terms (DOSE enricher_internal) ---------------------------------------------------------------------------
-    ext = set(tg['entrez_id']) & set(universe_list)
-    query = [g for g in target_list if g in gene_terms]       # target genes with a term (DOSE's qExtID2TermID)
-    n, N = len(query), len(ext)
-    q_terms = defaultdict(list)
-    for g in query:
-        for t in gene_terms[g]:
-            if g in ext:
-                q_terms[t].append(g)
-    rows = []
-    for t in sorted(set().union(*(gene_terms[g] for g in query))):
-        M = len(term_genes_all[t] & ext)
-        if not MIN_SIZE <= M <= MAX_SIZE:
-            continue
-        k = len(q_terms.get(t, []))
-        mu = M * n / N
-        sigma = mu * (N - n) * (N - M) / N / (N - 1)
-        rows.append({'ID': t, 'Description': term_name[t], 'GeneRatio': f'{k}/{n}', 'BgRatio': f'{M}/{N}',
-                     'RichFactor': k / M, 'FoldEnrichment': k / M * N / n, 'zScore': (k - mu) / math.sqrt(sigma),
-                     'pvalue': float(hypergeom.sf(k - 1, N, M, n)),
-                     'geneID': '/'.join(name_of.get(g, g) for g in q_terms.get(t, [])), 'Count': k})
-    terms = pd.DataFrame(rows)
-    terms['p.adjust'] = bh(terms['pvalue'].tolist())
-    terms['qvalue'] = qvalues(terms['pvalue'].tolist())
-    terms = terms[(terms['pvalue'] <= CUTOFF) & (terms['p.adjust'] <= CUTOFF) & (terms['qvalue'] <= CUTOFF)]
-    terms = terms.assign(_c=-terms['Count']).sort_values(['p.adjust', '_c'], kind='stable').drop(columns='_c')
-    terms['gene_ratio_num'] = terms['Count'] / n
-    terms['bg_ratio_num'] = terms['BgRatio'].map(lambda r: int(r.split('/')[0]) / int(r.split('/')[1]))
-    terms['fold_enrichment'] = terms['gene_ratio_num'] / terms['bg_ratio_num']
-    terms = terms[['ID', 'Description', 'GeneRatio', 'BgRatio', 'RichFactor', 'FoldEnrichment', 'zScore', 'pvalue',
-                   'p.adjust', 'qvalue', 'geneID', 'Count', 'gene_ratio_num', 'bg_ratio_num', 'fold_enrichment']]
-    terms.to_csv(outdir / 'disease_terms.tsv', sep='\t', index=False, lineterminator='\n')
-
-    # ---- Families (scripts/34) --------------------------------------------------------------------------------------
-    universe, target = set(universe_list), set(target_list)
-    background = universe - target
     audit, family_terms = [], defaultdict(list)
     for t in sorted(term_name):
         fam, status, method, reason, secondary = classify(term_name[t])
@@ -203,87 +111,54 @@ def main() -> None:
         if status == 'included':
             family_terms[fam].append(t)
     pd.DataFrame(audit).to_csv(outdir / 'disease_term_families.tsv', sep='\t', index=False, lineterminator='\n')
-    # Strata for the corrected tests: expression (deciles of the HPA cell-line median nTPM, and no data) and annotation
-    # depth (how many DisGeNET terms name the gene, counted outside the family or term under test).
-    genes_arr = np.array(universe_list)
-    is_target = np.isin(genes_arr, list(target))
-    expression = pd.read_csv(args.expression, sep='\t', dtype={'uniprot_accession': str}, keep_default_na=False, na_values=[''])
-    expr_of = dict(zip(expression['uniprot_accession'], expression['celline_median_ntpm']))
-    gene_expr: dict[str, float] = {}
-    for acc, symbol in zip(labels['canonical_UniProtAC'], labels['gene_symbol']):
-        v = expr_of.get(acc)
-        if v is not None and not pd.isna(v):
-            for e in entrez_of.get(symbol, []):
-                gene_expr[e] = max(gene_expr.get(e, -1.0), float(v))
-    expr = np.array([gene_expr.get(g, np.nan) for g in universe_list])
-    e_bin = quantile_bins(np.log1p(np.nan_to_num(expr)), 10, np.isnan(expr))
-    fam_of_term = {t: f for f, ts in family_terms.items() for t in ts}
-    gene_term_count = np.array([len(gene_terms.get(g, ())) for g in universe_list])
-    gene_fam_count = [defaultdict(int) for _ in universe_list]
-    for i, g in enumerate(universe_list):
-        for t in gene_terms.get(g, ()):
-            gene_fam_count[i][fam_of_term.get(t, '')] += 1
+    family_of = {t: f for f, ts in family_terms.items() for t in ts}
+    fam_genes = {f: set().union(*(term_genes_all[t] & universe for t in family_terms[f])) if family_terms[f] else set() for f in ALL_FAMILIES}
+    annotated = set(tg['entrez_id']) & universe       # DOSE's background for the DisGeNET terms
 
-    def stratified(x: np.ndarray, strata: np.ndarray) -> tuple[float, float, int]:
-        k = int(strata.max()) + 1
-        count = lambda m: np.bincount(strata[m], minlength=k)  # noqa: E731
-        odds, p = mantel_haenszel(count(x & is_target), count(~x & is_target), count(x & ~is_target), count(~x & ~is_target))
-        return odds, p, int((np.bincount(strata, minlength=k) > 1).sum())
+    # ---- The tests ----------------------------------------------------------------------------------------------------
+    do_genes = pd.read_csv(args.ontology_genes, sep='\t', dtype=str, keep_default_na=False)
+    do_terms = pd.read_csv(args.ontology_terms, sep='\t', dtype=str, keep_default_na=False)
+    fam_sets = lambda names: pd.DataFrame([(f, g) for f in names for g in fam_genes[f]], columns=['term', 'gene'])  # noqa: E731
+    jobs = [
+        Job('disgenet_terms', target, universe, tool='enrichDGN', min_size=MIN_SIZE, max_size=MAX_SIZE),
+        Job('disease_ontology', target, universe, sets=do_genes[['term_id', 'entrez_id']], names=do_terms[['term_id', 'name']], min_size=MIN_SIZE),
+        Job('disease_family', target & annotated, annotated, sets=fam_sets(AUDITED_FAMILIES), whole_universe=True),
+        Job('disease_family_additional', target & annotated, annotated, sets=fam_sets(ADDITIONAL_FAMILIES), whole_universe=True),
+    ]
+    res = run(jobs, outdir / 'enricher')
 
-    fam_rows, fam_genes = [], {}
-    for fam in ALL_FAMILIES:
-        g = set().union(*(term_genes_all[t] & universe for t in family_terms[fam])) if family_terms[fam] else set()
-        fam_genes[fam] = g
-        a, c = len(target & g), len(background & g)
-        b, d = len(target) - a, len(background) - c
-        odds = (a * d) / (b * c) if b * c else ((a + 0.5) * (d + 0.5)) / ((b + 0.5) * (c + 0.5))
-        row = {'disease_family': fam, 'contributing_ontology_terms': len(family_terms[fam]),
-               'methylarginine_protein_count': a, 'background_count': c, 'family_gene_count': a + c,
-               'methylarginine_denominator': len(target), 'background_denominator': len(background),
-               'odds_ratio': odds, 'p_value': float(fisher_exact([[a, b], [c, d]]).pvalue),
-               'audited': fam in AUDITED_FAMILIES}
-        x = np.isin(genes_arr, list(g))
-        d_bin = depth_bins(gene_term_count - np.array([fc.get(fam, 0) for fc in gene_fam_count]),
-                           gene_term_count - np.array([fc.get(fam, 0) for fc in gene_fam_count]))
-        for name, strata in (('expression', e_bin), ('annotation', d_bin), ('corrected', e_bin * 10 + d_bin)):
-            row[f'odds_ratio_{name}'], row[f'p_value_{name}'], row[f'n_strata_{name}'] = stratified(x, strata)
-        fam_rows.append(row)
-    for names in (AUDITED_FAMILIES, ADDITIONAL_FAMILIES):
-        part = [r for r in fam_rows if r['disease_family'] in names]
-        for suffix in ('', '_expression', '_annotation', '_corrected'):
-            for r, q in zip(part, bh([r['p_value' + suffix] for r in part])):
-                r['BH_adjusted_p' + suffix] = q
-    pd.DataFrame(fam_rows).sort_values(['audited', 'p_value'], ascending=[False, True], kind='stable').to_csv(outdir / 'disease_families.tsv', sep='\t', index=False, lineterminator='\n')
+    dgn = res['disgenet_terms'].copy()
+    dgn['geneID'] = dgn['geneID'].map(symbols)
+    dgn['family'] = dgn['ID'].map(family_of).fillna('')
+    dgn['enriched'] = (dgn['pvalue'] <= CUTOFF) & (dgn['p.adjust'] <= CUTOFF) & (dgn['qvalue'] <= CUTOFF)
+    dgn.sort_values(['p.adjust', 'Count'], ascending=[True, False], kind='stable').to_csv(outdir / 'disease_terms_tested.tsv', sep='\t', index=False, lineterminator='\n')
+    terms = dgn[dgn['enriched']].copy()
+    terms['gene_ratio_num'] = terms['k'] / terms['n']
+    terms['bg_ratio_num'] = terms['M'] / terms['N']
+    terms['fold_enrichment'] = terms['FoldEnrichment']
+    terms = terms.sort_values(['p.adjust', 'Count'], ascending=[True, False], kind='stable')
+    terms[['ID', 'Description', 'GeneRatio', 'BgRatio', 'RichFactor', 'FoldEnrichment', 'pvalue', 'p.adjust', 'qvalue', 'geneID', 'Count',
+           'gene_ratio_num', 'bg_ratio_num', 'fold_enrichment']].to_csv(outdir / 'disease_terms.tsv', sep='\t', index=False, lineterminator='\n')
 
-    # ---- Terms, corrected ---------------------------------------------------------------------------------------------
-    # Members of the term count its other terms (one fewer); everyone else keeps their count.
-    K = 11 * 10
-    base = e_bin * 10 + depth_bins(gene_term_count, gene_term_count)
-    N0 = np.bincount(base, minlength=K).astype(float)
-    Y0 = np.bincount(base, weights=is_target, minlength=K)
-    index_of = {g: i for i, g in enumerate(universe_list)}
-    dose_padj = dict(zip(terms['ID'], terms['p.adjust']))
-    corrected = []
-    for t in sorted(term_genes_all):
-        idx = np.array(sorted(index_of[g] for g in term_genes_all[t] if g in index_of), dtype=int)
-        if not MIN_SIZE <= len(idx) <= MAX_SIZE or not is_target[idx].any():
-            continue
-        ym = is_target[idx].astype(float)
-        old, new = base[idx], e_bin[idx] * 10 + depth_bins(gene_term_count[idx] - 1, gene_term_count)
-        N = N0 - np.bincount(old, minlength=K) + np.bincount(new, minlength=K)
-        Y = Y0 - np.bincount(old, weights=ym, minlength=K) + np.bincount(new, weights=ym, minlength=K)
-        In = np.bincount(new, minlength=K).astype(float)
-        A = np.bincount(new, weights=ym, minlength=K)
-        odds, p = mantel_haenszel(A, Y - A, In - A, N - Y - In + A)
-        corrected.append({'term_id': t, 'term_name': term_name[t], 'family': fam_of_term.get(t, ''), 'genes': len(idx),
-                          'methylated': int(ym.sum()), 'odds_ratio': odds, 'p_value': p,
-                          'dose_enriched': t in dose_padj, 'dose_p_adjust': dose_padj.get(t, ''),
-                          'methylated_genes': '/'.join(name_of.get(universe_list[i], universe_list[i]) for i in idx if is_target[i])})
-    corrected = pd.DataFrame(corrected)
-    corrected['BH_adjusted_p'] = bh(corrected['p_value'].tolist())
-    corrected = corrected.sort_values(['p_value', 'term_id'], kind='stable')[['term_id', 'term_name', 'family', 'genes', 'methylated', 'odds_ratio', 'p_value',
-                                                                           'BH_adjusted_p', 'dose_enriched', 'dose_p_adjust', 'methylated_genes']]
-    corrected.to_csv(outdir / 'disease_terms_corrected.tsv', sep='\t', index=False, lineterminator='\n')
+    do = res['disease_ontology'].copy()
+    parents = dict(zip(do_terms['term_id'], do_terms['parents']))
+    do['parents'] = do['ID'].map(parents).fillna('')
+    do['geneID'] = do['geneID'].map(symbols)
+    do.sort_values(['p.adjust', 'Count'], ascending=[True, False], kind='stable')[
+        ['ID', 'Description', 'parents', 'GeneRatio', 'BgRatio', 'k', 'n', 'M', 'N', 'FoldEnrichment', 'pvalue', 'p.adjust', 'qvalue', 'geneID']
+    ].to_csv(outdir / 'disease_ontology.tsv', sep='\t', index=False, lineterminator='\n')
+
+    fam_rows = []
+    for job, audited in (('disease_family', True), ('disease_family_additional', False)):
+        for r in res[job].to_dict('records'):
+            fam_rows.append({'disease_family': r['ID'], 'contributing_ontology_terms': len(family_terms[r['ID']]),
+                             'methylarginine_protein_count': r['k'], 'background_count': r['M'] - r['k'], 'family_gene_count': r['M'],
+                             'methylarginine_denominator': r['n'], 'background_denominator': r['N'] - r['n'],
+                             'fold_enrichment': r['FoldEnrichment'], 'p_value': r['pvalue'], 'BH_adjusted_p': r['p.adjust'],
+                             'audited': audited, 'method': 'enricher'})
+    fams = pd.DataFrame(fam_rows)
+    fams.sort_values(['audited', 'p_value'], ascending=[False, True], kind='stable').to_csv(outdir / 'disease_families.tsv', sep='\t', index=False, lineterminator='\n')
+
     prot = []
     for acc, s in zip(target_rows['canonical_UniProtAC'], target_rows['gene_symbol']):
         ents = set(entrez_of.get(s, []))
@@ -294,11 +169,9 @@ def main() -> None:
                              'contributing_term_count': len({t for t in family_terms[fam] for e in hit if e in term_genes_all[t]})})
     pd.DataFrame(prot, columns=['canonical_UniProtAC', 'gene_symbol', 'entrez_ids', 'disease_family', 'contributing_term_count']).to_csv(
         outdir / 'disease_family_proteins.tsv', sep='\t', index=False, lineterminator='\n')
-    sig = corrected[corrected['BH_adjusted_p'] <= CUTOFF]
-    print(f'corrected tests: {len(corrected)} terms, {int((sig["odds_ratio"] > 1).sum())} enriched and {int((sig["odds_ratio"] < 1).sum())} depleted '
-          f'(BH <= {CUTOFF}); {int(np.isnan(expr).sum())} universe genes without HPA RNA data')
-    print(f'{len(terms)} enriched terms; target {len(target)} of {len(universe)} genes; '
-          f'{len({r["canonical_UniProtAC"] for r in prot})} proteins in a family')
+    print(f'DisGeNET (enrichDGN): {len(dgn)} terms tested, {len(terms)} enriched; Disease Ontology (enricher): {len(do)} terms tested, '
+          f'{int((do["p.adjust"] <= CUTOFF).sum())} with p.adjust <= {CUTOFF}; families: {int((fams["BH_adjusted_p"] <= CUTOFF).sum())} of {len(fams)}; '
+          f'target {len(target)} of {len(universe)} genes; {len({r["canonical_UniProtAC"] for r in prot})} proteins in a family')
 
 
 if __name__ == '__main__':

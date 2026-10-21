@@ -147,6 +147,8 @@ def write_release_json(outdir: Path, ctx: dict, files: dict) -> None:
         'validation': ctx['validation'],
         'reference': {'proteome': 'UP000005640', 'reviewed': True, **{k: ctx['uniprot_release'][k] for k in ('release', 'release_date', 'entries', 'fasta', 'fasta_md5')}},
         'annotation': {'InterPro': '108.0', 'MobiDB': 'export of 2026-03-30', 'domain_ontology': 'config/domain_class_ontology.json'},
+        # The tools of the enrichment tests (scripts/enrich_sets.R), as the analyses recorded them.
+        'enrichment_tools': ctx.get('enrichment_tools', {}),
         'phosphositeplus': {'downloaded': '2021-05-22', 'via': 'Maron et al. 2021 Table S5',
                             'terms': 'CC BY-NC-SA 3.0 Unported, inputs/licences/phosphositeplus_terms_2021-07-11_web-archive.pdf'},
         'files': [],
@@ -177,8 +179,9 @@ FILE_ROWS = {
     'residue_evidence': 'run of residues of a protein with the same interaction evidence',
     'protein_partners': 'protein and STRING physical partner (score >= 0.7)',
     'complexes': 'Complex Portal or hu.MAP complex with a methylated member',
-    'disease_terms': 'enriched DisGeNET term (DOSE enrichDGN, uncorrected)',
-    'disease_terms_corrected': 'DisGeNET term tested with the test corrected for expression and annotation, enriched or not',
+    'disease_terms': 'enriched DisGeNET term (DOSE enrichDGN)',
+    'disease_terms_tested': 'DisGeNET term DOSE enrichDGN tested, enriched or not',
+    'disease_ontology': 'Disease Ontology term tested (clusterProfiler enricher on the gene sets of DOSE enrichDO)',
     'disease_families': 'disease family: terms and genes',
     'density_windows': 'protein and window width with significantly dense sites (q <= 0.05)',
     'condensates': 'CD-CODE condensate: name, type, members and methylated members',
@@ -282,7 +285,31 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         '- **Context:** MobiDB predicted disorder (export of 2026-03-30), InterPro 108.0 domains and repeats, sequence '
         'motifs: the classifiers of `scripts/06`, `scripts/05`, `scripts/07` and `scripts/08`. The intervals were '
         'computed on earlier UniProt sequences and moved to these (`inputs/annotation/interval_lift_to_uniprot_2026_03.tsv`).',
-        f"- **Previous version:** `releases/{previous}/` (the published union, git tag {previous}).",
+        f"- **Previous version:** `releases/{previous}/` (git tag {previous}).",
+        '',
+        '## Statistics',
+        '',
+        f"`{files['statistics'][0]}` holds every test behind the summaries: its analysis and category, the 2x2 counts a, b, "
+        'c and d, the effect, p, q and the method:',
+        '',
+        '- **Protein and gene sets** (method `enricher`): PANTHER and functional classes, CD-CODE condensates, Human Protein '
+        'Atlas locations, disease families, Gene Ontology RNA and DNA binding and complexes; the Disease Ontology and '
+        'DisGeNET terms are in `supporting/`. Over-representation analysis in R with clusterProfiler::enricher, and '
+        'DOSE::enrichDGN for the DisGeNET terms (`scripts/enrich_sets.R`; '
+        + ', '.join(f'{k} {v}' for k, v in ctx.get('enrichment_tools', {}).items()) + '). '
+        'For a set holding M of the N members of the background, where n of the N are methylarginine-containing proteins '
+        '(or their genes) and k of those are in the set, p is the one-sided hypergeometric probability of k or more, '
+        '`fold_enrichment` is (k/n)/(M/N), and q is the Benjamini-Hochberg adjusted p over the sets of the analysis; '
+        'a = k, b = n - k, c = M - k and d = N - M - n + k. A set is tested when it holds a methylarginine-containing '
+        'protein and its size is within the analysis\'s range. Backgrounds: the reviewed human proteome (classes, Gene '
+        'Ontology, complexes), the proteins of any human CD-CODE condensate (condensates), the proteins the Human Protein '
+        'Atlas profiled (locations), the reviewed human genes with a DisGeNET term (disease families and DisGeNET terms) '
+        'and those with a Disease Ontology term (Disease Ontology).',
+        '- **Arginines** (methods `fisher` and `mantel_haenszel`): motifs, disorder, domain context and the interaction '
+        'tests compare methylated arginines with the other arginines of the same proteins: two-sided Fisher exact test '
+        '(scipy) with the sample odds ratio after adding 0.5 to each cell, and for the interaction tests also the '
+        'Mantel-Haenszel common odds ratio with each protein a stratum (statsmodels); q is Benjamini-Hochberg within the '
+        'analysis and method.',
         '',
         '## Columns',
         '',
@@ -408,15 +435,13 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         f'DisGeNET terms none of them takes now go to {len(ADDITIONAL_FAMILIES)} additional, rule-based families '
         '(scripts/disease_families.py ADDITIONAL_FAMILY_RULES: mostly clinical signs, by organ system), tested and '
         'BH-adjusted apart (statistics: disease_family_additional). They are not audited.',
-        '- **Disease families corrected for expression and annotation.** Tested against every reviewed gene, every family '
-        'came out enriched, including infection, skin and respiratory disease, because the proteins found methylated are '
-        'highly expressed in cell lines and well studied, so they carry more disease terms of every kind. Each family is '
-        'now also tested with Mantel-Haenszel odds ratios over strata of expression (Human Protein Atlas 25.1 cell-line '
-        'median nTPM, inputs/annotation/hpa_25.1_rna_expression.tsv) and of annotation (DisGeNET terms outside the family '
-        'that name the gene), apart and together (statistics: methods mh_expression, mh_annotation, mh_expression_annotation; '
-        'supporting/disease_families). The corrected test is the website\'s default; the uncorrected Fisher test of earlier '
-        'versions is kept. Every term with 10 to 300 genes is tested the same way (supporting/disease_terms_corrected), '
-        'enriched or not.',
+        '- **Protein-set tests.** Every test of protein or gene sets (PANTHER and functional classes, CD-CODE condensates, '
+        'Human Protein Atlas locations, disease families, Gene Ontology binding, complexes) is an over-representation '
+        'analysis with clusterProfiler::enricher, and the DisGeNET terms with DOSE::enrichDGN (scripts/enrich_sets.R; '
+        'statistics: method enricher, with fold enrichment): p is the one-sided hypergeometric probability, fold enrichment '
+        '(k/n)/(M/N), q Benjamini-Hochberg over the sets of the analysis (README, Statistics). The disease families are tested '
+        'against the reviewed human genes with a DisGeNET term. The Human Disease Ontology is added, with the gene sets of '
+        'DOSE enrichDO (supporting/disease_ontology), and every DisGeNET term tested is listed (supporting/disease_terms_tested).',
         f"- **Methylation degree at each site** (`methyl_state`, {n(c['with_state'])} of {n(c['sites'])} sites). "
         f"{previous} gave a degree only from ProMetheusDB. This version also counts Maron et al. 2021 Table S2, UniProt's "
         'modified-residue annotations with experimental evidence (inferred ones are listed apart) and the two studies that '

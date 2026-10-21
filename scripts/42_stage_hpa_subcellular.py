@@ -15,9 +15,8 @@ Outputs (in --outdir, default $PTM_RESULTS_ROOT/hpa)
   hpa_subcellular_locations.tsv   one row per accession and location: main (1) or additional (0), reliability
   hpa_summary.json                input checksums and file dates, counts
 
-With --explorer-json, the table is merged into an existing Site Explorer export (protein field hpa_locations, and a
-per-location test of methylated against other profiled proteins in meta.hpa); 36_export_site_explorer_data.py applies
-the same merge (explorer_merge.py) when it builds the export.
+The release build reads the staged table (inputs/annotation/): scripts/release_tables.py tests each location
+(clusterProfiler enricher) and scripts/36_export_site_explorer_data.py carries the locations to the website.
 """
 from __future__ import annotations
 
@@ -35,7 +34,9 @@ from pathlib import Path
 import pandas as pd
 
 from common import parse_fasta, save_table
-from explorer_merge import HPA_RELIABILITY, merge_hpa, update_export
+
+# HPA reliability scores, lowest first.
+HPA_RELIABILITY = ['Uncertain', 'Approved', 'Supported', 'Enhanced']
 
 
 def read_table(path: Path) -> tuple[list[dict], str, str]:
@@ -65,8 +66,6 @@ def main() -> None:
     ap.add_argument('--fasta', default=os.environ.get('PTM_CANONICAL_FASTA', ''),
                     help='UniProt reviewed canonical FASTA (PTM_CANONICAL_FASTA).')
     ap.add_argument('--outdir', default=str(results_root / 'hpa'))
-    ap.add_argument('--explorer-json', default='',
-                    help='Optionally merge the table into this Site Explorer export in place.')
     args = ap.parse_args()
     if not args.subcellular or not args.atlas or not args.fasta:
         raise SystemExit('--subcellular, --atlas and --fasta are required (or set PTM_HPA_SUBCELLULAR, PTM_HPA_ATLAS and PTM_CANONICAL_FASTA)')
@@ -103,8 +102,6 @@ def main() -> None:
         'locations': int(table['location'].nunique()),
         'reliability': dict(Counter(table['reliability'])),
     }
-    if args.explorer_json:
-        summary['explorer'] = update_export(args.explorer_json, merge_hpa, table, summary)
     (outdir / 'hpa_summary.json').write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(summary, indent=2))
 

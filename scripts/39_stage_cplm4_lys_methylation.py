@@ -18,10 +18,6 @@ Outputs (in --outdir, default $PTM_RESULTS_ROOT/cplm4)
   cplm4_human_lys_methyl_validated.tsv   one row per canonical accession and position
   cplm4_human_lys_methyl_rejected.tsv    input rows that failed a check, with the reason
   cplm4_summary.json                     input checksum, counts per check, sites and proteins kept
-
-With --explorer-json, the validated sites are also merged into an existing Site Explorer export
-(docs/data/methylarg_sites.json) as Lys methylation entries with their CPLM source bits, replacing any CPLM
-entries already there; 36_export_site_explorer_data.py applies the same merge (explorer_merge.py) when it builds the export.
 """
 from __future__ import annotations
 
@@ -38,7 +34,6 @@ from pathlib import Path
 import pandas as pd
 
 from common import parse_fasta, save_table
-from explorer_merge import merge_cplm4, update_export
 
 CPLM4_COLUMNS = ['cplm_id', 'source_UniProtAC', 'position', 'modification', 'gene', 'organism', 'cplm_sequence',
                  'evidence', 'references']
@@ -105,8 +100,6 @@ def main() -> None:
                     help='UniProt reviewed canonical FASTA (PTM_CANONICAL_FASTA).')
     ap.add_argument('--organism', default='Homo sapiens')
     ap.add_argument('--outdir', default=str(results_root / 'cplm4'))
-    ap.add_argument('--explorer-json', default='',
-                    help='Optionally merge the validated sites into this Site Explorer export in place.')
     args = ap.parse_args()
     if not args.cplm or not args.fasta:
         raise SystemExit('--cplm and --fasta are required (or set PTM_CPLM4_METHYL and PTM_CANONICAL_FASTA)')
@@ -156,8 +149,6 @@ def main() -> None:
         'validated_proteins': int(good['canonical_UniProtAC'].nunique()),
         'validated_evidence': dict(Counter(good['evidence'])),
     }
-    if args.explorer_json:
-        summary.update(update_export(args.explorer_json, merge_cplm4, good, summary))
     (outdir / 'cplm4_summary.json').write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(summary, indent=2))
 

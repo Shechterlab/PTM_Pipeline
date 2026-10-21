@@ -101,7 +101,7 @@ def main() -> None:
     ].copy()
     if selected_assemblies.empty:
         selected_assemblies = enrich[enrich['member_count'] >= args.min_member_count].copy()
-    selected_assemblies = selected_assemblies.sort_values(['log2_odds_ratio', 'methyl_protein_count'], ascending=[False, False]).head(args.top_assemblies).copy()
+    selected_assemblies = selected_assemblies.sort_values(['log2_fold_enrichment', 'methyl_protein_count'], ascending=[False, False]).head(args.top_assemblies).copy()
 
     membership = membership[membership['condensate_id'].isin(set(selected_assemblies['condensate_id'].astype(str)))].copy()
     methyl_proteins = set(site_counts['canonical_UniProtAC'].astype(str))
@@ -123,7 +123,7 @@ def main() -> None:
 
     membership = membership[membership['canonical_UniProtAC'].isin(set(selected_proteins['canonical_UniProtAC'].astype(str)))].copy()
     membership = membership.merge(
-        selected_assemblies[['condensate_id', 'condensate_name', 'log2_odds_ratio', 'q_value', 'member_count', 'methyl_protein_count']],
+        selected_assemblies[['condensate_id', 'condensate_name', 'log2_fold_enrichment', 'q_value', 'member_count', 'methyl_protein_count']],
         how='left',
         on=['condensate_id', 'condensate_name'],
     )

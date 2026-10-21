@@ -18,8 +18,8 @@ Outputs (in --outdir, default $PTM_RESULTS_ROOT/carm1_ko)
   carm1_ko_sites.tsv        one row per canonical site and cell line
   carm1_ko_summary.json     input checksum, rule, counts
 
-With --explorer-json, the site table is merged into an existing Site Explorer export (site field carm1_ko);
-36_export_site_explorer_data.py applies the same merge (explorer_merge.py) when it builds the export.
+The release build reads the staged table (inputs/layers/): scripts/build_release.py calls each site and
+scripts/36_export_site_explorer_data.py carries the calls to the website.
 """
 from __future__ import annotations
 
@@ -35,7 +35,6 @@ import pandas as pd
 from openpyxl import load_workbook
 
 from common import parse_fasta, save_table
-from explorer_merge import merge_carm1_ko, update_export
 
 STUDY = 'Shishkova 2017'
 DOI = '10.1038/ncomms15571'
@@ -99,8 +98,6 @@ def main() -> None:
     ap.add_argument('--fasta', default=os.environ.get('PTM_CANONICAL_FASTA', ''),
                     help='UniProt reviewed canonical FASTA (PTM_CANONICAL_FASTA).')
     ap.add_argument('--outdir', default=str(results_root / 'carm1_ko'))
-    ap.add_argument('--explorer-json', default='',
-                    help='Optionally merge the site table into this Site Explorer export in place.')
     args = ap.parse_args()
     if not args.xlsx or not args.fasta:
         raise SystemExit('--xlsx and --fasta are required (or set PTM_CARM1_KO_XLSX and PTM_CANONICAL_FASTA)')
@@ -155,8 +152,6 @@ def main() -> None:
         'sites': {cell: dict(Counter(grp['call'])) for cell, grp in sites.groupby('cell_line')},
         'unique_sites': int(sites[['canonical_UniProtAC', 'position']].drop_duplicates().shape[0]),
     }
-    if args.explorer_json:
-        summary['explorer'] = update_export(args.explorer_json, merge_carm1_ko, sites, summary)
     (outdir / 'carm1_ko_summary.json').write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(summary, indent=2))
 

@@ -4,9 +4,10 @@ import argparse
 from pathlib import Path
 import re
 
+import math
+
 import matplotlib.pyplot as plt
 import pandas as pd
-from scipy.stats import fisher_exact
 
 from common import (
     BREWER_COLORS,
@@ -17,7 +18,6 @@ from common import (
     canonicalize_uniprot_accession,
     count_over_total_labels,
     load_json,
-    log2_odds_ratio,
     q_threshold_note,
     save_figure,
     save_table,
@@ -25,6 +25,7 @@ from common import (
     signed_bar_colors,
     style_axis,
 )
+from enrichment import Job, run
 
 SUBCLASS_TO_BROAD = {
     'RRM / KH RBPs': 'RNA-binding / RNP',
@@ -301,34 +302,30 @@ def propagate_labels_by_gene_consensus(protein_meta: pd.DataFrame, membership: p
     return pd.concat([membership, pd.DataFrame(rescue_rows)], ignore_index=True).drop_duplicates()
 
 
-def odds_ratio(a: int, b: int, c: int, d: int) -> float:
-    return ((a + 0.5) * (d + 0.5)) / ((b + 0.5) * (c + 0.5))
-
-
-def label_enrichment(memberships: pd.DataFrame, target_acc: set[str], family_name: str) -> pd.DataFrame:
+def label_enrichment(memberships: pd.DataFrame, target_acc: set[str], family_name: str, workdir: Path) -> pd.DataFrame:
+    """Each label of the family tested with clusterProfiler::enricher (one-sided hypergeometric, fold enrichment, BH
+    within the family; scripts/enrichment.py), the background every protein the family labels."""
     family = memberships[memberships['family'] == family_name].copy()
     universe = set(family['canonical_UniProtAC'].astype(str))
-    background_acc = universe - target_acc
+    targets = target_acc & universe
+    res = run([Job('functional_' + family_name, targets, universe, sets=family[['label', 'canonical_UniProtAC']], whole_universe=True)], workdir)['functional_' + family_name]
     rows = []
-    for label, group in family.groupby('label'):
-        label_acc = set(group['canonical_UniProtAC'].astype(str))
-        a = len(label_acc & target_acc)
-        b = len(target_acc - label_acc)
-        c = len(label_acc & background_acc)
-        d = len(background_acc - label_acc)
+    for r in res.to_dict('records'):
         rows.append({
-            'category': label,
-            'target_count': a,
-            'target_fraction': a / len(target_acc) if target_acc else pd.NA,
-            'background_count': c,
-            'background_fraction': c / len(background_acc) if background_acc else pd.NA,
-            'odds_ratio': odds_ratio(a, b, c, d),
-            'log2_odds_ratio': log2_odds_ratio(odds_ratio(a, b, c, d)),
-            'p_value': float(fisher_exact([[a, b], [c, d]], alternative='two-sided').pvalue),
+            'category': r['ID'],
+            'target_count': r['a'],
+            'target_fraction': r['a'] / r['n'] if r['n'] else pd.NA,
+            'background_count': r['c'],
+            'background_fraction': r['c'] / (r['N'] - r['n']) if r['N'] > r['n'] else pd.NA,
+            'fold_enrichment': r['FoldEnrichment'],
+            'log2_fold_enrichment': math.log2(r['FoldEnrichment']) if r['FoldEnrichment'] > 0 else float('nan'),
+            'p_value': r['pvalue'],
+            'q_value': r['p.adjust'],
+            'method': 'enricher',
             'family': family_name,
         })
-    out = add_q_values(pd.DataFrame(rows))
-    return out.sort_values(['odds_ratio', 'target_count'], ascending=[False, False]).reset_index(drop=True)
+    out = pd.DataFrame(rows)
+    return out.sort_values(['fold_enrichment', 'target_count'], ascending=[False, False]).reset_index(drop=True)
 
 
 def main() -> None:
@@ -381,10 +378,10 @@ def main() -> None:
     protein_summary = protein_summary.merge(protein_meta, how='left', on='canonical_UniProtAC')
     protein_summary['is_arg_methyl_protein'] = protein_summary['canonical_UniProtAC'].isin(target_acc)
 
-    broad = label_enrichment(memberships, target_acc, 'broad')
-    sub = label_enrichment(memberships, target_acc, 'subclass')
-
     outdir = Path(args.outdir)
+    broad = label_enrichment(memberships, target_acc, 'broad', outdir / 'enricher')
+    sub = label_enrichment(memberships, target_acc, 'subclass', outdir / 'enricher')
+
     outdir.mkdir(parents=True, exist_ok=True)
     save_table(protein_summary, outdir / 'protein_functional_labels.tsv')
     save_table(broad_membership, outdir / 'protein_functional_broad_membership.tsv')
@@ -394,20 +391,20 @@ def main() -> None:
     save_table(broad, outdir / 'arg_methyl_functional_class_broad_enrichment.tsv')
     save_table(sub, outdir / 'arg_methyl_functional_class_subclass_enrichment.tsv')
 
-    pb = broad[broad['target_count'] >= 10].sort_values('log2_odds_ratio').copy()
-    broad_colors = signed_bar_colors(pb['log2_odds_ratio'])
+    pb = broad[broad['target_count'] >= 10].sort_values('log2_fold_enrichment').copy()
+    broad_colors = signed_bar_colors(pb['log2_fold_enrichment'])
     broad_colors = [BREWER_COLORS['mid_gray'] if cat == 'Other / unclassified' else color for cat, color in zip(pb['category'], broad_colors)]
     fig, ax = plt.subplots(figsize=(9.2, 6.4))
-    ax.barh(pb['category'], pb['log2_odds_ratio'], color=broad_colors, edgecolor='white', linewidth=0.8)
+    ax.barh(pb['category'], pb['log2_fold_enrichment'], color=broad_colors, edgecolor='white', linewidth=0.8)
     style_axis(ax, zero='x')
-    ax.set_xlabel('log2(OR) vs all proteins')
+    ax.set_xlabel('log2 fold enrichment vs all proteins (clusterProfiler enricher)')
     ax.set_ylabel('Broad class')
     ax.set_title('Integrated arg-methylome: multi-label broad enrichment')
-    set_symmetric_xlim(ax, pb['log2_odds_ratio'], annotation_pad_ratio=0.38, center_on_zero=False)
+    set_symmetric_xlim(ax, pb['log2_fold_enrichment'], annotation_pad_ratio=0.38, center_on_zero=False)
     annotate_barh(
         ax,
         pb['category'],
-        pb['log2_odds_ratio'],
+        pb['log2_fold_enrichment'],
         count_over_total_labels(pb),
         fontsize=8.9,
     )
@@ -424,20 +421,20 @@ def main() -> None:
     save_figure(fig, outdir / 'arg_methyl_functional_class_broad_enrichment')
 
     sub_sig = sub[sub['q_value'] <= 0.05].copy()
-    ps = balanced_category_subset(sub_sig, min_count=8, top_positive=10, top_negative=6)
-    subclass_colors = signed_bar_colors(ps['log2_odds_ratio'])
+    ps = balanced_category_subset(sub_sig, value_col='log2_fold_enrichment', min_count=8, top_positive=10, top_negative=6)
+    subclass_colors = signed_bar_colors(ps['log2_fold_enrichment'])
     subclass_colors = [BREWER_COLORS['mid_gray'] if cat == 'Other / unclassified' else color for cat, color in zip(ps['category'], subclass_colors)]
     fig2, ax2 = plt.subplots(figsize=(10.2, 7.4))
-    ax2.barh(ps['category'], ps['log2_odds_ratio'], color=subclass_colors, edgecolor='white', linewidth=0.8)
+    ax2.barh(ps['category'], ps['log2_fold_enrichment'], color=subclass_colors, edgecolor='white', linewidth=0.8)
     style_axis(ax2, zero='x')
-    ax2.set_xlabel('log2(OR) vs all proteins')
+    ax2.set_xlabel('log2 fold enrichment vs all proteins (clusterProfiler enricher)')
     ax2.set_ylabel('Subclass')
     ax2.set_title('Integrated arg-methylome: multi-label RNA-centric subclasses')
-    set_symmetric_xlim(ax2, ps['log2_odds_ratio'], annotation_pad_ratio=0.34, center_on_zero=False)
+    set_symmetric_xlim(ax2, ps['log2_fold_enrichment'], annotation_pad_ratio=0.34, center_on_zero=False)
     annotate_barh(
         ax2,
         ps['category'],
-        ps['log2_odds_ratio'],
+        ps['log2_fold_enrichment'],
         count_over_total_labels(ps),
         fontsize=8.7,
     )
@@ -453,29 +450,29 @@ def main() -> None:
     fig2.tight_layout()
     save_figure(fig2, outdir / 'arg_methyl_functional_class_subclass_enrichment')
 
-    ps_counts = sub[(sub['target_count'] >= 8) & (sub['q_value'] <= 0.05) & (sub['odds_ratio'] > 1)].copy()
-    ps_counts = ps_counts.sort_values(['odds_ratio', 'target_count'], ascending=[False, False]).head(10).copy()
+    ps_counts = sub[(sub['target_count'] >= 8) & (sub['q_value'] <= 0.05) & (sub['fold_enrichment'] > 1)].copy()
+    ps_counts = ps_counts.sort_values(['fold_enrichment', 'target_count'], ascending=[False, False]).head(10).copy()
     if not ps_counts.empty:
         ps_counts['total_class_count'] = ps_counts['target_count'] + ps_counts['background_count']
         ps_counts['methyl_fraction_in_class'] = ps_counts['target_count'] / ps_counts['total_class_count']
         fig3, ax3 = plt.subplots(figsize=(10.0, 7.2))
         ax3.barh(
             ps_counts['category'][::-1],
-            ps_counts['odds_ratio'][::-1],
+            ps_counts['fold_enrichment'][::-1],
             color=BREWER_COLORS['mid_gray'],
             edgecolor='white',
             linewidth=0.8,
         )
         style_axis(ax3)
-        ax3.set_xlabel('Odds ratio vs all proteins')
+        ax3.set_xlabel('Fold enrichment vs all proteins (clusterProfiler enricher)')
         ax3.set_ylabel('Subclass')
         ax3.set_title('Integrated arg-methylome: enriched subclasses with class counts')
-        xmax = float(ps_counts['odds_ratio'].max()) if len(ps_counts) else 1.0
+        xmax = float(ps_counts['fold_enrichment'].max()) if len(ps_counts) else 1.0
         ax3.set_xlim(0, xmax * 1.22)
         annotate_barh(
             ax3,
             ps_counts['category'][::-1],
-            ps_counts['odds_ratio'][::-1],
+            ps_counts['fold_enrichment'][::-1],
             [
                 f"{n}/{t} ({frac:.0%})"
                 for n, t, frac in zip(
@@ -499,7 +496,7 @@ def main() -> None:
         save_figure(fig3, outdir / 'arg_methyl_functional_class_subclass_enrichment_count_aware')
         save_table(
             ps_counts[
-                ['category', 'target_count', 'background_count', 'total_class_count', 'methyl_fraction_in_class', 'odds_ratio', 'log2_odds_ratio', 'p_value', 'q_value']
+                ['category', 'target_count', 'background_count', 'total_class_count', 'methyl_fraction_in_class', 'fold_enrichment', 'log2_fold_enrichment', 'p_value', 'q_value']
             ],
             outdir / 'arg_methyl_functional_class_subclass_enrichment_count_aware.tsv',
         )

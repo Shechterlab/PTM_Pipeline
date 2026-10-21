@@ -235,16 +235,6 @@ def load_json(path: str | Path) -> dict:
     return json.loads(Path(path).read_text())
 
 
-# Source bits of the Site Explorer's other-PTM entries: 1 is the cross-PTM master table; CPLM 4.0 sites carry
-# a bit per evidence label they hold ("Exp.", "Dat.", or both as "Exp./Dat.").
-CPLM4_SOURCE_BITS = {'Exp.': 2, 'Dat.': 4}
-
-
-def cplm4_evidence_mask(evidence: str) -> int:
-    labels = str(evidence).split('/')
-    return sum(bit for label, bit in CPLM4_SOURCE_BITS.items() if label in labels)
-
-
 def parse_fasta(path: str | Path) -> dict[str, str]:
     sequences: dict[str, list[str]] = {}
     current_acc = ''

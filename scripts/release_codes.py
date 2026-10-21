@@ -418,7 +418,7 @@ CODES['analysis'] = {
     'disorder': 'methylarginines in a disorder class (scripts/06), against the other arginines of the methylated proteins',
     'domain_context': 'methylarginines in a domain context (scripts/05, 07), against the other arginines of the methylated proteins. A protein whose every arginine is a site has no background and is left out (MIF, 5 sites)',
     'domain_class': 'methylarginines whose nearest domain is of a class (scripts/07), against the other arginines of the methylated proteins (MIF left out, as for domain_context)',
-    'disease_family': 'methylarginine-containing proteins (counted by gene) in one of the eight audited disease families (scripts/14), against the other reviewed human genes (Entrez, with or without a DisGeNET term); q over the eight, within each method',
+    'disease_family': 'methylarginine-containing proteins (counted by gene) in one of the eight audited disease families (scripts/14), against the other reviewed human genes with a DisGeNET term (DOSE\'s background for the terms); q over the eight',
     'disease_family_additional': 'the same for the additional disease families (scripts/disease_families.py ADDITIONAL_FAMILY_RULES: rule-based, not audited, applied only to the terms no audited family takes); q over these families',
     'condensate': 'methylated proteins among the members of a CD-CODE condensate (scripts/12), against the other condensate proteins',
     'hpa_location': 'methylated proteins at a Human Protein Atlas location, against the other proteins HPA locates (Approved or better)',
@@ -426,14 +426,12 @@ CODES['analysis'] = {
     'predicted_interface': 'methylarginines at a predicted interface residue (ProtVar, category the pDockQ floor), against the other arginines of the proteins with a predicted interface. Strata: all, ordered, disordered',
     'crosslink': 'methylarginines with RNA or DNA crosslink evidence of a kind (category), against the other arginines of the proteins with that evidence; the _outside_rg categories leave out arginines in an RG or GR dipeptide',
     'intact': 'IntAct: methylarginines whose mutation changes an interaction (against other mutated arginines), and methylarginines inside a binding region of at most 20 residues (against the other arginines of proteins with one)',
-    'go_binding': 'methylated proteins with a Gene Ontology RNA- or DNA-binding annotation (category; _experimental: experimental evidence codes only), against the other reviewed human proteins',
+    'go_binding': 'methylated proteins with a Gene Ontology RNA- or DNA-binding annotation (category; _experimental: experimental evidence codes only), against all reviewed human proteins (clusterProfiler enricher, the four annotations as one job)',
 }
 CODES['method'] = {
-    'fisher': 'two-sided Fisher exact test, q = Benjamini-Hochberg within the analysis and method. The odds ratio adds 0.5 to each cell (Haldane-Anscombe), except for disease families (plain ratio, as scripts/34)',
+    'enricher': 'over-representation analysis with clusterProfiler::enricher (scripts/enrich_sets.R; versions in release.json): for a set with M members in a background of N, of which n are methylated (the targets), p is the one-sided hypergeometric probability of k or more methylated members, and fold_enrichment = (k/n)/(M/N). a = k, b = n - k (methylated proteins outside the set), c = M - k (other members of the set), d = N - M - n + k. q = Benjamini-Hochberg over the sets of the analysis (clusterProfiler p.adjust). A set is tested when it has at least one methylated member and its size is within the analysis\'s range',
+    'fisher': 'two-sided Fisher exact test (scipy), q = Benjamini-Hochberg within the analysis and method. The odds ratio adds 0.5 to each cell (Haldane-Anscombe)',
     'mantel_haenszel': 'Mantel-Haenszel common odds ratio with each protein a stratum, and the continuity-corrected Cochran-Mantel-Haenszel test (statsmodels); a b c d are the pooled counts. q = Benjamini-Hochberg within the analysis and method',
-    'mh_expression': 'disease families: Mantel-Haenszel odds ratio and continuity-corrected Mantel-Haenszel test over strata of expression (deciles of the gene\'s Human Protein Atlas cell-line median nTPM, and genes without HPA RNA data; scripts/14); a b c d are the pooled counts. q = Benjamini-Hochberg within the analysis and method',
-    'mh_annotation': 'disease families: the same over strata of annotation, the number of DisGeNET terms outside the family that name the gene (none, then quintiles of the others)',
-    'mh_expression_annotation': 'disease families: the same over the joint strata of expression and annotation. The corrected test, which the website shows by default',
 }
 CODES['ptm_type'] = {'phospho': 'phosphorylation (S, T, Y)', 'lys_acyl': 'lysine acylation', 'ub_sumo': 'ubiquitination or SUMOylation (K)', 'lys_methyl': 'lysine methylation'}
 
@@ -500,8 +498,10 @@ STATISTICS_COLUMNS = [
     ('b', 'integer', '', 'targets not in the category'),
     ('c', 'integer', '', 'background in the category'),
     ('d', 'integer', '', 'background not in the category'),
-    ('odds_ratio', 'number', '', 'odds ratio (method)'),
+    ('odds_ratio', 'number', '', 'odds ratio, for the 2x2 tests (methods fisher, mantel_haenszel); empty for method enricher'),
     ('log2_odds_ratio', 'number', '', 'its log2'),
+    ('fold_enrichment', 'number', '', 'fold enrichment (k/n over M/N) as clusterProfiler reports it, for method enricher; empty otherwise'),
+    ('log2_fold_enrichment', 'number', '', 'its log2'),
     ('p', 'number', '', 'p value'),
     ('q', 'number', '', 'Benjamini-Hochberg adjusted p value within the analysis and method, over all its strata and categories'),
     ('method', 'code', 'method', 'the test'),
@@ -564,35 +564,42 @@ CONDENSATE_COLUMNS = [
     ('n_members_methylated', 'integer', '', 'of these, proteins of the site table'),
 ]
 
-DISEASE_TERM_CORRECTED_COLUMNS = [
+DISEASE_TERM_TESTED_COLUMNS = [
     ('term_id', 'string', '', 'DisGeNET term (UMLS CUI)'),
-    ('term_name', 'string', '', 'its name (a ";" inside a name, the list separator, is written ","; the term_id is DisGeNET\'s)'),
+    ('term_name', 'string', '', 'its name (a ";" inside a name, the list separator, is written ",")'),
     ('family', 'string', '', 'its disease family (scripts/disease_families.py); empty when none'),
-    ('n_genes_term', 'integer', '', 'genes of the term among the reviewed human genes'),
+    ('n_genes_term', 'integer', '', "genes of the term in DOSE's background (reviewed human genes with a DisGeNET term)"),
     ('n_methylated', 'integer', '', 'of these, the genes of methylarginine-containing proteins'),
-    ('odds_ratio', 'number', '', 'Mantel-Haenszel odds ratio over strata of expression (HPA cell-line median nTPM deciles) and of the gene\'s other DisGeNET terms (scripts/14), against every other reviewed human gene'),
-    ('p', 'number', '', 'continuity-corrected Mantel-Haenszel test'),
-    ('q', 'number', '', 'Benjamini-Hochberg adjusted p value over the tested terms (10 to 300 genes, at least one methylated)'),
-    ('dose_enriched', 'boolean', '', 'among the enriched terms of the uncorrected test (DOSE enrichDGN, supporting/disease_terms)'),
-    ('dose_p_adjust', 'number', '', 'its adjusted p value there, empty when not enriched'),
+    ('fold_enrichment', 'number', '', 'fold enrichment as DOSE reports it'),
+    ('p', 'number', '', 'one-sided hypergeometric p value (DOSE enrichDGN)'),
+    ('p_adjust', 'number', '', 'Benjamini-Hochberg adjusted p value over the tested terms'),
+    ('q', 'number', '', 'q value (DOSE)'),
+    ('enriched', 'boolean', '', 'p, p_adjust and q at most 0.05, the cut of the published analysis (supporting/disease_terms)'),
+    ('genes', 'list<string>', '', 'the genes of the methylarginine-containing proteins in the term (symbols)'),
+    ('uniprot_accessions', 'list<string>', '', 'the proteins of the site table those genes stand for'),
+]
+
+DISEASE_ONTOLOGY_COLUMNS = [
+    ('term_id', 'string', '', 'Human Disease Ontology term (DOID)'),
+    ('term_name', 'string', '', 'its name (a ";" inside a name is written ",")'),
+    ('parents', 'list<string>', '', 'its parent terms (is_a)'),
+    ('n_genes_term', 'integer', '', 'genes of the term and of the terms under it, among the reviewed human genes with a Disease Ontology term (the gene sets of DOSE enrichDO)'),
+    ('n_methylated', 'integer', '', 'of these, the genes of methylarginine-containing proteins'),
+    ('fold_enrichment', 'number', '', 'fold enrichment (clusterProfiler)'),
+    ('p', 'number', '', 'one-sided hypergeometric p value (clusterProfiler::enricher on the Disease Ontology gene sets; the same as DOSE enrichDO)'),
+    ('q', 'number', '', 'Benjamini-Hochberg adjusted p value over the tested terms (at least 10 genes)'),
     ('genes', 'list<string>', '', 'the genes of the methylarginine-containing proteins in the term (symbols)'),
     ('uniprot_accessions', 'list<string>', '', 'the proteins of the site table those genes stand for'),
 ]
 
 DISEASE_FAMILY_COLUMNS = [
     ('family', 'string', '', 'disease family (scripts/disease_families.py): the eight audited families, then the additional ones, each in order of significance'),
-    ('audited', 'boolean', '', 'one of the eight audited families (the original pipeline\'s hand-checked rules, scripts/34; otherwise an additional, rule-based family)'),
+    ('audited', 'boolean', '', 'one of the eight audited families (scripts/disease_families.py FAMILY_RULES, the original pipeline\'s hand-checked rules); otherwise an additional, rule-based family'),
     ('n_terms', 'integer', '', 'DisGeNET terms assigned to it'),
     ('n_genes', 'integer', '', 'genes of the universe in at least one of its terms'),
     ('n_methylated_genes', 'integer', '', 'of these, the genes of methylarginine-containing proteins'),
-    ('odds_ratio_corrected', 'number', '', 'odds ratio of the test corrected for expression and annotation (statistics: method mh_expression_annotation), against the other reviewed human genes'),
-    ('q_corrected', 'number', '', 'its Benjamini-Hochberg adjusted p value (over the audited families, or over the additional ones)'),
-    ('odds_ratio_uncorrected', 'number', '', 'odds ratio of the uncorrected Fisher test (statistics: method fisher), as in v1.1.0'),
-    ('q_uncorrected', 'number', '', 'its adjusted p value'),
-    ('odds_ratio_expression', 'number', '', 'odds ratio corrected for expression only (method mh_expression)'),
-    ('q_expression', 'number', '', 'its adjusted p value'),
-    ('odds_ratio_annotation', 'number', '', 'odds ratio corrected for annotation only (method mh_annotation)'),
-    ('q_annotation', 'number', '', 'its adjusted p value'),
+    ('fold_enrichment', 'number', '', 'fold enrichment of the family (clusterProfiler::enricher against the reviewed human genes with a DisGeNET term; statistics: disease_family)'),
+    ('q', 'number', '', 'its Benjamini-Hochberg adjusted p value (over the audited families, or over the additional ones)'),
 ]
 
 SITE_INTERACTION_COLUMNS = [
@@ -634,10 +641,10 @@ COMPLEX_COLUMNS = [
     ('complex_id', 'string', '', 'Complex Portal id'),
     ('complex_name', 'string', '', 'its name (empty for most predicted complexes)'),
     ('curation', 'code', 'curation', 'curated or predicted'),
-    ('n_members', 'integer', '', 'member slots (alternative members of a slot count once)'),
-    ('n_members_methylated', 'integer', '', 'slots with a protein of the site table'),
+    ('n_members', 'integer', '', 'reviewed member proteins (each protein that can fill a member slot counts)'),
+    ('n_members_methylated', 'integer', '', 'members that are proteins of the site table'),
     ('methylated_members', 'list<string>', '', 'those proteins'),
-    ('fold_enrichment', 'number', '', 'methylated share of the members over the methylated share of reviewed human proteins'),
-    ('p', 'number', '', 'hypergeometric p value, P(X >= n_members_methylated)'),
-    ('q', 'number', '', 'Benjamini-Hochberg over all complexes of the same curation, those without a methylated member included. Only complexes with a methylated member are listed'),
+    ('fold_enrichment', 'number', '', 'clusterProfiler FoldEnrichment: methylated share of the members over the methylated share of reviewed human proteins'),
+    ('p', 'number', '', 'clusterProfiler enricher p value (one-sided hypergeometric, P(X >= n_members_methylated)), against all reviewed human proteins'),
+    ('q', 'number', '', 'Benjamini-Hochberg over the tested complexes of the same curation (complexes of at least two reviewed proteins with a methylated member). Only complexes with a methylated member are listed; those of a single reviewed protein are listed without a test'),
 ]

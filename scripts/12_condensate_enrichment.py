@@ -1,19 +1,17 @@
 from __future__ import annotations
 
 import argparse
+import math
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from scipy.stats import fisher_exact
 
 from common import (
     BREWER_COLORS,
-    add_q_values,
     annotate_barh,
     apply_paper_style,
     canonicalize_uniprot_accession,
-    log2_odds_ratio,
     q_threshold_note,
     save_figure,
     save_table,
@@ -21,6 +19,7 @@ from common import (
     signed_bar_colors,
     style_axis,
 )
+from enrichment import Job, run
 
 
 def normalize_membership(df: pd.DataFrame) -> pd.DataFrame:
@@ -104,10 +103,6 @@ def normalize_condensate_species(df: pd.DataFrame) -> pd.DataFrame:
     return normalized.drop_duplicates()
 
 
-def odds_ratio(a: int, b: int, c: int, d: int) -> float:
-    return ((a + 0.5) * (d + 0.5)) / ((b + 0.5) * (c + 0.5))
-
-
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--integrated-sites', required=True)
@@ -174,29 +169,29 @@ def main() -> None:
     methyl_in_universe = methyl_proteins & universe
     global_methyl_fraction = (len(methyl_in_universe) / len(universe)) if universe else 0.0
 
+    # Every condensate with at least --min-condensate-size members, tested with clusterProfiler::enricher (one-sided
+    # hypergeometric, fold enrichment, BH; scripts/enrichment.py) against the other proteins in any condensate.
+    tested = memberships.groupby('condensate_id')['canonical_UniProtAC'].nunique()
+    tested = set(tested[tested >= args.min_condensate_size].index)
+    names = memberships.drop_duplicates('condensate_id').set_index('condensate_id')['condensate_name']
+    sets = memberships.loc[memberships['condensate_id'].isin(tested), ['condensate_id', 'canonical_UniProtAC']]
+    res = run([Job('condensate', methyl_in_universe, universe, sets=sets, whole_universe=True)], Path(args.outdir) / 'enricher')['condensate']
     rows = []
-    for (condensate_id, condensate_name), group in memberships.groupby(['condensate_id', 'condensate_name']):
-        members = set(group['canonical_UniProtAC'].astype(str))
-        if len(members) < args.min_condensate_size:
-            continue
-        a = len(members & methyl_proteins)
-        b = len(methyl_in_universe) - a
-        c = len(members) - a
-        d = len(universe - members) - b
-        current_or = odds_ratio(a, b, c, d)
+    for r in res.to_dict('records'):
         rows.append({
-            'condensate_id': condensate_id,
-            'condensate_name': condensate_name,
-            'member_count': len(members),
-            'methyl_protein_count': a,
-            'methyl_fraction_within_condensate': a / len(members) if members else 0.0,
-            'expected_methyl_count_at_global_rate': len(members) * global_methyl_fraction,
-            'odds_ratio': current_or,
-            'log2_odds_ratio': log2_odds_ratio(current_or),
-            'p_value': float(fisher_exact([[a, b], [c, d]], alternative='two-sided').pvalue),
+            'condensate_id': r['ID'],
+            'condensate_name': names[r['ID']],
+            'member_count': r['M'],
+            'methyl_protein_count': r['k'],
+            'methyl_fraction_within_condensate': r['k'] / r['M'],
+            'expected_methyl_count_at_global_rate': r['M'] * global_methyl_fraction,
+            'fold_enrichment': r['FoldEnrichment'],
+            'log2_fold_enrichment': math.log2(r['FoldEnrichment']),
+            'p_value': r['pvalue'],
+            'q_value': r['p.adjust'],
+            'method': 'enricher',
         })
-
-    enrich = add_q_values(pd.DataFrame(rows)).sort_values(['odds_ratio', 'methyl_protein_count'], ascending=[False, False])
+    enrich = pd.DataFrame(rows).sort_values(['fold_enrichment', 'methyl_protein_count'], ascending=[False, False])
     summary = pd.DataFrame([{
         'methyl_proteins_total': len(methyl_proteins),
         'condensate_universe_proteins': len(universe),
@@ -214,20 +209,20 @@ def main() -> None:
     save_table(summary, outdir / 'condensate_summary.tsv')
 
     apply_paper_style()
-    positive_plot_df = enrich[(enrich['member_count'] >= 10) & (enrich['q_value'] <= 0.05)].sort_values(['log2_odds_ratio', 'methyl_protein_count'], ascending=[False, False]).head(15).sort_values('log2_odds_ratio')
+    positive_plot_df = enrich[(enrich['member_count'] >= 10) & (enrich['q_value'] <= 0.05)].sort_values(['log2_fold_enrichment', 'methyl_protein_count'], ascending=[False, False]).head(15).sort_values('log2_fold_enrichment')
     if not positive_plot_df.empty:
         fig0, ax0 = plt.subplots(figsize=(10.0, 7.2))
-        colors0 = signed_bar_colors(positive_plot_df['log2_odds_ratio'])
-        ax0.barh(positive_plot_df['condensate_name'], positive_plot_df['log2_odds_ratio'], color=colors0, edgecolor='white', linewidth=0.8)
+        colors0 = signed_bar_colors(positive_plot_df['log2_fold_enrichment'])
+        ax0.barh(positive_plot_df['condensate_name'], positive_plot_df['log2_fold_enrichment'], color=colors0, edgecolor='white', linewidth=0.8)
         style_axis(ax0, zero='x')
-        ax0.set_xlabel('log2(OR) vs human condensate protein universe')
+        ax0.set_xlabel('log2 fold enrichment vs human condensate proteins (clusterProfiler enricher)')
         ax0.set_ylabel('Condensate')
         ax0.set_title('Condensate enrichment of methylarginine proteins')
-        set_symmetric_xlim(ax0, positive_plot_df['log2_odds_ratio'], annotation_pad_ratio=0.36, center_on_zero=False)
+        set_symmetric_xlim(ax0, positive_plot_df['log2_fold_enrichment'], annotation_pad_ratio=0.36, center_on_zero=False)
         annotate_barh(
             ax0,
             positive_plot_df['condensate_name'],
-            positive_plot_df['log2_odds_ratio'],
+            positive_plot_df['log2_fold_enrichment'],
             [f'{nm}/{nt}' for nm, nt in zip(positive_plot_df['methyl_protein_count'], positive_plot_df['member_count'])],
             fontsize=8.8,
         )
@@ -235,20 +230,20 @@ def main() -> None:
         fig0.tight_layout()
         save_figure(fig0, outdir / 'condensate_enrichment')
 
-    plot_df = enrich[(enrich['member_count'] >= 10) & (enrich['q_value'] <= 0.05)].sort_values(['log2_odds_ratio', 'methyl_protein_count'], ascending=[False, False]).head(12).sort_values('log2_odds_ratio')
+    plot_df = enrich[(enrich['member_count'] >= 10) & (enrich['q_value'] <= 0.05)].sort_values(['log2_fold_enrichment', 'methyl_protein_count'], ascending=[False, False]).head(12).sort_values('log2_fold_enrichment')
     if not plot_df.empty:
         fig, ax = plt.subplots(figsize=(10.2, 7.6))
-        colors = signed_bar_colors(plot_df['log2_odds_ratio'])
-        ax.barh(plot_df['condensate_name'], plot_df['log2_odds_ratio'], color=colors, edgecolor='white', linewidth=0.8)
+        colors = signed_bar_colors(plot_df['log2_fold_enrichment'])
+        ax.barh(plot_df['condensate_name'], plot_df['log2_fold_enrichment'], color=colors, edgecolor='white', linewidth=0.8)
         style_axis(ax, zero='x')
-        ax.set_xlabel('log2(OR) vs human condensate protein universe')
+        ax.set_xlabel('log2 fold enrichment vs human condensate proteins (clusterProfiler enricher)')
         ax.set_ylabel('Condensate')
         ax.set_title('Condensate enrichment of methylarginine proteins')
-        set_symmetric_xlim(ax, plot_df['log2_odds_ratio'], annotation_pad_ratio=0.38, center_on_zero=False)
+        set_symmetric_xlim(ax, plot_df['log2_fold_enrichment'], annotation_pad_ratio=0.38, center_on_zero=False)
         annotate_barh(
             ax,
             plot_df['condensate_name'],
-            plot_df['log2_odds_ratio'],
+            plot_df['log2_fold_enrichment'],
             [f'{nm}/{nt}' for nm, nt in zip(plot_df['methyl_protein_count'], plot_df['member_count'])],
             fontsize=8.8,
         )

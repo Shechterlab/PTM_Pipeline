@@ -18,6 +18,9 @@ Sources
   ProtVar predicted interfaces (EMBL-EBI, CC BY 4.0) ....... AlphaFold-Multimer interface residues of human pairs
   IntAct features (EMBL-EBI, CC BY 4.0) .................... mutations that change an interaction, binding regions, methylated residues
 
+The protein-set enrichments (Gene Ontology RNA and DNA binding, complexes, condensates by CD-CODE confidence) are
+over-representation tests run with clusterProfiler's enricher (scripts/enrich_sets.R, so Rscript must be on PATH).
+
 It also writes docs/data/methylarg_pred_iface.json (--pred-iface-out): every residue of an explorer protein at a ProtVar
 predicted interface, as runs with the number of partners and the best pDockQ, which the explorer loads only when a
 figure draws the predicted lane.
@@ -46,8 +49,11 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 from scipy import stats as sps
 from statsmodels.stats.contingency_tables import StratifiedTable
+
+from enrichment import Job, run as run_enrichment
 
 STRING_VERSION = '12.5'
 STRING_LINKS = f'https://stringdb-downloads.org/download/protein.physical.links.v{STRING_VERSION}/9606.protein.physical.links.v{STRING_VERSION}.txt.gz'
@@ -731,27 +737,24 @@ def load_modelled_methyl_r(cache: Path, refresh: bool, workers: int):
     return out
 
 
-def cdcode_threshold_enrichment(cd, proteome, meth_base, uids, thresholds=(1, 2, 3, 4)):
+def cdcode_threshold_enrichment(cd, proteome, meth_base, uids, workdir, thresholds=(1, 2, 3, 4)):
     """Methylated share of each condensate counting only members at or above a CD-CODE confidence score, against the
-    other proteins in any human CD-CODE condensate (at any score), the background scripts/12 uses for all memberships."""
+    proteins in any human CD-CODE condensate (at any score), the background scripts/12 uses for all memberships:
+    clusterProfiler enricher, one job per score, condensates with at least five counted members.
+    {score: [[condensate index, members, methylated members, log2 fold enrichment, p, q], ...]}"""
     universe = {a for uid in uids for a in cd.get(uid, {}) if a in proteome}
-    N = len(universe)
-    K = sum(1 for a in universe if a in meth_base)
+    target = {a for a in universe if a in meth_base}
+    jobs = []
+    for t in thresholds:
+        sets = pd.DataFrame([(ci, a) for ci, uid in enumerate(uids) for a, m in cd.get(uid, {}).items() if m[0] >= t and a in proteome],
+                            columns=['term', 'gene'])
+        jobs.append(Job(f'condensate_confidence_{t}', target, universe, sets=sets, whole_universe=True, min_size=5))
+    res = run_enrichment(jobs, workdir)
     out = {}
     for t in thresholds:
-        rows, pv = [], []
-        for ci, uid in enumerate(uids):
-            members = {a for a, m in cd.get(uid, {}).items() if m[0] >= t and a in proteome}
-            n = len(members)
-            if n < 5:
-                continue
-            m = sum(1 for a in members if a in meth_base)
-            p, odds = fisher_2x2(m, n - m, K - m, (N - K) - (n - m))
-            rows.append([ci, n, m, sig(math.log2(odds)), sig(p)])
-            pv.append(p)
-        for r, q in zip(rows, bh(pv)):
-            r.append(sig(q))
-        out[str(t)] = rows
+        r = res[f'condensate_confidence_{t}']
+        rows = [[int(x.ID), int(x.M), int(x.k), sig(math.log2(x.FoldEnrichment)), sig(x.pvalue), sig(x['p.adjust'])] for _, x in r.iterrows()]
+        out[str(t)] = sorted(rows)
     return out
 
 
@@ -1338,11 +1341,6 @@ def mann_whitney(x, y):
 
 
 # ----------------------------------------------------------------------------- statistics
-def hypergeom_sf(k, N, K, n):
-    """P(X >= k) for X ~ Hypergeometric(N population, K successes, n draws)."""
-    return float(sps.hypergeom.sf(k - 1, N, K, n))
-
-
 def fisher_2x2(a, b, c, d):
     """Two-sided Fisher exact p (scipy) for [[a, b], [c, d]] and the Haldane-Anscombe corrected sample odds ratio."""
     p = float(sps.fisher_exact([[a, b], [c, d]]).pvalue)
@@ -1745,32 +1743,36 @@ def write_release_tables(outdir: Path, d: dict):
     for cid, name, predicted, slots, n, k, fold, p, q in d['complexes']:
         methylated = sorted({a for s in slots for a in s if a in d['meth_base']})
         n_cx.update(methylated)
-        rows.append([cid, '' if name in ('', '-') else name, 'predicted' if predicted else 'curated', n, k, '; '.join(methylated),
-                     f'{fold:.4g}', f'{p:.4g}', f'{q:.4g}'])
+        rows.append([cid, '' if name in ('', '-') else name, 'predicted' if predicted else 'curated', n, k, '; '.join(methylated)]
+                    + ['' if x is None else f'{x:.4g}' for x in (fold, p, q)])
     write('complexes.tsv', ['complex_id', 'complex_name', 'curation', 'n_members', 'n_members_methylated', 'methylated_members',
                             'fold_enrichment', 'p', 'q'], rows)
 
-    # Statistics, in the columns of the release's statistics table. Pooled Fisher (Haldane-Anscombe odds ratio) and,
-    # for the within-protein tests, Mantel-Haenszel with each protein as a stratum; q within each analysis and method.
+    # Statistics, in the columns of the release's statistics table. Residue tests: pooled Fisher (Haldane-Anscombe odds
+    # ratio) and, for the within-protein tests, Mantel-Haenszel with each protein as a stratum; q within each analysis
+    # and method. Protein-set tests: clusterProfiler enricher, fold enrichment and its BH p.adjust.
     st = []
     for an, cat, stratum, tabs, background in d['tests']:
         a, b, c, dd = (sum(t[k] for t in tabs) for k in range(4))
         if not a + b + c + dd:
             continue
         p, odds = fisher_2x2(a, b, c, dd)
-        st.append([an, cat, stratum, a, b, c, dd, odds, math.log2(odds), p, None, 'fisher', background, None])
+        st.append([an, cat, stratum, a, b, c, dd, odds, math.log2(odds), None, None, p, None, 'fisher', background, None])
         if len(tabs) > 1:
             mh_or, mh_p, used = mantel_haenszel(tabs)
             ok = mh_or is not None and math.isfinite(mh_or) and mh_or > 0
-            st.append([an, cat, stratum, a, b, c, dd, mh_or if ok else None, math.log2(mh_or) if ok else None, mh_p,
+            st.append([an, cat, stratum, a, b, c, dd, mh_or if ok else None, math.log2(mh_or) if ok else None, None, None, mh_p,
                        None, 'mantel_haenszel', background + ', each protein a stratum', used])
-    for key in dict.fromkeys((r[0], r[11]) for r in st):
-        idx = [k for k, r in enumerate(st) if (r[0], r[11]) == key and r[9] is not None]
-        for k, q in zip(idx, bh([st[k][9] for k in idx])):
-            st[k][10] = q
+    for key in dict.fromkeys((r[0], r[13]) for r in st):
+        idx = [k for k, r in enumerate(st) if (r[0], r[13]) == key and r[11] is not None]
+        for k, q in zip(idx, bh([st[k][11] for k in idx])):
+            st[k][12] = q
+    for an, cat, stratum, a, b, c, dd, fold, p, q, background in d['set_tests']:
+        st.append([an, cat, stratum, a, b, c, dd, None, None, fold, math.log2(fold), p, q, 'enricher', background, None])
     fmt = lambda x: '' if x is None else f'{x:.6g}' if isinstance(x, float) else x  # noqa: E731
-    write('interaction_statistics.tsv', ['analysis', 'category', 'stratum', 'a', 'b', 'c', 'd', 'odds_ratio', 'log2_odds_ratio', 'p', 'q',
-                                         'method', 'background', 'n_strata'], [[fmt(x) for x in r] for r in st])
+    write('interaction_statistics.tsv', ['analysis', 'category', 'stratum', 'a', 'b', 'c', 'd', 'odds_ratio', 'log2_odds_ratio',
+                                         'fold_enrichment', 'log2_fold_enrichment', 'p', 'q', 'method', 'background', 'n_strata'],
+               [[fmt(x) for x in r] for r in st])
 
     # One row per methylated protein
     rows = []
@@ -1815,8 +1817,12 @@ def main():
     ap.add_argument('--measured-sites', default='releases/v1.0.0/human_methylarginine_sites_v1.0.0.tsv',
                     help='with --tables: the sites the frozen model measurements were made at (the published union)')
     ap.add_argument('--tables-out', default='', help='also write the interaction tables of a release into this folder')
+    ap.add_argument('--enrichment-workdir', default='',
+                    help='where the clusterProfiler runs keep their inputs and results (default: <tables-out>/enricher, '
+                         'or PTM_data/interactions_enricher)')
     args = ap.parse_args()
     cache = Path(args.cache)
+    enrich_dir = Path(args.enrichment_workdir or (Path(args.tables_out) / 'enricher' if args.tables_out else 'PTM_data/interactions_enricher'))
     if args.tables:
         measured_sites = defaultdict(set)
         with open(args.measured_sites, encoding='utf-8') as fh:
@@ -1897,36 +1903,30 @@ def main():
             last = k
         string_rows.append(row)
 
-    # Complexes: membership, methylated share and enrichment against the reviewed proteome.
+    # Complexes: membership, methylated share and enrichment against the reviewed proteome (clusterProfiler enricher,
+    # curated and predicted complexes as separate jobs, complexes of at least two reviewed proteins). A complex's set is
+    # its reviewed member proteins; a slot that any of several proteins can fill contributes each of them.
     N = len(proteome)
     K = sum(1 for a in proteome if a in meth_base)
-    cx_rows, cx_p, cx_release = [], [], []
+    jobs = [Job(f'complexes_{kind}', [a for a in proteome if a in meth_base], proteome, whole_universe=True, min_size=2,
+                sets=pd.DataFrame([(c['id'], a) for c in complexes if c['predicted'] == (kind == 'predicted') for s in c['slots']
+                                   for a in s if a in proteome], columns=['term', 'gene']))
+            for kind in ('curated', 'predicted')]
+    res = run_enrichment(jobs, enrich_dir)
+    cx_test = {x.ID: x for j in jobs for _, x in res[j.job].iterrows()}
+    n_curated, n_predicted = (len(res[j.job]) for j in jobs)
+    cx_rows, cx_release = [], []
     for c in complexes:
         slots = [[a for a in s if a in proteome] or s for s in c['slots']]
-        n = len(slots)
-        k = sum(1 for s in slots if any(a in meth_base for a in s))
-        if k == 0:
-            # Tested for the BH correction, but only complexes with a methylated member are exported.
-            cx_p.append(hypergeom_sf(0, N, K, n) if n >= 2 else 1.0)
-            cx_rows.append(None)
-            cx_release.append(None)
+        reviewed = {a for s in slots for a in s if a in proteome}
+        methylated = {a for a in reviewed if a in meth_base}
+        if not methylated:
             continue
         members = [vid(s[0]) if len(s) == 1 else [vid(a) for a in s] for s in slots]
-        p = hypergeom_sf(k, N, K, n) if n >= 2 else 1.0
-        fold = (k / n) / (K / N) if n else 0
-        cx_rows.append([c['id'], c['name'], int(c['predicted']), members, n, k, sig(fold), sig(p)])
-        cx_release.append([c['id'], c['name'], bool(c['predicted']), slots, n, k, fold, p])
-        cx_p.append(p)
-    kinds = [int(c['predicted']) for c in complexes]
-    for kind in (0, 1):
-        idx = [i for i, kd in enumerate(kinds) if kd == kind]
-        for i, q in zip(idx, bh([cx_p[i] for i in idx])):
-            if cx_rows[i] is not None:
-                cx_rows[i].append(sig(q))
-                cx_release[i].append(q)
-    n_curated, n_predicted = kinds.count(0), kinds.count(1)
-    cx_rows = [r for r in cx_rows if r is not None]
-    cx_release = [r for r in cx_release if r is not None]
+        t = cx_test.get(c['id'])
+        fold, p, q = (float(t.FoldEnrichment), float(t.pvalue), float(t['p.adjust'])) if t is not None else (None, None, None)
+        cx_rows.append([c['id'], c['name'], int(c['predicted']), members, len(reviewed), len(methylated), sig(fold), sig(p), sig(q)])
+        cx_release.append([c['id'], c['name'], bool(c['predicted']), slots, len(reviewed), len(methylated), fold, p, q])
 
     # Interfaces at methylarginine sites, plus all-arginine counts for the enrichment test.
     site_rows = []
@@ -2512,7 +2512,7 @@ def main():
     cond_meta = explorer['meta'].get('condensates', [])
     cd_uids = [c[1] for c in cond_meta]
     cd, cd_version = load_cdcode(cache, args.refresh, cd_uids, args.workers)
-    cond_conf = cdcode_threshold_enrichment(cd, proteome, meth_base, cd_uids)
+    cond_conf = cdcode_threshold_enrichment(cd, proteome, meth_base, cd_uids, enrich_dir)
     # How CD-CODE confidence scores are distributed over human memberships (scores cluster at 1-2 and 4-5).
     score_hist = Counter(m[0] for uid in cd_uids for a, m in cd.get(uid, {}).items() if a in proteome)
     cond_score_hist = {str(k): v for k, v in sorted(score_hist.items())}
@@ -2556,22 +2556,23 @@ def main():
                 f |= F_DNA_EXP
         flags.append(f)
 
-    # GO RNA/DNA binding among methylated vs other reviewed human proteins.
-    go_enrich = {}
-    for key, bit in (('rna', F_RNA), ('rna_exp', F_RNA_EXP), ('dna', F_DNA), ('dna_exp', F_DNA_EXP)):
-        a = b = c = d = 0
+    # GO RNA/DNA binding among methylated proteins against all reviewed human proteins (clusterProfiler enricher, the
+    # four annotations as one job): {key: [methylated with, methylated, other with, other, log2 fold enrichment, p, q]}.
+    go_sets = []
+    for key in ('rna', 'rna_exp', 'dna', 'dna_exp'):
         for acc in proteome:
             g = go.get(acc)
             codes = (g['rna'] if key.startswith('rna') else g['dna']) if g else set()
-            has = bool(codes & GO_EXPERIMENTAL) if key.endswith('_exp') else bool(codes)
-            if acc in meth_base:
-                a, b = a + has, b + (not has)
-            else:
-                c, d = c + has, d + (not has)
-        p, odds = fisher_2x2(a, b, c, d)
-        go_enrich[key] = [a, a + b, c, c + d, sig(math.log2(odds)), sig(p)]
-        release_tests.append(('go_binding', key.replace('_exp', '') + '_binding' + ('_experimental' if key.endswith('_exp') else ''), 'all',
-                              [[a, b, c, d]], 'other reviewed human proteins'))
+            if codes & GO_EXPERIMENTAL if key.endswith('_exp') else codes:
+                go_sets.append((key, acc))
+    go_test = run_enrichment([Job('go_binding', [a for a in proteome if a in meth_base], proteome, whole_universe=True,
+                                  sets=pd.DataFrame(go_sets, columns=['term', 'gene']))], enrich_dir)['go_binding']
+    go_enrich, set_tests = {}, []
+    for _, x in go_test.iterrows():
+        go_enrich[x.ID] = [int(x.a), int(x.n), int(x.c), int(x.N - x.n), sig(math.log2(x.FoldEnrichment)), sig(x.pvalue), sig(x['p.adjust'])]
+        set_tests.append(('go_binding', x.ID.replace('_exp', '') + '_binding' + ('_experimental' if x.ID.endswith('_exp') else ''), 'all',
+                          int(x.a), int(x.b), int(x.c), int(x.d), float(x.FoldEnrichment), float(x.pvalue), float(x['p.adjust']),
+                          'all reviewed human proteins'))
 
     # STRING ids (numeric ENSP part) let the browser ask STRING for edges among a protein's partners.
     def ensp(acc):
@@ -2587,6 +2588,8 @@ def main():
             'proteome_size': N,
             **({'reference': reference} if reference else {}),
             'complexes_tested': {'curated': n_curated, 'predicted': n_predicted},
+            # protein-set tests (GO binding, complexes, condensates by confidence): clusterProfiler enricher, log2 fold enrichment
+            'set_effect': 'log2_fold_enrichment',
             'methylated_in_proteome': K,
             'prmt_genes': PRMT_GENES,
             'flag_bits': {'prmt': F_PRMT, 'tudor': F_TUDOR, 'rna': F_RNA, 'dna': F_DNA, 'rna_exp': F_RNA_EXP, 'dna_exp': F_DNA_EXP, 'wd40': F_WD40, 'phd': F_PHD},
@@ -2695,7 +2698,7 @@ def main():
             'prots': prots, 'sites': sites, 'vocab': vocab, 'gene_of': gene_of, 'iface_detail': iface_detail, 'xl_rows': xl_rows,
             'pred_all': pred_all, 'gallery': gallery, 'intact_rows': intact_rows, 'partners': partners, 'domain_classes': domain_classes,
             'meth_base': meth_base, 'cx_rows': cx_rows, 'iface_residues': iface_residues, 'pred_iface': pred_iface, 'xl_prot': xl_prot,
-            'intact_prot': intact_prot, 'tests': release_tests, 'complexes': cx_release, 'go': go, 'xl_seq': xl_seq_all,
+            'intact_prot': intact_prot, 'tests': release_tests, 'set_tests': set_tests, 'complexes': cx_release, 'go': go, 'xl_seq': xl_seq_all,
             'proteome': proteome})
     log(f'wrote {args.out}: {len(vocab):,} proteins, {sum(len(r) // 2 for r in string_rows):,} partner links, '
         f'{len(cx_rows):,} complexes with methylated members, {len(site_rows):,} sites at PDB interfaces '

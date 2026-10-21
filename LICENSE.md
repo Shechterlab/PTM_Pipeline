@@ -50,7 +50,7 @@ Data from other resources remain under their own terms. The explorer's **Documen
 | Trendel et al., Cell 188:4424 (2025), doi:10.1016/j.cell.2025.04.037 (DNA crosslinks and DNA interactome) | CC BY-NC 4.0 (open access article and supplement) |
 | CD-CODE (Rostam et al., Nat Methods 20:673, 2023) | CC BY-NC 4.0 (stated on cd-code.org) |
 
-Most other sources are CC0 or CC BY 4.0, including UniProt, PANTHER, STRING, Complex Portal, Gene Ontology, AlphaFold DB, AlphaMissense, ProtVar, the PDB, InterPro, Open Targets, ChIP-Atlas, IntAct, the Human Protein Atlas, RBDmap (Castello et al. 2016, CC BY 4.0) and the CARM1 knockout data (Shishkova et al. 2017, CC BY 4.0). Data reproduced from journal supplements are cited to their articles and remain subject to the publishers' terms. These include:
+Most other sources are CC0 or CC BY 4.0, including UniProt, PANTHER, the Human Disease Ontology (CC0 1.0), STRING, Complex Portal, Gene Ontology, AlphaFold DB, AlphaMissense, ProtVar, the PDB, InterPro, Open Targets, ChIP-Atlas, IntAct, the Human Protein Atlas, RBDmap (Castello et al. 2016, CC BY 4.0) and the CARM1 knockout data (Shishkova et al. 2017, CC BY 4.0). Data reproduced from journal supplements are cited to their articles and remain subject to the publishers' terms. These include:
 - Maron et al. 2021
 - ProMetheusDB
 

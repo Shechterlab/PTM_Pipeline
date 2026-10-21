@@ -50,7 +50,8 @@ bash hpc/build_release.sh v1.1.0
 
 The build checks every input against `inputs/MANIFEST.tsv`, places each source record on the reference sequences,
 stops if a record is placed against its own evidence or a site is not an arginine, runs the analyses, and writes
-`releases/v1.1.0/` and the website's data in `docs/data/`. It takes about half an hour on one core.
+`releases/v1.1.0/` and the website's data in `docs/data/`. It takes about half an hour on one core. The tests of
+protein and gene sets run in R (clusterProfiler and DOSE, in the environment file), so `Rscript` must be on the path.
 
 ## Scripts
 
@@ -64,6 +65,7 @@ stops if a record is placed against its own evidence or a site is not an arginin
 | `17_*` to `35_*` | extended analyses and the paper's figures |
 | `36_*`, `37_*` | the website's data: sites, evidence and interactions (`37a` stages the interaction inputs) |
 | `39_*` to `42_*` | the website's annotation layers (CARM1 knockout, Human Protein Atlas; CPLM 4.0 for v1.0.0) and the lysine and arginine methylation co-occurrence |
+| `enrichment.py`, `enrich_sets.R` | the over-representation tests of protein and gene sets (clusterProfiler `enricher`, DOSE `enrichDGN`), which the analyses call |
 | `build_release.py`, `release_*.py` | writing a release folder |
 
 `hpc/slurm_run_integration.sh` and `scripts/run_extended_analyses.sh` are the workflow of the published run with its

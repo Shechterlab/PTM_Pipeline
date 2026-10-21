@@ -11,15 +11,16 @@ The universe is the reviewed entries of --uniprot-metadata; the targets are the 
 protein PANTHER classifies has one top-level class, and config/panther_class_groups.json puts each top-level class in
 one group, so the groups (with the proteins PANTHER leaves unclassified) and the top-level classes (likewise) each
 partition the universe. A protein belongs to a class below the top level when PANTHER gives it that class or one under
-it. Three analyses, each a two-sided Fisher exact test per category with the Haldane-Anscombe odds ratio (0.5 added to
-each cell) and Benjamini-Hochberg q values within the analysis:
+it. Three analyses, each an over-representation test of every category with clusterProfiler::enricher (one-sided
+hypergeometric test, fold enrichment, Benjamini-Hochberg within the analysis; scripts/enrichment.py), the background
+being every reviewed protein (the unclassified ones form their own category):
 
   panther_group     the groups of the overview, and the unclassified proteins
   panther_class     the 24 top-level classes, and the unclassified proteins
   panther_subclass  every class below the top level with at least --min-proteins proteins in the universe
 
 Writes panther_class_enrichment.tsv (one row per test, with the 2x2 counts and each category's parent) and
-protein_panther_classes.tsv (one row per protein of the universe).
+protein_panther_classes.tsv (one row per protein of the universe). Needs Rscript with clusterProfiler on PATH.
 """
 from __future__ import annotations
 
@@ -29,26 +30,25 @@ import math
 from pathlib import Path
 
 import pandas as pd
-from scipy.stats import false_discovery_control, fisher_exact
+
+from enrichment import Job, run
 
 
 def read(path) -> pd.DataFrame:
     return pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False)
 
 
-def tests(analysis: str, members: dict[str, set], parents: dict[str, str], ids: dict[str, str], universe: set, targets: set) -> list[dict]:
+def tests(analysis: str, members: dict[str, set], parents: dict[str, str], ids: dict[str, str], universe: set, targets: set,
+          workdir: Path, min_size: int = 1) -> list[dict]:
+    """clusterProfiler::enricher over the categories, the background every protein of the universe."""
+    sets = pd.DataFrame([(name, acc) for name, group in members.items() for acc in group], columns=['term', 'gene'])
+    res = run([Job(analysis, targets, universe, sets=sets, whole_universe=True, min_size=min_size)], workdir)[analysis]
     rows = []
-    for name, group in members.items():
-        a = len(group & targets)
-        b = len(targets) - a
-        c = len(group) - a
-        d = len(universe) - len(targets) - c
-        odds = ((a + 0.5) * (d + 0.5)) / ((b + 0.5) * (c + 0.5))
-        rows.append({'analysis': analysis, 'category': name, 'category_id': ids.get(name, ''), 'parent': parents.get(name, ''),
-                     'a': a, 'b': b, 'c': c, 'd': d, 'odds_ratio': odds, 'log2_odds_ratio': math.log2(odds),
-                     'p_value': float(fisher_exact([[a, b], [c, d]]).pvalue)})
-    for r, q in zip(rows, false_discovery_control([r['p_value'] for r in rows], method='bh')):
-        r['q_value'] = float(q)
+    for r in res.to_dict('records'):
+        rows.append({'analysis': analysis, 'category': r['ID'], 'category_id': ids.get(r['ID'], ''), 'parent': parents.get(r['ID'], ''),
+                     'a': r['a'], 'b': r['b'], 'c': r['c'], 'd': r['d'], 'fold_enrichment': r['FoldEnrichment'],
+                     'log2_fold_enrichment': math.log2(r['FoldEnrichment']) if r['FoldEnrichment'] > 0 else None,
+                     'p_value': r['pvalue'], 'q_value': r['p.adjust'], 'method': 'enricher'})
     return rows
 
 
@@ -122,10 +122,11 @@ def main() -> None:
     if len(set(name[c] for c in ontology.index)) != len(ontology):
         raise SystemExit('two PANTHER classes share a name')
     ids = {v: k for k, v in name.items()}
-    result = (tests('panther_group', group_members, {}, {}, universe, targets)
-              + tests('panther_class', top_members, {name[c]: group_of[c] for c in tops}, ids, universe, targets)
+    work = out / 'enricher'
+    result = (tests('panther_group', group_members, {}, {}, universe, targets, work)
+              + tests('panther_class', top_members, {name[c]: group_of[c] for c in tops}, ids, universe, targets, work)
               + tests('panther_subclass', sub_members, {name[c]: name[top_of[c]] for c in ontology.index if c not in tops and c != 'PC00000'},
-                      ids, universe, targets))
+                      ids, universe, targets, work, min_size=args.min_proteins))
     pd.DataFrame(result).to_csv(out / 'panther_class_enrichment.tsv', sep='\t', index=False)
     for analysis in ('panther_group', 'panther_class'):
         part = [r for r in result if r['analysis'] == analysis]
@@ -133,7 +134,8 @@ def main() -> None:
             raise SystemExit(f'{analysis} does not partition the universe')
     classified = int((proteins['panther_class_id'] != '').sum())
     print(f'{len(universe):,} reviewed proteins, {len(targets):,} methylated; {classified:,} with a PANTHER class; '
-          f'{len(group_members)} groups, {len(top_members)} top-level rows, {len(sub_members)} subclasses tested')
+          f'{len(group_members)} groups, {len(top_members)} top-level rows, {len(sub_members)} subclasses of at least {args.min_proteins} proteins, '
+          f'{sum(r["analysis"] == "panther_subclass" for r in result)} of them with a methylated protein (clusterProfiler tests only those)')
 
 
 if __name__ == '__main__':

@@ -7,7 +7,8 @@ published PTM_results/) and the frozen inputs, and returns tables in the release
   proteins            one row per protein of the site table
   statistics          every enrichment test the website or the paper reports, with its 2x2 counts
   disease_terms       enriched DisGeNET terms (DOSE enrichDGN, uncorrected)
-  disease_terms_corrected  every tested DisGeNET term with the test corrected for expression and annotation
+  disease_terms_tested     every DisGeNET term DOSE tested, enriched or not
+  disease_ontology    every Disease Ontology term tested
   density_windows     significant methylarginine density windows (scripts/28)
   hpa_locations       Human Protein Atlas locations of the proteins
   other_ptm_sites     other modifications on the proteins, from the PTM master table
@@ -49,6 +50,15 @@ def split(value: str, sep: str = ';') -> list[str]:
 
 # ---- Statistics ------------------------------------------------------------------------------------------------------
 
+def effect(r: dict) -> dict:
+    """The effect size columns of a statistics row: clusterProfiler's fold enrichment for its tests (method enricher),
+    the odds ratio for the 2x2 tests."""
+    if 'fold_enrichment' in r:
+        return {'fold_enrichment': num(r['fold_enrichment']), 'log2_fold_enrichment': num(r['log2_fold_enrichment']),
+                'odds_ratio': None, 'log2_odds_ratio': None, 'method': r.get('method') or 'enricher'}
+    return {'odds_ratio': num(r['odds_ratio']), 'log2_odds_ratio': num(r['log2_odds_ratio']), 'method': 'fisher'}
+
+
 def from_fractions(df: pd.DataFrame, label: str, analysis: str, background: str, stratum: str = 'all') -> list[dict]:
     """Rows of an enrichment table that gives counts and fractions (target_count, target_fraction, background_count,
     background_fraction): the 2x2 table is recovered from the totals the fractions imply."""
@@ -62,8 +72,7 @@ def from_fractions(df: pd.DataFrame, label: str, analysis: str, background: str,
     for r in df.to_dict('records'):
         a, c = int(float(r['target_count'])), int(float(r['background_count']))
         rows.append({'analysis': analysis, 'category': r[label], 'stratum': stratum, 'a': a, 'b': n_target - a, 'c': c,
-                     'd': n_background - c, 'odds_ratio': num(r['odds_ratio']), 'log2_odds_ratio': num(r['log2_odds_ratio']),
-                     'p': num(r['p_value']), 'q': num(r['q_value']), 'method': 'fisher', 'background': background, 'n_strata': ''})
+                     'd': n_background - c, **effect(r), 'p': num(r['p_value']), 'q': num(r['q_value']), 'background': background, 'n_strata': ''})
     return rows
 
 
@@ -71,9 +80,8 @@ def panther_rows(root: Path) -> list[dict]:
     rows = []
     for r in read(root / 'panther_class' / 'panther_class_enrichment.tsv').to_dict('records'):
         rows.append({'analysis': r['analysis'], 'category': r['category'], 'stratum': 'all',
-                     **{k: int(r[k]) for k in 'abcd'}, 'odds_ratio': num(r['odds_ratio']),
-                     'log2_odds_ratio': num(r['log2_odds_ratio']), 'p': num(r['p_value']), 'q': num(r['q_value']),
-                     'method': 'fisher', 'background': 'other reviewed human proteins', 'n_strata': ''})
+                     **{k: int(r[k]) for k in 'abcd'}, **effect(r), 'p': num(r['p_value']), 'q': num(r['q_value']),
+                     'background': 'other reviewed human proteins', 'n_strata': ''})
     return rows
 
 
@@ -91,20 +99,17 @@ def statistics(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
                            'domain_context', 'other arginines of the methylated proteins')
     rows += from_fractions(read(root / 'domain_context' / 'domain_class_enrichment.tsv'), 'category',
                            'domain_class', 'other arginines of the methylated proteins')
-    # Each family: the uncorrected Fisher test, then the Mantel-Haenszel tests corrected for expression, annotation and
-    # both (scripts/14); a b c d are the pooled counts in every row.
+    # The disease families (scripts/14): clusterProfiler::enricher against the genes with a DisGeNET term.
     for r in read(root / 'disease' / 'disease_families.tsv').to_dict('records'):
         a, c = int(r['methylarginine_protein_count']), int(r['background_count'])
-        for suffix, method in (('', 'fisher'), ('_expression', 'mh_expression'), ('_annotation', 'mh_annotation'), ('_corrected', 'mh_expression_annotation')):
-            odds = float(r['odds_ratio' + suffix])
-            rows.append({'analysis': 'disease_family' if r['audited'] == 'True' else 'disease_family_additional',
-                         'category': r['disease_family'], 'stratum': 'all', 'a': a,
-                         'b': int(r['methylarginine_denominator']) - a, 'c': c, 'd': int(r['background_denominator']) - c,
-                         'odds_ratio': odds, 'log2_odds_ratio': math.log2(odds) if odds > 0 else None,
-                         'p': num(r['p_value' + suffix]), 'q': num(r['BH_adjusted_p' + suffix]), 'method': method,
-                         'background': 'other reviewed human genes (Entrez)', 'n_strata': int(r['n_strata' + suffix]) if suffix else ''})
+        fold = float(r['fold_enrichment'])
+        rows.append({'analysis': 'disease_family' if r['audited'] == 'True' else 'disease_family_additional',
+                     'category': r['disease_family'], 'stratum': 'all', 'a': a,
+                     'b': int(r['methylarginine_denominator']) - a, 'c': c, 'd': int(r['background_denominator']) - c,
+                     'fold_enrichment': fold, 'log2_fold_enrichment': math.log2(fold), 'p': num(r['p_value']), 'q': num(r['BH_adjusted_p']),
+                     'method': 'enricher', 'background': 'other reviewed human genes (Entrez) with a DisGeNET term', 'n_strata': ''})
     rows += condensate_rows(root)
-    rows += hpa_rows(proteins)
+    rows += hpa_rows(proteins, root / 'hpa' / 'enricher')
     return pd.DataFrame(rows)
 
 
@@ -119,35 +124,25 @@ def condensate_rows(root: Path) -> list[dict]:
         a, members = int(r['methyl_protein_count']), int(r['member_count'])
         rows.append({'analysis': 'condensate', 'category': r['condensate_id'], 'stratum': 'all', 'a': a,
                      'b': methyl_in_universe - a, 'c': members - a, 'd': universe - members - (methyl_in_universe - a),
-                     'odds_ratio': num(r['odds_ratio']), 'log2_odds_ratio': num(r['log2_odds_ratio']), 'p': num(r['p_value']),
-                     'q': num(r['q_value']), 'method': 'fisher',
+                     **effect(r), 'p': num(r['p_value']), 'q': num(r['q_value']),
                      'background': 'other human proteins in CD-CODE condensates (export of 2026-03-18)', 'n_strata': ''})
     del membership
     return rows
 
 
-def hpa_rows(proteins: pd.DataFrame) -> list[dict]:
-    """Per HPA location, methylated against other HPA-profiled proteins, over locations scored Approved or better
-    (scripts/explorer_merge.py merge_hpa, as on the website)."""
-    from scipy.stats import false_discovery_control, fisher_exact
+def hpa_rows(proteins: pd.DataFrame, workdir: Path) -> list[dict]:
+    """Per HPA location, methylated against other HPA-profiled proteins, over locations scored Approved or better:
+    clusterProfiler::enricher (one-sided hypergeometric, fold enrichment, BH; scripts/enrichment.py)."""
+    from enrichment import Job, run
     hpa = proteins.attrs['hpa_all']
     confident = hpa[hpa['reliability'] != 'Uncertain']
     universe = set(confident['canonical_UniProtAC'])
     methylated = universe & set(proteins['uniprot_accession'])
-    rows, pvals = [], []
-    for name in sorted(hpa['location'].unique()):
-        with_loc = set(confident.loc[confident['location'] == name, 'canonical_UniProtAC'])
-        a = len(with_loc & methylated)
-        b, c = len(methylated) - a, len(with_loc - methylated)
-        d = len(universe) - len(methylated) - c
-        odds = ((a + 0.5) * (d + 0.5)) / ((b + 0.5) * (c + 0.5))
-        pvals.append(float(fisher_exact([[a, b], [c, d]]).pvalue))
-        rows.append({'analysis': 'hpa_location', 'category': name, 'stratum': 'all', 'a': a, 'b': b, 'c': c, 'd': d,
-                     'odds_ratio': odds, 'log2_odds_ratio': math.log2(odds), 'p': pvals[-1], 'method': 'fisher',
-                     'background': 'other proteins with an HPA 25.1 location (Approved or better)', 'n_strata': ''})
-    for r, q in zip(rows, false_discovery_control(pvals, method='bh')):
-        r['q'] = float(q)
-    return rows
+    res = run([Job('hpa_location', methylated, universe, sets=confident[['location', 'canonical_UniProtAC']], whole_universe=True)], workdir)['hpa_location']
+    return [{'analysis': 'hpa_location', 'category': r['ID'], 'stratum': 'all', 'a': r['a'], 'b': r['b'], 'c': r['c'], 'd': r['d'],
+             'fold_enrichment': r['FoldEnrichment'], 'log2_fold_enrichment': math.log2(r['FoldEnrichment']),
+             'p': r['pvalue'], 'q': r['p.adjust'], 'method': 'enricher',
+             'background': 'other proteins with an HPA 25.1 location (Approved or better)', 'n_strata': ''} for r in res.to_dict('records')]
 
 
 # ---- Proteins ----------------------------------------------------------------------------------------------------------
@@ -322,25 +317,42 @@ def condensates_table(root: Path, accs: set) -> pd.DataFrame:
 
 def disease_families_table(root: Path) -> pd.DataFrame:
     f = read(root / 'disease' / 'disease_families.tsv')
-    out = pd.DataFrame({'family': f['disease_family'], 'audited': f['audited'] == 'True', 'n_terms': f['contributing_ontology_terms'].astype(int),
-                        'n_genes': f['family_gene_count'].astype(int), 'n_methylated_genes': f['methylarginine_protein_count'].astype(int)})
-    for suffix, name in (('_corrected', 'corrected'), ('', 'uncorrected'), ('_expression', 'expression'), ('_annotation', 'annotation')):
-        out[f'odds_ratio_{name}'] = f['odds_ratio' + suffix].astype(float)
-        out[f'q_{name}'] = f['BH_adjusted_p' + suffix].astype(float)
-    return out
+    return pd.DataFrame({'family': f['disease_family'], 'audited': f['audited'] == 'True', 'n_terms': f['contributing_ontology_terms'].astype(int),
+                         'n_genes': f['family_gene_count'].astype(int), 'n_methylated_genes': f['methylarginine_protein_count'].astype(int),
+                         'fold_enrichment': f['fold_enrichment'].astype(float), 'q': f['BH_adjusted_p'].astype(float)})
 
 
-def disease_terms_corrected_table(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
-    """Every DisGeNET term tested, with the corrected test (scripts/14 disease_terms_corrected.tsv)."""
-    t = read(root / 'disease' / 'disease_terms_corrected.tsv')
+def _accessions_of(proteins: pd.DataFrame):
     by_symbol = defaultdict(list)
     for acc, sym in zip(proteins['uniprot_accession'], proteins['_label_symbol']):
         by_symbol[sym].append(acc)
+    return lambda g: join(sorted({a for s in split(g, '/') for a in by_symbol.get(s, [])}))
+
+
+def _clean_name(names: pd.Series) -> pd.Series:
+    # ";" is the release's list separator: a name that holds one is written with ","
+    return names.str.replace('; ', ', ', regex=False).str.replace(';', ',', regex=False)
+
+
+def disease_terms_tested_table(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
+    """Every DisGeNET term DOSE enrichDGN tested, enriched or not (scripts/14 disease_terms_tested.tsv)."""
+    t = read(root / 'disease' / 'disease_terms_tested.tsv')
+    accs = _accessions_of(proteins)
     return pd.DataFrame({
-        'term_id': t['term_id'], 'term_name': t['term_name'].str.replace('; ', ', ', regex=False).str.replace(';', ',', regex=False), 'family': t['family'],
-        'n_genes_term': t['genes'].astype(int), 'n_methylated': t['methylated'].astype(int),
-        'odds_ratio': t['odds_ratio'].astype(float), 'p': t['p_value'].astype(float), 'q': t['BH_adjusted_p'].astype(float),
-        'dose_enriched': t['dose_enriched'] == 'True', 'dose_p_adjust': t['dose_p_adjust'].map(lambda v: float(v) if v != '' else None),
-        'genes': t['methylated_genes'].map(lambda g: join(split(g, '/'))),
-        'uniprot_accessions': t['methylated_genes'].map(lambda g: join(sorted({a for s in split(g, '/') for a in by_symbol.get(s, [])}))),
+        'term_id': t['ID'], 'term_name': _clean_name(t['Description']), 'family': t['family'],
+        'n_genes_term': t['M'].astype(int), 'n_methylated': t['k'].astype(int), 'fold_enrichment': t['FoldEnrichment'].astype(float),
+        'p': t['pvalue'].astype(float), 'p_adjust': t['p.adjust'].astype(float), 'q': t['qvalue'].astype(float), 'enriched': t['enriched'] == 'True',
+        'genes': t['geneID'].map(lambda g: join(split(g, '/'))), 'uniprot_accessions': t['geneID'].map(accs),
+    })
+
+
+def disease_ontology_table(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
+    """Every Disease Ontology term tested (scripts/14 disease_ontology.tsv)."""
+    t = read(root / 'disease' / 'disease_ontology.tsv')
+    accs = _accessions_of(proteins)
+    return pd.DataFrame({
+        'term_id': t['ID'], 'term_name': _clean_name(t['Description']), 'parents': t['parents'].map(lambda v: join(split(v, ';'))),
+        'n_genes_term': t['M'].astype(int), 'n_methylated': t['k'].astype(int), 'fold_enrichment': t['FoldEnrichment'].astype(float),
+        'p': t['pvalue'].astype(float), 'q': t['p.adjust'].astype(float),
+        'genes': t['geneID'].map(lambda g: join(split(g, '/'))), 'uniprot_accessions': t['geneID'].map(accs),
     })

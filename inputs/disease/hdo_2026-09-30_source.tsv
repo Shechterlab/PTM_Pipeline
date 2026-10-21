@@ -1,0 +1,8 @@
+field	value
+ontology	Human Disease Ontology
+release	2026-09-30
+source_url	https://raw.githubusercontent.com/DiseaseOntology/HumanDiseaseOntology/main/src/ontology/HumanDO.obo
+database	HDO.sqlite (YuLab, https://yulab-smu.top/DOSE), downloaded by GOSemSim
+database_md5	866c455b010b32052f620345e2295aca
+DOSE	4.4.0
+GOSemSim	2.36.0

@@ -18,7 +18,7 @@ and writes --outdir (releases/VERSION), for version V and previous version P:
   supporting/carm1_ko_V.tsv             response to CARM1 knockout (Shishkova et al. 2017)
   human_methylarginine_proteins_V.tsv   one row per protein: identity, function, enrichment, clustering, context
   statistics_V.tsv                      every enrichment test the website or the paper reports, with its 2x2 counts
-  supporting/disease_terms_V.tsv, disease_terms_corrected_V.tsv, density_windows_V.tsv, hpa_locations_V.tsv, other_ptm_sites_V.tsv
+  supporting/disease_terms_V.tsv, disease_terms_tested_V.tsv, disease_ontology_V.tsv, density_windows_V.tsv, hpa_locations_V.tsv, other_ptm_sites_V.tsv
   data_dictionary.tsv                   every column of every table, with its codes
   release.json                          version, counts, inputs and files
   README.md, CHANGES.md, MD5SUMS
@@ -771,8 +771,9 @@ def main() -> None:
         'proteins': (f'human_methylarginine_proteins_{version}.tsv', proteins, rc.PROTEIN_COLUMNS),
         'statistics': (f'statistics_{version}.tsv', statistics, rc.STATISTICS_COLUMNS),
         'disease_terms': (f'supporting/disease_terms_{version}.tsv', disease_terms, rc.DISEASE_TERM_COLUMNS),
-        'disease_terms_corrected': (f'supporting/disease_terms_corrected_{version}.tsv', release_tables.disease_terms_corrected_table(root, proteins),
-                                    rc.DISEASE_TERM_CORRECTED_COLUMNS),
+        'disease_terms_tested': (f'supporting/disease_terms_tested_{version}.tsv', release_tables.disease_terms_tested_table(root, proteins),
+                                 rc.DISEASE_TERM_TESTED_COLUMNS),
+        'disease_ontology': (f'supporting/disease_ontology_{version}.tsv', release_tables.disease_ontology_table(root, proteins), rc.DISEASE_ONTOLOGY_COLUMNS),
         'density_windows': (f'supporting/density_windows_{version}.tsv', extra['density_windows'], rc.DENSITY_COLUMNS),
         'hpa_locations': (f'supporting/hpa_locations_{version}.tsv', extra['hpa'], rc.HPA_COLUMNS),
         'other_ptm_sites': (f'supporting/other_ptm_sites_{version}.tsv', extra['other_ptm_sites'], rc.OTHER_PTM_COLUMNS),
@@ -802,9 +803,21 @@ def main() -> None:
     context = {'version': version, 'previous': previous, 'files': files, 'counts': counts, 'inputs': inputs, 'root': root,
                'uniprot_release': json.loads((inputs / INPUT['uniprot_release']).read_text()), 'records': records,
                'sites': sites, 'changes': changes, 'studies': studies, 'release_date': args.date,
-               'validation': validation(root, check)}
+               'validation': validation(root, check), 'enrichment_tools': enrichment_tools(root)}
     release_docs.write_all(outdir, context)
     print(json.dumps({k: v for k, v in counts.items() if not isinstance(v, dict)}))
+
+
+def enrichment_tools(root: Path) -> dict:
+    """The R and package versions every enrichment run of the analyses recorded (scripts/enrich_sets.R); they must agree."""
+    found = {}
+    for path in sorted(root.glob('**/enricher/results/versions.tsv')):
+        t = pd.read_csv(path, sep='\t', dtype=str)
+        found[str(path.relative_to(root))] = dict(zip(t['package'], t['version']))
+    versions = {tuple(sorted(v.items())) for v in found.values()}
+    if len(versions) > 1:
+        raise SystemExit(f'the enrichment runs used different tool versions: {found}')
+    return dict(versions.pop()) if versions else {}
 
 
 if __name__ == '__main__':

@@ -40,9 +40,8 @@ CELL_LINES = ['MCF7', 'MDA-MB-231']
 WEB_STUDY = {'PSP': 'PhosphoSitePlus'}
 WINDOW_FLANK = 15
 PADJ = 0.05
-# The disease family tests of the release (supporting/disease_families columns odds_ratio_<name>, q_<name>), the default first.
-DISEASE_TESTS = [('corrected', 'Corrected for expression and annotation'), ('uncorrected', 'Uncorrected (as in v1.1.0)'),
-                 ('expression', 'Corrected for expression only'), ('annotation', 'Corrected for annotation only')]
+# The Disease Ontology root (DOID:4 disease): the website's chart starts at its children's children.
+DO_ROOT = 'DOID:4'
 
 
 def read(path: Path) -> pd.DataFrame:
@@ -91,13 +90,39 @@ class Vocab:
 
 
 def overview_rows(stats: pd.DataFrame, analysis: str, extra=None) -> list[list]:
+    """[category, methylated in it, share of methylated, comparison share, effect, q]. Protein-set tests (method
+    enricher): the comparison share is that of all proteins of the background, the effect log2 fold enrichment. Residue
+    tests (method fisher): the share of the other residues, the effect log2 odds ratio."""
     rows = []
-    for r in stats[stats['analysis'] == analysis].to_dict('records'):
+    for r in stats[(stats['analysis'] == analysis) & (stats['method'] != 'mantel_haenszel')].to_dict('records'):
         a, b, c, d = (int(r[k]) for k in 'abcd')
-        row = [r['category'], a, round(a / (a + b), 4) if a + b else None, round(c / (c + d), 4) if c + d else None,
-               num(r['log2_odds_ratio']), sig(r['q'])]
+        if r['method'] == 'enricher':
+            other, effect = round((a + c) / (a + b + c + d), 4) if a + b + c + d else None, num(r['log2_fold_enrichment'])
+        else:
+            other, effect = round(c / (c + d), 4) if c + d else None, num(r['log2_odds_ratio'])
+        row = [r['category'], a, round(a / (a + b), 4) if a + b else None, other, effect, sig(r['q'])]
         rows.append(row + (extra(r) if extra else []))
     return rows
+
+
+def disease_ontology_release(inputs: Path) -> str:
+    """The Human Disease Ontology release of the frozen gene sets (inputs/disease/hdo_<release>_source.tsv)."""
+    found = sorted((inputs / 'disease').glob('hdo_*_source.tsv'))
+    if len(found) != 1:
+        raise SystemExit(f'expected one Disease Ontology source file in {inputs / "disease"}, found {len(found)}')
+    src = read(found[0]).set_index('field')['value']
+    return src.get('release', '')
+
+
+def disease_ontology_background(terms: pd.DataFrame) -> list[int]:
+    """[methylated genes with a Disease Ontology term, genes with a term]: the root term DOID:4 holds every annotated gene."""
+    root = terms[terms['term_id'] == DO_ROOT]
+    return [int(root['n_methylated'].iloc[0]), int(root['n_genes_term'].iloc[0])] if len(root) else [0, 0]
+
+
+def effect(r: dict):
+    """log2 fold enrichment of a protein-set test (method enricher), log2 odds ratio otherwise."""
+    return num(r['log2_fold_enrichment'] if r['method'] == 'enricher' else r['log2_odds_ratio'])
 
 
 def main() -> None:
@@ -123,7 +148,8 @@ def main() -> None:
     inhibitors = t('supporting/maron2021_inhibitors_{v}.tsv')
     carm1 = t('supporting/carm1_ko_{v}.tsv')
     disease_terms = t('supporting/disease_terms_{v}.tsv')
-    terms_corrected = t('supporting/disease_terms_corrected_{v}.tsv')
+    terms_tested = t('supporting/disease_terms_tested_{v}.tsv')
+    disease_ontology = t('supporting/disease_ontology_{v}.tsv')
     disease_families = t('supporting/disease_families_{v}.tsv')
     density = t('supporting/density_windows_{v}.tsv')
     hpa = t('supporting/hpa_locations_{v}.tsv')
@@ -140,14 +166,26 @@ def main() -> None:
     cond_vocab = Vocab(list(condensates['condensate_id']))
     families = list(disease_families['family'])
     family_idx = {f: k for k, f in enumerate(families)}
-    # The site's term list: the enriched terms of the uncorrected test (DOSE), in order, each with its corrected odds ratio
-    # and q, then the terms significant only with the corrected test (scripts/14).
-    corrected_of = terms_corrected.set_index('term_id')
-    extra_terms = terms_corrected[(terms_corrected['q'].astype(float) <= PADJ) & ~terms_corrected['term_id'].isin(set(disease_terms['term_id']))]
-    n_dose_terms = len(disease_terms)
+    # The site's DisGeNET term list: the enriched terms (DOSE enrichDGN), in order.
     site_terms = [[r['term_id'], r['term_name'], r['family'], int(r['n_methylated']), r['p_adjust'], r['uniprot_accessions']] for r in disease_terms.to_dict('records')]
-    site_terms += [[r['term_id'], r['term_name'], r['family'], int(r['n_methylated']), None, r['uniprot_accessions']] for r in extra_terms.to_dict('records')]
     term_family = [family_idx.get(x[2], -1) for x in site_terms]
+    # Disease Ontology terms tested (clusterProfiler enricher on DOSE's enrichDO gene sets). Every parent
+    # of a tested term is tested too (a parent holds its children's genes), so each protein is listed with its most
+    # specific tested terms and the website adds the terms above them.
+    do_terms = disease_ontology.copy()
+    do_id = {x: k for k, x in enumerate(do_terms['term_id'])}
+    do_parents = [[do_id[x] for x in L(ps) if x in do_id] for ps in do_terms['parents']]
+    for k, (ps, raw) in enumerate(zip(do_parents, do_terms['parents'])):
+        if do_terms.at[k, 'term_id'] != DO_ROOT and len(ps) != len(L(raw)):
+            raise SystemExit(f'{do_terms.at[k, "term_id"]}: a parent of a tested Disease Ontology term was not tested')
+    has_child = {q for ps in do_parents for q in ps}
+    protein_do = defaultdict(set)
+    for k, accs in enumerate(do_terms['uniprot_accessions']):
+        for a in L(accs):
+            protein_do[a].add(k)
+    for a, ks in protein_do.items():
+        covered = {q for k in ks for q in do_parents[k]}
+        protein_do[a] = ks - covered if covered <= ks else ks
     protein_terms = defaultdict(list)
     for k, x in enumerate(site_terms):
         for a in L(x[5]):
@@ -170,7 +208,7 @@ def main() -> None:
         terms = sorted(protein_terms.get(a, []))
         fam_mask = 0
         for k in terms:
-            if k < n_dose_terms and term_family[k] >= 0:   # families of the enriched terms of the uncorrected test
+            if term_family[k] >= 0:   # families of the enriched terms
                 fam_mask |= 1 << term_family[k]
         best = None
         if p['best_window_aa']:
@@ -290,7 +328,7 @@ def main() -> None:
                                num(statistics.median(g['log2_diff_median'].astype(float))) if len(g) else None])
     cond_stats = stats[stats['analysis'] == 'condensate'].set_index('category')
     cond_rows = [[r['condensate_name'], r['condensate_id'], r['condensate_type'], int(r['n_members']), int(r['n_members_methylated']),
-                  num(cond_stats.at[r['condensate_id'], 'log2_odds_ratio']) if r['condensate_id'] in cond_stats.index else None,
+                  effect(cond_stats.loc[r['condensate_id']]) if r['condensate_id'] in cond_stats.index else None,
                   sig(cond_stats.at[r['condensate_id'], 'q']) if r['condensate_id'] in cond_stats.index else None]
                  for r in condensates.to_dict('records')]
     methylated = set(acc_list)
@@ -330,6 +368,8 @@ def main() -> None:
         inside = {x for leaf in L(p['panther_classes']) for x in above(leaf)}
         row.append([pg.index(p['panther_group']), pc.index(p['panther_class']) if p['panther_class'] else -1,
                     sorted(k for k, x in enumerate(ps) if x in inside)])
+    for a, row in zip(acc_list, protein_rows):
+        row.append(sorted(protein_do.get(a, ())))   # the most specific tested Disease Ontology terms of the protein
     group_of = {ontology.at[c, 'name']: g['name'] for g in panther_config['groups'] for c in g['classes']}
     top_of = {n: ontology.at[ontology.at[by_name[n], 'top_level_id'], 'name'] for n in ps}
     totals = lambda r: [int(r['a']) + int(r['c'])]  # noqa: E731
@@ -364,11 +404,12 @@ def main() -> None:
             'disease_families': families,
             # the eight audited families (the original pipeline's hand-checked rules) come first; the others are rule-based additions (scripts/disease_families.py)
             'disease_family_audited': [r['audited'] == 'true' for r in disease_families.to_dict('records')],
-            # The family tests, the default first (scripts/14): Mantel-Haenszel over strata of HPA cell-line expression and of
-            # DisGeNET annotation outside the family, then the uncorrected Fisher test of v1.1.0, then each correction alone.
-            'disease_tests': [[name, label] for name, label in DISEASE_TESTS],
+            # Protein-set tests (functional and PANTHER classes, condensates, HPA locations, disease families, Disease
+            # Ontology) report log2 fold enrichment from clusterProfiler enricher; residue tests report log2 odds ratios.
+            'set_effect': 'log2_fold_enrichment',
+            'enrichment_tools': info.get('enrichment_tools', {}),
             'condensates': cond_rows,
-            'condensate_fields': ['name', 'cdcode_id', 'type', 'members', 'methyl_members', 'log2_odds_ratio', 'q_value'],
+            'condensate_fields': ['name', 'cdcode_id', 'type', 'members', 'methyl_members', 'log2_fold_enrichment', 'q_value'],
             'condensate_summary': {'methyl_proteins_total': str(len(methylated)), 'condensate_universe_proteins': str(universe),
                                    'methyl_proteins_in_any_condensate': str(len(in_condensate)),
                                    'condensate_count_after_filters': str(len(cond_stats))},
@@ -379,10 +420,18 @@ def main() -> None:
                 'disorder': overview_rows(stats, 'disorder'),
                 'domain_context': overview_rows(stats, 'domain_context'),
                 'domain_classes': overview_rows(stats, 'domain_class'),
-                # [family, methylated genes, genes, then odds ratio and q of each test in disease_tests order]
-                'disease_families': [[r['family'], int(r['n_methylated_genes']), int(r['n_genes'])] +
-                                     [x for name, _ in DISEASE_TESTS for x in (num(r[f'odds_ratio_{name}']), sig(r[f'q_{name}']))]
+                # [family, methylated genes, genes, fold enrichment, q]
+                'disease_families': [[r['family'], int(r['n_methylated_genes']), int(r['n_genes']), num(r['fold_enrichment']), sig(r['q'])]
                                      for r in disease_families.to_dict('records')],
+                # every Disease Ontology term tested: [DOID, name, parent term indices, methylated genes, genes, fold
+                # enrichment, q]; root: the index of DOID:4; background: methylated genes with a term, genes with a term
+                'disease_ontology': {
+                    'release': disease_ontology_release(inputs),
+                    'root': do_id.get(DO_ROOT, -1),
+                    'background': disease_ontology_background(disease_ontology),
+                    'terms': [[r['term_id'], r['term_name'], do_parents[k], int(r['n_methylated']), int(r['n_genes_term']),
+                               num(r['fold_enrichment']), sig(r['q'])] for k, r in enumerate(do_terms.to_dict('records'))],
+                },
                 'treatments': treatments,
                 # [category, methylated, fraction of methylated, fraction of others, log2 OR, q, (parent,) proteins]
                 'panther_groups': overview_rows(stats, 'panther_group', totals),
@@ -395,10 +444,10 @@ def main() -> None:
                                'arginine_count', 'shrinkage_log2_enrichment', 'arg_odds_q', 'is_isoform', 'condensates',
                                'disease_family_mask', 'als_ftd_audited_gene', 'local_density', 'best_density_window',
                                'significant_density_windows', 'cluster_architecture', 'other_ptms', 'gene_aliases', 'reference_md5',
-                               'hpa_locations', 'disease_families', 'disorder_intervals', 'panther'],
+                               'hpa_locations', 'disease_families', 'disorder_intervals', 'panther', 'disease_ontology_terms'],
             'panther': {'version': panther_config['panther_version'], 'unclassified': panther_config['unclassified'],
                         'groups': pg, 'classes': pc, 'subclasses': ps,
-                        'universe': int(stats[stats['analysis'] == 'panther_group'][['a', 'c']].astype(int).sum().sum())},
+                        'universe': int(stats[stats['analysis'] == 'panther_group'].iloc[0][['a', 'b', 'c', 'd']].astype(int).sum())},
             'site_fields': ['protein', 'position', 'state', 'source_mask', 'refs', 'disorder_class', 'disorder_edge_distance',
                             'domain_context', 'interpro', 'domain_class', 'domain_edge_distance', 'domain_side', 'window_31',
                             'motif_mask', 'window_center_mismatch', 'source_positions_original', 'maron_s2_state_mask',
@@ -413,8 +462,8 @@ def main() -> None:
                          'not_in_union': (ko_note.get('placed_sites') or 0) - len(ko_sites)},
             'hpa': {'version': hpa_note.get('version', ''), 'input_sha256': hpa_note.get('input_sha256', {}), 'locations': hpa_names,
                     'reliability': HPA_RELIABILITY, 'universe': hpa_universe, 'methylated': hpa_methyl,
-                    'enrichment_fields': ['location', 'methylated with', 'methylated without', 'other with', 'other without', 'log2 OR', 'p', 'q'],
-                    'enrichment': [[hpa_names.index(n), int(r['a']), int(r['b']), int(r['c']), int(r['d']), num(r['log2_odds_ratio']),
+                    'enrichment_fields': ['location', 'methylated with', 'methylated without', 'other with', 'other without', 'log2 fold enrichment', 'p', 'q'],
+                    'enrichment': [[hpa_names.index(n), int(r['a']), int(r['b']), int(r['c']), int(r['d']), effect(r),
                                     sig(r['p']), sig(r['q'])] for n, r in hpa_stats.iterrows()]},
             'disease_family_sets': {'version': 'audited_v1', 'fields': ['terms', 'genes', 'methylarginine_genes'],
                                     'families': [[int(r['n_terms']), int(r['n_genes']), int(r['n_methylated_genes'])] for r in disease_families.to_dict('records')]},
@@ -428,16 +477,9 @@ def main() -> None:
         'evidence_fields': ['source_table', 'reference', 'pmid', 'peptide', 'enzyme', 'state', 'source_accession', 'source_position',
                             'remap_status', 'study'],
         'refs': refs.values, 'sites': evidence,
-        # [UMLS id, name, family, methylated proteins' genes, uncorrected adj. p (null: not enriched there), corrected OR,
-        # corrected q, genes of the term]
-        'disease_terms': [[x[0], x[1], term_family[k], x[3], sig(x[4]) if x[4] not in (None, '') else None,
-                           num(corrected_of.at[x[0], 'odds_ratio']) if x[0] in corrected_of.index else None,
-                           sig(corrected_of.at[x[0], 'q']) if x[0] in corrected_of.index else None,
-                           int(corrected_of.at[x[0], 'n_genes_term']) if x[0] in corrected_of.index else None]
-                          for k, x in enumerate(site_terms)],
-        'disease_terms_tested': {'terms': len(terms_corrected), 'enriched': int(((terms_corrected['q'].astype(float) <= PADJ) & (terms_corrected['odds_ratio'].astype(float) > 1)).sum()),
-                                 'depleted': int(((terms_corrected['q'].astype(float) <= PADJ) & (terms_corrected['odds_ratio'].astype(float) < 1)).sum()),
-                                 'uncorrected_enriched': n_dose_terms},
+        # [UMLS id, name, family, methylated proteins' genes, adj. p] of the enriched DisGeNET terms (DOSE enrichDGN)
+        'disease_terms': [[x[0], x[1], term_family[k], x[3], sig(x[4])] for k, x in enumerate(site_terms)],
+        'disease_terms_tested': {'terms': len(terms_tested), 'enriched': int((terms_tested['enriched'] == 'true').sum())},
         'protein_disease_terms': protein_disease_terms,
     }
     outdir.mkdir(parents=True, exist_ok=True)
@@ -447,10 +489,11 @@ def main() -> None:
         print(f'wrote {path} ({path.stat().st_size / 1e6:.2f} MB)')
     print(f'{len(site_rows):,} sites, {len(protein_rows):,} proteins, {len(refs.values)} references, {len(evidence_payload["disease_terms"])} disease terms')
     if args.check:
-        check(outdir, sites, proteins, records, site_terms, web_name)
+        check(outdir, sites, proteins, records, site_terms, web_name, disease_ontology)
 
 
-def check(outdir: Path, sites: pd.DataFrame, proteins: pd.DataFrame, records: pd.DataFrame, disease_terms: list, web_name: dict) -> None:
+def check(outdir: Path, sites: pd.DataFrame, proteins: pd.DataFrame, records: pd.DataFrame, disease_terms: list, web_name: dict,
+          disease_ontology: pd.DataFrame) -> None:
     """Decode the written files and compare them with the release tables: every site, protein, record and term."""
     d = json.loads((outdir / 'methylarg_sites.json').read_text())
     e = json.loads((outdir / 'methylarg_evidence.json').read_text())
@@ -476,6 +519,23 @@ def check(outdir: Path, sites: pd.DataFrame, proteins: pd.DataFrame, records: pd
     for p, r in zip(P, proteins.to_dict('records')):
         if p[6] != int(r['protein_length']) or p[20] != r['reference_sequence_md5']:
             bad.append(r['uniprot_accession'])
+    # Disease Ontology: each protein's terms with every term above them give back each term's proteins
+    do = m['overview']['disease_ontology']['terms']
+    k_do = m['protein_fields'].index('disease_ontology_terms')
+    members = defaultdict(set)
+    for p in P:
+        todo, seen = list(p[k_do]), set()
+        while todo:
+            k = todo.pop()
+            if k not in seen:
+                seen.add(k)
+                todo += do[k][2]
+        for k in seen:
+            members[k].add(p[0])
+    shown_accs = set(proteins['uniprot_accession'])
+    for k, r in enumerate(disease_ontology.to_dict('records')):
+        if members[k] != set(L(r['uniprot_accessions'])) & shown_accs or do[k][0] != r['term_id']:
+            bad.append(r['term_id'])
     print('check: ' + ('the site data match the release tables' if not bad else f'{len(bad)} differences, e.g. {bad[:5]}'))
     if bad:
         raise SystemExit(1)

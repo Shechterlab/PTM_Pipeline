@@ -9,14 +9,18 @@
 #   2. the evidence check and the residue audit: either stops the build;
 #   3. the analyses the release and the website report, on the union (the sites kept pending are left out): functional
 #      classes, motifs and arginine enrichment, disorder and domain context, other PTMs, clustering and density,
-#      domain-cluster architectures, condensates, the Maron 2021 summaries and disease enrichment;
+#      domain-cluster architectures, condensates, the Maron 2021 summaries and disease enrichment; the tests of protein
+#      and gene sets run clusterProfiler and DOSE in R (scripts/enrich_sets.R), so Rscript must be on PATH;
 #   4. scripts/build_release.py, which writes releases/VERSION/;
 #   5. the website's data from the release (scripts/36) and the interaction evidence of its sites (scripts/37, from
 #      inputs/interactions/), then scripts/build_release.py again with the interaction tables; the website data go to
-#      docs/data/.
+#      docs/data/ (SITE_OUT).
 # Every input comes from inputs/ and must match inputs/MANIFEST.tsv (the files it lists as in Git). WORK_ROOT (default:
-# a temporary directory) holds the intermediate results. The previous version is releases/v1.0.0/. The build needs no
-# network: if inputs/interactions/ lacks data for a site, it stops and says how to stage it.
+# a temporary directory) holds the intermediate results. The build needs no network: if inputs/interactions/ lacks data
+# for a site, it stops and says how to stage it.
+#
+# Environment (optional): PREVIOUS, the release the changes are traced from (default releases/v1.1.0); RELEASE_OUT, where
+# the release goes (default releases/VERSION); SITE_OUT, where the website data go (default docs/data).
 
 set -eo pipefail
 
@@ -24,7 +28,9 @@ VERSION=${1:?usage: hpc/build_release.sh VERSION [WORK_ROOT]}
 CODE=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 IN="$CODE/inputs"
 WORK=${2:-$(mktemp -d)}
-OUT="$CODE/releases/$VERSION"
+OUT=${RELEASE_OUT:-$CODE/releases/$VERSION}
+PREVIOUS=${PREVIOUS:-$CODE/releases/v1.1.0}
+SITE_OUT=${SITE_OUT:-$CODE/docs/data}
 FASTA="$IN/reference/uniprot_human_reviewed_2026_03.fasta"
 ENTRIES="$IN/reference/uniprot_human_reviewed_2026_03_entries.tsv"
 mkdir -p "$WORK"
@@ -140,10 +146,11 @@ step "disease enrichment (scripts/14)" python "$CODE/scripts/14_disease_enrichme
   --labels "$WORK/functional_class_union/protein_functional_labels.tsv" \
   --term-genes "$IN/disease/dose_4.4.0_disgenet_term_genes.tsv" \
   --symbol-entrez "$IN/disease/orghsegdb_3.22.0_symbol_entrez.tsv" \
-  --expression "$IN/annotation/hpa_25.1_rna_expression.tsv" --outdir "$WORK/disease"
+  --ontology-genes "$IN/disease/hdo_2026-09-30_term_genes.tsv" --ontology-terms "$IN/disease/hdo_2026-09-30_terms.tsv" \
+  --outdir "$WORK/disease"
 
 release() {
-  python "$CODE/scripts/build_release.py" --results-root "$WORK" --previous "$CODE/releases/v1.0.0" --inputs "$IN" \
+  python "$CODE/scripts/build_release.py" --results-root "$WORK" --previous "$PREVIOUS" --inputs "$IN" \
     --allow "$CODE/config/remap_evidence_allowlist.tsv" --version "$VERSION" --outdir "$OUT" "$@"
 }
 echo "[release] writing $OUT"
@@ -156,7 +163,8 @@ step "site data (scripts/36)" python "$CODE/scripts/36_export_site_explorer_data
 step "interaction evidence (scripts/37)" python "$CODE/scripts/37_export_interaction_data.py" \
   --sites-json "$SITE/methylarg_sites.json" --out "$SITE/methylarg_interactions.json" \
   --pred-iface-out "$SITE/methylarg_pred_iface.json" --tables "$IN/interactions" --topup-cache "$WORK/interactions_topup" \
-  --tables-out "$WORK/interactions" --reference-fasta "$FASTA"
+  --tables-out "$WORK/interactions" --reference-fasta "$FASTA" \
+  --measured-sites "$CODE/releases/v1.0.0/human_methylarginine_sites_v1.0.0.tsv"
 if [ -n "$(find "$WORK/interactions_topup" -type f 2>/dev/null | head -1)" ]; then
   echo "[release] inputs/interactions/ lacks data for some sites; scripts/37 fetched it into $WORK/interactions_topup."
   echo "          Stage it with: python scripts/37a_stage_interactions.py --topup $WORK/interactions_topup, then build again."
@@ -166,5 +174,5 @@ fi
 echo "[release] writing $OUT with the interaction evidence"
 release --interactions "$WORK/interactions"
 cp "$SITE"/methylarg_sites.json "$SITE"/methylarg_evidence.json "$SITE"/methylarg_interactions.json \
-  "$SITE"/methylarg_pred_iface.json "$CODE/docs/data/"
-echo "[release] done: $OUT and docs/data/"
+  "$SITE"/methylarg_pred_iface.json "$SITE_OUT/"
+echo "[release] done: $OUT and $SITE_OUT/"
