@@ -48,6 +48,7 @@ for (i in seq_len(nrow(jobs))) {
     sets <- read.delim(j$sets, colClasses = "character")[, 1:2]
     names(sets) <- c("term", "gene")
     if (identical(tolower(j$whole_universe), "true")) {
+      # the whole-universe set must pass maxGSSize; the job's own sets above max_size are dropped after the test
       sets <- rbind(sets, data.frame(term = ALL, gene = universe))
       max_size <- max(max_size, length(universe))
     }
@@ -61,6 +62,7 @@ for (i in seq_len(nrow(jobs))) {
   if (nrow(d)) {
     d <- d[d$ID != ALL, , drop = FALSE]
     if (identical(tolower(j$whole_universe), "true")) {
+      d <- d[as.numeric(sub("/.*", "", d$BgRatio)) <= as.numeric(j$max_size), , drop = FALSE]
       # BH (stats::p.adjust) over the job's own sets, without the whole-universe set; clusterProfiler's qvalue
       # counted that set too, so it is left out
       d$p.adjust <- p.adjust(d$pvalue, method = "BH")

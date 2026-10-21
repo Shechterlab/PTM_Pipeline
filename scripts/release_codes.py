@@ -69,7 +69,7 @@ STUDY_LICENCE = {
     'ProMetheusDB': 'CC BY-NC-ND 4.0 (open-access supplement mmc2)',
     'UniProt': 'CC BY 4.0 (UniProt release 2026_03 MOD_RES)',
     'IEDB': 'IEDB query API, terms at www.iedb.org/terms_of_use_v3.php (epitopes the iPTMnet-format master table cites)',
-    'Larsen2016': 'PRIDE PXD003700 MaxQuant output (EMBL-EBI terms of use), with the site list of ' + MARON_S5,
+    'Larsen2016': 'AAAS (Sci Signal supplementary Table S1: derived records only, the table is not redistributed)',
     'Musiani2019': 'PRIDE PXD009070 MaxQuant output (CC0), with the site list of ' + MARON_S5,
     'Maron2021': 'CC BY-NC-ND 4.0 (open-access supplement, Tables S2 and S3)',
     'Guo2014': 'CC BY 4.0 (supplementary Tables S2 and S3)',
@@ -91,7 +91,7 @@ STUDY_NOTE = {
     'Lu2025': 'HeLa cells, enrichment with the SMN Tudor domain',
     'Ma2023': 'breast cancer patient-derived xenografts grown in mice, ADMA antibody enrichment. A peptide assigned to a human protein can come from the mouse stroma where the two sequences agree',
     'PSP': 'downloaded 22 May 2021 (date from the Shechter lab), as compiled in Maron et al. 2021 Table S5',
-    'Maron2021': "the study's own data, Tables S2 and S3",
+    'Maron2021': "the study's own data: Tables S2 and S3, localised with the lab's Proteome Discoverer exports",
 }
 
 # What a record holds, how the study localised the methyl group and what was kept (scripts/00_stage_study_sites.py),
@@ -113,20 +113,24 @@ STUDY_QUALITY = {
     'Ma2023': 'MaxQuant ADMA-antibody sites with a 31-residue window, localisation probability >= 0.75, 1 % FDR. Tumours '
               'grown in mice: a peptide identical in mouse and human can come from mouse stroma (flag xenograft_only).',
     # The studies compiled in Maron et al. 2021 Table S5, and the databases, now read from their own tables: the
-    # study's methods (from the article, or for Larsen 2016 and Musiani 2019, whose articles could not be retrieved, from
-    # the PRIDE record and deposited search), and what was kept. The compiled rows keep no localisation and add no site.
+    # study's methods (from the article, or for Musiani 2019, whose article could not be retrieved, from the PRIDE record
+    # and deposited search), and what was kept. The compiled rows of a study read here add no site of their own.
     'Larsen2016': 'HEK293 cells, peptides fractionated at high pH and enriched with methylarginine antibodies, MaxQuant with '
-                  'peptide, protein and site FDR 0.01, monomethylation of R and K searched. Read from the MaxQuant site '
-                  'table deposited in PRIDE PXD003700 (Methyl (KR)Sites.txt, 28 of the 140 raw files): arginine sites at '
-                  'localisation probability >= 0.75 that the study reports (listed in Maron Table S5). The article\'s own '
-                  'table could not be retrieved, so the study\'s other sites carry no localisation here and add none.',
-    'PSP': 'Curated database. Through Maron Table S5: the sites PhosphoSitePlus listed on 22 May 2021, each with a '
-           '15-residue window and position, without the study behind it, a localisation score or a degree. The records '
-           'carry no localisation evidence and add no site.',
+                  'peptide, protein and site FDR 0.01, monomethylation of R and K searched. Read from the article\'s Table S1 '
+                  '(8,900 sites, each with the leading protein, the position, the localisation probability and a 31-residue '
+                  'window): arginine sites at localisation probability >= 0.75. The leading protein is often an isoform or '
+                  'an unreviewed entry, so the site is placed from its window.',
+    'PSP': 'Curated database, trusted as curated. Through Maron Table S5: the sites PhosphoSitePlus listed on 22 May 2021, '
+           'each with a 15-residue window and position, without the study behind it, a localisation score or a degree. A '
+           'record is placed where its window names exactly one arginine in the reviewed proteome, in an entry the record '
+           'names.',
     'Maron2021': 'A549 cells treated with GSK591 or MS023, sequential Rme1, Rme2a and Rme2s antibody immunoprecipitation, '
-                 'Byonic in Proteome Discoverer 2.4 with mono- and dimethylation of R and K searched, 1 % FDR. The tables give '
-                 'no localisation score: a site is kept where its peptide (Tables S2 and S3) holds no other arginine or '
-                 'lysine, or holds no lysine and has every arginine dimethylated.',
+                 'Byonic in Proteome Discoverer 2.4 with mono- and dimethylation of R and K searched, 1 % FDR. Tables S2 and '
+                 'S3 give no localisation score; the lab\'s Proteome Discoverer peptide-group exports of the same '
+                 'immunoprecipitations do (ptmRS site probability, a residue named only at >= 75 %). A mark of the tables is '
+                 'kept where an export localises a methyl group to that arginine of the same peptide (with the export\'s '
+                 'degree when it differs, noted), or where its peptide holds no other arginine or lysine. GluC peptides and '
+                 'runs the exports do not hold are kept by mass only.',
     'Guo2014': 'HCT116 cells, monomethylarginine (Me-R4-100, D5A12) and ADMA antibodies, SEQUEST with a 1 % PSM FDR, mono- '
                'and dimethylation of R and K searched. Read from Tables S2 (peptide-spectrum matches with their ModScore) '
                'and S3 (sites with a 13-residue window): a site is kept where a PSM matching its window localises it at '
@@ -174,6 +178,8 @@ PLACEMENT_SEVERAL = {'unresolved_study_not_unique', 'unresolved_ambiguous_hit'}
 PLACEMENT_OTHER_PROTEIN = {'unresolved_study_other_entry'}
 # Placement codes of records not placed because their source gives no localisation of the methyl group.
 PLACEMENT_NOT_LOCALISED = {'superseded_by_study_table', 'unresolved_not_localised'}
+# Databases whose sites count as localised by curation (localised_by curated_database), placed from their window.
+CURATED_DATABASES = {'PSP'}
 
 SOURCE_TABLES = {
     'maron2021_s5': ('maron_s5', 'Maron et al. 2021 Table S5: methylarginine sites compiled from ten studies'),
@@ -184,8 +190,8 @@ SOURCE_TABLES = {
     'sylvestersen2014': ('sylvestersen2014', 'Sylvestersen et al. 2014 supplementary tables, staged (scripts/00_stage_study_sites.py)'),
     'lu2025': ('lu2025', 'Lu et al. 2025 Dataset EV1, staged (scripts/00_stage_study_sites.py)'),
     'ma2023': ('ma2023', 'Ma et al. 2023 Table S1 (PRIDE PXD038203), staged (scripts/00_stage_study_sites.py)'),
-    'larsen2016': ('larsen2016', 'Larsen et al. 2016 MaxQuant site table (PRIDE PXD003700), staged (scripts/00_stage_study_sites.py)'),
-    'maron2021': ('maron2021', 'Maron et al. 2021 Tables S2 and S3, staged (scripts/00_stage_study_sites.py)'),
+    'larsen2016': ('larsen2016', 'Larsen et al. 2016 Table S1, staged (scripts/00_stage_study_sites.py)'),
+    'maron2021': ('maron2021', 'Maron et al. 2021 Tables S2 and S3 with the lab\'s Proteome Discoverer exports, staged (scripts/00_stage_study_sites.py)'),
     'guo2014': ('guo2014', 'Guo et al. 2014 supplementary Tables S2 and S3, staged (scripts/00_stage_study_sites.py)'),
     'musiani2019': ('musiani2019', 'Musiani et al. 2019 MaxQuant site tables (PRIDE PXD009070), staged (scripts/00_stage_study_sites.py)'),
     'fong2019': ('fong2019', 'Fong et al. 2019 supplementary Table S4, staged (scripts/00_stage_study_sites.py)'),
@@ -398,6 +404,7 @@ CODES: dict[str, dict[str, str]] = {
         'one_methylatable_residue': 'the peptide holds one residue the search could methylate (no other arginine, and no lysine where lysine methylation was searched)',
         'every_arginine_dimethylated': 'every residue of the peptide the search could methylate is an arginine and every one is dimethylated, so the mass leaves no other arrangement',
         'curated_experimental': 'UniProt annotates the residue with experimental evidence from the literature (ECO:0000269)',
+        'curated_database': 'PhosphoSitePlus lists the residue as a methylarginine site from its curation (trusted as curated, it gives no localisation score)',
     },
     'evidence_kind': {
         'window_13': 'a 13-residue window centred on the site',
@@ -457,7 +464,7 @@ SITE_COLUMNS = [
     ('maron2021_s2_states', 'list<code>', 'methyl_state', 'degrees called at the site in Maron et al. 2021 Table S2'),
     ('uniprot_states', 'list<code>', 'methyl_state', 'degrees UniProt release 2026_03 annotates at the site (MOD_RES) with experimental evidence: ECO:0000269, or ECO:0007744 (large-scale proteomics). ADMA and SDMA calls in UniProt mostly follow the antibody of the experiment'),
     ('uniprot_states_inferred', 'list<code>', 'methyl_state', 'degrees UniProt annotates at the site only by similarity to another species (ECO:0000250) or without experimental evidence; not counted in methyl_state'),
-    ('states_by_study_design', 'list<code>', 'methyl_state', 'the one degree a study looked for: Rme1 for Larsen 2016 (monomethylarginine antibodies; only monomethylation searched, PRIDE PXD003700), Rme2 for Wei 2020 (ADMA antibody, PTMScan #13474; only dimethylation searched)'),
+    ('states_by_study_design', 'list<code>', 'methyl_state', 'the one degree a study looked for: Rme1 for Larsen 2016 (monomethylarginine antibodies; Table S1 lists monomethylarginine sites, and the deposited search, PRIDE PXD003700, has monomethylation only), Rme2 for Wei 2020 (ADMA antibody, PTMScan #13474; only dimethylation searched)'),
     ('methyl_state', 'code', 'state_summary', 'the degrees reported at the site by any of methyl_states_reported, maron2021_s2_states, uniprot_states and states_by_study_design; empty when none gives one. Mass spectrometry tells mono- from dimethylation, but asymmetric from symmetric mostly by the antibody used'),
     ('methyl_state_evidence', 'list<code>', 'state_evidence', 'which of these give a degree, in code order'),
     ('maron2021_s3_antibodies', 'list<code>', 'antibody', 'antibodies whose immunoprecipitation recovered the site in Maron et al. 2021 Table S3 (supporting/maron2021_detection)'),

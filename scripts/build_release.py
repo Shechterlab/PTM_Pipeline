@@ -638,10 +638,17 @@ def build_studies(records, sites) -> pd.DataFrame:
     return pd.DataFrame(out)
 
 
-def evidence_core(record: pd.Series) -> tuple[str, int]:
-    """The record's first sequence without marks or padding, and the 0-based offset of the site it names: the marked
-    arginine of a marked peptide, the centre of a window, the arginine of a peptide with one; -1 when it names none."""
-    token = clean(record['evidence_sequence']).split('; ')[0]
+def evidence_cores(record: pd.Series) -> list[tuple[str, int]]:
+    """Each of the record's sequences (a merged record can carry several) as evidence_core reads it."""
+    return [evidence_core(record, token) for token in clean(record['evidence_sequence']).split('; ')]
+
+
+def evidence_core(record: pd.Series, token: str | None = None) -> tuple[str, int]:
+    """The record's first sequence (or token) without marks or padding, and the 0-based offset of the site it names:
+    the marked arginine of a marked peptide, the centre of a window, the arginine of a peptide with one; -1 when it
+    names none."""
+    if token is None:
+        token = clean(record['evidence_sequence']).split('; ')[0]
     kind = record['evidence_kind']
     if kind == 'marked_peptide':
         plain, marked = remap.parse_modified_peptide(token)
@@ -679,6 +686,10 @@ def placed_example(r: pd.Series, reference: dict, proteome) -> list[str]:
         lo, hi = max(1, pos - 7), min(len(reference[acc]), pos + 7)
         return lines + [f"placed on {r['placed_site']} ({r['placement_code']}): no sequence, the reported residue is an arginine",
                         f'reference   {lo} {reference[acc][lo - 1:pos - 1]}[{reference[acc][pos - 1]}]{reference[acc][pos:hi]} {hi}']
+    for s, o in evidence_cores(r):   # trace the sequence that names the placed site, not just the first
+        if s and any(a == acc and (pos - start == o if o >= 0 else 0 <= pos - start < len(s)) for a, start in proteome.find(s)):
+            seq, off = s, o
+            break
     hits = proteome.find(seq)
     if off < 0:   # a peptide with several arginines: the occurrence that covers the site
         off = next((pos - start for a, start in hits if a == acc and 0 <= pos - start < len(seq)), -1)

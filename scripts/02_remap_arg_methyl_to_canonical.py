@@ -331,10 +331,10 @@ def place_localised_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> 
 
     Localised (site_localisation, codes in release_codes.CODES['localised_by']): a staged study's record as its staging
     says (a localisation score over the study's threshold, a peptide whose mass leaves one arrangement, or a curated
-    experimental annotation); a ProMetheusDB record when one of its marked peptides localises it by mass. A record of a
-    compiled table (Maron 2021 Table S5, the iPTMnet-format master table) carries no localisation: it is not placed,
-    superseded_by_study_table when the study's own table is read in this run, else unresolved_not_localised
-    (PhosphoSitePlus).
+    experimental annotation); a ProMetheusDB record when one of its marked peptides localises it by mass; a record of a
+    curated database trusted as curated (release_codes.CURATED_DATABASES: PhosphoSitePlus, curated_database). Any other
+    record of a compiled table (Maron 2021 Table S5, the iPTMnet-format master table) carries no localisation: it is not
+    placed, superseded_by_study_table when the study's own table is read in this run, else unresolved_not_localised.
 
     Placed: a curated record (UniProt) where remap_row placed it (its accession, at an arginine of that position). Any
     other localised record stays placed when its localising peptides, or without a peptide its window, searched in the
@@ -358,6 +358,9 @@ def place_localised_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> 
             found = localising_peptides(str(r.get('peptides', '') or ''), SEARCH_METHYLATABLE[r['source_table']])
             how = found[0][1] if found else ''
             peptides = [p for p, _ in found]
+            remapped.at[i, 'site_localisation'] = how
+        elif rc.study_of(r['source_table'], r.get('source', ''), r.get('reference', '')) in rc.CURATED_DATABASES:
+            how = 'curated_database'
             remapped.at[i, 'site_localisation'] = how
         else:
             how = ''

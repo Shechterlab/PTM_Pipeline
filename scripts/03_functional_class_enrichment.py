@@ -154,13 +154,17 @@ def build_combined_protein_metadata(
 ) -> pd.DataFrame:
     frames = []
 
-    master_cols = [c for c in ['canonical_UniProtAC', 'substrate_genename', 'UniProtID', 'protein_name', 'genename'] if c in master.columns]
-    if master_cols:
-        frames.append(master[master_cols].copy())
+    # With UniProt metadata every protein is labelled from the same text (UniProt and InterPro). The PTM master and the
+    # sites table name mostly methylated proteins, so their names would label those proteins from more words than the
+    # background; they are read only when no metadata is given.
+    if metadata is None or metadata.empty:
+        master_cols = [c for c in ['canonical_UniProtAC', 'substrate_genename', 'UniProtID', 'protein_name', 'genename'] if c in master.columns]
+        if master_cols:
+            frames.append(master[master_cols].copy())
 
-    site_cols = [c for c in ['canonical_UniProtAC', 'substrate_genename', 'UniProtID', 'protein_name'] if c in sites.columns]
-    if site_cols:
-        frames.append(sites[site_cols].copy())
+        site_cols = [c for c in ['canonical_UniProtAC', 'substrate_genename', 'UniProtID', 'protein_name'] if c in sites.columns]
+        if site_cols:
+            frames.append(sites[site_cols].copy())
 
     if metadata is not None and not metadata.empty:
         meta = metadata.copy()
@@ -410,7 +414,8 @@ def main() -> None:
     fig.text(
         0.99,
         0.01,
-        f'{q_threshold_note(pb["q_value"])}. Protein-level multi-label counts; totals are not additive.',
+        f'Test for enrichment (upper tail): {int((pb["q_value"] <= 0.05).sum())} of {len(pb)} classes at BH q\u22640.05; '
+        'depletions are descriptive. Protein-level multi-label counts; totals are not additive.',
         ha='right',
         va='bottom',
         fontsize=8,
@@ -420,7 +425,7 @@ def main() -> None:
     save_figure(fig, outdir / 'arg_methyl_functional_class_broad_enrichment')
 
     sub_sig = sub[sub['q_value'] <= 0.05].copy()
-    ps = balanced_category_subset(sub_sig, value_col='log2_fold_enrichment', min_count=8, top_positive=10, top_negative=6)
+    ps = balanced_category_subset(sub_sig, value_col='log2_fold_enrichment', min_count=8, top_positive=10, top_negative=0)   # the test is one-sided: only enrichment reaches q <= 0.05
     subclass_colors = signed_bar_colors(ps['log2_fold_enrichment'])
     subclass_colors = [BREWER_COLORS['mid_gray'] if cat == 'Other / unclassified' else color for cat, color in zip(ps['category'], subclass_colors)]
     fig2, ax2 = plt.subplots(figsize=(10.2, 7.4))
@@ -428,7 +433,7 @@ def main() -> None:
     style_axis(ax2, zero='x')
     ax2.set_xlabel('log2 fold enrichment vs all proteins (clusterProfiler enricher)')
     ax2.set_ylabel('Subclass')
-    ax2.set_title('Integrated arg-methylome: multi-label RNA-centric subclasses')
+    ax2.set_title('Integrated arg-methylome: enriched subclasses (multi-label)')
     set_symmetric_xlim(ax2, ps['log2_fold_enrichment'], annotation_pad_ratio=0.34, center_on_zero=False)
     annotate_barh(
         ax2,

@@ -25,6 +25,10 @@ out byte-identical, both times:
   (20,416 sequences). That file is now in Git as `../reference/uniprot_human_reviewed_2026_03.fasta`;
 - with `../interactions/uniprot_human_reviewed_2026-10-16.fasta`, also in Git.
 
+On 21 October 2026 the HPA tables were made again after a fix to scripts/42. Where HPA maps one accession to
+several genes, the script had kept the reliability and main/additional flag of the first gene listed; it now keeps
+the best reliability and counts a location as main when any of the genes has it as main. Four rows changed.
+
 ## What each table holds
 
 - **`cplm4_human_lys_methyl_validated.tsv`** (5,356 sites on 2,939 proteins): CPLM 4.0 human lysine methylation

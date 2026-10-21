@@ -7,7 +7,7 @@
 STUDY is one of the keys of STUDIES below; the command that staged each table, with its inputs and their MD5s, is in
 inputs/MANIFEST.tsv (how_made_or_checked, derived_from). --reference is the reviewed FASTA (lu2025, fedoriw2019),
 --entries and --history the reference entries and accession history (guo2014, fedoriw2019: gene symbols to entries),
---s5 Maron et al. 2021 Table S5 (larsen2016, musiani2019: the sites the study reports).
+--s5 Maron et al. 2021 Table S5 (musiani2019: the sites the study reports).
 
 Every record says how the methyl group is localised to its arginine (localised_by): localisation_score (the study's
 score passes its threshold), one_methylatable_residue or every_arginine_dimethylated (the peptide's mass leaves one
@@ -1087,13 +1087,62 @@ def read_wei(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
 MARON_DEGREE = {'me1': 'Rme1', 'me2': 'Rme2'}
 
 
+PD_MODS = re.compile(r'\d+x(Methyl|Dimethyl)\s*\[([^\]]*)\]')
+
+
+def pd_site_calls(path: Path, stats: Counter) -> dict[str, dict[int, dict[str, float]]]:
+    """A Proteome Discoverer 2.4 peptide-group export of the lab's immunoprecipitations (Byonic search, ptmRS site
+    probabilities): unmodified peptide -> {offset: {degree: best site probability}} for every arginine whose methyl
+    group PD places. PD names a residue in the Modifications column only at site probability >= 75 ('R8(96)'); a methyl
+    group it cannot place reads '[R]', and 'R/K' is a group it cannot tell between an arginine and a lysine."""
+    wb = load_workbook(path, read_only=True, data_only=True)
+    rows = wb.worksheets[0].iter_rows(values_only=True)
+    H = {text(h): k for k, h in enumerate(next(rows))}
+    calls = defaultdict(lambda: defaultdict(dict))
+    for r in rows:
+        if not any(v not in (None, '') for v in r):
+            continue
+        stats[f'pd_rows_read:{path.name}'] += 1
+        peptide = re.sub(r'^\[.*?\]\.|\.\[.*?\]$', '', text(r[H['Annotated Sequence']])).upper()
+        for kind, body in PD_MODS.findall(text(r[H['Modifications']])):
+            for tok in (t.strip() for t in body.split(';') if t.strip()):
+                m = re.fullmatch(r'R(\d+)\(([\d.]+)\)', tok)
+                if not m:
+                    stats['pd_methyl_groups_not_placed_on_one_arginine'] += 1
+                    continue
+                off, prob = int(m.group(1)), float(m.group(2))
+                if prob < MARON_MIN_PTMRS or not 1 <= off <= len(peptide) or peptide[off - 1] != 'R':
+                    stats['pd_methyl_groups_below_75_or_not_R'] += 1
+                    continue
+                degree = DEGREE[kind]
+                calls[peptide][off][degree] = max(prob, calls[peptide][off].get(degree, 0.0))
+    return calls
+
+
+MARON_MIN_PTMRS = 75.0
+
+
 def read_maron(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
     """Tables S2 (each methylated residue with a peptide that carries it) and S3 (each peptide with all its methyl
-    marks) of the A549 PTMScan data (sequential Rme1, Rme2a and Rme2s immunoprecipitation; Byonic, 1 % FDR). No
-    localisation score is published and the search methylated lysines as well as arginines (mono- and dimethyl), so a
-    site is kept only where its peptide holds no other arginine or lysine."""
+    marks) of the A549 PTMScan data (sequential Rme1, Rme2a and Rme2s immunoprecipitation; Proteome Discoverer 2.4 with
+    Byonic, 1 % FDR), with the lab's Proteome Discoverer peptide-group exports of the same immunoprecipitations ('IP
+    MethylatedPeptide Groups', 'OG IP MethylatedPeptide Groups'; pd_site_calls). The tables give no localisation score
+    and the search methylated lysines as well as arginines (mono- and dimethyl). A mark of the tables is kept where its
+    peptide holds no other arginine or lysine (one_methylatable_residue), or where an export localises a methyl group to
+    that arginine of the same peptide at ptmRS >= 75 % (localisation_score). When the export places the other degree
+    there, the record takes the export's degree and the note says what the table gives. The exports' accessions (NCBI
+    GI numbers in the earlier export) are not used: the tables name the protein. GluC peptides and the runs the exports
+    do not hold are kept only by mass."""
+    tables = [p for p in paths if p.name.startswith('maron2021_table')]
+    calls = {}
+    for path in sorted(set(paths) - set(tables), key=lambda p: p.name):
+        for peptide, sites in pd_site_calls(path, stats).items():
+            for off, degrees in sites.items():
+                for degree, prob in degrees.items():
+                    have = calls.setdefault(peptide, {}).setdefault(off, {})
+                    have[degree] = max(prob, have.get(degree, 0.0))
     out = []
-    for path in sorted(paths, key=lambda p: p.name):
+    for path in sorted(tables, key=lambda p: p.name):
         wb = load_workbook(path, read_only=True, data_only=True)
         for ws in wb.worksheets:
             H, data = sheet_rows(path, ws.title, 1)
@@ -1107,18 +1156,30 @@ def read_maron(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
                 if not marks or not ACCESSION.fullmatch(acc):
                     stats['rows_dropped:no_arginine_mark_or_accession'] += 1
                     continue
-                localised = mass_localised(peptide, marks, 'RK')
-                if not localised:
-                    stats['site_rows_dropped:other_arginine_or_lysine_in_peptide'] += len(marks)
-                    continue
+                by_mass = mass_localised(peptide, marks, 'RK')
                 for off, degree in marks.items():
+                    note, loc, localised = [f'{text(r[H["Protease"]])} peptide'], None, by_mass
+                    if not localised:
+                        placed = calls.get(peptide, {}).get(off, {})
+                        if not placed:
+                            stats['site_marks_dropped:not_localised_by_mass_or_ptmrs'] += 1
+                            continue
+                        if degree not in placed:
+                            if len(placed) > 1:
+                                stats['site_marks_dropped:ptmrs_places_both_degrees'] += 1
+                                continue
+                            note.append(f'{table} gives {MARK[degree][2:-1]}; the Proteome Discoverer export localises {MARK[next(iter(placed))][2:-1]}')
+                            degree = next(iter(placed))
+                            stats['site_marks_degree_from_ptmrs'] += 1
+                        localised, loc = 'localisation_score', placed[degree] / 100
+                        stats['site_marks_localised_by_ptmrs'] += 1
                     out.append(site_row([acc], text(r[H['Gene.Symbol']]), begin + off - 1, degree, 'A549',
                                         'Rme1, Rme2a and Rme2s antibodies (sequential)', table, peptide, off,
-                                        note=[f'{text(r[H["Protease"]])} peptide'], localised=localised))
+                                        note=note, loc=loc, localised=localised))
     return out
 
 
-# ------------------------------------------------------------------- Musiani 2019, Larsen 2016 (PRIDE deposits)
+# ------------------------------------------------------------------- Musiani 2019 (PRIDE deposit), Larsen 2016
 DEPOSIT_MIN_LOC = 0.75
 
 
@@ -1182,8 +1243,30 @@ def read_musiani(paths, stats, ctx):
     return read_deposit(paths, stats, ctx, 'Musiani', 'HeLa', 'SDMA then MMA antibodies (PTMScan)')
 
 
-def read_larsen(paths, stats, ctx):
-    return read_deposit(paths, stats, ctx, 'Larsen', 'HEK293', 'methylarginine antibodies after high-pH fractionation')
+def read_larsen(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
+    """Table S1: the 8,900 monomethylarginine sites of the HEK293 experiments (MaxQuant), each with the leading protein,
+    the position on it, the localisation probability and the 31-residue window. Kept: localisation probability >= 0.75
+    (MaxQuant class I; the table also lists sites below it). The leading protein can be an isoform or an unreviewed
+    entry; the gene names the reviewed entry, and the window places the site."""
+    H, data = sheet_rows(paths[0], load_workbook(paths[0], read_only=True).sheetnames[0], 1)
+    stats['rows_read:Table S1'] += len(data)
+    out = []
+    for r in data:
+        acc, window = text(r[H['Protein']]), text(r[H['Sequence window']])
+        if text(r[H['Amino acid']]) != 'R' or len(window) != 31 or window[15] != 'R':
+            stats['rows_dropped:not_arginine_or_window_not_31_centred'] += 1
+            continue
+        if not ACCESSION.fullmatch(acc):
+            stats['rows_dropped:not_uniprot_accession'] += 1
+            continue
+        loc = float(r[H['Localization prob']])
+        if loc < DEPOSIT_MIN_LOC:
+            stats['rows_dropped:localisation_below_0.75'] += 1
+            continue
+        gene = text(r[H['Gene names']]).split(';')[0]
+        out.append(site_row([acc], gene, int(float(r[H['Position within proteins']])), 'Rme1', 'HEK293',
+                            'methylarginine antibodies after high-pH fractionation', 'Table S1', window=window, loc=loc))
+    return out
 
 
 # ------------------------------------------------------------------------------------------------- UniProt, IEDB
@@ -1240,7 +1323,7 @@ STUDIES = {'hartel2019': ('Hartel2019', read_hartel, ()), 'geoghegan2015': ('Geo
            'ma2023': ('Ma2023', read_ma, ()), 'guo2014': ('Guo2014', read_guo, ('genes',)), 'fong2019': ('Fong2019', read_fong, ()),
            'li2021': ('Li2021', read_li, ()), 'fedoriw2019': ('Fedoriw2019', read_fedoriw, ('reference', 'genes')),
            'lim2020': ('Lim2020', read_lim, ()), 'wei2020': ('Wei2020', read_wei, ()), 'maron2021': ('Maron2021', read_maron, ()),
-           'musiani2019': ('Musiani2019', read_musiani, ('s5',)), 'larsen2016': ('Larsen2016', read_larsen, ('s5',)),
+           'musiani2019': ('Musiani2019', read_musiani, ('s5',)), 'larsen2016': ('Larsen2016', read_larsen, ()),
            'uniprot': ('UniProt', read_uniprot, ()), 'iedb': ('IEDB', read_iedb, ())}
 
 
@@ -1294,7 +1377,7 @@ def main() -> None:
     ap.add_argument('--reference', default='', help='the reference FASTA (lu2025: pairs each listed site with its PSM peptide; fedoriw2019: places peptides)')
     ap.add_argument('--entries', default='', help='the reference entries table (guo2014, fedoriw2019: gene symbols to entries)')
     ap.add_argument('--history', default='', help='the accession history table (gene synonyms, with --entries)')
-    ap.add_argument('--s5', default='', help='Maron 2021 Table S5 (musiani2019, larsen2016: the sites the study reports)')
+    ap.add_argument('--s5', default='', help='Maron 2021 Table S5 (musiani2019: the sites the study reports)')
     args = ap.parse_args()
 
     study_id, reader, needs = STUDIES[args.study]

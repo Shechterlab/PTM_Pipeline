@@ -104,12 +104,24 @@ def ranges(positions) -> str:
 
 
 class Writer:
-    def __init__(self, out: Path, cache: Path):
-        self.out, self.cache, self.manifest, self.summary = out, cache, [], {}
+    def __init__(self, out: Path, cache: Path, keep_existing: bool = False):
+        # keep_existing (top-ups): a dated table already staged is never overwritten; a second top-up of the same day
+        # writes NAME_DATE_2.tsv, which sorts after it (scripts/37 reads every table of a kind, oldest first).
+        self.out, self.cache, self.manifest, self.summary, self.keep_existing = out, cache, [], {}, keep_existing
+
+    def free(self, name: str) -> str:
+        if not self.keep_existing:
+            return name
+        stem, ext, k = name[:name.rindex('.')], name[name.rindex('.'):], 1
+        while (self.out / name).exists():
+            k += 1
+            name = f'{stem}_{k}{ext}'
+        return name
 
     def table(self, name: str, columns: list[str], rows, *, content: str, source: str, version: str, citation: str,
               licence: str, how: str, derived: list[str], redistribution: str = 'git') -> int:
-        path = self.out / name
+        path = self.out / self.free(name)
+        name = path.name
         n = 0
         with open(path, 'w', encoding='utf-8', newline='\n') as fh:
             fh.write('\t'.join(columns) + '\n')
@@ -124,7 +136,7 @@ class Writer:
     def fasta(self, name: str, records, *, content: str, source: str, version: str, citation: str, licence: str, how: str,
               derived: list[str], redistribution: str = 'git') -> int:
         """records: (accession, header text, sequence); 60 residues per line."""
-        path = self.out / name
+        path = self.out / self.free(name)
         n = 0
         with open(path, 'w', encoding='utf-8', newline='\n') as fh:
             for acc, head, seq in records:
@@ -888,7 +900,7 @@ def stage_topup(c: Path, out: Path, workers: int, manifest: Path, measured: str)
     """What scripts/37 --tables fetched into its top-up cache (proteins and sites the frozen tables do not cover), as dated
     tables next to the frozen ones; scripts/37 --tables reads every dated table of a kind. Adds their rows to the
     inputs MANIFEST and lists the fetched files in raw_topup_files_DATE.tsv."""
-    w = Writer(out, c)
+    w = Writer(out, c, keep_existing=True)
     if (c / 'pdbe_interfaces').is_dir():
         stage_pdbe_interfaces(w, c)
     if (c / 'contacts_seqres').is_dir():
@@ -899,7 +911,7 @@ def stage_topup(c: Path, out: Path, workers: int, manifest: Path, measured: str)
         stage_model_contacts(w, c, served=out / 'protvar_served_models_af2complexes_v1.tsv', measured=measured)
         stage_measured_positions(w, c)
     files = [p for p in sorted(c.rglob('*')) if p.is_file()]
-    raw = out / f'raw_topup_files_{dates_of(files)[:10]}.tsv'
+    raw = out / w.free(f'raw_topup_files_{dates_of(files)[:10]}.tsv')
     with open(raw, 'w', encoding='utf-8', newline='\n') as fh:
         fh.write('path\tbytes\tmd5\tsaved\n')
         for p in files:

@@ -17,7 +17,8 @@ source records were placed on UniProt sequences. The repository as it was before
 analysis output of the published run, is the branch
 [`v1.0.0_archive`](https://github.com/Shechterlab/PTM_Pipeline/tree/v1.0.0_archive) (and tag `v1.0.0`).
 
-Each release folder has a README that lists its tables and every column, a data dictionary, and checksums.
+Each release folder has a README that lists its tables and every column, and checksums; from v1.1.0 it also has a data
+dictionary and a record of what changed since the release before.
 
 ## Layout
 
@@ -45,12 +46,16 @@ archive of the release.
 ```bash
 conda env create -n ptm_pipeline -f envs/ptm_pipeline_hpc.yml
 conda activate ptm_pipeline
-bash hpc/build_release.sh v1.1.0
+bash hpc/build_release.sh v1.2.0
 ```
 
-The build checks every input against `inputs/MANIFEST.tsv`, places each source record on the reference sequences,
-stops if a record is placed against its own evidence or a site is not an arginine, runs the analyses, and writes
-`releases/v1.1.0/` and the website's data in `docs/data/`. It takes about half an hour on one core. The tests of
+The build checks every input against `inputs/MANIFEST.tsv`, reads each study from its own table in `inputs/sources/`,
+places each record on the reference sequences, keeps as sites only the records whose source localises the methyl group
+to one arginine that the peptide names once in the reviewed proteome, stops if a record is placed against its own
+evidence or a site is not an arginine, runs the analyses, and writes `releases/v1.2.0/` (with the changes traced from
+`releases/v1.1.0/`) and the website's data in `docs/data/`. v1.1.0, which placed records without localisation, is
+rebuilt with `PREVIOUS=releases/v1.0.0 STUDIES='' LOCALISED_ONLY=0 bash hpc/build_release.sh v1.1.0`; the header of
+`hpc/build_release.sh` lists the options. It takes about half an hour on one core. The tests of
 protein and gene sets run in R (clusterProfiler and DOSE, in the environment file), so `Rscript` must be on the path.
 
 ## Scripts

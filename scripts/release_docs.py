@@ -581,9 +581,9 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
             'A record adds a site only where its source localises the methyl group to one arginine: a localisation score over '
             "the study's threshold (MaxQuant localisation probability, ptmRS, Ascore or ModScore, ModLS), a peptide whose mass "
             'leaves one arrangement (no other residue the search could methylate, or every such residue a dimethylated '
-            'arginine), or a UniProt annotation with experimental evidence from the literature (`localised_by` in '
-            '`supporting/source_records`). Its peptide, or without one its window, must also name exactly one arginine in the '
-            'reviewed proteome, in a protein the record names.',
+            'arginine), a UniProt annotation with experimental evidence from the literature, or a PhosphoSitePlus site, '
+            'trusted as curated (`localised_by` in `supporting/source_records`). Its peptide, or without one its window, must '
+            'also name exactly one arginine in the reviewed proteome, in a protein the record names.',
             '',
             'Every study is read from its own tables (`inputs/sources/<study>_methylarginine_records.tsv`, staged by '
             '`scripts/00_stage_study_sites.py`), so the rows of the compiled tables give way to them: '
@@ -603,11 +603,10 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
             f"{n(len(not_unique_sites))} of them have a localised record whose peptide or window names several arginines in "
             'the reviewed proteome (paralogs, repeats) or one in a protein the record does not name.',
             '',
-            "Most of the rest rest on two studies whose localisation could not be read: Larsen et al. 2016, whose article "
-            "table could not be retrieved (the MaxQuant site table in PRIDE PXD003700 covers 28 of its 140 raw files), and "
-            "Maron et al. 2021, whose tables give no localisation score while its search allowed methylation of arginine "
-            "and lysine. The article table of Larsen 2016 (Table S1) and the search results of Maron 2021 with their "
-            "localisation scores would bring their localised sites back.",
+            "The others were reported through the compiled tables by studies whose own tables do not localise them: the "
+            "study's table gives the site below its localisation threshold, gives no score for a peptide that leaves "
+            "several residues the search could methylate, or does not list it. Their records stay in "
+            "`supporting/source_records` (`superseded_by_study_table`, or `unresolved_not_localised` for ProMetheusDB).",
             '',
         ]
         staged = [x for x in rc.STUDIES if x[0] in set(rc.STUDY_TABLES.values()) and x[0] not in set(rc.STUDIES_ADDED)]
@@ -714,7 +713,9 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
         '',
         '- Functional classes: short gene tokens of `config/functional_ontology.json` matched inside other words (`atr` in '
         'matrix and tetratricopeptide, `actin` in interacting, `lamin` in filamin, `nop` in aminopeptidase); they now match '
-        'whole words or word starts.',
+        'whole words or word starts. Every protein is labelled from the same text (UniProt and InterPro); the names in '
+        'the source tables, which list mostly methylated proteins, are no longer added to theirs. The classes called '
+        'enriched do not change.',
         '- Condensates: the background holds reviewed entries only, secondary accessions counted as their current entry.',
         '- Disease enrichment: a protein counts under its UniProt primary gene (the source tables\' first symbol could be a '
         'neighbouring gene, e.g. IGF2 for IGF2-AS), and the Disease Ontology table names genes by symbol.',
@@ -738,8 +739,9 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
           'out of every analysis.'] if c['pending'] else []) + ([
         f"- **Paralog windows** ({c['flags'].get('paralog_window', 0)} sites, flag `paralog_window`), accepted in "
         '`config/remap_evidence_allowlist.tsv`.'] if c['flags'].get('paralog_window', 0) else []) + [
-        '- **Sites without a readable localisation** (above): Larsen et al. 2016 Table S1 and the Maron et al. 2021 search '
-        'results would bring their localised sites back.',
+        '- **Sites without a readable localisation** (above): the article tables of Musiani et al. 2019 (Science '
+        'Signaling Data files) and the Proteome Discoverer exports of the Maron et al. 2021 GluC digests, and of runs the '
+        'two exports read do not hold, would bring more localised sites back.',
         '',
         '## Tracing a change',
         '',

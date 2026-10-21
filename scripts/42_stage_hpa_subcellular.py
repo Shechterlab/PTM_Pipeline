@@ -15,7 +15,7 @@ Outputs (in --outdir, default $PTM_RESULTS_ROOT/hpa)
   hpa_subcellular_locations.tsv   one row per accession and location: main (1) or additional (0), reliability
   hpa_summary.json                input checksums and file dates, counts
 
-The release build reads the staged table (inputs/annotation/): scripts/release_tables.py tests each location
+The release build reads the staged table (inputs/layers/): scripts/release_tables.py tests each location
 (clusterProfiler enricher) and scripts/36_export_site_explorer_data.py carries the locations to the website.
 """
 from __future__ import annotations
