@@ -13,9 +13,10 @@ sequence. For each interval table this script:
   - updates `protein_length` where the table has it.
 
     python scripts/00_lift_intervals_to_reference.py --old-fasta OLD.fasta --new-fasta inputs/reference/....fasta \
-        --tables inputs/annotation/interpro_108.0_domain_intervals.tsv ... --report lift_report.tsv
+        --tables staged/interpro_108.0_domain_intervals.tsv ... --outdir inputs/annotation --report lift_report.tsv
 
-Tables are rewritten in place; the report lists what happened to each changed entry.
+Each table is written to --outdir under its own name, never over itself, so a rerun starts from the same staged
+tables and gives the same result; the report lists what happened to each changed entry.
 """
 from __future__ import annotations
 
@@ -57,8 +58,13 @@ def main() -> None:
     ap.add_argument('--old-fasta', required=True, help='the sequences the tables were computed on')
     ap.add_argument('--new-fasta', required=True, help='the reference to move them to')
     ap.add_argument('--tables', nargs='+', required=True)
+    ap.add_argument('--outdir', required=True, help='where the lifted tables go (not the folder of --tables)')
     ap.add_argument('--report', required=True)
     args = ap.parse_args()
+    outdir = Path(args.outdir)
+    if any(Path(t).resolve().parent == outdir.resolve() for t in args.tables):
+        raise SystemExit('--outdir is the folder of a --tables file: a table would be lifted over itself')
+    outdir.mkdir(parents=True, exist_ok=True)
     old, new = read_fasta(Path(args.old_fasta)), read_fasta(Path(args.new_fasta))
     changed = {a: mapping(old[a], new[a]) for a in old.keys() & new.keys() if old[a] != new[a]}
     gone = sorted(old.keys() - new.keys())
@@ -70,10 +76,16 @@ def main() -> None:
         acc = df['canonical_UniProtAC']
         # Every entry, changed or not, must fit the sequences the table claims to number: an interval past the old
         # end means the entry was computed on another sequence (or the table was lifted already).
-        past = df[[int(e) > len(old.get(a, '')) for a, e in zip(acc, df['fragment_end'])] & acc.isin(old.keys())]
+        past = df[pd.Series([int(e) > len(old.get(a, '')) for a, e in zip(acc, df['fragment_end'])], index=df.index)
+                  & acc.isin(old.keys())]
         if len(past):
             raise SystemExit(f'{path.name}: {past["canonical_UniProtAC"].nunique()} entries have intervals beyond their length in '
                              f'--old-fasta (e.g. {past["canonical_UniProtAC"].iloc[0]}): not computed on it, or lifted already')
+        if 'protein_length' in df:
+            lifted = [a for a in changed if len(old[a]) != len(new[a]) and (df.loc[acc == a, 'protein_length'] == str(len(new[a]))).any()]
+            if lifted:
+                raise SystemExit(f'{path.name}: {len(lifted)} changed entries already have their --new-fasta length '
+                                 f'(e.g. {lifted[0]}): the table was lifted already')
         keep = ~acc.isin(gone)
         for a, (kind, shift) in sorted(changed.items()):
             rows = acc == a
@@ -103,7 +115,7 @@ def main() -> None:
         if 'protein_length' in df:
             lengths = df['canonical_UniProtAC'].map(lambda a: str(len(new[a])) if a in new else '')
             df = df.assign(protein_length=lengths)
-        df.to_csv(path, sep='\t', index=False, lineterminator='\n')
+        df.to_csv(outdir / path.name, sep='\t', index=False, lineterminator='\n')
     pd.DataFrame(report).to_csv(args.report, sep='\t', index=False, lineterminator='\n')
     print(pd.DataFrame(report).groupby(['table', 'action']).size().to_string())
 

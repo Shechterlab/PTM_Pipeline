@@ -16,7 +16,8 @@ terms, each on its own row, at positions that are an arginine of an entry whose 
   Omega-N-methylated arginine    Rme (degree not stated)
 
 with the evidence codes and their class: experimental (ECO:0000269 experimental evidence, ECO:0007744 combinatorial
-computational and experimental, i.e. large-scale proteomics), by_similarity (ECO:0000250) or other.
+computational and experimental, i.e. large-scale proteomics), by_similarity (ECO:0000250) or other. Features
+annotated on an isoform's sequence (40 in 2026_03) are counted in the report, not kept.
 """
 from __future__ import annotations
 
@@ -34,6 +35,8 @@ TERMS = {'Omega-N-methylarginine': 'Rme1', 'Asymmetric dimethylarginine': 'Rme2a
          'Dimethylated arginine': 'Rme2', 'Omega-N-methylated arginine': 'Rme'}
 EXPERIMENTAL = {'ECO:0000269', 'ECO:0007744'}
 FEATURE = re.compile(r'MOD_RES (\d+); /note="([^"]*)"(?:; /evidence="([^"]*)")?')
+# A feature on an isoform's sequence (MOD_RES P12345-2:249) is not on the canonical one: counted, not kept.
+ISOFORM_FEATURE = re.compile(r'MOD_RES [A-Z0-9]+-\d+:\d+; /note="([^";]*)')
 
 
 def read_fasta(path: str) -> dict[str, str]:
@@ -78,9 +81,10 @@ def main() -> None:
     raw = pd.read_csv(raw_path, sep='\t', dtype=str, keep_default_na=False)
     reference = read_fasta(args.fasta)
 
-    rows, skipped = [], {'not_in_reference': 0, 'sequence_differs': 0, 'not_arginine': 0}
+    rows, skipped = [], {'not_in_reference': 0, 'sequence_differs': 0, 'not_arginine': 0, 'on_an_isoform': 0}
     for r in raw.itertuples(index=False):
         acc, features, sequence = r[0], r[1], r[2]
+        skipped['on_an_isoform'] += sum(note.strip() in TERMS for note in ISOFORM_FEATURE.findall(features))
         terms = [(int(pos), note.split(';')[0].strip(), 'alternate' in note, [e.split('|')[0] for e in ev.split(', ') if e])
                  for pos, note, ev in FEATURE.findall(features)]
         terms = [t for t in terms if t[1] in TERMS]
