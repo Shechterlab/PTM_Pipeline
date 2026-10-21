@@ -12,7 +12,10 @@ entries).
 Every record says how the methyl group is localised to its arginine (localised_by): localisation_score (the study's
 score passes its threshold), one_methylatable_residue or every_arginine_dimethylated (the peptide's mass leaves one
 arrangement, common.mass_localised, for studies that give no score), or curated_experimental (UniProt ECO:0000269).
-Rows without one are dropped here and counted in the summary.
+A row the study reports that misses only the localisation (its score below the threshold, a peptide that leaves several
+residues, spectra that disagree, no spectrum at all) is kept with localised_by empty and the reason in not_localised: it
+adds no site, and the release lists it as lower-confidence evidence. Below, 'Kept' names the localised rows; rows that
+fail the study's identification filters (FDR, decoys, scores of the match) are dropped and counted in the summary.
 
 Writes the records each study reports, one per (first reported accession, reported position, unmarked peptide or
 window, degree), with the position the source gives on that accession. Nothing is placed on a reference sequence here:
@@ -52,7 +55,7 @@ under), not always 'Protein'; that accession leads reported_accession, followed 
 methods' q.value <= 0.05 (5 % peptide FDR; with the methyl-SILAC pair the set's FDR is 0.93 %) and IP.Prob > 0.25
 (every row meets them), and the localisation threshold ModLS > 8 or 'Unambiguous'. The methods also accept rows at
 ModLS 8 or below whose every arginine is methylated, whose methylated arginines trypsin missed, or whose PTMscore is
->= 0.95; those rows do not fix which arginine carries which methyl group, and are dropped. The note gives the record's
+>= 0.95; those rows do not fix which arginine carries which methyl group, and are kept not localised. The note gives the record's
 best ModLS. localisation_probability is left empty: PTM.Localization.Probs gives 0 to many marked arginines that ModLS
 localises (NRPAIAR(+28.03)GAAGGGGR(+14.02), ModLS 138, has 0 at all three arginines). Rows whose
 protein list holds a decoy (DECOY1_, DECOY2_) are dropped; their site description is UNMAPPED or doubtful.
@@ -71,7 +74,7 @@ Tudor domain (Proteome Discoverer, 1 % FDR). The tables give no localisation sco
 most of the peptides hold several arginines, so a site is kept only where a PSM localises it by mass: a PSM of the
 three replicates' PSM sheets (unambiguous, Percolator q <= 0.01) of the same protein, whose every arginine is
 dimethylated, with a dimethylated R at the site's position in the reference sequence (--reference); the record takes
-the peptide with most such PSMs. The other sites are dropped. EV1 has no list of monomethylarginine sites, only PSMs
+the peptide with most such PSMs. The other sites are kept by position only, not localised (no_localising_evidence). EV1 has no list of monomethylarginine sites, only PSMs
 without protein positions, so only the dimethyl list is staged. Sites of the 'Validated peptides' sheet (hmSILAC) are
 noted.
 
@@ -102,8 +105,8 @@ from common import mass_localised
 
 COLUMNS = ['study_id', 'reported_accession', 'reported_gene', 'reported_position', 'peptide', 'window', 'methyl_degree',
            'rme2_type', 'cell_type', 'enrichment', 'localisation_probability', 'n_source_rows', 'source_tables', 'note',
-           'localised_by']
-# How a record localises its methyl group to the one arginine (every staged record does, or it is dropped):
+           'localised_by', 'not_localised']
+# How a record localises its methyl group to the one arginine (empty for a record kept not localised, NOT_LOCALISED):
 #   localisation_score          the study's localisation score passes a standard threshold (MaxQuant localisation
 #                               probability >= 0.75, ptmRS >= 75 %, Ascore/ModScore > 13, Geoghegan's ModLS > 8,
 #                               Byonic Delta Mod > 20 for Maron 2021)
@@ -112,6 +115,14 @@ COLUMNS = ['study_id', 'reported_accession', 'reported_gene', 'reported_position
 #                               arginines only, so the mass allows no other arrangement
 #   curated_experimental        UniProt annotates the residue with experimental evidence (ECO:0000269)
 LOCALISED_BY = ('localisation_score', 'one_methylatable_residue', 'every_arginine_dimethylated', 'curated_experimental')
+# Why a record the study reports is not localised (localised_by empty). Such records are kept: they add no site, and
+# the release lists them as lower-confidence evidence (release_codes.CODES['not_localised']).
+#   below_threshold             the study's localisation score is below its threshold (the score is kept)
+#   several_residues            the peptide holds other residues the search could methylate, and no score is given
+#   search_disagrees            the study's confident spectra place the methyl group differently, or both degrees there
+#   no_localising_evidence      the study lists the site without a spectrum or score that localises it
+#   window_fits_several         the study's window centres on more than one marked arginine of its peptide (repeats)
+NOT_LOCALISED = ('below_threshold', 'several_residues', 'search_disagrees', 'no_localising_evidence', 'window_fits_several')
 ACCESSION = re.compile(r'([OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2})(-\d+)?')
 DEGREE = {'Methyl': 'Rme1', 'Dimethyl': 'Rme2'}
 MARK = {'Rme1': 'R(me1)', 'Rme2': 'R(me2)', '': 'R(methyl)'}  # '' : the degree is not given
@@ -147,10 +158,15 @@ def read_fasta(path: Path) -> dict[str, str]:
 
 
 def site_row(accs, gene, position, degree, cell, enrichment, table, peptide='', offset=None, window='', loc=None,
-             rme2=None, note=(), localised='localisation_score') -> dict:
+             rme2=None, note=(), localised='localisation_score', why='') -> dict:
+    """One site as a source row gives it. why: a NOT_LOCALISED code, for a row whose methyl group the study does not
+    localise (localised is then empty)."""
+    if why:
+        assert why in NOT_LOCALISED, why
+        localised = ''
     return {'accessions': list(accs), 'gene': gene, 'position': position, 'degree': degree, 'cell': cell,
             'enrichment': enrichment, 'table': table, 'peptide': peptide, 'offset': offset, 'window': window,
-            'loc': loc, 'rme2': rme2 or set(), 'note': list(note), 'localised': localised}
+            'loc': loc, 'rme2': rme2 or set(), 'note': list(note), 'localised': localised, 'why': why}
 
 
 def open_workbook(path: Path):
@@ -408,16 +424,16 @@ def read_hartel(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
                 if not 1 <= off <= len(peptide) or peptide[off - 1] != 'R':
                     stats['site_rows_dropped:marked_residue_not_R'] += 1
                     continue
-                if prob is None or prob < HARTEL_MIN_LOC:
-                    stats['site_rows_dropped:localisation_below_75' if prob is not None else 'site_rows_dropped:no_localisation_probability'] += 1
-                    continue
+                why = '' if prob is not None and prob >= HARTEL_MIN_LOC else 'below_threshold' if prob is not None else 'no_localising_evidence'
+                if why:
+                    stats['site_rows_not_localised:localisation_below_75' if prob is not None else 'site_rows_not_localised:no_localisation_probability'] += 1
                 if pos_of and not consistent:
                     stats['site_rows_dropped:position_inconsistent_with_peptide'] += 1
                     continue
                 degree = DEGREE[k]
                 rme2 = hartel_nl_call(off, localised, nl_class, n_me2, has_mma, andromeda) if nl_tested and degree == 'Rme2' else set()
                 row = site_row(masters, gene, pos_of.get((res, off)), degree, cell, enrichment, label, peptide, off,
-                               loc=prob / 100, rme2=rme2, note=[n for n in note if n])
+                               loc=None if prob is None else prob / 100, rme2=rme2, note=[n for n in note if n], why=why)
                 row['kd_condition'] = note[0] if kind == 'id' and note else ''
                 row['quant'] = kind == 'quant'
                 if row['position'] is None and label in ('S1', 'S2'):
@@ -541,12 +557,12 @@ def read_geoghegan(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
             continue
         localised = geoghegan_modls(r[H['ModLS']])
         if not localised:
-            stats['site_rows_dropped:modls_8_or_less'] += len(sites)
-            continue
+            stats['site_rows_not_localised:modls_8_or_less'] += len(sites)
         cell = text(r[H['Cell']])
         enrichment = GEOGHEGAN_ANTIBODY[text(r[H['Antibody']])]
         for m, (off, degree) in zip(reported, sites):
-            row = site_row(accs, gene, int(m.group(1)), degree, cell, '', 'ST1', peptide, off, note=[localised])
+            row = site_row(accs, gene, int(m.group(1)), degree, cell, '', 'ST1', peptide, off,
+                           note=[localised or f'ModLS {float(r[H["ModLS"]]):g}'], why='' if localised else 'below_threshold')
             row['enrichments'] = enrichment
             out.append(row)
     return out
@@ -614,9 +630,9 @@ def read_sylvestersen(paths: list[Path], stats: Counter, ctx: dict) -> list[dict
                 stats['rows_dropped:decoy_contaminant_or_not_uniprot'] += 1
                 continue
             loc = float(r[H['Localization prob']])
-            if loc < SYLVESTERSEN_MIN_LOC:
-                stats['rows_dropped:localisation_below_0.75'] += 1
-                continue
+            why = 'below_threshold' if loc < SYLVESTERSEN_MIN_LOC else ''
+            if why:
+                stats['rows_not_localised:localisation_below_0.75'] += 1
             window = text(r[H['Sequence window']])
             peptide, marks = maxquant_peptide(text(r[H['Modified sequence']]))
             candidates = [off for off, mk in marks.items() if peptide[off - 1] == 'R' and MAXQUANT_MARK.get(mk) == degree]
@@ -625,7 +641,7 @@ def read_sylvestersen(paths: list[Path], stats: Counter, ctx: dict) -> list[dict
                 stats['rows_window_only:site_not_matched_in_peptide'] += 1
             gene = text(r[H[gene_col]]).split(';')[0].strip()
             out.append(site_row(accs, gene, int(m.group(2)), degree, 'HEK293T', 'RMe and RMeGG MMA antibodies', label,
-                                peptide if off else '', off, window=window, loc=loc))
+                                peptide if off else '', off, window=window, loc=loc, why=why))
     return out
 
 
@@ -687,7 +703,7 @@ def read_lu(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
             continue
         note = ['hmSILAC validated peptide (EV1)'] if (acc, pos) in validated else []
         # The site's peptide: a localised dimethylarginine PSM of the same protein whose marked R lies at this position
-        # of the reference sequence (most PSMs, then the shorter peptide). Without one the site is dropped.
+        # of the reference sequence (most PSMs, then the shorter peptide). Without one the site is kept, not localised.
         seq, found = reference.get(acc.split('-')[0], ''), []
         for (peptide, off), n in psms.get(acc.split('-')[0], {}).items():
             start = pos - off
@@ -700,8 +716,10 @@ def read_lu(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
             localised = mass_localised(peptide, {k: 'Rme2' for k, aa in enumerate(peptide, 1) if aa == 'R'}, 'R')
             out.append(site_row([acc], '', pos, 'Rme2', 'HeLa', 'SMN Tudor', 'EV1 Arginine dimethylation sites; EV1 PSMs',
                                 peptide=peptide, offset=off, note=note, localised=localised))
-        else:
-            stats['sites_dropped:no_localised_psm'] += 1
+        else:   # listed by the study, but no PSM localises it: kept without a peptide, not localised
+            stats['sites_not_localised:no_localised_psm'] += 1
+            out.append(site_row([acc], '', pos, 'Rme2', 'HeLa', 'SMN Tudor', 'EV1 Arginine dimethylation sites', note=note,
+                                why='no_localising_evidence'))
     return out
 
 
@@ -792,7 +810,8 @@ def read_guo(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
     """Table S3 lists the HCT116 sites (13-residue window, lower-case r at the site, RefSeq numbering); Table S2 the
     peptide-spectrum matches with the ModScore of each site. A site is kept where an HCT116 PSM of its gene, its
     peptide aligned with the site's window, localises the methyl group there at ModScore > 13 and its precursor mass
-    gives the degree. The gene symbol names the reviewed entries; the RefSeq accession is kept in the note."""
+    gives the degree. The gene symbol names the reviewed entries; the RefSeq accession is kept in the note. A site
+    whose PSMs all score 13 or less is kept with them, not localised; one without a PSM, by its window."""
     s2_path, s3_path = sorted(paths, key=lambda p: p.name)  # ...-3.xlsx is Table S2, ...-4.xlsx Table S3
     H2, rows2 = sheet_rows(s2_path, open_workbook(s2_path).sheetnames[0], 5)
     stats['rows_read:Table S2'] += len(rows2)
@@ -815,9 +834,8 @@ def read_guo(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
             if peptide[off - 1] != 'R':
                 continue
             if scores.get(off, 0) <= GUO_MIN_MODSCORE:
-                stats['psm_sites_dropped:modscore_13_or_less'] += 1
-                continue
-            psms[text(r[H2['gene_symbol']]).upper()].append((peptide, off, scores[off], degree, text(r[H2['antibody ID']])))
+                stats['psm_sites_modscore_13_or_less'] += 1
+            psms[text(r[H2['gene_symbol']]).upper()].append((peptide, off, scores.get(off, 0.0), degree, text(r[H2['antibody ID']])))
     H3, rows3 = sheet_rows(s3_path, open_workbook(s3_path).sheetnames[0], 5)
     stats['rows_read:Table S3'] += len(rows3)
     out = []
@@ -838,13 +856,19 @@ def read_guo(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
             if all(window[6 + k] in 'xX' or not 0 <= off - 1 + k < len(peptide) or peptide[off - 1 + k] == window[6 + k].upper()
                    for k in range(-6, 7)):
                 fits.append((peptide, off, score, degree, antibody))
-        if not fits:
-            stats['rows_dropped:no_psm_localised_at_modscore_above_13'] += 1
-            continue
         refseq = text(r[H3['Accession #']])
-        for peptide, off, score, degree, antibody in fits:
+        localised = [f for f in fits if f[2] > GUO_MIN_MODSCORE]
+        if not fits:   # no HCT116 PSM of the site's peptide: kept by its window, not localised
+            stats['rows_not_localised:no_psm'] += 1
+            out.append(site_row(accs, gene, int(position), '', 'HCT116', '', 'Table S3', window=window.upper().replace('X', '_'),
+                                note=[f'RefSeq {refseq}'], why='no_localising_evidence'))
+            continue
+        if not localised:
+            stats['rows_not_localised:modscore_13_or_less'] += 1
+        for peptide, off, score, degree, antibody in localised or fits:
             row = site_row(accs, gene, int(position), degree, 'HCT116', GUO_ANTIBODY.get(antibody, antibody), 'Table S2; Table S3',
-                           peptide, off, window=window.upper().replace('X', '_'), note=[f'ModScore {score:g}', f'RefSeq {refseq}'])
+                           peptide, off, window=window.upper().replace('X', '_'), note=[f'ModScore {score:g}', f'RefSeq {refseq}'],
+                           why='' if localised else 'below_threshold')
             row['score'] = score
             out.append(row)
     return out
@@ -873,9 +897,12 @@ def read_fong(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
             stats['rows_dropped:decoy_contaminant_or_not_uniprot'] += 1
             continue
         loc, score = float(r[H['LcPrb']]), float(r[H['Score']])
-        if loc < FONG_MIN_LOC or score < FONG_MIN_SCORE:
-            stats['rows_dropped:localisation_below_0.75_or_score_below_25'] += 1
+        if score < FONG_MIN_SCORE:
+            stats['rows_dropped:score_below_25'] += 1
             continue
+        why = 'below_threshold' if loc < FONG_MIN_LOC else ''
+        if why:
+            stats['rows_not_localised:localisation_below_0.75'] += 1
         degree = MAXQUANT_MARK.get(text(r[H['Modification']]))
         peptide, marks = maxquant_peptide(text(r[H['Modified sequence']]))
         window = text(r[H['Modification Window']])
@@ -889,7 +916,7 @@ def read_fong(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
         experiment = text(r[H['Experiment']])
         enrichment = next((v for k, v in FONG_ENRICHMENT.items() if f'_{k}_' in f'_{experiment}_'), '')
         out.append(site_row(accs, text(r[H['Gene Names']]).split(';')[0], int(float(r[H['Position']])), degree, 'NB4',
-                            enrichment, 'Table S4', peptide, off, window=window, loc=loc))
+                            enrichment, 'Table S4', peptide, off, window=window, loc=loc, why=why))
     return out
 
 
@@ -927,11 +954,10 @@ def read_li(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
                     continue
                 localised = mass_localised(peptide, {off: degree}, 'RK')
                 if not localised:
-                    stats['site_rows_dropped:other_arginine_or_lysine_in_peptide'] += 1
-                    continue
+                    stats['site_rows_not_localised:other_arginine_or_lysine_in_peptide'] += 1
                 out.append(site_row([acc], text(r[H['Gene name']]), position, degree, 'HEK293', LI_ENRICHMENT[perturbation],
                                     ws.title, peptide, off, note=[f'{perturbation} {"knockdown" if perturbation != "SGC3027" else "inhibitor"}'],
-                                    localised=localised))
+                                    localised=localised, why='' if localised else 'several_residues'))
     return out
 
 
@@ -979,8 +1005,7 @@ def read_fedoriw(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
                     stats['rows_dropped:no_arginine_mark'] += 1
                     continue
                 if not localised:
-                    stats['rows_dropped:other_arginine_in_peptide'] += len(marks)
-                    continue
+                    stats['site_rows_not_localised:other_arginine_in_peptide'] += len(marks)
                 accs = ctx['genes'].get(gene.upper(), [])
                 hits = [(a, m.start() + 1) for a in accs for m in re.finditer(f'(?={peptide})', ctx['reference'].get(a, ''))]
                 if len(hits) != 1:
@@ -989,7 +1014,8 @@ def read_fedoriw(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
                 acc, start = hits[0]
                 for off, degree in marks.items():
                     out.append(site_row([acc], gene, start + off - 1, degree, cell, FEDORIW_ENRICHMENT.get(ip, ip), table,
-                                        peptide, off, note=[f'{ip} immunoprecipitation'], localised=localised))
+                                        peptide, off, note=[f'{ip} immunoprecipitation'], localised=localised,
+                                        why='' if localised else 'several_residues'))
     return out
 
 
@@ -1035,9 +1061,9 @@ def read_lim(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
                 if not re.fullmatch(r'\d+', site) or len(window) != 15 or window[7] != 'r':
                     stats['site_rows_dropped:no_position_or_window'] += 1
                     continue
-                if best is None or best <= LIM_MIN_MODSCORE:
-                    stats['site_rows_dropped:modscore_13_or_less'] += 1
-                    continue
+                why = 'below_threshold' if best is None or best <= LIM_MIN_MODSCORE else ''
+                if why:
+                    stats['site_rows_not_localised:modscore_13_or_less'] += 1
                 fits = [off for off in marks if all(window[7 + k] in 'xX' or not 0 <= off - 1 + k < len(peptide)
                                                     or peptide[off - 1 + k].replace('I', 'L') == window[7 + k].upper().replace('I', 'L')
                                                     for k in range(-7, 8))]
@@ -1047,7 +1073,7 @@ def read_lim(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
                 off = fits[0]
                 out.append(site_row([acc], text(r[col['Gene Name']]), int(site), marks[off], 'colorectal cancer tissue',
                                     LIM_TABLES[table], table, peptide, off, window=window.upper().replace('X', '_'),
-                                    note=[f'ModScore {best:g}']))
+                                    note=[f'ModScore {best:g}'] if best is not None else [], why=why))
     return out
 
 
@@ -1069,9 +1095,9 @@ def read_wei(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
             stats['rows_dropped:not_uniprot_accession'] += 1
             continue
         loc = float(r[H['Localization prob']])
-        if loc <= WEI_MIN_LOC:
-            stats['rows_dropped:localisation_0.75_or_less'] += 1
-            continue
+        why = 'below_threshold' if loc <= WEI_MIN_LOC else ''
+        if why:
+            stats['rows_not_localised:localisation_0.75_or_less'] += 1
         peptide = re.sub(r'\([^)]*\)', '', text(r[H['Dimethyl (R) Probabilities']])).upper()
         off, position = int(float(r[H['Position in peptide']])), int(float(r[H['Position within protein']]))
         if not 1 <= off <= len(peptide) or peptide[off - 1] != 'R':
@@ -1080,7 +1106,7 @@ def read_wei(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
         window = text(r[H['Sequence window']]).split(';')[0]
         gene = min((text(r[H['Gene names']]), text(r[H['Protein names']])), key=len).split(';')[0]
         out.append(site_row(accs, gene, position, 'Rme2', 'HPDE6c7; PANC-1', 'ADMA antibody (#13474)', 'Table 1', peptide,
-                            off, window=window, loc=loc))
+                            off, window=window, loc=loc, why=why))
     return out
 
 
@@ -1145,10 +1171,11 @@ def byonic_site_calls(path: Path, stats: Counter, psms: dict) -> None:
             psms[r['Sequence'].upper()].append((marks, float(r['Delta Mod Score'] or 0)))
 
 
-def byonic_consensus(psms: dict, stats: Counter) -> dict[str, dict[int, dict[str, float]]]:
+def byonic_consensus(psms: dict, stats: Counter) -> tuple[dict[str, dict[int, dict[str, float]]], set]:
     """Unmodified peptide -> {offset: {degree: best Delta Mod}} for the arginine marks every PSM above
-    MARON_MIN_DELTA_MOD of that peptide and set of marks (how many of each degree on R and K) places there."""
-    calls = defaultdict(lambda: defaultdict(dict))
+    MARON_MIN_DELTA_MOD of that peptide and set of marks (how many of each degree on R and K) places there; and the
+    (peptide, offset) marks those PSMs disagree on."""
+    calls, disagreed = defaultdict(lambda: defaultdict(dict)), set()
     for peptide, found in psms.items():
         groups = defaultdict(list)
         for marks, dm in found:
@@ -1163,7 +1190,8 @@ def byonic_consensus(psms: dict, stats: Counter) -> dict[str, dict[int, dict[str
                     calls[peptide][off][degree] = max(best, calls[peptide][off].get(degree, 0.0))
                 else:
                     stats['byonic_marks_dropped:confident_psms_disagree'] += 1
-    return calls
+                    disagreed.add((peptide, off))
+    return calls, disagreed
 
 
 def read_maron(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
@@ -1177,14 +1205,14 @@ def read_maron(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
     other arginine or lysine (one_methylatable_residue), or where the search localises a methyl group to that arginine
     of the same peptide (localisation_score): ptmRS >= 75 %, or Byonic Delta Mod > 20 in every high-confidence PSM above
     it. When the search places the other degree there, the record takes the search's degree and the note says what the
-    table gives; when it places both degrees, the mark is dropped. The search tables' accessions (NCBI GI numbers in the
-    earlier export) are not used: the tables name the protein."""
+    table gives; when it places both degrees, or the confident PSMs disagree, the mark is kept not localised. The
+    search tables' accessions (NCBI GI numbers in the earlier export) are not used: the tables name the protein."""
     tables = [p for p in paths if p.name.startswith('maron2021_table')]
     psm_tables = [p for p in paths if p.name.endswith('_PSMs.txt')]
     psms = defaultdict(list)
     for path in sorted(psm_tables, key=lambda p: p.name):
         byonic_site_calls(path, stats, psms)
-    byonic = byonic_consensus(psms, stats)
+    byonic, disagreed = byonic_consensus(psms, stats)
     calls = {}
     for path in sorted(set(paths) - set(tables) - set(psm_tables), key=lambda p: p.name):
         for peptide, sites in pd_site_calls(path, stats).items():
@@ -1213,13 +1241,18 @@ def read_maron(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
                     if not localised:
                         ptmrs, delta = calls.get(peptide, {}).get(off, {}), byonic.get(peptide, {}).get(off, {})
                         placed = set(ptmrs) | set(delta)
+                        why = ''
                         if not placed:
-                            stats['site_marks_dropped:not_localised_by_mass_ptmrs_or_byonic'] += 1
+                            stats['site_marks_not_localised:not_localised_by_mass_ptmrs_or_byonic'] += 1
+                            why = 'search_disagrees' if (peptide, off) in disagreed else 'several_residues'
+                        elif degree not in placed and len(placed) > 1:
+                            stats['site_marks_not_localised:search_places_both_degrees'] += 1
+                            why = 'search_disagrees'
+                        if why:
+                            out.append(site_row([acc], text(r[H['Gene.Symbol']]), begin + off - 1, degree, 'A549',
+                                                'Rme1, Rme2a and Rme2s antibodies (sequential)', table, peptide, off, note=note, why=why))
                             continue
                         if degree not in placed:
-                            if len(placed) > 1:
-                                stats['site_marks_dropped:search_places_both_degrees'] += 1
-                                continue
                             note.append(f'{table} gives {MARK[degree][2:-1]}; the search localises {MARK[next(iter(placed))][2:-1]}')
                             degree = next(iter(placed))
                             stats['site_marks_degree_from_search'] += 1
@@ -1273,20 +1306,22 @@ def read_musiani(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
                     stats['rows_dropped:not_arginine'] += 1
                     continue
                 loc = float(r[H['PTM Localization Probability']])
-                if loc < MIN_LOC:
-                    stats['rows_dropped:localisation_below_0.75'] += 1
-                    continue
+                why = 'below_threshold' if loc < MIN_LOC else ''
+                if why:
+                    stats['rows_not_localised:localisation_below_0.75'] += 1
                 acc, degree = text(r[H['Leading UniprotID']]), MAXQUANT_MARK[text(r[H['Modification']])]
                 peptide, marks = maxquant_peptide(text(r[H['Modified sequence']]))
                 window = text(r[H['Modification Window']])
                 off = musiani_site(peptide, marks, window, degree)
-                if not ACCESSION.fullmatch(acc) or off is None:
-                    stats['rows_dropped:accession_unreadable_or_window_not_on_one_mark'] += 1
+                if not ACCESSION.fullmatch(acc):
+                    stats['rows_dropped:accession_unreadable'] += 1
                     continue
+                if off is None:   # the window centres on more than one marked arginine (repeats): kept by its window
+                    stats['rows_window_only:window_fits_several_marks'] += 1
                 exp = text(r[H['Experiment']])
                 out.append(site_row([acc], text(r[H['Gene Names']]).split(';')[0], int(float(r[H['Position in protein']])), degree,
-                                    'HeLa', MUSIANI_ENRICHMENT.get(exp.split('_')[-1], exp), 'Table S1', peptide, off,
-                                    window=window.replace('z', '_'), loc=loc, note=[f'SILAC {exp}']))
+                                    'HeLa', MUSIANI_ENRICHMENT.get(exp.split('_')[-1], exp), 'Table S1', peptide if off else '', off,
+                                    window=window.replace('z', '_'), loc=loc, note=[f'SILAC {exp}'], why=why))
             continue
         for sheet in ('Spreadsheet 1', 'Spreadsheet 2'):
             rows = list(wb[sheet].iter_rows(values_only=True))
@@ -1306,16 +1341,18 @@ def read_musiani(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
                     continue
                 probs = [text(get(r, 'LcPrb', f'{x} (best)')) for x in ('H', 'L')]
                 loc = max((float(v) for v in probs if re.fullmatch(r'[\d.]+', v)), default=None)
-                if not (loc is not None and loc >= MIN_LOC or any(v == '> 0.75' for v in probs)):
-                    stats['rows_dropped:localisation_below_0.75'] += 1
-                    continue
+                why = '' if loc is not None and loc >= MIN_LOC or any(v == '> 0.75' for v in probs) else 'below_threshold'
+                if why:
+                    stats['rows_not_localised:localisation_below_0.75'] += 1
                 degree = MAXQUANT_MARK.get(text(get(r, 'Modification', side)))
+                if not degree:
+                    stats['rows_dropped:no_methyl_degree'] += 1
+                    continue
                 peptide, marks = maxquant_peptide(text(get(r, 'Modified Sequence', side)))
                 window, pos = text(get(r, 'Window', side)), int(float(get(r, 'Position', side)))
-                off = musiani_site(peptide, marks, window, degree) if degree else None
-                if off is None:
-                    stats['rows_dropped:window_not_on_one_mark'] += 1
-                    continue
+                off = musiani_site(peptide, marks, window, degree)
+                if off is None:   # the window centres on more than one marked arginine (repeats): kept by its window
+                    stats['rows_window_only:window_fits_several_marks'] += 1
                 gene = text(get(r, 'Gene', side)).split(';')[0]
                 accs = [a for a in text(get(r, 'All Proteins', side) or get(r, 'All proteins', side)).split(';') if a]
                 if not accs:   # Spreadsheet 2: the gene's reviewed entry that holds the peptide once
@@ -1329,8 +1366,8 @@ def read_musiani(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
                     stats['rows_dropped:accession_unreadable'] += 1
                     continue
                 out.append(site_row(accs, gene, pos, degree, 'HeLa', 'heavy-methyl SILAC, methylarginine antibodies',
-                                    f'Table S2 {sheet}', peptide, off, window=window, loc=loc,
-                                    note=['LcPrb > 0.75 (as given)'] if loc is None else []))
+                                    f'Table S2 {sheet}', peptide if off else '', off, window=window, loc=loc,
+                                    note=['LcPrb > 0.75 (as given)'] if loc is None else [], why=why))
     return out
 
 
@@ -1351,12 +1388,12 @@ def read_larsen(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
             stats['rows_dropped:not_uniprot_accession'] += 1
             continue
         loc = float(r[H['Localization prob']])
-        if loc < MIN_LOC:
-            stats['rows_dropped:localisation_below_0.75'] += 1
-            continue
+        why = 'below_threshold' if loc < MIN_LOC else ''
+        if why:
+            stats['rows_not_localised:localisation_below_0.75'] += 1
         gene = text(r[H['Gene names']]).split(';')[0]
         out.append(site_row([acc], gene, int(float(r[H['Position within proteins']])), 'Rme1', 'HEK293',
-                            'methylarginine antibodies after high-pH fractionation', 'Table S1', window=window, loc=loc))
+                            'methylarginine antibodies after high-pH fractionation', 'Table S1', window=window, loc=loc, why=why))
     return out
 
 
@@ -1399,11 +1436,11 @@ def read_iedb(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
         off = mods[0]
         localised = mass_localised(peptide, {off: ''}, 'RK')
         if not localised:
-            stats['rows_dropped:other_arginine_or_lysine_in_epitope'] += 1
-            continue
+            stats['rows_not_localised:other_arginine_or_lysine_in_epitope'] += 1
         a = antigens[0]
         out.append(site_row([a['accession'].split('.')[0]], '', a['starting_position'] + off - 1, '', '', 'HLA-presented peptides',
-                            'IEDB epitope', peptide, off, note=[f'IEDB epitope {e["structure_id"]}'], localised=localised))
+                            'IEDB epitope', peptide, off, note=[f'IEDB epitope {e["structure_id"]}'], localised=localised,
+                            why='' if localised else 'several_residues'))
     return out
 
 
@@ -1453,7 +1490,9 @@ def merge(study_id: str, rows: list[dict]) -> list[dict]:
             'localisation_probability': fmt_prob(max(locs) if locs else None), 'n_source_rows': len(grp),
             'source_tables': '; '.join(sorted({r['table'] for r in grp}, key=table_key)),
             'note': '; '.join(dict.fromkeys(notes)),
-            'localised_by': min((r['localised'] for r in grp), key=LOCALISED_BY.index),
+            # localised when any of its rows is; otherwise why none is
+            'localised_by': min((r['localised'] for r in grp if r['localised']), key=LOCALISED_BY.index, default=''),
+            'not_localised': '' if any(r['localised'] for r in grp) else min((r['why'] for r in grp), key=NOT_LOCALISED.index),
         })
     records.sort(key=lambda r: (r['reported_accession'].split('; ')[0], r['reported_position'], r['methyl_degree'],
                                 r['peptide'], r['window']))
@@ -1505,6 +1544,8 @@ def main() -> None:
         'with_peptide': sum(1 for r in records if r['peptide']),
         'with_window': sum(1 for r in records if r['window']),
         'distinct_accession_position': len({(r['reported_accession'].split('; ')[0], r['reported_position']) for r in records}),
+        'records_localised': sum(1 for r in records if r['localised_by']),
+        'records_not_localised': dict(sorted(Counter(r['not_localised'] for r in records if not r['localised_by']).items())),
         'out': str(out),
     }
     print(json.dumps(summary, indent=2))

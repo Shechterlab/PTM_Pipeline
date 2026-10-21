@@ -192,6 +192,7 @@ FILE_ROWS = {
     'studies': 'study or database: citation, DOI, terms, counts',
     'statistics': 'enrichment test behind the summaries: classes, motifs, disorder, domains, disease families, condensates, locations, interactions',
     'records': 'source record: what the study reported, its evidence, where each version placed it',
+    'lower_confidence': 'source record that adds no site (not localised, or not on one site of a protein it names), with where its methyl group could be',
     'changes': 'site of either version: kept, removed or added, and why',
     'maron_detection': 'site detected in Maron et al. 2021 Table S2 or S3 (per antibody)',
     'maron_inhibitors': 'site, antibody and PRMT inhibitor in Maron et al. 2021 Table S3',
@@ -609,6 +610,28 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
             "`supporting/source_records` (`superseded_by_study_table`, or `unresolved_not_localised` for ProMetheusDB).",
             '',
         ]
+        # ---- Lower-confidence evidence: the records that add no site but say where a methyl group could be
+        ambiguous = rc.PLACEMENT_SEVERAL | rc.PLACEMENT_OTHER_PROTEIN | {'unresolved_study_not_found'}
+        lower = records[(records['placed_site'] == '') & (records['pending_site'] == '')
+                        & (records['placement_code'] != 'superseded_by_study_table')
+                        & ((records['localised_by'] == '') | records['placement_code'].isin(ambiguous))]
+        if 'candidate_sites' in lower.columns and len(lower):
+            label = {**{c: 'several_sites' for c in rc.PLACEMENT_SEVERAL}, **{c: 'other_protein' for c in rc.PLACEMENT_OTHER_PROTEIN},
+                     'unresolved_study_not_found': 'not_in_reference'}
+            why = [label.get(c, '') if loc else (nl or 'several_residues')
+                   for loc, nl, c in zip(lower['localised_by'], lower['not_localised'], lower['placement_code'])]
+            counts = pd.Series(why).value_counts()
+            lines += [
+                '## Lower-confidence evidence',
+                '',
+                f"{n(len(lower))} records add no site but say where a methyl group could be: they are not localised, or localised "
+                'but not to one site of a protein they name. They are listed with their candidate sites in '
+                '`supporting/lower_confidence_evidence`, never counted as sites or used in a test, and the website shows them '
+                'only on request (protein map, row Lower-confidence evidence).',
+                '',
+                '| Why | Records |',
+                '|---|---:|',
+            ] + [f"| `{k}`: {rc.CODES['lower_confidence'][k]} | {v:,} |" for k, v in counts.items() if k] + ['']
         staged = [x for x in rc.STUDIES if x[0] in set(rc.STUDY_TABLES.values()) and x[0] not in set(rc.STUDIES_ADDED)]
         site_studies = placed.set_index('site_id')['studies'].str.split('; ')
         prev_by = prev_studies

@@ -372,7 +372,8 @@
   // Evidence rows follow the shared order: RNA/DNA crosslinks, then PDB interfaces, then IntAct.
   const MAP_ROWS = [['regions', 'Regions'], ['charge', 'Charge (EMBOSS, 5-aa mean)'], ['bias', 'Composition'], ['rg', 'RG/RGG-rich'],
     ['args', 'All arginines'], ['variants', 'Variants and mutagenesis'], ['kme', 'Lys methylation'], ['phospho', 'Phosphorylation'], ['kacyl', 'Lys acylation'],
-    ['ub', 'Ubiquitin / SUMO'], ['xl', 'RNA/DNA crosslinks'], ['iface', 'Contacts in PDB structures'], ['intact', 'IntAct mutations and binding regions'], ['pred', 'Predicted protein contacts']];
+    ['ub', 'Ubiquitin / SUMO'], ['xl', 'RNA/DNA crosslinks'], ['iface', 'Contacts in PDB structures'], ['intact', 'IntAct mutations and binding regions'], ['pred', 'Predicted protein contacts'],
+    ['lowconf', 'Lower-confidence evidence']];
   const MAP_PTM_KEYS = ['phospho', 'kacyl', 'ub', 'kme'];
   // IntAct is off until the reader switches it on (Rows menu); the cartoon and comparison follow the same switch.
   const MAP_DEFAULT_ON = ['domains', 'dense', 'regions', 'disorder', 'charge', 'rg', 'args', 'variants', 'kme', 'phospho', 'kacyl', 'ub', 'xl', 'iface', 'pred'];
@@ -5156,6 +5157,32 @@
       if (muts.some((m) => m[2] === 0)) legend.push([SWATCH.diamond(pal.bg, pal.variant), 'IntAct mutation, no effect']);
       y += 18;
     };
+    // Lower-confidence evidence: records that add no site. A dashed bracket spans the candidates of one record (one of
+    // them carries the methyl group), a pale tick marks each candidate; sites of the release are not repeated here.
+    rows.lowconf = () => {
+      if (p.iso) return;
+      if (!LOWCONF.data) {
+        loadLowConf().then(() => { if (UI.view === 'protein' && P[UI.detail] === p) drawMap(p, UNIDATA.get(p.acc)); });
+        return;
+      }
+      const list = (LOWCONF.data[p.acc.split('-')[0]] || []).filter(([pos]) => pos.some((q) => q >= v0 && q <= v1));
+      if (!list.length) return;
+      tlabel('Lower confidence', y);
+      gridLine(y);
+      for (const [pos, reason, study, detail] of list) {
+        const why = LOWCONF_LABEL[LOWCONF.reasons[reason]] || LOWCONF.reasons[reason] || '';
+        const t = tip('<b>Lower-confidence evidence</b> ' + pos.map((q) => rl(q, p)).join(', ') + '<br>' + esc(study) + ': ' + esc(why) + (detail ? '<br>' + esc(detail) : '') + '<br>Not counted as a site');
+        const shown = pos.filter((q) => q >= v0 && q <= v1);
+        if (pos.length > 1) {
+          const a = Math.min(...shown), b = Math.max(...shown);
+          g += MARK.predBox(x(a), y - 4, Math.max(2, x(b + 1) - x(a)), 8, pal.muted, 0.12, ' class="feat"' + t);
+        }
+        for (const q of shown) g += MARK.tick(x(q), y, 10, pal.muted, ' class="feat" opacity=".75"' + t, Math.max(1.6, x(q + 1) - x(q)));
+      }
+      legend.push([SWATCH.tick(pal.muted), 'Lower-confidence evidence (not a site)']);
+      if (list.some(([pos]) => pos.length > 1)) legend.push([(xx, yy) => MARK.predBox(xx, yy - 5, 20, 10, pal.muted, 0.12), 'One of these residues (not localised)']);
+      y += 18;
+    };
     rows.phospho = () => ptmRow(0);
     rows.kacyl = () => ptmRow(1);
     rows.ub = () => ptmRow(2);
@@ -7091,6 +7118,24 @@
 
   // PDBe-KB residues at interfaces with proteins, RNA and DNA, in UniProt numbering (all residues, not only sites).
   const IFDATA = new Map();
+  // Lower-confidence evidence (the release's supporting/lower_confidence_evidence): records that add no site, with where
+  // their methyl group could be, read from the evidence file on first use. accession -> [[positions], reason index,
+  // study, detail]; positions that are sites of the release are left out.
+  const LOWCONF = { data: null, promise: null, reasons: [] };
+  function loadLowConf() {
+    if (!LOWCONF.promise) LOWCONF.promise = loadEvidence().then((e) => {
+      const lc = (e && e.lower_confidence) || {};
+      LOWCONF.reasons = lc.reasons || [];
+      LOWCONF.data = lc.by_protein || {};
+    });
+    return LOWCONF.promise;
+  }
+  const LOWCONF_LABEL = {
+    below_threshold: 'localisation score below the study\'s threshold', several_residues: 'the methyl group is on one of these residues',
+    search_disagrees: 'the study\'s confident spectra disagree on the residue', no_localising_evidence: 'no spectrum or score localises it',
+    window_fits_several: 'the study\'s window fits several arginines', several_sites: 'the same sequence occurs at several sites',
+    other_protein: 'the sequence names a site in another protein', not_in_reference: 'the sequence is not in the reviewed protein',
+  };
   // Every residue at a predicted interface (ProtVar AlphaFold-Multimer models, all partners), one exported file read on
   // first use: accession -> [[start, end, partners, best pDockQ x100], ...].
   const PRED_IFACE = { data: null, promise: null };
@@ -10219,7 +10264,7 @@
       '<ul>' +
       '<li>Source rows were remapped to canonical UniProt sequences by their reported windows, peptides or positions and deduplicated by canonical accession and position. The original reported accession and position are kept in each site\'s evidence.</li>' +
       '<li><b>This is version ' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>: the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences (v1.1.0)' + (localisedOnly() ? ', each study read from its own tables (v1.2.0)' : '') + (addedStudies().length ? ' and the sites of ' + addedStudies().length + ' more studies (v1.2.0: ' + esc(addedStudies().join(', ')) + ')' : '') + '. Peptides keep the reported arginine instead of being moved to the arginine nearest their middle, rows are filed under the reviewed entry their sequence matches, and windows centred on a lysine or cut short at a protein end are read correctly. ' + changesText('', true) + ' (<a href="' + changesLink() + '" target="_blank" rel="noopener">what changed</a>). Every record is checked against its own evidence and every site is an arginine of the reference sequence. ' + (M.n_pending_not_shown ? fmt(M.n_pending_not_shown) + ' sites whose source windows match the entry on one side of the arginine only are kept pending in the release (flag <code>one_sided_window</code>) and are not shown here. ' : '') + 'The published version is at <a href="v1.0.0/">v1.0.0</a>.</li>' +
-      (localisedOnly() ? '<li><b>Site specificity.</b> Each study is read from its own tables, and ' + LOCALISED_RULE + '. A record must also pass the study\'s false discovery rate. A peptide shared by paralogs, repeated within a protein, or found only in another protein adds no site. Where a study gives no localisation score, the peptide decides: it localises the site when it holds no other residue the search could methylate (no other arginine, and no lysine where lysine methylation was searched), or when every such residue is a dimethylated arginine. PhosphoSitePlus sites (downloaded 22 May 2021, as compiled in Maron et al. 2021 Table S5) are trusted as curated and placed from their window under the same rule. The other compiled rows of Table S5 give way to each study\'s own table and stay in the release\'s source records. <button class="linkish" type="button" data-doc="study-quality">Data quality, study by study</button>.</li>'
+      (localisedOnly() ? '<li><b>Site specificity.</b> Each study is read from its own tables, and ' + LOCALISED_RULE + '. A record must also pass the study\'s false discovery rate. A peptide shared by paralogs, repeated within a protein, or found only in another protein adds no site. Where a study gives no localisation score, the peptide decides: it localises the site when it holds no other residue the search could methylate (no other arginine, and no lysine where lysine methylation was searched), or when every such residue is a dimethylated arginine. PhosphoSitePlus sites (downloaded 22 May 2021, as compiled in Maron et al. 2021 Table S5) are trusted as curated and placed from their window under the same rule. The other compiled rows of Table S5 give way to each study\'s own table and stay in the release\'s source records. Records that are not localised (a score below the study\'s threshold, a peptide that leaves several residues, spectra that disagree) or that are localised but not to one site of a protein they name are kept as <b>lower-confidence evidence</b>: never a site, never in a count or test, shown on protein maps only when the reader switches on the row Lower-confidence evidence (Rows menu), and listed in the release (supporting/lower_confidence_evidence). <button class="linkish" type="button" data-doc="study-quality">Data quality, study by study</button>.</li>'
         : addedStudies().length ? '<li><b>The studies added in v1.2.0</b> add a record only when it passes the study\'s false discovery rate, its methyl group is localised to one arginine (by the study\'s localisation score, or, for Lu 2025, which gives none, by a peptide whose every arginine is dimethylated), and its peptide or window names exactly one arginine in the whole reviewed human proteome, in a protein the record names. A peptide shared by paralogs, repeated within a protein, or found only in another protein adds no site. <button class="linkish" type="button" data-doc="study-quality">Data quality, study by study</button>.</li>' : '') +
       '<li><b>Gene symbols</b> follow current UniProt. Symbols reported by the sources (some outdated, a few belonging to paralogs with near-identical sequence, such as SNRPN on SmB/B′ rows) and UniProt synonyms are kept as searchable aliases.</li>' +
       '<li><b>State</b> is the degree reported at the site (Rme1, Rme2, or Rme1 + Rme2 when both are): by the source records (ProMetheusDB' + (localisedOnly() ? ' and the studies\' own tables' : addedStudies().length ? ' and the studies added in v1.2.0' : '') + '), by Maron et al. 2021 Table S2, by UniProt with experimental evidence, or by a study that looked for one degree only (Larsen 2016, monomethylation; Wei 2020, ADMA antibody and dimethylation). The site summary lists each source; UniProt annotations made only by similarity are shown there but not counted. Asymmetric and symmetric dimethylarginine have the same mass, so most sources tell them apart by the antibody used. ' +

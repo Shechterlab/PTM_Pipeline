@@ -258,6 +258,8 @@ def build_records(rows, typed, check, allowed, previous, pending_of, shift, refe
             'source_correction': clean(r.get('source_correction', '')),
             'evidence_as_reported': clean(r.get('peptide_sequence_reported', '')),
             'localised_by': clean(r.get('site_localisation', '')),
+            'not_localised': '' if clean(r.get('site_localisation', '')) else clean(r.get('study_not_localised', '')),
+            'candidate_sites': as_list(r.get('candidate_sites', '')),
             'placed_site': new,
             'placement_code': r['remap_status'],
             'evidence_check': rc.VERDICT_CODE[c['verdict']],
@@ -272,6 +274,25 @@ def build_records(rows, typed, check, allowed, previous, pending_of, shift, refe
             '_rme2_type': clean(r.get('study_rme2_type', '')),
         })
     return pd.DataFrame(out)
+
+
+def lower_confidence(records: pd.DataFrame, sites: set) -> pd.DataFrame:
+    """The records that add no site but say where a methyl group could be (supporting/lower_confidence_evidence): not
+    localised (a study's own record, or a compiled record no study table stands in for), or localised but not on one
+    site of a protein the record names. Rows of the compiled tables a study's own table supersedes are left out."""
+    ambiguous = {**{c: 'several_sites' for c in rc.PLACEMENT_SEVERAL}, **{c: 'other_protein' for c in rc.PLACEMENT_OTHER_PROTEIN},
+                 'unresolved_study_not_found': 'not_in_reference'}
+    keep = (records['placed_site'] == '') & (records['pending_site'] == '') & (records['placement_code'] != 'superseded_by_study_table')
+    rows = records[keep].copy()
+
+    def reason(localised: str, why: str, code: str) -> str:
+        if localised:
+            return ambiguous.get(code, '')
+        return why or ('several_residues' if code == 'unresolved_not_localised' else '')
+    rows['reason'] = [reason(*v) for v in zip(rows['localised_by'], rows['not_localised'], rows['placement_code'])]
+    rows = rows[rows['reason'] != '']
+    rows['candidates_in_release'] = rows['candidate_sites'].map(lambda c: '; '.join(x for x in c.split('; ') if x in sites) if c else '')
+    return rows[[c for c, *_ in rc.LOWER_CONFIDENCE_COLUMNS]]
 
 
 def record_detail(r: pd.Series) -> str:
@@ -948,6 +969,7 @@ def main() -> None:
         'sites': (f'human_methylarginine_sites_{version}.tsv', sites, rc.SITE_COLUMNS),
         'studies': (f'studies_{version}.tsv', studies, rc.STUDY_COLUMNS),
         'records': (f'supporting/source_records_{version}.tsv', records, rc.RECORD_COLUMNS),
+        'lower_confidence': (f'supporting/lower_confidence_evidence_{version}.tsv', lower_confidence(records, set(sites['site_id'])), rc.LOWER_CONFIDENCE_COLUMNS),
         'changes': (f'supporting/site_changes_{previous}_to_{version}.tsv', changes, rc.CHANGE_COLUMNS),
         'maron_detection': (f'supporting/maron2021_detection_{version}.tsv', detection, rc.MARON_DETECTION_COLUMNS),
         'maron_inhibitors': (f'supporting/maron2021_inhibitors_{version}.tsv', inhibitors, rc.MARON_INHIBITOR_COLUMNS),

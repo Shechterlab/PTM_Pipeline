@@ -1,255 +1,255 @@
-study_id	reported_accession	reported_gene	reported_position	peptide	window	methyl_degree	rme2_type	cell_type	enrichment	localisation_probability	n_source_rows	source_tables	note	localised_by
-UniProt	O00267		681			Rme1					1	MOD_RES		curated_experimental
-UniProt	O00267		681			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	O00267		696			Rme1					1	MOD_RES		curated_experimental
-UniProt	O00267		696			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	O00267		698			Rme1					1	MOD_RES		curated_experimental
-UniProt	O00267		698			Rme2					2	MOD_RES	asymmetric (UniProt); symmetric (UniProt)	curated_experimental
-UniProt	O14979		408			Rme2					1	MOD_RES		curated_experimental
-UniProt	O60506		444			Rme1					1	MOD_RES		curated_experimental
-UniProt	O60506		444			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	O60506		496			Rme1					1	MOD_RES		curated_experimental
-UniProt	O60506		510			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	O60506		518			Rme1					1	MOD_RES		curated_experimental
-UniProt	O60506		518			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	O60506		526			Rme1					1	MOD_RES		curated_experimental
-UniProt	O60506		526			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	O60506		536			Rme1					1	MOD_RES		curated_experimental
-UniProt	O60506		536			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	O60506		539			Rme1					1	MOD_RES		curated_experimental
-UniProt	O60506		539			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	O75044		927			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	O75306		118			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	P00533		1199			Rme1					1	MOD_RES		curated_experimental
-UniProt	P02686		241			Rme1					1	MOD_RES		curated_experimental
-UniProt	P02686		241			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	P03372		260			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P04049		563			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	P04264		82			Rme1					1	MOD_RES		curated_experimental
-UniProt	P04637		333			Rme1					1	MOD_RES		curated_experimental
-UniProt	P04637		335			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	P04637		337			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	P06746		83			Rme1					1	MOD_RES		curated_experimental
-UniProt	P06746		152			Rme1					1	MOD_RES		curated_experimental
-UniProt	P07437		318			Rme1					1	MOD_RES		curated_experimental
-UniProt	P08729		20			Rme1					1	MOD_RES		curated_experimental
-UniProt	P08729		20			Rme2					1	MOD_RES		curated_experimental
-UniProt	P09651		206			Rme1					1	MOD_RES		curated_experimental
-UniProt	P09651		206			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P09651		225			Rme1					1	MOD_RES		curated_experimental
-UniProt	P09651		225			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P11940		493			Rme1					1	MOD_RES		curated_experimental
-UniProt	P11940		493			Rme2					1	MOD_RES		curated_experimental
-UniProt	P14678		108			Rme2					1	MOD_RES		curated_experimental
-UniProt	P14678		112			Rme2					1	MOD_RES		curated_experimental
-UniProt	P14678		147			Rme1					1	MOD_RES		curated_experimental
-UniProt	P15056		671			Rme1					1	MOD_RES		curated_experimental
-UniProt	P15924		2826			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P15924		2834			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P15924		2838			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P15924		2846			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P17096		26			Rme1					1	MOD_RES		curated_experimental
-UniProt	P17096		26			Rme2					2	MOD_RES	asymmetric (UniProt); symmetric (UniProt)	curated_experimental
-UniProt	P17096		58			Rme1					1	MOD_RES		curated_experimental
-UniProt	P17096		58			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P17096		60			Rme1					1	MOD_RES		curated_experimental
-UniProt	P17096		60			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P22626		203			Rme1					1	MOD_RES		curated_experimental
-UniProt	P22626		203			Rme2					1	MOD_RES		curated_experimental
-UniProt	P22626		213			Rme1					1	MOD_RES		curated_experimental
-UniProt	P22626		213			Rme2					1	MOD_RES		curated_experimental
-UniProt	P22626		228			Rme1					1	MOD_RES		curated_experimental
-UniProt	P23246		571			Rme2					1	MOD_RES		curated_experimental
-UniProt	P23246		681			Rme1					1	MOD_RES		curated_experimental
-UniProt	P23246		693			Rme2					1	MOD_RES		curated_experimental
-UniProt	P23396		64			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P23396		65			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P23396		67			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P24928		1603								1	MOD_RES		curated_experimental
-UniProt	P24928		1810			Rme2					2	MOD_RES	asymmetric (UniProt); symmetric (UniProt)	curated_experimental
-UniProt	P26378		248			Rme1					1	MOD_RES		curated_experimental
-UniProt	P26378		248			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P31269		140			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	P31942		121			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P31942		287			Rme1					1	MOD_RES		curated_experimental
-UniProt	P31943		233			Rme1					1	MOD_RES		curated_experimental
-UniProt	P31943		233			Rme2					1	MOD_RES		curated_experimental
-UniProt	P35637		242			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		244			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		248			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		251			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		259			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		377			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		383			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		386			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		388			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		394			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		407			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		473			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		476			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		481			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		485			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		487			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		491			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		495			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		498			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P35637		503			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P39748		19			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	P39748		100			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	P39748		104			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	P39748		192			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	P46783		158			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	P46783		160			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	P49959		570			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P49959		572			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P49959		574			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P49959		576			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P49959		577			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P49959		580			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P49959		587			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P49959		592			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P49959		594			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P51991		52			Rme1					1	MOD_RES		curated_experimental
-UniProt	P51991		52			Rme2					1	MOD_RES		curated_experimental
-UniProt	P51991		246			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P62633		25			Rme1					1	MOD_RES		curated_experimental
-UniProt	P62633		27			Rme1					1	MOD_RES		curated_experimental
-UniProt	P62805		4			Rme1					1	MOD_RES		curated_experimental
-UniProt	P62805		4			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P62995		241			Rme2					1	MOD_RES		curated_experimental
-UniProt	P68363		339			Rme1					1	MOD_RES		curated_experimental
-UniProt	P68431		3			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P68431		18			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P84243		3			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P84243		18			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	P98179		105			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q00839		739			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q01844		300			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		302			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		304			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		309			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		314			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		317			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		321			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		455			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		464			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		471			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q01844		471			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		490			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		494			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		500			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		503			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		506			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		563			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		565			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		572			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q01844		572			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		575			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		581			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		589			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		592			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		596			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q01844		596			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		600			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		603			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		607			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q01844		607			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		615			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		633			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q01844		636			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q06787		544			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q07666		45			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q07666		52			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q07666		304			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q07666		310			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q07666		315			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q07666		320			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q07666		320			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q07666		325			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q07666		331			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q07666		331			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q07666		340			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q07955		93			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q07955		97			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q07955		109			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q08379		30			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q08379		35			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q09472		580			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q09472		604			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q09472		2142			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q13151		291			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q13227		323			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q13227		323			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q13283		435			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q13283		435			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q13283		460			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q13283		460			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q13310		518			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q13435		508			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q13435		508			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	Q14524		513			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q14524		513			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q14524		526			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q14524		526			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q14524		680			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q14524		680			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q15554		59			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q15554		60			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q15717		217			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q5TA31		98			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q5TA31		109			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q5TAQ9		204			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q71DI3		3			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q71DI3		18			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q86V81		204			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q86V81		204			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q86V81		220			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q86WR7		252			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q86WR7		320			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q86WR7		320			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q8IZS5		113			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q8N884		124			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	Q8WTW4		78			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q8WWM7		361			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q92804		206			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q92804		483			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q92804		528			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q92804		535			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q92804		570			Rme2					2	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q92934		94			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q92934		96			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q92997		27			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q92997		212			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q92997		271			Rme2					2	MOD_RES	asymmetric (UniProt); symmetric (UniProt)	curated_experimental
-UniProt	Q92997		342			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q92997		342			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	Q92997		614			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental
-UniProt	Q92997		698			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q92997		698			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q96A08		81			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q96A08		88			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q96A08		94			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q96EY1		58			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q96EY1		238			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q96EY1		293			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q96LA8		29			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q96LA8		35			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q96LA8		37			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q96PU8		242			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q96T37		578			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q96T37		578			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q99683		78			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q99683		80			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q99729		245			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q99729		245			Rme2					1	MOD_RES		curated_experimental
-UniProt	Q9BPX6		455			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q9BYG3		114			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q9BYG3		244								1	MOD_RES		curated_experimental
-UniProt	Q9BYG3		245								1	MOD_RES		curated_experimental
-UniProt	Q9BYG3		284			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q9NR22		58			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q9NR22		73			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q9NRC8		388			Rme1					1	MOD_RES		curated_experimental
-UniProt	Q9NRC8		388			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q9UBL3		296			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental
-UniProt	Q9Y2W1		17			Rme2					1	MOD_RES		curated_experimental
+study_id	reported_accession	reported_gene	reported_position	peptide	window	methyl_degree	rme2_type	cell_type	enrichment	localisation_probability	n_source_rows	source_tables	note	localised_by	not_localised
+UniProt	O00267		681			Rme1					1	MOD_RES		curated_experimental	
+UniProt	O00267		681			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	O00267		696			Rme1					1	MOD_RES		curated_experimental	
+UniProt	O00267		696			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	O00267		698			Rme1					1	MOD_RES		curated_experimental	
+UniProt	O00267		698			Rme2					2	MOD_RES	asymmetric (UniProt); symmetric (UniProt)	curated_experimental	
+UniProt	O14979		408			Rme2					1	MOD_RES		curated_experimental	
+UniProt	O60506		444			Rme1					1	MOD_RES		curated_experimental	
+UniProt	O60506		444			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	O60506		496			Rme1					1	MOD_RES		curated_experimental	
+UniProt	O60506		510			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	O60506		518			Rme1					1	MOD_RES		curated_experimental	
+UniProt	O60506		518			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	O60506		526			Rme1					1	MOD_RES		curated_experimental	
+UniProt	O60506		526			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	O60506		536			Rme1					1	MOD_RES		curated_experimental	
+UniProt	O60506		536			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	O60506		539			Rme1					1	MOD_RES		curated_experimental	
+UniProt	O60506		539			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	O75044		927			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	O75306		118			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	P00533		1199			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P02686		241			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P02686		241			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	P03372		260			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P04049		563			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	P04264		82			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P04637		333			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P04637		335			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	P04637		337			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	P06746		83			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P06746		152			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P07437		318			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P08729		20			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P08729		20			Rme2					1	MOD_RES		curated_experimental	
+UniProt	P09651		206			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P09651		206			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P09651		225			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P09651		225			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P11940		493			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P11940		493			Rme2					1	MOD_RES		curated_experimental	
+UniProt	P14678		108			Rme2					1	MOD_RES		curated_experimental	
+UniProt	P14678		112			Rme2					1	MOD_RES		curated_experimental	
+UniProt	P14678		147			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P15056		671			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P15924		2826			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P15924		2834			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P15924		2838			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P15924		2846			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P17096		26			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P17096		26			Rme2					2	MOD_RES	asymmetric (UniProt); symmetric (UniProt)	curated_experimental	
+UniProt	P17096		58			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P17096		58			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P17096		60			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P17096		60			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P22626		203			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P22626		203			Rme2					1	MOD_RES		curated_experimental	
+UniProt	P22626		213			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P22626		213			Rme2					1	MOD_RES		curated_experimental	
+UniProt	P22626		228			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P23246		571			Rme2					1	MOD_RES		curated_experimental	
+UniProt	P23246		681			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P23246		693			Rme2					1	MOD_RES		curated_experimental	
+UniProt	P23396		64			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P23396		65			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P23396		67			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P24928		1603								1	MOD_RES		curated_experimental	
+UniProt	P24928		1810			Rme2					2	MOD_RES	asymmetric (UniProt); symmetric (UniProt)	curated_experimental	
+UniProt	P26378		248			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P26378		248			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P31269		140			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	P31942		121			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P31942		287			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P31943		233			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P31943		233			Rme2					1	MOD_RES		curated_experimental	
+UniProt	P35637		242			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		244			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		248			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		251			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		259			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		377			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		383			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		386			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		388			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		394			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		407			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		473			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		476			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		481			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		485			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		487			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		491			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		495			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		498			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P35637		503			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P39748		19			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	P39748		100			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	P39748		104			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	P39748		192			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	P46783		158			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	P46783		160			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	P49959		570			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P49959		572			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P49959		574			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P49959		576			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P49959		577			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P49959		580			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P49959		587			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P49959		592			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P49959		594			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P51991		52			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P51991		52			Rme2					1	MOD_RES		curated_experimental	
+UniProt	P51991		246			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P62633		25			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P62633		27			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P62805		4			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P62805		4			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P62995		241			Rme2					1	MOD_RES		curated_experimental	
+UniProt	P68363		339			Rme1					1	MOD_RES		curated_experimental	
+UniProt	P68431		3			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P68431		18			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P84243		3			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P84243		18			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	P98179		105			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q00839		739			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q01844		300			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		302			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		304			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		309			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		314			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		317			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		321			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		455			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		464			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		471			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q01844		471			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		490			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		494			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		500			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		503			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		506			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		563			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		565			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		572			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q01844		572			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		575			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		581			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		589			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		592			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		596			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q01844		596			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		600			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		603			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		607			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q01844		607			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		615			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		633			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q01844		636			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q06787		544			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q07666		45			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q07666		52			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q07666		304			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q07666		310			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q07666		315			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q07666		320			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q07666		320			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q07666		325			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q07666		331			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q07666		331			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q07666		340			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q07955		93			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q07955		97			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q07955		109			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q08379		30			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q08379		35			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q09472		580			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q09472		604			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q09472		2142			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q13151		291			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q13227		323			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q13227		323			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q13283		435			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q13283		435			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q13283		460			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q13283		460			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q13310		518			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q13435		508			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q13435		508			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	Q14524		513			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q14524		513			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q14524		526			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q14524		526			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q14524		680			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q14524		680			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q15554		59			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q15554		60			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q15717		217			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q5TA31		98			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q5TA31		109			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q5TAQ9		204			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q71DI3		3			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q71DI3		18			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q86V81		204			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q86V81		204			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q86V81		220			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q86WR7		252			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q86WR7		320			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q86WR7		320			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q8IZS5		113			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q8N884		124			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	Q8WTW4		78			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q8WWM7		361			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q92804		206			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q92804		483			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q92804		528			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q92804		535			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q92804		570			Rme2					2	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q92934		94			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q92934		96			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q92997		27			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q92997		212			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q92997		271			Rme2					2	MOD_RES	asymmetric (UniProt); symmetric (UniProt)	curated_experimental	
+UniProt	Q92997		342			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q92997		342			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	Q92997		614			Rme2					1	MOD_RES	symmetric (UniProt)	curated_experimental	
+UniProt	Q92997		698			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q92997		698			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q96A08		81			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q96A08		88			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q96A08		94			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q96EY1		58			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q96EY1		238			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q96EY1		293			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q96LA8		29			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q96LA8		35			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q96LA8		37			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q96PU8		242			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q96T37		578			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q96T37		578			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q99683		78			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q99683		80			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q99729		245			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q99729		245			Rme2					1	MOD_RES		curated_experimental	
+UniProt	Q9BPX6		455			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q9BYG3		114			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q9BYG3		244								1	MOD_RES		curated_experimental	
+UniProt	Q9BYG3		245								1	MOD_RES		curated_experimental	
+UniProt	Q9BYG3		284			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q9NR22		58			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q9NR22		73			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q9NRC8		388			Rme1					1	MOD_RES		curated_experimental	
+UniProt	Q9NRC8		388			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q9UBL3		296			Rme2					1	MOD_RES	asymmetric (UniProt)	curated_experimental	
+UniProt	Q9Y2W1		17			Rme2					1	MOD_RES		curated_experimental	

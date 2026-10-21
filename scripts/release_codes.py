@@ -71,7 +71,7 @@ STUDY_LICENCE = {
     'IEDB': 'IEDB query API, terms at www.iedb.org/terms_of_use_v3.php (epitopes the iPTMnet-format master table cites)',
     'Larsen2016': 'AAAS (Sci Signal supplementary Table S1: derived records only, the table is not redistributed)',
     'Musiani2019': 'AAAS (Sci Signal supplementary Tables S1 and S2: derived records only, the tables are not redistributed)',
-    'Maron2021': 'CC BY-NC-ND 4.0 (open-access supplement, Tables S2 and S3); localisation from the authors\' search results (derived records only, the files are not redistributed)',
+    'Maron2021': 'CC BY-NC-ND 4.0 (open-access supplement, Tables S2 and S3), with localisation from the authors\' search results (derived records only, the files are not redistributed)',
     'Guo2014': 'CC BY 4.0 (supplementary Tables S2 and S3)',
     'Fong2019': 'Elsevier user licence (supplementary Table S4: derived records only, the table is not redistributed), PRIDE PXD012007 CC0',
     'Li2021': 'CC BY 4.0 (Supplementary Data 1, 3, 5 and 6)',
@@ -102,14 +102,14 @@ STUDY_QUALITY = {
                   'Percolator q <= 0.01 and ptmRS localisation >= 75 %. LN229 Tables S1-S2 give no positions: their rows '
                   'take the position Tables S3-S15 give for the same protein, peptide and residue, and are dropped without one.',
     'Geoghegan2015': 'Heavy-methyl SILAC peptide pairs with the methylated arginine marked, q <= 0.05 (0.93 % FDR for the paired '
-                     'set), localised at ModLS > 8 or unambiguously (rows at ModLS 8 or below are left out). Positions number '
+                     'set), localised at ModLS > 8 or unambiguously (rows at ModLS 8 or below are kept as lower-confidence evidence). Positions number '
                      'the first accession of the protein group, often an unreviewed entry, so the site is placed from the peptide.',
     'Sylvestersen2014': 'MaxQuant site tables with a 13-residue window and the peptide, localisation probability >= 0.75. '
                         'The export writes every leucine as isoleucine: L is written back where the reported entry, or else '
                         'one site of the reviewed proteome, matches with I and L taken as one.',
     'Lu2025': 'The 743 dimethylarginine sites of Dataset EV1 come without peptides or localisation scores (SEQUEST HT, '
               'Percolator 1 % FDR). A site is kept only where a PSM localises it by mass, every arginine of its peptide '
-              'dimethylated (155 sites), and the other 588 are left out.',
+              'dimethylated (155 sites), and the other 588 are kept as lower-confidence evidence.',
     'Ma2023': 'MaxQuant ADMA-antibody sites with a 31-residue window, localisation probability >= 0.75, 1 % FDR. Tumours '
               'grown in mice: a peptide identical in mouse and human can come from mouse stroma (flag xenograft_only).',
     # The studies compiled in Maron et al. 2021 Table S5, and the databases, now read from their own tables: the
@@ -126,25 +126,26 @@ STUDY_QUALITY = {
            'names.',
     'Maron2021': 'A549 cells treated with GSK591 or MS023, sequential Rme1, Rme2a and Rme2s antibody immunoprecipitation, '
                  'Byonic in Proteome Discoverer 2.4 with mono- and dimethylation of R and K searched, 1 % FDR, trypsin and '
-                 'GluC digests. Tables S2 and S3 give no localisation score; the authors\' search results of the same '
+                 'GluC digests. Tables S2 and S3 give no localisation score, the authors\' search results of the same '
                  'immunoprecipitations do: Proteome Discoverer peptide groups with ptmRS site probabilities (a residue named '
                  'only at >= 75 %), and the Byonic PSMs of the GluC and trypsin searches with their Delta Mod score. A mark '
                  'of the tables is kept where the search localises a methyl group to that arginine of the same peptide '
-                 '(ptmRS >= 75 %, or Delta Mod > 20 in every high-confidence PSM of that peptide and set of marks above it; '
-                 'the search\'s degree when it differs, noted), or where its peptide holds no other arginine or lysine. '
-                 'Marks the confident PSMs disagree on are left out.',
+                 '(ptmRS >= 75 %, or Delta Mod > 20 in every high-confidence PSM of that peptide and set of marks above it, '
+                 'with the search\'s degree when it differs, noted), or where its peptide holds no other arginine or lysine. '
+                 'Marks the confident PSMs disagree on are kept as lower-confidence evidence.',
     'Guo2014': 'HCT116 cells, monomethylarginine (Me-R4-100, D5A12) and ADMA antibodies, SEQUEST with a 1 % PSM FDR, mono- '
                'and dimethylation of R and K searched. Read from Tables S2 (peptide-spectrum matches with their ModScore) '
                'and S3 (sites with a 13-residue window): a site is kept where a PSM matching its window localises it at '
                'ModScore > 13, the paper\'s threshold, the degree read from the precursor mass. The positions number RefSeq '
                'proteins, so the record is placed from its peptide.',
     'Musiani2019': 'HeLa cells, SILAC with GSK591, SDMA then monomethylarginine antibody enrichment and the input, MaxQuant '
-                   '(1.6.1.0 in the PRIDE PXD009070 deposit) with a 1 % FDR; heavy-methyl SILAC for the orthogonal validation. '
+                   '(1.6.1.0 in the PRIDE PXD009070 deposit) with a 1 % FDR, and heavy-methyl SILAC for the orthogonal validation. '
                    'Read from the article\'s Table S1 (every site and identification, with the leading protein, position, '
-                   '15-residue window and localisation probability) and Table S2 (the heavy-methyl SILAC pairs; Spreadsheet 2 '
-                   'names the gene only, so its entry is the gene\'s reviewed entry that holds the peptide once): arginine '
-                   'sites at localisation probability >= 0.75, the best of the heavy and light peptides in Table S2. The '
-                   'window must centre on one marked arginine of the peptide, so repeats such as the TAF15 RGG repeats drop out.',
+                   '15-residue window and localisation probability) and Table S2 (the heavy-methyl SILAC pairs, Spreadsheet 2 '
+                   'naming the gene only, so its entry is the gene\'s reviewed entry that holds the peptide once): arginine '
+                   'sites at localisation probability >= 0.75, the best of the heavy and light peptides in Table S2. Where '
+                   'the window centres on more than one marked arginine (repeats such as the TAF15 RGG repeats), the record '
+                   'is placed from its window alone, and a window repeated in the protein adds no site.',
     'Fong2019': 'NB4 acute promyelocytic leukaemia cells, SDMA and monomethylarginine (and, with MS023, ADMA) antibody '
                 'enrichment, MaxQuant with a 1 % FDR. Read from Table S4: arginine sites at localisation probability >= 0.75 '
                 'and Andromeda score >= 25 (the paper accepted localisation >= 0.5), with the marked peptide and degree.',
@@ -404,6 +405,23 @@ CODES: dict[str, dict[str, str]] = {
         'superseded_by_study_table': "not placed: a compiled record (Maron 2021 Table S5, the iPTMnet-format master table) of a study read from its own table, whose records carry the study's localisation",
         'unresolved_not_localised': 'not placed: the source gives nothing that localises the methyl group to one residue (no localisation score, and a peptide that leaves several residues it could be on, or no peptide)',
     },
+    'not_localised': {
+        'below_threshold': "the study's localisation score is below its threshold (the score is in reported_detail)",
+        'several_residues': 'the peptide holds other residues the search could methylate, and no score localises the methyl group',
+        'search_disagrees': "the study's confident spectra place the methyl group on different residues, or both degrees on this one",
+        'no_localising_evidence': 'the study lists the site without a spectrum or score that localises it',
+        'window_fits_several': "the study's window centres on more than one marked arginine of its peptide",
+    },
+    'lower_confidence': {
+        'below_threshold': "the study's localisation score is below its threshold: the candidate is the residue the study names",
+        'several_residues': 'the methyl group is on one of the candidate arginines of the peptide (or a lysine), not localised',
+        'search_disagrees': "the study's confident spectra disagree on which candidate carries the methyl group",
+        'no_localising_evidence': 'the study names the residue, but no spectrum or score it gives localises it',
+        'window_fits_several': "the study's window centres on more than one marked arginine",
+        'several_sites': 'localised, but its peptide or window occurs at several sites (paralogs, repeats): one of the candidates',
+        'other_protein': 'localised, but its peptide or window names one site, in a protein the record does not name',
+        'not_in_reference': 'localised, but its peptide or window is not in the reviewed proteome (an isoform or another sequence)',
+    },
     'localised_by': {
         'localisation_score': "the study's localisation score passes its threshold (MaxQuant localisation probability >= 0.75, ptmRS >= 75 %, Ascore or ModScore > 13, ModLS > 8, Byonic Delta Mod > 20 with every confident PSM agreeing)",
         'one_methylatable_residue': 'the peptide holds one residue the search could methylate (no other arginine, and no lysine where lysine methylation was searched)',
@@ -546,6 +564,8 @@ RECORD_COLUMNS = [
     ('source_correction', 'code', 'source_correction', 'a fault of the source row this version corrects before placing the record'),
     ('evidence_as_reported', 'string', '', 'the evidence as the source gives it, when source_correction changed it'),
     ('localised_by', 'code', 'localised_by', 'what localises the methyl group to one residue, empty when nothing does (the record is then not placed)'),
+    ('not_localised', 'code', 'not_localised', 'for a record of a study read from its own tables and not localised: why'),
+    ('candidate_sites', 'list<string>', '', 'for a record that adds no site (not localised, or localised but not on one site of a protein it names): where its methyl group could be (at most 12; supporting/lower_confidence_evidence)'),
     ('placed_site', 'string', '', 'the site this version places the record on, empty when not placed'),
     ('placement_code', 'code', 'placement', 'how the record was placed (scripts/02 remap_status)'),
     ('evidence_check', 'code', 'evidence_check', "independent check of the placement against the record's own evidence (scripts/qc_remap_evidence_check.py)"),
@@ -554,6 +574,22 @@ RECORD_COLUMNS = [
     ('previous_site', 'string', '', 'the site the previous version placed the record on, in its numbering'),
     ('change_since_previous_version', 'code', 'record_change', 'how the placement changed'),
     ('reason_code', 'code', 'reason', 'why it changed'),
+]
+
+# supporting/lower_confidence_evidence: the records that add no site, but say where a methyl group could be.
+LOWER_CONFIDENCE_COLUMNS = [
+    ('record_id', 'integer', '', 'the record (supporting/source_records)'),
+    ('study', 'code', 'study', 'the study or database that reported it'),
+    ('reason', 'code', 'lower_confidence', 'why it adds no site'),
+    ('candidate_sites', 'list<string>', '', 'where the methyl group could be, on the reference sequences (at most 12)'),
+    ('candidates_in_release', 'list<string>', '', 'the candidates that are sites of this release (localised by another record)'),
+    ('reported_accession', 'list<string>', '', 'accession(s) as the source gives them'),
+    ('reported_gene', 'string', '', 'gene symbol as the source gives it'),
+    ('reported_position', 'string', '', 'position as the source gives it, on the accession it reports'),
+    ('reported_methyl_state', 'string', '', 'methylation state as reported, in the codes of the site table'),
+    ('reported_detail', 'string', '', 'what the study gives besides (localisation probability, ModScore or ModLS, tables)'),
+    ('evidence_kind', 'code', 'evidence_kind', 'the sequence evidence'),
+    ('evidence_sequence', 'list<string>', '', 'the peptide (marked) or window'),
 ]
 
 CHANGE_COLUMNS = [

@@ -141,6 +141,7 @@ def study_frame(path: str | Path) -> pd.DataFrame:
         'study_rme2_type': t['rme2_type'],
         'arg_methyl_state_known': t['methyl_degree'].ne(''),
         'site_localisation': t['localised_by'],
+        'study_not_localised': t['not_localised'] if 'not_localised' in t.columns else '',
         'source': study,
         'source_family': study,
         'reference': study,
@@ -319,6 +320,35 @@ def localising_peptides(peptides: str, methylatable: str) -> list[tuple[str, str
     return out
 
 
+# A record that adds no site lists at most this many candidate sites (lower-confidence evidence).
+MAX_CANDIDATES = 12
+
+
+def candidate_sites(r: pd.Series, proteome: ProteomeIndex, peptides: list[str] | None = None, residues: bool = False) -> list[str]:
+    """Where a record that adds no site could put its methyl group, as site keys (lower-confidence evidence). residues
+    False: the sites its evidence names in the reviewed proteome (the marked or centred arginine wherever its peptide or
+    window occurs). residues True, for a peptide that leaves several residues: every arginine of the peptide, in the
+    entry remap_row placed it in when it did, else wherever the peptide occurs. Without either, the site remap_row placed
+    it on. At most MAX_CANDIDATES, in order."""
+    placed, acc, pos = None, r['corrected_canonical_UniProtAC'], r['corrected_position']
+    if str(r['is_position_resolved']) == 'True' and isinstance(acc, str) and acc and pd.notna(pos):
+        placed = (acc, int(float(pos)))
+    sites = set()
+    if residues:
+        plain = next((seq for seq, _ in (marked_arginines(t.strip()) for t in str(r.get('peptides', '') or '').split(','))
+                      if len(seq) >= PROTEOME_MIN_ANCHOR), '')
+        if plain:
+            hits = proteome.find(plain)
+            if placed:
+                hits = [(a, st) for a, st in hits if a == placed[0] and st <= placed[1] < st + len(plain)] or hits
+            sites = {(a, st + k) for a, st in hits for k, aa in enumerate(plain) if aa == 'R'}
+    if not sites:
+        sites = proteome_sites(r, proteome, peptides)
+    if not sites and placed:
+        sites = {placed}
+    return [f'{a}:R{pos}' for a, pos in sorted(sites)[:MAX_CANDIDATES]]
+
+
 def unplace(remapped: pd.DataFrame, i, status: str) -> None:
     remapped.loc[i, ['is_position_resolved', 'corrected_canonical_UniProtAC', 'corrected_position', 'corrected_site']] = [False, '', None, '']
     remapped.at[i, 'is_position_remapped'] = False
@@ -347,6 +377,7 @@ def place_localised_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> 
     if 'site_localisation' not in remapped.columns:
         remapped['site_localisation'] = ''
     remapped['site_localisation'] = remapped['site_localisation'].fillna('').astype(str)
+    remapped['candidate_sites'] = ''
     staged = remapped['staged_study'].astype('boolean').fillna(False).astype(bool) if 'staged_study' in remapped.columns else pd.Series(False, index=remapped.index)
     read = {rc.STUDY_TABLES[t] for t in remapped.loc[staged, 'source_table'].unique()}
     for i in remapped.index:
@@ -366,6 +397,9 @@ def place_localised_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> 
             how = ''
         if not how:
             superseded = not staged[i] and rc.study_of(r['source_table'], r.get('source', ''), r.get('reference', '')) in read
+            if not superseded:   # lower-confidence evidence: where the methyl group could be
+                why = str(r.get('study_not_localised', '') or '') if staged[i] else 'several_residues'
+                remapped.at[i, 'candidate_sites'] = '; '.join(candidate_sites(r, proteome, residues=why in ('several_residues', 'search_disagrees')))
             unplace(remapped, i, 'superseded_by_study_table' if superseded else 'unresolved_not_localised')
             continue
         if how == 'curated_experimental':
@@ -383,6 +417,7 @@ def place_localised_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> 
             status = 'unresolved_study_other_entry'
         else:
             status = 'unresolved_study_not_unique' if sites else 'unresolved_study_not_found'
+        remapped.at[i, 'candidate_sites'] = '; '.join(candidate_sites(r, proteome, peptides))
         unplace(remapped, i, status)
     return remapped
 

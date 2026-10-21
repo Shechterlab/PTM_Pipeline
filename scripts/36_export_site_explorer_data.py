@@ -162,6 +162,8 @@ def main() -> None:
     hpa = t('supporting/hpa_locations_{v}.tsv')
     other_ptms = t('supporting/other_ptm_sites_{v}.tsv')
     condensates = t('supporting/condensates_{v}.tsv')
+    lower_path = rel / f'supporting/lower_confidence_evidence_{v}.tsv'
+    lower = read(lower_path) if lower_path.exists() else pd.DataFrame(columns=[c for c, *_ in rc.LOWER_CONFIDENCE_COLUMNS])
     pending = sites['flags'].map(lambda f: 'one_sided_window' in L(f))
     n_pending = int(pending.sum())
     sites = sites[~pending].reset_index(drop=True)
@@ -499,6 +501,20 @@ def main() -> None:
         'proteins': protein_rows,
         'sites': site_rows,
     }
+    # Lower-confidence evidence (records that add no site), per protein: [[positions], reason, study, detail], the
+    # candidates that are sites of the release left out (a record whose candidates all are is left out).
+    lower_reasons = Vocab(list(rc.CODES['lower_confidence']))
+    lower_by = defaultdict(list)
+    for r in lower.to_dict('records'):
+        taken = set(L(r['candidates_in_release']))
+        per = defaultdict(list)
+        for c in L(r['candidate_sites']):
+            if c not in taken:
+                acc, pos = c.split(':R')
+                per[acc].append(int(pos))
+        detail = '; '.join(x for x in (r['reported_detail'], r['evidence_sequence']) if x)
+        for acc, positions in per.items():
+            lower_by[acc].append([sorted(positions), lower_reasons.index(r['reason']), web_name[r['study']], detail[:200]])
     evidence_payload = {
         'source_tables': source_tables.values, 'studies': studies_vocab.values, 'remap_statuses': remap_statuses.values,
         'evidence_fields': ['source_table', 'reference', 'pmid', 'peptide', 'enzyme', 'state', 'source_accession', 'source_position',
@@ -509,6 +525,7 @@ def main() -> None:
         'disease_terms': [[x[0], x[1], term_family[k], x[3], sig(x[4]), x[6], num(x[7])] for k, x in enumerate(site_terms)],
         'disease_terms_tested': {'terms': len(terms_tested), 'enriched': int((terms_tested['enriched'] == 'true').sum())},
         'protein_disease_terms': protein_disease_terms,
+        'lower_confidence': {'reasons': lower_reasons.values, 'records': len(lower), 'by_protein': dict(sorted(lower_by.items()))},
     }
     outdir.mkdir(parents=True, exist_ok=True)
     for name, data in (('methylarg_sites.json', payload), ('methylarg_evidence.json', evidence_payload)):
