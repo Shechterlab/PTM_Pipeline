@@ -58,7 +58,7 @@
     ProMetheusDB: 'ProMetheusDB methyl-proteome table (mmc2)',
     UniProt: 'UniProt methylarginine annotation, via the cross-PTM master table',
     IEDB: 'Immune Epitope Database record with a methylated arginine, via the cross-PTM master table',
-    'Maron 2021': 'Sites Maron et al. 2021 detected in their own data (Table S5 reference "This study"); many were also reported earlier',
+    'Maron 2021': 'Sites Maron et al. 2021 detected in their own data; many were also reported earlier',
     'Hartel 2019': 'HEK293T and LN229 cells, antibody and SCX enrichment; ADMA and SDMA told apart by neutral losses (added in v1.1.1)',
     'Geoghegan 2015': 'Jurkat cells and primary T cells, heavy-methyl SILAC with monomethylarginine antibodies (added in v1.1.1)',
     'Sylvestersen 2014': 'HEK293T cells, monomethylarginine antibodies (added in v1.1.1)',
@@ -1900,9 +1900,12 @@
   }
 
   // ------------------------------------------------------------------ rail
+  // Biology first (the protein, the methyl mark and what writes it, its sequence and structural setting, what binds it),
+  // where the record comes from last.
   const SECTIONS = [
-    ['motif', 'Sequence motif', false], ['methyl', 'Methylation evidence', false], ['prov', 'Provenance', false], ['treat', 'PRMT inhibitors', false], ['struct', 'Disorder & domains', false], ['cluster', 'Clustering & crosstalk', false],
-    ['protein', 'Protein features', false], ['ix', 'Interactions & binding', false],
+    ['protein', 'Protein function & disease', false], ['methyl', 'Methylation state', false], ['treat', 'PRMT inhibitors & knockout', false],
+    ['motif', 'Sequence motif', false], ['struct', 'Disorder & domains', false], ['ix', 'Interactions & binding', false],
+    ['cluster', 'Clustering & crosstalk', false], ['prov', 'Provenance', false],
   ];
 
   function chipRow(name, items, selected, dots) {
@@ -3741,11 +3744,14 @@
       const ref = r[1] >= 0 ? ev.refs[r[1]] : '', own = ref === 'This study.';
       const refText = own ? 'Maron et al. 2021 (detected in that study\'s own data)' : ref;
       const name = st ? (STUDY_DOI[st] ? doiLink(STUDY_DOI[st], esc(st)) : esc(st)) : esc(refText || '—');
-      const via = (SOURCE_TABLE_LABEL[tbl] || tbl.replace(/_/g, ' '));
+      // A study's own data compiled in Maron Table S5 is cited by the study alone; PhosphoSitePlus, a database, keeps
+      // the compilation it came through (its download date and terms are those of Table S5).
+      const via = tbl === 'maron_s5' && st !== 'PhosphoSitePlus' ? '' : (SOURCE_TABLE_LABEL[tbl] || tbl.replace(/_/g, ' '));
       const pmids = r[2] ? r[2].split(/[;,\s]+/).filter(Boolean) : [];
+      const viaParts = [via ? (st === 'ProMetheusDB' || STUDY_TABLES.has(tbl) ? esc(via.replace(/^[^,]+ et al\. \d{4}, /, '')) : 'via ' + esc(via)) : '',
+        pmids.length ? 'PubMed ' + pmids.map((id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">' + esc(id) + '</a>').join(', ') : ''].filter(Boolean);
       const src = '<b' + (refText ? ' title="' + esc(refText) + '"' : '') + '>' + name + '</b>' +
-        '<span class="src-via">' + (st === 'ProMetheusDB' || (st === 'Maron 2021' && own) || STUDY_TABLES.has(tbl) ? esc(via.replace(/^[^,]+ et al\. \d{4}, /, '')) : 'via ' + esc(via)) +
-        (pmids.length ? ' · PubMed ' + pmids.map((id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">' + esc(id) + '</a>').join(', ') : '') + '</span>' +
+        (viaParts.length ? '<span class="src-via">' + viaParts.join(' · ') + '</span>' : '') +
         (refText && !(st && STUDY_DOI[st]) && !own && refText !== st ? '<span class="src-ref">' + esc(refText) + '</span>' : '');
       const status = ev.remap_statuses[r[8]] || '', rs = REMAP_SHORT[status] || ['ok', status.replace(/_/g, ' ')];
       const acc0 = r[6] || '', pos0 = r[7] != null && r[7] !== '' ? +r[7] : null;
@@ -4307,10 +4313,12 @@
       '<div class="sq-grid">' + names.map((name) => {
         const q = Q[name], r = studyRef(M.studies.findIndex((x) => x[0] === name));
         return '<div class="sq-card"><div class="sq-head"><b>' + esc(name) + '</b>' + (r[1] ? ' <a class="small" href="https://doi.org/' + esc(r[1]) + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">doi:' + esc(r[1]) + '</a>' : '') + '</div>' +
-          '<p class="sq-text">' + esc(q.quality) + '</p>' +
+          '<p class="sq-text">' + esc(q.quality.replace(/<=/g, '≤').replace(/>=/g, '≥')) + '</p>' +
           '<div class="sq-bar" role="img" aria-label="' + esc(fmt(q.n_records_placed) + ' of ' + fmt(q.n_records) + ' records placed') + '">' +
           seg(q.n_records_placed, 'sq-placed', fmt(q.n_records_placed) + ' placed') + seg(q.n_records_several_sites, 'sq-several', fmt(q.n_records_several_sites) + ' name several sites') + seg(q.n_records_other_protein, 'sq-other', fmt(q.n_records_other_protein) + ' name one site in another protein') + seg(q.n_records_no_site, 'sq-none', fmt(q.n_records_no_site) + ' name none') + '</div>' +
-          '<p class="sq-nums">' + fmt(q.n_records) + ' records: <b>' + fmt(q.n_records_placed) + ' placed</b> (' + pct(q.n_records_placed, q.n_records) + '%), ' + fmt(q.n_records_several_sites) + ' naming several sites, ' + fmt(q.n_records_other_protein) + ' one in another protein, ' + fmt(q.n_records_no_site) + ' none.<br>' +
+          '<p class="sq-nums">' + fmt(q.n_records) + ' records: ' + ['<b>' + fmt(q.n_records_placed) + ' placed</b> (' + pct(q.n_records_placed, q.n_records) + '%)',
+            q.n_records_several_sites ? fmt(q.n_records_several_sites) + ' naming several sites' : '', q.n_records_other_protein ? fmt(q.n_records_other_protein) + ' one in another protein' : '',
+            q.n_records_no_site ? fmt(q.n_records_no_site) + ' none' : ''].filter(Boolean).join(', ') + '.<br>' +
           fmt(q.n_sites) + ' sites: ' + fmt(q.n_sites_in_previous_version) + ' already in ' + esc(prev) + ', ' + fmt(q.n_sites_only_here) + ' reported by no other source.</p></div>';
       }).join('') + '</div>' +
       '<p class="note">Records traced from each source table to the reviewed proteome, with the site marked in the peptide and in the reference sequence: <a href="' + changesLink() + '#data-quality-study-by-study" target="_blank" rel="noopener">CHANGES.md, Data quality study by study</a>.</p>';

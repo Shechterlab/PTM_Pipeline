@@ -160,7 +160,7 @@ def restore_leucines(rows: pd.DataFrame, canonical_sequences: dict[str, str]) ->
     """For a source of LEUCINE_AS_ISOLEUCINE, write back L where the export wrote I: in the window and the marked peptide
     of a row whose reported entry, read at the reported position, agrees with them once I and L are taken as one
     residue, or else, for a row whose reported entry is not in the reference set or does not agree, from the one site
-    of the whole reference set that the peptide and window name when I and L are taken as one. The row's evidence as
+    of the whole reference set its peptide (or window) names when I and L are taken as one. The row's evidence as
     reported goes to peptide_sequence_reported and source_correction says leucine_restored; other rows are left as
     given."""
     rows = rows.copy()
@@ -199,8 +199,9 @@ def with_leucines(marked: str, ref: str) -> str:
 
 
 def leucines_from_proteome(r: pd.Series, canonical_sequences: dict[str, str], collapsed: ProteomeIndex) -> dict[str, str]:
-    """The row's peptide and window with L written back from the one site they name in the reference set when I and L
-    are taken as one residue; empty when they name none or several, or nothing changes."""
+    """The row's peptide and window with L written back from the one site of the reference set its peptide (or, without
+    one, its window) names when I and L are taken as one residue: each where it matches that site so; empty when the
+    sequence names none or several sites, or nothing changes."""
     peptide, window = str(r.get('peptides', '') or ''), str(r.get('seq_window', '') or '')
     pieces = []
     if peptide:
@@ -211,23 +212,22 @@ def leucines_from_proteome(r: pd.Series, canonical_sequences: dict[str, str], co
         core, lead, _ = split_window_padding(window)
         if core:
             pieces.append(('seq_window', window, core, len(window) // 2 - lead))
-    sites, hits = set(), {}
-    for col, given, plain, centre in pieces:
-        if len(plain) < PROTEOME_MIN_ANCHOR:
-            continue
-        found = collapsed.find(plain.replace('I', 'L'))
-        if found:
-            hits[col] = (given, plain, centre)
-            sites |= {(acc, start + centre) for acc, start in found}
+    pieces = [x for x in pieces if len(x[2]) >= PROTEOME_MIN_ANCHOR]
+    if not pieces:
+        return {}
+    _, _, plain, centre = pieces[0]
+    sites = {(acc, start + centre) for acc, start in collapsed.find(plain.replace('I', 'L'))}
     if len(sites) != 1:
         return {}
     acc, pos = next(iter(sites))
     seq, fixed = canonical_sequences[acc], {}
-    for col, (given, plain, centre) in hits.items():
+    for col, given, plain, centre in pieces:
         start = pos - centre - 1
-        restored = with_leucines(given, seq[start:start + len(plain)])
-        if restored != given:
-            fixed[col] = restored
+        ref = seq[start:start + len(plain)] if start >= 0 else ''
+        if ref.replace('I', 'L') == plain.replace('I', 'L'):
+            restored = with_leucines(given, ref)
+            if restored != given:
+                fixed[col] = restored
     return fixed
 
 
@@ -272,12 +272,13 @@ def lead_reviewed_accession(rows: pd.DataFrame, canonical_sequences: dict[str, s
 
 
 def proteome_sites(row: pd.Series, proteome: ProteomeIndex) -> set[tuple[str, int]]:
-    """Every site the row's evidence names anywhere in the reference set: each occurrence of its marked peptide or
-    centred window (of PROTEOME_MIN_ANCHOR residues or more), at the marked or central arginine."""
+    """Every site the row's evidence names anywhere in the reference set: each occurrence of its marked peptide (of
+    PROTEOME_MIN_ANCHOR residues or more), at the marked arginine. A row without one is read from its centred window
+    instead: the peptide is what the study measured, the window only the sequence of the entry it assigned."""
+    anchors = [a for a in build_anchors(row) if len(a['sequence']) >= PROTEOME_MIN_ANCHOR]
+    peptides = [a for a in anchors if a['anchor_type'] == 'annotated_peptide']
     sites = set()
-    for anchor in build_anchors(row):
-        if len(anchor['sequence']) < PROTEOME_MIN_ANCHOR:
-            continue
+    for anchor in peptides or anchors:
         for acc, start in proteome.find(anchor['sequence']):
             sites |= {(acc, start + k - 1) for k in anchor['indices']}
     return sites
@@ -298,6 +299,10 @@ def place_study_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> pd.D
             acc, pos = next(iter(sites))
             placed = remapped.at[i, 'is_position_resolved'] and remapped.at[i, 'remap_status'] != 'sequence_unique_proteome'
             if placed and (remapped.at[i, 'corrected_canonical_UniProtAC'], int(float(remapped.at[i, 'corrected_position']))) == (acc, pos):
+                # The code says what placed it: the sequence found once, in the reported entry or another the record names
+                # (remap_row may have reached the same site from a window that occurs more than once).
+                own = acc == canonicalize_uniprot_accession(remapped.at[i, 'substrate_UniProtAC'])
+                remapped.at[i, 'remap_status'] = 'sequence_unique_canonical' if own else 'sequence_unique_candidate'
                 continue
             status = 'unresolved_study_other_entry'
         else:

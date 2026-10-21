@@ -65,14 +65,14 @@ STUDY_QUALITY = {
                   'Percolator q <= 0.01 and ptmRS localisation >= 75 %. LN229 Tables S1-S2 give no positions: their rows '
                   'take the position Tables S3-S15 give for the same protein, peptide and residue, and are dropped without one.',
     'Geoghegan2015': 'Heavy-methyl SILAC peptide pairs with the methylated arginine marked, q <= 0.05 (0.93 % FDR for the paired '
-                     'set), localised at ModLS > 8 or unambiguously; rows at ModLS 8 or below are left out. Positions number '
-                     'the first accession of the protein group, often an unreviewed entry; the site is placed from the peptide.',
+                     'set), localised at ModLS > 8 or unambiguously (rows at ModLS 8 or below are left out). Positions number '
+                     'the first accession of the protein group, often an unreviewed entry, so the site is placed from the peptide.',
     'Sylvestersen2014': 'MaxQuant site tables with a 13-residue window and the peptide, localisation probability >= 0.75. '
-                        'The export writes every leucine as isoleucine; L is written back where the reported entry, or else '
+                        'The export writes every leucine as isoleucine: L is written back where the reported entry, or else '
                         'one site of the reviewed proteome, matches with I and L taken as one.',
     'Lu2025': 'The 743 dimethylarginine sites of Dataset EV1 come without peptides or localisation scores (SEQUEST HT, '
               'Percolator 1 % FDR). A site is kept only where a PSM localises it by mass, every arginine of its peptide '
-              'dimethylated (155 sites); the other 588 are left out.',
+              'dimethylated (155 sites), and the other 588 are left out.',
     'Ma2023': 'MaxQuant ADMA-antibody sites with a 31-residue window, localisation probability >= 0.75, 1 % FDR. Tumours '
               'grown in mice: a peptide identical in mouse and human can come from mouse stroma (flag xenograft_only).',
 }
@@ -407,8 +407,8 @@ RECORD_COLUMNS = [
     ('reported_position', 'string', '', 'position as reported'),
     ('reported_methyl_state', 'string', '', 'methylation state as reported, in the codes of the site table (ProMetheusDB me = Rme1, di = Rme2)'),
     ('reported_enzyme', 'string', '', 'methyltransferase as reported (PTM master table only)'),
-    ('reported_sample', 'string', '', 'cells or tissue the study measured (the studies added in v1.1.1)'),
-    ('reported_enrichment', 'string', '', 'how the study enriched the peptides, e.g. ADMA IAP (antibody), SCX fractionation, SMN Tudor domain (the studies added in v1.1.1)'),
+    ('reported_sample', 'list<string>', '', 'cells or tissue the study measured (the studies added in v1.1.1)'),
+    ('reported_enrichment', 'list<string>', '', 'how the study enriched the peptides, e.g. ADMA IAP (antibody), SCX fractionation, SMN Tudor domain (the studies added in v1.1.1)'),
     ('reported_detail', 'string', '', 'what else the study gives for the record: the neutral-loss call, the localisation probability, the source rows merged into the record and their tables, the PRMT1 knockdown result (the studies added in v1.1.1)'),
     ('evidence_kind', 'code', 'evidence_kind', 'kind of sequence evidence'),
     ('evidence_sequence', 'list<string>', '', 'the window, peptide or marked peptide (a few records give several), as the pipeline reads it: modifications other than methylation, e.g. (ox), are left out, and source_correction says when it was corrected'),

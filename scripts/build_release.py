@@ -276,7 +276,7 @@ def record_detail(r: pd.Series) -> str:
     if clean(r.get('study_localisation', '')):
         parts.append('localisation probability ' + clean(r['study_localisation']))
     if clean(r.get('study_rows', '')):
-        parts.append(clean(r['study_rows']) + ' source rows')
+        parts.append(clean(r['study_rows']) + (' source row' if clean(r['study_rows']) == '1' else ' source rows'))
     if clean(r.get('study_tables', '')):
         parts.append('tables ' + clean(r['study_tables']).replace('; ', ', '))
     if clean(r.get('study_note', '')):
@@ -655,7 +655,7 @@ def study_examples(records: pd.DataFrame, reference: dict) -> dict:
         g = records[records['study'] == sid]
         if g.empty:
             continue
-        rows = pd.to_numeric(g['reported_detail'].str.extract(r'(\d+) source rows')[0], errors='coerce').fillna(1)
+        rows = pd.to_numeric(g['reported_detail'].str.extract(r'(\d+) source rows?\b')[0], errors='coerce').fillna(1)
         blocks = []
         placed = g[(g['placed_site'] != '') & (g['evidence_kind'] != 'position_only')]
         if len(placed):
@@ -666,7 +666,8 @@ def study_examples(records: pd.DataFrame, reference: dict) -> dict:
             lines = [f"record {r['record_id']}: reported {r['reported_accession']} at R{r['reported_position']}"
                      + (f" ({r['reported_detail']})" if r['reported_detail'] else ''),
                      f"placed on {r['placed_site']} ({r['placement_code']}; evidence check: {r['evidence_check']}); "
-                     f"the {r['evidence_kind'].replace('_', ' ')} occurs {len(hits)} time{'s' if len(hits) != 1 else ''} in the reviewed proteome"]
+                     f"the {r['evidence_kind'].replace('_', ' ').replace('window ', 'window of ') + (' residues' if r['evidence_kind'].startswith('window_') else '')} "
+                     + ('occurs once' if len(hits) == 1 else f'occurs {len(hits)} times') + ' in the reviewed proteome']
             if off >= 0 and seq:
                 lines += traced(seq, off, reference[acc], pos - off)
             blocks.append(lines)
@@ -678,7 +679,7 @@ def study_examples(records: pd.DataFrame, reference: dict) -> dict:
             seq, off = marked_evidence(r)
             sites = sorted({key(a, start + off) for a, start in proteome.find(seq)}) if off >= 0 else []
             blocks.append([f"record {r['record_id']}: reported {r['reported_accession']} at R{r['reported_position']}, "
-                           f"{r['evidence_kind'].replace('_', ' ')} {r['evidence_sequence']}",
+                           f"{r['evidence_kind'].replace('_', ' ').replace('window ', 'window of ')} {r['evidence_sequence']}",
                            f"not placed ({code}): the evidence names {len(sites)} site{'s' if len(sites) != 1 else ''} in the "
                            'reviewed proteome, ' + ', '.join(sites[:6]) + (', ...' if len(sites) > 6 else '')])
         out[sid] = blocks

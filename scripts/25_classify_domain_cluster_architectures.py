@@ -79,7 +79,7 @@ def build_cluster_examples(site_context_path: Path, outdir: Path) -> Path:
         rows.append(
             {
                 "canonical_UniProtAC": accession,
-                "gene": str(group.get("substrate_genename", pd.Series([""])).dropna().astype(str).iloc[0]) if "substrate_genename" in group else "",
+                "gene": next((g for g in group.get("substrate_genename", pd.Series(dtype=str)).dropna().astype(str) if g), ""),
                 "domain_edge_bin_compact": edge_bin,
                 "total_sites_in_bin": len(positions),
                 "max_sites_in_20aa_span_within_bin": max_count,
