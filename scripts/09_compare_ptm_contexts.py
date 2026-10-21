@@ -325,6 +325,8 @@ def main() -> None:
 
     if args.interpro_intervals:
         interpro = normalize_intervals(pd.read_csv(args.interpro_intervals, sep='\t', low_memory=False))
+        # domains and repeats, as scripts/05 and 07 count them (homologous superfamilies are structural classifications)
+        interpro = interpro[interpro['interpro_type'].astype(str).isin(['domain', 'repeat'])].copy()
         ptm_sites = annotate_domain(ptm_sites, interpro, boundary_window=args.boundary_window)
         for ptm_group, group in ptm_sites.groupby('ptm_group'):
             residues = sorted(set(group['residue'].astype(str)))

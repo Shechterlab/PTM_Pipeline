@@ -112,6 +112,10 @@ def main() -> None:
     ap.add_argument('--outdir', required=True)
     ap.add_argument('--min-condensate-size', type=int, default=5)
     ap.add_argument('--include-synthetic', action='store_true')
+    ap.add_argument('--reference-fasta', default='', help='reviewed reference: members outside it are left out, as they can '
+                    'never be targets (the sites are on reviewed entries)')
+    ap.add_argument('--accession-history', default='', help='secondary accessions of the reference entries (kind secondary): '
+                    'a member listed under one counts as its current entry')
     args = ap.parse_args()
 
     if not args.staged_membership:
@@ -164,6 +168,17 @@ def main() -> None:
             )
             memberships = memberships.drop(columns=['condensate_name_catalog'])
 
+    if args.reference_fasta:
+        reviewed = {line.split('|')[1] for line in open(args.reference_fasta, encoding='utf-8') if line.startswith('>')}
+        current = {}
+        if args.accession_history:
+            history = pd.read_csv(args.accession_history, sep='\t', dtype=str, keep_default_na=False)
+            history = history[history['kind'] == 'secondary']
+            targets = history.groupby('key')['accession'].agg(set)
+            current = {k: next(iter(v)) for k, v in targets.items() if len(v) == 1}
+        acc = memberships['canonical_UniProtAC'].astype(str)
+        memberships = memberships.assign(canonical_UniProtAC=[a if a in reviewed else current.get(a, '') for a in acc])
+        memberships = memberships[memberships['canonical_UniProtAC'] != ''].drop_duplicates(['condensate_id', 'canonical_UniProtAC'])
     methyl_proteins = set(sites['canonical_UniProtAC'].dropna().astype(str).map(canonicalize_uniprot_accession))
     universe = set(memberships['canonical_UniProtAC'].astype(str))
     methyl_in_universe = methyl_proteins & universe

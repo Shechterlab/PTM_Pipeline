@@ -1,16 +1,19 @@
 from __future__ import annotations
 
 import argparse
+import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
 import pandas as pd
 
+import release_codes as rc
 from common import (
     accession_is_isoform,
     canonical_gene_name,
     canonicalize_uniprot_accession,
     clean_aa_sequence,
+    mass_localised,
     normalize_accession,
     parse_fasta,
     parse_modified_peptide,
@@ -26,13 +29,14 @@ def load_uniprot_metadata(path: str | Path) -> tuple[pd.DataFrame, dict[str, lis
         'Gene Names (primary)': 'gene_primary',
     })
     meta['canonical_UniProtAC'] = meta['canonical_UniProtAC'].astype(str).str.strip()
-    meta['gene_primary'] = meta.get('gene_primary', '').astype(str).map(canonical_gene_name)
+    # Every primary gene of an entry: UniProt lists several, separated by ';', for some (histones, SLX1A; SLX1B).
+    genes_of = meta.get('gene_primary', pd.Series('', index=meta.index)).fillna('').astype(str).str.split(';')
+    meta['gene_primary'] = genes_of.str[0].map(canonical_gene_name)
     gene_to_accessions: dict[str, list[str]] = defaultdict(list)
-    for row in meta.itertuples(index=False):
-        gene = canonical_gene_name(getattr(row, 'gene_primary', ''))
-        acc = str(getattr(row, 'canonical_UniProtAC', '')).strip()
-        if gene and acc:
-            gene_to_accessions[gene].append(acc)
+    for acc, genes in zip(meta['canonical_UniProtAC'], genes_of):
+        for gene in {canonical_gene_name(g) for g in genes}:
+            if gene and acc:
+                gene_to_accessions[gene].append(acc)
     gene_to_accessions = {gene: sorted(set(accs)) for gene, accs in gene_to_accessions.items()}
     return meta, gene_to_accessions
 
@@ -135,7 +139,8 @@ def study_frame(path: str | Path) -> pd.DataFrame:
         # residue with both types called stays Rme2 here, and study_rme2_type keeps the call.
         'arg_methyl_state': [{'ADMA': 'Rme2a', 'SDMA': 'Rme2s'}.get(x, d) for d, x in zip(t['methyl_degree'], t['rme2_type'])],
         'study_rme2_type': t['rme2_type'],
-        'arg_methyl_state_known': True,
+        'arg_methyl_state_known': t['methyl_degree'].ne(''),
+        'site_localisation': t['localised_by'],
         'source': study,
         'source_family': study,
         'reference': study,
@@ -153,7 +158,7 @@ def study_frame(path: str | Path) -> pd.DataFrame:
 
 
 # Sources whose export writes every leucine as isoleucine (isobaric in mass spectrometry).
-LEUCINE_AS_ISOLEUCINE = {'sylvestersen2014'}
+LEUCINE_AS_ISOLEUCINE = {'sylvestersen2014', 'lim2020'}
 
 
 def restore_leucines(rows: pd.DataFrame, canonical_sequences: dict[str, str]) -> pd.DataFrame:
@@ -271,45 +276,111 @@ def lead_reviewed_accession(rows: pd.DataFrame, canonical_sequences: dict[str, s
     return rows
 
 
-def proteome_sites(row: pd.Series, proteome: ProteomeIndex) -> set[tuple[str, int]]:
+def proteome_sites(row: pd.Series, proteome: ProteomeIndex, peptides: list[str] | None = None) -> set[tuple[str, int]]:
     """Every site the row's evidence names anywhere in the reference set: each occurrence of its marked peptide (of
     PROTEOME_MIN_ANCHOR residues or more), at the marked arginine. A row without one is read from its centred window
-    instead: the peptide is what the study measured, the window only the sequence of the entry it assigned."""
+    instead: the peptide is what the study measured, the window only the sequence of the entry it assigned. peptides:
+    read these marked peptides instead of the row's (the ones that localise the site)."""
+    if peptides is not None:
+        row = row.copy()
+        row['peptides'], row['seq_window'], row['peptide_sequence'] = ', '.join(peptides), '', ''
     anchors = [a for a in build_anchors(row) if len(a['sequence']) >= PROTEOME_MIN_ANCHOR]
-    peptides = [a for a in anchors if a['anchor_type'] == 'annotated_peptide']
+    marked = [a for a in anchors if a['anchor_type'] == 'annotated_peptide']
     sites = set()
-    for anchor in peptides or anchors:
+    for anchor in marked or anchors:
         for acc, start in proteome.find(anchor['sequence']):
             sites |= {(acc, start + k - 1) for k in anchor['indices']}
     return sites
 
 
-def place_study_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> pd.DataFrame:
-    """The studies added in v1.1.1 add a site only where the evidence is unequivocal: a record stays placed when its
-    marked peptide or window, searched in the whole reviewed proteome, names exactly one site, and remap_row placed it
-    there in an entry the record names (its accession, the current entry of a merged accession, or an entry of its
-    gene). Paralogs or repeats sharing the sequence, isoform-specific or changed sequences, a sequence found only in
-    another protein (which the study may have seen in an isoform or fusion the reviewed proteome does not hold), near
-    matches and position-only records stay unplaced."""
+# The residues each search could methylate (variable modifications), for the sources whose records are localised here
+# from the peptide's mass: ProMetheusDB (mmc2 header: mono- and dimethylation of R and K, trimethylation of K).
+SEARCH_METHYLATABLE = {'prometheus_mmc2': 'RK'}
+
+
+def marked_arginines(peptide: str) -> tuple[str, dict[int, str]]:
+    """'K(di)NNNLYSWDDFM(ox)ELGR(me)' -> ('KNNNLYSWDDFMELGR', {16: 'Rme1'}): the plain peptide and its methylated
+    arginines, R(me) mono and R(di) dimethyl."""
+    plain, marks = [], {}
+    for m in re.finditer(r'([A-Za-z])(?:\(([^)]*)\))?', peptide):
+        plain.append(m.group(1).upper())
+        if plain[-1] == 'R' and m.group(2):
+            marks[len(plain)] = {'me': 'Rme1', 'di': 'Rme2'}.get(m.group(2).strip().lower(), '')
+    return ''.join(plain), marks
+
+
+def localising_peptides(peptides: str, methylatable: str) -> list[tuple[str, str]]:
+    """The listed marked peptides whose mass alone localises their methyl groups, each with how (common.mass_localised)."""
+    out = []
+    for peptide in split_multi_value_field(peptides, separators=','):
+        how = mass_localised(*marked_arginines(peptide), methylatable)
+        if how:
+            out.append((peptide, how))
+    return out
+
+
+def unplace(remapped: pd.DataFrame, i, status: str) -> None:
+    remapped.loc[i, ['is_position_resolved', 'corrected_canonical_UniProtAC', 'corrected_position', 'corrected_site']] = [False, '', None, '']
+    remapped.at[i, 'is_position_remapped'] = False
+    remapped.at[i, 'remap_status'] = status
+
+
+def place_localised_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> pd.DataFrame:
+    """A record adds a site only where its source localises the methyl group to one residue and its evidence names
+    that residue unequivocally.
+
+    Localised (site_localisation, codes in release_codes.CODES['localised_by']): a staged study's record as its staging
+    says (a localisation score over the study's threshold, a peptide whose mass leaves one arrangement, or a curated
+    experimental annotation); a ProMetheusDB record when one of its marked peptides localises it by mass. A record of a
+    compiled table (Maron 2021 Table S5, the iPTMnet-format master table) carries no localisation: it is not placed,
+    superseded_by_study_table when the study's own table is read in this run, else unresolved_not_localised
+    (PhosphoSitePlus).
+
+    Placed: a curated record (UniProt) where remap_row placed it (its accession, at an arginine of that position). Any
+    other localised record stays placed when its localising peptides, or without a peptide its window, searched in the
+    whole reviewed proteome, name exactly one site, and remap_row placed it there in an entry the record names (its
+    accession, the current entry of a merged accession, or an entry of its gene). Paralogs or repeats sharing the
+    sequence, isoform-specific or changed sequences, a sequence found only in another protein (which the study may have
+    seen in an isoform or fusion the reviewed proteome does not hold), near matches and position-only records stay
+    unplaced."""
     remapped = remapped.copy()
+    if 'site_localisation' not in remapped.columns:
+        remapped['site_localisation'] = ''
+    remapped['site_localisation'] = remapped['site_localisation'].fillna('').astype(str)
     staged = remapped['staged_study'].astype('boolean').fillna(False).astype(bool) if 'staged_study' in remapped.columns else pd.Series(False, index=remapped.index)
-    for i in remapped.index[staged]:
-        sites = proteome_sites(remapped.loc[i], proteome)
+    read = {rc.STUDY_TABLES[t] for t in remapped.loc[staged, 'source_table'].unique()}
+    for i in remapped.index:
+        r = remapped.loc[i]
+        peptides = None
+        if staged[i]:
+            how = r['site_localisation']
+        elif r['source_table'] in SEARCH_METHYLATABLE:
+            found = localising_peptides(str(r.get('peptides', '') or ''), SEARCH_METHYLATABLE[r['source_table']])
+            how = found[0][1] if found else ''
+            peptides = [p for p, _ in found]
+            remapped.at[i, 'site_localisation'] = how
+        else:
+            how = ''
+        if not how:
+            superseded = not staged[i] and rc.study_of(r['source_table'], r.get('source', ''), r.get('reference', '')) in read
+            unplace(remapped, i, 'superseded_by_study_table' if superseded else 'unresolved_not_localised')
+            continue
+        if how == 'curated_experimental':
+            continue
+        sites = proteome_sites(r, proteome, peptides)
         if len(sites) == 1:
             acc, pos = next(iter(sites))
-            placed = remapped.at[i, 'is_position_resolved'] and remapped.at[i, 'remap_status'] != 'sequence_unique_proteome'
-            if placed and (remapped.at[i, 'corrected_canonical_UniProtAC'], int(float(remapped.at[i, 'corrected_position']))) == (acc, pos):
+            placed = r['is_position_resolved'] and r['remap_status'] != 'sequence_unique_proteome'
+            if placed and (r['corrected_canonical_UniProtAC'], int(float(r['corrected_position']))) == (acc, pos):
                 # The code says what placed it: the sequence found once, in the reported entry or another the record names
                 # (remap_row may have reached the same site from a window that occurs more than once).
-                own = acc == canonicalize_uniprot_accession(remapped.at[i, 'substrate_UniProtAC'])
+                own = acc == canonicalize_uniprot_accession(r['substrate_UniProtAC'])
                 remapped.at[i, 'remap_status'] = 'sequence_unique_canonical' if own else 'sequence_unique_candidate'
                 continue
             status = 'unresolved_study_other_entry'
         else:
             status = 'unresolved_study_not_unique' if sites else 'unresolved_study_not_found'
-        remapped.loc[i, ['is_position_resolved', 'corrected_canonical_UniProtAC', 'corrected_position', 'corrected_site']] = [False, '', None, '']
-        remapped.at[i, 'is_position_remapped'] = False
-        remapped.at[i, 'remap_status'] = status
+        unplace(remapped, i, status)
     return remapped
 
 
@@ -723,6 +794,8 @@ def main() -> None:
     ap.add_argument('--maron-extra', default='', help='Table S5 rows read for the first time in this version (maron_s5_rows_accession_na.tsv); they come after all other rows')
     ap.add_argument('--study-records', nargs='*', default=[],
                     help='studies staged by scripts/00_stage_study_sites.py, read after the source tables above, in this order')
+    ap.add_argument('--localised-only', action='store_true',
+                    help='place only records whose source localises the methyl group to one residue (place_localised_records); v1.1.0 was built without it')
     ap.add_argument('--canonical-fasta', required=True)
     ap.add_argument('--uniprot-metadata', required=True)
     ap.add_argument('--accession-history', default='',
@@ -773,7 +846,8 @@ def main() -> None:
         axis=1,
     )
     remapped = pd.concat([all_rows, remap_annotations], axis=1)
-    remapped = place_study_records(remapped, proteome)
+    if args.localised_only:
+        remapped = place_localised_records(remapped, proteome)
 
     resolved = remapped[remapped['is_position_resolved'].fillna(False)].copy()
     resolved['canonical_UniProtAC'] = resolved['corrected_canonical_UniProtAC']

@@ -317,7 +317,7 @@ def protein_density_summary(positions_by_acc: dict[str, np.ndarray], windows: li
             best = 0
             left = 0
             for right in range(site_count):
-                while positions[right] - positions[left] > window:
+                while positions[right] - positions[left] > window - 1:   # W residues: positions p..p+W-1
                     left += 1
                 best = max(best, right - left + 1)
             row[f'max_sites_in_{window}aa_window'] = int(best)

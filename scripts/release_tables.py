@@ -229,8 +229,9 @@ def proteins_table(root: Path, inputs: Path, sites: pd.DataFrame, records: pd.Da
             'disease_family_terms': join(fams[x] for x in family_order if x in fams),
             'als_ftd_family_gene': 'ALS / motor neuron / FTD' in fams,
             **{f'n_{t}': int(other_counts.get((acc, t), 0)) for t in ('phospho', 'lys_acyl', 'ub_sumo', 'lys_methyl')},
-            # the symbol the disease enrichment counted for this protein (scripts/14: first symbol of the labels)
-            '_label_symbol': (split(f['substrate_genename']) or split(f['genename']) or [''])[0] if f is not None else '',
+            # the symbol the disease enrichment counted for this protein (scripts/14: the UniProt primary gene, else the
+            # labels' first symbol)
+            '_label_symbol': gene.split(';')[0].strip() or ((split(f['substrate_genename']) or split(f['genename']) or [''])[0] if f is not None else ''),
         })
     table = pd.DataFrame(rows)
     table.attrs['hpa_all'] = hpa_all

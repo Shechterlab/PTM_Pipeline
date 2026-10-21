@@ -62,19 +62,31 @@ def main() -> None:
     ap.add_argument('--symbol-entrez', required=True)
     ap.add_argument('--ontology-genes', required=True, help='Disease Ontology term-gene table (scripts/00_export_disease_ontology.R)')
     ap.add_argument('--ontology-terms', required=True, help='Disease Ontology terms with names and parents')
+    ap.add_argument('--uniprot-metadata', default='',
+                    help="UniProt entries table: each protein counts under its UniProt primary gene (else the labels' first symbol)")
     ap.add_argument('--outdir', required=True)
     args = ap.parse_args()
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
 
     labels = pd.read_csv(args.labels, sep='\t', dtype=str, keep_default_na=False)
-    labels['gene_symbol'] = [primary_gene(a) or primary_gene(b) for a, b in zip(labels['substrate_genename'], labels.get('genename', [''] * len(labels)))]
+    # The protein's UniProt primary gene: the labels' first symbol comes from the source tables first (IGF2 for IGF2-AS).
+    uniprot_gene = {}
+    if args.uniprot_metadata:
+        meta = pd.read_csv(args.uniprot_metadata, sep='\t', dtype=str, keep_default_na=False)
+        uniprot_gene = {a: primary_gene(g) for a, g in zip(meta['Entry'], meta['Gene Names (primary)'])}
+    labels['gene_symbol'] = [uniprot_gene.get(acc, '') or primary_gene(a) or primary_gene(b) for acc, a, b in
+                             zip(labels['canonical_UniProtAC'], labels['substrate_genename'], labels.get('genename', [''] * len(labels)))]
     labels = labels[labels['gene_symbol'] != '']
     target_rows = labels[labels['is_arg_methyl_protein'].map(is_true)]
 
     sym = pd.read_csv(args.symbol_entrez, sep='\t', dtype=str, keep_default_na=False)
     entrez_of = sym.groupby('symbol')['entrez_id'].agg(list).to_dict()
-    name_of = dict(zip(sym.loc[sym['entrez_symbol'] == 'true', 'entrez_id'], sym.loc[sym['entrez_symbol'] == 'true', 'symbol']))
+    # A gene is named by the symbol of the protein that brought it in, the symbol the release maps back to proteins.
+    name_of = {}
+    for s in labels['gene_symbol']:
+        for e in entrez_of.get(s, []):
+            name_of.setdefault(e, s)
 
     def genes(symbols) -> list[str]:
         out, seen = [], set()
@@ -89,11 +101,12 @@ def main() -> None:
     targeted = set(genes(target_rows['gene_symbol']))
     target_list = [g for g in universe_list if g in targeted]
     universe, target = set(universe_list), set(target_list)
+    unmapped = lambda rows: int(rows.loc[~rows['gene_symbol'].isin(entrez_of), 'gene_symbol'].nunique())  # noqa: E731
     summary = pd.DataFrame([
         {'target': 'Universe', 'protein_count': labels['canonical_UniProtAC'].nunique(),
-         'symbol_count': labels['gene_symbol'].nunique(), 'entrez_count': len(universe_list)},
+         'symbol_count': labels['gene_symbol'].nunique(), 'entrez_count': len(universe_list), 'symbols_without_entrez': unmapped(labels)},
         {'target': 'All methyl proteins', 'protein_count': target_rows['canonical_UniProtAC'].nunique(),
-         'symbol_count': target_rows['gene_symbol'].nunique(), 'entrez_count': len(target_list)},
+         'symbol_count': target_rows['gene_symbol'].nunique(), 'entrez_count': len(target_list), 'symbols_without_entrez': unmapped(target_rows)},
     ])
     summary.to_csv(outdir / 'disease_input_summary.tsv', sep='\t', index=False, lineterminator='\n')
     symbols = lambda ids: '/'.join(name_of.get(g, g) for g in str(ids or '').split('/') if g)  # noqa: E731

@@ -489,6 +489,20 @@ def parse_modified_peptide(x: str, residue: str = 'R') -> tuple[str, list[int]]:
     return ''.join(clean), modified_positions
 
 
+def mass_localised(peptide: str, marks: dict[int, str], methylatable: str) -> str:
+    """How a peptide's mass alone localises its methyl groups, or '' when it does not. peptide: the plain sequence;
+    methylatable: the residues the study's search could methylate (R, or RK); marks: 1-based residue -> 'Rme1' or
+    'Rme2' for the methylated arginines. 'one_methylatable_residue': the peptide holds one residue the search could
+    methylate; 'every_arginine_dimethylated': every such residue is an arginine and every one is dimethylated, so the
+    mass leaves no other arrangement."""
+    candidates = [k for k, aa in enumerate(peptide, 1) if aa in methylatable]
+    if len(candidates) == 1:
+        return 'one_methylatable_residue'
+    if candidates and all(peptide[k - 1] == 'R' and marks.get(k) == 'Rme2' for k in candidates):
+        return 'every_arginine_dimethylated'
+    return ''
+
+
 def normalize_arg_methyl_state(state: str) -> str:
     s = str(state).strip().lower()
     if s in {'', 'nan', 'none'}:

@@ -1,0 +1,555 @@
+study_id	reported_accession	reported_gene	reported_position	peptide	window	methyl_degree	rme2_type	cell_type	enrichment	localisation_probability	n_source_rows	source_tables	note	localised_by
+Fedoriw2019	A0AV96	RBM47	394	APGPR(me2)GSYLGGYSAGRGIY		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	A0AV96	RBM47	405	GSYLGGYSAGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	A0AV96	RBM47	405	APGPRGSYLGGYSAGR(me2)GIY		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	A4D1U4	LCHN	34	WAEGPAVSLPQAPQPQAGGWGR(me1)		Rme1		Panc03.27	MMA antibody (#12235)		1	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	A6NGG8	C2orf71	408	QSGHTWQQSPFCLGSGR(me1)PQ		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	A6NGR9	MROH6	455	ALGEGDAR(me2)		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	A7E2V4	ZSWIM8	1120	LALGSR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	A7KAX9	ARHGAP32	1695	DFAFYNPR(me2)LQGK		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O00267	SUPT5H	681	ISSPMHPSAGGQR(me1)		Rme1		Panc03.27	MMA antibody (#12235)		1	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O00515	LAD1	424	SR(me1)GLPCTELFVAPVGVASK		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O00567	NOP56	359	YGLIFHSTFIGR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O00716	E2F3	121	AGLLQQPPALGR(me1)GGSGGGGGPPAK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O14497	ARID1A	235	SAYPPPAPAYALSSPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O14776	TCERG1	28	MAQQQALR(me2)FRGPAPPPNAVMRGPPPLMRPPPPFGM		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O14776	TCERG1	30	MAQQQALRFR(me2)GPAPPPNAVMRGPPPLMRPPPPFGM		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O14776	TCERG1	41	MAQQQALRFRGPAPPPNAVMR(me2)GPPPLMRPPPPFGM		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O14776	TCERG1	48	MAQQQALRFRGPAPPPNAVMRGPPPLMR(me2)PPPPFGM		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O14979	HNRNPDL	25	LSHVPPPLFPSAPATLASR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O14979	HNRNPDL	338	GR(me2)GRGQGQNWNQGFNNYYDQGYGNYNSAY		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O14979	HNRNPDL	340	GR(me1)GQGQNWNQGFNNYYDQGYGNYNSAY		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O14979	HNRNPDL	340	GRGR(me2)GQGQNWNQGFNNYYDQGYGNYNSAY		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O14979	HNRNPDL	408	ASR(me1)GGGNHQNNYQPY		Rme1		HupT4; OCI-Ly1; Panc03.27; Panc08.13; Toledo; not stated (Table S7)	MMA antibody (#12235)		6	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O14979	HNRNPDL	408	ASR(me2)GGGNHQNNYQPY		Rme2		HupT4; Panc08.13	ADMA antibody (#13474); SDMA antibody (#13563)		4	Table S5	ADMA immunoprecipitation; SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O15062	ZBTB5	526	VMIGSPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O15164	TRIM24	469	FPTQISLAQLR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O15372	EIF3H	105	FDEVQYQMEMMR(me2)		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O15417	TNRC18	807	WSADPAAHLATHPWLPR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O43237	DYNC1LI2	397	TQGR(me1)GGPASVPSSSPGTSVK		Rme1		Panc03.27	MMA antibody (#12235)		1	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O43251	RBFOX2	381	VYTADPYHALAPAASYGVGAVASLYR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O43251	RBFOX2	381	VYTADPYHALAPAASYGVGAVASLYR(me1)GGY		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O43390	HNRNPR	500	GGYEDPYYGYDDGYAVR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O43390	HNRNPR	500	GGYEDPYYGYDDGYAVR(me2)GR		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O43390	HNRNPR	502	GGYEDPYYGYDDGYAVRGR(me2)		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O43823	AKAP8	188	GSLDGFMR(me1)		Rme1		HupT4; OCI-Ly1; Panc03.27; Panc08.13; Toledo; not stated (Table S7)	MMA antibody (#12235)		6	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O60346	PHLPP1	1252	NTFIVMQR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O60506	SYNCRIP	444	NQMYDDYYYYGPPHMPPPTR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O60506	SYNCRIP	444	NQMYDDYYYYGPPHMPPPTR(me2)GRGRGGRGGY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O60506	SYNCRIP	446	NQMYDDYYYYGPPHMPPPTRGR(me2)GRGGRGGY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O60506	SYNCRIP	448	NQMYDDYYYYGPPHMPPPTRGRGR(me2)GGRGGY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O60506	SYNCRIP	451	NQMYDDYYYYGPPHMPPPTRGRGRGGR(me2)GGY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O60506	SYNCRIP	496	GGYEDPYYGYEDFQVGAR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O60506	SYNCRIP	496	GGYEDPYYGYEDFQVGAR(me2)		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O60506	SYNCRIP	496	GGYEDPYYGYEDFQVGAR(me2)GR		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O60506	SYNCRIP	498	GGYEDPYYGYEDFQVGARGR(me2)		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	O75190	DNAJB6	135	SR(me1)GTGSFFSAF		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O75306	NDUFS2	118	KCDPHIGLLHR(me2)GTEK		Rme2		HupT4; Panc03.27; Panc08.13	SDMA antibody (#13563)		3	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O75400	PRPF40A	74	YAPMGMHPMGQR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O75525	KHDRBS3	187	QAQLQELTYLNGGSENADVPVVR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O75970	MPDZ	1170	SLGISIVGGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O94826	TOMM70A	71	GR(me1)GDASGLK		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O94906	PRPF6	23	KKPFLGMPAPLGYVPGLGR(me1)GATGFTT		Rme1		Panc03.27	MMA antibody (#12235)		1	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	O95628	CNOT4	505	YPWMAFPR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P02538	KRT6A	369	YEELQVTAGR(me2)		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P04150	NR3C1	34	TLR(me1)GGATVK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P05783	KRT18	55	STSFR(me2)GGMGSGGLATGIAGGLAGMGGIQNEK		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P05787	KRT8	40	ISSSSFSR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P07814	EPRS	1152	LNQWCNVVR(me1)WEFK		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P09651	HNRNPA1	206	SGSGNFGGGR(me2)GGGFGGNDNFGRGGN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P09651	HNRNPA1	218	SGSGNFGGGRGGGFGGNDNFGR(me2)GGN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P09651	HNRNPA1	352	SSGPYGGGGQYFAKPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P11142	HSPA8	469	FELTGIPPAPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P11940	PABPC1	385	QAHLTNQYMQR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P11940	PABPC1	419	AVPNPVINPYQPAPPSGYFMAAIPQTQNR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P12035	KRT3	375	SLDLDSIIAEVR(me2)A		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P12270	TPR	2345	QR(me2)GVSHAMGGRGGINRGNIN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P12270	TPR	2354	QRGVSHAMGGR(me2)GGINRGNIN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P12270	TPR	2359	QRGVSHAMGGRGGINR(me2)GNIN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P14678	SNRPB	108	VPLAGAAGGPGIGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P14678	SNRPB	147	GVGGPSQQVMTPQGR(me1)		Rme1		Panc03.27	MMA antibody (#12235)		1	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P14678	SNRPB	147	GVGGPSQQVMTPQGR(me2)GTVAAAAAAATA		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P14678	SNRPB	181	GGPPPPMGR(me1)		Rme1		Panc03.27	MMA antibody (#12235)		1	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P14678	SNRPB	181	GGPPPPMGR(me2)GAPPPGM		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P14678	SNRPB	181	GGPPPPMGR(me2)GAPPPGMMGPPPGMRPPMGPPMGIPPGRGTPM		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P14678	SNRPB	196	GGPPPPMGRGAPPPGMMGPPPGMR(me2)PPMGPPMGIPPGRGTPM		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P14678	SNRPB	209	GGPPPPMGRGAPPPGMMGPPPGMRPPMGPPMGIPPGR(me2)GTPM		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P15923	TCF3	371	ALASIYSPDHSSNNFSSSPSTPVGSPQGLAGTSQWPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P16989	YBX3	326	PAPAVGEAEDKENQQATSGPNQPSVR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P19013	KRT4	56	SLYNLR(me1)GNK		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P19338	NCL	656	PKGEGGFGGR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P19338	NCL	656	GEGGFGGR(me2)		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P19338	NCL	681	GR(me2)GGFGGRGGF		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P19338	NCL	687	GRGGFGGR(me2)GGF		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P19338	NCL	694	GGR(me1)GGGGDHKPQG		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P20290	BTF3	13	TGAPAQADSR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P22087	FBL	8	MKPGFSPR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P22087	FBL	8	PGFSPR(me2)		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P22087	FBL	15	GGGFGGR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P22626	HNRNPA2B1	266	GFGDGYNGYGGGPGGGNFGGSPGYGGGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P22626	HNRNPA2B1	350	NMGGPYGGGNYGPGGSGGSGGYGGR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P31942	HNRNPH3	129	GGYYGAGR(me1)		Rme1		OCI-Ly1; Panc03.27; Toledo; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P33176	KIF5B	956	GGGAFVQNSQPVAVR(me1)GGGGK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P35637	FUS	218	GR(me1)GGSGGGGGGGGGGYN		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P35637	FUS	242	SSGGYEPR(me1)		Rme1		HupT4; OCI-Ly1; Panc03.27; Panc08.13; Toledo; not stated (Table S7)	MMA antibody (#12235)		6	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P35637	FUS	259	GGMGGSDR(me1)GGFNK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P35637	FUS	259	GGMGGSDR(me2)GGFNK		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P35637	FUS	259	GGSDR(me2)GGFNK		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P35637	FUS	328	NLYTDR(me2)ETGK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P35908	KRT2	12	GR(me2)GGGGGGF		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P35908	KRT2	61	GGGGFGSR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P35908	KRT2	61	GGGGFGSR(me2)SLVGLGGTK		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P36578	RPL4	97	SGQGAFGNMCR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P46783	RPS10	153	KAEAGAGSATEFQFR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P46783	RPS10	153	KAEAGAGSATEFQFR(me1)GGF		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P48382	RFX5	354	SLIPPIPVSPPILAPR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P48634	PRRC2A	247	GGLQPSGPPQFPPYR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P48634	PRRC2A	1223	LIPGPLSPVAR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P49247	RPIA	52	AQSGTR(me1)GGAGNTSTSCGDSNSICPAPSTMSK		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P49848	TAF6	524	VPGSIALPVQTLVSAR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P50238	CRIP1	68	GFGR(me1)GGAESHTFK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P50238	CRIP1	68	GFGR(me2)GGAESHTFK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P51610	HCFC1	504	VTGPQATTGTPLVTMR(me1)PASQAGK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P51610	HCFC1	524	APVTVTSLPAGVR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P51610	HCFC1	847	GAPGQPGTILR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P51617	IRAK1	701	LLSSSSLPGLGLEQDR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P51991	HNRNPA3	214	QEMQSAGSQR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P51991	HNRNPA3	214	QEMQSAGSQR(me2)GRGGGSGN		Rme2		Panc03.27	ADMA antibody (#13474); SDMA antibody (#13563)		2	Table S5	ADMA immunoprecipitation; SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P51991	HNRNPA3	214	QEMQSAGSQR(me2)GRGGGSGNFMGRGGNFGGGGGN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P51991	HNRNPA3	214	QEMQSAGSQR(me2)GRGGGSGNFMGRGGNFGGGGGNFGRGGN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P51991	HNRNPA3	216	GR(me2)GGGSGNF		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P51991	HNRNPA3	216	GR(me2)GGGSGNFMGRGGNFGGGGGNFGRGGN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P51991	HNRNPA3	216	QEMQSAGSQRGR(me2)GGGSGN		Rme2		Panc03.27	ADMA antibody (#13474); SDMA antibody (#13563)		2	Table S5	ADMA immunoprecipitation; SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P51991	HNRNPA3	216	QEMQSAGSQRGR(me2)GGGSGNFMGRGGNFGGGGGN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P51991	HNRNPA3	216	QEMQSAGSQRGR(me2)GGGSGNFMGRGGNFGGGGGNFGRGGN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P51991	HNRNPA3	226	GRGGGSGNFMGR(me2)GGNFGGGGGNFGRGGN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P51991	HNRNPA3	226	QEMQSAGSQRGRGGGSGNFMGR(me2)GGNFGGGGGN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P51991	HNRNPA3	226	QEMQSAGSQRGRGGGSGNFMGR(me2)GGNFGGGGGNFGRGGN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P51991	HNRNPA3	239	GGNFGGGGGNFGR(me2)GGN		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P51991	HNRNPA3	239	GRGGGSGNFMGRGGNFGGGGGNFGR(me2)GGN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P51991	HNRNPA3	239	QEMQSAGSQRGRGGGSGNFMGRGGNFGGGGGNFGR(me2)GGN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P52298	NCBP2	146	QDYDAGR(me1)GGYGK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P53621	COPA	965	QLFLQTYAR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P61960	UFM1	15	ITLTSDPR(me1)LPYK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P61978	HNRNPK	377	AYEPQGGSGYDYSYAGGR(me1)GSYGDLGGPIITTQVTIPK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P62273	RPS29	12	GHQQLYWSHPR(me1)K		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P62318	SNRPD3	112	GR(me2)GRGMGRGNIFQ		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P62318	SNRPD3	114	GR(me2)GMGRGNIFQK		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P62318	SNRPD3	114	GRGR(me2)GMGRGNIFQ		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P62318	SNRPD3	118	GMGR(me1)GNIFQ		Rme1		Panc03.27	MMA antibody (#12235)		1	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P62318	SNRPD3	118	GMGR(me2)GNIFQK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P62318	SNRPD3	118	GRGMGR(me2)GNIFQK		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P62318	SNRPD3	118	GRGRGMGR(me2)GNIFQ		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P63162	SNRPN	108	VPLAGAAGGPGVGR(me1)		Rme1		OCI-Ly1; Panc03.27; Toledo; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P63162	SNRPN	147	GVGGPSQQVMTPQGR(me2)GTVAAAAVAATA		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P63162	SNRPN	147	GVGGPSQQVMTPQGR(me2)GTVAAAAVAATASIAGAPTQYPPGRGTPPPPVGR		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P63162	SNRPN	172	GVGGPSQQVMTPQGRGTVAAAAVAATASIAGAPTQYPPGR(me2)GTPPPPVGR		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P63162	SNRPN	181	GVGGPSQQVMTPQGRGTVAAAAVAATASIAGAPTQYPPGRGTPPPPVGR(me2)		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P79522	PRR3	120	GWWGVNAEPPFPGPGHGGPTR(me1)GSFHK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P98175	RBM10	902	GSGLGAR(me1)GSSYGVTSTESYK		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P98179	RBM3	87	SAR(me2)GTRGGGFGAH		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P98179	RBM3	87	SAR(me2)GTRGGGFGAHGRGRSY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P98179	RBM3	90	GTR(me2)GGGFGAH		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	P98179	RBM3	90	SARGTR(me2)GGGFGAH		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P98179	RBM3	90	SARGTR(me2)GGGFGAHGRGRSY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P98179	RBM3	99	SARGTRGGGFGAHGR(me2)GRSY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	P98179	RBM3	101	SARGTRGGGFGAHGRGR(me2)SY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	702	NQFNR(me1)GGGH		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q00839	HNRNPU	709	GR(me2)GGFN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q00839	HNRNPU	709	GR(me2)GGFNMRGGN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	709	GR(me2)GGFNMRGGNFRGGAPGNRGGY		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	715	GRGGFNMR(me2)GGN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	715	GRGGFNMR(me2)GGNFRGGAPGNRGGY		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	720	GGNFR(me2)GGAPGNRGGYN		Rme2		Panc03.27	ADMA antibody (#13474); SDMA antibody (#13563)		2	Table S5	ADMA immunoprecipitation; SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	720	GRGGFNMRGGNFR(me2)GGAPGNRGGY		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	727	GGAPGNR(me2)GGYN		Rme2		Panc03.27	ADMA antibody (#13474); SDMA antibody (#13563)		2	Table S5	ADMA immunoprecipitation; SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q00839	HNRNPU	727	GGNFRGGAPGNR(me2)GGYN		Rme2		Panc03.27	ADMA antibody (#13474); SDMA antibody (#13563)		2	Table S5	ADMA immunoprecipitation; SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	727	GRGGFNMRGGNFRGGAPGNR(me2)GGY		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	755	GGGGGGSGGIGYPYPR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q00839	HNRNPU	762	APVFPGR(me1)GSY		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q00839	HNRNPU	762	APVFPGR(me1)GSYSN		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q00839	HNRNPU	768	GSYSNR(me2)GNYNRGGMPNRGNYNQN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	773	GSYSNRGNYNR(me2)GGMPNRGNYNQN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	779	GGMPNR(me2)GNYNQN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q00839	HNRNPU	779	GGMPNR(me2)GNYNQNFRGRGN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	779	GSYSNRGNYNRGGMPNR(me2)GNYNQN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	787	GNYNQNFR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q00839	HNRNPU	787	GGMPNRGNYNQNFR(me2)GRGN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q00839	HNRNPU	789	GGMPNRGNYNQNFRGR(me2)GN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q01081	U2AF1	165	QYEMGECTR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q01804	OTUD4	1050	QFYNQTYGSR(me1)K		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q01844	EWSR1	300	SMSGPDNR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q01844	EWSR1	302	GR(me2)GRGGFDRGGM		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q01844	EWSR1	304	GRGR(me2)GGFDRGGM		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q01844	EWSR1	309	GRGRGGFDR(me2)GGM		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q01844	EWSR1	486	GGPGGPGGPGGPMGR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q01844	EWSR1	589	GGPGGMFR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q02548	PAX5	377	FPNPGLLGSPYYYSAAAR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q02548	PAX5	377	YYSAAAR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q04637	EIF4G1	73	VQSAAPAR(me1)PGPAAHVYPAGSQVM		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q04637	EIF4G1	675	LQGINCGPDFTPSFANLGR(me1)		Rme1		OCI-Ly1; Panc03.27; Toledo; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q07666	KHDRBS1	284	GR(me2)GVPVRGRGAAPPPPPVPR		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474); SDMA antibody (#13563)		4	Table S5	SDMA immunoprecipitation; ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	289	GRGVPVR(me2)GRGAAPPPPPVPR		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474); SDMA antibody (#13563)		4	Table S5	SDMA immunoprecipitation; ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	289	GVPVR(me2)GRGAAPPPPPVPR		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474); SDMA antibody (#13563)		3	Table S5	ADMA immunoprecipitation; SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	291	GRGVPVRGR(me2)GAAPPPPPVPR		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474); SDMA antibody (#13563)		4	Table S5	SDMA immunoprecipitation; ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	291	GVPVRGR(me2)GAAPPPPPVPR		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474); SDMA antibody (#13563)		3	Table S5	ADMA immunoprecipitation; SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	302	GRGVPVRGRGAAPPPPPVPR(me2)		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474); SDMA antibody (#13563)		4	Table S5	SDMA immunoprecipitation; ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	302	GVPVRGRGAAPPPPPVPR(me2)		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474); SDMA antibody (#13563)		3	Table S5	ADMA immunoprecipitation; SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	304	GR(me2)GVGPPRGAL		Rme2		Panc03.27	ADMA antibody (#13474); SDMA antibody (#13563)		2	Table S5	ADMA immunoprecipitation; SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	304	GR(me2)GVGPPRGALVRGTPVRGAIT		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	310	GRGVGPPR(me2)GAL		Rme2		Panc03.27	ADMA antibody (#13474); SDMA antibody (#13563)		2	Table S5	ADMA immunoprecipitation; SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	310	GRGVGPPR(me2)GALVRGTPVRGAIT		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	315	GRGVGPPRGALVR(me2)GTPVRGAIT		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	320	GRGVGPPRGALVRGTPVR(me2)GAIT		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q07666	KHDRBS1	340	GVPPPPTVR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q08211	DHX9	1175	R(me2)GGSSYSGGGYGGGYSSGGYGSGGYGGSANSFRAGYGAGVGGGYRGVSRGGF		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1207	GGSSYSGGGYGGGYSSGGYGSGGYGGSANSFR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q08211	DHX9	1207	RGGSSYSGGGYGGGYSSGGYGSGGYGGSANSFR(me2)AGYGAGVGGGYRGVSRGGF		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1219	AGYGAGVGGGYR(me1)GV		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q08211	DHX9	1219	RGGSSYSGGGYGGGYSSGGYGSGGYGGSANSFRAGYGAGVGGGYR(me2)GVSRGGF		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1223	RGGSSYSGGGYGGGYSSGGYGSGGYGGSANSFRAGYGAGVGGGYRGVSR(me2)GGF		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1235	GNSGGDYR(me2)GPSGGYRGSGGFQRGGGRGAY		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1242	GPSGGYR(me1)GSGGF		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q08211	DHX9	1242	GNSGGDYRGPSGGYR(me2)GSGGFQRGGGRGAY		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1242	GPSGGYR(me2)GSGGFQRGGGRGAYGTGY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1242	GPSGGYR(me2)GSGGFQRGGGRGAYGTGYFGQGRGGGGY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1249	GNSGGDYRGPSGGYRGSGGFQR(me2)GGGRGAY		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1249	GPSGGYRGSGGFQR(me2)GGGRGAYGTGY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1249	GPSGGYRGSGGFQR(me2)GGGRGAYGTGYFGQGRGGGGY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1249	GSGGFQR(me2)GGGRGAYGTGY		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1249	GSGGFQR(me2)GGGRGAYGTGYFGQGRGGGGY		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1253	GGGR(me2)GAYGTGY		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q08211	DHX9	1253	GNSGGDYRGPSGGYRGSGGFQRGGGR(me2)GAY		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1253	GPSGGYRGSGGFQRGGGR(me2)GAYGTGY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1253	GPSGGYRGSGGFQRGGGR(me2)GAYGTGYFGQGRGGGGY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1253	GSGGFQRGGGR(me2)GAYGTGY		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1253	GSGGFQRGGGR(me2)GAYGTGYFGQGRGGGGY		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1265	GAYGTGYFGQGR(me1)GGGGY		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q08211	DHX9	1265	GTGYFGQGR(me1)GGGGY		Rme1		OCI-Ly1; Panc03.27; Toledo; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q08211	DHX9	1265	GPSGGYRGSGGFQRGGGRGAYGTGYFGQGR(me2)GGGGY		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1265	GSGGFQRGGGRGAYGTGYFGQGR(me2)GGGGY		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q08211	DHX9	1265	YGTGYFGQGR(me2)GGGGY		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q12830	BPTF	2155	VLGIIPSSTGTSQQTFTSFQPR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q12888	TP53BP1	1355	TSGTEPADFALPSSR(me1)GGPGK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q12905	ILF2	16	FGSR(me2)GGPGGGF		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q12906	ILF3	640	PHNPGFGMGGPMHNEVPPPPNLR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q12906	ILF3	653	GR(me2)GRGFGGANHGGYMNAGAGYGSYGYGGN		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q12906	ILF3	655	GR(me1)GFGGANHGGYMNAGAGYGSYGYGGN		Rme1		Panc03.27	MMA antibody (#12235)		1	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q12906	ILF3	655	GR(me2)GFGGANHGGYMNAGAGYGSY		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q12906	ILF3	655	GRGR(me2)GFGGANHGGYMNAGAGYGSYGYGGN		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q13148	TARDBP	293	FGGNPGGFGNQGGFGNSR(me1)		Rme1		OCI-Ly1; Panc03.27; Toledo; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q13151	HNRNPA0	189	EDIYSGGGGGGSR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q13151	HNRNPA0	291	SNSGPYR(me1)GGYGGGGGYGGSSF		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q13151	HNRNPA0	291	SNSGPYR(me2)GGYGGGGGYGGSSF		Rme2		HupT4; Panc03.27; Panc08.13	SDMA antibody (#13563)		3	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q13283	G3BP1	447	GPPR(me1)GGMVQK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q13283	G3BP1	447	GPPR(me2)GGMVQK		Rme2		HupT4; Panc03.27; Panc08.13	SDMA antibody (#13563)		3	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q13303	KCNAB2	28	QTGSPGMIYSTR(me2)YGSPK		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q13310	PABPC4	419	ALPANAILNQFQPAAGGYFVPAVPQAQGR(me1)PPYYTPNQLAQ		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q13310	PABPC4	442	WQQGGR(me2)PQGFQGMPSAIRQSGPRPTLRH		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q13310	PABPC4	454	WQQGGRPQGFQGMPSAIR(me2)QSGPRPTLRH		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q13310	PABPC4	459	WQQGGRPQGFQGMPSAIRQSGPR(me2)PTLRH		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q13310	PABPC4	463	WQQGGRPQGFQGMPSAIRQSGPRPTLR(me2)H		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q13310	PABPC4	509	LAMDFGGAGAAQQGLTDSCQSGGVPTAVQNLAPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q13330	MTA1	636	LIR(me1)GGSLPPVK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q13435	SF3B2	502	NSVPVPR(me2)HWCFK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q13616	CUL1	63	YMELYTHVYNYCTSVHQSNQAR(me1)		Rme1		HupT4; Panc03.27; Panc08.13; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q13698	CACNA1S	1038	PIYNNR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14004	CDK13	1504	GHISTSTGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14011	CIRBP	91	SR(me2)GYRGGSAGGRGF		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14011	CIRBP	94	GYR(me2)GGSAGGRGF		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14011	CIRBP	94	GYR(me2)GGSAGGRGFF		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14011	CIRBP	94	GYR(me2)GGSAGGRGFFR		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14011	CIRBP	94	GYR(me2)GGSAGGRGFFRGG		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14011	CIRBP	94	SRGYR(me2)GGSAGGRGF		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14011	CIRBP	101	GYRGGSAGGR(me2)GF		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14011	CIRBP	101	GYRGGSAGGR(me2)GFF		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14011	CIRBP	101	GYRGGSAGGR(me2)GFFR		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14011	CIRBP	101	GYRGGSAGGR(me2)GFFRGG		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14011	CIRBP	101	SRGYRGGSAGGR(me2)GF		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14011	CIRBP	105	GYRGGSAGGRGFFR(me2)		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14011	CIRBP	105	GYRGGSAGGRGFFR(me2)GG		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14103	HNRNPD	278	GGFAGR(me2)ARGRGGGPSQNWNQGYSNYWNQGYGNY		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14103	HNRNPD	280	AR(me2)GRGGGPSQNWNQGYSNYWNQGYGNYGY		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14103	HNRNPD	280	GGFAGRAR(me2)GRGGGPSQNWNQGYSNYWNQGYGNY		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14103	HNRNPD	282	GR(me1)GGGPSQNWNQGYSNYWNQGYGNYGYNS		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14103	HNRNPD	282	ARGR(me2)GGGPSQNWNQGYSNYWNQGYGNYGY		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14103	HNRNPD	282	GGFAGRARGR(me2)GGGPSQNWNQGYSNYWNQGYGNY		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14103	HNRNPD	282	GR(me2)GGGPSQNWNQGYSNYWNQGYGNYGY		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14103	HNRNPD	345	R(me1)GGHQNSYKPY		Rme1		HupT4; OCI-Ly1; Panc03.27; Panc08.13; Toledo; not stated (Table S7)	MMA antibody (#12235)		6	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14151	SAFB2	897	GLSGPSGPGHMASR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14185	DOCK1	1774	PPPVTPR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14191	WRN	1427	R(me1)GGLFS		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14247	CTTN	119	HCSQVDSVR(me1)GFGGK		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14444	CAPRIN1	608	SNQPYYNSR(me1)		Rme1		HupT4; OCI-Ly1; Panc03.27; Panc08.13; Toledo; not stated (Table S7)	MMA antibody (#12235)		6	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14444	CAPRIN1	608	SNQPYYNSR(me2)GV		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14444	CAPRIN1	608	SNQPYYNSR(me2)GVS		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14444	CAPRIN1	608	SNQPYYNSR(me2)GVSRGG		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14444	CAPRIN1	608	SNQPYYNSR(me2)GVSRGGSRGA		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14444	CAPRIN1	612	SNQPYYNSRGVSR(me2)GG		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14444	CAPRIN1	612	SNQPYYNSRGVSR(me2)GGSRGA		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14444	CAPRIN1	616	SNQPYYNSRGVSRGGSR(me2)GA		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q14498	RBM39	109	FNSAIR(me1)GK		Rme1		HupT4; OCI-Ly1; Panc03.27; Panc08.13; Toledo; not stated (Table S7)	MMA antibody (#12235)		6	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14966	ZNF638	9	FNPR(me2)GDFPL		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14966	ZNF638	1465	FKPTQSSLTR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q14978	NOLC1	683	GSYR(me1)GGSISVQVNSIK		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q15020	SART3	906	KAPGGPMLLPQTYGAR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q15020	SART3	906	KAPGGPMLLPQTYGAR(me1)GK		Rme1		HupT4; Panc03.27; Panc08.13; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q15424	SAFB	902	GHPIPHGGMQGGFGGQSR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q15654	TRIP6	236	EEAAGVSGPAGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q15654	TRIP6	236	EEAAGVSGPAGR(me2)GRGGEHGPQVPLSQPPEDELD		Rme2		HupT4; Panc03.27; Panc08.13	SDMA antibody (#13563)		3	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q15654	TRIP6	238	EEAAGVSGPAGRGR(me2)GGEHGPQVPLSQPPEDELD		Rme2		HupT4; Panc03.27; Panc08.13	SDMA antibody (#13563)		3	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q16512	PKN1	78	SLGPVELLLR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q1KMD3	HNRNPUL2	684	AYGQQYWGQPGNR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q1KMD3	HNRNPUL2	747	NYYGYQGYR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q1W6H9	FAM110C	56	PGTGR(me1)GVASEGSGPGAIK		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q2KHR3	QSER1	1171	QQFSTLAVR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q2VPA4	CR1L	192	SVVTYHCNLGSR(me2)GK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q32P51	HNRNPA1L2	140	IEVIEIMTDR(me1)GSGK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q32P51	HNRNPA1L2	225	GGNFSGR(me1)GGF		Rme1		OCI-Ly1; Panc03.27; Toledo; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q32P51	HNRNPA1L2	284	GGNFGGR(me1)SSGPYGGGGQYFAK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q52LJ0	FAM98B	335	QEGGGGR(me2)GGWGGGGGGGGRGGGGGGGGRGGW		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q52LJ0	FAM98B	347	GGWGGGGGGGGR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q52LJ0	FAM98B	347	QEGGGGRGGWGGGGGGGGR(me2)GGGGGGGGRGGW		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q52LJ0	FAM98B	356	QEGGGGRGGWGGGGGGGGRGGGGGGGGR(me2)GGW		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q52LJ0	FAM98B	384	GGWGGGGGGWGGGGGGGGGWGGGGGGGR(me1)		Rme1		Panc03.27	MMA antibody (#12235)		1	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q5EBL8	PDZD11	63	KPPGAQLGFNIR(me1)GGK		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q5T0W9	FAM83B	373	SHGYKPHFVPNFNGPNAIR(me1)QFQPN		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q5T0Z8	C6orf132	1053	YAGAGGLER(me2)FSGGGRSLIK		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q5T0Z8	C6orf132	1059	YAGAGGLERFSGGGR(me2)SLIK		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q5T0Z8	C6orf132	1109	VNSAGR(me2)APPGGLHAPRLSLEGAARGAAEAK		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q5T0Z8	C6orf132	1119	VNSAGRAPPGGLHAPR(me2)LSLEGAARGAAEAK		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q5T0Z8	C6orf132	1127	VNSAGRAPPGGLHAPRLSLEGAAR(me2)GAAEAK		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q5T1M5	FKBP15	520	QHNTEIR(me2)MAVSK		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q5T200	ZC3H13	66	FVHGPSPR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q5T5U3	ARHGAP21	575	MSGR(me1)GVGSVSQFK		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q5T5U3	ARHGAP21	575	MSGR(me2)GVGSVSQFK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q5T8P6	RBM26	855	GILSSGR(me2)GRGIH		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q5T8P6	RBM26	857	GILSSGRGR(me2)GIH		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q5VTE6	ANGEL2	72	APYPYFSSR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q69YN4	KIAA1429	1773	ASR(me2)GRGGLGPSWASANSGSGGSRGK		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q69YN4	KIAA1429	1775	ASRGR(me2)GGLGPSWASANSGSGGSRGK		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q69YN4	KIAA1429	1793	ASRGRGGLGPSWASANSGSGGSR(me2)GK		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q6IQ26	DENND5A	549	ESWFTNR(me1)EQMQNFD		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q6MZZ7	CAPN13	366	QVILGNTAGGPR(me2)		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q6PJG2	ELMSAN1	447	AVSTGDCGQVLR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q6PKG0	LARP1	334	SDGAGGAR(me2)ASF		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q6W2J9	BCOR	655	SPPIPYPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q6XZF7	DNMBP	480	TLQKPVLPLYR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q6Y7W6	GIGYF2	107	LTGR(me2)GGGGTVVGAPRGR		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q6Y7W6	GIGYF2	118	GGGGTVVGAPR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q6Y7W6	GIGYF2	118	LTGRGGGGTVVGAPR(me2)GR		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q6Y7W6	GIGYF2	120	LTGRGGGGTVVGAPRGR(me2)		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q709C8	VPS13C	3519	DFGDSLAR(me1)GGK		Rme1		OCI-Ly1; Panc03.27; Toledo; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q709C8	VPS13C	3526	GFLR(me1)GVVGGVTGIITKPVEGAK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q709F0	ACAD11	525	SDATNIECSIQR(me2)		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q7L5N1	COPS6	323	MR(me1)GLFF		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q7Z3K3	POGZ	238	TFTTVIPATLTIR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q7Z406	MYH14	1354	LALGSR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q7Z591	AKNA	351	YGR(me1)GQLNYPLPDFSK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q86TB9	PATL1	316	VGQMLPPAPGFR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q86U42	PABPN1	238	TSLALDESLFR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q86U42	PABPN1	277	TTNYNSSR(me2)SRFYSGFN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q86U42	PABPN1	279	SR(me2)FYSGFN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q86U42	PABPN1	279	SR(me2)FYSGFNSRPRGRVY		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q86U42	PABPN1	279	TTNYNSSRSR(me2)FYSGFN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q86U42	PABPN1	287	SRFYSGFNSR(me2)PRGRVY		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q86U42	PABPN1	289	SRFYSGFNSRPR(me2)GRVY		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q86U42	PABPN1	291	SRFYSGFNSRPRGR(me2)VY		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q86UU0	BCL9L	2	MR(me2)ILANK		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q86UW9	DTX2	256	TASVFGTHQAFAPYNKPSLSGAR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q86XP3	DDX42	12	R(me1)GFGFGGFAISAGK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q86YP4	GATAD2A	213	PSLQTSSAR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q86YP4	GATAD2A	225	MPGSVIPPPLVR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q86YP4	GATAD2A	273	QHSSTGPPPLLLAPR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q86YP4	GATAD2A	293	IIQQGLIR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8IY92	SLX4	1046	FLLGPPQGGSPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8IZW8	TNS4	209	SSSESLIFSGNQGR(me1)GH		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8N1G1	REXO1	191	GQGR(me1)GGGGGGALEYVPK		Rme1		OCI-Ly1; Panc03.27; Toledo; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8N3J3	C17orf53	295	GTIQSSPQNR(me1)FPCQPFQSPSSWLSGK		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8N4C8	MINK1	509	KPLYHYGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8N5A5	ZGPAT	370	VEPIHAVVLPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8N8D1	PDCD7	65	PGPFPGASAPFLQPPLALQPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8NA54	IQUB	86	QSDQSFSSLEPDNEQLMEEVISPR(me2)		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8NB15	ZNF511	240	IPSTICFGQGAAR(me1)		Rme1		OCI-Ly1; Panc03.27; Toledo; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8NC51	SERBP1	216	R(me1)GGSGSHNWGTVK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8NC51	SERBP1	216	R(me1)GGSGSHNWGTVKDELTESPK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8NC96	NECAP1	180	TAR(me1)GGGLSLLPPPPGGK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8NCA5	FAM98A	400	GGGYQDGGYR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8NCE2	MTMR14	638	AVAPSPSGAIGGLLEQFAR(me1)		Rme1		Panc03.27	MMA antibody (#12235)		1	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8ND04	SMG8	898	ALNSDMPLYILSSSQGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8ND56	LSM14A	421	GGR(me2)GRGGGRGGTFTAPRGF		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q8ND56	LSM14A	423	GGRGR(me2)GGGRGGTFTAPRGF		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q8ND56	LSM14A	427	GGRGRGGGR(me2)GGTFTAPRGF		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q8ND56	LSM14A	435	GGTFTAPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8ND56	LSM14A	435	GGRGRGGGRGGTFTAPR(me2)GF		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q8ND56	LSM14A	435	GGTFTAPR(me2)GF		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8NI36	WDR36	744	SAPFFIPTIPGLVPR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8TAP9	MPLKIP	57	DGYGSPHHTPPYGPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8TDN6	BRIX1	9	R(me1)GGFAVQAK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8TEW0	PARD3	294	LVEVPNDGGPLGIHVVPFSAR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8WUF5	PPP1R13L	180	QQGPPTPFDFLGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8WUF5	PPP1R13L	362	IPMPPSSPQPR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8WXG9	GPR98	4387	NISIVR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q8WXI9	GATAD2B	286	GPPKPGLVR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92567	FAM168A	138	VPPTQSNTAPPPYSPSPNPYQTAMYPIR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92567	FAM168A	189	SIPSAIYPAPVAAPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92786	PROX1	38	AR(me1)ATFF		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92804	TAF15	185	GYGGSQGGGR(me2)GRGGYDK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q92804	TAF15	187	GYGGSQGGGRGR(me2)GGYDK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q92804	TAF15	206	GPMTGSSGGDR(me2)GGFK		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92804	TAF15	403	GYGGER(me1)GY		Rme1		HupT4; Panc03.27; Panc08.13; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92804	TAF15	570	GGGYGGDR(me1)GGYGGK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92841	DDX17	81	APLPDLYPFGTMR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92900	UPF1	1019	NLVMPPMPPPGYFGQANGPAAGR(me1)GTPK		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92900	UPF1	1019	NLVMPPMPPPGYFGQANGPAAGR(me2)GTPK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92934	BAD	161	NLGR(me1)GSSAPSQ		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92945	KHSRP	411	SGPPGPPGGPGMPPGGR(me1)		Rme1		OCI-Ly1; Panc03.27; Toledo; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92945	KHSRP	411	SGPPGPPGGPGMPPGGR(me2)GRGRGQGNWGPPGGEMTFSIPTHK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q92945	KHSRP	413	GR(me2)GRGQGNWGPPGGEMTFSIPTHK		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q92945	KHSRP	413	SGPPGPPGGPGMPPGGRGR(me2)GRGQGNWGPPGGEMTFSIPTHK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q92945	KHSRP	415	GR(me2)GQGNWGPPGGEMTFSIPTHK		Rme2		HupT4; Panc03.27; Panc08.13	SDMA antibody (#13563)		3	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92945	KHSRP	415	GRGR(me2)GQGNWGPPGGEMTFSIPTHK		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q92945	KHSRP	415	SGPPGPPGGPGMPPGGRGRGR(me2)GQGNWGPPGGEMTFSIPTHK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q92945	KHSRP	442	CGLVIGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q92945	KHSRP	442	CGLVIGR(me1)GGENVK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96AE4	FUBP1	359	SVQAGNPGGPGPGGR(me1)		Rme1		HupT4; Panc03.27; Panc08.13; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96AE4	FUBP1	359	SVQAGNPGGPGPGGR(me2)GRGRGQGNWNMGPPGGLQEFNFIVPTGK		Rme2		HupT4; Panc03.27; Panc08.13	SDMA antibody (#13563)		3	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q96AE4	FUBP1	361	SVQAGNPGGPGPGGRGR(me2)GRGQGNWNMGPPGGLQEFNFIVPTGK		Rme2		HupT4; Panc03.27; Panc08.13	SDMA antibody (#13563)		3	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q96AE4	FUBP1	363	GR(me1)GQGNWNMGPPGGLQEFNFIVPTGK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96AE4	FUBP1	363	GR(me2)GQGNWNMGPPGGLQEFNFIVPTGK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96AE4	FUBP1	363	SVQAGNPGGPGPGGRGRGR(me2)GQGNWNMGPPGGLQEFNFIVPTGK		Rme2		HupT4; Panc03.27; Panc08.13	SDMA antibody (#13563)		3	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q96DH6	MSI2	197	EVMFPPGTR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96DH6	MSI2	228	GLPYTMDAFMLGMGMLGYPNFVATYGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96DH6	MSI2	261	GYPGFAPSYGYQFPGFPAAAYGPVAAAAVAAAR(me1)		Rme1		Panc03.27	MMA antibody (#12235)		1	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96EV2	RBM33	1028	KVTLTR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96EV2	RBM33	1028	VTLTR(me1)GGLQQPPHLPAGPHAHSPVPPGIK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96EY8	MMAB	215	FLNR(me2)LSDYLFT		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96GM5	SMARCD1	39	AGFQSVAPSGGAGASGGAGAAAALGPGGTPGPPVR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96HA1	POM121	229	FVITPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96HR8	NAF1	375	EFTR(me1)GF		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96HR8	NAF1	375	EFTR(me2)GF		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96I24	FUBP3	180	VGLVIGR(me1)GGETIK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96I24	FUBP3	337	DGFGGLAAAR(me1)		Rme1		HupT4; Panc03.27; Panc08.13; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96I24	FUBP3	339	GR(me2)GRGRGDWSVGAPGGVQEITYTVPADK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q96I24	FUBP3	341	GRGR(me2)GRGDWSVGAPGGVQEITYTVPADK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q96I24	FUBP3	343	GRGRGR(me2)GDWSVGAPGGVQEITYTVPADK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q96JM3	CHAMP1	778	CNFESNFPR(me1)GFK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96K30	RITA1	257	R(me1)GGATQKPKPPWK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96L34	MARK4	60	QPHVGNYR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96LJ7	DHRS1	21	GIGR(me1)GIALQLCK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96PU8	QKI	227	SPALAFSLAATAQAAPR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96PZ0	PUS7	450	CVEGQLLR(me1)GLSK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96QC0	PPP1R10	705	GGPGPGPGPYHR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96RL7	VPS13A	2962	EGITR(me1)GGK		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q96SI9	STRBP	608	GVVNTAVSAAVQAVR(me2)GRGRGTLTRGAFVGATAAPGYIAPGYGTPYGY		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q96SI9	STRBP	610	GVVNTAVSAAVQAVRGR(me2)GRGTLTRGAFVGATAAPGYIAPGYGTPYGY		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q96SI9	STRBP	612	GR(me2)GTLTRGAFVGATAAPGYIAPGYGTPYGYSTAAPAYGLPK		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q96SI9	STRBP	612	GVVNTAVSAAVQAVRGRGR(me2)GTLTRGAFVGATAAPGYIAPGYGTPYGY		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q96SI9	STRBP	617	GRGTLTR(me2)GAFVGATAAPGYIAPGYGTPYGYSTAAPAYGLPK		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q96SI9	STRBP	617	GVVNTAVSAAVQAVRGRGRGTLTR(me2)GAFVGATAAPGYIAPGYGTPYGY		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q99590	SCAF11	1151	SGWTSASSWAVR(me1)K		Rme1		OCI-Ly1; Panc03.27; Toledo; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q99729	HNRNPAB	253	GNR(me1)GSGGGGGGGGQSQSWNQGYGNYWNQGYGY		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q99729	HNRNPAB	322	R(me1)GGHQNNYKPY		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q99729	HNRNPAB	322	R(me2)GGHQNNYKPY		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474); SDMA antibody (#13563)		3	Table S5	ADMA immunoprecipitation; SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q99832	CCT7	535	STVDAPTAAGR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q99832	CCT7	535	STVDAPTAAGR(me2)GR		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q99832	CCT7	537	STVDAPTAAGRGR(me2)		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9BSI4	TINF2	276	VQSQWASTR(me1)GGHK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BST9	RTKN	14	VTVAR(me1)GSALEMEFK		Rme1		HupT4; Panc03.27; Panc08.13; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BT43	POLR3GL	12	GR(me1)GQLTFNVEAVGIGK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BTC0	DIDO1	62	LGLSLR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BTC0	DIDO1	1993	APAPLQFGGLR(me1)GSAPFSEK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BTC0	DIDO1	2008	NEQTPSR(me2)FHFQGQAPQVMK		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BTL3	FAM103A1	112	QEPYYPQQYGHYGYNQR(me1)PPYGYY		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BTV7	CABLES2	30	PGPAPGPAGPPPPAAPTSAAR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BUA3	C11orf84	143	AWSEGVALLQDVR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BUJ2	HNRNPUL1	639	GPPGGNR(me2)GGFQN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BUJ2	HNRNPUL1	639	GPPGGNR(me2)GGFQNRGGGSGGGGN		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9BUJ2	HNRNPUL1	639	GPPGGNR(me2)GGFQNRGGGSGGGGNYRGGFN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9BUJ2	HNRNPUL1	645	GPPGGNRGGFQNR(me2)GGGSGGGGN		Rme2		HupT4; Panc03.27; Panc08.13	ADMA antibody (#13474)		3	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9BUJ2	HNRNPUL1	645	GPPGGNRGGFQNR(me2)GGGSGGGGNYRGGFN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9BUJ2	HNRNPUL1	656	GPPGGNRGGFQNRGGGSGGGGNYR(me2)GGFN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9BUT9	FAM195A	65	AQPFAQPPGPWPLSSPGPR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BVK2	ALG8	268	R(me1)LFPFK		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BX40	LSM14B	118	AQHTLPQDPAIVQSSLGSASASPFQPHVPYSPFR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BX40	LSM14B	351	KLNTETFGVSGR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BXB5	OSBPL10	38	ATSAGSSPSCSLAGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BZ67	FRMD8	217	GQSLFAALR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BZZ5	API5	500	YSSNLGNFNYEQR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9BZZ5	API5	500	YSSNLGNFNYEQR(me1)GAF		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9C0G0	ZNF407	277	QNLAAR(me1)GGFVQILTK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9C0J8	WDR33	16	FFHMPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9C0J8	WDR33	1035	EFEGR(me1)GGPLPQEEK		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9C0J8	WDR33	1257	EMEAPGGPSEDR(me1)GGK		Rme1		HupT4; OCI-Ly1; Panc03.27; Panc08.13; Toledo; not stated (Table S7)	MMA antibody (#12235)		6	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9H089	LSG1	14	APAGGSLGR(me2)AL		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9H0D6	XRN2	824	TLGHVMPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9H0D6	XRN2	946	KYPLPPPSGR(me1)YNWN		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9H0D6	XRN2	946	KYPLPPPSGR(me2)YNWN		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9H0E3	SAP130	232	SNAPGPPLHIGASHLPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9H2H8	PPIL3	61	GFMVQTGDPTGTGR(me1)GGNSIWGK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9H307	PNN	54	LLALSGPGGGR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9H3H3	C11orf68	278	FQLGGSAR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9H3S7	PTPN23	950	QPIPAQHHFSSGIPAGFPAPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9H6K5	PRR36	254	SLSSSATPLSSPAR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9H6R0	DHX33	43	QVVMLLTAGSGGR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9H7S9	ZNF703	580	SHLSTAGGLAVPSLPTAGPYYSPYALYGQR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9NQ92	COPRS	26	GPPLPSAR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9NR12	PDLIM7	117	TAR(me2)PFG		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9NRC8	SIRT7	388	GAPLSSAPILGGWFGR(me1)GCTK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9NRJ4	TULP4	972	YSIPTGDPPPYPEIASQLAQGR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9NRR4	DROSHA	28	GGHGAR(me2)PSAPSFRPQNLRLLHPQQPPVQY		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9NRR4	DROSHA	35	GGHGARPSAPSFR(me2)PQNLRLLHPQQPPVQY		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9NRR4	DROSHA	40	GGHGARPSAPSFRPQNLR(me2)LLHPQQPPVQY		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9NWH9	SLTM	1017	IVQISGNSMPR(me1)GSGSGFKPFK		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9NYF8	BCLAF1	794	EYSGFAGVSR(me2)PRGTFF		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9NYF8	BCLAF1	796	EYSGFAGVSRPR(me2)GTFF		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9NYF8	BCLAF1	809	AR(me1)GVFAGTNTGPNNSNTTFQK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9NZB2	FAM120A	982	GPFPLQVVSVGGPAR(me1)		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9NZB2	FAM120A	1006	YYGR(me1)GYK		Rme1		HupT4; OCI-Ly1; Panc08.13; Toledo	MMA antibody (#12235)		4	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9NZJ7	MTCH1	29	AGAGAGAGAR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9NZN8	CNOT2	87	DMLASPSTSGQLSQFGASLYGQQSALGLPMR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9P2D1	CHD7	148	HGQSFVDSSSMWGPR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9P2N5	RBM27	455	LQLGTPPPLLAAR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9P2N5	RBM27	943	LGILPVGR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9P2N5	RBM27	943	LGILPVGR(me2)GK		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9UHV7	MED13	70	ADVLGVWR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9UI30	TRMT112	14	LLTHNLLSSHVR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9UL49	TCFL5	178	AAAAAGPDGAPEAR(me1)		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9ULI1	NWD2	843	MSELLYHLTR(me2)CG		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9ULX6	AKAP8L	185	AQGWAR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9ULX6	AKAP8L	208	MWEDPMGAR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9UN86	G3BP2	457	GPPPR(me1)GGMAQK		Rme1		HupT4; Panc03.27; Panc08.13; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9UN86	G3BP2	457	GPPPR(me2)GGMAQK		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9UPN9	TRIM33	515	TPGQINLAQLR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9UPT8	ZC3H4	270	GR(me1)GSMGGDHPEDEEDFYEEEMDYGESEEPMGDDDYDEYSK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9UQ35	SRRM2	2342	TPQAPASANLVGPR(me1)		Rme1		Panc03.27	MMA antibody (#12235)		1	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y2H5	PLEKHA6	677	HR(me1)GGLGPSATYSSNSPASPLSSASLTSPLSPFSLVSGSQGSPTKPGSNEPK		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y2W1	THRAP3	66	NHPR(me2)VYQNRDFRGH		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9Y2W1	THRAP3	71	NHPRVYQNR(me2)DFRGH		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9Y2W1	THRAP3	74	NHPRVYQNRDFR(me2)GH		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9Y2W1	THRAP3	91	NR(me2)GFYPWGQYN		Rme2		HupT4; Panc08.13	ADMA antibody (#13474)		2	Table S5	ADMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y2W1	THRAP3	91	NR(me2)GFYPWGQYNRGGYGNY		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9Y2W1	THRAP3	101	NRGFYPWGQYNR(me2)GGYGNY		Rme2		Panc03.27	ADMA antibody (#13474)		1	Table S5	ADMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9Y2W1	THRAP3	115	SNWQNYR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y2W1	THRAP3	839	AR(me2)GRGWGRGNYSGNNNNNSNNDFQK		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9Y2W1	THRAP3	841	ARGR(me2)GWGRGNYSGNNNNNSNNDFQK		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9Y2W1	THRAP3	841	GR(me2)GWGRGNYSGNNNNNSNNDFQK		Rme2		HupT4; Panc03.27; Panc08.13; not stated (Table S7)	SDMA antibody (#13563)		4	Table S5; Table S7	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9Y2W1	THRAP3	845	GWGR(me1)GNYSGNNNNNSNNDFQK		Rme1		HupT4; Panc03.27; Panc08.13; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y2W1	THRAP3	845	ARGRGWGR(me2)GNYSGNNNNNSNNDFQK		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9Y2W1	THRAP3	845	GR(me2)GNYSGNNNNNSNNDFQK		Rme2		Panc03.27; not stated (Table S7)	SDMA antibody (#13563)		2	Table S5; Table S7	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y2W1	THRAP3	845	GRGWGR(me2)GNYSGNNNNNSNNDFQK		Rme2		HupT4; Panc03.27; Panc08.13; not stated (Table S7)	SDMA antibody (#13563)		4	Table S5; Table S7	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9Y2W1	THRAP3	897	EGEGSDKWVSR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y3T6	R3HCC1	120	PISNQGAAAVPR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y3X0	CCDC9	102	TPPQQGGR(me1)AGM		Rme1		OCI-Ly1; Panc03.27; Toledo; not stated (Table S7)	MMA antibody (#12235)		4	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y3Y2	CHTOP	128	TLLR(me2)GGM		Rme2		HupT4; Panc08.13	SDMA antibody (#13563)		2	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y4E5	ZNF451	158	R(me1)GGHTWVSGKPILCPIMHCNK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y4Z0	LSM4	102	GR(me2)GMGGAGRGVF		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9Y4Z0	LSM4	109	GMGGAGR(me2)GVF		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y4Z0	LSM4	109	GRGMGGAGR(me2)GVF		Rme2		Panc03.27	SDMA antibody (#13563)		1	Table S5	SDMA immunoprecipitation	every_arginine_dimethylated
+Fedoriw2019	Q9Y4Z0	LSM4	125	GGIPGTGR(me1)GQPEK		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y520	PRRC2C	242	LNGQQAALASQYR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y520	PRRC2C	2689	STTPTSSPFR(me1)ATSTSPNSQSSK		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y520	PRRC2C	2719	QFQSAPATVR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y580	RBM7	190	FGSSPLDQSGFSPSVQSHSHSFNQSSSSQWR(me1)		Rme1		OCI-Ly1; Toledo	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y5S2	CDC42BPB	671	QGGR(me1)GAGATLEHQQEISK		Rme1		Panc03.27; not stated (Table S7)	MMA antibody (#12235)		2	Table S5; Table S7	MMA immunoprecipitation	one_methylatable_residue
+Fedoriw2019	Q9Y618	NCOR2	1653	GIPLDAAAAYYLPR(me1)		Rme1		HupT4; Panc08.13	MMA antibody (#12235)		2	Table S5	MMA immunoprecipitation	one_methylatable_residue

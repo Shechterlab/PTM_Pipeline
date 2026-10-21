@@ -205,6 +205,8 @@ def main() -> None:
     if not background_nonmethyl.empty:
         bg_flags = pd.DataFrame([family_flags(window) for window in background_nonmethyl['window_15']])
         background_nonmethyl = pd.concat([background_nonmethyl.reset_index(drop=True), bg_flags], axis=1)
+    # the proteome's other arginines: the methylated ones are the targets, not their background
+    all_arg_proteome = all_arg_proteome[~all_arg_proteome['site_key'].isin(methyl_site_keys)].copy()
     if not all_arg_proteome.empty:
         proteome_flags = pd.DataFrame([family_flags(window) for window in all_arg_proteome['window_15']])
         all_arg_proteome = pd.concat([all_arg_proteome.reset_index(drop=True), proteome_flags], axis=1)
@@ -247,7 +249,6 @@ def main() -> None:
         ),
         axis=1,
     )
-    protein_counts = add_q_values(protein_counts)
     global_rate = total_methyl / total_arg if total_arg else np.nan
     alpha0 = global_rate * args.shrinkage_prior_strength if pd.notna(global_rate) else np.nan
     beta0 = (1 - global_rate) * args.shrinkage_prior_strength if pd.notna(global_rate) else np.nan
@@ -265,9 +266,11 @@ def main() -> None:
         if pd.notna(global_rate) and int(row['arginine_count']) > 0 else np.nan,
         axis=1,
     )
-    protein_counts = add_q_values(protein_counts, p_col='binom_p_value', out_col='binom_q_value')
     protein_counts['protein_length'] = protein_counts['canonical_UniProtAC'].map(lambda acc: len(sequences.get(acc, '')))
     protein_counts = protein_counts[(protein_counts['arginine_count'] >= args.min_arg_count) & (protein_counts['methyl_site_count'] >= args.min_site_count)].copy()
+    # q over the proteins tested (those kept above), not over every methylated protein
+    protein_counts = add_q_values(protein_counts)
+    protein_counts = add_q_values(protein_counts, p_col='binom_p_value', out_col='binom_q_value')
     protein_counts['label'] = protein_counts.apply(top_protein_label, axis=1)
     protein_counts = protein_counts.sort_values(['shrinkage_log2_enrichment', 'methyl_site_count'], ascending=[False, False])
 
@@ -483,7 +486,7 @@ def main() -> None:
     fig4.tight_layout()
     save_figure(fig4, outdir / 'protein_site_count_vs_shrinkage_score')
 
-    top_or = protein_counts.head(20).sort_values('odds_ratio')
+    top_or = protein_counts.nlargest(20, 'odds_ratio').sort_values('odds_ratio')
     fig5, ax5 = plt.subplots(figsize=(10.0, 7.0))
     ax5.barh(
         top_or['label'],

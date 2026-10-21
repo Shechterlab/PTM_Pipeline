@@ -86,11 +86,22 @@ def commit() -> str:
         return 'unknown'
 
 
+def write_plain_tsv(table: pd.DataFrame, path: Path) -> None:
+    """A table of strings as plain TSV, no quoting (the values hold no tab or newline)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open('w', encoding='utf-8', newline='') as fh:
+        fh.write('\t'.join(table.columns) + '\n')
+        for row in table.itertuples(index=False):
+            fh.write('\t'.join(row) + '\n')
+
+
 def dictionary(files: dict) -> pd.DataFrame:
     rows = []
     for name, _frame, columns in files.values():
         for column, kind, codes, description in columns:
             meanings = rc.CODES.get(codes, {})
+            if any(';' in m for m in meanings.values()):
+                raise SystemExit(f'a meaning of the {codes} codes holds ";", the separator of value_meanings')
             rows.append({'file': name, 'column': column, 'type': kind, 'values': '; '.join(meanings),
                          'value_meanings': '; '.join(f'{c} = {m}' for c, m in meanings.items()), 'description': description})
     return pd.DataFrame(rows)
@@ -111,7 +122,9 @@ def write_all(outdir: Path, ctx: dict) -> None:
     files = dict(files)
     files['dictionary'] = ('data_dictionary.tsv', None, dictionary_columns)
     table = dictionary(files)
-    table.to_csv(outdir / 'data_dictionary.tsv', sep='\t', index=False, lineterminator='\n')
+    if table.apply(lambda col: col.str.contains('[\t\n\r]', regex=True)).any().any():
+        raise SystemExit('data_dictionary.tsv: a tab or newline inside a value')
+    write_plain_tsv(table, outdir / 'data_dictionary.tsv')
     check_codes(outdir, files)
     write_release_json(outdir, ctx, files)
     write_readme(outdir, ctx, files)

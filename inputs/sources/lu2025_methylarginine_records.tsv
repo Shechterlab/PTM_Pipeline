@@ -1,156 +1,156 @@
-study_id	reported_accession	reported_gene	reported_position	peptide	window	methyl_degree	rme2_type	cell_type	enrichment	localisation_probability	n_source_rows	source_tables	note
-Lu2025	O14979		408	ASR(me2)GGGNHQNNYQPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	5 PSMs with every arginine dimethylated
-Lu2025	P09651		206	SGSGNFGGGR(me2)GGGFGGNDNFGRGGNFSGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	P09651		218	SGSGNFGGGRGGGFGGNDNFGR(me2)GGNFSGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	P09651		225	SGSGNFGGGRGGGFGGNDNFGRGGNFSGR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	P19338		681	GR(me2)GGFGGRGGFRGGRGGGGDHKPQGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 13 PSMs with every arginine dimethylated
-Lu2025	P19338		687	GRGGFGGR(me2)GGFRGGRGGGGDHKPQGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 13 PSMs with every arginine dimethylated
-Lu2025	P19338		691	GRGGFGGRGGFR(me2)GGRGGGGDHKPQGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	13 PSMs with every arginine dimethylated
-Lu2025	P19338		694	GRGGFGGRGGFRGGR(me2)GGGGDHKPQGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	13 PSMs with every arginine dimethylated
-Lu2025	P22087		70	GGGGFHSGGNR(me2)GRGRGGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	P22087		72	GGGGFHSGGNRGR(me2)GRGGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	P22087		74	GGGGFHSGGNRGRGR(me2)GGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	P35637		244	GR(me2)GGGRGGRGGMGGSDRGGFNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	15 PSMs with every arginine dimethylated
-Lu2025	P35637		248	GRGGGR(me2)GGRGGMGGSDRGGFNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	15 PSMs with every arginine dimethylated
-Lu2025	P35637		251	GRGGGRGGR(me2)GGMGGSDRGGFNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	15 PSMs with every arginine dimethylated
-Lu2025	P35637		259	GRGGGRGGRGGMGGSDR(me2)GGFNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	15 PSMs with every arginine dimethylated
-Lu2025	P35637		491	GGDR(me2)GGFRGGRGGGDRGGFGPGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	P35637		495	GGDRGGFR(me2)GGRGGGDRGGFGPGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	P35637		498	GGDRGGFRGGR(me2)GGGDRGGFGPGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	P35637		503	GGDRGGFRGGRGGGDR(me2)GGFGPGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	P46100		2474	GMYQPVAGGMQPPPLQR(me2)APPPMRSK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	P46100		2480	GMYQPVAGGMQPPPLQRAPPPMR(me2)SK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	P46783		158	GGFGR(me2)GRGQPPQ		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 29 PSMs with every arginine dimethylated
-Lu2025	P46783		160	GGFGRGR(me2)GQPPQ		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 29 PSMs with every arginine dimethylated
-Lu2025	P49750		784	GPR(me2)FEGNRPDGPRPRYEGHPAEGTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	P49750		789	GPRFEGNR(me2)PDGPRPRYEGHPAEGTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	P49750		794	GPRFEGNRPDGPR(me2)PRYEGHPAEGTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	P49750		796	GPRFEGNRPDGPRPR(me2)YEGHPAEGTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	P51114		453	SVSGGR(me2)GRGGPRGGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	24 PSMs with every arginine dimethylated
-Lu2025	P51114		455	SVSGGRGR(me2)GGPRGGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	24 PSMs with every arginine dimethylated
-Lu2025	P51114		459	SVSGGRGRGGPR(me2)GGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	24 PSMs with every arginine dimethylated
-Lu2025	P62314		98	EAVAGR(me2)GRGRGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	P62314		100	EAVAGRGR(me2)GRGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	P62314		102	EAVAGRGRGR(me2)GR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	P62314		104	EAVAGRGRGRGR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	P62318		110	AQVAAR(me2)GRGRGMGRGNIFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	66 PSMs with every arginine dimethylated
-Lu2025	P62318		112	AQVAARGR(me2)GRGMGRGNIFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 66 PSMs with every arginine dimethylated
-Lu2025	P62318		114	AQVAARGRGR(me2)GMGRGNIFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 66 PSMs with every arginine dimethylated
-Lu2025	P62318		118	AQVAARGRGRGMGR(me2)GNIFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 66 PSMs with every arginine dimethylated
-Lu2025	P68431		41	SAPATGGVKKPHR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	P79522		88	R(me2)GLGPRSSPYGRGWWGVNAEPPFPGPGHGGPTRGSFHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	P79522		93	RGLGPR(me2)SSPYGRGWWGVNAEPPFPGPGHGGPTRGSFHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	P79522		99	SSPYGR(me2)GWWGVNAEPPFPGPGHGGPTRGSFHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	P79522		120	SSPYGRGWWGVNAEPPFPGPGHGGPTR(me2)GSFHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	P84243		41	SAPSTGGVKKPHR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q00839		702	NQFNR(me2)GGGHRGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q00839		707	NQFNRGGGHR(me2)GR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q00839		709	NQFNRGGGHRGR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q00839		762	APVFPGR(me2)GSYSNRGNYNR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q00839		768	APVFPGRGSYSNR(me2)GNYNR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q00839		773	APVFPGRGSYSNRGNYNR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q00839		779	GGMPNR(me2)GNYNQNFRGRGNNRGYK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q00839		787	GNYNQNFR(me2)GRGNNRGYK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	8 PSMs with every arginine dimethylated
-Lu2025	Q00839		789	GNYNQNFRGR(me2)GNNRGYK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	8 PSMs with every arginine dimethylated
-Lu2025	Q00839		793	GNYNQNFRGRGNNR(me2)GYK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	8 PSMs with every arginine dimethylated
-Lu2025	Q06787		534	R(me2)GGGGRGQGGRGRGGGFK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated
-Lu2025	Q06787		539	RGGGGR(me2)GQGGRGRGGGFK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated
-Lu2025	Q06787		544	RGGGGRGQGGR(me2)GRGGGFK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated
-Lu2025	Q06787		546	RGGGGRGQGGRGR(me2)GGGFK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated
-Lu2025	Q07666		284	GR(me2)GVPVRGRGAAPPPPPVPR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	9 PSMs with every arginine dimethylated
-Lu2025	Q07666		289	GRGVPVR(me2)GRGAAPPPPPVPR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	9 PSMs with every arginine dimethylated
-Lu2025	Q07666		291	GRGVPVRGR(me2)GAAPPPPPVPR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	9 PSMs with every arginine dimethylated
-Lu2025	Q07666		302	GRGVPVRGRGAAPPPPPVPR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 9 PSMs with every arginine dimethylated
-Lu2025	Q08211		1242	GPSGGYR(me2)GSGGFQRGGGRGAYGTGYFGQGRGGGGY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 35 PSMs with every arginine dimethylated
-Lu2025	Q08211		1249	GPSGGYRGSGGFQR(me2)GGGRGAYGTGYFGQGRGGGGY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 35 PSMs with every arginine dimethylated
-Lu2025	Q08211		1253	GPSGGYRGSGGFQRGGGR(me2)GAYGTGYFGQGRGGGGY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 35 PSMs with every arginine dimethylated
-Lu2025	Q08211		1265	GPSGGYRGSGGFQRGGGRGAYGTGYFGQGR(me2)GGGGY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 35 PSMs with every arginine dimethylated
-Lu2025	Q12830		2162	TATVTIR(me2)PNTSGSGGTTSNSQVITGPQIRPGMTVIRTPLQQSTLGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	Q12830		2184	TATVTIRPNTSGSGGTTSNSQVITGPQIR(me2)PGMTVIRTPLQQSTLGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	Q12830		2191	TATVTIRPNTSGSGGTTSNSQVITGPQIRPGMTVIR(me2)TPLQQSTLGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	Q12906		609	APVPVR(me2)GGPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 2 PSMs with every arginine dimethylated
-Lu2025	Q13227		312	SGFAATSQPGPR(me2)LPFIQHSQNPRFYHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 10 PSMs with every arginine dimethylated
-Lu2025	Q13227		323	SGFAATSQPGPRLPFIQHSQNPR(me2)FYHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 10 PSMs with every arginine dimethylated
-Lu2025	Q13435		502	NSVPVPR(me2)HWCFK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	8 PSMs with every arginine dimethylated
-Lu2025	Q14004		1504	GHISTSTGR(me2)GRGRGLPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	7 PSMs with every arginine dimethylated
-Lu2025	Q14004		1506	GHISTSTGRGR(me2)GRGLPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	7 PSMs with every arginine dimethylated
-Lu2025	Q14004		1508	GHISTSTGRGRGR(me2)GLPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	7 PSMs with every arginine dimethylated
-Lu2025	Q14103		345	R(me2)GGHQNSYKPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 6 PSMs with every arginine dimethylated
-Lu2025	Q14444		608	SNQPYYNSR(me2)GVSRGGSRGAR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	Q14444		612	SNQPYYNSRGVSR(me2)GGSRGAR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	Q14444		616	SNQPYYNSRGVSRGGSR(me2)GAR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	Q14444		619	SNQPYYNSRGVSRGGSRGAR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	Q14444		676	R(me2)GSGQSGPRGAPRGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated
-Lu2025	Q14444		684	RGSGQSGPR(me2)GAPRGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated
-Lu2025	Q14444		688	RGSGQSGPRGAPR(me2)GR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated
-Lu2025	Q14444		690	RGSGQSGPRGAPRGR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated
-Lu2025	Q14498		109	FNSAIR(me2)GK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	Q5VT52		1418	SPR(me2)PDFRPREPFLSRDPFHSLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated
-Lu2025	Q5VT52		1422	SPRPDFR(me2)PREPFLSRDPFHSLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated
-Lu2025	Q5VT52		1424	SPRPDFRPR(me2)EPFLSRDPFHSLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated
-Lu2025	Q5VT52		1430	SPRPDFRPREPFLSR(me2)DPFHSLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated
-Lu2025	Q5VT52		1438	R(me2)PRPPFARGPPFFAPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 19 PSMs with every arginine dimethylated
-Lu2025	Q5VT52		1440	RPR(me2)PPFARGPPFFAPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 19 PSMs with every arginine dimethylated
-Lu2025	Q5VT52		1445	RPRPPFAR(me2)GPPFFAPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 19 PSMs with every arginine dimethylated
-Lu2025	Q69YN4		1773	ASR(me2)GRGGLGPSWASANSGSGGSRGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	7 PSMs with every arginine dimethylated
-Lu2025	Q69YN4		1775	ASRGR(me2)GGLGPSWASANSGSGGSRGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	7 PSMs with every arginine dimethylated
-Lu2025	Q69YN4		1793	ASRGRGGLGPSWASANSGSGGSR(me2)GK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	7 PSMs with every arginine dimethylated
-Lu2025	Q86U42		294	VYR(me2)GRARATSWYSPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 9 PSMs with every arginine dimethylated
-Lu2025	Q86U42		296	VYRGR(me2)ARATSWYSPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 9 PSMs with every arginine dimethylated
-Lu2025	Q86U42		298	VYRGRAR(me2)ATSWYSPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 9 PSMs with every arginine dimethylated
-Lu2025	Q92576		1785	SITFTSR(me2)STSPRTSTNFSPMRPQQPNLQHLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated
-Lu2025	Q92576		1790	SITFTSRSTSPR(me2)TSTNFSPMRPQQPNLQHLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated
-Lu2025	Q92576		1799	SITFTSRSTSPRTSTNFSPMR(me2)PQQPNLQHLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated
-Lu2025	Q92804		185	GYGGSQGGGR(me2)GRGGYDK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	16 PSMs with every arginine dimethylated
-Lu2025	Q92804		187	GYGGSQGGGRGR(me2)GGYDK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	16 PSMs with every arginine dimethylated
-Lu2025	Q92945		411	SGPPGPPGGPGMPPGGR(me2)GRGRGQGNWGPPGGEMTFSIPTHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	78 PSMs with every arginine dimethylated
-Lu2025	Q92945		413	SGPPGPPGGPGMPPGGRGR(me2)GRGQGNWGPPGGEMTFSIPTHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	78 PSMs with every arginine dimethylated
-Lu2025	Q92945		415	SGPPGPPGGPGMPPGGRGRGR(me2)GQGNWGPPGGEMTFSIPTHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	78 PSMs with every arginine dimethylated
-Lu2025	Q93074		1854	QGSIGLYTQNQPLPAGGPR(me2)VDPYRPVRLPMQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q93074		1859	QGSIGLYTQNQPLPAGGPRVDPYR(me2)PVRLPMQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q93074		1862	QGSIGLYTQNQPLPAGGPRVDPYRPVR(me2)LPMQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q96AE4		359	SVQAGNPGGPGPGGR(me2)GRGRGQGNWNMGPPGGLQEFNFIVPTGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	13 PSMs with every arginine dimethylated
-Lu2025	Q96AE4		361	SVQAGNPGGPGPGGRGR(me2)GRGQGNWNMGPPGGLQEFNFIVPTGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	13 PSMs with every arginine dimethylated
-Lu2025	Q96AE4		363	SVQAGNPGGPGPGGRGRGR(me2)GQGNWNMGPPGGLQEFNFIVPTGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	13 PSMs with every arginine dimethylated
-Lu2025	Q96PV6		374	GAGSATR(me2)GGGAPSQRGTPGAGGAGRARGNSFTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated
-Lu2025	Q96PV6		382	GAGSATRGGGAPSQR(me2)GTPGAGGAGRARGNSFTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated
-Lu2025	Q96PV6		392	GAGSATRGGGAPSQRGTPGAGGAGR(me2)ARGNSFTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated
-Lu2025	Q96PV6		394	GAGSATRGGGAPSQRGTPGAGGAGRAR(me2)GNSFTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated
-Lu2025	Q99729		322	R(me2)GGHQNNYKPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 6 PSMs with every arginine dimethylated
-Lu2025	Q99832		535	STVDAPTAAGR(me2)GRGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	Q99832		537	STVDAPTAAGRGR(me2)GR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	Q99832		539	STVDAPTAAGRGRGR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated
-Lu2025	Q9BTC0		1893	GGAPFQFGGQR(me2)RPLLSQLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 5 PSMs with every arginine dimethylated
-Lu2025	Q9BTC0		1894	GGAPFQFGGQRR(me2)PLLSQLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 5 PSMs with every arginine dimethylated
-Lu2025	Q9BTC0		1977	VHSPPR(me2)FTNQRAPAPLQFGGLRGSAPFSEK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	9 PSMs with every arginine dimethylated
-Lu2025	Q9BTC0		1982	VHSPPRFTNQR(me2)APAPLQFGGLRGSAPFSEK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	9 PSMs with every arginine dimethylated
-Lu2025	Q9BTC0		1993	VHSPPRFTNQRAPAPLQFGGLR(me2)GSAPFSEK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	9 PSMs with every arginine dimethylated
-Lu2025	Q9H0D6		824	TLGHVMPR(me2)GSGTGIYSNAAPPPVTYQGNLYRPLLRGQAQIPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated
-Lu2025	Q9H0D6		847	TLGHVMPRGSGTGIYSNAAPPPVTYQGNLYR(me2)PLLRGQAQIPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated
-Lu2025	Q9H0D6		851	TLGHVMPRGSGTGIYSNAAPPPVTYQGNLYRPLLR(me2)GQAQIPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated
-Lu2025	Q9NX05		975	SSR(me2)GRGSFGMQVVSVGGPGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q9NX05		977	SSRGR(me2)GSFGMQVVSVGGPGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q9NYF8		803	IR(me2)GRGRARGVFAGTNTGPNNSNTTFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q9NYF8		805	IRGR(me2)GRARGVFAGTNTGPNNSNTTFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q9NYF8		807	IRGRGR(me2)ARGVFAGTNTGPNNSNTTFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q9NYF8		809	IRGRGRAR(me2)GVFAGTNTGPNNSNTTFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q9NYV4		1481	VPPR(me2)GGRGRGVPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	12 PSMs with every arginine dimethylated
-Lu2025	Q9NYV4		1484	VPPRGGR(me2)GRGVPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	12 PSMs with every arginine dimethylated
-Lu2025	Q9NYV4		1486	VPPRGGRGR(me2)GVPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	12 PSMs with every arginine dimethylated
-Lu2025	Q9NZB2		1006	YYGR(me2)GYK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated
-Lu2025	Q9P2N5		943	LGILPVGR(me2)GK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated
-Lu2025	Q9UBB5		55	EGAR(me2)GGGRGRGRWK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 10 PSMs with every arginine dimethylated
-Lu2025	Q9UBB5		59	EGARGGGR(me2)GRGRWK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 10 PSMs with every arginine dimethylated
-Lu2025	Q9UBB5		61	EGARGGGRGR(me2)GRWK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 10 PSMs with every arginine dimethylated
-Lu2025	Q9UBB5		63	EGARGGGRGRGR(me2)WK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated
-Lu2025	Q9UPT8		341	GMGR(me2)GRGRGGSRGGMNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated
-Lu2025	Q9UPT8		343	GMGRGR(me2)GRGGSRGGMNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated
-Lu2025	Q9UPT8		345	GMGRGRGR(me2)GGSRGGMNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated
-Lu2025	Q9UPT8		349	GMGRGRGRGGSR(me2)GGMNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated
-Lu2025	Q9Y2W1		839	AR(me2)GRGWGRGNYSGNNNNNSNNDFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	6 PSMs with every arginine dimethylated
-Lu2025	Q9Y2W1		841	ARGR(me2)GWGRGNYSGNNNNNSNNDFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	6 PSMs with every arginine dimethylated
-Lu2025	Q9Y2W1		845	ARGRGWGR(me2)GNYSGNNNNNSNNDFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	6 PSMs with every arginine dimethylated
-Lu2025	Q9Y4Z0		88	GR(me2)GRGGLQQQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 13 PSMs with every arginine dimethylated
-Lu2025	Q9Y4Z0		90	GRGR(me2)GGLQQQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 13 PSMs with every arginine dimethylated
-Lu2025	Q9Y5B0		913	SAAGGR(me2)GPRGHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	8 PSMs with every arginine dimethylated
-Lu2025	Q9Y5B0		916	SAAGGRGPR(me2)GHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	8 PSMs with every arginine dimethylated
+study_id	reported_accession	reported_gene	reported_position	peptide	window	methyl_degree	rme2_type	cell_type	enrichment	localisation_probability	n_source_rows	source_tables	note	localised_by
+Lu2025	O14979		408	ASR(me2)GGGNHQNNYQPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	5 PSMs with every arginine dimethylated	one_methylatable_residue
+Lu2025	P09651		206	SGSGNFGGGR(me2)GGGFGGNDNFGRGGNFSGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P09651		218	SGSGNFGGGRGGGFGGNDNFGR(me2)GGNFSGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P09651		225	SGSGNFGGGRGGGFGGNDNFGRGGNFSGR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P19338		681	GR(me2)GGFGGRGGFRGGRGGGGDHKPQGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 13 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P19338		687	GRGGFGGR(me2)GGFRGGRGGGGDHKPQGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 13 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P19338		691	GRGGFGGRGGFR(me2)GGRGGGGDHKPQGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	13 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P19338		694	GRGGFGGRGGFRGGR(me2)GGGGDHKPQGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	13 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P22087		70	GGGGFHSGGNR(me2)GRGRGGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P22087		72	GGGGFHSGGNRGR(me2)GRGGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P22087		74	GGGGFHSGGNRGRGR(me2)GGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P35637		244	GR(me2)GGGRGGRGGMGGSDRGGFNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	15 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P35637		248	GRGGGR(me2)GGRGGMGGSDRGGFNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	15 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P35637		251	GRGGGRGGR(me2)GGMGGSDRGGFNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	15 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P35637		259	GRGGGRGGRGGMGGSDR(me2)GGFNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	15 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P35637		491	GGDR(me2)GGFRGGRGGGDRGGFGPGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P35637		495	GGDRGGFR(me2)GGRGGGDRGGFGPGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P35637		498	GGDRGGFRGGR(me2)GGGDRGGFGPGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P35637		503	GGDRGGFRGGRGGGDR(me2)GGFGPGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P46100		2474	GMYQPVAGGMQPPPLQR(me2)APPPMRSK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P46100		2480	GMYQPVAGGMQPPPLQRAPPPMR(me2)SK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P46783		158	GGFGR(me2)GRGQPPQ		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 29 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P46783		160	GGFGRGR(me2)GQPPQ		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 29 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P49750		784	GPR(me2)FEGNRPDGPRPRYEGHPAEGTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P49750		789	GPRFEGNR(me2)PDGPRPRYEGHPAEGTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P49750		794	GPRFEGNRPDGPR(me2)PRYEGHPAEGTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P49750		796	GPRFEGNRPDGPRPR(me2)YEGHPAEGTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P51114		453	SVSGGR(me2)GRGGPRGGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	24 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P51114		455	SVSGGRGR(me2)GGPRGGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	24 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P51114		459	SVSGGRGRGGPR(me2)GGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	24 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P62314		98	EAVAGR(me2)GRGRGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P62314		100	EAVAGRGR(me2)GRGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P62314		102	EAVAGRGRGR(me2)GR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P62314		104	EAVAGRGRGRGR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P62318		110	AQVAAR(me2)GRGRGMGRGNIFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	66 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P62318		112	AQVAARGR(me2)GRGMGRGNIFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 66 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P62318		114	AQVAARGRGR(me2)GMGRGNIFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 66 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P62318		118	AQVAARGRGRGMGR(me2)GNIFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 66 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P68431		41	SAPATGGVKKPHR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	one_methylatable_residue
+Lu2025	P79522		88	R(me2)GLGPRSSPYGRGWWGVNAEPPFPGPGHGGPTRGSFHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P79522		93	RGLGPR(me2)SSPYGRGWWGVNAEPPFPGPGHGGPTRGSFHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P79522		99	SSPYGR(me2)GWWGVNAEPPFPGPGHGGPTRGSFHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P79522		120	SSPYGRGWWGVNAEPPFPGPGHGGPTR(me2)GSFHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	P84243		41	SAPSTGGVKKPHR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	one_methylatable_residue
+Lu2025	Q00839		702	NQFNR(me2)GGGHRGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q00839		707	NQFNRGGGHR(me2)GR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q00839		709	NQFNRGGGHRGR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q00839		762	APVFPGR(me2)GSYSNRGNYNR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q00839		768	APVFPGRGSYSNR(me2)GNYNR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q00839		773	APVFPGRGSYSNRGNYNR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q00839		779	GGMPNR(me2)GNYNQNFRGRGNNRGYK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q00839		787	GNYNQNFR(me2)GRGNNRGYK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	8 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q00839		789	GNYNQNFRGR(me2)GNNRGYK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	8 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q00839		793	GNYNQNFRGRGNNR(me2)GYK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	8 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q06787		534	R(me2)GGGGRGQGGRGRGGGFK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q06787		539	RGGGGR(me2)GQGGRGRGGGFK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q06787		544	RGGGGRGQGGR(me2)GRGGGFK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q06787		546	RGGGGRGQGGRGR(me2)GGGFK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q07666		284	GR(me2)GVPVRGRGAAPPPPPVPR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	9 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q07666		289	GRGVPVR(me2)GRGAAPPPPPVPR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	9 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q07666		291	GRGVPVRGR(me2)GAAPPPPPVPR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	9 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q07666		302	GRGVPVRGRGAAPPPPPVPR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 9 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q08211		1242	GPSGGYR(me2)GSGGFQRGGGRGAYGTGYFGQGRGGGGY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 35 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q08211		1249	GPSGGYRGSGGFQR(me2)GGGRGAYGTGYFGQGRGGGGY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 35 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q08211		1253	GPSGGYRGSGGFQRGGGR(me2)GAYGTGYFGQGRGGGGY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 35 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q08211		1265	GPSGGYRGSGGFQRGGGRGAYGTGYFGQGR(me2)GGGGY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 35 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q12830		2162	TATVTIR(me2)PNTSGSGGTTSNSQVITGPQIRPGMTVIRTPLQQSTLGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q12830		2184	TATVTIRPNTSGSGGTTSNSQVITGPQIR(me2)PGMTVIRTPLQQSTLGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q12830		2191	TATVTIRPNTSGSGGTTSNSQVITGPQIRPGMTVIR(me2)TPLQQSTLGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q12906		609	APVPVR(me2)GGPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 2 PSMs with every arginine dimethylated	one_methylatable_residue
+Lu2025	Q13227		312	SGFAATSQPGPR(me2)LPFIQHSQNPRFYHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q13227		323	SGFAATSQPGPRLPFIQHSQNPR(me2)FYHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q13435		502	NSVPVPR(me2)HWCFK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	8 PSMs with every arginine dimethylated	one_methylatable_residue
+Lu2025	Q14004		1504	GHISTSTGR(me2)GRGRGLPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	7 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q14004		1506	GHISTSTGRGR(me2)GRGLPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	7 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q14004		1508	GHISTSTGRGRGR(me2)GLPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	7 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q14103		345	R(me2)GGHQNSYKPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 6 PSMs with every arginine dimethylated	one_methylatable_residue
+Lu2025	Q14444		608	SNQPYYNSR(me2)GVSRGGSRGAR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q14444		612	SNQPYYNSRGVSR(me2)GGSRGAR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q14444		616	SNQPYYNSRGVSRGGSR(me2)GAR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q14444		619	SNQPYYNSRGVSRGGSRGAR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q14444		676	R(me2)GSGQSGPRGAPRGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q14444		684	RGSGQSGPR(me2)GAPRGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q14444		688	RGSGQSGPRGAPR(me2)GR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q14444		690	RGSGQSGPRGAPRGR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q14498		109	FNSAIR(me2)GK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	one_methylatable_residue
+Lu2025	Q5VT52		1418	SPR(me2)PDFRPREPFLSRDPFHSLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q5VT52		1422	SPRPDFR(me2)PREPFLSRDPFHSLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q5VT52		1424	SPRPDFRPR(me2)EPFLSRDPFHSLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q5VT52		1430	SPRPDFRPREPFLSR(me2)DPFHSLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q5VT52		1438	R(me2)PRPPFARGPPFFAPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 19 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q5VT52		1440	RPR(me2)PPFARGPPFFAPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 19 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q5VT52		1445	RPRPPFAR(me2)GPPFFAPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 19 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q69YN4		1773	ASR(me2)GRGGLGPSWASANSGSGGSRGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	7 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q69YN4		1775	ASRGR(me2)GGLGPSWASANSGSGGSRGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	7 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q69YN4		1793	ASRGRGGLGPSWASANSGSGGSR(me2)GK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	7 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q86U42		294	VYR(me2)GRARATSWYSPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 9 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q86U42		296	VYRGR(me2)ARATSWYSPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 9 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q86U42		298	VYRGRAR(me2)ATSWYSPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 9 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q92576		1785	SITFTSR(me2)STSPRTSTNFSPMRPQQPNLQHLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q92576		1790	SITFTSRSTSPR(me2)TSTNFSPMRPQQPNLQHLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q92576		1799	SITFTSRSTSPRTSTNFSPMR(me2)PQQPNLQHLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	4 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q92804		185	GYGGSQGGGR(me2)GRGGYDK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	16 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q92804		187	GYGGSQGGGRGR(me2)GGYDK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	16 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q92945		411	SGPPGPPGGPGMPPGGR(me2)GRGRGQGNWGPPGGEMTFSIPTHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	78 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q92945		413	SGPPGPPGGPGMPPGGRGR(me2)GRGQGNWGPPGGEMTFSIPTHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	78 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q92945		415	SGPPGPPGGPGMPPGGRGRGR(me2)GQGNWGPPGGEMTFSIPTHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	78 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q93074		1854	QGSIGLYTQNQPLPAGGPR(me2)VDPYRPVRLPMQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q93074		1859	QGSIGLYTQNQPLPAGGPRVDPYR(me2)PVRLPMQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q93074		1862	QGSIGLYTQNQPLPAGGPRVDPYRPVR(me2)LPMQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q96AE4		359	SVQAGNPGGPGPGGR(me2)GRGRGQGNWNMGPPGGLQEFNFIVPTGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	13 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q96AE4		361	SVQAGNPGGPGPGGRGR(me2)GRGQGNWNMGPPGGLQEFNFIVPTGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	13 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q96AE4		363	SVQAGNPGGPGPGGRGRGR(me2)GQGNWNMGPPGGLQEFNFIVPTGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	13 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q96PV6		374	GAGSATR(me2)GGGAPSQRGTPGAGGAGRARGNSFTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q96PV6		382	GAGSATRGGGAPSQR(me2)GTPGAGGAGRARGNSFTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q96PV6		392	GAGSATRGGGAPSQRGTPGAGGAGR(me2)ARGNSFTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q96PV6		394	GAGSATRGGGAPSQRGTPGAGGAGRAR(me2)GNSFTK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q99729		322	R(me2)GGHQNNYKPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 6 PSMs with every arginine dimethylated	one_methylatable_residue
+Lu2025	Q99832		535	STVDAPTAAGR(me2)GRGR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q99832		537	STVDAPTAAGRGR(me2)GR		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q99832		539	STVDAPTAAGRGRGR(me2)		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	2 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9BTC0		1893	GGAPFQFGGQR(me2)RPLLSQLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 5 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9BTC0		1894	GGAPFQFGGQRR(me2)PLLSQLK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 5 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9BTC0		1977	VHSPPR(me2)FTNQRAPAPLQFGGLRGSAPFSEK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	9 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9BTC0		1982	VHSPPRFTNQR(me2)APAPLQFGGLRGSAPFSEK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	9 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9BTC0		1993	VHSPPRFTNQRAPAPLQFGGLR(me2)GSAPFSEK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	9 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9H0D6		824	TLGHVMPR(me2)GSGTGIYSNAAPPPVTYQGNLYRPLLRGQAQIPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9H0D6		847	TLGHVMPRGSGTGIYSNAAPPPVTYQGNLYR(me2)PLLRGQAQIPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9H0D6		851	TLGHVMPRGSGTGIYSNAAPPPVTYQGNLYRPLLR(me2)GQAQIPK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	18 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9NX05		975	SSR(me2)GRGSFGMQVVSVGGPGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9NX05		977	SSRGR(me2)GSFGMQVVSVGGPGK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9NYF8		803	IR(me2)GRGRARGVFAGTNTGPNNSNTTFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9NYF8		805	IRGR(me2)GRARGVFAGTNTGPNNSNTTFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9NYF8		807	IRGRGR(me2)ARGVFAGTNTGPNNSNTTFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9NYF8		809	IRGRGRAR(me2)GVFAGTNTGPNNSNTTFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9NYV4		1481	VPPR(me2)GGRGRGVPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	12 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9NYV4		1484	VPPRGGR(me2)GRGVPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	12 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9NYV4		1486	VPPRGGRGR(me2)GVPY		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	12 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9NZB2		1006	YYGR(me2)GYK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	3 PSMs with every arginine dimethylated	one_methylatable_residue
+Lu2025	Q9P2N5		943	LGILPVGR(me2)GK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	1 PSMs with every arginine dimethylated	one_methylatable_residue
+Lu2025	Q9UBB5		55	EGAR(me2)GGGRGRGRWK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9UBB5		59	EGARGGGR(me2)GRGRWK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9UBB5		61	EGARGGGRGR(me2)GRWK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9UBB5		63	EGARGGGRGRGR(me2)WK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9UPT8		341	GMGR(me2)GRGRGGSRGGMNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9UPT8		343	GMGRGR(me2)GRGGSRGGMNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9UPT8		345	GMGRGRGR(me2)GGSRGGMNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9UPT8		349	GMGRGRGRGGSR(me2)GGMNK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	10 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9Y2W1		839	AR(me2)GRGWGRGNYSGNNNNNSNNDFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	6 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9Y2W1		841	ARGR(me2)GWGRGNYSGNNNNNSNNDFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	6 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9Y2W1		845	ARGRGWGR(me2)GNYSGNNNNNSNNDFQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	6 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9Y4Z0		88	GR(me2)GRGGLQQQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 13 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9Y4Z0		90	GRGR(me2)GGLQQQK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	hmSILAC validated peptide (EV1); 13 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9Y5B0		913	SAAGGR(me2)GPRGHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	8 PSMs with every arginine dimethylated	every_arginine_dimethylated
+Lu2025	Q9Y5B0		916	SAAGGRGPR(me2)GHK		Rme2		HeLa	SMN Tudor		1	EV1 Arginine dimethylation sites; EV1 PSMs	8 PSMs with every arginine dimethylated	every_arginine_dimethylated

@@ -86,7 +86,13 @@ def main() -> None:
             for loc in sorted(main | set(row['Additional location'].split(';')) - {''}):
                 out.append({'canonical_UniProtAC': acc, 'gene': row['Gene name'], 'ensembl_gene': row['Gene'], 'location': loc,
                             'main': int(loc in main), 'reliability': reliability.get(loc, row['Reliability'])})
-    table = pd.DataFrame(out).drop_duplicates(['canonical_UniProtAC', 'location']).sort_values(['canonical_UniProtAC', 'location'])
+    # An accession several HPA genes map to (paralogs sharing an entry) takes, per location, the main flag if any gene
+    # gives it and the highest reliability any gives, with the gene that gives it.
+    table = pd.DataFrame(out)
+    table['_rank'] = table['reliability'].map({level: k for k, level in enumerate(HPA_RELIABILITY)}).fillna(-1)
+    table = table.sort_values(['canonical_UniProtAC', 'location', '_rank', 'main', 'gene'], ascending=[True, True, False, False, True])
+    main_any = table.groupby(['canonical_UniProtAC', 'location'])['main'].transform('max')
+    table = table.assign(main=main_any).drop_duplicates(['canonical_UniProtAC', 'location']).drop(columns='_rank')
 
     outdir = Path(args.outdir)
     save_table(table, outdir / 'hpa_subcellular_locations.tsv')

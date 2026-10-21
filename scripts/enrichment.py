@@ -56,12 +56,15 @@ def run(jobs: list[Job], workdir: Path) -> dict[str, pd.DataFrame]:
             names = str(d / 'names.tsv')
         rows.append({'job': j.job, 'tool': j.tool, 'target': str(d / 'target.txt'), 'universe': str(d / 'universe.txt'), 'sets': sets,
                      'names': names, 'whole_universe': str(j.whole_universe).lower(), 'min_size': j.min_size, 'max_size': j.max_size})
-    pd.DataFrame(rows).to_csv(workdir / 'jobs.tsv', sep='\t', index=False)
+    # one jobs table and log per call, named after its jobs: several calls can share a workdir
+    tag = '_'.join(j.job for j in jobs)[:120]
+    jobs_file, log = workdir / f'jobs_{tag}.tsv', workdir / f'enrich_sets_{tag}.log'
+    pd.DataFrame(rows).to_csv(jobs_file, sep='\t', index=False)
     out = workdir / 'results'
-    proc = subprocess.run([rscript, str(RUNNER), str(workdir / 'jobs.tsv'), str(out)], capture_output=True, text=True)
-    (workdir / 'enrich_sets.log').write_text(proc.stdout + proc.stderr)
+    proc = subprocess.run([rscript, str(RUNNER), str(jobs_file), str(out)], capture_output=True, text=True)
+    log.write_text(proc.stdout + proc.stderr)
     if proc.returncode:
-        raise SystemExit(f'scripts/enrich_sets.R failed (log: {workdir / "enrich_sets.log"}):\n{proc.stderr[-2000:]}')
+        raise SystemExit(f'scripts/enrich_sets.R failed (log: {log}):\n{proc.stderr[-2000:]}')
     results = {}
     for j in jobs:
         t = pd.read_csv(out / f'{j.job}.tsv', sep='\t', dtype={'ID': str, 'Description': str, 'geneID': str}, keep_default_na=False, na_values=[''])

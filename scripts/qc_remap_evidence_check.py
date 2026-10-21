@@ -101,12 +101,13 @@ class Proteome:
 
 
 def marked_peptides(field) -> list[tuple[str, list[int]]]:
-    """ProMetheusDB peptides such as GVEYGSGR(di)GHLGTFEGR: the plain sequence and 0-based methyl-R offsets."""
+    """Marked peptides such as GVEYGSGR(di)GHLGTFEGR (ProMetheusDB, the study tables, R(methyl) where the degree is not
+    given): the plain sequence and 0-based methyl-R offsets."""
     out = []
     for pep in re.split(r'[;,]', str(field)):
         plain, idx = '', []
         for m in re.finditer(r'([A-Z])(\([a-z]+\))?', pep):
-            if m.group(2) in ('(me)', '(di)') and m.group(1) == 'R':
+            if m.group(2) in ('(me)', '(di)', '(methyl)') and m.group(1) == 'R':
                 idx.append(len(plain))
             plain += m.group(1)
         if plain:

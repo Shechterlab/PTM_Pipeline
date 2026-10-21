@@ -1,0 +1,336 @@
+study_id	reported_accession	reported_gene	reported_position	peptide	window	methyl_degree	rme2_type	cell_type	enrichment	localisation_probability	n_source_rows	source_tables	note	localised_by
+Li2021	A1KXE4	FAM168B	88	VSCSPTSGAVPPYSSSPNPYQTAVYPVR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	A8CG34	POM121C	206	FVITPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	A8CG34	POM121C	251	MVCSPVTVR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	C9J069	AJM1	231	PAPQFHGLTVPGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O00267	SUPT5H	668	DVTNFTVGGFAPMSPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O00470	MEIS1	369	AVSQGTPYNPDGQPMGGFVMDGQQHMGIR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	O00512	BCL9	1254	PSQTLQYFPR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		3	PRMT5-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor; PRMT5 knockdown	one_methylatable_residue
+Li2021	O00571	DDX3X	617	QSSGASSSSFSSSR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	O00712	NFIB	335	PLFSSASPQDSSPR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	O00716	E2F3	121	AGLLQQPPALGR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	O14497	ARID1A	774	NPQMPQYSSPQPGSALSPR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	O14497	ARID1A	1276	AAGPGLGNVAMGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O14686	KMT2D	2188	LPPQVPAQVPSQDPFGLAPAYPLEPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O14686	KMT2D	3626	QQQQQQQQQQQQQQHSAVLALSPSQSPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O14686	KMT2D	3707	LTPGGMALPGQPGGPFLNTALAQQQQQQHSGGAGSLAGPSGGFFPGNLALR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O14686	KMT2D	3727	QLQLQQQR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O14776	TCERG1	20	FNPGELR(me1)		Rme1		HEK293	MMA antibody		1	SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	O14979	HNRNPDL	408	ASR(me1)GGGNHQNNYQPY		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	O14979	HNRNPDL	408	ASR(me2)GGGNHQNNYQPY		Rme2		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me2 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	O15027	SEC16A	229	QNPHDGVVTPAASPSLPQPGLQMPGQWGPVQGGPQPSGQHR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	O15164	TRIM24	469	FPTQISLAQLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O15234	CASC3	518	MEEMGVQGGR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	O15446	CD3EAP	162	FCAFGGNPPVTGPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT7-regulated me1 (FC>2)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	O43251	RBFOX2	329	AVPPTAIPAYPGVVYQDGFYGADLYGGYAAYR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O43390	HNRNPR	500	GGYEDPYYGYDDGYAVR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	O43809	NUDT21	15	SQTGWPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody; MMA or SDMA antibody		5	PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	O43823	AKAP8	233	SDPFVPPAASSEPLSTPWNELNYVGGR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	O60244	MED14	1123	AGNWPGSPQVSGPSPAAR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O60341	KDM1A	838	IADQFLGAMYTLPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O60493	SNX3	43	PQNLNDAYGPPSNFLEIDVSNPQTVGVGR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	O60504	SORBS3	594	PQTQNLGTPGPALSHSR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	O75319	DUSP11	366	WYPYNYSR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	O75376	NCOR1	1589	ALDPAAAAYLFQR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O75390	CS	183	AALPSHVVTMLDNFPTNLHPMSQLSAAVTALNSESNFAR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		4	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	O75525	KHDRBS3	220	PVGVVVPR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	O94842	TOX4	421	GLQLGQTSTATIQPSQQAQIVTR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O94913	PCF11	1051	FDGQPGQPSLLPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	O95071	UBR5	146	WSSGVGGSGGGSSGR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		3	PRMT4-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	O95429	BAG4	185	SSGNSPTPVSR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	O95793	STAU1	98	PVDPYSR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	O95793	STAU1	108	MQSTYNYNMR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	P04040	CAT	47	LNVITVGPR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	P04264	KRT1	82	SISISVAR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody; MMA or SDMA antibody		6	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	P04632	CAPNS1	60	GGGGGGGGGGGLGGGLGNVLGGLISGAGGGGGGGGGGGGGGGGGGGGTAMR(me2)		Rme2		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me2 (FC>2); PRMT5-regulated me2 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P05787	KRT8	32	SYTSGPGSR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	P05787	KRT8	40	ISSSSFSR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	P06748	NPM1	101	MSVQPTVSLGGFEITPPVVLR(me2)		Rme2		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me2 (FC>2); PRMT5-regulated me2 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P08651	NFIC	451	MPSHCLSAQMLAPPPPGLPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P08670	VIM	36	SYVTTSTR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	P08727	KRT19	24	QSSATSSFGGLGGGSVR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P08727	KRT19	32	FGPGVAFR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P09012	SNRPA	152	AVQGGGATPVVGAVQGPVPGMPPMTQAPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody; MMA or SDMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2)	PRMT7 knockdown; PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	P09651	HNRNPA1	194	QEMASASSSQR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	P0CG12	DERPC	186	GGGPMGPGSGPNLR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	P0CG12	DERPC	214	PVGLGPGPNPNLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P0CG12	DERPC	225	SGFLGTNPAPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P0CG12	DERPC	266	AGGLLGTGSGLNLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P0CG12	DERPC	308	AAGLLGANSASFSQASGNMGTSPSSMAR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P0CG12	DERPC	494	SFVPFPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P0DI83	RAB34	125	VIVGSPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P10070	GLI2	146	SVHSSPTLSMISAAR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P10070	GLI2	910	YAAATGGPPPTPLPGLER(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P10070	GLI2	1208	PAFGQYPGYSPQGLQASPGGLDSTQPHLQPR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	P10070	GLI2	1397	AVQQQLAYAR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	P11940	PABPC1	385	QAHLTNQYMQR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P11940	PABPC1	419	AVPNPVINPYQPAPPSGYFMAAIPQTQNR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P12235	SLC25A4	138	YFAGNLASGGAAGATSLCFVYPLDFAR(me2)		Rme2		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me2 (FC>2); PRMT5-regulated me2 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P12236	SLC25A6	138	YFAGNLASGGAAGATSLCFVYPLDFAR(me2)		Rme2		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me2 (FC>2); PRMT5-regulated me2 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P12270	TPR	2163	TDGFAEAIHSPQVAGVPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	P15923	TCF3	371	ALASIYSPDHSSNNFSSSPSTPVGSPQGLAGTSQWPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	P15924	DSP	2826	GLPSPYNMSSAPGSR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P16383	GCFC2	51	ELPVPGSAEEEPPSGGGR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P16989	YBX3	169	GAEAANVTGPDGVPVEGSR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	P16989	YBX3	326	ENQQATSGPNQPSVR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2)	PRMT7 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	P17483	HOXB4	92	DPGPPPPPPPPPPPPPPPGLSPR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P18583	SON	1015	SMMSSYER(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT7-regulated me1 (FC>2)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	P18583	SON	1022	SMMSYER(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	P18583	SON	1031	SMMSPMAER(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	P22626	HNRNPA2B1	200	QEMQEVQSSR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	P22626	HNRNPA2B1	350	NMGGPYGGGNYGPGGSGGSGGYGGR(me2)		Rme2		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me2 (FC>2); PRMT5-regulated me2 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P23246	SFPQ	681	FGQGGAGPVGGQGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P23246	SFPQ	693	GMGPGTPAGYGR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	P31040	SDHA	662	TLNEADCATVPPAIR(me1)		Rme1		HEK293	MMA antibody		1	SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	P31942	HNRNPH3	301	DGMDNQGGYGSVGR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P33240	CSTF2	344	GGTLLSVTGEVEPR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P35580	MYH10	1940	GGPISFSSSR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P37802	TAGLN2	196	GASQAGMTGYGMPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT7-regulated me1 (FC>2)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	P46783	RPS10	153	AEAGAGSATEFQFR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P48634	PRRC2A	733	WMMIPPYVDPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P48634	PRRC2A	1080	GGGTGGPNHPPAPR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P49247	RPIA	42	AGGAASGGGGNSWDLPGSHVR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P49750	YLPM1	7	MYPNWGR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P49750	YLPM1	814	WGMIPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P49848	TAF6	524	VPGSIALPVQTLVSAR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P49959	MRE11	604	ADTGLETSTR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	P50219	MNX1	215	LGAGTFQLDQWLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P51116	FXR2	432	TYGGSYGGR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2)	PRMT7 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	P51532	SMARCA4	181	GPTPFNQNQLHQLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P51610	HCFC1	608	VASSPVMVSNPATR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P51610	HCFC1	847	GAPGQPGTILR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	P51610	HCFC1	1511	AVTTVTQSTPVPGPSVPPPEELQVSPGPR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P51991	HNRNPA3	286	GSYGGGDGGYNGFGGDGGNYGGGPGYSSR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	P52272	HNRNPM	496	MGAGMGFGLER(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	P52272	HNRNPM	565	MGANNLER(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	P52272	HNRNPM	606	MGPAMGPALGAGIER(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	P60660	MYL6	146	MTEEEVEMLVAGHEDSNGCINYEAFVR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	P67809	YBX1	199	FPPYYMR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		3	PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	P98174	FGD1	172	PSYLQMPR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	P98179	RBM3	131	PGGYGYGYGR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q01433	AMPD2	99	GGLGAPPLQSAR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q01844	EWSR1	486	GGPGGPGGPGGPMGR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q04724	TLE1	428	SPMVGFDPPPHMR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q04726	TLE3	430	SPMVSFGAVGFDPHPPMR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q06787	FMR1	471	SYVTDDGQGMGR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q08211	DHX9	24	MTPSYEIR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q09472	EP300	728	ITPQSGLNQFGQMSMAQPPIVPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q09472	EP300	2330	PQSQPPHSSPSPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q09666	AHNAK	556	VDIETPNLEGTLTGPR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q12830	BPTF	40	CAPAPPPPPPPPTSGPIGGLR(me1)		Rme1		HEK293	MMA antibody		1	SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q12830	BPTF	2155	VLGIIPSSTGTSQQTFTSFQPR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q12888	TP53BP1	1355	TSGTEPADFALPSSR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q12906	ILF3	815	FNYSGSGGR(me1)		Rme1		HEK293	MMA antibody		1	SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q12907	LMAN2	89	PYQGVGSSSMPLWDFQGSTMLTSQYVR(me2)		Rme2		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me2 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q13148	TARDBP	293	FGGNPGGFGNQGGFGNSR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		3	PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2)	PRMT7 knockdown; SGC3027 inhibitor; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q13151	HNRNPA0	189	EDIYSGGGGGGSR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q13151	HNRNPA0	284	SGGGGGGGGSSWGGR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q13155	AIMP2	26	VELPTCMYR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q13242	SRSF9	194	STSYGYSR(me1)		Rme1		HEK293	MMA antibody		1	SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q13243	SRSF5	73	VTIEHAR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q13303	KCNAB2	28	QTGSPGMIYSTR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q13310	PABPC4	509	LAMDFGGAGAAQQGLTDSCQSGGVPTAVQNLAPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q13435	SF3B2	638	VPPPWLIAMQR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q13586	STIM1	325	YAEEELEQVR(me1)		Rme1		HEK293	MMA antibody		1	SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q13625	TP53BP2	358	VAAVGPYIQSSTMPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q14498	RBM39	109	FNSAIR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q14527	HLTF	27	YLQTVQYGVHGNFPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q14527	HLTF	36	LSYPTFFPR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q14669	TRIP12	422	GLPPHLFGPLGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q14687	GSE1	690	STQTILGQQR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q15020	SART3	906	APGGPMLLPQTYGAR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q15020	SART3	918	TQLSLLPR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		3	PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q15233	NONO	456	FGQAATMEGIGAIGGTPPAFNR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q15596	NCOA2	489	MNSPSQSSPGMNPGQPTSMLSPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody; MMA or SDMA antibody		6	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	PRMT7 knockdown; SGC3027 inhibitor; PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q15654	TRIP6	43	GTPGPPPAHGAALQPHPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q15717	ELAVL1	217	FGGPVHHQAQR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q15723	ELF2	494	SNLTGSGSINIVGTPLAVR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q15723	ELF2	509	ALTPVSIAHGTPVMR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q15735	INPP5J	56	NAALGPSEPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q15735	INPP5J	65	LALAPVGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q16637	SMN1	204	SAPWNSFLPPPPPMPGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q1KMD3	HNRNPUL2	684	AYGQQYWGQPGNR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q1KMD3	HNRNPUL2	747	NYYGYQGYR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q2KHR3	QSER1	1171	QQFSTLAVR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q5BJH7	YIF1B	15	MHPAGLAAAAAGTPR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q5BKZ1	ZNF326	200	NYDAFGGPSTGR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q5H9L2	TCEAL5	182	DVQDPFAPR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q5JSZ5	PRRC2B	684	WMMMPSYMDPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q5JSZ5	PRRC2B	2110	YGSGQQPLILPQSIQLPPGQSLSVGAPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q5PRF9	SAMD4B	570	GWAFGSNSLPIAGSVGMGVAR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q5PRF9	SAMD4B	602	MGLLSPSGIGGVSPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT7-regulated me1 (FC>2)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q5T0W9	FAM83B	974	SATMGNSYGR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q5T200	ZC3H13	66	FVHGPSPR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q5VTE6	ANGEL2	72	APYPYFSSR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q63ZY3	KANK2	117	GFYPQYGALETR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q6EEV4	POLR2M	45	QPQPAQNVLAAPR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q6MZP7	LIN54	435	PINPTSQIVTTSQPQQR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q6NXT4	SLC30A6	449	TGFTNIPSR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q6P2H3	CEP85	277	PLPSQVWQPSPDTWHPR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		3	PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q6PJG2	ELMSAN1	344	ALLQDSAPQPALPQVQIPFPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q6RI45	BRWD3	1740	IADDEFDTMFSGR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q6SPF0	SAMD1	170	AAAAAATAPPSPGPAQPGPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q6W2J9	BCOR	655	SPPIPYPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody; MMA or SDMA antibody		6	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q6ZRS2	SRCAP	1224	LTLTGAQVR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q76L83	ASXL2	639	ISPMPFHPSQVSPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q7L4I2	RSRC2	429	GMGLGFTSSMR(me1)GMDAV		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q7Z434	MAVS	232	GPVSPSVSFQPLAR(me1)		Rme1		HEK293	MMA antibody		3	PRMT7-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	PRMT7 knockdown; SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q7Z6E9	RBBP6	522	LGYLVSPPQQIR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q86TB9	PATL1	344	AFFSAPPSATPPPQQHPPGPGPHLQNLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q86U42	PABPN1	238	TSLALDESLFR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q86US8	SMG6	512	FQNSDNPYYYPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody; MMA or SDMA antibody		5	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q86VM9	ZC3H18	239	GNCTWGMNCR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q86YP4	GATAD2A	249	LGPQASSQVVMPPLVR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q86YP4	GATAD2A	273	QHSSTGPPPLLLAPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q86YP4	GATAD2A	293	IIQQGLIR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8IVS2	MCAT	79	MPGQCSVLLFPGQGSQVVGMGR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8IWD4	CCDC117	60	AVPSSPAGSAAR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2)	PRMT7 knockdown; SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q8IWR0	ZC3H7A	334	GPLQTASVSPSMPFSASLLGTLPIGAR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8IWX8	CHERP	908	SYSFIAR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8IY67	RAVER1	596	AAMWASTPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		5	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	PRMT7 knockdown; SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8IY92	SLX4	1046	FLLGPPQGGSPR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q8IYD1	GSPT2	74	PFVPNVHAAEFVPSFLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8IYD1	GSPT2	520	GIEEEEILPGFILCDPSNLCHSGR(me2)		Rme2		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me2 (FC>2); PRMT4-regulated me2 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8IZH2	XRN1	1464	ICSLVGMPQPDFSFLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8IZL2	MAML2	552	SFINNPHPAMEPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8N3J3	C17orf53	392	TPQQPTHPSTR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q8N5A5	ZGPAT	370	VEPIHAVVLPR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q8N9E0	FAM133A	18	VAYMNPIAMAR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q8ND04	SMG8	835	SAVVMGR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q8ND24	RNF214	462	LSSLPQIPTPTLPPPPSETDFMLQVFQPSPSLAPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8ND83	SLAIN1	409	SMPNLAR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q8NEY1	NAV1	688	SSSMSVTGGR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q8NI36	WDR36	800	SAPFFIPTIPGLVPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8TAP9	MPLKIP	117	SPAGSQQQFGYSPGQQQTHPQGSPR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8TCG2	PI4K2B	177	VCCPCCFGR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q8TDC3	BRSK1	498	GGGAGEQPPPPSAR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q8TDD1	DDX54	868	VQELQQGAFGR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q8TER5	ARHGEF40	983	ADGASSGGAQWGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q8WUM4	PDCD6IP	745	EPSAPSIPTPAYQSSPAGGHAPTPPTPAPR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		4	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q8WWM7	ATXN2L	688	STSTPTSPGPR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q8WX93	PALLD	770	QFIAAQNLGPASGHGTPASSPSSSSLPSPMSPTPR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q8WXF1	PSPC1	507	TGSETPQAPMSGVGPVSGGPGGFGR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q8WXI9	GATAD2B	264	SATNTTLPHMLMSQR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q92567	FAM168A	138	VPPTQSNTAPPPYSPSPNPYQTAMYPIR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		4	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q92576	PHF3	1785	SITFTSR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q92686	NRGN	68	GPGPGGPGGAGVAR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q92686	NRGN	68	GPGPGGPGGAGVAR(me1)GGAGGGPSGD		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q92734	TFG	383	PGFTSLPGSTMTPPPSGPNPYAR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q92793	CREBBP	519	AYAALGLPYMNQPQTQLQPQVPGQQPAQPQTHQQMR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q92793	CREBBP	2366	PQSQPPHSSPSPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q92841	DDX17	505	FVINYDYPNSSEDYVHR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q92841	DDX17	684	SSQSSSQQFSGIGR(me1)		Rme1		HEK293	MMA antibody		1	SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q92917	GPKOW	173	AETVPEEANYEAVPVEAYGLAMLR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q92922	SMARCC1	1064	MIPTVAANIHPSGSGPTPPGMPPMPGNILGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q92934	BAD	161	NLGR(me1)GSSAPSQ		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		4	PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	PRMT7 knockdown; SGC3027 inhibitor; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q92945	KHSRP	411	SGPPGPPGGPGMPPGGR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q92945	KHSRP	442	CGLVIGR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q92997	DVL3	685	SHHTHPSYGPPGVPPLYGPPMLMMPPPPAAMGPPGAPPGR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q96AP0	ACD	437	TPSSPLQSCTPSLSPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96B70	LENG9	253	ALGTAADLGTLAPR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q96BD5	PHF21A	314	TFPMAQLTSIVIATPGTR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96DN6	MBD6	234	GNAPSPAPPPPPAISLNAPSYNWGAALR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96E39	RBMXL1	101	HGPPPPPR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q96EP5	DAZAP1	209	SQAPGQPGASQWGSR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96EP5	DAZAP1	253	VVPNAANGWAGQPPPTWQQGYGPQGMWVPAGQAIGGYGPPPAGR(me1)		Rme1		HEK293	MMA antibody		3	PRMT7-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	PRMT7 knockdown; SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q96EV2	RBM33	672	PHVQTAQPQASSSR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q96F45	ZNF503	636	SPLPTPGAPVPVPAATGPYYSPYALYGQR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96F45	ZNF503	636	SPLPTPGAPVPVPAATGPYYSPYALYGQR(me2)LTTASALGYQ		Rme2		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me2 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96GM5	SMARCD1	39	AGFQSVAPSGGAGASGGAGAAAALGPGGTPGPPVR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96HA1	POM121	229	FVITPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96HA1	POM121	274	MVCSPVTVR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q96JM3	CHAMP1	301	PFPAVSPEPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96K30	RITA1	149	ALLWTPPPTPR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q96L91	EP400	1618	IAQLASITGPQSR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96PE2	ARHGEF17	183	TCFPLAGLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96PK6	RBM14	238	ASYVAPLTAQPATYR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody; MMA or SDMA antibody		6	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q96PK6	RBM14	250	AQPSVSLGAAYR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q96PK6	RBM14	274	TQPMTAQAASYR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96PU8	QKI	227	SPALAFSLAATAQAAPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96PU8	QKI	256	TPTPAGPTIMPLIR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96PU8	QKI	336	IVTADR(me1)AATGN		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96QC0	PPP1R10	665	GMQHFPPGPGGPMPGPHGGPGGPVGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q96QC0	PPP1R10	705	GGPGPGPGPYHR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q96T58	SPEN	3038	PSGPGPSSFPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q99590	SCAF11	1164	TLPADVQNYYSR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q99958	FOXC2	54	AAGSYGGMASPMGVYSGHPEQYSAGMGR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9BPU6	DPYSL5	559	ILAPPGGR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		4	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9BRK4	LZTS2	168	GAPSLPSFMGPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody; MMA or SDMA antibody		6	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9BRK4	LZTS2	254	NSLSSLPTYSTGGAEPTTSSPGGHLPSHGSGR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9BRQ0	PYGO2	105	VGVAAPPFLGSPVPFGGFR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9BRQ0	PYGO2	130	VQGGMAGQVPPGYSTGGGGGPQPLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9BTC0	DIDO1	1775	EPGPHALGMSGLHGPNFPGPR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q9BTC0	DIDO1	1824	GPIPSLFSGQHGPPPYGDSR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9BTC0	DIDO1	1882	EFQDAPYNEVTGAPAQFEGTEQAPFLGSR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q9BTV5	FSD1	320	TASPINSPAR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9BUT9	MCRIP2	27	TGPTQQQVEGR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9BUT9	MCRIP2	65	AQPFAQPPGPWPLSSPGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9BWW4	SSBP3	202	QQGHPNMGGSMQR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9BXB5	OSBPL10	38	ATSAGSSPSCSLAGR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9BYJ9	YTHDF1	327	APVPQQAPSPQAAPQPQQVAQPLPAQPPALAQPQYQSPQQPPQTR(me1)		Rme1		HEK293	MMA antibody		1	SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q9C0J8	WDR33	782	GMQGPPHPHGIQGGPGSQGIQGPVSQGPLMGLNPR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q9H0D6	XRN2	895	GVGAEPLLPWNR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9H0D6	XRN2	946	YPLPPPSGR(me1)YNWN		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2)	SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9H0D6	XRN2	946	YPLPPPSGR(me2)YNWN		Rme2		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me2 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9H0E3	SAP130	34	LQVEMSSQQFPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9H0E3	SAP130	444	VVPQQITHTSPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9H0E3	SAP130	453	IQPDYPAER(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q9H0L4	CSTF2T	352	GGTLLSVTGEVEPR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9H2P0	ADNP	348	SVGQGYSVGQSMR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q9H2Z4	NKX2-4	144	GGAATGWYGANPDPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9H6S0	YTHDC2	32	QPAPGGGGGGGPSPCGPGGGGR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9H7C9	AAMDC	69	GVQTLVIGR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9H7S9	ZNF703	580	SHLSTAGGLAVPSLPTAGPYYSPYALYGQR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9H7S9	ZNF703	580	SHLSTAGGLAVPSLPTAGPYYSPYALYGQR(me1)LASASALGYQ		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		3	PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9H7S9	ZNF703	580	SHLSTAGGLAVPSLPTAGPYYSPYALYGQR(me2)LASASALGYQ		Rme2		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		2	PRMT4-regulated me2 (FC>2); PRMT5-regulated me2 (FC>2)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9H910	JPT2	104	TSDIFGSPVTATSR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9HAH7	FBRS	408	LYGLEPAHPLLYSR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9HBM6	TAF9B	128	YCLTAPNYR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2)	PRMT7 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9NRA8	EIF4ENIF1	574	APSPPLSQVFQTR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9NRA8	EIF4ENIF1	607	IPSPIGFTPGPQQLLGDPFQGMR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9NSV4	DIAPH3	603	EGGTGHSALPPPPPLPSGGGVPPPPPPPPPPPLPGMR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9NWH9	SLTM	1017	IVQISGNSMPR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9NX05	FAM120C	941	AMGSMPLPPQGR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	PRMT7 knockdown; SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9NYJ8	TAB2	173	GTSSLSQQTPR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9NYV4	CDK12	1404	TFSGSLSHLGESSSYQGTGSVQFPGDQDLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9NZB2	FAM120A	873	QSHTLPFPPPPALPFYPASAYPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9NZB2	FAM120A	884	HFGPVPPSQGR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q9NZU7	CABP1	155	EALPAAASR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9P266	JCAD	57	AGQGLQNGHEDGPAALAHR(me2)		Rme2		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me2 (FC>2); PRMT5-regulated me2 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9P270	SLAIN2	551	PSAPSAGGIPVPR(me1)		Rme1		HEK293	MMA or SDMA antibody		1	PRMT5-regulated me1 (FC>2)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9P2K1	CC2D2A	101	TGFAEFSMR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT5-regulated me1 (FC>2)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9P2N5	RBM27	455	LQLGTPPPLLAAR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody; MMA or SDMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2)	PRMT7 knockdown; PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9P2N5	RBM27	943	LGILPVGR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q9UGL9	CRCT1	65	GCCGDSGCCGSSSTSCCCFPR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q9UJY1	HSPB8	55	LLDDGFGMDPFPDDLTASWPDWALPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9UJY1	HSPB8	65	LSSAWPGTLR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9UKM9	RALY	141	LSPVPVPR(me1)		Rme1		HEK293	MMA antibody		1	PRMT7-regulated me1 (FC>2)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q9ULV3	CIZ1	156	GYGMASPGLAAPSLTPPQLATPNLQQFFPQATR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9ULX6	AKAP8L	179	GNDTFGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9UM47	NOTCH3	2174	QPPGGCVLSLGLLNPVAVPLDWAR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9UPN9	TRIM33	535	HQQLQQMR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q9UPN9	TRIM33	591	GNMNCGAFQAHQMR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9UPQ9	TNRC6B	1225	GLHTPVQPLNSSPSLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9UPQ9	TNRC6B	1620	PSSPWSSTAPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT7-regulated me1 (FC>2)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9UPW6	SATB2	347	LLAHQHPQAINQQFLNHPPIPR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q9UQ35	SRRM2	27	NLSLVR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q9UQ35	SRRM2	2221	MSQVPAPVPLMSLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9UQ35	SRRM2	2274	TPAAAAAMNLASPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2)	PRMT7 knockdown; SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9UQ35	SRRM2	2301	TPTAPAVNLAGAR(me1)		Rme1		HEK293	MMA or ADMA antibody; MMA or SDMA antibody		3	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT5-regulated me1 (FC>2)	PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9UQ35	SRRM2	2342	TPQAPASANLVGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9UQ35	SRRM2	2356	SAHATAPVNIAGSR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q9UQ35	SRRM2	2370	TAAALAPASLTSAR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9UQ35	SRRM2	2384	MAPALSGANLTSPR(me1)		Rme1		HEK293	MMA antibody		2	SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor	one_methylatable_residue
+Li2021	Q9Y2H6	FNDC3A	134	SPHPPLPGFIPVPTMMPPPPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9Y3Y2	CHTOP	51	ASMQQQQQLASAR(me1)		Rme1		HEK293	MMA antibody		2	PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown	one_methylatable_residue
+Li2021	Q9Y4H2	IRS2	429	VALLPAGGALQHSR(me1)		Rme1		HEK293	MMA antibody; MMA or SDMA antibody		3	PRMT5-regulated me1 (FC>2); SGC3027-regulated me1 (FC>2); SGC3027regulated me1(abolished)	SGC3027 inhibitor; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9Y520	PRRC2C	255	AMMPPYMFQQYPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody; MMA or SDMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT5-regulated me1 (FC>2); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown; PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9Y520	PRRC2C	747	WLMMQSYMDPR(me1)		Rme1		HEK293	MMA antibody; MMA or ADMA antibody		4	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished); PRMT7-regulated me1 (FC>2); PRMT7-regulated me1 (abolished)	PRMT7 knockdown; PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9Y520	PRRC2C	2679	PGTPPIAGR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9Y520	PRRC2C	2689	STTPTSSPFR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9Y580	RBM7	152	QAVMNSALR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9Y5U2	TSSC4	139	SPVEGLGR(me1)		Rme1		HEK293	MMA or SDMA antibody		2	PRMT5-regulated me1 (FC>2); PRMT5-regulated me1 (abolished)	PRMT5 knockdown	one_methylatable_residue
+Li2021	Q9Y5V3	MAGED1	314	SAPVPVTTQNPPGAPPNVLWQTPLAWQNPSGWQNQTAR(me1)		Rme1		HEK293	MMA or ADMA antibody		1	PRMT4-regulated me1 (FC>2)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9Y618	NCOR2	1653	GIPLDAAAAYYLPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9Y618	NCOR2	1729	ESSLALNYAAGPR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue
+Li2021	Q9Y6I3	EPN1	534	ASNPFLPGGGPATGPSVTNPFQPAPPATLTLNQLR(me1)		Rme1		HEK293	MMA or ADMA antibody		2	PRMT4-regulated me1 (FC>2); PRMT4-regulated me1 (abolished)	PRMT4 knockdown	one_methylatable_residue

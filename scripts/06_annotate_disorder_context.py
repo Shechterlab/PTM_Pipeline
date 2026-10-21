@@ -53,7 +53,11 @@ def normalize_disorder_intervals(df: pd.DataFrame) -> pd.DataFrame:
     return out.sort_values(['canonical_UniProtAC', 'fragment_start', 'fragment_end']).reset_index(drop=True)
 
 
-def classify_positions(intervals: pd.DataFrame, positions: np.ndarray, boundary_window: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def classify_positions(intervals: pd.DataFrame, positions: np.ndarray, boundary_window: int,
+                       length: int | None = None) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Disorder class of each position and its distance to the nearest disorder/order boundary. With the protein's
+    length, a region's end at a protein terminus is not a boundary: a position inside a region that runs to the end
+    measures to its other edge, and a position in a region that spans the whole protein has no distance."""
     n = len(positions)
     classes = np.full(n, 'no_disorder_annotation', dtype=object)
     distances = np.full(n, np.nan, dtype=float)
@@ -63,21 +67,25 @@ def classify_positions(intervals: pd.DataFrame, positions: np.ndarray, boundary_
 
     starts = intervals['fragment_start'].to_numpy(dtype=int)
     ends = intervals['fragment_end'].to_numpy(dtype=int)
-    min_distance = np.full(n, np.iinfo(np.int32).max, dtype=int)
+    none = np.iinfo(np.int32).max
+    min_distance = np.full(n, none, dtype=np.int64)
     in_interval = np.zeros(n, dtype=bool)
 
     for start, end in zip(starts, ends):
         overlap = (positions >= start) & (positions <= end)
         in_interval |= overlap
+        to_start = positions - start if length is None or start > 1 else np.full(n, none)
+        to_end = end - positions if length is None or end < length else np.full(n, none)
         dist = np.where(
             positions < start,
             start - positions,
-            np.where(positions > end, positions - end, np.minimum(positions - start, end - positions)),
+            np.where(positions > end, positions - end, np.minimum(to_start, to_end)),
         )
         min_distance = np.minimum(min_distance, dist)
+    whole = in_interval & (min_distance == none)   # inside a region that spans the protein: no boundary
 
     classes[in_interval] = 'disordered'
-    distances[in_interval] = min_distance[in_interval]
+    distances[in_interval & ~whole] = min_distance[in_interval & ~whole]
     boundary = (~in_interval) & (min_distance <= boundary_window)
     classes[boundary] = 'disorder_boundary'
     distances[boundary] = min_distance[boundary]
@@ -173,7 +181,8 @@ def disorder_label(label: str) -> str:
     }.get(str(label), str(label))
 
 
-def annotate_frame(df: pd.DataFrame, intervals_by_acc: dict[str, pd.DataFrame], accession_col: str, position_col: str, boundary_window: int) -> pd.DataFrame:
+def annotate_frame(df: pd.DataFrame, intervals_by_acc: dict[str, pd.DataFrame], accession_col: str, position_col: str, boundary_window: int,
+                   lengths: dict[str, int] | None = None) -> pd.DataFrame:
     out = df.copy()
     out[accession_col] = out[accession_col].astype(str).str.strip()
     out[position_col] = pd.to_numeric(out[position_col], errors='coerce')
@@ -188,7 +197,8 @@ def annotate_frame(df: pd.DataFrame, intervals_by_acc: dict[str, pd.DataFrame], 
         for accession, group in valid.groupby(accession_col, sort=False):
             positions = group[position_col].to_numpy(dtype=int)
             intervals = intervals_by_acc.get(accession, pd.DataFrame())
-            classes, distances, has_annotation = classify_positions(intervals, positions, boundary_window)
+            classes, distances, has_annotation = classify_positions(intervals, positions, boundary_window,
+                                                                    (lengths or {}).get(accession))
             out.loc[group.index, 'disorder_context_class'] = classes
             out.loc[group.index, 'nearest_disorder_edge_distance'] = distances
             out.loc[group.index, 'has_disorder_annotation'] = has_annotation & (classes != 'no_disorder_annotation')
@@ -227,12 +237,15 @@ def main() -> None:
         for accession, group in intervals.groupby('canonical_UniProtAC')
     }
 
+    sequences = parse_fasta(args.canonical_fasta) if args.canonical_fasta else {}
+    lengths = {acc: len(seq) for acc, seq in sequences.items()}
     annotated_sites = annotate_frame(
         sites,
         intervals_by_acc=intervals_by_acc,
         accession_col='canonical_UniProtAC',
         position_col='corrected_position',
         boundary_window=args.boundary_window,
+        lengths=lengths,
     )
 
     outdir = Path(args.outdir)
@@ -264,7 +277,6 @@ def main() -> None:
     save_figure(fig, outdir / 'arg_methyl_disorder_context_distribution')
 
     if args.canonical_fasta:
-        sequences = parse_fasta(args.canonical_fasta)
         # The tests compare sites with the other arginines of the same sequences, so they count only sites on proteins
         # in the FASTA, as scripts/08 does; sites on entries outside it (unreviewed or obsolete) have no background.
         tested_sites = annotated_sites[annotated_sites['canonical_UniProtAC'].isin(sequences)].copy()
@@ -276,6 +288,7 @@ def main() -> None:
             accession_col='canonical_UniProtAC',
             position_col='corrected_position',
             boundary_window=args.boundary_window,
+            lengths=lengths,
         )
         methyl_site_keys = set(annotated_sites['site_key'].astype(str))
         proteome_arg = proteome_arg[~proteome_arg['site_key'].isin(methyl_site_keys)].copy()

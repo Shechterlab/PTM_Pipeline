@@ -68,6 +68,12 @@ def main() -> None:
         path = Path(table)
         df = pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False, low_memory=False)
         acc = df['canonical_UniProtAC']
+        # Every entry, changed or not, must fit the sequences the table claims to number: an interval past the old
+        # end means the entry was computed on another sequence (or the table was lifted already).
+        past = df[[int(e) > len(old.get(a, '')) for a, e in zip(acc, df['fragment_end'])] & acc.isin(old.keys())]
+        if len(past):
+            raise SystemExit(f'{path.name}: {past["canonical_UniProtAC"].nunique()} entries have intervals beyond their length in '
+                             f'--old-fasta (e.g. {past["canonical_UniProtAC"].iloc[0]}): not computed on it, or lifted already')
         keep = ~acc.isin(gone)
         for a, (kind, shift) in sorted(changed.items()):
             rows = acc == a
@@ -90,6 +96,10 @@ def main() -> None:
                 report.append({'table': path.name, 'accession': a, 'old_length': len(old[a]), 'new_length': 0,
                                'change': 'not_in_new_reference', 'shift': 0, 'intervals': n, 'action': 'dropped'})
         df = df[keep]
+        past = df[[int(e) > len(new.get(a, '')) for a, e in zip(df['canonical_UniProtAC'], df['fragment_end'])]]
+        if len(past):
+            raise SystemExit(f'{path.name}: after the lift, {past["canonical_UniProtAC"].nunique()} entries have intervals beyond '
+                             f'their length in --new-fasta (e.g. {past["canonical_UniProtAC"].iloc[0]})')
         if 'protein_length' in df:
             lengths = df['canonical_UniProtAC'].map(lambda a: str(len(new[a])) if a in new else '')
             df = df.assign(protein_length=lengths)

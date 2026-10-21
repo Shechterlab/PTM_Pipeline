@@ -6,11 +6,13 @@ number, string, boolean, code, list<code>, list<integer>, list<string>, codes na
 """
 from __future__ import annotations
 
+import re
+
 CONTEXT_WINDOW = 20  # residues: the boundary window of scripts/05 and scripts/06
 PADJ_CUTOFF = 0.05   # Maron 2021 Table S3: a peptide changes when its adjusted p value is at most this (scripts/16)
 
 # Studies and databases behind the union, in the order of the studies file: those of v1.1.0 (most sites first), then
-# the studies added in v1.1.1 (staged by scripts/00_stage_study_sites.py). Citations and DOIs checked against Crossref.
+# the studies added in v1.2.0. Citations and DOIs checked against Crossref.
 STUDIES = [
     ('Larsen2016', 'Larsen 2016', 'Larsen SC et al., Sci Signal 9:rs9 (2016)', '10.1126/scisignal.aaf7329'),
     ('PSP', 'PhosphoSitePlus (PSP)', 'Hornbeck PV et al., Nucleic Acids Res 43:D512-D520 (2015)', '10.1093/nar/gku1267'),
@@ -31,16 +33,51 @@ STUDIES = [
     ('Lu2025', 'Lu 2025', 'Lu L et al., EMBO Rep 26:5649-5672 (2025)', '10.1038/s44319-025-00599-y'),
     ('Ma2023', 'Ma 2023', 'Ma M et al., J Am Soc Mass Spectrom 34:1692-1700 (2023)', '10.1021/jasms.3c00154'),
 ]
-# The studies added in v1.1.1, each its own source table (inputs/sources/<table>_methylarginine_records.tsv).
-STUDY_TABLES = {'hartel2019': 'Hartel2019', 'geoghegan2015': 'Geoghegan2015', 'sylvestersen2014': 'Sylvestersen2014', 'lu2025': 'Lu2025', 'ma2023': 'Ma2023'}
+# The studies read from their own tables (scripts/00_stage_study_sites.py, inputs/sources/<table>_methylarginine_records.tsv),
+# in the order the build reads them (after the three compiled tables, so that record_ids stay those of v1.1.0).
+STUDY_TABLES = {
+    'larsen2016': 'Larsen2016', 'maron2021': 'Maron2021', 'guo2014': 'Guo2014', 'musiani2019': 'Musiani2019',
+    'fong2019': 'Fong2019', 'li2021': 'Li2021', 'fedoriw2019': 'Fedoriw2019', 'uniprot': 'UniProt', 'lim2020': 'Lim2020',
+    'wei2020': 'Wei2020', 'iedb': 'IEDB', 'hartel2019': 'Hartel2019', 'geoghegan2015': 'Geoghegan2015',
+    'sylvestersen2014': 'Sylvestersen2014', 'lu2025': 'Lu2025', 'ma2023': 'Ma2023',
+}
+# The studies new in v1.2.0 (not in the compiled tables v1.1.0 read).
+STUDIES_ADDED = ['Hartel2019', 'Geoghegan2015', 'Sylvestersen2014', 'Lu2025', 'Ma2023']
+
+
+def study_of(source_table: str, source, reference) -> str:
+    """study_id of a source record, from its source table and, in the compiled tables, its source and reference."""
+    if source_table in STUDY_TABLES:
+        return STUDY_TABLES[source_table]
+    if source_table == 'human_ptm_master':
+        return {'unip': 'UniProt', 'iedb': 'IEDB'}[source]
+    if source_table == 'prometheus_mmc2':
+        return 'ProMetheusDB'
+    ref = '' if reference is None or reference != reference else str(reference).strip()
+    if ref.lower().startswith('this study'):
+        return 'Maron2021'
+    if 'PhosphoSitePlus' in ref:
+        return 'PSP'
+    author = ref.split(' et al.')[0].split()[-1]
+    return author + re.findall(r'\((\d{4})\)', ref)[-1]
+
 STUDY_ORDER = [s[0] for s in STUDIES]
 MARON_S5 = 'Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)'
 PTM_MASTER = 'the iPTMnet-format PTM master table (iPTMnet: CC BY-NC-SA 4.0)'
 STUDY_LICENCE = {
     'PSP': 'CC BY-NC-SA 3.0 Unported (PhosphoSitePlus terms of 2021, inputs/licences/), compiled in ' + MARON_S5,
     'ProMetheusDB': 'CC BY-NC-ND 4.0 (open-access supplement mmc2)',
-    'UniProt': 'CC BY 4.0, via ' + PTM_MASTER,
-    'IEDB': 'via ' + PTM_MASTER,
+    'UniProt': 'CC BY 4.0 (UniProt release 2026_03 MOD_RES)',
+    'IEDB': 'IEDB query API, terms at www.iedb.org/terms_of_use_v3.php (epitopes the iPTMnet-format master table cites)',
+    'Larsen2016': 'PRIDE PXD003700 MaxQuant output (EMBL-EBI terms of use), with the site list of ' + MARON_S5,
+    'Musiani2019': 'PRIDE PXD009070 MaxQuant output (CC0), with the site list of ' + MARON_S5,
+    'Maron2021': 'CC BY-NC-ND 4.0 (open-access supplement, Tables S2 and S3)',
+    'Guo2014': 'CC BY 4.0 (supplementary Tables S2 and S3)',
+    'Fong2019': 'Elsevier user licence (supplementary Table S4: derived records only, the table is not redistributed), PRIDE PXD012007 CC0',
+    'Li2021': 'CC BY 4.0 (Supplementary Data 1, 3, 5 and 6)',
+    'Fedoriw2019': 'Elsevier user licence (supplementary Tables S5 and S7: derived records only, the tables are not redistributed)',
+    'Lim2020': 'CC BY 4.0 (Additional files 1 and 2)',
+    'Wei2020': 'CC BY 4.0 (Table 1)',
     'Hartel2019': 'CC BY 4.0 (the article and its supplement, from 2020-09-15, and PRIDE PXD012357, CC0), records staged from supplementary Tables S1-S15',
     'Geoghegan2015': 'CC BY 4.0 (the article and its Supplementary Table 1)',
     'Sylvestersen2014': 'CC BY 4.0 (the article and its supplement, from 2020-10-12, and PRIDE PXD000559, CC0)',
@@ -54,12 +91,12 @@ STUDY_NOTE = {
     'Lu2025': 'HeLa cells, enrichment with the SMN Tudor domain',
     'Ma2023': 'breast cancer patient-derived xenografts grown in mice, ADMA antibody enrichment. A peptide assigned to a human protein can come from the mouse stroma where the two sequences agree',
     'PSP': 'downloaded 22 May 2021 (date from the Shechter lab), as compiled in Maron et al. 2021 Table S5',
-    'Maron2021': "the study's own sites in Table S5 (reference \"This study\")",
+    'Maron2021': "the study's own data, Tables S2 and S3",
 }
 
-# The studies added in v1.1.1: what a record holds, how the study localised the methyl group and what was kept
-# (scripts/00_stage_study_sites.py), and what to keep in mind. Each record is then placed only where its peptide or
-# window names exactly one arginine in the reviewed proteome (scripts/02 place_study_records).
+# What a record holds, how the study localised the methyl group and what was kept (scripts/00_stage_study_sites.py),
+# and what to keep in mind. A record is then placed only where its peptide or window names exactly one arginine in the
+# reviewed proteome (scripts/02 place_localised_records).
 STUDY_QUALITY = {
     'Hartel2019': 'Peptide-spectrum matches and peptide groups (Proteome Discoverer) with the methylated arginine marked, '
                   'Percolator q <= 0.01 and ptmRS localisation >= 75 %. LN229 Tables S1-S2 give no positions: their rows '
@@ -75,57 +112,68 @@ STUDY_QUALITY = {
               'dimethylated (155 sites), and the other 588 are left out.',
     'Ma2023': 'MaxQuant ADMA-antibody sites with a 31-residue window, localisation probability >= 0.75, 1 % FDR. Tumours '
               'grown in mice: a peptide identical in mouse and human can come from mouse stroma (flag xenograft_only).',
-    # The studies compiled in Maron et al. 2021 Table S5, and the databases: the study's methods (from the article, or
-    # for Larsen 2016 and Musiani 2019, whose articles could not be retrieved, from the PRIDE record and deposited
-    # search), and what reaches the union through the compilation. Table S5 keeps no localisation score or degree.
+    # The studies compiled in Maron et al. 2021 Table S5, and the databases, now read from their own tables: the
+    # study's methods (from the article, or for Larsen 2016 and Musiani 2019, whose articles could not be retrieved, from
+    # the PRIDE record and deposited search), and what was kept. The compiled rows keep no localisation and add no site.
     'Larsen2016': 'HEK293 cells, peptides fractionated at high pH and enriched with methylarginine antibodies, MaxQuant with '
-                  'peptide, protein and site FDR 0.01 (the search deposited in PRIDE PXD003700, which looks for '
-                  'monomethylation only). Through Maron Table S5: a 31-residue window and position per site. Some windows '
-                  'and positions are those of an isoform under the canonical accession, and are placed only where the '
-                  'window fits the canonical entry. Windows that lost the tripeptide NAN are restored.',
+                  'peptide, protein and site FDR 0.01, monomethylation of R and K searched. Read from the MaxQuant site '
+                  'table deposited in PRIDE PXD003700 (Methyl (KR)Sites.txt, 28 of the 140 raw files): arginine sites at '
+                  'localisation probability >= 0.75 that the study reports (listed in Maron Table S5). The article\'s own '
+                  'table could not be retrieved, so the study\'s other sites carry no localisation here and add none.',
     'PSP': 'Curated database. Through Maron Table S5: the sites PhosphoSitePlus listed on 22 May 2021, each with a '
-           '15-residue window and position, without the study behind it or a degree.',
+           '15-residue window and position, without the study behind it, a localisation score or a degree. The records '
+           'carry no localisation evidence and add no site.',
     'Maron2021': 'A549 cells treated with GSK591 or MS023, sequential Rme1, Rme2a and Rme2s antibody immunoprecipitation, '
-                 'Byonic in Proteome Discoverer 2.4, 1 % FDR, no localisation score given. Table S5 lists the 1,829 sites '
-                 '(reference "This study"), Table S2 the degree of each, which gives their methylation state here.',
-    'Guo2014': 'HCT116 cells, monomethylarginine (Me-R4-100, D5A12) and ADMA antibodies, SEQUEST with a 1 % PSM FDR, sites '
-               'confidently assigned at Ascore > 13. Through Maron Table S5: the 13-residue window and the position on a '
-               'RefSeq protein, under a UniProt accession, so the record is placed from its window. Table S5 leaves out '
-               'the 212 sites the study marks as previously published and 105 under outdated gene symbols, and keeps 94 '
-               'whose Ascore never exceeds 13.',
+                 'Byonic in Proteome Discoverer 2.4 with mono- and dimethylation of R and K searched, 1 % FDR. The tables give '
+                 'no localisation score: a site is kept where its peptide (Tables S2 and S3) holds no other arginine or '
+                 'lysine, or holds no lysine and has every arginine dimethylated.',
+    'Guo2014': 'HCT116 cells, monomethylarginine (Me-R4-100, D5A12) and ADMA antibodies, SEQUEST with a 1 % PSM FDR, mono- '
+               'and dimethylation of R and K searched. Read from Tables S2 (peptide-spectrum matches with their ModScore) '
+               'and S3 (sites with a 13-residue window): a site is kept where a PSM matching its window localises it at '
+               'ModScore > 13, the paper\'s threshold, the degree read from the precursor mass. The positions number RefSeq '
+               'proteins, so the record is placed from its peptide.',
     'Musiani2019': 'HeLa cells (heavy-methyl SILAC), SDMA then monomethylarginine antibody enrichment, MaxQuant 1.6.1.0 with '
-                   'a 1 % FDR (PRIDE PXD009070), no localisation threshold stated. Through Maron Table S5: a 15-residue '
-                   'window and position. 268 of the windows are centred on a lysine, not an arginine: none of them is placed.',
+                   'a 1 % FDR. Read from the MaxQuant site tables deposited in PRIDE PXD009070: arginine sites at '
+                   'localisation probability >= 0.75 that the study reports (listed in Maron Table S5, the article\'s own '
+                   'table could not be retrieved). The 268 Table S5 windows centred on a lysine are not among them.',
     'Fong2019': 'NB4 acute promyelocytic leukaemia cells, SDMA and monomethylarginine (and, with MS023, ADMA) antibody '
-                'enrichment, MaxQuant with a 1 % FDR, Andromeda score >= 25 and localisation probability >= 0.5. Through '
-                'Maron Table S5: a 15-residue window and position. Table S5 leaves out 273 of the study\'s 1,571 arginine '
-                'sites, those whose window the study\'s table gives empty or as a run of z.',
-    'Li2021': 'HEK293 cells (SILAC) after PRMT4, PRMT5 or PRMT7 knockdown, monomethylarginine then ADMA or SDMA antibody '
-              'enrichment, Proteome Discoverer 2.2 with FDR < 1 %, no localisation score given. The study lists the sites '
-              'whose methylation fell at least two-fold. Through Maron Table S5: peptide and position from the knockdown '
-              'tables, not the 271 sites found only in the SGC3027 inhibitor table.',
+                'enrichment, MaxQuant with a 1 % FDR. Read from Table S4: arginine sites at localisation probability >= 0.75 '
+                'and Andromeda score >= 25 (the paper accepted localisation >= 0.5), with the marked peptide and degree.',
+    'Li2021': 'HEK293 cells (SILAC) after PRMT4, PRMT5 or PRMT7 knockdown or SGC3027 treatment, monomethylarginine then ADMA '
+              'or SDMA antibody enrichment, Proteome Discoverer 2.2 with FDR < 1 %, methylation of R and K searched, no '
+              'localisation score given. Read from Supplementary Data 1, 3, 5 and 6, the sites whose methylation fell at '
+              'least two-fold or vanished: a site is kept where its peptide holds no other arginine or lysine.',
     'Fedoriw2019': 'DLBCL and pancreatic cancer cell lines with a type I PRMT inhibitor, monomethylarginine, ADMA and SDMA '
-                   'antibody enrichment, SEQUEST with a 2.5 % FDR, no localisation score given. The study lists the peptides '
-                   'whose methylation changed, by gene symbol and marked peptide. Through Maron Table S5: accession, position '
-                   'and peptide, for 599 of the study\'s 1,412 peptides.',
+                   'antibody enrichment, SEQUEST with a 2.5 % FDR, no localisation score given. Read from Tables S5 and S7 '
+                   '(gene symbol and marked peptide, the peptides whose methylation changed): a site is kept where its '
+                   'peptide holds one arginine, or every arginine dimethylated, and occurs once in the entries of its gene, '
+                   'which gives the position.',
     'Lim2020': 'Pooled colorectal cancer tissue from 10 patients, monomethylarginine and ADMA antibody enrichment, SEQUEST '
-               'with a 2.5 % FDR, sites confidently assigned at Ascore > 13. Through Maron Table S5: peptide and position, '
-               'with isoform accessions given as the canonical one and some leucines written as I.',
+               'with a 2.5 % FDR. Read from Tables S1 and S2: sites with ModScore > 13 (the paper\'s threshold), each with '
+               'peptide, window and degree. The tables write some leucines as I: L is written back where the reported '
+               'entry, or one site of the reviewed proteome, matches with I and L taken as one residue.',
     'Wei2020': 'HPDE6c7 and PANC-1 cells, ADMA antibody enrichment, MaxQuant 1.6.0.16 with FDR < 0.01, Andromeda score > 40 '
-               'and localisation probability > 0.75. Through Maron Table S5: a 31-residue window and position, 137 of the '
-               '289 under the canonical accession though the study numbers an isoform, so they are placed from the window.',
-    'ProMetheusDB': 'Methyl-proteome table of the heavy-methyl SILAC and SILAC experiments behind ProMetheusDB (SK-OV-3, HeLa, '
-                    'NB4 and U2OS cells): marked peptide, 15-residue window and degree (me or di) of each site.',
-    'UniProt': 'UniProt methylarginine annotations (MOD_RES), from the lab\'s iPTMnet-format export, whose iPTMnet release '
-               'and date are not recorded. 584 of the 762 records cite Guo et al. 2014 (PMID 24129315). Position only, '
+               'and localisation probability > 0.75. Read from Table 1: the 289 sites with peptide and 31-residue window, '
+               '137 of them numbered on an isoform, placed from the peptide.',
+    'ProMetheusDB': 'Methyl-proteome table mmc2 of the heavy-methyl SILAC and SILAC experiments behind ProMetheusDB (SK-OV-3, '
+                    'HeLa, NB4 and U2OS cells), MaxQuant with mono- and dimethylation of R and K and trimethylation of K '
+                    'searched: marked peptides, 15-residue window and degree (me or di) of each site, no localisation score. '
+                    'A record is kept where one of its peptides holds no other arginine or lysine, or holds no lysine and '
+                    'has every arginine dimethylated, and is placed from those peptides.',
+    'UniProt': 'UniProt release 2026_03 annotations of methylated arginines (MOD_RES) with experimental evidence from the '
+               'literature (ECO:0000269), curated residue by residue. Annotations from large-scale proteomics '
+               '(ECO:0007744), which repeat the studies read here, and those by similarity are left out. Position only, '
                'placed where the residue is an arginine of the entry.',
-    'IEDB': 'Immune Epitope Database records of HLA-presented peptides with a methylated arginine, from the same export: 64 '
-            'of the 85 cite Marino et al. 2017 (PMID 27503676). Position only, placed where the residue is an arginine.',
+    'IEDB': 'Immune Epitope Database epitopes (HLA-presented peptides) with a methylated arginine, the 85 the '
+            'iPTMnet-format master table cites, read from the IEDB query API: a site is kept where the epitope holds no '
+            'other arginine or lysine. The degree is not given.',
 }
 # Placement codes of records not placed because their evidence names several sites, or one site in a protein the
 # record does not name (the studies table counts each; the others not placed name none).
 PLACEMENT_SEVERAL = {'unresolved_study_not_unique', 'unresolved_ambiguous_hit'}
 PLACEMENT_OTHER_PROTEIN = {'unresolved_study_other_entry'}
+# Placement codes of records not placed because their source gives no localisation of the methyl group.
+PLACEMENT_NOT_LOCALISED = {'superseded_by_study_table', 'unresolved_not_localised'}
 
 SOURCE_TABLES = {
     'maron2021_s5': ('maron_s5', 'Maron et al. 2021 Table S5: methylarginine sites compiled from ten studies'),
@@ -136,6 +184,17 @@ SOURCE_TABLES = {
     'sylvestersen2014': ('sylvestersen2014', 'Sylvestersen et al. 2014 supplementary tables, staged (scripts/00_stage_study_sites.py)'),
     'lu2025': ('lu2025', 'Lu et al. 2025 Dataset EV1, staged (scripts/00_stage_study_sites.py)'),
     'ma2023': ('ma2023', 'Ma et al. 2023 Table S1 (PRIDE PXD038203), staged (scripts/00_stage_study_sites.py)'),
+    'larsen2016': ('larsen2016', 'Larsen et al. 2016 MaxQuant site table (PRIDE PXD003700), staged (scripts/00_stage_study_sites.py)'),
+    'maron2021': ('maron2021', 'Maron et al. 2021 Tables S2 and S3, staged (scripts/00_stage_study_sites.py)'),
+    'guo2014': ('guo2014', 'Guo et al. 2014 supplementary Tables S2 and S3, staged (scripts/00_stage_study_sites.py)'),
+    'musiani2019': ('musiani2019', 'Musiani et al. 2019 MaxQuant site tables (PRIDE PXD009070), staged (scripts/00_stage_study_sites.py)'),
+    'fong2019': ('fong2019', 'Fong et al. 2019 supplementary Table S4, staged (scripts/00_stage_study_sites.py)'),
+    'li2021': ('li2021', 'Li et al. 2021 Supplementary Data 1, 3, 5 and 6, staged (scripts/00_stage_study_sites.py)'),
+    'fedoriw2019': ('fedoriw2019', 'Fedoriw et al. 2019 supplementary Tables S5 and S7, staged (scripts/00_stage_study_sites.py)'),
+    'uniprot': ('uniprot', 'UniProt release 2026_03 MOD_RES with experimental evidence, staged (scripts/00_stage_study_sites.py)'),
+    'lim2020': ('lim2020', 'Lim et al. 2020 Additional files 1 and 2, staged (scripts/00_stage_study_sites.py)'),
+    'wei2020': ('wei2020', 'Wei et al. 2020 Table 1, staged (scripts/00_stage_study_sites.py)'),
+    'iedb': ('iedb', 'IEDB epitopes with a methylated arginine (query API), staged (scripts/00_stage_study_sites.py)'),
 }
 SOURCE_TABLE_CODE = {raw: code for code, (raw, _) in SOURCE_TABLES.items()}
 
@@ -153,7 +212,7 @@ CODES: dict[str, dict[str, str]] = {
         'Rme1_Rme2': 'both mono- and dimethylarginine reported at the site',
     },
     'state_evidence': {
-        'source_records': 'the source records (ProMetheusDB me/di; methyl_states_reported)',
+        'source_records': 'the source records (ProMetheusDB me/di, methyl_states_reported)',
         'maron2021_s2': 'Maron et al. 2021 Table S2 (maron2021_s2_states)',
         'uniprot': 'UniProt MOD_RES with experimental evidence (uniprot_states)',
         'study_design': 'a study that looked for one degree only (states_by_study_design)',
@@ -275,8 +334,9 @@ CODES: dict[str, dict[str, str]] = {
     'residue': {'R': 'arginine'},
     'records_change': {
         'same': 'the same records support the site in both versions',
-        'changed': 'some records moved onto or off the site; others support it in both versions',
-        'replaced': 'none of the records that supported the site before support it now; other records do',
+        'records_added': 'every record that supported the site before supports it now, and records this version reads for the first time support it too',
+        'changed': 'some records moved onto or off the site, others support it in both versions',
+        'replaced': 'none of the records that supported the site before support it now, other records do',
     },
     'site_change': {
         'kept': 'a site of the previous version too',
@@ -306,6 +366,9 @@ CODES: dict[str, dict[str, str]] = {
         'ambiguous_evidence': 'the evidence supports several sites equally. This version leaves the record unplaced',
         'one_sided_window': 'the site is kept pending a decision (flag one_sided_window)',
         'reference_renumbered': 'the same residue under a new number: UniProt 2026_03 extends the sequence at the N-terminus (RAB12, +96)',
+        'new_record': 'a source record this version reads for the first time (a study table read for the first time) supports the site',
+        'not_localised': 'the source gives nothing that localises the methyl group to one residue (a compiled record, or a study without localisation scores whose peptide leaves several residues): this version places only localised records',
+        'not_unique_in_proteome': 'a localised record whose evidence names several sites in the reviewed proteome, one site in a protein the record does not name, or none: this version places such records only where the evidence is unequivocal',
         'other': 'placement changed for a reason not covered by the codes above',
     },
     'placement': {
@@ -324,9 +387,17 @@ CODES: dict[str, dict[str, str]] = {
         'unresolved_ambiguous_hit': 'not placed: evidence supports several sites equally',
         'unresolved_evidence_elsewhere': 'not placed: the evidence lies elsewhere in the entry, not at the reported position',
         'unresolved_evidence_mismatch': 'not placed: the evidence does not match the entry at the reported position',
-        'unresolved_study_not_unique': 'not placed (study added in v1.1.1): the evidence names more than one site in the reference proteome',
-        'unresolved_study_not_found': 'not placed (study added in v1.1.1): the evidence names no arginine anywhere in the reference proteome',
-        'unresolved_study_other_entry': 'not placed (study added in v1.1.1): the evidence names one site, in a protein the record does not name (the study may have seen the sequence in an isoform or fusion the reference proteome does not hold)',
+        'unresolved_study_not_unique': 'not placed: a localised record whose evidence names more than one site in the reference proteome',
+        'unresolved_study_not_found': 'not placed: a localised record whose evidence names no arginine anywhere in the reference proteome',
+        'unresolved_study_other_entry': 'not placed: a localised record whose evidence names one site, in a protein the record does not name (the study may have seen the sequence in an isoform or fusion the reference proteome does not hold)',
+        'superseded_by_study_table': "not placed: a compiled record (Maron 2021 Table S5, the iPTMnet-format master table) of a study read from its own table, whose records carry the study's localisation",
+        'unresolved_not_localised': 'not placed: the source gives nothing that localises the methyl group to one residue (no localisation score, and a peptide that leaves several residues it could be on, or no peptide)',
+    },
+    'localised_by': {
+        'localisation_score': "the study's localisation score passes its threshold (MaxQuant localisation probability >= 0.75, ptmRS >= 75 %, Ascore or ModScore > 13, ModLS > 8)",
+        'one_methylatable_residue': 'the peptide holds one residue the search could methylate (no other arginine, and no lysine where lysine methylation was searched)',
+        'every_arginine_dimethylated': 'every residue of the peptide the search could methylate is an arginine and every one is dimethylated, so the mass leaves no other arrangement',
+        'curated_experimental': 'UniProt annotates the residue with experimental evidence from the literature (ECO:0000269)',
     },
     'evidence_kind': {
         'window_13': 'a 13-residue window centred on the site',
@@ -337,13 +408,13 @@ CODES: dict[str, dict[str, str]] = {
         'position_only': 'no sequence: the reported position only',
     },
     'source_correction': {
-        'nan_restored': 'Maron 2021 Table S5 gives this Larsen 2016 window without the tripeptide NAN (28 residues, where every other Larsen window has 31; no Larsen window holds NAN, so the letters were read as a missing value when the table was made). Restored where inserting NAN at exactly one place gives the window centred on the reported position of the reported entry',
-        'accession_na': 'Table S5 gives no accession (NA), only a gene symbol and a window; the previous version left the record out. It is placed from its gene symbol and window, and numbered after the records of the previous version',
-        'leucine_restored': "Sylvestersen et al. 2014's export writes every leucine as isoleucine (the two have the same mass). L is written back in the window and peptide where the reported entry, read at the reported position, agrees with them once I and L are taken as one residue; the evidence as given is in evidence_as_reported",
+        'nan_restored': 'Maron 2021 Table S5 gives this Larsen 2016 window without the tripeptide NAN (28 residues, where every other Larsen window has 31, no Larsen window holds NAN, so the letters were read as a missing value when the table was made). Restored where inserting NAN at exactly one place gives the window centred on the reported position of the reported entry',
+        'accession_na': 'Table S5 gives no accession (NA), only a gene symbol and a window. The previous version left the record out. It is placed from its gene symbol and window, and numbered after the records of the previous version',
+        'leucine_restored': "Sylvestersen et al. 2014's export writes every leucine as isoleucine (the two have the same mass). L is written back in the window and peptide where the reported entry, read at the reported position, agrees with them once I and L are taken as one residue. The evidence as given is in evidence_as_reported",
     },
     'evidence_check': {
         'agrees': 'placed on the one site its evidence names',
-        'agrees_reported_arginine': 'placed at the reported arginine, which its peptide or window covers; the evidence covers other arginines of the entry too (a peptide with several arginines, or a window or peptide found more than once), so the reported position picks this one',
+        'agrees_reported_arginine': 'placed at the reported arginine, which its peptide or window covers, the evidence covers other arginines of the entry too (a peptide with several arginines, or a window or peptide found more than once), so the reported position picks this one',
         'agrees_position_only': 'a record with a position and no sequence, placed at that arginine',
         'agrees_no_site': 'not placed, and its evidence names no site on a reviewed entry',
         'one_of_several': 'placed on one of several sites its evidence names',
@@ -396,7 +467,7 @@ SITE_COLUMNS = [
     ('carm1_ko_call', 'code', 'call', 'response to CARM1 knockout (Shishkova et al. 2017), combined over cell lines (supporting/carm1_ko), empty when not measured'),
     ('motifs', 'list<code>', 'motif', 'sequence motifs around the site (scripts/08), in code order'),
     ('disorder', 'code', 'disorder', 'MobiDB predicted disorder at the site (scripts/06)'),
-    ('disorder_edge_distance', 'integer', '', 'residues to the nearest edge of a disordered region, empty with no annotation'),
+    ('disorder_edge_distance', 'integer', '', 'residues to the nearest edge of a disordered region (a protein end is not an edge), empty with no annotation or when the region spans the whole protein'),
     ('domain', 'code', 'domain', 'InterPro 108.0 domain or repeat context (scripts/05)'),
     ('nearest_domain_interpro', 'string', '', 'InterPro accession of the nearest domain or repeat (the innermost when inside several)'),
     ('nearest_domain_name', 'string', '', 'its InterPro name'),
@@ -436,9 +507,10 @@ STUDY_COLUMNS = [
     ('n_sites_in_previous_version', 'integer', '', 'of its sites, those the previous version had'),
     ('n_records_several_sites', 'integer', '', 'records not placed because their evidence names several sites'),
     ('n_records_other_protein', 'integer', '', 'records not placed because their evidence names one site, in a protein the record does not name'),
+    ('n_records_not_localised', 'integer', '', 'records not placed because the source gives no localisation of the methyl group (placement superseded_by_study_table or unresolved_not_localised)'),
     ('n_records_no_site', 'integer', '', 'records not placed for another reason (placement_code in supporting/source_records)'),
     ('note', 'string', '', ''),
-    ('quality', 'string', '', 'for the studies added in v1.1.1: what a record holds, how the study localised the methyl group, and what was kept'),
+    ('quality', 'string', '', 'what a record holds, how the study localised the methyl group, and what was kept'),
 ]
 
 RECORD_COLUMNS = [
@@ -453,14 +525,15 @@ RECORD_COLUMNS = [
     ('reported_position', 'string', '', 'position as reported'),
     ('reported_methyl_state', 'string', '', 'methylation state as reported, in the codes of the site table (ProMetheusDB me = Rme1, di = Rme2)'),
     ('reported_enzyme', 'string', '', 'methyltransferase as reported (PTM master table only)'),
-    ('reported_sample', 'list<string>', '', 'cells or tissue the study measured (the studies added in v1.1.1)'),
-    ('reported_enrichment', 'list<string>', '', 'how the study enriched the peptides, e.g. ADMA IAP (antibody), SCX fractionation, SMN Tudor domain (the studies added in v1.1.1)'),
-    ('reported_detail', 'string', '', 'what else the study gives for the record: the neutral-loss call, the localisation probability, the source rows merged into the record and their tables, the PRMT1 knockdown result (the studies added in v1.1.1)'),
+    ('reported_sample', 'list<string>', '', 'cells or tissue the study measured (records read from a study table)'),
+    ('reported_enrichment', 'list<string>', '', 'how the study enriched the peptides, e.g. ADMA IAP (antibody), SCX fractionation, SMN Tudor domain (records read from a study table)'),
+    ('reported_detail', 'string', '', 'what else the study gives for the record: the neutral-loss call, the localisation probability or score, the source rows merged into the record and their tables, the PRMT1 knockdown result (records read from a study table)'),
     ('evidence_kind', 'code', 'evidence_kind', 'kind of sequence evidence'),
     ('evidence_sequence', 'list<string>', '', 'the window, peptide or marked peptide (a few records give several), as the pipeline reads it: modifications other than methylation, e.g. (ox), are left out, and source_correction says when it was corrected'),
     ('evidence_window', 'list<string>', '', 'the sequence window a marked-peptide record also carries (ProMetheusDB SeqWindow), which the placement uses as well'),
     ('source_correction', 'code', 'source_correction', 'a fault of the source row this version corrects before placing the record'),
     ('evidence_as_reported', 'string', '', 'the evidence as the source gives it, when source_correction changed it'),
+    ('localised_by', 'code', 'localised_by', 'what localises the methyl group to one residue, empty when nothing does (the record is then not placed)'),
     ('placed_site', 'string', '', 'the site this version places the record on, empty when not placed'),
     ('placement_code', 'code', 'placement', 'how the record was placed (scripts/02 remap_status)'),
     ('evidence_check', 'code', 'evidence_check', "independent check of the placement against the record's own evidence (scripts/qc_remap_evidence_check.py)"),
@@ -522,26 +595,26 @@ CODES['analysis'] = {
     'panther_group': 'methylated proteins in a group of PANTHER 19.0 top-level protein classes (config/panther_class_groups.json, scripts/03b), against the other reviewed human proteins. The groups and No PANTHER protein class partition the reviewed proteome: a + c sums to every reviewed entry',
     'panther_class': 'the same for the 24 PANTHER top-level protein classes and No PANTHER protein class (again a partition)',
     'panther_subclass': 'the same for every PANTHER class below the top level with at least 10 reviewed proteins (a protein counts in a class when PANTHER gives it that class or one under it)',
-    'functional_class': 'methylated proteins in a broad functional class (config/functional_ontology.json, scripts/03; the paper\'s keyword classes, which overlap), against the other reviewed human proteins',
+    'functional_class': 'methylated proteins in a broad functional class (config/functional_ontology.json, scripts/03: the paper\'s keyword classes, which overlap), against the other reviewed human proteins',
     'functional_subclass': 'the same for functional subclasses',
     'motif': 'methylarginines with a sequence motif (scripts/08), against the other arginines of the methylated proteins',
     'disorder': 'methylarginines in a disorder class (scripts/06), against the other arginines of the methylated proteins',
     'domain_context': 'methylarginines in a domain context (scripts/05, 07), against the other arginines of the methylated proteins. A protein whose every arginine is a site has no background and is left out (MIF, 5 sites)',
     'domain_class': 'methylarginines whose nearest domain is of a class (scripts/07), against the other arginines of the methylated proteins (MIF left out, as for domain_context)',
-    'disease_family': 'methylarginine-containing proteins (counted by gene) in one of the eight audited disease families (scripts/14), against the other reviewed human genes with a DisGeNET term (DOSE\'s background for the terms); q over the eight',
-    'disease_family_additional': 'the same for the additional disease families (scripts/disease_families.py ADDITIONAL_FAMILY_RULES: rule-based, not audited, applied only to the terms no audited family takes); q over these families',
+    'disease_family': 'methylarginine-containing proteins (counted by gene) in one of the eight audited disease families (scripts/14), against the other reviewed human genes with a DisGeNET term (DOSE\'s background for the terms), q over the eight',
+    'disease_family_additional': 'the same for the additional disease families (scripts/disease_families.py ADDITIONAL_FAMILY_RULES: rule-based, not audited, applied only to the terms no audited family takes), q over these families',
     'condensate': 'methylated proteins among the members of a CD-CODE condensate (scripts/12), against the other condensate proteins',
     'hpa_location': 'methylated proteins at a Human Protein Atlas location, against the other proteins HPA locates (Approved or better)',
     'pdb_interface': 'methylarginines at a PDB interface of a kind (category: rna, dna, protein including self, any), against the other arginines of the same proteins that a PDB structure covers (scripts/37). Strata: all, ordered (outside MobiDB disorder), domain (inside an InterPro domain)',
     'predicted_interface': 'methylarginines at a predicted interface residue (ProtVar, category the pDockQ floor), against the other arginines of the proteins with a predicted interface. Strata: all, ordered, disordered',
-    'crosslink': 'methylarginines with RNA or DNA crosslink evidence of a kind (category), against the other arginines of the proteins with that evidence; the _outside_rg categories leave out arginines in an RG or GR dipeptide',
+    'crosslink': 'methylarginines with RNA or DNA crosslink evidence of a kind (category), against the other arginines of the proteins with that evidence, the _outside_rg categories leave out arginines in an RG or GR dipeptide',
     'intact': 'IntAct: methylarginines whose mutation changes an interaction (against other mutated arginines), and methylarginines inside a binding region of at most 20 residues (against the other arginines of proteins with one)',
-    'go_binding': 'methylated proteins with a Gene Ontology RNA- or DNA-binding annotation (category; _experimental: experimental evidence codes only), against all reviewed human proteins (clusterProfiler enricher, the four annotations as one job)',
+    'go_binding': 'methylated proteins with a Gene Ontology RNA- or DNA-binding annotation (category, _experimental: experimental evidence codes only), against all reviewed human proteins (clusterProfiler enricher, the four annotations as one job)',
 }
 CODES['method'] = {
-    'enricher': 'over-representation analysis with clusterProfiler::enricher (scripts/enrich_sets.R; versions in release.json): for a set with M members in a background of N, of which n are methylated (the targets), p is the one-sided hypergeometric probability of k or more methylated members, and fold_enrichment = (k/n)/(M/N). a = k, b = n - k (methylated proteins outside the set), c = M - k (other members of the set), d = N - M - n + k. q = Benjamini-Hochberg over the sets of the analysis (clusterProfiler p.adjust). A set is tested when it has at least one methylated member and its size is within the analysis\'s range',
+    'enricher': 'over-representation analysis with clusterProfiler::enricher (scripts/enrich_sets.R, versions in release.json): for a set with M members in a background of N, of which n are methylated (the targets), p is the one-sided hypergeometric probability of k or more methylated members, and fold_enrichment = (k/n)/(M/N). a = k, b = n - k (methylated proteins outside the set), c = M - k (other members of the set), d = N - M - n + k. q = Benjamini-Hochberg over the sets of the analysis (clusterProfiler p.adjust). A set is tested when it has at least one methylated member and its size is within the analysis\'s range',
     'fisher': 'two-sided Fisher exact test (scipy), q = Benjamini-Hochberg within the analysis and method. The odds ratio adds 0.5 to each cell (Haldane-Anscombe)',
-    'mantel_haenszel': 'Mantel-Haenszel common odds ratio with each protein a stratum, and the continuity-corrected Cochran-Mantel-Haenszel test (statsmodels); a b c d are the pooled counts. q = Benjamini-Hochberg within the analysis and method',
+    'mantel_haenszel': 'Mantel-Haenszel common odds ratio with each protein a stratum, and the continuity-corrected Cochran-Mantel-Haenszel test (statsmodels), a b c d are the pooled counts. q = Benjamini-Hochberg within the analysis and method',
 }
 CODES['ptm_type'] = {'phospho': 'phosphorylation (S, T, Y)', 'lys_acyl': 'lysine acylation', 'ub_sumo': 'ubiquitination or SUMOylation (K)', 'lys_methyl': 'lysine methylation'}
 

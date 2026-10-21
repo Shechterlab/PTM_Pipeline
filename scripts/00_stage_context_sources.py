@@ -122,10 +122,11 @@ def stage_accession_history(path: Path, fasta_path: Path, timeout: int) -> None:
     syn_headers = download_file(UNIPROT_TSV_URL, {'format': 'tsv', 'query': UNIPROT_QUERY, 'fields': 'accession,gene_synonym'}, syn, timeout=max(timeout, 300))
     table = pd.read_csv(syn, sep='\t', dtype=str).fillna('')
     syn.unlink()
+    # UniProt separates the genes of an entry with '; ' and each gene's synonyms with spaces.
     for acc, names in zip(table['Entry'], table['Gene Names (synonym)']):
-        for name in names.split():
-            if acc in accessions:
-                rows.append(('synonym', name.strip(), acc))
+        for name in re.split(r'[;\s]+', names):
+            if name and acc in accessions:
+                rows.append(('synonym', name, acc))
     out = pd.DataFrame(rows, columns=['kind', 'key', 'accession']).drop_duplicates()
     # sec_ac.txt (FTP) and the synonyms (REST) come from the current release, which can be later than the staged FASTA;
     # entries missing from the FASTA were dropped above, so a later release only adds accessions that point into it.

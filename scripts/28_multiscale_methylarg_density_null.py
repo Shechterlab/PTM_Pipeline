@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import math
+import zlib
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -24,7 +25,7 @@ def max_sites_in_window(positions: np.ndarray, window: int) -> tuple[int, int, i
     best_right = int(positions[0])
     left = 0
     for right in range(len(positions)):
-        while positions[right] - positions[left] > window:
+        while positions[right] - positions[left] > window - 1:   # a window of W residues spans positions p..p+W-1
             left += 1
         count = right - left + 1
         if count > best:
@@ -32,6 +33,29 @@ def max_sites_in_window(positions: np.ndarray, window: int) -> tuple[int, int, i
             best_left = int(positions[left])
             best_right = int(positions[right])
     return best, best_left, best_right
+
+
+def null_max_counts(arg_positions: np.ndarray, methyl_count: int, windows: list[int], permutations: int,
+                    rng: np.random.Generator, chunk: int = 1000) -> dict[int, np.ndarray]:
+    """For each window, the most sites any window of that many residues holds, in each of `permutations` draws of
+    methyl_count arginines (without replacement) from arg_positions: the statistic of max_sites_in_window, vectorised.
+    Each draw's sorted positions are laid end to end, a protein length apart, so one search counts the positions within
+    each window of every draw."""
+    arg_positions = np.asarray(arg_positions, dtype=np.int64)
+    span = int(arg_positions.max()) + max(windows) + 1
+    out = {window: [] for window in windows}
+    done = 0
+    while done < permutations:
+        n = min(chunk, permutations - done)
+        keys = rng.random((n, len(arg_positions)))
+        sample = np.sort(arg_positions[np.argpartition(keys, methyl_count - 1, axis=1)[:, :methyl_count]], axis=1)
+        flat = (sample + np.arange(n, dtype=np.int64)[:, None] * span).ravel()
+        index = np.arange(flat.size)
+        for window in windows:
+            counts = np.searchsorted(flat, flat + window - 1, side='right') - index
+            out[window].append(counts.reshape(n, methyl_count).max(axis=1))
+        done += n
+    return {window: np.concatenate(v) for window, v in out.items()}
 
 
 def window_site_count(positions: np.ndarray, start: int, end: int) -> int:
@@ -54,15 +78,10 @@ def empirical_scan(
         return []
 
     observed = {}
-    null_values = {window: [] for window in windows}
     for window in windows:
         max_count, start, end = max_sites_in_window(methyl_positions, window)
         observed[window] = (max_count, start, end)
-
-    for _ in range(permutations):
-        sampled = np.sort(rng.choice(arg_positions, size=methyl_count, replace=False))
-        for window in windows:
-            null_values[window].append(max_sites_in_window(sampled, window)[0])
+    null_values = null_max_counts(arg_positions, methyl_count, windows, permutations, rng)
 
     rows = []
     for window in windows:
@@ -200,7 +219,7 @@ def main() -> None:
     parser.add_argument("--fasta", default="PTM_data/context/uniprot_human_reviewed_canonical.fasta")
     parser.add_argument("--outdir", default="PTM_results/methyl_arg_clustering")
     parser.add_argument("--windows", nargs="*", type=int, default=[5, 10, 15, 20, 30, 50, 75, 100])
-    parser.add_argument("--permutations", type=int, default=1000)
+    parser.add_argument("--permutations", type=int, default=10000)
     parser.add_argument("--min-sites", type=int, default=3)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--top-n", type=int, default=35)
@@ -215,7 +234,6 @@ def main() -> None:
     sites["corrected_position"] = sites["corrected_position"].astype(int)
     sites = sites.drop_duplicates(["canonical_UniProtAC", "corrected_position"])
 
-    rng = np.random.default_rng(args.seed)
     rows = []
     skipped = 0
     for accession, group in sites.groupby("canonical_UniProtAC", sort=False):
@@ -228,6 +246,8 @@ def main() -> None:
             continue
         gene_values = group["substrate_genename"].dropna().astype(str)
         gene = gene_values.iloc[0] if not gene_values.empty else ""
+        # a generator per protein, from the seed and the accession: a protein's null does not depend on the others
+        rng = np.random.default_rng([args.seed, zlib.crc32(str(accession).encode())])
         for row in empirical_scan(methyl_positions, arg_positions, sorted(set(args.windows)), args.permutations, rng):
             row["canonical_UniProtAC"] = accession
             row["gene"] = gene

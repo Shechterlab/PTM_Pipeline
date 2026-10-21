@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-19",
+  "generated": "2026-10-21",
   "version": "25.1",
   "input": {
     "subcellular": "subcellular_location.tsv.zip",
@@ -22,14 +22,9 @@
   "proteins": 13301,
   "locations": 49,
   "reliability": {
-    "Approved": 14456,
-    "Uncertain": 3826,
+    "Approved": 14460,
+    "Uncertain": 3822,
     "Supported": 7191,
     "Enhanced": 1677
-  },
-  "explorer": {
-    "explorer_proteins_with_hpa": 3941,
-    "universe": 12685,
-    "methylated_in_universe": 3835
   }
 }

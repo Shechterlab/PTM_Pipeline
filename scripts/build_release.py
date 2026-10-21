@@ -112,21 +112,22 @@ def ordered(values, order: list[str]) -> list[str]:
     return [v for v in order if v in values]
 
 
-def study_of(row) -> str:
-    """study_id of a source record."""
-    if row['source_table'] in rc.STUDY_TABLES:
-        return rc.STUDY_TABLES[row['source_table']]
-    if row['source_table'] == 'human_ptm_master':
-        return {'unip': 'UniProt', 'iedb': 'IEDB'}[row['source']]
-    if row['source_table'] == 'prometheus_mmc2':
-        return 'ProMetheusDB'
-    ref = row['reference'].strip()
-    if ref.lower().startswith('this study'):
-        return 'Maron2021'
-    if 'PhosphoSitePlus' in ref:
-        return 'PSP'
-    author = ref.split(' et al.')[0].split()[-1]
-    return author + re.findall(r'\((\d{4})\)', ref)[-1]
+def recommended_name(names: str) -> str:
+    """UniProt's recommended name: its 'Protein names' text up to the first alternative name, a top-level (...) or [...]
+    group that follows a space and is followed by a space or the end. Brackets that belong to the name stay: 'DNA
+    (cytosine-5)-methyltransferase 1', 'Isocitrate dehydrogenase [NADP], mitochondrial', '[Pyruvate dehydrogenase
+    (acetyl-transferring)] kinase isozyme 1, mitochondrial'."""
+    depth, start = 0, -1
+    for k, ch in enumerate(names):
+        if ch in '([':
+            if depth == 0:
+                start = k
+            depth += 1
+        elif ch in ')]' and depth:
+            depth -= 1
+            if depth == 0 and start > 0 and names[start - 1] == ' ' and (k + 1 == len(names) or names[k + 1] == ' '):
+                return names[:start - 1]
+    return names
 
 
 def window_of(row: pd.Series) -> str:
@@ -171,6 +172,10 @@ def record_reason(row: pd.Series, old: str, new: str, reference: dict, typed: pd
     status = row['remap_status']
     if status == 'sequence_peptide_start':
         return 'peptide_start'
+    if status in rc.PLACEMENT_NOT_LOCALISED:
+        return 'not_localised'
+    if status in rc.PLACEMENT_SEVERAL | rc.PLACEMENT_OTHER_PROTEIN | {'unresolved_study_not_found'} and row.get('site_localisation', ''):
+        return 'not_unique_in_proteome'
     evidence = remap.row_evidence(typed)
     windows = [e for e in evidence if e['anchor_type'] in ('centered_window', 'truncated_window')]
     if new and not old:
@@ -214,7 +219,7 @@ def record_reason(row: pd.Series, old: str, new: str, reference: dict, typed: pd
 def build_records(rows, typed, check, allowed, previous, pending_of, shift, reference) -> pd.DataFrame:
     out = []
     for i, r in rows.iterrows():
-        study = study_of(r)
+        study = rc.study_of(r['source_table'], r['source'], r['reference'])
         kind, text = evidence_of(typed.loc[i])
         new = key(r['corrected_canonical_UniProtAC'], r['corrected_position']) if r['is_position_resolved'] == 'True' else ''
         old_published = previous.at[i, 'placed_site'] if i < len(previous) else ''
@@ -252,6 +257,7 @@ def build_records(rows, typed, check, allowed, previous, pending_of, shift, refe
             'evidence_window': window_of(typed.loc[i]) if kind == 'marked_peptide' else '',
             'source_correction': clean(r.get('source_correction', '')),
             'evidence_as_reported': clean(r.get('peptide_sequence_reported', '')),
+            'localised_by': clean(r.get('site_localisation', '')),
             'placed_site': new,
             'placement_code': r['remap_status'],
             'evidence_check': rc.VERDICT_CODE[c['verdict']],
@@ -506,12 +512,14 @@ def build_sites(records, union, pending, reference, entry, previous_sites) -> pd
             reasons = ['reference_renumbered'] if renumbered else []
         else:
             reasons = (['one_sided_window'] if site in pending else []) + sorted(set(group.loc[group['_previous_lifted'] != site, 'reason_code']) - {''})
+            if group['change_since_previous_version'].eq('new_record').any():
+                reasons = sorted(set(reasons) | {'new_record'})
         rows.append({
             'site_id': site,
             'uniprot_accession': acc,
             'uniprot_entry_name': entry(acc, 'Entry Name'),
             'gene': entry(acc, 'Gene Names (primary)'),
-            'protein_name': re.split(r' [(\[]', entry(acc, 'Protein names'))[0],
+            'protein_name': recommended_name(entry(acc, 'Protein names')),
             'position': pos,
             'residue': seq[pos - 1],
             'window_15': window_31[8:23],
@@ -562,6 +570,8 @@ def build_changes(records, sites, previous_sites, shift, entry) -> pd.DataFrame:
             involved = pd.concat([gained, lost])
             kept_records = len(at_before.get(site, [])) - len(lost)
             codes = (['reference_renumbered'] if before[site] != site else []) + sorted(set(involved['reason_code']) - {'', 'reference_renumbered'})
+            if gained['change_since_previous_version'].eq('new_record').any():
+                codes = sorted(set(codes) | {'new_record'})
         elif in_before:
             change = 'removed'
             rows = records.loc[at_before.get(site, [])]
@@ -572,9 +582,13 @@ def build_changes(records, sites, previous_sites, shift, entry) -> pd.DataFrame:
             rows = records.loc[at_now.get(site, [])]
             involved = rows[rows['_previous_lifted'] != site]
             codes = (['one_sided_window'] if site in pending else []) + sorted(set(involved['reason_code']) - {''})
+            if involved['change_since_previous_version'].eq('new_record').any():
+                codes = sorted(set(codes) | {'new_record'})
         if change == 'kept':
             elsewhere = sorted((set(site_of[lost.index]) | set(gained['previous_site'])) - {'', site, before[site]}, key=split_key)
-            records_change = 'same' if involved.empty else 'replaced' if kept_records == 0 else 'changed'
+            only_new = lost.empty and len(gained) and gained['change_since_previous_version'].eq('new_record').all()
+            records_change = ('same' if involved.empty else 'replaced' if kept_records == 0 else 'records_added' if only_new
+                              else 'changed')
         else:
             elsewhere = sorted(set(site_of[involved.index] if change == 'removed' else involved['previous_site']) - {'', site}, key=split_key)
             records_change = ''
@@ -609,12 +623,14 @@ def build_studies(records, sites) -> pd.DataFrame:
         unplaced = group[group['placed_site'] == '']
         several = int(unplaced['placement_code'].isin(rc.PLACEMENT_SEVERAL).sum())
         other = int(unplaced['placement_code'].isin(rc.PLACEMENT_OTHER_PROTEIN).sum())
+        not_localised = int(unplaced['placement_code'].isin(rc.PLACEMENT_NOT_LOCALISED).sum())
         out.append({'study_id': sid, 'label': label, 'source_table': join(ordered(group['source_table'], list(rc.SOURCE_TABLES))),
                     'citation': citation, 'doi': doi, 'licence': rc.STUDY_LICENCE.get(sid, rc.MARON_S5),
                     'n_records': len(group), 'n_records_placed': int((group['placed_site'] != '').sum()),
                     'n_sites': len(supported), 'n_sites_only_here': int((supported.map(len) == 1).sum()),
                     'n_sites_in_previous_version': int(placed.loc[supported.index, 'in_previous_version'].sum()),
-                    'n_records_several_sites': several, 'n_records_other_protein': other, 'n_records_no_site': len(unplaced) - several - other,
+                    'n_records_several_sites': several, 'n_records_other_protein': other, 'n_records_not_localised': not_localised,
+                    'n_records_no_site': len(unplaced) - several - other - not_localised,
                     'note': rc.STUDY_NOTE.get(sid, ''), 'quality': rc.STUDY_QUALITY.get(sid, '')})
     unknown = set(records['study']) - set(rc.STUDY_ORDER)
     if unknown:
@@ -792,12 +808,14 @@ def write_table(df: pd.DataFrame, columns: list[tuple], path: Path) -> None:
         else:
             out[name] = ['' if v is None or (isinstance(v, float) and pd.isna(v)) or v is pd.NA else str(v) for v in col]
         bad = out[name].str.contains('[\t\n\r]', regex=True)
-        if not kind.startswith('list'):
+        if kind.startswith('list'):
+            # items separated by '; ', none empty and none holding ';' itself
+            bad |= out[name].map(lambda v: bool(v) and any(not x or ';' in x for x in v.split('; ')))
+        else:
             bad |= out[name].str.contains(';', regex=False)
         if bad.any():
             raise SystemExit(f'{path.name}: column {name} has a separator inside a value: {out.loc[bad, name].iloc[0]!r}')
-    path.parent.mkdir(parents=True, exist_ok=True)
-    out.to_csv(path, sep='\t', index=False, lineterminator='\n')
+    release_docs.write_plain_tsv(out, path)
 
 
 def main() -> None:

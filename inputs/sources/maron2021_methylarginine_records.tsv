@@ -1,0 +1,135 @@
+study_id	reported_accession	reported_gene	reported_position	peptide	window	methyl_degree	rme2_type	cell_type	enrichment	localisation_probability	n_source_rows	source_tables	note	localised_by
+Maron2021	A0AV96	RBM47	394	APGPR(me2)GSYLGGYSAGR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	A0AV96	RBM47	405	APGPRGSYLGGYSAGR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	O00567	NOP56	359	YGLIFHSTFIGR(me1)		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	Trypsin peptide	one_methylatable_residue
+Maron2021	O14979	HNRNPDL; HNRPDL	408	ASR(me1)GGGNHQNNYQPY		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		5	Table S2; Table S3	Trypsin peptide	one_methylatable_residue
+Maron2021	O14979	HNRNPDL; HNRPDL	408	ASR(me2)GGGNHQNNYQPY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	Trypsin peptide	one_methylatable_residue
+Maron2021	O94788	ALDH1A2	412	GFFIEPTVFSNVTDDMR(me1)		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	Trypsin peptide	one_methylatable_residue
+Maron2021	O94913	PCF11	929	GGHGPSGAAIR(me2)FDGPHGQPGGGIRFE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	O94913	PCF11	942	GGHGPSGAAIRFDGPHGQPGGGIR(me2)FE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	O94913	PCF11	1038	GCHALR(me2)FDGQPGQPSLLPRFDGLHGQPGPRFE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		4	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	O94913	PCF11	1051	GCHALRFDGQPGQPSLLPR(me2)FDGLHGQPGPRFE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		4	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	O94913	PCF11	1062	GCHALRFDGQPGQPSLLPRFDGLHGQPGPR(me2)FE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		4	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	P02708	CHRNA1	46	HR(me2)QVVE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	GluC peptide	one_methylatable_residue
+Maron2021	P07996	THBS1	189	MENAELDVPIQSVFTR(me1)		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	Trypsin peptide	one_methylatable_residue
+Maron2021	P0C0L4	C4A; C4B	1498	VGLSGMAIADVTLLSGFHALR(me1)		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	Trypsin peptide	one_methylatable_residue
+Maron2021	P0DMV9	HSPA1B; HSPA1A	469	LSGIPPAPR(me1)GVPQIE		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		3	Table S2; Table S3	GluC peptide	one_methylatable_residue
+Maron2021	P11142	HSPA8	469	LTGIPPAPR(me1)GVPQIE		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		7	Table S2; Table S3	GluC peptide	one_methylatable_residue
+Maron2021	P16989	CSDA; YBX3	288	NPTYR(me2)PRYR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		6	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P16989	CSDA; YBX3	290	NPTYRPR(me2)YR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		6	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P16989	CSDA; YBX3	292	NPTYRPRYR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		6	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	656	GEGGFGGR(me2)GGGR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	656	GEGGFGGR(me2)GGGRGGFGGRGGGR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	656	GEGGFGGR(me2)GGGRGGFGGRGGGRGGRGGFGGRGRGGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	660	GEGGFGGRGGGR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	660	GEGGFGGRGGGR(me2)GGFGGRGGGR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	660	GEGGFGGRGGGR(me2)GGFGGRGGGRGGRGGFGGRGRGGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	660	GGGR(me2)GGFGGRGGGRGGRGGFGGRGRGGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	666	GEGGFGGRGGGRGGFGGR(me2)GGGR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	666	GEGGFGGRGGGRGGFGGR(me2)GGGRGGRGGFGGRGRGGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	666	GGGRGGFGGR(me2)GGGRGGRGGFGGRGRGGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	670	GEGGFGGRGGGRGGFGGRGGGR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	670	GEGGFGGRGGGRGGFGGRGGGR(me2)GGRGGFGGRGRGGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	670	GGGRGGFGGRGGGR(me2)GGRGGFGGRGRGGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	673	GEGGFGGRGGGRGGFGGRGGGRGGR(me2)GGFGGRGRGGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	673	GGGRGGFGGRGGGRGGR(me2)GGFGGRGRGGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	679	GEGGFGGRGGGRGGFGGRGGGRGGRGGFGGR(me2)GRGGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	679	GGGRGGFGGRGGGRGGRGGFGGR(me2)GRGGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	681	GEGGFGGRGGGRGGFGGRGGGRGGRGGFGGRGR(me2)GGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	681	GGGRGGFGGRGGGRGGRGGFGGRGR(me2)GGFGGRGGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	687	GEGGFGGRGGGRGGFGGRGGGRGGRGGFGGRGRGGFGGR(me2)GGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	687	GGGRGGFGGRGGGRGGRGGFGGRGRGGFGGR(me2)GGFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	691	GEGGFGGRGGGRGGFGGRGGGRGGRGGFGGRGRGGFGGRGGFR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P19338	NCL	691	GGGRGGFGGRGGGRGGRGGFGGRGRGGFGGRGGFR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P20742	PZP	738	PYVPQLGTYNVIPLNNEQSSGPVPETVR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	Trypsin peptide	one_methylatable_residue
+Maron2021	P27695	APEX1	156	VSYGIGDEEHDQEGR(me1)		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	Trypsin peptide	one_methylatable_residue
+Maron2021	P31942	HNRNPH3	343	GGGGSGGYYGQGGMSGGGWR(me1)GMY		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	Trypsin peptide	one_methylatable_residue
+Maron2021	P35637	FUS	377	ADFNR(me2)GGGNGR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P35637	FUS	383	ADFNRGGGNGR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P38159	RBMX	369	DSYSSSSR(me2)GAPRGGGRGGSRSDRGGGRSRY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P38159	RBMX	373	DSYSSSSRGAPR(me2)GGGRGGSRSDRGGGRSRY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P38159	RBMX	377	DSYSSSSRGAPRGGGR(me2)GGSRSDRGGGRSRY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P38159	RBMX	381	DSYSSSSRGAPRGGGRGGSR(me2)SDRGGGRSRY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P38159	RBMX	384	DSYSSSSRGAPRGGGRGGSRSDR(me2)GGGRSRY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P38159	RBMX	384	SDR(me2)GGGRSRY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P38159	RBMX	388	DSYSSSSRGAPRGGGRGGSRSDRGGGR(me2)SRY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P38159	RBMX	388	SDRGGGR(me2)SRY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P38159	RBMX	390	DSYSSSSRGAPRGGGRGGSRSDRGGGRSR(me2)Y		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P38159	RBMX	390	SDRGGGRSR(me2)Y		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P46783	RPS10	153	FQFR(me2)GGFGRGRGQPPQ		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	P46783	RPS10	158	FQFRGGFGR(me2)GRGQPPQ		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	P46783	RPS10	158	GGFGR(me2)GRGQPPQ		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		4	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P46783	RPS10	160	FQFRGGFGRGR(me2)GQPPQ		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	P46783	RPS10	160	GGFGRGR(me2)GQPPQ		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		4	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	P49750		789	GNR(me2)PDGPRPRYE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	P49750		794	GNRPDGPR(me2)PRYE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	P49750		796	GNRPDGPRPR(me2)YE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	P50238	CRIP1	68	GFGR(me1)GGAESHTF		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	one_methylatable_residue
+Maron2021	P55011	SLC12A2	223	AVPR(me2)ID		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	GluC peptide	one_methylatable_residue
+Maron2021	Q00839	HNRNPU	702	NQFNR(me2)GGGHRGRGGFNMRGGNFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		4	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	707	GGGHR(me2)GRGGFNMRGGNFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	707	NQFNRGGGHR(me2)GRGGFNMRGGNFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		4	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	709	GGGHRGR(me2)GGFNMRGGNFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	709	NQFNRGGGHRGR(me2)GGFNMRGGNFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		4	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	715	GGGHRGRGGFNMR(me2)GGNFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	715	NQFNRGGGHRGRGGFNMR(me2)GGNFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		4	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	720	GGGHRGRGGFNMRGGNFR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	720	NQFNRGGGHRGRGGFNMRGGNFR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		4	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	762	APVFPGR(me2)GSYSNR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	762	APVFPGR(me2)GSYSNRGNYNR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	768	APVFPGRGSYSNR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	768	APVFPGRGSYSNR(me2)GNYNR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q00839	HNRNPU	773	APVFPGRGSYSNRGNYNR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q07890	SOS2	1321	LSHPPLYR(me2)LPLLE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		3	Table S2; Table S3	GluC peptide	one_methylatable_residue
+Maron2021	Q08211	DHX9	1242	GPSGGYR(me2)GSGGFQRGGGRGAYGTGYFGQGRGGGGY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q08211	DHX9	1249	GPSGGYRGSGGFQR(me2)GGGRGAYGTGYFGQGRGGGGY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q08211	DHX9	1249	GSGGFQR(me2)GGGRGAYGTGYFGQGRGGGGY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q08211	DHX9	1253	GPSGGYRGSGGFQRGGGR(me2)GAYGTGYFGQGRGGGGY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q08211	DHX9	1253	GSGGFQRGGGR(me2)GAYGTGYFGQGRGGGGY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q08211	DHX9	1265	GPSGGYRGSGGFQRGGGRGAYGTGYFGQGR(me2)GGGGY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q08211	DHX9	1265	GSGGFQRGGGRGAYGTGYFGQGR(me2)GGGGY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q13151	HNRNPA0	291	SNSGPYR(me2)GGYGGGGGYGGSSF		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	Trypsin peptide	one_methylatable_residue
+Maron2021	Q14157	UBAP2L	172	R(me2)GRRGRGRGRGGSGRRGGRFSAQGMGTFNPAD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q14157	UBAP2L	174	RGR(me2)RGRGRGRGGSGRRGGRFSAQGMGTFNPAD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q14157	UBAP2L	175	RGRR(me2)GRGRGRGGSGRRGGRFSAQGMGTFNPAD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q14157	UBAP2L	177	RGRRGR(me2)GRGRGGSGRRGGRFSAQGMGTFNPAD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q14157	UBAP2L	179	RGRRGRGR(me2)GRGGSGRRGGRFSAQGMGTFNPAD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q14157	UBAP2L	181	RGRRGRGRGR(me2)GGSGRRGGRFSAQGMGTFNPAD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q14157	UBAP2L	186	RGRRGRGRGRGGSGR(me2)RGGRFSAQGMGTFNPAD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q14157	UBAP2L	187	RGRRGRGRGRGGSGRR(me2)GGRFSAQGMGTFNPAD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q14157	UBAP2L	190	RGRRGRGRGRGGSGRRGGR(me2)FSAQGMGTFNPAD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q15149	PLEC	650	AGVAAPATQVAQVTLQSVQR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	Trypsin peptide	one_methylatable_residue
+Maron2021	Q15761	NPY5R	302	TACVLPAPER(me1)		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	Trypsin peptide	one_methylatable_residue
+Maron2021	Q16881	TXNRD1	443	VVAQSTNSEEIIEGEYNTVMLAIGR(me1)		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	Trypsin peptide	one_methylatable_residue
+Maron2021	Q5BKZ1	ZNF326	200	AFGGPSTGR(me2)GRGRGHMGD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q5BKZ1	ZNF326	202	AFGGPSTGRGR(me2)GRGHMGD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q5BKZ1	ZNF326	204	AFGGPSTGRGRGR(me2)GHMGD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q86UU0	BCL9L	680	LLR(me2)HQLLE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		3	Table S2; Table S3	GluC peptide	one_methylatable_residue
+Maron2021	Q8IWX8	CHERP	559	FPPR(me2)HPFERPPYPHRFDYPQGD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q8IWX8	CHERP	564	FPPRHPFER(me2)PPYPHRFDYPQGD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q8IWX8	CHERP	564	R(me2)PPYPHRFDYPQGD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q8IWX8	CHERP	570	FPPRHPFERPPYPHR(me2)FDYPQGD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q8IWX8	CHERP	570	RPPYPHR(me2)FDYPQGD		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q8N8A6	DDX51	8	ALFYVAR(me2)YPGPDAAAAAGPEGAE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	GluC peptide	one_methylatable_residue
+Maron2021	Q8NCA5		351	HSSYGGR(me1)GGHE		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		3	Table S2; Table S3	GluC peptide	one_methylatable_residue
+Maron2021	Q8NCA5		514	QHFQHGGYQYNHSGFGQGR(me1)HYTS		Rme1		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		1	Table S2	GluC peptide	one_methylatable_residue
+Maron2021	Q96EV2	RBM33	470	PFFLGVSGEPR(me2)FPSHLFLE		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		5	Table S2; Table S3	GluC peptide	one_methylatable_residue
+Maron2021	Q96SI9	STRBP	608	GVVNTAVSAAVQAVR(me2)GRGRGTLTR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q96SI9	STRBP	610	GVVNTAVSAAVQAVRGR(me2)GRGTLTR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q96SI9	STRBP	612	GVVNTAVSAAVQAVRGRGR(me2)GTLTR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q96SI9	STRBP	617	GVVNTAVSAAVQAVRGRGRGTLTR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q9BZZ5	API5	500	QR(me2)GAFRGSRGGRGWGTRGNRSRGRLY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q9BZZ5	API5	504	QRGAFR(me2)GSRGGRGWGTRGNRSRGRLY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q9BZZ5	API5	507	QRGAFRGSR(me2)GGRGWGTRGNRSRGRLY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q9BZZ5	API5	510	QRGAFRGSRGGR(me2)GWGTRGNRSRGRLY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q9BZZ5	API5	515	QRGAFRGSRGGRGWGTR(me2)GNRSRGRLY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q9BZZ5	API5	518	QRGAFRGSRGGRGWGTRGNR(me2)SRGRLY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q9BZZ5	API5	520	QRGAFRGSRGGRGWGTRGNRSR(me2)GRLY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q9BZZ5	API5	522	QRGAFRGSRGGRGWGTRGNRSRGR(me2)LY		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	GluC peptide	every_arginine_dimethylated
+Maron2021	Q9C0J8	WDR33	10	ATEIGSPPR(me2)FFHMPR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q9C0J8	WDR33	16	ATEIGSPPRFFHMPR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q9Y2W1	THRAP3	901	GR(me2)GAFPRGRGRFMFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q9Y2W1	THRAP3	906	GRGAFPR(me2)GRGRFMFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q9Y2W1	THRAP3	908	GRGAFPRGR(me2)GRFMFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q9Y2W1	THRAP3	910	GRGAFPRGRGR(me2)FMFR		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated
+Maron2021	Q9Y2W1	THRAP3	914	GRGAFPRGRGRFMFR(me2)		Rme2		A549	Rme1, Rme2a and Rme2s antibodies (sequential)		2	Table S3	Trypsin peptide	every_arginine_dimethylated

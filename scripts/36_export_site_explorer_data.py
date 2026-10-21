@@ -22,8 +22,11 @@ from pathlib import Path
 
 import pandas as pd
 
-# Source tables: the three of v1.1.0, then one per study added in v1.1.1 (bits of the site field source_mask).
-SOURCES = ['Maron2021', 'ProMetheusDB', 'human_ptm_master', 'hartel2019', 'geoghegan2015', 'sylvestersen2014', 'lu2025', 'ma2023']
+import release_codes as rc
+
+# Source tables: the three compiled tables of v1.1.0 (Maron2021 is Table S5), then one per study table (bits of the
+# site field source_mask).
+SOURCES = ['Maron2021', 'ProMetheusDB', 'human_ptm_master', *rc.STUDY_TABLES]
 SOURCE_OF_TABLE = {'maron2021_s5': 'Maron2021', 'prometheusdb_mmc2': 'ProMetheusDB', 'ptm_master': 'human_ptm_master',
                    **{t: t for t in SOURCES[3:]}}
 RAW_TABLE = {'maron2021_s5': 'maron_s5', 'prometheusdb_mmc2': 'prometheus_mmc2', 'ptm_master': 'human_ptm_master',
@@ -346,6 +349,11 @@ def main() -> None:
     layer = lambda name: json.loads((inputs / 'layers' / name).read_text()) if (inputs / 'layers' / name).exists() else {}  # noqa: E731
     hpa_note, ko_note = layer('hpa_summary.json'), layer('carm1_ko_summary.json')
     ko_sites = set(carm1['site_id'])
+    # every site the CARM1 knockout study measured (scripts/41 placed them), in the union or not
+    ko_layer = read(inputs / 'layers' / 'carm1_ko_sites.tsv') if (inputs / 'layers' / 'carm1_ko_sites.tsv').exists() else pd.DataFrame(
+        columns=['canonical_UniProtAC', 'position', 'peptides_down'])
+    ko_placed = set(zip(ko_layer['canonical_UniProtAC'], ko_layer['position']))
+    ko_placed_down = set(zip(*(ko_layer.loc[ko_layer['peptides_down'].astype(int) > 0, c] for c in ('canonical_UniProtAC', 'position'))))
     dis = read(inputs / args.disorder_intervals)
     intervals = defaultdict(list)
     for a, s0, s1 in zip(dis['canonical_UniProtAC'], dis['fragment_start'], dis['fragment_end']):
@@ -353,6 +361,7 @@ def main() -> None:
             intervals[a].append([int(float(s0)), int(float(s1))])
     for a, row in zip(acc_list, protein_rows):
         row.append(sorted(intervals.get(a, [])))
+    disorder_field = len(protein_rows[0]) - 1 if protein_rows else 0
 
     # PANTHER protein classes: [group, top-level class (-1: none), the tested subclasses the protein is in]. The
     # release gives each protein's most specific classes; a protein is in every class above them too.
@@ -471,10 +480,10 @@ def main() -> None:
                                        f'peptides down at adj. p <= {PADJ:g}', f'peptides up at adj. p <= {PADJ:g}'],
             'carm1_ko': {'study': ko_note.get('study', 'Shishkova 2017'), 'doi': ko_note.get('doi', '10.1038/ncomms15571'),
                          'cell_lines': CELL_LINES, 'rule': ko_note.get('rule', ''), 'input_sha256': ko_note.get('input_sha256'),
-                         'placed_sites': ko_note.get('placed_sites'), 'placed_sites_down': ko_note.get('placed_sites_down'),
+                         'placed_sites': len(ko_placed), 'placed_sites_down': len(ko_placed_down),
                          'union_sites': len(ko_sites),
                          'union_sites_down': int(carm1.groupby('site_id')['n_decreased'].agg(lambda x: x.astype(int).sum() > 0).sum()),
-                         'not_in_union': (ko_note.get('placed_sites') or 0) - len(ko_sites)},
+                         'not_in_union': len(ko_placed) - len(ko_sites)},
             'hpa': {'version': hpa_note.get('version', ''), 'input_sha256': hpa_note.get('input_sha256', {}), 'locations': hpa_names,
                     'reliability': HPA_RELIABILITY, 'universe': hpa_universe, 'methylated': hpa_methyl,
                     'enrichment_fields': ['location', 'methylated with', 'methylated without', 'other with', 'other without', 'log2 fold enrichment', 'p', 'q'],
@@ -482,7 +491,8 @@ def main() -> None:
                                     sig(r['p']), sig(r['q'])] for n, r in hpa_stats.iterrows()]},
             'disease_family_sets': {'version': 'audited_v1', 'fields': ['terms', 'genes', 'methylarginine_genes'],
                                     'families': [[int(r['n_terms']), int(r['n_genes']), int(r['n_methylated_genes'])] for r in disease_families.to_dict('records')]},
-            'disorder_intervals': {'source': f'MobiDB disorder intervals ({args.disorder_intervals})', 'proteins': sum(1 for r in protein_rows if r[-2])},
+            'disorder_intervals': {'source': f'MobiDB disorder intervals ({args.disorder_intervals})',
+                                   'proteins': sum(1 for r in protein_rows if r[disorder_field])},
         },
         'proteins': protein_rows,
         'sites': site_rows,

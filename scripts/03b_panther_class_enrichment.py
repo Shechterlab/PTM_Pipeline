@@ -19,7 +19,7 @@ being every reviewed protein (the unclassified ones form their own category):
   panther_class     the 24 top-level classes, and the unclassified proteins
   panther_subclass  every class below the top level with at least --min-proteins proteins in the universe
 
-Writes panther_class_enrichment.tsv (one row per test, with the 2x2 counts and each category's parent) and
+Writes panther_class_enrichment.tsv (one row per test, with the 2x2 counts and each category's parent: the group of a top-level class, the top-level class of a subclass) and
 protein_panther_classes.tsv (one row per protein of the universe). Needs Rscript with clusterProfiler on PATH.
 """
 from __future__ import annotations
@@ -128,10 +128,13 @@ def main() -> None:
               + tests('panther_subclass', sub_members, {name[c]: name[top_of[c]] for c in ontology.index if c not in tops and c != 'PC00000'},
                       ids, universe, targets, work, min_size=args.min_proteins))
     pd.DataFrame(result).to_csv(out / 'panther_class_enrichment.tsv', sep='\t', index=False)
-    for analysis in ('panther_group', 'panther_class'):
-        part = [r for r in result if r['analysis'] == analysis]
-        if sum(r['a'] + r['c'] for r in part) != len(universe) or sum(r['a'] for r in part) != len(targets):
-            raise SystemExit(f'{analysis} does not partition the universe')
+    # The groups and the top-level classes must partition the universe. Checked on the categories themselves:
+    # clusterProfiler leaves out a category without a methylated protein, so the tested rows need not add up.
+    for analysis, members in (('panther_group', group_members), ('panther_class', top_members)):
+        listed = [acc for group in members.values() for acc in group]
+        if len(listed) != len(set(listed)) or set(listed) != universe:
+            raise SystemExit(f'{analysis} does not partition the universe: {len(listed)} listed, {len(set(listed))} distinct, '
+                             f'{len(universe)} in the universe, {len(set(listed) - universe)} outside it')
     classified = int((proteins['panther_class_id'] != '').sum())
     print(f'{len(universe):,} reviewed proteins, {len(targets):,} methylated; {classified:,} with a PANTHER class; '
           f'{len(group_members)} groups, {len(top_members)} top-level rows, {len(sub_members)} subclasses of at least {args.min_proteins} proteins, '
