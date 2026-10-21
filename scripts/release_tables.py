@@ -6,7 +6,8 @@ published PTM_results/) and the frozen inputs, and returns tables in the release
 
   proteins            one row per protein of the site table
   statistics          every enrichment test the website or the paper reports, with its 2x2 counts
-  disease_terms       enriched DisGeNET terms
+  disease_terms       enriched DisGeNET terms (DOSE enrichDGN, uncorrected)
+  disease_terms_corrected  every tested DisGeNET term with the test corrected for expression and annotation
   density_windows     significant methylarginine density windows (scripts/28)
   hpa_locations       Human Protein Atlas locations of the proteins
   other_ptm_sites     other modifications on the proteins, from the PTM master table
@@ -90,15 +91,18 @@ def statistics(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
                            'domain_context', 'other arginines of the methylated proteins')
     rows += from_fractions(read(root / 'domain_context' / 'domain_class_enrichment.tsv'), 'category',
                            'domain_class', 'other arginines of the methylated proteins')
+    # Each family: the uncorrected Fisher test, then the Mantel-Haenszel tests corrected for expression, annotation and
+    # both (scripts/14); a b c d are the pooled counts in every row.
     for r in read(root / 'disease' / 'disease_families.tsv').to_dict('records'):
         a, c = int(r['methylarginine_protein_count']), int(r['background_count'])
-        odds = float(r['odds_ratio'])
-        rows.append({'analysis': 'disease_family' if r['audited'] == 'True' else 'disease_family_additional',
-                     'category': r['disease_family'], 'stratum': 'all', 'a': a,
-                     'b': int(r['methylarginine_denominator']) - a, 'c': c, 'd': int(r['background_denominator']) - c,
-                     'odds_ratio': odds, 'log2_odds_ratio': math.log2(odds) if odds > 0 else None,
-                     'p': num(r['p_value']), 'q': num(r['BH_adjusted_p']), 'method': 'fisher',
-                     'background': 'other reviewed human genes (Entrez) with a DisGeNET term', 'n_strata': ''})
+        for suffix, method in (('', 'fisher'), ('_expression', 'mh_expression'), ('_annotation', 'mh_annotation'), ('_corrected', 'mh_expression_annotation')):
+            odds = float(r['odds_ratio' + suffix])
+            rows.append({'analysis': 'disease_family' if r['audited'] == 'True' else 'disease_family_additional',
+                         'category': r['disease_family'], 'stratum': 'all', 'a': a,
+                         'b': int(r['methylarginine_denominator']) - a, 'c': c, 'd': int(r['background_denominator']) - c,
+                         'odds_ratio': odds, 'log2_odds_ratio': math.log2(odds) if odds > 0 else None,
+                         'p': num(r['p_value' + suffix]), 'q': num(r['BH_adjusted_p' + suffix]), 'method': method,
+                         'background': 'other reviewed human genes (Entrez)', 'n_strata': int(r['n_strata' + suffix]) if suffix else ''})
     rows += condensate_rows(root)
     rows += hpa_rows(proteins)
     return pd.DataFrame(rows)
@@ -318,5 +322,25 @@ def condensates_table(root: Path, accs: set) -> pd.DataFrame:
 
 def disease_families_table(root: Path) -> pd.DataFrame:
     f = read(root / 'disease' / 'disease_families.tsv')
-    return pd.DataFrame({'family': f['disease_family'], 'audited': f['audited'] == 'True', 'n_terms': f['contributing_ontology_terms'].astype(int),
-                         'n_genes': f['family_gene_count'].astype(int), 'n_methylated_genes': f['methylarginine_protein_count'].astype(int)})
+    out = pd.DataFrame({'family': f['disease_family'], 'audited': f['audited'] == 'True', 'n_terms': f['contributing_ontology_terms'].astype(int),
+                        'n_genes': f['family_gene_count'].astype(int), 'n_methylated_genes': f['methylarginine_protein_count'].astype(int)})
+    for suffix, name in (('_corrected', 'corrected'), ('', 'uncorrected'), ('_expression', 'expression'), ('_annotation', 'annotation')):
+        out[f'odds_ratio_{name}'] = f['odds_ratio' + suffix].astype(float)
+        out[f'q_{name}'] = f['BH_adjusted_p' + suffix].astype(float)
+    return out
+
+
+def disease_terms_corrected_table(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
+    """Every DisGeNET term tested, with the corrected test (scripts/14 disease_terms_corrected.tsv)."""
+    t = read(root / 'disease' / 'disease_terms_corrected.tsv')
+    by_symbol = defaultdict(list)
+    for acc, sym in zip(proteins['uniprot_accession'], proteins['_label_symbol']):
+        by_symbol[sym].append(acc)
+    return pd.DataFrame({
+        'term_id': t['term_id'], 'term_name': t['term_name'].str.replace('; ', ', ', regex=False).str.replace(';', ',', regex=False), 'family': t['family'],
+        'n_genes_term': t['genes'].astype(int), 'n_methylated': t['methylated'].astype(int),
+        'odds_ratio': t['odds_ratio'].astype(float), 'p': t['p_value'].astype(float), 'q': t['BH_adjusted_p'].astype(float),
+        'dose_enriched': t['dose_enriched'] == 'True', 'dose_p_adjust': t['dose_p_adjust'].map(lambda v: float(v) if v != '' else None),
+        'genes': t['methylated_genes'].map(lambda g: join(split(g, '/'))),
+        'uniprot_accessions': t['methylated_genes'].map(lambda g: join(sorted({a for s in split(g, '/') for a in by_symbol.get(s, [])}))),
+    })

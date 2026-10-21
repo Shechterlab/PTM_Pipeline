@@ -1,10 +1,12 @@
 """Disease families for the DisGeNET enrichment (used by scripts/14_disease_enrichment.py and scripts/34).
 
 Each DisGeNET term is assigned to at most one of eight audited families by the first rule its name matches; a few names
-are assigned by hand (CURATED_OVERRIDES). The rules are those of the paper, except that v1.1.0 adds TDP-43
+are assigned by hand (CURATED_OVERRIDES). The rules are those of the original pipeline (scripts/34; the disease analysis is
+not part of the paper), except that v1.1.0 adds TDP-43
 proteinopathy, Pick disease and anterior horn cell disease to the ALS / motor neuron / FTD rule. A term no audited rule matches goes to the first of the additional families
 (ADDITIONAL_FAMILY_RULES, rule-based and not audited) whose rule it matches; those are tested apart, so the audited
-families and their tests are those of the paper. Terms that match no rule are "Other / unassigned" and are not tested.
+families and their uncorrected tests are those of the original pipeline. Terms that match no rule are "Other / unassigned" and are
+not tested.
 """
 from __future__ import annotations
 

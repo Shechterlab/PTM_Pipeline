@@ -418,7 +418,7 @@ CODES['analysis'] = {
     'disorder': 'methylarginines in a disorder class (scripts/06), against the other arginines of the methylated proteins',
     'domain_context': 'methylarginines in a domain context (scripts/05, 07), against the other arginines of the methylated proteins. A protein whose every arginine is a site has no background and is left out (MIF, 5 sites)',
     'domain_class': 'methylarginines whose nearest domain is of a class (scripts/07), against the other arginines of the methylated proteins (MIF left out, as for domain_context)',
-    'disease_family': 'methylarginine-containing proteins (counted by gene) in one of the eight audited disease families (scripts/14), against the other genes with a DisGeNET term; q over the eight',
+    'disease_family': 'methylarginine-containing proteins (counted by gene) in one of the eight audited disease families (scripts/14), against the other reviewed human genes (Entrez, with or without a DisGeNET term); q over the eight, within each method',
     'disease_family_additional': 'the same for the additional disease families (scripts/disease_families.py ADDITIONAL_FAMILY_RULES: rule-based, not audited, applied only to the terms no audited family takes); q over these families',
     'condensate': 'methylated proteins among the members of a CD-CODE condensate (scripts/12), against the other condensate proteins',
     'hpa_location': 'methylated proteins at a Human Protein Atlas location, against the other proteins HPA locates (Approved or better)',
@@ -431,6 +431,9 @@ CODES['analysis'] = {
 CODES['method'] = {
     'fisher': 'two-sided Fisher exact test, q = Benjamini-Hochberg within the analysis and method. The odds ratio adds 0.5 to each cell (Haldane-Anscombe), except for disease families (plain ratio, as scripts/34)',
     'mantel_haenszel': 'Mantel-Haenszel common odds ratio with each protein a stratum, and the continuity-corrected Cochran-Mantel-Haenszel test (statsmodels); a b c d are the pooled counts. q = Benjamini-Hochberg within the analysis and method',
+    'mh_expression': 'disease families: Mantel-Haenszel odds ratio and continuity-corrected Mantel-Haenszel test over strata of expression (deciles of the gene\'s Human Protein Atlas cell-line median nTPM, and genes without HPA RNA data; scripts/14); a b c d are the pooled counts. q = Benjamini-Hochberg within the analysis and method',
+    'mh_annotation': 'disease families: the same over strata of annotation, the number of DisGeNET terms outside the family that name the gene (none, then quintiles of the others)',
+    'mh_expression_annotation': 'disease families: the same over the joint strata of expression and annotation. The corrected test, which the website shows by default',
 }
 CODES['ptm_type'] = {'phospho': 'phosphorylation (S, T, Y)', 'lys_acyl': 'lysine acylation', 'ub_sumo': 'ubiquitination or SUMOylation (K)', 'lys_methyl': 'lysine methylation'}
 
@@ -561,12 +564,35 @@ CONDENSATE_COLUMNS = [
     ('n_members_methylated', 'integer', '', 'of these, proteins of the site table'),
 ]
 
+DISEASE_TERM_CORRECTED_COLUMNS = [
+    ('term_id', 'string', '', 'DisGeNET term (UMLS CUI)'),
+    ('term_name', 'string', '', 'its name (a ";" inside a name, the list separator, is written ","; the term_id is DisGeNET\'s)'),
+    ('family', 'string', '', 'its disease family (scripts/disease_families.py); empty when none'),
+    ('n_genes_term', 'integer', '', 'genes of the term among the reviewed human genes'),
+    ('n_methylated', 'integer', '', 'of these, the genes of methylarginine-containing proteins'),
+    ('odds_ratio', 'number', '', 'Mantel-Haenszel odds ratio over strata of expression (HPA cell-line median nTPM deciles) and of the gene\'s other DisGeNET terms (scripts/14), against every other reviewed human gene'),
+    ('p', 'number', '', 'continuity-corrected Mantel-Haenszel test'),
+    ('q', 'number', '', 'Benjamini-Hochberg adjusted p value over the tested terms (10 to 300 genes, at least one methylated)'),
+    ('dose_enriched', 'boolean', '', 'among the enriched terms of the uncorrected test (DOSE enrichDGN, supporting/disease_terms)'),
+    ('dose_p_adjust', 'number', '', 'its adjusted p value there, empty when not enriched'),
+    ('genes', 'list<string>', '', 'the genes of the methylarginine-containing proteins in the term (symbols)'),
+    ('uniprot_accessions', 'list<string>', '', 'the proteins of the site table those genes stand for'),
+]
+
 DISEASE_FAMILY_COLUMNS = [
     ('family', 'string', '', 'disease family (scripts/disease_families.py): the eight audited families, then the additional ones, each in order of significance'),
-    ('audited', 'boolean', '', 'one of the eight audited families of the paper (otherwise an additional, rule-based family)'),
+    ('audited', 'boolean', '', 'one of the eight audited families (the original pipeline\'s hand-checked rules, scripts/34; otherwise an additional, rule-based family)'),
     ('n_terms', 'integer', '', 'DisGeNET terms assigned to it'),
     ('n_genes', 'integer', '', 'genes of the universe in at least one of its terms'),
     ('n_methylated_genes', 'integer', '', 'of these, the genes of methylarginine-containing proteins'),
+    ('odds_ratio_corrected', 'number', '', 'odds ratio of the test corrected for expression and annotation (statistics: method mh_expression_annotation), against the other reviewed human genes'),
+    ('q_corrected', 'number', '', 'its Benjamini-Hochberg adjusted p value (over the audited families, or over the additional ones)'),
+    ('odds_ratio_uncorrected', 'number', '', 'odds ratio of the uncorrected Fisher test (statistics: method fisher), as in v1.1.0'),
+    ('q_uncorrected', 'number', '', 'its adjusted p value'),
+    ('odds_ratio_expression', 'number', '', 'odds ratio corrected for expression only (method mh_expression)'),
+    ('q_expression', 'number', '', 'its adjusted p value'),
+    ('odds_ratio_annotation', 'number', '', 'odds ratio corrected for annotation only (method mh_annotation)'),
+    ('q_annotation', 'number', '', 'its adjusted p value'),
 ]
 
 SITE_INTERACTION_COLUMNS = [

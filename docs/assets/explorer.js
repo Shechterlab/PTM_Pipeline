@@ -957,8 +957,8 @@
     panther: 'PANTHER protein class: a group of the overview, a top-level class or a subclass, e.g. rna-processing-and-translation, rna-splicing-factor',
     class: 'Functional class (lab protein ontology), e.g. rna-binding, chromatin',
     subclass: 'Functional subclass (lab protein ontology), e.g. hnrnp, chromatin-readers',
-    disease: 'Disease family (DisGeNET): methylated proteins in the family\'s enriched terms, e.g. als, cancer; als-all is the full audited ALS/MN/FTD gene set',
-    dterm: 'One enriched DisGeNET term, by UMLS id or name: the methylated proteins whose gene it names, e.g. dterm:C2718017 (TDP-43 proteinopathies)',
+    disease: 'Disease family (DisGeNET): the methylated proteins whose gene is in the family\'s gene set (what its test counts), e.g. als, cancer',
+    dterm: 'One DisGeNET term of the term table, by UMLS id or name: the methylated proteins whose gene it names, e.g. dterm:C2718017 (TDP-43 proteinopathies)',
     condensate: 'CD-CODE condensate, e.g. stress-granule, nuclear-speckle',
     location: 'Subcellular location in the Human Protein Atlas (reliability Approved or better), e.g. nucleoli, nuclear-speckles',
     complex: 'Complex Portal complex, by ID (CPX-1234) or name',
@@ -1005,7 +1005,7 @@
       out.forEach((x) => { if (again[x.slug] > 1) x.slug += '-' + (key === 'condensate' ? slugify(M.condensates[x.k][1]) : x.k); });
     }
     if (key === 'disease') {
-      // Each family's full gene set too (every DisGeNET term of the family), as disease:<family>-all.
+      // disease:<family> is the family's gene set; disease:<family>-all, its name before v1.1.1, still works.
       for (const x of out.slice()) if (M.disease_families[x.k] !== 'ALS / motor neuron / FTD') out.push({ k: 'all' + x.k, name: x.name + ', full gene set', slug: x.slug + '-all' });
       out.push({ k: 'als', name: 'ALS / MN / FTD, full audited gene set', slug: 'als-all' });
     }
@@ -1033,26 +1033,51 @@
   const dgnTested = () => 'terms of ' + DGN_TERMS.min + '–' + DGN_TERMS.max + ' genes, p.adjust ≤ ' + DGN_TERMS.padj;
   // Methylated proteins in the enriched DisGeNET terms of disease family k (what disease:<family> lists).
   const diseaseTermCount = (k) => (k >= 0 ? P.reduce((n, p) => n + (p.dis & 2 ** k ? 1 : 0), 0) : 0);
-  // Every enriched DisGeNET term, the ones in no audited family included, for the Disease families card.
+  // The DisGeNET terms for the Disease families card: with the corrected tests (v1.1.1 exports), the terms significant
+  // with the corrected test by default, or the enriched terms of the uncorrected test (DOSE enrichDGN). Rows of
+  // evidence.disease_terms: [UMLS id, name, family, methylated, uncorrected adj. p (null: not enriched there),
+  // corrected OR, corrected q, genes].
   function disTermsHtml() {
     const ev = UI.evd;
     if (!ev) return '<p class="muted small">Loading the terms…</p>';
-    const terms = ev.disease_terms, fam = UI.disFam == null ? '' : UI.disFam;
-    const none = terms.filter((t) => t[2] < 0).length;
-    const shown = terms.filter((t) => fam === '' || (fam === 'none' ? t[2] < 0 : t[2] === +fam));
+    const all = ev.disease_terms, hasCorr = all.some((t) => t.length > 5), tested = ev.disease_terms_tested;
+    const view = hasCorr && UI.disTermView !== 'uncorrected' ? 'corrected' : 'uncorrected';
+    const fam = UI.disFam == null ? '' : UI.disFam;
+    const pool = all.filter((t) => (view === 'corrected' ? t[6] != null && t[6] <= PADJ : t[4] != null));
+    if (view === 'corrected') pool.sort((a, b) => a[6] - b[6] || b[3] - a[3]);
+    const none = pool.filter((t) => t[2] < 0).length;
+    const shown = pool.filter((t) => fam === '' || (fam === 'none' ? t[2] < 0 : t[2] === +fam));
     const famName = (k) => (k >= 0 ? M.disease_families[k] : '');
-    return '<div class="dis-terms"><p class="note">' + fmt(terms.length) + ' DisGeNET terms are enriched among methylated proteins (' + dgnTested() + '); ' +
-      fmt(terms.filter((t) => t[2] >= 0 && !famAudited(t[2])).length) + ' of them belong to an additional family and ' + fmt(none) + ' to no family.</p>' +
-      '<label class="small">Show <select id="dis-fam"><option value="">all terms</option><option value="none"' + (fam === 'none' ? ' selected' : '') + '>terms in no family (' + fmt(none) + ')</option>' +
-      M.disease_families.map((f, k) => '<option value="' + k + '"' + (fam === String(k) ? ' selected' : '') + '>' + esc(f) + (famAudited(k) ? '' : ' (additional)') + '</option>').join('') + '</select></label>' +
-      '<div class="tbl-wrap dis-terms-tbl"><table class="tbl compact"><thead><tr><th>Term</th><th>Family</th><th class="r">Methyl-R proteins</th><th class="r">Adj. p</th></tr></thead><tbody>' +
-      shown.map((t) => '<tr><td><button class="linkish" type="button" data-dterm="' + esc(t[0]) + '" title="List the ' + fmt(t[3]) + ' methylated proteins whose gene this term names">' + esc(t[1]) + '</button> <span class="muted mono small">' + esc(t[0]) + '</span></td><td class="muted">' + esc(famName(t[2])) + '</td><td class="r num">' + fmt(t[3]) +
-        '</td><td class="r num">' + fmtP(t[4]) + '</td></tr>').join('') + '</tbody></table></div></div>';
+    const note = view === 'corrected' && tested
+      ? fmt(tested.terms) + ' DisGeNET terms of ' + DGN_TERMS.min + '–' + DGN_TERMS.max + ' genes were tested with the corrected test (strata of expression and annotation, as the families); <b>' + fmt(tested.enriched) + '</b> are enriched and <b>' + fmt(tested.depleted) + '</b> depleted (BH ≤ ' + PADJ + '). Without correction, ' + fmt(tested.uncorrected_enriched) + ' are enriched (DOSE enrichDGN). Every tested term, enriched or not, is in the release (supporting/disease_terms_corrected).'
+      : fmt(pool.length) + ' DisGeNET terms are enriched among methylated proteins without correction (DOSE enrichDGN, ' + dgnTested() + '); ' + fmt(pool.filter((t) => t[2] >= 0 && !famAudited(t[2])).length) + ' of them belong to an additional family and ' + fmt(none) + ' to no family.' +
+        (hasCorr ? ' The last column is the corrected test\'s q.' : '');
+    const head = view === 'corrected' ? '<th class="r">OR</th><th class="r">q</th>' : '<th class="r">Adj. p</th>' + (hasCorr ? '<th class="r">Corr. q</th>' : '');
+    const cells = (t) => (view === 'corrected' ? '<td class="r num">' + (t[5] == null ? '—' : t[5].toFixed(2)) + '</td><td class="r num">' + fmtP(t[6]) + '</td>'
+      : '<td class="r num">' + fmtP(t[4]) + '</td>' + (hasCorr ? '<td class="r num' + (t[6] != null && t[6] <= PADJ ? '' : ' muted') + '">' + (t[6] == null ? '—' : fmtP(t[6])) + '</td>' : ''));
+    return '<div class="dis-terms"><p class="note">' + note + '</p>' +
+      '<div class="dis-term-controls">' + (hasCorr ? '<label class="small">Terms <select id="dis-termview"><option value="corrected"' + (view === 'corrected' ? ' selected' : '') + '>significant with the corrected test</option><option value="uncorrected"' + (view === 'uncorrected' ? ' selected' : '') + '>enriched without correction (DOSE)</option></select></label>' : '') +
+      '<label class="small">Show <select id="dis-fam"><option value="">all families</option><option value="none"' + (fam === 'none' ? ' selected' : '') + '>terms in no family (' + fmt(none) + ')</option>' +
+      M.disease_families.map((f, k) => '<option value="' + k + '"' + (fam === String(k) ? ' selected' : '') + '>' + esc(f) + (famAudited(k) ? '' : ' (additional)') + '</option>').join('') + '</select></label></div>' +
+      (shown.length ? '<div class="tbl-wrap dis-terms-tbl"><table class="tbl compact"><thead><tr><th>Term and family</th><th class="r" title="Methylarginine-containing proteins whose gene the term names">Methyl-R</th>' + head + '</tr></thead><tbody>' +
+      shown.map((t) => '<tr><td><button class="linkish" type="button" data-dterm="' + esc(t[0]) + '" title="List the ' + fmt(t[3]) + ' methylated proteins whose gene this term names">' + esc(t[1]) + '</button> <span class="muted mono small">' + esc(t[0]) + '</span>' +
+        (t[2] >= 0 ? '<span class="dis-term-fam">' + esc(famName(t[2])) + '</span>' : '') + '</td><td class="r num">' + fmt(t[3]) +
+        '</td>' + cells(t) + '</tr>').join('') + '</tbody></table></div>' : '<p class="muted small">No term of this family.</p>') + '</div>';
   }
   // In the full audited ALS/MN/FTD gene set (disease:als-all): the family-membership export when present, else the
   // older symbol-and-alias flag.
-  // The eight audited families of the paper; the others are rule-based additions (scripts/disease_families.py).
+  // The eight audited families (the original pipeline's hand-checked rules); the others are rule-based additions (scripts/disease_families.py).
   const famAudited = (k) => !M.disease_family_audited || !!M.disease_family_audited[k];
+  // The family tests of the export, the default first (scripts/14: corrected for expression and annotation, uncorrected,
+  // each correction alone). Rows of M.overview.disease_families are [family, methylated genes, genes, then the odds ratio
+  // and q of each test]; an export before v1.1.1 has the uncorrected test only.
+  const disTests = () => M.disease_tests || [['uncorrected', 'Uncorrected']];
+  const disTestIx = () => Math.min(UI.disTest || 0, disTests().length - 1);
+  const famOR = (r, t = disTestIx()) => r[3 + 2 * t];
+  const famQ = (r, t = disTestIx()) => r[4 + 2 * t];
+  const disTestLabel = (t = disTestIx()) => disTests()[t][1];
+  const disTestShort = (t = disTestIx()) => ({ corrected: 'corrected for expression and annotation', uncorrected: 'uncorrected', expression: 'corrected for expression', annotation: 'corrected for annotation' })[disTests()[t][0]] || disTests()[t][1];
+  const famTestsHtml = (r) => disTests().map((t, i) => esc(t[1]) + ': OR ' + (famOR(r, i) || 0).toFixed(2) + ', q ' + fmtP(famQ(r, i))).join('<br>');
   const nAudited = () => M.disease_families.filter((_, k) => famAudited(k)).length;
   // In the full gene set of family k (any DisGeNET term of the family names the gene).
   const familyMember = (k) => (p) => !!p.disFam && p.disFam.some((x) => x[0] === k);
@@ -1090,11 +1115,11 @@
           : key === 'panther' ? pantherTest(k)
           : key === 'class' ? (p) => p.func & bit
             : key === 'subclass' ? (p) => p.sub & bit
-              : key === 'disease' ? (k === 'als' ? alsMember : typeof k === 'string' ? familyMember(+k.slice(3)) : (p) => p.dis & bit)
+              : key === 'disease' ? (k === 'als' ? alsMember : familyMember(typeof k === 'string' ? +k.slice(3) : k))
                 : key === 'complex' ? (p) => (p.cx || []).includes(k)
                   : key === 'location' ? (p) => p.hpa.some((x) => x[0] === k && x[1] >= HPA_SURE)
                   : (p, f) => (f.condConf ? (cdMemberships(p) || []).some((c) => c.ci === k && c.score >= f.condConf) : p.cond.includes(k));
-      return { text: x.slug, label: key === 'complex' ? x.name + ' (' + x.slug + ')' : key === 'disease' && typeof k === 'number' ? x.name + ' (enriched terms)' : x.name, kind: key === 'study' || key === 'domain' ? 'site' : 'prot', k, test };
+      return { text: x.slug, label: key === 'complex' ? x.name + ' (' + x.slug + ')' : x.name, kind: key === 'study' || key === 'domain' ? 'site' : 'prot', k, test };
     }
     if (key === 'dterm') {
       // The enriched DisGeNET terms are in the evidence file: until it loads the term matches nothing, then the
@@ -1851,7 +1876,7 @@
       case 'protein': return (pantherMeta() ? '<div class="fgroup"><label class="flabel" for="f-panther">Protein class (PANTHER ' + esc(pantherMeta().version) + ')</label>' + termSelect('f-panther', 'panther', pantherOptions()) + '</div>' : '') +
         '<div class="fgroup"><label class="flabel" for="f-func">Functional class (DeAngelo et al., 2026)</label>' + termSelect('f-func', 'class', termOptions(M.func_classes.map((c, k) => [termSlug('class', k), c]).sort((a, b) => a[1].localeCompare(b[1])))) + '</div>' +
         '<div class="fgroup"><label class="flabel" for="f-sub">Functional subclass</label>' + termSelect('f-sub', 'subclass', subclassOptions('')) + '</div>' +
-        '<div class="fgroup"><label class="flabel" for="f-disease">Disease family (DisGeNET)</label>' + termSelect('f-disease', 'disease', termOptions(termNames('disease').map((x) => [x.slug, x.k !== 'als' && !diseaseTermCount(x.k) ? x.name + ' (no enriched term)' : x.name, x.k !== 'als' && !diseaseTermCount(x.k)]))) + '</div>' +
+        '<div class="fgroup"><label class="flabel" for="f-disease">Disease family (DisGeNET)</label>' + termSelect('f-disease', 'disease', termOptions(termNames('disease').filter((x) => typeof x.k === 'number').map((x) => [x.slug, x.name + (famAudited(x.k) ? '' : ' (additional)')]))) + '</div>' +
         '<div class="fgroup"><label class="flabel" for="f-cond">CD-CODE condensate (methylated members)</label>' + termSelect('f-cond', 'condensate', termOptions(condOpts.map(([k, l]) => [termSlug('condensate', k), l]))) +
         '<label class="check"><input type="checkbox" id="f-anycond"' + (F.anyCond ? ' checked' : '') + '> In any CD-CODE condensate</label>' +
         '<label class="flabel" for="f-condconf" title="CD-CODE\'s 0–5 confidence that the protein belongs to the condensate">Membership confidence (CD-CODE)</label>' +
@@ -2366,25 +2391,23 @@
       const r = (ov.functional_subclasses || []).find((x) => x[0] === name);
       if (r) card('Functional subclass of ' + (r[6] || '—'), name, fmt(r[1]) + ' methylarginine proteins; log2 OR <b>' + fmtL2(r[4]) + '</b>, q ' + fmtP(r[5]) + ' vs the reviewed background.');
     }
-    if (typeof one('disease') === 'string' && one('disease').startsWith('all')) {
-      const fk = +one('disease').slice(3), name = M.disease_families[fk], sets = M.disease_family_sets;
-      const n = P.filter(familyMember(fk)).length;
-      card('Disease family, full gene set' + (famAudited(fk) ? '' : ' (additional, rule-based)'), name, 'The <b>' + fmt(n) + '</b> methylated proteins whose gene is named by any DisGeNET term of the family' + (sets && sets.families[fk] ? ' (' + fmt(sets.families[fk][0]) + ' terms, ' + fmt(sets.families[fk][1]) + ' genes)' : '') + ', not only by its enriched terms.');
-    } else if (one('disease') != null) {
-      if (one('disease') === 'als') card('Audited disease family', 'ALS / motor neuron / FTD (full gene set)', 'Every gene in the audited ALS/MN/FTD family, not only genes in enriched terms.');
-      else {
-        const name = M.disease_families[one('disease')];
-        const r = ov.disease_families.find((x) => x[0] === name);
-        const n = diseaseTermCount(one('disease'));
-        if (r) card('Audited disease family (DisGeNET)', name, (n ? 'Listed here: the <b>' + fmt(n) + '</b> methylated proteins in this family\'s enriched DisGeNET terms (DOSE enrichDGN, ' + dgnTested() + ').' : 'No DisGeNET term of this family is enriched on its own (DOSE enrichDGN, ' + dgnTested() + '), so no proteins are listed.') + ' For context, ' + fmt(r[1]) + ' of the ' + fmt(r[2]) + ' proteins in the whole family\'s gene set contain a methylarginine (counted by gene); OR <b>' + (r[3] || 0).toFixed(2) + '</b>, BH-adjusted p ' + fmtP(r[4]) + '.' +
-          (M.disease_families[one('disease')] === 'ALS / motor neuron / FTD' ? (() => { const a = P.filter(alsMember); const iso = a.filter((p) => p.iso).length, unrev = a.filter((p) => p.unrev).length;
-            const also = [iso ? fmt(iso) + ' isoform entr' + (iso === 1 ? 'y' : 'ies') : '', unrev ? fmt(unrev) + ' unreviewed' : ''].filter(Boolean);
-            return ' <code>disease:als-all</code> lists all ' + fmt(a.length) + ' methylated UniProt entries (' + fmt(new Set(a.map((p) => p.gene.toUpperCase())).size) + ' genes' + (also.length ? '; ' + also.join(' and ') + ' included' : '') + ') of the full audited gene set.'; })() : ''));
-      }
+    if (one('disease') != null) {
+      // Any form of disease:<family> lists the family's gene set: disease:<family>, disease:<family>-all and disease:als-all.
+      const d = one('disease'), fk = d === 'als' ? M.disease_families.indexOf('ALS / motor neuron / FTD') : typeof d === 'string' ? +d.slice(3) : d;
+      const name = M.disease_families[fk], sets = M.disease_family_sets, r = ov.disease_families.find((x) => x[0] === name);
+      const a = P.filter(d === 'als' ? alsMember : familyMember(fk));
+      const iso = a.filter((p) => p.iso).length, unrev = a.filter((p) => p.unrev).length;
+      const also = [iso ? fmt(iso) + ' isoform entr' + (iso === 1 ? 'y' : 'ies') : '', unrev ? fmt(unrev) + ' unreviewed' : ''].filter(Boolean);
+      if (name) card('Disease family (DisGeNET)' + (famAudited(fk) ? '' : ', additional (rule-based)'), name, 'The <b>' + fmt(a.length) + '</b> methylated UniProt entries' + (also.length ? ' (' + also.join(' and ') + ' included)' : '') + ' whose gene is named by any DisGeNET term of the family' +
+        (sets && sets.families[fk] ? ' (' + fmt(sets.families[fk][0]) + ' terms, ' + fmt(sets.families[fk][1]) + ' genes)' : '') + ', which is what the family test counts.' +
+        (r ? ' ' + fmt(r[1]) + ' of the ' + fmt(r[2]) + ' genes of the family are those of methylarginine-containing proteins; ' + disTests().map((t, k) => esc(t[1].charAt(0).toLowerCase() + t[1].slice(1)) + ': OR <b>' + (famOR(r, k) || 0).toFixed(2) + '</b>, q ' + fmtP(famQ(r, k))).join('; ') + '.' : ''));
     }
     if (one('dterm') != null && UI.evd) {
       const t = UI.evd.disease_terms[one('dterm')];
-      if (t) card('DisGeNET term' + (t[2] >= 0 ? ' · ' + M.disease_families[t[2]] : ''), t[1], esc(t[0]) + ' · enriched among methylated proteins (DOSE enrichDGN, adj. p ' + fmtP(t[4]) + '); listed: the ' + fmt(t[3]) + ' methylated proteins whose gene it names. <a href="https://www.ncbi.nlm.nih.gov/medgen/?term=' + encodeURIComponent(t[0]) + '" target="_blank" rel="noopener">MedGen ↗</a>');
+      if (t) card('DisGeNET term' + (t[2] >= 0 ? ' · ' + M.disease_families[t[2]] : ''), t[1], esc(t[0]) + ' · ' +
+        (t[5] != null ? 'corrected for expression and annotation: OR <b>' + t[5].toFixed(2) + '</b>, q ' + fmtP(t[6]) + '; ' : '') +
+        (t[4] != null ? 'without correction enriched (DOSE enrichDGN, adj. p ' + fmtP(t[4]) + ')' : 'not enriched without correction') +
+        '. Listed: the ' + fmt(t[3]) + ' methylated proteins whose gene it names. <a href="https://www.ncbi.nlm.nih.gov/medgen/?term=' + encodeURIComponent(t[0]) + '" target="_blank" rel="noopener">MedGen ↗</a>');
     }
     if (one('study') != null) {
       const k = one('study');
@@ -2602,6 +2625,9 @@
     return { lo, hi, ticks, xp: (v) => ((v - lo) / (hi - lo)) * 100 };
   }
 
+  // A compact chart's narrow track labels 0 and every other tick when it has more than five.
+  const tickShown = (spec, sc, i) => !spec.compact || sc.ticks.length <= 5 || (i - sc.ticks.indexOf(0)) % 2 === 0;
+
   function hbars(spec) {
     const rows = spec.rows;
     const sc = niceScale(rows);
@@ -2620,7 +2646,7 @@
         '<span class="hb-bar' + (r.sig || spec.noSig ? '' : ' ns') + (v < 0 ? ' neg' : '') + '" style="left:' + a.toFixed(2) + '%;width:' + Math.max(0.6, b - a).toFixed(2) + '%"></span></span>' +
         '<span class="hb-val">' + vfmt(r.value) + '</span>' + (spec.sel ? selCell(r.sel) : '') + '</button>';
     }).join('') + '</div>' +
-      '<div class="hb-axis' + cls + '" aria-hidden="true"><span></span>' + (spec.extraCol ? '<span></span>' : '') + '<span class="ticks">' + sc.ticks.map((t) => '<span style="left:' + sc.xp(t).toFixed(2) + '%">' + tfmt(t) + '</span>').join('') + '</span><span></span>' + (spec.sel ? '<span></span>' : '') + '</div>' +
+      '<div class="hb-axis' + cls + '" aria-hidden="true"><span></span>' + (spec.extraCol ? '<span></span>' : '') + '<span class="ticks">' + sc.ticks.map((t, i) => '<span style="left:' + sc.xp(t).toFixed(2) + '%">' + (tickShown(spec, sc, i) ? tfmt(t) : '') + '</span>').join('') + '</span><span></span>' + (spec.sel ? '<span></span>' : '') + '</div>' +
       (spec.treeNote && rows.some((r) => r.sub) ? '<p class="chart-tree-note">' + spec.treeNote + '</p>' : '') +
       '<div class="chart-key">' + (spec.noSig ? '' : spec.compact ? '<span><i></i>Enriched (q ≤ 0.05)</span><span><i class="neg"></i>Depleted (q ≤ 0.05)</span><span><i class="ns"></i>Not significant</span>' :
         '<span><i></i>More than expected, q ≤ 0.05</span><span><i class="neg"></i>Less than expected, q ≤ 0.05</span><span><i class="ns"></i>Not significant</span>') + (spec.sel ? selKeyHtml(spec.sel) : '') + '<span>' + esc(spec.axis || 'log2 odds ratio vs background') + '</span></div>';
@@ -2820,20 +2846,19 @@
       footHtml: '<button class="linkish" type="button" id="func-more" style="margin-top:.5rem">' + (UI.funcExpanded ? 'Hide subclasses' : 'Show ' + subs.length + ' subclasses') + '</button>',
     };
     const dis = {
-      id: 'ch-dis', title: 'Disease families', subHtml: 'Methylated proteins vs the reviewed human proteome, by DisGeNET disease family. Association, not causation.' + docLink('ov-disease'),
-      subText: (UI.disMore ? 'Audited and additional' : 'Audited') + ' DisGeNET disease families vs the reviewed background', axis: 'log2 odds ratio vs reviewed background', extraCol: true, extraName: 'methylarginine_proteins_of_family',
-      tsvCols: [['methylated_proteins_in_enriched_terms', (r) => r.inTerms]], compact: true, format: fmtL1, heads: ['Family', 'methyl-R/all', '', 'log2 OR'],
+      id: 'ch-dis', title: 'Disease families', subHtml: 'Methylated proteins vs the reviewed human proteome, by DisGeNET disease family, ' + esc(disTestShort()) + '. Association, not causation.' + docLink('ov-disease'),
+      subText: (UI.disMore ? 'Audited and additional' : 'Audited') + ' DisGeNET disease families vs the reviewed human genes, ' + disTestShort(), axis: 'log2 odds ratio, ' + disTestShort(), extraCol: true, extraName: 'methylarginine_proteins_of_family',
+      tsvCols: [['test', () => disTestLabel()]], compact: true, format: fmtL1, heads: ['Family', 'methyl-R/all', '', 'log2 OR'],
       rows: ov.disease_families.filter((r) => UI.disMore || famAudited(M.disease_families.indexOf(r[0]))).map((r) => {
-        const fk = M.disease_families.indexOf(r[0]), audited = famAudited(fk);
-        const inTerms = diseaseTermCount(fk);
-        return { label: r[0], value: r[3] ? Math.log2(r[3]) : null, q: r[4], sig: sigq(r[4]), key: r[0], extra: ofTotal(r[1], r[2]), inTerms,
-          note: inTerms ? '' : 'no enriched term', extraRow: !audited, audited, fk,
-          title: '<b>' + esc(r[0]) + '</b><br>' + fmt(r[1]) + ' of the ' + fmt(r[2]) + ' proteins in the family\'s gene set contain a methylarginine (counted by gene), OR ' + (r[3] || 0).toFixed(2) + ', BH-adjusted p ' + fmtP(r[4]) +
-            '<br>' + (inTerms ? 'Click: the ' + fmt(inTerms) + ' methylated proteins in this family\'s enriched DisGeNET terms (' + dgnTested() + ')' : 'No term of this family is enriched on its own (' + dgnTested() + '). Click: the ' + fmt(P.filter(fk >= 0 ? familyMember(fk) : () => false).length) + ' methylated proteins of its full gene set') };
+        const fk = M.disease_families.indexOf(r[0]), audited = famAudited(fk), or = famOR(r), q = famQ(r);
+        return { label: r[0], value: or ? Math.log2(or) : null, q, sig: sigq(q), key: r[0], extra: ofTotal(r[1], r[2]), extraRow: !audited, audited, fk,
+          title: '<b>' + esc(r[0]) + '</b><br>' + fmt(r[1]) + ' of the ' + fmt(r[2]) + ' proteins in the family\'s gene set contain a methylarginine (counted by gene)<br>' + famTestsHtml(r) +
+            '<br>Click: the ' + fmt(P.filter(fk >= 0 ? familyMember(fk) : () => false).length) + ' methylated proteins of its gene set' };
       }).sort((a, b) => (b.audited - a.audited) || b.value - a.value).map((r, k, all) => (!r.audited && (k === 0 || all[k - 1].audited) ? Object.assign(r, { head: 'Additional families (rule-based, not audited; tested apart)' }) : r)),
-      footHtml: '<div class="chart-links">' + (M.disease_family_audited && M.disease_families.length > nAudited() ? '<button class="linkish" type="button" id="dis-fams">' +
+      footHtml: (disTests().length > 1 ? '<label class="small chart-test">Test <select id="dis-test">' + disTests().map((t, i) => '<option value="' + i + '"' + (i === disTestIx() ? ' selected' : '') + '>' + esc(t[1]) + '</option>').join('') + '</select></label>' : '') +
+        '<div class="chart-links">' + (M.disease_family_audited && M.disease_families.length > nAudited() ? '<button class="linkish" type="button" id="dis-fams">' +
         (UI.disMore ? 'Show the ' + nAudited() + ' audited families only' : 'Show ' + (M.disease_families.length - nAudited()) + ' more families (rule-based, not audited)') + '</button>' : '') +
-        '<button class="linkish" type="button" id="dis-more">' + (UI.disTerms ? 'Hide the enriched terms' : 'Show every enriched DisGeNET term') + '</button></div>' +
+        '<button class="linkish" type="button" id="dis-more">' + (UI.disTerms ? 'Hide the DisGeNET terms' : 'Show the DisGeNET terms') + '</button></div>' +
         (UI.disTerms ? disTermsHtml() : ''),
     };
     // Fixed categories keep their logical order (inside to outside); ranked lists say so and sort by value.
@@ -2865,8 +2890,8 @@
     if (pan) markSelection(pan, 'proteins', (r) => pantherTest(r.key));
     markSelection(func, 'proteins', (r) => (r.kind === 'sub' ? ix(M.func_subclasses, r.key) >= 0 && ((p) => p.sub & 2 ** ix(M.func_subclasses, r.key))
       : ix(M.func_classes, r.key) >= 0 && ((p) => p.func & 2 ** ix(M.func_classes, r.key))));
-    // A family with enriched terms counts the proteins in them; one without counts its full gene set (what a click lists).
-    markSelection(dis, 'proteins', (r) => r.fk >= 0 && (r.inTerms ? (p) => p.dis & 2 ** r.fk : familyMember(r.fk)), 'Selected proteins in the family\'s enriched terms (its gene set where none is enriched)');
+    // A family counts the selected proteins of its gene set (what a click lists).
+    markSelection(dis, 'proteins', (r) => r.fk >= 0 && familyMember(r.fk), 'Selected proteins in the family\'s gene set');
     markSelection(disorder, 'sites', (r) => ix(M.disorder_classes, r.key) >= 0 && ((s) => s.dc === ix(M.disorder_classes, r.key)));
     markSelection(domctx, 'sites', (r) => ix(M.domain_contexts, r.key) >= 0 && ((s) => s.dctx === ix(M.domain_contexts, r.key)));
     markSelection(domcls, 'sites', (r) => ix(M.domain_classes, r.key) >= 0 && ((s) => s.dcls === ix(M.domain_classes, r.key)));
@@ -2987,8 +3012,12 @@
         : pickTerm('class', termSlug('class', M.func_classes.indexOf(r.key)), 'proteins')));
       $('#func-more', el).addEventListener('click', () => { UI.funcExpanded = !UI.funcExpanded; renderDash(el, page); });
     }
-    // A family none of whose terms is enriched lists the methylated proteins of its full gene set instead.
-    bindBars($('#ch-dis', el), dis.rows, (r) => pickTerm('disease', r.inTerms ? termSlug('disease', r.fk) : M.disease_families[r.fk] === 'ALS / motor neuron / FTD' ? 'als-all' : termSlug('disease', 'all' + r.fk), 'proteins'));
+    // A family lists the methylated proteins of its gene set, which is what its test counts.
+    bindBars($('#ch-dis', el), dis.rows, (r) => pickTerm('disease', termSlug('disease', r.fk), 'proteins'));
+    const dt = $('#dis-test', el);
+    if (dt) dt.addEventListener('change', () => { UI.disTest = +dt.value; renderDash(el, page); });
+    const dv = $('#dis-termview', el);
+    if (dv) dv.addEventListener('change', () => { UI.disTermView = dv.value; UI.disFam = ''; renderDash(el, page); });
     $$('[data-dterm]', el).forEach((b) => b.addEventListener('click', () => pickTerm('dterm', b.dataset.dterm, 'proteins')));
     const dfm = $('#dis-fams', el);
     if (dfm) dfm.addEventListener('click', () => { UI.disMore = !UI.disMore; renderDash(el, page); });
@@ -3870,7 +3899,8 @@
         const fi = M.disease_families.indexOf(g);
         return '<details><summary>' + (fi >= 0 ? '<button class="linkish strong" type="button" data-fam="' + fi + '">' + esc(g) + '</button>' : '<span class="strong">' + esc(g) + '</span>') +
           ' <span class="muted">' + terms.length + ' term' + (terms.length === 1 ? '' : 's') + '</span></summary><ul class="term-list">' +
-          terms.map((t) => '<li title="' + esc('Term enrichment across all methylarginine proteins: p.adjust ' + fmtP(t[4])) + '"><a href="https://www.ncbi.nlm.nih.gov/medgen/?term=' + encodeURIComponent(t[0]) + '" target="_blank" rel="noopener" title="' + esc(t[0] + ' (UMLS) in NCBI MedGen') + '">' + esc(t[1]) + '</a> <span class="muted">· ' + esc(t[0]) + (UI.ctx === 'dataset' ? ' · p.adj ' + fmtP(t[4]) : '') + '</span></li>').join('') + '</ul></details>';
+          terms.map((t) => '<li title="' + esc('Term enrichment across all methylarginine proteins: ' + (t[4] != null ? 'without correction p.adjust ' + fmtP(t[4]) : 'not enriched without correction') + (t[5] != null ? '; corrected for expression and annotation OR ' + t[5].toFixed(2) + ', q ' + fmtP(t[6]) : '')) + '"><a href="https://www.ncbi.nlm.nih.gov/medgen/?term=' + encodeURIComponent(t[0]) + '" target="_blank" rel="noopener" title="' + esc(t[0] + ' (UMLS) in NCBI MedGen') + '">' + esc(t[1]) + '</a> <span class="muted">· ' + esc(t[0]) + (UI.ctx === 'dataset' ? ' · p.adj ' + (t[4] != null ? fmtP(t[4]) : '—') : '') + '</span>' +
+            (t[6] != null && t[6] <= PADJ ? ' <span class="tag' + (t[5] > 1 ? '' : ' src') + '" title="Significant with the test corrected for expression and annotation">' + (t[5] > 1 ? 'holds after correction' : 'depleted after correction') + '</span>' : '') + '</li>').join('') + '</ul></details>';
       }).join('') + '</div>' : '<p class="muted">' + esc(p.label) + ' is in none of the enriched DisGeNET terms.</p>';
     } else dg = '<p class="note">Loading terms…</p>';
     box.innerHTML = '<h3>Disease associations</h3>' +
@@ -3878,11 +3908,13 @@
       '<p class="flabel">Curated in UniProt</p>' + uni +
       '<p class="flabel">Open Targets association scores</p><div id="ot-box">' + (u && u.ensg && u.ensg.length ? '<p class="note">Loading Open Targets…</p>' : '<p class="muted">' + (u === undefined ? 'Waiting for UniProt…' : 'No Ensembl gene for this entry.') + '</p>') + '</div>' +
       diseaseFamiliesHtml(p, ev) +
-      '<details class="dataset-ctx"' + (UI.ctx === 'dataset' ? ' open' : '') + '><summary class="flabel">Dataset context: DisGeNET terms enriched among all methylarginine proteins that include ' + esc(p.label) + '</summary>' +
-      '<p class="note">These terms were tested for enrichment across the whole methylarginine set (DOSE enrichDGN; ' + dgnTested() + ', so broader terms are never tested on their own); the gene–term link is DisGeNET\'s, the statistics are about the set. Association, not causation.</p>' + dg + '</details>';
+      '<details class="dataset-ctx"' + (UI.ctx === 'dataset' ? ' open' : '') + '><summary class="flabel">Dataset context: DisGeNET terms significant across all methylarginine proteins that include ' + esc(p.label) + '</summary>' +
+      '<p class="note">These terms were tested for enrichment across the whole methylarginine set (DOSE enrichDGN; ' + dgnTested() + ', so broader terms are never tested on their own)' +
+        (ev && ev.disease_terms_tested ? ', and again corrected for expression and annotation, as the family tests: few terms hold after correction (' + fmt(ev.disease_terms_tested.enriched) + ' of ' + fmt(ev.disease_terms_tested.terms) + ' tested), and those are tagged' : '') +
+        '; the gene–term link is DisGeNET\'s, the statistics are about the set. Association, not causation.</p>' + dg + '</details>';
     $$('[data-fam]', box).forEach((b2) => b2.addEventListener('click', (e) => { e.preventDefault(); setTerm('disease', termSlug('disease', b2.dataset.fam === 'als' ? 'als' : +b2.dataset.fam), 'proteins'); }));
     // Summary line: UniProt-curated diseases, then the audited families (in the card's order) whose gene sets hold the gene.
-    const famOrder = M.overview.disease_families.filter((r) => famAudited(M.disease_families.indexOf(r[0]))).sort((a, b) => (b[3] || 0) - (a[3] || 0)).map((r) => r[0]);
+    const famOrder = M.overview.disease_families.filter((r) => famAudited(M.disease_families.indexOf(r[0]))).sort((a, b) => (famOR(b) || 0) - (famOR(a) || 0)).map((r) => r[0]);
     const fams = p.disFam ? famOrder.filter((n) => p.disFam.some((x) => M.disease_families[x[0]] === n)) : alsMember(p) ? ['ALS / motor neuron / FTD'] : [];
     setFoldSummary('p-dis', [u ? (u.diseases.length ? 'UniProt: ' + sumList(u.diseases.map((d) => d.acronym || d.name), 2) : 'none curated in UniProt') : '',
       fams.length ? 'families: ' + sumList(fams, 2) : 'in no audited disease family'].filter(Boolean).join(' · '));
@@ -3906,22 +3938,28 @@
   function diseaseFamiliesHtml(p, ev) {
     if (!p.disFam) return '';
     const sets = M.disease_family_sets, rows = M.overview.disease_families;
-    const enr = {};
-    if (ev) for (const k of ev.protein_disease_terms[p.i] || []) { const f = ev.disease_terms[k][2]; if (f >= 0) enr[f] = (enr[f] || 0) + 1; }
-    const order = rows.slice().map((r) => M.disease_families.indexOf(r[0])).sort((a, b) => (famAudited(b) - famAudited(a)) || ((rows.find((x) => x[0] === M.disease_families[b]) || [])[3] || 0) - ((rows.find((x) => x[0] === M.disease_families[a]) || [])[3] || 0));
+    // Terms naming the gene: enriched without correction (DOSE), and enriched with the corrected test.
+    const enr = {}, corr = {};
+    if (ev) for (const k of ev.protein_disease_terms[p.i] || []) {
+      const t = ev.disease_terms[k], f = t[2];
+      if (f < 0) continue;
+      if (t[4] != null) enr[f] = (enr[f] || 0) + 1;
+      if (t[6] != null && t[6] <= PADJ && t[5] > 1) corr[f] = (corr[f] || 0) + 1;
+    }
+    const famRowOf = (k) => rows.find((x) => x[0] === M.disease_families[k]) || [];
+    const order = rows.slice().map((r) => M.disease_families.indexOf(r[0])).sort((a, b) => (famAudited(b) - famAudited(a)) || (famOR(famRowOf(b)) || 0) - (famOR(famRowOf(a)) || 0));
     const mine = new Map(p.disFam);
     const items = order.filter((k) => mine.has(k)).map((k) => {
       const n = mine.get(k), tot = sets && sets.families[k] ? sets.families[k][0] : null, r = rows.find((x) => x[0] === M.disease_families[k]);
-      const listed = diseaseTermCount(k) > 0;
-      const name = listed ? '<button class="linkish strong" type="button" data-fam="' + k + '" title="List the methylated proteins in this family\'s enriched terms">' + esc(M.disease_families[k]) + '</button>' : '<b>' + esc(M.disease_families[k]) + '</b>';
+      const name = '<button class="linkish strong" type="button" data-fam="' + k + '" title="List the methylated proteins of this family\'s gene set">' + esc(M.disease_families[k]) + '</button>';
       return '<li>' + name + (famAudited(k) ? '' : ' <span class="tag src" title="Rule-based family, not audited (scripts/disease_families.py)">additional</span>') + ' <span class="muted">· named in ' + fmt(n) + (tot ? ' of its ' + fmt(tot) : '') + ' term' + ((tot || n) === 1 ? '' : 's') +
-        (ev ? (enr[k] ? ', ' + enr[k] + ' enriched' : ', none enriched') : '') + '</span>' +
-        (UI.ctx === 'dataset' && r ? ' <span class="tag' + (r[4] != null && r[4] <= PADJ ? '' : ' src') + '" title="' + esc('Family test across all methylarginine-containing proteins: ' + fmt(r[1]) + ' of ' + fmt(r[2]) + ' proteins of the family contain a methylarginine, OR ' + (r[3] || 0).toFixed(2) + ', BH-adjusted p ' + fmtP(r[4])) + '">' + fmtL2(r[3] ? Math.log2(r[3]) : null) + '</span>' : '') + '</li>';
+        (ev ? (enr[k] ? ', ' + enr[k] + ' enriched without correction' : ', none enriched without correction') + (corr[k] ? ', ' + corr[k] + ' with it' : '') : '') + '</span>' +
+        (UI.ctx === 'dataset' && r ? ' <span class="tag' + (famQ(r) != null && famQ(r) <= PADJ ? '' : ' src') + '" title="' + esc('Family test across all methylarginine-containing proteins, ' + disTestShort() + ': ' + fmt(r[1]) + ' of ' + fmt(r[2]) + ' genes of the family are those of methylarginine-containing proteins, OR ' + (famOR(r) || 0).toFixed(2) + ', BH-adjusted p ' + fmtP(famQ(r))) + '">' + fmtL2(famOR(r) ? Math.log2(famOR(r)) : null) + '</span>' : '') + '</li>';
     });
     return '<p class="flabel">Disease families (DisGeNET)</p>' +
       (items.length ? '<ul class="term-list fam-list">' + items.join('') + '</ul>' : '<p class="muted">' + esc(p.label) + ' is in none of the family gene sets.</p>') +
       '<p class="note">Families whose gene set (every DisGeNET term of the family) includes ' + esc(p.label) + ', so it counts toward that family\'s test on the Overview' +
-      (UI.ctx === 'dataset' ? ' (tags: the family\'s log2 OR; outlined = not significant)' : '') + '. Enriched: terms enriched among all methylarginine proteins (' + dgnTested() + '), listed below.</p>';
+      (UI.ctx === 'dataset' ? ' (tags: the family\'s log2 OR, ' + esc(disTestShort()) + '; outlined = not significant)' : '') + '. Enriched: terms enriched among all methylarginine proteins (' + dgnTested() + '), listed below.</p>';
   }
 
   function renderClusterCard(p) {
@@ -9730,8 +9768,11 @@
       ['overview', 'Overview charts', '<p>Bars show log2 odds ratios; filled bars have a Benjamini–Hochberg q ≤ 0.05, outlined bars do not. The bars and their statistics always describe the whole dataset; clicking a bar filters the Proteins and Sites views. With a search or filter set, an orange count after each bar gives how many of the selected proteins or sites fall in it, bars the selection does not reach are faded, and the Enriched features card at the top lists what sets the selection apart. Exported charts and their TSV files carry the same counts.</p>' +
         sub('ov-ontology', 'Protein classes', (pantherMeta() ? '<p><b>Protein classes (PANTHER ' + esc(pantherMeta().version) + ').</b> PANTHER gives each protein it classifies one top-level protein class (24 in all), and the overview groups these into ' + pantherMeta().groups.filter((g) => g !== pantherMeta().unclassified).length + ' (config/panther_class_groups.json). With the proteins PANTHER leaves unclassified, the groups partition the ' + fmt(pantherMeta().universe) + ' reviewed human proteins (' + esc(referenceLabel()) + '), so their counts add up to it. Each row compares methylated proteins with the other reviewed proteins (two-sided Fisher test; odds ratio with 0.5 added to each cell; Benjamini-Hochberg q within the groups, the classes or the subclasses). <i>Show the PANTHER classes</i> lists the top-level classes of each group; <i>Show the subclasses</i> lists every class below them with at least 10 proteins. A protein counts in every class above its own, so subclasses overlap. Search <code>panther:</code> for any of them. The release gives each protein\'s group, class, most specific classes and family (scripts/03b).</p>' : '') +
           '<p><b>Functional ontology (DeAngelo et al., 2026).</b> The keyword classes represented in DeAngelo et al., 2026 (config/functional_ontology.json, scripts/03), assigned from UniProt names, keywords and domains; a protein can belong to several, so these classes overlap and do not add up. The overview charts the PANTHER classes instead; the keyword classes stay as a filter (<code>class:</code>, <code>subclass:</code>), on protein pages, as an optional column of the Proteins table and in the release statistics (analyses functional_class and functional_subclass). Each class is compared between methylated proteins and the other reviewed human proteins (Fisher, BH).</p>') +
-        sub('ov-disease', 'Disease families', '<p>DisGeNET terms (the gene–term mapping shipped with DOSE) are assigned to ' + nAudited() + ' audited families by label rules with a fixed precedence (scripts/34)' + (M.disease_families.length > nAudited() ? ', and the terms none of them takes to ' + (M.disease_families.length - nAudited()) + ' additional families by further rules (scripts/disease_families.py ADDITIONAL_FAMILY_RULES; rule-based and not audited, mostly clinical signs). The chart shows the audited families, ranked by enrichment; “Show more families” adds the others, tested and BH-adjusted apart so that the audited results are those of the paper' : '') + '. Each family\'s gene set is the union of its terms\' genes in the reviewed-human universe, each gene counted once. A bar is that family\'s two-sided Fisher exact test, methylated proteins against the rest of the universe, BH-adjusted across the ' + nAudited() + ' audited families (the additional families among themselves). This is enrichment of disease gene sets among methylated proteins, not causation, and the families overlap heavily (scripts/34 writes the pairwise gene overlaps), so they are not independent findings.</p>' +
-          '<p>Clicking a bar (or <code>disease:cancer</code>, <code>disease:als</code> in the search) lists something narrower: the methylated proteins in that family\'s individually enriched terms (DOSE enrichDGN, ' + dgnTested() + '). Terms with more than ' + DGN_TERMS.max + ' genes, usually the broadest disease names, count in their family\'s test but are never tested on their own, so their genes reach the list only through smaller enriched terms. A family none of whose terms is enriched on its own' + (() => { const e = M.disease_families.filter((_, i) => !diseaseTermCount(i)); return e.length ? ' (' + esc(e.join(', ')) + ' in the current data)' : ''; })() + ' is marked “no enriched term”, and a click on it lists the methylated proteins of its full gene set instead (<code>disease:&lt;family&gt;-all</code>). In the term table, a click on a term lists the methylated proteins it names (<code>dterm:</code>). <code>disease:als-all</code> lists every methylated protein in the full audited ALS/MN/FTD gene set. Protein pages name every family whose gene set holds the protein, which is what the family test counts, and how many of its terms are enriched.</p>') +
+        sub('ov-disease', 'Disease families', '<p>DisGeNET terms (the gene–term mapping shipped with DOSE) are assigned to ' + nAudited() + ' audited families by label rules with a fixed precedence (the original pipeline\'s hand-checked rules, scripts/34; the disease analysis is not part of the paper)' + (M.disease_families.length > nAudited() ? ', and the terms none of them takes to ' + (M.disease_families.length - nAudited()) + ' additional families by further rules (scripts/disease_families.py ADDITIONAL_FAMILY_RULES; rule-based and not audited, mostly clinical signs). The chart shows the audited families; “Show more families” adds the others, tested and BH-adjusted apart' : '') + '. Each family\'s gene set is the union of its terms\' genes among the reviewed human genes, each gene counted once.</p>' +
+          '<p>Every test compares the genes of methylarginine-containing proteins with all other reviewed human genes, with or without a DisGeNET term. Without correction (a two-sided Fisher test, as in v1.1.0) every family is enriched, infection, skin and respiratory disease included: the proteins found methylated are the ones mass spectrometry of cell lines detects, highly expressed and well studied, so they carry more disease terms of every kind. ' +
+          (M.disease_tests ? 'The default test corrects for both: a Mantel–Haenszel odds ratio, with the continuity-corrected Mantel–Haenszel test, over strata of expression (deciles of the gene\'s Human Protein Atlas 25.1 cell-line median nTPM, and one stratum for genes without HPA RNA data) and of annotation (how many DisGeNET terms outside the family name the gene: none, then quintiles), BH-adjusted as above (scripts/14). The selector under the chart shows the uncorrected test or either correction alone. The correction is conservative: genes are also studied more because they matter in disease, so it can remove real signal. ' : '') +
+          'This is enrichment of disease gene sets among methylated proteins, not causation, and the families overlap heavily (scripts/34 writes the pairwise gene overlaps), so they are not independent findings.</p>' +
+          '<p>Clicking a bar (or <code>disease:cancer</code>, <code>disease:als</code> in the search) lists the methylated proteins of the family\'s gene set, which is what its test counts (<code>disease:&lt;family&gt;-all</code>, the name before v1.1.1, does the same). “Show the DisGeNET terms” lists the terms of ' + DGN_TERMS.min + '–' + DGN_TERMS.max + ' genes ' + (M.disease_tests ? 'significant with the corrected test, enriched or depleted, or those enriched without correction (DOSE enrichDGN, ' + dgnTested() + ')' : 'enriched among methylated proteins (DOSE enrichDGN, ' + dgnTested() + ')') + '; terms with more than ' + DGN_TERMS.max + ' genes, usually the broadest disease names, count in their family\'s test but are never tested on their own. A click on a term lists the methylated proteins it names (<code>dterm:</code>). Protein pages name every family whose gene set holds the protein and how many of its terms are enriched' + (M.disease_tests ? ', without and with correction' : '') + '.</p>') +
         sub('ov-motifs', 'Sequence motifs', '<p>Motifs are read from a ±7 window on the canonical sequence and compared between methylated arginines and the other arginines of the same proteins: ' + M.motifs.map((m) => esc(MOTIF_LABEL[m]) + ' (' + esc(MOTIF_HELP[m]) + ')').join('; ') + '.</p>') +
         sub('ov-condensates', 'Condensates', '<p>CD-CODE condensates with at least five counted members; the bar is the log2 odds ratio of methylated members against the other proteins in any human CD-CODE condensate (Fisher, BH), and the numbers are methylated / members. "Count members" sets which memberships count: all of them, from the pipeline\'s CD-CODE export (scripts/12), or only those with CD-CODE confidence ≥ 2, 3 or 4 of 5, read from the CD-CODE ' + esc((IX && IX.meta && IX.meta.cdcode_version) || '') + ' API (scripts/37; reviewed proteins, the background being proteins in any condensate there), so condensates whose member lists rest on single proteomics screens do not dominate. The page opens at ≥ 3. ' + condHistNote() + '</p>') +
         (hpaMeta() ? sub('ov-location', 'Subcellular location', '<p>Human Protein Atlas' + (hpaMeta().version ? ' ' + esc(hpaMeta().version) : '') + ' subcellular locations (' + doiLink('10.1126/science.aal3321', 'Thul et al. 2017') + '; CC BY 4.0), mapped to canonical UniProt entries with HPA\'s own Ensembl–UniProt table (scripts/42). Each location carries HPA\'s reliability (Enhanced, Supported, Approved or Uncertain); searches (<code>location:</code>), the filter and the test count Approved or better. For each location the bar is the log2 odds ratio of methylated against the other ' + fmt(hpaMeta().universe - hpaMeta().methylated) + ' HPA-profiled proteins (' + fmt(hpaMeta().methylated) + ' methylated proteins profiled; Fisher test, Benjamini–Hochberg q). Locations with fewer than 10 profiled proteins are not drawn. Protein pages list the locations, main ones first, beside the CD-CODE condensates.</p>') : '') +
@@ -9789,7 +9830,7 @@
       '<li><b>Clustering</b>: nearest methyl-R spacing and maximum sites in 3–50 aa windows per protein; dense windows come from a multiscale rolling-window scan against a same-protein arginine null (1,000 permutations, q ≤ 0.05). Architecture classes describe proteins with ≥3 sites in a 20 aa span.</li>' +
       '<li><b>Arg enrichment</b> (see Arginine enrichment of a protein) groups sites by UniProt accession. (v1.0.0 grouped them by accession and gene symbol, so a protein whose sources used two symbols, such as MRE11/MRE11A, was tested in two parts.)</li>' +
       '<li><b>Condensates</b> are CD-CODE memberships; condensate-level enrichment uses condensates with at least five members.</li>' +
-      '<li><b>Disease</b> associations list DisGeNET terms enriched among methylarginine proteins (DOSE enrichDGN, ' + dgnTested() + ') that include the gene or one of its synonyms, grouped into the audited disease families; the family filters (<code>disease:als</code>, …) use these terms, and <code>disease:als-all</code> the full audited ALS/MN/FTD family gene set (see Disease families).</li>' +
+      '<li><b>Disease</b> associations list DisGeNET terms enriched among methylarginine proteins (DOSE enrichDGN, ' + dgnTested() + (M.disease_tests ? '; tagged where they hold after correction for expression and annotation' : '') + ') that include the gene or one of its synonyms, grouped into the disease families; the family filters (<code>disease:als</code>, …) list each family\'s full gene set (see Disease families).</li>' +
       '</ul>' +
       ''],
       ['protein-pages', 'Live annotations on protein pages', '' +

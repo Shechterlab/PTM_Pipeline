@@ -1403,6 +1403,11 @@ details.fold > summary { padding: 0.95rem 1.35rem; }
 .dis-terms { display: grid; gap: 0.5rem; margin-top: 0.6rem; }
 .dis-terms .note { margin: 0; }
 .dis-terms select { margin-left: 0.3rem; max-width: 16rem; }
+.dis-term-controls { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; }
+.dis-terms-tbl td:first-child, .dis-terms-tbl td:first-child .linkish { text-align: left; }
+.dis-term-fam { display: block; font-size: 0.74rem; color: var(--muted); }
+.chart-test { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.5rem; }
+.chart-test select { max-width: 100%; }
 .dis-terms-tbl { max-height: 22rem; overflow-y: auto; }
 @media print { .dis-terms-tbl { max-height: none; overflow: visible; } }
 .hb.sub2 .hb-label { padding-left: 2.2rem; }

@@ -177,7 +177,8 @@ FILE_ROWS = {
     'residue_evidence': 'run of residues of a protein with the same interaction evidence',
     'protein_partners': 'protein and STRING physical partner (score >= 0.7)',
     'complexes': 'Complex Portal or hu.MAP complex with a methylated member',
-    'disease_terms': 'enriched DisGeNET term (DOSE enrichDGN)',
+    'disease_terms': 'enriched DisGeNET term (DOSE enrichDGN, uncorrected)',
+    'disease_terms_corrected': 'DisGeNET term tested with the test corrected for expression and annotation, enriched or not',
     'disease_families': 'disease family: terms and genes',
     'density_windows': 'protein and window width with significantly dense sites (q <= 0.05)',
     'condensates': 'CD-CODE condensate: name, type, members and methylated members',
@@ -407,6 +408,15 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         f'DisGeNET terms none of them takes now go to {len(ADDITIONAL_FAMILIES)} additional, rule-based families '
         '(scripts/disease_families.py ADDITIONAL_FAMILY_RULES: mostly clinical signs, by organ system), tested and '
         'BH-adjusted apart (statistics: disease_family_additional). They are not audited.',
+        '- **Disease families corrected for expression and annotation.** Tested against every reviewed gene, every family '
+        'came out enriched, including infection, skin and respiratory disease, because the proteins found methylated are '
+        'highly expressed in cell lines and well studied, so they carry more disease terms of every kind. Each family is '
+        'now also tested with Mantel-Haenszel odds ratios over strata of expression (Human Protein Atlas 25.1 cell-line '
+        'median nTPM, inputs/annotation/hpa_25.1_rna_expression.tsv) and of annotation (DisGeNET terms outside the family '
+        'that name the gene), apart and together (statistics: methods mh_expression, mh_annotation, mh_expression_annotation; '
+        'supporting/disease_families). The corrected test is the website\'s default; the uncorrected Fisher test of earlier '
+        'versions is kept. Every term with 10 to 300 genes is tested the same way (supporting/disease_terms_corrected), '
+        'enriched or not.',
         f"- **Methylation degree at each site** (`methyl_state`, {n(c['with_state'])} of {n(c['sites'])} sites). "
         f"{previous} gave a degree only from ProMetheusDB. This version also counts Maron et al. 2021 Table S2, UniProt's "
         'modified-residue annotations with experimental evidence (inferred ones are listed apart) and the two studies that '

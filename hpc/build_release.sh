@@ -139,7 +139,8 @@ step "Maron 2021 summaries (scripts/16)" python "$CODE/scripts/16_maron_state_tr
 step "disease enrichment (scripts/14)" python "$CODE/scripts/14_disease_enrichment.py" \
   --labels "$WORK/functional_class_union/protein_functional_labels.tsv" \
   --term-genes "$IN/disease/dose_4.4.0_disgenet_term_genes.tsv" \
-  --symbol-entrez "$IN/disease/orghsegdb_3.22.0_symbol_entrez.tsv" --outdir "$WORK/disease"
+  --symbol-entrez "$IN/disease/orghsegdb_3.22.0_symbol_entrez.tsv" \
+  --expression "$IN/annotation/hpa_25.1_rna_expression.tsv" --outdir "$WORK/disease"
 
 release() {
   python "$CODE/scripts/build_release.py" --results-root "$WORK" --previous "$CODE/releases/v1.0.0" --inputs "$IN" \

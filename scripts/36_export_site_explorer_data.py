@@ -40,6 +40,9 @@ CELL_LINES = ['MCF7', 'MDA-MB-231']
 WEB_STUDY = {'PSP': 'PhosphoSitePlus'}
 WINDOW_FLANK = 15
 PADJ = 0.05
+# The disease family tests of the release (supporting/disease_families columns odds_ratio_<name>, q_<name>), the default first.
+DISEASE_TESTS = [('corrected', 'Corrected for expression and annotation'), ('uncorrected', 'Uncorrected (as in v1.1.0)'),
+                 ('expression', 'Corrected for expression only'), ('annotation', 'Corrected for annotation only')]
 
 
 def read(path: Path) -> pd.DataFrame:
@@ -120,6 +123,7 @@ def main() -> None:
     inhibitors = t('supporting/maron2021_inhibitors_{v}.tsv')
     carm1 = t('supporting/carm1_ko_{v}.tsv')
     disease_terms = t('supporting/disease_terms_{v}.tsv')
+    terms_corrected = t('supporting/disease_terms_corrected_{v}.tsv')
     disease_families = t('supporting/disease_families_{v}.tsv')
     density = t('supporting/density_windows_{v}.tsv')
     hpa = t('supporting/hpa_locations_{v}.tsv')
@@ -136,10 +140,17 @@ def main() -> None:
     cond_vocab = Vocab(list(condensates['condensate_id']))
     families = list(disease_families['family'])
     family_idx = {f: k for k, f in enumerate(families)}
-    term_family = [family_idx.get(f, -1) for f in disease_terms['family']]
+    # The site's term list: the enriched terms of the uncorrected test (DOSE), in order, each with its corrected odds ratio
+    # and q, then the terms significant only with the corrected test (scripts/14).
+    corrected_of = terms_corrected.set_index('term_id')
+    extra_terms = terms_corrected[(terms_corrected['q'].astype(float) <= PADJ) & ~terms_corrected['term_id'].isin(set(disease_terms['term_id']))]
+    n_dose_terms = len(disease_terms)
+    site_terms = [[r['term_id'], r['term_name'], r['family'], int(r['n_methylated']), r['p_adjust'], r['uniprot_accessions']] for r in disease_terms.to_dict('records')]
+    site_terms += [[r['term_id'], r['term_name'], r['family'], int(r['n_methylated']), None, r['uniprot_accessions']] for r in extra_terms.to_dict('records')]
+    term_family = [family_idx.get(x[2], -1) for x in site_terms]
     protein_terms = defaultdict(list)
-    for k, accs in enumerate(disease_terms['uniprot_accessions']):
-        for a in L(accs):
+    for k, x in enumerate(site_terms):
+        for a in L(x[5]):
             protein_terms[a].append(k)
     dens = defaultdict(list)
     for r in density.to_dict('records'):
@@ -159,7 +170,7 @@ def main() -> None:
         terms = sorted(protein_terms.get(a, []))
         fam_mask = 0
         for k in terms:
-            if term_family[k] >= 0:
+            if k < n_dose_terms and term_family[k] >= 0:   # families of the enriched terms of the uncorrected test
                 fam_mask |= 1 << term_family[k]
         best = None
         if p['best_window_aa']:
@@ -271,7 +282,6 @@ def main() -> None:
         for sub in L(p['functional_subclasses']):
             for broad in L(p['functional_classes']):
                 parent[sub][broad] += 1
-    fam_stats = stats[stats['analysis'].isin(['disease_family', 'disease_family_additional'])].set_index('category')
     treatments = []
     for drug in MARON_TREATMENTS:
         for ip in ('SDMA', 'ADMA', 'MMA'):
@@ -352,8 +362,11 @@ def main() -> None:
             'func_classes': func_classes.values, 'func_subclasses': func_subclasses.values,
             'disorder_classes': disorder_classes.values, 'domain_contexts': domain_contexts.values, 'domain_classes': domain_classes.values,
             'disease_families': families,
-            # the eight audited families of the paper come first; the others are rule-based additions (scripts/disease_families.py)
+            # the eight audited families (the original pipeline's hand-checked rules) come first; the others are rule-based additions (scripts/disease_families.py)
             'disease_family_audited': [r['audited'] == 'true' for r in disease_families.to_dict('records')],
+            # The family tests, the default first (scripts/14): Mantel-Haenszel over strata of HPA cell-line expression and of
+            # DisGeNET annotation outside the family, then the uncorrected Fisher test of v1.1.0, then each correction alone.
+            'disease_tests': [[name, label] for name, label in DISEASE_TESTS],
             'condensates': cond_rows,
             'condensate_fields': ['name', 'cdcode_id', 'type', 'members', 'methyl_members', 'log2_odds_ratio', 'q_value'],
             'condensate_summary': {'methyl_proteins_total': str(len(methylated)), 'condensate_universe_proteins': str(universe),
@@ -366,8 +379,10 @@ def main() -> None:
                 'disorder': overview_rows(stats, 'disorder'),
                 'domain_context': overview_rows(stats, 'domain_context'),
                 'domain_classes': overview_rows(stats, 'domain_class'),
-                'disease_families': [[f, int(fam_stats.at[f, 'a']), int(fam_stats.at[f, 'a']) + int(fam_stats.at[f, 'c']),
-                                      num(fam_stats.at[f, 'odds_ratio']), sig(fam_stats.at[f, 'q'])] for f in families],
+                # [family, methylated genes, genes, then odds ratio and q of each test in disease_tests order]
+                'disease_families': [[r['family'], int(r['n_methylated_genes']), int(r['n_genes'])] +
+                                     [x for name, _ in DISEASE_TESTS for x in (num(r[f'odds_ratio_{name}']), sig(r[f'q_{name}']))]
+                                     for r in disease_families.to_dict('records')],
                 'treatments': treatments,
                 # [category, methylated, fraction of methylated, fraction of others, log2 OR, q, (parent,) proteins]
                 'panther_groups': overview_rows(stats, 'panther_group', totals),
@@ -413,8 +428,16 @@ def main() -> None:
         'evidence_fields': ['source_table', 'reference', 'pmid', 'peptide', 'enzyme', 'state', 'source_accession', 'source_position',
                             'remap_status', 'study'],
         'refs': refs.values, 'sites': evidence,
-        'disease_terms': [[r['term_id'], r['term_name'], term_family[k], int(r['n_methylated']), sig(r['p_adjust'])]
-                          for k, r in enumerate(disease_terms.to_dict('records'))],
+        # [UMLS id, name, family, methylated proteins' genes, uncorrected adj. p (null: not enriched there), corrected OR,
+        # corrected q, genes of the term]
+        'disease_terms': [[x[0], x[1], term_family[k], x[3], sig(x[4]) if x[4] not in (None, '') else None,
+                           num(corrected_of.at[x[0], 'odds_ratio']) if x[0] in corrected_of.index else None,
+                           sig(corrected_of.at[x[0], 'q']) if x[0] in corrected_of.index else None,
+                           int(corrected_of.at[x[0], 'n_genes_term']) if x[0] in corrected_of.index else None]
+                          for k, x in enumerate(site_terms)],
+        'disease_terms_tested': {'terms': len(terms_corrected), 'enriched': int(((terms_corrected['q'].astype(float) <= PADJ) & (terms_corrected['odds_ratio'].astype(float) > 1)).sum()),
+                                 'depleted': int(((terms_corrected['q'].astype(float) <= PADJ) & (terms_corrected['odds_ratio'].astype(float) < 1)).sum()),
+                                 'uncorrected_enriched': n_dose_terms},
         'protein_disease_terms': protein_disease_terms,
     }
     outdir.mkdir(parents=True, exist_ok=True)
@@ -424,10 +447,10 @@ def main() -> None:
         print(f'wrote {path} ({path.stat().st_size / 1e6:.2f} MB)')
     print(f'{len(site_rows):,} sites, {len(protein_rows):,} proteins, {len(refs.values)} references, {len(evidence_payload["disease_terms"])} disease terms')
     if args.check:
-        check(outdir, sites, proteins, records, disease_terms, web_name)
+        check(outdir, sites, proteins, records, site_terms, web_name)
 
 
-def check(outdir: Path, sites: pd.DataFrame, proteins: pd.DataFrame, records: pd.DataFrame, disease_terms: pd.DataFrame, web_name: dict) -> None:
+def check(outdir: Path, sites: pd.DataFrame, proteins: pd.DataFrame, records: pd.DataFrame, disease_terms: list, web_name: dict) -> None:
     """Decode the written files and compare them with the release tables: every site, protein, record and term."""
     d = json.loads((outdir / 'methylarg_sites.json').read_text())
     e = json.loads((outdir / 'methylarg_evidence.json').read_text())
