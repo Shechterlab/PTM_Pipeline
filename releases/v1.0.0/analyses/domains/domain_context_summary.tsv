@@ -1,0 +1,6 @@
+domain_context_class	site_count	boundary_window	include_types
+in_domain	4256	20	domain;repeat
+distal	4000	20	domain;repeat
+no_domain_annotation	1717	20	domain;repeat
+inter_domain_linker	1398	20	domain;repeat
+boundary	1124	20	domain;repeat

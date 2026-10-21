@@ -1,0 +1,351 @@
+analysis	category	stratum	a	b	c	d	odds_ratio	log2_odds_ratio	fold_enrichment	log2_fold_enrichment	p	q	method	background	n_strata
+panther_group	RNA processing and translation	all	625	3957	525	15309			2.42157	1.27595	2.3822e-130	2.62042e-129	enricher	other reviewed human proteins	
+panther_group	Scaffolds, adaptors and chaperones	all	300	4282	664	15170			1.38663	0.47158	1.12379e-10	6.18087e-10	enricher	other reviewed human proteins	
+panther_group	Transcription, chromatin and DNA	all	551	4031	1592	14242			1.14563	0.196143	8.62491e-05	0.000316247	enricher	other reviewed human proteins	
+panther_group	Cytoskeleton, adhesion and matrix	all	335	4247	1014	14820			1.10649	0.145994	0.0167866	0.0461631	enricher	other reviewed human proteins	
+panther_group	Protein-modifying enzymes	all	394	4188	1229	14605			1.08167	0.113255	0.0356786	0.0784929	enricher	other reviewed human proteins	
+panther_group	Metabolic enzymes	all	448	4134	1503	14331			1.02314	0.0330077	0.290259	0.532142	enricher	other reviewed human proteins	
+panther_group	Other PANTHER classes	all	10	4572	51	15783			0.730442	-0.453158	0.905123	1	enricher	other reviewed human proteins	
+panther_group	No PANTHER protein class	all	1326	3256	5170	10664			0.909522	-0.13682	0.999999	1	enricher	other reviewed human proteins	
+panther_group	Transport and membrane traffic	all	283	4299	1317	14517			0.788101	-0.343547	1	1	enricher	other reviewed human proteins	
+panther_group	Immunity and defence	all	23	4559	597	15237			0.165292	-2.59691	1	1	enricher	other reviewed human proteins	
+panther_group	Signalling: receptors, ligands and modulators	all	287	4295	2172	13662			0.520043	-0.943298	1	1	enricher	other reviewed human proteins	
+panther_class	RNA metabolism protein	all	425	4157	390	15444			2.32352	1.21631	9.60149e-80	2.40037e-78	enricher	other reviewed human proteins	
+panther_class	translational protein	all	200	4382	135	15699			2.66012	1.41149	1.49792e-49	1.8724e-48	enricher	other reviewed human proteins	
+panther_class	chromatin/chromatin-binding, or -regulatory protein	all	151	4431	167	15667			2.11576	1.08117	3.59153e-23	2.99294e-22	enricher	other reviewed human proteins	
+panther_class	cytoskeletal protein	all	239	4343	394	15440			1.68232	0.750456	6.93974e-19	4.33734e-18	enricher	other reviewed human proteins	
+panther_class	chaperone	all	102	4480	111	15723			2.13371	1.09337	2.05512e-16	1.02756e-15	enricher	other reviewed human proteins	
+panther_class	DNA metabolism protein	all	80	4502	145	15689			1.58425	0.663798	4.7378e-06	1.97408e-05	enricher	other reviewed human proteins	
+panther_class	scaffold/adaptor protein	all	198	4384	553	15281			1.17474	0.232338	0.00552967	0.0197488	enricher	other reviewed human proteins	
+panther_class	membrane traffic protein	all	115	4467	316	15518			1.18887	0.249597	0.0205325	0.0641642	enricher	other reviewed human proteins	
+panther_class	protein modifying enzyme	all	394	4188	1229	14605			1.08167	0.113255	0.0356786	0.0991071	enricher	other reviewed human proteins	
+panther_class	protein-binding activity modulator	all	190	4392	608	15226			1.06088	0.0852615	0.183551	0.458878	enricher	other reviewed human proteins	
+panther_class	metabolite interconversion enzyme	all	448	4134	1503	14331			1.02314	0.0330077	0.290259	0.65968	enricher	other reviewed human proteins	
+panther_class	calcium-binding protein	all	25	4557	89	15745			0.977126	-0.033383	0.588891	1	enricher	other reviewed human proteins	
+panther_class	storage protein	all	1	4581	7	15827			0.556962	-0.844349	0.869146	1	enricher	other reviewed human proteins	
+panther_class	viral or transposable element protein	all	9	4573	44	15790			0.756628	-0.402345	0.870649	1	enricher	other reviewed human proteins	
+panther_class	extracellular matrix protein	all	26	4556	114	15720			0.827486	-0.273192	0.887472	1	enricher	other reviewed human proteins	
+panther_class	cell junction protein	all	9	4573	51	15783			0.668354	-0.581315	0.94393	1	enricher	other reviewed human proteins	
+panther_class	transfer/carrier protein	all	21	4561	115	15719			0.688012	-0.539495	0.983889	1	enricher	other reviewed human proteins	
+panther_class	gene-specific transcriptional regulator	all	320	4262	1280	14554			0.891139	-0.166277	0.993745	1	enricher	other reviewed human proteins	
+panther_class	structural protein	all	20	4562	170	15664			0.469021	-1.09228	0.999994	1	enricher	other reviewed human proteins	
+panther_class	cell adhesion molecule	all	41	4541	285	15549			0.560379	-0.835525	0.999998	1	enricher	other reviewed human proteins	
+panther_class	No PANTHER protein class	all	1326	3256	5170	10664			0.909522	-0.13682	0.999999	1	enricher	other reviewed human proteins	
+panther_class	transporter	all	147	4435	886	14948			0.634063	-0.657301	1	1	enricher	other reviewed human proteins	
+panther_class	defense/immunity protein	all	23	4559	597	15237			0.165292	-2.59691	1	1	enricher	other reviewed human proteins	
+panther_class	intercellular signal molecule	all	23	4559	383	15451			0.252416	-1.98612	1	1	enricher	other reviewed human proteins	
+panther_class	transmembrane signal receptor	all	49	4533	1092	14742			0.191349	-2.38572	1	1	enricher	other reviewed human proteins	
+panther_subclass	RNA processing factor	all	153	4429	100	15734			2.69455	1.43005	4.33408e-39	5.59096e-37	enricher	other reviewed human proteins	
+panther_subclass	RNA splicing factor	all	95	4487	38	15796			3.18264	1.67022	2.4637e-33	1.58909e-31	enricher	other reviewed human proteins	
+panther_subclass	ribosomal protein	all	101	4481	77	15757			2.52823	1.33813	3.13757e-23	1.34915e-21	enricher	other reviewed human proteins	
+panther_subclass	translation factor	all	70	4512	43	15791			2.76017	1.46475	1.90714e-19	6.15054e-18	enricher	other reviewed human proteins	
+panther_subclass	RNA helicase	all	48	4534	24	15810			2.97046	1.57069	1.28213e-15	3.3079e-14	enricher	other reviewed human proteins	
+panther_subclass	microtubule binding motor protein	all	41	4541	26	15808			2.72662	1.44711	1.00123e-11	2.15265e-10	enricher	other reviewed human proteins	
+panther_subclass	translation initiation factor	all	45	4537	35	15799			2.50633	1.32558	5.7607e-11	1.06162e-09	enricher	other reviewed human proteins	
+panther_subclass	Hsp70 family chaperone	all	15	4567	0	15834			4.4557	2.15565	1.81358e-10	2.92441e-09	enricher	other reviewed human proteins	
+panther_subclass	actin or actin-binding cytoskeletal protein	all	107	4475	170	15664			1.72115	0.783376	7.49317e-10	1.07402e-08	enricher	other reviewed human proteins	
+panther_subclass	aminoacyl-tRNA synthetase	all	26	4556	15	15819			2.82556	1.49854	2.1515e-08	2.77543e-07	enricher	other reviewed human proteins	
+panther_subclass	microtubule or microtubule-binding cytoskeletal protein	all	95	4487	158	15676			1.67309	0.742513	3.38367e-08	3.96812e-07	enricher	other reviewed human proteins	
+panther_subclass	non-receptor serine/threonine protein kinase	all	114	4468	228	15606			1.48523	0.570688	2.14511e-06	2.30599e-05	enricher	other reviewed human proteins	
+panther_subclass	chaperonin	all	11	4571	2	15832			3.7702	1.91464	3.55247e-06	3.52514e-05	enricher	other reviewed human proteins	
+panther_subclass	translation elongation factor	all	11	4571	4	15830			3.26751	1.70819	3.93496e-05	0.000362578	enricher	other reviewed human proteins	
+panther_subclass	intermediate filament	all	24	4558	26	15808			2.13873	1.09676	6.04324e-05	0.000519719	enricher	other reviewed human proteins	
+panther_subclass	kinase	all	51	4531	87	15747			1.64667	0.719552	7.59214e-05	0.000612117	enricher	other reviewed human proteins	
+panther_subclass	histone modifying enzyme	all	30	4552	40	15794			1.90958	0.933258	0.000110562	0.000838968	enricher	other reviewed human proteins	
+panther_subclass	intermediate filament binding protein	all	10	4572	4	15830			3.18264	1.67022	0.000129937	0.000931218	enricher	other reviewed human proteins	
+panther_subclass	non-motor actin binding protein	all	35	4547	52	15782			1.79252	0.84199	0.000145445	0.000987497	enricher	other reviewed human proteins	
+panther_subclass	actin and actin related protein	all	18	4564	17	15817			2.2915	1.19629	0.000165585	0.00106802	enricher	other reviewed human proteins	
+panther_subclass	guanyl-nucleotide exchange factor	all	42	4540	76	15758			1.58593	0.665325	0.000769463	0.0047267	enricher	other reviewed human proteins	
+panther_subclass	dehydrogenase	all	52	4530	102	15732			1.50452	0.589304	0.000824774	0.00483617	enricher	other reviewed human proteins	
+panther_subclass	G-protein modulator	all	85	4497	195	15639			1.35262	0.435759	0.00122981	0.00689762	enricher	other reviewed human proteins	
+panther_subclass	tubulin	all	12	4570	11	15823			2.32471	1.21705	0.00174998	0.00940613	enricher	other reviewed human proteins	
+panther_subclass	nucleotide kinase	all	16	4566	19	15815			2.03689	1.02637	0.00193033	0.00996051	enricher	other reviewed human proteins	
+panther_subclass	DNA-directed RNA polymerase	all	16	4566	22	15812			1.87608	0.907723	0.00529816	0.026287	enricher	other reviewed human proteins	
+panther_subclass	oxidoreductase	all	153	4429	415	15419			1.20021	0.263292	0.00606822	0.0289926	enricher	other reviewed human proteins	
+panther_subclass	peroxidase	all	11	4571	12	15822			2.13099	1.09152	0.0063922	0.0294498	enricher	other reviewed human proteins	
+panther_subclass	non-motor microtubule binding protein	all	32	4550	64	15770			1.48523	0.570688	0.00932725	0.0393886	enricher	other reviewed human proteins	
+panther_subclass	exoribonuclease	all	11	4571	13	15821			2.04219	1.03012	0.00943979	0.0393886	enricher	other reviewed human proteins	
+panther_subclass	isomerase	all	16	4566	24	15810			1.78228	0.833723	0.00946548	0.0393886	enricher	other reviewed human proteins	
+panther_subclass	transcription cofactor	all	34	4548	70	15764			1.45667	0.542674	0.0103945	0.0419028	enricher	other reviewed human proteins	
+panther_subclass	vesicle coat protein	all	17	4565	28	15806			1.68326	0.751261	0.0143864	0.0562379	enricher	other reviewed human proteins	
+panther_subclass	mRNA polyadenylation factor	all	11	4571	15	15819			1.8851	0.914643	0.0187343	0.0696176	enricher	other reviewed human proteins	
+panther_subclass	reductase	all	27	4555	55	15779			1.46712	0.552986	0.0188885	0.0696176	enricher	other reviewed human proteins	
+panther_subclass	mutase	all	7	4575	7	15827			2.22785	1.15565	0.0217241	0.0778447	enricher	other reviewed human proteins	
+panther_subclass	HMG box transcription factor	all	13	4569	21	15813			1.70365	0.768628	0.02742	0.0955993	enricher	other reviewed human proteins	
+panther_subclass	nucleotidyltransferase	all	11	4571	17	15817			1.75045	0.807728	0.0334837	0.113668	enricher	other reviewed human proteins	
+panther_subclass	actin binding motor protein	all	10	4572	15	15819			1.78228	0.833723	0.0368687	0.12195	enricher	other reviewed human proteins	
+panther_subclass	immunoglobulin fold transcription factor	all	16	4566	30	15804			1.54981	0.632089	0.0381502	0.123034	enricher	other reviewed human proteins	
+panther_subclass	DNA helicase	all	9	4573	13	15821			1.82278	0.866144	0.040433	0.127216	enricher	other reviewed human proteins	
+panther_subclass	ligase	all	18	4564	36	15798			1.48523	0.570688	0.0438013	0.134533	enricher	other reviewed human proteins	
+panther_subclass	phosphatase modulator	all	17	4565	35	15799			1.45667	0.542674	0.0582986	0.174896	enricher	other reviewed human proteins	
+panther_subclass	ubiquitin-protein ligase	all	104	4478	304	15530			1.13577	0.183665	0.0777909	0.228069	enricher	other reviewed human proteins	
+panther_subclass	carbohydrate kinase	all	7	4575	11	15823			1.73277	0.793081	0.0872802	0.250203	enricher	other reviewed human proteins	
+panther_subclass	cysteine protease	all	37	4545	98	15736			1.22119	0.288289	0.10147	0.282673	enricher	other reviewed human proteins	
+panther_subclass	general transcription factor	all	32	4550	83	15751			1.23985	0.310161	0.10299	0.282673	enricher	other reviewed human proteins	
+panther_subclass	endoribonuclease	all	16	4566	37	15797			1.34512	0.42773	0.119161	0.320246	enricher	other reviewed human proteins	
+panther_subclass	DNA-directed DNA polymerase	all	6	4576	10	15824			1.67089	0.740613	0.128106	0.337259	enricher	other reviewed human proteins	
+panther_subclass	RNA methyltransferase	all	12	4570	27	15807			1.37098	0.455211	0.145983	0.376636	enricher	other reviewed human proteins	
+panther_subclass	Rel homology transcription factor	all	11	4571	25	15809			1.36146	0.445157	0.165588	0.41884	enricher	other reviewed human proteins	
+panther_subclass	transaminase	all	8	4574	17	15817			1.42582	0.511795	0.179934	0.438094	enricher	other reviewed human proteins	
+panther_subclass	protein phosphatase	all	34	4548	96	15738			1.16534	0.220746	0.179992	0.438094	enricher	other reviewed human proteins	
+panther_subclass	ATP synthase	all	13	4569	34	15800			1.23243	0.301502	0.241961	0.578018	enricher	other reviewed human proteins	
+panther_subclass	GTPase-activating protein	all	38	4544	114	15720			1.11392	0.155651	0.251223	0.589232	enricher	other reviewed human proteins	
+panther_subclass	kinase inhibitor	all	7	4575	17	15817			1.29958	0.378043	0.282299	0.650296	enricher	other reviewed human proteins	
+panther_subclass	heterotrimeric G-protein	all	12	4570	33	15801			1.18819	0.24876	0.299792	0.678476	enricher	other reviewed human proteins	
+panther_subclass	nucleotide phosphatase	all	5	4577	14	15820			1.17255	0.229651	0.428588	0.953238	enricher	other reviewed human proteins	
+panther_subclass	basic leucine zipper transcription factor	all	11	4571	36	15798			1.04282	0.0604936	0.493785	1	enricher	other reviewed human proteins	
+panther_subclass	myelin protein	all	4	4578	12	15822			1.11392	0.155651	0.498816	1	enricher	other reviewed human proteins	
+panther_subclass	G-protein	all	43	4539	147	15687			1.00839	0.01206	0.503592	1	enricher	other reviewed human proteins	
+panther_subclass	extracellular matrix structural protein	all	16	4566	54	15780			1.01844	0.0263679	0.513515	1	enricher	other reviewed human proteins	
+panther_subclass	acetyltransferase	all	8	4574	27	15807			1.01844	0.0263679	0.542362	1	enricher	other reviewed human proteins	
+panther_subclass	SNARE protein	all	7	4575	24	15810			1.00612	0.00880948	0.562545	1	enricher	other reviewed human proteins	
+panther_subclass	small GTPase	all	27	4555	98	15736			0.96243	-0.0552459	0.624164	1	enricher	other reviewed human proteins	
+panther_subclass	mitochondrial carrier protein	all	3	4579	11	15823			0.954792	-0.0667416	0.639074	1	enricher	other reviewed human proteins	
+panther_subclass	immunoglobulin superfamily cell adhesion molecule	all	12	4570	45	15789			0.938041	-0.0922766	0.650142	1	enricher	other reviewed human proteins	
+panther_subclass	deaminase	all	3	4579	12	15822			0.891139	-0.166277	0.687812	1	enricher	other reviewed human proteins	
+panther_subclass	transferase	all	148	4434	535	15299			0.96551	-0.0506375	0.703371	1	enricher	other reviewed human proteins	
+panther_subclass	phosphodiesterase	all	9	4573	36	15798			0.891139	-0.166277	0.708381	1	enricher	other reviewed human proteins	
+panther_subclass	methyltransferase	all	10	4572	42	15792			0.856865	-0.222861	0.76021	1	enricher	other reviewed human proteins	
+panther_subclass	damaged DNA-binding protein	all	3	4579	14	15820			0.786299	-0.346849	0.770084	1	enricher	other reviewed human proteins	
+panther_subclass	lyase	all	25	4557	100	15734			0.891139	-0.166277	0.775162	1	enricher	other reviewed human proteins	
+panther_subclass	phosphatase	all	25	4557	100	15734			0.891139	-0.166277	0.775162	1	enricher	other reviewed human proteins	
+panther_subclass	homeodomain transcription factor	all	53	4529	204	15630			0.918879	-0.122053	0.780504	1	enricher	other reviewed human proteins	
+panther_subclass	C4 zinc finger nuclear receptor	all	9	4573	40	15794			0.818393	-0.289134	0.801663	1	enricher	other reviewed human proteins	
+panther_subclass	non-receptor tyrosine protein kinase	all	6	4576	28	15806			0.786299	-0.346849	0.807217	1	enricher	other reviewed human proteins	
+panther_subclass	decarboxylase	all	3	4579	16	15818			0.703531	-0.507314	0.833704	1	enricher	other reviewed human proteins	
+panther_subclass	primary active transporter	all	45	4537	181	15653			0.887196	-0.172675	0.840792	1	enricher	other reviewed human proteins	
+panther_subclass	endodeoxyribonuclease	all	2	4580	12	15822			0.636528	-0.651704	0.856184	1	enricher	other reviewed human proteins	
+panther_subclass	kinase modulator	all	17	4565	76	15758			0.814482	-0.296045	0.863171	1	enricher	other reviewed human proteins	
+panther_subclass	acyltransferase	all	12	4570	58	15776			0.763834	-0.38867	0.889405	1	enricher	other reviewed human proteins	
+panther_subclass	metalloprotease	all	29	4553	126	15708			0.833646	-0.262493	0.889658	1	enricher	other reviewed human proteins	
+panther_subclass	cyclase	all	3	4579	21	15813			0.556962	-0.844349	0.930445	1	enricher	other reviewed human proteins	
+panther_subclass	helix-turn-helix transcription factor	all	74	4508	307	15527			0.865411	-0.208543	0.933604	1	enricher	other reviewed human proteins	
+panther_subclass	basic helix-loop-helix transcription factor	all	17	4565	84	15750			0.749969	-0.415098	0.933886	1	enricher	other reviewed human proteins	
+panther_subclass	oxidase	all	10	4572	55	15779			0.685492	-0.544789	0.94059	1	enricher	other reviewed human proteins	
+panther_subclass	phospholipase	all	9	4573	51	15783			0.668354	-0.581315	0.94393	1	enricher	other reviewed human proteins	
+panther_subclass	dehydratase	all	5	4577	33	15801			0.586276	-0.770349	0.94948	1	enricher	other reviewed human proteins	
+panther_subclass	apolipoprotein	all	4	4578	28	15806			0.556962	-0.844349	0.949623	1	enricher	other reviewed human proteins	
+panther_subclass	tight junction	all	4	4578	28	15806			0.556962	-0.844349	0.949623	1	enricher	other reviewed human proteins	
+panther_subclass	serine/threonine protein kinase receptor	all	1	4581	11	15823			0.371308	-1.42931	0.952681	1	enricher	other reviewed human proteins	
+panther_subclass	esterase	all	5	4577	34	15800			0.571243	-0.807823	0.956894	1	enricher	other reviewed human proteins	
+panther_subclass	membrane-bound signaling molecule	all	4	4578	30	15804			0.5242	-0.931812	0.964285	1	enricher	other reviewed human proteins	
+panther_subclass	gap junction	all	2	4580	19	15815			0.424352	-1.23667	0.966034	1	enricher	other reviewed human proteins	
+panther_subclass	ATP-binding cassette (ABC) transporter	all	6	4576	41	15793			0.568812	-0.813975	0.968599	1	enricher	other reviewed human proteins	
+panther_subclass	calmodulin-related	all	13	4569	74	15760			0.665794	-0.586853	0.969696	1	enricher	other reviewed human proteins	
+panther_subclass	membrane trafficking regulatory protein	all	19	4563	101	15733			0.705485	-0.503312	0.971875	1	enricher	other reviewed human proteins	
+panther_subclass	winged helix/forkhead transcription factor	all	19	4563	103	15731			0.69392	-0.527159	0.977197	1	enricher	other reviewed human proteins	
+panther_subclass	protease inhibitor	all	20	4562	109	15725			0.690806	-0.533648	0.980843	1	enricher	other reviewed human proteins	
+panther_subclass	protease	all	113	4469	481	15353			0.847632	-0.238489	0.98251	1	enricher	other reviewed human proteins	
+panther_subclass	interferon superfamily	all	1	4581	15	15819			0.278481	-1.84435	0.982893	1	enricher	other reviewed human proteins	
+panther_subclass	interleukin superfamily	all	2	4580	23	15811			0.356456	-1.48821	0.985716	1	enricher	other reviewed human proteins	
+panther_subclass	major histocompatibility complex protein	all	4	4578	36	15798			0.44557	-1.16628	0.987864	1	enricher	other reviewed human proteins	
+panther_subclass	amino acid transporter	all	2	4580	24	15810			0.342746	-1.54479	0.988535	1	enricher	other reviewed human proteins	
+panther_subclass	kinase activator	all	4	4578	37	15797			0.434702	-1.2019	0.989923	1	enricher	other reviewed human proteins	
+panther_subclass	aspartic protease	all	1	4581	18	15816			0.23451	-2.09228	0.992025	1	enricher	other reviewed human proteins	
+panther_subclass	integrin	all	2	4580	26	15808			0.318264	-1.6517	0.99264	1	enricher	other reviewed human proteins	
+panther_subclass	glycosidase	all	3	4579	33	15801			0.371308	-1.42931	0.993217	1	enricher	other reviewed human proteins	
+panther_subclass	glycosyltransferase	all	21	4561	124	15710			0.645308	-0.631941	0.994031	1	enricher	other reviewed human proteins	
+panther_subclass	hydrolase	all	84	4498	387	15447			0.794646	-0.331615	0.994431	1	enricher	other reviewed human proteins	
+panther_subclass	cadherin	all	14	4568	99	15735			0.552033	-0.857173	0.997827	1	enricher	other reviewed human proteins	
+panther_subclass	lipase	all	9	4573	74	15760			0.483148	-1.04946	0.998005	1	enricher	other reviewed human proteins	
+panther_subclass	complement component	all	1	4581	24	15810			0.178228	-2.48821	0.998268	1	enricher	other reviewed human proteins	
+panther_subclass	oxygenase	all	11	4571	86	15748			0.505285	-0.98483	0.998419	1	enricher	other reviewed human proteins	
+panther_subclass	ligand-gated ion channel	all	5	4577	57	15777			0.35933	-1.47662	0.999292	1	enricher	other reviewed human proteins	
+panther_subclass	DNA-binding transcription factor	all	286	4296	1210	14624			0.851824	-0.231372	0.999493	1	enricher	other reviewed human proteins	
+panther_subclass	voltage-gated ion channel	all	7	4575	90	15744			0.321545	-1.63691	0.999986	1	enricher	other reviewed human proteins	
+panther_subclass	growth factor	all	6	4576	92	15742			0.272798	-1.8741	0.999998	1	enricher	other reviewed human proteins	
+panther_subclass	peptide hormone	all	2	4580	61	15773			0.141451	-2.82163	0.999998	1	enricher	other reviewed human proteins	
+panther_subclass	serine protease	all	19	4563	176	15658			0.434145	-1.20375	0.999999	1	enricher	other reviewed human proteins	
+panther_subclass	zinc finger transcription factor	all	107	4475	614	15220			0.661248	-0.596738	1	1	enricher	other reviewed human proteins	
+panther_subclass	cytokine	all	4	4578	98	15736			0.174733	-2.51677	1	1	enricher	other reviewed human proteins	
+panther_subclass	C2H2 zinc finger transcription factor	all	83	4499	551	15283			0.583317	-0.777649	1	1	enricher	other reviewed human proteins	
+panther_subclass	ion channel	all	28	4554	287	15547			0.396062	-1.3362	1	1	enricher	other reviewed human proteins	
+panther_subclass	secondary carrier transporter	all	17	4565	222	15612			0.316932	-1.65775	1	1	enricher	other reviewed human proteins	
+panther_subclass	G-protein coupled receptor	all	15	4567	391	15443			0.164619	-2.60279	1	1	enricher	other reviewed human proteins	
+panther_subclass	immunoglobulin	all	1	4581	169	15665			0.02621	-5.25374	1	1	enricher	other reviewed human proteins	
+panther_subclass	immunoglobulin receptor superfamily	all	9	4573	252	15582			0.153645	-2.70233	1	1	enricher	other reviewed human proteins	
+functional_class	Translation / ribosome / biogenesis	all	431	4151	434	15400			2.22012	1.15064	5.78286e-73	3.75886e-72	enricher	other reviewed human proteins	
+functional_class	Nuclear scaffold / pore / lamina	all	110	4472	137	15697			1.98432	0.988643	8.37879e-15	1.55606e-14	enricher	other reviewed human proteins	
+functional_class	RNA-binding / RNP	all	1091	3491	1527	14307			1.85682	0.892837	6.81911e-125	8.86484e-124	enricher	other reviewed human proteins	
+functional_class	Cell cycle / centrosome / spindle	all	85	4497	140	15694			1.68326	0.751261	1.27984e-07	1.66379e-07	enricher	other reviewed human proteins	
+functional_class	DNA repair / genome maintenance	all	146	4436	245	15589			1.66376	0.734451	1.27277e-11	1.83844e-11	enricher	other reviewed human proteins	
+functional_class	Proteostasis / ubiquitin / chaperone	all	398	4184	731	15103			1.57074	0.651446	4.10347e-24	1.0669e-23	enricher	other reviewed human proteins	
+functional_class	Cytoplasmic / trafficking / cytoskeleton	all	732	3850	1548	14286			1.43051	0.516533	7.90737e-30	2.5699e-29	enricher	other reviewed human proteins	
+functional_class	Mitochondrial / metabolism	all	383	4199	871	14963			1.36087	0.44453	4.2986e-12	6.98522e-12	enricher	other reviewed human proteins	
+functional_class	Signaling / enzymes	all	1519	3063	3737	12097			1.28771	0.364807	1.37346e-37	5.95165e-37	enricher	other reviewed human proteins	
+functional_class	Chromatin / transcription	all	1001	3581	2502	13332			1.27324	0.348502	5.51162e-21	1.19418e-20	enricher	other reviewed human proteins	
+functional_class	Other / unclassified	all	660	3922	3130	12704			0.775926	-0.366009	1	1	enricher	other reviewed human proteins	
+functional_class	Membrane / receptor / extracellular	all	638	3944	4634	11200			0.539214	-0.891071	1	1	enricher	other reviewed human proteins	
+functional_class	Poorly characterized / specialized	all	168	4414	1268	14566			0.521279	-0.939872	1	1	enricher	other reviewed human proteins	
+functional_subclass	Stress granule / paraspeckle / P-body	all	32	4550	9	15825			3.47762	1.7981	6.16829e-14	1.1896e-13	enricher	other reviewed human proteins	
+functional_subclass	hnRNP / RG-rich RBPs	all	72	4510	35	15799			2.99823	1.58411	4.23322e-23	1.42871e-22	enricher	other reviewed human proteins	
+functional_subclass	RRM / KH RBPs	all	210	4372	117	15717			2.86146	1.51675	1.0061e-59	2.71647e-58	enricher	other reviewed human proteins	
+functional_subclass	Spliceosome / splicing	all	86	4496	52	15782			2.77674	1.47339	7.93509e-24	3.06068e-23	enricher	other reviewed human proteins	
+functional_subclass	Poly(A) / stability RBPs	all	37	4545	23	15811			2.74768	1.45821	7.40505e-11	1.33291e-10	enricher	other reviewed human proteins	
+functional_subclass	Translation / initiation / elongation	all	248	4334	216	15618			2.38149	1.25187	6.60403e-49	8.91544e-48	enricher	other reviewed human proteins	
+functional_subclass	RNA helicases	all	81	4501	74	15760			2.32846	1.21938	4.64259e-16	1.13954e-15	enricher	other reviewed human proteins	
+functional_subclass	Nucleolar / ribosome biogenesis	all	84	4498	83	15751			2.24119	1.16426	2.51415e-15	5.65683e-15	enricher	other reviewed human proteins	
+functional_subclass	Nuclear scaffold / pore / lamina	all	110	4472	137	15697			1.98432	0.988643	8.37879e-15	1.74021e-14	enricher	other reviewed human proteins	
+functional_subclass	Cell cycle / centrosome / spindle	all	84	4498	131	15703			1.74083	0.799775	2.6416e-08	4.19547e-08	enricher	other reviewed human proteins	
+functional_subclass	Chromatin writers / remodelers	all	182	4400	286	15548			1.73277	0.793081	4.11622e-16	1.11138e-15	enricher	other reviewed human proteins	
+functional_subclass	RNA-associated zinc finger / post-transcriptional	all	71	4511	115	15719			1.70083	0.766239	8.55364e-07	1.09975e-06	enricher	other reviewed human proteins	
+functional_subclass	Endomembrane / coat trafficking	all	102	4480	184	15650			1.58909	0.668205	2.13566e-07	2.88314e-07	enricher	other reviewed human proteins	
+functional_subclass	mRNA processing / export / 3'-end	all	518	4064	940	14894			1.58303	0.662684	2.16629e-32	1.46225e-31	enricher	other reviewed human proteins	
+functional_subclass	Cytoskeleton / trafficking	all	401	4181	730	15104			1.57978	0.659726	7.72861e-25	4.17345e-24	enricher	other reviewed human proteins	
+functional_subclass	Proteostasis / chaperone / proteasome	all	398	4184	731	15103			1.57074	0.651446	4.10347e-24	1.84656e-23	enricher	other reviewed human proteins	
+functional_subclass	Transcription / mediator / polymerase	all	326	4256	625	15209			1.5274	0.611077	8.78983e-18	2.63695e-17	enricher	other reviewed human proteins	
+functional_subclass	Junction / polarity / scaffold	all	210	4372	422	15412			1.48053	0.566116	1.7939e-10	3.02721e-10	enricher	other reviewed human proteins	
+functional_subclass	Chromatin readers	all	184	4398	391	15443			1.42582	0.511795	5.55306e-08	7.8912e-08	enricher	other reviewed human proteins	
+functional_subclass	DNA repair / DDR	all	42	4540	99	15735			1.32723	0.408417	0.0256103	0.0314309	enricher	other reviewed human proteins	
+functional_subclass	Signaling / enzymes	all	1501	3081	3652	12182			1.29788	0.376162	4.37481e-39	3.93733e-38	enricher	other reviewed human proteins	
+functional_subclass	Mitochondrial / metabolic enzymes	all	337	4245	824	15010			1.29334	0.371103	4.39553e-08	6.59329e-08	enricher	other reviewed human proteins	
+functional_subclass	DNA-binding transcription factors / developmental regulators	all	428	4154	1480	14354			0.999496	-0.000727599	0.514741	0.604261	enricher	other reviewed human proteins	
+functional_subclass	Adhesion / intermediate filament scaffolds	all	59	4523	208	15626			0.984592	-0.022402	0.578244	0.650524	enricher	other reviewed human proteins	
+functional_subclass	Other / unclassified	all	830	3752	3908	11926			0.780546	-0.357444	1	1	enricher	other reviewed human proteins	
+functional_subclass	Membrane / receptor / extracellular	all	522	4060	3927	11907			0.522786	-0.935709	1	1	enricher	other reviewed human proteins	
+functional_subclass	Poorly characterized / specialized	all	168	4414	1268	14566			0.521279	-0.939872	1	1	enricher	other reviewed human proteins	
+motif	RGG	all	874	11621	788	195967	18.7017	4.22509			0	0	fisher	other arginines of the methylated proteins	
+motif	GRG	all	905	11590	1036	195719	14.752	3.88284			0	0	fisher	other arginines of the methylated proteins	
+motif	RG	all	3457	9038	11681	185074	6.06057	2.59945			0	0	fisher	other arginines of the methylated proteins	
+motif	DR	all	1387	11108	8208	188547	2.86903	1.52056			5.70264e-211	1.56823e-210	fisher	other arginines of the methylated proteins	
+motif	GAR	all	87	12408	892	195863	1.54751	0.629951			0.00025177	0.000276947	fisher	other arginines of the methylated proteins	
+motif	CARM1_proline_rich	all	6259	6236	81526	115229	1.41861	0.50448			1.26342e-79	2.31627e-79	fisher	other arginines of the methylated proteins	
+motif	CARM1_hydrophobic_proline	all	5521	6974	71496	125259	1.38698	0.471946			4.01427e-68	6.30814e-68	fisher	other arginines of the methylated proteins	
+motif	RXR	all	2053	10442	31707	165048	1.02362	0.0336837			0.353411	0.353411	fisher	other arginines of the methylated proteins	
+motif	ER	all	627	11868	15733	181022	0.60831	-0.717121			3.66026e-37	5.03286e-37	fisher	other arginines of the methylated proteins	
+motif	RD	all	378	12117	10432	186323	0.557869	-0.842002			5.24441e-33	6.40984e-33	fisher	other arginines of the methylated proteins	
+motif	RE	all	418	12077	15565	181190	0.403358	-1.30987			9.39669e-95	2.06727e-94	fisher	other arginines of the methylated proteins	
+disorder	disordered	all	6060	6435	64965	131790	1.91041	0.933885			3.18531e-262	1.27412e-261	fisher	other arginines of the methylated proteins	
+disorder	no_disorder_annotation	all	6	12489	67	196688	1.5165	0.600749			0.451029	0.451029	fisher	other arginines of the methylated proteins	
+disorder	disorder_boundary	all	2945	9550	48342	148413	0.946841	-0.0788054			0.0117278	0.0156371	fisher	other arginines of the methylated proteins	
+disorder	ordered	all	3484	9011	83381	113374	0.525762	-0.927519			5.15628e-233	1.03126e-232	fisher	other arginines of the methylated proteins	
+domain_context	no_domain_annotation	all	1712	10778	19682	177073	1.42937	0.515382			5.81151e-37	9.68585e-37	fisher	other arginines of the methylated proteins	
+domain_context	distal	all	4000	8490	49226	147529	1.41209	0.497827			4.93967e-65	1.23492e-64	fisher	other arginines of the methylated proteins	
+domain_context	boundary	all	1124	11366	16092	180663	1.11066	0.151412			0.0014184	0.0014184	fisher	other arginines of the methylated proteins	
+domain_context	inter_domain_linker	all	1398	11092	26945	169810	0.794532	-0.331823			5.11548e-16	6.39434e-16	fisher	other arginines of the methylated proteins	
+domain_context	in_domain	all	4256	8234	84810	111945	0.682295	-0.551532			5.74886e-89	2.87443e-88	fisher	other arginines of the methylated proteins	
+domain_class	Sm / Lsm	all	11	12479	45	196710	3.98398	1.99421			0.00041538	0.000646147	fisher	other arginines of the methylated proteins	
+domain_class	RRM / KH RNA-binding	all	1020	11470	4857	191898	3.51471	1.81341			1.25318e-211	1.75446e-210	fisher	other arginines of the methylated proteins	
+domain_class	Ribosome / RNP structural	all	209	12281	1069	195686	3.12114	1.64207			1.48079e-39	6.91036e-39	fisher	other arginines of the methylated proteins	
+domain_class	dsRNA-binding	all	19	12471	176	196579	1.74144	0.800284			0.0332104	0.0422678	fisher	other arginines of the methylated proteins	
+domain_class	No domain annotation	all	1712	10778	19682	177073	1.42937	0.515382			5.81151e-37	2.03403e-36	fisher	other arginines of the methylated proteins	
+domain_class	DNA-binding	all	155	12335	1992	194763	1.2322	0.301242			0.0171436	0.0240011	fisher	other arginines of the methylated proteins	
+domain_class	RNA-associated zinc finger	all	104	12386	1432	195323	1.15034	0.202065			0.194135	0.226491	fisher	other arginines of the methylated proteins	
+domain_class	Chromatin catalytic / remodeler	all	100	12390	1524	195231	1.03872	0.0548108			0.752264	0.752264	fisher	other arginines of the methylated proteins	
+domain_class	RNA helicase	all	240	12250	4095	192660	0.923522	-0.114783			0.230785	0.248538	fisher	other arginines of the methylated proteins	
+domain_class	Catalytic enzyme domain	all	850	11640	16243	180512	0.811952	-0.300534			4.47335e-09	1.25254e-08	fisher	other arginines of the methylated proteins	
+domain_class	Repeat / superfamily	all	492	11998	9843	186912	0.779414	-0.359539			4.87061e-08	1.13648e-07	fisher	other arginines of the methylated proteins	
+domain_class	Protein-protein repeat / scaffold	all	395	12095	8068	188687	0.764668	-0.387094			1.03154e-07	2.06308e-07	fisher	other arginines of the methylated proteins	
+domain_class	Other domain	all	7070	5420	125100	71655	0.747139	-0.420552			2.60425e-54	1.82297e-53	fisher	other arginines of the methylated proteins	
+domain_class	Chromatin reader	all	113	12377	2629	194126	0.676978	-0.562819			1.96128e-05	3.43224e-05	fisher	other arginines of the methylated proteins	
+disease_family	Cancer / neoplasia	all	3666	601	9933	2786			1.07313	0.10183	3.22854e-30	2.58283e-29	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family	Ataxia / cerebellar degeneration	all	626	3641	1202	11517			1.36322	0.447021	1.5178e-20	6.07121e-20	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family	Developmental / congenital syndromes	all	2420	1847	6274	6445			1.10806	0.148039	3.51636e-17	9.37696e-17	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family	ALS / motor neuron / FTD	all	490	3777	1016	11703			1.29521	0.373184	7.47781e-12	1.49424e-11	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family	Myopathy / muscle / cardiomyopathy	all	847	3420	1953	10766			1.20419	0.268059	9.339e-12	1.49424e-11	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family	Alzheimer / tau / dementia	all	989	3278	2448	10271			1.14547	0.195945	2.5142e-08	3.35226e-08	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family	Parkinsonism	all	609	3658	1495	11224			1.15223	0.204432	1.11634e-05	1.27581e-05	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family	Immune / inflammatory	all	1686	2581	4848	7871			1.02718	0.0386902	0.0544598	0.0544598	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Neurodevelopmental and behavioural	all	1754	2513	4116	8603			1.18949	0.25034	3.88784e-25	5.83175e-24	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Cancer-related (other)	all	1679	2588	3925	8794			1.19267	0.254197	2.93758e-24	1.55944e-23	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Neurological signs	all	1066	3201	2257	10462			1.27701	0.352773	3.11888e-24	1.55944e-23	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Neurodegeneration and neuromuscular (other)	all	1408	2859	3313	9406			1.18724	0.247607	2.51906e-18	9.44647e-18	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Pregnancy, birth and growth	all	1045	3222	2353	10366			1.22423	0.291869	4.94128e-17	1.48238e-16	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Craniofacial, skeletal and limb features	all	1925	2342	4964	7755			1.11235	0.153616	1.64366e-12	4.10915e-12	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Blood and haematological	all	1040	3227	2470	10249			1.17949	0.238165	5.08529e-12	1.0897e-11	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Eye and ear	all	1118	3149	2687	10032			1.16965	0.226076	6.06436e-12	1.13707e-11	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Digestive and liver	all	1677	2590	4289	8430			1.11897	0.162171	2.7869e-11	4.64483e-11	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Infection	all	1327	2940	3302	9417			1.14117	0.19052	5.72375e-11	8.58562e-11	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Skin, hair and nails	all	998	3269	2421	10298			1.16198	0.216589	7.52297e-10	1.02586e-09	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Cardiovascular	all	1569	2698	4061	8658			1.10939	0.149763	4.10363e-09	5.12953e-09	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Kidney, urinary and reproductive	all	1221	3046	3094	9625			1.12643	0.171755	1.86149e-08	2.14787e-08	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Respiratory	all	728	3539	1848	10871			1.125	0.16993	4.3199e-05	4.62846e-05	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+disease_family_additional	Metabolic and mitochondrial	all	1490	2777	4170	8549			1.04794	0.0675624	0.00563315	0.00563315	enricher	other reviewed human genes (Entrez) with a DisGeNET term	
+condensate	3190BB68	all	6	2066	0	1951			1.9416	0.957248	0.0185999	0.0572306	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	373365D7	all	6	2066	0	1951			1.9416	0.957248	0.0185999	0.0572306	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	BEB5E62D	all	6	2066	0	1951			1.9416	0.957248	0.0185999	0.0572306	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	F85A2E29	all	35	2037	3	1948			1.78832	0.838603	7.69092e-08	6.15273e-07	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	A40D6D0A	all	11	2061	1	1950			1.7798	0.831717	0.00423986	0.0211993	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	D8E9712B	all	14	2058	2	1949			1.6989	0.764603	0.00295583	0.0168904	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	62EA6512	all	13	2059	2	1949			1.68272	0.750797	0.00508469	0.0219705	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	4F6C34C9	all	4	2068	1	1950			1.55328	0.63532	0.206708	0.459352	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	08386919	all	6	2066	2	1949			1.4562	0.54221	0.164917	0.388039	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	81D2A7B6	all	8	2064	3	1948			1.41207	0.497816	0.133516	0.333791	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	D6A53B8E	all	18	2054	7	1944			1.39795	0.483317	0.0302592	0.0864549	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	232F8A39	all	551	1521	223	1728			1.3822	0.466966	3.18844e-35	6.37688e-34	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	DEE660B4	all	780	1292	360	1591			1.32846	0.40976	2.09619e-42	8.38474e-41	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	1A18FFC4	all	47	2025	23	1928			1.30365	0.382554	0.00549264	0.0219705	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	462A97B5	all	14	2058	7	1944			1.2944	0.372285	0.119511	0.318695	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	7FF4107C	all	4	2068	2	1949			1.2944	0.372285	0.372252	0.660887	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	B5B9A610	all	281	1791	146	1805			1.27773	0.353582	1.95237e-10	1.95237e-09	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	804901D1	all	136	1936	71	1880			1.27564	0.351224	1.58865e-05	0.00010591	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	91857CE7	all	814	1258	472	1479			1.22898	0.297458	4.59316e-25	6.12421e-24	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	1EF72FBA	all	5	2067	3	1948			1.2135	0.279176	0.396532	0.660887	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	7C2F7184	all	5	2067	3	1948			1.2135	0.279176	0.396532	0.660887	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	BB266630	all	5	2067	3	1948			1.2135	0.279176	0.396532	0.660887	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	278829DE	all	3	2069	2	1949			1.16496	0.220282	0.528194	0.789469	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	A0DCDA94	all	13	2059	9	1942			1.14731	0.198256	0.30961	0.619221	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	38EC0B30	all	23	2049	16	1935			1.14505	0.195407	0.218959	0.460967	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	3EAB04FE	all	4	2068	3	1948			1.10949	0.149893	0.532892	0.789469	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	B3A0EABC	all	4	2068	3	1948			1.10949	0.149893	0.532892	0.789469	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	FB4E32DD	all	694	1378	669	1282			0.988607	-0.0165303	0.714452	0.952602	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	6F24707C	all	38	2034	38	1913			0.970801	-0.0427523	0.648513	0.923105	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	24B72B50	all	4	2068	4	1947			0.970801	-0.0427523	0.669251	0.923105	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	8C2F96ED	all	245	1827	307	1644			0.861762	-0.214639	0.999869	0.999869	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	F345034F	all	10	2062	13	1938			0.844175	-0.244386	0.836783	0.956324	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	B15FE1AF	all	3	2069	4	1947			0.832115	-0.265145	0.79757	0.956324	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	F3208D05	all	3	2069	4	1947			0.832115	-0.265145	0.79757	0.956324	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	AA62C26E	all	2	2070	3	1948			0.776641	-0.36468	0.830888	0.956324	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	CCFFAF5A	all	2	2070	3	1948			0.776641	-0.36468	0.830888	0.956324	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	F701F3BC	all	5	2067	8	1943			0.74677	-0.421264	0.889174	0.987971	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	5965E019	all	16	2056	26	1925			0.739658	-0.43507	0.971858	0.998201	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	437BC32B	all	2	2070	5	1946			0.554744	-0.850107	0.946941	0.998201	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+condensate	3625CB60	all	1	2071	4	1947			0.38832	-1.36468	0.973246	0.998201	enricher	other human proteins in CD-CODE condensates (export of 2026-03-18)	
+hpa_location	Cytosol	all	1534	2252	2895	6006			1.16064	0.214922	5.13643e-18	2.46549e-16	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Nucleoplasm	all	1780	2006	3654	5247			1.09769	0.134467	3.19399e-10	7.66557e-09	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Mitotic chromosome	all	35	3751	35	8866			1.67552	0.744605	0.000306759	0.00490814	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Primary cilium tip	all	33	3753	35	8866			1.62624	0.701536	0.000886935	0.00933614	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Nucleoli rim	all	58	3728	78	8823			1.42912	0.515123	0.000972514	0.00933614	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Basal body	all	106	3680	181	8720			1.23766	0.307618	0.00539618	0.0405536	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Calyx	all	30	3756	37	8864			1.50046	0.585406	0.00672693	0.0405536	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Endosomes	all	10	3776	6	8895			2.09439	1.06653	0.00680875	0.0405536	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Nucleoli	all	309	3477	615	8286			1.12064	0.164319	0.0076208	0.0405536	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Nuclear speckles	all	155	3631	287	8614			1.17513	0.232826	0.00905531	0.0405536	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Centriolar satellite	all	60	3726	94	8807			1.3056	0.384709	0.00929352	0.0405536	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Actin filaments	all	77	3709	134	8767			1.22289	0.290292	0.0213933	0.0855732	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Primary cilium	all	96	3690	176	8725			1.18272	0.242104	0.0287751	0.106246	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Nuclear bodies	all	185	3601	368	8533			1.12105	0.16485	0.0330498	0.113314	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Cytokinetic bridge	all	65	3721	114	8787			1.21685	0.283157	0.0358034	0.114571	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Perinuclear theca	all	26	3760	38	8863			1.36136	0.445044	0.0424614	0.127384	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Microtubules	all	96	3690	182	8719			1.15719	0.210626	0.0496224	0.14011	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Microtubule ends	all	4	3782	2	8899			2.23402	1.15964	0.0691728	0.184461	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Annulus	all	19	3767	29	8872			1.32645	0.40757	0.0955358	0.239935	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Intermediate filaments	all	43	3743	78	8823			1.19086	0.252006	0.102241	0.239935	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Flagellar centriole	all	40	3746	72	8829			1.1968	0.259178	0.104972	0.239935	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Midbody	all	16	3770	24	8877			1.34041	0.422677	0.110464	0.241012	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Mitotic spindle	all	39	3747	71	8830			1.18809	0.248647	0.11845	0.247201	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Nucleoli fibrillar center	all	95	3691	192	8709			1.10923	0.149553	0.124469	0.248938	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Lysosomes	all	8	3778	10	8891			1.48935	0.57468	0.13712	0.26327	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Centrosome	all	132	3654	277	8624			1.08151	0.113042	0.149766	0.276492	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Connecting piece	all	29	3757	55	8846			1.1569	0.210268	0.20427	0.355152	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Equatorial segment	all	28	3758	53	8848			1.15838	0.21211	0.207172	0.355152	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Rods & Rings	all	6	3780	9	8892			1.34041	0.422677	0.273633	0.452909	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Mitochondria	all	312	3474	708	8193			1.02502	0.0356534	0.304764	0.477729	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Cytoplasmic bodies	all	22	3764	44	8857			1.11701	0.159642	0.308533	0.477729	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Midbody ring	all	7	3779	12	8889			1.23459	0.304032	0.328785	0.493178	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Principal piece	all	108	3678	241	8660			1.03699	0.0524089	0.3431	0.499054	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Endoplasmic reticulum	all	160	3626	365	8536			1.02127	0.0303591	0.389211	0.549474	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	End piece	all	55	3731	125	8776			1.02393	0.0341113	0.444601	0.609739	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Nuclear membrane	all	75	3711	174	8727			1.00935	0.0134214	0.485547	0.647395	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Kinetochore	all	2	3784	5	8896			0.957437	-0.0627503	0.667284	0.865666	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Cell Junctions	all	78	3708	197	8704			0.950474	-0.0732809	0.726621	0.902135	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Mid piece	all	95	3691	239	8662			0.953137	-0.069244	0.732985	0.902135	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Lipid droplets	all	9	3777	28	8873			0.815115	-0.294924	0.818684	0.977369	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Focal adhesion sites	all	32	3754	90	8811			0.878959	-0.186133	0.835244	0.977369	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Acrosome	all	28	3758	81	8820			0.860815	-0.216225	0.855198	0.977369	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Aggresome	all	3	3783	14	8887			0.591358	-0.757896	0.92076	1	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Peroxisomes	all	4	3782	19	8882			0.582788	-0.778957	0.944563	1	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Primary cilium transition zone	all	10	3776	39	8862			0.683884	-0.548177	0.949987	1	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Plasma membrane	all	476	3310	1433	7468			0.835563	-0.259179	1	1	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Golgi apparatus	all	244	3542	848	8053			0.748765	-0.417415	1	1	enricher	other proteins with an HPA 25.1 location (Approved or better)	
+hpa_location	Vesicles	all	448	3338	1582	7319			0.739538	-0.435304	1	1	enricher	other proteins with an HPA 25.1 location (Approved or better)	
