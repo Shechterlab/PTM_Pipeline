@@ -273,7 +273,7 @@ CODES: dict[str, dict[str, str]] = {
         'canonical_position_fallback': 'position-only record: the reported residue is an arginine of the canonical entry',
         'same_accession_evidence_near_match': 'evidence not in the entry, but matches it at the reported arginine within 2 residues (variant or conflict)',
         'canonical_evidence_near_match': 'evidence not in the canonical entry, but matches it at the reported arginine within 2 residues',
-        'unresolved_no_anchor': 'not placed: no evidence names an arginine and the reported residue is not one',
+        'unresolved_no_anchor': 'not placed: the evidence, if any, is in no candidate entry, and the reported residue is not an arginine',
         'unresolved_no_hit': 'not placed: evidence not found in any candidate entry',
         'unresolved_ambiguous_hit': 'not placed: evidence supports several sites equally',
         'unresolved_evidence_elsewhere': 'not placed: the evidence lies elsewhere in the entry, not at the reported position',

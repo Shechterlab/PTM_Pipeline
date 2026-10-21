@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import subprocess
 from pathlib import Path
 
@@ -118,6 +119,7 @@ def write_all(outdir: Path, ctx: dict) -> None:
         write_changes(outdir, ctx, files)
     else:
         write_changes_since_release(outdir, ctx, files)
+    write_studies(outdir, ctx)
     write_md5sums(outdir)
 
 
@@ -233,6 +235,7 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         '| `data_dictionary.tsv` | column of every table, with its codes and their meanings |',
         '| `release.json` | the release: version, counts, reference, inputs, files with MD5 |',
         '| `CHANGES.md` | what changed since the previous version |',
+        '| `STUDIES.md` | each study and database behind the sites: where its records come from, how they were filtered and placed, and records traced from the source to the site |',
         '| `MD5SUMS` | checksums (`md5sum -c MD5SUMS`) |',
         '',
         'Tables are UTF-8, tab-separated, one header row. Lists are separated by `; `, booleans are `true`/`false`, '
@@ -498,18 +501,6 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
     (outdir / 'CHANGES.md').write_text('\n'.join(lines) + '\n')
 
 
-def not_placed(r) -> str:
-    """Why a study's records were left out, from its row of the studies table: the reasons that apply."""
-    reasons = [(r['n_records_several_sites'], 'whose evidence names several arginines of the reviewed proteome (paralogs, repeats)'),
-               (r['n_records_other_protein'], 'whose evidence names one, in a protein the record does not name (an isoform or '
-                                              'fusion the reviewed proteome does not hold)'),
-               (r['n_records_no_site'], 'whose evidence names none (isoform-specific or changed sequences)')]
-    parts = [f'{n(int(k))} {why}' for k, why in reasons if int(k)]
-    if not parts:
-        return 'Every record is placed.'
-    return 'Not placed: ' + (', '.join(parts[:-1]) + ' and ' + parts[-1] if len(parts) > 1 else parts[0]) + '.'
-
-
 def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
     """CHANGES.md from a previous release of this format (v1.1.0 on): the studies added, what happened to the previous
     sites and records, and what changed in the analyses."""
@@ -577,33 +568,10 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
             f"({n(len({a for a in only_new['uniprot_accession']} - prev_proteins))} of them new). "
             'A site the new studies report that an earlier source reports too gains their records.',
             '',
-            '### Data quality, study by study',
-            '',
-            'For each study: what its records hold and how they were filtered, what became of them, and records traced from '
-            'the source table to the reviewed proteome: the placed record merged from most source rows (brackets mark the '
-            'site in its evidence and in the reference sequence), the first record left out because its evidence names '
-            'several sites, and the first left out because it names one in a protein the record does not name.',
+            'Where each study\'s records come from, how they were filtered and placed, and records traced from the source '
+            'table to the reviewed proteome, for these studies and those of the previous version: `STUDIES.md`.',
             '',
         ]
-        st = studies.set_index('study_id')
-        examples = ctx.get('study_examples', {})
-        for sid, label, citation, doi in added:
-            r = st.loc[sid]
-            lines += [
-                f'#### {label}',
-                '',
-                f'{citation}, [doi:{doi}](https://doi.org/{doi}). {r["note"][:1].upper() + r["note"][1:]}.',
-                '',
-                f'> {r["quality"]}',
-                '',
-                f"{n(int(r['n_records']))} records: {n(int(r['n_records_placed']))} placed on {n(int(r['n_sites']))} sites "
-                f"({n(int(r['n_sites_in_previous_version']))} of them already in {previous}, {n(int(r['n_sites_only_here']))} "
-                f"reported by no other source). " + not_placed(r),
-                '',
-            ]
-            for block in examples.get(sid, []):
-                lines += ['```text', *block, '```', '']
-
         nl = placed[placed['dimethyl_type_neutral_loss'] != '']
         if len(nl):
             ab = nl['maron2021_s3_antibodies'].str.split('; ').map(lambda v: {x for x in v if x in ('ADMA', 'SDMA')})
@@ -668,6 +636,67 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
         'Their columns are listed in `README.md` and `data_dictionary.tsv`.',
     ]
     (outdir / 'CHANGES.md').write_text('\n'.join(lines) + '\n')
+
+
+def anchor(label: str) -> str:
+    """The anchor GitHub gives a Markdown heading."""
+    return re.sub(r'[^a-z0-9 -]', '', label.lower()).replace(' ', '-')
+
+
+def write_studies(outdir: Path, ctx: dict) -> None:
+    """STUDIES.md: for every study and database behind the sites, where its records come from, what they hold and how
+    they were filtered (release_codes STUDY_NOTE, STUDY_QUALITY), what became of them (placed, and why the others were
+    not), and records traced from the source table to the reviewed proteome (build_release.study_examples)."""
+    version, studies, records = ctx['version'], ctx['studies'], ctx['records']
+    examples = ctx.get('study_examples', {})
+    st = studies.set_index('study_id')
+    order = [x for x in rc.STUDIES if x[0] in st.index]
+    words = {code: text for code, (_, text) in rc.SOURCE_TABLES.items()}
+    lines = [
+        f'# Studies and databases behind the sites, {version}',
+        '',
+        'Every site rests on records: rows of the source tables, each crediting the study or database that reported the '
+        'site. A record is placed on a reviewed UniProt entry by its own sequence evidence (a window centred on the site, '
+        'or a peptide with or without the site marked), and only by its reported position when it gives no sequence; every '
+        'placed record is then checked against that evidence, and every site is an arginine of the reference sequence. The '
+        'studies added in v1.1.1 add a record only when the study localised the methyl group to one arginine and the '
+        'peptide (or, without one, the window) names exactly one arginine in the whole reviewed proteome, in a protein the '
+        'record names.',
+        '',
+        'Each section gives where the study\'s records come from, what they hold, what became of them, and records traced '
+        'from the source table to the reviewed proteome: a placed record, with its evidence aligned to the reference '
+        'sequence (brackets mark the site), and a record left out, with the reason. The placement codes are explained in '
+        '`data_dictionary.tsv`; every record is in `supporting/source_records`.',
+        '',
+        '| Study or database | Records from | Records | Placed | Sites | Reported by no other source |',
+        '|---|---|---:|---:|---:|---:|',
+    ]
+    for sid, label, citation, doi in order:
+        r = st.loc[sid]
+        lines.append(f"| [{label}](#{anchor(label)}) | {'; '.join(words.get(t, t) for t in str(r['source_table']).split('; '))} | "
+                     f"{n(int(r['n_records']))} | {n(int(r['n_records_placed']))} | {n(int(r['n_sites']))} | {n(int(r['n_sites_only_here']))} |")
+    lines.append('')
+    for sid, label, citation, doi in order:
+        r = st.loc[sid]
+        g = records[records['study'] == sid]
+        left = g[(g['placed_site'] == '') & (g['pending_site'] == '')]['placement_code'].value_counts()
+        note = r['note'][:1].upper() + r['note'][1:] if r['note'] else ''
+        lines += [f'## {label}', '', f'{citation}, [doi:{doi}](https://doi.org/{doi}).' + (f' {note}.' if note else ''), '',
+                  '**Records from** ' + '; '.join(words.get(t, t) for t in str(r['source_table']).split('; '))
+                  + f". **Terms:** {r['licence']}.", '']
+        if r['quality']:
+            lines += [f"> {r['quality']}", '']
+        pending = int(((g['placed_site'] == '') & (g['pending_site'] != '')).sum())
+        lines.append(f"{n(int(r['n_records']))} record{'s' if int(r['n_records']) != 1 else ''}: {n(int(r['n_records_placed']))} placed on "
+                     f"{n(int(r['n_sites']))} site{'s' if int(r['n_sites']) != 1 else ''} ({n(int(r['n_sites_in_previous_version']))} of "
+                     f"them in the previous version, {n(int(r['n_sites_only_here']))} reported by no other source)"
+                     + (f', {n(pending)} pending' if pending else '') + '.'
+                     + (' Not placed: ' + '; '.join(f'{n(int(k))} `{code}` ({re.sub(r"^not placed( [(][^)]*[)])?: ", "", rc.CODES["placement"].get(code, ""))})' for code, k in left.items()) + '.'
+                        if len(left) else ' Every record is placed.'))
+        lines.append('')
+        for block in examples.get(sid, []):
+            lines += ['```text', *block, '```', '']
+    (outdir / 'STUDIES.md').write_text('\n'.join(lines))
 
 
 def write_md5sums(outdir: Path) -> None:

@@ -4300,28 +4300,42 @@
     const t = fmt(c.kept) + ' of the ' + fmt(c.previous_sites) + of + ' are kept' + (c.kept_pending ? ' (' + fmt(c.kept_pending) + ' of them pending)' : '') + ', ' + fmt(c.removed) + ' were removed and ' + fmt(c.added) + ' added';
     return lead + (sentence ? t.charAt(0).toUpperCase() + t.slice(1) : t);
   }
-  // Data quality of the studies added in v1.1.1, one card each (the release's studies table: column quality and the
-  // record and site counts); the bar splits the records into placed, evidence naming several sites, and naming none.
-  function studyQualityHtml() {
+  // Where each source table's records come from, in words (the release's source_table codes).
+  const RECORDS_FROM = {
+    maron2021_s5: 'Maron et al. 2021 Table S5, a compilation of published sites', prometheusdb_mmc2: 'ProMetheusDB supplementary table mmc2',
+    ptm_master: 'the cross-PTM master table (an iPTMnet export of UniProt and IEDB records)', hartel2019: 'the study\'s supplementary Tables S1–S15',
+    geoghegan2015: 'the study\'s Supplementary Table 1', sylvestersen2014: 'the study\'s supplementary tables', lu2025: 'the study\'s Dataset EV1',
+    ma2023: 'the study\'s Table S1 (PRIDE PXD038203)',
+  };
+  const studiesLink = (label) => 'https://github.com/Shechterlab/PTM_Pipeline/blob/main/releases/' + encodeURIComponent((M.provenance && M.provenance.dataset_version) || 'v1.1.0') +
+    '/STUDIES.md#' + label.toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/ /g, '-');
+  // One card per study or database (the release's studies table): where its records come from and on what terms, how
+  // they were filtered (the studies added in v1.1.1), and what became of them. The bar splits the records: placed,
+  // evidence naming several sites, naming one in a protein the record does not name, and the rest.
+  function studyCardsHtml() {
     const Q = M.study_quality || {};
-    const names = addedStudies().filter((name) => Q[name]);
-    if (!names.length) return '';
     const prev = (M.provenance && M.provenance.previous_version) || 'the previous version';
+    const added = new Set(addedStudies());
     const seg = (n, cls, label) => (n ? '<span class="sq-seg ' + cls + '" style="flex:' + n + '" title="' + esc(label) + '"></span>' : '');
-    return '<h4 id="doc-study-quality">Studies added in v1.1.1: data quality</h4>' +
-      '<p>A record of these studies is kept when it passes the study\'s false discovery rate and its methyl group is localised to one arginine (the thresholds are on each card), and placed only where its peptide or window names exactly one arginine in the reviewed human proteome, in a protein the record names. The bar splits each study\'s records: <span class="sq-key sq-placed"></span> placed, <span class="sq-key sq-several"></span> evidence naming several sites (paralogs, repeats), <span class="sq-key sq-other"></span> naming one site in a protein the record does not name (an isoform or fusion the reviewed proteome does not hold), <span class="sq-key sq-none"></span> naming none (isoform-specific or changed sequences).</p>' +
-      '<div class="sq-grid">' + names.map((name) => {
+    return '<p>A card per study or database, largest first. Records are placed on a reviewed UniProt entry by their own sequence evidence, and only by the reported position when they give none; the studies added in v1.1.1 add a record only when its methyl group is localised to one arginine and its peptide (or, without one, its window) names exactly one arginine in the whole reviewed proteome, in a protein the record names. The bar splits each study\'s records: <span class="sq-key sq-placed"></span> placed, <span class="sq-key sq-several"></span> evidence naming several sites (paralogs, repeats), <span class="sq-key sq-other"></span> naming one site in a protein the record does not name, <span class="sq-key sq-none"></span> not placed for another reason (evidence found nowhere, or not at the reported arginine).</p>' +
+      '<div class="sq-grid">' + M.studyOrder.map((k) => M.studies[k][0]).filter((name) => Q[name]).map((name) => {
         const q = Q[name], r = studyRef(M.studies.findIndex((x) => x[0] === name));
-        return '<div class="sq-card"><div class="sq-head"><b>' + esc(name) + '</b>' + (r[1] ? ' <a class="small" href="https://doi.org/' + esc(r[1]) + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">doi:' + esc(r[1]) + '</a>' : '') + '</div>' +
-          '<p class="sq-text">' + esc(q.quality.replace(/<=/g, '≤').replace(/>=/g, '≥')) + '</p>' +
+        const from = (q.source_tables || []).map((t) => RECORDS_FROM[t] || t).join('; ');
+        const help = STUDY_HELP[name] || '';
+        const rest = q.n_records - q.n_records_placed - q.n_records_several_sites - q.n_records_other_protein;
+        return '<div class="sq-card" id="study-' + esc(name.replace(/[^A-Za-z0-9]+/g, '-')) + '"><div class="sq-head"><b>' + esc(name) + '</b>' + (r[1] ? ' <a class="small" href="https://doi.org/' + esc(r[1]) + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">doi:' + esc(r[1]) + '</a>' : '') + '</div>' +
+          (help ? '<p class="sq-text muted">' + esc(help) + '</p>' : '') +
+          '<p class="sq-from"><b>Records from</b> ' + esc(from) + '. <b>Terms:</b> ' + esc(q.licence) + '.</p>' +
+          (q.quality ? '<p class="sq-text">' + esc(q.quality.replace(/<=/g, '≤').replace(/>=/g, '≥')) + '</p>' : '') +
           '<div class="sq-bar" role="img" aria-label="' + esc(fmt(q.n_records_placed) + ' of ' + fmt(q.n_records) + ' records placed') + '">' +
-          seg(q.n_records_placed, 'sq-placed', fmt(q.n_records_placed) + ' placed') + seg(q.n_records_several_sites, 'sq-several', fmt(q.n_records_several_sites) + ' name several sites') + seg(q.n_records_other_protein, 'sq-other', fmt(q.n_records_other_protein) + ' name one site in another protein') + seg(q.n_records_no_site, 'sq-none', fmt(q.n_records_no_site) + ' name none') + '</div>' +
-          '<p class="sq-nums">' + fmt(q.n_records) + ' records: ' + ['<b>' + fmt(q.n_records_placed) + ' placed</b> (' + pct(q.n_records_placed, q.n_records) + '%)',
+          seg(q.n_records_placed, 'sq-placed', fmt(q.n_records_placed) + ' placed') + seg(q.n_records_several_sites, 'sq-several', fmt(q.n_records_several_sites) + ' name several sites') +
+          seg(q.n_records_other_protein, 'sq-other', fmt(q.n_records_other_protein) + ' name one site in another protein') + seg(rest, 'sq-none', fmt(rest) + ' not placed for another reason') + '</div>' +
+          '<p class="sq-nums">' + fmt(q.n_records) + ' record' + (q.n_records === 1 ? '' : 's') + ': ' + ['<b>' + fmt(q.n_records_placed) + ' placed</b> (' + pctText(q.n_records_placed, q.n_records) + '%)',
             q.n_records_several_sites ? fmt(q.n_records_several_sites) + ' naming several sites' : '', q.n_records_other_protein ? fmt(q.n_records_other_protein) + ' one in another protein' : '',
-            q.n_records_no_site ? fmt(q.n_records_no_site) + ' none' : ''].filter(Boolean).join(', ') + '.<br>' +
-          fmt(q.n_sites) + ' sites: ' + fmt(q.n_sites_in_previous_version) + ' already in ' + esc(prev) + ', ' + fmt(q.n_sites_only_here) + ' reported by no other source.</p></div>';
-      }).join('') + '</div>' +
-      '<p class="note">Records traced from each source table to the reviewed proteome, with the site marked in the peptide and in the reference sequence: <a href="' + changesLink() + '#data-quality-study-by-study" target="_blank" rel="noopener">CHANGES.md, Data quality study by study</a>.</p>';
+            rest > 0 ? fmt(rest) + (added.has(name) ? ' naming none' : ' not placed for another reason') : ''].filter(Boolean).join(', ') + '.<br>' +
+          fmt(q.n_sites) + ' sites: ' + fmt(q.n_sites_in_previous_version) + ' in ' + esc(prev) + ', ' + fmt(q.n_sites_only_here) + ' reported by no other source.</p>' +
+          '<p class="sq-link"><a href="' + studiesLink(q.label) + '" target="_blank" rel="noopener">Records traced from the source to the site</a></p></div>';
+      }).join('') + '</div>';
   }
   // The studies added in v1.1.1 that this export holds, by name.
   const ADDED_STUDIES = ['Hartel 2019', 'Geoghegan 2015', 'Sylvestersen 2014', 'Lu 2025', 'Ma 2023'];
@@ -10115,9 +10129,8 @@
       '<dt>ProMetheusDB</dt><dd>Methyl-proteome table (mmc2) with monomethyl (Rme1) and dimethyl (Rme2) calls: Massignani et al., ' + doiLink('10.1016/j.mcpro.2022.100243', 'Mol Cell Proteomics 21:100243 (2022)') + '.</dd>' +
       '<dt>PTM master</dt><dd>Methylarginine rows of the lab\'s cross-PTM human master table (UniProt and IEDB annotations); the same table supplies the phospho, lysine acyl, ubiquitin/SUMO and lysine methyl sites shown as crosstalk. Those other-PTM sites are not exhaustive: they come from an iPTMnet export (HPRD, literature mining and other curated sources) plus UniProt, so modifications reported elsewhere, for example in PhosphoSitePlus or recent proteomics studies, may be missing. iPTMnet: Huang et al., ' + doiLink('10.1093/nar/gkx1104', 'Nucleic Acids Res 46:D542 (2018)') + '; IEDB: Vita et al., ' + doiLink('10.1093/nar/gky1006', 'Nucleic Acids Res 47:D339 (2019)') + '.</dd></dl>' +
       '<p class="note"><b>Licence notice.</b> ' + fmt((M.studies.find((x) => x[0] === 'PhosphoSitePlus') || [0, 0, 0])[2]) + ' sites in the union are reported by PhosphoSitePlus® (via Maron et al. 2021 Table S5). ' + esc(PSP_NOTICE) + ' Please acknowledge PhosphoSitePlus® and cite Hornbeck et al. 2015 (' + doiLink('10.1093/nar/gku1267') + ') when using these sites, including in downloads.</p>' +
-      '<h4>Studies and databases behind the sites</h4><ul class="cite-list">' +
-      M.studyOrder.map((k) => '<li><b>' + esc(M.studies[k][0]) + '</b>: ' + fmt(M.studies[k][2]) + ' sites, ' + fmt(M.studies[k][3]) + ' reported only there<br><span class="muted">' + (STUDY_HELP[M.studies[k][0]] ? esc(STUDY_HELP[M.studies[k][0]]) + '. ' : '') + refLine(studyRef(k)) + '</span></li>').join('') + '</ul>' +
-      studyQualityHtml()],
+      '<h4 id="doc-study-quality">Studies and databases behind the sites</h4>' + (Object.keys(M.study_quality || {}).length ? studyCardsHtml() : '<ul class="cite-list">' +
+      M.studyOrder.map((k) => '<li><b>' + esc(M.studies[k][0]) + '</b>: ' + fmt(M.studies[k][2]) + ' sites, ' + fmt(M.studies[k][3]) + ' reported only there<br><span class="muted">' + (STUDY_HELP[M.studies[k][0]] ? esc(STUDY_HELP[M.studies[k][0]]) + '. ' : '') + refLine(studyRef(k)) + '</span></li>').join('') + '</ul>')],
       ['processing', 'How sites were processed', '' +
       '<ul>' +
       '<li>Source rows were remapped to canonical UniProt sequences by their reported windows, peptides or positions and deduplicated by canonical accession and position. The original reported accession and position are kept in each site\'s evidence.</li>' +

@@ -622,17 +622,21 @@ def build_studies(records, sites) -> pd.DataFrame:
     return pd.DataFrame(out)
 
 
-def marked_evidence(record: pd.Series) -> tuple[str, int]:
-    """The record's first sequence without marks, and the 0-based offset of its site: the marked arginine of a marked
-    peptide, the centre of a window (padding left out); (sequence, -1) when neither names one."""
+def evidence_core(record: pd.Series) -> tuple[str, int]:
+    """The record's first sequence without marks or padding, and the 0-based offset of the site it names: the marked
+    arginine of a marked peptide, the centre of a window, the arginine of a peptide with one; -1 when it names none."""
     token = clean(record['evidence_sequence']).split('; ')[0]
-    if record['evidence_kind'] == 'marked_peptide':
+    kind = record['evidence_kind']
+    if kind == 'marked_peptide':
         plain, marked = remap.parse_modified_peptide(token)
         return plain, marked[0] - 1 if len(marked) == 1 else -1
-    if record['evidence_kind'].startswith('window_'):
+    if kind.startswith('window_'):
         core, lead, _ = remap.split_window_padding(token)
-        return core, int(record['evidence_kind'].split('_')[1]) // 2 - lead
-    return token, -1
+        return core, int(kind.split('_')[1]) // 2 - lead
+    if kind == 'peptide':
+        arginines = [k for k, aa in enumerate(token) if aa == 'R']
+        return token, arginines[0] if len(arginines) == 1 else -1
+    return '', -1
 
 
 def traced(sequence: str, offset: int, reference: str, start: int, flank: int = 6) -> list[str]:
@@ -644,44 +648,79 @@ def traced(sequence: str, offset: int, reference: str, start: int, flank: int = 
     return [f'evidence    {" " * len(str(lo))} {ev}', f'reference   {lo} {ref} {hi}']
 
 
+def evidence_words(kind: str) -> str:
+    return {'marked_peptide': 'marked peptide', 'peptide': 'peptide', 'position_only': 'position'}.get(
+        kind, kind.replace('window_', 'window of ') + ' residues')
+
+
+def placed_example(r: pd.Series, reference: dict, proteome) -> list[str]:
+    """A placed record: what the source reported, where it is placed and why, and its evidence on the reference."""
+    acc, pos = split_key(r['placed_site'])
+    seq, off = evidence_core(r)
+    lines = [f"record {r['record_id']}: reported {r['reported_accession']} at R{r['reported_position']}"
+             + (f" ({r['reported_detail']})" if r['reported_detail'] else '')]
+    if not seq:
+        lo, hi = max(1, pos - 7), min(len(reference[acc]), pos + 7)
+        return lines + [f"placed on {r['placed_site']} ({r['placement_code']}): no sequence, the reported residue is an arginine",
+                        f'reference   {lo} {reference[acc][lo - 1:pos - 1]}[{reference[acc][pos - 1]}]{reference[acc][pos:hi]} {hi}']
+    hits = proteome.find(seq)
+    if off < 0:   # a peptide with several arginines: the occurrence that covers the site
+        off = next((pos - start for a, start in hits if a == acc and 0 <= pos - start < len(seq)), -1)
+    lines.append(f"placed on {r['placed_site']} ({r['placement_code']}; evidence check: {r['evidence_check']}); the "
+                 f"{evidence_words(r['evidence_kind'])} " + ('occurs once' if len(hits) == 1 else f'occurs {len(hits)} times')
+                 + ' in the reviewed proteome')
+    return lines + (traced(seq, off, reference[acc], pos - off) if off >= 0 else [])
+
+
+def code_reason(code: str) -> str:
+    """A placement code's meaning without its leading 'not placed' words."""
+    return re.sub(r'^not placed( \([^)]*\))?: ', '', rc.CODES['placement'].get(code, ''))
+
+
+def unplaced_example(r: pd.Series, proteome) -> list[str]:
+    """A record left out: its evidence, its placement code and meaning, and where the evidence occurs."""
+    seq, off = evidence_core(r)
+    hits = proteome.find(seq) if seq else []
+    where = sorted({key(a, start + off) for a, start in hits}) if off >= 0 else sorted(f'{a}:{start}-{start + len(seq) - 1}' for a, start in hits)
+    lines = [f"record {r['record_id']}: reported {r['reported_accession']} at R{r['reported_position']}"
+             + (f", {evidence_words(r['evidence_kind'])} {r['evidence_sequence']}" if seq else ', no sequence'),
+             f"not placed ({r['placement_code']}): {code_reason(r['placement_code'])}"]
+    if seq and not where:
+        lines.append('the evidence occurs nowhere in the reviewed proteome')
+    elif seq:
+        lines.append(f"the evidence {'names' if off >= 0 else 'occurs at'} {len(where)} "
+                     f"{'site' if off >= 0 else 'place'}{'s' if len(where) != 1 else ''} in the reviewed proteome: "
+                     + ', '.join(where[:6]) + (', ...' if len(where) > 6 else ''))
+    return lines
+
+
 def study_examples(records: pd.DataFrame, reference: dict) -> dict:
-    """For each study added in v1.1.1 (rc.STUDY_QUALITY), records traced from the source to the reviewed proteome: the
-    placed record merged from most source rows, the first record not placed because its evidence names several sites,
-    and the first not placed because it names one in a protein the record does not name, with those sites. Text lines,
-    for CHANGES.md."""
+    """For each study, records traced from the source to the reviewed proteome, as text lines for STUDIES.md: a placed
+    record (for a study added in v1.1.1 the one merged from most source rows, otherwise the first whose evidence check
+    agrees), and records left out (for an added study the first whose evidence names several sites and the first whose
+    one site is in a protein the record does not name, otherwise the first left out)."""
     proteome = remap.ProteomeIndex(reference)
+    staged = set(rc.STUDY_TABLES.values())
     out = {}
-    for sid in rc.STUDY_QUALITY:
+    for sid in rc.STUDY_ORDER:
         g = records[records['study'] == sid]
         if g.empty:
             continue
-        rows = pd.to_numeric(g['reported_detail'].str.extract(r'(\d+) source rows?\b')[0], errors='coerce').fillna(1)
         blocks = []
-        placed = g[(g['placed_site'] != '') & (g['evidence_kind'] != 'position_only')]
+        placed = g[g['placed_site'] != '']
+        if sid in staged:
+            rows = pd.to_numeric(g['reported_detail'].str.extract(r'(\d+) source rows?\b')[0], errors='coerce').fillna(1)
+            placed = placed.loc[rows[placed.index].sort_values(ascending=False, kind='stable').index]
+        else:
+            placed = pd.concat([placed[(placed['evidence_check'] == 'agrees') & (placed['evidence_kind'] != 'position_only')], placed])
         if len(placed):
-            r = placed.loc[rows[placed.index].sort_values(ascending=False, kind='stable').index[0]]
-            seq, off = marked_evidence(r)
-            acc, pos = split_key(r['placed_site'])
-            hits = proteome.find(seq)
-            lines = [f"record {r['record_id']}: reported {r['reported_accession']} at R{r['reported_position']}"
-                     + (f" ({r['reported_detail']})" if r['reported_detail'] else ''),
-                     f"placed on {r['placed_site']} ({r['placement_code']}; evidence check: {r['evidence_check']}); "
-                     f"the {r['evidence_kind'].replace('_', ' ').replace('window ', 'window of ') + (' residues' if r['evidence_kind'].startswith('window_') else '')} "
-                     + ('occurs once' if len(hits) == 1 else f'occurs {len(hits)} times') + ' in the reviewed proteome']
-            if off >= 0 and seq:
-                lines += traced(seq, off, reference[acc], pos - off)
-            blocks.append(lines)
-        for code in ('unresolved_study_not_unique', 'unresolved_study_other_entry'):
-            left = g[g['placement_code'] == code]
-            if not len(left):
-                continue
-            r = left.iloc[0]
-            seq, off = marked_evidence(r)
-            sites = sorted({key(a, start + off) for a, start in proteome.find(seq)}) if off >= 0 else []
-            blocks.append([f"record {r['record_id']}: reported {r['reported_accession']} at R{r['reported_position']}, "
-                           f"{r['evidence_kind'].replace('_', ' ').replace('window ', 'window of ')} {r['evidence_sequence']}",
-                           f"not placed ({code}): the evidence names {len(sites)} site{'s' if len(sites) != 1 else ''} in the "
-                           'reviewed proteome, ' + ', '.join(sites[:6]) + (', ...' if len(sites) > 6 else '')])
+            blocks.append(placed_example(placed.iloc[0], reference, proteome))
+        left = g[(g['placed_site'] == '') & (g['pending_site'] == '')]
+        codes = ['unresolved_study_not_unique', 'unresolved_study_other_entry'] if sid in staged else [None]
+        for code in codes:
+            pick = left if code is None else left[left['placement_code'] == code]
+            if len(pick):
+                blocks.append(unplaced_example(pick.iloc[0], proteome))
         out[sid] = blocks
     return out
 

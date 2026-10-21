@@ -1521,3 +1521,5 @@ body.slim .hero .brand-mark img { order: 0; }
 .sq-none { background: var(--line-strong); }
 .sq-key { display: inline-block; width: 0.75em; height: 0.75em; border-radius: 2px; vertical-align: -0.05em; }
 .sq-nums { font-size: 0.8rem; color: var(--muted); margin: 0.45rem 0 0; line-height: 1.45; }
+.sq-from { font-size: 0.8rem; line-height: 1.45; margin: 0 0 0.45rem; }
+.sq-link { font-size: 0.8rem; margin: 0.35rem 0 0; }
