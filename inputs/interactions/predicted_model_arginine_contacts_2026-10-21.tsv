@@ -1,0 +1,56 @@
+source	model	uniprot_accession	chain	position	partner_accession	min_distance_a	clash	salt_bridge	hydrogen_bond	cation_pi	plddt_arginine	plddt_partner_min	partner_residues
+ProtVar	O00303_O15372	O15372	B	313	O00303	3.5	false	false	false	false	81	73	A:V355
+ProtVar	O15498_P60880	O15498	A	88	P60880	4.7	false	false	false	false	76	78	B:M146
+ProtVar	O15498_Q9UNK0	O15498	A	71	Q9UNK0	3.5	false	false	false	false	88	55	B:R141
+ProtVar	O43592_P62826	P62826	B	166	O43592	4.2	false	false	false	false	91	48	A:G395
+ProtVar	O75558_Q52MB2	O75558	A	77	Q52MB2	4.2	false	false	false	false	65	82	B:D78
+ProtVar	O75558_Q9BTT6	O75558	A	71	Q9BTT6	3.7	false	true	false	false	72	95	B:E93:sb
+ProtVar	O94955_P10321	P10321	B	226	O94955	3.8	false	false	false	true	93	91	A:F542:pi
+ProtVar	O95257_Q99598	Q99598	B	179	O95257	1.2	true	false	true	false	87	67	A:V148:hb; A:N149:hb
+ProtVar	O95257_Q99598	Q99598	B	181	O95257	1.6	true	false	true	false	88	67	A:N149:hb
+ProtVar	O95678_P08670	P08670	B	410	O95678	2.9	false	false	true	false	92	92	A:Y358:hb
+ProtVar	P00918_P61224	P00918	A	58	P61224	3.1	false	true	true	false	86	63	B:D69:hb+sb
+ProtVar	P00918_P62834	P00918	A	58	P62834	2.8	false	true	true	false	91	70	B:D69:hb+sb
+ProtVar	P01892_P10321	P10321	B	226	P01892	2	true	false	true	false	94	81	A:A260:hb
+ProtVar	P01920_P10321	P10321	B	226	P01920	3.2	false	true	true	false	94	86	A:D153:sb; A:D184:hb+sb
+ProtVar	P04439_P10321	P10321	B	226	P04439	2.2	false	false	true	false	94	89	A:A260:hb
+ProtVar	P05783_P08670	P08670	B	401	P05783	3.1	false	true	true	false	76	84	A:E376:hb+sb; A:Y380:hb
+ProtVar	P05787_P08670	P08670	B	401	P05787	3	false	true	true	false	80	83	A:E387:hb+sb; A:Y391:hb
+ProtVar	P06748_P60709	P06748	A	291	P60709	4	false	true	false	false	92	80	B:E270:sb
+ProtVar	P07196_P08670	P08670	B	401	P07196	4.1	false	false	false	false	80	80	A:R390
+ProtVar	P07197_P08670	P08670	B	401	P07197	2.9	false	true	true	false	83	85	A:E397:hb+sb; A:Y401:hb
+ProtVar	P08238_Q16543	P08238	A	337	Q16543	3.2	false	true	false	false	90	59	B:E134:sb
+ProtVar	P08670_P08729	P08670	A	401	P08729	3.3	false	true	true	false	78	82	B:E388:hb+sb
+ProtVar	P08670_P14136	P08670	A	401	P14136	3.1	false	false	false	false	83	82	B:R367
+ProtVar	P08670_P17661	P08670	A	401	P17661	2.9	false	false	false	false	83	84	B:R406
+ProtVar	P08670_P35900	P08670	A	401	P35900	4.4	false	false	false	false	87	83	B:R371
+ProtVar	P08670_P48681	P08670	A	401	P48681	3	false	true	true	false	91	94	B:E298:hb+sb; B:Y302:hb
+ProtVar	P08670_Q04695	P08670	A	401	Q04695	2.9	false	false	false	false	84	79	B:R385
+ProtVar	P08670_Q08117	P08670	A	401	Q08117	4.5	false	false	false	false	87	91	B:L85
+ProtVar	P08670_Q08117	P08670	A	410	Q08117	2.3	false	false	true	false	60	85	B:H100:hb
+ProtVar	P08670_Q96IZ0	P08670	A	401	Q96IZ0	2.6	false	true	true	false	90	96	B:E276:hb+sb
+ProtVar	P10253_P27824	P27824	B	400	P10253	2.7	false	false	false	false	80	30	A:L117
+ProtVar	P10321_P13747	P10321	A	226	P13747	1.8	true	false	true	false	94	78	B:G258:hb
+ProtVar	P10321_P20337	P10321	A	226	P20337	4.6	false	false	false	false	94	85	B:M22
+ProtVar	P10321_P28070	P10321	A	226	P28070	4.5	false	false	false	false	89	68	B:D124
+ProtVar	P10321_P30450	P10321	A	226	P30450	1.8	true	false	true	false	93	79	B:A260:hb; B:G261:hb
+ProtVar	P10321_P41273	P10321	A	226	P41273	4.4	false	false	false	false	96	65	B:A116
+ProtVar	P10321_P61769	P10321	A	226	P61769	2.4	false	false	true	false	95	74	B:D118:hb
+ProtVar	P10321_P79483	P10321	A	226	P79483	2.9	false	false	true	false	95	80	B:N179:hb
+ProtVar	P10321_Q96S06	P10321	A	226	Q96S06	3.7	false	false	false	false	96	77	B:Y97
+ProtVar	P16383_Q9UBB9	Q9UBB9	B	479	P16383	4.7	false	false	false	false	80	69	A:V266
+ProtVar	P60842_Q15056	Q15056	B	205	P60842	3.7	false	true	false	false	85	91	A:D261:sb
+ProtVar	P61247_P62244	P61247	A	213	P62244	1.7	true	false	true	false	92	85	B:N70:hb
+ProtVar	P62888_Q9H9Y2	P62888	A	56	Q9H9Y2	3.1	false	false	true	false	91	85	B:E121:hb
+ProtVar	Q13547_Q99832	Q99832	B	313	Q13547	4.8	false	false	false	false	88	92	A:L271
+ProtVar	Q14240_Q15056	Q15056	B	205	Q14240	4	false	false	false	false	83	90	A:D262
+ProtVar	Q14687_Q9UBB9	Q9UBB9	B	479	Q14687	4.5	false	false	false	false	84	42	A:W1207
+ProtVar	Q7Z6J9_Q8NCE0	Q7Z6J9	A	438	Q8NCE0	2.6	false	false	true	false	85	91	B:D389:hb
+ProtVar	Q86X02_Q9UBB9	Q9UBB9	B	479	Q86X02	4.5	false	false	false	false	89	86	A:R194
+ProtVar	Q8N1B3_Q96N46	Q96N46	B	282	Q8N1B3	4.3	false	false	false	false	89	90	A:D244
+ProtVar	Q96DF8_Q96N46	Q96N46	B	282	Q96DF8	3	false	false	false	false	80	86	A:E40
+ProtVar	Q96JN2_Q9NP66	Q96JN2	A	62	Q9NP66	3.1	false	false	true	false	82	80	B:I324:hb; B:L325:hb
+AlphaFold DB	AF-0000000203737505		A	313		1.4	true	false	false	false	83	61	B:V355
+AlphaFold DB	AF-0000000204823759		A	9		2.7	false	false	false	false	93	80	B:L889
+AlphaFold DB	AF-0000000210389923		B	93		4.8	false	false	false	false	82	94	A:Y139
+AlphaFold DB	AF-0000000210439728		A	165		2.7	false	false	false	false	91	19	B:F322

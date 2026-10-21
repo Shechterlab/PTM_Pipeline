@@ -75,6 +75,52 @@ STUDY_QUALITY = {
               'dimethylated (155 sites), and the other 588 are left out.',
     'Ma2023': 'MaxQuant ADMA-antibody sites with a 31-residue window, localisation probability >= 0.75, 1 % FDR. Tumours '
               'grown in mice: a peptide identical in mouse and human can come from mouse stroma (flag xenograft_only).',
+    # The studies compiled in Maron et al. 2021 Table S5, and the databases: the study's methods (from the article, or
+    # for Larsen 2016 and Musiani 2019, whose articles could not be retrieved, from the PRIDE record and deposited
+    # search), and what reaches the union through the compilation. Table S5 keeps no localisation score or degree.
+    'Larsen2016': 'HEK293 cells, peptides fractionated at high pH and enriched with methylarginine antibodies, MaxQuant with '
+                  'peptide, protein and site FDR 0.01 (the search deposited in PRIDE PXD003700, which looks for '
+                  'monomethylation only). Through Maron Table S5: a 31-residue window and position per site. Some windows '
+                  'and positions are those of an isoform under the canonical accession, and are placed only where the '
+                  'window fits the canonical entry. Windows that lost the tripeptide NAN are restored.',
+    'PSP': 'Curated database. Through Maron Table S5: the sites PhosphoSitePlus listed on 22 May 2021, each with a '
+           '15-residue window and position, without the study behind it or a degree.',
+    'Maron2021': 'A549 cells treated with GSK591 or MS023, sequential Rme1, Rme2a and Rme2s antibody immunoprecipitation, '
+                 'Byonic in Proteome Discoverer 2.4, 1 % FDR, no localisation score given. Table S5 lists the 1,829 sites '
+                 '(reference "This study"), Table S2 the degree of each, which gives their methylation state here.',
+    'Guo2014': 'HCT116 cells, monomethylarginine (Me-R4-100, D5A12) and ADMA antibodies, SEQUEST with a 1 % PSM FDR, sites '
+               'confidently assigned at Ascore > 13. Through Maron Table S5: the 13-residue window and the position on a '
+               'RefSeq protein, under a UniProt accession, so the record is placed from its window. Table S5 leaves out '
+               'the 212 sites the study marks as previously published and 105 under outdated gene symbols, and keeps 94 '
+               'whose Ascore never exceeds 13.',
+    'Musiani2019': 'HeLa cells (heavy-methyl SILAC), SDMA then monomethylarginine antibody enrichment, MaxQuant 1.6.1.0 with '
+                   'a 1 % FDR (PRIDE PXD009070), no localisation threshold stated. Through Maron Table S5: a 15-residue '
+                   'window and position. 268 of the windows are centred on a lysine, not an arginine: none of them is placed.',
+    'Fong2019': 'NB4 acute promyelocytic leukaemia cells, SDMA and monomethylarginine (and, with MS023, ADMA) antibody '
+                'enrichment, MaxQuant with a 1 % FDR, Andromeda score >= 25 and localisation probability >= 0.5. Through '
+                'Maron Table S5: a 15-residue window and position. Table S5 leaves out 273 of the study\'s 1,571 arginine '
+                'sites, those whose window the study\'s table gives empty or as a run of z.',
+    'Li2021': 'HEK293 cells (SILAC) after PRMT4, PRMT5 or PRMT7 knockdown, monomethylarginine then ADMA or SDMA antibody '
+              'enrichment, Proteome Discoverer 2.2 with FDR < 1 %, no localisation score given. The study lists the sites '
+              'whose methylation fell at least two-fold. Through Maron Table S5: peptide and position from the knockdown '
+              'tables, not the 271 sites found only in the SGC3027 inhibitor table.',
+    'Fedoriw2019': 'DLBCL and pancreatic cancer cell lines with a type I PRMT inhibitor, monomethylarginine, ADMA and SDMA '
+                   'antibody enrichment, SEQUEST with a 2.5 % FDR, no localisation score given. The study lists the peptides '
+                   'whose methylation changed, by gene symbol and marked peptide. Through Maron Table S5: accession, position '
+                   'and peptide, for 599 of the study\'s 1,412 peptides.',
+    'Lim2020': 'Pooled colorectal cancer tissue from 10 patients, monomethylarginine and ADMA antibody enrichment, SEQUEST '
+               'with a 2.5 % FDR, sites confidently assigned at Ascore > 13. Through Maron Table S5: peptide and position, '
+               'with isoform accessions given as the canonical one and some leucines written as I.',
+    'Wei2020': 'HPDE6c7 and PANC-1 cells, ADMA antibody enrichment, MaxQuant 1.6.0.16 with FDR < 0.01, Andromeda score > 40 '
+               'and localisation probability > 0.75. Through Maron Table S5: a 31-residue window and position, 137 of the '
+               '289 under the canonical accession though the study numbers an isoform, so they are placed from the window.',
+    'ProMetheusDB': 'Methyl-proteome table of the heavy-methyl SILAC and SILAC experiments behind ProMetheusDB (SK-OV-3, HeLa, '
+                    'NB4 and U2OS cells): marked peptide, 15-residue window and degree (me or di) of each site.',
+    'UniProt': 'UniProt methylarginine annotations (MOD_RES), from the lab\'s iPTMnet-format export, whose iPTMnet release '
+               'and date are not recorded. 584 of the 762 records cite Guo et al. 2014 (PMID 24129315). Position only, '
+               'placed where the residue is an arginine of the entry.',
+    'IEDB': 'Immune Epitope Database records of HLA-presented peptides with a methylated arginine, from the same export: 64 '
+            'of the 85 cite Marino et al. 2017 (PMID 27503676). Position only, placed where the residue is an arginine.',
 }
 # Placement codes of records not placed because their evidence names several sites, or one site in a protein the
 # record does not name (the studies table counts each; the others not placed name none).
