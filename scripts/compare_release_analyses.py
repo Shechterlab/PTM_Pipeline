@@ -98,7 +98,8 @@ def main() -> None:
 
     tables = {}
     for v, root in roots.items():
-        s = read(Path(root) / f'statistics_{v}.tsv')
+        found = sorted(Path(root).glob('statistics_*.tsv'))
+        s = read(Path(root) / f'statistics_{v}.tsv' if (Path(root) / f'statistics_{v}.tsv').exists() or len(found) != 1 else found[0])
         s = s[s['method'] != 'mantel_haenszel']
         s['key'] = s['analysis'] + '\t' + s['category'] + '\t' + s['stratum']
         tables[v] = s.drop_duplicates('key').set_index('key')
