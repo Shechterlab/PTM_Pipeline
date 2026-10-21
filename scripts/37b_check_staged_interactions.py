@@ -67,15 +67,19 @@ def merge(spans) -> list[tuple[int, int]]:
 
 class Tables:
     def __init__(self, folder: Path):
+        # the interaction rows of inputs/MANIFEST.tsv (inputs/interactions/MANIFEST.tsv before it was merged there)
         self.folder = folder
-        with open(folder / 'MANIFEST.tsv', encoding='utf-8') as fh:
-            self.manifest = list(csv.DictReader(fh, delimiter='\t'))
+        manifest = folder / 'MANIFEST.tsv' if (folder / 'MANIFEST.tsv').exists() else folder.parent / 'MANIFEST.tsv'
+        with open(manifest, encoding='utf-8') as fh:
+            self.manifest = [r for r in csv.DictReader(fh, delimiter='\t') if r['file'].startswith('interactions/')]
         self.names = [r['file'].split('/', 1)[1] for r in self.manifest]
 
     def path(self, prefix: str, suffix: str = '.tsv') -> Path:
-        hits = [n for n in self.names if n.startswith(prefix) and n.endswith(suffix)]
-        if len(hits) != 1:
-            raise KeyError(f'{prefix}: {hits}')
+        # the first staging (dated tables sort by date): the one the raw cache this script compares with produced;
+        # later dated top-ups add proteins it did not hold
+        hits = sorted(n for n in self.names if n.startswith(prefix) and n.endswith(suffix))
+        if not hits:
+            raise KeyError(f'{prefix}: no table')
         return self.folder / hits[0]
 
     def rows(self, prefix: str):

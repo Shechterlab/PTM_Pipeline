@@ -1519,6 +1519,7 @@ body.slim .hero .brand-mark img { order: 0; }
 .sq-several { background: var(--muted); }
 .sq-other { background: color-mix(in srgb, var(--muted) 55%, var(--line-strong)); }
 .sq-none { background: var(--line-strong); }
+.sq-unloc { background: repeating-linear-gradient(135deg, var(--line-strong) 0 3px, transparent 3px 6px); }
 .sq-key { display: inline-block; width: 0.75em; height: 0.75em; border-radius: 2px; vertical-align: -0.05em; }
 .sq-nums { font-size: 0.8rem; color: var(--muted); margin: 0.45rem 0 0; line-height: 1.45; }
 .sq-from { font-size: 0.8rem; line-height: 1.45; margin: 0 0 0.45rem; }

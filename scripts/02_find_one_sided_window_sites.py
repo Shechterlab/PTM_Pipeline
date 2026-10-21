@@ -2,8 +2,8 @@
 """List the sites a release keeps pending a policy decision: windows that match the entry on one side of the site only.
 
 scripts/02_remap_arg_methyl_to_canonical.py leaves a window record unplaced when its window does not match the entry
-at the reported arginine. Some of these windows match one full flank (at least 6 residues) and the site exactly, and
-the other flank not at all, and no other reviewed entry holds the window. Some are windows of another isoform of the
+at the reported arginine. Some of these windows match one full flank (at least 6 residues) and the site exactly, but
+not the other flank in full, and no other reviewed entry holds the window. Some are windows of another isoform of the
 protein (a different exon after the site). A window whose numbering is that of another isoform as well is kept the
 same way at the arginine where one complete flank (15 residues and the arginine) matches the entry, when that happens
 at exactly one arginine (FMR1 R606: a window reported at R564, from an isoform that skips an exon). The release keeps

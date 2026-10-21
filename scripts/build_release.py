@@ -618,7 +618,7 @@ def build_studies(records, sites) -> pd.DataFrame:
     for sid, label, citation, doi in rc.STUDIES:
         group = records[records['study'] == sid]
         if group.empty:
-            continue   # a study this build does not read (the studies added in v1.1.1, when rebuilding v1.1.0)
+            continue   # a study this build does not read (the study tables, when rebuilding v1.1.0)
         supported = per_site[per_site.map(lambda s: sid in s)]
         unplaced = group[group['placed_site'] == '']
         several = int(unplaced['placement_code'].isin(rc.PLACEMENT_SEVERAL).sum())
@@ -712,7 +712,7 @@ def unplaced_example(r: pd.Series, proteome) -> list[str]:
 
 def study_examples(records: pd.DataFrame, reference: dict) -> dict:
     """For each study, records traced from the source to the reviewed proteome, as text lines for STUDIES.md: a placed
-    record (for a study added in v1.1.1 the one merged from most source rows, otherwise the first whose evidence check
+    record (for a study read from its own table the one merged from most source rows, otherwise the first whose evidence check
     agrees), and records left out (for an added study the first whose evidence names several sites and the first whose
     one site is in a protein the record does not name, otherwise the first left out)."""
     proteome = remap.ProteomeIndex(reference)
@@ -745,9 +745,12 @@ def validation(root: Path, check: pd.DataFrame) -> dict:
     """The outcome of the build's two gates (hpc/build_release.sh stops on either)."""
     audit = root / 'qc' / 'remap_evidence_check' / 'union_site_residue_audit.tsv'
     failures = root / 'qc' / 'remap_evidence_check' / 'remap_evidence_check_failures.tsv'
+    missing = [p.name for p in (audit, failures) if not p.exists()]
+    if missing:   # a release records the gates' outcome; without their output it cannot say they passed
+        raise SystemExit(f'gate output missing from {root / "qc" / "remap_evidence_check"}: {missing} (run the evidence check and audit)')
     return {'evidence_check': {rc.VERDICT_CODE[k]: int(n) for k, n in check['verdict'].value_counts().items()},
-            'rows_against_evidence_not_accepted': len(read_tsv(failures)) if failures.exists() else 0,
-            'union_sites_not_arginine': len(read_tsv(audit)) if audit.exists() else 0}
+            'rows_against_evidence_not_accepted': len(read_tsv(failures)),
+            'union_sites_not_arginine': len(read_tsv(audit))}
 
 
 def peptide_start_agreement(rows: pd.DataFrame, typed: pd.DataFrame, reference: dict, path: Path) -> dict:
@@ -842,6 +845,10 @@ def main() -> None:
     typed = pd.read_csv(root / 'remapped' / 'human_arg_methyl_source_rows_with_remap.tsv', sep='\t', low_memory=False)
     typed = remap.annotate_window_lengths(typed) if 'seq_window_window_length' not in typed else typed
     check = read_tsv(root / 'qc' / 'remap_evidence_check' / 'remap_evidence_check_rows.tsv')
+    # the evidence check writes one row per record, in the records' order: joined by position, so check it
+    if len(check) != len(rows) or not (check['reported_accession'].values == rows['substrate_UniProtAC_original'].replace('nan', '').values).all() \
+            or not (check['source_table'].values == rows['source_table'].values).all():
+        raise SystemExit('the evidence check rows do not line up with the records (rerun scripts/qc_remap_evidence_check.py)')
     union = read_tsv(root / 'integrated' / 'human_arg_methyl_union_dedup_by_site.tsv')
     pending_table = read_tsv(root / 'integrated' / 'pending_one_sided_window_sites.tsv')
     pending = {key(a, p) for a, p in zip(pending_table['canonical_UniProtAC'], pending_table['position'])}

@@ -394,9 +394,9 @@ def main() -> None:
             'generated': info['release_date'],
             'provenance': {
                 'dataset_version': v,
-                'pipeline_commit': info['code_commit'],
-                'uncommitted_changes': False,
-                'results_root': f'releases/{v}',
+                'pipeline_commit': info['code_commit'].replace('+uncommitted', ''),
+                'uncommitted_changes': info['code_commit'].endswith('+uncommitted'),
+                'results_root': f'releases/{v}',   # where the release lives in the repository
                 'reference_sequences': {'file': info['reference']['fasta'], 'md5': info['reference']['fasta_md5'],
                                         'sequences': info['reference']['entries'], 'uniprot_release': info['reference']['release'],
                                         'uniprot_release_date': info['reference']['release_date']},
@@ -415,11 +415,13 @@ def main() -> None:
             'studies': [[name, study_citation.get(name, '') or study_info.get(name, ('', ''))[0], study_counts[k], study_unique[k],
                          study_info.get(name, ('', ''))[1]] for k, name in enumerate(studies_vocab.values)],
             # Every study and database, by name: where its records come from and their data quality, as the release's
-            # studies table gives them (STUDIES.md has the traced records). A release before v1.1.1 has no quality.
+            # studies table gives them (STUDIES.md has the traced records). A release before v1.2.0 has no quality, and
+            # none before it counts records without localisation.
             'study_quality': {web_name[r['study_id']]: dict(
                 {k: (int(r[k]) if k.startswith('n_') else r[k]) for k in (
                     'label', 'licence', 'quality', 'n_records', 'n_records_placed', 'n_sites', 'n_sites_in_previous_version',
-                    'n_sites_only_here', 'n_records_several_sites', 'n_records_other_protein', 'n_records_no_site')},
+                    'n_sites_only_here', 'n_records_several_sites', 'n_records_other_protein', 'n_records_not_localised',
+                    'n_records_no_site') if k in r},
                 source_tables=L(r['source_table'])) for r in studies.to_dict('records')} if 'quality' in studies.columns else {},
             'states': STATES, 'motifs': MOTIFS, 'maron_ips': MARON_IPS, 'maron_treatments': MARON_TREATMENTS,
             'other_ptm_groups': OTHER_PTM_GROUPS, 'other_ptm_sources': ['Cross-PTM master table'],

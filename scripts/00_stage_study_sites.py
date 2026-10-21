@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Stage the methylarginine records of five proteomics studies from their supplementary tables (inputs/sources/).
+"""Stage the methylarginine records of each study and database from its own tables (inputs/sources/).
 
-    python scripts/00_stage_study_sites.py --study hartel2019 \
-        --input 153496_0_supp_351381_ptfjl4.xlsx 153496_0_supp_351382_ptfjl4.xlsx \
-        --out inputs/sources/hartel2019_methylarginine_records.tsv
-    python scripts/00_stage_study_sites.py --study geoghegan2015 --input ncomms7758-s2.xlsx \
-        --out inputs/sources/geoghegan2015_methylarginine_records.tsv
-    python scripts/00_stage_study_sites.py --study sylvestersen2014 --input mcp.O113.032748-4.xlsx mcp.O113.032748-6.xlsx \
-        --out inputs/sources/sylvestersen2014_methylarginine_records.tsv
-    python scripts/00_stage_study_sites.py --study lu2025 --input 44319_2025_599_MOESM3_ESM.xlsx \
-        --reference inputs/reference/uniprot_human_reviewed_2026_03.fasta --out inputs/sources/lu2025_methylarginine_records.tsv
-    python scripts/00_stage_study_sites.py --study ma2023 \
-        --input Table_S1_Identified_and_quantified_ADMA_methylation_sites_06012022.xlsx \
-        --out inputs/sources/ma2023_methylarginine_records.tsv
+    python scripts/00_stage_study_sites.py --study STUDY --input TABLE [TABLE ...] [--reference FASTA] \
+        [--entries ENTRIES --history HISTORY] [--s5 TABLE_S5] --out inputs/sources/STUDY_methylarginine_records.tsv
+
+STUDY is one of the keys of STUDIES below; the command that staged each table, with its inputs and their MD5s, is in
+inputs/MANIFEST.tsv (how_made_or_checked, derived_from). --reference is the reviewed FASTA (lu2025, fedoriw2019),
+--entries and --history the reference entries and accession history (guo2014, fedoriw2019: gene symbols to entries),
+--s5 Maron et al. 2021 Table S5 (larsen2016, musiani2019: the sites the study reports).
+
+Every record says how the methyl group is localised to its arginine (localised_by): localisation_score (the study's
+score passes its threshold), one_methylatable_residue or every_arginine_dimethylated (the peptide's mass leaves one
+arrangement, common.mass_localised, for studies that give no score), or curated_experimental (UniProt ECO:0000269).
+Rows without one are dropped here and counted in the summary.
 
 Writes the records each study reports, one per (first reported accession, reported position, unmarked peptide or
 window, degree), with the position the source gives on that accession. Nothing is placed on a reference sequence here:

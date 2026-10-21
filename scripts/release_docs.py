@@ -80,8 +80,11 @@ def md5(path: Path) -> str:
 
 
 def commit() -> str:
+    """HEAD, with '+uncommitted' when tracked files differ from it (the release was built from a working tree)."""
     try:
-        return subprocess.run(['git', 'rev-parse', 'HEAD'], capture_output=True, text=True, cwd=REPO).stdout.strip() or 'unknown'
+        head = subprocess.run(['git', 'rev-parse', 'HEAD'], capture_output=True, text=True, cwd=REPO).stdout.strip() or 'unknown'
+        dirty = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=no'], capture_output=True, text=True, cwd=REPO).stdout.strip()
+        return head + ('+uncommitted' if dirty else '')
     except OSError:
         return 'unknown'
 
@@ -220,14 +223,17 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
     c, version, previous = ctx['counts'], ctx['version'], ctx['previous']
     studies = ctx['studies']
     ur = ctx['uniprot_release']
-    added = [label for sid, label, *_ in rc.STUDIES if sid in set(rc.STUDY_TABLES.values()) and sid in set(ctx['records']['study'])]
+    added = [label for sid, label, *_ in rc.STUDIES if sid in set(rc.STUDIES_ADDED) and sid in set(ctx['records']['study'])]
+    localised = 'localised_by' in ctx['records'].columns and ctx['records']['placement_code'].isin(rc.PLACEMENT_NOT_LOCALISED).any()
     lines = [
         f'# Human methylarginine sites, {version}',
         '',
-        f"{n(c['sites'])} sites on {n(c['proteins'])} proteins, and {n(c['pending'])} pending sites, "
-        f"{n(c['rows'])} rows: the human protein arginine methylation sites of {PAPER}, with corrections to how some "
-        f'source records were placed on UniProt sequences (v1.1.0)'
-        + (f" and the sites of {len(added)} more studies (v1.1.1: {', '.join(added)})" if added else '')
+        f"{n(c['sites'])} sites on {n(c['proteins'])} proteins"
+        + (f", and {n(c['pending'])} pending sites" if c['pending'] else '') + f", {n(c['rows'])} rows: the human protein arginine "
+        f'methylation sites of {PAPER}, with corrections to how some source records were placed on UniProt sequences (v1.1.0)'
+        + ('; from v1.2.0 every study is read from its own tables and a site is kept only where its methyl group is '
+           'localised to one arginine' if localised else '')
+        + (f" and the sites of {len(added)} more studies ({', '.join(added)})" if added else '')
         + f'. [CHANGES.md](CHANGES.md) says what changed since {previous}'
         + (' (the published version)' if previous == 'v1.0.0' else '') + ' and why.',
         '',
@@ -284,9 +290,11 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'source (the `studies` column does), and that web pages showing PSP-derived sites link them to the PSP protein '
         'page (www.phosphosite.org/uniprotAccAction?id=<UniProt accession>).',
         '',
-        'The annotation and interaction sources keep their own terms too (`licence` in `inputs/MANIFEST.tsv`). Three are '
-        'non-commercial: the DisGeNET terms behind the disease tables (CC BY-NC-SA 4.0), CD-CODE condensates (CC BY-NC 4.0) '
-        'and the pepR-MS RNA crosslink compendium (CC BY-NC).',
+        'The annotation and interaction sources keep their own terms too (`licence` in `inputs/MANIFEST.tsv`). Four are '
+        'non-commercial: the DisGeNET terms behind the disease tables (CC BY-NC-SA 4.0), CD-CODE condensates (CC BY-NC 4.0), '
+        'the pepR-MS RNA crosslink compendium (CC BY-NC) and the DNA crosslinks of Trendel et al. 2025 (CC BY-NC 4.0). Maron '
+        'et al. 2021 and ProMetheusDB supplements are CC BY-NC-ND 4.0: the release redistributes records derived from them, '
+        'not the tables themselves.',
         '',
         '## How it was built',
         '',
@@ -544,22 +552,95 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
         + ('all are placed as before. ' if (old['change_since_previous_version'].isin(['same', 'not_placed'])).all() else
            f"{n(int((~old['change_since_previous_version'].isin(['same', 'not_placed'])).sum()))} of them are placed differently "
            '(supporting/source_records, columns change_since_previous_version and reason_code). ')
-        + (f'The records of the studies added follow them, from record_id {first_new:,}.' if first_new else ''),
+        + (f'The records read for the first time (each study\'s own table) follow them, from record_id {first_new:,}.' if first_new else ''),
         '',
     ]
-    added = [s for s in rc.STUDIES if s[0] in set(new['study'])]
+    # ---- Site specificity: the records without localisation, and the sites of the previous version they alone held
+    if 'localised_by' in records.columns and records['placement_code'].isin(rc.PLACEMENT_NOT_LOCALISED).any():
+        code_n = records['placement_code'].value_counts()
+        unloc = records[records['placement_code'] == 'unresolved_not_localised']
+        removed = changes[changes['change'] == 'removed']
+        prev_studies = prev.set_index('site_id')['studies'].str.split('; ')
+        rem_studies = removed['previous_site_id'].map(prev_studies)
+
+        def support(st) -> str:
+            others = set(st) - {'PSP'}
+            if not others:
+                return 'PhosphoSitePlus only'
+            if len(others) == 1:
+                return dict((x[0], x[1]) for x in rc.STUDIES)[next(iter(others))] + ' (with or without PhosphoSitePlus)'
+            if others == {'Larsen2016', 'Maron2021'}:
+                return 'Larsen 2016 and Maron 2021 (with or without PhosphoSitePlus)'
+            return 'two or more studies'
+        by_support = rem_studies.dropna().map(support).value_counts()
+        localised_elsewhere = records[(records['localised_by'] != '') & records['placement_code'].isin(rc.PLACEMENT_SEVERAL | rc.PLACEMENT_OTHER_PROTEIN | {'unresolved_study_not_found'})]
+        not_unique_sites = set(localised_elsewhere['_previous_at']) & set(removed['previous_site_id'])
+        lines += [
+            '## Site specificity',
+            '',
+            'A record adds a site only where its source localises the methyl group to one arginine: a localisation score over '
+            "the study's threshold (MaxQuant localisation probability, ptmRS, Ascore or ModScore, ModLS), a peptide whose mass "
+            'leaves one arrangement (no other residue the search could methylate, or every such residue a dimethylated '
+            'arginine), or a UniProt annotation with experimental evidence from the literature (`localised_by` in '
+            '`supporting/source_records`). Its peptide, or without one its window, must also name exactly one arginine in the '
+            'reviewed proteome, in a protein the record names.',
+            '',
+            'Every study is read from its own tables (`inputs/sources/<study>_methylarginine_records.tsv`, staged by '
+            '`scripts/00_stage_study_sites.py`), so the rows of the compiled tables give way to them: '
+            f"{n(int(code_n.get('superseded_by_study_table', 0)))} records of Maron et al. 2021 Table S5 and the PTM master table "
+            'are not placed (`superseded_by_study_table`), the study\'s own records standing in for them. '
+            f"{n(len(unloc))} records carry no localisation at all (`unresolved_not_localised`): "
+            + ', '.join(f"{n(v)} {k}" for k, v in unloc['study'].map(dict((x[0], x[1]) for x in rc.STUDIES)).value_counts().items())
+            + '. All records stay in `supporting/source_records`.',
+            '',
+            f"The {n(len(removed))} sites of {previous} that no localised record supports are removed. By the sources that reported "
+            f'them in {previous}:',
+            '',
+            '| Reported in ' + previous + ' by | Sites removed |',
+            '|---|---:|',
+        ] + [f'| {k} | {v:,} |' for k, v in by_support.items()] + [
+            '',
+            f"{n(len(not_unique_sites))} of them have a localised record whose peptide or window names several arginines in "
+            'the reviewed proteome (paralogs, repeats) or one in a protein the record does not name.',
+            '',
+            "Most of the rest rest on two studies whose localisation could not be read: Larsen et al. 2016, whose article "
+            "table could not be retrieved (the MaxQuant site table in PRIDE PXD003700 covers 28 of its 140 raw files), and "
+            "Maron et al. 2021, whose tables give no localisation score while its search allowed methylation of arginine "
+            "and lysine. The article table of Larsen 2016 (Table S1) and the search results of Maron 2021 with their "
+            "localisation scores would bring their localised sites back.",
+            '',
+        ]
+        staged = [x for x in rc.STUDIES if x[0] in set(rc.STUDY_TABLES.values()) and x[0] not in set(rc.STUDIES_ADDED)]
+        site_studies = placed.set_index('site_id')['studies'].str.split('; ')
+        prev_by = prev_studies
+        rows_ = []
+        for sid, label, citation, doi in staged:
+            g = records[(records['study'] == sid) & (records['source_table'].isin([k for k, (raw, _) in rc.SOURCE_TABLES.items() if raw in rc.STUDY_TABLES]))]
+            if g.empty:
+                continue
+            here = {x for x in g['placed_site'] if x} & set(site_studies.index)
+            before = {x for x, st in prev_by.items() if sid in st}
+            rows_.append(f'| [{label}](https://doi.org/{doi}) | {len(g):,} | {int((g["placed_site"] != "").sum()):,} | {len(here):,} | {len(before):,} |')
+        if rows_:
+            lines += [
+                '## Studies read from their own tables',
+                '',
+                'The studies compiled in Maron et al. 2021 Table S5, and UniProt and IEDB, read from their own tables. Records: '
+                'those the staging keeps (localised, and within the study\'s false discovery rate); sites: those they support '
+                f'now, beside the sites the study supported in {previous} through the compiled tables.',
+                '',
+                f'| Study | Records | Placed | Sites | Sites in {previous} |',
+                '|---|---:|---:|---:|---:|',
+            ] + rows_ + ['', '`STUDIES.md` gives, for each, the tables read, the thresholds, and records traced from the source table to the '
+                         'reviewed proteome.', '']
+    added = [s for s in rc.STUDIES if s[0] in set(new['study']) and s[0] in set(rc.STUDIES_ADDED)]
     if added:
         lines += [
             f'## Studies added ({len(added)})',
             '',
-            'Each study\'s supplementary table is staged by `scripts/00_stage_study_sites.py` into '
-            '`inputs/sources/<study>_methylarginine_records.tsv`: one record per reported peptide and arginine, kept when '
-            'it passes the study\'s false discovery rate and the methyl group is localised to that arginine (the thresholds '
-            'are below and in the script). A record is then placed only where its peptide or window names exactly one '
-            'arginine in the whole reviewed proteome, in a protein the record names (its accession, the current entry of a '
-            'merged accession, or an entry of its gene); a peptide shared by paralogs, repeated in a protein, found only in '
-            'an isoform or an unreviewed entry, or found only in another protein adds no site. Placed records are checked '
-            'against their evidence like those of the other source tables.',
+            'Each study\'s supplementary table is staged like the others: one record per reported peptide and arginine, kept when '
+            'it passes the study\'s false discovery rate and the methyl group is localised to that arginine, and placed by the '
+            'rule above.',
             '',
             '| Study | Sample | Records | Placed | Sites | Sites new to the union | Proteins new to the union |',
             '|---|---|---:|---:|---:|---:|---:|',
@@ -578,48 +659,44 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
         lines += [
             '',
             f"{n(len(only_new))} sites are new to the union, on {n(only_new['uniprot_accession'].nunique())} proteins "
-            f"({n(len({a for a in only_new['uniprot_accession']} - prev_proteins))} of them new). "
-            'A site the new studies report that an earlier source reports too gains their records.',
-            '',
-            'Where each study\'s records come from, how they were filtered and placed, and records traced from the source '
-            'table to the reviewed proteome, for these studies and those of the previous version: `STUDIES.md`.',
+            f"({n(len({a for a in only_new['uniprot_accession']} - prev_proteins))} of them new).",
             '',
         ]
-        nl = placed[placed['dimethyl_type_neutral_loss'] != '']
-        if len(nl):
-            ab = nl['maron2021_s3_antibodies'].str.split('; ').map(lambda v: {x for x in v if x in ('ADMA', 'SDMA')})
-            call = nl['dimethyl_type_neutral_loss'].str.split('; ').map(set)
-            both = [(a, b) for a, b in zip(call, ab) if b]
-            same = sum(a == b for a, b in both)
-            part = sum(bool(a & b) and a != b for a, b in both)
-            lines += [
-                '### ADMA and SDMA from neutral losses',
-                '',
-                f"Hartel et al. 2019 tell asymmetric from symmetric dimethylarginine by the neutral loss in the fragment "
-                f"spectra: dimethylamine (45.058 Da) for ADMA, methylamine (31.042 Da) for SDMA. `dimethyl_type_neutral_loss` "
-                f"gives the call at {n(len(nl))} sites: "
-                + ', '.join(f"{v} {k}" for k, v in nl['dimethyl_type_neutral_loss'].value_counts().items()) + '. '
-                f"Maron et al. 2021 Table S3 says which antibodies recovered a site (`maron2021_s3_antibodies`). At the "
-                f"{n(len(both))} sites with both a neutral-loss call and an ADMA or SDMA immunoprecipitation, the two agree at "
-                f"{n(same)}, overlap at {n(part)} and differ at {n(len(both) - same - part)}. Both columns are kept as reported.",
-                '',
-            ]
-        xeno = int(placed['flags'].str.contains('xenograft_only').sum())
-        if xeno:
-            lines += [
-                '### Xenograft-only sites',
-                '',
-                f"Ma et al. 2023 measured breast cancer patient-derived xenografts grown in mice. The {n(xeno)} sites only "
-                'they report carry the flag `xenograft_only`: where the human and mouse sequences agree, the peptide can come '
-                'from the mouse stroma.',
-                '',
-            ]
+    nl = placed[placed['dimethyl_type_neutral_loss'] != '']
+    if len(nl):
+        ab = nl['maron2021_s3_antibodies'].str.split('; ').map(lambda v: {x for x in v if x in ('ADMA', 'SDMA')})
+        call = nl['dimethyl_type_neutral_loss'].str.split('; ').map(set)
+        both = [(a, b) for a, b in zip(call, ab) if b]
+        same = sum(a == b for a, b in both)
+        part = sum(bool(a & b) and a != b for a, b in both)
+        lines += [
+            '### ADMA and SDMA from neutral losses',
+            '',
+            f"Hartel et al. 2019 tell asymmetric from symmetric dimethylarginine by the neutral loss in the fragment "
+            f"spectra: dimethylamine (45.058 Da) for ADMA, methylamine (31.042 Da) for SDMA. `dimethyl_type_neutral_loss` "
+            f"gives the call at {n(len(nl))} sites: "
+            + ', '.join(f"{v} {k}" for k, v in nl['dimethyl_type_neutral_loss'].value_counts().items()) + '. '
+            f"Maron et al. 2021 Table S3 says which antibodies recovered a site (`maron2021_s3_antibodies`). At the "
+            f"{n(len(both))} sites with both a neutral-loss call and an ADMA or SDMA immunoprecipitation, the two agree at "
+            f"{n(same)}, overlap at {n(part)} and differ at {n(len(both) - same - part)}. Both columns are kept as reported.",
+            '',
+        ]
+    xeno = int(placed['flags'].str.contains('xenograft_only').sum())
+    if xeno:
+        lines += [
+            '### Xenograft-only sites',
+            '',
+            f"Ma et al. 2023 measured breast cancer patient-derived xenografts grown in mice. The {n(xeno)} sites only "
+            'they report carry the flag `xenograft_only`: where the human and mouse sequences agree, the peptide can come '
+            'from the mouse stroma.',
+            '',
+        ]
     lines += [
         '## Methylation degree',
         '',
         f"`methyl_state` gives a degree at {n(c['with_state'])} of {n(c['sites'])} sites: "
         + ', '.join(f"{n(v)} {k.replace('_', ' + ')}" for k, v in c['state'].items() if k != 'none') + '. '
-        'The studies added count through their records (`methyl_states_reported`).',
+        'The studies read from their own tables count through their records (`methyl_states_reported`).',
         '',
         '## Protein-set tests',
         '',
@@ -631,14 +708,38 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
         'reviewed human genes with a DisGeNET term.',
         '- The Human Disease Ontology is added, with the gene sets of DOSE enrichDO (`supporting/disease_ontology`), and every '
         'DisGeNET term tested is listed (`supporting/disease_terms_tested`).',
-        '- The analyses run on the sites of this version, the studies added included.',
+        '- The analyses run on the sites of this version.',
+        '',
+        '## Corrections to the analyses',
+        '',
+        '- Functional classes: short gene tokens of `config/functional_ontology.json` matched inside other words (`atr` in '
+        'matrix and tetratricopeptide, `actin` in interacting, `lamin` in filamin, `nop` in aminopeptidase); they now match '
+        'whole words or word starts.',
+        '- Condensates: the background holds reviewed entries only, secondary accessions counted as their current entry.',
+        '- Disease enrichment: a protein counts under its UniProt primary gene (the source tables\' first symbol could be a '
+        'neighbouring gene, e.g. IGF2 for IGF2-AS), and the Disease Ontology table names genes by symbol.',
+        '- Density windows: a window of W residues spans W residues (it spanned W+1), each protein\'s null is seeded from '
+        'its accession, and the null takes 10,000 permutations (1,000 before).',
+        '- Motifs: the proteome background leaves out the methylated arginines. Per-protein arginine enrichment: q over the '
+        'proteins tested.',
+        '- Disorder: a protein end is not an edge of a disordered region; MobiDB entries numbered on another sequence than '
+        'the reference were replaced from the MobiDB API or dropped (`inputs/annotation/mobidb_entries_patched_2026-10-21.tsv`).',
+        '- Human Protein Atlas: an accession several HPA genes map to takes the best reliability and the main location of any.',
+        '- Protein names keep brackets that belong to the name (DNA (cytosine-5)-methyltransferase 1); gene synonyms are '
+        'split at the semicolons between genes.',
+        '- Interaction evidence: predicted contacts and interface residues whose residues disagree with the reference '
+        'sequence (a chain of another protein, another numbering) and ProtVar pairs with a non-human partner are left out; '
+        'PDB contacts in fusion chains name the protein of the segment that holds the residue; CD-CODE members listed '
+        'under isoforms count once, with their best confidence.',
         '',
         '## Still open',
         '',
-        f"- **Windows that match on one side only** ({n(c['pending'])} sites, flag `one_sided_window`): kept, flagged and left "
-        'out of every analysis, as in the previous version.',
+    ] + ([f"- **Windows that match on one side only** ({n(c['pending'])} sites, flag `one_sided_window`): kept, flagged and left "
+          'out of every analysis.'] if c['pending'] else []) + ([
         f"- **Paralog windows** ({c['flags'].get('paralog_window', 0)} sites, flag `paralog_window`), accepted in "
-        '`config/remap_evidence_allowlist.tsv`.',
+        '`config/remap_evidence_allowlist.tsv`.'] if c['flags'].get('paralog_window', 0) else []) + [
+        '- **Sites without a readable localisation** (above): Larsen et al. 2016 Table S1 and the Maron et al. 2021 search '
+        'results would bring their localised sites back.',
         '',
         '## Tracing a change',
         '',
@@ -672,9 +773,10 @@ def write_studies(outdir: Path, ctx: dict) -> None:
         'site. A record is placed on a reviewed UniProt entry by its own sequence evidence (a window centred on the site, '
         'or a peptide with or without the site marked), and only by its reported position when it gives no sequence; every '
         'placed record is then checked against that evidence, and every site is an arginine of the reference sequence. The '
-        'studies added in v1.1.1 add a record only when the study localised the methyl group to one arginine and the '
-        'peptide (or, without one, the window) names exactly one arginine in the whole reviewed proteome, in a protein the '
-        'record names.',
+        'records of a study read from its own table add a site only when the study localised the methyl group to one '
+        'arginine and the peptide (or, without one, the window) names exactly one arginine in the whole reviewed proteome, '
+        'in a protein the record names; the rows of the compiled tables (Maron et al. 2021 Table S5, the PTM master table) '
+        'carry no localisation and add none.',
         '',
         'Each section gives where the study\'s records come from, what they hold, what became of them, and records traced '
         'from the source table to the reviewed proteome: a placed record, with its evidence aligned to the reference '

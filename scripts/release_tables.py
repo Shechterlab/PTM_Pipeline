@@ -6,7 +6,7 @@ published PTM_results/) and the frozen inputs, and returns tables in the release
 
   proteins            one row per protein of the site table
   statistics          every enrichment test the website or the paper reports, with its 2x2 counts
-  disease_terms       enriched DisGeNET terms (DOSE enrichDGN, uncorrected)
+  disease_terms       enriched DisGeNET terms (DOSE enrichDGN: p, BH-adjusted p and q all <= 0.05)
   disease_terms_tested     every DisGeNET term DOSE tested, enriched or not
   disease_ontology    every Disease Ontology term tested
   density_windows     significant methylarginine density windows (scripts/28)

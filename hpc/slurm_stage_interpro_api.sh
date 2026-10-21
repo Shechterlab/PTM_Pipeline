@@ -28,8 +28,9 @@ INTERPRO_API_RETRIES=${PTM_INTERPRO_API_RETRIES:-5}
 run_step() {
   echo "[ptm_interpro_api] $1"
   shift
-  "$@"
-  status=$?
+  # under set -e a failing command would exit before its status is read: catch it, then report it
+  status=0
+  "$@" || status=$?
   if [ "$status" -ne 0 ]; then
     echo "[ptm_interpro_api] step failed with exit code $status"
     echo "[ptm_interpro_api] command: $*"

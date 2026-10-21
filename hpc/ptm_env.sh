@@ -1,13 +1,14 @@
 #!/bin/bash
 
 ptm_choose_default_root() {
-  primary="$1"
-  fallback="$2"
-  if [ -n "$primary" ] && [ -e "$primary" ]; then
-    printf '%s\n' "$primary"
-    return
-  fi
-  printf '%s\n' "$fallback"
+  # the first of the paths given that exists, else the last one (so a missing input fails visibly downstream)
+  for candidate in "$@"; do
+    if [ -n "$candidate" ] && [ -e "$candidate" ]; then
+      printf '%s\n' "$candidate"
+      return
+    fi
+  done
+  printf '%s\n' "${@: -1}"
 }
 
 PTM_ENV_SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)

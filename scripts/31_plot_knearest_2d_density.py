@@ -10,7 +10,9 @@ import pandas as pd
 from common import BREWER_COLORS, canonical_site_table, parse_fasta, save_figure, style_axis
 
 
-BIN_EDGES = np.array([0, 1, 2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 40, 60, 80, 100, np.inf], dtype=float)
+# Half-integer edges: distances are whole residues, and np.histogram2d bins are [a, b), so the bin labelled 1 holds 1.
+BIN_EDGES = np.array([0, 1, 2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 40, 60, 80, 100], dtype=float) + 0.5
+BIN_EDGES = np.append(BIN_EDGES, np.inf)
 BIN_LABELS = ["1", "2", "3", "4", "5", "6", "7-8", "9-10", "11-15", "16-20", "21-30", "31-40", "41-60", "61-80", "81-100", ">100/none"]
 
 

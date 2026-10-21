@@ -5,7 +5,7 @@ downloaded at build time: `hpc/build_release.sh` checks each file against `MANIF
 
 | Folder | Holds |
 |---|---|
-| `sources/` | where the sites come from: Maron et al. 2021 Tables S2, S3 and S5, ProMetheusDB (Massignani et al. 2022), the iPTMnet-format PTM master table, and from v1.1.1 the records of five more studies (Hartel et al. 2019, Geoghegan et al. 2015, Sylvestersen et al. 2014, Lu et al. 2025, Ma et al. 2023), one table each |
+| `sources/` | where the sites come from: Maron et al. 2021 Tables S2, S3 and S5, ProMetheusDB (Massignani et al. 2022), the iPTMnet-format PTM master table, and from v1.2.0 one table of localised records per study and database (`<study>_methylarginine_records.tsv`: Larsen 2016, Maron 2021, Guo 2014, Musiani 2019, Fong 2019, Li 2021, Fedoriw 2019, UniProt, Lim 2020, Wei 2020, IEDB, and the studies added in v1.2.0, Hartel 2019, Geoghegan 2015, Sylvestersen 2014, Lu 2025, Ma 2023) |
 | `reference/` | the one UniProt reference: release 2026_03, reviewed human reference proteome UP000005640 (sequences, entries, accession history, release record); see its README |
 | `annotation/` | InterPro 108.0 domain intervals and MobiDB disorder intervals for every reviewed entry, the PANTHER 19.0 protein classes, and the CD-CODE condensate tables |
 | `layers/` | the CARM1 knockout response (Shishkova et al. 2017), Human Protein Atlas 25.1 locations, and the CPLM 4.0 summary; see its README |
@@ -20,7 +20,7 @@ Staging is done once, before a build; the build itself reads only these files. E
 
 | Folder | Staged with |
 |---|---|
-| `sources/` | the journal supplements as published (checked against the publishers' files), and the lab's PTM master table. The studies added in v1.1.1: `scripts/00_stage_study_sites.py` reads each study's supplementary table (its URL and MD5 in `MANIFEST.tsv`) and writes one record per reported peptide and arginine, with the filters of the study's methods |
+| `sources/` | the journal supplements as published (checked against the publishers' files), and the lab's PTM master table. The study tables: `scripts/00_stage_study_sites.py` reads each study's own tables (supplementary tables, or the MaxQuant site tables deposited in PRIDE for Larsen 2016 and Musiani 2019; URLs, MD5s and the command in `MANIFEST.tsv`) and writes one record per reported peptide and arginine whose methyl group the study localises, with the filters of the study's methods. Raw downloads go to the Zenodo archive, except the Elsevier supplements of Fong 2019 and Fedoriw 2019 (`checksum_only`: only records derived from them are redistributed) |
 | `reference/` | UniProt REST downloads (query and release in `uniprot_release.json`); the accession history with `scripts/00_stage_context_sources.py` |
 | `annotation/` | InterPro: `scripts/00_stage_context_sources.py --interpro-source bulk` on InterPro 108.0 `protein2ipr.dat.gz`. MobiDB: `scripts/00_stage_mobidb_disorder.py`. Both moved to the 2026_03 sequences by `scripts/00_lift_intervals_to_reference.py`. PANTHER: `scripts/00_stage_panther_classes.py` on the three PANTHER 19.0 downloads (kept at their release URLs). UniProt methylarginine annotations: `scripts/00_stage_uniprot_methylarginine.py` (UniProt REST, release 2026_03). CD-CODE: exports as downloaded |
 | `layers/` | downloads by `scripts/00_fetch_static_sources.py`, then `scripts/41_stage_carm1_ko_sites.py`, `scripts/42_stage_hpa_subcellular.py` and `scripts/39_stage_cplm4_lys_methylation.py` |

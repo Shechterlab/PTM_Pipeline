@@ -628,7 +628,8 @@ def stage_model_contacts(w: Writer, c: Path, served: Path | None = None, measure
                 meta = [[m.get('chainId'), m.get('uniprotAccession')] for m in json.loads(pf.read_text())]
             except (json.JSONDecodeError, AttributeError):
                 meta = []
-        accs = [a for _, a in meta] or list(x.get('uniprotAccessions') or [])
+        listed = x.get('uniprotAccession') or x.get('uniprotAccessions') or []   # the API's key is uniprotAccession, a list
+        accs = [a for _, a in meta] or ([listed] if isinstance(listed, str) else list(listed))
         rows.append([mid, accs, [ch for ch, _ in meta], x.get('complexPredictionAccuracy_ipTM'), x.get('complexPredictionAccuracy_pDockQ')])
     d = dates_of(lists)
     w.table(f'alphafold_db_human_heterodimers_{d[:10]}.tsv', ['model_id', 'uniprot_accessions', 'chains', 'iptm', 'pdockq'], rows,

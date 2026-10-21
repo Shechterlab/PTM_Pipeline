@@ -10,9 +10,16 @@ else
   SEARCH_CMD=(grep -RInE '^(<<<<<<<|=======|>>>>>>>)' "$CODE_ROOT")
 fi
 
-if "${SEARCH_CMD[@]}" >/tmp/ptm_conflict_markers.txt 2>/dev/null; then
+# grep and rg exit 1 when nothing matches and 2 on an error: only 1 passes
+markers_status=0
+MARKERS=$("${SEARCH_CMD[@]}" 2>&1) || markers_status=$?
+if [ "$markers_status" -eq 0 ]; then
   echo "[ptm_hygiene] merge conflict markers detected:"
-  cat /tmp/ptm_conflict_markers.txt
+  printf '%s\n' "$MARKERS"
+  exit 1
+elif [ "$markers_status" -ne 1 ]; then
+  echo "[ptm_hygiene] the conflict-marker search failed:"
+  printf '%s\n' "$MARKERS"
   exit 1
 fi
 

@@ -1,12 +1,13 @@
 #!/bin/bash
 # Build the corrected union from the frozen inputs and write a release.
 #
-#   bash hpc/build_release.sh VERSION [WORK_ROOT]        e.g. bash hpc/build_release.sh v1.1.0
+#   bash hpc/build_release.sh VERSION [WORK_ROOT]        e.g. bash hpc/build_release.sh v1.2.0
 #
 # Runs, with the python on PATH:
-#   1. the parsers, the remapping (with the accession history, Maron's peptide starts and the studies staged in
-#      inputs/sources/), the union, and the sites
-#      whose windows match the entry on one side of the arginine only (kept pending a decision);
+#   1. the parsers, the placement of every record on the reference sequences (with the accession history, Maron's
+#      peptide starts and the study tables of inputs/sources/; a record adds a site only where its source localises the
+#      methyl group to one arginine, scripts/02 --localised-only), the union, and the sites whose windows match the entry
+#      on one side of the arginine only (kept pending a decision);
 #   2. the evidence check and the residue audit: either stops the build;
 #   3. the analyses the release and the website report, on the union (the sites kept pending are left out): functional
 #      classes, motifs and arginine enrichment, disorder and domain context, other PTMs, clustering and density,

@@ -74,5 +74,5 @@ figures; they read staged files from `PTM_data/` and write `PTM_results/` (paths
 ## Cite and licence
 
 Cite the paper and the studies that reported the sites you use (each release's studies table lists them). Code is MIT;
-data and content are CC BY-NC-SA 4.0; third-party data keep their own terms, and PhosphoSitePlus®, DisGeNET, CD-CODE
-and the pepR-MS compendium are non-commercial. See [LICENSE.md](LICENSE.md).
+data and content are CC BY-NC-SA 4.0; third-party data keep their own terms, and PhosphoSitePlus®, DisGeNET, CD-CODE,
+the pepR-MS compendium and the Trendel et al. 2025 DNA crosslinks are non-commercial. See [LICENSE.md](LICENSE.md).

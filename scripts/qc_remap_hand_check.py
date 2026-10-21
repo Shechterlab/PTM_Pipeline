@@ -171,8 +171,8 @@ def audit_union(union: pd.DataFrame, cache: dict, fasta: dict | None, out: Path)
         seq = fasta.get(acc, '') if fasta is not None else cache.get(acc, '')
         if not seq:
             kind = 'accession not in --fasta' if fasta is not None else 'accession not in current UniProt'
-        elif pos > len(seq):
-            kind = 'position beyond the sequence end'
+        elif not 1 <= pos <= len(seq):
+            kind = 'position outside the sequence'
         elif seq[pos - 1] != 'R':
             kind = f'residue is {seq[pos - 1]}, not R'
         else:

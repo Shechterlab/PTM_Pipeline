@@ -12,12 +12,11 @@ set -eo pipefail
 CONDA_BASE=/gs/gsfs0/hpc01/rhel8/apps/conda3
 CONDA_EXE="$CONDA_BASE/bin/conda"
 
+CONDA_HOOK_STATUS=0
 if [ -x "$CONDA_EXE" ]; then
-  eval "$("$CONDA_EXE" shell.bash hook)"
-  CONDA_HOOK_STATUS=$?
+  eval "$("$CONDA_EXE" shell.bash hook)" || CONDA_HOOK_STATUS=$?
 else
-  . "$CONDA_BASE/bin/activate"
-  CONDA_HOOK_STATUS=$?
+  . "$CONDA_BASE/bin/activate" || CONDA_HOOK_STATUS=$?
 fi
 
 ENV_NAME=${PTM_ENV_NAME:-ptm_pipeline}
@@ -36,8 +35,9 @@ MARON_EXCLUDE_PATTERN=${PTM_MARON_EXCLUDE_PATTERN:-}
 run_step() {
   echo "[ptm_pipeline] $1"
   shift
-  "$@"
-  status=$?
+  # under set -e a failing command would exit before its status is read: catch it, then report it
+  status=0
+  "$@" || status=$?
   if [ "$status" -ne 0 ]; then
     echo "[ptm_pipeline] step failed with exit code $status"
     echo "[ptm_pipeline] command: $*"

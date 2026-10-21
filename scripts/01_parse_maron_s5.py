@@ -3,7 +3,7 @@
 Two faults of the table are corrected, and each corrected row says so (source_correction; the reported values stay in
 *_reported columns):
 
-- nan_restored: 11 Larsen 2016 windows are 28 residues long where the study's windows are 31, each missing the
+- nan_restored: 14 Larsen 2016 windows are 28 residues long where the study's windows are 31, each missing the
   tripeptide NAN (no Larsen window holds it; the letters were read as a missing value when the table was made). With
   --canonical-fasta, a window is restored when inserting NAN at exactly one place gives the 31-residue window centred
   on the reported position of the reported entry.

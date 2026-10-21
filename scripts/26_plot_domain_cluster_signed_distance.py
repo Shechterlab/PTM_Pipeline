@@ -21,7 +21,6 @@ ARCHITECTURE_COLORS = {
     "domain-distal clustered": BREWER_COLORS["dark_gray"],
 }
 
-SIGNED_BINS = [-10**9, -200, -100, -40, -20, 0, 20, 40, 100, 200, 10**9]
 SIGNED_LABELS = [
     "N >200",
     "N 101-200",
@@ -109,13 +108,12 @@ def build_cluster_site_table(cluster_path: Path, profiles_path: Path, site_conte
     cluster_sites["signed_domain_edge_distance"] = cluster_sites.apply(signed_distance, axis=1)
     cluster_sites = cluster_sites[cluster_sites["signed_domain_edge_distance"].notna()].copy()
     cluster_sites["domain_side"] = cluster_sites["nearest_domain_side"].map(side_label)
-    cluster_sites["signed_distance_bin"] = pd.cut(
-        cluster_sites["signed_domain_edge_distance"],
-        bins=SIGNED_BINS,
-        labels=SIGNED_LABELS,
-        include_lowest=True,
-        right=True,
-    )
+    # Bin the distance on each side by its size: the N side's bins are the C side's mirrored, so that N-side distances of
+    # exactly 20, 40, 100 or 200 fall in the nearer bin as they do on the C side (0 counts as N <=20, as before).
+    signed = cluster_sites["signed_domain_edge_distance"]
+    size_bin = pd.cut(signed.abs(), bins=[-1, 20, 40, 100, 200, 10**9], labels=["<=20", "21-40", "41-100", "101-200", ">200"], right=True)
+    cluster_sites["signed_distance_bin"] = pd.Categorical(
+        [("N " if d <= 0 else "C ") + str(b) for d, b in zip(signed, size_bin)], categories=SIGNED_LABELS, ordered=True)
     cluster_sites["abs_distance_class"] = cluster_sites["nearest_domain_edge_distance"].map(
         lambda value: "<=20 aa" if float(value) <= 20 else ">20 aa"
     )

@@ -3,8 +3,8 @@
 scripts/37_export_interaction_data.py was written to read a cache of raw downloads. With --tables it reads these
 tables instead (scripts/37b_check_staged_interactions.py shows that each table rebuilds what its loader returns from
 the cache). Proteins, sites and structures the 2026-10-16 download did not cover (proteins and sites new in a release)
-are fetched by scripts/37's own code into a separate top-up cache, and topup_tables() writes what was fetched as dated
-tables next to the frozen ones.
+are fetched by scripts/37's own code into a separate top-up cache, and scripts/37a_stage_interactions.py --topup writes
+what was fetched as dated tables next to the frozen ones.
 """
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ def L(value: str) -> list[str]:
 
 
 class Tables:
-    """Rows of the newest table of each kind in a folder (and of every dated top-up table of that kind)."""
+    """Rows of every table of a kind in a folder: the first staging and every dated top-up, oldest first."""
 
     def __init__(self, folder: Path):
         self.folder = Path(folder)
@@ -152,17 +152,33 @@ def modelled_methyl_r(t: Tables):
     return [(r['pdb_id'], r['chain'], int(r['seqres_index']), r['chem_comp']) for r in t.rows('pdb_methylarginine_')]
 
 
-def protvar(t: Tables, keep: set, floor: float):
+def labels_agree(labels, seq: str) -> bool:
+    """Residue labels such as R83 agree with the sequence at their numbers (all of them, and at least one)."""
+    for x in labels:
+        aa, num = x[:1], x[1:]
+        if not num.isdigit() or not 1 <= int(num) <= len(seq) or seq[int(num) - 1] != aa:
+            return False
+    return bool(labels)
+
+
+def protvar(t: Tables, keep: set, floor: float, seqs: dict | None = None):
+    """Predicted interface residues of each protein (ProtVar 2024, pDockQ >= floor). With seqs (the reviewed proteome),
+    a pair with a partner outside it (another species, an unreviewed entry) is left out, and so is a side whose residue
+    labels disagree with the protein's reference sequence (numbered on another sequence or isoform)."""
     out = defaultdict(list)
     for r in t.rows('protvar_predicted_'):
         a, b = r['uniprot_id1'].split('-')[0], r['uniprot_id2'].split('-')[0]
         score = float(r['pdockq'])
         if a == b or score < floor or (a not in keep and b not in keep):
             continue
+        if seqs is not None and (a not in seqs or b not in seqs):
+            continue
         for acc, other, field, first in ((a, b, 'ifresid1', True), (b, a, 'ifresid2', False)):
             if acc not in keep:
                 continue
             res = [x for x in r[field].split(',') if x]
+            if seqs is not None and not labels_agree(res, seqs[acc]):
+                continue
             pos_all = {int(x[1:]) for x in res if x[1:].isdigit()}
             pos_r = {int(x[1:]) for x in res if x[:1] == 'R' and x[1:].isdigit()}
             if pos_all:
@@ -283,7 +299,8 @@ def crosslink_sequences(t: Tables, seq: dict, proteome: dict, rna_sets: list) ->
         if not r['position'] or not r['crosslinked_residue']:
             continue
         a, pos, pep = r['uniprot_accession'], int(r['position']), r['peptide']
-        plain = re.sub(r'([A-Z])\[(57\.02\d*|15\.99\d*)\]', r'\1', r['modified_sequence'])
+        # n[42.0106] marks an N-terminal acetyl group, not a residue
+        plain = re.sub(r'([A-Z])\[(57\.02\d*|15\.99\d*)\]', r'\1', re.sub(r'^n\[[^\]]*\]', '', r['modified_sequence']))
         m = re.search(r'([A-Z])\[\d+\.\d+\]', plain)
         k = len(re.sub(r'\[[^\]]*\]', '', plain[:m.start()])) if m else -1
         s = seq.get(a, '')
@@ -317,6 +334,15 @@ def crosslink_sequences(t: Tables, seq: dict, proteome: dict, rna_sets: list) ->
     return {'rna': rna_out, 'dna': {a: sorted(v) for a, v in dna.items()}, 'rbd': {a: sorted(v) for a, v in rbd.items()}}
 
 
+def merge_member(members: dict, acc: str, value: tuple) -> None:
+    """A protein listed in a condensate under its accession and under isoforms (P29590 and P29590-12): one member with the
+    highest confidence, every role and evidence bit, and every PubMed ID."""
+    if acc in members:
+        score, roles, evid, pmids = members[acc]
+        value = (max(score, value[0]), roles | value[1], evid | value[2], pmids + [p for p in value[3] if p not in pmids])
+    members[acc] = value
+
+
 def cdcode(t: Tables, role_bits: dict, role_other: int, evidence_bits: dict, evidence_other: int):
     out = defaultdict(dict)
     for r in t.rows('cdcode_'):
@@ -326,7 +352,8 @@ def cdcode(t: Tables, role_bits: dict, role_other: int, evidence_bits: dict, evi
         for e in L(r['experimental_evidence']):
             evid |= evidence_bits.get(e, evidence_other)
         score = float(r['confidence_score'])
-        out[r['condensate_uid']][r['uniprot_accession']] = (int(score) if score.is_integer() else score, roles, evid, L(r['pmids']))
+        merge_member(out[r['condensate_uid']], r['uniprot_accession'].split('-')[0],
+                     (int(score) if score.is_integer() else score, roles, evid, L(r['pmids'])))
     version = re.search(r'cdcode_([\d.]+)_', t.paths('cdcode_')[0].name).group(1)
     return dict(out), version
 
@@ -358,11 +385,19 @@ def environments(t: Tables) -> dict:
     return out
 
 
-def model_contacts(t: Tables, g_clash: int, g_sb: int, g_hb: int, g_catpi: int) -> dict:
+def model_contacts(t: Tables, g_clash: int, g_sb: int, g_hb: int, g_catpi: int, seqs: dict | None = None) -> dict:
     """(source, model) -> {chain: {position: measure}} with measure = (min distance, flags, pLDDT R, lowest partner pLDDT,
-    [[partner chain, residue label], ...]), as scripts/37 measure_methyl_r gives it."""
+    [[partner chain, residue label], ...]), as scripts/37 measure_methyl_r gives it. With seqs (the reviewed proteome), a
+    measure is left out when its partner is outside it or its partner residues disagree with the partner's reference
+    sequence: the chain named for the partner is another protein, or numbers another sequence."""
     out = defaultdict(lambda: defaultdict(dict))
     for r in t.rows('predicted_model_arginine_contacts_'):
+        if seqs is not None:
+            partner = seqs.get(r['partner_accession'], '')
+            labels = [x.split(':')[1] for x in L(r['partner_residues']) if x.count(':') >= 1]   # 'A:E240:hb+sb' -> 'E240'
+            if not partner or (labels and not labels_agree(labels, partner)) \
+                    or seqs.get(r['uniprot_accession'], '')[int(r['position']) - 1:int(r['position'])] != 'R':
+                continue
         flags = (r['clash'] == 'true') * g_clash | (r['salt_bridge'] == 'true') * g_sb | (r['hydrogen_bond'] == 'true') * g_hb | (r['cation_pi'] == 'true') * g_catpi
         labels = [list(x.split(':', 1)) for x in L(r['partner_residues'])]
         m = [float(r['min_distance_a']), flags, int(r['plddt_arginine']) if r['plddt_arginine'] else None,
@@ -389,8 +424,9 @@ def afdb_heterodimers(t: Tables) -> dict:
     return out
 
 
-def afdb_queried(t: Tables) -> set:
-    return {r['uniprot_accession'] for r in t.rows('alphafold_db_complex_queries_')}
+def afdb_queried(t: Tables) -> dict:
+    """Accession -> the number of human heterodimer models its AlphaFold DB query listed."""
+    return {r['uniprot_accession']: int(r['human_heterodimers'] or 0) for r in t.rows('alphafold_db_complex_queries_')}
 
 
 def read_json(path: Path, default):

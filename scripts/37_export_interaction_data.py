@@ -54,6 +54,7 @@ from scipy import stats as sps
 from statsmodels.stats.contingency_tables import StratifiedTable
 
 from enrichment import Job, run as run_enrichment
+from interaction_inputs import merge_member
 
 STRING_VERSION = '12.5'
 STRING_LINKS = f'https://stringdb-downloads.org/download/protein.physical.links.v{STRING_VERSION}/9606.protein.physical.links.v{STRING_VERSION}.txt.gz'
@@ -333,8 +334,9 @@ def fetch_interfaces(cache: Path, accs: list, refresh: bool, workers: int):
                 time.sleep(2 ** k)
             except Exception:  # noqa: BLE001 - network hiccup, retried
                 time.sleep(2 ** k)
-        log(f'  PDBe interface lookup failed for {acc}')
+        failed.append(acc)
 
+    failed = []
     todo = [a for a in accs if refresh or not (folder / f'{a}.json').exists()]
     log(f'PDBe interfaces: {len(accs) - len(todo):,} cached, fetching {len(todo):,}')
     done = 0
@@ -343,6 +345,8 @@ def fetch_interfaces(cache: Path, accs: list, refresh: bool, workers: int):
             done += 1
             if done % 250 == 0:
                 log(f'  {done:,}/{len(todo):,}')
+    if failed:   # stop rather than leave these proteins' interfaces out
+        raise SystemExit(f'PDBe-KB did not answer for {len(failed)} proteins after 5 tries (e.g. {failed[0]}); run the build again')
     out = {}
     for acc in accs:
         p = folder / f'{acc}.json'
@@ -467,7 +471,7 @@ def load_cdcode(cache: Path, refresh: bool, uids: list, workers: int):
                     pm = str(pm)
                     if pm.isdigit() and pm not in pmids:
                         pmids.append(pm)
-            members[acc] = (r.get('confidence_score') or 0, roles, evid, pmids)
+            merge_member(members, acc, (r.get('confidence_score') or 0, roles, evid, pmids))
         out[uid] = members
     try:
         version = json.loads(release.read_text()).get('latest_release_version', '')
@@ -525,8 +529,8 @@ def site_contacts(cache: Path, pdb: str, chain: str, label: int, refresh: bool):
             time.sleep(2 ** k)
         except Exception:  # noqa: BLE001 - network hiccup, retried
             time.sleep(2 ** k)
-    if text is None:
-        return None
+    if text is None:   # the server failed every try: stop rather than leave the evidence out
+        raise SystemExit(f'ModelServer did not answer for {pdb} chain {chain} residue {label} after 4 tries; run the build again')
     atoms = parse_cif_atoms(text)
     me = [a for a in atoms if a.get('auth_asym_id') == chain and a.get('label_seq_id') == str(label)]
     resn = me[0].get('label_comp_id') if me else ''
@@ -595,8 +599,8 @@ def residue_environment(cache: Path, pdb: str, chain: str, label: int, refresh: 
             time.sleep(2 ** k)
         except Exception:  # noqa: BLE001 - network hiccup, retried
             time.sleep(2 ** k)
-    if text is None:
-        return None
+    if text is None:   # the server failed every try: stop rather than leave the evidence out
+        raise SystemExit(f'ModelServer did not answer for {pdb} chain {chain} residue {label} after 4 tries; run the build again')
     rows = []
     for a in parse_cif_atoms(text):
         el = (a.get('type_symbol') or '').upper()
@@ -1390,7 +1394,8 @@ def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
     g['load_uniprot_regions'] = lambda cache, refresh: ii.regions(t)
     g['load_sifts_chains'] = lambda cache, refresh, keep_pdbs: ii.sifts_chains(t, keep_pdbs)
     g['load_modelled_methyl_r'] = lambda cache, refresh, workers: ii.modelled_methyl_r(t)
-    g['load_protvar'] = lambda cache, refresh, keep: ii.protvar(t, keep, PRED_TIERS[0])
+    reference = {a: v[2] for a, v in ii.uniprot(t)[0].items()}
+    g['load_protvar'] = lambda cache, refresh, keep: ii.protvar(t, keep, PRED_TIERS[0], reference)
     g['load_protvar_served'] = lambda cache, refresh: {(r['uniprot_id1'], r['uniprot_id2']) for r in ii.protvar_served_rows(t)}
     g['load_cdcode'] = lambda cache, refresh, uids, workers: ii.cdcode(t, ROLE_BITS, ROLE_OTHER, EVIDENCE_BITS, EVIDENCE_OTHER)
 
@@ -1427,11 +1432,16 @@ def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
     g['residue_environment'] = residue_environment_
     g['analyze_environment'] = lambda rows, chain, label: rows.result if isinstance(rows, Measured) else orig['analyze_environment'](rows, chain, label)
 
-    measured = ii.model_contacts(t, G_CLASH, G_SB, G_HB, G_CATPI)
+    measured = ii.model_contacts(t, G_CLASH, G_SB, G_HB, G_CATPI, reference)
     measured_at = ii.model_positions(t)
     served_rows = ii.protvar_served_rows(t)
     heterodimers = ii.afdb_heterodimers(t)
     afdb_queried = ii.afdb_queried(t)
+
+    def partner_agrees(m, partner):
+        """A measure's partner residues agree with the partner's reference sequence (else the chains are mixed up)."""
+        labels = [lab.split(':')[0] for _, lab in m[4]]   # 'E98:hb+sb' -> 'E98'
+        return partner in reference and (not labels or ii.labels_agree(labels, reference[partner]))
 
     def measure_new(folder_name, key, data, want):
         """Measure positions the tables do not have, in a model downloaded now; cached in topup/folder_name/key.json."""
@@ -1454,7 +1464,7 @@ def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
         jobs = []
         for r in served_rows:
             a, b = r['uniprot_id1'], r['uniprot_id2']
-            if '-' in a or '-' in b or a == b:
+            if '-' in a or '-' in b or a == b or a not in reference or b not in reference:   # human reviewed pairs only
                 continue
             sc = float(r['pdockq'])
             if sc < GALLERY_PDOCKQ:
@@ -1487,7 +1497,7 @@ def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
                 acc = want[ch][0]
                 other = b if acc == a else a
                 for pos, m in sites.items():
-                    if int(pos) in want[ch][1]:
+                    if int(pos) in want[ch][1] and partner_agrees(m, other):
                         out.append({'acc': acc, 'pos': int(pos), 'partner': other, 'src': 0, 'score': sc, 'pdockq': sc, 'm': m, 'ref': 1 if acc == a else 2, 'chain': ch})
         return out
     g['measure_protvar_models'] = measure_protvar_models_
@@ -1496,7 +1506,10 @@ def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
         accs = sorted(sites_by_acc)
         lists = topup / 'afdb_complex'
         lists.mkdir(parents=True, exist_ok=True)
-        new_accs = [a for a in accs if a not in afdb_queried]
+        # an accession whose saved query listed more heterodimers than the tables hold models for (models staged
+        # without their accessions before the uniprotAccession key was read) is queried again
+        held = Counter(a for x in heterodimers.values() for a in x['accessions'])
+        new_accs = [a for a in accs if a not in afdb_queried or held[a] < afdb_queried[a]]
 
         def get_list(acc):
             dest = lists / f'{acc}.json'
@@ -1505,11 +1518,12 @@ def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
                 dest.write_text(data.decode() if data else '[]')
         with ThreadPoolExecutor(max_workers=workers) as pool:
             list(pool.map(get_list, new_accs))
-        models = {mid: dict(x, scores=(x['iptm'], x['pdockq'])) for mid, x in heterodimers.items()}
+        models = {mid: dict(x, scores=(x['iptm'], x['pdockq'])) for mid, x in heterodimers.items() if x['accessions']}
         for acc in new_accs:
             for x in ii.read_json(lists / f'{acc}.json', []):
                 if isinstance(x, dict) and x.get('assemblyType') == 'Hetero' and set(x.get('taxId') or []) == {9606} and x.get('modelEntityId'):
-                    models.setdefault(x['modelEntityId'], {'accessions': list(x.get('uniprotAccessions') or []), 'chains': [],
+                    listed = x.get('uniprotAccession') or x.get('uniprotAccessions') or []
+                    models.setdefault(x['modelEntityId'], {'accessions': [listed] if isinstance(listed, str) else list(listed), 'chains': [],
                                                           'scores': (x.get('complexPredictionAccuracy_ipTM'), x.get('complexPredictionAccuracy_pDockQ'))})
         models = {mid: x for mid, x in models.items() if set(x['accessions']) & set(accs)}
         preds = topup / 'afdb_prediction'
@@ -1559,7 +1573,7 @@ def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
                 if not acc or not others or acc not in sites_by_acc:
                     continue
                 for pos, m in sites.items():
-                    if int(pos) in sites_by_acc[acc]:
+                    if int(pos) in sites_by_acc[acc] and partner_agrees(m, others[0]):
                         out.append({'acc': acc, 'pos': int(pos), 'partner': others[0], 'src': 1, 'score': iptm, 'pdockq': pdockq,
                                     'm': m, 'ref': mid, 'chain': ch})
         return out
@@ -1813,7 +1827,7 @@ def main():
     ap.add_argument('--model-workers', type=int, default=8, help='parallel model downloads for the predicted-contact gallery')
     ap.add_argument('--tables', default='', help='read the frozen tables in this folder (inputs/interactions) instead of --cache')
     ap.add_argument('--topup-cache', default='PTM_data/interactions_topup',
-                    help='with --tables: where to save what the tables do not cover (scripts/interaction_inputs.py topup_tables stages it)')
+                    help='with --tables: where to save what the tables do not cover (scripts/37a_stage_interactions.py --topup stages it)')
     ap.add_argument('--measured-sites', default='releases/v1.0.0/human_methylarginine_sites_v1.0.0.tsv',
                     help='with --tables: the sites the frozen model measurements were made at (the published union)')
     ap.add_argument('--tables-out', default='', help='also write the interaction tables of a release into this folder')
@@ -2466,10 +2480,10 @@ def main():
                 if done % 500 == 0:
                     log(f'  {done:,}/{len(todo):,}')
         chain_acc = {(pdb, ch): base_acc(sp) for pdb, rows in chains.items() for ch, sp, *_ in rows}
-        chain_map = defaultdict(list)
+        chain_map = defaultdict(list)   # SIFTS segments of a chain; a fusion chain has segments of several proteins
         for pdb, rows in chains.items():
             for ch, sp, beg, sp_beg, sp_end in rows:
-                chain_map[(pdb, ch)].append((beg, sp_beg, sp_end))
+                chain_map[(pdb, ch)].append((beg, sp_beg, sp_end, base_acc(sp)))
         by_site = defaultdict(dict)   # j -> {(key, pdb): set(labels)}
         modelled = {}
         for (pdb, ch, auth), owners in requests_.items():
@@ -2489,10 +2503,10 @@ def main():
                         pacc = chain_acc.get((pdb, hch))
                         unp = None
                         if re.fullmatch(r'\d+', hlab or ''):
-                            for res_beg, sp_beg, sp_end in chain_map.get((pdb, hch), []):
+                            for res_beg, sp_beg, sp_end, seg_acc in chain_map.get((pdb, hch), []):
                                 u = sp_beg + (int(hlab) - res_beg)
                                 if sp_beg <= u <= sp_end:
-                                    unp = u
+                                    unp, pacc = u, seg_acc   # the protein of the segment that holds the residue
                                     break
                         k = vid(pacc) if pacc else -4
                         label = AA3[comp] + (str(unp) if unp is not None else hch + ':' + hseq)
@@ -2627,17 +2641,17 @@ def main():
                 'complexes': ['id', 'name', 'predicted', 'members (index or list of alternatives)', 'n', 'methylated', 'fold', 'p', 'q'],
                 'iface': ['site', 'mask', 'partners (-1 RNA, -2 DNA, else protein index)', 'pdb ids (first 8)', 'pdb count'],
                 'enrich': '[methylated at, methylated not at, other R at, other R not at, log2 OR, p] over structurally observed arginines',
-                'go_enrich': '[methylated with term, methylated reviewed, other with term, other reviewed, log2 OR, p]',
+                'go_enrich': '[methylated with term, methylated reviewed, other with term, other reviewed, log2 fold enrichment, p, BH q]',
                 'enrich_strata': '{type: {all|ordered|domain: {pooled: [a, b, c, d, log2 OR, p], mh: [log2 MH OR, CMH p, informative proteins]}}}',
-                'contacts': ['site', '[partner (-1 RNA, -2 DNA, -3 ligand, -4 unmapped chain, else protein index), pdb, residue labels]', 'methylated residue modelled (2MR/DA2/NMM/AGM)'],
-                'cd_members': ['protein', 'condensate index (meta.condensates of the sites file)', 'confidence 1-5', 'role bits', 'evidence bits', 'publications', 'all PMIDs'],
+                'contacts': ['site', '[partner (-1 RNA, -2 DNA, -3 ligand, -4 unmapped chain, else protein index), pdb, residue labels]', 'methylated residue modelled (2MR/DA2/NMM)'],
+                'cd_members': ['protein', 'condensate index (meta.condensates of the sites file)', 'CD-CODE confidence score (0-5)', 'role bits', 'evidence bits', 'publications', 'all PMIDs'],
                 'wr': ['PRMT or Tudor protein index', 'its STRING physical partners (indices)'],
                 'rg_iface': '{segment|dipeptide|other: {cover: [methylated sites, structurally observed], rna|any: {pooled, mh}}}',
                 'geometry': ['site', 'pdb', 'chain', 'Levy class (0 none, 1 support, 2 rim, 3 core)', 'rASA alone', 'rASA in complex', 'nucleic-acid contact (base/backbone/contact/none)', 'bases hydrogen-bonded', 'ASA buried by nucleic acid', 'ASA buried by protein', 'hydrogen bonds to protein'],
                 'geometry_summary': '{levy_counts, na_counts: {1 methylated, 0 control}, core|base: {pooled, mh}}',
                 'modelled': ['site', 'PDB entries modelling a methylated arginine there', 'residue names'],
                 'modelled_gaps': ['protein index', 'UniProt positions modelled as methylarginine but not in the union', 'PDB entries'],
-                'cond_conf': '{min stars: [[condensate index, members, methylated, log2 OR, p, q], ...]}',
+                'cond_conf': '{min stars: [[condensate index, members, methylated, log2 fold enrichment, p, q], ...]}',
                 'cond_score_hist': '{CD-CODE confidence score: memberships of reviewed human proteins}',
                 'pred': ['site', '[[partner index, pDockQ x 100, 1 if this protein is ProtVar uniprot_id1, served model: 1 same order, 2 reversed, 0 none], ...] (top 12)', 'predicted partners'],
                 'gallery': ['site', 'partner index', 'source (0 ProtVar served model, 1 AlphaFold DB complex)', 'score x 100 (ProtVar pDockQ; AlphaFold DB ipTM)', 'pDockQ x 100', 'pLDDT of the arginine', 'lowest pLDDT of the partner residues named', 'minimum heavy-atom distance x 10 (Å)', 'flags (1 salt bridge <= 4 Å, 2 H-bond <= 3.5 Å, 4 cation-pi <= 5 Å, 8 clash < 2.2 Å)', 'partner residues with bond codes (sb, hb, pi)', 'model reference (ProtVar: 1 this protein first, 2 partner first; AlphaFold DB: model id)', 'this protein\'s chain'],

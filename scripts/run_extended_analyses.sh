@@ -39,6 +39,7 @@ require_file "$PTM_RESULTS_ROOT/domain_context/same_protein_nonmethyl_arginine_d
 require_file "$PTM_RESULTS_ROOT/methyl_arg_clustering/per_site_nearest_methyl_arg_distance.tsv"
 require_file "$PTM_RESULTS_ROOT/methyl_arg_clustering/nearest_neighbor_curve_vs_null.tsv"
 require_file "$PTM_CANONICAL_FASTA"
+require_file "$PTM_MOBIDB_INTERVALS"   # the architecture and domain-edge steps below need it
 
 NEIGHBOR_ARGS=(
   --integrated-sites "$PTM_RESULTS_ROOT/integrated/human_arg_methyl_union_dedup_by_site.tsv"

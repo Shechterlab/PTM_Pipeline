@@ -71,7 +71,7 @@ def main() -> None:
 
     protein_counts = df.groupby(
         ['substrate_UniProtAC', 'canonical_UniProtAC', 'substrate_genename', 'accession_is_isoform', 'needs_sequence_remap', 'canonical_counting_status'],
-        as_index=False,
+        as_index=False, dropna=False,   # sites without a gene name are counted too
     ).size().rename(columns={'size': 'site_count_accession_level'})
     protein_counts['label'] = protein_counts.apply(protein_label, axis=1)
     protein_counts = protein_counts.sort_values(
