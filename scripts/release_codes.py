@@ -9,8 +9,8 @@ from __future__ import annotations
 CONTEXT_WINDOW = 20  # residues: the boundary window of scripts/05 and scripts/06
 PADJ_CUTOFF = 0.05   # Maron 2021 Table S3: a peptide changes when its adjusted p value is at most this (scripts/16)
 
-# Studies and databases behind the union, in the order of the studies file (most sites first, as in v1.1.0).
-# Citations and DOIs checked against Crossref.
+# Studies and databases behind the union, in the order of the studies file: those of v1.1.0 (most sites first), then
+# the studies added in v1.1.1 (staged by scripts/00_stage_study_sites.py). Citations and DOIs checked against Crossref.
 STUDIES = [
     ('Larsen2016', 'Larsen 2016', 'Larsen SC et al., Sci Signal 9:rs9 (2016)', '10.1126/scisignal.aaf7329'),
     ('PSP', 'PhosphoSitePlus (PSP)', 'Hornbeck PV et al., Nucleic Acids Res 43:D512-D520 (2015)', '10.1093/nar/gku1267'),
@@ -25,7 +25,14 @@ STUDIES = [
     ('Lim2020', 'Lim 2020', 'Lim Y et al., Proteome Sci 18:6 (2020)', '10.1186/s12953-020-00162-8'),
     ('Wei2020', 'Wei 2020', 'Wei M et al., Front Cell Dev Biol 8:545934 (2020)', '10.3389/fcell.2020.545934'),
     ('IEDB', 'IEDB', 'Vita R et al., Nucleic Acids Res 47:D339-D343 (2019)', '10.1093/nar/gky1006'),
+    ('Hartel2019', 'Hartel 2019', 'Hartel NG et al., Mol Cell Proteomics 18:2149-2164 (2019)', '10.1074/mcp.RA119.001625'),
+    ('Geoghegan2015', 'Geoghegan 2015', 'Geoghegan V et al., Nat Commun 6:6758 (2015)', '10.1038/ncomms7758'),
+    ('Sylvestersen2014', 'Sylvestersen 2014', 'Sylvestersen KB et al., Mol Cell Proteomics 13:2072-2088 (2014)', '10.1074/mcp.O113.032748'),
+    ('Lu2025', 'Lu 2025', 'Lu L et al., EMBO Rep 26:5649-5672 (2025)', '10.1038/s44319-025-00599-y'),
+    ('Ma2023', 'Ma 2023', 'Ma M et al., J Am Soc Mass Spectrom 34:1692-1700 (2023)', '10.1021/jasms.3c00154'),
 ]
+# The studies added in v1.1.1, each its own source table (inputs/sources/<table>_methylarginine_records.tsv).
+STUDY_TABLES = {'hartel2019': 'Hartel2019', 'geoghegan2015': 'Geoghegan2015', 'sylvestersen2014': 'Sylvestersen2014', 'lu2025': 'Lu2025', 'ma2023': 'Ma2023'}
 STUDY_ORDER = [s[0] for s in STUDIES]
 MARON_S5 = 'Maron 2021 Table S5 (CC BY-NC-ND 4.0, open-access supplement)'
 PTM_MASTER = 'the iPTMnet-format PTM master table (iPTMnet: CC BY-NC-SA 4.0)'
@@ -34,8 +41,18 @@ STUDY_LICENCE = {
     'ProMetheusDB': 'CC BY-NC-ND 4.0 (open-access supplement mmc2)',
     'UniProt': 'CC BY 4.0, via ' + PTM_MASTER,
     'IEDB': 'via ' + PTM_MASTER,
+    'Hartel2019': 'CC BY 4.0 (the article and its supplement, from 2020-09-15, and PRIDE PXD012357, CC0), records staged from supplementary Tables S1-S15',
+    'Geoghegan2015': 'CC BY 4.0 (the article and its Supplementary Table 1)',
+    'Sylvestersen2014': 'CC BY 4.0 (the article and its supplement, from 2020-10-12, and PRIDE PXD000559, CC0)',
+    'Lu2025': 'CC BY 4.0 (the article and Dataset EV1)',
+    'Ma2023': 'CC0 (PRIDE PXD038203 Table S1), the article is not open access',
 }
 STUDY_NOTE = {
+    'Hartel2019': 'HEK293T and LN229 cells. ADMA and SDMA called from characteristic neutral losses (dimethylamine, methylamine) of dimethylarginine peptides (reported_methyl_state Rme2a, Rme2s), the other dimethylarginines as Rme2',
+    'Geoghegan2015': 'Jurkat and primary human T cells, heavy-methyl SILAC with methylarginine antibodies',
+    'Sylvestersen2014': 'HEK293T cells, monomethylarginine antibody enrichment',
+    'Lu2025': 'HeLa cells, enrichment with the SMN Tudor domain',
+    'Ma2023': 'breast cancer patient-derived xenografts grown in mice, ADMA antibody enrichment. A peptide assigned to a human protein can come from the mouse stroma where the two sequences agree',
     'PSP': 'downloaded 22 May 2021 (date from the Shechter lab), as compiled in Maron et al. 2021 Table S5',
     'Maron2021': "the study's own sites in Table S5 (reference \"This study\")",
 }
@@ -44,6 +61,11 @@ SOURCE_TABLES = {
     'maron2021_s5': ('maron_s5', 'Maron et al. 2021 Table S5: methylarginine sites compiled from ten studies'),
     'prometheusdb_mmc2': ('prometheus_mmc2', 'ProMetheusDB (Massignani et al. 2022) supplementary table mmc2'),
     'ptm_master': ('human_ptm_master', 'the arginine methylation rows of the iPTMnet-format PTM master table (UniProt and IEDB records)'),
+    'hartel2019': ('hartel2019', 'Hartel et al. 2019 supplementary Tables S1-S15, staged (scripts/00_stage_study_sites.py)'),
+    'geoghegan2015': ('geoghegan2015', 'Geoghegan et al. 2015 Supplementary Table 1, staged (scripts/00_stage_study_sites.py)'),
+    'sylvestersen2014': ('sylvestersen2014', 'Sylvestersen et al. 2014 supplementary tables, staged (scripts/00_stage_study_sites.py)'),
+    'lu2025': ('lu2025', 'Lu et al. 2025 Dataset EV1, staged (scripts/00_stage_study_sites.py)'),
+    'ma2023': ('ma2023', 'Ma et al. 2023 Table S1 (PRIDE PXD038203), staged (scripts/00_stage_study_sites.py)'),
 }
 SOURCE_TABLE_CODE = {raw: code for code, (raw, _) in SOURCE_TABLES.items()}
 
@@ -65,6 +87,10 @@ CODES: dict[str, dict[str, str]] = {
         'maron2021_s2': 'Maron et al. 2021 Table S2 (maron2021_s2_states)',
         'uniprot': 'UniProt MOD_RES with experimental evidence (uniprot_states)',
         'study_design': 'a study that looked for one degree only (states_by_study_design)',
+    },
+    'dimethyl_type': {
+        'ADMA': 'asymmetric dimethylarginine: the neutral loss of dimethylamine (45.058 Da)',
+        'SDMA': 'symmetric dimethylarginine: the neutral loss of methylamine (31.042 Da)',
     },
     'antibody': {
         'MMA': 'anti-monomethylarginine immunoprecipitation',
@@ -174,6 +200,7 @@ CODES: dict[str, dict[str, str]] = {
         'arginine_from_position': 'the evidence of every supporting record covers other arginines of the entry too (a peptide with several arginines, or a window or peptide found more than once): the positions the sources report pick this one (evidence_check agrees_reported_arginine)',
         'shared_sequence': 'residues -15 to +15 occur identically in another reviewed entry (same_window_accessions): histone variants, identical paralogs. The evidence cannot tell them apart: the protein is the one the source named',
         'single_study': 'one study or database reports the site',
+        'xenograft_only': 'only Ma et al. 2023 reports the site, from breast cancer patient-derived xenografts grown in mice: where the human and mouse sequences agree, the peptide can come from the mouse stroma',
     },
     'residue': {'R': 'arginine'},
     'records_change': {
@@ -289,6 +316,7 @@ SITE_COLUMNS = [
     ('methyl_state', 'code', 'state_summary', 'the degrees reported at the site by any of methyl_states_reported, maron2021_s2_states, uniprot_states and states_by_study_design; empty when none gives one. Mass spectrometry tells mono- from dimethylation, but asymmetric from symmetric mostly by the antibody used'),
     ('methyl_state_evidence', 'list<code>', 'state_evidence', 'which of these give a degree, in code order'),
     ('maron2021_s3_antibodies', 'list<code>', 'antibody', 'antibodies whose immunoprecipitation recovered the site in Maron et al. 2021 Table S3 (supporting/maron2021_detection)'),
+    ('dimethyl_type_neutral_loss', 'list<code>', 'dimethyl_type', 'the dimethylarginine type Hartel et al. 2019 called at the site from neutral losses in the fragment spectra, independent of the antibody used (both when both were called). Shown beside maron2021_s3_antibodies, which says which antibodies recovered the site; the two can differ'),
     ('maron2021_GSK591_call', 'code', 'call', f'response to GSK591 in Maron et al. 2021 Table S3, combined over antibodies (supporting/maron2021_inhibitors: a peptide changes at adjusted p <= {PADJ_CUTOFF}), empty when not measured'),
     ('maron2021_MS023_call', 'code', 'call', 'response to MS023, as for GSK591'),
     ('carm1_ko_call', 'code', 'call', 'response to CARM1 knockout (Shishkova et al. 2017), combined over cell lines (supporting/carm1_ko), empty when not measured'),
@@ -346,6 +374,9 @@ RECORD_COLUMNS = [
     ('reported_position', 'string', '', 'position as reported'),
     ('reported_methyl_state', 'string', '', 'methylation state as reported, in the codes of the site table (ProMetheusDB me = Rme1, di = Rme2)'),
     ('reported_enzyme', 'string', '', 'methyltransferase as reported (PTM master table only)'),
+    ('reported_sample', 'string', '', 'cells or tissue the study measured (the studies added in v1.1.1)'),
+    ('reported_enrichment', 'string', '', 'how the study enriched the peptides, e.g. ADMA IAP (antibody), SCX fractionation, SMN Tudor domain (the studies added in v1.1.1)'),
+    ('reported_detail', 'string', '', 'what else the study gives for the record: the neutral-loss call, the localisation probability, the source rows merged into the record and their tables, the PRMT1 knockdown result (the studies added in v1.1.1)'),
     ('evidence_kind', 'code', 'evidence_kind', 'kind of sequence evidence'),
     ('evidence_sequence', 'list<string>', '', 'the window, peptide or marked peptide (a few records give several), as the pipeline reads it: modifications other than methylation, e.g. (ox), are left out, and source_correction says when it was corrected'),
     ('evidence_window', 'list<string>', '', 'the sequence window a marked-peptide record also carries (ProMetheusDB SeqWindow), which the placement uses as well'),

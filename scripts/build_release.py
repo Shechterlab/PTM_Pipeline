@@ -114,6 +114,8 @@ def ordered(values, order: list[str]) -> list[str]:
 
 def study_of(row) -> str:
     """study_id of a source record."""
+    if row['source_table'] in rc.STUDY_TABLES:
+        return rc.STUDY_TABLES[row['source_table']]
     if row['source_table'] == 'human_ptm_master':
         return {'unip': 'UniProt', 'iedb': 'IEDB'}[row['source']]
     if row['source_table'] == 'prometheus_mmc2':
@@ -242,6 +244,9 @@ def build_records(rows, typed, check, allowed, previous, pending_of, shift, refe
             'reported_position': clean(r['position']),
             'reported_methyl_state': clean(r['arg_methyl_state']),
             'reported_enzyme': clean(r.get('enzyme_genename', '')),
+            'reported_sample': clean(r.get('study_sample', '')),
+            'reported_enrichment': clean(r.get('study_enrichment', '')),
+            'reported_detail': record_detail(r),
             'evidence_kind': kind,
             'evidence_sequence': text,
             'evidence_window': window_of(typed.loc[i]) if kind == 'marked_peptide' else '',
@@ -254,10 +259,29 @@ def build_records(rows, typed, check, allowed, previous, pending_of, shift, refe
             'pending_site': pending_of.get(i + 1, ''),
             'previous_site': old_published,
             '_previous_lifted': old,
+            # where the previous version had the record, placed or (from v1.1.0) kept pending
+            '_previous_at': old or lifted(previous.at[i, 'pending_site'] if 'pending_site' in previous and i < len(previous) else '', shift),
             'change_since_previous_version': change,
             'reason_code': reason,
+            '_rme2_type': clean(r.get('study_rme2_type', '')),
         })
     return pd.DataFrame(out)
+
+
+def record_detail(r: pd.Series) -> str:
+    """What a staged study says about a record besides its sample and enrichment (scripts/00_stage_study_sites.py)."""
+    parts = []
+    if clean(r.get('study_rme2_type', '')):
+        parts.append('neutral loss ' + clean(r['study_rme2_type']).replace('; ', ' and '))
+    if clean(r.get('study_localisation', '')):
+        parts.append('localisation probability ' + clean(r['study_localisation']))
+    if clean(r.get('study_rows', '')):
+        parts.append(clean(r['study_rows']) + ' source rows')
+    if clean(r.get('study_tables', '')):
+        parts.append('tables ' + clean(r['study_tables']).replace('; ', ', '))
+    if clean(r.get('study_note', '')):
+        parts.append(clean(r['study_note']).replace('; ', ', '))
+    return ', '.join(parts)
 
 
 # ---- Maron et al. 2021 Tables S2 and S3, CARM1 knockout ------------------------------------------------------------
@@ -473,6 +497,8 @@ def build_sites(records, union, pending, reference, entry, previous_sites) -> pd
             flags.append('shared_sequence')
         if len(studies) == 1:
             flags.append('single_study')
+        if studies == ['Ma2023']:
+            flags.append('xenograft_only')
         reported = sorted({int(float(p)) for p in group['reported_position'] if clean(p)})
         in_previous = group['_previous_lifted'].eq(site).any() or site in previous_sites
         renumbered = group['reason_code'].eq('reference_renumbered').any()
@@ -500,6 +526,7 @@ def build_sites(records, union, pending, reference, entry, previous_sites) -> pd
             'n_records': len(group),
             'record_ids': join(sorted(group['record_id'])),
             'reported_positions': join(reported) if any(p != pos for p in reported) else '',
+            'dimethyl_type_neutral_loss': join(ordered({t for x in group['_rme2_type'] for t in x.split('; ') if t}, list(rc.CODES['dimethyl_type']))),
             'flags': join(flags),
             'same_window_accessions': join(shared),
             'same_window_genes': join(entry(a, 'Gene Names (primary)').split(';')[0].strip() or a for a in shared),
@@ -519,7 +546,7 @@ def build_changes(records, sites, previous_sites, shift, entry) -> pd.DataFrame:
     before = {lifted(s, shift): s for s in previous_sites}
     pending = set(records['pending_site']) - {''}
     at_now = records.groupby(site_of).groups
-    at_before = records.groupby('_previous_lifted').groups
+    at_before = records.groupby('_previous_at').groups
     reported_gene = records.groupby('previous_site')['reported_gene'].agg(lambda g: next((x for x in g if x), ''))
     out = []
     for site in sorted(now | set(before), key=split_key):
@@ -529,7 +556,7 @@ def build_changes(records, sites, previous_sites, shift, entry) -> pd.DataFrame:
             # The records that moved onto or off the site; with none of the previous ones left, its records were replaced.
             change = 'kept'
             gained = records.loc[at_now.get(site, [])]
-            gained = gained[gained['_previous_lifted'] != site]
+            gained = gained[gained['_previous_at'] != site]
             lost = records.loc[at_before.get(site, [])]
             lost = lost[site_of[lost.index] != site]
             involved = pd.concat([gained, lost])
@@ -576,6 +603,8 @@ def build_studies(records, sites) -> pd.DataFrame:
     out = []
     for sid, label, citation, doi in rc.STUDIES:
         group = records[records['study'] == sid]
+        if group.empty:
+            continue   # a study this build does not read (the studies added in v1.1.1, when rebuilding v1.1.0)
         supported = per_site[per_site.map(lambda s: sid in s)]
         out.append({'study_id': sid, 'label': label, 'source_table': join(ordered(group['source_table'], list(rc.SOURCE_TABLES))),
                     'citation': citation, 'doi': doi, 'licence': rc.STUDY_LICENCE.get(sid, rc.MARON_S5),
@@ -697,7 +726,11 @@ def main() -> None:
 
     prev_sites = read_tsv(prev_dir / f'human_methylarginine_sites_{previous}.tsv')
     prev_records = read_tsv(prev_dir / 'supporting' / f'source_records_{previous}.tsv')
-    shift, broken = reference_lift(inputs)
+    prev_info = json.loads((prev_dir / 'release.json').read_text()) if (prev_dir / 'release.json').exists() else {}
+    if prev_info.get('reference', {}).get('fasta_md5') == hashlib.md5((inputs / INPUT['fasta']).read_bytes()).hexdigest():
+        shift, broken = {}, set()   # the same reference sequences: the previous numbering is this one
+    else:
+        shift, broken = reference_lift(inputs)
     stuck = sorted(s for s in prev_sites['site_id'] if split_key(s)[0] in broken)
     if stuck:
         raise SystemExit(f'previous sites on entries whose numbering cannot be carried over: {stuck}')
@@ -706,14 +739,21 @@ def main() -> None:
     # of source_correction), and after them the records read for the first time.
     n_prev = len(prev_records)
     head = rows.iloc[:n_prev]
-    reported_peptide = head['peptide_sequence_reported'].map(clean).where(head['peptide_sequence_reported'].map(clean) != '', head['peptide_sequence'].map(clean)) \
-        if 'peptide_sequence_reported' in head else head['peptide_sequence'].map(clean)
     same = (len(rows) >= n_prev and len(check) == len(rows)
             and (head['source_table'].map(rc.SOURCE_TABLE_CODE).values == prev_records['source_table'].values).all()
             and (head['substrate_UniProtAC_original'].map(clean).values == prev_records['reported_accession'].values).all()
-            and (head['position'].map(clean).values == prev_records['reported_position'].values).all()
-            and (reported_peptide.values == prev_records['peptide_sequence'].values).all()
-            and (head['seq_window'].map(clean).values == prev_records['seq_window'].values).all())
+            and (head['position'].map(clean).values == prev_records['reported_position'].values).all())
+    if same and 'evidence_sequence' in prev_records:
+        # a release of this format: the evidence as this run reads it
+        evidence = [evidence_of(typed.loc[i]) for i in range(n_prev)]
+        same = ([k for k, _ in evidence] == list(prev_records['evidence_kind'])
+                and [t for _, t in evidence] == list(prev_records['evidence_sequence']))
+    elif same:
+        # v1.0.0: the peptide and window as the source tables give them
+        reported_peptide = head['peptide_sequence_reported'].map(clean).where(head['peptide_sequence_reported'].map(clean) != '', head['peptide_sequence'].map(clean)) \
+            if 'peptide_sequence_reported' in head else head['peptide_sequence'].map(clean)
+        same = ((reported_peptide.values == prev_records['peptide_sequence'].values).all()
+                and (head['seq_window'].map(clean).values == prev_records['seq_window'].values).all())
     if not same:
         raise SystemExit('this run does not hold the previous release\'s source records in the same order')
 
@@ -802,7 +842,7 @@ def main() -> None:
     counts.update(peptide_start_agreement(rows, typed, reference, root / 'parsed_maron' / 'maron_peptide_coordinates.tsv'))
     context = {'version': version, 'previous': previous, 'files': files, 'counts': counts, 'inputs': inputs, 'root': root,
                'uniprot_release': json.loads((inputs / INPUT['uniprot_release']).read_text()), 'records': records,
-               'sites': sites, 'changes': changes, 'studies': studies, 'release_date': args.date,
+               'sites': sites, 'changes': changes, 'studies': studies, 'release_date': args.date, 'previous_sites': prev_sites,
                'validation': validation(root, check), 'enrichment_tools': enrichment_tools(root)}
     release_docs.write_all(outdir, context)
     print(json.dumps({k: v for k, v in counts.items() if not isinstance(v, dict)}))

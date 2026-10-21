@@ -1504,4 +1504,4 @@ body.slim .hero .brand-mark img { order: 0; }
 /* Touch screens: the evidence cartoon zooms on a horizontal drag (with the protein map), so it fits the width. */
 @media (pointer: coarse) { .cc-box svg.ccart { min-width: 0; } }
 /* Disease card: Disease Ontology or DisGeNET families */
-.chart-tools { margin: -0.4rem 0 0.7rem; }
+.chart-tools { margin: 0 0 0.7rem; }

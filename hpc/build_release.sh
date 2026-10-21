@@ -4,7 +4,8 @@
 #   bash hpc/build_release.sh VERSION [WORK_ROOT]        e.g. bash hpc/build_release.sh v1.1.0
 #
 # Runs, with the python on PATH:
-#   1. the parsers, the remapping (with the accession history and Maron's peptide starts), the union, and the sites
+#   1. the parsers, the remapping (with the accession history, Maron's peptide starts and the studies staged in
+#      inputs/sources/), the union, and the sites
 #      whose windows match the entry on one side of the arginine only (kept pending a decision);
 #   2. the evidence check and the residue audit: either stops the build;
 #   3. the analyses the release and the website report, on the union (the sites kept pending are left out): functional
@@ -20,7 +21,8 @@
 # for a site, it stops and says how to stage it.
 #
 # Environment (optional): PREVIOUS, the release the changes are traced from (default releases/v1.1.0); RELEASE_OUT, where
-# the release goes (default releases/VERSION); SITE_OUT, where the website data go (default docs/data).
+# the release goes (default releases/VERSION); SITE_OUT, where the website data go (default docs/data); STUDIES, the
+# staged studies read (default the five added in v1.1.1). v1.1.0 itself: PREVIOUS=releases/v1.0.0 STUDIES=''.
 
 set -eo pipefail
 
@@ -30,6 +32,7 @@ IN="$CODE/inputs"
 WORK=${2:-$(mktemp -d)}
 OUT=${RELEASE_OUT:-$CODE/releases/$VERSION}
 PREVIOUS=${PREVIOUS:-$CODE/releases/v1.1.0}
+STUDIES=${STUDIES-hartel2019 geoghegan2015 sylvestersen2014 lu2025 ma2023}
 SITE_OUT=${SITE_OUT:-$CODE/docs/data}
 FASTA="$IN/reference/uniprot_human_reviewed_2026_03.fasta"
 ENTRIES="$IN/reference/uniprot_human_reviewed_2026_03_entries.tsv"
@@ -63,6 +66,12 @@ python "$CODE/scripts/01_parse_prometheus_mmc2.py" --input "$IN/sources/massigna
 python "$CODE/scripts/01_parse_maron_peptide_coordinates.py" --table-s2 "$IN/sources/maron2021_tableS2_methylarginine_ip_sites.xlsx" \
   --table-s3 "$IN/sources/maron2021_tableS3_methylpeptides_prmt_inhibitors.xlsx" --outdir "$WORK/parsed_maron"
 COORDS="$WORK/parsed_maron/maron_peptide_coordinates.tsv"
+# The studies added in v1.1.1, staged by scripts/00_stage_study_sites.py; their records follow those of the three
+# source tables, in this order, so that record_ids stay those of earlier releases.
+STUDY_RECORDS=""
+for study in $STUDIES; do
+  STUDY_RECORDS="$STUDY_RECORDS $IN/sources/${study}_methylarginine_records.tsv"
+done
 
 echo "[release] placing records on the reference sequences"
 python "$CODE/scripts/02_remap_arg_methyl_to_canonical.py" \
@@ -74,6 +83,7 @@ python "$CODE/scripts/02_remap_arg_methyl_to_canonical.py" \
   --uniprot-metadata "$ENTRIES" \
   --accession-history "$IN/reference/uniprot_accession_history_2026_03.tsv" \
   --peptide-coordinates "$COORDS" \
+  --study-records $STUDY_RECORDS \
   --outdir "$WORK/remapped" > "$WORK/remap.log"
 tail -1 "$WORK/remap.log"
 python "$CODE/scripts/02_integrate_arg_methyl_sources.py" \

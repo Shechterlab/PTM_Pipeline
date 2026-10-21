@@ -114,6 +114,43 @@ def prepare_frame(df: pd.DataFrame, source_name: str) -> pd.DataFrame:
     return out
 
 
+def study_frame(path: str | Path) -> pd.DataFrame:
+    """A study's records as scripts/00_stage_study_sites.py stages them (inputs/sources/<study>_methylarginine_records.tsv),
+    in the columns of the other source tables: the marked peptide is read like ProMetheusDB's, the window like Table
+    S5's. The source table is named after the study in lower case (hartel2019)."""
+    t = pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False)
+    study = t['study_id'].iloc[0]
+    if (t['study_id'] != study).any():
+        raise SystemExit(f'{path}: one study per file')
+    out = pd.DataFrame({
+        'substrate_UniProtAC_original': t['reported_accession'],
+        'substrate_UniProtAC': t['reported_accession'].str.split('; ').str[0],
+        'substrate_genename': t['reported_gene'],
+        'position': t['reported_position'],
+        'residue': 'R',
+        # marked as ProMetheusDB marks them, R(me) and R(di), which the evidence check reads too
+        'peptides': t['peptide'].str.replace('R(me1)', 'R(me)', regex=False).str.replace('R(me2)', 'R(di)', regex=False),
+        'seq_window': t['window'],
+        # The degree, or for a dimethylarginine the one type a study called from neutral losses (Hartel 2019); a
+        # residue with both types called stays Rme2 here, and study_rme2_type keeps the call.
+        'arg_methyl_state': [{'ADMA': 'Rme2a', 'SDMA': 'Rme2s'}.get(x, d) for d, x in zip(t['methyl_degree'], t['rme2_type'])],
+        'study_rme2_type': t['rme2_type'],
+        'arg_methyl_state_known': True,
+        'source': study,
+        'source_family': study,
+        'reference': study,
+        'ptm_group': 'Arg methylation',
+        'data_layer': 'external_methyl_table',
+        'study_sample': t['cell_type'],
+        'study_enrichment': t['enrichment'],
+        'study_localisation': t['localisation_probability'],
+        'study_rows': t['n_source_rows'],
+        'study_tables': t['source_tables'],
+        'study_note': t['note'],
+    })
+    return prepare_frame(out, study.lower())
+
+
 def find_all_occurrences(sequence: str, anchor: str) -> list[int]:
     if not sequence or not anchor:
         return []
@@ -522,6 +559,8 @@ def main() -> None:
     ap.add_argument('--maron', required=True)
     ap.add_argument('--prometheus', required=True)
     ap.add_argument('--maron-extra', default='', help='Table S5 rows read for the first time in this version (maron_s5_rows_accession_na.tsv); they come after all other rows')
+    ap.add_argument('--study-records', nargs='*', default=[],
+                    help='studies staged by scripts/00_stage_study_sites.py, read after the source tables above, in this order')
     ap.add_argument('--canonical-fasta', required=True)
     ap.add_argument('--uniprot-metadata', required=True)
     ap.add_argument('--accession-history', default='',
@@ -555,6 +594,7 @@ def main() -> None:
     ]
     if args.maron_extra and Path(args.maron_extra).exists():
         frames.append(prepare_frame(pd.read_csv(args.maron_extra, sep='\t', low_memory=False, keep_default_na=False, na_values=['']), 'maron_s5'))
+    frames += [study_frame(path) for path in args.study_records]
     all_rows = pd.concat(frames, ignore_index=True, sort=False)
     all_rows['canonical_UniProtAC'] = all_rows['canonical_UniProtAC'].astype(str).map(canonicalize_uniprot_accession)
     all_rows = annotate_window_lengths(all_rows)

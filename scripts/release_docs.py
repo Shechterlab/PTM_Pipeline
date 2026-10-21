@@ -100,7 +100,7 @@ def n(value) -> str:
 
 
 def write_all(outdir: Path, ctx: dict) -> None:
-    files, c, version, previous = ctx['files'], ctx['counts'], ctx['version'], ctx['previous']
+    files, previous = ctx['files'], ctx['previous']
     dictionary_columns = [('file', 'string', '', 'the release file, relative to the release folder'),
                           ('column', 'string', '', 'the column'),
                           ('type', 'code', '', 'integer, number, string, boolean, code, or a list of these'),
@@ -114,7 +114,10 @@ def write_all(outdir: Path, ctx: dict) -> None:
     check_codes(outdir, files)
     write_release_json(outdir, ctx, files)
     write_readme(outdir, ctx, files)
-    write_changes(outdir, ctx, files)
+    if previous == 'v1.0.0':
+        write_changes(outdir, ctx, files)
+    else:
+        write_changes_since_release(outdir, ctx, files)
     write_md5sums(outdir)
 
 
@@ -202,13 +205,16 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
     c, version, previous = ctx['counts'], ctx['version'], ctx['previous']
     studies = ctx['studies']
     ur = ctx['uniprot_release']
+    added = [label for sid, label, *_ in rc.STUDIES if sid in set(rc.STUDY_TABLES.values()) and sid in set(ctx['records']['study'])]
     lines = [
         f'# Human methylarginine sites, {version}',
         '',
         f"{n(c['sites'])} sites on {n(c['proteins'])} proteins, and {n(c['pending'])} pending sites, "
         f"{n(c['rows'])} rows: the human protein arginine methylation sites of {PAPER}, with corrections to how some "
-        f'source records were placed on UniProt sequences. [CHANGES.md](CHANGES.md) says what changed since {previous} '
-        f'(the published version) and why.',
+        f'source records were placed on UniProt sequences (v1.1.0)'
+        + (f" and the sites of {len(added)} more studies (v1.1.1: {', '.join(added)})" if added else '')
+        + f'. [CHANGES.md](CHANGES.md) says what changed since {previous}'
+        + (' (the published version)' if previous == 'v1.0.0' else '') + ' and why.',
         '',
         f'Every site has its sequence, methylation evidence, structural context, the studies that report it, and the '
         f'source records behind it. Positions are on UniProt release {ur["release"]} (reviewed human reference proteome '
@@ -243,9 +249,12 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
               for s in studies.itertuples()]
     lines += [
         '',
-        'The site records come from three source tables: Maron et al. 2021 Table S5 (sites compiled from ten studies), '
+        'The site records come from Maron et al. 2021 Table S5 (sites compiled from ten studies), '
         'ProMetheusDB (Massignani et al. 2022) and the arginine methylation rows of an iPTMnet-format PTM master table '
-        '(UniProt and IEDB records). Maron et al. 2021 Tables S2 and S3 and the CARM1 knockout data (Shishkova et al. '
+        '(UniProt and IEDB records)'
+        + (f", and the supplementary tables of {', '.join(added)}, each staged into one table of records "
+           '(`scripts/00_stage_study_sites.py`, `inputs/sources/`)' if added else '')
+        + '. Maron et al. 2021 Tables S2 and S3 and the CARM1 knockout data (Shishkova et al. '
         '2017, doi:10.1038/ncomms15571) annotate sites but add none.',
         '',
         '## Licence',
@@ -293,8 +302,8 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'c and d, the effect, p, q and the method:',
         '',
         '- **Protein and gene sets** (method `enricher`): PANTHER and functional classes, CD-CODE condensates, Human Protein '
-        'Atlas locations, disease families, Gene Ontology RNA and DNA binding and complexes; the Disease Ontology and '
-        'DisGeNET terms are in `supporting/`. Over-representation analysis in R with clusterProfiler::enricher, and '
+        'Atlas locations, disease families and Gene Ontology RNA and DNA binding; the complexes, Disease Ontology terms and '
+        'DisGeNET terms, tested the same way, are in `supporting/`. Over-representation analysis in R with clusterProfiler::enricher, and '
         'DOSE::enrichDGN for the DisGeNET terms (`scripts/enrich_sets.R`; '
         + ', '.join(f'{k} {v}' for k, v in ctx.get('enrichment_tools', {}).items()) + '). '
         'For a set holding M of the N members of the background, where n of the N are methylarginine-containing proteins '
@@ -483,6 +492,136 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         'site, the records that moved onto or off it, and both).',
         f"- `{files['records'][0]}`: one row per source record, with what the study reported, the evidence sequence, where "
         'each version placed it, the independent evidence check and the reason code.',
+        '',
+        'Their columns are listed in `README.md` and `data_dictionary.tsv`.',
+    ]
+    (outdir / 'CHANGES.md').write_text('\n'.join(lines) + '\n')
+
+
+def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
+    """CHANGES.md from a previous release of this format (v1.1.0 on): the studies added, what happened to the previous
+    sites and records, and what changed in the analyses."""
+    c, version, previous = ctx['counts'], ctx['version'], ctx['previous']
+    records, changes, sites, studies = ctx['records'], ctx['changes'], ctx['sites'], ctx['studies']
+    placed = sites[~sites['flags'].str.contains('one_sided_window')]
+    prev = ctx['previous_sites']
+    prev_pending = prev['flags'].str.contains('one_sided_window')
+    old = records[records['change_since_previous_version'] != 'new_record']
+    new = records[records['change_since_previous_version'] == 'new_record']
+    added_ids = set(changes.loc[changes['change'] == 'added', 'site_id'])
+    prev_proteins = set(changes.loc[changes['change'] != 'added', 'site_id'].map(lambda x: split_key(x)[0]))
+    first_new = int(new['record_id'].min()) if len(new) else None
+    lines = [
+        f'# Changes from {previous} to {version}',
+        '',
+        f'| | {previous} | {version} |',
+        '|---|---:|---:|',
+        f"| Sites | {n(int((~prev_pending).sum()))} | {n(c['sites'])} |",
+        f"| Proteins | {n(prev.loc[~prev_pending, 'uniprot_accession'].nunique())} | {n(c['proteins'])} |",
+        f"| Sites kept pending | {n(int(prev_pending.sum()))} | {n(c['pending'])} |",
+        f"| Source records | {n(len(old))} | {n(len(records))} |",
+        f"| Source records placed | {n(int((old['previous_site'] != '').sum()))} | {n(c['records_placed'])} |",
+        f"| Studies and databases | {n(len(old['study'].unique()))} | {n(len(studies))} |",
+        '',
+        f"Of the {n(c['previous_sites'])} sites of {previous} (pending ones included), {n(c['kept'])} are kept and {n(c['removed'])} removed; "
+        f"{n(c['added'])} sites were added. The records of {previous} are read in the same order and "
+        + ('all are placed as before. ' if (old['change_since_previous_version'].isin(['same', 'not_placed'])).all() else
+           f"{n(int((~old['change_since_previous_version'].isin(['same', 'not_placed'])).sum()))} of them are placed differently "
+           '(supporting/source_records, columns change_since_previous_version and reason_code). ')
+        + (f'The records of the studies added follow them, from record_id {first_new:,}.' if first_new else ''),
+        '',
+    ]
+    added = [s for s in rc.STUDIES if s[0] in set(new['study'])]
+    if added:
+        lines += [
+            f'## Studies added ({len(added)})',
+            '',
+            'Each study\'s supplementary table is staged by `scripts/00_stage_study_sites.py` into '
+            '`inputs/sources/<study>_methylarginine_records.tsv`: one record per reported peptide and arginine, with the '
+            'filters of the study\'s own methods (stated in the script). The records are placed and checked against their '
+            'evidence like those of the other source tables.',
+            '',
+            '| Study | Sample | Records | Placed | Sites | Sites new to the union | Proteins new to the union |',
+            '|---|---|---:|---:|---:|---:|---:|',
+        ]
+        site_studies = placed.set_index('site_id')['studies'].str.split('; ')
+        for sid, label, citation, doi in added:
+            g = new[new['study'] == sid]
+            here = {s for s in g['placed_site'] if s}
+            here_placed = here & set(site_studies.index)
+            new_sites = here_placed & added_ids
+            new_prot = {split_key(x)[0] for x in new_sites} - prev_proteins
+            sample = '; '.join(sorted({x for v in g['reported_sample'] for x in v.split('; ') if x}))
+            lines.append(f'| [{label}](https://doi.org/{doi}) | {sample} | {len(g):,} | {int((g["placed_site"] != "").sum()):,} | '
+                         f'{len(here_placed):,} | {len(new_sites):,} | {len(new_prot):,} |')
+        only_new = placed[placed['site_id'].isin(added_ids)]
+        lines += [
+            '',
+            f"{n(len(only_new))} sites are new to the union, on {n(only_new['uniprot_accession'].nunique())} proteins "
+            f"({n(len({a for a in only_new['uniprot_accession']} - prev_proteins))} of them new). "
+            'A site the new studies report that an earlier source reports too gains their records.',
+            '',
+        ]
+        nl = placed[placed['dimethyl_type_neutral_loss'] != '']
+        if len(nl):
+            ab = nl['maron2021_s3_antibodies'].str.split('; ').map(lambda v: {x for x in v if x in ('ADMA', 'SDMA')})
+            call = nl['dimethyl_type_neutral_loss'].str.split('; ').map(set)
+            both = [(a, b) for a, b in zip(call, ab) if b]
+            same = sum(a == b for a, b in both)
+            part = sum(bool(a & b) and a != b for a, b in both)
+            lines += [
+                '### ADMA and SDMA from neutral losses',
+                '',
+                f"Hartel et al. 2019 tell asymmetric from symmetric dimethylarginine by the neutral loss in the fragment "
+                f"spectra: dimethylamine (45.058 Da) for ADMA, methylamine (31.042 Da) for SDMA. `dimethyl_type_neutral_loss` "
+                f"gives the call at {n(len(nl))} sites: "
+                + ', '.join(f"{v} {k}" for k, v in nl['dimethyl_type_neutral_loss'].value_counts().items()) + '. '
+                f"Maron et al. 2021 Table S3 says which antibodies recovered a site (`maron2021_s3_antibodies`). At the "
+                f"{n(len(both))} sites with both a neutral-loss call and an ADMA or SDMA immunoprecipitation, the two agree at "
+                f"{n(same)}, overlap at {n(part)} and differ at {n(len(both) - same - part)}. Both columns are kept as reported.",
+                '',
+            ]
+        xeno = int(placed['flags'].str.contains('xenograft_only').sum())
+        if xeno:
+            lines += [
+                '### Xenograft-only sites',
+                '',
+                f"Ma et al. 2023 measured breast cancer patient-derived xenografts grown in mice. The {n(xeno)} sites only "
+                'they report carry the flag `xenograft_only`: where the human and mouse sequences agree, the peptide can come '
+                'from the mouse stroma.',
+                '',
+            ]
+    lines += [
+        '## Methylation degree',
+        '',
+        f"`methyl_state` gives a degree at {n(c['with_state'])} of {n(c['sites'])} sites: "
+        + ', '.join(f"{n(v)} {k.replace('_', ' + ')}" for k, v in c['state'].items() if k != 'none') + '. '
+        'The studies added count through their records (`methyl_states_reported`).',
+        '',
+        '## Protein-set tests',
+        '',
+        '- Every test of protein or gene sets (PANTHER and functional classes, CD-CODE condensates, Human Protein Atlas '
+        'locations, disease families, Gene Ontology binding, complexes) is an over-representation analysis with '
+        'clusterProfiler::enricher, and the DisGeNET terms with DOSE::enrichDGN (scripts/enrich_sets.R; statistics: method '
+        'enricher, with fold enrichment): p is the one-sided hypergeometric probability, fold enrichment (k/n)/(M/N), q '
+        'Benjamini-Hochberg over the sets of the analysis (README, Statistics). The disease families are tested against the '
+        'reviewed human genes with a DisGeNET term.',
+        '- The Human Disease Ontology is added, with the gene sets of DOSE enrichDO (`supporting/disease_ontology`), and every '
+        'DisGeNET term tested is listed (`supporting/disease_terms_tested`).',
+        '- The analyses run on the sites of this version, the studies added included.',
+        '',
+        '## Still open',
+        '',
+        f"- **Windows that match on one side only** ({n(c['pending'])} sites, flag `one_sided_window`): kept, flagged and left "
+        'out of every analysis, as in the previous version.',
+        f"- **Paralog windows** ({c['flags'].get('paralog_window', 0)} sites, flag `paralog_window`), accepted in "
+        '`config/remap_evidence_allowlist.tsv`.',
+        '',
+        '## Tracing a change',
+        '',
+        f"- `{files['changes'][0]}`: one row per site of either version, with its change and the records involved.",
+        f"- `{files['records'][0]}`: one row per source record, with what the study reported, where each version placed it "
+        'and the evidence check.',
         '',
         'Their columns are listed in `README.md` and `data_dictionary.tsv`.',
     ]

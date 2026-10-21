@@ -22,12 +22,16 @@ from pathlib import Path
 
 import pandas as pd
 
-SOURCES = ['Maron2021', 'ProMetheusDB', 'human_ptm_master']
-SOURCE_OF_TABLE = {'maron2021_s5': 'Maron2021', 'prometheusdb_mmc2': 'ProMetheusDB', 'ptm_master': 'human_ptm_master'}
-RAW_TABLE = {'maron2021_s5': 'maron_s5', 'prometheusdb_mmc2': 'prometheus_mmc2', 'ptm_master': 'human_ptm_master'}
+# Source tables: the three of v1.1.0, then one per study added in v1.1.1 (bits of the site field source_mask).
+SOURCES = ['Maron2021', 'ProMetheusDB', 'human_ptm_master', 'hartel2019', 'geoghegan2015', 'sylvestersen2014', 'lu2025', 'ma2023']
+SOURCE_OF_TABLE = {'maron2021_s5': 'Maron2021', 'prometheusdb_mmc2': 'ProMetheusDB', 'ptm_master': 'human_ptm_master',
+                   **{t: t for t in SOURCES[3:]}}
+RAW_TABLE = {'maron2021_s5': 'maron_s5', 'prometheusdb_mmc2': 'prometheus_mmc2', 'ptm_master': 'human_ptm_master',
+             **{t: t for t in SOURCES[3:]}}
 STATES = ['', 'Rme1', 'Rme2', 'mixed']
-STATE_SOURCES = [('methyl_states_reported', 'ProMetheusDB'), ('maron2021_s2_states', 'Maron 2021 Table S2'),
-                 ('uniprot_states', 'UniProt'), ('uniprot_states_inferred', 'UniProt, by similarity (not counted)')]
+STATE_SOURCES = [('methyl_states_reported', 'Source records'), ('maron2021_s2_states', 'Maron 2021 Table S2'),
+                 ('uniprot_states', 'UniProt'), ('uniprot_states_inferred', 'UniProt, by similarity (not counted)'),
+                 ('dimethyl_type_neutral_loss', 'Hartel 2019, neutral loss')]
 DESIGN_LABEL = {'Rme1': 'Larsen 2016 (looked for Rme1 only)', 'Rme2': 'Wei 2020 (ADMA antibody, Rme2 only)'}
 MOTIFS = ['RG', 'RGG', 'GRG', 'GAR', 'RXR', 'CARM1_proline_rich', 'CARM1_hydrophobic_proline', 'DR', 'RD', 'ER', 'RE']
 MARON_IPS = ['MMA', 'ADMA', 'SDMA']
@@ -178,7 +182,6 @@ def main() -> None:
     for k, (ps, raw) in enumerate(zip(do_parents, do_terms['parents'])):
         if do_terms.at[k, 'term_id'] != DO_ROOT and len(ps) != len(L(raw)):
             raise SystemExit(f'{do_terms.at[k, "term_id"]}: a parent of a tested Disease Ontology term was not tested')
-    has_child = {q for ps in do_parents for q in ps}
     protein_do = defaultdict(set)
     for k, accs in enumerate(do_terms['uniprot_accessions']):
         for a in L(accs):
@@ -235,11 +238,11 @@ def main() -> None:
         ])
 
     # ---- Sites ----------------------------------------------------------------------------------------------------
-    site_index = {s: j for j, s in enumerate(sites['site_id'])}
     site_of = records['placed_site'].where(records['placed_site'] != '', records['pending_site'])
     records = records.assign(_site=site_of)
     refs, studies_vocab = Vocab(), Vocab()
     web_name = {r['study_id']: WEB_STUDY.get(r['study_id'], r['label']) for r in studies.to_dict('records')}
+    study_info = {web_name[r['study_id']]: (r['citation'], r['doi']) for r in studies.to_dict('records')}
     study_citation = {}
     for r in records.to_dict('records'):
         if r['source_table'] == 'maron2021_s5' and r['reference_text']:
@@ -286,7 +289,8 @@ def main() -> None:
         evidence.append([[
             0, refs.index(rec[i]['reference_text']) if rec[i]['reference_text'] else -1, rec[i]['pmid'], rec[i]['evidence_sequence'],
             rec[i]['reported_enzyme'], rec[i]['reported_methyl_state'], rec[i]['reported_accession'], rec[i]['reported_position'],
-            rec[i]['placement_code'], web_name[rec[i]['study']]] for i in ids])
+            rec[i]['placement_code'], web_name[rec[i]['study']],
+            ' · '.join(x for x in (rec[i]['reported_sample'], rec[i]['reported_enrichment'], rec[i]['reported_detail']) if x)] for i in ids])
         site_rows.append([
             pidx[s['uniprot_accession']], int(s['position']), state,
             sum(1 << SOURCES.index(SOURCE_OF_TABLE[x]) for x in L(s['source_tables'])),
@@ -389,6 +393,7 @@ def main() -> None:
                 'inputs': [{'file': x['file'].split('/')[-1], 'md5': x['md5']} for x in info['inputs'] if x['file'].startswith('inputs/sources/')],
                 'validation': info.get('validation', {}),
                 'changes': {k: info['counts'].get(k) for k in ('previous_sites', 'kept', 'kept_pending', 'removed', 'added')},
+                'previous_version': info.get('previous_version', ''),
                 'coordinates': 'Positions are 1-based on the reference sequences (canonical UniProt entries, initiator methionine = 1). '
                                'Protein field reference_md5 is the checksum of each reference sequence in UniProt\'s format; current UniProt '
                                'annotations line up with the positions only where the current sequence has the same checksum.',
@@ -396,7 +401,9 @@ def main() -> None:
             'n_sites': len(site_rows), 'n_proteins': len(protein_rows), 'n_pending_not_shown': n_pending,
             'window_flank': WINDOW_FLANK, 'window_flags': window_flags,
             'sources': SOURCES,
-            'studies': [[name, study_citation.get(name, ''), study_counts[k], study_unique[k]] for k, name in enumerate(studies_vocab.values)],
+            # [name, citation, sites, sites reported only there, DOI]
+            'studies': [[name, study_citation.get(name, '') or study_info.get(name, ('', ''))[0], study_counts[k], study_unique[k],
+                         study_info.get(name, ('', ''))[1]] for k, name in enumerate(studies_vocab.values)],
             'states': STATES, 'motifs': MOTIFS, 'maron_ips': MARON_IPS, 'maron_treatments': MARON_TREATMENTS,
             'other_ptm_groups': OTHER_PTM_GROUPS, 'other_ptm_sources': ['Cross-PTM master table'],
             'func_classes': func_classes.values, 'func_subclasses': func_subclasses.values,
@@ -475,7 +482,7 @@ def main() -> None:
     evidence_payload = {
         'source_tables': source_tables.values, 'studies': studies_vocab.values, 'remap_statuses': remap_statuses.values,
         'evidence_fields': ['source_table', 'reference', 'pmid', 'peptide', 'enzyme', 'state', 'source_accession', 'source_position',
-                            'remap_status', 'study'],
+                            'remap_status', 'study', 'detail'],
         'refs': refs.values, 'sites': evidence,
         # [UMLS id, name, family, methylated proteins' genes, adj. p] of the enriched DisGeNET terms (DOSE enrichDGN)
         'disease_terms': [[x[0], x[1], term_family[k], x[3], sig(x[4])] for k, x in enumerate(site_terms)],
