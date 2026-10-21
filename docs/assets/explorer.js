@@ -1059,21 +1059,49 @@
   // Methylated proteins in the enriched DisGeNET terms of disease family k (what disease:<family> lists).
   const diseaseTermCount = (k) => (k >= 0 ? P.reduce((n, p) => n + (p.dis & 2 ** k ? 1 : 0), 0) : 0);
   // The enriched DisGeNET terms (DOSE enrichDGN), for the Disease card's DisGeNET view. Rows of evidence.disease_terms:
-  // [UMLS id, name, family, methylated, adj. p].
+  // [UMLS id, name, family, methylated, adj. p, genes of the term, fold enrichment] (the last two from v1.1.1). The terms
+  // of the audited families come first; most of the others are DisGeNET's clinical signs (the additional families).
+  const DIS_TERMS_SHOWN = 25, DIS_TERMS_PER_FAMILY = 5;
   function disTermsHtml() {
     const ev = UI.evd;
     if (!ev) return '<p class="muted small">Loading the terms…</p>';
-    const terms = ev.disease_terms, fam = UI.disFam == null ? '' : UI.disFam, tested = ev.disease_terms_tested;
-    const none = terms.filter((t) => t[2] < 0).length;
-    const shown = terms.filter((t) => fam === '' || (fam === 'none' ? t[2] < 0 : t[2] === +fam));
-    const famName = (k) => (k >= 0 ? M.disease_families[k] : '');
-    return '<div class="dis-terms"><p class="note">' + fmt(terms.length) + (tested ? ' of the ' + fmt(tested.terms) + ' tested' : '') + ' DisGeNET terms are enriched among methylated proteins (DOSE enrichDGN, ' + dgnTested() + '); ' +
-      fmt(terms.filter((t) => t[2] >= 0 && !famAudited(t[2])).length) + ' of them belong to an additional family and ' + fmt(none) + ' to no family.' + (tested ? ' Every tested term is in the release (supporting/disease_terms_tested).' : '') + '</p>' +
-      '<div class="dis-term-controls"><label class="small">Show <select id="dis-fam"><option value="">all families</option><option value="none"' + (fam === 'none' ? ' selected' : '') + '>terms in no family (' + fmt(none) + ')</option>' +
-      M.disease_families.map((f, k) => '<option value="' + k + '"' + (fam === String(k) ? ' selected' : '') + '>' + esc(f) + (famAudited(k) ? '' : ' (additional)') + '</option>').join('') + '</select></label></div>' +
-      (shown.length ? '<div class="tbl-wrap dis-terms-tbl"><table class="tbl compact"><thead><tr><th>Term and family</th><th class="r" title="Methylarginine-containing proteins whose gene the term names">Methyl-R</th><th class="r">Adj. p</th></tr></thead><tbody>' +
-      shown.map((t) => '<tr><td><button class="linkish" type="button" data-dterm="' + esc(t[0]) + '" title="List the ' + fmt(t[3]) + ' methylated proteins whose gene this term names">' + esc(t[1]) + '</button> <span class="muted mono small">' + esc(t[0]) + '</span>' +
-        (t[2] >= 0 ? '<span class="dis-term-fam">' + esc(famName(t[2])) + '</span>' : '') + '</td><td class="r num">' + fmt(t[3]) + '</td><td class="r num">' + fmtP(t[4]) + '</td></tr>').join('') + '</tbody></table></div>' : '<p class="muted small">No term of this family.</p>') + '</div>';
+    const terms = ev.disease_terms, tested = ev.disease_terms_tested, full = terms.some((t) => t.length > 5);
+    const fam = UI.disFam == null ? 'audited' : UI.disFam;
+    const inSet = (t) => (fam === '' ? true : fam === 'audited' ? t[2] >= 0 && famAudited(t[2]) : fam === 'additional' ? t[2] >= 0 && !famAudited(t[2])
+      : fam === 'none' ? t[2] < 0 : t[2] === +fam);
+    const n = (f) => terms.filter((t) => (f === 'audited' ? t[2] >= 0 && famAudited(t[2]) : f === 'additional' ? t[2] >= 0 && !famAudited(t[2]) : t[2] < 0)).length;
+    const pool = terms.filter(inSet);
+    const famName = (k) => (k >= 0 ? M.disease_families[k] : 'no family');
+    const opt = (v, label) => '<option value="' + v + '"' + (fam === v ? ' selected' : '') + '>' + esc(label) + '</option>';
+    const termRow = (t, withFam) => '<tr><td><button class="linkish" type="button" data-dterm="' + esc(t[0]) + '" title="List the ' + fmt(t[3]) + ' methylated proteins whose gene this term names">' + esc(t[1]) + '</button>' +
+      '<span class="dis-term-fam">' + (withFam ? esc(famName(t[2])) + ' · ' : '') + '<span class="mono">' + esc(t[0]) + '</span></span></td><td class="r num">' + fmt(t[3]) + (full ? '/' + fmt(t[5]) : '') + '</td>' +
+      (full ? '<td class="r num">' + (t[6] != null ? t[6].toFixed(2) : '—') + '</td>' : '') + '<td class="r num">' + fmtP(t[4]) + '</td></tr>';
+    // Several families: each family's DIS_TERMS_PER_FAMILY most significant terms under its name, the families in the
+    // order of the chart; one family: its terms, DIS_TERMS_SHOWN at a time.
+    const grouped = !/^\d+$/.test(fam);
+    let body = '';
+    if (grouped) {
+      const order = M.overview.disease_families.slice().sort((a, b) => (famAudited(M.disease_families.indexOf(b[0])) - famAudited(M.disease_families.indexOf(a[0]))) || (famEff(b) || 0) - (famEff(a) || 0))
+        .map((r) => M.disease_families.indexOf(r[0])).concat([-1]);
+      for (const k of order) {
+        const list = pool.filter((t) => t[2] === k);
+        if (!list.length) continue;
+        body += '<tr class="dis-term-group"><th colspan="' + (full ? 4 : 3) + '">' + esc(k >= 0 ? famName(k) : 'In no family') + ' <span class="muted">· ' + fmt(list.length) + ' term' + (list.length === 1 ? '' : 's') + '</span>' +
+          (list.length > DIS_TERMS_PER_FAMILY && k >= 0 ? ' <button class="linkish small" type="button" data-disfam="' + k + '">all ' + fmt(list.length) + '</button>' : '') + '</th></tr>' +
+          (k >= 0 ? list.slice(0, DIS_TERMS_PER_FAMILY) : list).map((t) => termRow(t, false)).join('');
+      }
+    } else {
+      body = (UI.disTermsAll ? pool : pool.slice(0, DIS_TERMS_SHOWN)).map((t) => termRow(t, false)).join('');
+    }
+    return '<div class="dis-terms"><p class="note">' + fmt(terms.length) + (tested ? ' of the ' + fmt(tested.terms) + ' DisGeNET terms tested' : ' DisGeNET terms') + ' (' + DGN_TERMS.min + '–' + DGN_TERMS.max + ' genes) are enriched among methylated proteins (DOSE enrichDGN, adj. p ≤ ' + DGN_TERMS.padj + '). ' +
+      fmt(n('audited')) + ' belong to the ' + nAudited() + ' audited disease families; ' + fmt(n('additional')) + ' to the additional families, mostly clinical signs such as facial features; ' + fmt(n('none')) + ' to none.' + (tested ? ' Every tested term is in the release (supporting/disease_terms_tested).' : '') + '</p>' +
+      '<div class="dis-term-controls"><label class="small">Show <select id="dis-fam">' + opt('audited', 'audited disease families (' + fmt(n('audited')) + ')') +
+      M.disease_families.map((f, k) => (famAudited(k) ? opt(String(k), ' ' + f) : '')).join('') + opt('additional', 'additional families, mostly clinical signs (' + fmt(n('additional')) + ')') +
+      M.disease_families.map((f, k) => (famAudited(k) ? '' : opt(String(k), ' ' + f))).join('') + opt('none', 'terms in no family (' + fmt(n('none')) + ')') + opt('', 'all ' + fmt(terms.length) + ' terms') + '</select></label></div>' +
+      (pool.length ? '<div class="tbl-wrap dis-terms-tbl"><table class="tbl compact"><thead><tr><th>Term' + (grouped ? ', by family (most significant first)' : '') + '</th><th class="r" title="Genes of methylarginine-containing proteins, of the genes of the term">Methyl-R' + (full ? '/all' : '') + '</th>' + (full ? '<th class="r" title="Fold enrichment">FE</th>' : '') + '<th class="r">Adj. p</th></tr></thead><tbody>' +
+        body + '</tbody></table></div>' +
+        (!grouped && pool.length > DIS_TERMS_SHOWN ? '<button class="linkish" type="button" id="dis-terms-all">' + (UI.disTermsAll ? 'Show the first ' + DIS_TERMS_SHOWN : 'Show all ' + fmt(pool.length)) + '</button>' : '')
+        : '<p class="muted small">No enriched term in this group.</p>') + '</div>';
   }
   // The eight audited families (the original pipeline's hand-checked rules); the others are rule-based additions (scripts/disease_families.py).
   const famAudited = (k) => !M.disease_family_audited || !!M.disease_family_audited[k];
@@ -1102,6 +1130,8 @@
   // The Disease Ontology chart shows terms of at least DO_ROW genes; every tested term (at least DO_TERMS.min genes) is
   // in the term table, the doterm: search and the release.
   const DO_ROW = 100;
+  // The short list: enriched terms of at least DO_SHORT genes, and DO_COMPARE classes that are not enriched.
+  const DO_SHORT = 50, DO_COMPARE = 4;
   const DO_TERMS = { min: 10 };
   // Methods text for the protein-set tests (v1.1.1 exports): what the test is, its numbers and its backgrounds.
   function setTestDocHtml() {
@@ -1127,8 +1157,8 @@
     const bg = dm.background, nTested = dm.terms.length - 1;
     return '<p><b>Disease Ontology</b> (the default view). The Human Disease Ontology (' + doiLink('10.1093/nar/gkad1051', 'Baron et al. 2024') + '; CC0)' + (dm.release ? ', release ' + esc(dm.release) : '') + ', with the gene sets DOSE uses for <code>enrichDO</code>: each term holds the genes annotated to it and to every term under it. ' +
       'The background is the ' + fmt(bg[1]) + ' reviewed human genes with a Disease Ontology term, ' + fmt(bg[0]) + ' of them (' + pct(bg[0], bg[1]) + '%) genes of methylarginine-containing proteins. Every term of at least ' + DO_TERMS.min + ' genes with a methylated protein is tested (' + fmt(nTested) + ' terms; clusterProfiler enricher on DOSE\'s gene sets, which is the test of enrichDO; BH over all of them). ' +
-      'The chart shows the eight classes under “disease” and, under each, the terms of at least ' + DO_ROW + ' genes; “Show the terms under them” adds the next level. The term table lists the enriched terms, or every tested term. A click on a bar or a term (or <code>doterm:</code> in the search, e.g. <code>doterm:DOID:332</code> for amyotrophic lateral sclerosis) lists the methylated proteins whose gene is in the term. Protein pages list each protein\'s most specific terms.</p>' +
-      '<p><b>DisGeNET families.</b> ' + famRules + 'Each family is tested against the reviewed human genes with a DisGeNET term (clusterProfiler enricher; q over the audited families). ' + clicks + '</p>' + caveat;
+      'A term holds the genes of every term under it, so a broad term (cancer, nervous system disease) repeats the narrower ones. The chart therefore lists the narrowest enriched terms of at least ' + DO_SHORT + ' genes (a term is left out when an enriched term under it is listed), then, for comparison, the ' + DO_COMPARE + ' largest terms two levels below “disease” that are not enriched. “Show the whole ontology” draws the eight classes under “disease” with their terms of at least ' + DO_ROW + ' genes, and “Show the terms under them” adds the next level. The term table lists the enriched terms, or every tested term. A click on a bar or a term (or <code>doterm:</code> in the search, e.g. <code>doterm:DOID:332</code> for amyotrophic lateral sclerosis) lists the methylated proteins whose gene is in the term. Protein pages list each protein\'s most specific terms.</p>' +
+      '<p><b>DisGeNET families.</b> ' + famRules + 'Each family is tested against the reviewed human genes with a DisGeNET term (clusterProfiler enricher; q over the audited families). Most enriched DisGeNET terms are clinical signs (facial features, for example), which the additional families take; the term table opens on the terms of the audited families. ' + clicks + '</p>' + caveat;
   }
   // The Disease Ontology term table: the enriched terms (q ≤ 0.05) or every tested term (UI.doAll), by q.
   function doTermsHtml() {
@@ -2989,32 +3019,46 @@
         '<button class="linkish" type="button" id="dis-more">' + (UI.disTerms ? 'Hide the DisGeNET terms' : 'Show the DisGeNET terms') + '</button></div>' +
         (UI.disTerms ? disTermsHtml() : ''),
     };
-    // Disease Ontology: the eight classes under "disease", each with its terms of at least DO_ROW genes, and with
-    // UI.doLevel the terms of at least DO_ROW genes under those.
+    // Disease Ontology. The short list (default): the most specific enriched terms of at least DO_SHORT genes (a term
+    // is left out when an enriched term under it is listed), then the largest terms two levels below "disease" that are
+    // not enriched, for comparison. The whole ontology (UI.doView 'tree'): the eight classes under "disease", each with
+    // its terms of at least DO_ROW genes, and with UI.doLevel the terms of at least DO_ROW genes under those.
     const doSpec = dm ? (() => {
-      const T = dm.terms, rows = [];
+      const T = dm.terms, rows = [], tree = UI.doView === 'tree';
       const row = (k, depth, parent) => {
-        const t = T[k];
+        const t = T[k], under = parent != null ? [parent] : t[2];
         return { label: t[1], value: t[5] ? +Math.log2(t[5]).toFixed(3) : null, q: t[6], sig: sigq(t[6]), key: t[0], dok: k, sub: depth > 0, depth, extra: ofTotal(t[3], t[4]), nums: [t[3], t[4]],
-          title: '<b>' + esc(t[1]) + '</b> (' + esc(t[0]) + (parent != null ? ', under ' + esc(T[parent][1]) : '') + ')<br>' + fmt(t[3]) + ' of its ' + fmt(t[4]) + ' genes are those of methylarginine-containing proteins (' + pct(t[3], t[4]) + '%, against ' + pct(dm.background[0], dm.background[1]) + '% of all genes with a Disease Ontology term)<br>fold enrichment ' + (t[5] || 0).toFixed(2) + ', q ' + fmtP(t[6]) + '<br>Click: the methylated proteins in the term' };
+          title: '<b>' + esc(t[1]) + '</b> (' + esc(t[0]) + (under.length ? ', under ' + under.map((q) => esc(T[q][1])).join(', ') : '') + ')<br>' + fmt(t[3]) + ' of its ' + fmt(t[4]) + ' genes are those of methylarginine-containing proteins (' + pct(t[3], t[4]) + '%, against ' + pct(dm.background[0], dm.background[1]) + '% of all genes with a Disease Ontology term)<br>fold enrichment ' + (t[5] || 0).toFixed(2) + ', q ' + fmtP(t[6]) + '<br>Click: the methylated proteins in the term' };
       };
-      const big = (k) => T[k][4] >= DO_ROW;
       const byValue = (a, b) => (T[b][5] || 0) - (T[a][5] || 0);
-      doChildren(dm.root).slice().sort(byValue).forEach((c) => {
-        rows.push(row(c, 0));
-        doChildren(c).filter(big).sort(byValue).forEach((cc) => {
-          rows.push(row(cc, 1, c));
-          if (UI.doLevel) doChildren(cc).filter(big).sort(byValue).forEach((g) => rows.push(row(g, 2, cc)));
+      const enriched = (k) => k !== dm.root && T[k][6] != null && T[k][6] <= PADJ;
+      if (tree) {
+        const big = (k) => T[k][4] >= DO_ROW;
+        doChildren(dm.root).slice().sort(byValue).forEach((c) => {
+          rows.push(row(c, 0));
+          doChildren(c).filter(big).sort(byValue).forEach((cc) => {
+            rows.push(row(cc, 1, c));
+            if (UI.doLevel) doChildren(cc).filter(big).sort(byValue).forEach((g) => rows.push(row(g, 2, cc)));
+          });
         });
-      });
-      const nSig = T.filter((t) => t[6] != null && t[6] <= PADJ && t[0] !== T[dm.root][0]).length;
+      } else {
+        const listed = T.map((t, k) => k).filter((k) => enriched(k) && T[k][4] >= DO_SHORT);
+        const set = new Set(listed);
+        const below = (k) => { const out = new Set(), todo = doChildren(k).slice(); while (todo.length) { const x = todo.pop(); if (!out.has(x)) { out.add(x); todo.push(...doChildren(x)); } } return out; };
+        listed.filter((k) => ![...below(k)].some((x) => set.has(x))).sort(byValue).forEach((k, i) => rows.push(Object.assign(row(k, 0), i ? {} : { head: 'Enriched (q ≤ ' + PADJ + '): the most specific terms' })));
+        doChildren(dm.root).flatMap((c) => doChildren(c)).filter((k) => !enriched(k)).sort((a, b) => T[b][4] - T[a][4]).filter((k, i, all) => all.indexOf(k) === i).slice(0, DO_COMPARE)
+          .forEach((k, i) => rows.push(Object.assign(row(k, 0), i ? {} : { head: 'For comparison: the largest classes, not enriched' })));
+      }
+      const nSig = T.filter((t, k) => enriched(k)).length;
       return {
-        id: 'ch-do', title: 'Disease', figTitle: 'Disease Ontology', subHtml: 'Methylated proteins vs the reviewed human genes with a Disease Ontology term, by disease class. Association, not causation.' + docLink('ov-disease'), tools: disToggle,
-        subText: 'Human Disease Ontology ' + (dm.release || '') + ' classes' + (UI.doLevel ? ' and the terms under them' : '') + ' (terms of at least ' + DO_ROW + ' genes) vs all reviewed human genes with a Disease Ontology term',
+        id: 'ch-do', title: 'Disease', figTitle: 'Disease Ontology', subHtml: 'Methylated proteins vs the reviewed human genes with a Disease Ontology term' + (tree ? ', by disease class' : '') + '. Association, not causation.' + docLink('ov-disease'), tools: disToggle,
+        subText: 'Human Disease Ontology ' + (dm.release || '') + (tree ? ' classes' + (UI.doLevel ? ' and the terms under them' : '') + ' (terms of at least ' + DO_ROW + ' genes)' : ': the most specific enriched terms of at least ' + DO_SHORT + ' genes, and the largest classes that are not enriched') + ', vs all reviewed human genes with a Disease Ontology term',
         rows, extraCol: true, extraName: 'methylated_of_genes', extraTsv: ['methylated_genes', 'genes'], compact: true, format: fmtL1, heads: ['Disease Ontology', 'methyl-R/all', '', 'log2 FE'], fold: true,
-        axis: 'log2 fold enrichment vs all genes with a Disease Ontology term', tsvCols: [['doid', (r) => r.key]],
+        firstSection: tree ? '' : 'Enriched', axis: 'log2 fold enrichment vs all genes with a Disease Ontology term', tsvCols: [['doid', (r) => r.key]],
         treeNote: 'Shaded, indented rows are terms under the row above: their genes are among its genes, and terms overlap, so they do not add up.',
-        footHtml: '<div class="chart-links"><button class="linkish" type="button" id="do-level">' + (UI.doLevel ? 'Hide the terms under them' : 'Show the terms under them') + '</button>' +
+        footHtml: (tree ? '' : '<p class="note">A term holds the genes of every term under it, so broad terms (cancer, nervous system disease) repeat the narrower ones: the list keeps the narrowest enriched term of each branch, of at least ' + DO_SHORT + ' genes.</p>') +
+          '<div class="chart-links"><button class="linkish" type="button" id="do-view">' + (tree ? 'Show the short list' : 'Show the whole ontology') + '</button>' +
+          (tree ? '<button class="linkish" type="button" id="do-level">' + (UI.doLevel ? 'Hide the terms under them' : 'Show the terms under them') + '</button>' : '') +
           '<button class="linkish" type="button" id="do-terms">' + (UI.doTerms ? 'Hide the term table' : 'Show the ' + fmt(nSig) + ' enriched terms, and every tested term') + '</button></div>' +
           (UI.doTerms ? doTermsHtml() : ''),
       };
@@ -3187,7 +3231,12 @@
       renderDash(el, page);
     });
     const df = $('#dis-fam', el);
-    if (df) df.addEventListener('change', () => { UI.disFam = df.value; renderDash(el, page); });
+    if (df) df.addEventListener('change', () => { UI.disFam = df.value; UI.disTermsAll = false; renderDash(el, page); });
+    $$('[data-disfam]', el).forEach((b) => b.addEventListener('click', () => { UI.disFam = b.dataset.disfam; UI.disTermsAll = false; renderDash(el, page); }));
+    const dta = $('#dis-terms-all', el);
+    if (dta) dta.addEventListener('click', () => { UI.disTermsAll = !UI.disTermsAll; renderDash(el, page); });
+    const dov = $('#do-view', el);
+    if (dov) dov.addEventListener('click', () => { UI.doView = UI.doView === 'tree' ? 'short' : 'tree'; renderDash(el, page); });
     const dol = $('#do-level', el);
     if (dol) dol.addEventListener('click', () => { UI.doLevel = !UI.doLevel; renderDash(el, page); });
     const dot = $('#do-terms', el);

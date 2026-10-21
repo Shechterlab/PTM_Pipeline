@@ -171,7 +171,8 @@ def main() -> None:
     families = list(disease_families['family'])
     family_idx = {f: k for k, f in enumerate(families)}
     # The site's DisGeNET term list: the enriched terms (DOSE enrichDGN), in order.
-    site_terms = [[r['term_id'], r['term_name'], r['family'], int(r['n_methylated']), r['p_adjust'], r['uniprot_accessions']] for r in disease_terms.to_dict('records')]
+    site_terms = [[r['term_id'], r['term_name'], r['family'], int(r['n_methylated']), r['p_adjust'], r['uniprot_accessions'],
+                   int(r['n_genes_term']), r['fold_enrichment']] for r in disease_terms.to_dict('records')]
     term_family = [family_idx.get(x[2], -1) for x in site_terms]
     # Disease Ontology terms tested (clusterProfiler enricher on DOSE's enrichDO gene sets). Every parent
     # of a tested term is tested too (a parent holds its children's genes), so each protein is listed with its most
@@ -484,8 +485,9 @@ def main() -> None:
         'evidence_fields': ['source_table', 'reference', 'pmid', 'peptide', 'enzyme', 'state', 'source_accession', 'source_position',
                             'remap_status', 'study', 'detail'],
         'refs': refs.values, 'sites': evidence,
-        # [UMLS id, name, family, methylated proteins' genes, adj. p] of the enriched DisGeNET terms (DOSE enrichDGN)
-        'disease_terms': [[x[0], x[1], term_family[k], x[3], sig(x[4])] for k, x in enumerate(site_terms)],
+        # [UMLS id, name, family, methylated proteins' genes, adj. p, genes of the term, fold enrichment] of the enriched
+        # DisGeNET terms (DOSE enrichDGN)
+        'disease_terms': [[x[0], x[1], term_family[k], x[3], sig(x[4]), x[6], num(x[7])] for k, x in enumerate(site_terms)],
         'disease_terms_tested': {'terms': len(terms_tested), 'enriched': int((terms_tested['enriched'] == 'true').sum())},
         'protein_disease_terms': protein_disease_terms,
     }

@@ -1505,3 +1505,5 @@ body.slim .hero .brand-mark img { order: 0; }
 @media (pointer: coarse) { .cc-box svg.ccart { min-width: 0; } }
 /* Disease card: Disease Ontology or DisGeNET families */
 .chart-tools { margin: 0 0 0.7rem; }
+.dis-terms-tbl td.num { white-space: nowrap; }
+.dis-terms-tbl tr.dis-term-group th { text-align: left; font-weight: 600; padding-top: 0.7rem; background: var(--surface-2); }
