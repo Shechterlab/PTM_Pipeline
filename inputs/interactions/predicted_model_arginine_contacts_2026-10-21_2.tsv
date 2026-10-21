@@ -1,0 +1,19 @@
+source	model	uniprot_accession	chain	position	partner_accession	min_distance_a	clash	salt_bridge	hydrogen_bond	cation_pi	plddt_arginine	plddt_partner_min	partner_residues
+ProtVar	A7E2Y1_P60660	P60660	B	146	A7E2Y1	4.4	false	false	false	false	87	88	A:R844
+ProtVar	O76011_P12035	P12035	B	375	O76011	3.6	false	false	false	false	78	75	A:Y274
+ProtVar	O76013_P12035	P12035	B	375	O76013	3.5	false	false	false	false	83	88	A:Y269
+ProtVar	O76014_P12035	P12035	B	375	O76014	1.9	true	false	false	false	81	78	A:M276
+ProtVar	O76015_P12035	P12035	B	375	O76015	1.8	true	false	false	false	79	73	A:M276
+ProtVar	P05787_P12035	P12035	B	375	P05787	2.8	false	false	false	false	72	74	A:Y267
+ProtVar	P08727_P12035	P12035	B	375	P08727	2.6	false	false	false	false	74	71	A:M252
+ProtVar	P12035_P19013	P12035	A	375	P19013	2.4	false	false	true	false	78	82	B:Y315:hb
+ProtVar	P12035_Q6A163	P12035	A	375	Q6A163	3.2	false	false	false	false	84	84	B:M268
+ProtVar	P12035_Q92764	P12035	A	375	Q92764	2.6	false	false	false	false	78	72	B:M269
+ProtVar	P12035_Q9C075	P12035	A	375	Q9C075	2.6	false	false	false	false	83	85	B:M244
+ProtVar	Q86Y79_Q9C0D3	Q86Y79	A	2	Q9C0D3	0.9	true	true	true	false	76	79	B:A477:hb; B:L479:hb; B:T484:hb; B:D526:hb+sb
+AlphaFold DB	AF-0000000203999493		B	3		2.8	false	false	true	false	91	84	A:G160:hb
+AlphaFold DB	AF-0000000210364286		B	130		3.5	false	false	false	false	77	91	A:R90
+AlphaFold DB	AF-0000000210457020		B	283		2.7	false	true	true	false	38	83	A:D243:hb+sb
+AlphaFold DB	AF-0000000210995152		B	105		3	false	true	true	false	97	96	A:E236:hb+sb
+AlphaFold DB	AF-0000000211031038		A	267		2.9	false	false	false	false	95	94	B:Q2
+AlphaFold DB	AF-0000000211734649		A	282		3.8	false	false	false	false	87	87	B:D244

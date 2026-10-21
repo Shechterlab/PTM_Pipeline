@@ -1,0 +1,1053 @@
+uniprot_accession	start	end	partner	partner_name	pdb_entries
+O15085	46	49	O15085	Rho guanine nucleotide exchange factor 11	5tyt
+O15085	51	51	O15085	Rho guanine nucleotide exchange factor 11	5tyt
+O15085	56	63	B2RXS4	Plexin-B2	5e6p
+O15085	66	66	B2RXS4	Plexin-B2	5e6p
+O15085	68	70	B2RXS4	Plexin-B2	5e6p
+O15085	80	81	O15085	Rho guanine nucleotide exchange factor 11	5tyt
+O15085	85	88	B2RXS4	Plexin-B2	5e6p
+O15085	91	91	O15085	Rho guanine nucleotide exchange factor 11	5tyt
+O15085	93	94	O15085	Rho guanine nucleotide exchange factor 11	5tyt
+O15085	102	102	B2RXS4	Plexin-B2	5e6p
+O15085	106	106	B2RXS4	Plexin-B2	5e6p
+O15085	109	109	B2RXS4	Plexin-B2	5e6p
+O15085	114	114	O15085	Rho guanine nucleotide exchange factor 11	5tyt
+O15085	116	116	O15085	Rho guanine nucleotide exchange factor 11	5tyt
+O15085	120	120	B2RXS4	Plexin-B2	5e6p
+O15085	715	715	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg
+O15085	717	717	P61586	Transforming protein RhoA	3t06; 5jhg; 5jhh
+O15085	718	718	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	737	738	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	741	741	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	745	745	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhh
+O15085	748	748	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	837	837	P61586	Transforming protein RhoA	1xcg
+O15085	844	844	P61586	Transforming protein RhoA	3t06
+O15085	867	867	P61586	Transforming protein RhoA	1xcg; 5jhg; 5jhh
+O15085	868	869	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	870	870	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg
+O15085	872	873	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	876	876	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	879	879	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg
+O15085	880	880	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	883	884	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	887	888	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	891	891	P61586	Transforming protein RhoA	3t06
+O15085	914	914	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	917	917	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	918	918	P61586	Transforming protein RhoA	1xcg; 5jhg; 5jhh
+O15085	920	920	P61586	Transforming protein RhoA	1xcg; 5jhh
+O15085	921	921	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	924	925	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	928	929	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	932	932	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg
+O15085	978	978	P61586	Transforming protein RhoA	3kz1
+O15085	1032	1032	P61586	Transforming protein RhoA	3kz1
+O15085	1034	1038	P61586	Transforming protein RhoA	3kz1
+O15085	1044	1044	P61586	Transforming protein RhoA	3kz1
+O15085	1046	1046	P61586	Transforming protein RhoA	3kz1
+O15085	1048	1050	P61586	Transforming protein RhoA	3kz1
+O15085	1052	1052	P61586	Transforming protein RhoA	3kz1
+O15085	1054	1056	P61586	Transforming protein RhoA	3kz1
+O15085	1064	1064	P61586	Transforming protein RhoA	5jhg
+O15085	1065	1065	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhg; 5jhh
+O15085	1068	1068	P61586	Transforming protein RhoA	1xcg; 3t06; 5jhh
+O75044	7	7	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	8	8	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	9	9	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	10	10	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i7d
+O75044	13	13	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	16	16	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i7d
+O75044	17	17	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r; 5i7d
+O75044	20	20	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	21	21	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i7d
+O75044	24	24	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	27	27	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	30	31	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	34	34	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	37	37	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r; 5i7d
+O75044	38	38	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	45	45	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	48	49	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	51	51	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	52	52	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	55	55	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	56	56	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r; 5i7d
+O75044	59	60	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	63	63	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	66	66	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	67	67	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	70	70	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	73	74	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	93	93	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	94	95	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	98	99	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	102	103	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	106	106	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	111	112	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	115	115	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	116	116	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j
+O75044	119	119	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	123	123	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	127	127	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	130	130	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	133	133	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	134	134	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	137	137	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	138	138	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i7d
+O75044	141	141	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	142	142	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r; 5i7d
+O75044	144	145	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	148	148	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	149	149	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i7d
+O75044	152	152	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	156	156	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	157	157	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	167	168	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	171	171	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	172	172	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r; 5i7d
+O75044	175	175	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	244	244	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	247	247	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	248	248	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	250	251	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	252	252	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	253	255	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	257	259	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	260	260	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	261	262	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	263	263	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	264	264	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	266	266	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	268	268	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	270	270	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j
+O75044	271	271	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i7d
+O75044	272	272	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	273	273	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	276	278	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	279	279	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	280	280	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j
+O75044	281	286	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	288	290	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	292	294	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	295	295	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	296	299	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	301	301	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	302	302	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	303	303	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	306	306	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	307	307	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j
+O75044	310	310	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	313	313	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	314	314	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	317	318	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	320	322	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	323	323	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	325	326	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	329	329	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	330	330	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i7d
+O75044	333	333	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	335	338	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	339	339	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	340	340	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	341	341	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	342	348	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	349	349	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r; 5i7d
+O75044	350	350	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	351	351	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	353	353	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r; 5i7d
+O75044	354	357	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	361	361	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	362	362	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	365	366	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6r
+O75044	369	369	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	395	395	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	398	398	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	399	399	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i7d
+O75044	402	402	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	403	403	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	404	404	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	406	410	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	412	413	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	415	415	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	440	440	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	444	444	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	447	448	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	450	451	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	454	455	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	458	458	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	459	459	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	461	462	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	465	465	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	466	466	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	469	470	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	473	473	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r; 5i7d
+O75044	474	474	O75044	SLIT-ROBO Rho GTPase-activating protein 2	5i6j; 5i6r
+O75044	739	739	O75044	SLIT-ROBO Rho GTPase-activating protein 2	4rtt
+O75044	742	746	O75044	SLIT-ROBO Rho GTPase-activating protein 2	4rtt
+O75044	761	762	O75044	SLIT-ROBO Rho GTPase-activating protein 2	4rtt
+O75044	764	765	O75044	SLIT-ROBO Rho GTPase-activating protein 2	4rtt
+O75044	767	767	O75044	SLIT-ROBO Rho GTPase-activating protein 2	4rtt
+O75044	776	776	O75044	SLIT-ROBO Rho GTPase-activating protein 2	4rtt
+O75044	778	778	O75044	SLIT-ROBO Rho GTPase-activating protein 2	4rtt
+O75044	797	798	O75044	SLIT-ROBO Rho GTPase-activating protein 2	4rtt
+O75044	800	800	O75044	SLIT-ROBO Rho GTPase-activating protein 2	4rtt
+O75044	803	804	O75044	SLIT-ROBO Rho GTPase-activating protein 2	4rtt
+O75044	806	809	O75044	SLIT-ROBO Rho GTPase-activating protein 2	4rtt
+P04070	25	28	P38435	Vitamin K-dependent gamma-carboxylase	9bvm
+P04070	30	31	P38435	Vitamin K-dependent gamma-carboxylase	9bvm
+P04070	33	37	P38435	Vitamin K-dependent gamma-carboxylase	9bvm
+P04070	39	40	P38435	Vitamin K-dependent gamma-carboxylase	9bvm
+P04070	42	44	P38435	Vitamin K-dependent gamma-carboxylase	9bvm
+P04070	44	47	Q9UNN8	Endothelial protein C receptor	1lqv; 3jtc
+P04070	46	51	P38435	Vitamin K-dependent gamma-carboxylase	9bvm
+P04070	49	50	Q9UNN8	Endothelial protein C receptor	1lqv; 3jtc
+P04070	57	57	P38435	Vitamin K-dependent gamma-carboxylase	9bvm
+P04070	67	67	Q9UNN8	Endothelial protein C receptor	1lqv; 3jtc
+P04070	71	71	Q9UNN8	Endothelial protein C receptor	1lqv; 3jtc
+P04070	140	140	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	141	142	P04070	Vitamin K-dependent protein C	9mov
+P04070	143	143	P04070	Vitamin K-dependent protein C	6m3c
+P04070	144	144	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	147	151	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	153	153	P04070	Vitamin K-dependent protein C	9mov
+P04070	164	164	P04070	Vitamin K-dependent protein C	9mov
+P04070	166	166	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	181	184	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	185	185	P04070	Vitamin K-dependent protein C	6m3c
+P04070	186	186	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	187	188	P04070	Vitamin K-dependent protein C	6m3c
+P04070	219	219	P12259	Coagulation factor V	9mot; 9mov
+P04070	221	222	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	224	224	P04070	Vitamin K-dependent protein C	9mov
+P04070	225	225	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	233	233	P12259	Coagulation factor V	9mot; 9mov
+P04070	235	237	P12259	Coagulation factor V	9mot; 9mov
+P04070	244	244	P04070	Vitamin K-dependent protein C	9mov
+P04070	253	253	P12259	Coagulation factor V	9mot; 9mov
+P04070	257	257	P12259	Coagulation factor V	9mot; 9mov
+P04070	269	269	P12259	Coagulation factor V	9mot; 9mov
+P04070	271	272	P12259	Coagulation factor V	9mot; 9mov
+P04070	294	294	P12259	Coagulation factor V	9mot; 9mov
+P04070	296	296	P12259	Coagulation factor V	9mot; 9mov
+P04070	311	311	P04070	Vitamin K-dependent protein C	6m3c
+P04070	312	313	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	316	322	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	325	325	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	328	329	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	344	344	IG-light kappa chain	h1573 Fab H chain	6m3c
+P04070	344	344	P12259	Coagulation factor V	9mot; 9mov
+P04070	346	351	IG-light kappa chain	h1573 Fab H chain	6m3c
+P04070	348	348	IG-heavy chain	h1573 Fab L chain	6m3c
+P04070	348	351	P12259	Coagulation factor V	9mot; 9mov
+P04070	351	351	IG-heavy chain	h1573 Fab L chain	6m3c
+P04070	353	353	P12259	Coagulation factor V	9mot; 9mov
+P04070	374	376	P12259	Coagulation factor V	9mot; 9mov
+P04070	378	379	P12259	Coagulation factor V	9mot; 9mov
+P04070	394	394	IG-heavy chain	h1573 Fab L chain	6m3c
+P04070	396	400	P12259	Coagulation factor V	9mot; 9mov
+P04070	398	399	IG-light kappa chain	h1573 Fab H chain	6m3c
+P04070	402	402	P12259	Coagulation factor V	9mot; 9mov
+P04070	410	411	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	413	415	P04070	Vitamin K-dependent protein C	6m3c; 9mov
+P04070	420	427	P12259	Coagulation factor V	9mot; 9mov
+P04070	424	426	IG-light kappa chain	h1573 Fab H chain	6m3c
+P04070	428	430	IG-heavy chain	h1573 Fab L chain	6m3c
+P04070	428	428	IG-light kappa chain	h1573 Fab H chain	6m3c
+P04070	430	430	IG-light kappa chain	h1573 Fab H chain	6m3c
+P04070	430	430	P12259	Coagulation factor V	9mot; 9mov
+P04070	433	433	P12259	Coagulation factor V	9mot; 9mov
+P08173	60	60	P54311	Guanine nucleotide-binding protein G(I)/G(S)/G(T) subunit beta-1	9n29
+P08173	60	60	P62873	Guanine nucleotide-binding protein G(I)/G(S)/G(T) subunit beta-1	9n09
+P08173	61	61	P62873	Guanine nucleotide-binding protein G(I)/G(S)/G(T) subunit beta-1	7trq; 7v68; 7v6a; 8e9x; 8fx5; 9n09
+P08173	62	62	P62873	Guanine nucleotide-binding protein G(I)/G(S)/G(T) subunit beta-1	9n09
+P08173	65	65	Other	Other	9n29
+P08173	67	67	B2RSH2	Guanine nucleotide-binding protein G(i) subunit alpha-1	8fx5
+P08173	67	67	Other	Other	9n09; 9n29
+P08173	67	67	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trq; 7trs; 7v68
+P08173	89	89	P81031	Muscarinic toxin 3	9iqs
+P08173	92	92	P81031	Muscarinic toxin 3	9iqs
+P08173	97	97	P81031	Muscarinic toxin 3	9iqs
+P08173	102	103	P00720	Endolysin	5dsg
+P08173	102	103	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	106	107	P00720	Endolysin	5dsg
+P08173	106	107	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	108	109	P81031	Muscarinic toxin 3	9iqs
+P08173	113	113	P81031	Muscarinic toxin 3	9iqs
+P08173	130	130	B2RSH2	Guanine nucleotide-binding protein G(i) subunit alpha-1	8fx5
+P08173	130	130	Other	Other	9n09; 9n29
+P08173	130	130	P09471	Guanine nucleotide-binding protein G(o) subunit alpha	8e9x
+P08173	130	130	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trp; 7trq; 7trs; 7v68; 7v6a
+P08173	131	131	P00720	Endolysin	5dsg
+P08173	131	131	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	133	134	B2RSH2	Guanine nucleotide-binding protein G(i) subunit alpha-1	8fx5
+P08173	133	134	Other	Other	9n09; 9n29
+P08173	133	134	P09471	Guanine nucleotide-binding protein G(o) subunit alpha	8e9x
+P08173	133	133	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trp; 7trq; 7trs; 7v68; 7v69; 7v6a
+P08173	134	134	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trp; 7trq; 7trs; 7v68; 7v6a
+P08173	137	137	B2RSH2	Guanine nucleotide-binding protein G(i) subunit alpha-1	8fx5
+P08173	137	138	Other	Other	9n09; 9n29
+P08173	137	138	P09471	Guanine nucleotide-binding protein G(o) subunit alpha	8e9x
+P08173	137	138	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trp; 7trq; 7trs; 7v68; 7v69; 7v6a
+P08173	139	139	Other	Other	9n29
+P08173	141	142	B2RSH2	Guanine nucleotide-binding protein G(i) subunit alpha-1	8fx5
+P08173	141	141	Other	Other	9n09
+P08173	141	141	P09471	Guanine nucleotide-binding protein G(o) subunit alpha	8e9x
+P08173	141	141	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trq; 7trs; 7v69
+P08173	142	142	Other	Other	9n09; 9n29
+P08173	142	142	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trp; 7v69; 7v6a
+P08173	145	145	Other	Other	9n09; 9n29
+P08173	147	147	P00720	Endolysin	5dsg
+P08173	147	147	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	150	151	P00720	Endolysin	5dsg
+P08173	150	151	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	154	154	P00720	Endolysin	5dsg
+P08173	154	154	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	158	158	P00720	Endolysin	5dsg
+P08173	158	158	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	169	170	P00720	Endolysin	5dsg
+P08173	169	170	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	172	173	P00720	Endolysin	5dsg
+P08173	172	173	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	176	178	P00720	Endolysin	5dsg
+P08173	176	178	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	184	187	P81031	Muscarinic toxin 3	9iqs
+P08173	190	190	P81031	Muscarinic toxin 3	9iqs
+P08173	193	194	P81031	Muscarinic toxin 3	9iqs
+P08173	197	197	P81031	Muscarinic toxin 3	9iqs
+P08173	209	209	P00720	Endolysin	5dsg
+P08173	209	209	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	212	213	P00720	Endolysin	5dsg
+P08173	212	213	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	216	217	P00720	Endolysin	5dsg
+P08173	216	217	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	218	218	B2RSH2	Guanine nucleotide-binding protein G(i) subunit alpha-1	8fx5
+P08173	218	218	P09471	Guanine nucleotide-binding protein G(o) subunit alpha	8e9x
+P08173	218	218	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trp; 7trq; 7trs; 7v68; 7v6a
+P08173	219	220	P00720	Endolysin	5dsg
+P08173	219	220	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	222	222	P09471	Guanine nucleotide-binding protein G(o) subunit alpha	8e9x
+P08173	222	222	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trp; 7v68
+P08173	224	225	B2RSH2	Guanine nucleotide-binding protein G(i) subunit alpha-1	8fx5
+P08173	224	224	Other	Other	9n09; 9n29
+P08173	224	224	P09471	Guanine nucleotide-binding protein G(o) subunit alpha	8e9x
+P08173	224	224	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trp; 7trq; 7trs; 7v69
+P08173	226	226	P09471	Guanine nucleotide-binding protein G(o) subunit alpha	8e9x
+P08173	226	226	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk
+P08173	391	391	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7v6a
+P08173	393	394	P09471	Guanine nucleotide-binding protein G(o) subunit alpha	8e9x
+P08173	394	394	B2RSH2	Guanine nucleotide-binding protein G(i) subunit alpha-1	8fx5
+P08173	394	394	Other	Other	9n09; 9n29
+P08173	394	394	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trp; 7trq; 7trs; 7v68; 7v69; 7v6a
+P08173	397	398	B2RSH2	Guanine nucleotide-binding protein G(i) subunit alpha-1	8fx5
+P08173	397	398	P09471	Guanine nucleotide-binding protein G(o) subunit alpha	8e9x
+P08173	397	398	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trp; 7trq; 7trs; 7v68; 7v69; 7v6a
+P08173	398	398	Other	Other	9n09; 9n29
+P08173	401	401	B2RSH2	Guanine nucleotide-binding protein G(i) subunit alpha-1	8fx5
+P08173	401	401	Other	Other	9n09
+P08173	401	402	P09471	Guanine nucleotide-binding protein G(o) subunit alpha	8e9x
+P08173	401	401	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trq; 7trs; 7v68; 7v6a
+P08173	402	402	Other	Other	9n29
+P08173	402	402	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trp; 7trq; 7v68; 7v6a
+P08173	416	416	P81031	Muscarinic toxin 3	9iqs
+P08173	421	421	P00720	Endolysin	5dsg
+P08173	421	421	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	423	423	P81031	Muscarinic toxin 3	9iqs
+P08173	425	426	P00720	Endolysin	5dsg
+P08173	425	426	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	427	428	P81031	Muscarinic toxin 3	9iqs
+P08173	429	429	P00720	Endolysin	5dsg
+P08173	429	429	P08173	Muscarinic acetylcholine receptor M4	5dsg
+P08173	432	432	P81031	Muscarinic toxin 3	9iqs
+P08173	435	436	P81031	Muscarinic toxin 3	9iqs
+P08173	439	439	P81031	Muscarinic toxin 3	9iqs
+P08173	456	456	B2RSH2	Guanine nucleotide-binding protein G(i) subunit alpha-1	8fx5
+P08173	456	457	Other	Other	9n09; 9n29
+P08173	456	457	P09471	Guanine nucleotide-binding protein G(o) subunit alpha	8e9x
+P08173	456	456	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7trk; 7trp; 7trq; 7trs; 7v68; 7v69; 7v6a
+P08173	457	457	P63096	Guanine nucleotide-binding protein G(i) subunit alpha-1	7v68; 7v69; 7v6a
+P10606	32	32	P00414	Cytochrome c oxidase subunit 3	5z62
+P10606	34	38	P00414	Cytochrome c oxidase subunit 3	5z62; 9i6f; 9i7u
+P10606	38	38	P14406	Cytochrome c oxidase subunit 7A2, mitochondrial	9i6f
+P10606	39	39	P00414	Cytochrome c oxidase subunit 3	5z62; 9i6f
+P10606	40	40	P00414	Cytochrome c oxidase subunit 3	5z62; 9i6f; 9i7u
+P10606	43	43	P00414	Cytochrome c oxidase subunit 3	5z62; 9i6f; 9i7u
+P10606	43	43	P14406	Cytochrome c oxidase subunit 7A2, mitochondrial	5z62; 9i6f; 9i7u
+P10606	45	48	P00414	Cytochrome c oxidase subunit 3	5z62; 9i6f; 9i7u
+P10606	45	45	P14406	Cytochrome c oxidase subunit 7A2, mitochondrial	5z62; 9i6f; 9i7u
+P10606	46	46	P14406	Cytochrome c oxidase subunit 7A2, mitochondrial	9i7u
+P10606	51	51	P00414	Cytochrome c oxidase subunit 3	5z62; 9i6f; 9i7u
+P10606	62	63	P00414	Cytochrome c oxidase subunit 3	5z62; 9i6f; 9i7u
+P10606	63	63	P00395	Cytochrome c oxidase subunit 1	5z62; 9i6f; 9i7u
+P10606	64	64	P00395	Cytochrome c oxidase subunit 1	5z62; 9i7u
+P10606	64	64	P00414	Cytochrome c oxidase subunit 3	5z62; 9i6f
+P10606	66	68	P00395	Cytochrome c oxidase subunit 1	5z62; 9i6f; 9i7u
+P10606	69	70	P00395	Cytochrome c oxidase subunit 1	5z62; 9i6f
+P10606	74	74	P20674	Cytochrome c oxidase subunit 5A, mitochondrial	9i7u
+P10606	78	78	P00395	Cytochrome c oxidase subunit 1	9i6f; 9i7u
+P10606	79	80	P00395	Cytochrome c oxidase subunit 1	5z62; 9i6f; 9i7u
+P10606	81	81	P00395	Cytochrome c oxidase subunit 1	9i7u
+P10606	82	82	P00395	Cytochrome c oxidase subunit 1	9i6f; 9i7u
+P10606	83	84	P00395	Cytochrome c oxidase subunit 1	5z62; 9i6f; 9i7u
+P10606	83	83	P00414	Cytochrome c oxidase subunit 3	9i6f
+P10606	86	86	P00395	Cytochrome c oxidase subunit 1	5z62; 9i6f
+P10606	86	86	P13073	Cytochrome c oxidase subunit 4 isoform 1, mitochondrial	9i6f
+P10606	87	90	P00395	Cytochrome c oxidase subunit 1	5z62; 9i6f; 9i7u
+P10606	92	92	P00395	Cytochrome c oxidase subunit 1	5z62; 9i6f; 9i7u
+P10606	94	94	P20674	Cytochrome c oxidase subunit 5A, mitochondrial	5z62
+P10606	97	97	P00395	Cytochrome c oxidase subunit 1	5z62; 9i7u
+P10606	98	98	P00395	Cytochrome c oxidase subunit 1	5z62; 9i6f; 9i7u
+P10606	99	100	P00395	Cytochrome c oxidase subunit 1	5z62; 9i7u
+P10606	101	102	P00395	Cytochrome c oxidase subunit 1	5z62; 9i6f; 9i7u
+P10606	104	104	P00395	Cytochrome c oxidase subunit 1	5z62; 9i6f; 9i7u
+P10606	104	104	P13073	Cytochrome c oxidase subunit 4 isoform 1, mitochondrial	5z62; 9i6f; 9i7u
+P10606	106	106	P13073	Cytochrome c oxidase subunit 4 isoform 1, mitochondrial	5z62; 9i6f; 9i7u
+P10606	112	112	P20674	Cytochrome c oxidase subunit 5A, mitochondrial	5z62; 9i6f; 9i7u
+P10606	113	113	P20674	Cytochrome c oxidase subunit 5A, mitochondrial	5z62; 9i7u
+P10606	114	114	P20674	Cytochrome c oxidase subunit 5A, mitochondrial	5z62; 9i6f; 9i7u
+P10606	115	115	P20674	Cytochrome c oxidase subunit 5A, mitochondrial	5z62; 9i7u
+P10606	117	117	P20674	Cytochrome c oxidase subunit 5A, mitochondrial	5z62; 9i6f; 9i7u
+P10606	120	120	P00395	Cytochrome c oxidase subunit 1	9i6f; 9i7u
+P10606	129	129	P00414	Cytochrome c oxidase subunit 3	9i7u
+P11532	11	13	P11532	Dystrophin	1dxx
+P11532	16	17	P11532	Dystrophin	1dxx
+P11532	19	21	P11532	Dystrophin	1dxx
+P11532	23	24	P11532	Dystrophin	1dxx
+P11532	27	27	P11532	Dystrophin	1dxx
+P11532	112	112	P11532	Dystrophin	1dxx
+P11532	115	115	P11532	Dystrophin	1dxx
+P11532	119	124	P11532	Dystrophin	1dxx
+P11532	126	128	P11532	Dystrophin	1dxx
+P11532	131	131	P11532	Dystrophin	1dxx
+P11532	134	134	P11532	Dystrophin	1dxx
+P11532	136	136	P11532	Dystrophin	1dxx
+P11532	139	140	P11532	Dystrophin	1dxx
+P11532	210	214	P11532	Dystrophin	1dxx
+P11532	217	217	P11532	Dystrophin	1dxx
+P11532	220	220	P11532	Dystrophin	1dxx
+P11532	222	227	P11532	Dystrophin	1dxx
+P11532	230	230	P11532	Dystrophin	1dxx
+P11532	233	234	P11532	Dystrophin	1dxx
+P11532	236	237	P11532	Dystrophin	1dxx
+P11532	241	246	P11532	Dystrophin	1dxx
+P11532	3066	3066	Q14118	Dystroglycan 1	1eg4
+P11532	3068	3068	Q14118	Dystroglycan 1	1eg4
+P11532	3072	3072	Q14118	Dystroglycan 1	1eg4
+P11532	3074	3074	Q14118	Dystroglycan 1	1eg4
+P11532	3076	3076	Q14118	Dystroglycan 1	1eg4
+P11532	3079	3083	Q14118	Dystroglycan 1	1eg4
+P11532	3188	3190	Q14118	Dystroglycan 1	1eg4
+P38398	3	3	Q99728	BRCA1-associated RING domain protein 1	1jm7
+P38398	6	6	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv
+P38398	7	7	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb
+P38398	8	8	Q99728	BRCA1-associated RING domain protein 1	1jm7
+P38398	10	10	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv
+P38398	11	11	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 8grq
+P38398	14	14	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb; 8grq
+P38398	15	15	Q99728	BRCA1-associated RING domain protein 1	7jzv
+P38398	16	16	P61077	Ubiquitin-conjugating enzyme E2 D3	7lyb; 8grq
+P38398	17	17	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb
+P38398	18	18	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb; 8grq
+P38398	19	20	P61077	Ubiquitin-conjugating enzyme E2 D3	7lyb
+P38398	21	21	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb; 8grq
+P38398	22	22	Q99728	BRCA1-associated RING domain protein 1	1jm7
+P38398	25	26	P61077	Ubiquitin-conjugating enzyme E2 D3	7lyb; 8grq
+P38398	28	28	P61077	Ubiquitin-conjugating enzyme E2 D3	7lyb
+P38398	38	38	O60814	Histone H2B type 1-K	7jzv
+P38398	38	38	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb
+P38398	40	40	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb; 8grq
+P38398	41	41	Q99728	BRCA1-associated RING domain protein 1	7jzv
+P38398	42	42	Q99728	BRCA1-associated RING domain protein 1	7lyb
+P38398	47	47	P61077	Ubiquitin-conjugating enzyme E2 D3	8grq
+P38398	50	51	P61077	Ubiquitin-conjugating enzyme E2 D3	7lyb; 8grq
+P38398	54	54	P61077	Ubiquitin-conjugating enzyme E2 D3	8grq
+P38398	55	55	Q6FI13	Histone H2A type 2-A	7jzv
+P38398	56	56	P04908	Histone H2A type 1-B/E	7lyb
+P38398	62	62	P61077	Ubiquitin-conjugating enzyme E2 D3	7lyb; 8grq
+P38398	63	63	P61077	Ubiquitin-conjugating enzyme E2 D3	7lyb
+P38398	69	69	O60814	Histone H2B type 1-K	8grq
+P38398	70	71	Q6FI13	Histone H2A type 2-A	7jzv
+P38398	71	72	O60814	Histone H2B type 1-K	7jzv; 8grq
+P38398	71	71	P04908	Histone H2A type 1-B/E	7lyb; 8grq
+P38398	71	71	P06899	Histone H2B type 1-J	7lyb
+P38398	73	73	O60814	Histone H2B type 1-K	7jzv
+P38398	74	74	Q99728	BRCA1-associated RING domain protein 1	7jzv; 7lyb; 8grq
+P38398	76	76	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb
+P38398	77	77	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7lyb; 8grq
+P38398	78	78	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb; 8grq
+P38398	79	79	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb
+P38398	81	82	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb; 8grq
+P38398	85	85	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb; 8grq
+P38398	88	88	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb
+P38398	89	89	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb; 8grq
+P38398	92	92	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv
+P38398	93	93	Q99728	BRCA1-associated RING domain protein 1	1jm7; 8grq
+P38398	95	95	Q99728	BRCA1-associated RING domain protein 1	7jzv
+P38398	96	96	Q99728	BRCA1-associated RING domain protein 1	1jm7; 7jzv; 7lyb; 8grq
+P38398	97	97	Q99728	BRCA1-associated RING domain protein 1	1jm7
+P38398	1654	1656	Other	Other	1t2v; 3k0h; 3k0k; 3k15; 3k16; 3pxe; 4ofb
+P38398	1654	1656	P24928	DNA-directed RNA polymerase II subunit RPB1	9qpx
+P38398	1654	1656	Q13085	Acetyl-CoA carboxylase 1	3coj; 6g2i
+P38398	1654	1658	Q5UIP0	Telomere-associated protein RIF1	8rs8
+P38398	1654	1656	Q8WXE1	ATR-interacting protein	4igk
+P38398	1654	1658	Q99708	DNA endonuclease RBBP8	1y98
+P38398	1654	1657	Q9BX63	Fanconi anemia group J protein	1t15; 1t29
+P38398	1655	1656	Q6PJG6	Integrator complex assembly factor BRAT1	4ifi
+P38398	1655	1656	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4jlu; 4u4a; 4y18; 4y2g
+P38398	1657	1657	Other	Other	3pxe; 4ofb
+P38398	1657	1657	Q13085	Acetyl-CoA carboxylase 1	6g2i
+P38398	1657	1658	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4y18
+P38398	1658	1658	Other	Other	4ofb
+P38398	1658	1658	Q13085	Acetyl-CoA carboxylase 1	3coj
+P38398	1658	1658	Q9BX63	Fanconi anemia group J protein	1t29
+P38398	1659	1659	Other	Other	1t2v; 4ofb
+P38398	1659	1660	P38398	Breast cancer type 1 susceptibility protein	6g2i
+P38398	1659	1660	Q13085	Acetyl-CoA carboxylase 1	6g2i
+P38398	1659	1659	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4jlu; 4y18
+P38398	1661	1661	Q9BX63	Fanconi anemia group J protein	1t29
+P38398	1662	1662	Other	Other	4ofb
+P38398	1662	1663	P38398	Breast cancer type 1 susceptibility protein	6g2i
+P38398	1664	1664	Q13085	Acetyl-CoA carboxylase 1	6g2i
+P38398	1666	1667	P38398	Breast cancer type 1 susceptibility protein	6g2i
+P38398	1666	1667	Q13085	Acetyl-CoA carboxylase 1	6g2i
+P38398	1669	1670	P38398	Breast cancer type 1 susceptibility protein	6g2i
+P38398	1670	1671	Q13085	Acetyl-CoA carboxylase 1	6g2i
+P38398	1673	1679	P38398	Breast cancer type 1 susceptibility protein	6g2i
+P38398	1678	1678	Other	Other	4ofb
+P38398	1683	1683	P38398	Breast cancer type 1 susceptibility protein	6g2i
+P38398	1690	1691	Q9BX63	Fanconi anemia group J protein	1t29
+P38398	1691	1691	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4jlu
+P38398	1696	1696	Q9BX63	Fanconi anemia group J protein	1t29
+P38398	1698	1698	Other	Other	1t2v; 3k0h; 3k0k; 3k16; 3pxe; 4ofb
+P38398	1698	1699	P24928	DNA-directed RNA polymerase II subunit RPB1	9qpx
+P38398	1698	1698	Q13085	Acetyl-CoA carboxylase 1	3coj
+P38398	1698	1702	Q5UIP0	Telomere-associated protein RIF1	8rs8
+P38398	1698	1702	Q6PJG6	Integrator complex assembly factor BRAT1	4ifi
+P38398	1698	1700	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4jlu; 4u4a; 4y18; 4y2g
+P38398	1698	1702	Q8WXE1	ATR-interacting protein	4igk
+P38398	1698	1702	Q99708	DNA endonuclease RBBP8	1y98
+P38398	1698	1702	Q9BX63	Fanconi anemia group J protein	1t15; 1t29
+P38398	1699	1700	Other	Other	1t2v; 3k0h; 3k0k; 3k15; 3k16; 3pxe; 4ofb
+P38398	1699	1702	Q13085	Acetyl-CoA carboxylase 1	3coj; 6g2i
+P38398	1701	1701	Other	Other	1t2v; 3k0h; 3k0k; 3k15
+P38398	1701	1702	P24928	DNA-directed RNA polymerase II subunit RPB1	9qpx
+P38398	1701	1701	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4jlu
+P38398	1702	1702	Other	Other	1t2v; 3k0h; 3k0k; 3k15; 3k16; 3pxe; 4ofb
+P38398	1702	1702	P38398	Breast cancer type 1 susceptibility protein	6g2i
+P38398	1702	1702	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4jlu; 4u4a; 4y18; 4y2g
+P38398	1704	1704	Other	Other	1t2v; 3k0k; 3k16; 3pxe; 4ofb
+P38398	1704	1704	P24928	DNA-directed RNA polymerase II subunit RPB1	9qpx
+P38398	1704	1704	Q13085	Acetyl-CoA carboxylase 1	3coj; 6g2i
+P38398	1704	1704	Q5UIP0	Telomere-associated protein RIF1	8rs8
+P38398	1704	1704	Q6PJG6	Integrator complex assembly factor BRAT1	4ifi
+P38398	1704	1704	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4jlu; 4u4a; 4y2g
+P38398	1704	1704	Q8WXE1	ATR-interacting protein	4igk
+P38398	1704	1704	Q99708	DNA endonuclease RBBP8	1y98
+P38398	1704	1704	Q9BX63	Fanconi anemia group J protein	1t15
+P38398	1723	1727	Q13085	Acetyl-CoA carboxylase 1	6g2i
+P38398	1740	1740	Q13085	Acetyl-CoA carboxylase 1	3coj; 6g2i
+P38398	1740	1741	Q9BX63	Fanconi anemia group J protein	1t15; 1t29
+P38398	1741	1741	Other	Other	1t2v; 3k0h; 3k0k; 3k15; 3k16; 3pxe; 4ofb
+P38398	1741	1741	P24928	DNA-directed RNA polymerase II subunit RPB1	9qpx
+P38398	1741	1741	Q13085	Acetyl-CoA carboxylase 1	6g2i
+P38398	1741	1741	Q5UIP0	Telomere-associated protein RIF1	8rs8
+P38398	1741	1741	Q6PJG6	Integrator complex assembly factor BRAT1	4ifi
+P38398	1741	1741	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4y18; 4y2g
+P38398	1741	1741	Q8WXE1	ATR-interacting protein	4igk
+P38398	1741	1741	Q99708	DNA endonuclease RBBP8	1y98
+P38398	1773	1773	Other	Other	3k0h; 3k0k; 3k15
+P38398	1773	1773	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4y18
+P38398	1774	1775	Other	Other	1t2v; 3k0h; 3k0k; 3k15; 3k16; 3pxe; 4ofb
+P38398	1774	1775	P24928	DNA-directed RNA polymerase II subunit RPB1	9qpx
+P38398	1774	1775	Q13085	Acetyl-CoA carboxylase 1	3coj; 6g2i
+P38398	1774	1775	Q5UIP0	Telomere-associated protein RIF1	8rs8
+P38398	1774	1775	Q6PJG6	Integrator complex assembly factor BRAT1	4ifi
+P38398	1774	1774	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4jlu; 4u4a; 4y18; 4y2g
+P38398	1774	1775	Q8WXE1	ATR-interacting protein	4igk
+P38398	1774	1775	Q99708	DNA endonuclease RBBP8	1y98
+P38398	1774	1775	Q9BX63	Fanconi anemia group J protein	1t15; 1t29
+P38398	1775	1775	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4u4a; 4y18; 4y2g
+P38398	1776	1776	P38398	Breast cancer type 1 susceptibility protein	6g2i
+P38398	1811	1811	Q9BX63	Fanconi anemia group J protein	1t29
+P38398	1813	1813	Q9BX63	Fanconi anemia group J protein	1t29
+P38398	1834	1834	Q13085	Acetyl-CoA carboxylase 1	6g2i
+P38398	1835	1835	Other	Other	3k0h; 3k0k; 3k16; 3pxe; 4ofb
+P38398	1835	1836	Q13085	Acetyl-CoA carboxylase 1	3coj; 6g2i
+P38398	1835	1836	Q5UIP0	Telomere-associated protein RIF1	8rs8
+P38398	1835	1835	Q6PJG6	Integrator complex assembly factor BRAT1	4ifi
+P38398	1835	1835	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4u4a; 4y18; 4y2g
+P38398	1835	1835	Q8WXE1	ATR-interacting protein	4igk
+P38398	1835	1836	Q99708	DNA endonuclease RBBP8	1y98
+P38398	1835	1836	Q9BX63	Fanconi anemia group J protein	1t15; 1t29
+P38398	1836	1836	Other	Other	4ofb
+P38398	1836	1836	P24928	DNA-directed RNA polymerase II subunit RPB1	9qpx
+P38398	1839	1839	Other	Other	1t2v
+P38398	1839	1839	Q13085	Acetyl-CoA carboxylase 1	6g2i
+P38398	1839	1839	Q6UWZ7	BRCA1-A complex subunit Abraxas 1	4y2g
+P38398	1840	1840	Other	Other	4ofb
+P38398	1840	1840	Q13085	Acetyl-CoA carboxylase 1	3coj; 6g2i
+P38398	1840	1840	Q9BX63	Fanconi anemia group J protein	1t15
+P38398	1852	1852	Q13085	Acetyl-CoA carboxylase 1	3coj
+P38398	1853	1853	Q13085	Acetyl-CoA carboxylase 1	3coj; 6g2i
+Q13586	251	251	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	254	255	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	257	258	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	261	262	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	264	265	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	268	268	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	272	272	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	276	276	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	279	280	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	282	283	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	286	287	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	290	290	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	294	294	Q13586	Stromal interaction molecule 1	4o9b
+Q13586	313	313	Q13586	Stromal interaction molecule 1	2maj
+Q13586	314	314	Q13586	Stromal interaction molecule 1	2maj; 2mak
+Q13586	316	316	Q13586	Stromal interaction molecule 1	2mak
+Q13586	317	317	Q13586	Stromal interaction molecule 1	2maj; 2mak
+Q13586	318	318	Q13586	Stromal interaction molecule 1	2mak
+Q13586	320	321	Q13586	Stromal interaction molecule 1	2maj; 2mak
+Q13586	322	322	Q13586	Stromal interaction molecule 1	2mak
+Q13586	324	325	Q13586	Stromal interaction molecule 1	2maj; 2mak
+Q13586	327	329	Q13586	Stromal interaction molecule 1	2maj; 2mak
+Q13586	330	330	Q13586	Stromal interaction molecule 1	2maj
+Q13586	331	331	Q13586	Stromal interaction molecule 1	2mak
+Q13586	332	332	Q13586	Stromal interaction molecule 1	2maj; 2mak
+Q13586	333	333	Q13586	Stromal interaction molecule 1	2mak
+Q13586	334	336	Q13586	Stromal interaction molecule 1	2maj; 2mak
+Q13586	336	337	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	338	338	Q13586	Stromal interaction molecule 1	2maj; 2mak
+Q13586	339	339	Q13586	Stromal interaction molecule 1	2maj
+Q13586	339	340	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	341	341	Q13586	Stromal interaction molecule 1	2maj
+Q13586	342	343	Q13586	Stromal interaction molecule 1	2maj; 2mak
+Q13586	342	344	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	344	344	Q13586	Stromal interaction molecule 1	2maj
+Q13586	345	345	Q13586	Stromal interaction molecule 1	2mak
+Q13586	346	347	Q13586	Stromal interaction molecule 1	2maj; 3teq
+Q13586	347	347	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	348	348	Q13586	Stromal interaction molecule 1	2maj
+Q13586	350	351	Q13586	Stromal interaction molecule 1	2maj; 3teq
+Q13586	351	351	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	352	352	Q13586	Stromal interaction molecule 1	2maj
+Q13586	353	353	Q13586	Stromal interaction molecule 1	2mak; 3teq
+Q13586	354	354	Q13586	Stromal interaction molecule 1	2maj; 2mak; 3teq
+Q13586	355	355	Q13586	Stromal interaction molecule 1	2maj
+Q13586	355	355	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	357	358	Q13586	Stromal interaction molecule 1	2maj; 2mak; 3teq
+Q13586	358	358	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	359	359	Q13586	Stromal interaction molecule 1	2maj
+Q13586	360	360	Q13586	Stromal interaction molecule 1	2mak
+Q13586	361	361	Q13586	Stromal interaction molecule 1	2maj; 2mak; 3teq
+Q13586	362	362	Q13586	Stromal interaction molecule 1	2maj; 3teq
+Q13586	362	362	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	364	364	Q13586	Stromal interaction molecule 1	2mak
+Q13586	365	365	Q13586	Stromal interaction molecule 1	2maj; 2mak; 3teq
+Q13586	366	366	Q13586	Stromal interaction molecule 1	2maj
+Q13586	366	366	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	368	368	Q13586	Stromal interaction molecule 1	2maj; 2mak
+Q13586	369	370	Q13586	Stromal interaction molecule 1	2maj
+Q13586	372	372	Q13586	Stromal interaction molecule 1	2maj; 2mak
+Q13586	372	373	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	373	373	Q13586	Stromal interaction molecule 1	2maj
+Q13586	375	377	Q13586	Stromal interaction molecule 1	2maj
+Q13586	376	377	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	379	380	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	380	381	Q13586	Stromal interaction molecule 1	2maj
+Q13586	383	384	Q13586	Stromal interaction molecule 1	2maj
+Q13586	383	384	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	386	386	Q96D31	Calcium release-activated calcium channel protein 1	2mak
+Q13586	425	425	Q13586	Stromal interaction molecule 1	3teq
+Q13586	429	430	Q13586	Stromal interaction molecule 1	3teq
+Q13586	432	433	Q13586	Stromal interaction molecule 1	3teq
+Q13586	436	437	Q13586	Stromal interaction molecule 1	3teq
+Q53H82	22	23	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	25	27	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	41	41	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	49	49	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	78	81	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	90	91	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	97	98	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	100	100	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	110	111	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	116	118	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	120	120	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	122	122	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	145	145	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	164	164	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	173	173	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	252	253	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	255	255	Q53H82	Endoribonuclease LACTB2	4ad9
+Q53H82	259	259	Q53H82	Endoribonuclease LACTB2	4ad9
+Q6MZZ7	517	517	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	519	519	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	541	542	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	544	545	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	554	556	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	611	611	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	614	615	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	617	622	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	630	630	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	634	634	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	637	638	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	641	642	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	644	646	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	652	659	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	662	664	Q6MZZ7	Calpain-13	2i7a
+Q6MZZ7	666	669	Q6MZZ7	Calpain-13	2i7a
+Q8N884	173	176	DNA	DNA	6ct9; 6cta; 6edb; 6edc; 7ftn
+Q8N884	180	180	DNA	DNA	6ct9; 6cta; 6edb; 6edc; 7ftn
+Q8N884	183	183	DNA	DNA	6ct9; 6cta; 6edb; 6edc; 7ftn
+Q8N884	187	187	DNA	DNA	6ct9; 6cta; 7ftn
+Q8N884	198	198	DNA	DNA	6ct9; 6cta; 6edc; 7ftn
+Q8N884	204	205	DNA	DNA	6edc
+Q8N884	210	210	DNA	DNA	6ct9; 6cta; 6edb; 6edc; 7ftn
+Q8N884	214	215	DNA	DNA	6ct9; 6cta; 6edb; 6edc; 7ftn
+Q8N884	217	217	DNA	DNA	6ct9; 6cta; 6edc; 7ftn
+Q8N884	236	236	P04908	Histone H2A type 1-B/E	7c0m; 7ccq; 7ccr
+Q8N884	236	236	Q16777	Histone H2A type 2-C	6y5e
+Q8N884	236	236	Q6FI13	Histone H2A type 2-A	6y5d
+Q8N884	236	236	Q99878	Histone H2A type 1-J	8ol1
+Q8N884	254	255	P04908	Histone H2A type 1-B/E	7c0m; 7ccq; 7ccr
+Q8N884	254	254	P06899	Histone H2B type 1-J	7ccq; 7ccr
+Q8N884	254	255	Q16777	Histone H2A type 2-C	6y5e
+Q8N884	254	255	Q6FI13	Histone H2A type 2-A	6y5d
+Q8N884	254	255	Q99878	Histone H2A type 1-J	8ol1
+Q8N884	255	255	O60814	Histone H2B type 1-K	6y5d; 6y5e
+Q8N884	255	255	P06899	Histone H2B type 1-J	7c0m; 7ccq; 7ccr
+Q8N884	255	255	Q99877	Histone H2B type 1-N	8ol1
+Q8N884	256	257	P06899	Histone H2B type 1-J	7ccq; 7ccr
+Q8N884	257	257	P04908	Histone H2A type 1-B/E	7c0m; 7ccq; 7ccr
+Q8N884	257	257	Q6FI13	Histone H2A type 2-A	6y5d
+Q8N884	257	257	Q99878	Histone H2A type 1-J	8ol1
+Q8N884	258	258	P04908	Histone H2A type 1-B/E	7ccr
+Q8N884	259	259	P06899	Histone H2B type 1-J	7ccq; 7ccr
+Q8N884	282	282	DNA	DNA	7ccr
+Q8N884	285	285	DNA	DNA	7c0m
+Q8N884	300	300	DNA	DNA	6y5d; 7c0m; 7ccr
+Q8N884	301	301	DNA	DNA	7ccr
+Q8N884	302	302	DNA	DNA	6y5d; 7c0m; 7ccr
+Q8N884	327	329	P04908	Histone H2A type 1-B/E	7c0m; 7ccq; 7ccr
+Q8N884	327	328	Q16777	Histone H2A type 2-C	6y5e
+Q8N884	327	329	Q6FI13	Histone H2A type 2-A	6y5d
+Q8N884	327	328	Q99878	Histone H2A type 1-J	8ol1
+Q8N884	329	329	O60814	Histone H2B type 1-K	6y5d; 6y5e
+Q8N884	329	329	P06899	Histone H2B type 1-J	7c0m; 7ccq; 7ccr
+Q8N884	329	329	Q99877	Histone H2B type 1-N	8ol1
+Q8N884	335	335	P06899	Histone H2B type 1-J	7ccq; 7ccr
+Q8N884	341	341	Q8N884	Cyclic GMP-AMP synthase	5v8o; 6lrc; 6lre; 6lri; 6lrj; 6lrk; 6lrl; 8ime; 8imf; 8img; 9j2w; 9j2x; 9j2y
+Q8N884	344	347	Q8N884	Cyclic GMP-AMP synthase	5v8o; 6lrc; 6lre; 6lri; 6lrj; 6lrk; 6lrl; 8ime; 8imf; 8img; 9j2w; 9j2x; 9j2y
+Q8N884	347	347	DNA	DNA	6y5d; 6y5e; 7ccq
+Q8N884	349	350	P06899	Histone H2B type 1-J	7ccq; 7ccr
+Q8N884	350	350	DNA	DNA	6y5d; 6y5e; 7ccq; 7ccr; 8ol1
+Q8N884	350	351	P04908	Histone H2A type 1-B/E	7ccq
+Q8N884	350	350	Q6FI13	Histone H2A type 2-A	6y5d
+Q8N884	350	350	Q99878	Histone H2A type 1-J	8ol1
+Q8N884	351	351	Q8N884	Cyclic GMP-AMP synthase	6lre; 6lrj
+Q8N884	353	353	O60814	Histone H2B type 1-K	6y5d; 6y5e
+Q8N884	353	354	P04908	Histone H2A type 1-B/E	7c0m; 7ccq; 7ccr
+Q8N884	353	353	P06899	Histone H2B type 1-J	7ccq; 7ccr
+Q8N884	353	355	Q16777	Histone H2A type 2-C	6y5e
+Q8N884	353	356	Q6FI13	Histone H2A type 2-A	6y5d
+Q8N884	353	355	Q99878	Histone H2A type 1-J	8ol1
+Q8N884	355	355	P04908	Histone H2A type 1-B/E	7c0m
+Q8N884	367	367	P06899	Histone H2B type 1-J	7c0m
+Q8N884	368	368	O60814	Histone H2B type 1-K	6y5d
+Q8N884	368	368	P06899	Histone H2B type 1-J	7c0m; 7ccr
+Q8N884	384	384	DNA	DNA	6ct9; 6cta; 6edc; 7ftn
+Q8N884	385	385	Q8N884	Cyclic GMP-AMP synthase	6lre
+Q8N884	388	389	Q8N884	Cyclic GMP-AMP synthase	5v8o; 6lrc; 6lre; 6lri; 6lrj; 6lrk; 6lrl; 8ime; 8imf; 8img; 9j2w; 9j2x; 9j2y
+Q8N884	391	395	Q8N884	Cyclic GMP-AMP synthase	5v8o; 6lrc; 6lre; 6lri; 6lrj; 6lrk; 6lrl; 8ime; 8imf; 8img; 9j2w; 9j2x; 9j2y
+Q8N884	394	394	DNA	DNA	8ol1
+Q8N884	395	395	DNA	DNA	6y5d
+Q8N884	398	398	DNA	DNA	6ct9; 6cta; 6edb; 6edc; 7ftn
+Q8N884	398	398	Q8N884	Cyclic GMP-AMP synthase	5v8o; 6lrc; 6lre; 6lri; 6lrj; 6lrk; 6lrl; 8ime; 8imf; 8img; 9j2w; 9j2x; 9j2y
+Q8N884	400	400	DNA	DNA	6edb; 6edc
+Q8N884	402	402	Q8N884	Cyclic GMP-AMP synthase	6lre; 6lrl
+Q8N884	407	407	DNA	DNA	6ct9; 6cta; 6edb; 6edc; 7ftn
+Q8N884	411	411	DNA	DNA	6cta
+Q8N884	427	427	DNA	DNA	7c0m; 7ccr
+Q8N884	428	428	DNA	DNA	7ccr
+Q8N884	428	428	P06899	Histone H2B type 1-J	7c0m
+Q8N884	499	499	DNA	DNA	6y5d; 7c0m
+Q8N884	509	510	Q6PJ21	SPRY domain-containing SOCS box protein 3	8okx; 8ol1
+Q8N884	512	515	Q6PJ21	SPRY domain-containing SOCS box protein 3	8okx; 8ol1
+Q8WTW4	15	15	O74824	GTP-binding protein gtr1	8fw5
+Q8WTW4	18	21	O74824	GTP-binding protein gtr1	8fw5
+Q8WTW4	34	34	O74824	GTP-binding protein gtr1	8fw5
+Q8WTW4	38	38	Q12980	GATOR1 complex protein NPRL3	8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	39	39	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	41	41	O74824	GTP-binding protein gtr1	8fw5
+Q8WTW4	41	41	Q12980	GATOR1 complex protein NPRL3	9o5a
+Q8WTW4	42	42	Q12980	GATOR1 complex protein NPRL3	9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	43	43	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	44	44	Q12980	GATOR1 complex protein NPRL3	6ces
+Q8WTW4	45	47	O74824	GTP-binding protein gtr1	8fw5
+Q8WTW4	45	45	Q12980	GATOR1 complex protein NPRL3	6cet
+Q8WTW4	47	47	Q12980	GATOR1 complex protein NPRL3	8fw5; 9o5a; 9o5d; 9o5e
+Q8WTW4	48	48	Q12980	GATOR1 complex protein NPRL3	6ces
+Q8WTW4	49	50	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	52	52	Q12980	GATOR1 complex protein NPRL3	6ces
+Q8WTW4	53	53	Q12980	GATOR1 complex protein NPRL3	6ces; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e
+Q8WTW4	54	54	O75140	GATOR1 complex protein DEPDC5	8fw5
+Q8WTW4	54	54	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	55	56	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	57	57	Q12980	GATOR1 complex protein NPRL3	6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	58	58	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	59	59	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet; 9v0j
+Q8WTW4	60	60	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet; 7t3a; 8fw5; 9o5e
+Q8WTW4	61	62	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet
+Q8WTW4	78	79	O74824	GTP-binding protein gtr1	8fw5
+Q8WTW4	82	82	O74824	GTP-binding protein gtr1	8fw5
+Q8WTW4	96	96	Q12980	GATOR1 complex protein NPRL3	9o5a
+Q8WTW4	99	99	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e
+Q8WTW4	100	100	O75140	GATOR1 complex protein DEPDC5	6cet; 7t3a
+Q8WTW4	103	103	O75140	GATOR1 complex protein DEPDC5	9o5a
+Q8WTW4	103	103	Q12980	GATOR1 complex protein NPRL3	9o5e
+Q8WTW4	104	104	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	108	108	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	111	111	O75140	GATOR1 complex protein DEPDC5	9o5a; 9o5d; 9o5e
+Q8WTW4	115	115	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	144	144	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a
+Q8WTW4	150	150	O75140	GATOR1 complex protein DEPDC5	9o5a; 9v0j
+Q8WTW4	151	152	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	153	153	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	154	154	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	156	156	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	157	157	O75140	GATOR1 complex protein DEPDC5	6cet; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	158	158	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	160	160	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	162	162	O75140	GATOR1 complex protein DEPDC5	7t3a; 8fw5
+Q8WTW4	163	163	O75140	GATOR1 complex protein DEPDC5	8fw5
+Q8WTW4	165	165	O75140	GATOR1 complex protein DEPDC5	6ces; 7t3a; 8fw5; 9o5a; 9o5d
+Q8WTW4	165	165	Q12980	GATOR1 complex protein NPRL3	8fw5
+Q8WTW4	166	166	O75140	GATOR1 complex protein DEPDC5	6cet; 8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	168	168	O75140	GATOR1 complex protein DEPDC5	8fw5
+Q8WTW4	170	170	O75140	GATOR1 complex protein DEPDC5	9o5d
+Q8WTW4	171	172	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet
+Q8WTW4	179	179	O75140	GATOR1 complex protein DEPDC5	8fw5
+Q8WTW4	182	182	O75140	GATOR1 complex protein DEPDC5	9o5a; 9o5d
+Q8WTW4	183	185	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	188	188	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	189	189	O75140	GATOR1 complex protein DEPDC5	6cet; 8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	190	190	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	191	191	O75140	GATOR1 complex protein DEPDC5	6ces; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	192	192	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	193	193	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	195	195	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 9o5a; 9o5d
+Q8WTW4	203	203	O75140	GATOR1 complex protein DEPDC5	9v0j
+Q8WTW4	204	204	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet
+Q8WTW4	205	205	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	206	206	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet
+Q8WTW4	207	207	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d
+Q8WTW4	208	208	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	211	211	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d
+Q8WTW4	212	212	O75140	GATOR1 complex protein DEPDC5	9o5a; 9o5d
+Q8WTW4	214	214	O75140	GATOR1 complex protein DEPDC5	6cet; 7t3a; 9o5a; 9o5d; 9o5e
+Q8WTW4	215	215	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 9o5a; 9o5d
+Q8WTW4	216	216	O75140	GATOR1 complex protein DEPDC5	7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	217	217	O75140	GATOR1 complex protein DEPDC5	8fw5
+Q8WTW4	218	218	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d
+Q8WTW4	219	219	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	221	221	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d
+Q8WTW4	222	222	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d
+Q8WTW4	223	223	O75140	GATOR1 complex protein DEPDC5	6cet; 9o5a; 9o5d; 9v0j
+Q8WTW4	225	225	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	226	226	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	227	227	O75140	GATOR1 complex protein DEPDC5	9o5a; 9o5d
+Q8WTW4	229	229	O75140	GATOR1 complex protein DEPDC5	7t3a; 8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	230	230	O75140	GATOR1 complex protein DEPDC5	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	238	238	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d
+Q8WTW4	239	242	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	239	239	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet
+Q8WTW4	246	246	Q12980	GATOR1 complex protein NPRL3	9o5a; 9o5d
+Q8WTW4	247	247	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	248	248	Q12980	GATOR1 complex protein NPRL3	7t3a; 9o5a; 9o5e
+Q8WTW4	249	249	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	250	250	Q12980	GATOR1 complex protein NPRL3	9o5a; 9o5d; 9o5e
+Q8WTW4	251	251	Q12980	GATOR1 complex protein NPRL3	9o5e
+Q8WTW4	252	252	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	253	253	Q12980	GATOR1 complex protein NPRL3	8fw5; 9o5a; 9o5d; 9o5e
+Q8WTW4	255	255	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e
+Q8WTW4	256	256	Q12980	GATOR1 complex protein NPRL3	8fw5; 9o5a; 9o5d; 9o5e
+Q8WTW4	267	267	Q12980	GATOR1 complex protein NPRL3	6ces
+Q8WTW4	268	268	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet
+Q8WTW4	269	269	Q12980	GATOR1 complex protein NPRL3	6cet
+Q8WTW4	270	270	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet
+Q8WTW4	275	275	Q12980	GATOR1 complex protein NPRL3	6cet
+Q8WTW4	278	278	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet; 7t3a; 9o5a; 9o5e; 9v0j
+Q8WTW4	279	279	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	281	281	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet
+Q8WTW4	282	282	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e
+Q8WTW4	283	283	Q12980	GATOR1 complex protein NPRL3	7t3a
+Q8WTW4	285	285	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet
+Q8WTW4	286	286	Q12980	GATOR1 complex protein NPRL3	6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	287	287	Q12980	GATOR1 complex protein NPRL3	6cet
+Q8WTW4	290	290	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	295	295	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	298	298	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	311	311	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d
+Q8WTW4	323	323	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet
+Q8WTW4	324	324	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet; 7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	326	326	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet; 8fw5; 9o5d; 9o5e
+Q8WTW4	327	328	Q12980	GATOR1 complex protein NPRL3	6ces
+Q8WTW4	330	330	Q12980	GATOR1 complex protein NPRL3	9v0j
+Q8WTW4	331	331	Q12980	GATOR1 complex protein NPRL3	9o5a; 9o5d
+Q8WTW4	332	332	O75140	GATOR1 complex protein DEPDC5	9o5d
+Q8WTW4	332	332	Q12980	GATOR1 complex protein NPRL3	9o5a; 9o5d; 9o5e
+Q8WTW4	333	333	Q12980	GATOR1 complex protein NPRL3	9o5d
+Q8WTW4	335	335	Q12980	GATOR1 complex protein NPRL3	9o5a
+Q8WTW4	343	343	O75140	GATOR1 complex protein DEPDC5	9o5d
+Q8WTW4	344	345	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5d
+Q8WTW4	345	345	Q12980	GATOR1 complex protein NPRL3	9v0j
+Q8WTW4	346	346	Q12980	GATOR1 complex protein NPRL3	9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	347	347	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9v0j
+Q8WTW4	348	348	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	352	352	O75140	GATOR1 complex protein DEPDC5	9o5a; 9o5d
+Q8WTW4	355	356	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d
+Q8WTW4	357	357	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5d
+Q8WTW4	358	358	O75140	GATOR1 complex protein DEPDC5	8fw5
+Q8WTW4	359	359	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5d
+Q8WTW4	360	360	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5a; 9o5d
+Q8WTW4	361	361	O75140	GATOR1 complex protein DEPDC5	8fw5
+Q8WTW4	365	365	O75140	GATOR1 complex protein DEPDC5	8fw5
+Q8WTW4	366	366	Q12980	GATOR1 complex protein NPRL3	6ces
+Q8WTW4	368	369	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5d
+Q8WTW4	369	369	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet
+Q8WTW4	370	370	Q12980	GATOR1 complex protein NPRL3	6cet
+Q8WTW4	371	371	Q12980	GATOR1 complex protein NPRL3	6ces; 6cet
+Q8WTW4	372	372	O75140	GATOR1 complex protein DEPDC5	8fw5; 9o5d
+Q8WTW4	375	375	O75140	GATOR1 complex protein DEPDC5	9o5d
+Q8WTW4	375	375	Q12980	GATOR1 complex protein NPRL3	9v0j
+Q8WTW4	376	376	Q12980	GATOR1 complex protein NPRL3	8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q8WTW4	377	377	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5d; 9o5e; 9v0j
+Q8WTW4	378	378	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e
+Q8WTW4	379	380	Q12980	GATOR1 complex protein NPRL3	7t3a; 8fw5; 9o5a; 9o5d; 9o5e; 9v0j
+Q9BPX6	103	103	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	104	104	Q9H4I9	Essential MCU regulator, mitochondrial	6wdn
+Q9BPX6	105	105	Q8NE86	Calcium uniporter protein, mitochondrial	6wdn
+Q9BPX6	105	106	Q9H4I9	Essential MCU regulator, mitochondrial	6k7y; 6wdn; 6xjx
+Q9BPX6	106	107	D6WIX5	Calcium uniporter protein, mitochondrial	6xqn
+Q9BPX6	106	107	D6X268	Essential MCU regulator, mitochondrial	6xqn
+Q9BPX6	106	106	Q8NE86	Calcium uniporter protein, mitochondrial	6k7y; 6wdn; 6wdo
+Q9BPX6	106	107	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	107	107	Q8NE86	Calcium uniporter protein, mitochondrial	6wdn; 6xjx
+Q9BPX6	107	107	Q9H4I9	Essential MCU regulator, mitochondrial	6wdo; 6xjx
+Q9BPX6	108	108	Q9H4I9	Essential MCU regulator, mitochondrial	6xjv; 6xjx
+Q9BPX6	109	109	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	109	109	Q9H4I9	Essential MCU regulator, mitochondrial	6xjx
+Q9BPX6	110	110	Q8NE86	Calcium uniporter protein, mitochondrial	6xjx
+Q9BPX6	110	110	Q9H4I9	Essential MCU regulator, mitochondrial	6xjv
+Q9BPX6	111	111	Q8NE86	Calcium uniporter protein, mitochondrial	6wdn
+Q9BPX6	114	114	D6WIX5	Calcium uniporter protein, mitochondrial	6xqn
+Q9BPX6	114	114	Q8NE86	Calcium uniporter protein, mitochondrial	6wdn; 6xjx
+Q9BPX6	114	114	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	117	117	D6WIX5	Calcium uniporter protein, mitochondrial	6xqn
+Q9BPX6	117	117	Q8NE86	Calcium uniporter protein, mitochondrial	6wdn; 6xjx
+Q9BPX6	117	117	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	121	122	D6WIX5	Calcium uniporter protein, mitochondrial	6xqn
+Q9BPX6	121	121	Q8NE86	Calcium uniporter protein, mitochondrial	6wdn; 6xjx
+Q9BPX6	121	123	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	126	126	D6WIX5	Calcium uniporter protein, mitochondrial	6xqn
+Q9BPX6	126	126	Q8NE86	Calcium uniporter protein, mitochondrial	6wdn; 6xjx
+Q9BPX6	126	126	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	129	129	D6WIX5	Calcium uniporter protein, mitochondrial	6xqn
+Q9BPX6	129	129	Q8NE86	Calcium uniporter protein, mitochondrial	6wdn; 6xjx
+Q9BPX6	129	129	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	169	170	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	210	210	Q8IYU8	Calcium uptake protein 2, mitochondrial	6wdo
+Q9BPX6	214	214	Q8IYU8	Calcium uptake protein 2, mitochondrial	6xjv; 6xqo
+Q9BPX6	221	221	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6lb8; 6le5; 6wdn; 6wdo; 6xjv; 6xjx; 6xqn; 6xqo
+Q9BPX6	221	222	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	222	222	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6lb8; 6le5; 6wdo; 6xjv; 6xjx; 6xqn; 6xqo
+Q9BPX6	225	225	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6lb8; 6le5; 6wdo; 6xjv; 6xjx; 6xqn; 6xqo
+Q9BPX6	225	226	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc; 4nsd
+Q9BPX6	226	226	Q8IYU8	Calcium uptake protein 2, mitochondrial	6lb7; 6lb8; 6wdn; 6xjx; 6xqn
+Q9BPX6	228	229	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6lb8; 6le5; 6wdn; 6wdo; 6xjv; 6xjx; 6xqn; 6xqo
+Q9BPX6	228	229	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc; 4nsd
+Q9BPX6	230	230	Q8IYU8	Calcium uptake protein 2, mitochondrial	6lb8; 6wdn; 6xjv; 6xjx
+Q9BPX6	230	231	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	231	231	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6lb8; 6le5; 6wdn; 6xjv; 6xjx; 6xqn; 6xqo
+Q9BPX6	232	232	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb8; 6le5; 6wdn; 6wdo; 6xjv; 6xjx; 6xqn; 6xqo
+Q9BPX6	232	232	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc; 4nsd
+Q9BPX6	233	233	Q8IYU8	Calcium uptake protein 2, mitochondrial	6lb8; 6le5; 6wdn; 6xjx
+Q9BPX6	233	234	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	234	234	Q8IYU8	Calcium uptake protein 2, mitochondrial	6lb7; 6lb8; 6le5; 6wdn; 6xjx; 6xqn
+Q9BPX6	235	235	Q8IYU8	Calcium uptake protein 2, mitochondrial	6wdn
+Q9BPX6	239	242	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	244	244	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	245	245	Q8IYU8	Calcium uptake protein 2, mitochondrial	6lb8
+Q9BPX6	245	245	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc; 4nsd
+Q9BPX6	248	248	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	249	249	Q8IYU8	Calcium uptake protein 2, mitochondrial	6lb7; 6lb8; 6le5; 6wdn; 6wdo; 6xjv; 6xjx; 6xqn; 6xqo
+Q9BPX6	249	249	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc; 4nsd
+Q9BPX6	250	250	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6le5; 6wdn; 6wdo; 6xjv
+Q9BPX6	250	250	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	252	252	Q8IYU8	Calcium uptake protein 2, mitochondrial	6lb8; 6le5; 6xqn
+Q9BPX6	252	253	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	253	253	Q8IYU8	Calcium uptake protein 2, mitochondrial	6lb7; 6lb8; 6le5; 6wdn; 6xjx; 6xqn
+Q9BPX6	259	260	Q8NE86	Calcium uniporter protein, mitochondrial	6xjx
+Q9BPX6	260	260	Q9H4I9	Essential MCU regulator, mitochondrial	6xjx
+Q9BPX6	261	261	Q8NE86	Calcium uniporter protein, mitochondrial	6wdn; 6xjx
+Q9BPX6	262	263	Q8NE86	Calcium uniporter protein, mitochondrial	6wdn
+Q9BPX6	265	265	Q8NE86	Calcium uniporter protein, mitochondrial	6wdn
+Q9BPX6	286	288	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	337	337	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	338	338	Q9H4I9	Essential MCU regulator, mitochondrial	6wdo; 6xjv
+Q9BPX6	339	339	Q9H4I9	Essential MCU regulator, mitochondrial	6k7y; 6wdo
+Q9BPX6	340	340	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	340	341	Q9H4I9	Essential MCU regulator, mitochondrial	6k7y; 6wdo; 6xjv
+Q9BPX6	344	344	Q9H4I9	Essential MCU regulator, mitochondrial	6wdo; 6xjv
+Q9BPX6	347	347	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	347	347	Q9H4I9	Essential MCU regulator, mitochondrial	6xjv
+Q9BPX6	351	351	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	375	375	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6xjv
+Q9BPX6	376	376	Q8IYU8	Calcium uptake protein 2, mitochondrial	6le5
+Q9BPX6	376	376	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	379	379	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6le5; 6wdn; 6wdo; 6xjv; 6xjx; 6xqo
+Q9BPX6	379	380	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	380	380	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6le5; 6wdn; 6wdo; 6xjx; 6xqn; 6xqo
+Q9BPX6	381	381	Q8IYU8	Calcium uptake protein 2, mitochondrial	6xqo
+Q9BPX6	382	382	Q8IYU8	Calcium uptake protein 2, mitochondrial	6lb7; 6wdo; 6xqo
+Q9BPX6	382	390	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	383	383	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6lb8; 6le5; 6wdn; 6wdo; 6xjv; 6xjx; 6xqo
+Q9BPX6	384	384	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6lb8; 6le5; 6wdn; 6wdo; 6xjv; 6xjx; 6xqn
+Q9BPX6	386	386	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6lb8; 6le5; 6wdn; 6xjv; 6xjx; 6xqo
+Q9BPX6	387	387	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6lb8; 6wdn; 6wdo; 6xjv; 6xjx; 6xqn; 6xqo
+Q9BPX6	388	388	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6wdo; 6xjv; 6xqo
+Q9BPX6	389	389	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6wdo; 6xqo
+Q9BPX6	392	392	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	394	395	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	395	395	Q8IYU8	Calcium uptake protein 2, mitochondrial	6xjv
+Q9BPX6	398	398	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6xjv; 6xqo
+Q9BPX6	398	398	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	399	399	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6xjv; 6xqn
+Q9BPX6	401	403	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	402	402	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb7; 6lb8; 6le5; 6wdn; 6xjx; 6xqn; 6xqo
+Q9BPX6	403	403	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6lb8; 6xjv; 6xjx; 6xqn; 6xqo
+Q9BPX6	405	405	Q8IYU8	Calcium uptake protein 2, mitochondrial	6xqo
+Q9BPX6	405	405	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	422	425	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	427	427	Q8IYU8	Calcium uptake protein 2, mitochondrial	6lb7; 6xjv
+Q9BPX6	427	427	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	429	431	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	438	438	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y
+Q9BPX6	442	442	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y; 6xjv
+Q9BPX6	444	445	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y
+Q9BPX6	450	451	Q8NE86	Calcium uniporter protein, mitochondrial	6wdn; 6xjx
+Q9BPX6	450	457	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	452	452	Q9H4I9	Essential MCU regulator, mitochondrial	6wdn; 6xjx
+Q9BPX6	453	453	Q9H4I9	Essential MCU regulator, mitochondrial	6xjx
+Q9BPX6	454	454	Q8NE86	Calcium uniporter protein, mitochondrial	6xjx
+Q9BPX6	455	455	Q8IYU8	Calcium uptake protein 2, mitochondrial	6wdn
+Q9BPX6	455	455	Q9H4I9	Essential MCU regulator, mitochondrial	6xjx
+Q9BPX6	456	456	Q9H4I9	Essential MCU regulator, mitochondrial	6wdn; 6xjx
+Q9BPX6	459	460	Q8IYU8	Calcium uptake protein 2, mitochondrial	6wdn
+Q9BPX6	459	467	Q9BPX6	Calcium uptake protein 1, mitochondrial	4nsc
+Q9BPX6	459	459	Q9H4I9	Essential MCU regulator, mitochondrial	6xjx
+Q9BPX6	462	464	Q8IYU8	Calcium uptake protein 2, mitochondrial	6wdn
+Q9BPX6	466	466	Q8IYU8	Calcium uptake protein 2, mitochondrial	6wdn
+Q9BPX6	467	467	Q9H4I9	Essential MCU regulator, mitochondrial	6k7y
+Q9BPX6	469	469	Q8IYU8	Calcium uptake protein 2, mitochondrial	6xjx
+Q9BPX6	475	476	Q8IYU8	Calcium uptake protein 2, mitochondrial	6k7y
