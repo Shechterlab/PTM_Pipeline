@@ -2648,8 +2648,7 @@
     }).join('') + '</div>' +
       '<div class="hb-axis' + cls + '" aria-hidden="true"><span></span>' + (spec.extraCol ? '<span></span>' : '') + '<span class="ticks">' + sc.ticks.map((t, i) => '<span style="left:' + sc.xp(t).toFixed(2) + '%">' + (tickShown(spec, sc, i) ? tfmt(t) : '') + '</span>').join('') + '</span><span></span>' + (spec.sel ? '<span></span>' : '') + '</div>' +
       (spec.treeNote && rows.some((r) => r.sub) ? '<p class="chart-tree-note">' + spec.treeNote + '</p>' : '') +
-      '<div class="chart-key">' + (spec.noSig ? '' : spec.compact ? '<span><i></i>Enriched (q ≤ 0.05)</span><span><i class="neg"></i>Depleted (q ≤ 0.05)</span><span><i class="ns"></i>Not significant</span>' :
-        '<span><i></i>More than expected, q ≤ 0.05</span><span><i class="neg"></i>Less than expected, q ≤ 0.05</span><span><i class="ns"></i>Not significant</span>') + (spec.sel ? selKeyHtml(spec.sel) : '') + '<span>' + esc(spec.axis || 'log2 odds ratio vs background') + '</span></div>';
+      '<div class="chart-key">' + (spec.noSig ? '' : '<span><i></i>' + sigKeyLabels(spec)[0] + '</span><span><i class="neg"></i>' + sigKeyLabels(spec)[1] + '</span><span><i class="ns"></i>' + sigKeyLabels(spec)[2] + '</span>') + (spec.sel ? selKeyHtml(spec.sel) : '') + '<span>' + esc(spec.axis || 'log2 odds ratio vs background') + '</span></div>';
   }
   // The selection's count in a bar (orange dot, as the Filtered flag), blank where none of it is there.
   const selCell = (n) => '<span class="hb-sel">' + (n ? '<i></i>' + fmt(n) : '') + '</span>';
@@ -2674,53 +2673,96 @@
       hbars(spec) + (spec.footHtml || '') + '</div>';
   }
 
+  // Words of a chart's significance key, the same on the page and in its exports.
+  const sigKeyLabels = (spec) => (spec.compact ? ['Enriched (q ≤ 0.05)', 'Depleted (q ≤ 0.05)', 'Not significant'] : ['More than expected, q ≤ 0.05', 'Less than expected, q ≤ 0.05', 'Not significant']);
+  // Lines of at most `width` px of text at font size fs.
+  function wrapText(text, width, fs, pal) {
+    const lines = [];
+    let line = '';
+    for (const word of String(text).split(/\s+/)) {
+      const next = line ? line + ' ' + word : word;
+      if (line && textW(next, fs, pal) > width) { lines.push(line); line = word; } else line = next;
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  // The SVG of an hbars chart, laid out as on the page: column headings, section headings, nested rows (shaded and
+  // indented by depth), the same numbers, key and tree note.
   function chartSvg(spec) {
     const pal = EXPORT_PAL;
     const rows = spec.rows;
-    const W = 760, labelW = 270, extraW = spec.extraCol ? 64 : 0, valW = 64, selW = spec.sel ? 52 : 0;
+    const W = 760, labelW = 270, extraW = spec.extraCol ? 72 : 0, valW = 64, selW = spec.sel ? 52 : 0;
     const x0 = 24 + labelW + extraW, x1 = W - valW - selW - 16;
-    const rowH = 22, top = 74;
+    const rowH = 22, headH = 26;
     const sc = niceScale(rows);
     const X = (v) => x0 + (sc.xp(v) / 100) * (x1 - x0);
     const vfmt = spec.format || fmtL2;
     const tfmt = spec.tick || ((t) => t);
     let g = '<text x="24" y="32" font-size="17" font-weight="700" fill="' + pal.ink + '">' + esc(spec.title) + '</text>' +
       '<text x="24" y="52" font-size="11" fill="' + pal.muted + '">' + esc(spec.subText || '') + '</text>';
-    for (const t of sc.ticks) g += '<line x1="' + r1(X(t)) + '" x2="' + r1(X(t)) + '" y1="' + (top - 6) + '" y2="' + (top + rows.length * rowH) + '" stroke="' + pal.grid + '"/>';
-    g += '<line x1="' + r1(X(0)) + '" x2="' + r1(X(0)) + '" y1="' + (top - 8) + '" y2="' + (top + rows.length * rowH + 2) + '" stroke="' + pal.backbone + '"/>';
+    let top = 74;
+    if (spec.heads) {
+      const hy = top + 4, head = (x, text, end) => '<text x="' + x + '" y="' + hy + '" font-size="9.5" font-weight="700" fill="' + pal.muted + '"' + (end ? ' text-anchor="end"' : '') + '>' + esc(text) + '</text>';
+      g += head(24, spec.heads[0]) + (spec.extraCol ? head(24 + labelW + extraW - 6, spec.heads[1], true) : '') + head(W - selW - 16, spec.heads[3], true) + (spec.sel ? head(W - 16, 'sel.', true) : '') +
+        '<line x1="24" x2="' + (W - 16) + '" y1="' + (hy + 6) + '" y2="' + (hy + 6) + '" stroke="' + pal.grid + '"/>';
+      top += 18;
+    }
+    // A section heading takes a line of its own above its first row, as on the page.
+    const ys = [];
+    let y = top;
+    for (const r of rows) { if (r.head) y += headH; ys.push(y); y += rowH; }
+    const bottom = y;
+    for (const t of sc.ticks) g += '<line x1="' + r1(X(t)) + '" x2="' + r1(X(t)) + '" y1="' + (top - 4) + '" y2="' + bottom + '" stroke="' + pal.grid + '"/>';
+    g += '<line x1="' + r1(X(0)) + '" x2="' + r1(X(0)) + '" y1="' + (top - 6) + '" y2="' + (bottom + 2) + '" stroke="' + pal.backbone + '"/>';
     rows.forEach((r, k) => {
-      const y = top + k * rowH;
+      const y = ys[k];
+      if (r.head) g += '<line x1="24" x2="' + (W - 16) + '" y1="' + (y - headH + 6) + '" y2="' + (y - headH + 6) + '" stroke="' + pal.grid + '"/>' +
+        '<text x="24" y="' + (y - 5) + '" font-size="9.5" font-weight="700" letter-spacing="0.4" fill="' + pal.muted + '">' + esc(r.head.toUpperCase()) + '</text>';
       const v = r.value == null ? 0 : r.value;
       const a = X(Math.min(0, v)), b = X(Math.max(0, v));
       const fill = spec.counts ? pal.seq[3] : v < 0 ? pal.down[3] : pal.up[3];
       const ns = !spec.noSig && !r.sig;
+      const depth = r.depth || (r.sub ? 1 : 0), bh = depth === 2 ? 5 : depth ? 8 : 10;
+      if (depth) g += '<rect x="20" y="' + (y + 1) + '" width="' + (W - 36) + '" height="' + (rowH - 2) + '" rx="3" fill="' + pal.panel + '" fill-opacity="' + (depth === 2 ? 0.9 : 0.5) + '"/>';
       // Bars the selection does not reach fade, as on the page.
       g += spec.sel && !r.sel ? '<g opacity="0.4">' : '<g>';
-      const lab = r.label.length > 46 ? r.label.slice(0, 44) + '…' : r.label, lx = r.sub ? 40 : 24, lfs = r.sub ? 10.5 : 11.5;
-      g += '<text x="' + lx + '" y="' + (y + 14) + '" font-size="' + lfs + '" fill="' + (r.sub ? pal.muted : pal.ink) + '">' + esc(lab) + '</text>';
+      const lab = r.label.length > 46 ? r.label.slice(0, 44) + '…' : r.label, lx = 24 + 16 * depth, lfs = depth ? 10.5 : 11.5;
+      g += '<text x="' + lx + '" y="' + (y + 14) + '" font-size="' + lfs + '" fill="' + (depth ? pal.muted : pal.ink) + '"' + (spec.rows.some((x) => x.sub) && !depth ? ' font-weight="700"' : '') + '>' + esc(lab) + '</text>';
       if (r.note) g += '<text x="' + r1(lx + textW(lab, lfs, pal) + 6) + '" y="' + (y + 14) + '" font-size="9.5" fill="' + pal.muted + '">' + esc(r.note) + '</text>';
       if (spec.extraCol) g += '<text x="' + (24 + labelW + extraW - 6) + '" y="' + (y + 14) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="end">' + esc(r.extra || '') + '</text>';
-      g += '<rect x="' + r1(a) + '" y="' + (y + 6) + '" width="' + r1(Math.max(1, b - a)) + '" height="10" rx="2" fill="' + (ns ? pal.bg : fill) + '" stroke="' + fill + '" stroke-width="' + (ns ? 1.4 : 0) + '"/>';
+      g += '<rect x="' + r1(a) + '" y="' + r1(y + 11 - bh / 2) + '" width="' + r1(Math.max(1, b - a)) + '" height="' + bh + '" rx="2" fill="' + (ns ? pal.bg : fill) + '" stroke="' + fill + '" stroke-width="' + (ns ? 1.4 : 0) + '"' +
+        (r.extraRow || depth === 2 ? ' fill-opacity="' + (depth === 2 ? 0.55 : 0.7) + '"' : '') + '/>';
       g += '<text x="' + (W - selW - 16) + '" y="' + (y + 14) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="end">' + esc(vfmt(r.value)) + '</text></g>';
       if (spec.sel && r.sel) g += '<circle cx="' + (W - selW - 4) + '" cy="' + (y + 11) + '" r="3.5" fill="' + pal.accent + '"/><text x="' + (W - 16) + '" y="' + (y + 14) + '" font-size="10.5" font-weight="700" fill="' + pal.accent + '" text-anchor="end">' + fmt(r.sel) + '</text>';
     });
-    const ay = top + rows.length * rowH + 16;
+    const ay = bottom + 16;
     for (const t of sc.ticks) g += '<text x="' + r1(X(t)) + '" y="' + ay + '" font-size="10" fill="' + pal.muted + '" text-anchor="middle">' + esc(String(tfmt(t))) + '</text>';
     g += '<text x="' + r1((x0 + x1) / 2) + '" y="' + (ay + 16) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="middle">' + esc(spec.axis || 'log2 odds ratio vs background') + '</text>';
-    const items = spec.noSig ? [] : [[SWATCH.fill(pal.up[3]), 'More than expected, q ≤ 0.05'], [SWATCH.fill(pal.down[3]), 'Less than expected, q ≤ 0.05'],
-      [(a, b) => '<rect x="' + r1(a) + '" y="' + r1(b - 5) + '" width="20" height="10" rx="2" fill="' + pal.bg + '" stroke="' + pal.muted + '" stroke-width="1.4"/>', 'Not significant (outline)']];
+    let ny = ay + 22;
+    if (spec.treeNote && rows.some((r) => r.sub)) {
+      for (const line of wrapText(spec.treeNote.replace(/<[^>]+>/g, ''), W - 48, 10, pal)) { ny += 14; g += '<text x="24" y="' + ny + '" font-size="10" fill="' + pal.muted + '">' + esc(line) + '</text>'; }
+      ny += 8;
+    }
+    const kl = sigKeyLabels(spec);
+    const items = spec.noSig ? [] : [[SWATCH.fill(pal.up[3]), kl[0]], [SWATCH.fill(pal.down[3]), kl[1]],
+      [(a, b) => '<rect x="' + r1(a) + '" y="' + r1(b - 5) + '" width="20" height="10" rx="2" fill="' + pal.bg + '" stroke="' + pal.muted + '" stroke-width="1.4"/>', kl[2]]];
     if (spec.sel) items.push([(a, b) => '<circle cx="' + r1(a + 10) + '" cy="' + r1(b) + '" r="3.5" fill="' + pal.accent + '"/>', spec.sel.noun + ', of ' + fmt(spec.sel.n) + ' (' + (spec.sel.what.length > 70 ? spec.sel.what.slice(0, 68) + '…' : spec.sel.what) + ')']);
-    const key = items.length ? svgLegend(pal, items, 24, ay + 22, W - 48, { fs: 10 }) : null;
-    const H = Math.ceil(key ? ay + 22 + key.h + 22 : ay + 30);
+    const key = items.length ? svgLegend(pal, items, 24, ny, W - 48, { fs: 10 }) : null;
+    const H = Math.ceil(key ? ny + key.h + 22 : ny + 10);
     return { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + pal.font + '\'><rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' + g + (key ? key.svg : '') + '</svg>', W, H };
   }
 
   function chartTsv(spec) {
-    const more = spec.tsvCols || [];
+    // Nested and sectioned charts also say each row's depth and section, as the page draws them.
+    let section = spec.firstSection || '';
+    const sections = spec.rows.map((r) => (section = r.head || section));
+    const more = (spec.rows.some((r) => r.head) ? [['section', (r) => sections[spec.rows.indexOf(r)]]] : [])
+      .concat(spec.rows.some((r) => r.sub) ? [['depth', (r) => r.depth || (r.sub ? 1 : 0)]] : [], spec.tsvCols || []);
     const sel = spec.sel ? '\tselected_' + spec.sel.unit : '';
     return (spec.sel ? '# selected: ' + spec.sel.what + ' (' + spec.sel.n + ' ' + (spec.sel.n === 1 ? spec.sel.unit.replace(/s$/, '') : spec.sel.unit) + ')\n' : '') +
-      ['label\t' + (spec.valueLabel || 'log2_odds_ratio') + '\tq_value\t' + (spec.extraName || 'detail') + more.map((c) => '\t' + c[0]).join('') + sel,
-        ...spec.rows.map((r) => [r.label, r.value, r.q == null ? '' : r.q, r.extra || ''].concat(more.map((c) => c[1](r)), spec.sel ? [r.sel == null ? '' : r.sel] : []).map(cell).join('\t'))].join('\n') + '\n';
+      ['label\t' + (spec.valueLabel || 'log2_odds_ratio') + '\tq_value\t' + (spec.extraTsv ? spec.extraTsv.join('\t') : spec.extraName || 'detail') + more.map((c) => '\t' + c[0]).join('') + sel,
+        ...spec.rows.map((r) => [r.label, r.value, r.q == null ? '' : r.q].concat(spec.extraTsv ? (r.nums || ['', '']) : [r.extra || ''], more.map((c) => c[1](r)), spec.sel ? [r.sel == null ? '' : r.sel] : []).map(cell).join('\t'))].join('\n') + '\n';
   }
 
   function bindChartExports(root) {
@@ -2799,7 +2841,7 @@
     const pan = pm && ov.panther_groups ? (() => {
       const rows = [];
       const total = (r) => r[r.length - 1];
-      const row = (r, kind, k, depth) => ({ label: r[0], value: r[4], q: r[5], sig: sigq(r[5]), key: kind + k, kind, sub: depth > 0, depth, extra: ofTotal(r[1], total(r)),
+      const row = (r, kind, k, depth) => ({ label: r[0], value: r[4], q: r[5], sig: sigq(r[5]), key: kind + k, kind, sub: depth > 0, depth, extra: ofTotal(r[1], total(r)), nums: [r[1], total(r)],
         title: '<b>' + esc(r[0]) + '</b>' + (kind === 'c' ? ' (PANTHER class, in ' + esc(r[6]) + ')' : kind === 's' ? ' (PANTHER subclass of ' + esc(r[6]) + ')' : '') +
           '<br>' + fmt(r[1]) + ' of ' + fmt(total(r)) + ' reviewed proteins carry a methylarginine (' + pct(r[1], total(r)) + '%)<br>' +
           (100 * r[2]).toFixed(1) + '% of methylated vs ' + (100 * r[3]).toFixed(1) + '% of other reviewed proteins; log2 OR ' + fmtL2(r[4]) + ', q ' + fmtP(r[5]) });
@@ -2820,7 +2862,7 @@
       return {
         id: 'ch-pan', title: 'Protein classes', subHtml: 'Methylated proteins vs the reviewed human proteome, by PANTHER protein class (grouped); every protein is in one row.' + docLink('ov-ontology'),
         subText: 'PANTHER ' + pm.version + ' protein class groups' + (UI.panLevel ? ', classes' + (UI.panLevel > 1 ? ' and subclasses' : '') : '') + ' vs the other reviewed human proteins',
-        rows, extraCol: true, extraName: 'methylated_of_proteins', compact: true, format: fmtL1, heads: ['PANTHER group', 'methyl-R/all', '', 'log2 OR'],
+        rows, extraCol: true, extraName: 'methylated_of_proteins', extraTsv: ['methylated_proteins', 'proteins'], compact: true, format: fmtL1, heads: ['PANTHER group', 'methyl-R/all', '', 'log2 OR'],
         treeNote: 'Shaded, indented rows belong to the row above: the PANTHER classes of a group add up to it; subclasses (shaded further) are parts of their class and overlap, so they do not add up.',
         footHtml: '<p class="note">The groups add up to the reviewed proteome: ' + fmt(sumMe) + ' methylated of ' + fmt(sum) + ' proteins' +
           (unc ? ', ' + fmt(total(unc)) + ' of which PANTHER gives no class' : '') + '. Subclasses overlap (a protein is in each class above its own).</p>' +
@@ -2847,11 +2889,11 @@
     };
     const dis = {
       id: 'ch-dis', title: 'Disease families', subHtml: 'Methylated proteins vs the reviewed human proteome, by DisGeNET disease family, ' + esc(disTestShort()) + '. Association, not causation.' + docLink('ov-disease'),
-      subText: (UI.disMore ? 'Audited and additional' : 'Audited') + ' DisGeNET disease families vs the reviewed human genes, ' + disTestShort(), axis: 'log2 odds ratio, ' + disTestShort(), extraCol: true, extraName: 'methylarginine_proteins_of_family',
-      tsvCols: [['test', () => disTestLabel()]], compact: true, format: fmtL1, heads: ['Family', 'methyl-R/all', '', 'log2 OR'],
+      subText: (UI.disMore ? 'Audited and additional' : 'Audited') + ' DisGeNET disease families vs the reviewed human genes, ' + disTestShort(), axis: 'log2 odds ratio, ' + disTestShort(), extraCol: true, extraName: 'methylarginine_proteins_of_family', extraTsv: ['methylated_genes', 'family_genes'],
+      tsvCols: [['test', () => disTestLabel()]], firstSection: 'Audited families', compact: true, format: fmtL1, heads: ['Family', 'methyl-R/all', '', 'log2 OR'],
       rows: ov.disease_families.filter((r) => UI.disMore || famAudited(M.disease_families.indexOf(r[0]))).map((r) => {
         const fk = M.disease_families.indexOf(r[0]), audited = famAudited(fk), or = famOR(r), q = famQ(r);
-        return { label: r[0], value: or ? Math.log2(or) : null, q, sig: sigq(q), key: r[0], extra: ofTotal(r[1], r[2]), extraRow: !audited, audited, fk,
+        return { label: r[0], value: or ? Math.log2(or) : null, q, sig: sigq(q), key: r[0], extra: ofTotal(r[1], r[2]), nums: [r[1], r[2]], extraRow: !audited, audited, fk,
           title: '<b>' + esc(r[0]) + '</b><br>' + fmt(r[1]) + ' of the ' + fmt(r[2]) + ' proteins in the family\'s gene set contain a methylarginine (counted by gene)<br>' + famTestsHtml(r) +
             '<br>Click: the ' + fmt(P.filter(fk >= 0 ? familyMember(fk) : () => false).length) + ' methylated proteins of its gene set' };
       }).sort((a, b) => (b.audited - a.audited) || b.value - a.value).map((r, k, all) => (!r.audited && (k === 0 || all[k - 1].audited) ? Object.assign(r, { head: 'Additional families (rule-based, not audited; tested apart)' }) : r)),
