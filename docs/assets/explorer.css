@@ -268,6 +268,8 @@ main > .lc-note { margin: 0 0 1rem; }
 .tag.na-xl.na-rna { border-color: var(--nt-u); }
 .tag.na-xl.na-dna { border-color: var(--nt-c); }
 .tag.na-xl.na-rbd { border-style: dashed; font-weight: 500; }
+.tag.na-xl.na-eclip { border-color: var(--teal-600); }
+.tag.na-prox { font-size: 0.66rem; padding: 0 0.3rem; margin-top: 0.15rem; border: 1px dotted var(--ink-2); background: transparent; color: var(--ink-2); font-weight: 600; font-variant-numeric: tabular-nums; }
 .sc-na-xl { margin: 0.1rem 0 0.3rem; color: var(--ink-2); }
 .tip:has(.na-tip) { max-width: 25rem; }
 .na-tip ul { list-style: none; padding: 0; margin: 0.15rem 0 0.25rem; display: grid; gap: 0.3rem; }

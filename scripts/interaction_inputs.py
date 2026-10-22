@@ -387,6 +387,23 @@ def nucleic_chains(t: Tables) -> tuple[dict, set]:
     return out, looked
 
 
+def na_proximity(t: Tables) -> dict:
+    """(pdb, chain, SEQRES index of an arginine) -> (residue name, [(nucleic-acid chain, its SEQRES index, nucleotide,
+    distance to the side chain, distance to any atom of the arginine)]) for the arginines read within 8 Å of RNA and DNA
+    (one read with none has an empty list). Empty before the proximity tables were staged."""
+    out = {}
+    try:
+        rows = list(t.rows('pdb_arginine_nucleic_acid_proximity_'))
+    except KeyError:
+        return out
+    for r in rows:
+        key = (r['pdb_id'], r['chain'], int(r['seqres_index']))
+        resn, hits = out.setdefault(key, (r['residue'], []))
+        if r['na_chain']:
+            hits.append((r['na_chain'], int(r['na_seqres_index']), r['nucleotide'], float(r['side_chain_distance_a']), float(r['any_atom_distance_a'])))
+    return out
+
+
 def na_residue_contacts(t: Tables) -> dict:
     """(pdb, protein chain) -> [(SEQRES index, author number, residue, nucleic-acid chain, its SEQRES index, nucleotide,
     distance)] for the protein chains read against RNA and DNA (a chain with none has an empty list)."""

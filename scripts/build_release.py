@@ -946,20 +946,22 @@ def interaction_tables(folder: Path, sites: pd.DataFrame) -> dict:
     if na is not None and set(na['site_id']) - set(analysed['site_id']):
         raise SystemExit(f'{folder}: nucleic-acid contacts for sites that are not analysed in the release')
     regions = read_tsv(folder / 'nucleic_acid_regions.tsv') if (folder / 'nucleic_acid_regions.tsv').exists() else None
-    beyond = {name: read_tsv(folder / f'{name}.tsv') for name in ('nucleic_acid_near_sites', 'rna_bind_n_seq', 'dna_motifs', 'eclip')
+    beyond = {name: read_tsv(folder / f'{name}.tsv') for name in ('nucleic_acid_proximal_sites', 'nucleic_acid_near_sites', 'rna_bind_n_seq', 'dna_motifs', 'eclip')
               if (folder / f'{name}.tsv').exists()}
-    if 'nucleic_acid_near_sites' in beyond and set(beyond['nucleic_acid_near_sites']['site_id']) - set(analysed['site_id']):
-        raise SystemExit(f'{folder}: bound sequences next to sites that are not analysed in the release')
+    for name in ('nucleic_acid_proximal_sites', 'nucleic_acid_near_sites'):
+        if name in beyond and set(beyond[name]['site_id']) - set(analysed['site_id']):
+            raise SystemExit(f'{folder}: {name} has sites that are not analysed in the release')
     return {'sites': ev, 'residues': t['residue_evidence'], 'partners': t['protein_partners'], 'complexes': t['complexes'],
             'statistics': t['interaction_statistics'], 'proteins': t['protein_interaction_summary'], 'status': status, 'evidence': evidence,
             'nucleic_acid': na, 'nucleic_acid_regions': regions, 'beyond': beyond}
 
 
 def bound_columns(ix: dict) -> dict:
-    """site_id -> the site table's bound_* values, from the RNA and DNA each site touches in structures
-    (nucleic_acid_contacts) and that its neighbours within 5 positions touch (nucleic_acid_near_sites). The bound
-    sequence shown is the best supported: one the arginine touches before one next to it, then the most PDB entries,
-    then the type's code order; its touched nucleotides are those of every entry showing it."""
+    """site_id -> the site table's bound_* values, from the RNA and DNA in direct contact with each site's side chain in
+    structures (nucleic_acid_contacts), within 8 Å of it where there is none (nucleic_acid_proximal_sites), and in contact
+    via a residue at i ± 1-5 where there is neither (nucleic_acid_near_sites). The bound sequence shown is the best
+    supported: direct, then proximal, then via a flanking residue; then the most PDB entries, then the type's code order;
+    its marked nucleotides are those of every entry showing it."""
     def hits(marked):
         out, k, i = set(), 0, 0
         while i < len(marked):
@@ -971,35 +973,47 @@ def bound_columns(ix: dict) -> dict:
             k += 1
         return out
 
-    groups = {}   # (site, window, type, at or near) -> {contact, offset, entries, offsets, names}
+    groups = {}   # (site, window, type, tier) -> {tier, contact, offset, distance, entries, offsets, names}
     na = ix.get('nucleic_acid')
     for r in (na.itertuples() if na is not None else []):
-        g = groups.setdefault((r.site_id, r.window, r.nucleic_acid_type, 'at'), {'contact': ('dna' if r.nucleic_acid == 'dna' else 'rna') + '_at', 'offset': 0,
-                                                                            'entries': set(), 'offsets': set(), 'names': Counter()})
+        g = groups.setdefault((r.site_id, r.window, r.nucleic_acid_type, 0), {'tier': 0, 'contact': ('dna' if r.nucleic_acid == 'dna' else 'rna') + '_at', 'offset': 0,
+                                                                          'distance': float(r.closest_distance_a), 'entries': set(), 'offsets': set(), 'names': Counter()})
         g['entries'].add(r.pdb_id)
+        g['distance'] = min(g['distance'], float(r.closest_distance_a))
         g['offsets'] |= hits(r.window_marked)
         g['names'][r.molecule_name] += 1
+    prox = ix['beyond'].get('nucleic_acid_proximal_sites')
+    for r in (prox.itertuples() if prox is not None else []):
+        # within 4 Å in the entry read: a direct contact PDBe-KB does not list at the interface
+        tier = 1 if float(r.distance_a) > 4 else 0
+        g = groups.setdefault((r.site_id, r.window, r.nucleic_acid_type, 'prox', tier), {'tier': tier, 'contact': r.nucleic_acid + ('_proximal' if tier else '_at'), 'offset': 0,
+                                                                          'distance': float(r.distance_a), 'entries': 0, 'offsets': set(), 'names': Counter()})
+        g['entries'] += int(r.n_entries)
+        g['distance'] = min(g['distance'], float(r.distance_a))
+        g['offsets'] |= hits(r.window_marked)
+        g['names'][r.molecule_name] += int(r.n_entries)
     near = ix['beyond'].get('nucleic_acid_near_sites')
     for r in (near.itertuples() if near is not None else []):
-        g = groups.setdefault((r.site_id, r.window, r.nucleic_acid_type, 'near'), {'contact': r.nucleic_acid + '_near', 'offset': int(r.residue_offset),
-                                                                            'entries': 0, 'offsets': set(), 'names': Counter()})
+        g = groups.setdefault((r.site_id, r.window, r.nucleic_acid_type, 2), {'tier': 2, 'contact': r.nucleic_acid + '_near', 'offset': int(r.residue_offset),
+                                                                          'distance': None, 'entries': 0, 'offsets': set(), 'names': Counter()})
         g['entries'] += int(r.n_entries)
         g['offset'] = min(g['offset'], int(r.residue_offset), key=lambda v: (abs(v), v))
         g['offsets'] |= hits(r.window_marked)
         g['names'][r.molecule_name] += int(r.n_entries)
     by_site = defaultdict(list)
-    for (site, window, ntype, _), g in groups.items():
+    for (site, window, ntype, *_), g in groups.items():
         g['n'] = len(g['entries']) if isinstance(g['entries'], set) else g['entries']
         by_site[site].append((window, ntype, g))
     types = list(rc.CODES['nucleic_acid_type'])
     out = {}
     for site, rows in by_site.items():
-        window, ntype, g = min(rows, key=lambda x: (x[2]['offset'] != 0, -x[2]['n'], types.index(x[1]), x[0]))
+        window, ntype, g = min(rows, key=lambda x: (x[2]['tier'], -x[2]['n'], types.index(x[1]), x[0]))
         out[site] = {
             'bound_nucleic_acid': join(ordered({x[2]['contact'] for x in rows}, list(rc.CODES['bound_contact']))),
             'bound_nucleic_acid_types': join(ordered({x[1] for x in rows}, types)),
             'bound_sequence': ''.join(f'[{c}]' if k in g['offsets'] else c for k, c in enumerate(window)),
             'bound_sequence_offset': g['offset'],
+            'bound_sequence_distance_a': g['distance'] if g['distance'] is not None else '',
             'bound_sequence_type': ntype,
             'bound_sequence_molecule': g['names'].most_common(1)[0][0],
             'bound_sequence_entries': g['n'],
@@ -1218,7 +1232,7 @@ def main() -> None:
             files['nucleic_acid_contacts'] = (f'supporting/nucleic_acid_contacts_{version}.tsv', ix['nucleic_acid'], rc.NUCLEIC_ACID_CONTACT_COLUMNS)
         if ix['nucleic_acid_regions'] is not None:
             files['nucleic_acid_regions'] = (f'supporting/nucleic_acid_regions_{version}.tsv', ix['nucleic_acid_regions'], rc.NUCLEIC_ACID_REGION_COLUMNS)
-        for name, columns in (('nucleic_acid_near_sites', rc.NUCLEIC_ACID_NEAR_COLUMNS), ('rna_bind_n_seq', rc.RNA_BIND_N_SEQ_COLUMNS),
+        for name, columns in (('nucleic_acid_proximal_sites', rc.NUCLEIC_ACID_PROXIMAL_COLUMNS), ('nucleic_acid_near_sites', rc.NUCLEIC_ACID_NEAR_COLUMNS), ('rna_bind_n_seq', rc.RNA_BIND_N_SEQ_COLUMNS),
                               ('dna_motifs', rc.DNA_MOTIF_COLUMNS), ('eclip', rc.ECLIP_COLUMNS)):
             if name in ix['beyond']:
                 files[name] = (f'supporting/{name}_{version}.tsv', ix['beyond'][name], columns)

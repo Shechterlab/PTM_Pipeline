@@ -338,8 +338,10 @@ CODES: dict[str, dict[str, str]] = {
     'bound_contact': {
         'rna_at': 'direct contact: an atom of the arginine side chain (CD, NE, CZ, NH1, NH2) within 4 Å of RNA (or an RNA-DNA hybrid) in a PDB structure',
         'dna_at': 'direct contact: an atom of the arginine side chain within 4 Å of DNA in a PDB structure',
-        'rna_near': 'contact via a flanking residue: in a complex where no atom of the arginine side chain is within 4 Å of RNA, a residue at i ± 1-5 is',
-        'dna_near': 'contact via a flanking residue: in a complex where no atom of the arginine side chain is within 4 Å of DNA, a residue at i ± 1-5 is',
+        'rna_proximal': 'proximal: in a complex without direct contact, an atom of the arginine side chain within 8 Å of RNA',
+        'dna_proximal': 'proximal: in a complex without direct contact, an atom of the arginine side chain within 8 Å of DNA',
+        'rna_near': 'contact via a flanking residue: in a complex where no atom of the arginine side chain is within 8 Å of RNA, a residue at i ± 1-5 is within 4 Å',
+        'dna_near': 'contact via a flanking residue: in a complex where no atom of the arginine side chain is within 8 Å of DNA, a residue at i ± 1-5 is within 4 Å',
     },
     'partner_kind': {
         'protein': 'another protein (partner_accession)',
@@ -559,10 +561,11 @@ SITE_COLUMNS = [
     ('domain_edge_distance', 'integer', '', 'residues to the nearest domain edge (0 inside a domain), empty when none'),
     ('interaction_status', 'code', 'interaction_status', 'interaction evidence at the site (supporting/site_interactions), empty for the sites kept pending'),
     ('interaction_evidence', 'list<code>', 'evidence_type', 'the evidence types at the site, in code order'),
-    ('bound_nucleic_acid', 'list<code>', 'bound_contact', 'RNA or DNA in direct contact with the site in PDB structures, or in contact via a residue at i ± 1-5 in a complex without direct contact, in code order (every entry: supporting/nucleic_acid_contacts and nucleic_acid_near_sites)'),
+    ('bound_nucleic_acid', 'list<code>', 'bound_contact', 'RNA or DNA in direct contact with the site in PDB structures, within 8 Å of its side chain in a complex without direct contact, or in contact via a residue at i ± 1-5 in a complex with neither, in code order (every entry: supporting/nucleic_acid_contacts and nucleic_acid_near_sites)'),
     ('bound_nucleic_acid_types', 'list<code>', 'nucleic_acid_type', 'the types of those RNA and DNA chains, in code order'),
-    ('bound_sequence', 'string', '', 'the best-supported bound sequence (direct contact before contact via a flanking residue, then the most PDB entries): 8 nucleotides each side of the centre, the contacted nucleotides in brackets, - past the chain\'s ends'),
-    ('bound_sequence_offset', 'integer', '', '0 for direct contact with the arginine side chain; else k, the offset of the closest residue i+k (k = ±1 to ±5) within 4 Å of bound_sequence'),
+    ('bound_sequence', 'string', '', 'the best-supported bound sequence (direct contact, then proximal, then via a flanking residue; then the most PDB entries): 8 nucleotides each side of the centre, the contacted nucleotides in brackets, - past the chain\'s ends'),
+    ('bound_sequence_offset', 'integer', '', '0 for direct contact or proximity of the arginine side chain; else k, the offset of the closest residue i+k (k = ±1 to ±5) within 4 Å of bound_sequence'),
+    ('bound_sequence_distance_a', 'number', '', 'distance from the arginine side chain to the closest nucleotide of bound_sequence, in Å (direct and proximal), empty for a flanking-residue contact'),
     ('bound_sequence_type', 'code', 'nucleic_acid_type', 'the type of its chain'),
     ('bound_sequence_molecule', 'string', '', 'its molecule name in the PDB entries (the most common one)'),
     ('bound_sequence_entries', 'integer', '', 'PDB entries showing it'),
@@ -671,7 +674,7 @@ LOWER_CONFIDENCE_SITE_EXTRA = [
     ('in_earlier_versions', 'list<string>', '', 'the earlier releases that had this site (v1.0.0, v1.1.0)'),
 ]
 
-BOUND_SITE_COLUMNS = ('bound_nucleic_acid', 'bound_nucleic_acid_types', 'bound_sequence', 'bound_sequence_offset', 'bound_sequence_type',
+BOUND_SITE_COLUMNS = ('bound_nucleic_acid', 'bound_nucleic_acid_types', 'bound_sequence', 'bound_sequence_offset', 'bound_sequence_distance_a', 'bound_sequence_type',
                       'bound_sequence_molecule', 'bound_sequence_entries')
 LOWER_CONFIDENCE_SITE_COLUMNS = [c for c in SITE_COLUMNS if c[0] not in ('interaction_status', 'interaction_evidence', *BOUND_SITE_COLUMNS, 'in_previous_version',
                                                                          'change_since_previous_version', 'change_reasons')] \
@@ -970,7 +973,7 @@ NUCLEIC_ACID_CONTACT_COLUMNS = [
 ]
 
 NUCLEIC_ACID_NEAR_COLUMNS = [
-    ('site_id', 'string', '', 'the site (site table): a methylarginine with no side-chain atom within 4 Å of RNA or DNA in this complex, and a residue at i ± 1-5 that has one'),
+    ('site_id', 'string', '', 'the site (site table): a methylarginine with no side-chain atom within 8 Å of RNA or DNA in this complex (none within 4 Å in any of its entries), and a residue at i ± 1-5 with one within 4 Å'),
     ('nucleic_acid', 'code', 'nucleic_acid', 'what that residue contacts (RNA-DNA hybrids counted as RNA)'),
     ('nucleic_acid_type', 'code', 'nucleic_acid_type', 'the type of the chain'),
     ('residue_offset', 'integer', '', 'the closest such residue, in positions from the site (negative: N-terminal)'),
@@ -985,6 +988,23 @@ NUCLEIC_ACID_NEAR_COLUMNS = [
     ('window_start', 'integer', '', 'SEQRES number of the window\'s first position'),
     ('window', 'string', '', 'the chain 8 nucleotides each side of the centre nucleotide (the 9th); - past its ends. Aligns with the windows of supporting/nucleic_acid_contacts'),
     ('window_marked', 'string', '', 'the window with every nucleotide contacted by a residue at i ± 1-5 in brackets'),
+]
+
+NUCLEIC_ACID_PROXIMAL_COLUMNS = [
+    ('site_id', 'string', '', 'the site (site table): a methylarginine with no side-chain atom within 4 Å of RNA or DNA in this complex (in none of its entries), and one within 8 Å'),
+    ('nucleic_acid', 'code', 'nucleic_acid', 'what the closest chain is (RNA-DNA hybrids counted as RNA)'),
+    ('nucleic_acid_type', 'code', 'nucleic_acid_type', 'the type of the chain'),
+    ('distance_a', 'number', '', 'distance from the arginine side chain (CD, NE, CZ, NH1, NH2) to the closest nucleotide, in Å, in the entry read (the closer of up to two copies of the protein); 4 Å or less where PDBe-KB does not list the residue at the interface, counted as direct contact in the site table'),
+    ('pdb_id', 'string', '', 'the entry read for the complex (one per distinct set of bound sequences)'),
+    ('n_entries', 'integer', '', 'the entries with the protein and the same bound sequences'),
+    ('chain', 'string', '', 'the RNA or DNA chain closest to the side chain, of this kind'),
+    ('molecule_name', 'string', '', 'its molecule name'),
+    ('source_organism', 'string', '', 'its source organism'),
+    ('sample_preparation', 'string', '', 'how it was made (Synthetically obtained: a designed oligonucleotide)'),
+    ('closest_nucleotide', 'string', '', 'the nucleotide closest to the side chain, SEQRES numbering'),
+    ('window_start', 'integer', '', 'SEQRES number of the window\'s first position'),
+    ('window', 'string', '', 'the chain 8 nucleotides each side of the closest nucleotide (the 9th); - past its ends. Aligns with the windows of supporting/nucleic_acid_contacts'),
+    ('window_marked', 'string', '', 'the window with every nucleotide within 8 Å of the side chain in brackets'),
 ]
 
 NUCLEIC_ACID_REGION_COLUMNS = [

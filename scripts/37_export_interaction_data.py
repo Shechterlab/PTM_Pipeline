@@ -111,6 +111,7 @@ REGION_GAP = 3        # residues touching nucleic acid this close join one regio
 REGION_SEGMENTS = 6   # bound segments kept per region (the most entries first)
 SEG_FLANK, SEG_JOIN = 2, 4   # a bound segment: contacted nucleotides with 2 each side; clusters this close join
 NEAR_RESIDUES = 5     # a methylarginine is next to RNA or DNA where a residue this close in sequence touches it
+PROXIMAL_CUTOFF = 8.0   # Å: a methylarginine's side chain this close to RNA or DNA, but not within CONTACT_CUTOFF, is proximal
 # What an RNA or DNA chain is, from its molecule name, source organism and preparation, and for DNA whether the entry
 # holds core histones (a nucleosome). The first RNA rule that matches the lower-case name wins; viral by organism too.
 NA_TYPE_RNA = [
@@ -828,6 +829,58 @@ def site_contacts(cache: Path, pdb: str, chain: str, label: int, refresh: bool):
             if key not in seen or d < seen[key]:
                 seen[key] = d
         out['hits'] = [[ch, lab, seq, comp, round(d, 2)] for (ch, lab, seq, comp), d in sorted(seen.items(), key=lambda kv: kv[1])]
+    dest.write_text(json.dumps(out))
+    return out
+
+
+def site_na_proximity(cache: Path, pdb: str, chain: str, label: int, na_chains: set, refresh: bool):
+    """The nucleotides of the entry's RNA and DNA chains within PROXIMAL_CUTOFF of an arginine's side chain (CD, NE, CZ,
+    NH1, NH2) in the first model, cached as JSON: {'resn', 'hits': [[nucleic-acid chain, its SEQRES index, nucleotide,
+    distance to the side chain, distance to any atom of the arginine]]}. The residue is addressed by author chain and
+    SEQRES index, as in site_contacts; symmetry copies are left out."""
+    dest = cache / 'na_proximity' / f'{pdb}_{chain}_{label}.json'
+    if dest.exists() and not refresh:
+        try:
+            return json.loads(dest.read_text())
+        except json.JSONDecodeError:
+            pass
+    url = MODELSERVER.format(pdb=pdb) + '?' + urllib.parse.urlencode(
+        {'auth_asym_id': chain, 'label_seq_id': label, 'radius': PROXIMAL_CUTOFF + 0.5, 'model_nums': 1, 'encoding': 'cif'})
+    text = None
+    for k in range(4):
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': UA})
+            with urllib.request.urlopen(req, timeout=120) as r:
+                text = r.read().decode('utf-8', 'replace')
+            break
+        except urllib.error.HTTPError as e:
+            if e.code in (400, 404):
+                text = ''
+                break
+            time.sleep(2 ** k)
+        except Exception:  # noqa: BLE001 - network hiccup, retried
+            time.sleep(2 ** k)
+    if text is None:
+        raise SystemExit(f'ModelServer did not answer for {pdb} chain {chain} residue {label} after 4 tries; run the build again')
+    atoms = parse_cif_atoms(text)
+    me = [a for a in atoms if a.get('auth_asym_id') == chain and a.get('label_seq_id') == str(label)]
+    xyz = lambda a: (float(a['Cartn_x']), float(a['Cartn_y']), float(a['Cartn_z']))  # noqa: E731
+    side = [xyz(a) for a in me if a.get('label_atom_id') in SIDE_CHAIN]
+    every = [xyz(a) for a in me]
+    out = {'resn': me[0].get('label_comp_id') if me else '', 'hits': []}
+    if side:
+        best = {}
+        for a in atoms:
+            ch = a.get('auth_asym_id', '')
+            if ch not in na_chains or not re.fullmatch(r'\d+', a.get('label_seq_id') or '') or a.get('type_symbol') == 'H':
+                continue
+            q = xyz(a)
+            ds, da = min(math.dist(q, x) for x in side), min(math.dist(q, x) for x in every)
+            key = (ch, int(a['label_seq_id']))
+            if ds <= PROXIMAL_CUTOFF and (key not in best or ds < best[key][1]):
+                best[key] = (a.get('label_comp_id', ''), ds, min(da, best[key][2]) if key in best else da)
+        out['hits'] = [[ch, lab, comp, round(ds, 2), round(da, 2)] for (ch, lab), (comp, ds, da) in sorted(best.items(), key=lambda kv: kv[1][1])]
+    dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(json.dumps(out))
     return out
 
@@ -1657,7 +1710,7 @@ def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
     t = ii.Tables(folder)
     g = globals()
     orig = {k: g[k] for k in ('fetch_interfaces', 'site_contacts', 'residue_environment', 'analyze_environment', 'load_nucleic_chains',
-                              'chain_na_contacts')}
+                              'chain_na_contacts', 'site_na_proximity')}
     manifest = folder.parent / 'MANIFEST.tsv'
     intact_release = ''
     if manifest.exists():
@@ -1713,6 +1766,12 @@ def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
         hit = na_res.get((pdb, chain))
         return {'hits': [list(h) for h in hit]} if hit is not None else orig['chain_na_contacts'](topup, pdb, chain, na_chains, False)
     g['chain_na_contacts'] = chain_na_contacts_
+    na_prox = ii.na_proximity(t)
+
+    def site_na_proximity_(cache, pdb, chain, label, na_chains, refresh):
+        hit = na_prox.get((pdb, chain, int(label)))
+        return {'resn': hit[0], 'hits': [list(h) for h in hit[1]]} if hit is not None else orig['site_na_proximity'](topup, pdb, chain, label, na_chains, False)
+    g['site_na_proximity'] = site_na_proximity_
 
     def site_contacts_(cache, pdb, chain, label, refresh):
         hit = contacts.get((pdb, chain, int(label)))
@@ -2116,6 +2175,13 @@ def write_release_tables(outdir: Path, d: dict):
             for acc, kind, start, end, n_ent, n_cx, segs, n_segs, in_sites in d.get('na_regions') or []]
     write('nucleic_acid_regions.tsv', ['uniprot_accession', 'start', 'end', 'nucleic_acid', 'n_entries', 'n_complexes', 'methylarginines',
                                        'bound_segments', 'segment_entries', 'segment_example_entries', 'segment_molecule_names', 'segment_types', 'n_segments'], rows)
+    rows = []
+    for j, kind, pdb, ch, window, offsets, dist, ents, centre in d.get('prox_rows') or []:
+        _, _, name, organism, seq, prep, _ = d['chains_na'][(pdb, ch)]
+        rows.append([sid(j), kind, chain_type(d['chains_na'][(pdb, ch)]), dist, pdb, len(ents), ch, clean(name), clean(organism), prep,
+                     f'{seq[centre - 1]}{centre}', centre - NA_WINDOW, window, ''.join(f'[{c}]' if k in offsets else c for k, c in enumerate(window))])
+    write('nucleic_acid_proximal_sites.tsv', ['site_id', 'nucleic_acid', 'nucleic_acid_type', 'distance_a', 'pdb_id', 'n_entries', 'chain', 'molecule_name',
+                                              'source_organism', 'sample_preparation', 'closest_nucleotide', 'window_start', 'window', 'window_marked'], rows)
     rows = []
     for j, kind, pdb, ch, window, offsets, via, ents, centre in d.get('near_rows') or []:
         _, _, name, organism, seq, prep, _ = d['chains_na'][(pdb, ch)]
@@ -2891,13 +2957,13 @@ def main():
         g[2].add(na_name_ix[name])
         g[3] = min(g[3], dist)
         g[4] = g[4] and prep == 'Synthetically obtained'
-    na_json = [[j, kind, window, sorted(g[0]), sorted(g[1], reverse=True), sorted(g[2]), round(g[3], 2), int(g[4]), 0, ntype]
+    na_json = [[j, kind, window, sorted(g[0]), sorted(g[1], reverse=True), sorted(g[2]), round(g[3], 2), int(g[4]), 0, ntype, 0]
                for (j, kind, ntype, window), g in sorted(grouped.items())]
 
     # Regions: the residues of each methylated protein within 4 Å of RNA or DNA, read once per distinct complex (the
     # protein with the same bound sequences; the entries sharing it are counted), joined into runs, each with the bound
     # segments it touches and the methylarginines inside it.
-    region_json, near_rows = [], []
+    region_json, near_rows, prox_rows = [], [], []
     if chains_na:
         na_by_pdb = defaultdict(list)
         for (pdb, ch), v in chains_na.items():
@@ -2969,14 +3035,74 @@ def main():
         log(f"Nucleic-acid regions: {sum(1 for r in region_json if r[1] == 'rna'):,} RNA- and {sum(1 for r in region_json if r[1] == 'dna'):,} "
             f"DNA-contacting regions in {len({r[0] for r in region_json}):,} proteins, {sum(1 for r in region_json if r[8]):,} with methylarginines")
 
-        # Bound sequences next to a methylarginine: in each distinct complex where the arginine itself touches no RNA or
-        # DNA (in none of its entries), the stretch that residues within NEAR_RESIDUES of it touch, on the chain they
-        # touch most, centred on the middle nucleotide that the closest such residue touches; windows align as the
-        # direct ones do. [site, kind, entry read, chain, window, touched offsets, closest residue - site, entries, centre]
+        # Proximal: in each distinct complex where no atom of the arginine side chain is within CONTACT_CUTOFF of RNA or
+        # DNA (in none of its entries), the nucleotides within PROXIMAL_CUTOFF of it, read in the complex's entry (both
+        # copies of the protein, the closer kept), on the closest chain of each kind, the window centred on the closest
+        # nucleotide. [site, kind, entry read, chain, window, offsets within the cutoff, distance, entries, centre]
         at_entry = {(r[0], r[1]) for r in na_rows}
         sites_of = defaultdict(list)
         for (acc, q), j in site_at.items():
             sites_of[acc].append((q, j))
+        prox_jobs = []
+        for acc, si, pdb, ch in jobs:
+            for q0, j in sites_of.get(acc, []):
+                if any((j, e) in at_entry for e in sig_entries[si]):
+                    continue
+                lab = next((beg + (q0 - sp_beg) for beg, sp_beg, sp_end, sa in seg_of[(pdb, ch)] if sa == acc and sp_beg <= q0 <= sp_end), None)
+                if lab is not None:
+                    prox_jobs.append((j, si, pdb, ch, lab))
+        log(f'Proximal: {len(prox_jobs):,} methylarginine side chains read within {PROXIMAL_CUTOFF:g} Å of RNA or DNA')
+
+        def run_prox(job):
+            j, si, pdb, ch, lab = job
+            return job, site_na_proximity(cache, pdb, ch, lab, set(na_by_pdb.get(pdb, [])), args.refresh)
+
+        best_prox = {}   # (site, complex, kind) -> (distance, entry, chain, {SEQRES index: distance})
+        done = 0
+        with ThreadPoolExecutor(max_workers=args.workers) as pool:
+            for (j, si, pdb, ch, lab), res in pool.map(run_prox, prox_jobs):
+                done += 1
+                if done % 2000 == 0:
+                    log(f'  {done:,}/{len(prox_jobs):,}')
+                by_chain = defaultdict(dict)
+                for nch, nlab, _, ds, _ in res['hits']:
+                    if (pdb, nch) in chains_na and 1 <= nlab <= len(chains_na[(pdb, nch)][4]):
+                        by_chain[nch][nlab] = ds
+                for nch, hits in by_chain.items():
+                    key = (j, si, 'dna' if chains_na[(pdb, nch)][0] == 'dna' else 'rna')
+                    d = min(hits.values())
+                    if key not in best_prox or d < best_prox[key][0]:
+                        best_prox[key] = (d, pdb, nch, hits)
+        for (j, si, kind), (d, pdb, nch, hits) in sorted(best_prox.items()):
+            centre = min(hits, key=lambda k: (hits[k], k))
+            seq, lo = chains_na[(pdb, nch)][4], centre - NA_WINDOW
+            window = ''.join(seq[k - 1] if 1 <= k <= len(seq) else '-' for k in range(lo, centre + NA_WINDOW + 1))
+            prox_rows.append([j, kind, pdb, nch, window, sorted(k - lo for k in hits if lo <= k <= centre + NA_WINDOW), round(d, 2), sig_entries[si], centre])
+        prox_cx = {(j, si) for j, si, _ in best_prox}
+        grouped = {}
+        for j, kind, pdb, nch, window, offsets, d, ents, _ in prox_rows:
+            name, prep = chains_na[(pdb, nch)][2], chains_na[(pdb, nch)][5]
+            if name not in na_name_ix:
+                na_name_ix[name] = len(na_names)
+                na_names.append(name)
+            g = grouped.setdefault((j, kind, chain_type(chains_na[(pdb, nch)]), window), [set(), set(), set(), d, True])
+            g[0].update(offsets)
+            g[1].update(ents)
+            g[2].add(na_name_ix[name])
+            g[3] = min(g[3], d)
+            g[4] = g[4] and prep == 'Synthetically obtained'
+        # a side chain within CONTACT_CUTOFF in the entry read is a direct contact PDBe-KB did not list: tier 0
+        na_json += [[j, kind, window, sorted(g[0]), sorted(g[1], reverse=True), sorted(g[2]), g[3], int(g[4]), 0, ntype, int(g[3] > CONTACT_CUTOFF)]
+                    for (j, kind, ntype, window), g in sorted(grouped.items())]
+        log(f"Proximal: {len({r[0] for r in prox_rows if r[1] == 'rna'}):,} methylarginines with RNA and {len({r[0] for r in prox_rows if r[1] == 'dna'}):,} "
+            f"with DNA within {PROXIMAL_CUTOFF:g} Å of the side chain and none within {CONTACT_CUTOFF:g} Å ({len(prox_rows):,} site-complex pairs; "
+            f"{sum(1 for r in prox_rows if r[6] <= CONTACT_CUTOFF):,} within {CONTACT_CUTOFF:g} Å in the entry read although PDBe-KB does not list the residue at the interface)")
+
+        # Bound sequences via a flanking residue: in each distinct complex where the arginine side chain has no RNA or DNA
+        # within CONTACT_CUTOFF (in none of its entries) nor within PROXIMAL_CUTOFF, the stretch that residues within
+        # NEAR_RESIDUES of it touch, on the chain they touch most, centred on the middle nucleotide that the closest such
+        # residue touches; windows align as the direct ones do.
+        # [site, kind, entry read, chain, window, touched offsets, closest residue - site, entries, centre]
         for (acc, kind), res in sorted(per_res.items()):
             by_cx = defaultdict(lambda: defaultdict(set))   # complex -> position -> {(pdb, chain, SEQRES index)}
             for q, hits in res.items():
@@ -2986,7 +3112,7 @@ def main():
                 for si, at_pos in sorted(by_cx.items()):
                     # other residues only: the arginine's own (side chain within 4 Å) is the direct tier
                     near = {q: h for q, h in at_pos.items() if 0 < abs(q - q0) <= NEAR_RESIDUES}
-                    if not near or any((j, e) in at_entry for e in sig_entries[si]):
+                    if not near or (j, si) in prox_cx or any((j, e) in at_entry for e in sig_entries[si]):
                         continue
                     (pdb, nch), _ = Counter((pd, ch) for h in near.values() for pd, ch, _ in h).most_common(1)[0]
                     on = {q: sorted(n for pd, ch, n in h if (pd, ch) == (pdb, nch)) for q, h in near.items()}
@@ -3008,7 +3134,7 @@ def main():
             g[2].add(na_name_ix[name])
             g[3] = min(g[3], via, key=lambda v: (abs(v), v))
             g[4] = g[4] and prep == 'Synthetically obtained'
-        na_json += [[j, kind, window, sorted(g[0]), sorted(g[1], reverse=True), sorted(g[2]), None, int(g[4]), g[3], ntype]
+        na_json += [[j, kind, window, sorted(g[0]), sorted(g[1], reverse=True), sorted(g[2]), None, int(g[4]), g[3], ntype, 0]
                     for (j, kind, ntype, window), g in sorted(grouped.items())]
         log(f"Bound sequences next to methylarginines: {len({r[0] for r in near_rows if r[1] == 'rna'}):,} sites with RNA and "
             f"{len({r[0] for r in near_rows if r[1] == 'dna'}):,} with DNA touched within {NEAR_RESIDUES} residues ({len(near_rows):,} site-complex pairs)")
@@ -3142,9 +3268,9 @@ def main():
                 'contacts': ['site', '[partner (-1 RNA, -2 DNA, -3 ligand, -4 unmapped chain, else protein index), pdb, residue labels]', 'methylated residue modelled (2MR/DA2/NMM)'],
                 'na': ['site', 'rna|dna|hybrid', f'window: the chain\'s sequence {NA_WINDOW} nt each side of the nucleotide closest to the arginine (at), or of the one its closest '
                        f'neighbour touches (near), - past its ends', 'contacted offsets in the window (middle at ' + str(NA_WINDOW) + '), over the entries', 'PDB entries showing it',
-                       'molecule names (na_names index)', 'closest distance (Å), at only', 'made oligonucleotide in every entry (Synthetically obtained): 1, else 0',
-                       f'0: the arginine touches it (within 4 Å); else the offset of the closest residue within {NEAR_RESIDUES} that does',
-                       'chain type (' + '|'.join(NA_TYPES) + ')'],
+                       'molecule names (na_names index)', 'closest distance (Å) to the side chain, direct and proximal only', 'made oligonucleotide in every entry (Synthetically obtained): 1, else 0',
+                       f'0: the side chain is within 4 Å or (tier 1) {PROXIMAL_CUTOFF:g} Å of it; else k of the closest residue i+k (k = ±1 to ±{NEAR_RESIDUES}) within 4 Å of it',
+                       'chain type (' + '|'.join(NA_TYPES) + ')', f'tier: 0 direct contact or via a flanking residue, 1 proximal (side chain within {PROXIMAL_CUTOFF:g} Å, one entry per distinct complex)'],
                 'na_names': 'molecule names of the RNA and DNA chains',
                 'nab': {'rbns': ['accession', 'ENCODE experiment', 'protein concentration', f'top {RBNS_TOP} 5-mers [[kmer, R]]', 'ENCODE logos [[k, logo, [[A, C, G, U] per position]]]'],
                         'jaspar': ['accession', 'matrix', 'name', 'TF class', 'TF family', '[[A, C, G, T] counts per position]', 'IUPAC consensus'],
@@ -3226,7 +3352,7 @@ def main():
             'pred_all': pred_all, 'gallery': gallery, 'intact_rows': intact_rows, 'partners': partners, 'domain_classes': domain_classes,
             'meth_base': meth_base, 'cx_rows': cx_rows, 'iface_residues': iface_residues, 'pred_iface': pred_iface, 'xl_prot': xl_prot,
             'intact_prot': intact_prot, 'tests': release_tests, 'set_tests': set_tests, 'complexes': cx_release, 'go': go, 'xl_seq': xl_seq_all,
-            'proteome': proteome, 'na_rows': na_rows, 'chains_na': chains_na, 'na_regions': region_json, 'nab': nab, 'near_rows': near_rows})
+            'proteome': proteome, 'na_rows': na_rows, 'chains_na': chains_na, 'na_regions': region_json, 'nab': nab, 'near_rows': near_rows, 'prox_rows': prox_rows})
     log(f'wrote {args.out}: {len(vocab):,} proteins, {sum(len(r) // 2 for r in string_rows):,} partner links, '
         f'{len(cx_rows):,} complexes with methylated members, {len(site_rows):,} sites at PDB interfaces '
         f'({Path(args.out).stat().st_size / 1e6:.2f} MB)')

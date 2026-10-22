@@ -525,6 +525,31 @@ def stage_nucleic_chains(w: Writer, c: Path):
             derived=[f'pdbe_molecules/<pdb>.json ({len(files):,} files)'])
 
 
+def stage_na_proximity(w: Writer, c: Path):
+    """The nucleotides within 8 Å of each methylarginine side chain read for the proximal tier (one entry per distinct
+    complex, where the side chain has no nucleotide within 4 Å)."""
+    files = sorted((c / 'na_proximity').glob('*.json'))
+    rows = []
+    for p in files:
+        pdb, chain, label = p.stem.split('_')
+        try:
+            res = json.loads(p.read_text())
+        except json.JSONDecodeError:
+            continue
+        rows += [[pdb, chain, int(label), res.get('resn', ''), *h] for h in res.get('hits') or []] or [[pdb, chain, int(label), res.get('resn', ''), '', '', '', '', '']]
+    rows.sort(key=lambda x: (x[0], x[1], x[2], x[7] if x[7] != '' else 0))
+    d = dates_of(files)
+    w.table(f'pdb_arginine_nucleic_acid_proximity_{d[:10]}.tsv',
+            ['pdb_id', 'chain', 'seqres_index', 'residue', 'na_chain', 'na_seqres_index', 'nucleotide', 'side_chain_distance_a', 'any_atom_distance_a'], rows,
+            content='Nucleotides of the entry\'s RNA and DNA chains within 8 Å of the side chain (CD, NE, CZ, NH1, NH2) of a '
+                    'methylarginine, in the first model of one entry per distinct complex where the side chain has no nucleotide '
+                    'within 4 Å, with the distance to any atom of the arginine; a row with empty nucleotide columns is a residue '
+                    'read with none',
+            source=x37.MODELSERVER, version=f'RCSB ModelServer, read {d}', citation='Burley et al., Nucleic Acids Res 51:D488 (2023)',
+            licence='CC0 (PDB data)', how='scripts/37 site_na_proximity; collected here',
+            derived=[f'na_proximity/<pdb>_<chain>_<seqres index>.json ({len(files):,} files)'])
+
+
 def stage_na_regions(w: Writer, c: Path):
     """Every residue of a methylated protein's chain within 4 Å of RNA or DNA, one entry per distinct complex."""
     files = sorted((c / 'na_regions').glob('*.json'))
@@ -969,6 +994,8 @@ def stage_topup(c: Path, out: Path, workers: int, manifest: Path, measured: str)
         stage_nucleic_chains(w, c)
     if any((c / 'na_regions').glob('*.json')):
         stage_na_regions(w, c)
+    if any((c / 'na_proximity').glob('*.json')):
+        stage_na_proximity(w, c)
     # scripts/37 makes these folders before it knows whether a model needs measuring: stage only what holds files
     if any(p.is_file() for x in ('protvar_measure', 'afdb_measure', 'afdb_complex') for p in (c / x).glob('*')):
         stage_model_contacts(w, c, served=out / 'protvar_served_models_af2complexes_v1.tsv', measured=measured)
