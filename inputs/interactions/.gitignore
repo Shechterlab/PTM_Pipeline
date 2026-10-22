@@ -1,0 +1,4 @@
+# pCLAP (PRIDE PXD005739): PRIDE gives only the EMBL-EBI terms of use and the submitters state no licence, so the table
+# derived from their MaxQuant output is not redistributed (../MANIFEST.tsv redistribution = checksum_only).
+# Rebuild it with scripts/43d_stage_pclap.py.
+pclap_mullari2017_peptides.tsv
