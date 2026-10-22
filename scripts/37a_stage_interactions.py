@@ -508,15 +508,16 @@ def stage_nucleic_chains(w: Writer, c: Path):
             chains = x37.nucleic_chain_rows(json.loads(p.read_text() or '{}').get(p.stem, []))
         except json.JSONDecodeError:
             continue
-        rows += [[p.stem, ch, entity, kind, name, organism, prep, len(seq), seq] for ch, entity, kind, name, organism, seq, prep in chains]
+        rows += [[p.stem, ch, entity, kind, name, organism, prep, histones, len(seq), seq] for ch, entity, kind, name, organism, seq, prep, histones in chains]
         if not chains:
-            rows.append([p.stem, '', '', '', '', '', '', '', ''])
+            rows.append([p.stem, '', '', '', '', '', '', '', '', ''])
     rows.sort(key=lambda x: (x[0], x[1]))
     d = dates_of(files)
     w.table(f'pdb_nucleic_acid_chains_{d[:10]}.tsv',
-            ['pdb_id', 'chain', 'entity_id', 'nucleic_acid', 'molecule_name', 'source_organism', 'sample_preparation', 'length', 'sequence'], rows,
+            ['pdb_id', 'chain', 'entity_id', 'nucleic_acid', 'molecule_name', 'source_organism', 'sample_preparation', 'entry_core_histones', 'length', 'sequence'], rows,
             content='The RNA and DNA chains of the PDB entries where a methylated protein touches nucleic acid: molecule type (rna, dna or '
-                    'hybrid), name, source organism, sample preparation (Synthetically obtained for a made oligonucleotide) and SEQRES '
+                    'hybrid), name, source organism, sample preparation (Synthetically obtained for a made oligonucleotide), whether the '
+                    'entry holds a core histone (H2A, H2B, H3, H4 or a variant: a nucleosome\'s DNA) and SEQRES '
                     'sequence in one-letter codes (modified nucleotides as their parent); a row with an empty chain is an entry looked up '
                     'that has none',
             source=x37.PDBE_MOLECULES, version=f'PDBe API, read {d}', citation='Burley et al., Nucleic Acids Res 51:D488 (2023)',

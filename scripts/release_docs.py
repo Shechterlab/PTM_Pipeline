@@ -204,9 +204,9 @@ FILE_ROWS = {
     'residue_evidence': 'run of residues of a protein with the same interaction evidence',
     'protein_partners': 'protein and STRING physical partner (score >= 0.7)',
     'complexes': 'Complex Portal or hu.MAP complex with a methylated member',
-    'nucleic_acid_contacts': 'site and RNA or DNA chain it touches in a PDB structure: the contacted nucleotides and the bound sequence around them',
-    'nucleic_acid_near_sites': 'site and complex in which a residue within 5 positions of it, not the arginine itself, touches RNA or DNA: the bound sequence there',
-    'nucleic_acid_regions': 'run of residues of a protein touching RNA or DNA in PDB structures: the bound segments and the methylarginines inside it',
+    'nucleic_acid_contacts': 'site and RNA or DNA chain within 4 Å of its side chain in a PDB structure: the contacted nucleotides and the bound sequence around them',
+    'nucleic_acid_near_sites': 'site and complex in which a residue at i ± 1-5, not the arginine side chain, is within 4 Å of RNA or DNA: the bound sequence there',
+    'nucleic_acid_regions': 'run of residues of a protein within 4 Å of RNA or DNA in PDB structures: the bound segments and the methylarginines inside it',
     'rna_bind_n_seq': 'methylated protein and ENCODE RNA Bind-n-Seq experiment: its most enriched 5-mers and logos (in vitro)',
     'dna_motifs': 'methylated protein and JASPAR 2026 DNA-binding profile',
     'eclip': 'methylated protein and ENCODE eCLIP experiment: peaks by transcript region and the genes with most peaks (in cells)',
@@ -830,7 +830,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
 
 
 def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
-    """CHANGES.md: the RNA and DNA bound at and next to methylarginines, and what their proteins bind (v1.3.0 on)."""
+    """CHANGES.md: the RNA and DNA in contact with methylarginines, directly or via a flanking residue, and what their proteins bind (v1.3.0 on)."""
     if 'nucleic_acid_contacts' not in files or previous not in ('v1.0.0', 'v1.1.0', 'v1.2.0'):
         return []
     at, near = files['nucleic_acid_contacts'][1], files.get('nucleic_acid_near_sites', (None, None))[1]
@@ -839,32 +839,34 @@ def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
     out = [
         '## RNA and DNA at methylarginines',
         '',
-        f'The sites are those of {previous}. This version adds the RNA and DNA they touch in PDB structures, read in every entry '
+        f'The sites are those of {previous}. This version adds the RNA and DNA in contact with them in PDB structures, read in every entry '
         'PDBe-KB lists for a site with RNA or DNA, and what their proteins bind in vitro and in cells.',
         '',
-        f"- `{files['nucleic_acid_contacts'][0]}`: {n(kind(at, 'rna'))} methylarginines touch RNA and {n(kind(at, 'dna'))} touch DNA "
+        f"- `{files['nucleic_acid_contacts'][0]}`: {n(kind(at, 'rna'))} methylarginines in direct contact with RNA and {n(kind(at, 'dna'))} with DNA "
         f"(a nucleotide within 4 Å of the side chain), {n(len(at))} site-chain pairs in {n(at['pdb_id'].nunique())} entries: the "
         'chain (molecule, organism, how it was made: Synthetically obtained for a designed oligonucleotide), the nucleotides '
         'contacted and the bound sequence 8 nucleotides each side of the closest one, so the windows of any sites align.',
     ]
     if near is not None:
         out.append(f"- `{files['nucleic_acid_near_sites'][0]}`: {n(kind(near, 'rna'))} sites with RNA and {n(kind(near, 'dna'))} with DNA "
-                   'touched by a residue within 5 positions in a complex where the arginine itself touches none: the bound sequence '
-                   'there, centred on what the closest such residue touches.')
+                   'in contact via a flanking residue (one at i ± 1-5 within 4 Å, in a complex where the arginine side chain has no contact): '
+                   'the bound sequence there, centred on the nucleotide the closest such residue contacts.')
     if regions is not None:
         has = regions['methylarginines'].astype(str).str.len() > 0
         out.append(f"- `{files['nucleic_acid_regions'][0]}`: {n(len(regions))} runs of residues within 4 Å of RNA or DNA on "
                    f"{n(regions['uniprot_accession'].nunique())} proteins ({n(int(has.sum()))} with methylarginines inside), read once per "
-                   'distinct complex (the same bound sequences), with the segments each touches.')
+                   'distinct complex (the same bound sequences), with the segments each contacts.')
     for key, text in (('rna_bind_n_seq', 'ENCODE RNA Bind-n-Seq (in vitro): the most enriched 5-mers and logos'),
                       ('dna_motifs', 'JASPAR 2026 CORE vertebrates DNA-binding profiles (CC BY 4.0)'),
                       ('eclip', 'ENCODE eCLIP in K562 and HepG2 cells: peaks by transcript region (GENCODE v50 basic) and the genes with most')):
         if key in files:
             df = files[key][1]
             out.append(f"- `{files[key][0]}`: {text}, for {n(df['uniprot_accession'].nunique())} methylated proteins.")
-    out += ['', 'The website shows them on protein pages (RNA and DNA tabs: where the protein binds, the bound sequences at '
-            'or next to each methylarginine with a logo, its preferences and eCLIP targets), on a site\'s card, and for a '
-            'selection in the Interactions view. Inputs: `inputs/interactions/pdb_nucleic_acid_*` (PDB data, CC0) and '
+    out += ['', 'The website shows them on protein pages (RNA and DNA interactions: where the protein binds, the bound sequences '
+            'in contact with each methylarginine with a logo and a type filter, its preferences and eCLIP targets), on a site\'s card, in '
+            'the site tables (Bound RNA/DNA, with the search term bound:), and for a selection in the Interactions view.'
+            ' Each chain is typed (rRNA, tRNA, snRNA, mRNA, other ncRNA, viral, designed oligo; nucleosomal, telomeric or other '
+            'DNA) and the site table gains bound_* columns. Inputs: `inputs/interactions/pdb_nucleic_acid_*` (PDB data, CC0) and '
             '`inputs/nucleic_acid/` (scripts/43_stage_nucleic_acid_binding.py). RNAcompete (CISBP-RNA) states no licence and '
             'is not included.', '']
     return out

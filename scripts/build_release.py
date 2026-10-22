@@ -955,6 +955,58 @@ def interaction_tables(folder: Path, sites: pd.DataFrame) -> dict:
             'nucleic_acid': na, 'nucleic_acid_regions': regions, 'beyond': beyond}
 
 
+def bound_columns(ix: dict) -> dict:
+    """site_id -> the site table's bound_* values, from the RNA and DNA each site touches in structures
+    (nucleic_acid_contacts) and that its neighbours within 5 positions touch (nucleic_acid_near_sites). The bound
+    sequence shown is the best supported: one the arginine touches before one next to it, then the most PDB entries,
+    then the type's code order; its touched nucleotides are those of every entry showing it."""
+    def hits(marked):
+        out, k, i = set(), 0, 0
+        while i < len(marked):
+            if marked[i] == '[':
+                out.add(k)
+                i += 3
+            else:
+                i += 1
+            k += 1
+        return out
+
+    groups = {}   # (site, window, type, at or near) -> {contact, offset, entries, offsets, names}
+    na = ix.get('nucleic_acid')
+    for r in (na.itertuples() if na is not None else []):
+        g = groups.setdefault((r.site_id, r.window, r.nucleic_acid_type, 'at'), {'contact': ('dna' if r.nucleic_acid == 'dna' else 'rna') + '_at', 'offset': 0,
+                                                                            'entries': set(), 'offsets': set(), 'names': Counter()})
+        g['entries'].add(r.pdb_id)
+        g['offsets'] |= hits(r.window_marked)
+        g['names'][r.molecule_name] += 1
+    near = ix['beyond'].get('nucleic_acid_near_sites')
+    for r in (near.itertuples() if near is not None else []):
+        g = groups.setdefault((r.site_id, r.window, r.nucleic_acid_type, 'near'), {'contact': r.nucleic_acid + '_near', 'offset': int(r.residue_offset),
+                                                                            'entries': 0, 'offsets': set(), 'names': Counter()})
+        g['entries'] += int(r.n_entries)
+        g['offset'] = min(g['offset'], int(r.residue_offset), key=lambda v: (abs(v), v))
+        g['offsets'] |= hits(r.window_marked)
+        g['names'][r.molecule_name] += int(r.n_entries)
+    by_site = defaultdict(list)
+    for (site, window, ntype, _), g in groups.items():
+        g['n'] = len(g['entries']) if isinstance(g['entries'], set) else g['entries']
+        by_site[site].append((window, ntype, g))
+    types = list(rc.CODES['nucleic_acid_type'])
+    out = {}
+    for site, rows in by_site.items():
+        window, ntype, g = min(rows, key=lambda x: (x[2]['offset'] != 0, -x[2]['n'], types.index(x[1]), x[0]))
+        out[site] = {
+            'bound_nucleic_acid': join(ordered({x[2]['contact'] for x in rows}, list(rc.CODES['bound_contact']))),
+            'bound_nucleic_acid_types': join(ordered({x[1] for x in rows}, types)),
+            'bound_sequence': ''.join(f'[{c}]' if k in g['offsets'] else c for k, c in enumerate(window)),
+            'bound_sequence_offset': g['offset'],
+            'bound_sequence_type': ntype,
+            'bound_sequence_molecule': g['names'].most_common(1)[0][0],
+            'bound_sequence_entries': g['n'],
+        }
+    return out
+
+
 def write_table(df: pd.DataFrame, columns: list[tuple], path: Path) -> None:
     """Write a release TSV in the declared column order and types: integers without decimals, numbers in up to 6
     significant digits, booleans true/false, empty for missing. Fails on a tab or newline in a value, or on ';' in a
@@ -1091,6 +1143,9 @@ def main() -> None:
     analysed = ~sites['flags'].str.contains('one_sided_window', regex=False)   # sites kept pending are left out
     sites['interaction_status'] = sites['site_id'].map(ix['status']).fillna('none').where(analysed, '') if ix else ''
     sites['interaction_evidence'] = sites['site_id'].map(ix['evidence']).fillna('') if ix else ''
+    bound = bound_columns(ix) if ix else {}
+    for c in rc.BOUND_SITE_COLUMNS:
+        sites[c] = sites['site_id'].map(lambda s: bound[s][c] if s in bound else '')
     sites = sites[[c for c, *_ in rc.SITE_COLUMNS]]
     lc_sites = sites.iloc[n_main:].merge(lc_tests, on='site_id', how='left')
     lc_sites = lc_sites[[c for c, *_ in rc.LOWER_CONFIDENCE_SITE_COLUMNS]].reset_index(drop=True)

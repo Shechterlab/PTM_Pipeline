@@ -371,8 +371,9 @@ def contacts(t: Tables) -> dict:
 
 
 def nucleic_chains(t: Tables) -> tuple[dict, set]:
-    """(pdb, author chain) -> (kind, entity, molecule name, organism, SEQRES sequence, sample preparation) of the RNA and DNA chains staged,
-    and the PDB entries looked up (an entry with none has a row with an empty chain). Empty before v1.3.0's staging."""
+    """(pdb, author chain) -> (kind, entity, molecule name, organism, SEQRES sequence, sample preparation, entry has core
+    histones) of the RNA and DNA chains staged, and the PDB entries looked up (an entry with none has a row with an empty
+    chain). Empty before v1.3.0's staging."""
     out, looked = {}, set()
     try:
         rows = list(t.rows('pdb_nucleic_acid_chains_'))
@@ -382,7 +383,7 @@ def nucleic_chains(t: Tables) -> tuple[dict, set]:
         looked.add(r['pdb_id'])
         if r['chain']:
             out[(r['pdb_id'], r['chain'])] = (r['nucleic_acid'], int(r['entity_id']), r['molecule_name'], r['source_organism'], r['sequence'],
-                                              r.get('sample_preparation', ''))
+                                              r.get('sample_preparation', ''), r.get('entry_core_histones') == 'true')
     return out, looked
 
 

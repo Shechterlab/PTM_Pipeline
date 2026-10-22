@@ -83,7 +83,7 @@
     UniProt: 'UniProt methylarginine annotation with experimental evidence from the literature (ECO:0000269)',
     IEDB: 'Immune Epitope Database epitope with a methylated arginine, localised by its sequence',
     'Maron 2021': 'A549 cells, Rme1/Rme2a/Rme2s antibodies, trypsin and GluC (Tables S2–S3); sites the authors\' search results localise (ptmRS ≥ 75 %, or Byonic Delta Mod > 20 in every confident PSM) or whose peptide localises the methyl group by mass',
-    PhosphoSitePlus: 'Curated database (www.phosphosite.org): the sites it listed when downloaded on 22 May 2021, as compiled in Maron et al. 2021 Table S5; trusted as curated and placed from their 15-residue window',
+    PhosphoSitePlus: 'Curated database (www.phosphosite.org): the sites it listed when downloaded on 22 May 2021, as compiled in Maron et al. 2021 Table S5; trusted as curated and placed from their 15-residue window. PhosphoSitePlus curators (PhD scientists) find candidate papers with semi-automatic literature searches, record the sites each paper shows with the methods behind them, and an editor checks every record; besides low-throughput primary papers and published mass-spectrometry studies, PhosphoSitePlus also lists sites from Cell Signaling Technology\'s own high-throughput discovery runs. Its per-site download counts the references of each kind (columns LT_LIT, MS_LIT and MS_CST), but Maron Table S5 keeps none of them, so this release cannot tell which PhosphoSitePlus sites rest on a hand-curated primary paper and which on mass spectrometry alone',
     'Larsen 2016': 'HEK293 cells, monomethylarginine antibodies; Table S1, localisation probability ≥ 0.75',
     'Musiani 2019': 'HeLa cells, GSK591 SILAC and heavy-methyl SILAC; Tables S1 and S2, localisation probability ≥ 0.75',
     'Guo 2014': 'HCT116 cells; sites a PSM localises at ModScore > 13',
@@ -124,7 +124,7 @@
       ['Lim et al. 2020', 'Sites from colorectal cancer tissue, ModScore > 13', 'Additional files 1–2', 'CC BY 4.0', 'Lim et al., Proteome Sci 18:6 (2020)', '10.1186/s12953-020-00162-8'],
       ['Wei et al. 2020', 'ADMA sites from pancreatic cells, localisation probability > 0.75', 'Table 1', 'CC BY 4.0', 'Wei et al., Front Cell Dev Biol 8:545934 (2020)', '10.3389/fcell.2020.545934'],
       ['CARM1 knockout (Shishkova et al. 2017)', 'ADMA peptides in parental and CARM1 knockout MCF7 and MDA-MB-231 cells: which sites fall without CARM1 (scripts/41; not used to add sites)', 'Supplementary Data 1', 'CC BY 4.0', 'Shishkova et al., Nat Commun 8:15571 (2017)', '10.1038/ncomms15571'],
-      ['PhosphoSitePlus®', 'Curated sites, trusted as curated: a site is placed where its 15-residue window names one arginine in the reviewed proteome', 'Downloaded 22 May 2021, as compiled in Maron et al. 2021 Table S5', 'CC BY-NC-SA 3.0 (non-commercial)', 'Hornbeck et al., Nucleic Acids Res 43:D512 (2015)', '10.1093/nar/gku1267'],
+      ['PhosphoSitePlus®', 'Curated sites, trusted as curated: a site is placed where its 15-residue window names one arginine in the reviewed proteome. Hand-curated from low-throughput papers and mass-spectrometry studies, with sites from Cell Signaling Technology\'s own discovery runs; which kind backs each site is not in the compiled table', 'Downloaded 22 May 2021, as compiled in Maron et al. 2021 Table S5', 'CC BY-NC-SA 3.0 (non-commercial)', 'Hornbeck et al., Nucleic Acids Res 43:D512 (2015)', '10.1093/nar/gku1267'],
       ['ProMetheusDB', 'Methyl-proteome table mmc2 (Rme1/Rme2 calls); a record counts where one of its peptides localises the methyl group by mass', 'mmc2, sheet RK-methylsites', 'CC BY-NC-ND 4.0', 'Massignani et al., Mol Cell Proteomics 21:100243 (2022)', '10.1016/j.mcpro.2022.100243'],
       ['Hartel et al. 2019', 'Sites from HEK293T and LN229 cells; ADMA and SDMA from neutral losses (added in v1.2.0)', 'Supplementary Tables S1–S15', 'CC BY 4.0', 'Hartel et al., Mol Cell Proteomics 18:2149 (2019)', '10.1074/mcp.RA119.001625'],
       ['Geoghegan et al. 2015', 'Sites from Jurkat and primary T cells, heavy-methyl SILAC (added in v1.2.0)', 'Supplementary Table 1', 'CC BY 4.0', 'Geoghegan et al., Nat Commun 6:6758 (2015)', '10.1038/ncomms7758'],
@@ -297,6 +297,32 @@
   };
   const TREAT_HELP = { GSK591: 'PRMT5 inhibitor', MS023: 'type I PRMT inhibitor', 'CARM1 KO': 'CARM1 (PRMT4) knockout' };
   const PTM_LABEL = ['Phospho', 'Lys acyl', 'Ub/SUMO', 'Lys methyl'];
+  // What each protein-map row shows and where it comes from (the hover on its label).
+  function mapRowHelp(name, p) {
+    const uni = 'read live from the UniProt entry (rest.uniprot.org)';
+    const H = {
+      'Sites': 'The methylarginine sites of this release on the protein, coloured as chosen above; click one for its card',
+      'Regions': 'UniProt features of type Region: stretches the curators describe, such as an acidic disordered region, an RNA-binding RGG box or an interaction with a partner, with the evidence UniProt cites on the entry; and Motif features (outlined). ' +
+        'UniProt\'s Disordered regions are left out here, as disorder is drawn on the chain from MobiDB. Features ' + uni,
+      'Composition': 'UniProt Compositional bias features (for example basic and acidic residues), ' + uni,
+      'RG/RGG': RG_HELP + '. Found in the UniProt sequence',
+      'Charge': 'Mean charge of residues i−2 to i+2 on the EMBOSS scale (K, R +1; H +0.5; D, E −1), from the UniProt sequence',
+      'Arginines': 'Every arginine of the UniProt sequence; the methylarginines in their colour',
+      'Variants': 'UniProt natural variants (with those UniProt imports from ClinVar and other sources), ' + uni,
+      'Mutagenesis': 'UniProt mutagenesis features that change an arginine, ' + uni,
+      'RNA crosslink': 'Residues UV-crosslinked to RNA in living cells (pepR-MS compendium: re-analysis of Kramer 2014, XRNAX, RBS-ID, pRBS-ID and pepR-MS) and RBDmap RNA-bound fragments (Castello et al. 2016, HeLa); click a mark for the studies and peptides',
+      'DNA crosslink': 'Residues UV-crosslinked to DNA in MCF7 cells, alone or as candidates, and crosslinked peptides (Trendel et al. 2025); UniProt DNA-binding regions; click a mark for the records',
+      'RNA contact (PDB)': 'Residues at an RNA interface in experimentally determined structures (PDBe-KB interface residues, read live); click for the PDB entries',
+      'DNA contact (PDB)': 'Residues at a DNA interface in experimentally determined structures (PDBe-KB interface residues, read live); click for the PDB entries',
+      'Protein contact (PDB)': 'Residues at an interface with another protein in experimentally determined structures (PDBe-KB interface residues, read live); click for the entries and partners',
+      'Self-contact (PDB)': 'Residues at an interface with another copy of the same protein (homo-oligomer) in experimentally determined structures (PDBe-KB); click for the entries',
+      'Protein contact (predicted)': 'Residues within 5 Å of the partner in AlphaFold-Multimer models of human protein pairs (ProtVar, pDockQ ≥ 0.23), darker where more partners share them; click for the partners',
+      'IntAct': 'IntAct curated features of interaction participants: binding regions mapped for a partner and mutations that change, or do not change, an interaction; click for the records',
+      'Lower confidence': 'Records that add no site (lower-confidence evidence): a residue that fails a site test, or a methyl group not localised to one residue',
+    };
+    if (PTM_LABEL.includes(name)) return 'Other PTMs of this protein from ' + ptmSourceNote(p).replace(/^the /, '') + ' (not exhaustive)';
+    return H[name] || '';
+  }
   const PTM_PREFIX = ['p', 'ac', 'ub', 'me'];
   // An other-PTM entry is [position, group, residue, source bits]: bit 0 the cross-PTM master table, then the CPLM 4.0
   // evidence labels (meta.other_ptm_sources). Exports made before CPLM was added have no fourth element.
@@ -1052,8 +1078,8 @@
   // interaction:predicted. A comma inside a term means any of its values (motif:RGG,GAR); separate terms must all
   // match. Every other word still searches genes, accessions and sites, so the search box and the link say exactly
   // what is selected.
-  const TERM_KEYS = ['motif', 'window', 'study', 'domain', 'panther', 'class', 'subclass', 'disease', 'dterm', 'doterm', 'condensate', 'location', 'complex', 'go', 'binds', 'interaction', 'confidence'];
-  const TERM_GROUP = { motif: 'motif', window: 'motif', study: 'prov', domain: 'struct', panther: 'protein', class: 'protein', subclass: 'protein', disease: 'protein', dterm: 'protein', doterm: 'protein', condensate: 'protein', location: 'protein', complex: 'ix', go: 'ix', binds: 'ix', interaction: 'ix' };
+  const TERM_KEYS = ['motif', 'window', 'study', 'domain', 'panther', 'class', 'subclass', 'disease', 'dterm', 'doterm', 'condensate', 'location', 'complex', 'go', 'binds', 'interaction', 'bound', 'confidence'];
+  const TERM_GROUP = { motif: 'motif', window: 'motif', study: 'prov', domain: 'struct', panther: 'protein', class: 'protein', subclass: 'protein', disease: 'protein', dterm: 'protein', doterm: 'protein', condensate: 'protein', location: 'protein', complex: 'ix', go: 'ix', binds: 'ix', interaction: 'ix', bound: 'ix' };
   const TERM_HELP = {
     motif: 'Motif covering the methyl-R: a family (RG, RGG, GRG, GAR, RXR, DR, RD, ER, RE, CARM1-Pro) or a pattern such as GXRG or [RK]XR',
     window: 'Motif anywhere within ±15 aa of the site, e.g. PRPR',
@@ -1071,6 +1097,7 @@
     go: 'Gene Ontology binding: rna or dna',
     binds: 'STRING physical partner: prmt, tudor, wd40, phd, methylated, other, or a gene symbol',
     interaction: 'Interaction evidence at the site: experimental, predicted, predicted-only, any or none',
+    bound: 'RNA or DNA within 4 Å of the arginine side chain, or of a residue at i ± 1–5, in a PDB structure: rna, dna, any, at (direct contact only), or a type such as rrna, mrna, snrna, nucleosomal',
   };
   const TERM_NOUN = { confidence: 'confidence tier', study: 'study or database', domain: 'domain class', panther: 'PANTHER protein class', class: 'functional class', subclass: 'functional subclass', disease: 'disease family', condensate: 'condensate', location: 'HPA location', complex: 'complex' };
   // confidence: (the view with lower-confidence sites): [name, test]
@@ -1081,6 +1108,33 @@
   const motifTerm = (m) => MOTIF_TERM[m] || m;
   const motifFamily = (v) => M.motifs.findIndex((m) => motifTerm(m).toLowerCase() === String(v).toLowerCase());
   const BIND_TERMS = [['prmt', 1], ['tudor', 2], ['wd40', 4], ['phd', 5], ['methylated', 3], ['other', 6]];
+  // The type of a bound RNA or DNA chain (scripts/37 na_type), in code order: [code, label, help, search term].
+  const NA_TYPES = [
+    ['rrna', 'rRNA', 'Ribosomal RNA, with pre-rRNA spacers (ETS, ITS) and mitochondrial rRNA', 'rrna'],
+    ['trna', 'tRNA', 'Transfer RNA, with pre-tRNA', 'trna'],
+    ['snrna', 'snRNA', 'Spliceosomal small nuclear RNA (U1, U2, U4, U5, U6, U11, U12, U4atac, U6atac) and U7', 'snrna'],
+    ['mrna', 'mRNA', 'mRNA or pre-mRNA: exons, introns, UTRs, splice sites and IRES elements of cellular genes', 'mrna'],
+    ['other_ncrna', 'Other ncRNA', 'snoRNA, 7SK, SRP RNA, telomerase RNA, TERRA, RNase P or MRP RNA, Y RNA, miRNA precursors, piRNA, lncRNA, guide RNA', 'ncrna'],
+    ['viral_rna', 'Viral RNA', 'RNA of a virus (from a virus, or named as HIV, HCV or viral)', 'viral'],
+    ['rna_oligo', 'RNA oligo', 'A designed RNA oligonucleotide with no biological name (Synthetically obtained)', 'oligo'],
+    ['other_rna', 'Other RNA', 'RNA whose name gives no type: riboswitches, ribozymes, unnamed natural RNA', 'other-rna'],
+    ['nucleosomal_dna', 'Nucleosomal DNA', 'DNA in an entry with core histones: a nucleosome, or a complex on one', 'nucleosomal'],
+    ['telomeric_dna', 'Telomeric DNA', 'Telomeric DNA (TTAGGG repeats) outside nucleosomes', 'telomeric'],
+    ['other_dna', 'Other DNA', 'Any other DNA: transcription factor sites, polymerase templates, repair substrates, designed duplexes', 'other-dna'],
+  ];
+  const NA_TYPE = new Map(NA_TYPES.map(([t, label, help, term], k) => [t, { k, label, help, term }]));
+  const naTypeOf = (t) => NA_TYPE.get(t) || { k: 99, label: t || 'RNA', help: '', term: '' };
+  // bound: RNA or DNA within 4 Å of the arginine side chain in a structure (direct contact) or, in a complex without one,
+  // of a residue at i ± 1–5 (contact via a flanking residue). A bound:at term keeps direct contacts only, for the other
+  // bound: terms too.
+  const boundAtOn = () => Q.tokens.some((t) => t.key === 'bound' && t.vals.some((v) => v.text === 'at'));
+  const boundRows = (s) => (boundAtOn() ? (s.na || []).filter((r) => !r.via) : s.na || []);
+  const BOUND_TERMS = [
+    ['rna', 'RNA', 'RNA (or an RNA-DNA hybrid) within 4 Å of the arginine side chain, or of a residue at i ± 1–5, in a PDB structure', (s) => boundRows(s).some((r) => r.kind !== 'dna')],
+    ['dna', 'DNA', 'DNA within 4 Å of the arginine side chain, or of a residue at i ± 1–5, in a PDB structure', (s) => boundRows(s).some((r) => r.kind === 'dna')],
+    ['any', 'RNA or DNA', 'RNA or DNA within 4 Å of the arginine side chain, or of a residue at i ± 1–5, in a PDB structure', (s) => boundRows(s).length > 0],
+    ['at', 'direct contact with the arginine side chain', 'An atom of the arginine side chain (CD, NE, CZ, NH1 or NH2) within 4 Å of RNA or DNA; contacts made only by residues at i ± 1–5 are left out', (s) => (s.na || []).some((r) => !r.via)],
+  ].concat(NA_TYPES.map(([t, label, help, term]) => [term, label, help, (s) => boundRows(s).some((r) => r.type === t)]));
   const IX_STATUS_TERMS = [
     ['experimental', 'Experimental interaction evidence', (m) => m & EV_EXP],
     ['predicted', 'Predicted interface or contact', (m) => m & EV_PRED],
@@ -1363,6 +1417,11 @@
       if (!st) return { error: 'interaction: takes experimental, predicted, predicted-only, any or none.' };
       return { text: st[0], label: st[1], kind: 'site', test: (s) => ixReady() && !!st[2](s.ev || 0) };
     }
+    if (key === 'bound') {
+      const w = v.toLowerCase(), bt = BOUND_TERMS.find(([t]) => t === w);
+      if (!bt) return { error: 'bound: takes rna, dna, any, at or a type: ' + NA_TYPES.map((x) => x[3]).join(', ') + '.' };
+      return { text: bt[0], label: bt[1], kind: 'site', test: (s) => ixReady() && bt[3](s) };
+    }
     return { error: 'Unknown term ' + key + ':' };
   }
   // key:value, key:"two words" or key:a,b at the start of the search or after a space, comma or semicolon.
@@ -1407,6 +1466,7 @@
       case 'go': return any(t.vals) + ' (GO' + (F.goExp ? ', experimental' : '') + ')';
       case 'binds': return 'Binds ' + any(t.vals) + ' (STRING ≥ ' + (F.ixScore / 1000).toFixed(1) + ')';
       case 'interaction': return 'Site: ' + any(t.vals).replace(/^./, (c) => c.toLowerCase());
+      case 'bound': return t.vals.length === 1 && t.vals[0].text === 'at' ? 'RNA/DNA in direct contact with the arginine side chain' : 'RNA/DNA contact in structures: ' + any(t.vals);
       default: return tokenText(t);
     }
   }
@@ -1453,6 +1513,7 @@
     else if (key === 'window') list = [['PRPR', 'Pro-Arg repeats'], ['RGRG', 'RG repeat'], ['YGG', 'Tyr-Gly-Gly']];
     else if (key === 'go') list = [['rna', 'RNA binding (GO:0003723)'], ['dna', 'DNA binding (GO:0003677)']];
     else if (key === 'interaction') list = IX_STATUS_TERMS.map(([t, l]) => [t, l]);
+    else if (key === 'bound') list = BOUND_TERMS.map(([t, l]) => [t, l]);
     else if (key === 'binds') {
       list = BIND_TERMS.map(([t, v]) => [t, BIND_OPTS.find((o) => o[0] === v)[1]]);
       if (ixReady() && part.length >= 2) {
@@ -2035,7 +2096,7 @@
     return '<div class="chips" data-term="' + key + '">' + items.map(([v, label, help]) =>
       '<button class="chip" type="button" data-v="' + esc(v) + '" aria-pressed="' + on.has(String(v).toLowerCase()) + '" title="' + esc((help ? help + ' · ' : '') + 'search ' + key + ':' + v) + '">' + esc(label) + '</button>').join('') + '</div>';
   }
-  const CHIP_OF = { motif: (v) => v.family, binds: (v) => v.bindClass };
+  const CHIP_OF = { motif: (v) => v.family, binds: (v) => v.bindClass, bound: (v) => v.text !== 'at' };
   function termSelect(id, key, html, label) {
     const n = termValues(key).length, one = singleTerm(key);
     return '<select id="' + id + '" data-termsel="' + key + '"' + (n ? ' class="set"' : '') + (label ? ' aria-label="' + esc(label) + '"' : '') + '>' +
@@ -2131,6 +2192,8 @@
 
   function renderRailState() {
     // Rail controls mirror the search terms (typed, removed from a chip, or restored from a link) unless being edited.
+    const ba = $('#f-boundat');
+    if (ba) ba.checked = boundAtOn();
     $$('#rail .chips[data-term]').forEach((row) => {
       const on = new Set(termValues(row.dataset.term).map((v) => v.text.toLowerCase()));
       $$('.chip', row).forEach((b) => b.setAttribute('aria-pressed', String(on.has(b.dataset.v.toLowerCase()))));
@@ -2621,13 +2684,17 @@
 
   // ----- result tables. Core columns always show; optional ones are switched in the Columns menu, remembered per table.
   // A column: {k, label, sort?, cls?, opt?, td(row)}. cls also hides a column on narrow screens (hide-sm, hide-xs).
-  const COL_DEFAULT = { proteins: ['ix', 'idr', 'cond', 'density'], sites: ['ix', 'prmti', 'src'], psites: ['ix', 'prmti', 'src'] };
+  const COL_DEFAULT = { proteins: ['ix', 'idr', 'cond', 'density'], sites: ['ix', 'na', 'prmti', 'src'], psites: ['ix', 'na', 'prmti', 'src'] };
+  // Columns added to the defaults since a reader may have saved their choice: shown once, then remembered as chosen.
+  const COL_ADDED = { sites: ['na'], psites: ['na'] };
   function colsOn(table) {
     UI.cols = UI.cols || {};
     if (!UI.cols[table]) {
-      let saved = null;
-      try { saved = JSON.parse(store.get('mre-cols-' + table) || 'null'); } catch (e) { saved = null; }
-      UI.cols[table] = new Set(Array.isArray(saved) ? saved : COL_DEFAULT[table]);
+      let saved = null, known = null;
+      try { saved = JSON.parse(store.get('mre-cols-' + table) || 'null'); known = JSON.parse(store.get('mre-cols-known-' + table) || 'null'); } catch (e) { saved = null; }
+      const on = new Set(Array.isArray(saved) ? saved : COL_DEFAULT[table]);
+      if (Array.isArray(saved)) (COL_ADDED[table] || []).filter((k) => !(Array.isArray(known) && known.includes(k))).forEach((k) => on.add(k));
+      UI.cols[table] = on;
     }
     return UI.cols[table];
   }
@@ -2641,7 +2708,7 @@
   function bindColMenu(el, table, redraw) {
     const box = $('.col-menu', el);
     if (!box) return;
-    const save = () => store.set('mre-cols-' + table, JSON.stringify(Array.from(colsOn(table))));
+    const save = () => { store.set('mre-cols-' + table, JSON.stringify(Array.from(colsOn(table)))); store.set('mre-cols-known-' + table, JSON.stringify(COL_ADDED[table] || [])); };
     $$('[data-col]', box).forEach((cb) => cb.addEventListener('change', () => {
       const on = colsOn(table);
       if (cb.checked) on.add(cb.dataset.col); else on.delete(cb.dataset.col);
@@ -2861,6 +2928,8 @@
     { k: 'state', label: 'State', sort: 'state', td: (s) => pill(s.st) },
     { k: 'win', label: 'Window ±7 · motifs', sort: 'win', td: winCell },
     { k: 'ix', label: 'Interaction evidence', sort: 'ix', opt: true, tdCls: 'ix-col', tip: STATUS_HELP, td: (s) => ixCell(s, 2) },
+    { k: 'na', label: 'Bound RNA/DNA', sort: 'na', opt: true, cls: 'hide-xs', tdCls: 'na-col', menu: 'Bound RNA/DNA (structures and crosslinks)',
+      tip: 'RNA or DNA within 4 Å of the arginine side chain in PDB structures (direct contact) or, in a complex without one, within 4 Å of a residue at i ± 1–5 (tagged via i±k), with its type; and the nearest residue at i ± 1–5 UV-crosslinked to RNA or DNA in living cells. Hover a cell for every bound sequence, the crosslinked residues at i ± 10 and what the protein binds', td: boundCell },
     { k: 'prmti', label: 'PRMT loss', sort: 'prmti', opt: true, menu: 'PRMT inhibitor or knockout response', tip: 'Change after GSK591 (PRMT5i) or MS023 (type I PRMTi), Maron 2021 Table S3, adj. p ≤ 0.05; or in CARM1 knockout cells, Shishkova 2017, at least twofold with p < 0.05', td: treatHtml },
     { k: 'src', label: 'Reported by', sort: 'src', opt: true, cls: 'hide-sm', td: (s) => '<div class="tags">' + studyTags(s.study, 2, P[s.p].acc) + '</div>' },
     { k: 'ctx', label: 'Context', sort: 'ctx', opt: true, menu: 'Disorder and domain context', cls: 'hide-xs', tdCls: 'nw', td: contextHtml },
@@ -2869,6 +2938,7 @@
   ];
   const S_SORT = {
     ix: (s) => ixRank(s),
+    na: boundRank,
     gene: (s) => P[s.p].label.toLowerCase(),
     pos: (s) => s.pos,
     state: (s) => s.st,
@@ -3571,6 +3641,7 @@
       '<div class="card" id="site-card" hidden></div>' +
       foldHtml('p-cc', 'Interaction evidence at a glance', contactCardHtml(), false, 'loading…') +
       foldHtml('p-ix', 'Partners and complexes', '<div class="card" id="card-ix"></div>', false, 'loading…') +
+      foldHtml('p-na', 'RNA and DNA interactions', '<div class="card" id="card-na"></div>', false, 'loading…') +
       foldHtml('p-sites', 'Sites', '<div class="card tbl-card" id="card-sites"><div class="card-pad"><div class="card-head"><div><h3>Sites</h3><p class="sub">Click a row for details of the site.</p></div><div class="actions" id="psites-tools"></div></div><div id="psites-ix"></div></div>' +
       '<div class="tbl-wrap" id="psites"></div><p class="note uni-extra" id="uni-extra" hidden></p><div class="card-pad" id="psites-cite"></div></div>') +
       foldHtml('p-3d', '3D structure', structureCard(p), false, 'AlphaFold DB model and experimental structures; loads when opened') +
@@ -3605,6 +3676,7 @@
     renderClusterCard(p);
     renderPtmCard(p);
     renderIxCard(p);
+    renderNaCard(p);
     renderConsCard(p, UNIDATA.has(p.acc) ? UNIDATA.get(p.acc) : undefined);
     bindFigure(p);
     drawMap(p, UNIDATA.get(p.acc));
@@ -3722,6 +3794,7 @@
       { k: 'state', label: 'State', td: (s) => pill(s.st) },
       { k: 'win', label: 'Window ±7 · motifs', td: winCell },
       { k: 'ix', label: 'Interaction evidence', opt: true, tdCls: 'ix-col', tip: STATUS_HELP, td: (s) => ixCell(s, 3) },
+      { k: 'na', label: 'Bound RNA/DNA', opt: true, tdCls: 'na-col', menu: 'Bound RNA/DNA (structures and crosslinks)', tip: 'RNA or DNA within 4 Å of the arginine side chain in PDB structures, or of a residue at i ± 1–5 (via i±k), and the nearest residue at i ± 1–5 UV-crosslinked in living cells; hover for more', td: boundCell },
       { k: 'prmti', label: 'PRMT loss', opt: true, menu: 'PRMT inhibitor or knockout response', td: treatHtml },
       { k: 'src', label: 'Reported by', opt: true, cls: 'hide-sm', td: (s) => '<div class="tags">' + studyTags(s.study, 3, P[s.p].acc) + '</div>' },
       { k: 'af', label: 'AlphaFold', opt: true, menu: 'AlphaFold pLDDT and AlphaMissense', tdCls: 'nw', tip: 'AlphaFold pLDDT at the site and mean AlphaMissense score for R→X', td: (s) => afCell(p, s) },
@@ -4068,9 +4141,9 @@
       } else if (act === 'link') {
         const url = location.origin + location.pathname + '?q=' + encodeURIComponent(p.label + ' ' + rl(s.pos, P[s.p])) + '#' + encodeURIComponent(p.acc);
         copyText(url, e.currentTarget);
-      } else if (act === 'ixcard') {
+      } else if (act === 'ixcard' || act === 'nacard') {
         // Instant, and again once the 3D card it passes has started and grown.
-        const c = openFoldOf($('#card-ix')), d = c && c.closest('details.fold');
+        const c = openFoldOf($(act === 'ixcard' ? '#card-ix' : '#card-na')), d = c && c.closest('details.fold');
         if (d) { d.scrollIntoView({ block: 'start' }); setTimeout(() => d.scrollIntoView({ block: 'start' }), 400); }
       }
       else if (act === 'close') { UI.highlight = null; box.hidden = true; box.innerHTML = ''; setSiteHash(p, null); const cs = $('#crumb-site'); if (cs) cs.hidden = true; $$('#psites tr.row.sel').forEach((r) => r.classList.remove('sel')); drawMap(p, UNIDATA.get(p.acc)); }
@@ -4721,11 +4794,11 @@
         ticks: xp ? xp.dnaPos : [], boxes: xp ? xp.dnaPeps.map(([a, b]) => [a, b, 0.35, 'DNA-crosslinked peptide']).concat(xp.dnaCand.map((c) => [c, c, 0.7, 'DNA crosslink candidate residue'])) : [],
         hit: (s) => !!(s.xl && s.xl.d & 9), weak: (s) => !!(s.xl && s.xl.d & 2) },
       { key: 'pdbna', label: 'RNA/DNA contact', sub: 'in PDB structures', short: 'RNA/DNA contact (PDB)', tiny: 'RNA/DNA (PDB)', color: pal.rna,
-        help: 'Residues touching RNA (purple) or DNA (gold) in an experimentally determined structure (PDBe-KB interface residues)',
+        help: 'Residues at an RNA (purple) or DNA (gold) interface in an experimentally determined structure (PDBe-KB interface residues)',
         ranges: ifd ? ifd.rna.map((r) => r.concat(pal.rna, 'pdb-rna')).concat(ifd.dna.map((r) => r.concat(pal.dna, 'pdb-dna'))) : null,
         hit: (s) => !!(s.iface & 12) },
       { key: 'pdbprot', label: 'Protein contact', sub: 'in PDB structures', short: 'Protein contact (PDB)', tiny: 'Protein (PDB)', color: pal.protein,
-        help: 'Residues touching another protein (teal) or another copy of the same protein (pale, self-contact) in an experimentally determined structure (PDBe-KB interface residues)',
+        help: 'Residues at an interface with another protein (teal) or another copy of the same protein (pale, self-contact) in an experimentally determined structure (PDBe-KB interface residues)',
         ranges: ifd ? ifd.protein.map((r) => r.concat(pal.protein, 'pdb-protein')).concat(ifd.self.map((r) => r.concat(pal.self, 'pdb-self'))) : null,
         hit: (s) => !!(s.iface & 3) },
       showIntact() ? { key: 'intact', label: 'IntAct', sub: 'curated experiments', short: 'IntAct', tiny: 'IntAct', color: pal.protein,
@@ -5006,11 +5079,21 @@
     let g = '';
     let y;
     const legend = [];
-    const tlabel = (txt, yy) => { g += '<text x="0" y="' + (yy + 4) + '" font-size="' + fitFs(txt, 10, ML - 8, pal, 600) + '" font-weight="600" fill="' + pal.muted + '">' + esc(txt) + '</text>'; };
     const tip = (html) => ' data-tip="' + esc(html) + '"';
+    // Each row label says what the row shows and where it comes from (MAP_ROW_HELP).
+    const tlabel = (txt, yy) => { const h = mapRowHelp(txt, p); g += '<text x="0" y="' + (yy + 4) + '" font-size="' + fitFs(txt, 10, ML - 8, pal, 600) + '" font-weight="600" fill="' + pal.muted + '"' + (h ? ' class="feat row-lab"' + tip('<b>' + esc(txt) + '</b><br>' + h) : '') + '>' + esc(txt) + '</text>'; };
     const nspan = (a, b) => (a === b ? '' + rn(a, p) : rn(a, p) + '–' + rn(b, p));
     const gridLine = (yy) => { g += '<line x1="' + ML + '" x2="' + (W - MR) + '" y1="' + yy + '" y2="' + yy + '" stroke="' + pal.grid + '"/>'; };
     const methylPos = new Set(p.sites.map((j) => S[j].pos));
+    // Zoomed in, a row switched on keeps its place when the protein has its kind of data elsewhere: an empty lane
+    // saying so, so the rows do not jump about as the view moves.
+    const zoomed = v0 > 1 || v1 < len;
+    const emptyRow = (name) => {
+      tlabel(name, y);
+      gridLine(y);
+      g += '<text x="' + (ML + 4) + '" y="' + (y + 3) + '" font-size="9" fill="' + pal.muted + '">none in ' + nspan(v0, v1) + '</text>';
+      y += 18;
+    };
 
     if (titled0) {
       const sub = p.acc + ' · ' + fmt(len) + ' aa · ' + p.sites.length + ' methylarginine site' + (p.sites.length === 1 ? '' : 's') + (p.hist ? ' · histone numbering (no initiator Met)' : '') + (UI.zoom && !o.full ? ' · showing residues ' + rn(v0, p) + '–' + rn(v1, p) : '');
@@ -5079,8 +5162,8 @@
     // onto separate lines so no box or label hides another; a label sits inside its box, else just after it when there
     // is room on that line, else only in the tooltip. Motifs are outlined to tell them from regions; the disorder row
     // uses the shared disorder mark.
-    const boxTrack = (name, list, fill, ink, labelOf, tipOf) => {
-      if (!list.length) return;
+    const boxTrack = (name, list, fill, ink, labelOf, tipOf, anyAll) => {
+      if (!list.length) { if (zoomed && anyAll) emptyRow(name); return; }
       const items = list.slice().sort((p1, p2) => p1.start - p2.start || (p2.end - p2.start) - (p1.end - p1.start)).map((f) => {
         const a = cx(f.start), b = Math.max(cx(f.end + 1), a + 2), text = labelOf ? labelOf(f) : '', tw = textW(text, 9.5, pal);
         return { f, a, w: b - a, text, tw };
@@ -5112,19 +5195,19 @@
     // is missing or still loading, and adds its legend entries when it draws something.
     const rows = {};
     rows.regions = () => {
-      const list = feats.filter((f) => ((f.type === 'Region' && f.desc !== 'Disordered') || f.type === 'Motif') && visible(f.start, f.end));
-      boxTrack('Regions', list, pal.region, pal.ink, (f) => f.desc, (f) => '<b>' + esc(f.type) + '</b> ' + esc(f.desc) + '<br>' + nspan(f.start, f.end));
+      const all = feats.filter((f) => (f.type === 'Region' && f.desc !== 'Disordered') || f.type === 'Motif'), list = all.filter((f) => visible(f.start, f.end));
+      boxTrack('Regions', list, pal.region, pal.ink, (f) => f.desc, (f) => '<b>' + esc(f.type) + '</b> ' + esc(f.desc) + '<br>' + nspan(f.start, f.end) + '<br><span class="muted">UniProt ' + esc(p.acc) + ', ' + (f.type === 'Motif' ? 'Motif' : 'Region') + ' feature</span>', all.length);
       if (list.some((f) => f.type !== 'Motif')) legend.push([SWATCH.fill(pal.region), 'Region (UniProt)']);
     };
     rows.bias = () => {
-      const list = feats.filter((f) => f.type === 'Compositional bias' && visible(f.start, f.end));
-      boxTrack('Composition', list, pal.bias, pal.ink, (f) => f.desc.replace(/ residues$/, '-rich').replace('Basic and acidic', 'Charged'), (f) => '<b>Compositional bias</b> ' + esc(f.desc) + '<br>' + nspan(f.start, f.end));
+      const all = feats.filter((f) => f.type === 'Compositional bias'), list = all.filter((f) => visible(f.start, f.end));
+      boxTrack('Composition', list, pal.bias, pal.ink, (f) => f.desc.replace(/ residues$/, '-rich').replace('Basic and acidic', 'Charged'), (f) => '<b>Compositional bias</b> ' + esc(f.desc) + '<br>' + nspan(f.start, f.end) + '<br><span class="muted">UniProt ' + esc(p.acc) + '</span>', all.length);
       if (list.length) legend.push([SWATCH.fill(pal.bias), 'Compositional bias (UniProt)']);
     };
     rows.rg = () => {
       if (!u) return;
       const list = u.rg.filter((b) => visible(b.start, b.end)).map((b) => Object.assign({}, b));
-      boxTrack('RG/RGG', list, pal.rg, pal.rgInk, (b) => b.label, (b) => '<b>' + b.label + '</b> ' + nspan(b.start, b.end) + '<br>' + b.n + ' RG dipeptides, ' + b.rgg + ' RGG<br>' + RG_HELP);
+      boxTrack('RG/RGG', list, pal.rg, pal.rgInk, (b) => b.label, (b) => '<b>' + b.label + '</b> ' + nspan(b.start, b.end) + '<br>' + b.n + ' RG dipeptides, ' + b.rgg + ' RGG<br>' + RG_HELP, u.rg.length);
       if (list.length) legend.push(KEY.rg(pal));
     };
     rows.args = () => {
@@ -5150,8 +5233,9 @@
     rows.variants = () => {
       if (!(u && (u.variants.length || u.mutagen.length))) return;
       const track = (name, list, isMut) => {
+        const any = list.length;
         list = list.filter((f) => visible(f.start, f.end));
-        if (!list.length) return;
+        if (!list.length) { if (zoomed && any) emptyRow(name); return; }
         tlabel(name, y);
         gridLine(y);
         const right = { v: -1e9 }, labelled = new Set();
@@ -5178,7 +5262,7 @@
     // Other PTMs from the cross-PTM master table (and CPLM 4.0 for lysine methylation), one row per group.
     const ptmRow = (gi) => {
       const list = p.ptms.filter((t) => t[1] === gi && t[0] >= v0 && t[0] <= v1);
-      if (!list.length) return;
+      if (!list.length) { if (zoomed && p.ptms.some((t) => t[1] === gi)) emptyRow(PTM_LABEL[gi]); return; }
       tlabel(PTM_LABEL[gi], y);
       gridLine(y);
       const color = gi === 3 ? pal.kme : pal.ptm;
@@ -5194,7 +5278,7 @@
       for (const [key, label, color] of [['rna', 'RNA contact (PDB)', pal.rna], ['dna', 'DNA contact (PDB)', pal.dna], ['protein', 'Protein contact (PDB)', pal.protein], ['self', 'Self-contact (PDB)', pal.self]]) {
         const byPos = new Map();
         for (const [a, b, name] of ifd[key]) for (let r = Math.max(a, v0); r <= Math.min(b, v1); r++) { if (!byPos.has(r)) byPos.set(r, new Set()); byPos.get(r).add(name); }
-        if (!byPos.size) continue;
+        if (!byPos.size) { if (zoomed && ifd[key].length) emptyRow(label); continue; }
         tlabel(label, y);
         gridLine(y);
         const positions = Array.from(byPos.keys()).sort((m, n) => m - n);
@@ -5204,7 +5288,7 @@
           let nm = 0;
           for (let r = a; r <= b; r++) { byPos.get(r).forEach((nme) => names.add(nme)); if (methylPos.has(r)) nm++; }
           g += MARK.box(x(a) - 0.8, y - 5, Math.max(1.6, x(b + 1) - x(a)), 10, color, ' class="feat" data-ev="pdb-' + key + ':' + a + ':' + b + '"' +
-            tip('<b>' + label + '</b> ' + nspan(a, b) + (key === 'self' ? '<br>Touches another copy of this same protein (a homodimer or larger homo-oligomer)' : key === 'protein' ? '<br>Touches a different protein' : '<br>Touches ' + key.toUpperCase()) + ' in an experimentally determined structure<br>' + esc(Array.from(names).slice(0, 6).join(', ')) + (names.size > 6 ? ' and ' + (names.size - 6) + ' more' : '') + (nm ? '<br>' + nm + ' methylarginine' + (nm === 1 ? '' : 's') + ' here' : '') + '<br>PDBe-KB · <i>click for the PDB entries</i>'));
+            tip('<b>' + label + '</b> ' + nspan(a, b) + (key === 'self' ? '<br>At an interface with another copy of this same protein (a homodimer or larger homo-oligomer)' : key === 'protein' ? '<br>At an interface with a different protein' : '<br>At an interface with ' + key.toUpperCase()) + ' in an experimentally determined structure<br>' + esc(Array.from(names).slice(0, 6).join(', ')) + (names.size > 6 ? ' and ' + (names.size - 6) + ' more' : '') + (nm ? '<br>' + nm + ' methylarginine' + (nm === 1 ? '' : 's') + ' here' : '') + '<br>PDBe-KB · <i>rest here or click for the PDB entries, with links</i>'));
         };
         for (let k = 1; k <= positions.length; k++) {
           if (k < positions.length && positions[k] === prev + 1) { prev = positions[k]; continue; }
@@ -5218,7 +5302,7 @@
     rows.xl = () => {
       const xp = !p.iso && ixReady() ? IX.xlProt.get(p.i) : null;
       if (!xp) return;
-      const more = '<br><i>click for the evidence</i>';
+      const more = '<br><i>rest here or click for the evidence, with links</i>';
       const tick = (pos, color, label, kind) => MARK.tick(x(pos), y, 12, color, ' class="feat" data-ev="' + kind + ':' + pos + ':' + pos + '"' + tip(label + more), Math.max(1.8, x(pos + 1) - x(pos)));
       const box = (a, b, color, op, label, kind) => MARK.box(x(Math.max(a, v0)) - 0.5, y - 4, x(Math.min(b, v1) + 1) - x(Math.max(a, v0)), 8, color, ' class="feat" data-ev="' + kind + ':' + a + ':' + b + '" fill-opacity="' + op + '"' + tip(label + more));
       const inView = (a, b) => b >= v0 && a <= v1;
@@ -5246,7 +5330,7 @@
     // where more partners share it, in the predicted style. Clicking lists the methylarginines inside and their partners.
     rows.pred = () => {
       const runs = (predIfaceOf(p) || []).filter(([a, b]) => visible(a, b));
-      if (!runs.length) return;
+      if (!runs.length) { if (zoomed && (predIfaceOf(p) || []).length) emptyRow('Protein contact (predicted)'); return; }
       tlabel('Protein contact (predicted)', y);
       gridLine(y);
       for (const [a, b, n, q] of runs) {
@@ -5262,7 +5346,7 @@
       const ia = !p.iso && ixReady() ? IX.iaProt.get(p.i) : null;
       if (!ia) return;
       const regions = ia.regions.filter(([a, b]) => visible(a, b)), muts = ia.muts.filter(([a, b]) => visible(a, b));
-      if (!regions.length && !muts.length) return;
+      if (!regions.length && !muts.length) { if (zoomed && (ia.regions.length || ia.muts.length)) emptyRow('IntAct'); return; }
       tlabel('IntAct', y);
       gridLine(y);
       const who = (list, n) => esc(list.map(ixGene).join(', ')) + (n > list.length ? ' and ' + (n - list.length) + ' more' : '');
@@ -5292,7 +5376,7 @@
         return;
       }
       const list = (LOWCONF.data[p.acc.split('-')[0]] || []).filter(([pos]) => pos.some((q) => q >= v0 && q <= v1));
-      if (!list.length) return;
+      if (!list.length) { if (zoomed && (LOWCONF.data[p.acc.split('-')[0]] || []).length) emptyRow('Lower confidence'); return; }
       tlabel('Lower confidence', y);
       gridLine(y);
       for (const [pos, reason, study, detail] of list) {
@@ -6801,7 +6885,7 @@
   const IXF = { prmt: 1, tudor: 2, rna: 4, dna: 8, rnaExp: 16, dnaExp: 32, wd40: 64, phd: 128 };
   // Partner classes named in the filters; "any other protein" is a partner in none of them.
   const IXF_CLASS = IXF.prmt | IXF.tudor | IXF.wd40 | IXF.phd;
-  const IFACE_OPTS = [[4, 'RNA'], [8, 'DNA'], [1, 'Another protein'], [2, 'A copy of itself', 'Self-contact: the arginine touches another copy of the same protein in a homodimer or larger homo-oligomer']];
+  const IFACE_OPTS = [[4, 'RNA'], [8, 'DNA'], [1, 'Another protein'], [2, 'A copy of itself', 'Self-contact: the arginine is at an interface with another copy of the same protein in a homodimer or larger homo-oligomer']];
   const IFACE_NAME = { 4: 'RNA', 8: 'DNA', 1: 'another protein', 2: 'a copy of itself (homo-oligomer)' };
   const naColor = (kind, t = TOKENS[themeName()]) => t[kind === 'RNA' ? 'rna' : 'dna'];
   const BIND_OPTS = [
@@ -6927,19 +7011,20 @@
       s.contacts = rows;
       s.modelledMe = modelled;
     }
-    // The RNA and DNA each site touches in structures: one row per bound window, with every entry showing it (naRows).
+    // The RNA and DNA in contact with each site in structures: one row per bound window, with every entry showing it (naRows).
     const naNames = d.na_names || [];
-    // via 0: the arginine touches it; else the offset of the closest residue within 5 that does (bound next to the site).
-    for (const [j, kind, win, offs, pdbs, names, dist, syn, via] of d.na || []) {
+    // via 0: within 4 Å of the arginine side chain; else k of the closest residue i+k (k = ±1–5) within 4 Å of it.
+    // type: the chain's type (NA_TYPES).
+    for (const [j, kind, win, offs, pdbs, names, dist, syn, via, type] of d.na || []) {
       const s = S[j];
-      if (s) (s.na || (s.na = [])).push({ kind, win, offs, pdbs, names: names.map((k) => naNames[k]), dist, syn: !!syn, via: via || 0 });
+      if (s) (s.na || (s.na = [])).push({ kind, win, offs, pdbs, names: names.map((k) => naNames[k]), dist, syn: !!syn, via: via || 0, type: type || (kind === 'dna' ? 'other_dna' : 'other_rna') });
     }
-    // Regions of a protein that touch RNA or DNA in structures, and what is known of its binding beyond structures.
+    // Regions of a protein in contact with RNA or DNA in structures, and what is known of its binding beyond structures.
     const pIndex = new Map(P.map((q, i) => [q.acc, i]));
     const push = (m, i, v) => { if (!m.has(i)) m.set(i, []); m.get(i).push(v); };
     const naReg = new Map(), nab = { rbns: new Map(), jaspar: new Map(), eclip: new Map() };
     for (const [acc, kind, start, end, nEnt, nCx, segs, nSegs, sites] of d.na_regions || []) {
-      if (pIndex.has(acc)) push(naReg, pIndex.get(acc), { kind, start, end, nEnt, nCx, segs: segs.map(([seg, pdb, name, n]) => ({ seg, pdb, name, n })), nSegs, sites });
+      if (pIndex.has(acc)) push(naReg, pIndex.get(acc), { kind, start, end, nEnt, nCx, segs: segs.map(([seg, pdb, name, n, type]) => ({ seg, pdb, name, n, type })), nSegs, sites });
     }
     const b = d.nab || {};
     for (const [acc, exp, conc, top, logos] of b.rbns || []) if (pIndex.has(acc)) push(nab.rbns, pIndex.get(acc), { exp, conc, top, logos });
@@ -7003,6 +7088,7 @@
     else if (UI.view === 'protein' && UI.detail != null) {
       const p = P[UI.detail];
       renderIxCard(p);
+      renderNaCard(p);
       renderCondCard(p);
       renderSiteTable(p);
       renderContactCard(p);
@@ -7033,7 +7119,7 @@
     const prots = (s.ifP || []).filter((k) => k >= 0 && k !== P[s.p].i);
     prots.slice(0, max || 3).forEach((k) => tags.push('<span class="tag iface-p" title="' + title + '">' + esc(ixGene(k)) + '</span>'));
     if (prots.length > (max || 3)) tags.push('<span class="tag" title="' + esc(prots.slice(max || 3).map(ixGene).join(', ')) + '">+' + (prots.length - (max || 3)) + '</span>');
-    if (s.iface & 2) tags.push('<span class="tag" title="' + esc('Self-contact: touches another copy of this same protein (homo-oligomer). ') + title + '">self-contact</span>');
+    if (s.iface & 2) tags.push('<span class="tag" title="' + esc('Self-contact: at an interface with another copy of this same protein (homo-oligomer). ') + title + '">self-contact</span>');
     return tags.join(' ');
   }
 
@@ -7042,7 +7128,7 @@
     return (s.ifP || []).map((k) => (k === P[s.p].i ? 'self (homo-oligomer)' : ixGene(k))).join(';');
   }
 
-  // Residues each methylarginine touches in PDB structures (precomputed side-chain contacts, <= 4 Å).
+  // Residues in contact with each methylarginine in PDB structures (precomputed side-chain contacts, <= 4 Å).
   const CONTACT_KIND = { '-1': 'RNA', '-2': 'DNA', '-3': 'Ligand', '-4': 'Protein' };
   function contactGroups(s) {
     if (!s.contacts || !s.contacts.length) return [];
@@ -7064,7 +7150,7 @@
   function geoLine(s) {
     const g = s.geo;
     if (!g) return '';
-    const na = g.na === 'base' ? 'H-bonds to ' + (g.baseHb.length ? 'bases ' + g.baseHb.slice(0, 4).join(' ') : 'nucleobases') : g.na === 'backbone' ? 'H-bonds to the nucleic-acid backbone' : g.na === 'contact' ? 'touches nucleic acid without an H-bond' : '';
+    const na = g.na === 'base' ? 'H-bonds to ' + (g.baseHb.length ? 'bases ' + g.baseHb.slice(0, 4).join(' ') : 'nucleobases') : g.na === 'backbone' ? 'H-bonds to the nucleic-acid backbone' : g.na === 'contact' ? 'within 4 Å of nucleic acid, no hydrogen bond' : '';
     return '<span class="geo" title="' + esc('Relative accessibility of the arginine alone ' + Math.round(100 * g.rMono) + '%, in the complex ' + Math.round(100 * g.rCplx) + '% (' + g.pdb.toUpperCase() + ' chain ' + g.chain + '; Levy 2010 classes). ' + (g.protHb ? g.protHb + ' H-bond(s) to protein.' : '')) + '">' +
       esc(LEVY_LABEL[g.levy]) + ' <span class="muted">' + g.pdb.toUpperCase() + '</span>' + (na ? ' · ' + esc(na) : '') + '</span>';
   }
@@ -7204,13 +7290,13 @@
   }
 
   // ------------------------------------------------- bound RNA and DNA (PDB structures)
-  // The chain a methylarginine touches, NA_W nucleotides each side of the one closest to it (offset 0), so the windows
+  // The chain in contact with a methylarginine, NA_W nucleotides each side of the one closest to it (offset 0), so the windows
   // of any sites align on their middle. A site's distinct windows share one weight, so every site counts once.
   const NA_W = 8;
   const NT_BASES = ['A', 'C', 'G', 'U'];
   const ntKey = (c) => (c === 'T' ? 'U' : c);
-  // near: also the windows bound next to the site (a residue within 5 touches them, the arginine does not); w.via is
-  // that residue's offset, 0 for a window the arginine itself touches.
+  // near: also the windows in contact via a flanking residue (one at i ± 1–5 within 4 Å, the arginine side chain not);
+  // w.via is that residue's offset k, 0 for direct contact.
   function naRows(sites, kind, near) {
     const out = [];
     for (const s of sites) {
@@ -7218,8 +7304,8 @@
       for (const r of s.na || []) {
         if (kind === 'dna' ? r.kind !== 'dna' : r.kind === 'dna') continue;   // RNA-DNA hybrids go with RNA
         if (r.via && !near) continue;
-        const key = r.win + (r.via ? '|near' : '');
-        if (!seen.has(key)) seen.set(key, { s, win: r.win, offs: new Set(), pdbs: [], names: [], kind: r.kind, dist: r.dist, syn: true, via: r.via });
+        const key = r.win + '|' + r.type + (r.via ? '|near' : '');
+        if (!seen.has(key)) seen.set(key, { s, win: r.win, offs: new Set(), pdbs: [], names: [], kind: r.kind, type: r.type, dist: r.dist, syn: true, via: r.via });
         const w = seen.get(key);
         r.pdbs.forEach((x) => { if (!w.pdbs.includes(x)) w.pdbs.push(x); });
         r.names.forEach((x) => { if (x && !w.names.includes(x)) w.names.push(x); });
@@ -7304,36 +7390,127 @@
     return logoSvg(cols, Object.assign({ pal, T, mode: 'bits', center: -1, label: (i) => ((i + 1) % 2 === 1 || cols.length < 10 ? String(i + 1) : ''),
       tip: (i, c) => '<b>Position ' + (i + 1) + '</b><br>' + ntShare(c, T) }, o || {}));
   }
-  // One aligned window: tinted nucleotides, contacted ones bold and underlined, offset 0 outlined.
-  function naWindowHtml(w) {
-    const T = w.kind === 'dna';
-    return '<span class="na-win" aria-label="' + esc(w.win.replace(/-/g, '')) + '"><span class="muted">5′</span>' + Array.from(w.win).map((c, i) => (c === '-'
+  // One aligned window: tinted nucleotides, contacted ones bold and underlined, offset 0 outlined; flank: nucleotides
+  // shown each side of the middle (all NA_W by default).
+  function naWindowHtml(w, flank) {
+    const T = w.kind === 'dna', f = flank == null ? NA_W : flank;
+    return '<span class="na-win" aria-label="' + esc(w.win.replace(/-/g, '')) + '"><span class="muted">5′</span>' + Array.from(w.win).map((c, i) => (Math.abs(i - NA_W) > f ? '' : c === '-'
       ? '<span class="nt pad">·</span>'
       : '<span class="nt nt-' + ntKey(c) + (w.offs.has(i) ? ' hit' : '') + (i === NA_W ? ' mid' : '') + '">' + (c === 'U' && T ? 'T' : c) + '</span>')).join('') + '<span class="muted">3′</span></span>';
   }
+  const sgn = (v) => (v > 0 ? '+' : '−') + Math.abs(v);
+  const iRel = (v) => 'i' + sgn(v);   // a residue relative to the site i: i+4, i−2
+  const naTypeTag = (t) => '<span class="tag na-type" data-tip="' + esc('<b>' + naTypeOf(t).label + '</b><br>' + naTypeOf(t).help) + '">' + esc(naTypeOf(t).label) + '</span>';
+  const naNearTag = (w, s) => '<span class="tag na-near" data-tip="' + esc('<b>Contact via a flanking residue</b><br>No atom of the arginine side chain is within 4 Å of this ' + (w.kind === 'dna' ? 'DNA' : 'RNA') + ' in these structures; residue ' +
+    rn(s.pos + w.via, P[s.p]) + ' (' + iRel(w.via) + ') is, and the window is centred on the nucleotide it contacts.') + '">via ' + iRel(w.via) + '</span>';
+  const naOligoTag = () => '<span class="tag na-oligo" data-tip="' + esc('<b>Designed oligonucleotide</b><br>Synthetically obtained in every entry showing it: the sequence the authors chose, not necessarily one the protein binds in cells.') + '">oligo</span>';
   function naAlignHtml(ws, withProtein, limit) {
     const rows = ws.slice().sort((a, b) => (withProtein ? P[a.s.p].label.localeCompare(P[b.s.p].label) : 0) || a.s.pos - b.s.pos || a.win.localeCompare(b.win));
     const shown = limit ? rows.slice(0, limit) : rows;
     return '<div class="tbl-wrap"><table class="tbl compact na-aln"><thead><tr>' + (withProtein ? '<th>Protein</th>' : '') + '<th>Site</th><th>Bound sequence, aligned on the closest nucleotide</th><th class="hide-sm">Chain</th><th>PDB</th></tr></thead><tbody>' +
       shown.map((w) => '<tr>' + (withProtein ? '<td><button class="linkish" type="button" data-na-p="' + w.s.p + '">' + esc(P[w.s.p].label) + '</button></td>' : '') +
         '<td class="num"><button class="linkish strong" type="button" data-na-p="' + w.s.p + '" data-na-pos="' + w.s.pos + '">' + rl(w.s.pos, P[w.s.p]) + '</button>' +
-        (w.via ? '<br><span class="tag na-near" title="' + esc('The arginine does not touch this ' + (w.kind === 'dna' ? 'DNA' : 'RNA') + '; residue ' + (w.s.pos + w.via) + ' (' + (w.via > 0 ? '+' : '−') + Math.abs(w.via) +
-          ') does, and the window is centred on what it touches') + '">near ' + (w.via > 0 ? '+' : '−') + Math.abs(w.via) + '</span>' : '') + '</td>' +
-        '<td>' + naWindowHtml(w) + '</td><td class="hide-sm small na-name" title="' + esc(w.names.join('; ') + (w.syn ? '. A designed oligonucleotide in every entry (Synthetically obtained).' : '')) + '">' +
-        (w.syn ? '<span class="tag na-oligo">oligo</span> ' : '') + esc(w.names.slice(0, 2).join('; ')) + (w.names.length > 2 ? ' +' + (w.names.length - 2) : '') + '</td>' +
+        (w.via ? '<br>' + naNearTag(w, w.s) : '') + '</td>' +
+        '<td>' + naWindowHtml(w) + '</td><td class="hide-sm small na-name">' + naTypeTag(w.type) + (w.syn ? naOligoTag() : '') +
+        ' <span data-tip="' + esc(w.names.map(esc).join('<br>')) + '">' + esc(w.names.slice(0, 2).join('; ')) + (w.names.length > 2 ? ' +' + (w.names.length - 2) : '') + '</span></td>' +
         '<td class="small">' + w.pdbs.slice(0, 3).map((x) => '<a href="https://www.rcsb.org/structure/' + encodeURIComponent(x) + '" target="_blank" rel="noopener">' + esc(x.toUpperCase()) + '</a>').join(' ') +
         (w.pdbs.length > 3 ? ' +' + (w.pdbs.length - 3) : '') + '</td></tr>').join('') + '</tbody></table></div>' +
       (limit && rows.length > limit ? '<p class="note">' + fmt(limit) + ' of ' + fmt(rows.length) + ' bound sequences; the TSV has all of them.</p>' : '');
   }
   const NA_NOTE = 'Bound sequence: the chain ' + NA_W + ' nucleotides each side of the one closest to the arginine\'s side chain (offset 0, outlined); nucleotides within 4 Å are bold. ' +
-    'Next to the methylarginine (tagged near ±k): in a complex where the arginine touches no ' + 'RNA or DNA but a residue within 5 positions does, the stretch those residues touch, centred on what the closest one touches, and the nucleotides they touch bold. ' +
+    'Contact via a flanking residue (tagged via i±k): in a complex where no atom of the arginine side chain lies within 4 Å of RNA or DNA but a residue at i ± 1–5 does, the stretch those residues contact, centred on the nucleotide the closest one contacts, and the nucleotides they contact bold. ' +
     'Every PDB entry with the site at an RNA or DNA interface is read. A structure shows the complex its authors made, often with a designed oligonucleotide (tagged oligo), not every sequence ' +
     'the protein binds in cells. In the logo each site counts once, however many structures or chains it has; letter height is the frequency, or the frequency × information content in bits, ' +
     'which shows conservation among a few sites.';
   function naTsv(ws) {
-    return ['protein\tuniprot_accession\tsite\tcontact\tnucleic_acid\twindow\tcontacted_offsets\tclosest_distance_a\tdesigned_oligonucleotide\tmolecule_names\tpdb_entries']
-      .concat(ws.map((w) => [P[w.s.p].label, P[w.s.p].acc, rl(w.s.pos, P[w.s.p]), w.via ? 'near ' + (w.via > 0 ? '+' : '') + w.via : 'at', w.kind, w.win,
+    return ['protein\tuniprot_accession\tsite\tcontact\tnucleic_acid\tnucleic_acid_type\twindow\tcontacted_offsets\tclosest_distance_a\tdesigned_oligonucleotide\tmolecule_names\tpdb_entries']
+      .concat(ws.map((w) => [P[w.s.p].label, P[w.s.p].acc, rl(w.s.pos, P[w.s.p]), w.via ? 'via i' + (w.via > 0 ? '+' : '') + w.via : 'direct', w.kind, w.type, w.win,
         Array.from(w.offs).sort((a, b) => a - b).map((o) => o - NA_W).join(';'), w.dist == null ? '' : w.dist, w.syn ? 'yes' : 'no', w.names.join(';'), w.pdbs.join(';')].join('\t'))).join('\n') + '\n';
+  }
+  // The RNA and DNA in contact with a site: bound windows in structures (best first: direct contact, then via a flanking residue,
+  // then most entries, then type order) and, from living cells, the crosslinked residues within NA_XL_SPAN and the
+  // RBDmap fragments around it. Cached per site once the interaction data has loaded.
+  const NA_NEAR = 5, NA_XL_SPAN = 10;
+  function siteBound(s) {
+    if (s.nb && s.nb.ix === IX) return s.nb;
+    const ws = naRows([s], 'rna', true).concat(naRows([s], 'dna', true))
+      .sort((a, b) => (!!a.via - !!b.via) || b.pdbs.length - a.pdbs.length || naTypeOf(a.type).k - naTypeOf(b.type).k);
+    const xp = IX.xlProt.get(s.p), close = (x) => Math.abs(x.pos - s.pos) <= NA_XL_SPAN;
+    const byDist = (a, b) => Math.abs(a.pos - s.pos) - Math.abs(b.pos - s.pos) || a.pos - b.pos;
+    const rna = xp ? xp.rnaPos.map((pos, k) => ({ pos, bits: xp.rnaBits[k] })).filter(close).sort(byDist) : [];
+    const dna = xp ? xp.dnaPos.map((pos) => ({ pos, one: true })).concat(xp.dnaCand.map((pos) => ({ pos, one: false }))).filter(close).sort(byDist) : [];
+    const frag = xp ? xp.rbd.filter(([a, b]) => a <= s.pos && s.pos <= b) : [];
+    s.nb = { ix: IX, ws, rna, dna, frag };
+    return s.nb;
+  }
+  // A residue relative to the site i: R335 (i+4), or the site itself.
+  const relRes = (s, pos) => { const u = UNIDATA.get(P[s.p].acc), aa = (u && u.seq && u.seq[pos - 1]) || ''; return pos === s.pos ? 'the site (i)' : aa + rn(pos, P[s.p]) + ' (' + iRel(pos - s.pos) + ')'; };
+  // One line on the crosslinks in cells at or near the site (site card), or '' when there are none within NA_XL_SPAN.
+  function xlNearText(s, b) {
+    const out = [];
+    if (b.rna.length) out.push('UV-crosslinked to RNA in living cells: ' + b.rna.slice(0, 4).map((x) => relRes(s, x.pos)).join(', ') + (b.rna.length > 4 ? ' +' + (b.rna.length - 4) : ''));
+    if (b.dna.length) out.push('UV-crosslinked to DNA in living cells: ' + b.dna.slice(0, 4).map((x) => relRes(s, x.pos) + (x.one ? '' : ' (candidate)')).join(', ') + (b.dna.length > 4 ? ' +' + (b.dna.length - 4) : ''));
+    if (b.frag.length) out.push('inside RBDmap RNA-bound fragment' + (b.frag.length === 1 ? ' ' : 's ') + b.frag.map(([x, y]) => rn(x, P[s.p]) + '–' + rn(y, P[s.p])).join(', '));
+    return out.join('; ');
+  }
+  // The site table's Bound RNA/DNA cell: the best bound window (±5 nt shown), its type and contact, and the nearest
+  // residue at i ± 1–NA_NEAR UV-crosslinked in living cells; the hover has the rest.
+  function boundCell(s) {
+    if (!ixReady()) return '<span class="muted">…</span>';
+    const b = siteBound(s);
+    const xr = b.rna.find((x) => Math.abs(x.pos - s.pos) <= NA_NEAR), xd = b.dna.find((x) => Math.abs(x.pos - s.pos) <= NA_NEAR);
+    if (!b.ws.length && !xr && !xd && !b.frag.length) return '<span class="muted">—</span>';
+    let h = '';
+    if (b.ws.length) {
+      const w = b.ws[0];
+      h += naWindowHtml(w, 5) + '<div class="na-meta">' + naTypeTag(w.type) + (w.via ? naNearTag(w, s) : '') +
+        '<span class="muted">' + fmt(w.pdbs.length) + ' entr' + (w.pdbs.length === 1 ? 'y' : 'ies') + (b.ws.length > 1 ? ' · +' + (b.ws.length - 1) + ' more' : '') + '</span></div>';
+    }
+    const xl = (x, K) => '<span class="tag na-xl na-' + K.toLowerCase() + '">' + K + ' xl ' + (x.pos === s.pos ? 'at i' : iRel(x.pos - s.pos)) + '</span>';
+    const cells = (xr ? xl(xr, 'RNA') : '') + (xd ? xl(xd, 'DNA') : '') + (b.frag.length && !xr ? '<span class="tag na-xl na-rbd">RBDmap</span>' : '');
+    if (cells) h += '<div class="na-meta">' + cells + '</div>';
+    return '<div class="na-cell" data-tip="' + esc(boundTipHtml(s, b)) + '">' + h + '</div>';
+  }
+  function boundTipHtml(s, b) {
+    const p = P[s.p], out = ['<div class="na-tip"><b>' + esc(p.label) + ' ' + rl(s.pos, p) + ': RNA and DNA</b>'];
+    const row = (w) => '<li>' + naWindowHtml(w) + '<br><span class="muted">' + esc(naTypeOf(w.type).label) + (w.names[0] ? ' · ' + esc(w.names[0]) : '') + ' · ' + fmt(w.pdbs.length) + ' entr' + (w.pdbs.length === 1 ? 'y' : 'ies') +
+      (w.via ? ' · contacted by residue ' + rn(s.pos + w.via, p) + ' (' + iRel(w.via) + ')' : w.dist != null ? ' · ' + w.dist + ' Å from the side chain' : '') + (w.syn ? ' · designed oligo' : '') + '</span></li>';
+    const list = (ws, k) => '<ul>' + ws.slice(0, k).map(row).join('') + '</ul>' + (ws.length > k ? '<p class="muted">+' + (ws.length - k) + ' more</p>' : '');
+    const at = b.ws.filter((w) => !w.via), nx = b.ws.filter((w) => w.via);
+    if (at.length) out.push('<p class="tl">Direct contact with the arginine side chain (≤ 4 Å)</p>' + list(at, 3));
+    if (nx.length) out.push('<p class="tl">Contact via a residue at i ± 1–' + NA_NEAR + '</p>' + list(nx, at.length ? 2 : 3));
+    const sets = (bits) => xlSets(bits).join(', ');
+    if (b.rna.length || b.dna.length || b.frag.length) {
+      out.push('<p class="tl">UV-crosslinked residues in living cells, i ± ' + NA_XL_SPAN + '</p>' +
+        (b.rna.length ? '<p>RNA: ' + b.rna.slice(0, 5).map((x) => '<b>' + relRes(s, x.pos) + '</b> <span class="muted">' + esc(sets(x.bits)) + '</span>').join('; ') + (b.rna.length > 5 ? '; +' + (b.rna.length - 5) : '') + '</p>' : '') +
+        (b.dna.length ? '<p>DNA (Trendel 2025): ' + b.dna.slice(0, 5).map((x) => '<b>' + relRes(s, x.pos) + '</b>' + (x.one ? '' : ' <span class="muted">candidate</span>')).join('; ') + '</p>' : '') +
+        (b.frag.length ? '<p>Inside RBDmap RNA-bound fragment' + (b.frag.length === 1 ? ' ' : 's ') + b.frag.map(([x, y]) => rn(x, p) + '–' + rn(y, p)).join(', ') + ' <span class="muted">HeLa</span></p>' : ''));
+    }
+    const rb = IX.nab.rbns.get(s.p), ec = IX.nab.eclip.get(s.p), jm = IX.nab.jaspar.get(s.p);
+    if (rb || ec || jm) {
+      const top = (x) => { const tot = x.regions.reduce((a, c) => a + c, 0) || 1, k = x.regions.indexOf(Math.max(...x.regions)); return ECLIP_LABEL[k] + ' ' + pctText(x.regions[k], tot) + '%'; };
+      out.push('<p class="tl">What ' + esc(p.label) + ' binds (whole protein)</p>' +
+        (rb ? '<p>RNA in vitro (RNA Bind-n-Seq): ' + rb[0].top.slice(0, 4).map(([k]) => esc(k)).join(', ') + '</p>' : '') +
+        (ec ? '<p>RNA in cells (eCLIP): ' + ec.map((x) => esc(x.cell) + ' ' + fmt(x.n) + ' peaks, most in ' + top(x)).join('; ') + '</p>' : '') +
+        (jm ? '<p>DNA profile (JASPAR): ' + jm.slice(0, 2).map((m) => esc(m.name) + ' ' + esc(m.cons)).join(', ') + '</p>' : ''));
+    }
+    out.push('<p class="muted">Click the row to open the site; its protein page has every sequence under RNA and DNA interactions.</p></div>');
+    return out.join('');
+  }
+  // Rank for sorting the column: direct contact, then via a flanking residue, then a crosslink at i ± 1–NA_NEAR, by support.
+  function boundRank(s) {
+    if (!ixReady()) return null;
+    const b = siteBound(s), w = b.ws[0];
+    if (w) return (w.via ? 2000 : 3000) + Math.min(w.pdbs.length, 999);
+    const x = b.rna.concat(b.dna).find((y) => Math.abs(y.pos - s.pos) <= NA_NEAR);
+    return x ? 1000 - Math.abs(x.pos - s.pos) : b.frag.length ? 1 : null;
+  }
+  function boundTsv(s) {
+    if (!ixReady()) return ['', '', '', '', ''];
+    const b = siteBound(s), w = b.ws[0];
+    return [Array.from(new Set(b.ws.map((x) => (x.kind === 'dna' ? 'dna' : 'rna') + (x.via ? '_near' : '_at')))).join(';'), Array.from(new Set(b.ws.map((x) => x.type))).join(';'),
+      w ? Array.from(w.win).map((c, i) => (w.offs.has(i) ? '[' + c + ']' : c)).join('') : '', w ? w.via : '',
+      b.rna.concat(b.dna).filter((x) => Math.abs(x.pos - s.pos) <= NA_NEAR).map((x) => (b.rna.includes(x) ? 'RNA:' : 'DNA:') + (x.pos - s.pos)).join(';')];
   }
   function bindLogoTips(root) {
     $$('.logo-col:not([data-tb])', root).forEach((c) => {
@@ -7343,12 +7520,24 @@
       c.addEventListener('mouseleave', hideTip);
     });
   }
+  // The windows of one kind a block shows: contacts via flanking residues too unless switched off, of the type picked.
+  function naShown(wsAll, kind) {
+    const ws = wsAll.filter((w) => (kind === 'dna') === (w.kind === 'dna') && (UI.naNear !== false || !w.via));
+    const t = naTypePick(wsAll, kind);
+    return t ? ws.filter((w) => w.type === t) : ws;
+  }
+  // The type picked for a kind, while the windows have it (else all types).
+  function naTypePick(wsAll, kind) {
+    const t = UI.naType && UI.naType[kind];
+    return t && wsAll.some((w) => w.type === t && (kind === 'dna') === (w.kind === 'dna')) ? t : '';
+  }
+  const naRedraw = () => { if (UI.view === 'protein' && UI.detail != null) renderNaCard(P[UI.detail]); else renderView(); };
   function bindNaBlock(root, wsAll, name) {
-    const ws = UI.naNear === false ? wsAll.filter((w) => !w.via) : wsAll;
     bindLogoTips(root);
-    $$('.na-near', root).forEach((sel) => sel.addEventListener('change', () => {
-      UI.naNear = sel.value === 'near';
-      if (UI.view === 'protein' && UI.detail != null) renderIxCard(P[UI.detail]); else renderView();
+    $$('.na-near', root).forEach((sel) => sel.addEventListener('change', () => { UI.naNear = sel.value === 'near'; naRedraw(); }));
+    $$('[data-na-type]', root).forEach((b) => b.addEventListener('click', () => {
+      UI.naType = Object.assign({}, UI.naType, { [b.closest('.na-block').dataset.naKind]: b.dataset.naType });
+      naRedraw();
     }));
     $$('.na-block', root).forEach((blk) => {
       const sel = $('.na-mode', blk), logo = $('.na-logo', blk);
@@ -7356,7 +7545,7 @@
       sel.addEventListener('change', () => {
         blk.dataset.naMode = sel.value;
         const kind = blk.dataset.naKind;
-        logo.innerHTML = naLogoSvg(ws.filter((w) => (kind === 'dna') === (w.kind === 'dna')), kind, screenPalette(), false, '', sel.value).svg;
+        logo.innerHTML = naLogoSvg(naShown(wsAll, kind), kind, screenPalette(), false, '', sel.value).svg;
         bindLogoTips(logo);
       });
     });
@@ -7366,21 +7555,22 @@
     }));
     $$('[data-na-exp]', root).forEach((b) => b.addEventListener('click', () => {
       const [kind, fmt_] = b.dataset.naExp.split(':');
-      const rows = ws.filter((w) => (kind === 'dna') === (w.kind === 'dna'));
+      const rows = naShown(wsAll, kind), t = naTypePick(wsAll, kind), stem = name + '_' + kind + (t ? '_' + t : '');
       const blk = b.closest('.na-block'), mode = blk ? blk.dataset.naMode : 'bits';
-      if (fmt_ === 'tsv') download(name + '_' + kind + '.tsv', naTsv(rows));
-      else exportFigure(fmt_, naLogoSvg(rows, kind, EXPORT_PAL, true, (kind === 'dna' ? 'DNA' : 'RNA') + ' bound at ' + fmt(new Set(rows.map((w) => w.s)).size) + ' methylarginines', mode), name + '_' + kind + '_logo');
+      if (fmt_ === 'tsv') download(stem + '.tsv', naTsv(rows));
+      else exportFigure(fmt_, naLogoSvg(rows, kind, EXPORT_PAL, true, (t ? naTypeOf(t).label : kind === 'dna' ? 'DNA' : 'RNA') + ' in contact with ' + fmt(new Set(rows.map((w) => w.s)).size) + ' methylarginines', mode), stem + '_logo');
     }));
   }
-  // The RNA and DNA one site touches, or that its neighbours touch, in structures: its aligned windows (site card).
+  // The RNA and DNA in contact with one site in structures, directly or via a flanking residue, and its crosslinks (site card).
   function siteBoundHtml(s) {
-    const ws = naRows([s], 'rna', true).concat(naRows([s], 'dna', true)).sort((a, b) => (!!a.via - !!b.via) || b.pdbs.length - a.pdbs.length);
-    if (!ws.length) return '';
-    const row = (w) => '<li>' + naWindowHtml(w) + ' <span class="muted small">' + (w.kind === 'dna' ? 'DNA' : 'RNA') + ' · ' + fmt(w.pdbs.length) + ' entr' + (w.pdbs.length === 1 ? 'y' : 'ies') + '</span>' +
-      (w.via ? ' <span class="tag na-near" title="' + esc('Touched by residue ' + (s.pos + w.via) + ', not by the arginine itself') + '">near ' + (w.via > 0 ? '+' : '−') + Math.abs(w.via) + '</span>' : '') +
-      (w.syn ? ' <span class="tag na-oligo">oligo</span>' : '') + '</li>';
-    return '<p class="sc-who"><span class="flabel">Bound RNA and DNA in structures</span></p><ul class="sc-na">' + ws.slice(0, 5).map(row).join('') + '</ul>' +
-      (ws.length > 5 ? '<p class="muted small">' + (ws.length - 5) + ' more in the RNA and DNA tabs of Partners and complexes.</p>' : '');
+    const b = siteBound(s), ws = b.ws;
+    const xl = xlNearText(s, b);
+    if (!ws.length && !xl) return '';
+    const row = (w) => '<li>' + naWindowHtml(w) + ' ' + naTypeTag(w.type) + (w.via ? naNearTag(w, s) : '') + (w.syn ? naOligoTag() : '') +
+      ' <span class="muted small" data-tip="' + esc(w.names.map(esc).join('<br>') + '<br>' + w.pdbs.map((x) => x.toUpperCase()).join(' ')) + '">' + esc(w.names[0] || '') + ' · ' + fmt(w.pdbs.length) + ' entr' + (w.pdbs.length === 1 ? 'y' : 'ies') + '</span></li>';
+    return '<p class="sc-who"><span class="flabel">RNA and DNA contacts of ' + rl(s.pos, P[s.p]) + '</span></p>' + (ws.length ? '<ul class="sc-na">' + ws.slice(0, 5).map(row).join('') + '</ul>' : '') +
+      (xl ? '<p class="small sc-na-xl">' + xl + '</p>' : '') +
+      '<p class="muted small">' + (ws.length > 5 ? (ws.length - 5) + ' more bound sequences. ' : '') + '<button class="linkish" type="button" data-sc="nacard">RNA and DNA interactions of ' + esc(P[s.p].label) + '</button></p>';
   }
 
   // ------------------------------------------- where a protein binds RNA or DNA, and what it binds
@@ -7400,7 +7590,16 @@
       merged.forEach(([a, b, n]) => out.push({ start: a, end: b, src: 'rbd', n }));
     }
     if (xp && kind === 'dna') xp.dnaBind.forEach(([a, b]) => out.push({ start: a, end: b, src: 'unp' }));
-    out.forEach((r) => { r.sites = p.sites.filter((j) => S[j].pos >= r.start && S[j].pos <= r.end); });
+    // Residues crosslinked in living cells, consecutive ones joined across gaps of up to 3 (as the structure regions).
+    const xl = xp ? Array.from(new Set(kind === 'rna' ? xp.rnaPos : xp.dnaPos.concat(xp.dnaCand))).sort((a, b) => a - b) : [];
+    let cur = null;
+    for (const q of xl) {
+      if (cur && q - cur.end <= 4) { cur.end = q; cur.n++; } else { cur = { start: q, end: q, src: 'xl', n: 1 }; out.push(cur); }
+    }
+    out.forEach((r) => {
+      r.sites = p.sites.filter((j) => S[j].pos >= r.start && S[j].pos <= r.end);
+      r.near = p.sites.filter((j) => (S[j].pos < r.start && S[j].pos >= r.start - NA_NEAR) || (S[j].pos > r.end && S[j].pos <= r.end + NA_NEAR));
+    });
     return out.sort((x, y) => x.start - y.start || x.end - y.end);
   }
   // A bound segment ('AU[G][G]C…'): contacted nucleotides (in brackets) bold, … between clusters.
@@ -7410,22 +7609,28 @@
     pdb: ['structure', (K) => 'Residues within 4 Å of ' + K + ' in PDB structures'],
     rbd: ['RBDmap', () => 'Peptides crosslinked to RNA in HeLa cells (RBDmap, Castello et al. 2016); overlapping fragments merged'],
     unp: ['UniProt', () => 'UniProt DNA-binding region'],
+    xl: ['crosslinks', (K) => (K === 'RNA' ? 'Residues crosslinked to RNA in living cells (pepR-MS compendium: Kramer 2014, XRNAX, RBS-ID, pRBS-ID, pepR-MS)' : 'Residues crosslinked to DNA in MCF7 cells, alone or as candidates (Trendel et al. 2025)') + ', joined across gaps of up to 3'],
   };
   function bindWhereHtml(p, kind) {
     const regs = bindRegions(p, kind), K = kind.toUpperCase();
     if (!regs.length) return '';
     return '<section class="na-sec na-where"><h4>Where ' + esc(p.label) + ' binds ' + K + ', and the methylarginines there</h4><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th class="r">Residues</th><th>Evidence</th>' +
-      '<th class="hide-sm">UniProt domain</th><th>What it touches</th><th>Methylarginines inside</th></tr></thead><tbody>' +
-      regs.map((r) => '<tr' + (r.sites.length ? ' class="has"' : '') + '><td class="num">' + r.start + '–' + r.end + '</td>' +
-        '<td><span class="tag" title="' + esc(BIND_SRC[r.src][1](K)) + '">' + BIND_SRC[r.src][0] + '</span>' +
-        (r.src === 'pdb' ? ' <span class="muted small">' + fmt(r.r.nEnt) + ' entr' + (r.r.nEnt === 1 ? 'y' : 'ies') + '</span>' : r.src === 'rbd' ? ' <span class="muted small">' + r.n + ' fragment' + (r.n === 1 ? '' : 's') + '</span>' : '') + '</td>' +
+      '<th class="hide-sm">UniProt domain</th><th>What it contacts</th><th>Methylarginines inside or flanking (≤ 5 residues)</th></tr></thead><tbody>' +
+      regs.map((r) => '<tr' + (r.sites.length || r.near.length ? ' class="has"' : '') + '><td class="num">' + (r.start === r.end ? r.start : r.start + '–' + r.end) + '</td>' +
+        '<td><span class="tag" data-tip="' + esc(BIND_SRC[r.src][1](K)) + '">' + BIND_SRC[r.src][0] + '</span>' +
+        (r.src === 'pdb' ? ' <span class="muted small">' + fmt(r.r.nEnt) + ' entr' + (r.r.nEnt === 1 ? 'y' : 'ies') + '</span>' : r.src === 'rbd' ? ' <span class="muted small">' + r.n + ' fragment' + (r.n === 1 ? '' : 's') + '</span>'
+          : r.src === 'xl' ? ' <span class="muted small">' + r.n + ' residue' + (r.n === 1 ? '' : 's') + '</span>' : '') + '</td>' +
         '<td class="hide-sm small" data-dom="' + r.start + '-' + r.end + '"><span class="muted">…</span></td>' +
-        '<td>' + (r.src === 'pdb' ? r.r.segs.slice(0, 3).map((g) => segHtml(g.seg) + ' <span class="muted small" title="' + esc(g.name + ', e.g. ' + g.pdb.toUpperCase()) + '">' + fmt(g.n) + '</span>').join('<br>') +
-          (r.r.nSegs > 3 ? '<br><span class="muted small">+' + (r.r.nSegs - 3) + ' more</span>' : '') : '<span class="muted">' + (r.src === 'rbd' ? 'RNA in cells, sequence not determined' : 'DNA, as annotated') + '</span>') + '</td>' +
-        '<td>' + (r.sites.length ? r.sites.map((j) => '<button class="linkish strong" type="button" data-pos="' + S[j].pos + '">' + rl(S[j].pos, p) + '</button>').join(' ') : '<span class="muted">—</span>') + '</td></tr>').join('') +
+        '<td>' + (r.src === 'pdb' ? r.r.segs.slice(0, 3).map((g) => segHtml(g.seg) + ' <span class="muted small" data-tip="' + esc('<b>' + naTypeOf(g.type).label + '</b> · ' + esc(g.name || '') + '<br>' + fmt(g.n) + ' entr' + (g.n === 1 ? 'y' : 'ies') + ', e.g. ' + g.pdb.toUpperCase()) + '">' +
+          (g.type ? esc(naTypeOf(g.type).label) + ' · ' : '') + fmt(g.n) + '</span>').join('<br>') +
+          (r.r.nSegs > 3 ? '<br><span class="muted small">+' + (r.r.nSegs - 3) + ' more</span>' : '') : '<span class="muted">' + (r.src === 'rbd' ? 'RNA in cells, sequence not determined' : r.src === 'xl' ? K + ' in cells, sequence not determined' : 'DNA, as annotated') + '</span>') + '</td>' +
+        '<td>' + (r.sites.length ? r.sites.map((j) => '<button class="linkish strong" type="button" data-pos="' + S[j].pos + '">' + rl(S[j].pos, p) + '</button>').join(' ') : '') +
+          (r.near.length ? (r.sites.length ? '<br>' : '') + '<span class="muted small">flanking: </span>' + r.near.map((j) => '<button class="linkish strong" type="button" data-pos="' + S[j].pos + '" data-tip="' + esc(rl(S[j].pos, p) + ' lies ' + (S[j].pos < r.start ? r.start - S[j].pos + ' residue' + (r.start - S[j].pos === 1 ? '' : 's') + ' N-terminal' : S[j].pos - r.end + ' residue' + (S[j].pos - r.end === 1 ? '' : 's') + ' C-terminal') + ' to this region') + '">' + rl(S[j].pos, p) + '</button> <span class="muted small">' +
+            (S[j].pos < r.start ? sgn(S[j].pos - r.start) : sgn(S[j].pos - r.end)) + '</span>').join(' ') : '') + (r.sites.length || r.near.length ? '' : '<span class="muted">—</span>') + '</td></tr>').join('') +
       '</tbody></table></div><p class="note">Structure: runs of residues within 4 Å of ' + K + ' (joined across gaps of up to 3), read once per distinct complex of every PDB entry with ' + esc(p.label) + ' and ' + K +
-      '; the segments are the stretches they touch, contacted nucleotides bold, … between distant clusters, with the number of entries showing each. ' +
-      (kind === 'rna' ? 'RBDmap: peptides crosslinked to RNA in HeLa cells, the sequence bound is not known.' : 'UniProt: annotated DNA-binding regions.') + '</p></section>';
+      '; the segments are the stretches they contact, contacted nucleotides bold, … between distant clusters, with the number of entries showing each. ' +
+      (kind === 'rna' ? 'RBDmap: peptides crosslinked to RNA in HeLa cells, the sequence bound is not known. ' : 'UniProt: annotated DNA-binding regions. ') +
+      'Crosslinks: residues UV-crosslinked to ' + K + ' in living cells, joined across gaps of up to 3. Flanking: methylarginines within ' + NA_NEAR + ' residues of either end of a region, with their distance from it (negative: N-terminal).</p></section>';
   }
   function fillBindDomains(root, p) {
     const cells = $$('[data-dom]', root);
@@ -7447,8 +7652,8 @@
       const rb = IX.nab.rbns.get(p.i) || [];
       if (!rb.length) return '';
       return '<section class="na-sec"><h4>Preferred RNA in vitro (RNA Bind-n-Seq)</h4>' + rb.map((x) => '<div class="nab-row">' +
-        (x.logos.length ? '<div class="nab-logos">' + x.logos.map(([k, lg, pwm]) => '<span class="nab-logo" title="ENCODE logo ' + lg + ', from ' + k + '-mers">' + pfmLogoSvg(pwm, false, pal, { compact: true }).svg + '</span>').join('') + '</div>' : '') +
-        '<div class="tags">' + x.top.map(([k, r]) => '<span class="tag nab-kmer" title="enrichment R ' + r + '">' + esc(k) + ' <span class="muted">' + Number(r).toFixed(1) + '</span></span>').join('') + '</div>' +
+        (x.logos.length ? '<div class="nab-logos">' + x.logos.map(([k, lg, pwm]) => '<span class="nab-logo" data-tip="' + esc('ENCODE logo ' + lg + ', from ' + k + '-mers') + '">' + pfmLogoSvg(pwm, false, pal, { compact: true }).svg + '</span>').join('') + '</div>' : '') +
+        '<div class="tags">' + x.top.map(([k, r]) => '<span class="tag nab-kmer" data-tip="' + esc('<b>' + k + '</b><br>enrichment R ' + r + ': its frequency in the RNA the protein pulled down over the input') + '">' + esc(k) + ' <span class="muted">' + Number(r).toFixed(1) + '</span></span>').join('') + '</div>' +
         '<p class="note">The ' + x.top.length + ' most enriched 5-mers (R: frequency in the RNA the purified protein pulled down from random RNA, over the input) at ' + esc(x.conc) +
         '; ENCODE <a href="https://www.encodeproject.org/experiments/' + encodeURIComponent(x.exp) + '/" target="_blank" rel="noopener">' + esc(x.exp) + ' ↗</a>.</p></div>').join('') + '</section>';
     }
@@ -7474,23 +7679,34 @@
   // Logo and aligned windows of one kind for a set of sites (a protein's, or the selection's). The logo shows letter
   // height as information for a few sites and as frequency for many (NA_FREQ_FROM), and the reader can switch.
   const NA_FREQ_FROM = 15;
-  function naBlockHtml(wsAll, kind, withProtein, limit) {
-    const K = kind === 'dna' ? 'DNA' : 'RNA', hasNear = wsAll.some((w) => w.via), near = hasNear && UI.naNear !== false;
-    const ws = near ? wsAll : wsAll.filter((w) => !w.via);
+  // Type chips of a block: every type its windows have (direct and flanking-residue contacts, as switched), with the sites of each.
+  function naTypeChips(wsAll, kind) {
+    const pool = wsAll.filter((w) => UI.naNear !== false || !w.via), n = new Map();
+    for (const w of pool) { if (!n.has(w.type)) n.set(w.type, new Set()); n.get(w.type).add(w.s); }
+    if (n.size < 2 && !naTypePick(wsAll, kind)) return '';
+    const cur = naTypePick(wsAll, kind);
+    const chip = (v, label, cnt, help) => '<button type="button" class="chip" data-na-type="' + v + '" aria-pressed="' + (cur === v) + '"' + (help ? ' data-tip="' + esc('<b>' + label + '</b><br>' + help) + '"' : '') + '>' + esc(label) + ' <b>' + fmt(cnt) + '</b></button>';
+    return '<div class="na-types chips" role="group" aria-label="Type of ' + (kind === 'dna' ? 'DNA' : 'RNA') + '"><span class="flabel">Type</span>' + chip('', 'All', new Set(pool.map((w) => w.s)).size) +
+      NA_TYPES.filter(([t]) => n.has(t)).map(([t, l, h]) => chip(t, l, n.get(t).size, h)).join('') + '</div>';
+  }
+  function naBlockHtml(wsAllKinds, kind, withProtein, limit) {
+    const t = naTypePick(wsAllKinds, kind), wsAll = t ? wsAllKinds.filter((w) => w.type === t) : wsAllKinds;
+    const K = (kind === 'dna' ? 'DNA' : 'RNA') + (t ? ' (' + naTypeOf(t).label + ')' : ''), hasNear = wsAll.some((w) => w.via), near = hasNear && UI.naNear !== false;
+    const ws = near ? wsAll : wsAll.filter((w) => !w.via), chips = naTypeChips(wsAllKinds, kind);
     const nAt = new Set(wsAll.filter((w) => !w.via).map((w) => w.s)).size, nNear = new Set(wsAll.filter((w) => w.via && !wsAll.some((x) => !x.via && x.s === w.s)).map((w) => w.s)).size;
-    const sw = hasNear ? '<label class="fig-ctl small">Sequences <select class="na-near">' + [['near', 'at or next to the methylarginine'], ['at', 'at the methylarginine']]
+    const sw = hasNear ? '<label class="fig-ctl small">Contacts <select class="na-near">' + [['near', 'direct and via i ± 1–5'], ['at', 'direct only']]
       .map(([v, l]) => '<option value="' + v + '"' + ((v === 'near') === near ? ' selected' : '') + '>' + l + '</option>').join('') + '</select></label>' : '';
     const n = new Set(ws.map((w) => w.s)).size, pdbs = new Set(ws.flatMap((w) => w.pdbs)).size;
     if (!wsAll.length) return '';
-    if (!n) return '<div class="na-block" data-na-kind="' + kind + '"><p class="na-head">No methylarginine touches ' + K + ' itself; ' + fmt(nNear) + ' ha' + (nNear === 1 ? 's' : 've') + ' a neighbour that does. ' + sw + '</p></div>';
+    if (!n) return '<div class="na-block" data-na-kind="' + kind + '"><p class="na-head">No methylarginine side chain is within 4 Å of ' + K + '; ' + fmt(nNear) + ' ha' + (nNear === 1 ? 's' : 've') + ' a residue at i ± 1–5 that is. ' + sw + '</p>' + chips + '</div>';
     // frequency for many sites or many windows (a histone's hundreds of nucleosomal DNAs), information for a few
     const mode = n >= NA_FREQ_FROM || ws.length >= 2 * NA_FREQ_FROM ? 'freq' : 'bits';
-    return '<div class="na-block" data-na-kind="' + kind + '" data-na-mode="' + mode + '"><p class="na-head"><b>' + fmt(nAt) + '</b> methylarginine' + (nAt === 1 ? '' : 's') + ' touch' + (nAt === 1 ? 'es' : '') + ' ' + K +
-      (near && nNear ? ', <b>' + fmt(nNear) + '</b> more ha' + (nNear === 1 ? 's' : 've') + ' a residue within 5 that does' : '') + ', in ' + fmt(pdbs) + ' PDB entr' + (pdbs === 1 ? 'y' : 'ies') +
+    return '<div class="na-block" data-na-kind="' + kind + '" data-na-mode="' + mode + '"><p class="na-head"><b>' + fmt(nAt) + '</b> methylarginine' + (nAt === 1 ? '' : 's') + ' in direct contact with ' + K +
+      (near && nNear ? ', <b>' + fmt(nNear) + '</b> more via a residue at i ± 1–5' : '') + ', in ' + fmt(pdbs) + ' PDB entr' + (pdbs === 1 ? 'y' : 'ies') +
       ', ' + fmt(ws.length) + ' distinct bound sequence' + (ws.length === 1 ? '' : 's') + '. ' + sw +
       (n >= 2 ? '<label class="fig-ctl small">Letter height <select class="na-mode">' + [['bits', 'information (bits)'], ['freq', 'frequency']].map(([v, l]) => '<option value="' + v + '"' + (v === mode ? ' selected' : '') + '>' + l + '</option>').join('') + '</select></label>' : '') +
       '<span class="exp na-exp"><button type="button" data-na-exp="' + kind + ':svg">SVG</button><button type="button" data-na-exp="' + kind + ':png">PNG</button><button type="button" data-na-exp="' + kind + ':tsv">TSV</button></span></p>' +
-      (n >= 2 ? '<div class="na-logo">' + naLogoSvg(ws, kind, screenPalette(), false, '', mode).svg + '</div>' : '') + naAlignHtml(ws, withProtein, limit) + '</div>';
+      chips + (n >= 2 ? '<div class="na-logo">' + naLogoSvg(ws, kind, screenPalette(), false, '', mode).svg + '</div>' : '') + naAlignHtml(ws, withProtein, limit) + '</div>';
   }
 
   // ----- live sources (cached per protein)
@@ -7646,6 +7862,18 @@
     if (F.pevAll) add('ix', 'Protein: ' + pevLabel(F.pevAll) + (F.pevExact ? ' (only these)' : ''), () => { F.pevAll = 0; F.pevExact = false; });
   }
 
+  // Rail filter: RNA or DNA in contact with the site in structures (direct or via i ± 1–5), its type, direct contact only.
+  function boundRailHtml(more) {
+    const n = new Map();
+    for (const s of S) for (const r of s.na || []) { if (!n.has(r.type)) n.set(r.type, new Set()); n.get(r.type).add(s.j); }
+    const types = NA_TYPES.filter(([t]) => n.has(t)), on = termValues('bound').some((v) => NA_TYPES.some((x) => x[3] === v.text));
+    return '<div class="fgroup"><span class="flabel" title="Within 4 Å of the arginine side chain in a PDB structure (direct contact) or, in a complex without one, within 4 Å of a residue at i ± 1–5">RNA/DNA contact in PDB structures, direct or via i ± 1–5 (match any)</span>' +
+      termChips('bound', [['rna', 'RNA', 'RNA (or an RNA-DNA hybrid) in direct contact or via a residue at i ± 1–5'], ['dna', 'DNA', 'DNA in direct contact or via a residue at i ± 1–5']]) +
+      more('Type; direct contact only', on || boundAtOn(),
+        '<span class="flabel">Type of RNA or DNA (match any)</span>' + termChips('bound', types.map(([t, l, h, term]) => [term, l + ' ' + fmt(n.get(t).size), h])) +
+        '<label class="check"><input type="checkbox" id="f-boundat"' + (boundAtOn() ? ' checked' : '') + '> Direct contact with the arginine side chain only (leave out contacts via i ± 1–5)</label>') + '</div>';
+  }
+
   function ixRailBody(sel) {
     if (!IX) return '<p class="note">Loading interaction data…</p>';
     if (IX.failed) return '<p class="note">Interaction data (<code>data/methylarg_interactions.json</code>) is not available.</p>';
@@ -7656,6 +7884,7 @@
       '<div class="fgroup"><span class="flabel" title="' + esc(STATUS_HELP) + '">Interaction evidence at the site</span>' +
       termChips('interaction', [['experimental', 'Experimental', 'Crosslink, RBDmap fragment or contact in a PDB structure at this residue (IntAct records are shown apart)'], ['predicted', 'Predicted', 'Predicted interface or confident predicted contact, with or without experimental evidence'],
         ['predicted-only', 'Predicted only', 'Predicted, with no experimental evidence yet: candidates to test'], ['none', 'None recorded', 'No interaction evidence recorded; most proteins were never crystallised or crosslinked']]) + '</div>' +
+      boundRailHtml(more) +
       '<div class="fgroup"><span class="flabel" title="STRING v' + esc(IX.meta.string_version) + ' physical subnetwork">Has a physical partner that is (match any)</span>' + termChips('binds', BIND_TERMS.map(([t, v]) => { const o = BIND_OPTS.find((x) => x[0] === v); return [t, o[1], o[2]]; })) +
       more('A specific partner, confidence', !!pt || F.ixScore !== 700,
         '<label class="flabel" for="f-partner">Binds a specific protein (any gene)</label>' +
@@ -7762,6 +7991,11 @@
     if (sc) sc.addEventListener('change', () => { F.ixScore = +sc.value || 700; refresh(); });
     const ge = $('#f-goexp', rail);
     if (ge) ge.addEventListener('change', () => { F.goExp = ge.checked; refresh(); });
+    const ba = $('#f-boundat', rail);
+    if (ba) ba.addEventListener('change', () => {
+      const t = Q.tokens.find((x) => x.key === 'bound' && x.vals.length === 1 && x.vals[0].text === 'at');
+      if (ba.checked && !t) addTerm('bound', 'at'); else if (!ba.checked && t) replaceToken(t, 'bound', '');
+    });
     const mo = $('#f-modelled', rail);
     if (mo) mo.addEventListener('change', () => { F.modelledPdb = mo.checked; refresh(); });
     const pr = $('#f-pred', rail);
@@ -8151,11 +8385,12 @@
   function renderIxCard(p) {
     const box = $('#card-ix');
     if (!box) return;
-    const head = '<div class="card-head"><div><h3>Interactions</h3><p class="sub">Partners, complexes, RNA and DNA binding, and contacts in structures.</p></div><div class="exp" id="ix-exp"></div></div>';
+    const head = '<div class="card-head"><div><h3>Partners and complexes</h3><p class="sub">Protein partners, complexes and contacts in structures; RNA and DNA have their own card below.</p></div><div class="exp" id="ix-exp"></div></div>';
     ixFact(p);
     if (!IX) { box.innerHTML = head + '<p class="note">Loading interaction data…</p>'; setFoldSummary('p-ix', 'loading…'); return; }
     if (IX.failed) { box.innerHTML = head + '<p class="note">Interaction data is not available.</p>'; setFoldSummary('p-ix', 'not available'); return; }
-    const tabs = [['proteins', 'Protein partners', partnersAt(p, 700).length], ['complexes', 'Complexes', p.cx.length], ['rna', 'RNA', null], ['dna', 'DNA', null]];
+    const tabs = [['proteins', 'Protein partners', partnersAt(p, 700).length], ['complexes', 'Complexes', p.cx.length]];
+    if (!tabs.some(([k]) => k === UI.ixTab)) UI.ixTab = 'proteins';
     setFoldSummary('p-ix', fmt(tabs[0][2]) + ' high-confidence STRING partner' + (tabs[0][2] === 1 ? '' : 's') + ' · ' + fmt(p.cx.length) + ' complex' + (p.cx.length === 1 ? '' : 'es'));
     const ev = EV_SETS.map(([b, l]) => [b, l, p.sites.filter((j) => (S[j].ev || 0) & b).length]).filter((x) => x[2]);
     const strip = ev.length ? '<p class="ev-strip"><span class="muted small">Evidence at its ' + fmt(p.sites.length) + ' methylarginines:</span> ' +
@@ -8165,8 +8400,43 @@
     $$('[data-evp]', box).forEach((b) => b.addEventListener('click', () => { setPlain(p.acc); setFilters((f) => { f.evAll = +b.dataset.evp; f.evExact = false; }, 'sites'); window.scrollTo({ top: 0 }); }));
     const body = $('#ix-body', box);
     if (UI.ixTab === 'complexes') renderIxComplexes(p, body);
-    else if (UI.ixTab === 'rna' || UI.ixTab === 'dna') renderIxNucleic(p, body, UI.ixTab);
     else renderIxProteins(p, body);
+  }
+
+  // ----- protein page: RNA and DNA interactions
+  // What the protein's RNA or DNA evidence amounts to, for the tab counts and the fold summary.
+  function naEvidence(p, kind) {
+    const sites = p.sites.map((j) => S[j]), ws = naRows(sites, kind, true), xp = IX.xlProt.get(p.i);
+    const at = new Set(ws.filter((w) => !w.via).map((w) => w.s)), nx = new Set(ws.filter((w) => w.via && !at.has(w.s)).map((w) => w.s));
+    const xlN = xp ? (kind === 'rna' ? xp.rnaPos.length : xp.dnaPos.length + xp.dnaCand.length) : 0;
+    const xlSites = sites.filter((s) => { const b = siteBound(s); return (kind === 'rna' ? b.rna : b.dna).some((x) => Math.abs(x.pos - s.pos) <= NA_NEAR); });
+    const regs = ((IX.naReg && IX.naReg.get(p.i)) || []).filter((r) => r.kind === kind).length;
+    const nab = kind === 'rna' ? [IX.nab.rbns.get(p.i) ? 'RNA Bind-n-Seq' : '', IX.nab.eclip.get(p.i) ? 'eCLIP' : ''].filter(Boolean) : [IX.nab.jaspar.get(p.i) ? 'JASPAR profile' : ''].filter(Boolean);
+    const sitesAny = new Set([...at, ...nx, ...xlSites]).size;
+    return { at: at.size, nx: nx.size, xlN, xlSites: xlSites.length, regs, nab, sitesAny, any: !!(ws.length || xlN || regs || nab.length || (xp && (kind === 'rna' ? xp.rbd.length : xp.dnaBind.length || xp.dnaInt))) };
+  }
+  function naEvidenceText(e) {
+    const parts = [];
+    if (e.at) parts.push(fmt(e.at) + ' site' + (e.at === 1 ? '' : 's') + ' in direct contact in structures');
+    if (e.nx) parts.push(fmt(e.nx) + ' via i ± 1–5');
+    if (e.xlN) parts.push(fmt(e.xlN) + ' UV-crosslinked residue' + (e.xlN === 1 ? '' : 's') + (e.xlSites ? ' (' + fmt(e.xlSites) + ' site' + (e.xlSites === 1 ? '' : 's') + ' with one at i ± 1–5)' : ''));
+    if (e.regs) parts.push(fmt(e.regs) + ' region' + (e.regs === 1 ? '' : 's') + ' in structures');
+    return parts.concat(e.nab).join(', ') || 'none recorded';
+  }
+  function renderNaCard(p) {
+    const box = $('#card-na');
+    if (!box) return;
+    const head = '<div class="card-head"><div><h3>RNA and DNA interactions</h3><p class="sub">Where ' + esc(p.label) + ' contacts RNA and DNA in structures and is UV-crosslinked to them in living cells, the sequences in contact with its methylarginines, and what it binds in vitro and in cells.' + docLink('ix-na') + '</p></div></div>';
+    if (!IX) { box.innerHTML = head + '<p class="note">Loading interaction data…</p>'; setFoldSummary('p-na', 'loading…'); return; }
+    if (IX.failed) { box.innerHTML = head + '<p class="note">Interaction data is not available.</p>'; setFoldSummary('p-na', 'not available'); return; }
+    const ev = { rna: naEvidence(p, 'rna'), dna: naEvidence(p, 'dna') };
+    setFoldSummary('p-na', 'RNA: ' + naEvidenceText(ev.rna) + ' · DNA: ' + naEvidenceText(ev.dna));
+    // The tab picked stays; at first, RNA unless only DNA has evidence.
+    const tab = UI.naTab || (ev.rna.any || !ev.dna.any ? 'rna' : 'dna');
+    box.innerHTML = head + '<div class="seg ix-tabs" role="tablist">' + [['rna', 'RNA'], ['dna', 'DNA']].map(([k, l]) => '<button type="button" role="tab" data-natab="' + k + '" aria-pressed="' + (tab === k) + '"' +
+      ' data-tip="' + esc('<b>' + l + '</b><br>' + naEvidenceText(ev[k])) + '">' + l + (ev[k].sitesAny ? ' <span class="n">' + fmt(ev[k].sitesAny) + ' site' + (ev[k].sitesAny === 1 ? '' : 's') + '</span>' : '') + '</button>').join('') + '</div><div id="na-body"></div>';
+    $$('[data-natab]', box).forEach((b) => b.addEventListener('click', () => { UI.naTab = b.dataset.natab; renderNaCard(p); }));
+    renderIxNucleic(p, $('#na-body', box), tab);
   }
 
   // Fact tile on a protein page: its sites by interaction status (ixStatus; STATUS_HELP says what each means).
@@ -8397,7 +8667,7 @@
         '<ul class="ix-sites">' + (at.length ? '<li><b>At a crosslinked residue:</b> ' + list(at) + '</li>' : '') + (near.length ? '<li><b>Within 3 residues:</b> ' + list(near) + '</li>' : '') + (frag.length ? '<li><b>Inside an RBDmap fragment:</b> ' + list(frag) + '</li>' : '') +
         (!at.length && !near.length && !frag.length ? '<li class="muted">No methylarginine at or near a crosslinked residue.</li>' : '') + '</ul>' :
         '<p class="muted">No RNA crosslinks recorded for this protein in the pepR-MS compendium or RBDmap.</p>') +
-        '<p class="note">UV crosslinking mass spectrometry localises the amino acid that touched RNA in living cells (pepR-MS re-analysis of Kramer 2014, XRNAX, RBS-ID, pRBS-ID and pepR-MS; RBDmap gives RNA-bound fragments). None of the pepR-MS crosslinked peptides carries a methylation mass shift, so a methylated arginine is seen there through its unmethylated fraction.</p></section>';
+        '<p class="note">UV crosslinking mass spectrometry localises the amino acid crosslinked to RNA in living cells (pepR-MS re-analysis of Kramer 2014, XRNAX, RBS-ID, pRBS-ID and pepR-MS; RBDmap gives RNA-bound fragments). None of the pepR-MS crosslinked peptides carries a methylation mass shift, so a methylated arginine is seen there through its unmethylated fraction.</p></section>';
     }
     const at = sites.filter((s) => s.xl && s.xl.d & 1), cand = sites.filter((s) => s.xl && !(s.xl.d & 1) && s.xl.d & 8), pep = sites.filter((s) => s.xl && !(s.xl.d & 9) && s.xl.d & 2), bind = sites.filter((s) => s.xl && s.xl.d & 4);
     return '<section><h4>DNA contact in living cells</h4>' +
@@ -8409,8 +8679,7 @@
   }
 
   function renderIxNucleic(p, body, kind) {
-    const exp = $('#ix-exp');
-    if (exp) exp.innerHTML = '';
+    body.dataset.kind = kind;
     const KIND = kind.toUpperCase();
     const bit = kind === 'rna' ? 4 : 8;
     const flag = kind === 'rna' ? IXF.rna : IXF.dna, flagExp = kind === 'rna' ? IXF.rnaExp : IXF.dnaExp;
@@ -8442,7 +8711,7 @@
     fillBindDomains(body, p);
     bindLogoTips(body);
     $$('.ec-gene', body).forEach((b) => b.addEventListener('click', () => { setPlain(b.dataset.gene); go('proteins'); window.scrollTo({ top: 0 }); }));
-    const alive = () => UI.detail === p.i && UI.ixTab === kind && document.body.contains(body);
+    const alive = () => UI.detail === p.i && body.dataset.kind === kind && document.body.contains(body);
     loadQuickGO(p.acc.split('-')[0], term).then((rows) => {
       const el = $('#ix-go', body);
       if (!el || !alive()) return;
@@ -8507,7 +8776,7 @@
   // ----- overview cards
   // ----- Interactions view: key findings first, then one collapsible section per analysis.
   const IX_SECTIONS = [
-    ['cells', 'RNA and DNA contact in living cells', 'Is the methylated arginine the residue that touches RNA or DNA?'],
+    ['cells', 'RNA and DNA contact in living cells', 'Is the methylated arginine the residue crosslinked to RNA or DNA?'],
     ['pdb', 'Interfaces in PDB structures', 'Interfaces with protein, RNA and DNA in experimental structures'],
     ['intact', 'Curated interaction features (IntAct)', 'Curated mutations, binding regions and methylated residues'],
     ['predicted', 'Predicted complexes', 'Interfaces in AlphaFold-Multimer models'],
@@ -8620,7 +8889,7 @@
       for (const s of R.sites) n[ixStatus(s)]++;
       sel = '<p class="ix-sel"><span class="sel-key"><i></i>Your ' + fmt(R.sites.length) + ' site' + (R.sites.length === 1 ? '' : 's') + '</span> <span class="ixs ixs-exp"><i></i>' + fmt(n.exp) + ' experimental</span> <span class="ixs ixs-pred"><i></i>' + fmt(n.pred) + ' predicted only</span> <span class="ixs ixs-none"><i></i>' + fmt(n.none) + ' none</span> <span class="muted small">Below: the whole dataset.</span></p>';
     }
-    return '<div class="card wide ix-feature" id="ch-ix"><div class="card-head"><div><h3>Interactions and binding</h3><p class="sub">What methylated arginines touch: proteins, RNA and DNA.</p></div>' +
+    return '<div class="card wide ix-feature" id="ch-ix"><div class="card-head"><div><h3>Interactions and binding</h3><p class="sub">What methylated arginines contact: proteins, RNA and DNA.</p></div>' +
       '<div class="exp"><button type="button" class="btn" data-ixgo="">Explore interactions →</button></div></div>' + sel + checkSiteHtml('ov-check') + findingsList(pick) + '</div>';
   }
   // One protein drawn as the contacts cartoon, to show what each kind of evidence looks like along a sequence.
@@ -9490,7 +9759,7 @@
     const scoped = constraints().length > 0, n = { exp: 0, pred: 0, none: 0 };
     for (const s of R.sites) n[ixStatus(s)]++;
     const tile = (k, term, label) => fact(fmt(n[k]), label, pctText(n[k], R.sites.length || 1) + '% of ' + (scoped ? 'your ' : '') + fmt(R.sites.length) + ' sites', term, 'List these sites');
-    el.innerHTML = '<div class="ix-page"><div class="ov-head"><h2>Interactions</h2><span class="muted small">What methylated arginines touch: proteins, RNA and DNA</span></div>' +
+    el.innerHTML = '<div class="ix-page"><div class="ov-head"><h2>Interactions</h2><span class="muted small">What methylated arginines contact: proteins, RNA and DNA</span></div>' +
       '<div class="facts ix-facts">' + tile('exp', 'experimental', 'Experimental evidence') + tile('pred', 'predicted-only', 'Predicted only') + tile('none', 'none', 'None recorded') + '</div>' +
       checkSiteHtml('ix-check') +
       '<div class="ov-head"><h2>Key findings</h2><span class="muted small">Click one for the numbers</span></div>' + findingsList(ixFindings()) +
@@ -9535,8 +9804,8 @@
     const rna = naRows(R.sites, 'rna', true), dna = naRows(R.sites, 'dna', true), nabPart = ixNabHtml();
     if (!rna.length && !dna.length && !nabPart) return '';
     const part = (ws, kind) => '<section class="na-part"><h4>' + (kind === 'dna' ? 'DNA' : 'RNA') + ' in structures</h4>' +
-      (ws.length ? naBlockHtml(ws, kind, true, 40) : '<p class="muted">No methylarginine of ' + (constraints().length ? 'your selection' : 'the release') + ' touches ' + kind.toUpperCase() + ' in the structures read.</p>') + '</section>';
-    return '<div class="card" id="ix-na"><div class="card-head"><div><h3>RNA and DNA bound at methylarginines</h3><p class="sub">The sequence each methylarginine touches in PDB structures, ' +
+      (ws.length ? naBlockHtml(ws, kind, true, 40) : '<p class="muted">No methylarginine of ' + (constraints().length ? 'your selection' : 'the release') + ' contacts ' + kind.toUpperCase() + ' in the structures read.</p>') + '</section>';
+    return '<div class="card" id="ix-na"><div class="card-head"><div><h3>RNA and DNA bound at methylarginines</h3><p class="sub">The sequence in contact with each methylarginine in PDB structures, ' +
       'aligned on the nucleotide closest to it, and what the proteins bind in vitro and in cells' + (constraints().length ? ', for your selection' : '') + '.' + docLink('ix-na') + '</p></div></div>' +
       part(rna, 'rna') + part(dna, 'dna') + '<p class="note">' + NA_NOTE + '</p>' + nabPart + '</div>';
   }
@@ -9560,7 +9829,7 @@
       ', a JASPAR DNA profile for ' + fmt(nJm) + ', eCLIP for ' + fmt(nEc) + '.</p><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Protein</th><th class="r">Sites</th><th>RNA in vitro (top 5-mers)</th><th>DNA profile</th><th>RNA in cells (eCLIP)</th></tr></thead><tbody>' +
       rows.slice(0, LIMIT).map((r) => '<tr><td><button class="linkish" type="button" data-na-p="' + r.i + '">' + esc(P[r.i].label) + '</button></td><td class="r num">' + r.n + '</td>' +
         '<td>' + (r.rb ? r.rb[0].top.slice(0, 3).map(([k]) => '<span class="tag nab-kmer">' + esc(k) + '</span>').join(' ') : '<span class="muted">—</span>') + '</td>' +
-        '<td>' + (r.jm ? r.jm.slice(0, 2).map((m) => '<span class="nab-logo" title="' + esc(m.id + ' ' + m.name + ' ' + m.cons) + '">' + pfmLogoSvg(m.pfm, true, pal, { compact: true }).svg + '</span>').join('') +
+        '<td>' + (r.jm ? r.jm.slice(0, 2).map((m) => '<span class="nab-logo" data-tip="' + esc('<b>' + esc(m.id) + '</b> ' + esc(m.name) + '<br><span class="mono">' + esc(m.cons) + '</span>') + '">' + pfmLogoSvg(m.pfm, true, pal, { compact: true }).svg + '</span>').join('') +
           (r.jm.length > 2 ? ' <span class="muted small">+' + (r.jm.length - 2) + '</span>' : '') : '<span class="muted">—</span>') + '</td>' +
         '<td>' + (r.ec ? r.ec.map((x) => esc(x.cell) + ' ' + fmt(x.n)).join(', ') + '<br><span class="muted small">' + esc(Array.from(new Set(r.ec.flatMap((x) => x.genes.slice(0, 3).map(([g]) => g)))).slice(0, 4).join(', ')) + '</span>' : '<span class="muted">—</span>') + '</td></tr>').join('') +
       '</tbody></table></div>' + (rows.length > LIMIT ? '<p class="note">' + fmt(LIMIT) + ' of ' + fmt(rows.length) + ' proteins; each protein page has all of its data.</p>' : '') +
@@ -9570,7 +9839,7 @@
   function ixNaSummary() {
     const n = (kind) => new Set(naRows(R.sites, kind, false).map((w) => w.s)).size;
     const prots = new Set(R.sites.map((s) => s.p)), withNab = Array.from(prots).filter((i) => IX.nab.rbns.get(i) || IX.nab.jaspar.get(i) || IX.nab.eclip.get(i)).length;
-    return fmt(n('rna')) + ' methylarginines touch RNA and ' + fmt(n('dna')) + ' touch DNA in structures; ' + fmt(withNab) + ' proteins with motifs or eCLIP' + (constraints().length ? ', your selection' : '');
+    return fmt(n('rna')) + ' methylarginines in direct contact with RNA and ' + fmt(n('dna')) + ' with DNA in structures; ' + fmt(withNab) + ' proteins with motifs or eCLIP' + (constraints().length ? ', your selection' : '');
   }
 
   function openIxSection(k) {
@@ -10396,6 +10665,7 @@
       const [kind, a, b] = f.dataset.ev.split(':');
       showEvidence(e, p, kind, +a, +b);
     }));
+    bindEvidenceHover(svg, p);
     svg.addEventListener('pointermove', (e) => {
       if (start == null) return;
       const cur = Math.max(g.ML, Math.min(g.W - g.MR, toX(e)));
@@ -10571,7 +10841,7 @@
   }
   // The evidence behind a contact mark on residues a..b of protein p, with links to the studies and PDB entries.
   // A fragment's sequence with its methylarginines underlined.
-  const fragHtml = (frag, start, methyl) => frag.split('').map((c, k) => (methyl.includes(start + k) ? '<u>' + esc(c) + '</u>' : esc(c))).join('');
+  const fragHtml = (frag, start, methyl, xl) => frag.split('').map((c, k) => { const t = methyl.includes(start + k) ? '<u>' + esc(c) + '</u>' : esc(c); return xl && xl.includes(start + k) ? '<b class="xl-res">' + t + '</b>' : t; }).join('');
   function contactEvidenceHtml(p, kind, a, b) {
     const span = a === b ? rn(a, p) : rn(a, p) + '–' + rn(b, p);
     const u = UNIDATA.get(p.acc), seq = (u && u.seq) || '';
@@ -10593,8 +10863,9 @@
       for (const f of xp.rbd.filter(overlap)) {
         const frag = xp.seq ? (xp.seq.rbd.find((x) => x[0] === f[0] && x[1] === f[1]) || [])[2] : '';
         items.push('<li>RBDmap RNA-bound fragment <b>' + rn(f[0], p) + '–' + rn(f[1], p) + '</b>, HeLa (' + doiLink(RBDMAP_DOI, 'Castello et al. 2016') + ')' +
-          (frag ? '<br><span class="mono">' + fragHtml(frag, f[0], methyl) + '</span>' : '') + '</li>');
+          (frag ? '<br><span class="mono frag">' + fragHtml(frag, f[0], p.sites.map((j) => S[j].pos), xp.rnaPos) + '</span>' : '') + '</li>');
       }
+      if (xp.rbd.some(overlap) && xp.seq) items.push('<li class="muted">In the fragments: bold, residues crosslinked to RNA; underlined, methylarginines.</li>');
       if (nRes) items.push('<li class="muted">Residue-level sets as compiled and re-analysed in the pepR-MS compendium (' + doiLink(PEPR_DOI, 'Sha, Kuster &amp; Trendel 2025') + ').</li>');
     } else if (kind === 'dna' && xp) {
       for (const pos of xp.dnaPos.filter(inR)) items.push('<li><b>' + res(pos) + '</b> crosslinked to DNA, MCF7 (' + doiLink(DNAXL_DOI, 'Trendel et al. 2025') + ')</li>');
@@ -10655,7 +10926,9 @@
       (items.length ? '<ul class="evpop-list">' + items.join('') + '</ul>' : '<p class="muted">No record found for this stretch.</p>') +
       (methyl.length ? '<p class="evpop-foot"><button class="linkish" type="button" data-goto-site="' + methyl[0] + '">Open the site card for ' + rl(methyl[0], p) + '</button></p>' : '');
   }
-  function showEvidence(e, p, kind, a, b) {
+  // hover: opened by resting on a mark (bindEvidenceHover); it closes when the pointer leaves the mark and the card,
+  // while one opened by a click stays until closed.
+  function showEvidence(e, p, kind, a, b, hover) {
     let pop = $('#evpop');
     if (!pop) {
       pop = document.createElement('div');
@@ -10663,7 +10936,11 @@
       document.body.appendChild(pop);
       document.addEventListener('keydown', (k) => { if (k.key === 'Escape') pop.hidden = true; });
       document.addEventListener('pointerdown', (k) => { if (!pop.hidden && !pop.contains(k.target) && !k.target.closest('[data-ev]')) pop.hidden = true; });
+      pop.addEventListener('mouseenter', () => clearTimeout(EVHOVER.close));
+      pop.addEventListener('mouseleave', evHoverLeave);
     }
+    if (hover && !pop.hidden && !pop.dataset.hover) return;   // a card the reader clicked open stays
+    pop.dataset.hover = hover ? '1' : '';
     hideTip();
     pop.innerHTML = contactEvidenceHtml(p, kind, a, b);
     pop.hidden = false;
@@ -10680,6 +10957,26 @@
     if (left + w > window.innerWidth - 8) left = Math.max(8, e.clientX - w - 12);
     if (top + h > window.innerHeight - 8) top = Math.max(8, e.clientY - h - 12);
     pop.style.left = left + 'px'; pop.style.top = top + 'px';
+  }
+  // Evidence marks (data-ev) open their evidence card, with its links, after the pointer rests on them for a moment,
+  // as a click does; such a card closes shortly after the pointer leaves both the mark and the card.
+  const EVHOVER = { open: null, close: null };
+  const evHoverCard = () => { const pop = $('#evpop'); return pop && !pop.hidden && pop.dataset.hover ? pop : null; };
+  function evHoverLeave() {
+    clearTimeout(EVHOVER.open);
+    clearTimeout(EVHOVER.close);
+    EVHOVER.close = setTimeout(() => { const pop = evHoverCard(); if (pop && !pop.matches(':hover')) pop.hidden = true; }, 300);
+  }
+  function bindEvidenceHover(root, p) {
+    $$('[data-ev]', root).forEach((m) => {
+      m.addEventListener('mouseenter', (e) => {
+        clearTimeout(EVHOVER.open);
+        clearTimeout(EVHOVER.close);
+        const at = { clientX: e.clientX, clientY: e.clientY };
+        EVHOVER.open = setTimeout(() => { const [kind, a, b] = m.dataset.ev.split(':'); showEvidence(at, p, kind, +a, +b, true); }, 450);
+      });
+      m.addEventListener('mouseleave', evHoverLeave);
+    });
   }
   // Hover read-out and evidence clicks on a contacts cartoon (out: its contactCartoonSvg result).
   // onZoom([first, last] or null), when given, lets a drag across the cartoon zoom it and a double click reset it.
@@ -10724,18 +11021,19 @@
       if (start != null || e.target.classList.contains('cc-site')) return;
       const pos = posAt(e);
       if (pos == null) { hideTip(); return; }
-      showTip(e, residueInsight(p, pos, { hint: e.target.closest('[data-ev]') ? 'Click for the evidence' : '' }));
+      showTip(e, residueInsight(p, pos, { hint: e.target.closest('[data-ev]') ? 'Rest here or click for the evidence, with links' : '' }));
     });
     svg.addEventListener('mouseleave', hideTip);
     $$('[data-ev]', svg).forEach((m) => m.addEventListener('click', (e) => {
       const [kind, a, b] = m.dataset.ev.split(':');
       showEvidence(e, p, kind, +a, +b);
     }));
+    bindEvidenceHover(svg, p);
   }
 
   // ------------------------------------------------------------------ tooltip
   const tipEl = () => $('#tip');
-  function showTip(e, html) { const t = tipEl(); t.innerHTML = html; t.hidden = false; moveTip(e); }
+  function showTip(e, html) { if (evHoverCard()) return; const t = tipEl(); t.innerHTML = html; t.hidden = false; moveTip(e); }
   function moveTip(e) {
     const t = tipEl();
     if (t.hidden) return;
@@ -10746,6 +11044,27 @@
     t.style.left = Math.max(8, left) + 'px'; t.style.top = Math.max(8, topY) + 'px';
   }
   function hideTip() { const t = tipEl(); if (t) t.hidden = true; }
+  // Any HTML element with data-tip shows it on hover, wherever it is drawn; SVG marks bind their own (they share the
+  // tooltip with read-outs such as the protein map's).
+  let tipFor = null;
+  document.addEventListener('mouseover', (e) => {
+    const el = e.target instanceof Element ? e.target.closest('[data-tip]') : null;
+    if (!el || el instanceof SVGElement || el === tipFor) return;
+    tipFor = el;
+    showTip(e, el.getAttribute('data-tip'));
+  });
+  document.addEventListener('mousemove', (e) => { if (tipFor && tipFor.contains(e.target)) moveTip(e); });
+  document.addEventListener('mouseout', (e) => {
+    if (tipFor && !(e.relatedTarget instanceof Node && tipFor.contains(e.relatedTarget))) { tipFor = null; hideTip(); }
+  });
+  // Popout menus (Columns, Rows, network options, More links, Saved outside the filter rail) close on a click outside
+  // them or on Escape, not only on their own button; a click or tap also clears a hover tooltip.
+  const openPopouts = () => $$('details.col-menu[open], details.links-more[open], details.saved-menu[open]').filter((d) => !d.closest('.rail'));
+  document.addEventListener('pointerdown', (e) => {
+    openPopouts().forEach((d) => { if (!d.contains(e.target)) d.open = false; });
+    if (tipFor) { tipFor = null; hideTip(); }
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { openPopouts().forEach((d) => { d.open = false; }); hideTip(); } });
 
   // ---------------------------------------------------------------- about
   function renderAbout(el) {
@@ -10798,7 +11117,7 @@
           'Tags with a dashed outline are evidence not localised to the residue alone. A candidate-residue crosslink and an RBDmap fragment count as experimental; near an RNA crosslink, inside a DNA-crosslinked peptide and a UniProt DNA-binding region are context only and do not set the status. Most proteins were never crystallised or crosslinked, so "none recorded" is not evidence of no contact. ' +
           'Partner and complex information about the whole protein (STRING, Complex Portal, Gene Ontology) is never counted as site evidence. Search with <code>interaction:experimental</code>, <code>interaction:predicted-only</code>, <code>interaction:none</code>, or <code>interaction:predicted</code> for any predicted evidence. ' +
           'The <b>Check a site</b> box on the Overview and Interactions pages answers the question for one site without leaving the page.</p>') +
-        sub('ix-na', 'RNA and DNA bound at methylarginines', '<p>For every methylarginine at an RNA or DNA interface in a PDB structure (PDBe-KB), the two most recent entries are read: the nucleotides of other chains within 4 Å of the arginine\'s side chain (CD, NE, CZ, NH1, NH2) are its contacts, and the chain\'s SEQRES sequence (PDBe API, modified nucleotides as their parent) gives the bound sequence, 8 nucleotides each side of the closest one. Windows of different sites therefore align on their middle (offset 0, outlined), with the contacted nucleotides in bold; a dot is past the end of the chain. A chain is RNA or DNA by its molecule type in the entry, so modified nucleotides such as the m7G cap count. The logo counts each site once, sharing its weight among its distinct windows, so a site seen in many ribosome or nucleosome structures does not outweigh one seen once; letter height is the frequency, or the frequency × information content in bits (2 bits for a column of one nucleotide), which shows conservation among a few sites but flattens across many unrelated ones. Ribosomal RNA and nucleosomal DNA make up much of what has been solved, and a structure shows the complex its authors made, often with a designed oligonucleotide (tagged oligo). Release file supporting/nucleic_acid_contacts.</p><p><b>Where a protein binds.</b> On a protein page, the RNA and DNA tabs list the regions that bind: runs of residues within 4 Å of RNA or DNA in structures (read once per distinct complex, that is per set of bound sequences, in every entry; joined across gaps of up to 3 residues), with the stretches of RNA or DNA they touch; RBDmap fragments crosslinked to RNA in HeLa cells; and UniProt DNA-binding regions. Each row names the UniProt domains it falls in and the methylarginines inside it. Release file supporting/nucleic_acid_regions.</p><p><b>What it binds beyond structures.</b> RNA Bind-n-Seq (ENCODE; Dominguez et al. 2018): the 5-mers a purified protein enriches from random RNA, and ENCODE\'s logos. JASPAR 2026 CORE vertebrates (CC BY 4.0): DNA-binding profiles, a heterodimer\'s for both partners. eCLIP (ENCODE; Van Nostrand et al. 2020): the RNA a protein is crosslinked to in K562 and HepG2 cells, as reproducible peaks placed on GENCODE v50 basic transcripts, with the genes with most peaks. For a selection, the Interactions view lists these for the selected proteins and the eCLIP targets two or more of them share. RNAcompete (CISBP-RNA) states no licence and is not included. Release files supporting/rna_bind_n_seq, dna_motifs and eclip.</p>') +
+        sub('ix-na', 'RNA and DNA bound at methylarginines', '<p>For every methylarginine at an RNA or DNA interface in a PDB structure (PDBe-KB), every PDB entry is read: the nucleotides of other chains within 4 Å of the arginine\'s side chain (CD, NE, CZ, NH1, NH2) are its contacts, and the chain\'s SEQRES sequence (PDBe API, modified nucleotides as their parent) gives the bound sequence, 8 nucleotides each side of the closest one. Windows of different sites therefore align on their middle (offset 0, outlined), with the contacted nucleotides in bold; a dot is past the end of the chain. A chain is RNA or DNA by its molecule type in the entry, so modified nucleotides such as the m7G cap count. <b>Contact via a flanking residue</b> (tagged via i±k): in each distinct complex (the protein with the same bound sequences) where no atom of the arginine side chain lies within 4 Å of RNA or DNA but a residue at i ± 1–5 does, the stretch those residues contact, centred on the nucleotide the closest one contacts. <b>Type.</b> Each chain is typed from its molecule name, source organism and preparation: rRNA, tRNA, snRNA, mRNA (with pre-mRNA, introns, UTRs and IRES elements), other non-coding RNA, viral RNA, a designed RNA oligo with no biological name, or other RNA; DNA is nucleosomal when the entry holds core histones, telomeric, or other. The Type chips over each logo show one type at a time, and the search term <code>bound:</code> (rna, dna, at, or a type such as mrna or nucleosomal) keeps the sites with it. The logo counts each site once, sharing its weight among its distinct windows, so a site seen in many ribosome or nucleosome structures does not outweigh one seen once; letter height is the frequency, or the frequency × information content in bits (2 bits for a column of one nucleotide), which shows conservation among a few sites but flattens across many unrelated ones. Ribosomal RNA and nucleosomal DNA make up much of what has been solved, and a structure shows the complex its authors made, often with a designed oligonucleotide (tagged oligo). <b>In the site tables</b>, the Bound RNA/DNA column shows each site\'s best-supported bound sequence (±5 nt of the middle; direct contact before contact via a flanking residue, then the most entries) with its type, and the nearest residue at i ± 1–5 UV-crosslinked to RNA or DNA in living cells; its hover lists every bound sequence, the crosslinked residues at i ± 10 and what the protein binds as a whole. Release files supporting/nucleic_acid_contacts and nucleic_acid_near_sites; the site table\'s bound_* columns.</p><p><b>Where a protein binds.</b> On a protein page, the RNA and DNA interactions card lists the regions that bind: runs of residues within 4 Å of RNA or DNA in structures (read once per distinct complex, that is per set of bound sequences, in every entry; joined across gaps of up to 3 residues), with the stretches of RNA or DNA they contact and their type; runs of residues UV-crosslinked to RNA or DNA in living cells (joined the same way); RBDmap fragments crosslinked to RNA in HeLa cells; and UniProt DNA-binding regions. Each row names the UniProt domains it falls in, the methylarginines inside it and those flanking it (within 5 residues of either end), with their distance from it. Release file supporting/nucleic_acid_regions.</p><p><b>What it binds beyond structures.</b> RNA Bind-n-Seq (ENCODE; Dominguez et al. 2018): the 5-mers a purified protein enriches from random RNA, and ENCODE\'s logos. JASPAR 2026 CORE vertebrates (CC BY 4.0): DNA-binding profiles, a heterodimer\'s for both partners. eCLIP (ENCODE; Van Nostrand et al. 2020): the RNA a protein is crosslinked to in K562 and HepG2 cells, as reproducible peaks placed on GENCODE v50 basic transcripts, with the genes with most peaks. For a selection, the Interactions view lists these for the selected proteins and the eCLIP targets two or more of them share. RNAcompete (CISBP-RNA) states no licence and is not included. Release files supporting/rna_bind_n_seq, dna_motifs and eclip.</p>') +
         sub('ix-evmap', 'How the evidence fits together', '<p>Counted per site or per protein. For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink at or possibly at the residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), three IntAct record types (a mutation that changed an interaction, a short binding region, the arginine curated as methylated in an interaction; these do not set the status), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. The protein-context table shows, for the sites with each kind of evidence, the share on proteins annotated as RNA- or DNA-binding (Gene Ontology), in a CD-CODE condensate, physically linked to a PRMT or a Tudor-domain reader (STRING ≥ 0.7) or in a Complex Portal curated complex, against all selected sites; each cell lists those sites. Counted per protein, the same layout combines these protein properties and whether any of the protein\'s sites carries contact evidence. Below the site view, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
         sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a dimethylarginine state call (ProMetheusDB, Maron Table S2, UniProt or Wei 2020), the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the plain odds ratio with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ 0.05 are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions are read with care.</p>') +
         sub('ix-wr', 'Writers and readers sharing substrates', '<p>For the proteins in the current selection, each cell counts the methylated proteins that are STRING physical partners (score ≥ 0.7) of both a PRMT (rows) and a Tudor-domain protein (columns, InterPro IPR002999; the 12 with most shared partners are shown). The expected count assumes the two partner lists are independent among the selected methylated proteins that are in STRING; Fisher\'s exact test, Benjamini–Hochberg across the cells; outlined cells have at least two shared partners and q ≤ 0.05 (a single shared partner of two short lists can pass the test alone). Clicking a cell lists the proteins (binds: both partners). A physical link is to the whole protein, not to a site, and several Tudor proteins read methyllysine rather than methylarginine, so a shared partner is a candidate path to test, not a demonstrated one.</p>') +
@@ -10865,14 +11184,14 @@
       '<li><b>Complexes</b>: Complex Portal curated complexes and hu.MAP 3.0 predicted complexes (CC0). Enrichment of methylated members is a one-sided hypergeometric test against the reviewed human proteome, BH-adjusted separately for curated and predicted complexes. Members are counted once per protein (two processed chains of one precursor are one member); a member slot that Complex Portal fills with interchangeable proteins (e.g. the three calmodulins) counts each of them, and the member list shows each methylated one.</li>' +
       '<li><b>RNA and DNA binding</b>: Gene Ontology GO:0003723 and GO:0003677 including child terms (QuickGO/GOA, CC BY 4.0); experimental evidence means EXP, IDA, IPI, IMP, IGI, IEP or their high-throughput equivalents. Protein pages add live ENCODE eCLIP and TF ChIP-seq experiments and ChIP-Atlas target genes (CC BY 4.0).</li>' +
       '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two entries with the highest PDB IDs (roughly the most recent) per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were read from the structure itself (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylated arginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
-      '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue that touched RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016). DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence' + (IX && IX.meta && IX.meta.xl_check ? ' (' + fmt(IX.meta.xl_check.matched) + ' matched, ' + fmt(IX.meta.xl_check.dropped) + ' dropped)' : '') + '. Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides.</li>' +
+      '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue crosslinked to RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016). DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence' + (IX && IX.meta && IX.meta.xl_check ? ' (' + fmt(IX.meta.xl_check.matched) + ' matched, ' + fmt(IX.meta.xl_check.dropped) + ' dropped)' : '') + '. Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides.</li>' +
       '<li><b>IntAct</b>: curated features of interaction participants (' + doiLink('10.1093/nar/gkab1006', 'del Toro et al. 2022') + '; CC BY 4.0), exported by scripts/37 when their curated sequence matches the canonical UniProt sequence at their range: mutations and their effect on an interaction (disrupts, decreases, increases, causes, no effect), regions mapped as sufficient, necessary, binding-associated or direct-interaction regions for a partner, and methylated arginines of participants. At a site, a mutation of up to 3 residues that changed an interaction, a binding region of up to ' + ((IX && IX.ia && IX.ia.peptide_max) || 20) + ' residues and a methylated-residue record are listed as IntAct evidence and can be filtered on; they do not set the site\'s interaction status. Longer regions appear only on the protein map. The IntAct map row (and its lane in the cartoon and comparison) is off until switched on in the Rows menu. The Interactions tab tests methylated against other arginines of the same proteins.</li>' +
       '<li><b>Interactive network</b>: on a protein page the partner network is drawn with Cytoscape.js (' + doiLink('10.1093/bioinformatics/btv557', 'Franz et al. 2016') + '): drag nodes, zoom with the + and − buttons, lay it out again or reset it; hover a node for its details and click it to open the protein. SVG, PNG and Cytoscape exports keep the arrangement on screen; print and the Figures tab use the drawn layout.</li>' +
       '<li><b>STRING network options</b>: on a protein page, the network can be physical or functional (all associations), scored on chosen evidence channels (STRING\'s own rule: remove the 0.041 prior from each channel score, combine, add the prior back), limited to methylated partners, PRMTs and reader domains or RNA/DNA binders, labelled and sized as needed, extended with pinned genes, and opened on string-db.org with the same settings. Options are remembered in this browser.</li>' +
       '<li><b>Writer and reader paths</b>: the protein network can add a second ring of PRMTs and Tudor-domain proteins that bind its partners (STRING ≥ 0.7).</li>' +
       (P.some((p) => p.unrev) ? '<li><b>Unreviewed UniProt entries</b>: ' + fmt(S.filter((x) => P[x.p].unrev).length) + ' sites in the union sit on entries without a Swiss-Prot entry name (unreviewed TrEMBL entries, and some UniProt has since made obsolete), mostly without a staged sequence, so they lack motif, disorder and domain context. ' + fmt(S.filter((x) => x.dup != null).length) + ' of them repeat a site at the same position on the reviewed entry of the same gene, so the union counts those residues twice. The explorer keeps the union as published, tags these entries and sites, and offers a "Reviewed UniProt entries only" filter (Provenance); the sites TSV has <code>uniprot_reviewed</code> and <code>same_site_on_reviewed_entry</code> columns.</li>' : '<li><b>UniProt entries</b>: every site is on a reviewed (Swiss-Prot) entry of ' + esc(referenceLabel()) + '.</li>') +
       '<li><b>Statistics</b> (interaction export, <code>scripts/37_export_interaction_data.py</code>): ' + (FOLD() ? 'clusterProfiler enricher for the protein-set tests (Gene Ontology RNA and DNA binding, complexes, condensates by CD-CODE confidence; see Overview charts); ' : 'the hypergeometric test (complexes); ') + 'SciPy for Fisher\'s exact test, Benjamini–Hochberg adjustment and the Mann–Whitney U test; statsmodels for the Mantel–Haenszel pooled odds ratio within proteins, its Robins–Breslow–Greenland 95% confidence interval and the continuity-corrected Cochran–Mantel–Haenszel test. Pooled odds ratios across proteins carry Woolf (log) 95% intervals; log2 odds ratios in the ' + (FOLD() ? '' : 'GO and ') + 'interface tables add 0.5 to each cell (Haldane–Anscombe).</li>' +
-      '<li><b>Key findings</b> on the Interactions tab are generated from the exported statistics, so "more often", "less often" or "not significantly different" follows each test. "Self-contact" marks residues that touch another copy of the same protein (a homodimer or homo-oligomer) in a PDB entry.</li>' +
+      '<li><b>Key findings</b> on the Interactions tab are generated from the exported statistics, so "more often", "less often" or "not significantly different" follows each test. "Self-contact" marks residues at an interface with another copy of the same protein (a homodimer or homo-oligomer) in a PDB entry.</li>' +
       '<li><b>Interface geometry</b>: for every methylarginine at a PDB interface and up to 12 non-methylated interface arginines per protein, the 10 Å environment in one entry (the most recent showing the interface) gives relative solvent accessibility alone and in the complex (Shrake–Rupley, Arg maximum 274 Å² from Tien et al. 2013) and the Levy (' + doiLink('10.1016/j.jmb.2010.09.028', '2010') + ') class: core, rim or support. Guanidino nitrogens within 3.5 Å of a nucleobase N/O count as base hydrogen bonds, of a phosphate or sugar O as backbone hydrogen bonds. Both are compared within proteins (Mantel–Haenszel). The RG/RGG table repeats the interface test within each sequence context.</li>' +
       '<li><b>Predicted complexes</b>: the predicted-interface test uses ProtVar residues within 5 Å of the partner in AlphaFold-Multimer models of human protein pairs; models are full length, so disordered regions count, and every arginine of the sequence is compared. The best-supported predicted contacts are methylarginines in a salt bridge (guanidino N to an Asp/Glu carboxylate O, ≤ 4 Å) or hydrogen bond (guanidino N to an acceptor O, or His ND1/NE2, ≤ 3.5 Å) with the partner, both residues at or above the pLDDT floor and no steric clash, in ProtVar models with pDockQ ≥ 0.5 or AlphaFold DB human heterodimers (ipTM ≥ 0.8 when "confident").</li>' +
       '<li><b>Methylarginines modelled in the PDB</b>: entries containing 2MR, DA2 or NMM (RCSB search; AGM, 5-methylarginine, is C-methylated and not counted), their residues from PDBe, mapped to UniProt through SIFTS; union sites are flagged and positions the union lacks are listed on protein pages.</li>' +
@@ -11497,7 +11816,8 @@
     const head = ['gene', 'uniprot_accession', 'uniprot_reviewed', 'same_site_on_reviewed_entry', 'protein_name', 'site', 'position', 'numbering', 'state', 'maron_s2_state', 'maron_ip', 'sources', 'source_count',
       'window_15', 'window_31', 'motifs', 'disorder_context', 'disorder_edge_distance', 'domain_context', 'nearest_interpro', 'nearest_domain_class',
       'domain_edge_distance', 'domain_side', 'nearest_methyl_r_distance', 'GSK591_decreased', 'GSK591_increased', 'MS023_decreased', 'MS023_increased',
-      'maron_s3_measurements', 'CARM1_KO_decreased', 'CARM1_KO_increased', 'carm1_ko_measurements', 'condensates', 'functional_classes', 'reported_by', 'reporting_sources', 'references', 'reported_by_doi', 'pdb_interface_partners', 'pdb_interface_entries', 'pdb_interface_entries_total', 'pdb_contacts', 'predicted_interface_partners_pdockq', 'predicted_interface_partners_total', 'rna_dna_crosslinks', 'intact_records'];
+      'maron_s3_measurements', 'CARM1_KO_decreased', 'CARM1_KO_increased', 'carm1_ko_measurements', 'condensates', 'functional_classes', 'reported_by', 'reporting_sources', 'references', 'reported_by_doi', 'pdb_interface_partners', 'pdb_interface_entries', 'pdb_interface_entries_total', 'pdb_contacts', 'predicted_interface_partners_pdockq', 'predicted_interface_partners_total', 'rna_dna_crosslinks', 'intact_records',
+      'bound_rna_dna', 'bound_types', 'bound_sequence', 'bound_sequence_offset', 'crosslinks_within_5'];
     // With lower-confidence sites shown: which tier, whether the statistics with them count it, and the tests it fails.
     head.push('shared_with_paralogs');
     if (M.lower_confidence_sites) head.push('confidence', 'in_statistics_with_lower_confidence', 'tests_failed');
@@ -11519,7 +11839,7 @@
         s.refs.map((k) => M.refs[k]).join(' | '), bits(s.study).map((b) => studyRef(b)[1]).filter(Boolean).join(';'),
         ixReady() ? ifaceText(s) : '', (s.ifPdb || []).join(';'), ixReady() ? (s.ifN || (s.ifPdb || []).length) : '', ixReady() ? contactText(s) : '',
         ixReady() ? predText(s) : '', ixReady() ? (s.pred ? s.pred.n || s.pred.hits.length : 0) : '', ixReady() ? xlText(s) : '', ixReady() ? iaText(s) : '',
-      ].concat([(s.par || []).map(([a, g]) => (g ? g + ' ' : '') + a).join(';')]).concat(M.lower_confidence_sites ? [s.lc ? 'lower_confidence' : 'site', !s.lc || s.lcAn ? 'yes' : 'no',
+      ].concat(boundTsv(s)).concat([(s.par || []).map(([a, g]) => (g ? g + ' ' : '') + a).join(';')]).concat(M.lower_confidence_sites ? [s.lc ? 'lower_confidence' : 'site', !s.lc || s.lcAn ? 'yes' : 'no',
         s.lc ? lcResults(s).filter(([, r]) => r === 'fail').map(([l]) => l).join(';') : ''] : []).map(cell).join('\t'));
     }
     return out.join('\n') + '\n';

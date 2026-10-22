@@ -123,7 +123,11 @@ STUDY_QUALITY = {
     'PSP': 'Curated database, trusted as curated. Through Maron Table S5: the sites PhosphoSitePlus listed on 22 May 2021, '
            'each with a 15-residue window and position, without the study behind it, a localisation score or a degree. A '
            'record is placed where its window names exactly one arginine in the reviewed proteome, in an entry the record '
-           'names.',
+           'names. PhosphoSitePlus curators find papers by semi-automatic literature search, record the sites each shows with '
+           'the methods behind them, and an editor checks every record; besides low-throughput primary papers and published '
+           'mass-spectrometry studies it lists sites from Cell Signaling Technology\'s own high-throughput discovery runs. Its '
+           'per-site download counts each kind of reference (LT_LIT, MS_LIT, MS_CST); Table S5 keeps none, so the release '
+           'cannot tell which sites rest on a hand-curated primary paper.',
     'Maron2021': 'A549 cells treated with GSK591 or MS023, sequential Rme1, Rme2a and Rme2s antibody immunoprecipitation, '
                  'Byonic in Proteome Discoverer 2.4 with mono- and dimethylation of R and K searched, 1 % FDR, trypsin and '
                  'GluC digests. Tables S2 and S3 give no localisation score, the authors\' search results of the same '
@@ -316,6 +320,26 @@ CODES: dict[str, dict[str, str]] = {
         'rna': 'an RNA chain (PDB molecule type polyribonucleotide)',
         'dna': 'a DNA chain (polydeoxyribonucleotide)',
         'hybrid': 'a chain with both ribo- and deoxyribonucleotides',
+    },
+    # scripts/37 na_type: from the chain's molecule name, source organism and preparation, and for DNA the entry's histones
+    'nucleic_acid_type': {
+        'rrna': 'ribosomal RNA, with pre-rRNA spacers (ETS, ITS) and mitochondrial rRNA',
+        'trna': 'transfer RNA, with pre-tRNA',
+        'snrna': 'spliceosomal small nuclear RNA (U1, U2, U4, U5, U6, U11, U12, U4atac, U6atac) and U7',
+        'mrna': 'mRNA or pre-mRNA: named as mRNA, an exon, intron, UTR, splice site or IRES of a cellular gene',
+        'other_ncrna': 'another non-coding RNA: snoRNA, 7SK, SRP RNA, telomerase RNA, TERRA, RNase P or MRP RNA, Y RNA, miRNA or its precursor, piRNA, lncRNA, guide RNA',
+        'viral_rna': 'RNA of a virus (its source organism, or named as HIV, HCV or viral)',
+        'rna_oligo': 'a designed RNA oligonucleotide with no biological name (Synthetically obtained)',
+        'other_rna': 'RNA whose name gives no type (riboswitches, ribozymes, unnamed natural RNA)',
+        'nucleosomal_dna': 'DNA in an entry with a core histone (a nucleosome or a complex on one), or named as nucleosomal (601, Widom, alpha-satellite)',
+        'telomeric_dna': 'telomeric DNA outside nucleosomes: named so, or TTAGGG repeats',
+        'other_dna': 'any other DNA',
+    },
+    'bound_contact': {
+        'rna_at': 'direct contact: an atom of the arginine side chain (CD, NE, CZ, NH1, NH2) within 4 Å of RNA (or an RNA-DNA hybrid) in a PDB structure',
+        'dna_at': 'direct contact: an atom of the arginine side chain within 4 Å of DNA in a PDB structure',
+        'rna_near': 'contact via a flanking residue: in a complex where no atom of the arginine side chain is within 4 Å of RNA, a residue at i ± 1-5 is',
+        'dna_near': 'contact via a flanking residue: in a complex where no atom of the arginine side chain is within 4 Å of DNA, a residue at i ± 1-5 is',
     },
     'partner_kind': {
         'protein': 'another protein (partner_accession)',
@@ -535,6 +559,13 @@ SITE_COLUMNS = [
     ('domain_edge_distance', 'integer', '', 'residues to the nearest domain edge (0 inside a domain), empty when none'),
     ('interaction_status', 'code', 'interaction_status', 'interaction evidence at the site (supporting/site_interactions), empty for the sites kept pending'),
     ('interaction_evidence', 'list<code>', 'evidence_type', 'the evidence types at the site, in code order'),
+    ('bound_nucleic_acid', 'list<code>', 'bound_contact', 'RNA or DNA in direct contact with the site in PDB structures, or in contact via a residue at i ± 1-5 in a complex without direct contact, in code order (every entry: supporting/nucleic_acid_contacts and nucleic_acid_near_sites)'),
+    ('bound_nucleic_acid_types', 'list<code>', 'nucleic_acid_type', 'the types of those RNA and DNA chains, in code order'),
+    ('bound_sequence', 'string', '', 'the best-supported bound sequence (direct contact before contact via a flanking residue, then the most PDB entries): 8 nucleotides each side of the centre, the contacted nucleotides in brackets, - past the chain\'s ends'),
+    ('bound_sequence_offset', 'integer', '', '0 for direct contact with the arginine side chain; else k, the offset of the closest residue i+k (k = ±1 to ±5) within 4 Å of bound_sequence'),
+    ('bound_sequence_type', 'code', 'nucleic_acid_type', 'the type of its chain'),
+    ('bound_sequence_molecule', 'string', '', 'its molecule name in the PDB entries (the most common one)'),
+    ('bound_sequence_entries', 'integer', '', 'PDB entries showing it'),
     ('n_studies', 'integer', '', 'number of studies or databases reporting the site'),
     ('studies', 'list<code>', 'study', 'the studies or databases reporting the site, in the order of the studies file, PhosphoSitePlus is PSP, as its terms ask'),
     ('study_dois', 'list<string>', '', 'their DOIs, in the same order'),
@@ -640,7 +671,9 @@ LOWER_CONFIDENCE_SITE_EXTRA = [
     ('in_earlier_versions', 'list<string>', '', 'the earlier releases that had this site (v1.0.0, v1.1.0)'),
 ]
 
-LOWER_CONFIDENCE_SITE_COLUMNS = [c for c in SITE_COLUMNS if c[0] not in ('interaction_status', 'interaction_evidence', 'in_previous_version',
+BOUND_SITE_COLUMNS = ('bound_nucleic_acid', 'bound_nucleic_acid_types', 'bound_sequence', 'bound_sequence_offset', 'bound_sequence_type',
+                      'bound_sequence_molecule', 'bound_sequence_entries')
+LOWER_CONFIDENCE_SITE_COLUMNS = [c for c in SITE_COLUMNS if c[0] not in ('interaction_status', 'interaction_evidence', *BOUND_SITE_COLUMNS, 'in_previous_version',
                                                                          'change_since_previous_version', 'change_reasons')] \
     + LOWER_CONFIDENCE_SITE_EXTRA
 # The site table of the view with lower-confidence sites (the website's, when it shows them): both tiers.
@@ -917,10 +950,11 @@ SITE_INTERACTION_COLUMNS = [
 ]
 
 NUCLEIC_ACID_CONTACT_COLUMNS = [
-    ('site_id', 'string', '', 'the site (site table), at a PDBe-KB RNA or DNA interface or touching a nucleotide in a structure read'),
+    ('site_id', 'string', '', 'the site (site table), at a PDBe-KB RNA or DNA interface or with a nucleotide within 4 Å of its side chain in a structure read'),
     ('pdb_id', 'string', '', 'the PDB entry (every entry PDBe-KB lists for the site with RNA or DNA is read)'),
     ('chain', 'string', '', 'the RNA or DNA chain (author chain id)'),
     ('nucleic_acid', 'code', 'nucleic_acid', 'what the chain is'),
+    ('nucleic_acid_type', 'code', 'nucleic_acid_type', 'its type, from its name, organism and preparation (DNA: nucleosomal in an entry with core histones)'),
     ('molecule_name', 'string', '', 'the chain\'s molecule name in the PDB entry'),
     ('source_organism', 'string', '', 'its source organism (synthetic construct for a made oligonucleotide)'),
     ('sample_preparation', 'string', '', 'how the chain was made, as the entry records it: Synthetically obtained (a designed oligonucleotide), Natural source or Genetically manipulated'),
@@ -936,34 +970,36 @@ NUCLEIC_ACID_CONTACT_COLUMNS = [
 ]
 
 NUCLEIC_ACID_NEAR_COLUMNS = [
-    ('site_id', 'string', '', 'the site (site table): a methylarginine that touches no RNA or DNA in this complex but has a residue within 5 positions that does'),
-    ('nucleic_acid', 'code', 'nucleic_acid', 'what that residue touches (RNA-DNA hybrids counted as RNA)'),
+    ('site_id', 'string', '', 'the site (site table): a methylarginine with no side-chain atom within 4 Å of RNA or DNA in this complex, and a residue at i ± 1-5 that has one'),
+    ('nucleic_acid', 'code', 'nucleic_acid', 'what that residue contacts (RNA-DNA hybrids counted as RNA)'),
+    ('nucleic_acid_type', 'code', 'nucleic_acid_type', 'the type of the chain'),
     ('residue_offset', 'integer', '', 'the closest such residue, in positions from the site (negative: N-terminal)'),
     ('residue', 'integer', '', 'its position'),
     ('pdb_id', 'string', '', 'the entry read for the complex (one per distinct set of bound sequences)'),
     ('n_entries', 'integer', '', 'the entries with the protein and the same bound sequences'),
-    ('chain', 'string', '', 'the RNA or DNA chain the neighbouring residues touch most'),
+    ('chain', 'string', '', 'the RNA or DNA chain with most contacts from the residues at i ± 1-5'),
     ('molecule_name', 'string', '', 'its molecule name'),
     ('source_organism', 'string', '', 'its source organism'),
     ('sample_preparation', 'string', '', 'how it was made (Synthetically obtained: a designed oligonucleotide)'),
-    ('centre_nucleotide', 'string', '', 'the middle nucleotide the closest residue touches, SEQRES numbering'),
+    ('centre_nucleotide', 'string', '', 'the middle nucleotide contacted by the closest such residue, SEQRES numbering'),
     ('window_start', 'integer', '', 'SEQRES number of the window\'s first position'),
     ('window', 'string', '', 'the chain 8 nucleotides each side of the centre nucleotide (the 9th); - past its ends. Aligns with the windows of supporting/nucleic_acid_contacts'),
-    ('window_marked', 'string', '', 'the window with every nucleotide that a residue within 5 positions of the site touches in brackets'),
+    ('window_marked', 'string', '', 'the window with every nucleotide contacted by a residue at i ± 1-5 in brackets'),
 ]
 
 NUCLEIC_ACID_REGION_COLUMNS = [
     ('uniprot_accession', 'string', '', 'protein of the site table'),
     ('start', 'integer', '', 'first residue of a run of residues within 4 Å of RNA or DNA in a PDB structure (runs joined across gaps of up to 3 residues)'),
     ('end', 'integer', '', 'last residue of the run'),
-    ('nucleic_acid', 'code', 'nucleic_acid', 'what the residues touch (RNA-DNA hybrids counted as RNA)'),
-    ('n_entries', 'integer', '', 'PDB entries in which the run touches it (every entry PDBe-KB lists for the protein with RNA or DNA)'),
+    ('nucleic_acid', 'code', 'nucleic_acid', 'what the residues contact (RNA-DNA hybrids counted as RNA)'),
+    ('n_entries', 'integer', '', 'PDB entries in which the run contacts it (every entry PDBe-KB lists for the protein with RNA or DNA)'),
     ('n_complexes', 'integer', '', 'distinct complexes read: one entry per set of bound sequences, the others counted with it'),
     ('methylarginines', 'list<string>', '', 'the sites (site table) inside the run'),
-    ('bound_segments', 'list<string>', '', 'the stretches of RNA or DNA the run touches, 5\' to 3\': contacted nucleotides in brackets with 2 more each side, and … between clusters further apart than 4 nucleotides; at most 6, most entries first'),
+    ('bound_segments', 'list<string>', '', 'the stretches of RNA or DNA the run contacts, 5\' to 3\': contacted nucleotides in brackets with 2 more each side, and … between clusters further apart than 4 nucleotides; at most 6, most entries first'),
     ('segment_entries', 'list<string>', '', 'PDB entries showing each segment, in the same order'),
     ('segment_example_entries', 'list<string>', '', 'an entry showing each segment'),
     ('segment_molecule_names', 'list<string>', '', 'the molecule name of each segment\'s chain'),
+    ('segment_types', 'list<code>', 'nucleic_acid_type', 'the type of each segment\'s chain'),
     ('n_segments', 'integer', '', 'distinct segments, including those not listed'),
 ]
 

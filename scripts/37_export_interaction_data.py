@@ -111,6 +111,44 @@ REGION_GAP = 3        # residues touching nucleic acid this close join one regio
 REGION_SEGMENTS = 6   # bound segments kept per region (the most entries first)
 SEG_FLANK, SEG_JOIN = 2, 4   # a bound segment: contacted nucleotides with 2 each side; clusters this close join
 NEAR_RESIDUES = 5     # a methylarginine is next to RNA or DNA where a residue this close in sequence touches it
+# What an RNA or DNA chain is, from its molecule name, source organism and preparation, and for DNA whether the entry
+# holds core histones (a nucleosome). The first RNA rule that matches the lower-case name wins; viral by organism too.
+NA_TYPE_RNA = [
+    ('viral_rna', r'virus|viral|\bhiv|\bhcv|\bsars|\btar rna'),
+    ('trna', r'trna|transfer rna'),
+    ('rrna', r'rrna|rrma|ribosomal|transcribed spacer|\b(5|5\.8|12|16|18|23|25|26|28|45|47)s\b|\b[35]\'? ?ets\b|\bits ?[12]\b'),
+    ('mrna', r'mrna|messenger|intron|exon|\butr\b|\bires\b|\b[35]\'ss\b|splice site|minx|branch ?(point|site)|au-rich'),
+    ('other_ncrna', r'telomeric rna|terra\b|snorna|scarna|small nucleolar|\bu(3|8|13)\b|7sk|\bsrp\b|7sl|signal recognition|telomerase|\bterc\b|rnase p|\bh1 rna|'
+                    r'\bmrp\b|\by rna|vault|lncrna|xist|malat|mirna|micro ?rna|pre-mir|pri-mir|let-7|pirna|sgrna|guide rna|crrna|tracr'),
+    ('snrna', r'snrna|small nuclear|spliceosom|\brnu\d|\bu(1|2|4|5|6|7|11|12|4atac|6atac)\b'),
+]
+NA_TYPE_DNA = r'nucleosom|hexasom|widom|601|alpha-satellite|α-satellite|sat2r'
+CORE_HISTONE = re.compile(r'^histone h(2a|2b|3|4)(?![a-z]{2})|centromeric protein a|\bcenp-?a\b|macro-?h2a', re.I)
+NA_TYPES = ['rrna', 'trna', 'snrna', 'mrna', 'other_ncrna', 'viral_rna', 'rna_oligo', 'other_rna', 'nucleosomal_dna', 'telomeric_dna', 'other_dna']
+
+
+def na_type(kind: str, name: str, organism: str, prep: str, seq: str, histones: bool) -> str:
+    """The type of an RNA or DNA chain (NA_TYPES): RNA (and RNA-DNA hybrids) by NA_TYPE_RNA, else a designed oligo when
+    synthesised, else other_rna; DNA is nucleosomal in an entry with core histones or when named so, telomeric when
+    named so or holding a TTAGGG repeat junction (GGGTTAGGG, or its complement), else other_dna."""
+    low = (name or '').lower()
+    if kind == 'dna':
+        if histones or re.search(NA_TYPE_DNA, low):
+            return 'nucleosomal_dna'
+        if 'telomer' in low or re.search(r'GGGTTAGGG|CCCTAACCC|(TTAGGG){2}|(CCCTAA){2}', seq or ''):
+            return 'telomeric_dna'
+        return 'other_dna'
+    if 'virus' in (organism or '').lower():
+        return 'viral_rna'
+    for code, rx in NA_TYPE_RNA:
+        if re.search(rx, low):
+            return code
+    return 'rna_oligo' if prep == 'Synthetically obtained' else 'other_rna'
+
+
+def chain_type(v: tuple) -> str:
+    """na_type of a load_nucleic_chains value (kind, entity, name, organism, sequence, preparation, core histones)."""
+    return na_type(v[0], v[2], v[3], v[5], v[4], v[6])
 # IntAct curated features of interaction participants (EMBL-EBI, CC BY 4.0): mutations and their effect on the
 # interaction, binding regions mapped for a partner, and modified residues of the participants.
 INTACT_FEATURES = 'https://ftp.ebi.ac.uk/pub/databases/intact/current/psimitab/features/{name}.tsv'
@@ -446,8 +484,11 @@ def load_sifts_chains(cache: Path, refresh: bool, keep_pdbs: set):
 
 def nucleic_chain_rows(mols: list) -> list:
     """The RNA and DNA chains in a PDBe API molecules answer: [(author chain, entity, kind, name, organism, sequence,
-    sample preparation)]; the preparation tells a made oligonucleotide (Synthetically obtained) from a natural or
-    expressed one (Natural source, Genetically manipulated)."""
+    sample preparation, entry has core histones)]; the preparation tells a made oligonucleotide (Synthetically
+    obtained) from a natural or expressed one (Natural source, Genetically manipulated), and core histones tell a
+    nucleosome's DNA."""
+    histones = any((m.get('molecule_type') or '').startswith('polypeptide') and any(CORE_HISTONE.search(n or '') for n in m.get('molecule_name') or [])
+                   for m in mols)
     out = []
     for m in mols:
         kind = NA_KINDS.get(m.get('molecule_type', ''))
@@ -455,14 +496,15 @@ def nucleic_chain_rows(mols: list) -> list:
             continue
         name = (m.get('molecule_name') or [''])[0]
         organism = ((m.get('source') or [{}])[0] or {}).get('organism_scientific_name') or ''
-        out += [(ch, int(m['entity_id']), kind, name, organism, m['sequence'], m.get('sample_preparation') or '') for ch in m.get('in_chains') or []]
+        out += [(ch, int(m['entity_id']), kind, name, organism, m['sequence'], m.get('sample_preparation') or '', histones) for ch in m.get('in_chains') or []]
     return out
 
 
 def load_nucleic_chains(cache: Path, pdbs: set, refresh: bool, workers: int) -> dict:
     """The RNA and DNA chains of PDB entries (PDBe API molecules): (pdb, author chain) -> (kind, entity, name, organism,
-    sequence, sample preparation). kind is rna, dna or hybrid (NA_KINDS); the sequence is the entity's SEQRES in one-letter
-    codes, modified nucleotides as their parent, so a contact's SEQRES index (label_seq_id) is its position in it."""
+    sequence, sample preparation, entry has core histones). kind is rna, dna or hybrid (NA_KINDS); the sequence is the
+    entity's SEQRES in one-letter codes, modified nucleotides as their parent, so a contact's SEQRES index (label_seq_id)
+    is its position in it."""
     folder = cache / 'pdbe_molecules'
 
     def one(pdb):
@@ -479,8 +521,8 @@ def load_nucleic_chains(cache: Path, pdbs: set, refresh: bool, workers: int) -> 
     out = {}
     with ThreadPoolExecutor(max_workers=workers) as pool:
         for pdb, mols in pool.map(one, sorted(pdbs)):
-            for ch, entity, kind, name, organism, seq, prep in nucleic_chain_rows(mols):
-                out[(pdb, ch)] = (kind, entity, name, organism, seq, prep)
+            for ch, entity, kind, name, organism, seq, prep, histones in nucleic_chain_rows(mols):
+                out[(pdb, ch)] = (kind, entity, name, organism, seq, prep, histones)
     return out
 
 
@@ -584,7 +626,7 @@ def nucleic_contacts(results: dict, requests_: dict, chains_na: dict) -> list:
                 if k not in by_chain[hch] or dist < by_chain[hch][k][1]:
                     by_chain[hch][k] = (comp, dist, hseq)
         for hch, hits in by_chain.items():
-            kind, entity, _, _, seq, _ = chains_na[(pdb, hch)]
+            kind, entity, _, _, seq, _, _ = chains_na[(pdb, hch)]
             parent = lambda c: c[1:] if len(c) == 2 and c[0] == 'D' else c  # noqa: E731
             if any(not 1 <= k <= len(seq) or (parent(c) in 'ACGTUI' and len(parent(c)) == 1 and seq[k - 1] != parent(c))
                    for k, (c, _, _) in hits.items()):
@@ -2059,27 +2101,29 @@ def write_release_tables(outdir: Path, d: dict):
     clean = lambda v: (v or '').replace(';', ',')  # noqa: E731 - the release lists are '; '-separated
     rows = []
     for j, pdb, ch, kind, _, window, offsets, near, dist, hits in d.get('na_rows') or []:
-        _, _, name, organism, seq, prep = d['chains_na'][(pdb, ch)]
+        _, _, name, organism, seq, prep, _ = d['chains_na'][(pdb, ch)]
         name, organism = clean(name), clean(organism)
-        rows.append([sid(j), pdb, ch, kind, name, organism, prep, len(seq), f'{seq[near - 1]}{near}', dist,
+        rows.append([sid(j), pdb, ch, kind, chain_type(d['chains_na'][(pdb, ch)]), name, organism, prep, len(seq), f'{seq[near - 1]}{near}', dist,
                      '; '.join(f'{parent(c)}{k}' for k, c, _, _ in hits), '; '.join(str(a) for _, _, _, a in hits),
                      '; '.join(f'{x:.2f}' for _, _, x, _ in hits), near - NA_WINDOW, window,
                      ''.join(f'[{c}]' if k in offsets else c for k, c in enumerate(window))])
-    write('nucleic_acid_contacts.tsv', ['site_id', 'pdb_id', 'chain', 'nucleic_acid', 'molecule_name', 'source_organism', 'sample_preparation', 'chain_length',
+    write('nucleic_acid_contacts.tsv', ['site_id', 'pdb_id', 'chain', 'nucleic_acid', 'nucleic_acid_type', 'molecule_name', 'source_organism', 'sample_preparation', 'chain_length',
                                         'closest_nucleotide', 'closest_distance_a', 'contacted_nucleotides', 'contacted_author_numbers',
                                         'contacted_distances_a', 'window_start', 'window', 'window_marked'], rows)
     rows = [[acc, start, end, kind, n_ent, n_cx, '; '.join(sid(j) for j in in_sites), '; '.join(seg for seg, *_ in segs),
-             '; '.join(str(n) for *_, n in segs), '; '.join(pdb for _, pdb, _, _ in segs), '; '.join(clean(name) or '-' for _, _, name, _ in segs), n_segs]
+             '; '.join(str(n) for _, _, _, n, _ in segs), '; '.join(pdb for _, pdb, _, _, _ in segs), '; '.join(clean(name) or '-' for _, _, name, _, _ in segs),
+             '; '.join(t for *_, t in segs), n_segs]
             for acc, kind, start, end, n_ent, n_cx, segs, n_segs, in_sites in d.get('na_regions') or []]
     write('nucleic_acid_regions.tsv', ['uniprot_accession', 'start', 'end', 'nucleic_acid', 'n_entries', 'n_complexes', 'methylarginines',
-                                       'bound_segments', 'segment_entries', 'segment_example_entries', 'segment_molecule_names', 'n_segments'], rows)
+                                       'bound_segments', 'segment_entries', 'segment_example_entries', 'segment_molecule_names', 'segment_types', 'n_segments'], rows)
     rows = []
     for j, kind, pdb, ch, window, offsets, via, ents, centre in d.get('near_rows') or []:
-        _, _, name, organism, seq, prep = d['chains_na'][(pdb, ch)]
+        _, _, name, organism, seq, prep, _ = d['chains_na'][(pdb, ch)]
         acc, pos = prots[sites[j][0]][0], sites[j][1]
-        rows.append([sid(j), kind, via, pos + via, pdb, len(ents), ch, clean(name), clean(organism), prep, f'{seq[centre - 1]}{centre}', centre - NA_WINDOW, window,
+        rows.append([sid(j), kind, chain_type(d['chains_na'][(pdb, ch)]), via, pos + via, pdb, len(ents), ch, clean(name), clean(organism), prep,
+                     f'{seq[centre - 1]}{centre}', centre - NA_WINDOW, window,
                      ''.join(f'[{c}]' if k in offsets else c for k, c in enumerate(window))])
-    write('nucleic_acid_near_sites.tsv', ['site_id', 'nucleic_acid', 'residue_offset', 'residue', 'pdb_id', 'n_entries', 'chain', 'molecule_name', 'source_organism',
+    write('nucleic_acid_near_sites.tsv', ['site_id', 'nucleic_acid', 'nucleic_acid_type', 'residue_offset', 'residue', 'pdb_id', 'n_entries', 'chain', 'molecule_name', 'source_organism',
                                           'sample_preparation', 'centre_nucleotide', 'window_start', 'window', 'window_marked'], rows)
     nab = d.get('nab') or {}
     write('rna_bind_n_seq.tsv', ['uniprot_accession', 'encode_experiment', 'concentration', 'top_5mers', 'top_5mer_R', 'logo_consensus'],
@@ -2833,22 +2877,22 @@ def main():
         na_rows = nucleic_contacts(results, requests_, chains_na)
         log(f"Bound sequences: {len({r[0] for r in na_rows if r[3] != 'dna'}):,} methylarginines touch RNA and "
             f"{len({r[0] for r in na_rows if r[3] == 'dna'}):,} touch DNA in the structures read ({len(na_rows):,} site-chain pairs)")
-    # The website's block: one row per site, kind and bound window, with every entry that shows it.
+    # The website's block: one row per site, kind, type and bound window, with every entry that shows it.
     na_names, na_name_ix, grouped = [], {}, {}
     for j, pdb, ch, kind, _, window, offsets, near, dist, _ in na_rows:
-        _, _, name, _, _, prep = chains_na[(pdb, ch)]
+        name, prep = chains_na[(pdb, ch)][2], chains_na[(pdb, ch)][5]
         if name not in na_name_ix:
             na_name_ix[name] = len(na_names)
             na_names.append(name)
-        g = grouped.setdefault((j, kind, window), [set(), [], set(), dist, True])
+        g = grouped.setdefault((j, kind, chain_type(chains_na[(pdb, ch)]), window), [set(), [], set(), dist, True])
         g[0].update(offsets)
         if pdb not in g[1]:
             g[1].append(pdb)
         g[2].add(na_name_ix[name])
         g[3] = min(g[3], dist)
         g[4] = g[4] and prep == 'Synthetically obtained'
-    na_json = [[j, kind, window, sorted(g[0]), sorted(g[1], reverse=True), sorted(g[2]), round(g[3], 2), int(g[4]), 0]
-               for (j, kind, window), g in sorted(grouped.items())]
+    na_json = [[j, kind, window, sorted(g[0]), sorted(g[1], reverse=True), sorted(g[2]), round(g[3], 2), int(g[4]), 0, ntype]
+               for (j, kind, ntype, window), g in sorted(grouped.items())]
 
     # Regions: the residues of each methylated protein within 4 Å of RNA or DNA, read once per distinct complex (the
     # protein with the same bound sequences; the entries sharing it are counted), joined into runs, each with the bound
@@ -2916,11 +2960,11 @@ def main():
                 segs = {}
                 for (si, pdb, nch), labs in touched.items():
                     seg = bound_segment(chains_na[(pdb, nch)][4], labs)
-                    g = segs.setdefault(seg, [set(), pdb, chains_na[(pdb, nch)][2]])
+                    g = segs.setdefault(seg, [set(), pdb, chains_na[(pdb, nch)][2], chain_type(chains_na[(pdb, nch)])])
                     g[0].update(sig_entries[si])
                 top = sorted(segs.items(), key=lambda kv: (-len(kv[1][0]), kv[0]))[:REGION_SEGMENTS]
                 region_json.append([acc, kind, start, end, len({e for si in sis for e in sig_entries[si]}), len(sis),
-                                    [[seg, g[1], g[2], len(g[0])] for seg, g in top], len(segs),
+                                    [[seg, g[1], g[2], len(g[0]), g[3]] for seg, g in top], len(segs),
                                     [site_at[(acc, q)] for q in range(start, end + 1) if (acc, q) in site_at]])
         log(f"Nucleic-acid regions: {sum(1 for r in region_json if r[1] == 'rna'):,} RNA- and {sum(1 for r in region_json if r[1] == 'dna'):,} "
             f"DNA-contacting regions in {len({r[0] for r in region_json}):,} proteins, {sum(1 for r in region_json if r[8]):,} with methylarginines")
@@ -2958,14 +3002,14 @@ def main():
             if name not in na_name_ix:
                 na_name_ix[name] = len(na_names)
                 na_names.append(name)
-            g = grouped.setdefault((j, kind, window), [set(), set(), set(), via, True])
+            g = grouped.setdefault((j, kind, chain_type(chains_na[(pdb, nch)]), window), [set(), set(), set(), via, True])
             g[0].update(offsets)
             g[1].update(ents)
             g[2].add(na_name_ix[name])
             g[3] = min(g[3], via, key=lambda v: (abs(v), v))
             g[4] = g[4] and prep == 'Synthetically obtained'
-        na_json += [[j, kind, window, sorted(g[0]), sorted(g[1], reverse=True), sorted(g[2]), None, int(g[4]), g[3]]
-                    for (j, kind, window), g in sorted(grouped.items())]
+        na_json += [[j, kind, window, sorted(g[0]), sorted(g[1], reverse=True), sorted(g[2]), None, int(g[4]), g[3], ntype]
+                    for (j, kind, ntype, window), g in sorted(grouped.items())]
         log(f"Bound sequences next to methylarginines: {len({r[0] for r in near_rows if r[1] == 'rna'}):,} sites with RNA and "
             f"{len({r[0] for r in near_rows if r[1] == 'dna'}):,} with DNA touched within {NEAR_RESIDUES} residues ({len(near_rows):,} site-complex pairs)")
     if args.fetch_contacts_only:
@@ -3099,14 +3143,15 @@ def main():
                 'na': ['site', 'rna|dna|hybrid', f'window: the chain\'s sequence {NA_WINDOW} nt each side of the nucleotide closest to the arginine (at), or of the one its closest '
                        f'neighbour touches (near), - past its ends', 'contacted offsets in the window (middle at ' + str(NA_WINDOW) + '), over the entries', 'PDB entries showing it',
                        'molecule names (na_names index)', 'closest distance (Å), at only', 'made oligonucleotide in every entry (Synthetically obtained): 1, else 0',
-                       f'0: the arginine touches it (within 4 Å); else the offset of the closest residue within {NEAR_RESIDUES} that does'],
+                       f'0: the arginine touches it (within 4 Å); else the offset of the closest residue within {NEAR_RESIDUES} that does',
+                       'chain type (' + '|'.join(NA_TYPES) + ')'],
                 'na_names': 'molecule names of the RNA and DNA chains',
                 'nab': {'rbns': ['accession', 'ENCODE experiment', 'protein concentration', f'top {RBNS_TOP} 5-mers [[kmer, R]]', 'ENCODE logos [[k, logo, [[A, C, G, U] per position]]]'],
                         'jaspar': ['accession', 'matrix', 'name', 'TF class', 'TF family', '[[A, C, G, T] counts per position]', 'IUPAC consensus'],
                         'eclip': ['accession', 'ENCODE experiment', 'cell line', 'reproducible peaks', 'peaks by region ' + '|'.join(ECLIP_REGIONS),
                                   f'top {ECLIP_TOP} genes [[gene, peaks]]']},
                 'na_regions': ['accession', 'rna|dna', 'start', 'end', 'PDB entries', 'distinct complexes (bound sequences) read',
-                               '[[bound segment: contacted nucleotides in brackets, ' + str(SEG_FLANK) + ' each side, … between clusters; example entry; molecule name; entries], ...] most entries first',
+                               '[[bound segment: contacted nucleotides in brackets, ' + str(SEG_FLANK) + ' each side, … between clusters; example entry; molecule name; entries; chain type], ...] most entries first',
                                'distinct segments', 'methylarginine sites in the region'],
                 'cd_members': ['protein', 'condensate index (meta.condensates of the sites file)', 'CD-CODE confidence score (0-5)', 'role bits', 'evidence bits', 'publications', 'all PMIDs'],
                 'wr': ['PRMT or Tudor protein index', 'its STRING physical partners (indices)'],
