@@ -34,6 +34,8 @@
   const fmtL1 = (v) => (v == null ? '—' : (v > 0 ? '+' : '') + v.toFixed(1));
   const pct = (a, b) => (b ? Math.round((100 * a) / b) : 0);
   const pctText = (a, b) => (a > 0 && pct(a, b) === 0 ? '<1' : String(pct(a, b)));
+  // The address may be out of reach (a frame that refuses URL changes): then the page keeps its place itself.
+  const histSet = (fn, url) => { try { history[fn](null, '', url); return true; } catch (e) { return false; } };
   const popcount = (n) => { let c = 0; while (n) { c += n & 1; n >>= 1; } return c; };
   const bits = (mask) => { const out = []; for (let i = 0; mask; i++, mask >>= 1) if (mask & 1) out.push(i); return out; };
   const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
@@ -1769,7 +1771,7 @@
     if (LC_ON) qs.set('lc', '1');
     const s = qs.toString();
     const next = location.pathname + (s ? '?' + s : '') + location.hash;
-    if (next !== location.pathname + location.search + location.hash) history.replaceState(null, '', next);
+    if (next !== location.pathname + location.search + location.hash) histSet('replaceState', next);
   }
   function copyLink(btn) {
     syncUrl();
@@ -1982,12 +1984,13 @@
   // --------------------------------------------------------------- routing
   function go(view, acc) {
     const hash = view === 'protein' ? acc : view;
-    if (location.hash.slice(1) === hash) route();
-    else location.hash = hash;
+    if (location.hash.slice(1) === hash) { route(); return; }
+    try { location.hash = hash; } catch (e) { /* refused: routed below */ }
+    if (location.hash.slice(1) !== hash) route(hash);
   }
 
-  function route() {
-    let h = location.hash.slice(1);
+  function route(over) {
+    let h = typeof over === 'string' ? over : location.hash.slice(1);
     try { h = decodeURIComponent(h); } catch (e) { /* a malformed escape (#FUS%2): read the hash as given */ }
     let view = 'overview', focus = null, siteInHash = false;
     // #interactions/ix-nac: a page opened on one of its sections (the focus view)
@@ -2069,7 +2072,7 @@
   // The open site is part of the address (#ACC/R123) without adding a history step for every click.
   function setSiteHash(p, pos) {
     const want = '#' + p.acc + (pos == null ? '' : '/' + rl(pos, p));
-    if (location.hash !== want) history.replaceState(null, '', location.pathname + location.search + want);
+    if (location.hash !== want) histSet('replaceState', location.pathname + location.search + want);
     setDocTitle();
   }
   const VIEW_NAMES = { overview: 'Overview', proteins: 'Proteins', sites: 'Sites', interactions: 'Interactions', charts: 'Charts', figures: 'Figure panels', about: 'Documentation', report: 'Insight report', compare: 'Comparison' };
@@ -2424,7 +2427,7 @@
     $('#q-clear').hidden = !text;
     const url = new URL(location.href);
     if (text.trim()) url.searchParams.set('q', text.trim()); else url.searchParams.delete('q');
-    history.replaceState(null, '', url.pathname + url.search + url.hash);
+    histSet('replaceState', url.pathname + url.search + url.hash);
   }
 
   function syncToolbar() {
@@ -4101,7 +4104,7 @@
       '</div>' +
       foldHtml('p-map', 'Protein map', figureCard(p), true, fmt(p.sites.length) + ' methylarginine site' + (p.sites.length === 1 ? '' : 's')) + '</div>' +
       '<div class="card" id="site-card" hidden></div>' +
-      (UI_A ? aHome(null) : '') + focusBarHtml() + hubList +
+      (UI_A ? aHome(null, protAOv(p)) : '') + focusBarHtml() + hubList +
       '<div class="print-only print-foot"><p>' + esc(siteName()) + ' · ' + esc(siteUrl()) + '</p><p>Cite: ' + esc(PAPER.cite) + ' https://doi.org/' + esc(PAPER.doi) + '</p><p>Sites: methylarginine union from PTM_Pipeline. Features, variants and sequence: UniProt. Predicted structure, pLDDT and AlphaMissense: AlphaFold DB. Experimental structures: RCSB PDB and PDBe (SIFTS). Condensates: CD-CODE. Partners: STRING; complexes: Complex Portal and hu.MAP; predicted complexes: ProtVar and AlphaFold DB; crosslinks: pepR-MS compendium, RBDmap, Trendel et al. 2025; IntAct; locations: Human Protein Atlas; disease: DisGeNET (via DOSE), UniProt and Open Targets; orthologues: Ensembl Compara. Licences and citations: the Documentation page.</p></div>';
 
     $$('[data-crumb]', el).forEach((b) => b.addEventListener('click', () => { go(b.dataset.crumb); window.scrollTo({ top: 0 }); }));
@@ -4339,7 +4342,7 @@
   const hubBase = () => (UI.view === 'protein' && UI.detail != null ? P[UI.detail].acc : UI.view);
   function hubFocus(key) {
     const want = '#' + hubBase() + (key ? '/' + key : '');
-    if (location.hash !== want) history.pushState(null, '', location.pathname + location.search + want);
+    if (location.hash !== want) histSet('pushState', location.pathname + location.search + want);
     UI.focus = key || null;
     hubApply($('#content'));
   }
@@ -4503,6 +4506,62 @@
       (lead ? '<section class="a-lead"><h2 class="a-q">' + lead.q + '</h2>' + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') +
         (lead.fig ? '<div class="card a-fig">' + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
       '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>').join('') + '</div></div>';
+  }
+  // A protein drawn as small lanes along its length: each lane a label and marks, a box for a stretch [a, b], a tick
+  // for one residue, a pin for a site (cls names its colour); the sites lane last, as on the protein map.
+  function aTrack(len, lanes) {
+    const L = Math.max(len || 1, 1), at = (q) => (100 * Math.min(Math.max(q - 0.5, 0), L) / L).toFixed(2) + '%';
+    const w = (a, b) => Math.max(0.6, (100 * (b - a + 1)) / L).toFixed(2) + '%';
+    return '<div class="a-track">' + lanes.filter((ln) => ln.items.length || ln.always).map((ln) => '<div class="at-lane"><span class="at-l">' + esc(ln.label) + '</span><span class="at-r"><i class="at-axis"></i>' +
+      ln.items.map((x) => (x.b != null ? '<i class="at-box ' + (x.cls || '') + '" style="left:' + at(x.a) + ';width:' + w(x.a, x.b) + '"' + (x.tip ? ' data-tip="' + esc(x.tip) + '"' : '') + '></i>'
+        : '<i class="at-pin ' + (x.cls || '') + '" style="left:' + at(x.a) + '"' + (x.tip ? ' data-tip="' + esc(x.tip) + '"' : '') + '></i>')).join('') + '</span></div>').join('') +
+      '<div class="at-lane at-scale"><span class="at-l"></span><span class="at-r"><b style="left:0">1</b><b style="left:100%">' + fmt(L) + ' aa</b></span></div></div>';
+  }
+  // The pictures and numbers of a protein page's tiles (layout A), from what the page already holds.
+  function protAOv(p) {
+    const sites = p.sites.map((j) => S[j]), len = p.len || Math.ceil(p.maxPos * 1.05) || 100, ix = ixReady();
+    const st = (s) => (ix ? ixStatus(s) || 'none' : 'none');
+    const pins = (cls) => sites.map((s) => ({ a: s.pos, cls: cls || st(s), tip: '<b>' + p.label + ' R' + s.pos + '</b>' + (ix ? '<br>' + (IXS[st(s)] || ['—'])[0] : '') }));
+    const ov = {};
+    if (ix) {
+      const k = { exp: 0, pred: 0, none: 0 };
+      for (const s of sites) k[st(s)]++;
+      ov['p-cc'] = { vis: aTrack(len, [{ label: 'Sites', items: pins() }]) };
+      ov['p-sites'] = { vis: aStack([{ n: k.exp, cls: 'exp', label: 'Experimental evidence', key: 'experimental' }, { n: k.pred, cls: 'pred', label: 'Predicted only', key: 'predicted' }, { n: k.none, cls: 'none', label: 'None recorded', key: 'none' }]) };
+      const xp = IX.xlProt.get(p.i), regs = ((IX.naReg && IX.naReg.get(p.i)) || []);
+      const rna = [], dna = [];
+      if (xp) {
+        for (const [a, b] of xp.rbd.concat(xp.capAdj, xp.capXl, xp.pclap, xp.rbrid)) rna.push({ a, b, cls: 'rna soft', tip: 'RNA-bound peptide or fragment, or RBR-ID+ residues ' + a + '–' + b });
+        for (const q of xp.rnaPos) rna.push({ a: q, b: q, cls: 'rna', tip: 'RNA-crosslinked residue ' + q });
+        for (const [a, b] of xp.dnaPeps) dna.push({ a, b, cls: 'dna soft', tip: 'DNA-crosslinked peptide ' + a + '–' + b });
+        for (const q of xp.dnaPos.concat(xp.dnaCand)) dna.push({ a: q, b: q, cls: 'dna', tip: 'DNA-crosslinked residue ' + q });
+      }
+      for (const r of regs) (r.kind === 'dna' ? dna : rna).push({ a: r.a != null ? r.a : r.start, b: r.b != null ? r.b : r.end, cls: (r.kind === 'dna' ? 'dna' : 'rna') + ' pdb', tip: (r.kind === 'dna' ? 'DNA' : 'RNA') + ' contact in PDB structures' });
+      if (rna.length || dna.length) ov['p-na'] = { vis: aTrack(len, [{ label: 'RNA', items: rna }, { label: 'DNA', items: dna }, { label: 'Sites', items: pins('site') }]) };
+      const partners = typeof partnersAt === 'function' ? partnersAt(p, 700).length : 0, cx = (p.cx || []).length;   // curated and predicted, as the card counts them
+      ov['p-ix'] = { vis: aBig([[fmt(partners), 'partners'], [fmt(cx), cx === 1 ? 'complex' : 'complexes', 'dna']]) };
+    }
+    if (p.idr && p.idr.length) ov['p-dom'] = { vis: aTrack(len, [{ label: 'Disorder', items: p.idr.map(([a, b]) => ({ a, b, cls: 'idr', tip: 'Disordered ' + a + '–' + b + ' (MobiDB)' })) }, { label: 'Sites', items: pins('site') }]) };
+    if (p.ptms && p.ptms.length) ov['p-ptm'] = { vis: aTrack(len, [{ label: 'PTMs', items: p.ptms.map(([q, g]) => ({ a: q, b: q, cls: 'ptm', tip: PTM_LABEL[g] + ' ' + q })) }, { label: 'Sites', items: pins('site') }]) };
+    const cl = p.arch && p.arch[1] && p.arch[1].length ? p.arch[1] : p.best ? [[p.best[1], p.best[2], p.best[3]]] : [];
+    ov['p-cluster'] = { vis: aTrack(len, [{ label: 'Clusters', items: cl.map(([a, b, n]) => ({ a, b, cls: 'clu', tip: n + ' sites, ' + a + '–' + b })), always: true }, { label: 'Sites', items: pins('site') }]) };
+    if (p.argN) ov['p-seq'] = { vis: aMeters([{ label: 'Arginines methylated', v: p.sites.length / p.argN, text: fmt(p.sites.length) + ' of ' + fmt(p.argN), cls: 'sel' }]) };
+    const nDis = p.dis ? popcount(p.dis) : 0;
+    if (p.cond && p.cond.length || (p.hpa && p.hpa.length)) ov['p-cond'] = { vis: aBig([[fmt((p.cond || []).length), (p.cond || []).length === 1 ? 'condensate' : 'condensates'], [fmt((p.hpa || []).length), (p.hpa || []).length === 1 ? 'location' : 'locations', 'dna']]) };
+    if (nDis) ov['p-dis'] = { vis: aBig([[fmt(nDis), nDis === 1 ? 'disease family' : 'disease families']]) };
+    return ov;
+  }
+  // Tiles whose pictures need data that arrives after the page was drawn (a protein's interaction evidence).
+  function aRefreshTiles(root, ov) {
+    const home = root && $('.a-home', root);
+    if (!home) return;
+    for (const [k, o] of Object.entries(ov)) {
+      const t = $('.a-tile[data-go="' + k + '"]', home);
+      if (!t || !o || !o.vis) continue;
+      let v = $('.a-vis', t);
+      if (!v) { v = document.createElement('span'); v.className = 'a-vis'; $('.a-tt', t).after(v); t.classList.remove('novis'); }
+      v.innerHTML = o.vis;
+    }
   }
   function bindAHome(root) {
     root.classList.toggle('a-mode', UI_A);
@@ -9298,6 +9357,7 @@
     const v = $('#ix-fact'), sub = $('#ix-fact-sub');
     if (!v || !sub) return;
     if (!IX) return;
+    if (UI_A && !IX.failed) aRefreshTiles($('#content'), protAOv(p));
     if (IX.failed) { v.textContent = '—'; sub.textContent = 'interaction data unavailable'; return; }
     const n = { exp: 0, pred: 0, none: 0 };
     for (const j of p.sites) n[ixStatus(S[j])]++;

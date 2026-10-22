@@ -1898,3 +1898,27 @@ html.drawer-open { overflow: hidden; }
   .a-tile { padding: 0.75rem 0.85rem; }
 }
 @media print { .a-home { display: none !important; } .a-mode .hub-list:not(.focus) { display: block !important; } }
+/* protein tiles: small lanes along the protein */
+.a-track { display: grid; gap: 0.2rem; }
+.at-lane { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); align-items: center; gap: 0.4rem; }
+.at-l { font-size: 0.68rem; color: var(--muted); text-align: right; }
+.at-r { position: relative; height: 0.85rem; }
+.at-axis { position: absolute; top: 50%; right: 0; left: 0; height: 2px; margin-top: -1px; background: var(--line); }
+.at-box { position: absolute; top: 15%; height: 70%; border-radius: 2px; background: var(--muted); opacity: 0.9; }
+.at-pin { position: absolute; top: 50%; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: var(--muted); box-shadow: 0 0 0 1.5px var(--surface); }
+.at-box.rna { background: var(--t-rnaInk); }
+.at-box.rna.soft { opacity: 0.35; }
+.at-box.dna { background: var(--t-dnaInk, var(--accent-dark)); }
+.at-box.dna.soft { opacity: 0.35; }
+.at-box.pdb { top: 30%; height: 40%; opacity: 1; }
+.at-box.idr { background: var(--line-strong); }
+.at-box.ptm { background: var(--ink-2); }
+.at-box.clu { background: color-mix(in srgb, var(--accent) 35%, var(--surface)); }
+.at-pin.exp { background: var(--teal-600); }
+.at-pin.pred { background: color-mix(in srgb, var(--teal-600) 45%, var(--surface)); }
+.at-pin.none { background: var(--line-strong); }
+.at-pin.site { background: var(--accent); }
+.at-scale .at-r { height: 0.7rem; }
+.at-scale b { position: absolute; top: 0; font-size: 0.6rem; font-weight: 500; color: var(--muted); transform: translateX(-50%); }
+.at-scale b:first-child { transform: none; }
+.at-scale b:last-child { transform: translateX(-100%); white-space: nowrap; }
