@@ -900,6 +900,7 @@
       disFam: named(M.protein_fields, r, 'disease_families', null),
       pan: named(M.protein_fields, r, 'panther', null),
       doTerms: null,
+      dgnBg: named(M.protein_fields, r, 'disgenet_background', null),
     }));
     for (const p of P) if (p.ref) REFMD5.set(p.acc, p.ref);
     // Disease Ontology: each protein's most specific tested terms, with every term above them.
@@ -1280,7 +1281,8 @@
       body = (UI.disTermsAll ? pool : pool.slice(0, DIS_TERMS_SHOWN)).map((t) => termRow(t, false)).join('');
     }
     return '<div class="dis-terms"><p class="note">' + fmt(terms.length) + (tested ? ' of the ' + fmt(tested.terms) + ' DisGeNET terms tested' : ' DisGeNET terms') + ' (' + DGN_TERMS.min + '–' + DGN_TERMS.max + ' genes) are enriched among methylated proteins (DOSE enrichDGN, adj. p ≤ ' + DGN_TERMS.padj + '). ' +
-      fmt(n('audited')) + ' belong to the ' + nAudited() + ' audited disease families; ' + fmt(n('additional')) + ' to the additional families, mostly clinical signs such as facial features; ' + fmt(n('none')) + ' to none.' + (tested ? ' Every tested term is in the release (supporting/disease_terms_tested).' : '') + '</p>' +
+      fmt(n('audited')) + ' belong to the ' + nAudited() + ' audited disease families; ' + fmt(n('additional')) + ' to the additional families, mostly clinical signs such as facial features; ' + fmt(n('none')) + ' to none.' + (tested ? ' Every tested term is in the release (supporting/disease_terms_tested).' : '') +
+      (constraints().length ? ' <b>Whole dataset:</b> these terms are not retested for your selection, because the site data hold the genes of the enriched terms only; the families above are.' : '') + '</p>' +
       '<div class="dis-term-controls"><label class="small">Show <select id="dis-fam">' + opt('audited', 'audited disease families (' + fmt(n('audited')) + ')') +
       M.disease_families.map((f, k) => (famAudited(k) ? opt(String(k), ' ' + f) : '')).join('') + opt('additional', 'additional families, mostly clinical signs (' + fmt(n('additional')) + ')') +
       M.disease_families.map((f, k) => (famAudited(k) ? '' : opt(String(k), ' ' + f))).join('') + opt('none', 'terms in no family (' + fmt(n('none')) + ')') + opt('', 'all ' + fmt(terms.length) + ' terms') + '</select></label></div>' +
@@ -1360,16 +1362,20 @@
   }
   // The Disease Ontology term table: the enriched terms (q ≤ 0.05) or every tested term (UI.doAll), by q.
   function doTermsHtml() {
-    const dm = doMeta(), T = dm.terms, rootId = T[dm.root] ? T[dm.root][0] : '';
+    const dm = doMeta(), T = dm.terms, rootId = T[dm.root] ? T[dm.root][0] : '', sd = doSelection();
+    // [count, genes, fold enrichment, q]: the selection's when there is one
+    const v = (k) => { const x = sd && sd.rows[k]; return x ? [x.selK || 0, T[k][4], x.value == null ? null : 2 ** x.value, x.q] : [T[k][3], T[k][4], T[k][5], T[k][6]]; };
     const tested = T.map((t, k) => k).filter((k) => T[k][0] !== rootId);
-    const enriched = tested.filter((k) => T[k][6] != null && T[k][6] <= PADJ);
-    const shown = (UI.doAll ? tested : enriched).slice().sort((a, b) => (T[a][6] - T[b][6]) || ((T[b][5] || 0) - (T[a][5] || 0)));
+    const enriched = tested.filter((k) => v(k)[3] != null && v(k)[3] <= PADJ);
+    const shown = (UI.doAll ? tested : enriched).slice().sort((a, b) => ((v(a)[3] == null ? 2 : v(a)[3]) - (v(b)[3] == null ? 2 : v(b)[3])) || ((v(b)[2] || 0) - (v(a)[2] || 0)));
     const parentNames = (k) => T[k][2].map((q) => T[q][1]).join(', ');
-    return '<div class="dis-terms"><p class="note">' + fmt(tested.length) + ' Disease Ontology terms of at least ' + DO_TERMS.min + ' genes with a methylated protein were tested; <b>' + fmt(enriched.length) + '</b> are enriched (q ≤ ' + PADJ + '). Every tested term is in the release (supporting/disease_ontology).</p>' +
+    const whole = (k) => (sd ? ' title="Whole dataset: ' + fmt(T[k][3]) + ' of ' + fmt(T[k][4]) + ' genes, fold enrichment ' + (T[k][5] || 0).toFixed(2) + ', q ' + fmtP(T[k][6]) + '"' : '');
+    return '<div class="dis-terms"><p class="note">' + fmt(tested.length) + ' Disease Ontology terms of at least ' + DO_TERMS.min + ' genes with a methylated protein were tested; <b>' + fmt(enriched.length) + '</b> are enriched (q ≤ ' + PADJ + ')' +
+      (sd ? ' for your selection (' + fmt(sd.selTest.n) + ' genes of ' + fmt(sd.selTest.N) + ' with a Disease Ontology term), with Benjamini–Hochberg over every tested term; the whole dataset\'s values are in each row\'s hover' : '') + '. Every tested term is in the release (supporting/disease_ontology).</p>' +
       '<div class="dis-term-controls"><label class="small">Show <select id="do-all"><option value="0">enriched terms (' + fmt(enriched.length) + ')</option><option value="1"' + (UI.doAll ? ' selected' : '') + '>every tested term (' + fmt(tested.length) + ')</option></select></label></div>' +
-      '<div class="tbl-wrap dis-terms-tbl"><table class="tbl compact"><thead><tr><th>Term (under)</th><th class="r" title="Genes of methylarginine-containing proteins, of the genes of the term">Methyl-R/all</th><th class="r">FE</th><th class="r">q</th></tr></thead><tbody>' +
-      shown.map((k) => { const t = T[k]; return '<tr><td><button class="linkish" type="button" data-doterm="' + esc(t[0]) + '" title="List the methylated proteins in this term">' + esc(t[1]) + '</button> <a class="muted mono small" href="' + doLink(t[0]) + '" target="_blank" rel="noopener" title="The term in the Disease Ontology">' + esc(t[0]) + '</a>' +
-        (t[2].length ? '<span class="dis-term-fam">' + esc(parentNames(k)) + '</span>' : '') + '</td><td class="r num">' + fmt(t[3]) + '/' + fmt(t[4]) + '</td><td class="r num">' + (t[5] || 0).toFixed(2) + '</td><td class="r num">' + fmtP(t[6]) + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
+      '<div class="tbl-wrap dis-terms-tbl"><table class="tbl compact"><thead><tr><th>Term (under)</th><th class="r" title="' + (sd ? 'Genes of your selection' : 'Genes of methylarginine-containing proteins') + ', of the genes of the term">' + (sd ? 'Selected/all' : 'Methyl-R/all') + '</th><th class="r">FE</th><th class="r">q</th></tr></thead><tbody>' +
+      shown.map((k) => { const t = T[k], x = v(k); return '<tr' + whole(k) + '><td><button class="linkish" type="button" data-doterm="' + esc(t[0]) + '" title="List the methylated proteins in this term">' + esc(t[1]) + '</button> <a class="muted mono small" href="' + doLink(t[0]) + '" target="_blank" rel="noopener" title="The term in the Disease Ontology">' + esc(t[0]) + '</a>' +
+        (t[2].length ? '<span class="dis-term-fam">' + esc(parentNames(k)) + '</span>' : '') + '</td><td class="r num">' + fmt(x[0]) + '/' + fmt(x[1]) + '</td><td class="r num">' + (x[2] == null ? '—' : x[2].toFixed(2)) + '</td><td class="r num">' + fmtP(x[3]) + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
   }
   const nAudited = () => M.disease_families.filter((_, k) => famAudited(k)).length;
   // In the full gene set of family k (any DisGeNET term of the family names the gene).
@@ -3057,7 +3063,7 @@
   // -------------------------------------------------------------- charts
   // A chart spec renders as interactive HTML bars and exports as a standalone SVG/PNG/TSV.
   function niceScale(rows) {
-    const vals = rows.map((r) => r.value).filter((v) => v != null);
+    const vals = rows.flatMap((r) => [r.value, r.ref]).filter((v) => v != null && Number.isFinite(v));
     let lo = Math.min(0, ...vals), hi = Math.max(0, ...vals);
     const raw = (hi - lo || 1) / 5;
     const mag = Math.pow(10, Math.floor(Math.log10(raw)));
@@ -3078,7 +3084,7 @@
     const tfmt = spec.tick || ((t) => t);
     const cls = (spec.extraCol ? ' has-extra' : '') + (spec.sel ? ' has-sel' : '') + (rows.some((r) => r.sub) ? ' tree' : '') + (spec.compact ? ' compact' : '');
     // Column headings for compact charts: what the numbers are, so they can stay short.
-    const heads = spec.heads ? '<div class="hb-cols' + cls + '" aria-hidden="true"><span>' + esc(spec.heads[0]) + '</span>' + (spec.extraCol ? '<span>' + esc(spec.heads[1]) + '</span>' : '') +
+    const heads = spec.heads ? '<div class="hb-cols' + cls + '" aria-hidden="true"><span>' + esc(spec.heads[0]) + '</span>' + (spec.extraCol ? '<span>' + esc(countHead(spec)) + '</span>' : '') +
       '<span>' + esc(spec.heads[2]) + '</span><span>' + esc(spec.heads[3]) + '</span>' + (spec.sel ? '<span>sel.</span>' : '') + '</div>' : '';
     return heads + '<div class="hbars' + cls + '" role="list">' + rows.map((r, k) => {
       const v = r.value == null ? 0 : r.value;
@@ -3086,12 +3092,14 @@
       return (r.head ? '<div class="hb-head" role="presentation">' + esc(r.head) + '</div>' : '') + '<button class="hb' + (r.sub ? ' sub' : '') + (r.depth === 2 ? ' sub2' : '') + (r.extraRow ? ' extra-row' : '') + (spec.sel && !r.sel ? ' off' : '') + (r.noClick ? ' noclick' : '') + '" type="button" role="listitem" data-k="' + k + '"' + (r.noClick ? ' aria-disabled="true"' : '') + ' aria-label="' + esc(r.label + (r.note ? ' (' + r.note + ')' : '') + ': ' + (spec.valueLabel || (spec.fold ? 'log2 fold enrichment' : 'log2 OR')) + ' ' + vfmt(r.value) + (spec.noSig ? '' : r.sig ? ', significant' : ', not significant') + (spec.sel && r.sel != null ? ', ' + r.sel + ' selected ' + spec.sel.unit : '')) + '">' +
         '<span class="hb-label">' + esc(r.label) + (r.note ? '<span class="hb-note">' + esc(r.note) + '</span>' : '') + '</span>' + (spec.extraCol ? '<span class="hb-extra">' + esc(r.extra || '') + '</span>' : '') +
         '<span class="hb-track"><span class="hb-zero" style="left:' + sc.xp(0).toFixed(2) + '%"></span>' +
-        '<span class="hb-bar' + (r.sig || spec.noSig ? '' : ' ns') + (v < 0 ? ' neg' : '') + '" style="left:' + a.toFixed(2) + '%;width:' + Math.max(0.6, b - a).toFixed(2) + '%"></span></span>' +
+        '<span class="hb-bar' + (r.sig || spec.noSig ? '' : ' ns') + (v < 0 ? ' neg' : '') + (spec.selTest ? ' sel-bar' : '') + '" style="left:' + a.toFixed(2) + '%;width:' + (r.value == null ? 0 : Math.max(0.6, b - a)).toFixed(2) + '%"></span>' +
+        (spec.selTest && r.ref != null ? '<span class="hb-ref" style="left:' + sc.xp(r.ref).toFixed(2) + '%"></span>' : '') + '</span>' +
         '<span class="hb-val">' + vfmt(r.value) + '</span>' + (spec.sel ? selCell(r.sel) : '') + '</button>';
     }).join('') + '</div>' +
       '<div class="hb-axis' + cls + '" aria-hidden="true"><span></span>' + (spec.extraCol ? '<span></span>' : '') + '<span class="ticks">' + sc.ticks.map((t, i) => '<span style="left:' + sc.xp(t).toFixed(2) + '%">' + (tickShown(spec, sc, i) ? tfmt(t) : '') + '</span>').join('') + '</span><span></span>' + (spec.sel ? '<span></span>' : '') + '</div>' +
       (spec.treeNote && rows.some((r) => r.sub) ? '<p class="chart-tree-note">' + spec.treeNote + '</p>' : '') +
-      '<div class="chart-key">' + (spec.noSig ? '' : sigKey(spec).map(([c, l]) => '<span><i' + (c ? ' class="' + c + '"' : '') + '></i>' + l + '</span>').join('')) + (spec.sel ? selKeyHtml(spec.sel) : '') + '<span>' + esc(chartAxis(spec)) + '</span></div>';
+      '<div class="chart-key">' + (spec.selTest ? '<span class="sel-test-key"><b>Your selection:</b>&nbsp;' + fmt(spec.selTest.n) + ' ' + esc(spec.selTest.unit) + ' of ' + fmt(spec.selTest.N) + ' (' + esc(spec.selTest.bg) + ')</span><span><i class="ref"></i>whole dataset</span>' : '') +
+      (spec.noSig ? '' : sigKey(spec).map(([c, l]) => '<span><i' + (c ? ' class="' + c + '"' : '') + '></i>' + l + '</span>').join('')) + (spec.sel ? selKeyHtml(spec.sel) : '') + '<span>' + esc(chartAxis(spec)) + '</span></div>';
   }
   // The selection's count in a bar (orange dot, as the Filtered flag), blank where none of it is there.
   const selCell = (n) => '<span class="hb-sel">' + (n ? '<i></i>' + fmt(n) : '') + '</span>';
@@ -3150,7 +3158,7 @@
     let top = 74;
     if (spec.heads) {
       const hy = top + 4, head = (x, text, end) => '<text x="' + x + '" y="' + hy + '" font-size="9.5" font-weight="700" fill="' + pal.muted + '"' + (end ? ' text-anchor="end"' : '') + '>' + esc(text) + '</text>';
-      g += head(24, spec.heads[0]) + (spec.extraCol ? head(24 + labelW + extraW - 6, spec.heads[1], true) : '') + head(W - selW - 16, spec.heads[3], true) + (spec.sel ? head(W - 16, 'sel.', true) : '') +
+      g += head(24, spec.heads[0]) + (spec.extraCol ? head(24 + labelW + extraW - 6, countHead(spec), true) : '') + head(W - selW - 16, spec.heads[3], true) + (spec.sel ? head(W - 16, 'sel.', true) : '') +
         '<line x1="24" x2="' + (W - 16) + '" y1="' + (hy + 6) + '" y2="' + (hy + 6) + '" stroke="' + pal.grid + '"/>';
       top += 18;
     }
@@ -3179,7 +3187,8 @@
       if (spec.extraCol) g += '<text x="' + (24 + labelW + extraW - 6) + '" y="' + (y + 14) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="end">' + esc(r.extra || '') + '</text>';
       g += '<rect x="' + r1(a) + '" y="' + r1(y + 11 - bh / 2) + '" width="' + r1(Math.max(1, b - a)) + '" height="' + bh + '" rx="2" fill="' + (ns ? pal.bg : fill) + '" stroke="' + fill + '" stroke-width="' + (ns ? 1.4 : 0) + '"' +
         (r.extraRow || depth === 2 ? ' fill-opacity="' + (depth === 2 ? 0.55 : 0.7) + '"' : '') + '/>';
-      g += '<text x="' + (W - selW - 16) + '" y="' + (y + 14) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="end">' + esc(vfmt(r.value)) + '</text></g>';
+      if (spec.selTest && r.ref != null) g += '<line x1="' + r1(X(r.ref)) + '" x2="' + r1(X(r.ref)) + '" y1="' + r1(y + 11 - bh / 2 - 3) + '" y2="' + r1(y + 11 + bh / 2 + 3) + '" stroke="' + pal.ink + '" stroke-width="2"/>';
+      g += '<text x="' + (W - selW - 16) + '" y="' + (y + 14) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="end">' + esc(r.value == null ? '–' : vfmt(r.value)) + '</text></g>';
       if (spec.sel && r.sel) g += '<circle cx="' + (W - selW - 4) + '" cy="' + (y + 11) + '" r="3.5" fill="' + pal.accent + '"/><text x="' + (W - 16) + '" y="' + (y + 14) + '" font-size="10.5" font-weight="700" fill="' + pal.accent + '" text-anchor="end">' + fmt(r.sel) + '</text>';
     });
     const ay = bottom + 16;
@@ -3193,6 +3202,7 @@
     const swatch = { '': SWATCH.fill(pal.up[3]), neg: SWATCH.fill(pal.down[3]),
       ns: (a, b) => '<rect x="' + r1(a) + '" y="' + r1(b - 5) + '" width="20" height="10" rx="2" fill="' + pal.bg + '" stroke="' + pal.muted + '" stroke-width="1.4"/>' };
     const items = spec.noSig ? [] : sigKey(spec).map(([c, l]) => [swatch[c], l]);
+    if (spec.selTest) items.unshift([(a, b) => '<line x1="' + r1(a + 10) + '" x2="' + r1(a + 10) + '" y1="' + r1(b - 6) + '" y2="' + r1(b + 6) + '" stroke="' + pal.ink + '" stroke-width="2"/>', 'whole dataset; bars: your selection, ' + fmt(spec.selTest.n) + ' ' + spec.selTest.unit + ' of ' + fmt(spec.selTest.N) + ' (' + spec.selTest.bg + ')']);
     if (spec.sel) items.push([(a, b) => '<circle cx="' + r1(a + 10) + '" cy="' + r1(b) + '" r="3.5" fill="' + pal.accent + '"/>', spec.sel.noun + ', of ' + fmt(spec.sel.n) + ' (' + (spec.sel.what.length > 70 ? spec.sel.what.slice(0, 68) + '…' : spec.sel.what) + ')']);
     const key = items.length ? svgLegend(pal, items, 24, ny, W - 48, { fs: 10 }) : null;
     const H = Math.ceil(key ? ny + key.h + 22 : ny + 10);
@@ -3206,8 +3216,10 @@
     const more = (spec.rows.some((r) => r.head) ? [['section', (r) => sections[spec.rows.indexOf(r)]]] : [])
       .concat(spec.rows.some((r) => r.sub) ? [['depth', (r) => r.depth || (r.sub ? 1 : 0)]] : [], spec.tsvCols || []);
     const sel = spec.sel ? '\tselected_' + spec.sel.unit : '';
+    if (spec.selTest) more.push(['whole_dataset_value', (r) => (r.ref == null ? '' : r.ref)], ['whole_dataset_q', (r) => (r.refQ == null ? '' : r.refQ)]);
     return (spec.sel ? '# selected: ' + spec.sel.what + ' (' + spec.sel.n + ' ' + (spec.sel.n === 1 ? spec.sel.unit.replace(/s$/, '') : spec.sel.unit) + ')\n' : '') +
-      ['label\t' + (spec.valueLabel || (spec.fold ? 'log2_fold_enrichment' : 'log2_odds_ratio')) + '\tq_value\t' + (spec.extraTsv ? spec.extraTsv.join('\t') : spec.extraName || 'detail') + more.map((c) => '\t' + c[0]).join('') + sel,
+      (spec.selTest ? '# values and q for your selection: ' + spec.selTest.what + ' (' + spec.selTest.n + ' ' + spec.selTest.unit + ' of ' + spec.selTest.N + ' in the background, ' + spec.selTest.bg + '); one-sided hypergeometric, BH across the rows\n' : '') +
+      ['label\t' + (spec.valueLabel || (spec.fold ? 'log2_fold_enrichment' : 'log2_odds_ratio')) + '\tq_value\t' + (spec.extraTsv ? spec.extraTsv.map((c, i) => (spec.selTest && !i ? c.replace(/^(methylated|methylarginine)_/, 'selected_') : c)).join('\t') : (spec.selTest ? selName(spec.extraName || 'detail') : spec.extraName || 'detail')) + more.map((c) => '\t' + c[0]).join('') + sel,
         ...spec.rows.map((r) => [r.label, r.value, r.q == null ? '' : r.q].concat(spec.extraTsv ? (r.nums || ['', '']) : [r.extraRaw != null ? r.extraRaw : r.extra || ''], more.map((c) => c[1](r)), spec.sel ? [r.sel == null ? '' : r.sel] : []).map(cell).join('\t'))].join('\n') + '\n';
   }
 
@@ -3289,7 +3301,6 @@
     const bySort = UI.condSort === 'fold' ? (a, b) => (b.l2 - a.l2) || (b.m - a.m) : (a, b) => (a.q - b.q) || (b.l2 - a.l2);
     const condAll = (thr ? confTable[String(thr)].map(([k, n, m, l2, , q]) => ({ k, c: M.condensates[k], n, m, l2, q })) :
       M.condensates.map((c, k) => Object.assign({ k, c, n: c[3], m: c[4] }, condRow(c)))).filter((x) => x.l2 != null).sort(bySort);
-    const condShown = UI.allCond ? condAll : condAll.slice(0, 14);
     const cs = M.condensate_summary || {};
     const condShare = +cs.condensate_universe_proteins ? pct(+cs.methyl_proteins_in_any_condensate, +cs.condensate_universe_proteins) : null;
     const protShare = +cs.reviewed_proteome_proteins ? pct(+cs.methyl_proteins_total, +cs.reviewed_proteome_proteins) : null;
@@ -3306,9 +3317,9 @@
         (hasProteome && condShare && protShare ? '<br><span class="small muted">' + condShare + '% of condensate proteins are methylated, against ' + protShare + '% of all reviewed proteins: most condensates are enriched relative to the proteome, and few relative to other condensates.</span>' : '') + '<br>' + thrSel,
       tools: condTools,
       subText: 'CD-CODE condensates: methylated members vs ' + vsBg(bgName) + (thr ? ' (CD-CODE ' + ((IX && IX.meta && IX.meta.cdcode_version) || '') + ', confidence ≥ ' + thr + ')' : ' (pipeline CD-CODE export, all memberships)') + (UI.condSort === 'fold' ? ', by fold enrichment' : ', by q'), extraCol: true, extraName: 'methylated_of_members',
-      rows: condShown.map(({ c, k, n, m, l2, q }) => ({ label: c[0], value: l2, q, sig: sigq(q), key: k, extra: m + '/' + n,
+      rows: condAll.map(({ c, k, n, m, l2, q }) => ({ label: c[0], value: l2, q, sig: sigq(q), key: k, extra: m + '/' + n,
         title: '<b>' + esc(c[0]) + '</b> · CD-CODE ' + esc(c[1]) + (c[2] !== 'biomolecular' ? ' · ' + esc(c[2]) : '') + '<br>' + m + ' of ' + n + ' counted members methylated (' + pct(m, n) + '%)' + (thr ? ' (confidence ≥ ' + thr + ')' : '') +
-          '<br>vs ' + vsBg(bgName) + ': ' + effName() + ' ' + fmtL2(l2) + ', q ' + fmtP(q) +
+          '<br>Against ' + (condBg === 'proteome' ? 'all reviewed human proteins' : 'all proteins in any condensate') + ': ' + effName() + ' ' + fmtL2(l2) + ', q ' + fmtP(q) +
           (!thr && hasProteome ? '<br><span class="muted">' + (condBg === 'proteome' ? 'vs other condensates: ' + fmtL2(c[5]) + ', q ' + fmtP(c[6]) : 'vs the proteome: ' + fmtL2(c[7]) + ', q ' + fmtP(c[8])) + '</span>' : '') })),
       fold: FOLD(), axis: FOLD() ? 'log2 fold enrichment vs ' + (condBg === 'proteome' ? 'all reviewed proteins' : 'all condensate proteins') : '', keepOrder: true,
       footHtml: '<button class="linkish" type="button" id="cond-more" style="margin-top:.5rem">' + (UI.allCond ? 'Show the top 14' : 'Show all ' + condAll.length + ' tested condensates') + '</button>',
@@ -3319,13 +3330,11 @@
     // location of at least 10 profiled proteins, strongest first, including small ones (endosomes, cilia, sperm parts).
     const hm = hpaMeta();
     const locAll = hm ? hm.enrichment.filter((r) => r[1] + r[3] >= 10).map((r) => ({ k: r[0], name: hm.locations[r[0]], a: r[1], n: r[1] + r[3], l2: r[5], q: r[7] })).sort((x, y) => y.l2 - x.l2) : [];
-    const locMain = LOC_MAIN.flatMap(([group, names]) => locAll.filter((x) => names.includes(x.name)).map((x, i) => Object.assign({}, x, i ? {} : { head: group })));
-    const locCurated = !UI.allLoc && locMain.length >= 6;
-    const locRows = locCurated ? locMain : UI.allLoc ? locAll : locAll.slice(0, 14);
+    const locCurated = !UI.allLoc && LOC_MAIN.flatMap(([, names]) => names).filter((nm) => locAll.some((x) => x.name === nm)).length >= 6;
     const loc = hm ? {
       id: 'ch-loc', title: 'Subcellular location', subHtml: 'Subcellular locations of methylated proteins vs all profiled proteins (Human Protein Atlas)' + (locCurated ? ': the main compartments' : ': every location with at least 10 profiled proteins') + '.' + docLink('ov-location'),
       subText: 'HPA subcellular locations' + (locCurated ? ' (main compartments)' : '') + ', methylated vs ' + vsBg('profiled proteins') + ' (reliability Approved or better)', extraCol: true, extraName: 'methylated_of_profiled', fold: FOLD(), axis: FOLD() ? 'log2 fold enrichment vs all HPA-profiled proteins' : '',
-      rows: locRows.map((x) => ({ label: x.name, value: x.l2, q: x.q, sig: sigq(x.q), key: x.k, extra: x.a + '/' + x.n, head: x.head,
+      rows: locAll.map((x) => ({ label: x.name, value: x.l2, q: x.q, sig: sigq(x.q), key: x.k, extra: x.a + '/' + x.n,
         title: '<b>' + esc(x.name) + '</b> (HPA)<br>' + x.a + ' of ' + x.n + ' profiled proteins with this location are methylated (' + pct(x.a, x.n) + '%)<br>' + effName() + ' ' + fmtL2(x.l2) + ', q ' + fmtP(x.q) })),
       footHtml: '<button class="linkish" type="button" id="loc-more" style="margin-top:.5rem">' + (UI.allLoc ? 'Show the main compartments' : 'Show all ' + locAll.length + ' locations') + '</button>',
     } : null;
@@ -3369,10 +3378,10 @@
     const subs = ov.functional_subclasses || [];
     const funcRows = [];
     ov.functional_classes.slice().sort((a, b) => b[4] - a[4]).forEach((r) => {
-      funcRows.push({ label: r[0], value: r[4], q: r[5], sig: sigq(r[5]), key: r[0], kind: 'broad', extra: fmt(r[1]), extraRaw: r[1],
+      funcRows.push({ label: r[0], value: r[4], q: r[5], sig: sigq(r[5]), key: r[0], kind: 'broad', extra: fmt(r[1]), extraRaw: r[1], bgM: Math.round(r[3] * ((pantherMeta() && pantherMeta().universe) || 0)),
         title: '<b>' + esc(r[0]) + '</b><br>' + fmt(r[1]) + ' methylarginine proteins (' + (100 * r[2]).toFixed(1) + '%) vs ' + (100 * r[3]).toFixed(1) + '% ' + vsBg('reviewed proteins') + '<br>' + effName() + ' ' + fmtL2(r[4]) + ', q ' + fmtP(r[5]) });
       if (UI.funcExpanded) {
-        subs.filter((x) => x[6] === r[0]).sort((a, b) => b[4] - a[4]).forEach((x) => funcRows.push({ label: x[0] === r[0] ? x[0] + ' (subclass)' : x[0], value: x[4], q: x[5], sig: sigq(x[5]), key: x[0], kind: 'sub', sub: true, extra: fmt(x[1]), extraRaw: x[1],
+        subs.filter((x) => x[6] === r[0]).sort((a, b) => b[4] - a[4]).forEach((x) => funcRows.push({ label: x[0] === r[0] ? x[0] + ' (subclass)' : x[0], value: x[4], q: x[5], sig: sigq(x[5]), key: x[0], kind: 'sub', sub: true, extra: fmt(x[1]), extraRaw: x[1], bgM: Math.round(x[3] * ((pantherMeta() && pantherMeta().universe) || 0)),
           title: '<b>' + esc(x[0]) + '</b> (subclass of ' + esc(r[0]) + ')<br>' + fmt(x[1]) + ' methylarginine proteins<br>' + effName() + ' ' + fmtL2(x[4]) + ', q ' + fmtP(x[5]) }));
       }
     });
@@ -3387,6 +3396,8 @@
     const dm = doMeta();
     const disView = dm && UI.disView === 'do' ? 'do' : 'dgn';
     const disToggle = dm ? '<span class="seg dis-view" role="group" aria-label="Disease vocabulary"><button type="button" data-disview="dgn" aria-pressed="' + (disView === 'dgn') + '">DisGeNET families</button><button type="button" data-disview="do" aria-pressed="' + (disView === 'do') + '">Disease Ontology</button></span>' : '';
+    const byFamily = (a, b) => (b.audited - a.audited) || (rankValue(b) - rankValue(a));
+    const famHead = (r, k, all) => Object.assign(r, { head: !r.audited && (k === 0 || all[k - 1].audited) ? 'Additional families (rule-based, not audited; tested separately)' : undefined });
     const fams = {
       id: 'ch-dis', title: dm ? 'Disease' : 'Disease families', figTitle: 'Disease families (DisGeNET)', subHtml: 'Genes of methylated proteins vs all reviewed human genes' + (FOLD() ? ' with a DisGeNET term' : '') + ', by disease family. Association, not causation.' + docLink('ov-disease'), tools: disToggle,
       subText: (UI.disMore ? 'Audited and additional' : 'Audited') + ' DisGeNET disease families vs ' + (FOLD() ? 'all reviewed human genes with a DisGeNET term' : 'the reviewed human genes'), axis: FOLD() ? 'log2 fold enrichment vs all genes with a DisGeNET term' : 'log2 odds ratio vs background', extraCol: true, extraName: 'methylarginine_proteins_of_family', extraTsv: ['methylated_genes', 'family_genes'],
@@ -3396,7 +3407,7 @@
         return { label: r[0], value: e ? +Math.log2(e).toFixed(3) : null, q, sig: sigq(q), key: r[0], extra: ofTotal(r[1], r[2]), nums: [r[1], r[2]], extraRow: !audited, audited, fk,
           title: '<b>' + esc(r[0]) + '</b><br>' + fmt(r[1]) + ' of the ' + fmt(r[2]) + ' genes of the family\'s gene set encode methylarginine-containing proteins<br>' + famEffHtml(r) +
             '<br>Click: the ' + fmt(P.filter(fk >= 0 ? familyMember(fk) : () => false).length) + ' methylated proteins of its gene set' };
-      }).sort((a, b) => (b.audited - a.audited) || b.value - a.value).map((r, k, all) => (!r.audited && (k === 0 || all[k - 1].audited) ? Object.assign(r, { head: 'Additional families (rule-based, not audited; tested separately)' }) : r)),
+      }).sort(byFamily).map(famHead),
       footHtml: '<div class="chart-links">' + (M.disease_family_audited && M.disease_families.length > nAudited() ? '<button class="linkish" type="button" id="dis-fams">' +
         (UI.disMore ? 'Show the ' + nAudited() + ' audited families only' : 'Show ' + (M.disease_families.length - nAudited()) + ' more families (rule-based, not audited)') + '</button>' : '') +
         '<button class="linkish" type="button" id="dis-more">' + (UI.disTerms ? 'Hide the DisGeNET terms' : 'Show the DisGeNET terms') + '</button></div>' +
@@ -3407,15 +3418,20 @@
     // not enriched, for comparison. The whole ontology (UI.doView 'tree'): the eight classes under "disease", each with
     // its terms of at least DO_ROW genes, and with UI.doLevel the terms of at least DO_ROW genes under those.
     const doSpec = dm ? (() => {
-      const T = dm.terms, rows = [], tree = UI.doView === 'tree';
+      const T = dm.terms, rows = [], tree = UI.doView === 'tree', sd = doSelection();
       const row = (k, depth, parent) => {
+        const r = rowAll(k, depth, parent), x = sd && sd.rows[k];
+        return x ? Object.assign(r, { value: x.value, q: x.q, sig: x.sig, p: x.p, ref: x.ref, refQ: x.refQ, selK: x.selK, selM: x.selM, extra: x.extra, nums: x.nums, title: r.title + x.selNote }) : r;
+      };
+      const rowAll = (k, depth, parent) => {
         const t = T[k], under = parent != null ? [parent] : t[2];
         const top = DO_TOP[t[0]];
         return { label: t[1], note: top ? top[0] : '', value: t[5] ? +Math.log2(t[5]).toFixed(3) : null, q: t[6], sig: sigq(t[6]), key: t[0], dok: k, sub: depth > 0, depth, extra: ofTotal(t[3], t[4]), nums: [t[3], t[4]],
           title: '<b>' + esc(t[1]) + '</b> (' + esc(t[0]) + (under.length ? ', under ' + under.map((q) => esc(T[q][1])).join(', ') : '') + ')<br>' + (top && top[1] ? '<i>' + esc(top[1]) + '</i> (Disease Ontology)<br>' : '') + fmt(t[3]) + ' of its ' + fmt(t[4]) + ' genes encode methylarginine-containing proteins (' + pct(t[3], t[4]) + '%, against ' + pct(dm.background[0], dm.background[1]) + '% of all genes with a Disease Ontology term)<br>fold enrichment ' + (t[5] || 0).toFixed(2) + ', q ' + fmtP(t[6]) + '<br>Click: the methylated proteins in the term' };
       };
-      const byValue = (a, b) => (T[b][5] || 0) - (T[a][5] || 0);
-      const enriched = (k) => k !== dm.root && T[k][6] != null && T[k][6] <= PADJ;
+      const fe = (k) => (sd ? (sd.rows[k].value == null ? -99 : sd.rows[k].value) : T[k][5] || 0), qOf = (k) => (sd ? sd.rows[k].q : T[k][6]);
+      const byValue = (a, b) => fe(b) - fe(a);
+      const enriched = (k) => k !== dm.root && qOf(k) != null && qOf(k) <= PADJ;
       if (tree) {
         const big = (k) => T[k][4] >= DO_ROW;
         doChildren(dm.root).slice().sort(byValue).forEach((c) => {
@@ -3435,15 +3451,16 @@
       }
       const nSig = T.filter((t, k) => enriched(k)).length;
       return {
+        selTest: sd ? sd.selTest : undefined,
         id: 'ch-do', title: 'Disease', figTitle: 'Disease Ontology', subHtml: 'Genes of methylated proteins vs all reviewed human genes with a Disease Ontology term' + (tree ? ', by disease class' : '') + '. Association, not causation.' + docLink('ov-disease'), tools: disToggle,
-        subText: 'Human Disease Ontology ' + (dm.release || '') + (tree ? ' classes' + (UI.doLevel ? ' and the terms under them' : '') + ' (terms of at least ' + DO_ROW + ' genes)' : ': the most specific enriched terms of at least ' + DO_SHORT + ' genes, and the largest classes that are not enriched') + ', vs all reviewed human genes with a Disease Ontology term',
+        subText: 'Human Disease Ontology ' + (dm.release || '') + (tree ? ' classes' + (UI.doLevel ? ' and the terms under them' : '') + ' (terms of at least ' + DO_ROW + ' genes)' : ': the most specific enriched terms of at least ' + DO_SHORT + ' genes, and the largest classes that are not enriched') + ', vs all reviewed human genes with a Disease Ontology term' + (sd ? sd.selTest.note : ''),
         rows, extraCol: true, extraName: 'methylated_of_genes', extraTsv: ['methylated_genes', 'genes'], compact: true, format: fmtL1, heads: ['Disease Ontology', 'methyl-R/all', '', 'log2 FE'], fold: true,
         firstSection: tree ? '' : 'Enriched', axis: 'log2 fold enrichment vs all genes with a Disease Ontology term', tsvCols: [['doid', (r) => r.key]],
         treeNote: 'Shaded, indented rows are terms under the row above: their genes are among its genes, and terms overlap, so they do not add up.',
         footHtml: (tree ? '' : '<p class="note">A term holds the genes of every term under it, so broad terms (cancer, nervous system disease) repeat the narrower ones: the list keeps the narrowest enriched term of each branch, of at least ' + DO_SHORT + ' genes.</p>') +
           '<div class="chart-links"><button class="linkish" type="button" id="do-view">' + (tree ? 'Show the short list' : 'Show the whole ontology') + '</button>' +
           (tree ? '<button class="linkish" type="button" id="do-level">' + (UI.doLevel ? 'Hide the terms under them' : 'Show the terms under them') + '</button>' : '') +
-          '<button class="linkish" type="button" id="do-terms">' + (UI.doTerms ? 'Hide the term table' : 'Show the ' + fmt(nSig) + ' enriched terms, and every tested term') + '</button></div>' +
+          '<button class="linkish" type="button" id="do-terms">' + (UI.doTerms ? 'Hide the term table' : 'Show the ' + fmt(nSig) + ' enriched terms' + (sd ? ' of your selection' : '') + ', and every tested term') + '</button></div>' +
           (UI.doTerms ? doTermsHtml() : ''),
       };
     })() : null;
@@ -3499,14 +3516,31 @@
     if (sctx) markSelection(sctx, 'sites', (r) => ix(structCodes(), r.key) >= 0 && ((s) => s.sctx === ix(structCodes(), r.key)));
     markSelection(study, 'sites', (r) => (s) => s.study & 2 ** r.key);
     markSelection(motif, 'sites', (r) => ix(M.motifs, r.key) >= 0 && ((s) => s.mot & (1 << ix(M.motifs, r.key))));
-    markSelection(cond, 'proteins', (r) => (thr ? (p) => (cdMemberships(p) || []).some((c) => c.ci === r.key && c.score >= thr) : (p) => p.cond.includes(r.key)));
-    if (loc) markSelection(loc, 'proteins', (r) => (p) => p.hpa.some((x) => x[0] === r.key && x[1] >= HPA_SURE));
-    if (pan) markSelection(pan, 'proteins', (r) => pantherTest(r.key));
-    markSelection(func, 'proteins', (r) => (r.kind === 'sub' ? ix(M.func_subclasses, r.key) >= 0 && ((p) => p.sub & 2 ** ix(M.func_subclasses, r.key))
-      : ix(M.func_classes, r.key) >= 0 && ((p) => p.func & 2 ** ix(M.func_classes, r.key))));
-    // A family counts the selected proteins of its gene set, a Disease Ontology term those in it (what a click lists).
-    markSelection(fams, 'proteins', (r) => r.fk >= 0 && familyMember(r.fk), 'Selected proteins in the family\'s gene set');
-    if (doSpec) markSelection(doSpec, 'proteins', (r) => (p) => !!p.doTerms && p.doTerms.has(r.dok), 'Selected proteins in the term');
+    // Protein-set charts: recomputed for the selection against the same background (selSetTest).
+    const reviewed = (p) => !p.unrev, proteomeN = (pantherMeta() && pantherMeta().universe) || +(cs.reviewed_proteome_proteins || 0);
+    const condMember = (r) => (thr ? (p) => (cdMemberships(p) || []).some((c) => c.ci === r.key && c.score >= thr) : (p) => p.cond.includes(r.key));
+    selSetTest(cond, condBg === 'proteome' ? { N: +cs.reviewed_proteome_proteins, inBg: reviewed, member: condMember, M: (r) => +String(r.extra).split('/')[1], bg: 'reviewed proteome' }
+      : { N: +cs.condensate_universe_proteins, inBg: (p) => (thr ? (cdMemberships(p) || []).length > 0 : p.cond.length > 0), member: condMember, M: (r) => +String(r.extra).split('/')[1], bg: 'proteins in any condensate' });
+    if (loc) selSetTest(loc, { N: hm.universe, inBg: (p) => p.hpa.some((x) => x[1] >= HPA_SURE), member: (r) => (p) => p.hpa.some((x) => x[0] === r.key && x[1] >= HPA_SURE), M: (r) => +String(r.extra).split('/')[1], bg: 'HPA-profiled proteins' });
+    if (pan) selSetTest(pan, { N: pantherMeta().universe, inBg: reviewed, member: (r) => pantherTest(r.key), M: (r) => r.nums[1], bg: 'reviewed proteome', family: (r) => r.kind });
+    // Order and cut the lists after testing every row: by the selection's results when there is one.
+    const num = (v, d) => (v == null || !Number.isFinite(v) ? d : v);
+    if (pan && pan.selTest) pan.rows = resortRanked(pan.rows, (r) => r.label === pantherMeta().unclassified);
+    if (cond.selTest) cond.rows.sort(UI.condSort === 'fold' ? (a, b) => num(b.value, -99) - num(a.value, -99) : (a, b) => (num(a.q, 2) - num(b.q, 2)) || (num(b.value, -99) - num(a.value, -99)));
+    if (!UI.allCond) cond.rows = cond.rows.slice(0, 14);
+    if (loc) {
+      if (loc.selTest) loc.rows.sort((a, b) => num(b.value, -99) - num(a.value, -99));
+      loc.rows = locCurated ? LOC_MAIN.flatMap(([group, names]) => loc.rows.filter((r) => names.includes(r.label)).map((r, i) => Object.assign(r, { head: i ? undefined : group }))) : UI.allLoc ? loc.rows : loc.rows.slice(0, 14);
+    }
+    selSetTest(func, { N: proteomeN, inBg: reviewed, M: (r) => r.bgM, family: (r) => r.kind,
+      member: (r) => (r.kind === 'sub' ? ix(M.func_subclasses, r.key) >= 0 && ((p) => p.sub & 2 ** ix(M.func_subclasses, r.key)) : ix(M.func_classes, r.key) >= 0 && ((p) => p.func & 2 ** ix(M.func_classes, r.key))), bg: 'reviewed proteome' });
+    // Disease sets count genes. A family needs the size of the DisGeNET background (v1.3.0 exports); without it the
+    // chart keeps the whole-dataset test with the selection's counts.
+    const dgnBg = M.disease_family_sets && M.disease_family_sets.background;
+    if (dgnBg && M.protein_fields.includes('disgenet_background')) selSetTest(fams, { N: dgnBg[1], inBg: (p) => p.dgnBg === 1, id: (p) => p.gene || p.acc, unit: 'genes', member: (r) => r.fk >= 0 && familyMember(r.fk), M: (r) => r.nums[1], bg: 'genes with a DisGeNET term', family: (r) => r.audited });
+    else markSelection(fams, 'proteins', (r) => r.fk >= 0 && familyMember(r.fk), 'Selected proteins in the family\'s gene set');
+    if (func.selTest) func.rows = resortRanked(func.rows);
+    if (fams.selTest) fams.rows = fams.rows.sort(byFamily).map(famHead);
     markSelection(disorder, 'sites', (r) => ix(M.disorder_classes, r.key) >= 0 && ((s) => s.dc === ix(M.disorder_classes, r.key)));
     markSelection(domctx, 'sites', (r) => ix(M.domain_contexts, r.key) >= 0 && ((s) => s.dctx === ix(M.domain_contexts, r.key)));
     markSelection(domcls, 'sites', (r) => ix(M.domain_classes, r.key) >= 0 && ((s) => s.dcls === ix(M.domain_classes, r.key)));
@@ -3524,6 +3558,81 @@
       const t = test(r);
       r.sel = t ? items.reduce((n, x) => n + (t(x) ? 1 : 0), 0) : null;
     }
+  }
+
+  // With a selection, a protein-set chart is recomputed for it: the selected proteins in the chart's background (n of
+  // its N) are tested against each set (k of its M), one-sided hypergeometric with fold enrichment and BH across the
+  // chart's rows, as scripts/enrichment.py tests all methylated proteins. Each bar then shows the selection, with a
+  // tick at the whole-dataset value (row.ref). cfg: N, inBg(p), member(row) -> test(p), M(row), id(p) (proteins counted
+  // once by canonical accession, genes by symbol), unit, bg (what the background is).
+  function selSetTest(spec, cfg) {
+    if (!spec || !constraints().length) return;
+    const seen = new Set(), sel = [];
+    for (const p of R.prots) { const id = cfg.id ? cfg.id(p) : p.acc.split('-')[0]; if (id && !seen.has(id) && cfg.inBg(p)) { seen.add(id); sel.push(p); } }
+    const n = sel.length, N = cfg.N;
+    spec.selTest = { n, N, unit: cfg.unit || 'proteins', bg: cfg.bg, what: selectionText() };
+    const tested = [];
+    for (const r of spec.rows) {
+      const M = cfg.M(r), t = cfg.member(r);
+      r.ref = r.value;
+      r.refQ = r.q;
+      r.q = null; r.p = null; r.sig = false; r.selNote = '';
+      if (!t || !M || !n) { r.value = null; r.selK = null; continue; }
+      const ids = new Set();
+      for (const p of sel) if (t(p)) ids.add(cfg.id ? cfg.id(p) : p.acc.split('-')[0]);
+      const k = ids.size;
+      r.selK = k; r.selM = M;
+      r.value = k ? +Math.log2((k / n) / (M / N)).toFixed(3) : null;
+      r.p = k ? hyperSf(k, N, M, n) : null;
+      if (k) tested.push(r);
+      r.extra = ofTotal(k, M); r.extraRaw = k; if (r.nums) r.nums = [k, M];
+      r.selNote = '<br><b>Your selection</b>: ' + fmt(k) + ' of its ' + fmt(n) + ' ' + spec.selTest.unit + ' in the background are in this set of ' + fmt(M) +
+        (k ? '; log2 fold enrichment ' + fmtL2(r.value) : '; not tested (none in the set)');
+    }
+    // BH within each family of tests, as the pipeline adjusts each analysis apart (PANTHER groups, classes and
+    // subclasses; broad classes and subclasses; audited and additional disease families).
+    const fam = new Map();
+    for (const r of tested) { const f = cfg.family ? cfg.family(r) : ''; if (!fam.has(f)) fam.set(f, []); fam.get(f).push(r); }
+    for (const list of fam.values()) bhAdjust(list, (x) => x.p);
+    for (const r of spec.rows) {
+      if (r.selK) { r.sig = r.q != null && r.q <= PADJ; r.selNote += ', q ' + fmtP(r.q); }
+      r.selNote += '<br><span class="muted">Whole dataset: ' + (r.ref == null ? 'not tested' : fmtL2(r.ref) + ', q ' + fmtP(r.refQ)) + ' (tick)</span>';
+      r.title = (r.title || '') + r.selNote;
+    }
+    spec.selTest.note = '; your selection, ' + fmt(n) + ' ' + spec.selTest.unit + ' of ' + fmt(N) + ' in the background (' + selectionText() + ')';
+    spec.subText = (spec.subText || '') + spec.selTest.note;
+  }
+
+  // A ranked chart in the order of its values (the selection's, once retested): each row keeps its sub-rows (depth, or
+  // sub) under it, ranked among themselves; rows for which last(row) holds stay at the end.
+  const rankValue = (r) => (r.value == null || !Number.isFinite(r.value) ? -99 : r.value);
+  function resortRanked(rows, last) {
+    const depth = (r) => (r.depth != null ? r.depth : r.sub ? 1 : 0);
+    const order = (list, d) => {
+      const blocks = [];
+      for (const r of list) { if (depth(r) <= d || !blocks.length) blocks.push({ r, kids: [] }); else blocks[blocks.length - 1].kids.push(r); }
+      const end = blocks.filter((b) => last && last(b.r)), rest = blocks.filter((b) => !(last && last(b.r))).sort((a, b) => rankValue(b.r) - rankValue(a.r));
+      return rest.concat(end).flatMap((b) => [b.r, ...order(b.kids, d + 1)]);
+    };
+    return order(rows, 0);
+  }
+
+  // The count column of a chart: the selection's members of each set once the chart is retested for it.
+  const selName = (name) => (/^(methylated|methylarginine)/.test(name) ? name.replace(/^(methylated|methylarginine)(_proteins)?/, 'selected') : 'selected_' + name);
+  const countHead = (spec) => (spec.selTest && /^methyl-R\//.test(spec.heads[1]) ? 'selected/all' : spec.heads[1]);
+
+  // The Disease Ontology test for the selection over every tested term, BH over all of them as scripts/14 adjusts
+  // them, kept for the current result R: a spec whose rows[k] is term k.
+  let doSelCache = null;
+  function doSelection() {
+    const dm = doMeta();
+    if (!dm || !constraints().length) return null;
+    if (doSelCache && doSelCache.R === R) return doSelCache.spec;
+    const spec = { rows: dm.terms.map((t, k) => ({ value: t[5] ? +Math.log2(t[5]).toFixed(3) : null, q: t[6], dok: k, nums: [t[3], t[4]] })) };
+    selSetTest(spec, { N: dm.background[1], inBg: (p) => !!p.doTerms && p.doTerms.has(dm.root), id: (p) => p.gene || p.acc, unit: 'genes',
+      member: (r) => (p) => !!p.doTerms && p.doTerms.has(r.dok), M: (r) => r.nums[1], bg: 'genes with a Disease Ontology term' });
+    doSelCache = { R, spec };
+    return spec;
   }
 
   function renderOverview(el) { renderDash(el, 'overview'); }
@@ -3568,7 +3677,7 @@
     // analysis behind a one-line header. With a selection, a line about it and its enriched features come first.
     el.innerHTML =
       (selOn ? '<p class="ov-hint sel">Your selection: <b>' + fmt(R.sites.length) + '</b> site' + (R.sites.length === 1 ? '' : 's') + ' on <b>' + fmt(R.prots.length) + '</b> protein' + (R.prots.length === 1 ? '' : 's') +
-        '. The charts show the whole dataset; <span class="sel-key"><i></i>orange counts</span> are your selection, and a click on a bar narrows it.' +
+        '. Protein-set charts (classes, disease, condensates, locations) are recomputed for your selection, with a tick at the whole-dataset value; residue charts (motifs, structural context) show the whole dataset with your selection\'s counts in <span class="sel-key"><i></i>orange</span>. A click on a bar narrows the selection.' +
         (one ? ' <button class="linkish" type="button" id="ov-open-one">Open ' + esc(one.label) + ' →</button>' : '') + '</p>' + profileCardHtml() : '') +
       '<div class="ov-head"><h2>What kinds of proteins are methylated</h2><span class="muted small">' + (selOn ? 'Click a bar to narrow your selection' : 'Click a bar to list its proteins') + '</span></div>' +
       '<div class="ov-grid">' + chartCard(pan || func) + chartCard(dis) + '</div>' +
@@ -10439,6 +10548,17 @@
     let prev = 1;
     for (let k = order.length - 1; k >= 0; k--) { prev = Math.min(prev, (pval(order[k]) * order.length) / (k + 1)); order[k].q = prev; }
     return order;
+  }
+  // P(X >= k) for X hypergeometric: k of the n targets in a set of M among N (one-sided, as clusterProfiler's enricher:
+  // phyper(k - 1, M, N - M, n, lower.tail = FALSE)).
+  function hyperSf(k, N, M, n) {
+    if (k <= 0) return 1;
+    const hi = Math.min(M, n);
+    if (k > hi) return 0;
+    const lp = (x) => lfact(M) - lfact(x) - lfact(M - x) + lfact(N - M) - lfact(n - x) - lfact(N - M - n + x) - (lfact(N) - lfact(n) - lfact(N - n));
+    let pv = 0;
+    for (let x = k; x <= hi; x++) pv += Math.exp(lp(x));
+    return Math.min(1, pv);
   }
   function fisherP(a, b, c, d) {
     const r1 = a + b, r2 = c + d, c1 = a + c, n = r1 + r2;

@@ -195,6 +195,9 @@ def proteins_table(root: Path, inputs: Path, sites: pd.DataFrame, records: pd.Da
     for r in family_rows.to_dict('records'):
         families[r['canonical_UniProtAC']][r['disease_family']] = int(r['contributing_term_count'])
     family_order = ALL_FAMILIES
+    background_path = root / 'disease' / 'disease_background_proteins.tsv'
+    disgenet_bg = set() if not background_path.exists() else {
+        r['canonical_UniProtAC'] for r in read(background_path).to_dict('records') if r['disgenet_background'] == 'True'}
     other = other_ptm_sites(inputs, set(accs), sequences)
     other_counts = other.groupby(['uniprot_accession', 'ptm_type']).size()
 
@@ -251,6 +254,7 @@ def proteins_table(root: Path, inputs: Path, sites: pd.DataFrame, records: pd.Da
             'disease_families': join(x for x in family_order if x in fams),
             'disease_family_terms': join(fams[x] for x in family_order if x in fams),
             'als_ftd_family_gene': 'ALS / motor neuron / FTD' in fams,
+            'disgenet_background': acc in disgenet_bg,
             **{f'n_{t}': int(other_counts.get((acc, t), 0)) for t in ('phospho', 'lys_acyl', 'ub_sumo', 'lys_methyl')},
             # the symbol the disease enrichment counted for this protein (scripts/14: the UniProt primary gene, else the
             # labels' first symbol)
@@ -343,6 +347,8 @@ def disease_families_table(root: Path) -> pd.DataFrame:
     f = read(root / 'disease' / 'disease_families.tsv')
     return pd.DataFrame({'family': f['disease_family'], 'audited': f['audited'] == 'True', 'n_terms': f['contributing_ontology_terms'].astype(int),
                          'n_genes': f['family_gene_count'].astype(int), 'n_methylated_genes': f['methylarginine_protein_count'].astype(int),
+                         'n_genes_tested': f['methylarginine_denominator'].astype(int) + f['background_denominator'].astype(int),
+                         'n_methylated_genes_tested': f['methylarginine_denominator'].astype(int),
                          'fold_enrichment': f['fold_enrichment'].astype(float), 'q': f['BH_adjusted_p'].astype(float)})
 
 

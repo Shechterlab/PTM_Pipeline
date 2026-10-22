@@ -826,6 +826,7 @@ PROTEIN_COLUMNS = [
     ('disease_families', 'list<string>', '', 'disease families whose genes include the protein\'s gene (scripts/14)'),
     ('disease_family_terms', 'list<integer>', '', 'for each of these families, the number of its DisGeNET terms annotated to the gene'),
     ('als_ftd_family_gene', 'boolean', '', 'the gene is in the ALS / motor neuron / FTD family'),
+    ('disgenet_background', 'boolean', '', 'the gene has at least one DisGeNET term: it is in the background of the disease family tests'),
     ('n_phospho', 'integer', '', 'phosphorylation sites in the PTM master table (supporting/other_ptm_sites)'),
     ('n_lys_acyl', 'integer', '', 'lysine acylation sites'),
     ('n_ub_sumo', 'integer', '', 'ubiquitination or SUMOylation sites'),
@@ -949,6 +950,8 @@ DISEASE_FAMILY_COLUMNS = [
     ('n_terms', 'integer', '', 'DisGeNET terms assigned to it'),
     ('n_genes', 'integer', '', 'genes of the universe in at least one of its terms'),
     ('n_methylated_genes', 'integer', '', 'of these, the genes of methylarginine-containing proteins'),
+    ('n_genes_tested', 'integer', '', 'the background of the test: reviewed human genes with at least one DisGeNET term (the same for every family)'),
+    ('n_methylated_genes_tested', 'integer', '', 'of these, the genes of methylarginine-containing proteins (the same for every family)'),
     ('fold_enrichment', 'number', '', 'fold enrichment of the family (clusterProfiler::enricher against the reviewed human genes with a DisGeNET term; statistics: disease_family)'),
     ('q', 'number', '', 'its Benjamini-Hochberg adjusted p value (over the audited families, or over the additional ones)'),
 ]

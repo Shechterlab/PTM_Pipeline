@@ -29,6 +29,8 @@ Writes to --outdir:
   disease_ontology.tsv          every Disease Ontology term tested, with its parents and the methylated genes in it
   disease_families.tsv          the family tests: the eight audited families, then the additional ones
   disease_family_proteins.tsv   for each methylarginine protein, the families its gene is in
+  disease_background_proteins.tsv  for each methylarginine protein, whether its gene has a DisGeNET term (the background
+                                of the family tests)
   disease_term_families.tsv     every DisGeNET term with its family assignment
   disease_input_summary.tsv     proteins, symbols and Entrez genes of the universe and the target
 Needs Rscript with clusterProfiler and DOSE on PATH.
@@ -182,6 +184,9 @@ def main() -> None:
                              'contributing_term_count': len({t for t in family_terms[fam] for e in hit if e in term_genes_all[t]})})
     pd.DataFrame(prot, columns=['canonical_UniProtAC', 'gene_symbol', 'entrez_ids', 'disease_family', 'contributing_term_count']).to_csv(
         outdir / 'disease_family_proteins.tsv', sep='\t', index=False, lineterminator='\n')
+    pd.DataFrame([{'canonical_UniProtAC': acc, 'gene_symbol': s, 'disgenet_background': bool(set(entrez_of.get(s, [])) & annotated)}
+                  for acc, s in zip(target_rows['canonical_UniProtAC'], target_rows['gene_symbol'])]).to_csv(
+        outdir / 'disease_background_proteins.tsv', sep='\t', index=False, lineterminator='\n')
     print(f'DisGeNET (enrichDGN): {len(dgn)} terms tested, {len(terms)} enriched; Disease Ontology (enricher): {len(do)} terms tested, '
           f'{int((do["p.adjust"] <= CUTOFF).sum())} with p.adjust <= {CUTOFF}; families: {int((fams["BH_adjusted_p"] <= CUTOFF).sum())} of {len(fams)}; '
           f'target {len(target)} of {len(universe)} genes; {len({r["canonical_UniProtAC"] for r in prot})} proteins in a family')

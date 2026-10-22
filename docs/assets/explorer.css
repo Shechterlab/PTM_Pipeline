@@ -1676,3 +1676,7 @@ body.slim .hero .brand-mark img { order: 0; }
 /* In-card index of a long card's sections */
 .card-index { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.5rem; margin: 0 0 0.9rem; font-size: 0.8rem; }
 .card-index .ci-sep { color: var(--muted); }
+/* A protein-set chart recomputed for the selection: the bar is the selection, the tick the whole dataset */
+.hb-ref { position: absolute; top: 50%; width: 2px; height: 16px; margin-left: -1px; transform: translateY(-50%); background: var(--ink); border-radius: 1px; pointer-events: none; }
+.chart-key i.ref { width: 2px; height: 12px; background: var(--ink); border: 0; border-radius: 1px; }
+.sel-test-key { color: var(--ink-2); }
