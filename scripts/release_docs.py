@@ -207,7 +207,7 @@ FILE_ROWS = {
     'nucleic_acid_contacts': 'site and RNA or DNA chain within 4 Å of its side chain in a PDB structure: the contacted nucleotides and the bound sequence around them',
     'arginine_nucleic_acid_distances': 'arginine of a methylated protein modelled in a PDB entry with RNA or DNA: its minimum side-chain distance to each, methylated or not',
     'nucleic_acid_proximal_sites': 'site, complex and kind of nucleic acid in which the arginine side chain is within 8 Å, not 4 Å, of RNA or DNA: the bound sequence around the closest nucleotide',
-    'nucleic_acid_near_sites': 'site and complex in which a residue at i ± 1-5, not the arginine side chain, is within 4 Å of RNA or DNA (the side chain not within 8 Å): the bound sequence there',
+    'nucleic_acid_near_sites': 'site and complex in which a residue at i ± 1–5, not the arginine side chain, is within 4 Å of RNA or DNA (the side chain not within 8 Å): the bound sequence there',
     'nucleic_acid_regions': 'run of residues of a protein within 4 Å of RNA or DNA in PDB structures: the bound segments and the methylarginines inside it',
     'rna_bind_n_seq': 'methylated protein and ENCODE RNA Bind-n-Seq experiment: its most enriched 5-mers and logos (in vitro)',
     'dna_motifs': 'methylated protein and JASPAR 2026 DNA-binding profile',
@@ -216,7 +216,7 @@ FILE_ROWS = {
     'disease_terms_tested': 'DisGeNET term DOSE enrichDGN tested, enriched or not',
     'disease_ontology': 'Disease Ontology term tested (clusterProfiler enricher on the gene sets of DOSE enrichDO)',
     'disease_families': 'disease family: terms and genes',
-    'density_windows': 'protein and window width with significantly dense sites (q <= 0.05)',
+    'density_windows': 'protein and window width with site density significantly above the permutation null (q <= 0.05)',
     'condensates': 'CD-CODE condensate: name, type, members and methylated members',
     'hpa_locations': 'protein and Human Protein Atlas location',
     'other_ptm_sites': 'other modification on a protein of the release (PTM master table)',
@@ -315,7 +315,7 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         '1. checks every input against `inputs/MANIFEST.tsv`;',
         '2. parses the source tables and places each record on the reference sequence '
         '(`scripts/02_remap_arg_methyl_to_canonical.py`);',
-        '3. stops if any record is placed against its own evidence (`scripts/qc_remap_evidence_check.py`; the 22 '
+        '3. stops if the placement of any record contradicts its own evidence (`scripts/qc_remap_evidence_check.py`; the 22 '
         'accepted paralog rows of `config/remap_evidence_allowlist.tsv` aside) or any site is not an arginine;',
         '4. runs the analyses on the union: functional classes (`scripts/03`), motifs and arginine enrichment (`08`), '
         'disorder and domain context (`06`, `05`, `07`), other PTMs (`09`), site density and clusters (`10`, `28`, `25`), '
@@ -427,7 +427,7 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         '',
         f"- **Windows missing NAN** ({len(nan_rows)} records, `source_correction` `nan_restored`). Maron et al. 2021 Table "
         'S5 gives these Larsen 2016 windows 28 residues long, where every other Larsen window has 31, and no Larsen window '
-        'there holds the tripeptide NAN: the letters were read as a missing value when the table was made. The parser '
+        'there holds the tripeptide NAN: it was interpreted as a missing value (NaN) when the table was compiled. The parser '
         'restores NAN where inserting it at exactly one place gives the window centred on the reported position of the '
         f"reported entry; the window as the table gives it is kept in `evidence_as_reported`. {previous} placed "
         f"{int((nan_rows['previous_site'] != '').sum())} of these records; this version places "
@@ -455,7 +455,7 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         '',
         '## Decided in this version',
         '',
-        '- **Peptides with several arginines.** A peptide does not say which of its arginines is methylated, and the '
+        '- **Peptides with several arginines.** A peptide sequence alone does not specify which of its arginines is methylated, and the '
         'position the source reports may follow an older numbering. Where Maron et al. 2021 Tables S2 and S3 give the '
         "peptide's start in the same numbering, the reported position is counted from that start (reason "
         f"`peptide_start`): {c['peptide_start_records']} records ({int(reason_records.get('peptide_start', 0))} of them placed differently in {previous}), on {start_sites}. Without such a start the record "
@@ -477,9 +477,9 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         '(not Niemann-Pick) and anterior horn cell disease, which the published rule missed (5 DisGeNET terms, among '
         'them the enriched terms TDP-43 Proteinopathies, Pick Disease of the Brain and Degeneration of anterior horn '
         f'cells); the other {len(AUDITED_FAMILIES) - 1} audited families are unchanged. The '
-        f'DisGeNET terms none of them takes now go to {len(ADDITIONAL_FAMILIES)} additional, rule-based families '
+        f'DisGeNET terms not assigned to an audited family are now assigned to {len(ADDITIONAL_FAMILIES)} additional, rule-based families '
         '(scripts/disease_families.py ADDITIONAL_FAMILY_RULES: mostly clinical signs, by organ system), tested and '
-        'BH-adjusted apart (statistics: disease_family_additional). They are not audited.',
+        'BH-adjusted separately (statistics: disease_family_additional). They are not audited.',
         '- **Protein-set tests.** Every test of protein or gene sets (PANTHER and functional classes, CD-CODE condensates, '
         'Human Protein Atlas locations, disease families, Gene Ontology binding, complexes) is an over-representation '
         'analysis with clusterProfiler::enricher, and the DisGeNET terms with DOSE::enrichDGN (scripts/enrich_sets.R; '
@@ -489,9 +489,9 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         'DOSE enrichDO (supporting/disease_ontology), and every DisGeNET term tested is listed (supporting/disease_terms_tested).',
         f"- **Methylation degree at each site** (`methyl_state`, {n(c['with_state'])} of {n(c['sites'])} sites). "
         f"{previous} gave a degree only from ProMetheusDB. This version also counts Maron et al. 2021 Table S2, UniProt's "
-        'modified-residue annotations with experimental evidence (inferred ones are listed apart) and the two studies that '
-        'looked for one degree only: Larsen 2016 (monomethylation) and Wei 2020 (ADMA antibody, dimethylation). Mass '
-        'spectrometry tells mono- from dimethylation, but asymmetric from symmetric mostly by the antibody used, so '
+        'modified-residue annotations with experimental evidence (inferred ones are listed separately) and the two studies that '
+        'searched for one methylation degree only: Larsen 2016 (monomethylation) and Wei 2020 (ADMA antibody, dimethylation). Mass '
+        'spectrometry distinguishes mono- from dimethylation; asymmetric and symmetric dimethylation are mostly assigned from the antibody used, so '
         '`methyl_state` gives Rme1, Rme2 or both, and the columns it is drawn from keep the detail: '
         + ', '.join(f"{n(v)} {k.replace('_', ' + ')}" for k, v in c['state'].items() if k != 'none') + '.',
         f'- **PRMT inhibitor calls** (Maron et al. 2021 Table S3). A peptide changes when its adjusted p value is at most '
@@ -516,7 +516,7 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         'paralog, except at RBM39 R109, where the 6-residue peptide SALRGK reads SAIRGK in RBM39 (I and L have the same '
         'mass) and also occurs in CCDC13. The records stay on the entry the source named, accepted in '
         '`config/remap_evidence_allowlist.tsv`.',
-        f"- **Arginine picked by the reported position** ({c['flags'].get('arginine_from_position', 0)} sites, flag "
+        f"- **Arginine assigned from the reported position** ({c['flags'].get('arginine_from_position', 0)} sites, flag "
         '`arginine_from_position`): every record of the site has a peptide with several arginines, or a window or peptide '
         'found more than once in the entry, so the evidence alone does not single out this arginine; the positions the '
         'sources report do.',
@@ -848,8 +848,8 @@ def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
         'PDBe-KB lists for a site with RNA or DNA, and what their proteins bind in vitro and in cells.',
         '',
         f"- `{files['nucleic_acid_contacts'][0]}`: {n(kind(at, 'rna'))} methylarginines in direct contact with RNA and {n(kind(at, 'dna'))} with DNA "
-        f"(a nucleotide within 4 Å of the side chain), {n(len(at))} site-chain pairs in {n(at['pdb_id'].nunique())} entries: the "
-        'chain (molecule, organism, how it was made: Synthetically obtained for a designed oligonucleotide), the nucleotides '
+        f"(a nucleotide within 4 Å of the side chain), {n(len(at))} site–chain pairs in {n(at['pdb_id'].nunique())} entries: the "
+        'chain (molecule name, source organism and preparation method: Synthetically obtained for a designed oligonucleotide), the nucleotides '
         'contacted and the sequence window of 8 nucleotides on each side of the nearest one, so the windows of different sites align. '
         'The windows are the sequences deposited in each structure, often chosen by its authors, so they record contacts, not '
         'sequence preference; no consensus is derived from them.',
@@ -866,7 +866,7 @@ def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
                    'or 8 Å more often than the other arginines of the same proteins.')
     if near is not None:
         out.append(f"- `{files['nucleic_acid_near_sites'][0]}`: {n(kind(near, 'rna'))} sites with RNA and {n(kind(near, 'dna'))} with DNA "
-                   'in contact via a flanking residue (one at i ± 1-5 within 4 Å, in a complex where the arginine side chain is not within 8 Å): '
+                   'in contact via a flanking residue (one at i ± 1–5 within 4 Å, in a complex where the arginine side chain is not within 8 Å): '
                    'the bound sequence there, centred on the nucleotide the closest such residue contacts.')
     if regions is not None:
         has = regions['methylarginines'].astype(str).str.len() > 0
@@ -875,7 +875,7 @@ def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
                    'distinct complex (the same bound sequences), with the segments each contacts.')
     for key, text in (('rna_bind_n_seq', 'ENCODE RNA Bind-n-Seq (in vitro): the most enriched 5-mers and logos'),
                       ('dna_motifs', 'JASPAR 2026 CORE vertebrates DNA-binding profiles (CC BY 4.0)'),
-                      ('eclip', 'ENCODE eCLIP in K562 and HepG2 cells: peaks by transcript region (GENCODE v50 basic) and the genes with most')):
+                      ('eclip', 'ENCODE eCLIP in K562 and HepG2 cells: peaks by transcript region (GENCODE v50 basic) and the genes with the most peaks')):
         if key in files:
             df = files[key][1]
             out.append(f"- `{files[key][0]}`: {text}, for {n(df['uniprot_accession'].nunique())} methylated proteins.")
@@ -910,7 +910,7 @@ def analysis_section(files: dict, previous: str) -> list:
                 f"Each CD-CODE condensate is also tested against the reviewed human proteome (analysis condensate_proteome): "
                 f"{n(int((q <= 0.05).sum()))} of {n(len(cp))} condensates are enriched at q <= 0.05. The test against the other "
                 'condensate proteins (analysis condensate) is unchanged; as about half of all condensate proteins are methylated, it '
-                'asks which condensates stand out among condensates, and few do.', '']
+                'tests which condensates are enriched relative to other condensates; few are.', '']
     return out
 
 

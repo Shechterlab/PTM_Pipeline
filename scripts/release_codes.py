@@ -86,7 +86,7 @@ STUDY_LICENCE = {
     'Ma2023': 'CC0 (PRIDE PXD038203 Table S1), the article is not open access',
 }
 STUDY_NOTE = {
-    'Hartel2019': 'HEK293T and LN229 cells. ADMA and SDMA called from characteristic neutral losses (dimethylamine, methylamine) of dimethylarginine peptides (reported_methyl_state Rme2a, Rme2s), the other dimethylarginines as Rme2',
+    'Hartel2019': 'HEK293T and LN229 cells. ADMA and SDMA assigned from characteristic neutral losses (dimethylamine, methylamine) of dimethylarginine peptides (reported_methyl_state Rme2a, Rme2s), the other dimethylarginines as Rme2',
     'Geoghegan2015': 'Jurkat and primary human T cells, heavy-methyl SILAC with methylarginine antibodies',
     'Sylvestersen2014': 'HEK293T cells, monomethylarginine antibody enrichment',
     'Lu2025': 'HeLa cells, enrichment with the SMN Tudor domain',
@@ -121,7 +121,7 @@ STUDY_QUALITY = {
                   '(8,900 sites, each with the leading protein, the position, the localisation probability and a 31-residue '
                   'window): arginine sites at localisation probability >= 0.75. The leading protein is often an isoform or '
                   'an unreviewed entry, so the site is placed from its window.',
-    'PSP': 'Curated database, trusted as curated. Through Maron Table S5: the sites PhosphoSitePlus listed on 22 May 2021, '
+    'PSP': 'Curated database, accepted as curated. Through Maron Table S5: the sites PhosphoSitePlus listed on 22 May 2021, '
            'each with a 15-residue window and position, without the study behind it, a localisation score or a degree. A '
            'record is placed where its window names exactly one arginine in the reviewed proteome, in an entry the record '
            'names. PhosphoSitePlus curators find papers by semi-automatic literature search, record the sites each shows with '
@@ -232,7 +232,7 @@ CODES: dict[str, dict[str, str]] = {
         'source_records': 'the source records (ProMetheusDB me/di, methyl_states_reported)',
         'maron2021_s2': 'Maron et al. 2021 Table S2 (maron2021_s2_states)',
         'uniprot': 'UniProt MOD_RES with experimental evidence (uniprot_states)',
-        'study_design': 'a study that looked for one degree only (states_by_study_design)',
+        'study_design': 'a study that searched for one methylation degree only (states_by_study_design)',
     },
     'dimethyl_type': {
         'ADMA': 'asymmetric dimethylarginine: the neutral loss of dimethylamine (45.058 Da)',
@@ -254,7 +254,7 @@ CODES: dict[str, dict[str, str]] = {
     'call': {
         'decreased': 'lower with the treatment: at least one decreased peptide (or row) and none increased',
         'increased': 'higher with the treatment: at least one increased peptide (or row) and none decreased',
-        'mixed': 'peptides (or rows) disagree',
+        'mixed': 'peptides (or rows) change in opposite directions',
         'no_change': 'no significant change',
     },
     'cell_line': {'MCF7': 'MCF7 breast cancer cells', 'MDA-MB-231': 'MDA-MB-231 breast cancer cells'},
@@ -321,7 +321,7 @@ CODES: dict[str, dict[str, str]] = {
     'localisation': {
         'at_residue': 'at this residue',
         'candidate_residue': 'a crosslink whose candidate residues include this one',
-        'within_3': 'a crosslinked residue within 3 residues (not this one)',
+        'within_3': 'a crosslinked residue at i ± 1–3 (not this one)',
         'in_fragment': 'inside the fragment',
         'in_peptide': 'inside a crosslinked peptide, residue not localised',
         'in_region': 'inside the region',
@@ -350,8 +350,8 @@ CODES: dict[str, dict[str, str]] = {
         'dna_at': 'direct contact: an atom of the arginine side chain within 4 Å of DNA in a PDB structure',
         'rna_proximal': 'proximal: in a complex without direct contact, an atom of the arginine side chain within 8 Å of RNA',
         'dna_proximal': 'proximal: in a complex without direct contact, an atom of the arginine side chain within 8 Å of DNA',
-        'rna_near': 'contact via a flanking residue: in a complex where no atom of the arginine side chain is within 8 Å of RNA, a residue at i ± 1-5 is within 4 Å',
-        'dna_near': 'contact via a flanking residue: in a complex where no atom of the arginine side chain is within 8 Å of DNA, a residue at i ± 1-5 is within 4 Å',
+        'rna_near': 'contact via a flanking residue: in a complex where no heavy atom of the arginine side chain is within 8 Å of RNA, a residue at i ± 1–5 is within 4 Å of RNA',
+        'dna_near': 'contact via a flanking residue: in a complex where no heavy atom of the arginine side chain is within 8 Å of DNA, a residue at i ± 1–5 is within 4 Å of DNA',
     },
     'partner_kind': {
         'protein': 'another protein (partner_accession)',
@@ -410,7 +410,7 @@ CODES: dict[str, dict[str, str]] = {
         'unreviewed_accession': "the previous version filed reviewed-entry numbering under the source's unreviewed or obsolete accession. This version files it under the reviewed entry",
         'lysine_window': 'the source window is centred on a lysine. The previous version turned it into a nearby arginine site',
         'truncated_window': 'the window is cut short at a protein end. The previous version read it as if centred, taking the arginine at or nearest the middle of the short window. This version counts from its intact end',
-        'multi_arginine_peptide': 'a peptide with several arginines that does not cover the reported position. The previous version guessed one',
+        'multi_arginine_peptide': 'a peptide with several arginines that does not cover the reported position. The previous version assigned one without supporting evidence',
         'peptide_start': "a peptide with several arginines, numbered differently from the entry. The previous version took the arginine nearest its middle. This version counts the reported position from the peptide's start in Maron 2021 Tables S2/S3",
         'wrong_protein': 'the previous version filed the position under another reviewed protein than the one whose sequence matched',
         'outdated_accession_or_symbol': 'the source accession is merged or obsolete, or its gene symbol outdated. This version reaches the current entry',
@@ -551,7 +551,7 @@ SITE_COLUMNS = [
     ('uniprot_states', 'list<code>', 'methyl_state', 'degrees UniProt release 2026_03 annotates at the site (MOD_RES) with experimental evidence: ECO:0000269, or ECO:0007744 (large-scale proteomics). ADMA and SDMA calls in UniProt mostly follow the antibody of the experiment'),
     ('uniprot_states_inferred', 'list<code>', 'methyl_state', 'degrees UniProt annotates at the site only by similarity to another species (ECO:0000250) or without experimental evidence; not counted in methyl_state'),
     ('states_by_study_design', 'list<code>', 'methyl_state', 'the one degree a study looked for: Rme1 for Larsen 2016 (monomethylarginine antibodies; Table S1 lists monomethylarginine sites, and the deposited search, PRIDE PXD003700, has monomethylation only), Rme2 for Wei 2020 (ADMA antibody, PTMScan #13474; only dimethylation searched)'),
-    ('methyl_state', 'code', 'state_summary', 'the degrees reported at the site by any of methyl_states_reported, maron2021_s2_states, uniprot_states and states_by_study_design; empty when none gives one. Mass spectrometry tells mono- from dimethylation, but asymmetric from symmetric mostly by the antibody used'),
+    ('methyl_state', 'code', 'state_summary', 'the degrees reported at the site by any of methyl_states_reported, maron2021_s2_states, uniprot_states and states_by_study_design; empty when none gives one. Mass spectrometry distinguishes mono- from dimethylation; asymmetric and symmetric dimethylation are mostly assigned from the antibody used'),
     ('methyl_state_evidence', 'list<code>', 'state_evidence', 'which of these give a degree, in code order'),
     ('maron2021_s3_antibodies', 'list<code>', 'antibody', 'antibodies whose immunoprecipitation recovered the site in Maron et al. 2021 Table S3 (supporting/maron2021_detection)'),
     ('dimethyl_type_neutral_loss', 'list<code>', 'dimethyl_type', 'the dimethylarginine type Hartel et al. 2019 called at the site from neutral losses in the fragment spectra, independent of the antibody used (both when both were called). Shown beside maron2021_s3_antibodies, which says which antibodies recovered the site; the two can differ'),
@@ -579,7 +579,7 @@ SITE_COLUMNS = [
     ('bound_sequence_distance_a', 'number', '', 'minimum heavy-atom distance from the arginine side chain to bound_sequence, in Å (direct and proximal), empty for a flanking-residue contact'),
     ('bound_sequence_type', 'code', 'nucleic_acid_type', 'the type of its chain'),
     ('bound_sequence_molecule', 'string', '', 'its molecule name in the PDB entries (the most common one)'),
-    ('bound_sequence_entries', 'integer', '', 'PDB entries showing it'),
+    ('bound_sequence_entries', 'integer', '', 'number of PDB entries containing it'),
     ('n_studies', 'integer', '', 'number of studies or databases reporting the site'),
     ('studies', 'list<code>', 'study', 'the studies or databases reporting the site, in the order of the studies file, PhosphoSitePlus is PSP, as its terms ask'),
     ('study_dois', 'list<string>', '', 'their DOIs, in the same order'),
@@ -768,14 +768,14 @@ CODES['analysis'] = {
     'disease_family': 'methylarginine-containing proteins (counted by gene) in one of the eight audited disease families (scripts/14), against the other reviewed human genes with a DisGeNET term (DOSE\'s background for the terms), q over the eight',
     'disease_family_additional': 'the same for the additional disease families (scripts/disease_families.py ADDITIONAL_FAMILY_RULES: rule-based, not audited, applied only to the terms no audited family takes), q over these families',
     'condensate': 'methylated proteins among the members of a CD-CODE condensate (scripts/12), against the other condensate proteins',
-    'condensate_proteome': 'methylated proteins among the members of a CD-CODE condensate (scripts/12), against the other reviewed human proteins. Condensate proteins are methylated about twice as often as proteins in general, so most condensates are enriched against this background and few against the other condensate proteins',
+    'condensate_proteome': 'methylated proteins among the members of a CD-CODE condensate (scripts/12), against the other reviewed human proteins. The fraction of methylated proteins is about twice as high among condensate proteins as in the reviewed proteome, so most condensates are enriched against this background and few against the other condensate proteins',
     'hpa_location': 'methylated proteins at a Human Protein Atlas location, against the other proteins HPA locates (Approved or better)',
-    'pdb_interface': 'methylarginines at a PDB interface of a kind (category: rna, dna, protein including self, any), against the other arginines of the same proteins that a PDB structure covers (scripts/37). Strata: all, ordered (outside MobiDB disorder), domain (inside an InterPro domain)',
+    'pdb_interface': 'methylarginines at a PDB interface of a given type (category: rna, dna, protein including self, any), against the other arginines of the same proteins that a PDB structure covers (scripts/37). Strata: all, ordered (outside MobiDB disorder), domain (inside an InterPro domain)',
     'predicted_interface': 'methylarginines at a predicted interface residue (ProtVar, category the pDockQ floor), against the other arginines of the proteins with a predicted interface. Strata: all, ordered, disordered',
-    'crosslink': 'methylarginines with RNA or DNA crosslink evidence of a kind (category), against the other arginines of the proteins with that evidence, the _outside_rg categories leave out arginines in an RG or GR dipeptide',
-    'nucleic_acid_distance': 'methylarginines whose side chain (CD, NE, CZ, NH1, NH2) comes within 4 or 8 Å of RNA, DNA or either (category) in some PDB entry, against the other arginines of the same proteins; every arginine modelled in an entry where PDBe-KB lists the protein with that kind of nucleic acid counts (supporting/arginine_nucleic_acid_distances)',
+    'crosslink': 'methylarginines with RNA or DNA crosslink evidence of a given type (category), against the other arginines of the proteins with that evidence, the _outside_rg categories leave out arginines in an RG or GR dipeptide',
+    'nucleic_acid_distance': 'methylarginines with a side-chain heavy atom (CD, NE, CZ, NH1, NH2) within 4 or 8 Å of RNA, DNA or either (category) in at least one PDB entry, against the other arginines of the same proteins; every arginine modelled in an entry where PDBe-KB lists the protein with that kind of nucleic acid counts (supporting/arginine_nucleic_acid_distances)',
     'intact': 'IntAct: methylarginines whose mutation changes an interaction (against other mutated arginines), and methylarginines inside a binding region of at most 20 residues (against the other arginines of proteins with one)',
-    'go_binding': 'methylated proteins with a Gene Ontology RNA- or DNA-binding annotation (category, _experimental: experimental evidence codes only), against all reviewed human proteins (clusterProfiler enricher, the four annotations as one job)',
+    'go_binding': 'methylated proteins with a Gene Ontology RNA- or DNA-binding annotation (category, _experimental: experimental evidence codes only), against all reviewed human proteins (clusterProfiler enricher; the four annotations tested together, BH across them)',
 }
 CODES['method'] = {
     'enricher': 'over-representation analysis with clusterProfiler::enricher (scripts/enrich_sets.R, versions in release.json): for a set with M members in a background of N, of which n are methylated (the targets), p is the one-sided hypergeometric probability of k or more methylated members, and fold_enrichment = (k/n)/(M/N). a = k, b = n - k (methylated proteins outside the set), c = M - k (other members of the set), d = N - M - n + k. q = Benjamini-Hochberg over the sets of the analysis (clusterProfiler p.adjust). A set is tested when it has at least one methylated member and its size is within the analysis\'s range',
@@ -824,7 +824,7 @@ PROTEIN_COLUMNS = [
     ('condensates', 'list<string>', '', 'CD-CODE condensates the protein belongs to (CD-CODE ids, export of 2026-03-18, scripts/12)'),
     ('hpa_locations', 'list<string>', '', 'Human Protein Atlas 25.1 subcellular locations, main locations first (supporting/hpa_locations)'),
     ('disease_families', 'list<string>', '', 'disease families whose genes include the protein\'s gene (scripts/14)'),
-    ('disease_family_terms', 'list<integer>', '', 'for each of these families, how many of its DisGeNET terms name the gene'),
+    ('disease_family_terms', 'list<integer>', '', 'for each of these families, the number of its DisGeNET terms annotated to the gene'),
     ('als_ftd_family_gene', 'boolean', '', 'the gene is in the ALS / motor neuron / FTD family'),
     ('n_phospho', 'integer', '', 'phosphorylation sites in the PTM master table (supporting/other_ptm_sites)'),
     ('n_lys_acyl', 'integer', '', 'lysine acylation sites'),
@@ -871,7 +871,7 @@ DISEASE_TERM_COLUMNS = [
     ('p_adjust', 'number', '', 'Benjamini-Hochberg adjusted p value over the tested terms'),
     ('q', 'number', '', 'q value (qvalue, lambda 0.05, as DOSE)'),
     ('genes', 'list<string>', '', 'the genes of the methylarginine-containing proteins in the term (symbols, org.Hs.eg.db)'),
-    ('uniprot_accessions', 'list<string>', '', 'the proteins of the site table those genes stand for'),
+    ('uniprot_accessions', 'list<string>', '', 'the proteins of the site table encoded by those genes'),
 ]
 
 DENSITY_COLUMNS = [
@@ -881,7 +881,7 @@ DENSITY_COLUMNS = [
     ('end', 'integer', '', 'last residue'),
     ('sites', 'integer', '', 'methylarginine sites in it'),
     ('arginines', 'integer', '', 'arginines in it'),
-    ('null_mean_sites', 'number', '', 'mean of the most sites in a window under the null (sites placed on the protein\'s arginines at random)'),
+    ('null_mean_sites', 'number', '', 'mean, under the null, of the maximum number of sites in any window of that width (sites placed on the protein\'s arginines at random)'),
     ('log2_obs_over_null', 'number', '', 'log2 of observed over null mean'),
     ('p', 'number', '', 'empirical p value (1,000 permutations)'),
     ('q', 'number', '', 'Benjamini-Hochberg q value over all protein-window tests. Only windows with q <= 0.05 are listed'),
@@ -927,7 +927,7 @@ DISEASE_TERM_TESTED_COLUMNS = [
     ('q', 'number', '', 'q value (DOSE)'),
     ('enriched', 'boolean', '', 'p, p_adjust and q at most 0.05, the cut of the published analysis (supporting/disease_terms)'),
     ('genes', 'list<string>', '', 'the genes of the methylarginine-containing proteins in the term (symbols)'),
-    ('uniprot_accessions', 'list<string>', '', 'the proteins of the site table those genes stand for'),
+    ('uniprot_accessions', 'list<string>', '', 'the proteins of the site table encoded by those genes'),
 ]
 
 DISEASE_ONTOLOGY_COLUMNS = [
@@ -940,7 +940,7 @@ DISEASE_ONTOLOGY_COLUMNS = [
     ('p', 'number', '', 'one-sided hypergeometric p value (clusterProfiler::enricher on the Disease Ontology gene sets; the same as DOSE enrichDO)'),
     ('q', 'number', '', 'Benjamini-Hochberg adjusted p value over the tested terms (at least 10 genes)'),
     ('genes', 'list<string>', '', 'the genes of the methylarginine-containing proteins in the term (symbols)'),
-    ('uniprot_accessions', 'list<string>', '', 'the proteins of the site table those genes stand for'),
+    ('uniprot_accessions', 'list<string>', '', 'the proteins of the site table encoded by those genes'),
 ]
 
 DISEASE_FAMILY_COLUMNS = [
@@ -963,23 +963,23 @@ SITE_INTERACTION_COLUMNS = [
     ('source', 'string', '', 'PDBe-KB, ProtVar, AFDB (AlphaFold DB), IntAct, RBDmap, Trendel2025, UniProt, or the RNA crosslink dataset (Kramer2014, XRNAX, RBS-ID, pRBS-ID, pepR-MS, pepR-MS_focused)'),
     ('structures', 'list<string>', '', 'PDB entries (PDB rows), or the predicted model (ProtVar pair or AlphaFold DB model id)'),
     ('score', 'number', '', 'pDockQ (ProtVar) or ipTM (AlphaFold DB) of the predicted complex'),
-    ('distance_a', 'number', '', 'closest distance in the predicted model between the arginine and the partner, in angstroms'),
-    ('detail', 'string', '', 'for an RNA crosslink, the crosslinked peptides of that dataset with the crosslinked residue in brackets, its position and the RNA adduct masses (pepR-MS compendium Table S2); for an RBDmap fragment, its range and sequence; for a DNA crosslink, the crosslinked peptide with the residues the crosslink may sit on in lower case (Trendel et al. 2025); bonds, pLDDT and partner residues of a predicted contact; effect, residues, PubMed and IntAct ids of an IntAct record'),
+    ('distance_a', 'number', '', 'minimum interatomic distance between the arginine and the partner in the predicted model, in Å'),
+    ('detail', 'string', '', 'for an RNA crosslink, the crosslinked peptides of that dataset with the crosslinked residue in brackets, its position and the RNA adduct masses (pepR-MS compendium Table S2); for an RBDmap fragment, its range and sequence; for a DNA crosslink, the crosslinked peptide with the candidate crosslinked residues in lower case (Trendel et al. 2025); bonds, pLDDT and partner residues of a predicted contact; effect, residues, PubMed and IntAct ids of an IntAct record'),
     ('counts_as_evidence', 'boolean', '', 'the record is site-level evidence: crosslinks at or as a candidate residue, RBDmap fragments, PDB interfaces, predicted interfaces, confident predicted contacts, and IntAct mutations that change an interaction, short binding regions and methylated residues. interaction_status counts all of these except IntAct'),
 ]
 
 NUCLEIC_ACID_CONTACT_COLUMNS = [
-    ('site_id', 'string', '', 'the site (site table), at a PDBe-KB RNA or DNA interface or with a nucleotide within 4 Å of its side chain in a structure read'),
-    ('pdb_id', 'string', '', 'the PDB entry (every entry PDBe-KB lists for the site with RNA or DNA is read)'),
+    ('site_id', 'string', '', 'the site (site table), at a PDBe-KB RNA or DNA interface or with a nucleotide within 4 Å of its side chain in a structure analysed'),
+    ('pdb_id', 'string', '', 'the PDB entry (every entry PDBe-KB lists for the site with RNA or DNA is analysed)'),
     ('chain', 'string', '', 'the RNA or DNA chain (author chain id)'),
-    ('nucleic_acid', 'code', 'nucleic_acid', 'what the chain is'),
+    ('nucleic_acid', 'code', 'nucleic_acid', 'molecule type of the chain (RNA or DNA)'),
     ('nucleic_acid_type', 'code', 'nucleic_acid_type', 'its type, from its name, organism and preparation (DNA: nucleosomal in an entry with core histones)'),
     ('molecule_name', 'string', '', 'the chain\'s molecule name in the PDB entry'),
     ('source_organism', 'string', '', 'its source organism (synthetic construct for a made oligonucleotide)'),
     ('sample_preparation', 'string', '', 'how the chain was made, as the entry records it: Synthetically obtained (a designed oligonucleotide), Natural source or Genetically manipulated'),
     ('chain_length', 'integer', '', 'nucleotides in the chain\'s SEQRES sequence'),
     ('closest_nucleotide', 'string', '', 'the nucleotide closest to the arginine side chain, numbered along the SEQRES sequence (modified nucleotides as their parent)'),
-    ('closest_distance_a', 'number', '', 'its distance to the closest guanidino or CD atom, in angstroms'),
+    ('closest_distance_a', 'number', '', 'its minimum heavy-atom distance to the arginine side chain (CD, NE, CZ, NH1, NH2), in Å'),
     ('contacted_nucleotides', 'list<string>', '', 'every nucleotide of the chain within 4 Å of the arginine side chain, SEQRES numbering'),
     ('contacted_author_numbers', 'list<string>', '', 'the same nucleotides with the entry\'s author numbers, in the same order'),
     ('contacted_distances_a', 'list<string>', '', 'their distances in angstroms, in the same order'),
@@ -990,11 +990,11 @@ NUCLEIC_ACID_CONTACT_COLUMNS = [
 
 NUCLEIC_ACID_NEAR_COLUMNS = [
     ('site_id', 'string', '', 'the site (site table): a methylarginine with no side-chain atom within 8 Å of RNA or DNA in this complex (none within 4 Å in any of its entries), and a residue at i ± 1-5 with one within 4 Å'),
-    ('nucleic_acid', 'code', 'nucleic_acid', 'what that residue contacts (RNA-DNA hybrids counted as RNA)'),
+    ('nucleic_acid', 'code', 'nucleic_acid', 'molecule type of the chain that residue contacts (RNA-DNA hybrids counted as RNA)'),
     ('nucleic_acid_type', 'code', 'nucleic_acid_type', 'the type of the chain'),
     ('residue_offset', 'integer', '', 'the closest such residue, in positions from the site (negative: N-terminal)'),
     ('residue', 'integer', '', 'its position'),
-    ('pdb_id', 'string', '', 'the entry read for the complex (one per distinct set of bound sequences)'),
+    ('pdb_id', 'string', '', 'the entry analysed for the complex (one per distinct set of bound sequences)'),
     ('n_entries', 'integer', '', 'the entries with the protein and the same bound sequences'),
     ('chain', 'string', '', 'the RNA or DNA chain with most contacts from the residues at i ± 1-5'),
     ('molecule_name', 'string', '', 'its molecule name'),
@@ -1014,20 +1014,20 @@ ARGININE_DISTANCE_COLUMNS = [
     ('entries_with_rna', 'integer', '', 'entries with RNA that model the arginine'),
     ('rna_distance_a', 'number', '', 'the minimum heavy-atom distance from its side chain (CD, NE, CZ, NH1, NH2) to RNA over those entries, in Å, empty when never within 8 Å'),
     ('rna_type', 'code', 'nucleic_acid_type', 'the type of that RNA chain'),
-    ('rna_example_pdb', 'string', '', 'an entry with that approach'),
+    ('rna_example_pdb', 'string', '', 'an entry with that minimum distance'),
     ('entries_with_dna', 'integer', '', 'entries with DNA that model the arginine'),
     ('dna_distance_a', 'number', '', 'the minimum heavy-atom distance from its side chain to DNA, as for RNA'),
     ('dna_type', 'code', 'nucleic_acid_type', 'the type of that DNA chain'),
-    ('dna_example_pdb', 'string', '', 'an entry with that approach'),
+    ('dna_example_pdb', 'string', '', 'an entry with that minimum distance'),
 ]
 
 NUCLEIC_ACID_PROXIMAL_COLUMNS = [
     ('site_id', 'string', '', 'the site (site table): a methylarginine with no side-chain atom within 4 Å of RNA or DNA at a listed interface of this complex (in none of its entries), and one within 8 Å in at least one of its entries'),
-    ('nucleic_acid', 'code', 'nucleic_acid', 'what the closest chain is (RNA-DNA hybrids counted as RNA)'),
+    ('nucleic_acid', 'code', 'nucleic_acid', 'molecule type of the nearest chain (RNA-DNA hybrids counted as RNA)'),
     ('nucleic_acid_type', 'code', 'nucleic_acid_type', 'the type of the chain'),
     ('distance_a', 'number', '', 'the minimum heavy-atom distance from the arginine side chain (CD, NE, CZ, NH1, NH2) to that kind of nucleic acid over the complex\'s entries, in Å (up to two copies of the protein per entry); 4 Å or less where PDBe-KB does not list the residue at the interface, counted as direct contact in the site table'),
     ('pdb_id', 'string', '', 'the entry with that minimum distance'),
-    ('n_entries', 'integer', '', 'the entries of the complex in which the side chain comes within 8 Å'),
+    ('n_entries', 'integer', '', 'the entries of the complex in which a side-chain heavy atom lies within 8 Å'),
     ('chain', 'string', '', 'the RNA or DNA chain closest to the side chain, of this kind'),
     ('molecule_name', 'string', '', 'its molecule name'),
     ('source_organism', 'string', '', 'its source organism'),
@@ -1042,9 +1042,9 @@ NUCLEIC_ACID_REGION_COLUMNS = [
     ('uniprot_accession', 'string', '', 'protein of the site table'),
     ('start', 'integer', '', 'first residue of a run of residues within 4 Å of RNA or DNA in a PDB structure (runs joined across gaps of up to 3 residues)'),
     ('end', 'integer', '', 'last residue of the run'),
-    ('nucleic_acid', 'code', 'nucleic_acid', 'what the residues contact (RNA-DNA hybrids counted as RNA)'),
+    ('nucleic_acid', 'code', 'nucleic_acid', 'molecule type of the chains the residues contact (RNA-DNA hybrids counted as RNA)'),
     ('n_entries', 'integer', '', 'PDB entries in which the run contacts it (every entry PDBe-KB lists for the protein with RNA or DNA)'),
-    ('n_complexes', 'integer', '', 'distinct complexes read: one entry per set of bound sequences, the others counted with it'),
+    ('n_complexes', 'integer', '', 'distinct complexes analysed: one entry per set of bound sequences, the others counted with it'),
     ('methylarginines', 'list<string>', '', 'the sites (site table) inside the run'),
     ('bound_segments', 'list<string>', '', 'the stretches of RNA or DNA the run contacts, 5\' to 3\': contacted nucleotides in brackets with 2 more each side, and … between clusters further apart than 4 nucleotides; at most 6, most entries first'),
     ('segment_entries', 'list<string>', '', 'PDB entries showing each segment, in the same order'),
@@ -1055,7 +1055,7 @@ NUCLEIC_ACID_REGION_COLUMNS = [
 ]
 
 RNA_BIND_N_SEQ_COLUMNS = [
-    ('uniprot_accession', 'string', '', 'methylated protein with an ENCODE RNA Bind-n-Seq experiment (what the purified protein picks from random RNA in vitro)'),
+    ('uniprot_accession', 'string', '', 'methylated protein with an ENCODE RNA Bind-n-Seq experiment (RNA sequences enriched by the purified protein from a random pool in vitro)'),
     ('encode_experiment', 'string', '', 'the ENCODE experiment'),
     ('concentration', 'string', '', 'the protein concentration at which its top 5-mer is most enriched; the 5-mers are ranked there'),
     ('top_5mers', 'list<string>', '', 'the 12 most enriched 5-mers'),
@@ -1074,7 +1074,7 @@ DNA_MOTIF_COLUMNS = [
 ]
 
 ECLIP_COLUMNS = [
-    ('uniprot_accession', 'string', '', 'methylated protein with an ENCODE eCLIP experiment (RNA it binds in K562 or HepG2 cells)'),
+    ('uniprot_accession', 'string', '', 'methylated protein with an ENCODE eCLIP experiment (RNA crosslinked to it in K562 or HepG2 cells)'),
     ('encode_experiment', 'string', '', 'the ENCODE experiment'),
     ('cell_line', 'string', '', 'K562, HepG2, or another biosample'),
     ('n_peaks', 'integer', '', 'reproducible peaks (replicates 1 and 2, GRCh38)'),
