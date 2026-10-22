@@ -1,0 +1,146 @@
+model_id	gene_symbol	uniprot_accession	mapped_by	motif_kind	motif_type	seed	oligomer	experiment	cycle	barcode	batch	rbd_count	note	length
+jolma2020_linear_001	BOLL	Q8N9W6	symbol	linear	Primary	KUGUUGUGUUKK	monomeric	Experiment_1	3	TCCCAA40NGCGC	AAG	1		12
+jolma2020_linear_002	CARHSP1	Q9Y2V2	symbol	linear	Secondary	GCCAUGAUCAUGAU	dimeric	Experiment_1	3	TGCAGT40NAAG	AAG			14
+jolma2020_linear_003	CARHSP1	Q9Y2V2	symbol	linear	Primary	UUGCCUUGUCCCGAU	monomeric	Experiment_1	3	TGCAGT40NAAG	AAG	1		15
+jolma2020_linear_004	CELF1	Q92879	symbol	linear	Primary	UGUGUNUGUGU	dimeric	Experiment_1	4b-	TTCTAC40NCGA	AAG	2		11
+jolma2020_linear_005	CELF3	Q5SZQ8	symbol	linear	Primary	UGUGUNUGUGU	dimeric	Experiment_1	4	TGTTCG40NGAC	AAG	2		11
+jolma2020_linear_006	CELF4	Q9BZC1	symbol	linear	Primary	UGUGUUGUGU	dimeric	Experiment_1	3	TTATGG40NCGTT	AAH	1		10
+jolma2020_linear_007	CSDA	P16989	renamed symbol	linear	Primary	UAACAUCA	monomeric	Experiment_1	4	TGAAGC40NCTA	AAG	1		8
+jolma2020_linear_008	CSTF2	P33240	symbol	linear	Primary	RRGGCGUAGCGUNN	monomeric	Experiment_1	3	TTCTGG40NACTT	AAG	1		14
+jolma2020_linear_009	CSTF2T	Q9H0L4	symbol	linear	Primary	CGUAGCGUCU	monomeric	Experiment_1	3b0	TCTCGA40NCAT	AAG	1		10
+jolma2020_linear_010	DAZ4	Q86SG3	symbol	linear	Secondary	GYUCUAGUUAGYAUC	monomeric	Experiment_1	2	TCTGGT40NGGG	AAH			15
+jolma2020_linear_011	DAZAP1	Q96EP5	symbol	linear	Primary	UUAGGUUAGG	dimeric	Experiment_1	4	TGCAAG40NAAC	AAG	2		10
+jolma2020_linear_012	DAZL	Q92904	symbol	linear	Secondary	GUUGUUGUUG	dimeric	Experiment_1	4	TCTAGA40NCGA	AAG			10
+jolma2020_linear_013	ELAVL1	Q15717	symbol	linear	Primary	UUUAUGNUUU	monomeric	Experiment_1	4b0	TGGACT40NAAT	EMJ	3		10
+jolma2020_linear_014	ELAVL3	Q14576	symbol	linear	Primary	GUUUUUG	monomeric	Experiment_1	4	TAAGGC40NTGCC	AAG	3		7
+jolma2020_linear_015	ELAVL4	P26378	symbol	linear	Primary	UUUUAUUUUG	monomeric	Experiment_1	4b0	TCACGG40NTGT	EMO	3		10
+jolma2020_linear_016	ESRP1	Q6NXG1	symbol	linear	Primary	GGUGUUGGUG	dimeric	Replicate	4	TAAGGA40NCCG	AAG			10
+jolma2020_linear_017	ESRP1	Q6NXG1	symbol	linear	Primary	GGUGUGGUGU	dimeric	Experiment_1	4	TGGGCT40NGTT	AAG	1		10
+jolma2020_linear_018	HEXIM1	O94992	symbol	linear	Primary	GKDKCGACGGK	monomeric	Experiment_1	3	TTGGGT40NGGC	AAH	1		11
+jolma2020_linear_019	HEXIM2	Q96MH2	symbol	linear	Primary	NGCGACGGKN	monomeric	Experiment_1	3	TCTTAA40NGCA	AAH	1		10
+jolma2020_linear_020	HNRNPA0	Q13151	symbol	linear	Primary	KUAGKUUAGGK	dimeric	Experiment_1	3	TGTCGA40NCCGA	AAH	2		11
+jolma2020_linear_021	HNRNPA0	Q13151	symbol	linear	Secondary	KUAGKUUUAGGK	dimeric	Experiment_1	3	TGTCGA40NCCGA	AAH			12
+jolma2020_linear_022	HNRNPA1L2	Q32P51	symbol	linear	Primary	NUAGGUUAGGGW	dimeric	Experiment_1	4	TGAATC40NGTA	AAG	2		12
+jolma2020_linear_023	HNRNPA3	P51991	symbol	linear	Primary	UAGGUUAGGG	dimeric	Experiment_1	4	TCGTAG40NCAGC	AAG	2		10
+jolma2020_linear_024	HNRNPC	P07910	symbol	linear	Primary	UUUUUGGUGG	monomeric	Experiment_1	4	TACCGG40NAGT	AAG	1		10
+jolma2020_linear_025	HNRNPCL1	O60812	symbol	linear	Primary	GUUUUUUGGG	monomeric	Experiment_1	3	TAGCCA40NTAT	AAG	1		10
+jolma2020_linear_026	HNRNPL	P14866	symbol	linear	Primary	ACAUWWCAUW	dimeric	Experiment_1	3	TATGAG40NCGT	AAG	3		10
+jolma2020_linear_027	HNRPLL	Q8WVV9	renamed symbol	linear	Primary	GCAURCAYCC	dimeric	Experiment_1	3	TATAAA40NACG	AAG	3		10
+jolma2020_linear_028	IGF2BP1	Q9NZI8	symbol	linear	Primary	CAGNUWCA	monomeric	Experiment_1	4	TCTTAA40NGCA	AAG	3		8
+jolma2020_linear_029	KHDRBS1	Q07666	symbol	linear	Primary	UAAUAGN	dimeric	Experiment_1	4	TAGCAT40NGCAA	AAG	1		7
+jolma2020_linear_030	KHDRBS2	Q5VWX1	symbol	linear	Primary	UAAACAAUAA	dimeric	Experiment_1	4b0	TGTGGT40NGGC	EMJ	1		10
+jolma2020_linear_031	KHDRBS3	O75525	symbol	linear	Primary	UAAANNNNNNNUAAA	dimeric	Experiment_1	4	TCCTCG40NCAG	AAG	1		15
+jolma2020_linear_032	LARP6	Q9BRS8	symbol	linear	Primary	GUGUCNNNNNNNNNGAAGUCN	monomeric	Experiment_1	4b-	TTTGTA40NTAAC	AAG	1		21
+jolma2020_linear_033	LARP7	Q4G0J3	symbol	linear	Primary	GRUCGUGAUGN	monomeric	Experiment_1	4b0	TACGCG40NCCG	EMO	1		11
+jolma2020_linear_034	MCM3AP	O60318	symbol	linear	Primary	CGCCAGUGCG	monomeric	Experiment_1	3b-	TACATC40NCAAG	AAH	1		10
+jolma2020_linear_035	MEX3B	Q6ZN04	symbol	linear	Primary	UAGAGUUUAU	monomeric	Experiment_1	4	TGTCTC40NTCA	AAG	2		10
+jolma2020_linear_036	MEX3B	Q6ZN04	symbol	linear	Secondary	UAUUUAU	monomeric	Experiment_1	4	TGTCTC40NTCA	AAG			7
+jolma2020_linear_037	MEX3C	Q5U5Q3	symbol	linear	Primary	NNAGAGUUUAUNN	monomeric	Experiment_1	3	TGTATG40NCGG	AAG	2		13
+jolma2020_linear_038	MEX3D	Q86XN8	symbol	linear	Primary	UNURUUUAUU	monomeric	Experiment_1	4	TCGTCT40NGGTG	AAG	1		10
+jolma2020_linear_039	MSI1	O43347	symbol	linear	Primary	KUAGUWKUAGK	dimeric	Experiment_1	4	TTGGCG40NGGGA	AAG	2		11
+jolma2020_linear_040	MSI2	Q96DH6	symbol	linear	Primary	GUAGUGDGUAGK	dimeric	Experiment_1	4b-	TTTACT40NTACC	AAG	2		12
+jolma2020_linear_041	MSI2	Q96DH6	symbol	linear	Secondary	GUAGUNNNGUAGK	dimeric	Experiment_1	4b-	TTTACT40NTACC	AAG			13
+jolma2020_linear_042	NOVA2	Q9UNW9	symbol	linear	Primary	UCAUUCAU	dimeric	Experiment_1	4	TATTCT40NCTC	AAG	2		8
+jolma2020_linear_043	PABPC5	Q96DU9	symbol	linear	Primary	NUAKAAAKUURCN	monomeric	Experiment_1	4	TACCTG40NACG	AAG	4		13
+jolma2020_linear_044	PABPC5	Q96DU9	symbol	linear	Secondary	NUAKAAAUUACUACAN	monomeric	Experiment_1	4	TACCTG40NACG	AAG			16
+jolma2020_linear_045	PCBP1	Q15365	symbol	linear	Primary	UCCUUNNCCUU	dimeric	Experiment_1	3	TCGTAA40NCGG	AAG	3		11
+jolma2020_linear_046	PUM1	Q14671	symbol	linear	Primary	NUGUAAAUAG	monomeric	Experiment_1	4b0	TAAGGG40NACC	EMJ	8		10
+jolma2020_linear_047	PUM2	Q8TB72	symbol	linear	Secondary	NNUGUAYAGK	monomeric	Experiment_1	2	TCCGCG40NTCT	AAG			10
+jolma2020_linear_048	PUM2	Q8TB72	symbol	linear	Primary	NUGUAAAUAGKN	monomeric	Experiment_1	2	TCCGCG40NTCT	AAG	8		12
+jolma2020_linear_049	QKI	Q96PU8	symbol	linear	Primary	NUACUAACAWN	monomeric	Experiment_1	3b-	TAAGTT40NTCGA	AAG	1		11
+jolma2020_linear_050	QKI	Q96PU8	symbol	linear	Secondary	ACUAACANNACUAACA	dimeric	Experiment_1	4b-	TCACTG40NACC	AAG			16
+jolma2020_linear_051	RBFOX1	Q9NWB1	symbol	linear	Secondary	GCAUGNNGCAUG	dimeric	Replicate	4	TTGCGA40NTACG	AAG			12
+jolma2020_linear_052	RBM14	Q96PK6	symbol	linear	Primary	GGKUGCGUCG	monomeric	Experiment_1	4	TATGGA40NAGCC	AAG	2		10
+jolma2020_linear_053	RBM14	Q96PK6	symbol	linear	Primary	UGCGUCG	monomeric	Replicate	4	TTAGCA40NGGT	AAG			7
+jolma2020_linear_054	RBM24	Q9BX46	symbol	linear	Primary	GUGUGNGUGUG	dimeric	Experiment_1	4	TGAAGA40NATG	AAG	1		11
+jolma2020_linear_055	RBM28	Q9NW13	symbol	linear	Primary	GRGGCCGNGCGGUGG	monomeric	Experiment_1	3	TTCTTT40NCAG	AAG	4		15
+jolma2020_linear_056	RBM28	Q9NW13	symbol	linear	Secondary	GUGGGUCUCGG	monomeric	Experiment_1	3	TTCTTT40NCAG	AAG			11
+jolma2020_linear_057	RBM38	Q9H0Z9	symbol	linear	Primary	KKGUGUGUGUGUKK	monomeric	Experiment_1	4	TCGTCC40NGCC	AAG	1		14
+jolma2020_linear_058	RBM4	Q9BWF3	symbol	linear	Secondary	CGGGGURUGN	monomeric	Experiment_1	3	TTCGGA40NCGC	AAG			10
+jolma2020_linear_059	RBM42	Q9BTD8	symbol	linear	Primary	NGGAACUAAN	monomeric	Experiment_1	4b0	TAGATG40NTAT	EMJ	1		10
+jolma2020_linear_060	RBM46	Q8TBY0	symbol	linear	Primary	GUGAUUG	monomeric	Experiment_1	4b0	TGGGAG40NAGG	EMO	3		7
+jolma2020_linear_061	RBMS1	P29558	symbol	linear	Secondary	GUAUUUAKNGGG	monomeric	Experiment_1	3	TATTCA40NTCAG	AAG			12
+jolma2020_linear_062	RBMS1	P29558	symbol	linear	Secondary	UUAUAAUCAAC	monomeric	Experiment_1	3	TATTCA40NTCAG	AAG			11
+jolma2020_linear_063	RBMS2	Q15434	symbol	linear	Secondary	CAGUGAUUGG	monomeric	Replicate	4b0	TATGCT40NACT	EMO			10
+jolma2020_linear_064	RBMS2	Q15434	symbol	linear	Secondary	CGNUAUAUAG	monomeric	Experiment_1	4b-	TATGGT40NATA	EMQ			10
+jolma2020_linear_065	RBPMS	Q93062	symbol	linear	Primary	NAGGCACR	monomeric	Experiment_1	3	TTCGGG40NATGT	AAG	1		8
+jolma2020_linear_066	RBPMS	Q93062	symbol	linear	Secondary	UCACGNGCACN	dimeric	Experiment_1	3	TTCGGG40NATGT	AAG			11
+jolma2020_linear_067	RBPMS2	Q6ZRY4	symbol	linear	Secondary	CACAGNGCACA	dimeric	Experiment_1	4	TCTAAA40NCGC	EMN			11
+jolma2020_linear_068	RBPMS2	Q6ZRY4	symbol	linear	Secondary	UCACRUGCACA	dimeric	Experiment_1	4	TCTAAA40NCGC	EMN			11
+jolma2020_linear_069	RBPMS2	Q6ZRY4	symbol	linear	Primary	UGCACA	monomeric	Experiment_1	4	TCTAAA40NCGC	EMN	1		6
+jolma2020_linear_070	RNPC3	Q96LT9	symbol	linear	Primary	GGGUSUACGGGGU	monomeric	Experiment_1	3	TGCGCT40NTGA	AAG	1		13
+jolma2020_linear_071	RNPC3	Q96LT9	symbol	linear	Primary	GGGDDGGGDKUACKKGGK	monomeric	Replicate	3	TTAACA40NTGT	AAH			18
+jolma2020_linear_072	SART3	Q15020	symbol	linear	Primary	NGUUAGCRK	monomeric	Experiment_1	3	TTGGTG40NCTAA	AAG	2		9
+jolma2020_linear_073	SNRNP70	P08621	symbol	linear	Secondary	GNUCANGNNG	monomeric	Experiment_1	3	TCTCGT40NGCC	AAH			10
+jolma2020_linear_074	SNRNP70	P08621	symbol	linear	Primary	GUUCAAGGUG	monomeric	Experiment_1	3	TCTCGT40NGCC	AAH	1		10
+jolma2020_linear_075	SNRPA	P09012	symbol	linear	Secondary	CAUUGCACN	monomeric	Experiment_1	2	TGTCTA40NTCG	AAG			9
+jolma2020_linear_076	SNRPA	P09012	symbol	linear	Primary	NUGCACR	monomeric	Experiment_1	2	TGTCTA40NTCG	AAG	2		7
+jolma2020_linear_077	SNRPB2	P08579	symbol	linear	Secondary	GGGUGUGCAC	monomeric	Experiment_1	3	TGGTCA40NGTG	AAG			10
+jolma2020_linear_078	SNRPB2	P08579	symbol	linear	Primary	NNCAUUGCACN	monomeric	Experiment_1	3	TGGTCA40NGTG	AAG	2		11
+jolma2020_linear_079	TARDBP	Q13148	symbol	linear	Primary	GUGUGAAUGG	monomeric	Experiment_1	4	TCAGTA40NACC	AAG	2		10
+jolma2020_linear_080	TARDBP	Q13148	symbol	linear	Secondary	GUGUGNGUGUG	dimeric	Experiment_1	4	TCAGTA40NACC	AAG			11
+jolma2020_linear_081	THUMPD1	Q9NXG2	symbol	linear	Primary	UUCGUGGCUUG	monomeric	Experiment_1	3	TCCTGC40NTGCC	AAG	1		11
+jolma2020_linear_082	THUMPD1	Q9NXG2	symbol	linear	Secondary	WGCGCGGUYUU	monomeric	Experiment_1	3	TCCTGC40NTGCC	AAG			11
+jolma2020_linear_083	YBX1	P67809	symbol	linear	Secondary	NUAACAUCGGG	monomeric	Experiment_1	4	TCTTGC40NATAG	AAG			11
+jolma2020_linear_084	YBX2	Q9Y2T7	symbol	linear	Secondary	GCCAUNNNAUCGC	monomeric	Experiment_1	4b-	TCTCAC40NACCT	AAG			13
+jolma2020_linear_085	YBX2	Q9Y2T7	symbol	linear	Primary	NUAACAUCNN	monomeric	Experiment_1	4	TCTCAC40NACCT	AAG	1		10
+jolma2020_linear_086	ZC3H10	Q96K80	symbol	linear	Primary	GCGCAUGCGNN	dimeric	Experiment_1	2	TTGAAT40NAAGT	AAG	3		11
+jolma2020_linear_087	ZC3H10	Q96K80	symbol	linear	Secondary	NGCGCAGCGUN	dimeric	Experiment_1	2	TTGAAT40NAAGT	AAG			11
+jolma2020_linear_088	ZC3H12A	Q5D1E8	symbol	linear	Secondary	NUUGCCAWAGUKU	monomeric	Experiment_1	4	TGATGA40NCATT	AAG			13
+jolma2020_linear_089	ZC3H12B	Q5HYM0	symbol	linear	Secondary	NGCGNCAGUCGGUAGCN	monomeric	Experiment_1	3	TGAATG40NGTAG	AAG			17
+jolma2020_linear_090	ZC3H12C	Q9C0D7	symbol	linear	Secondary	NUGCGNCAGUCGGUAGC	monomeric	Experiment_1	4	TATGAC40NTCA	AAG			17
+jolma2020_linear_091	ZC3H8	Q8N5P1	symbol	linear	Primary	GCUUGC	monomeric	Experiment_1	4b0	TAAACAG26N	EMO	3		6
+jolma2020_linear_092	ZCRB1	Q8TBF4	symbol	linear	Primary	GUAUUAAGGG	monomeric	Experiment_1	2	TAGACC40NGTTA	AAG	2		10
+jolma2020_linear_093	ZCRB1	Q8TBF4	symbol	linear	Secondary	GUGGACUUAANNN	monomeric	Experiment_1	2	TAGACC40NGTTA	AAG			13
+jolma2020_linear_094	ZCRB1	Q8TBF4	symbol	linear	Primary	GNNUUAAKK	monomeric	Replicate	3	TTTGAG40NATT	AAG			9
+jolma2020_linear_095	ZCRB1	Q8TBF4	symbol	linear	Secondary	GUGGACUUAA	monomeric	Replicate	3	TTTGAG40NATT	AAG			10
+jolma2020_linear_096	ZFP36	P26651	symbol	linear	Secondary	KUAUUUAUGGUGG	monomeric	Experiment_1	3	TCAAAG40NGAG	AAG			13
+jolma2020_linear_097	ZFP36	P26651	symbol	linear	Primary	UUAUUUAUU	monomeric	EXperiment_1	2	TCAAAG40NGAG	AAG	2		9
+jolma2020_linear_098	ZFR	Q96KR1	symbol	linear	Secondary	GUGACGGAUG	monomeric	Replicate	4b0	TAGTTA40NGTG	EMQ			10
+jolma2020_linear_099	ZFR	Q96KR1	symbol	linear	Primary	GUGCGGAUGN	monomeric	Replicate	4b0	TAGTTA40NGTG	EMQ			10
+jolma2020_linear_100	ZFR	Q96KR1	symbol	linear	Secondary	GGCACGGAUG	monomeric	Experiment_1	4	TCCTTG40NTGGC	AAG			10
+jolma2020_linear_101	ZFR	Q96KR1	symbol	linear	Primary	UUGCCGGAUGYCGU	monomeric	Experiment_1	4	TCCTTG40NTGGC	AAG	1		14
+jolma2020_linear_102	ZRANB2	O95218	symbol	linear	Secondary	NNGGUAGGURRN	dimeric	Experiment_1	4	TTCACG40NAGT	AAG			12
+jolma2020_linear_103	ZRANB2	O95218	symbol	linear	Primary	NNNGGUAAGGUNN	dimeric	Experiment_1	4	TTCACG40NAGT	AAG	2		13
+jolma2020_structured_001	DAZ1	Q9NQZ3	symbol	structured	Secondary	NUGKUGUUGUAGN		Replicate	4b-	TGACTT40NGGT	EMQ			21
+jolma2020_structured_002	DAZ1	Q9NQZ3	symbol	structured	Secondary	CRNAAUGUUAGUAGN		Experiment_1	3	TGGCCT40NATTT	AAG			21
+jolma2020_structured_003	DAZ1	Q9NQZ3	symbol	structured	Primary	NNUGUGUGSGUUUCCGSN		Experiment_1	3	TGGCCT40NATTT	AAG	2		20
+jolma2020_structured_004	DAZ3	Q9NR90	symbol	structured	Primary	NNUGUGUGSGUUUCCGSN		Experiment_1	3	TGAAGA40NACAG	AAH	1		20
+jolma2020_structured_005	DAZ4	Q86SG3	symbol	structured	Secondary	CUGKUGUUGUAGG		Experiment_1	2	TCTGGT40NGGG	AAH			23
+jolma2020_structured_006	DAZ4	Q86SG3	symbol	structured	Primary	NNUGUGUGSGUUUCCGSN		Experiment_1	2	TCTGGT40NGGG	AAH	1		20
+jolma2020_structured_007	DAZL	Q92904	symbol	structured	Primary	NNUGYGUGCGUUUCCGSN		Experiment_1	4	TCTAGA40NCGA	AAG	1		22
+jolma2020_structured_008	HNRNPA1	P09651	symbol	structured	Primary	NGCAGUUUUAGGGCN		Experiment_1	4	TTTGTT40NTTAG	AAG	2		19
+jolma2020_structured_009	HNRNPC	P07910	symbol	structured	Secondary	NGGGUCUNAUUUUUAAN		Experiment_1	4	TACCGG40NAGT	AAG			25
+jolma2020_structured_010	HNRNPCL1	O60812	symbol	structured	Secondary	NGGGUCUNAUUUUUAAN		Experiment_1	3	TAGCCA40NTAT	AAG			25
+jolma2020_structured_011	MKRN1	Q9UHC7	symbol	structured	Primary	NYGUAAAKUGUAGN		Experiment_1	4	TCGATT40NTTG	AAG	4		22
+jolma2020_structured_012	RALY	Q9UKM9	symbol	structured	Primary	GGGUCUUWUUUUUAA		Experiment_1	3	TTGCTG40NCTA	AAG	1		25
+jolma2020_structured_013	RBFOX1	Q9NWB1	symbol	structured	Primary	GKUGCAUGUG		Experiment_1	2	TGGTCG40NTCGG	AAG	1		20
+jolma2020_structured_014	RBFOX3	A6NFN3	symbol	structured	Primary	GUWGCAUGUG		Experiment_1	3	TTGTCT40NGCT	AAG	1		22
+jolma2020_structured_015	RBM4	Q9BWF3	symbol	structured	Primary	KGUUGCGCGGG		Experiment_1	3	TTCGGA40NCGC	AAG	3		21
+jolma2020_structured_016	RBM4	Q9BWF3	symbol	structured	Secondary	UGAGUGCGGUAG		Experiment_1	3	TTCGGA40NCGC	AAG			20
+jolma2020_structured_017	RBM4B	Q9BQ04	symbol	structured	Primary	KGUUGCGCGGG		Experiment_1	3	TTGCCC40NCTC	AAG	3		21
+jolma2020_structured_018	RBM4B	Q9BQ04	symbol	structured	Secondary	UGAGUGCGGUAG		Experiment_1	3	TTGCCC40NCTC	AAG			20
+jolma2020_structured_019	RBM6	P78332	symbol	structured	Primary	YRCGCUCCUNGCY		Experiment_1	2	TTATGA40NCAG	AAG	2		23
+jolma2020_structured_020	RBM6	P78332	symbol	structured	Secondary	YRYGCUCGUGCYN		Experiment_1	2	TTATGA40NCAG	AAG			23
+jolma2020_structured_021	RBMS1	P29558	symbol	structured	Primary	SGUGCAUAAKGCN		Experiment_1	3	TATTCA40NTCAG	AAG	2		19
+jolma2020_structured_022	RBMS2	Q15434	symbol	structured	Primary	NUGCAUAAUGN		Experiment_1	4b-	TATGGT40NATA	EMQ	2		19
+jolma2020_structured_023	RBMS3	Q6XE24	symbol	structured	Primary	NUGCAUAAUGN		Experiment_1	4b0	TTTGAC40NGGT	EMO	1		19
+jolma2020_structured_024	RBMS3	Q6XE24	symbol	structured	Secondary	SAUGYAURAKKUG		Experiment_1	4b0	TTTGAC40NGGT	EMO			19
+jolma2020_structured_025	RBMY1E	A6NEQ0	symbol	structured	Secondary	NAGCUUNGUGCUN		Experiment_1	4b0	TGGTGG40NTAA	EMO			13
+jolma2020_structured_026	RBMY1E	A6NEQ0	symbol	structured	Primary	NGCUUCGNGCN		Experiment_1	4b0	TGGTGG40NTAA	EMO	1		11
+jolma2020_structured_027	RBMY1F	Q15415	symbol	structured	Secondary	GCGCAAGAGC		Experiment_1	4	TACCTC40NATT	AAG			13
+jolma2020_structured_028	RBMY1F	Q15415	symbol	structured	Primary	NGCCCUCAAGGYN		Experiment_1	4	TACCTC40NATT	AAG	1		15
+jolma2020_structured_029	RBMY1J	Q15415	symbol	structured	Secondary	GCGCAAGAGC		Experiment_1	4b-	TCATAG40NGGT	AAG			14
+jolma2020_structured_030	RBMY1J	Q15415	symbol	structured	Primary	NGCCCUCAAGGYN		Experiment_1	4b-	TCATAG40NGGT	AAG	1		17
+jolma2020_structured_031	RBMY1J	Q15415	symbol	structured	Secondary	NGCGUCGUGGCN		Experiment_1	4b-	TCATAG40NGGT	AAG			14
+jolma2020_structured_032	RBMY1J	Q15415	symbol	structured	Secondary	UGAAUUCGUCN		Experiment_1	4b-	TCATAG40NGGT	AAG			13
+jolma2020_structured_033	RC3H1	Q5TC82	symbol	structured	Primary	YRCGUUUUAGKR		Experiment_1	4	TGCTAA40NAACA	AAG	1		16
+jolma2020_structured_034	RC3H2	Q9HBD1	symbol	structured	Secondary	CCUCUNUGAGG		Experiment_1	2	TCTTGC40NTTC	AAG			15
+jolma2020_structured_035	RC3H2	Q9HBD1	symbol	structured	Secondary	CUCGUAUCGAG		Experiment_1	2	TCTTGC40NTTC	AAG			15
+jolma2020_structured_036	RC3H2	Q9HBD1	symbol	structured	Primary	CURCGUUUUAGKAG		Experiment_1	2	TCTTGC40NTTC	AAG	1		18
+jolma2020_structured_037	RNPC3	Q96LT9	symbol	structured	Secondary	GCAGUKUUAGGGY		Experiment_1	3	TGCGCT40NTGA	AAG			17
+jolma2020_structured_038	YBX1	P67809	symbol	structured	Primary	RCCAYRHCAUCGY		Experiment_1	4	TCTTGC40NATAG	AAG	1		17
+jolma2020_structured_039	ZC3H12A	Q5D1E8	symbol	structured	Primary	NGCAGGUAAGUGCN		Experiment_1	4	TGATGA40NCATT	AAG	1		14
+jolma2020_structured_040	ZC3H12B	Q5HYM0	symbol	structured	Primary	NGCAGGUAAGUGSN		Experiment_1	2	TGAATG40NGTAG	AAG	1		14
+jolma2020_structured_041	ZC3H12B	Q5HYM0	symbol	structured	Secondary	SCAGGUAUUAUGS		Experiment_1	2	TGAATG40NGTAG	AAG			15
+jolma2020_structured_042	ZC3H12C	Q9C0D7	symbol	structured	Primary	NCAGGUAAGUGN		Experiment_1	3	TATGAC40NTCA	AAG	1		14

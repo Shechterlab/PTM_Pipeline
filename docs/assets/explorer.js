@@ -7461,7 +7461,7 @@
     // Regions of a protein in contact with RNA or DNA in structures, and what is known of its binding beyond structures.
     const pIndex = new Map(P.map((q, i) => [q.acc, i]));
     const push = (m, i, v) => { if (!m.has(i)) m.set(i, []); m.get(i).push(v); };
-    const naReg = new Map(), nab = { rbns: new Map(), jaspar: new Map(), eclip: new Map() };
+    const naReg = new Map(), nab = { rbns: new Map(), jaspar: new Map(), eclip: new Map(), selex: new Map() };
     for (const [acc, kind, start, end, nEnt, nCx, segs, nSegs, sites] of d.na_regions || []) {
       if (pIndex.has(acc)) push(naReg, pIndex.get(acc), { kind, start, end, nEnt, nCx, segs: segs.map(([seg, pdb, name, n, type]) => ({ seg, pdb, name, n, type })), nSegs, sites });
     }
@@ -7469,6 +7469,9 @@
     for (const [acc, exp, conc, top, logos] of b.rbns || []) if (pIndex.has(acc)) push(nab.rbns, pIndex.get(acc), { exp, conc, top, logos });
     for (const [acc, id, name, cls, fam, pfm, cons] of b.jaspar || []) if (pIndex.has(acc)) push(nab.jaspar, pIndex.get(acc), { id, name, cls, fam, pfm, cons });
     for (const [acc, exp, cell, n, regions, genes] of b.eclip || []) if (pIndex.has(acc)) push(nab.eclip, pIndex.get(acc), { exp, cell, n, regions, genes });
+    // HTR-SELEX models (Jolma et al. 2020), primary before secondary
+    for (const [acc, id, kind, type, exp, cycle, olig, pfm, cons] of b.htrselex || []) if (pIndex.has(acc)) push(nab.selex, pIndex.get(acc), { id, kind, type, exp, cycle, olig, pfm, cons });
+    nab.selex.forEach((list) => list.sort((a, c) => (a.type !== 'Primary') - (c.type !== 'Primary') || (a.exp !== 'Experiment_1') - (c.exp !== 'Experiment_1')));
     const wr = new Map((d.wr || []).map(([k, list]) => [k, new Set(list)]));
     for (const g of d.geometry || []) {
       const s = S[g[0]];
@@ -7850,7 +7853,7 @@
     'Contact via a flanking residue (tagged via i+k): the side chain is not within 8 Å, but a residue at i ± 1–5 has a heavy atom within 4 Å; the window is centred on the nucleotide nearest that residue. ' +
     'N and X mark bases not assigned in the model (unknown or non-standard nucleotides). All PDB entries with the site at an RNA or DNA interface are included. ' +
     'The sequences are those the authors of each structure chose (designed oligonucleotides are tagged oligo), so they record contacts, not sequence preference, and no consensus is derived from them; ' +
-    'sequence preference is shown only from selection experiments (RNA Bind-n-Seq for RNA, JASPAR profiles for DNA).';
+    'sequence preference is shown only from selection experiments (RNA Bind-n-Seq and HTR-SELEX for RNA, JASPAR profiles for DNA).';
   function naTsv(ws) {
     return ['protein\tuniprot_accession\tsite\tcontact\tnucleic_acid\tnucleic_acid_type\twindow\tcontacted_offsets\tside_chain_distance_a\tdesigned_oligonucleotide\tmolecule_names\tpdb_entries']
       .concat(ws.map((w) => [P[w.s.p].label, P[w.s.p].acc, rl(w.s.pos, P[w.s.p]), w.via ? 'via i' + (w.via > 0 ? '+' : '') + w.via : w.prox ? 'proximal' : 'direct', w.kind, w.type, w.win,
@@ -7927,11 +7930,12 @@
         (b.frag.length ? '<p>Inside RBDmap RNA-bound fragment' + (b.frag.length === 1 ? ' ' : 's ') + b.frag.map(([x, y]) => rn(x, p) + '–' + rn(y, p)).join(', ') + ' <span class="muted">HeLa</span></p>' : '') +
         (b.xr && IX.nab.eclip.get(s.p) ? '<p class="tl">RNA crosslinked to ' + esc(p.label) + ' in cells (ENCODE eCLIP)</p><p>' + eclipText(s.p, 6) + '</p><p class="muted">With an RNA crosslink at ' + (b.xr.pos === s.pos ? 'the site' : iRel(b.xr.pos - s.pos)) + ', these transcripts are candidate RNA partners of this segment.</p>' : ''));
     }
-    const rb = IX.nab.rbns.get(s.p), ec = IX.nab.eclip.get(s.p), jm = IX.nab.jaspar.get(s.p);
-    if (rb || (ec && !b.xr) || jm) {
+    const rb = IX.nab.rbns.get(s.p), ec = IX.nab.eclip.get(s.p), jm = IX.nab.jaspar.get(s.p), sx = IX.nab.selex.get(s.p);
+    if (rb || sx || (ec && !b.xr) || jm) {
       const top = (x) => { const tot = x.regions.reduce((a, c) => a + c, 0) || 1, k = x.regions.indexOf(Math.max(...x.regions)); return ECLIP_LABEL[k] + ' ' + pctText(x.regions[k], tot) + '%'; };
       out.push('<p class="tl">What ' + esc(p.label) + ' binds (whole protein)</p>' +
         (rb ? '<p>RNA in vitro (RNA Bind-n-Seq): ' + rb[0].top.slice(0, 4).map(([k]) => esc(k)).join(', ') + '</p>' : '') +
+        (sx ? '<p>RNA in vitro (HTR-SELEX): ' + Array.from(new Set(sx.map((m) => m.cons))).slice(0, 3).map(esc).join(', ') + '</p>' : '') +
         (ec && !b.xr ? '<p>RNA in cells (eCLIP): ' + ec.map((x) => esc(x.cell) + ' ' + fmt(x.n) + ' peaks, most in ' + top(x)).join('; ') + '</p>' : '') +
         (jm ? '<p>DNA profile (JASPAR): ' + jm.slice(0, 2).map((m) => esc(m.name) + ' ' + esc(m.cons)).join(', ') + '</p>' : ''));
     }
@@ -8076,17 +8080,21 @@
       });
     });
   }
-  // What it prefers beyond structures: RNA Bind-n-Seq (ENCODE, in vitro) or JASPAR 2026 profiles.
+  // What it prefers beyond structures: RNA Bind-n-Seq (ENCODE) and HTR-SELEX (Jolma 2020), both in vitro, or JASPAR 2026 profiles.
   function bindPrefHtml(p, kind) {
     const pal = screenPalette();
     if (kind === 'rna') {
-      const rb = IX.nab.rbns.get(p.i) || [];
-      if (!rb.length) return '';
-      return '<section class="na-sec"><h4>Preferred RNA in vitro (RNA Bind-n-Seq)</h4>' + rb.map((x) => '<div class="nab-row">' +
+      const rb = IX.nab.rbns.get(p.i) || [], sx = IX.nab.selex.get(p.i) || [];
+      if (!rb.length && !sx.length) return '';
+      return (rb.length ? '<section class="na-sec"><h4>Preferred RNA in vitro (RNA Bind-n-Seq)</h4>' + rb.map((x) => '<div class="nab-row">' +
         (x.logos.length ? '<div class="nab-logos">' + x.logos.map(([k, lg, pwm]) => '<span class="nab-logo" data-tip="' + esc('ENCODE logo ' + lg + ', from ' + k + '-mers') + '">' + pfmLogoSvg(pwm, false, pal, { compact: true }).svg + '</span>').join('') + '</div>' : '') +
         '<div class="tags">' + x.top.map(([k, r]) => '<span class="tag nab-kmer" data-tip="' + esc('<b>' + k + '</b><br>enrichment R ' + r + ': its frequency in protein-bound RNA relative to the input') + '">' + esc(k) + ' <span class="muted">' + Number(r).toFixed(1) + '</span></span>').join('') + '</div>' +
         '<p class="note">The ' + x.top.length + ' most enriched 5-mers (R: frequency in RNA recovered with the purified protein from a random-sequence pool, relative to the input) at ' + esc(x.conc) +
-        '; ENCODE <a href="https://www.encodeproject.org/experiments/' + encodeURIComponent(x.exp) + '/" target="_blank" rel="noopener">' + esc(x.exp) + ' ↗</a>.</p></div>').join('') + '</section>';
+        '; ENCODE <a href="https://www.encodeproject.org/experiments/' + encodeURIComponent(x.exp) + '/" target="_blank" rel="noopener">' + esc(x.exp) + ' ↗</a>.</p></div>').join('') + '</section>' : '') +
+        (sx.length ? '<section class="na-sec"><h4>Preferred RNA in vitro (HTR-SELEX)</h4><div class="nab-grid">' + sx.map((m) => '<figure class="nab-mat">' + pfmLogoSvg(m.pfm, false, pal, { h: 60, cw: 16 }).svg +
+          '<figcaption><span class="mono">' + esc(m.cons) + '</span><br><span class="muted small">' + esc([m.type === 'Primary' ? 'primary' : 'secondary', m.kind === 'structured' ? 'within a stem-loop' : 'linear', m.olig, m.exp === 'Experiment_1' ? '' : 'replicate', 'cycle ' + m.cycle].filter(Boolean).join(' · ')) +
+          '</span></figcaption></figure>').join('') + '</div><p class="note">RNA selected by the purified protein (or its RNA-binding domains) from random 40-nucleotide RNA over several cycles (Jolma et al., <i>Genome Res</i> 30:962, 2020, Supplemental Tables S2 and S3, CC BY-NC 4.0). ' +
+          (sx.some((m) => m.kind === 'structured') ? '"Within a stem-loop": the motif sits in the loop of a hairpin whose flanking bases pair.' : '') + '</p></section>' : '');
     }
     const jm = IX.nab.jaspar.get(p.i) || [];
     if (!jm.length) return '';
@@ -8856,7 +8864,7 @@
     const xlN = xp ? (kind === 'rna' ? xp.rnaPos.length : xp.dnaPos.length + xp.dnaCand.length) : 0;
     const xlSites = sites.filter((s) => { const b = siteBound(s); return (kind === 'rna' ? b.rna : b.dna).some((x) => Math.abs(x.pos - s.pos) <= NA_NEAR); });
     const regs = ((IX.naReg && IX.naReg.get(p.i)) || []).filter((r) => r.kind === kind).length;
-    const nab = kind === 'rna' ? [IX.nab.rbns.get(p.i) ? 'RNA Bind-n-Seq' : '', IX.nab.eclip.get(p.i) ? 'eCLIP' : ''].filter(Boolean) : [IX.nab.jaspar.get(p.i) ? 'JASPAR profile' : ''].filter(Boolean);
+    const nab = kind === 'rna' ? [IX.nab.rbns.get(p.i) ? 'RNA Bind-n-Seq' : '', IX.nab.selex.get(p.i) ? 'HTR-SELEX' : '', IX.nab.eclip.get(p.i) ? 'eCLIP' : ''].filter(Boolean) : [IX.nab.jaspar.get(p.i) ? 'JASPAR profile' : ''].filter(Boolean);
     const sitesAny = new Set([...at, ...px, ...nx, ...xlSites]).size;
     return { at: at.size, px: px.size, nx: nx.size, xlN, xlSites: xlSites.length, regs, nab, sitesAny, any: !!(ws.length || xlN || regs || nab.length || (xp && (kind === 'rna' ? xp.rbd.length : xp.dnaBind.length || xp.dnaInt))) };
   }
@@ -10372,13 +10380,13 @@
       } else exportFigure(b.dataset.naDist, naDistSvg(rows, EXPORT_PAL, { forExport: true, title: 'Minimum distance of arginine side chains to RNA and DNA, by type' }), 'methylarginine_distance_to_rna_dna');
     }));
   }
-  // The selected proteins with RNA Bind-n-Seq, JASPAR or eCLIP data, most selected sites first, and the eCLIP target
+  // The selected proteins with RNA Bind-n-Seq, HTR-SELEX, JASPAR or eCLIP data, most selected sites first, and the eCLIP target
   // genes that two or more of them share (each experiment's 25 genes with most peaks).
   function ixNabHtml() {
     const count = new Map();
     for (const s of R.sites) count.set(s.p, (count.get(s.p) || 0) + 1);
-    const rows = Array.from(count.entries()).map(([i, n]) => ({ i, n, rb: IX.nab.rbns.get(i), jm: IX.nab.jaspar.get(i), ec: IX.nab.eclip.get(i) }))
-      .filter((r) => r.rb || r.jm || r.ec).sort((a, b) => b.n - a.n || P[a.i].label.localeCompare(P[b.i].label));
+    const rows = Array.from(count.entries()).map(([i, n]) => ({ i, n, rb: IX.nab.rbns.get(i), sx: IX.nab.selex.get(i), jm: IX.nab.jaspar.get(i), ec: IX.nab.eclip.get(i) }))
+      .filter((r) => r.rb || r.sx || r.jm || r.ec).sort((a, b) => b.n - a.n || P[a.i].label.localeCompare(P[b.i].label));
     if (!rows.length) return '';
     const pal = screenPalette(), LIMIT = 40;
     const by = new Map();
@@ -10387,11 +10395,13 @@
       genes.forEach((g) => { if (!by.has(g)) by.set(g, []); by.get(g).push(P[r.i].label); });
     }
     const shared = Array.from(by.entries()).filter(([, l]) => l.length >= 2).sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
-    const nRb = rows.filter((r) => r.rb).length, nJm = rows.filter((r) => r.jm).length, nEc = rows.filter((r) => r.ec).length;
-    return '<section class="na-part"><h4>What the proteins bind beyond structures</h4><p class="na-head"><b>' + fmt(rows.length) + '</b> of the ' + fmt(count.size) + ' proteins have data: RNA Bind-n-Seq for ' + fmt(nRb) +
-      ', a JASPAR DNA profile for ' + fmt(nJm) + ', eCLIP for ' + fmt(nEc) + '.</p><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Protein</th><th class="r">Sites</th><th>RNA in vitro (top 5-mers)</th><th>DNA profile</th><th>RNA in cells (eCLIP)</th></tr></thead><tbody>' +
+    const nRb = rows.filter((r) => r.rb).length, nSx = rows.filter((r) => r.sx).length, nJm = rows.filter((r) => r.jm).length, nEc = rows.filter((r) => r.ec).length;
+    return '<section class="na-part"><h4>What the proteins bind beyond structures</h4><p class="na-head"><b>' + fmt(rows.length) + '</b> of the ' + fmt(count.size) + ' proteins have data: RNA Bind-n-Seq for ' + fmt(nRb) + ', HTR-SELEX for ' + fmt(nSx) +
+      ', a JASPAR DNA profile for ' + fmt(nJm) + ', eCLIP for ' + fmt(nEc) + '.</p><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Protein</th><th class="r">Sites</th><th>RNA in vitro (RBNS 5-mers; HTR-SELEX)</th><th>DNA profile</th><th>RNA in cells (eCLIP)</th></tr></thead><tbody>' +
       rows.slice(0, LIMIT).map((r) => '<tr><td><button class="linkish" type="button" data-na-p="' + r.i + '">' + esc(P[r.i].label) + '</button></td><td class="r num">' + r.n + '</td>' +
-        '<td>' + (r.rb ? r.rb[0].top.slice(0, 3).map(([k]) => '<span class="tag nab-kmer">' + esc(k) + '</span>').join(' ') : '<span class="muted">—</span>') + '</td>' +
+        '<td>' + (r.rb ? r.rb[0].top.slice(0, 3).map(([k]) => '<span class="tag nab-kmer">' + esc(k) + '</span>').join(' ') : '') +
+          (r.sx ? (r.rb ? '<br>' : '') + Array.from(new Set(r.sx.filter((m) => m.type === 'Primary').concat(r.sx).map((m) => m.cons))).slice(0, 2).map((c) => '<span class="mono small" title="HTR-SELEX consensus (Jolma et al. 2020)">' + esc(c) + '</span>').join(' ') : '') +
+          (r.rb || r.sx ? '' : '<span class="muted">—</span>') + '</td>' +
         '<td>' + (r.jm ? r.jm.slice(0, 2).map((m) => '<span class="nab-logo" data-tip="' + esc('<b>' + esc(m.id) + '</b> ' + esc(m.name) + '<br><span class="mono">' + esc(m.cons) + '</span>') + '">' + pfmLogoSvg(m.pfm, true, pal, { compact: true }).svg + '</span>').join('') +
           (r.jm.length > 2 ? ' <span class="muted small">+' + (r.jm.length - 2) + '</span>' : '') : '<span class="muted">—</span>') + '</td>' +
         '<td>' + (r.ec ? r.ec.map((x) => esc(x.cell) + ' ' + fmt(x.n)).join(', ') + '<br><span class="muted small">' + esc(Array.from(new Set(r.ec.flatMap((x) => x.genes.slice(0, 3).map(([g]) => g)))).slice(0, 4).join(', ')) + '</span>' : '<span class="muted">—</span>') + '</td></tr>').join('') +
@@ -10401,8 +10411,8 @@
   }
   function ixNaSummary() {
     const n = (kind) => new Set(naRows(R.sites, kind, false).map((w) => w.s)).size;
-    const prots = new Set(R.sites.map((s) => s.p)), withNab = Array.from(prots).filter((i) => IX.nab.rbns.get(i) || IX.nab.jaspar.get(i) || IX.nab.eclip.get(i)).length;
-    return fmt(n('rna')) + ' methylarginines in direct contact with RNA and ' + fmt(n('dna')) + ' with DNA in structures; ' + fmt(withNab) + ' proteins with RNA Bind-n-Seq, JASPAR or eCLIP data' + (constraints().length ? ', your selection' : '');
+    const prots = new Set(R.sites.map((s) => s.p)), withNab = Array.from(prots).filter((i) => IX.nab.rbns.get(i) || IX.nab.selex.get(i) || IX.nab.jaspar.get(i) || IX.nab.eclip.get(i)).length;
+    return fmt(n('rna')) + ' methylarginines in direct contact with RNA and ' + fmt(n('dna')) + ' with DNA in structures; ' + fmt(withNab) + ' proteins with RNA Bind-n-Seq, HTR-SELEX, JASPAR or eCLIP data' + (constraints().length ? ', your selection' : '');
   }
 
   function openIxSection(k) {
@@ -11799,7 +11809,7 @@
           '<p><b>Chain type.</b> Each chain is classified from its molecule name, source organism and preparation: rRNA, tRNA, snRNA, mRNA (including pre-mRNA, introns, UTRs and IRES elements), other non-coding RNA, viral RNA, a designed RNA oligonucleotide without a biological name, or other RNA; an unnamed RNA of 900 nucleotides or more is classified as rRNA. DNA is nucleosomal when the entry contains core histones, telomeric (TTAGGG repeats), or other. The type chips restrict the windows to one type, and the search term <code>bound:</code> (rna, dna, at, or a type such as mrna or nucleosomal) selects the sites with that evidence. In the site tables, the Bound RNA/DNA column shows each site\'s window with the most supporting entries (±5 nucleotides; direct contact before proximal, then contact via a flanking residue) with its type, and the nearest residue within i ± 5 (the site included) UV-crosslinked to RNA or DNA in living cells; its tooltip lists every window, the crosslinked residues within i ± 10, and the protein\'s binding evidence. Release files supporting/nucleic_acid_contacts, nucleic_acid_proximal_sites and nucleic_acid_near_sites; the site table\'s bound_* columns.</p>' +
           '<p><b>Distance of methylarginines to RNA and DNA.</b> For every arginine of the methylated proteins modelled in a PDB entry that contains RNA or DNA (every entry in which PDBe-KB lists the protein with nucleic acid; up to two copies of the protein per entry), the minimum heavy-atom distance from its side chain to each RNA and DNA chain is recorded up to 8 Å. The Interactions view shows the distribution of this minimum distance by nucleic-acid type in 1 Å bins, for methylarginines and for the other arginines of the same proteins (bar height is the fraction of each group), and tests whether a larger fraction of methylarginines than of the other arginines lies within 4 Å or 8 Å: the Mantel–Haenszel odds ratio with each protein as a stratum, and the pooled Fisher odds ratio. Only arginines modelled in a structure are included, so disordered RGG regions, which contain many methylarginines, are largely absent; most structures contain unmethylated recombinant protein. Release files supporting/arginine_nucleic_acid_distances and interaction_statistics (analysis nucleic_acid_distance).</p>' +
           '<p><b>Binding regions.</b> On a protein page, the RNA and DNA interactions card lists the regions that bind nucleic acid: runs of residues in direct contact in structures (analysed once per distinct complex in every entry; runs separated by up to 3 residues are joined), with the nucleic-acid segments they contact and their type; runs of residues UV-crosslinked to RNA or DNA in living cells (joined in the same way); RBDmap fragments crosslinked to RNA in HeLa cells; and UniProt DNA-binding regions. Each row gives the UniProt domains it overlaps, the methylarginines within it and those within 5 residues of either end, with their distance from it. Release file supporting/nucleic_acid_regions.</p>' +
-          '<p><b>Sequence preference and targets from selection experiments.</b> RNA Bind-n-Seq (ENCODE; Dominguez et al. 2018): the 5-mers enriched in RNA recovered by the purified protein from a random library, relative to the input, with ENCODE\'s logos. JASPAR 2026 CORE vertebrates (CC BY 4.0): DNA-binding profiles from SELEX and ChIP-based experiments; a heterodimer\'s profile is listed for both partners. eCLIP (ENCODE; Van Nostrand et al. 2020): RNA crosslinked to the protein in K562 and HepG2 cells, as reproducible peaks assigned to GENCODE v50 basic transcripts, with the genes with the most peaks; these reflect expression as well as preference. For a selection, the Interactions view lists these for the selected proteins and the genes with eCLIP peaks for two or more of them. RNAcompete (CISBP-RNA) states no licence and is not included. Release files supporting/rna_bind_n_seq, dna_motifs and eclip.</p>') +
+          '<p><b>Sequence preference and targets from selection experiments.</b> RNA Bind-n-Seq (ENCODE; Dominguez et al. 2018): the 5-mers enriched in RNA recovered by the purified protein from a random library, relative to the input, with ENCODE\'s logos. HTR-SELEX (Jolma et al. 2020, <i>Genome Res</i> 30:962, CC BY-NC 4.0): RNA selected by the purified protein or its RNA-binding domains from random 40-nucleotide RNA over several cycles, as position frequency matrices of linear motifs and of motifs in the loop of a stem-loop, primary and secondary (86 proteins). JASPAR 2026 CORE vertebrates (CC BY 4.0): DNA-binding profiles from SELEX and ChIP-based experiments; a heterodimer\'s profile is listed for both partners. eCLIP (ENCODE; Van Nostrand et al. 2020): RNA crosslinked to the protein in K562 and HepG2 cells, as reproducible peaks assigned to GENCODE v50 basic transcripts, with the genes with the most peaks; these reflect expression as well as preference. For a selection, the Interactions view lists these for the selected proteins and the genes with eCLIP peaks for two or more of them. RNAcompete (CISBP-RNA) states no licence and is not included. Release files supporting/rna_bind_n_seq, htr_selex, dna_motifs and eclip.</p>') +
         sub('ix-evmap', 'How the evidence fits together', '<p>Counted per site or per protein. For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink localised to the residue or with it as a candidate residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), three IntAct record types (a mutation that changed an interaction, a short binding region, the arginine curated as methylated in an interaction; these do not set the status), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. The protein-context table shows, for the sites with each kind of evidence, the share on proteins annotated as RNA- or DNA-binding (Gene Ontology), in a CD-CODE condensate, physically linked to a PRMT or a Tudor-domain reader (STRING ≥ 0.7) or in a Complex Portal curated complex, against all selected sites; each cell lists those sites. Counted per protein, the same layout combines these protein properties and whether any of the protein\'s sites carries contact evidence. Below the site view, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
         sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a dimethylarginine state call (ProMetheusDB, Maron Table S2, UniProt or Wei 2020), the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the plain odds ratio with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ 0.05 are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions should be interpreted with caution.</p>') +
         sub('ix-wr', 'Writers and readers sharing substrates', '<p>For the proteins in the current selection, each cell counts the methylated proteins that are STRING physical partners (score ≥ 0.7) of both a PRMT (rows) and a Tudor-domain protein (columns, InterPro IPR002999; the 12 with most shared partners are shown). The expected count assumes the two partner lists are independent among the selected methylated proteins that are in STRING; Fisher\'s exact test, Benjamini–Hochberg across the cells; outlined cells have at least two shared partners and q ≤ 0.05 (a single shared partner of two short lists can pass the test alone). Clicking a cell lists the proteins (binds: both partners). A physical link is to the whole protein, not to a site, and several Tudor proteins read methyllysine rather than methylarginine, so a shared partner is a candidate path to test, not a demonstrated one.</p>') +

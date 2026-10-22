@@ -211,6 +211,7 @@ FILE_ROWS = {
     'nucleic_acid_regions': 'run of residues of a protein within 4 Å of RNA or DNA in PDB structures: the bound segments and the methylarginines inside it',
     'rna_bind_n_seq': 'methylated protein and ENCODE RNA Bind-n-Seq experiment: its most enriched 5-mers and logos (in vitro)',
     'dna_motifs': 'methylated protein and JASPAR 2026 DNA-binding profile',
+    'htr_selex': 'methylated protein and HTR-SELEX RNA-binding model (Jolma et al. 2020)',
     'eclip': 'methylated protein and ENCODE eCLIP experiment: peaks by transcript region and the genes with most peaks (in cells)',
     'disease_terms': 'enriched DisGeNET term (DOSE enrichDGN)',
     'disease_terms_tested': 'DisGeNET term DOSE enrichDGN tested, enriched or not',
@@ -875,6 +876,7 @@ def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
                    f"{n(regions['uniprot_accession'].nunique())} proteins ({n(int(has.sum()))} with methylarginines inside), read once per "
                    'distinct complex (the same bound sequences), with the segments each contacts.')
     for key, text in (('rna_bind_n_seq', 'ENCODE RNA Bind-n-Seq (in vitro): the most enriched 5-mers and logos'),
+                      ('htr_selex', 'HTR-SELEX (in vitro, Jolma et al., Genome Res 30:962, 2020, CC BY-NC 4.0): linear and stem-loop RNA motifs'),
                       ('dna_motifs', 'JASPAR 2026 CORE vertebrates DNA-binding profiles (CC BY 4.0)'),
                       ('eclip', 'ENCODE eCLIP in K562 and HepG2 cells: peaks by transcript region (GENCODE v50 basic) and the genes with the most peaks')):
         if key in files:

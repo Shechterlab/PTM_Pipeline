@@ -681,7 +681,7 @@ def load_nucleic_acid_binding(folder: Path, keep: set) -> dict:
             return []
         with open(p, encoding='utf-8') as fh:
             return list(csv.DictReader(fh, delimiter='\t'))
-    out = {'rbns': [], 'jaspar': [], 'eclip': []}
+    out = {'rbns': [], 'jaspar': [], 'eclip': [], 'htrselex': []}
     kmers = defaultdict(list)
     for r in rows('rbns_5mer_enrichment.tsv'):
         if r['uniprot_accession'] in keep:
@@ -702,6 +702,15 @@ def load_nucleic_acid_binding(folder: Path, keep: set) -> dict:
             m = pfm[r['matrix_id']]
             out['jaspar'].append([r['uniprot_accession'], r['matrix_id'], r['name'], r['tf_class'], r['tf_family'], m,
                                   ''.join(iupac(dict(zip('ACGT', c))) for c in m)])
+    # HTR-SELEX (Jolma et al. 2020): each model's position frequency matrix and its IUPAC consensus
+    sel = defaultdict(list)
+    for r in rows('htrselex_jolma2020_pfms.tsv'):
+        sel[r['model_id']].append([float(r[b]) for b in 'ACGU'])
+    for r in rows('htrselex_jolma2020_models.tsv'):
+        if r['uniprot_accession'] in keep:
+            m = sel[r['model_id']]
+            out['htrselex'].append([r['uniprot_accession'], r['model_id'], r['motif_kind'], r['motif_type'], r['experiment'], r['cycle'], r['oligomer'],
+                                    m, ''.join(iupac(dict(zip('ACGU', c))) for c in m)])
     regions = defaultdict(dict)
     for r in rows('encode_eclip_peak_regions.tsv'):
         regions[r['encode_experiment']][r['region']] = int(r['n_peaks'])
@@ -713,8 +722,8 @@ def load_nucleic_acid_binding(folder: Path, keep: set) -> dict:
             exp = r['encode_experiment']
             out['eclip'].append([r['uniprot_accession'], exp, r['cell_line'], int(r['n_peaks']), [regions[exp].get(k, 0) for k in ECLIP_REGIONS],
                                  genes[exp][:ECLIP_TOP]])
-    log(f"Binding beyond structures: RNA Bind-n-Seq for {len({x[0] for x in out['rbns']}):,} methylated proteins, JASPAR for "
-        f"{len({x[0] for x in out['jaspar']}):,}, eCLIP for {len({x[0] for x in out['eclip']}):,}")
+    log(f"Binding beyond structures: RNA Bind-n-Seq for {len({x[0] for x in out['rbns']}):,} methylated proteins, HTR-SELEX for "
+        f"{len({x[0] for x in out['htrselex']}):,}, JASPAR for {len({x[0] for x in out['jaspar']}):,}, eCLIP for {len({x[0] for x in out['eclip']}):,}")
     return out
 
 
@@ -2221,6 +2230,8 @@ def write_release_tables(outdir: Path, d: dict):
           [[acc, exp, conc, '; '.join(k for k, _ in top), '; '.join(str(v) for _, v in top),
             '; '.join(''.join(iupac(dict(zip('ACGU', c))) for c in pwm) for _, _, pwm in logos)]
            for acc, exp, conc, top, logos in nab.get('rbns', [])])
+    write('htr_selex.tsv', ['uniprot_accession', 'model_id', 'motif_kind', 'motif_type', 'experiment', 'cycle', 'oligomer', 'length', 'consensus'],
+          [[acc, mid, kind, mtype, exp, cycle, olig, len(m), cons] for acc, mid, kind, mtype, exp, cycle, olig, m, cons in nab.get('htrselex', [])])
     write('dna_motifs.tsv', ['uniprot_accession', 'matrix_id', 'name', 'tf_class', 'tf_family', 'length', 'consensus'],
           [[acc, mid, name, cls, fam, len(m), cons] for acc, mid, name, cls, fam, m, cons in nab.get('jaspar', [])])
     write('eclip.tsv', ['uniprot_accession', 'encode_experiment', 'cell_line', 'n_peaks'] + [f'peaks_{k}' for k in ECLIP_REGIONS] + ['top_target_genes', 'top_target_peaks'],
@@ -2885,7 +2896,7 @@ def main():
         f'{sum(1 for r in xl_rows if r[3] & D_XL):,} DNA-crosslinked (single localisation), {sum(1 for r in xl_rows if r[3] & D_CAND):,} DNA candidate residues, '
         f'{sum(1 for r in xl_rows if r[3] & D_BIND):,} in UniProt DNA-binding regions')
 
-    nab = load_nucleic_acid_binding(Path(args.nucleic_acid), set(meth_accs)) if args.nucleic_acid else {'rbns': [], 'jaspar': [], 'eclip': []}
+    nab = load_nucleic_acid_binding(Path(args.nucleic_acid), set(meth_accs)) if args.nucleic_acid else {'rbns': [], 'jaspar': [], 'eclip': [], 'htrselex': []}
     # Every entry in which a methylated protein touches RNA or DNA (PDBe-KB), for the bound sequences and the regions.
     na_entries = defaultdict(set)
     for acc in meth_accs:
@@ -3355,7 +3366,7 @@ def main():
                 'cdcode': f'CD-CODE {cd_version} condensate membership via cd-code.org API',
                 'contacts': 'RCSB ModelServer residue surroundings (wwPDB data, CC0)',
                 'na': 'PDBe API molecules (wwPDB data, CC0): the SEQRES sequence of each RNA and DNA chain',
-                'nab': 'ENCODE RNA Bind-n-Seq and eCLIP (no use restrictions); JASPAR 2026 CORE vertebrates non-redundant (CC BY 4.0); GENCODE v50 basic',
+                'nab': 'ENCODE RNA Bind-n-Seq and eCLIP (no use restrictions); HTR-SELEX, Jolma et al., Genome Res 30:962 (2020) (CC BY-NC 4.0); JASPAR 2026 CORE vertebrates non-redundant (CC BY 4.0); GENCODE v50 basic',
                 'regions': 'UniProt disordered regions (MobiDB-lite) and domain, repeat and zinc-finger features (CC BY 4.0)',
                 'protvar': 'ProtVar predicted interfaces 2024.05.28, AlphaFold-Multimer, residues within 5 Å (EMBL-EBI, CC BY 4.0); served-model list from af2complexes_interfaces_v1',
                 'afdb_complexes': 'AlphaFold DB predicted complexes (human heterodimers), API and model files (EMBL-EBI, CC BY 4.0)',
@@ -3389,6 +3400,8 @@ def main():
                                  '{kind}_distance: [n methylarginines within 8 Å, median Å, n other, median Å, Mann-Whitney p]',
                 'nab': {'rbns': ['accession', 'ENCODE experiment', 'protein concentration', f'top {RBNS_TOP} 5-mers [[kmer, R]]', 'ENCODE logos [[k, logo, [[A, C, G, U] per position]]]'],
                         'jaspar': ['accession', 'matrix', 'name', 'TF class', 'TF family', '[[A, C, G, T] counts per position]', 'IUPAC consensus'],
+                        'htrselex': ['accession', 'model', 'linear|structured', 'Primary|Secondary', 'experiment', 'selection cycle', 'monomeric|dimeric',
+                                     '[[A, C, G, U] frequencies per position]', 'IUPAC consensus'],
                         'eclip': ['accession', 'ENCODE experiment', 'cell line', 'reproducible peaks', 'peaks by region ' + '|'.join(ECLIP_REGIONS),
                                   f'top {ECLIP_TOP} genes [[gene, peaks]]']},
                 'na_regions': ['accession', 'rna|dna', 'start', 'end', 'PDB entries', 'distinct complexes (bound sequences) read',

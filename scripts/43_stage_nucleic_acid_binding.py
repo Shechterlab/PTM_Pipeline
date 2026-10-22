@@ -2,9 +2,9 @@
 """Stage what is known of the RNA and DNA that methylated proteins bind, beyond structures (inputs/nucleic_acid/).
 
     python scripts/43_stage_nucleic_acid_binding.py --cache PTM_data/external/nucleic_acid --out inputs/nucleic_acid \
-        [--only rbns jaspar eclip]
+        [--only rbns jaspar eclip htrselex]
 
-Three sources, each mapped to the reviewed human reference (--entries, release 2026_03):
+Four sources, each mapped to the reviewed human reference (--entries, release 2026_03):
 
   RNA Bind-n-Seq (ENCODE; Dominguez et al., Mol Cell 70:854, 2018, and ENCODE4): what a purified RBP picks from random
       RNA in vitro. Kept: the 5-mer enrichment R at the protein concentration where the top 5-mer is most enriched,
@@ -16,6 +16,10 @@ Three sources, each mapped to the reviewed human reference (--entries, release 2
       of RBPs in K562 and HepG2 cells, placed by their middle on GENCODE v50 basic transcripts: per experiment the
       peaks in CDS, 3' UTR, 5' UTR, non-coding exon, intron or outside genes (that order when a peak falls in more
       than one), and the 200 genes with most peaks.
+  HTR-SELEX (Jolma et al., Genome Res 30:962, 2020; CC BY-NC 4.0): what a purified RBP picks in vitro from random RNA
+      of 40 nucleotides, over several selection cycles, as position frequency matrices of linear motifs (Supplemental
+      Table S2) and of motifs within a stem-loop (Table S3), primary and secondary, with the experiment and its
+      replicate. Taken from the Europe PMC copy of the supplements; each RBP mapped by its gene symbol (two renamed since).
 
 ENCODE data have no use restrictions (encodeproject.org/help/citing-encode). RNAcompete (CISBP-RNA) states no licence,
 so it is not staged; the website links to it. Every download is listed with its MD5 in raw_files.tsv, and each table
@@ -44,6 +48,11 @@ JASPAR_PFM = 'https://jaspar.elixir.no/download/data/2026/CORE/JASPAR2026_CORE_v
 JASPAR_SQL = 'https://jaspar.elixir.no/download/database/JASPAR2026.sql.gz'
 GENCODE = 'https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_50/gencode.v50.basic.annotation.gtf.gz'
 ENCODE_TERMS = 'ENCODE data: no restrictions on use (encodeproject.org/help/citing-encode)'
+# Jolma et al. 2020 supplements through Europe PMC (PMC's own links answer scripts with a browser check)
+JOLMA_SUPPL = 'https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7397871/supplementaryFiles'
+JOLMA_TABLES = 'supp_gr.258848.119_Supplemental_Tables_S1-S8.xlsx'
+# Symbols of the paper that HGNC has renamed since (UniProt primary gene names, release 2026_03)
+JOLMA_RENAMED = {'CSDA': 'YBX3', 'HNRPLL': 'HNRNPLL'}
 # Where an eCLIP peak's middle falls, best first when it falls in more than one.
 REGIONS = ['CDS', 'UTR3', 'UTR5', 'noncoding_exon', 'intron']
 TOP_GENES = 200
@@ -307,6 +316,74 @@ def stage_jaspar(dl: Downloads, ref: Reference, out: Out):
     log(f'JASPAR: {len({r[0] for r in mrows})} matrices on {len({r[2] for r in mrows})} proteins; {len(unmapped)} with no human entry')
 
 
+# ---- HTR-SELEX ---------------------------------------------------------------------------------------------------------
+
+def cell_number(v):
+    """A spreadsheet cell as a number (the sheets are read as text), None when empty or not a number."""
+    try:
+        x = float(v)
+    except (TypeError, ValueError):
+        return None
+    return x if x == x else None
+
+
+def htrselex_blocks(sheet):
+    """The motifs of a supplemental table of Jolma et al. 2020: (field: value, [[A, C, G, U] per position]) for each block
+    under the column header row: a row naming the motif, then its A, C, G and U rows."""
+    rows = sheet.values.tolist()
+    head = next(i for i, r in enumerate(rows) if r[0] == 'Gene Symbol' and r[1] == 'Barcode')
+    fields = [str(v).strip() for v in rows[head] if isinstance(v, str)]
+    i = head + 1
+    while i < len(rows):
+        if [str(rows[i + k][0]).strip() if i + k < len(rows) else '' for k in range(1, 5)] == ['A', 'C', 'G', 'U']:
+            meta = {f: rows[i][k] for k, f in enumerate(fields)}
+            cols = [k for k in range(1, len(rows[i + 1])) if cell_number(rows[i + 1][k]) is not None]
+            yield meta, [[cell_number(rows[i + b][k]) or 0.0 for b in range(1, 5)] for k in cols]
+            i += 5
+        else:
+            i += 1
+
+
+def stage_htrselex(dl: Downloads, ref: Reference, out: Out):
+    import io
+    import zipfile
+
+    import pandas as pd
+    z = dl.get(JOLMA_SUPPL, 'htrselex/jolma2020_PMC7397871_supplementary_files.zip', 'cache')
+    with zipfile.ZipFile(z) as zf:
+        book = pd.ExcelFile(io.BytesIO(zf.read(JOLMA_TABLES)))
+    mrows, prows, unmapped = [], [], set()
+    text = lambda v: '' if v is None or (isinstance(v, float) and v != v) else str(v).strip()  # noqa: E731
+    for sheet, kind in (('S2-PWMs-linear', 'linear'), ('S3- PWMs-structured', 'structured')):
+        for k, (meta, cols) in enumerate(htrselex_blocks(book.parse(sheet, header=None, dtype=object)), 1):
+            gene = text(meta['Gene Symbol'])
+            symbol = JOLMA_RENAMED.get(gene, gene)
+            accs = ref.symbol(symbol)
+            if not accs:
+                unmapped.add(gene)
+            model = f'jolma2020_{kind}_{k:03d}'
+            for acc in sorted(accs):
+                mrows.append([model, gene, acc, 'renamed symbol' if symbol != gene else 'symbol', kind, text(meta.get('Motif type')),
+                              text(meta.get('seed')), text(meta.get('Mono or multimer')), text(meta.get('Experiment')), text(meta.get('cycle')),
+                              text(meta.get('Barcode')), text(meta.get('Batch')), text(next((v for f, v in meta.items() if f.startswith('Number of RBDs')), '')),
+                              text(meta.get('Note')), len(cols)])
+            # Table S2 gives counts, S3 frequencies: both as frequencies per position
+            prows += [[model, j + 1, *[round(v / (sum(c) or 1), 4) for v in c]] for j, c in enumerate(cols)]
+    meta = dict(source=JOLMA_SUPPL + ' (' + JOLMA_TABLES + ', sheets S2 and S3)', version='Genome Res 30:962 (2020), Supplemental Tables S2 and S3',
+                citation='Jolma et al., Genome Res 30:962 (2020), doi:10.1101/gr.258848.119', licence='CC BY-NC 4.0 (the article and its supplements, PMC7397871)')
+    out.table('htrselex_jolma2020_models.tsv', ['model_id', 'gene_symbol', 'uniprot_accession', 'mapped_by', 'motif_kind', 'motif_type', 'seed', 'oligomer',
+                                                 'experiment', 'cycle', 'barcode', 'batch', 'rbd_count', 'note', 'length'], mrows,
+              content='HTR-SELEX RNA-binding models of human RBPs (in vitro selection from random 40-nucleotide RNA): linear motifs and motifs within a '
+                      'stem-loop, primary or secondary, with the experiment (or its replicate), the selection cycle used and the RBP\'s reviewed entry',
+              derived_from=JOLMA_TABLES + ' sheets S2-PWMs-linear and S3- PWMs-structured',
+              how_made_or_checked=f'scripts/43_stage_nucleic_acid_binding.py htrselex; mapped by gene symbol ({", ".join(f"{a} as {b}" for a, b in JOLMA_RENAMED.items())}); '
+                                  f'unmapped: {", ".join(sorted(unmapped)) or "none"}', **meta)
+    out.table('htrselex_jolma2020_pfms.tsv', ['model_id', 'position', 'A', 'C', 'G', 'U'], prows,
+              content='The position frequency matrices of the same models (Table S2 counts and Table S3 frequencies, both as frequencies per position)',
+              derived_from=JOLMA_TABLES, how_made_or_checked='scripts/43_stage_nucleic_acid_binding.py htrselex', **meta)
+    log(f'HTR-SELEX: {len({r[0] for r in mrows})} models on {len({r[2] for r in mrows})} proteins; unmapped: {sorted(unmapped)}')
+
+
 # ---- eCLIP -------------------------------------------------------------------------------------------------------------
 
 def gtf_attrs(text: str) -> dict:
@@ -473,7 +550,7 @@ def main() -> None:
     ap.add_argument('--out', default=str(root / 'inputs' / 'nucleic_acid'))
     ap.add_argument('--entries', default=str(root / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03_entries.tsv'))
     ap.add_argument('--manifest', default=str(root / 'inputs' / 'MANIFEST.tsv'))
-    ap.add_argument('--only', nargs='*', default=['rbns', 'jaspar', 'eclip'])
+    ap.add_argument('--only', nargs='*', default=['rbns', 'jaspar', 'eclip', 'htrselex'])
     ap.add_argument('--workers', type=int, default=6)
     args = ap.parse_args()
     dl, ref, out = Downloads(Path(args.cache)), Reference(Path(args.entries)), Out(Path(args.out))
@@ -483,6 +560,8 @@ def main() -> None:
         stage_jaspar(dl, ref, out)
     if 'eclip' in args.only:
         stage_eclip(dl, ref, out, args.workers)
+    if 'htrselex' in args.only:
+        stage_htrselex(dl, ref, out)
     raw = Path(args.out) / 'raw_files.tsv'
     old = {}
     if raw.exists():
@@ -497,7 +576,7 @@ def main() -> None:
             w.writerow(({**keep, **rows})[k])
     out.manifest.append({'file': f'{Path(args.out).name}/raw_files.tsv', 'bytes': raw.stat().st_size, 'md5': md5_of(raw),
                          'rows': len(keep) + len(rows), 'redistribution': 'git',
-                         'content': 'Every file scripts/43 downloaded (ENCODE files and searches, JASPAR, GENCODE), with its URL, size, MD5 and date; '
+                         'content': 'Every file scripts/43 downloaded (ENCODE files and searches, JASPAR, GENCODE, the Jolma 2020 supplements), with its URL, size, MD5 and date; '
                                     'the files themselves are not kept here', 'source': 'the sources above',
                          'how_made_or_checked': 'scripts/43_stage_nucleic_acid_binding.py'})
     out.write_manifest(Path(args.manifest))

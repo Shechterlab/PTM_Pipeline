@@ -782,6 +782,8 @@ CODES['method'] = {
     'fisher': 'two-sided Fisher exact test (scipy), q = Benjamini-Hochberg within the analysis and method. The odds ratio adds 0.5 to each cell (Haldane-Anscombe)',
     'mantel_haenszel': 'Mantel-Haenszel common odds ratio with each protein a stratum, and the continuity-corrected Cochran-Mantel-Haenszel test (statsmodels), a b c d are the pooled counts. q = Benjamini-Hochberg within the analysis and method',
 }
+CODES['htr_selex_kind'] = {'linear': 'a linear motif (Jolma et al. 2020, Supplemental Table S2)',
+                           'structured': 'a motif within a stem-loop, whose flanks pair (Supplemental Table S3)'}
 CODES['ptm_type'] = {'phospho': 'phosphorylation (S, T, Y)', 'lys_acyl': 'lysine acylation', 'ub_sumo': 'ubiquitination or SUMOylation (K)', 'lys_methyl': 'lysine methylation'}
 
 PROTEIN_COLUMNS = [
@@ -1071,6 +1073,18 @@ RNA_BIND_N_SEQ_COLUMNS = [
     ('top_5mers', 'list<string>', '', 'the 12 most enriched 5-mers'),
     ('top_5mer_R', 'list<string>', '', 'their enrichment R (frequency in the bound RNA over the input), in the same order'),
     ('logo_consensus', 'list<string>', '', 'the consensus (IUPAC) of each logo ENCODE gives for the experiment, strongest first'),
+]
+
+HTR_SELEX_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'methylated protein with an HTR-SELEX model (Jolma et al., Genome Res 30:962, 2020: RNA selected by the purified protein from random 40-nucleotide RNA in vitro, CC BY-NC 4.0)'),
+    ('model_id', 'string', '', 'the model: jolma2020_linear_<n> from Supplemental Table S2, jolma2020_structured_<n> from Table S3, in their order'),
+    ('motif_kind', 'code', 'htr_selex_kind', 'whether the motif is linear or lies within a stem-loop'),
+    ('motif_type', 'string', '', 'Primary or Secondary, as the paper gives it'),
+    ('experiment', 'string', '', 'the experiment that gave the model (Experiment_1, or its Replicate)'),
+    ('cycle', 'string', '', 'the selection cycle the model was derived from'),
+    ('oligomer', 'string', '', 'monomeric or dimeric binding, as the paper gives it (linear models)'),
+    ('length', 'integer', '', 'positions in the model'),
+    ('consensus', 'string', '', 'IUPAC consensus of the position frequency matrix'),
 ]
 
 DNA_MOTIF_COLUMNS = [
