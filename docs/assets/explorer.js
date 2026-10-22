@@ -798,6 +798,7 @@
   const fetchText = (u) => fetch(u).then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); });
 
   // AlphaFold DB entry for an accession: per-residue pLDDT and, for arginines, AlphaMissense R->X scores.
+  const afFailed = new Set();   // accessions whose AlphaFold DB lookup failed (rather than found no model)
   function loadAF(acc) {
     if (afCache.has(acc)) return afCache.get(acc);
     const pr = fetchJson('https://alphafold.ebi.ac.uk/api/prediction/' + encodeURIComponent(acc))
@@ -831,7 +832,7 @@
           return { entry: e, plddt, am: amR, seq: e.uniprotSequence || e.sequence || '' };
         });
       })
-      .catch(() => null)
+      .catch((err) => { if (String(err && err.message) !== '404') afFailed.add(acc); return null; })   // 404: AFDB has no model
       .then((d) => { AFDATA.set(acc, d); return d; });
     afCache.set(acc, pr);
     return pr;
@@ -4251,7 +4252,7 @@
   function hubHtml(single) {
     const scoped = constraints().length > 0;
     if (single) return '';
-    return '<p class="a-proto a-try hub-only">A new layout is in preparation <button type="button" class="linkish" data-ui="a">Try it</button></p><p class="hub-legend hub-only"><span class="hl-keys">' + am(1) + 'more ' + am(-1) + 'less than expected ' + am(0) + 'no difference (q ≤ ' + PADJ + ')</span> ' +
+    return '<p class="a-proto a-try hub-only">You are viewing the previous layout <button type="button" class="linkish" data-ui="a">Back to the new layout</button></p><p class="hub-legend hub-only"><span class="hl-keys">' + am(1) + 'more ' + am(-1) + 'less than expected ' + am(0) + 'no difference (q ≤ ' + PADJ + ')</span> ' +
       'Figures: each test or class a dot at its odds ratio or fold enrichment (log scale, centre line no difference), or a bar for a share' + (scoped ? '; your selection on top, the whole dataset below' : '') + '. ' +
       (scoped ? '<b>Retested</b>: the release\'s test run again on your selection. <b>Counted</b>: your sites or proteins counted. <b>Whole dataset only</b>: unchanged by a selection.'
         : 'Make a selection (search, or <b>Filters</b>) and every question is answered for it too.') + ' A row opens its figures and tables.</p>' +
@@ -4417,13 +4418,13 @@
       vt.updateCallbackDone.then(after, after);
     } else { apply(); after(); }
   }
-  // ---- Layout A (prototype; ?ui=a, ?ui=old to go back; remembered in this browser). A page leads with one question,
+  // ---- Layout A (the default; ?ui=old for the previous layout, ?ui=a back; remembered in this browser). A page leads with one question,
   // its answer in a sentence and the figure that gives it, then tiles: one per section of the scorecard, each a title,
   // a small picture and one line. A tile opens its section as the scorecard's row does (the focus view); the scorecard
   // stays in the page behind the tiles, so every link to a section still works.
-  // A page may set window.MSE_UI_DEFAULT ('a') to open in layout A when the reader has not chosen.
+  // A page may set window.MSE_UI_DEFAULT ('a' or 'old') for the layout it opens in when the reader has not chosen.
   let UI_A = (() => {
-    const v = new URLSearchParams(location.search).get('ui'), d = window.MSE_UI_DEFAULT || '';
+    const v = new URLSearchParams(location.search).get('ui'), d = window.MSE_UI_DEFAULT || 'a';
     try { if (v) localStorage.setItem('mse-ui', v); return (v || localStorage.getItem('mse-ui') || d) === 'a'; } catch (e) { return (v || d) === 'a'; }
   })();
   // Switch layouts in place (any [data-ui] button): remembered in this browser where storage allows.
@@ -4503,7 +4504,7 @@
         (vis ? '<span class="a-vis">' + vis + '</span>' : '') + '<span class="a-head" data-sum-of="' + r.key + '"' + (o.head != null ? ' data-fixed' : '') + '>' + head + '</span>' + (whole ? '<span class="a-whole"><span>Whole dataset</span> ' + whole + '</span>' : '') + '</button>';
     };
     return '<div class="a-home hub-only">' +
-      '<p class="a-proto">Prototype layout <button type="button" class="linkish" data-ui="old">Back to the current layout</button></p>' +
+      '<p class="a-proto">New layout <button type="button" class="linkish" data-ui="old">Switch to the previous layout</button></p>' +
       (lead ? '<section class="a-lead"><h2 class="a-q">' + lead.q + '</h2>' + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') +
         (lead.fig ? '<div class="card a-fig">' + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
       '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>').join('') + '</div></div>';
@@ -4563,43 +4564,64 @@
     }
     return ov;
   }
-  // Tiles whose data load when a protein page opens in layout A: the AlphaFold model (pLDDT along the protein) and
-  // the Ensembl orthologues (is each methylarginine an arginine in mouse … yeast, against the protein's other
-  // arginines). Each fills its tile when it arrives, if the page is still this protein's.
+  // Tiles whose data load when a protein page opens in layout A: the AlphaFold model (pLDDT along the protein), the PDB
+  // chains mapped to it (PDBe SIFTS) and the Ensembl orthologues. Each fills its tile when it arrives, if the page is
+  // still this protein's. A lookup that fails, or does not answer within its time, leaves a line saying so in the tile;
+  // the page and the other tiles carry on.
   function aLoadTiles(p) {
     const here = () => UI_A && UI.detail === p.i && UI.view === 'protein';
+    const fill = (ov) => { if (here()) aRefreshTiles($('#content'), ov); };
+    const note = (text) => '<span class="a-note">' + text + '</span>';
     const pins = () => p.sites.map((j) => ({ a: S[j].pos, cls: 'site', tip: '<b>' + p.label + ' R' + S[j].pos + '</b>' }));
-    loadAF(p.acc).then((af) => {
-      if (!here() || !af || !af.plddt.size) return;
-      const len = Math.max(p.len || 0, ...af.plddt.keys()), runs = [];
-      for (let q = 1; q <= len; q++) {
-        const v = af.plddt.get(q), k = v == null ? -1 : plddtBand(v), last = runs[runs.length - 1];
-        if (last && last.k === k && last.b === q - 1) last.b = q;
-        else runs.push({ k, a: q, b: q });
-      }
-      const items = runs.filter((r) => r.k >= 0).map((r) => ({ a: r.a, b: r.b, col: PLDDT_BANDS[r.k][1], tip: 'pLDDT ' + PLDDT_BANDS[r.k][2].toLowerCase() + ', ' + r.a + '–' + r.b }));
-      const sv = p.sites.map((j) => af.plddt.get(S[j].pos)).filter((v) => v != null), conf = sv.filter((v) => v > 70).length;
-      const key = PLDDT_BANDS.map((b) => '<span><i style="background:' + b[1] + '"></i>' + esc(b[2].replace(/ \(.*$/, '')) + '</span>').join('');
-      aRefreshTiles($('#content'), { 'p-3d': { vis: aTrack(len, [{ label: 'pLDDT', items }, { label: 'Sites', items: pins() }], key),
-        head: sv.length ? 'AlphaFold model: <b>' + conf + ' of ' + sv.length + '</b> site' + (sv.length === 1 ? '' : 's') + ' in confident regions (pLDDT > 70)' : null } });
-    });
+    const nS = p.sites.length, ofS = (k) => '<b>' + k + ' of ' + nS + '</b> site' + (nS === 1 ? '' : 's');
+    // 3D structure: a lane per source, drawn again as each arrives (undefined: waiting; null: none or no answer)
+    const t3 = {};
+    const draw3d = () => {
+      if (t3.af === undefined || t3.pdb === undefined) return;
+      const lanes = [], heads = [];
+      let len = p.len || Math.ceil(p.maxPos * 1.05) || 100, key = '';
+      const af = t3.af;
+      if (af && af.plddt.size) {
+        len = Math.max(len, ...af.plddt.keys());
+        const runs = [];
+        for (let q = 1; q <= len; q++) {
+          const v = af.plddt.get(q), k = v == null ? -1 : plddtBand(v), last = runs[runs.length - 1];
+          if (last && last.k === k && last.b === q - 1) last.b = q;
+          else runs.push({ k, a: q, b: q });
+        }
+        lanes.push({ label: 'pLDDT', items: runs.filter((r) => r.k >= 0).map((r) => ({ a: r.a, b: r.b, col: PLDDT_BANDS[r.k][1], tip: 'AlphaFold pLDDT ' + PLDDT_BANDS[r.k][2].toLowerCase() + ', ' + r.a + '–' + r.b })) });
+        key = PLDDT_BANDS.map((b) => '<span><i style="background:' + b[1] + '"></i>' + esc(b[2].replace(/ \(.*$/, '')) + '</span>').join('');
+        const sv = p.sites.map((j) => af.plddt.get(S[j].pos)).filter((v) => v != null);
+        if (sv.length) heads.push('AlphaFold: ' + ofS(sv.filter((v) => v > 70).length) + ' in confident regions (pLDDT > 70)');
+      } else heads.push(af === false || afFailed.has(p.acc) ? 'AlphaFold DB did not answer' : 'no AlphaFold model');
+      const pdb = t3.pdb;
+      if (pdb && !pdb.failed) {
+        const iv = pdb.entries.flatMap((e) => e.maps.map((m) => [m.unpStart, m.unpEnd])).filter(([a, b]) => a > 0 && b >= a).sort((x, y) => x[0] - y[0]), cover = [];
+        for (const [a, b] of iv) { const last = cover[cover.length - 1]; if (last && a <= last[1] + 1) last[1] = Math.max(last[1], b); else cover.push([a, b]); }
+        const nIn = p.sites.filter((j) => cover.some(([a, b]) => S[j].pos >= a && S[j].pos <= b)).length, nE = pdb.entries.length;
+        if (cover.length) lanes.push({ label: 'PDB', items: cover.map(([a, b]) => ({ a, b, cls: 'xs', tip: 'Residues ' + a + '–' + b + ' in PDB chains (SIFTS; some may be unmodelled)' })) });
+        heads.push(nE ? fmt(nE) + ' PDB entr' + (nE === 1 ? 'y' : 'ies') + ' cover ' + ofS(nIn) : 'no PDB entry');
+      } else heads.push('PDBe did not answer');
+      lanes.push({ label: 'Sites', items: pins() });
+      fill({ 'p-3d': { vis: lanes.length > 1 ? aTrack(len, lanes, key) : note('No AlphaFold model or PDB structure could be loaded.'), head: heads.join(' · ') } });
+    };
+    withTimeout(loadAF(p.acc), 30000).then((af) => { t3.af = af; }, () => { t3.af = false; }).then(draw3d);
+    withTimeout(loadPdb(p.acc), 30000).then((r) => { t3.pdb = r; }, () => { t3.pdb = null; }).then(draw3d);
+    // Conservation: per species, the methylarginines still R, against the protein's other arginines (the tick)
+    const consNote = (text) => fill({ 'p-cons': { vis: note(text) } });
     loadUniProt(p.acc).then((u) => {
+      if (!here()) return;
       const ensg = u && u.seq && u.ensg && u.ensg[0];
-      if (!here() || !ensg) return;
-      loadOrthologs(ensg).then((orthos) => {
+      if (!u) { consNote('UniProt did not answer, so the orthologues cannot be aligned.'); return; }
+      if (!ensg) return;
+      withTimeout(loadOrthologs(ensg), 60000).then((orthos) => {
         if (!here() || !orthos.length) return;
-        const model = orthoModel(p, u, orthos), sites = new Set(model.sites);
-        const others = [];
-        for (let q = 1; q <= u.seq.length; q++) if (u.seq[q - 1] === 'R' && !sites.has(q)) others.push(q);
-        const kept = (r, qs) => { let n = 0, m = 0; for (const q of qs) { const a = r.at(q); if (a != null) { m++; if (a === 'R') n++; } } return [n, m]; };
-        const rows = model.rows.map((r) => {
-          const [n, m] = kept(r, model.sites), [on, om] = kept(r, others);
-          return { m, label: r.name, v: m ? n / m : 0, ref: om ? on / om : null, text: n + '/' + m,
-            tip: '<b>' + esc(r.name) + '</b> (' + Math.round(r.pid) + '% identical)<br>R at ' + n + ' of ' + m + ' methylarginines' + (m ? ' (' + pct(n, m) + '%)' : '') + (om ? '<br>R at ' + pct(on, om) + '% of the other arginines (the tick)' : '') };
-        }).filter((r) => r.m);
-        if (rows.length) aRefreshTiles($('#content'), { 'p-cons': { vis: aMeters(rows, { tight: true, foot: 'Methylarginines still R in each species · <b>|</b> the protein\'s other arginines' }) } });
-        renderConsCard(p, u);   // the card shows the alignments it now holds
-      }).catch(() => {});
+        const ck = consKeep(u, orthoModel(p, u, orthos));
+        const rows = ck.species.filter((x) => x.m).map((x) => ({ label: x.r.name, v: x.n / x.m, ref: x.om ? x.on / x.om : null, text: x.n + '/' + x.m,
+          tip: '<b>' + esc(x.r.name) + '</b> (' + Math.round(x.r.pid) + '% identical)<br>R at ' + x.n + ' of ' + x.m + ' methylarginines (' + pct(x.n, x.m) + '%)' + (x.om ? '<br>R at ' + pct(x.on, x.om) + '% of the other arginines (the tick)' : '') }));
+        if (rows.length) fill({ 'p-cons': { vis: aMeters(rows, { tight: true, foot: 'Methylarginines still R in each species · <b>|</b> the protein\'s other arginines' }) } });
+        renderConsCard(p, u);   // the card shows the alignments it now holds, and the summary the test
+      }, (e) => consNote('Ensembl Compara ' + (String(e && e.message) === 'timeout' ? 'did not answer within a minute' : 'could not be reached') + '. Open the section to try again.'));
     });
   }
   // Tiles whose pictures need data that arrives after the page was drawn (a protein's interaction evidence).
@@ -13364,6 +13386,49 @@
     return { rows, sites: p.sites.map((j) => S[j].pos) };
   }
 
+  // Is each arginine still an arginine in the orthologues? For each arginine of the human protein with an aligned
+  // residue in at least one species, the share of those species where it is R; the methylarginines against the
+  // protein's other arginines by their means and a two-sided Wilcoxon rank-sum test (normal approximation, ties
+  // corrected), each arginine counted once however many species align it. Also per species: the methylarginines and the
+  // other arginines that are R there, of those aligned.
+  function consKeep(u, model) {
+    const sites = new Set(model.sites), me = [], other = [];
+    const species = model.rows.map((r) => ({ r, n: 0, m: 0, on: 0, om: 0 }));
+    for (let q = 1; q <= u.seq.length; q++) {
+      if (u.seq[q - 1] !== 'R') continue;
+      const isSite = sites.has(q);
+      let n = 0, m = 0;
+      species.forEach((x) => {
+        const a = x.r.at(q);
+        if (a == null) return;
+        m++; if (a === 'R') n++;
+        if (isSite) { x.m++; if (a === 'R') x.n++; } else { x.om++; if (a === 'R') x.on++; }
+      });
+      if (m) (isSite ? me : other).push(n / m);
+    }
+    const mean = (v) => (v.length ? v.reduce((a, b) => a + b, 0) / v.length : null);
+    let p = null;
+    if (me.length >= 3 && other.length >= 3) {
+      const all = me.map((v) => [v, 1]).concat(other.map((v) => [v, 0])).sort((a, b) => a[0] - b[0]);
+      const N = all.length, n1 = me.length, n2 = other.length;
+      let r1 = 0, ties = 0;
+      for (let i = 0; i < N;) {
+        let j = i;
+        while (j < N && all[j][0] === all[i][0]) j++;
+        const t = j - i;
+        ties += t ** 3 - t;
+        for (let k = i; k < j; k++) if (all[k][1]) r1 += (i + j + 1) / 2;
+        i = j;
+      }
+      const U = r1 - (n1 * (n1 + 1)) / 2, sd = Math.sqrt(((n1 * n2) / 12) * (N + 1 - ties / (N * (N - 1))));
+      p = sd > 0 ? Math.min(1, erfc(Math.max(0, Math.abs(U - (n1 * n2) / 2) - 0.5) / sd / Math.SQRT2)) : 1;
+    }
+    return { me: mean(me), other: mean(other), n1: me.length, n2: other.length, p, species };
+  }
+  // The test in words: for the card's summary (and so the tile) and the card.
+  const consSay = (ck) => (ck.me == null || ck.other == null ? '' : 'still R: methylarginines ' + Math.round(100 * ck.me) + '%, other arginines ' + Math.round(100 * ck.other) + '% of species' +
+    (ck.p == null ? ' (too few to test)' : ' (rank-sum p ' + fmtP(ck.p) + ')'));
+
   function consSvg(p, u, model, pos, flank) {
     const pal = EXPORT_PAL, cw = 15, rh = 17, labelW = 120, x0 = 16 + labelW, ncol = 2 * flank + 1;
     const W = Math.max(560, x0 + ncol * cw + 90);
@@ -13419,8 +13484,11 @@
         const per = model.rows.map((r) => { const v = sites.map((q) => r.at(q)); return { r, v, nR: v.filter((a) => a === 'R').length, nMap: v.filter((a) => a != null).length }; });
         UI.consPos = sites.includes(UI.consPos) ? UI.consPos : sites[0];
         const absent = ORTHO_SPECIES.filter(([sp]) => !orthos.some((o) => o.sp === sp)).map(([, n]) => n);
-        setFoldSummary('p-cons', 'R kept at the sites: ' + sumList(per.filter((x) => x.r.name !== 'Human').map((x) => x.r.name + ' ' + x.nR + '/' + x.nMap), 3));
-        body.innerHTML = '<div class="cons-sum">' + per.map((x) => '<span class="tag"><b>' + esc(x.r.name) + '</b> R at ' + x.nR + '/' + x.nMap + '</span>').join(' ') +
+        const ck = consKeep(u, model), say = consSay(ck);
+        setFoldSummary('p-cons', (say ? say.charAt(0).toUpperCase() + say.slice(1) + ' · ' : 'R kept at the sites: ') + sumList(per.filter((x) => x.r.name !== 'Human').map((x) => x.r.name + ' ' + x.nR + '/' + x.nMap), 3));
+        body.innerHTML = (ck.me != null && ck.other != null ? '<p class="cons-test"><b>Methylarginines against the other arginines of ' + esc(p.label) + ':</b> on average a methylarginine is still an arginine in <b>' + Math.round(100 * ck.me) + '%</b> of the species whose orthologue aligns it, the other arginines in <b>' +
+          Math.round(100 * ck.other) + '%</b> (' + fmt(ck.n1) + ' and ' + fmt(ck.n2) + ' arginines; ' + (ck.p == null ? 'too few to test' : 'Wilcoxon rank-sum p = ' + fmtP(ck.p)) + ').</p>' : '') +
+          '<div class="cons-sum">' + per.map((x) => '<span class="tag"><b>' + esc(x.r.name) + '</b> R at ' + x.nR + '/' + x.nMap + '</span>').join(' ') +
           (absent.length ? ' <span class="muted small">No orthologue in Ensembl: ' + esc(absent.join(', ')) + '.</span>' : '') + '</div>' +
           '<div class="tbl-wrap cons-wrap"><table class="cons-tbl"><thead><tr><th>Species</th>' + sites.map((q) => '<th><button type="button" class="linkish" data-cpos="' + q + '">' + rn(q, p) + '</button></th>').join('') + '</tr></thead><tbody>' +
           '<tr><th>Human</th>' + sites.map((q) => { const a = u && u.seq ? u.seq[q - 1] : 'R'; return '<td class="' + cls(a) + '">' + esc(a || '·') + '</td>'; }).join('') + '</tr>' +
