@@ -53,7 +53,7 @@
   // -------------------------------------------------------------- vocabulary
   const STATE_LABEL = ['No assigned state', 'Rme1', 'Rme2', 'Rme1 + Rme2'];
   // Source tables: the compiled tables of v1.1.0 (Maron2021 is Table S5) and, from v1.2.0, each study's own table.
-  const SOURCE_LABEL = { Maron2021: 'Maron 2021 Table S5 (compiled)', ProMetheusDB: 'ProMetheusDB', human_ptm_master: 'PTM master table (compiled)',
+  const SOURCE_LABEL = { Maron2021: 'Maron 2021 Table S5 (PhosphoSitePlus rows from v1.2.0)', ProMetheusDB: 'ProMetheusDB', human_ptm_master: 'PTM master table (compiled)',
     larsen2016: 'Larsen 2016', maron2021: 'Maron 2021 Tables S2–S3', guo2014: 'Guo 2014', musiani2019: 'Musiani 2019', fong2019: 'Fong 2019',
     li2021: 'Li 2021', fedoriw2019: 'Fedoriw 2019', uniprot: 'UniProt MOD_RES', lim2020: 'Lim 2020', wei2020: 'Wei 2020', iedb: 'IEDB epitopes',
     hartel2019: 'Hartel 2019', geoghegan2015: 'Geoghegan 2015', sylvestersen2014: 'Sylvestersen 2014', lu2025: 'Lu 2025', ma2023: 'Ma 2023' };
@@ -2186,8 +2186,10 @@
         '<div class="fgroup"><span class="flabel">Reported by study or database (match any)</span>' +
         termChips('study', M.studyOrder.map((k) => [termSlug('study', k), M.studies[k][0] + ' · ' + compact(M.studies[k][2]), M.studies[k][1] || STUDY_HELP[M.studies[k][0]] || ''])) + '</div>' +
         '<div class="fgroup"><label class="flabel" for="f-minrep">Sources reporting the site</label>' + sel('f-minrep', options(withCurrent([[2, '≥2 studies or databases'], [3, '≥3'], [4, '≥4'], [5, '≥5']], F.minRep, (v) => '≥' + v), F.minRep || '', 'Any'), !!F.minRep) + '</div>' +
-        '<div class="fgroup"><span class="flabel">Pipeline source table</span>' + chipRow('sources', M.sources.map((n, k) => [k, SOURCE_LABEL[n], SOURCE_HELP[n]]), F.sources) +
-        '<label class="check"><input type="checkbox" id="f-multi"' + (F.multi ? ' checked' : '') + '> In ≥2 source tables at the same position</label>' +
+        // The source-table filter of the compiled-table releases; from v1.2.0 each table is a study, so the study filter
+        // above replaces it (it is still shown when a link sets it).
+        (!localisedOnly() || F.sources.size || F.multi ? '<div class="fgroup"><span class="flabel">Pipeline source table</span>' + chipRow('sources', M.sources.map((n, k) => [k, SOURCE_LABEL[n], SOURCE_HELP[n]]).filter(([k]) => !localisedOnly() || F.sources.has(k) || S.some((x) => x.src & (1 << k))), F.sources) +
+        '<label class="check"><input type="checkbox" id="f-multi"' + (F.multi ? ' checked' : '') + '> In ≥2 source tables at the same position</label>' : '<div class="fgroup">') +
         (P.some((p) => p.unrev) ? '<label class="check" title="' + esc(unrevHelp()) + '"><input type="checkbox" id="f-reviewed"' + (F.reviewed ? ' checked' : '') + '> Reviewed UniProt entries only</label>' : '') + '</div>';
       case 'treat': return '<div class="fgroup"><label class="flabel" for="f-treat">PRMT inhibitor or knockout response</label>' + sel('f-treat', options(TREAT_OPTIONS.some((o) => o[0] === F.treat) ? TREAT_OPTIONS : TREAT_OPTIONS.concat([[F.treat, treatLabel(F.treat)]]), F.treat), !!F.treat) + '</div>';
       case 'motif': {
@@ -3228,6 +3230,20 @@
     });
   }
 
+  // Where the sites come from (v1.2.0 exports on): every study from its own tables, PhosphoSitePlus through Maron
+  // Table S5, ProMetheusDB, UniProt and IEDB; the compiled tables of earlier versions add no site.
+  function sourcesNowHtml() {
+    const db = ['PhosphoSitePlus', 'ProMetheusDB', 'UniProt', 'IEDB'];
+    const studies = M.studyOrder.filter((k) => !db.includes(M.studies[k][0]));
+    const n = (name) => { const k = M.studyOrder.find((x) => M.studies[x][0] === name); return k == null ? null : M.studies[k][2]; };
+    return '<p>From v1.2.0, every study is taken from its own published tables (supplementary tables or deposited search results), not from a compilation, and every record passes the same site tests (How sites were processed). The sites come from:</p><ul>' +
+      '<li><b>' + studies.length + ' proteomics studies</b>, each from its original tables, listed below with the tables used: ' + esc(studies.map((k) => M.studies[k][0]).join(', ')) + '.</li>' +
+      (n('PhosphoSitePlus') != null ? '<li><b>PhosphoSitePlus</b> (' + fmt(n('PhosphoSitePlus')) + ' sites): the human methylarginine sites PhosphoSitePlus listed on 22 May 2021, as compiled in Table S5 of Maron et al., <a href="https://doi.org/10.1016/j.isci.2021.102971">iScience 24:102971 (2021)</a>, accepted as curated and placed from their 15-residue windows. The other rows of Table S5 are superseded by each study\'s own table and add no site.</li>' : '') +
+      (n('ProMetheusDB') != null ? '<li><b>ProMetheusDB</b> (' + fmt(n('ProMetheusDB')) + ' sites): the methyl-proteome table (mmc2) of Massignani et al., ' + doiLink('10.1016/j.mcpro.2022.100243', 'Mol Cell Proteomics 21:100243 (2022)') + ', where a peptide localises the methyl group by mass.</li>' : '') +
+      (n('UniProt') != null || n('IEDB') != null ? '<li><b>UniProt</b> MOD_RES annotations with experimental evidence' + (n('UniProt') != null ? ' (' + fmt(n('UniProt')) + ' sites)' : '') + ' and <b>IEDB</b> epitopes with a methylated arginine' + (n('IEDB') != null ? ' (' + fmt(n('IEDB')) + ' sites)' : '') + '.</li>' : '') +
+      '</ul><p>The lab\'s cross-PTM master table, a source of sites in v1.0.0 and v1.1.0, adds no methylarginine site from v1.2.0. It supplies only the phospho, lysine acyl, ubiquitin/SUMO and lysine methyl sites shown as crosstalk; these are not exhaustive, as they come from an iPTMnet export (HPRD, literature mining and other curated sources) and UniProt (iPTMnet: Huang et al., ' + doiLink('10.1093/nar/gkx1104', 'Nucleic Acids Res 46:D542 (2018)') + ').</p>';
+  }
+
   // The methylated fractions of condensate proteins and of the reviewed proteome, for the condensate text (v1.3.0 exports).
   function condBgShares() {
     const cs = M.condensate_summary || {};
@@ -3557,6 +3573,9 @@
       '<div class="ov-head"><h2>What kinds of proteins are methylated</h2><span class="muted small">' + (selOn ? 'Click a bar to narrow your selection' : 'Click a bar to list its proteins') + '</span></div>' +
       '<div class="ov-grid">' + chartCard(pan || func) + chartCard(dis) + '</div>' +
       '<div class="ov-head"><h2>Explore further</h2></div>' +
+      pageIndexHtml([['Start', [['ov-start', 'Starting points']]], ['Interactions', [['ov-ix', 'Interactions and binding']]],
+        ['Sequence and structure', [['ov-motif', 'Motifs'], ['ov-struct', 'Structural context']]], ['Protein sets', [['ov-cond', 'Condensates'], ['ov-loc', 'Subcellular location']]],
+        ['Sources and responses', [['ov-study', 'Provenance'], ['ov-treat', 'PRMT inhibitors and knockout']]]]) +
       '<div class="fold-list">' +
       startsHtml +
       foldHtml('ov-ix', 'Interactions and binding', ixOverviewHtml(), false, ixSum) +
@@ -3575,6 +3594,7 @@
       '</div>';
     bindDocLinks(el);
     bindProfile(el);
+    bindPageIndex(el);
     const oo = $('#ov-open-one', el);
     if (oo) oo.addEventListener('click', () => openProtein(one.i));
     $$('[data-quick]', el).forEach((b) => b.addEventListener('click', () => { const q = UI.quick[+b.dataset.quick]; if (q) q[2](); }));
@@ -3774,25 +3794,32 @@
       fact(p.shrink == null ? '—' : fmtL2(p.shrink), 'Arg enrichment (log2)', p.argQ == null ? 'not tested (needs ≥2 sites and ≥10 arginines on a reviewed canonical sequence)' : 'shrinkage estimate; Fisher q ' + fmtP(p.argQ), 'enrich', 'How the arginine enrichment is computed') +
       fact('<span id="ix-fact">…</span>', 'Sites with experimental interaction evidence', '<span id="ix-fact-sub">loading interaction data</span>', 'ixexp', 'List these sites') +
       '</div>' +
-      // Every card is a fold; only the protein map starts open.
+      // Every card is a fold; only the protein map starts open. The index above them reaches any fold.
+      pageIndexHtml([['Map', [['p-map', 'Protein map']]], ['Interactions', [['p-cc', 'Evidence at a glance'], ['p-ix', 'Proteins'], ['p-na', 'RNA and DNA']]],
+        ['Sites and structure', [['p-sites', 'Sites'], ['p-3d', '3D structure']]],
+        ['Protein context', [['p-cond', 'Location and condensates'], ['p-dis', 'Disease'], ['p-func', 'Protein class'], ['p-dom', 'Domains and regions'], ['p-cons', 'Conservation']]],
+        ['Sequence features', [['p-cluster', 'Clustering'], ['p-ptm', 'Other PTMs'], ['p-seq', 'Sequence']]]], ['p-3d']) +
       '<div class="fold-list">' +
       foldHtml('p-map', 'Protein map', figureCard(p), true, fmt(p.sites.length) + ' methylarginine site' + (p.sites.length === 1 ? '' : 's')) +
       '<div class="card" id="site-card" hidden></div>' +
+      '<h2 class="fold-group">Interactions</h2>' +
       foldHtml('p-cc', 'Interaction evidence at a glance', contactCardHtml(), false, 'loading…') +
       foldHtml('p-ix', 'Protein interactions', '<div class="card" id="card-ix"></div>', false, 'loading…') +
       foldHtml('p-na', 'RNA and DNA interactions', '<div class="card" id="card-na"></div>', false, 'loading…') +
+      '<h2 class="fold-group">Sites and structure</h2>' +
       foldHtml('p-sites', 'Sites', '<div class="card tbl-card" id="card-sites"><div class="card-pad"><div class="card-head"><div><h3>Sites</h3><p class="sub">Click a row for details of the site.</p></div><div class="actions" id="psites-tools"></div></div><div id="psites-ix"></div></div>' +
       '<div class="tbl-wrap" id="psites"></div><p class="note uni-extra" id="uni-extra" hidden></p><div class="card-pad" id="psites-cite"></div></div>') +
       foldHtml('p-3d', '3D structure', structureCard(p), false, 'AlphaFold DB model and experimental structures; loads when opened') +
       '</div>' +
       // The context toggle applies to the cards below it (and the Complexes tab above).
-      ctxToggleHtml(p) +
+      '<div class="fold-list"><h2 class="fold-group">Protein context</h2></div>' + ctxToggleHtml(p) +
       '<div class="fold-list">' +
       foldHtml('p-cond', 'Location and condensates', '<div class="card" id="card-cond"></div>') +
       foldHtml('p-dis', 'Disease associations', '<div class="card" id="card-dis"></div>') +
       foldHtml('p-func', 'Protein class', '<div class="card" id="card-func"></div>') +
       foldHtml('p-dom', 'Domains and regions', '<div class="card" id="card-dom"></div>') +
       foldHtml('p-cons', 'Conservation across species', '<div class="card" id="card-cons"></div>') +
+      '<h2 class="fold-group">Sequence features</h2>' +
       foldHtml('p-cluster', 'Clustering', '<div class="card" id="card-cluster"></div>') +
       foldHtml('p-ptm', 'Other PTMs', '<div class="card" id="card-ptm"></div>') +
       foldHtml('p-seq', 'Sequence', '<div class="card" id="card-seq"><div class="card-head"><div><h3>Sequence</h3><p class="sub" id="seq-sub">Loading sequence from UniProt…</p></div><div class="exp" role="group" aria-label="Sequence export"><button type="button" id="copy-fasta" disabled>Copy FASTA</button><button type="button" id="seq-svg" disabled title="Sequence figure with gene, protein name, UniProt accession and legend">SVG</button><button type="button" id="seq-png" disabled title="Sequence figure with gene, protein name, UniProt accession and legend">PNG</button></div></div><div id="seq"></div></div>', false, 'Loading from UniProt…') +
@@ -3804,6 +3831,7 @@
     $('#print-page', el).addEventListener('click', (e) => savePdf(p, e.currentTarget, 'print'));
     bindCtx(p);
     bindFacts(p);
+    bindPageIndex(el);
     $$('[data-open-p]', el).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.openP)));
     const pfc = $('#pf-clear', el);
     if (pfc) pfc.addEventListener('click', clearFilters);
@@ -3900,6 +3928,74 @@
   function foldHtml(key, title, inner, dflt, summary, cls) {
     return '<details class="fold' + (cls ? ' ' + cls : '') + '" data-fold="' + key + '"' + (foldIsOpen(key, dflt) ? ' open' : '') + '><summary class="fold-head"><span class="pm" aria-hidden="true"></span>' +
       '<span class="fold-title">' + esc(title) + '</span><span class="fold-sum" id="fold-sum-' + key + '">' + esc(summary || '') + '</span></summary>' + inner + '</details>';
+  }
+  // An index of a page's folds, grouped, that stays in view below the toolbar: a click opens the fold and scrolls to it,
+  // open folds are marked, the fold being read is highlighted, and Expand all / Collapse all act on every fold (Expand
+  // all leaves out folds that load heavy data when opened, listed in skip). groups: [[heading, [[fold key, label]]]].
+  function pageIndexHtml(groups, skip) {
+    return '<nav class="page-index" aria-label="Sections of this page" data-skip="' + esc((skip || []).join(' ')) + '">' +
+      '<span class="pi-tools"><button type="button" class="linkish" data-pi-all="1"' + (skip && skip.length ? ' title="Opens every section except those that load large data when opened"' : '') + '>Expand all</button><button type="button" class="linkish" data-pi-all="0">Collapse all</button></span>' +
+      groups.map(([g, items]) => '<span class="pi-group"><span class="pi-g">' + esc(g) + '</span>' + items.map(([k, l]) => '<button type="button" class="pi" data-pi="' + k + '">' + esc(l) + '</button>').join('') + '</span>').join('') + '</nav>';
+  }
+  let pageIndexScroll = null;
+  function bindPageIndex(root) {
+    const nav = $('.page-index', root);
+    if (pageIndexScroll) { window.removeEventListener('scroll', pageIndexScroll); pageIndexScroll = null; }
+    if (!nav) return;
+    const fold = (k) => $('details.fold[data-fold="' + k + '"]', root);
+    $$('.pi', nav).forEach((b) => { if (!fold(b.dataset.pi)) b.hidden = true; });
+    $$('.pi-group', nav).forEach((g) => { if (!$$('.pi:not([hidden])', g).length) g.hidden = true; });
+    const keys = $$('.pi:not([hidden])', nav).map((b) => b.dataset.pi);
+    // where a fold's header lands: below the toolbar and the index as they are once stuck
+    const offset = () => (parseFloat(getComputedStyle(nav).top) || 0) + nav.offsetHeight + 8;
+    const mark = () => $$('.pi', nav).forEach((b) => { const d = fold(b.dataset.pi); b.classList.toggle('open', !!(d && d.open)); });
+    $$('.pi', nav).forEach((b) => b.addEventListener('click', () => {
+      const d = fold(b.dataset.pi);
+      if (!d) return;
+      d.open = true;
+      window.scrollTo({ top: d.getBoundingClientRect().top + window.scrollY - offset(), behavior: 'smooth' });
+      const sm = $('summary', d);
+      if (sm) sm.focus({ preventScroll: true });
+    }));
+    const skip = new Set((nav.dataset.skip || '').split(' ').filter(Boolean));
+    $$('[data-pi-all]', nav).forEach((b) => b.addEventListener('click', () => {
+      const on = b.dataset.piAll === '1';
+      keys.forEach((k) => { const d = fold(k); if (d && !(on && skip.has(k))) d.open = on; });
+      mark();
+    }));
+    root.addEventListener('toggle', (e) => { if (e.target.matches && e.target.matches('details.fold')) mark(); }, true);
+    mark();
+    // The section being read: the last fold whose header has passed the index.
+    let ticking = false;
+    pageIndexScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        if (!nav.isConnected) return;
+        const top = offset() + 4;
+        let cur = null;
+        for (const k of keys) { const d = fold(k); if (d && d.getBoundingClientRect().top <= top) cur = k; }
+        $$('.pi', nav).forEach((b) => b.classList.toggle('cur', b.dataset.pi === cur));
+      });
+    };
+    window.addEventListener('scroll', pageIndexScroll, { passive: true });
+    pageIndexScroll();
+  }
+  // An index of a long card's sections (its h4 headings), as links that scroll to them.
+  function addCardIndex(body, min) {
+    const heads = $$(':scope > .ix-grid > section > h4, :scope > section > h4', body);
+    if (heads.length < (min || 4)) return;
+    const nav = document.createElement('nav');
+    nav.className = 'card-index';
+    nav.setAttribute('aria-label', 'Sections of this card');
+    nav.innerHTML = '<span class="muted small">In this card:</span> ' + heads.map((h, i) => '<button type="button" class="linkish" data-ci="' + i + '">' + esc(h.textContent) + '</button>').join('<span class="ci-sep" aria-hidden="true">·</span>');
+    body.prepend(nav);
+    $$('[data-ci]', nav).forEach((b) => b.addEventListener('click', () => {
+      const h = heads[+b.dataset.ci], pi = $('.page-index');
+      const off = (pi ? (parseFloat(getComputedStyle(pi).top) || 0) + pi.offsetHeight : 0) + 12;
+      window.scrollTo({ top: h.getBoundingClientRect().top + window.scrollY - off, behavior: 'smooth' });
+    }));
   }
   const setFoldSummary = (key, text) => { const el = document.getElementById('fold-sum-' + key); if (el) { el.textContent = text || ''; el.title = text || ''; } };
   // Open the fold holding el (a card or anything inside one) before a jump to it.
@@ -8527,8 +8623,8 @@
     const tabs = [['proteins', 'Partners', partnersAt(p, 700).length, 'STRING physical partners at score ≥ 0.7'], ['complexes', 'Complexes', p.cx.length, 'complexes with ' + p.label + ' (Complex Portal, curated and predicted)']];
     if (!tabs.some(([k]) => k === UI.ixTab)) UI.ixTab = 'proteins';
     setFoldSummary('p-ix', fmt(tabs[0][2]) + ' high-confidence STRING partner' + (tabs[0][2] === 1 ? '' : 's') + ' · ' + fmt(p.cx.length) + ' complex' + (p.cx.length === 1 ? '' : 'es'));
-    box.innerHTML = head + evStripHtml(p, false) + '<div class="seg ix-tabs" role="tablist">' + tabs.map(([k, l, n, tip]) => '<button type="button" role="tab" data-ixtab="' + k + '" aria-pressed="' + (UI.ixTab === k) + '" data-tip="' + esc('<b>' + l + '</b><br>' + fmt(n) + ' ' + tip) + '">' + esc(l) + (n != null ? ' <span class="n">' + fmt(n) + '</span>' : '') + '</button>').join('') + '</div><div id="ix-body"></div>';
-    $$('[data-ixtab]', box).forEach((b) => b.addEventListener('click', () => { UI.ixTab = b.dataset.ixtab; renderIxCard(p); }));
+    box.innerHTML = head + evStripHtml(p, false) + '<div class="seg ix-tabs" role="tablist">' + tabs.map(([k, l, n, tip]) => '<button type="button" role="tab" data-ixtab="' + k + '" aria-pressed="' + (UI.ixTab === k) + '" aria-selected="' + (UI.ixTab === k) + '"' + (n || UI.ixTab === k ? '' : ' aria-disabled="true"') + ' data-tip="' + esc('<b>' + l + '</b><br>' + fmt(n) + ' ' + tip) + '">' + esc(l) + (n != null ? ' <span class="n">' + fmt(n) + '</span>' : '') + '</button>').join('') + '</div><div id="ix-body"></div>';
+    $$('[data-ixtab]', box).forEach((b) => b.addEventListener('click', () => { if (b.getAttribute('aria-disabled') === 'true') return; UI.ixTab = b.dataset.ixtab; renderIxCard(p); }));
     bindEvStrip(p, box);
     const body = $('#ix-body', box);
     if (UI.ixTab === 'complexes') renderIxComplexes(p, body);
@@ -8579,9 +8675,9 @@
     setFoldSummary('p-na', 'RNA: ' + naEvidenceText(ev.rna) + ' · DNA: ' + naEvidenceText(ev.dna));
     // The tab picked stays; at first, RNA unless only DNA has evidence.
     const tab = UI.naTab || (ev.rna.any || !ev.dna.any ? 'rna' : 'dna');
-    box.innerHTML = head + evStripHtml(p, true) + '<div class="seg ix-tabs" role="tablist">' + [['rna', 'RNA'], ['dna', 'DNA']].map(([k, l]) => '<button type="button" role="tab" data-natab="' + k + '" aria-pressed="' + (tab === k) + '"' +
+    box.innerHTML = head + evStripHtml(p, true) + '<div class="seg ix-tabs" role="tablist">' + [['rna', 'RNA'], ['dna', 'DNA']].map(([k, l]) => '<button type="button" role="tab" data-natab="' + k + '" aria-pressed="' + (tab === k) + '" aria-selected="' + (tab === k) + '"' + (ev[k].any || tab === k ? '' : ' aria-disabled="true"') +
       ' data-tip="' + esc('<b>' + l + '</b><br>' + fmt(ev[k].sitesAny) + ' methylarginine' + (ev[k].sitesAny === 1 ? '' : 's') + ' with ' + l + ' evidence at or beside it<br>' + naEvidenceText(ev[k])) + '">' + l + ' <span class="n">' + fmt(ev[k].sitesAny) + '</span></button>').join('') + '</div><div id="na-body"></div>';
-    $$('[data-natab]', box).forEach((b) => b.addEventListener('click', () => { UI.naTab = b.dataset.natab; renderNaCard(p); }));
+    $$('[data-natab]', box).forEach((b) => b.addEventListener('click', () => { if (b.getAttribute('aria-disabled') === 'true') return; UI.naTab = b.dataset.natab; renderNaCard(p); }));
     bindEvStrip(p, box);
     renderIxNucleic(p, $('#na-body', box), tab);
   }
@@ -8871,7 +8967,7 @@
           (g ? ' contacts <b>' + esc(g.labels.slice(0, 8).join(' ')) + '</b> <span class="muted">(' + g.pdbs.map((x) => x.toUpperCase()).join(', ') + ')</span>' : '') +
           ' <span class="muted small">at the interface in ' + (s.ifN || (s.ifPdb || []).length) + ' entr' + ((s.ifN || 0) === 1 ? 'y' : 'ies') + '</span></li>'; }).join('') + '</ul>' :
         '<p class="muted">None of the methylated arginines contacts ' + KIND + ' in a PDB structure (PDBe-KB).</p>') +
-      '<p class="note">PDBe-KB interface residues across all PDB entries of this protein; methylation of these arginines would change the contact.</p></section>' +
+      '<p class="note">PDBe-KB interface residues across all PDB entries of this protein; methylation of these arginines would alter the contact.</p></section>' +
       bindWhereHtml(p, kind) +
       (naWs.length ? '<section class="na-sec"><h4>' + KIND + ' sequences at methylarginines in PDB structures</h4>' + naBlockHtml(naWs, kind, false, 60) + '<p class="note">' + NA_NOTE + '</p></section>' : '') +
       bindPrefHtml(p, kind) +
@@ -8881,6 +8977,7 @@
         '<section><h4>ChIP-Atlas target genes</h4><div id="ix-chip" class="note">Loading ChIP-Atlas…</div></section><section><h4>ENCODE TF ChIP-seq</h4><div id="ix-encode" class="note">Searching ENCODE…</div></section>') +
       '</div>';
     $$('.ix-sites [data-pos]', body).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
+    addCardIndex(body);
     const naBlk = $('.na-block', body);
     if (naBlk) bindNaBlock(naBlk.closest('section'), naWs, 'methylarginine_' + p.label + '_bound');
     $$('.na-where [data-pos]', body).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
@@ -9939,7 +10036,12 @@
       '<div class="facts ix-facts">' + tile('exp', 'experimental', 'Experimental evidence') + tile('pred', 'predicted-only', 'Predicted only') + tile('none', 'none', 'None recorded') + '</div>' +
       checkSiteHtml('ix-check') +
       '<div class="ov-head"><h2>Key findings</h2><span class="muted small">Click one for the numbers</span></div>' + findingsList(ixFindings()) +
-      '<div class="ov-head"><h2>Explore the evidence</h2><span class="muted small">Most tests compare methylated with other arginines of the same proteins</span></div><div class="fold-list">' +
+      '<div class="ov-head"><h2>Explore the evidence</h2><span class="muted small">Most tests compare methylated with other arginines of the same proteins</span></div>' +
+      pageIndexHtml([['Overview', [['ix-evmap', 'How the evidence fits together'], ['ix-ex', 'One protein'], ['ix-cm', 'Sites and evidence']]],
+        ['RNA and DNA', [['ix-na', 'RNA and DNA at methylarginines'], ['ixs-cells', 'Crosslinking in cells'], ['ixs-go', 'RNA- and DNA-binding proteins']]],
+        ['Structures and models', [['ixs-pdb', 'PDB interfaces'], ['ixs-predicted', 'Predicted complexes']]],
+        ['Partners and complexes', [['ixs-partners', 'Writers and readers'], ['ix-wr', 'Shared substrates'], ['ixs-complexes', 'Complexes'], ['ixs-intact', 'IntAct features']]]]) +
+      '<div class="fold-list">' +
       foldHtml('ix-evmap', 'How the evidence fits together', ixEvidenceMapHtml(), false, 'how crosslink, PDB, predicted and IntAct evidence combine on ' + (constraints().length ? 'your ' + fmt(R.sites.length) + ' sites' : 'all ' + fmt(R.sites.length) + ' sites')) +
       // The worked example and the two matrices behind one-line headers.
       foldIf('ix-ex', 'What the evidence looks like on one protein', ixExampleHtml(), () => 'drawn for ' + ixExampleProtein().label + '; type any protein to redraw it') +
@@ -9947,6 +10049,7 @@
       foldIf('ix-wr', 'Writers and readers sharing substrates', ixWrMatrixHtml(), () => 'methylated proteins bound by both a PRMT and a Tudor-domain protein (STRING)') +
       foldIf('ix-na', 'RNA and DNA at methylarginines', ixNaHtml(), () => ixNaSummary()) +
       IX_SECTIONS.map(([k, title, tag]) => foldHtml('ixs-' + k, title, '<div class="ix-sec-body" id="ixs-' + k + '">' + body[k]() + '</div>', false, tag)).join('') + '</div></div>';
+    bindPageIndex(el);
     $$('.ix-facts .fact', el).forEach((b) => {
       const run = () => setTerm('interaction', b.dataset.fact, 'sites');
       b.addEventListener('click', run);
@@ -11327,7 +11430,7 @@
     // Every section is a fold, closed at first; its summary names the sub-sections, or says what it holds.
     const DOC_SUM = {
       about: 'what the explorer is and the paper to cite', cite: 'the original studies, the evidence resources and the paper',
-      sources: 'Maron 2021, ProMetheusDB, the PTM master table and the studies behind them', processing: 'remapping, gene symbols, state, inhibitor response, clustering, enrichment',
+      sources: localisedOnly() ? 'every study from its own tables, PhosphoSitePlus, ProMetheusDB, UniProt and IEDB' : 'Maron 2021, ProMetheusDB, the PTM master table and the studies behind them', processing: 'remapping, gene symbols, state, inhibitor response, clustering, enrichment',
       'protein-pages': 'protein map rows, the evidence cartoon, UniProt, AlphaFold DB and PDB', interactions: 'partners, complexes, binding, interfaces, crosslinks, IntAct, statistics',
       provenance: 'what the site positions refer to', licences: 'every source with its version, licence and citation', guardrails: 'what the data can and cannot say', downloads: 'TSV downloads and their terms',
     };
@@ -11396,12 +11499,13 @@
         '<li><b>The original studies or databases that reported the sites you use.</b> Every list of sites (Proteins, Sites, protein pages, the insight report and the comparison) ends with <i>How to cite these sites</i>: the reporting studies with how many of the sites each reported, full references and DOIs, and a <i>Copy references</i> button. The site card lists the studies behind one site, and the Sites TSV has a <code>reported_by_doi</code> column.</li>' +
         '<li><b>The resources behind any evidence you rely on</b>: for example the pepR-MS compendium and the datasets it re-analyses for RNA crosslinks, Trendel et al. 2025 for DNA crosslinks, PDBe-KB for interfaces, ProtVar and AlphaFold for predicted complexes, CD-CODE for condensates and STRING or Complex Portal for partners. The same lists name them for the sites in view; every resource is in <i>Data sources, versions and licences</i> below with its citation and licence.</li>' +
         '<li><b>' + esc(PAPER.cite) + '</b> ' + doiLink(PAPER.doi) + ', for the compiled, remapped union and this explorer.</li></ol>' +
-        '<p>The studies and databases behind the union, with their references, are listed under Sources in the union. PhosphoSitePlus® sites carry a non-commercial licence (CC BY-NC-SA 3.0).</p>'],
-      ['sources', 'Sources in the union', '' +
+        '<p>The studies and databases behind the union, with their references, are listed under ' + (localisedOnly() ? 'Sources of the sites' : 'Sources in the union') + '. PhosphoSitePlus® sites carry a non-commercial licence (CC BY-NC-SA 3.0).</p>'],
+      // v1.2.0 on: every study from its own tables (localisedOnly); earlier exports: the three compiled tables.
+      ['sources', localisedOnly() ? 'Sources of the sites' : 'Sources in the union', (localisedOnly() ? sourcesNowHtml() : '' +
       '<dl>' +
       '<dt>Maron 2021</dt><dd>Table S5 of Maron et al., <a href="https://doi.org/10.1016/j.isci.2021.102971">iScience 24:102971 (2021)</a>, a compilation of human methylarginine sites from published proteomics.</dd>' +
       '<dt>ProMetheusDB</dt><dd>Methyl-proteome table (mmc2) with monomethyl (Rme1) and dimethyl (Rme2) calls: Massignani et al., ' + doiLink('10.1016/j.mcpro.2022.100243', 'Mol Cell Proteomics 21:100243 (2022)') + '.</dd>' +
-      '<dt>PTM master</dt><dd>Methylarginine rows of the lab\'s cross-PTM human master table (UniProt and IEDB annotations); the same table supplies the phospho, lysine acyl, ubiquitin/SUMO and lysine methyl sites shown as crosstalk. Those other-PTM sites are not exhaustive: they come from an iPTMnet export (HPRD, literature mining and other curated sources) plus UniProt, so modifications reported elsewhere, for example in PhosphoSitePlus or recent proteomics studies, may be missing. iPTMnet: Huang et al., ' + doiLink('10.1093/nar/gkx1104', 'Nucleic Acids Res 46:D542 (2018)') + '; IEDB: Vita et al., ' + doiLink('10.1093/nar/gky1006', 'Nucleic Acids Res 47:D339 (2019)') + '.</dd></dl>' +
+      '<dt>PTM master</dt><dd>Methylarginine rows of the lab\'s cross-PTM human master table (UniProt and IEDB annotations); the same table supplies the phospho, lysine acyl, ubiquitin/SUMO and lysine methyl sites shown as crosstalk. Those other-PTM sites are not exhaustive: they come from an iPTMnet export (HPRD, literature mining and other curated sources) plus UniProt, so modifications reported elsewhere, for example in PhosphoSitePlus or recent proteomics studies, may be missing. iPTMnet: Huang et al., ' + doiLink('10.1093/nar/gkx1104', 'Nucleic Acids Res 46:D542 (2018)') + '; IEDB: Vita et al., ' + doiLink('10.1093/nar/gky1006', 'Nucleic Acids Res 47:D339 (2019)') + '.</dd></dl>') +
       '<p class="note"><b>Licence notice.</b> ' + fmt((M.studies.find((x) => x[0] === 'PhosphoSitePlus') || [0, 0, 0])[2]) + ' sites in the union are reported by PhosphoSitePlus® (via Maron et al. 2021 Table S5). ' + esc(PSP_NOTICE) + ' Please acknowledge PhosphoSitePlus® and cite Hornbeck et al. 2015 (' + doiLink('10.1093/nar/gku1267') + ') when using these sites, including in downloads.</p>' +
       '<h4 id="doc-study-quality">Studies and databases behind the sites</h4>' + (Object.keys(M.study_quality || {}).length ? studyCardsHtml() : '<ul class="cite-list">' +
       M.studyOrder.map((k) => '<li><b>' + esc(M.studies[k][0]) + '</b>: ' + fmt(M.studies[k][2]) + ' sites, ' + fmt(M.studies[k][3]) + ' reported only there<br><span class="muted">' + (STUDY_HELP[M.studies[k][0]] ? esc(STUDY_HELP[M.studies[k][0]]) + '. ' : '') + refLine(studyRef(k)) + '</span></li>').join('') + '</ul>')],
