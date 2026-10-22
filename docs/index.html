@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Serif:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="assets/explorer.css?v=20261022r">
+  <link rel="stylesheet" href="assets/explorer.css?v=20261022s">
   <script>
     try { var t = localStorage.getItem('mre-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
   </script>
@@ -61,7 +61,6 @@
       <div class="query-note" id="query-note" aria-live="polite"></div>
       <div class="tabs" id="tabs" role="tablist" aria-label="Views">
         <button class="tab" role="tab" id="tab-overview" data-view="overview" aria-selected="true">Overview</button>
-        <span class="sel-label" id="sel-label">All data</span>
         <button class="tab in-sel" role="tab" id="tab-proteins" data-view="proteins" aria-selected="false">Proteins <span class="count" id="count-proteins">–</span></button>
         <button class="tab in-sel" role="tab" id="tab-sites" data-view="sites" aria-selected="false">Sites <span class="count" id="count-sites">–</span></button>
         <button class="tab in-sel tab-feature" role="tab" id="tab-interactions" data-view="interactions" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="7" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><path d="M8.3 7.2 15.6 7M7.3 8.2l3.6 7.6M16.8 9.2l-3.6 6.6"></path></svg>Interactions</button>
@@ -75,9 +74,6 @@
   <main class="wrap">
     <div class="lc-note" id="lc-note" hidden></div>
     <div class="layout" id="layout">
-      <aside class="rail" id="rail" aria-label="Filters" data-collapsed="true"></aside>
-      <div class="rail-grip" id="rail-grip" role="separator" aria-orientation="vertical" tabindex="0"
-        aria-label="Width of the filters: drag, or use the arrow keys; double-click resets it" title="Drag to resize the filters; double-click resets"></div>
       <div class="content" id="content">
         <div class="loading" id="loading"><div class="spinner"></div><p>Loading methylarginine sites…</p></div>
       </div>
@@ -98,7 +94,10 @@
     </div>
   </footer>
 
+  <!-- The filters: a drawer over the dimmed page, opened from the scope bar's Filters button. -->
+  <div class="drawer-bg" id="drawer-bg" hidden></div>
+  <aside class="rail drawer" id="rail" role="dialog" aria-modal="true" aria-labelledby="rail-title" hidden></aside>
   <div class="tip" id="tip" hidden></div>
-  <script src="assets/explorer.js?v=20261022r"></script>
+  <script src="assets/explorer.js?v=20261022s"></script>
 </body>
 </html>

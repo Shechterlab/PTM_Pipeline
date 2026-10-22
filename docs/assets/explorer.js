@@ -1836,8 +1836,8 @@
   }
 
   // The selection: everything that narrows the sites (search terms and filters, which must all match), with its counts
-  // and tools. It heads the filter panel, where filters are added; pages without the panel show it in the bar under the
-  // search box instead. Orange marks a selection everywhere: here, the views of the tab bar and the active filter groups.
+  // and tools. It sits in the bar under the search box on every view, after the Filters button, and heads the filters
+  // drawer. Orange marks a selection everywhere: here, the views of the tab bar and the active filter groups.
   function selectionHtml(cons) {
     const tools = (more) => '<span class="scope-tools">' + savedMenuHtml(cons.length > 0) + more + '</span>';
     if (!cons.length) {
@@ -1872,17 +1872,17 @@
       bindSelection(rs, cons);
     }
     updateSelectionTabs(cons);
-    const withRail = !$('#layout').classList.contains('no-rail') && !railHidden();
-    box.classList.toggle('on', cons.length > 0 && !withRail);
-    if (cons.length && !withRail) {
-      box.hidden = false;
-      box.innerHTML = selectionHtml(cons);
-      bindSelection(box, cons);
-    } else if (!cons.length && UI.view === 'overview') {
-      // On the landing page the bar offers searches to try (the header already gives the totals).
-      box.hidden = false;
+    // The scope bar under the search, on every view: the Filters button, then what every view shows (all sites, or
+    // the selection and its terms). Without a selection, the Overview offers searches to try.
+    box.hidden = false;
+    box.classList.toggle('on', cons.length > 0);
+    const btn = '<button class="filters-btn" type="button" id="filters-btn" aria-haspopup="dialog" aria-controls="rail" aria-expanded="' + !$('#rail').hidden + '" title="Filter by function, disease, methylation state, motif, structure, interactions and source">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"></path></svg>Filters' +
+      '<span class="filters-n" id="filters-n"' + (cons.length ? '' : ' hidden') + '>' + cons.length + '</span></button>';
+    if (!cons.length && UI.view === 'overview') {
       const tries = [['FUS', 'a protein'], ['FUS R216', 'a site'], ['TAF15 EWSR1 FUS', 'a gene list'], ['disease:als', 'a disease family'], ['motif:RGG', 'a motif']];
-      box.innerHTML = '<span class="scope-try"><span class="scope-hint">Try</span>' + tries.map(([q, what]) => '<button type="button" class="try-chip" data-try="' + esc(q) + '" title="Search for ' + esc(what) + '">' + esc(q) + '</button>').join('') + '</span>' +
+      box.innerHTML = btn + '<span class="scope-count">All <b>' + fmt(S.length) + '</b> sites on <b>' + fmt(P.length) + '</b> proteins</span>' +
+        '<span class="scope-try"><span class="scope-hint">Try</span>' + tries.map(([q, what]) => '<button type="button" class="try-chip" data-try="' + esc(q) + '" title="Search for ' + esc(what) + '">' + esc(q) + '</button>').join('') + '</span>' +
         '<span class="scope-tools">' + savedMenuHtml(false) + '</span>';
       $$('[data-try]', box).forEach((b) => b.addEventListener('click', () => {
         setPlain(b.dataset.try); compute();
@@ -1891,9 +1891,10 @@
       }));
       bindSaved(box);
     } else {
-      box.hidden = true;
-      box.innerHTML = '';
+      box.innerHTML = btn + selectionHtml(cons);
+      bindSelection(box, cons);
     }
+    $('#filters-btn', box).addEventListener('click', () => openFilters());
     syncToolbar();
   }
 
@@ -1904,7 +1905,6 @@
     if (!tabs) return;
     const on = (cons || constraints()).length > 0;
     tabs.classList.toggle('filtered', on);
-    $('#sel-label').textContent = on ? 'Selection' : 'All data';
     const ptab = $('#tab-protein');
     const one = on && R && R.prots.length === 1 ? R.prots[0].i : null;
     const i = UI.view === 'protein' && UI.detail != null ? UI.detail : one;
@@ -1985,8 +1985,11 @@
   function route() {
     let h = location.hash.slice(1);
     try { h = decodeURIComponent(h); } catch (e) { /* a malformed escape (#FUS%2): read the hash as given */ }
-    let view = 'overview';
-    if (['overview', 'proteins', 'sites', 'interactions', 'figures', 'about', 'report', 'compare'].includes(h)) view = h;
+    let view = 'overview', focus = null, siteInHash = false;
+    // #interactions/ix-nac: a page opened on one of its sections (the focus view)
+    const [hv, hf] = h.split('/');
+    if (hf && ['overview', 'interactions'].includes(hv) && /^[a-z][\w-]*$/.test(hf)) { view = hv; focus = hf; }
+    else if (['overview', 'proteins', 'sites', 'interactions', 'figures', 'about', 'report', 'compare'].includes(h)) view = h;
     else if (h === 'docs') view = 'about';
     else if (h === 'charts') view = 'overview';
     else if (h) {
@@ -2003,17 +2006,21 @@
           const want = Q.positions && Q.positions.get(hit[0]);
           if (UI.highlight == null && want && want.size === 1) UI.highlight = want.values().next().value;
         }
-        if (site) UI.highlight = +site[1] + (P[hit[0]].hist ? 1 : 0);
+        if (site) { UI.highlight = +site[1] + (P[hit[0]].hist ? 1 : 0); siteInHash = true; }
+        else if (/^p-[a-z0-9]+$/.test(sitePart || '')) focus = sitePart;
         rememberProtein(hit[0]);
       }
     }
+    // Only the section changed (a scorecard row, Back): show it without drawing the page again.
+    const samePage = !siteInHash && view === UI.view && UI.hubR === R && UI.hubDetail === (view === 'protein' ? UI.detail : null) && $('#content .hub-list');
+    UI.focus = focus;
+    if (samePage) { setDocTitle(); hubApply($('#content')); return; }
     UI.view = view;
     if (!['protein', 'about'].includes(view)) UI.lastView = view;
     setDocTitle();
     if (view !== 'report' && view !== 'compare') setPrintPageStyle(false);
     $$('.tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.view === view)));
     tabsInView();
-    $('#layout').classList.toggle('no-rail', view === 'about' || view === 'report' || view === 'compare');
     document.body.classList.toggle('slim', view !== 'overview');
     renderScope();
     renderView();
@@ -2045,6 +2052,8 @@
     else if (UI.view === 'compare') renderCompare(el);
     else if (UI.view === 'about') renderAbout(el);
     else if (UI.view === 'protein') renderProtein(el, P[UI.detail]);
+    UI.hubR = R;
+    UI.hubDetail = UI.view === 'protein' ? UI.detail : null;
   }
 
   function openProtein(i, pos) {
@@ -2239,20 +2248,21 @@
   function renderRail() {
     const rail = $('#rail');
     const open = new Set($$('details[open]', rail).map((d) => d.dataset.sec));
-    const firstRender = !rail.children.length;
+    const firstRender = !rail.children.length, scrollTop = firstRender ? 0 : ($('.drawer-body', rail) || {}).scrollTop || 0;
+    // The drawer: what is selected now, the filters by topic, and a foot that says what they leave and closes onto it.
     rail.innerHTML =
-      '<button class="rail-strip" type="button" id="rail-strip" title="Show the filters" aria-label="Show the filters">' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"></path></svg>' +
-      '<span class="rail-strip-label">Filters</span><span class="rail-strip-n" id="rail-strip-n" hidden></span></button>' +
+      '<div class="drawer-head"><h2 id="rail-title">Filters</h2>' +
+      '<button class="btn quiet small" type="button" id="rail-done" title="Close the filters (Esc)">Close</button></div>' +
+      '<div class="drawer-body">' +
       '<div class="rail-sel scope" id="rail-sel" aria-live="polite"></div>' +
-      '<div class="rail-head"><h2>Add filters</h2><div class="actions">' +
-      '<button class="btn small rail-clear" type="button" id="rail-clear" hidden title="Clear the search and every filter">Clear all</button>' +
-      '<button class="btn quiet small rail-min-btn" type="button" id="rail-min" title="Hide the filters, so the results take the full width">Hide</button>' +
-      '<button class="btn quiet small rail-toggle" type="button" id="rail-toggle" aria-expanded="' + (rail.dataset.collapsed === 'false') + '">' + (rail.dataset.collapsed === 'false' ? 'Hide' : 'Show') + '</button></div></div>' +
-      '<p class="rail-note">Each filter narrows the selection above; a site must match all of them.</p>' +
+      '<p class="rail-note">Each filter narrows the selection; a site must match all of them. Every page then shows the selection, and its tests run again on it.</p>' +
       SECTIONS.map(([key, title, dflt]) => '<details data-sec="' + key + '"' + ((firstRender ? dflt : open.has(key)) ? ' open' : '') + '><summary><span>' + esc(title) + '</span>' +
         '<span class="sec-count" data-count="' + key + '" hidden></span><span class="sec-clear" role="button" tabindex="0" data-clear="' + key + '" hidden>Clear</span></summary>' +
-        sectionBody(key) + '</details>').join('');
+        sectionBody(key) + '</details>').join('') + '</div>' +
+      '<div class="drawer-foot"><span class="df-count" id="rail-count" aria-live="polite"></span>' +
+      '<button class="btn small quiet rail-clear" type="button" id="rail-clear" hidden title="Clear the search and every filter">Clear all</button>' +
+      '<button class="btn small primary" type="button" id="rail-show">Show results</button></div>';
+    $('.drawer-body', rail).scrollTop = scrollTop;
     bindRail();
     renderRailState();
     renderScope();
@@ -2290,8 +2300,10 @@
     const counts = {};
     for (const c of constraints()) counts[c.group] = (counts[c.group] || 0) + 1;
     $$('[data-count]').forEach((el) => { const n = counts[el.dataset.count] || 0; el.hidden = !n; el.textContent = n; });
-    const sn = $('#rail-strip-n'), total = Object.values(counts).reduce((a, b) => a + b, 0);
-    if (sn) { sn.hidden = !total; sn.textContent = total; sn.title = total + (total === 1 ? ' filter' : ' filters') + ' set'; }
+    const sn = $('#filters-n'), total = Object.values(counts).reduce((a, b) => a + b, 0);
+    if (sn) { sn.hidden = !total; sn.textContent = total; }
+    const rcn = $('#rail-count');
+    if (rcn && R) rcn.innerHTML = '<b>' + fmt(R.sites.length) + '</b> site' + (R.sites.length === 1 ? '' : 's') + ' on <b>' + fmt(R.prots.length) + '</b> protein' + (R.prots.length === 1 ? '' : 's') + (total ? '' : ' (all)');
     $$('[data-clear]').forEach((el) => { el.hidden = !counts[el.dataset.clear]; });
     const rc = $('#rail-clear');
     if (rc) { rc.hidden = !total; rc.textContent = 'Clear all (' + total + ')'; }
@@ -2346,80 +2358,57 @@
       el.addEventListener('click', run);
       el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') run(e); });
     });
-    $('#rail-min').addEventListener('click', () => setRailMin(true));
     $('#rail-clear').addEventListener('click', clearAll);
-    $('#rail-strip').addEventListener('click', () => setRailMin(false));
-    $('#rail-toggle').addEventListener('click', () => {
-      const collapsed = rail.dataset.collapsed !== 'false';
-      rail.dataset.collapsed = collapsed ? 'false' : 'true';
-      const t = $('#rail-toggle');
-      t.textContent = collapsed ? 'Hide' : 'Show';
-      t.setAttribute('aria-expanded', String(collapsed));
-    });
+    $('#rail-done').addEventListener('click', () => closeFilters());
+    $('#rail-show').addEventListener('click', () => closeFilters());
   }
 
-  // --------------------------------------------------------- filter column
-  // Side by side (above 900 px wide) the reader can drag the column's edge, or move it with the arrow keys, and hide the
-  // column to a strip; both are kept in this browser. Below 900 px the filters fold into a panel above the results.
-  const RAIL = { min: 192, max: 448, key: 'mre-rail' };
-  const railPrefs = (() => { try { return JSON.parse(store.get(RAIL.key) || 'null') || {}; } catch (e) { return {}; } })();
-  const railSideBySide = () => !window.matchMedia || window.matchMedia('(min-width: 901px)').matches;
-  const railHidden = () => $('#layout').classList.contains('rail-min') && railSideBySide();
-  const saveRail = () => store.set(RAIL.key, JSON.stringify(railPrefs));
-  // charts drawn to their box's width redraw when the results column changes width
-  const railReflow = () => window.dispatchEvent(new Event('resize'));
-  function railWidth(w) {
-    const layout = $('#layout');
-    if (w == null) { layout.style.removeProperty('--rail-w'); return undefined; }
-    w = Math.round(Math.max(RAIL.min, Math.min(RAIL.max, layout.clientWidth * 0.4, w)));
-    layout.style.setProperty('--rail-w', w + 'px');
-    return w;
+  // --------------------------------------------------------- filter drawer
+  // The filters slide in from the left over the page, which is dimmed and inert behind them (Esc, the backdrop, Close
+  // or Show results close them). Filters apply as they are set; the drawer's foot counts what they leave.
+  const pageParts = () => [$('header.hero'), $('#toolbar'), $('main'), $('footer.site')].filter(Boolean);
+  let filtersOpener = null;
+  function openFilters(sec) {
+    const rail = $('#rail'), bg = $('#drawer-bg');
+    if (!rail.hidden && rail.classList.contains('on')) return;
+    filtersOpener = document.activeElement;
+    rail.hidden = false; bg.hidden = false;
+    void rail.offsetWidth;   // start the slide from the closed position
+    rail.classList.add('on'); bg.classList.add('on');
+    pageParts().forEach((el) => { el.inert = true; });
+    document.documentElement.classList.add('drawer-open');
+    const fb = $('#filters-btn');
+    if (fb) fb.setAttribute('aria-expanded', 'true');
+    renderRailState();
+    const d = sec && $('#rail details[data-sec="' + sec + '"]');
+    if (d) { d.open = true; d.scrollIntoView({ block: 'start' }); }
+    const first = d ? $('summary', d) : $('#rail-done');
+    if (first) first.focus({ preventScroll: !!d });
   }
-  function setRailMin(on) {
-    railPrefs.min = on;
-    saveRail();
-    $('#layout').classList.toggle('rail-min', on);
-    renderScope();
-    railReflow();
-    const f = on ? $('#rail-strip') : $('#rail-min');
-    if (f) f.focus();
+  function closeFilters() {
+    const rail = $('#rail'), bg = $('#drawer-bg');
+    if (rail.hidden) return;
+    rail.classList.remove('on'); bg.classList.remove('on');
+    pageParts().forEach((el) => { el.inert = false; });
+    document.documentElement.classList.remove('drawer-open');
+    const fb = $('#filters-btn');
+    if (fb) fb.setAttribute('aria-expanded', 'false');
+    const done = () => { if (!rail.classList.contains('on')) { rail.hidden = true; bg.hidden = true; } };
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) done();
+    else setTimeout(done, 240);
+    const back = filtersOpener && filtersOpener.isConnected ? filtersOpener : $('#filters-btn');
+    if (back) back.focus({ preventScroll: true });
+    filtersOpener = null;
   }
   function initRail() {
-    const layout = $('#layout'), grip = $('#rail-grip');
-    layout.classList.toggle('rail-min', !!railPrefs.min);
-    if (railPrefs.w) railWidth(railPrefs.w);
-    const set = (w) => { railPrefs.w = railWidth(w); };
-    grip.addEventListener('pointerdown', (e) => {
-      if (e.button !== 0) return;
+    $('#drawer-bg').addEventListener('click', () => closeFilters());
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || $('#rail').hidden) return;
+      // Escape closes an open menu or suggestion list inside the drawer first
+      if (e.target.closest && e.target.closest('.suggest, details.saved-menu[open]')) return;
       e.preventDefault();
-      grip.setPointerCapture(e.pointerId);
-      const x0 = e.clientX, w0 = $('#rail').getBoundingClientRect().width;
-      layout.classList.add('rail-drag');
-      const move = (ev) => set(w0 + ev.clientX - x0);
-      const up = () => {
-        grip.removeEventListener('pointermove', move);
-        grip.removeEventListener('pointerup', up);
-        grip.removeEventListener('pointercancel', up);
-        layout.classList.remove('rail-drag');
-        saveRail();
-        railReflow();
-      };
-      grip.addEventListener('pointermove', move);
-      grip.addEventListener('pointerup', up);
-      grip.addEventListener('pointercancel', up);
+      closeFilters();
     });
-    grip.addEventListener('keydown', (e) => {
-      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-      e.preventDefault();
-      const step = (e.shiftKey ? 64 : 16) * (e.key === 'ArrowRight' ? 1 : -1);
-      set($('#rail').getBoundingClientRect().width + step);
-      saveRail();
-      railReflow();
-    });
-    grip.addEventListener('dblclick', () => { delete railPrefs.w; railWidth(null); saveRail(); railReflow(); });
-    // a narrower window keeps the kept width within 40% of the page; crossing 900 px moves the selection
-    window.addEventListener('resize', debounce(() => { if (railPrefs.w) railWidth(railPrefs.w); }, 150));
-    if (window.matchMedia) window.matchMedia('(min-width: 901px)').addEventListener('change', renderScope);
   }
 
   // --------------------------------------------------------- global events
@@ -3119,6 +3108,25 @@
     return rows.length ? 'enriched' + (lead ? ' ' + lead : '') + ': ' + list : (lead ? lead + ': ' : '') + 'no significant enrichment';
   }
 
+  // A chart's answer on a scorecard: its strongest significant rows with their effect (fold enrichment for protein
+  // sets, odds ratio for residues). whole: the whole dataset's answer, which a chart retested for a selection keeps on
+  // each row (ref, refQ).
+  function chartAnswer(spec, whole, n = 2) {
+    if (!spec) return '';
+    const re = whole && spec.selTest;
+    const v = (r) => (re ? r.ref : r.value), sig = (r) => (re ? r.refQ != null && r.refQ <= PADJ : !!r.sig);
+    const short = (r) => String(r.label).split(' · ')[0];
+    const ok = (r) => v(r) != null && Number.isFinite(v(r)) && !/^(no |not |unknown|unassigned|other\b)/i.test(short(r));
+    const up = spec.rows.filter((r) => ok(r) && sig(r) && v(r) > 0).sort((a, b) => v(b) - v(a));
+    const down = spec.fold ? [] : spec.rows.filter((r) => ok(r) && sig(r) && v(r) < 0).sort((a, b) => v(a) - v(b));
+    const eff = (r) => (spec.fold ? fx(Math.pow(2, v(r))) + '-fold' : 'OR ' + fx(Math.pow(2, v(r))));
+    const list = (rows, k) => rows.slice(0, k).map((r) => esc(short(r)) + ' <span class="an">' + eff(r) + '</span>').join(', ') + (rows.length > k ? ' +' + (rows.length - k) : '');
+    if (up.length) return am(1) + list(up, n) + (down.length ? '; ' + am(-1) + list(down, 1) : '');
+    if (down.length) return am(-1) + list(down, n);
+    if (!whole && spec.selTest && !spec.rows.some((r) => r.value != null)) return am(0) + 'too few to test';
+    return am(0) + (spec.fold ? 'none over-represented' : 'none differs') + ' at q ≤ ' + PADJ;
+  }
+
   function chartCard(spec, cls) {
     UI.charts[spec.id] = spec;
     return '<div class="card chart-card' + (cls ? ' ' + cls : '') + '" id="' + spec.id + '"><div class="card-head"><div><h3>' + esc(spec.title) + '</h3><p class="sub">' + spec.subHtml + '</p></div>' + expButtons(spec.id) + '</div>' +
@@ -3754,50 +3762,57 @@
     const selOn = constraints().length > 0, repSel = [0, 0, 0, 0, 0];
     if (selOn) for (const s of R.sites) repSel[Math.min(5, popcount(s.study)) - 1]++;
     const one = R.prots.length === 1 ? R.prots[0] : null;
-    // Interaction status of the sites in view, for the header of the interactions panel.
-    const ixSum = (() => {
+    // The landing page is a scorecard of the dataset's questions (hubHtml): each row answers for the selection and the
+    // whole dataset, and opens its charts and tables on their own.
+    const scoped = selOn, row = (key, title, inner, q, how, sel, all, empty) => foldHtml(key, title, inner, false, '', null, { q, how, sel, all: scoped ? all : '', empty });
+    const chartRow = (key, spec, q, extra) => (spec ? row(key, spec.title, chartCard(spec) + (extra || ''), q, 'retest', chartAnswer(spec), chartAnswer(spec, true)) : '');
+    const ixCount = (sites) => {
       if (!ixReady()) return 'loading the interaction data…';
       const n = { exp: 0, pred: 0, none: 0 };
-      for (const s of (selOn ? R.sites : S)) n[ixStatus(s)]++;
-      return (selOn ? 'of your sites, ' : '') + fmt(n.exp) + ' site' + (n.exp === 1 ? '' : 's') + ' with experimental interaction evidence, ' + fmt(n.pred) + ' predicted only · key findings and a site check';
-    })();
-    const startsHtml = foldHtml('ov-start', 'Starting points', '<div class="card wide starts" id="ov-start"><h3>Starting points</h3><div class="starts-grid">' +
+      for (const s of sites) n[ixStatus(s)]++;
+      return '<span class="an">' + fmt(n.exp) + '</span> sites (' + pctText(n.exp, sites.length || 1) + '%) with experimental evidence, ' + fmt(n.pred) + ' predicted only';
+    };
+    const provCount = (sites) => {
+      let mask = 0, multi2 = 0;
+      for (const s of sites) { mask |= s.study; if (popcount(s.study) >= 2) multi2++; }
+      return '<span class="an">' + fmt(sites.length) + '</span> sites from ' + popcount(mask) + ' studies or databases; <span class="an">' + pctText(multi2, sites.length || 1) + '%</span> reported by two or more';
+    };
+    const profile = selOn ? profileCardHtml() : '';
+    el.innerHTML =
+      (one ? '<p class="hub-legend hub-only">Your selection is one protein. <button class="linkish" type="button" id="ov-open-one">Open ' + esc(one.label) + ' →</button></p>' : '') +
+      hubHtml() + focusBarHtml() +
+      '<div class="hub-list">' +
+      hubSec('Your selection', profile || row('sel-enriched', 'Enriched features', '', 'What sets a selection apart from the other sites?', 'needs', null, '', 'Make a selection (search, or Filters) to see the site features over-represented in it.')) +
+      hubSec('What kinds of proteins are methylated',
+        chartRow('ov-pan', pan || func, 'Which protein classes are over-represented among methylated proteins?') +
+        chartRow('ov-dis', dis, 'Which disease gene sets are over-represented?') +
+        chartRow('ov-cond', cond, 'Which biomolecular condensates are over-represented (CD-CODE' + (thr ? ', confidence ≥ ' + thr : '') + ')?') +
+        chartRow('ov-loc', loc, 'Which subcellular locations are over-represented (Human Protein Atlas)?')) +
+      hubSec('Where in the protein',
+        chartRow('ov-motif', motif, 'Which sequence motifs surround methylarginines, against the other arginines of the same proteins?') +
+        row('ov-struct', sctx ? 'Structural context' : 'Disorder and domains', structHtml, 'Are methylarginines in disordered regions or domains, against the other arginines of the same proteins?', 'retest',
+          chartAnswer(sctx || disorder), chartAnswer(sctx || disorder, true))) +
+      hubSec('Interactions',
+        row('ov-ix', 'Interactions and binding', ixOverviewHtml(), 'How many sites have interaction evidence? The Interactions page tests it.', 'count', ixCount(selOn ? R.sites : S), ixCount(S))) +
+      hubSec('Sources and responses',
+        row('ov-study', 'Provenance', '<div class="card wide chart-card" id="ch-study"><div class="card-head"><div><h3>Provenance</h3><p class="sub">' + study.subHtml + '</p></div>' + expButtons('ch-study') + '</div>' +
+      '<div class="two-col"><div>' + hbars(study) + '</div>' +
+      '<div><p class="flabel" style="margin:0 0 .5rem">Studies or databases reporting each site</p><div class="hbars rep-dist' + (selOn ? ' has-sel' : '') + '">' +
+      repDist.map((n, k) => '<button class="hb' + (selOn && !repSel[k] ? ' off' : '') + '" type="button" data-rep="' + (k + 1) + '"><span class="hb-label">' + (k === 4 ? '5 or more' : (k + 1) + (k ? ' sources' : ' source')) + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / repDist[0]).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span>' + (selOn ? selCell(repSel[k]) : '') + '</button>').join('') +
+      '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) are reported by two or more' + (selOn ? '; ' + fmt(R.sites.length - repSel[0]) + ' of the ' + fmt(R.sites.length) + ' selected' : '') + '. Databases such as PhosphoSitePlus compile published studies, so two sources can rest on the same measurement. Click a row to keep sites with at least that many.</p></div></div></div>', 'Which studies and databases report the sites?', 'count', provCount(selOn ? R.sites : S), provCount(S)) +
+        row('ov-treat', 'PRMT inhibitor and knockout response', '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor and knockout response</h3><p class="sub">Sites that change when PRMT5 or type I PRMTs are inhibited (Maron et al. 2021)' + (koMeta() ? ' or CARM1 is knocked out (Shishkova et al. 2017)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable() + '</div>', 'Which sites lose methylation when PRMTs are inhibited or knocked out?', 'count', treatSummary(selOn ? R.sites : S, true), treatSummary(S, true))) +
+      hubSec('Starting points',
+        row('ov-start', 'Starting points', '<div class="card wide starts" id="ov-start"><h3>Starting points</h3><div class="starts-grid">' +
       '<div><h4>Quick selections</h4><div class="gene-chips">' + (UI.quick || []).map((q, k) => '<button class="gene-chip" type="button" data-quick="' + k + '">' + esc(q[1]) + '<span>' + q[0] + '</span></button>').join('') + '</div></div>' +
       '<div><h4>Most methyl-R sites</h4>' + geneChips(topSites, (p) => p.sites.length) + '</div>' +
       '<div><h4>Highest arginine-methylation enrichment</h4>' + geneChips(topArg, (p) => fmtL2(p.shrink)) + '</div>' +
       '<div><h4>Most significant methylarginine clustering (permutation test)</h4>' + geneChips(topDense, (p) => { const w = p.sig.slice().sort((a, b) => b[4] - a[4])[0]; return w[3] + '/' + w[0] + ' aa'; }) + '</div>' +
-      '</div></div>', false, 'quick selections and the proteins with the most sites, strongest enrichment and clustering');
-    // The landing page: what kinds of proteins are methylated (the two headline charts, open), then every other
-    // analysis behind a one-line header. With a selection, a line about it and its enriched features come first.
-    el.innerHTML =
-      (selOn ? '<p class="ov-hint sel">Your selection: <b>' + fmt(R.sites.length) + '</b> site' + (R.sites.length === 1 ? '' : 's') + ' on <b>' + fmt(R.prots.length) + '</b> protein' + (R.prots.length === 1 ? '' : 's') +
-        '. Every chart is the same test run on your selection, with a tick at the whole dataset\'s value: its proteins against the same background for protein sets (classes, disease, condensates, locations), its sites against the other arginines of their proteins for residues (motifs, structural context). Provenance counts your sites per study. A click on a bar narrows the selection.' +
-        (one ? ' <button class="linkish" type="button" id="ov-open-one">Open ' + esc(one.label) + ' →</button>' : '') + '</p>' + profileCardHtml() : '') +
-      '<div class="ov-head"><h2>What kinds of proteins are methylated</h2><span class="muted small">' + (selOn ? 'Click a bar to narrow your selection' : 'Click a bar to list its proteins') + '</span></div>' +
-      '<div class="ov-grid">' + chartCard(pan || func) + chartCard(dis) + '</div>' +
-      '<div class="ov-head"><h2>Explore further</h2></div>' +
-      pageIndexHtml([['Start', [['ov-start', 'Starting points']]], ['Interactions', [['ov-ix', 'Interactions and binding']]],
-        ['Sequence and structure', [['ov-motif', 'Motifs'], ['ov-struct', 'Structural context']]], ['Protein sets', [['ov-cond', 'Condensates'], ['ov-loc', 'Subcellular location']]],
-        ['Sources and responses', [['ov-study', 'Provenance'], ['ov-treat', 'PRMT inhibitors and knockout']]]]) +
-      '<div class="fold-list">' +
-      startsHtml +
-      foldHtml('ov-ix', 'Interactions and binding', ixOverviewHtml(), false, ixSum) +
-      foldHtml('ov-motif', motif.title, chartCard(motif), false, chartSummary(motif)) +
-      foldHtml('ov-cond', cond.title, chartCard(cond), false, chartSummary(cond) + (thr ? ' (CD-CODE confidence ≥ ' + thr + ')' : '')) +
-      (loc ? foldHtml('ov-loc', loc.title, chartCard(loc), false, chartSummary(loc)) : '') +
-      foldHtml('ov-struct', sctx ? 'Structural context' : 'Disorder and domains', structHtml, false,
-        (sctx ? [chartSummary(sctx, 2)] : [chartSummary(disorder, 2, 'disorder'), chartSummary(domctx, 2, 'context')]).concat(chartSummary(domcls, 2, 'nearest class')).join('; ')) +
-      foldHtml('ov-study', 'Provenance', '<div class="card wide chart-card" id="ch-study"><div class="card-head"><div><h3>Provenance</h3><p class="sub">' + study.subHtml + '</p></div>' + expButtons('ch-study') + '</div>' +
-      '<div class="two-col"><div>' + hbars(study) + '</div>' +
-      '<div><p class="flabel" style="margin:0 0 .5rem">Studies or databases reporting each site</p><div class="hbars rep-dist' + (selOn ? ' has-sel' : '') + '">' +
-      repDist.map((n, k) => '<button class="hb' + (selOn && !repSel[k] ? ' off' : '') + '" type="button" data-rep="' + (k + 1) + '"><span class="hb-label">' + (k === 4 ? '5 or more' : (k + 1) + (k ? ' sources' : ' source')) + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / repDist[0]).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span>' + (selOn ? selCell(repSel[k]) : '') + '</button>').join('') +
-      '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) are reported by two or more' + (selOn ? '; ' + fmt(R.sites.length - repSel[0]) + ' of the ' + fmt(R.sites.length) + ' selected' : '') + '. Databases such as PhosphoSitePlus compile published studies, so two sources can rest on the same measurement. Click a row to keep sites with at least that many.</p></div></div></div>', false,
-        fmt(M.n_sites) + ' sites from ' + M.studyOrder.length + ' studies or databases; ' + fmt(multi) + ' (' + pct(multi, M.n_sites) + '%) reported by two or more') +
-      foldHtml('ov-treat', 'PRMT inhibitor and knockout response', '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor and knockout response</h3><p class="sub">Sites that change when PRMT5 or type I PRMTs are inhibited (Maron et al. 2021)' + (koMeta() ? ' or CARM1 is knocked out (Shishkova et al. 2017)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable() + '</div>', false, treatSummary()) +
+      '</div></div>', 'Quick selections, and the proteins with the most sites, the strongest enrichment and clustering', 'whole',
+          'Quick selections and notable proteins', 'Quick selections and notable proteins')) +
       '</div>';
     bindDocLinks(el);
     bindProfile(el);
-    bindPageIndex(el);
+    bindHub(el, 'Overview');
     const oo = $('#ov-open-one', el);
     if (oo) oo.addEventListener('click', () => openProtein(one.i));
     $$('[data-quick]', el).forEach((b) => b.addEventListener('click', () => { const q = UI.quick[+b.dataset.quick]; if (q) q[2](); }));
@@ -3893,11 +3908,11 @@
   // inhibitor and methyl-IP (sites measured in that IP; changed at adj. p <= 0.05), then CARM1 knockout per cell line
   // (Shishkova 2017; at least twofold with p < 0.05). Medians are true medians of the per-site changes.
   const median = (v) => { if (!v.length) return null; const a = v.slice().sort((x, y) => x - y), h = a.length >> 1; return a.length % 2 ? a[h] : (a[h - 1] + a[h]) / 2; };
-  function treatRows() {
-    const rows = [];
+  function treatRows(sites) {
+    const rows = [], SS = sites || S;
     M.maron_treatments.forEach((name, t) => M.maron_ips.forEach((ipName, ip) => {
       // A site can carry more than one entry for an inhibitor and IP; it counts once, as the filter (treatPass) does.
-      const e = S.map((s) => s.tr.filter((x) => x[0] === ip && x[1] === t)).filter((v) => v.length);
+      const e = SS.map((s) => s.tr.filter((x) => x[0] === ip && x[1] === t)).filter((v) => v.length);
       if (!e.length) return;
       const s3 = (M.overview.treatments || []).find((r) => r[0] === name && r[1] === ipName);
       rows.push({ name, ipName, t, k: ip, n: e.length, down: e.filter((v) => v.some((x) => trDir(x) === 'down')).length, up: e.filter((v) => v.some((x) => trDir(x) === 'up')).length,
@@ -3905,15 +3920,16 @@
     }));
     const km = koMeta();
     if (km) km.cell_lines.forEach((cell, c) => {
-      const v = S.map((s) => s.ko.find((x) => x[0] === c)).filter(Boolean);
+      const v = SS.map((s) => s.ko.find((x) => x[0] === c)).filter(Boolean);
       rows.push({ name: 'CARM1 KO', ipName: 'ADMA', t: 2, k: c, cell, n: v.length, down: v.filter((x) => x[4]).length, up: v.filter((x) => x[5]).length, med: median(v.map((x) => x[1])) });
     });
     return rows;
   }
   // The two rows with the largest decreased share, for a folded header.
-  function treatSummary() {
-    const top = treatRows().filter((r) => r.n).sort((a, b) => b.down / b.n - a.down / a.n).slice(0, 2);
-    return top.length ? 'most decreased: ' + top.map((r) => r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName)) + ' ' + pct(r.down, r.n) + '% of ' + fmt(r.n)).join(', ') : '';
+  function treatSummary(sites, html) {
+    const top = treatRows(sites).filter((r) => r.n).sort((a, b) => b.down / b.n - a.down / a.n).slice(0, 2);
+    if (!html) return top.length ? 'most decreased: ' + top.map((r) => r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName)) + ' ' + pct(r.down, r.n) + '% of ' + fmt(r.n)).join(', ') : '';
+    return top.length ? 'Most decreased: ' + top.map((r) => esc(r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName))) + ' <span class="an">' + pct(r.down, r.n) + '%</span> of ' + fmt(r.n)).join(', ') : 'none of these sites was measured';
   }
   function treatTable() {
     const km = koMeta(), all = treatRows();
@@ -3962,6 +3978,7 @@
     const ext = (href, label) => '<a class="btn quiet small" href="' + href + '" target="_blank" rel="noopener">' + label + ' ↗</a>';
     const base = p.acc.split('-')[0];
     const filtered = constraints().length > 0;
+    const prow = (key, title, inner, q, sum) => foldHtml(key, title, inner, false, sum || '', null, { q });
     el.innerHTML =
       '<div class="print-only print-head" id="print-head"></div>' +
       crumbsHtml(p) +
@@ -3984,7 +4001,9 @@
       ext('https://www.phosphosite.org/uniprotAccAction?id=' + encodeURIComponent(base), 'PhosphoSitePlus') + '</div></details>' +
       '<button class="btn small" type="button" id="save-pdf" title="Download this protein page as a PDF file">Download PDF</button>' +
       '<button class="btn small quiet" type="button" id="print-page" title="Print this protein page (the print dialog can also save a PDF with selectable text)">Print</button></div></div>' +
-      (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
+      // The protein's identity stays; its facts and map head the page (they give way to a section opened alone), and
+      // every other card is a row of the protein's sections (bindHub).
+      '<div class="hub-only">' + (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
       '<div id="drift-note"></div>' +
       (p.unrev ? (() => {
         const twin = p.reviewedTwin, nDup = p.sites.filter((j) => S[j].dup != null).length;
@@ -3997,35 +4016,29 @@
       fact(p.shrink == null ? '—' : fmtL2(p.shrink), 'Arg enrichment (log2)', p.argQ == null ? 'not tested (needs ≥2 sites and ≥10 arginines on a reviewed canonical sequence)' : 'shrinkage estimate; Fisher q ' + fmtP(p.argQ), 'enrich', 'How the arginine enrichment is computed') +
       fact('<span id="ix-fact">…</span>', 'Sites with experimental interaction evidence', '<span id="ix-fact-sub">loading interaction data</span>', 'ixexp', 'List these sites') +
       '</div>' +
-      // Every card is a fold; only the protein map starts open. The index above them reaches any fold.
-      pageIndexHtml([['Map', [['p-map', 'Map']]], ['Interactions', [['p-cc', 'Evidence at a glance'], ['p-ix', 'Partners'], ['p-na', 'RNA and DNA']]],
-        ['Sites and structure', [['p-sites', 'Sites'], ['p-3d', '3D structure']]],
-        ['Protein context', [['p-cond', 'Location and condensates'], ['p-dis', 'Disease'], ['p-func', 'Protein class'], ['p-dom', 'Domains and regions'], ['p-cons', 'Conservation']]],
-        ['Sequence features', [['p-cluster', 'Clustering'], ['p-ptm', 'Other PTMs'], ['p-seq', 'Sequence']]]], ['p-3d'], p.label) +
-      '<div class="fold-list">' +
-      foldHtml('p-map', 'Protein map', figureCard(p), true, fmt(p.sites.length) + ' methylarginine site' + (p.sites.length === 1 ? '' : 's')) +
+      foldHtml('p-map', 'Protein map', figureCard(p), true, fmt(p.sites.length) + ' methylarginine site' + (p.sites.length === 1 ? '' : 's')) + '</div>' +
       '<div class="card" id="site-card" hidden></div>' +
-      '<h2 class="fold-group">Interactions</h2>' +
-      foldHtml('p-cc', 'Interaction evidence at a glance', contactCardHtml(), false, 'loading…') +
-      foldHtml('p-ix', 'Protein interactions', '<div class="card" id="card-ix"></div>', false, 'loading…') +
-      foldHtml('p-na', 'RNA and DNA interactions', '<div class="card" id="card-na"></div>', false, 'loading…') +
-      '<h2 class="fold-group">Sites and structure</h2>' +
-      foldHtml('p-sites', 'Sites', '<div class="card tbl-card" id="card-sites"><div class="card-pad"><div class="card-head"><div><h3>Sites</h3><p class="sub">Click a row for details of the site.</p></div><div class="actions" id="psites-tools"></div></div><div id="psites-ix"></div></div>' +
-      '<div class="tbl-wrap" id="psites"></div><p class="note uni-extra" id="uni-extra" hidden></p><div class="card-pad" id="psites-cite"></div></div>') +
-      foldHtml('p-3d', '3D structure', structureCard(p), false, 'AlphaFold DB model and experimental structures; loads when opened') +
-      '</div>' +
-      // The context toggle applies to the cards below it (and the Complexes tab above).
-      '<div class="fold-list"><h2 class="fold-group">Protein context</h2></div>' + ctxToggleHtml(p) +
-      '<div class="fold-list">' +
-      foldHtml('p-cond', 'Location and condensates', '<div class="card" id="card-cond"></div>') +
-      foldHtml('p-dis', 'Disease associations', '<div class="card" id="card-dis"></div>') +
-      foldHtml('p-func', 'Protein class', '<div class="card" id="card-func"></div>') +
-      foldHtml('p-dom', 'Domains and regions', '<div class="card" id="card-dom"></div>') +
-      foldHtml('p-cons', 'Conservation across species', '<div class="card" id="card-cons"></div>') +
-      '<h2 class="fold-group">Sequence features</h2>' +
-      foldHtml('p-cluster', 'Clustering', '<div class="card" id="card-cluster"></div>') +
-      foldHtml('p-ptm', 'Other PTMs', '<div class="card" id="card-ptm"></div>') +
-      foldHtml('p-seq', 'Sequence', '<div class="card" id="card-seq"><div class="card-head"><div><h3>Sequence</h3><p class="sub" id="seq-sub">Loading sequence from UniProt…</p></div><div class="exp" role="group" aria-label="Sequence export"><button type="button" id="copy-fasta" disabled>Copy FASTA</button><button type="button" id="seq-svg" disabled title="Sequence figure with gene, protein name, UniProt accession and legend">SVG</button><button type="button" id="seq-png" disabled title="Sequence figure with gene, protein name, UniProt accession and legend">PNG</button></div></div><div id="seq"></div></div>', false, 'Loading from UniProt…') +
+      focusBarHtml() +
+      '<div class="hub-list single">' +
+      hubSec('Interactions',
+        prow('p-cc', 'Interaction evidence at a glance', contactCardHtml(), 'Which evidence lies along the protein, site by site', 'loading…') +
+        prow('p-ix', 'Protein interactions', '<div class="card" id="card-ix"></div>', 'Partners, complexes and predicted models', 'loading…') +
+        prow('p-na', 'RNA and DNA interactions', '<div class="card" id="card-na"></div>', 'Crosslinks, structures, binding motifs and eCLIP targets', 'loading…')) +
+      hubSec('Sites and structure',
+        prow('p-sites', 'Sites', '<div class="card tbl-card" id="card-sites"><div class="card-pad"><div class="card-head"><div><h3>Sites</h3><p class="sub">Click a row for details of the site.</p></div><div class="actions" id="psites-tools"></div></div><div id="psites-ix"></div></div>' +
+      '<div class="tbl-wrap" id="psites"></div><p class="note uni-extra" id="uni-extra" hidden></p><div class="card-pad" id="psites-cite"></div></div>', 'Every site with its evidence, state and sources', fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites shown') +
+        prow('p-3d', '3D structure', structureCard(p), 'AlphaFold DB model and experimental structures', 'loads when opened')) +
+      // The context toggle applies to the cards of its section (and the Complexes tab of Protein interactions).
+      hubSec('Protein context',
+        prow('p-cond', 'Location and condensates', '<div class="card" id="card-cond"></div>', 'Human Protein Atlas locations and CD-CODE condensates') +
+        prow('p-dis', 'Disease associations', '<div class="card" id="card-dis"></div>', 'UniProt, DisGeNET and Open Targets') +
+        prow('p-func', 'Protein class', '<div class="card" id="card-func"></div>', 'PANTHER and keyword classes') +
+        prow('p-dom', 'Domains and regions', '<div class="card" id="card-dom"></div>', 'UniProt domains and regions, InterPro classes') +
+        prow('p-cons', 'Conservation across species', '<div class="card" id="card-cons"></div>', 'Orthologue alignments from Ensembl Compara'), ctxToggleHtml(p)) +
+      hubSec('Sequence features',
+        prow('p-cluster', 'Clustering', '<div class="card" id="card-cluster"></div>', 'Do the sites cluster along the sequence?') +
+        prow('p-ptm', 'Other PTMs', '<div class="card" id="card-ptm"></div>', 'Other modifications near the sites') +
+        prow('p-seq', 'Sequence', '<div class="card" id="card-seq"><div class="card-head"><div><h3>Sequence</h3><p class="sub" id="seq-sub">Loading sequence from UniProt…</p></div><div class="exp" role="group" aria-label="Sequence export"><button type="button" id="copy-fasta" disabled>Copy FASTA</button><button type="button" id="seq-svg" disabled title="Sequence figure with gene, protein name, UniProt accession and legend">SVG</button><button type="button" id="seq-png" disabled title="Sequence figure with gene, protein name, UniProt accession and legend">PNG</button></div></div><div id="seq"></div></div>', 'The canonical sequence with the sites marked', 'loading from UniProt…')) +
       '</div>' +
       '<div class="print-only print-foot"><p>' + esc(siteName()) + ' · ' + esc(siteUrl()) + '</p><p>Cite: ' + esc(PAPER.cite) + ' https://doi.org/' + esc(PAPER.doi) + '</p><p>Sites: methylarginine union from PTM_Pipeline. Features, variants and sequence: UniProt. Predicted structure, pLDDT and AlphaMissense: AlphaFold DB. Experimental structures: RCSB PDB and PDBe (SIFTS). Condensates: CD-CODE. Partners: STRING; complexes: Complex Portal and hu.MAP; predicted complexes: ProtVar and AlphaFold DB; crosslinks: pepR-MS compendium, RBDmap, Trendel et al. 2025; IntAct; locations: Human Protein Atlas; disease: DisGeNET (via DOSE), UniProt and Open Targets; orthologues: Ensembl Compara. Licences and citations: the Documentation page.</p></div>';
 
@@ -4034,7 +4047,7 @@
     $('#print-page', el).addEventListener('click', (e) => savePdf(p, e.currentTarget, 'print'));
     bindCtx(p);
     bindFacts(p);
-    bindPageIndex(el);
+    bindHub(el, p.label);
     $$('[data-open-p]', el).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.openP)));
     const pfc = $('#pf-clear', el);
     if (pfc) pfc.addEventListener('click', clearFilters);
@@ -4114,6 +4127,15 @@
   // Open the fold holding a card and bring it into view (the fold's header when the card fills the fold).
   function revealCard(el, smooth) {
     if (!el) return null;
+    const hf = el.closest && el.closest('details.hub-row');
+    if (hf) {
+      if (UI.focus !== hf.dataset.fold) hubFocus(hf.dataset.fold);
+      const inner = el.closest('details.fold');
+      if (inner && inner !== hf && !inner.open) inner.open = true;
+      // a card deeper in the section scrolls into view under the focus bar
+      if (el !== hf && el.parentElement !== hf) setTimeout(() => el.scrollIntoView({ block: 'start', behavior: smooth === false ? 'auto' : 'smooth' }), 40);
+      return el;
+    }
     openFoldOf(el);
     const d = el.parentElement && el.parentElement.matches('details.fold') ? el.parentElement : el;
     d.scrollIntoView({ block: 'start', behavior: smooth === false ? 'auto' : 'smooth' });
@@ -4128,111 +4150,125 @@
   const CLAMP_SEL = '.card-head p.sub:not(:has(select, input, .warn, .warn-text)), .card > p.sub:not(:has(select, input, .warn, .warn-text)), .card-pad p.sub:not(:has(select, input, .warn, .warn-text))';
   const foldState = (() => { try { return JSON.parse(store.get(FOLD_STORE) || '{}') || {}; } catch (e) { return {}; } })();
   const foldIsOpen = (key, dflt) => (Object.prototype.hasOwnProperty.call(foldState, key) ? !!foldState[key] : !!dflt);
-  function foldHtml(key, title, inner, dflt, summary, cls) {
+  // meta: the fold is a row of a page's scorecard (hubHtml): meta.q the question it answers, meta.how how a selection
+  // reaches it (HOW_TEXT), meta.sel and meta.all the answers for what is shown and for the whole dataset (html, built
+  // with esc), meta.empty why there is nothing to show. A scorecard row starts closed; bindHub opens it on its own.
+  function foldHtml(key, title, inner, dflt, summary, cls, meta) {
+    if (meta) {
+      return '<details class="fold hub-row' + (cls ? ' ' + cls : '') + (meta.empty ? ' hub-empty' : '') + '" data-fold="' + key + '" data-how="' + (meta.how || '') + '"><summary class="fold-head"' + (meta.empty ? ' aria-disabled="true"' : '') + '>' +
+        '<span class="pm" aria-hidden="true"></span><span class="fold-tq"><span class="fold-title">' + esc(title) + '</span>' + (meta.q ? '<span class="fold-q">' + esc(meta.q) + '</span>' : '') + '</span>' +
+        '<span class="fold-selc"><span class="fold-sum" id="fold-sum-' + key + '">' + (meta.empty ? esc(meta.empty) : meta.sel != null ? meta.sel : esc(summary || '')) + '</span>' +
+        (meta.how ? '<span class="fold-how">' + HOW_TEXT[meta.how] + '</span>' : '') + '</span>' +
+        '<span class="fold-all">' + (meta.all || '') + '</span><span class="fold-go" aria-hidden="true"></span></summary>' + (meta.empty ? '' : inner) + '</details>';
+    }
     return '<details class="fold' + (cls ? ' ' + cls : '') + '" data-fold="' + key + '"' + (foldIsOpen(key, dflt) ? ' open' : '') + '><summary class="fold-head"><span class="pm" aria-hidden="true"></span>' +
       '<span class="fold-title">' + esc(title) + '</span><span class="fold-sum" id="fold-sum-' + key + '">' + esc(summary || '') + '</span></summary>' + inner + '</details>';
   }
-  // An index of a page's folds, grouped, that stays in view below the toolbar: a click opens the fold and scrolls to it,
-  // open folds are marked, the fold being read is highlighted, and Expand all / Collapse all act on every fold (Expand
-  // all leaves out folds that load heavy data when opened, listed in skip). groups: [[heading, [[fold key, label]]]].
-  // The sections of a page as a second row of tabs under the toolbar, in the toolbar's style: the section being read is
-  // underlined (aria-current), open ones are darker than closed ones, groups are set apart by a rule (their name is the
-  // group's label for screen readers and its tooltip). The row scrolls sideways when long, with fades and arrows.
-  // lead: what the sections are about, as the toolbar labels its views (the protein, or the selection / all data).
-  function pageIndexHtml(groups, skip, lead) {
-    const scoped = constraints().length > 0, text = lead || (scoped ? 'Selection' : 'All data');
-    return '<nav class="page-index" aria-label="Sections of this page" data-skip="' + esc((skip || []).join(' ')) + '">' +
-      '<span class="pi-lead' + (lead ? ' named' : scoped ? ' sel' : '') + '">' + esc(text) + '</span>' +
-      '<button type="button" class="pi-arrow pi-prev" aria-label="Earlier sections" hidden>‹</button><div class="pi-scroll">' +
-      groups.map(([g, items]) => '<span class="pi-group" role="group" aria-label="' + esc(g) + '" title="' + esc(g) + '">' + items.map(([k, l]) => '<button type="button" class="pi" data-pi="' + k + '">' + esc(l) + '</button>').join('') + '</span>').join('') +
-      '</div><button type="button" class="pi-arrow pi-next" aria-label="Later sections" hidden>›</button>' +
-      // step through the cards: the previous or next section, opened and scrolled to (title: which)
-      '<span class="pi-step" role="group" aria-label="Step through the sections"><button type="button" class="pi-stepb" data-step="-1" aria-label="Previous section"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 10 8 5.5 12.5 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
-      '<button type="button" class="pi-stepb" data-step="1" aria-label="Next section"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 6 8 10.5 12.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></span>' +
-      '<button type="button" class="pi-all" data-pi-all="1"' + (skip && skip.length ? ' title="Opens every section except those that load large data when opened"' : '') + '>Expand all</button></nav>';
+
+  // ---- Layered pages. A page's sections are a scorecard (the hub): each row a question, its answer for the
+  // selection and for the whole dataset, and how the selection reaches it. A row opens its section alone (the focus
+  // view) under a bar with the way back and the sections before and after; the address keeps it
+  // (#interactions/ix-nac, #P35637/p-na), so the browser's Back returns to the scorecard.
+  const HOW_TEXT = {
+    retest: 'Retested on your selection', count: 'Counted in your selection', whole: 'Whole dataset only',
+    example: 'One protein of your selection', needs: 'Compares your selection',
+  };
+  // Answers: a marker for the direction (▲ more than expected, ▼ less, ○ no significant difference) and a few words.
+  const AM_PATH = { up: 'M5 1.5 9 8.5H1z', down: 'M5 8.5 9 1.5H1z', ns: '' };
+  const am = (dir) => { const k = dir > 0 ? 'up' : dir < 0 ? 'down' : 'ns'; return '<svg class="dirm ' + k + '" viewBox="0 0 10 10" aria-hidden="true">' + (k === 'ns' ? '<circle cx="5" cy="5" r="3.4" fill="none" stroke="currentColor" stroke-width="1.6"/>' : '<path d="' + AM_PATH[k] + '" fill="currentColor"/>') + '</svg>'; };
+  // effect sizes as a reader reads them; a selection defined by the feature itself gives unbounded odds ratios
+  const fx = (x) => (x >= 1000 ? '> 1,000' : x >= 10 ? x.toFixed(0) : x >= 1 ? x.toFixed(1) : x >= 0.01 ? x.toFixed(2) : '< 0.01');
+  // The head of a scorecard: what its columns hold, and how to read the markers and the selection's labels.
+  function hubHtml(single) {
+    const scoped = constraints().length > 0;
+    if (single) return '';
+    return '<p class="hub-legend hub-only"><span class="hl-keys">' + am(1) + 'more ' + am(-1) + 'less than expected ' + am(0) + 'no difference (q ≤ ' + PADJ + ')</span> ' +
+      (scoped ? '<b>Retested</b>: the release\'s test run again on your selection. <b>Counted</b>: your sites or proteins counted. <b>Whole dataset only</b>: unchanged by a selection.'
+        : 'Make a selection (search, or <b>Filters</b>) and every question is answered for it too.') + ' A row opens its figures and tables.</p>' +
+      '<div class="hub-head hub-only" aria-hidden="true"><span>Question</span>' +
+      (scoped ? '<span class="sel">Your selection · ' + fmt(R.sites.length) + ' sites, ' + fmt(R.prots.length) + ' proteins</span><span>Whole dataset · ' + fmt(S.length) + ' sites</span>'
+        : '<span>Answer · all ' + fmt(S.length) + ' sites on ' + fmt(P.length) + ' proteins</span>') + '<span></span></div>';
   }
-  let pageIndexScroll = null;
-  function bindPageIndex(root) {
-    const nav = $('.page-index', root);
-    if (pageIndexScroll) { window.removeEventListener('scroll', pageIndexScroll); pageIndexScroll = null; }
-    if (!nav) return;
-    const fold = (k) => $('details.fold[data-fold="' + k + '"]', root);
-    $$('.pi', nav).forEach((b) => { if (!fold(b.dataset.pi)) b.hidden = true; });
-    $$('.pi-group', nav).forEach((g) => { if (!$$('.pi:not([hidden])', g).length) g.hidden = true; });
-    const keys = $$('.pi:not([hidden])', nav).map((b) => b.dataset.pi);
-    // where a fold's header lands: below the toolbar and the index as they are once stuck
-    const offset = () => (parseFloat(getComputedStyle(nav).top) || 0) + nav.offsetHeight + 8;
-    const skip = new Set((nav.dataset.skip || '').split(' ').filter(Boolean));
-    const all = $('.pi-all', nav);
-    // One toggle: Expand all while any section that it opens is closed, else Collapse all.
-    const mark = () => {
-      $$('.pi', nav).forEach((b) => { const d = fold(b.dataset.pi); b.classList.toggle('open', !!(d && d.open)); });
-      const closed = keys.some((k) => { const d = fold(k); return d && !d.open && !skip.has(k); });
-      all.dataset.piAll = closed ? '1' : '0';
-      all.textContent = closed ? 'Expand all' : 'Collapse all';
-    };
-    // Sideways overflow: fades and arrows on the side with more sections.
-    const sc = $('.pi-scroll', nav), prev = $('.pi-prev', nav), next = $('.pi-next', nav);
-    const edges = () => {
-      const left = sc.scrollLeft > 4, right = sc.scrollWidth - sc.clientWidth - sc.scrollLeft > 4;
-      nav.classList.toggle('more-left', left);
-      nav.classList.toggle('more-right', right);
-      prev.hidden = !left;
-      next.hidden = !right;
-    };
-    sc.addEventListener('scroll', edges, { passive: true });
-    prev.addEventListener('click', () => sc.scrollBy({ left: -0.6 * sc.clientWidth, behavior: 'smooth' }));
-    next.addEventListener('click', () => sc.scrollBy({ left: 0.6 * sc.clientWidth, behavior: 'smooth' }));
-    if (typeof ResizeObserver === 'function') new ResizeObserver(edges).observe(sc);
-    edges();
-    const goTo = (k) => {
-      const d = fold(k);
-      if (!d) return;
-      d.open = true;
-      window.scrollTo({ top: d.getBoundingClientRect().top + window.scrollY - offset(), behavior: 'smooth' });
-      const sm = $('summary', d);
-      if (sm) sm.focus({ preventScroll: true });
-    };
-    $$('.pi', nav).forEach((b) => b.addEventListener('click', () => goTo(b.dataset.pi)));
-    // ˄ ˅: the section before or after the one being read (the first section from the top of the page)
-    const curKey = () => { const c = $('.pi.cur', nav); return c ? c.dataset.pi : null; };
-    const stepTarget = (dir) => { const i = keys.indexOf(curKey()); return keys[i < 0 ? (dir > 0 ? 0 : -1) : i + dir]; };
-    const label = (k) => { const b = $('.pi[data-pi="' + k + '"]', nav); return b ? b.textContent : ''; };
-    const stepTitles = () => $$('.pi-stepb', nav).forEach((b) => { const k = stepTarget(+b.dataset.step); b.disabled = !k; b.title = k ? (+b.dataset.step > 0 ? 'Next: ' : 'Previous: ') + label(k) : ''; });
-    $$('.pi-stepb', nav).forEach((b) => b.addEventListener('click', () => { const k = stepTarget(+b.dataset.step); if (k) goTo(k); }));
-    all.addEventListener('click', () => {
-      const on = all.dataset.piAll === '1';
-      keys.forEach((k) => { const d = fold(k); if (d && !(on && skip.has(k))) d.open = on; });
-      mark();
-    });
-    root.addEventListener('toggle', (e) => { if (e.target.matches && e.target.matches('details.fold')) mark(); }, true);
-    mark();
-    // The section being read: the last fold whose header has passed the index.
-    let ticking = false;
-    pageIndexScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        ticking = false;
-        if (!nav.isConnected) return;
-        const top = offset() + 4;
-        let cur = null;
-        for (const k of keys) { const d = fold(k); if (d && d.getBoundingClientRect().top <= top) cur = k; }
-        $$('.pi', nav).forEach((b) => {
-          const on = b.dataset.pi === cur;
-          if (on && !b.classList.contains('cur')) {
-            // keep the current section's tab in view in the row
-            const l = b.getBoundingClientRect().left - sc.getBoundingClientRect().left + sc.scrollLeft, r = l + b.offsetWidth;
-            if (l < sc.scrollLeft || r > sc.scrollLeft + sc.clientWidth) sc.scrollTo({ left: Math.max(0, l - 24), behavior: 'smooth' });
-          }
-          b.classList.toggle('cur', on);
-          if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
-        });
-        stepTitles();
+  const hubSec = (title, html, extra) => (html ? '<section class="hub-sec"><h3 class="hub-group">' + esc(title) + '</h3>' + (extra || '') + html + '</section>' : '');
+  const focusBarHtml = () => '<nav class="focus-bar" aria-label="Sections of this page" hidden><button type="button" class="fb-back" data-fb="back">‹ All sections</button>' +
+    '<span class="fb-crumb"></span><span class="fb-pos"></span><span class="fb-step"><button type="button" data-fb="-1">‹ Previous</button><button type="button" data-fb="1">Next ›</button></span></nav>';
+  // Where the page's sections live in the address: the view, or the protein's accession.
+  const hubBase = () => (UI.view === 'protein' && UI.detail != null ? P[UI.detail].acc : UI.view);
+  function hubFocus(key) {
+    const want = '#' + hubBase() + (key ? '/' + key : '');
+    if (location.hash !== want) history.pushState(null, '', location.pathname + location.search + want);
+    UI.focus = key || null;
+    hubApply($('#content'));
+  }
+  function bindHub(root, label) {
+    const list = $('.hub-list', root);
+    if (!list) return;
+    list.classList.toggle('scoped', constraints().length > 0);
+    list.dataset.label = label || '';
+    $$('details.hub-row', list).forEach((d) => {
+      const s = $(':scope > summary', d);
+      s.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (d.classList.contains('hub-empty') || list.classList.contains('focus')) return;
+        UI.hubFrom = d.dataset.fold;
+        hubFocus(d.dataset.fold);
       });
+    });
+    const bar = $('.focus-bar', root);
+    if (bar) $$('[data-fb]', bar).forEach((b) => b.addEventListener('click', () => {
+      if (b.dataset.fb === 'back') { hubFocus(null); return; }
+      const k = b.dataset.key;
+      if (k) hubFocus(k);
+    }));
+    hubApply(root);
+  }
+  // Show the scorecard, or the one section UI.focus names (an unknown or empty one shows the scorecard).
+  function hubApply(root) {
+    const list = root && $('.hub-list', root);
+    if (!list) return;
+    const all = $$('details.hub-row', list).filter((d) => !d.classList.contains('hub-empty'));
+    const d = UI.focus ? all.find((x) => x.dataset.fold === UI.focus) : null;
+    // A redraw of the same page and section (a filter, a control inside a card) keeps the scroll position.
+    const on = !!d, shownKey = hubBase() + '/' + (on ? d.dataset.fold : ''), prev = UI.hubShown, changed = prev !== shownKey;
+    const samePage = !!prev && prev.split('/')[0] === shownKey.split('/')[0];
+    UI.hubShown = shownKey;
+    const apply = () => {
+      root.classList.toggle('focus-mode', on);
+      list.classList.toggle('focus', on);
+      $$('details.hub-row', list).forEach((x) => { const cur = x === d; x.classList.toggle('cur', cur); if (cur && !x.open) x.open = true; else if (!cur && x.open) x.open = false; });
+      $$('.hub-sec', list).forEach((s) => s.classList.toggle('cur', on && s.contains(d)));
+      const bar = $('.focus-bar', root);
+      if (bar) {
+        bar.hidden = !on;
+        if (on) {
+          const i = all.indexOf(d), sec = d.closest('.hub-sec'), grp = sec ? $('.hub-group', sec) : null;
+          const name = (x) => $('.fold-title', x).textContent;
+          $('.fb-crumb', bar).innerHTML = esc(list.dataset.label || VIEW_NAMES[UI.view] || '') + (grp ? ' › ' + esc(grp.textContent) : '') + ' › <b>' + esc(name(d)) + '</b>';
+          $('.fb-pos', bar).textContent = (i + 1) + ' of ' + all.length;
+          [[-1, all[i - 1]], [1, all[i + 1]]].forEach(([dir, x]) => {
+            const b = $('[data-fb="' + dir + '"]', bar);
+            b.disabled = !x;
+            b.dataset.key = x ? x.dataset.fold : '';
+            b.title = x ? (dir < 0 ? 'Previous: ' : 'Next: ') + name(x) : '';
+            b.innerHTML = dir < 0 ? '‹ Previous' + (x ? ' <span>· ' + esc(name(x)) + '</span>' : '') : (x ? '<span>' + esc(name(x)) + ' ·</span> ' : '') + 'Next ›';
+          });
+        }
+      }
     };
-    window.addEventListener('scroll', pageIndexScroll, { passive: true });
-    pageIndexScroll();
+    if (!changed) { apply(); return; }
+    const after = () => {
+      // the section opens at the top of the page; back on the scorecard, the row it came from is in view
+      const sum = on ? $(':scope > summary', d) : UI.hubFrom && $('details.hub-row[data-fold="' + UI.hubFrom + '"] > summary', list);
+      if (on) window.scrollTo({ top: Math.max(0, root.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--toolbar-h')) || 0) - 12) });
+      else if (sum && samePage) sum.scrollIntoView({ block: 'center' });
+      if (sum && samePage) sum.focus({ preventScroll: true });
+      window.dispatchEvent(new Event('resize'));   // charts drawn to their box's width
+    };
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (document.startViewTransition && !reduce && samePage && document.visibilityState === 'visible') {
+      const vt = document.startViewTransition(apply);
+      vt.updateCallbackDone.then(after, after);
+    } else { apply(); after(); }
   }
   // An index of a long card's sections (its h4 headings), as links that scroll to them.
   function addCardIndex(body, min) {
@@ -4244,7 +4280,7 @@
     nav.innerHTML = '<span class="ci-label">In this card</span><div class="ci-scroll">' + heads.map((h, i) => '<button type="button" class="ci" data-ci="' + i + '">' + esc(h.textContent) + '</button>').join('') + '</div>';
     body.prepend(nav);
     $$('[data-ci]', nav).forEach((b) => b.addEventListener('click', () => {
-      const h = heads[+b.dataset.ci], pi = $('.page-index');
+      const h = heads[+b.dataset.ci], pi = $('.focus-bar:not([hidden])');
       const off = (pi ? (parseFloat(getComputedStyle(pi).top) || 0) + pi.offsetHeight : 0) + 12;
       window.scrollTo({ top: h.getBoundingClientRect().top + window.scrollY - off, behavior: 'smooth' });
     }));
@@ -4252,7 +4288,13 @@
   const narrowScreen = () => { try { return window.matchMedia('(max-width: 700px)').matches; } catch (e) { return false; } };
   const setFoldSummary = (key, text) => { const el = document.getElementById('fold-sum-' + key); if (el) { el.textContent = text || ''; el.title = text || ''; } };
   // Open the fold holding el (a card or anything inside one) before a jump to it.
-  const openFoldOf = (el) => { const d = el && el.closest ? el.closest('details.fold') : null; if (d && !d.open) d.open = true; return el; };
+  const openFoldOf = (el) => {
+    const d = el && el.closest ? el.closest('details.fold') : null;
+    const row = el && el.closest ? el.closest('details.hub-row') : null;
+    if (row) { if (UI.focus !== row.dataset.fold && !row.classList.contains('hub-empty')) hubFocus(row.dataset.fold); if (d && d !== row && !d.open) d.open = true; }
+    else if (d && !d.open) d.open = true;
+    return el;
+  };
   // "3 more" style tail for a summary list.
   const sumList = (list, n) => (list.length <= n ? list.join(', ') : list.slice(0, n).join(', ') + ' +' + (list.length - n));
 
@@ -9311,15 +9353,6 @@
 
   // ----- overview cards
   // ----- Interactions view: key findings first, then one collapsible section per analysis.
-  const IX_SECTIONS = [
-    ['cells', 'RNA and DNA crosslinking in living cells', 'Is the methylated arginine the residue crosslinked to RNA or DNA?'],
-    ['pdb', 'Interfaces in PDB structures', 'Interfaces with protein, RNA and DNA in experimental structures'],
-    ['intact', 'Curated interaction features (IntAct)', 'Curated mutations, binding regions and methylated residues'],
-    ['predicted', 'Predicted complexes', 'Interfaces in AlphaFold-Multimer models'],
-    ['partners', 'Writers, readers and other partners', 'PRMTs and reader domains that bind methylated proteins'],
-    ['complexes', 'Protein complexes', 'Complexes enriched in methylated members'],
-    ['go', 'RNA- and DNA-binding proteins (Gene Ontology)', 'Methylated vs other human proteins'],
-  ];
 
   // Headline statistics, worded from the numbers so the text stays true if the data change.
   // High-confidence (>= 0.7) STRING physical partners of methylated proteins: distinct partners and how many are
@@ -10228,7 +10261,8 @@
         show.map((r) => '<tr class="row' + (r.fold < 1 ? ' depleted' : '') + '" tabindex="0" data-prof-key="' + r.ft.key + '" title="' + (r.fold > 1 ? 'Narrow the selection to sites with this feature' : 'Less common here than in the other sites') + '"><td><span class="muted small">' + esc(r.ft.group) + '</span> ' + esc(r.ft.label) + '</td>' +
           '<td class="r num">' + fmt(r.a) + ' <span class="muted">(' + pc(r.a, r.n1) + ')</span></td><td class="r num hide-xs">' + pc(r.c, r.n2) + '</td><td class="r num"><b>' + (r.fold >= 10 ? r.fold.toFixed(0) : r.fold.toFixed(1)) + '×</b></td><td class="r num">' + fmtP(r.q) + '</td></tr>').join('') + '</tbody></table></div>' :
         '<p class="note">No site feature differs significantly (BH q ≤ 0.05) between this selection and the other sites.</p>') +
-      '<p class="note">Fisher\'s exact test per feature, Benjamini–Hochberg across the ' + rows.length + ' features tested. Sites in one protein are not independent, so read this as a pointer.</p></div>', false, sum);
+      '<p class="note">Fisher\'s exact test per feature, Benjamini–Hochberg across the ' + rows.length + ' features tested. Sites in one protein are not independent, so read this as a pointer.</p></div>', false, sum, null,
+      { q: 'What sets your selection apart from the other sites?', how: 'needs', sel: am(up.length ? 1 : down.length ? -1 : 0) + esc(sum), all: '<span class="muted">compares the selection with the other sites</span>' });
   }
 
   function bindProfile(el) {
@@ -10295,25 +10329,74 @@
     const scoped = constraints().length > 0, n = { exp: 0, pred: 0, none: 0 };
     for (const s of R.sites) n[ixStatus(s)]++;
     const tile = (k, term, label) => fact(fmt(n[k]), label, pctText(n[k], R.sites.length || 1) + '% of ' + (scoped ? 'your ' : '') + fmt(R.sites.length) + ' sites', term, 'List these sites');
-    el.innerHTML = '<div class="ix-page"><div class="ov-head"><h2>Interactions</h2><span class="muted small">What methylated arginines contact: proteins, RNA and DNA</span></div>' +
-      '<div class="facts ix-facts">' + tile('exp', 'experimental', 'Experimental evidence') + tile('pred', 'predicted-only', 'Predicted only') + tile('none', 'none', 'None recorded') + '</div>' +
-      checkSiteHtml('ix-check') +
-      '<div class="ov-head"><h2>Key findings</h2><span class="muted small">' + (scoped ? 'Whole dataset; the sections below are retested for your selection' : 'Click one for the numbers') + '</span></div>' + findingsList(ixFindings()) +
-      '<div class="ov-head"><h2>Explore the evidence</h2><span class="muted small">Most tests compare methylated with other arginines of the same proteins</span></div>' +
-      pageIndexHtml([['Overview', [['ix-nac', 'RNA and DNA contact tests'], ['ix-evmap', 'How the evidence fits together'], ['ix-ex', 'One protein'], ['ix-cm', 'Sites and evidence']]],
-        ['RNA and DNA', [['ix-na', 'RNA and DNA at methylarginines'], ['ixs-cells', 'Crosslinking in cells'], ['ixs-go', 'RNA- and DNA-binding proteins']]],
-        ['Structures and models', [['ixs-pdb', 'PDB interfaces'], ['ixs-predicted', 'Predicted complexes']]],
-        ['Partners and complexes', [['ixs-partners', 'Writers and readers'], ['ix-wr', 'Shared substrates'], ['ixs-complexes', 'Complexes'], ['ixs-intact', 'IntAct features']]]]) +
-      '<div class="fold-list">' +
-      foldIf('ix-nac', 'Are methylarginines at RNA and DNA contacts?', nacCardHtml(), () => nacSummary()) +
-      foldHtml('ix-evmap', 'How the evidence fits together', ixEvidenceMapHtml(), false, 'how crosslink, PDB, predicted and IntAct evidence combine on ' + (constraints().length ? 'your ' + fmt(R.sites.length) + ' sites' : 'all ' + fmt(R.sites.length) + ' sites')) +
-      // The worked example and the two matrices behind one-line headers.
-      foldIf('ix-ex', 'What the evidence looks like on one protein', ixExampleHtml(), () => 'drawn for ' + ixExampleProtein().label + '; type any protein to redraw it') +
-      foldIf('ix-cm', 'Which sites carry which evidence', ixConnMatrixHtml(), () => 'site features against crosslink, PDB and predicted-complex evidence' + (constraints().length ? ', your selection' : '')) +
-      foldIf('ix-wr', 'Writers and readers sharing substrates', ixWrMatrixHtml(), () => 'methylated proteins bound by both a PRMT and a Tudor-domain protein (STRING)') +
-      foldIf('ix-na', 'RNA and DNA at methylarginines', ixNaHtml(), () => ixNaSummary()) +
-      IX_SECTIONS.map(([k, title, tag]) => foldHtml('ixs-' + k, title, '<div class="ix-sec-body" id="ixs-' + k + '">' + body[k]() + '</div>', false, tag)).join('') + '</div></div>';
-    bindPageIndex(el);
+    // Answers for the scorecard: each section's deciding test on the selection and on every site.
+    const selJ = scoped ? new Set(R.sites.map((s) => s.j)) : null, selP = scoped ? new Set(R.sites.map((s) => s.p)) : null;
+    const test = (group, path, on) => {
+      const e = (IX.selTests || []).find((x) => x[0] === group && x[1].join('/') === path.join('/'));
+      return e ? mhTest(selTestTables(e, on ? selJ : null, on ? selP : null)) : null;
+    };
+    const mhAns = (label, m) => {
+      if (!m || m.or == null || Number.isNaN(m.or)) return am(0) + esc(label) + ': too few to test';
+      const dir = m.p != null && m.p <= 0.05 ? (m.or > 1 ? 1 : -1) : 0;
+      return am(dir) + esc(label) + ' <span class="an">OR ' + (Number.isFinite(m.or) ? fx(m.or) : '> 1,000') + '</span> <span class="muted">p ' + fmtP(m.p) + '</span>';
+    };
+    const tests = (list, on) => list.map(([g, path, label]) => { const m = test(g, path, on); return m ? mhAns(label, m) : ''; }).filter(Boolean).join('; ');
+    const both = (list) => [tests(list, scoped), scoped ? tests(list, false) : ''];
+    const nacAns = (rows) => {
+      if (!rows || !rows.length) return '';
+      const more = (r) => (r.or != null ? r.or > 1 : r.edge > 0), sig = rows.filter((r) => r.q != null && r.q <= PADJ), up = sig.filter(more), down = sig.filter((r) => !more(r));
+      if (!sig.length) return am(0) + 'none of ' + rows.length + ' kinds of contact differs (q ≤ ' + PADJ + ')';
+      const best = (up.length ? up : down).slice().sort((x, y) => x.q - y.q)[0];
+      return am(up.length ? 1 : -1) + '<span class="an">' + sig.length + ' of ' + rows.length + '</span> differ; ' + (up.length ? 'more often ' : 'less often ') + esc(best.full.charAt(0).toLowerCase() + best.full.slice(1)) + ' <span class="an">OR ' + (best.or != null ? fx(best.or) : best.edge > 0 ? '> 1,000' : '0') + '</span>';
+    };
+    const evAns = (sites) => { const c = { exp: 0, pred: 0, none: 0 }; for (const s of sites) c[ixStatus(s)]++; return '<span class="an">' + fmt(c.exp) + '</span> sites (' + pctText(c.exp, sites.length || 1) + '%) with experimental evidence, ' + fmt(c.pred) + ' predicted only'; };
+    const goAns = (g) => {
+      const r = g && g.rna;
+      if (!r) return '';
+      const [a, n1, c, n2, l2, pv, q] = r, bg = FOLD() ? [a + c, n1 + n2] : [c, n2], qq = q != null ? q : pv;
+      return am(qq != null && qq <= PADJ ? (l2 > 0 ? 1 : -1) : 0) + 'RNA-binding <span class="an">' + pctText(a, n1 || 1) + '%</span> of proteins vs ' + pctText(bg[0], bg[1] || 1) + '% <span class="muted">' + (q != null ? 'q' : 'p') + ' ' + fmtP(qq) + '</span>';
+    };
+    const cxAns = (on) => {
+      const sel = on ? cxSelection() : null, rows = (IX.cx || []).map((c) => (sel ? Object.assign({}, c, sel.get(c.k) || { m: 0, q: null }) : c)).filter((c) => !c.pred && c.q != null && c.q <= PADJ).sort((x, y) => x.q - y.q);
+      return rows.length ? am(1) + '<span class="an">' + fmt(rows.length) + '</span> curated complexes enriched; top: ' + esc(rows[0].name) : am(0) + 'no curated complex enriched (q ≤ ' + PADJ + ')';
+    };
+    const partAns = (prots) => { const pm = partnerShare(prots); return pm.distinct ? '<span class="an">' + pctText(pm.distinctMeth, pm.distinct) + '%</span> of ' + fmt(pm.distinct) + ' partners are methylated (' + pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of human proteins)' : 'no high-confidence partners'; };
+    const row = (key, title, inner, q, how, ans, empty) => foldHtml(key, title, inner, false, '', null, { q, how, sel: ans[0], all: scoped ? ans[1] : '', empty: inner ? null : empty || 'Not available in this export.' });
+    const sec = (k) => '<div class="ix-sec-body" id="ixs-' + k + '">' + body[k]() + '</div>';
+    const nacHtml = nacCardHtml(), naHtml = ixNaHtml(), wrHtml = ixWrMatrixHtml(), cmHtml = ixConnMatrixHtml(), exHtml = ixExampleHtml();
+    el.innerHTML = '<div class="ix-page">' +
+      '<div class="facts ix-facts hub-only">' + tile('exp', 'experimental', 'Experimental evidence') + tile('pred', 'predicted-only', 'Predicted only') + tile('none', 'none', 'None recorded') + '</div>' +
+      hubHtml() + focusBarHtml() +
+      '<div class="hub-list">' +
+      hubSec('Summary',
+        row('ix-nac', 'RNA and DNA contact tests', nacHtml, 'Are methylarginines at RNA and DNA contacts more often than the other arginines of the same proteins?', 'retest',
+          [nacAns(scoped ? nacRows(selJ) : nacWhole()), nacAns(nacWhole())], 'Needs the per-protein tables of the interaction export.') +
+        row('ix-evmap', 'How the evidence fits together', ixEvidenceMapHtml(), 'How do crosslink, structure, prediction and IntAct evidence overlap on the sites?', 'count', [evAns(R.sites), evAns(S)]) +
+        row('ix-cm', 'Which sites carry which evidence', cmHtml ? cmHtml + checkSiteHtml('ix-check') : '', 'Do sites with a feature (motif, disorder, methylation class) carry a kind of evidence more often? Check one site.', 'count',
+          ['Site features against crosslink, structure and prediction evidence' + (scoped ? ', your sites' : ''), 'Site features against crosslink, structure and prediction evidence']) +
+        row('ix-ex', 'The evidence on one protein', exHtml, 'What the evidence looks like along one protein; type any protein to redraw it', 'example',
+          ['Drawn for <span class="an">' + esc(ixExampleProtein().label) + '</span>', 'Drawn for HNRNPA1, or the protein of a selection with the most sites with experimental evidence'])) +
+      hubSec('RNA and DNA',
+        row('ixs-cells', 'Crosslinking in living cells', sec('cells'), 'Is the methylarginine the residue crosslinked to RNA or DNA, or inside an RNA-bound peptide?', 'retest',
+          both([['xl_enrich', ['rna_xl'], 'RNA-crosslinked residue'], ['xl_enrich', ['rna_capri_adj'], 'in an RNA-bound peptide (CAPRI)']])) +
+        row('ix-na', 'Bound RNA and DNA', naHtml, 'Which RNA and DNA do methylarginines contact in structures, and what do their proteins bind?', 'count',
+          [ixNaSummary(R.sites, true), ixNaSummary(S, true)], 'No methylarginine of this selection touches RNA or DNA in a structure, and its proteins have no binding data.') +
+        row('ixs-go', 'RNA- and DNA-binding proteins (Gene Ontology)', sec('go'), 'Are methylated proteins annotated as RNA- or DNA-binding more often than human proteins?', 'retest',
+          [goAns(scoped ? goSelection() : IX.goEnrich), goAns(IX.goEnrich)])) +
+      hubSec('Structures and models',
+        row('ixs-pdb', 'Interfaces in PDB structures', sec('pdb'), 'Are methylarginines at protein, RNA or DNA interfaces in experimental structures?', 'retest',
+          both([['enrich_strata', ['protein', 'all'], 'protein interface'], ['enrich_strata', ['rna', 'all'], 'RNA interface']])) +
+        row('ixs-predicted', 'Predicted complexes', sec('predicted'), 'Are methylarginines at the interfaces of AlphaFold-Multimer models of human protein pairs?', 'retest',
+          both([['pred_enrich', ['0.23', 'all'], 'predicted interface (pDockQ ≥ 0.23)']]))) +
+      hubSec('Partners and complexes',
+        row('ixs-partners', 'Writers, readers and other partners', sec('partners'), 'Which PRMTs and reader-domain proteins bind the methylated proteins?', 'count', [partAns(scoped ? R.prots : P), partAns(P)]) +
+        row('ix-wr', 'Writers and readers sharing substrates', wrHtml, 'Which methylated proteins are bound by both a PRMT and a Tudor-domain protein?', 'count',
+          ['PRMT and Tudor partners shared by ' + (scoped ? 'your ' + fmt(R.prots.length) : 'all ' + fmt(P.length)) + ' proteins (STRING)', 'PRMT and Tudor partners shared by all ' + fmt(P.length) + ' proteins (STRING)']) +
+        row('ixs-complexes', 'Protein complexes', sec('complexes'), 'Which complexes have more methylated members than expected?', 'retest', [cxAns(scoped), cxAns(false)]) +
+        row('ixs-intact', 'Curated interaction features (IntAct)', sec('intact'), 'Are methylarginines at curated mutation sites and short binding regions more often?', 'retest',
+          both([['intact_enrich', ['peptide_disordered'], 'short binding region (disordered R)'], ['intact_enrich', ['mutation'], 'mutation with an effect']]))) +
+      '</div></div>';
+    bindHub(el, 'Interactions');
     $$('.ix-facts .fact', el).forEach((b) => {
       const run = () => setTerm('interaction', b.dataset.fact, 'sites');
       b.addEventListener('click', run);
@@ -10340,8 +10423,6 @@
     if (UI.ixJump) { const k = UI.ixJump; UI.ixJump = null; openIxSection(k); }
     if (UI.ixScrollMap) { UI.ixScrollMap = false; const m = $('#ix-evmap', el); if (m) setTimeout(() => revealCard(m, false), 0); }
   }
-
-  const foldIf = (key, title, html, sum) => (html ? foldHtml(key, title, html, false, sum()) : '');
 
   // The bound sequences of the selection's methylarginines, RNA then DNA (naBlockHtml), and what the selected proteins
   // bind beyond structures (ixNabHtml).
@@ -10462,17 +10543,16 @@
       (shared.length ? '<p class="flabel">Genes with eCLIP peaks for two or more of these proteins</p><div class="tags">' + shared.slice(0, 30).map(([g, l]) => '<button class="tag ec-gene" type="button" data-gene="' + esc(g) + '" title="' + esc(l.join(', ')) + '">' + esc(g) +
         ' <span class="muted">' + l.length + '</span></button>').join('') + '</div><p class="note">Among each experiment\'s 25 genes with most reproducible peaks; the number is how many of these proteins have eCLIP peaks in the gene\'s transcripts.</p>' : '') + '</section>';
   }
-  function ixNaSummary() {
-    const n = (kind) => new Set(naRows(R.sites, kind, false).map((w) => w.s)).size;
-    const prots = new Set(R.sites.map((s) => s.p)), withNab = Array.from(prots).filter((i) => IX.nab.rbns.get(i) || IX.nab.selex.get(i) || IX.nab.jaspar.get(i) || IX.nab.eclip.get(i)).length;
+  function ixNaSummary(sites, html) {
+    sites = sites || R.sites;
+    const n = (kind) => new Set(naRows(sites, kind, false).map((w) => w.s)).size;
+    const prots = new Set(sites.map((s) => s.p)), withNab = Array.from(prots).filter((i) => IX.nab.rbns.get(i) || IX.nab.selex.get(i) || IX.nab.jaspar.get(i) || IX.nab.eclip.get(i)).length;
+    if (html) return '<span class="an">' + fmt(n('rna')) + '</span> methylarginines touch RNA and <span class="an">' + fmt(n('dna')) + '</span> DNA in structures; ' + fmt(withNab) + ' proteins with RNA Bind-n-Seq, HTR-SELEX, JASPAR or eCLIP data';
     return fmt(n('rna')) + ' methylarginines in direct contact with RNA and ' + fmt(n('dna')) + ' with DNA in structures; ' + fmt(withNab) + ' proteins with RNA Bind-n-Seq, HTR-SELEX, JASPAR or eCLIP data' + (constraints().length ? ', your selection' : '');
   }
 
   function openIxSection(k) {
-    const b = $('#ixs-' + k), d = b && b.closest('details.fold');
-    if (!d) return;
-    d.open = true;
-    d.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    if ($('details.fold[data-fold="ixs-' + k + '"]')) hubFocus('ixs-' + k);
   }
 
   // "Details" links: open a section here, or go to the Interactions tab first.
@@ -10785,6 +10865,10 @@
       ['xl_enrich', ['rna_xl_single'], '… crosslink localised to it alone', 'RNA-crosslinked residue, crosslink localised to it alone'],
       ['xl_enrich', ['rna_xl_nonrg'], '… outside RG/GR dipeptides', 'RNA-crosslinked residue outside RG/GR dipeptides'],
       ['xl_enrich', ['rna_rbdmap'], 'Inside an RNA-bound fragment (RBDmap)'],
+      ['xl_enrich', ['rna_rbdmap_nonrg'], '… outside RG/GR dipeptides', 'Inside an RNA-bound fragment (RBDmap), outside RG/GR dipeptides'],
+      ['xl_enrich', ['rna_capri_adj'], 'Inside an RNA-bound peptide (CAPRI ADJ)', 'Inside an RNA-bound peptide next to a crosslink (CAPRI ADJ-peptide)'],
+      ['xl_enrich', ['rna_capri_adj_nonrg'], '… outside RG/GR dipeptides', 'Inside a CAPRI ADJ-peptide, outside RG/GR dipeptides'],
+      ['xl_enrich', ['rna_capri_xl'], 'Inside an RNA-crosslinked peptide (CAPRI XL)', 'Inside an RNA-crosslinked peptide (CAPRI XL-peptide)'],
       ['xl_enrich', ['dna_xl'], 'DNA crosslink localised to the residue'],
       ['xl_enrich', ['dna_cand'], '… or one of its candidate residues', 'DNA crosslink at the residue or one of its candidate residues'],
       ['xl_enrich', ['dna_pep'], 'Inside a DNA-crosslinked peptide'],
@@ -10912,11 +10996,6 @@
       '<div class="nac-fig">' + nacForestSvg(rows, ref, screenPalette()).svg + '</div>' +
       '<p class="note">An odds ratio above 1: the methylated arginines of a protein carry that contact more often than its other arginines. Each test counts only proteins with that kind of evidence (crosslinks, structures with RNA or DNA, a binding region), and arginines resolved there; "proteins" gives the informative strata (both kinds of arginine, both outcomes) of those with such a methylarginine. q: Benjamini–Hochberg across the tests of this card. ' +
       'Structures are mostly of unmethylated, recombinant protein without its disordered regions; crosslinking finds unmodified crosslinked peptides, so a fully methylated site can look depleted. Absence of evidence is not absence of contact.</p></div>';
-  }
-  function nacSummary() {
-    const scoped = constraints().length > 0, rows = scoped ? nacRows(new Set(R.sites.map((s) => s.j))) : nacWhole();
-    const sig = (rows || []).filter((r) => r.q != null && r.q <= PADJ);
-    return 'within-protein odds ratios for ' + (rows || []).length + ' kinds of contact' + (scoped ? ', your selection' : '') + '; ' + (sig.length ? sig.length + ' differ at q ≤ ' + PADJ : 'none differs at q ≤ ' + PADJ);
   }
   function bindNac(root) {
     const box = $('#ix-nac', root);
@@ -11984,7 +12063,8 @@
     const parts = [
       ['start', 'Getting started', '<ul>' +
         '<li><b>Search</b> for a gene symbol or synonym (FUS, TDP43), a UniProt accession, part of a protein name, a site (FUS R216) or a pasted gene list. The bar under the search box lists every active filter; click one to remove it.</li>' +
-        '<li><b>Filter</b> with the panel on the left, or click a bar in any chart. The address keeps the view, the search and the filters (and the protein and site, <code>#P35637/R216</code>), so a copied link reopens the same place.</li>' +
+        '<li><b>Filter</b> with the <b>Filters</b> button that leads the bar under the search box (a drawer of filters by topic, whose foot counts the sites and proteins they leave), or click a bar in any chart. The bar then shows the selection on every view. The address keeps the view, the search and the filters (and the protein and site, <code>#P35637/R216</code>), so a copied link reopens the same place.</li>' +
+        '<li><b>Sections as questions.</b> The Overview, the Interactions page and each protein page list their sections as rows: the question a section answers and its answer, for a selection beside the whole dataset\'s, with how the selection reaches it: <i>Retested</i> (the release\'s test run again on the selection, against the same background), <i>Counted</i> (the selection\'s sites or proteins counted, without a test) or <i>Whole dataset only</i>. A filled red triangle marks more than expected, a slate one less, a ring no significant difference at 0.05 (the answer gives the q or p value it rests on). A row opens its section alone, with its figures, tables and downloads; <i>Previous</i> and <i>Next</i> step through the sections, <i>All sections</i> (or the browser\'s Back) returns, and the address keeps the section (<code>#interactions/ix-nac</code>), so a link opens it.</li>' +
         '<li><b>Views</b>: Overview (dataset charts), Proteins and Sites (tables, TSV download), Interactions (partners, complexes, structures and RNA/DNA crosslinks), Figures (alignment, logo and protein comparison from the current selection) and a page per protein (map, sites, interactions, conservation, 3D structure and sequence).</li>' +
         '<li><b>Human only.</b> Every site, protein and annotation is <i>Homo sapiens</i> (canonical UniProt sequences, human cells and tissues). Related proteins from other species appear only in the homologous-structures panel and the orthologue alignment on protein pages, labelled with their species.</li>' +
         '<li><b>Residue numbering</b> follows the canonical UniProt sequence with the initiator methionine as 1, except for histones (H1, H2A, H2B, H3, H4 and their variants, including CENP-A), which follow the histone convention without the initiator methionine: H3R2 is UniProt R3 of P68431. Histone sites are searched, shown and linked in histone numbering, with the UniProt number alongside; stored positions and the TSV <code>position</code> column stay in UniProt numbering. Some papers number receptors from the mature protein: EGFR R198/R200 in Liao et al. 2015 are UniProt R222/R224.</li></ul>' +
@@ -11994,7 +12074,7 @@
         sub('tables', 'Tables, columns and the site card', '<p>The Proteins, Sites and protein-page tables show their core columns and a <b>Columns</b> menu for the rest (context, next methyl-R, Maron IP, AlphaFold, nearest domain …); the choice is remembered in this browser. On a phone each row becomes a labelled card. ' +
           'Clicking a site, or opening a link with a site in the search (<code>FUS R216</code>), opens the <b>site card</b> under the protein map: its interaction status and evidence with partners, what is known about the whole protein (labelled as such), sequence context, inhibitor response, AlphaFold confidence and reports.</p>') +
         sub('arg-enrich', 'Arginine enrichment of a protein', '<p>Shown on protein pages and in the Proteins table (script 08). For a protein with <i>a</i> methylarginine sites among <i>n</i> arginines of its canonical sequence, and the proteome-wide rate <i>r</i> (all union sites over all arginines of the canonical human sequences), the value is log2 of (<i>a</i> + 200<i>r</i>) / (<i>n</i> + 200) over <i>r</i>: a beta-binomial shrinkage estimate with a prior weight equivalent to 200 arginines, which shrinks the estimates for proteins with few arginines toward the proteome rate. The q-value is a two-sided Fisher\'s exact test of the protein\'s methylated and other arginines against those of all other proteins, Benjamini–Hochberg across the methylated proteins. Proteins with fewer than 2 sites or 10 arginines are not tested. The filter <i>Arginines methylated more than the proteome rate</i> keeps proteins with q ≤ 0.05 and a positive estimate.</p>')],
-      ['overview', 'Overview charts', (FOLD() ? setTestDocHtml() + '<p>Residue charts (motifs, disorder, domains) compare methylated arginines with the other arginines of the same proteins: bars show log2 odds ratios (two-sided Fisher exact test, 0.5 added to each cell), and bars below zero can be significant. ' : '<p>Bars show log2 odds ratios; ') + 'Filled bars have a Benjamini–Hochberg q ≤ 0.05, outlined bars do not. The bars and their statistics always describe the whole dataset; clicking a bar filters the Proteins and Sites views. With a search or filter set, an orange count after each bar gives how many of the selected proteins or sites fall in it, bars containing none of the selection are faded, and the Enriched features card at the top lists the features over-represented in the selection. Exported charts and their TSV files carry the same counts.</p>' +
+      ['overview', 'Overview charts', (FOLD() ? setTestDocHtml() + '<p>Residue charts (motifs, disorder, domains) compare methylated arginines with the other arginines of the same proteins: bars show log2 odds ratios (two-sided Fisher exact test, 0.5 added to each cell), and bars below zero can be significant. ' : '<p>Bars show log2 odds ratios; ') + 'Filled bars have a Benjamini–Hochberg q ≤ 0.05, outlined bars do not. Without a selection the bars describe the whole dataset, and clicking a bar starts a selection. With a search or filter set, each chart is the same test run on the selection, with a tick at the whole dataset\'s value (Tests on a selection, below); a click on a bar narrows the selection, and the Enriched features row lists the site features over-represented in it. Exported charts and their TSV files carry the same counts.</p>' +
         sub('ov-ontology', 'Protein classes', (pantherMeta() ? '<p><b>Protein classes (PANTHER ' + esc(pantherMeta().version) + ').</b> PANTHER gives each protein it classifies one top-level protein class (24 in all), and the overview groups these into ' + pantherMeta().groups.filter((g) => g !== pantherMeta().unclassified).length + ' (config/panther_class_groups.json). With the proteins PANTHER leaves unclassified, the groups partition the ' + fmt(pantherMeta().universe) + ' reviewed human proteins (' + esc(referenceLabel()) + '), so their counts add up to it. ' + (FOLD() ? 'Each row tests whether methylated proteins are over-represented in the class against all reviewed proteins (clusterProfiler enricher, as above; q within the groups, the classes or the subclasses).' : 'Each row compares methylated proteins with the other reviewed proteins (two-sided Fisher test; odds ratio with 0.5 added to each cell; Benjamini-Hochberg q within the groups, the classes or the subclasses).') + ' <i>Show the PANTHER classes</i> lists the top-level classes of each group; <i>Show the subclasses</i> lists every class below them with at least 10 proteins. A protein counts in every class above its own, so subclasses overlap. Search <code>panther:</code> for any of them. The release gives each protein\'s group, class, most specific classes and family (scripts/03b).</p>' : '') +
           '<p><b>Functional ontology (DeAngelo et al., 2026).</b> The keyword classes represented in DeAngelo et al., 2026 (config/functional_ontology.json, scripts/03), assigned from UniProt names, keywords and domains; a protein can belong to several, so these classes overlap and do not add up. The overview charts the PANTHER classes instead; the keyword classes stay as a filter (<code>class:</code>, <code>subclass:</code>), on protein pages, as an optional column of the Proteins table and in the release statistics (analyses functional_class and functional_subclass). ' + (FOLD() ? 'Each class is tested for over-representation of methylated proteins against all reviewed human proteins (clusterProfiler enricher, BH).' : 'Each class is compared between methylated proteins and the other reviewed human proteins (Fisher, BH).') + '</p>') +
         sub('ov-disease', doMeta() ? 'Disease' : 'Disease families', diseaseDocHtml()) +
@@ -12030,13 +12110,13 @@
           '<p><b>Distance of methylarginines to RNA and DNA.</b> For every arginine of the methylated proteins modelled in a PDB entry that contains RNA or DNA (every entry in which PDBe-KB lists the protein with nucleic acid; up to two copies of the protein per entry), the minimum heavy-atom distance from its side chain to each RNA and DNA chain is recorded up to 8 Å. The Interactions view shows the distribution of this minimum distance by nucleic-acid type in 1 Å bins, for methylarginines and for the other arginines of the same proteins (bar height is the fraction of each group), and tests whether a larger fraction of methylarginines than of the other arginines lies within 4 Å or 8 Å: the Mantel–Haenszel odds ratio with each protein as a stratum, and the pooled Fisher odds ratio. Only arginines modelled in a structure are included, so disordered RGG regions, which contain many methylarginines, are largely absent; most structures contain unmethylated recombinant protein. Release files supporting/arginine_nucleic_acid_distances and interaction_statistics (analysis nucleic_acid_distance).</p>' +
           '<p><b>Binding regions.</b> On a protein page, the RNA and DNA interactions card lists the regions that bind nucleic acid: runs of residues in direct contact in structures (analysed once per distinct complex in every entry; runs separated by up to 3 residues are joined), with the nucleic-acid segments they contact and their type; runs of residues UV-crosslinked to RNA or DNA in living cells (joined in the same way); RBDmap fragments crosslinked to RNA in HeLa cells; and UniProt DNA-binding regions. Each row gives the UniProt domains it overlaps, the methylarginines within it and those within 5 residues of either end, with their distance from it. Release file supporting/nucleic_acid_regions.</p>' +
           '<p><b>Sequence preference and targets from selection experiments.</b> RNA Bind-n-Seq (ENCODE; Dominguez et al. 2018): the 5-mers enriched in RNA recovered by the purified protein from a random library, relative to the input, with ENCODE\'s logos. HTR-SELEX (Jolma et al. 2020, <i>Genome Res</i> 30:962, CC BY-NC 4.0): RNA selected by the purified protein or its RNA-binding domains from random 40-nucleotide RNA over several cycles, as position frequency matrices of linear motifs and of motifs in the loop of a stem-loop, primary and secondary (86 proteins). JASPAR 2026 CORE vertebrates (CC BY 4.0): DNA-binding profiles from SELEX and ChIP-based experiments; a heterodimer\'s profile is listed for both partners. eCLIP (ENCODE; Van Nostrand et al. 2020): RNA crosslinked to the protein in K562 and HepG2 cells, as reproducible peaks assigned to GENCODE v50 basic transcripts, with the genes with the most peaks; these reflect expression as well as preference. For a selection, the Interactions view lists these for the selected proteins and the genes with eCLIP peaks for two or more of them. RNAcompete (CISBP-RNA) states no licence and is not included. Release files supporting/rna_bind_n_seq, htr_selex, dna_motifs and eclip.</p>') +
-        sub('ix-nac', 'Are methylarginines at RNA and DNA contacts?', '<p>One forest plot of every within-protein test of a nucleic-acid contact: RNA crosslinked to the residue in cells (pepR-MS compendium; localised to it alone; outside RG/GR dipeptides), inside an RNA-bound fragment (RBDmap), DNA crosslinked to the residue or one of its candidate residues and inside a DNA-crosslinked peptide (Trendel et al. 2025), at an RNA or DNA interface in a PDB structure (PDBe-KB), side chain within 4 or 8 Å of RNA or DNA in a PDB entry, and inside a UniProt DNA-binding region. ' +
+        sub('ix-nac', 'Are methylarginines at RNA and DNA contacts?', '<p>One forest plot of every within-protein test of a nucleic-acid contact: RNA crosslinked to the residue in cells (pepR-MS compendium; localised to it alone; outside RG/GR dipeptides), inside an RNA-bound fragment (RBDmap, HeLa; and outside RG/GR dipeptides), inside an RNA-bound peptide next to a crosslink or inside an RNA-crosslinked peptide (CAPRI, HEK293: Panhale et al. 2019, ADJ- and XL-peptides; ADJ also outside RG/GR dipeptides), DNA crosslinked to the residue or one of its candidate residues and inside a DNA-crosslinked peptide (Trendel et al. 2025), at an RNA or DNA interface in a PDB structure (PDBe-KB), side chain within 4 or 8 Å of RNA or DNA in a PDB entry, and inside a UniProt DNA-binding region. ' +
           'Each test compares a protein\'s methylarginines with its other arginines (Mantel–Haenszel odds ratio, Robins–Breslow–Greenland 95% CI, continuity-corrected test; each protein a stratum), over the proteins with that kind of evidence and the arginines it resolves; q is Benjamini–Hochberg across the card. With a selection, its methylarginines are compared with the other arginines of their proteins, and a tick marks the whole dataset. The same tests, with their pooled counts, are in the sections below and in the release statistics (analyses crosslink, pdb_interface, nucleic_acid_distance).</p>') +
         sub('ix-evmap', 'How the evidence fits together', '<p>Counted per site or per protein. For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink localised to the residue or with it as a candidate residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), three IntAct record types (a mutation that changed an interaction, a short binding region, the arginine curated as methylated in an interaction; these do not set the status), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. The protein-context table shows, for the sites with each kind of evidence, the share on proteins annotated as RNA- or DNA-binding (Gene Ontology), in a CD-CODE condensate, physically linked to a PRMT or a Tudor-domain reader (STRING ≥ 0.7) or in a Complex Portal curated complex, against all selected sites; each cell lists those sites. Counted per protein, the same layout combines these protein properties and whether any of the protein\'s sites carries contact evidence. Below the site view, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
         sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a dimethylarginine state call (ProMetheusDB, Maron Table S2, UniProt or Wei 2020), the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the plain odds ratio with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ 0.05 are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions should be interpreted with caution.</p>') +
         sub('ix-wr', 'Writers and readers sharing substrates', '<p>For the proteins in the current selection, each cell counts the methylated proteins that are STRING physical partners (score ≥ 0.7) of both a PRMT (rows) and a Tudor-domain protein (columns, InterPro IPR002999; the 12 with most shared partners are shown). The expected count assumes the two partner lists are independent among the selected methylated proteins that are in STRING; Fisher\'s exact test, Benjamini–Hochberg across the cells; outlined cells have at least two shared partners and q ≤ 0.05 (a single shared partner of two short lists can pass the test alone). Clicking a cell lists the proteins (binds: both partners). A physical link is to the whole protein, not to a site, and several Tudor proteins read methyllysine rather than methylarginine, so a shared partner is a candidate path to test, not a demonstrated one.</p>') +
         sub('profile', 'Enriched features of a selection', '<p>Shown on the Overview, Proteins and Sites views whenever a search or filter is set. Each site feature (motifs, disorder, methylation calls and IPs, PRMT inhibitor and CARM1 knockout response, close spacing, number of reporting sources, the interaction evidence types, and the functional class and HPA location of the site\'s protein) is compared between the selected sites and all other sites with the two-sided Fisher exact test, Benjamini–Hochberg-adjusted across the features tested (computed in the browser for the current selection, with the method of SciPy\'s fisher_exact; the two agree to 1e-12); up to 8 features more common and 4 less common at q ≤ 0.05 are listed, more common ones first. The ratio is the share in the selection over the share in the other sites. Clicking a more common feature narrows the selection to it. Sites of the same protein are not independent, so these comparisons are exploratory, not confirmatory; a selection built from a few proteins mostly reflects those proteins.</p>') +
-        sub('compare', 'Comparing two selections', '<p>Save a selection with a name (<b>Save</b>, next to the selection at the top of the filters, on the Enriched features card or on the report); saved selections stay in this browser. Change the search or filters, open <b>Saved</b> and press <b>Compare</b> next to the saved one: it is A, and the current selection is B. The comparison shows both selections, their overlap, a paragraph on each, the interaction status split, the site features that differ between them (Fisher\'s exact test, Benjamini–Hochberg across features; up to 16 with q ≤ 0.05, or the 16 closest, faded, when none is), each as the share of A and of B with the ratio, side-by-side logos and the proteins with most sites. ' +
+        sub('compare', 'Comparing two selections', '<p>Save a selection with a name (<b>Save</b>, next to the selection in the bar under the search box, on the Enriched features card or on the report); saved selections stay in this browser. Change the search or filters, open <b>Saved</b> and press <b>Compare</b> next to the saved one: it is A, and the current selection is B. The comparison shows both selections, their overlap, a paragraph on each, the interaction status split, the site features that differ between them (Fisher\'s exact test, Benjamini–Hochberg across features; up to 16 with q ≤ 0.05, or the 16 closest, faded, when none is), each as the share of A and of B with the ratio, side-by-side logos and the proteins with most sites. ' +
           'Sites in both selections count on both sides, which makes the test conservative. The link keeps both selections (<code>A=</code> holds the first), and the page prints with the same header, citation and page numbers as the report.</p>') +
         sub('report', 'Insight report', '<p>One printable page for the current selection: the selection and a link that reopens it, headline numbers, what sets it apart, the site and protein evidence maps with the protein-context table, the sequence logo and alignment (±7, first 30 sites), the proteins on one residue scale (up to 8, UniProt features fetched live), the proteins with most selected sites with their evidence, and the methods and citation. It opens the browser\'s print dialog; choose Save as PDF.</p>')],
       ['about', 'About', '<p>The explorer indexes the integrated human methylarginine union assembled by the <a href="https://github.com/Shechterlab/PTM_Pipeline">PTM_Pipeline</a> for the review below. It runs entirely in your browser; UniProt, AlphaFold DB, PDB, Ensembl and other annotations on protein pages are fetched live.</p>' +
