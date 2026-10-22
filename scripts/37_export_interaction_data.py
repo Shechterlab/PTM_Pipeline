@@ -3101,7 +3101,7 @@ def main():
     # same proteins. Maron IP classes come from methyl-specific immunoprecipitation; state calls from the sources.
     type_classes = [('rme2s', lambda r: r[17] & 4), ('rme2a', lambda r: (r[17] & 2) and not (r[17] & 4)), ('rme1ip', lambda r: r[17] == 1),
                     ('rme2', lambda r: r[2] in (2, 3)), ('rme1', lambda r: r[2] == 1), ('nostate', lambda r: r[2] == 0 and not r[17]), ('any', lambda r: True)]
-    xl_types = {}
+    xl_types, xl_type_contrast = {}, {}
     xl_freq = {}
     for out_key, have, test, *within in (('rna_xl', lambda acc: bool(rna_xl.get(acc)), lambda acc, q: bool(rna_xl.get(acc, {}).get(q))),
                                 ('rna_xl_single', lambda acc: bool(rna_single.get(acc)), lambda acc, q: q in rna_single.get(acc, set())),
@@ -3135,8 +3135,7 @@ def main():
                         tabs[name][acc][0 if hit else 1] += 1
         xl_types[out_key] = {name: or_summary(tabs[name].values()) for name, _ in type_classes}
         # SDMA-IP against ADMA-IP sites directly (same proteins), and the ratio of their odds ratios.
-        xl_types[out_key]['s_vs_a'] = type_contrast(dict(tabs['rme2s']), dict(tabs['rme2a']), seed=sum(map(ord, out_key)))
-        st = xl_types[out_key]['s_vs_a']
+        xl_type_contrast[out_key] = st = type_contrast(dict(tabs['rme2s']), dict(tabs['rme2a']), seed=sum(map(ord, out_key)))
         log(f"{out_key}: SDMA-IP vs ADMA-IP direct MH OR {st['direct']['mh'][0]} (p {st['direct']['mh'][3]}, {st['direct']['mh'][4]} proteins); "
             f"ratio of ORs {st['ratio'][0]} [{st['ratio'][1]}-{st['ratio'][2]}] p {st['ratio'][3]}")
 
@@ -3728,7 +3727,8 @@ def main():
                            'CAPRI XL-peptides near a site [[start, end, peptide]]', 'CAPRI ADJ-peptides near a site [[start, end, peptide]]',
                            'pCLAP RNA-binding peptides near a site [[start, end, peptide]]', 'RBR-ID+ peptides near a site [[start, end, peptide, log2 +4SU/-4SU, p]]'],
                 'xl_enrich': '{rna_xl|rna_near|rna_rbdmap|rna_capri_xl|rna_capri_adj|rna_pclap (Lys-C region)|rna_pclap_pep|rna_pclap_cov (among arginines in any measured pCLAP peptide)|rna_rbrid (under an RBR-ID+ peptide)|rna_rbrid_seg (RBR-ID region of residue score >= 3)|rna_rbrid_cov (rna_rbrid among measured arginines)|dna_xl|dna_cand|dna_pep|dna_bind (+ _nonrg RNA variants): {pooled, mh, proteins, or: {pooled: [a, b, c, d, OR, lo, hi, p], mh: [OR, lo, hi, p, strata]}}} methylated vs other arginines of proteins with that evidence',
-                'xl_types': '{rna_xl|rna_xl_single|rna_rbdmap|rna_capri_xl|rna_capri_adj|rna_pclap|rna_pclap_cov|rna_rbrid|rna_rbrid_cov|dna_xl: {rme2s|rme2a|rme1ip|rme2|rme1|nostate|any: or_summary, s_vs_a: {direct: or_summary of SDMA-IP against ADMA-IP sites of the same proteins, ratio: [OR rme2s / OR rme2a, lo, hi, p, protein resamples]}}} each methylation class vs unmethylated arginines of the same proteins',
+                'xl_types': '{rna_xl|rna_xl_single|rna_rbdmap|rna_capri_xl|rna_capri_adj|rna_pclap|rna_pclap_cov|rna_rbrid|rna_rbrid_cov|dna_xl: {rme2s|rme2a|rme1ip|rme2|rme1|nostate|any: or_summary}} each methylation class vs unmethylated arginines of the same proteins',
+                'xl_type_contrast': '{the xl_types keys: {direct: or_summary of SDMA-IP against ADMA-IP sites of the same proteins, ratio: [OR rme2s / OR rme2a against unmethylated arginines, lo, hi, p, protein resamples]}}',
                 'xl_freq': '{spectra|datasets: {meth: [n, mean, median], other: [...], p (Mann-Whitney)}, multi: or_summary (crosslinked in >= 2 datasets)} among RNA-crosslinked arginines',
                 'pred_enrich': '{pDockQ floor: {all|ordered|disordered: {pooled, mh}}} methylated vs other arginines of the same protein at a predicted interface',
                 'intact': ['site', '[[kind (0 mutation, 1 binding region <= peptide_max aa, 2 methylated arginine), code (meta.intact effects or regions; 0 for kind 2), start, end, resulting sequence, partners (-1 RNA, -2 DNA, -3 small molecule, -4 other, else protein index), PubMed ids, IntAct interaction ACs (first 5), records], ...]'],
@@ -3772,7 +3772,7 @@ def main():
         'xl_seq': xl_seq,
         'xl_enrich': xl_enrich,
         'xl_sets': [label for _, label in RNA_XL_SETS],
-        'xl_types': xl_types,
+        'xl_types': xl_types, 'xl_type_contrast': xl_type_contrast,
         'xl_freq': xl_freq,
         'intact': intact_rows,
         'intact_prot': intact_prot,
