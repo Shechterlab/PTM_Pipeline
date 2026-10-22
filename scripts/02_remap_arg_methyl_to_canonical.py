@@ -350,6 +350,21 @@ def candidate_sites(r: pd.Series, proteome: ProteomeIndex, peptides: list[str] |
     return [f'{a}:R{pos}' for a, pos in sorted(sites)[:MAX_CANDIDATES]]
 
 
+def named_paralog(r: pd.Series, sites: set) -> bool:
+    """The paralog rule: the evidence names one site in each of several reviewed entries (paralogs or identical copies
+    share the sequence, none holds it twice), and remap_row placed the record on one of them, in an entry the record
+    names (its accession, the current entry of a merged accession, or an entry of its gene). Mass spectrometry cannot
+    tell the copies apart; the site is credited to the protein the study assigned the peptide to (MaxQuant's razor
+    protein, for most studies) and flagged paralog_assigned."""
+    accs = [a for a, _ in sites]
+    if len(sites) < 2 or len(set(accs)) != len(accs):
+        return False
+    acc, pos = r['corrected_canonical_UniProtAC'], r['corrected_position']
+    if str(r['is_position_resolved']) != 'True' or r['remap_status'] == 'sequence_unique_proteome' or not isinstance(acc, str) or pd.isna(pos):
+        return False
+    return (acc, int(float(pos))) in sites
+
+
 def record_tests(r: pd.Series, proteome: ProteomeIndex, how: str, peptides: list[str] | None = None,
                  residues: bool = False, sites: set | None = None) -> dict:
     """The site tests of a record (release_codes.CODES['site_test']), at the site its study reports.
@@ -363,7 +378,8 @@ def record_tests(r: pd.Series, proteome: ProteomeIndex, how: str, peptides: list
       named_entry            the reported entry is one the record names (remap_row placed it there, not in another
                              entry the whole-proteome search found: sequence_unique_proteome)
       unique_in_proteome     the evidence names one site in the reviewed proteome (residues True: the peptide occurs
-                             once)
+                             once); paralogs: one site in each of several entries, one of them the reported entry
+                             the record names (named_paralog)
       methyl_on_arginine     the methyl group can only be on an arginine: localised, or the peptide holds no lysine
                              (fail: it holds one, which could carry the methyl group); untested without a peptide
       localised              the study localises the methyl group to the arginine (site_localisation)
@@ -392,7 +408,7 @@ def record_tests(r: pd.Series, proteome: ProteomeIndex, how: str, peptides: list
         'evidence_sites': '; '.join(f'{a}:R{p}' for a, p in sorted(sites)),
         'test_evidence_at_site': 'curated' if curated else test(bool(reported) and reported in sites),
         'test_named_entry': test(bool(reported) and r['remap_status'] != 'sequence_unique_proteome'),
-        'test_unique_in_proteome': 'curated' if curated else test(unique),
+        'test_unique_in_proteome': 'curated' if curated else 'paralogs' if not residues and not unique and named_paralog(r, sites) else test(unique),
         'test_methyl_on_arginine': 'pass' if how else (test('K' not in ''.join(plains)) if plains else 'untested'),
         'test_localised': test(bool(how)),
     }
@@ -422,10 +438,12 @@ def place_localised_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> 
     Placed: a curated record (UniProt) where remap_row placed it (its accession, at an arginine of that position). Any
     other localised record stays placed when its localising peptides, or without a peptide its window, searched in the
     whole reviewed proteome, name exactly one site, and remap_row placed it there in an entry the record names (its
-    accession, the current entry of a merged accession, or an entry of its gene). Paralogs or repeats sharing the
-    sequence, isoform-specific or changed sequences, a sequence found only in another protein (which the study may have
-    seen in an isoform or fusion the reviewed proteome does not hold), near matches and position-only records stay
-    unplaced."""
+    accession, the current entry of a merged accession, or an entry of its gene). A sequence that names one site in each
+    of several entries (paralogs, identical copies) stays placed on the one remap_row chose, the entry the record names:
+    sequence_paralog_named (named_paralog), then all records of that sequence on one copy (paralog_consensus; the
+    release flags the site paralog_assigned). Repeats within a protein,
+    isoform-specific or changed sequences, a sequence found only in another protein (which the study may have seen in an
+    isoform or fusion the reviewed proteome does not hold), near matches and position-only records stay unplaced."""
     remapped = remapped.copy()
     if 'site_localisation' not in remapped.columns:
         remapped['site_localisation'] = ''
@@ -473,10 +491,35 @@ def place_localised_records(remapped: pd.DataFrame, proteome: ProteomeIndex) -> 
                 remapped.at[i, 'remap_status'] = 'sequence_unique_canonical' if own else 'sequence_unique_candidate'
                 continue
             status = 'unresolved_study_other_entry'
+        elif named_paralog(r, sites):
+            remapped.at[i, 'remap_status'] = 'sequence_paralog_named'
+            continue
         else:
             status = 'unresolved_study_not_unique' if sites else 'unresolved_study_not_found'
         remapped.at[i, 'candidate_sites'] = '; '.join(candidate_sites(r, proteome, peptides))
         unplace(remapped, i, status)
+    return paralog_consensus(remapped)
+
+
+def paralog_consensus(remapped: pd.DataFrame) -> pd.DataFrame:
+    """The paralog rule gives one site per shared sequence: the records whose evidence names the same sites (one in each
+    paralog) go on the copy most of them name, then the copy most studies name, then the first accession. Studies name
+    different copies of the same sequence (their razor proteins differ); the consensus is the copy the evidence favours,
+    and the site is flagged paralog_assigned with the others."""
+    idx = remapped.index[remapped['remap_status'] == 'sequence_paralog_named']
+    groups = defaultdict(list)
+    for i in idx:
+        groups[remapped.at[i, 'evidence_sites']].append(i)
+    for members in groups.values():
+        named, studies = Counter(), defaultdict(set)
+        for i in members:
+            r = remapped.loc[i]
+            site = (r['corrected_canonical_UniProtAC'], int(float(r['corrected_position'])))
+            named[site] += 1
+            studies[site].add(rc.study_of(r['source_table'], r.get('source', ''), r.get('reference', '')))
+        acc, pos = sorted(named, key=lambda s: (-named[s], -len(studies[s]), s))[0]
+        for i in members:
+            remapped.loc[i, ['corrected_canonical_UniProtAC', 'corrected_position', 'corrected_site']] = [acc, pos, f'R{pos}']
     return remapped
 
 

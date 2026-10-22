@@ -376,7 +376,7 @@ def lower_confidence_sites(records: pd.DataFrame, site_ids: set, reference: dict
         def rank(item):
             i, t = item
             return (t['test_evidence_at_site'] in ('pass', 'curated'), t['test_methyl_on_arginine'] != 'fail', t['test_named_entry'] == 'pass',
-                    t['test_unique_in_proteome'] == 'pass', t['test_localised'] == 'pass',
+                    t['test_unique_in_proteome'] in ('pass', 'paralogs'), t['test_localised'] == 'pass',
                     records.at[i, 'placement_code'] != 'superseded_by_study_table', -int(records.at[i, 'record_id']))
         best = max(tested, key=rank)[1] if tested else dict.fromkeys(TEST_FIELDS, 'untested')
         reasons = {lower_confidence_reason(records.at[i, 'localised_by'], records.at[i, 'not_localised'], records.at[i, 'placement_code']) for i in idx}
@@ -604,7 +604,8 @@ def context_annotations(sites: pd.DataFrame, inputs: Path) -> pd.DataFrame:
 
 # ---- Sites -----------------------------------------------------------------------------------------------------------
 
-def build_sites(records, union, pending, reference, entry, previous_sites) -> pd.DataFrame:
+def build_sites(records, union, pending, reference, entry, previous_sites, placed_here: bool = True) -> pd.DataFrame:
+    """placed_here False: the records are not placed on these sites (lower-confidence sites), so no placement flag."""
     site_of = records['placed_site'].where(records['placed_site'] != '', records['pending_site'])
     observed = {key(a, p): o for a, p, o in zip(union['canonical_UniProtAC'], union['corrected_position'], union['arg_methyl_states_observed'])}
     proteome = remap.ProteomeIndex(reference)
@@ -630,6 +631,12 @@ def build_sites(records, union, pending, reference, entry, previous_sites) -> pd
             flags.append('near_match_only')
         if site not in pending and group['evidence_check'].eq('agrees_reported_arginine').all():
             flags.append('arginine_from_position')
+        # the paralog rule: placed only because the study named this one of several entries holding the sequence
+        paralog = group['placement_code'].eq('sequence_paralog_named')
+        paralogs = sorted({x.split(':R')[0] for e in group.loc[paralog, '_evidence_sites'] for x in e.split('; ') if x} - {acc}) \
+            if placed_here and paralog.any() and not (~paralog).any() else []
+        if paralogs:
+            flags.append('paralog_assigned')
         if shared:
             flags.append('shared_sequence')
         if len(studies) == 1:
@@ -667,6 +674,7 @@ def build_sites(records, union, pending, reference, entry, previous_sites) -> pd
             'reported_positions': join(reported) if any(p != pos for p in reported) else '',
             'dimethyl_type_neutral_loss': join(ordered({t for x in group['_rme2_type'] for t in x.split('; ') if t}, list(rc.CODES['dimethyl_type']))),
             'flags': join(flags),
+            'shared_with_paralogs': join(paralogs),
             'same_window_accessions': join(shared),
             'same_window_genes': join(entry(a, 'Gene Names (primary)').split(';')[0].strip() or a for a in shared),
             'in_previous_version': bool(in_previous),
@@ -1049,7 +1057,7 @@ def main() -> None:
     # The lower-confidence sites go through the same annotation as the sites, then apart.
     members, published = earlier_sites(prev_dir, previous, prev_sites, records, shift)
     lc_records, lc_tests = lower_confidence_sites(records, site_ids, reference, members)
-    lc_sites = build_sites(lc_records, union.iloc[:0], set(), reference, entry, previous_lifted) if len(lc_records) else sites.iloc[:0]
+    lc_sites = build_sites(lc_records, union.iloc[:0], set(), reference, entry, previous_lifted, placed_here=False) if len(lc_records) else sites.iloc[:0]
     lc_tests = lc_tests[lc_tests['site_id'].isin(set(lc_sites['site_id']))]
     n_main = len(sites)
     sites = pd.concat([sites, lc_sites], ignore_index=True)

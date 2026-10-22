@@ -224,6 +224,7 @@ button, input, select { font: inherit; color: inherit; }
 .lc-note { display: flex; gap: 0.5rem; align-items: baseline; font-size: 0.82rem; color: var(--ink-2); padding: 0.35rem 0.6rem; margin: 0.25rem 0; border-radius: 0.45rem;
   background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--muted) 9%, transparent) 0 6px, transparent 6px 12px); border: 1px dashed var(--line-strong); }
 .lc-note[hidden] { display: none; }
+.tag.par-tag { margin-left: 0.3rem; color: var(--ink-2); border: 1px solid var(--line-strong); background: var(--surface-2); font-weight: 600; }
 .tag.lc-tag { margin-left: 0.3rem; color: var(--ink-2); border: 1px dashed var(--muted);
   background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--muted) 16%, transparent) 0 2px, transparent 2px 5px); }
 .tabs::-webkit-scrollbar { display: none; }

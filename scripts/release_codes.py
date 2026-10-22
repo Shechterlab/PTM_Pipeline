@@ -339,6 +339,7 @@ CODES: dict[str, dict[str, str]] = {
         'paralog_window': 'a supporting window or peptide matches another reviewed entry exactly and this entry within 2 residues (open, accepted in config/remap_evidence_allowlist.tsv). The other entry is a paralog, except at RBM39 R109, where a 6-residue peptide differs from RBM39 only at an isobaric I/L and also occurs in CCDC13',
         'near_match_only': 'every supporting record matches the entry within 2 residues, not exactly (a variant or sequence conflict)',
         'arginine_from_position': 'the evidence of every supporting record covers other arginines of the entry too (a peptide with several arginines, or a window or peptide found more than once): the positions the sources report pick this one (evidence_check agrees_reported_arginine)',
+        'paralog_assigned': "the peptide or window of the site's records occurs once in each of several reviewed entries (shared_with_paralogs), so mass spectrometry cannot tell which carried the methyl group: the site is on the copy most of its records name, the protein the studies assigned the peptide to (the paralog rule)",
         'shared_sequence': 'residues -15 to +15 occur identically in another reviewed entry (same_window_accessions): histone variants, identical paralogs. The evidence cannot tell them apart: the protein is the one the source named',
         'single_study': 'one study or database reports the site',
         'xenograft_only': 'only Ma et al. 2023 reports the site, from breast cancer patient-derived xenografts grown in mice: where the human and mouse sequences agree, the peptide can come from the mouse stroma',
@@ -386,6 +387,7 @@ CODES: dict[str, dict[str, str]] = {
     'placement': {
         'sequence_unique_canonical': 'evidence sequence found once in the reported entry',
         'sequence_unique_candidate': 'evidence sequence found once, in another entry of the same gene or the current entry of a merged accession',
+        'sequence_paralog_named': 'evidence sequence found once in each of several reviewed entries (paralogs, identical copies), one of them named by the record: placed on the copy most records of that sequence name (flag paralog_assigned)',
         'sequence_closest_supported': 'evidence sequence found more than once: the occurrence nearest the reported position',
         'sequence_position_verified': 'the reported arginine lies inside the peptide in the reference sequence',
         'sequence_unique_proteome': 'evidence sequence found once in the whole reference proteome (no candidate entry held it)',
@@ -426,8 +428,8 @@ CODES: dict[str, dict[str, str]] = {
     # passes all five; a lower-confidence site is an arginine a study reports whose records each fail at least one.
     'site_test': {
         'evidence_at_site': "the record's own peptide or window occurs in this entry and covers this arginine, where the study puts the methyl group (for a peptide with several arginines: one of them)",
-        'named_entry': 'the arginine is in a protein the record names: its accession, the current entry of a merged accession, or an entry of its gene (not another protein that alone holds the sequence)',
-        'unique_in_proteome': 'the peptide or window names one site in the reviewed human proteome (UniProt 2026_03, UP000005640): no paralog, repeat or other protein holds it (for a peptide with several arginines: the peptide occurs once)',
+        'named_entry': 'the arginine is in a protein the record names: its accession, the current entry of a merged accession, or an entry of its gene (not another protein that alone holds the sequence). Under the paralog rule, the record names one of the copies that hold the sequence',
+        'unique_in_proteome': 'the peptide or window names one site in the reviewed human proteome (UniProt 2026_03, UP000005640): no paralog, repeat or other protein holds it (for a peptide with several arginines: the peptide occurs once). Result paralogs: it names one site in each of several entries, one of them the protein the record names (the paralog rule, which counts as passing: the site goes on the copy most records of that sequence name)',
         'methyl_on_arginine': 'the methyl group can only be on an arginine: the record is localised to one, or its peptide holds no lysine (a lysine could carry the methyl group instead), untested when the study gives a window but no peptide',
         'localised': 'the study localises the methyl group to this arginine (localised_by: a localisation score over its threshold, a peptide whose mass leaves one arrangement, or a curated annotation)',
     },
@@ -436,9 +438,10 @@ CODES: dict[str, dict[str, str]] = {
         'fail': 'the record fails it',
         'untested': 'the record holds nothing to test it on (methyl_on_arginine: a window but no peptide)',
         'curated': 'a curated annotation without sequence evidence (UniProt, experimental): the curation stands in for the test',
+        'paralogs': 'unique_in_proteome only: the sequence names one site in each of several reviewed entries, one of them the protein the record names. Counts as passing: the site goes on the copy most records of that sequence name, flagged paralog_assigned',
     },
     'tier': {
-        'site': 'a site: one of its records passes every test (site_test)',
+        'site': 'a site: one of its records passes every test (site_test; unique_in_proteome may be paralogs)',
         'lower_confidence': 'a lower-confidence site: an arginine a study reports as methylated, or a site of an earlier release, whose records each fail at least one test, shown on request and never in the counts and tests of the release',
     },
     'localised_by': {
@@ -535,6 +538,7 @@ SITE_COLUMNS = [
     ('record_ids', 'list<integer>', '', 'the records behind the site (record_id in supporting/source_records), ascending'),
     ('reported_positions', 'list<integer>', '', 'positions the records report, ascending, only when one differs from position'),
     ('flags', 'list<code>', 'flag', 'cautions, in code order'),
+    ('shared_with_paralogs', 'list<string>', '', 'for a site flagged paralog_assigned: the other reviewed entries whose sequence holds the same peptide or window at an arginine, sorted'),
     ('same_window_accessions', 'list<string>', '', 'every other reviewed entry holding the 31 residues of window_31, sorted'),
     ('same_window_genes', 'list<string>', '', 'the first primary gene of each (the accession when UniProt gives no gene), same order'),
     ('in_previous_version', 'boolean', '', 'whether the previous version had this site'),

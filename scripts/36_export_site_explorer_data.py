@@ -244,6 +244,9 @@ def main() -> None:
         ])
 
     # ---- Sites ----------------------------------------------------------------------------------------------------
+    entries = read(next((inputs / 'reference').glob('uniprot_human_reviewed_*_entries.tsv')))
+    gene_names = dict(zip(entries['Entry'], entries['Gene Names (primary)'].str.split(';').str[0].str.strip()))
+    gene_of = lambda a: gene_names.get(a, '')  # noqa: E731
     site_of = records['placed_site'].where(records['placed_site'] != '', records['pending_site'])
     records = records.assign(_site=site_of)
     refs, studies_vocab = Vocab(), Vocab()
@@ -307,6 +310,8 @@ def main() -> None:
             sum(1 << MARON_IPS.index(x) for x in L(s['maron2021_s3_antibodies'])),
             sorted(tr.get(sid, [])), studies_vocab.mask(web_name[x] for x in L(s['studies'])), sorted(ko.get(sid, [])),
             state_detail or None,
+            # the paralog rule: the other entries holding the site's sequence, as [accession, gene]
+            [[a, gene_of(a)] for a in L(s.get('shared_with_paralogs', ''))] or None,
         ])
     # evidence rows: table and study codes as vocabularies
     source_tables, remap_statuses = Vocab(), Vocab()
@@ -492,7 +497,7 @@ def main() -> None:
             'site_fields': ['protein', 'position', 'state', 'source_mask', 'refs', 'disorder_class', 'disorder_edge_distance',
                             'domain_context', 'interpro', 'domain_class', 'domain_edge_distance', 'domain_side', 'window_31',
                             'motif_mask', 'window_center_mismatch', 'source_positions_original', 'maron_s2_state_mask',
-                            'maron_ip_mask', 'maron_treatment', 'study_mask', 'carm1_ko', 'state_detail'],
+                            'maron_ip_mask', 'maron_treatment', 'study_mask', 'carm1_ko', 'state_detail', 'paralogs'],
             'maron_treatment_fields': ['ip', 'treatment', 'median change', 'lowest adj. p', 'peptide rows',
                                        f'peptides down at adj. p <= {PADJ:g}', f'peptides up at adj. p <= {PADJ:g}'],
             'carm1_ko': {'study': ko_note.get('study', 'Shishkova 2017'), 'doi': ko_note.get('doi', '10.1038/ncomms15571'),

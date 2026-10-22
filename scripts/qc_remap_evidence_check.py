@@ -28,6 +28,10 @@ With --peptide-coordinates (scripts/01_parse_maron_peptide_coordinates.py) a pla
 names the arginine at the reported position counted from the peptide's start, when the table gives the start of that
 peptide, or of one containing it or inside it, on the same entry.
 
+A row placed by the paralog rule (remap_status sequence_paralog_named: its sequence occurs once in each of several
+reviewed entries, and the record goes on the copy most records name) is checked against the sites its evidence names
+in every entry that holds it.
+
 With --fail-on-contradictions the exit status is 1 when a row is placed against its evidence, without evidence, or on an
 accession outside --fasta, unless --allow lists it (TSV: source_table, reported_accession, reported_position,
 placed_site, reason). Such rows are written to remap_evidence_check_failures.tsv.
@@ -199,10 +203,11 @@ def coordinate_sites(s: str, acc: str, pos: int, peptides: list[str], coords: di
     return out
 
 
-def check_row(r, seqs: dict, genes: dict, proteome: Proteome, coords: dict | None = None) -> tuple[str, set, str]:
+def check_row(r, seqs: dict, genes: dict, proteome: Proteome, coords: dict | None = None, everywhere: bool = False) -> tuple[str, set, str]:
     """Drift class, the evidence-implied sites (accession, position) on reviewed entries, and what singles the site
     out: 'evidence', 'position' (the evidence covers other arginines of the entry too, and the reported position picks
-    one) or 'position_only' (no sequence)."""
+    one) or 'position_only' (no sequence). everywhere: the sites the evidence names in every reviewed entry that holds
+    it as well (for a record placed by the paralog rule, on the copy of a shared sequence most records name)."""
     m = ACC.search(str(r.substrate_UniProtAC_original))
     acc = (m.group(1) + (m.group(2) or '')) if m else ''
     s, pos = seqs.get(acc, ''), int(r.position)
@@ -239,7 +244,7 @@ def check_row(r, seqs: dict, genes: dict, proteome: Proteome, coords: dict | Non
                 tokens += [(p, idx) for p, idx in marks] + [(t, [k for k, aa in enumerate(t) if aa == 'R']) for t in peptides]
                 if near_match(s, pos, tokens):
                     implied = {(acc, pos)}
-    if acc not in genes or cls not in ('A', 'B') or not implied:
+    if everywhere or acc not in genes or cls not in ('A', 'B') or not implied:
         # Reported entry unusable or not matching: search the evidence across the reviewed proteome.
         cand = set()
         for t, off, w in windows:
@@ -254,8 +259,11 @@ def check_row(r, seqs: dict, genes: dict, proteome: Proteome, coords: dict | Non
                     cand.add((a, i + pos - src[0]))
                 elif t.count('R') == 1:
                     cand.add((a, i + t.index('R') + 1))
-        same_gene = {c for c in cand if genes.get(c[0]) == str(r.substrate_genename).upper()}
-        implied = same_gene or cand or implied
+        if everywhere:
+            implied = implied | cand
+        else:
+            same_gene = {c for c in cand if genes.get(c[0]) == str(r.substrate_genename).upper()}
+            implied = same_gene or cand or implied
     return cls, implied, basis
 
 
@@ -300,7 +308,7 @@ def main() -> None:
 
     out = []
     for r in rows.itertuples():
-        cls, implied, basis = check_row(r, seqs, genes, proteome, coords)
+        cls, implied, basis = check_row(r, seqs, genes, proteome, coords, everywhere=r.remap_status == 'sequence_paralog_named')
         placed = f'{r.corrected_canonical_UniProtAC}:{int(r.corrected_position)}' if bool(r.is_position_resolved) and pd.notna(r.corrected_position) else ''
         evidence = sorted(f'{a}:{p}' for a, p in implied if a in reviewed)
         if placed and placed.split(':')[0] not in reviewed:
