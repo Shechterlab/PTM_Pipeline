@@ -205,6 +205,7 @@ FILE_ROWS = {
     'protein_partners': 'protein and STRING physical partner (score >= 0.7)',
     'complexes': 'Complex Portal or hu.MAP complex with a methylated member',
     'nucleic_acid_contacts': 'site and RNA or DNA chain it touches in a PDB structure: the contacted nucleotides and the bound sequence around them',
+    'nucleic_acid_near_sites': 'site and complex in which a residue within 5 positions of it, not the arginine itself, touches RNA or DNA: the bound sequence there',
     'nucleic_acid_regions': 'run of residues of a protein touching RNA or DNA in PDB structures: the bound segments and the methylarginines inside it',
     'rna_bind_n_seq': 'methylated protein and ENCODE RNA Bind-n-Seq experiment: its most enriched 5-mers and logos (in vitro)',
     'dna_motifs': 'methylated protein and JASPAR 2026 DNA-binding profile',

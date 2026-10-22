@@ -249,6 +249,9 @@ main > .lc-note { margin: 0 0 1rem; }
 .logo-col { cursor: default; }
 .na-name { max-width: 18rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tag.na-oligo { font-size: 0.68rem; padding: 0 0.3rem; margin-right: 0.15rem; }
+.sc-na { list-style: none; padding: 0; margin: 0.2rem 0 0.4rem; display: grid; gap: 0.2rem; }
+.sc-na .na-win { font-size: 0.78rem; }
+.tag.na-near { font-size: 0.66rem; padding: 0 0.3rem; margin-top: 0.15rem; border: 1px dashed var(--muted); background: transparent; color: var(--ink-2); font-weight: 600; }
 .na-where td .na-win { font-size: 0.78rem; }
 .nab-row + .nab-row { margin-top: 0.6rem; border-top: 1px solid var(--line); padding-top: 0.5rem; }
 .nab-logos { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.35rem; }

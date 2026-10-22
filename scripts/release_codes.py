@@ -935,6 +935,23 @@ NUCLEIC_ACID_CONTACT_COLUMNS = [
     ('window_marked', 'string', '', 'the window with the contacted nucleotides in brackets'),
 ]
 
+NUCLEIC_ACID_NEAR_COLUMNS = [
+    ('site_id', 'string', '', 'the site (site table): a methylarginine that touches no RNA or DNA in this complex but has a residue within 5 positions that does'),
+    ('nucleic_acid', 'code', 'nucleic_acid', 'what that residue touches (RNA-DNA hybrids counted as RNA)'),
+    ('residue_offset', 'integer', '', 'the closest such residue, in positions from the site (negative: N-terminal)'),
+    ('residue', 'integer', '', 'its position'),
+    ('pdb_id', 'string', '', 'the entry read for the complex (one per distinct set of bound sequences)'),
+    ('n_entries', 'integer', '', 'the entries with the protein and the same bound sequences'),
+    ('chain', 'string', '', 'the RNA or DNA chain the neighbouring residues touch most'),
+    ('molecule_name', 'string', '', 'its molecule name'),
+    ('source_organism', 'string', '', 'its source organism'),
+    ('sample_preparation', 'string', '', 'how it was made (Synthetically obtained: a designed oligonucleotide)'),
+    ('centre_nucleotide', 'string', '', 'the middle nucleotide the closest residue touches, SEQRES numbering'),
+    ('window_start', 'integer', '', 'SEQRES number of the window\'s first position'),
+    ('window', 'string', '', 'the chain 8 nucleotides each side of the centre nucleotide (the 9th); - past its ends. Aligns with the windows of supporting/nucleic_acid_contacts'),
+    ('window_marked', 'string', '', 'the window with every nucleotide that a residue within 5 positions of the site touches in brackets'),
+]
+
 NUCLEIC_ACID_REGION_COLUMNS = [
     ('uniprot_accession', 'string', '', 'protein of the site table'),
     ('start', 'integer', '', 'first residue of a run of residues within 4 Å of RNA or DNA in a PDB structure (runs joined across gaps of up to 3 residues)'),

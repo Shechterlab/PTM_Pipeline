@@ -4027,7 +4027,7 @@
         (pt.exp.length ? '<p class="sc-who"><span class="flabel">Contacts (experimental)</span> ' + pt.exp.map(esc).join(', ') + '</p>' : '') +
         (pt.ia.length ? '<p class="sc-who"><span class="flabel">IntAct partners</span> ' + pt.ia.map(esc).join(', ') + ' <span class="muted small">(curated records; not counted in the status)</span></p>' : '') +
         (pt.pred.length ? '<p class="sc-who"><span class="flabel">Partners (predicted)</span> ' + pt.pred.map(esc).join(', ') + '</p>' : '') +
-        (tags ? '<div class="tags">' + tags + '</div>' : '') + contactHtml(s, 6) +
+        (tags ? '<div class="tags">' + tags + '</div>' : '') + contactHtml(s, 6) + siteBoundHtml(s) +
         ((s.ia || []).length ? '<p class="sc-who"><span class="flabel">IntAct records at ' + rl(s.pos, P[s.p]) + '</span></p><ul class="evpop-list sc-ia">' + s.ia.slice().sort((x, y) => x.kind - y.kind || (iaChanges(y) - iaChanges(x))).slice(0, 8).map((r) => iaRecordHtml(r, p)).join('') + '</ul>' + (s.ia.length > 8 ? '<p class="muted small">' + (s.ia.length - 8) + ' more in the evidence list (click the IntAct tag).</p>' : '') : '');
       // What is known about the whole protein, labelled as such so it is not read as site evidence.
       const part = partnersAt(p, 700), cls = (v) => part.filter(([k]) => bindMatch(v, k)).map(([k]) => ixGene(k));
@@ -6929,9 +6929,10 @@
     }
     // The RNA and DNA each site touches in structures: one row per bound window, with every entry showing it (naRows).
     const naNames = d.na_names || [];
-    for (const [j, kind, win, offs, pdbs, names, dist, syn] of d.na || []) {
+    // via 0: the arginine touches it; else the offset of the closest residue within 5 that does (bound next to the site).
+    for (const [j, kind, win, offs, pdbs, names, dist, syn, via] of d.na || []) {
       const s = S[j];
-      if (s) (s.na || (s.na = [])).push({ kind, win, offs, pdbs, names: names.map((k) => naNames[k]), dist, syn: !!syn });
+      if (s) (s.na || (s.na = [])).push({ kind, win, offs, pdbs, names: names.map((k) => naNames[k]), dist, syn: !!syn, via: via || 0 });
     }
     // Regions of a protein that touch RNA or DNA in structures, and what is known of its binding beyond structures.
     const pIndex = new Map(P.map((q, i) => [q.acc, i]));
@@ -7208,14 +7209,18 @@
   const NA_W = 8;
   const NT_BASES = ['A', 'C', 'G', 'U'];
   const ntKey = (c) => (c === 'T' ? 'U' : c);
-  function naRows(sites, kind) {
+  // near: also the windows bound next to the site (a residue within 5 touches them, the arginine does not); w.via is
+  // that residue's offset, 0 for a window the arginine itself touches.
+  function naRows(sites, kind, near) {
     const out = [];
     for (const s of sites) {
       const seen = new Map();
       for (const r of s.na || []) {
         if (kind === 'dna' ? r.kind !== 'dna' : r.kind === 'dna') continue;   // RNA-DNA hybrids go with RNA
-        if (!seen.has(r.win)) seen.set(r.win, { s, win: r.win, offs: new Set(), pdbs: [], names: [], kind: r.kind, dist: r.dist, syn: true });
-        const w = seen.get(r.win);
+        if (r.via && !near) continue;
+        const key = r.win + (r.via ? '|near' : '');
+        if (!seen.has(key)) seen.set(key, { s, win: r.win, offs: new Set(), pdbs: [], names: [], kind: r.kind, dist: r.dist, syn: true, via: r.via });
+        const w = seen.get(key);
         r.pdbs.forEach((x) => { if (!w.pdbs.includes(x)) w.pdbs.push(x); });
         r.names.forEach((x) => { if (x && !w.names.includes(x)) w.names.push(x); });
         r.offs.forEach((o) => w.offs.add(o));
@@ -7311,7 +7316,9 @@
     const shown = limit ? rows.slice(0, limit) : rows;
     return '<div class="tbl-wrap"><table class="tbl compact na-aln"><thead><tr>' + (withProtein ? '<th>Protein</th>' : '') + '<th>Site</th><th>Bound sequence, aligned on the closest nucleotide</th><th class="hide-sm">Chain</th><th>PDB</th></tr></thead><tbody>' +
       shown.map((w) => '<tr>' + (withProtein ? '<td><button class="linkish" type="button" data-na-p="' + w.s.p + '">' + esc(P[w.s.p].label) + '</button></td>' : '') +
-        '<td class="num"><button class="linkish strong" type="button" data-na-p="' + w.s.p + '" data-na-pos="' + w.s.pos + '">' + rl(w.s.pos, P[w.s.p]) + '</button></td>' +
+        '<td class="num"><button class="linkish strong" type="button" data-na-p="' + w.s.p + '" data-na-pos="' + w.s.pos + '">' + rl(w.s.pos, P[w.s.p]) + '</button>' +
+        (w.via ? '<br><span class="tag na-near" title="' + esc('The arginine does not touch this ' + (w.kind === 'dna' ? 'DNA' : 'RNA') + '; residue ' + (w.s.pos + w.via) + ' (' + (w.via > 0 ? '+' : '−') + Math.abs(w.via) +
+          ') does, and the window is centred on what it touches') + '">near ' + (w.via > 0 ? '+' : '−') + Math.abs(w.via) + '</span>' : '') + '</td>' +
         '<td>' + naWindowHtml(w) + '</td><td class="hide-sm small na-name" title="' + esc(w.names.join('; ') + (w.syn ? '. A designed oligonucleotide in every entry (Synthetically obtained).' : '')) + '">' +
         (w.syn ? '<span class="tag na-oligo">oligo</span> ' : '') + esc(w.names.slice(0, 2).join('; ')) + (w.names.length > 2 ? ' +' + (w.names.length - 2) : '') + '</td>' +
         '<td class="small">' + w.pdbs.slice(0, 3).map((x) => '<a href="https://www.rcsb.org/structure/' + encodeURIComponent(x) + '" target="_blank" rel="noopener">' + esc(x.toUpperCase()) + '</a>').join(' ') +
@@ -7319,13 +7326,14 @@
       (limit && rows.length > limit ? '<p class="note">' + fmt(limit) + ' of ' + fmt(rows.length) + ' bound sequences; the TSV has all of them.</p>' : '');
   }
   const NA_NOTE = 'Bound sequence: the chain ' + NA_W + ' nucleotides each side of the one closest to the arginine\'s side chain (offset 0, outlined); nucleotides within 4 Å are bold. ' +
+    'Next to the methylarginine (tagged near ±k): in a complex where the arginine touches no ' + 'RNA or DNA but a residue within 5 positions does, the stretch those residues touch, centred on what the closest one touches, and the nucleotides they touch bold. ' +
     'Every PDB entry with the site at an RNA or DNA interface is read. A structure shows the complex its authors made, often with a designed oligonucleotide (tagged oligo), not every sequence ' +
     'the protein binds in cells. In the logo each site counts once, however many structures or chains it has; letter height is the frequency, or the frequency × information content in bits, ' +
     'which shows conservation among a few sites.';
   function naTsv(ws) {
-    return ['protein\tuniprot_accession\tsite\tnucleic_acid\twindow\tcontacted_offsets\tclosest_distance_a\tdesigned_oligonucleotide\tmolecule_names\tpdb_entries']
-      .concat(ws.map((w) => [P[w.s.p].label, P[w.s.p].acc, rl(w.s.pos, P[w.s.p]), w.kind, w.win, Array.from(w.offs).sort((a, b) => a - b).map((o) => o - NA_W).join(';'), w.dist, w.syn ? 'yes' : 'no',
-        w.names.join(';'), w.pdbs.join(';')].join('\t'))).join('\n') + '\n';
+    return ['protein\tuniprot_accession\tsite\tcontact\tnucleic_acid\twindow\tcontacted_offsets\tclosest_distance_a\tdesigned_oligonucleotide\tmolecule_names\tpdb_entries']
+      .concat(ws.map((w) => [P[w.s.p].label, P[w.s.p].acc, rl(w.s.pos, P[w.s.p]), w.via ? 'near ' + (w.via > 0 ? '+' : '') + w.via : 'at', w.kind, w.win,
+        Array.from(w.offs).sort((a, b) => a - b).map((o) => o - NA_W).join(';'), w.dist == null ? '' : w.dist, w.syn ? 'yes' : 'no', w.names.join(';'), w.pdbs.join(';')].join('\t'))).join('\n') + '\n';
   }
   function bindLogoTips(root) {
     $$('.logo-col:not([data-tb])', root).forEach((c) => {
@@ -7335,8 +7343,13 @@
       c.addEventListener('mouseleave', hideTip);
     });
   }
-  function bindNaBlock(root, ws, name) {
+  function bindNaBlock(root, wsAll, name) {
+    const ws = UI.naNear === false ? wsAll.filter((w) => !w.via) : wsAll;
     bindLogoTips(root);
+    $$('.na-near', root).forEach((sel) => sel.addEventListener('change', () => {
+      UI.naNear = sel.value === 'near';
+      if (UI.view === 'protein' && UI.detail != null) renderIxCard(P[UI.detail]); else renderView();
+    }));
     $$('.na-block', root).forEach((blk) => {
       const sel = $('.na-mode', blk), logo = $('.na-logo', blk);
       if (!sel || !logo) return;
@@ -7359,6 +7372,17 @@
       else exportFigure(fmt_, naLogoSvg(rows, kind, EXPORT_PAL, true, (kind === 'dna' ? 'DNA' : 'RNA') + ' bound at ' + fmt(new Set(rows.map((w) => w.s)).size) + ' methylarginines', mode), name + '_' + kind + '_logo');
     }));
   }
+  // The RNA and DNA one site touches, or that its neighbours touch, in structures: its aligned windows (site card).
+  function siteBoundHtml(s) {
+    const ws = naRows([s], 'rna', true).concat(naRows([s], 'dna', true)).sort((a, b) => (!!a.via - !!b.via) || b.pdbs.length - a.pdbs.length);
+    if (!ws.length) return '';
+    const row = (w) => '<li>' + naWindowHtml(w) + ' <span class="muted small">' + (w.kind === 'dna' ? 'DNA' : 'RNA') + ' · ' + fmt(w.pdbs.length) + ' entr' + (w.pdbs.length === 1 ? 'y' : 'ies') + '</span>' +
+      (w.via ? ' <span class="tag na-near" title="' + esc('Touched by residue ' + (s.pos + w.via) + ', not by the arginine itself') + '">near ' + (w.via > 0 ? '+' : '−') + Math.abs(w.via) + '</span>' : '') +
+      (w.syn ? ' <span class="tag na-oligo">oligo</span>' : '') + '</li>';
+    return '<p class="sc-who"><span class="flabel">Bound RNA and DNA in structures</span></p><ul class="sc-na">' + ws.slice(0, 5).map(row).join('') + '</ul>' +
+      (ws.length > 5 ? '<p class="muted small">' + (ws.length - 5) + ' more in the RNA and DNA tabs of Partners and complexes.</p>' : '');
+  }
+
   // ------------------------------------------- where a protein binds RNA or DNA, and what it binds
   // Regions: runs of residues within 4 Å of RNA or DNA in structures (one entry per distinct complex read), RBDmap
   // fragments (RNA-bound in HeLa cells, overlapping ones merged) and UniProt DNA-binding regions, each with the
@@ -7450,12 +7474,19 @@
   // Logo and aligned windows of one kind for a set of sites (a protein's, or the selection's). The logo shows letter
   // height as information for a few sites and as frequency for many (NA_FREQ_FROM), and the reader can switch.
   const NA_FREQ_FROM = 15;
-  function naBlockHtml(ws, kind, withProtein, limit) {
+  function naBlockHtml(wsAll, kind, withProtein, limit) {
+    const K = kind === 'dna' ? 'DNA' : 'RNA', hasNear = wsAll.some((w) => w.via), near = hasNear && UI.naNear !== false;
+    const ws = near ? wsAll : wsAll.filter((w) => !w.via);
+    const nAt = new Set(wsAll.filter((w) => !w.via).map((w) => w.s)).size, nNear = new Set(wsAll.filter((w) => w.via && !wsAll.some((x) => !x.via && x.s === w.s)).map((w) => w.s)).size;
+    const sw = hasNear ? '<label class="fig-ctl small">Sequences <select class="na-near">' + [['near', 'at or next to the methylarginine'], ['at', 'at the methylarginine']]
+      .map(([v, l]) => '<option value="' + v + '"' + ((v === 'near') === near ? ' selected' : '') + '>' + l + '</option>').join('') + '</select></label>' : '';
     const n = new Set(ws.map((w) => w.s)).size, pdbs = new Set(ws.flatMap((w) => w.pdbs)).size;
-    if (!n) return '';
+    if (!wsAll.length) return '';
+    if (!n) return '<div class="na-block" data-na-kind="' + kind + '"><p class="na-head">No methylarginine touches ' + K + ' itself; ' + fmt(nNear) + ' ha' + (nNear === 1 ? 's' : 've') + ' a neighbour that does. ' + sw + '</p></div>';
     const mode = n >= NA_FREQ_FROM ? 'freq' : 'bits';
-    return '<div class="na-block" data-na-kind="' + kind + '" data-na-mode="' + mode + '"><p class="na-head"><b>' + fmt(n) + '</b> methylarginine' + (n === 1 ? '' : 's') + ' touch' + (n === 1 ? 'es' : '') + ' ' + (kind === 'dna' ? 'DNA' : 'RNA') + ' in ' + fmt(pdbs) + ' PDB entr' + (pdbs === 1 ? 'y' : 'ies') +
-      ', ' + fmt(ws.length) + ' distinct bound sequence' + (ws.length === 1 ? '' : 's') + '. ' +
+    return '<div class="na-block" data-na-kind="' + kind + '" data-na-mode="' + mode + '"><p class="na-head"><b>' + fmt(nAt) + '</b> methylarginine' + (nAt === 1 ? '' : 's') + ' touch' + (nAt === 1 ? 'es' : '') + ' ' + K +
+      (near && nNear ? ', <b>' + fmt(nNear) + '</b> more ha' + (nNear === 1 ? 's' : 've') + ' a residue within 5 that does' : '') + ', in ' + fmt(pdbs) + ' PDB entr' + (pdbs === 1 ? 'y' : 'ies') +
+      ', ' + fmt(ws.length) + ' distinct bound sequence' + (ws.length === 1 ? '' : 's') + '. ' + sw +
       (n >= 2 ? '<label class="fig-ctl small">Letter height <select class="na-mode">' + [['bits', 'information (bits)'], ['freq', 'frequency']].map(([v, l]) => '<option value="' + v + '"' + (v === mode ? ' selected' : '') + '>' + l + '</option>').join('') + '</select></label>' : '') +
       '<span class="exp na-exp"><button type="button" data-na-exp="' + kind + ':svg">SVG</button><button type="button" data-na-exp="' + kind + ':png">PNG</button><button type="button" data-na-exp="' + kind + ':tsv">TSV</button></span></p>' +
       (n >= 2 ? '<div class="na-logo">' + naLogoSvg(ws, kind, screenPalette(), false, '', mode).svg + '</div>' : '') + naAlignHtml(ws, withProtein, limit) + '</div>';
@@ -8384,7 +8415,7 @@
     const flag = kind === 'rna' ? IXF.rna : IXF.dna, flagExp = kind === 'rna' ? IXF.rnaExp : IXF.dnaExp;
     const term = kind === 'rna' ? 'GO:0003723' : 'GO:0003677';
     const sites = p.sites.map((j) => S[j]).filter((s) => s.iface & bit);
-    const naWs = naRows(p.sites.map((j) => S[j]), kind);
+    const naWs = naRows(p.sites.map((j) => S[j]), kind, true);
     const gene = p.gene;
     body.innerHTML =
       '<div class="ix-grid">' +
@@ -9485,7 +9516,7 @@
     bindWrMatrix(el);
     const naBox = $('#ix-na', el);
     if (naBox) {
-      bindNaBlock(naBox, naRows(R.sites, 'rna').concat(naRows(R.sites, 'dna')), 'methylarginine_bound');
+      bindNaBlock(naBox, naRows(R.sites, 'rna', true).concat(naRows(R.sites, 'dna', true)), 'methylarginine_bound');
       bindLogoTips(naBox);
       $$('.ec-gene', naBox).forEach((b) => b.addEventListener('click', () => { setPlain(b.dataset.gene); go('proteins'); window.scrollTo({ top: 0 }); }));
     }
@@ -9500,7 +9531,7 @@
   // The bound sequences of the selection's methylarginines, RNA then DNA (naBlockHtml), and what the selected proteins
   // bind beyond structures (ixNabHtml).
   function ixNaHtml() {
-    const rna = naRows(R.sites, 'rna'), dna = naRows(R.sites, 'dna'), nabPart = ixNabHtml();
+    const rna = naRows(R.sites, 'rna', true), dna = naRows(R.sites, 'dna', true), nabPart = ixNabHtml();
     if (!rna.length && !dna.length && !nabPart) return '';
     const part = (ws, kind) => '<section class="na-part"><h4>' + (kind === 'dna' ? 'DNA' : 'RNA') + ' in structures</h4>' +
       (ws.length ? naBlockHtml(ws, kind, true, 40) : '<p class="muted">No methylarginine of ' + (constraints().length ? 'your selection' : 'the release') + ' touches ' + kind.toUpperCase() + ' in the structures read.</p>') + '</section>';
@@ -9536,7 +9567,7 @@
         ' <span class="muted">' + l.length + '</span></button>').join('') + '</div><p class="note">Among each experiment\'s 25 genes with most reproducible peaks; the number is how many of the proteins bind the gene.</p>' : '') + '</section>';
   }
   function ixNaSummary() {
-    const n = (kind) => new Set(naRows(R.sites, kind).map((w) => w.s)).size;
+    const n = (kind) => new Set(naRows(R.sites, kind, false).map((w) => w.s)).size;
     const prots = new Set(R.sites.map((s) => s.p)), withNab = Array.from(prots).filter((i) => IX.nab.rbns.get(i) || IX.nab.jaspar.get(i) || IX.nab.eclip.get(i)).length;
     return fmt(n('rna')) + ' methylarginines touch RNA and ' + fmt(n('dna')) + ' touch DNA in structures; ' + fmt(withNab) + ' proteins with motifs or eCLIP' + (constraints().length ? ', your selection' : '');
   }

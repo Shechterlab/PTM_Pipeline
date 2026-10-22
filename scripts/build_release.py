@@ -946,7 +946,10 @@ def interaction_tables(folder: Path, sites: pd.DataFrame) -> dict:
     if na is not None and set(na['site_id']) - set(analysed['site_id']):
         raise SystemExit(f'{folder}: nucleic-acid contacts for sites that are not analysed in the release')
     regions = read_tsv(folder / 'nucleic_acid_regions.tsv') if (folder / 'nucleic_acid_regions.tsv').exists() else None
-    beyond = {name: read_tsv(folder / f'{name}.tsv') for name in ('rna_bind_n_seq', 'dna_motifs', 'eclip') if (folder / f'{name}.tsv').exists()}
+    beyond = {name: read_tsv(folder / f'{name}.tsv') for name in ('nucleic_acid_near_sites', 'rna_bind_n_seq', 'dna_motifs', 'eclip')
+              if (folder / f'{name}.tsv').exists()}
+    if 'nucleic_acid_near_sites' in beyond and set(beyond['nucleic_acid_near_sites']['site_id']) - set(analysed['site_id']):
+        raise SystemExit(f'{folder}: bound sequences next to sites that are not analysed in the release')
     return {'sites': ev, 'residues': t['residue_evidence'], 'partners': t['protein_partners'], 'complexes': t['complexes'],
             'statistics': t['interaction_statistics'], 'proteins': t['protein_interaction_summary'], 'status': status, 'evidence': evidence,
             'nucleic_acid': na, 'nucleic_acid_regions': regions, 'beyond': beyond}
@@ -1160,7 +1163,8 @@ def main() -> None:
             files['nucleic_acid_contacts'] = (f'supporting/nucleic_acid_contacts_{version}.tsv', ix['nucleic_acid'], rc.NUCLEIC_ACID_CONTACT_COLUMNS)
         if ix['nucleic_acid_regions'] is not None:
             files['nucleic_acid_regions'] = (f'supporting/nucleic_acid_regions_{version}.tsv', ix['nucleic_acid_regions'], rc.NUCLEIC_ACID_REGION_COLUMNS)
-        for name, columns in (('rna_bind_n_seq', rc.RNA_BIND_N_SEQ_COLUMNS), ('dna_motifs', rc.DNA_MOTIF_COLUMNS), ('eclip', rc.ECLIP_COLUMNS)):
+        for name, columns in (('nucleic_acid_near_sites', rc.NUCLEIC_ACID_NEAR_COLUMNS), ('rna_bind_n_seq', rc.RNA_BIND_N_SEQ_COLUMNS),
+                              ('dna_motifs', rc.DNA_MOTIF_COLUMNS), ('eclip', rc.ECLIP_COLUMNS)):
             if name in ix['beyond']:
                 files[name] = (f'supporting/{name}_{version}.tsv', ix['beyond'][name], columns)
     for folder in (outdir / 'supporting', outdir):
