@@ -149,6 +149,12 @@ accessions only.
 | `raw_capri_files.tsv` | 2 | The two CAPRI supplements, with their size, MD5 and date (staged with `--capri`; they are not in the October 16 cache). |
 | `pclap_mullari2017_peptides.tsv` | 9,966 | pCLAP (HEK293) peptides from the PRIDE MaxQuant search (PXD005739) of 4 UV-crosslinked (XL) and 4 non-crosslinked (No XL) pull-downs. Each peptide is on the canonical sequence, with its Lys-C peptide (the RNA-bound region), the eight intensities, how each run identified it (MS/MS or matching) and the XL against No XL test. 5,572 peptides on 2,041 proteins are RNA-binding; the other 4,394 are the measured background. Not in Git (see Licences). |
 | `raw_pclap_files.tsv` | 7 | The PRIDE archive, the three MaxQuant tables read from it, PRIDE's project and file listings, and the 2023 supplement used as a check, with their size, MD5 and date (staged with `scripts/43d_stage_pclap.py`). |
+| `rbrid_oksuz2023_k562_peptides.tsv` | 72,375 | RBR-ID (K562 nuclei, PRIDE PXD035484): peptides on 5,889 canonical sequences, with runs quantified per condition (of 15), log2 +4SU/−4SU, p (t or Fisher), BH q, the RBR-ID score of He et al. 2016 (64,733 scored) and the RBR-ID+ call (p < 0.05, depleted). A 5 × 5 test on the means of technical replicates is given beside it. |
+| `rbrid_oksuz2023_k562_positive_residues.tsv` | 121,523 | The residues at or above the published cut-off: residues under at least one RBR-ID+ peptide, in 6,530 runs of consecutive residues in 1,853 proteins. Each has the number of RBR-ID+ peptides over it, their best p, and its residue scores (summed and smoothed). No other residue is staged. |
+| `rbrid_oksuz2023_k562_coverage.tsv` | 100,734 | The measured background, as merged residue intervals per protein at three levels: `quantified` (under any staged peptide; 5,889 proteins), `tested` (under a peptide with a t or Fisher test, where an RBR-ID+ call was possible) and `scored` (under a peptide with an RBR-ID score). An arginine is measured when it lies in a `quantified` interval. |
+| `rbrid_oksuz2023_k562_segments.tsv` | 3,463 | RBR-ID RNA-binding regions in 1,098 proteins: runs of consecutive residues whose smoothed residue score is ≥ 3, with the maximum and mean residue score, the peptides over them and the best p. |
+| `rbrid_oksuz2023_k562_runs.tsv` | 30 | The 30 runs: acquisition date, sample, condition, the raw files of the sample, and the median used to normalise. |
+| `raw_rbrid_files.tsv` | 4 | The PRIDE files read, with size, MD5 and date. The 2 GB report was streamed, not kept. |
 | `trendel2025_dna_crosslink_localisation.tsv` | 1,688 | DNA-crosslinked peptides (MCF7). Lower-case letters mark the residues the crosslink may sit on. |
 | `trendel2025_dna_crosslinked_peptides.tsv` | 688 | DNA-crosslinked peptide ranges. |
 | `trendel2025_mcf7_dna_interactome.tsv` | 1,191 | Proteins in the MCF7 DNA interactome. |
@@ -183,6 +189,57 @@ peptides, so `scripts/43d_stage_pclap.py` derives them from the deposited `pepti
   unmarked genes, 13 do.
 - **Methylarginine:** the search allowed only Acetyl (Protein N-term) and Oxidation (M) as variable modifications, so a
   methylated peptide could be identified only in its unmethylated form.
+**RBR-ID** (Oksuz et al., Mol Cell 83:2449, 2023; method of He et al., Mol Cell 64:416, 2016). K562 cells were pulsed
+or not with 4-thiouridine (4SU) and irradiated with 312 nm UV. A peptide crosslinked to RNA changes mass, so the
+signal of the unmodified peptide drops in the +4SU samples. `scripts/43c_stage_rbrid.py` stages it from the DIA-NN
+report on PRIDE (staged 22 October 2026).
+
+- **Which run is which.** PRIDE has no sample table. The raw files are `no_4SU_1`–`5` and `4SU_6`–`10`, each in
+  technical replicates t1–t3. The report's 30 runs, also listed in the DIA-NN log on PRIDE, are samples 1–10 on
+  three acquisition dates. So samples 1–5 are −4SU, 6–10 are +4SU, and the dates are the technical replicates
+  (5 × 3 per condition, as the methods state).
+  - Checks in the data: each run's most correlated run is of the same condition (30 of 30).
+  - The human counterpart of He et al.'s example peptide, HNRNPC 74–89, is depleted in samples 6–10 (log2 −0.40,
+    p = 0.004).
+- **Method.** As the authors describe it:
+  - charge states summed and abundances median-normalised per run (Oksuz et al.);
+  - unpaired two-sided Student's t test, or Fisher's exact test when a peptide is absent from one condition; BH q;
+  - score = −log2(+4SU/−4SU) × (log10 p)² (He et al.);
+  - residue score: the scores of overlapping peptides summed and smoothed with Friedman's super smoother (He et al.,
+    supplement). The smoother is a port of R's `supsmu`, checked against R.
+- **Choices where the papers are silent.**
+  - DIA-NN filter: Q.Value, Lib.Q.Value and Lib.PG.Q.Value ≤ 0.01.
+  - Peptide: the stripped sequence.
+  - The t test is on the normalised values, 15 vs 15 runs, with at least 3 runs per condition.
+  - Fisher-tested peptides get no score.
+  - Only residues under a scored peptide get a residue score.
+  - Segment threshold 3, the lowest of 1, 2, 3 and 5 whose permutation estimate of the residue false-discovery rate
+    is under 10%. The estimate was 7% at 3, from 20 balanced swaps of samples between the groups. The rule was fixed
+    before any comparison with methylarginines.
+- **Placement.** Each peptide goes to the reviewed canonical sequence that contains it exactly once:
+  - through the accession DIA-NN gives (72,284), or its current entry when it is a secondary accession (16);
+  - otherwise through the gene (75);
+  - several matches: the entry with most peptides, as the authors did.
+  - 648 are left out: 541 match none of those sequences, 96 occur twice in one, and 11 have no reviewed entry.
+- **Smoothing spills over.** The smoother can lift residues next to a strong peptide above the threshold. A segment
+  whose `max_summed_score` is low and whose `best_p` is high lies there through smoothing alone.
+- **No methylarginine in the search.** The search allowed only carbamidomethyl-Cys, Met oxidation and protein
+  N-terminal acetylation; `Modified.Sequence` has UniMod 4, 35 and 1 only. A peptide with a methylarginine is
+  measured only in its unmethylated form.
+- **Residue scores only at the published cut-off.** Neither paper sets a cut-off on residue scores. The published
+  cut-off is the peptide one: log2 ratio < 0 and p < 0.05.
+  - He et al. 2016, Experimental Procedures: "primary hits".
+  - Oksuz et al. 2023, STAR Methods: "RBR-ID+", their Figure S5 analysis.
+  - A peptide absent from every +4SU run counts when its Fisher p is < 0.05.
+  - The positive-residue table keeps a residue only when such a peptide covers it.
+  - He et al. also removed peptides that passed without UV. This dataset has no no-UV samples, so that filter cannot
+    be applied.
+  - The p is unadjusted, as in those analyses, and the t test counts technical replicates as the authors did. So the
+    cut-off is loose: 121,523 of the 784,576 measured residues (15.5%) pass it.
+- **The full profile is not staged.** It holds about 0.7 million scored residues. `residue_profiles()` in the script
+  recomputes it from the peptide table in seconds.
+- **Measured background.** The coverage table records which residues any peptide measured. A detectability control
+  can compare methylated and other arginines among measured ones only.
 
 ### Condensates
 
@@ -205,6 +262,8 @@ Each table carries its source's licence in `../MANIFEST.tsv`. Licences verified 
   - `pclap_mullari2017_peptides.tsv` carries the authors' intensities, so it is not redistributed. It is listed with its
     MD5 (`checksum_only`) and kept out of Git by `.gitignore`.
   - `scripts/43d_stage_pclap.py` rebuilds it byte for byte from PRIDE.
+- **RBR-ID** (Oksuz et al., Mol Cell 83:2449, 2023): CC0, the licence of PRIDE dataset PXD035484 ("Creative
+  Commons Public Domain (CC0)", read from the PRIDE API on 22 October 2026). Its search did not allow methylarginine.
 - **Trendel et al. 2025:** CC BY-NC 4.0, from the open access article.
 - **CD-CODE:** CC BY-NC 4.0, as stated on [cd-code.org](https://cd-code.org/).
 - **pepR-MS:** CC BY-NC.
@@ -233,4 +292,5 @@ The non-commercial terms are compatible with the repository's CC BY-NC-SA 4.0 fo
 python scripts/37a_stage_interactions.py --cache data/interactions_cache --out inputs/interactions
 python scripts/37b_check_staged_interactions.py --cache data/interactions_cache --tables inputs/interactions
 python -I scripts/43d_stage_pclap.py --cache PTM_data/external/pclap --out inputs/interactions   # pCLAP; downloads 193 MB from PRIDE
+python -I scripts/43c_stage_rbrid.py --cache <download folder> --out inputs/interactions
 ```

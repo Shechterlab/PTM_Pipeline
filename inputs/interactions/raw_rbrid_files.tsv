@@ -1,0 +1,5 @@
+path	url	bytes	md5	saved	note
+PXD035484/report.tsv	https://ftp.pride.ebi.ac.uk/pride/data/archive/2023/07/PXD035484/report.tsv	2020413561	23d0de70cb026a88effcede995ce41e6	2026-10-22	streamed, not kept; SHA-1 b6f6e03180a2394d11a25225b6f97792a8128f0f equals the checksum PRIDE lists
+PXD035484/DIA.DIA-NN.search.log	https://ftp.pride.ebi.ac.uk/pride/data/archive/2023/07/PXD035484/DIA.DIA-NN.search.log	39568	729ce0c8e7889247d3bd56125d001c14	2026-10-22	kept in the download folder
+PXD035484/pride_project.json	https://www.ebi.ac.uk/pride/ws/archive/v3/projects/PXD035484	9058	2d362b6e86007f419b6b1ecd2ae3c77a	2026-10-22	kept in the download folder
+PXD035484/pride_files.json	https://www.ebi.ac.uk/pride/ws/archive/v3/projects/PXD035484/files?pageSize=500&page=0	38615	95318c25127870d8f2c58156608aaf7e	2026-10-22	kept in the download folder
