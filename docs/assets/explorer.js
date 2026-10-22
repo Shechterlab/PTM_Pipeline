@@ -3822,14 +3822,17 @@
         // the cards lead; the tiles below chart every test, so the figure is drawn only when no card can be
         const tipKey = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span class="a-info" tabindex="0" data-tip="' +
           esc('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against all reviewed human proteins (fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; open a tile for every test.') + '">How to read</span>';
-        lead = hi.length ? { q: 'What sets methylarginine sites apart?', hi: aHighlights(hi) + '<div class="a-key a-key-line">' + tipKey + '</div>' }
-          : { q: 'What sets methylarginine sites apart?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
+        const ex = ['HNRNPA1', 'FUS', 'G3BP1'].map((g) => pickReviewed(lookupExact(g))).filter(Boolean);
+        const pic = ex.length ? aMapsHtml(ex, 'Methylarginines on three RNA-binding proteins. Click one to open it.') : '';
+        lead = hi.length ? { q: 'What sets methylarginine sites apart?', pic, hi: aHighlights(hi) + '<div class="a-key a-key-line">' + tipKey + '</div>' }
+          : { q: 'What sets methylarginine sites apart?', pic, key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
             fig: aForest([['Where in the protein', where], ['Which proteins', which]], { subTip: true }) };
       } else {
         const rows = profileRows() || [], sig = rows.filter((r) => r.q <= 0.05);
         const up = sig.filter((r) => r.fold > 1).slice(0, 6), dn = sig.filter((r) => r.fold < 1).slice(0, 3);
         const fr = (r) => ({ label: r.ft.label, main: { or: r.fold, sig: true, q: r.q, fold: true } });
-        lead = { q: 'What sets your selection apart?', key: '<span><i class="aq-pt up"></i>more common</span><span><i class="aq-pt down"></i>less common</span><span class="a-key-note">Your ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + ' (q ≤ 0.05)</span>',
+        const ex = R.prots.map((p) => [p, p.sites.filter((j) => R.shown.has(j)).length]).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([p]) => p);
+        lead = { q: 'What sets your selection apart?', pic: ex.length ? aMapsHtml(ex, 'The proteins of your selection with the most sites. Click one to open it.') : '', key: '<span><i class="aq-pt up"></i>more common</span><span><i class="aq-pt down"></i>less common</span><span class="a-key-note">Your ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + ' (q ≤ 0.05)</span>',
           verdict: !rows.length ? 'Too few sites to compare with the rest.' : up.length || dn.length ? '<b>More common in your selection:</b> ' + lst(up.slice(0, 3).map(fr)) + (dn.length ? '. <b>Less common:</b> ' + dn.slice(0, 2).map((r) => esc(r.ft.label) + ' <span class="an">' + fx(r.fold) + '×</span>').join(', ') : '') + '.'
             : 'Nothing in your selection differs from the other sites at q ≤ 0.05.',
           fig: up.length || dn.length ? aForest([['More common', up.map(fr)], ['Less common', dn.map(fr)]]) : '', go: 'sel-enriched', goText: 'Every feature, with counts' };
@@ -3896,6 +3899,7 @@
     bindProfile(el);
     bindHub(el, 'Overview');
     bindAHome(el);
+    bindAMaps(el);
     const oo = $('#ov-open-one', el);
     if (oo) oo.addEventListener('click', () => openProtein(one.i));
     $$('[data-quick]', el).forEach((b) => b.addEventListener('click', () => { const q = UI.quick[+b.dataset.quick]; if (q) q[2](); }));
@@ -4108,7 +4112,7 @@
       '<button class="btn small quiet" type="button" id="print-page" title="Print this protein page (the print dialog can also save a PDF with selectable text)">Print</button></div></div>' +
       // The protein's identity stays; its facts and map head the page (they give way to a section opened alone), and
       // every other card is a row of the protein's sections (bindHub).
-      '<div class="hub-only">' + (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
+      '<div class="hub-only p-top">' + (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
       '<div id="drift-note"></div>' +
       (p.unrev ? (() => {
         const twin = p.reviewedTwin, nDup = p.sites.filter((j) => S[j].dup != null).length;
@@ -4510,9 +4514,12 @@
     cls: () => '<svg viewBox="0 0 64 24"><path d="M4 16 q6 -12 12 0 t12 0 t12 0 t12 0" class="hg-rna"/><circle cx="58" cy="8" r="3.6" class="hg-site"/></svg>',
     cond: () => '<svg viewBox="0 0 64 24"><circle cx="16" cy="12" r="9" class="hg-drop"/><circle cx="36" cy="9" r="5.5" class="hg-drop"/><circle cx="50" cy="15" r="4" class="hg-drop"/><circle cx="14" cy="10" r="2.4" class="hg-site"/></svg>',
     loc: () => '<svg viewBox="0 0 64 24"><ellipse cx="32" cy="12" rx="28" ry="10" class="hg-cell"/><circle cx="36" cy="12" r="5.5" class="hg-nuc"/></svg>',
+    dna: () => '<svg viewBox="0 0 64 24"><path d="M4 6 C14 6 18 18 28 18 S42 6 52 6" class="hg-dna"/><path d="M4 18 C14 18 18 6 28 6 S42 18 52 18" class="hg-dna"/><circle cx="58" cy="12" r="3.6" class="hg-site"/></svg>',
+    pdb: () => '<svg viewBox="0 0 64 24"><path d="M4 12 c3 -9 9 -9 12 0 s9 9 12 0 s9 -9 12 0 s9 9 12 0" class="hg-helix"/><circle cx="58" cy="12" r="3.6" class="hg-site"/></svg>',
+    ppi: () => '<svg viewBox="0 0 64 24"><ellipse cx="20" cy="12" rx="15" ry="9" class="hg-blob"/><ellipse cx="44" cy="12" rx="15" ry="9" class="hg-blob b"/><circle cx="32" cy="12" r="3.6" class="hg-site"/></svg>',
   };
   const aHighlights = (items) => '<div class="a-hi">' + items.map((x) => '<button type="button" class="a-hi-c" data-go="' + x.go + '" data-tip="' + esc(x.tip) + '">' +
-    '<span class="a-hi-g" aria-hidden="true">' + x.glyph + '</span><span class="a-hi-n ' + (x.dir || 'up') + '">' + x.big + '</span><span class="a-hi-l">' + esc(x.label) + '</span><span class="a-hi-e">' + esc(x.kind) + '</span></button>').join('') + '</div>';
+    '<span class="a-hi-g" aria-hidden="true">' + x.glyph + '</span><span class="a-hi-n ' + (x.dir || 'up') + '">' + esc(x.big) + '</span><span class="a-hi-l">' + esc(x.label) + '</span><span class="a-hi-e">' + esc(x.kind) + '</span></button>').join('') + '</div>';
   // Small pictures for tiles: meters (shares, with a reference tick), a stacked bar, big numbers.
   const aMeters = (rows, o = {}) => '<div class="a-meters' + (o.tight ? ' tight' : '') + '">' + rows.map((r) => '<div class="am-row"' + (r.tip ? ' data-tip="' + esc(r.tip) + '"' : '') + '><span class="am-l">' + esc(r.label) + '</span><span class="am-t"><i class="' + (r.cls || '') + '" style="width:' + (100 * Math.max(0, Math.min(1, r.v || 0))).toFixed(1) + '%"></i>' +
     (r.ref != null ? '<b style="left:' + (100 * r.ref).toFixed(1) + '%"></b>' : '') + '</span><span class="am-v">' + esc(r.text) + '</span></div>').join('') + (o.foot ? '<div class="am-foot">' + o.foot + '</div>' : '') + '</div>';
@@ -4536,7 +4543,7 @@
         (vis ? '<span class="a-vis">' + vis + '</span>' : '') + '<span class="a-head" data-sum-of="' + r.key + '"' + (o.head != null ? ' data-fixed' : '') + '>' + head + '</span>' + (whole ? '<span class="a-whole"><span>Whole dataset</span> ' + whole + '</span>' : '') + '</button>';
     };
     return '<div class="a-home hub-only">' +
-      (lead ? '<section class="a-lead"><h2 class="a-q">' + lead.q + '</h2>' + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') + (lead.hi || '') +
+      (lead ? '<section class="a-lead"><h2 class="a-q">' + lead.q + '</h2>' + (lead.pic || '') + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') + (lead.hi || '') +
         (lead.fig ? '<div class="card a-fig">' + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
       '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>').join('') + '</div>' +
       '<p class="a-proto">New layout <button type="button" class="linkish" data-ui="old">Switch to the previous layout</button></p></div>';
@@ -4655,6 +4662,21 @@
         renderConsCard(p, u);   // the card shows the alignments it now holds, and the summary the test
       }, (e) => consNote('Ensembl Compara ' + (String(e && e.message) === 'timeout' ? 'did not answer within a minute' : 'could not be reached') + '. Open the section to try again.'));
     });
+  }
+  // A few proteins as maps: the chain with its domains, disordered stretches and RG/RGG segments, and each
+  // methylarginine above it, coloured by its interaction evidence; a map opens its protein. Domains and RG/RGG segments
+  // come from UniProt and are drawn when it answers.
+  const aMapsHtml = (list, cap) => '<div class="card a-maps">' + (cap ? '<p class="a-maps-cap">' + cap + '</p>' : '') +
+    list.map((p) => '<button type="button" class="a-map" data-map-p="' + p.i + '" aria-label="Open ' + esc(p.label) + '"></button>').join('') + '</div>';
+  function bindAMaps(root) {
+    const maps = $$('.a-maps .a-map', root);
+    const draw = () => maps.forEach((b, k) => {
+      if (!document.body.contains(b)) return;
+      const p = P[+b.dataset.mapP];
+      b.innerHTML = contactCartoonSvg(p, UNIDATA.get(p.acc), null, { pal: Object.assign(screenPalette(), { bg: cssVar('--surface') }), W: Math.max(560, Math.round(b.clientWidth || 900)), noLanes: true, noLegend: k < maps.length - 1 }).svg;
+    });
+    draw();
+    maps.forEach((b) => { const p = P[+b.dataset.mapP]; loadUniProt(p.acc).then(draw, () => {}); b.addEventListener('click', () => openProtein(p.i)); });
   }
   // Tiles whose pictures need data that arrives after the page was drawn (a protein's interaction evidence).
   function aRefreshTiles(root, ov) {
@@ -5773,7 +5795,7 @@
     const inView = (s) => s.pos >= v0 && s.pos <= v1;
     const sites = p.sites.map((j) => S[j]).filter(inView);
     const clip = 'ccclip' + (++CC_CLIP);
-    const lanes = contactLanes(p, ifd, pal);
+    const lanes = o.noLanes ? [] : contactLanes(p, ifd, pal);
     const mode = IXS_MODE, colors = mode.colors(pal);
     let g = '', y = 8;
     if (exp && !panel && !o.print) {
@@ -5804,7 +5826,7 @@
     // Guides from methylarginines with evidence, drawn first so marks sit on top.
     for (const h of heads) {
       const st = ixStatus(h.s);
-      if (st && st !== 'none') g += '<line x1="' + r1(h.hx) + '" x2="' + r1(h.hx) + '" y1="' + (base + 8) + '" y2="' + bottom + '" stroke="' + pal.ev + '" stroke-width="0.9" stroke-dasharray="2 2" opacity="' + (st === 'exp' ? 0.75 : 0.45) + '"/>';
+      if (lanes.length && st && st !== 'none') g += '<line x1="' + r1(h.hx) + '" x2="' + r1(h.hx) + '" y1="' + (base + 8) + '" y2="' + bottom + '" stroke="' + pal.ev + '" stroke-width="0.9" stroke-dasharray="2 2" opacity="' + (st === 'exp' ? 0.75 : 0.45) + '"/>';
     }
     lanes.forEach((ln, k) => {
       const cy = laneY(k);
@@ -5863,8 +5885,8 @@
     yy += 26;
     const items = [
       [SWATCH.head(pal, pal.ev, false), 'Experimental evidence'], [SWATCH.head(pal, pal.ev, true), 'Predicted only'], [SWATCH.head(pal, pal.none, false), 'None recorded'],
-    ].concat(KEY.lanes(pal), backboneKey(pal, [{ p, u }]));
-    const leg = svgLegend(pal, items, m, yy, W - 2 * m, { fs: panel ? 8.5 : 10 });
+    ].concat(lanes.length ? KEY.lanes(pal) : [], backboneKey(pal, [{ p, u }]));
+    const leg = o.noLegend ? { svg: '', h: -12 } : svgLegend(pal, items, m, yy, W - 2 * m, { fs: panel ? 8.5 : 10 });
     g += leg.svg;
     const H = Math.ceil(yy + leg.h + 6);
     return { W, H, x0, x1, len, v0, v1, svg: '<svg xmlns="http://www.w3.org/2000/svg" class="ccart" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + (pal.font || EXPORT_PAL.font).replace(/'/g, '"') + '\' role="img" aria-label="' + esc(p.label + ': methylarginines and interaction evidence along the sequence') + '">' +
@@ -10871,7 +10893,6 @@
       const cells = [['CAPRI peptide next to a crosslink', 'Panhale 2019 · HEK293', 'rna_capri_adj', 'rna_capri_cov'], ['pCLAP RNA-binding peptide', 'Mullari 2017 · HEK293', 'rna_pclap_pep', 'rna_pclap_cov'],
         ['RBDmap RNA-bound peptide', 'Castello 2016 · HeLa', 'rna_rbdmap', 'rna_rbdmap_cov'], ['RBR-ID+ residue', 'Oksuz 2023 · K562', 'rna_rbrid', 'rna_rbrid_cov']]
         .map(([label, sub, path, ctl]) => Object.assign({ label, sub, mainName: mainName(ctl) }, pair(path, ctl)));
-      const xl = Object.assign({ label: 'The residue crosslinked to RNA', sub: 'pepR-MS compendium · 5 datasets', mainName: mainName() }, pair('rna_xl'));
       const dna = Object.assign({ label: 'A DNA-crosslinked residue or candidate', sub: 'Trendel 2025 · MCF7', mainName: mainName() }, pair('dna_cand'));
       const st = (label, path) => ({ label, sub: 'PDB entries, side chain', mainName: mainName(), main: test('na_dist_stats', [path], scoped), ghost: scoped ? test('na_dist_stats', [path], false) : null });
       const rnaSt = st('Within 4 Å of RNA', 'rna_within_4a'), dnaSt = st('Within 4 Å of DNA', 'dna_within_4a');
@@ -10879,16 +10900,9 @@
       const pt = (label, sub, g, path) => ({ label, sub, mainName: mainName(), main: test(g, path, scoped), ghost: scoped ? test(g, path, false) : null });
       const prot = [pt('At a protein interface', 'PDB entries (PDBe-KB)', 'enrich_strata', ['protein', 'all']), pt('At a predicted protein interface', 'AlphaFold-Multimer, pDockQ ≥ 0.23 (ProtVar)', 'pred_enrich', ['0.23', 'all']),
         pt('In a short binding region', 'IntAct, disordered arginines', 'intact_enrich', ['peptide_disordered'])];
-      // The answer, one clause per partner: a direction and its effect for each kind of evidence.
+      // The in-cell RNA experiments that differ, and the range of their effects.
       const up = cells.filter((r) => aDir(r.main) === 'up'), testable = cells.filter((r) => aOr(r.main)), ors = up.map((r) => r.main.or);
       const rng = ors.length ? (ors.length > 1 ? fx(Math.min(...ors)) + '–' + fx(Math.max(...ors)) : fx(ors[0])) + '×' : '';
-      const say = (r, where) => { const d = aDir(r.main); return !aOr(r.main) ? 'too few to test ' + where : d === 'ns' ? 'no difference ' + where : (d === 'up' ? 'more often ' : 'less often ') + where + ' (' + fx(r.main.or) + '×)'; };
-      const cellsSay = !testable.length ? 'too few to test in living cells' : up.length ? 'more often in RNA-bound peptides in living cells (' + rng + (up.length < testable.length ? ', ' + up.length + ' of ' + testable.length + ' experiments' : '') + ', among the arginines each experiment measured)' : 'no difference in RNA-bound peptides in living cells';
-      const verdict = (scoped ? '<b>Your selection.</b> ' : '') + '<b>RNA:</b> ' + cellsSay + '; ' + say(rnaSt, 'within 4 Å in PDB structures') + '. ' +
-        '<b>DNA:</b> ' + say(dna, 'at DNA-crosslinked residues') + '; ' + say(dnaSt, 'within 4 Å in PDB structures') + '. ' +
-        '<b>Proteins:</b> ' + say(prot[0], 'at PDB protein interfaces') + '; ' + say(prot[1], 'at predicted interfaces') + '.';
-      const key = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span><i class="aq-pt ns"></i>no difference (p > 0.05)</span><span><i class="aq-gh"></i>' +
-        (scoped ? 'whole dataset' : 'all arginines of those proteins (no detection control)') + '</span><span class="a-key-note">Each row: methylarginines against the other arginines of the same proteins (Mantel–Haenszel odds ratio, 95% CI)</span>';
       // tiles
       const cnt = (ss) => { const c = { exp: 0, pred: 0, none: 0 }; for (const s of ss) c[ixStatus(s)]++; return c; };
       const c = cnt(R.sites), cw = cnt(S);
@@ -10935,9 +10949,27 @@
       ov['ixs-pdb'] = cmp((on) => [tRow('Protein', 'protein interfaces', 'enrich_strata', ['protein', 'all'], on), tRow('RNA', 'RNA interfaces', 'enrich_strata', ['rna', 'all'], on), tRow('DNA', 'DNA interfaces', 'enrich_strata', ['dna', 'all'], on)]);
       ov['ixs-predicted'] = cmp((on) => [tRow('pDockQ ≥ 0.23', 'predicted interfaces', 'pred_enrich', ['0.23', 'all'], on), tRow('pDockQ ≥ 0.5', 'confident ones', 'pred_enrich', ['0.5', 'all'], on)]);
       ov['ixs-intact'] = cmp((on) => [tRow('Binding region', 'short binding regions', 'intact_enrich', ['peptide_disordered'], on), tRow('Mutation', 'mutations with an effect', 'intact_enrich', ['mutation'], on)]);
-      return aHome({ q: 'Are methylarginines enriched at contacts with RNA, DNA or other proteins?', verdict, key,
-        fig: aForest([['RNA · in living cells', cells.concat([xl])], ['RNA · in solved structures', [rnaSt]], ['DNA', [dna, dnaSt]], ['Proteins', prot]], { ghostShort: scoped ? 'all sites' : 'all', ghostName: scoped ? 'Whole dataset' : 'Among all arginines of these proteins' }),
-        go: 'ix-nac', goText: 'Every contact test, with tables' }, ov, ['ix-nac']);
+      // The answer: four cards (RNA and DNA in living cells, solved structures, protein interfaces) and one sentence.
+      const big = (m) => (aDir(m) === 'ns' ? 'No difference' : fx(m.or) + '×');
+      const tipRows = (rows) => rows.map((r) => esc(r.label) + ': ' + (aOr(r.main) ? fmtOr(r.main.or, r.main.lo, r.main.hi) + (r.main.p != null ? ', p ' + fmtP(r.main.p) : '') : 'too few to test')).join('<br>');
+      const vs = (scoped ? 'The methylarginines of your selection' : 'Methylarginines') + ' against the other arginines of the same proteins';
+      const hiCards = [];
+      if (testable.length) hiCards.push({ go: 'ixs-cells', kind: 'RNA · in living cells', glyph: aGlyph.cls(), big: ors.length ? rng : 'No difference', dir: ors.length ? 'up' : 'ns',
+        label: 'in RNA-bound peptides' + (ors.length && ors.length < testable.length ? ' (' + ors.length + ' of ' + testable.length + ' experiments)' : ''),
+        tip: '<b>' + vs + '</b>, counting only the arginines each experiment measured<br>' + tipRows(cells) });
+      if (aOr(dna.main)) hiCards.push({ go: 'ixs-cells', kind: 'DNA · in living cells', glyph: aGlyph.dna(), big: big(dna.main), dir: aDir(dna.main), label: 'at DNA-crosslinked residues', tip: '<b>' + vs + '</b><br>' + tipRows([dna]) });
+      const stRows = [rnaSt, dnaSt].filter((r) => aOr(r.main)), stSame = stRows.length && stRows.every((r) => aDir(r.main) === 'ns');
+      if (stRows.length) hiCards.push({ go: 'ix-na', kind: 'Solved structures', glyph: aGlyph.pdb(), big: stSame ? 'No difference' : stRows.map((r) => fx(r.main.or) + '×').join(' · '), dir: stSame ? 'ns' : aDir(stRows[0].main),
+        label: 'within 4 Å of RNA or DNA', tip: '<b>' + vs + '</b>, side chain within 4 Å in PDB entries<br>' + tipRows(stRows) });
+      if (aOr(prot[1].main)) hiCards.push({ go: 'ixs-predicted', kind: 'Protein partners', glyph: aGlyph.ppi(), big: big(prot[1].main), dir: aDir(prot[1].main), label: 'at predicted protein interfaces',
+        tip: '<b>' + vs + '</b><br>' + tipRows(prot) });
+      // the sentence: what holds in cells, then whether the structures agree
+      const inCells = [ors.length && 'in RNA-bound peptides', aDir(dna.main) === 'up' && 'at DNA crosslinks'].filter(Boolean);
+      const who = scoped ? 'the methylarginines of your selection' : 'methylarginines';
+      const answer = (inCells.length ? 'In living cells, ' + who + ' sit ' + inCells.join(' and ') + ' more often than the other arginines of the same proteins' : 'In living cells, ' + who + ' are not enriched at RNA or DNA contacts') +
+        (stSame ? '; in solved structures, they are not closer to RNA or DNA.' : '.');
+      const more = '<p class="a-more"><button type="button" class="linkish" data-go="ix-nac">Every contact test, with tables ›</button></p>';
+      return aHome({ q: 'Are methylarginines enriched at contacts with RNA, DNA or other proteins?', pic: exHtml, verdict: answer, hi: hiCards.length ? aHighlights(hiCards) + more : more }, ov, ['ix-ex', 'ix-nac']);
     }
     A_ROWS.length = 0;
     const hubList = '<div class="hub-list">' +
@@ -10947,7 +10979,7 @@
         row('ix-evmap', 'How the evidence fits together', ixEvidenceMapHtml(), 'How do crosslink, structure, prediction and IntAct evidence overlap on the sites?', 'count', [evAns(R.sites), evAns(S)], null, pctLanes(expShare)) +
         row('ix-cm', 'Which sites carry which evidence', cmHtml ? cmHtml + checkSiteHtml('ix-check') : '', 'Do sites with a feature (motif, disorder, methylation class) carry a kind of evidence more often? Check one site.', 'count',
           ['Site features against crosslink, structure and prediction evidence' + (scoped ? ', your sites' : ''), 'Site features against crosslink, structure and prediction evidence']) +
-        row('ix-ex', 'The evidence on one protein', exHtml, 'What the evidence looks like along one protein; type any protein to redraw it', 'example',
+        row('ix-ex', 'The evidence on one protein', UI_A ? '<p class="note">Drawn at the top of this page.</p>' : exHtml, 'What the evidence looks like along one protein; type any protein to redraw it', 'example',
           ['Drawn for <span class="an">' + esc(ixExampleProtein().label) + '</span>', 'Drawn for HNRNPA1, or the protein of a selection with the most sites with experimental evidence'])) +
       hubSec('RNA and DNA',
         row('ixs-cells', 'Crosslinking in living cells', sec('cells'), 'Is the methylarginine the residue crosslinked to RNA or DNA, or inside an RNA-bound peptide?', 'retest',

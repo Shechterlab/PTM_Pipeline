@@ -1833,6 +1833,23 @@ html.drawer-open { overflow: hidden; }
 .hg-drop { fill: color-mix(in srgb, var(--accent) 22%, var(--surface)); stroke: color-mix(in srgb, var(--accent) 60%, var(--surface)); stroke-width: 1.2; }
 .hg-cell { fill: var(--surface-2); stroke: var(--line-strong); stroke-width: 1.2; }
 .hg-nuc { fill: color-mix(in srgb, var(--teal-600) 35%, var(--surface)); }
+.hg-dna { fill: none; stroke: var(--t-dnaInk, var(--accent-dark)); stroke-width: 2; stroke-linecap: round; }
+.hg-helix { fill: none; stroke: var(--teal-600); stroke-width: 2; stroke-linecap: round; }
+.hg-blob { fill: color-mix(in srgb, var(--teal-600) 22%, var(--surface)); stroke: var(--teal-600); stroke-width: 1.2; }
+.hg-blob.b { fill: color-mix(in srgb, var(--ink-2) 14%, var(--surface)); stroke: var(--ink-2); }
+.a-hi-n.ns { font-size: 1.45rem; line-height: 1.6rem; color: var(--muted); }
+.a-more { margin: 0.1rem 0 0; font-size: 0.86rem; }
+/* layout A: proteins drawn as maps */
+.a-maps { display: grid; gap: 0.2rem; padding: 0.7rem 0.9rem 0.6rem; }
+.a-maps-cap { margin: 0 0 0.2rem; font-size: 0.82rem; color: var(--muted); }
+.a-map { display: block; width: 100%; padding: 0; border: 1px solid transparent; border-radius: 10px; background: none; color: inherit; cursor: pointer; }
+.a-map:hover { border-color: var(--line); background: var(--surface-2); }
+.a-map:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.a-map svg { display: block; width: 100%; height: auto; }
+/* layout A's protein page: the map, then the numbers */
+.ui-a .p-top { display: flex; flex-direction: column; gap: 0.9rem; }
+.ui-a .p-top > details.fold { order: 1; }
+.ui-a .p-top > .facts { order: 2; }
 .a-pills { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 .a-vis:has(> .a-pills) { min-height: 0; }
 .a-pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.3rem 0.2rem 0.6rem; border-radius: 99px; background: var(--surface-2); font-size: 0.8rem; font-weight: 600; color: var(--ink); }
