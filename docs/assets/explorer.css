@@ -1680,3 +1680,7 @@ body.slim .hero .brand-mark img { order: 0; }
 .hb-ref { position: absolute; top: 50%; width: 2px; height: 16px; margin-left: -1px; transform: translateY(-50%); background: var(--ink); border-radius: 1px; pointer-events: none; }
 .chart-key i.ref { width: 2px; height: 12px; background: var(--ink); border: 0; border-radius: 1px; }
 .sel-test-key { color: var(--ink-2); }
+/* While a selection is set: what a section's tests compare (orange rule, the selection's colour), or that a part is
+   the whole dataset's (grey rule). */
+.scope-note { margin: 0.35rem 0 0.75rem; padding: 0.3rem 0.65rem; border-left: 3px solid var(--accent); background: var(--surface-2); font-size: 0.8rem; color: var(--ink-2); border-radius: 0 4px 4px 0; }
+.scope-note.whole { border-left-color: var(--muted); }

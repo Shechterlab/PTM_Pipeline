@@ -384,6 +384,32 @@ def structure_context(disorder_class, domain_class, domain_edge_distance) -> str
     return 'idr_near_domain' if d <= STRUCTURE_NEAR else 'idr_mid_domain'
 
 
+def per_protein_background(analysis: str, tested, background: pd.DataFrame, col: str | None = None,
+                           flags: list[str] | None = None) -> pd.DataFrame:
+    """The background of a residue test, per protein: for every protein whose sites the test counts (tested), the number
+    of its other arginines (category '*'), and of those in each class of col (missing: 'Other / unclassified', as
+    fisher_like_enrichment counts them) or with each flag column true (named without its 'motif_' prefix). The website
+    repeats the test for a selection of sites from these counts: the selected methylarginines against the other
+    arginines of the same proteins."""
+    tested = sorted({str(a) for a in tested})
+    acc = background['canonical_UniProtAC'].astype(str)
+    keep = acc.isin(tested)
+    parts = [pd.DataFrame({'canonical_UniProtAC': tested, 'category': '*',
+                           'other_arginines': acc[keep].value_counts().reindex(tested, fill_value=0).to_numpy()})]
+    if col is not None:
+        cats = background.loc[keep, col].fillna('Other / unclassified').astype(str)
+        parts.append(pd.DataFrame({'canonical_UniProtAC': acc[keep], 'category': cats})
+                     .groupby(['canonical_UniProtAC', 'category']).size().rename('other_arginines').reset_index())
+    for flag in flags or []:
+        hit = keep & background[flag].fillna(False).astype(bool)
+        parts.append(acc[hit].value_counts().rename('other_arginines').rename_axis('canonical_UniProtAC').reset_index()
+                     .assign(category=flag.removeprefix('motif_')))
+    out = pd.concat(parts, ignore_index=True)
+    out.insert(0, 'analysis', analysis)
+    return out[['analysis', 'canonical_UniProtAC', 'category', 'other_arginines']].sort_values(
+        ['canonical_UniProtAC', 'category'], kind='stable').reset_index(drop=True)
+
+
 # Within-protein tests: Mantel-Haenszel with each protein a stratum (scripts/07, scripts/37).
 def informative_strata(tables):
     """Strata that carry information for a Mantel-Haenszel analysis (no empty margin, at least two observations)."""

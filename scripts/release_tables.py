@@ -352,6 +352,19 @@ def disease_families_table(root: Path) -> pd.DataFrame:
                          'fold_enrichment': f['fold_enrichment'].astype(float), 'q': f['BH_adjusted_p'].astype(float)})
 
 
+def arginine_background_table(root: Path) -> pd.DataFrame:
+    """The other arginines behind each residue test of the statistics, per protein (scripts/08, 06 and 07
+    background_per_protein.tsv): the website repeats the tests for a selection of sites from them."""
+    parts = [read(root / d / 'background_per_protein.tsv') for d in ('motif_arg_odds', 'disorder_context', 'domain_context')
+             if (root / d / 'background_per_protein.tsv').exists()]
+    columns = [c[0] for c in rc.ARGININE_BACKGROUND_COLUMNS]
+    if not parts:
+        return pd.DataFrame(columns=columns)
+    t = pd.concat(parts, ignore_index=True).rename(columns={'canonical_UniProtAC': 'uniprot_accession'})
+    t['other_arginines'] = t['other_arginines'].astype(int)
+    return t[columns]
+
+
 def _accessions_of(proteins: pd.DataFrame):
     by_symbol = defaultdict(list)
     for acc, sym in zip(proteins['uniprot_accession'], proteins['_label_symbol']):

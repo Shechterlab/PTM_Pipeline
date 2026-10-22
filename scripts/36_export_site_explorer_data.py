@@ -565,6 +565,24 @@ def main() -> None:
         'protein_disease_terms': protein_disease_terms,
         'lower_confidence': {'reasons': lower_reasons.values, 'records': len(lower), 'by_protein': dict(sorted(lower_by.items()))},
     }
+    # The other arginines behind the residue tests (supporting/arginine_background), for the website to repeat them on a
+    # selection: each analysis with its classes, and per protein and analysis [protein index, analysis index, other
+    # arginines, then class index and count for each class it has].
+    bg_path = rel / f'supporting/arginine_background_{v}.tsv'
+    if bg_path.exists():
+        bg = read(bg_path)
+        analyses = list(dict.fromkeys(bg['analysis']))
+        classes = {a: sorted(set(bg.loc[(bg['analysis'] == a) & (bg['category'] != '*'), 'category'])) for a in analyses}
+        bg_rows = []
+        for (acc, a), g in bg.groupby(['uniprot_accession', 'analysis'], sort=False):
+            if acc not in pidx:
+                continue
+            row = [pidx[acc], analyses.index(a), int(g.loc[g['category'] == '*', 'other_arginines'].iloc[0])]
+            for c, n in zip(g['category'], g['other_arginines']):
+                if c != '*':
+                    row += [classes[a].index(c), int(n)]
+            bg_rows.append(row)
+        evidence_payload['arginine_background'] = {'analyses': [[a, classes[a]] for a in analyses], 'proteins': bg_rows}
     outdir.mkdir(parents=True, exist_ok=True)
     for name, data in (('methylarg_sites.json', payload), ('methylarg_evidence.json', evidence_payload)):
         path = outdir / name

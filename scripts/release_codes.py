@@ -773,9 +773,9 @@ CODES['analysis'] = {
     'pdb_interface': 'methylarginines at a PDB interface of a given type (category: rna, dna, protein including self, any), against the other arginines of the same proteins that a PDB structure covers (scripts/37). Strata: all, ordered (outside MobiDB disorder), domain (inside an InterPro domain)',
     'predicted_interface': 'methylarginines at a predicted interface residue (ProtVar, category the pDockQ floor), against the other arginines of the proteins with a predicted interface. Strata: all, ordered, disordered',
     'crosslink': 'methylarginines with RNA or DNA crosslink evidence of a given type (category), against the other arginines of the proteins with that evidence, the _outside_rg categories leave out arginines in an RG or GR dipeptide',
-    'nucleic_acid_distance': 'methylarginines with a side-chain heavy atom (CD, NE, CZ, NH1, NH2) within 4 or 8 Å of RNA, DNA or either (category) in at least one PDB entry, against the other arginines of the same proteins; every arginine modelled in an entry where PDBe-KB lists the protein with that kind of nucleic acid counts (supporting/arginine_nucleic_acid_distances)',
+    'nucleic_acid_distance': 'methylarginines with a side-chain heavy atom (CD, NE, CZ, NH1, NH2) within 4 or 8 Å of RNA, DNA or either (category) in at least one PDB entry, against the other arginines of the same proteins. Every arginine modelled in an entry where PDBe-KB lists the protein with that kind of nucleic acid counts (supporting/arginine_nucleic_acid_distances)',
     'intact': 'IntAct: methylarginines whose mutation changes an interaction (against other mutated arginines), and methylarginines inside a binding region of at most 20 residues (against the other arginines of proteins with one)',
-    'go_binding': 'methylated proteins with a Gene Ontology RNA- or DNA-binding annotation (category, _experimental: experimental evidence codes only), against all reviewed human proteins (clusterProfiler enricher; the four annotations tested together, BH across them)',
+    'go_binding': 'methylated proteins with a Gene Ontology RNA- or DNA-binding annotation (category, _experimental: experimental evidence codes only), against all reviewed human proteins (clusterProfiler enricher, the four annotations tested together, BH across them)',
 }
 CODES['method'] = {
     'enricher': 'over-representation analysis with clusterProfiler::enricher (scripts/enrich_sets.R, versions in release.json): for a set with M members in a background of N, of which n are methylated (the targets), p is the one-sided hypergeometric probability of k or more methylated members, and fold_enrichment = (k/n)/(M/N). a = k, b = n - k (methylated proteins outside the set), c = M - k (other members of the set), d = N - M - n + k. q = Benjamini-Hochberg over the sets of the analysis (clusterProfiler p.adjust). A set is tested when it has at least one methylated member and its size is within the analysis\'s range',
@@ -954,6 +954,13 @@ DISEASE_FAMILY_COLUMNS = [
     ('n_methylated_genes_tested', 'integer', '', 'of these, the genes of methylarginine-containing proteins (the same for every family)'),
     ('fold_enrichment', 'number', '', 'fold enrichment of the family (clusterProfiler::enricher against the reviewed human genes with a DisGeNET term; statistics: disease_family)'),
     ('q', 'number', '', 'its Benjamini-Hochberg adjusted p value (over the audited families, or over the additional ones)'),
+]
+
+ARGININE_BACKGROUND_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'a protein whose sites the residue test counts'),
+    ('analysis', 'string', '', 'the residue test (statistics analysis): motif, disorder, domain_context, domain_class or structure_context'),
+    ('category', 'string', '', 'the class or motif of the test; * for all of the protein\'s other arginines'),
+    ('other_arginines', 'integer', '', 'the arginines of the protein that are not sites of the release, in the class or with the motif: the background of the test, which compares the sites with the other arginines of the same proteins'),
 ]
 
 SITE_INTERACTION_COLUMNS = [

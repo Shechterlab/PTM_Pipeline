@@ -1651,6 +1651,31 @@ def woolf_ci(a, b, c, d):
     return float(ci.low), float(ci.high)
 
 
+class Tables(dict):
+    """The per-protein 2x2 tables of residue tests, {test: {accession: [a, b, c, d]}} (methylarginines with and without
+    the feature, other arginines with and without), which also keep the methylarginines counted in a and b: the website
+    repeats each test on a selection of sites from them (selection_tests)."""
+
+    def __init__(self, keys=()):
+        super().__init__({k: defaultdict(lambda: [0, 0, 0, 0]) for k in keys})
+        self.sites = defaultdict(lambda: ([], []))
+
+    def __missing__(self, key):
+        self[key] = defaultdict(lambda: [0, 0, 0, 0])
+        return self[key]
+
+    def add(self, key, acc, pos, cell):
+        self[key][acc][cell] += 1
+        if cell < 2:
+            self.sites[key][cell].append((acc, pos))
+
+    def export(self, key, protein_index: dict, site_index: dict) -> list:
+        """[[protein, other arginines with, without] for each protein, methylarginine sites with, sites without]."""
+        with_, without = self.sites[key]
+        return [[[protein_index[acc], t[2], t[3]] for acc, t in sorted(self[key].items(), key=lambda x: protein_index[x[0]])],
+                sorted(site_index[x] for x in with_), sorted(site_index[x] for x in without)]
+
+
 def or_summary(tables):
     """Pooled Fisher OR and within-stratum MH OR, each with 95% CI and p: {'pooled': [a, b, c, d, OR, lo, hi, p], 'mh': [OR, lo, hi, p, used]}."""
     tables = list(tables)
@@ -2353,11 +2378,11 @@ def main():
     enrich = {'rna': [0, 0, 0, 0], 'dna': [0, 0, 0, 0], 'protein': [0, 0, 0, 0], 'any': [0, 0, 0, 0]}
     IFACE_TYPES = (('rna', I_RNA), ('dna', I_DNA), ('protein', I_PROTEIN | I_SELF), ('any', I_RNA | I_DNA | I_PROTEIN | I_SELF))
     STRATA = ('all', 'ordered', 'domain')
-    strata = {(t, f): defaultdict(lambda: [0, 0, 0, 0]) for t, _ in IFACE_TYPES for f in STRATA}
+    strata = Tables((t, f) for t, _ in IFACE_TYPES for f in STRATA)
     contact_jobs = []   # (site j, partner key, pdb, own accession, position)
     env_jobs = []       # (methylated 1/0, protein index, position, site j or -1, pdb, accession)
     RG_CONTEXTS = ('segment', 'dipeptide', 'other')
-    rg_strata = {(c, t): defaultdict(lambda: [0, 0, 0, 0]) for c in RG_CONTEXTS for t in ('rna', 'any')}
+    rg_strata = Tables((c, t) for c in RG_CONTEXTS for t in ('rna', 'any'))
     rg_cover = {c: [0, 0] for c in RG_CONTEXTS}   # methylated sites in context: [all, structurally observed]
     by_prot_sites = defaultdict(list)
     for j, s in enumerate(sites):
@@ -2442,15 +2467,15 @@ def main():
             in_dom = any(a <= pos <= b for a, b in dom)
             ctx = rg_ctx(pos)
             for key, bit in (('rna', I_RNA), ('any', I_RNA | I_DNA | I_PROTEIN | I_SELF)):
-                rg_strata[(ctx, key)][acc][(0 if meth else 2) + (0 if m & bit else 1)] += 1
+                rg_strata.add((ctx, key), acc, pos, (0 if meth else 2) + (0 if m & bit else 1))
             for key, bit in IFACE_TYPES:
                 cell = (0 if meth else 2) + (0 if m & bit else 1)
                 enrich[key][cell] += 1
-                strata[(key, 'all')][acc][cell] += 1
+                strata.add((key, 'all'), acc, pos, cell)
                 if ordered:
-                    strata[(key, 'ordered')][acc][cell] += 1
+                    strata.add((key, 'ordered'), acc, pos, cell)
                 if in_dom:
-                    strata[(key, 'domain')][acc][cell] += 1
+                    strata.add((key, 'domain'), acc, pos, cell)
     enrich_out = {}
     for key, (a, b, c, d) in enrich.items():
         p, odds = fisher_2x2(a, b, c, d)
@@ -2590,7 +2615,7 @@ def main():
         return 1 if (a, b) in served else 2 if (b, a) in served else 0
 
     pred_rows, pred_all = [], []
-    pred_strata = {(t, f): defaultdict(lambda: [0, 0, 0, 0]) for t in PRED_TIERS for f in ('all', 'ordered', 'disordered')}
+    pred_strata = Tables((t, f) for t in PRED_TIERS for f in ('all', 'ordered', 'disordered'))
     for i, acc in enumerate(meth_accs):
         if '-' in acc or acc not in pred:
             continue
@@ -2617,8 +2642,8 @@ def main():
                 if seq[pos - 1] != 'R':
                     continue
                 cell = (0 if pos in site_pos else 2) + (0 if pos in iface_r else 1)
-                pred_strata[(t, 'all')][acc][cell] += 1
-                pred_strata[(t, 'disordered' if any(a <= pos <= b for a, b in dis) else 'ordered')][acc][cell] += 1
+                pred_strata.add((t, 'all'), acc, pos, cell)
+                pred_strata.add((t, 'disordered' if any(a <= pos <= b for a, b in dis) else 'ordered'), acc, pos, cell)
     pred_enrich = {}
     for t in PRED_TIERS:
         pred_enrich[str(t)] = {}
@@ -2672,7 +2697,7 @@ def main():
         return -3 if 'small molecule' in t else -4
 
     intact_rows, intact_prot = [], []
-    intact_strata = {k: defaultdict(lambda: [0, 0, 0, 0]) for k in ('mutation', 'peptide', 'peptide_disordered')}
+    intact_strata = Tables(('mutation', 'peptide', 'peptide_disordered'))
     for i, acc in enumerate(meth_accs):
         if '-' in acc or acc not in intact:
             continue
@@ -2717,12 +2742,12 @@ def main():
             row = 0 if q in site_pos else 2
             effects = r_effect.get(q, set())
             if effects:
-                intact_strata['mutation'][acc][row + (0 if effects - {0} else 1)] += 1
+                intact_strata.add('mutation', acc, q, row + (0 if effects - {0} else 1))
             if peptide_spans:
                 inside = 0 if any(a <= q <= b for a, b in peptide_spans) else 1
-                intact_strata['peptide'][acc][row + inside] += 1
+                intact_strata.add('peptide', acc, q, row + inside)
                 if any(a <= q <= b for a, b in dis):
-                    intact_strata['peptide_disordered'][acc][row + inside] += 1
+                    intact_strata.add('peptide_disordered', acc, q, row + inside)
     intact_enrich = {k: or_summary(v.values()) for k, v in intact_strata.items()}
     for k, v in intact_strata.items():
         release_tests.append(('intact', INTACT_TEST[k], 'all', list(v.values()),
@@ -2734,7 +2759,7 @@ def main():
     rna_xl, rna_count, rbd_frag, dna_xl, dna_peps, dna_int, dna_bind, rna_single, xl_check = load_crosslinks(cache, args.refresh, {a: v[2] for a, v in proteome.items()}, proteome)
     xl_seq_all = load_crosslink_sequences({a: v[2] for a, v in proteome.items()}, proteome)
     xl_rows, xl_prot, xl_seq = [], [], []
-    xl_strata = {k: defaultdict(lambda: [0, 0, 0, 0]) for k in ('rna_xl', 'rna_xl_single', 'rna_near', 'rna_rbdmap', 'dna_xl', 'dna_cand', 'dna_pep', 'dna_bind', 'rna_xl_nonrg', 'rna_rbdmap_nonrg')}
+    xl_strata = Tables(('rna_xl', 'rna_xl_single', 'rna_near', 'rna_rbdmap', 'dna_xl', 'dna_cand', 'dna_pep', 'dna_bind', 'rna_xl_nonrg', 'rna_rbdmap_nonrg'))
     for i, acc in enumerate(meth_accs):
         if '-' in acc:
             continue
@@ -2777,11 +2802,11 @@ def main():
             for q in range(1, len(seq_) + 1):
                 if seq_[q - 1] == 'R':
                     cell = (0 if q in site_pos else 2) + (0 if test(q) else 1)
-                    xl_strata[key][acc][cell] += 1
+                    xl_strata.add(key, acc, q, cell)
                     # RG/RGG regions both bind RNA and carry most methylarginines: repeat the RNA tests without
                     # arginines in an RG or GR dipeptide.
                     if key in ('rna_xl', 'rna_rbdmap') and not ((q < len(seq_) and seq_[q] == 'G') or (q > 1 and seq_[q - 2] == 'G')):
-                        xl_strata[key + '_nonrg'][acc][cell] += 1
+                        xl_strata.add(key + '_nonrg', acc, q, cell)
     xl_enrich = {}
     for key, tabs in xl_strata.items():
         tabs = list(tabs.values())
@@ -2963,7 +2988,7 @@ def main():
     # protein with the same bound sequences; the entries sharing it are counted), joined into runs, each with the bound
     # segments it touches and the methylarginines inside it.
     region_json, near_rows, prox_rows = [], [], []
-    arg_rows, na_dist, na_dist_stats = [], [], {}
+    arg_rows, na_dist, na_dist_stats, dist_strata = [], [], {}, Tables()
     if chains_na:
         na_by_pdb = defaultdict(list)
         for (pdb, ch), v in chains_na.items():
@@ -3122,7 +3147,6 @@ def main():
         # Are methylarginines closer to RNA or DNA than the other arginines of the same proteins? Every arginine modelled
         # in an entry with that kind of nucleic acid, by its minimum distance over the entries: within CONTACT_CUTOFF and
         # within PROXIMAL_CUTOFF, methylarginines against the others, each protein a stratum.
-        strata = defaultdict(lambda: defaultdict(lambda: [0, 0, 0, 0]))   # (kind, cutoff) -> accession -> [a, b, c, d]
         dists = defaultdict(lambda: ([], []))   # kind -> (methylarginine distances, other distances), those within the cutoff
         for (acc, q), by_kind in sorted(arg_mod.items()):
             meth = (acc, q) in site_at
@@ -3132,7 +3156,7 @@ def main():
                     continue
                 d = min((arg_best[(acc, q, k)][0] for k in ('rna', 'dna') if (acc, q, k) in arg_best and (kind == 'any' or k == kind)), default=None)
                 for cut in (CONTACT_CUTOFF, PROXIMAL_CUTOFF):
-                    strata[(kind, cut)][acc][(0 if meth else 2) + (0 if d is not None and d <= cut else 1)] += 1
+                    dist_strata.add((kind, cut), acc, q, (0 if meth else 2) + (0 if d is not None and d <= cut else 1))
                 if d is not None:
                     dists[kind][0 if meth else 1].append(d)
             row = [acc, q, site_at.get((acc, q)), meth]
@@ -3140,7 +3164,7 @@ def main():
                 best = arg_best.get((acc, q, kind))
                 row += [len(by_kind.get(kind, ())), best[0] if best else None, best[3] if best else '', best[1] if best else '']
             arg_rows.append(row)
-        for (kind, cut), tabs in sorted(strata.items()):
+        for (kind, cut), tabs in sorted(dist_strata.items()):
             key = f'{kind}_within_{cut:g}a'
             na_dist_stats[key] = or_summary(tabs.values())
             release_tests.append(('nucleic_acid_distance', key, 'all', list(tabs.values()),
@@ -3290,6 +3314,16 @@ def main():
         m = re.match(r'9606\.ENSP(\d+)$', sid)
         return int(m.group(1)) if m else 0
 
+    # Per residue test, what the website needs to repeat it on a selection of sites (Tables.export), under the result
+    # it replaces: the selected methylarginines against the other arginines of their proteins.
+    protein_of = {a: i for i, a in enumerate(meth_accs)}
+    site_of = {(meth_accs[s[0]], s[1]): j for j, s in enumerate(sites)}
+    path = {'pred_enrich': lambda k: [str(k[0]), k[1]], 'na_dist_stats': lambda k: [f'{k[0]}_within_{k[1]:g}a']}
+    selection_tests = [[group, path.get(group, lambda k: list(k) if isinstance(k, tuple) else [k])(key), *tables.export(key, protein_of, site_of)]
+                       for group, tables in (('enrich_strata', strata), ('rg_iface', rg_strata), ('pred_enrich', pred_strata),
+                                             ('intact_enrich', intact_strata), ('xl_enrich', xl_strata), ('na_dist_stats', dist_strata))
+                       for key in list(tables)]
+
     out = {
         'meta': {
             'generated': dt.date.today().isoformat(),
@@ -3380,6 +3414,8 @@ def main():
                 'pred_enrich': '{pDockQ floor: {all|ordered|disordered: {pooled, mh}}} methylated vs other arginines of the same protein at a predicted interface',
                 'intact': ['site', '[[kind (0 mutation, 1 binding region <= peptide_max aa, 2 methylated arginine), code (meta.intact effects or regions; 0 for kind 2), start, end, resulting sequence, partners (-1 RNA, -2 DNA, -3 small molecule, -4 other, else protein index), PubMed ids, IntAct interaction ACs (first 5), records], ...]'],
                 'intact_prot': ['protein index', '[[start, end, region type bits (1 << meta.intact regions index), partners (first 8), partner count, records], ...] binding regions', '[[start, end, effect code, partners (first 8), partner count, records], ...] mutations of <= mutation_max residues'],
+                'selection_tests': ['the result it replaces: enrich_strata, rg_iface, pred_enrich, intact_enrich, xl_enrich or na_dist_stats', 'its key path',
+                                    '[[protein index, other arginines with the feature, without], ...]', 'methylarginine sites with the feature', 'sites without'],
                 'intact_enrich': '{mutation: or_summary of methylated vs other arginines, a single-residue mutation changing an interaction vs only no-effect mutations; peptide|peptide_disordered: methylated vs other arginines inside a binding region of <= peptide_max aa (all, or UniProt-disordered arginines only)}',
             },
         },
@@ -3395,6 +3431,7 @@ def main():
         'na_names': na_names,
         'na_dist': na_dist,
         'na_dist_stats': na_dist_stats,
+        'selection_tests': selection_tests,
         'na_regions': region_json,
         'nab': nab,
         'cd_members': cd_rows,

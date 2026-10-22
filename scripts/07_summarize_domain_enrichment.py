@@ -21,6 +21,7 @@ from common import (
     log2_odds_ratio,
     mantel_haenszel_ci,
     parse_fasta,
+    per_protein_background,
     q_threshold_note,
     residue_background_from_sequences,
     save_figure,
@@ -464,6 +465,12 @@ def main() -> None:
         tested_sites = annotated_sites[has_background]
         structure_enrichment = fisher_like_enrichment(tested_sites['structure_context'], methyl_protein_arg['structure_context'])
         structure_within = within_protein_enrichment(tested_sites, methyl_protein_arg, 'structure_context')
+    tested_proteins = tested_sites['canonical_UniProtAC']
+    background_per_protein = pd.concat(
+        [per_protein_background('domain_context', tested_proteins, methyl_protein_arg, col='domain_context_class'),
+         per_protein_background('domain_class', tested_proteins, methyl_protein_arg, col='nearest_domain_class')] +
+        ([per_protein_background('structure_context', tested_proteins, methyl_protein_arg, col='structure_context')]
+         if 'structure_context' in methyl_protein_arg.columns else []), ignore_index=True)
     edge_summary = annotated_sites[['nearest_domain_edge_distance', 'domain_context_class']].copy()
     observed_edge = tested_sites['nearest_domain_edge_distance'].dropna().astype(float)
     background_edge = methyl_protein_arg['nearest_domain_edge_distance'].dropna().astype(float)
@@ -536,6 +543,7 @@ def main() -> None:
     if not disordered_edge_qc.empty:
         save_table(disordered_edge_qc, outdir / 'domain_edge_disordered_only_qc.tsv')
     save_table(methyl_protein_arg, outdir / 'same_protein_nonmethyl_arginine_domain_background.tsv')
+    save_table(background_per_protein, outdir / 'background_per_protein.tsv')
     save_table(
         pd.DataFrame([{
             'include_types': ';'.join(args.include_types) if args.include_types else 'all',

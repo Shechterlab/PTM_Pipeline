@@ -20,6 +20,7 @@ from common import (
     count_over_total_labels,
     log2_odds_ratio,
     parse_fasta,
+    per_protein_background,
     q_threshold_note,
     residue_background_from_sequences,
     save_figure,
@@ -278,6 +279,8 @@ def main() -> None:
     outdir.mkdir(parents=True, exist_ok=True)
     save_table(sites, outdir / 'sequence_windows.tsv')
     save_table(motif_vs_methyl_proteins, outdir / 'motif_family_enrichment_vs_methylated_protein_arginines.tsv')
+    save_table(per_protein_background('motif', sites['canonical_UniProtAC'], background_nonmethyl, flags=motif_columns),
+               outdir / 'background_per_protein.tsv')
     save_table(motif_vs_proteome, outdir / 'motif_family_enrichment_vs_all_proteome_arginines.tsv')
     save_table(positional, outdir / 'positional_amino_acid_enrichment.tsv')
     save_table(protein_counts, outdir / 'per_protein_arg_odds.tsv')

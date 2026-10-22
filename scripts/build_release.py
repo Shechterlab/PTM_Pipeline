@@ -1221,6 +1221,7 @@ def main() -> None:
         'other_ptm_sites': (f'supporting/other_ptm_sites_{version}.tsv', extra['other_ptm_sites'], rc.OTHER_PTM_COLUMNS),
         'condensates': (f'supporting/condensates_{version}.tsv', release_tables.condensates_table(aroot, set(sites['uniprot_accession'])), rc.CONDENSATE_COLUMNS),
         'disease_families': (f'supporting/disease_families_{version}.tsv', release_tables.disease_families_table(aroot), rc.DISEASE_FAMILY_COLUMNS),
+        'arginine_background': (f'supporting/arginine_background_{version}.tsv', release_tables.arginine_background_table(aroot), rc.ARGININE_BACKGROUND_COLUMNS),
     }
     if args.statistics_with_lower_confidence:
         files['statistics_with_lower_confidence'] = (f'statistics_with_lower_confidence_{version}.tsv',

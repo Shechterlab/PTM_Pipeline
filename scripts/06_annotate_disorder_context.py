@@ -18,6 +18,7 @@ from common import (
     fisher_like_enrichment,
     log2_odds_ratio,
     parse_fasta,
+    per_protein_background,
     q_threshold_note,
     residue_background_from_sequences,
     save_figure,
@@ -314,6 +315,8 @@ def main() -> None:
         )
         save_table(enrich_all, outdir / 'idr_enrichment_vs_all_arginines.tsv')
         save_table(enrich_same, outdir / 'idr_enrichment_vs_arginines_in_methylated_proteins.tsv')
+        save_table(per_protein_background('disorder', tested_sites['canonical_UniProtAC'], methyl_protein_arg, col='disorder_context_class'),
+                   outdir / 'background_per_protein.tsv')
         save_table(binary_all, outdir / 'idr_binary_enrichment_vs_all_arginines.tsv')
         save_table(binary_same, outdir / 'idr_binary_enrichment_vs_arginines_in_methylated_proteins.tsv')
         save_table(proximal_binary_all, outdir / 'idr_proximal_binary_enrichment_vs_all_arginines.tsv')

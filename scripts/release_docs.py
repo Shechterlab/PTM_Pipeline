@@ -216,6 +216,7 @@ FILE_ROWS = {
     'disease_terms_tested': 'DisGeNET term DOSE enrichDGN tested, enriched or not',
     'disease_ontology': 'Disease Ontology term tested (clusterProfiler enricher on the gene sets of DOSE enrichDO)',
     'disease_families': 'disease family: terms and genes',
+    'arginine_background': 'protein and residue test: the other arginines of the protein, in all and in each class or motif',
     'density_windows': 'protein and window width with site density significantly above the permutation null (q <= 0.05)',
     'condensates': 'CD-CODE condensate: name, type, members and methylated members',
     'hpa_locations': 'protein and Human Protein Atlas location',
