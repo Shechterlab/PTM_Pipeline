@@ -22,9 +22,9 @@
 #      (scripts/37, from inputs/interactions/), then scripts/build_release.py again with the interaction tables, which
 #      writes releases/VERSION/ with the statistics of the second run and both analyses' result tables (analyses/,
 #      analyses_with_lower_confidence/); the website data go to docs/data/ (SITE_OUT), the view's as methylarg_*_all.json.
-# Every input comes from inputs/ and must match inputs/MANIFEST.tsv (the files it lists as in Git). WORK_ROOT (default:
-# a temporary directory) holds the intermediate results. The build needs the network only when inputs/interactions/
-# lacks data for a site: scripts/37 then fetches it into WORK_ROOT/interactions_topup, and the build stops, before
+# Every input comes from inputs/ and must match inputs/MANIFEST.tsv (the files it lists as in Git, and the pCLAP peptides,
+# which scripts/43d derives from PRIDE when they are absent). WORK_ROOT (default: a temporary directory) holds the
+# intermediate results. The build needs the network for that derivation and when inputs/interactions/ lacks data for a site: scripts/37 then fetches it into WORK_ROOT/interactions_topup, and the build stops, before
 # writing the release, and says how to stage it.
 #
 # Environment (optional): PREVIOUS, the release the changes are traced from (default releases/v1.2.0); RELEASE_OUT, where
@@ -54,6 +54,27 @@ fi
 echo "[release] checking inputs against $IN/MANIFEST.tsv"
 . "$CODE/hpc/analyses.sh"
 check_inputs
+
+# The pCLAP peptides are derived from the PRIDE MaxQuant output and kept out of Git (EMBL-EBI terms of use): when they
+# are absent, scripts/43d derives them (download into PTM_data/external/pclap) in WORK, leaving the files in Git alone.
+# Either way they must match MANIFEST.tsv, or scripts/37 would test them silently changed or leave them out.
+PCLAP=interactions/pclap_mullari2017_peptides.tsv
+if [ ! -f "$IN/$PCLAP" ]; then
+  echo "[release] deriving $IN/$PCLAP (scripts/43d_stage_pclap.py)"
+  mkdir -p "$WORK/logs" "$WORK/pclap/interactions"
+  python "$CODE/scripts/43d_stage_pclap.py" --out "$WORK/pclap/interactions" --manifest '' > "$WORK/logs/stage_pclap.log" 2>&1 \
+    || { tail -20 "$WORK/logs/stage_pclap.log"; echo "[release] could not derive the pCLAP peptides (log: $WORK/logs/stage_pclap.log)"; exit 1; }
+  cp "$WORK/pclap/$PCLAP" "$IN/$PCLAP"
+fi
+python - "$IN" "$PCLAP" <<'PYEOF'
+import hashlib, sys
+from pathlib import Path
+import pandas as pd
+inputs, name = Path(sys.argv[1]), sys.argv[2]
+manifest = pd.read_csv(inputs / 'MANIFEST.tsv', sep='\t', dtype=str, keep_default_na=False).set_index('file')
+if hashlib.md5((inputs / name).read_bytes()).hexdigest() != manifest.at[name, 'md5']:
+    sys.exit(f'{name} differs from MANIFEST.tsv: move it aside and build again to derive it (scripts/43d_stage_pclap.py)')
+PYEOF
 
 {
   echo "built: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
