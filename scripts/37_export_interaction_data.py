@@ -2015,6 +2015,9 @@ XL_TEST = {'rna_xl': 'rna_crosslink', 'rna_xl_single': 'rna_crosslink_single_res
            'rna_rbdmap_nonrg': 'rbdmap_fragment_outside_rg', 'rna_capri_xl': 'capri_xl_peptide', 'rna_capri_adj': 'capri_adj_peptide',
            'rna_capri_xl_nonrg': 'capri_xl_peptide_outside_rg', 'rna_capri_adj_nonrg': 'capri_adj_peptide_outside_rg'}
 INTACT_TEST = {'mutation': 'mutation_changes_interaction', 'peptide': 'binding_region', 'peptide_disordered': 'binding_region_disordered'}
+# Sequence proximity: the distances (residues along the sequence; 0 is inside) at which each arginine is tested for
+# lying near each kind of residue-level RNA evidence.
+SEQ_PROX_D = (0, 3, 5, 10, 20)
 
 
 def runs(positions):
@@ -2827,6 +2830,7 @@ def main():
     xl_rows, xl_prot, xl_seq = [], [], []
     xl_strata = Tables(('rna_xl', 'rna_xl_single', 'rna_near', 'rna_rbdmap', 'dna_xl', 'dna_cand', 'dna_pep', 'dna_bind', 'rna_xl_nonrg', 'rna_rbdmap_nonrg',
                         'rna_capri_xl', 'rna_capri_adj', 'rna_capri_xl_nonrg', 'rna_capri_adj_nonrg'))
+    prox_strata = Tables()
     for i, acc in enumerate(meth_accs):
         if '-' in acc:
             continue
@@ -2880,6 +2884,18 @@ def main():
                     # arginines in an RG or GR dipeptide.
                     if key in ('rna_xl', 'rna_rbdmap', 'rna_capri_xl', 'rna_capri_adj') and not ((q < len(seq_) and seq_[q] == 'G') or (q > 1 and seq_[q - 2] == 'G')):
                         xl_strata.add(key + '_nonrg', acc, q, cell)
+        # Sequence proximity: each arginine's distance along the sequence to the nearest residue of each kind of RNA
+        # evidence (0: at or inside it), tested at each distance in SEQ_PROX_D within the proteins with that evidence.
+        for track, spans in (('rna_xl', [(q, q) for q in r_map]), ('rna_rbdmap', list(frags)),
+                             ('rna_capri_adj', [(a, b) for a, b, _ in c_adj]), ('rna_capri_xl', [(a, b) for a, b, _ in c_xl])):
+            if not spans:
+                continue
+            for q in range(1, len(seq_) + 1):
+                if seq_[q - 1] != 'R':
+                    continue
+                dq = min(0 if a <= q <= b else min(abs(q - a), abs(q - b)) for a, b in spans)
+                for dmax in SEQ_PROX_D:
+                    prox_strata.add(f'{track}:{dmax}', acc, q, (0 if q in site_pos else 2) + (0 if dq <= dmax else 1))
     xl_enrich = {}
     for key, tabs in xl_strata.items():
         tabs = list(tabs.values())
@@ -2891,6 +2907,14 @@ def main():
     for key, tabs in xl_strata.items():
         xl_enrich[key]['or'] = or_summary(tabs.values())
         release_tests.append(('crosslink', XL_TEST[key], 'all', list(tabs.values()), 'other arginines of the same proteins (proteins with that evidence)'))
+    seq_prox = {}
+    for key, tabs in prox_strata.items():
+        track, dmax = key.split(':')
+        seq_prox.setdefault(track, {})[dmax] = or_summary(tabs.values())
+        release_tests.append(('sequence_proximity', XL_TEST[track], f'within_{dmax}_residues', list(tabs.values()),
+                              'other arginines of the same proteins (proteins with that evidence)'))
+    log('Sequence proximity (MH OR at 0/3/5/10/20 residues): ' + '; '.join(
+        track + ' ' + '/'.join(str(v[str(dm)]['mh'][0]) for dm in SEQ_PROX_D) for track, v in seq_prox.items()))
 
     # By methylation type: each class of methylated arginine vs the unmethylated arginines (not in the union) of the
     # same proteins. Maron IP classes come from methyl-specific immunoprecipitation; state calls from the sources.
@@ -3290,7 +3314,9 @@ def main():
                     near = {q: h for q, h in at_pos.items() if 0 < abs(q - q0) <= NEAR_RESIDUES}
                     if not near or (j, si) in prox_cx or any((j, e) in at_entry for e in sig_entries[si]):
                         continue
-                    (pdb, nch), _ = Counter((pd, ch) for h in near.values() for pd, ch, _ in h).most_common(1)[0]
+                    # the chain touched most; ties go to the first entry and chain by name, so the choice does not
+                    # depend on set order (string hashes differ between runs)
+                    (pdb, nch), _ = min(Counter((pd, ch) for h in near.values() for pd, ch, _ in h).items(), key=lambda kv: (-kv[1], kv[0]))
                     on = {q: sorted(n for pd, ch, n in h if (pd, ch) == (pdb, nch)) for q, h in near.items()}
                     via = min((q for q in on if on[q]), key=lambda q: (abs(q - q0), q))
                     centre = on[via][len(on[via]) // 2]
@@ -3393,10 +3419,11 @@ def main():
     # it replaces: the selected methylarginines against the other arginines of their proteins.
     protein_of = {a: i for i, a in enumerate(meth_accs)}
     site_of = {(meth_accs[s[0]], s[1]): j for j, s in enumerate(sites)}
-    path = {'pred_enrich': lambda k: [str(k[0]), k[1]], 'na_dist_stats': lambda k: [f'{k[0]}_within_{k[1]:g}a']}
+    path = {'pred_enrich': lambda k: [str(k[0]), k[1]], 'na_dist_stats': lambda k: [f'{k[0]}_within_{k[1]:g}a'], 'seq_prox': lambda k: k.split(':')}
     selection_tests = [[group, path.get(group, lambda k: list(k) if isinstance(k, tuple) else [k])(key), *tables.export(key, protein_of, site_of)]
                        for group, tables in (('enrich_strata', strata), ('rg_iface', rg_strata), ('pred_enrich', pred_strata),
-                                             ('intact_enrich', intact_strata), ('xl_enrich', xl_strata), ('na_dist_stats', dist_strata))
+                                             ('intact_enrich', intact_strata), ('xl_enrich', xl_strata), ('na_dist_stats', dist_strata),
+                                             ('seq_prox', prox_strata))
                        for key in list(tables)]
 
     out = {
@@ -3464,6 +3491,7 @@ def main():
                 'na_names': 'molecule names of the RNA and DNA chains',
                 'na_dist': ['type of RNA or DNA', f'methylarginines by the minimum heavy-atom distance from the side chain, 1 Å bins from 0 to {PROXIMAL_CUTOFF:g} Å',
                             'the other arginines of the same proteins, likewise (every entry with the protein and RNA or DNA)'],
+                'seq_prox': '{rna_xl|rna_rbdmap|rna_capri_adj|rna_capri_xl}: {0|3|5|10|20}: or_summary of methylarginines against the other arginines of proteins with that evidence, within that many residues along the sequence of the nearest evidence residue (0: at or inside it)',
                 'na_dist_stats': '{rna|dna|any}_within_{4|8}a: or_summary of methylarginines against the other arginines modelled with that kind, within the cutoff; '
                                  '{kind}_distance: [n methylarginines within 8 Å, median Å, n other, median Å, Mann-Whitney p]',
                 'nab': {'rbns': ['accession', 'ENCODE experiment', 'protein concentration', f'top {RBNS_TOP} 5-mers [[kmer, R]]', 'ENCODE logos [[k, logo, [[A, C, G, U] per position]]]'],
@@ -3500,7 +3528,7 @@ def main():
                 'pred_enrich': '{pDockQ floor: {all|ordered|disordered: {pooled, mh}}} methylated vs other arginines of the same protein at a predicted interface',
                 'intact': ['site', '[[kind (0 mutation, 1 binding region <= peptide_max aa, 2 methylated arginine), code (meta.intact effects or regions; 0 for kind 2), start, end, resulting sequence, partners (-1 RNA, -2 DNA, -3 small molecule, -4 other, else protein index), PubMed ids, IntAct interaction ACs (first 5), records], ...]'],
                 'intact_prot': ['protein index', '[[start, end, region type bits (1 << meta.intact regions index), partners (first 8), partner count, records], ...] binding regions', '[[start, end, effect code, partners (first 8), partner count, records], ...] mutations of <= mutation_max residues'],
-                'selection_tests': ['the result it replaces: enrich_strata, rg_iface, pred_enrich, intact_enrich, xl_enrich or na_dist_stats', 'its key path',
+                'selection_tests': ['the result it replaces: enrich_strata, rg_iface, pred_enrich, intact_enrich, xl_enrich, na_dist_stats or seq_prox', 'its key path',
                                     '[[protein index, other arginines with the feature, without], ...]', 'methylarginine sites with the feature', 'sites without'],
                 'intact_enrich': '{mutation: or_summary of methylated vs other arginines, a single-residue mutation changing an interaction vs only no-effect mutations; peptide|peptide_disordered: methylated vs other arginines inside a binding region of <= peptide_max aa (all, or UniProt-disordered arginines only)}',
             },
@@ -3517,6 +3545,7 @@ def main():
         'na_names': na_names,
         'na_dist': na_dist,
         'na_dist_stats': na_dist_stats,
+        'seq_prox': seq_prox,
         'selection_tests': selection_tests,
         'na_regions': region_json,
         'nab': nab,

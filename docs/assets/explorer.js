@@ -7682,7 +7682,7 @@
       geoSummary: d.geometry_summary || {}, rg: d.rg_iface || {}, modelledGaps, condConf: d.cond_conf || {}, condConfP: d.cond_conf_proteome || null, nModelled: (d.modelled || []).length,
       predEnrich: d.pred_enrich || {}, nPred: (d.pred || []).length, condHist: d.cond_score_hist || {}, gallery,
       xlProt, xlEnrich: d.xl_enrich || {}, xlSets: d.xl_sets || [], xlTypes: d.xl_types || {}, xlFreq: d.xl_freq || null,
-      iaProt, iaEnrich: d.intact_enrich || {}, ia: (d.meta && d.meta.intact) || null, naReg, nab, naDist: d.na_dist || [], naDistStats: d.na_dist_stats || {},
+      iaProt, iaEnrich: d.intact_enrich || {}, ia: (d.meta && d.meta.intact) || null, naReg, nab, naDist: d.na_dist || [], naDistStats: d.na_dist_stats || {}, seqProx: d.seq_prox || {},
       selTests: d.selection_tests || null };
     IX.byAcc = new Map(prot.map((x) => [x.acc, x.k]));
     IX.prmts = prot.filter((x) => x.flags & IXF.prmt).sort((a, b) => prmtRank(a.gene) - prmtRank(b.gene));
@@ -8118,6 +8118,8 @@
         (b.capri.length ? '<p>Inside CAPRI RNA-bound peptide' + (b.capri.length === 1 ? ' ' : 's ') + b.capri.map(([x, y, k]) => rn(x, p) + '–' + rn(y, p) + ' <span class="muted">' + k + '</span>').join(', ') + ' <span class="muted">HEK293</span></p>' : '') +
         (b.xr && IX.nab.eclip.get(s.p) ? '<p class="tl">RNA crosslinked to ' + esc(p.label) + ' in cells (ENCODE eCLIP)</p><p>' + eclipText(s.p, 6) + '</p><p class="muted">With an RNA crosslink at ' + (b.xr.pos === s.pos ? 'the site' : iRel(b.xr.pos - s.pos)) + ', these transcripts are candidate RNA partners of this segment.</p>' : ''));
     }
+    const sp = seqProxOf(s);
+    if (sp.length) out.push('<p class="tl">Nearest RNA-binding evidence along the sequence</p><p>' + sp.map(([l, d]) => esc(l) + ' <b>' + (d ? d + ' residue' + (d === 1 ? '' : 's') : 'at the site') + '</b>').join('; ') + '</p>');
     const rb = IX.nab.rbns.get(s.p), ec = IX.nab.eclip.get(s.p), jm = IX.nab.jaspar.get(s.p), sx = IX.nab.selex.get(s.p);
     if (rb || sx || (ec && !b.xr) || jm) {
       const top = (x) => { const tot = x.regions.reduce((a, c) => a + c, 0) || 1, k = x.regions.indexOf(Math.max(...x.regions)); return ECLIP_LABEL[k] + ' ' + pctText(x.regions[k], tot) + '%'; };
@@ -10485,7 +10487,7 @@
       .filter((c) => c.m >= 2 && c.fold > 0).map((c) => ({ v: Math.log2(c.fold), dir: c.q != null && c.q <= PADJ ? 1 : 0 })) }; }) };
     const partFig = pctLanes((on) => { const pm = partnerShare(on ? R.prots : P); return pm.distinct ? pm.distinctMeth / pm.distinct : null; }, IX.meta.proteome_size ? IX.meta.methylated_in_proteome / IX.meta.proteome_size : null);
     const sec = (k) => '<div class="ix-sec-body" id="ixs-' + k + '">' + body[k]() + '</div>';
-    const nacHtml = nacCardHtml(), naHtml = ixNaHtml(), wrHtml = ixWrMatrixHtml(), cmHtml = ixConnMatrixHtml(), exHtml = ixExampleHtml();
+    const nacHtml = nacCardHtml(), proxHtml = proxCardHtml(), naHtml = ixNaHtml(), wrHtml = ixWrMatrixHtml(), cmHtml = ixConnMatrixHtml(), exHtml = ixExampleHtml();
     el.innerHTML = '<div class="ix-page">' +
       '<div class="facts ix-facts hub-only">' + tile('exp', 'experimental', 'Experimental evidence') + tile('pred', 'predicted-only', 'Predicted only') + tile('none', 'none', 'None recorded') + '</div>' +
       hubHtml() + focusBarHtml() +
@@ -10502,6 +10504,9 @@
         row('ixs-cells', 'Crosslinking in living cells', sec('cells'), 'Is the methylarginine the residue crosslinked to RNA or DNA, or inside an RNA-bound peptide?', 'retest',
           both([['xl_enrich', ['rna_xl'], 'RNA-crosslinked residue'], ['xl_enrich', ['rna_capri_adj'], 'in an RNA-bound peptide (CAPRI)']]), null,
           testsFig([['xl_enrich', ['rna_xl']], ['xl_enrich', ['rna_xl_nonrg']], ['xl_enrich', ['rna_rbdmap']], ['xl_enrich', ['rna_capri_adj']], ['xl_enrich', ['rna_capri_xl']], ['xl_enrich', ['dna_cand']], ['xl_enrich', ['dna_pep']]])) +
+        row('ix-prox', 'Sequence proximity to RNA-binding residues', proxHtml, 'How far along the sequence do methylarginines lie from residues that bind RNA in cells, against the other arginines of the same proteins?', 'retest',
+          both([['seq_prox', ['rna_xl', '5'], 'within 5 of a crosslinked residue'], ['seq_prox', ['rna_capri_adj', '5'], 'of a CAPRI peptide']]), 'Needs the proximity tables of the interaction export.',
+          testsFig(PROX_TRACKS.map(([k]) => ['seq_prox', [k, '5']]))) +
         row('ix-na', 'Bound RNA and DNA', naHtml, 'Which RNA and DNA do methylarginines contact in structures, and what do their proteins bind?', 'count',
           [ixNaSummary(R.sites, true), ixNaSummary(S, true)], 'No methylarginine of this selection touches RNA or DNA in a structure, and its proteins have no binding data.', pctLanes(naShare)) +
         row('ixs-go', 'RNA- and DNA-binding proteins (Gene Ontology)', sec('go'), 'Are methylated proteins annotated as RNA- or DNA-binding more often than human proteins?', 'retest',
@@ -10536,6 +10541,7 @@
     bindConnMatrix(el);
     bindWrMatrix(el);
     bindNac(el);
+    bindProx(el);
     const naBox = $('#ix-na', el);
     if (naBox) {
       bindNaBlock(naBox, naRows(R.sites, 'rna', true).concat(naRows(R.sites, 'dna', true)), 'methylarginine_bound');
@@ -10939,7 +10945,7 @@
     return out;
   }
   const dirOf = (l2, p) => (l2 == null || p == null ? 'not tested' : p <= 0.05 ? (l2 > 0 ? 'more often' : 'less often') : 'not significantly more or less often');
-  const IX_GROUP = { enrich_strata: 'strata', rg_iface: 'rg', pred_enrich: 'predEnrich', intact_enrich: 'iaEnrich', xl_enrich: 'xlEnrich', na_dist_stats: 'naDistStats' };
+  const IX_GROUP = { enrich_strata: 'strata', rg_iface: 'rg', pred_enrich: 'predEnrich', intact_enrich: 'iaEnrich', xl_enrich: 'xlEnrich', na_dist_stats: 'naDistStats', seq_prox: 'seqProx' };
   let ixSelCache = null;
   function ixSel() {
     if (!constraints().length || !IX || !IX.selTests) return null;
@@ -10960,7 +10966,7 @@
     for (const entry of IX.selTests) {
       const [group, path] = entry, tables = selTestTables(entry, sel, prots), pooled = [0, 1, 2, 3].map((k) => tables.reduce((n, t) => n + t[k], 0));
       let res;
-      if (group === 'intact_enrich' || group === 'na_dist_stats') res = orSummary(tables, pooled);
+      if (group === 'intact_enrich' || group === 'na_dist_stats' || group === 'seq_prox') res = orSummary(tables, pooled);
       else if (group === 'xl_enrich') res = Object.assign(strataShape(tables, pooled), { proteins: tables.length, or: orSummary(tables, pooled) });
       else res = strataShape(tables, pooled);
       let node = v[group];
@@ -11143,6 +11149,143 @@
               .concat(scoped ? [(refBy.get(r.key) || {}).or ?? '', (refBy.get(r.key) || {}).q ?? ''] : []).join('\t'))).join('\n') + '\n');
       } else exportFigure(b.dataset.nac, nacForestSvg(rows, ref, EXPORT_PAL, { forExport: true, title: 'Methylarginines at RNA and DNA contacts, within proteins', sub: scoped ? 'Selection: ' + selectionText() + ' (' + fmt(R.sites.length) + ' sites); tick: whole dataset' : 'All ' + fmt(S.length) + ' sites' }), 'methylarginine_nucleic_acid_contacts');
     }));
+  }
+  // ----- Sequence proximity: for each kind of residue-level RNA evidence in cells, how far along the sequence each
+  // arginine lies from the nearest residue with it (0: at or inside it). Methylarginines against the other arginines
+  // of the proteins with that evidence, within each distance (Mantel–Haenszel, each protein a stratum; scripts/37
+  // seq_prox), for the selection or every site; BH across the card. One small panel per kind of evidence.
+  const PROX_TRACKS = [['rna_xl', 'RNA-crosslinked residue', 'pepR-MS compendium'], ['rna_rbdmap', 'RBDmap RNA-bound fragment', 'HeLa'],
+    ['rna_capri_adj', 'CAPRI peptide next to a crosslink (ADJ)', 'HEK293'], ['rna_capri_xl', 'CAPRI RNA-crosslinked peptide (XL)', 'HEK293'],
+    ['rna_pclap', 'pCLAP RNA-bound peptide', ''], ['rna_rbrid', 'RBR-ID RNA-binding region', 'K562']];
+  const PROX_D = [0, 3, 5, 10, 20];
+  // The distances at which a test differs, in words: "at or inside it and within 3, 5 and 10 residues".
+  const proxSpan = (ds) => {
+    const w = ds.filter((d) => d > 0), list = w.length > 1 ? w.slice(0, -1).join(', ') + ' and ' + w[w.length - 1] : String(w[0]);
+    return (ds.length === PROX_D.length ? 'at every distance up to ' + PROX_D[PROX_D.length - 1] + ' residues'
+      : (ds.includes(0) ? 'at or inside it' + (w.length ? ' and ' : '') : '') + (w.length ? 'within ' + list + ' residues' : ''));
+  };
+  let proxCache = null;
+  function proxRows(sel) {
+    if (!IX || !IX.selTests) return [];
+    const key = sel ? R : 'all';
+    if (proxCache && proxCache[sel ? 'sel' : 'all'] && proxCache[sel ? 'sel' : 'all'].key === key) return proxCache[sel ? 'sel' : 'all'].rows;
+    const byKey = new Map(IX.selTests.filter((e) => e[0] === 'seq_prox').map((e) => [e[1].join(':'), e]));
+    const prots = sel ? new Set([...sel].map((j) => S[j].p)) : null, rows = [];
+    for (const [track, label, where] of PROX_TRACKS) {
+      for (const d of PROX_D) {
+        const e = byKey.get(track + ':' + d);
+        if (!e) continue;
+        const tables = selTestTables(e, sel, prots), m = mhTest(tables);
+        const [a, b, c, dd] = [0, 1, 2, 3].map((k) => tables.reduce((n, x) => n + x[k], 0));
+        const ok = m.or != null && Number.isFinite(m.or) && m.or > 0;
+        rows.push({ track, label, where, d, key: track + ':' + d, a, b, c, d2: dd, or: ok ? m.or : null, edge: m.or === Infinity ? 1 : m.or === 0 ? -1 : 0, lo: ok ? m.lo : null, hi: ok ? m.hi : null, p: m.p, used: m.used, proteins: tables.filter((x) => x[0] + x[1] > 0).length });
+      }
+    }
+    bhAdjust(rows);
+    proxCache = proxCache || {};
+    proxCache[sel ? 'sel' : 'all'] = { key, rows };
+    return rows;
+  }
+  // Small multiples: per kind of evidence, the odds ratio (log scale, shared) at each distance with its 95% CI; filled
+  // where q ≤ PADJ (red more often, slate less often), hollow otherwise; a dark tick marks the whole dataset.
+  function proxSvg(rows, ref, pal, o) {
+    o = o || {};
+    const tracks = PROX_TRACKS.filter(([k]) => rows.some((r) => r.track === k));
+    const cols = Math.min(o.cols || 2, tracks.length), pw = 300, ph = 168, gapX = 26, gapY = 20, padT = o.title ? 56 : 8, keyH = 34;
+    const W = cols * pw + (cols - 1) * gapX, nRows = Math.ceil(tracks.length / cols), H = padT + nRows * ph + (nRows - 1) * gapY + keyH;
+    const l2 = (v) => Math.log2(v);
+    const vals = rows.concat(ref || []).flatMap((r) => [r.lo, r.hi, r.or]).filter((v) => v != null && v > 0 && Number.isFinite(v)).map(l2);
+    const lo = Math.max(-3, Math.floor(Math.min(-1, ...vals))), hi = Math.min(4, Math.ceil(Math.max(1, ...vals)));
+    const up = pal.up[2], down = pal.down[2], f = (v) => (v == null ? '–' : v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(2) : v.toPrecision(2));
+    const refBy = new Map((ref || []).map((r) => [r.key, r]));
+    let g = '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>';
+    if (o.title) g += '<text x="0" y="18" font-size="13" font-weight="700" fill="' + pal.ink + '">' + esc(o.title) + '</text>' + (o.sub ? '<text x="0" y="36" font-size="10.5" fill="' + pal.muted + '">' + esc(o.sub) + '</text>' : '');
+    tracks.forEach(([track, label, where], k) => {
+      const px = (k % cols) * (pw + gapX), py = padT + Math.floor(k / cols) * (ph + gapY);
+      const axL = px + 30, axR = px + pw - 8, axT = py + 40, axB = py + ph - 26;
+      const X = (i) => axL + ((i + 0.5) / PROX_D.length) * (axR - axL), Y = (v) => axB - ((Math.min(hi, Math.max(lo, v)) - lo) / (hi - lo)) * (axB - axT);
+      g += '<text x="' + px + '" y="' + (py + 13) + '" font-size="11.5" font-weight="700" fill="' + pal.ink + '">' + esc(label) + '</text>' +
+        (where ? '<text x="' + px + '" y="' + (py + 27) + '" font-size="10" fill="' + pal.muted + '">' + esc(where) + '</text>' : '');
+      for (let tk = lo; tk <= hi; tk++) {
+        g += '<line x1="' + axL + '" x2="' + axR + '" y1="' + r1(Y(tk)) + '" y2="' + r1(Y(tk)) + '" stroke="' + (tk === 0 ? pal.muted : pal.grid) + '" stroke-width="1"/>' +
+          '<text x="' + (axL - 5) + '" y="' + r1(Y(tk) + 3.5) + '" font-size="9.5" text-anchor="end" fill="' + pal.muted + '">' + (tk >= 0 ? 2 ** tk : '1/' + 2 ** -tk) + '</text>';
+      }
+      PROX_D.forEach((d, i) => { g += '<text x="' + r1(X(i)) + '" y="' + (axB + 14) + '" font-size="9.5" text-anchor="middle" fill="' + pal.muted + '">' + (d ? '≤' + d : 'at') + '</text>'; });
+      const tr = PROX_D.map((d) => rows.find((r) => r.track === track && r.d === d));
+      const pts = tr.map((r, i) => (r && r.or != null ? [X(i), Y(l2(r.or))] : null));
+      const path = pts.filter(Boolean).map((q, i) => (i ? 'L' : 'M') + r1(q[0]) + ' ' + r1(q[1])).join('');
+      if (path) g += '<path d="' + path + '" fill="none" stroke="' + pal.muted + '" stroke-width="1.2" stroke-opacity="0.7"/>';
+      tr.forEach((r, i) => {
+        if (!r) return;
+        const cx = X(i), sig = r.q != null && r.q <= PADJ, more = r.or != null ? r.or > 1 : r.edge > 0, col = !sig ? pal.muted : more ? up : down;
+        if (r.or != null && r.lo != null && r.hi != null) g += '<line x1="' + r1(cx) + '" x2="' + r1(cx) + '" y1="' + r1(Y(l2(r.lo))) + '" y2="' + r1(Y(l2(r.hi))) + '" stroke="' + col + '" stroke-width="2" stroke-linecap="round"/>';
+        const rf = refBy.get(r.key);
+        if (rf && rf.or != null) g += '<line x1="' + r1(cx - 8) + '" x2="' + r1(cx + 8) + '" y1="' + r1(Y(l2(rf.or))) + '" y2="' + r1(Y(l2(rf.or))) + '" stroke="' + pal.ink + '" stroke-width="2"/>';
+        if (r.or != null) g += '<circle cx="' + r1(cx) + '" cy="' + r1(Y(l2(r.or))) + '" r="4.5" fill="' + (sig ? col : pal.bg) + '" stroke="' + (sig ? pal.bg : col) + '" stroke-width="2"/>';
+        else if (r.edge) g += '<path d="M' + r1(cx - 5) + ' ' + r1(Y(r.edge > 0 ? hi : lo) + 7 * r.edge) + 'L' + r1(cx) + ' ' + r1(Y(r.edge > 0 ? hi : lo)) + 'L' + r1(cx + 5) + ' ' + r1(Y(r.edge > 0 ? hi : lo) + 7 * r.edge) + 'Z" fill="' + col + '"/>';
+        if (!o.forExport) {
+          const tip = '<b>' + esc(label) + '</b>, ' + (r.d ? 'within ' + r.d + ' residues' : 'at or inside it') + '<br>Methylarginines: ' + fmt(r.a) + ' of ' + fmt(r.a + r.b) + ' (' + pctText(r.a, r.a + r.b || 1) + '%) · other arginines of the same proteins: ' + fmt(r.c) + ' of ' + fmt(r.c + r.d2) + ' (' + pctText(r.c, r.c + r.d2 || 1) + '%)' +
+            '<br>Mantel–Haenszel OR ' + (r.or != null ? f(r.or) + (r.lo != null ? ' [95% CI ' + f(r.lo) + '–' + f(r.hi) + ']' : '') : r.edge > 0 ? 'unbounded' : r.edge < 0 ? '0' : 'not estimable') + ', p ' + fmtP(r.p) + ', q ' + fmtP(r.q) + '<br>' + fmt(r.used) + ' informative proteins of the ' + fmt(r.proteins) + ' with such a methylarginine' +
+            (rf ? '<br><span class="muted">Whole dataset: OR ' + f(rf.or) + ', q ' + fmtP(rf.q) + ' (tick)</span>' : '');
+          g += '<rect class="prox-hit" x="' + r1(cx - 14) + '" y="' + axT + '" width="28" height="' + (axB - axT) + '" fill="transparent" data-tip="' + esc(tip) + '"/>';
+        }
+      });
+    });
+    const ky = H - 10;
+    g += '<text x="0" y="' + (ky - 14) + '" font-size="10" fill="' + pal.muted + '">Odds ratio within proteins (log scale) of lying at, or within that many residues of, the evidence</text>' +
+      '<circle cx="6" cy="' + (ky - 4) + '" r="4.5" fill="' + up + '" stroke="' + pal.bg + '" stroke-width="2"/><text x="15" y="' + ky + '" font-size="10" fill="' + pal.ink + '">More often, q ≤ ' + PADJ + '</text>' +
+      '<circle cx="136" cy="' + (ky - 4) + '" r="4.5" fill="' + down + '" stroke="' + pal.bg + '" stroke-width="2"/><text x="145" y="' + ky + '" font-size="10" fill="' + pal.ink + '">Less often</text>' +
+      '<circle cx="222" cy="' + (ky - 4) + '" r="4.5" fill="' + pal.bg + '" stroke="' + pal.muted + '" stroke-width="2"/><text x="231" y="' + ky + '" font-size="10" fill="' + pal.ink + '">Not significant</text>' +
+      (ref ? '<line x1="330" x2="346" y1="' + (ky - 4) + '" y2="' + (ky - 4) + '" stroke="' + pal.ink + '" stroke-width="2"/><text x="352" y="' + ky + '" font-size="10" fill="' + pal.ink + '">Whole dataset</text>' : '');
+    return { W, H, svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" font-family="' + esc(pal.font || EXPORT_PAL.font) + '" role="img" aria-label="' +
+      esc((o.title || 'Methylarginines near RNA-binding residues along the sequence') + ': within-protein odds ratios at each distance, with 95% confidence intervals') + '">' + g + '</svg>' };
+  }
+  function proxCardHtml() {
+    if (!ixReady() || !IX.selTests || !IX.selTests.some((e) => e[0] === 'seq_prox')) return '';
+    const scoped = constraints().length > 0, sel = scoped ? new Set(R.sites.map((s) => s.j)) : null;
+    const rows = proxRows(sel), ref = scoped ? proxRows(null) : null;
+    if (!rows.length) return '';
+    const read = PROX_TRACKS.map(([k, label]) => {
+      const tr = rows.filter((r) => r.track === k);
+      if (!tr.length) return '';
+      const sig = tr.filter((r) => r.q != null && r.q <= PADJ && r.or != null), more = sig.filter((r) => r.or > 1), less = sig.filter((r) => r.or < 1);
+      const at = tr.find((r) => r.d === 0), far = tr[tr.length - 1];
+      return '<li><b>' + esc(label) + '</b>: OR ' + (at && at.or != null ? fx(at.or) : '–') + ' at or inside it, ' + (far && far.or != null ? fx(far.or) : '–') + ' within ' + far.d + ' residues; ' +
+        (more.length ? 'more often ' + proxSpan(more.map((r) => r.d)) : less.length ? 'less often ' + proxSpan(less.map((r) => r.d)) : 'no distance differs') + ' (q ≤ ' + PADJ + ').</li>';
+    }).join('');
+    return '<div class="card" id="ix-prox"><div class="card-head"><div><h3>Sequence proximity to RNA-binding residues</h3><p class="sub">For each kind of RNA evidence from cells, how far along the sequence each arginine lies from the nearest residue with it. Methylated against the other arginines of the same proteins, within each distance (Mantel–Haenszel, each protein a stratum).' + docLink('ix-prox') + '</p></div>' +
+      '<div class="exp" role="group" aria-label="Export"><button type="button" data-prox="svg">SVG</button><button type="button" data-prox="png">PNG</button><button type="button" data-prox="tsv">TSV</button></div></div>' +
+      ixScope() + '<ul class="prox-read">' + read + '</ul>' +
+      '<div class="prox-fig">' + proxSvg(rows, ref, screenPalette(), { cols: narrowScreen() ? 1 : 2 }).svg + '</div>' +
+      '<p class="note">Distance is counted in residues along the canonical sequence: 0 is the crosslinked residue itself or a residue inside the fragment or peptide. Each kind of evidence counts only the proteins that carry it, so the proteins differ between panels. ' +
+      'An odds ratio that stays above 1 as the distance grows means methylarginines sit in the RNA-binding parts of their proteins; one that falls back toward 1 means the association is local. Peptide searches did not allow methylarginine, so a methylated stretch can be missed as bound. q: Benjamini–Hochberg across the panels.</p></div>';
+  }
+  function bindProx(root) {
+    const box = $('#ix-prox', root);
+    if (!box) return;
+    $$('.prox-hit', box).forEach((c) => {
+      c.addEventListener('mouseenter', (e) => showTip(e, c.getAttribute('data-tip')));
+      c.addEventListener('mousemove', moveTip);
+      c.addEventListener('mouseleave', hideTip);
+    });
+    $$('[data-prox]', box).forEach((b) => b.addEventListener('click', () => {
+      const scoped = constraints().length > 0, rows = proxRows(scoped ? new Set(R.sites.map((s) => s.j)) : null), ref = scoped ? proxRows(null) : null;
+      if (b.dataset.prox === 'tsv') {
+        const refBy = new Map((ref || []).map((r) => [r.key, r]));
+        download('methylarginine_rna_sequence_proximity.tsv', (scoped ? '# your selection: ' + selectionText() + ' (' + R.sites.length + ' sites); whole_dataset_* columns: all sites\n' : '') +
+          ['evidence\tcells\twithin_residues\tmethylarginines_within\tmethylarginines\tother_arginines_within\tother_arginines\tmh_odds_ratio\tci_low\tci_high\tp\tq\tinformative_proteins\tproteins' + (scoped ? '\twhole_dataset_or\twhole_dataset_q' : '')]
+            .concat(rows.map((r) => [r.label, r.where, r.d, r.a, r.a + r.b, r.c, r.c + r.d2, r.or ?? (r.edge > 0 ? 'Inf' : r.edge < 0 ? 0 : ''), r.lo ?? '', r.hi ?? '', r.p ?? '', r.q ?? '', r.used, r.proteins]
+              .concat(scoped ? [(refBy.get(r.key) || {}).or ?? '', (refBy.get(r.key) || {}).q ?? ''] : []).join('\t'))).join('\n') + '\n');
+      } else exportFigure(b.dataset.prox, proxSvg(rows, ref, EXPORT_PAL, { forExport: true, cols: 2, title: 'Methylarginines near RNA-binding residues along the sequence, within proteins', sub: scoped ? 'Selection: ' + selectionText() + ' (' + fmt(R.sites.length) + ' sites); tick: whole dataset' : 'All ' + fmt(S.length) + ' sites' }), 'methylarginine_rna_sequence_proximity');
+    }));
+  }
+  // A site's distance along the sequence to the nearest residue of each kind of RNA evidence on its protein.
+  function seqProxOf(s) {
+    const xp = ixReady() ? IX.xlProt.get(s.p) : null;
+    if (!xp) return [];
+    const near = (spans) => { let best = null; for (const [a, b] of spans) { const d = s.pos >= a && s.pos <= b ? 0 : Math.min(Math.abs(s.pos - a), Math.abs(s.pos - b)); if (best == null || d < best) best = d; } return best; };
+    return [['RNA-crosslinked residue', near(xp.rnaPos.map((q) => [q, q]))], ['RBDmap fragment', near(xp.rbd)], ['CAPRI ADJ-peptide', near(xp.capAdj)], ['CAPRI XL-peptide', near(xp.capXl)]]
+      .concat(xp.pclap ? [['pCLAP peptide', near(xp.pclap)]] : [], xp.rbrid ? [['RBR-ID region', near(xp.rbrid)]] : []).filter((x) => x[1] != null);
   }
   const ixRes = (group) => { const v = ixSel(); return v ? v[group] : IX[IX_GROUP[group]] || {}; };
   // The note under a section's heading while a selection is set: what its tests compare, or that a part is not retested.
@@ -12246,6 +12389,7 @@
           '<p><b>Distance of methylarginines to RNA and DNA.</b> For every arginine of the methylated proteins modelled in a PDB entry that contains RNA or DNA (every entry in which PDBe-KB lists the protein with nucleic acid; up to two copies of the protein per entry), the minimum heavy-atom distance from its side chain to each RNA and DNA chain is recorded up to 8 Å. The Interactions view shows the distribution of this minimum distance by nucleic-acid type in 1 Å bins, for methylarginines and for the other arginines of the same proteins (bar height is the fraction of each group), and tests whether a larger fraction of methylarginines than of the other arginines lies within 4 Å or 8 Å: the Mantel–Haenszel odds ratio with each protein as a stratum, and the pooled Fisher odds ratio. Only arginines modelled in a structure are included, so disordered RGG regions, which contain many methylarginines, are largely absent; most structures contain unmethylated recombinant protein. Release files supporting/arginine_nucleic_acid_distances and interaction_statistics (analysis nucleic_acid_distance).</p>' +
           '<p><b>Binding regions.</b> On a protein page, the RNA and DNA interactions card lists the regions that bind nucleic acid: runs of residues in direct contact in structures (analysed once per distinct complex in every entry; runs separated by up to 3 residues are joined), with the nucleic-acid segments they contact and their type; runs of residues UV-crosslinked to RNA or DNA in living cells (joined in the same way); RBDmap fragments crosslinked to RNA in HeLa cells; and UniProt DNA-binding regions. Each row gives the UniProt domains it overlaps, the methylarginines within it and those within 5 residues of either end, with their distance from it. Release file supporting/nucleic_acid_regions.</p>' +
           '<p><b>Sequence preference and targets from selection experiments.</b> RNA Bind-n-Seq (ENCODE; Dominguez et al. 2018): the 5-mers enriched in RNA recovered by the purified protein from a random library, relative to the input, with ENCODE\'s logos. HTR-SELEX (Jolma et al. 2020, <i>Genome Res</i> 30:962, CC BY-NC 4.0): RNA selected by the purified protein or its RNA-binding domains from random 40-nucleotide RNA over several cycles, as position frequency matrices of linear motifs and of motifs in the loop of a stem-loop, primary and secondary (86 proteins). JASPAR 2026 CORE vertebrates (CC BY 4.0): DNA-binding profiles from SELEX and ChIP-based experiments; a heterodimer\'s profile is listed for both partners. eCLIP (ENCODE; Van Nostrand et al. 2020): RNA crosslinked to the protein in K562 and HepG2 cells, as reproducible peaks assigned to GENCODE v50 basic transcripts, with the genes with the most peaks; these reflect expression as well as preference. For a selection, the Interactions view lists these for the selected proteins and the genes with eCLIP peaks for two or more of them. RNAcompete (CISBP-RNA) states no licence and is not included. Release files supporting/rna_bind_n_seq, htr_selex, dna_motifs and eclip.</p>') +
+        sub('ix-prox', 'Sequence proximity to RNA-binding residues', '<p>For each kind of residue-level RNA evidence from cells (residues crosslinked to RNA in the pepR-MS compendium, RBDmap fragments, CAPRI ADJ- and XL-peptides), every arginine of a protein with that evidence gets its distance along the canonical sequence to the nearest residue with it: 0 for the crosslinked residue itself or a residue inside the fragment or peptide. Within 0, 3, 5, 10 and 20 residues, methylarginines are compared with the other arginines of the same proteins (Mantel–Haenszel odds ratio with its 95% CI, each protein a stratum; scripts/37 seq_prox, release statistics analysis sequence_proximity). With a selection, its sites are compared with the other arginines of their proteins, and a tick marks the whole dataset. q: Benjamini–Hochberg across the panels of the card. The site table\'s RNA/DNA column also gives each site\'s nearest distance to each kind of evidence on hover.</p>') +
         sub('ix-nac', 'Are methylarginines at RNA and DNA contacts?', '<p>One forest plot of every within-protein test of a nucleic-acid contact: RNA crosslinked to the residue in cells (pepR-MS compendium; localised to it alone; outside RG/GR dipeptides), inside an RNA-bound fragment (RBDmap, HeLa; and outside RG/GR dipeptides), inside an RNA-bound peptide next to a crosslink or inside an RNA-crosslinked peptide (CAPRI, HEK293: Panhale et al. 2019, ADJ- and XL-peptides; ADJ also outside RG/GR dipeptides), DNA crosslinked to the residue or one of its candidate residues and inside a DNA-crosslinked peptide (Trendel et al. 2025), at an RNA or DNA interface in a PDB structure (PDBe-KB), side chain within 4 or 8 Å of RNA or DNA in a PDB entry, and inside a UniProt DNA-binding region. ' +
           'Each test compares a protein\'s methylarginines with its other arginines (Mantel–Haenszel odds ratio, Robins–Breslow–Greenland 95% CI, continuity-corrected test; each protein a stratum), over the proteins with that kind of evidence and the arginines it resolves; q is Benjamini–Hochberg across the card. With a selection, its methylarginines are compared with the other arginines of their proteins, and a tick marks the whole dataset. The same tests, with their pooled counts, are in the sections below and in the release statistics (analyses crosslink, pdb_interface, nucleic_acid_distance).</p>') +
         sub('ix-evmap', 'How the evidence fits together', '<p>Counted per site or per protein. For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink localised to the residue or with it as a candidate residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), three IntAct record types (a mutation that changed an interaction, a short binding region, the arginine curated as methylated in an interaction; these do not set the status), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. The protein-context table shows, for the sites with each kind of evidence, the share on proteins annotated as RNA- or DNA-binding (Gene Ontology), in a CD-CODE condensate, physically linked to a PRMT or a Tudor-domain reader (STRING ≥ 0.7) or in a Complex Portal curated complex, against all selected sites; each cell lists those sites. Counted per protein, the same layout combines these protein properties and whether any of the protein\'s sites carries contact evidence. Below the site view, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
