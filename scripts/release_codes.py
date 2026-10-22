@@ -918,11 +918,12 @@ SITE_INTERACTION_COLUMNS = [
 
 NUCLEIC_ACID_CONTACT_COLUMNS = [
     ('site_id', 'string', '', 'the site (site table), at a PDBe-KB RNA or DNA interface or touching a nucleotide in a structure read'),
-    ('pdb_id', 'string', '', 'the PDB entry (the two most recent entries per site and partner type are read)'),
+    ('pdb_id', 'string', '', 'the PDB entry (every entry PDBe-KB lists for the site with RNA or DNA is read)'),
     ('chain', 'string', '', 'the RNA or DNA chain (author chain id)'),
     ('nucleic_acid', 'code', 'nucleic_acid', 'what the chain is'),
     ('molecule_name', 'string', '', 'the chain\'s molecule name in the PDB entry'),
     ('source_organism', 'string', '', 'its source organism (synthetic construct for a made oligonucleotide)'),
+    ('sample_preparation', 'string', '', 'how the chain was made, as the entry records it: Synthetically obtained (a designed oligonucleotide), Natural source or Genetically manipulated'),
     ('chain_length', 'integer', '', 'nucleotides in the chain\'s SEQRES sequence'),
     ('closest_nucleotide', 'string', '', 'the nucleotide closest to the arginine side chain, numbered along the SEQRES sequence (modified nucleotides as their parent)'),
     ('closest_distance_a', 'number', '', 'its distance to the closest guanidino or CD atom, in angstroms'),
@@ -932,6 +933,55 @@ NUCLEIC_ACID_CONTACT_COLUMNS = [
     ('window_start', 'integer', '', 'SEQRES number of the window\'s first position (below 1 when the window runs past the chain\'s start)'),
     ('window', 'string', '', 'the bound sequence: 8 nucleotides each side of the closest one, which is the 9th; - past the chain\'s ends. Windows of different sites align on their middle'),
     ('window_marked', 'string', '', 'the window with the contacted nucleotides in brackets'),
+]
+
+NUCLEIC_ACID_REGION_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'protein of the site table'),
+    ('start', 'integer', '', 'first residue of a run of residues within 4 Å of RNA or DNA in a PDB structure (runs joined across gaps of up to 3 residues)'),
+    ('end', 'integer', '', 'last residue of the run'),
+    ('nucleic_acid', 'code', 'nucleic_acid', 'what the residues touch (RNA-DNA hybrids counted as RNA)'),
+    ('n_entries', 'integer', '', 'PDB entries in which the run touches it (every entry PDBe-KB lists for the protein with RNA or DNA)'),
+    ('n_complexes', 'integer', '', 'distinct complexes read: one entry per set of bound sequences, the others counted with it'),
+    ('methylarginines', 'list<string>', '', 'the sites (site table) inside the run'),
+    ('bound_segments', 'list<string>', '', 'the stretches of RNA or DNA the run touches, 5\' to 3\': contacted nucleotides in brackets with 2 more each side, and … between clusters further apart than 4 nucleotides; at most 6, most entries first'),
+    ('segment_entries', 'list<string>', '', 'PDB entries showing each segment, in the same order'),
+    ('segment_example_entries', 'list<string>', '', 'an entry showing each segment'),
+    ('segment_molecule_names', 'list<string>', '', 'the molecule name of each segment\'s chain'),
+    ('n_segments', 'integer', '', 'distinct segments, including those not listed'),
+]
+
+RNA_BIND_N_SEQ_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'methylated protein with an ENCODE RNA Bind-n-Seq experiment (what the purified protein picks from random RNA in vitro)'),
+    ('encode_experiment', 'string', '', 'the ENCODE experiment'),
+    ('concentration', 'string', '', 'the protein concentration at which its top 5-mer is most enriched; the 5-mers are ranked there'),
+    ('top_5mers', 'list<string>', '', 'the 12 most enriched 5-mers'),
+    ('top_5mer_R', 'list<string>', '', 'their enrichment R (frequency in the bound RNA over the input), in the same order'),
+    ('logo_consensus', 'list<string>', '', 'the consensus (IUPAC) of each logo ENCODE gives for the experiment, strongest first'),
+]
+
+DNA_MOTIF_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'methylated protein with a JASPAR 2026 CORE vertebrates non-redundant profile (its own, or a heterodimer\'s it is part of)'),
+    ('matrix_id', 'string', '', 'the JASPAR matrix (jaspar.elixir.no/matrix/<id>)'),
+    ('name', 'string', '', 'the matrix name (A::B for a heterodimer)'),
+    ('tf_class', 'string', '', 'the transcription factor class, as JASPAR gives it'),
+    ('tf_family', 'string', '', 'the transcription factor family'),
+    ('length', 'integer', '', 'positions in the matrix'),
+    ('consensus', 'string', '', 'IUPAC consensus of the matrix'),
+]
+
+ECLIP_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'methylated protein with an ENCODE eCLIP experiment (RNA it binds in K562 or HepG2 cells)'),
+    ('encode_experiment', 'string', '', 'the ENCODE experiment'),
+    ('cell_line', 'string', '', 'K562, HepG2, or another biosample'),
+    ('n_peaks', 'integer', '', 'reproducible peaks (replicates 1 and 2, GRCh38)'),
+    ('peaks_CDS', 'integer', '', 'peaks whose middle falls in a coding sequence of a GENCODE v50 basic transcript of their strand'),
+    ('peaks_UTR3', 'integer', '', 'in a 3\' UTR (and in no coding sequence)'),
+    ('peaks_UTR5', 'integer', '', 'in a 5\' UTR'),
+    ('peaks_noncoding_exon', 'integer', '', 'in an exon of a non-coding transcript'),
+    ('peaks_intron', 'integer', '', 'in an intron'),
+    ('peaks_intergenic', 'integer', '', 'outside every basic transcript'),
+    ('top_target_genes', 'list<string>', '', 'the 25 genes with most peaks'),
+    ('top_target_peaks', 'list<string>', '', 'their peaks, in the same order'),
 ]
 
 RESIDUE_EVIDENCE_COLUMNS = [

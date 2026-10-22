@@ -6927,11 +6927,23 @@
       s.contacts = rows;
       s.modelledMe = modelled;
     }
-    // The RNA and DNA chains each site touches in structures: the bound sequence around the closest nucleotide (naRows).
-    for (const [j, pdb, chain, kind, name, org, win, offs, near, dist, len] of d.na || []) {
+    // The RNA and DNA each site touches in structures: one row per bound window, with every entry showing it (naRows).
+    const naNames = d.na_names || [];
+    for (const [j, kind, win, offs, pdbs, names, dist, syn] of d.na || []) {
       const s = S[j];
-      if (s) (s.na || (s.na = [])).push({ pdb, chain, kind, name, org, win, offs, near, dist, len });
+      if (s) (s.na || (s.na = [])).push({ kind, win, offs, pdbs, names: names.map((k) => naNames[k]), dist, syn: !!syn });
     }
+    // Regions of a protein that touch RNA or DNA in structures, and what is known of its binding beyond structures.
+    const pIndex = new Map(P.map((q, i) => [q.acc, i]));
+    const push = (m, i, v) => { if (!m.has(i)) m.set(i, []); m.get(i).push(v); };
+    const naReg = new Map(), nab = { rbns: new Map(), jaspar: new Map(), eclip: new Map() };
+    for (const [acc, kind, start, end, nEnt, nCx, segs, nSegs, sites] of d.na_regions || []) {
+      if (pIndex.has(acc)) push(naReg, pIndex.get(acc), { kind, start, end, nEnt, nCx, segs: segs.map(([seg, pdb, name, n]) => ({ seg, pdb, name, n })), nSegs, sites });
+    }
+    const b = d.nab || {};
+    for (const [acc, exp, conc, top, logos] of b.rbns || []) if (pIndex.has(acc)) push(nab.rbns, pIndex.get(acc), { exp, conc, top, logos });
+    for (const [acc, id, name, cls, fam, pfm, cons] of b.jaspar || []) if (pIndex.has(acc)) push(nab.jaspar, pIndex.get(acc), { id, name, cls, fam, pfm, cons });
+    for (const [acc, exp, cell, n, regions, genes] of b.eclip || []) if (pIndex.has(acc)) push(nab.eclip, pIndex.get(acc), { exp, cell, n, regions, genes });
     const wr = new Map((d.wr || []).map(([k, list]) => [k, new Set(list)]));
     for (const g of d.geometry || []) {
       const s = S[g[0]];
@@ -6961,7 +6973,7 @@
       geoSummary: d.geometry_summary || {}, rg: d.rg_iface || {}, modelledGaps, condConf: d.cond_conf || {}, nModelled: (d.modelled || []).length,
       predEnrich: d.pred_enrich || {}, nPred: (d.pred || []).length, condHist: d.cond_score_hist || {}, gallery,
       xlProt, xlEnrich: d.xl_enrich || {}, xlSets: d.xl_sets || [], xlTypes: d.xl_types || {}, xlFreq: d.xl_freq || null,
-      iaProt, iaEnrich: d.intact_enrich || {}, ia: (d.meta && d.meta.intact) || null };
+      iaProt, iaEnrich: d.intact_enrich || {}, ia: (d.meta && d.meta.intact) || null, naReg, nab };
     IX.byAcc = new Map(prot.map((x) => [x.acc, x.k]));
     IX.prmts = prot.filter((x) => x.flags & IXF.prmt).sort((a, b) => prmtRank(a.gene) - prmtRank(b.gene));
     IX.tudors = prot.filter((x) => x.flags & IXF.tudor).sort((a, b) => a.gene.localeCompare(b.gene));
@@ -7202,12 +7214,13 @@
       const seen = new Map();
       for (const r of s.na || []) {
         if (kind === 'dna' ? r.kind !== 'dna' : r.kind === 'dna') continue;   // RNA-DNA hybrids go with RNA
-        if (!seen.has(r.win)) seen.set(r.win, { s, win: r.win, offs: new Set(), pdbs: [], names: [], kind: r.kind, dist: r.dist });
+        if (!seen.has(r.win)) seen.set(r.win, { s, win: r.win, offs: new Set(), pdbs: [], names: [], kind: r.kind, dist: r.dist, syn: true });
         const w = seen.get(r.win);
-        if (!w.pdbs.includes(r.pdb)) w.pdbs.push(r.pdb);
-        if (r.name && !w.names.includes(r.name)) w.names.push(r.name);
+        r.pdbs.forEach((x) => { if (!w.pdbs.includes(x)) w.pdbs.push(x); });
+        r.names.forEach((x) => { if (x && !w.names.includes(x)) w.names.push(x); });
         r.offs.forEach((o) => w.offs.add(o));
         w.dist = Math.min(w.dist, r.dist);
+        w.syn = w.syn && r.syn;
       }
       const ws = Array.from(seen.values());
       ws.forEach((w) => { w.weight = 1 / ws.length; out.push(w); });
@@ -7225,46 +7238,66 @@
     return cols;
   }
   const NT_GLYPH_W = { A: 72, C: 72, G: 78, U: 72, T: 61 };   // advance widths (Arial bold, font-size 100)
-  // A sequence logo, offset 0 shaded. mode bits: letter height = frequency × information content (2 bits at most), which
-  // shows conservation in a few sites; freq: letter height = frequency, which shows composition across many.
-  function naLogoSvg(ws, kind, pal, forExport, title, mode) {
-    const cols = naColumns(ws), T = kind === 'dna', bits = mode !== 'freq';
-    const cw = 22, h = 110, padL = 40, padT = title ? 30 : 10, padB = 34, W = padL + cols.length * cw + 10, H = padT + h + padB;
+  // A sequence logo of columns of nucleotide weights ({A, C, G, U, n}). mode bits: letter height = frequency ×
+  // information content (2 bits at most), which shows conservation; freq: letter height = frequency, which shows
+  // composition across many sequences. o: pal, T (DNA letters), mode, title, forExport, center (a shaded column),
+  // label(i) (the column's axis label, or ''), tip(i, c) (its tooltip), note (under the axis), compact (no axis text).
+  function logoSvg(cols, o) {
+    const pal = o.pal, bits = o.mode !== 'freq', compact = !!o.compact;
+    const cw = o.cw || (compact ? 13 : 22), h = o.h || (compact ? 44 : 110), padL = compact ? 2 : 40, padT = o.title ? 30 : compact ? 2 : 10;
+    const padB = compact ? 2 : o.note ? 34 : 20, W = padL + cols.length * cw + (compact ? 2 : 10), H = padT + h + padB;
     const font = pal.font || EXPORT_PAL.font;
     let g = '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>';
-    if (title) g += '<text x="' + padL + '" y="18" font-size="13" font-weight="700" fill="' + pal.ink + '">' + esc(title) + '</text>';
-    g += '<rect x="' + (padL + NA_W * cw) + '" y="' + padT + '" width="' + cw + '" height="' + h + '" fill="' + pal.panel + '"/>';
-    for (const b of [0, 0.5, 1]) {
-      const y = padT + h - b * h;
-      g += '<line x1="' + (padL - 4) + '" x2="' + (padL + cols.length * cw) + '" y1="' + y + '" y2="' + y + '" stroke="' + pal.grid + '" stroke-width="1"/>' +
-        '<text x="' + (padL - 7) + '" y="' + (y + 4) + '" font-size="11" text-anchor="end" fill="' + pal.muted + '">' + (bits ? 2 * b : b) + '</text>';
-    }
-    g += '<text transform="translate(12,' + (padT + h / 2) + ') rotate(-90)" font-size="11" text-anchor="middle" fill="' + pal.muted + '">' + (bits ? 'bits' : 'frequency') + '</text>';
+    if (o.title) g += '<text x="' + padL + '" y="18" font-size="13" font-weight="700" fill="' + pal.ink + '">' + esc(o.title) + '</text>';
+    if (o.center != null && o.center >= 0) g += '<rect x="' + (padL + o.center * cw) + '" y="' + padT + '" width="' + cw + '" height="' + h + '" fill="' + pal.panel + '"/>';
+    if (!compact) {
+      for (const v of [0, 0.5, 1]) {
+        const y = padT + h - v * h;
+        g += '<line x1="' + (padL - 4) + '" x2="' + (padL + cols.length * cw) + '" y1="' + y + '" y2="' + y + '" stroke="' + pal.grid + '" stroke-width="1"/>' +
+          '<text x="' + (padL - 7) + '" y="' + (y + 4) + '" font-size="11" text-anchor="end" fill="' + pal.muted + '">' + (bits ? 2 * v : v) + '</text>';
+      }
+      g += '<text transform="translate(12,' + (padT + h / 2) + ') rotate(-90)" font-size="11" text-anchor="middle" fill="' + pal.muted + '">' + (bits ? 'bits' : 'frequency') + '</text>';
+    } else g += '<line x1="' + padL + '" x2="' + (padL + cols.length * cw) + '" y1="' + (padT + h) + '" y2="' + (padT + h) + '" stroke="' + pal.grid + '" stroke-width="1"/>';
     cols.forEach((c, i) => {
-      const x = padL + i * cw, off = i - NA_W;
+      const x = padL + i * cw;
       if (c.n > 0) {
-        const f = NT_BASES.map((b) => [b, c[b] / c.n]).filter(([, p]) => p > 0);
-        const ic = bits ? Math.max(0, 2 + f.reduce((a, [, p]) => a + p * Math.log2(p), 0)) : 2;
+        const f = NT_BASES.map((b) => [b, c[b] / c.n]).filter(([, q]) => q > 0);
+        const ic = bits ? Math.max(0, 2 + f.reduce((acc, [, q]) => acc + q * Math.log2(q), 0)) : 2;
         let y = padT + h;
-        f.sort((a, b) => a[1] - b[1]).forEach(([b, p]) => {
-          const hh = p * ic / 2 * h;
+        f.sort((x1, x2) => x1[1] - x2[1]).forEach(([b, q]) => {
+          const hh = q * ic / 2 * h;
           if (hh < 0.6) return;
-          const letter = b === 'U' && T ? 'T' : b;
+          const letter = b === 'U' && o.T ? 'T' : b;
           g += '<text x="0" y="0" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="100" text-anchor="middle" fill="' + pal['nt' + b] + '"' +
-            ' transform="translate(' + r1(x + cw / 2) + ',' + r1(y) + ') scale(' + ((cw - 2) / NT_GLYPH_W[letter]).toFixed(4) + ',' + (hh / 71.6).toFixed(4) + ')">' + letter + '</text>';
+            ' transform="translate(' + r1(x + cw / 2) + ',' + r1(y) + ') scale(' + ((cw - (compact ? 1 : 2)) / NT_GLYPH_W[letter]).toFixed(4) + ',' + (hh / 71.6).toFixed(4) + ')">' + letter + '</text>';
           y -= hh;
         });
       }
-      if (!forExport && c.n > 0) {
-        const tip = '<b>' + (off === 0 ? 'Closest nucleotide (offset 0)' : 'Offset ' + (off > 0 ? '+' : '−') + Math.abs(off) + ' (' + Math.abs(off) + ' nt ' + (off > 0 ? '3′' : '5′') + ' of the closest)') + '</b><br>' +
-          NT_BASES.map((b) => (b === 'U' && T ? 'T' : b) + ' ' + Math.round(100 * c[b] / c.n) + '%').join(' · ') + '<br><span class="muted">' + fmt(Math.round(c.n)) + ' site' + (Math.round(c.n) === 1 ? '' : 's') + ' with a nucleotide here</span>';
-        g += '<rect class="logo-col" x="' + x + '" y="' + padT + '" width="' + cw + '" height="' + h + '" fill="transparent" data-tip="' + esc(tip) + '"/>';
-      }
-      if (off % 2 === 0) g += '<text x="' + (x + cw / 2) + '" y="' + (padT + h + 15) + '" font-size="11" text-anchor="middle" fill="' + (off === 0 ? pal.ink : pal.muted) + '"' + (off === 0 ? ' font-weight="700"' : '') + '>' + (off > 0 ? '+' + off : off === 0 ? '0' : '−' + -off) + '</text>';
+      if (!o.forExport && c.n > 0 && o.tip) g += '<rect class="logo-col" x="' + x + '" y="' + padT + '" width="' + cw + '" height="' + h + '" fill="transparent" data-tip="' + esc(o.tip(i, c)) + '"/>';
+      const lab = !compact && o.label ? o.label(i) : '';
+      if (lab) g += '<text x="' + (x + cw / 2) + '" y="' + (padT + h + 15) + '" font-size="11" text-anchor="middle" fill="' + (i === o.center ? pal.ink : pal.muted) + '"' + (i === o.center ? ' font-weight="700"' : '') + '>' + lab + '</text>';
     });
-    g += '<text x="' + (padL + NA_W * cw + cw / 2) + '" y="' + (padT + h + 29) + '" font-size="11" text-anchor="middle" fill="' + pal.muted + '">5′ ← nucleotide closest to the methylarginine → 3′</text>';
+    if (o.note && !compact) g += '<text x="' + (padL + (o.center != null && o.center >= 0 ? o.center * cw + cw / 2 : cols.length * cw / 2)) + '" y="' + (padT + h + 29) + '" font-size="11" text-anchor="middle" fill="' + pal.muted + '">' + esc(o.note) + '</text>';
     return { W, H, svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" font-family="' + esc(font) + '" role="img" aria-label="' +
-      esc((title || 'Sequence logo') + ': bound ' + (T ? 'DNA' : 'RNA') + ' nucleotides around the methylarginine') + '">' + g + '</svg>' };
+      esc(o.aria || o.title || 'Sequence logo') + '">' + g + '</svg>' };
+  }
+  const ntShare = (c, T) => NT_BASES.map((b) => (b === 'U' && T ? 'T' : b) + ' ' + Math.round(100 * c[b] / c.n) + '%').join(' · ');
+  // The bound windows' logo, aligned on the nucleotide closest to the methylarginine (offset 0).
+  function naLogoSvg(ws, kind, pal, forExport, title, mode) {
+    const T = kind === 'dna', off = (i) => i - NA_W;
+    return logoSvg(naColumns(ws), {
+      pal, T, mode, title, forExport, center: NA_W, note: '5′ ← nucleotide closest to the methylarginine → 3′',
+      aria: (title || 'Sequence logo') + ': bound ' + (T ? 'DNA' : 'RNA') + ' nucleotides around the methylarginine',
+      label: (i) => (off(i) % 2 === 0 ? (off(i) > 0 ? '+' + off(i) : off(i) === 0 ? '0' : '−' + -off(i)) : ''),
+      tip: (i, c) => '<b>' + (off(i) === 0 ? 'Closest nucleotide (offset 0)' : 'Offset ' + (off(i) > 0 ? '+' : '−') + Math.abs(off(i)) + ' (' + Math.abs(off(i)) + ' nt ' + (off(i) > 0 ? '3′' : '5′') + ' of the closest)') +
+        '</b><br>' + ntShare(c, T) + '<br><span class="muted">' + fmt(Math.round(c.n)) + ' site' + (Math.round(c.n) === 1 ? '' : 's') + ' with a nucleotide here</span>',
+    });
+  }
+  // A position weight or frequency matrix ([[A, C, G, U|T] per position]) as a logo in bits.
+  function pfmLogoSvg(rows, T, pal, o) {
+    const cols = rows.map(([a, c, g, u]) => ({ A: a, C: c, G: g, U: u, n: a + c + g + u }));
+    return logoSvg(cols, Object.assign({ pal, T, mode: 'bits', center: -1, label: (i) => ((i + 1) % 2 === 1 || cols.length < 10 ? String(i + 1) : ''),
+      tip: (i, c) => '<b>Position ' + (i + 1) + '</b><br>' + ntShare(c, T) }, o || {}));
   }
   // One aligned window: tinted nucleotides, contacted ones bold and underlined, offset 0 outlined.
   function naWindowHtml(w) {
@@ -7279,20 +7312,24 @@
     return '<div class="tbl-wrap"><table class="tbl compact na-aln"><thead><tr>' + (withProtein ? '<th>Protein</th>' : '') + '<th>Site</th><th>Bound sequence, aligned on the closest nucleotide</th><th class="hide-sm">Chain</th><th>PDB</th></tr></thead><tbody>' +
       shown.map((w) => '<tr>' + (withProtein ? '<td><button class="linkish" type="button" data-na-p="' + w.s.p + '">' + esc(P[w.s.p].label) + '</button></td>' : '') +
         '<td class="num"><button class="linkish strong" type="button" data-na-p="' + w.s.p + '" data-na-pos="' + w.s.pos + '">' + rl(w.s.pos, P[w.s.p]) + '</button></td>' +
-        '<td>' + naWindowHtml(w) + '</td><td class="hide-sm small na-name" title="' + esc(w.names.join('; ')) + '">' + esc(w.names.slice(0, 2).join('; ')) + (w.names.length > 2 ? ' +' + (w.names.length - 2) : '') + '</td>' +
+        '<td>' + naWindowHtml(w) + '</td><td class="hide-sm small na-name" title="' + esc(w.names.join('; ') + (w.syn ? '. A designed oligonucleotide in every entry (Synthetically obtained).' : '')) + '">' +
+        (w.syn ? '<span class="tag na-oligo">oligo</span> ' : '') + esc(w.names.slice(0, 2).join('; ')) + (w.names.length > 2 ? ' +' + (w.names.length - 2) : '') + '</td>' +
         '<td class="small">' + w.pdbs.slice(0, 3).map((x) => '<a href="https://www.rcsb.org/structure/' + encodeURIComponent(x) + '" target="_blank" rel="noopener">' + esc(x.toUpperCase()) + '</a>').join(' ') +
         (w.pdbs.length > 3 ? ' +' + (w.pdbs.length - 3) : '') + '</td></tr>').join('') + '</tbody></table></div>' +
       (limit && rows.length > limit ? '<p class="note">' + fmt(limit) + ' of ' + fmt(rows.length) + ' bound sequences; the TSV has all of them.</p>' : '');
   }
   const NA_NOTE = 'Bound sequence: the chain ' + NA_W + ' nucleotides each side of the one closest to the arginine\'s side chain (offset 0, outlined); nucleotides within 4 Å are bold. ' +
-    'Only the two most recent structures per site and partner type are read. In the logo each site counts once, however many structures or chains it has; letter height is the frequency, ' +
-    'or the frequency × information content in bits, which shows conservation among a few sites.';
+    'Every PDB entry with the site at an RNA or DNA interface is read. A structure shows the complex its authors made, often with a designed oligonucleotide (tagged oligo), not every sequence ' +
+    'the protein binds in cells. In the logo each site counts once, however many structures or chains it has; letter height is the frequency, or the frequency × information content in bits, ' +
+    'which shows conservation among a few sites.';
   function naTsv(ws) {
-    return ['protein\tuniprot_accession\tsite\tnucleic_acid\twindow\tcontacted_offsets\tclosest_distance_a\tmolecule_names\tpdb_entries']
-      .concat(ws.map((w) => [P[w.s.p].label, P[w.s.p].acc, rl(w.s.pos, P[w.s.p]), w.kind, w.win, Array.from(w.offs).sort((a, b) => a - b).map((o) => o - NA_W).join(';'), w.dist, w.names.join(';'), w.pdbs.join(';')].join('\t'))).join('\n') + '\n';
+    return ['protein\tuniprot_accession\tsite\tnucleic_acid\twindow\tcontacted_offsets\tclosest_distance_a\tdesigned_oligonucleotide\tmolecule_names\tpdb_entries']
+      .concat(ws.map((w) => [P[w.s.p].label, P[w.s.p].acc, rl(w.s.pos, P[w.s.p]), w.kind, w.win, Array.from(w.offs).sort((a, b) => a - b).map((o) => o - NA_W).join(';'), w.dist, w.syn ? 'yes' : 'no',
+        w.names.join(';'), w.pdbs.join(';')].join('\t'))).join('\n') + '\n';
   }
   function bindLogoTips(root) {
-    $$('.logo-col', root).forEach((c) => {
+    $$('.logo-col:not([data-tb])', root).forEach((c) => {
+      c.setAttribute('data-tb', '1');
       c.addEventListener('mouseenter', (e) => showTip(e, c.getAttribute('data-tip')));
       c.addEventListener('mousemove', moveTip);
       c.addEventListener('mouseleave', hideTip);
@@ -7322,6 +7359,94 @@
       else exportFigure(fmt_, naLogoSvg(rows, kind, EXPORT_PAL, true, (kind === 'dna' ? 'DNA' : 'RNA') + ' bound at ' + fmt(new Set(rows.map((w) => w.s)).size) + ' methylarginines', mode), name + '_' + kind + '_logo');
     }));
   }
+  // ------------------------------------------- where a protein binds RNA or DNA, and what it binds
+  // Regions: runs of residues within 4 Å of RNA or DNA in structures (one entry per distinct complex read), RBDmap
+  // fragments (RNA-bound in HeLa cells, overlapping ones merged) and UniProt DNA-binding regions, each with the
+  // methylarginines inside it; the UniProt domains they fall in are filled in when UniProt answers.
+  function bindRegions(p, kind) {
+    const out = [];
+    for (const r of (IX.naReg && IX.naReg.get(p.i)) || []) if (r.kind === kind) out.push({ start: r.start, end: r.end, src: 'pdb', r });
+    const xp = IX.xlProt.get(p.i);
+    if (xp && kind === 'rna') {
+      const merged = [];
+      for (const [a, b] of xp.rbd.slice().sort((x, y) => x[0] - y[0])) {
+        const last = merged[merged.length - 1];
+        if (last && a <= last[1]) { last[1] = Math.max(last[1], b); last[2]++; } else merged.push([a, b, 1]);
+      }
+      merged.forEach(([a, b, n]) => out.push({ start: a, end: b, src: 'rbd', n }));
+    }
+    if (xp && kind === 'dna') xp.dnaBind.forEach(([a, b]) => out.push({ start: a, end: b, src: 'unp' }));
+    out.forEach((r) => { r.sites = p.sites.filter((j) => S[j].pos >= r.start && S[j].pos <= r.end); });
+    return out.sort((x, y) => x.start - y.start || x.end - y.end);
+  }
+  // A bound segment ('AU[G][G]C…'): contacted nucleotides (in brackets) bold, … between clusters.
+  const segHtml = (seg) => '<span class="na-win">' + seg.replace(/\[([A-Z])\]|([A-Z])|(…)/g, (m, hit, plain, gap) => (gap ? '<span class="muted">…</span>'
+    : '<span class="nt nt-' + ntKey(hit || plain) + (hit ? ' hit' : '') + '">' + (hit || plain) + '</span>')) + '</span>';
+  const BIND_SRC = {
+    pdb: ['structure', (K) => 'Residues within 4 Å of ' + K + ' in PDB structures'],
+    rbd: ['RBDmap', () => 'Peptides crosslinked to RNA in HeLa cells (RBDmap, Castello et al. 2016); overlapping fragments merged'],
+    unp: ['UniProt', () => 'UniProt DNA-binding region'],
+  };
+  function bindWhereHtml(p, kind) {
+    const regs = bindRegions(p, kind), K = kind.toUpperCase();
+    if (!regs.length) return '';
+    return '<section class="na-sec na-where"><h4>Where ' + esc(p.label) + ' binds ' + K + ', and the methylarginines there</h4><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th class="r">Residues</th><th>Evidence</th>' +
+      '<th class="hide-sm">UniProt domain</th><th>What it touches</th><th>Methylarginines inside</th></tr></thead><tbody>' +
+      regs.map((r) => '<tr' + (r.sites.length ? ' class="has"' : '') + '><td class="num">' + r.start + '–' + r.end + '</td>' +
+        '<td><span class="tag" title="' + esc(BIND_SRC[r.src][1](K)) + '">' + BIND_SRC[r.src][0] + '</span>' +
+        (r.src === 'pdb' ? ' <span class="muted small">' + fmt(r.r.nEnt) + ' entr' + (r.r.nEnt === 1 ? 'y' : 'ies') + '</span>' : r.src === 'rbd' ? ' <span class="muted small">' + r.n + ' fragment' + (r.n === 1 ? '' : 's') + '</span>' : '') + '</td>' +
+        '<td class="hide-sm small" data-dom="' + r.start + '-' + r.end + '"><span class="muted">…</span></td>' +
+        '<td>' + (r.src === 'pdb' ? r.r.segs.slice(0, 3).map((g) => segHtml(g.seg) + ' <span class="muted small" title="' + esc(g.name + ', e.g. ' + g.pdb.toUpperCase()) + '">' + fmt(g.n) + '</span>').join('<br>') +
+          (r.r.nSegs > 3 ? '<br><span class="muted small">+' + (r.r.nSegs - 3) + ' more</span>' : '') : '<span class="muted">' + (r.src === 'rbd' ? 'RNA in cells, sequence not determined' : 'DNA, as annotated') + '</span>') + '</td>' +
+        '<td>' + (r.sites.length ? r.sites.map((j) => '<button class="linkish strong" type="button" data-pos="' + S[j].pos + '">' + rl(S[j].pos, p) + '</button>').join(' ') : '<span class="muted">—</span>') + '</td></tr>').join('') +
+      '</tbody></table></div><p class="note">Structure: runs of residues within 4 Å of ' + K + ' (joined across gaps of up to 3), read once per distinct complex of every PDB entry with ' + esc(p.label) + ' and ' + K +
+      '; the segments are the stretches they touch, contacted nucleotides bold, … between distant clusters, with the number of entries showing each. ' +
+      (kind === 'rna' ? 'RBDmap: peptides crosslinked to RNA in HeLa cells, the sequence bound is not known.' : 'UniProt: annotated DNA-binding regions.') + '</p></section>';
+  }
+  function fillBindDomains(root, p) {
+    const cells = $$('[data-dom]', root);
+    if (!cells.length) return;
+    loadUniProt(p.acc).then((u) => {
+      // domains, zinc fingers and DNA-binding regions (UniProt's repeats are often numbered units such as 1-1, 2-1)
+      const feats = u ? u.feats.filter((f) => f.type === 'Domain' || f.type === 'Zinc finger' || f.type === 'DNA binding') : [];
+      cells.forEach((c) => {
+        const [a, b] = c.dataset.dom.split('-').map(Number);
+        const hit = feats.filter((f) => f.start <= b && f.end >= a).map((f) => (f.desc || f.type) + ' ' + f.start + '–' + f.end);
+        c.innerHTML = hit.length ? esc(Array.from(new Set(hit)).join('; ')) : '<span class="muted">' + (u ? 'none' : 'UniProt did not answer') + '</span>';
+      });
+    });
+  }
+  // What it prefers beyond structures: RNA Bind-n-Seq (ENCODE, in vitro) or JASPAR 2026 profiles.
+  function bindPrefHtml(p, kind) {
+    const pal = screenPalette();
+    if (kind === 'rna') {
+      const rb = IX.nab.rbns.get(p.i) || [];
+      if (!rb.length) return '';
+      return '<section class="na-sec"><h4>Preferred RNA in vitro (RNA Bind-n-Seq)</h4>' + rb.map((x) => '<div class="nab-row">' +
+        (x.logos.length ? '<div class="nab-logos">' + x.logos.map(([k, lg, pwm]) => '<span class="nab-logo" title="ENCODE logo ' + lg + ', from ' + k + '-mers">' + pfmLogoSvg(pwm, false, pal, { compact: true }).svg + '</span>').join('') + '</div>' : '') +
+        '<div class="tags">' + x.top.map(([k, r]) => '<span class="tag nab-kmer" title="enrichment R ' + r + '">' + esc(k) + ' <span class="muted">' + Number(r).toFixed(1) + '</span></span>').join('') + '</div>' +
+        '<p class="note">The ' + x.top.length + ' most enriched 5-mers (R: frequency in the RNA the purified protein pulled down from random RNA, over the input) at ' + esc(x.conc) +
+        '; ENCODE <a href="https://www.encodeproject.org/experiments/' + encodeURIComponent(x.exp) + '/" target="_blank" rel="noopener">' + esc(x.exp) + ' ↗</a>.</p></div>').join('') + '</section>';
+    }
+    const jm = IX.nab.jaspar.get(p.i) || [];
+    if (!jm.length) return '';
+    return '<section class="na-sec"><h4>DNA-binding profiles (JASPAR 2026)</h4><div class="nab-grid">' + jm.map((m) => '<figure class="nab-mat">' + pfmLogoSvg(m.pfm, true, pal, { h: 60, cw: 16 }).svg +
+      '<figcaption><a href="https://jaspar.elixir.no/matrix/' + encodeURIComponent(m.id) + '/" target="_blank" rel="noopener">' + esc(m.id) + ' ↗</a> ' + esc(m.name) + ' <span class="mono">' + esc(m.cons) + '</span><br><span class="muted small">' +
+      esc([m.cls, m.fam].filter(Boolean).join(' · ')) + '</span></figcaption></figure>').join('') + '</div><p class="note">JASPAR CORE vertebrates, non-redundant (CC BY 4.0); a heterodimer\'s profile (A::B) is listed for both partners.</p></section>';
+  }
+  // eCLIP in K562 and HepG2 cells (ENCODE): reproducible peaks by transcript region, and the genes with most peaks.
+  const ECLIP_LABEL = ['CDS', '3′ UTR', '5′ UTR', 'non-coding exon', 'intron', 'intergenic'];
+  function eclipHtml(p) {
+    const ex = IX.nab.eclip.get(p.i) || [];
+    if (!ex.length) return '';
+    return '<div class="ec-grid">' + ex.map((x) => {
+      const tot = x.regions.reduce((a, b) => a + b, 0) || 1;
+      return '<div class="ec-exp"><p><b>' + esc(x.cell) + '</b> · ' + fmt(x.n) + ' reproducible peaks · <a href="https://www.encodeproject.org/experiments/' + encodeURIComponent(x.exp) + '/" target="_blank" rel="noopener">' + esc(x.exp) + ' ↗</a></p>' +
+        '<div class="ec-regions">' + x.regions.map((n, k) => '<div class="ec-r"><span class="ec-l">' + ECLIP_LABEL[k] + '</span><span class="ec-bar"><i style="width:' + (100 * n / tot).toFixed(1) + '%"></i></span><span class="ec-v num">' + pctText(n, tot) + '%</span></div>').join('') + '</div>' +
+        '<p class="flabel">Genes with most peaks</p><div class="tags">' + x.genes.slice(0, 20).map(([g, n]) => '<button class="tag ec-gene" type="button" data-gene="' + esc(g) + '" title="' + n + ' peaks; search ' + esc(g) + '">' + esc(g) + ' <span class="muted">' + n + '</span></button>').join('') + '</div></div>';
+    }).join('') + '</div><p class="note">Peak middles placed on GENCODE v50 basic transcripts of their strand (CDS first, then 3′ UTR, 5′ UTR, non-coding exon, intron). In cells, so the targets reflect expression as well as preference.</p>';
+  }
+
   // Logo and aligned windows of one kind for a set of sites (a protein's, or the selection's). The logo shows letter
   // height as information for a few sites and as frequency for many (NA_FREQ_FROM), and the reader can switch.
   const NA_FREQ_FROM = 15;
@@ -8270,14 +8395,21 @@
           ' <span class="muted small">at the interface in ' + (s.ifN || (s.ifPdb || []).length) + ' entr' + ((s.ifN || 0) === 1 ? 'y' : 'ies') + '</span></li>'; }).join('') + '</ul>' :
         '<p class="muted">None of the methylated arginines contacts ' + KIND + ' in a PDB structure (PDBe-KB).</p>') +
       '<p class="note">PDBe-KB interface residues across all PDB entries of this protein; methylation of these arginines would change the contact.</p></section>' +
+      bindWhereHtml(p, kind) +
       (naWs.length ? '<section class="na-sec"><h4>Bound ' + KIND + ' sequences in structures</h4>' + naBlockHtml(naWs, kind, false, 0) + '<p class="note">' + NA_NOTE + '</p></section>' : '') +
+      bindPrefHtml(p, kind) +
       xlSectionHtml(p, kind) +
       '<section><h4>PDB structures with ' + KIND + '</h4><div id="ix-pdb" class="note">Looking up PDB entries…</div></section>' +
-      (kind === 'rna' ? '<section><h4>ENCODE eCLIP</h4><div id="ix-encode" class="note">Searching ENCODE…</div></section>' :
+      (kind === 'rna' ? '<section' + (IX.nab.eclip.get(p.i) ? ' class="na-sec"' : '') + '><h4>RNA bound in cells (ENCODE eCLIP)</h4>' + (IX.nab.eclip.get(p.i) ? eclipHtml(p) : '<div id="ix-encode" class="note">Searching ENCODE…</div>') + '</section>' :
         '<section><h4>ChIP-Atlas target genes</h4><div id="ix-chip" class="note">Loading ChIP-Atlas…</div></section><section><h4>ENCODE TF ChIP-seq</h4><div id="ix-encode" class="note">Searching ENCODE…</div></section>') +
       '</div>';
     $$('.ix-sites [data-pos]', body).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
-    if (naWs.length) bindNaBlock($('.na-sec', body), naWs, 'methylarginine_' + p.label + '_bound');
+    const naBlk = $('.na-block', body);
+    if (naBlk) bindNaBlock(naBlk.closest('section'), naWs, 'methylarginine_' + p.label + '_bound');
+    $$('.na-where [data-pos]', body).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
+    fillBindDomains(body, p);
+    bindLogoTips(body);
+    $$('.ec-gene', body).forEach((b) => b.addEventListener('click', () => { setPlain(b.dataset.gene); go('proteins'); window.scrollTo({ top: 0 }); }));
     const alive = () => UI.detail === p.i && UI.ixTab === kind && document.body.contains(body);
     loadQuickGO(p.acc.split('-')[0], term).then((rows) => {
       const el = $('#ix-go', body);
@@ -9352,7 +9484,11 @@
     bindConnMatrix(el);
     bindWrMatrix(el);
     const naBox = $('#ix-na', el);
-    if (naBox) bindNaBlock(naBox, naRows(R.sites, 'rna').concat(naRows(R.sites, 'dna')), 'methylarginine_bound');
+    if (naBox) {
+      bindNaBlock(naBox, naRows(R.sites, 'rna').concat(naRows(R.sites, 'dna')), 'methylarginine_bound');
+      bindLogoTips(naBox);
+      $$('.ec-gene', naBox).forEach((b) => b.addEventListener('click', () => { setPlain(b.dataset.gene); go('proteins'); window.scrollTo({ top: 0 }); }));
+    }
     bindComplexMembers(el);
     bindDocLinks(el);
     if (UI.ixJump) { const k = UI.ixJump; UI.ixJump = null; openIxSection(k); }
@@ -9361,18 +9497,48 @@
 
   const foldIf = (key, title, html, sum) => (html ? foldHtml(key, title, html, false, sum()) : '');
 
-  // The bound sequences of the selection's methylarginines, RNA then DNA (naBlockHtml).
+  // The bound sequences of the selection's methylarginines, RNA then DNA (naBlockHtml), and what the selected proteins
+  // bind beyond structures (ixNabHtml).
   function ixNaHtml() {
-    const rna = naRows(R.sites, 'rna'), dna = naRows(R.sites, 'dna');
-    if (!rna.length && !dna.length) return '';
-    const part = (ws, kind) => '<section class="na-part"><h4>' + (kind === 'dna' ? 'DNA' : 'RNA') + '</h4>' +
+    const rna = naRows(R.sites, 'rna'), dna = naRows(R.sites, 'dna'), nabPart = ixNabHtml();
+    if (!rna.length && !dna.length && !nabPart) return '';
+    const part = (ws, kind) => '<section class="na-part"><h4>' + (kind === 'dna' ? 'DNA' : 'RNA') + ' in structures</h4>' +
       (ws.length ? naBlockHtml(ws, kind, true, 40) : '<p class="muted">No methylarginine of ' + (constraints().length ? 'your selection' : 'the release') + ' touches ' + kind.toUpperCase() + ' in the structures read.</p>') + '</section>';
     return '<div class="card" id="ix-na"><div class="card-head"><div><h3>RNA and DNA bound at methylarginines</h3><p class="sub">The sequence each methylarginine touches in PDB structures, ' +
-      'aligned on the nucleotide closest to it' + (constraints().length ? ', for your selection' : '') + '.' + docLink('ix-na') + '</p></div></div>' + part(rna, 'rna') + part(dna, 'dna') + '<p class="note">' + NA_NOTE + '</p></div>';
+      'aligned on the nucleotide closest to it, and what the proteins bind in vitro and in cells' + (constraints().length ? ', for your selection' : '') + '.' + docLink('ix-na') + '</p></div></div>' +
+      part(rna, 'rna') + part(dna, 'dna') + '<p class="note">' + NA_NOTE + '</p>' + nabPart + '</div>';
+  }
+  // The selected proteins with RNA Bind-n-Seq, JASPAR or eCLIP data, most selected sites first, and the eCLIP target
+  // genes that two or more of them share (each experiment's 25 genes with most peaks).
+  function ixNabHtml() {
+    const count = new Map();
+    for (const s of R.sites) count.set(s.p, (count.get(s.p) || 0) + 1);
+    const rows = Array.from(count.entries()).map(([i, n]) => ({ i, n, rb: IX.nab.rbns.get(i), jm: IX.nab.jaspar.get(i), ec: IX.nab.eclip.get(i) }))
+      .filter((r) => r.rb || r.jm || r.ec).sort((a, b) => b.n - a.n || P[a.i].label.localeCompare(P[b.i].label));
+    if (!rows.length) return '';
+    const pal = screenPalette(), LIMIT = 40;
+    const by = new Map();
+    for (const r of rows.filter((x) => x.ec)) {
+      const genes = new Set(r.ec.flatMap((x) => x.genes.map(([g]) => g)));
+      genes.forEach((g) => { if (!by.has(g)) by.set(g, []); by.get(g).push(P[r.i].label); });
+    }
+    const shared = Array.from(by.entries()).filter(([, l]) => l.length >= 2).sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
+    const nRb = rows.filter((r) => r.rb).length, nJm = rows.filter((r) => r.jm).length, nEc = rows.filter((r) => r.ec).length;
+    return '<section class="na-part"><h4>What the proteins bind beyond structures</h4><p class="na-head"><b>' + fmt(rows.length) + '</b> of the ' + fmt(count.size) + ' proteins have data: RNA Bind-n-Seq for ' + fmt(nRb) +
+      ', a JASPAR DNA profile for ' + fmt(nJm) + ', eCLIP for ' + fmt(nEc) + '.</p><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Protein</th><th class="r">Sites</th><th>RNA in vitro (top 5-mers)</th><th>DNA profile</th><th>RNA in cells (eCLIP)</th></tr></thead><tbody>' +
+      rows.slice(0, LIMIT).map((r) => '<tr><td><button class="linkish" type="button" data-na-p="' + r.i + '">' + esc(P[r.i].label) + '</button></td><td class="r num">' + r.n + '</td>' +
+        '<td>' + (r.rb ? r.rb[0].top.slice(0, 3).map(([k]) => '<span class="tag nab-kmer">' + esc(k) + '</span>').join(' ') : '<span class="muted">—</span>') + '</td>' +
+        '<td>' + (r.jm ? r.jm.slice(0, 2).map((m) => '<span class="nab-logo" title="' + esc(m.id + ' ' + m.name + ' ' + m.cons) + '">' + pfmLogoSvg(m.pfm, true, pal, { compact: true }).svg + '</span>').join('') +
+          (r.jm.length > 2 ? ' <span class="muted small">+' + (r.jm.length - 2) + '</span>' : '') : '<span class="muted">—</span>') + '</td>' +
+        '<td>' + (r.ec ? r.ec.map((x) => esc(x.cell) + ' ' + fmt(x.n)).join(', ') + '<br><span class="muted small">' + esc(Array.from(new Set(r.ec.flatMap((x) => x.genes.slice(0, 3).map(([g]) => g)))).slice(0, 4).join(', ')) + '</span>' : '<span class="muted">—</span>') + '</td></tr>').join('') +
+      '</tbody></table></div>' + (rows.length > LIMIT ? '<p class="note">' + fmt(LIMIT) + ' of ' + fmt(rows.length) + ' proteins; each protein page has all of its data.</p>' : '') +
+      (shared.length ? '<p class="flabel">eCLIP targets shared by two or more of these proteins</p><div class="tags">' + shared.slice(0, 30).map(([g, l]) => '<button class="tag ec-gene" type="button" data-gene="' + esc(g) + '" title="' + esc(l.join(', ')) + '">' + esc(g) +
+        ' <span class="muted">' + l.length + '</span></button>').join('') + '</div><p class="note">Among each experiment\'s 25 genes with most reproducible peaks; the number is how many of the proteins bind the gene.</p>' : '') + '</section>';
   }
   function ixNaSummary() {
     const n = (kind) => new Set(naRows(R.sites, kind).map((w) => w.s)).size;
-    return fmt(n('rna')) + ' methylarginines touch RNA and ' + fmt(n('dna')) + ' touch DNA in structures' + (constraints().length ? ', your selection' : '');
+    const prots = new Set(R.sites.map((s) => s.p)), withNab = Array.from(prots).filter((i) => IX.nab.rbns.get(i) || IX.nab.jaspar.get(i) || IX.nab.eclip.get(i)).length;
+    return fmt(n('rna')) + ' methylarginines touch RNA and ' + fmt(n('dna')) + ' touch DNA in structures; ' + fmt(withNab) + ' proteins with motifs or eCLIP' + (constraints().length ? ', your selection' : '');
   }
 
   function openIxSection(k) {
@@ -10600,7 +10766,7 @@
           'Tags with a dashed outline are evidence not localised to the residue alone. A candidate-residue crosslink and an RBDmap fragment count as experimental; near an RNA crosslink, inside a DNA-crosslinked peptide and a UniProt DNA-binding region are context only and do not set the status. Most proteins were never crystallised or crosslinked, so "none recorded" is not evidence of no contact. ' +
           'Partner and complex information about the whole protein (STRING, Complex Portal, Gene Ontology) is never counted as site evidence. Search with <code>interaction:experimental</code>, <code>interaction:predicted-only</code>, <code>interaction:none</code>, or <code>interaction:predicted</code> for any predicted evidence. ' +
           'The <b>Check a site</b> box on the Overview and Interactions pages answers the question for one site without leaving the page.</p>') +
-        sub('ix-na', 'RNA and DNA bound at methylarginines', '<p>For every methylarginine at an RNA or DNA interface in a PDB structure (PDBe-KB), the two most recent entries are read: the nucleotides of other chains within 4 Å of the arginine\'s side chain (CD, NE, CZ, NH1, NH2) are its contacts, and the chain\'s SEQRES sequence (PDBe API, modified nucleotides as their parent) gives the bound sequence, 8 nucleotides each side of the closest one. Windows of different sites therefore align on their middle (offset 0, outlined), with the contacted nucleotides in bold; a dot is past the end of the chain. A chain is RNA or DNA by its molecule type in the entry, so modified nucleotides such as the m7G cap count. The logo counts each site once, sharing its weight among its distinct windows, so a site seen in many ribosome or nucleosome structures does not outweigh one seen once; letter height is the frequency, or the frequency × information content in bits (2 bits for a column of one nucleotide), which shows conservation among a few sites but flattens across many unrelated ones. Ribosomal RNA and nucleosomal DNA make up much of what has been solved. Release file supporting/nucleic_acid_contacts.</p>') +
+        sub('ix-na', 'RNA and DNA bound at methylarginines', '<p>For every methylarginine at an RNA or DNA interface in a PDB structure (PDBe-KB), the two most recent entries are read: the nucleotides of other chains within 4 Å of the arginine\'s side chain (CD, NE, CZ, NH1, NH2) are its contacts, and the chain\'s SEQRES sequence (PDBe API, modified nucleotides as their parent) gives the bound sequence, 8 nucleotides each side of the closest one. Windows of different sites therefore align on their middle (offset 0, outlined), with the contacted nucleotides in bold; a dot is past the end of the chain. A chain is RNA or DNA by its molecule type in the entry, so modified nucleotides such as the m7G cap count. The logo counts each site once, sharing its weight among its distinct windows, so a site seen in many ribosome or nucleosome structures does not outweigh one seen once; letter height is the frequency, or the frequency × information content in bits (2 bits for a column of one nucleotide), which shows conservation among a few sites but flattens across many unrelated ones. Ribosomal RNA and nucleosomal DNA make up much of what has been solved, and a structure shows the complex its authors made, often with a designed oligonucleotide (tagged oligo). Release file supporting/nucleic_acid_contacts.</p><p><b>Where a protein binds.</b> On a protein page, the RNA and DNA tabs list the regions that bind: runs of residues within 4 Å of RNA or DNA in structures (read once per distinct complex, that is per set of bound sequences, in every entry; joined across gaps of up to 3 residues), with the stretches of RNA or DNA they touch; RBDmap fragments crosslinked to RNA in HeLa cells; and UniProt DNA-binding regions. Each row names the UniProt domains it falls in and the methylarginines inside it. Release file supporting/nucleic_acid_regions.</p><p><b>What it binds beyond structures.</b> RNA Bind-n-Seq (ENCODE; Dominguez et al. 2018): the 5-mers a purified protein enriches from random RNA, and ENCODE\'s logos. JASPAR 2026 CORE vertebrates (CC BY 4.0): DNA-binding profiles, a heterodimer\'s for both partners. eCLIP (ENCODE; Van Nostrand et al. 2020): the RNA a protein is crosslinked to in K562 and HepG2 cells, as reproducible peaks placed on GENCODE v50 basic transcripts, with the genes with most peaks. For a selection, the Interactions view lists these for the selected proteins and the eCLIP targets two or more of them share. RNAcompete (CISBP-RNA) states no licence and is not included. Release files supporting/rna_bind_n_seq, dna_motifs and eclip.</p>') +
         sub('ix-evmap', 'How the evidence fits together', '<p>Counted per site or per protein. For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink at or possibly at the residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), three IntAct record types (a mutation that changed an interaction, a short binding region, the arginine curated as methylated in an interaction; these do not set the status), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. The protein-context table shows, for the sites with each kind of evidence, the share on proteins annotated as RNA- or DNA-binding (Gene Ontology), in a CD-CODE condensate, physically linked to a PRMT or a Tudor-domain reader (STRING ≥ 0.7) or in a Complex Portal curated complex, against all selected sites; each cell lists those sites. Counted per protein, the same layout combines these protein properties and whether any of the protein\'s sites carries contact evidence. Below the site view, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
         sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a dimethylarginine state call (ProMetheusDB, Maron Table S2, UniProt or Wei 2020), the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the plain odds ratio with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ 0.05 are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions are read with care.</p>') +
         sub('ix-wr', 'Writers and readers sharing substrates', '<p>For the proteins in the current selection, each cell counts the methylated proteins that are STRING physical partners (score ≥ 0.7) of both a PRMT (rows) and a Tudor-domain protein (columns, InterPro IPR002999; the 12 with most shared partners are shown). The expected count assumes the two partner lists are independent among the selected methylated proteins that are in STRING; Fisher\'s exact test, Benjamini–Hochberg across the cells; outlined cells have at least two shared partners and q ≤ 0.05 (a single shared partner of two short lists can pass the test alone). Clicking a cell lists the proteins (binds: both partners). A physical link is to the whole protein, not to a site, and several Tudor proteins read methyllysine rather than methylarginine, so a shared partner is a candidate path to test, not a demonstrated one.</p>') +

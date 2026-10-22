@@ -508,19 +508,43 @@ def stage_nucleic_chains(w: Writer, c: Path):
             chains = x37.nucleic_chain_rows(json.loads(p.read_text() or '{}').get(p.stem, []))
         except json.JSONDecodeError:
             continue
-        rows += [[p.stem, ch, entity, kind, name, organism, len(seq), seq] for ch, entity, kind, name, organism, seq in chains]
+        rows += [[p.stem, ch, entity, kind, name, organism, prep, len(seq), seq] for ch, entity, kind, name, organism, seq, prep in chains]
         if not chains:
-            rows.append([p.stem, '', '', '', '', '', '', ''])
+            rows.append([p.stem, '', '', '', '', '', '', '', ''])
     rows.sort(key=lambda x: (x[0], x[1]))
     d = dates_of(files)
     w.table(f'pdb_nucleic_acid_chains_{d[:10]}.tsv',
-            ['pdb_id', 'chain', 'entity_id', 'nucleic_acid', 'molecule_name', 'source_organism', 'length', 'sequence'], rows,
-            content='The RNA and DNA chains of the PDB entries where a methylarginine touches nucleic acid: molecule type (rna, dna or '
-                    'hybrid), name, source organism and SEQRES sequence in one-letter codes (modified nucleotides as their parent); a row '
-                    'with an empty chain is an entry looked up that has none',
+            ['pdb_id', 'chain', 'entity_id', 'nucleic_acid', 'molecule_name', 'source_organism', 'sample_preparation', 'length', 'sequence'], rows,
+            content='The RNA and DNA chains of the PDB entries where a methylated protein touches nucleic acid: molecule type (rna, dna or '
+                    'hybrid), name, source organism, sample preparation (Synthetically obtained for a made oligonucleotide) and SEQRES '
+                    'sequence in one-letter codes (modified nucleotides as their parent); a row with an empty chain is an entry looked up '
+                    'that has none',
             source=x37.PDBE_MOLECULES, version=f'PDBe API, read {d}', citation='Burley et al., Nucleic Acids Res 51:D488 (2023)',
             licence='CC0 (PDB data)', how='scripts/37 load_nucleic_chains; collected here',
             derived=[f'pdbe_molecules/<pdb>.json ({len(files):,} files)'])
+
+
+def stage_na_regions(w: Writer, c: Path):
+    """Every residue of a methylated protein's chain within 4 Å of RNA or DNA, one entry per distinct complex."""
+    files = sorted((c / 'na_regions').glob('*.json'))
+    rows = []
+    for p in files:
+        pdb, chain = p.stem.split('_', 1)
+        try:
+            hits = json.loads(p.read_text()).get('hits') or []
+        except json.JSONDecodeError:
+            continue
+        rows += [[pdb, chain, *h] for h in hits] or [[pdb, chain, '', '', '', '', '', '', '']]
+    rows.sort(key=lambda x: (x[0], x[1], x[2] if x[2] != '' else 0, x[5] if x[5] != '' else '', x[6] if x[6] != '' else 0))
+    d = dates_of(files)
+    w.table(f'pdb_nucleic_acid_residue_contacts_{d[:10]}.tsv',
+            ['pdb_id', 'chain', 'seqres_index', 'author_number', 'residue', 'na_chain', 'na_seqres_index', 'nucleotide', 'distance_a'], rows,
+            content='Residues of a methylated protein\'s chain within 4 Å (any heavy atoms) of an RNA or DNA chain of the entry, in the '
+                    'asymmetric unit of the first model, read in one entry per distinct complex (the protein with the same bound '
+                    'sequences); a row with empty contact columns is a chain read that touches none',
+            source=x37.MODELSERVER_INTERACTION, version=f'RCSB ModelServer, read {d}', citation='Burley et al., Nucleic Acids Res 51:D488 (2023)',
+            licence='CC0 (PDB data)', how='scripts/37 chain_na_contacts; collected here',
+            derived=[f'na_regions/<pdb>_<chain>.json ({len(files):,} files)'])
 
 
 def _env(p: str):
@@ -942,6 +966,8 @@ def stage_topup(c: Path, out: Path, workers: int, manifest: Path, measured: str)
         stage_environments(w, c, workers)
     if any((c / 'pdbe_molecules').glob('*.json')):
         stage_nucleic_chains(w, c)
+    if any((c / 'na_regions').glob('*.json')):
+        stage_na_regions(w, c)
     # scripts/37 makes these folders before it knows whether a model needs measuring: stage only what holds files
     if any(p.is_file() for x in ('protvar_measure', 'afdb_measure', 'afdb_complex') for p in (c / x).glob('*')):
         stage_model_contacts(w, c, served=out / 'protvar_served_models_af2complexes_v1.tsv', measured=measured)

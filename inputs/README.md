@@ -10,6 +10,7 @@ downloaded at build time: `hpc/build_release.sh` checks each file against `MANIF
 | `annotation/` | InterPro 108.0 domain intervals and MobiDB disorder intervals for every reviewed entry, the PANTHER 19.0 protein classes, and the CD-CODE condensate tables |
 | `layers/` | the CARM1 knockout response (Shishkova et al. 2017), Human Protein Atlas 25.1 locations, and the CPLM 4.0 summary; see its README |
 | `interactions/` | the data behind the website's interaction views (STRING, Complex Portal, GO, PDBe-KB and SIFTS, PDB contacts, ProtVar, AlphaFold DB, IntAct, RNA and DNA crosslinks, RBDmap, CD-CODE 2.3), one table per source; see its README |
+| `nucleic_acid/` | what methylated proteins bind beyond structures: ENCODE RNA Bind-n-Seq 5-mer enrichment and logos (in vitro), JASPAR 2026 CORE vertebrates DNA-binding profiles, and ENCODE eCLIP peaks (in K562 and HepG2 cells) placed on GENCODE v50 basic transcripts |
 | `disease/` | DisGeNET term-gene sets as bundled with DOSE 4.4.0, org.Hs.eg.db 3.22.0's gene symbol to Entrez map, and the Human Disease Ontology (release 2026-09-30) with the gene sets DOSE enrichDO tests, for the disease enrichment |
 | `licences/` | the PhosphoSitePlus terms as of July 2021 (web archive capture), when the PhosphoSitePlus records in Maron et al. 2021 Table S5 were downloaded |
 
@@ -25,6 +26,7 @@ Staging is done once, before a build; the build itself reads only these files. E
 | `annotation/` | InterPro: `scripts/00_stage_context_sources.py --interpro-source bulk` on InterPro 108.0 `protein2ipr.dat.gz`. MobiDB: `scripts/00_stage_mobidb_disorder.py`. Both moved to the 2026_03 sequences by `scripts/00_lift_intervals_to_reference.py`. PANTHER: `scripts/00_stage_panther_classes.py` on the three PANTHER 19.0 downloads (kept at their release URLs). UniProt methylarginine annotations: `scripts/00_stage_uniprot_methylarginine.py` (UniProt REST, release 2026_03). CD-CODE: exports as downloaded |
 | `layers/` | downloads by `scripts/00_fetch_static_sources.py` (which checks each against the MD5 in `layers/raw_files.tsv`), then `scripts/41_stage_carm1_ko_sites.py`, `scripts/42_stage_hpa_subcellular.py` and `scripts/39_stage_cplm4_lys_methylation.py` |
 | `interactions/` | `scripts/37_export_interaction_data.py` downloads into a cache, and `scripts/37a_stage_interactions.py` turns the cache into these tables. For proteins and sites a release adds, `scripts/37 --tables` fetches what the tables lack into a top-up cache, and `scripts/37a_stage_interactions.py --topup` stages it as dated tables next to the others |
+| `nucleic_acid/` | `scripts/43_stage_nucleic_acid_binding.py` (ENCODE portal searches and files, each checked against ENCODE's MD5; the JASPAR 2026 release files and database dump; GENCODE v50 basic), every download listed in `nucleic_acid/raw_files.tsv`. RNAcompete (CISBP-RNA) states no licence and is not staged |
 | `disease/` | `scripts/00_export_disease_tables.R` (Bioconductor DOSE 4.4.0 and org.Hs.eg.db 3.22.0, from bioconda) and `scripts/00_export_disease_ontology.R` (DOSE's Disease Ontology data, HDO.sqlite from YuLab) |
 
 ## MANIFEST.tsv

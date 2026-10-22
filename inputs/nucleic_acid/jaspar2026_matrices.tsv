@@ -1,0 +1,1082 @@
+matrix_id	name	uniprot_accession	mapped_by	species_taxids	tf_class	tf_family	length	sites
+MA0004.1	Arnt	P27540	symbol	10090	Basic helix-loop-helix factors (bHLH)	PAS domain factors	6	20
+MA0069.1	PAX6	P26367	accession	9606	Paired box factors	Paired plus homeo domain	14	43
+MA0071.1	RORA	P35398	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	10	25
+MA0074.1	RXRA::VDR	P11473	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	15	10
+MA0074.1	RXRA::VDR	P19793	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	15	10
+MA0101.1	REL	Q04864	accession	9606	Rel homology region (RHR) factors	NF-kappaB-related factors	10	17
+MA0107.1	RELA	Q04206	accession	9606	Rel homology region (RHR) factors	NF-kappaB-related factors	10	18
+MA0111.1	Spz1	Q9BXG8	symbol	10090	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	11	12
+MA0115.1	NR1H2::RXRA	P19793	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	17	25
+MA0115.1	NR1H2::RXRA	P55055	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	17	25
+MA0119.1	NFIC::TLX1	P08651	accession	9606	Homeo domain factors	NK	14	16
+MA0119.1	NFIC::TLX1	P31314	accession	9606	Homeo domain factors	NK	14	16
+MA0130.1	ZNF354C	Q86Y25	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	6	16
+MA0142.1	Pou5f1::Sox2	P48431	symbol	10090	High-mobility group (HMG) domain factors	SOX-related factors	15	1364
+MA0142.1	Pou5f1::Sox2	Q01860	symbol	10090	High-mobility group (HMG) domain factors	SOX-related factors	15	1364
+MA0151.1	Arid3a	Q99856	symbol	10090	ARID	ARID-related	6	27
+MA0155.1	INSM1	Q01101	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	12	24
+MA0159.1	RARA::RXRA	P10276	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	17	23
+MA0159.1	RARA::RXRA	P19793	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	17	23
+MA0163.1	PLAG1	Q6DJT9	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	18
+MA0145.2	Tfcp2l1	Q9NZI6	symbol	10090	Grainyhead domain factors	CP2-related factors	14	4071
+MA0468.1	DUX4	Q9UBX2	accession	9606	Homeo domain factors	Paired-related HD factors	11	38217
+MA0515.1	Sox6	P35712	symbol	10090	High-mobility group (HMG) domain factors	SOX-related factors	10	249
+MA0258.2	ESR2	Q92731	accession	9606	Nuclear receptors with C4 zinc fingers	Steroid hormone receptors (NR3)	15	8243
+MA0595.1	SREBF1	P36956	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	58
+MA0596.1	SREBF2	Q12772	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	47
+MA0599.1	KLF5	Q13887	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	10	13611
+MA0604.1	Atf1	P18846	symbol	10090	Basic leucine zipper factors (bZIP)	CREB-related factors	8	1000
+MA0608.1	Creb3l2	Q70SY1	symbol	10090	Basic leucine zipper factors (bZIP)	CREB-related factors	9	999
+MA0613.1	FOXG1	P55316	accession	9606	Fork head/winged helix factors	FOX	8	999
+MA0614.1	Foxj2	Q9P0K8	symbol	10090	Fork head/winged helix factors	FOX	8	999
+MA0636.1	BHLHE41	Q9C0J9	accession	9606	Basic helix-loop-helix factors (bHLH)	Hairy-related factors	10	9573
+MA0641.1	ELF4	Q99607	accession	9606	Tryptophan cluster factors	Ets-related	12	1059
+MA0042.2	FOXI1	Q12951	accession	9606	Fork head/winged helix factors	FOX	7	5832
+MA0033.2	FOXL1	Q12952	accession	9606	Fork head/winged helix factors	FOX	7	4933
+MA0153.2	HNF1B	P35680	accession	9606	Homeo domain factors	POU domain factors	13	35025
+MA0486.2	HSF1	Q00613	accession	9606	Heat shock factors	HSF factors	13	1562
+MA0653.1	IRF9	Q00978	accession	9606	Tryptophan cluster factors	Interferon-regulatory factors	15	3672
+MA0655.1	JDP2	Q8WYK2	accession	9606	Basic leucine zipper factors (bZIP)	Fos-related	9	1801
+MA0660.1	MEF2B	Q02080	accession	9606	MADS box factors	Regulators of differentiation	12	3728
+MA0663.1	MLX	Q9UH92	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	332
+MA0665.1	MSC	O60682	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	10	94
+MA0667.1	MYF6	P23409	accession	9606	Basic helix-loop-helix factors (bHLH)	MyoD/ASC-related factors	10	533
+MA0669.1	NEUROG2	Q9H2A3	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	10	428
+MA0676.1	Nr2e1	Q9Y466	symbol	10090	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	9	1954
+MA0678.1	OLIG2	Q13516	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	10	2090
+MA0068.2	PAX4	O43316	accession	9606	Paired box factors	Paired plus homeo domain	8	522
+MA0512.2	Rxra	P19793	symbol	10090	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	14	50494
+MA0083.3	SRF	P11831	accession	9606	MADS box factors	Responders to external signals (SRF/RLM1)	16	1548
+MA0009.2	TBXT	O15178	accession	9606	T-Box factors	Brachyury-related factors	16	7116
+MA0689.1	TBX20	Q9UMR3	accession	9606	T-Box factors	TBX1-related factors	11	572
+MA0691.1	TFAP4	Q01664	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	4488
+MA0696.1	ZIC1	Q15915	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	39709
+MA0713.1	PHOX2A	O14813	accession	9606	Homeo domain factors	Paired-related HD factors	11	15335
+MA0715.1	PROP1	O75360	accession	9606	Homeo domain factors	Paired-related HD factors	11	660
+MA0724.1	VENTX	O95231	accession	9606	Homeo domain factors	NK	9	23923
+MA0728.1	Nr2F6	P10588	symbol	10090	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	15	288
+MA0729.1	RARA	P10276	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	18	768
+MA0730.1	RARA	P10276	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	17	1426
+MA0731.1	BCL6B	Q8N143	symbol	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	17	226
+MA0472.2	EGR2	P11161	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	11	2072
+MA0736.1	GLIS2	Q9BZE0	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	1621
+MA0737.1	GLIS3	Q8NEA6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	981
+MA0741.1	KLF16	Q9BXK1	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	11	3053
+MA0758.1	E2F7	Q96AV8	accession	9606	Fork head/winged helix factors	E2F	14	1053
+MA0770.1	HSF2	Q03933	accession	9606	Heat shock factors	HSF factors	13	3488
+MA0771.1	HSF4	Q9ULV5	accession	9606	Heat shock factors	HSF factors	13	14127
+MA0773.1	MEF2D	Q14814	symbol	9606	MADS box factors	Regulators of differentiation	12	5804
+MA0774.1	MEIS2	O14770	accession	9606	Homeo domain factors	TALE-type homeo domain factors	8	2337
+MA0776.1	MYBL1	P10243	accession	9606	Tryptophan cluster factors	Myb/SANT domain factors	12	2208
+MA0777.1	MYBL2	P10244	accession	9606	Tryptophan cluster factors	Myb/SANT domain factors	15	1307
+MA0105.4	NFKB1	P19838	accession	9606	Rel homology region (RHR) factors	NF-kappaB-related factors	13	12262
+MA0780.1	PAX3	P23760	accession	9606	Paired box factors	Paired plus homeo domain	10	10576
+MA0783.1	PKNOX2	Q96KN3	accession	9606	Homeo domain factors	TALE-type homeo domain factors	12	1238
+MA0787.1	POU3F2	P20265	accession	9606	Homeo domain factors	POU domain factors	12	1523
+MA0788.1	POU3F3	P20264	accession	9606	Homeo domain factors	POU domain factors	13	1078
+MA0789.1	POU3F4	P49335	accession	9606	Homeo domain factors	POU domain factors	9	12543
+MA0792.1	POU5F1B	Q06416	accession	9606	Homeo domain factors	POU domain factors	9	13431
+MA0794.1	PROX1	Q92786	accession	9606	Homeo domain factors	HD-PROS factors	12	3367
+MA0795.1	SMAD3	P84022	accession	9606	SMAD/NF-1 DNA-binding domain factors	SMAD factors	10	4132
+MA0796.1	TGIF1	Q15583	accession	9606	Homeo domain factors	TALE-type homeo domain factors	12	13280
+MA0797.1	TGIF2	Q9GZN2	accession	9606	Homeo domain factors	TALE-type homeo domain factors	12	12852
+MA0511.2	RUNX2	Q13950	accession	9606	Runt domain factors	Runt-related factors	9	8038
+MA0801.1	MGA	Q8IWI9	accession	9606	T-Box factors	TBX6-related factors	8	44673
+MA0803.1	TBX15	Q96SF7	accession	9606	T-Box factors	TBX1-related factors	8	11352
+MA0805.1	TBX1	O43435	accession	9606	T-Box factors	TBX1-related factors	8	13615
+MA0806.1	TBX4	P57082	accession	9606	T-Box factors	TBX2-related factors	8	22719
+MA0807.1	TBX5	Q99593	accession	9606	T-Box factors	TBX2-related factors	8	2509
+MA0808.1	TEAD3	Q99594	accession	9606	TEA domain factors	TEF-1-related factors	8	22618
+MA0813.1	TFAP2B	Q92481	accession	9606	Basic helix-span-helix factors (bHSH)	AP-2	13	1305
+MA0815.1	TFAP2C	Q92754	accession	9606	Basic helix-span-helix factors (bHSH)	AP-2	13	2563
+MA0816.1	Ascl2	Q99929	symbol	10090	Basic helix-loop-helix factors (bHLH)	MyoD/ASC-related factors	10	352
+MA0822.1	HES7	Q9BYE0	accession	9606	Basic helix-loop-helix factors (bHLH)	Hairy-related factors	12	1864
+MA0823.1	HEY1	Q9Y5J3	accession	9606	Basic helix-loop-helix factors (bHLH)	Hairy-related factors	10	3338
+MA0826.1	OLIG1	Q8TAK6	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	10	13362
+MA0827.1	OLIG3	Q7RTU3	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	10	2678
+MA0838.1	CEBPG	P53567	accession	9606	Basic leucine zipper factors (bZIP)	CEBP-related	10	20742
+MA0845.1	FOXB1	Q99853	accession	9606	Fork head/winged helix factors	FOX	11	7303
+MA0032.2	FOXC1	Q12948	accession	9606	Fork head/winged helix factors	FOX	11	19566
+MA0848.1	FOXO4	P98177	accession	9606	Fork head/winged helix factors	FOX	7	7060
+MA0849.1	FOXO6	A8MYZ6	accession	9606	Fork head/winged helix factors	FOX	7	8470
+MA0850.1	FOXP3	Q9BZS1	symbol	9606	Fork head/winged helix factors	FOX	7	211
+MA0855.1	RXRB	P28702	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	14	5152
+MA0856.1	RXRG	P48443	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	14	34936
+MA0857.1	Rarb	P10826	symbol	10090	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	16	1949
+MA0858.1	Rarb	P10826	symbol	10090	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	17	652
+MA0860.1	Rarg	P13631	symbol	10090	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	17	4921
+MA0525.2	TP63	Q9H3D4	accession	9606	p53 domain factors	p53-related factors	18	2724
+MA0106.3	TP53	P04637	accession	9606	p53 domain factors	p53-related factors	18	17412
+MA0862.1	GMEB2	Q9UKD1	accession	9606	SAND domain factors	GMEB	8	457
+MA0863.1	MTF1	Q14872	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	55
+MA0024.3	E2F1	Q01094	accession	9606	Fork head/winged helix factors	E2F	12	1023
+MA0866.1	SOX21	Q9Y651	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	15	16194
+MA0870.1	Sox1	O00570	symbol	10090	High-mobility group (HMG) domain factors	SOX-related factors	15	2316
+MA0872.1	TFAP2A	P05549	accession	9606	Basic helix-span-helix factors (bHSH)	AP-2	13	1387
+MA1124.1	ZNF24	P17028	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	13	23304
+MA1155.1	ZSCAN4	Q8NAM6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	2125
+MA1127.1	FOSB::JUN	P05412	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	11	1000
+MA1127.1	FOSB::JUN	P53539	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	11	1000
+MA1129.1	FOSL1::JUN	P05412	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	1000
+MA1129.1	FOSL1::JUN	P15407	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	1000
+MA1136.1	FOSB::JUNB	P17275	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	1000
+MA1136.1	FOSB::JUNB	P53539	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	1000
+MA1420.1	IRF5	Q13568	accession	9606	Tryptophan cluster factors	Interferon-regulatory factors	14	268
+MA1421.1	TCF7L1	Q9HCS4	accession	9606	High-mobility group (HMG) domain factors	TCF-7-related factors	12	159
+MA1468.1	ATOH7	Q8N100	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	10	1013
+MA1485.1	FERD3L	Q96RJ6	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	14	32056
+MA1489.1	FOXN3	O00409	accession	9606	Fork head/winged helix factors	FOX	8	998
+MA1493.1	HES6	Q96HZ4	accession	9606	Basic helix-loop-helix factors (bHLH)	Hairy-related factors	10	533
+MA1509.1	IRF6	O14896	accession	9606	Tryptophan cluster factors	Interferon-regulatory factors	9	3553
+MA1538.1	NR2F1	P10589	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	15	3514
+MA1539.1	NR2F6	P10588	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	15	11749
+MA1555.1	RXRB	P28702	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	14	1803
+MA1556.1	RXRG	P48443	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	14	2117
+MA1557.1	SMAD5	Q99717	accession	9606	SMAD/NF-1 DNA-binding domain factors	SMAD factors	10	6027
+MA1570.1	TFAP4	Q01664	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	845
+MA1571.1	TGIF2LX	Q8IUE1	accession	9606	Homeo domain factors	TALE-type homeo domain factors	12	3276
+MA1572.1	TGIF2LY	Q8IUE0	accession	9606	Homeo domain factors	TALE-type homeo domain factors	12	7196
+MA1580.1	ZBTB32	Q9Y2Y4	accession	9606	C2H2 zinc finger factors	Other factors with up to three adjacent zinc fingers	10	3560
+MA1587.1	ZNF135	P52742	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	948
+MA1588.1	ZNF136	P52737	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	3201
+MA1594.1	ZNF382	Q96SR6	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	24	4252
+MA1596.1	ZNF460	Q14592	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	16	1612
+MA1597.1	ZNF528	Q3MIS6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	17	616
+MA0158.2	HOXA5	P20719	accession	9606	Homeo domain factors	HOX	8	3130
+MA0912.2	HOXD3	P31249	accession	9606	Homeo domain factors	HOX	8	15665
+MA0623.2	NEUROG1	Q92886	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	10	3669
+MA2093.1	HOXB1	P14653	accession	9606	Homeo domain factors	HOX	7	2074
+MA2095.1	Sox7	Q9BT81	symbol	10090	High-mobility group (HMG) domain factors	SOX-related factors	10	2431
+MA2096.1	ZNF524	Q96C55	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	1857
+MA1715.1	ZNF707	Q96C28	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	1157
+MA2097.1	ZNF75A	Q96N20	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	1870
+MA2098.1	ZNF766	Q5HY98	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	8069
+MA2099.1	ZNF770	Q6IQ21	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	8	14331
+MA1718.1	ZNF8	P17098	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	20	2690
+MA2100.1	ZSCAN16	Q9H4T2	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	18	50290
+MA2101.1	ZNF677	Q86XU0	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	1581
+MA1684.1	Foxn1	O15353	symbol	10090	Fork head/winged helix factors	FOX	6	5235
+MA2102.1	ZBTB17	Q13105	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	8	298
+MA1931.1	ELK1::HOXA1	P19419	accession	9606	Homeo domain factors	HOX-related factors	14	94
+MA1931.1	ELK1::HOXA1	P49639	accession	9606	Homeo domain factors	HOX-related factors	14	94
+MA1957.1	HOXB2::ELK1	P14652	accession	9606	Tryptophan cluster factors	Ets-related	14	1563
+MA1957.1	HOXB2::ELK1	P19419	accession	9606	Tryptophan cluster factors	Ets-related	14	1563
+MA1962.1	POU2F1::SOX2	P14859	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	17	16245
+MA1962.1	POU2F1::SOX2	P48431	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	17	16245
+MA1972.1	ZFP14	Q9HCL3	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	15	1001
+MA1980.1	ZNF418	Q8TF45	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	15	1000
+MA1985.1	ZNF669	Q96BR6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	1000
+MA2117.1	FOXP4	Q8IVH2	accession	9606	Fork head/winged helix factors	FOX	7	21667
+MA2118.1	FOXS1	O43638	accession	9606	Fork head/winged helix factors	FOX	8	374
+MA2119.1	HOXA3	O43365	accession	9606	Homeo domain factors	HOX	7	2771
+MA2120.1	ZNF184	Q99676	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	13	1001
+MA2121.1	ZNF213	O14771	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	687
+MA2122.1	Ebf4	Q9BQW3	symbol	10090	Rel homology region (RHR) factors	EBF-related	11	9387
+MA2123.1	Hand1	O96004	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	9	1062
+MA2124.1	Hmga1	P17096	symbol	10090	TATA-binding proteins	HMGA	8	25806
+MA0079.5	SP1	P08047	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	9	999
+MA0509.3	RFX1	P22670	symbol	9606	Fork head/winged helix factors	RFX-related factors	16	19362
+MA0516.3	SP2	Q02086	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	9	1000
+MA0607.2	BHLHA15	Q7RTS1	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	10	13874
+MA0685.2	SP4	Q02446	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	9	1001
+MA0740.2	KLF14	Q8TD94	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	9	1001
+MA0742.2	KLF12	Q9Y4X4	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	9	1001
+MA0798.3	RFX3	P48380	accession	9606	Fork head/winged helix factors	RFX-related factors	16	2249
+MA0818.2	BHLHE22	Q8NFJ8	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	10	10475
+MA0821.2	HES5	Q5TA89	accession	9606	Basic helix-loop-helix factors (bHLH)	Hairy-related factors	10	14513
+MA0831.3	TFE3	P19532	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	21132
+MA0878.3	CDX1	P47902	accession	9606	Homeo domain factors	HOX	10	10576
+MA0884.2	DUXA	A6NLW8	accession	9606	Homeo domain factors	Paired-related HD factors	13	10537
+MA1511.2	KLF10	Q13118	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	9	1000
+MA1532.2	NR1D2	Q14995	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	15	65541
+MA1547.2	PITX2	Q99697	accession	9606	Homeo domain factors	Paired-related HD factors	8	8019
+MA1563.2	SOX18	P35713	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	8	709
+MA1573.2	Thap11	Q96EK4	symbol	10090	C2CH THAP-type zinc finger factors	THAP-related factors	14	660
+MA1601.2	ZNF75D	P51815	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	1001
+MA1633.2	BACH1	O14867	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	41039
+MA2323.1	Pgr	P06401	symbol	10116	Nuclear receptors with C4 zinc fingers	Steroid hormone receptors (NR3)	17	493
+MA2324.1	BCL11A	Q9H165	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	7	6265
+MA2325.1	EPAS1	Q99814	accession	9606	Basic helix-loop-helix factors (bHLH)	PAS domain factors	9	640
+MA2326.1	IKZF2	Q9UKS7	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	6	11394
+MA2327.1	PGR	P06401	accession	9606	Nuclear receptors with C4 zinc fingers	Steroid hormone receptors (NR3)	9	29864
+MA2328.1	ZBED4	O75132	accession	9606	C2H2 zinc finger factors	BED zinc finger factors	10	660
+MA2329.1	ZBTB11	O95625	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	2395
+MA2331.1	ZNF157	P51786	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	21	536
+MA2332.1	ZNF175	Q9Y473	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	1476
+MA2333.1	ZNF35	P13682	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	15270
+MA2334.1	ZNF547	Q8IVP9	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	13	437
+MA2335.1	ZNF558	Q96NG5	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	29	655
+MA2336.1	ZSCAN21	Q9Y5A6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	947
+MA2337.1	Nr1h3	Q13133	symbol	10090	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	6	3862
+MA2338.1	Ppara	Q07869	symbol	10090	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	7	18178
+MA2339.1	Nanog	Q9H9S0	symbol	10090	Homeo domain factors	NK	7	8664
+MA2340.1	Zbtb2	Q8N680	symbol	10090	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	10	1019
+MA2341.1	FEZF2	Q8TBJ5	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	265
+MA0619.2	LIN54	Q6MZP7	symbol	9031	CRC domain	tesmin/TSO1-family	7	999
+MA0006.2	Ahr::Arnt	P27540	symbol	10090	Basic helix-loop-helix factors (bHLH)	PAS domain factors	5	24
+MA0006.2	Ahr::Arnt	P35869	symbol	10090	Basic helix-loop-helix factors (bHLH)	PAS domain factors	5	24
+MA0854.2	Alx1	Q15699	symbol	10090	Homeo domain factors	Paired-related HD factors	8	100
+MA0634.2	ALX3	O95076	accession	9606	Homeo domain factors	Paired-related HD factors	6	9016
+MA0853.2	Alx4	Q9H161	symbol	10090	Homeo domain factors	Paired-related HD factors	12	101
+MA0690.3	TBX21	Q9UL17	accession	9606	T-Box factors	TBrain-related factors	10	4836
+MA0007.4	Ar	P10275	symbol	10090	Nuclear receptors with C4 zinc fingers	Steroid hormone receptors (NR3)	16	3102
+MA1463.2	ARGFX	A6NJG6	accession	9606	Homeo domain factors	Paired-related HD factors	8	25318
+MA0601.2	Arid3b	Q8IVW6	symbol	10090	ARID	ARID-related	7	999
+MA0602.2	Arid5a	Q03989	symbol	10090	ARID	ARID-related	8	99
+MA0259.2	ARNT::HIF1A	P27540	accession	9606,9986,10090,10117	Basic helix-loop-helix factors (bHLH)	PAS domain factors	5	104
+MA0259.2	ARNT::HIF1A	Q16665	accession	9606,9986,10090,10117	Basic helix-loop-helix factors (bHLH)	PAS domain factors	5	104
+MA1464.2	ARNT2	Q9HBZ2	accession	9606	Basic helix-loop-helix factors (bHLH)	PAS domain factors	8	46838
+MA0874.2	Arx	Q96QS3	symbol	10090	Homeo domain factors	Paired-related HD factors	10	101
+MA1100.3	ASCL1	P50553	accession	9606	Basic helix-loop-helix factors (bHLH)	MyoD/ASC-related factors	8	5288
+MA1631.2	ASCL1	P50553	accession	9606	Basic helix-loop-helix factors (bHLH)	MyoD/ASC-related factors	9	34356
+MA1632.2	ATF2	P15336	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	59394
+MA1988.2	Atf3	P18847	symbol	10090	Basic leucine zipper factors (bZIP)	Fos-related	7	54692
+MA0605.3	ATF3	P18847	accession	9606	Basic leucine zipper factors (bZIP)	Fos-related	10	41900
+MA0833.3	ATF4	P18848	accession	9606	Basic leucine zipper factors (bZIP)	ATF-4-related factors	10	33276
+MA1466.2	ATF6	P18850	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	13	1158
+MA0834.2	ATF7	P17544	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	23510
+MA0461.3	Atoh1	Q92858	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	8	1194
+MA1467.3	Atoh1	Q92858	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	7	21477
+MA0591.2	Bach1::Mafk	O14867	symbol	10090	Basic leucine zipper factors (bZIP)	Maf-related	12	114
+MA0591.2	Bach1::Mafk	O60675	symbol	10090	Basic leucine zipper factors (bZIP)	Maf-related	12	114
+MA0496.4	MAFK	O60675	accession	9606	Basic leucine zipper factors (bZIP)	Maf-related	10	51734
+MA1101.3	BACH2	Q9BYV9	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	11	85792
+MA1470.2	BACH2	Q9BYV9	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	19	321
+MA0877.4	BARHL1	Q9BZE3	accession	9606	Homeo domain factors	NK	6	4191
+MA0635.2	BARHL2	Q9NY43	accession	9606	Homeo domain factors	NK	6	13498
+MA0875.2	BARX1	Q9HBU1	accession	9606	Homeo domain factors	NK	6	7641
+MA1471.2	BARX2	Q9UMQ3	accession	9606	Homeo domain factors	NK	9	28504
+MA1634.2	BATF	Q16520	accession	9606	Basic leucine zipper factors (bZIP)	B-ATF-related factors	7	47008
+MA0462.3	BATF::JUN	P05412	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	7	38154
+MA0462.3	BATF::JUN	Q16520	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	7	38154
+MA0489.3	Jun	P05412	symbol	10090	Basic leucine zipper factors (bZIP)	Jun-related	8	94103
+MA0488.2	JUN	P05412	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	20968
+MA0835.3	BATF3	Q9NR55	accession	9606	Basic leucine zipper factors (bZIP)	B-ATF-related factors	7	11965
+MA1989.2	Bcl11B	Q9C0K0	symbol	10090	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	9	39791
+MA0463.3	BCL6	P41182	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	13	7064
+MA1472.3	Bhlha15	Q7RTS1	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	8	21916
+MA1635.2	BHLHE22	Q8NFJ8	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	6	18356
+MA0817.2	BHLHE23	Q8NDY6	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	10	5994
+MA0464.3	BHLHE40	O14503	accession	9606	Basic helix-loop-helix factors (bHLH)	Hairy-related factors	8	13094
+MA1928.2	BNC2	Q6ZN30	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	7	5672
+MA0876.2	BSX	Q3C1V8	accession	9606	Homeo domain factors	NK	6	9623
+MA0465.3	CDX2	Q99626	accession	9606	Homeo domain factors	HOX	8	32026
+MA1473.2	CDX4	O14627	accession	9606	Homeo domain factors	HOX	9	27062
+MA0102.5	CEBPA	P49715	accession	9606	Basic leucine zipper factors (bZIP)	CEBP-related	10	79003
+MA0466.4	CEBPB	P17676	accession	9606	Basic leucine zipper factors (bZIP)	CEBP-related	10	12555
+MA0836.3	CEBPD	P49716	accession	9606	Basic leucine zipper factors (bZIP)	CEBP-related	8	21452
+MA0837.3	CEBPE	Q15744	accession	9606	Basic leucine zipper factors (bZIP)	CEBP-related	10	12422
+MA1636.2	CEBPG	P53567	accession	9606	Basic leucine zipper factors (bZIP)	CEBP-related	10	37316
+MA0819.3	CLOCK	O15516	accession	9606	Basic helix-loop-helix factors (bHLH)	PAS domain factors	7	3065
+MA0018.5	CREB1	P16220	accession	9606	Basic leucine zipper factors (bZIP)	CREB-related factors	8	79544
+MA0638.2	CREB3	O43889	accession	9606	Basic leucine zipper factors (bZIP)	CREB-related factors	12	469
+MA0839.2	CREB3L1	Q96BA8	accession	9606	Basic leucine zipper factors (bZIP)	CREB-related factors	13	897
+MA1474.2	CREB3L4	Q8TEY5	accession	9606	Basic leucine zipper factors (bZIP)	CREB-related factors	10	6369
+MA1475.2	CREB3L4	Q8TEY5	accession	9606	Basic leucine zipper factors (bZIP)	CREB-related factors	9	1590
+MA0840.2	Creb5	Q02930	symbol	10090	Basic leucine zipper factors (bZIP)	CREB-related factors	10	4227
+MA0609.3	CREM	Q03060	accession	9606	Basic leucine zipper factors (bZIP)	CREB-related factors	10	17027
+MA0467.3	Crx	O43186	symbol	10090	Homeo domain factors	Paired-related HD factors	6	4333
+MA0139.2	CTCF	P49711	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	913
+MA1929.2	CTCF	P49711	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	31	6766
+MA1930.2	CTCF	P49711	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	33	2576
+MA1102.3	CTCFL	Q8NI51	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	18037
+MA0754.3	CUX1	P39880	accession	9606	Homeo domain factors	HD-CUT	9	8484
+MA0650.4	Hoxa13	P31271	symbol	10090	Homeo domain factors	HOX	8	17248
+MA0901.3	HOXB13	Q92826	accession	9606	Homeo domain factors	HOX	9	78714
+MA0755.2	CUX2	O14529	accession	9606	Homeo domain factors	HD-CUT	9	62500
+MA0639.2	DBP	Q10586	accession	9606	Basic leucine zipper factors (bZIP)	CEBP-related	10	8322
+MA0019.2	Ddit3::Cebpa	P0DPQ6	symbol	10116	Basic leucine zipper factors (bZIP)	CEBP-related	10	39
+MA0019.2	Ddit3::Cebpa	P35638	symbol	10116	Basic leucine zipper factors (bZIP)	CEBP-related	10	39
+MA0019.2	Ddit3::Cebpa	P49715	symbol	10116	Basic leucine zipper factors (bZIP)	CEBP-related	10	39
+MA0879.3	DLX1	P56177	accession	9606	Homeo domain factors	NK	6	6495
+MA0885.3	Dlx2	Q07687	symbol	10090	Homeo domain factors	NK	8	7437
+MA0880.2	Dlx3	O60479	symbol	10090	Homeo domain factors	NK	6	8059
+MA0881.2	Dlx4	Q92988	symbol	10090	Homeo domain factors	NK	6	12923
+MA1476.3	Dlx5	P56178	symbol	10090	Homeo domain factors	NK	8	4077
+MA0882.2	DLX6	P56179	accession	9606	Homeo domain factors	NK	6	2780
+MA0883.2	Dmbx1	Q8NFW5	symbol	10090	Homeo domain factors	Paired-related HD factors	10	100
+MA1603.2	Dmrt1	Q9Y5R6	symbol	10090	DM-type intertwined zinc finger factors	DMRT factors	9	18295
+MA0610.2	DMRT3	Q9NQL9	accession	9606	DM-type intertwined zinc finger factors	DMRT factors	7	1001
+MA1707.2	DMRTA1	Q5VZB9	accession	9606	DM-type intertwined zinc finger factors	DMRT factors	10	4820
+MA1478.2	DMRTA2	Q96SC8	accession	9606	DM-type intertwined zinc finger factors	DMRT factors	6	1717
+MA1479.2	DMRTC2	Q8IXT2	accession	9606	DM-type intertwined zinc finger factors	DMRT factors	11	1058
+MA1480.2	DPRX	A6NFQ7	accession	9606	Homeo domain factors	Paired-related HD factors	9	8561
+MA1481.2	DRGX	A6NNA5	accession	9606	Homeo domain factors	Paired-related HD factors	6	17057
+MA0864.3	E2F2	Q14209	accession	9606	Fork head/winged helix factors	E2F	13	5620
+MA0469.4	E2F3	O00716	accession	9606	Fork head/winged helix factors	E2F	14	35365
+MA0756.3	ONECUT2	O95948	accession	9606	Homeo domain factors	HD-CUT	8	9469
+MA0470.3	E2F4	Q16254	accession	9606	Fork head/winged helix factors	E2F	13	16281
+MA0471.3	E2F6	O75461	accession	9606	Fork head/winged helix factors	E2F	8	33098
+MA0865.3	E2F8	A0AVK6	accession	9606	Fork head/winged helix factors	E2F	9	1566
+MA0154.5	EBF1	Q9UH73	accession	9606	Rel homology region (RHR) factors	Early B-Cell Factor-related factors	11	45425
+MA1604.2	Ebf2	Q9HAK2	symbol	10090	Rel homology region (RHR) factors	Early B-Cell Factor-related factors	9	26261
+MA1637.2	EBF3	Q9H4W6	accession	9606	Rel homology region (RHR) factors	Early B-Cell Factor-related factors	9	22062
+MA0162.5	EGR1	P18146	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	10	30598
+MA0732.2	EGR3	Q06889	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	11	1762
+MA0733.2	EGR4	Q05215	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	11	4978
+MA0598.4	EHF	Q9NZC4	accession	9606	Tryptophan cluster factors	Ets-related	9	15368
+MA0473.4	ELF1	P32519	accession	9606	Tryptophan cluster factors	Ets-related	9	47770
+MA1483.3	ELF2	Q15723	accession	9606	Tryptophan cluster factors	Ets-related	10	146401
+MA0640.3	ELF3	P78545	accession	9606	Tryptophan cluster factors	Ets-related	9	48502
+MA0136.4	Elf5	Q9UKW6	symbol	10090	Tryptophan cluster factors	Ets-related	8	42146
+MA0028.3	ELK1	P19419	accession	9606	Tryptophan cluster factors	Ets-related	9	67234
+MA0800.2	EOMES	O95936	accession	9606	T-Box factors	TBrain-related factors	9	11902
+MA1708.2	ETV7	Q9Y603	accession	9606	Tryptophan cluster factors	Ets-related	9	14072
+MA1495.2	HOXA1	P49639	accession	9606	Homeo domain factors	HOX	6	8952
+MA1932.2	ELK1::HOXB13	P19419	accession	9606	Homeo domain factors	HOX-related factors	15	7232
+MA1932.2	ELK1::HOXB13	Q92826	accession	9606	Homeo domain factors	HOX-related factors	15	7232
+MA0779.2	PAX1	P15863	accession	9606	Paired box factors	Paired domain only	16	5221
+MA0014.4	PAX5	Q02548	accession	9606	Paired box factors	Paired domain only	8	1412
+MA0781.2	PAX9	P55771	accession	9606	Paired box factors	Paired domain only	16	3984
+MA0686.2	SPDEF	O95238	accession	9606	Tryptophan cluster factors	Ets-related	10	5817
+MA1933.2	ELK1::SREBF2	P19419	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	15	1197
+MA1933.2	ELK1::SREBF2	Q12772	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	15	1197
+MA0828.3	SREBF2	Q12772	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	14373
+MA0843.2	TEF	Q10587	accession	9606	Basic leucine zipper factors (bZIP)	CEBP-related	10	3981
+MA0759.3	ELK3	P41970	accession	9606	Tryptophan cluster factors	Ets-related	9	21909
+MA0076.3	ELK4	P28324	accession	9606	Tryptophan cluster factors	Ets-related	9	3427
+MA0612.3	EMX1	Q04741	accession	9606	Homeo domain factors	NK	6	9563
+MA0886.2	EMX2	Q04743	accession	9606	Homeo domain factors	NK	6	38096
+MA0027.3	EN1	Q05925	accession	9606	Homeo domain factors	NK	6	2999
+MA0642.3	EN2	P19622	accession	9606	Homeo domain factors	NK	7	1800
+MA0760.2	ERF	P50548	accession	9606	Tryptophan cluster factors	Ets-related	9	245
+MA1934.2	ERF::FIGLA	P50548	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	13	14550
+MA1934.2	ERF::FIGLA	Q6QHK4	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	13	14550
+MA0820.2	FIGLA	Q6QHK4	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	6	1809
+MA1935.2	ERF::FOXI1	P50548	accession	9606	Fork head/winged helix factors	FOX	10	1309
+MA1935.2	ERF::FOXI1	Q12951	accession	9606	Fork head/winged helix factors	FOX	10	1309
+MA1936.2	ERF::FOXO1	P50548	accession	9606	Fork head/winged helix factors	FOX	12	363
+MA0480.3	Foxo1	Q12778	symbol	10090	Fork head/winged helix factors	FOX	7	14116
+MA1937.2	ERF::HOXB13	P50548	accession	9606	Homeo domain factors	HOX-related factors	13	2426
+MA1937.2	ERF::HOXB13	Q92826	accession	9606	Homeo domain factors	HOX-related factors	13	2426
+MA0058.4	MAX	P61244	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	6	6915
+MA1938.2	ERF::NHLH1	P50548	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	16	325
+MA1938.2	ERF::NHLH1	Q02575	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	16	325
+MA0048.3	NHLH1	Q02575	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	9	3246
+MA1939.2	ERF::SREBF2	P50548	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	16	483
+MA1939.2	ERF::SREBF2	Q12772	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	16	483
+MA0474.4	Erg	P11308	symbol	10090	Tryptophan cluster factors	Ets-related	10	30061
+MA0112.4	ESR1	P03372	accession	9606	Nuclear receptors with C4 zinc fingers	Steroid hormone receptors (NR3)	15	614
+MA0592.4	ESRRA	P11474	accession	9606	Nuclear receptors with C4 zinc fingers	Steroid hormone receptors (NR3)	9	25995
+MA0141.4	ESRRB	O95718	accession	9606	Nuclear receptors with C4 zinc fingers	Steroid hormone receptors (NR3)	10	2302
+MA0643.2	Esrrg	P62508	symbol	10090	Nuclear receptors with C4 zinc fingers	Steroid hormone receptors (NR3)	9	27172
+MA0644.3	ESX1	Q8N693	accession	9606	Homeo domain factors	Paired-related HD factors	7	22850
+MA0098.4	ETS1	P14921	accession	9606	Tryptophan cluster factors	Ets-related	9	3774
+MA1484.2	ETS2	P15036	accession	9606	Tryptophan cluster factors	Ets-related	9	21072
+MA0761.3	ETV1	P50549	accession	9606	Tryptophan cluster factors	Ets-related	9	37339
+MA0762.2	ETV2	O00321	symbol	9606	Tryptophan cluster factors	Ets-related	9	1222
+MA1940.2	ETV2::DRGX	A6NNA5	accession	9606	Homeo domain factors	Paired-related HD factors	12	2044
+MA1941.2	ETV2::FIGLA	Q6QHK4	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	13	16121
+MA1942.2	ETV2::FOXI1	Q12951	accession	9606	Fork head/winged helix factors	FOX	11	2073
+MA1943.2	ETV2::HOXB13	Q92826	accession	9606	Homeo domain factors	HOX-related factors	13	6638
+MA0763.2	ETV3	P41162	accession	9606	Tryptophan cluster factors	Ets-related	9	304
+MA0764.4	ETV4	P43268	accession	9606	Tryptophan cluster factors	Ets-related	9	20369
+MA0765.4	ETV5	P41161	accession	9606	Tryptophan cluster factors	Ets-related	9	18364
+MA1944.2	ETV5::DRGX	A6NNA5	accession	9606	Homeo domain factors	Paired-related HD factors	12	468
+MA1944.2	ETV5::DRGX	P41161	accession	9606	Homeo domain factors	Paired-related HD factors	12	468
+MA1945.2	ETV5::FIGLA	P41161	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	14	2282
+MA1945.2	ETV5::FIGLA	Q6QHK4	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	14	2282
+MA1946.2	ETV5::FOXI1	P41161	accession	9606	Fork head/winged helix factors	FOX	12	559
+MA1946.2	ETV5::FOXI1	Q12951	accession	9606	Fork head/winged helix factors	FOX	12	559
+MA1947.2	ETV5::FOXO1	P41161	accession	9606	Fork head/winged helix factors	FOX	10	255
+MA1947.2	ETV5::FOXO1	Q12778	accession	9606	Fork head/winged helix factors	FOX	10	255
+MA1948.2	ETV5::HOXA2	O43364	accession	9606	Homeo domain factors	HOX-related factors	12	486
+MA1948.2	ETV5::HOXA2	P41161	accession	9606	Homeo domain factors	HOX-related factors	12	486
+MA0900.3	HOXA2	O43364	accession	9606	Homeo domain factors	HOX	6	60585
+MA0645.2	ETV6	P41212	accession	9606	Tryptophan cluster factors	Ets-related	9	7469
+MA0887.2	EVX1	P49640	accession	9606	Homeo domain factors	HOX	6	11702
+MA0888.2	EVX2	Q03828	accession	9606	Homeo domain factors	HOX	6	29598
+MA0156.4	FEV	Q99581	accession	9606	Tryptophan cluster factors	Ets-related	9	11481
+MA0475.3	FLI1	Q01543	accession	9606	Tryptophan cluster factors	Ets-related	9	54661
+MA1949.2	FLI1::DRGX	A6NNA5	accession	9606	Tryptophan cluster factors	Ets-related	14	418
+MA1949.2	FLI1::DRGX	Q01543	accession	9606	Tryptophan cluster factors	Ets-related	14	418
+MA1950.2	FLI1::FOXI1	Q01543	accession	9606	Fork head/winged helix factors	FOX	11	3032
+MA0476.2	FOS	P01100	accession	9606	Basic leucine zipper factors (bZIP)	Fos-related	8	29396
+MA1951.2	FOS	P01100	accession	9606	Basic leucine zipper factors (bZIP)	Fos-related	13	2303
+MA0099.4	FOS::JUN	P01100	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1000
+MA0099.4	FOS::JUN	P05412	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1000
+MA1126.2	FOS::JUN	P01100	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	1000
+MA1126.2	FOS::JUN	P05412	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	1000
+MA1134.2	FOS::JUNB	P01100	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1001
+MA1134.2	FOS::JUNB	P17275	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1001
+MA1140.3	JUNB	P17275	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	11	333
+MA0490.3	JUNB	P17275	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	79856
+MA1141.2	FOS::JUND	P01100	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1001
+MA1141.2	FOS::JUND	P17535	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1001
+MA0492.2	JUND	P17535	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	11	33631
+MA0491.3	JUND	P17535	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	105945
+MA1135.2	FOSB::JUNB	P17275	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1000
+MA1135.2	FOSB::JUNB	P53539	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1000
+MA0477.3	FOSL1	P15407	accession	9606	Basic leucine zipper factors (bZIP)	Fos-related	9	57681
+MA1128.2	FOSL1::JUN	P05412	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1000
+MA1128.2	FOSL1::JUN	P15407	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1000
+MA1137.2	FOSL1::JUNB	P15407	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1000
+MA1137.2	FOSL1::JUNB	P17275	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1000
+MA1142.2	FOSL1::JUND	P15407	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	8	1000
+MA1142.2	FOSL1::JUND	P17535	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	8	1000
+MA1143.2	FOSL1::JUND	P15407	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1000
+MA1143.2	FOSL1::JUND	P17535	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1000
+MA0478.2	FOSL2	P15408	accession	9606	Basic leucine zipper factors (bZIP)	Fos-related	10	5318
+MA1130.2	FOSL2::JUN	P05412	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1000
+MA1130.2	FOSL2::JUN	P15408	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1000
+MA1131.2	FOSL2::JUN	P05412	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	1001
+MA1131.2	FOSL2::JUN	P15408	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	1001
+MA1138.2	FOSL2::JUNB	P15408	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1001
+MA1138.2	FOSL2::JUNB	P17275	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	1001
+MA1139.2	FOSL2::JUNB	P15408	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	1000
+MA1139.2	FOSL2::JUNB	P17275	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	1000
+MA1144.2	FOSL2::JUND	P15408	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	999
+MA1144.2	FOSL2::JUND	P17535	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	9	999
+MA1145.2	FOSL2::JUND	P15408	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	1001
+MA1145.2	FOSL2::JUND	P17535	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	1001
+MA0148.5	FOXA1	P55317	accession	9606	Fork head/winged helix factors	FOX	8	322803
+MA0047.4	FOXA2	Q9Y261	accession	9606	Fork head/winged helix factors	FOX	8	262153
+MA1683.2	FOXA3	P55318	accession	9606	Fork head/winged helix factors	FOX	7	48937
+MA0846.2	FOXC2	Q99958	accession	9606	Fork head/winged helix factors	FOX	11	22189
+MA0031.2	FOXD1	Q16676	accession	9606	Fork head/winged helix factors	FOX	7	20
+MA0847.4	FOXD2	O60548	accession	9606	Fork head/winged helix factors	FOX	11	2834
+MA0041.3	FOXD3	Q9UJU5	accession	9606	Fork head/winged helix factors	FOX	14	206
+MA1487.3	FOXE1	O00358	accession	9606	Fork head/winged helix factors	FOX	12	3268
+MA1606.2	Foxf1	Q12946	symbol	10090	Fork head/winged helix factors	FOX	7	59540
+MA0030.2	FOXF2	Q12947	accession	9606	Fork head/winged helix factors	FOX	9	22
+MA0479.2	FOXH1	O75593	accession	9606	Fork head/winged helix factors	FOX	8	8211
+MA1952.2	FOXJ2::ELF1	P32519	accession	9606	Tryptophan cluster factors	Ets-related	11	2308
+MA1952.2	FOXJ2::ELF1	Q9P0K8	accession	9606	Tryptophan cluster factors	Ets-related	11	2308
+MA0682.3	PITX1	P78337	accession	9606	Homeo domain factors	Paired-related HD factors	6	10531
+MA0851.2	Foxj3	Q9UPW0	symbol	10090	Fork head/winged helix factors	FOX	9	99
+MA0852.3	FOXK1	P85037	accession	9606	Fork head/winged helix factors	FOX	7	1056
+MA1103.3	FOXK2	Q01167	accession	9606	Fork head/winged helix factors	FOX	7	16679
+MA1607.2	Foxl2	P58012	symbol	10090	Fork head/winged helix factors	FOX	10	18101
+MA1953.2	FOXO1::ELF1	P32519	accession	9606	Tryptophan cluster factors	Ets-related	13	294
+MA1953.2	FOXO1::ELF1	Q12778	accession	9606	Tryptophan cluster factors	Ets-related	13	294
+MA1954.2	FOXO1::ELK1	P19419	accession	9606	Tryptophan cluster factors	Ets-related	13	1643
+MA1954.2	FOXO1::ELK1	Q12778	accession	9606	Tryptophan cluster factors	Ets-related	13	1643
+MA1955.2	FOXO1::ELK3	P41970	accession	9606	Tryptophan cluster factors	Ets-related	13	144
+MA1955.2	FOXO1::ELK3	Q12778	accession	9606	Tryptophan cluster factors	Ets-related	13	144
+MA1956.2	FOXO1::FLI1	Q01543	accession	9606	Tryptophan cluster factors	Ets-related	13	224
+MA1956.2	FOXO1::FLI1	Q12778	accession	9606	Tryptophan cluster factors	Ets-related	13	224
+MA0157.4	Foxo3	O43524	symbol	10090	Fork head/winged helix factors	FOX	7	23912
+MA0481.4	FOXP1	Q9H334	accession	9606	Fork head/winged helix factors	FOX	7	74718
+MA0593.2	FOXP2	O15409	accession	9606	Fork head/winged helix factors	FOX	9	766
+MA0040.2	Foxq1	Q9C009	symbol	10116	Fork head/winged helix factors	FOX	10	18
+MA0062.4	GABPA	Q06546	accession	9606	Tryptophan cluster factors	Ets-related	10	65479
+MA0035.5	GATA1	P15976	accession	9606	Other C4 zinc finger-type factors	C4-GATA-related	7	71828
+MA0140.3	GATA1::TAL1	P15976	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	17	4955
+MA0140.3	GATA1::TAL1	P17542	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	17	4955
+MA0036.4	GATA2	P23769	accession	9606	Other C4 zinc finger-type factors	C4-GATA-related	7	14213
+MA0037.5	Gata3	P23771	symbol	10090	Other C4 zinc finger-type factors	C4-GATA-related	8	24868
+MA0482.3	GATA4	P43694	accession	9606	Other C4 zinc finger-type factors	C4-GATA-related	8	59014
+MA0766.3	GATA5	Q9BWX5	accession	9606	Other C4 zinc finger-type factors	C4-GATA-related	8	17749
+MA1104.3	GATA6	Q92908	accession	9606	Other C4 zinc finger-type factors	C4-GATA-related	8	79444
+MA0889.2	GBX1	Q14549	accession	9606	Homeo domain factors	HOX	7	27339
+MA0890.2	GBX2	P52951	accession	9606	Homeo domain factors	HOX	6	28171
+MA0646.2	GCM1	Q9NP62	accession	9606	GCM domain factors	GCM	10	27521
+MA0143.5	SOX2	P48431	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	7	85754
+MA0767.2	GCM2	O75603	accession	9606	GCM domain factors	GCM	8	1741
+MA0038.3	GFI1	Q99684	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	30678
+MA0483.2	Gfi1B	Q5VTD9	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	1761
+MA1990.2	Gli1	P08151	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	4003
+MA0734.4	Gli2	P10070	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	2492
+MA1491.3	GLI3	P10071	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	10666
+MA0735.2	GLIS1	Q8NBF1	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	6069
+MA0615.2	Gmeb1	Q9Y692	symbol	10090	SAND domain factors	GMEB	6	101
+MA0647.2	GRHL1	Q9NZI5	accession	9606	Grainyhead domain factors	Grainyhead-related factors	10	3427
+MA1105.3	GRHL2	Q6ISB3	accession	9606	Grainyhead domain factors	Grainyhead-related factors	8	41878
+MA0648.2	GSC	P56915	accession	9606	Homeo domain factors	Paired-related HD factors	6	6135
+MA0891.2	GSC2	O15499	accession	9606	Homeo domain factors	Paired-related HD factors	6	2132
+MA0892.2	GSX1	Q9H4S2	symbol	9606	Homeo domain factors	HOX	6	1355
+MA0893.3	GSX2	Q9BZM3	accession	9606	Homeo domain factors	HOX	7	5814
+MA0092.2	Hand1::Tcf3	O96004	symbol	10090	Basic helix-loop-helix factors (bHLH)	E2A	9	29
+MA0092.2	Hand1::Tcf3	P15923	symbol	10090	Basic helix-loop-helix factors (bHLH)	E2A	9	29
+MA0522.4	TCF3	P15923	accession	9606	Basic helix-loop-helix factors (bHLH)	E2A	7	31261
+MA1638.2	HAND2	P61296	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	6	30283
+MA1099.3	HES1	Q14469	accession	9606	Basic helix-loop-helix factors (bHLH)	Hairy-related factors	8	29578
+MA0616.3	HES2	Q9Y543	accession	9606	Basic helix-loop-helix factors (bHLH)	Hairy-related factors	9	11249
+MA0894.2	HESX1	Q9UBX0	accession	9606	Homeo domain factors	Paired-related HD factors	6	4293
+MA0649.2	HEY2	Q9UBP5	accession	9606	Basic helix-loop-helix factors (bHLH)	Hairy-related factors	9	2107
+MA0739.2	Hic1	Q14526	symbol	10090	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	8	12392
+MA0738.2	HIC2	Q96JB3	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	6	5652
+MA1106.2	HIF1A	Q16665	accession	9606	Basic helix-loop-helix factors (bHLH)	PAS domain factors	6	980
+MA0131.3	HINFP	Q9BQA5	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	8	555
+MA0043.4	HLF	Q16534	accession	9606	Basic leucine zipper factors (bZIP)	CEBP-related	9	24424
+MA0895.2	HMBOX1	Q6NT76	accession	9606	Homeo domain factors	POU domain factors	7	1394
+MA0896.2	Hmx1	Q9NP08	symbol	10090	Homeo domain factors	NK	9	100
+MA0897.2	Hmx2	A2RU54	symbol	10090	Homeo domain factors	NK	15	100
+MA0898.2	Hmx3	A6NHT5	symbol	10090	Homeo domain factors	NK	9	100
+MA1991.2	Hnf1A	P20823	symbol	10090	Homeo domain factors	POU domain factors	10	1249
+MA0046.3	HNF1A	P20823	accession	9606	Homeo domain factors	POU domain factors	13	15200
+MA1494.2	HNF4A	P41235	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	14	650
+MA0114.5	HNF4A	P41235	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	9	46504
+MA0484.3	HNF4G	Q14541	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	9	18222
+MA0899.2	HOXA10	P31260	accession	9606	Homeo domain factors	HOX	9	13904
+MA0911.2	Hoxa11	P31270	symbol	10090	Homeo domain factors	HOX	9	1258
+MA1496.2	HOXA4	Q00056	accession	9606	Homeo domain factors	HOX	7	2945
+MA1497.2	HOXA6	P31267	accession	9606	Homeo domain factors	HOX	7	11868
+MA1498.3	HOXA7	P31268	accession	9606	Homeo domain factors	HOX	6	9467
+MA0594.3	HOXA9	P31269	accession	9606	Homeo domain factors	HOX	7	2058
+MA0902.3	HOXB2	P14652	accession	9606	Homeo domain factors	HOX	6	6878
+MA1566.3	TBX3	O15119	accession	9606	T-Box factors	TBX2-related factors	9	5206
+MA0903.2	HOXB3	P14651	accession	9606	Homeo domain factors	HOX	6	15247
+MA1499.2	HOXB4	P17483	accession	9606	Homeo domain factors	HOX	6	11183
+MA0904.3	HOXB5	P09067	accession	9606	Homeo domain factors	HOX	6	3604
+MA1500.2	HOXB6	P17509	accession	9606	Homeo domain factors	HOX	7	6902
+MA1501.2	HOXB7	P09629	accession	9606	Homeo domain factors	HOX	7	915
+MA1502.2	HOXB8	P17481	accession	9606	Homeo domain factors	HOX	7	4474
+MA1503.2	HOXB9	P17482	accession	9606	Homeo domain factors	HOX	9	2746
+MA0905.2	HOXC10	Q9NYD6	accession	9606	Homeo domain factors	HOX	9	5765
+MA0651.3	HOXC11	O43248	accession	9606	Homeo domain factors	HOX	11	15349
+MA0906.2	HOXC12	P31275	accession	9606	Homeo domain factors	HOX	10	4298
+MA0907.2	HOXC13	P31276	accession	9606	Homeo domain factors	HOX	9	1372
+MA1504.2	HOXC4	P09017	accession	9606	Homeo domain factors	HOX	6	12058
+MA1505.2	HOXC8	P31273	accession	9606	Homeo domain factors	HOX	6	13828
+MA0485.3	HOXC9	P31274	accession	9606	Homeo domain factors	HOX	9	21648
+MA1506.2	HOXD10	P28358	accession	9606	Homeo domain factors	HOX	10	4645
+MA0908.2	HOXD11	P31277	accession	9606	Homeo domain factors	HOX	9	412
+MA0873.2	HOXD12	P35452	accession	9606	Homeo domain factors	HOX	10	1367
+MA1958.2	HOXD12::ELK1	P19419	accession	9606	Tryptophan cluster factors	Ets-related	13	621
+MA1958.2	HOXD12::ELK1	P35452	accession	9606	Tryptophan cluster factors	Ets-related	13	621
+MA0909.4	Hoxd13	P35453	symbol	10090	Homeo domain factors	HOX	7	5977
+MA1507.2	HOXD4	P09016	accession	9606	Homeo domain factors	HOX	6	4589
+MA0910.3	HOXD8	P13378	accession	9606	Homeo domain factors	HOX	7	3628
+MA0913.3	HOXD9	P28356	accession	9606	Homeo domain factors	HOX	9	19190
+MA1508.2	IKZF1	Q13422	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	8	10918
+MA1992.2	Ikzf3	Q9UKT9	symbol	10090	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	9	1183
+MA0050.4	Irf1	P10914	symbol	10090	Tryptophan cluster factors	Interferon-regulatory factors	11	15640
+MA0051.2	IRF2	P14316	accession	9606	Tryptophan cluster factors	Interferon-regulatory factors	16	12
+MA1418.2	IRF3	Q14653	accession	9606	Tryptophan cluster factors	Interferon-regulatory factors	17	26023
+MA1419.2	IRF4	Q15306	accession	9606	Tryptophan cluster factors	Interferon-regulatory factors	14	51719
+MA0772.2	IRF7	Q92985	accession	9606	Tryptophan cluster factors	Interferon-regulatory factors	13	1150
+MA0652.2	IRF8	Q02556	accession	9606	Tryptophan cluster factors	Interferon-regulatory factors	13	6844
+MA1608.2	Isl1	P61371	symbol	10090	Homeo domain factors	HD-LIM	7	5637
+MA0914.2	ISL2	Q96A47	accession	9606	Homeo domain factors	HD-LIM	6	6936
+MA0654.2	ISX	Q2M1V0	accession	9606	Homeo domain factors	Paired-related HD factors	6	2074
+MA0656.2	JDP2	Q8WYK2	accession	9606	Basic leucine zipper factors (bZIP)	Fos-related	10	27142
+MA1132.2	JUN::JUNB	P05412	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	8	1000
+MA1132.2	JUN::JUNB	P17275	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	8	1000
+MA1133.2	JUN::JUNB	P05412	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	11	1001
+MA1133.2	JUN::JUNB	P17275	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	11	1001
+MA0493.3	KLF1	Q13351	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	8	1001
+MA1512.2	KLF11	O14901	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	10	9164
+MA0657.2	KLF13	Q9Y2Y9	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	17	3341
+MA1513.2	KLF15	Q9UIH9	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	8	11369
+MA1514.2	KLF17	Q5JT82	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	14	33019
+MA1515.2	KLF2	Q9Y5W3	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	8	6204
+MA1516.2	KLF3	P57682	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	10	43259
+MA0039.5	KLF4	O43474	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	8	55817
+MA1517.2	KLF6	Q99612	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	9	3312
+MA1959.2	KLF7	O75840	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	8	1000
+MA1107.3	KLF9	Q13886	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	11	25579
+MA0618.2	LBX1	P52954	accession	9606	Homeo domain factors	NK	7	1000
+MA0699.2	LBX2	Q6XYB7	accession	9606	Homeo domain factors	NK	6	3262
+MA0768.3	Lef1	Q9UJU2	symbol	10090	High-mobility group (HMG) domain factors	TCF-7-related factors	8	1081
+MA1518.3	Lhx1	P48742	symbol	10090	Homeo domain factors	HD-LIM	10	454
+MA0700.3	LHX2	P50458	accession	9606	Homeo domain factors	HD-LIM	6	6333
+MA0135.2	Lhx3	Q9UBR4	symbol	10090	Homeo domain factors	HD-LIM	12	20
+MA0704.2	Lhx4	Q969G2	symbol	10090	Homeo domain factors	HD-LIM	6	4025
+MA1519.2	LHX5	Q9H2C1	accession	9606	Homeo domain factors	HD-LIM	7	8750
+MA0658.2	LHX6	Q9UPM6	accession	9606	Homeo domain factors	HD-LIM	8	5757
+MA0705.2	Lhx8	Q68G74	symbol	10090	Homeo domain factors	HD-LIM	6	7088
+MA0701.3	LHX9	Q9NQ69	accession	9606	Homeo domain factors	HD-LIM	7	8740
+MA0702.3	LMX1A	Q8TE12	accession	9606	Homeo domain factors	HD-LIM	7	7750
+MA0703.3	LMX1B	O60663	accession	9606	Homeo domain factors	HD-LIM	8	4254
+MA1520.2	MAF	O75444	accession	9606	Basic leucine zipper factors (bZIP)	Maf-related	13	3177
+MA0501.2	MAF::NFE2	O75444	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	11	1090
+MA0501.2	MAF::NFE2	Q16621	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	11	1090
+MA0841.2	NFE2	Q16621	accession	9606	Basic leucine zipper factors (bZIP)	Jun-related	10	20151
+MA1521.2	MAFA	Q8NHW3	accession	9606	Basic leucine zipper factors (bZIP)	Maf-related	13	9123
+MA0117.3	Mafb	Q9Y5Q3	symbol	10090	Basic leucine zipper factors (bZIP)	Maf-related	11	2183
+MA0495.4	MAFF	Q9ULX9	accession	9606	Basic leucine zipper factors (bZIP)	Maf-related	11	37746
+MA0659.4	Mafg	O15525	symbol	10090	Basic leucine zipper factors (bZIP)	Maf-related	12	20118
+MA0059.2	MAX::MYC	P01106	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	21
+MA0059.2	MAX::MYC	P61244	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	21
+MA0147.4	MYC	P01106	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	8	4942
+MA1522.2	MAZ	P56270	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	15063
+MA0029.2	Mecom	Q03112	symbol	10090	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	11	27
+MA0052.5	MEF2A	Q02078	accession	9606	MADS box factors	Regulators of differentiation	10	16162
+MA0497.2	MEF2C	Q06413	accession	9606	MADS box factors	Regulators of differentiation	11	2209
+MA0498.3	MEIS1	O00470	accession	9606	Homeo domain factors	TALE-type homeo domain factors	5	94598
+MA1639.2	MEIS1	O00470	accession	9606	Homeo domain factors	TALE-type homeo domain factors	9	6736
+MA1640.2	MEIS2	O14770	accession	9606	Homeo domain factors	TALE-type homeo domain factors	9	20173
+MA0775.2	MEIS3	Q99687	accession	9606	Homeo domain factors	TALE-type homeo domain factors	7	7165
+MA0661.2	MEOX1	P50221	accession	9606	Homeo domain factors	HOX	7	3265
+MA0706.2	MEOX2	P50222	symbol	9606	Homeo domain factors	HOX	7	29945
+MA1960.2	MGA::EVX1	P49640	accession	9606	Homeo domain factors	HOX	11	4516
+MA1960.2	MGA::EVX1	Q8IWI9	accession	9606	Homeo domain factors	HOX	11	4516
+MA0620.4	MITF	O75030	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	63527
+MA0662.2	MIXL1	Q9H2W2	accession	9606	Homeo domain factors	Paired-related HD factors	6	30922
+MA0622.2	Mlxip	Q9HAP2	symbol	10090	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	6	999
+MA0664.2	MLXIPL	Q9NP71	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	8	709
+MA0825.2	MNT	Q99583	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	6	713
+MA0707.3	MNX1	P50219	accession	9606	Homeo domain factors	HOX	6	19178
+MA1523.2	MSANTD3	Q96H12	accession	9606	Tryptophan cluster factors	Myb/SANT domain factors	7	998
+MA1524.3	Msgn1	A6NI15	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	10	542
+MA0666.3	MSX1	P28360	accession	9606	Homeo domain factors	NK	6	7706
+MA0708.3	MSX2	P35548	accession	9606	Homeo domain factors	NK	6	9310
+MA1108.3	MXI1	P50539	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	6	22048
+MA0100.4	MYB	P10242	accession	9606	Tryptophan cluster factors	Myb/SANT domain factors	6	1527
+MA0104.5	MYCN	P04198	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	8	6984
+MA1641.2	MYF5	P13349	accession	9606	Basic helix-loop-helix factors (bHLH)	MyoD/ASC-related factors	8	11210
+MA0499.3	MYOD1	P15172	accession	9606	Basic helix-loop-helix factors (bHLH)	MyoD/ASC-related factors	9	34300
+MA0500.3	MYOG	P15173	accession	9606	Basic helix-loop-helix factors (bHLH)	MyoD/ASC-related factors	8	22357
+MA0056.3	MZF1	P28698	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	8242
+MA1109.2	NEUROD1	Q13562	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	8	2282
+MA1993.2	Neurod2	Q15784	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	6	54024
+MA0668.3	Neurod2	Q15784	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	8	32957
+MA1642.2	NEUROG2	Q9H2A3	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	7	34391
+MA0606.3	Nfat5	O94916	symbol	10090	Rel homology region (RHR) factors	NFAT-related factors	8	356
+MA0624.3	Nfatc1	O95644	symbol	10090	Rel homology region (RHR) factors	NFAT-related factors	6	6191
+MA0152.3	Nfatc2	Q13469	symbol	10090	Rel homology region (RHR) factors	NFAT-related factors	8	3239
+MA0625.3	NFATC3	Q12968	accession	9606	Rel homology region (RHR) factors	NFAT-related factors	6	6606
+MA1525.3	NFATC4	Q14934	accession	9606	Rel homology region (RHR) factors	NFAT-related factors	9	11949
+MA0150.3	Nfe2l2	Q16236	symbol	10090	Basic leucine zipper factors (bZIP)	Jun-related	11	726
+MA0670.2	NFIA	Q12857	accession	9606	SMAD/NF-1 DNA-binding domain factors	Nuclear factor 1	6	95496
+MA1643.2	NFIB	O00712	accession	9606	SMAD/NF-1 DNA-binding domain factors	Nuclear factor 1	17	4416
+MA0161.3	NFIC	P08651	accession	9606	SMAD/NF-1 DNA-binding domain factors	Nuclear factor 1	7	11607
+MA1527.2	NFIC	P08651	accession	9606	SMAD/NF-1 DNA-binding domain factors	Nuclear factor 1	15	2966
+MA0025.3	NFIL3	Q16649	accession	9606	Basic leucine zipper factors (bZIP)	CEBP-related	9	22996
+MA0671.2	NFIX	Q14938	accession	9606	SMAD/NF-1 DNA-binding domain factors	Nuclear factor 1	6	59749
+MA1528.2	NFIX	Q14938	accession	9606	SMAD/NF-1 DNA-binding domain factors	Nuclear factor 1	14	29185
+MA0778.2	NFKB2	Q00653	accession	9606	Rel homology region (RHR) factors	NF-kappaB-related factors	11	16493
+MA0060.4	NFYA	P23511	accession	9606	Heteromeric CCAAT-binding factors	Heteromeric CCAAT-binding	8	4825
+MA0502.3	NFYB	P25208	accession	9606	Heteromeric CCAAT-binding factors	Heteromeric CCAAT-binding	9	7454
+MA1644.2	NFYC	Q13952	accession	9606	Heteromeric CCAAT-binding factors	Heteromeric CCAAT-binding	7	13616
+MA1529.2	NHLH2	Q02577	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	16	25632
+MA1994.2	Nkx2-1	P43699	symbol	10090	Homeo domain factors	NK	7	16242
+MA1645.2	NKX2-2	O95096	accession	9606	Homeo domain factors	NK	8	26023
+MA0672.2	NKX2-3	Q8TAU0	accession	9606	Homeo domain factors	NK	8	15942
+MA2003.2	NKX2-4	Q9H2Z4	accession	9606	Homeo domain factors	NK	8	2116
+MA0063.3	NKX2-5	P52952	accession	9606	Homeo domain factors	NK	7	5444
+MA0673.2	NKX2-8	O15522	accession	9606	Homeo domain factors	NK	8	8563
+MA0124.3	Nkx3-1	Q99801	symbol	10090	Homeo domain factors	NK	7	8367
+MA0122.4	Nkx3-2	P78367	symbol	10090	Homeo domain factors	NK	10	10220
+MA0674.2	NKX6-1	P78426	accession	9606	Homeo domain factors	NK	7	2213
+MA0675.2	NKX6-2	Q9C056	accession	9606	Homeo domain factors	NK	6	20921
+MA1530.2	NKX6-3	A6NJ46	accession	9606	Homeo domain factors	NK	8	6905
+MA0125.2	Nobox	O60393	symbol	10090	Homeo domain factors	Paired-related HD factors	6	38
+MA0710.2	NOTO	A8MTQ0	accession	9606	Homeo domain factors	NK	7	22796
+MA0626.2	Npas2	Q99743	symbol	10090	Basic helix-loop-helix factors (bHLH)	PAS domain factors	8	999
+MA1995.2	Npas4	Q8IUM7	symbol	10090	Basic helix-loop-helix factors (bHLH)	PAS domain factors	7	8960
+MA1531.2	NR1D1	P20393	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	14	6996
+MA1996.2	Nr1H2	P55055	symbol	10090	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	6	8971
+MA0494.2	Nr1h3::Rxra	P19793	symbol	10090	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	16	1269
+MA0494.2	Nr1h3::Rxra	Q13133	symbol	10090	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	16	1269
+MA1110.3	Nr1H4	Q96RI1	symbol	10090	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	6	4736
+MA1146.2	NR1H4::RXRA	P19793	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	13	999
+MA1146.2	NR1H4::RXRA	Q96RI1	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	13	999
+MA1533.2	NR1I2	O75469	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	15	176
+MA1534.2	NR1I3	Q14994	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	8	59754
+MA1535.2	NR2C1	P13056	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	6	9904
+MA0504.2	NR2C2	P49116	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	14	395
+MA1536.2	NR2C2	P49116	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	6	19346
+MA0164.2	Nr2e3	Q9Y5X4	symbol	10090	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	6	23
+MA0017.3	NR2F1	P10589	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	12	12059
+MA1537.2	NR2F1	P10589	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	13	34672
+MA1111.2	NR2F2	P24468	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	7	2204
+MA0677.2	Nr2f6	P10588	symbol	10090	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	13	391
+MA0113.4	NR3C1	P04150	accession	9606	Nuclear receptors with C4 zinc fingers	Steroid hormone receptors (NR3)	15	21985
+MA0727.2	NR3C2	P08235	accession	9606	Nuclear receptors with C4 zinc fingers	Steroid hormone receptors (NR3)	15	42725
+MA1112.3	NR4A1	P22736	accession	9606	Nuclear receptors with C4 zinc fingers	NGFI-B-related receptors (NR4)	8	15927
+MA0160.3	NR4A2	P43354	accession	9606	Nuclear receptors with C4 zinc fingers	NGFI-B-related receptors (NR4)	8	259
+MA1147.2	NR4A2::RXRA	P19793	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	13	999
+MA1147.2	NR4A2::RXRA	P43354	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	13	999
+MA1541.2	NR6A1	Q15406	accession	9606	Nuclear receptors with C4 zinc fingers	GCNF-related receptors (NR6)	14	1494
+MA0842.3	NRL	P54845	accession	9606	Basic leucine zipper factors (bZIP)	Maf-related	12	31751
+MA1997.2	Olig2	Q13516	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	6	61142
+MA0679.3	ONECUT1	Q9UBC0	accession	9606	Homeo domain factors	HD-CUT	9	62219
+MA0757.2	ONECUT3	O60422	accession	9606	Homeo domain factors	HD-CUT	12	6080
+MA1542.2	OSR1	Q8TAX0	accession	9606	C2H2 zinc finger factors	Other factors with up to three adjacent zinc fingers	8	5590
+MA1646.2	OSR2	Q8N2R0	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	14808
+MA0711.2	OTX1	P32242	accession	9606	Homeo domain factors	Paired-related HD factors	6	24276
+MA0712.3	OTX2	P32243	accession	9606	Homeo domain factors	Paired-related HD factors	7	120679
+MA1544.2	OVOL1	O14753	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	20235
+MA1545.2	OVOL2	Q9BRP0	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	14544
+MA1961.2	PATZ1	Q9HBE1	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	11	1000
+MA0067.3	PAX2	Q02962	accession	9606	Paired box factors	Paired domain only	16	3575
+MA1546.2	PAX3	P23760	accession	9606	Paired box factors	Paired plus homeo domain	14	1623
+MA0680.3	Pax7	P23759	symbol	10090	Paired box factors	Paired plus homeo domain	10	41429
+MA0070.2	PBX1	P40424	accession	9606	Homeo domain factors	TALE-type homeo domain factors	9	18
+MA1113.3	PBX2	P40425	accession	9606	Homeo domain factors	TALE-type homeo domain factors	9	29596
+MA1114.2	PBX3	P40426	accession	9606	Homeo domain factors	TALE-type homeo domain factors	11	7021
+MA0132.3	PDX1	P52945	accession	9606	Homeo domain factors	HOX	6	7422
+MA0681.3	PHOX2B	Q99453	accession	9606	Homeo domain factors	Paired-related HD factors	12	53236
+MA0714.2	PITX3	O75364	accession	9606	Homeo domain factors	Paired-related HD factors	6	6806
+MA0782.3	PKNOX1	P55347	accession	9606	Homeo domain factors	TALE-type homeo domain factors	10	39963
+MA1615.2	Plagl1	Q9UM63	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	14153
+MA1548.2	PLAGL2	Q9UPG8	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	998
+MA0784.3	POU1F1	P28069	accession	9606	Homeo domain factors	POU domain factors	14	4630
+MA0785.2	POU2F1	P14859	accession	9606	Homeo domain factors	POU domain factors	9	13159
+MA0507.3	POU2F2	P09086	accession	9606	Homeo domain factors	POU domain factors	13	11662
+MA0627.3	POU2F3	Q9UKI9	accession	9606	Homeo domain factors	POU domain factors	9	56029
+MA0786.2	POU3F1	Q03052	accession	9606	Homeo domain factors	POU domain factors	10	2919
+MA0790.2	POU4F1	Q01851	accession	9606	Homeo domain factors	POU domain factors	12	4067
+MA0683.2	POU4F2	Q12837	accession	9606	Homeo domain factors	POU domain factors	15	3041
+MA0791.2	POU4F3	Q15319	accession	9606	Homeo domain factors	POU domain factors	12	5050
+MA1115.2	POU5F1	Q01860	accession	9606	Homeo domain factors	POU domain factors	7	13114
+MA0628.2	POU6F1	Q14863	accession	9606	Homeo domain factors	POU domain factors	6	1000
+MA1549.2	POU6F1	Q14863	accession	9606	Homeo domain factors	POU domain factors	7	6860
+MA0793.2	POU6F2	P78424	accession	9606	Homeo domain factors	POU domain factors	9	3297
+MA1148.2	PPARA::RXRA	P19793	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	17	1000
+MA1148.2	PPARA::RXRA	Q07869	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	17	1000
+MA1550.2	PPARD	Q03181	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	14	14378
+MA0066.2	PPARG	P37231	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	19	28
+MA0065.3	Pparg::Rxra	P19793	symbol	10090	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	13	860
+MA0065.3	Pparg::Rxra	P37231	symbol	10090	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	13	860
+MA0508.4	PRDM1	O75626	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	55481
+MA1998.2	Prdm14	Q9GZV8	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	13841
+MA1616.2	Prdm15	P57071	symbol	10090	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	11	2237
+MA1647.3	Prdm4	Q9UKN5	symbol	10090	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	11	1181
+MA1999.2	Prdm5	Q9NQX1	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	740
+MA1723.2	PRDM9	Q9NQV7	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	20	1000
+MA0716.2	PRRX1	P54821	accession	9606	Homeo domain factors	Paired-related HD factors	6	27391
+MA0075.4	PRRX2	Q99811	accession	9606	Homeo domain factors	Paired-related HD factors	7	11044
+MA1619.2	Ptf1A	Q7RTS3	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	8	7253
+MA1620.2	Ptf1A	Q7RTS3	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	8	10291
+MA1149.2	RARA::RXRG	P10276	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	17	1000
+MA1149.2	RARA::RXRG	P48443	accession	9606	Nuclear receptors with C4 zinc fingers	RXR-related receptors (NR2)	17	1000
+MA1552.2	RARB	P10826	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	13	472
+MA0859.2	Rarg	P13631	symbol	10090	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	15	26801
+MA1553.2	RARG	P13631	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	13	3882
+MA0718.2	RAX	Q9Y2V3	accession	9606	Homeo domain factors	Paired-related HD factors	6	2651
+MA0717.2	RAX2	Q96IS3	accession	9606	Homeo domain factors	Paired-related HD factors	6	44106
+MA1116.2	RBPJ	Q06330	accession	9606	Rel homology region (RHR) factors	CSL-related factors	6	2402
+MA1117.2	RELB	Q01201	accession	9606	Rel homology region (RHR) factors	NF-kappaB-related factors	7	3290
+MA0138.3	REST	Q13127	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	20	1597
+MA0600.3	RFX2	P48378	accession	9606	Fork head/winged helix factors	RFX-related factors	14	14232
+MA0799.3	RFX4	Q33E94	accession	9606	Fork head/winged helix factors	RFX-related factors	13	882
+MA0510.3	RFX5	P48382	accession	9606	Fork head/winged helix factors	RFX-related factors	14	2918
+MA1724.2	Rfx6	Q8HWS3	symbol	10090	Fork head/winged helix factors	RFX-related factors	9	8550
+MA1554.2	RFX7	O14593	accession	9606	Fork head/winged helix factors	RFX-related factors	8	285
+MA0719.2	RHOXF1	Q8NHV9	accession	9606	Homeo domain factors	Paired-related HD factors	6	14231
+MA0072.2	RORA	P35398	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	11	36
+MA1150.2	RORB	Q92753	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	10	1000
+MA1151.2	RORC	P51449	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	10	1000
+MA0073.2	RREB1	Q92766	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	19	11
+MA0684.3	RUNX3	Q13761	accession	9606	Runt domain factors	Runt-related factors	8	27377
+MA1963.2	SATB1	Q01826	accession	9606	Homeo domain factors	HD-CUT	7	34224
+MA0743.3	SCRT1	Q9BWW7	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	60209
+MA0744.3	SCRT2	Q9NQ03	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	65610
+MA0630.2	SHOX	O15266	accession	9606	Homeo domain factors	Paired-related HD factors	6	999
+MA0720.2	Shox2	O60902	symbol	10090	Homeo domain factors	Paired-related HD factors	6	19386
+MA1118.2	SIX1	Q15475	accession	9606	Homeo domain factors	HD-SINE	9	1108
+MA1119.2	SIX2	Q9NPC8	accession	9606	Homeo domain factors	HD-SINE	11	5453
+MA0631.2	Six3	O95343	symbol	10090	Homeo domain factors	HD-SINE	11	100
+MA2001.2	Six4	Q9UIU6	symbol	10090	Homeo domain factors	HD-SINE	7	4291
+MA1964.2	SMAD2	Q15796	accession	9606	SMAD/NF-1 DNA-binding domain factors	SMAD factors	6	3758
+MA1153.2	Smad4	Q13485	symbol	10090	SMAD/NF-1 DNA-binding domain factors	SMAD factors	7	1000
+MA1558.2	SNAI1	O95863	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	24001
+MA0745.3	SNAI2	O43623	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	45816
+MA1559.2	SNAI3	Q3KNW1	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	6431
+MA1560.2	SOHLH2	Q9NX45	accession	9606	Basic helix-loop-helix factors (bHLH)	PAS domain factors	8	1924
+MA0442.3	SOX10	P56693	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	6	2055
+MA0869.3	Sox11	P35716	symbol	10090	High-mobility group (HMG) domain factors	SOX-related factors	8	10248
+MA1561.2	SOX12	O15370	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	10	1368
+MA1120.2	SOX13	Q9UN79	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	7	4552
+MA1562.2	SOX14	O95416	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	9	805
+MA1152.2	SOX15	O60248	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	7	1000
+MA0078.3	Sox17	Q9H6I2	symbol	10090	High-mobility group (HMG) domain factors	SOX-related factors	10	12287
+MA0514.3	Sox3	P41225	symbol	10090	High-mobility group (HMG) domain factors	SOX-related factors	7	11978
+MA0867.3	SOX4	Q06945	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	8	9011
+MA0087.3	Sox5	P35711	symbol	10090	High-mobility group (HMG) domain factors	SOX-related factors	8	124
+MA0868.3	SOX8	P57073	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	7	2463
+MA0077.2	SOX9	P48436	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	8	76
+MA0746.3	SP3	Q02447	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	11	7543
+MA1965.2	SP5	Q6BEB4	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	6	20696
+MA0747.2	SP8	Q8IXZ3	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	11	171
+MA1564.2	SP9	P0CG40	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	10	3844
+MA0080.7	Spi1	P17947	symbol	10090	Tryptophan cluster factors	Ets-related	13	105198
+MA0081.3	SPIB	Q01892	accession	9606	Tryptophan cluster factors	Ets-related	13	26930
+MA0687.2	SPIC	Q8N5J4	accession	9606	Tryptophan cluster factors	Ets-related	13	303
+MA0829.3	SREBF1	P36956	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	7141
+MA0084.2	SRY	Q05066	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	7	28
+MA0137.4	STAT1	P42224	accession	9606	STAT domain factors	STAT factors	9	3629
+MA0517.2	STAT1::STAT2	P42224	accession	9606	STAT domain factors	STAT factors	13	620
+MA0517.2	STAT1::STAT2	P52630	accession	9606	STAT domain factors	STAT factors	13	620
+MA1623.2	Stat2	P52630	symbol	10090	STAT domain factors	STAT factors	10	3959
+MA0144.3	STAT3	P40763	accession	9606	STAT domain factors	STAT factors	9	21620
+MA0518.2	Stat4	Q14765	symbol	10090	STAT domain factors	STAT factors	10	2873
+MA1624.2	Stat5a	P42229	symbol	10090	STAT domain factors	STAT factors	9	4514
+MA0519.2	Stat5a::Stat5b	P42229	symbol	10090	STAT domain factors	STAT factors	9	16507
+MA0519.2	Stat5a::Stat5b	P51692	symbol	10090	STAT domain factors	STAT factors	9	16507
+MA1625.2	Stat5b	P51692	symbol	10090	STAT domain factors	STAT factors	9	2760
+MA0520.2	Stat6	P42226	symbol	10090	STAT domain factors	STAT factors	10	1852
+MA0091.2	TAL1::TCF3	P15923	accession	9606	Basic helix-loop-helix factors (bHLH)	E2A	10	44
+MA0091.2	TAL1::TCF3	P17542	accession	9606	Basic helix-loop-helix factors (bHLH)	E2A	10	44
+MA0108.3	TBP	P20226	symbol		TATA-binding proteins	TBP-related factors	7	389
+MA0802.2	TBR1	Q16650	accession	9606	T-Box factors	TBrain-related factors	9	39630
+MA1565.2	TBX18	O95935	accession	9606	T-Box factors	TBX1-related factors	9	1058
+MA0804.2	TBX19	O60806	accession	9606	T-Box factors	Brachyury-related factors	17	45896
+MA0688.2	TBX2	Q13207	accession	9606	T-Box factors	TBX2-related factors	9	4398
+MA1567.3	Tbx6	O95947	symbol	10090	T-Box factors	TBX6-related factors	9	9652
+MA0521.3	Tcf12	Q99081	symbol	10090	Basic helix-loop-helix factors (bHLH)	E2A	6	73995
+MA1648.2	TCF12	Q99081	accession	9606	Basic helix-loop-helix factors (bHLH)	E2A	7	61876
+MA0832.2	Tcf21	O43680	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	10	198
+MA1568.2	TCF21	O43680	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	10	1438
+MA0830.3	TCF4	P15884	accession	9606	Basic helix-loop-helix factors (bHLH)	E2A	8	29465
+MA0769.3	TCF7	P36402	accession	9606	High-mobility group (HMG) domain factors	TCF-7-related factors	7	14994
+MA0523.2	TCF7L2	Q9NQB0	accession	9606	High-mobility group (HMG) domain factors	TCF-7-related factors	9	4188
+MA0632.3	TCFL5	Q9UL49	accession	9606	Basic helix-loop-helix factors (bHLH)	PAS domain factors	8	72543
+MA0090.4	TEAD1	P28347	accession	9606	TEA domain factors	TEF-1-related factors	9	70398
+MA1121.2	TEAD2	Q15562	accession	9606	TEA domain factors	TEF-1-related factors	7	542
+MA0809.3	TEAD4	Q15561	accession	9606	TEA domain factors	TEF-1-related factors	8	78086
+MA0810.2	TFAP2A	P05549	accession	9606	Basic helix-span-helix factors (bHSH)	AP-2	11	4005
+MA0003.5	TFAP2A	P05549	accession	9606	Basic helix-span-helix factors (bHSH)	AP-2	9	15968
+MA0811.2	TFAP2B	Q92481	accession	9606	Basic helix-span-helix factors (bHSH)	AP-2	11	4959
+MA0812.2	TFAP2B	Q92481	accession	9606	Basic helix-span-helix factors (bHSH)	AP-2	9	4615
+MA0524.3	TFAP2C	Q92754	accession	9606	Basic helix-span-helix factors (bHSH)	AP-2	11	8544
+MA0814.3	TFAP2C	Q92754	accession	9606	Basic helix-span-helix factors (bHSH)	AP-2	9	60819
+MA1569.2	TFAP2E	Q6VUC0	accession	9606	Basic helix-span-helix factors (bHSH)	AP-2	9	21373
+MA1966.2	TFAP4::ETV1	P50549	accession	9606	Tryptophan cluster factors	Ets-related	13	3411
+MA1966.2	TFAP4::ETV1	Q01664	accession	9606	Tryptophan cluster factors	Ets-related	13	3411
+MA1967.2	TFAP4::FLI1	Q01543	accession	9606	Tryptophan cluster factors	Ets-related	14	1643
+MA1967.2	TFAP4::FLI1	Q01664	accession	9606	Tryptophan cluster factors	Ets-related	14	1643
+MA1968.2	TFCP2	Q12800	accession	9606	Grainyhead domain factors	CP2-related factors	9	576
+MA1122.2	TFDP1	Q14186	accession	9606	Fork head/winged helix factors	E2F	8	2007
+MA0692.2	TFEB	P19484	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	8	8735
+MA0871.3	TFEC	O14948	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	8	7955
+MA0597.3	THAP1	Q9NVV9	accession	9606	C2CH THAP-type zinc finger factors	THAP-related factors	8	5178
+MA1969.2	THRA	P10827	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	18	182
+MA1574.2	THRB	P10828	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	13	8934
+MA1575.2	THRB	P10828	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	17	4770
+MA1576.2	THRB	P10828	accession	9606	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	18	389
+MA1577.2	TLX2	O43763	accession	9606	Homeo domain factors	NK	6	18502
+MA0861.2	TP73	O15350	accession	9606	p53 domain factors	p53-related factors	16	10147
+MA1970.2	TRPS1	Q9UHF7	accession	9606	Other C4 zinc finger-type factors	C4-GATA-related	8	18283
+MA1123.3	TWIST1	Q15672	accession	9606	Basic helix-loop-helix factors (bHLH)	Tal-related	8	27333
+MA0633.3	Twist2	Q8WVJ9	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	6	49629
+MA0721.2	UNCX	A6NJT0	accession	9606	Homeo domain factors	Paired-related HD factors	6	42987
+MA0093.4	USF1	P22415	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	55334
+MA0526.5	USF2	Q15853	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	10	19360
+MA0722.2	VAX1	Q5SQQ9	accession	9606	Homeo domain factors	NK	7	6156
+MA0723.3	VAX2	Q9UIW0	accession	9606	Homeo domain factors	NK	6	14472
+MA0693.4	Vdr	P11473	symbol	10090	Nuclear receptors with C4 zinc fingers	Thyroid hormone receptor-related factors (NR1)	7	38542
+MA1578.2	VEZF1	Q14119	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	6	998
+MA0725.2	VSX1	Q9NZR4	accession	9606	Homeo domain factors	Paired-related HD factors	7	14889
+MA0726.2	VSX2	P58304	accession	9606	Homeo domain factors	Paired-related HD factors	7	14681
+MA1627.2	Wt1	P19544	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	4691
+MA0844.2	XBP1	P17861	accession	9606	Basic leucine zipper factors (bZIP)	XBP-1-related factors	11	12830
+MA0095.4	Yy1	P25490	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	43348
+MA0748.3	YY2	O15391	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	5704
+MA0749.2	ZBED1	O96006	accession	9606	C2H2 zinc finger factors	BED zinc finger factors	12	5840
+MA1971.2	ZBED2	Q9BTP6	accession	9606	C2H2 zinc finger factors	BED zinc finger factors	7	1297
+MA1649.2	ZBTB12	Q9Y330	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	4767
+MA1650.2	ZBTB14	O43829	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	4547
+MA0698.2	ZBTB18	Q99592	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	13671
+MA1579.2	ZBTB26	Q9HCK0	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	1627
+MA0527.2	ZBTB33	Q86T24	accession	9606	C2H2 zinc finger factors	Other factors with up to three adjacent zinc fingers	10	705
+MA1581.2	ZBTB6	Q15916	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	2227
+MA0694.2	ZBTB7B	O15156	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	2274
+MA0103.4	ZEB1	P37275	accession	9606	Homeo domain factors	HD-ZF factors	6	20129
+MA1651.2	ZFP42	Q96MM3	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	13	1752
+MA1583.2	ZFP57	Q9NU63	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	7	6332
+MA0146.3	Zfx	P17010	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	479
+MA1628.2	Zic1::Zic2	O95409	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	9892
+MA1628.2	Zic1::Zic2	Q15915	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	9892
+MA1629.2	Zic2	O95409	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	11919
+MA0697.3	Zic3	O60481	symbol	10090	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	26174
+MA0751.2	ZIC4	Q8N9L1	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	7525
+MA1584.2	ZIC5	Q96T25	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	26889
+MA1709.2	ZIM3	Q96PE6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	17220
+MA1585.2	ZKSCAN1	P17029	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	6127
+MA1973.2	ZKSCAN3	Q9BRR0	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	210
+MA1652.2	ZKSCAN5	Q9Y2L8	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	9	3327
+MA1653.2	ZNF148	Q9UQR1	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	11199
+MA1654.2	ZNF16	P17020	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	21	833
+MA1725.2	ZNF189	O75820	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	15946
+MA1974.2	ZNF211	Q13398	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	10	794
+MA1975.2	ZNF214	Q9UL59	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	13	1000
+MA1710.2	ZNF257	Q9Y2Q1	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	1000
+MA0528.3	ZNF263	O14978	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	56343
+MA1592.2	ZNF274	Q96GC6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	39423
+MA1630.3	ZNF281	Q9Y2X9	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	1001
+MA1154.2	ZNF282	Q9UDV7	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	312
+MA1593.2	ZNF317	Q96PQ6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	11463
+MA1977.2	ZNF324	O75467	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	1000
+MA1726.2	ZNF331	Q9NQX6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	1153
+MA1655.2	ZNF341	Q9BYN7	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	8	18728
+MA1711.2	ZNF343	Q6P1L6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	16	48707
+MA1978.2	ZNF354A	O60765	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	20	1000
+MA1125.2	ZNF384	Q8TF68	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	30433
+MA0752.2	ZNF410	Q86VK4	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	16	3988
+MA1979.2	ZNF416	Q8NA42	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	345
+MA1727.2	ZNF417	Q8TAU3	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	7	999
+MA1656.2	ZNF449	Q6P9G9	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	7660
+MA1712.2	ZNF454	Q8N9F8	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	17	1000
+MA1981.2	ZNF530	Q6P9A1	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	1000
+MA1728.2	ZNF549	Q6P9A3	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	4827
+MA1982.2	ZNF574	Q6ZN55	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	14	1001
+MA1983.2	ZNF582	Q96NG8	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	19	293
+MA1713.2	ZNF610	Q8N9Z0	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	2386
+MA1657.2	ZNF652	Q9Y2D9	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	12373
+MA1984.2	ZNF667	Q5HYK9	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	1000
+MA1714.2	ZNF675	Q8TD23	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	19	999
+MA1729.2	ZNF680	Q8NEM1	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	5766
+MA1599.2	ZNF682	O95780	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	1058
+MA1600.2	ZNF684	Q5T5D7	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	1349
+MA1986.2	ZNF692	Q9BU19	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	10745
+MA1987.2	ZNF701	Q9NV72	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	17	1000
+MA1730.2	ZNF708	P17019	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	849
+MA0753.3	ZNF740	Q8NDX6	accession	9606	C2H2 zinc finger factors	Other factors with up to three adjacent zinc fingers	10	1201
+MA1716.2	ZNF76	P36508	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	17	2428
+MA1731.2	ZNF768	Q9H5H4	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	1000
+MA1717.2	ZNF784	Q8NCA9	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	8	6535
+MA1719.2	ZNF816	Q0VGE8	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	1053
+MA1720.2	ZNF85	Q03923	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	584
+MA1721.2	ZNF93	P35789	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	2388
+MA1602.2	ZSCAN29	Q8IWY8	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	999
+MA1722.2	ZSCAN31	Q96LW9	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	18	8838
+MA2094.1	PAX8	Q06710	accession	9606	Paired box factors	Paired domain only	16	9248
+MA2457.1	ZNF260	Q3ZCT1	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	22	2008
+MA2458.1	ZNF146	Q15072	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	11422
+MA2462.1	ZNF250	P15622	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	257
+MA2469.1	FOXM1	Q08050	accession	9606	Fork head/winged helix factors	FOX	7	12177
+MA2470.1	ZBTB48	P10074	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	1001
+MA0089.3	MAFG::NRF1	O15525	accession	9606	Uncharacterized	NRF	11	3356
+MA0089.3	MAFG::NRF1	Q16656	accession	9606	Uncharacterized	NRF	11	3356
+MA2487.1	ZBTB21	Q9ULJ3	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	6	8549
+MA2488.1	ZBTB40	Q9NUA8	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	12923
+MA2489.1	ZFP28	Q8NHY6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	18	1019
+MA2490.1	ZFP3	Q96NJ6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	578
+MA2491.1	ZNF134	P52741	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	15	1657
+MA2492.1	ZNF18	P17022	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	12941
+MA2493.1	ZNF322	Q6U7Q0	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	13	602
+MA2494.1	ZNF436	Q9C0F3	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	22	3861
+MA2495.1	ZNF490	Q9ULM2	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	5593
+MA2496.1	ZNF596	Q8TC21	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	2502
+MA2497.1	ZNF623	O75123	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	20	4447
+MA2504.1	BCL11A	Q9H165	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	8	2173
+MA2506.1	MYT1	Q01538	accession	9606	C2HC	MYT	7	1000
+MA2507.1	NACC2	Q96BF6	accession	9606	C2H2 zinc finger factors	Other factors with up to three adjacent zinc fingers	24	1000
+MA2508.1	CASZ1	Q86V15	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	14	1000
+MA2509.1	ZBTB5	O15062	accession	9606	C2H2 zinc finger factors	BTB-POZ	10	1000
+MA2510.1	ZBTB41	Q5SVQ8	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	18	1000
+MA2511.1	ZNF335	Q9H4Z2	accession	9606	C2H2 zinc finger factors	Other factors with up to three adjacent zinc fingers	8	1000
+MA2512.1	ZNF648	Q5T619	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	1000
+MA2513.1	FLYWCH1	Q4VC44	accession	9606		FLYWCH1	21	1000
+MA2514.1	ZNF853	P0CG23	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	1000
+MA2515.1	ZNF865	P0CJ78	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	1000
+MA2516.1	ZSCAN2	Q7Z7L9	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	30	1000
+MA2517.1	ZSCAN25	Q6NSZ9	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	1000
+MA2518.1	ZNF551	Q7Z340	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	24	344
+MA2519.1	ZNF606	E7ETH6	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	14	1120
+MA2520.1	ZNF678	Q5SXM1	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	9	75
+MA2521.1	FIZ1	Q96SL8	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	19	1492
+MA2522.1	ZNF683	Q8IZ20	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	2548
+MA2523.1	ZNF689	C0HLU2	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	13	1164
+MA2524.1	ZNF696	Q9H7X3	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	21	82
+MA2525.1	ZNF699	Q32M78	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	203
+MA2526.1	ZNF721	Q8TF20	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	1617
+MA2527.1	ZNF726	A6NNF4	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	73
+MA2528.1	ZNF732	B4DXR9	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	16	1054
+MA2529.1	ZNF772	Q68DY9	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	19	113
+MA2530.1	ZNF773	Q6PK81	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	75
+MA2531.1	ZNF775	Q96BV0	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	15	10156
+MA2532.1	ZNF780B	Q9Y6R6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	351
+MA2533.1	ZNF814	B7Z6K7	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	16	500
+MA2534.1	ZNF831	Q5JPB2	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	11	8480
+MA2535.1	MYPOP	Q86VE0	accession	9606	Tryptophan cluster factors	Myb-SANT	13	6779
+MA2536.1	PRDM13	Q9H4Q3	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	10	27501
+MA2537.1	SALL3	Q9BXA9	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	9	202
+MA2538.1	CGGBP1	Q9UFW8	accession	9606	C2H2 zinc finger factors		12	7306
+MA2539.1	SLC2A4RG	Q9NR83	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	10	3906
+MA2540.1	SP140L	Q9H930	accession	9606	SAND domain factors	Sp140-Sp100	6	10112
+MA2541.1	CREB3L3	Q68CJ9	accession	9606	Basic leucine zipper factors (bZIP)	CREB-related	12	3662
+MA2542.1	SCAND3	Q6R2W3	accession	9606	C2H2 zinc finger factors	BED zinc finger factors	8	43337
+MA2543.1	ZBTB47	Q9UFB7	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	8083
+MA2544.1	ZKSCAN4	Q969J2	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	24	271
+MA2545.1	ZNF57	Q68EA5	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	24	77
+MA2546.1	ZNF131	P52739	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	13	5874
+MA2547.1	ZNF215	Q9UL58	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	129
+MA2548.1	ZNF226	Q9NYT6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	17	231
+MA2549.1	ZNF234	Q14588	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	18	624
+MA2550.1	ZNF275	Q9NSD4	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	537
+MA2551.1	ZNF286B	P0CG31	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	21	93
+MA2552.1	ZNF367	Q7RTV3	accession	9606	C2H2 zinc finger factors		9	42822
+MA2553.1	ZNF407	Q9C0G0	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	17	117
+MA2554.1	ZNF471	Q9BX82	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	9496
+MA2555.1	ZNF493	Q6ZR52	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	26
+MA2556.1	ZNF510	Q9Y2H8	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	15	107
+MA2557.1	ZGLP1	P0C6A0	accession	9606	Other C4 zinc finger-type factors	C4-GATA-related	4	1000
+MA2558.1	MSANTD4	Q8NCY6	accession	9606	Tryptophan cluster factors	Myb-SANT	9	1000
+MA2559.1	NACC2	Q96BF6	accession	9606	C2H2 zinc finger factors	Other factors with up to three adjacent zinc fingers	5	1000
+MA2560.1	POGK	Q9P215	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	14	1000
+MA2561.1	TIGD4	Q8IY51	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	1000
+MA2562.1	TIGD5	Q53EQ6	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	13	1000
+MA2563.1	TIGD7	Q6NT04	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	1000
+MA2564.1	ZNF43	P17038	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	1000
+MA2565.1	ZNF70	Q9UC06	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	6	1000
+MA2566.1	ZNF395	Q9H8N7	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	6	1000
+MA2567.1	ZNF497	Q6ZNH5	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	1000
+MA2568.1	ZNF568	Q3ZCX4	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	1000
+MA2569.1	ZNF676	Q8N7Q3	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	16	1000
+MA2570.1	ZNF746	Q6NUN9	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	11	1000
+MA2571.1	ZNF800	Q2TB10	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	6	1000
+MA2572.1	ZNF827	Q17R98	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	5	1000
+MA2573.1	ZNF836	Q6ZNA1	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	1000
+MA2574.1	ZNF878	C9JN71	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	16	1000
+MA2575.1	ZNF536	O15090	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	5	1000
+MA2576.1	ZXDB	P98169	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	7	1000
+MA2577.1	ZXDC	Q2QGD7	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	1000
+MA2578.1	ZBTB8A	Q96BR9	accession	9606	C2H2 zinc finger factors	Other factors with up to three adjacent zinc fingers	9	1000
+MA2579.1	ZBTB8B	Q8NAP8	accession	9606	C2H2 zinc finger factors	Other factors with up to three adjacent zinc fingers	7	1000
+MA2580.1	ZNF20	P17024	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	1000
+MA2581.1	ZNF66	Q6ZN08	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	1000
+MA2582.1	ZNF121	P58317	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	1000
+MA2583.1	ZNF142	P52746	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	12	1000
+MA2584.1	DNTTIP1	Q9H147	accession	9606	Rel homology region (RHR) factors	NFkappaB-related	11	1000
+MA2585.1	ZNF500	O60304	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	1000
+MA2586.1	ZNF518B	Q9C0D4	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	13	1000
+MA2587.1	ZNF672	Q499Z4	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	1000
+MA2588.1	FAM200B	P0CF97	accession	9606	C2H2 zinc finger factors	BED zinc finger factors	8	1000
+MA2589.1	ZNF728	P0DKX0	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	1000
+MA2590.1	ZNF841	Q6ZN19	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	1000
+MA2591.1	ZNF850	A8MQ14	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	15	1000
+MA2592.1	MKX	Q8IYA7	accession	9606	Homeo domain factors	TALE-type HD	6	1000
+MA2593.1	ZNF362	Q5T0B9	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	25560
+MA2594.1	DMTF1	Q9Y222	accession	9606	Tryptophan cluster factors	Myb-SANT	11	5782
+MA2595.1	ZNF700	Q9H0M5	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	2476
+MA2596.1	ZXDA	P98168	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	3413
+MA2597.1	LEUTX	A8MZ59	accession	9606	Homeo domain factors	Paired-related HD	8	5478
+MA2598.1	MSANTD1	Q6ZTZ1	accession	9606	Tryptophan cluster factors	Myb-SANT	10	62106
+MA2599.1	TIGD3	Q6B0B8	accession	9606			8	45744
+MA2600.1	TPRX1	Q8N7U7	accession	9606	Homeo domain factors	Paired-related HD	10	58545
+MA2601.1	USF3	Q68DE3	accession	9606	Basic helix-loop-helix factors (bHLH)	bHLH-ZIP	8	9348
+MA2602.1	ZBED5	Q49AG3	accession	9606	C2H2 zinc finger factors	BED zinc finger factors	8	14983
+MA2603.1	ZFTA	C9JLR9	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	9	37168
+MA2628.1	HELT	A6NFD8	accession	9606	Basic helix-loop-helix factors (bHLH)	Hairy-related factors	8	54
+MA2629.1	GSC::TBX21	P56915	accession	9606	T-Box factors	TBX1-related factors	16	900
+MA2629.1	GSC::TBX21	Q9UL17	accession	9606	T-Box factors	TBX1-related factors	16	900
+MA2674.1	HIF3A	Q9Y2N7	accession	9606	Homeo domain factors	PAS	6	1000
+MA2675.1	HOMEZ	Q8IX15	accession	9606	Homeo domain factors	HD-ZF	9	6103
+MA2676.1	HSF5	Q4G112	accession	9606	Heat shock factors	HSF factors	8	8968
+MA2677.1	HOXD1	Q9GZZ0	accession	9606	Homeo domain factors	HOX	9	2447
+MA2678.1	IRX1	P78414	accession	9606	Homeo domain factors	TALE-type HD	6	7594
+MA2679.1	IRX2	Q9BZI1	accession	9606	Homeo domain factors	TALE-type HD	6	6682
+MA2680.1	IRX5	P78411	accession	9606	Homeo domain factors	TALE-type HD	6	9539
+MA2681.1	KLF8	O95600	accession	9606	C2H2 zinc finger factors	Three-zinc finger Kruppel-related	11	997
+MA2682.1	MYT1L	Q9UL68	accession	9606	C2HC	MYT	6	994
+MA2683.1	NPAS3	Q8IXF0	accession	9606	Basic helix-loop-helix factors (bHLH)	PAS	6	996
+MA2684.1	SOX30	O94993	accession	9606	High-mobility group (HMG) domain factors	SOX-related factors	8	8991
+MA2685.1	TLX3	O43711	accession	9606	Homeo domain factors	NK	8	2244
+MA2686.1	ZEB2	O60315	accession	9606	Homeo domain factors	HD-ZF	6	1003
+MA2687.1	ZNF251	Q9BRH9	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	20	1971
+MA2688.1	ZNF347	Q96SE7	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	16	2288
+MA2689.1	ZNF470	Q6ECI4	accession	9606	C2H2 zinc finger factors	Other factors with up to three adjacent zinc fingers	16	72
+MA2690.1	ZNF724	A8MTY0	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	24	197
+MA2691.1	ZNF841	Q6ZN19	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	13	84
+MA2692.1	ZNF43	P17038	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	671
+MA0750.4	ZBTB7A	O95365	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	997
+MA0695.3	ZBTB7C	A1YPR0	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	8	7501
+MA2330.2	ZBTB24	O43167	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	1000
+MA1589.3	ZNF140	P52738	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	12	1155
+MA0088.3	ZNF143	P52747	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	23	889
+MA1976.3	ZNF320	A2RRD8	accession	9606	C2H2 zinc finger factors	More than 3 adjacent zinc fingers	10	1000
+MA0116.2	ZNF423	Q2M1K9	accession	9606	C2H2 zinc finger factors	Factors with multiple dispersed zinc fingers	13	1003
+MA2484.1	Dmrtb1	Q96MA1	symbol	10090	DM-type intertwined zinc finger factors	DMRT factors	13	4093
+MA2486.1	Fosb	P53539	symbol	10090	Basic leucine zipper factors (bZIP)	Fos-related	7	20082
+MA1540.3	Nr5a1	Q13285	symbol	10090	Nuclear receptors with C4 zinc fingers	FTZF1-related (NR5A)	12	4697
+MA0505.3	Nr5a2	O00482	symbol	10090	Nuclear receptors with C4 zinc fingers	FTZF1-related (NR5A)	9	30542
+MA0506.3	Nrf1	Q16656	symbol	10090	Uncharacterized	NRF	12	12729
+MA1618.2	Ptf1A	Q7RTS3	symbol	10090	Basic helix-loop-helix factors (bHLH)	Tal-related	9	14441
+MA0002.3	Runx1	Q01196	symbol	10090	Runt domain factors	Runt-related factors	9	2000
+MA2503.1	Banp	Q8N9N5	symbol	10090	ARID	ARID-related	10	836

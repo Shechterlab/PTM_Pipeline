@@ -69,6 +69,7 @@ SIFTS_OBSERVED = 'https://ftp.ebi.ac.uk/pub/databases/msd/sifts/flatfiles/tsv/un
 SIFTS_CHAINS = 'https://ftp.ebi.ac.uk/pub/databases/msd/sifts/flatfiles/tsv/pdb_chain_uniprot.tsv.gz'
 CDCODE_API = 'https://cd-code.org/api'
 MODELSERVER = 'https://models.rcsb.org/v1/{pdb}/residueSurroundings'
+MODELSERVER_INTERACTION = 'https://models.rcsb.org/v1/{pdb}/residueInteraction'
 RCSB_SEARCH = 'https://search.rcsb.org/rcsbsearch/v2/query'
 # ProtVar predicted interfaces: AlphaFold-Multimer models of human binary interactions, residues within 5 Å
 # of the partner chain, in UniProt numbering (CC BY 4.0).
@@ -106,6 +107,9 @@ PDBE_MODRES = 'https://www.ebi.ac.uk/pdbe/api/pdb/entry/modified_AA_or_NA/{pdb}'
 PDBE_MOLECULES = 'https://www.ebi.ac.uk/pdbe/api/pdb/entry/molecules/{pdb}'
 NA_KINDS = {'polyribonucleotide': 'rna', 'polydeoxyribonucleotide': 'dna', 'polydeoxyribonucleotide/polyribonucleotide hybrid': 'hybrid'}
 NA_WINDOW = 8   # nucleotides kept each side of the one closest to a methylarginine
+REGION_GAP = 3        # residues touching nucleic acid this close join one region
+REGION_SEGMENTS = 6   # bound segments kept per region (the most entries first)
+SEG_FLANK, SEG_JOIN = 2, 4   # a bound segment: contacted nucleotides with 2 each side; clusters this close join
 # IntAct curated features of interaction participants (EMBL-EBI, CC BY 4.0): mutations and their effect on the
 # interaction, binding regions mapped for a partner, and modified residues of the participants.
 INTACT_FEATURES = 'https://ftp.ebi.ac.uk/pub/databases/intact/current/psimitab/features/{name}.tsv'
@@ -440,7 +444,9 @@ def load_sifts_chains(cache: Path, refresh: bool, keep_pdbs: set):
 
 
 def nucleic_chain_rows(mols: list) -> list:
-    """The RNA and DNA chains in a PDBe API molecules answer: [(author chain, entity, kind, name, organism, sequence)]."""
+    """The RNA and DNA chains in a PDBe API molecules answer: [(author chain, entity, kind, name, organism, sequence,
+    sample preparation)]; the preparation tells a made oligonucleotide (Synthetically obtained) from a natural or
+    expressed one (Natural source, Genetically manipulated)."""
     out = []
     for m in mols:
         kind = NA_KINDS.get(m.get('molecule_type', ''))
@@ -448,14 +454,14 @@ def nucleic_chain_rows(mols: list) -> list:
             continue
         name = (m.get('molecule_name') or [''])[0]
         organism = ((m.get('source') or [{}])[0] or {}).get('organism_scientific_name') or ''
-        out += [(ch, int(m['entity_id']), kind, name, organism, m['sequence']) for ch in m.get('in_chains') or []]
+        out += [(ch, int(m['entity_id']), kind, name, organism, m['sequence'], m.get('sample_preparation') or '') for ch in m.get('in_chains') or []]
     return out
 
 
 def load_nucleic_chains(cache: Path, pdbs: set, refresh: bool, workers: int) -> dict:
     """The RNA and DNA chains of PDB entries (PDBe API molecules): (pdb, author chain) -> (kind, entity, name, organism,
-    sequence). kind is rna, dna or hybrid (NA_KINDS); the sequence is the entity's SEQRES in one-letter codes, modified
-    nucleotides as their parent, so a contact's SEQRES index (label_seq_id) is its position in it."""
+    sequence, sample preparation). kind is rna, dna or hybrid (NA_KINDS); the sequence is the entity's SEQRES in one-letter
+    codes, modified nucleotides as their parent, so a contact's SEQRES index (label_seq_id) is its position in it."""
     folder = cache / 'pdbe_molecules'
 
     def one(pdb):
@@ -472,9 +478,91 @@ def load_nucleic_chains(cache: Path, pdbs: set, refresh: bool, workers: int) -> 
     out = {}
     with ThreadPoolExecutor(max_workers=workers) as pool:
         for pdb, mols in pool.map(one, sorted(pdbs)):
-            for ch, entity, kind, name, organism, seq in nucleic_chain_rows(mols):
-                out[(pdb, ch)] = (kind, entity, name, organism, seq)
+            for ch, entity, kind, name, organism, seq, prep in nucleic_chain_rows(mols):
+                out[(pdb, ch)] = (kind, entity, name, organism, seq, prep)
     return out
+
+
+SYM_CHAIN = re.compile(r'^(.+)-(\d+_\d{3})$')
+
+
+def chain_na_contacts(cache: Path, pdb: str, chain: str, na_chains: set, refresh: bool):
+    """Residues of a protein chain within CONTACT_CUTOFF (any heavy atoms) of the entry's RNA and DNA chains, in the
+    asymmetric unit of the first model (RCSB ModelServer residueInteraction; symmetry copies left out), cached as JSON:
+    [[SEQRES index, author number, residue, nucleic-acid chain, its SEQRES index, nucleotide, distance]]."""
+    dest = cache / 'na_regions' / f'{pdb}_{chain}.json'
+    if dest.exists() and not refresh:
+        try:
+            return json.loads(dest.read_text())
+        except json.JSONDecodeError:
+            pass
+    url = MODELSERVER_INTERACTION.format(pdb=pdb) + '?' + urllib.parse.urlencode(
+        {'auth_asym_id': chain, 'radius': CONTACT_CUTOFF + 0.5, 'model_nums': 1, 'encoding': 'cif'})
+    text = None
+    for k in range(4):
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': UA})
+            with urllib.request.urlopen(req, timeout=180) as r:
+                text = r.read().decode('utf-8', 'replace')
+            break
+        except urllib.error.HTTPError as e:
+            if e.code in (400, 404):
+                text = ''
+                break
+            time.sleep(2 ** k)
+        except Exception:  # noqa: BLE001 - network hiccup, retried
+            time.sleep(2 ** k)
+    if text is None:
+        raise SystemExit(f'ModelServer did not answer for {pdb} chain {chain} after 4 tries; run the build again')
+    prot, nucl = [], defaultdict(list)   # nucleotide atoms by 4 Å grid cell
+    for a in parse_cif_atoms(text):
+        ch = a.get('auth_asym_id', '')
+        m = SYM_CHAIN.match(ch)
+        if m:
+            if m.group(2) != '1_555':
+                continue
+            ch = m.group(1)
+        if a.get('type_symbol') == 'H' or not re.fullmatch(r'\d+', a.get('label_seq_id') or ''):
+            continue
+        xyz = (float(a['Cartn_x']), float(a['Cartn_y']), float(a['Cartn_z']))
+        if ch == chain and a.get('label_comp_id') in AA3:
+            prot.append((int(a['label_seq_id']), a.get('auth_seq_id', ''), a['label_comp_id'], xyz))
+        elif ch in na_chains:
+            cell = tuple(int(math.floor(v / CONTACT_CUTOFF)) for v in xyz)
+            nucl[cell].append((ch, int(a['label_seq_id']), a.get('label_comp_id', ''), xyz))
+    best = {}
+    for lab, auth, resn, xyz in prot:
+        cx, cy, cz = (int(math.floor(v / CONTACT_CUTOFF)) for v in xyz)
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                for dz in (-1, 0, 1):
+                    for nch, nlab, comp, q in nucl.get((cx + dx, cy + dy, cz + dz), ()):
+                        d = math.dist(xyz, q)
+                        if d <= CONTACT_CUTOFF and ((lab, nch, nlab) not in best or d < best[(lab, nch, nlab)][0]):
+                            best[(lab, nch, nlab)] = (d, auth, resn, comp)
+    out = {'hits': [[lab, auth, resn, nch, nlab, comp, round(d, 2)] for (lab, nch, nlab), (d, auth, resn, comp) in sorted(best.items())]}
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(json.dumps(out))
+    return out
+
+
+def bound_segment(seq: str, labs: set) -> str:
+    """The contacted nucleotides of a chain (SEQRES indices) with SEG_FLANK each side, contacted ones in brackets, and
+    clusters further apart than SEG_JOIN separated by '…'."""
+    idx = sorted(labs)
+    clusters, cur = [], [idx[0], idx[0]]
+    for k in idx[1:]:
+        if k - cur[1] <= SEG_JOIN:
+            cur[1] = k
+        else:
+            clusters.append(cur)
+            cur = [k, k]
+    clusters.append(cur)
+    parts = []
+    for lo, hi in clusters:
+        parts.append(''.join(f'[{seq[k - 1]}]' if k in labs else seq[k - 1]
+                             for k in range(max(1, lo - SEG_FLANK), min(len(seq), hi + SEG_FLANK) + 1)))
+    return '…'.join(parts)
 
 
 def nucleic_contacts(results: dict, requests_: dict, chains_na: dict) -> list:
@@ -495,7 +583,7 @@ def nucleic_contacts(results: dict, requests_: dict, chains_na: dict) -> list:
                 if k not in by_chain[hch] or dist < by_chain[hch][k][1]:
                     by_chain[hch][k] = (comp, dist, hseq)
         for hch, hits in by_chain.items():
-            kind, entity, _, _, seq = chains_na[(pdb, hch)]
+            kind, entity, _, _, seq, _ = chains_na[(pdb, hch)]
             parent = lambda c: c[1:] if len(c) == 2 and c[0] == 'D' else c  # noqa: E731
             if any(not 1 <= k <= len(seq) or (parent(c) in 'ACGTUI' and len(parent(c)) == 1 and seq[k - 1] != parent(c))
                    for k, (c, _, _) in hits.items()):
@@ -517,6 +605,69 @@ def nucleic_contacts(results: dict, requests_: dict, chains_na: dict) -> list:
         if key not in best or r[8] < best[key][8]:
             best[key] = r
     return sorted(best.values(), key=lambda r: (r[0], r[1], r[2]))
+
+
+ECLIP_REGIONS = ['CDS', 'UTR3', 'UTR5', 'noncoding_exon', 'intron', 'intergenic']
+RBNS_TOP, ECLIP_TOP = 12, 25
+
+
+def iupac(col: dict) -> str:
+    """One position of a frequency matrix as an IUPAC letter: the base when it has half the weight and twice the next,
+    a two-base code when two bases have three quarters, else N."""
+    total = sum(col.values()) or 1
+    f = sorted(((v / total, b) for b, v in col.items()), reverse=True)
+    if f[0][0] >= 0.5 and f[0][0] >= 2 * f[1][0]:
+        return f[0][1]
+    pair = ''.join(sorted(b for _, b in f[:2]))
+    codes = {'AG': 'R', 'CT': 'Y', 'CG': 'S', 'AT': 'W', 'GT': 'K', 'AC': 'M', 'AU': 'W', 'GU': 'K', 'CU': 'Y'}
+    return codes.get(pair, 'N') if f[0][0] + f[1][0] >= 0.75 else 'N'
+
+
+def load_nucleic_acid_binding(folder: Path, keep: set) -> dict:
+    """What the methylated proteins (keep) bind beyond structures, from the tables scripts/43 staged: RNA Bind-n-Seq
+    (the RBNS_TOP most enriched 5-mers and ENCODE's logos), JASPAR 2026 DNA-binding matrices, and ENCODE eCLIP peaks
+    (per experiment: peaks by transcript region and the ECLIP_TOP genes with most)."""
+    def rows(name):
+        p = folder / name
+        if not p.exists():
+            return []
+        with open(p, encoding='utf-8') as fh:
+            return list(csv.DictReader(fh, delimiter='\t'))
+    out = {'rbns': [], 'jaspar': [], 'eclip': []}
+    kmers = defaultdict(list)
+    for r in rows('rbns_5mer_enrichment.tsv'):
+        if r['uniprot_accession'] in keep:
+            # ENCODE writes the RNA k-mers with T
+            kmers[(r['uniprot_accession'], r['encode_experiment'], r['concentration'])].append((r['kmer'].replace('T', 'U'), float(r['R'])))
+    logos = defaultdict(lambda: defaultdict(list))
+    for r in rows('rbns_logos.tsv'):
+        if r['uniprot_accession'] in keep:
+            logos[(r['uniprot_accession'], r['encode_experiment'])][(int(r['k']), int(r['logo']))].append([float(r[b]) for b in 'ACGU'])
+    for (acc, exp, conc), ks in sorted(kmers.items()):
+        top = sorted(ks, key=lambda x: -x[1])[:RBNS_TOP]
+        out['rbns'].append([acc, exp, conc, [[k, round(v, 2)] for k, v in top], [[k, lg, pwm] for (k, lg), pwm in sorted(logos[(acc, exp)].items())][:3]])
+    pfm = defaultdict(list)
+    for r in rows('jaspar2026_pfms.tsv'):
+        pfm[r['matrix_id']].append([int(r[b]) for b in 'ACGT'])
+    for r in rows('jaspar2026_matrices.tsv'):
+        if r['uniprot_accession'] in keep:
+            m = pfm[r['matrix_id']]
+            out['jaspar'].append([r['uniprot_accession'], r['matrix_id'], r['name'], r['tf_class'], r['tf_family'], m,
+                                  ''.join(iupac(dict(zip('ACGT', c))) for c in m)])
+    regions = defaultdict(dict)
+    for r in rows('encode_eclip_peak_regions.tsv'):
+        regions[r['encode_experiment']][r['region']] = int(r['n_peaks'])
+    genes = defaultdict(list)
+    for r in rows('encode_eclip_target_genes.tsv'):
+        genes[r['encode_experiment']].append([r['gene_name'] or r['gene_id'], int(r['n_peaks'])])
+    for r in rows('encode_eclip_experiments.tsv'):
+        if r['uniprot_accession'] in keep:
+            exp = r['encode_experiment']
+            out['eclip'].append([r['uniprot_accession'], exp, r['cell_line'], int(r['n_peaks']), [regions[exp].get(k, 0) for k in ECLIP_REGIONS],
+                                 genes[exp][:ECLIP_TOP]])
+    log(f"Binding beyond structures: RNA Bind-n-Seq for {len({x[0] for x in out['rbns']}):,} methylated proteins, JASPAR for "
+        f"{len({x[0] for x in out['jaspar']}):,}, eCLIP for {len({x[0] for x in out['eclip']}):,}")
+    return out
 
 
 def load_cdcode(cache: Path, refresh: bool, uids: list, workers: int):
@@ -1462,7 +1613,8 @@ def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
     import interaction_inputs as ii
     t = ii.Tables(folder)
     g = globals()
-    orig = {k: g[k] for k in ('fetch_interfaces', 'site_contacts', 'residue_environment', 'analyze_environment', 'load_nucleic_chains')}
+    orig = {k: g[k] for k in ('fetch_interfaces', 'site_contacts', 'residue_environment', 'analyze_environment', 'load_nucleic_chains',
+                              'chain_na_contacts')}
     manifest = folder.parent / 'MANIFEST.tsv'
     intact_release = ''
     if manifest.exists():
@@ -1512,6 +1664,12 @@ def use_frozen_tables(folder: Path, topup: Path, measured_sites: dict):
             out.update(orig['load_nucleic_chains'](topup, missing, False, workers))
         return out
     g['load_nucleic_chains'] = load_nucleic_chains_
+    na_res = ii.na_residue_contacts(t)
+
+    def chain_na_contacts_(cache, pdb, chain, na_chains, refresh):
+        hit = na_res.get((pdb, chain))
+        return {'hits': [list(h) for h in hit]} if hit is not None else orig['chain_na_contacts'](topup, pdb, chain, na_chains, False)
+    g['chain_na_contacts'] = chain_na_contacts_
 
     def site_contacts_(cache, pdb, chain, label, refresh):
         hit = contacts.get((pdb, chain, int(label)))
@@ -1897,16 +2055,33 @@ def write_release_tables(outdir: Path, d: dict):
     # CONTACT_CUTOFF of its side chain (numbered along the chain's SEQRES sequence, with the entry's author numbers), and
     # the bound sequence around the closest one, contacted nucleotides in brackets.
     parent = lambda c: c[1:] if len(c) == 2 and c[0] == 'D' else c  # noqa: E731
+    clean = lambda v: (v or '').replace(';', ',')  # noqa: E731 - the release lists are '; '-separated
     rows = []
     for j, pdb, ch, kind, _, window, offsets, near, dist, hits in d.get('na_rows') or []:
-        _, _, name, organism, seq = d['chains_na'][(pdb, ch)]
-        rows.append([sid(j), pdb, ch, kind, name, organism, len(seq), f'{seq[near - 1]}{near}', dist,
+        _, _, name, organism, seq, prep = d['chains_na'][(pdb, ch)]
+        name, organism = clean(name), clean(organism)
+        rows.append([sid(j), pdb, ch, kind, name, organism, prep, len(seq), f'{seq[near - 1]}{near}', dist,
                      '; '.join(f'{parent(c)}{k}' for k, c, _, _ in hits), '; '.join(str(a) for _, _, _, a in hits),
                      '; '.join(f'{x:.2f}' for _, _, x, _ in hits), near - NA_WINDOW, window,
                      ''.join(f'[{c}]' if k in offsets else c for k, c in enumerate(window))])
-    write('nucleic_acid_contacts.tsv', ['site_id', 'pdb_id', 'chain', 'nucleic_acid', 'molecule_name', 'source_organism', 'chain_length',
+    write('nucleic_acid_contacts.tsv', ['site_id', 'pdb_id', 'chain', 'nucleic_acid', 'molecule_name', 'source_organism', 'sample_preparation', 'chain_length',
                                         'closest_nucleotide', 'closest_distance_a', 'contacted_nucleotides', 'contacted_author_numbers',
                                         'contacted_distances_a', 'window_start', 'window', 'window_marked'], rows)
+    rows = [[acc, start, end, kind, n_ent, n_cx, '; '.join(sid(j) for j in in_sites), '; '.join(seg for seg, *_ in segs),
+             '; '.join(str(n) for *_, n in segs), '; '.join(pdb for _, pdb, _, _ in segs), '; '.join(clean(name) or '-' for _, _, name, _ in segs), n_segs]
+            for acc, kind, start, end, n_ent, n_cx, segs, n_segs, in_sites in d.get('na_regions') or []]
+    write('nucleic_acid_regions.tsv', ['uniprot_accession', 'start', 'end', 'nucleic_acid', 'n_entries', 'n_complexes', 'methylarginines',
+                                       'bound_segments', 'segment_entries', 'segment_example_entries', 'segment_molecule_names', 'n_segments'], rows)
+    nab = d.get('nab') or {}
+    write('rna_bind_n_seq.tsv', ['uniprot_accession', 'encode_experiment', 'concentration', 'top_5mers', 'top_5mer_R', 'logo_consensus'],
+          [[acc, exp, conc, '; '.join(k for k, _ in top), '; '.join(str(v) for _, v in top),
+            '; '.join(''.join(iupac(dict(zip('ACGU', c))) for c in pwm) for _, _, pwm in logos)]
+           for acc, exp, conc, top, logos in nab.get('rbns', [])])
+    write('dna_motifs.tsv', ['uniprot_accession', 'matrix_id', 'name', 'tf_class', 'tf_family', 'length', 'consensus'],
+          [[acc, mid, name, cls, fam, len(m), cons] for acc, mid, name, cls, fam, m, cons in nab.get('jaspar', [])])
+    write('eclip.tsv', ['uniprot_accession', 'encode_experiment', 'cell_line', 'n_peaks'] + [f'peaks_{k}' for k in ECLIP_REGIONS] + ['top_target_genes', 'top_target_peaks'],
+          [[acc, exp, cell, n, *regions, '; '.join(g for g, _ in genes), '; '.join(str(c) for _, c in genes)]
+           for acc, exp, cell, n, regions, genes in nab.get('eclip', [])])
     log(f'wrote the release interaction tables to {outdir}')
 
 
@@ -1929,7 +2104,9 @@ def main():
                          'inputs/reference/uniprot_human_reviewed_2026_03.fasta); stops if a downloaded sequence differs from it')
     ap.add_argument('--fetch-interfaces-only', action='store_true', help='only fill the PDBe interface cache')
     ap.add_argument('--fetch-contacts-only', action='store_true', help='only fill the structure-contact cache (needs the interface cache)')
-    ap.add_argument('--contact-entries', type=int, default=2, help='PDB entries examined per site and partner type')
+    ap.add_argument('--contact-entries', type=int, default=2, help='PDB entries examined per site and protein partner')
+    ap.add_argument('--na-contact-entries', type=int, default=0, help='PDB entries examined per site with RNA or DNA (0: every entry)')
+    ap.add_argument('--nucleic-acid', default='', help='the tables scripts/43 staged (inputs/nucleic_acid): RNA Bind-n-Seq, JASPAR, eCLIP')
     ap.add_argument('--fetch-environments-only', action='store_true', help='only fill the 10 Å residue-environment cache (interface geometry)')
     ap.add_argument('--controls-per-protein', type=int, default=12, help='non-methylated interface arginines sampled per protein for the geometry comparison')
     ap.add_argument('--fetch-models-only', action='store_true', help='only measure methylarginines in predicted complex models (ProtVar, AlphaFold DB)')
@@ -2107,7 +2284,8 @@ def main():
             for key, ids in hit.items():
                 plist.append(-1 if key == 'RNA' else -2 if key == 'DNA' else vid(key))
                 pdbs.update(ids)
-                for pdb in sorted(ids, reverse=True)[:args.contact_entries]:
+                cap = (args.na_contact_entries or None) if key in ('RNA', 'DNA') else args.contact_entries
+                for pdb in sorted(ids, reverse=True)[:cap]:
                     contact_jobs.append((j, key, pdb, acc, pos))
             site_rows.append([j, mask_of(hit), plist, sorted(pdbs)[:8], len(pdbs)])
             if pdbs:
@@ -2563,8 +2741,16 @@ def main():
         f'{sum(1 for r in xl_rows if r[3] & D_XL):,} DNA-crosslinked (single localisation), {sum(1 for r in xl_rows if r[3] & D_CAND):,} DNA candidate residues, '
         f'{sum(1 for r in xl_rows if r[3] & D_BIND):,} in UniProt DNA-binding regions')
 
+    nab = load_nucleic_acid_binding(Path(args.nucleic_acid), set(meth_accs)) if args.nucleic_acid else {'rbns': [], 'jaspar': [], 'eclip': []}
+    # Every entry in which a methylated protein touches RNA or DNA (PDBe-KB), for the bound sequences and the regions.
+    na_entries = defaultdict(set)
+    for acc in meth_accs:
+        for part in ifaces.get(acc) or []:
+            if part.get('accession') in ('RNA', 'DNA'):
+                for r in part.get('residues', []):
+                    na_entries[acc].update(e.get('pdbId') for e in r.get('interactingPDBEntries') or [] if e.get('pdbId'))
     # Residues each interface methylarginine touches, from the structures themselves (RCSB ModelServer).
-    contact_rows, na_rows, chains_na = [], [], {}
+    contact_rows, na_rows, chains_na, na_json, na_names = [], [], {}, [], []
     if contact_jobs:
         chains = load_sifts_chains(cache, args.refresh, {pdb for _, _, pdb, _, _ in contact_jobs})
         requests_ = defaultdict(list)   # (pdb, chain, author residue) -> [(site, partner key)]
@@ -2590,7 +2776,7 @@ def main():
                     log(f'  {done:,}/{len(todo):,}')
         # The RNA and DNA chains of the entries where a methylarginine meets nucleic acid: a nucleotide is told by its chain
         # (modified ones such as the m7G cap included), and the chain's sequence is the bound sequence.
-        na_pdbs = {pdb for _, key, pdb, _, _ in contact_jobs if key in ('RNA', 'DNA')}
+        na_pdbs = {pdb for _, key, pdb, _, _ in contact_jobs if key in ('RNA', 'DNA')} | set().union(*na_entries.values())
         na_pdbs |= {pdb for (pdb, _, _), res in results.items() if res and any(h[3] in NUC_RNA or h[3] in NUC_DNA for h in res['hits'])}
         chains_na = load_nucleic_chains(cache, na_pdbs, args.refresh, args.workers)
         log(f'Bound sequences: {len(chains_na):,} RNA and DNA chains in {len(na_pdbs):,} PDB entries')
@@ -2638,6 +2824,97 @@ def main():
         na_rows = nucleic_contacts(results, requests_, chains_na)
         log(f"Bound sequences: {len({r[0] for r in na_rows if r[3] != 'dna'}):,} methylarginines touch RNA and "
             f"{len({r[0] for r in na_rows if r[3] == 'dna'}):,} touch DNA in the structures read ({len(na_rows):,} site-chain pairs)")
+    # The website's block: one row per site, kind and bound window, with every entry that shows it.
+    na_names, na_name_ix, grouped = [], {}, {}
+    for j, pdb, ch, kind, _, window, offsets, near, dist, _ in na_rows:
+        _, _, name, _, _, prep = chains_na[(pdb, ch)]
+        if name not in na_name_ix:
+            na_name_ix[name] = len(na_names)
+            na_names.append(name)
+        g = grouped.setdefault((j, kind, window), [set(), [], set(), dist, True])
+        g[0].update(offsets)
+        if pdb not in g[1]:
+            g[1].append(pdb)
+        g[2].add(na_name_ix[name])
+        g[3] = min(g[3], dist)
+        g[4] = g[4] and prep == 'Synthetically obtained'
+    na_json = [[j, kind, window, sorted(g[0]), sorted(g[1], reverse=True), sorted(g[2]), round(g[3], 2), int(g[4])]
+               for (j, kind, window), g in sorted(grouped.items())]
+
+    # Regions: the residues of each methylated protein within 4 Å of RNA or DNA, read once per distinct complex (the
+    # protein with the same bound sequences; the entries sharing it are counted), joined into runs, each with the bound
+    # segments it touches and the methylarginines inside it.
+    region_json = []
+    if chains_na:
+        na_by_pdb = defaultdict(list)
+        for (pdb, ch), v in chains_na.items():
+            na_by_pdb[pdb].append(ch)
+        complexes = defaultdict(lambda: defaultdict(list))   # accession -> bound sequences -> entries
+        for acc, ents in na_entries.items():
+            for pdb in ents:
+                bound = tuple(sorted({(chains_na[(pdb, ch)][0], chains_na[(pdb, ch)][4]) for ch in na_by_pdb.get(pdb, [])}))
+                if bound:
+                    complexes[acc][bound].append(pdb)
+        reps = {max(ents) for by_bound in complexes.values() for ents in by_bound.values()}
+        rchains = load_sifts_chains(cache, args.refresh, reps)
+        seg_of = defaultdict(list)
+        for pdb, rows in rchains.items():
+            for ch, sp, beg, sp_beg, sp_end in rows:
+                seg_of[(pdb, ch)].append((beg, sp_beg, sp_end, base_acc(sp)))
+        sig_entries, jobs = [], []
+        for acc, by_bound in sorted(complexes.items()):
+            for _, ents in sorted(by_bound.items()):
+                pdb = max(ents)
+                for ch in sorted({ch for ch, sp, *_ in rchains.get(pdb, []) if base_acc(sp) == acc})[:2]:
+                    jobs.append((acc, len(sig_entries), pdb, ch))
+                sig_entries.append(sorted(ents, reverse=True))
+        log(f'Nucleic-acid regions: {len(jobs):,} protein chains in {len(sig_entries):,} distinct complexes of {len(complexes):,} proteins '
+            f'({sum(len(e) for e in sig_entries):,} protein-entry pairs)')
+
+        def run_region(job):
+            acc, si, pdb, ch = job
+            return job, chain_na_contacts(cache, pdb, ch, set(na_by_pdb.get(pdb, [])), args.refresh)
+
+        per_res = defaultdict(lambda: defaultdict(set))   # (accession, rna|dna) -> position -> {(complex, pdb, chain, SEQRES index)}
+        done = 0
+        with ThreadPoolExecutor(max_workers=args.workers) as pool:
+            for (acc, si, pdb, ch), res in pool.map(run_region, jobs):
+                done += 1
+                if done % 500 == 0:
+                    log(f'  {done:,}/{len(jobs):,}')
+                for lab, _, _, nch, nlab, _, _ in res['hits']:
+                    unp = next((sp_beg + (lab - beg) for beg, sp_beg, sp_end, sa in seg_of[(pdb, ch)]
+                                if sa == acc and sp_beg <= sp_beg + (lab - beg) <= sp_end), None)
+                    if unp is not None and (pdb, nch) in chains_na:
+                        per_res[(acc, 'dna' if chains_na[(pdb, nch)][0] == 'dna' else 'rna')][unp].add((si, pdb, nch, nlab))
+        site_at = {(prots[sites[j][0]][0], sites[j][1]): j for j in range(len(sites))}
+        for (acc, kind), res in sorted(per_res.items()):
+            pos = sorted(res)
+            runs, cur = [], [pos[0], pos[0]]
+            for q in pos[1:]:
+                if q - cur[1] <= REGION_GAP + 1:
+                    cur[1] = q
+                else:
+                    runs.append(cur)
+                    cur = [q, q]
+            runs.append(cur)
+            for start, end in runs:
+                hits = set().union(*(res[q] for q in range(start, end + 1) if q in res))
+                sis = {h[0] for h in hits}
+                touched = defaultdict(set)
+                for si, pdb, nch, nlab in hits:
+                    touched[(si, pdb, nch)].add(nlab)
+                segs = {}
+                for (si, pdb, nch), labs in touched.items():
+                    seg = bound_segment(chains_na[(pdb, nch)][4], labs)
+                    g = segs.setdefault(seg, [set(), pdb, chains_na[(pdb, nch)][2]])
+                    g[0].update(sig_entries[si])
+                top = sorted(segs.items(), key=lambda kv: (-len(kv[1][0]), kv[0]))[:REGION_SEGMENTS]
+                region_json.append([acc, kind, start, end, len({e for si in sis for e in sig_entries[si]}), len(sis),
+                                    [[seg, g[1], g[2], len(g[0])] for seg, g in top], len(segs),
+                                    [site_at[(acc, q)] for q in range(start, end + 1) if (acc, q) in site_at]])
+        log(f"Nucleic-acid regions: {sum(1 for r in region_json if r[1] == 'rna'):,} RNA- and {sum(1 for r in region_json if r[1] == 'dna'):,} "
+            f"DNA-contacting regions in {len({r[0] for r in region_json}):,} proteins, {sum(1 for r in region_json if r[8]):,} with methylarginines")
     if args.fetch_contacts_only:
         return
 
@@ -2733,6 +3010,7 @@ def main():
             'evidence_bits': dict(EVIDENCE_BITS, other=EVIDENCE_OTHER),
             'contact_cutoff': CONTACT_CUTOFF,
             'contact_entries': args.contact_entries,
+            'na_contact_entries': args.na_contact_entries or 'all',
             'go_experimental_codes': sorted(GO_EXPERIMENTAL),
             'sources': {
                 'string': f'STRING v{STRING_VERSION} physical links (CC BY 4.0)',
@@ -2743,6 +3021,7 @@ def main():
                 'cdcode': f'CD-CODE {cd_version} condensate membership via cd-code.org API',
                 'contacts': 'RCSB ModelServer residue surroundings (wwPDB data, CC0)',
                 'na': 'PDBe API molecules (wwPDB data, CC0): the SEQRES sequence of each RNA and DNA chain',
+                'nab': 'ENCODE RNA Bind-n-Seq and eCLIP (no use restrictions); JASPAR 2026 CORE vertebrates non-redundant (CC BY 4.0); GENCODE v50 basic',
                 'regions': 'UniProt disordered regions (MobiDB-lite) and domain, repeat and zinc-finger features (CC BY 4.0)',
                 'protvar': 'ProtVar predicted interfaces 2024.05.28, AlphaFold-Multimer, residues within 5 Å (EMBL-EBI, CC BY 4.0); served-model list from af2complexes_interfaces_v1',
                 'afdb_complexes': 'AlphaFold DB predicted complexes (human heterodimers), API and model files (EMBL-EBI, CC BY 4.0)',
@@ -2764,8 +3043,17 @@ def main():
                 'go_enrich': '[methylated with term, methylated reviewed, other with term, other reviewed, log2 fold enrichment, p, BH q]',
                 'enrich_strata': '{type: {all|ordered|domain: {pooled: [a, b, c, d, log2 OR, p], mh: [log2 MH OR, CMH p, informative proteins]}}}',
                 'contacts': ['site', '[partner (-1 RNA, -2 DNA, -3 ligand, -4 unmapped chain, else protein index), pdb, residue labels]', 'methylated residue modelled (2MR/DA2/NMM)'],
-                'na': ['site', 'pdb', 'chain', 'rna|dna|hybrid', 'molecule name', 'source organism', f'window: the chain\'s sequence {NA_WINDOW} nt each side of the nucleotide closest to the arginine, - past its ends',
-                       'contacted offsets in the window (closest at ' + str(NA_WINDOW) + ')', 'SEQRES index of the closest nucleotide', 'its distance (Å)', 'chain length'],
+                'na': ['site', 'rna|dna|hybrid', f'window: the chain\'s sequence {NA_WINDOW} nt each side of the nucleotide closest to the arginine, - past its ends',
+                       'contacted offsets in the window (closest at ' + str(NA_WINDOW) + '), over the entries', 'PDB entries showing it', 'molecule names (na_names index)',
+                       'closest distance (Å)', 'made oligonucleotide in every entry (Synthetically obtained): 1, else 0'],
+                'na_names': 'molecule names of the RNA and DNA chains',
+                'nab': {'rbns': ['accession', 'ENCODE experiment', 'protein concentration', f'top {RBNS_TOP} 5-mers [[kmer, R]]', 'ENCODE logos [[k, logo, [[A, C, G, U] per position]]]'],
+                        'jaspar': ['accession', 'matrix', 'name', 'TF class', 'TF family', '[[A, C, G, T] counts per position]', 'IUPAC consensus'],
+                        'eclip': ['accession', 'ENCODE experiment', 'cell line', 'reproducible peaks', 'peaks by region ' + '|'.join(ECLIP_REGIONS),
+                                  f'top {ECLIP_TOP} genes [[gene, peaks]]']},
+                'na_regions': ['accession', 'rna|dna', 'start', 'end', 'PDB entries', 'distinct complexes (bound sequences) read',
+                               '[[bound segment: contacted nucleotides in brackets, ' + str(SEG_FLANK) + ' each side, … between clusters; example entry; molecule name; entries], ...] most entries first',
+                               'distinct segments', 'methylarginine sites in the region'],
                 'cd_members': ['protein', 'condensate index (meta.condensates of the sites file)', 'CD-CODE confidence score (0-5)', 'role bits', 'evidence bits', 'publications', 'all PMIDs'],
                 'wr': ['PRMT or Tudor protein index', 'its STRING physical partners (indices)'],
                 'rg_iface': '{segment|dipeptide|other: {cover: [methylated sites, structurally observed], rna|any: {pooled, mh}}}',
@@ -2796,8 +3084,10 @@ def main():
         'go_enrich': go_enrich,
         'enrich_strata': enrich_strata,
         'contacts': contact_rows,
-        'na': [[j, pdb, ch, kind, chains_na[(pdb, ch)][2], chains_na[(pdb, ch)][3], window, offsets, near, round(dist, 2), len(chains_na[(pdb, ch)][4])]
-               for j, pdb, ch, kind, _, window, offsets, near, dist, _ in na_rows],
+        'na': na_json,
+        'na_names': na_names,
+        'na_regions': region_json,
+        'nab': nab,
         'cd_members': cd_rows,
         'wr': wr_rows,
         'rg_iface': rg_out,
@@ -2837,7 +3127,7 @@ def main():
             'pred_all': pred_all, 'gallery': gallery, 'intact_rows': intact_rows, 'partners': partners, 'domain_classes': domain_classes,
             'meth_base': meth_base, 'cx_rows': cx_rows, 'iface_residues': iface_residues, 'pred_iface': pred_iface, 'xl_prot': xl_prot,
             'intact_prot': intact_prot, 'tests': release_tests, 'set_tests': set_tests, 'complexes': cx_release, 'go': go, 'xl_seq': xl_seq_all,
-            'proteome': proteome, 'na_rows': na_rows, 'chains_na': chains_na})
+            'proteome': proteome, 'na_rows': na_rows, 'chains_na': chains_na, 'na_regions': region_json, 'nab': nab})
     log(f'wrote {args.out}: {len(vocab):,} proteins, {sum(len(r) // 2 for r in string_rows):,} partner links, '
         f'{len(cx_rows):,} complexes with methylated members, {len(site_rows):,} sites at PDB interfaces '
         f'({Path(args.out).stat().st_size / 1e6:.2f} MB)')

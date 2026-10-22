@@ -248,6 +248,25 @@ main > .lc-note { margin: 0 0 1rem; }
 .nt.mid { outline: 1.5px solid var(--ink); outline-offset: -1px; }
 .logo-col { cursor: default; }
 .na-name { max-width: 18rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tag.na-oligo { font-size: 0.68rem; padding: 0 0.3rem; margin-right: 0.15rem; }
+.na-where td .na-win { font-size: 0.78rem; }
+.nab-row + .nab-row { margin-top: 0.6rem; border-top: 1px solid var(--line); padding-top: 0.5rem; }
+.nab-logos { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.35rem; }
+.nab-logo { display: inline-block; vertical-align: middle; }
+.nab-logo svg { display: block; }
+.tag.nab-kmer { font-family: var(--font-mono); }
+.nab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.75rem; }
+.nab-mat { margin: 0; min-width: 0; }
+.nab-mat svg { display: block; max-width: 100%; height: auto; }
+.nab-mat figcaption { font-size: 0.8rem; margin-top: 0.2rem; overflow-wrap: anywhere; }
+.nab-mat .mono, .mono { font-family: var(--font-mono); }
+.ec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: 0.75rem 1.25rem; }
+.ec-exp { min-width: 0; }
+.ec-regions { display: grid; gap: 0.15rem; max-width: 26rem; margin: 0.25rem 0 0.5rem; }
+.ec-r { display: grid; grid-template-columns: 8rem minmax(0, 1fr) 3rem; gap: 0.5rem; align-items: center; font-size: 0.8rem; }
+.ec-bar { height: 0.55rem; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
+.ec-bar i { display: block; height: 100%; background: var(--teal-600); border-radius: 2px; }
+.ec-v { text-align: right; color: var(--ink-2); }
 .na-head .fig-ctl { margin-left: 0.3rem; }
 .tag.par-tag { margin-left: 0.3rem; color: var(--ink-2); border: 1px solid var(--line-strong); background: var(--surface-2); font-weight: 600; }
 .tag.lc-tag { margin-left: 0.3rem; color: var(--ink-2); border: 1px dashed var(--muted);

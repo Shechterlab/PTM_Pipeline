@@ -371,7 +371,7 @@ def contacts(t: Tables) -> dict:
 
 
 def nucleic_chains(t: Tables) -> tuple[dict, set]:
-    """(pdb, author chain) -> (kind, entity, molecule name, organism, SEQRES sequence) of the RNA and DNA chains staged,
+    """(pdb, author chain) -> (kind, entity, molecule name, organism, SEQRES sequence, sample preparation) of the RNA and DNA chains staged,
     and the PDB entries looked up (an entry with none has a row with an empty chain). Empty before v1.3.0's staging."""
     out, looked = {}, set()
     try:
@@ -381,8 +381,25 @@ def nucleic_chains(t: Tables) -> tuple[dict, set]:
     for r in rows:
         looked.add(r['pdb_id'])
         if r['chain']:
-            out[(r['pdb_id'], r['chain'])] = (r['nucleic_acid'], int(r['entity_id']), r['molecule_name'], r['source_organism'], r['sequence'])
+            out[(r['pdb_id'], r['chain'])] = (r['nucleic_acid'], int(r['entity_id']), r['molecule_name'], r['source_organism'], r['sequence'],
+                                              r.get('sample_preparation', ''))
     return out, looked
+
+
+def na_residue_contacts(t: Tables) -> dict:
+    """(pdb, protein chain) -> [(SEQRES index, author number, residue, nucleic-acid chain, its SEQRES index, nucleotide,
+    distance)] for the protein chains read against RNA and DNA (a chain with none has an empty list)."""
+    out = {}
+    try:
+        rows = list(t.rows('pdb_nucleic_acid_residue_contacts_'))
+    except KeyError:
+        return out
+    for r in rows:
+        hits = out.setdefault((r['pdb_id'], r['chain']), [])
+        if r['na_chain']:
+            hits.append((int(r['seqres_index']), r['author_number'], r['residue'], r['na_chain'], int(r['na_seqres_index']),
+                         r['nucleotide'], float(r['distance_a'])))
+    return out
 
 
 def environments(t: Tables) -> dict:

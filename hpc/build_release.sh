@@ -143,7 +143,7 @@ interactions() {   # $1 site data folder, $2 interaction tables out
   python "$CODE/scripts/37_export_interaction_data.py" \
     --sites-json "$1/methylarg_sites.json" --out "$1/methylarg_interactions.json" \
     --pred-iface-out "$1/methylarg_pred_iface.json" --tables "$IN/interactions" --topup-cache "$WORK/interactions_topup" \
-    --tables-out "$2" --reference-fasta "$FASTA" \
+    --tables-out "$2" --reference-fasta "$FASTA" --nucleic-acid "$IN/nucleic_acid" \
     --measured-sites "$CODE/releases/v1.0.0/human_methylarginine_sites_v1.0.0.tsv"
 }
 # both tiers first: when they lack data, so may the sites, and one top-up covers both
