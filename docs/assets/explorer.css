@@ -1644,24 +1644,44 @@ body.slim .hero .brand-mark img { order: 0; }
 .chart-tools .seg + .seg { margin-left: 0.75rem; }
 .ix-net-head { margin: 1.2rem 0 0.5rem; }
 
-/* ---- Page index: the folds of a page, grouped, in one row kept in view below the toolbar (scrolls sideways when long) */
+/* ---- Page index: the sections of a page as a second row of tabs, in the toolbar's style (same weight, underline for
+   the section being read), kept in view below the toolbar; it scrolls sideways when long, with fades and arrows. */
 .page-index {
   position: sticky; top: calc(var(--toolbar-h) + env(safe-area-inset-top, 0px)); z-index: 20;
-  display: flex; flex-wrap: nowrap; align-items: center; gap: 0.25rem; overflow-x: auto; scrollbar-width: none;
-  margin: 0 0 1rem; padding: 0.35rem 0.6rem; background: color-mix(in srgb, var(--surface) 95%, transparent);
-  backdrop-filter: blur(6px); border: 1px solid var(--line); border-radius: var(--radius-card); box-shadow: var(--shadow);
-  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2rem), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 2rem), transparent);
+  display: flex; align-items: stretch; gap: 0; margin: 0 0 1.1rem;
+  /* as wide as the column whatever the sections' width: the row scrolls instead */
+  width: 100%; max-width: 100%; min-width: 0; contain: inline-size;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+  box-shadow: 0 6px 10px -10px rgb(0 0 0 / 0.35);
 }
-.page-index::-webkit-scrollbar { display: none; }
-.pi-group { display: inline-flex; flex-wrap: nowrap; align-items: center; gap: 0.2rem; padding-left: 0.55rem; border-left: 1px solid var(--line); }
-.pi-group:first-child { border-left: 0; padding-left: 0; }
-.pi-g { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-right: 0.1rem; white-space: nowrap; }
-.pi { border: 1px solid transparent; background: transparent; color: var(--ink-2); border-radius: 999px; padding: 0.1rem 0.5rem; font-size: 0.76rem; cursor: pointer; white-space: nowrap; }
-.pi:hover { color: var(--accent); border-color: var(--line-strong); }
-.pi.open { background: color-mix(in srgb, var(--chip-on-bg) 14%, transparent); color: var(--ink); }
-.pi.cur { background: var(--chip-on-bg); color: var(--chip-on-fg); }
-.pi-tools { display: inline-flex; gap: 0.7rem; font-size: 0.74rem; white-space: nowrap; padding: 0 0.6rem 0 0.2rem; }
-.page-index > .pi-tools + .pi-group { border-left: 1px solid var(--line); padding-left: 0.55rem; }
+/* what the sections are about, styled as the toolbar's ALL DATA / SELECTION label (orange for a selection) */
+.pi-lead { flex: none; align-self: center; max-width: 9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 0.7rem 0 0.75rem; margin-right: 0.15rem; border-right: 1px solid var(--line-strong);
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.pi-lead.sel { color: var(--accent); }
+.pi-lead.named { color: var(--brand-ink); letter-spacing: 0.02em; }
+@media (max-width: 560px) { .pi-lead { max-width: 5.5rem; padding: 0 0.5rem; } }
+.pi-scroll { flex: 1 1 auto; min-width: 0; display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
+.pi-scroll::-webkit-scrollbar { display: none; }
+.page-index.more-right .pi-scroll { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent); }
+.page-index.more-left .pi-scroll { -webkit-mask-image: linear-gradient(90deg, transparent, #000 3rem); mask-image: linear-gradient(90deg, transparent, #000 3rem); }
+.page-index.more-left.more-right .pi-scroll { -webkit-mask-image: linear-gradient(90deg, transparent, #000 3rem, #000 calc(100% - 3rem), transparent); mask-image: linear-gradient(90deg, transparent, #000 3rem, #000 calc(100% - 3rem), transparent); }
+.pi-group { display: flex; flex: none; align-items: stretch; }
+.pi-group + .pi-group { margin-left: 0.35rem; padding-left: 0.35rem; position: relative; }
+.pi-group + .pi-group::before { content: ""; position: absolute; left: 0; top: 30%; bottom: 30%; border-left: 1px solid var(--line-strong); }
+.pi {
+  flex: none; min-height: 2.6rem; padding: 0.5rem 0.7rem 0.55rem; border: 0; border-bottom: 2.5px solid transparent; background: none;
+  color: var(--muted); font: inherit; font-size: 0.86rem; font-weight: 600; white-space: nowrap; cursor: pointer;
+}
+.pi:hover { color: var(--brand-ink); }
+.pi.open { color: var(--ink-2); }
+.pi.cur { color: var(--brand-ink); border-bottom-color: var(--accent); }
+.pi:focus-visible, .pi-all:focus-visible, .pi-arrow:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.pi-arrow { flex: none; width: 2rem; border: 0; background: var(--surface); color: var(--ink-2); font-size: 1.25rem; line-height: 1; cursor: pointer; }
+.pi-arrow:hover { color: var(--accent); }
+.pi-all { flex: none; margin-left: 0.25rem; padding: 0 0.85rem; border: 0; border-left: 1px solid var(--line); background: none; color: var(--accent-dark); font: inherit; font-size: 0.8rem; font-weight: 600; white-space: nowrap; cursor: pointer; }
+.pi-all:hover { color: var(--accent); text-decoration: underline; }
+@media (pointer: coarse) { .pi-arrow { display: none; } }
+@media (max-width: 560px) { .pi { font-size: 0.82rem; padding: 0.45rem 0.55rem 0.5rem; } .pi-all { padding: 0 0.6rem; } }
 @media print { .page-index, .card-index { display: none !important; } }
 /* Group headings between folds */
 .fold-group { font-family: var(--font-body); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin: 0.9rem 0 -0.2rem 0.2rem; }
@@ -1674,8 +1694,14 @@ body.slim .hero .brand-mark img { order: 0; }
 .seg.ix-tabs button[aria-disabled="true"] { opacity: 0.45; cursor: default; }
 .seg.ix-tabs .n { display: inline-block; min-width: 1.4em; margin-left: 0.3rem; padding: 0 0.35rem; border-radius: 999px; background: var(--chip-bg, var(--line)); font-size: 0.74rem; font-weight: 600; opacity: 1; }
 /* In-card index of a long card's sections */
-.card-index { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.5rem; margin: 0 0 0.9rem; font-size: 0.8rem; }
-.card-index .ci-sep { color: var(--muted); }
+/* A long card's sections: a quieter row of the same tabs, scrolling sideways when long */
+.card-index { display: flex; align-items: stretch; margin: 0 0 1rem; border-bottom: 1px solid var(--line); min-width: 0; contain: inline-size; }
+.ci-label { flex: none; align-self: center; padding-right: 0.6rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.ci-scroll { display: flex; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.ci-scroll::-webkit-scrollbar { display: none; }
+.ci { flex: none; padding: 0.4rem 0.6rem 0.45rem; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--ink-2); font: inherit; font-size: 0.8rem; font-weight: 500; white-space: nowrap; cursor: pointer; }
+.ci:hover { color: var(--brand-ink); border-bottom-color: var(--line-strong); }
+.ci:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 /* A protein-set chart recomputed for the selection: the bar is the selection, the tick the whole dataset */
 .hb-ref { position: absolute; top: 50%; width: 2px; height: 16px; margin-left: -1px; transform: translateY(-50%); background: var(--ink); border-radius: 1px; pointer-events: none; }
 .chart-key i.ref { width: 2px; height: 12px; background: var(--ink); border: 0; border-radius: 1px; }
@@ -1684,3 +1710,9 @@ body.slim .hero .brand-mark img { order: 0; }
    the whole dataset's (grey rule). */
 .scope-note { margin: 0.35rem 0 0.75rem; padding: 0.3rem 0.65rem; border-left: 3px solid var(--accent); background: var(--surface-2); font-size: 0.8rem; color: var(--ink-2); border-radius: 0 4px 4px 0; }
 .scope-note.whole { border-left-color: var(--muted); }
+/* A figure's key behind a toggle on narrow screens (open from the start on wide ones, where the toggle hides) */
+.key-fold > summary { display: inline-flex; align-items: center; gap: 0.3rem; margin: 0 0 0.4rem; font-size: 0.8rem; font-weight: 600; color: var(--ink-2); cursor: pointer; list-style: none; }
+.key-fold > summary::-webkit-details-marker { display: none; }
+.key-fold > summary::before { content: "▸"; color: var(--muted); }
+.key-fold[open] > summary::before { content: "▾"; }
+@media (min-width: 701px) { .key-fold[open] > summary { display: none; } }

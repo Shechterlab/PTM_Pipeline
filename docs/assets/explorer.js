@@ -2059,7 +2059,7 @@
     if (location.hash !== want) history.replaceState(null, '', location.pathname + location.search + want);
     setDocTitle();
   }
-  const VIEW_NAMES = { overview: 'Overview', proteins: 'Proteins', sites: 'Sites', interactions: 'Interactions', charts: 'Charts', figures: 'Figures', about: 'Documentation', report: 'Insight report', compare: 'Comparison' };
+  const VIEW_NAMES = { overview: 'Overview', proteins: 'Proteins', sites: 'Sites', interactions: 'Interactions', charts: 'Charts', figures: 'Figure panels', about: 'Documentation', report: 'Insight report', compare: 'Comparison' };
   let baseTitle = '';
   function setDocTitle() {
     baseTitle = baseTitle || document.title;
@@ -3265,7 +3265,7 @@
   }
 
   // -------------------------------------------------------------- overview
-  // The overview's dataset charts, also listed on the Figures page: one spec each for chartCard, hbars and chartSvg,
+  // The overview's dataset charts: one spec each for chartCard, hbars and chartSvg,
   // built with the current overview options (condensate confidence, expanded lists). thr: the confidence counted.
   function overviewCharts() {
     const ov = M.overview;
@@ -3998,10 +3998,10 @@
       fact('<span id="ix-fact">…</span>', 'Sites with experimental interaction evidence', '<span id="ix-fact-sub">loading interaction data</span>', 'ixexp', 'List these sites') +
       '</div>' +
       // Every card is a fold; only the protein map starts open. The index above them reaches any fold.
-      pageIndexHtml([['Map', [['p-map', 'Protein map']]], ['Interactions', [['p-cc', 'Evidence at a glance'], ['p-ix', 'Proteins'], ['p-na', 'RNA and DNA']]],
+      pageIndexHtml([['Map', [['p-map', 'Map']]], ['Interactions', [['p-cc', 'Evidence at a glance'], ['p-ix', 'Partners'], ['p-na', 'RNA and DNA']]],
         ['Sites and structure', [['p-sites', 'Sites'], ['p-3d', '3D structure']]],
         ['Protein context', [['p-cond', 'Location and condensates'], ['p-dis', 'Disease'], ['p-func', 'Protein class'], ['p-dom', 'Domains and regions'], ['p-cons', 'Conservation']]],
-        ['Sequence features', [['p-cluster', 'Clustering'], ['p-ptm', 'Other PTMs'], ['p-seq', 'Sequence']]]], ['p-3d']) +
+        ['Sequence features', [['p-cluster', 'Clustering'], ['p-ptm', 'Other PTMs'], ['p-seq', 'Sequence']]]], ['p-3d'], p.label) +
       '<div class="fold-list">' +
       foldHtml('p-map', 'Protein map', figureCard(p), true, fmt(p.sites.length) + ' methylarginine site' + (p.sites.length === 1 ? '' : 's')) +
       '<div class="card" id="site-card" hidden></div>' +
@@ -4135,10 +4135,18 @@
   // An index of a page's folds, grouped, that stays in view below the toolbar: a click opens the fold and scrolls to it,
   // open folds are marked, the fold being read is highlighted, and Expand all / Collapse all act on every fold (Expand
   // all leaves out folds that load heavy data when opened, listed in skip). groups: [[heading, [[fold key, label]]]].
-  function pageIndexHtml(groups, skip) {
+  // The sections of a page as a second row of tabs under the toolbar, in the toolbar's style: the section being read is
+  // underlined (aria-current), open ones are darker than closed ones, groups are set apart by a rule (their name is the
+  // group's label for screen readers and its tooltip). The row scrolls sideways when long, with fades and arrows.
+  // lead: what the sections are about, as the toolbar labels its views (the protein, or the selection / all data).
+  function pageIndexHtml(groups, skip, lead) {
+    const scoped = constraints().length > 0, text = lead || (scoped ? 'Selection' : 'All data');
     return '<nav class="page-index" aria-label="Sections of this page" data-skip="' + esc((skip || []).join(' ')) + '">' +
-      '<span class="pi-tools"><button type="button" class="linkish" data-pi-all="1"' + (skip && skip.length ? ' title="Opens every section except those that load large data when opened"' : '') + '>Expand all</button><button type="button" class="linkish" data-pi-all="0">Collapse all</button></span>' +
-      groups.map(([g, items]) => '<span class="pi-group"><span class="pi-g">' + esc(g) + '</span>' + items.map(([k, l]) => '<button type="button" class="pi" data-pi="' + k + '">' + esc(l) + '</button>').join('') + '</span>').join('') + '</nav>';
+      '<span class="pi-lead' + (lead ? ' named' : scoped ? ' sel' : '') + '">' + esc(text) + '</span>' +
+      '<button type="button" class="pi-arrow pi-prev" aria-label="Earlier sections" hidden>‹</button><div class="pi-scroll">' +
+      groups.map(([g, items]) => '<span class="pi-group" role="group" aria-label="' + esc(g) + '" title="' + esc(g) + '">' + items.map(([k, l]) => '<button type="button" class="pi" data-pi="' + k + '">' + esc(l) + '</button>').join('') + '</span>').join('') +
+      '</div><button type="button" class="pi-arrow pi-next" aria-label="Later sections" hidden>›</button>' +
+      '<button type="button" class="pi-all" data-pi-all="1"' + (skip && skip.length ? ' title="Opens every section except those that load large data when opened"' : '') + '>Expand all</button></nav>';
   }
   let pageIndexScroll = null;
   function bindPageIndex(root) {
@@ -4151,7 +4159,29 @@
     const keys = $$('.pi:not([hidden])', nav).map((b) => b.dataset.pi);
     // where a fold's header lands: below the toolbar and the index as they are once stuck
     const offset = () => (parseFloat(getComputedStyle(nav).top) || 0) + nav.offsetHeight + 8;
-    const mark = () => $$('.pi', nav).forEach((b) => { const d = fold(b.dataset.pi); b.classList.toggle('open', !!(d && d.open)); });
+    const skip = new Set((nav.dataset.skip || '').split(' ').filter(Boolean));
+    const all = $('.pi-all', nav);
+    // One toggle: Expand all while any section that it opens is closed, else Collapse all.
+    const mark = () => {
+      $$('.pi', nav).forEach((b) => { const d = fold(b.dataset.pi); b.classList.toggle('open', !!(d && d.open)); });
+      const closed = keys.some((k) => { const d = fold(k); return d && !d.open && !skip.has(k); });
+      all.dataset.piAll = closed ? '1' : '0';
+      all.textContent = closed ? 'Expand all' : 'Collapse all';
+    };
+    // Sideways overflow: fades and arrows on the side with more sections.
+    const sc = $('.pi-scroll', nav), prev = $('.pi-prev', nav), next = $('.pi-next', nav);
+    const edges = () => {
+      const left = sc.scrollLeft > 4, right = sc.scrollWidth - sc.clientWidth - sc.scrollLeft > 4;
+      nav.classList.toggle('more-left', left);
+      nav.classList.toggle('more-right', right);
+      prev.hidden = !left;
+      next.hidden = !right;
+    };
+    sc.addEventListener('scroll', edges, { passive: true });
+    prev.addEventListener('click', () => sc.scrollBy({ left: -0.6 * sc.clientWidth, behavior: 'smooth' }));
+    next.addEventListener('click', () => sc.scrollBy({ left: 0.6 * sc.clientWidth, behavior: 'smooth' }));
+    if (typeof ResizeObserver === 'function') new ResizeObserver(edges).observe(sc);
+    edges();
     $$('.pi', nav).forEach((b) => b.addEventListener('click', () => {
       const d = fold(b.dataset.pi);
       if (!d) return;
@@ -4160,12 +4190,11 @@
       const sm = $('summary', d);
       if (sm) sm.focus({ preventScroll: true });
     }));
-    const skip = new Set((nav.dataset.skip || '').split(' ').filter(Boolean));
-    $$('[data-pi-all]', nav).forEach((b) => b.addEventListener('click', () => {
-      const on = b.dataset.piAll === '1';
+    all.addEventListener('click', () => {
+      const on = all.dataset.piAll === '1';
       keys.forEach((k) => { const d = fold(k); if (d && !(on && skip.has(k))) d.open = on; });
       mark();
-    }));
+    });
     root.addEventListener('toggle', (e) => { if (e.target.matches && e.target.matches('details.fold')) mark(); }, true);
     mark();
     // The section being read: the last fold whose header has passed the index.
@@ -4179,7 +4208,16 @@
         const top = offset() + 4;
         let cur = null;
         for (const k of keys) { const d = fold(k); if (d && d.getBoundingClientRect().top <= top) cur = k; }
-        $$('.pi', nav).forEach((b) => b.classList.toggle('cur', b.dataset.pi === cur));
+        $$('.pi', nav).forEach((b) => {
+          const on = b.dataset.pi === cur;
+          if (on && !b.classList.contains('cur')) {
+            // keep the current section's tab in view in the row
+            const l = b.offsetLeft - sc.offsetLeft, r = l + b.offsetWidth;
+            if (l < sc.scrollLeft || r > sc.scrollLeft + sc.clientWidth) sc.scrollTo({ left: Math.max(0, l - 24), behavior: 'smooth' });
+          }
+          b.classList.toggle('cur', on);
+          if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+        });
       });
     };
     window.addEventListener('scroll', pageIndexScroll, { passive: true });
@@ -4192,7 +4230,7 @@
     const nav = document.createElement('nav');
     nav.className = 'card-index';
     nav.setAttribute('aria-label', 'Sections of this card');
-    nav.innerHTML = '<span class="muted small">In this card:</span> ' + heads.map((h, i) => '<button type="button" class="linkish" data-ci="' + i + '">' + esc(h.textContent) + '</button>').join('<span class="ci-sep" aria-hidden="true">·</span>');
+    nav.innerHTML = '<span class="ci-label">In this card</span><div class="ci-scroll">' + heads.map((h, i) => '<button type="button" class="ci" data-ci="' + i + '">' + esc(h.textContent) + '</button>').join('') + '</div>';
     body.prepend(nav);
     $$('[data-ci]', nav).forEach((b) => b.addEventListener('click', () => {
       const h = heads[+b.dataset.ci], pi = $('.page-index');
@@ -4200,6 +4238,7 @@
       window.scrollTo({ top: h.getBoundingClientRect().top + window.scrollY - off, behavior: 'smooth' });
     }));
   }
+  const narrowScreen = () => { try { return window.matchMedia('(max-width: 700px)').matches; } catch (e) { return false; } };
   const setFoldSummary = (key, text) => { const el = document.getElementById('fold-sum-' + key); if (el) { el.textContent = text || ''; el.title = text || ''; } };
   // Open the fold holding el (a card or anything inside one) before a jump to it.
   const openFoldOf = (el) => { const d = el && el.closest ? el.closest('details.fold') : null; if (d && !d.open) d.open = true; return el; };
@@ -5439,7 +5478,8 @@
       '<div class="fig-controls"><label class="fig-ctl">Colour sites by <select id="fig-color">' + Object.keys(COLOR_MODES).map((k) => '<option value="' + k + '"' + (f.color === k ? ' selected' : '') + '>' + esc(COLOR_MODES[k].name) + '</option>').join('') + '</select></label>' +
       '<div class="seg" role="group" aria-label="Site labels"><span>Site labels</span>' + [['auto', 'Auto'], ['all', 'All'], ['none', 'None']].map(([k, l]) => '<button type="button" data-lab="' + k + '" aria-pressed="' + (f.labels === k) + '">' + l + '</button>').join('') + '</div>' +
       '<details class="col-menu rows-menu"><summary class="btn quiet small">Rows</summary><div class="col-pop" id="rows-pop">' + rowsMenuHtml() + '</div></details>' + '</div>' +
-      '<div class="legend" id="fig-legend"></div><div class="map-box" id="map-box"></div>' +
+      // the key under a "Key" toggle on narrow screens, where it would otherwise fill the screen above the map
+      '<details class="key-fold"' + (narrowScreen() ? '' : ' open') + '><summary>Key</summary><div class="legend" id="fig-legend"></div></details><div class="map-box" id="map-box"></div>' +
       '<p class="note screen-only">Drag across the map to zoom; Interaction evidence at a glance follows the same zoom. SVG and PNG exports reproduce this view on a white background with a title and legend.</p></div>';
   }
 
@@ -9468,7 +9508,7 @@
   // ------------------------------------------------- evidence map (UpSet)
   // How the interaction evidence combines on the current selection, counted per site or per protein, and the protein
   // context of each kind of site evidence. Totals, rows and cells set the evidence filters; the actions hand the
-  // selection to the Figures tab or the insight report.
+  // selection to the figure panels or the insight report.
   function upsetData(items, maskOf, sets) {
     const combos = new Map(), tot = sets.map(() => 0);
     let none = 0;
@@ -11792,10 +11832,10 @@
         sub('ov-provenance', 'Provenance', '<p>' + (localisedOnly() ? 'Sites reported by each study and database, each taken from its own tables (its localised records), by ProMetheusDB, and by PhosphoSitePlus (downloaded 22 May 2021, compiled in Maron et al. 2021 Table S5; accepted as curated). The other rows of Table S5 are superseded by each study\'s own table' : 'Sites reported by each study compiled in Maron et al. 2021 Table S5, by ProMetheusDB and by curated UniProt/IEDB records' + (addedStudies().length ? ', and by the studies added in v1.2.0 (' + esc(addedStudies().join(', ')) + '), each read from its own supplementary table' : '')) + '; the column gives the sites reported only there. A report is one study or database.' + (addedStudies().includes('Ma 2023') ? ' Ma et al. 2023 measured breast cancer xenografts grown in mice: a site only they report is marked on its site summary, since where the human and mouse sequences agree the peptide can come from the mouse stroma.' : '') + '</p>') +
         sub('ov-inhibitors', 'PRMT inhibitor and knockout response', '<p>Maron et al. 2021 Table S3: sites per methyl-IP that changed significantly (adjusted p ≤ 0.05) after GSK591 (PRMT5 inhibitor) or MS023 (type I PRMT inhibitor) compared with DMSO. The median change is the Table S3 <code>&lt;inhibitor&gt;_vs_DMSO_diff</code> value across sites.</p>' + (koMeta() ? '<p>CARM1 knockout: ' + doiLink(koMeta().doi, 'Shishkova et al. 2017') + ' (Nat Commun 8:15571), Supplementary Data 1, ADMA-enriched peptides quantified in parental and CARM1 knockout ' + esc(koMeta().cell_lines.join(' and ')) + ' cells. Each peptide is placed on the canonical sequence only where it occurs exactly once (scripts/41); a site is decreased or increased when a peptide carrying it changes ' + esc(koMeta().rule.replace(/^peptide /, '')) + ' (the twofold rule of the paper). ' + fmt(koMeta().union_sites) + ' union sites were measured, ' + fmt(koMeta().union_sites_down) + ' of them decreased; ' + fmt(koMeta().not_in_union) + ' sites of the paper are not in the union and are not added. The site card names CARM1 as the likely methyltransferase of a site whose methylation decreases in CARM1 knockout cells.</p>' : ''))],
       ['figures', 'Figures and alignments', '<p>Every exported figure (SVG or PNG, including 3D snapshots and the interaction network) ends with a credit line naming this site, its address and ' + esc(PAPER.short) + '. Printed protein pages carry the same.</p>' +
-        sub('fig-hub', 'The Figures page', '<p>The Figures page gathers every figure of the current selection: the site alignment and logo, the protein comparison and the two evidence maps; for one protein of the selection (picked from a list, most selected sites first) its protein map, interaction-evidence cartoon, partner network and sequence; and the Overview\'s dataset charts, which do not change with the selection. One export size applies to all of them and to the panel exports on protein pages: screen layout, or a journal column width (85, 114 or 174 mm) with PNG at 300, 600 or 1000 dpi; SVGs are then sized in millimetres and PNGs record their resolution. At a column width the protein map, the cartoon and the comparison are laid out again for that width, so their text keeps its size; the other figures are scaled, and every card states the smallest text it will print at, with a warning below 5 pt.</p>') +
+        sub('fig-hub', 'Figure panels', '<p>Every chart, map and table has its own SVG, PNG and TSV buttons. The figure panels page (<b>Make figures</b> in the Proteins and Sites views) holds the figures of a selection that no single page draws: the site alignment and logo, the protein comparison on one scale and the two evidence maps, with the export size. One export size applies to all of them and to the panel exports on protein pages: screen layout, or a journal column width (85, 114 or 174 mm) with PNG at 300, 600 or 1000 dpi; SVGs are then sized in millimetres and PNGs record their resolution. At a column width the protein map, the cartoon and the comparison are laid out again for that width, so their text keeps its size; the other figures are scaled, and every card states the smallest text it will print at, with a warning below 5 pt.</p>') +
         sub('fig-files', 'Files for other programs', '<p>The 3D view exports a PNG snapshot; a ChimeraX command script (.cxc) and a PyMOL script (.pml) that open the same model (AlphaFold DB by its file address, PDB entries by ID, predicted complexes by their model address) and rebuild the view in the light colours: the colouring of every residue as shown, methylarginine side chains in their site colours, site labels, the focused residue and the side chains within 5 Å of it, surface and background; and the coordinates as mmCIF or PDB, unchanged, with the methylarginines of the protein listed (mmCIF: a comment block and an <code>_explorer_methylarginine</code> table; PDB: REMARK 999 lines). The partner network exports as Cytoscape JSON with its layout, node attributes and the colour of each node (map <code>fill_colour</code> with a passthrough mapping to keep them). The site alignment and the orthologue alignment export as FASTA with a Jalview features file that colours each methylarginine by methylation class.</p>') +
         sub('fig-colours', 'Colours and marks', '<p>Every figure, chip and legend uses one set of colours, each with one meaning, and one set of marks. Exports and print always use the light colours.</p>' + graphicKeyHtml() + '<p>Pale, dashed or outlined versions of a colour mean “nearby” or “region-level” (a fragment, a peptide, a long binding region); a hollow, dashed site head means predicted only, or measured without a change. Conventions with their own colours keep them: AlphaFold pLDDT bands, EMBOSS charge (blue basic, red acidic), element colours in 3D and residue chemistry in logos.</p>') +
-        sub('fig-align', 'Site alignment and sequence logo', '<p>The selected sites (Figures tab) are aligned at the methylated arginine using the ±15 residue windows of the canonical sequence; positions past a protein end are left blank. The logo uses every selected site with a window. "Frequency" stacks residue frequencies at each position; "Information" scales each stack by its information content, log2(20) minus the Shannon entropy and the small-sample correction 19/(2 ln2 n) (Schneider et al. 1986, ' + doiLink('10.1016/0022-2836(86)90165-8', 'J Mol Biol 188:415') + '), so the invariant central arginine reaches about 4.3 bits. Colours follow WebLogo\'s chemistry scheme (Crooks et al. 2004, ' + doiLink('10.1101/gr.849004', 'Genome Res 14:1188') + '). FASTA export writes the aligned windows with - for positions past a protein end.</p>') +
+        sub('fig-align', 'Site alignment and sequence logo', '<p>The selected sites (figure panels) are aligned at the methylated arginine using the ±15 residue windows of the canonical sequence; positions past a protein end are left blank. The logo uses every selected site with a window. "Frequency" stacks residue frequencies at each position; "Information" scales each stack by its information content, log2(20) minus the Shannon entropy and the small-sample correction 19/(2 ln2 n) (Schneider et al. 1986, ' + doiLink('10.1016/0022-2836(86)90165-8', 'J Mol Biol 188:415') + '), so the invariant central arginine reaches about 4.3 bits. Colours follow WebLogo\'s chemistry scheme (Crooks et al. 2004, ' + doiLink('10.1101/gr.849004', 'Genome Res 14:1188') + '). FASTA export writes the aligned windows with - for positions past a protein end.</p>') +
         sub('fig-compare', 'Protein comparison', '<p>The selected proteins (a searched gene list keeps its order) drawn on one residue scale or each to its own length, with UniProt domains, repeats and zinc fingers, disordered regions (as on protein maps), RG/RGG segments, lysine methylation and the selected methylarginines coloured as on protein maps. Features are fetched live from UniProt.</p>') +
         sub('fig-ortho', 'Orthologue alignment', '<p>On protein pages, the Ensembl gene from UniProt\'s cross-references is sent to Ensembl Compara (REST, live) for orthologues in mouse, chicken, frog (<i>X. tropicalis</i>), zebrafish, fly, worm and yeast; for each species the orthologue with the highest identity is used, with Ensembl\'s pairwise protein alignment. UniProt positions are carried to the Ensembl human protein when the sequences are identical or one contains the other, otherwise through a unique 15-residue anchor around each site; positions without one are shown as not mapped. Columns follow the human sequence, so insertions in other species are not shown. R means the arginine is conserved, K a conservative change. ' + doiLink('10.1093/database/bav096', 'Herrero et al. 2016') + '; ' + doiLink('10.1093/bioinformatics/btu613', 'Yates et al. 2015') + '.</p>')],
       ['insight', 'Evidence map, enriched features and report', sub('ix-status', 'Interaction status of a site', '<p>Every site has one of three statuses, shown as a badge in the tables, on the site card, in the map colouring (<i>Colour sites by: Interaction evidence</i>) and as the quick filter above the Sites table. ' +
@@ -12161,7 +12201,7 @@
     return c.length ? c.join('; ') : 'all sites';
   }
 
-  // The Figures page: every figure of the current selection in one place, with one export size for all of them. At a
+  // The figure panels page: the figures of the current selection no single page draws, with one export size for all. At a
   // journal column width the protein map, the interaction cartoon and the protein comparison lay themselves out again
   // at that width; the other figures are scaled, and each card says the smallest text it will print at.
   function renderFigures(el) {
@@ -12170,20 +12210,14 @@
     const prots = figProteins();
     const sel2 = (id, opts, val) => '<select id="' + id + '">' + opts.map(([v, l]) => '<option value="' + v + '"' + (String(v) === String(val) ? ' selected' : '') + '>' + esc(l) + '</option>').join('') + '</select>';
     const scoped = constraints().length > 0;
-    // The protein for the one-protein figures: chosen from the selection, most selected sites first.
-    const pick = R.prots.slice().sort((a, b) => R.counts[b.i] - R.counts[a.i] || a.label.localeCompare(b.label)).slice(0, 300);
-    const fp = pick.find((p) => p.i === f.prot) || pick[0] || null;
-    f.prot = fp ? fp.i : null;
     const btn = (fx, label, title) => '<button type="button" data-fx="' + fx + '"' + (title ? ' title="' + esc(title) + '"' : '') + '>' + label + '</button>';
     const img = (fx) => btn(fx + '-svg', 'SVG') + btn(fx + '-png', 'PNG');
     // Every figure is a fold, closed at first, and draws when it is opened (see whenOpen below).
     const card = (id, title, sub, buttons, body, sum) => foldHtml(id, title, '<div class="card fig-card" id="' + id + '"><div class="card-head"><div><h3>' + esc(title) + '</h3><p class="sub">' + sub + '</p></div>' +
       '<div class="exp" role="group" aria-label="' + esc(title) + ' export">' + buttons + '</div></div>' + body + '<p class="print-note" id="' + id + '-note"></p></div>', false, sum);
     const box = (id, note) => '<div class="fig-preview" id="' + id + '"><p class="note">' + (note || 'Loading…') + '</p></div>';
-    const charts = overviewCharts();
-    const chartList = [charts.pan, charts.func, charts.doSpec, charts.fams, charts.motif, charts.cond, charts.loc, charts.sctx, charts.domcls, charts.disorder, charts.domctx, charts.study].filter(Boolean);
     const sizeSum = panelState.mm ? PANEL_WIDTHS.find(([v]) => v === panelState.mm)[1] + ', PNG ' + panelState.dpi + ' dpi' : 'screen layout';
-    el.innerHTML = resultsHead('Figures', 'Every figure of the current selection, ready to export: ' + fmt(R.sites.length) + ' sites on ' + fmt(R.prots.length) + ' protein' + (R.prots.length === 1 ? '' : 's') + '. Exports credit this site and ' + esc(PAPER.short) + '.',
+    el.innerHTML = resultsHead('Figure panels', 'The figures of the current selection that no single page draws, at one export size: ' + fmt(R.sites.length) + ' sites on ' + fmt(R.prots.length) + ' protein' + (R.prots.length === 1 ? '' : 's') + '. Every chart, map and table elsewhere has its own SVG, PNG and TSV buttons; exports credit this site and ' + esc(PAPER.short) + '.',
       '<button class="btn small" type="button" id="fg-report" title="Profile, evidence map, logo and protein comparison of this selection as one PDF">Insight report (PDF)</button>') +
       (scoped ? '' : '<div class="filter-note">No search or filter is set, so these figures use the whole dataset. Search for proteins or set filters to focus them.</div>') +
       '<div class="fold-list">' +
@@ -12204,20 +12238,7 @@
         '<label class="check fig-ctl"><input type="checkbox" id="fg-lanes"' + (f.lanes ? ' checked' : '') + '> Interaction evidence lanes</label></div>' + box('fg-cmp-box', 'Loading UniProt features for ' + fmt(prots.length) + ' proteins…'), fmt(prots.length) + ' protein' + (prots.length === 1 ? '' : 's')) +
       card('fg-evs', 'Interaction evidence of the sites', 'How the kinds of interaction evidence combine on the selected sites.' + docLink('ix-evmap'), img('evs'), box('fg-evs-box'), fmt(R.sites.length) + ' sites') +
       card('fg-evp', 'Evidence of the proteins', 'How protein-level evidence combines on the selected proteins.' + docLink('ix-evmap'), img('evp'), box('fg-evp-box'), fmt(R.prots.length) + ' proteins') +
-      '</div><h2 class="fig-sec">One protein</h2>' +
-      (fp ? '<div class="fig-controls fig-pick"><label class="fig-ctl">Protein <select id="fg-prot">' + pick.map((p) => '<option value="' + p.i + '"' + (p === fp ? ' selected' : '') + '>' + esc(p.label) + ' (' + fmt(R.counts[p.i]) + ' site' + (R.counts[p.i] === 1 ? '' : 's') + ')</option>').join('') + '</select></label>' +
-        '<button class="linkish" type="button" id="fg-open">Open its page</button></div><div class="fold-list">' +
-        card('fg-map', 'Protein map', 'The whole protein, with the rows and colours chosen on protein pages.' + docLink('fig-hub'), img('map'), box('fg-map-box'), fp.label) +
-        card('fg-cc', 'Interaction evidence at a glance', 'The protein as a linear cartoon above its evidence lanes.' + docLink('fig-compare'), img('cc'), box('fg-cc-box'), fp.label) +
-        card('fg-net', 'Partner network', 'STRING partners with the network options chosen on protein pages.', img('net') + btn('net-cyjs', 'Cytoscape', 'The network with its layout and attributes, for Cytoscape'), box('fg-net-box'), fp.label) +
-        card('fg-seq', 'Sequence', 'The canonical sequence with its methylarginines.', img('seq'), box('fg-seq-box'), fp.label) +
-        foldHtml('fg-3d-fold', '3D structure and orthologues', '<div class="card fig-card"><p class="sub">Exported from the protein page: 3D snapshot, ChimeraX and PyMOL scripts, coordinates and orthologue alignment.</p>' +
-        '<p><button class="btn quiet small" type="button" id="fg-3d">Open the 3D view of ' + esc(fp.label) + '</button></p></div>', false, 'on the protein page') + '</div>'
-        : '<p class="note">No protein selected.</p>') +
-      '<h2 class="fig-sec">Whole dataset</h2><div class="fold-list">' +
-      foldHtml('fg-charts', 'Overview charts', '<div class="card fig-card"><p class="sub">Bars show the whole dataset; orange counts show your selection.</p><ul class="fig-list">' +
-      chartList.map((c) => '<li><span>' + esc(c.figTitle || c.title) + '</span><span class="exp">' + btn('chart-' + c.id + '-svg', 'SVG') + btn('chart-' + c.id + '-png', 'PNG') + btn('chart-' + c.id + '-tsv', 'TSV') +
-        '<button type="button" class="linkish" data-preview="' + c.id + '">Preview</button></span><div class="fig-preview" id="pv-' + c.id + '" hidden></div></li>').join('') + '</ul></div>', false, fmt(chartList.length) + ' charts') + '</div>';
+      '</div>';
 
     // What a figure will look like in print at the chosen width.
     const note = (id, out) => {
@@ -12277,39 +12298,10 @@
     whenOpen('fg-evs', () => show('fg-evs', builders.evs(), 'Loading interaction data…'));
     whenOpen('fg-evp', () => show('fg-evp', builders.evp(), 'Loading interaction data…'));
 
-    // One protein
-    let fu = null, fifd = null, fnet = null;
-    if (fp) {
-      builders.map = () => (fu ? mapSvg(fp, fu, { pal: EXPORT_PAL, forExport: true, full: true, W: W() || undefined }) : null);
-      builders.cc = () => (fu ? contactCartoonSvg(fp, fu, fifd, Object.assign({ forExport: true }, panelOpts())) : null);
-      builders.seq = () => (fu && fu.seq ? seqSvg(fp, fu) : null);
-      builders.net = () => (fnet ? asFigure(ixNetSvg(fnet, EXPORT_PAL, true)) : null);
-      let fpData = null;
-      const fpLoad = () => fpData || (fpData = Promise.all([loadUniProt(fp.acc), fp.iso ? null : loadIface(fp.acc).catch(() => null)]).then(([u]) => {
-        if (UI.view !== 'figures' || f.prot !== fp.i) return false;
-        fu = u; fifd = fp.iso ? null : IFDATA.get(fp.acc.split('-')[0]) || null;
-        return true;
-      }));
-      whenOpen('fg-map', () => fpLoad().then((ok) => { if (ok) show('fg-map', builders.map(), 'UniProt features did not load.'); }));
-      whenOpen('fg-cc', () => fpLoad().then((ok) => { if (ok) show('fg-cc', builders.cc(), 'UniProt features did not load.'); }));
-      whenOpen('fg-seq', () => fpLoad().then((ok) => { if (ok) show('fg-seq', builders.seq(), 'The sequence did not load.'); }));
-      const netLoad = () => (ixReady() ? partnerNet(fp).then((net) => { if (UI.view !== 'figures' || f.prot !== fp.i) return; fnet = net; show('fg-net', builders.net(), 'No STRING partner of this kind at this confidence.'); })
-        : show('fg-net', null, 'Loading interaction data…'));
-      whenOpen('fg-net', netLoad);
-    }
-
     // Exports: every button builds the figure as previewed and exports it at the chosen size.
-    const name = (what) => (fp && ['map', 'cc', 'net', 'seq'].includes(what) ? (fp.gene || fp.acc) + '_' : 'methylarginine_') +
-      { align: 'site_alignment', cmp: 'protein_comparison', evs: 'site_evidence_map', evp: 'protein_evidence_map', map: 'protein_map', cc: 'interaction_evidence', net: UI.net.type + '_partners', seq: 'sequence' }[what];
+    const name = (what) => 'methylarginine_' + { align: 'site_alignment', cmp: 'protein_comparison', evs: 'site_evidence_map', evp: 'protein_evidence_map' }[what];
     $$('[data-fx]', el).forEach((b) => b.addEventListener('click', () => {
       const fx = b.dataset.fx;
-      if (fx.startsWith('chart-')) {
-        const [, id, kind] = /^chart-(.+)-(svg|png|tsv)$/.exec(fx);
-        const spec = chartList.find((c) => c.id === id);
-        if (kind === 'tsv') download('methylarginine_' + id.replace(/^ch-/, '') + '.tsv', chartTsv(spec));
-        else exportPanel(kind, chartSvg(spec), 'methylarginine_' + id.replace(/^ch-/, ''));
-        return;
-      }
       const [what, kind] = fx.split('-');
       if (what === 'align' && (kind === 'fasta' || kind === 'jalview')) {
         if (!sel.length) return;
@@ -12323,15 +12315,8 @@
         })));
         return;
       }
-      if (what === 'net' && kind === 'cyjs') { if (fnet) download(name('net') + '.cyjs', JSON.stringify(netCytoscape(fnet), null, 1)); return; }
       const out = builders[what] && builders[what]();
       if (out) exportPanel(kind, out, name(what));
-    }));
-    $$('[data-preview]', el).forEach((b) => b.addEventListener('click', () => {
-      const pv = $('#pv-' + b.dataset.preview, el), spec = chartList.find((c) => c.id === b.dataset.preview);
-      if (pv.hidden) { const out = chartSvg(spec); pv.innerHTML = '<div class="panel-prev"' + panelPreviewStyle() + '>' + out.svg + '</div>'; }
-      pv.hidden = !pv.hidden;
-      b.textContent = pv.hidden ? 'Preview' : 'Hide';
     }));
 
     // Controls
@@ -12347,11 +12332,6 @@
     $('#fg-lanes', el).addEventListener('change', (e) => { f.lanes = e.target.checked; drawCmp(); if (f.lanes) ifaces().then(() => { if (UI.view === 'figures') drawCmp(); }); });
     bindPanelControls($('.fig-settings', el), rerender);
     $('#fg-report', el).addEventListener('click', () => openReport());
-    if (fp) {
-      $('#fg-prot', el).addEventListener('change', (e) => { f.prot = +e.target.value; rerender(); });
-      $('#fg-open', el).addEventListener('click', () => openProtein(fp.i));
-      $('#fg-3d', el).addEventListener('click', () => { openProtein(fp.i); setTimeout(() => { revealCard($('#card-af'), false); if (UI.startStructure) UI.startStructure(); }, 300); });
-    }
     bindDocLinks(el);
   }
 
