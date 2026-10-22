@@ -441,7 +441,7 @@ CODES: dict[str, dict[str, str]] = {
         'paralogs': 'unique_in_proteome only: the sequence names one site in each of several reviewed entries, one of them the protein the record names. Counts as passing: the site goes on the copy most records of that sequence name, flagged paralog_assigned',
     },
     'tier': {
-        'site': 'a site: one of its records passes every test (site_test; unique_in_proteome may be paralogs)',
+        'site': 'a site: one of its records passes every test (site_test, unique_in_proteome possibly as paralogs)',
         'lower_confidence': 'a lower-confidence site: an arginine a study reports as methylated, or a site of an earlier release, whose records each fail at least one test, shown on request and never in the counts and tests of the release',
     },
     'localised_by': {
