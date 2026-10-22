@@ -475,6 +475,12 @@ def main() -> None:
                 'domain_context': overview_rows(stats, 'domain_context'),
                 'domain_classes': overview_rows(stats, 'domain_class'),
                 'structure_context': overview_rows(stats, 'structure_context'),
+                # [class, Mantel-Haenszel log2 OR, its 95% CI (log2), q, informative strata]: within each protein
+                'structure_context_within': [[r['category'], num(math.log2(float(r['odds_ratio']))) if num(r['odds_ratio']) else None,
+                                              num(math.log2(float(r['odds_ratio_ci_low']))) if num(r.get('odds_ratio_ci_low')) else None,
+                                              num(math.log2(float(r['odds_ratio_ci_high']))) if num(r.get('odds_ratio_ci_high')) else None,
+                                              sig(r['q']), integer(r['n_strata'])]
+                                             for r in stats[(stats['analysis'] == 'structure_context') & (stats['method'] == 'mantel_haenszel')].to_dict('records')],
                 # [family, methylated genes, genes, fold enrichment, q]
                 'disease_families': [[r['family'], int(r['n_methylated_genes']), int(r['n_genes']), num(r['fold_enrichment']), sig(r['q'])]
                                      for r in disease_families.to_dict('records')],

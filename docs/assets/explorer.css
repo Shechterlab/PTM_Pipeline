@@ -1642,3 +1642,4 @@ body.slim .hero .brand-mark img { order: 0; }
 .sq-link { font-size: 0.8rem; margin: 0.35rem 0 0; }
 /* Two toggle groups side by side in a chart's tools (background, order) */
 .chart-tools .seg + .seg { margin-left: 0.75rem; }
+.ix-net-head { margin: 1.2rem 0 0.5rem; }

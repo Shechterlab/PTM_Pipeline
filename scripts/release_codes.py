@@ -574,9 +574,9 @@ SITE_COLUMNS = [
     ('interaction_evidence', 'list<code>', 'evidence_type', 'the evidence types at the site, in code order'),
     ('bound_nucleic_acid', 'list<code>', 'bound_contact', 'RNA or DNA in direct contact with the site in PDB structures, within 8 Å of its side chain in a complex without direct contact, or in contact via a residue at i ± 1-5 in a complex with neither, in code order (every entry: supporting/nucleic_acid_contacts and nucleic_acid_near_sites)'),
     ('bound_nucleic_acid_types', 'list<code>', 'nucleic_acid_type', 'the types of those RNA and DNA chains, in code order'),
-    ('bound_sequence', 'string', '', 'the best-supported bound sequence (direct contact, then proximal, then via a flanking residue; then the most PDB entries): 8 nucleotides each side of the centre, the contacted nucleotides in brackets, - past the chain\'s ends'),
-    ('bound_sequence_offset', 'integer', '', '0 for direct contact or proximity of the arginine side chain; else k, the offset of the closest residue i+k (k = ±1 to ±5) within 4 Å of bound_sequence'),
-    ('bound_sequence_distance_a', 'number', '', 'distance from the arginine side chain to the closest nucleotide of bound_sequence, in Å (direct and proximal), empty for a flanking-residue contact'),
+    ('bound_sequence', 'string', '', 'the sequence window with the most support (direct contact, then proximal, then via a flanking residue; then the most PDB entries): 8 nucleotides on each side of the centre, the contacted nucleotides in brackets, - beyond the chain\'s ends. It is the sequence deposited in the structure, often chosen by its authors, and records a contact, not a sequence preference'),
+    ('bound_sequence_offset', 'integer', '', '0 for direct contact or proximity of the arginine side chain; else k, the offset of the nearest residue i+k (k = ±1 to ±5) in direct contact (within 4 Å) with bound_sequence'),
+    ('bound_sequence_distance_a', 'number', '', 'minimum heavy-atom distance from the arginine side chain to bound_sequence, in Å (direct and proximal), empty for a flanking-residue contact'),
     ('bound_sequence_type', 'code', 'nucleic_acid_type', 'the type of its chain'),
     ('bound_sequence_molecule', 'string', '', 'its molecule name in the PDB entries (the most common one)'),
     ('bound_sequence_entries', 'integer', '', 'PDB entries showing it'),
@@ -764,7 +764,7 @@ CODES['analysis'] = {
     'disorder': 'methylarginines in a disorder class (scripts/06), against the other arginines of the methylated proteins',
     'domain_context': 'methylarginines in a domain context (scripts/05, 07), against the other arginines of the methylated proteins. A protein whose every arginine is a site has no background and is left out (MIF, 5 sites)',
     'domain_class': 'methylarginines whose nearest domain is of a class (scripts/07), against the other arginines of the methylated proteins (MIF left out, as for domain_context)',
-    'structure_context': 'methylarginines in a structural context (disorder and domains in one class, scripts/07), against the other arginines of the methylated proteins (MIF left out, as for domain_context)',
+    'structure_context': 'methylarginines in a structural context (disorder and domains in one class, scripts/07), against the other arginines of the methylated proteins (MIF left out, as for domain_context): pooled (method fisher), and within each protein (method mantel_haenszel, each protein a stratum, with the 95% CI of the odds ratio)',
     'disease_family': 'methylarginine-containing proteins (counted by gene) in one of the eight audited disease families (scripts/14), against the other reviewed human genes with a DisGeNET term (DOSE\'s background for the terms), q over the eight',
     'disease_family_additional': 'the same for the additional disease families (scripts/disease_families.py ADDITIONAL_FAMILY_RULES: rule-based, not audited, applied only to the terms no audited family takes), q over these families',
     'condensate': 'methylated proteins among the members of a CD-CODE condensate (scripts/12), against the other condensate proteins',
@@ -856,6 +856,8 @@ STATISTICS_COLUMNS = [
     ('method', 'code', 'method', 'the test'),
     ('background', 'string', '', 'what the targets are compared with'),
     ('n_strata', 'integer', '', 'strata of a stratified test, empty otherwise'),
+    ('odds_ratio_ci_low', 'number', '', 'lower bound of the 95% confidence interval of the odds ratio (Robins-Breslow-Greenland, for the mantel_haenszel rows that report it), empty otherwise'),
+    ('odds_ratio_ci_high', 'number', '', 'upper bound, as for odds_ratio_ci_low'),
 ]
 
 DISEASE_TERM_COLUMNS = [
@@ -982,7 +984,7 @@ NUCLEIC_ACID_CONTACT_COLUMNS = [
     ('contacted_author_numbers', 'list<string>', '', 'the same nucleotides with the entry\'s author numbers, in the same order'),
     ('contacted_distances_a', 'list<string>', '', 'their distances in angstroms, in the same order'),
     ('window_start', 'integer', '', 'SEQRES number of the window\'s first position (below 1 when the window runs past the chain\'s start)'),
-    ('window', 'string', '', 'the bound sequence: 8 nucleotides each side of the closest one, which is the 9th; - past the chain\'s ends. Windows of different sites align on their middle'),
+    ('window', 'string', '', 'the sequence window: 8 nucleotides on each side of the nucleotide nearest to the side chain, which is the 9th; - beyond the chain\'s ends. Windows of different sites align on their middle'),
     ('window_marked', 'string', '', 'the window with the contacted nucleotides in brackets'),
 ]
 
@@ -1000,7 +1002,7 @@ NUCLEIC_ACID_NEAR_COLUMNS = [
     ('sample_preparation', 'string', '', 'how it was made (Synthetically obtained: a designed oligonucleotide)'),
     ('centre_nucleotide', 'string', '', 'the middle nucleotide contacted by the closest such residue, SEQRES numbering'),
     ('window_start', 'integer', '', 'SEQRES number of the window\'s first position'),
-    ('window', 'string', '', 'the chain 8 nucleotides each side of the centre nucleotide (the 9th); - past its ends. Aligns with the windows of supporting/nucleic_acid_contacts'),
+    ('window', 'string', '', '8 nucleotides on each side of the centre nucleotide (the 9th); - beyond the chain\'s ends. Aligns with the windows of supporting/nucleic_acid_contacts'),
     ('window_marked', 'string', '', 'the window with every nucleotide contacted by a residue at i ± 1-5 in brackets'),
 ]
 
@@ -1010,11 +1012,11 @@ ARGININE_DISTANCE_COLUMNS = [
     ('site_id', 'string', '', 'the site, when the arginine is one (site table)'),
     ('methylated', 'boolean', '', 'the arginine is a site of this release'),
     ('entries_with_rna', 'integer', '', 'entries with RNA that model the arginine'),
-    ('rna_distance_a', 'number', '', 'the closest approach of its side chain to RNA over those entries, in Å, empty when never within 8 Å'),
+    ('rna_distance_a', 'number', '', 'the minimum heavy-atom distance from its side chain (CD, NE, CZ, NH1, NH2) to RNA over those entries, in Å, empty when never within 8 Å'),
     ('rna_type', 'code', 'nucleic_acid_type', 'the type of that RNA chain'),
     ('rna_example_pdb', 'string', '', 'an entry with that approach'),
     ('entries_with_dna', 'integer', '', 'entries with DNA that model the arginine'),
-    ('dna_distance_a', 'number', '', 'the closest approach of its side chain to DNA, as for RNA'),
+    ('dna_distance_a', 'number', '', 'the minimum heavy-atom distance from its side chain to DNA, as for RNA'),
     ('dna_type', 'code', 'nucleic_acid_type', 'the type of that DNA chain'),
     ('dna_example_pdb', 'string', '', 'an entry with that approach'),
 ]
@@ -1023,8 +1025,8 @@ NUCLEIC_ACID_PROXIMAL_COLUMNS = [
     ('site_id', 'string', '', 'the site (site table): a methylarginine with no side-chain atom within 4 Å of RNA or DNA at a listed interface of this complex (in none of its entries), and one within 8 Å in at least one of its entries'),
     ('nucleic_acid', 'code', 'nucleic_acid', 'what the closest chain is (RNA-DNA hybrids counted as RNA)'),
     ('nucleic_acid_type', 'code', 'nucleic_acid_type', 'the type of the chain'),
-    ('distance_a', 'number', '', 'the closest approach of the arginine side chain (CD, NE, CZ, NH1, NH2) to that kind of nucleic acid over the complex\'s entries, in Å (up to two copies of the protein per entry); 4 Å or less where PDBe-KB does not list the residue at the interface, counted as direct contact in the site table'),
-    ('pdb_id', 'string', '', 'the entry with that closest approach'),
+    ('distance_a', 'number', '', 'the minimum heavy-atom distance from the arginine side chain (CD, NE, CZ, NH1, NH2) to that kind of nucleic acid over the complex\'s entries, in Å (up to two copies of the protein per entry); 4 Å or less where PDBe-KB does not list the residue at the interface, counted as direct contact in the site table'),
+    ('pdb_id', 'string', '', 'the entry with that minimum distance'),
     ('n_entries', 'integer', '', 'the entries of the complex in which the side chain comes within 8 Å'),
     ('chain', 'string', '', 'the RNA or DNA chain closest to the side chain, of this kind'),
     ('molecule_name', 'string', '', 'its molecule name'),
@@ -1032,7 +1034,7 @@ NUCLEIC_ACID_PROXIMAL_COLUMNS = [
     ('sample_preparation', 'string', '', 'how it was made (Synthetically obtained: a designed oligonucleotide)'),
     ('closest_nucleotide', 'string', '', 'the nucleotide closest to the side chain, SEQRES numbering'),
     ('window_start', 'integer', '', 'SEQRES number of the window\'s first position'),
-    ('window', 'string', '', 'the chain 8 nucleotides each side of the closest nucleotide (the 9th); - past its ends. Aligns with the windows of supporting/nucleic_acid_contacts'),
+    ('window', 'string', '', '8 nucleotides on each side of the nucleotide nearest to the side chain (the 9th); - beyond the chain\'s ends. Aligns with the windows of supporting/nucleic_acid_contacts'),
     ('window_marked', 'string', '', 'the window with every nucleotide within 8 Å of the side chain in brackets'),
 ]
 

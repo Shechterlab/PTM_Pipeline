@@ -1183,6 +1183,9 @@ def main() -> None:
     studies = build_studies(records, main_sites)
     proteins, extra = release_tables.proteins_table(aroot, inputs, sites, placed, entry, reference)
     statistics = release_tables.statistics(aroot, proteins)
+    for column, *_ in rc.STATISTICS_COLUMNS:   # a column only some analyses fill (the 95% CI of an odds ratio)
+        if column not in statistics.columns:
+            statistics[column] = None
     if ix:
         status = sites.groupby('uniprot_accession')['interaction_status'].agg(Counter)
         proteins['n_sites_experimental'] = proteins['uniprot_accession'].map(lambda a: status[a]['experimental'])

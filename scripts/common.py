@@ -10,7 +10,7 @@ from typing import Iterable
 
 import numpy as np
 import pandas as pd
-from scipy.stats import fisher_exact
+from scipy.stats import chi2, fisher_exact
 
 
 BREWER_COLORS = {
@@ -382,6 +382,39 @@ def structure_context(disorder_class, domain_class, domain_edge_distance) -> str
     if pd.isna(d) or d > STRUCTURE_MID:
         return 'idr_far_from_domain'
     return 'idr_near_domain' if d <= STRUCTURE_NEAR else 'idr_mid_domain'
+
+
+# Within-protein tests: Mantel-Haenszel with each protein a stratum (scripts/07, scripts/37).
+def informative_strata(tables):
+    """Strata that carry information for a Mantel-Haenszel analysis (no empty margin, at least two observations)."""
+    return [(a, b, c, d) for a, b, c, d in tables if a + b + c + d >= 2 and (a + b) and (c + d) and (a + c) and (b + d)]
+
+
+def mantel_haenszel(tables):
+    """Mantel-Haenszel common odds ratio and the continuity-corrected CMH test (statsmodels StratifiedTable).
+
+    Returns (odds, p, informative strata); odds may be inf when no stratum has b*c > 0."""
+    strata = informative_strata(tables)
+    if not strata:
+        return None, None, 0
+    from statsmodels.stats.contingency_tables import StratifiedTable
+    st = StratifiedTable([np.array([[a, b], [c, d]], dtype=float) for a, b, c, d in strata])
+    den = sum(b * c / (a + b + c + d) for a, b, c, d in strata)
+    odds = float(st.oddsratio_pooled) if den > 0 else float('inf')
+    # statsmodels reports 1 - cdf, which underflows below ~1e-16; take its statistic to scipy's survival function.
+    return odds, float(chi2.sf(st.test_null_odds(correction=True).statistic, 1)), len(strata)
+
+
+def mantel_haenszel_ci(tables):
+    """Mantel-Haenszel OR with its Robins-Breslow-Greenland 95% CI (statsmodels): (odds, lo, hi, p, informative strata)."""
+    odds, p, used = mantel_haenszel(tables)
+    if odds is None or not math.isfinite(odds) or odds <= 0:
+        return odds, None, None, p, used
+    strata = informative_strata(tables)
+    from statsmodels.stats.contingency_tables import StratifiedTable
+    st = StratifiedTable([np.array([[a, b], [c, d]], dtype=float) for a, b, c, d in strata])
+    lo, hi = st.oddsratio_pooled_confint(alpha=0.05)
+    return odds, (float(lo) if math.isfinite(lo) else None), (float(hi) if math.isfinite(hi) else None), p, used
 
 
 def fisher_like_enrichment(target: pd.Series, universe: pd.Series) -> pd.DataFrame:

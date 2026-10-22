@@ -205,7 +205,7 @@ FILE_ROWS = {
     'protein_partners': 'protein and STRING physical partner (score >= 0.7)',
     'complexes': 'Complex Portal or hu.MAP complex with a methylated member',
     'nucleic_acid_contacts': 'site and RNA or DNA chain within 4 Å of its side chain in a PDB structure: the contacted nucleotides and the bound sequence around them',
-    'arginine_nucleic_acid_distances': 'arginine of a methylated protein modelled in a PDB entry with RNA or DNA: its closest approach to each, methylated or not',
+    'arginine_nucleic_acid_distances': 'arginine of a methylated protein modelled in a PDB entry with RNA or DNA: its minimum side-chain distance to each, methylated or not',
     'nucleic_acid_proximal_sites': 'site, complex and kind of nucleic acid in which the arginine side chain is within 8 Å, not 4 Å, of RNA or DNA: the bound sequence around the closest nucleotide',
     'nucleic_acid_near_sites': 'site and complex in which a residue at i ± 1-5, not the arginine side chain, is within 4 Å of RNA or DNA (the side chain not within 8 Å): the bound sequence there',
     'nucleic_acid_regions': 'run of residues of a protein within 4 Å of RNA or DNA in PDB structures: the bound segments and the methylarginines inside it',
@@ -850,17 +850,19 @@ def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
         f"- `{files['nucleic_acid_contacts'][0]}`: {n(kind(at, 'rna'))} methylarginines in direct contact with RNA and {n(kind(at, 'dna'))} with DNA "
         f"(a nucleotide within 4 Å of the side chain), {n(len(at))} site-chain pairs in {n(at['pdb_id'].nunique())} entries: the "
         'chain (molecule, organism, how it was made: Synthetically obtained for a designed oligonucleotide), the nucleotides '
-        'contacted and the bound sequence 8 nucleotides each side of the closest one, so the windows of any sites align.',
+        'contacted and the sequence window of 8 nucleotides on each side of the nearest one, so the windows of different sites align. '
+        'The windows are the sequences deposited in each structure, often chosen by its authors, so they record contacts, not '
+        'sequence preference; no consensus is derived from them.',
     ]
     if prox is not None:
         out.append(f"- `{files['nucleic_acid_proximal_sites'][0]}`: {n(kind(prox, 'rna'))} sites with RNA and {n(kind(prox, 'dna'))} with DNA "
                    'within 8 Å of the arginine side chain in a complex where it has no direct contact (every entry of the complex '
-                   'read): the closest approach and the bound sequence around the closest nucleotide.')
+                   'analysed): the minimum heavy-atom distance and the sequence window around the nearest nucleotide.')
     if dist is not None:
         meth = dist['methylated'].astype(str) == 'true'
-        out.append(f"- `{files['arginine_nucleic_acid_distances'][0]}`: the closest approach to RNA and to DNA of every arginine of the "
-                   f"methylated proteins modelled in an entry with nucleic acid ({n(int(meth.sum()))} methylarginines, {n(int((~meth).sum()))} other "
-                   'arginines), and in `interaction_statistics` (analysis nucleic_acid_distance) whether methylarginines come within 4 '
+        out.append(f"- `{files['arginine_nucleic_acid_distances'][0]}`: the minimum heavy-atom distance from the side chain to RNA and to DNA of every "
+                   f"arginine of the methylated proteins modelled in an entry with nucleic acid ({n(int(meth.sum()))} methylarginines, {n(int((~meth).sum()))} other "
+                   'arginines), and in `interaction_statistics` (analysis nucleic_acid_distance) whether methylarginines lie within 4 '
                    'or 8 Å more often than the other arginines of the same proteins.')
     if near is not None:
         out.append(f"- `{files['nucleic_acid_near_sites'][0]}`: {n(kind(near, 'rna'))} sites with RNA and {n(kind(near, 'dna'))} with DNA "

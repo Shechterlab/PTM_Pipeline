@@ -14,10 +14,12 @@ from common import (
     annotate_barh,
     apply_paper_style,
     balanced_category_subset,
+    benjamini_hochberg,
     classify_by_patterns,
     fisher_like_enrichment,
     load_json,
     log2_odds_ratio,
+    mantel_haenszel_ci,
     parse_fasta,
     q_threshold_note,
     residue_background_from_sequences,
@@ -290,6 +292,30 @@ def cumulative_edge_curve(target_dist: pd.Series, background_dist: pd.Series, ma
     return add_q_values(pd.DataFrame(rows))
 
 
+def within_protein_enrichment(sites: pd.DataFrame, background: pd.DataFrame, col: str) -> pd.DataFrame:
+    """Each class of col: methylarginines against the other arginines of the same protein, each protein a stratum
+    (Mantel-Haenszel common odds ratio, Robins-Breslow-Greenland 95% CI, continuity-corrected CMH test; BH over the
+    classes). It asks whether, within a protein, the methylated arginines lie in the class more often than its other
+    arginines, which the pooled test cannot separate from which proteins are methylated."""
+    meth = sites.groupby(['canonical_UniProtAC', col]).size().unstack(fill_value=0)
+    other = background.groupby(['canonical_UniProtAC', col]).size().unstack(fill_value=0)
+    proteins = sorted(set(meth.index) & set(other.index))
+    meth, other = meth.reindex(proteins, fill_value=0), other.reindex(proteins, fill_value=0)
+    n_meth, n_other = meth.sum(axis=1), other.sum(axis=1)
+    rows = []
+    for cat in sorted(set(meth.columns) | set(other.columns)):
+        a = meth[cat] if cat in meth.columns else pd.Series(0, index=proteins)
+        c = other[cat] if cat in other.columns else pd.Series(0, index=proteins)
+        tables = [(int(a[q]), int(n_meth[q] - a[q]), int(c[q]), int(n_other[q] - c[q])) for q in proteins]
+        odds, lo, hi, p, used = mantel_haenszel_ci(tables)
+        rows.append({'category': cat, 'target_count': int(a.sum()), 'target_total': int(n_meth.sum()), 'background_count': int(c.sum()),
+                     'background_total': int(n_other.sum()), 'n_strata': used, 'mh_odds_ratio': odds, 'ci_low': lo, 'ci_high': hi,
+                     'p_value': p})
+    out = pd.DataFrame(rows)
+    out['q_value'] = benjamini_hochberg(out['p_value'].astype(float))   # NaN where no stratum is informative
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument('--annotated-sites', required=True)
@@ -428,7 +454,7 @@ def main() -> None:
         methyl_protein_arg['nearest_domain_class'],
     )
     # Disorder and domains in one class per arginine (common.structure_context), when the disorder classes are known.
-    structure_enrichment = pd.DataFrame()
+    structure_enrichment = structure_within = pd.DataFrame()
     if 'disorder_context_class' in tested_sites.columns and 'disorder_context_class' in methyl_protein_arg.columns:
         def structure(df: pd.DataFrame) -> pd.Series:
             return pd.Series([structure_context(a, b, c) for a, b, c in zip(df['disorder_context_class'], df['domain_context_class'],
@@ -437,6 +463,7 @@ def main() -> None:
         methyl_protein_arg['structure_context'] = structure(methyl_protein_arg)
         tested_sites = annotated_sites[has_background]
         structure_enrichment = fisher_like_enrichment(tested_sites['structure_context'], methyl_protein_arg['structure_context'])
+        structure_within = within_protein_enrichment(tested_sites, methyl_protein_arg, 'structure_context')
     edge_summary = annotated_sites[['nearest_domain_edge_distance', 'domain_context_class']].copy()
     observed_edge = tested_sites['nearest_domain_edge_distance'].dropna().astype(float)
     background_edge = methyl_protein_arg['nearest_domain_edge_distance'].dropna().astype(float)
@@ -494,6 +521,7 @@ def main() -> None:
     save_table(domain_class_enrichment, outdir / 'domain_class_enrichment.tsv')
     if not structure_enrichment.empty:
         save_table(structure_enrichment, outdir / 'structure_context_enrichment.tsv')
+        save_table(structure_within, outdir / 'structure_context_within_protein.tsv')
     save_table(edge_summary, outdir / 'domain_edge_distance_summary.tsv')
     save_table(edge_comparison, outdir / 'domain_edge_distance_comparison.tsv')
     save_table(edge_bin_enrichment, outdir / 'domain_edge_bin_enrichment.tsv')

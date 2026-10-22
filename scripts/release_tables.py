@@ -102,6 +102,16 @@ def statistics(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
     if (root / 'domain_context' / 'structure_context_enrichment.tsv').exists():
         rows += from_fractions(read(root / 'domain_context' / 'structure_context_enrichment.tsv'), 'category',
                                'structure_context', 'other arginines of the methylated proteins')
+    # The same classes within each protein (scripts/07 within_protein_enrichment): Mantel-Haenszel, with its 95% CI.
+    if (root / 'domain_context' / 'structure_context_within_protein.tsv').exists():
+        for r in read(root / 'domain_context' / 'structure_context_within_protein.tsv').to_dict('records'):
+            a, c, odds = int(r['target_count']), int(r['background_count']), num(r['mh_odds_ratio'])
+            rows.append({'analysis': 'structure_context', 'category': r['category'], 'stratum': 'all', 'a': a, 'b': int(r['target_total']) - a,
+                         'c': c, 'd': int(r['background_total']) - c, 'odds_ratio': odds,
+                         'log2_odds_ratio': math.log2(odds) if odds and odds > 0 and math.isfinite(odds) else None,
+                         'odds_ratio_ci_low': num(r['ci_low']), 'odds_ratio_ci_high': num(r['ci_high']),
+                         'p': num(r['p_value']), 'q': num(r['q_value']), 'method': 'mantel_haenszel',
+                         'background': 'other arginines of the same protein, each protein a stratum', 'n_strata': int(r['n_strata'])})
     # The disease families (scripts/14): clusterProfiler::enricher against the genes with a DisGeNET term.
     for r in read(root / 'disease' / 'disease_families.tsv').to_dict('records'):
         a, c = int(r['methylarginine_protein_count']), int(r['background_count'])

@@ -51,8 +51,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from scipy import stats as sps
-from statsmodels.stats.contingency_tables import StratifiedTable
 
+from common import mantel_haenszel, mantel_haenszel_ci
 from enrichment import Job, run as run_enrichment
 from interaction_inputs import merge_member
 
@@ -842,7 +842,7 @@ def chain_na_proximity(cache: Path, pdb: str, chain: str, na_chains: set, refres
     DNA chains within PROXIMAL_CUTOFF (RCSB ModelServer residueInteraction of the chain; symmetry copies left out),
     cached as JSON: {'args': [[SEQRES index, author number, residue]], 'hits': [[SEQRES index, nucleic-acid chain, its
     closest nucleotide's SEQRES index, nucleotide, side-chain distance, [SEQRES indices within PROXIMAL_CUTOFF]]]}.
-    The distance is the closest approach of a side-chain atom (CD, NE, CZ, NH1, NH2) to any heavy atom of the chain."""
+    The distance is the minimum distance from a side-chain heavy atom (CD, NE, CZ, NH1, NH2) to any heavy atom of the chain."""
     dest = cache / 'na_arginines' / f'{pdb}_{chain}.json'
     if dest.exists() and not refresh:
         try:
@@ -1642,36 +1642,6 @@ def load_intact(cache: Path, refresh: bool, seq: dict):
         log(f'IntAct release note not available ({e})')
     log('IntAct features: ' + ', '.join(f'{k} {v:,}' for k, v in sorted(counts.items())))
     return feats, dict(counts), release
-
-
-def informative_strata(tables):
-    """Strata that carry information for a Mantel-Haenszel analysis (no empty margin, at least two observations)."""
-    return [(a, b, c, d) for a, b, c, d in tables if a + b + c + d >= 2 and (a + b) and (c + d) and (a + c) and (b + d)]
-
-
-def mantel_haenszel(tables):
-    """Mantel-Haenszel common odds ratio and the continuity-corrected CMH test (statsmodels StratifiedTable).
-
-    Returns (odds, p, informative strata); odds may be inf when no stratum has b*c > 0."""
-    strata = informative_strata(tables)
-    if not strata:
-        return None, None, 0
-    st = StratifiedTable([np.array([[a, b], [c, d]], dtype=float) for a, b, c, d in strata])
-    den = sum(b * c / (a + b + c + d) for a, b, c, d in strata)
-    odds = float(st.oddsratio_pooled) if den > 0 else float('inf')
-    # statsmodels reports 1 - cdf, which underflows below ~1e-16; take its statistic to scipy's survival function.
-    return odds, float(sps.chi2.sf(st.test_null_odds(correction=True).statistic, 1)), len(strata)
-
-
-def mantel_haenszel_ci(tables):
-    """Mantel-Haenszel OR with its Robins-Breslow-Greenland 95% CI (statsmodels): (odds, lo, hi, p, informative strata)."""
-    odds, p, used = mantel_haenszel(tables)
-    if odds is None or not math.isfinite(odds) or odds <= 0:
-        return odds, None, None, p, used
-    strata = informative_strata(tables)
-    st = StratifiedTable([np.array([[a, b], [c, d]], dtype=float) for a, b, c, d in strata])
-    lo, hi = st.oddsratio_pooled_confint(alpha=0.05)
-    return odds, (float(lo) if math.isfinite(lo) else None), (float(hi) if math.isfinite(hi) else None), p, used
 
 
 def woolf_ci(a, b, c, d):
@@ -3137,7 +3107,7 @@ def main():
                         if dist < g[0]:
                             g[:5] = [dist, pdb, nch, k, within]
         # Proximal: in each distinct complex where the arginine side chain has no RNA or DNA within CONTACT_CUTOFF in a
-        # listed interface (in none of its entries), the closest approach within PROXIMAL_CUTOFF over its entries, on the
+        # listed interface (in none of its entries), the minimum distance within PROXIMAL_CUTOFF over its entries, on the
         # closest chain of each kind, the window centred on the closest nucleotide, those within the cutoff marked.
         # [site, kind, entry read, chain, window, offsets within the cutoff, distance, entries within the cutoff, centre]
         for (acc, q0, si, kind), (d, pdb, nch, centre, within, ents) in sorted(site_cx.items()):
@@ -3150,7 +3120,7 @@ def main():
         prox_cx = {(r[0], cx_of[(prots[sites[r[0]][0]][0], r[2])]) for r in prox_rows}
 
         # Are methylarginines closer to RNA or DNA than the other arginines of the same proteins? Every arginine modelled
-        # in an entry with that kind of nucleic acid, by its closest approach over the entries: within CONTACT_CUTOFF and
+        # in an entry with that kind of nucleic acid, by its minimum distance over the entries: within CONTACT_CUTOFF and
         # within PROXIMAL_CUTOFF, methylarginines against the others, each protein a stratum.
         strata = defaultdict(lambda: defaultdict(lambda: [0, 0, 0, 0]))   # (kind, cutoff) -> accession -> [a, b, c, d]
         dists = defaultdict(lambda: ([], []))   # kind -> (methylarginine distances, other distances), those within the cutoff
@@ -3379,7 +3349,7 @@ def main():
                        f'0: the side chain is within 4 Å or (tier 1) {PROXIMAL_CUTOFF:g} Å of it; else k of the closest residue i+k (k = ±1 to ±{NEAR_RESIDUES}) within 4 Å of it',
                        'chain type (' + '|'.join(NA_TYPES) + ')', f'tier: 0 direct contact or via a flanking residue, 1 proximal (side chain within {PROXIMAL_CUTOFF:g} Å, one entry per distinct complex)'],
                 'na_names': 'molecule names of the RNA and DNA chains',
-                'na_dist': ['type of RNA or DNA', f'methylarginines by the closest approach of the side chain, 1 Å bins from 0 to {PROXIMAL_CUTOFF:g} Å',
+                'na_dist': ['type of RNA or DNA', f'methylarginines by the minimum heavy-atom distance from the side chain, 1 Å bins from 0 to {PROXIMAL_CUTOFF:g} Å',
                             'the other arginines of the same proteins, likewise (every entry with the protein and RNA or DNA)'],
                 'na_dist_stats': '{rna|dna|any}_within_{4|8}a: or_summary of methylarginines against the other arginines modelled with that kind, within the cutoff; '
                                  '{kind}_distance: [n methylarginines within 8 Å, median Å, n other, median Å, Mann-Whitney p]',
