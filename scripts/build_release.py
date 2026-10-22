@@ -1037,6 +1037,7 @@ def write_table(df: pd.DataFrame, columns: list[tuple], path: Path) -> None:
             out[name] = ['true' if bool(v) else 'false' for v in col]
         else:
             out[name] = ['' if v is None or (isinstance(v, float) and pd.isna(v)) or v is pd.NA else str(v) for v in col]
+        out[name] = out[name].astype(object)   # an empty table's columns would otherwise be numbers
         bad = out[name].str.contains('[\t\n\r]', regex=True)
         if kind.startswith('list'):
             # items separated by '; ', none empty and none holding ';' itself

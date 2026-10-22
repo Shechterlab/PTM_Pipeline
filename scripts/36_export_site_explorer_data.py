@@ -396,8 +396,11 @@ def main() -> None:
                     sorted(k for k, x in enumerate(ps) if x in inside)])
     for a, row in zip(acc_list, protein_rows):
         row.append(sorted(protein_do.get(a, ())))   # the most specific tested Disease Ontology terms of the protein
-    for p, row in zip(proteins.to_dict('records'), protein_rows):
-        row.append(int(p.get('disgenet_background') == 'true'))   # the gene has a DisGeNET term (the family tests' background)
+    # The gene has a DisGeNET term (the family tests' background), when the analyses recorded it (scripts/14 from v1.3.0)
+    dgn_background = 'disgenet_background' in proteins.columns and bool((proteins['disgenet_background'] == 'true').any())
+    if dgn_background:
+        for p, row in zip(proteins.to_dict('records'), protein_rows):
+            row.append(int(p['disgenet_background'] == 'true'))
     group_of = {ontology.at[c, 'name']: g['name'] for g in panther_config['groups'] for c in g['classes']}
     top_of = {n: ontology.at[ontology.at[by_name[n], 'top_level_id'], 'name'] for n in ps}
     totals = lambda r: [int(r['a']) + int(r['c'])]  # noqa: E731
@@ -503,12 +506,12 @@ def main() -> None:
                 'functional_subclasses': overview_rows(stats, 'functional_subclass',
                                                        lambda r: [parent[r['category']].most_common(1)[0][0] if parent[r['category']] else '']),
             },
-            'protein_fields': ['accession', 'gene', 'protein_name', 'uniprot_id', 'func_class_mask', 'func_subclass_mask', 'length',
+            'protein_fields': [*['accession', 'gene', 'protein_name', 'uniprot_id', 'func_class_mask', 'func_subclass_mask', 'length',
                                'arginine_count', 'shrinkage_log2_enrichment', 'arg_odds_q', 'is_isoform', 'condensates',
                                'disease_family_mask', 'als_ftd_audited_gene', 'local_density', 'best_density_window',
                                'significant_density_windows', 'cluster_architecture', 'other_ptms', 'gene_aliases', 'reference_md5',
-                               'hpa_locations', 'disease_families', 'disorder_intervals', 'panther', 'disease_ontology_terms',
-                               'disgenet_background'],
+                               'hpa_locations', 'disease_families', 'disorder_intervals', 'panther', 'disease_ontology_terms'],
+                               *(['disgenet_background'] if dgn_background else [])],
             'panther': {'version': panther_config['panther_version'], 'unclassified': panther_config['unclassified'],
                         'groups': pg, 'classes': pc, 'subclasses': ps,
                         'universe': int(stats[stats['analysis'] == 'panther_group'].iloc[0][['a', 'b', 'c', 'd']].astype(int).sum())},
@@ -532,7 +535,8 @@ def main() -> None:
             'disease_family_sets': {'version': 'audited_v1', 'fields': ['terms', 'genes', 'methylarginine_genes'],
                                     'families': [[int(r['n_terms']), int(r['n_genes']), int(r['n_methylated_genes'])] for r in disease_families.to_dict('records')],
                                     # [methylated genes, genes] with a DisGeNET term: the background of every family test
-                                    'background': [int(disease_families['n_methylated_genes_tested'].iloc[0]), int(disease_families['n_genes_tested'].iloc[0])]},
+                                    **({'background': [int(disease_families['n_methylated_genes_tested'].iloc[0]), int(disease_families['n_genes_tested'].iloc[0])]}
+                                       if dgn_background else {})},
             'disorder_intervals': {'source': f'MobiDB disorder intervals ({args.disorder_intervals})',
                                    'proteins': sum(1 for r in protein_rows if r[disorder_field])},
         },
