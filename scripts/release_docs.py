@@ -545,6 +545,8 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
     added_ids = set(changes.loc[changes['change'] == 'added', 'site_id'])
     prev_proteins = set(changes.loc[changes['change'] != 'added', 'site_id'].map(lambda x: split_key(x)[0]))
     first_new = int(new['record_id'].min()) if len(new) else None
+    # what v1.2.0 changed (studies read from their own tables, site tests, corrections) is told against v1.1.0 only
+    since_v11 = previous == 'v1.1.0'
     lines = [
         f'# Changes from {previous} to {version}',
         '',
@@ -566,7 +568,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
         '',
     ]
     # ---- Site specificity: the records without localisation, and the sites of the previous version they alone held
-    if 'localised_by' in records.columns and records['placement_code'].isin(rc.PLACEMENT_NOT_LOCALISED).any():
+    if since_v11 and 'localised_by' in records.columns and records['placement_code'].isin(rc.PLACEMENT_NOT_LOCALISED).any():
         code_n = records['placement_code'].value_counts()
         unloc = records[records['placement_code'] == 'unresolved_not_localised']
         removed = changes[changes['change'] == 'removed']
@@ -731,7 +733,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
             '',
         ]
     nl = placed[placed['dimethyl_type_neutral_loss'] != '']
-    if len(nl):
+    if since_v11 and len(nl):
         ab = nl['maron2021_s3_antibodies'].str.split('; ').map(lambda v: {x for x in v if x in ('ADMA', 'SDMA')})
         call = nl['dimethyl_type_neutral_loss'].str.split('; ').map(set)
         both = [(a, b) for a, b in zip(call, ab) if b]
@@ -759,7 +761,9 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
             'from the mouse stroma.',
             '',
         ]
-    lines += [
+    lines += nucleic_acid_section(ctx, files, previous)
+    if since_v11:
+        lines += [
         '## Methylation degree',
         '',
         f"`methyl_state` gives a degree at {n(c['with_state'])} of {n(c['sites'])} sites: "
@@ -802,14 +806,17 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
         'PDB contacts in fusion chains name the protein of the segment that holds the residue; CD-CODE members listed '
         'under isoforms count once, with their best confidence.',
         '',
+        ]
+    lines += [
         '## Still open',
         '',
     ] + ([f"- **Windows that match on one side only** ({n(c['pending'])} sites, flag `one_sided_window`): kept, flagged and left "
           'out of every analysis.'] if c['pending'] else []) + ([
         f"- **Paralog windows** ({c['flags'].get('paralog_window', 0)} sites, flag `paralog_window`), accepted in "
         '`config/remap_evidence_allowlist.tsv`.'] if c['flags'].get('paralog_window', 0) else []) + [
-        '- **Sites without a readable localisation** (above): mostly sites whose study gives them below its localisation '
-        'threshold, or whose search placed the methyl group differently from one confident spectrum to the next.',
+        '- **Sites without a readable localisation** (' + ('above' if since_v11 else 'Site specificity in the CHANGES.md of v1.2.0') + '): mostly sites '
+        'whose study gives them below its localisation threshold, or whose search placed the methyl group differently from one '
+        'confident spectrum to the next.',
         '',
         '## Tracing a change',
         '',
@@ -820,6 +827,47 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
         'Their columns are listed in `README.md` and `data_dictionary.tsv`.',
     ]
     (outdir / 'CHANGES.md').write_text('\n'.join(lines) + '\n')
+
+
+def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
+    """CHANGES.md: the RNA and DNA bound at and next to methylarginines, and what their proteins bind (v1.3.0 on)."""
+    if 'nucleic_acid_contacts' not in files or previous not in ('v1.0.0', 'v1.1.0', 'v1.2.0'):
+        return []
+    at, near = files['nucleic_acid_contacts'][1], files.get('nucleic_acid_near_sites', (None, None))[1]
+    regions = files.get('nucleic_acid_regions', (None, None))[1]
+    kind = lambda df, k: int(df.loc[df['nucleic_acid'].isin(['rna', 'hybrid'] if k == 'rna' else ['dna']), 'site_id'].nunique())  # noqa: E731
+    out = [
+        '## RNA and DNA at methylarginines',
+        '',
+        f'The sites are those of {previous}. This version adds the RNA and DNA they touch in PDB structures, read in every entry '
+        'PDBe-KB lists for a site with RNA or DNA, and what their proteins bind in vitro and in cells.',
+        '',
+        f"- `{files['nucleic_acid_contacts'][0]}`: {n(kind(at, 'rna'))} methylarginines touch RNA and {n(kind(at, 'dna'))} touch DNA "
+        f"(a nucleotide within 4 Å of the side chain), {n(len(at))} site-chain pairs in {n(at['pdb_id'].nunique())} entries: the "
+        'chain (molecule, organism, how it was made: Synthetically obtained for a designed oligonucleotide), the nucleotides '
+        'contacted and the bound sequence 8 nucleotides each side of the closest one, so the windows of any sites align.',
+    ]
+    if near is not None:
+        out.append(f"- `{files['nucleic_acid_near_sites'][0]}`: {n(kind(near, 'rna'))} sites with RNA and {n(kind(near, 'dna'))} with DNA "
+                   'touched by a residue within 5 positions in a complex where the arginine itself touches none: the bound sequence '
+                   'there, centred on what the closest such residue touches.')
+    if regions is not None:
+        has = regions['methylarginines'].astype(str).str.len() > 0
+        out.append(f"- `{files['nucleic_acid_regions'][0]}`: {n(len(regions))} runs of residues within 4 Å of RNA or DNA on "
+                   f"{n(regions['uniprot_accession'].nunique())} proteins ({n(int(has.sum()))} with methylarginines inside), read once per "
+                   'distinct complex (the same bound sequences), with the segments each touches.')
+    for key, text in (('rna_bind_n_seq', 'ENCODE RNA Bind-n-Seq (in vitro): the most enriched 5-mers and logos'),
+                      ('dna_motifs', 'JASPAR 2026 CORE vertebrates DNA-binding profiles (CC BY 4.0)'),
+                      ('eclip', 'ENCODE eCLIP in K562 and HepG2 cells: peaks by transcript region (GENCODE v50 basic) and the genes with most')):
+        if key in files:
+            df = files[key][1]
+            out.append(f"- `{files[key][0]}`: {text}, for {n(df['uniprot_accession'].nunique())} methylated proteins.")
+    out += ['', 'The website shows them on protein pages (RNA and DNA tabs: where the protein binds, the bound sequences at '
+            'or next to each methylarginine with a logo, its preferences and eCLIP targets), on a site\'s card, and for a '
+            'selection in the Interactions view. Inputs: `inputs/interactions/pdb_nucleic_acid_*` (PDB data, CC0) and '
+            '`inputs/nucleic_acid/` (scripts/43_stage_nucleic_acid_binding.py). RNAcompete (CISBP-RNA) states no licence and '
+            'is not included.', '']
+    return out
 
 
 def anchor(label: str) -> str:

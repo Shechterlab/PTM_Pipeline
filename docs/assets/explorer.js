@@ -8427,7 +8427,7 @@
         '<p class="muted">None of the methylated arginines contacts ' + KIND + ' in a PDB structure (PDBe-KB).</p>') +
       '<p class="note">PDBe-KB interface residues across all PDB entries of this protein; methylation of these arginines would change the contact.</p></section>' +
       bindWhereHtml(p, kind) +
-      (naWs.length ? '<section class="na-sec"><h4>Bound ' + KIND + ' sequences in structures</h4>' + naBlockHtml(naWs, kind, false, 0) + '<p class="note">' + NA_NOTE + '</p></section>' : '') +
+      (naWs.length ? '<section class="na-sec"><h4>Bound ' + KIND + ' sequences in structures</h4>' + naBlockHtml(naWs, kind, false, 60) + '<p class="note">' + NA_NOTE + '</p></section>' : '') +
       bindPrefHtml(p, kind) +
       xlSectionHtml(p, kind) +
       '<section><h4>PDB structures with ' + KIND + '</h4><div id="ix-pdb" class="note">Looking up PDB entries…</div></section>' +

@@ -27,7 +27,7 @@
 # lacks data for a site: scripts/37 then fetches it into WORK_ROOT/interactions_topup, and the build stops, before
 # writing the release, and says how to stage it.
 #
-# Environment (optional): PREVIOUS, the release the changes are traced from (default releases/v1.1.0); RELEASE_OUT, where
+# Environment (optional): PREVIOUS, the release the changes are traced from (default releases/v1.2.0); RELEASE_OUT, where
 # the release goes (default releases/VERSION); SITE_OUT, where the website data go (default docs/data); STUDIES, the
 # study tables read (default all sixteen, inputs/sources/<study>_methylarginine_records.tsv); LOCALISED_ONLY (default 1),
 # 0 to place records without localisation as v1.1.0 did. v1.1.0 itself: PREVIOUS=releases/v1.0.0 STUDIES=''
@@ -40,7 +40,7 @@ CODE=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 IN="$CODE/inputs"
 WORK=${2:-$(mktemp -d)}
 OUT=${RELEASE_OUT:-$CODE/releases/$VERSION}
-PREVIOUS=${PREVIOUS:-$CODE/releases/v1.1.0}
+PREVIOUS=${PREVIOUS:-$CODE/releases/v1.2.0}
 STUDIES=${STUDIES-larsen2016 maron2021 guo2014 musiani2019 fong2019 li2021 fedoriw2019 uniprot lim2020 wei2020 iedb hartel2019 geoghegan2015 sylvestersen2014 lu2025 ma2023}
 LOCALISED_ONLY=${LOCALISED_ONLY:-1}
 SITE_OUT=${SITE_OUT:-$CODE/docs/data}

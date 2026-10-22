@@ -2940,7 +2940,8 @@ def main():
                     by_cx[si][q].add((pdb, nch, nlab))
             for q0, j in sorted(sites_of.get(acc, [])):
                 for si, at_pos in sorted(by_cx.items()):
-                    near = {q: h for q, h in at_pos.items() if abs(q - q0) <= NEAR_RESIDUES}
+                    # other residues only: the arginine's own (side chain within 4 Å) is the direct tier
+                    near = {q: h for q, h in at_pos.items() if 0 < abs(q - q0) <= NEAR_RESIDUES}
                     if not near or any((j, e) in at_entry for e in sig_entries[si]):
                         continue
                     (pdb, nch), _ = Counter((pd, ch) for h in near.values() for pd, ch, _ in h).most_common(1)[0]
