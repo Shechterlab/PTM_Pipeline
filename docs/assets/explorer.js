@@ -3801,13 +3801,30 @@
         return up.concat(dn).map((r) => ({ label: short(r), sub, main: { or: 2 ** r.value, sig: true, q: r.q, fold: !!spec.fold } }));
       };
       const lst = (rows) => rows.filter((r) => r.main.or > 1).map((r) => esc(r.label) + ' <span class="an">' + fx(r.main.or) + '×</span>').join(', ');
-      const key = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span class="a-key-note">Within-protein odds ratios (where in the protein) and fold enrichments (which proteins), q ≤ ' + PADJ + '</span>';
+      const key = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span class="a-info" tabindex="0" data-tip="' + esc('Where in the protein: methylarginines against the other arginines of the same proteins (within-protein odds ratios). Which proteins: methylated proteins against all reviewed human proteins (fold enrichment). Shown: q ≤ ' + PADJ + '.') + '">How to read</span>';
       let lead;
       if (!scoped) {
         const where = pick(motif, 2, 1, 'sequence motif').concat(pick(sctx || disorder, 1, 1, sctx ? 'structural context' : 'disorder'));
         const which = pick(pan || func, 1, 0, pan ? 'PANTHER class' : 'protein class').concat(pick(cond, 1, 0, 'CD-CODE condensate'), pick(loc, 1, 0, 'Human Protein Atlas location'), pick(dis, 1, 0, 'disease gene set'));
-        lead = { q: 'What sets methylarginine sites apart?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
-          fig: aForest([['Where in the protein · against the other arginines of the same proteins', where], ['Which proteins · against all human proteins', which]]) };
+        // the headline cards: the strongest motif and structural class, protein class and condensate
+        const top = (spec) => (spec ? spec.rows.filter((r) => ok(r) && r.sig && r.value > 0).sort((a, b) => b.value - a.value)[0] : null);
+        const hi = [];
+        const card = (spec, go, kind, glyph, label, vs) => {
+          const r = top(spec);
+          if (!r) return;
+          const or = 2 ** r.value;
+          hi.push({ go, kind, glyph: glyph(short(r)), big: fx(or) + '×', label: label(short(r)), tip: '<b>' + esc(short(r)) + '</b><br>' + fx(or) + '× ' + vs + (r.q != null ? ', q ' + fmtP(r.q) : '') });
+        };
+        card(motif, 'ov-motif', 'Sequence motif', aGlyph.motif, (l) => l + ' motif', 'more often around methylarginines than around the other arginines of the same proteins');
+        card(sctx || disorder, 'ov-struct', 'Position in the protein', aGlyph.struct, (l) => l.replace(/^IDR\b/, 'Disordered,'), 'more often at methylarginines than at the other arginines of the same proteins');
+        card(pan || func, 'ov-pan', 'Protein class', aGlyph.cls, (l) => l, 'more methylated proteins than among all human proteins');
+        card(cond, 'ov-cond', 'Condensate', aGlyph.cond, (l) => l, 'more methylated proteins than among all human proteins');
+        // the cards lead; the tiles below chart every test, so the figure is drawn only when no card can be
+        const tipKey = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span class="a-info" tabindex="0" data-tip="' +
+          esc('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against all reviewed human proteins (fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; open a tile for every test.') + '">How to read</span>';
+        lead = hi.length ? { q: 'What sets methylarginine sites apart?', hi: aHighlights(hi) + '<div class="a-key a-key-line">' + tipKey + '</div>' }
+          : { q: 'What sets methylarginine sites apart?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
+            fig: aForest([['Where in the protein', where], ['Which proteins', which]], { subTip: true }) };
       } else {
         const rows = profileRows() || [], sig = rows.filter((r) => r.q <= 0.05);
         const up = sig.filter((r) => r.fold > 1).slice(0, 6), dn = sig.filter((r) => r.fold < 1).slice(0, 3);
@@ -3833,9 +3850,10 @@
       const tr = treatRows(scoped ? R.sites : S).filter((r) => r.n).sort((a, b) => b.down / b.n - a.down / a.n).slice(0, 2);
       const ov = {
         'ov-pan': chartTile(pan || func), 'ov-dis': chartTile(dis), 'ov-cond': chartTile(cond), 'ov-loc': chartTile(loc), 'ov-motif': chartTile(motif), 'ov-struct': chartTile(sctx || disorder),
-        'ov-ix': { vis: ixStack(scoped ? R.sites : S) },
+        'ov-ix': ixReady() ? { vis: ixStack(scoped ? R.sites : S), head: '<b>' + fmt((scoped ? R.sites : S).filter((s) => ixStatus(s) === 'exp').length) + '</b> sites with experimental evidence' } : { vis: '' },
         'ov-study': { vis: aMeters([{ label: 'Reported by two or more', v: multiShare(scoped ? R.sites : S), text: pctText(Math.round(1000 * (multiShare(scoped ? R.sites : S) || 0)), 1000) + '%', cls: 'sel' }]), head: '<b>' + studies(scoped ? R.sites : S) + '</b> studies and databases report ' + (scoped ? 'your sites' : 'the sites') },
-        'ov-treat': { vis: aMeters(tr.map((r) => ({ label: r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName)), v: r.down / r.n, text: pct(r.down, r.n) + '% lost', cls: 'down' }))), head: 'Sites that lose methylation when PRMTs are inhibited or knocked out' },
+        'ov-treat': { vis: aMeters(tr.map((r) => ({ label: r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName)), v: r.down / r.n, text: pct(r.down, r.n) + '% lost', cls: 'down' }))), head: 'Methylation lost on PRMT inhibition or knockout' },
+        'ov-start': { vis: '<span class="a-pills">' + topSites.slice(0, 8).map((p) => '<span class="a-pill">' + esc(p.label) + '<b>' + p.sites.length + '</b></span>').join('') + '</span>', head: 'The proteins with the most sites, and quick selections' },
       };
       for (const k of Object.keys(ov)) if (!ov[k]) delete ov[k];
       return aHome(lead, ov, scoped ? [] : ['sel-enriched']);
@@ -4427,11 +4445,14 @@
     const v = new URLSearchParams(location.search).get('ui'), d = window.MSE_UI_DEFAULT || 'a';
     try { if (v) localStorage.setItem('mse-ui', v); return (v || localStorage.getItem('mse-ui') || d) === 'a'; } catch (e) { return (v || d) === 'a'; }
   })();
+  const uiClass = () => document.documentElement.classList.toggle('ui-a', UI_A);
+  uiClass();
   // Switch layouts in place (any [data-ui] button): remembered in this browser where storage allows.
   document.addEventListener('click', (e) => {
     const b = e.target instanceof Element ? e.target.closest('[data-ui]') : null;
     if (!b) return;
     UI_A = b.dataset.ui === 'a';
+    uiClass();
     try { localStorage.setItem('mse-ui', b.dataset.ui); } catch (err) { /* storage blocked: this visit only */ }
     UI.focus = null;
     renderView();
@@ -4464,14 +4485,14 @@
       if (!rows.length) continue;
       if (g) h += '<div class="aq-grp">' + esc(g) + '</div>';
       for (const r of rows) {
-        h += '<div class="aq-lab"' + (o.compact ? ' title="' + esc(r.label) + '"' : '') + '>' + esc(r.label) + (r.sub ? '<small>' + esc(r.sub) + '</small>' : '') + '</div>' +
+        h += '<div class="aq-lab"' + (o.compact || (o.subTip && r.sub) ? ' title="' + esc(r.label + (r.sub ? ' (' + r.sub + ')' : '')) + '"' : '') + '>' + esc(r.label) + (r.sub && !o.subTip ? '<small>' + esc(r.sub) + '</small>' : '') + '</div>' +
           '<div class="aq-plot">' + grid + mark(r.ghost, true, aTip(r.label, r.ghost, o.ghostName)) + mark(r.main, false, aTip(r.label, r.main, r.mainName || o.mainName)) + '</div>' +
           '<div class="aq-val"><b class="' + aDir(r.main) + '">' + val(r.main) + '</b>' + (aOr(r.ghost) ? '<small>' + esc(o.ghostShort || '') + ' ' + val(r.ghost) + '</small>' : '') + '</div>';
       }
     }
     const lab = (k) => (k < 0 ? '1/' + 2 ** -k : String(2 ** k)) + '×';
     return '<div class="aq' + (o.compact ? ' compact' : '') + '">' + h + '<div class="aq-lab"></div><div class="aq-axis">' +
-      ticks.map((k) => '<span style="left:' + X(2 ** k) + '">' + lab(k) + '</span>').join('') + '</div><div></div>' +
+      ticks.filter((k) => !o.compact || k === 0).map((k) => '<span style="left:' + X(2 ** k) + '">' + lab(k) + '</span>').join('') + '</div><div></div>' +
       (o.compact ? '' : '<div class="aq-lab"></div><div class="aq-ends"><span>← less often</span><span>more often →</span></div><div></div>') + '</div>';
   }
   // A set of tests in a few words: which differ, and how.
@@ -4481,6 +4502,17 @@
     if (!rows.some((r) => aOr(r.main))) return 'Too few to test';
     return up.length || dn.length ? (up.length ? 'More often: ' + up.map(one).join(', ') : '') + (up.length && dn.length ? '; ' : '') + (dn.length ? (up.length ? 'less' : 'Less') + ' often: ' + dn.map(one).join(', ') : '') : 'No difference (p > 0.05)';
   };
+  // A page's headline effects as cards: a small glyph of what the effect is about, the effect as a big number, its
+  // name and kind; each opens its section, and its tooltip says what was compared.
+  const aGlyph = {
+    motif: (m) => '<span class="hg-seq">' + esc(m).split('').map((c) => '<i' + (c === 'R' ? ' class="r"' : '') + '>' + esc(c) + '</i>').join('') + '</span>',
+    struct: () => '<svg viewBox="0 0 64 24"><rect x="2" y="7" width="20" height="10" rx="4" class="hg-dom"/><path d="M22 12 q4 -6 8 0 t8 0 t8 0 t8 0" class="hg-idr"/><circle cx="56" cy="12" r="3.6" class="hg-site"/></svg>',
+    cls: () => '<svg viewBox="0 0 64 24"><path d="M4 16 q6 -12 12 0 t12 0 t12 0 t12 0" class="hg-rna"/><circle cx="58" cy="8" r="3.6" class="hg-site"/></svg>',
+    cond: () => '<svg viewBox="0 0 64 24"><circle cx="16" cy="12" r="9" class="hg-drop"/><circle cx="36" cy="9" r="5.5" class="hg-drop"/><circle cx="50" cy="15" r="4" class="hg-drop"/><circle cx="14" cy="10" r="2.4" class="hg-site"/></svg>',
+    loc: () => '<svg viewBox="0 0 64 24"><ellipse cx="32" cy="12" rx="28" ry="10" class="hg-cell"/><circle cx="36" cy="12" r="5.5" class="hg-nuc"/></svg>',
+  };
+  const aHighlights = (items) => '<div class="a-hi">' + items.map((x) => '<button type="button" class="a-hi-c" data-go="' + x.go + '" data-tip="' + esc(x.tip) + '">' +
+    '<span class="a-hi-g" aria-hidden="true">' + x.glyph + '</span><span class="a-hi-n ' + (x.dir || 'up') + '">' + x.big + '</span><span class="a-hi-l">' + esc(x.label) + '</span><span class="a-hi-e">' + esc(x.kind) + '</span></button>').join('') + '</div>';
   // Small pictures for tiles: meters (shares, with a reference tick), a stacked bar, big numbers.
   const aMeters = (rows, o = {}) => '<div class="a-meters' + (o.tight ? ' tight' : '') + '">' + rows.map((r) => '<div class="am-row"' + (r.tip ? ' data-tip="' + esc(r.tip) + '"' : '') + '><span class="am-l">' + esc(r.label) + '</span><span class="am-t"><i class="' + (r.cls || '') + '" style="width:' + (100 * Math.max(0, Math.min(1, r.v || 0))).toFixed(1) + '%"></i>' +
     (r.ref != null ? '<b style="left:' + (100 * r.ref).toFixed(1) + '%"></b>' : '') + '</span><span class="am-v">' + esc(r.text) + '</span></div>').join('') + (o.foot ? '<div class="am-foot">' + o.foot + '</div>' : '') + '</div>';
@@ -4504,10 +4536,10 @@
         (vis ? '<span class="a-vis">' + vis + '</span>' : '') + '<span class="a-head" data-sum-of="' + r.key + '"' + (o.head != null ? ' data-fixed' : '') + '>' + head + '</span>' + (whole ? '<span class="a-whole"><span>Whole dataset</span> ' + whole + '</span>' : '') + '</button>';
     };
     return '<div class="a-home hub-only">' +
-      '<p class="a-proto">New layout <button type="button" class="linkish" data-ui="old">Switch to the previous layout</button></p>' +
-      (lead ? '<section class="a-lead"><h2 class="a-q">' + lead.q + '</h2>' + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') +
+      (lead ? '<section class="a-lead"><h2 class="a-q">' + lead.q + '</h2>' + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') + (lead.hi || '') +
         (lead.fig ? '<div class="card a-fig">' + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
-      '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>').join('') + '</div></div>';
+      '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>').join('') + '</div>' +
+      '<p class="a-proto">New layout <button type="button" class="linkish" data-ui="old">Switch to the previous layout</button></p></div>';
   }
   // A protein drawn as small lanes along its length: each lane a label and marks, a box for a stretch [a, b], a tick
   // for one residue, a pin for a site (cls names its colour); the sites lane last, as on the protein map.
