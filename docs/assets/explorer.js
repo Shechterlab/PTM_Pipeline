@@ -7483,7 +7483,8 @@
     const n = new Set(ws.map((w) => w.s)).size, pdbs = new Set(ws.flatMap((w) => w.pdbs)).size;
     if (!wsAll.length) return '';
     if (!n) return '<div class="na-block" data-na-kind="' + kind + '"><p class="na-head">No methylarginine touches ' + K + ' itself; ' + fmt(nNear) + ' ha' + (nNear === 1 ? 's' : 've') + ' a neighbour that does. ' + sw + '</p></div>';
-    const mode = n >= NA_FREQ_FROM ? 'freq' : 'bits';
+    // frequency for many sites or many windows (a histone's hundreds of nucleosomal DNAs), information for a few
+    const mode = n >= NA_FREQ_FROM || ws.length >= 2 * NA_FREQ_FROM ? 'freq' : 'bits';
     return '<div class="na-block" data-na-kind="' + kind + '" data-na-mode="' + mode + '"><p class="na-head"><b>' + fmt(nAt) + '</b> methylarginine' + (nAt === 1 ? '' : 's') + ' touch' + (nAt === 1 ? 'es' : '') + ' ' + K +
       (near && nNear ? ', <b>' + fmt(nNear) + '</b> more ha' + (nNear === 1 ? 's' : 've') + ' a residue within 5 that does' : '') + ', in ' + fmt(pdbs) + ' PDB entr' + (pdbs === 1 ? 'y' : 'ies') +
       ', ' + fmt(ws.length) + ' distinct bound sequence' + (ws.length === 1 ? '' : 's') + '. ' + sw +
