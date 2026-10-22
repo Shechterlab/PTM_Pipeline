@@ -1679,9 +1679,35 @@ html.drawer-open { overflow: hidden; }
 /* Hub: a page's sections as a scorecard, each row a question with its answer for the selection and for the whole
    dataset and how the selection reaches it. Focus: one section alone, under a bar with the way back and the
    sections before and after. */
-.content { --hub-cols: minmax(0, 1.05fr) minmax(0, 1fr) minmax(0, 1fr) 1.25rem; }
+/* Scorecard columns: question, figure, answer for the selection, answer for the whole dataset, chevron; without a
+   selection one answer column; protein pages (single) have no figure. */
+.content { --hub-cols: minmax(0, 1fr) 10.5rem minmax(0, 1.6fr) 1.25rem; }
+.content:has(.hub-list.scoped) { --hub-cols: minmax(0, 1fr) 10.5rem minmax(0, 1fr) minmax(0, 1fr) 1.25rem; }
 .hub-list { display: grid; gap: 0.4rem; min-width: 0; }
 .hub-list.single { --hub-cols: minmax(0, 0.9fr) minmax(0, 1.6fr) 1.25rem; }
+.hub-list.single .fold-fig { display: none; }
+.fold-go { grid-column: -2; }
+.fold-fig { display: flex; align-items: center; min-width: 0; }
+.hub-fig { display: block; max-width: 100%; height: auto; overflow: visible; }
+.hf-grid { stroke: var(--line); stroke-width: 1; }
+.hf-mid { stroke: var(--line-strong); stroke-width: 1.3; }
+.hf-lab { font-family: var(--font-body); font-size: 9.5px; font-weight: 600; fill: var(--muted); }
+.hf-axis { margin-top: 0.25rem; }
+.hf-axis text { font-family: var(--font-body); font-size: 9.5px; font-weight: 600; letter-spacing: 0; text-transform: none; fill: var(--muted); }
+.hf-axis text.mid { fill: var(--ink-2); }
+.hf-axis text.end { font-weight: 500; font-style: italic; }
+.hf-ci { stroke: var(--ink-2); stroke-width: 1.4; stroke-linecap: round; }
+.hf-pt { stroke-width: 1.2; }
+.hf-pt.up { fill: var(--t-up-3); stroke: var(--surface); }
+.hf-pt.down { fill: var(--t-down-3); stroke: var(--surface); }
+.hf-pt.ns { fill: var(--surface); stroke: var(--muted); }
+.hf-track { fill: color-mix(in srgb, var(--brand-ink, #1f5f6b) 14%, var(--surface)); }
+.hf-track.sel { fill: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+.hf-fill { fill: var(--brand-ink, #1f5f6b); }
+.hf-fill.sel { fill: var(--accent); }
+.hf-ref { stroke: var(--ink); stroke-width: 1.5; }
+.hub-head .hh-fig { white-space: nowrap; display: grid; }
+.hub-list.single ~ .hub-head .hh-fig { display: none; }
 .hub-sec { display: grid; gap: 0.4rem; min-width: 0; }
 .hub-group { margin: 0.9rem 0 0.05rem; font-family: inherit; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
 .hub-sec:first-child > .hub-group { margin-top: 0.2rem; }
@@ -1746,8 +1772,10 @@ html.drawer-open { overflow: hidden; }
 @media (max-width: 700px) {
   .hub-head { display: none; }
   .hub-list details.hub-row > summary.fold-head, .hub-list.single details.hub-row > summary.fold-head { grid-template-columns: minmax(0, 1fr) 1.25rem; padding: 0.7rem 0.85rem; }
-  .hub-list .fold-tq, .hub-list .fold-selc, .hub-list .fold-all { grid-column: 1; }
-  .hub-list .fold-go { grid-column: 2; grid-row: 1 / span 3; }
+  .hub-list .fold-tq, .hub-list .fold-fig, .hub-list .fold-selc, .hub-list .fold-all { grid-column: 1; }
+  .hub-list .fold-fig:not(:empty) { margin: 0.15rem 0 0.1rem; }
+  .hub-list .hub-fig { width: 12rem; }
+  .hub-list .fold-go { grid-column: 2; grid-row: 1 / span 4; }
   .hub-list.scoped:not(.single) .fold-sum::before, .hub-list.scoped:not(.single) .fold-all::before { display: block; margin-bottom: 0.05rem; font-size: 0.64rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
   .hub-list.scoped:not(.single) .fold-sum::before { content: "Your selection"; color: var(--accent-dark); }
   .hub-list.scoped:not(.single) .fold-all::before { content: "Whole dataset"; color: var(--muted); }

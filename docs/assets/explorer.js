@@ -3765,8 +3765,12 @@
     const one = R.prots.length === 1 ? R.prots[0] : null;
     // The landing page is a scorecard of the dataset's questions (hubHtml): each row answers for the selection and the
     // whole dataset, and opens its charts and tables on their own.
-    const scoped = selOn, row = (key, title, inner, q, how, sel, all, empty) => foldHtml(key, title, inner, false, '', null, { q, how, sel, all: scoped ? all : '', empty });
-    const chartRow = (key, spec, q, extra) => (spec ? row(key, spec.title, chartCard(spec) + (extra || ''), q, 'retest', chartAnswer(spec), chartAnswer(spec, true)) : '');
+    const scoped = selOn, row = (key, title, inner, q, how, sel, all, empty, fig) => foldHtml(key, title, inner, false, '', null, { q, how, sel, all: scoped ? all : '', empty, fig });
+    const chartRow = (key, spec, q, extra) => (spec ? row(key, spec.title, chartCard(spec) + (extra || ''), q, 'retest', chartAnswer(spec), chartAnswer(spec, true), null, chartFig(spec, scoped)) : '');
+    // a share of the sites, as a meter for the selection and the whole dataset
+    const pctFig = (f) => ({ kind: 'pct', lanes: scoped ? [{ label: 'sel', v: f(R.sites) }, { label: 'all', v: f(S) }] : [{ label: 'all', v: f(S) }] });
+    const share = (test) => (sites) => (sites.length ? sites.filter(test).length / sites.length : null);
+    const topDown = (sites) => { const r = treatRows(sites).filter((x) => x.n); return r.length ? Math.max(...r.map((x) => x.down / x.n)) : null; };
     const ixCount = (sites) => {
       if (!ixReady()) return 'loading the interaction data…';
       const n = { exp: 0, pred: 0, none: 0 };
@@ -3792,16 +3796,17 @@
       hubSec('Where in the protein',
         chartRow('ov-motif', motif, 'Which sequence motifs surround methylarginines, against the other arginines of the same proteins?') +
         row('ov-struct', sctx ? 'Structural context' : 'Disorder and domains', structHtml, 'Are methylarginines in disordered regions or domains, against the other arginines of the same proteins?', 'retest',
-          chartAnswer(sctx || disorder), chartAnswer(sctx || disorder, true))) +
+          chartAnswer(sctx || disorder), chartAnswer(sctx || disorder, true), null, chartFig(sctx || disorder, scoped))) +
       hubSec('Interactions',
-        row('ov-ix', 'Interactions and binding', ixOverviewHtml(), 'How many sites have interaction evidence? The Interactions page tests it.', 'count', ixCount(selOn ? R.sites : S), ixCount(S))) +
+        row('ov-ix', 'Interactions and binding', ixOverviewHtml(), 'How many sites have interaction evidence? The Interactions page tests it.', 'count', ixCount(selOn ? R.sites : S), ixCount(S), null,
+          ixReady() ? pctFig(share((s) => ixStatus(s) === 'exp')) : null)) +
       hubSec('Sources and responses',
         row('ov-study', 'Provenance', '<div class="card wide chart-card" id="ch-study"><div class="card-head"><div><h3>Provenance</h3><p class="sub">' + study.subHtml + '</p></div>' + expButtons('ch-study') + '</div>' +
       '<div class="two-col"><div>' + hbars(study) + '</div>' +
       '<div><p class="flabel" style="margin:0 0 .5rem">Studies or databases reporting each site</p><div class="hbars rep-dist' + (selOn ? ' has-sel' : '') + '">' +
       repDist.map((n, k) => '<button class="hb' + (selOn && !repSel[k] ? ' off' : '') + '" type="button" data-rep="' + (k + 1) + '"><span class="hb-label">' + (k === 4 ? '5 or more' : (k + 1) + (k ? ' sources' : ' source')) + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / repDist[0]).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span>' + (selOn ? selCell(repSel[k]) : '') + '</button>').join('') +
-      '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) are reported by two or more' + (selOn ? '; ' + fmt(R.sites.length - repSel[0]) + ' of the ' + fmt(R.sites.length) + ' selected' : '') + '. Databases such as PhosphoSitePlus compile published studies, so two sources can rest on the same measurement. Click a row to keep sites with at least that many.</p></div></div></div>', 'Which studies and databases report the sites?', 'count', provCount(selOn ? R.sites : S), provCount(S)) +
-        row('ov-treat', 'PRMT inhibitor and knockout response', '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor and knockout response</h3><p class="sub">Sites that change when PRMT5 or type I PRMTs are inhibited (Maron et al. 2021)' + (koMeta() ? ' or CARM1 is knocked out (Shishkova et al. 2017)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable() + '</div>', 'Which sites lose methylation when PRMTs are inhibited or knocked out?', 'count', treatSummary(selOn ? R.sites : S, true), treatSummary(S, true))) +
+      '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) are reported by two or more' + (selOn ? '; ' + fmt(R.sites.length - repSel[0]) + ' of the ' + fmt(R.sites.length) + ' selected' : '') + '. Databases such as PhosphoSitePlus compile published studies, so two sources can rest on the same measurement. Click a row to keep sites with at least that many.</p></div></div></div>', 'Which studies and databases report the sites?', 'count', provCount(selOn ? R.sites : S), provCount(S), null, pctFig(share((s) => popcount(s.study) >= 2))) +
+        row('ov-treat', 'PRMT inhibitor and knockout response', '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor and knockout response</h3><p class="sub">Sites that change when PRMT5 or type I PRMTs are inhibited (Maron et al. 2021)' + (koMeta() ? ' or CARM1 is knocked out (Shishkova et al. 2017)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable() + '</div>', 'Which sites lose methylation when PRMTs are inhibited or knocked out?', 'count', treatSummary(selOn ? R.sites : S, true), treatSummary(S, true), null, pctFig(topDown))) +
       hubSec('Starting points',
         row('ov-start', 'Starting points', '<div class="card wide starts" id="ov-start"><h3>Starting points</h3><div class="starts-grid">' +
       '<div><h4>Quick selections</h4><div class="gene-chips">' + (UI.quick || []).map((q, k) => '<button class="gene-chip" type="button" data-quick="' + k + '">' + esc(q[1]) + '<span>' + q[0] + '</span></button>').join('') + '</div></div>' +
@@ -4158,6 +4163,7 @@
     if (meta) {
       return '<details class="fold hub-row' + (cls ? ' ' + cls : '') + (meta.empty ? ' hub-empty' : '') + '" data-fold="' + key + '" data-how="' + (meta.how || '') + '"><summary class="fold-head"' + (meta.empty ? ' aria-disabled="true"' : '') + '>' +
         '<span class="pm" aria-hidden="true"></span><span class="fold-tq"><span class="fold-title">' + esc(title) + '</span>' + (meta.q ? '<span class="fold-q">' + esc(meta.q) + '</span>' : '') + '</span>' +
+        '<span class="fold-fig">' + (meta.empty ? '' : hubFig(meta.fig)) + '</span>' +
         '<span class="fold-selc"><span class="fold-sum" id="fold-sum-' + key + '">' + (meta.empty ? esc(meta.empty) : meta.sel != null ? meta.sel : esc(summary || '')) + '</span>' +
         (meta.how ? '<span class="fold-how">' + HOW_TEXT[meta.how] + '</span>' : '') + '</span>' +
         '<span class="fold-all">' + (meta.all || '') + '</span><span class="fold-go" aria-hidden="true"></span></summary>' + (meta.empty ? '' : inner) + '</details>';
@@ -4184,12 +4190,87 @@
     const scoped = constraints().length > 0;
     if (single) return '';
     return '<p class="hub-legend hub-only"><span class="hl-keys">' + am(1) + 'more ' + am(-1) + 'less than expected ' + am(0) + 'no difference (q ≤ ' + PADJ + ')</span> ' +
+      'Figures: each test or class a dot at its odds ratio or fold enrichment (log scale, centre line no difference), or a bar for a share' + (scoped ? '; your selection on top, the whole dataset below' : '') + '. ' +
       (scoped ? '<b>Retested</b>: the release\'s test run again on your selection. <b>Counted</b>: your sites or proteins counted. <b>Whole dataset only</b>: unchanged by a selection.'
         : 'Make a selection (search, or <b>Filters</b>) and every question is answered for it too.') + ' A row opens its figures and tables.</p>' +
-      '<div class="hub-head hub-only" aria-hidden="true"><span>Question</span>' +
+      '<div class="hub-head hub-only" aria-hidden="true"><span>Question</span><span class="hh-fig">At a glance' + hubFigAxis() + '</span>' +
       (scoped ? '<span class="sel">Your selection · ' + fmt(R.sites.length) + ' sites, ' + fmt(R.prots.length) + ' proteins</span><span>Whole dataset · ' + fmt(S.length) + ' sites</span>'
         : '<span>Answer · all ' + fmt(S.length) + ' sites on ' + fmt(P.length) + ' proteins</span>') + '<span></span></div>';
   }
+  // ---- Scorecard figures. Effects ('or'): one strip on a log2 scale from 1/16 to 16 (centre line: no difference,
+  // faint lines at 2- and 4-fold), each test or class a dot at its odds ratio or fold enrichment, filled red where
+  // significantly more, slate where less, hollow where not; a lone test also draws its 95% CI, and values beyond the
+  // scale sit at its edge. Shares ('pct'): a meter, with a dark tick at a reference share. With a selection, its lane
+  // is on top ('sel') and the whole dataset's below ('all'); the row's text gives the numbers.
+  const HUB_FIG = { w: 164, lane: 17, log: 4, lab: 19 };
+  function hubFig(fig) {
+    const lanes = fig && fig.lanes ? fig.lanes.filter((l) => l && (fig.kind === 'pct' ? l.v != null : l.pts.some((q) => q.v != null))) : [];
+    if (!lanes.length) return '';
+    const n = lanes.length, labW = HUB_FIG.lab, W = HUB_FIG.w, H = n * HUB_FIG.lane + 4, x0 = labW + 4, x1 = W - 4, xm = (x0 + x1) / 2;
+    const X = (l2) => (xm + (Math.max(-HUB_FIG.log, Math.min(HUB_FIG.log, l2)) / HUB_FIG.log) * (x1 - xm)).toFixed(1);
+    let g = '';
+    if (fig.kind !== 'pct') {
+      for (const k of [-2, -1, 1, 2]) g += '<line class="hf-grid" x1="' + X(k) + '" x2="' + X(k) + '" y1="2" y2="' + (H - 2) + '"/>';
+      g += '<line class="hf-mid" x1="' + xm + '" x2="' + xm + '" y1="1" y2="' + (H - 1) + '"/>';
+    }
+    lanes.forEach((ln, i) => {
+      const y = 2 + i * HUB_FIG.lane + HUB_FIG.lane / 2;
+      if (n > 1) g += '<text class="hf-lab" x="0" y="' + (y + 3) + '">' + ln.label + '</text>';
+      if (fig.kind === 'pct') {
+        const w = x1 - x0, v = Math.max(0, Math.min(1, ln.v));
+        g += '<rect class="hf-track' + (ln.label === 'sel' ? ' sel' : '') + '" x="' + x0 + '" y="' + (y - 3) + '" width="' + w + '" height="6" rx="3"/>' +
+          (v > 0 ? '<rect class="hf-fill' + (ln.label === 'sel' ? ' sel' : '') + '" x="' + x0 + '" y="' + (y - 3) + '" width="' + Math.max(3, w * v).toFixed(1) + '" height="6" rx="3"/>' : '') +
+          (ln.ref != null ? '<line class="hf-ref" x1="' + (x0 + w * ln.ref).toFixed(1) + '" x2="' + (x0 + w * ln.ref).toFixed(1) + '" y1="' + (y - 5) + '" y2="' + (y + 5) + '"/>' : '');
+        return;
+      }
+      const all = ln.pts.filter((q) => q.v != null && !Number.isNaN(q.v)), pts = all.filter((q) => Math.abs(q.v) <= HUB_FIG.log);
+      const one = all.length === 1 ? all[0] : null;
+      // values beyond the scale: one arrowhead at that edge, coloured as the strongest of them
+      for (const side of [-1, 1]) {
+        const out = all.filter((q) => q.v * side > HUB_FIG.log);
+        if (!out.length) continue;
+        const dir = out.some((q) => q.dir === side) ? side : out.some((q) => q.dir) ? -side : 0, xe = side > 0 ? x1 + 1 : x0 - 1;
+        g += '<path class="hf-pt ' + (dir > 0 ? 'up' : dir < 0 ? 'down' : 'ns') + '" d="M' + xe + ' ' + y + 'l' + (-5 * side) + ' -4v8z"/>';
+      }
+      if (one && one.lo > 0 && one.hi > 0) g += '<line class="hf-ci" x1="' + X(Math.log2(one.lo)) + '" x2="' + X(Number.isFinite(one.hi) ? Math.log2(one.hi) : HUB_FIG.log) + '" y1="' + y + '" y2="' + y + '"/>';
+      // dots that would overlap move to a row just above or below, then hollow ones are drawn first so the
+      // significant ones sit on top
+      const r = pts.length > 24 ? 2.1 : pts.length > 10 ? 2.6 : 3.1, last = [-1e9, -1e9, -1e9], offs = [0, -4.2, 4.2];
+      const placed = pts.map((q) => ({ q, x: +X(q.v) })).sort((a, b) => a.x - b.x).map((d) => {
+        let k = last.findIndex((lx) => d.x - lx >= 2 * r - 0.6);
+        if (k < 0) k = last.indexOf(Math.min(...last));
+        last[k] = d.x;
+        return Object.assign(d, { y: y + offs[k] });
+      });
+      placed.sort((a, b) => Math.abs(a.q.dir) - Math.abs(b.q.dir)).forEach(({ q, x, y: yy }) => {
+        g += '<circle class="hf-pt ' + (q.dir > 0 ? 'up' : q.dir < 0 ? 'down' : 'ns') + '" cx="' + x.toFixed(1) + '" cy="' + yy.toFixed(1) + '" r="' + r + '"/>';
+      });
+    });
+    return '<svg class="hub-fig" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" aria-hidden="true">' + g + '</svg>';
+  }
+  // The figure column's scale, drawn once in the scorecard's head with the figures' geometry.
+  function hubFigAxis() {
+    const W = HUB_FIG.w, x0 = HUB_FIG.lab + 4, x1 = W - 4, xm = (x0 + x1) / 2, X = (l2) => (xm + (l2 / HUB_FIG.log) * (x1 - xm)).toFixed(1);
+    return '<svg class="hub-fig hf-axis" viewBox="0 0 ' + W + ' 14" width="' + W + '" height="14" aria-hidden="true">' +
+      [[-2, '¼'], [-1, '½'], [0, '1'], [1, '2'], [2, '4']].map(([k, l]) => '<text x="' + X(k) + '" y="10" text-anchor="middle"' + (k ? '' : ' class="mid"') + '>' + l + '</text>').join('') +
+      '<text x="' + x0 + '" y="10" text-anchor="start" class="end">less</text><text x="' + x1 + '" y="10" text-anchor="end" class="end">more</text></svg>';
+  }
+  // A chart's classes as an effect strip (as chartAnswer reads them).
+  function chartFig(spec, scoped) {
+    if (!spec) return null;
+    const short = (r) => String(r.label).split(' · ')[0];
+    const ok = (r) => !/^(no |not |unknown|unassigned|other\b)/i.test(short(r));
+    const lane = (whole) => {
+      const re = whole && spec.selTest;
+      return { label: whole ? 'all' : 'sel', pts: spec.rows.filter(ok).map((r) => {
+        const v = re ? r.ref : r.value, sig = re ? r.refQ != null && r.refQ <= PADJ : !!r.sig;
+        return { v: v != null && Number.isFinite(v) ? v : null, dir: sig && v ? Math.sign(v) : 0 };
+      }) };
+    };
+    return { kind: 'or', lanes: scoped ? [lane(false), lane(true)] : [lane(true)] };
+  }
+  // A within-protein test as a dot: [Mantel–Haenszel result] -> point on the log2 scale (p ≤ 0.05 filled).
+  const mhPt = (m) => (!m || m.or == null || Number.isNaN(m.or) ? { v: null } : { v: Number.isFinite(m.or) ? (m.or > 0 ? Math.log2(m.or) : -99) : 99, lo: m.lo, hi: m.hi, dir: m.p != null && m.p <= 0.05 ? (m.or > 1 ? 1 : -1) : 0 });
   const hubSec = (title, html, extra) => (html ? '<section class="hub-sec"><h3 class="hub-group">' + esc(title) + '</h3>' + (extra || '') + html + '</section>' : '');
   const focusBarHtml = () => '<nav class="focus-bar" aria-label="Sections of this page" hidden><button type="button" class="fb-back" data-fb="back">‹ All sections</button>' +
     '<span class="fb-crumb"></span><span class="fb-pos"></span><span class="fb-step"><button type="button" data-fb="-1">‹ Previous</button><button type="button" data-fb="1">Next ›</button></span></nav>';
@@ -10284,7 +10365,8 @@
           '<td class="r num">' + fmt(r.a) + ' <span class="muted">(' + pc(r.a, r.n1) + ')</span></td><td class="r num hide-xs">' + pc(r.c, r.n2) + '</td><td class="r num"><b>' + (r.fold >= 10 ? r.fold.toFixed(0) : r.fold.toFixed(1)) + '×</b></td><td class="r num">' + fmtP(r.q) + '</td></tr>').join('') + '</tbody></table></div>' :
         '<p class="note">No site feature differs significantly (BH q ≤ 0.05) between this selection and the other sites.</p>') +
       '<p class="note">Fisher\'s exact test per feature, Benjamini–Hochberg across the ' + rows.length + ' features tested. Sites in one protein are not independent, so read this as a pointer.</p></div>', false, sum, null,
-      { q: 'What sets your selection apart from the other sites?', how: 'needs', sel: am(up.length ? 1 : down.length ? -1 : 0) + esc(sum), all: '<span class="muted">compares the selection with the other sites</span>' });
+      { q: 'What sets your selection apart from the other sites?', how: 'needs', sel: am(up.length ? 1 : down.length ? -1 : 0) + esc(sum), all: '<span class="muted">compares the selection with the other sites</span>',
+        fig: { kind: 'or', lanes: [{ label: 'sel', pts: rows.map((r) => ({ v: r.fold > 0 ? Math.log2(r.fold) : -99, dir: r.q <= 0.05 ? (r.fold > 1 ? 1 : -1) : 0 })) }] } });
   }
 
   function bindProfile(el) {
@@ -10383,7 +10465,25 @@
       return rows.length ? am(1) + '<span class="an">' + fmt(rows.length) + '</span> curated complexes enriched; top: ' + esc(rows[0].name) : am(0) + 'no curated complex enriched (q ≤ ' + PADJ + ')';
     };
     const partAns = (prots) => { const pm = partnerShare(prots); return pm.distinct ? '<span class="an">' + pctText(pm.distinctMeth, pm.distinct) + '%</span> of ' + fmt(pm.distinct) + ' partners are methylated (' + pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of human proteins)' : 'no high-confidence partners'; };
-    const row = (key, title, inner, q, how, ans, empty) => foldHtml(key, title, inner, false, '', null, { q, how, sel: ans[0], all: scoped ? ans[1] : '', empty: inner ? null : empty || 'Not available in this export.' });
+    const row = (key, title, inner, q, how, ans, empty, fig) => foldHtml(key, title, inner, false, '', null, { q, how, sel: ans[0], all: scoped ? ans[1] : '', empty: inner ? null : empty || 'Not available in this export.', fig });
+    const lanes = (f) => (scoped ? [f(true), f(false)] : [f(false)]);
+    const testsFig = (list) => ({ kind: 'or', lanes: lanes((on) => ({ label: on ? 'sel' : 'all', pts: list.map(([g, path]) => mhPt(test(g, path, on))) })) });
+    const nacFig = { kind: 'or', lanes: lanes((on) => ({ label: on ? 'sel' : 'all', pts: ((on ? nacRows(selJ) : nacWhole()) || []).map((r) => {
+      const more = r.or != null ? r.or > 1 : r.edge > 0;
+      return { v: r.or != null ? Math.log2(r.or) : r.edge ? r.edge * 99 : null, dir: r.q != null && r.q <= PADJ ? (more ? 1 : -1) : 0 };
+    }) })) };
+    const pctLanes = (f, ref) => ({ kind: 'pct', lanes: lanes((on) => ({ label: on ? 'sel' : 'all', v: f(on), ref })) });
+    const expShare = (on) => { const ss = on ? R.sites : S; return ss.length ? ss.filter((s) => ixStatus(s) === 'exp').length / ss.length : null; };
+    const naShare = (on) => { const ss = on ? R.sites : S; if (!ss.length) return null; const hit = new Set(naRows(ss, 'rna', false).concat(naRows(ss, 'dna', false)).map((w) => w.s)); return hit.size / ss.length; };
+    const goFig = { kind: 'or', lanes: lanes((on) => { const g = on ? goSelection() : IX.goEnrich; return { label: on ? 'sel' : 'all', pts: ['rna', 'dna'].map((k) => {
+      const r = g && g[k];
+      if (!r || r[4] == null) return { v: null };
+      const qq = r[6] != null ? r[6] : r[5];
+      return { v: r[4], dir: qq != null && qq <= PADJ ? Math.sign(r[4]) : 0 };
+    }) }; }) };
+    const cxFig = { kind: 'or', lanes: lanes((on) => { const sel = on ? cxSelection() : null; return { label: on ? 'sel' : 'all', pts: (IX.cx || []).filter((c) => !c.pred).map((c) => (sel ? Object.assign({}, c, sel.get(c.k) || { m: 0 }) : c))
+      .filter((c) => c.m >= 2 && c.fold > 0).map((c) => ({ v: Math.log2(c.fold), dir: c.q != null && c.q <= PADJ ? 1 : 0 })) }; }) };
+    const partFig = pctLanes((on) => { const pm = partnerShare(on ? R.prots : P); return pm.distinct ? pm.distinctMeth / pm.distinct : null; }, IX.meta.proteome_size ? IX.meta.methylated_in_proteome / IX.meta.proteome_size : null);
     const sec = (k) => '<div class="ix-sec-body" id="ixs-' + k + '">' + body[k]() + '</div>';
     const nacHtml = nacCardHtml(), naHtml = ixNaHtml(), wrHtml = ixWrMatrixHtml(), cmHtml = ixConnMatrixHtml(), exHtml = ixExampleHtml();
     el.innerHTML = '<div class="ix-page">' +
@@ -10392,31 +10492,34 @@
       '<div class="hub-list">' +
       hubSec('Summary',
         row('ix-nac', 'RNA and DNA contact tests', nacHtml, 'Are methylarginines at RNA and DNA contacts more often than the other arginines of the same proteins?', 'retest',
-          [nacAns(scoped ? nacRows(selJ) : nacWhole()), nacAns(nacWhole())], 'Needs the per-protein tables of the interaction export.') +
-        row('ix-evmap', 'How the evidence fits together', ixEvidenceMapHtml(), 'How do crosslink, structure, prediction and IntAct evidence overlap on the sites?', 'count', [evAns(R.sites), evAns(S)]) +
+          [nacAns(scoped ? nacRows(selJ) : nacWhole()), nacAns(nacWhole())], 'Needs the per-protein tables of the interaction export.', nacFig) +
+        row('ix-evmap', 'How the evidence fits together', ixEvidenceMapHtml(), 'How do crosslink, structure, prediction and IntAct evidence overlap on the sites?', 'count', [evAns(R.sites), evAns(S)], null, pctLanes(expShare)) +
         row('ix-cm', 'Which sites carry which evidence', cmHtml ? cmHtml + checkSiteHtml('ix-check') : '', 'Do sites with a feature (motif, disorder, methylation class) carry a kind of evidence more often? Check one site.', 'count',
           ['Site features against crosslink, structure and prediction evidence' + (scoped ? ', your sites' : ''), 'Site features against crosslink, structure and prediction evidence']) +
         row('ix-ex', 'The evidence on one protein', exHtml, 'What the evidence looks like along one protein; type any protein to redraw it', 'example',
           ['Drawn for <span class="an">' + esc(ixExampleProtein().label) + '</span>', 'Drawn for HNRNPA1, or the protein of a selection with the most sites with experimental evidence'])) +
       hubSec('RNA and DNA',
         row('ixs-cells', 'Crosslinking in living cells', sec('cells'), 'Is the methylarginine the residue crosslinked to RNA or DNA, or inside an RNA-bound peptide?', 'retest',
-          both([['xl_enrich', ['rna_xl'], 'RNA-crosslinked residue'], ['xl_enrich', ['rna_capri_adj'], 'in an RNA-bound peptide (CAPRI)']])) +
+          both([['xl_enrich', ['rna_xl'], 'RNA-crosslinked residue'], ['xl_enrich', ['rna_capri_adj'], 'in an RNA-bound peptide (CAPRI)']]), null,
+          testsFig([['xl_enrich', ['rna_xl']], ['xl_enrich', ['rna_xl_nonrg']], ['xl_enrich', ['rna_rbdmap']], ['xl_enrich', ['rna_capri_adj']], ['xl_enrich', ['rna_capri_xl']], ['xl_enrich', ['dna_cand']], ['xl_enrich', ['dna_pep']]])) +
         row('ix-na', 'Bound RNA and DNA', naHtml, 'Which RNA and DNA do methylarginines contact in structures, and what do their proteins bind?', 'count',
-          [ixNaSummary(R.sites, true), ixNaSummary(S, true)], 'No methylarginine of this selection touches RNA or DNA in a structure, and its proteins have no binding data.') +
+          [ixNaSummary(R.sites, true), ixNaSummary(S, true)], 'No methylarginine of this selection touches RNA or DNA in a structure, and its proteins have no binding data.', pctLanes(naShare)) +
         row('ixs-go', 'RNA- and DNA-binding proteins (Gene Ontology)', sec('go'), 'Are methylated proteins annotated as RNA- or DNA-binding more often than human proteins?', 'retest',
-          [goAns(scoped ? goSelection() : IX.goEnrich), goAns(IX.goEnrich)])) +
+          [goAns(scoped ? goSelection() : IX.goEnrich), goAns(IX.goEnrich)], null, goFig)) +
       hubSec('Structures and models',
         row('ixs-pdb', 'Interfaces in PDB structures', sec('pdb'), 'Are methylarginines at protein, RNA or DNA interfaces in experimental structures?', 'retest',
-          both([['enrich_strata', ['protein', 'all'], 'protein interface'], ['enrich_strata', ['rna', 'all'], 'RNA interface']])) +
+          both([['enrich_strata', ['protein', 'all'], 'protein interface'], ['enrich_strata', ['rna', 'all'], 'RNA interface']]), null,
+          testsFig([['enrich_strata', ['protein', 'all']], ['enrich_strata', ['rna', 'all']], ['enrich_strata', ['dna', 'all']]])) +
         row('ixs-predicted', 'Predicted complexes', sec('predicted'), 'Are methylarginines at the interfaces of AlphaFold-Multimer models of human protein pairs?', 'retest',
-          both([['pred_enrich', ['0.23', 'all'], 'predicted interface (pDockQ ≥ 0.23)']]))) +
+          both([['pred_enrich', ['0.23', 'all'], 'predicted interface (pDockQ ≥ 0.23)']]), null, testsFig([['pred_enrich', ['0.23', 'all']]]))) +
       hubSec('Partners and complexes',
-        row('ixs-partners', 'Writers, readers and other partners', sec('partners'), 'Which PRMTs and reader-domain proteins bind the methylated proteins?', 'count', [partAns(scoped ? R.prots : P), partAns(P)]) +
+        row('ixs-partners', 'Writers, readers and other partners', sec('partners'), 'Which PRMTs and reader-domain proteins bind the methylated proteins?', 'count', [partAns(scoped ? R.prots : P), partAns(P)], null, partFig) +
         row('ix-wr', 'Writers and readers sharing substrates', wrHtml, 'Which methylated proteins are bound by both a PRMT and a Tudor-domain protein?', 'count',
           ['PRMT and Tudor partners shared by ' + (scoped ? 'your ' + fmt(R.prots.length) : 'all ' + fmt(P.length)) + ' proteins (STRING)', 'PRMT and Tudor partners shared by all ' + fmt(P.length) + ' proteins (STRING)']) +
-        row('ixs-complexes', 'Protein complexes', sec('complexes'), 'Which complexes have more methylated members than expected?', 'retest', [cxAns(scoped), cxAns(false)]) +
+        row('ixs-complexes', 'Protein complexes', sec('complexes'), 'Which complexes have more methylated members than expected?', 'retest', [cxAns(scoped), cxAns(false)], null, cxFig) +
         row('ixs-intact', 'Curated interaction features (IntAct)', sec('intact'), 'Are methylarginines at curated mutation sites and short binding regions more often?', 'retest',
-          both([['intact_enrich', ['peptide_disordered'], 'short binding region (disordered R)'], ['intact_enrich', ['mutation'], 'mutation with an effect']]))) +
+          both([['intact_enrich', ['peptide_disordered'], 'short binding region (disordered R)'], ['intact_enrich', ['mutation'], 'mutation with an effect']]), null,
+          testsFig([['intact_enrich', ['peptide_disordered']], ['intact_enrich', ['mutation']]]))) +
       '</div></div>';
     bindHub(el, 'Interactions');
     $$('.ix-facts .fact', el).forEach((b) => {
