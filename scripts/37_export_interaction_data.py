@@ -108,6 +108,8 @@ CAPRI_XL, CAPRI_ADJ = 1, 2             # CAPRI: inside an RNA-crosslinked peptid
 PCLAP_PEP, PCLAP_LYSC = 4, 8            # pCLAP: inside an RNA-binding peptide, inside the Lys-C peptide around one
 RBRID_RES = 16                          # RBR-ID: a residue under an RBR-ID+ peptide (the published cut-off)
 PCLAP_TABLE = 'pclap_mullari2017_peptides.tsv'
+# The peptides CAPRI and RBDmap measured, RNA-bound or not (scripts/43f; the RBDmap table is kept out of Git)
+BACKGROUND_TABLES = {'capri': 'capri_panhale2019_measured_peptides.tsv', 'rbdmap': 'rbdmap_castello2016_measured_peptides.tsv'}
 RBRID_TABLES = {'pos': 'rbrid_oksuz2023_k562_positive_residues.tsv', 'cov': 'rbrid_oksuz2023_k562_coverage.tsv',
                 'seg': 'rbrid_oksuz2023_k562_segments.tsv', 'pep': 'rbrid_oksuz2023_k562_peptides.tsv'}
 XL_NEAR = 3                           # "near" = within this many residues of a crosslinked residue
@@ -1669,6 +1671,38 @@ def load_pclap(path: Path, seq: dict):
                  'proteins_rna_binding': len(res['pep']), 'proteins_measured': len(res['measured'])}
 
 
+def load_backgrounds(folder: Path, seq: dict):
+    """The peptides CAPRI and RBDmap measured (scripts/43f_stage_peptide_backgrounds.py): {'capri'|'rbdmap': {acc:
+    {'meas': [(start, end)] every peptide measured, 'bound': [(start, end)] the RNA-bound ones (CAPRI: one of the
+    authors' adjacent peptides; RBDmap: a peptide of the authors' RBDpeps)}}}, and counts. RBDmap's 'measured' is a
+    peptide quantified in the RNA-bound or the released fraction. Rows whose peptide does not match the sequence are
+    dropped; a missing table leaves its experiment out."""
+    out, check = {}, {}
+    for name, table in BACKGROUND_TABLES.items():
+        path, res, c = folder / table, defaultdict(lambda: {'meas': [], 'bound': []}), Counter()
+        if not path.exists():
+            log(f'{name} measured peptides: {path} not found (scripts/43f_stage_peptide_backgrounds.py writes it); left out')
+            out[name], check[name] = {}, {'available': False}
+            continue
+        with open(path, encoding='utf-8') as fh:
+            for r in csv.DictReader(fh, delimiter='\t'):
+                acc, a, b = r['uniprot_id'], int(r['start']), int(r['end'])
+                if seq.get(acc, '')[a - 1:b] != r['sequence']:
+                    c['dropped'] += 1
+                    continue
+                if name == 'rbdmap' and not int(r['quantified_bound_or_released'] or 0):
+                    continue
+                res[acc]['meas'].append((a, b))
+                if (r['adjacent_peptide'] if name == 'capri' else r['rna_bound']) == 'true':
+                    res[acc]['bound'].append((a, b))
+                    c['bound'] += 1
+                c['kept'] += 1
+        out[name] = {k: {'meas': sorted(set(v['meas'])), 'bound': sorted(set(v['bound']))} for k, v in res.items()}
+        check[name] = {'available': True, 'kept': c['kept'], 'bound': c['bound'], 'dropped': c['dropped'],
+                       'proteins_bound': sum(1 for v in out[name].values() if v['bound'])}
+    return out, check
+
+
 def load_rbrid(folder: Path, seq: dict):
     """RBR-ID (Oksuz et al. 2023, K562 nuclei) from the tables scripts/43c_stage_rbrid.py stages (CC0): {'pos': {acc: set
     of residues under an RBR-ID+ peptide (log2 +4SU/-4SU < 0, p < 0.05: the published cut-off)}, 'spans': {acc: [(start,
@@ -2137,7 +2171,8 @@ XL_TEST = {'rna_xl': 'rna_crosslink', 'rna_xl_single': 'rna_crosslink_single_res
            'rna_capri_xl_nonrg': 'capri_xl_peptide_outside_rg', 'rna_capri_adj_nonrg': 'capri_adj_peptide_outside_rg',
            'rna_pclap': 'pclap_lysc_region', 'rna_pclap_pep': 'pclap_peptide', 'rna_pclap_nonrg': 'pclap_lysc_region_outside_rg',
            'rna_pclap_cov': 'pclap_peptide_among_measured', 'rna_rbrid': 'rbrid_residue', 'rna_rbrid_nonrg': 'rbrid_residue_outside_rg',
-           'rna_rbrid_cov': 'rbrid_residue_among_measured', 'rna_rbrid_seg': 'rbrid_region'}
+           'rna_rbrid_cov': 'rbrid_residue_among_measured', 'rna_rbrid_seg': 'rbrid_region',
+           'rna_capri_cov': 'capri_adj_peptide_among_measured', 'rna_rbdmap_cov': 'rbdmap_peptide_among_measured'}
 INTACT_TEST = {'mutation': 'mutation_changes_interaction', 'peptide': 'binding_region', 'peptide_disordered': 'binding_region_disordered'}
 # Sequence proximity: the distances (residues along the sequence; 0 is inside) at which each arginine is tested for
 # lying near each kind of residue-level RNA evidence.
@@ -2982,6 +3017,11 @@ def main():
     if rbrid_check.get('available'):
         log(f"RBR-ID: {rbrid_check['residues']:,} residues under {rbrid_check['positive_peptides']:,} RBR-ID+ peptides on {rbrid_check['proteins']:,} proteins; "
             f"{rbrid_check['regions']:,} regions of residue score >= 3; {rbrid_check['proteins_measured']:,} proteins measured")
+    # The peptides CAPRI and RBDmap measured: the detection controls of their tests.
+    bgs, bg_check = load_backgrounds(Path(args.tables or 'inputs/interactions'), {a: v[2] for a, v in proteome.items()})
+    for name, v in bg_check.items():
+        if v.get('available'):
+            log(f"{name} measured peptides: {v['kept']:,} kept ({v['bound']:,} RNA-bound on {v['proteins_bound']:,} proteins), {v['dropped']:,} dropped")
     xl_rows, xl_prot, xl_seq = [], [], []
     xl_strata = Tables(('rna_xl', 'rna_xl_single', 'rna_near', 'rna_rbdmap', 'dna_xl', 'dna_cand', 'dna_pep', 'dna_bind', 'rna_xl_nonrg', 'rna_rbdmap_nonrg',
                         'rna_capri_xl', 'rna_capri_adj', 'rna_capri_xl_nonrg', 'rna_capri_adj_nonrg'))
@@ -3059,6 +3099,14 @@ def main():
             for q in range(1, len(seq_) + 1):
                 if seq_[q - 1] == 'R' and any(a <= q <= b for a, b in p_meas):
                     xl_strata.add('rna_pclap_cov', acc, q, (0 if q in site_pos else 2) + (0 if any(a <= q <= b for a, b, _ in p_pep) else 1))
+        # The same for CAPRI and RBDmap, with the peptides each measured: among the arginines inside a measured peptide,
+        # is a methylated one more often inside an RNA-bound one (a CAPRI adjacent peptide, a peptide of an RBDpep)?
+        for name, key in (('capri', 'rna_capri_cov'), ('rbdmap', 'rna_rbdmap_cov')):
+            bg = bgs[name].get(acc)
+            if bg and bg['bound']:
+                for q in range(1, len(seq_) + 1):
+                    if seq_[q - 1] == 'R' and any(a <= q <= b for a, b in bg['meas']):
+                        xl_strata.add(key, acc, q, (0 if q in site_pos else 2) + (0 if any(a <= q <= b for a, b in bg['bound']) else 1))
         # The same for RBR-ID: among the arginines under a quantified peptide only.
         if b_pos:
             for q in range(1, len(seq_) + 1):
@@ -3111,6 +3159,10 @@ def main():
                                 ('rna_pclap', lambda acc: bool(pclap['lysc'].get(acc)), lambda acc, q: any(a <= q <= b for a, b in pclap['lysc'].get(acc, []))),
                                 ('rna_pclap_cov', lambda acc: bool(pclap['pep'].get(acc)), lambda acc, q: any(a <= q <= b for a, b, _ in pclap['pep'].get(acc, [])),
                                  lambda acc, q: any(a <= q <= b for a, b in pclap['measured'].get(acc, []))),
+                                ('rna_capri_cov', lambda acc: bool((bgs['capri'].get(acc) or {}).get('bound')), lambda acc, q: any(a <= q <= b for a, b in bgs['capri'][acc]['bound']),
+                                 lambda acc, q: any(a <= q <= b for a, b in bgs['capri'][acc]['meas'])),
+                                ('rna_rbdmap_cov', lambda acc: bool((bgs['rbdmap'].get(acc) or {}).get('bound')), lambda acc, q: any(a <= q <= b for a, b in bgs['rbdmap'][acc]['bound']),
+                                 lambda acc, q: any(a <= q <= b for a, b in bgs['rbdmap'][acc]['meas'])),
                                 ('rna_rbrid', lambda acc: bool(rbrid['pos'].get(acc)), lambda acc, q: q in rbrid['pos'].get(acc, ())),
                                 ('rna_rbrid_cov', lambda acc: bool(rbrid['pos'].get(acc)), lambda acc, q: q in rbrid['pos'].get(acc, ()),
                                  lambda acc, q: any(a <= q <= b for a, b in rbrid['cov'].get(acc, []))),
@@ -3673,6 +3725,7 @@ def main():
             'capri_check': capri_check,
             'pclap_check': pclap_check,
             'rbrid_check': rbrid_check,
+            'background_check': bg_check,
             'pred_iface': {'file': Path(args.pred_iface_out).name, 'proteins': len(pred_iface), 'pdockq_min': PRED_TIERS[0]},
             'fields': {
                 'proteins': ['accession', 'gene', 'flags', 'ensp'],
@@ -3726,8 +3779,8 @@ def main():
                            'DNA-crosslinked peptides near a site [[start, peptide with candidate residues in lower case]]', 'RBDmap fragments near a site [[start, end, fragment]]',
                            'CAPRI XL-peptides near a site [[start, end, peptide]]', 'CAPRI ADJ-peptides near a site [[start, end, peptide]]',
                            'pCLAP RNA-binding peptides near a site [[start, end, peptide]]', 'RBR-ID+ peptides near a site [[start, end, peptide, log2 +4SU/-4SU, p]]'],
-                'xl_enrich': '{rna_xl|rna_near|rna_rbdmap|rna_capri_xl|rna_capri_adj|rna_pclap (Lys-C region)|rna_pclap_pep|rna_pclap_cov (among arginines in any measured pCLAP peptide)|rna_rbrid (under an RBR-ID+ peptide)|rna_rbrid_seg (RBR-ID region of residue score >= 3)|rna_rbrid_cov (rna_rbrid among measured arginines)|dna_xl|dna_cand|dna_pep|dna_bind (+ _nonrg RNA variants): {pooled, mh, proteins, or: {pooled: [a, b, c, d, OR, lo, hi, p], mh: [OR, lo, hi, p, strata]}}} methylated vs other arginines of proteins with that evidence',
-                'xl_types': '{rna_xl|rna_xl_single|rna_rbdmap|rna_capri_xl|rna_capri_adj|rna_pclap|rna_pclap_cov|rna_rbrid|rna_rbrid_cov|dna_xl: {rme2s|rme2a|rme1ip|rme2|rme1|nostate|any: or_summary}} each methylation class vs unmethylated arginines of the same proteins',
+                'xl_enrich': '{rna_xl|rna_near|rna_rbdmap|rna_capri_xl|rna_capri_adj|rna_pclap (Lys-C region)|rna_pclap_pep|rna_pclap_cov (among arginines in any measured pCLAP peptide)|rna_capri_cov (inside a CAPRI adjacent peptide, among arginines inside a peptide CAPRI measured)|rna_rbdmap_cov (inside a peptide of an RBDmap RBDpep, among arginines inside a peptide RBDmap quantified in the bound or released fraction)|rna_rbrid (under an RBR-ID+ peptide)|rna_rbrid_seg (RBR-ID region of residue score >= 3)|rna_rbrid_cov (rna_rbrid among measured arginines)|dna_xl|dna_cand|dna_pep|dna_bind (+ _nonrg RNA variants): {pooled, mh, proteins, or: {pooled: [a, b, c, d, OR, lo, hi, p], mh: [OR, lo, hi, p, strata]}}} methylated vs other arginines of proteins with that evidence',
+                'xl_types': '{rna_xl|rna_xl_single|rna_rbdmap|rna_capri_xl|rna_capri_adj|rna_pclap|rna_pclap_cov|rna_capri_cov|rna_rbdmap_cov|rna_rbrid|rna_rbrid_cov|dna_xl: {rme2s|rme2a|rme1ip|rme2|rme1|nostate|any: or_summary}} each methylation class vs unmethylated arginines of the same proteins',
                 'xl_type_contrast': '{the xl_types keys: {direct: or_summary of SDMA-IP against ADMA-IP sites of the same proteins, ratio: [OR rme2s / OR rme2a against unmethylated arginines, lo, hi, p, protein resamples]}}',
                 'xl_freq': '{spectra|datasets: {meth: [n, mean, median], other: [...], p (Mann-Whitney)}, multi: or_summary (crosslinked in >= 2 datasets)} among RNA-crosslinked arginines',
                 'pred_enrich': '{pDockQ floor: {all|ordered|disordered: {pooled, mh}}} methylated vs other arginines of the same protein at a predicted interface',
