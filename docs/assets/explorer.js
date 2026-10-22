@@ -448,6 +448,8 @@
     light: {
       st1: '#2A78D6', st2: '#EB6834', st2s: '#A23B12', stMix: '#1BAF7A', none: '#A3AEB3', meth: '#B4485F',
       rna: '#7B4FBF', dna: '#B7791F', protein: '#0E7490', self: '#7FA9B6', other: '#8A99A3', ev: '#0F3B47',
+      // Nucleotides (Okabe-Ito; validated for colour-vision deficiency on this surface): A, C, G, U/T.
+      ntA: '#009E73', ntC: '#0072B2', ntG: '#E69F00', ntU: '#D55E00',
       rnaBg: 'rgba(123,79,191,0.14)', dnaBg: 'rgba(183,121,31,0.16)', proteinBg: 'rgba(14,116,144,0.12)', rnaInk: '#5B3A96', dnaInk: '#7A4F10', proteinInk: '#0B5A70',
       domain: '#B9DDE6', domainInk: '#0F3B47', dis: '#8796A0', rg: '#F5D6DE', rgInk: '#7A2E45',
       bias: '#FDE3D4', region: '#E3ECF6', dense: 'rgba(17,24,39,0.07)',
@@ -459,6 +461,7 @@
     dark: {
       st1: '#3987E5', st2: '#D95926', st2s: '#F4A26B', stMix: '#199E70', none: '#6D7D84', meth: '#E0708A',
       rna: '#A98BE0', dna: '#D9A548', protein: '#3FB5CF', self: '#6E98A5', other: '#7E8E95', ev: '#D7EEF3',
+      ntA: '#17A478', ntC: '#3284D0', ntG: '#C48506', ntU: '#C44323',
       rnaBg: 'rgba(123,79,191,0.3)', dnaBg: 'rgba(183,121,31,0.3)', proteinBg: 'rgba(63,181,207,0.22)', rnaInk: '#D2BDF5', dnaInk: '#EFCA85', proteinInk: '#9BDDEC',
       domain: '#1F5566', domainInk: '#E3F4F8', dis: '#8FA6B0', rg: '#5A2C3A', rgInk: '#F6C9D6',
       bias: '#4A2A1C', region: '#213847', dense: 'rgba(232,239,242,0.09)',
@@ -6924,6 +6927,11 @@
       s.contacts = rows;
       s.modelledMe = modelled;
     }
+    // The RNA and DNA chains each site touches in structures: the bound sequence around the closest nucleotide (naRows).
+    for (const [j, pdb, chain, kind, name, org, win, offs, near, dist, len] of d.na || []) {
+      const s = S[j];
+      if (s) (s.na || (s.na = [])).push({ pdb, chain, kind, name, org, win, offs, near, dist, len });
+    }
     const wr = new Map((d.wr || []).map(([k, list]) => [k, new Set(list)]));
     for (const g of d.geometry || []) {
       const s = S[g[0]];
@@ -7180,6 +7188,152 @@
   }
   function contactText(s) {
     return contactGroups(s).map((g) => g.name + ': ' + g.labels.join(' ') + ' (' + g.pdbs.join(',') + ')').join('; ');
+  }
+
+  // ------------------------------------------------- bound RNA and DNA (PDB structures)
+  // The chain a methylarginine touches, NA_W nucleotides each side of the one closest to it (offset 0), so the windows
+  // of any sites align on their middle. A site's distinct windows share one weight, so every site counts once.
+  const NA_W = 8;
+  const NT_BASES = ['A', 'C', 'G', 'U'];
+  const ntKey = (c) => (c === 'T' ? 'U' : c);
+  function naRows(sites, kind) {
+    const out = [];
+    for (const s of sites) {
+      const seen = new Map();
+      for (const r of s.na || []) {
+        if (kind === 'dna' ? r.kind !== 'dna' : r.kind === 'dna') continue;   // RNA-DNA hybrids go with RNA
+        if (!seen.has(r.win)) seen.set(r.win, { s, win: r.win, offs: new Set(), pdbs: [], names: [], kind: r.kind, dist: r.dist });
+        const w = seen.get(r.win);
+        if (!w.pdbs.includes(r.pdb)) w.pdbs.push(r.pdb);
+        if (r.name && !w.names.includes(r.name)) w.names.push(r.name);
+        r.offs.forEach((o) => w.offs.add(o));
+        w.dist = Math.min(w.dist, r.dist);
+      }
+      const ws = Array.from(seen.values());
+      ws.forEach((w) => { w.weight = 1 / ws.length; out.push(w); });
+    }
+    return out;
+  }
+  function naColumns(ws) {
+    const cols = Array.from({ length: 2 * NA_W + 1 }, () => ({ A: 0, C: 0, G: 0, U: 0, n: 0 }));
+    for (const w of ws) {
+      for (let i = 0; i < cols.length; i++) {
+        const c = ntKey(w.win[i]);
+        if (NT_BASES.includes(c)) { cols[i][c] += w.weight; cols[i].n += w.weight; }
+      }
+    }
+    return cols;
+  }
+  const NT_GLYPH_W = { A: 72, C: 72, G: 78, U: 72, T: 61 };   // advance widths (Arial bold, font-size 100)
+  // A sequence logo, offset 0 shaded. mode bits: letter height = frequency × information content (2 bits at most), which
+  // shows conservation in a few sites; freq: letter height = frequency, which shows composition across many.
+  function naLogoSvg(ws, kind, pal, forExport, title, mode) {
+    const cols = naColumns(ws), T = kind === 'dna', bits = mode !== 'freq';
+    const cw = 22, h = 110, padL = 40, padT = title ? 30 : 10, padB = 34, W = padL + cols.length * cw + 10, H = padT + h + padB;
+    const font = pal.font || EXPORT_PAL.font;
+    let g = '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>';
+    if (title) g += '<text x="' + padL + '" y="18" font-size="13" font-weight="700" fill="' + pal.ink + '">' + esc(title) + '</text>';
+    g += '<rect x="' + (padL + NA_W * cw) + '" y="' + padT + '" width="' + cw + '" height="' + h + '" fill="' + pal.panel + '"/>';
+    for (const b of [0, 0.5, 1]) {
+      const y = padT + h - b * h;
+      g += '<line x1="' + (padL - 4) + '" x2="' + (padL + cols.length * cw) + '" y1="' + y + '" y2="' + y + '" stroke="' + pal.grid + '" stroke-width="1"/>' +
+        '<text x="' + (padL - 7) + '" y="' + (y + 4) + '" font-size="11" text-anchor="end" fill="' + pal.muted + '">' + (bits ? 2 * b : b) + '</text>';
+    }
+    g += '<text transform="translate(12,' + (padT + h / 2) + ') rotate(-90)" font-size="11" text-anchor="middle" fill="' + pal.muted + '">' + (bits ? 'bits' : 'frequency') + '</text>';
+    cols.forEach((c, i) => {
+      const x = padL + i * cw, off = i - NA_W;
+      if (c.n > 0) {
+        const f = NT_BASES.map((b) => [b, c[b] / c.n]).filter(([, p]) => p > 0);
+        const ic = bits ? Math.max(0, 2 + f.reduce((a, [, p]) => a + p * Math.log2(p), 0)) : 2;
+        let y = padT + h;
+        f.sort((a, b) => a[1] - b[1]).forEach(([b, p]) => {
+          const hh = p * ic / 2 * h;
+          if (hh < 0.6) return;
+          const letter = b === 'U' && T ? 'T' : b;
+          g += '<text x="0" y="0" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="100" text-anchor="middle" fill="' + pal['nt' + b] + '"' +
+            ' transform="translate(' + r1(x + cw / 2) + ',' + r1(y) + ') scale(' + ((cw - 2) / NT_GLYPH_W[letter]).toFixed(4) + ',' + (hh / 71.6).toFixed(4) + ')">' + letter + '</text>';
+          y -= hh;
+        });
+      }
+      if (!forExport && c.n > 0) {
+        const tip = '<b>' + (off === 0 ? 'Closest nucleotide (offset 0)' : 'Offset ' + (off > 0 ? '+' : '−') + Math.abs(off) + ' (' + Math.abs(off) + ' nt ' + (off > 0 ? '3′' : '5′') + ' of the closest)') + '</b><br>' +
+          NT_BASES.map((b) => (b === 'U' && T ? 'T' : b) + ' ' + Math.round(100 * c[b] / c.n) + '%').join(' · ') + '<br><span class="muted">' + fmt(Math.round(c.n)) + ' site' + (Math.round(c.n) === 1 ? '' : 's') + ' with a nucleotide here</span>';
+        g += '<rect class="logo-col" x="' + x + '" y="' + padT + '" width="' + cw + '" height="' + h + '" fill="transparent" data-tip="' + esc(tip) + '"/>';
+      }
+      if (off % 2 === 0) g += '<text x="' + (x + cw / 2) + '" y="' + (padT + h + 15) + '" font-size="11" text-anchor="middle" fill="' + (off === 0 ? pal.ink : pal.muted) + '"' + (off === 0 ? ' font-weight="700"' : '') + '>' + (off > 0 ? '+' + off : off === 0 ? '0' : '−' + -off) + '</text>';
+    });
+    g += '<text x="' + (padL + NA_W * cw + cw / 2) + '" y="' + (padT + h + 29) + '" font-size="11" text-anchor="middle" fill="' + pal.muted + '">5′ ← nucleotide closest to the methylarginine → 3′</text>';
+    return { W, H, svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" font-family="' + esc(font) + '" role="img" aria-label="' +
+      esc((title || 'Sequence logo') + ': bound ' + (T ? 'DNA' : 'RNA') + ' nucleotides around the methylarginine') + '">' + g + '</svg>' };
+  }
+  // One aligned window: tinted nucleotides, contacted ones bold and underlined, offset 0 outlined.
+  function naWindowHtml(w) {
+    const T = w.kind === 'dna';
+    return '<span class="na-win" aria-label="' + esc(w.win.replace(/-/g, '')) + '"><span class="muted">5′</span>' + Array.from(w.win).map((c, i) => (c === '-'
+      ? '<span class="nt pad">·</span>'
+      : '<span class="nt nt-' + ntKey(c) + (w.offs.has(i) ? ' hit' : '') + (i === NA_W ? ' mid' : '') + '">' + (c === 'U' && T ? 'T' : c) + '</span>')).join('') + '<span class="muted">3′</span></span>';
+  }
+  function naAlignHtml(ws, withProtein, limit) {
+    const rows = ws.slice().sort((a, b) => (withProtein ? P[a.s.p].label.localeCompare(P[b.s.p].label) : 0) || a.s.pos - b.s.pos || a.win.localeCompare(b.win));
+    const shown = limit ? rows.slice(0, limit) : rows;
+    return '<div class="tbl-wrap"><table class="tbl compact na-aln"><thead><tr>' + (withProtein ? '<th>Protein</th>' : '') + '<th>Site</th><th>Bound sequence, aligned on the closest nucleotide</th><th class="hide-sm">Chain</th><th>PDB</th></tr></thead><tbody>' +
+      shown.map((w) => '<tr>' + (withProtein ? '<td><button class="linkish" type="button" data-na-p="' + w.s.p + '">' + esc(P[w.s.p].label) + '</button></td>' : '') +
+        '<td class="num"><button class="linkish strong" type="button" data-na-p="' + w.s.p + '" data-na-pos="' + w.s.pos + '">' + rl(w.s.pos, P[w.s.p]) + '</button></td>' +
+        '<td>' + naWindowHtml(w) + '</td><td class="hide-sm small na-name" title="' + esc(w.names.join('; ')) + '">' + esc(w.names.slice(0, 2).join('; ')) + (w.names.length > 2 ? ' +' + (w.names.length - 2) : '') + '</td>' +
+        '<td class="small">' + w.pdbs.slice(0, 3).map((x) => '<a href="https://www.rcsb.org/structure/' + encodeURIComponent(x) + '" target="_blank" rel="noopener">' + esc(x.toUpperCase()) + '</a>').join(' ') +
+        (w.pdbs.length > 3 ? ' +' + (w.pdbs.length - 3) : '') + '</td></tr>').join('') + '</tbody></table></div>' +
+      (limit && rows.length > limit ? '<p class="note">' + fmt(limit) + ' of ' + fmt(rows.length) + ' bound sequences; the TSV has all of them.</p>' : '');
+  }
+  const NA_NOTE = 'Bound sequence: the chain ' + NA_W + ' nucleotides each side of the one closest to the arginine\'s side chain (offset 0, outlined); nucleotides within 4 Å are bold. ' +
+    'Only the two most recent structures per site and partner type are read. In the logo each site counts once, however many structures or chains it has; letter height is the frequency, ' +
+    'or the frequency × information content in bits, which shows conservation among a few sites.';
+  function naTsv(ws) {
+    return ['protein\tuniprot_accession\tsite\tnucleic_acid\twindow\tcontacted_offsets\tclosest_distance_a\tmolecule_names\tpdb_entries']
+      .concat(ws.map((w) => [P[w.s.p].label, P[w.s.p].acc, rl(w.s.pos, P[w.s.p]), w.kind, w.win, Array.from(w.offs).sort((a, b) => a - b).map((o) => o - NA_W).join(';'), w.dist, w.names.join(';'), w.pdbs.join(';')].join('\t'))).join('\n') + '\n';
+  }
+  function bindLogoTips(root) {
+    $$('.logo-col', root).forEach((c) => {
+      c.addEventListener('mouseenter', (e) => showTip(e, c.getAttribute('data-tip')));
+      c.addEventListener('mousemove', moveTip);
+      c.addEventListener('mouseleave', hideTip);
+    });
+  }
+  function bindNaBlock(root, ws, name) {
+    bindLogoTips(root);
+    $$('.na-block', root).forEach((blk) => {
+      const sel = $('.na-mode', blk), logo = $('.na-logo', blk);
+      if (!sel || !logo) return;
+      sel.addEventListener('change', () => {
+        blk.dataset.naMode = sel.value;
+        const kind = blk.dataset.naKind;
+        logo.innerHTML = naLogoSvg(ws.filter((w) => (kind === 'dna') === (w.kind === 'dna')), kind, screenPalette(), false, '', sel.value).svg;
+        bindLogoTips(logo);
+      });
+    });
+    $$('[data-na-p]', root).forEach((b) => b.addEventListener('click', () => {
+      const i = +b.dataset.naP, pos = b.dataset.naPos;
+      if (UI.detail === i && pos) { UI.highlight = +pos; flashSite(+pos, false); } else openProtein(i, pos ? +pos : null);
+    }));
+    $$('[data-na-exp]', root).forEach((b) => b.addEventListener('click', () => {
+      const [kind, fmt_] = b.dataset.naExp.split(':');
+      const rows = ws.filter((w) => (kind === 'dna') === (w.kind === 'dna'));
+      const blk = b.closest('.na-block'), mode = blk ? blk.dataset.naMode : 'bits';
+      if (fmt_ === 'tsv') download(name + '_' + kind + '.tsv', naTsv(rows));
+      else exportFigure(fmt_, naLogoSvg(rows, kind, EXPORT_PAL, true, (kind === 'dna' ? 'DNA' : 'RNA') + ' bound at ' + fmt(new Set(rows.map((w) => w.s)).size) + ' methylarginines', mode), name + '_' + kind + '_logo');
+    }));
+  }
+  // Logo and aligned windows of one kind for a set of sites (a protein's, or the selection's). The logo shows letter
+  // height as information for a few sites and as frequency for many (NA_FREQ_FROM), and the reader can switch.
+  const NA_FREQ_FROM = 15;
+  function naBlockHtml(ws, kind, withProtein, limit) {
+    const n = new Set(ws.map((w) => w.s)).size, pdbs = new Set(ws.flatMap((w) => w.pdbs)).size;
+    if (!n) return '';
+    const mode = n >= NA_FREQ_FROM ? 'freq' : 'bits';
+    return '<div class="na-block" data-na-kind="' + kind + '" data-na-mode="' + mode + '"><p class="na-head"><b>' + fmt(n) + '</b> methylarginine' + (n === 1 ? '' : 's') + ' touch' + (n === 1 ? 'es' : '') + ' ' + (kind === 'dna' ? 'DNA' : 'RNA') + ' in ' + fmt(pdbs) + ' PDB entr' + (pdbs === 1 ? 'y' : 'ies') +
+      ', ' + fmt(ws.length) + ' distinct bound sequence' + (ws.length === 1 ? '' : 's') + '. ' +
+      (n >= 2 ? '<label class="fig-ctl small">Letter height <select class="na-mode">' + [['bits', 'information (bits)'], ['freq', 'frequency']].map(([v, l]) => '<option value="' + v + '"' + (v === mode ? ' selected' : '') + '>' + l + '</option>').join('') + '</select></label>' : '') +
+      '<span class="exp na-exp"><button type="button" data-na-exp="' + kind + ':svg">SVG</button><button type="button" data-na-exp="' + kind + ':png">PNG</button><button type="button" data-na-exp="' + kind + ':tsv">TSV</button></span></p>' +
+      (n >= 2 ? '<div class="na-logo">' + naLogoSvg(ws, kind, screenPalette(), false, '', mode).svg + '</div>' : '') + naAlignHtml(ws, withProtein, limit) + '</div>';
   }
 
   // ----- live sources (cached per protein)
@@ -8105,6 +8259,7 @@
     const flag = kind === 'rna' ? IXF.rna : IXF.dna, flagExp = kind === 'rna' ? IXF.rnaExp : IXF.dnaExp;
     const term = kind === 'rna' ? 'GO:0003723' : 'GO:0003677';
     const sites = p.sites.map((j) => S[j]).filter((s) => s.iface & bit);
+    const naWs = naRows(p.sites.map((j) => S[j]), kind);
     const gene = p.gene;
     body.innerHTML =
       '<div class="ix-grid">' +
@@ -8115,12 +8270,14 @@
           ' <span class="muted small">at the interface in ' + (s.ifN || (s.ifPdb || []).length) + ' entr' + ((s.ifN || 0) === 1 ? 'y' : 'ies') + '</span></li>'; }).join('') + '</ul>' :
         '<p class="muted">None of the methylated arginines contacts ' + KIND + ' in a PDB structure (PDBe-KB).</p>') +
       '<p class="note">PDBe-KB interface residues across all PDB entries of this protein; methylation of these arginines would change the contact.</p></section>' +
+      (naWs.length ? '<section class="na-sec"><h4>Bound ' + KIND + ' sequences in structures</h4>' + naBlockHtml(naWs, kind, false, 0) + '<p class="note">' + NA_NOTE + '</p></section>' : '') +
       xlSectionHtml(p, kind) +
       '<section><h4>PDB structures with ' + KIND + '</h4><div id="ix-pdb" class="note">Looking up PDB entries…</div></section>' +
       (kind === 'rna' ? '<section><h4>ENCODE eCLIP</h4><div id="ix-encode" class="note">Searching ENCODE…</div></section>' :
         '<section><h4>ChIP-Atlas target genes</h4><div id="ix-chip" class="note">Loading ChIP-Atlas…</div></section><section><h4>ENCODE TF ChIP-seq</h4><div id="ix-encode" class="note">Searching ENCODE…</div></section>') +
       '</div>';
     $$('.ix-sites [data-pos]', body).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
+    if (naWs.length) bindNaBlock($('.na-sec', body), naWs, 'methylarginine_' + p.label + '_bound');
     const alive = () => UI.detail === p.i && UI.ixTab === kind && document.body.contains(body);
     loadQuickGO(p.acc.split('-')[0], term).then((rows) => {
       const el = $('#ix-go', body);
@@ -9179,6 +9336,7 @@
       foldIf('ix-ex', 'What the evidence looks like on one protein', ixExampleHtml(), () => 'drawn for ' + ixExampleProtein().label + '; type any protein to redraw it') +
       foldIf('ix-cm', 'Which sites carry which evidence', ixConnMatrixHtml(), () => 'site features against crosslink, PDB and predicted-complex evidence' + (constraints().length ? ', your selection' : '')) +
       foldIf('ix-wr', 'Writers and readers sharing substrates', ixWrMatrixHtml(), () => 'methylated proteins bound by both a PRMT and a Tudor-domain protein (STRING)') +
+      foldIf('ix-na', 'RNA and DNA bound at methylarginines', ixNaHtml(), () => ixNaSummary()) +
       IX_SECTIONS.map(([k, title, tag]) => foldHtml('ixs-' + k, title, '<div class="ix-sec-body" id="ixs-' + k + '">' + body[k]() + '</div>', false, tag)).join('') + '</div></div>';
     $$('.ix-facts .fact', el).forEach((b) => {
       const run = () => setTerm('interaction', b.dataset.fact, 'sites');
@@ -9193,6 +9351,8 @@
     bindEvidenceMap(el);
     bindConnMatrix(el);
     bindWrMatrix(el);
+    const naBox = $('#ix-na', el);
+    if (naBox) bindNaBlock(naBox, naRows(R.sites, 'rna').concat(naRows(R.sites, 'dna')), 'methylarginine_bound');
     bindComplexMembers(el);
     bindDocLinks(el);
     if (UI.ixJump) { const k = UI.ixJump; UI.ixJump = null; openIxSection(k); }
@@ -9200,6 +9360,20 @@
   }
 
   const foldIf = (key, title, html, sum) => (html ? foldHtml(key, title, html, false, sum()) : '');
+
+  // The bound sequences of the selection's methylarginines, RNA then DNA (naBlockHtml).
+  function ixNaHtml() {
+    const rna = naRows(R.sites, 'rna'), dna = naRows(R.sites, 'dna');
+    if (!rna.length && !dna.length) return '';
+    const part = (ws, kind) => '<section class="na-part"><h4>' + (kind === 'dna' ? 'DNA' : 'RNA') + '</h4>' +
+      (ws.length ? naBlockHtml(ws, kind, true, 40) : '<p class="muted">No methylarginine of ' + (constraints().length ? 'your selection' : 'the release') + ' touches ' + kind.toUpperCase() + ' in the structures read.</p>') + '</section>';
+    return '<div class="card" id="ix-na"><div class="card-head"><div><h3>RNA and DNA bound at methylarginines</h3><p class="sub">The sequence each methylarginine touches in PDB structures, ' +
+      'aligned on the nucleotide closest to it' + (constraints().length ? ', for your selection' : '') + '.</p></div></div>' + part(rna, 'rna') + part(dna, 'dna') + '<p class="note">' + NA_NOTE + '</p></div>';
+  }
+  function ixNaSummary() {
+    const n = (kind) => new Set(naRows(R.sites, kind).map((w) => w.s)).size;
+    return fmt(n('rna')) + ' methylarginines touch RNA and ' + fmt(n('dna')) + ' touch DNA in structures' + (constraints().length ? ', your selection' : '');
+  }
 
   function openIxSection(k) {
     const b = $('#ixs-' + k), d = b && b.closest('details.fold');

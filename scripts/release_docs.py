@@ -204,6 +204,7 @@ FILE_ROWS = {
     'residue_evidence': 'run of residues of a protein with the same interaction evidence',
     'protein_partners': 'protein and STRING physical partner (score >= 0.7)',
     'complexes': 'Complex Portal or hu.MAP complex with a methylated member',
+    'nucleic_acid_contacts': 'site and RNA or DNA chain it touches in a PDB structure: the contacted nucleotides and the bound sequence around them',
     'disease_terms': 'enriched DisGeNET term (DOSE enrichDGN)',
     'disease_terms_tested': 'DisGeNET term DOSE enrichDGN tested, enriched or not',
     'disease_ontology': 'Disease Ontology term tested (clusterProfiler enricher on the gene sets of DOSE enrichDO)',

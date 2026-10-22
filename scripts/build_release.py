@@ -941,8 +941,13 @@ def interaction_tables(folder: Path, sites: pd.DataFrame) -> dict:
     kinds = counted.groupby('site_id')['evidence_type'].agg(set)
     status = {s: 'experimental' if k & experimental else 'predicted_only' if k & predicted else 'none' for s, k in kinds.items()}
     evidence = {s: join(ordered(k, rc.EVIDENCE_ORDER)) for s, k in kinds.items()}
+    # the RNA and DNA each site touches in structures (scripts/37 from v1.3.0)
+    na = read_tsv(folder / 'nucleic_acid_contacts.tsv') if (folder / 'nucleic_acid_contacts.tsv').exists() else None
+    if na is not None and set(na['site_id']) - set(analysed['site_id']):
+        raise SystemExit(f'{folder}: nucleic-acid contacts for sites that are not analysed in the release')
     return {'sites': ev, 'residues': t['residue_evidence'], 'partners': t['protein_partners'], 'complexes': t['complexes'],
-            'statistics': t['interaction_statistics'], 'proteins': t['protein_interaction_summary'], 'status': status, 'evidence': evidence}
+            'statistics': t['interaction_statistics'], 'proteins': t['protein_interaction_summary'], 'status': status, 'evidence': evidence,
+            'nucleic_acid': na}
 
 
 def write_table(df: pd.DataFrame, columns: list[tuple], path: Path) -> None:
@@ -1149,6 +1154,8 @@ def main() -> None:
             'protein_partners': (f'supporting/protein_partners_{version}.tsv', ix['partners'], rc.PARTNER_COLUMNS),
             'complexes': (f'supporting/complexes_{version}.tsv', ix['complexes'], rc.COMPLEX_COLUMNS),
         })
+        if ix['nucleic_acid'] is not None:
+            files['nucleic_acid_contacts'] = (f'supporting/nucleic_acid_contacts_{version}.tsv', ix['nucleic_acid'], rc.NUCLEIC_ACID_CONTACT_COLUMNS)
     for folder in (outdir / 'supporting', outdir):
         if folder.is_dir():
             for p in folder.iterdir():

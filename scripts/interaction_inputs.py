@@ -370,6 +370,21 @@ def contacts(t: Tables) -> dict:
     return out
 
 
+def nucleic_chains(t: Tables) -> tuple[dict, set]:
+    """(pdb, author chain) -> (kind, entity, molecule name, organism, SEQRES sequence) of the RNA and DNA chains staged,
+    and the PDB entries looked up (an entry with none has a row with an empty chain). Empty before v1.3.0's staging."""
+    out, looked = {}, set()
+    try:
+        rows = list(t.rows('pdb_nucleic_acid_chains_'))
+    except KeyError:
+        return out, looked
+    for r in rows:
+        looked.add(r['pdb_id'])
+        if r['chain']:
+            out[(r['pdb_id'], r['chain'])] = (r['nucleic_acid'], int(r['entity_id']), r['molecule_name'], r['source_organism'], r['sequence'])
+    return out, looked
+
+
 def environments(t: Tables) -> dict:
     """(pdb, chain, SEQRES index) -> scripts/37 analyze_environment result, or None for a residue that is not an arginine."""
     out = {}

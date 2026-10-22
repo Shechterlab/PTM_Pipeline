@@ -499,6 +499,30 @@ def stage_contacts(w: Writer, c: Path):
             derived=[f'contacts_seqres/<pdb>_<chain>_<seqres index>.json ({len(files):,} files)'])
 
 
+def stage_nucleic_chains(w: Writer, c: Path):
+    """The RNA and DNA chains, with their SEQRES sequences, of the PDB entries where a methylarginine meets nucleic acid."""
+    files = sorted((c / 'pdbe_molecules').glob('*.json'))
+    rows = []
+    for p in files:
+        try:
+            chains = x37.nucleic_chain_rows(json.loads(p.read_text() or '{}').get(p.stem, []))
+        except json.JSONDecodeError:
+            continue
+        rows += [[p.stem, ch, entity, kind, name, organism, len(seq), seq] for ch, entity, kind, name, organism, seq in chains]
+        if not chains:
+            rows.append([p.stem, '', '', '', '', '', '', ''])
+    rows.sort(key=lambda x: (x[0], x[1]))
+    d = dates_of(files)
+    w.table(f'pdb_nucleic_acid_chains_{d[:10]}.tsv',
+            ['pdb_id', 'chain', 'entity_id', 'nucleic_acid', 'molecule_name', 'source_organism', 'length', 'sequence'], rows,
+            content='The RNA and DNA chains of the PDB entries where a methylarginine touches nucleic acid: molecule type (rna, dna or '
+                    'hybrid), name, source organism and SEQRES sequence in one-letter codes (modified nucleotides as their parent); a row '
+                    'with an empty chain is an entry looked up that has none',
+            source=x37.PDBE_MOLECULES, version=f'PDBe API, read {d}', citation='Burley et al., Nucleic Acids Res 51:D488 (2023)',
+            licence='CC0 (PDB data)', how='scripts/37 load_nucleic_chains; collected here',
+            derived=[f'pdbe_molecules/<pdb>.json ({len(files):,} files)'])
+
+
 def _env(p: str):
     path = Path(p)
     stem, label = path.name[:-len('.json.gz')].rsplit('_', 1)
@@ -916,6 +940,8 @@ def stage_topup(c: Path, out: Path, workers: int, manifest: Path, measured: str)
         stage_contacts(w, c)
     if (c / 'environments').is_dir():
         stage_environments(w, c, workers)
+    if any((c / 'pdbe_molecules').glob('*.json')):
+        stage_nucleic_chains(w, c)
     # scripts/37 makes these folders before it knows whether a model needs measuring: stage only what holds files
     if any(p.is_file() for x in ('protvar_measure', 'afdb_measure', 'afdb_complex') for p in (c / x).glob('*')):
         stage_model_contacts(w, c, served=out / 'protvar_served_models_af2complexes_v1.tsv', measured=measured)

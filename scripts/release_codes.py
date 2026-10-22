@@ -312,6 +312,11 @@ CODES: dict[str, dict[str, str]] = {
         'in_peptide': 'inside a crosslinked peptide, residue not localised',
         'in_region': 'inside the region',
     },
+    'nucleic_acid': {
+        'rna': 'an RNA chain (PDB molecule type polyribonucleotide)',
+        'dna': 'a DNA chain (polydeoxyribonucleotide)',
+        'hybrid': 'a chain with both ribo- and deoxyribonucleotides',
+    },
     'partner_kind': {
         'protein': 'another protein (partner_accession)',
         'self': 'another copy of the same protein',
@@ -909,6 +914,24 @@ SITE_INTERACTION_COLUMNS = [
     ('distance_a', 'number', '', 'closest distance in the predicted model between the arginine and the partner, in angstroms'),
     ('detail', 'string', '', 'for an RNA crosslink, the crosslinked peptides of that dataset with the crosslinked residue in brackets, its position and the RNA adduct masses (pepR-MS compendium Table S2); for an RBDmap fragment, its range and sequence; for a DNA crosslink, the crosslinked peptide with the residues the crosslink may sit on in lower case (Trendel et al. 2025); bonds, pLDDT and partner residues of a predicted contact; effect, residues, PubMed and IntAct ids of an IntAct record'),
     ('counts_as_evidence', 'boolean', '', 'the record is site-level evidence: crosslinks at or as a candidate residue, RBDmap fragments, PDB interfaces, predicted interfaces, confident predicted contacts, and IntAct mutations that change an interaction, short binding regions and methylated residues. interaction_status counts all of these except IntAct'),
+]
+
+NUCLEIC_ACID_CONTACT_COLUMNS = [
+    ('site_id', 'string', '', 'the site (site table), at a PDBe-KB RNA or DNA interface or touching a nucleotide in a structure read'),
+    ('pdb_id', 'string', '', 'the PDB entry (the two most recent entries per site and partner type are read)'),
+    ('chain', 'string', '', 'the RNA or DNA chain (author chain id)'),
+    ('nucleic_acid', 'code', 'nucleic_acid', 'what the chain is'),
+    ('molecule_name', 'string', '', 'the chain\'s molecule name in the PDB entry'),
+    ('source_organism', 'string', '', 'its source organism (synthetic construct for a made oligonucleotide)'),
+    ('chain_length', 'integer', '', 'nucleotides in the chain\'s SEQRES sequence'),
+    ('closest_nucleotide', 'string', '', 'the nucleotide closest to the arginine side chain, numbered along the SEQRES sequence (modified nucleotides as their parent)'),
+    ('closest_distance_a', 'number', '', 'its distance to the closest guanidino or CD atom, in angstroms'),
+    ('contacted_nucleotides', 'list<string>', '', 'every nucleotide of the chain within 4 Å of the arginine side chain, SEQRES numbering'),
+    ('contacted_author_numbers', 'list<string>', '', 'the same nucleotides with the entry\'s author numbers, in the same order'),
+    ('contacted_distances_a', 'list<string>', '', 'their distances in angstroms, in the same order'),
+    ('window_start', 'integer', '', 'SEQRES number of the window\'s first position (below 1 when the window runs past the chain\'s start)'),
+    ('window', 'string', '', 'the bound sequence: 8 nucleotides each side of the closest one, which is the 9th; - past the chain\'s ends. Windows of different sites align on their middle'),
+    ('window_marked', 'string', '', 'the window with the contacted nucleotides in brackets'),
 ]
 
 RESIDUE_EVIDENCE_COLUMNS = [
