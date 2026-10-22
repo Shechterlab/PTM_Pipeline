@@ -1,0 +1,5 @@
+pdb_id	chain	seqres_index	residue	levy_class	relative_asa_alone	relative_asa_in_complex	asa_buried_by_nucleic_acid_a2	asa_buried_by_protein_a2	nucleic_acid_contact	base_hbond_partners	protein_hbonds
+3d2f	B	261	ARG	rim	0.477	0.39	0	23.9	none		0
+3d2f	B	299	ARG	support	0.162	0.13	0	8.7	none		0
+7kw7	C	171	ARG	core	0.419	0.16	0	70.9	none		2
+7kw7	C	322	ARG	none	0.48	0.48	0	0	none		0

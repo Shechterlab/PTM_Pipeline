@@ -916,7 +916,8 @@ def stage_topup(c: Path, out: Path, workers: int, manifest: Path, measured: str)
         stage_contacts(w, c)
     if (c / 'environments').is_dir():
         stage_environments(w, c, workers)
-    if any((c / x).is_dir() for x in ('protvar_measure', 'afdb_measure', 'afdb_complex')):
+    # scripts/37 makes these folders before it knows whether a model needs measuring: stage only what holds files
+    if any(p.is_file() for x in ('protvar_measure', 'afdb_measure', 'afdb_complex') for p in (c / x).glob('*')):
         stage_model_contacts(w, c, served=out / 'protvar_served_models_af2complexes_v1.tsv', measured=measured)
         stage_measured_positions(w, c)
     files = [p for p in sorted(c.rglob('*')) if p.is_file()]
