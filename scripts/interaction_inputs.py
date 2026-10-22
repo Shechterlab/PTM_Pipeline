@@ -251,7 +251,7 @@ def crosslinks(t: Tables, seq: dict, proteome: dict, rna_sets: list, focused_bit
         if len(positions) == 1:
             rna_single[a].update(positions)
     gene_acc = {v[0]: a for a, v in sorted(proteome.items())}
-    for r in t.rows('rbdmap_'):
+    for r in t.rows('rbdmap_castello2016_rna_bound_fragments'):
         frag, a = r['fragment_sequence'], r['protein_id'].split('-')[0]
         if a not in seq and r['gene']:
             a = gene_acc.get(r['gene'], a)
@@ -321,7 +321,7 @@ def crosslink_sequences(t: Tables, seq: dict, proteome: dict, rna_sets: list) ->
             dna[a].add((start, pep))
     gene_acc = {v[0]: a for a, v in sorted(proteome.items())}
     rbd = defaultdict(set)
-    for r in t.rows('rbdmap_'):
+    for r in t.rows('rbdmap_castello2016_rna_bound_fragments'):
         frag, a = r['fragment_sequence'], r['protein_id'].split('-')[0]
         if a not in seq and r['gene']:
             a = gene_acc.get(r['gene'], a)
