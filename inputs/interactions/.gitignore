@@ -2,3 +2,7 @@
 # derived from their MaxQuant output is not redistributed (../MANIFEST.tsv redistribution = checksum_only).
 # Rebuild it with scripts/43d_stage_pclap.py.
 pclap_mullari2017_peptides.tsv
+# RBDmap (PRIDE PXD000883): likewise only the EMBL-EBI terms of use, so the peptide table derived from its MaxQuant
+# peptide and quantification tables is not redistributed (checksum_only). Rebuild it with
+# scripts/43f_stage_peptide_backgrounds.py --only rbdmap.
+rbdmap_castello2016_measured_peptides.tsv

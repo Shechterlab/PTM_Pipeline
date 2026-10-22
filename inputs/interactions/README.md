@@ -155,6 +155,10 @@ accessions only.
 | `rbrid_oksuz2023_k562_segments.tsv` | 3,463 | RBR-ID RNA-binding regions in 1,098 proteins: runs of consecutive residues whose smoothed residue score is ≥ 3, with the maximum and mean residue score, the peptides over them and the best p. |
 | `rbrid_oksuz2023_k562_runs.tsv` | 30 | The 30 runs: acquisition date, sample, condition, the raw files of the sample, and the median used to normalise. |
 | `raw_rbrid_files.tsv` | 4 | The PRIDE files read, with size, MD5 and date. The 2 GB report was streamed, not kept. |
+| `capri_panhale2019_measured_peptides.tsv` | 4,777 | CAPRI (HEK293) peptides from the PRIDE MaxQuant search (PXD013338) of the human adjacent-peptide runs: 3 UV-crosslinked and 3 non-crosslinked replicates. Each peptide is on the canonical sequence, with its Lys-C region, whether it is one of the authors' adjacent peptides (2,555 on 455 proteins), and how many +UV and -UV replicates detected it and identified it by MS/MS. The others are the measured background. |
+| `raw_capri_pride_files.tsv` | 7 | The PRIDE archive, the three MaxQuant tables read from it, the experimental design file and PRIDE's project and file listings, with their size, MD5 and date (staged with `scripts/43f_stage_peptide_backgrounds.py`). |
+| `rbdmap_castello2016_measured_peptides.tsv` | 26,398 | RBDmap (HeLa) tryptic peptides identified in the Lys-C and Arg-C experiments (PRIDE PXD000883). Each peptide is on the canonical sequence, with its Lys-C or Arg-C fragment, in how many replicates it was quantified in the RNA-bound and released fractions and the input, its mean log2 RNA-bound/released ratio, and the authors' call from Table S1 (1,596 RBDpeps on 575 proteins; 2,314 CandidateRBDpeps). Not in Git (see Licences). |
+| `raw_rbdmap_pride_files.tsv` | 7 | The four PRIDE peptide and quantification tables, Table S1 and PRIDE's project and file listings, with their size, MD5 and date (staged with `scripts/43f_stage_peptide_backgrounds.py`). |
 | `trendel2025_dna_crosslink_localisation.tsv` | 1,688 | DNA-crosslinked peptides (MCF7). Lower-case letters mark the residues the crosslink may sit on. |
 | `trendel2025_dna_crosslinked_peptides.tsv` | 688 | DNA-crosslinked peptide ranges. |
 | `trendel2025_mcf7_dna_interactome.tsv` | 1,191 | Proteins in the MCF7 DNA interactome. |
@@ -241,6 +245,42 @@ report on PRIDE (staged 22 October 2026).
 - **Measured background.** The coverage table records which residues any peptide measured. A detectability control
   can compare methylated and other arginines among measured ones only.
 
+**Measured-peptide backgrounds (CAPRI and RBDmap).** A region can be called RNA-bound only where one of its peptides was
+measured, and methylarginines are themselves found by mass spectrometry. `scripts/43f_stage_peptide_backgrounds.py` lists
+every peptide each experiment measured, so that methylarginines can be compared with the other arginines the experiment
+could see (as `rna_pclap_cov` does for pCLAP). Both tables place peptides as scripts/43d does (exact, unique match: leading
+razor protein, other accessions, secondary accessions, gene names), and remove reverse hits and contaminants. Neither
+search allowed methylarginine.
+
+- **CAPRI** (Panhale et al., Nat Commun 10:2682, 2019). The runs come from `20160811_human_CAPRI_Adjacent_MaxQuant_augs2016.zip`:
+  20 runs grouped into 3 UV-crosslinked and 3 non-crosslinked replicates (pools A and B together, as the authors searched them).
+  - **+UV and -UV:** MaxQuant's experiment of each run, checked against PRIDE's `Filenames_Experimental_Design.xlsx`.
+  - **Detection:** a replicate detects a peptide when its intensity is above 0.
+  - **Adjacent peptides:** the authors' own, matched by sequence to `capri_panhale2019_adj_peptides.tsv`. Their rule was a
+    moderated t-test with a Benjamini-Hochberg FDR below 5%, then more than eightfold higher mean intensity. All 2,565 are
+    in the search, and each of the 2,555 kept was detected in all three +UV replicates.
+  - **Lys-C region:** CAPRI's rule, extended to the nearest lysine on each side. It gives the authors' ADJ-peptide for
+    1,535 of the 1,536 whose adjacent peptides are placed on the authors' entry. For 177 ADJ-peptides the leading razor
+    protein is another entry sharing the peptide (for example HNRNPC rather than HNRNPCL2, ACTB rather than POTEF).
+  - **Placement:** 4,777 of 4,880 peptides kept. 72 are not in the canonical sequence, 27 occur at more than one
+    position and 4 have no reviewed entry; 10 of the dropped peptides are adjacent.
+- **RBDmap** (Castello et al., Mol Cell 63:696, 2016). The files are `RBDmap_{LysC,ArgC}_peptideID.txt` (MaxQuant peptides)
+  and `RBDmap_{LysC,ArgC}_QUAN.txt` (intensity per fraction and replicate). F3 is the RNA-bound fraction (the second oligo(dT)
+  capture's eluate), F2 the released one, F1 the input.
+  - **RNA-bound:** the authors' calls from Table S1, matched by protease and sequence. Their rule (Supplemental
+    Experimental Procedures) was a limma moderated t-test of the log2 F3/F2 ratio, normalised to the released mode, against
+    zero over three replicates. A Benjamini-Hochberg FDR of 1% gives RBDpep; 10% gives CandidateRBDpep. All 1,610 Table S1
+    RBDpeps are in the PRIDE tables.
+  - **Measured:** every identified peptide is kept. `quantified_bound_or_released` counts the replicates with an F2 or F3
+    intensity. A peptide seen only in the input could never be called RNA-bound.
+  - **Fragment:** the in-silico digest that reproduces Table S1's fragments (8,471 of the 8,473 rows that place on the
+    reference). It cuts after every K (Lys-C) or R (Arg-C), but a piece shorter than 6 residues joins the next one; the
+    protein's first piece is cut off from 4 residues, and a one-residue last piece joins the fragment before it. For the
+    RBDpeps placed on Table S1's own entry, the fragment equals Table S1's in 1,277 of 1,279 cases; the other 2 differ in
+    sequence. 317 RBDpeps are placed on another entry (Table S1 gives an unreviewed entry, none, or a paralog).
+  - **Placement:** 26,398 of 26,681 peptides kept. 167 are not in the canonical sequence, 91 occur at more than one
+    position and 25 have no reviewed entry; 14 of the dropped peptides are RBDpeps.
+
 ### Condensates
 
 | File | Rows | What it holds |
@@ -255,8 +295,13 @@ Each table carries its source's licence in `../MANIFEST.tsv`. Licences verified 
   AlphaFold DB and IntAct.
 - **RBDmap** (Castello et al. 2016): CC BY 4.0, from the open access article in
   [PMC5003815](https://pmc.ncbi.nlm.nih.gov/articles/PMC5003815/).
+  - PRIDE PXD000883 (checked 22 October 2026) gives only the "EBI terms of use". `rbdmap_castello2016_measured_peptides.tsv`
+    is derived from those files, so it is listed with its MD5 (`checksum_only`) and kept out of Git by `.gitignore`.
+  - `scripts/43f_stage_peptide_backgrounds.py --only rbdmap` rebuilds it byte for byte, and `hpc/build_release.sh` does
+    so when it is absent.
 - **CAPRI** (Panhale et al., Nat Commun 10:2682, 2019): CC BY 4.0, from the open access article and its
-  supplementary data. Its searches did not allow methylarginine as a modification.
+  supplementary data. Its searches did not allow methylarginine as a modification. PRIDE PXD013338 is CC0, so
+  `capri_panhale2019_measured_peptides.tsv` is in Git.
 - **pCLAP** (Mullari et al. 2017; checked 22 October 2026): PRIDE PXD005739 gives only the "EBI terms of use", and the
   submitters state no licence. The article is not open access (ACS; not AuthorChoice, not in PMC, Unpaywall "closed").
   - `pclap_mullari2017_peptides.tsv` carries the authors' intensities, so it is not redistributed. It is listed with its
@@ -293,4 +338,5 @@ python scripts/37a_stage_interactions.py --cache data/interactions_cache --out i
 python scripts/37b_check_staged_interactions.py --cache data/interactions_cache --tables inputs/interactions
 python -I scripts/43d_stage_pclap.py --cache PTM_data/external/pclap --out inputs/interactions   # pCLAP; downloads 193 MB from PRIDE
 python -I scripts/43c_stage_rbrid.py --cache <download folder> --out inputs/interactions
+python -I scripts/43f_stage_peptide_backgrounds.py --cache PTM_data/external --out inputs/interactions   # CAPRI and RBDmap; downloads about 250 MB
 ```

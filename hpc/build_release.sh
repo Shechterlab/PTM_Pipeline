@@ -22,9 +22,9 @@
 #      (scripts/37, from inputs/interactions/), then scripts/build_release.py again with the interaction tables, which
 #      writes releases/VERSION/ with the statistics of the second run and both analyses' result tables (analyses/,
 #      analyses_with_lower_confidence/); the website data go to docs/data/ (SITE_OUT), the view's as methylarg_*_all.json.
-# Every input comes from inputs/ and must match inputs/MANIFEST.tsv (the files it lists as in Git, and the pCLAP peptides,
-# which scripts/43d derives from PRIDE when they are absent). WORK_ROOT (default: a temporary directory) holds the
-# intermediate results. The build needs the network for that derivation and when inputs/interactions/ lacks data for a site: scripts/37 then fetches it into WORK_ROOT/interactions_topup, and the build stops, before
+# Every input comes from inputs/ and must match inputs/MANIFEST.tsv (the files it lists as in Git, and the pCLAP and
+# RBDmap peptides, which scripts/43d and scripts/43f derive from PRIDE when they are absent). WORK_ROOT (default: a temporary directory) holds the
+# intermediate results. The build needs the network for those derivations and when inputs/interactions/ lacks data for a site: scripts/37 then fetches it into WORK_ROOT/interactions_topup, and the build stops, before
 # writing the release, and says how to stage it.
 #
 # Environment (optional): PREVIOUS, the release the changes are traced from (default releases/v1.2.0); RELEASE_OUT, where
@@ -55,26 +55,33 @@ echo "[release] checking inputs against $IN/MANIFEST.tsv"
 . "$CODE/hpc/analyses.sh"
 check_inputs
 
-# The pCLAP peptides are derived from the PRIDE MaxQuant output and kept out of Git (EMBL-EBI terms of use): when they
-# are absent, scripts/43d derives them (download into PTM_data/external/pclap) in WORK, leaving the files in Git alone.
-# Either way they must match MANIFEST.tsv, or scripts/37 would test them silently changed or leave them out.
-PCLAP=interactions/pclap_mullari2017_peptides.tsv
-if [ ! -f "$IN/$PCLAP" ]; then
-  echo "[release] deriving $IN/$PCLAP (scripts/43d_stage_pclap.py)"
-  mkdir -p "$WORK/logs" "$WORK/pclap/interactions"
-  python "$CODE/scripts/43d_stage_pclap.py" --out "$WORK/pclap/interactions" --manifest '' > "$WORK/logs/stage_pclap.log" 2>&1 \
-    || { tail -20 "$WORK/logs/stage_pclap.log"; echo "[release] could not derive the pCLAP peptides (log: $WORK/logs/stage_pclap.log)"; exit 1; }
-  cp "$WORK/pclap/$PCLAP" "$IN/$PCLAP"
-fi
-python - "$IN" "$PCLAP" <<'PYEOF'
+# Tables derived from PRIDE and kept out of Git (EMBL-EBI terms of use): the pCLAP peptides (scripts/43d, from the
+# MaxQuant output) and the RBDmap measured peptides (scripts/43f, from the peptide and quantification tables). When one
+# is absent, its script derives it (download into PTM_data/external/) in WORK, leaving the files in Git alone. Either way
+# each must match MANIFEST.tsv, or scripts/37 would test it silently changed or leave it out.
+derive_input() {  # derive_input TABLE SCRIPT [ARGS...]
+  local table=$1 script=$2 name
+  shift 2
+  name=$(basename "$table" .tsv)
+  if [ ! -f "$IN/$table" ]; then
+    echo "[release] deriving $IN/$table ($script)"
+    mkdir -p "$WORK/logs" "$WORK/derived/$name/interactions"
+    python "$CODE/$script" "$@" --out "$WORK/derived/$name/interactions" --manifest '' > "$WORK/logs/stage_$name.log" 2>&1 \
+      || { tail -20 "$WORK/logs/stage_$name.log"; echo "[release] could not derive $table (log: $WORK/logs/stage_$name.log)"; exit 1; }
+    cp "$WORK/derived/$name/$table" "$IN/$table"
+  fi
+  python - "$IN" "$table" "$script" <<'PYEOF'
 import hashlib, sys
 from pathlib import Path
 import pandas as pd
-inputs, name = Path(sys.argv[1]), sys.argv[2]
+inputs, name, script = Path(sys.argv[1]), sys.argv[2], sys.argv[3]
 manifest = pd.read_csv(inputs / 'MANIFEST.tsv', sep='\t', dtype=str, keep_default_na=False).set_index('file')
 if hashlib.md5((inputs / name).read_bytes()).hexdigest() != manifest.at[name, 'md5']:
-    sys.exit(f'{name} differs from MANIFEST.tsv: move it aside and build again to derive it (scripts/43d_stage_pclap.py)')
+    sys.exit(f'{name} differs from MANIFEST.tsv: move it aside and build again to derive it ({script})')
 PYEOF
+}
+derive_input interactions/pclap_mullari2017_peptides.tsv scripts/43d_stage_pclap.py
+derive_input interactions/rbdmap_castello2016_measured_peptides.tsv scripts/43f_stage_peptide_backgrounds.py --only rbdmap
 
 {
   echo "built: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
