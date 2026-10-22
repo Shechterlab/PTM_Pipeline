@@ -1659,7 +1659,7 @@ body.slim .hero .brand-mark img { order: 0; }
   font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
 .pi-lead.sel { color: var(--accent); }
 .pi-lead.named { color: var(--brand-ink); letter-spacing: 0.02em; }
-@media (max-width: 560px) { .pi-lead { max-width: 5.5rem; padding: 0 0.5rem; } }
+@media (max-width: 560px) { .pi-lead { max-width: 4.6rem; padding: 0 0.45rem; letter-spacing: 0.03em; } }
 .pi-scroll { flex: 1 1 auto; min-width: 0; display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
 .pi-scroll::-webkit-scrollbar { display: none; }
 .page-index.more-right .pi-scroll { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent); }
@@ -1678,10 +1678,17 @@ body.slim .hero .brand-mark img { order: 0; }
 .pi:focus-visible, .pi-all:focus-visible, .pi-arrow:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .pi-arrow { flex: none; width: 2rem; border: 0; background: var(--surface); color: var(--ink-2); font-size: 1.25rem; line-height: 1; cursor: pointer; }
 .pi-arrow:hover { color: var(--accent); }
+.pi-step { flex: none; display: flex; align-items: center; gap: 0.1rem; padding: 0 0.3rem; border-left: 1px solid var(--line); }
+.pi-stepb { width: 2rem; height: 2rem; display: grid; place-items: center; border: 1px solid transparent; border-radius: 6px; background: none; color: var(--ink-2); cursor: pointer; }
+.pi-stepb svg { width: 1rem; height: 1rem; }
+.pi-stepb:hover:not(:disabled) { color: var(--accent); border-color: var(--line-strong); }
+.pi-stepb:disabled { color: var(--line-strong); cursor: default; }
+.pi-stepb:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .pi-all { flex: none; margin-left: 0.25rem; padding: 0 0.85rem; border: 0; border-left: 1px solid var(--line); background: none; color: var(--accent-dark); font: inherit; font-size: 0.8rem; font-weight: 600; white-space: nowrap; cursor: pointer; }
 .pi-all:hover { color: var(--accent); text-decoration: underline; }
 @media (pointer: coarse) { .pi-arrow { display: none; } }
-@media (max-width: 560px) { .pi { font-size: 0.82rem; padding: 0.45rem 0.55rem 0.5rem; } .pi-all { padding: 0 0.6rem; } }
+/* Phones: the tabs get the room; Expand all gives way to stepping (˄ ˅), the lead label shortens */
+@media (max-width: 560px) { .pi { font-size: 0.82rem; padding: 0.45rem 0.55rem 0.5rem; } .pi-all { display: none; } .pi-step { padding: 0 0.15rem; } .pi-stepb { width: 2.4rem; height: 2.4rem; } }
 @media print { .page-index, .card-index { display: none !important; } }
 /* Group headings between folds */
 .fold-group { font-family: var(--font-body); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin: 0.9rem 0 -0.2rem 0.2rem; }
@@ -1716,3 +1723,7 @@ body.slim .hero .brand-mark img { order: 0; }
 .key-fold > summary::before { content: "▸"; color: var(--muted); }
 .key-fold[open] > summary::before { content: "▾"; }
 @media (min-width: 701px) { .key-fold[open] > summary { display: none; } }
+/* Nucleic-acid contact card: the forest plot scales to the card; the reading above it in plain words */
+.nac-fig { overflow-x: auto; }
+.nac-fig svg { display: block; width: 100%; max-width: 980px; height: auto; min-width: 640px; }
+.nac-read { margin: 0.2rem 0 0.6rem; font-size: 0.9rem; color: var(--ink-2); }
