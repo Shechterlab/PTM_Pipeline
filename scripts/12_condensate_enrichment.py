@@ -168,6 +168,7 @@ def main() -> None:
             )
             memberships = memberships.drop(columns=['condensate_name_catalog'])
 
+    reviewed = set()
     if args.reference_fasta:
         reviewed = {line.split('|')[1] for line in open(args.reference_fasta, encoding='utf-8') if line.startswith('>')}
         current = {}
@@ -185,28 +186,39 @@ def main() -> None:
     global_methyl_fraction = (len(methyl_in_universe) / len(universe)) if universe else 0.0
 
     # Every condensate with at least --min-condensate-size members, tested with clusterProfiler::enricher (one-sided
-    # hypergeometric, fold enrichment, BH; scripts/enrichment.py) against the other proteins in any condensate.
+    # hypergeometric, fold enrichment, BH; scripts/enrichment.py) against two backgrounds: the other proteins in any
+    # condensate (are its members methylated more often than condensate proteins in general, half of which are), and,
+    # with --reference-fasta, the reviewed human proteome (more often than proteins in general).
     tested = memberships.groupby('condensate_id')['canonical_UniProtAC'].nunique()
     tested = set(tested[tested >= args.min_condensate_size].index)
     names = memberships.drop_duplicates('condensate_id').set_index('condensate_id')['condensate_name']
     sets = memberships.loc[memberships['condensate_id'].isin(tested), ['condensate_id', 'canonical_UniProtAC']]
-    res = run([Job('condensate', methyl_in_universe, universe, sets=sets, whole_universe=True)], Path(args.outdir) / 'enricher')['condensate']
-    rows = []
-    for r in res.to_dict('records'):
-        rows.append({
-            'condensate_id': r['ID'],
-            'condensate_name': names[r['ID']],
-            'member_count': r['M'],
-            'methyl_protein_count': r['k'],
-            'methyl_fraction_within_condensate': r['k'] / r['M'],
-            'expected_methyl_count_at_global_rate': r['M'] * global_methyl_fraction,
-            'fold_enrichment': r['FoldEnrichment'],
-            'log2_fold_enrichment': math.log2(r['FoldEnrichment']),
-            'p_value': r['pvalue'],
-            'q_value': r['p.adjust'],
-            'method': 'enricher',
-        })
-    enrich = pd.DataFrame(rows).sort_values(['fold_enrichment', 'methyl_protein_count'], ascending=[False, False])
+    jobs = [Job('condensate', methyl_in_universe, universe, sets=sets, whole_universe=True)]
+    if reviewed:
+        jobs.append(Job('condensate_proteome', methyl_proteins & reviewed, reviewed, sets=sets, whole_universe=True))
+    res = run(jobs, Path(args.outdir) / 'enricher')
+
+    def table(result: pd.DataFrame, base_fraction: float) -> pd.DataFrame:
+        rows = []
+        for r in result.to_dict('records'):
+            rows.append({
+                'condensate_id': r['ID'],
+                'condensate_name': names[r['ID']],
+                'member_count': r['M'],
+                'methyl_protein_count': r['k'],
+                'methyl_fraction_within_condensate': r['k'] / r['M'],
+                'expected_methyl_count_at_global_rate': r['M'] * base_fraction,
+                'fold_enrichment': r['FoldEnrichment'],
+                'log2_fold_enrichment': math.log2(r['FoldEnrichment']),
+                'p_value': r['pvalue'],
+                'q_value': r['p.adjust'],
+                'method': 'enricher',
+            })
+        return pd.DataFrame(rows).sort_values(['fold_enrichment', 'methyl_protein_count'], ascending=[False, False])
+
+    enrich = table(res['condensate'], global_methyl_fraction)
+    proteome_fraction = len(methyl_proteins & reviewed) / len(reviewed) if reviewed else 0.0
+    enrich_proteome = table(res['condensate_proteome'], proteome_fraction) if reviewed else pd.DataFrame()
     summary = pd.DataFrame([{
         'methyl_proteins_total': len(methyl_proteins),
         'condensate_universe_proteins': len(universe),
@@ -214,6 +226,9 @@ def main() -> None:
         'fraction_methyl_proteins_in_any_condensate': (len(methyl_in_universe) / len(methyl_proteins)) if methyl_proteins else 0.0,
         'fraction_condensate_universe_proteins_methylated': global_methyl_fraction,
         'condensate_count_after_filters': int(enrich['condensate_id'].nunique()) if not enrich.empty else 0,
+        'reviewed_proteome_proteins': len(reviewed),
+        'methyl_proteins_in_reviewed_proteome': len(methyl_proteins & reviewed),
+        'fraction_reviewed_proteome_methylated': proteome_fraction,
         'include_synthetic': bool(args.include_synthetic),
     }])
 
@@ -222,6 +237,8 @@ def main() -> None:
     save_table(memberships, outdir / 'condensate_membership.tsv')
     save_table(enrich, outdir / 'condensate_enrichment.tsv')
     save_table(summary, outdir / 'condensate_summary.tsv')
+    if not enrich_proteome.empty:
+        save_table(enrich_proteome, outdir / 'condensate_enrichment_vs_proteome.tsv')
 
     apply_paper_style()
     positive_plot_df = enrich[(enrich['member_count'] >= 10) & (enrich['q_value'] <= 0.05)].sort_values(['log2_fold_enrichment', 'methyl_protein_count'], ascending=[False, False]).head(15).sort_values('log2_fold_enrichment')

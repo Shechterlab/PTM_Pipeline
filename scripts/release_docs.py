@@ -764,6 +764,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
             '',
         ]
     lines += nucleic_acid_section(ctx, files, previous)
+    lines += analysis_section(files, previous)
     if since_v11:
         lines += [
         '## Methylation degree',
@@ -883,6 +884,31 @@ def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
             'DNA) and the site table gains bound_* columns. Inputs: `inputs/interactions/pdb_nucleic_acid_*` (PDB data, CC0) and '
             '`inputs/nucleic_acid/` (scripts/43_stage_nucleic_acid_binding.py). RNAcompete (CISBP-RNA) states no licence and '
             'is not included.', '']
+    return out
+
+
+def analysis_section(files: dict, previous: str) -> list:
+    """CHANGES.md: the analyses added in v1.3.0 (structural context, condensates against the proteome)."""
+    if previous not in ('v1.0.0', 'v1.1.0', 'v1.2.0'):
+        return []
+    stats = files['statistics'][1]
+    out = []
+    sc = stats[stats['analysis'] == 'structure_context']
+    if len(sc):
+        out += ['## Structural context', '',
+                f"Each site gains `structure_context`: disorder (MobiDB) and domains (InterPro) in one class, from inside a folded "
+                f"domain to a disordered region more than {rc.STRUCTURE_MID} residues from any domain, with disordered regions "
+                f"binned by the distance to the nearest domain edge (within {rc.STRUCTURE_NEAR}, {rc.STRUCTURE_NEAR + 1}-{rc.STRUCTURE_MID}, "
+                f"more than {rc.STRUCTURE_MID}). `{files['statistics'][0]}` (analysis structure_context) compares methylarginines with "
+                'the other arginines of the same proteins in each class. The disorder and domain columns and their tests are unchanged.', '']
+    cp = stats[stats['analysis'] == 'condensate_proteome']
+    if len(cp):
+        q = cp['q'].astype(float)
+        out += ['## Condensates against the proteome', '',
+                f"Each CD-CODE condensate is also tested against the reviewed human proteome (analysis condensate_proteome): "
+                f"{n(int((q <= 0.05).sum()))} of {n(len(cp))} condensates are enriched at q <= 0.05. The test against the other "
+                'condensate proteins (analysis condensate) is unchanged; as about half of all condensate proteins are methylated, it '
+                'asks which condensates stand out among condensates, and few do.', '']
     return out
 
 

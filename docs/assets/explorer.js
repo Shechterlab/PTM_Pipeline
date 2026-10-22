@@ -280,14 +280,14 @@
     CARM1_hydrophobic_proline: 'Pro within ±5 and a hydrophobic residue (AILMFWVY) within ±3 (CARM1-like)',
     DR: 'Asp at −1', RD: 'Asp at +1', ER: 'Glu at −1', RE: 'Glu at +1',
   };
-  const DISORDER_LABEL = { disordered: 'IDR', disorder_boundary: 'IDR edge ≤20 aa', ordered: 'Ordered', no_disorder_annotation: 'No disorder data' };
+  const DISORDER_LABEL = { disordered: 'IDR', disorder_boundary: 'Ordered, ≤20 aa from an IDR', ordered: 'Ordered, >20 aa from an IDR', no_disorder_annotation: 'No disorder data' };
   const DISORDER_HELP = {
     disordered: 'Inside a MobiDB disorder interval',
     disorder_boundary: 'Outside, but within 20 aa of, a disorder interval',
     ordered: 'More than 20 aa from any disorder interval',
     no_disorder_annotation: 'Protein has no MobiDB disorder annotation',
   };
-  const DOMAIN_LABEL = { in_domain: 'In domain', boundary: 'Domain edge ≤20 aa', inter_domain_linker: 'Inter-domain linker', distal: 'Domain-distal', no_domain_annotation: 'No domain data' };
+  const DOMAIN_LABEL = { in_domain: 'In domain', boundary: 'Outside, ≤20 aa from a domain', inter_domain_linker: 'Inter-domain linker', distal: 'Domain-distal', no_domain_annotation: 'No domain data' };
   const DOMAIN_HELP = {
     in_domain: 'Inside an InterPro domain or repeat',
     boundary: 'Outside, but within 20 aa of, a domain edge',
@@ -295,6 +295,35 @@
     distal: 'More than 20 aa from any domain and not between two domains',
     no_domain_annotation: 'Protein has no InterPro domain or repeat annotation',
   };
+  // Structural context (v1.3.0 exports: M.structure_contexts and the site field structure_context; derived from the
+  // disorder and domain classes for earlier ones): disorder and domains in one class, from inside a folded domain to
+  // deep in a disordered region (scripts/common.py structure_context).
+  const STRUCT_CODES = ['domain_folded', 'domain_disordered', 'ordered_outside_domain', 'idr_near_domain', 'idr_mid_domain', 'idr_far_from_domain', 'no_disorder_annotation'];
+  const STRUCT_LABEL = { domain_folded: 'Folded domain', domain_disordered: 'Disordered domain', ordered_outside_domain: 'Ordered, outside domains', idr_near_domain: 'IDR ≤10 aa from a domain', idr_mid_domain: 'IDR 11–30 aa from a domain', idr_far_from_domain: 'IDR >30 aa from any domain', no_disorder_annotation: 'No disorder data' };
+  const STRUCT_HELP = {
+    domain_folded: 'Inside an InterPro domain or repeat, outside MobiDB disorder',
+    domain_disordered: 'Inside an InterPro domain or repeat that MobiDB calls disordered at the site',
+    ordered_outside_domain: 'Outside domains and outside MobiDB disorder',
+    idr_near_domain: 'In a MobiDB disordered region outside domains, within 10 aa of a domain edge',
+    idr_mid_domain: 'In a MobiDB disordered region outside domains, 11–30 aa from the nearest domain edge',
+    idr_far_from_domain: 'In a MobiDB disordered region more than 30 aa from any domain, or on a protein with none',
+    no_disorder_annotation: 'Protein has no MobiDB disorder annotation',
+  };
+  // The Human Protein Atlas locations the subcellular chart opens on: the main compartments by where they are in the
+  // cell (HPA 25.1 names), enriched or not, so the nuclear ones read against the rest of the cell.
+  const LOC_MAIN = [
+    ['Nucleus', ['Nucleoplasm', 'Nuclear speckles', 'Nuclear bodies', 'Nucleoli', 'Nucleoli fibrillar center', 'Nucleoli rim', 'Mitotic chromosome', 'Nuclear membrane']],
+    ['Cytoplasm', ['Cytosol', 'Cytoplasmic bodies', 'Centrosome', 'Microtubules', 'Actin filaments']],
+    ['Organelles and membranes', ['Mitochondria', 'Endoplasmic reticulum', 'Golgi apparatus', 'Vesicles', 'Plasma membrane']],
+  ];
+  const structCodes = () => M.structure_contexts || STRUCT_CODES;
+  // A site's class index in structCodes() when the export has none (as scripts/common.py structure_context).
+  function structOf(s) {
+    const dc = M.disorder_classes[s.dc], dx = M.domain_contexts[s.dctx];
+    const c = dc === 'no_disorder_annotation' ? dc : dx === 'in_domain' ? (dc === 'disordered' ? 'domain_disordered' : 'domain_folded')
+      : dc !== 'disordered' ? 'ordered_outside_domain' : s.domDist == null || s.domDist > 30 ? 'idr_far_from_domain' : s.domDist <= 10 ? 'idr_near_domain' : 'idr_mid_domain';
+    return structCodes().indexOf(c);
+  }
   const TREAT_HELP = { GSK591: 'PRMT5 inhibitor', MS023: 'type I PRMT inhibitor', 'CARM1 KO': 'CARM1 (PRMT4) knockout' };
   const PTM_LABEL = ['Phospho', 'Lys acyl', 'Ub/SUMO', 'Lys methyl'];
   // What each protein-map row shows and where it comes from (the hover on its label).
@@ -636,7 +665,7 @@
     // Motif, study, domain class, functional class, disease, condensate, complex, GO and partner filters are search
     // terms (motif:RGG …) held in Q, not here.
     states: new Set(), ips: new Set(), sources: new Set(), s2: new Set(), multi: false, reviewed: false, minRep: 0,
-    treat: '', disorder: new Set(), domctx: new Set(),
+    treat: '', disorder: new Set(), domctx: new Set(), sctx: new Set(),
     nn: 0, ptmGroup: '', ptmDist: 0,
     anyCond: false, minSites: 1, dense: false, arch: '', argEnriched: false,
     ixScore: 700, goExp: false, iface: new Set(), condConf: 0, modelledPdb: false, pred: 0, galOnly: false, xl: new Set(),
@@ -886,10 +915,10 @@
     S = data.sites.map((r, j) => ({
       j, p: r[0], pos: r[1], st: r[2], src: r[3], refs: r[4], dc: r[5], dEdge: r[6], dctx: r[7], ipr: r[8],
       dcls: r[9], domDist: r[10], domSide: r[11], win: r[12], mot: r[13], mis: !!r[14], orig: r[15],
-      s2: r[16], ip: r[17], tr: r[18], study: r[19] || 0, ko: named(M.site_fields, r, 'carm1_ko', []), stx: named(M.site_fields, r, 'state_detail', null), par: named(M.site_fields, r, 'paralogs', null), nn: null, ptmD: null, trf: 0,
+      s2: r[16], ip: r[17], tr: r[18], study: r[19] || 0, ko: named(M.site_fields, r, 'carm1_ko', []), stx: named(M.site_fields, r, 'state_detail', null), sctx: named(M.site_fields, r, 'structure_context', null), par: named(M.site_fields, r, 'paralogs', null), nn: null, ptmD: null, trf: 0,
       iface: 0, ifP: null, ifPdb: null, ifN: 0, contacts: null, modelledMe: '', geo: null, modelled: null,
     }));
-    for (const s of S) P[s.p].sites.push(s.j);
+    for (const s of S) { P[s.p].sites.push(s.j); if (s.sctx == null) s.sctx = structOf(s); }
     // The view with lower-confidence sites marks them, with what the tests found (M.lower_confidence_sites).
     const LCS = M.lower_confidence_sites;
     if (LCS) for (const [j, an, res, why, earlier] of LCS.sites) Object.assign(S[j], { lc: true, lcAn: !!an, lcRes: res, lcWhy: why, lcEarlier: earlier || [] });
@@ -1324,10 +1353,10 @@
       return '<p>' + famRules + 'A bar is that family\'s two-sided Fisher exact test, methylated proteins against the rest of the reviewed human genes, BH-adjusted across the audited families (the additional families among themselves).</p><p>' + clicks + '</p>' + caveat;
     }
     const bg = dm.background, nTested = dm.terms.length - 1;
-    return '<p><b>Disease Ontology</b> (the default view). The Human Disease Ontology (' + doiLink('10.1093/nar/gkad1051', 'Baron et al. 2024') + '; CC0)' + (dm.release ? ', release ' + esc(dm.release) : '') + ', with the gene sets DOSE uses for <code>enrichDO</code>: each term holds the genes annotated to it and to every term under it. ' +
+    return '<p><b>DisGeNET families</b> (the default view). ' + famRules + 'Each family is tested against the reviewed human genes with a DisGeNET term (clusterProfiler enricher; q over the audited families). Most enriched DisGeNET terms are clinical signs (facial features, for example), which the additional families take; the term table opens on the terms of the audited families. ' + clicks + '</p>' +
+      '<p><b>Disease Ontology.</b> The Human Disease Ontology (' + doiLink('10.1093/nar/gkad1051', 'Baron et al. 2024') + '; CC0)' + (dm.release ? ', release ' + esc(dm.release) : '') + ', with the gene sets DOSE uses for <code>enrichDO</code>: each term holds the genes annotated to it and to every term under it. ' +
       'The background is the ' + fmt(bg[1]) + ' reviewed human genes with a Disease Ontology term, ' + fmt(bg[0]) + ' of them (' + pct(bg[0], bg[1]) + '%) genes of methylarginine-containing proteins. Every term of at least ' + DO_TERMS.min + ' genes with a methylated protein is tested (' + fmt(nTested) + ' terms; clusterProfiler enricher on DOSE\'s gene sets, which is the test of enrichDO; BH over all of them). ' +
-      'A term holds the genes of every term under it, so a broad term (cancer, nervous system disease) repeats the narrower ones. The chart therefore lists the narrowest enriched terms of at least ' + DO_SHORT + ' genes (a term is left out when an enriched term under it is listed), then, for comparison, the ' + DO_COMPARE + ' largest terms two levels below “disease” that are not enriched. “Show the whole ontology” draws the eight classes under “disease” with their terms of at least ' + DO_ROW + ' genes, and “Show the terms under them” adds the next level. The classes keep the ontology\'s names, each followed by a short gloss, and their tooltips give its definition: “physical disorder”, for example, is its class of congenital and developmental conditions (congenital heart disease, congenital nervous system abnormality, orofacial cleft), defined as a disease with a material basis in a genetic abnormality, an error in embryonic development, infection or a compromised intrauterine environment. The term table lists the enriched terms, or every tested term. A click on a bar or a term (or <code>doterm:</code> in the search, e.g. <code>doterm:DOID:332</code> for amyotrophic lateral sclerosis) lists the methylated proteins whose gene is in the term. Protein pages list each protein\'s most specific terms.</p>' +
-      '<p><b>DisGeNET families.</b> ' + famRules + 'Each family is tested against the reviewed human genes with a DisGeNET term (clusterProfiler enricher; q over the audited families). Most enriched DisGeNET terms are clinical signs (facial features, for example), which the additional families take; the term table opens on the terms of the audited families. ' + clicks + '</p>' + caveat;
+      'A term holds the genes of every term under it, so a broad term (cancer, nervous system disease) repeats the narrower ones. The chart therefore lists the narrowest enriched terms of at least ' + DO_SHORT + ' genes (a term is left out when an enriched term under it is listed), then, for comparison, the ' + DO_COMPARE + ' largest terms two levels below “disease” that are not enriched. “Show the whole ontology” draws the eight classes under “disease” with their terms of at least ' + DO_ROW + ' genes, and “Show the terms under them” adds the next level. The classes keep the ontology\'s names, each followed by a short gloss, and their tooltips give its definition: “physical disorder”, for example, is its class of congenital and developmental conditions (congenital heart disease, congenital nervous system abnormality, orofacial cleft), defined as a disease with a material basis in a genetic abnormality, an error in embryonic development, infection or a compromised intrauterine environment. The term table lists the enriched terms, or every tested term. A click on a bar or a term (or <code>doterm:</code> in the search, e.g. <code>doterm:DOID:332</code> for amyotrophic lateral sclerosis) lists the methylated proteins whose gene is in the term. Protein pages list each protein\'s most specific terms.</p>' + caveat;
   }
   // The Disease Ontology term table: the enriched terms (q ≤ 0.05) or every tested term (UI.doAll), by q.
   function doTermsHtml() {
@@ -1643,6 +1672,7 @@
     if (f.treat && !treatPass(s, f.treat)) return false;
     if (f.disorder.size && !f.disorder.has(s.dc)) return false;
     if (f.domctx.size && !f.domctx.has(s.dctx)) return false;
+    if (f.sctx.size && !f.sctx.has(s.sctx)) return false;
     if (f.nn && !(s.nn != null && s.nn <= f.nn)) return false;
     if (f.ptmDist) {
       const d = f.ptmGroup === '' ? Math.min.apply(null, s.ptmD) : s.ptmD[+f.ptmGroup];
@@ -1759,6 +1789,7 @@
     if (F.feats) F.feats.split(',').forEach((k) => { const ft = featureMap().get(k); if (ft) add('profile', ft.label, () => { F.feats = F.feats.split(',').filter((x) => x !== k).join(','); }); });
     F.disorder.forEach((v) => add('struct', DISORDER_LABEL[M.disorder_classes[v]], () => F.disorder.delete(v)));
     F.domctx.forEach((v) => add('struct', DOMAIN_LABEL[M.domain_contexts[v]], () => F.domctx.delete(v)));
+    F.sctx.forEach((v) => add('struct', STRUCT_LABEL[structCodes()[v]] || 'Structural context', () => F.sctx.delete(v)));
     if (F.nn) add('cluster', 'Methyl-R within ' + F.nn + ' aa', () => { F.nn = 0; });
     if (F.ptmDist) add('cluster', (F.ptmGroup === '' ? 'Any PTM' : PTM_LABEL[+F.ptmGroup]) + ' within ±' + F.ptmDist + ' aa', () => { F.ptmDist = 0; });
     if (F.dense) add('cluster', 'Dense methyl-R region', () => { F.dense = false; });
@@ -2076,7 +2107,7 @@
   // where the record comes from last.
   const SECTIONS = [
     ['protein', 'Protein function & disease', false], ['methyl', 'Methylation state', false], ['treat', 'PRMT inhibitors & knockout', false],
-    ['motif', 'Sequence motif', false], ['struct', 'Disorder & domains', false], ['ix', 'Interactions & binding', false],
+    ['motif', 'Sequence motif', false], ['struct', 'Structural context', false], ['ix', 'Interactions & binding', false],
     ['cluster', 'Clustering & crosstalk', false], ['prov', 'Provenance', false],
   ];
 
@@ -2168,9 +2199,13 @@
           '<p class="note" id="f-motifmsg">' + motifHint() + '</p></div>' +
           '<div class="fgroup"><span class="flabel">Motif family at the methyl-R (match any)</span>' + termChips('motif', M.motifs.map((m) => [motifTerm(m), MOTIF_LABEL[m], MOTIF_HELP[m]])) + '</div>';
       }
-      case 'struct': return '<div class="fgroup"><span class="flabel">Disorder (MobiDB)</span>' + chipRow('disorder', M.disorder_classes.map((c, k) => [k, DISORDER_LABEL[c] || c, DISORDER_HELP[c]]), F.disorder) + '</div>' +
-        '<div class="fgroup"><span class="flabel">Domain context (InterPro)</span>' + chipRow('domctx', M.domain_contexts.map((c, k) => [k, DOMAIN_LABEL[c] || c, DOMAIN_HELP[c]]), F.domctx) + '</div>' +
-        '<div class="fgroup"><label class="flabel" for="f-domclass">Nearest domain class (lab domain ontology)</label>' + termSelect('f-domclass', 'domain', termOptions(M.domain_classes.map((c, k) => [termSlug('domain', k), c]).sort((a, b) => a[1].localeCompare(b[1])))) + '</div>';
+      // One structural class per site (disorder and domains together), then the nearest domain's class; the disorder and
+      // domain classes on their own stay one click away (and open when a link sets them).
+      case 'struct': return '<div class="fgroup"><span class="flabel">Structural context (MobiDB disorder, InterPro domains)</span>' + chipRow('sctx', structCodes().map((c, k) => [k, STRUCT_LABEL[c] || c, STRUCT_HELP[c]]).filter((x) => structCodes()[x[0]] !== 'no_disorder_annotation' || F.sctx.has(x[0])), F.sctx) + '</div>' +
+        '<div class="fgroup"><label class="flabel" for="f-domclass">Nearest domain class (lab domain ontology)</label>' + termSelect('f-domclass', 'domain', termOptions(M.domain_classes.map((c, k) => [termSlug('domain', k), c]).sort((a, b) => a[1].localeCompare(b[1])))) + '</div>' +
+        '<details class="fgroup fsub"' + (F.disorder.size || F.domctx.size ? ' open' : '') + '><summary class="flabel">Disorder and domain classes, separately</summary>' +
+        '<span class="flabel">Disorder (MobiDB)</span>' + chipRow('disorder', M.disorder_classes.map((c, k) => [k, DISORDER_LABEL[c] || c, DISORDER_HELP[c]]), F.disorder) +
+        '<span class="flabel">Domain context (InterPro)</span>' + chipRow('domctx', M.domain_contexts.map((c, k) => [k, DOMAIN_LABEL[c] || c, DOMAIN_HELP[c]]), F.domctx) + '</details>';
       case 'cluster': return '<div class="fgroup"><label class="flabel" for="f-nn">Another methyl-R within</label>' + sel('f-nn', options(withCurrent([[2, '2 aa'], [3, '3 aa'], [5, '5 aa'], [10, '10 aa'], [20, '20 aa']], F.nn, (v) => v + ' aa'), F.nn || '', 'Any spacing'), !!F.nn) + '</div>' +
         '<div class="fgroup"><label class="flabel" for="f-ptm" title="Sites from the pipeline\'s cross-PTM master table (iPTMnet sources and UniProt). Not exhaustive: sites reported elsewhere may be missing.">Other PTM nearby (PTM master table; not exhaustive)</label>' + sel('f-ptm', options(PTM_LABEL.map((l, k) => [k, l]), F.ptmGroup, 'Any PTM type'), !!F.ptmDist) +
         sel('f-ptmdist', options(withCurrent([[2, 'within ±2 aa'], [5, 'within ±5 aa'], [10, 'within ±10 aa'], [20, 'within ±20 aa']], F.ptmDist, (v) => 'within ±' + v + ' aa'), F.ptmDist || '', 'Off'), !!F.ptmDist, 'PTM distance') + '</div>' +
@@ -2203,6 +2238,7 @@
       '<span class="rail-strip-label">Filters</span><span class="rail-strip-n" id="rail-strip-n" hidden></span></button>' +
       '<div class="rail-sel scope" id="rail-sel" aria-live="polite"></div>' +
       '<div class="rail-head"><h2>Add filters</h2><div class="actions">' +
+      '<button class="btn small rail-clear" type="button" id="rail-clear" hidden title="Clear the search and every filter">Clear all</button>' +
       '<button class="btn quiet small rail-min-btn" type="button" id="rail-min" title="Hide the filters, so the results take the full width">Hide</button>' +
       '<button class="btn quiet small rail-toggle" type="button" id="rail-toggle" aria-expanded="' + (rail.dataset.collapsed === 'false') + '">' + (rail.dataset.collapsed === 'false' ? 'Hide' : 'Show') + '</button></div></div>' +
       '<p class="rail-note">Each filter narrows the selection above; a site must match all of them.</p>' +
@@ -2249,6 +2285,8 @@
     const sn = $('#rail-strip-n'), total = Object.values(counts).reduce((a, b) => a + b, 0);
     if (sn) { sn.hidden = !total; sn.textContent = total; sn.title = total + (total === 1 ? ' filter' : ' filters') + ' set'; }
     $$('[data-clear]').forEach((el) => { el.hidden = !counts[el.dataset.clear]; });
+    const rc = $('#rail-clear');
+    if (rc) { rc.hidden = !total; rc.textContent = 'Clear all (' + total + ')'; }
     $$('#rail details').forEach((d) => d.classList.toggle('active', !!counts[d.dataset.sec]));
   }
 
@@ -2301,6 +2339,7 @@
       el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') run(e); });
     });
     $('#rail-min').addEventListener('click', () => setRailMin(true));
+    $('#rail-clear').addEventListener('click', clearAll);
     $('#rail-strip').addEventListener('click', () => setRailMin(false));
     $('#rail-toggle').addEventListener('click', () => {
       const collapsed = rail.dataset.collapsed !== 'false';
@@ -3214,30 +3253,58 @@
         '<select id="ov-motifwhere" aria-label="Where the motif may sit"><option value="motif">covering the methyl-R</option><option value="window">within ±15 aa</option></select>' +
         '<button class="btn small" type="submit">Search</button></div><p class="note" id="ov-motifmsg">Click a bar, or type a pattern: X = any residue, [ST] = S or T. A pattern covering the methyl-R adds <code>motif:</code> to the search, one within ±15 aa adds <code>window:</code>.</p></form>',
     };
-    // Members counted: the pipeline's CD-CODE table (all memberships) or only CD-CODE confidence >= threshold.
-    const thr = ixReady() && IX.condConf[String(UI.condThr)] ? UI.condThr : 0;
-    const condAll = (thr ? IX.condConf[String(thr)].map(([k, n, m, l2, , q]) => ({ k, c: M.condensates[k], n, m, l2, q })) :
-      M.condensates.map((c, k) => ({ k, c, n: c[3], m: c[4], l2: c[5], q: c[6] }))).filter((x) => x.l2 != null).sort((a, b) => b.l2 - a.l2);
+    // Members counted: the pipeline's CD-CODE table (all memberships) or only CD-CODE confidence >= threshold. Two
+    // backgrounds (v1.3.0 exports on, UI.condBg): the reviewed proteome (the default: are a condensate's members
+    // methylated more often than proteins in general?) or the proteins in any condensate (do they stand out among
+    // condensate proteins, about half of which are methylated?). Ordered by q (UI.condSort 'q', the default), as fold
+    // enrichment is capped (every member methylated) and so ranks five-member condensates first, or by fold enrichment.
+    const hasProteome = M.condensates.some((c) => c[7] != null);
+    const condBg = hasProteome && UI.condBg !== 'condensates' ? 'proteome' : 'condensates';
+    const confTable = ixReady() ? (condBg === 'proteome' ? IX.condConfP : IX.condConf) : null;
+    const thr = confTable && confTable[String(UI.condThr)] ? UI.condThr : 0;
+    const condRow = (c) => (condBg === 'proteome' ? { l2: c[7], q: c[8] } : { l2: c[5], q: c[6] });
+    const bySort = UI.condSort === 'fold' ? (a, b) => (b.l2 - a.l2) || (b.m - a.m) : (a, b) => (a.q - b.q) || (b.l2 - a.l2);
+    const condAll = (thr ? confTable[String(thr)].map(([k, n, m, l2, , q]) => ({ k, c: M.condensates[k], n, m, l2, q })) :
+      M.condensates.map((c, k) => Object.assign({ k, c, n: c[3], m: c[4] }, condRow(c)))).filter((x) => x.l2 != null).sort(bySort);
     const condShown = UI.allCond ? condAll : condAll.slice(0, 14);
+    const cs = M.condensate_summary || {};
+    const condShare = +cs.condensate_universe_proteins ? pct(+cs.methyl_proteins_in_any_condensate, +cs.condensate_universe_proteins) : null;
+    const protShare = +cs.reviewed_proteome_proteins ? pct(+cs.methyl_proteins_total, +cs.reviewed_proteome_proteins) : null;
+    const bgName = condBg === 'proteome' ? 'reviewed human proteins' : 'proteins in any condensate';
     const thrSel = '<label class="fig-ctl cond-thr">Count members <select id="cond-thr">' + [[0, 'all memberships'], [2, 'CD-CODE confidence ≥ 2'], [3, 'CD-CODE confidence ≥ 3'], [4, 'CD-CODE confidence ≥ 4']]
-      .map(([v, l]) => '<option value="' + v + '"' + (v === thr ? ' selected' : '') + (v && !ixReady() ? ' disabled' : '') + '>' + l + '</option>').join('') + '</select></label>';
+      .map(([v, l]) => '<option value="' + v + '"' + (v === thr ? ' selected' : '') + (v && !(confTable && confTable[String(v)]) ? ' disabled' : '') + '>' + l + '</option>').join('') + '</select></label>';
+    const condTools = (hasProteome ? '<span class="seg cond-bg" role="group" aria-label="Background"><button type="button" data-condbg="proteome" aria-pressed="' + (condBg === 'proteome') + '" data-tip="Members against every reviewed human protein: is the condensate more methylated than proteins in general?">vs proteome</button>' +
+      '<button type="button" data-condbg="condensates" aria-pressed="' + (condBg === 'condensates') + '" data-tip="Members against the proteins in any CD-CODE condensate' + (condShare ? ', ' + condShare + '% of which are methylated' : '') + ': does the condensate stand out among condensates?">vs other condensates</button></span>' : '') +
+      '<span class="seg cond-sort" role="group" aria-label="Order"><button type="button" data-condsort="q" aria-pressed="' + (UI.condSort !== 'fold') + '" data-tip="Smallest q first: the strongest evidence, which favours condensates with many members">by evidence</button>' +
+      '<button type="button" data-condsort="fold" aria-pressed="' + (UI.condSort === 'fold') + '" data-tip="Largest fold enrichment first. It is capped when every member is methylated, so small condensates lead">by fold</button></span>';
     const cond = {
       id: 'ch-cond', title: 'Biomolecular condensates',
-      subHtml: 'Condensates whose members are more often methylated (CD-CODE).' + docLink('ov-condensates') + '<br>' + thrSel,
-      subText: 'CD-CODE condensates: methylated members vs ' + vsBg('condensate proteins') + (thr ? ' (CD-CODE ' + ((IX && IX.meta && IX.meta.cdcode_version) || '') + ', confidence ≥ ' + thr + ')' : ' (pipeline CD-CODE export, all memberships)'), extraCol: true, extraName: 'methylated_of_members',
+      subHtml: 'Condensates whose members are more often methylated (CD-CODE), against ' + (condBg === 'proteome' ? 'the reviewed proteome' : 'the proteins in any condensate') + '.' + docLink('ov-condensates') +
+        (hasProteome && condShare && protShare ? '<br><span class="small muted">' + condShare + '% of condensate proteins are methylated, against ' + protShare + '% of all reviewed proteins: most condensates are enriched against the proteome, and few stand out against other condensates.</span>' : '') + '<br>' + thrSel,
+      tools: condTools,
+      subText: 'CD-CODE condensates: methylated members vs ' + vsBg(bgName) + (thr ? ' (CD-CODE ' + ((IX && IX.meta && IX.meta.cdcode_version) || '') + ', confidence ≥ ' + thr + ')' : ' (pipeline CD-CODE export, all memberships)') + (UI.condSort === 'fold' ? ', by fold enrichment' : ', by q'), extraCol: true, extraName: 'methylated_of_members',
       rows: condShown.map(({ c, k, n, m, l2, q }) => ({ label: c[0], value: l2, q, sig: sigq(q), key: k, extra: m + '/' + n,
-        title: '<b>' + esc(c[0]) + '</b> · CD-CODE ' + esc(c[1]) + (c[2] !== 'biomolecular' ? ' · ' + esc(c[2]) : '') + '<br>' + m + ' of ' + n + ' counted members methylated' + (thr ? ' (confidence ≥ ' + thr + ')' : '') + '<br>' + effName() + ' ' + fmtL2(l2) + ', q ' + fmtP(q) })), fold: FOLD(), axis: FOLD() ? 'log2 fold enrichment vs all condensate proteins' : '',
+        title: '<b>' + esc(c[0]) + '</b> · CD-CODE ' + esc(c[1]) + (c[2] !== 'biomolecular' ? ' · ' + esc(c[2]) : '') + '<br>' + m + ' of ' + n + ' counted members methylated (' + pct(m, n) + '%)' + (thr ? ' (confidence ≥ ' + thr + ')' : '') +
+          '<br>vs ' + vsBg(bgName) + ': ' + effName() + ' ' + fmtL2(l2) + ', q ' + fmtP(q) +
+          (!thr && hasProteome ? '<br><span class="muted">' + (condBg === 'proteome' ? 'vs other condensates: ' + fmtL2(c[5]) + ', q ' + fmtP(c[6]) : 'vs the proteome: ' + fmtL2(c[7]) + ', q ' + fmtP(c[8])) + '</span>' : '') })),
+      fold: FOLD(), axis: FOLD() ? 'log2 fold enrichment vs ' + (condBg === 'proteome' ? 'all reviewed proteins' : 'all condensate proteins') : '',
       footHtml: '<button class="linkish" type="button" id="cond-more" style="margin-top:.5rem">' + (UI.allCond ? 'Show the top 14' : 'Show all ' + condAll.length + ' tested condensates') + '</button>',
     };
-    // Human Protein Atlas locations: methylated vs other HPA-profiled proteins (scripts/42), strongest first.
+    // Human Protein Atlas locations: methylated vs other HPA-profiled proteins (scripts/42). The default view lists the
+    // main compartments (LOC_MAIN), grouped by where they are in the cell and strongest first within a group, so the
+    // enriched nuclear ones sit beside the cytoplasmic and membrane compartments that are not; "Show all" lists every
+    // location of at least 10 profiled proteins, strongest first, including small ones (endosomes, cilia, sperm parts).
     const hm = hpaMeta();
     const locAll = hm ? hm.enrichment.filter((r) => r[1] + r[3] >= 10).map((r) => ({ k: r[0], name: hm.locations[r[0]], a: r[1], n: r[1] + r[3], l2: r[5], q: r[7] })).sort((x, y) => y.l2 - x.l2) : [];
+    const locMain = LOC_MAIN.flatMap(([group, names]) => locAll.filter((x) => names.includes(x.name)).map((x, i) => Object.assign({}, x, i ? {} : { head: group })));
+    const locCurated = !UI.allLoc && locMain.length >= 6;
+    const locRows = locCurated ? locMain : UI.allLoc ? locAll : locAll.slice(0, 14);
     const loc = hm ? {
-      id: 'ch-loc', title: 'Subcellular location', subHtml: 'Where in the cell methylated proteins are found (Human Protein Atlas).' + docLink('ov-location'),
-      subText: 'HPA subcellular locations, methylated vs ' + vsBg('profiled proteins') + ' (reliability Approved or better)', extraCol: true, extraName: 'methylated_of_profiled', fold: FOLD(), axis: FOLD() ? 'log2 fold enrichment vs all HPA-profiled proteins' : '',
-      rows: (UI.allLoc ? locAll : locAll.slice(0, 14)).map((x) => ({ label: x.name, value: x.l2, q: x.q, sig: sigq(x.q), key: x.k, extra: x.a + '/' + x.n,
-        title: '<b>' + esc(x.name) + '</b> (HPA)<br>' + x.a + ' of ' + x.n + ' profiled proteins with this location are methylated<br>' + effName() + ' ' + fmtL2(x.l2) + ', q ' + fmtP(x.q) })),
-      footHtml: '<button class="linkish" type="button" id="loc-more" style="margin-top:.5rem">' + (UI.allLoc ? 'Show the top 14' : 'Show all ' + locAll.length + ' locations') + '</button>',
+      id: 'ch-loc', title: 'Subcellular location', subHtml: 'Where in the cell methylated proteins are found (Human Protein Atlas)' + (locCurated ? ': the main compartments' : ': every location of at least 10 profiled proteins') + '.' + docLink('ov-location'),
+      subText: 'HPA subcellular locations' + (locCurated ? ' (main compartments)' : '') + ', methylated vs ' + vsBg('profiled proteins') + ' (reliability Approved or better)', extraCol: true, extraName: 'methylated_of_profiled', fold: FOLD(), axis: FOLD() ? 'log2 fold enrichment vs all HPA-profiled proteins' : '',
+      rows: locRows.map((x) => ({ label: x.name, value: x.l2, q: x.q, sig: sigq(x.q), key: x.k, extra: x.a + '/' + x.n, head: x.head,
+        title: '<b>' + esc(x.name) + '</b> (HPA)<br>' + x.a + ' of ' + x.n + ' profiled proteins with this location are methylated (' + pct(x.a, x.n) + '%)<br>' + effName() + ' ' + fmtL2(x.l2) + ', q ' + fmtP(x.q) })),
+      footHtml: '<button class="linkish" type="button" id="loc-more" style="margin-top:.5rem">' + (UI.allLoc ? 'Show the main compartments' : 'Show all ' + locAll.length + ' locations') + '</button>',
     } : null;
     // PANTHER protein classes (scripts/03b): ten groups of the 24 top-level classes which, with the unclassified
     // proteins, partition the reviewed proteome, so their protein counts add up to it. Each group expands into its
@@ -3292,10 +3359,11 @@
       treeNote: 'Shaded, indented rows are subclasses of the class above: their proteins are among the class\'s. The classes overlap (a protein can be in several), so neither classes nor subclasses add up to the proteome; the Protein classes chart (PANTHER) does.',
       footHtml: '<button class="linkish" type="button" id="func-more" style="margin-top:.5rem">' + (UI.funcExpanded ? 'Hide subclasses' : 'Show ' + subs.length + ' subclasses') + '</button>',
     };
-    // Disease: the Disease Ontology (v1.2.0 exports; the default) or the DisGeNET families, one click apart (UI.disView).
+    // Disease: the DisGeNET families (the default: eight audited families a reader recognises) or the Disease Ontology
+    // (v1.2.0 exports on), one click apart (UI.disView).
     const dm = doMeta();
-    const disView = dm && UI.disView !== 'dgn' ? 'do' : 'dgn';
-    const disToggle = dm ? '<span class="seg dis-view" role="group" aria-label="Disease vocabulary"><button type="button" data-disview="do" aria-pressed="' + (disView === 'do') + '">Disease Ontology</button><button type="button" data-disview="dgn" aria-pressed="' + (disView === 'dgn') + '">DisGeNET families</button></span>' : '';
+    const disView = dm && UI.disView === 'do' ? 'do' : 'dgn';
+    const disToggle = dm ? '<span class="seg dis-view" role="group" aria-label="Disease vocabulary"><button type="button" data-disview="dgn" aria-pressed="' + (disView === 'dgn') + '">DisGeNET families</button><button type="button" data-disview="do" aria-pressed="' + (disView === 'do') + '">Disease Ontology</button></span>' : '';
     const fams = {
       id: 'ch-dis', title: dm ? 'Disease' : 'Disease families', figTitle: 'Disease families (DisGeNET)', subHtml: 'Methylated proteins vs the reviewed human genes' + (FOLD() ? ' with a DisGeNET term' : '') + ', by disease family. Association, not causation.' + docLink('ov-disease'), tools: disToggle,
       subText: (UI.disMore ? 'Audited and additional' : 'Audited') + ' DisGeNET disease families vs ' + (FOLD() ? 'all reviewed human genes with a DisGeNET term' : 'the reviewed human genes'), axis: FOLD() ? 'log2 fold enrichment vs all genes with a DisGeNET term' : 'log2 odds ratio vs background', extraCol: true, extraName: 'methylarginine_proteins_of_family', extraTsv: ['methylated_genes', 'family_genes'],
@@ -3376,9 +3444,18 @@
       subText: 'Class of the nearest InterPro domain, methylated vs unmodified arginines', extraCol: true, extraName: 'sites',
       rows: ctxRows(ov.domain_classes || [], {}, {}).sort((a, b) => b.value - a.value),
     };
+    // Structural context (v1.3.0 exports): disorder and domains in one class per arginine, in order from inside a folded
+    // domain to deep in a disordered region; disordered regions by their distance to the nearest domain edge.
+    const sctx = ov.structure_context ? {
+      id: 'ch-struct', title: 'Structural context', subHtml: 'Methylated vs other arginines of the same proteins, from inside folded domains to deep in disordered regions (MobiDB disorder, InterPro domains).' + docLink('ov-structure'),
+      subText: 'Structural context (MobiDB disorder, InterPro domains), methylated vs unmodified arginines in the same proteins', extraCol: true, extraName: 'sites',
+      rows: ctxRows(ctxOrder(ov.structure_context.filter((r) => r[0] !== 'no_disorder_annotation'), STRUCT_CODES), STRUCT_LABEL, STRUCT_HELP)
+        .map((r) => (r.key === 'domain_folded' ? Object.assign(r, { head: 'In a domain' }) : r.key === 'ordered_outside_domain' ? Object.assign(r, { head: 'Outside domains' }) : r)),
+    } : null;
     // With a search or filter set, every bar also counts the selection's proteins or sites in it, with the test a click
     // on the bar adds to the search; the statistics stay those of the whole dataset.
     const ix = (list, key) => list.indexOf(key);
+    if (sctx) markSelection(sctx, 'sites', (r) => ix(structCodes(), r.key) >= 0 && ((s) => s.sctx === ix(structCodes(), r.key)));
     markSelection(study, 'sites', (r) => (s) => s.study & 2 ** r.key);
     markSelection(motif, 'sites', (r) => ix(M.motifs, r.key) >= 0 && ((s) => s.mot & (1 << ix(M.motifs, r.key))));
     markSelection(cond, 'proteins', (r) => (thr ? (p) => (cdMemberships(p) || []).some((c) => c.ci === r.key && c.score >= thr) : (p) => p.cond.includes(r.key)));
@@ -3393,7 +3470,7 @@
     markSelection(domctx, 'sites', (r) => ix(M.domain_contexts, r.key) >= 0 && ((s) => s.dctx === ix(M.domain_contexts, r.key)));
     markSelection(domcls, 'sites', (r) => ix(M.domain_classes, r.key) >= 0 && ((s) => s.dcls === ix(M.domain_classes, r.key)));
 
-    return { study, motif, cond, loc, pan, func, dis, fams, doSpec, disorder, domctx, domcls, thr };
+    return { study, motif, cond, loc, pan, func, dis, fams, doSpec, disorder, domctx, domcls, sctx, thr };
   }
 
   // spec.sel {unit, n, what, noun} and row.sel (selected items in the bar, null where the bar has no test) when a selection is
@@ -3417,7 +3494,15 @@
     const topDense = P.filter((p) => p.sig.length).sort((a, b) => Math.max(...b.sig.map((w) => w[4])) - Math.max(...a.sig.map((w) => w[4]))).slice(0, 14);
     const examples = [['FUS', 'One protein'], ['FUS R216', 'One site'], ['TAF15 EWSR1 FUS', 'A gene list (FET family)'], ['SNRPB SNRPD1 SNRPD3', 'Sm proteins'], ['TDP43', 'A synonym'], ['splicing factor', 'Protein name']];
     const geneChips = (list, sub) => '<div class="gene-chips">' + list.map((p) => '<button class="gene-chip" type="button" data-i="' + p.i + '">' + esc(p.label) + '<span>' + sub(p) + '</span></button>').join('') + '</div>';
-    const { study, motif, cond, loc, pan, func, dis, disorder, domctx, domcls, thr } = overviewCharts();
+    const { study, motif, cond, loc, pan, func, dis, disorder, domctx, domcls, sctx, thr } = overviewCharts();
+    // One card for disorder and domains: the structural context (v1.3.0 exports), the nearest domain's class, and the
+    // disorder and domain classes on their own behind a link (shown directly for earlier exports, which lack the first).
+    const ctxSection = (spec, id, gap) => '<div class="card-head"' + (gap ? ' style="margin-top:1.1rem"' : '') + '><div><h3 class="h4">' + esc(spec.title) + '</h3><p class="sub">' + spec.subHtml + '</p></div>' + expButtons(spec.id) + '</div><div id="' + id + '">' + hbars(spec) + '</div>';
+    const split = !sctx || UI.ctxSplit;
+    const structHtml = '<div class="card chart-card" id="ch-structure">' +
+      (sctx ? '<div class="card-head"><div><h3>Structural context</h3><p class="sub">' + sctx.subHtml + '</p></div>' + expButtons('ch-struct') + '</div><div id="ch-struct-bars">' + hbars(sctx) + '</div>' + ctxSection(domcls, 'ch-domcls-bars', true) : '') +
+      (split ? ctxSection(disorder, 'ch-disorder-bars', !!sctx) + ctxSection(domctx, 'ch-domctx-bars', true) : '') + (sctx ? '' : ctxSection(domcls, 'ch-domcls-bars', true)) +
+      (sctx ? '<button class="linkish" type="button" id="ctx-split" style="margin-top:.6rem">' + (UI.ctxSplit ? 'Hide the disorder and domain classes' : 'Show the disorder and domain classes separately') + '</button>' : '') + '</div>';
     const repDist = [0, 0, 0, 0, 0];
     for (const s of S) repDist[Math.min(5, popcount(s.study)) - 1]++;
     const multi = M.n_sites - repDist[0];
@@ -3453,10 +3538,8 @@
       foldHtml('ov-motif', motif.title, chartCard(motif), false, chartSummary(motif)) +
       foldHtml('ov-cond', cond.title, chartCard(cond), false, chartSummary(cond) + (thr ? ' (CD-CODE confidence ≥ ' + thr + ')' : '')) +
       (loc ? foldHtml('ov-loc', loc.title, chartCard(loc), false, chartSummary(loc)) : '') +
-      foldHtml('ov-disorder', disorder.title, chartCard(disorder), false, chartSummary(disorder)) +
-      foldHtml('ov-dom', 'Domains', '<div class="card chart-card" id="ch-dom"><div class="card-head"><div><h3>Domains</h3><p class="sub">' + domctx.subHtml + '</p></div>' + expButtons('ch-domctx') + '</div>' + hbars(domctx) +
-      '<div class="card-head" style="margin-top:1.1rem"><div><h3 class="h4">Nearest domain class</h3><p class="sub">' + domcls.subHtml + '</p></div>' + expButtons('ch-domcls') + '</div><div id="ch-domcls-bars">' + hbars(domcls) + '</div></div>', false,
-        [chartSummary(domctx, 2, 'context'), chartSummary(domcls, 2, 'nearest class')].join('; ')) +
+      foldHtml('ov-struct', sctx ? 'Structural context' : 'Disorder and domains', structHtml, false,
+        (sctx ? [chartSummary(sctx, 2)] : [chartSummary(disorder, 2, 'disorder'), chartSummary(domctx, 2, 'context')]).concat(chartSummary(domcls, 2, 'nearest class')).join('; ')) +
       foldHtml('ov-study', 'Provenance', '<div class="card wide chart-card" id="ch-study"><div class="card-head"><div><h3>Provenance</h3><p class="sub">' + study.subHtml + '</p></div>' + expButtons('ch-study') + '</div>' +
       '<div class="two-col"><div>' + hbars(study) + '</div>' +
       '<div><p class="flabel" style="margin:0 0 .5rem">Studies or databases reporting each site</p><div class="hbars rep-dist' + (selOn ? ' has-sel' : '') + '">' +
@@ -3473,7 +3556,8 @@
     // With a selection, a bar's term is added to the search (terms must all match), so the click narrows the selection
     // to what the bar's orange count says; without one it starts a new selection.
     const pickTerm = selOn ? addTerm : setTerm;
-    UI.charts['ch-study'] = study; UI.charts['ch-domctx'] = domctx; UI.charts['ch-domcls'] = domcls;
+    UI.charts['ch-study'] = study; UI.charts['ch-domctx'] = domctx; UI.charts['ch-domcls'] = domcls; UI.charts['ch-disorder'] = disorder;
+    if (sctx) UI.charts['ch-struct'] = sctx;
 
     $$('.gene-chip[data-i]', el).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.i)));
     $$('.gene-chip[data-q]', el).forEach((b) => b.addEventListener('click', () => {
@@ -3503,6 +3587,8 @@
     const ct = $('#cond-thr', el);
     if (ct) ct.addEventListener('change', () => { UI.condThr = +ct.value; UI.allCond = false; renderDash(el, page); });
     $('#cond-more', el).addEventListener('click', () => { UI.allCond = !UI.allCond; renderDash(el, page); });
+    $$('#ch-cond [data-condbg]', el).forEach((b) => b.addEventListener('click', () => { UI.condBg = b.dataset.condbg; renderDash(el, page); }));
+    $$('#ch-cond [data-condsort]', el).forEach((b) => b.addEventListener('click', () => { UI.condSort = b.dataset.condsort; renderDash(el, page); }));
     if (pan) {
       bindBars($('#ch-pan', el), pan.rows, (r) => pickTerm('panther', termSlug('panther', r.key), 'proteins'));
       $$('#ch-pan [data-pan]', el).forEach((b) => b.addEventListener('click', () => { UI.panLevel = +b.dataset.pan; renderDash(el, page); }));
@@ -3540,9 +3626,12 @@
     if (dot) dot.addEventListener('click', () => { UI.doTerms = !UI.doTerms; renderDash(el, page); });
     const doa = $('#do-all', el);
     if (doa) doa.addEventListener('change', () => { UI.doAll = doa.value === '1'; renderDash(el, page); });
-    bindBars($('#ch-disorder', el), disorder.rows, (r) => setFilters((f) => { const k = M.disorder_classes.indexOf(r.key); f.disorder = new Set(k >= 0 ? [k] : []); }, 'sites'));
-    bindBars($('#ch-dom > .hbars', el), domctx.rows, (r) => setFilters((f) => { const k = M.domain_contexts.indexOf(r.key); f.domctx = new Set(k >= 0 ? [k] : []); }, 'sites'));
+    if (sctx) bindBars($('#ch-struct-bars', el), sctx.rows, (r) => setFilters((f) => { const k = structCodes().indexOf(r.key); f.sctx = new Set(k >= 0 ? [k] : []); }, 'sites'));
+    const dsb = $('#ch-disorder-bars', el), dcb = $('#ch-domctx-bars', el), csp = $('#ctx-split', el);
+    if (dsb) bindBars(dsb, disorder.rows, (r) => setFilters((f) => { const k = M.disorder_classes.indexOf(r.key); f.disorder = new Set(k >= 0 ? [k] : []); }, 'sites'));
+    if (dcb) bindBars(dcb, domctx.rows, (r) => setFilters((f) => { const k = M.domain_contexts.indexOf(r.key); f.domctx = new Set(k >= 0 ? [k] : []); }, 'sites'));
     bindBars($('#ch-domcls-bars', el), domcls.rows, (r) => pickTerm('domain', termSlug('domain', M.domain_classes.indexOf(r.key)), 'sites'));
+    if (csp) csp.addEventListener('click', () => { UI.ctxSplit = !UI.ctxSplit; renderDash(el, page); });
     $$('#ch-treat tr.row', el).forEach((tr) => {
       const go2 = () => setFilters((f) => { f.treat = tr.dataset.treat; }, 'sites');
       tr.addEventListener('click', go2);
@@ -7081,7 +7170,7 @@
     const iaProt = new Map((d.intact_prot || []).map(([i, regions, muts]) => [i, { regions, muts }]));
     const modelledGaps = new Map((d.modelled_gaps || []).map(([k, pos, pdbs]) => [k, { pos, pdbs }]));
     IX = { meta: d.meta, prot, byEnsp, cx, cxOf, enrich: d.enrich || {}, goEnrich: d.go_enrich || {}, strata: d.enrich_strata || {}, cd, wr, nP,
-      geoSummary: d.geometry_summary || {}, rg: d.rg_iface || {}, modelledGaps, condConf: d.cond_conf || {}, nModelled: (d.modelled || []).length,
+      geoSummary: d.geometry_summary || {}, rg: d.rg_iface || {}, modelledGaps, condConf: d.cond_conf || {}, condConfP: d.cond_conf_proteome || null, nModelled: (d.modelled || []).length,
       predEnrich: d.pred_enrich || {}, nPred: (d.pred || []).length, condHist: d.cond_score_hist || {}, gallery,
       xlProt, xlEnrich: d.xl_enrich || {}, xlSets: d.xl_sets || [], xlTypes: d.xl_types || {}, xlFreq: d.xl_freq || null,
       iaProt, iaEnrich: d.intact_enrich || {}, ia: (d.meta && d.meta.intact) || null, naReg, nab, naDist: d.na_dist || [], naDistStats: d.na_dist_stats || {} };
@@ -11232,8 +11321,10 @@
           '<p><b>Functional ontology (DeAngelo et al., 2026).</b> The keyword classes represented in DeAngelo et al., 2026 (config/functional_ontology.json, scripts/03), assigned from UniProt names, keywords and domains; a protein can belong to several, so these classes overlap and do not add up. The overview charts the PANTHER classes instead; the keyword classes stay as a filter (<code>class:</code>, <code>subclass:</code>), on protein pages, as an optional column of the Proteins table and in the release statistics (analyses functional_class and functional_subclass). ' + (FOLD() ? 'Each class is tested for over-representation of methylated proteins against all reviewed human proteins (clusterProfiler enricher, BH).' : 'Each class is compared between methylated proteins and the other reviewed human proteins (Fisher, BH).') + '</p>') +
         sub('ov-disease', doMeta() ? 'Disease' : 'Disease families', diseaseDocHtml()) +
         sub('ov-motifs', 'Sequence motifs', '<p>Motifs are read from a ±7 window on the canonical sequence and compared between methylated arginines and the other arginines of the same proteins: ' + M.motifs.map((m) => esc(MOTIF_LABEL[m]) + ' (' + esc(MOTIF_HELP[m]) + ')').join('; ') + '.</p>') +
-        sub('ov-condensates', 'Condensates', '<p>CD-CODE condensates with at least five counted members; ' + (FOLD() ? 'the bar is the log2 fold enrichment of methylated members against all proteins in any human CD-CODE condensate (clusterProfiler enricher, BH; condensates with a methylated member are tested)' : 'the bar is the log2 odds ratio of methylated members against the other proteins in any human CD-CODE condensate (Fisher, BH)') + ', and the numbers are methylated / members. "Count members" sets which memberships count: all of them, from the pipeline\'s CD-CODE export (scripts/12), or only those with CD-CODE confidence ≥ 2, 3 or 4 of 5, read from the CD-CODE ' + esc((IX && IX.meta && IX.meta.cdcode_version) || '') + ' API (scripts/37; reviewed proteins, the background being proteins in any condensate there), so condensates whose member lists rest on single proteomics screens do not dominate. The page opens at ≥ 3. ' + condHistNote() + '</p>') +
-        (hpaMeta() ? sub('ov-location', 'Subcellular location', '<p>Human Protein Atlas' + (hpaMeta().version ? ' ' + esc(hpaMeta().version) : '') + ' subcellular locations (' + doiLink('10.1126/science.aal3321', 'Thul et al. 2017') + '; CC BY 4.0), mapped to canonical UniProt entries with HPA\'s own Ensembl–UniProt table (scripts/42). Each location carries HPA\'s reliability (Enhanced, Supported, Approved or Uncertain); searches (<code>location:</code>), the filter and the test count Approved or better. For each location the bar is ' + (FOLD() ? 'the log2 fold enrichment of methylated proteins against all ' + fmt(hpaMeta().universe) + ' HPA-profiled proteins (' + fmt(hpaMeta().methylated) + ' methylated proteins profiled; clusterProfiler enricher, Benjamini–Hochberg q)' : 'the log2 odds ratio of methylated against the other ' + fmt(hpaMeta().universe - hpaMeta().methylated) + ' HPA-profiled proteins (' + fmt(hpaMeta().methylated) + ' methylated proteins profiled; Fisher test, Benjamini–Hochberg q)') + '. Locations with fewer than 10 profiled proteins are not drawn. Protein pages list the locations, main ones first, beside the CD-CODE condensates.</p>') : '') +
+        sub('ov-condensates', 'Condensates', '<p>CD-CODE condensates with at least five counted members; ' + (FOLD() ? 'the bar is the log2 fold enrichment of methylated members (clusterProfiler enricher, BH; condensates with a methylated member are tested)' : 'the bar is the log2 odds ratio of methylated members against the other proteins in any human CD-CODE condensate (Fisher, BH)') + ', and the numbers are methylated / members. ' +
+          (M.condensates.some((c) => c[7] != null) ? 'Two backgrounds answer two questions. <b>vs proteome</b> (the default) tests the members against every reviewed human protein: is the condensate more methylated than proteins in general? <b>vs other condensates</b> tests them against the proteins in any human CD-CODE condensate: does it stand out among condensates? About half of all condensate proteins are methylated, against about a fifth of the proteome, so nearly every large condensate is enriched against the proteome (Cajal bodies, transcriptional condensates, stress granules, P-bodies) while few stand out against other condensates; both tests are in the release (statistics, analyses condensate_proteome and condensate). The list is ordered by q, as fold enrichment cannot exceed the value where every member is methylated, which small condensates reach by chance; “by fold” orders it by the bar. ' : '') + ' "Count members" sets which memberships count: all of them, from the pipeline\'s CD-CODE export (scripts/12), or only those with CD-CODE confidence ≥ 2, 3 or 4 of 5, read from the CD-CODE ' + esc((IX && IX.meta && IX.meta.cdcode_version) || '') + ' API (scripts/37; reviewed proteins, tested against the same two backgrounds), so condensates whose member lists rest on single proteomics screens do not dominate. The page opens at ≥ 3. ' + condHistNote() + '</p>') +
+        (hpaMeta() ? sub('ov-location', 'Subcellular location', '<p>Human Protein Atlas' + (hpaMeta().version ? ' ' + esc(hpaMeta().version) : '') + ' subcellular locations (' + doiLink('10.1126/science.aal3321', 'Thul et al. 2017') + '; CC BY 4.0), mapped to canonical UniProt entries with HPA\'s own Ensembl–UniProt table (scripts/42). Each location carries HPA\'s reliability (Enhanced, Supported, Approved or Uncertain); searches (<code>location:</code>), the filter and the test count Approved or better. For each location the bar is ' + (FOLD() ? 'the log2 fold enrichment of methylated proteins against all ' + fmt(hpaMeta().universe) + ' HPA-profiled proteins (' + fmt(hpaMeta().methylated) + ' methylated proteins profiled; clusterProfiler enricher, Benjamini–Hochberg q)' : 'the log2 odds ratio of methylated against the other ' + fmt(hpaMeta().universe - hpaMeta().methylated) + ' HPA-profiled proteins (' + fmt(hpaMeta().methylated) + ' methylated proteins profiled; Fisher test, Benjamini–Hochberg q)') + '. The chart opens on the main compartments, grouped by where they are in the cell (' + LOC_MAIN.map(([g, names]) => esc(g.toLowerCase()) + ': ' + esc(names.join(', '))).join('; ') + '), enriched or not, so the nuclear ones read against the rest of the cell; “Show all” lists every location of at least 10 profiled proteins, strongest first. Locations with fewer than 10 profiled proteins are not drawn. Protein pages list the locations, main ones first, beside the CD-CODE condensates.</p>') : '') +
+        sub('ov-structure', 'Structural context', '<p>Disorder (MobiDB) and domains (InterPro domains and repeats) in one class per arginine, from inside a folded domain to deep in a disordered region: ' + STRUCT_CODES.filter((k) => k !== 'no_disorder_annotation').map((k) => esc(STRUCT_LABEL[k]) + ' = ' + esc(lc1(STRUCT_HELP[k]))).join('; ') + '. Each class compares the share of methylated sites in it with the share of the other arginines of the same proteins (Fisher, BH; release statistics, analysis structure_context), and the site table has the class in its structure_context column. It replaces reading the disorder and domain charts side by side, whose edges (an IDR edge, a domain edge) measure different things; both stay in the card, behind “Show the disorder and domain classes separately”, and in the filters.</p>') +
         sub('ov-disorder', 'Disorder context', '<p>MobiDB disorder intervals: ' + Object.keys(DISORDER_LABEL).map((k) => esc(DISORDER_LABEL[k]) + ' = ' + esc(lc1(DISORDER_HELP[k] || ''))).join('; ') + '. Each class compares the share of methylated sites in it with the share of the other arginines of the same proteins (Fisher, BH). The "no disorder annotation" class is tested but not drawn. In this release the methylated side also counts the ' + fmt(S.filter((x) => P[x.p].unrev).length) + ' sites on entries without a reviewed canonical sequence; they add no background arginines and fall almost all in the undrawn class. The next release counts only proteins with a staged sequence on both sides, as the motif test already does, which changes the drawn bars.</p>') +
         sub('ov-domains', 'Domains', '<p>Position relative to InterPro domains and repeats: ' + Object.keys(DOMAIN_LABEL).map((k) => esc(DOMAIN_LABEL[k]) + ' = ' + esc(lc1(DOMAIN_HELP[k]))).join('; ') + '. The nearest-domain class comes from the lab domain-class ontology (config/domain_class_ontology.json). As for disorder, the methylated side also counts sites on entries without a reviewed canonical sequence; most fall in "No domain data", which is why that bar sits above zero.</p>') +
         sub('ov-provenance', 'Provenance', '<p>' + (localisedOnly() ? 'Sites reported by each study and database, each read from its own tables (its localised records), by ProMetheusDB, and by PhosphoSitePlus (downloaded 22 May 2021, compiled in Maron et al. 2021 Table S5; trusted as curated). The other rows of Table S5 give way to each study\'s own table' : 'Sites reported by each study compiled in Maron et al. 2021 Table S5, by ProMetheusDB and by curated UniProt/IEDB records' + (addedStudies().length ? ', and by the studies added in v1.2.0 (' + esc(addedStudies().join(', ')) + '), each read from its own supplementary table' : '')) + '; the column gives the sites reported only there. A report is one study or database.' + (addedStudies().includes('Ma 2023') ? ' Ma et al. 2023 measured breast cancer xenografts grown in mice: a site only they report is marked on its site summary, since where the human and mouse sequences agree the peptide can come from the mouse stroma.' : '') + '</p>') +
@@ -11623,7 +11714,7 @@
       '<div class="exp" role="group" aria-label="' + esc(title) + ' export">' + buttons + '</div></div>' + body + '<p class="print-note" id="' + id + '-note"></p></div>', false, sum);
     const box = (id, note) => '<div class="fig-preview" id="' + id + '"><p class="note">' + (note || 'Loading…') + '</p></div>';
     const charts = overviewCharts();
-    const chartList = [charts.func, charts.doSpec, charts.fams, charts.motif, charts.cond, charts.loc, charts.disorder, charts.domctx, charts.domcls, charts.study].filter(Boolean);
+    const chartList = [charts.func, charts.doSpec, charts.fams, charts.motif, charts.cond, charts.loc, charts.sctx, charts.domcls, charts.disorder, charts.domctx, charts.study].filter(Boolean);
     const sizeSum = panelState.mm ? PANEL_WIDTHS.find(([v]) => v === panelState.mm)[1] + ', PNG ' + panelState.dpi + ' dpi' : 'screen layout';
     el.innerHTML = resultsHead('Figures', 'Every figure of the current selection, ready to export: ' + fmt(R.sites.length) + ' sites on ' + fmt(R.prots.length) + ' protein' + (R.prots.length === 1 ? '' : 's') + '. Exports credit this site and ' + esc(PAPER.short) + '.',
       '<button class="btn small" type="button" id="fg-report" title="Profile, evidence map, logo and protein comparison of this selection as one PDF">Insight report (PDF)</button>') +

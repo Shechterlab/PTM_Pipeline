@@ -7,6 +7,7 @@ number, string, boolean, code, list<code>, list<integer>, list<string>, codes na
 from __future__ import annotations
 
 import re
+from common import STRUCTURE_MID, STRUCTURE_NEAR  # residues: the disordered-region bins of structure_context
 
 CONTEXT_WINDOW = 20  # residues: the boundary window of scripts/05 and scripts/06
 PADJ_CUTOFF = 0.05   # Maron 2021 Table S3: a peptide changes when its adjusted p value is at most this (scripts/16)
@@ -124,9 +125,9 @@ STUDY_QUALITY = {
            'each with a 15-residue window and position, without the study behind it, a localisation score or a degree. A '
            'record is placed where its window names exactly one arginine in the reviewed proteome, in an entry the record '
            'names. PhosphoSitePlus curators find papers by semi-automatic literature search, record the sites each shows with '
-           'the methods behind them, and an editor checks every record; besides low-throughput primary papers and published '
+           'the methods behind them, and an editor checks every record. Besides low-throughput primary papers and published '
            'mass-spectrometry studies it lists sites from Cell Signaling Technology\'s own high-throughput discovery runs. Its '
-           'per-site download counts each kind of reference (LT_LIT, MS_LIT, MS_CST); Table S5 keeps none, so the release '
+           'per-site download counts each kind of reference (LT_LIT, MS_LIT, MS_CST). Table S5 keeps none, so the release '
            'cannot tell which sites rest on a hand-curated primary paper.',
     'Maron2021': 'A549 cells treated with GSK591 or MS023, sequential Rme1, Rme2a and Rme2s antibody immunoprecipitation, '
                  'Byonic in Proteome Discoverer 2.4 with mono- and dimethylation of R and K searched, 1 % FDR, trypsin and '
@@ -282,6 +283,15 @@ CODES: dict[str, dict[str, str]] = {
         'inter_domain_linker': f'between two domains or repeats, more than {CONTEXT_WINDOW} residues from both',
         'distal': f'more than {CONTEXT_WINDOW} residues from any domain or repeat, not between two',
         'no_domain_annotation': 'InterPro has no domain or repeat on the protein',
+    },
+    'structure_context': {
+        'domain_folded': 'inside an InterPro domain or repeat, outside MobiDB disorder',
+        'domain_disordered': 'inside an InterPro domain or repeat that MobiDB calls disordered at the site',
+        'ordered_outside_domain': 'outside domains and repeats, and outside MobiDB disorder',
+        'idr_near_domain': f'in a MobiDB disordered region outside domains, within {STRUCTURE_NEAR} residues of a domain or repeat',
+        'idr_mid_domain': f'in a MobiDB disordered region outside domains, {STRUCTURE_NEAR + 1}-{STRUCTURE_MID} residues from the nearest domain or repeat',
+        'idr_far_from_domain': f'in a MobiDB disordered region more than {STRUCTURE_MID} residues from any domain or repeat, or on a protein with none',
+        'no_disorder_annotation': 'MobiDB has no disordered region on the protein',
     },
     'domain_side': {
         'inside': 'inside the nearest domain',
@@ -559,6 +569,7 @@ SITE_COLUMNS = [
     ('nearest_domain_class', 'string', '', 'its class in config/domain_class_ontology.json, as scripts/07 assigns it, No domain annotation when none'),
     ('domain_side', 'code', 'domain_side', 'where the site lies relative to the nearest domain, empty when none'),
     ('domain_edge_distance', 'integer', '', 'residues to the nearest domain edge (0 inside a domain), empty when none'),
+    ('structure_context', 'code', 'structure_context', 'disorder and domains in one class, from inside a folded domain to deep in a disordered region (common.structure_context, from disorder, domain and domain_edge_distance)'),
     ('interaction_status', 'code', 'interaction_status', 'interaction evidence at the site (supporting/site_interactions), empty for the sites kept pending'),
     ('interaction_evidence', 'list<code>', 'evidence_type', 'the evidence types at the site, in code order'),
     ('bound_nucleic_acid', 'list<code>', 'bound_contact', 'RNA or DNA in direct contact with the site in PDB structures, within 8 Å of its side chain in a complex without direct contact, or in contact via a residue at i ± 1-5 in a complex with neither, in code order (every entry: supporting/nucleic_acid_contacts and nucleic_acid_near_sites)'),
@@ -753,9 +764,11 @@ CODES['analysis'] = {
     'disorder': 'methylarginines in a disorder class (scripts/06), against the other arginines of the methylated proteins',
     'domain_context': 'methylarginines in a domain context (scripts/05, 07), against the other arginines of the methylated proteins. A protein whose every arginine is a site has no background and is left out (MIF, 5 sites)',
     'domain_class': 'methylarginines whose nearest domain is of a class (scripts/07), against the other arginines of the methylated proteins (MIF left out, as for domain_context)',
+    'structure_context': 'methylarginines in a structural context (disorder and domains in one class, scripts/07), against the other arginines of the methylated proteins (MIF left out, as for domain_context)',
     'disease_family': 'methylarginine-containing proteins (counted by gene) in one of the eight audited disease families (scripts/14), against the other reviewed human genes with a DisGeNET term (DOSE\'s background for the terms), q over the eight',
     'disease_family_additional': 'the same for the additional disease families (scripts/disease_families.py ADDITIONAL_FAMILY_RULES: rule-based, not audited, applied only to the terms no audited family takes), q over these families',
     'condensate': 'methylated proteins among the members of a CD-CODE condensate (scripts/12), against the other condensate proteins',
+    'condensate_proteome': 'methylated proteins among the members of a CD-CODE condensate (scripts/12), against the other reviewed human proteins. Condensate proteins are methylated about twice as often as proteins in general, so most condensates are enriched against this background and few against the other condensate proteins',
     'hpa_location': 'methylated proteins at a Human Protein Atlas location, against the other proteins HPA locates (Approved or better)',
     'pdb_interface': 'methylarginines at a PDB interface of a kind (category: rna, dna, protein including self, any), against the other arginines of the same proteins that a PDB structure covers (scripts/37). Strata: all, ordered (outside MobiDB disorder), domain (inside an InterPro domain)',
     'predicted_interface': 'methylarginines at a predicted interface residue (ProtVar, category the pDockQ floor), against the other arginines of the proteins with a predicted interface. Strata: all, ordered, disordered',

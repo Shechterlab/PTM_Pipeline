@@ -270,6 +270,7 @@ def main() -> None:
         ko[r['site_id']].append([CELL_LINES.index(r['cell_line']), num(r['log2_ko_over_wt']), sig(r['p']), int(r['n_peptides']),
                                  int(r['n_decreased']), int(r['n_increased'])])
     disorder_classes, domain_contexts, domain_classes = Vocab(), Vocab(), Vocab()
+    structure_contexts = Vocab(list(rc.CODES['structure_context']))   # fixed order: inside a folded domain to deep in a disordered region
     interpro, interpro_idx = [], {}
     window_flags = {'missing': 0, 'center_not_r': 0}
     site_rows, evidence = [], []
@@ -312,6 +313,7 @@ def main() -> None:
             state_detail or None,
             # the paralog rule: the other entries holding the site's sequence, as [accession, gene]
             [[a, gene_of(a)] for a in L(s.get('shared_with_paralogs', ''))] or None,
+            structure_contexts.index(s['structure_context']) if s.get('structure_context') else None,
         ])
     # evidence rows: table and study codes as vocabularies
     source_tables, remap_statuses = Vocab(), Vocab()
@@ -341,15 +343,18 @@ def main() -> None:
             g = inhibitors[(inhibitors['inhibitor'] == drug) & (inhibitors['antibody'] == ip)]
             treatments.append([drug, ip, len(g), int((g['call'] == 'decreased').sum()), int((g['call'] == 'increased').sum()),
                                num(statistics.median(g['log2_diff_median'].astype(float))) if len(g) else None])
+    # Each condensate against the other condensate proteins and against the reviewed proteome (scripts/12).
     cond_stats = stats[stats['analysis'] == 'condensate'].set_index('category')
+    cond_proteome = stats[stats['analysis'] == 'condensate_proteome'].set_index('category')
+    tested = lambda t, c: [effect(t.loc[c]), sig(t.at[c, 'q'])] if c in t.index else [None, None]  # noqa: E731
     cond_rows = [[r['condensate_name'], r['condensate_id'], r['condensate_type'], int(r['n_members']), int(r['n_members_methylated']),
-                  effect(cond_stats.loc[r['condensate_id']]) if r['condensate_id'] in cond_stats.index else None,
-                  sig(cond_stats.at[r['condensate_id'], 'q']) if r['condensate_id'] in cond_stats.index else None]
+                  *tested(cond_stats, r['condensate_id']), *tested(cond_proteome, r['condensate_id'])]
                  for r in condensates.to_dict('records')]
     methylated = set(acc_list)
     in_condensate = {a for a, row in zip(acc_list, protein_rows) if row[11]}
     universe = int(cond_stats['a'].astype(int).iloc[0] + cond_stats['b'].astype(int).iloc[0] + cond_stats['c'].astype(int).iloc[0]
                    + cond_stats['d'].astype(int).iloc[0]) if len(cond_stats) else 0
+    proteome_n = int(cond_proteome.iloc[0][['a', 'b', 'c', 'd']].astype(int).sum()) if len(cond_proteome) else 0
     hpa_stats = stats[stats['analysis'] == 'hpa_location'].set_index('category')
     hpa_universe = int(hpa_stats.iloc[0][['a', 'b', 'c', 'd']].astype(int).sum()) if len(hpa_stats) else 0
     hpa_methyl = int(hpa_stats.iloc[0][['a', 'b']].astype(int).sum()) if len(hpa_stats) else 0
@@ -447,6 +452,7 @@ def main() -> None:
             'other_ptm_groups': OTHER_PTM_GROUPS, 'other_ptm_sources': ['Cross-PTM master table'],
             'func_classes': func_classes.values, 'func_subclasses': func_subclasses.values,
             'disorder_classes': disorder_classes.values, 'domain_contexts': domain_contexts.values, 'domain_classes': domain_classes.values,
+            'structure_contexts': structure_contexts.values,
             'disease_families': families,
             # the eight audited families (the original pipeline's hand-checked rules) come first; the others are rule-based additions (scripts/disease_families.py)
             'disease_family_audited': [r['audited'] == 'true' for r in disease_families.to_dict('records')],
@@ -455,10 +461,12 @@ def main() -> None:
             'set_effect': 'log2_fold_enrichment',
             'enrichment_tools': info.get('enrichment_tools', {}),
             'condensates': cond_rows,
-            'condensate_fields': ['name', 'cdcode_id', 'type', 'members', 'methyl_members', 'log2_fold_enrichment', 'q_value'],
+            'condensate_fields': ['name', 'cdcode_id', 'type', 'members', 'methyl_members', 'log2_fold_enrichment', 'q_value',
+                                  'log2_fold_enrichment_vs_proteome', 'q_value_vs_proteome'],
             'condensate_summary': {'methyl_proteins_total': str(len(methylated)), 'condensate_universe_proteins': str(universe),
                                    'methyl_proteins_in_any_condensate': str(len(in_condensate)),
-                                   'condensate_count_after_filters': str(len(cond_stats))},
+                                   'condensate_count_after_filters': str(len(cond_stats)),
+                                   'reviewed_proteome_proteins': str(proteome_n)},
             'refs': refs.values, 'interpro': interpro,
             'overview': {
                 'functional_classes': overview_rows(stats, 'functional_class'),
@@ -466,6 +474,7 @@ def main() -> None:
                 'disorder': overview_rows(stats, 'disorder'),
                 'domain_context': overview_rows(stats, 'domain_context'),
                 'domain_classes': overview_rows(stats, 'domain_class'),
+                'structure_context': overview_rows(stats, 'structure_context'),
                 # [family, methylated genes, genes, fold enrichment, q]
                 'disease_families': [[r['family'], int(r['n_methylated_genes']), int(r['n_genes']), num(r['fold_enrichment']), sig(r['q'])]
                                      for r in disease_families.to_dict('records')],
@@ -497,7 +506,7 @@ def main() -> None:
             'site_fields': ['protein', 'position', 'state', 'source_mask', 'refs', 'disorder_class', 'disorder_edge_distance',
                             'domain_context', 'interpro', 'domain_class', 'domain_edge_distance', 'domain_side', 'window_31',
                             'motif_mask', 'window_center_mismatch', 'source_positions_original', 'maron_s2_state_mask',
-                            'maron_ip_mask', 'maron_treatment', 'study_mask', 'carm1_ko', 'state_detail', 'paralogs'],
+                            'maron_ip_mask', 'maron_treatment', 'study_mask', 'carm1_ko', 'state_detail', 'paralogs', 'structure_context'],
             'maron_treatment_fields': ['ip', 'treatment', 'median change', 'lowest adj. p', 'peptide rows',
                                        f'peptides down at adj. p <= {PADJ:g}', f'peptides up at adj. p <= {PADJ:g}'],
             'carm1_ko': {'study': ko_note.get('study', 'Shishkova 2017'), 'doi': ko_note.get('doi', '10.1038/ncomms15571'),
@@ -570,6 +579,7 @@ def check(outdir: Path, sites: pd.DataFrame, proteins: pd.DataFrame, records: pd
                 or [m['motifs'][k] for k in range(len(m['motifs'])) if s[13] >> k & 1] != L(r['motifs']) \
                 or m['disorder_classes'][s[5]] != r['disorder'] or m['domain_contexts'][s[7]] != r['domain'] \
                 or m['domain_classes'][s[9]] != r['nearest_domain_class'] \
+                or (r.get('structure_context') and m['structure_contexts'][s[23]] != r['structure_context']) \
                 or {m['studies'][k][0] for k in range(len(m['studies'])) if s[19] >> k & 1} != {web_name[x] for x in L(r['studies'])}:
             bad.append(r['site_id'])
     n_records = sum(len(x) for x in e['sites'])

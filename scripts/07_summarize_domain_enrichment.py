@@ -25,6 +25,7 @@ from common import (
     save_table,
     set_symmetric_xlim,
     signed_bar_colors,
+    structure_context,
     style_axis,
 )
 
@@ -426,6 +427,16 @@ def main() -> None:
         tested_sites['nearest_domain_class'],
         methyl_protein_arg['nearest_domain_class'],
     )
+    # Disorder and domains in one class per arginine (common.structure_context), when the disorder classes are known.
+    structure_enrichment = pd.DataFrame()
+    if 'disorder_context_class' in tested_sites.columns and 'disorder_context_class' in methyl_protein_arg.columns:
+        def structure(df: pd.DataFrame) -> pd.Series:
+            return pd.Series([structure_context(a, b, c) for a, b, c in zip(df['disorder_context_class'], df['domain_context_class'],
+                                                                            df['nearest_domain_edge_distance'])], index=df.index)
+        annotated_sites['structure_context'] = structure(annotated_sites)
+        methyl_protein_arg['structure_context'] = structure(methyl_protein_arg)
+        tested_sites = annotated_sites[has_background]
+        structure_enrichment = fisher_like_enrichment(tested_sites['structure_context'], methyl_protein_arg['structure_context'])
     edge_summary = annotated_sites[['nearest_domain_edge_distance', 'domain_context_class']].copy()
     observed_edge = tested_sites['nearest_domain_edge_distance'].dropna().astype(float)
     background_edge = methyl_protein_arg['nearest_domain_edge_distance'].dropna().astype(float)
@@ -481,6 +492,8 @@ def main() -> None:
     save_table(annotated_sites, outdir / 'sites_with_domain_context.tsv')
     save_table(context_enrichment, outdir / 'domain_context_enrichment.tsv')
     save_table(domain_class_enrichment, outdir / 'domain_class_enrichment.tsv')
+    if not structure_enrichment.empty:
+        save_table(structure_enrichment, outdir / 'structure_context_enrichment.tsv')
     save_table(edge_summary, outdir / 'domain_edge_distance_summary.tsv')
     save_table(edge_comparison, outdir / 'domain_edge_distance_comparison.tsv')
     save_table(edge_bin_enrichment, outdir / 'domain_edge_bin_enrichment.tsv')

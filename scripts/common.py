@@ -360,6 +360,30 @@ def add_q_values(df: pd.DataFrame, p_col: str = 'p_value', out_col: str = 'q_val
     return out
 
 
+# Structural context: MobiDB disorder and InterPro domains in one class per arginine, from inside a folded domain to deep
+# in a disordered region (scripts/07 tests it; build_release writes it per site). An arginine in a disordered region
+# outside domains is binned by its distance to the nearest domain edge; on a protein without domains it is far.
+STRUCTURE_NEAR, STRUCTURE_MID = 10, 30
+STRUCTURE_CONTEXTS = ['domain_folded', 'domain_disordered', 'ordered_outside_domain', 'idr_near_domain', 'idr_mid_domain',
+                      'idr_far_from_domain', 'no_disorder_annotation']
+
+
+def structure_context(disorder_class, domain_class, domain_edge_distance) -> str:
+    """The class of STRUCTURE_CONTEXTS from a site's disorder class (scripts/06), domain context (scripts/05) and
+    distance to the nearest domain edge."""
+    if str(disorder_class) == 'no_disorder_annotation':
+        return 'no_disorder_annotation'
+    disordered = str(disorder_class) == 'disordered'
+    if str(domain_class) == 'in_domain':
+        return 'domain_disordered' if disordered else 'domain_folded'
+    if not disordered:
+        return 'ordered_outside_domain'
+    d = pd.to_numeric(domain_edge_distance, errors='coerce')
+    if pd.isna(d) or d > STRUCTURE_MID:
+        return 'idr_far_from_domain'
+    return 'idr_near_domain' if d <= STRUCTURE_NEAR else 'idr_mid_domain'
+
+
 def fisher_like_enrichment(target: pd.Series, universe: pd.Series) -> pd.DataFrame:
     target = target.fillna('Other / unclassified')
     universe = universe.fillna('Other / unclassified')

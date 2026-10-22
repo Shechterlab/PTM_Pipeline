@@ -1092,23 +1092,27 @@ def load_modelled_methyl_r(cache: Path, refresh: bool, workers: int):
 
 
 def cdcode_threshold_enrichment(cd, proteome, meth_base, uids, workdir, thresholds=(1, 2, 3, 4)):
-    """Methylated share of each condensate counting only members at or above a CD-CODE confidence score, against the
-    proteins in any human CD-CODE condensate (at any score), the background scripts/12 uses for all memberships:
-    clusterProfiler enricher, one job per score, condensates with at least five counted members.
-    {score: [[condensate index, members, methylated members, log2 fold enrichment, p, q], ...]}"""
-    universe = {a for uid in uids for a in cd.get(uid, {}) if a in proteome}
-    target = {a for a in universe if a in meth_base}
+    """Methylated share of each condensate counting only members at or above a CD-CODE confidence score, against two
+    backgrounds, as scripts/12 tests all memberships: the proteins in any human CD-CODE condensate (at any score), and
+    the reviewed human proteome. clusterProfiler enricher, one job per score and background, condensates with at
+    least five counted members. ({score: rows} against condensate proteins, {score: rows} against the proteome), each
+    row [condensate index, members, methylated members, log2 fold enrichment, p, q]."""
+    backgrounds = {'condensates': {a for uid in uids for a in cd.get(uid, {}) if a in proteome}, 'proteome': set(proteome)}
     jobs = []
     for t in thresholds:
         sets = pd.DataFrame([(ci, a) for ci, uid in enumerate(uids) for a, m in cd.get(uid, {}).items() if m[0] >= t and a in proteome],
                             columns=['term', 'gene'])
-        jobs.append(Job(f'condensate_confidence_{t}', target, universe, sets=sets, whole_universe=True, min_size=5))
+        for bg, universe in backgrounds.items():
+            target = {a for a in universe if a in meth_base}
+            suffix = '' if bg == 'condensates' else '_proteome'
+            jobs.append(Job(f'condensate_confidence_{t}{suffix}', target, universe, sets=sets, whole_universe=True, min_size=5))
     res = run_enrichment(jobs, workdir)
-    out = {}
+    out = ({}, {})
     for t in thresholds:
-        r = res[f'condensate_confidence_{t}']
-        rows = [[int(x.ID), int(x.M), int(x.k), sig(math.log2(x.FoldEnrichment)), sig(x.pvalue), sig(x['p.adjust'])] for _, x in r.iterrows()]
-        out[str(t)] = sorted(rows)
+        for k, suffix in enumerate(('', '_proteome')):
+            r = res[f'condensate_confidence_{t}{suffix}']
+            rows = [[int(x.ID), int(x.M), int(x.k), sig(math.log2(x.FoldEnrichment)), sig(x.pvalue), sig(x['p.adjust'])] for _, x in r.iterrows()]
+            out[k][str(t)] = sorted(rows)
     return out
 
 
@@ -2875,7 +2879,7 @@ def main():
                      'other': [len(ds_un), sig(sum(ds_un) / len(ds_un)) if ds_un else None, med(ds_un)], 'p': sig(mann_whitney(ds_meth, ds_un)[1])},
         'multi': or_summary(multi.values()),
     }
-    log(f'Crosslinks by type: ' + ', '.join(f"{k} MH OR {v['mh'][0]} (p {v['mh'][3]})" for k, v in xl_types['rna_xl'].items()))
+    log('Crosslinks by type: ' + ', '.join(f"{k} MH OR {v['mh'][0]} (p {v['mh'][3]})" for k, v in xl_types['rna_xl'].items()))
     log(f"Crosslink frequency: methylated R mean spectra {xl_freq['spectra']['meth'][1]} vs {xl_freq['spectra']['other'][1]} (p {xl_freq['spectra']['p']}); "
         f"datasets {xl_freq['datasets']['meth'][1]} vs {xl_freq['datasets']['other'][1]} (p {xl_freq['datasets']['p']})")
     log(f'Crosslinks: {sum(1 for r in xl_rows if r[1]):,} methylarginines are RNA-crosslinked residues, {sum(1 for r in xl_rows if r[2]):,} within {XL_NEAR} residues; '
@@ -2933,7 +2937,6 @@ def main():
             if not res:
                 continue
             for j, _ in owners:
-                own = meth_accs[sites[j][0]]
                 if res.get('resn') in METHYL_R:
                     modelled[j] = res['resn']
                 for hch, hlab, hseq, comp, dist in res['hits']:
@@ -3236,7 +3239,7 @@ def main():
     cond_meta = explorer['meta'].get('condensates', [])
     cd_uids = [c[1] for c in cond_meta]
     cd, cd_version = load_cdcode(cache, args.refresh, cd_uids, args.workers)
-    cond_conf = cdcode_threshold_enrichment(cd, proteome, meth_base, cd_uids, enrich_dir)
+    cond_conf, cond_conf_proteome = cdcode_threshold_enrichment(cd, proteome, meth_base, cd_uids, enrich_dir)
     # How CD-CODE confidence scores are distributed over human memberships (scores cluster at 1-2 and 4-5).
     score_hist = Counter(m[0] for uid in cd_uids for a, m in cd.get(uid, {}).items() if a in proteome)
     cond_score_hist = {str(k): v for k, v in sorted(score_hist.items())}
@@ -3363,7 +3366,7 @@ def main():
                        f'0: the side chain is within 4 Å or (tier 1) {PROXIMAL_CUTOFF:g} Å of it; else k of the closest residue i+k (k = ±1 to ±{NEAR_RESIDUES}) within 4 Å of it',
                        'chain type (' + '|'.join(NA_TYPES) + ')', f'tier: 0 direct contact or via a flanking residue, 1 proximal (side chain within {PROXIMAL_CUTOFF:g} Å, one entry per distinct complex)'],
                 'na_names': 'molecule names of the RNA and DNA chains',
-                'na_dist': [f'type of RNA or DNA', f'methylarginines by the closest approach of the side chain, 1 Å bins from 0 to {PROXIMAL_CUTOFF:g} Å',
+                'na_dist': ['type of RNA or DNA', f'methylarginines by the closest approach of the side chain, 1 Å bins from 0 to {PROXIMAL_CUTOFF:g} Å',
                             'the other arginines of the same proteins, likewise (every entry with the protein and RNA or DNA)'],
                 'na_dist_stats': '{rna|dna|any}_within_{4|8}a: or_summary of methylarginines against the other arginines modelled with that kind, within the cutoff; '
                                  '{kind}_distance: [n methylarginines within 8 Å, median Å, n other, median Å, Mann-Whitney p]',
@@ -3382,6 +3385,7 @@ def main():
                 'modelled': ['site', 'PDB entries modelling a methylated arginine there', 'residue names'],
                 'modelled_gaps': ['protein index', 'UniProt positions modelled as methylarginine but not in the union', 'PDB entries'],
                 'cond_conf': '{min stars: [[condensate index, members, methylated, log2 fold enrichment, p, q], ...]}',
+                'cond_conf_proteome': 'as cond_conf, against the reviewed human proteome instead of the proteins in any condensate',
                 'cond_score_hist': '{CD-CODE confidence score: memberships of reviewed human proteins}',
                 'pred': ['site', '[[partner index, pDockQ x 100, 1 if this protein is ProtVar uniprot_id1, served model: 1 same order, 2 reversed, 0 none], ...] (top 12)', 'predicted partners'],
                 'gallery': ['site', 'partner index', 'source (0 ProtVar served model, 1 AlphaFold DB complex)', 'score x 100 (ProtVar pDockQ; AlphaFold DB ipTM)', 'pDockQ x 100', 'pLDDT of the arginine', 'lowest pLDDT of the partner residues named', 'minimum heavy-atom distance x 10 (Å)', 'flags (1 salt bridge <= 4 Å, 2 H-bond <= 3.5 Å, 4 cation-pi <= 5 Å, 8 clash < 2.2 Å)', 'partner residues with bond codes (sb, hb, pi)', 'model reference (ProtVar: 1 this protein first, 2 partner first; AlphaFold DB: model id)', 'this protein\'s chain'],
@@ -3418,6 +3422,7 @@ def main():
         'modelled': modelled_rows,
         'modelled_gaps': modelled_gaps,
         'cond_conf': cond_conf,
+        'cond_conf_proteome': cond_conf_proteome,
         'cond_score_hist': cond_score_hist,
         'pred': pred_rows,
         'pred_enrich': pred_enrich,

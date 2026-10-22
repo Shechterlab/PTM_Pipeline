@@ -99,6 +99,9 @@ def statistics(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
                            'domain_context', 'other arginines of the methylated proteins')
     rows += from_fractions(read(root / 'domain_context' / 'domain_class_enrichment.tsv'), 'category',
                            'domain_class', 'other arginines of the methylated proteins')
+    if (root / 'domain_context' / 'structure_context_enrichment.tsv').exists():
+        rows += from_fractions(read(root / 'domain_context' / 'structure_context_enrichment.tsv'), 'category',
+                               'structure_context', 'other arginines of the methylated proteins')
     # The disease families (scripts/14): clusterProfiler::enricher against the genes with a DisGeNET term.
     for r in read(root / 'disease' / 'disease_families.tsv').to_dict('records'):
         a, c = int(r['methylarginine_protein_count']), int(r['background_count'])
@@ -126,6 +129,16 @@ def condensate_rows(root: Path) -> list[dict]:
                      'b': methyl_in_universe - a, 'c': members - a, 'd': universe - members - (methyl_in_universe - a),
                      **effect(r), 'p': num(r['p_value']), 'q': num(r['q_value']),
                      'background': 'other human proteins in CD-CODE condensates (export of 2026-03-18)', 'n_strata': ''})
+    # The same condensates against the reviewed human proteome (scripts/12 with --reference-fasta).
+    path = root / 'condensates' / 'condensate_enrichment_vs_proteome.tsv'
+    if path.exists():
+        proteome, methylated = int(summary['reviewed_proteome_proteins']), int(summary['methyl_proteins_in_reviewed_proteome'])
+        for r in read(path).to_dict('records'):
+            a, members = int(r['methyl_protein_count']), int(r['member_count'])
+            rows.append({'analysis': 'condensate_proteome', 'category': r['condensate_id'], 'stratum': 'all', 'a': a,
+                         'b': methylated - a, 'c': members - a, 'd': proteome - members - (methylated - a),
+                         **effect(r), 'p': num(r['p_value']), 'q': num(r['q_value']),
+                         'background': 'other reviewed human proteins', 'n_strata': ''})
     del membership
     return rows
 

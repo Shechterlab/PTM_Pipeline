@@ -46,7 +46,7 @@ sys.path.insert(0, str(SCRIPTS))
 import release_codes as rc  # noqa: E402
 import release_docs  # noqa: E402
 import release_tables  # noqa: E402
-from common import classify_by_patterns  # noqa: E402
+from common import classify_by_patterns, structure_context  # noqa: E402
 
 
 def load_script(name: str, file: str):
@@ -599,6 +599,7 @@ def context_annotations(sites: pd.DataFrame, inputs: Path) -> pd.DataFrame:
     out['nearest_domain_class'] = domain_class
     out['domain_side'] = dom['nearest_domain_side'].fillna('')
     out['domain_edge_distance'] = pd.to_numeric(dom['nearest_domain_edge_distance'], errors='coerce').astype('Int64')
+    out['structure_context'] = [structure_context(a, b, c) for a, b, c in zip(out['disorder'], out['domain'], out['domain_edge_distance'])]
     return out
 
 
