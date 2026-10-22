@@ -3336,7 +3336,7 @@ def main():
             contact_rows.append([j, rows, modelled.get(j, '')])
         log(f'Structure contacts: {len(contact_rows):,} sites with residue-level contacts')
         na_rows = nucleic_contacts(results, requests_, chains_na)
-        log(f"Bound sequences: {len({r[0] for r in na_rows if r[3] != 'dna'}):,} methylarginines touch RNA and "
+        log(f"Bound sequences: {len({r[0] for r in na_rows if r[3] != 'dna'}):,} methylarginines in contact with RNA and "
             f"{len({r[0] for r in na_rows if r[3] == 'dna'}):,} touch DNA in the structures read ({len(na_rows):,} site-chain pairs)")
     # The website's block: one row per site, kind, type and bound window, with every entry that shows it.
     na_names, na_name_ix, grouped = [], {}, {}

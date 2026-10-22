@@ -1798,7 +1798,7 @@ html.drawer-open { overflow: hidden; }
 }
 
 /* ---- Layout A (prototype, ?ui=a): a page's question, its answer and one figure, then tiles that open its sections. */
-.a-mode .hub-legend, .a-mode .hub-head, .a-mode .ix-facts, .a-mode .hub-list:not(.focus) { display: none; }
+.a-mode .hub-legend, .a-mode .hub-head, .a-mode .ix-facts, .a-mode .a-try, .a-mode .hub-list:not(.focus) { display: none; }
 .a-home { display: grid; gap: 1.5rem; margin: 0.25rem 0 2rem; }
 .a-proto { display: flex; align-items: center; gap: 0.6rem; margin: 0; font-size: 0.78rem; color: var(--muted); }
 .a-proto::before { content: ""; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); }

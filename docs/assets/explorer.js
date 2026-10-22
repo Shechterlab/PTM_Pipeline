@@ -4247,7 +4247,7 @@
   function hubHtml(single) {
     const scoped = constraints().length > 0;
     if (single) return '';
-    return '<p class="hub-legend hub-only"><span class="hl-keys">' + am(1) + 'more ' + am(-1) + 'less than expected ' + am(0) + 'no difference (q ≤ ' + PADJ + ')</span> ' +
+    return '<p class="a-proto a-try hub-only">A new layout is in preparation <button type="button" class="linkish" data-ui="a">Try it</button></p><p class="hub-legend hub-only"><span class="hl-keys">' + am(1) + 'more ' + am(-1) + 'less than expected ' + am(0) + 'no difference (q ≤ ' + PADJ + ')</span> ' +
       'Figures: each test or class a dot at its odds ratio or fold enrichment (log scale, centre line no difference), or a bar for a share' + (scoped ? '; your selection on top, the whole dataset below' : '') + '. ' +
       (scoped ? '<b>Retested</b>: the release\'s test run again on your selection. <b>Counted</b>: your sites or proteins counted. <b>Whole dataset only</b>: unchanged by a selection.'
         : 'Make a selection (search, or <b>Filters</b>) and every question is answered for it too.') + ' A row opens its figures and tables.</p>' +
@@ -4417,10 +4417,21 @@
   // its answer in a sentence and the figure that gives it, then tiles: one per section of the scorecard, each a title,
   // a small picture and one line. A tile opens its section as the scorecard's row does (the focus view); the scorecard
   // stays in the page behind the tiles, so every link to a section still works.
-  const UI_A = (() => {
-    const v = new URLSearchParams(location.search).get('ui');
-    try { if (v) localStorage.setItem('mse-ui', v); return (v || localStorage.getItem('mse-ui')) === 'a'; } catch (e) { return v === 'a'; }
+  // A page may set window.MSE_UI_DEFAULT ('a') to open in layout A when the reader has not chosen.
+  let UI_A = (() => {
+    const v = new URLSearchParams(location.search).get('ui'), d = window.MSE_UI_DEFAULT || '';
+    try { if (v) localStorage.setItem('mse-ui', v); return (v || localStorage.getItem('mse-ui') || d) === 'a'; } catch (e) { return (v || d) === 'a'; }
   })();
+  // Switch layouts in place (any [data-ui] button): remembered in this browser where storage allows.
+  document.addEventListener('click', (e) => {
+    const b = e.target instanceof Element ? e.target.closest('[data-ui]') : null;
+    if (!b) return;
+    UI_A = b.dataset.ui === 'a';
+    try { localStorage.setItem('mse-ui', b.dataset.ui); } catch (err) { /* storage blocked: this visit only */ }
+    UI.focus = null;
+    renderView();
+    window.scrollTo({ top: 0 });
+  });
   // The scorecard's rows as foldHtml draws them, with the group hubSec puts them in: what the tiles are made from.
   const A_ROWS = [];
   const aOr = (m) => (m && m.or != null && m.or > 0 && Number.isFinite(m.or) ? m.or : null);
@@ -4498,7 +4509,6 @@
     const home = $('.a-home', root);
     if (!home) return;
     $$('[data-go]', home).forEach((b) => b.addEventListener('click', () => { if (b.getAttribute('aria-disabled') === 'true') return; UI.hubFrom = b.dataset.go; hubFocus(b.dataset.go); }));
-    $$('[data-ui]', home).forEach((b) => b.addEventListener('click', () => { const u = new URL(location.href); u.searchParams.set('ui', b.dataset.ui); location.href = u.href; }));
     // Rows whose summary fills in later (a protein's cards load on their own): their tile follows.
     const sync = () => $$('[data-sum-of]:not([data-fixed])', home).forEach((t) => { const s = $('#fold-sum-' + t.dataset.sumOf, root); if (s && s.innerHTML !== t.innerHTML) t.innerHTML = s.innerHTML; });
     const list = $('.hub-list', root);
@@ -10692,15 +10702,19 @@
       const xl = Object.assign({ label: 'The residue crosslinked to RNA', sub: 'pepR-MS compendium · 5 datasets', mainName: mainName() }, pair('rna_xl'));
       const dna = Object.assign({ label: 'A DNA-crosslinked residue or candidate', sub: 'Trendel 2025 · MCF7', mainName: mainName() }, pair('dna_cand'));
       const st = (label, path) => ({ label, sub: 'PDB entries, side chain', mainName: mainName(), main: test('na_dist_stats', [path], scoped), ghost: scoped ? test('na_dist_stats', [path], false) : null });
-      const structs = [st('Within 4 Å of RNA', 'rna_within_4a'), st('Within 4 Å of DNA', 'dna_within_4a')];
+      const rnaSt = st('Within 4 Å of RNA', 'rna_within_4a'), dnaSt = st('Within 4 Å of DNA', 'dna_within_4a');
+      // protein partners: interfaces in PDB structures, in AlphaFold-Multimer models of human pairs, and IntAct's short binding regions
+      const pt = (label, sub, g, path) => ({ label, sub, mainName: mainName(), main: test(g, path, scoped), ghost: scoped ? test(g, path, false) : null });
+      const prot = [pt('At a protein interface', 'PDB entries (PDBe-KB)', 'enrich_strata', ['protein', 'all']), pt('At a predicted protein interface', 'AlphaFold-Multimer, pDockQ ≥ 0.23 (ProtVar)', 'pred_enrich', ['0.23', 'all']),
+        pt('In a short binding region', 'IntAct, disordered arginines', 'intact_enrich', ['peptide_disordered'])];
+      // The answer, one clause per partner: a direction and its effect for each kind of evidence.
       const up = cells.filter((r) => aDir(r.main) === 'up'), testable = cells.filter((r) => aOr(r.main)), ors = up.map((r) => r.main.or);
       const rng = ors.length ? (ors.length > 1 ? fx(Math.min(...ors)) + '–' + fx(Math.max(...ors)) : fx(ors[0])) + '×' : '';
-      const who = scoped ? 'In your selection, in cells' : 'In cells';
-      let verdict = !testable.length ? '<b>' + who + ': too few sites to test.</b> ' : up.length === testable.length ? '<b>' + who + ', yes:</b> '
-        : up.length ? '<b>' + who + ', in ' + up.length + ' of ' + testable.length + ' experiments:</b> ' : '<b>' + who + ', no difference.</b> ';
-      if (up.length) verdict += 'the odds that a methylarginine is in an RNA-bound peptide are ' + rng + ' those of the other arginines of the same proteins, counting only the arginines each experiment measured. ';
-      const sUp = structs.filter((r) => aDir(r.main) === 'up'), sDn = structs.filter((r) => aDir(r.main) === 'down');
-      verdict += sUp.length ? '<b>In solved structures, more often ' + sUp.map((r) => r.label.toLowerCase()).join(' and ') + '.</b>' : sDn.length ? '<b>In solved structures, less often ' + sDn.map((r) => r.label.toLowerCase()).join(' and ') + '.</b>' : '<b>In solved structures, no difference.</b>';
+      const say = (r, where) => { const d = aDir(r.main); return !aOr(r.main) ? 'too few to test ' + where : d === 'ns' ? 'no difference ' + where : (d === 'up' ? 'more often ' : 'less often ') + where + ' (' + fx(r.main.or) + '×)'; };
+      const cellsSay = !testable.length ? 'too few to test in living cells' : up.length ? 'more often in RNA-bound peptides in living cells (' + rng + (up.length < testable.length ? ', ' + up.length + ' of ' + testable.length + ' experiments' : '') + ', among the arginines each experiment measured)' : 'no difference in RNA-bound peptides in living cells';
+      const verdict = (scoped ? '<b>Your selection.</b> ' : '') + '<b>RNA:</b> ' + cellsSay + '; ' + say(rnaSt, 'within 4 Å in PDB structures') + '. ' +
+        '<b>DNA:</b> ' + say(dna, 'at DNA-crosslinked residues') + '; ' + say(dnaSt, 'within 4 Å in PDB structures') + '. ' +
+        '<b>Proteins:</b> ' + say(prot[0], 'at PDB protein interfaces') + '; ' + say(prot[1], 'at predicted interfaces') + '.';
       const key = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span><i class="aq-pt ns"></i>no difference (p > 0.05)</span><span><i class="aq-gh"></i>' +
         (scoped ? 'whole dataset' : 'all arginines of those proteins (no detection control)') + '</span><span class="a-key-note">Each row: methylarginines against the other arginines of the same proteins (Mantel–Haenszel odds ratio, 95% CI)</span>';
       // tiles
@@ -10737,7 +10751,7 @@
       const ov = {
         'ix-evmap': { vis: stack(c), head: '<b>' + fmt(c.exp) + '</b> sites (' + pctText(c.exp, R.sites.length || 1) + '%) with experimental evidence', whole: fmt(cw.exp) + ' of ' + fmt(S.length) },
         'ix-prox': { vis: proxSvg(), head: aOr(p0) && aOr(p20) ? 'CAPRI: <b>' + fx(p0.or) + '×</b> inside, ' + fx(p20.or) + '× within 20 residues' : 'Odds ratio by distance from RNA-binding residues' },
-        'ix-na': { vis: aBig([[fmt(naN(R.sites, 'rna')), 'touch RNA'], [fmt(naN(R.sites, 'dna')), 'touch DNA', 'dna']]), head: 'methylarginines in PDB structures, with the bound sequences', whole: fmt(naN(S, 'rna')) + ' RNA, ' + fmt(naN(S, 'dna')) + ' DNA' },
+        'ix-na': { vis: aBig([[fmt(naN(R.sites, 'rna')), 'in contact with RNA'], [fmt(naN(R.sites, 'dna')), 'with DNA', 'dna']]), head: 'methylarginines in PDB structures, with the bound sequences', whole: fmt(naN(S, 'rna')) + ' RNA, ' + fmt(naN(S, 'dna')) + ' DNA' },
         'ixs-go': { vis: aMeters(goM(go)), head: 'Methylated proteins vs ' + (FOLD() ? 'all reviewed' : 'other') + ' human proteins (GO)' },
         'ixs-partners': { vis: pm.distinct ? aMeters([{ label: 'Partners methylated', v: pm.distinctMeth / pm.distinct, ref: pRef, text: pctText(pm.distinctMeth, pm.distinct) + '%', cls: 'sel' }]) : '', head: pm.distinct ? 'of ' + fmt(pm.distinct) + ' partners (tick: ' + pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of human proteins)' : 'no high-confidence partners' },
         'ixs-complexes': { vis: aBig([[fmt(cxs.length), 'complexes enriched']]), head: cxs.length ? 'Top: ' + esc(cxs[0].name) : 'none enriched (q ≤ ' + PADJ + ')', whole: scoped ? fmt(cxRows(false).length) + ' enriched' : '' },
@@ -10749,8 +10763,8 @@
       ov['ixs-pdb'] = cmp((on) => [tRow('Protein', 'protein interfaces', 'enrich_strata', ['protein', 'all'], on), tRow('RNA', 'RNA interfaces', 'enrich_strata', ['rna', 'all'], on), tRow('DNA', 'DNA interfaces', 'enrich_strata', ['dna', 'all'], on)]);
       ov['ixs-predicted'] = cmp((on) => [tRow('pDockQ ≥ 0.23', 'predicted interfaces', 'pred_enrich', ['0.23', 'all'], on), tRow('pDockQ ≥ 0.5', 'confident ones', 'pred_enrich', ['0.5', 'all'], on)]);
       ov['ixs-intact'] = cmp((on) => [tRow('Binding region', 'short binding regions', 'intact_enrich', ['peptide_disordered'], on), tRow('Mutation', 'mutations with an effect', 'intact_enrich', ['mutation'], on)]);
-      return aHome({ q: 'Are methylarginines where proteins touch RNA and DNA?', verdict, key,
-        fig: aForest([['RNA, in living cells', cells.concat([xl])], ['DNA, in living cells', [dna]], ['In solved structures', structs]], { ghostShort: scoped ? 'all sites' : 'all', ghostName: scoped ? 'Whole dataset' : 'Among all arginines of these proteins' }),
+      return aHome({ q: 'Are methylarginines enriched at contacts with RNA, DNA or other proteins?', verdict, key,
+        fig: aForest([['RNA · in living cells', cells.concat([xl])], ['RNA · in solved structures', [rnaSt]], ['DNA', [dna, dnaSt]], ['Proteins', prot]], { ghostShort: scoped ? 'all sites' : 'all', ghostName: scoped ? 'Whole dataset' : 'Among all arginines of these proteins' }),
         go: 'ix-nac', goText: 'Every contact test, with tables' }, ov, ['ix-nac']);
     }
     A_ROWS.length = 0;
@@ -10771,7 +10785,7 @@
           both([['seq_prox', ['rna_xl', '5'], 'within 5 of a crosslinked residue'], ['seq_prox', ['rna_capri_adj', '5'], 'of a CAPRI peptide']]), 'Needs the proximity tables of the interaction export.',
           testsFig(PROX_TRACKS.map(([k]) => ['seq_prox', [k, '5']]))) +
         row('ix-na', 'Bound RNA and DNA', naHtml, 'Which RNA and DNA do methylarginines contact in structures, and what do their proteins bind?', 'count',
-          [ixNaSummary(R.sites, true), ixNaSummary(S, true)], 'No methylarginine of this selection touches RNA or DNA in a structure, and its proteins have no binding data.', pctLanes(naShare)) +
+          [ixNaSummary(R.sites, true), ixNaSummary(S, true)], 'No methylarginine of this selection is in contact with RNA or DNA in a structure, and its proteins have no binding data.', pctLanes(naShare)) +
         row('ixs-go', 'RNA- and DNA-binding proteins (Gene Ontology)', sec('go'), 'Are methylated proteins annotated as RNA- or DNA-binding more often than human proteins?', 'retest',
           [goAns(scoped ? goSelection() : IX.goEnrich), goAns(IX.goEnrich)], null, goFig)) +
       hubSec('Structures and models',
@@ -10945,7 +10959,7 @@
     sites = sites || R.sites;
     const n = (kind) => new Set(naRows(sites, kind, false).map((w) => w.s)).size;
     const prots = new Set(sites.map((s) => s.p)), withNab = Array.from(prots).filter((i) => IX.nab.rbns.get(i) || IX.nab.selex.get(i) || IX.nab.jaspar.get(i) || IX.nab.eclip.get(i)).length;
-    if (html) return '<span class="an">' + fmt(n('rna')) + '</span> methylarginines touch RNA and <span class="an">' + fmt(n('dna')) + '</span> DNA in structures; ' + fmt(withNab) + ' proteins with RNA Bind-n-Seq, HTR-SELEX, JASPAR or eCLIP data';
+    if (html) return '<span class="an">' + fmt(n('rna')) + '</span> methylarginines in contact with RNA and <span class="an">' + fmt(n('dna')) + '</span> DNA in structures; ' + fmt(withNab) + ' proteins with RNA Bind-n-Seq, HTR-SELEX, JASPAR or eCLIP data';
     return fmt(n('rna')) + ' methylarginines in direct contact with RNA and ' + fmt(n('dna')) + ' with DNA in structures; ' + fmt(withNab) + ' proteins with RNA Bind-n-Seq, HTR-SELEX, JASPAR or eCLIP data' + (constraints().length ? ', your selection' : '');
   }
 
