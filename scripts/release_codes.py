@@ -1105,10 +1105,11 @@ DNA_MOTIF_COLUMNS = [
 ]
 
 ECLIP_COLUMNS = [
-    ('uniprot_accession', 'string', '', 'methylated protein with an ENCODE eCLIP experiment (RNA crosslinked to it in K562 or HepG2 cells)'),
-    ('encode_experiment', 'string', '', 'the ENCODE experiment'),
+    ('uniprot_accession', 'string', '', 'methylated protein with an eCLIP experiment (RNA crosslinked to it in K562 or HepG2 cells)'),
+    ('source', 'string', '', 'ENCODE (reproducible peaks) or ENCORE (Her et al. 2026, GEO GSE315407: reproducible enriched windows of at most 100 nt, Skipper)'),
+    ('experiment', 'string', '', 'the ENCODE experiment (ENCSR id) or the ENCORE experiment (its GEO file name: RBP, cell line, Yeo-lab number)'),
     ('cell_line', 'string', '', 'K562, HepG2, or another biosample'),
-    ('n_peaks', 'integer', '', 'reproducible peaks (replicates 1 and 2, GRCh38)'),
+    ('n_peaks', 'integer', '', 'reproducible peaks (ENCODE, replicates 1 and 2, GRCh38) or reproducible enriched windows (ENCORE); the peaks_ columns count the same'),
     ('peaks_CDS', 'integer', '', 'peaks whose middle falls in a coding sequence of a GENCODE v50 basic transcript of their strand'),
     ('peaks_UTR3', 'integer', '', 'in a 3\' UTR (and in no coding sequence)'),
     ('peaks_UTR5', 'integer', '', 'in a 5\' UTR'),
@@ -1116,7 +1117,10 @@ ECLIP_COLUMNS = [
     ('peaks_intron', 'integer', '', 'in an intron'),
     ('peaks_intergenic', 'integer', '', 'outside every basic transcript'),
     ('top_target_genes', 'list<string>', '', 'the 25 genes with most peaks'),
-    ('top_target_peaks', 'list<string>', '', 'their peaks, in the same order'),
+    ('top_target_peaks', 'list<string>', '', 'their peaks (or windows), in the same order'),
+    ('top_5mers', 'list<string>', '', 'the 5 5-mers (RNA alphabet) most enriched in the top 1,000 peaks or windows against those of the other RBPs of the same source, weighted to the same mix of regions (scripts/43e; ranked by a two-proportion z, a ranking only)'),
+    ('top_5mer_ratios', 'list<string>', '', 'their frequency ratios, in the same order'),
+    ('same_data_as', 'string', '', 'ENCORE rows: the released ENCODE experiment whose data this re-analyses, if any (not independent evidence)'),
 ]
 
 RESIDUE_EVIDENCE_COLUMNS = [

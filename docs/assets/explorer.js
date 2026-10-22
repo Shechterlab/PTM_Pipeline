@@ -165,6 +165,7 @@
       ['RBDmap', 'RNA-bound fragments (RBDpep, HeLa)', 'Table S1 (Oxford Research Archive)', 'ORA terms; article open access', 'Castello et al., Mol Cell 63:696 (2016)', '10.1016/j.molcel.2016.06.029'],
       ['CAPRI', 'RNA-crosslinked (XL) and adjacent (ADJ) peptides (HEK293)', 'Supplementary Data 3 and 9', 'CC BY 4.0', 'Panhale et al., Nat Commun 10:2682 (2019)', '10.1038/s41467-019-10585-3'],
       ['pCLAP', 'RNA-binding peptides and their Lys-C regions (HEK293), derived from the MaxQuant search (PRIDE PXD005739)', 'PRIDE PXD005739', 'EMBL-EBI terms of use (the derived peptide table is not redistributed)', 'Mullari et al., J Proteome Res 16:2762 (2017)', '10.1021/acs.jproteome.7b00042'],
+      ['ENCORE eCLIP', 'eCLIP enriched windows of 103 RBPs in K562 and HepG2 (Skipper), with their RNA sequences and enriched 5-mers', 'GEO GSE315407', 'Public (GEO; no licence stated by the submitters); article CC BY 4.0', 'Her et al., Cell Syst 17:101588 (2026); Skipper: Boyle et al., Cell Genom 3:100317 (2023)', '10.1016/j.cels.2026.101588'],
       ['RBR-ID', 'Residues under peptides depleted when RNA is 4SU-labelled and crosslinked (K562 nuclei), re-scored from the DIA-NN report (PRIDE PXD035484)', 'PRIDE PXD035484', 'CC0', 'Oksuz et al., Mol Cell 83:2449 (2023); method He et al., Mol Cell 64:416 (2016)', '10.1016/j.molcel.2023.06.012'],
       ['DNA interactome', 'Proteins in direct contact with DNA; DNA-crosslinked peptides and residues (MCF7)', 'Tables S1–S2', 'Journal supplement (Elsevier)', 'Trendel et al., Cell 188:4424 (2025)', '10.1016/j.cell.2025.04.037'],
       ['UniProt DNA-binding regions', 'Curated DNA-binding regions (DNA_BIND)', 'At export', 'CC BY 4.0', 'UniProt Consortium, Nucleic Acids Res 53:D609 (2025)', '10.1093/nar/gkae1010'],
@@ -1175,7 +1176,7 @@
   const INCELL_TERMS = [
     ['rna', 'RNA-crosslinked residue within i ± 5', 'A residue UV-crosslinked to RNA in living cells (pepR-MS compendium) at the site or within 5 residues', (s) => !!siteBound(s).xr],
     ['dna', 'DNA-crosslinked residue within i ± 5', 'A residue UV-crosslinked to DNA in MCF7 cells, alone or as a candidate (Trendel et al. 2025), at the site or within 5 residues', (s) => !!siteBound(s).xd],
-    ['eclip', 'RNA-crosslinked residue within i ± 5, with eCLIP', 'An RNA-crosslinked residue at the site or within 5 residues, and ENCODE eCLIP data exist for the protein in K562 or HepG2 cells', (s) => !!siteBound(s).xr && !!IX.nab.eclip.get(s.p)],
+    ['eclip', 'RNA-crosslinked residue within i ± 5, with eCLIP', 'An RNA-crosslinked residue at the site or within 5 residues, and eCLIP data (ENCODE or ENCORE) exist for the protein in K562 or HepG2 cells', (s) => !!siteBound(s).xr && !!IX.nab.eclip.get(s.p)],
   ];
   const BOUND_TERMS = [
     ['rna', 'RNA', 'RNA (or an RNA-DNA hybrid) in direct contact with the arginine side chain (≤ 4 Å), within 8 Å of it (proximal), or in direct contact with a residue at i ± 1–5, in a PDB structure (the tiers set under Contacts)', (s) => boundRows(s).some((r) => r.kind !== 'dna')],
@@ -7663,7 +7664,9 @@
     const b = d.nab || {};
     for (const [acc, exp, conc, top, logos] of b.rbns || []) if (pIndex.has(acc)) push(nab.rbns, pIndex.get(acc), { exp, conc, top, logos });
     for (const [acc, id, name, cls, fam, pfm, cons] of b.jaspar || []) if (pIndex.has(acc)) push(nab.jaspar, pIndex.get(acc), { id, name, cls, fam, pfm, cons });
-    for (const [acc, exp, cell, n, regions, genes] of b.eclip || []) if (pIndex.has(acc)) push(nab.eclip, pIndex.get(acc), { exp, cell, n, regions, genes });
+    // eCLIP: ENCODE peaks or ENCORE windows (Her et al. 2026), each with its top 5-mers against the other RBPs and, for
+    // ENCORE, its top windows specific to the RBP with their RNA sequence
+    for (const [acc, exp, cell, n, regions, genes, src, kmers, wins, same] of b.eclip || []) if (pIndex.has(acc)) push(nab.eclip, pIndex.get(acc), { exp, cell, n, regions, genes, src: src || 'ENCODE', kmers: kmers || [], wins: wins || [], same: same || '' });
     // HTR-SELEX models (Jolma et al. 2020), primary before secondary
     for (const [acc, id, kind, type, exp, cycle, olig, pfm, cons] of b.htrselex || []) if (pIndex.has(acc)) push(nab.selex, pIndex.get(acc), { id, kind, type, exp, cycle, olig, pfm, cons });
     nab.selex.forEach((list) => list.sort((a, c) => (a.type !== 'Primary') - (c.type !== 'Primary') || (a.exp !== 'Experiment_1') - (c.exp !== 'Experiment_1')));
@@ -8099,7 +8102,7 @@
   function eclipText(i, genes) {
     return (IX.nab.eclip.get(i) || []).map((x) => {
       const tot = x.regions.reduce((a, c) => a + c, 0) || 1, k = x.regions.indexOf(Math.max(...x.regions));
-      return esc(x.cell) + ': ' + fmt(x.n) + ' peaks, most in ' + ECLIP_LABEL[k] + ' (' + pctText(x.regions[k], tot) + '%)' + (genes ? '; top genes ' + esc(x.genes.slice(0, genes).map(([g]) => g).join(', ')) : '');
+      return esc(x.cell) + (x.src === 'ENCORE' ? ' (ENCORE)' : '') + ': ' + fmt(x.n) + (x.src === 'ENCORE' ? ' windows' : ' peaks') + ', most in ' + ECLIP_LABEL[k] + ' (' + pctText(x.regions[k], tot) + '%)' + (genes ? '; top genes ' + esc(x.genes.slice(0, genes).map(([g]) => g).join(', ')) : '');
     }).join('<br>');
   }
   function xlNearText(s, b) {
@@ -8111,7 +8114,7 @@
     if (b.pclap.length) out.push('inside pCLAP RNA-binding peptide' + (b.pclap.length === 1 ? ' ' : 's ') + b.pclap.map(([x, y]) => rn(x, P[s.p]) + '–' + rn(y, P[s.p])).join(', '));
     if (b.rbrid.length) out.push('RBR-ID+ residue' + (b.rbrid[0][2] != null ? ' (residue score up to ' + b.rbrid[0][2] + ')' : ''));
     // an RNA crosslink at the site or i ± 1–5: the RNA bound there in cells may be among the protein's eCLIP targets
-    if (b.xr && IX.nab.eclip.get(s.p)) out.push('RNA crosslinked to ' + esc(P[s.p].label) + ' in cells (ENCODE eCLIP): ' + eclipText(s.p, 5).replace(/<br>/g, '; '));
+    if (b.xr && IX.nab.eclip.get(s.p)) out.push('RNA crosslinked to ' + esc(P[s.p].label) + ' in cells (eCLIP): ' + eclipText(s.p, 5).replace(/<br>/g, '; '));
     return out.join('; ');
   }
   // The site table's Bound RNA/DNA cell: the best bound window (±5 nt shown), its type and contact, and the nearest
@@ -8150,7 +8153,7 @@
         (b.capri.length ? '<p>Inside CAPRI RNA-bound peptide' + (b.capri.length === 1 ? ' ' : 's ') + b.capri.map(([x, y, k]) => rn(x, p) + '–' + rn(y, p) + ' <span class="muted">' + k + '</span>').join(', ') + ' <span class="muted">HEK293</span></p>' : '') +
         (b.pclap.length ? '<p>Inside pCLAP RNA-binding peptide' + (b.pclap.length === 1 ? ' ' : 's ') + b.pclap.map(([x, y]) => rn(x, p) + '–' + rn(y, p)).join(', ') + ' <span class="muted">HEK293</span></p>' : '') +
         (b.rbrid.length ? '<p>RBR-ID+ residues ' + b.rbrid.map(([x, y, sc]) => rn(x, p) + '–' + rn(y, p) + (sc != null ? ' <span class="muted">score ' + sc + '</span>' : '')).join(', ') + ' <span class="muted">K562</span></p>' : '') +
-        (b.xr && IX.nab.eclip.get(s.p) ? '<p class="tl">RNA crosslinked to ' + esc(p.label) + ' in cells (ENCODE eCLIP)</p><p>' + eclipText(s.p, 6) + '</p><p class="muted">With an RNA crosslink at ' + (b.xr.pos === s.pos ? 'the site' : iRel(b.xr.pos - s.pos)) + ', these transcripts are candidate RNA partners of this segment.</p>' : ''));
+        (b.xr && IX.nab.eclip.get(s.p) ? '<p class="tl">RNA crosslinked to ' + esc(p.label) + ' in cells (eCLIP)</p><p>' + eclipText(s.p, 6) + '</p><p class="muted">With an RNA crosslink at ' + (b.xr.pos === s.pos ? 'the site' : iRel(b.xr.pos - s.pos)) + ', these transcripts are candidate RNA partners of this segment.</p>' : ''));
     }
     const sp = seqProxOf(s);
     if (sp.length) out.push('<p class="tl">Nearest RNA-binding evidence along the sequence</p><p>' + sp.map(([l, d]) => esc(l) + ' <b>' + (d ? d + ' residue' + (d === 1 ? '' : 's') : 'at the site') + '</b>').join('; ') + '</p>');
@@ -8334,16 +8337,21 @@
       esc([m.cls, m.fam].filter(Boolean).join(' · ')) + '</span></figcaption></figure>').join('') + '</div><p class="note">JASPAR CORE vertebrates, non-redundant (CC BY 4.0); a heterodimer\'s profile (A::B) is listed for both partners.</p></section>';
   }
   // eCLIP in K562 and HepG2 cells (ENCODE): reproducible peaks by transcript region, and the genes with most peaks.
-  const ECLIP_LABEL = ['CDS', '3′ UTR', '5′ UTR', 'non-coding exon', 'intron', 'intergenic'];
+  const ECLIP_LABEL = ['CDS', '3′ UTR', '5′ UTR', 'non-coding exon', 'intron', 'intergenic'], ECLIP_KEYS = ['CDS', 'UTR3', 'UTR5', 'noncoding_exon', 'intron', 'intergenic'];
   function eclipHtml(p) {
     const ex = IX.nab.eclip.get(p.i) || [];
     if (!ex.length) return '';
     return '<div class="ec-grid">' + ex.map((x) => {
       const tot = x.regions.reduce((a, b) => a + b, 0) || 1;
-      return '<div class="ec-exp"><p><b>' + esc(x.cell) + '</b> · ' + fmt(x.n) + ' reproducible peaks · <a href="https://www.encodeproject.org/experiments/' + encodeURIComponent(x.exp) + '/" target="_blank" rel="noopener">' + esc(x.exp) + ' ↗</a></p>' +
+      const enc = x.src === 'ENCORE';
+      const link = enc ? '<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE315407" target="_blank" rel="noopener" title="' + esc(x.exp) + '">ENCORE, GEO GSE315407 ↗</a> (' + doiLink('10.1016/j.cels.2026.101588', 'Her et al. 2026') + ')'
+        : '<a href="https://www.encodeproject.org/experiments/' + encodeURIComponent(x.exp) + '/" target="_blank" rel="noopener">' + esc(x.exp) + ' ↗</a>';
+      const kmers = x.kmers.length ? '<p class="flabel">5-mers most enriched against other RBPs</p><div class="tags">' + x.kmers.map(([k, r]) => '<span class="tag mono" title="' + esc(k + ': ' + r + '× as frequent in the top ' + (enc ? 'windows' : 'peaks') + ' as in the other RBPs\' (same mix of regions)') + '">' + esc(k) + ' <span class="muted">' + r + '×</span></span>').join('') + '</div>' : '';
+      const wins = x.wins.length ? '<p class="flabel">Top windows specific to ' + esc(p.label) + '</p>' + x.wins.map(([g, reg, l2, nx, seq]) => '<p class="ec-win"><span class="mono">' + esc(seq) + '</span><br><span class="muted">' + esc(g) + ' · ' + esc(ECLIP_LABEL[ECLIP_KEYS.indexOf(reg)] || reg) + ' · log2 odds ratio ' + l2 + ' · in ' + nx + ' of the ENCORE experiments</span></p>').join('') : '';
+      return '<div class="ec-exp"><p><b>' + esc(x.cell) + '</b> · ' + fmt(x.n) + (enc ? ' enriched windows' : ' reproducible peaks') + ' · ' + link + (x.same ? ' <span class="muted">(re-analysis of ENCODE ' + esc(x.same) + ')</span>' : '') + '</p>' +
         '<div class="ec-regions">' + x.regions.map((n, k) => '<div class="ec-r"><span class="ec-l">' + ECLIP_LABEL[k] + '</span><span class="ec-bar"><i style="width:' + (100 * n / tot).toFixed(1) + '%"></i></span><span class="ec-v num">' + pctText(n, tot) + '%</span></div>').join('') + '</div>' +
-        '<p class="flabel">Genes with most peaks</p><div class="tags">' + x.genes.slice(0, 20).map(([g, n]) => '<button class="tag ec-gene" type="button" data-gene="' + esc(g) + '" title="' + n + ' peaks; search ' + esc(g) + '">' + esc(g) + ' <span class="muted">' + n + '</span></button>').join('') + '</div></div>';
-    }).join('') + '</div><p class="note">Peak middles placed on GENCODE v50 basic transcripts of their strand (CDS first, then 3′ UTR, 5′ UTR, non-coding exon, intron). Because eCLIP is performed in cells, peak counts reflect transcript abundance as well as binding preference.</p>';
+        '<p class="flabel">Genes with most ' + (enc ? 'windows' : 'peaks') + '</p><div class="tags">' + x.genes.slice(0, 20).map(([g, n]) => '<button class="tag ec-gene" type="button" data-gene="' + esc(g) + '" title="' + n + (enc ? ' windows' : ' peaks') + '; search ' + esc(g) + '">' + esc(g) + ' <span class="muted">' + n + '</span></button>').join('') + '</div>' + kmers + wins + '</div>';
+    }).join('') + '</div><p class="note">ENCODE peaks and ENCORE windows (Her et al. 2026; reproducible enriched windows of at most 100 nt, Skipper) placed on GENCODE v50 basic transcripts of their strand (CDS first, then 3′ UTR, 5′ UTR, non-coding exon, intron). Because eCLIP is performed in cells, counts reflect transcript abundance as well as binding preference. 5-mers: the top 1,000 peaks or windows against those of the other RBPs of the same source, weighted to the same mix of regions (ranked by a z score, a ranking only). ENCORE windows reproducible in more than 17% of its experiments are left out of the top windows as not specific to the RBP; ENCORE experiments marked as a re-analysis use the same data as the ENCODE experiment named.</p>';
   }
 
   // Aligned windows of one kind for a set of sites (a protein's, or the selection's).
@@ -9417,7 +9425,7 @@
       bindPrefHtml(p, kind) +
       xlSectionHtml(p, kind) +
       '<section><h4>PDB structures with ' + KIND + '</h4><div id="ix-pdb" class="note">Looking up PDB entries…</div></section>' +
-      (kind === 'rna' ? '<section' + (IX.nab.eclip.get(p.i) ? ' class="na-sec"' : '') + '><h4>RNA crosslinked in cells (ENCODE eCLIP)</h4>' + (IX.nab.eclip.get(p.i) ? eclipHtml(p) : '<div id="ix-encode" class="note">Searching ENCODE…</div>') + '</section>' :
+      (kind === 'rna' ? '<section' + (IX.nab.eclip.get(p.i) ? ' class="na-sec"' : '') + '><h4>RNA crosslinked in cells (eCLIP: ENCODE, ENCORE)</h4>' + (IX.nab.eclip.get(p.i) ? eclipHtml(p) : '<div id="ix-encode" class="note">Searching ENCODE…</div>') + '</section>' :
         '<section><h4>ChIP-Atlas target genes</h4><div id="ix-chip" class="note">Loading ChIP-Atlas…</div></section><section><h4>ENCODE TF ChIP-seq</h4><div id="ix-encode" class="note">Searching ENCODE…</div></section>') +
       '</div>';
     $$('.ix-sites [data-pos]', body).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));

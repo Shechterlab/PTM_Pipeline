@@ -669,6 +669,9 @@ def nucleic_contacts(results: dict, requests_: dict, chains_na: dict) -> list:
 
 ECLIP_REGIONS = ['CDS', 'UTR3', 'UTR5', 'noncoding_exon', 'intron', 'intergenic']
 RBNS_TOP, ECLIP_TOP = 12, 25
+# ENCORE windows reproducible in more than this share of its experiments are left out of each experiment's top windows
+# as not specific to the RBP (the cut-off of the Skipper paper, Boyle et al. 2023); ECLIP_WIN windows are kept per experiment.
+ECLIP_SHARED, ECLIP_WIN = 0.17, 3
 
 
 def iupac(col: dict) -> str:
@@ -686,7 +689,9 @@ def iupac(col: dict) -> str:
 def load_nucleic_acid_binding(folder: Path, keep: set) -> dict:
     """What the methylated proteins (keep) bind beyond structures, from the tables scripts/43 staged: RNA Bind-n-Seq
     (the RBNS_TOP most enriched 5-mers and ENCODE's logos), JASPAR 2026 DNA-binding matrices, and ENCODE eCLIP peaks
-    (per experiment: peaks by transcript region and the ECLIP_TOP genes with most)."""
+    (per experiment: peaks by transcript region and the ECLIP_TOP genes with most), and ENCORE eCLIP windows (Her et al. 2026; per experiment the windows by region, the
+    ECLIP_TOP genes with most, its ECLIP_WIN top windows specific to the RBP with their RNA sequence) and, for both eCLIP
+    sources, the 5-mers most enriched in the top windows or peaks against the other RBPs' (scripts/43e)."""
     def rows(name):
         p = folder / name
         if not p.exists():
@@ -729,13 +734,35 @@ def load_nucleic_acid_binding(folder: Path, keep: set) -> dict:
     genes = defaultdict(list)
     for r in rows('encode_eclip_target_genes.tsv'):
         genes[r['encode_experiment']].append([r['gene_name'] or r['gene_id'], int(r['n_peaks'])])
+    # the 5-mers most enriched in an experiment's top windows or peaks against the other RBPs' (top 5 by z, with R)
+    kmer5 = {r['experiment']: [[k, float(v)] for k, v in (x.split(':') for x in r['top_other'].split(';') if x)]
+             for r in rows('eclip_5mer_backgrounds.tsv')}
     for r in rows('encode_eclip_experiments.tsv'):
         if r['uniprot_accession'] in keep:
             exp = r['encode_experiment']
             out['eclip'].append([r['uniprot_accession'], exp, r['cell_line'], int(r['n_peaks']), [regions[exp].get(k, 0) for k in ECLIP_REGIONS],
-                                 genes[exp][:ECLIP_TOP]])
+                                 genes[exp][:ECLIP_TOP], 'ENCODE', kmer5.get(exp, []), [], ''])
+    # ENCORE (Skipper windows): the same, plus the top windows found in at most ECLIP_SHARED of its experiments
+    er = defaultdict(dict)
+    for r in rows('encore_eclip_window_regions.tsv'):
+        er[r['encore_experiment']][r['region']] = int(r['n_windows'])
+    eg = defaultdict(list)
+    for r in rows('encore_eclip_target_genes.tsv'):
+        eg[r['encore_experiment']].append([r['gene_name'] or r['gene_id'], int(r['n_windows'])])
+    exps = rows('encore_eclip_experiments.tsv')
+    wins = defaultdict(list)
+    for r in sorted(rows('encore_eclip_top_windows.tsv'), key=lambda r: (r['encore_experiment'], int(r['rank']))):
+        if int(r['n_experiments']) <= ECLIP_SHARED * len(exps) and len(wins[r['encore_experiment']]) < ECLIP_WIN:
+            wins[r['encore_experiment']].append([r['gene_name'] or r['gene_id'], r['region'], float(r['l2or_mean']), int(r['n_experiments']), r['rna_sequence']])
+    for r in exps:
+        if r['uniprot_accession'] in keep:
+            exp = r['encore_experiment']
+            # an ENCORE experiment with a released ENCODE counterpart re-analyses the same data
+            out['eclip'].append([r['uniprot_accession'], exp, r['cell_line'], int(r['n_windows']), [er[exp].get(k, 0) for k in ECLIP_REGIONS],
+                                 eg[exp][:ECLIP_TOP], 'ENCORE', kmer5.get(exp, []), wins[exp], r['encode_experiment'] if r['encode_status'] == 'released' else ''])
     log(f"Binding beyond structures: RNA Bind-n-Seq for {len({x[0] for x in out['rbns']}):,} methylated proteins, HTR-SELEX for "
-        f"{len({x[0] for x in out['htrselex']}):,}, JASPAR for {len({x[0] for x in out['jaspar']}):,}, eCLIP for {len({x[0] for x in out['eclip']}):,}")
+        f"{len({x[0] for x in out['htrselex']}):,}, JASPAR for {len({x[0] for x in out['jaspar']}):,}, eCLIP for {len({x[0] for x in out['eclip'] if x[6] == 'ENCODE'}):,} (ENCODE) and "
+        f"{len({x[0] for x in out['eclip'] if x[6] == 'ENCORE'}):,} (ENCORE)")
     return out
 
 
@@ -2467,9 +2494,11 @@ def write_release_tables(outdir: Path, d: dict):
           [[acc, mid, kind, mtype, exp, cycle, olig, len(m), cons] for acc, mid, kind, mtype, exp, cycle, olig, m, cons in nab.get('htrselex', [])])
     write('dna_motifs.tsv', ['uniprot_accession', 'matrix_id', 'name', 'tf_class', 'tf_family', 'length', 'consensus'],
           [[acc, mid, name, cls, fam, len(m), cons] for acc, mid, name, cls, fam, m, cons in nab.get('jaspar', [])])
-    write('eclip.tsv', ['uniprot_accession', 'encode_experiment', 'cell_line', 'n_peaks'] + [f'peaks_{k}' for k in ECLIP_REGIONS] + ['top_target_genes', 'top_target_peaks'],
-          [[acc, exp, cell, n, *regions, '; '.join(g for g, _ in genes), '; '.join(str(c) for _, c in genes)]
-           for acc, exp, cell, n, regions, genes in nab.get('eclip', [])])
+    write('eclip.tsv', ['uniprot_accession', 'source', 'experiment', 'cell_line', 'n_peaks'] + [f'peaks_{k}' for k in ECLIP_REGIONS] +
+          ['top_target_genes', 'top_target_peaks', 'top_5mers', 'top_5mer_ratios', 'same_data_as'],
+          [[acc, src, exp, cell, n, *regions, '; '.join(g for g, _ in genes), '; '.join(str(c) for _, c in genes),
+            '; '.join(k for k, _ in kmers), '; '.join(str(v) for _, v in kmers), same]
+           for acc, exp, cell, n, regions, genes, src, kmers, _wins, same in nab.get('eclip', [])])
     log(f'wrote the release interaction tables to {outdir}')
 
 
@@ -3700,7 +3729,7 @@ def main():
                 'cdcode': f'CD-CODE {cd_version} condensate membership via cd-code.org API',
                 'contacts': 'RCSB ModelServer residue surroundings (wwPDB data, CC0)',
                 'na': 'PDBe API molecules (wwPDB data, CC0): the SEQRES sequence of each RNA and DNA chain',
-                'nab': 'ENCODE RNA Bind-n-Seq and eCLIP (no use restrictions); HTR-SELEX, Jolma et al., Genome Res 30:962 (2020) (CC BY-NC 4.0); JASPAR 2026 CORE vertebrates non-redundant (CC BY 4.0); GENCODE v50 basic',
+                'nab': 'ENCODE RNA Bind-n-Seq and eCLIP (no use restrictions); ENCORE eCLIP, Her et al. 2026 (GEO GSE315407, public); HTR-SELEX, Jolma et al., Genome Res 30:962 (2020) (CC BY-NC 4.0); JASPAR 2026 CORE vertebrates non-redundant (CC BY 4.0); GENCODE v50 basic',
                 'regions': 'UniProt disordered regions (MobiDB-lite) and domain, repeat and zinc-finger features (CC BY 4.0)',
                 'protvar': 'ProtVar predicted interfaces 2024.05.28, AlphaFold-Multimer, residues within 5 Å (EMBL-EBI, CC BY 4.0); served-model list from af2complexes_interfaces_v1',
                 'afdb_complexes': 'AlphaFold DB predicted complexes (human heterodimers), API and model files (EMBL-EBI, CC BY 4.0)',
@@ -3751,8 +3780,11 @@ def main():
                         'jaspar': ['accession', 'matrix', 'name', 'TF class', 'TF family', '[[A, C, G, T] counts per position]', 'IUPAC consensus'],
                         'htrselex': ['accession', 'model', 'linear|structured', 'Primary|Secondary', 'experiment', 'selection cycle', 'monomeric|dimeric',
                                      '[[A, C, G, U] frequencies per position]', 'IUPAC consensus'],
-                        'eclip': ['accession', 'ENCODE experiment', 'cell line', 'reproducible peaks', 'peaks by region ' + '|'.join(ECLIP_REGIONS),
-                                  f'top {ECLIP_TOP} genes [[gene, peaks]]']},
+                        'eclip': ['accession', 'experiment (ENCODE ENCSR id, or ENCORE GEO name)', 'cell line', 'reproducible peaks (ENCODE) or enriched windows (ENCORE)',
+                                  'peaks or windows by region ' + '|'.join(ECLIP_REGIONS), f'top {ECLIP_TOP} genes [[gene, peaks or windows]]', 'source (ENCODE|ENCORE)',
+                                  'top 5-mers against the other RBPs\' windows or peaks [[kmer, R]]',
+                                  f'ENCORE: its top {ECLIP_WIN} windows reproducible in at most {ECLIP_SHARED:.0%} of the ENCORE experiments [[gene, region, mean log2 odds ratio, experiments sharing it, RNA sequence]]',
+                                  'ENCORE: the released ENCODE experiment whose data it re-analyses, if any']},
                 'na_regions': ['accession', 'rna|dna', 'start', 'end', 'PDB entries', 'distinct complexes (bound sequences) read',
                                '[[bound segment: contacted nucleotides in brackets, ' + str(SEG_FLANK) + ' each side, … between clusters; example entry; molecule name; entries; chain type], ...] most entries first',
                                'distinct segments', 'methylarginine sites in the region'],
