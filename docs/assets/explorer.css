@@ -236,16 +236,17 @@ main > .lc-note { margin: 0 0 1rem; }
 .na-logo { overflow-x: auto; margin: 0.2rem 0 0.4rem; }
 .na-logo svg { display: block; max-width: 100%; height: auto; }
 .na-part + .na-part { margin-top: 1rem; }
-.na-win { font-family: var(--font-mono); font-size: 0.82rem; white-space: nowrap; letter-spacing: 0; }
-.na-win .muted { font-family: var(--font-body); font-size: 0.72rem; margin: 0 0.2rem; }
-.nt { display: inline-block; width: 1.05em; text-align: center; border-radius: 2px; color: var(--ink); }
-.nt.pad { color: var(--muted); }
-.nt-A { background: color-mix(in srgb, var(--nt-a) 24%, transparent); }
-.nt-C { background: color-mix(in srgb, var(--nt-c) 24%, transparent); }
-.nt-G { background: color-mix(in srgb, var(--nt-g) 30%, transparent); }
-.nt-U { background: color-mix(in srgb, var(--nt-u) 24%, transparent); }
-.nt.hit { font-weight: 800; box-shadow: inset 0 -2px 0 var(--ink); }
-.nt.mid { outline: 1.5px solid var(--ink); outline-offset: -1px; }
+/* Bound RNA and DNA windows read as the protein windows (.win): plain letters, the anchor boxed, the contacts bold. */
+.na-win { font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.02em; white-space: nowrap; color: var(--ink-2); }
+.na-win .end { font-family: var(--font-body); font-size: 0.7rem; color: var(--muted); margin: 0 0.18rem; letter-spacing: 0; }
+.na-win .gap { color: var(--muted); margin: 0 0.1rem; }
+.nt { display: inline-block; min-width: 0.62em; text-align: center; border-radius: 3px; }
+.nt.pad { color: var(--line-strong); }
+.nt.unk { color: var(--muted); }
+.nt.hit { color: var(--brand-ink); font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+.nt.mid { padding: 0 0.12rem; background: var(--teal); color: #fff; font-weight: 600; }
+.nt.mid.hit { text-decoration-color: #fff; }
+.tag.na-unk { font-family: var(--font-body); font-size: 0.68rem; color: var(--muted); }
 .logo-col { cursor: default; }
 .na-name { max-width: 18rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tag.na-oligo { font-size: 0.68rem; padding: 0 0.3rem; margin-right: 0.15rem; }
@@ -261,7 +262,7 @@ main > .lc-note { margin: 0 0 1rem; }
 .na-col { min-width: 9.5rem; }
 .na-cell { cursor: help; }
 .na-cell .na-win { font-size: 0.74rem; }
-.na-cell .na-win .muted { font-size: 0.66rem; margin: 0 0.12rem; }
+.na-cell .na-win .end { font-size: 0.66rem; margin: 0 0.12rem; }
 .na-meta { display: flex; flex-wrap: wrap; gap: 0.2rem; align-items: center; margin-top: 0.15rem; font-size: 0.7rem; }
 .na-meta .tag { margin: 0; }
 .tag.na-xl { font-size: 0.66rem; padding: 0 0.3rem; font-weight: 600; background: transparent; border: 1px solid var(--line-strong); color: var(--ink-2); }
@@ -279,11 +280,10 @@ main > .lc-note { margin: 0 0 1rem; }
 .na-tip p { margin: 0.15rem 0; }
 .na-tip .tl { margin: 0.5rem 0 0.1rem; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
 .tip .muted { color: color-mix(in srgb, var(--bg) 72%, transparent); }
-.tip .nt { color: var(--bg); }
-.tip .nt.pad { color: color-mix(in srgb, var(--bg) 55%, transparent); }
-.tip .nt.hit { box-shadow: inset 0 -2px 0 var(--bg); }
-.tip .nt.mid { outline-color: var(--bg); }
-.tip .na-win .muted { color: color-mix(in srgb, var(--bg) 60%, transparent); }
+.tip .na-win { color: var(--bg); }
+.tip .nt.pad, .tip .nt.unk { color: color-mix(in srgb, var(--bg) 55%, transparent); }
+.tip .nt.hit { color: #9be3f2; }
+.tip .na-win .end, .tip .na-win .gap { color: color-mix(in srgb, var(--bg) 60%, transparent); }
 .nab-row + .nab-row { margin-top: 0.6rem; border-top: 1px solid var(--line); padding-top: 0.5rem; }
 .nab-logos { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.35rem; }
 .nab-logo { display: inline-block; vertical-align: middle; }
@@ -1640,3 +1640,5 @@ body.slim .hero .brand-mark img { order: 0; }
 .sq-nums { font-size: 0.8rem; color: var(--muted); margin: 0.45rem 0 0; line-height: 1.45; }
 .sq-from { font-size: 0.8rem; line-height: 1.45; margin: 0 0 0.45rem; }
 .sq-link { font-size: 0.8rem; margin: 0.35rem 0 0; }
+/* Two toggle groups side by side in a chart's tools (background, order) */
+.chart-tools .seg + .seg { margin-left: 0.75rem; }

@@ -120,7 +120,7 @@ NA_TYPE_RNA = [
     ('rrna', r'rrna|rrma|ribosomal|transcribed spacer|\b(5|5\.8|12|16|18|23|25|26|28|45|47)s\b|\b[35]\'? ?ets\b|\bits ?[12]\b'),
     ('mrna', r'mrna|messenger|intron|exon|\butr\b|\bires\b|\b[35]\'ss\b|splice site|minx|branch ?(point|site)|au-rich'),
     ('other_ncrna', r'telomeric rna|terra\b|snorna|scarna|small nucleolar|\bu(3|8|13)\b|7sk|\bsrp\b|7sl|signal recognition|telomerase|\bterc\b|rnase p|\bh1 rna|'
-                    r'\bmrp\b|\by rna|vault|lncrna|xist|malat|mirna|micro ?rna|pre-mir|pri-mir|let-7|pirna|sgrna|guide rna|crrna|tracr'),
+                    r'\bmrp\b|\by rna|vault|lncrna|xist|malat|mirna|micro ?rna|pre-mir|pri-mir|let-7|pirna|sgrna|guide rna|crrna|tracr|ribos?o?switch'),
     ('snrna', r'snrna|small nuclear|spliceosom|\brnu\d|\bu(1|2|4|5|6|7|11|12|4atac|6atac)\b'),
 ]
 NA_TYPE_DNA = r'nucleosom|hexasom|widom|601|alpha-satellite|α-satellite|sat2r'
@@ -130,7 +130,7 @@ NA_TYPES = ['rrna', 'trna', 'snrna', 'mrna', 'other_ncrna', 'viral_rna', 'rna_ol
 
 def na_type(kind: str, name: str, organism: str, prep: str, seq: str, histones: bool) -> str:
     """The type of an RNA or DNA chain (NA_TYPES): RNA (and RNA-DNA hybrids) by NA_TYPE_RNA, else a designed oligo when
-    synthesised, else other_rna; DNA is nucleosomal in an entry with core histones or when named so, telomeric when
+    synthesised, else rRNA when 900 nucleotides or longer, else other_rna; DNA is nucleosomal in an entry with core histones or when named so, telomeric when
     named so or holding a TTAGGG repeat junction (GGGTTAGGG, or its complement), else other_dna."""
     low = (name or '').lower()
     if kind == 'dna':
@@ -144,7 +144,11 @@ def na_type(kind: str, name: str, organism: str, prep: str, seq: str, histones: 
     for code, rx in NA_TYPE_RNA:
         if re.search(rx, low):
             return code
-    return 'rna_oligo' if prep == 'Synthetically obtained' else 'other_rna'
+    if prep == 'Synthetically obtained':
+        return 'rna_oligo'
+    # An unnamed cellular RNA of 900 nucleotides or more ("RNA (969-MER)") is a ribosomal RNA: the 12S, 16S, 18S and 28S
+    # rRNAs are, while mRNA, snRNA and other ncRNA chains in structures are far shorter (viral genomes are typed above).
+    return 'rrna' if len(seq or '') >= 900 else 'other_rna'
 
 
 def chain_type(v: tuple) -> str:
@@ -3049,14 +3053,23 @@ def main():
                 touched = defaultdict(set)
                 for si, pdb, nch, nlab in hits:
                     touched[(si, pdb, nch)].add(nlab)
+                # A segment's type is the most frequent over the chains showing it, a named type (rRNA, tRNA ...) before
+                # other_rna or other_dna: one entry may name the 12S rRNA only "RNA (969-MER)".
+                # The example entry and molecule name are those of the first chain of that type.
                 segs = {}
-                for (si, pdb, nch), labs in touched.items():
+                for (si, pdb, nch), labs in sorted(touched.items()):
                     seg = bound_segment(chains_na[(pdb, nch)][4], labs)
-                    g = segs.setdefault(seg, [set(), pdb, chains_na[(pdb, nch)][2], chain_type(chains_na[(pdb, nch)])])
+                    g = segs.setdefault(seg, [set(), []])
                     g[0].update(sig_entries[si])
+                    g[1].append((chain_type(chains_na[(pdb, nch)]), pdb, chains_na[(pdb, nch)][2]))
+
+                def seg_example(chains):
+                    n = Counter(t for t, _, _ in chains)
+                    best = max(n, key=lambda t: (not t.startswith('other_'), n[t], t))
+                    return next((pdb, name, t) for t, pdb, name in chains if t == best)
                 top = sorted(segs.items(), key=lambda kv: (-len(kv[1][0]), kv[0]))[:REGION_SEGMENTS]
                 region_json.append([acc, kind, start, end, len({e for si in sis for e in sig_entries[si]}), len(sis),
-                                    [[seg, g[1], g[2], len(g[0]), g[3]] for seg, g in top], len(segs),
+                                    [[seg, *seg_example(g[1])[:2], len(g[0]), seg_example(g[1])[2]] for seg, g in top], len(segs),
                                     [site_at[(acc, q)] for q in range(start, end + 1) if (acc, q) in site_at]])
         log(f"Nucleic-acid regions: {sum(1 for r in region_json if r[1] == 'rna'):,} RNA- and {sum(1 for r in region_json if r[1] == 'dna'):,} "
             f"DNA-contacting regions in {len({r[0] for r in region_json}):,} proteins, {sum(1 for r in region_json if r[8]):,} with methylarginines")

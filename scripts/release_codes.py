@@ -333,14 +333,14 @@ CODES: dict[str, dict[str, str]] = {
     },
     # scripts/37 na_type: from the chain's molecule name, source organism and preparation, and for DNA the entry's histones
     'nucleic_acid_type': {
-        'rrna': 'ribosomal RNA, with pre-rRNA spacers (ETS, ITS) and mitochondrial rRNA',
+        'rrna': 'ribosomal RNA, with pre-rRNA spacers (ETS, ITS) and mitochondrial rRNA, and an unnamed RNA of 900 nucleotides or more',
         'trna': 'transfer RNA, with pre-tRNA',
         'snrna': 'spliceosomal small nuclear RNA (U1, U2, U4, U5, U6, U11, U12, U4atac, U6atac) and U7',
         'mrna': 'mRNA or pre-mRNA: named as mRNA, an exon, intron, UTR, splice site or IRES of a cellular gene',
-        'other_ncrna': 'another non-coding RNA: snoRNA, 7SK, SRP RNA, telomerase RNA, TERRA, RNase P or MRP RNA, Y RNA, miRNA or its precursor, piRNA, lncRNA, guide RNA',
+        'other_ncrna': 'another non-coding RNA: snoRNA, 7SK, SRP RNA, telomerase RNA, TERRA, RNase P or MRP RNA, Y RNA, miRNA or its precursor, piRNA, lncRNA, guide RNA, riboswitch',
         'viral_rna': 'RNA of a virus (its source organism, or named as HIV, HCV or viral)',
         'rna_oligo': 'a designed RNA oligonucleotide with no biological name (Synthetically obtained)',
-        'other_rna': 'RNA whose name gives no type (riboswitches, ribozymes, unnamed natural RNA)',
+        'other_rna': 'RNA whose name gives no type (ribozymes, aptamers, unnamed natural RNA shorter than 900 nucleotides)',
         'nucleosomal_dna': 'DNA in an entry with a core histone (a nucleosome or a complex on one), or named as nucleosomal (601, Widom, alpha-satellite)',
         'telomeric_dna': 'telomeric DNA outside nucleosomes: named so, or TTAGGG repeats',
         'other_dna': 'any other DNA',
