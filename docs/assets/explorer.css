@@ -224,6 +224,8 @@ button, input, select { font: inherit; color: inherit; }
 .lc-note { display: flex; gap: 0.5rem; align-items: baseline; font-size: 0.82rem; color: var(--ink-2); padding: 0.35rem 0.6rem; margin: 0.25rem 0; border-radius: 0.45rem;
   background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--muted) 9%, transparent) 0 6px, transparent 6px 12px); border: 1px dashed var(--line-strong); }
 .lc-note[hidden] { display: none; }
+/* outside the sticky toolbar, above the results: it scrolls away, so the toolbar keeps its height */
+main > .lc-note { margin: 0 0 1rem; }
 .tag.par-tag { margin-left: 0.3rem; color: var(--ink-2); border: 1px solid var(--line-strong); background: var(--surface-2); font-weight: 600; }
 .tag.lc-tag { margin-left: 0.3rem; color: var(--ink-2); border: 1px dashed var(--muted);
   background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--muted) 16%, transparent) 0 2px, transparent 2px 5px); }
@@ -1295,9 +1297,8 @@ a.tag { text-decoration: none; }
 a.tag:hover, button.tag:hover { text-decoration: underline; text-underline-offset: 2px; }
 button.tag { border: 0; font-family: inherit; line-height: inherit; cursor: pointer; }
 
-/* Jumps to a card or section land below the sticky search and tabs */
-.card, details.ix-sec, details.fold, [id^="ch-"], [id^="ix-"], #site-card { scroll-margin-top: 170px; }
-@media (max-width: 760px) { .card, details.ix-sec, details.fold, [id^="ch-"], [id^="ix-"], #site-card { scroll-margin-top: 120px; } }
+/* Jumps to a card or section land below the sticky search and tabs (--toolbar-h is their measured height) */
+.card, details.ix-sec, details.fold, [id^="ch-"], [id^="ix-"], #site-card { scroll-margin-top: calc(var(--toolbar-h) + 1rem); }
 /* Human Protein Atlas locations on protein pages: main locations bold, uncertain ones faded. */
 .sub-h { font-family: var(--font-body); font-size: 0.86rem; font-weight: 700; margin: 0.9rem 0 0.4rem; }
 .sub-h .ext { margin-left: 0.4rem; font-weight: 400; font-size: 0.8rem; }
