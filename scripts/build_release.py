@@ -937,7 +937,7 @@ def interaction_tables(folder: Path, sites: pd.DataFrame) -> dict:
     for frame, column in ((ev, 'counts_as_evidence'), (t['protein_partners'], 'partner_methylated')):
         frame[column] = frame[column] == 'true'
     counted = ev[ev['counts_as_evidence']]
-    experimental = {'rna_crosslink', 'rbdmap_fragment', 'capri_xl_peptide', 'capri_adj_peptide', 'dna_crosslink', 'pdb_protein', 'pdb_rna', 'pdb_dna', 'pdb_self'}
+    experimental = {'rna_crosslink', 'rbdmap_fragment', 'capri_xl_peptide', 'capri_adj_peptide', 'pclap_peptide', 'pclap_lysc_region', 'dna_crosslink', 'pdb_protein', 'pdb_rna', 'pdb_dna', 'pdb_self'}
     predicted = {'predicted_interface', 'predicted_contact'}
     kinds = counted.groupby('site_id')['evidence_type'].agg(set)
     status = {s: 'experimental' if k & experimental else 'predicted_only' if k & predicted else 'none' for s, k in kinds.items()}

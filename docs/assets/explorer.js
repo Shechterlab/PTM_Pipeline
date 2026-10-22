@@ -164,6 +164,7 @@
       ['pRBS-ID', 'Base-specific RNA crosslinks (via pepR-MS re-analysis)', '', 'Journal article', 'Bae et al., Nat Commun 12:6026 (2021)', '10.1038/s41467-021-26317-5'],
       ['RBDmap', 'RNA-bound fragments (RBDpep, HeLa)', 'Table S1 (Oxford Research Archive)', 'ORA terms; article open access', 'Castello et al., Mol Cell 63:696 (2016)', '10.1016/j.molcel.2016.06.029'],
       ['CAPRI', 'RNA-crosslinked (XL) and adjacent (ADJ) peptides (HEK293)', 'Supplementary Data 3 and 9', 'CC BY 4.0', 'Panhale et al., Nat Commun 10:2682 (2019)', '10.1038/s41467-019-10585-3'],
+      ['pCLAP', 'RNA-binding peptides and their Lys-C regions (HEK293), derived from the MaxQuant search (PRIDE PXD005739)', 'PRIDE PXD005739', 'EMBL-EBI terms of use (the derived peptide table is not redistributed)', 'Mullari et al., J Proteome Res 16:2762 (2017)', '10.1021/acs.jproteome.7b00042'],
       ['DNA interactome', 'Proteins in direct contact with DNA; DNA-crosslinked peptides and residues (MCF7)', 'Tables S1–S2', 'Journal supplement (Elsevier)', 'Trendel et al., Cell 188:4424 (2025)', '10.1016/j.cell.2025.04.037'],
       ['UniProt DNA-binding regions', 'Curated DNA-binding regions (DNA_BIND)', 'At export', 'CC BY 4.0', 'UniProt Consortium, Nucleic Acids Res 53:D609 (2025)', '10.1093/nar/gkae1010'],
     ]],
@@ -5398,8 +5399,8 @@
     const on = (s, mask) => !!((s.ev || 0) & mask);
     return [
       { key: 'rna', label: 'RNA crosslink', sub: 'in living cells', short: 'RNA crosslink', tiny: 'RNA xl', color: pal.rna,
-        help: 'Residues crosslinked to RNA by UV light in living cells (pepR-MS compendium); pale boxes are RNA-bound fragments (RBDmap) and peptides (CAPRI)',
-        ticks: xp ? xp.rnaPos : [], boxes: xp ? xp.rbd.map(([a, b]) => [a, b, 0.25, 'RBDmap RNA-bound fragment']).concat(xp.capAdj.map(([a, b]) => [a, b, 0.18, 'CAPRI RNA-bound peptide (ADJ)']), xp.capXl.map(([a, b]) => [a, b, 0.42, 'CAPRI RNA-crosslinked peptide (XL)'])) : [],
+        help: 'Residues crosslinked to RNA by UV light in living cells (pepR-MS compendium); pale boxes are RNA-bound fragments (RBDmap) and peptides (CAPRI, pCLAP)',
+        ticks: xp ? xp.rnaPos : [], boxes: xp ? xp.rbd.map(([a, b]) => [a, b, 0.25, 'RBDmap RNA-bound fragment']).concat(xp.capAdj.map(([a, b]) => [a, b, 0.18, 'CAPRI RNA-bound peptide (ADJ)']), xp.capXl.map(([a, b]) => [a, b, 0.42, 'CAPRI RNA-crosslinked peptide (XL)']), xp.pclap.map(([a, b]) => [a, b, 0.32, 'pCLAP RNA-binding peptide'])) : [],
         hit: (s) => !!(s.xl && s.xl.r), weak: (s) => !!(s.xl && (s.xl.f || s.xl.n || s.xl.c)) },
       { key: 'dna', label: 'DNA crosslink', sub: 'in living cells', short: 'DNA crosslink', tiny: 'DNA xl', color: pal.dna,
         help: 'Residues and peptides crosslinked to DNA by UV light in living cells (Trendel et al. 2025)',
@@ -5919,16 +5920,19 @@
       const tick = (pos, color, label, kind) => MARK.tick(x(pos), y, 12, color, ' class="feat" data-ev="' + kind + ':' + pos + ':' + pos + '"' + tip(label + more), Math.max(1.8, x(pos + 1) - x(pos)));
       const box = (a, b, color, op, label, kind) => MARK.box(x(Math.max(a, v0)) - 0.5, y - 4, x(Math.min(b, v1) + 1) - x(Math.max(a, v0)), 8, color, ' class="feat" data-ev="' + kind + ':' + a + ':' + b + '" fill-opacity="' + op + '"' + tip(label + more));
       const inView = (a, b) => b >= v0 && a <= v1;
-      if (xp.rnaPos.length || xp.rbd.length || xp.capAdj.length || xp.capXl.length) {
+      if (xp.rnaPos.length || xp.rbd.length || xp.capAdj.length || xp.capXl.length || xp.pclap.length) {
         tlabel('RNA crosslink', y);
         gridLine(y);
         for (const [a, b] of xp.capAdj) if (inView(a, b)) g += box(a, b, pal.rna, 0.16, '<b>CAPRI RNA-bound peptide (ADJ)</b> ' + nspan(a, b) + '<br>released next to an RNA crosslink; Panhale et al. 2019, HEK293', 'rna');
         for (const [a, b] of xp.rbd) if (inView(a, b)) g += box(a, b, pal.rna, 0.28, '<b>RBDmap RNA-bound fragment</b> ' + nspan(a, b) + '<br>Castello et al. 2016, HeLa', 'rna');
         for (const [a, b] of xp.capXl) if (inView(a, b)) g += box(a, b, pal.rna, 0.45, '<b>CAPRI RNA-crosslinked peptide (XL)</b> ' + nspan(a, b) + '<br>identified with an RNA adduct; Panhale et al. 2019, HEK293', 'rna');
+        for (const [a, b] of xp.pclapLysc) if (inView(a, b)) g += box(a, b, pal.rna, 0.12, '<b>pCLAP RNA-binding region</b> ' + nspan(a, b) + '<br>the Lys-C peptide around an RNA-binding peptide; Mullari et al. 2017, HEK293', 'rna');
+        for (const [a, b] of xp.pclap) if (inView(a, b)) g += box(a, b, pal.rna, 0.36, '<b>pCLAP RNA-binding peptide</b> ' + nspan(a, b) + '<br>enriched from UV-crosslinked RNA-protein complexes; Mullari et al. 2017, HEK293', 'rna');
         xp.rnaPos.forEach((pos, k) => { if (pos >= v0 && pos <= v1) g += tick(pos, pal.rna, '<b>RNA-crosslinked residue</b> ' + nspan(pos, pos) + '<br>' + esc(xlSets(xp.rnaBits[k]).join(', ')), 'rna'); });
         legend.push([SWATCH.tick(pal.rna), 'RNA-crosslinked residue']);
         if (xp.rbd.some(([a, b]) => inView(a, b))) legend.push([SWATCH.fill(pal.rna, 0.28), 'RBDmap RNA-bound fragment']);
         if (xp.capAdj.some(([a, b]) => inView(a, b)) || xp.capXl.some(([a, b]) => inView(a, b))) legend.push([SWATCH.fill(pal.rna, 0.3), 'CAPRI RNA-bound peptide (paler: ADJ)']);
+        if (xp.pclap.some(([a, b]) => inView(a, b))) legend.push([SWATCH.fill(pal.rna, 0.3), 'pCLAP RNA-binding peptide (paler: its Lys-C region)']);
         y += 18;
       }
       if (xp.dnaPos.length || xp.dnaCand.length || xp.dnaPeps.length || xp.dnaBind.length) {
@@ -6400,7 +6404,7 @@
         if (r && d) return XL.both;
         if (r) return XL.rna;
         if (d) return XL.dna;
-        if (inR(pos, xp.rbd) || inR(pos, xp.capXl) || inR(pos, xp.capAdj)) return XL.rbd;
+        if (inR(pos, xp.rbd) || inR(pos, xp.capXl) || inR(pos, xp.capAdj) || inR(pos, xp.pclap)) return XL.rbd;
         if (inR(pos, xp.dnaPeps) || inR(pos, xp.dnaBind)) return XL.dnaReg;
         return XL.none;
       };
@@ -6421,7 +6425,7 @@
       ss: () => sw(SS_COLORS.h, 'Helix') + sw(SS_COLORS.s, 'Strand') + sw(SS_COLORS.c, 'Coil'),
       charge: () => sw(CHARGE_COLORS.basic, 'Basic (R, K)') + sw(CHARGE_COLORS.his, 'His') + sw(CHARGE_COLORS.acidic, 'Acidic (D, E)') + sw(CHARGE_COLORS.other, 'Other'),
       hydro: () => grad(HYDRO, 'Hydrophilic', 'Hydrophobic') + '<span class="muted">Kyte–Doolittle</span>',
-      xl: () => (ixReady() && IX.xlProt.get(mol.p.i) ? sw(XL.rna, 'RNA-crosslinked residue') + sw(XL.dna, 'DNA-crosslinked residue') + sw(XL.both, 'Both') + sw(XL.rbd, 'RNA-bound fragment or peptide (RBDmap, CAPRI)') + sw(XL.dnaReg, 'DNA crosslink candidate, crosslinked peptide or DNA-binding region') + sw(XL.none, 'No crosslink') + (mol.mode === 'pdb' && !mol.pdb.pred ? sw(XL.other, 'Other chains') : '') :
+      xl: () => (ixReady() && IX.xlProt.get(mol.p.i) ? sw(XL.rna, 'RNA-crosslinked residue') + sw(XL.dna, 'DNA-crosslinked residue') + sw(XL.both, 'Both') + sw(XL.rbd, 'RNA-bound fragment or peptide (RBDmap, CAPRI, pCLAP)') + sw(XL.dnaReg, 'DNA crosslink candidate, crosslinked peptide or DNA-binding region') + sw(XL.none, 'No crosslink') + (mol.mode === 'pdb' && !mol.pdb.pred ? sw(XL.other, 'Other chains') : '') :
         '<span class="muted">No RNA or DNA crosslinks recorded for this protein</span>'),
       uniform: () => '',
     };
@@ -7662,15 +7666,17 @@
     const gallery = (d.gallery || []).map(([j, k, src, score, pdq, plR, plP, d10, flags, res, ref, chain]) => ({ j, k, src, score, pdq, plR, plP, d: d10 / 10, flags, res, ref, chain }));
     for (const g of gallery) { const s = S[g.j]; if (s) (s.gal = s.gal || []).push(g); }
     // Residue-level RNA/DNA crosslinks (pepR-MS compendium, RBDmap, Trendel 2025, UniProt DNA-binding regions).
-    // c: CAPRI peptides holding the site (1 an RNA-crosslinked XL-peptide, 2 an ADJ-peptide next to a crosslink)
+    // c: peptides holding the site (1 a CAPRI RNA-crosslinked XL-peptide, 2 a CAPRI ADJ-peptide next to a crosslink,
+    // 4 a pCLAP RNA-binding peptide, 8 the Lys-C peptide around one)
     for (const [j, r, n, dna, f, one, c] of d.xl || []) { if (S[j]) S[j].xl = { r, n, d: dna, f, one: !!one, c: c || 0 }; }
     const xlProt = new Map();
-    for (const [i, rnaPos, rnaBits, dnaPos, dnaPeps, dnaBind, dnaInt, rbd, dnaCand, capXl, capAdj] of d.xl_prot || []) {
-      xlProt.set(i, { rnaPos, rnaBits, dnaPos, dnaPeps, dnaBind, dnaInt: !!dnaInt, rbd: rbd || [], dnaCand: dnaCand || [], capXl: capXl || [], capAdj: capAdj || [] });
+    for (const [i, rnaPos, rnaBits, dnaPos, dnaPeps, dnaBind, dnaInt, rbd, dnaCand, capXl, capAdj, pclap, pclapLysc, pclapMeas] of d.xl_prot || []) {
+      xlProt.set(i, { rnaPos, rnaBits, dnaPos, dnaPeps, dnaBind, dnaInt: !!dnaInt, rbd: rbd || [], dnaCand: dnaCand || [], capXl: capXl || [], capAdj: capAdj || [],
+        pclap: pclap || [], pclapLysc: pclapLysc || [], pclapMeas: pclapMeas || [] });
     }
     // The peptides behind the crosslinks near each site: RNA [position, dataset, peptide, index of the crosslinked
     // residue, adduct masses], DNA [start, peptide with candidate residues in lower case], RBDmap [start, end, fragment].
-    for (const [i, rna, dna, rbd, capXl, capAdj] of d.xl_seq || []) { const x = xlProt.get(i); if (x) x.seq = { rna, dna, rbd, capXl: capXl || [], capAdj: capAdj || [] }; }
+    for (const [i, rna, dna, rbd, capXl, capAdj, pclap] of d.xl_seq || []) { const x = xlProt.get(i); if (x) x.seq = { rna, dna, rbd, capXl: capXl || [], capAdj: capAdj || [], pclap: pclap || [] }; }
     // IntAct curated features: per site, mutations of up to 3 residues, binding regions of up to 20 and methylated
     // residues of interaction participants; per protein, every binding region and short mutation for the map.
     for (const [j, recs] of d.intact || []) {
@@ -7793,13 +7799,15 @@
   const XL_OPTS = [[1, 'RNA-crosslinked residue'], [2, 'RNA-crosslinked residue at i ± 1–3'], [4, 'RBDmap RNA-bound fragment'],
     [128, 'CAPRI RNA-bound peptide (ADJ)', 'Inside a Lys-C peptide released next to an RNA crosslink in HEK293 cells (CAPRI ADJ-peptide, Panhale et al. 2019)'],
     [64, 'CAPRI RNA-crosslinked peptide (XL)', 'Inside a peptide identified with an RNA adduct in HEK293 cells (CAPRI XL-peptide, Panhale et al. 2019)'],
+    [512, 'pCLAP RNA-binding region', 'Inside the Lys-C peptide around a peptide enriched from UV-crosslinked RNA-protein complexes in HEK293 cells (pCLAP, Mullari et al. 2017)'],
+    [256, 'pCLAP RNA-binding peptide', 'Inside a peptide enriched from UV-crosslinked RNA-protein complexes in HEK293 cells (pCLAP, Mullari et al. 2017)'],
     [8, 'DNA crosslink at this residue', 'The DNA crosslink is localised to this residue alone (Trendel et al. 2025)'],
     [32, 'DNA crosslink candidate', 'A candidate residue of a DNA crosslink; most DNA crosslinks are not localised to a single residue'], [16, 'UniProt DNA-binding region']];
   const xlSets = (bits) => (IX.xlSets || []).filter((_, k) => bits & (1 << k)).concat(bits & 32 ? ['pepR-MS focused site'] : []);
   function xlMask(s) {
     const x = s.xl;
     if (!x) return 0;
-    return (x.r ? 1 : 0) | (x.n ? 2 : 0) | (x.f ? 4 : 0) | (x.d & 1 ? 8 : 0) | (x.d & 4 ? 16 : 0) | (x.d & 9 ? 32 : 0) | (x.c & 1 ? 64 : 0) | (x.c & 2 ? 128 : 0);
+    return (x.r ? 1 : 0) | (x.n ? 2 : 0) | (x.f ? 4 : 0) | (x.d & 1 ? 8 : 0) | (x.d & 4 ? 16 : 0) | (x.d & 9 ? 32 : 0) | (x.c & 1 ? 64 : 0) | (x.c & 2 ? 128 : 0) | (x.c & 4 ? 256 : 0) | (x.c & 8 ? 512 : 0);
   }
   // Interaction evidence per site as bits, for the evidence map and its filter. No bit means nothing recorded: most
   // proteins were never crystallised or crosslinked, so it is not evidence of no contact.
@@ -7809,6 +7817,7 @@
     [1, 'RNA crosslink', 'RNA XL', 'Crosslinked to RNA in living cells at this residue, or by a crosslink whose candidate residues include it (pepR-MS compendium)', (s) => xlMask(s) & 1],
     [2, 'RNA-bound fragment', 'RBDmap', 'Inside an RBDmap RNA-bound fragment (Castello et al. 2016)', (s) => xlMask(s) & 4],
     [1024, 'RNA-bound peptide', 'CAPRI', 'Inside a peptide crosslinked to RNA, or a peptide released next to an RNA crosslink, in HEK293 cells (CAPRI XL- and ADJ-peptides, Panhale et al. 2019)', (s) => xlMask(s) & 192],
+    [2048, 'pCLAP RNA-binding region', 'pCLAP', 'Inside a peptide enriched from UV-crosslinked RNA-protein complexes, or the Lys-C peptide around one, in HEK293 cells (pCLAP, Mullari et al. 2017)', (s) => xlMask(s) & 768],
     [4, 'DNA crosslink', 'DNA XL', 'A DNA crosslink localised to, or with a candidate at, this residue (Trendel et al. 2025)', (s) => xlMask(s) & 40],
     [16, 'RNA/DNA contact in a PDB structure', 'RNA/DNA (PDB)', 'At an RNA or DNA interface in an experimentally determined structure (PDBe-KB interface residues)', (s) => s.iface & 12],
     [8, 'Protein contact in a PDB structure', 'Protein (PDB)', 'At an interface with another protein, or another copy of the same protein, in an experimentally determined structure (PDBe-KB interface residues)', (s) => s.iface & 3],
@@ -7823,7 +7832,7 @@
   // (predicted-complex interfaces and confident predicted contacts), the two levels of a site's interaction status.
   // IntAct records (128, 256, 512) are shown and filterable but never set the status: the IntAct row is off by default,
   // and a curated methylated residue (512) is not contact evidence.
-  const EV_EXP = 1 | 2 | 4 | 8 | 16 | 1024, EV_PRED = 32 | 64;
+  const EV_EXP = 1 | 2 | 4 | 8 | 16 | 1024 | 2048, EV_PRED = 32 | 64;
   // A site's interaction status: 'exp' (any experimental evidence), 'pred' (predicted only) or 'none'; null until loaded.
   const ixStatus = (s) => (!ixReady() ? null : s.ev & EV_EXP ? 'exp' : s.ev & EV_PRED ? 'pred' : 'none');
   const IXS = { exp: ['Experimental', 'experimental'], pred: ['Predicted only', 'predicted-only'], none: ['None recorded', 'none'] };
@@ -7831,7 +7840,7 @@
   // Partners named by the evidence at a site: RNA/DNA, PDB interface partners and predicted-complex partners.
   function ixPartners(s) {
     const exp = new Set(), pred = new Set(), ia = new Set();
-    if (s.xl && (s.xl.r || s.xl.f || s.xl.c)) exp.add('RNA');
+    if (s.xl && (s.xl.r || s.xl.f || s.xl.c)) exp.add('RNA');   // c: CAPRI or pCLAP peptides
     if (s.xl && s.xl.d & 9) exp.add('DNA');
     if (s.iface & 4) exp.add('RNA');
     if (s.iface & 8) exp.add('DNA');
@@ -7882,7 +7891,8 @@
     if (x.r) t.push('<button type="button" class="tag na-rna' + (x.one ? '' : ' xl-near') + '"' + evChip(s, 'rna', s.pos, s.pos) + ' title="' + esc('RNA-crosslinked residue in living human cells (UV crosslinking mass spectrometry): ' + xlSets(x.r).join(', ') + (x.one ? '. At least one crosslink is localised to this residue alone.' : '. Only as one of several candidate residues of a crosslink.')) + '">RNA xl</button>');
     else if (x.n) t.push('<button type="button" class="tag na-rna xl-near"' + evChip(s, 'rna', s.pos - 3, s.pos + 3) + ' title="' + esc('RNA-crosslinked residue at i ± 1–3: ' + xlSets(x.n).join(', ')) + '">RNA xl i ± 1–3</button>');
     if (x.f) t.push('<button type="button" class="tag na-rna xl-near"' + evChip(s, 'rna', s.pos, s.pos) + ' title="Inside an RNA-bound fragment (RBDmap, HeLa; Castello et al. 2016)">RBDmap</button>');
-    if (x.c) t.push('<button type="button" class="tag na-rna xl-near"' + evChip(s, 'rna', s.pos, s.pos) + ' title="' + (x.c & 1 ? 'Inside a peptide identified with an RNA adduct' : 'Inside a peptide released next to an RNA crosslink') + ' (CAPRI ' + (x.c & 1 ? 'XL' : 'ADJ') + '-peptide, HEK293; Panhale et al. 2019)">CAPRI</button>');
+    if (x.c & 3) t.push('<button type="button" class="tag na-rna xl-near"' + evChip(s, 'rna', s.pos, s.pos) + ' title="' + (x.c & 1 ? 'Inside a peptide identified with an RNA adduct' : 'Inside a peptide released next to an RNA crosslink') + ' (CAPRI ' + (x.c & 1 ? 'XL' : 'ADJ') + '-peptide, HEK293; Panhale et al. 2019)">CAPRI</button>');
+    if (x.c & 12) t.push('<button type="button" class="tag na-rna xl-near"' + evChip(s, 'rna', s.pos, s.pos) + ' title="' + (x.c & 4 ? 'Inside a pCLAP RNA-binding peptide' : 'Inside the Lys-C peptide around a pCLAP RNA-binding peptide') + ' (HEK293; Mullari et al. 2017)">pCLAP</button>');
     if (x.d & 1) t.push('<button type="button" class="tag na-dna"' + evChip(s, 'dna', s.pos, s.pos) + ' title="DNA crosslink localised to this residue in living MCF7 cells (Trendel et al. 2025)">DNA xl</button>');
     else if (x.d & 8) t.push('<button type="button" class="tag na-dna xl-near"' + evChip(s, 'dna', s.pos, s.pos) + ' title="One of several candidate residues of a DNA crosslink in living MCF7 cells (Trendel et al. 2025)">DNA xl candidate</button>');
     else if (x.d & 2) t.push('<button type="button" class="tag na-dna xl-near"' + evChip(s, 'dna', s.pos, s.pos) + ' title="Inside a DNA-crosslinked peptide (Trendel et al. 2025)">DNA xl peptide</button>');
@@ -8058,8 +8068,9 @@
     const dna = xp ? xp.dnaPos.map((pos) => ({ pos, one: true })).concat(xp.dnaCand.map((pos) => ({ pos, one: false }))).filter(close).sort(byDist) : [];
     const frag = xp ? xp.rbd.filter(([a, b]) => a <= s.pos && s.pos <= b) : [];
     const capri = xp ? xp.capXl.filter(([a, b]) => a <= s.pos && s.pos <= b).map((r) => [r[0], r[1], 'XL']).concat(xp.capAdj.filter(([a, b]) => a <= s.pos && s.pos <= b).map((r) => [r[0], r[1], 'ADJ'])) : [];
+    const pclap = xp ? xp.pclap.filter(([a, b]) => a <= s.pos && s.pos <= b) : [];
     const xr = rna.find((x) => Math.abs(x.pos - s.pos) <= NA_NEAR), xd = dna.find((x) => Math.abs(x.pos - s.pos) <= NA_NEAR);
-    s.nb = { ix: IX, ws, rna, dna, frag, capri, xr, xd };
+    s.nb = { ix: IX, ws, rna, dna, frag, capri, pclap, xr, xd };
     return s.nb;
   }
   // A residue relative to the site i: R335 (i+4), or the site itself.
@@ -8078,6 +8089,7 @@
     if (b.dna.length) out.push('UV-crosslinked to DNA in living cells: ' + b.dna.slice(0, 4).map((x) => relRes(s, x.pos) + (x.one ? '' : ' (candidate)')).join(', ') + (b.dna.length > 4 ? ' +' + (b.dna.length - 4) : ''));
     if (b.frag.length) out.push('inside RBDmap RNA-bound fragment' + (b.frag.length === 1 ? ' ' : 's ') + b.frag.map(([x, y]) => rn(x, P[s.p]) + '–' + rn(y, P[s.p])).join(', '));
     if (b.capri.length) out.push('inside CAPRI RNA-bound peptide' + (b.capri.length === 1 ? ' ' : 's ') + b.capri.map(([x, y, k]) => rn(x, P[s.p]) + '–' + rn(y, P[s.p]) + ' (' + k + ')').join(', '));
+    if (b.pclap.length) out.push('inside pCLAP RNA-binding peptide' + (b.pclap.length === 1 ? ' ' : 's ') + b.pclap.map(([x, y]) => rn(x, P[s.p]) + '–' + rn(y, P[s.p])).join(', '));
     // an RNA crosslink at the site or i ± 1–5: the RNA bound there in cells may be among the protein's eCLIP targets
     if (b.xr && IX.nab.eclip.get(s.p)) out.push('RNA crosslinked to ' + esc(P[s.p].label) + ' in cells (ENCODE eCLIP): ' + eclipText(s.p, 5).replace(/<br>/g, '; '));
     return out.join('; ');
@@ -8088,7 +8100,7 @@
     if (!ixReady()) return '<span class="muted">…</span>';
     const b = siteBound(s);
     const xr = b.xr, xd = b.xd, ec = xr && IX.nab.eclip.get(s.p);
-    if (!b.ws.length && !xr && !xd && !b.frag.length && !b.capri.length) return '<span class="muted">—</span>';
+    if (!b.ws.length && !xr && !xd && !b.frag.length && !b.capri.length && !b.pclap.length) return '<span class="muted">—</span>';
     let h = '';
     if (b.ws.length) {
       const w = b.ws[0];
@@ -8096,7 +8108,7 @@
         '<span class="muted">' + fmt(w.pdbs.length) + ' entr' + (w.pdbs.length === 1 ? 'y' : 'ies') + (b.ws.length > 1 ? ' · +' + (b.ws.length - 1) + ' more' : '') + '</span></div>';
     }
     const xl = (x, K) => '<span class="tag na-xl na-' + K.toLowerCase() + '">' + K + ' xl ' + (x.pos === s.pos ? 'at i' : iRel(x.pos - s.pos)) + '</span>';
-    const cells = (xr ? xl(xr, 'RNA') : '') + (ec ? '<span class="tag na-xl na-eclip">eCLIP</span>' : '') + (xd ? xl(xd, 'DNA') : '') + (b.frag.length && !xr ? '<span class="tag na-xl na-rbd">RBDmap</span>' : '') + (b.capri.length && !xr ? '<span class="tag na-xl na-rbd">CAPRI</span>' : '');
+    const cells = (xr ? xl(xr, 'RNA') : '') + (ec ? '<span class="tag na-xl na-eclip">eCLIP</span>' : '') + (xd ? xl(xd, 'DNA') : '') + (b.frag.length && !xr ? '<span class="tag na-xl na-rbd">RBDmap</span>' : '') + (b.capri.length && !xr ? '<span class="tag na-xl na-rbd">CAPRI</span>' : '') + (b.pclap.length && !xr ? '<span class="tag na-xl na-rbd">pCLAP</span>' : '');
     if (cells) h += '<div class="na-meta">' + cells + '</div>';
     return '<div class="na-cell" data-tip="' + esc(boundTipHtml(s, b)) + '">' + h + '</div>';
   }
@@ -8110,12 +8122,13 @@
     if (px.length) out.push('<p class="tl">Proximal: side chain > 4 Å and ≤ 8 Å</p>' + list(px, at.length ? 2 : 3));
     if (nx.length) out.push('<p class="tl">Contact via a residue at i ± 1–' + NA_NEAR + '</p>' + list(nx, at.length || px.length ? 2 : 3));
     const sets = (bits) => xlSets(bits).join(', ');
-    if (b.rna.length || b.dna.length || b.frag.length || b.capri.length) {
+    if (b.rna.length || b.dna.length || b.frag.length || b.capri.length || b.pclap.length) {
       out.push('<p class="tl">UV-crosslinked residues in living cells, i ± ' + NA_XL_SPAN + '</p>' +
         (b.rna.length ? '<p>RNA: ' + b.rna.slice(0, 5).map((x) => '<b>' + relRes(s, x.pos) + '</b> <span class="muted">' + esc(sets(x.bits)) + '</span>').join('; ') + (b.rna.length > 5 ? '; +' + (b.rna.length - 5) : '') + '</p>' : '') +
         (b.dna.length ? '<p>DNA (Trendel 2025): ' + b.dna.slice(0, 5).map((x) => '<b>' + relRes(s, x.pos) + '</b>' + (x.one ? '' : ' <span class="muted">candidate</span>')).join('; ') + '</p>' : '') +
         (b.frag.length ? '<p>Inside RBDmap RNA-bound fragment' + (b.frag.length === 1 ? ' ' : 's ') + b.frag.map(([x, y]) => rn(x, p) + '–' + rn(y, p)).join(', ') + ' <span class="muted">HeLa</span></p>' : '') +
         (b.capri.length ? '<p>Inside CAPRI RNA-bound peptide' + (b.capri.length === 1 ? ' ' : 's ') + b.capri.map(([x, y, k]) => rn(x, p) + '–' + rn(y, p) + ' <span class="muted">' + k + '</span>').join(', ') + ' <span class="muted">HEK293</span></p>' : '') +
+        (b.pclap.length ? '<p>Inside pCLAP RNA-binding peptide' + (b.pclap.length === 1 ? ' ' : 's ') + b.pclap.map(([x, y]) => rn(x, p) + '–' + rn(y, p)).join(', ') + ' <span class="muted">HEK293</span></p>' : '') +
         (b.xr && IX.nab.eclip.get(s.p) ? '<p class="tl">RNA crosslinked to ' + esc(p.label) + ' in cells (ENCODE eCLIP)</p><p>' + eclipText(s.p, 6) + '</p><p class="muted">With an RNA crosslink at ' + (b.xr.pos === s.pos ? 'the site' : iRel(b.xr.pos - s.pos)) + ', these transcripts are candidate RNA partners of this segment.</p>' : ''));
     }
     const sp = seqProxOf(s);
@@ -8138,7 +8151,7 @@
     const b = siteBound(s), w = b.ws[0];
     if (w) return [3000, 2500, 2000][naTierOf(w)] + Math.min(w.pdbs.length, 499);
     const x = b.rna.concat(b.dna).find((y) => Math.abs(y.pos - s.pos) <= NA_NEAR);
-    return x ? 1000 - Math.abs(x.pos - s.pos) : b.frag.length || b.capri.length ? 1 : null;
+    return x ? 1000 - Math.abs(x.pos - s.pos) : b.frag.length || b.capri.length || b.pclap.length ? 1 : null;
   }
   function boundTsv(s) {
     if (!ixReady()) return ['', '', '', '', ''];
@@ -8214,7 +8227,7 @@
       }
       merged.forEach(([a, b, n]) => out.push({ start: a, end: b, src: 'rbd', n }));
       const mc = [];
-      for (const [a, b] of xp.capXl.concat(xp.capAdj).sort((x, y) => x[0] - y[0])) {
+      for (const [a, b] of xp.capXl.concat(xp.capAdj, xp.pclap).sort((x, y) => x[0] - y[0])) {
         const last = mc[mc.length - 1];
         if (last && a <= last[1]) { last[1] = Math.max(last[1], b); last[2]++; } else mc.push([a, b, 1]);
       }
@@ -8239,7 +8252,7 @@
   const BIND_SRC = {
     pdb: ['structure', (K) => 'Residues within 4 Å of ' + K + ' in PDB structures'],
     rbd: ['RBDmap', () => 'Peptides crosslinked to RNA in HeLa cells (RBDmap, Castello et al. 2016); overlapping fragments merged'],
-    capri: ['CAPRI', () => 'Peptides crosslinked to RNA, or released next to an RNA crosslink, in HEK293 cells (CAPRI XL- and ADJ-peptides, Panhale et al. 2019); overlapping peptides merged'],
+    capri: ['CAPRI / pCLAP', () => 'Peptides crosslinked to RNA, or released next to an RNA crosslink, in HEK293 cells (CAPRI XL- and ADJ-peptides, Panhale et al. 2019), and peptides enriched from UV-crosslinked RNA-protein complexes (pCLAP, Mullari et al. 2017); overlapping peptides merged'],
     unp: ['UniProt', () => 'UniProt DNA-binding region'],
     xl: ['crosslinks', (K) => (K === 'RNA' ? 'Residues crosslinked to RNA in living cells (pepR-MS compendium: Kramer 2014, XRNAX, RBS-ID, pRBS-ID, pepR-MS)' : 'Residues crosslinked to DNA in MCF7 cells, alone or as candidates (Trendel et al. 2025)') + ', joined across gaps of up to 3'],
   };
@@ -9063,7 +9076,7 @@
     const regs = ((IX.naReg && IX.naReg.get(p.i)) || []).filter((r) => r.kind === kind).length;
     const nab = kind === 'rna' ? [IX.nab.rbns.get(p.i) ? 'RNA Bind-n-Seq' : '', IX.nab.selex.get(p.i) ? 'HTR-SELEX' : '', IX.nab.eclip.get(p.i) ? 'eCLIP' : ''].filter(Boolean) : [IX.nab.jaspar.get(p.i) ? 'JASPAR profile' : ''].filter(Boolean);
     const sitesAny = new Set([...at, ...px, ...nx, ...xlSites]).size;
-    return { at: at.size, px: px.size, nx: nx.size, xlN, xlSites: xlSites.length, regs, nab, sitesAny, any: !!(ws.length || xlN || regs || nab.length || (xp && (kind === 'rna' ? xp.rbd.length || xp.capXl.length || xp.capAdj.length : xp.dnaBind.length || xp.dnaInt))) };
+    return { at: at.size, px: px.size, nx: nx.size, xlN, xlSites: xlSites.length, regs, nab, sitesAny, any: !!(ws.length || xlN || regs || nab.length || (xp && (kind === 'rna' ? xp.rbd.length || xp.capXl.length || xp.capAdj.length || xp.pclap.length : xp.dnaBind.length || xp.dnaInt))) };
   }
   function naEvidenceText(e) {
     const parts = [];
@@ -9341,14 +9354,14 @@
     const list = (arr) => arr.map((s) => '<button class="linkish strong" type="button" data-pos="' + s.pos + '">' + rl(s.pos, P[s.p]) + '</button>').join(', ');
     const ranges = (arr) => arr.slice(0, 8).map(([a, b]) => a + '–' + b).join(', ') + (arr.length > 8 ? ' +' + (arr.length - 8) : '');
     if (kind === 'rna') {
-      const at = sites.filter((s) => s.xl && s.xl.r), near = sites.filter((s) => s.xl && !s.xl.r && s.xl.n), frag = sites.filter((s) => s.xl && s.xl.f), cap = sites.filter((s) => s.xl && s.xl.c);
+      const at = sites.filter((s) => s.xl && s.xl.r), near = sites.filter((s) => s.xl && !s.xl.r && s.xl.n), frag = sites.filter((s) => s.xl && s.xl.f), cap = sites.filter((s) => s.xl && s.xl.c & 3), pcl = sites.filter((s) => s.xl && s.xl.c & 4);
       const sets = xp ? xlSets(xp.rnaBits.reduce((a, b) => a | b, 0)) : [];
-      return '<section><h4>RNA crosslinks in living cells</h4>' + (xp && (xp.rnaPos.length || xp.rbd.length || xp.capXl.length || xp.capAdj.length) ?
+      return '<section><h4>RNA crosslinks in living cells</h4>' + (xp && (xp.rnaPos.length || xp.rbd.length || xp.capXl.length || xp.capAdj.length || xp.pclap.length) ?
         '<p>' + (xp.rnaPos.length ? fmt(xp.rnaPos.length) + ' RNA-crosslinked residues (' + esc(sets.join(', ')) + ')' : 'No residue-level crosslinks') + (xp.rbd.length ? '; RBDmap RNA-bound fragments ' + ranges(xp.rbd) : '') +
-          (xp.capXl.length ? '; CAPRI RNA-crosslinked peptides ' + ranges(xp.capXl) : '') + (xp.capAdj.length ? '; CAPRI RNA-bound peptides next to a crosslink ' + ranges(xp.capAdj) : '') + '.</p>' +
-        '<ul class="ix-sites">' + (at.length ? '<li><b>At a crosslinked residue:</b> ' + list(at) + '</li>' : '') + (near.length ? '<li><b>Within 3 residues:</b> ' + list(near) + '</li>' : '') + (frag.length ? '<li><b>Inside an RBDmap fragment:</b> ' + list(frag) + '</li>' : '') + (cap.length ? '<li><b>Inside a CAPRI peptide:</b> ' + list(cap) + '</li>' : '') +
-        (!at.length && !near.length && !frag.length && !cap.length ? '<li class="muted">No methylarginine at or near a crosslinked residue.</li>' : '') + '</ul>' :
-        '<p class="muted">No RNA crosslinks recorded for this protein in the pepR-MS compendium, RBDmap or CAPRI.</p>') +
+          (xp.capXl.length ? '; CAPRI RNA-crosslinked peptides ' + ranges(xp.capXl) : '') + (xp.capAdj.length ? '; CAPRI RNA-bound peptides next to a crosslink ' + ranges(xp.capAdj) : '') + (xp.pclap.length ? '; pCLAP RNA-binding peptides ' + ranges(xp.pclap) : '') + '.</p>' +
+        '<ul class="ix-sites">' + (at.length ? '<li><b>At a crosslinked residue:</b> ' + list(at) + '</li>' : '') + (near.length ? '<li><b>Within 3 residues:</b> ' + list(near) + '</li>' : '') + (frag.length ? '<li><b>Inside an RBDmap fragment:</b> ' + list(frag) + '</li>' : '') + (cap.length ? '<li><b>Inside a CAPRI peptide:</b> ' + list(cap) + '</li>' : '') + (pcl.length ? '<li><b>Inside a pCLAP RNA-binding peptide:</b> ' + list(pcl) + '</li>' : '') +
+        (!at.length && !near.length && !frag.length && !cap.length && !pcl.length ? '<li class="muted">No methylarginine at or near a crosslinked residue.</li>' : '') + '</ul>' :
+        '<p class="muted">No RNA crosslinks recorded for this protein in the pepR-MS compendium, RBDmap, CAPRI or pCLAP.</p>') +
         '<p class="note">UV crosslinking mass spectrometry localises the amino acid crosslinked to RNA in living cells (pepR-MS re-analysis of Kramer 2014, XRNAX, RBS-ID, pRBS-ID and pepR-MS; RBDmap gives RNA-bound fragments). None of the pepR-MS crosslinked peptides carries a methylation mass shift, so a methylated arginine is seen there through its unmethylated fraction.</p></section>';
     }
     const at = sites.filter((s) => s.xl && s.xl.d & 1), cand = sites.filter((s) => s.xl && !(s.xl.d & 1) && s.xl.d & 8), pep = sites.filter((s) => s.xl && !(s.xl.d & 9) && s.xl.d & 2), bind = sites.filter((s) => s.xl && s.xl.d & 4);
@@ -10503,7 +10516,7 @@
       hubSec('RNA and DNA',
         row('ixs-cells', 'Crosslinking in living cells', sec('cells'), 'Is the methylarginine the residue crosslinked to RNA or DNA, or inside an RNA-bound peptide?', 'retest',
           both([['xl_enrich', ['rna_xl'], 'RNA-crosslinked residue'], ['xl_enrich', ['rna_capri_adj'], 'in an RNA-bound peptide (CAPRI)']]), null,
-          testsFig([['xl_enrich', ['rna_xl']], ['xl_enrich', ['rna_xl_nonrg']], ['xl_enrich', ['rna_rbdmap']], ['xl_enrich', ['rna_capri_adj']], ['xl_enrich', ['rna_capri_xl']], ['xl_enrich', ['dna_cand']], ['xl_enrich', ['dna_pep']]])) +
+          testsFig([['xl_enrich', ['rna_xl']], ['xl_enrich', ['rna_xl_nonrg']], ['xl_enrich', ['rna_rbdmap']], ['xl_enrich', ['rna_capri_adj']], ['xl_enrich', ['rna_capri_xl']], ['xl_enrich', ['rna_pclap']], ['xl_enrich', ['rna_pclap_cov']], ['xl_enrich', ['dna_cand']], ['xl_enrich', ['dna_pep']]])) +
         row('ix-prox', 'Sequence proximity to RNA-binding residues', proxHtml, 'How far along the sequence do methylarginines lie from residues that bind RNA in cells, against the other arginines of the same proteins?', 'retest',
           both([['seq_prox', ['rna_xl', '5'], 'within 5 of a crosslinked residue'], ['seq_prox', ['rna_capri_adj', '5'], 'of a CAPRI peptide']]), 'Needs the proximity tables of the interaction export.',
           testsFig(PROX_TRACKS.map(([k]) => ['seq_prox', [k, '5']]))) +
@@ -10884,6 +10897,8 @@
       '<div class="tbl-wrap"><table class="tbl compact strata-tbl"><thead><tr><th>Arginine is…</th><th class="r">OR within protein [95% CI]</th><th class="r">Methylated R</th><th class="r">Other R</th><th class="r hide-xs">Informative / proteins</th></tr></thead><tbody>' +
       row('rna_xl', 'An RNA-crosslinked residue', 1) + row('rna_xl_single', '… localised to this residue alone (single localisation)') + row('rna_xl_nonrg', '… excluding RG/GR dipeptides') + row('rna_near', 'RNA-crosslinked residue at i ± 1–3', 2) + row('rna_rbdmap', 'Inside an RBDmap RNA-bound fragment', 4) + row('rna_rbdmap_nonrg', '… excluding RG/GR dipeptides') +
       row('rna_capri_adj', 'Inside a CAPRI RNA-bound peptide next to a crosslink (ADJ)', 128) + row('rna_capri_adj_nonrg', '… excluding RG/GR dipeptides') + row('rna_capri_xl', 'Inside a CAPRI RNA-crosslinked peptide (XL)', 64) +
+      row('rna_pclap', 'Inside a pCLAP RNA-binding region (Lys-C peptide)', 512) + row('rna_pclap_nonrg', '… excluding RG/GR dipeptides') + row('rna_pclap_pep', 'Inside a pCLAP RNA-binding peptide', 256) +
+      row('rna_pclap_cov', '… only arginines inside a peptide pCLAP measured (detection control)') +
       row('dna_xl', 'A DNA crosslink localised to this residue', 8) + row('dna_cand', '… or one of its candidate residues', 32) + row('dna_pep', 'Inside a DNA-crosslinked peptide') + row('dna_bind', 'Inside a UniProt DNA-binding region', 16) + '</tbody></table></div>' +
       '<p class="note">Counts are arginines of the canonical sequences of proteins with that evidence; a row\'s site list also includes the few sites outside them. About half of the crosslinks are localised to several candidate residues; "single localisation" keeps only residues to which at least one crosslink is localised alone. Few DNA crosslinks are localised to one residue, so the DNA test is based on candidate residues.</p>' +
       '<h4 style="margin-top:1rem">By methylation class</h4>' +
@@ -11003,6 +11018,10 @@
       ['xl_enrich', ['rna_capri_adj'], 'Inside an RNA-bound peptide (CAPRI ADJ)', 'Inside an RNA-bound peptide next to a crosslink (CAPRI ADJ-peptide)'],
       ['xl_enrich', ['rna_capri_adj_nonrg'], '… outside RG/GR dipeptides', 'Inside a CAPRI ADJ-peptide, outside RG/GR dipeptides'],
       ['xl_enrich', ['rna_capri_xl'], 'Inside an RNA-crosslinked peptide (CAPRI XL)', 'Inside an RNA-crosslinked peptide (CAPRI XL-peptide)'],
+      ['xl_enrich', ['rna_pclap'], 'Inside an RNA-binding region (pCLAP)', 'Inside a pCLAP RNA-binding region (the Lys-C peptide around an RNA-binding peptide)'],
+      ['xl_enrich', ['rna_pclap_nonrg'], '… outside RG/GR dipeptides', 'Inside a pCLAP RNA-binding region, outside RG/GR dipeptides'],
+      ['xl_enrich', ['rna_pclap_pep'], 'Inside an RNA-binding peptide (pCLAP)', 'Inside a pCLAP RNA-binding peptide'],
+      ['xl_enrich', ['rna_pclap_cov'], '… among arginines pCLAP measured', 'Inside a pCLAP RNA-binding peptide, counting only arginines inside a measured peptide'],
       ['xl_enrich', ['dna_xl'], 'DNA crosslink localised to the residue'],
       ['xl_enrich', ['dna_cand'], '… or one of its candidate residues', 'DNA crosslink at the residue or one of its candidate residues'],
       ['xl_enrich', ['dna_pep'], 'Inside a DNA-crosslinked peptide'],
@@ -11156,7 +11175,7 @@
   // seq_prox), for the selection or every site; BH across the card. One small panel per kind of evidence.
   const PROX_TRACKS = [['rna_xl', 'RNA-crosslinked residue', 'pepR-MS compendium'], ['rna_rbdmap', 'RBDmap RNA-bound fragment', 'HeLa'],
     ['rna_capri_adj', 'CAPRI peptide next to a crosslink (ADJ)', 'HEK293'], ['rna_capri_xl', 'CAPRI RNA-crosslinked peptide (XL)', 'HEK293'],
-    ['rna_pclap', 'pCLAP RNA-bound peptide', ''], ['rna_rbrid', 'RBR-ID RNA-binding region', 'K562']];
+    ['rna_pclap', 'pCLAP RNA-binding peptide', 'HEK293'], ['rna_rbrid', 'RBR-ID RNA-binding region', 'K562']];
   const PROX_D = [0, 3, 5, 10, 20];
   // The distances at which a test differs, in words: "at or inside it and within 3, 5 and 10 residues".
   const proxSpan = (ds) => {
@@ -11285,7 +11304,7 @@
     if (!xp) return [];
     const near = (spans) => { let best = null; for (const [a, b] of spans) { const d = s.pos >= a && s.pos <= b ? 0 : Math.min(Math.abs(s.pos - a), Math.abs(s.pos - b)); if (best == null || d < best) best = d; } return best; };
     return [['RNA-crosslinked residue', near(xp.rnaPos.map((q) => [q, q]))], ['RBDmap fragment', near(xp.rbd)], ['CAPRI ADJ-peptide', near(xp.capAdj)], ['CAPRI XL-peptide', near(xp.capXl)]]
-      .concat(xp.pclap ? [['pCLAP peptide', near(xp.pclap)]] : [], xp.rbrid ? [['RBR-ID region', near(xp.rbrid)]] : []).filter((x) => x[1] != null);
+      .concat(xp.pclap.length ? [['pCLAP RNA-binding peptide', near(xp.pclap)]] : [], xp.rbrid ? [['RBR-ID region', near(xp.rbrid)]] : []).filter((x) => x[1] != null);
   }
   const ixRes = (group) => { const v = ixSel(); return v ? v[group] : IX[IX_GROUP[group]] || {}; };
   // The note under a section's heading while a selection is set: what its tests compare, or that a part is not retested.
@@ -12051,6 +12070,7 @@
       if (k >= 0) ev.push('RNA crosslink (' + esc(xlSets(xp.rnaBits[k]).join(', ')) + ')');
       else if (covers(xp.rbd, pos)) ev.push('In an RBDmap RNA-bound fragment');
       if (k < 0 && (covers(xp.capXl, pos) || covers(xp.capAdj, pos))) ev.push('In a CAPRI RNA-bound peptide (' + (covers(xp.capXl, pos) ? 'XL' : 'ADJ') + ')');
+      if (k < 0 && covers(xp.pclap, pos)) ev.push('In a pCLAP RNA-binding peptide');
       if (xp.dnaPos.includes(pos)) ev.push('DNA crosslink (Trendel 2025)');
       else if (xp.dnaCand.includes(pos)) ev.push('DNA crosslink candidate');
       else if (covers(xp.dnaPeps, pos)) ev.push('In a DNA-crosslinked peptide');
@@ -12075,7 +12095,7 @@
     'Kramer 2014': '10.1038/nmeth.3092', 'XRNAX 2019': '10.1016/j.cell.2018.11.004', 'RBS-ID 2020': '10.1038/s41594-020-0436-2',
     'pRBS-ID 2021': '10.1038/s41467-021-26317-5', 'pepR-MS 2025': '10.1101/2025.09.05.674461', 'pepR-MS focused site': '10.1101/2025.09.05.674461',
   };
-  const PEPR_DOI = '10.1101/2025.09.05.674461', RBDMAP_DOI = '10.1016/j.molcel.2016.06.029', DNAXL_DOI = '10.1016/j.cell.2025.04.037', CAPRI_DOI = '10.1038/s41467-019-10585-3';
+  const PEPR_DOI = '10.1101/2025.09.05.674461', RBDMAP_DOI = '10.1016/j.molcel.2016.06.029', DNAXL_DOI = '10.1016/j.cell.2025.04.037', CAPRI_DOI = '10.1038/s41467-019-10585-3', PCLAP_DOI = '10.1021/acs.jproteome.7b00042';
   const EV_TITLE = { pred: 'Predicted protein contacts (AlphaFold-Multimer models)', rna: 'RNA crosslinks in living cells', dna: 'DNA crosslinks in living cells', 'pdb-rna': 'RNA contacts in PDB structures', 'pdb-dna': 'DNA contacts in PDB structures', 'pdb-protein': 'Protein contacts in PDB structures', 'pdb-self': 'Self-contacts in PDB structures', pdbna: 'RNA/DNA contacts in PDB structures', pdbprot: 'Protein contacts in PDB structures', intact: 'Interaction features curated in IntAct' };
   const pmidLink = (id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">PubMed ' + esc(id) + '</a>';
   const iaPartnerText = (list, n) => esc(list.map(ixGene).join(', ')) + (n > list.length ? ' and ' + (n - list.length) + ' more' : '');
@@ -12117,14 +12137,15 @@
         items.push('<li>RBDmap RNA-bound fragment <b>' + rn(f[0], p) + '–' + rn(f[1], p) + '</b>, HeLa (' + doiLink(RBDMAP_DOI, 'Castello et al. 2016') + ')' +
           (frag ? '<br><span class="mono frag">' + fragHtml(frag, f[0], p.sites.map((j) => S[j].pos), xp.rnaPos) + '</span>' : '') + '</li>');
       }
-      for (const [key, list, label] of [['capXl', xp.capXl, 'CAPRI RNA-crosslinked peptide (XL)'], ['capAdj', xp.capAdj, 'CAPRI RNA-bound peptide next to a crosslink (ADJ)']]) {
+      for (const [key, list, label, doi, cite] of [['capXl', xp.capXl, 'CAPRI RNA-crosslinked peptide (XL)', CAPRI_DOI, 'Panhale et al. 2019'], ['capAdj', xp.capAdj, 'CAPRI RNA-bound peptide next to a crosslink (ADJ)', CAPRI_DOI, 'Panhale et al. 2019'],
+        ['pclap', xp.pclap, 'pCLAP RNA-binding peptide', PCLAP_DOI, 'Mullari et al. 2017']]) {
         for (const f of list.filter(overlap)) {
           const pep = xp.seq ? (xp.seq[key].find((x) => x[0] === f[0] && x[1] === f[1]) || [])[2] : '';
-          items.push('<li>' + label + ' <b>' + rn(f[0], p) + '–' + rn(f[1], p) + '</b>, HEK293 (' + doiLink(CAPRI_DOI, 'Panhale et al. 2019') + ')' +
+          items.push('<li>' + label + ' <b>' + rn(f[0], p) + '–' + rn(f[1], p) + '</b>, HEK293 (' + doiLink(doi, cite) + ')' +
             (pep ? '<br><span class="mono frag">' + fragHtml(pep, f[0], p.sites.map((j) => S[j].pos), xp.rnaPos) + '</span>' : '') + '</li>');
         }
       }
-      if ((xp.rbd.some(overlap) || xp.capXl.some(overlap) || xp.capAdj.some(overlap)) && xp.seq) items.push('<li class="muted">In the fragments and peptides: bold, residues crosslinked to RNA; underlined, methylarginines.</li>');
+      if ((xp.rbd.some(overlap) || xp.capXl.some(overlap) || xp.capAdj.some(overlap) || xp.pclap.some(overlap)) && xp.seq) items.push('<li class="muted">In the fragments and peptides: bold, residues crosslinked to RNA; underlined, methylarginines.</li>');
       if (nRes) items.push('<li class="muted">Residue-level sets as compiled and re-analysed in the pepR-MS compendium (' + doiLink(PEPR_DOI, 'Sha, Kuster &amp; Trendel 2025') + ').</li>');
     } else if (kind === 'dna' && xp) {
       for (const pos of xp.dnaPos.filter(inR)) items.push('<li><b>' + res(pos) + '</b> crosslinked to DNA, MCF7 (' + doiLink(DNAXL_DOI, 'Trendel et al. 2025') + ')</li>');
@@ -12389,8 +12410,8 @@
           '<p><b>Distance of methylarginines to RNA and DNA.</b> For every arginine of the methylated proteins modelled in a PDB entry that contains RNA or DNA (every entry in which PDBe-KB lists the protein with nucleic acid; up to two copies of the protein per entry), the minimum heavy-atom distance from its side chain to each RNA and DNA chain is recorded up to 8 Å. The Interactions view shows the distribution of this minimum distance by nucleic-acid type in 1 Å bins, for methylarginines and for the other arginines of the same proteins (bar height is the fraction of each group), and tests whether a larger fraction of methylarginines than of the other arginines lies within 4 Å or 8 Å: the Mantel–Haenszel odds ratio with each protein as a stratum, and the pooled Fisher odds ratio. Only arginines modelled in a structure are included, so disordered RGG regions, which contain many methylarginines, are largely absent; most structures contain unmethylated recombinant protein. Release files supporting/arginine_nucleic_acid_distances and interaction_statistics (analysis nucleic_acid_distance).</p>' +
           '<p><b>Binding regions.</b> On a protein page, the RNA and DNA interactions card lists the regions that bind nucleic acid: runs of residues in direct contact in structures (analysed once per distinct complex in every entry; runs separated by up to 3 residues are joined), with the nucleic-acid segments they contact and their type; runs of residues UV-crosslinked to RNA or DNA in living cells (joined in the same way); RBDmap fragments crosslinked to RNA in HeLa cells; and UniProt DNA-binding regions. Each row gives the UniProt domains it overlaps, the methylarginines within it and those within 5 residues of either end, with their distance from it. Release file supporting/nucleic_acid_regions.</p>' +
           '<p><b>Sequence preference and targets from selection experiments.</b> RNA Bind-n-Seq (ENCODE; Dominguez et al. 2018): the 5-mers enriched in RNA recovered by the purified protein from a random library, relative to the input, with ENCODE\'s logos. HTR-SELEX (Jolma et al. 2020, <i>Genome Res</i> 30:962, CC BY-NC 4.0): RNA selected by the purified protein or its RNA-binding domains from random 40-nucleotide RNA over several cycles, as position frequency matrices of linear motifs and of motifs in the loop of a stem-loop, primary and secondary (86 proteins). JASPAR 2026 CORE vertebrates (CC BY 4.0): DNA-binding profiles from SELEX and ChIP-based experiments; a heterodimer\'s profile is listed for both partners. eCLIP (ENCODE; Van Nostrand et al. 2020): RNA crosslinked to the protein in K562 and HepG2 cells, as reproducible peaks assigned to GENCODE v50 basic transcripts, with the genes with the most peaks; these reflect expression as well as preference. For a selection, the Interactions view lists these for the selected proteins and the genes with eCLIP peaks for two or more of them. RNAcompete (CISBP-RNA) states no licence and is not included. Release files supporting/rna_bind_n_seq, htr_selex, dna_motifs and eclip.</p>') +
-        sub('ix-prox', 'Sequence proximity to RNA-binding residues', '<p>For each kind of residue-level RNA evidence from cells (residues crosslinked to RNA in the pepR-MS compendium, RBDmap fragments, CAPRI ADJ- and XL-peptides), every arginine of a protein with that evidence gets its distance along the canonical sequence to the nearest residue with it: 0 for the crosslinked residue itself or a residue inside the fragment or peptide. Within 0, 3, 5, 10 and 20 residues, methylarginines are compared with the other arginines of the same proteins (Mantel–Haenszel odds ratio with its 95% CI, each protein a stratum; scripts/37 seq_prox, release statistics analysis sequence_proximity). With a selection, its sites are compared with the other arginines of their proteins, and a tick marks the whole dataset. q: Benjamini–Hochberg across the panels of the card. The site table\'s RNA/DNA column also gives each site\'s nearest distance to each kind of evidence on hover.</p>') +
-        sub('ix-nac', 'Are methylarginines at RNA and DNA contacts?', '<p>One forest plot of every within-protein test of a nucleic-acid contact: RNA crosslinked to the residue in cells (pepR-MS compendium; localised to it alone; outside RG/GR dipeptides), inside an RNA-bound fragment (RBDmap, HeLa; and outside RG/GR dipeptides), inside an RNA-bound peptide next to a crosslink or inside an RNA-crosslinked peptide (CAPRI, HEK293: Panhale et al. 2019, ADJ- and XL-peptides; ADJ also outside RG/GR dipeptides), DNA crosslinked to the residue or one of its candidate residues and inside a DNA-crosslinked peptide (Trendel et al. 2025), at an RNA or DNA interface in a PDB structure (PDBe-KB), side chain within 4 or 8 Å of RNA or DNA in a PDB entry, and inside a UniProt DNA-binding region. ' +
+        sub('ix-prox', 'Sequence proximity to RNA-binding residues', '<p>For each kind of residue-level RNA evidence from cells (residues crosslinked to RNA in the pepR-MS compendium, RBDmap fragments, CAPRI ADJ- and XL-peptides, pCLAP RNA-binding peptides), every arginine of a protein with that evidence gets its distance along the canonical sequence to the nearest residue with it: 0 for the crosslinked residue itself or a residue inside the fragment or peptide. Within 0, 3, 5, 10 and 20 residues, methylarginines are compared with the other arginines of the same proteins (Mantel–Haenszel odds ratio with its 95% CI, each protein a stratum; scripts/37 seq_prox, release statistics analysis sequence_proximity). With a selection, its sites are compared with the other arginines of their proteins, and a tick marks the whole dataset. q: Benjamini–Hochberg across the panels of the card. The site table\'s RNA/DNA column also gives each site\'s nearest distance to each kind of evidence on hover.</p>') +
+        sub('ix-nac', 'Are methylarginines at RNA and DNA contacts?', '<p>One forest plot of every within-protein test of a nucleic-acid contact: RNA crosslinked to the residue in cells (pepR-MS compendium; localised to it alone; outside RG/GR dipeptides), inside an RNA-bound fragment (RBDmap, HeLa; and outside RG/GR dipeptides), inside an RNA-bound peptide next to a crosslink or inside an RNA-crosslinked peptide (CAPRI, HEK293: Panhale et al. 2019, ADJ- and XL-peptides; ADJ also outside RG/GR dipeptides), inside a pCLAP RNA-binding region or peptide (Mullari et al. 2017, HEK293; also outside RG/GR dipeptides, and counting only the arginines inside a peptide pCLAP measured, a control for detection), DNA crosslinked to the residue or one of its candidate residues and inside a DNA-crosslinked peptide (Trendel et al. 2025), at an RNA or DNA interface in a PDB structure (PDBe-KB), side chain within 4 or 8 Å of RNA or DNA in a PDB entry, and inside a UniProt DNA-binding region. ' +
           'Each test compares a protein\'s methylarginines with its other arginines (Mantel–Haenszel odds ratio, Robins–Breslow–Greenland 95% CI, continuity-corrected test; each protein a stratum), over the proteins with that kind of evidence and the arginines it resolves; q is Benjamini–Hochberg across the card. With a selection, its methylarginines are compared with the other arginines of their proteins, and a tick marks the whole dataset. The same tests, with their pooled counts, are in the sections below and in the release statistics (analyses crosslink, pdb_interface, nucleic_acid_distance).</p>') +
         sub('ix-evmap', 'How the evidence fits together', '<p>Counted per site or per protein. For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink localised to the residue or with it as a candidate residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), three IntAct record types (a mutation that changed an interaction, a short binding region, the arginine curated as methylated in an interaction; these do not set the status), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. The protein-context table shows, for the sites with each kind of evidence, the share on proteins annotated as RNA- or DNA-binding (Gene Ontology), in a CD-CODE condensate, physically linked to a PRMT or a Tudor-domain reader (STRING ≥ 0.7) or in a Complex Portal curated complex, against all selected sites; each cell lists those sites. Counted per protein, the same layout combines these protein properties and whether any of the protein\'s sites carries contact evidence. Below the site view, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
         sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a dimethylarginine state call (ProMetheusDB, Maron Table S2, UniProt or Wei 2020), the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the plain odds ratio with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ 0.05 are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions should be interpreted with caution.</p>') +
@@ -12459,7 +12480,7 @@
       '<li><b>Complexes</b>: Complex Portal curated complexes and hu.MAP 3.0 predicted complexes (CC0). Enrichment of methylated members is a one-sided hypergeometric test against the reviewed human proteome, BH-adjusted separately for curated and predicted complexes. Members are counted once per protein (two processed chains of one precursor are one member); a member slot that Complex Portal fills with interchangeable proteins (e.g. the three calmodulins) counts each of them, and the member list shows each methylated one.</li>' +
       '<li><b>RNA and DNA binding</b>: Gene Ontology GO:0003723 and GO:0003677 including child terms (QuickGO/GOA, CC BY 4.0); experimental evidence means EXP, IDA, IPI, IMP, IGI, IEP or their high-throughput equivalents. Protein pages add live ENCODE eCLIP and TF ChIP-seq experiments and ChIP-Atlas target genes (CC BY 4.0).</li>' +
       '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two entries with the highest PDB IDs (roughly the most recent) per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were extracted from the atomic coordinates (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylated arginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
-      '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue crosslinked to RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016, HeLa), and CAPRI RNA-bound peptides (Panhale et al. 2019, HEK293): XL-peptides identified with an RNA adduct, and ADJ-peptides, the Lys-C peptides released next to a crosslink. CAPRI\'s searches, like pepR-MS\'s, did not allow methylarginine, so a peptide with a methylarginine was identified only from its unmethylated molecules; its spans are used, not its adduct localisation scores, which place the base and the rest of the nucleotide on different residues. DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence' + (IX && IX.meta && IX.meta.xl_check ? ' (' + fmt(IX.meta.xl_check.matched) + ' matched, ' + fmt(IX.meta.xl_check.dropped) + ' dropped)' : '') + '. Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides.</li>' +
+      '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue crosslinked to RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016, HeLa), and CAPRI RNA-bound peptides (Panhale et al. 2019, HEK293): XL-peptides identified with an RNA adduct, and ADJ-peptides, the Lys-C peptides released next to a crosslink; and pCLAP RNA-binding peptides (Mullari et al. 2017, HEK293), which scripts/43d derives from the deposited MaxQuant search with the authors\' rule (UV-crosslinked against non-crosslinked samples, ≥ 3 of 4 valid values, two-sided t-test with s0 0.1 and a 5% permutation FDR), each with the Lys-C peptide around it, the authors\' RNA-binding region. pCLAP also records every peptide it measured, so one test counts only arginines inside a measured peptide: whether a stretch is detected at all explains much of the enrichment of methylarginines inside RNA-binding peptides. CAPRI\'s and pCLAP\'s searches, like pepR-MS\'s, did not allow methylarginine, so a peptide with a methylarginine was identified only from its unmethylated molecules; its spans are used, not its adduct localisation scores, which place the base and the rest of the nucleotide on different residues. DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence' + (IX && IX.meta && IX.meta.xl_check ? ' (' + fmt(IX.meta.xl_check.matched) + ' matched, ' + fmt(IX.meta.xl_check.dropped) + ' dropped)' : '') + '. Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides.</li>' +
       '<li><b>IntAct</b>: curated features of interaction participants (' + doiLink('10.1093/nar/gkab1006', 'del Toro et al. 2022') + '; CC BY 4.0), exported by scripts/37 when their curated sequence matches the canonical UniProt sequence at their range: mutations and their effect on an interaction (disrupts, decreases, increases, causes, no effect), regions mapped as sufficient, necessary, binding-associated or direct-interaction regions for a partner, and methylated arginines of participants. At a site, a mutation of up to 3 residues that changed an interaction, a binding region of up to ' + ((IX && IX.ia && IX.ia.peptide_max) || 20) + ' residues and a methylated-residue record are listed as IntAct evidence and can be filtered on; they do not set the site\'s interaction status. Longer regions appear only on the protein map. The IntAct map row (and its lane in the cartoon and comparison) is off until switched on in the Rows menu. The Interactions tab tests methylated against other arginines of the same proteins.</li>' +
       '<li><b>Interactive network</b>: on a protein page the partner network is drawn with Cytoscape.js (' + doiLink('10.1093/bioinformatics/btv557', 'Franz et al. 2016') + '): drag nodes, zoom with the + and − buttons, lay it out again or reset it; hover a node for its details and click it to open the protein. SVG, PNG and Cytoscape exports keep the arrangement on screen; print and the Figures tab use the drawn layout.</li>' +
       '<li><b>STRING network options</b>: on a protein page, the network can be physical or functional (all associations), scored on chosen evidence channels (STRING\'s own rule: remove the 0.041 prior from each channel score, combine, add the prior back), limited to methylated partners, PRMTs and reader domains or RNA/DNA binders, labelled and sized as needed, extended with pinned genes, and opened on string-db.org with the same settings. Options are remembered in this browser.</li>' +

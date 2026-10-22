@@ -105,6 +105,8 @@ RNA_FOCUSED = 32                       # pepR-MS Table S3 focused crosslinking s
 D_XL, D_PEP, D_BIND, D_CAND = 1, 2, 4, 8  # DNA: crosslink localised to this residue alone, inside a crosslinked peptide,
                                           # UniProt DNA-binding region, one of several candidate residues of a crosslink
 CAPRI_XL, CAPRI_ADJ = 1, 2             # CAPRI: inside an RNA-crosslinked peptide, inside a Lys-C peptide next to a crosslink
+PCLAP_PEP, PCLAP_LYSC = 4, 8            # pCLAP: inside an RNA-binding peptide, inside the Lys-C peptide around one
+PCLAP_TABLE = 'pclap_mullari2017_peptides.tsv'
 XL_NEAR = 3                           # "near" = within this many residues of a crosslinked residue
 RINGS = {'PHE': ('CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ'), 'TYR': ('CG', 'CD1', 'CD2', 'CE1', 'CE2', 'CZ'), 'TRP': ('CD2', 'CE2', 'CE3', 'CZ2', 'CZ3', 'CH2')}
 PDBE_MODRES = 'https://www.ebi.ac.uk/pdbe/api/pdb/entry/modified_AA_or_NA/{pdb}'
@@ -1632,6 +1634,38 @@ def load_capri(cache: Path, refresh: bool, seq: dict, seq_meta: dict | None = No
     return ii.capri_spans(rows, seq, seq_meta)
 
 
+def load_pclap(path: Path, seq: dict):
+    """pCLAP (Mullari et al. 2017, HEK293) from the table scripts/43d_stage_pclap.py derives from the PRIDE search (kept
+    out of Git: PRIDE gives only the EBI terms of use): {'pep': {acc: [(start, end, peptide)]} RNA-binding peptides,
+    'lysc': {acc: [(start, end)]} their Lys-C peptides (the authors' RNA-binding regions), 'measured': {acc: [(start, end)]}
+    every peptide measured, RNA-binding or not}, and counts. Rows whose peptide does not match the sequence are dropped."""
+    out = {'pep': defaultdict(list), 'lysc': defaultdict(set), 'measured': defaultdict(list)}
+    check = Counter()
+    if not path.exists():
+        log(f'pCLAP: {path} not found (scripts/43d_stage_pclap.py writes it); left out')
+        return {k: {} for k in out}, {'available': False}
+    with open(path, encoding='utf-8') as fh:
+        for r in csv.DictReader(fh, delimiter='\t'):
+            acc, s = r['uniprot_accession'], seq.get(r['uniprot_accession'], '')
+            try:
+                a, b, la, lb = int(r['start']), int(r['end']), int(r['lysc_start']), int(r['lysc_end'])
+            except ValueError:
+                check['dropped'] += 1
+                continue
+            if s[a - 1:b] != r['sequence']:
+                check['dropped'] += 1
+                continue
+            out['measured'][acc].append((a, b))
+            if r['rna_binding'] == 'true':
+                out['pep'][acc].append((a, b, r['sequence']))
+                out['lysc'][acc].add((la, lb))
+                check['rna_binding'] += 1
+            check['kept'] += 1
+    res = {'pep': dict(out['pep']), 'lysc': {k: sorted(v) for k, v in out['lysc'].items()}, 'measured': dict(out['measured'])}
+    return res, {'available': True, 'kept': check['kept'], 'rna_binding': check['rna_binding'], 'dropped': check['dropped'],
+                 'proteins_rna_binding': len(res['pep']), 'proteins_measured': len(res['measured'])}
+
+
 def load_intact(cache: Path, refresh: bool, seq: dict):
     """IntAct features on reviewed human proteins whose curated sequence matches the canonical sequence at their range.
 
@@ -2013,7 +2047,9 @@ XL_TEST = {'rna_xl': 'rna_crosslink', 'rna_xl_single': 'rna_crosslink_single_res
            'rna_rbdmap': 'rbdmap_fragment', 'dna_xl': 'dna_crosslink', 'dna_cand': 'dna_crosslink_or_candidate',
            'dna_pep': 'dna_crosslinked_peptide', 'dna_bind': 'dna_binding_region', 'rna_xl_nonrg': 'rna_crosslink_outside_rg',
            'rna_rbdmap_nonrg': 'rbdmap_fragment_outside_rg', 'rna_capri_xl': 'capri_xl_peptide', 'rna_capri_adj': 'capri_adj_peptide',
-           'rna_capri_xl_nonrg': 'capri_xl_peptide_outside_rg', 'rna_capri_adj_nonrg': 'capri_adj_peptide_outside_rg'}
+           'rna_capri_xl_nonrg': 'capri_xl_peptide_outside_rg', 'rna_capri_adj_nonrg': 'capri_adj_peptide_outside_rg',
+           'rna_pclap': 'pclap_lysc_region', 'rna_pclap_pep': 'pclap_peptide', 'rna_pclap_nonrg': 'pclap_lysc_region_outside_rg',
+           'rna_pclap_cov': 'pclap_peptide_among_measured'}
 INTACT_TEST = {'mutation': 'mutation_changes_interaction', 'peptide': 'binding_region', 'peptide_disordered': 'binding_region_disordered'}
 # Sequence proximity: the distances (residues along the sequence; 0 is inside) at which each arginine is tested for
 # lying near each kind of residue-level RNA evidence.
@@ -2079,6 +2115,7 @@ def write_release_tables(outdir: Path, d: dict):
         return ', '.join(f'{marked(pep, k)} at {q} ({masses} Da)' for q in positions for b, pep, k, masses in xs['rna'].get(acc, {}).get(q, []) if b == bit)
 
     capri = d.get('capri') or {'xl': {}, 'adj': {}}
+    pclap = d.get('pclap') or {'pep': {}, 'lysc': {}, 'measured': {}}
     for j, rb, nb, db, fb, single, cb in d['xl_rows']:
         acc, pos = prots[sites[j][0]][0], sites[j][1]
         for k, src in enumerate(XL_SOURCE):
@@ -2096,6 +2133,12 @@ def write_release_tables(outdir: Path, d: dict):
             if cb & bit:
                 peps = [f'{a}-{b} {pep}' for a, b, pep in capri[kind].get(acc, []) if a <= pos <= b]
                 rows.append([sid(j), ev, loc, 'rna', '', '', 'CAPRI', '', '', '', ', '.join(peps), True])
+        if cb & PCLAP_PEP:
+            peps = [f'{a}-{b} {pep}' for a, b, pep in pclap['pep'].get(acc, []) if a <= pos <= b]
+            rows.append([sid(j), 'pclap_peptide', 'in_peptide', 'rna', '', '', 'pCLAP', '', '', '', ', '.join(peps), True])
+        if cb & PCLAP_LYSC:
+            regs = [f'{a}-{b}' for a, b in pclap['lysc'].get(acc, []) if a <= pos <= b]
+            rows.append([sid(j), 'pclap_lysc_region', 'in_fragment', 'rna', '', '', 'pCLAP', '', '', '', 'Lys-C peptide ' + ', '.join(regs), True])
         dna_peps = ', '.join(f'{a}-{a + len(pep) - 1} {pep}' for a, pep in xs['dna'].get(acc, []) if a <= pos <= a + len(pep) - 1)
         dna_note = (f'peptide {dna_peps} (lower case: the residues the crosslink may sit on)') if dna_peps else ''
         if db & D_XL:
@@ -2153,7 +2196,7 @@ def write_release_tables(outdir: Path, d: dict):
     for acc, rs in d['pred_iface'].items():
         for a, b, n, q in rs:
             rows.append([acc, a, b, 'predicted_interface', 'at_residue', n, f'{q / 100:.2f}', 'ProtVar'])
-    for i, r_pos, r_bits, d_xl, d_peps, d_bind, _in_int, frags, d_cand, c_xl, c_adj in d['xl_prot']:
+    for i, r_pos, r_bits, d_xl, d_peps, d_bind, _in_int, frags, d_cand, c_xl, c_adj, p_pep, p_lysc, _p_meas in d['xl_prot']:
         acc = prots[i][0]
         for q, bits in zip(r_pos, r_bits):
             rows.append([acc, q, q, 'rna_crosslink', 'at_residue', '', '', '; '.join(src for k, src in enumerate(XL_SOURCE) if bits >> k & 1)])
@@ -2171,6 +2214,10 @@ def write_release_tables(outdir: Path, d: dict):
             rows.append([acc, a, b, 'capri_xl_peptide', 'in_peptide', '', '', 'CAPRI'])
         for a, b in c_adj:
             rows.append([acc, a, b, 'capri_adj_peptide', 'in_fragment', '', '', 'CAPRI'])
+        for a, b in p_pep:
+            rows.append([acc, a, b, 'pclap_peptide', 'in_peptide', '', '', 'pCLAP'])
+        for a, b in p_lysc:
+            rows.append([acc, a, b, 'pclap_lysc_region', 'in_fragment', '', '', 'pCLAP'])
     for i, regions, muts in d['intact_prot']:
         acc = prots[i][0]
         for a, b, bits, _ps, n, _rec in regions:
@@ -2294,7 +2341,7 @@ def write_release_tables(outdir: Path, d: dict):
     log(f'wrote the release interaction tables to {outdir}')
 
 
-SITE_EVIDENCE = ['rna_crosslink', 'rbdmap_fragment', 'capri_xl_peptide', 'capri_adj_peptide', 'dna_crosslink', 'dna_binding_region', 'pdb_protein', 'pdb_rna', 'pdb_dna',
+SITE_EVIDENCE = ['rna_crosslink', 'rbdmap_fragment', 'capri_xl_peptide', 'capri_adj_peptide', 'pclap_peptide', 'pclap_lysc_region', 'dna_crosslink', 'dna_binding_region', 'pdb_protein', 'pdb_rna', 'pdb_dna',
                  'pdb_self', 'predicted_interface', 'predicted_contact', 'intact_mutation', 'intact_binding_region', 'intact_methylated']
 
 
@@ -2321,6 +2368,7 @@ def main():
     ap.add_argument('--fetch-models-only', action='store_true', help='only measure methylarginines in predicted complex models (ProtVar, AlphaFold DB)')
     ap.add_argument('--model-workers', type=int, default=8, help='parallel model downloads for the predicted-contact gallery')
     ap.add_argument('--tables', default='', help='read the frozen tables in this folder (inputs/interactions) instead of --cache')
+    ap.add_argument('--pclap', default='', help='the pCLAP peptide table scripts/43d_stage_pclap.py writes (default: ' + PCLAP_TABLE + ' in --tables, or inputs/interactions)')
     ap.add_argument('--topup-cache', default='PTM_data/interactions_topup',
                     help='with --tables: where to save what the tables do not cover (scripts/37a_stage_interactions.py --topup stages it)')
     ap.add_argument('--measured-sites', default='releases/v1.0.0/human_methylarginine_sites_v1.0.0.tsv',
@@ -2827,6 +2875,10 @@ def main():
     capri, capri_check = load_capri(cache, args.refresh, {a: v[2] for a, v in proteome.items()}, proteome)
     log('CAPRI: ' + '; '.join(f"{k.upper()}-peptides {v['kept']:,} kept ({v['moved']:,} re-located by sequence), {v['dropped']:,} dropped"
                               for k, v in capri_check.items()))
+    # pCLAP (HEK293): RNA-binding peptides, their Lys-C peptides, and every peptide measured (the detectability control).
+    pclap, pclap_check = load_pclap(Path(args.pclap) if args.pclap else Path(args.tables or 'inputs/interactions') / PCLAP_TABLE, {a: v[2] for a, v in proteome.items()})
+    if pclap_check.get('available'):
+        log(f"pCLAP: {pclap_check['rna_binding']:,} RNA-binding of {pclap_check['kept']:,} measured peptides on {pclap_check['proteins_rna_binding']:,} proteins; {pclap_check['dropped']:,} dropped")
     xl_rows, xl_prot, xl_seq = [], [], []
     xl_strata = Tables(('rna_xl', 'rna_xl_single', 'rna_near', 'rna_rbdmap', 'dna_xl', 'dna_cand', 'dna_pep', 'dna_bind', 'rna_xl_nonrg', 'rna_rbdmap_nonrg',
                         'rna_capri_xl', 'rna_capri_adj', 'rna_capri_xl_nonrg', 'rna_capri_adj_nonrg'))
@@ -2836,6 +2888,7 @@ def main():
             continue
         r_map, d_map, peps, binds, frags = rna_xl.get(acc, {}), dna_xl.get(acc, {}), dna_peps.get(acc, []), dna_bind.get(acc, []), rbd_frag.get(acc, [])
         c_xl, c_adj = capri['xl'].get(acc, []), capri['adj'].get(acc, [])
+        p_pep, p_lysc, p_meas = pclap['pep'].get(acc, []), pclap['lysc'].get(acc, []), pclap['measured'].get(acc, [])
         r_single = rna_single.get(acc, set())
         site_pos = {sites[j][1] for j in by_prot_sites[i]}
         def near_bits(pos):
@@ -2849,7 +2902,8 @@ def main():
             pos = sites[j][1]
             rb, nb, db = r_map.get(pos, 0), near_bits(pos), dna_bits(pos)
             fb = 1 if any(a <= pos <= b for a, b in frags) else 0
-            cb = (CAPRI_XL if any(a <= pos <= b for a, b, _ in c_xl) else 0) | (CAPRI_ADJ if any(a <= pos <= b for a, b, _ in c_adj) else 0)
+            cb = (CAPRI_XL if any(a <= pos <= b for a, b, _ in c_xl) else 0) | (CAPRI_ADJ if any(a <= pos <= b for a, b, _ in c_adj) else 0) | \
+                (PCLAP_PEP if any(a <= pos <= b for a, b, _ in p_pep) else 0) | (PCLAP_LYSC if any(a <= pos <= b for a, b in p_lysc) else 0)
             if rb or nb or db or fb or cb:
                 xl_rows.append([j, rb, nb, db, fb, 1 if pos in r_single else 0, cb])
         # The peptides and fragments behind the evidence near each site (what the evidence pop-ups show).
@@ -2857,13 +2911,15 @@ def main():
         seq_rna = [[q, bit, pep, k, masses] for q, hits in sorted(xl_seq_all['rna'].get(acc, {}).items()) if near(q, q) for bit, pep, k, masses in hits]
         seq_dna = [[a, pep] for a, pep in xl_seq_all['dna'].get(acc, []) if near(a, a + len(pep) - 1)]
         seq_rbd = [[a, b, frag] for a, b, frag in xl_seq_all['rbd'].get(acc, []) if near(a, b)]
-        seq_cxl, seq_cadj = ([[a, b, pep] for a, b, pep in spans if near(a, b)] for spans in (c_xl, c_adj))
-        if seq_rna or seq_dna or seq_rbd or seq_cxl or seq_cadj:
-            xl_seq.append([i, seq_rna, seq_dna, seq_rbd, seq_cxl, seq_cadj])
-        if r_map or d_map or peps or binds or frags or acc in dna_int or c_xl or c_adj:
+        seq_cxl, seq_cadj, seq_pclap = ([[a, b, pep] for a, b, pep in spans if near(a, b)] for spans in (c_xl, c_adj, p_pep))
+        if seq_rna or seq_dna or seq_rbd or seq_cxl or seq_cadj or seq_pclap:
+            xl_seq.append([i, seq_rna, seq_dna, seq_rbd, seq_cxl, seq_cadj, seq_pclap])
+        if r_map or d_map or peps or binds or frags or acc in dna_int or c_xl or c_adj or p_pep:
             xl_prot.append([i, sorted(r_map), [r_map[q] for q in sorted(r_map)], sorted(q for q, v in d_map.items() if v & D_XL), sorted(set(peps)), sorted(set(binds)),
                             1 if acc in dna_int else 0, sorted(set(frags)), sorted(q for q, v in d_map.items() if v == D_CAND),
-                            sorted({(a, b) for a, b, _ in c_xl}), sorted({(a, b) for a, b, _ in c_adj})])
+                            sorted({(a, b) for a, b, _ in c_xl}), sorted({(a, b) for a, b, _ in c_adj}),
+                            # pCLAP: RNA-binding peptides, their Lys-C peptides, peptides measured but not RNA-binding
+                            sorted({(a, b) for a, b, _ in p_pep}), sorted(set(p_lysc)), sorted(set(p_meas) - {(a, b) for a, b, _ in p_pep})])
         seq_ = proteome.get(acc, ('', '', ''))[2]
         if not seq_:
             continue
@@ -2871,6 +2927,8 @@ def main():
                                 ('rna_rbdmap', lambda q: any(a <= q <= b for a, b in frags), bool(frags)),
                                 ('rna_capri_xl', lambda q: any(a <= q <= b for a, b, _ in c_xl), bool(c_xl)),
                                 ('rna_capri_adj', lambda q: any(a <= q <= b for a, b, _ in c_adj), bool(c_adj)),
+                                ('rna_pclap', lambda q: any(a <= q <= b for a, b in p_lysc), bool(p_lysc)),
+                                ('rna_pclap_pep', lambda q: any(a <= q <= b for a, b, _ in p_pep), bool(p_pep)),
                                 ('dna_xl', lambda q: bool(d_map.get(q, 0) & D_XL), any(v & D_XL for v in d_map.values())),
                                 ('dna_cand', lambda q: bool(d_map.get(q, 0)), bool(d_map)), ('dna_pep', lambda q: any(a <= q <= b for a, b in peps), bool(peps)),
                                 ('dna_bind', lambda q: any(a <= q <= b for a, b in binds), bool(binds))):
@@ -2882,12 +2940,19 @@ def main():
                     xl_strata.add(key, acc, q, cell)
                     # RG/RGG regions both bind RNA and carry most methylarginines: repeat the RNA tests without
                     # arginines in an RG or GR dipeptide.
-                    if key in ('rna_xl', 'rna_rbdmap', 'rna_capri_xl', 'rna_capri_adj') and not ((q < len(seq_) and seq_[q] == 'G') or (q > 1 and seq_[q - 2] == 'G')):
+                    if key in ('rna_xl', 'rna_rbdmap', 'rna_capri_xl', 'rna_capri_adj', 'rna_pclap') and not ((q < len(seq_) and seq_[q] == 'G') or (q > 1 and seq_[q - 2] == 'G')):
                         xl_strata.add(key + '_nonrg', acc, q, cell)
+        # pCLAP measured every peptide it could see: among the arginines inside a measured peptide only, are methylated
+        # ones inside an RNA-binding peptide more often? (Controls for whether a stretch is detected at all.)
+        if p_pep:
+            for q in range(1, len(seq_) + 1):
+                if seq_[q - 1] == 'R' and any(a <= q <= b for a, b in p_meas):
+                    xl_strata.add('rna_pclap_cov', acc, q, (0 if q in site_pos else 2) + (0 if any(a <= q <= b for a, b, _ in p_pep) else 1))
         # Sequence proximity: each arginine's distance along the sequence to the nearest residue of each kind of RNA
         # evidence (0: at or inside it), tested at each distance in SEQ_PROX_D within the proteins with that evidence.
         for track, spans in (('rna_xl', [(q, q) for q in r_map]), ('rna_rbdmap', list(frags)),
-                             ('rna_capri_adj', [(a, b) for a, b, _ in c_adj]), ('rna_capri_xl', [(a, b) for a, b, _ in c_xl])):
+                             ('rna_capri_adj', [(a, b) for a, b, _ in c_adj]), ('rna_capri_xl', [(a, b) for a, b, _ in c_xl]),
+                             ('rna_pclap', [(a, b) for a, b, _ in p_pep])):
             if not spans:
                 continue
             for q in range(1, len(seq_) + 1):
@@ -2927,6 +2992,7 @@ def main():
                                 ('rna_rbdmap', lambda acc: bool(rbd_frag.get(acc)), lambda acc, q: any(a <= q <= b for a, b in rbd_frag.get(acc, []))),
                                 ('rna_capri_xl', lambda acc: bool(capri['xl'].get(acc)), lambda acc, q: any(a <= q <= b for a, b, _ in capri['xl'].get(acc, []))),
                                 ('rna_capri_adj', lambda acc: bool(capri['adj'].get(acc)), lambda acc, q: any(a <= q <= b for a, b, _ in capri['adj'].get(acc, []))),
+                                ('rna_pclap', lambda acc: bool(pclap['lysc'].get(acc)), lambda acc, q: any(a <= q <= b for a, b in pclap['lysc'].get(acc, []))),
                                 ('dna_xl', lambda acc: any(v & D_XL for v in dna_xl.get(acc, {}).values()), lambda acc, q: bool(dna_xl.get(acc, {}).get(q, 0) & D_XL))):
         tabs = {name: defaultdict(lambda: [0, 0, 0, 0]) for name, _ in type_classes}
         for i, acc in enumerate(meth_accs):
@@ -3465,6 +3531,9 @@ def main():
                 'capri': 'CAPRI (Panhale et al. 2019 Nat Commun, HEK293, CC BY 4.0) Supplementary Data 9 and 3: RNA-crosslinked peptides (XL-peptides) '
                          'and the Lys-C peptides next to crosslinks (ADJ-peptides). The searches did not allow methylarginine, so a peptide with a '
                          'methylarginine could be identified only from molecules in which that arginine was unmethylated',
+                'pclap': 'pCLAP (Mullari et al. 2017 J Proteome Res, HEK293, UV crosslinking): RNA-binding peptides derived by scripts/43d_stage_pclap.py '
+                         'from the PRIDE PXD005739 MaxQuant search (XL against No XL, the authors\' published rule), their Lys-C peptides (the authors\' '
+                         'RNA-binding regions) and every measured peptide. The search did not allow methylarginine',
                 'rna_crosslinks': 'pepR-MS (Sha, Kuster & Trendel, bioRxiv 2025, CC BY-NC) Tables S2-S3: RNA-crosslinked residues re-analysed from Kramer 2014, XRNAX 2019, RBS-ID 2020, pRBS-ID 2021 and pepR-MS',
                 'dna_crosslinks': 'Trendel et al. 2025 Cell Tables S1-S2: DNA interactome and DNA-crosslinked peptides with localised residues; UniProt DNA-binding regions (CC BY 4.0)',
                 'intact': f'IntAct curated features (mutations, binding regions, modified residues; EMBL-EBI, CC BY 4.0). {intact_release}',
@@ -3473,6 +3542,7 @@ def main():
                        'mutation_max': INTACT_MUT_MAX, 'release': intact_release, 'counts': intact_counts},
             'xl_check': xl_check,
             'capri_check': capri_check,
+            'pclap_check': pclap_check,
             'pred_iface': {'file': Path(args.pred_iface_out).name, 'proteins': len(pred_iface), 'pdockq_min': PRED_TIERS[0]},
             'fields': {
                 'proteins': ['accession', 'gene', 'flags', 'ensp'],
@@ -3491,7 +3561,7 @@ def main():
                 'na_names': 'molecule names of the RNA and DNA chains',
                 'na_dist': ['type of RNA or DNA', f'methylarginines by the minimum heavy-atom distance from the side chain, 1 Å bins from 0 to {PROXIMAL_CUTOFF:g} Å',
                             'the other arginines of the same proteins, likewise (every entry with the protein and RNA or DNA)'],
-                'seq_prox': '{rna_xl|rna_rbdmap|rna_capri_adj|rna_capri_xl}: {0|3|5|10|20}: or_summary of methylarginines against the other arginines of proteins with that evidence, within that many residues along the sequence of the nearest evidence residue (0: at or inside it)',
+                'seq_prox': '{rna_xl|rna_rbdmap|rna_capri_adj|rna_capri_xl|rna_pclap}: {0|3|5|10|20}: or_summary of methylarginines against the other arginines of proteins with that evidence, within that many residues along the sequence of the nearest evidence residue (0: at or inside it)',
                 'na_dist_stats': '{rna|dna|any}_within_{4|8}a: or_summary of methylarginines against the other arginines modelled with that kind, within the cutoff; '
                                  '{kind}_distance: [n methylarginines within 8 Å, median Å, n other, median Å, Mann-Whitney p]',
                 'nab': {'rbns': ['accession', 'ENCODE experiment', 'protein concentration', f'top {RBNS_TOP} 5-mers [[kmer, R]]', 'ENCODE logos [[k, logo, [[A, C, G, U] per position]]]'],
@@ -3522,8 +3592,8 @@ def main():
                 'xl_seq': ['protein index', 'RNA-crosslinked peptides near a site [[position, dataset bit, peptide, index of the crosslinked residue, RNA masses]]',
                            'DNA-crosslinked peptides near a site [[start, peptide with candidate residues in lower case]]', 'RBDmap fragments near a site [[start, end, fragment]]',
                            'CAPRI XL-peptides near a site [[start, end, peptide]]', 'CAPRI ADJ-peptides near a site [[start, end, peptide]]'],
-                'xl_enrich': '{rna_xl|rna_near|rna_rbdmap|rna_capri_xl|rna_capri_adj|dna_xl|dna_cand|dna_pep|dna_bind (+ _nonrg RNA variants): {pooled, mh, proteins, or: {pooled: [a, b, c, d, OR, lo, hi, p], mh: [OR, lo, hi, p, strata]}}} methylated vs other arginines of proteins with that evidence',
-                'xl_types': '{rna_xl|rna_xl_single|rna_rbdmap|rna_capri_xl|rna_capri_adj|dna_xl: {rme2s|rme2a|rme1ip|rme2|rme1|nostate|any: or_summary}} each methylation class vs unmethylated arginines of the same proteins',
+                'xl_enrich': '{rna_xl|rna_near|rna_rbdmap|rna_capri_xl|rna_capri_adj|rna_pclap (Lys-C region)|rna_pclap_pep|rna_pclap_cov (among arginines in any measured pCLAP peptide)|dna_xl|dna_cand|dna_pep|dna_bind (+ _nonrg RNA variants): {pooled, mh, proteins, or: {pooled: [a, b, c, d, OR, lo, hi, p], mh: [OR, lo, hi, p, strata]}}} methylated vs other arginines of proteins with that evidence',
+                'xl_types': '{rna_xl|rna_xl_single|rna_rbdmap|rna_capri_xl|rna_capri_adj|rna_pclap|dna_xl: {rme2s|rme2a|rme1ip|rme2|rme1|nostate|any: or_summary}} each methylation class vs unmethylated arginines of the same proteins',
                 'xl_freq': '{spectra|datasets: {meth: [n, mean, median], other: [...], p (Mann-Whitney)}, multi: or_summary (crosslinked in >= 2 datasets)} among RNA-crosslinked arginines',
                 'pred_enrich': '{pDockQ floor: {all|ordered|disordered: {pooled, mh}}} methylated vs other arginines of the same protein at a predicted interface',
                 'intact': ['site', '[[kind (0 mutation, 1 binding region <= peptide_max aa, 2 methylated arginine), code (meta.intact effects or regions; 0 for kind 2), start, end, resulting sequence, partners (-1 RNA, -2 DNA, -3 small molecule, -4 other, else protein index), PubMed ids, IntAct interaction ACs (first 5), records], ...]'],
@@ -3588,7 +3658,7 @@ def main():
             'prots': prots, 'sites': sites, 'vocab': vocab, 'gene_of': gene_of, 'iface_detail': iface_detail, 'xl_rows': xl_rows,
             'pred_all': pred_all, 'gallery': gallery, 'intact_rows': intact_rows, 'partners': partners, 'domain_classes': domain_classes,
             'meth_base': meth_base, 'cx_rows': cx_rows, 'iface_residues': iface_residues, 'pred_iface': pred_iface, 'xl_prot': xl_prot,
-            'intact_prot': intact_prot, 'tests': release_tests, 'set_tests': set_tests, 'complexes': cx_release, 'go': go, 'xl_seq': xl_seq_all, 'capri': capri,
+            'intact_prot': intact_prot, 'tests': release_tests, 'set_tests': set_tests, 'complexes': cx_release, 'go': go, 'xl_seq': xl_seq_all, 'capri': capri, 'pclap': pclap,
             'proteome': proteome, 'na_rows': na_rows, 'chains_na': chains_na, 'na_regions': region_json, 'nab': nab, 'near_rows': near_rows, 'prox_rows': prox_rows, 'arg_rows': arg_rows})
     log(f'wrote {args.out}: {len(vocab):,} proteins, {sum(len(r) // 2 for r in string_rows):,} partner links, '
         f'{len(cx_rows):,} complexes with methylated members, {len(site_rows):,} sites at PDB interfaces '
