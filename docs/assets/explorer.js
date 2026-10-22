@@ -476,6 +476,8 @@
       rna: '#7B4FBF', dna: '#B7791F', protein: '#0E7490', self: '#7FA9B6', other: '#8A99A3', ev: '#0F3B47',
       // Nucleotides (Okabe-Ito; validated for colour-vision deficiency on this surface): A, C, G, U/T.
       ntA: '#009E73', ntC: '#0072B2', ntG: '#E69F00', ntU: '#D55E00',
+      // Other arginines beside methylarginines (meth): a neutral drawn as an outline, so the two differ by fill as well as colour.
+      argOther: '#76848B',
       rnaBg: 'rgba(123,79,191,0.14)', dnaBg: 'rgba(183,121,31,0.16)', proteinBg: 'rgba(14,116,144,0.12)', rnaInk: '#5B3A96', dnaInk: '#7A4F10', proteinInk: '#0B5A70',
       domain: '#B9DDE6', domainInk: '#0F3B47', dis: '#8796A0', rg: '#F5D6DE', rgInk: '#7A2E45',
       bias: '#FDE3D4', region: '#E3ECF6', dense: 'rgba(17,24,39,0.07)',
@@ -488,6 +490,7 @@
       st1: '#3987E5', st2: '#D95926', st2s: '#F4A26B', stMix: '#199E70', none: '#6D7D84', meth: '#E0708A',
       rna: '#A98BE0', dna: '#D9A548', protein: '#3FB5CF', self: '#6E98A5', other: '#7E8E95', ev: '#D7EEF3',
       ntA: '#17A478', ntC: '#3284D0', ntG: '#C48506', ntU: '#C44323',
+      argOther: '#B8C3C8',
       rnaBg: 'rgba(123,79,191,0.3)', dnaBg: 'rgba(183,121,31,0.3)', proteinBg: 'rgba(63,181,207,0.22)', rnaInk: '#D2BDF5', dnaInk: '#EFCA85', proteinInk: '#9BDDEC',
       domain: '#1F5566', domainInk: '#E3F4F8', dis: '#8FA6B0', rg: '#5A2C3A', rgInk: '#F6C9D6',
       bias: '#4A2A1C', region: '#213847', dense: 'rgba(232,239,242,0.09)',
@@ -7081,7 +7084,7 @@
       geoSummary: d.geometry_summary || {}, rg: d.rg_iface || {}, modelledGaps, condConf: d.cond_conf || {}, nModelled: (d.modelled || []).length,
       predEnrich: d.pred_enrich || {}, nPred: (d.pred || []).length, condHist: d.cond_score_hist || {}, gallery,
       xlProt, xlEnrich: d.xl_enrich || {}, xlSets: d.xl_sets || [], xlTypes: d.xl_types || {}, xlFreq: d.xl_freq || null,
-      iaProt, iaEnrich: d.intact_enrich || {}, ia: (d.meta && d.meta.intact) || null, naReg, nab };
+      iaProt, iaEnrich: d.intact_enrich || {}, ia: (d.meta && d.meta.intact) || null, naReg, nab, naDist: d.na_dist || [], naDistStats: d.na_dist_stats || {} };
     IX.byAcc = new Map(prot.map((x) => [x.acc, x.k]));
     IX.prmts = prot.filter((x) => x.flags & IXF.prmt).sort((a, b) => prmtRank(a.gene) - prmtRank(b.gene));
     IX.tudors = prot.filter((x) => x.flags & IXF.tudor).sort((a, b) => a.gene.localeCompare(b.gene));
@@ -7426,7 +7429,7 @@
   const naNearTag = (w, s) => '<span class="tag na-near" data-tip="' + esc('<b>Contact via a flanking residue</b><br>No atom of the arginine side chain is within 4 Å of this ' + (w.kind === 'dna' ? 'DNA' : 'RNA') + ' in these structures; residue ' +
     rn(s.pos + w.via, P[s.p]) + ' (' + iRel(w.via) + ') is, and the window is centred on the nucleotide it contacts.') + '">via ' + iRel(w.via) + '</span>';
   const naProxTag = (w) => '<span class="tag na-prox" data-tip="' + esc('<b>Proximal</b><br>The closest atom of the arginine side chain is ' + w.dist + ' Å from this ' + (w.kind === 'dna' ? 'DNA' : 'RNA') +
-    ' (none within 4 Å) in the entry read for the complex; the window is centred on the closest nucleotide, the nucleotides within 8 Å bold.') + '">' + w.dist + ' Å</span>';
+    ' (none within 4 Å), the closest approach over the complex\'s PDB entries; the window is centred on the closest nucleotide, the nucleotides within 8 Å bold.') + '">' + w.dist + ' Å</span>';
   const naTierTag = (w, s) => (w.via ? naNearTag(w, s) : w.prox ? naProxTag(w) : '');
   const naOligoTag = () => '<span class="tag na-oligo" data-tip="' + esc('<b>Designed oligonucleotide</b><br>Synthetically obtained in every entry showing it: the sequence the authors chose, not necessarily one the protein binds in cells.') + '">oligo</span>';
   function naAlignHtml(ws, withProtein, limit) {
@@ -7443,7 +7446,7 @@
       (limit && rows.length > limit ? '<p class="note">' + fmt(limit) + ' of ' + fmt(rows.length) + ' bound sequences; the TSV has all of them.</p>' : '');
   }
   const NA_NOTE = 'Bound sequence: the chain ' + NA_W + ' nucleotides each side of the one closest to the arginine\'s side chain (offset 0, outlined); nucleotides within 4 Å are bold. ' +
-    'Proximal (tagged with the distance, e.g. 5.6 Å): in a complex without direct contact, an atom of the arginine side chain within 8 Å, read in one entry per complex; the window is centred on the closest nucleotide, those within 8 Å bold. ' +
+    'Proximal (tagged with the distance, e.g. 5.6 Å): in a complex without direct contact, an atom of the arginine side chain within 8 Å, the closest approach over the complex\'s entries; the window is centred on the closest nucleotide, those within 8 Å bold. ' +
     'Contact via a flanking residue (tagged via i±k): in a complex where the arginine side chain is not within 8 Å of RNA or DNA but a residue at i ± 1–5 is within 4 Å, the stretch those residues contact, centred on the nucleotide the closest one contacts, and the nucleotides they contact bold. ' +
     'Every PDB entry with the site at an RNA or DNA interface is read. A structure shows the complex its authors made, often with a designed oligonucleotide (tagged oligo), not every sequence ' +
     'the protein binds in cells. In the logo each site counts once, however many structures or chains it has; letter height is the frequency, or the frequency × information content in bits, ' +
@@ -9838,6 +9841,7 @@
     if (naBox) {
       bindNaBlock(naBox, naRows(R.sites, 'rna', true).concat(naRows(R.sites, 'dna', true)), 'methylarginine_bound');
       bindLogoTips(naBox);
+      bindNaDist(naBox);
       $$('.ec-gene', naBox).forEach((b) => b.addEventListener('click', () => { setPlain(b.dataset.gene); go('proteins'); window.scrollTo({ top: 0 }); }));
     }
     bindComplexMembers(el);
@@ -9852,12 +9856,92 @@
   // bind beyond structures (ixNabHtml).
   function ixNaHtml() {
     const rna = naRows(R.sites, 'rna', true), dna = naRows(R.sites, 'dna', true), nabPart = ixNabHtml();
-    if (!rna.length && !dna.length && !nabPart) return '';
+    if (!rna.length && !dna.length && !nabPart && !(IX.naDist || []).length) return '';
     const part = (ws, kind) => '<section class="na-part"><h4>' + (kind === 'dna' ? 'DNA' : 'RNA') + ' in structures</h4>' +
       (ws.length ? naBlockHtml(ws, kind, true, 40) : '<p class="muted">No methylarginine of ' + (constraints().length ? 'your selection' : 'the release') + ' contacts ' + kind.toUpperCase() + ' in the structures read.</p>') + '</section>';
     return '<div class="card" id="ix-na"><div class="card-head"><div><h3>RNA and DNA bound at methylarginines</h3><p class="sub">The sequence in contact with each methylarginine in PDB structures, ' +
       'aligned on the nucleotide closest to it, and what the proteins bind in vitro and in cells' + (constraints().length ? ', for your selection' : '') + '.' + docLink('ix-na') + '</p></div></div>' +
-      part(rna, 'rna') + part(dna, 'dna') + '<p class="note">' + NA_NOTE + '</p>' + nabPart + '</div>';
+      part(rna, 'rna') + part(dna, 'dna') + '<p class="note">' + NA_NOTE + '</p>' + naDistHtml() + nabPart + '</div>';
+  }
+  // How close methylarginines come to RNA and DNA, by type, against the other arginines of the same proteins: for each
+  // arginine modelled with that type in some PDB entry, its closest side-chain approach within 8 Å, in 1 Å bins; bar
+  // height is the share of that group's arginines of the row, so the two groups compare whatever their size.
+  function naDistSvg(rows, pal, o) {
+    o = o || {};
+    const B = 8, bw = 15, gap = 3, cw = 2 * bw + gap + 12, rowH = 50, padL = 150, padR = 96, padT = o.title ? 62 : 34, plotW = B * cw, W = padL + plotW + padR;
+    const H = padT + rows.length * rowH + 34, share = (v, tot) => (tot ? v / tot : 0);
+    const top = Math.max(0.05, ...rows.flatMap(([, m, x]) => [...m.map((v) => share(v, m.reduce((a, b) => a + b, 0))), ...x.map((v) => share(v, x.reduce((a, b) => a + b, 0)))]));
+    const x0 = (k) => padL + k * cw + 6, hMax = rowH - 16;
+    let g = '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>';
+    if (o.title) g += '<text x="0" y="18" font-size="13" font-weight="700" fill="' + pal.ink + '">' + esc(o.title) + '</text>';
+    // legend: fill and outline carry the groups as well as colour
+    const ly = padT - 18;
+    g += '<rect x="' + padL + '" y="' + (ly - 9) + '" width="12" height="10" rx="2" fill="' + pal.meth + '"/><text x="' + (padL + 17) + '" y="' + ly + '" font-size="11" fill="' + pal.ink + '">Methylarginines</text>' +
+      '<rect x="' + (padL + 130) + '" y="' + (ly - 8.5) + '" width="11" height="9" rx="2" fill="none" stroke="' + pal.argOther + '" stroke-width="1.5"/><text x="' + (padL + 147) + '" y="' + ly + '" font-size="11" fill="' + pal.ink + '">Other arginines of the same proteins</text>';
+    const xc4 = padL + 4 * cw;
+    rows.forEach(([type, m, x], r) => {
+      const y = padT + r * rowH, base = y + rowH - 6, nm = m.reduce((a, b) => a + b, 0), no = x.reduce((a, b) => a + b, 0);
+      g += '<line x1="' + padL + '" x2="' + (padL + plotW) + '" y1="' + base + '" y2="' + base + '" stroke="' + pal.grid + '"/>' +
+        '<text x="' + (padL - 10) + '" y="' + (base - 14) + '" font-size="12" font-weight="600" text-anchor="end" fill="' + pal.ink + '">' + esc(naTypeOf(type).label) + '</text>' +
+        '<text x="' + (padL + plotW + 8) + '" y="' + (base - 18) + '" font-size="10.5" fill="' + pal.muted + '">' + fmt(nm) + ' methyl-R</text>' +
+        '<text x="' + (padL + plotW + 8) + '" y="' + (base - 5) + '" font-size="10.5" fill="' + pal.muted + '">' + fmt(no) + ' other</text>';
+      for (let k = 0; k < B; k++) {
+        const hm = share(m[k], nm) / top * hMax, ho = share(x[k], no) / top * hMax, xm = x0(k), xo = xm + bw + gap;
+        if (hm > 0) g += '<rect x="' + xm + '" y="' + r1(base - Math.max(hm, 1)) + '" width="' + bw + '" height="' + r1(Math.max(hm, 1)) + '" rx="2" fill="' + pal.meth + '"/>';
+        if (ho > 0) g += '<rect x="' + (xo + 0.75) + '" y="' + r1(base - Math.max(ho, 1.5) + 0.75) + '" width="' + (bw - 1.5) + '" height="' + r1(Math.max(ho, 1.5) - 0.75) + '" rx="2" fill="' + pal.bg + '" stroke="' + pal.argOther + '" stroke-width="1.5"/>';
+        if (!o.forExport) {
+          const tip = '<b>' + esc(naTypeOf(type).label) + ', ' + k + '–' + (k + 1) + ' Å</b><br>Methylarginines: ' + fmt(m[k]) + ' of ' + fmt(nm) + ' (' + pctText(m[k], nm || 1) + '%)<br>Other arginines: ' +
+            fmt(x[k]) + ' of ' + fmt(no) + ' (' + pctText(x[k], no || 1) + '%)<br><span class="muted">Closest approach of the side chain over every PDB entry with this type</span>';
+          g += '<rect class="dist-hit" x="' + (xm - 3) + '" y="' + y + '" width="' + (2 * bw + gap + 6) + '" height="' + (rowH - 4) + '" fill="transparent" data-tip="' + esc(tip) + '"/>';
+        }
+      }
+    });
+    // the direct-contact cutoff
+    g += '<line x1="' + xc4 + '" x2="' + xc4 + '" y1="' + (padT - 4) + '" y2="' + (padT + rows.length * rowH) + '" stroke="' + pal.muted + '" stroke-dasharray="3 3"/>' +
+      '<text x="' + (xc4 + 4) + '" y="' + (padT + 6) + '" font-size="10" fill="' + pal.muted + '">4 Å: direct contact</text>';
+    const ay = padT + rows.length * rowH + 4;
+    for (let k = 0; k <= B; k++) g += '<text x="' + (padL + k * cw) + '" y="' + (ay + 12) + '" font-size="10.5" text-anchor="middle" fill="' + pal.muted + '">' + k + '</text>';
+    g += '<text x="' + (padL + plotW / 2) + '" y="' + (ay + 27) + '" font-size="11" text-anchor="middle" fill="' + pal.muted + '">closest approach of the side chain (Å)</text>';
+    return { W, H, svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" font-family="' + esc(pal.font || EXPORT_PAL.font) + '" role="img" aria-label="' +
+      esc((o.title || 'Distance to RNA and DNA') + ': closest approach of methylarginine and other arginine side chains to each type of RNA and DNA, in 1 Å bins') + '">' + g + '</svg>' };
+  }
+  // The within-protein tests: methylarginines against the other arginines of the same proteins.
+  function naDistStatsHtml() {
+    const st = IX.naDistStats || {};
+    const cell = (key) => {
+      const x = st[key];
+      if (!x || !x.pooled || !(x.pooled[0] + x.pooled[1])) return '<td class="muted">—</td>';
+      const [a, b, c, d] = x.pooled, mh = x.mh || [];
+      return '<td><b>' + pctText(a, a + b) + '%</b> vs ' + pctText(c, c + d) + '%<br><span class="muted small">' + (mh[0] != null ? 'MH OR ' + fmtOr(mh[0], mh[1], mh[2]) + ', p ' + fmtP(mh[3]) + ', ' + fmt(mh[4]) + ' proteins' : 'too few proteins for MH') + '</span></td>';
+    };
+    const row = (kind, label) => '<tr><th scope="row">' + label + '</th>' + cell(kind + '_within_4a') + cell(kind + '_within_8a') +
+      (st[kind + '_distance'] && st[kind + '_distance'][0] ? '<td class="small">' + st[kind + '_distance'][1] + ' vs ' + st[kind + '_distance'][3] + ' Å<br><span class="muted">p ' + fmtP(st[kind + '_distance'][4]) + '</span></td>' : '<td class="muted">—</td>') + '</tr>';
+    return '<div class="tbl-wrap"><table class="tbl compact na-dist-tbl"><thead><tr><th></th><th>Within 4 Å</th><th>Within 8 Å</th><th>Median distance, within 8 Å</th></tr></thead><tbody>' +
+      row('rna', 'RNA') + row('dna', 'DNA') + row('any', 'RNA or DNA') + '</tbody></table></div>' +
+      '<p class="note">Share of methylarginines vs other arginines of the same proteins whose side chain (CD, NE, CZ, NH1, NH2) comes within the distance in some PDB entry with that nucleic acid; every arginine modelled in such an entry counts (arginines in unmodelled, often disordered, stretches cannot). ' +
+      'MH OR: Mantel–Haenszel odds ratio with each protein a stratum, 95% CI. Median distance: among arginines within 8 Å, Mann–Whitney p. Structures show the complexes their authors made, mostly of unmethylated recombinant protein.</p>';
+  }
+  function naDistHtml() {
+    const rows = IX.naDist || [];
+    if (!rows.length) return '';
+    return '<section class="na-part" id="na-dist"><h4>How close methylarginines come to RNA and DNA</h4><p class="na-head">Every arginine of the methylated proteins modelled in a PDB entry with RNA or DNA (all entries PDBe-KB lists), by its closest side-chain approach to each type, methylarginines against the other arginines of the same proteins; the whole release. ' +
+      '<span class="exp"><button type="button" data-na-dist="svg">SVG</button><button type="button" data-na-dist="png">PNG</button><button type="button" data-na-dist="tsv">TSV</button></span></p>' +
+      '<div class="na-dist-fig">' + naDistSvg(rows, screenPalette()).svg + '</div>' + naDistStatsHtml() + '</section>';
+  }
+  function bindNaDist(root) {
+    $$('.dist-hit:not([data-tb])', root).forEach((c) => {
+      c.setAttribute('data-tb', '1');
+      c.addEventListener('mouseenter', (e) => showTip(e, c.getAttribute('data-tip')));
+      c.addEventListener('mousemove', moveTip);
+      c.addEventListener('mouseleave', hideTip);
+    });
+    $$('[data-na-dist]', root).forEach((b) => b.addEventListener('click', () => {
+      const rows = IX.naDist || [];
+      if (b.dataset.naDist === 'tsv') {
+        download('arginine_distance_to_rna_dna_by_type.tsv', ['nucleic_acid_type\tdistance_bin_a\tmethylarginines\tother_arginines']
+          .concat(rows.flatMap(([t, m, x]) => m.map((v, k) => [t, k + '-' + (k + 1), v, x[k]].join('\t')))).join('\n') + '\n');
+      } else exportFigure(b.dataset.naDist, naDistSvg(rows, EXPORT_PAL, { forExport: true, title: 'Closest approach of arginine side chains to RNA and DNA, by type' }), 'methylarginine_distance_to_rna_dna');
+    }));
   }
   // The selected proteins with RNA Bind-n-Seq, JASPAR or eCLIP data, most selected sites first, and the eCLIP target
   // genes that two or more of them share (each experiment's 25 genes with most peaks).
@@ -11167,7 +11251,8 @@
           'Tags with a dashed outline are evidence not localised to the residue alone. A candidate-residue crosslink and an RBDmap fragment count as experimental; near an RNA crosslink, inside a DNA-crosslinked peptide and a UniProt DNA-binding region are context only and do not set the status. Most proteins were never crystallised or crosslinked, so "none recorded" is not evidence of no contact. ' +
           'Partner and complex information about the whole protein (STRING, Complex Portal, Gene Ontology) is never counted as site evidence. Search with <code>interaction:experimental</code>, <code>interaction:predicted-only</code>, <code>interaction:none</code>, or <code>interaction:predicted</code> for any predicted evidence. ' +
           'The <b>Check a site</b> box on the Overview and Interactions pages answers the question for one site without leaving the page.</p>') +
-        sub('ix-na', 'RNA and DNA bound at methylarginines', '<p>For every methylarginine at an RNA or DNA interface in a PDB structure (PDBe-KB), every PDB entry is read: the nucleotides of other chains within 4 Å of the arginine\'s side chain (CD, NE, CZ, NH1, NH2) are its contacts, and the chain\'s SEQRES sequence (PDBe API, modified nucleotides as their parent) gives the bound sequence, 8 nucleotides each side of the closest one. Windows of different sites therefore align on their middle (offset 0, outlined), with the contacted nucleotides in bold; a dot is past the end of the chain. A chain is RNA or DNA by its molecule type in the entry, so modified nucleotides such as the m7G cap count. <b>Proximal</b> (tagged with the distance): in each distinct complex (the protein with the same bound sequences) where no atom of the arginine side chain lies within 4 Å of RNA or DNA in any of its entries, one within 8 Å, read in the complex\'s most recent entry (the closer of two copies of the protein), with the window centred on the closest nucleotide. <b>Contact via a flanking residue</b> (tagged via i±k): in each distinct complex where the arginine side chain is not within 8 Å but a residue at i ± 1–5 lies within 4 Å of RNA or DNA, the stretch those residues contact, centred on the nucleotide the closest one contacts. <b>Type.</b> Each chain is typed from its molecule name, source organism and preparation: rRNA, tRNA, snRNA, mRNA (with pre-mRNA, introns, UTRs and IRES elements), other non-coding RNA, viral RNA, a designed RNA oligo with no biological name, or other RNA; DNA is nucleosomal when the entry holds core histones, telomeric, or other. The Type chips over each logo show one type at a time, and the search term <code>bound:</code> (rna, dna, at, or a type such as mrna or nucleosomal) keeps the sites with it. The logo counts each site once, sharing its weight among its distinct windows, so a site seen in many ribosome or nucleosome structures does not outweigh one seen once; letter height is the frequency, or the frequency × information content in bits (2 bits for a column of one nucleotide), which shows conservation among a few sites but flattens across many unrelated ones. Ribosomal RNA and nucleosomal DNA make up much of what has been solved, and a structure shows the complex its authors made, often with a designed oligonucleotide (tagged oligo). <b>In the site tables</b>, the Bound RNA/DNA column shows each site\'s best-supported bound sequence (±5 nt of the middle; direct contact before contact via a flanking residue, then the most entries) with its type, and the nearest residue at i ± 1–5 UV-crosslinked to RNA or DNA in living cells; its hover lists every bound sequence, the crosslinked residues at i ± 10 and what the protein binds as a whole. Release files supporting/nucleic_acid_contacts and nucleic_acid_near_sites; the site table\'s bound_* columns.</p><p><b>Where a protein binds.</b> On a protein page, the RNA and DNA interactions card lists the regions that bind: runs of residues within 4 Å of RNA or DNA in structures (read once per distinct complex, that is per set of bound sequences, in every entry; joined across gaps of up to 3 residues), with the stretches of RNA or DNA they contact and their type; runs of residues UV-crosslinked to RNA or DNA in living cells (joined the same way); RBDmap fragments crosslinked to RNA in HeLa cells; and UniProt DNA-binding regions. Each row names the UniProt domains it falls in, the methylarginines inside it and those flanking it (within 5 residues of either end), with their distance from it. Release file supporting/nucleic_acid_regions.</p><p><b>What it binds beyond structures.</b> RNA Bind-n-Seq (ENCODE; Dominguez et al. 2018): the 5-mers a purified protein enriches from random RNA, and ENCODE\'s logos. JASPAR 2026 CORE vertebrates (CC BY 4.0): DNA-binding profiles, a heterodimer\'s for both partners. eCLIP (ENCODE; Van Nostrand et al. 2020): the RNA a protein is crosslinked to in K562 and HepG2 cells, as reproducible peaks placed on GENCODE v50 basic transcripts, with the genes with most peaks. For a selection, the Interactions view lists these for the selected proteins and the eCLIP targets two or more of them share. RNAcompete (CISBP-RNA) states no licence and is not included. Release files supporting/rna_bind_n_seq, dna_motifs and eclip.</p>') +
+        sub('ix-na', 'RNA and DNA bound at methylarginines', '<p>For every methylarginine at an RNA or DNA interface in a PDB structure (PDBe-KB), every PDB entry is read: the nucleotides of other chains within 4 Å of the arginine\'s side chain (CD, NE, CZ, NH1, NH2) are its contacts, and the chain\'s SEQRES sequence (PDBe API, modified nucleotides as their parent) gives the bound sequence, 8 nucleotides each side of the closest one. Windows of different sites therefore align on their middle (offset 0, outlined), with the contacted nucleotides in bold; a dot is past the end of the chain. A chain is RNA or DNA by its molecule type in the entry, so modified nucleotides such as the m7G cap count. <b>Proximal</b> (tagged with the distance): in each distinct complex (the protein with the same bound sequences) where no atom of the arginine side chain lies within 4 Å of RNA or DNA in any of its entries, one within 8 Å: the closest approach over every entry of the complex (up to two copies of the protein in each), with the window centred on the closest nucleotide. <b>Contact via a flanking residue</b> (tagged via i±k): in each distinct complex where the arginine side chain is not within 8 Å but a residue at i ± 1–5 lies within 4 Å of RNA or DNA, the stretch those residues contact, centred on the nucleotide the closest one contacts. <b>Type.</b> Each chain is typed from its molecule name, source organism and preparation: rRNA, tRNA, snRNA, mRNA (with pre-mRNA, introns, UTRs and IRES elements), other non-coding RNA, viral RNA, a designed RNA oligo with no biological name, or other RNA; DNA is nucleosomal when the entry holds core histones, telomeric, or other. The Type chips over each logo show one type at a time, and the search term <code>bound:</code> (rna, dna, at, or a type such as mrna or nucleosomal) keeps the sites with it. The logo counts each site once, sharing its weight among its distinct windows, so a site seen in many ribosome or nucleosome structures does not outweigh one seen once; letter height is the frequency, or the frequency × information content in bits (2 bits for a column of one nucleotide), which shows conservation among a few sites but flattens across many unrelated ones. Ribosomal RNA and nucleosomal DNA make up much of what has been solved, and a structure shows the complex its authors made, often with a designed oligonucleotide (tagged oligo). <b>In the site tables</b>, the Bound RNA/DNA column shows each site\'s best-supported bound sequence (±5 nt of the middle; direct contact before contact via a flanking residue, then the most entries) with its type, and the nearest residue at i ± 1–5 UV-crosslinked to RNA or DNA in living cells; its hover lists every bound sequence, the crosslinked residues at i ± 10 and what the protein binds as a whole. Release files supporting/nucleic_acid_contacts, nucleic_acid_proximal_sites and nucleic_acid_near_sites; the site table\'s bound_* columns.</p>' +
+          '<p><b>How close methylarginines come.</b> Every arginine of the methylated proteins modelled in a PDB entry with RNA or DNA (every entry PDBe-KB lists for the protein with nucleic acid, up to two copies of the protein in each) is measured: the closest approach of its side chain (CD, NE, CZ, NH1, NH2) to any heavy atom of each RNA and DNA chain within 8 Å (RCSB ModelServer, first model, symmetry copies left out). The Interactions view draws the closest approach to each type of RNA and DNA in 1 Å bins, methylarginines against the other arginines of the same proteins (bar height is the share of each group, so their sizes do not matter), and tests whether methylarginines come within 4 Å or 8 Å more often than the other arginines: Mantel–Haenszel odds ratio with each protein a stratum, and pooled Fisher. Only arginines a structure models count, so disordered RGG stretches, where many methylarginines lie, are mostly absent; and the structures are of the complexes their authors made, mostly with unmethylated recombinant protein. Release files supporting/arginine_nucleic_acid_distances and interaction_statistics (analysis nucleic_acid_distance).</p><p><b>Where a protein binds.</b> On a protein page, the RNA and DNA interactions card lists the regions that bind: runs of residues within 4 Å of RNA or DNA in structures (read once per distinct complex, that is per set of bound sequences, in every entry; joined across gaps of up to 3 residues), with the stretches of RNA or DNA they contact and their type; runs of residues UV-crosslinked to RNA or DNA in living cells (joined the same way); RBDmap fragments crosslinked to RNA in HeLa cells; and UniProt DNA-binding regions. Each row names the UniProt domains it falls in, the methylarginines inside it and those flanking it (within 5 residues of either end), with their distance from it. Release file supporting/nucleic_acid_regions.</p><p><b>What it binds beyond structures.</b> RNA Bind-n-Seq (ENCODE; Dominguez et al. 2018): the 5-mers a purified protein enriches from random RNA, and ENCODE\'s logos. JASPAR 2026 CORE vertebrates (CC BY 4.0): DNA-binding profiles, a heterodimer\'s for both partners. eCLIP (ENCODE; Van Nostrand et al. 2020): the RNA a protein is crosslinked to in K562 and HepG2 cells, as reproducible peaks placed on GENCODE v50 basic transcripts, with the genes with most peaks. For a selection, the Interactions view lists these for the selected proteins and the eCLIP targets two or more of them share. RNAcompete (CISBP-RNA) states no licence and is not included. Release files supporting/rna_bind_n_seq, dna_motifs and eclip.</p>') +
         sub('ix-evmap', 'How the evidence fits together', '<p>Counted per site or per protein. For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink at or possibly at the residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), three IntAct record types (a mutation that changed an interaction, a short binding region, the arginine curated as methylated in an interaction; these do not set the status), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. The protein-context table shows, for the sites with each kind of evidence, the share on proteins annotated as RNA- or DNA-binding (Gene Ontology), in a CD-CODE condensate, physically linked to a PRMT or a Tudor-domain reader (STRING ≥ 0.7) or in a Complex Portal curated complex, against all selected sites; each cell lists those sites. Counted per protein, the same layout combines these protein properties and whether any of the protein\'s sites carries contact evidence. Below the site view, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
         sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a dimethylarginine state call (ProMetheusDB, Maron Table S2, UniProt or Wei 2020), the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the plain odds ratio with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ 0.05 are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions are read with care.</p>') +
         sub('ix-wr', 'Writers and readers sharing substrates', '<p>For the proteins in the current selection, each cell counts the methylated proteins that are STRING physical partners (score ≥ 0.7) of both a PRMT (rows) and a Tudor-domain protein (columns, InterPro IPR002999; the 12 with most shared partners are shown). The expected count assumes the two partner lists are independent among the selected methylated proteins that are in STRING; Fisher\'s exact test, Benjamini–Hochberg across the cells; outlined cells have at least two shared partners and q ≤ 0.05 (a single shared partner of two short lists can pass the test alone). Clicking a cell lists the proteins (binds: both partners). A physical link is to the whole protein, not to a site, and several Tudor proteins read methyllysine rather than methylarginine, so a shared partner is a candidate path to test, not a demonstrated one.</p>') +

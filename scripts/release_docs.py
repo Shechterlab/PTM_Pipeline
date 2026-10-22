@@ -205,6 +205,7 @@ FILE_ROWS = {
     'protein_partners': 'protein and STRING physical partner (score >= 0.7)',
     'complexes': 'Complex Portal or hu.MAP complex with a methylated member',
     'nucleic_acid_contacts': 'site and RNA or DNA chain within 4 Å of its side chain in a PDB structure: the contacted nucleotides and the bound sequence around them',
+    'arginine_nucleic_acid_distances': 'arginine of a methylated protein modelled in a PDB entry with RNA or DNA: its closest approach to each, methylated or not',
     'nucleic_acid_proximal_sites': 'site, complex and kind of nucleic acid in which the arginine side chain is within 8 Å, not 4 Å, of RNA or DNA: the bound sequence around the closest nucleotide',
     'nucleic_acid_near_sites': 'site and complex in which a residue at i ± 1-5, not the arginine side chain, is within 4 Å of RNA or DNA (the side chain not within 8 Å): the bound sequence there',
     'nucleic_acid_regions': 'run of residues of a protein within 4 Å of RNA or DNA in PDB structures: the bound segments and the methylarginines inside it',
@@ -836,6 +837,7 @@ def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
         return []
     at, near = files['nucleic_acid_contacts'][1], files.get('nucleic_acid_near_sites', (None, None))[1]
     prox = files.get('nucleic_acid_proximal_sites', (None, None))[1]
+    dist = files.get('arginine_nucleic_acid_distances', (None, None))[1]
     regions = files.get('nucleic_acid_regions', (None, None))[1]
     kind = lambda df, k: int(df.loc[df['nucleic_acid'].isin(['rna', 'hybrid'] if k == 'rna' else ['dna']), 'site_id'].nunique())  # noqa: E731
     out = [
@@ -851,8 +853,14 @@ def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
     ]
     if prox is not None:
         out.append(f"- `{files['nucleic_acid_proximal_sites'][0]}`: {n(kind(prox, 'rna'))} sites with RNA and {n(kind(prox, 'dna'))} with DNA "
-                   'within 8 Å of the arginine side chain in a complex where it has no direct contact (one entry read per distinct '
-                   'complex): the distance and the bound sequence around the closest nucleotide.')
+                   'within 8 Å of the arginine side chain in a complex where it has no direct contact (every entry of the complex '
+                   'read): the closest approach and the bound sequence around the closest nucleotide.')
+    if dist is not None:
+        meth = dist['methylated'].astype(str) == 'true'
+        out.append(f"- `{files['arginine_nucleic_acid_distances'][0]}`: the closest approach to RNA and to DNA of every arginine of the "
+                   f"methylated proteins modelled in an entry with nucleic acid ({n(int(meth.sum()))} methylarginines, {n(int((~meth).sum()))} other "
+                   'arginines), and in `interaction_statistics` (analysis nucleic_acid_distance) whether methylarginines come within 4 '
+                   'or 8 Å more often than the other arginines of the same proteins.')
     if near is not None:
         out.append(f"- `{files['nucleic_acid_near_sites'][0]}`: {n(kind(near, 'rna'))} sites with RNA and {n(kind(near, 'dna'))} with DNA "
                    'in contact via a flanking residue (one at i ± 1-5 within 4 Å, in a complex where the arginine side chain is not within 8 Å): '

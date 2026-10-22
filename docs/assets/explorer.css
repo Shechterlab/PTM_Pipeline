@@ -269,6 +269,9 @@ main > .lc-note { margin: 0 0 1rem; }
 .tag.na-xl.na-dna { border-color: var(--nt-c); }
 .tag.na-xl.na-rbd { border-style: dashed; font-weight: 500; }
 .tag.na-xl.na-eclip { border-color: var(--teal-600); }
+.na-dist-fig { overflow-x: auto; margin: 0.3rem 0 0.5rem; }
+.na-dist-fig svg { display: block; max-width: 100%; height: auto; }
+.na-dist-tbl td, .na-dist-tbl th { vertical-align: top; }
 .tag.na-prox { font-size: 0.66rem; padding: 0 0.3rem; margin-top: 0.15rem; border: 1px dotted var(--ink-2); background: transparent; color: var(--ink-2); font-weight: 600; font-variant-numeric: tabular-nums; }
 .sc-na-xl { margin: 0.1rem 0 0.3rem; color: var(--ink-2); }
 .tip:has(.na-tip) { max-width: 25rem; }

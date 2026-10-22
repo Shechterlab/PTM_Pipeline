@@ -760,6 +760,7 @@ CODES['analysis'] = {
     'pdb_interface': 'methylarginines at a PDB interface of a kind (category: rna, dna, protein including self, any), against the other arginines of the same proteins that a PDB structure covers (scripts/37). Strata: all, ordered (outside MobiDB disorder), domain (inside an InterPro domain)',
     'predicted_interface': 'methylarginines at a predicted interface residue (ProtVar, category the pDockQ floor), against the other arginines of the proteins with a predicted interface. Strata: all, ordered, disordered',
     'crosslink': 'methylarginines with RNA or DNA crosslink evidence of a kind (category), against the other arginines of the proteins with that evidence, the _outside_rg categories leave out arginines in an RG or GR dipeptide',
+    'nucleic_acid_distance': 'methylarginines whose side chain (CD, NE, CZ, NH1, NH2) comes within 4 or 8 Å of RNA, DNA or either (category) in some PDB entry, against the other arginines of the same proteins; every arginine modelled in an entry where PDBe-KB lists the protein with that kind of nucleic acid counts (supporting/arginine_nucleic_acid_distances)',
     'intact': 'IntAct: methylarginines whose mutation changes an interaction (against other mutated arginines), and methylarginines inside a binding region of at most 20 residues (against the other arginines of proteins with one)',
     'go_binding': 'methylated proteins with a Gene Ontology RNA- or DNA-binding annotation (category, _experimental: experimental evidence codes only), against all reviewed human proteins (clusterProfiler enricher, the four annotations as one job)',
 }
@@ -990,13 +991,28 @@ NUCLEIC_ACID_NEAR_COLUMNS = [
     ('window_marked', 'string', '', 'the window with every nucleotide contacted by a residue at i ± 1-5 in brackets'),
 ]
 
+ARGININE_DISTANCE_COLUMNS = [
+    ('uniprot_accession', 'string', '', 'protein of the site table with a PDB entry that PDBe-KB lists with RNA or DNA'),
+    ('position', 'integer', '', 'an arginine of the protein modelled in at least one such entry (first model, up to two copies of the protein per entry)'),
+    ('site_id', 'string', '', 'the site, when the arginine is one (site table)'),
+    ('methylated', 'boolean', '', 'the arginine is a site of this release'),
+    ('entries_with_rna', 'integer', '', 'entries with RNA that model the arginine'),
+    ('rna_distance_a', 'number', '', 'the closest approach of its side chain to RNA over those entries, in Å, empty when never within 8 Å'),
+    ('rna_type', 'code', 'nucleic_acid_type', 'the type of that RNA chain'),
+    ('rna_example_pdb', 'string', '', 'an entry with that approach'),
+    ('entries_with_dna', 'integer', '', 'entries with DNA that model the arginine'),
+    ('dna_distance_a', 'number', '', 'the closest approach of its side chain to DNA, as for RNA'),
+    ('dna_type', 'code', 'nucleic_acid_type', 'the type of that DNA chain'),
+    ('dna_example_pdb', 'string', '', 'an entry with that approach'),
+]
+
 NUCLEIC_ACID_PROXIMAL_COLUMNS = [
-    ('site_id', 'string', '', 'the site (site table): a methylarginine with no side-chain atom within 4 Å of RNA or DNA in this complex (in none of its entries), and one within 8 Å'),
+    ('site_id', 'string', '', 'the site (site table): a methylarginine with no side-chain atom within 4 Å of RNA or DNA at a listed interface of this complex (in none of its entries), and one within 8 Å in at least one of its entries'),
     ('nucleic_acid', 'code', 'nucleic_acid', 'what the closest chain is (RNA-DNA hybrids counted as RNA)'),
     ('nucleic_acid_type', 'code', 'nucleic_acid_type', 'the type of the chain'),
-    ('distance_a', 'number', '', 'distance from the arginine side chain (CD, NE, CZ, NH1, NH2) to the closest nucleotide, in Å, in the entry read (the closer of up to two copies of the protein); 4 Å or less where PDBe-KB does not list the residue at the interface, counted as direct contact in the site table'),
-    ('pdb_id', 'string', '', 'the entry read for the complex (one per distinct set of bound sequences)'),
-    ('n_entries', 'integer', '', 'the entries with the protein and the same bound sequences'),
+    ('distance_a', 'number', '', 'the closest approach of the arginine side chain (CD, NE, CZ, NH1, NH2) to that kind of nucleic acid over the complex\'s entries, in Å (up to two copies of the protein per entry); 4 Å or less where PDBe-KB does not list the residue at the interface, counted as direct contact in the site table'),
+    ('pdb_id', 'string', '', 'the entry with that closest approach'),
+    ('n_entries', 'integer', '', 'the entries of the complex in which the side chain comes within 8 Å'),
     ('chain', 'string', '', 'the RNA or DNA chain closest to the side chain, of this kind'),
     ('molecule_name', 'string', '', 'its molecule name'),
     ('source_organism', 'string', '', 'its source organism'),

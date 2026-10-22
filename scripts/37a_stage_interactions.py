@@ -525,29 +525,33 @@ def stage_nucleic_chains(w: Writer, c: Path):
             derived=[f'pdbe_molecules/<pdb>.json ({len(files):,} files)'])
 
 
-def stage_na_proximity(w: Writer, c: Path):
-    """The nucleotides within 8 Å of each methylarginine side chain read for the proximal tier (one entry per distinct
-    complex, where the side chain has no nucleotide within 4 Å)."""
-    files = sorted((c / 'na_proximity').glob('*.json'))
-    rows = []
+def stage_na_arginines(w: Writer, c: Path):
+    """Every arginine modelled in the protein chains read against RNA and DNA (every entry with the protein and nucleic
+    acid), and the distance of each side chain to the RNA and DNA chains within 8 Å."""
+    files = sorted((c / 'na_arginines').glob('*.json'))
+    chains, dists = [], []
     for p in files:
-        pdb, chain, label = p.stem.split('_')
+        pdb, chain = p.stem.split('_', 1)
         try:
             res = json.loads(p.read_text())
         except json.JSONDecodeError:
             continue
-        rows += [[pdb, chain, int(label), res.get('resn', ''), *h] for h in res.get('hits') or []] or [[pdb, chain, int(label), res.get('resn', ''), '', '', '', '', '']]
-    rows.sort(key=lambda x: (x[0], x[1], x[2], x[7] if x[7] != '' else 0))
+        chains.append([pdb, chain, len(res['args']), ['%d:%s:%s' % (lab, auth, comp) for lab, auth, comp in res['args']]])
+        dists += [[pdb, chain, lab, nch, k, comp, d, within] for lab, nch, k, comp, d, within in res['hits']]
+    chains.sort(key=lambda x: (x[0], x[1]))
+    dists.sort(key=lambda x: (x[0], x[1], x[2], x[3]))
     d = dates_of(files)
-    w.table(f'pdb_arginine_nucleic_acid_proximity_{d[:10]}.tsv',
-            ['pdb_id', 'chain', 'seqres_index', 'residue', 'na_chain', 'na_seqres_index', 'nucleotide', 'side_chain_distance_a', 'any_atom_distance_a'], rows,
-            content='Nucleotides of the entry\'s RNA and DNA chains within 8 Å of the side chain (CD, NE, CZ, NH1, NH2) of a '
-                    'methylarginine, in the first model of one entry per distinct complex where the side chain has no nucleotide '
-                    'within 4 Å, with the distance to any atom of the arginine; a row with empty nucleotide columns is a residue '
-                    'read with none',
-            source=x37.MODELSERVER, version=f'RCSB ModelServer, read {d}', citation='Burley et al., Nucleic Acids Res 51:D488 (2023)',
-            licence='CC0 (PDB data)', how='scripts/37 site_na_proximity; collected here',
-            derived=[f'na_proximity/<pdb>_<chain>_<seqres index>.json ({len(files):,} files)'])
+    common = dict(source=x37.MODELSERVER_INTERACTION, version=f'RCSB ModelServer, read {d}', citation='Burley et al., Nucleic Acids Res 51:D488 (2023)',
+                  licence='CC0 (PDB data)', how='scripts/37 chain_na_proximity; collected here',
+                  derived=[f'na_arginines/<pdb>_<chain>.json ({len(files):,} files)'])
+    w.table(f'pdb_chain_arginines_{d[:10]}.tsv', ['pdb_id', 'chain', 'n_arginines', 'arginines'], chains,
+            content='The arginines modelled (first model) in each protein chain read against RNA and DNA: every chain of a '
+                    'methylated protein (up to two copies) in every PDB entry where PDBe-KB lists the protein with RNA or DNA, '
+                    'as SEQRES index:author number:residue (methylated arginines as 2MR, DA2, NMM)', **common)
+    w.table(f'pdb_arginine_nucleic_acid_distances_{d[:10]}.tsv',
+            ['pdb_id', 'chain', 'seqres_index', 'na_chain', 'closest_na_seqres_index', 'closest_nucleotide', 'side_chain_distance_a', 'na_seqres_within_8a'], dists,
+            content='For each arginine of those chains with a side-chain atom (CD, NE, CZ, NH1, NH2) within 8 Å of an RNA or DNA '
+                    'chain of the entry: the closest nucleotide, its distance and every nucleotide of that chain within 8 Å', **common)
 
 
 def stage_na_regions(w: Writer, c: Path):
@@ -994,8 +998,8 @@ def stage_topup(c: Path, out: Path, workers: int, manifest: Path, measured: str)
         stage_nucleic_chains(w, c)
     if any((c / 'na_regions').glob('*.json')):
         stage_na_regions(w, c)
-    if any((c / 'na_proximity').glob('*.json')):
-        stage_na_proximity(w, c)
+    if any((c / 'na_arginines').glob('*.json')):
+        stage_na_arginines(w, c)
     # scripts/37 makes these folders before it knows whether a model needs measuring: stage only what holds files
     if any(p.is_file() for x in ('protvar_measure', 'afdb_measure', 'afdb_complex') for p in (c / x).glob('*')):
         stage_model_contacts(w, c, served=out / 'protvar_served_models_af2complexes_v1.tsv', measured=measured)

@@ -387,20 +387,21 @@ def nucleic_chains(t: Tables) -> tuple[dict, set]:
     return out, looked
 
 
-def na_proximity(t: Tables) -> dict:
-    """(pdb, chain, SEQRES index of an arginine) -> (residue name, [(nucleic-acid chain, its SEQRES index, nucleotide,
-    distance to the side chain, distance to any atom of the arginine)]) for the arginines read within 8 Å of RNA and DNA
-    (one read with none has an empty list). Empty before the proximity tables were staged."""
+def na_arginines(t: Tables) -> dict:
+    """(pdb, protein chain) -> {'args': [[SEQRES index, author number, residue]], 'hits': [[SEQRES index, nucleic-acid
+    chain, closest nucleotide's SEQRES index, nucleotide, side-chain distance, [SEQRES indices within 8 Å]]]}, as
+    scripts/37 chain_na_proximity returns it, for the chains read. Empty before these tables were staged."""
     out = {}
     try:
-        rows = list(t.rows('pdb_arginine_nucleic_acid_proximity_'))
+        chains = list(t.rows('pdb_chain_arginines_'))
+        dists = list(t.rows('pdb_arginine_nucleic_acid_distances_'))
     except KeyError:
         return out
-    for r in rows:
-        key = (r['pdb_id'], r['chain'], int(r['seqres_index']))
-        resn, hits = out.setdefault(key, (r['residue'], []))
-        if r['na_chain']:
-            hits.append((r['na_chain'], int(r['na_seqres_index']), r['nucleotide'], float(r['side_chain_distance_a']), float(r['any_atom_distance_a'])))
+    for r in chains:
+        out[(r['pdb_id'], r['chain'])] = {'args': [[int(x.split(':')[0]), x.split(':')[1], x.split(':')[2]] for x in r['arginines'].split('; ') if x], 'hits': []}
+    for r in dists:
+        out[(r['pdb_id'], r['chain'])]['hits'].append([int(r['seqres_index']), r['na_chain'], int(r['closest_na_seqres_index']), r['closest_nucleotide'],
+                                                     float(r['side_chain_distance_a']), [int(x) for x in r['na_seqres_within_8a'].split('; ') if x]])
     return out
 
 
