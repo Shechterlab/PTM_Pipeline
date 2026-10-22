@@ -200,7 +200,7 @@ FILE_ROWS = {
     'maron_detection': 'site detected in Maron et al. 2021 Table S2 or S3 (per antibody)',
     'maron_inhibitors': 'site, antibody and PRMT inhibitor in Maron et al. 2021 Table S3',
     'carm1_ko': 'site and cell line in the CARM1 knockout data of Shishkova et al. 2017',
-    'site_interactions': 'piece of interaction evidence at a site: crosslinks, PDB interfaces, predicted interfaces and contacts, IntAct records',
+    'site_interactions': 'piece of interaction evidence at a site: crosslinks and RNA-bound peptides (RBDmap, CAPRI), PDB interfaces, predicted interfaces and contacts, IntAct records',
     'residue_evidence': 'run of residues of a protein with the same interaction evidence',
     'protein_partners': 'protein and STRING physical partner (score >= 0.7)',
     'complexes': 'Complex Portal or hu.MAP complex with a methylated member',

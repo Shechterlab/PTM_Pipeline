@@ -334,6 +334,60 @@ def crosslink_sequences(t: Tables, seq: dict, proteome: dict, rna_sets: list) ->
     return {'rna': rna_out, 'dna': {a: sorted(v) for a, v in dna.items()}, 'rbd': {a: sorted(v) for a, v in rbd.items()}}
 
 
+def place_peptide(seq: dict, gene_acc: dict, acc: str, gene: str, start, end, pep: str):
+    """A peptide on the reviewed canonical sequence: of the given accession, else of the gene's; at the given span when the
+    sequence there matches, else at its only occurrence. (accession, start, end, moved), or None when the peptide is
+    nowhere in the sequence or more than once."""
+    a = acc.split('-')[0]
+    if a not in seq and gene:
+        a = gene_acc.get(gene, a)
+    s = seq.get(a, '')
+    if not s or not pep:
+        return None
+    try:
+        s0, s1 = int(start), int(end)
+    except (TypeError, ValueError):
+        s0, s1 = 0, 0
+    if s1 - s0 == len(pep):   # a 0-based start (the CAPRI ADJ-peptide table): end - start is the length
+        s0 += 1
+    if s0 > 0 and s[s0 - 1:s1] == pep:
+        return a, s0, s1, False
+    hit = s.find(pep)
+    if hit < 0 or s.find(pep, hit + 1) >= 0:
+        return None
+    return a, hit + 1, hit + len(pep), True
+
+
+def capri_spans(rows: dict, seq: dict, proteome: dict | None):
+    """CAPRI peptides (Panhale et al. 2019, HEK293) on the canonical sequence. rows: {'xl'|'adj': [(uniprot_id, gene, start,
+    end, peptide)]} as the supplements give them (the accession is often an unreviewed entry of the gene). Returns
+    {'xl'|'adj': {acc: [(start, end, peptide)]}} and {'xl'|'adj': {kept, moved, dropped}} (moved: kept at the place
+    the peptide matches the sequence, not the given one)."""
+    gene_acc = {v[0]: a for a, v in sorted(proteome.items())} if proteome else {}
+    spans, counts = {}, {}
+    for kind, recs in rows.items():
+        out, n = defaultdict(set), Counter(kept=0, moved=0, dropped=0)
+        for acc, gene, s0, s1, pep in recs:
+            hit = place_peptide(seq, gene_acc, acc, gene, s0, s1, pep)
+            if hit is None:
+                n['dropped'] += 1
+                continue
+            a, b0, b1, moved = hit
+            out[a].add((b0, b1, pep))
+            n['kept'] += 1
+            n['moved'] += moved
+        spans[kind] = {a: sorted(v) for a, v in out.items()}
+        counts[kind] = dict(n)
+    return spans, counts
+
+
+def capri(t: Tables, seq: dict, proteome: dict | None):
+    """What scripts/37 load_capri returns, from the staged CAPRI tables."""
+    rows = {kind: [(r['uniprot_id'], r['gene'], r['peptide_start'], r['peptide_end'], r[col]) for r in t.rows(f'capri_panhale2019_{kind}_peptides')]
+            for kind, col in (('xl', 'xl_peptide'), ('adj', 'adj_peptide'))}
+    return capri_spans(rows, seq, proteome)
+
+
 def merge_member(members: dict, acc: str, value: tuple) -> None:
     """A protein listed in a condensate under its accession and under isoforms (P29590 and P29590-12): one member with the
     highest confidence, every role and evidence bit, and every PubMed ID."""

@@ -350,6 +350,12 @@ def main():
         size = sum(len(v) for v in b.values()) if isinstance(b, dict) and name != 'sequence check' else len(b) if not isinstance(b, dict) else b
         check(f'Crosslinks: {name}', plain(a) == plain(b), f'{size:,}' if isinstance(size, int) else str(size))
     check('Crosslink sequence check equals the website build', xl[8] == site['meta']['xl_check'], str(site['meta']['xl_check']))
+    # CAPRI peptides (staged from v1.3.0): the same spans from the supplements in the cache and from the staged tables
+    ii = load('interaction_inputs', 'interaction_inputs.py')
+    capri = x37.load_capri(c, False, seq, proteome)
+    check('CAPRI peptides', capri == ii.capri(t, seq, proteome), ', '.join(f"{k} {v['kept']:,} kept, {v['dropped']:,} dropped" for k, v in capri[1].items()))
+    if 'capri_check' in site['meta']:
+        check('CAPRI placement equals the website build', capri[1] == site['meta']['capri_check'], str(site['meta']['capri_check']))
 
     # ------------------------------------------------------------------ CD-CODE
     uids = sorted(p.stem for p in (c / 'cdcode').glob('*.json') if p.name != 'release.json')

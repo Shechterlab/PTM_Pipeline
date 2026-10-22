@@ -923,7 +923,7 @@ def peptide_start_agreement(rows: pd.DataFrame, typed: pd.DataFrame, reference: 
 
 def interaction_tables(folder: Path, sites: pd.DataFrame) -> dict:
     """The tables scripts/37 wrote for these sites (--tables-out), with each site's interaction status: experimental
-    when a crosslink, RBDmap fragment or PDB interface counts as evidence there, predicted_only when only a predicted
+    when a crosslink, RBDmap fragment, CAPRI peptide or PDB interface counts as evidence there, predicted_only when only a predicted
     interface or confident predicted contact does, none otherwise (IntAct records never set it, as on the website)."""
     t = {name: read_tsv(folder / f'{name}.tsv') for name in ('site_interactions', 'residue_evidence', 'protein_partners', 'complexes',
                                                             'interaction_statistics', 'protein_interaction_summary')}
@@ -937,7 +937,7 @@ def interaction_tables(folder: Path, sites: pd.DataFrame) -> dict:
     for frame, column in ((ev, 'counts_as_evidence'), (t['protein_partners'], 'partner_methylated')):
         frame[column] = frame[column] == 'true'
     counted = ev[ev['counts_as_evidence']]
-    experimental = {'rna_crosslink', 'rbdmap_fragment', 'dna_crosslink', 'pdb_protein', 'pdb_rna', 'pdb_dna', 'pdb_self'}
+    experimental = {'rna_crosslink', 'rbdmap_fragment', 'capri_xl_peptide', 'capri_adj_peptide', 'dna_crosslink', 'pdb_protein', 'pdb_rna', 'pdb_dna', 'pdb_self'}
     predicted = {'predicted_interface', 'predicted_contact'}
     kinds = counted.groupby('site_id')['evidence_type'].agg(set)
     status = {s: 'experimental' if k & experimental else 'predicted_only' if k & predicted else 'none' for s, k in kinds.items()}

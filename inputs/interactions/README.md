@@ -144,6 +144,9 @@ accessions only.
 | `pepr_ms_v2_table_s2_rna_crosslinked_peptides.tsv` | 16,799 | pepR-MS compendium, Table S2: RNA-crosslinked peptide-spectrum matches from five datasets, re-analysed with one pipeline. Each row includes the residue carrying the nucleotide mass. |
 | `pepr_ms_v2_table_s3_focused_sites.tsv` | 2,211 | pepR-MS compendium, Table S3: the focused crosslinking site(s) of each crosslink. |
 | `rbdmap_castello2016_rna_bound_fragments.tsv` | 1,610 | RBDmap (HeLa) high-confidence RNA-bound fragments, as Table S1 gives them. scripts/37 keeps 1,376: 83 of these it moves to the place the fragment matches the sequence, and it drops 234. |
+| `capri_panhale2019_xl_peptides.tsv` | 335 | CAPRI (HEK293) XL-peptides, Supplementary Data 9: tryptic peptides identified with an RNA adduct, with the number of adduct forms and spectra and the AScores as given. scripts/37 keeps 327 (24 moved to the place the peptide matches the canonical sequence) and drops 8. It uses the peptide spans only: the AScores place the base and the rest of an adduct on different residues. |
+| `capri_panhale2019_adj_peptides.tsv` | 1,762 | CAPRI (HEK293) ADJ-peptides, Supplementary Data 3: the Lys-C peptide around tryptic peptides released next to RNA crosslinks. The table's start is 0-based (end minus start is the length). scripts/37 keeps 1,713 (90 moved) and drops 49. |
+| `raw_capri_files.tsv` | 2 | The two CAPRI supplements, with their size, MD5 and date (staged with `--capri`; they are not in the October 16 cache). |
 | `trendel2025_dna_crosslink_localisation.tsv` | 1,688 | DNA-crosslinked peptides (MCF7). Lower-case letters mark the residues the crosslink may sit on. |
 | `trendel2025_dna_crosslinked_peptides.tsv` | 688 | DNA-crosslinked peptide ranges. |
 | `trendel2025_mcf7_dna_interactome.tsv` | 1,191 | Proteins in the MCF7 DNA interactome. |
@@ -162,6 +165,8 @@ Each table carries its source's licence in `../MANIFEST.tsv`. Licences verified 
   AlphaFold DB and IntAct.
 - **RBDmap** (Castello et al. 2016): CC BY 4.0, from the open access article in
   [PMC5003815](https://pmc.ncbi.nlm.nih.gov/articles/PMC5003815/).
+- **CAPRI** (Panhale et al., Nat Commun 10:2682, 2019): CC BY 4.0, from the open access article and its
+  supplementary data. Its searches did not allow methylarginine as a modification.
 - **Trendel et al. 2025:** CC BY-NC 4.0, from the open access article.
 - **CD-CODE:** CC BY-NC 4.0, as stated on [cd-code.org](https://cd-code.org/).
 - **pepR-MS:** CC BY-NC.

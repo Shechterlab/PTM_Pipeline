@@ -22,6 +22,7 @@ lists joined with "; ", booleans true/false, empty for missing.
 
     python scripts/37a_stage_interactions.py --cache PTM_data/interactions_cache --out inputs/interactions
     python scripts/37a_stage_interactions.py --topup PTM_data/interactions_topup --out inputs/interactions
+    python scripts/37a_stage_interactions.py --capri PTM_data/interactions_cache --out inputs/interactions   (CAPRI only)
 """
 from __future__ import annotations
 
@@ -877,6 +878,8 @@ def stage_crosslinks(w: Writer, c: Path):
             licence='CC BY 4.0 (open access article and its supplement; PMC5003815)',
             how='scripts/37a_stage_interactions.py stage_crosslinks (one row per table row)', derived=['crosslinks/rbdmap_castello2016_table_s1.xlsx'])
 
+    stage_capri(w, c)
+
     loc, pep, interactome = [], [], []
     p2, p1 = folder / 'trendel2025_mmc2.xlsx', folder / 'trendel2025_mmc1.xlsx'
     wb = openpyxl.load_workbook(p2, read_only=True)
@@ -954,6 +957,63 @@ def stage_cdcode(w: Writer, c: Path):
             how='scripts/37a_stage_interactions.py stage_cdcode', derived=[f'cdcode/<uid>.json ({len(files)} files)', 'cdcode/release.json'])
 
 
+def stage_capri(w: Writer, c: Path) -> list[Path]:
+    """CAPRI (Panhale et al. 2019, HEK293): the RNA-crosslinked peptides (Supplementary Data 9) and the Lys-C peptides next
+    to crosslinks (Supplementary Data 3), as the supplements give them. Returns the files read."""
+    folder = c / 'crosslinks'
+    paths = {kind: folder / f'capri_panhale2019_moesm{k}.xlsx' for kind, k, _, _ in x37.CAPRI_TABLES}
+    if not all(p.exists() for p in paths.values()):
+        print(f'CAPRI supplements not in {folder} (scripts/37 downloads them): not staged')
+        return []
+    sheet = {kind: (sh, first) for kind, _, sh, first in x37.CAPRI_TABLES}
+    xl = [[str(r['gene_name'] or ''), str(r['uniprot_id'] or ''), r['XL-peptide_start'], r['XL-peptide_end'], str(r['XL-peptide']),
+           r['num_XL-peptides'], r['num_Spectra'], str(r['AScores'] or '')] for r in x37.capri_sheet(paths['xl'], *sheet['xl'])]
+    adj = [[str(r['gene_name'] or ''), str(r['uniprot_id'] or ''), r['ADJ-peptide_start'], r['ADJ-peptide_end'], str(r['ADJ-peptide']),
+            [p.strip() for p in str(r['adjacent_peptides'] or '').split(',') if p.strip()]] for r in x37.capri_sheet(paths['adj'], *sheet['adj'])]
+    d = dates_of(paths.values())
+    common = dict(citation='Panhale et al., Nat Commun 10:2682 (2019), doi:10.1038/s41467-019-10585-3',
+                  licence='CC BY 4.0 (open access article and its supplementary data)')
+    w.table('capri_panhale2019_xl_peptides.tsv',
+            ['gene', 'uniprot_id', 'peptide_start', 'peptide_end', 'xl_peptide', 'n_xl_peptides', 'n_spectra', 'ascores'], xl,
+            content='CAPRI (HEK293, 4-thiouridine and 365 nm UV) human XL-peptides: tryptic peptides identified with an RNA adduct (PEAKS PTM, '
+                    'manually curated), with the accession and span the supplement gives (often an unreviewed entry of the gene), the number of '
+                    'adduct forms and spectra, and the AScores as given (per adduct form, comma-separated, each part of an adduct semicolon-separated). '
+                    'The searches did not allow methylarginine',
+            source=x37.CAPRI_ESM.format(k=12), version=f'Supplementary Data 9, downloaded {d}', how='scripts/37a_stage_interactions.py stage_capri (one row per table row; scripts/37 places '
+            'each peptide on the canonical sequence)', derived=[f'crosslinks/{paths["xl"].name}'], **common)
+    w.table('capri_panhale2019_adj_peptides.tsv',
+            ['gene', 'uniprot_id', 'peptide_start', 'peptide_end', 'adj_peptide', 'adjacent_peptides'], adj,
+            content='CAPRI (HEK293) human ADJ-peptides: the Lys-C peptide reconstructed around tryptic peptides released next to RNA crosslinks '
+                    'and enriched in UV-crosslinked samples (MaxQuant), with the accession and span the supplement gives (the start is 0-based: '
+                    'end minus start is the length) and the adjacent peptides inside it. The searches did not allow methylarginine',
+            source=x37.CAPRI_ESM.format(k=6), version=f'Supplementary Data 3, downloaded {d}', how='scripts/37a_stage_interactions.py stage_capri (one row per table row; scripts/37 places '
+            'each peptide on the canonical sequence)', derived=[f'crosslinks/{paths["adj"].name}'], **common)
+    return list(paths.values())
+
+
+def add_to_manifest(w: Writer, manifest: Path):
+    """Put the rows of the tables this run wrote into the inputs MANIFEST (replacing rows of the same files)."""
+    m = manifest.read_text(encoding='utf-8').splitlines()
+    head = m[0].split('\t')
+    names = {r[0] for r in w.manifest}
+    keep = [line for line in m[1:] if line.split('\t')[0] not in names]
+    for r in w.manifest:
+        rec = dict(zip(MANIFEST_COLUMNS, r))
+        rec['how_made_or_checked'] = rec.pop('how_made')
+        keep.append('\t'.join(cell(rec.get(h, '')) for h in head))
+    manifest.write_text('\n'.join([m[0]] + keep) + '\n', encoding='utf-8')
+    print(f'{len(w.manifest)} rows in {manifest}')
+
+
+def list_files(out: Path, name: str, c: Path, files: list[Path]) -> Path:
+    path = out / name
+    with open(path, 'w', encoding='utf-8', newline='\n') as fh:
+        fh.write('path\tbytes\tmd5\tsaved\n')
+        for p in files:
+            fh.write(f'{p.relative_to(c)}\t{p.stat().st_size}\t{md5_file(p)}\t{file_date(p)}\n')
+    return path
+
+
 # ----------------------------------------------------------------------------- raw cache list
 def list_cache(c: Path, out: Path):
     rows = []
@@ -1005,24 +1065,10 @@ def stage_topup(c: Path, out: Path, workers: int, manifest: Path, measured: str)
         stage_model_contacts(w, c, served=out / 'protvar_served_models_af2complexes_v1.tsv', measured=measured)
         stage_measured_positions(w, c)
     files = [p for p in sorted(c.rglob('*')) if p.is_file()]
-    raw = out / w.free(f'raw_topup_files_{dates_of(files)[:10]}.tsv')
-    with open(raw, 'w', encoding='utf-8', newline='\n') as fh:
-        fh.write('path\tbytes\tmd5\tsaved\n')
-        for p in files:
-            fh.write(f'{p.relative_to(c)}\t{p.stat().st_size}\t{md5_file(p)}\t{file_date(p)}\n')
+    raw = list_files(out, w.free(f'raw_topup_files_{dates_of(files)[:10]}.tsv'), c, files)
     w._add(raw, len(files), f'Every file the top-up fetched ({c.name}/), with its size, MD5 and date', 'the sources above', dates_of(files),
            '', '', 'scripts/37a_stage_interactions.py --topup', [], 'git')
-    # the inputs MANIFEST has its own column order
-    m = manifest.read_text(encoding='utf-8').splitlines()
-    head = m[0].split('\t')
-    names = {r[0] for r in w.manifest}
-    keep = [line for line in m[1:] if line.split('\t')[0] not in names]
-    for r in w.manifest:
-        rec = dict(zip(MANIFEST_COLUMNS, r))
-        rec['how_made_or_checked'] = rec.pop('how_made')
-        keep.append('\t'.join(cell(rec.get(h, '')) for h in head))
-    manifest.write_text('\n'.join([m[0]] + keep) + '\n', encoding='utf-8')
-    print(f'{len(w.manifest)} rows in {manifest}')
+    add_to_manifest(w, manifest)   # the inputs MANIFEST has its own column order
 
 
 def main():
@@ -1030,7 +1076,9 @@ def main():
     ap.add_argument('--cache', default='PTM_data/interactions_cache')
     ap.add_argument('--out', default='inputs/interactions')
     ap.add_argument('--topup', default='', help='stage only this top-up cache of scripts/37 --tables (e.g. PTM_data/interactions_topup)')
-    ap.add_argument('--manifest', default='inputs/MANIFEST.tsv', help='with --topup: the inputs MANIFEST to add the new tables to')
+    ap.add_argument('--capri', default='', help='stage only the CAPRI supplements of this cache (CACHE/crosslinks/capri_panhale2019_moesm*.xlsx, '
+                    'as scripts/37 downloads them) and add their tables to the inputs MANIFEST')
+    ap.add_argument('--manifest', default='inputs/MANIFEST.tsv', help='with --topup or --capri: the inputs MANIFEST to add the new tables to')
     ap.add_argument('--measured', default='the v1.1.0 sites that the published union does not have',
                     help='with --topup: whose positions the top-up measured, for the MANIFEST')
     ap.add_argument('--workers', type=int, default=4, help='processes for the interface-geometry measures')
@@ -1041,6 +1089,17 @@ def main():
     args = ap.parse_args()
     if args.topup:
         stage_topup(Path(args.topup), Path(args.out), args.workers, Path(args.manifest), args.measured)
+        return
+    if args.capri:
+        c, out = Path(args.capri), Path(args.out)
+        w = Writer(out, c)
+        files = stage_capri(w, c)
+        if not files:
+            raise SystemExit(f'no CAPRI supplements in {c}/crosslinks')
+        raw = list_files(out, 'raw_capri_files.tsv', c, files)
+        w._add(raw, len(files), 'The CAPRI supplements behind the capri_panhale2019 tables, with their size, MD5 and date', x37.CAPRI_ESM.format(k='{6,12}'),
+               dates_of(files), '', '', 'scripts/37a_stage_interactions.py --capri', [], 'git')
+        add_to_manifest(w, Path(args.manifest))
         return
     c, out = Path(args.cache), Path(args.out)
     out.mkdir(parents=True, exist_ok=True)

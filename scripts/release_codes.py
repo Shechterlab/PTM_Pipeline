@@ -299,13 +299,15 @@ CODES: dict[str, dict[str, str]] = {
         'C_terminal_to_domain': 'after (C-terminal to) the nearest domain',
     },
     'interaction_status': {
-        'experimental': 'the site has experimental interaction evidence: an RNA or DNA crosslink at the residue or as a candidate residue, an RBDmap fragment, or a PDB interface',
+        'experimental': 'the site has experimental interaction evidence: an RNA or DNA crosslink at the residue or as a candidate residue, an RBDmap fragment, a CAPRI RNA-crosslinked or adjacent peptide, or a PDB interface',
         'predicted_only': 'only predicted evidence: a predicted interface (ProtVar, pDockQ >= 0.23) or a confident predicted contact (a salt bridge or hydrogen bond, no clash, both residues at pLDDT >= 80, AlphaFold DB models at ipTM >= 0.8)',
         'none': 'none recorded. Most proteins were never crystallised or crosslinked, so this is not evidence of no interaction. IntAct records do not set the status',
     },
     'evidence_type': {
         'rna_crosslink': 'RNA-protein crosslink (pepR-MS re-analysis of Kramer 2014, XRNAX, RBS-ID, pRBS-ID, pepR-MS focused sites)',
         'rbdmap_fragment': 'inside an RNA-bound proteolytic fragment (RBDmap, Castello et al. 2016)',
+        'capri_xl_peptide': 'inside an RNA-crosslinked peptide (CAPRI XL-peptide, Panhale et al. 2019, HEK293)',
+        'capri_adj_peptide': 'inside a Lys-C peptide next to an RNA crosslink (CAPRI ADJ-peptide, Panhale et al. 2019, HEK293)',
         'dna_crosslink': 'DNA-protein crosslink (Trendel et al. 2025)',
         'dna_binding_region': 'inside a UniProt DNA-binding region (annotation, not evidence of contact)',
         'pdb_protein': 'at a protein-protein interface in the PDB (PDBe-KB)',
@@ -322,7 +324,7 @@ CODES: dict[str, dict[str, str]] = {
         'at_residue': 'at this residue',
         'candidate_residue': 'a crosslink whose candidate residues include this one',
         'within_3': 'a crosslinked residue at i ± 1–3 (not this one)',
-        'in_fragment': 'inside the fragment',
+        'in_fragment': 'inside the proteolytic fragment (an RBDmap fragment or a CAPRI ADJ-peptide)',
         'in_peptide': 'inside a crosslinked peptide, residue not localised',
         'in_region': 'inside the region',
     },
@@ -972,12 +974,12 @@ SITE_INTERACTION_COLUMNS = [
     ('partner_kind', 'code', 'partner_kind', 'what the arginine contacts, empty when the record names no partner'),
     ('partner_accession', 'string', '', 'the partner protein (reviewed UniProtKB accession)'),
     ('partner_gene', 'string', '', 'its primary gene name'),
-    ('source', 'string', '', 'PDBe-KB, ProtVar, AFDB (AlphaFold DB), IntAct, RBDmap, Trendel2025, UniProt, or the RNA crosslink dataset (Kramer2014, XRNAX, RBS-ID, pRBS-ID, pepR-MS, pepR-MS_focused)'),
+    ('source', 'string', '', 'PDBe-KB, ProtVar, AFDB (AlphaFold DB), IntAct, RBDmap, CAPRI, Trendel2025, UniProt, or the RNA crosslink dataset (Kramer2014, XRNAX, RBS-ID, pRBS-ID, pepR-MS, pepR-MS_focused)'),
     ('structures', 'list<string>', '', 'PDB entries (PDB rows), or the predicted model (ProtVar pair or AlphaFold DB model id)'),
     ('score', 'number', '', 'pDockQ (ProtVar) or ipTM (AlphaFold DB) of the predicted complex'),
     ('distance_a', 'number', '', 'minimum interatomic distance between the arginine and the partner in the predicted model, in Å'),
-    ('detail', 'string', '', 'for an RNA crosslink, the crosslinked peptides of that dataset with the crosslinked residue in brackets, its position and the RNA adduct masses (pepR-MS compendium Table S2); for an RBDmap fragment, its range and sequence; for a DNA crosslink, the crosslinked peptide with the candidate crosslinked residues in lower case (Trendel et al. 2025); bonds, pLDDT and partner residues of a predicted contact; effect, residues, PubMed and IntAct ids of an IntAct record'),
-    ('counts_as_evidence', 'boolean', '', 'the record is site-level evidence: crosslinks at or as a candidate residue, RBDmap fragments, PDB interfaces, predicted interfaces, confident predicted contacts, and IntAct mutations that change an interaction, short binding regions and methylated residues. interaction_status counts all of these except IntAct'),
+    ('detail', 'string', '', 'for an RNA crosslink, the crosslinked peptides of that dataset with the crosslinked residue in brackets, its position and the RNA adduct masses (pepR-MS compendium Table S2); for an RBDmap fragment or a CAPRI peptide, its range and sequence; for a DNA crosslink, the crosslinked peptide with the candidate crosslinked residues in lower case (Trendel et al. 2025); bonds, pLDDT and partner residues of a predicted contact; effect, residues, PubMed and IntAct ids of an IntAct record'),
+    ('counts_as_evidence', 'boolean', '', 'the record is site-level evidence: crosslinks at or as a candidate residue, RBDmap fragments, CAPRI peptides, PDB interfaces, predicted interfaces, confident predicted contacts, and IntAct mutations that change an interaction, short binding regions and methylated residues. interaction_status counts all of these except IntAct'),
 ]
 
 NUCLEIC_ACID_CONTACT_COLUMNS = [

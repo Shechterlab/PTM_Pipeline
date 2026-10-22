@@ -9,7 +9,7 @@ downloaded at build time: `hpc/build_release.sh` checks each file against `MANIF
 | `reference/` | the one UniProt reference: release 2026_03, reviewed human reference proteome UP000005640 (sequences, entries, accession history, release record); see its README |
 | `annotation/` | InterPro 108.0 domain intervals and MobiDB disorder intervals for every reviewed entry, the PANTHER 19.0 protein classes, and the CD-CODE condensate tables |
 | `layers/` | the CARM1 knockout response (Shishkova et al. 2017), Human Protein Atlas 25.1 locations, and the CPLM 4.0 summary; see its README |
-| `interactions/` | the data behind the website's interaction views (STRING, Complex Portal, GO, PDBe-KB and SIFTS, PDB contacts, ProtVar, AlphaFold DB, IntAct, RNA and DNA crosslinks, RBDmap, CD-CODE 2.3), one table per source; see its README |
+| `interactions/` | the data behind the website's interaction views (STRING, Complex Portal, GO, PDBe-KB and SIFTS, PDB contacts, ProtVar, AlphaFold DB, IntAct, RNA and DNA crosslinks, RBDmap, CAPRI, CD-CODE 2.3), one table per source; see its README |
 | `nucleic_acid/` | what methylated proteins bind beyond structures: ENCODE RNA Bind-n-Seq 5-mer enrichment and logos (in vitro), JASPAR 2026 CORE vertebrates DNA-binding profiles, and ENCODE eCLIP peaks (in K562 and HepG2 cells) placed on GENCODE v50 basic transcripts |
 | `disease/` | DisGeNET term-gene sets as bundled with DOSE 4.4.0, org.Hs.eg.db 3.22.0's gene symbol to Entrez map, and the Human Disease Ontology (release 2026-09-30) with the gene sets DOSE enrichDO tests, for the disease enrichment |
 | `licences/` | the PhosphoSitePlus terms as of July 2021 (web archive capture), when the PhosphoSitePlus records in Maron et al. 2021 Table S5 were downloaded |
