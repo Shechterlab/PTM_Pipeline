@@ -4114,6 +4114,7 @@
     bindFacts(p);
     bindHub(el, p.label);
     bindAHome(el);
+    if (UI_A) aLoadTiles(p);
     $$('[data-open-p]', el).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.openP)));
     const pfc = $('#pf-clear', el);
     if (pfc) pfc.addEventListener('click', clearFilters);
@@ -4480,8 +4481,8 @@
     return up.length || dn.length ? (up.length ? 'More often: ' + up.map(one).join(', ') : '') + (up.length && dn.length ? '; ' : '') + (dn.length ? (up.length ? 'less' : 'Less') + ' often: ' + dn.map(one).join(', ') : '') : 'No difference (p > 0.05)';
   };
   // Small pictures for tiles: meters (shares, with a reference tick), a stacked bar, big numbers.
-  const aMeters = (rows) => '<div class="a-meters">' + rows.map((r) => '<div class="am-row"><span class="am-l">' + esc(r.label) + '</span><span class="am-t"><i class="' + (r.cls || '') + '" style="width:' + (100 * Math.max(0, Math.min(1, r.v || 0))).toFixed(1) + '%"></i>' +
-    (r.ref != null ? '<b style="left:' + (100 * r.ref).toFixed(1) + '%"></b>' : '') + '</span><span class="am-v">' + esc(r.text) + '</span></div>').join('') + '</div>';
+  const aMeters = (rows, o = {}) => '<div class="a-meters' + (o.tight ? ' tight' : '') + '">' + rows.map((r) => '<div class="am-row"' + (r.tip ? ' data-tip="' + esc(r.tip) + '"' : '') + '><span class="am-l">' + esc(r.label) + '</span><span class="am-t"><i class="' + (r.cls || '') + '" style="width:' + (100 * Math.max(0, Math.min(1, r.v || 0))).toFixed(1) + '%"></i>' +
+    (r.ref != null ? '<b style="left:' + (100 * r.ref).toFixed(1) + '%"></b>' : '') + '</span><span class="am-v">' + esc(r.text) + '</span></div>').join('') + (o.foot ? '<div class="am-foot">' + o.foot + '</div>' : '') + '</div>';
   const aStack = (parts) => { const tot = parts.reduce((a, p) => a + p.n, 0) || 1; return '<div class="a-stack"><div class="as-bar">' + parts.map((p) => '<i class="' + p.cls + '" style="flex-grow:' + p.n + '" data-tip="' + esc('<b>' + p.label + '</b><br>' + fmt(p.n) + ' (' + pctText(p.n, tot) + '%)') + '"></i>').join('') + '</div><div class="as-key">' + parts.filter((p) => p.key).map((p) => '<span><i class="' + p.cls + '"></i>' + esc(p.key) + ' ' + pctText(p.n, tot) + '%</span>').join('') + '</div></div>'; };
   const aBig = (items) => '<div class="a-big">' + items.map(([n, label, cls]) => '<span class="' + (cls || '') + '"><b>' + n + '</b> ' + esc(label) + '</span>').join('') + '</div>';
   // The page's lead and its tiles. ov: {key: {vis, head, whole}} replaces a tile's picture or words; skip: keys left out.
@@ -4509,13 +4510,13 @@
   }
   // A protein drawn as small lanes along its length: each lane a label and marks, a box for a stretch [a, b], a tick
   // for one residue, a pin for a site (cls names its colour); the sites lane last, as on the protein map.
-  function aTrack(len, lanes) {
+  function aTrack(len, lanes, key) {
     const L = Math.max(len || 1, 1), at = (q) => (100 * Math.min(Math.max(q - 0.5, 0), L) / L).toFixed(2) + '%';
     const w = (a, b) => Math.max(0.6, (100 * (b - a + 1)) / L).toFixed(2) + '%';
     return '<div class="a-track">' + lanes.filter((ln) => ln.items.length || ln.always).map((ln) => '<div class="at-lane"><span class="at-l">' + esc(ln.label) + '</span><span class="at-r"><i class="at-axis"></i>' +
-      ln.items.map((x) => (x.b != null ? '<i class="at-box ' + (x.cls || '') + '" style="left:' + at(x.a) + ';width:' + w(x.a, x.b) + '"' + (x.tip ? ' data-tip="' + esc(x.tip) + '"' : '') + '></i>'
+      ln.items.map((x) => (x.b != null ? '<i class="at-box ' + (x.cls || '') + '" style="left:' + at(x.a) + ';width:' + w(x.a, x.b) + (x.col ? ';background:' + x.col : '') + '"' + (x.tip ? ' data-tip="' + esc(x.tip) + '"' : '') + '></i>'
         : '<i class="at-pin ' + (x.cls || '') + '" style="left:' + at(x.a) + '"' + (x.tip ? ' data-tip="' + esc(x.tip) + '"' : '') + '></i>')).join('') + '</span></div>').join('') +
-      '<div class="at-lane at-scale"><span class="at-l"></span><span class="at-r"><b style="left:0">1</b><b style="left:100%">' + fmt(L) + ' aa</b></span></div></div>';
+      '<div class="at-lane at-scale"><span class="at-l"></span><span class="at-r"><b style="left:0">1</b><b style="left:100%">' + fmt(L) + ' aa</b></span></div>' + (key ? '<div class="at-key">' + key + '</div>' : '') + '</div>';
   }
   // The pictures and numbers of a protein page's tiles (layout A), from what the page already holds.
   function protAOv(p) {
@@ -4549,7 +4550,57 @@
     const nDis = p.dis ? popcount(p.dis) : 0;
     if (p.cond && p.cond.length || (p.hpa && p.hpa.length)) ov['p-cond'] = { vis: aBig([[fmt((p.cond || []).length), (p.cond || []).length === 1 ? 'condensate' : 'condensates'], [fmt((p.hpa || []).length), (p.hpa || []).length === 1 ? 'location' : 'locations', 'dna']]) };
     if (nDis) ov['p-dis'] = { vis: aBig([[fmt(nDis), nDis === 1 ? 'disease family' : 'disease families']]) };
+    // Protein class: the share of each of this protein's PANTHER classes that is methylated, the tick at the share of
+    // all reviewed proteins.
+    const pm = pantherMeta(), ovw = M.overview;
+    if (pm && p.pan && ovw.panther_groups) {
+      const [g, c, sk] = p.pan, tot = (r) => r[r.length - 1], ref = pm.universe ? M.n_proteins / pm.universe : null;
+      const rows = [ovw.panther_groups[g], c >= 0 ? ovw.panther_classes[c] : null].concat((sk || []).slice(0, 2).map((k) => (ovw.panther_subclasses || [])[k]))
+        .filter((r) => r && r[0] !== pm.unclassified && tot(r) > 0);
+      if (rows.length) ov['p-func'] = { vis: aMeters(rows.map((r) => ({ label: r[0], v: r[1] / tot(r), ref, text: pct(r[1], tot(r)) + '%', cls: r[4] < 0 ? 'down' : '',
+        tip: '<b>' + esc(r[0]) + '</b><br>' + fmt(r[1]) + ' of ' + fmt(tot(r)) + ' reviewed proteins in this class carry a methylarginine (' + pct(r[1], tot(r)) + '%), vs ' + pct(M.n_proteins, pm.universe) + '% of all (the tick)' })),
+        { foot: ref != null ? 'Share of each class methylated · <b>|</b> all reviewed proteins, ' + pct(M.n_proteins, pm.universe) + '%' : '' }) };
+    }
     return ov;
+  }
+  // Tiles whose data load when a protein page opens in layout A: the AlphaFold model (pLDDT along the protein) and
+  // the Ensembl orthologues (is each methylarginine an arginine in mouse … yeast, against the protein's other
+  // arginines). Each fills its tile when it arrives, if the page is still this protein's.
+  function aLoadTiles(p) {
+    const here = () => UI_A && UI.detail === p.i && UI.view === 'protein';
+    const pins = () => p.sites.map((j) => ({ a: S[j].pos, cls: 'site', tip: '<b>' + p.label + ' R' + S[j].pos + '</b>' }));
+    loadAF(p.acc).then((af) => {
+      if (!here() || !af || !af.plddt.size) return;
+      const len = Math.max(p.len || 0, ...af.plddt.keys()), runs = [];
+      for (let q = 1; q <= len; q++) {
+        const v = af.plddt.get(q), k = v == null ? -1 : plddtBand(v), last = runs[runs.length - 1];
+        if (last && last.k === k && last.b === q - 1) last.b = q;
+        else runs.push({ k, a: q, b: q });
+      }
+      const items = runs.filter((r) => r.k >= 0).map((r) => ({ a: r.a, b: r.b, col: PLDDT_BANDS[r.k][1], tip: 'pLDDT ' + PLDDT_BANDS[r.k][2].toLowerCase() + ', ' + r.a + '–' + r.b }));
+      const sv = p.sites.map((j) => af.plddt.get(S[j].pos)).filter((v) => v != null), conf = sv.filter((v) => v > 70).length;
+      const key = PLDDT_BANDS.map((b) => '<span><i style="background:' + b[1] + '"></i>' + esc(b[2].replace(/ \(.*$/, '')) + '</span>').join('');
+      aRefreshTiles($('#content'), { 'p-3d': { vis: aTrack(len, [{ label: 'pLDDT', items }, { label: 'Sites', items: pins() }], key),
+        head: sv.length ? 'AlphaFold model: <b>' + conf + ' of ' + sv.length + '</b> site' + (sv.length === 1 ? '' : 's') + ' in confident regions (pLDDT > 70)' : null } });
+    });
+    loadUniProt(p.acc).then((u) => {
+      const ensg = u && u.seq && u.ensg && u.ensg[0];
+      if (!here() || !ensg) return;
+      loadOrthologs(ensg).then((orthos) => {
+        if (!here() || !orthos.length) return;
+        const model = orthoModel(p, u, orthos), sites = new Set(model.sites);
+        const others = [];
+        for (let q = 1; q <= u.seq.length; q++) if (u.seq[q - 1] === 'R' && !sites.has(q)) others.push(q);
+        const kept = (r, qs) => { let n = 0, m = 0; for (const q of qs) { const a = r.at(q); if (a != null) { m++; if (a === 'R') n++; } } return [n, m]; };
+        const rows = model.rows.map((r) => {
+          const [n, m] = kept(r, model.sites), [on, om] = kept(r, others);
+          return { m, label: r.name, v: m ? n / m : 0, ref: om ? on / om : null, text: n + '/' + m,
+            tip: '<b>' + esc(r.name) + '</b> (' + Math.round(r.pid) + '% identical)<br>R at ' + n + ' of ' + m + ' methylarginines' + (m ? ' (' + pct(n, m) + '%)' : '') + (om ? '<br>R at ' + pct(on, om) + '% of the other arginines (the tick)' : '') };
+        }).filter((r) => r.m);
+        if (rows.length) aRefreshTiles($('#content'), { 'p-cons': { vis: aMeters(rows, { tight: true, foot: 'Methylarginines still R in each species · <b>|</b> the protein\'s other arginines' }) } });
+        renderConsCard(p, u);   // the card shows the alignments it now holds
+      }).catch(() => {});
+    });
   }
   // Tiles whose pictures need data that arrives after the page was drawn (a protein's interaction evidence).
   function aRefreshTiles(root, ov) {
@@ -4561,6 +4612,8 @@
       let v = $('.a-vis', t);
       if (!v) { v = document.createElement('span'); v.className = 'a-vis'; $('.a-tt', t).after(v); t.classList.remove('novis'); }
       v.innerHTML = o.vis;
+      const h = $('.a-head', t), sum = $('#fold-sum-' + k, root);
+      if (o.head && h) { h.innerHTML = o.head; h.dataset.until = sum ? sum.innerHTML : ''; }
     }
   }
   function bindAHome(root) {
@@ -4569,7 +4622,12 @@
     if (!home) return;
     $$('[data-go]', home).forEach((b) => b.addEventListener('click', () => { if (b.getAttribute('aria-disabled') === 'true') return; UI.hubFrom = b.dataset.go; hubFocus(b.dataset.go); }));
     // Rows whose summary fills in later (a protein's cards load on their own): their tile follows.
-    const sync = () => $$('[data-sum-of]:not([data-fixed])', home).forEach((t) => { const s = $('#fold-sum-' + t.dataset.sumOf, root); if (s && s.innerHTML !== t.innerHTML) t.innerHTML = s.innerHTML; });
+    const sync = () => $$('[data-sum-of]:not([data-fixed])', home).forEach((t) => {
+      const s = $('#fold-sum-' + t.dataset.sumOf, root);
+      if (!s || s.innerHTML === t.innerHTML || (t.dataset.until != null && t.dataset.until === s.innerHTML)) return;
+      delete t.dataset.until;
+      t.innerHTML = s.innerHTML;
+    });
     const list = $('.hub-list', root);
     if (list) new MutationObserver(sync).observe(list, { subtree: true, childList: true, characterData: true });
   }

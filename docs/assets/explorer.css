@@ -1866,6 +1866,12 @@ html.drawer-open { overflow: hidden; }
 .am-t i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 99px; background: var(--teal-600); }
 .am-t i.down { background: var(--t-down-3); }
 .am-t b { position: absolute; top: -0.2rem; bottom: -0.2rem; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--ink); }
+.am-foot { font-size: 0.64rem; color: var(--muted); }
+.am-foot b { color: var(--ink); }
+.a-meters.tight { gap: 0.25rem; }
+.a-meters.tight .am-row { grid-template-columns: 4.2rem minmax(0, 1fr) 2.4rem; align-items: center; gap: 0.5rem; }
+.a-meters.tight .am-l { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.a-meters.tight .am-t { grid-column: auto; height: 0.5rem; }
 .a-stack .as-bar { display: flex; gap: 2px; height: 0.9rem; }
 .a-stack .as-bar i { min-width: 2px; border-radius: 3px; }
 .a-stack .exp, .a-pins .exp { background: var(--teal-600); }
@@ -1922,3 +1928,5 @@ html.drawer-open { overflow: hidden; }
 .at-scale b { position: absolute; top: 0; font-size: 0.6rem; font-weight: 500; color: var(--muted); transform: translateX(-50%); }
 .at-scale b:first-child { transform: none; }
 .at-scale b:last-child { transform: translateX(-100%); white-space: nowrap; }
+.at-key { display: flex; flex-wrap: wrap; gap: 0.1rem 0.55rem; margin-top: 0.2rem; font-size: 0.62rem; color: var(--muted); }
+.at-key i { display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.2rem; border-radius: 2px; vertical-align: -1px; }
