@@ -1,0 +1,4 @@
+architecture_class	n_proteins	median_max_sites_in_20aa_span	median_total_sites_in_clustered_bins	median_domain_edge_distance	median_idr_segment_length
+broad across IDR	21	5.0	15.0	28.0	
+domain-proximal clustered	37	3.0	4.0	12.0	
+domain-distal clustered	208	3.0	6.0	151.75	

@@ -6,10 +6,13 @@ What the methylarginine site union is made from, and where each version is.
 
 | Version | Sites | Where |
 |---|---|---|
-| v1.0.0 | 13,719 sites on 5,090 accessions | Published with DeAngelo, Silverstein & Shechter, Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011. Tables in `releases/v1.0.0/`; the full analysis output at git tag `v1.0.0` and in branch `v1.0.0_archive`; the website as published in `docs/v1.0.0/`. |
-| v1.1.0 | 13,365 sites on 4,723 proteins, and 6 pending sites | `releases/v1.1.0/`, and the website in `docs/`. Same sources and methods, mapped to UniProt release 2026_03, with corrections to how some source records were placed on UniProt sequences (`releases/v1.1.0/CHANGES.md`). |
+| v1.0.0 | 13,719 sites on 5,090 accessions | Published with DeAngelo, Silverstein & Shechter, Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011. Tables in `releases/v1.0.0/`; the full analysis output at git tags `v1.0.0` and `v1.0.0_archive`; the website as published in `docs/v1.0.0/`. |
+| v1.1.0 | 13,365 sites on 4,723 proteins, and 6 pending sites | `releases/v1.1.0/`, and its website in `docs/v1.1.0/`. Same sources and methods, mapped to UniProt release 2026_03, with corrections to how some source records were placed on UniProt sequences (`releases/v1.1.0/CHANGES.md`). |
+| v1.2.0 | 11,601 sites on 4,432 proteins, and 2,406 lower-confidence sites | `releases/v1.2.0/`, and the website in `docs/`. Each study read from its own tables; a site needs a record that passes five site tests (`releases/v1.2.0/CHANGES.md`, `releases/v1.2.0/STUDIES.md`). |
 
 ## Sources of the sites
+
+The sources of v1.0.0 and v1.1.0. v1.2.0 reads each study from its own tables instead; `releases/v1.2.0/STUDIES.md` lists them, with their tables and licences.
 
 28,960 source records from three tables (`inputs/sources/`):
 

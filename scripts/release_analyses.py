@@ -135,7 +135,7 @@ def collect(args) -> None:
              'way (hpc/release_analyses.sh). ' + (
                  'v1.0.0 numbered its sites on an earlier UniProt release: each site is taken to where v1.1.0 placed its records on '
                  'UniProt 2026_03, and the sites v1.1.0 could not place are left out. The analyses of the published run are in the '
-                 'v1.0.0_archive branch. ' if args.map else '') +
+                 'v1.0.0_archive tag. ' if args.map else '') +
              'The sites kept pending (flag one_sided_window) are left out, as in the release build.' + (
                  ' The lower-confidence sites whose own evidence covers the arginine and leaves the methyl group on an arginine '
                  '(in_analyses_with_lower_confidence in the release\'s lower-confidence site table) are counted as sites; the others '

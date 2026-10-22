@@ -1,0 +1,164 @@
+analysis	category	category_id	parent	a	b	c	d	fold_enrichment	log2_fold_enrichment	p_value	q_value	method
+panther_group	RNA processing and translation			612	3820	538	15446	2.45145816983205	1.2936401445765944	3.91580147098532e-129	4.30738161808385e-128	enricher
+panther_group	Scaffolds, adaptors and chaperones			281	4151	683	15301	1.34276555267612	0.4252074317066413	1.72356669085673e-08	9.479616799712e-08	enricher
+panther_group	Transcription, chromatin and DNA			523	3909	1620	14364	1.12421771159901	0.16892144928607464	0.000851195083078	0.003121048637953	enricher
+panther_group	Protein-modifying enzymes			400	4032	1223	14761	1.1353045458893	0.18307935294243013	0.0017267360989358	0.0047485242720735	enricher
+panther_group	Cytoskeleton, adhesion and matrix			327	4105	1022	14962	1.11662335785567	0.15914264026550204	0.0113871732044707	0.0250517810498356	enricher
+panther_group	Metabolic enzymes			431	4001	1520	14464	1.01763235367589	0.025216444195753362	0.342360299422363	0.627660548940999	enricher
+panther_group	Other PANTHER classes			10	4422	51	15933	0.755163638515713	-0.4051387949598426	0.880485284291107	1.0	enricher
+panther_group	No PANTHER protein class			1293	3139	5203	10781	0.91690304280557	-0.12515890965924067	0.999991925585784	1.0	enricher
+panther_group	Transport and membrane traffic			264	4168	1336	14648	0.760072202166065	-0.3957916227005902	0.999999974919076	1.0	enricher
+panther_group	Immunity and defence			20	4412	600	15384	0.148596715965995	-2.750525862671195	1.0	1.0	enricher
+panther_group	Signalling: receptors, ligands and modulators			271	4161	2188	13796	0.507670195538969	-0.97803653052653	1.0	1.0	enricher
+panther_class	RNA metabolism protein	PC00031	RNA processing and translation	423	4009	392	15592	2.39085734535226	1.2575280517171894	2.4679189549050497e-83	6.16979738726263e-82	enricher
+panther_class	translational protein	PC00263	RNA processing and translation	189	4243	146	15838	2.59889002640228	1.3778955865916163	4.2947601788398804e-44	5.3684502235498496e-43	enricher
+panther_class	cytoskeletal protein	PC00085	Cytoskeleton, adhesion and matrix	231	4201	402	15582	1.68104436498024	0.7493577997033986	4.57361336585445e-18	3.8113444715453804e-17	enricher
+panther_class	chromatin/chromatin-binding, or -regulatory protein	PC00077	Transcription, chromatin and DNA	133	4299	185	15799	1.92661716958427	0.9460699279325153	3.84794947784979e-16	2.4049684236561202e-15	enricher
+panther_class	chaperone	PC00072	Scaffolds, adaptors and chaperones	96	4336	117	15867	2.07616820053897	1.053923328210996	2.03352588220966e-14	1.01676294110483e-13	enricher
+panther_class	DNA metabolism protein	PC00009	Transcription, chromatin and DNA	77	4355	148	15836	1.57644604893702	0.656675797193542	9.66761967452238e-06	4.02817486438433e-05	enricher
+panther_class	protein modifying enzyme	PC00260	Protein-modifying enzymes	400	4032	1223	14761	1.1353045458893	0.18307935294243013	0.0017267360989358	0.0061669146390565	enricher
+panther_class	membrane traffic protein	PC00150	Transport and membrane traffic	116	4316	315	15669	1.23979997822208	0.3101073837541499	0.0056016121424413	0.0175050379451291	enricher
+panther_class	scaffold/adaptor protein	PC00226	Scaffolds, adaptors and chaperones	185	4247	566	15418	1.13475654602528	0.18238281071772702	0.0276759248726957	0.0768775690908215	enricher
+panther_class	protein-binding activity modulator	PC00095	Signalling: receptors, ligands and modulators	180	4252	618	15366	1.03905974322087	0.055278607823012554	0.289722242937451	0.724305607343628	enricher
+panther_class	metabolite interconversion enzyme	PC00262	Metabolic enzymes	431	4001	1520	14464	1.01763235367589	0.025216444195753362	0.342360299422363	0.77809158959628	enricher
+panther_class	calcium-binding protein	PC00060	Signalling: receptors, ligands and modulators	25	4407	89	15895	1.01019697257584	0.014636623325658377	0.513979606121931	1.0	enricher
+panther_class	viral or transposable element protein	PC00237	Other PANTHER classes	9	4423	44	15940	0.782235542537974	-0.35432500540520623	0.842347050633351	1.0	enricher
+panther_class	extracellular matrix protein	PC00102	Cytoskeleton, adhesion and matrix	26	4406	114	15870	0.855492521918515	-0.22517285108819277	0.843054119505617	1.0	enricher
+panther_class	storage protein	PC00210	Other PANTHER classes	1	4431	7	15977	0.575812274368231	-0.796329552284319	0.858891455628501	1.0	enricher
+panther_class	cell junction protein	PC00070	Cytoskeleton, adhesion and matrix	9	4423	51	15933	0.690974729241877	-0.5332951464505257	0.927471322503801	1.0	enricher
+panther_class	gene-specific transcriptional regulator	PC00264	Transcription, chromatin and DNA	313	4119	1287	14697	0.901146209386282	-0.15016689512642467	0.986819873845336	1.0	enricher
+panther_class	transfer/carrier protein	PC00219	Transport and membrane traffic	19	4413	117	15867	0.643554894882141	-0.6358648800910719	0.991913643520446	1.0	enricher
+panther_class	structural protein	PC00211	Cytoskeleton, adhesion and matrix	20	4412	170	15814	0.484894546836405	-1.0442570657279047	0.999983878589941	1.0	enricher
+panther_class	No PANTHER protein class			1293	3139	5203	10781	0.91690304280557	-0.12515890965924067	0.999991925585784	1.0	enricher
+panther_class	cell adhesion molecule	PC00069	Cytoskeleton, adhesion and matrix	41	4391	285	15699	0.579344865008527	-0.7875057018973127	0.999993215133463	1.0	enricher
+panther_class	transporter	PC00227	Transport and membrane traffic	129	4303	904	15080	0.575254856871263	-0.7977268357261238	0.999999999999998	1.0	enricher
+panther_class	defense/immunity protein	PC00090	Immunity and defence	20	4412	600	15384	0.148596715965995	-2.750525862671195	1.0	1.0	enricher
+panther_class	intercellular signal molecule	PC00207	Signalling: receptors, ligands and modulators	23	4409	383	15601	0.260959257349149	-1.9381035134124827	1.0	1.0	enricher
+panther_class	transmembrane signal receptor	PC00197	Signalling: receptors, ligands and modulators	43	4389	1098	14886	0.173601597180255	-2.5261478738709067	1.0	1.0	enricher
+panther_subclass	RNA processing factor	PC00147	RNA metabolism protein	147	4285	106	15878	2.67650290378277	1.4203492178577377	1.5643253986991e-36	1.9866932563478497e-34	enricher
+panther_subclass	RNA splicing factor	PC00148	RNA metabolism protein	89	4343	44	15940	3.08254390488858	1.6241214431808915	4.47065388406492e-29	2.83886521638122e-27	enricher
+panther_subclass	ribosomal protein	PC00202	translational protein	94	4338	84	15900	2.43264511418489	1.282525868426923	7.621211283405981e-20	3.22631277664187e-18	enricher
+panther_subclass	translation factor	PC00223	translational protein	67	4365	46	15938	2.73128654036612	1.4495806757582645	4.877507311742e-18	1.54860857147808e-16	enricher
+panther_subclass	RNA helicase	PC00032	RNA metabolism protein	47	4385	25	15959	3.0070196550341	1.5883342979510082	2.2618584545819e-15	5.74512047463802e-14	enricher
+panther_subclass	microtubule binding motor protein	PC00156	cytoskeletal protein	39	4393	28	15956	2.6813944716849	1.4229834761201587	9.4693805154974e-11	2.0043522091136203e-09	enricher
+panther_subclass	translation initiation factor	PC00224	translational protein	43	4389	37	15947	2.47599277978339	1.3080071075304147	3.55019632793533e-10	6.4410704806826805e-09	enricher
+panther_subclass	Hsp70 family chaperone	PC00027	chaperone	14	4418	1	15983	4.29939831528279	2.1041347741647662	6.0792653743506905e-09	9.65083378178173e-08	enricher
+panther_subclass	microtubule or microtubule-binding cytoskeletal protein	PC00157	cytoskeletal protein	94	4338	159	15825	1.71150525820122	0.7752657246990047	1.32036604600203e-08	1.86318319824731e-07	enricher
+panther_subclass	actin or actin-binding cytoskeletal protein	PC00041	cytoskeletal protein	100	4332	177	15807	1.6629957382476	0.7337844714412185	2.54642699250872e-08	3.23396228048608e-07	enricher
+panther_subclass	aminoacyl-tRNA synthetase	PC00047	translational protein	25	4407	16	15968	2.80884036277186	1.4899746328723227	6.1977185245786e-08	7.15554775110438e-07	enricher
+panther_subclass	non-receptor serine/threonine protein kinase	PC00167	protein modifying enzyme	113	4319	229	15755	1.5220301053476	0.6059968952449662	7.02038503402313e-07	7.42990749434115e-06	enricher
+panther_subclass	chaperonin	PC00073	chaperone	11	4421	2	15982	3.89780616495418	1.9626623482118863	2.50416820169046e-06	2.44637970472837e-05	enricher
+panther_subclass	tubulin	PC00228	cytoskeletal protein	15	4417	8	15976	3.00423795322555	1.586999087267185	8.84565213820305e-06	8.02427015394134e-05	enricher
+panther_subclass	histone modifying enzyme	PC00261	chromatin/chromatin-binding, or -regulatory protein	31	4401	39	15945	2.0400206291903	1.0285837411575869	2.00582542888445e-05	0.0001698265529788	enricher
+panther_subclass	translation elongation factor	PC00222	translational protein	11	4421	4	15980	3.37809867629362	1.7562114707444587	2.8204886897455e-05	0.0002238762897485	enricher
+panther_subclass	intermediate filament	PC00129	cytoskeletal protein	24	4408	26	15958	2.21111913357401	1.1447767586621145	3.41068732387245e-05	0.0002547984059598	enricher
+panther_subclass	dehydrogenase	PC00092	metabolite interconversion enzyme	54	4378	100	15884	1.61526560082517	0.6917714091842504	9.39766258365945e-05	0.0006434095216182	enricher
+panther_subclass	intermediate filament binding protein	PC00130	cytoskeletal protein	10	4422	4	15980	3.29035585353275	1.7182436205454399	9.62581174074529e-05	0.0006434095216182	enricher
+panther_subclass	non-motor actin binding protein	PC00165	cytoskeletal protein	34	4398	53	15931	1.80024067388688	0.8481897931172895	0.000177065764326	0.0011243676034706	enricher
+panther_subclass	G-protein modulator	PC00022	protein-binding activity modulator	85	4347	195	15789	1.39840123775142	0.483778366908418	0.0004204018399846	0.0025424301751452	enricher
+panther_subclass	kinase	PC00137	metabolite interconversion enzyme	47	4385	91	15893	1.56887982001779	0.6497348426151504	0.0005461632646486	0.0031528515731987	enricher
+panther_subclass	HMG box transcription factor	PC00024	gene-specific transcriptional regulator	16	4416	18	15966	2.16776385644511	1.1162076064653448	0.000902944896062	0.0049858261652121	enricher
+panther_subclass	DNA-directed RNA polymerase	PC00019	RNA metabolism protein	17	4415	21	15963	2.06080182405472	1.043205775522434	0.001278410199403	0.0067612858900056	enricher
+panther_subclass	nucleotide kinase	PC00172	metabolite interconversion enzyme	16	4416	19	15965	2.10582774626096	1.074387430770715	0.0013309617893711	0.0067612858900056	enricher
+panther_subclass	guanyl-nucleotide exchange factor	PC00113	protein-binding activity modulator	39	4393	79	15905	1.5224866915499	0.606429617216089	0.0028550725312987	0.0139459312105747	enricher
+panther_subclass	oxidoreductase	PC00176	metabolite interconversion enzyme	148	4284	420	15564	1.20028474093659	0.2633766938399436	0.0070644662844279	0.0330063736303928	enricher
+panther_subclass	exoribonuclease	PC00099	RNA metabolism protein	11	4421	13	15971	2.11131167268351	1.0781395656318196	0.0072769957610314	0.0330063736303928	enricher
+panther_subclass	nucleotidyltransferase	PC00174	metabolite interconversion enzyme	12	4420	16	15968	1.97421351211965	0.9812780263792337	0.0097557437461058	0.0427234295088085	enricher
+panther_subclass	actin binding motor protein	PC00040	cytoskeletal protein	11	4421	14	15970	2.02685920577617	1.019245876578251	0.0104831099664088	0.0443784988577973	enricher
+panther_subclass	actin and actin related protein	PC00039	cytoskeletal protein	14	4418	21	15963	1.84259927797834	0.8817423528283193	0.0110258940777945	0.0451705983187064	enricher
+panther_subclass	immunoglobulin fold transcription factor	PC00251	gene-specific transcriptional regulator	17	4415	29	15955	1.70240150682781	0.7675713329090046	0.0131449926529332	0.0521691895913286	enricher
+panther_subclass	mRNA polyadenylation factor	PC00146	RNA metabolism protein	11	4421	15	15969	1.94890308247709	0.9626623482118865	0.014668097122497	0.0564499495320337	enricher
+panther_subclass	peroxidase	PC00180	metabolite interconversion enzyme	10	4422	13	15971	2.00282530215037	1.0020365865460314	0.015901554145857	0.0593969816624658	enricher
+panther_subclass	non-motor microtubule binding protein	PC00166	cytoskeletal protein	30	4402	66	15918	1.43953068592058	0.5255985426030458	0.0187351832520036	0.0679819506572703	enricher
+panther_subclass	phosphatase modulator	PC00184	protein-binding activity modulator	18	4414	34	15950	1.59455706748126	0.6731557310169055	0.0222000926851718	0.0783169936393559	enricher
+panther_subclass	vesicle coat protein	PC00235	membrane traffic protein	16	4416	29	15955	1.63786602486964	0.7118173513860108	0.0232980644035352	0.0799690318715939	enricher
+panther_subclass	transcription cofactor	PC00217	gene-specific transcriptional regulator	31	4401	73	15911	1.37309080810886	0.4574270399614655	0.0327577181247224	0.109479742153677	enricher
+panther_subclass	reductase	PC00198	metabolite interconversion enzyme	25	4407	57	15927	1.40442018138593	0.48997463287232274	0.0398768182258894	0.129855279863794	enricher
+panther_subclass	general transcription factor	PC00259	RNA metabolism protein	33	4399	82	15902	1.32186469941924	0.40257451612975553	0.0469846593330334	0.149176293382381	enricher
+panther_subclass	endoribonuclease	PC00094	RNA metabolism protein	17	4415	36	15948	1.47755602479395	0.56321283440282	0.0523607141818747	0.162190504904831	enricher
+panther_subclass	ubiquitin-protein ligase	PC00234	protein modifying enzyme	102	4330	306	15678	1.15162454873646	0.20367044771567847	0.0601248550319716	0.181806109263343	enricher
+panther_subclass	RNA methyltransferase	PC00033	RNA metabolism protein	13	4419	26	15958	1.53549939831528	0.6187079469945223	0.0633162719167959	0.187003872870537	enricher
+panther_subclass	cysteine protease	PC00081	protein modifying enzyme	37	4395	98	15886	1.26252172750368	0.33630821629380336	0.0687136952642255	0.198141152417473	enricher
+panther_subclass	GTPase-activating protein	PC00257	protein-binding activity modulator	41	4391	111	15873	1.24254227626829	0.31329493889018156	0.0717765070080122	0.198141152417473	enricher
+panther_subclass	Rel homology transcription factor	PC00252	gene-specific transcriptional regulator	12	4420	24	15960	1.53549939831528	0.6187079469945223	0.0727144069439264	0.198141152417473	enricher
+panther_subclass	transaminase	PC00216	metabolite interconversion enzyme	9	4423	16	15968	1.65833935018051	0.7297392593832727	0.0733278280600098	0.198141152417473	enricher
+panther_subclass	isomerase	PC00135	metabolite interconversion enzyme	13	4419	27	15957	1.4971119133574	0.5821820709694102	0.0758521277528741	0.200692088012813	enricher
+panther_subclass	DNA helicase	PC00011	DNA metabolism protein	8	4424	14	15970	1.67509025270758	0.7442388290783827	0.0844266590921758	0.218820116422578	enricher
+panther_subclass	protein phosphatase	PC00195	protein modifying enzyme	35	4397	95	15889	1.24021105248542	0.3105856516321921	0.092325613238759	0.234507057626448	enricher
+panther_subclass	ligase	PC00142	metabolite interconversion enzyme	16	4416	38	15946	1.36488835405803	0.44878294555221354	0.108375796763549	0.269876984097466	enricher
+panther_subclass	mutase	PC00160	metabolite interconversion enzyme	5	4427	9	15975	1.64517792676637	0.7182436205454354	0.169162399139234	0.413146628666974	enricher
+panther_subclass	SNARE protein	PC00034	membrane traffic protein	9	4423	22	15962	1.33737044369396	0.4193991387711225	0.215138978444715	0.515521703065637	enricher
+panther_subclass	DNA-directed DNA polymerase	PC00018	DNA metabolism protein	5	4427	11	15973	1.43953068592058	0.5255985426030458	0.255510371531372	0.589996676081532	enricher
+panther_subclass	myelin protein	PC00161	structural protein	5	4427	11	15973	1.43953068592058	0.5255985426030458	0.255510371531372	0.589996676081532	enricher
+panther_subclass	extracellular matrix structural protein	PC00103	extracellular matrix protein	17	4415	53	15931	1.11872099020113	0.16185027202104796	0.343951478705504	0.779204318652999	enricher
+panther_subclass	carbohydrate kinase	PC00065	metabolite interconversion enzyme	5	4427	13	15971	1.2795828319294	0.35567354116072847	0.349721623332448	0.779204318652999	enricher
+panther_subclass	nucleotide phosphatase	PC00173	metabolite interconversion enzyme	5	4427	14	15970	1.21223636709101	0.2776710291594545	0.397701540360647	0.870829234927624	enricher
+panther_subclass	kinase inhibitor	PC00139	protein-binding activity modulator	6	4426	18	15966	1.15162454873646	0.20367044771567847	0.424775997901745	0.914348334466468	enricher
+panther_subclass	ATP synthase	PC00002	transporter	11	4421	36	15948	1.07811659881711	0.10851321467533628	0.445022019852835	0.941963275355168	enricher
+panther_subclass	heterotrimeric G-protein	PC00117	protein-binding activity modulator	10	4422	35	15949	1.02366626554352	0.0337454462733661	0.525049225724155	1.0	enricher
+panther_subclass	mitochondrial carrier protein	PC00158	transporter	3	4429	11	15973	0.987106756059824	-0.01872197362076782	0.613918235702396	1.0	enricher
+panther_subclass	transferase	PC00220	metabolite interconversion enzyme	145	4287	538	15446	0.977953496730817	-0.03216223055947496	0.636261740832118	1.0	enricher
+panther_subclass	acetyltransferase	PC00038	metabolite interconversion enzyme	7	4425	28	15956	0.92129963898917	-0.11825764717168079	0.661908432342768	1.0	enricher
+panther_subclass	deaminase	PC00088	metabolite interconversion enzyme	3	4429	12	15972	0.92129963898917	-0.11825764717168079	0.66330980709205	1.0	enricher
+panther_subclass	G-protein	PC00020	protein-binding activity modulator	39	4393	151	15833	0.94554436633099	-0.08078294175301828	0.681792193878109	1.0	enricher
+panther_subclass	small GTPase	PC00208	protein-binding activity modulator	25	4407	100	15884	0.92129963898917	-0.11825764717168079	0.712100624289353	1.0	enricher
+panther_subclass	basic leucine zipper transcription factor	PC00056	gene-specific transcriptional regulator	9	4423	38	15946	0.882095399032184	-0.18099340251964346	0.719284552865828	1.0	enricher
+panther_subclass	methyltransferase	PC00155	metabolite interconversion enzyme	10	4422	42	15942	0.885865037489586	-0.17484117553804912	0.719381335723099	1.0	enricher
+panther_subclass	damaged DNA-binding protein	PC00086	DNA metabolism protein	3	4429	14	15970	0.812911446166914	-0.29882989281350286	0.747848751325157	1.0	enricher
+panther_subclass	C4 zinc finger nuclear receptor	PC00169	gene-specific transcriptional regulator	9	4423	40	15944	0.846091505194135	-0.2411143949572155	0.766069536395199	1.0	enricher
+panther_subclass	non-receptor tyrosine protein kinase	PC00168	protein modifying enzyme	6	4426	28	15956	0.812911446166914	-0.29882989281350286	0.778415239784997	1.0	enricher
+panther_subclass	phosphatase	PC00181	metabolite interconversion enzyme	24	4408	101	15883	0.884447653429603	-0.1771513362252497	0.783327281183454	1.0	enricher
+panther_subclass	metalloprotease	PC00153	protein modifying enzyme	30	4402	125	15859	0.891580295795971	-0.16556336195003746	0.789593754169344	1.0	enricher
+panther_subclass	immunoglobulin superfamily cell adhesion molecule	PC00125	cell adhesion molecule	10	4422	47	15937	0.808157578060675	-0.30729147156169856	0.821395110165836	1.0	enricher
+panther_subclass	endodeoxyribonuclease	PC00093	DNA metabolism protein	2	4430	12	15972	0.65807117070655	-0.6036844743419226	0.841387048228746	1.0	enricher
+panther_subclass	lyase	PC00144	metabolite interconversion enzyme	23	4409	102	15882	0.847595667870036	-0.23855188088939322	0.843700741429155	1.0	enricher
+panther_subclass	membrane trafficking regulatory protein	PC00151	membrane traffic protein	22	4410	98	15886	0.844524669073405	-0.24378852925554123	0.844135503887798	1.0	enricher
+panther_subclass	tight junction	PC00214	cell junction protein	5	4427	27	15957	0.719765342960289	-0.4744014573969561	0.854752520387137	1.0	enricher
+panther_subclass	basic helix-loop-helix transcription factor	PC00055	gene-specific transcriptional regulator	18	4414	83	15901	0.820960074346785	-0.2846160335938011	0.858871611769183	1.0	enricher
+panther_subclass	phospholipase	PC00186	metabolite interconversion enzyme	10	4422	50	15934	0.767749699157641	-0.38129205300547586	0.867441962442444	1.0	enricher
+panther_subclass	protease	PC00190	protein modifying enzyme	118	4314	476	15508	0.915095601016179	-0.12800562372324287	0.876903410215247	1.0	enricher
+panther_subclass	esterase	PC00097	metabolite interconversion enzyme	6	4426	33	15951	0.708692029991669	-0.496769270425411	0.878993282813252	1.0	enricher
+panther_subclass	phosphodiesterase	PC00185	metabolite interconversion enzyme	7	4425	38	15946	0.716566385880465	-0.4808277265563903	0.885232484371298	1.0	enricher
+panther_subclass	cyclase	PC00079	metabolite interconversion enzyme	3	4429	21	15963	0.575812274368231	-0.796329552284319	0.918902277194173	1.0	enricher
+panther_subclass	oxidase	PC00175	metabolite interconversion enzyme	10	4422	55	15929	0.708692029991669	-0.496769270425411	0.922565025282062	1.0	enricher
+panther_subclass	calmodulin-related	PC00061	calcium-binding protein	14	4418	73	15911	0.741275571600481	-0.4319181260754439	0.924024737400613	1.0	enricher
+panther_subclass	dehydratase	PC00091	metabolite interconversion enzyme	5	4427	33	15951	0.606118183545506	-0.722328970840543	0.937829094987614	1.0	enricher
+panther_subclass	apolipoprotein	PC00052	transfer/carrier protein	4	4428	28	15956	0.575812274368231	-0.796329552284319	0.939094317421669	1.0	enricher
+panther_subclass	decarboxylase	PC00089	metabolite interconversion enzyme	2	4430	17	15967	0.484894546836405	-1.0442570657279047	0.940140780797575	1.0	enricher
+panther_subclass	membrane-bound signaling molecule	PC00152	intercellular signal molecule	4	4428	30	15954	0.541940964111276	-0.8837923935346591	0.956041373693911	1.0	enricher
+panther_subclass	acyltransferase	PC00042	metabolite interconversion enzyme	10	4422	60	15924	0.65807117070655	-0.6036844743419226	0.9567914917425	1.0	enricher
+panther_subclass	kinase modulator	PC00140	protein-binding activity modulator	14	4418	79	15905	0.693451341174644	-0.5281334413347458	0.959073349902982	1.0	enricher
+panther_subclass	gap junction	PC00105	cell junction protein	2	4430	19	15965	0.438714113804366	-1.188646975063081	0.960079158112623	1.0	enricher
+panther_subclass	homeodomain transcription factor	PC00119	gene-specific transcriptional regulator	44	4388	213	15771	0.788661169562713	-0.34252248284090037	0.972029096403851	1.0	enricher
+panther_subclass	primary active transporter	PC00068	transporter	38	4394	188	15796	0.77454394428293	-0.3685810012559215	0.972524133946244	1.0	enricher
+panther_subclass	interferon superfamily	PC00127	intercellular signal molecule	1	4431	15	15969	0.287906137184116	-1.7963295522843166	0.980105692998758	1.0	enricher
+panther_subclass	interleukin superfamily	PC00128	intercellular signal molecule	2	4430	23	15961	0.368519855595668	-1.4401857420590432	0.982579982716211	1.0	enricher
+panther_subclass	amino acid transporter	PC00046	transporter	2	4430	24	15960	0.354346014995835	-1.496769270425409	0.985888773724189	1.0	enricher
+panther_subclass	kinase activator	PC00138	protein-binding activity modulator	4	4428	37	15947	0.449414458043497	-1.153881556902404	0.986785335905974	1.0	enricher
+panther_subclass	winged helix/forkhead transcription factor	PC00246	gene-specific transcriptional regulator	17	4415	105	15879	0.641889092738356	-0.6396040485968656	0.98922790015917	1.0	enricher
+panther_subclass	aspartic protease	PC00053	protein modifying enzyme	1	4431	18	15966	0.242447273418203	-2.044257065727902	0.990459477571167	1.0	enricher
+panther_subclass	integrin	PC00126	cell adhesion molecule	2	4430	26	15958	0.329035585353275	-1.6036844743419225	0.990771648814034	1.0	enricher
+panther_subclass	glycosidase	PC00110	metabolite interconversion enzyme	3	4429	33	15951	0.383874849578821	-1.381292053005474	0.991178526101969	1.0	enricher
+panther_subclass	hydrolase	PC00121	metabolite interconversion enzyme	82	4350	389	15595	0.801980577464033	-0.3183607972790186	0.991745452581336	1.0	enricher
+panther_subclass	lipase	PC00143	metabolite interconversion enzyme	10	4422	73	15911	0.554999782523596	-0.8494408887438817	0.992079538782698	1.0	enricher
+panther_subclass	glycosyltransferase	PC00111	metabolite interconversion enzyme	20	4412	125	15859	0.635379061371841	-0.6543105474118915	0.99439679015194	1.0	enricher
+panther_subclass	helix-turn-helix transcription factor	PC00116	gene-specific transcriptional regulator	63	4369	318	15666	0.761704425935928	-0.3926968162777239	0.995422166964201	1.0	enricher
+panther_subclass	ATP-binding cassette (ABC) transporter	PC00003	transporter	4	4428	43	15941	0.392042399569859	-1.350918403961958	0.995558306389017	1.0	enricher
+panther_subclass	major histocompatibility complex protein	PC00149	defense/immunity protein	3	4429	37	15947	0.345487364620939	-1.5332951464505236	0.995986696642459	1.0	enricher
+panther_subclass	protease inhibitor	PC00191	protein-binding activity modulator	16	4416	113	15871	0.571348613326617	-0.8075568077075727	0.997749432886294	1.0	enricher
+panther_subclass	complement component	PC00078	defense/immunity protein	1	4431	24	15960	0.184259927797834	-2.440185742059043	0.997806693942496	1.0	enricher
+panther_subclass	DNA-binding transcription factor	PC00218	gene-specific transcriptional regulator	282	4150	1214	14770	0.868337226587386	-0.20367265977316185	0.997863479535095	1.0	enricher
+panther_subclass	cadherin	PC00057	cell adhesion molecule	13	4419	100	15884	0.529951119772531	-0.9160687965584152	0.998375733808501	1.0	enricher
+panther_subclass	oxygenase	PC00177	metabolite interconversion enzyme	10	4422	87	15897	0.474896721128438	-1.0743142995840842	0.998988114631152	1.0	enricher
+panther_subclass	ligand-gated ion channel	PC00141	transporter	4	4428	58	15926	0.29719343193199	-1.7505258626711953	0.999754434862838	1.0	enricher
+panther_subclass	serine protease	PC00203	protein modifying enzyme	23	4409	172	15812	0.543330556326946	-0.8800979099769173	0.999890774941592	1.0	enricher
+panther_subclass	voltage-gated ion channel	PC00241	transporter	8	4424	89	15895	0.37991737690275	-1.396242394471448	0.999895349643175	1.0	enricher
+panther_subclass	growth factor	PC00112	intercellular signal molecule	6	4426	92	15892	0.282030501731378	-1.8260768956783733	0.999994966268664	1.0	enricher
+panther_subclass	peptide hormone	PC00179	intercellular signal molecule	2	4430	61	15923	0.146238037934789	-2.773609475784234	0.999996364915304	1.0	enricher
+panther_subclass	zinc finger transcription factor	PC00244	gene-specific transcriptional regulator	110	4322	611	15373	0.702794454152626	-0.5088252880004818	0.99999649233177	1.0	enricher
+panther_subclass	cytokine	PC00083	intercellular signal molecule	4	4428	98	15886	0.180646988037092	-2.4687548942558153	0.999999944118193	1.0	enricher
+panther_subclass	C2H2 zinc finger transcription factor	PC00248	gene-specific transcriptional regulator	86	4346	548	15436	0.624856222027355	-0.6784038277216278	0.999999960869276	1.0	enricher
+panther_subclass	ion channel	PC00133	transporter	27	4405	288	15696	0.39484270242393	-1.3406500685081288	0.999999999905174	1.0	enricher
+panther_subclass	secondary carrier transporter	PC00258	transporter	13	4419	226	15758	0.250562663323414	-1.9967566421239775	0.999999999999563	1.0	enricher
+panther_subclass	G-protein coupled receptor	PC00021	transmembrane signal receptor	13	4419	393	15591	0.147498710675606	-2.761225751328403	1.0	1.0	enricher
+panther_subclass	immunoglobulin receptor superfamily	PC00124	defense/immunity protein	6	4426	255	15729	0.10589651022864	-3.23927304813305	1.0	1.0	enricher

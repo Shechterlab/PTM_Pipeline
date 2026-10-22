@@ -1,8 +1,8 @@
 {
-  "title": "Human methylarginine sites, v1.1.0 (PTM_Pipeline)",
+  "title": "Human methylarginine sites, v1.2.0 (PTM_Pipeline)",
   "upload_type": "dataset",
-  "version": "v1.1.0",
-  "description": "<p>The human protein arginine methylation sites of DeAngelo, Silverstein &amp; Shechter, Cell Chem Biol 33:1404-1421 (2026), with the code that builds them and the Methylarginine Site Explorer website. v1.1.0 uses the sources and methods of the paper, mapped to UniProt release 2026_03, with corrections to how some source records were placed on UniProt sequences: 13,365 sites on 4,723 proteins, and 6 pending sites. releases/v1.1.0/CHANGES.md says what changed since the published version (v1.0.0, also included).</p>",
+  "version": "v1.2.0",
+  "description": "<p>The human protein arginine methylation sites of DeAngelo, Silverstein &amp; Shechter, Cell Chem Biol 33:1404-1421 (2026), with the code that builds them and the Methylarginine Site Explorer website. v1.2.0 reads each of 18 studies and databases from its own tables and keeps as a site only an arginine that one of its records passes five site tests for: 11,601 sites on 4,432 proteins, 360 of them placed by the paralog rule and flagged paralog_assigned. The 2,406 arginines that a study reports, or an earlier release had, and that no record passes every test for are kept as lower-confidence sites with their test results. releases/v1.2.0/CHANGES.md says what changed since v1.1.0; v1.1.0 and the published version (v1.0.0) are also included.</p>",
   "creators": [
     {"name": "DeAngelo, J. D."},
     {"name": "Silverstein, A. M."},
