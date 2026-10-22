@@ -147,9 +147,42 @@ accessions only.
 | `capri_panhale2019_xl_peptides.tsv` | 335 | CAPRI (HEK293) XL-peptides, Supplementary Data 9: tryptic peptides identified with an RNA adduct, with the number of adduct forms and spectra and the AScores as given. scripts/37 keeps 327 (24 moved to the place the peptide matches the canonical sequence) and drops 8. It uses the peptide spans only: the AScores place the base and the rest of an adduct on different residues. |
 | `capri_panhale2019_adj_peptides.tsv` | 1,762 | CAPRI (HEK293) ADJ-peptides, Supplementary Data 3: the Lys-C peptide around tryptic peptides released next to RNA crosslinks. The table's start is 0-based (end minus start is the length). scripts/37 keeps 1,713 (90 moved) and drops 49. |
 | `raw_capri_files.tsv` | 2 | The two CAPRI supplements, with their size, MD5 and date (staged with `--capri`; they are not in the October 16 cache). |
+| `pclap_mullari2017_peptides.tsv` | 9,966 | pCLAP (HEK293) peptides from the PRIDE MaxQuant search (PXD005739) of 4 UV-crosslinked (XL) and 4 non-crosslinked (No XL) pull-downs. Each peptide is on the canonical sequence, with its Lys-C peptide (the RNA-bound region), the eight intensities, how each run identified it (MS/MS or matching) and the XL against No XL test. 5,572 peptides on 2,041 proteins are RNA-binding; the other 4,394 are the measured background. Not in Git (see Licences). |
+| `raw_pclap_files.tsv` | 7 | The PRIDE archive, the three MaxQuant tables read from it, PRIDE's project and file listings, and the 2023 supplement used as a check, with their size, MD5 and date (staged with `scripts/43d_stage_pclap.py`). |
 | `trendel2025_dna_crosslink_localisation.tsv` | 1,688 | DNA-crosslinked peptides (MCF7). Lower-case letters mark the residues the crosslink may sit on. |
 | `trendel2025_dna_crosslinked_peptides.tsv` | 688 | DNA-crosslinked peptide ranges. |
 | `trendel2025_mcf7_dna_interactome.tsv` | 1,191 | Proteins in the MCF7 DNA interactome. |
+
+**pCLAP** (Mullari et al., J Proteome Res 16:2762, 2017). Cells are UV-crosslinked and lysed, and proteins are digested
+with Lys-C. Poly(A) RNA is pulled down with oligo(dT) together with the Lys-C peptides crosslinked to it, then digested
+with RNase and trypsin. The tryptic peptides are measured label-free. Neither the article nor PRIDE lists the RNA-binding
+peptides, so `scripts/43d_stage_pclap.py` derives them from the deposited `peptides.txt`.
+
+- **The rule:** the one Mullari et al., Nat Commun 14:4348 (2023) give for pCLAP's "Filter 1", citing the 2017 article.
+  - Keep peptides with at least 3 of 4 valid values in one group.
+  - Impute missing values per run (Perseus defaults: 1.8 SD down, 0.3 SD wide).
+  - Run a two-sided t-test with s0 = 0.1 and a 5% permutation FDR (all 70 splits of the eight runs).
+  - Call a peptide RNA-binding when it is significant with XL > No XL.
+- **Choices made here:**
+  - Imputation is random, so the call is the majority of 25 seeded imputations; 881 tested peptides pass in some but not all.
+  - Contaminants and reverse hits are removed.
+  - The 2017 article could not be read (ACS; the publisher's site refuses scripted access), so its exact settings are not
+    confirmed. An FDR of 1% cannot be reached with 4 against 4 runs.
+- **Lys-C peptide:** found as the authors' own tool does it ([pCLAP_Tryp2LysC](https://github.com/dblyon/pCLAP_Tryp2LysC)).
+  It is the in-silico Lys-C peptide of ≥ 7 residues, with ≤ 6 missed cleavages, that holds the tryptic peptide and has the
+  fewest missed cleavages.
+- **Placement:** by exact, unique match to the 2026_03 reference. The script tries, in order:
+  1. the leading razor protein (9,838 peptides);
+  2. the other accessions given (107), or a secondary accession followed to its entry (9);
+  3. the gene names (12).
+
+  It drops 65 of 10,031 measured peptides, 43 of them RNA-binding: 50 are not in the canonical sequence, 13 occur at more
+  than one position, 1 gene matches several entries and 1 peptide has no reviewed entry.
+- **Check:** the brain-pCLAP supplement (2023, Supplementary Data 1) marks which of its 526 brain RBPs the 2017 HEK293
+  pCLAP found. Of the 347 marked genes with the same human symbol, 345 have an RNA-binding peptide here. Of the 160
+  unmarked genes, 13 do.
+- **Methylarginine:** the search allowed only Acetyl (Protein N-term) and Oxidation (M) as variable modifications, so a
+  methylated peptide could be identified only in its unmethylated form.
 
 ### Condensates
 
@@ -167,6 +200,11 @@ Each table carries its source's licence in `../MANIFEST.tsv`. Licences verified 
   [PMC5003815](https://pmc.ncbi.nlm.nih.gov/articles/PMC5003815/).
 - **CAPRI** (Panhale et al., Nat Commun 10:2682, 2019): CC BY 4.0, from the open access article and its
   supplementary data. Its searches did not allow methylarginine as a modification.
+- **pCLAP** (Mullari et al. 2017; checked 22 October 2026): PRIDE PXD005739 gives only the "EBI terms of use", and the
+  submitters state no licence. The article is not open access (ACS; not AuthorChoice, not in PMC, Unpaywall "closed").
+  - `pclap_mullari2017_peptides.tsv` carries the authors' intensities, so it is not redistributed. It is listed with its
+    MD5 (`checksum_only`) and kept out of Git by `.gitignore`.
+  - `scripts/43d_stage_pclap.py` rebuilds it byte for byte from PRIDE.
 - **Trendel et al. 2025:** CC BY-NC 4.0, from the open access article.
 - **CD-CODE:** CC BY-NC 4.0, as stated on [cd-code.org](https://cd-code.org/).
 - **pepR-MS:** CC BY-NC.
@@ -194,4 +232,5 @@ The non-commercial terms are compatible with the repository's CC BY-NC-SA 4.0 fo
 ```
 python scripts/37a_stage_interactions.py --cache data/interactions_cache --out inputs/interactions
 python scripts/37b_check_staged_interactions.py --cache data/interactions_cache --tables inputs/interactions
+python -I scripts/43d_stage_pclap.py --cache PTM_data/external/pclap --out inputs/interactions   # pCLAP; downloads 193 MB from PRIDE
 ```
