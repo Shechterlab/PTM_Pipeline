@@ -1747,7 +1747,7 @@
       bindSelection(rs, cons);
     }
     updateSelectionTabs(cons);
-    const withRail = !$('#layout').classList.contains('no-rail');
+    const withRail = !$('#layout').classList.contains('no-rail') && !railHidden();
     box.classList.toggle('on', cons.length > 0 && !withRail);
     if (cons.length && !withRail) {
       box.hidden = false;
@@ -2110,8 +2110,12 @@
     const open = new Set($$('details[open]', rail).map((d) => d.dataset.sec));
     const firstRender = !rail.children.length;
     rail.innerHTML =
+      '<button class="rail-strip" type="button" id="rail-strip" title="Show the filters" aria-label="Show the filters">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"></path></svg>' +
+      '<span class="rail-strip-label">Filters</span><span class="rail-strip-n" id="rail-strip-n" hidden></span></button>' +
       '<div class="rail-sel scope" id="rail-sel" aria-live="polite"></div>' +
       '<div class="rail-head"><h2>Add filters</h2><div class="actions">' +
+      '<button class="btn quiet small rail-min-btn" type="button" id="rail-min" title="Hide the filters, so the results take the full width">Hide</button>' +
       '<button class="btn quiet small rail-toggle" type="button" id="rail-toggle" aria-expanded="' + (rail.dataset.collapsed === 'false') + '">' + (rail.dataset.collapsed === 'false' ? 'Hide' : 'Show') + '</button></div></div>' +
       '<p class="rail-note">Each filter narrows the selection above; a site must match all of them.</p>' +
       SECTIONS.map(([key, title, dflt]) => '<details data-sec="' + key + '"' + ((firstRender ? dflt : open.has(key)) ? ' open' : '') + '><summary><span>' + esc(title) + '</span>' +
@@ -2152,6 +2156,8 @@
     const counts = {};
     for (const c of constraints()) counts[c.group] = (counts[c.group] || 0) + 1;
     $$('[data-count]').forEach((el) => { const n = counts[el.dataset.count] || 0; el.hidden = !n; el.textContent = n; });
+    const sn = $('#rail-strip-n'), total = Object.values(counts).reduce((a, b) => a + b, 0);
+    if (sn) { sn.hidden = !total; sn.textContent = total; sn.title = total + (total === 1 ? ' filter' : ' filters') + ' set'; }
     $$('[data-clear]').forEach((el) => { el.hidden = !counts[el.dataset.clear]; });
     $$('#rail details').forEach((d) => d.classList.toggle('active', !!counts[d.dataset.sec]));
   }
@@ -2204,6 +2210,8 @@
       el.addEventListener('click', run);
       el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') run(e); });
     });
+    $('#rail-min').addEventListener('click', () => setRailMin(true));
+    $('#rail-strip').addEventListener('click', () => setRailMin(false));
     $('#rail-toggle').addEventListener('click', () => {
       const collapsed = rail.dataset.collapsed !== 'false';
       rail.dataset.collapsed = collapsed ? 'false' : 'true';
@@ -2211,6 +2219,70 @@
       t.textContent = collapsed ? 'Hide' : 'Show';
       t.setAttribute('aria-expanded', String(collapsed));
     });
+  }
+
+  // --------------------------------------------------------- filter column
+  // Side by side (above 900 px wide) the reader can drag the column's edge, or move it with the arrow keys, and hide the
+  // column to a strip; both are kept in this browser. Below 900 px the filters fold into a panel above the results.
+  const RAIL = { min: 192, max: 448, key: 'mre-rail' };
+  const railPrefs = (() => { try { return JSON.parse(store.get(RAIL.key) || 'null') || {}; } catch (e) { return {}; } })();
+  const railSideBySide = () => !window.matchMedia || window.matchMedia('(min-width: 901px)').matches;
+  const railHidden = () => $('#layout').classList.contains('rail-min') && railSideBySide();
+  const saveRail = () => store.set(RAIL.key, JSON.stringify(railPrefs));
+  // charts drawn to their box's width redraw when the results column changes width
+  const railReflow = () => window.dispatchEvent(new Event('resize'));
+  function railWidth(w) {
+    const layout = $('#layout');
+    if (w == null) { layout.style.removeProperty('--rail-w'); return undefined; }
+    w = Math.round(Math.max(RAIL.min, Math.min(RAIL.max, layout.clientWidth * 0.4, w)));
+    layout.style.setProperty('--rail-w', w + 'px');
+    return w;
+  }
+  function setRailMin(on) {
+    railPrefs.min = on;
+    saveRail();
+    $('#layout').classList.toggle('rail-min', on);
+    renderScope();
+    railReflow();
+    const f = on ? $('#rail-strip') : $('#rail-min');
+    if (f) f.focus();
+  }
+  function initRail() {
+    const layout = $('#layout'), grip = $('#rail-grip');
+    layout.classList.toggle('rail-min', !!railPrefs.min);
+    if (railPrefs.w) railWidth(railPrefs.w);
+    const set = (w) => { railPrefs.w = railWidth(w); };
+    grip.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      grip.setPointerCapture(e.pointerId);
+      const x0 = e.clientX, w0 = $('#rail').getBoundingClientRect().width;
+      layout.classList.add('rail-drag');
+      const move = (ev) => set(w0 + ev.clientX - x0);
+      const up = () => {
+        grip.removeEventListener('pointermove', move);
+        grip.removeEventListener('pointerup', up);
+        grip.removeEventListener('pointercancel', up);
+        layout.classList.remove('rail-drag');
+        saveRail();
+        railReflow();
+      };
+      grip.addEventListener('pointermove', move);
+      grip.addEventListener('pointerup', up);
+      grip.addEventListener('pointercancel', up);
+    });
+    grip.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      const step = (e.shiftKey ? 64 : 16) * (e.key === 'ArrowRight' ? 1 : -1);
+      set($('#rail').getBoundingClientRect().width + step);
+      saveRail();
+      railReflow();
+    });
+    grip.addEventListener('dblclick', () => { delete railPrefs.w; railWidth(null); saveRail(); railReflow(); });
+    // a narrower window keeps the kept width within 40% of the page; crossing 900 px moves the selection
+    window.addEventListener('resize', debounce(() => { if (railPrefs.w) railWidth(railPrefs.w); }, 150));
+    if (window.matchMedia) window.matchMedia('(min-width: 901px)').addEventListener('change', renderScope);
   }
 
   // --------------------------------------------------------- global events
@@ -2403,6 +2475,7 @@
     $$('[data-theme-set]').forEach((b) => b.addEventListener('click', () => { setTheme(b.dataset.themeSet); renderView(); }));
     if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (!document.documentElement.hasAttribute('data-theme')) { applyTokens(); renderView(); } });
     setTheme(store.get('mre-theme') || 'system', true);
+    initRail();
     syncToolbar();
     window.addEventListener('resize', debounce(syncToolbar, 150));
     window.addEventListener('resize', debounce(tabsFade, 150));

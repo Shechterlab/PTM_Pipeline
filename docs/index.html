@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Serif:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="assets/explorer.css?v=20261022f">
+  <link rel="stylesheet" href="assets/explorer.css?v=20261022g">
   <script>
     try { var t = localStorage.getItem('mre-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
   </script>
@@ -77,6 +77,8 @@
     <div class="lc-note" id="lc-note" hidden></div>
     <div class="layout" id="layout">
       <aside class="rail" id="rail" aria-label="Filters" data-collapsed="true"></aside>
+      <div class="rail-grip" id="rail-grip" role="separator" aria-orientation="vertical" tabindex="0"
+        aria-label="Width of the filters: drag, or use the arrow keys; double-click resets it" title="Drag to resize the filters; double-click resets"></div>
       <div class="content" id="content">
         <div class="loading" id="loading"><div class="spinner"></div><p>Loading methylarginine sites…</p></div>
       </div>
@@ -98,6 +100,6 @@
   </footer>
 
   <div class="tip" id="tip" hidden></div>
-  <script src="assets/explorer.js?v=20261022f"></script>
+  <script src="assets/explorer.js?v=20261022g"></script>
 </body>
 </html>

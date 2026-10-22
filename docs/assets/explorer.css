@@ -250,9 +250,29 @@ main > .lc-note { margin: 0 0 1rem; }
 
 /* ---- Layout ------------------------------------------------------------ */
 main.wrap { padding-block: 1.5rem 3rem; }
-.layout { display: grid; grid-template-columns: 16.5rem minmax(0, 1fr); gap: 1.75rem; align-items: start; }
+/* --rail-w is the filter column; the reader can drag its edge (#rail-grip), and JS keeps the width inline */
+.layout { --rail-w: 16.5rem; --rail-gap: 1.75rem; position: relative; display: grid; grid-template-columns: var(--rail-w) minmax(0, 1fr); gap: var(--rail-gap); align-items: start; }
 .layout.no-rail { grid-template-columns: minmax(0, 1fr); }
-.layout.no-rail .rail { display: none; }
+.layout.no-rail .rail, .layout.no-rail .rail-grip { display: none; }
+.rail-grip { position: absolute; top: 0; bottom: 0; left: calc(var(--rail-w) + var(--rail-gap) / 2 - 0.3rem); width: 0.6rem; z-index: 2; cursor: col-resize; touch-action: none; }
+.rail-grip::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; transform: translateX(-50%); border-radius: 1px; background: transparent; transition: background 0.15s; }
+.rail-grip:hover::after, .rail-grip:focus-visible::after, .layout.rail-drag .rail-grip::after { background: var(--accent); }
+.rail-grip:focus-visible { outline: none; }
+.layout.rail-drag { cursor: col-resize; user-select: none; }
+/* Hidden filters: a strip at the left that brings them back, with the number of filters set */
+.rail-strip { display: none; flex-direction: column; align-items: center; gap: 0.55rem; width: 2.5rem; padding: 0.8rem 0; border: 1px solid var(--line); border-radius: var(--radius-card);
+  background: var(--surface); color: var(--ink-2); font: inherit; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; }
+.rail-strip:hover, .rail-strip:focus-visible { border-color: var(--accent); color: var(--accent-dark); }
+.rail-strip svg { width: 16px; height: 16px; flex: none; }
+.rail-strip .rail-strip-label { writing-mode: vertical-rl; }
+.rail-strip-n { min-width: 1.35rem; padding: 0.1rem 0.3rem; border-radius: 999px; background: var(--accent); color: #fff; font-size: 0.72rem; letter-spacing: 0; text-align: center; }
+.rail-strip-n[hidden] { display: none; }
+@media (min-width: 901px) {
+  .layout.rail-min { grid-template-columns: 2.5rem minmax(0, 1fr); }
+  .layout.rail-min .rail { overflow: visible; padding-right: 0; }
+  .layout.rail-min .rail > :not(.rail-strip), .layout.rail-min .rail-grip { display: none; }
+  .layout.rail-min .rail-strip { display: flex; }
+}
 .content { min-width: 0; display: grid; gap: 1.25rem; }
 
 /* ---- Filter rail ------------------------------------------------------- */
@@ -327,6 +347,7 @@ main.wrap { padding-block: 1.5rem 3rem; }
 .btn.small { padding: 0.2rem 0.55rem; font-size: 0.78rem; }
 .linkish { border: 0; background: none; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; font-size: 0.82rem; }
 .rail-toggle { display: none; }
+.rail-min-btn { display: inline-flex; }
 
 /* ---- Results header ------------------------------------------------------ */
 .results-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
@@ -674,7 +695,7 @@ footer.site a:hover { color: var(--accent); }
 }
 /* Laptops: the filters stay on the left, in a narrower column. */
 @media (max-width: 1180px) {
-  .layout { grid-template-columns: 14rem minmax(0, 1fr); gap: 1.1rem; }
+  .layout { --rail-w: 14rem; --rail-gap: 1.1rem; }
 }
 /* Tablets and phones: the filters fold into a panel above the results, so tables get the full width. */
 @media (max-width: 900px) {
@@ -682,6 +703,7 @@ footer.site a:hover { color: var(--accent); }
   .rail { position: static; max-height: none; overflow: visible; padding: 0.75rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); }
   .rail[data-collapsed="true"] > :not(.rail-head):not(.rail-sel) { display: none; }
   .rail-toggle { display: inline-flex; }
+  .rail-min-btn, .rail-grip { display: none; }
   .rail-head { border-bottom: 0; padding-bottom: 0; }
   .rail[data-collapsed="false"] .rail-head { border-bottom: 1px solid var(--line); padding-bottom: 0.5rem; }
 }
@@ -856,7 +878,7 @@ svg.ix-net { display: block; width: 100%; height: auto; }
   .print-only { display: block; }
   .screen-only, .hero, .toolbar, .rail, footer.site, .tip, #back, .detail-links .btn, .links-more, .filter-note button,
   .exp, .fig-controls, #fig-legend, .map-box, .af-controls .fig-controls, .af-toggles, .af-viewer, .af-msg, #af-sub,
-  #back-af, .ev-toggle, .view3d, #pdb-more, #pdb-list th:last-child, #pdb-list td:last-child, .tbl-foot button, #zoom-reset { display: none !important; }
+  #back-af, .ev-toggle, .view3d, #pdb-more, #pdb-list th:last-child, #pdb-list td:last-child, .tbl-foot button, #zoom-reset, .rail-grip { display: none !important; }
   .wrap { max-width: none; padding: 0; }
   .layout { display: block; }
   .content { width: 100%; }
