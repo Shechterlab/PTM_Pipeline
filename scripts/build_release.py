@@ -328,15 +328,16 @@ def earlier_sites(prev_dir: Path, previous: str, prev_sites: pd.DataFrame, recor
             for site in now:
                 members[version][site] = sorted(set(members[version].get(site, [])) | set(ids))
             published.append((version, r['site_id'], now))
-    # Releases further back: the previous release's lower-confidence sites name the earlier versions that had each
-    # one, with its records, and its published_sites lists their sites; without them an arginine only an older release
-    # had would leave the lower-confidence sites when a newer release becomes the previous one.
+    # The arginines the earlier releases had, as the previous release counted them: its lower-confidence sites name the
+    # earlier versions that had each one, with its records (a site the table above shows as moved is still an arginine
+    # that release published), and its published_sites lists the sites of releases further back. Without them the
+    # lower-confidence sites would shrink each time a newer release becomes the previous one.
     covered = set(members) | {v for v, _, _ in published}
     lower = prev_dir / f'human_methylarginine_lower_confidence_sites_{previous}.tsv'
     if lower.exists():
         for r in read_tsv(lower).to_dict('records'):
             ids = [int(x) for x in str(r.get('record_ids', '')).split('; ') if x]
-            for version in [v for v in str(r.get('in_earlier_versions', '')).split('; ') if v and v not in covered]:
+            for version in [v for v in str(r.get('in_earlier_versions', '')).split('; ') if v]:
                 site = lifted(r['site_id'], shift)
                 members[version][site] = sorted(set(members[version].get(site, [])) | set(ids))
     shown = prev_dir / 'supporting' / f'published_sites_{previous}.tsv'
