@@ -1899,12 +1899,22 @@ html.filters-pinned #rail-show, html.filters-pinned .rail-sel, html.filters-pinn
 .a-mode .hub-list.focus details.hub-row.cur > summary.fold-head > :is(.fold-fig, .fold-selc, .fold-all, .fold-go) { display: none; }
 .a-more-n { display: block; width: fit-content; margin: 0.2rem 0 0 auto; padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.76rem; font-weight: 600; color: var(--accent-dark); }
 .a-more-n:hover { background: var(--surface-2); text-decoration: underline; }
-.aq-tag { display: inline-block; margin-right: 0.3rem; padding: 0 0.28rem; border-radius: 3px; background: color-mix(in srgb, var(--accent) 14%, var(--surface)); color: var(--accent-dark); font-size: 0.6rem; font-weight: 700; line-height: 1.35; letter-spacing: 0.04em; text-transform: uppercase; vertical-align: 1px; }
+.aq-tag { display: inline-block; margin-right: 0.3rem; padding: 0 0.28rem; border-radius: 3px; background: color-mix(in srgb, var(--accent) 14%, var(--surface)); color: var(--accent-dark); font-size: 0.6rem; font-weight: 700; line-height: 1.35; letter-spacing: 0.02em; vertical-align: 1px; }
 .aq.compact .aq-lab[data-tip], .aq.compact .aq-val[data-tip] { cursor: help; }
+.a-cap-key { display: block; margin-top: 0.3rem; font-size: 0.7rem; color: var(--muted); }
+.a-treat .a-meters.tight .am-row { grid-template-columns: 7.6rem minmax(0, 1fr) 2.4rem; }
+/* a cards page's question with its Download PDF */
+.a-q-row { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap; }
+.a-q-row .a-q { margin: 0; }
+.pdf-scope { margin: 0 0 0.6rem; font-size: 0.82rem; color: var(--muted); }
+/* the PDF of a cards page: its tiles, not the sections behind them */
+html.pdf-export.pdf-cards .a-home { display: block !important; }
+html.pdf-export.pdf-cards .a-mode .hub-list:not(.focus), html.pdf-export.pdf-cards .a-proto, html.pdf-export.pdf-cards .a-reshuffle, html.pdf-export.pdf-cards .a-more-n, html.pdf-export.pdf-cards .a-info, html.pdf-export.pdf-cards .a-more, html.pdf-export.pdf-cards .tile-go { display: none !important; }
+html.pdf-export.pdf-cards .a-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+html.pdf-export.pdf-cards .a-grp { flex-basis: 100% !important; max-width: none !important; }
+html.pdf-export.pdf-cards :has(> #ix-ex-q), html.pdf-export.pdf-cards .exp, html.pdf-export.pdf-cards .a-map-go { display: none !important; }
+html.pdf-export.pdf-cards .a-tile, html.pdf-export.pdf-cards .a-hi-c { box-shadow: none !important; }
 /* the PRMT tile: each perturbation's rows under its name */
-.a-treat .am-h { margin: 0.45rem 0 0.2rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
-.a-treat .am-h:first-child { margin-top: 0; }
-.a-treat .a-meters.tight .am-row { grid-template-columns: 5.6rem minmax(0, 1fr) 2.4rem; }
 .hb.hb-more { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); box-shadow: inset 3px 0 0 var(--accent); transition: background 0.6s; }
 /* an effect of zero (none of the sites): a left-pointing mark at the scale's end */
 .aq-pt.aq-none { width: 0; height: 0; margin: 0 0 0 0.15rem; box-shadow: none; border-radius: 0; background: none; border-style: solid; border-width: 5px 8px 5px 0; border-color: transparent var(--t-down-3, var(--ink-2)) transparent transparent; transform: translateY(-50%); }
@@ -1914,9 +1924,9 @@ html.filters-pinned #rail-show, html.filters-pinned .rail-sel, html.filters-pinn
 .ui-a .p-top > .p-hi { order: 2; }
 .a-more { margin: 0.1rem 0 0; font-size: 0.86rem; }
 /* layout A: proteins drawn as maps */
-.a-maps { display: grid; gap: 0.2rem; padding: 0.7rem 0.9rem 0.6rem; }
+.a-maps { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.2rem; padding: 0.7rem 0.9rem 0.6rem; }
 .a-maps-cap { margin: 0 0 0.2rem; font-size: 0.82rem; color: var(--muted); }
-.a-map { display: block; width: 100%; padding: 0; border: 1px solid transparent; border-radius: 10px; background: none; color: inherit; cursor: pointer; }
+.a-map { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; min-width: 0; padding: 0; border: 1px solid transparent; border-radius: 10px; background: none; color: inherit; cursor: pointer; }
 .a-map { position: relative; }
 .a-map:hover { border-color: var(--line); background: var(--surface-2); }
 .a-map-go { display: block; padding: 0.35rem 0.7rem 0; font-size: 0.8rem; font-weight: 600; text-align: right; color: var(--accent-dark); }

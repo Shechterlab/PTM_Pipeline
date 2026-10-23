@@ -3495,8 +3495,8 @@
         (hasProteome && condShare && protShare ? '<br><span class="small muted">' + condShare + '% of condensate proteins are methylated, against ' + protShare + '% of all reviewed proteins: most condensates are enriched relative to the proteome, and few relative to other condensates.</span>' : '') + '<br>' + thrSel,
       tools: condTools,
       subText: 'CD-CODE condensates: methylated members vs ' + vsBg(bgName) + (thr ? ' (CD-CODE ' + ((IX && IX.meta && IX.meta.cdcode_version) || '') + ', confidence ≥ ' + thr + ')' : ' (pipeline CD-CODE export, all memberships)') + (UI.condSort === 'fold' ? ', by fold enrichment' : ', by q'), extraCol: true, extraName: 'methylated_of_members',
-      rows: condAll.map(({ c, k, n, m, l2, q }) => ({ label: c[0], value: l2, q, sig: sigq(q), key: k, extra: m + '/' + n, allIn: n > 0 && m === n ? n : 0, note: n > 0 && m === n ? 'all methylated' : '',
-        title: '<b>' + esc(c[0]) + '</b> · CD-CODE ' + esc(c[1]) + (c[2] !== 'biomolecular' ? ' · ' + esc(c[2]) : '') + '<br>' + m + ' of ' + n + ' counted members methylated (' + pct(m, n) + '%)' + (thr ? ' (confidence ≥ ' + thr + ')' : '') +
+      rows: condAll.map(({ c, k, n, m, l2, q }) => ({ label: condName(k), value: l2, q, sig: sigq(q), key: k, extra: m + '/' + n, allIn: n > 0 && m === n ? n : 0, note: n > 0 && m === n ? 'all ' + n + ' members methylated' : '',
+        title: '<b>' + esc(c[0]) + '</b> · CD-CODE ' + esc(c[1]) + (c[2] !== 'biomolecular' ? ' · ' + esc(c[2]) : '') + (condDrivers(k).length ? '<br>Drivers (methylated): ' + esc(condDrivers(k).join(', ')) : '') + '<br>' + m + ' of ' + n + ' counted members methylated (' + pct(m, n) + '%)' + (thr ? ' (confidence ≥ ' + thr + ')' : '') +
           '<br>Against ' + (condBg === 'proteome' ? 'all reviewed human proteins' : 'all proteins in any condensate') + ': ' + effName() + ' ' + fmtL2(l2) + ', q ' + fmtP(q) +
           (!thr && hasProteome ? '<br><span class="muted">' + (condBg === 'proteome' ? 'vs other condensates: ' + fmtL2(c[5]) + ', q ' + fmtP(c[6]) : 'vs the proteome: ' + fmtL2(c[7]) + ', q ' + fmtP(c[8])) + '</span>' : '') })),
       fold: FOLD(), axis: FOLD() ? 'log2 fold enrichment vs ' + (condBg === 'proteome' ? 'all reviewed proteins' : 'all condensate proteins') : '', keepOrder: true,
@@ -3984,8 +3984,8 @@
       const chartTile = (spec) => {
         if (!spec) return null;
         // a set whose members are all methylated is as enriched as a set can be: tagged "all"
-        const row = (r) => ({ label: short(r), main: { or: 2 ** r.value, sig: true, q: r.q, fold: !!spec.fold }, tag: r.allIn ? 'all' : '',
-          tipMore: r.allIn ? 'All ' + r.allIn + ' members are methylated, so ' + fx(2 ** r.value) + '× is the most enrichment a set can reach' : '' });
+        const row = (r) => ({ label: short(r), main: { or: 2 ** r.value, sig: true, q: r.q, fold: !!spec.fold }, tag: r.allIn && !scoped ? r.allIn + '/' + r.allIn : '',
+          tipMore: r.allIn && !scoped ? 'All ' + r.allIn + ' members are methylated, so ' + fx(2 ** r.value) + '× is the most enrichment a set can reach' : '' });
         const differ = (r) => ok(r) && r.sig && aBig(r.value);
         const kept = spec.keepOrder ? () => 0 : null;
         const up = spec.rows.filter((r) => differ(r) && r.value > 0).sort(kept || ((a, b) => b.value - a.value));
@@ -3995,23 +3995,23 @@
         const same = spec.rows.filter((r) => ok(r) && r.sig && !aBig(r.value)).sort(kept || ((a, b) => Math.abs(b.value) - Math.abs(a.value)));
         const nSame = Math.max(0, 7 - nUp - nDn), rows = up.slice(0, nUp).concat(dn.slice(0, nDn)).concat(same.slice(0, nSame)).map(row);
         const left = up.slice(nUp).concat(dn.slice(nDn), same.slice(nSame)), more = left.length;
-        return { vis: rows.length ? aForest([[null, rows]], { compact: true }) + (more ? '<span class="a-more-n" data-more="' + esc(JSON.stringify(left.map((r) => r.label))) + '" title="Open the section at the ' + more + ' not shown here">+' + more + ' more ›</span>' : '') : '', head: rows.length ? '' : 'none differs (q ≤ ' + PADJ + ')', whole: '' };
+        const capped = rows.some((r) => r.tag);
+        return { vis: rows.length ? aForest([[null, rows]], { compact: true }) + (capped ? '<span class="a-cap-key"><span class="aq-tag">n/n</span> every member methylated: as enriched as a set can be</span>' : '') + (more ? '<span class="a-more-n" data-more="' + esc(JSON.stringify(left.map((r) => r.label))) + '" title="Open the section at the ' + more + ' not shown here">+' + more + ' more ›</span>' : '') : '', head: rows.length ? '' : 'none differs (q ≤ ' + PADJ + ')', whole: '' };
       };
       const ixStack = (ss) => { if (!ixReady()) return ''; const k = { exp: 0, pred: 0, none: 0 }; for (const s of ss) k[ixStatus(s)]++; return aStack([{ n: k.exp, cls: 'exp', label: 'Experimental evidence', key: 'experimental' }, { n: k.pred, cls: 'pred', label: 'Predicted only', key: 'predicted' }, { n: k.none, cls: 'none', label: 'None recorded' }]); };
       const studies = (ss) => { let m = 0; for (const s of ss) m |= s.study; return popcount(m); };
       const multiShare = share((s) => popcount(s.study) >= 2);
-      const trAll = treatRows(scoped ? R.sites : S).filter((r) => r.n);
-      const trName = (r) => (r.t === 2 ? r.cell : ipLabel(r.ipName) + ' IP');
-      const trVis = [['GSK591', 'GSK591 · PRMT5 inhibitor'], ['MS023', 'MS023 · type I PRMT inhibitor'], ['CARM1 KO', 'CARM1 knockout · Rme2a IP']].map(([name, head]) => {
-        const rs = trAll.filter((r) => r.name === name);
-        return rs.length ? '<p class="am-h">' + esc(head) + '</p>' + aMeters(rs.map((r) => ({ label: trName(r), v: r.down / r.n, text: pct(r.down, r.n) + '%', cls: 'down',
-          tip: '<b>' + esc(r.name + ', ' + trName(r)) + '</b><br>' + fmt(r.down) + ' of ' + fmt(r.n) + ' measured sites decreased' + (r.up ? '; ' + fmt(r.up) + ' increased' : '') })), { tight: true }) : '';
-      }).join('');
+      // every perturbation and methyl-IP, ranked by the number of sites that lose methylation
+      const trAll = treatRows(scoped ? R.sites : S).filter((r) => r.n).sort((a, b) => b.down - a.down || b.n - a.n);
+      const trMax = Math.max(1, ...trAll.map((r) => r.down));
+      const trName = (r) => (r.t === 2 ? 'CARM1 KO ' + r.cell : r.name + ' ' + ipLabel(r.ipName));
+      const trVis = trAll.length ? aMeters(trAll.map((r) => ({ label: trName(r), v: r.down / trMax, text: fmt(r.down), cls: 'down',
+        tip: '<b>' + esc(r.t === 2 ? 'CARM1 knockout, ' + r.cell + ' (Rme2a IP)' : r.name + ' (' + (TREAT_HELP[r.name] || '') + '), ' + ipLabel(r.ipName) + ' IP') + '</b><br>' + fmt(r.down) + ' of ' + fmt(r.n) + ' measured sites decreased (' + pct(r.down, r.n) + '%)' + (r.up ? '; ' + fmt(r.up) + ' increased' : '') })), { tight: true }) : '';
       const ov = {
         'ov-pan': chartTile(pan || func), 'ov-dis': chartTile(dis), 'ov-cond': chartTile(cond), 'ov-loc': chartTile(loc), 'ov-motif': chartTile(motif), 'ov-struct': chartTile(sctx || disorder),
         'ov-ix': ixReady() ? { vis: ixStack(scoped ? R.sites : S), head: '<b>' + fmt((scoped ? R.sites : S).filter((s) => ixStatus(s) === 'exp').length) + '</b> sites with experimental evidence' } : { vis: '' },
         'ov-study': { vis: aMeters([{ label: 'Reported by two or more', v: multiShare(scoped ? R.sites : S), text: pctText(Math.round(1000 * (multiShare(scoped ? R.sites : S) || 0)), 1000) + '%', cls: 'sel' }]), head: '<b>' + studies(scoped ? R.sites : S) + '</b> studies and databases report ' + (scoped ? 'your sites' : 'the sites') },
-        'ov-treat': { vis: trVis ? '<div class="a-treat">' + trVis + '</div>' : '', head: 'Share of the measured sites that lose methylation' },
+        'ov-treat': { vis: trVis ? '<div class="a-treat">' + trVis + '</div>' : '', head: 'Sites that lose methylation with each PRMT inhibitor (Maron 2021) or CARM1 knockout (Shishkova 2017)' },
         'ov-start': { vis: '<span class="a-pills">' + topSites.slice(0, 8).map((p) => '<span class="a-pill">' + esc(p.label) + '<b>' + p.sites.length + '</b></span>').join('') + '</span>', head: 'The proteins with the most sites, and quick selections' },
       };
       for (const k of Object.keys(ov)) if (!ov[k]) delete ov[k];
@@ -4827,7 +4827,8 @@
         (vis ? '<span class="a-vis">' + vis + '</span>' : '') + '<span class="a-head" data-sum-of="' + r.key + '"' + (o.head != null ? ' data-fixed' : '') + '>' + head + '</span>' + (whole ? '<span class="a-whole"><span>Whole dataset</span> ' + whole + '</span>' : '') + '</button>';
     };
     return '<div class="a-home hub-only">' +
-      (lead ? '<section class="a-lead"><h2 class="a-q">' + lead.q + '</h2>' + (lead.pic || '') + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') + (lead.hi || '') +
+      '<p class="print-only pdf-scope">' + (scoped ? 'Selection: ' + esc(selectionText()) + ' · ' + fmt(R.sites.length) + ' sites on ' + fmt(R.prots.length) + ' proteins' : 'All ' + fmt(S.length) + ' sites on ' + fmt(P.length) + ' proteins') + ' · ' + new Date().toISOString().slice(0, 10) + '</p>' +
+      (lead ? '<section class="a-lead"><div class="a-q-row"><h2 class="a-q">' + lead.q + '</h2><button type="button" class="btn small screen-only" data-pdf-page title="This page\'s cards as an A4 PDF, for ' + (scoped ? 'your selection' : 'all sites') + '">Download PDF</button></div>' + (lead.pic || '') + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') + (lead.hi || '') +
         (lead.fig ? '<div class="card a-fig">' + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
       '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>' +
         (ins[g] ? '<section class="a-grp a-wide">' + ins[g] + '</section>' : '')).join('') + '</div>' +
@@ -4918,7 +4919,7 @@
       [[ovw.panther_groups, [g]], [ovw.panther_classes, c >= 0 ? [c] : []], [ovw.panther_subclasses || [], sk || []]]
         .forEach(([table, ks]) => ks.forEach((k) => { const r = table[k]; if (r && r[0] !== pm.unclassified) cats.push({ name: r[0], l2: r[4], q: r[5], kind: 'Protein class', go: 'p-func' }); }));
     }
-    for (const k of p.cond || []) { const c = M.condensates[k]; if (c) cats.push({ name: c[0], l2: c[7] != null ? c[7] : c[5], q: c[8] != null ? c[8] : c[6], kind: 'Condensate', go: 'p-cond' }); }
+    for (const k of p.cond || []) { const c = M.condensates[k]; if (c) cats.push({ name: condName(k), l2: c[7] != null ? c[7] : c[5], q: c[8] != null ? c[8] : c[6], kind: 'Condensate', go: 'p-cond' }); }
     const top = cats.filter((x) => x.l2 != null && x.q != null && x.q <= PADJ && x.l2 > 0 && aBig(x.l2)).sort((a, b) => b.l2 - a.l2)[0];
     if (top) cards.push({ go: top.go, kind: top.kind, glyph: top.kind === 'Condensate' ? aGlyph.drops() : aGlyph.cls(), big: fx(2 ** top.l2) + '×', dir: 'up', label: top.name,
       tip: '<b>' + esc(top.name) + '</b>: ' + esc(p.label) + ' belongs to it. Across the dataset, methylated proteins are ' + fx(2 ** top.l2) + '× over-represented in it (q ' + fmtP(top.q) + ')' });
@@ -4997,14 +4998,15 @@
     list.map((p) => '<button type="button" class="a-map" data-map-p="' + p.i + '" aria-label="Open ' + esc(p.label) + '"></button>').join('') + '</div>';
   function bindAMaps(root) {
     const maps = $$('.a-maps .a-map', root);
-    const draw = () => maps.forEach((b, k) => {
+    // drawn to the box's width (or to w, for a PDF page)
+    const draw = UI.drawMaps = (w) => maps.forEach((b, k) => {
       if (!document.body.contains(b)) return;
       const p = P[+b.dataset.mapP];
       b.innerHTML = '<span class="a-map-go" aria-hidden="true">Open ' + esc(p.label) + ' ›</span>' +
-        contactCartoonSvg(p, UNIDATA.get(p.acc), null, { pal: Object.assign(screenPalette(), { bg: cssVar('--surface') }), W: Math.max(560, Math.round(b.clientWidth || 900)), noLanes: true, noLegend: k < maps.length - 1 }).svg;
+        contactCartoonSvg(p, UNIDATA.get(p.acc), null, { pal: Object.assign(screenPalette(), { bg: cssVar('--surface') }), W: w || Math.max(560, Math.round(b.clientWidth || 900)), noLanes: true, noLegend: k < maps.length - 1 }).svg;
     });
     draw();
-    maps.forEach((b) => { const p = P[+b.dataset.mapP]; loadUniProt(p.acc).then(draw, () => {}); b.addEventListener('click', () => openProtein(p.i)); });
+    maps.forEach((b) => { const p = P[+b.dataset.mapP]; loadUniProt(p.acc).then(() => draw(), () => {}); b.addEventListener('click', () => openProtein(p.i)); });
     const sh = $('[data-ex-shuffle]', root), card = $('.a-maps', root);
     if (sh && card) sh.addEventListener('click', () => { card.outerHTML = aMapsHtml(exProts(true), ''); bindAMaps(root); }, { once: true });
   }
@@ -5051,8 +5053,27 @@
     window.scrollTo({ top: Math.max(0, hits[0].getBoundingClientRect().top + window.scrollY - barBottom() - 90), behavior: 'smooth' });
     setTimeout(() => hits.forEach((b) => b.classList.remove('hb-more')), 6000);
   }
+  // A cards page (Overview, Interactions) as an A4 PDF: its question, figures and tiles, for the selection shown;
+  // drawn light whatever the theme (the page is drawn again light for it, then back).
+  async function pagePdf(btn) {
+    const text = btn.textContent, what = VIEW_NAMES[UI.view] || 'Overview', day = new Date().toISOString().slice(0, 10), sel = constraints().length > 0;
+    const root = document.documentElement, prev = root.getAttribute('data-theme'), dark = themeName() === 'dark', y = window.scrollY;
+    btn.disabled = true;
+    btn.textContent = 'Writing PDF…';
+    if (dark) { root.setAttribute('data-theme', 'light'); applyTokens('light'); renderView(); }
+    if (UI.drawMaps && $('#content .a-maps')) UI.drawMaps(PDF_WIDTH - 40);   // the maps at the printed width
+    try {
+      await downloadPdf($('#content'), what + ' · ' + (sel ? selectionText() : 'all sites') + ' · ' + day, 'methylarginines_' + what.toLowerCase() + (sel ? '_selection' : '') + '_' + day + '.pdf', 'pdf-cards');
+    } catch (e) {
+      alert('The PDF could not be written (' + e.message + ').');
+    } finally {
+      if (dark) { if (prev == null) root.removeAttribute('data-theme'); else root.setAttribute('data-theme', prev); applyTokens(); renderView(); window.scrollTo(0, y); }
+      else { btn.disabled = false; btn.textContent = text; if (UI.drawMaps && $('#content .a-maps')) UI.drawMaps(); }
+    }
+  }
   function bindAHome(root) {
     root.classList.toggle('a-mode', UI_A);
+    $$('[data-pdf-page]', root).forEach((b) => b.addEventListener('click', () => pagePdf(b)));
     const home = $('.a-home', root);
     if (!home) return;
     $$('[data-go]', home).forEach((b) => b.addEventListener('click', (e) => {
@@ -5591,6 +5612,16 @@
   const EVID_LABEL = [[1, 'in vivo'], [2, 'in cellulo'], [4, 'in vitro'], [8, 'FRAP'], [16, 'colocalisation'], [32, 'mass spectrometry'], [64, 'emergent properties'], [128, 'other']];
   const stars = (n) => '<span class="stars" role="img" aria-label="' + n + ' of 5">' + [1, 2, 3, 4, 5].map((k) => '<i class="' + (k <= n ? 'on' : '') + '">★</i>').join('') + '</span>';
   const cdMemberships = (p) => (ixReady() ? IX.cd.get(p.i) || [] : null);
+  // A condensate's CD-CODE name with, in parentheses, its drivers among the methylated proteins (two, then a count),
+  // unless the name already says one: "Anisosome (TARDBP)". A trailing abbreviation gives way to them.
+  const condDrivers = (k) => (ixReady() && IX.cdDrivers ? (IX.cdDrivers.get(k) || []).map((x) => x[1]) : []);
+  function condName(k) {
+    const c = M.condensates[k];
+    if (!c) return '';
+    const dr = condDrivers(k).filter((g) => !c[0].toUpperCase().includes(g.toUpperCase()));
+    if (!dr.length) return c[0];
+    return c[0].replace(/\s*\([^()]*\)$/, '') + ' (' + dr.slice(0, 2).join(', ') + (dr.length > 2 ? ' +' + (dr.length - 2) : '') + ')';
+  }
 
   // Human Protein Atlas locations of this protein: main locations first, each with HPA's reliability; in the dataset
   // view, how methylated proteins as a whole are enriched at each of them.
@@ -8421,7 +8452,11 @@
     }
     const iaProt = new Map((d.intact_prot || []).map(([i, regions, muts]) => [i, { regions, muts }]));
     const modelledGaps = new Map((d.modelled_gaps || []).map(([k, pos, pdbs]) => [k, { pos, pdbs }]));
-    IX = { meta: d.meta, prot, byEnsp, cx, cxOf, enrich: d.enrich || {}, goEnrich: d.go_enrich || {}, strata: d.enrich_strata || {}, cd, wr, nP,
+    // CD-CODE drivers of each condensate among the methylated proteins, the most confident first.
+    const cdDrivers = new Map();
+    for (const [i, ci, score, roles] of d.cd_members || []) if ((roles & 2) && P[i]) { if (!cdDrivers.has(ci)) cdDrivers.set(ci, []); cdDrivers.get(ci).push([score, P[i].label]); }
+    for (const v of cdDrivers.values()) v.sort((a, b) => b[0] - a[0] || a[1].localeCompare(b[1]));
+    IX = { meta: d.meta, prot, byEnsp, cx, cxOf, enrich: d.enrich || {}, goEnrich: d.go_enrich || {}, strata: d.enrich_strata || {}, cd, cdDrivers, wr, nP,
       geoSummary: d.geometry_summary || {}, rg: d.rg_iface || {}, modelledGaps, condConf: d.cond_conf || {}, condConfP: d.cond_conf_proteome || null, nModelled: (d.modelled || []).length,
       predEnrich: d.pred_enrich || {}, nPred: (d.pred || []).length, condHist: d.cond_score_hist || {}, gallery,
       xlProt, xlEnrich: d.xl_enrich || {}, xlSets: d.xl_sets || [], xlTypes: d.xl_types || {}, xlFreq: d.xl_freq || null,
@@ -12685,7 +12720,7 @@
   }
   // jsPDF's built-in fonts cover Latin-1 only.
   const pdfText = (t) => String(t).replace(/[–—]/g, '-').replace(/[≥]/g, '>=').replace(/[≤]/g, '<=').replace(/[^\x20-\xff]/g, '');
-  async function downloadPdf(root, label, filename) {
+  async function downloadPdf(root, label, filename, cls) {
     await Promise.all(PDF_LIBS.map(loadScript));
     const pg = PDF_PAGE, mmPerPx = (pg.w - 2 * pg.side) / PDF_WIDTH, pageH = (pg.h - pg.top - pg.bottom) / mmPerPx;
     // Two canvas pixels per CSS pixel, fewer for very long pages (browsers cap a canvas at about 32,000 pixels).
@@ -12697,22 +12732,41 @@
       scale, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: PDF_WIDTH,
       onclone: (doc) => {
         doc.documentElement.classList.add('pdf-export');
+        if (cls) doc.documentElement.classList.add(cls);
         const st = doc.createElement('style');
         st.textContent = printRulesCss();
         doc.head.appendChild(st);
         return (doc.fonts ? doc.fonts.ready : Promise.resolve()).then(() => {
           const el = doc.getElementById(root.id), top = el.getBoundingClientRect().top;
+          // figures drawn to the screen's width take the printed box's width, scaled by their viewBox (given one
+          // from their own size where they have none)
+          if (cls) el.querySelectorAll('svg').forEach((svg) => {
+            if (svg.closest('.a-map, .a-maps, .cc-box')) { svg.style.width = '100%'; svg.style.height = 'auto'; }
+            const w = +svg.getAttribute('width'), h = +svg.getAttribute('height'), r = svg.getBoundingClientRect();
+            if (!svg.getAttribute('viewBox') && w > 0 && h > 0) svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+            const vb = (svg.getAttribute('viewBox') || '').split(/[\s,]+/).map(Number);
+            if (r.width && vb.length === 4 && vb[2] > 0) { svg.setAttribute('width', r.width); svg.setAttribute('height', r.width * vb[3] / vb[2]); svg.style.height = 'auto'; }
+          });
           const rect = (x) => { const r = x.getBoundingClientRect(); return [r.top - top, r.bottom - top]; };
-          cuts = Array.from(el.querySelectorAll('.card, section, header, figure, tr, p, li, .fact, .facts, .tbl-wrap, .fig-preview, .print-map, .print-cc, .print-net, .print-3d'))
+          cuts = Array.from(el.querySelectorAll('.card, section, header, figure, tr, p, li, .fact, .facts, .tbl-wrap, .fig-preview, .print-map, .print-cc, .print-net, .print-3d, .a-tile, .a-hi-c, .a-map'))
             .map((x) => rect(x)[1]).filter((y) => y > 0).sort((a, b) => a - b);
-          avoid = Array.from(el.querySelectorAll('.card:not(.tbl-card), figure, .fact, .facts, svg, img, tr'))
+          avoid = Array.from(el.querySelectorAll('.card:not(.tbl-card), figure, .fact, .facts, svg, img, tr, .a-tile, .a-hi-c, .a-map'))
             .map(rect).filter(([a, b]) => b - a > 0 && b - a < pageH * 0.9);
           // A heading stays with the first lines under it.
           avoid.push(...Array.from(el.querySelectorAll('h2, h3, h4, .card-head')).map(rect).filter(([a, b]) => b > a).map(([a, b]) => [a, b + 60]));
         });
       },
     });
-    const H = canvas.height / scale, Wc = canvas.width / scale;
+    // white space at the foot of the page is not a page of its own
+    const g0 = canvas.getContext('2d');
+    let last = canvas.height - 1;
+    for (; last > 0; last -= 3) {
+      const px = g0.getImageData(0, last, canvas.width, 1).data;
+      let ink = false;
+      for (let i = 0; i < px.length; i += 12) if (px[i] < 245 || px[i + 1] < 245 || px[i + 2] < 245) { ink = true; break; }
+      if (ink) break;
+    }
+    const H = Math.min(canvas.height, last + 12 * scale) / scale, Wc = canvas.width / scale;
     const free = (y) => !avoid.some(([a, b]) => a < y - 0.5 && y + 0.5 < b);
     const pages = [];
     for (let y = 0; y < H - 2;) {
