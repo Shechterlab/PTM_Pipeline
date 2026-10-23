@@ -1,0 +1,398 @@
+analysis	category	stratum	a_v1.0.0	log2_effect_v1.0.0	q_v1.0.0	call_v1.0.0	a_v1.1.0	log2_effect_v1.1.0	q_v1.1.0	call_v1.1.0	a_v1.2.0	log2_effect_v1.2.0	q_v1.2.0	call_v1.2.0	a_v1.2.0-lc	log2_effect_v1.2.0-lc	q_v1.2.0-lc	call_v1.2.0-lc	a_v1.3.0	log2_effect_v1.3.0	q_v1.3.0	call_v1.3.0	a_v1.3.0-lc	log2_effect_v1.3.0-lc	q_v1.3.0-lc	call_v1.3.0-lc	calls_agree
+panther_group	RNA processing and translation	all	625	1.28	2.62042e-129	enriched	640	1.27	2.13858e-132	enriched	612	1.29	4.30738e-128	enriched	640	1.26	3.95261e-131	enriched	612	1.29	4.30738e-128	enriched	640	1.26	3.95261e-131	enriched	true
+panther_group	Scaffolds, adaptors and chaperones	all	300	0.472	6.18087e-10	enriched	306	0.456	1.21915e-09	enriched	281	0.425	9.47962e-08	enriched	305	0.444	3.63613e-09	enriched	281	0.425	9.47962e-08	enriched	305	0.444	3.63613e-09	enriched	true
+panther_group	Transcription, chromatin and DNA	all	551	0.196	0.000316247	enriched	571	0.204	0.000119831	enriched	523	0.169	0.00312105	enriched	581	0.221	2.30873e-05	enriched	523	0.169	0.00312105	enriched	581	0.221	2.30873e-05	enriched	true
+panther_group	Cytoskeleton, adhesion and matrix	all	335	0.146	0.0461631	enriched	345	0.145	0.043584	enriched	327	0.159	0.0250518	enriched	352	0.166	0.0176319	enriched	327	0.159	0.0250518	enriched	352	0.166	0.0176319	enriched	true
+panther_group	Protein-modifying enzymes	all	394	0.113	0.0784929	ns	408	0.12	0.0558982	ns	400	0.183	0.00474852	enriched	413	0.13	0.0368678	enriched	400	0.183	0.00474852	enriched	413	0.13	0.0368678	enriched	false
+panther_group	Metabolic enzymes	all	448	0.033	0.532142	ns	462	0.0337	0.517408	ns	431	0.0252	0.627661	ns	468	0.0444	0.403358	ns	431	0.0252	0.627661	ns	468	0.0444	0.403358	ns	true
+panther_group	Other PANTHER classes	all	10	-0.453	1	ns	10	-0.497	1	ns	10	-0.405	1	ns	10	-0.505	1	ns	10	-0.405	1	ns	10	-0.505	1	ns	true
+panther_group	No PANTHER protein class	all	1326	-0.137	1	ns	1362	-0.142	1	ns	1293	-0.125	1	ns	1374	-0.137	1	ns	1293	-0.125	1	ns	1374	-0.137	1	ns	true
+panther_group	Transport and membrane traffic	all	283	-0.344	1	ns	294	-0.332	1	ns	264	-0.396	1	ns	285	-0.385	1	ns	264	-0.396	1	ns	285	-0.385	1	ns	true
+panther_group	Immunity and defence	all	23	-2.6	1	ns	24	-2.58	1	ns	20	-2.75	1	ns	23	-2.65	1	ns	20	-2.75	1	ns	23	-2.65	1	ns	true
+panther_group	Signalling: receptors, ligands and modulators	all	287	-0.943	1	ns	301	-0.918	1	ns	271	-0.978	1	ns	298	-0.941	1	ns	271	-0.978	1	ns	298	-0.941	1	ns	true
+panther_class	RNA metabolism protein	all	425	1.22	2.40037e-78	enriched	433	1.2	8.50618e-79	enriched	423	1.26	6.1698e-82	enriched	437	1.2	1.99423e-80	enriched	423	1.26	6.1698e-82	enriched	437	1.2	1.99423e-80	enriched	true
+panther_class	translational protein	all	200	1.41	1.8724e-48	enriched	207	1.42	2.23599e-51	enriched	189	1.38	5.36845e-43	enriched	203	1.38	4.91635e-48	enriched	189	1.38	5.36845e-43	enriched	203	1.38	4.91635e-48	enriched	true
+panther_class	chromatin/chromatin-binding, or -regulatory protein	all	151	1.08	2.99294e-22	enriched	157	1.09	6.50279e-24	enriched	133	0.946	2.40497e-15	enriched	157	1.09	1.19824e-23	enriched	133	0.946	2.40497e-15	enriched	157	1.09	1.19824e-23	enriched	true
+panther_class	cytoskeletal protein	all	239	0.75	4.33734e-18	enriched	245	0.743	2.31438e-18	enriched	231	0.749	3.81134e-17	enriched	248	0.752	4.67274e-19	enriched	231	0.749	3.81134e-17	enriched	248	0.752	4.67274e-19	enriched	true
+panther_class	chaperone	all	102	1.09	1.02756e-15	enriched	103	1.06	2.78663e-15	enriched	96	1.05	1.01676e-13	enriched	101	1.03	3.9736e-14	enriched	96	1.05	1.01676e-13	enriched	101	1.03	3.9736e-14	enriched	true
+panther_class	DNA metabolism protein	all	80	0.664	1.97408e-05	enriched	81	0.638	3.37645e-05	enriched	77	0.657	4.02817e-05	enriched	81	0.63	4.1908e-05	enriched	77	0.657	4.02817e-05	enriched	81	0.63	4.1908e-05	enriched	true
+panther_class	scaffold/adaptor protein	all	198	0.232	0.0197488	enriched	203	0.225	0.0211775	enriched	185	0.182	0.0768776	ns	204	0.224	0.0194582	enriched	185	0.182	0.0768776	ns	204	0.224	0.0194582	enriched	false
+panther_class	membrane traffic protein	all	115	0.25	0.0641642	ns	122	0.291	0.0211775	enriched	116	0.31	0.017505	enriched	124	0.307	0.0154964	enriched	116	0.31	0.017505	enriched	124	0.307	0.0154964	enriched	false
+panther_class	protein modifying enzyme	all	394	0.113	0.0991071	ns	408	0.12	0.0705785	ns	400	0.183	0.00616691	enriched	413	0.13	0.0465502	enriched	400	0.183	0.00616691	enriched	413	0.13	0.0465502	enriched	false
+panther_class	protein-binding activity modulator	all	190	0.0853	0.458878	ns	199	0.108	0.294058	ns	180	0.0553	0.724306	ns	198	0.0931	0.387664	ns	180	0.0553	0.724306	ns	198	0.0931	0.387664	ns	true
+panther_class	metabolite interconversion enzyme	all	448	0.033	0.65968	ns	462	0.0337	0.641414	ns	431	0.0252	0.778092	ns	468	0.0444	0.500031	ns	431	0.0252	0.778092	ns	468	0.0444	0.500031	ns	true
+panther_class	calcium-binding protein	all	25	-0.0334	1	ns	26	-0.0205	1	ns	25	0.0146	1	ns	26	-0.0284	1	ns	25	0.0146	1	ns	26	-0.0284	1	ns	true
+panther_class	storage protein	all	1	-0.844	1	ns	1	-0.888	1	ns	1	-0.796	1	ns	1	-0.896	1	ns	1	-0.796	1	ns	1	-0.896	1	ns	true
+panther_class	viral or transposable element protein	all	9	-0.402	1	ns	9	-0.446	1	ns	9	-0.354	1	ns	9	-0.454	1	ns	9	-0.354	1	ns	9	-0.454	1	ns	true
+panther_class	extracellular matrix protein	all	26	-0.273	1	ns	27	-0.262	1	ns	26	-0.225	1	ns	30	-0.118	1	ns	26	-0.225	1	ns	30	-0.118	1	ns	true
+panther_class	cell junction protein	all	9	-0.581	1	ns	10	-0.473	1	ns	9	-0.533	1	ns	10	-0.481	1	ns	9	-0.533	1	ns	10	-0.481	1	ns	true
+panther_class	transfer/carrier protein	all	21	-0.539	1	ns	21	-0.583	1	ns	19	-0.636	1	ns	20	-0.662	1	ns	19	-0.636	1	ns	20	-0.662	1	ns	true
+panther_class	gene-specific transcriptional regulator	all	320	-0.166	1	ns	333	-0.153	1	ns	313	-0.15	1	ns	343	-0.118	1	ns	313	-0.15	1	ns	343	-0.118	1	ns	true
+panther_class	structural protein	all	20	-1.09	1	ns	20	-1.14	1	ns	20	-1.04	1	ns	20	-1.14	1	ns	20	-1.04	1	ns	20	-1.14	1	ns	true
+panther_class	cell adhesion molecule	all	41	-0.836	1	ns	43	-0.811	1	ns	41	-0.788	1	ns	44	-0.785	1	ns	41	-0.788	1	ns	44	-0.785	1	ns	true
+panther_class	No PANTHER protein class	all	1326	-0.137	1	ns	1362	-0.142	1	ns	1293	-0.125	1	ns	1374	-0.137	1	ns	1293	-0.125	1	ns	1374	-0.137	1	ns	true
+panther_class	transporter	all	147	-0.657	1	ns	151	-0.662	1	ns	129	-0.798	1	ns	141	-0.769	1	ns	129	-0.798	1	ns	141	-0.769	1	ns	true
+panther_class	defense/immunity protein	all	23	-2.6	1	ns	24	-2.58	1	ns	20	-2.75	1	ns	23	-2.65	1	ns	20	-2.75	1	ns	23	-2.65	1	ns	true
+panther_class	intercellular signal molecule	all	23	-1.99	1	ns	24	-1.97	1	ns	23	-1.94	1	ns	23	-2.04	1	ns	23	-1.94	1	ns	23	-2.04	1	ns	true
+panther_class	transmembrane signal receptor	all	49	-2.39	1	ns	52	-2.34	1	ns	43	-2.53	1	ns	51	-2.38	1	ns	43	-2.53	1	ns	51	-2.38	1	ns	true
+panther_subclass	RNA processing factor	all	153	1.43	5.59096e-37	enriched	155	1.41	9.06927e-37	enriched	147	1.42	1.98669e-34	enriched	154	1.39	9.7619e-36	enriched	147	1.42	1.98669e-34	enriched	154	1.39	9.7619e-36	enriched	true
+panther_subclass	RNA splicing factor	all	95	1.67	1.58909e-31	enriched	95	1.63	2.08382e-30	enriched	89	1.62	2.83887e-27	enriched	94	1.6	2.72574e-29	enriched	89	1.62	2.83887e-27	enriched	94	1.6	2.72574e-29	enriched	true
+panther_subclass	ribosomal protein	all	101	1.34	1.34915e-21	enriched	103	1.32	7.27169e-22	enriched	94	1.28	3.22631e-18	enriched	100	1.27	7.64423e-20	enriched	94	1.28	3.22631e-18	enriched	100	1.27	7.64423e-20	enriched	true
+panther_subclass	translation factor	all	70	1.46	6.15054e-18	enriched	74	1.5	2.9032e-20	enriched	67	1.45	1.54861e-16	enriched	74	1.49	5.47104e-20	enriched	67	1.45	1.54861e-16	enriched	74	1.49	5.47104e-20	enriched	true
+panther_subclass	RNA helicase	all	48	1.57	3.3079e-14	enriched	49	1.56	1.67645e-14	enriched	47	1.59	5.74512e-14	enriched	49	1.55	2.11703e-14	enriched	47	1.59	5.74512e-14	enriched	49	1.55	2.11703e-14	enriched	true
+panther_subclass	microtubule binding motor protein	all	41	1.45	2.15265e-10	enriched	41	1.4	5.13622e-10	enriched	39	1.42	2.00435e-09	enriched	41	1.4	6.1768e-10	enriched	39	1.42	2.00435e-09	enriched	41	1.4	6.1768e-10	enriched	true
+panther_subclass	translation initiation factor	all	45	1.33	1.06162e-09	enriched	49	1.4	6.72376e-12	enriched	43	1.31	6.44107e-09	enriched	49	1.4	8.38271e-12	enriched	43	1.31	6.44107e-09	enriched	49	1.4	8.38271e-12	enriched	true
+panther_subclass	Hsp70 family chaperone	all	15	2.16	2.92441e-09	enriched	15	2.11	4.61082e-09	enriched	14	2.1	9.65083e-08	enriched	15	2.1	5.0072e-09	enriched	14	2.1	9.65083e-08	enriched	15	2.1	5.0072e-09	enriched	true
+panther_subclass	actin or actin-binding cytoskeletal protein	all	107	0.783	1.07402e-08	enriched	109	0.766	1.34551e-08	enriched	100	0.734	3.23396e-07	enriched	109	0.758	1.87363e-08	enriched	100	0.734	3.23396e-07	enriched	109	0.758	1.87363e-08	enriched	true
+panther_subclass	aminoacyl-tRNA synthetase	all	26	1.5	2.77543e-07	enriched	27	1.51	8.79676e-08	enriched	25	1.49	7.15555e-07	enriched	26	1.45	5.52002e-07	enriched	25	1.49	7.15555e-07	enriched	26	1.45	5.52002e-07	enriched	true
+panther_subclass	microtubule or microtubule-binding cytoskeletal protein	all	95	0.743	3.96812e-07	enriched	98	0.744	1.95137e-07	enriched	94	0.775	1.86318e-07	enriched	101	0.779	2.71348e-08	enriched	94	0.775	1.86318e-07	enriched	101	0.779	2.71348e-08	enriched	true
+panther_subclass	non-receptor serine/threonine protein kinase	all	114	0.571	2.30599e-05	enriched	119	0.589	5.97247e-06	enriched	113	0.606	7.42991e-06	enriched	117	0.557	2.57197e-05	enriched	113	0.606	7.42991e-06	enriched	117	0.557	2.57197e-05	enriched	true
+panther_subclass	chaperonin	all	11	1.91	3.52514e-05	enriched	11	1.87	4.84383e-05	enriched	11	1.96	2.44638e-05	enriched	11	1.86	5.05533e-05	enriched	11	1.96	2.44638e-05	enriched	11	1.86	5.05533e-05	enriched	true
+panther_subclass	translation elongation factor	all	11	1.71	0.000362578	enriched	11	1.66	0.000403854	enriched	11	1.76	0.000223876	enriched	12	1.78	5.05533e-05	enriched	11	1.76	0.000223876	enriched	12	1.78	5.05533e-05	enriched	true
+panther_subclass	intermediate filament	all	24	1.1	0.000519719	enriched	25	1.11	0.00024592	enriched	24	1.14	0.000254798	enriched	25	1.1	0.0002413	enriched	24	1.14	0.000254798	enriched	25	1.1	0.0002413	enriched	true
+panther_subclass	kinase	all	51	0.72	0.000612117	enriched	52	0.704	0.000595299	enriched	47	0.65	0.00315285	enriched	51	0.668	0.00120822	enriched	47	0.65	0.00315285	enriched	51	0.668	0.00120822	enriched	true
+panther_subclass	histone modifying enzyme	all	30	0.933	0.000838968	enriched	33	1.03	8.09816e-05	enriched	31	1.03	0.000169827	enriched	32	0.975	0.000223073	enriched	31	1.03	0.000169827	enriched	32	0.975	0.000223073	enriched	true
+panther_subclass	intermediate filament binding protein	all	10	1.67	0.000931218	enriched	11	1.76	0.000154591	enriched	10	1.72	0.00064341	enriched	11	1.76	0.0001635	enriched	10	1.72	0.00064341	enriched	11	1.76	0.0001635	enriched	true
+panther_subclass	non-motor actin binding protein	all	35	0.842	0.000987497	enriched	35	0.798	0.00175303	enriched	34	0.848	0.00112437	enriched	35	0.79	0.00170411	enriched	34	0.848	0.00112437	enriched	35	0.79	0.00170411	enriched	true
+panther_subclass	actin and actin related protein	all	18	1.2	0.00106802	enriched	18	1.15	0.00168944	enriched	14	0.882	0.0451706	enriched	18	1.14	0.00156988	enriched	14	0.882	0.0451706	enriched	18	1.14	0.00156988	enriched	true
+panther_subclass	guanyl-nucleotide exchange factor	all	42	0.665	0.0047267	enriched	42	0.622	0.00780315	enriched	39	0.606	0.0139459	enriched	44	0.681	0.00223988	enriched	39	0.606	0.0139459	enriched	44	0.681	0.00223988	enriched	true
+panther_subclass	dehydrogenase	all	52	0.589	0.00483617	enriched	53	0.573	0.00527343	enriched	54	0.692	0.00064341	enriched	56	0.645	0.00104498	enriched	54	0.692	0.00064341	enriched	56	0.645	0.00104498	enriched	true
+panther_subclass	G-protein modulator	all	85	0.436	0.00689762	enriched	90	0.474	0.0019972	enriched	85	0.484	0.00254243	enriched	93	0.514	0.000589911	enriched	85	0.484	0.00254243	enriched	93	0.514	0.000589911	enriched	true
+panther_subclass	tubulin	all	12	1.22	0.00940613	enriched	12	1.17	0.0119161	enriched	15	1.59	8.02427e-05	enriched	15	1.49	0.000173967	enriched	15	1.59	8.02427e-05	enriched	15	1.49	0.000173967	enriched	true
+panther_subclass	nucleotide kinase	all	16	1.03	0.00996051	enriched	16	0.983	0.0133581	enriched	16	1.07	0.00676129	enriched	17	1.06	0.00473659	enriched	16	1.07	0.00676129	enriched	17	1.06	0.00473659	enriched	true
+panther_subclass	DNA-directed RNA polymerase	all	16	0.908	0.026287	enriched	18	1.03	0.00522565	enriched	17	1.04	0.00676129	enriched	18	1.03	0.00473659	enriched	17	1.04	0.00676129	enriched	18	1.03	0.00473659	enriched	true
+panther_subclass	oxidoreductase	all	153	0.263	0.0289926	enriched	156	0.248	0.035292	enriched	148	0.263	0.0330064	enriched	159	0.267	0.0208352	enriched	148	0.263	0.0330064	enriched	159	0.267	0.0208352	enriched	true
+panther_subclass	peroxidase	all	11	1.09	0.0294498	enriched	11	1.05	0.035292	enriched	10	1	0.059397	ns	11	1.04	0.0356579	enriched	10	1	0.059397	ns	11	1.04	0.0356579	enriched	false
+panther_subclass	non-motor microtubule binding protein	all	32	0.571	0.0393886	enriched	34	0.614	0.0204295	enriched	30	0.526	0.067982	ns	34	0.607	0.020839	enriched	30	0.526	0.067982	ns	34	0.607	0.020839	enriched	false
+panther_subclass	exoribonuclease	all	11	1.03	0.0393886	enriched	11	0.986	0.0480471	enriched	11	1.08	0.0330064	enriched	11	0.978	0.0471529	enriched	11	1.08	0.0330064	enriched	11	0.978	0.0471529	enriched	true
+panther_subclass	isomerase	all	16	0.834	0.0393886	enriched	16	0.79	0.0496715	enriched	13	0.582	0.200692	ns	16	0.782	0.0493619	enriched	13	0.582	0.200692	ns	16	0.782	0.0493619	enriched	false
+panther_subclass	transcription cofactor	all	34	0.543	0.0419028	enriched	34	0.499	0.0602551	ns	31	0.457	0.10948	ns	35	0.533	0.0398032	enriched	31	0.457	0.10948	ns	35	0.533	0.0398032	enriched	false
+panther_subclass	vesicle coat protein	all	17	0.751	0.0562379	ns	18	0.79	0.035292	enriched	16	0.712	0.079969	ns	18	0.782	0.0362572	enriched	16	0.712	0.079969	ns	18	0.782	0.0362572	enriched	false
+panther_subclass	mRNA polyadenylation factor	all	11	0.915	0.0696176	ns	12	0.996	0.035292	enriched	11	0.963	0.0564499	ns	12	0.989	0.0356579	enriched	11	0.963	0.0564499	ns	12	0.989	0.0356579	enriched	false
+panther_subclass	reductase	all	27	0.553	0.0696176	ns	28	0.562	0.0578435	ns	25	0.49	0.129855	ns	27	0.501	0.0942479	ns	25	0.49	0.129855	ns	27	0.501	0.0942479	ns	true
+panther_subclass	mutase	all	7	1.16	0.0778447	ns	7	1.11	0.0914584	ns	5	0.718	0.413147	ns	7	1.1	0.0869066	ns	5	0.718	0.413147	ns	7	1.1	0.0869066	ns	true
+panther_subclass	HMG box transcription factor	all	13	0.769	0.0955993	ns	13	0.725	0.120516	ns	16	1.12	0.00498583	enriched	16	1.02	0.00942608	enriched	16	1.12	0.00498583	enriched	16	1.02	0.00942608	enriched	false
+panther_subclass	nucleotidyltransferase	all	11	0.808	0.113668	ns	11	0.764	0.139415	ns	12	0.981	0.0427234	enriched	12	0.882	0.0606584	ns	12	0.981	0.0427234	enriched	12	0.882	0.0606584	ns	false
+panther_subclass	actin binding motor protein	all	10	0.834	0.12195	ns	10	0.79	0.147507	ns	11	1.02	0.0443785	enriched	11	0.92	0.0613977	ns	11	1.02	0.0443785	enriched	11	0.92	0.0613977	ns	false
+panther_subclass	immunoglobulin fold transcription factor	all	16	0.632	0.123034	ns	16	0.588	0.154162	ns	17	0.768	0.0521692	ns	17	0.668	0.0862622	ns	17	0.768	0.0521692	ns	17	0.668	0.0862622	ns	true
+panther_subclass	DNA helicase	all	9	0.866	0.127216	ns	9	0.822	0.154162	ns	8	0.744	0.21882	ns	9	0.814	0.15286	ns	8	0.744	0.21882	ns	9	0.814	0.15286	ns	true
+panther_subclass	ligase	all	18	0.571	0.134533	ns	18	0.527	0.174847	ns	16	0.449	0.269877	ns	17	0.437	0.273175	ns	16	0.449	0.269877	ns	17	0.437	0.273175	ns	true
+panther_subclass	phosphatase modulator	all	17	0.543	0.174896	ns	17	0.499	0.222769	ns	18	0.673	0.078317	ns	18	0.573	0.132501	ns	18	0.673	0.078317	ns	18	0.573	0.132501	ns	true
+panther_subclass	ubiquitin-protein ligase	all	104	0.184	0.228069	ns	105	0.154	0.305295	ns	102	0.204	0.181806	ns	106	0.16	0.273175	ns	102	0.204	0.181806	ns	106	0.16	0.273175	ns	true
+panther_subclass	carbohydrate kinase	all	7	0.793	0.250203	ns	7	0.749	0.272438	ns	5	0.356	0.779204	ns	6	0.519	0.537234	ns	5	0.356	0.779204	ns	6	0.519	0.537234	ns	true
+panther_subclass	cysteine protease	all	37	0.288	0.282673	ns	38	0.283	0.272438	ns	37	0.336	0.198141	ns	40	0.349	0.155268	ns	37	0.336	0.198141	ns	40	0.349	0.155268	ns	true
+panther_subclass	general transcription factor	all	32	0.31	0.282673	ns	33	0.311	0.272438	ns	33	0.403	0.149176	ns	34	0.346	0.206165	ns	33	0.403	0.149176	ns	34	0.346	0.206165	ns	true
+panther_subclass	endoribonuclease	all	16	0.428	0.320246	ns	16	0.384	0.368683	ns	17	0.563	0.162191	ns	17	0.464	0.253323	ns	17	0.563	0.162191	ns	17	0.464	0.253323	ns	true
+panther_subclass	DNA-directed DNA polymerase	all	6	0.741	0.337259	ns	6	0.697	0.368683	ns	5	0.526	0.589997	ns	5	0.426	0.685262	ns	5	0.526	0.589997	ns	5	0.426	0.685262	ns	true
+panther_subclass	RNA methyltransferase	all	12	0.455	0.376636	ns	13	0.527	0.272438	ns	13	0.619	0.187004	ns	13	0.519	0.273175	ns	13	0.619	0.187004	ns	13	0.519	0.273175	ns	true
+panther_subclass	Rel homology transcription factor	all	11	0.445	0.41884	ns	11	0.401	0.468338	ns	12	0.619	0.198141	ns	12	0.519	0.280955	ns	12	0.619	0.198141	ns	12	0.519	0.280955	ns	true
+panther_subclass	transaminase	all	8	0.512	0.438094	ns	8	0.468	0.485977	ns	9	0.73	0.198141	ns	9	0.63	0.273175	ns	9	0.73	0.198141	ns	9	0.63	0.273175	ns	true
+panther_subclass	protein phosphatase	all	34	0.221	0.438094	ns	35	0.219	0.439314	ns	35	0.311	0.234507	ns	35	0.211	0.453608	ns	35	0.311	0.234507	ns	35	0.211	0.453608	ns	true
+panther_subclass	ATP synthase	all	13	0.302	0.578018	ns	13	0.258	0.655732	ns	11	0.109	0.941963	ns	13	0.25	0.660542	ns	11	0.109	0.941963	ns	13	0.25	0.660542	ns	true
+panther_subclass	GTPase-activating protein	all	38	0.156	0.589232	ns	43	0.29	0.236095	ns	41	0.313	0.198141	ns	43	0.282	0.247676	ns	41	0.313	0.198141	ns	43	0.282	0.247676	ns	true
+panther_subclass	kinase inhibitor	all	7	0.378	0.650296	ns	7	0.334	0.716815	ns	6	0.204	0.914348	ns	7	0.326	0.692205	ns	6	0.204	0.914348	ns	7	0.326	0.692205	ns	true
+panther_subclass	heterotrimeric G-protein	all	12	0.249	0.678476	ns	12	0.205	0.769786	ns	10	0.0337	1	ns	11	0.0716	1	ns	10	0.0337	1	ns	11	0.0716	1	ns	true
+panther_subclass	nucleotide phosphatase	all	5	0.23	0.953238	ns	5	0.186	0.952055	ns	5	0.278	0.870829	ns	5	0.178	0.978933	ns	5	0.278	0.870829	ns	5	0.178	0.978933	ns	true
+panther_subclass	basic leucine zipper transcription factor	all	11	0.0605	1	ns	11	0.0168	1	ns	9	-0.181	1	ns	10	-0.129	1	ns	9	-0.181	1	ns	10	-0.129	1	ns	true
+panther_subclass	myelin protein	all	4	0.156	1	ns	4	0.112	1	ns	5	0.526	0.589997	ns	5	0.426	0.685262	ns	5	0.526	0.589997	ns	5	0.426	0.685262	ns	true
+panther_subclass	G-protein	all	43	0.0121	1	ns	45	0.0339	0.952055	ns	39	-0.0808	1	ns	44	-0.00642	1	ns	39	-0.0808	1	ns	44	-0.00642	1	ns	true
+panther_subclass	extracellular matrix structural protein	all	16	0.0264	1	ns	17	0.0701	0.952055	ns	17	0.162	0.779204	ns	20	0.297	0.445839	ns	17	0.162	0.779204	ns	20	0.297	0.445839	ns	true
+panther_subclass	acetyltransferase	all	8	0.0264	1	ns	9	0.153	0.938703	ns	7	-0.118	1	ns	9	0.145	0.922695	ns	7	-0.118	1	ns	9	0.145	0.922695	ns	true
+panther_subclass	SNARE protein	all	7	0.00881	1	ns	8	0.158	0.939205	ns	9	0.419	0.515522	ns	9	0.32	0.660542	ns	9	0.419	0.515522	ns	9	0.32	0.660542	ns	true
+panther_subclass	small GTPase	all	27	-0.0552	1	ns	28	-0.0465	1	ns	25	-0.118	1	ns	28	-0.0544	1	ns	25	-0.118	1	ns	28	-0.0544	1	ns	true
+panther_subclass	mitochondrial carrier protein	all	3	-0.0667	1	ns	3	-0.11	1	ns	3	-0.0187	1	ns	3	-0.118	1	ns	3	-0.0187	1	ns	3	-0.118	1	ns	true
+panther_subclass	immunoglobulin superfamily cell adhesion molecule	all	12	-0.0923	1	ns	12	-0.136	1	ns	10	-0.307	1	ns	12	-0.144	1	ns	10	-0.307	1	ns	12	-0.144	1	ns	true
+panther_subclass	deaminase	all	3	-0.166	1	ns	3	-0.21	1	ns	3	-0.118	1	ns	3	-0.218	1	ns	3	-0.118	1	ns	3	-0.218	1	ns	true
+panther_subclass	transferase	all	148	-0.0506	1	ns	157	-0.0092	1	ns	145	-0.0322	1	ns	157	-0.0171	1	ns	145	-0.0322	1	ns	157	-0.0171	1	ns	true
+panther_subclass	phosphodiesterase	all	9	-0.166	1	ns	9	-0.21	1	ns	7	-0.481	1	ns	9	-0.218	1	ns	7	-0.481	1	ns	9	-0.218	1	ns	true
+panther_subclass	methyltransferase	all	10	-0.223	1	ns	12	-0.00355	1	ns	10	-0.175	1	ns	12	-0.0115	1	ns	10	-0.175	1	ns	12	-0.0115	1	ns	true
+panther_subclass	damaged DNA-binding protein	all	3	-0.347	1	ns	3	-0.391	1	ns	3	-0.299	1	ns	3	-0.398	1	ns	3	-0.299	1	ns	3	-0.398	1	ns	true
+panther_subclass	lyase	all	25	-0.166	1	ns	25	-0.21	1	ns	23	-0.239	1	ns	25	-0.218	1	ns	23	-0.239	1	ns	25	-0.218	1	ns	true
+panther_subclass	phosphatase	all	25	-0.166	1	ns	25	-0.21	1	ns	24	-0.177	1	ns	27	-0.107	1	ns	24	-0.177	1	ns	27	-0.107	1	ns	true
+panther_subclass	homeodomain transcription factor	all	53	-0.122	1	ns	53	-0.166	1	ns	44	-0.343	1	ns	53	-0.174	1	ns	44	-0.343	1	ns	53	-0.174	1	ns	true
+panther_subclass	C4 zinc finger nuclear receptor	all	9	-0.289	1	ns	9	-0.333	1	ns	9	-0.241	1	ns	9	-0.341	1	ns	9	-0.241	1	ns	9	-0.341	1	ns	true
+panther_subclass	non-receptor tyrosine protein kinase	all	6	-0.347	1	ns	7	-0.168	1	ns	6	-0.299	1	ns	7	-0.176	1	ns	6	-0.299	1	ns	7	-0.176	1	ns	true
+panther_subclass	decarboxylase	all	3	-0.507	1	ns	3	-0.551	1	ns	2	-1.04	1	ns	3	-0.559	1	ns	2	-1.04	1	ns	3	-0.559	1	ns	true
+panther_subclass	primary active transporter	all	45	-0.173	1	ns	45	-0.216	1	ns	38	-0.369	1	ns	43	-0.29	1	ns	38	-0.369	1	ns	43	-0.29	1	ns	true
+panther_subclass	endodeoxyribonuclease	all	2	-0.652	1	ns	2	-0.695	1	ns	2	-0.604	1	ns	2	-0.703	1	ns	2	-0.604	1	ns	2	-0.703	1	ns	true
+panther_subclass	kinase modulator	all	17	-0.296	1	ns	18	-0.257	1	ns	14	-0.528	1	ns	17	-0.348	1	ns	14	-0.528	1	ns	17	-0.348	1	ns	true
+panther_subclass	acyltransferase	all	12	-0.389	1	ns	12	-0.432	1	ns	10	-0.604	1	ns	10	-0.703	1	ns	10	-0.604	1	ns	10	-0.703	1	ns	true
+panther_subclass	metalloprotease	all	29	-0.262	1	ns	30	-0.257	1	ns	30	-0.166	1	ns	31	-0.218	1	ns	30	-0.166	1	ns	31	-0.218	1	ns	true
+panther_subclass	cyclase	all	3	-0.844	1	ns	3	-0.888	1	ns	3	-0.796	1	ns	3	-0.896	1	ns	3	-0.796	1	ns	3	-0.896	1	ns	true
+panther_subclass	helix-turn-helix transcription factor	all	74	-0.209	1	ns	75	-0.233	1	ns	63	-0.393	1	ns	75	-0.241	1	ns	63	-0.393	1	ns	75	-0.241	1	ns	true
+panther_subclass	basic helix-loop-helix transcription factor	all	17	-0.415	1	ns	19	-0.298	1	ns	18	-0.285	1	ns	18	-0.384	1	ns	18	-0.285	1	ns	18	-0.384	1	ns	true
+panther_subclass	oxidase	all	10	-0.545	1	ns	10	-0.589	1	ns	10	-0.497	1	ns	11	-0.459	1	ns	10	-0.497	1	ns	11	-0.459	1	ns	true
+panther_subclass	phospholipase	all	9	-0.581	1	ns	10	-0.473	1	ns	10	-0.381	1	ns	10	-0.481	1	ns	10	-0.381	1	ns	10	-0.481	1	ns	true
+panther_subclass	dehydratase	all	5	-0.77	1	ns	5	-0.814	1	ns	5	-0.722	1	ns	5	-0.822	1	ns	5	-0.722	1	ns	5	-0.822	1	ns	true
+panther_subclass	apolipoprotein	all	4	-0.844	1	ns	4	-0.888	1	ns	4	-0.796	1	ns	4	-0.896	1	ns	4	-0.796	1	ns	4	-0.896	1	ns	true
+panther_subclass	tight junction	all	4	-0.844	1	ns	5	-0.566	1	ns	5	-0.474	1	ns	5	-0.574	1	ns	5	-0.474	1	ns	5	-0.574	1	ns	true
+panther_subclass	serine/threonine protein kinase receptor	all	1	-1.43	1	ns	1	-1.47	1	ns				not tested	1	-1.48	1	ns				not tested	1	-1.48	1	ns	true
+panther_subclass	esterase	all	5	-0.808	1	ns	6	-0.589	1	ns	6	-0.497	1	ns	7	-0.374	1	ns	6	-0.497	1	ns	7	-0.374	1	ns	true
+panther_subclass	membrane-bound signaling molecule	all	4	-0.932	1	ns	4	-0.976	1	ns	4	-0.884	1	ns	4	-0.983	1	ns	4	-0.884	1	ns	4	-0.983	1	ns	true
+panther_subclass	gap junction	all	2	-1.24	1	ns	2	-1.28	1	ns	2	-1.19	1	ns	2	-1.29	1	ns	2	-1.19	1	ns	2	-1.29	1	ns	true
+panther_subclass	ATP-binding cassette (ABC) transporter	all	6	-0.814	1	ns	6	-0.858	1	ns	4	-1.35	1	ns	6	-0.866	1	ns	4	-1.35	1	ns	6	-0.866	1	ns	true
+panther_subclass	calmodulin-related	all	13	-0.587	1	ns	14	-0.524	1	ns	14	-0.432	1	ns	14	-0.532	1	ns	14	-0.432	1	ns	14	-0.532	1	ns	true
+panther_subclass	membrane trafficking regulatory protein	all	19	-0.503	1	ns	21	-0.403	1	ns	22	-0.244	1	ns	22	-0.343	1	ns	22	-0.244	1	ns	22	-0.343	1	ns	true
+panther_subclass	winged helix/forkhead transcription factor	all	19	-0.527	1	ns	20	-0.497	1	ns	17	-0.64	1	ns	20	-0.505	1	ns	17	-0.64	1	ns	20	-0.505	1	ns	true
+panther_subclass	protease inhibitor	all	20	-0.534	1	ns	21	-0.507	1	ns	16	-0.808	1	ns	18	-0.737	1	ns	16	-0.808	1	ns	18	-0.737	1	ns	true
+panther_subclass	protease	all	113	-0.238	1	ns	117	-0.232	1	ns	118	-0.128	1	ns	122	-0.18	1	ns	118	-0.128	1	ns	122	-0.18	1	ns	true
+panther_subclass	interferon superfamily	all	1	-1.84	1	ns	1	-1.89	1	ns	1	-1.8	1	ns	1	-1.9	1	ns	1	-1.8	1	ns	1	-1.9	1	ns	true
+panther_subclass	interleukin superfamily	all	2	-1.49	1	ns	2	-1.53	1	ns	2	-1.44	1	ns	2	-1.54	1	ns	2	-1.44	1	ns	2	-1.54	1	ns	true
+panther_subclass	major histocompatibility complex protein	all	4	-1.17	1	ns	4	-1.21	1	ns	3	-1.53	1	ns	3	-1.63	1	ns	3	-1.53	1	ns	3	-1.63	1	ns	true
+panther_subclass	amino acid transporter	all	2	-1.54	1	ns	2	-1.59	1	ns	2	-1.5	1	ns	2	-1.6	1	ns	2	-1.5	1	ns	2	-1.6	1	ns	true
+panther_subclass	kinase activator	all	4	-1.2	1	ns	5	-0.924	1	ns	4	-1.15	1	ns	4	-1.25	1	ns	4	-1.15	1	ns	4	-1.25	1	ns	true
+panther_subclass	aspartic protease	all	1	-2.09	1	ns	1	-2.14	1	ns	1	-2.04	1	ns	1	-2.14	1	ns	1	-2.04	1	ns	1	-2.14	1	ns	true
+panther_subclass	integrin	all	2	-1.65	1	ns	2	-1.7	1	ns	2	-1.6	1	ns	2	-1.7	1	ns	2	-1.6	1	ns	2	-1.7	1	ns	true
+panther_subclass	glycosidase	all	3	-1.43	1	ns	3	-1.47	1	ns	3	-1.38	1	ns	4	-1.07	1	ns	3	-1.38	1	ns	4	-1.07	1	ns	true
+panther_subclass	glycosyltransferase	all	21	-0.632	1	ns	22	-0.609	1	ns	20	-0.654	1	ns	22	-0.616	1	ns	20	-0.654	1	ns	22	-0.616	1	ns	true
+panther_subclass	hydrolase	all	84	-0.332	1	ns	86	-0.341	1	ns	82	-0.318	1	ns	90	-0.284	1	ns	82	-0.318	1	ns	90	-0.284	1	ns	true
+panther_subclass	cadherin	all	14	-0.857	1	ns	14	-0.901	1	ns	13	-0.916	1	ns	14	-0.909	1	ns	13	-0.916	1	ns	14	-0.909	1	ns	true
+panther_subclass	lipase	all	9	-1.05	1	ns	10	-0.941	1	ns	10	-0.849	1	ns	10	-0.949	1	ns	10	-0.849	1	ns	10	-0.949	1	ns	true
+panther_subclass	complement component	all	1	-2.49	1	ns	1	-2.53	1	ns	1	-2.44	1	ns	1	-2.54	1	ns	1	-2.44	1	ns	1	-2.54	1	ns	true
+panther_subclass	oxygenase	all	11	-0.985	1	ns	11	-1.03	1	ns	10	-1.07	1	ns	11	-1.04	1	ns	10	-1.07	1	ns	11	-1.04	1	ns	true
+panther_subclass	ligand-gated ion channel	all	5	-1.48	1	ns	6	-1.26	1	ns	4	-1.75	1	ns	4	-1.85	1	ns	4	-1.75	1	ns	4	-1.85	1	ns	true
+panther_subclass	DNA-binding transcription factor	all	286	-0.231	1	ns	299	-0.211	1	ns	282	-0.204	1	ns	308	-0.176	1	ns	282	-0.204	1	ns	308	-0.176	1	ns	true
+panther_subclass	voltage-gated ion channel	all	7	-1.64	1	ns	8	-1.49	1	ns	8	-1.4	1	ns	8	-1.5	1	ns	8	-1.4	1	ns	8	-1.5	1	ns	true
+panther_subclass	growth factor	all	6	-1.87	1	ns	7	-1.7	1	ns	6	-1.83	1	ns	6	-1.93	1	ns	6	-1.83	1	ns	6	-1.93	1	ns	true
+panther_subclass	peptide hormone	all	2	-2.82	1	ns	2	-2.87	1	ns	2	-2.77	1	ns	2	-2.87	1	ns	2	-2.77	1	ns	2	-2.87	1	ns	true
+panther_subclass	serine protease	all	19	-1.2	1	ns	21	-1.1	1	ns	23	-0.88	1	ns	23	-0.98	1	ns	23	-0.88	1	ns	23	-0.98	1	ns	true
+panther_subclass	zinc finger transcription factor	all	107	-0.597	1	ns	113	-0.562	1	ns	110	-0.509	1	ns	121	-0.471	1	ns	110	-0.509	1	ns	121	-0.471	1	ns	true
+panther_subclass	cytokine	all	4	-2.52	1	ns	4	-2.56	1	ns	4	-2.47	1	ns	4	-2.57	1	ns	4	-2.47	1	ns	4	-2.57	1	ns	true
+panther_subclass	C2H2 zinc finger transcription factor	all	83	-0.778	1	ns	88	-0.737	1	ns	86	-0.678	1	ns	96	-0.619	1	ns	86	-0.678	1	ns	96	-0.619	1	ns	true
+panther_subclass	ion channel	all	28	-1.34	1	ns	30	-1.28	1	ns	27	-1.34	1	ns	28	-1.39	1	ns	27	-1.34	1	ns	28	-1.39	1	ns	true
+panther_subclass	secondary carrier transporter	all	17	-1.66	1	ns	18	-1.62	1	ns	13	-2	1	ns	15	-1.89	1	ns	13	-2	1	ns	15	-1.89	1	ns	true
+panther_subclass	G-protein coupled receptor	all	15	-2.6	1	ns	15	-2.65	1	ns	13	-2.76	1	ns	16	-2.56	1	ns	13	-2.76	1	ns	16	-2.56	1	ns	true
+panther_subclass	immunoglobulin	all	1	-5.25	1	ns	1	-5.3	1	ns				not tested	1	-5.31	1	ns				not tested	1	-5.31	1	ns	true
+panther_subclass	immunoglobulin receptor superfamily	all	9	-2.7	1	ns	9	-2.75	1	ns	6	-3.24	1	ns	8	-2.92	1	ns	6	-3.24	1	ns	8	-2.92	1	ns	true
+functional_class	Translation / ribosome / biogenesis	all	431	1.15	3.75886e-72	enriched	445	1.15	8.61704e-76	enriched	417	1.15	6.8201e-69	enriched	440	1.13	3.9179e-72	enriched	417	1.15	6.8201e-69	enriched	440	1.13	3.9179e-72	enriched	true
+functional_class	Nuclear scaffold / pore / lamina	all	110	0.989	1.55606e-14	enriched	114	0.996	2.12558e-15	enriched	102	0.928	4.89841e-12	enriched	115	1	1.10223e-15	enriched	102	0.928	4.89841e-12	enriched	115	1	1.10223e-15	enriched	true
+functional_class	RNA-binding / RNP	all	1091	0.893	8.86484e-124	enriched	1117	0.883	1.65296e-125	enriched	1061	0.901	6.20482e-121	enriched	1124	0.884	7.21823e-127	enriched	1061	0.901	6.20482e-121	enriched	1124	0.884	7.21823e-127	enriched	true
+functional_class	Cell cycle / centrosome / spindle	all	85	0.751	1.66379e-07	enriched	89	0.774	3.06639e-08	enriched	86	0.816	1.53201e-08	enriched	89	0.766	4.02652e-08	enriched	86	0.816	1.53201e-08	enriched	89	0.766	4.02652e-08	enriched	true
+functional_class	DNA repair / genome maintenance	all	146	0.734	1.83844e-11	enriched	149	0.72	2.12029e-11	enriched	144	0.763	6.99878e-12	enriched	152	0.741	3.85034e-12	enriched	144	0.763	6.99878e-12	enriched	152	0.741	3.85034e-12	enriched	true
+functional_class	Proteostasis / ubiquitin / chaperone	all	398	0.651	1.0669e-23	enriched	410	0.651	1.44956e-24	enriched	389	0.666	6.54866e-24	enriched	413	0.653	5.79727e-25	enriched	389	0.666	6.54866e-24	enriched	413	0.653	5.79727e-25	enriched	true
+functional_class	Cytoplasmic / trafficking / cytoskeleton	all	732	0.517	2.5699e-29	enriched	758	0.523	2.40154e-31	enriched	706	0.512	1.29187e-27	enriched	755	0.51	8.73851e-30	enriched	706	0.512	1.29187e-27	enriched	755	0.51	8.73851e-30	enriched	true
+functional_class	Mitochondrial / metabolism	all	383	0.445	6.98522e-12	enriched	393	0.438	5.88114e-12	enriched	371	0.447	1.36535e-11	enriched	394	0.434	7.4063e-12	enriched	371	0.447	1.36535e-11	enriched	394	0.434	7.4063e-12	enriched	true
+functional_class	Signaling / enzymes	all	1519	0.365	5.95165e-37	enriched	1568	0.367	7.07421e-39	enriched	1478	0.373	3.0463e-37	enriched	1570	0.361	9.05979e-38	enriched	1478	0.373	3.0463e-37	enriched	1570	0.361	9.05979e-38	enriched	true
+functional_class	Chromatin / transcription	all	1001	0.349	1.19418e-20	enriched	1033	0.35	1.20902e-21	enriched	971	0.353	2.58373e-20	enriched	1047	0.362	2.71137e-23	enriched	971	0.353	2.58373e-20	enriched	1047	0.362	2.71137e-23	enriched	true
+functional_class	Other / unclassified	all	660	-0.366	1	ns	679	-0.369	1	ns	650	-0.34	1	ns	687	-0.36	1	ns	650	-0.34	1	ns	687	-0.36	1	ns	true
+functional_class	Membrane / receptor / extracellular	all	638	-0.891	1	ns	660	-0.886	1	ns	618	-0.889	1	ns	663	-0.887	1	ns	618	-0.889	1	ns	663	-0.887	1	ns	true
+functional_class	Poorly characterized / specialized	all	168	-0.94	1	ns	176	-0.916	1	ns	151	-1.05	1	ns	172	-0.958	1	ns	151	-1.05	1	ns	172	-0.958	1	ns	true
+functional_subclass	Stress granule / paraspeckle / P-body	all	32	1.8	1.1896e-13	enriched	33	1.8	2.34875e-14	enriched	32	1.85	4.7727e-14	enriched	33	1.79	2.78132e-14	enriched	32	1.85	4.7727e-14	enriched	33	1.79	2.78132e-14	enriched	true
+functional_subclass	hnRNP / RG-rich RBPs	all	72	1.58	1.42871e-22	enriched	72	1.54	9.47603e-22	enriched	71	1.61	1.48406e-22	enriched	72	1.53	1.33314e-21	enriched	71	1.61	1.48406e-22	enriched	72	1.53	1.33314e-21	enriched	true
+functional_subclass	RRM / KH RBPs	all	210	1.52	2.71647e-58	enriched	215	1.51	5.94335e-60	enriched	208	1.55	2.81696e-59	enriched	215	1.5	1.65276e-59	enriched	208	1.55	2.81696e-59	enriched	215	1.5	1.65276e-59	enriched	true
+functional_subclass	Spliceosome / splicing	all	86	1.47	3.06068e-23	enriched	87	1.45	4.73325e-23	enriched	86	1.52	3.85897e-24	enriched	87	1.44	7.05269e-23	enriched	86	1.52	3.85897e-24	enriched	87	1.44	7.05269e-23	enriched	true
+functional_subclass	Poly(A) / stability RBPs	all	37	1.46	1.33291e-10	enriched	38	1.45	5.63896e-11	enriched	37	1.51	4.47003e-11	enriched	38	1.45	6.71303e-11	enriched	37	1.51	4.47003e-11	enriched	38	1.45	6.71303e-11	enriched	true
+functional_subclass	Translation / initiation / elongation	all	248	1.25	8.91544e-48	enriched	253	1.24	2.61135e-48	enriched	233	1.21	1.86544e-41	enriched	247	1.19	3.25e-44	enriched	233	1.21	1.86544e-41	enriched	247	1.19	3.25e-44	enriched	true
+functional_subclass	RNA helicases	all	81	1.22	1.13954e-15	enriched	82	1.19	1.72493e-15	enriched	78	1.21	8.70266e-15	enriched	83	1.2	6.292e-16	enriched	78	1.21	8.70266e-15	enriched	83	1.2	6.292e-16	enriched	true
+functional_subclass	Nucleolar / ribosome biogenesis	all	84	1.16	5.65683e-15	enriched	89	1.2	6.00804e-17	enriched	82	1.18	9.64152e-15	enriched	88	1.18	3.2919e-16	enriched	82	1.18	9.64152e-15	enriched	88	1.18	3.2919e-16	enriched	true
+functional_subclass	Nuclear scaffold / pore / lamina	all	110	0.989	1.74021e-14	enriched	114	0.996	2.37713e-15	enriched	102	0.928	4.74769e-12	enriched	115	1	1.23267e-15	enriched	102	0.928	4.74769e-12	enriched	115	1	1.23267e-15	enriched	true
+functional_subclass	Cell cycle / centrosome / spindle	all	84	0.8	4.19547e-08	enriched	88	0.823	6.14151e-09	enriched	85	0.865	3.48577e-09	enriched	88	0.815	8.13679e-09	enriched	85	0.865	3.48577e-09	enriched	88	0.815	8.13679e-09	enriched	true
+functional_subclass	Chromatin writers / remodelers	all	182	0.793	1.11138e-15	enriched	190	0.811	3.56564e-17	enriched	180	0.825	1.85788e-16	enriched	191	0.811	2.79607e-17	enriched	180	0.825	1.85788e-16	enriched	191	0.811	2.79607e-17	enriched	true
+functional_subclass	RNA-associated zinc finger / post-transcriptional	all	71	0.766	1.09975e-06	enriched	71	0.723	3.53847e-06	enriched	71	0.814	2.91804e-07	enriched	73	0.755	9.46088e-07	enriched	71	0.814	2.91804e-07	enriched	73	0.755	9.46088e-07	enriched	true
+functional_subclass	Endomembrane / coat trafficking	all	102	0.668	2.88314e-07	enriched	110	0.733	5.75074e-09	enriched	100	0.688	2.09568e-07	enriched	110	0.725	7.94904e-09	enriched	100	0.688	2.09568e-07	enriched	110	0.725	7.94904e-09	enriched	true
+functional_subclass	mRNA processing / export / 3'-end	all	518	0.663	1.46225e-31	enriched	533	0.66	1.47325e-32	enriched	500	0.66	6.60179e-30	enriched	539	0.668	9.40344e-34	enriched	500	0.66	6.60179e-30	enriched	539	0.668	9.40344e-34	enriched	true
+functional_subclass	Cytoskeleton / trafficking	all	401	0.66	4.17345e-24	enriched	418	0.676	1.64445e-26	enriched	385	0.649	1.86157e-22	enriched	418	0.668	5.45742e-26	enriched	385	0.649	1.86157e-22	enriched	418	0.668	5.45742e-26	enriched	true
+functional_subclass	Proteostasis / chaperone / proteasome	all	398	0.651	1.84656e-23	enriched	410	0.651	2.50885e-24	enriched	389	0.666	1.13342e-23	enriched	413	0.653	1.00337e-24	enriched	389	0.666	1.13342e-23	enriched	413	0.653	1.00337e-24	enriched	true
+functional_subclass	Transcription / mediator / polymerase	all	326	0.611	2.63695e-17	enriched	338	0.62	1.5838e-18	enriched	319	0.628	1.3078e-17	enriched	337	0.607	7.33039e-18	enriched	319	0.628	1.3078e-17	enriched	337	0.607	7.33039e-18	enriched	true
+functional_subclass	Junction / polarity / scaffold	all	210	0.566	3.02721e-10	enriched	221	0.596	9.27653e-12	enriched	213	0.635	2.19681e-12	enriched	220	0.582	2.96106e-11	enriched	213	0.635	2.19681e-12	enriched	220	0.582	2.96106e-11	enriched	true
+functional_subclass	Chromatin readers	all	184	0.512	7.8912e-08	enriched	189	0.507	6.02896e-08	enriched	185	0.568	3.59582e-09	enriched	193	0.529	1.12961e-08	enriched	185	0.568	3.59582e-09	enriched	193	0.529	1.12961e-08	enriched	true
+functional_subclass	DNA repair / DDR	all	42	0.408	0.0314309	enriched	43	0.399	0.0324272	enriched	41	0.422	0.0294637	enriched	46	0.488	0.00849292	enriched	41	0.422	0.0294637	enriched	46	0.488	0.00849292	enriched	true
+functional_subclass	Signaling / enzymes	all	1501	0.376	3.93733e-38	enriched	1549	0.378	4.92e-40	enriched	1463	0.387	6.36259e-39	enriched	1553	0.374	2.37529e-39	enriched	1463	0.387	6.36259e-39	enriched	1553	0.374	2.37529e-39	enriched	true
+functional_subclass	Mitochondrial / metabolic enzymes	all	337	0.371	6.59329e-08	enriched	344	0.357	1.14058e-07	enriched	328	0.38	5.46689e-08	enriched	347	0.362	6.81081e-08	enriched	328	0.38	5.46689e-08	enriched	347	0.362	6.81081e-08	enriched	true
+functional_subclass	DNA-binding transcription factors / developmental regulators	all	428	-0.000728	0.604261	ns	442	0.00198	0.574292	ns	420	0.0201	0.4426	ns	456	0.039	0.296343	ns	420	0.0201	0.4426	ns	456	0.039	0.296343	ns	true
+functional_subclass	Adhesion / intermediate filament scaffolds	all	59	-0.0224	0.650524	ns	62	0.00543	0.574292	ns	58	0.000956	0.587283	ns	64	0.0433	0.466684	ns	58	0.000956	0.587283	ns	64	0.0433	0.466684	ns	true
+functional_subclass	Other / unclassified	all	830	-0.357	1	ns	852	-0.363	1	ns	793	-0.375	1	ns	857	-0.363	1	ns	793	-0.375	1	ns	857	-0.363	1	ns	true
+functional_subclass	Membrane / receptor / extracellular	all	522	-0.936	1	ns	540	-0.931	1	ns	509	-0.924	1	ns	543	-0.93	1	ns	509	-0.924	1	ns	543	-0.93	1	ns	true
+functional_subclass	Poorly characterized / specialized	all	168	-0.94	1	ns	176	-0.916	1	ns	151	-1.05	1	ns	172	-0.958	1	ns	151	-1.05	1	ns	172	-0.958	1	ns	true
+motif	RGG	all	874	4.23	0	enriched	942	4.36	0	enriched	901	4.47	0	enriched	937	4.33	0	enriched	901	4.47	0	enriched	937	4.33	0	enriched	true
+motif	GRG	all	905	3.88	0	enriched	1008	4.1	0	enriched	972	4.22	0	enriched	1020	4.1	0	enriched	972	4.22	0	enriched	1020	4.1	0	enriched	true
+motif	RG	all	3457	2.6	0	enriched	3719	2.63	0	enriched	3502	2.79	0	enriched	3748	2.64	0	enriched	3502	2.79	0	enriched	3748	2.64	0	enriched	true
+motif	DR	all	1387	1.52	1.56823e-210	enriched	1442	1.47	3.32592e-207	enriched	1329	1.56	1.99794e-212	enriched	1455	1.48	3.52389e-211	enriched	1329	1.56	1.99794e-212	enriched	1455	1.48	3.52389e-211	enriched	true
+motif	GAR	all	87	0.63	0.000276947	enriched	98	0.707	1.9604e-05	enriched	96	0.876	2.37091e-07	enriched	104	0.791	9.87644e-07	enriched	96	0.876	2.37091e-07	enriched	104	0.791	9.87644e-07	enriched	true
+motif	CARM1_proline_rich	all	6259	0.504	2.31627e-79	enriched	6628	0.477	1.11034e-75	enriched	5829	0.507	9.27199e-75	enriched	6719	0.502	2.44517e-84	enriched	5829	0.507	9.27199e-75	enriched	6719	0.502	2.44517e-84	enriched	true
+motif	CARM1_hydrophobic_proline	all	5521	0.472	6.30814e-68	enriched	5809	0.431	1.39932e-60	enriched	5139	0.479	2.39569e-65	enriched	5896	0.459	6.95322e-69	enriched	5139	0.479	2.39569e-65	enriched	5896	0.459	6.95322e-69	enriched	true
+motif	RXR	all	2053	0.0337	0.353411	ns	2338	0.147	1.9604e-05	enriched	1936	0.0637	0.0886825	ns	2359	0.152	9.63525e-06	enriched	1936	0.0637	0.0886825	ns	2359	0.152	9.63525e-06	enriched	false
+motif	ER	all	627	-0.717	5.03286e-37	depleted	666	-0.728	2.33518e-40	depleted	559	-0.778	1.48215e-39	depleted	652	-0.779	1.01872e-45	depleted	559	-0.778	1.48215e-39	depleted	652	-0.779	1.01872e-45	depleted	true
+motif	RD	all	378	-0.842	6.40984e-33	depleted	398	-0.863	2.56971e-36	depleted	340	-0.88	9.7144e-33	depleted	400	-0.863	1.89064e-36	depleted	340	-0.88	9.7144e-33	depleted	400	-0.863	1.89064e-36	depleted	true
+motif	RE	all	418	-1.31	2.06727e-94	depleted	465	-1.25	2.46735e-93	depleted	347	-1.47	9.53662e-104	depleted	448	-1.32	2.47491e-102	depleted	347	-1.47	9.53662e-104	depleted	448	-1.32	2.47491e-102	depleted	true
+disorder	disordered	all	6060	0.934	1.27412e-261	enriched	6621	1.01	0	enriched	5873	1.04	4.42857e-306	enriched	6675	1.01	0	enriched	5873	1.04	4.42857e-306	enriched	6675	1.01	0	enriched	true
+disorder	no_disorder_annotation	all	6	0.601	0.451029	ns	6	0.546	0.460015	ns	7	0.922	0.130199	ns	9	-1.01	0.0215224	depleted	7	0.922	0.130199	ns	9	-1.01	0.0215224	depleted	false
+disorder	disorder_boundary	all	2945	-0.0788	0.0156371	depleted	3082	-0.125	5.27886e-05	depleted	2626	-0.154	3.22865e-06	depleted	3109	-0.117	0.000157685	depleted	2626	-0.154	3.22865e-06	depleted	3109	-0.117	0.000157685	depleted	true
+disorder	ordered	all	3484	-0.928	1.03126e-232	depleted	3656	-0.979	7.64174e-275	depleted	3095	-1	6.71022e-250	depleted	3652	-0.979	1.9642e-275	depleted	3095	-1	6.71022e-250	depleted	3652	-0.979	1.9642e-275	depleted	true
+domain_context	no_domain_annotation	all	1712	0.515	9.68585e-37	enriched	1853	0.554	4.08782e-45	enriched	1579	0.564	2.66422e-40	enriched	1848	0.56	4.62983e-46	enriched	1579	0.564	2.66422e-40	enriched	1848	0.56	4.62983e-46	enriched	true
+domain_context	distal	all	4000	0.498	1.23492e-64	enriched	4330	0.538	2.16479e-80	enriched	3929	0.605	2.80707e-90	enriched	4396	0.542	1.98041e-82	enriched	3929	0.605	2.80707e-90	enriched	4396	0.542	1.98041e-82	enriched	true
+domain_context	boundary	all	1124	0.151	0.0014184	enriched	1205	0.148	0.00124448	enriched	1051	0.16	0.00108518	enriched	1200	0.135	0.00321828	enriched	1051	0.16	0.00108518	enriched	1200	0.135	0.00321828	enriched	true
+domain_context	inter_domain_linker	all	1398	-0.332	6.39434e-16	depleted	1487	-0.345	4.39956e-18	depleted	1310	-0.33	7.78059e-15	depleted	1504	-0.351	7.4657e-19	depleted	1310	-0.33	7.78059e-15	depleted	1504	-0.351	7.4657e-19	depleted	true
+domain_context	in_domain	all	4256	-0.552	2.87443e-88	depleted	4485	-0.598	3.80127e-110	depleted	3727	-0.681	8.45496e-123	depleted	4492	-0.597	3.7253e-110	depleted	3727	-0.681	8.45496e-123	depleted	4492	-0.597	3.7253e-110	depleted	true
+domain_class	Sm / Lsm	all	11	1.99	0.000646147	enriched	14	2.37	1.01613e-05	enriched	11	2.09	0.000385159	enriched	14	2.39	9.03262e-06	enriched	11	2.09	0.000385159	enriched	14	2.39	9.03262e-06	enriched	true
+domain_class	RRM / KH RNA-binding	all	1020	1.81	1.75446e-210	enriched	1086	1.85	4.57879e-230	enriched	967	1.86	1.67349e-209	enriched	1089	1.87	3.86172e-235	enriched	967	1.86	1.67349e-209	enriched	1089	1.87	3.86172e-235	enriched	true
+domain_class	Ribosome / RNP structural	all	209	1.64	6.91036e-39	enriched	240	1.78	1.63781e-50	enriched	211	1.75	1.1524e-43	enriched	241	1.82	1.71694e-52	enriched	211	1.75	1.1524e-43	enriched	241	1.82	1.71694e-52	enriched	true
+domain_class	dsRNA-binding	all	19	0.8	0.0422678	enriched	23	1.05	0.00378308	enriched	23	1.2	0.00115321	enriched	23	1.06	0.00345044	enriched	23	1.2	0.00115321	enriched	23	1.06	0.00345044	enriched	true
+domain_class	No domain annotation	all	1712	0.515	2.03403e-36	enriched	1853	0.554	8.58443e-45	enriched	1579	0.564	5.59487e-40	enriched	1848	0.56	9.72264e-46	enriched	1579	0.564	5.59487e-40	enriched	1848	0.56	9.72264e-46	enriched	true
+domain_class	DNA-binding	all	155	0.301	0.0240011	enriched	173	0.352	0.00394874	enriched	161	0.378	0.00301494	enriched	170	0.303	0.0129399	enriched	161	0.378	0.00301494	enriched	170	0.303	0.0129399	enriched	true
+domain_class	RNA-associated zinc finger	all	104	0.202	0.226491	ns	122	0.396	0.00656699	enriched	111	0.376	0.0128483	enriched	123	0.373	0.0108753	enriched	111	0.376	0.0128483	enriched	123	0.373	0.0108753	enriched	false
+domain_class	Chromatin catalytic / remodeler	all	100	0.0548	0.752264	ns	106	0.0621	0.681832	ns	84	-0.0602	0.740636	ns	105	0.0633	0.680359	ns	84	-0.0602	0.740636	ns	105	0.0633	0.680359	ns	true
+domain_class	RNA helicase	all	240	-0.115	0.248538	ns	246	-0.152	0.114739	ns	208	-0.179	0.0892009	ns	246	-0.152	0.122284	ns	208	-0.179	0.0892009	ns	246	-0.152	0.122284	ns	true
+domain_class	Catalytic enzyme domain	all	850	-0.301	1.25254e-08	depleted	891	-0.36	1.37145e-12	depleted	772	-0.352	1.11181e-10	depleted	899	-0.323	2.07163e-10	depleted	772	-0.352	1.11181e-10	depleted	899	-0.323	2.07163e-10	depleted	true
+domain_class	Repeat / superfamily	all	492	-0.36	1.13648e-07	depleted	534	-0.435	9.30648e-12	depleted	467	-0.397	7.58036e-09	depleted	539	-0.457	5.39508e-13	depleted	467	-0.397	7.58036e-09	depleted	539	-0.457	5.39508e-13	depleted	true
+domain_class	Protein-protein repeat / scaffold	all	395	-0.387	2.06308e-07	depleted	416	-0.385	1.17598e-07	depleted	362	-0.393	4.16419e-07	depleted	431	-0.362	4.34322e-07	depleted	362	-0.393	4.16419e-07	depleted	431	-0.362	4.34322e-07	depleted	true
+domain_class	Other domain	all	7070	-0.421	1.82297e-53	depleted	7535	-0.425	3.24004e-58	depleted	6531	-0.441	6.82403e-55	depleted	7590	-0.432	1.56823e-60	depleted	6531	-0.441	6.82403e-55	depleted	7590	-0.432	1.56823e-60	depleted	true
+domain_class	Chromatin reader	all	113	-0.563	3.43224e-05	depleted	121	-0.55	2.5725e-05	depleted	109	-0.522	0.000175071	depleted	122	-0.569	1.07755e-05	depleted	109	-0.522	0.000175071	depleted	122	-0.569	1.07755e-05	depleted	true
+disease_family	Cancer / neoplasia	all	3666	0.102	2.58283e-29	enriched	3769	0.0992	8.2786e-29	enriched	3571	0.101	4.59213e-28	enriched	3792	0.0981	1.95182e-28	enriched	3571	0.101	4.59213e-28	enriched	3792	0.0981	1.95182e-28	enriched	true
+disease_family	Ataxia / cerebellar degeneration	all	626	0.447	6.07121e-20	enriched	646	0.45	5.31896e-21	enriched	624	0.48	1.95278e-22	enriched	646	0.44	3.23731e-20	enriched	624	0.48	1.95278e-22	enriched	646	0.44	3.23731e-20	enriched	true
+disease_family	Developmental / congenital syndromes	all	2420	0.148	9.37696e-17	enriched	2480	0.141	9.28352e-16	enriched	2356	0.147	5.93531e-16	enriched	2487	0.135	1.13117e-14	enriched	2356	0.147	5.93531e-16	enriched	2487	0.135	1.13117e-14	enriched	true
+disease_family	ALS / motor neuron / FTD	all	490	0.373	1.49424e-11	enriched	502	0.365	1.36105e-11	enriched	480	0.381	9.63888e-12	enriched	497	0.341	2.96376e-10	enriched	480	0.381	9.63888e-12	enriched	497	0.341	2.96376e-10	enriched	true
+disease_family	Myopathy / muscle / cardiomyopathy	all	847	0.268	1.49424e-11	enriched	870	0.264	1.36105e-11	enriched	834	0.283	2.54191e-12	enriched	872	0.258	4.25564e-11	enriched	834	0.283	2.54191e-12	enriched	872	0.258	4.25564e-11	enriched	true
+disease_family	Alzheimer / tau / dementia	all	989	0.196	3.35226e-08	enriched	1015	0.191	4.32805e-08	enriched	967	0.201	2.56651e-08	enriched	1011	0.175	4.61227e-07	enriched	967	0.201	2.56651e-08	enriched	1011	0.175	4.61227e-07	enriched	true
+disease_family	Parkinsonism	all	609	0.204	1.27581e-05	enriched	620	0.188	4.46996e-05	enriched	586	0.186	9.20789e-05	enriched	613	0.161	0.000406666	enriched	586	0.186	9.20789e-05	enriched	613	0.161	0.000406666	enriched	true
+disease_family	Immune / inflammatory	all	1686	0.0387	0.0544598	ns	1735	0.0374	0.0571588	ns	1652	0.0466	0.0282538	enriched	1739	0.0309	0.0959158	ns	1652	0.0466	0.0282538	enriched	1739	0.0309	0.0959158	ns	false
+disease_family_additional	Neurodevelopmental and behavioural	all	1754	0.25	5.83175e-24	enriched	1808	0.251	3.83108e-25	enriched	1707	0.248	4.14209e-23	enriched	1811	0.244	4.96156e-24	enriched	1707	0.248	4.14209e-23	enriched	1811	0.244	4.96156e-24	enriched	true
+disease_family_additional	Cancer-related (other)	all	1679	0.254	1.55944e-23	enriched	1724	0.25	1.35007e-23	enriched	1636	0.254	8.91615e-23	enriched	1729	0.244	1.02247e-22	enriched	1636	0.254	8.91615e-23	enriched	1729	0.244	1.02247e-22	enriched	true
+disease_family_additional	Neurological signs	all	1066	0.353	1.55944e-23	enriched	1096	0.35	6.61267e-24	enriched	1049	0.367	3.00199e-24	enriched	1103	0.35	4.96156e-24	enriched	1049	0.367	3.00199e-24	enriched	1103	0.35	4.96156e-24	enriched	true
+disease_family_additional	Neurodegeneration and neuromuscular (other)	all	1408	0.248	9.44647e-18	enriched	1451	0.248	1.52942e-18	enriched	1367	0.242	1.84911e-16	enriched	1436	0.224	3.59761e-15	enriched	1367	0.242	1.84911e-16	enriched	1436	0.224	3.59761e-15	enriched	true
+disease_family_additional	Pregnancy, birth and growth	all	1045	0.292	1.48238e-16	enriched	1070	0.283	3.41413e-16	enriched	1014	0.286	2.27896e-15	enriched	1068	0.271	6.23098e-15	enriched	1014	0.286	2.27896e-15	enriched	1068	0.271	6.23098e-15	enriched	true
+disease_family_additional	Craniofacial, skeletal and limb features	all	1925	0.154	4.10915e-12	enriched	1975	0.148	1.02693e-11	enriched	1887	0.162	4.50815e-13	enriched	1989	0.148	7.44281e-12	enriched	1887	0.162	4.50815e-13	enriched	1989	0.148	7.44281e-12	enriched	true
+disease_family_additional	Blood and haematological	all	1040	0.238	1.0897e-11	enriched	1065	0.23	2.22068e-11	enriched	1010	0.233	5.18136e-11	enriched	1065	0.22	1.40037e-10	enriched	1010	0.233	5.18136e-11	enriched	1065	0.22	1.40037e-10	enriched	true
+disease_family_additional	Eye and ear	all	1118	0.226	1.13707e-11	enriched	1149	0.223	1.02693e-11	enriched	1104	0.245	4.50815e-13	enriched	1151	0.216	4.26373e-11	enriched	1104	0.245	4.50815e-13	enriched	1151	0.216	4.26373e-11	enriched	true
+disease_family_additional	Digestive and liver	all	1677	0.162	4.64483e-11	enriched	1718	0.154	1.80446e-10	enriched	1629	0.158	3.061e-10	enriched	1714	0.141	4.74297e-09	enriched	1629	0.158	3.061e-10	enriched	1714	0.141	4.74297e-09	enriched	true
+disease_family_additional	Infection	all	1327	0.191	8.58562e-11	enriched	1354	0.177	8.11472e-10	enriched	1300	0.198	3.68548e-11	enriched	1363	0.177	8.80713e-10	enriched	1300	0.198	3.68548e-11	enriched	1363	0.177	8.80713e-10	enriched	true
+disease_family_additional	Skin, hair and nails	all	998	0.217	1.02586e-09	enriched	1029	0.218	3.9108e-10	enriched	975	0.22	1.00423e-09	enriched	1025	0.203	5.35368e-09	enriched	975	0.22	1.00423e-09	enriched	1025	0.203	5.35368e-09	enriched	true
+disease_family_additional	Cardiovascular	all	1569	0.15	5.12953e-09	enriched	1615	0.149	3.23211e-09	enriched	1526	0.147	1.73209e-08	enriched	1605	0.13	2.1735e-07	enriched	1526	0.147	1.73209e-08	enriched	1605	0.13	2.1735e-07	enriched	true
+disease_family_additional	Kidney, urinary and reproductive	all	1221	0.172	2.14787e-08	enriched	1247	0.16	1.18612e-07	enriched	1190	0.172	3.51564e-08	enriched	1249	0.152	4.05158e-07	enriched	1190	0.172	3.51564e-08	enriched	1249	0.152	4.05158e-07	enriched	true
+disease_family_additional	Respiratory	all	728	0.17	4.62846e-05	enriched	747	0.164	5.827e-05	enriched	708	0.167	8.09138e-05	enriched	744	0.149	0.000248465	enriched	708	0.167	8.09138e-05	enriched	744	0.149	0.000248465	enriched	true
+disease_family_additional	Metabolic and mitochondrial	all	1490	0.0676	0.00563315	enriched	1537	0.0697	0.00378209	enriched	1458	0.0736	0.00327554	enriched	1529	0.0524	0.022718	enriched	1458	0.0736	0.00327554	enriched	1529	0.0524	0.022718	enriched	true
+condensate	3190BB68	all	6	0.957	0.0572306	ns	6	0.93	0.0641967	ns	6	0.997	0.0484006	enriched	6	0.926	0.0651151	ns	6	0.997	0.0484006	enriched	6	0.926	0.0651151	ns	false
+condensate	373365D7	all	6	0.957	0.0572306	ns	6	0.93	0.0641967	ns	6	0.997	0.0484006	enriched	6	0.926	0.0651151	ns	6	0.997	0.0484006	enriched	6	0.926	0.0651151	ns	false
+condensate	BEB5E62D	all	6	0.957	0.0572306	ns	6	0.93	0.0641967	ns	6	0.997	0.0484006	enriched	6	0.926	0.0651151	ns	6	0.997	0.0484006	enriched	6	0.926	0.0651151	ns	false
+condensate	F85A2E29	all	35	0.839	6.15273e-07	enriched	35	0.811	1.13943e-06	enriched	36	0.919	2.48844e-08	enriched	36	0.848	1.08363e-07	enriched	36	0.919	2.48844e-08	enriched	36	0.848	1.08363e-07	enriched	true
+condensate	A40D6D0A	all	11	0.832	0.0211993	enriched	12	0.93	0.00246731	enriched	12	0.997	0.00129925	enriched	12	0.926	0.00253851	enriched	12	0.997	0.00129925	enriched	12	0.926	0.00253851	enriched	true
+condensate	D8E9712B	all	14	0.765	0.0168904	enriched	15	0.837	0.00252405	enriched	15	0.904	0.00129925	enriched	15	0.833	0.00260948	enriched	15	0.904	0.00129925	enriched	15	0.833	0.00260948	enriched	true
+condensate	62EA6512	all	13	0.751	0.0219705	enriched	13	0.723	0.027988	enriched	13	0.791	0.0148535	enriched	13	0.72	0.025862	enriched	13	0.791	0.0148535	enriched	13	0.72	0.025862	enriched	true
+condensate	4F6C34C9	all	4	0.635	0.459352	ns	4	0.608	0.48918	ns	4	0.676	0.396703	ns	4	0.604	0.467039	ns	4	0.676	0.396703	ns	4	0.604	0.467039	ns	true
+condensate	08386919	all	6	0.542	0.388039	ns	6	0.515	0.422469	ns	6	0.582	0.32318	ns	6	0.511	0.426904	ns	6	0.582	0.32318	ns	6	0.511	0.426904	ns	true
+condensate	81D2A7B6	all	8	0.498	0.333791	ns	8	0.47	0.371087	ns	8	0.538	0.285213	ns	8	0.467	0.375938	ns	8	0.538	0.285213	ns	8	0.467	0.375938	ns	true
+condensate	D6A53B8E	all	18	0.483	0.0864549	ns	18	0.456	0.10777	ns	17	0.441	0.155104	ns	18	0.452	0.110713	ns	17	0.441	0.155104	ns	18	0.452	0.110713	ns	true
+condensate	232F8A39	all	551	0.467	6.37688e-34	enriched	557	0.455	2.32769e-33	enriched	542	0.483	1.44121e-34	enriched	560	0.459	2.62956e-34	enriched	542	0.483	1.44121e-34	enriched	560	0.459	2.62956e-34	enriched	true
+condensate	DEE660B4	all	780	0.41	8.38474e-41	enriched	787	0.395	3.7909e-39	enriched	768	0.428	2.22227e-42	enriched	790	0.397	7.70185e-40	enriched	768	0.428	2.22227e-42	enriched	790	0.397	7.70185e-40	enriched	true
+condensate	1A18FFC4	all	47	0.383	0.0219705	enriched	47	0.355	0.0349591	enriched	48	0.453	0.00544889	enriched	48	0.382	0.0204291	enriched	48	0.453	0.00544889	enriched	48	0.382	0.0204291	enriched	true
+condensate	462A97B5	all	14	0.372	0.318695	ns	14	0.345	0.370166	ns	14	0.413	0.254397	ns	14	0.341	0.375938	ns	14	0.413	0.254397	ns	14	0.341	0.375938	ns	true
+condensate	7FF4107C	all	4	0.372	0.660887	ns	4	0.345	0.670495	ns	4	0.413	0.58185	ns	4	0.341	0.675036	ns	4	0.413	0.58185	ns	4	0.341	0.675036	ns	true
+condensate	B5B9A610	all	281	0.354	1.95237e-09	enriched	285	0.346	2.08229e-09	enriched	270	0.336	4.15573e-08	enriched	285	0.343	2.93378e-09	enriched	270	0.336	4.15573e-08	enriched	285	0.343	2.93378e-09	enriched	true
+condensate	804901D1	all	136	0.351	0.00010591	enriched	138	0.345	0.000104942	enriched	140	0.433	8.13097e-07	enriched	140	0.362	3.27956e-05	enriched	140	0.433	8.13097e-07	enriched	140	0.362	3.27956e-05	enriched	true
+condensate	91857CE7	all	814	0.297	6.12421e-24	enriched	833	0.303	5.52561e-26	enriched	789	0.293	7.95349e-22	enriched	833	0.3	1.75444e-25	enriched	789	0.293	7.95349e-22	enriched	833	0.3	1.75444e-25	enriched	true
+condensate	1EF72FBA	all	5	0.279	0.660887	ns	5	0.252	0.670495	ns	5	0.319	0.58185	ns	5	0.248	0.675036	ns	5	0.319	0.58185	ns	5	0.248	0.675036	ns	true
+condensate	7C2F7184	all	5	0.279	0.660887	ns	5	0.252	0.670495	ns	5	0.319	0.58185	ns	5	0.248	0.675036	ns	5	0.319	0.58185	ns	5	0.248	0.675036	ns	true
+condensate	BB266630	all	5	0.279	0.660887	ns	5	0.252	0.670495	ns	5	0.319	0.58185	ns	5	0.248	0.675036	ns	5	0.319	0.58185	ns	5	0.248	0.675036	ns	true
+condensate	278829DE	all	3	0.22	0.789469	ns	3	0.193	0.739401	ns	3	0.261	0.691906	ns	3	0.189	0.757386	ns	3	0.261	0.691906	ns	3	0.189	0.757386	ns	true
+condensate	A0DCDA94	all	13	0.198	0.619221	ns	13	0.171	0.654599	ns	14	0.345	0.32318	ns	14	0.274	0.45743	ns	14	0.345	0.32318	ns	14	0.274	0.45743	ns	true
+condensate	38EC0B30	all	23	0.195	0.460967	ns	23	0.168	0.538731	ns	21	0.104	0.58185	ns	23	0.164	0.517348	ns	21	0.104	0.58185	ns	23	0.164	0.517348	ns	true
+condensate	3EAB04FE	all	4	0.15	0.789469	ns	4	0.122	0.739401	ns	2	-0.81	0.993947	ns	3	-0.296	0.958097	ns	2	-0.81	0.993947	ns	3	-0.296	0.958097	ns	true
+condensate	B3A0EABC	all	4	0.15	0.789469	ns	5	0.444	0.538731	ns	5	0.512	0.455577	ns	5	0.441	0.517348	ns	5	0.512	0.455577	ns	5	0.441	0.517348	ns	true
+condensate	FB4E32DD	all	694	-0.0165	0.952602	ns	706	-0.0194	0.935892	ns	674	-0.0185	0.941575	ns	706	-0.0228	0.958097	ns	674	-0.0185	0.941575	ns	706	-0.0228	0.958097	ns	true
+condensate	6F24707C	all	38	-0.0428	0.923105	ns	41	0.0393	0.68511	ns	40	0.0715	0.58185	ns	41	0.0359	0.698487	ns	40	0.0715	0.58185	ns	41	0.0359	0.698487	ns	true
+condensate	24B72B50	all	4	-0.0428	0.923105	ns	4	-0.0703	0.890377	ns	4	-0.00251	0.851677	ns	4	-0.0737	0.923471	ns	4	-0.00251	0.851677	ns	4	-0.0737	0.923471	ns	true
+condensate	8C2F96ED	all	245	-0.215	0.999869	ns	247	-0.23	0.999964	ns	235	-0.235	0.999942	ns	245	-0.246	0.999988	ns	235	-0.235	0.999942	ns	245	-0.246	0.999988	ns	true
+condensate	F345034F	all	10	-0.244	0.956324	ns	10	-0.272	0.982265	ns	10	-0.204	0.970437	ns	10	-0.275	0.98533	ns	10	-0.204	0.970437	ns	10	-0.275	0.98533	ns	true
+condensate	B15FE1AF	all	3	-0.265	0.956324	ns	3	-0.293	0.955949	ns	2	-0.81	0.993947	ns	3	-0.296	0.958097	ns	2	-0.81	0.993947	ns	3	-0.296	0.958097	ns	true
+condensate	F3208D05	all	3	-0.265	0.956324	ns	3	-0.293	0.955949	ns	3	-0.225	0.968834	ns	3	-0.296	0.958097	ns	3	-0.225	0.968834	ns	3	-0.296	0.958097	ns	true
+condensate	AA62C26E	all	2	-0.365	0.956324	ns	3	0.193	0.739401	ns	3	0.261	0.691906	ns	3	0.189	0.757386	ns	3	0.261	0.691906	ns	3	0.189	0.757386	ns	true
+condensate	CCFFAF5A	all	2	-0.365	0.956324	ns	3	0.193	0.739401	ns	3	0.261	0.691906	ns	3	0.189	0.757386	ns	3	0.261	0.691906	ns	3	0.189	0.757386	ns	true
+condensate	F701F3BC	all	5	-0.421	0.987971	ns	5	-0.449	0.999964	ns	5	-0.381	0.993947	ns	5	-0.452	0.999988	ns	5	-0.381	0.993947	ns	5	-0.452	0.999988	ns	true
+condensate	5965E019	all	16	-0.435	0.998201	ns	16	-0.463	0.999964	ns	16	-0.395	0.993947	ns	17	-0.379	0.999988	ns	16	-0.395	0.993947	ns	17	-0.379	0.999988	ns	true
+condensate	437BC32B	all	2	-0.85	0.998201	ns	2	-0.878	0.999964	ns	2	-0.81	0.993947	ns	2	-0.881	0.999988	ns	2	-0.81	0.993947	ns	2	-0.881	0.999988	ns	true
+condensate	3625CB60	all	1	-1.36	0.998201	ns	1	-1.39	0.999964	ns	1	-1.32	0.993947	ns	1	-1.4	0.999988	ns	1	-1.32	0.993947	ns	1	-1.4	0.999988	ns	true
+hpa_location	Cytosol	all	1534	0.215	2.46549e-16	enriched	1565	0.204	2.91919e-15	enriched	1482	0.208	1.12502e-14	enriched	1572	0.202	5.17972e-15	enriched	1482	0.208	1.12502e-14	enriched	1572	0.202	5.17972e-15	enriched	true
+hpa_location	Nucleoplasm	all	1780	0.134	7.66557e-09	enriched	1829	0.134	3.81699e-09	enriched	1731	0.138	7.05332e-09	enriched	1845	0.138	9.59928e-10	enriched	1731	0.138	7.05332e-09	enriched	1845	0.138	9.59928e-10	enriched	true
+hpa_location	Mitotic chromosome	all	35	0.745	0.00490814	enriched	37	0.785	0.00140167	enriched	36	0.829	0.000984165	enriched	37	0.776	0.00161765	enriched	36	0.829	0.000984165	enriched	37	0.776	0.00161765	enriched	true
+hpa_location	Primary cilium tip	all	33	0.702	0.00933614	enriched	33	0.662	0.0142953	enriched	30	0.607	0.0326268	enriched	32	0.609	0.0345768	enriched	30	0.607	0.0326268	enriched	32	0.609	0.0345768	enriched	true
+hpa_location	Nucleoli rim	all	58	0.515	0.00933614	enriched	62	0.572	0.00199984	enriched	58	0.558	0.0051325	enriched	61	0.54	0.00464748	enriched	58	0.558	0.0051325	enriched	61	0.54	0.00464748	enriched	true
+hpa_location	Basal body	all	106	0.308	0.0405536	enriched	108	0.295	0.0388485	enriched	101	0.281	0.0525129	ns	106	0.259	0.0718137	ns	101	0.281	0.0525129	ns	106	0.259	0.0718137	ns	false
+hpa_location	Calyx	all	30	0.585	0.0405536	enriched	31	0.593	0.0388485	enriched	30	0.629	0.0286486	enriched	30	0.537	0.0598004	ns	30	0.629	0.0286486	enriched	30	0.537	0.0598004	ns	false
+hpa_location	Endosomes	all	10	1.07	0.0405536	enriched	10	1.03	0.0413545	enriched	9	0.958	0.0798161	ns	10	1.02	0.0530181	ns	9	0.958	0.0798161	ns	10	1.02	0.0530181	ns	false
+hpa_location	Nucleoli	all	309	0.164	0.0405536	enriched	318	0.166	0.0388485	enriched	305	0.189	0.0283361	enriched	320	0.166	0.0400372	enriched	305	0.189	0.0283361	enriched	320	0.166	0.0400372	enriched	true
+hpa_location	Nuclear speckles	all	155	0.233	0.0405536	enriched	159	0.23	0.0413545	enriched	154	0.267	0.0286486	enriched	162	0.248	0.0374209	enriched	154	0.267	0.0286486	enriched	162	0.248	0.0374209	enriched	true
+hpa_location	Centriolar satellite	all	60	0.385	0.0405536	enriched	61	0.369	0.0477927	enriched	58	0.379	0.0525129	ns	60	0.336	0.0767663	ns	58	0.379	0.0525129	ns	60	0.336	0.0767663	ns	false
+hpa_location	Actin filaments	all	77	0.29	0.0855732	ns	77	0.251	0.118405	ns	75	0.296	0.0798161	ns	78	0.261	0.118979	ns	75	0.296	0.0798161	ns	78	0.261	0.118979	ns	true
+hpa_location	Primary cilium	all	96	0.242	0.106246	ns	98	0.232	0.106829	ns	93	0.24	0.0995641	ns	97	0.209	0.138419	ns	93	0.24	0.0995641	ns	97	0.209	0.138419	ns	true
+hpa_location	Nuclear bodies	all	185	0.165	0.113314	ns	190	0.164	0.106829	ns	187	0.224	0.0334062	enriched	194	0.185	0.0718137	ns	187	0.224	0.0334062	enriched	194	0.185	0.0718137	ns	false
+hpa_location	Cytokinetic bridge	all	65	0.283	0.114571	ns	67	0.287	0.106829	ns	64	0.304	0.0900714	ns	67	0.279	0.118979	ns	64	0.304	0.0900714	ns	67	0.279	0.118979	ns	true
+hpa_location	Perinuclear theca	all	26	0.445	0.127384	ns	27	0.46	0.106829	ns	25	0.432	0.139825	ns	26	0.397	0.156024	ns	25	0.432	0.139825	ns	26	0.397	0.156024	ns	true
+hpa_location	Microtubules	all	96	0.211	0.14011	ns	98	0.201	0.155341	ns	96	0.254	0.08164	ns	100	0.221	0.118979	ns	96	0.254	0.08164	ns	100	0.221	0.118979	ns	true
+hpa_location	Microtubule ends	all	4	1.16	0.184461	ns	4	1.12	0.202297	ns	3	0.788	0.424435	ns	3	0.696	0.448983	ns	3	0.788	0.424435	ns	3	0.696	0.448983	ns	true
+hpa_location	Annulus	all	19	0.408	0.239935	ns	19	0.368	0.260162	ns	18	0.373	0.276297	ns	18	0.281	0.366323	ns	18	0.373	0.276297	ns	18	0.281	0.366323	ns	true
+hpa_location	Intermediate filaments	all	43	0.252	0.239935	ns	44	0.246	0.237591	ns	41	0.227	0.284383	ns	45	0.269	0.191862	ns	41	0.227	0.284383	ns	45	0.269	0.191862	ns	true
+hpa_location	Flagellar centriole	all	40	0.259	0.239935	ns	40	0.22	0.289638	ns	40	0.303	0.163674	ns	41	0.246	0.256473	ns	40	0.303	0.163674	ns	41	0.246	0.256473	ns	true
+hpa_location	Midbody	all	16	0.423	0.241012	ns	16	0.383	0.280185	ns	14	0.273	0.424435	ns	16	0.374	0.292413	ns	14	0.273	0.424435	ns	16	0.374	0.292413	ns	true
+hpa_location	Mitotic spindle	all	39	0.249	0.247201	ns	41	0.281	0.206413	ns	41	0.364	0.102195	ns	42	0.307	0.156024	ns	41	0.364	0.102195	ns	42	0.307	0.156024	ns	true
+hpa_location	Nucleoli fibrillar center	all	95	0.15	0.248938	ns	99	0.17	0.212108	ns	95	0.193	0.163674	ns	102	0.204	0.138419	ns	95	0.193	0.163674	ns	102	0.204	0.138419	ns	true
+hpa_location	Lysosomes	all	8	0.575	0.26327	ns	8	0.535	0.298425	ns	7	0.425	0.424435	ns	8	0.526	0.319603	ns	7	0.425	0.424435	ns	8	0.526	0.319603	ns	true
+hpa_location	Centrosome	all	132	0.113	0.276492	ns	134	0.0953	0.324554	ns	133	0.167	0.153515	ns	137	0.118	0.287452	ns	133	0.167	0.153515	ns	137	0.118	0.287452	ns	true
+hpa_location	Connecting piece	all	29	0.21	0.355152	ns	30	0.22	0.324554	ns	29	0.254	0.313564	ns	29	0.162	0.448983	ns	29	0.254	0.313564	ns	29	0.162	0.448983	ns	true
+hpa_location	Equatorial segment	all	28	0.212	0.355152	ns	29	0.223	0.324554	ns	25	0.0919	0.602922	ns	29	0.214	0.366323	ns	25	0.0919	0.602922	ns	29	0.214	0.366323	ns	true
+hpa_location	Rods & Rings	all	6	0.423	0.452909	ns	6	0.383	0.477188	ns	5	0.203	0.633331	ns	6	0.374	0.47066	ns	5	0.203	0.633331	ns	6	0.374	0.47066	ns	true
+hpa_location	Mitochondria	all	312	0.0357	0.477729	ns	324	0.0506	0.371403	ns	304	0.0415	0.45708	ns	326	0.0506	0.396973	ns	304	0.0415	0.45708	ns	326	0.0506	0.396973	ns	true
+hpa_location	Cytoplasmic bodies	all	22	0.16	0.477729	ns	22	0.12	0.511867	ns	23	0.267	0.340906	ns	23	0.175	0.448983	ns	23	0.267	0.340906	ns	23	0.175	0.448983	ns	true
+hpa_location	Midbody ring	all	7	0.304	0.493178	ns	7	0.265	0.511867	ns	6	0.125	0.666411	ns	6	0.0333	0.76638	ns	6	0.125	0.666411	ns	6	0.0333	0.76638	ns	true
+hpa_location	Principal piece	all	108	0.0524	0.499054	ns	111	0.0525	0.509308	ns	103	0.0273	0.623807	ns	111	0.0436	0.55277	ns	103	0.0273	0.623807	ns	111	0.0436	0.55277	ns	true
+hpa_location	Endoplasmic reticulum	all	160	0.0304	0.549474	ns	166	0.044	0.509308	ns	155	0.0279	0.602922	ns	160	-0.018	0.791308	ns	155	0.0279	0.602922	ns	160	-0.018	0.791308	ns	true
+hpa_location	End piece	all	55	0.0341	0.609739	ns	57	0.0462	0.566014	ns	56	0.103	0.45708	ns	56	0.0118	0.704312	ns	56	0.103	0.45708	ns	56	0.0118	0.704312	ns	true
+hpa_location	Nuclear membrane	all	75	0.0134	0.647395	ns	78	0.0305	0.57893	ns	72	-0.00215	0.707164	ns	79	0.04	0.590254	ns	72	-0.00215	0.707164	ns	79	0.04	0.590254	ns	true
+hpa_location	Kinetochore	all	2	-0.0628	0.865666	ns	2	-0.102	0.888183	ns	2	-0.0194	0.818732	ns	2	-0.111	0.869722	ns	2	-0.0194	0.818732	ns	2	-0.111	0.869722	ns	true
+hpa_location	Cell Junctions	all	78	-0.0733	0.902135	ns	79	-0.0944	0.958759	ns	78	-0.03	0.791095	ns	82	-0.0495	0.86779	ns	78	-0.03	0.791095	ns	82	-0.0495	0.86779	ns	true
+hpa_location	Mid piece	all	95	-0.0692	0.902135	ns	98	-0.0639	0.911921	ns	90	-0.104	0.97307	ns	96	-0.102	0.973082	ns	90	-0.104	0.97307	ns	96	-0.102	0.973082	ns	true
+hpa_location	Lipid droplets	all	9	-0.295	0.977369	ns	9	-0.334	0.993201	ns	9	-0.252	0.967939	ns	9	-0.343	0.973082	ns	9	-0.252	0.967939	ns	9	-0.343	0.973082	ns	true
+hpa_location	Focal adhesion sites	all	32	-0.186	0.977369	ns	32	-0.226	1	ns	31	-0.189	0.975787	ns	33	-0.19	0.973082	ns	31	-0.189	0.975787	ns	33	-0.19	0.973082	ns	true
+hpa_location	Acrosome	all	28	-0.216	0.977369	ns	29	-0.205	0.993201	ns	25	-0.336	1	ns	31	-0.118	0.911499	ns	25	-0.336	1	ns	31	-0.118	0.911499	ns	true
+hpa_location	Aggresome	all	3	-0.758	1	ns	3	-0.797	1	ns	3	-0.715	1	ns	3	-0.806	1	ns	3	-0.715	1	ns	3	-0.806	1	ns	true
+hpa_location	Peroxisomes	all	4	-0.779	1	ns	4	-0.818	1	ns	3	-1.15	1	ns	4	-0.827	1	ns	3	-1.15	1	ns	4	-0.827	1	ns	true
+hpa_location	Primary cilium transition zone	all	10	-0.548	1	ns	11	-0.45	1	ns	9	-0.657	1	ns	10	-0.597	1	ns	9	-0.657	1	ns	10	-0.597	1	ns	true
+hpa_location	Plasma membrane	all	476	-0.259	1	ns	488	-0.263	1	ns	450	-0.297	1	ns	494	-0.254	1	ns	450	-0.297	1	ns	494	-0.254	1	ns	true
+hpa_location	Golgi apparatus	all	244	-0.417	1	ns	258	-0.376	1	ns	236	-0.422	1	ns	261	-0.369	1	ns	236	-0.422	1	ns	261	-0.369	1	ns	true
+hpa_location	Vesicles	all	448	-0.435	1	ns	463	-0.427	1	ns	432	-0.444	1	ns	461	-0.442	1	ns	432	-0.444	1	ns	461	-0.442	1	ns	true
+structure_context	no_disorder_annotation	all				not tested				not tested				not tested				not tested	7	0.922	0.130044	ns	9	-1.01	0.021509	depleted	false
+structure_context	idr_mid_domain	all				not tested				not tested				not tested				not tested	590	0.905	1.09432e-38	enriched	673	0.897	4.17684e-43	enriched	true
+structure_context	idr_far_from_domain	all				not tested				not tested				not tested				not tested	4325	0.854	1.15794e-183	enriched	4883	0.813	1.17201e-189	enriched	true
+structure_context	idr_near_domain	all				not tested				not tested				not tested				not tested	297	0.796	1.15096e-16	enriched	332	0.739	2.65111e-16	enriched	true
+structure_context	domain_disordered	all				not tested				not tested				not tested				not tested	661	0.471	6.83652e-14	enriched	787	0.527	1.31919e-19	enriched	true
+structure_context	ordered_outside_domain	all				not tested				not tested				not tested				not tested	2653	-0.375	2.53935e-31	depleted	3054	-0.399	2.17996e-40	depleted	true
+structure_context	domain_folded	all				not tested				not tested				not tested				not tested	3063	-0.831	3.49285e-168	depleted	3702	-0.751	9.61314e-161	depleted	true
+condensate_proteome	A40D6D0A	all				not tested				not tested				not tested				not tested	12	2.2	3.60877e-08	enriched	12	2.1	8.276e-08	enriched	true
+condensate_proteome	3190BB68	all				not tested				not tested				not tested				not tested	6	2.2	0.000208763	enriched	6	2.1	0.000316057	enriched	true
+condensate_proteome	373365D7	all				not tested				not tested				not tested				not tested	6	2.2	0.000208763	enriched	6	2.1	0.000316057	enriched	true
+condensate_proteome	BEB5E62D	all				not tested				not tested				not tested				not tested	6	2.2	0.000208763	enriched	6	2.1	0.000316057	enriched	true
+condensate_proteome	F85A2E29	all				not tested				not tested				not tested				not tested	36	2.13	2.57926e-21	enriched	36	2.03	3.01251e-20	enriched	true
+condensate_proteome	D8E9712B	all				not tested				not tested				not tested				not tested	15	2.11	5.61075e-09	enriched	15	2.01	1.55501e-08	enriched	true
+condensate_proteome	62EA6512	all				not tested				not tested				not tested				not tested	13	2	4.83724e-07	enriched	13	1.9	1.06452e-06	enriched	true
+condensate_proteome	4F6C34C9	all				not tested				not tested				not tested				not tested	4	1.88	0.015279	enriched	4	1.78	0.0190474	enriched	true
+condensate_proteome	08386919	all				not tested				not tested				not tested				not tested	6	1.79	0.00352588	enriched	6	1.69	0.00516592	enriched	true
+condensate_proteome	81D2A7B6	all				not tested				not tested				not tested				not tested	8	1.74	0.000813302	enriched	8	1.64	0.00134325	enriched	true
+condensate_proteome	B3A0EABC	all				not tested				not tested				not tested				not tested	5	1.72	0.0118132	enriched	5	1.62	0.0159896	enriched	true
+condensate_proteome	232F8A39	all				not tested				not tested				not tested				not tested	542	1.69	2.83078e-189	enriched	560	1.64	2.99264e-191	enriched	true
+condensate_proteome	1A18FFC4	all				not tested				not tested				not tested				not tested	48	1.66	2.46774e-16	enriched	48	1.56	4.50803e-15	enriched	true
+condensate_proteome	D6A53B8E	all				not tested				not tested				not tested				not tested	17	1.65	2.57171e-06	enriched	18	1.63	1.01463e-06	enriched	true
+condensate_proteome	804901D1	all				not tested				not tested				not tested				not tested	140	1.64	4.95018e-45	enriched	140	1.54	2.40953e-41	enriched	true
+condensate_proteome	DEE660B4	all				not tested				not tested				not tested				not tested	768	1.63	1.65197e-255	enriched	790	1.57	8.3704e-254	enriched	true
+condensate_proteome	462A97B5	all				not tested				not tested				not tested				not tested	14	1.62	3.05837e-05	enriched	14	1.52	7.09391e-05	enriched	true
+condensate_proteome	7FF4107C	all				not tested				not tested				not tested				not tested	4	1.62	0.0303611	enriched	4	1.52	0.0388469	enriched	true
+condensate_proteome	A0DCDA94	all				not tested				not tested				not tested				not tested	14	1.55	6.32918e-05	enriched	14	1.45	0.000144199	enriched	true
+condensate_proteome	B5B9A610	all				not tested				not tested				not tested				not tested	270	1.54	5.36845e-77	enriched	285	1.52	3.75022e-82	enriched	true
+condensate_proteome	1EF72FBA	all				not tested				not tested				not tested				not tested	5	1.53	0.0212594	enriched	5	1.43	0.0286564	enriched	true
+condensate_proteome	7C2F7184	all				not tested				not tested				not tested				not tested	5	1.53	0.0212594	enriched	5	1.43	0.0286564	enriched	true
+condensate_proteome	BB266630	all				not tested				not tested				not tested				not tested	5	1.53	0.0212594	enriched	5	1.43	0.0286564	enriched	true
+condensate_proteome	91857CE7	all				not tested				not tested				not tested				not tested	789	1.5	1.70356e-222	enriched	833	1.48	6.19192e-237	enriched	true
+condensate_proteome	278829DE	all				not tested				not tested				not tested				not tested	3	1.47	0.0861986	ns	3	1.37	0.104252	ns	true
+condensate_proteome	AA62C26E	all				not tested				not tested				not tested				not tested	3	1.47	0.0861986	ns	3	1.37	0.104252	ns	true
+condensate_proteome	CCFFAF5A	all				not tested				not tested				not tested				not tested	3	1.47	0.0861986	ns	3	1.37	0.104252	ns	true
+condensate_proteome	38EC0B30	all				not tested				not tested				not tested				not tested	21	1.31	2.99187e-05	enriched	23	1.34	4.78113e-06	enriched	true
+condensate_proteome	6F24707C	all				not tested				not tested				not tested				not tested	40	1.28	1.19617e-08	enriched	41	1.21	2.49448e-08	enriched	true
+condensate_proteome	24B72B50	all				not tested				not tested				not tested				not tested	4	1.2	0.0861986	ns	4	1.1	0.107188	ns	true
+condensate_proteome	FB4E32DD	all				not tested				not tested				not tested				not tested	674	1.19	4.03818e-121	enriched	706	1.15	6.93387e-124	enriched	true
+condensate_proteome	F345034F	all				not tested				not tested				not tested				not tested	10	1	0.0219332	enriched	10	0.902	0.035084	enriched	true
+condensate_proteome	F3208D05	all				not tested				not tested				not tested				not tested	3	0.981	0.198445	ns	3	0.882	0.219317	ns	true
+condensate_proteome	8C2F96ED	all				not tested				not tested				not tested				not tested	235	0.972	3.67983e-28	enriched	245	0.932	6.87331e-28	enriched	true
+condensate_proteome	F701F3BC	all				not tested				not tested				not tested				not tested	5	0.825	0.149792	ns	5	0.725	0.187824	ns	true
+condensate_proteome	5965E019	all				not tested				not tested				not tested				not tested	16	0.811	0.0185372	enriched	17	0.799	0.0159896	enriched	true
+condensate_proteome	3EAB04FE	all				not tested				not tested				not tested				not tested	2	0.396	0.481804	ns	3	0.882	0.219317	ns	true
+condensate_proteome	437BC32B	all				not tested				not tested				not tested				not tested	2	0.396	0.481804	ns	2	0.297	0.523887	ns	true
+condensate_proteome	B15FE1AF	all				not tested				not tested				not tested				not tested	2	0.396	0.481804	ns	3	0.882	0.219317	ns	true
+condensate_proteome	3625CB60	all				not tested				not tested				not tested				not tested	1	-0.118	0.705886	ns	1	-0.218	0.73392	ns	true

@@ -9,11 +9,12 @@ them, and the [Methylarginine Site Explorer](https://shechterlab.github.io/PTM_P
 
 | Version | Sites | Data | Website |
 |---|---|---|---|
-| **v1.2.0** (current) | 11,601 sites on 4,432 proteins, and 2,406 lower-confidence sites | [`releases/v1.2.0/`](releases/v1.2.0/) ([what changed](releases/v1.2.0/CHANGES.md)) | [`docs/`](docs/) |
+| **v1.3.0** (current) | 11,601 sites on 4,432 proteins, and 2,406 lower-confidence sites | [`releases/v1.3.0/`](releases/v1.3.0/) ([what changed](releases/v1.3.0/CHANGES.md)) | [`docs/`](docs/) |
+| v1.2.0 | 11,601 sites on 4,432 proteins, and 2,406 lower-confidence sites | [`releases/v1.2.0/`](releases/v1.2.0/) ([what changed](releases/v1.2.0/CHANGES.md)) | [`docs/v1.2.0/`](docs/v1.2.0/) |
 | v1.1.0 | 13,365 sites on 4,723 proteins, and 6 pending | [`releases/v1.1.0/`](releases/v1.1.0/) ([what changed](releases/v1.1.0/CHANGES.md)) | [`docs/v1.1.0/`](docs/v1.1.0/) |
 | v1.0.0 (published with the paper) | 13,719 sites on 5,090 accessions | [`releases/v1.0.0/`](releases/v1.0.0/) | [`docs/v1.0.0/`](docs/v1.0.0/) |
 
-v1.2.0 reads every study from its own tables and keeps as a site only an arginine that one of its records passes five tests for: the record's peptide or window covers it, in a protein the record names, at one place in the reviewed proteome (or once in each of several paralogs, when the site goes on the copy most records name and is flagged `paralog_assigned`), the methyl group can only be on an arginine, and the study localises it there. The 2,406 arginines that a study reports, or an earlier release had, and that no record passes every test for are kept as lower-confidence sites with their test results; the website shows them on request, and a second run of the analyses counts the 1,844 that are surely methylarginine (`statistics_with_lower_confidence`). Every release's analyses, rerun with the same code, are in its `analyses/` folder, and [`releases/comparison/`](releases/comparison/) compares them. v1.1.0 uses the sources and methods of the paper, mapped to UniProt release 2026_03, with corrections to how some source records were placed on UniProt sequences. The repository as it was before this reorganisation, with the full
+v1.3.0 keeps the sites of v1.2.0 and adds what methylated arginines contact: RNA and DNA in PDB structures (with the bound sequences), RNA-binding evidence from living cells (crosslinked residues, RBDmap, CAPRI, pCLAP and RBR-ID, each also tested among the arginines its experiment measured), and what their proteins bind in vitro and in cells (RNA Bind-n-Seq, HTR-SELEX, JASPAR, ENCODE and ENCORE eCLIP); the website opens each page with a picture and its answer. v1.2.0 reads every study from its own tables and keeps as a site only an arginine that one of its records passes five tests for: the record's peptide or window covers it, in a protein the record names, at one place in the reviewed proteome (or once in each of several paralogs, when the site goes on the copy most records name and is flagged `paralog_assigned`), the methyl group can only be on an arginine, and the study localises it there. The 2,406 arginines that a study reports, or an earlier release had, and that no record passes every test for are kept as lower-confidence sites with their test results; the website shows them on request, and a second run of the analyses counts the 1,844 that are surely methylarginine (`statistics_with_lower_confidence`). Every release's analyses, rerun with the same code, are in its `analyses/` folder, and [`releases/comparison/`](releases/comparison/) compares them. v1.1.0 uses the sources and methods of the paper, mapped to UniProt release 2026_03, with corrections to how some source records were placed on UniProt sequences. The repository as it was before this reorganisation, with the full
 analysis output of the published run, is the tag
 [`v1.0.0_archive`](https://github.com/Shechterlab/PTM_Pipeline/tree/v1.0.0_archive) (and the earlier tag `v1.0.0`).
 
@@ -25,7 +26,7 @@ dictionary and a record of what changed since the release before.
 | Folder | Holds |
 |---|---|
 | [`releases/`](releases/) | the site union, one folder per version |
-| [`docs/`](docs/) | the Methylarginine Site Explorer (GitHub Pages); `docs/v1.0.0/` is the published version and `docs/v1.1.0/` the previous release, unchanged |
+| [`docs/`](docs/) | the Methylarginine Site Explorer (GitHub Pages); `docs/v1.0.0/` is the published version and `docs/v1.1.0/` and `docs/v1.2.0/` the releases since, unchanged |
 | [`inputs/`](inputs/) | every file a release and the website are built from, with `MANIFEST.tsv` |
 | [`provenance/`](provenance/) | where the sites come from, in one page |
 | [`scripts/`](scripts/) | the pipeline, numbered by step |
@@ -46,14 +47,14 @@ archive of the release.
 ```bash
 conda env create -n ptm_pipeline -f envs/ptm_pipeline_hpc.yml
 conda activate ptm_pipeline
-bash hpc/build_release.sh v1.2.0
+bash hpc/build_release.sh v1.3.0
 ```
 
 The build checks every input against `inputs/MANIFEST.tsv`, reads each study from its own table in `inputs/sources/`,
 places each record on the reference sequences, keeps as sites only the records that pass the five site tests (the
 paralog rule included), keeps the arginines that fail as lower-confidence sites, stops if a record is placed against
 its own evidence or a site is not an arginine, runs the analyses twice (on the sites, and with the lower-confidence
-sites that are surely methylarginine), and writes `releases/v1.2.0/` (with the changes traced from `releases/v1.1.0/`
+sites that are surely methylarginine), and writes `releases/v1.3.0/` (with the changes traced from `releases/v1.2.0/`
 and both analyses' result tables) and the website's data in `docs/data/` (the view with lower-confidence sites as
 `methylarg_*_all.json`). v1.1.0, which placed records without localisation, is
 rebuilt with `PREVIOUS=releases/v1.0.0 STUDIES='' LOCALISED_ONLY=0 bash hpc/build_release.sh v1.1.0`; the header of
