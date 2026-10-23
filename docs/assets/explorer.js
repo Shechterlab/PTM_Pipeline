@@ -2769,6 +2769,16 @@
     syncToolbar();
     window.addEventListener('resize', debounce(syncToolbar, 150));
     window.addEventListener('resize', debounce(tabsFade, 150));
+    let wasNarrow = window.innerWidth < NARROW + 80;
+    window.addEventListener('resize', debounce(() => {
+      const now = window.innerWidth < NARROW + 80;
+      if (!now && !wasNarrow) return;
+      wasNarrow = now;
+      const p = UI.view === 'protein' && UI.detail != null ? P[UI.detail] : null;
+      if (p && $('#map-box')) drawMap(p, UNIDATA.get(p.acc));
+      if (p && $('#cc-box')) renderContactCard(p);
+      if (UI.view === 'overview' && UI.drawMaps) UI.drawMaps();
+    }, 250));
     $('.tabs').addEventListener('scroll', debounce(tabsFade, 60), { passive: true });
   }
 
@@ -3991,13 +4001,17 @@
         lead = anyEffect ? { q: 'What kinds of proteins are arginine methylated?', hi: '<div class="a-key a-key-line">' + tipKey + '</div>' }
           : { q: 'What kinds of proteins are arginine methylated?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
             fig: aForest([['Where in the protein', where], ['Which proteins', which]], { subTip: true }) };
+      } else if (!R.sites.length) {
+        lead = { q: 'Your selection', pic: selListHtml(), verdict: '<span class="a-note">No site matches this selection. Change the search or the filters, or clear the selection.</span>' };
+        return aHome(lead, {}, A_ROWS.map((r) => r.key));
       } else if (!testable) {
         const drawn = R.prots.map((p) => [p, p.sites.filter((j) => R.shown.has(j)).length]).sort((a, b) => b[1] - a[1]).slice(0, 12).map(([p]) => p);
         lead = { q: 'Your selection', pic: selListHtml(), verdict: selTooFew(),
           hi: '<h3 class="a-gh a-drawn-h">Your proteins, drawn' + (R.prots.length > drawn.length ? ' <span class="muted">(the ' + drawn.length + ' with the most sites)</span>' : '') + '</h3>' + aMapsHtml(drawn, '') };
       } else {
-        const rows = profileRows() || [], sig = rows.filter((r) => r.q <= 0.05);
-        const up = sig.filter((r) => r.fold > 1).slice(0, 6), dn = sig.filter((r) => r.fold < 1).slice(0, 3);
+        // the strongest-supported features (by q), drawn in order of effect; catch-all classes say nothing
+        const rows = profileRows() || [], sig = rows.filter((r) => r.q <= 0.05 && !/\b(Other|Unclassified|unclassified)$/.test(r.ft.label));
+        const up = sig.filter((r) => r.fold > 1).slice(0, 6).sort((a, b) => b.fold - a.fold), dn = sig.filter((r) => r.fold < 1).slice(0, 3).sort((a, b) => a.fold - b.fold);
         const fr = (r) => ({ label: r.ft.label, main: { or: r.fold, sig: true, q: r.q, fold: true } });
         lead = { q: 'Your selection', pic: selListHtml(), figHead: 'What sets it apart from the other sites?', key: '<span><i class="aq-pt up"></i>more common</span><span><i class="aq-pt down"></i>less common</span><span class="a-key-note">Your ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + ' (q ≤ 0.05)</span>',
           verdict: !rows.length ? 'Too few sites to compare with the rest.' : up.length || dn.length ? '' : 'Nothing in your selection differs from the other sites at q ≤ 0.05.',
@@ -4005,8 +4019,8 @@
       }
       const chartTile = (spec) => {
         if (!spec) return null;
-        // a set whose members are all methylated is as enriched as a set can be: tagged "all"
-        const row = (r) => ({ label: short(r), main: { or: 2 ** r.value, sig: true, q: r.q, fold: !!spec.fold }, tag: r.allIn && !scoped ? r.allIn + '/' + r.allIn : '',
+        // a set whose members are all methylated is as enriched as a set can be: said on hover
+        const row = (r) => ({ label: short(r), main: { or: 2 ** r.value, sig: true, q: r.q, fold: !!spec.fold },
           tipMore: r.allIn && !scoped ? 'All ' + r.allIn + ' members are methylated, so ' + fx(2 ** r.value) + '× is the most enrichment a set can reach' : '' });
         const differ = (r) => ok(r) && r.sig && aBig(r.value);
         const kept = spec.keepOrder ? () => 0 : null;
@@ -4017,10 +4031,44 @@
         const same = spec.rows.filter((r) => ok(r) && r.sig && !aBig(r.value)).sort(kept || ((a, b) => Math.abs(b.value) - Math.abs(a.value)));
         const nSame = Math.max(0, 7 - nUp - nDn), rows = up.slice(0, nUp).concat(dn.slice(0, nDn)).concat(same.slice(0, nSame)).map(row);
         const left = up.slice(nUp).concat(dn.slice(nDn), same.slice(nSame)), more = left.length;
-        const capped = rows.some((r) => r.tag);
-        return { vis: rows.length ? aForest([[null, rows]], { compact: true }) + (capped ? '<span class="a-cap-key"><span class="aq-tag">n/n</span> every member methylated: as enriched as a set can be</span>' : '') + (more ? '<span class="a-more-n" data-more="' + esc(JSON.stringify(left.map((r) => r.label))) + '" title="Open the section at the ' + more + ' not shown here">+' + more + ' more ›</span>' : '') : '', head: rows.length ? '' : 'none differs (q ≤ ' + PADJ + ')', whole: '' };
+        return { vis: rows.length ? aForest([[null, rows]], { compact: true }) + (more ? '<span class="a-more-n" data-more="' + esc(JSON.stringify(left.map((r) => r.label))) + '" title="Open the section at the ' + more + ' not shown here">+' + more + ' more ›</span>' : '') : '', head: rows.length ? '' : 'none differs (q ≤ ' + PADJ + ')', whole: '' };
+      };
+      // Where in the protein, simply: in a disordered region (MobiDB) or in a domain (InterPro), then the classes of
+      // nearest domain that stand out (all against the other arginines of the same proteins, pooled).
+      const structTile = () => {
+        const one = (spec, key, label, what) => { const r = spec && spec.rows.find((x) => x.key === key); return r && r.value != null ? { label, main: { or: 2 ** r.value, sig: r.sig, q: r.q }, mainName: what } : null; };
+        const base = [one(disorder, 'disordered', 'IDR', 'In a disordered region (MobiDB)'), one(domctx, 'in_domain', 'Domain', 'Inside an InterPro domain')].filter(Boolean);
+        const cls = (domcls.rows || []).filter((r) => ok(r) && r.sig && r.value > 0 && aBig(r.value)).sort((a, b) => b.value - a.value).slice(0, 4)
+          .map((r) => ({ label: short(r), main: { or: 2 ** r.value, sig: true, q: r.q }, mainName: 'Nearest domain of this class (InterPro)' }));
+        if (!base.length && !cls.length) return chartTile(sctx || disorder);
+        return { vis: aForest([[null, base], [cls.length ? 'Nearest domain' : null, cls]], { compact: true }), head: 'Methylarginines against the other arginines of the same proteins', whole: '' };
       };
       const ixStack = (ss) => { if (!ixReady()) return ''; const k = { exp: 0, pred: 0, none: 0 }; for (const s of ss) k[ixStatus(s)]++; return aStack([{ n: k.exp, cls: 'exp', label: 'Experimental evidence', key: 'experimental' }, { n: k.pred, cls: 'pred', label: 'Predicted only', key: 'predicted' }, { n: k.none, cls: 'none', label: 'None recorded' }]); };
+      // the interaction evidence of the sites, and the tests of the Interactions page: methylarginines against the other
+      // arginines of the same proteins in living cells (the RNA tests among the arginines each experiment measured) and
+      // at protein interfaces
+      const ixTile = () => {
+        const ss = scoped ? R.sites : S, on = scoped && testable;
+        const t = (label, g, path, what) => ({ label, main: ixSelTest(g, path, on), mainName: what });
+        const cells = [t('RNA-crosslinked residue', 'xl_enrich', ['rna_xl'], 'The residue crosslinked to RNA (pepR-MS compendium)'),
+          t('CAPRI peptide', 'xl_enrich', ['rna_capri_cov'], 'Among the arginines CAPRI measured (Panhale 2019)'), t('pCLAP peptide', 'xl_enrich', ['rna_pclap_cov'], 'Among the arginines pCLAP measured (Mullari 2017)'),
+          t('RBDmap peptide', 'xl_enrich', ['rna_rbdmap_cov'], 'Among the arginines RBDmap measured (Castello 2016)'), t('RBR-ID+ residue', 'xl_enrich', ['rna_rbrid_cov'], 'Among the arginines RBR-ID measured (Oksuz 2023)'),
+          t('DNA-crosslinked residue', 'xl_enrich', ['dna_cand'], 'A DNA-crosslinked residue or candidate (Trendel 2025)')].filter((r) => aOr(r.main));
+        const prot = [t('Protein interface (PDB)', 'enrich_strata', ['protein', 'all'], 'At a protein interface in a PDB entry (PDBe-KB)'),
+          t('Predicted interface', 'pred_enrich', ['0.23', 'all'], 'At an AlphaFold-Multimer interface, pDockQ ≥ 0.23 (ProtVar)')].filter((r) => aOr(r.main));
+        const exp = ss.filter((s) => ixStatus(s) === 'exp').length;
+        return { vis: ixStack(ss) + (scoped && !testable ? '' : aForest([['In living cells', cells], ['Protein contacts', prot]], { compact: true })),
+          head: '<b>' + fmt(exp) + '</b> ' + (scoped ? 'of your sites' : 'sites') + ' (' + pctText(exp, ss.length || 1) + '%) with experimental evidence' };
+      };
+      // the sources reporting the most sites (of the selection, when there is one), then the share reported twice or more
+      const provTile = () => {
+        const ss = scoped ? R.sites : S, n = studies(ss);
+        const by = M.studyOrder.map((k) => [k, ss.filter((s) => s.study & 2 ** k).length]).filter((x) => x[1]).sort((a, b) => b[1] - a[1]);
+        const top = by.slice(0, 5), mx = top.length ? top[0][1] : 1, sh = multiShare(ss) || 0;
+        const meters = top.map(([k, c]) => ({ label: M.studies[k][0], v: c / mx, text: fmt(c), cls: 'count', tip: '<b>' + esc(M.studies[k][0]) + '</b><br>' + fmt(c) + ' of ' + fmt(ss.length) + (scoped ? ' selected' : '') + ' sites' }));
+        return { vis: aMeters(meters, { tight: true, wide: true }),
+          head: '<b>' + n + '</b> studies and databases' + (by.length > top.length ? ' (the ' + top.length + ' with the most sites shown)' : '') + '; <b>' + pctText(Math.round(1000 * sh), 1000) + '%</b> of ' + (scoped ? 'your sites' : 'sites') + ' reported by two or more' };
+      };
       const studies = (ss) => { let m = 0; for (const s of ss) m |= s.study; return popcount(m); };
       const multiShare = share((s) => popcount(s.study) >= 2);
       // every perturbation and methyl-IP, ranked by the number of sites that lose methylation
@@ -4030,22 +4078,22 @@
       const trVis = trAll.length ? aMeters(trAll.map((r) => ({ label: trName(r), v: r.down / trMax, text: fmt(r.down), cls: 'down',
         tip: '<b>' + esc(r.t === 2 ? 'CARM1 knockout, ' + r.cell + ' (Rme2a IP)' : r.name + ' (' + (TREAT_HELP[r.name] || '') + '), ' + ipLabel(r.ipName) + ' IP') + '</b><br>' + fmt(r.down) + ' of ' + fmt(r.n) + ' measured sites decreased (' + pct(r.down, r.n) + '%)' + (r.up ? '; ' + fmt(r.up) + ' increased' : '') })), { tight: true }) : '';
       const ov = {
-        'ov-pan': chartTile(pan || func), 'ov-dis': chartTile(dis), 'ov-cond': chartTile(cond), 'ov-loc': chartTile(loc), 'ov-motif': chartTile(motif), 'ov-struct': chartTile(sctx || disorder),
-        'ov-ix': ixReady() ? { vis: ixStack(scoped ? R.sites : S), head: '<b>' + fmt((scoped ? R.sites : S).filter((s) => ixStatus(s) === 'exp').length) + '</b> sites with experimental evidence' } : { vis: '' },
-        'ov-study': { vis: aMeters([{ label: 'Reported by two or more', v: multiShare(scoped ? R.sites : S), text: pctText(Math.round(1000 * (multiShare(scoped ? R.sites : S) || 0)), 1000) + '%', cls: 'sel' }]), head: '<b>' + studies(scoped ? R.sites : S) + '</b> studies and databases report ' + (scoped ? 'your sites' : 'the sites') },
+        'ov-pan': chartTile(pan || func), 'ov-dis': chartTile(dis), 'ov-cond': chartTile(cond), 'ov-loc': chartTile(loc), 'ov-motif': chartTile(motif), 'ov-struct': structTile(),
+        'ov-ix': ixReady() ? ixTile() : { vis: '' },
+        'ov-study': provTile(),
         'ov-treat': { vis: trVis ? '<div class="a-treat">' + trVis + '</div>' : '', head: 'Sites that lose methylation with each PRMT inhibitor (Maron 2021) or CARM1 knockout (Shishkova 2017)' },
-        'ov-start': { vis: '<span class="a-pills">' + topSites.slice(0, 8).map((p) => '<span class="a-pill">' + esc(p.label) + '<b>' + p.sites.length + '</b></span>').join('') + '</span>', head: 'The proteins with the most sites, and quick selections' },
+        'ov-start': { vis: '<span class="a-pills">' + topSites.slice(0, 8).map((p) => '<span class="a-pill">' + esc(p.label) + '<b>' + p.sites.length + '</b></span>').join('') + '</span>', head: 'The proteins with the most sites; open for quick selections' },
       };
       for (const k of Object.keys(ov)) if (!ov[k]) delete ov[k];
       // the opening page only: three proteins at random, after the starting points
       const ex = scoped ? [] : exProts();
       const maps = ex.length ? '<h3 class="a-gh">Randomly selected proteins <button type="button" class="linkish a-reshuffle" data-ex-shuffle>Draw three others</button></h3>' + aMapsHtml(ex, '') : '';
-      return aHome(lead, ov, ['sel-enriched'], { 'Starting points': maps });
+      return aHome(lead, ov, ['sel-enriched'], { Explore: maps });
     }
     A_ROWS.length = 0;
     const hubList = '<div class="hub-list">' +
       untested(hubSec('Your selection', (selOn ? profileCardHtml(true) : '') || row('sel-enriched', 'Enriched features', '', 'What sets a selection apart from the other sites?', 'needs', null, '', 'Make a selection (search, or Filters) to see the site features over-represented in it.'))) +
-      untested(hubSec(selOn ? 'What kinds of proteins are in your selection' : 'What kinds of proteins are methylated',
+      untested(hubSec(selOn ? 'Kinds of protein in your selection' : 'Kinds of protein',
         chartRow('ov-pan', pan || func, 'Which protein classes are over-represented among methylated proteins?') +
         chartRow('ov-dis', dis, 'Which disease gene sets are over-represented?') +
         chartRow('ov-cond', cond, 'Which biomolecular condensates are over-represented (CD-CODE' + (thr ? ', confidence ≥ ' + thr : '') + ')?') +
@@ -4064,7 +4112,7 @@
       repDist.map((n, k) => '<button class="hb' + (selOn && !repSel[k] ? ' off' : '') + '" type="button" data-rep="' + (k + 1) + '"><span class="hb-label">' + (k === 4 ? '5 or more' : (k + 1) + (k ? ' sources' : ' source')) + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / repDist[0]).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span>' + (selOn ? selCell(repSel[k]) : '') + '</button>').join('') +
       '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) are reported by two or more' + (selOn ? '; ' + fmt(R.sites.length - repSel[0]) + ' of the ' + fmt(R.sites.length) + ' selected' : '') + '. Databases such as PhosphoSitePlus compile published studies, so two sources can rest on the same measurement. Click a row to keep sites with at least that many.</p></div></div></div>', 'Which studies and databases report the sites?', 'count', provCount(selOn ? R.sites : S), provCount(S), null, pctFig(share((s) => popcount(s.study) >= 2))) +
         row('ov-treat', 'PRMT inhibitor and knockout response', '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor and knockout response</h3><p class="sub">Sites that change when PRMT5 or type I PRMTs are inhibited (Maron et al. 2021)' + (koMeta() ? ' or CARM1 is knocked out (Shishkova et al. 2017)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable() + '</div>', 'Which sites lose methylation when PRMTs are inhibited or knocked out?', 'count', treatSummary(selOn ? R.sites : S, true), treatSummary(S, true), null, pctFig(topDown))) +
-      (selOn ? '' : hubSec('Starting points',
+      (selOn ? '' : hubSec('Explore',
         row('ov-start', 'Starting points', '<div class="card wide starts" id="ov-start"><h3>Starting points</h3><div class="starts-grid">' +
       '<div><h4>Quick selections</h4><div class="gene-chips">' + (UI.quick || []).map((q, k) => '<button class="gene-chip" type="button" data-quick="' + k + '">' + esc(q[1]) + '<span>' + q[0] + '</span></button>').join('') + '</div></div>' +
       '<div><h4>Most methyl-R sites</h4>' + geneChips(topSites, (p) => p.sites.length) + '</div>' +
@@ -4197,9 +4245,10 @@
   }
   // The two rows with the largest decreased share, for a folded header.
   function treatSummary(sites, html) {
-    const top = treatRows(sites).filter((r) => r.n).sort((a, b) => b.down / b.n - a.down / a.n).slice(0, 2);
-    if (!html) return top.length ? 'most decreased: ' + top.map((r) => r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName)) + ' ' + pct(r.down, r.n) + '% of ' + fmt(r.n)).join(', ') : '';
-    return top.length ? 'Most decreased: ' + top.map((r) => esc(r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName))) + ' <span class="an">' + pct(r.down, r.n) + '%</span> of ' + fmt(r.n)).join(', ') : 'none of these sites was measured';
+    // ranked by the number of sites lost, as the tile ranks them
+    const top = treatRows(sites).filter((r) => r.n).sort((a, b) => b.down - a.down || b.n - a.n).slice(0, 2);
+    if (!html) return top.length ? 'most sites lost: ' + top.map((r) => r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName)) + ' ' + fmt(r.down) + ' of ' + fmt(r.n)).join(', ') : '';
+    return top.length ? 'Most sites lost: ' + top.map((r) => esc(r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName))) + ' <span class="an">' + fmt(r.down) + '</span> of ' + fmt(r.n)).join(', ') : 'none of these sites was measured';
   }
   function treatTable() {
     const km = koMeta(), all = treatRows();
@@ -4781,7 +4830,10 @@
       const ci = m.lo > 0 && m.hi > 0 && Number.isFinite(m.hi) ? '<i class="aq-ci' + (gh ? ' gh' : ' ' + aDir(m)) + '" style="left:' + X(m.lo) + ';width:calc(' + X(m.hi) + ' - ' + X(m.lo) + ')"></i>' : '';
       return ci + '<i class="' + (gh ? 'aq-gh' : 'aq-pt ' + aDir(m)) + '" style="left:' + X(m.or) + '" data-tip="' + esc(tip) + '"></i>';
     };
-    const val = (m) => (aOr(m) ? fx(m.or) + '×' : none(m) ? 'none' : '—');
+    // one number of decimals down the column: two when any value under 1.2 needs them to tell it from the 1.1x line
+    const dig = ms.some((m) => m.or >= 0.01 && m.or < 1.2) ? 2 : 1;
+    const fxc = (x) => (x >= 1000 ? '> 1,000' : x >= 10 ? x.toFixed(0) : x >= 0.01 ? x.toFixed(dig) : '< 0.01');
+    const val = (m) => (aOr(m) ? fxc(m.or) + '×' : none(m) ? 'none' : '—');
     let h = '';
     for (const [g, rows] of groups) {
       if (!rows.length) continue;
@@ -4826,7 +4878,7 @@
   const aHighlights = (items) => '<div class="a-hi">' + items.map((x) => '<button type="button" class="a-hi-c" data-go="' + x.go + '" data-tip="' + esc(x.tip) + '">' +
     '<span class="a-hi-g" aria-hidden="true">' + x.glyph + '</span><span class="a-hi-n ' + (x.dir || 'up') + '">' + esc(x.big) + '</span><span class="a-hi-l">' + esc(x.label) + '</span><span class="a-hi-e">' + esc(x.kind) + '</span></button>').join('') + '</div>';
   // Small pictures for tiles: meters (shares, with a reference tick), a stacked bar, big numbers.
-  const aMeters = (rows, o = {}) => '<div class="a-meters' + (o.tight ? ' tight' : '') + '">' + rows.map((r) => '<div class="am-row"' + (r.tip ? ' data-tip="' + esc(r.tip) + '"' : '') + '><span class="am-l">' + esc(r.label) + '</span><span class="am-t"><i class="' + (r.cls || '') + '" style="width:' + (100 * Math.max(0, Math.min(1, r.v || 0))).toFixed(1) + '%"></i>' +
+  const aMeters = (rows, o = {}) => '<div class="a-meters' + (o.tight ? ' tight' : '') + (o.wide ? ' wide' : '') + '">' + rows.map((r) => '<div class="am-row"' + (r.tip ? ' data-tip="' + esc(r.tip) + '"' : '') + '><span class="am-l">' + esc(r.label) + '</span><span class="am-t"><i class="' + (r.cls || '') + '" style="width:' + (100 * Math.max(0, Math.min(1, r.v || 0))).toFixed(1) + '%"></i>' +
     (r.ref != null ? '<b style="left:' + (100 * r.ref).toFixed(1) + '%"></b>' : '') + '</span><span class="am-v">' + esc(r.text) + '</span></div>').join('') + (o.foot ? '<div class="am-foot">' + o.foot + '</div>' : '') + '</div>';
   const aStack = (parts) => { const tot = parts.reduce((a, p) => a + p.n, 0) || 1; return '<div class="a-stack"><div class="as-bar">' + parts.map((p) => '<i class="' + p.cls + '" style="flex-grow:' + p.n + '" data-tip="' + esc('<b>' + p.label + '</b><br>' + fmt(p.n) + ' (' + pctText(p.n, tot) + '%)') + '"></i>').join('') + '</div><div class="as-key">' + parts.filter((p) => p.key).map((p) => '<span><i class="' + p.cls + '"></i>' + esc(p.key) + ' ' + pctText(p.n, tot) + '%</span>').join('') + '</div></div>'; };
   const aBigN = (items) => '<div class="a-big">' + items.map(([n, label, cls]) => '<span class="' + (cls || '') + '"><b>' + n + '</b> ' + esc(label) + '</span>').join('') + '</div>';
@@ -4934,17 +4986,12 @@
       const nR = sites.filter((s) => (s.ev || 0) & EV_RNA_CELLS).length;
       cards.push({ go: 'p-na', kind: 'RNA · in living cells', glyph: aGlyph.cls(), big: of(nR), dir: 'n', label: 'in RNA-bound regions', tip: 'Methylarginines crosslinked to RNA, or inside an RNA-bound peptide or fragment (RBDmap, CAPRI, pCLAP) or under an RBR-ID+ peptide' });
     }
-    // the category it belongs to that methylated proteins are most over-represented in (PANTHER, CD-CODE condensates)
-    const cats = [], pm = pantherMeta(), ovw = M.overview;
-    if (pm && p.pan) {
-      const [g, c, sk] = p.pan;
-      [[ovw.panther_groups, [g]], [ovw.panther_classes, c >= 0 ? [c] : []], [ovw.panther_subclasses || [], sk || []]]
-        .forEach(([table, ks]) => ks.forEach((k) => { const r = table[k]; if (r && r[0] !== pm.unclassified) cats.push({ name: r[0], l2: r[4], q: r[5], kind: 'Protein class', go: 'p-func' }); }));
-    }
-    for (const k of p.cond || []) { const c = M.condensates[k]; if (c) cats.push({ name: condName(k), l2: c[7] != null ? c[7] : c[5], q: c[8] != null ? c[8] : c[6], kind: 'Condensate', go: 'p-cond' }); }
-    const top = cats.filter((x) => x.l2 != null && x.q != null && x.q <= PADJ && x.l2 > 0 && aBig(x.l2)).sort((a, b) => b.l2 - a.l2)[0];
-    if (top) cards.push({ go: top.go, kind: top.kind, glyph: top.kind === 'Condensate' ? aGlyph.drops() : aGlyph.cls(), big: fx(2 ** top.l2) + '×', dir: 'up', label: top.name,
-      tip: '<b>' + esc(top.name) + '</b>: ' + esc(p.label) + ' belongs to it. Across the dataset, methylated proteins are ' + fx(2 ** top.l2) + '× over-represented in it (q ' + fmtP(top.q) + ')' });
+    // its CD-CODE condensates, naming the one methylated proteins favour most across the dataset
+    const condK = new Set((p.cond || []).concat((cdMemberships(p) || []).map((m) => m.ci))), conds = [];
+    for (const k of condK) { const c = M.condensates[k]; if (c) conds.push({ name: condName(k), l2: c[7] != null ? c[7] : c[5], q: c[8] != null ? c[8] : c[6] }); }
+    const topC = conds.filter((x) => x.l2 != null && x.q != null && x.q <= PADJ && x.l2 > 0 && aBig(x.l2)).sort((a, b) => b.l2 - a.l2)[0];
+    if (conds.length) cards.push({ go: 'p-cond', kind: 'Condensates', glyph: aGlyph.drops(), big: fmt(conds.length), dir: 'n', label: 'CD-CODE condensate' + (conds.length === 1 ? '' : 's') + (topC ? ', with ' + topC.name : ': ' + conds[0].name),
+      tip: '<b>' + esc(p.label) + '</b> is a member of ' + fmt(conds.length) + ' CD-CODE condensate' + (conds.length === 1 ? '' : 's') + (topC ? '<br>' + esc(topC.name) + ': across the dataset, methylated proteins are ' + fx(2 ** topC.l2) + '× over-represented in it (q ' + fmtP(topC.q) + ')' : '') });
     const ck = CONS_KEEP.get(p.i);
     if (ck && ck.me != null && ck.other != null) cards.push({ go: 'p-cons', kind: 'Conservation', glyph: aGlyph.tree(), big: Math.round(100 * ck.me) + '%', dir: 'n', label: 'still R in orthologues (others ' + Math.round(100 * ck.other) + '%)',
       tip: 'On average, the share of species whose orthologue still has an arginine at a methylarginine (' + fmt(ck.n1) + ') and at the other arginines (' + fmt(ck.n2) + ')' + (ck.p != null ? '; Wilcoxon rank-sum p ' + fmtP(ck.p) : '') });
@@ -5025,7 +5072,7 @@
       if (!document.body.contains(b)) return;
       const p = P[+b.dataset.mapP];
       b.innerHTML = '<span class="a-map-go" aria-hidden="true">Open ' + esc(p.label) + ' ›</span>' +
-        contactCartoonSvg(p, UNIDATA.get(p.acc), null, { pal: Object.assign(screenPalette(), { bg: cssVar('--surface') }), W: w || Math.max(560, Math.round(b.clientWidth || 900)), noLanes: true, noLegend: k < maps.length - 1 }).svg;
+        contactCartoonSvg(p, UNIDATA.get(p.acc), null, Object.assign({ pal: Object.assign(screenPalette(), { bg: cssVar('--surface') }), W: w || Math.max(560, Math.round(b.clientWidth || 900)), noLanes: true, noLegend: k < maps.length - 1 }, w ? {} : narrowOpts(b))).svg;
     });
     draw();
     maps.forEach((b) => { const p = P[+b.dataset.mapP]; loadUniProt(p.acc).then(() => draw(), () => {}); b.addEventListener('click', () => openProtein(p.i)); });
@@ -5221,7 +5268,7 @@
     const ixF = UI.pIx || '';
     const nShown = rows.filter((s) => R.shown.has(s.j)).length;
     setFoldSummary('p-sites', fmt(rows.length) + ' site' + (rows.length === 1 ? '' : 's') + (nShown < rows.length ? ', ' + fmt(nShown) + ' match your filters' : '') +
-      (ixReady() ? ' · ' + ['exp', 'pred', 'none'].map((k) => fmt(rows.filter((x) => ixStatus(x) === k).length) + ' ' + IXS[k][0].toLowerCase()).join(', ') : '') +
+      (ixReady() ? ' · ' + ['exp', 'pred', 'none'].map((k) => [rows.filter((x) => ixStatus(x) === k).length, k]).filter((x) => x[0]).map(([n, k]) => fmt(n) + ' ' + IXS[k][0].toLowerCase()).join(', ') : '') +
       (ixF ? ' · showing ' + IXS[ixF][0].toLowerCase() + ' only' : ''));
     box.innerHTML = '<table class="tbl stackable">' + colHead(cols, { dir: 1 }, null) + '<tbody>' +
       rows.map((s) => {
@@ -5643,8 +5690,9 @@
     const c = M.condensates[k];
     if (!c) return '';
     const dr = condDrivers(k).filter((g) => !c[0].toUpperCase().includes(g.toUpperCase()));
-    if (!dr.length) return c[0];
-    return c[0].replace(/\s*\([^()]*\)$/, '') + ' (' + dr.slice(0, 2).join(', ') + (dr.length > 2 ? ' +' + (dr.length - 2) : '') + ')';
+    const name = /^[a-z]{3,}[\s-]/.test(c[0]) ? c[0].charAt(0).toUpperCase() + c[0].slice(1) : c[0];
+    if (!dr.length) return name;
+    return name.replace(/\s*\([^()]*\)$/, '') + ' (' + dr.slice(0, 2).join(', ') + (dr.length > 2 ? ' +' + (dr.length - 2) : '') + ')';
   }
 
   // Human Protein Atlas locations of this protein: main locations first, each with HPA's reliability; in the dataset
@@ -5717,7 +5765,7 @@
     const locs = hm ? p.hpa.filter((x) => x[2]).map((x) => hm.locations[x[0]]) : [];
     const nCond = mem ? new Set(p.cond.concat(mem.map((m) => m.ci))).size : p.cond.length;
     const top = mem && mem.slice().sort((x, y) => y.score - x.score || y.nPub - x.nPub || M.condensates[x.ci][0].localeCompare(M.condensates[y.ci][0]))[0];
-    setFoldSummary('p-cond', [locs.length ? sumList(locs, 2) : '', nCond ? nCond + ' CD-CODE condensate' + (nCond === 1 ? '' : 's') + (top && top.score > 0 ? ', top ' + M.condensates[top.ci][0] + ' (' + top.score + '/5)' : '') : 'no CD-CODE condensate'].filter(Boolean).join(' · '));
+    setFoldSummary('p-cond', [locs.length ? sumList(locs, 2) : '', nCond ? nCond + ' CD-CODE condensate' + (nCond === 1 ? '' : 's') + (top && top.score > 0 ? ', most confident ' + condName(top.ci) + ' (' + top.score + ' of 5 stars)' : '') : 'no CD-CODE condensate'].filter(Boolean).join(' · '));
   }
 
   // Functional ontology tree: broad classes with this protein's subclasses nested under their parent class.
@@ -5757,8 +5805,9 @@
     $$('[data-func]', box).forEach((b) => b.addEventListener('click', () => setTerm('class', termSlug('class', M.func_classes.indexOf(b.dataset.func)), 'proteins')));
     $$('[data-sub]', box).forEach((b) => b.addEventListener('click', () => setTerm('subclass', termSlug('subclass', M.func_subclasses.indexOf(b.dataset.sub)), 'proteins')));
     $$('[data-pan]', box).forEach((b) => b.addEventListener('click', () => setTerm('panther', b.dataset.pan, 'proteins')));
-    const panSum = pm && p.pan && p.pan[1] >= 0 ? 'PANTHER: ' + pm.classes[p.pan[1]] : '';
-    setFoldSummary('p-func', [panSum, broad.length ? sumList(broad, 3) : subs.length ? sumList(subs, 3) : 'no class assigned'].filter(Boolean).join(' · '));
+    // the same names as the section: PANTHER's group and class, then the functional classes
+    const panSum = pm && p.pan && pm.groups[p.pan[0]] !== pm.unclassified ? 'PANTHER: ' + pm.groups[p.pan[0]] + (p.pan[1] >= 0 ? ' › ' + pm.classes[p.pan[1]] : '') : '';
+    setFoldSummary('p-func', [panSum, broad.length ? 'functional: ' + sumList(broad, 3) : subs.length ? 'functional: ' + sumList(subs, 3) : panSum ? '' : 'no class assigned'].filter(Boolean).join(' · '));
   }
 
   // Open Targets Platform: this gene's disease associations and their overall scores (CC0).
@@ -6329,6 +6378,9 @@
     return { W, H, x0, x1, len, v0, v1, svg: '<svg xmlns="http://www.w3.org/2000/svg" class="ccart" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + (pal.font || EXPORT_PAL.font).replace(/'/g, '"') + '\' role="img" aria-label="' + esc(p.label + ': methylarginines and interaction evidence along the sequence') + '">' +
       (exp ? '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' : '') + g + '</svg>' };
   }
+  const NARROW = 600;
+  const narrowW = (el) => { const w = el ? el.clientWidth : 0; return w > 0 && w < NARROW ? Math.round(w) : 0; };
+  const narrowOpts = (el) => (narrowW(el) ? { W: narrowW(el), panel: true } : {});
   // The card on protein pages, redrawn as UniProt features, interaction data and PDBe-KB interfaces arrive.
   function contactCardHtml() {
     return '<div class="card" id="card-contacts"><div class="card-head"><div><h3>Interaction evidence at a glance</h3><p class="sub">Each methylarginine above the interaction evidence at the same residues. Solid: experimental; hollow: predicted only.' + docLink('ix-status') + '</p></div>' +
@@ -6346,7 +6398,7 @@
     if (!box) return;
     const ifd = p.iso ? { rna: [], dna: [], protein: [], self: [] } : IFDATA.get(p.acc.split('-')[0]) || null;
     // One zoom for the protein map and this cartoon: dragging across either zooms both.
-    const cc = contactCartoonSvg(p, UNIDATA.get(p.acc), ifd, Object.assign({ pal: Object.assign(screenPalette(), { bg: cssVar('--surface') }), range: UI.zoom }, panelOpts()));
+    const cc = contactCartoonSvg(p, UNIDATA.get(p.acc), ifd, Object.assign({ pal: Object.assign(screenPalette(), { bg: cssVar('--surface') }), range: UI.zoom }, narrowOpts(box), panelOpts()));
     box.innerHTML = '<div class="panel-prev"' + panelPreviewStyle() + '>' + cc.svg + '</div>' +
       '<p class="note screen-only">Drag across the cartoon to zoom it and the protein map' + (UI.zoom ? '; showing residues ' + rn(cc.v0, p) + '–' + rn(cc.v1, p) + ' (double-click or Reset zoom to see the whole protein)' : '') + '.</p>';
     bindCartoon(box, p, cc, (r) => setZoom(p, r));
@@ -6356,8 +6408,10 @@
       if (!zr.dataset.bound) { zr.dataset.bound = '1'; zr.addEventListener('click', () => setZoom(p, null)); }
     }
     if (ixReady()) {
-      const ev = EV_SETS.map(([b, , short]) => [short, p.sites.filter((j) => (S[j].ev || 0) & b).length]).filter((x) => x[1]);
-      setFoldSummary('p-cc', ev.length ? 'sites with ' + ev.map(([l, n]) => l + ' ' + n).join(' · ') : 'no interaction evidence at these sites');
+      // the cartoon's own counts: methylarginines with each lane's evidence, at the residue or beside it
+      const all = p.sites.map((j) => S[j]);
+      const ev = contactLanes(p, ifd, EXPORT_PAL).map((ln) => [ln.short, all.filter((s) => ln.hit(s) || (ln.weak && ln.weak(s))).length]).filter((x) => x[1]);
+      setFoldSummary('p-cc', ev.length ? 'of ' + fmt(all.length) + ' methylarginines: ' + ev.map(([l, n]) => l + ' ' + fmt(n)).join(' · ') : 'no interaction evidence at these methylarginines');
     }
     $$('.cc-site', box).forEach((c) => c.addEventListener('click', () => { UI.highlight = +c.dataset.pos; flashSite(+c.dataset.pos, true); drawMap(p, UNIDATA.get(p.acc)); }));
     const card = $('#card-contacts');
@@ -6438,7 +6492,7 @@
     const z = (!o.full && UI.zoom) || [1, len];
     const v0 = Math.max(1, z[0]), v1 = Math.min(len, Math.max(z[1], v0 + 10));
     // o.W lays the map out at another width (journal columns); o.full ignores the page's zoom.
-    const W = o.W || 1000, ML = Math.min(140, Math.round(W * 0.2)), MR = 18;
+    const W = o.W || 1000, ML = o.narrow ? Math.min(110, Math.round(W * 0.3)) : Math.min(140, Math.round(W * 0.2)), MR = o.narrow ? 8 : 18;
     const x = (pos) => ML + ((pos - v0) / (v1 - v0 + 1)) * (W - ML - MR);
     const visible = (a, b) => b >= v0 && a <= v1;
     const cx = (pos) => Math.max(ML, Math.min(W - MR, x(pos)));
@@ -6467,14 +6521,23 @@
         if (line >= 0) { lineEnd[line] = lx + w / 2; placed.push({ grp: [h], text, lx, line }); continue; }
         // No line has room: join the nearest label to the left, which then reads "R472 +3" and grows to the right only
         // (nothing on its line lies to its right yet).
-        const last = placed[placed.length - 1];
-        if (!last) continue;
-        const left = last.lx - width(last.text) / 2;
-        last.grp.push(h);
-        last.text = labelText(last.grp);
-        const w2 = width(last.text);
-        last.lx = Math.min(W - MR - w2 / 2, left + w2 / 2);
-        lineEnd[last.line] = last.lx + w2 / 2;
+        let lab = placed[placed.length - 1];
+        if (!lab) continue;
+        lab.left = lab.lx - width(lab.text) / 2;
+        lab.grp.push(h);
+        // A label pushed back from the right edge must not run into the one before it on its line: the two then
+        // become one label.
+        for (;;) {
+          lab.text = labelText(lab.grp);
+          const w2 = width(lab.text);
+          lab.lx = Math.min(W - MR - w2 / 2, lab.left + w2 / 2);
+          const prev = placed.filter((q) => q !== lab && q.line === lab.line && q.lx <= lab.lx).sort((a, b) => b.lx - a.lx)[0];
+          if (!prev || prev.lx + width(prev.text) / 2 + 5 <= lab.lx - w2 / 2) { lineEnd[lab.line] = lab.lx + w2 / 2; break; }
+          prev.left = prev.lx - width(prev.text) / 2;
+          prev.grp.push(...lab.grp);
+          placed.splice(placed.indexOf(lab), 1);
+          lab = prev;
+        }
       }
     }
     const nLines = placed.length ? Math.max(...placed.map((q) => q.line)) + 1 : 0;
@@ -6891,7 +6954,7 @@
     const box = $('#map-box');
     if (!box) return;
     const sub = $('#map-sub');
-    const out = mapSvg(p, u, { pal: screenPalette(), forExport: false });
+    const out = mapSvg(p, u, { pal: screenPalette(), forExport: false, W: narrowW(box) || undefined, narrow: !!narrowW(box) });
     if (sub) {
       const who = p.acc + ' · ' + (p.hist ? 'histone numbering (no initiator Met; R2 = UniProt R3) · ' : '');
       sub.textContent = u ? who + fmt(out.len) + ' aa · features from UniProt' + (UI.zoom ? ' · showing ' + rn(out.v0, p) + '–' + rn(out.v1, p) : '') :
@@ -9902,13 +9965,13 @@
     return { at: at.size, px: px.size, nx: nx.size, xlN, xlSites: xlSites.length, regs, nab, sitesAny, any: !!(ws.length || xlN || regs || nab.length || (xp && (kind === 'rna' ? xp.rbd.length || xp.capXl.length || xp.capAdj.length || xp.pclap.length || xp.rbrid.length : xp.dnaBind.length || xp.dnaInt))) };
   }
   function naEvidenceText(e) {
-    const parts = [];
-    if (e.at) parts.push(fmt(e.at) + ' site' + (e.at === 1 ? '' : 's') + ' in direct contact in structures');
-    if (e.px) parts.push(fmt(e.px) + ' within 8 Å');
-    if (e.nx) parts.push(fmt(e.nx) + ' via i ± 1–5');
-    if (e.xlN) parts.push(fmt(e.xlN) + ' UV-crosslinked residue' + (e.xlN === 1 ? '' : 's') + (e.xlSites ? ' (' + fmt(e.xlSites) + ' site' + (e.xlSites === 1 ? '' : 's') + ' with one at i ± 1–5)' : ''));
-    if (e.regs) parts.push(fmt(e.regs) + ' region' + (e.regs === 1 ? '' : 's') + ' in structures');
-    return parts.concat(e.nab).join(', ') || 'none recorded';
+    const parts = [], pl = (n, w) => fmt(n) + ' ' + w + (n === 1 ? '' : 's');
+    // in structures: sites in contact, then those only within 8 Å, then those only through a neighbouring residue
+    const st = [[e.at, 'in contact'], [e.px, 'within 8 Å'], [e.nx, 'in contact through a neighbouring residue']].filter((x) => x[0]);
+    if (st.length) parts.push(st.map(([n, w], i) => (i ? fmt(n) + ' more ' : pl(n, 'site') + ' ') + w).join(', ') + ' in structures');
+    if (e.xlN) parts.push(pl(e.xlN, 'residue') + ' crosslinked in cells' + (e.xlSites ? ' (' + pl(e.xlSites, 'site') + ' within ' + NA_NEAR + ' residues of one)' : ''));
+    if (e.regs) parts.push(pl(e.regs, 'bound region') + ' in structures');
+    return parts.concat(e.nab).join('; ') || 'none recorded';
   }
   function renderNaCard(p) {
     const box = $('#card-na');
@@ -10431,7 +10494,7 @@
     const draw = () => {
       const box = $('#ix-ex-box', card);
       if (!box || UI.view !== 'interactions') return;
-      const cc = contactCartoonSvg(p, UNIDATA.get(p.acc), p.iso ? null : IFDATA.get(base) || null, { pal: Object.assign(screenPalette(), { bg: cssVar('--surface') }), range });
+      const cc = contactCartoonSvg(p, UNIDATA.get(p.acc), p.iso ? null : IFDATA.get(base) || null, Object.assign({ pal: Object.assign(screenPalette(), { bg: cssVar('--surface') }), range }, narrowOpts(box)));
       box.innerHTML = cc.svg + '<p class="note screen-only">Drag across the cartoon to zoom' + (range ? '; showing residues ' + rn(cc.v0, p) + '–' + rn(cc.v1, p) + ', double-click to see it all' : '') + '.</p>';
       bindCartoon(box, p, cc, (r) => { range = r; draw(); });
       $$('.cc-site', box).forEach((c) => c.addEventListener('click', () => openProtein(p.i, +c.dataset.pos)));
@@ -11267,6 +11330,14 @@
     }));
   }
 
+  // One of the Interactions page's within-protein tests (IX.selTests), on the selection (on) or on every site.
+  let ixSelSets = null;
+  function ixSelTest(group, path, on) {
+    const e = IX && (IX.selTests || []).find((x) => x[0] === group && x[1].join('/') === path.join('/'));
+    if (!e) return null;
+    if (on && (!ixSelSets || ixSelSets.R !== R)) ixSelSets = { R, j: new Set(R.sites.map((s) => s.j)), p: new Set(R.sites.map((s) => s.p)) };
+    return mhTest(selTestTables(e, on ? ixSelSets.j : null, on ? ixSelSets.p : null));
+  }
   function renderInteractions(el) {
     if (!IX) { el.innerHTML = '<div class="card"><h3>Interactions and binding</h3><p class="note">Loading interaction data…</p></div>'; return; }
     if (IX.failed) { el.innerHTML = '<div class="card"><h3>Interactions and binding</h3><p class="note">Interaction data (<code>data/methylarg_interactions.json</code>) is not available.</p></div>'; return; }
@@ -11276,10 +11347,7 @@
     const tile = (k, term, label) => fact(fmt(n[k]), label, pctText(n[k], R.sites.length || 1) + '% of ' + (scoped ? 'your ' : '') + fmt(R.sites.length) + ' sites', term, 'List these sites');
     // Answers for the scorecard: each section's deciding test on the selection and on every site.
     const selJ = scoped ? new Set(R.sites.map((s) => s.j)) : null, selP = scoped ? new Set(R.sites.map((s) => s.p)) : null;
-    const test = (group, path, on) => {
-      const e = (IX.selTests || []).find((x) => x[0] === group && x[1].join('/') === path.join('/'));
-      return e ? mhTest(selTestTables(e, on ? selJ : null, on ? selP : null)) : null;
-    };
+    const test = ixSelTest;
     const mhAns = (label, m) => {
       if (!m || m.or == null || Number.isNaN(m.or)) return am(0) + esc(label) + ': too few to test';
       const dir = m.p != null && m.p <= 0.05 ? (m.or > 1 ? 1 : -1) : 0;
@@ -11383,7 +11451,7 @@
       const ctlRng = (() => { const u = cells.filter((r) => aDir(r.main) === 'up').map((r) => r.main.or); return u.length ? '<b>' + (u.length > 1 ? fx(Math.min(...u)) + '–' + fx(Math.max(...u)) : fx(u[0])) + '×</b> among the arginines each experiment measured' : 'no difference among the arginines each experiment measured'; })();
       const ov = {
         'ix-evmap': { vis: stack(c), head: '<b>' + fmt(c.exp) + '</b> sites (' + pctText(c.exp, R.sites.length || 1) + '%) with experimental evidence', whole: fmt(cw.exp) + ' of ' + fmt(S.length) },
-        'ix-prox': { vis: proxSvg(), head: aOr(p0) && aOr(p20) ? 'CAPRI: <b>' + fx(p0.or) + '×</b> inside, ' + fx(p20.or) + '× within 20 residues' : 'Odds ratio by distance from RNA-binding residues' },
+        'ix-prox': { vis: proxSvg(), head: aOr(p0) && aOr(p20) ? 'Against all the other arginines, measured or not: CAPRI <b>' + fx(p0.or) + '×</b> inside, ' + fx(p20.or) + '× within 20 residues' : 'Odds ratio by distance from RNA-binding residues' },
         'ix-na': { vis: aBigN([[fmt(naN(R.sites, 'rna')), 'in contact with RNA'], [fmt(naN(R.sites, 'dna')), 'with DNA', 'dna']]), head: 'methylarginines in PDB structures, with the bound sequences', whole: fmt(naN(S, 'rna')) + ' RNA, ' + fmt(naN(S, 'dna')) + ' DNA' },
         'ixs-go': { vis: aMeters(goM(go)), head: 'Methylated proteins vs ' + (FOLD() ? 'all reviewed' : 'other') + ' human proteins (GO)' },
         'ixs-partners': { vis: pm.distinct ? aMeters([{ label: 'Partners methylated', v: pm.distinctMeth / pm.distinct, ref: pRef, text: pctText(pm.distinctMeth, pm.distinct) + '%', cls: 'sel' }]) : '', head: pm.distinct ? 'of ' + fmt(pm.distinct) + ' partners (tick: ' + pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of human proteins)' : 'no high-confidence partners' },
@@ -11422,6 +11490,7 @@
         '.';
       const more = '<p class="a-more"><button type="button" class="linkish" data-go="ix-nac">Every contact test, with tables ›</button></p>';
       const q = 'Are methylarginines enriched at contacts with RNA, DNA or other proteins?';
+      if (!R.sites.length) return aHome({ q, pic: selListHtml(false), verdict: '<span class="a-note">No site matches this selection. Change the search or the filters, or clear the selection.</span>' }, {}, A_ROWS.map((r) => r.key));
       if (!ixTestable) {
         const counted = hiCards.filter((x) => x.dir === 'n');
         return aHome({ q, pic: selListHtml() + exHtml, verdict: selTooFew(), hi: counted.length ? aHighlights(counted) : '' }, ov, ['ix-ex', 'ix-nac']);

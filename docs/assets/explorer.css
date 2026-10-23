@@ -671,7 +671,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .legend i { width: 10px; height: 10px; border-radius: 50%; }
 .legend i.sq { border-radius: 2px; width: 14px; }
 .map-box { position: relative; overflow-x: auto; }
-svg.pmap { display: block; width: 100%; min-width: 34rem; height: auto; user-select: none; touch-action: pan-y; }
+svg.pmap { display: block; width: 100%; height: auto; user-select: none; touch-action: pan-y; }
 svg.pmap .head { cursor: pointer; }
 svg.pmap .feat { cursor: help; }
 .tip {
@@ -1072,7 +1072,7 @@ details.ix-sec[open] > summary .pm, details.fold[open] > summary .pm { border-co
 .docs-toc { position: sticky; top: calc(var(--toolbar-h) + env(safe-area-inset-top, 0px) + 1rem); padding: 1rem 1.1rem; }
 .docs-toc .flabel { margin: 0 0 0.4rem; }
 .docs-toc ol { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.35rem; font-size: 0.88rem; }
-.docs-toc .linkish { text-align: left; }
+.docs-toc .linkish { text-align: left; vertical-align: top; }
 .docs-body { max-width: none; }
 .doc-sec { scroll-margin-top: calc(var(--toolbar-h) + 1rem); min-width: 0; }
 .doc-body { max-width: none; }
@@ -1285,7 +1285,6 @@ footer.site .linkish { font-size: inherit; }
 .row-move { display: inline-flex; gap: 0.15rem; }
 .row-move .linkish { padding: 0 0.3rem; font-size: 0.95rem; text-decoration: none; }
 .row-move .linkish:disabled { opacity: 0.3; cursor: default; }
-@media (max-width: 560px) { .cc-box svg.ccart { min-width: 640px; } }
 .panel-prev { width: 100%; }
 .panel-prev svg { width: 100%; height: auto; display: block; }
 /* ---- Breadcrumbs -------------------------------------------------------- */
@@ -1838,7 +1837,7 @@ html.drawer-open { overflow: hidden; }
 .hg-blob.b { fill: color-mix(in srgb, var(--ink-2) 14%, var(--surface)); stroke: var(--ink-2); }
 .a-hi-n.ns { font-size: 1.45rem; line-height: 1.6rem; color: var(--muted); }
 .a-hi-n.same { color: var(--muted); }
-.a-hi-n.n { font-size: 1.9rem; color: var(--teal); }
+.a-hi-n.n { font-size: 1.9rem; color: var(--brand-ink); }
 .hg-stem { stroke: var(--line-strong); stroke-width: 1.2; }
 .hg-drop { fill: color-mix(in srgb, var(--accent) 22%, var(--surface)); stroke: color-mix(in srgb, var(--accent) 60%, var(--surface)); stroke-width: 1.2; }
 /* layout A's section bar: always under the toolbar; on the tiles it holds the Sections menu, in a section also the way
@@ -1951,7 +1950,6 @@ html.pdf-export.pdf-cards .a-tile, html.pdf-export.pdf-cards .a-hi-c { box-shado
 .fold-pic { flex: 0 0 15rem; margin-left: auto; min-width: 0; font-size: 0.75rem; }
 .fold-pic:empty, details.fold[open] > summary > .fold-pic { display: none; }
 .fold-pic .a-big b { font-size: 1.35rem; }
-.fold-pic .a-big .dna b { font-size: 1.1rem; }
 details.fold .fold-pic .at-key, details.fold .fold-pic .am-foot, details.fold .fold-pic .as-key { display: none; }
 .fold-pic .a-note { display: block; color: var(--muted); line-height: 1.3; }
 details.fold.p-row > summary:has(> .fold-pic:not(:empty)) .fold-sum { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
@@ -1994,14 +1992,16 @@ details.fold.p-row > summary:has(> .fold-pic:not(:empty)) .fold-sum { white-spac
 .aq-axis span { position: absolute; top: 0.15rem; transform: translateX(-50%); font-size: 0.7rem; color: var(--muted); }
 .aq-ends { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); }
 .aq.compact { grid-template-columns: minmax(0, 1.9fr) minmax(3.5rem, 1fr) 2.7rem; column-gap: 0.4rem; }
-.aq.compact .aq-lab { overflow: hidden; padding: 0.1rem 0; font-size: 0.74rem; white-space: nowrap; text-overflow: ellipsis; }
+.aq.compact .aq-lab { overflow: hidden; padding: 0.1rem 0; font-size: 0.74rem; line-height: 1.2; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
+.aq.compact .aq-grp { padding: 0.4rem 0 0.1rem; font-size: 0.6rem; }
+.aq.compact .aq-grp:first-child { padding-top: 0; }
 .aq.compact .aq-plot { height: 1.15rem; }
 .aq.compact .aq-pt { width: 8px; height: 8px; margin: -4px 0 0 -4px; box-shadow: none; }
 .aq.compact .aq-val b { font-size: 0.74rem; }
 .aq.compact .aq-axis span { font-size: 0.62rem; }
 /* tiles */
-.a-groups { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 1.2rem 0.8rem; }
-.a-grp { display: grid; gap: 0.55rem; min-width: 0; flex: var(--n) 1 calc(var(--n) * 15.5rem + (var(--n) - 1) * 0.8rem); }
+.a-groups { display: flex; flex-wrap: wrap; align-items: stretch; gap: 1.2rem 0.8rem; }
+.a-grp { display: grid; grid-template-rows: auto 1fr; gap: 0.55rem; min-width: 0; flex: var(--n) 1 calc(var(--n) * 15.5rem + (var(--n) - 1) * 0.8rem); }
 .a-gh { margin: 0; font: 600 0.72rem/1.2 var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .a-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr)); gap: 0.8rem; }
 .a-tile { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; padding: 0.85rem 0.95rem 0.8rem; border: 1px solid var(--line); border-radius: 0.9rem; background: var(--surface); box-shadow: var(--shadow); color: var(--ink); font: inherit; text-align: left; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; }
@@ -2030,7 +2030,8 @@ details.fold.p-row > summary:has(> .fold-pic:not(:empty)) .fold-sum { white-spac
 .a-meters.tight { gap: 0.25rem; }
 .cons-test { margin: 0 0 0.6rem; font-size: 0.9rem; }
 .a-meters.tight .am-row { grid-template-columns: 4.2rem minmax(0, 1fr) 2.4rem; align-items: center; gap: 0.5rem; }
-.a-meters.tight .am-l { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.a-meters.tight .am-l { overflow: hidden; line-height: 1.2; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
+.a-meters.tight.wide .am-row { grid-template-columns: 7.4rem minmax(0, 1fr) 2.9rem; }
 .a-meters.tight .am-t { grid-column: auto; height: 0.5rem; }
 .a-stack .as-bar { display: flex; gap: 2px; height: 0.9rem; }
 .a-stack .as-bar i { min-width: 2px; border-radius: 3px; }
@@ -2040,8 +2041,7 @@ details.fold.p-row > summary:has(> .fold-pic:not(:empty)) .fold-sum { white-spac
 .a-stack .as-key { display: flex; gap: 0.8rem; margin-top: 0.3rem; font-size: 0.72rem; color: var(--muted); }
 .a-stack .as-key i { display: inline-block; width: 0.6rem; height: 0.6rem; margin-right: 0.25rem; border-radius: 2px; vertical-align: -1px; }
 .a-big { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 1rem; font-size: 0.8rem; color: var(--muted); }
-.a-big b { margin-right: 0.15rem; font: 600 1.9rem/1 var(--font-body); color: var(--teal); }
-.a-big .dna b { font-size: 1.4rem; color: var(--accent-dark); }
+.a-big b { margin-right: 0.15rem; font: 600 1.9rem/1 var(--font-body); color: var(--brand-ink); }
 .a-prox { display: block; width: 100%; height: auto; overflow: visible; }
 .a-prox text { font-family: var(--font-body); font-size: 10px; fill: var(--muted); }
 .a-prox .ap-mid { stroke: var(--line-strong); stroke-width: 1.2; }
