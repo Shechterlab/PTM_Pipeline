@@ -12045,14 +12045,18 @@
       const x = st[key];
       if (!x || !x.pooled || !(x.pooled[0] + x.pooled[1])) return '<td class="muted">—</td>';
       const [a, b, c, d] = x.pooled, mh = x.mh || [];
-      return '<td><b>' + pctText(a, a + b) + '%</b> vs ' + pctText(c, c + d) + '%<br><span class="muted small">' + (mh[0] != null ? 'MH OR ' + fmtOr(mh[0], mh[1], mh[2]) + ', p ' + fmtP(mh[3]) + ', ' + fmt(mh[4]) + ' proteins' : 'too few proteins for MH') + '</span></td>';
+      // The within-protein odds ratio leads; the pooled shares mix proteins (see the note).
+      return '<td>' + (mh[0] != null ? '<b>OR ' + fmtOr(mh[0], mh[1], mh[2]) + '</b>, p ' + fmtP(mh[3]) + '<br><span class="muted small">' + fmt(mh[4]) + ' proteins · ' : '<span class="muted small">too few proteins to compare within proteins · ') +
+        'pooled ' + pctText(a, a + b) + '% vs ' + pctText(c, c + d) + '%</span></td>';
     };
     const row = (kind, label) => '<tr><th scope="row">' + label + '</th>' + cell(kind + '_within_4a') + cell(kind + '_within_8a') +
       (st[kind + '_distance'] && st[kind + '_distance'][0] ? '<td class="small">' + st[kind + '_distance'][1] + ' vs ' + st[kind + '_distance'][3] + ' Å<br><span class="muted">p ' + fmtP(st[kind + '_distance'][4]) + '</span></td>' : '<td class="muted">—</td>') + '</tr>';
-    return ixScope() + (ixSel() ? '<p class="note">The figure and the median distances are the whole release\'s.</p>' : '') + '<div class="tbl-wrap"><table class="tbl compact na-dist-tbl"><thead><tr><th></th><th>Within 4 Å</th><th>Within 8 Å</th><th>Median distance, within 8 Å</th></tr></thead><tbody>' +
+    return ixScope() + (ixSel() ? '<p class="note">The figure and the median distances are the whole release\'s.</p>' : '') + '<div class="tbl-wrap"><table class="tbl compact na-dist-tbl"><thead><tr><th></th><th>Within 4 Å</th><th>Within 8 Å</th><th>Median distance, within 8 Å (pooled)</th></tr></thead><tbody>' +
       row('rna', 'RNA') + row('dna', 'DNA') + row('any', 'RNA or DNA') + '</tbody></table></div>' +
       '<p class="note">Share of methylarginines vs other arginines of the same proteins whose side chain (CD, NE, CZ, NH1, NH2) lies within the distance of that nucleic acid in at least one PDB entry; every arginine modelled in such an entry counts (arginines in unmodelled, often disordered, segments are not counted). ' +
-      'MH OR: Mantel–Haenszel odds ratio with each protein a stratum, 95% CI. Median distance: among arginines within 8 Å, Mann–Whitney p. Structures show the complexes their authors made, mostly of unmethylated recombinant protein.</p>';
+      'OR: Mantel–Haenszel odds ratio of a methylarginine against the other arginines of the same protein, each protein a stratum, 95% CI; this is the comparison to read. ' +
+      'The pooled shares and the median distances (Mann–Whitney p) put all proteins together: heavily methylated RNA-binding proteins sit in complexes where many of their arginines touch RNA, so pooled shares can favour methylarginines where, protein by protein, they lie no closer than the other arginines. ' +
+      'Structures show the complexes their authors made, mostly of unmethylated recombinant protein.</p>';
   }
   function naDistHtml() {
     const rows = IX.naDist || [];
