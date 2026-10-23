@@ -1914,6 +1914,8 @@ html.filters-pinned #rail-show, html.filters-pinned .rail-sel, html.filters-pinn
 .a-sel .a-pill:hover, .a-sel .a-pill:focus-visible { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); color: var(--accent-dark); }
 .a-sel-more { font-size: 0.8rem; }
 .a-fig-h { margin: 0 0 0.4rem; font-size: 1.05rem; }
+.a-drawn-h { margin-top: 1rem; }
+details.hub-row[hidden] { display: none !important; }
 /* the PDF of a cards page: its tiles, not the sections behind them */
 html.pdf-export.pdf-cards .a-home { display: block !important; }
 html.pdf-export.pdf-cards .a-mode .hub-list:not(.focus), html.pdf-export.pdf-cards .a-proto, html.pdf-export.pdf-cards .a-reshuffle, html.pdf-export.pdf-cards .a-more-n, html.pdf-export.pdf-cards .a-info, html.pdf-export.pdf-cards .a-more, html.pdf-export.pdf-cards .tile-go { display: none !important; }

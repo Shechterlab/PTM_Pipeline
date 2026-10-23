@@ -3909,6 +3909,17 @@
 
   function renderOverview(el) { renderDash(el, 'overview'); }
   const SEL_MIN = { prots: 10, sites: 30 };
+  const selTestable = () => !constraints().length || (R.prots.length >= SEL_MIN.prots && R.sites.length >= SEL_MIN.sites);
+  // The selection on a cards page: what was asked, its size and (pills) its proteins, each opening its page.
+  function selListHtml(pills = true) {
+    const ps = R.prots.map((p) => [p, p.sites.filter((j) => R.shown.has(j)).length]).sort((a, b) => b[1] - a[1] || a[0].label.localeCompare(b[0].label)), show = pills ? ps.slice(0, 30) : [];
+    return '<div class="a-sel"><p class="a-sel-what">' + (pills ? '' : '<b>Your selection:</b> ') + esc(selectionText()) + ' · <b>' + fmt(R.sites.length) + '</b> site' + (R.sites.length === 1 ? '' : 's') + ' on <b>' + fmt(R.prots.length) + '</b> protein' + (R.prots.length === 1 ? '' : 's') + '</p>' +
+      (show.length ? '<div class="a-pills">' + show.map(([p, n]) => '<button type="button" class="a-pill" data-open-p="' + p.i + '" title="Open ' + esc(p.label) + ': ' + n + ' site' + (n === 1 ? '' : 's') + ' in your selection">' + esc(p.label) + '<b>' + n + '</b></button>').join('') +
+        (ps.length > show.length ? '<button type="button" class="linkish a-sel-more" data-go-view="proteins">+' + fmt(ps.length - show.length) + ' more on the Proteins page</button>' : '') + '</div>' : '') + '</div>';
+  }
+  // What a selection too small for the comparisons is told, on every cards page.
+  const selTooFew = () => '<span class="a-note">Too few to compare with the other sites: the tests need at least ' + SEL_MIN.prots + ' proteins and ' + SEL_MIN.sites +
+    ' sites, and this selection has ' + fmt(R.prots.length) + ' protein' + (R.prots.length === 1 ? '' : 's') + ' and ' + fmt(R.sites.length) + ' site' + (R.sites.length === 1 ? '' : 's') + '. The counts below hold for any selection.</span>';
   function renderDash(el, page) {
     const ov = M.overview;
     UI.charts = {};
@@ -3933,7 +3944,7 @@
     const selOn = constraints().length > 0, repSel = [0, 0, 0, 0, 0];
     // A selection is compared with the rest (enriched features, protein sets, motifs, structural context) only when it
     // is big enough for the tests to mean something; a smaller one gets its list and the counts.
-    const testable = !selOn || (R.prots.length >= SEL_MIN.prots && R.sites.length >= SEL_MIN.sites);
+    const testable = selTestable();
     // its untested sections stay in the page, hidden (their controls still bind), and out of its tiles and Sections
     const untested = (html) => (testable ? html : '<div hidden>' + html + '</div>');
     if (selOn) for (const s of R.sites) repSel[Math.min(5, popcount(s.study)) - 1]++;
@@ -3981,8 +3992,9 @@
           : { q: 'What kinds of proteins are arginine methylated?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
             fig: aForest([['Where in the protein', where], ['Which proteins', which]], { subTip: true }) };
       } else if (!testable) {
-        lead = { q: 'Your selection', pic: selListHtml(), verdict: '<span class="a-note">Too few to compare with the other sites: the tests need at least ' + SEL_MIN.prots + ' proteins and ' + SEL_MIN.sites +
-          ' sites, and this selection has ' + fmt(R.prots.length) + ' protein' + (R.prots.length === 1 ? '' : 's') + ' and ' + fmt(R.sites.length) + ' site' + (R.sites.length === 1 ? '' : 's') + '. The counts below hold for any selection.</span>' };
+        const drawn = R.prots.map((p) => [p, p.sites.filter((j) => R.shown.has(j)).length]).sort((a, b) => b[1] - a[1]).slice(0, 12).map(([p]) => p);
+        lead = { q: 'Your selection', pic: selListHtml(), verdict: selTooFew(),
+          hi: '<h3 class="a-gh a-drawn-h">Your proteins, drawn' + (R.prots.length > drawn.length ? ' <span class="muted">(the ' + drawn.length + ' with the most sites)</span>' : '') + '</h3>' + aMapsHtml(drawn, '') };
       } else {
         const rows = profileRows() || [], sig = rows.filter((r) => r.q <= 0.05);
         const up = sig.filter((r) => r.fold > 1).slice(0, 6), dn = sig.filter((r) => r.fold < 1).slice(0, 3);
@@ -3990,12 +4002,6 @@
         lead = { q: 'Your selection', pic: selListHtml(), figHead: 'What sets it apart from the other sites?', key: '<span><i class="aq-pt up"></i>more common</span><span><i class="aq-pt down"></i>less common</span><span class="a-key-note">Your ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + ' (q ≤ 0.05)</span>',
           verdict: !rows.length ? 'Too few sites to compare with the rest.' : up.length || dn.length ? '' : 'Nothing in your selection differs from the other sites at q ≤ 0.05.',
           fig: up.length || dn.length ? aForest([['More common', up.map(fr)], ['Less common', dn.map(fr)]], { noneOf: 'your sites' }) : '', go: 'sel-enriched', goText: 'Every feature, with counts' };
-      }
-      function selListHtml() {
-        const ps = R.prots.map((p) => [p, p.sites.filter((j) => R.shown.has(j)).length]).sort((a, b) => b[1] - a[1] || a[0].label.localeCompare(b[0].label)), show = ps.slice(0, 30);
-        return '<div class="a-sel"><p class="a-sel-what">' + esc(selectionText()) + ' · <b>' + fmt(R.sites.length) + '</b> site' + (R.sites.length === 1 ? '' : 's') + ' on <b>' + fmt(R.prots.length) + '</b> protein' + (R.prots.length === 1 ? '' : 's') + '</p>' +
-          '<div class="a-pills">' + show.map(([p, n]) => '<button type="button" class="a-pill" data-open-p="' + p.i + '" title="Open ' + esc(p.label) + ': ' + n + ' site' + (n === 1 ? '' : 's') + ' in your selection">' + esc(p.label) + '<b>' + n + '</b></button>').join('') +
-          (ps.length > show.length ? '<button type="button" class="linkish a-sel-more" data-go-view="proteins">+' + fmt(ps.length - show.length) + ' more on the Proteins page</button>' : '') + '</div></div>';
       }
       const chartTile = (spec) => {
         if (!spec) return null;
@@ -11305,6 +11311,10 @@
     const partFig = pctLanes((on) => { const pm = partnerShare(on ? R.prots : P); return pm.distinct ? pm.distinctMeth / pm.distinct : null; }, IX.meta.proteome_size ? IX.meta.methylated_in_proteome / IX.meta.proteome_size : null);
     const sec = (k) => '<div class="ix-sec-body" id="ixs-' + k + '">' + body[k]() + '</div>';
     const nacHtml = nacCardHtml(), proxHtml = proxCardHtml(), naHtml = ixNaHtml(), wrHtml = ixWrMatrixHtml(), cmHtml = ixConnMatrixHtml(), exHtml = ixExampleHtml();
+    // A selection too small to compare keeps what is counted (evidence, bound RNA and DNA, partners, one protein drawn);
+    // its tests stay in the page, hidden, out of its tiles and Sections.
+    const ixTestable = selTestable();
+    const IX_TESTS = ['ix-nac', 'ix-cm', 'ixs-cells', 'ix-prox', 'ixs-go', 'ixs-pdb', 'ixs-predicted', 'ix-wr', 'ixs-complexes', 'ixs-intact'];
     // Layout A: the page's question, answered by the four in-cell experiments with their detection controls, the
     // crosslinked residues and the structures; then the tiles' pictures.
     function ixAHome() {
@@ -11395,7 +11405,12 @@
       const answer = (inCells.length ? 'In living cells, ' + who + ' sit ' + inCells.join(' and ') + ' more often than the other arginines of the same proteins' : 'In living cells, ' + who + ' are not enriched at RNA or DNA contacts') +
         '.';
       const more = '<p class="a-more"><button type="button" class="linkish" data-go="ix-nac">Every contact test, with tables ›</button></p>';
-      return aHome({ q: 'Are methylarginines enriched at contacts with RNA, DNA or other proteins?', pic: exHtml, verdict: answer, hi: hiCards.length ? aHighlights(hiCards) + more : more }, ov, ['ix-ex', 'ix-nac']);
+      const q = 'Are methylarginines enriched at contacts with RNA, DNA or other proteins?';
+      if (!ixTestable) {
+        const counted = hiCards.filter((x) => x.dir === 'n');
+        return aHome({ q, pic: selListHtml() + exHtml, verdict: selTooFew(), hi: counted.length ? aHighlights(counted) : '' }, ov, ['ix-ex', 'ix-nac']);
+      }
+      return aHome({ q, pic: (scoped ? selListHtml(false) : '') + exHtml, verdict: answer, hi: hiCards.length ? aHighlights(hiCards) + more : more }, ov, ['ix-ex', 'ix-nac']);
     }
     A_ROWS.length = 0;
     const hubList = '<div class="hub-list">' +
@@ -11433,9 +11448,11 @@
           both([['intact_enrich', ['peptide_disordered'], 'short binding region (disordered R)'], ['intact_enrich', ['mutation'], 'mutation with an effect']]), null,
           testsFig([['intact_enrich', ['peptide_disordered']], ['intact_enrich', ['mutation']]]))) +
       '</div>';
+    if (!ixTestable) for (let i = A_ROWS.length - 1; i >= 0; i--) if (IX_TESTS.includes(A_ROWS[i].key)) A_ROWS.splice(i, 1);
     el.innerHTML = '<div class="ix-page">' +
       '<div class="facts ix-facts hub-only">' + tile('exp', 'experimental', 'Experimental evidence') + tile('pred', 'predicted-only', 'Predicted only') + tile('none', 'none', 'None recorded') + '</div>' +
       hubHtml() + (UI_A ? focusBarHtml() + ixAHome() : focusBarHtml()) + hubList + '</div>';
+    if (!ixTestable) IX_TESTS.forEach((k) => { const d = $('details.hub-row[data-fold="' + k + '"]', el); if (d) d.hidden = true; });
     bindHub(el, 'Interactions');
     bindAHome(el);
     $$('.ix-facts .fact', el).forEach((b) => {
