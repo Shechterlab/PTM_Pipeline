@@ -482,9 +482,17 @@
     ['ub', 'Ubiquitin / SUMO'], ['xl', 'RNA/DNA crosslinks'], ['iface', 'Contacts in PDB structures'], ['intact', 'IntAct mutations and binding regions'], ['pred', 'Predicted protein contacts'],
     ['lowconf', 'Lower-confidence evidence']];
   const MAP_PTM_KEYS = ['phospho', 'kacyl', 'ub', 'kme'];
-  // IntAct is off until the reader switches it on (Rows menu); the cartoon and comparison follow the same switch.
   const MAP_DEFAULT_ON = ['domains', 'dense', 'ipr', 'regions', 'disorder', 'charge', 'rg', 'args', 'variants', 'kme', 'phospho', 'kacyl', 'ub', 'xl', 'iface', 'pred'];
-  const showIntact = () => UI.fig.tracks.has('intact');
+  // IntAct shows by default on a protein where IntAct records a mutation of one of its arginines (UI.fig.intact 'auto');
+  // the Rows menu turns it on or off everywhere ('on' | 'off'). The cartoon and comparison follow the same switch.
+  const iaArgMut = (p) => {
+    const ia = p && !p.iso && ixReady() ? IX.iaProt.get(p.i) : null;
+    if (!ia) return false;
+    const u = UNIDATA.get(p.acc), seq = u && u.seq, meth = new Set(p.sites.map((j) => S[j].pos));
+    return ia.muts.some(([a, b]) => { for (let q = a; q <= b; q++) if (seq ? seq[q - 1] === 'R' : meth.has(q)) return true; return false; });
+  };
+  const showIntact = (p = P[UI.detail]) => UI.fig.intact === 'on' || (UI.fig.intact !== 'off' && iaArgMut(p));
+  const tracksFor = (p) => { const t = new Set(UI.fig.tracks); if (showIntact(p)) t.add('intact'); else t.delete('intact'); return t; };
   const mapPrefs = (() => { try { return JSON.parse(store.get('mre-map-rows') || 'null') || {}; } catch (e) { return {}; } })();
   const mapRowOrder = () => {
     const keys = MAP_ROWS.map(([k]) => k), order = (UI.fig.order || []).filter((k) => keys.includes(k));
@@ -496,7 +504,7 @@
     const seen = new Set(mapPrefs.order || []);
     return mapPrefs.on.concat(MAP_ROWS.map(([k]) => k).filter((k) => !seen.has(k) && MAP_DEFAULT_ON.includes(k)));
   };
-  const saveMapPrefs = () => store.set('mre-map-rows', JSON.stringify({ on: Array.from(UI.fig.tracks), order: mapRowOrder() }));
+  const saveMapPrefs = () => store.set('mre-map-rows', JSON.stringify({ on: Array.from(UI.fig.tracks).filter((k) => k !== 'intact'), order: mapRowOrder(), intact: UI.fig.intact }));
   // STRING network options on protein pages, remembered in this browser. ch: evidence channels by letter (NET_CHANNELS).
   const NET_DEFAULT = { type: 'physical', ch: 'edtanfp', show: 'all', labels: 'all', size: 'sites', pins: [] };
   const netPrefs = (() => { try { return Object.assign({}, NET_DEFAULT, JSON.parse(store.get('mre-ixnet') || 'null') || {}); } catch (e) { return Object.assign({}, NET_DEFAULT); } })();
@@ -730,7 +738,8 @@
     sortP: { key: 'sites', dir: -1 }, sortS: { key: 'gene', dir: 1 },
     pageP: 50, pageS: 100, zoom: null, openEvidence: new Set(),
     allCond: false, funcExpanded: false, charts: {},
-    fig: { color: 'state', labels: 'auto', tracks: new Set(mapTracks0()), order: Array.isArray(mapPrefs.order) ? mapPrefs.order : null },
+    fig: { color: 'state', labels: 'auto', tracks: new Set(mapTracks0()), order: Array.isArray(mapPrefs.order) ? mapPrefs.order : null,
+      intact: ['on', 'off', 'auto'].includes(mapPrefs.intact) ? mapPrefs.intact : Array.isArray(mapPrefs.on) && mapPrefs.on.includes('intact') ? 'on' : 'auto' },
     ixTab: 'proteins', ixTop: 20, ixMin: 700, ixColor: 'sites', ixAll: false, ixNet: null, net: netPrefs, ixRing: true,
     cxPred: false, cxMin: 3, cxSort: 'q', cxAll: false, refsOpen: new Set(), ctx: 'protein', condThr: 3, pendingContact: null, pendingModel: null, ixOpen: new Set(), ixJump: null,
     gal: { conf: 'confident', pl: 80, kind: 'bond', noPdb: false, xl: false, all: false },
@@ -6498,7 +6507,7 @@
         help: 'Residues at an interface with another protein (teal) or another copy of the same protein (pale, self-contact) in an experimentally determined structure (PDBe-KB interface residues)',
         ranges: ifd ? ifd.protein.map((r) => r.concat(pal.protein, 'pdb-protein')).concat(ifd.self.map((r) => r.concat(pal.self, 'pdb-self'))) : null,
         hit: (s) => !!(s.iface & 3), at: 'at a protein interface in a PDB structure' },
-      showIntact() ? { key: 'intact', label: 'IntAct', sub: 'curated experiments', short: 'IntAct', tiny: 'IntAct', color: pal.protein,
+      showIntact(p) ? { key: 'intact', label: 'IntAct', sub: 'curated experiments', short: 'IntAct', tiny: 'IntAct', color: pal.protein,
         help: 'Curated interaction experiments (IntAct): mutations that change an interaction (diamonds) and binding regions mapped for a partner (darker when 20 residues or fewer)',
         boxes: ia ? ia.regions.map(([a, b]) => [a, b, b - a < 20 ? 0.55 : 0.16, 'IntAct binding region']) : [],
         diamonds: ia ? ia.muts.filter((m) => m[2] >= 1 && m[2] <= 4).map((m) => m[0]) : [],
@@ -6687,8 +6696,8 @@
   }
 
   // Rows menu: overlays and rows with a checkbox each; rows also move up and down. Choices are remembered.
-  function rowsMenuHtml() {
-    const T = UI.fig.tracks, name = new Map(MAP_ROWS);
+  function rowsMenuHtml(p) {
+    const T = tracksFor(p), name = new Map(MAP_ROWS);
     return '<p class="flabel">On the backbone</p>' + MAP_OVERLAYS.map(([k, l]) => '<label class="check"><input type="checkbox" data-row="' + k + '"' + (T.has(k) ? ' checked' : '') + '> ' + esc(l) + '</label>').join('') +
       '<p class="flabel">Rows, top to bottom</p><ol class="rows-list">' + mapRowOrder().map((k, i, all) => '<li><label class="check"><input type="checkbox" data-row="' + k + '"' + (T.has(k) ? ' checked' : '') + '> ' + esc(name.get(k)) + '</label>' +
         '<span class="row-move"><button type="button" class="linkish" data-move="' + k + ':-1"' + (i ? '' : ' disabled') + ' aria-label="Move ' + esc(name.get(k)) + ' up">↑</button><button type="button" class="linkish" data-move="' + k + ':1"' + (i < all.length - 1 ? '' : ' disabled') + ' aria-label="Move ' + esc(name.get(k)) + ' down">↓</button></span></li>').join('') + '</ol>' +
@@ -6697,8 +6706,12 @@
   function bindRowsMenu(p) {
     const pop = $('#rows-pop');
     if (!pop) return;
-    const redraw = () => { saveMapPrefs(); pop.innerHTML = rowsMenuHtml(); bindRowsMenu(p); drawMap(p, UNIDATA.get(p.acc)); renderContactCard(p); };
-    $$('[data-row]', pop).forEach((cb) => cb.addEventListener('change', () => { if (cb.checked) UI.fig.tracks.add(cb.dataset.row); else UI.fig.tracks.delete(cb.dataset.row); redraw(); }));
+    const redraw = () => { saveMapPrefs(); pop.innerHTML = rowsMenuHtml(p); bindRowsMenu(p); drawMap(p, UNIDATA.get(p.acc)); renderContactCard(p); };
+    $$('[data-row]', pop).forEach((cb) => cb.addEventListener('change', () => {
+      if (cb.dataset.row === 'intact') UI.fig.intact = cb.checked ? 'on' : 'off';
+      else if (cb.checked) UI.fig.tracks.add(cb.dataset.row); else UI.fig.tracks.delete(cb.dataset.row);
+      redraw();
+    }));
     $$('[data-move]', pop).forEach((b) => b.addEventListener('click', () => {
       const [k, d] = b.dataset.move.split(':'), order = mapRowOrder(), i = order.indexOf(k), j = i + +d;
       if (j < 0 || j >= order.length) return;
@@ -6708,7 +6721,7 @@
       const again = $('[data-move="' + b.dataset.move + '"]', pop);
       if (again && !again.disabled) again.focus();
     }));
-    $('[data-rows-reset]', pop).addEventListener('click', () => { UI.fig.tracks = new Set(MAP_DEFAULT_ON); UI.fig.order = null; redraw(); });
+    $('[data-rows-reset]', pop).addEventListener('click', () => { UI.fig.tracks = new Set(MAP_DEFAULT_ON); UI.fig.order = null; UI.fig.intact = 'auto'; redraw(); });
   }
   // "Histone H3.1 (H3C1) protein map": the protein name leads, the gene symbol follows when it differs.
   const mapTitle = (p) => (p.name && p.name !== p.label ? p.name + ' (' + p.label + ')' : p.label) + ' protein map';
@@ -6718,7 +6731,7 @@
       '<div class="exp" role="group" aria-label="Figure export"><button type="button" id="zoom-reset" hidden>Reset zoom</button><button type="button" id="fig-svg">SVG</button><button type="button" id="fig-png">PNG</button></div></div>' +
       '<div class="fig-controls">' + (p.unl ? '' : '<label class="fig-ctl">Colour sites by <select id="fig-color">' + Object.keys(COLOR_MODES).map((k) => '<option value="' + k + '"' + (f.color === k ? ' selected' : '') + '>' + esc(COLOR_MODES[k].name) + '</option>').join('') + '</select></label>' +
       '<div class="seg" role="group" aria-label="Site labels"><span>Site labels</span>' + [['auto', 'Auto', 'Up to three lines of labels; neighbours too close share one (R213 +3), and none above 120 sites. Zoom in to separate them.'], ['all', 'All', 'Every site its own label, on as many lines as it needs'], ['none', 'None', 'No site labels']].map(([k, l, t]) => '<button type="button" data-lab="' + k + '" aria-pressed="' + (f.labels === k) + '" data-tip="' + esc(t) + '">' + l + '</button>').join('') + '</div>') +
-      '<details class="col-menu rows-menu"><summary class="btn quiet small">Rows</summary><div class="col-pop" id="rows-pop">' + rowsMenuHtml() + '</div></details>' + '</div>' +
+      '<details class="col-menu rows-menu"><summary class="btn quiet small">Rows</summary><div class="col-pop" id="rows-pop">' + rowsMenuHtml(p) + '</div></details>' + '</div>' +
       // the key under the map, so the drawing comes first (a toggle on narrow screens, where it would fill the screen)
       '<div class="map-box" id="map-box"></div><details class="key-fold"' + (narrowScreen() ? '' : ' open') + '><summary>Key</summary><div class="legend" id="fig-legend"></div></details>' +
       '<p class="note screen-only">Drag across the map to zoom; Interaction evidence at a glance follows the same zoom. SVG and PNG exports reproduce this view on a white background with a title and legend.</p></div>';
@@ -6743,7 +6756,7 @@
   function mapSvg(p, u, o) {
     const pal = o.pal;
     const fig = UI.fig;
-    const T = fig.tracks;
+    const T = tracksFor(p);
     const mode = COLOR_MODES[fig.color] || COLOR_MODES.state;
     const colors = mode.colors(pal), hollow = (k) => !!(mode.hollow && mode.hollow[k]);
     const len = (u && u.len) || p.len || Math.ceil(p.maxPos * 1.05) || 100;
@@ -7115,16 +7128,18 @@
       tlabel('IntAct', y);
       gridLine(y);
       const who = (list, n) => esc(list.map(ixGene).join(', ')) + (n > list.length ? ' and ' + (n - list.length) + ' more' : '');
-      for (const [a, b, typeBits, partners, n] of regions.sort((m, q) => (q[1] - q[0]) - (m[1] - m[0]))) {
+      // where each record comes from: its publications and IntAct interactions (links in the click)
+      const src = (pm, acs) => ((pm && pm.length) || (acs && acs.length) ? '<br>' + [(pm || []).length ? 'PubMed ' + pm.join(', ') : '', (acs || []).length ? 'IntAct ' + acs.join(', ') : ''].filter(Boolean).join(' · ') : '');
+      for (const [a, b, typeBits, partners, n, , pm, acs] of regions.sort((m, q) => (q[1] - q[0]) - (m[1] - m[0]))) {
         g += MARK.box(x(Math.max(a, v0)), y - 4, x(Math.min(b, v1) + 1) - x(Math.max(a, v0)), 8, pal.protein, ' class="feat" data-ev="intact:' + a + ':' + b + '" fill-opacity="' + (b - a < (IX.ia ? IX.ia.peptide_max : 20) ? 0.55 : 0.14) + '"' +
-          tip('<b>IntAct binding region</b> ' + nspan(a, b) + ' (' + bits(typeBits).map((k) => IA_REGION[k]).join(', ') + ')<br>For ' + who(partners, n) + '<br><i>click for the records</i>'));
+          tip('<b>IntAct binding region</b> ' + nspan(a, b) + ' (' + bits(typeBits).map((k) => IA_REGION[k]).join(', ') + ')<br>For ' + who(partners, n) + src(pm, acs) + '<br><i>click for the records, with links</i>'));
       }
       const right = { v: -1e9 };
-      for (const [a, b, code, partners, n] of muts) {
+      for (const [a, b, code, partners, n, , pm, acs] of muts) {
         const changes = code >= 1 && code <= 4, hit = a === b && methylPos.has(a);
         const color = hit ? pal.mark : changes ? pal.protein : pal.variant;
         g += MARK.diamond(x(a), y, 6, changes ? color : pal.bg, color, ' class="feat" data-ev="intact:' + a + ':' + b + '"' +
-          tip('<b>IntAct mutation</b> ' + nspan(a, b) + (hit ? ' · at a methylarginine' : '') + '<br>' + IA_EFFECT[code].replace(/^./, (c) => c.toUpperCase()) + ' the interaction with ' + who(partners, n) + '<br><i>click for the records</i>'));
+          tip('<b>IntAct mutation</b> ' + nspan(a, b) + (hit ? ' · at a methylarginine' : '') + '<br>' + IA_EFFECT[code].replace(/^./, (c) => c.toUpperCase()) + ' the interaction with ' + who(partners, n) + src(pm, acs) + '<br><i>click for the records, with links</i>'));
         if (hit && changes) labelAt(x(a), y, rl(a, p), right);
       }
       if (regions.length) legend.push([SWATCH.fill(pal.protein, 0.55), 'IntAct binding region (pale: longer than 20 aa)']);
@@ -7231,6 +7246,9 @@
   function drawMap(p, u) {
     const box = $('#map-box');
     if (!box) return;
+    // the IntAct row's default depends on the sequence, which UniProt may only now have supplied
+    const iaBox = $('#rows-pop [data-row="intact"]');
+    if (iaBox) iaBox.checked = showIntact(p);
     const sub = $('#map-sub');
     const out = mapSvg(p, u, { pal: screenPalette(), forExport: false, W: narrowW(box) || undefined, narrow: !!narrowW(box) });
     if (sub) {
@@ -14169,13 +14187,17 @@
   const pmidLink = (id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">PubMed ' + esc(id) + '</a>';
   const iaPartnerText = (list, n) => esc(list.map(ixGene).join(', ')) + (n > list.length ? ' and ' + (n - list.length) + ' more' : '');
   // One IntAct record (a site-level record carries PubMed ids and interaction ACs; a map-track record only counts).
+  // The publications (PubMed) and IntAct interactions behind a curated feature, as links.
+  function iaRefsHtml(pmids, acs) {
+    const refs = (pmids || []).slice(0, 3).map(pmidLink).concat((acs || []).slice(0, 2).map((ac) => '<a href="' + iaLink(ac) + '" target="_blank" rel="noopener">IntAct ' + esc(ac) + '</a>'));
+    return refs.length ? ' · ' + refs.join(' · ') : '';
+  }
   function iaRecordHtml(r, p) {
     // A single residue is named with its amino acid (R258); a stretch by its range.
     const u = UNIDATA.get(p.acc), aa = (pos) => (u && u.seq && u.seq[pos - 1]) || (p.sites.some((j) => S[j].pos === pos) ? 'R' : '');
     const span = r.a === r.b ? aa(r.a) + rn(r.a, p) : rn(r.a, p) + '–' + rn(r.b, p);
     const who = r.partners.length ? iaPartnerText(r.partners, r.nPartners || r.partners.length) : 'a partner';
-    const refs = (r.pmids || []).slice(0, 3).map(pmidLink).concat((r.acs || []).slice(0, 2).map((ac) => '<a href="' + iaLink(ac) + '" target="_blank" rel="noopener">' + esc(ac) + '</a>'));
-    const tail = refs.length ? ' · ' + refs.join(' · ') : '';
+    const tail = iaRefsHtml(r.pmids, r.acs);
     if (r.kind === 0) return '<li>Mutation <b>' + span + (r.res ? '→' + esc(r.res) : '') + '</b> ' + IA_EFFECT[r.code] + ' the interaction with ' + who + tail + '</li>';
     if (r.kind === 1) return '<li>' + IA_REGION[r.code].replace(/^./, (c) => c.toUpperCase()) + ' binding region <b>' + span + '</b> for ' + who + tail + '</li>';
     return '<li><b>' + span + '</b> methylated in the interaction with ' + who + tail + '</li>';
@@ -14240,8 +14262,8 @@
       }
       const ia = ixReady() ? IX.iaProt.get(p.i) : null;
       if (ia) {
-        for (const [x, y, code, partners, n] of ia.muts) if (overlap([x, y]) && !seen.has([0, code, x, y].join(':'))) items.push(iaRecordHtml({ kind: 0, code, a: x, b: y, res: '', partners, nPartners: n }, p));
-        for (const [x, y, typeBits, partners, n] of ia.regions) if (overlap([x, y]) && y - x < 400) items.push('<li>' + bits(typeBits).map((k) => IA_REGION[k]).join('/').replace(/^./, (c) => c.toUpperCase()) + ' binding region <b>' + rn(x, p) + '–' + rn(y, p) + '</b> for ' + iaPartnerText(partners, n) + '</li>');
+        for (const [x, y, code, partners, n, , pmids, acs] of ia.muts) if (overlap([x, y]) && !seen.has([0, code, x, y].join(':'))) items.push(iaRecordHtml({ kind: 0, code, a: x, b: y, res: '', partners, nPartners: n, pmids, acs }, p));
+        for (const [x, y, typeBits, partners, n, , pmids, acs] of ia.regions) if (overlap([x, y]) && y - x < 400) items.push('<li>' + bits(typeBits).map((k) => IA_REGION[k]).join('/').replace(/^./, (c) => c.toUpperCase()) + ' binding region <b>' + rn(x, p) + '–' + rn(y, p) + '</b> for ' + iaPartnerText(partners, n) + iaRefsHtml(pmids, acs) + '</li>');
       }
       if (items.length) items.push('<li class="muted">Curated by IntAct from the publications listed; every feature here matches the canonical UniProt sequence at its range. <a href="https://www.ebi.ac.uk/intact/search?query=' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">All IntAct interactions of ' + esc(p.label) + ' ↗</a></li>');
     } else if (kind === 'pred') {
@@ -14779,7 +14801,7 @@
         '<text x="16" y="47" font-size="11" fill="' + pal.muted + '">' + esc(o.sub) + '</text>';
       y = 62;
     }
-    const rowH = o.lanes ? 78 + (showIntact() ? 6 : 5) * 10 + 6 : 78;
+    const rowH = o.lanes ? 78 + (items.some((it) => showIntact(it.p)) ? 6 : 5) * 10 + 6 : 78;
     for (const it of items) {
       const { p, u } = it;
       const len = lenOf(it), span = o.scale === 'fit' ? len : maxLen;

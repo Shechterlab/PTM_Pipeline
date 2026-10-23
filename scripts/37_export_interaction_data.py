@@ -2404,9 +2404,9 @@ def write_release_tables(outdir: Path, d: dict):
             rows.append([acc, a, b, 'rbrid_region', 'in_region', '', '', 'RBR-ID'])
     for i, regions, muts in d['intact_prot']:
         acc = prots[i][0]
-        for a, b, bits, _ps, n, _rec in regions:
+        for a, b, bits, _ps, n, *_ in regions:
             rows.append([acc, a, b, 'intact_binding_region', 'in_region', n, '', 'IntAct'])
-        for a, b, code, _ps, n, _rec in muts:
+        for a, b, code, _ps, n, *_ in muts:
             rows.append([acc, a, b, 'intact_mutation', 'in_region' if a != b else 'at_residue', n, '', 'IntAct'])
     rows.sort(key=lambda r: (r[0], r[1], r[2], order[r[3]], r[4]))
     write('residue_evidence.tsv', ['uniprot_accession', 'start', 'end', 'evidence_type', 'localisation', 'n_partners', 'best_score', 'sources'], rows)
@@ -3013,16 +3013,22 @@ def main():
             pk = tuple(sorted({intact_partner(x) for x in participants}))
             span = b - a + 1
             if kind == 1:
-                r = regions.setdefault((a, b), [0, set(), 0])
+                r = regions.setdefault((a, b), [0, set(), 0, set(), set()])
                 r[0] |= 1 << code
                 r[1].update(pk)
                 r[2] += 1
+                if pmid:
+                    r[3].add(pmid)
+                r[4].add(ac)
                 if span <= INTACT_PEPTIDE_MAX:
                     peptide_spans.append((a, b))
             elif kind == 0 and span <= INTACT_MUT_MAX:
-                m = muts.setdefault((a, b, code), [set(), 0])
+                m = muts.setdefault((a, b, code), [set(), 0, set(), set()])
                 m[0].update(pk)
                 m[1] += 1
+                if pmid:
+                    m[2].add(pmid)
+                m[3].add(ac)
                 if span == 1 and code != 5:
                     r_effect[a].add(code)
             if (kind == 1 and span > INTACT_PEPTIDE_MAX) or (kind == 0 and span > INTACT_MUT_MAX):
@@ -3036,8 +3042,9 @@ def main():
         for j, recs in sorted(at_site.items()):
             intact_rows.append([j, [[kind, code, a, b, res, list(pk), sorted(pm), sorted(set(acs))[:5], len(acs)]
                                     for (kind, code, a, b, res, pk), (pm, acs) in sorted(recs.items())]])
-        intact_prot.append([i, [[a, b, bits, sorted(ps)[:8], len(ps), n] for (a, b), (bits, ps, n) in sorted(regions.items())],
-                            [[a, b, code, sorted(ps)[:8], len(ps), n] for (a, b, code), (ps, n) in sorted(muts.items())]])
+        # each record with its publications (first 3 PubMed ids) and IntAct interactions (first 2), so every mark links back
+        intact_prot.append([i, [[a, b, bits, sorted(ps)[:8], len(ps), n, sorted(pm)[:3], sorted(acs)[:2]] for (a, b), (bits, ps, n, pm, acs) in sorted(regions.items())],
+                            [[a, b, code, sorted(ps)[:8], len(ps), n, sorted(pm)[:3], sorted(acs)[:2]] for (a, b, code), (ps, n, pm, acs) in sorted(muts.items())]])
         seq_ = proteome.get(acc, ('', '', ''))[2]
         dis = disordered.get(acc, [])
         for q in range(1, len(seq_) + 1):
@@ -3914,7 +3921,7 @@ def main():
                 'xl_freq': '{spectra|datasets: {meth: [n, mean, median], other: [...], p (Mann-Whitney)}, multi: or_summary (crosslinked in >= 2 datasets)} among RNA-crosslinked arginines',
                 'pred_enrich': '{pDockQ floor: {all|ordered|disordered: {pooled, mh}}} methylated vs other arginines of the same protein at a predicted interface',
                 'intact': ['site', '[[kind (0 mutation, 1 binding region <= peptide_max aa, 2 methylated arginine), code (meta.intact effects or regions; 0 for kind 2), start, end, resulting sequence, partners (-1 RNA, -2 DNA, -3 small molecule, -4 other, else protein index), PubMed ids, IntAct interaction ACs (first 5), records], ...]'],
-                'intact_prot': ['protein index', '[[start, end, region type bits (1 << meta.intact regions index), partners (first 8), partner count, records], ...] binding regions', '[[start, end, effect code, partners (first 8), partner count, records], ...] mutations of <= mutation_max residues'],
+                'intact_prot': ['protein index', '[[start, end, region type bits (1 << meta.intact regions index), partners (first 8), partner count, records, PubMed ids (first 3), IntAct interaction ACs (first 2)], ...] binding regions', '[[start, end, effect code, partners (first 8), partner count, records, PubMed ids (first 3), IntAct interaction ACs (first 2)], ...] mutations of <= mutation_max residues'],
                 'selection_tests': ['the result it replaces: enrich_strata, rg_iface, pred_enrich, intact_enrich, xl_enrich, na_dist_stats or seq_prox', 'its key path',
                                     '[[protein index, other arginines with the feature, without], ...]', 'methylarginine sites with the feature', 'sites without'],
                 'intact_enrich': '{mutation: or_summary of methylated vs other arginines, a single-residue mutation changing an interaction vs only no-effect mutations; peptide|peptide_disordered: methylated vs other arginines inside a binding region of <= peptide_max aa (all, or UniProt-disordered arginines only)}',
