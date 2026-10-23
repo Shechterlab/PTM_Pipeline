@@ -4135,7 +4135,7 @@
       '<button class="btn small quiet" type="button" id="print-page" title="Print this protein page (the print dialog can also save a PDF with selectable text)">Print</button></div></div>' +
       // The protein's identity stays; its facts and map head the page (they give way to a section opened alone), and
       // every other card is a row of the protein's sections (bindHub).
-      '<div class="hub-only p-top">' + (UI_A ? '<div class="a-hi p-hi" id="p-hi"></div>' : '') + (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
+      '<div class="hub-only p-top">' + (UI_A ? '<div class="p-hi" id="p-hi"></div>' : '') + (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
       '<div id="drift-note"></div>' +
       (p.unrev ? (() => {
         const twin = p.reviewedTwin, nDup = p.sites.filter((j) => S[j].dup != null).length;
