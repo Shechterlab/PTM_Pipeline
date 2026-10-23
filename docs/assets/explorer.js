@@ -2097,7 +2097,7 @@
       '<li><button class="linkish" type="button" data-crumb="overview">Overview</button></li>' +
       '<li><button class="linkish" type="button" data-crumb="proteins">' + esc(VIEW_NAMES.proteins || 'Proteins') + '</button> <span class="muted small">(' + esc(sel) + ')</span></li>' +
       '<li aria-current="page"><b>' + esc(p.label) + '</b></li>' +
-      '<li id="crumb-site"' + (UI.highlight == null ? ' hidden' : '') + '>' + (UI.highlight == null ? '' : esc(rl(UI.highlight, p))) + '</li><li id="crumb-sec" hidden></li></ol>' +
+      '<li id="crumb-site"' + (UI.highlight == null ? ' hidden' : '') + '>' + (UI.highlight == null ? '' : esc(rl(UI.highlight, p))) + '</li></ol>' +
       (from !== 'proteins' && from !== 'overview' ? '<button class="linkish crumb-back" type="button" data-crumb="' + from + '">‹ Back to ' + esc(VIEW_NAMES[from] || 'results') + '</button>' : '') +
       (recent.length ? '<span class="crumb-recent"><span class="muted small">Recent</span> ' + recent.map((i) => '<button class="linkish" type="button" data-open-p="' + i + '">' + esc(P[i].label) + '</button>').join(' · ') + '</span>' : '') + '</nav>';
   }
@@ -3917,7 +3917,7 @@
       '</div>';
     el.innerHTML =
       (one ? '<p class="hub-legend hub-only">Your selection is one protein. <button class="linkish" type="button" id="ov-open-one">Open ' + esc(one.label) + ' →</button></p>' : '') +
-      hubHtml() + (UI_A ? aSecsHtml() + ovAHome() : '') + focusBarHtml() + hubList;
+      hubHtml() + (UI_A ? focusBarHtml() + ovAHome() : focusBarHtml()) + hubList;
     bindDocLinks(el);
     bindProfile(el);
     bindHub(el, 'Overview');
@@ -4113,7 +4113,7 @@
       '</div>';
     el.innerHTML =
       '<div class="print-only print-head" id="print-head"></div>' +
-      crumbsHtml(p) + (UI_A ? aSecsHtml() : '') +
+      crumbsHtml(p) + (UI_A ? focusBarHtml() : '') +
       '<div class="detail-head">' +
       '<div class="detail-title"><h2>' + esc(p.label) + '</h2><span class="pn" id="pname">' + esc(p.name) + '</span></div>' +
       (p.aliases.length ? '<p class="aliases">Also reported as ' + p.aliases.map((a) => '<span>' + esc(a) + '</span>').join(', ') + '</p>' : '') +
@@ -4150,7 +4150,7 @@
       '</div>' +
       foldHtml('p-map', 'Protein map', figureCard(p), true, fmt(p.sites.length) + ' methylarginine site' + (p.sites.length === 1 ? '' : 's')) + '</div>' +
       '<div class="card" id="site-card" hidden></div>' +
-      (UI_A ? aHome(null, protAOv(p)) : '') + focusBarHtml() + hubList +
+      (UI_A ? aHome(null, protAOv(p)) : focusBarHtml()) + hubList +
       '<div class="print-only print-foot"><p>' + esc(siteName()) + ' · ' + esc(siteUrl()) + '</p><p>Cite: ' + esc(PAPER.cite) + ' https://doi.org/' + esc(PAPER.doi) + '</p><p>Sites: methylarginine union from PTM_Pipeline. Features, variants and sequence: UniProt. Predicted structure, pLDDT and AlphaMissense: AlphaFold DB. Experimental structures: RCSB PDB and PDBe (SIFTS). Condensates: CD-CODE. Partners: STRING; complexes: Complex Portal and hu.MAP; predicted complexes: ProtVar and AlphaFold DB; crosslinks: pepR-MS compendium, RBDmap, Trendel et al. 2025; IntAct; locations: Human Protein Atlas; disease: DisGeNET (via DOSE), UniProt and Open Targets; orthologues: Ensembl Compara. Licences and citations: the Documentation page.</p></div>';
 
     $$('[data-crumb]', el).forEach((b) => b.addEventListener('click', () => { go(b.dataset.crumb); window.scrollTo({ top: 0 }); }));
@@ -4383,7 +4383,14 @@
     for (const r of A_ROWS) if (r.group == null) r.group = title;
     return html ? '<section class="hub-sec"><h3 class="hub-group">' + esc(title) + '</h3>' + (extra || '') + html + '</section>' : '';
   };
-  const focusBarHtml = () => '<nav class="focus-bar" aria-label="Sections of this page" hidden><button type="button" class="fb-back" data-fb="back">‹ All sections</button>' +
+  // Layout A's Sections menu: every section of the page by group (A_ROWS), the open one marked.
+  const secMenuHtml = () => {
+    const groups = [];
+    for (const r of A_ROWS) { let g = groups.find((x) => x[0] === r.group); if (!g) groups.push(g = [r.group, []]); g[1].push(r); }
+    return '<details class="sec-menu"><summary>Sections</summary><div class="sec-pop">' + groups.map(([g, rows]) => '<div class="sp-g">' + (g ? '<p class="sp-h">' + esc(g) + '</p>' : '') +
+      rows.map((r) => '<button type="button" data-asec="' + r.key + '" aria-current="false"' + ((r.meta || {}).empty ? ' disabled title="' + esc(r.meta.empty) + '"' : '') + '>' + esc(r.title) + '</button>').join('') + '</div>').join('') + '</div></details>';
+  };
+  const focusBarHtml = () => '<nav class="focus-bar" aria-label="Sections of this page" hidden><button type="button" class="fb-back" data-fb="back">‹ All sections</button>' + (UI_A ? secMenuHtml() : '') +
     '<span class="fb-crumb"></span><span class="fb-pos"></span><span class="fb-step"><button type="button" data-fb="-1">‹ Previous</button><button type="button" data-fb="1">Next ›</button></span></nav>';
   // Where the page's sections live in the address: the view, or the protein's accession.
   const hubBase = () => (UI.view === 'protein' && UI.detail != null ? P[UI.detail].acc : UI.view);
@@ -4430,16 +4437,10 @@
       list.classList.toggle('focus', on);
       $$('details.hub-row', list).forEach((x) => { const cur = x === d; x.classList.toggle('cur', cur); if (cur && !x.open) x.open = true; else if (!cur && x.open) x.open = false; });
       $$('.hub-sec', list).forEach((s) => s.classList.toggle('cur', on && s.contains(d)));
-      $$('.a-secs [data-asec]', root).forEach((b) => {
-        const cur = b.dataset.asec === (on ? d.dataset.fold : '');
-        b.setAttribute('aria-current', cur ? 'true' : 'false');
-        if (cur && on) b.scrollIntoView({ block: 'nearest', inline: 'center' });
-      });
-      const cs = $('#crumb-sec', root);
-      if (cs) { cs.hidden = !on; cs.textContent = on ? $('.fold-title', d).textContent : ''; }
       const bar = $('.focus-bar', root);
       if (bar) {
-        bar.hidden = !on;
+        bar.hidden = !on && !UI_A;
+        bar.classList.toggle('hub', !on);
         if (on) {
           const i = all.indexOf(d), sec = d.closest('.hub-sec'), grp = sec ? $('.hub-group', sec) : null;
           const name = (x) => $('.fold-title', x).textContent;
@@ -4453,6 +4454,13 @@
             b.innerHTML = dir < 0 ? '‹ Previous' + (x ? ' <span>· ' + esc(name(x)) + '</span>' : '') : (x ? '<span>' + esc(name(x)) + ' ·</span> ' : '') + 'Next ›';
           });
         }
+      }
+      if (bar && UI_A) {
+        if (!on) $('.fb-crumb', bar).innerHTML = '<b>' + esc(list.dataset.label || VIEW_NAMES[UI.view] || '') + '</b> · ' + all.length + ' sections';
+        $$('.sec-menu [data-asec]', bar).forEach((b) => b.setAttribute('aria-current', String(on && b.dataset.asec === d.dataset.fold)));
+        const m = $('.sec-menu', bar);
+        if (m) m.open = false;
+        document.documentElement.style.setProperty('--strip-h', bar.offsetHeight + 'px');
       }
     };
     if (!changed) { apply(); return; }
@@ -4561,17 +4569,6 @@
   const aStack = (parts) => { const tot = parts.reduce((a, p) => a + p.n, 0) || 1; return '<div class="a-stack"><div class="as-bar">' + parts.map((p) => '<i class="' + p.cls + '" style="flex-grow:' + p.n + '" data-tip="' + esc('<b>' + p.label + '</b><br>' + fmt(p.n) + ' (' + pctText(p.n, tot) + '%)') + '"></i>').join('') + '</div><div class="as-key">' + parts.filter((p) => p.key).map((p) => '<span><i class="' + p.cls + '"></i>' + esc(p.key) + ' ' + pctText(p.n, tot) + '%</span>').join('') + '</div></div>'; };
   const aBigN = (items) => '<div class="a-big">' + items.map(([n, label, cls]) => '<span class="' + (cls || '') + '"><b>' + n + '</b> ' + esc(label) + '</span>').join('') + '</div>';
   // The page's lead and its tiles. ov: {key: {vis, head, whole}} replaces a tile's picture or words; skip: keys left out.
-  // Layout A's section strip: every section of the page by group, sticky under the toolbar, the one open marked; it
-  // replaces the focus bar, so a section is one click from any other and from the tiles ("All sections").
-  function aSecsHtml() {
-    const groups = [];
-    for (const r of A_ROWS) { let g = groups.find((x) => x[0] === r.group); if (!g) groups.push(g = [r.group, []]); g[1].push(r); }
-    return '<nav class="a-secs" aria-label="Sections of this page"><div class="as-scroll"><i class="as-fade l" aria-hidden="true"></i>' +
-      '<button type="button" class="as-all" data-asec="" aria-current="true">All sections</button>' +
-      groups.map(([g, rows]) => (g ? '<span class="as-g">' + esc(g) + '</span>' : '') + rows.map((r) => '<button type="button" class="as-c" data-asec="' + r.key + '" aria-current="false"' +
-        ((r.meta || {}).empty ? ' disabled title="' + esc(r.meta.empty) + '"' : '') + '>' + esc(r.title) + '</button>').join('')).join('') +
-      '<i class="as-fade r" aria-hidden="true"></i></div></nav>';
-  }
   // ins: { group name: html } drawn, full width, after that group's tiles.
   function aHome(lead, ov = {}, skip = [], ins = {}) {
     const scoped = constraints().length > 0, groups = [];
@@ -4645,9 +4642,7 @@
       const [g, c, sk] = p.pan, tot = (r) => r[r.length - 1], ref = pm.universe ? M.n_proteins / pm.universe : null;
       const rows = [ovw.panther_groups[g], c >= 0 ? ovw.panther_classes[c] : null].concat((sk || []).slice(0, 2).map((k) => (ovw.panther_subclasses || [])[k]))
         .filter((r) => r && r[0] !== pm.unclassified && tot(r) > 0);
-      if (rows.length) ov['p-func'] = { vis: aMeters(rows.map((r) => ({ label: r[0], v: r[1] / tot(r), ref, text: pct(r[1], tot(r)) + '%', cls: r[4] < 0 ? 'down' : '',
-        tip: '<b>' + esc(r[0]) + '</b><br>' + fmt(r[1]) + ' of ' + fmt(tot(r)) + ' reviewed proteins in this class carry a methylarginine (' + pct(r[1], tot(r)) + '%), vs ' + pct(M.n_proteins, pm.universe) + '% of all (the tick)' })),
-        { foot: ref != null ? 'Share of each class methylated · <b>|</b> all reviewed proteins, ' + pct(M.n_proteins, pm.universe) + '%' : '' }) };
+      if (rows.length) ov['p-func'] = { vis: '<span class="a-pills">' + rows.map((r) => '<span class="a-pill">' + esc(r[0]) + '</span>').join('') + '</span>' };
     }
     return ov;
   }
@@ -4786,9 +4781,7 @@
   }
   function bindAHome(root) {
     root.classList.toggle('a-mode', UI_A);
-    $$('.a-secs [data-asec]', root).forEach((b) => b.addEventListener('click', () => { const k = b.dataset.asec; if (k) UI.hubFrom = k; hubFocus(k || null); }));
-    const strip = $('.a-secs', root);
-    if (strip) document.documentElement.style.setProperty('--strip-h', strip.offsetHeight + 'px');
+    $$('.sec-menu [data-asec]', root).forEach((b) => b.addEventListener('click', () => { const m = b.closest('details'); if (m) m.open = false; UI.hubFrom = b.dataset.asec; hubFocus(b.dataset.asec); }));
     const home = $('.a-home', root);
     if (!home) return;
     $$('[data-go]', home).forEach((b) => b.addEventListener('click', () => { if (b.getAttribute('aria-disabled') === 'true') return; UI.hubFrom = b.dataset.go; hubFocus(b.dataset.go); }));
@@ -11111,7 +11104,7 @@
       '</div>';
     el.innerHTML = '<div class="ix-page">' +
       '<div class="facts ix-facts hub-only">' + tile('exp', 'experimental', 'Experimental evidence') + tile('pred', 'predicted-only', 'Predicted only') + tile('none', 'none', 'None recorded') + '</div>' +
-      hubHtml() + (UI_A ? aSecsHtml() + ixAHome() : '') + focusBarHtml() + hubList + '</div>';
+      hubHtml() + (UI_A ? focusBarHtml() + ixAHome() : focusBarHtml()) + hubList + '</div>';
     bindHub(el, 'Interactions');
     bindAHome(el);
     $$('.ix-facts .fact', el).forEach((b) => {
@@ -12928,7 +12921,7 @@
   });
   // Popout menus (Columns, Rows, network options, More links, Saved outside the filter rail) close on a click outside
   // them or on Escape, not only on their own button; a click or tap also clears a hover tooltip.
-  const openPopouts = () => $$('details.col-menu[open], details.links-more[open], details.saved-menu[open]').filter((d) => !d.closest('.rail'));
+  const openPopouts = () => $$('details.col-menu[open], details.links-more[open], details.saved-menu[open], details.sec-menu[open]').filter((d) => !d.closest('.rail'));
   document.addEventListener('pointerdown', (e) => {
     openPopouts().forEach((d) => { if (!d.contains(e.target)) d.open = false; });
     if (tipFor) { tipFor = null; hideTip(); }

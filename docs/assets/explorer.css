@@ -1839,23 +1839,20 @@ html.drawer-open { overflow: hidden; }
 .a-hi-n.n { font-size: 1.9rem; color: var(--teal); }
 .hg-stem { stroke: var(--line-strong); stroke-width: 1.2; }
 .hg-drop { fill: color-mix(in srgb, var(--accent) 22%, var(--surface)); stroke: color-mix(in srgb, var(--accent) 60%, var(--surface)); stroke-width: 1.2; }
-/* layout A's section strip: sticky under the toolbar, scrolls sideways, fades where there is more */
-.a-mode .focus-bar { display: none !important; }
-.a-secs { position: sticky; top: calc(var(--toolbar-h) + env(safe-area-inset-top, 0px)); z-index: 19; margin: 0 0 0.75rem; background: var(--bg); border-bottom: 1px solid var(--line); }
-.as-scroll { display: flex; align-items: center; gap: 0.3rem; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; padding: 0.45rem 0; container-type: scroll-state; }
-.as-g { flex: none; margin: 0 0.1rem 0 0.7rem; font-size: 0.64rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
-.as-c, .as-all { flex: none; min-height: 2.1rem; padding: 0.2rem 0.75rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink-2); font: inherit; font-size: 0.8rem; white-space: nowrap; cursor: pointer; }
-.as-all { font-weight: 600; }
-.as-c:hover:not(:disabled), .as-all:hover, .as-c:focus-visible, .as-all:focus-visible { border-color: var(--accent); color: var(--accent-dark); }
-.as-c[aria-current="true"], .as-all[aria-current="true"], .as-c[aria-current="true"]:hover, .as-all[aria-current="true"]:hover, .as-c[aria-current="true"]:focus-visible, .as-all[aria-current="true"]:focus-visible { border-color: var(--teal-600); background: var(--teal-600); color: #fff; }
-.as-c:focus-visible, .as-all:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.as-c:disabled { opacity: 0.45; cursor: default; }
-.as-fade { position: sticky; z-index: 1; flex: none; align-self: stretch; width: 1.6rem; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
-.as-fade.l { left: 0; margin-right: -1.6rem; background: linear-gradient(to right, var(--bg), transparent); }
-.as-fade.r { right: 0; margin-left: -1.6rem; background: linear-gradient(to left, var(--bg), transparent); }
-@container scroll-state(scrollable: left) { .as-fade.l { opacity: 1; } }
-@container scroll-state(scrollable: right) { .as-fade.r { opacity: 1; } }
-@media print { .a-secs { display: none !important; } }
+/* layout A's section bar: always under the toolbar; on the tiles it holds the Sections menu, in a section also the way
+   back, where it is, and the previous and next sections */
+.focus-bar.hub .fb-back, .focus-bar.hub .fb-pos, .focus-bar.hub .fb-step { display: none; }
+.sec-menu { position: relative; flex: none; }
+.sec-menu > summary { list-style: none; display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.25rem; padding: 0.25rem 0.85rem; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--ink); font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+.sec-menu > summary::-webkit-details-marker { display: none; }
+.sec-menu > summary::after { content: "▾"; font-size: 0.72rem; color: var(--muted); }
+.sec-menu[open] > summary, .sec-menu > summary:hover, .sec-menu > summary:focus-visible { border-color: var(--accent); color: var(--accent-dark); }
+.sec-pop { position: absolute; top: calc(100% + 0.4rem); left: 0; z-index: 40; width: min(58rem, calc(100vw - 2rem)); max-height: min(70vh, 34rem); overflow: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 0.9rem 1.2rem; padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 12px 32px rgb(0 0 0 / 0.16); }
+.sp-h { margin: 0 0 0.3rem; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.sp-g button { display: block; width: 100%; padding: 0.4rem 0.55rem; border: 0; border-radius: 6px; background: none; color: var(--ink-2); font: inherit; font-size: 0.86rem; text-align: left; cursor: pointer; }
+.sp-g button:hover:not(:disabled), .sp-g button:focus-visible { background: var(--surface-2); color: var(--accent-dark); }
+.sp-g button[aria-current="true"] { background: color-mix(in srgb, var(--teal-600) 14%, var(--surface)); color: var(--ink); font-weight: 600; }
+.sp-g button:disabled { opacity: 0.45; cursor: default; }
 .crumb-back { margin-left: 0.6rem; font-size: 0.82rem; }
 /* filters pinned to the left (wide screens) */
 :root { --rail-pin-w: 21rem; }
