@@ -1860,7 +1860,10 @@ html.drawer-open { overflow: hidden; }
 :root { --rail-pin-w: 21rem; }
 html.filters-pinned body { padding-left: var(--rail-pin-w); }
 html.filters-pinned .rail.drawer { width: var(--rail-pin-w); transform: none; transition: none; box-shadow: none; z-index: 30; }
-html.filters-pinned #rail-show { display: none; }
+html.filters-pinned #rail-show, html.filters-pinned .rail-sel, html.filters-pinned .drawer-foot, html.filters-pinned .filters-btn { display: none; }
+/* in an open section, the card's own index stays under the section strip */
+.a-mode.focus-mode .card-index { position: sticky; top: calc(var(--toolbar-h) + var(--strip-h, 3rem) + env(safe-area-inset-top, 0px)); z-index: 18; margin-inline: -0.1rem; padding-inline: 0.1rem; background: var(--surface); }
+.a-head:empty { display: none; }
 .rail-pin[aria-pressed="true"] { border-color: var(--teal-600); color: var(--teal); }
 .hg-tree { fill: none; stroke: var(--teal-600); stroke-width: 1.6; stroke-linecap: round; }
 .a-grp.a-wide { flex-basis: 100%; }

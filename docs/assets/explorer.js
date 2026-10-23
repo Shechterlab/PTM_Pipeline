@@ -3860,20 +3860,10 @@
       }
       const chartTile = (spec) => {
         if (!spec) return null;
-        // motifs: the four strongest of either sign and the two of the other (DR among them), the others three and one
+        // the strongest rows: four (motifs: four and the two of the other sign, DR among them), the picture alone
         const motifTile = spec.id === 'ch-motif';
-        const rows = pick(spec, motifTile ? 4 : 3, spec.fold ? 0 : motifTile ? 2 : 1, '');
-        // the line: how many of the rows tested differ by at least MIN_EFFECT, out of how many
-        const noun = { 'ch-pan': 'groups', 'ch-func': 'classes', 'ch-dis': 'families', 'ch-do': 'terms', 'ch-cond': 'condensates', 'ch-loc': 'locations', 'ch-motif': 'motifs', 'ch-struct': 'classes', 'ch-disorder': 'classes' }[spec.id] || 'rows';
-        const cnt = (whole) => {
-          const re = whole && spec.selTest, v = (r) => (re ? r.ref : r.value), sg = (r) => (re ? r.refQ != null && r.refQ <= PADJ : !!r.sig);
-          const tested = spec.rows.filter((r) => ok(r) && !r.sub), tot = tested.length;
-          const u = tested.filter((r) => sg(r) && v(r) > 0 && aBig(v(r))).length, d = spec.fold ? 0 : tested.filter((r) => sg(r) && v(r) < 0 && aBig(v(r))).length;
-          if (!u && !d) return 'none of ' + tot + ' ' + noun + ' differs by ≥ ' + MIN_EFFECT + '×';
-          return spec.fold ? '<b>' + u + ' of ' + tot + '</b> ' + noun + ' over-represented ≥ ' + MIN_EFFECT + '×'
-            : '<b>' + u + '</b> more often, <b>' + d + '</b> less often, of ' + tot + ' ' + noun + ' (≥ ' + MIN_EFFECT + '×)';
-        };
-        return { vis: rows.length ? aForest([[null, rows]], { compact: true }) : '', head: cnt(false), whole: scoped && spec.selTest ? cnt(true) : '' };
+        const rows = pick(spec, 4, spec.fold ? 0 : motifTile ? 2 : 1, '');
+        return { vis: rows.length ? aForest([[null, rows]], { compact: true }) : '', head: rows.length ? '' : 'none differs (q ≤ ' + PADJ + ')', whole: '' };
       };
       const ixStack = (ss) => { if (!ixReady()) return ''; const k = { exp: 0, pred: 0, none: 0 }; for (const s of ss) k[ixStatus(s)]++; return aStack([{ n: k.exp, cls: 'exp', label: 'Experimental evidence', key: 'experimental' }, { n: k.pred, cls: 'pred', label: 'Predicted only', key: 'predicted' }, { n: k.none, cls: 'none', label: 'None recorded' }]); };
       const studies = (ss) => { let m = 0; for (const s of ss) m |= s.study; return popcount(m); };
@@ -3927,7 +3917,7 @@
       '</div>';
     el.innerHTML =
       (one ? '<p class="hub-legend hub-only">Your selection is one protein. <button class="linkish" type="button" id="ov-open-one">Open ' + esc(one.label) + ' →</button></p>' : '') +
-      hubHtml() + (UI_A ? ovAHome() : '') + focusBarHtml() + hubList;
+      hubHtml() + (UI_A ? aSecsHtml() + ovAHome() : '') + focusBarHtml() + hubList;
     bindDocLinks(el);
     bindProfile(el);
     bindHub(el, 'Overview');
@@ -4123,7 +4113,7 @@
       '</div>';
     el.innerHTML =
       '<div class="print-only print-head" id="print-head"></div>' +
-      crumbsHtml(p) +
+      crumbsHtml(p) + (UI_A ? aSecsHtml() : '') +
       '<div class="detail-head">' +
       '<div class="detail-title"><h2>' + esc(p.label) + '</h2><span class="pn" id="pname">' + esc(p.name) + '</span></div>' +
       (p.aliases.length ? '<p class="aliases">Also reported as ' + p.aliases.map((a) => '<span>' + esc(a) + '</span>').join(', ') + '</p>' : '') +
@@ -4599,7 +4589,7 @@
       return '<button type="button" class="a-tile' + (empty ? ' off' : '') + (vis ? '' : ' novis') + '" data-go="' + r.key + '"' + (empty ? ' aria-disabled="true"' : '') + '><span class="a-tt">' + esc(r.title) + '</span>' +
         (vis ? '<span class="a-vis">' + vis + '</span>' : '') + '<span class="a-head" data-sum-of="' + r.key + '"' + (o.head != null ? ' data-fixed' : '') + '>' + head + '</span>' + (whole ? '<span class="a-whole"><span>Whole dataset</span> ' + whole + '</span>' : '') + '</button>';
     };
-    return aSecsHtml() + '<div class="a-home hub-only">' +
+    return '<div class="a-home hub-only">' +
       (lead ? '<section class="a-lead"><h2 class="a-q">' + lead.q + '</h2>' + (lead.pic || '') + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') + (lead.hi || '') +
         (lead.fig ? '<div class="card a-fig">' + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
       '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>' +
@@ -4797,6 +4787,8 @@
   function bindAHome(root) {
     root.classList.toggle('a-mode', UI_A);
     $$('.a-secs [data-asec]', root).forEach((b) => b.addEventListener('click', () => { const k = b.dataset.asec; if (k) UI.hubFrom = k; hubFocus(k || null); }));
+    const strip = $('.a-secs', root);
+    if (strip) document.documentElement.style.setProperty('--strip-h', strip.offsetHeight + 'px');
     const home = $('.a-home', root);
     if (!home) return;
     $$('[data-go]', home).forEach((b) => b.addEventListener('click', () => { if (b.getAttribute('aria-disabled') === 'true') return; UI.hubFrom = b.dataset.go; hubFocus(b.dataset.go); }));
@@ -4822,7 +4814,8 @@
     body.prepend(nav);
     $$('[data-ci]', nav).forEach((b) => b.addEventListener('click', () => {
       const h = heads[+b.dataset.ci], pi = $('.focus-bar:not([hidden])');
-      const off = (pi ? (parseFloat(getComputedStyle(pi).top) || 0) + pi.offsetHeight : 0) + 12;
+      const stuck = getComputedStyle(nav).position === 'sticky' ? (parseFloat(getComputedStyle(nav).top) || 0) + nav.offsetHeight : 0;
+      const off = Math.max(stuck, pi && pi.offsetHeight ? (parseFloat(getComputedStyle(pi).top) || 0) + pi.offsetHeight : 0) + 12;
       window.scrollTo({ top: h.getBoundingClientRect().top + window.scrollY - off, behavior: 'smooth' });
     }));
   }
@@ -11118,7 +11111,7 @@
       '</div>';
     el.innerHTML = '<div class="ix-page">' +
       '<div class="facts ix-facts hub-only">' + tile('exp', 'experimental', 'Experimental evidence') + tile('pred', 'predicted-only', 'Predicted only') + tile('none', 'none', 'None recorded') + '</div>' +
-      hubHtml() + (UI_A ? ixAHome() : '') + focusBarHtml() + hubList + '</div>';
+      hubHtml() + (UI_A ? aSecsHtml() + ixAHome() : '') + focusBarHtml() + hubList + '</div>';
     bindHub(el, 'Interactions');
     bindAHome(el);
     $$('.ix-facts .fact', el).forEach((b) => {
