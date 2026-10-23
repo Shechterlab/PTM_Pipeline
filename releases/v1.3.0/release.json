@@ -2,7 +2,7 @@
  "title": "Human methylarginine sites",
  "version": "v1.3.0",
  "previous_version": "v1.2.0",
- "code_commit": "4d9dbbba972e67277f4b2509d103f6009e406aff+uncommitted",
+ "code_commit": "b0e082b702586cae03692811bbb13f2c562c1771",
  "repository": "https://github.com/Shechterlab/PTM_Pipeline",
  "release_date": "2026-10-23",
  "paper": "DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011",

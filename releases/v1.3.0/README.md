@@ -87,7 +87,7 @@ The annotation and interaction sources keep their own terms too (`licence` in `i
 
 ## How it was built
 
-`bash hpc/build_release.sh v1.3.0` at commit `4d9dbbba972e67277f4b2509d103f6009e406aff+uncommitted` of https://github.com/Shechterlab/PTM_Pipeline:
+`bash hpc/build_release.sh v1.3.0` at commit `b0e082b702586cae03692811bbb13f2c562c1771` of https://github.com/Shechterlab/PTM_Pipeline:
 
 1. checks every input against `inputs/MANIFEST.tsv`;
 2. parses the source tables and places each record on the reference sequence (`scripts/02_remap_arg_methyl_to_canonical.py`);
