@@ -1861,10 +1861,16 @@ html.drawer-open { overflow: hidden; }
 .rail-tabs button:hover { color: var(--accent-dark); }
 .rail-tabs button[aria-selected="true"] { border-color: var(--line-strong); background: var(--surface-2); color: var(--ink); }
 .drawer-body[hidden], .drawer-foot[hidden] { display: none; }
-.rail-secs { gap: 0.9rem; }
-.sr-all { justify-self: start; min-height: 2.1rem; padding: 0.25rem 0.85rem; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
-.sr-all[aria-current="true"] { border-color: var(--teal-600); background: var(--teal-600); color: #fff; }
-html.filters-pinned .sec-btn, html.filters-pinned .focus-bar.hub:not(.ret), html.filters-pinned #rail-done { display: none; }
+.rail-secs { gap: 0.15rem; }
+/* the Sections tab: the pages, the one shown opened onto its sections */
+.toc-page { display: grid; gap: 0.3rem; min-width: 0; }
+.toc-p { display: block; width: 100%; padding: 0.45rem 0.55rem; border: 0; border-radius: 6px; background: none; color: var(--ink-2); font: inherit; font-size: 0.92rem; font-weight: 600; text-align: left; cursor: pointer; }
+.toc-p:hover, .toc-p:focus-visible { background: var(--surface-2); color: var(--accent-dark); }
+.toc-page.cur > .toc-p { color: var(--ink); }
+.toc-p[aria-current="page"] { background: color-mix(in srgb, var(--teal-600) 14%, var(--surface)); }
+.toc-secs { display: grid; gap: 0.75rem; margin: 0 0 0.5rem 0.55rem; padding: 0.2rem 0 0.2rem 0.6rem; border-left: 2px solid var(--line); }
+.page-part { display: grid; gap: 1.25rem; min-width: 0; }
+html.filters-pinned #rail-done, .a-mode .focus-bar.hub:not(.ret) { display: none; }
 /* a protein page's bar: the way back to the page it came from, and Top once scrolled */
 .focus-bar.hub .fb-back.fb-ret { display: inline-flex; }
 .fb-top { flex: none; margin-left: auto; min-height: 2.25rem; padding: 0.25rem 0.75rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink-2); font: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
@@ -1889,7 +1895,11 @@ html.filters-pinned #rail-show, html.filters-pinned .rail-sel, html.filters-pinn
 /* in an open section, the card's own index stays under the section strip */
 .a-mode.focus-mode .card-index { position: sticky; top: calc(var(--toolbar-h) + var(--strip-h, 3rem) + env(safe-area-inset-top, 0px)); z-index: 18; margin-inline: -0.1rem; padding-inline: 0.1rem; background: var(--surface); }
 .a-head:empty { display: none; }
-.a-more-n { display: block; margin-top: 0.2rem; font-size: 0.74rem; color: var(--muted); text-align: right; }
+.a-mode .hub-list.focus details.hub-row.cur > summary.fold-head { grid-template-columns: minmax(0, 1fr); }
+.a-mode .hub-list.focus details.hub-row.cur > summary.fold-head > :is(.fold-fig, .fold-selc, .fold-all, .fold-go) { display: none; }
+.a-more-n { display: block; width: fit-content; margin: 0.2rem 0 0 auto; padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.76rem; font-weight: 600; color: var(--accent-dark); }
+.a-more-n:hover { background: var(--surface-2); text-decoration: underline; }
+.hb.hb-more { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); box-shadow: inset 3px 0 0 var(--accent); transition: background 0.6s; }
 /* an effect of zero (none of the sites): a left-pointing mark at the scale's end */
 .aq-pt.aq-none { width: 0; height: 0; margin: 0 0 0 0.15rem; box-shadow: none; border-radius: 0; background: none; border-style: solid; border-width: 5px 8px 5px 0; border-color: transparent var(--t-down-3, var(--ink-2)) transparent transparent; transform: translateY(-50%); }
 .hg-tree { fill: none; stroke: var(--teal-600); stroke-width: 1.6; stroke-linecap: round; }
@@ -1954,7 +1964,7 @@ details.fold.p-row > summary:has(> .fold-pic:not(:empty)) .fold-sum { white-spac
 .aq-axis { position: relative; height: 1.15rem; border-top: 1px solid var(--line); }
 .aq-axis span { position: absolute; top: 0.15rem; transform: translateX(-50%); font-size: 0.7rem; color: var(--muted); }
 .aq-ends { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); }
-.aq.compact { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 2.7rem; column-gap: 0.4rem; }
+.aq.compact { grid-template-columns: minmax(0, 1.9fr) minmax(3.5rem, 1fr) 2.7rem; column-gap: 0.4rem; }
 .aq.compact .aq-lab { overflow: hidden; padding: 0.1rem 0; font-size: 0.74rem; white-space: nowrap; text-overflow: ellipsis; }
 .aq.compact .aq-plot { height: 1.15rem; }
 .aq.compact .aq-pt { width: 8px; height: 8px; margin: -4px 0 0 -4px; box-shadow: none; }
