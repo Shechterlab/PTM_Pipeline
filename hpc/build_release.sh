@@ -200,4 +200,9 @@ for f in sites evidence interactions pred_iface; do
   cp "$SITE/methylarg_$f.json" "$SITE_OUT/methylarg_$f.json"
   cp "$SITE_ALL/methylarg_$f.json" "$SITE_OUT/methylarg_${f}_all.json"
 done
+# InterPro domains of the explorer's proteins (scripts/36c), for the protein map's domain row; one file for both tiers
+step "InterPro domains (scripts/36c)" python "$CODE/scripts/36c_export_interpro_domains.py" --intervals "$IN/annotation/interpro_108.0_domain_intervals.tsv" \
+  --sites-json "$SITE_OUT/methylarg_sites_all.json" --out "$SITE_OUT/methylarg_interpro.json"
+# eCLIP logos (scripts/43f), one file for both tiers: the 5-mers enriched in each experiment's peaks or windows, aligned
+step "eCLIP logos (scripts/43f)" python "$CODE/scripts/43f_eclip_logos.py" --inputs "$IN/nucleic_acid" --out "$SITE_OUT/methylarg_eclip_logos.json"
 echo "[release] done: $OUT and $SITE_OUT/"

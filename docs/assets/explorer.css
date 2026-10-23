@@ -638,7 +638,10 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .af-dialog .af-wrap > div:first-child { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-height: 0; }
 .af-dialog .af-viewer { height: auto; min-height: 320px; }
 .af-dialog .af-side { overflow: auto; min-height: 0; }
-.af-dialog .card-head .sub { display: none; }
+.af-dialog #af-sub { display: none !important; }
+/* in the large view the sites to focus come first */
+.af-dialog .af-side { display: flex; flex-direction: column; gap: 0.5rem; }
+.af-dialog .af-focus { order: -1; padding-bottom: 0.5rem; border-bottom: 1px solid var(--line); }
 #af-move[aria-pressed="true"], #af-big[aria-pressed="true"] { border-color: var(--accent); color: var(--accent-dark); }
 @media (max-width: 760px) { .af-dialog { width: 100vw; height: 100dvh; max-height: none; border-radius: 0; padding: 0.7rem; } .af-dialog .af-wrap { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; } .af-dialog .af-side { max-height: 30vh; } }
 .af-side .flabel { margin: 0.3rem 0 0; }
@@ -2124,3 +2127,19 @@ details.fold.p-row > summary:has(> .fold-pic:not(:empty)) .fold-sum { white-spac
 .at-scale b:last-child { transform: translateX(-100%); white-space: nowrap; }
 .at-key { display: flex; flex-wrap: wrap; gap: 0.1rem 0.55rem; margin-top: 0.2rem; font-size: 0.62rem; color: var(--muted); }
 .at-key i { display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.2rem; border-radius: 2px; vertical-align: -1px; }
+
+/* Preferred RNA, by motif: groups of protein cards, each with its logos (in vitro, in cells) */
+.pg-group { margin: 0.4rem 0 1rem; }
+.pg-h { margin: 0 0 0.45rem; font-size: 0.92rem; }
+.pg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.6rem; }
+.pg-card { padding: 0.55rem 0.65rem; border: 1px solid var(--line); border-radius: 0.6rem; background: var(--surface); min-width: 0; }
+.pg-name { margin: 0 0 0.35rem; font-size: 0.85rem; }
+.pg-logos { display: flex; flex-wrap: wrap; gap: 0.5rem 0.8rem; align-items: flex-end; }
+.pg-logo { margin: 0; display: grid; gap: 0.1rem; justify-items: start; }
+.pg-logo svg { display: block; max-width: 100%; height: auto; }
+.pg-logo figcaption { font-size: 0.68rem; color: var(--muted); }
+.pg-logo.weak svg, .ec-logo.weak svg { opacity: 0.55; }
+.ec-logo { display: grid; gap: 0.15rem; justify-items: start; margin: 0.2rem 0 0.4rem; }
+.ris-btn { white-space: nowrap; }
+.sc-refs + .ris-btn, .pub .ris-btn { margin: 0.2rem 0; }
+.pg-kmers { display: grid; grid-template-columns: repeat(2, auto); gap: 0.1rem 0.5rem; font-size: 0.78rem; color: var(--ink); }
