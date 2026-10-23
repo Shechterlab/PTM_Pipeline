@@ -210,7 +210,7 @@
   const SOURCE_CITE = {
     'Maron 2021': ['Maron MI et al., iScience 24:102971 (2021)', '10.1016/j.isci.2021.102971'],
     ProMetheusDB: ['Massignani E et al., Mol Cell Proteomics 21:100243 (2022)', '10.1016/j.mcpro.2022.100243'],
-    PhosphoSitePlus: ['Hornbeck PV et al., Nucleic Acids Res 43:D512 (2015)', '10.1093/nar/gku1267'],
+    PhosphoSitePlus: ['PhosphoSitePlus, downloaded 22 May 2021 (as compiled in Maron et al. 2021 Table S5); Hornbeck PV et al., Nucleic Acids Res 43:D512 (2015)', '10.1093/nar/gku1267'],
     UniProt: ['UniProt Consortium, Nucleic Acids Res 53:D609 (2025)', '10.1093/nar/gkae1010'],
     IEDB: ['Vita R et al., Nucleic Acids Res 47:D339 (2019)', '10.1093/nar/gky1006'],
     'Shishkova 2017': ['Shishkova E et al., Nat Commun 8:15571 (2017)', '10.1038/ncomms15571'],
@@ -223,6 +223,9 @@
     'Lim 2020': ['Lim Y et al., Proteome Sci 18:6 (2020)', '10.1186/s12953-020-00162-8'],
     'Li 2021': ['Li WJ et al., Nat Commun 12:1946 (2021)', '10.1038/s41467-021-21963-1'],
   };
+  // The name a study or database is shown under: PhosphoSitePlus with the year its records were downloaded (May 2021,
+  // through Maron et al. 2021 Table S5), so it is not read as the database today. Lookups keep the plain name.
+  const studyLabel = (name) => (name === 'PhosphoSitePlus' ? 'PhosphoSitePlus 2021' : name);
   // Full reference of a study or database behind the union: [text, doi].
   function studyRef(k) {
     const name = M.studies[k][0], ref = M.studies[k][1];
@@ -2214,7 +2217,7 @@
         '<label class="check"><input type="checkbox" id="f-lc"' + (LC_ON ? ' checked' : '') + '> Show lower-confidence sites (hatched)</label>' +
         (confTiers().length > 1 ? termChips('confidence', confTiers().map(([[n], k]) => [termSlug('confidence', k), n, ''])) : '') + '</div>' : '') +
         '<div class="fgroup"><span class="flabel">Reported by study or database (match any)</span>' +
-        termChips('study', M.studyOrder.map((k) => [termSlug('study', k), M.studies[k][0] + ' · ' + compact(M.studies[k][2]), M.studies[k][1] || STUDY_HELP[M.studies[k][0]] || ''])) + '</div>' +
+        termChips('study', M.studyOrder.map((k) => [termSlug('study', k), studyLabel(M.studies[k][0]) + ' · ' + compact(M.studies[k][2]), M.studies[k][1] || STUDY_HELP[M.studies[k][0]] || ''])) + '</div>' +
         '<div class="fgroup"><label class="flabel" for="f-minrep">Sources reporting the site</label>' + sel('f-minrep', options(withCurrent([[2, '≥2 studies or databases'], [3, '≥3'], [4, '≥4'], [5, '≥5']], F.minRep, (v) => '≥' + v), F.minRep || '', 'Any'), !!F.minRep) + '</div>' +
         // The source-table filter of the compiled-table releases; from v1.2.0 each table is a study, so the study filter
         // above replaces it (it is still shown when a link sets it).
@@ -2392,9 +2395,11 @@
   let filtersOpener = null;
   // Pinned (screens 1100 px and wider): the filters stay open as a column on the left, the page beside them and in use;
   // remembered in this browser where storage allows.
+  // Until the reader chooses (Pin or Unpin, remembered), the panel is pinned on screens 1280 px and wider.
   const PIN_MQ = window.matchMedia ? window.matchMedia('(min-width: 1100px)') : null;
-  let pinFilters = (() => { try { return localStorage.getItem('mse-pin-filters') === '1'; } catch (e) { return false; } })();
-  const pinned = () => pinFilters && (!PIN_MQ || PIN_MQ.matches);
+  const PIN_WIDE = window.matchMedia ? window.matchMedia('(min-width: 1280px)') : null;
+  let pinFilters = (() => { try { const v = localStorage.getItem('mse-pin-filters'); return v == null ? null : v === '1'; } catch (e) { return null; } })();
+  const pinned = () => (pinFilters == null ? !!PIN_WIDE && PIN_WIDE.matches : pinFilters) && (!PIN_MQ || PIN_MQ.matches);
   const PIN_ON = 'Keep this panel open on the left', PIN_OFF = 'Let this panel close again';
   // The panel's tabs (layout A, on a page with sections): Sections lists them by group, the one open or in view
   // marked; a click goes to it (closing the panel unless it is pinned). The tab last chosen is remembered.
@@ -2547,6 +2552,7 @@
     $('#drawer-bg').addEventListener('click', () => closeFilters());
     applyPin();
     if (PIN_MQ && PIN_MQ.addEventListener) PIN_MQ.addEventListener('change', applyPin);
+    if (PIN_WIDE && PIN_WIDE.addEventListener) PIN_WIDE.addEventListener('change', () => { if (pinFilters == null) applyPin(); });
     window.addEventListener('resize', debounce(() => { const w = (() => { try { return +localStorage.getItem(RAIL_W.key) || null; } catch (e) { return null; } })(); if (w) railWidth(w); }, 150));
     // the panel's tabs and its list of sections (drawn again with the page, so bound once here)
     $('#rail').addEventListener('click', (e) => {
@@ -2874,10 +2880,10 @@
     return shown.map((k) => {
       const name = M.studies[k][0], tip = M.studies[k][1] || STUDY_HELP[name] || '';
       const url = acc && STUDY_RECORD[name] ? STUDY_RECORD[name](acc.split('-')[0]) : studyRef(k)[1] ? 'https://doi.org/' + studyRef(k)[1] : '';
-      return url ? '<a class="tag src" href="' + url + '" target="_blank" rel="noopener" title="' + esc(tip + (STUDY_RECORD[name] && acc ? ' · open the ' + name + ' record' : ' · open the paper')) + '">' + esc(name) + '</a>'
-        : '<span class="tag src" title="' + esc(tip) + '">' + esc(name) + '</span>';
+      return url ? '<a class="tag src" href="' + url + '" target="_blank" rel="noopener" title="' + esc(tip + (STUDY_RECORD[name] && acc ? ' · open the ' + name + ' record' : ' · open the paper')) + '">' + esc(studyLabel(name)) + '</a>'
+        : '<span class="tag src" title="' + esc(tip) + '">' + esc(studyLabel(name)) + '</span>';
     }).join(' ') +
-      (rest.length ? ' <span class="tag" title="' + esc(rest.map((k) => M.studies[k][0]).join(', ')) + '">+' + rest.length + '</span>' : '');
+      (rest.length ? ' <span class="tag" title="' + esc(rest.map((k) => studyLabel(M.studies[k][0])).join(', ')) + '">+' + rest.length + '</span>' : '');
   }
 
   // PRMT perturbations in one order everywhere: GSK591 (PRMT5i) and MS023 (type I PRMTi) from Maron 2021, then the
@@ -3463,8 +3469,8 @@
       id: 'ch-study', title: 'Provenance', subHtml: 'Sites reported by each study or database.' + docLink('ov-provenance'),
       subText: 'Methylarginine sites reported by each study or database', noSig: true, format: (v) => fmt(v), tick: compact, axis: 'methylarginine sites reported', valueLabel: 'sites',
       extraCol: true, extraName: 'reported_only_here',
-      rows: M.studyOrder.map((k) => ({ label: M.studies[k][0], value: M.studies[k][2], sig: true, key: k, extra: fmt(M.studies[k][3]) + ' only', extraRaw: M.studies[k][3],
-        title: '<b>' + esc(M.studies[k][0]) + '</b><br>' + esc(M.studies[k][1] && M.studies[k][1] !== 'This study.' ? M.studies[k][1] : STUDY_HELP[M.studies[k][0]] || '') + '<br>' + fmt(M.studies[k][2]) + ' sites, ' + fmt(M.studies[k][3]) + ' reported only here' })),
+      rows: M.studyOrder.map((k) => ({ label: studyLabel(M.studies[k][0]), value: M.studies[k][2], sig: true, key: k, extra: fmt(M.studies[k][3]) + ' only', extraRaw: M.studies[k][3],
+        title: '<b>' + esc(studyLabel(M.studies[k][0])) + '</b><br>' + esc(M.studies[k][1] && M.studies[k][1] !== 'This study.' ? M.studies[k][1] : STUDY_HELP[M.studies[k][0]] || '') + '<br>' + fmt(M.studies[k][2]) + ' sites, ' + fmt(M.studies[k][3]) + ' reported only here' })),
     };
     const motif = {
       id: 'ch-motif', title: 'Sequence motifs', subHtml: 'Motifs around methylated vs other arginines of the same proteins.' + docLink('ov-motifs'),
@@ -4065,9 +4071,21 @@
         const ss = scoped ? R.sites : S, n = studies(ss);
         const by = M.studyOrder.map((k) => [k, ss.filter((s) => s.study & 2 ** k).length]).filter((x) => x[1]).sort((a, b) => b[1] - a[1]);
         const top = by.slice(0, 5), mx = top.length ? top[0][1] : 1, sh = multiShare(ss) || 0;
-        const meters = top.map(([k, c]) => ({ label: M.studies[k][0], v: c / mx, text: fmt(c), cls: 'count', tip: '<b>' + esc(M.studies[k][0]) + '</b><br>' + fmt(c) + ' of ' + fmt(ss.length) + (scoped ? ' selected' : '') + ' sites' }));
+        const meters = top.map(([k, c]) => ({ label: studyLabel(M.studies[k][0]), v: c / mx, text: fmt(c), cls: 'count', tip: '<b>' + esc(studyLabel(M.studies[k][0])) + '</b><br>' + fmt(c) + ' of ' + fmt(ss.length) + (scoped ? ' selected' : '') + ' sites' }));
         return { vis: aMeters(meters, { tight: true, wide: true }),
           head: '<b>' + n + '</b> studies and databases' + (by.length > top.length ? ' (the ' + top.length + ' with the most sites shown)' : '') + '; <b>' + pctText(Math.round(1000 * sh), 1000) + '%</b> of ' + (scoped ? 'your sites' : 'sites') + ' reported by two or more' };
+      };
+      // Starting points: the proteins with the most sites, the strongest arginine-methylation enrichment and the
+      // densest clusters, and the quick selections; a click on a protein opens it, on a selection applies it
+      const startVis = () => {
+        const pill = (p, sub, tip) => '<span class="a-pill a-go" data-open-p="' + p.i + '" title="' + esc(tip || 'Open ' + p.label) + '">' + esc(p.label) + (sub != null ? '<b>' + esc(String(sub)) + '</b>' : '') + '</span>';
+        const col = (h, tip, body) => (body ? '<div class="a-start-col"><p class="a-start-h" title="' + esc(tip) + '">' + esc(h) + '</p><span class="a-pills">' + body + '</span></div>' : '');
+        const dense = (p) => p.sig.slice().sort((a, b) => b[4] - a[4])[0];
+        return '<div class="a-start">' +
+          col('Most sites', 'Proteins with the most methylarginine sites', topSites.slice(0, 6).map((p) => pill(p, p.sites.length)).join('')) +
+          col('Most of their arginines methylated', 'Highest arginine-methylation enrichment: more of the protein\'s arginines methylated than its length and arginine count predict', topArg.slice(0, 6).map((p) => pill(p, null)).join('')) +
+          col('Densest clusters', 'Most significant clustering of methylarginines (permutation test): sites in the window', topDense.slice(0, 6).map((p) => { const w = dense(p); return pill(p, w[3] + '/' + w[0] + ' aa', 'Open ' + p.label + ': ' + w[3] + ' sites in ' + w[0] + ' residues'); }).join('')) +
+          col('Quick selections', 'Ready-made selections', (UI.quick || []).map((q, k) => '<span class="a-pill a-go" data-quick="' + k + '" title="Show the ' + esc(q[1]) + '">' + esc(q[1]) + '<b>' + q[0] + '</b></span>').join('')) + '</div>';
       };
       const studies = (ss) => { let m = 0; for (const s of ss) m |= s.study; return popcount(m); };
       const multiShare = share((s) => popcount(s.study) >= 2);
@@ -4082,7 +4100,7 @@
         'ov-ix': ixReady() ? ixTile() : { vis: '' },
         'ov-study': provTile(),
         'ov-treat': { vis: trVis ? '<div class="a-treat">' + trVis + '</div>' : '', head: 'Sites that lose methylation with each PRMT inhibitor (Maron 2021) or CARM1 knockout (Shishkova 2017)' },
-        'ov-start': { vis: '<span class="a-pills">' + topSites.slice(0, 8).map((p) => '<span class="a-pill">' + esc(p.label) + '<b>' + p.sites.length + '</b></span>').join('') + '</span>', head: 'The proteins with the most sites; open for quick selections' },
+        'ov-start': { vis: startVis(), head: 'Click a protein to open it, or a selection to apply it', full: true },
       };
       for (const k of Object.keys(ov)) if (!ov[k]) delete ov[k];
       // the opening page only: three proteins at random, after the starting points
@@ -4904,7 +4922,8 @@
       '<p class="print-only pdf-scope">' + (scoped ? '' : 'All ' + fmt(S.length) + ' sites on ' + fmt(P.length) + ' proteins · ') + new Date().toISOString().slice(0, 10) + '</p>' +
       (lead ? '<section class="a-lead"><div class="a-q-row"><h2 class="a-q">' + lead.q + '</h2><button type="button" class="btn small screen-only" data-pdf-page title="This page\'s cards as an A4 PDF, for ' + (scoped ? 'your selection' : 'all sites') + '">Download PDF</button></div>' + (lead.pic || '') + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') + (lead.hi || '') +
         (lead.fig ? '<div class="card a-fig">' + (lead.figHead ? '<h3 class="a-fig-h">' + esc(lead.figHead) + '</h3>' : '') + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
-      '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>' +
+      // a group whose tile asks for it (full) takes a row of its own
+      '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp' + (rows.some((r) => ov[r.key] && ov[r.key].full) ? ' a-full' : '') + '" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>' +
         (ins[g] ? '<section class="a-grp a-wide">' + ins[g] + '</section>' : '')).join('') + '</div>' +
       '<p class="a-proto">New layout <button type="button" class="linkish" data-ui="old">Switch to the previous layout</button></p></div>';
   }
@@ -5149,6 +5168,10 @@
     if (!home) return;
     $$('[data-go]', home).forEach((b) => b.addEventListener('click', (e) => {
       if (b.getAttribute('aria-disabled') === 'true') return;
+      // a protein or a quick selection inside a tile acts itself; anywhere else the tile opens its section
+      const op = e.target.closest('.a-tile [data-open-p]'), qk = e.target.closest('.a-tile [data-quick]');
+      if (op) { openProtein(+op.dataset.openP); return; }
+      if (qk) { const q = (UI.quick || [])[+qk.dataset.quick]; if (q) q[2](); return; }
       const more = e.target.closest('.a-more-n');
       UI.hubFrom = b.dataset.go;
       hubFocus(b.dataset.go);
@@ -5425,7 +5448,7 @@
       const st = r[9] != null ? ev.studies[r[9]] : null, tbl = ev.source_tables[r[0]] || '';
       const ref = r[1] >= 0 ? ev.refs[r[1]] : '', own = ref === 'This study.';
       const refText = own ? 'Maron et al. 2021 (detected in that study\'s own data)' : ref;
-      const name = st ? (STUDY_DOI[st] ? doiLink(STUDY_DOI[st], esc(st)) : esc(st)) : esc(refText || '—');
+      const name = st ? (STUDY_DOI[st] ? doiLink(STUDY_DOI[st], esc(studyLabel(st))) : esc(studyLabel(st))) : esc(refText || '—');
       // A study's own data compiled in Maron Table S5 is cited by the study alone; PhosphoSitePlus, a database, keeps
       // the compilation it came through (its download date and terms are those of Table S5).
       const via = tbl === 'maron_s5' && st !== 'PhosphoSitePlus' ? '' : (SOURCE_TABLE_LABEL[tbl] || tbl.replace(/_/g, ' '));
@@ -5549,7 +5572,7 @@
       '<section><h4>Site</h4><dl class="sc-kv">' + pub('Window ±7', windowHtml(s.win, 7, s.j)) + pub('Motifs', motifTags(s.mot)) + pub('Context', contextHtml(s).replace('<br>', ' · ')) +
       pub('Methylation state', s.stx ? s.stx.map((x) => esc(x[1].replace(/; /g, ', ')) + ' <span class="muted">' + esc(x[0]) + '</span>').join('<br>') : '<span class="muted">no source gives a degree</span>') +
       pub('Nearest methyl-R', s.nn == null ? '—' : s.nn + ' aa') + pub('PRMT loss', treatHtml(s)) + pub('Maron IP', ipTags(s.ip) || '—') + pub('Variants', siteVariantsHtml(s, p)) + pub('AlphaFold', afCell(p, s)) +
-      pub('Reported by', '<ul class="sc-refs">' + M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => { const r = studyRef(k); return '<li>' + (r[1] ? '<a href="https://doi.org/' + r[1] + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">' + esc(M.studies[k][0]) + '</a>' : '<span title="' + esc(r[0]) + '">' + esc(M.studies[k][0]) + '</span>') + '</li>'; }).join('') + '</ul>' +
+      pub('Reported by', '<ul class="sc-refs">' + M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => { const r = studyRef(k); return '<li>' + (r[1] ? '<a href="https://doi.org/' + r[1] + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">' + esc(studyLabel(M.studies[k][0])) + '</a>' : '<span title="' + esc(r[0]) + '">' + esc(studyLabel(M.studies[k][0])) + '</span>') + '</li>'; }).join('') + '</ul>' +
         (xenograftOnly(s) ? '<p class="small warn-text">Reported only from breast cancer xenografts grown in mice (Ma et al. 2023): where the human and mouse sequences agree, the peptide can come from the mouse stroma.</p>' : '') +
         '<p class="muted small">Cite these for ' + rl(s.pos, P[s.p]) + ', with ' + esc(PAPER.short) + ' for the compilation.</p>') + '</dl></section>' +
       (ixReady() ? '<section class="sc-wr"><h4>Writer and reader</h4>' + writerReaderHtml(s, p) + '</section>' : '') + '</div>';
@@ -6018,7 +6041,7 @@
         const help = STUDY_HELP[name] || '';
         const unloc = q.n_records_not_localised || 0;
         const rest = q.n_records - q.n_records_placed - q.n_records_several_sites - q.n_records_other_protein - unloc;
-        return '<div class="sq-card" id="study-' + esc(name.replace(/[^A-Za-z0-9]+/g, '-')) + '"><div class="sq-head"><b>' + esc(name) + '</b>' + (r[1] ? ' <a class="small" href="https://doi.org/' + esc(r[1]) + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">doi:' + esc(r[1]) + '</a>' : '') + '</div>' +
+        return '<div class="sq-card" id="study-' + esc(name.replace(/[^A-Za-z0-9]+/g, '-')) + '"><div class="sq-head"><b>' + esc(studyLabel(name)) + '</b>' + (r[1] ? ' <a class="small" href="https://doi.org/' + esc(r[1]) + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">doi:' + esc(r[1]) + '</a>' : '') + '</div>' +
           (help ? '<p class="sq-text muted">' + esc(help) + '</p>' : '') +
           '<p class="sq-from"><b>Records from</b> ' + esc(from) + '. <b>Terms:</b> ' + esc(q.licence) + '.</p>' +
           (q.quality ? '<p class="sq-text">' + esc(q.quality.replace(/<=/g, '≤').replace(/>=/g, '≥')) + '</p>' : '') +
@@ -12853,6 +12876,9 @@
       onclone: (doc) => {
         doc.documentElement.classList.add('pdf-export');
         if (cls) doc.documentElement.classList.add(cls);
+        // a pinned side panel would keep its column and squeeze the page into what is left
+        doc.documentElement.classList.remove('filters-pinned', 'drawer-open');
+        for (const id of ['rail', 'rail-grip', 'drawer-bg']) { const x = doc.getElementById(id); if (x) x.style.display = 'none'; }
         const st = doc.createElement('style');
         st.textContent = printRulesCss();
         doc.head.appendChild(st);
@@ -13062,7 +13088,7 @@
       (s.par ? '<b>Paralog-assigned</b>: also in ' + esc(s.par.map(([a, g]) => g || a).join(', ')) + '<br>' : '') +
       (s.win ? windowHtml(s.win, 7) + '<br>' : '') +
       esc(DISORDER_LABEL[M.disorder_classes[s.dc]] || '') + ' · ' + esc(DOMAIN_LABEL[M.domain_contexts[s.dctx]] || '') + (ipr ? ' (' + esc(ipr) + ')' : '') + '<br>' +
-      'Reported by ' + M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => esc(M.studies[k][0])).join(', ') +
+      'Reported by ' + M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => esc(studyLabel(M.studies[k][0]))).join(', ') +
       (s.trf ? '<br>' + PERTURB.map(([label, down]) => (s.trf & down ? '▼' + label + ' ' : '') + (s.trf & (down << 1) ? '▲' + label + ' ' : '')).join('') : '');
   }
 
@@ -13471,7 +13497,7 @@
       '<dt>PTM master</dt><dd>Methylarginine rows of the lab\'s cross-PTM human master table (UniProt and IEDB annotations); the same table supplies the phospho, lysine acyl, ubiquitin/SUMO and lysine methyl sites shown as crosstalk. Those other-PTM sites are not exhaustive: they come from an iPTMnet export (HPRD, literature mining and other curated sources) plus UniProt, so modifications reported elsewhere, for example in PhosphoSitePlus or recent proteomics studies, may be missing. iPTMnet: Huang et al., ' + doiLink('10.1093/nar/gkx1104', 'Nucleic Acids Res 46:D542 (2018)') + '; IEDB: Vita et al., ' + doiLink('10.1093/nar/gky1006', 'Nucleic Acids Res 47:D339 (2019)') + '.</dd></dl>') +
       '<p class="note"><b>Licence notice.</b> ' + fmt((M.studies.find((x) => x[0] === 'PhosphoSitePlus') || [0, 0, 0])[2]) + ' sites in the union are reported by PhosphoSitePlus® (via Maron et al. 2021 Table S5). ' + esc(PSP_NOTICE) + ' Please acknowledge PhosphoSitePlus® and cite Hornbeck et al. 2015 (' + doiLink('10.1093/nar/gku1267') + ') when using these sites, including in downloads.</p>' +
       '<h4 id="doc-study-quality">Studies and databases behind the sites</h4>' + (Object.keys(M.study_quality || {}).length ? studyCardsHtml() : '<ul class="cite-list">' +
-      M.studyOrder.map((k) => '<li><b>' + esc(M.studies[k][0]) + '</b>: ' + fmt(M.studies[k][2]) + ' sites, ' + fmt(M.studies[k][3]) + ' reported only there<br><span class="muted">' + (STUDY_HELP[M.studies[k][0]] ? esc(STUDY_HELP[M.studies[k][0]]) + '. ' : '') + refLine(studyRef(k)) + '</span></li>').join('') + '</ul>')],
+      M.studyOrder.map((k) => '<li><b>' + esc(studyLabel(M.studies[k][0])) + '</b>: ' + fmt(M.studies[k][2]) + ' sites, ' + fmt(M.studies[k][3]) + ' reported only there<br><span class="muted">' + (STUDY_HELP[M.studies[k][0]] ? esc(STUDY_HELP[M.studies[k][0]]) + '. ' : '') + refLine(studyRef(k)) + '</span></li>').join('') + '</ul>')],
       ['processing', 'How sites were processed', '' +
       '<ul>' +
       '<li>Source rows were remapped to canonical UniProt sequences by their reported windows, peptides or positions and deduplicated by canonical accession and position. The original reported accession and position are kept in each site\'s evidence.</li>' +
