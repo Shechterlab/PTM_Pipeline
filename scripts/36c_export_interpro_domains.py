@@ -18,7 +18,8 @@ Writes two files:
   lower-confidence tier's proteins too), one file per shard(accession): {names: [[InterPro accession, name, type]], prot:
   {accession: [domains, families]}}, each [[start, end, index into names, [indices of entries covering the same
   stretch]?], ...]; and docs/data/pred_iface/pNN.json, the predicted protein-contact runs of scripts/37 (--pred-iface,
-  the view with lower-confidence sites, whose proteins include the others'), {prot: {accession: runs}}: a protein page
+  the view with lower-confidence sites, whose proteins include the others'), {prot: {accession: runs}, partners:
+  {accession: [[partner, gene, best pDockQ x100, served model order]]}}: a protein page
   reads one small file of each.
 
   docs/data/methylarg_proteome.json and docs/data/proteome/pNN.json, for the reviewed human proteins of UniProt
@@ -182,11 +183,12 @@ def main() -> None:
     pi = json.loads(a.pred_iface.read_text(encoding='utf-8'))
     pdir = a.out_dir / 'pred_iface'
     pdir.mkdir(parents=True, exist_ok=True)
-    parts = [{} for _ in range(a.shards)]
+    parts = [{'prot': {}, 'partners': {}} for _ in range(a.shards)]
     for acc, runs in pi['prot'].items():
-        parts[shard(acc, a.shards)][acc] = runs
+        parts[shard(acc, a.shards)]['prot'][acc] = runs
+        parts[shard(acc, a.shards)]['partners'][acc] = pi['partners'][acc]
     for k, part in enumerate(parts):
-        (pdir / f'p{k:02d}.json').write_text(json.dumps({'prot': part}, separators=(',', ':')), encoding='utf-8')
+        (pdir / f'p{k:02d}.json').write_text(json.dumps(part, separators=(',', ':'), ensure_ascii=False), encoding='utf-8')
     (pdir / 'meta.json').write_text(json.dumps(pi.get('meta', {}), separators=(',', ':')), encoding='utf-8')
     print(f'predicted contact runs of {len(pi["prot"]):,} proteins -> {pdir} ({a.shards} files)')
 

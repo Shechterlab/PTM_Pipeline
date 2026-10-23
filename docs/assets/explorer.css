@@ -2171,3 +2171,14 @@ ul.tight li { margin: 0.15rem 0; }
 .af-viewer:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media print { .af-pan { display: none !important; } }
 #af-src .pdb-pick select { max-width: min(30rem, 100%); text-overflow: ellipsis; }
+
+/* A chip that selects, with its source link beside it (light protein pages: complexes, condensates). */
+.chip-pair { display: inline-flex; align-items: center; gap: 0.1rem; }
+.chip-src {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 1.5rem; min-height: 1.5rem;
+  border-radius: 999px; font-size: 0.8rem; color: var(--muted); text-decoration: none;
+}
+.chip-src:hover, .chip-src:focus-visible { color: var(--teal-600); background: var(--surface-2, transparent); }
+/* More ProtVar partners in an evidence card */
+.pred-more { margin: 0.2rem 0 0 0.9rem; }
+.pred-more > summary { cursor: pointer; color: var(--muted); font-size: 0.85em; }

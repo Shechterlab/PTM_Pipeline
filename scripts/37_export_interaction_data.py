@@ -22,7 +22,8 @@ The protein-set enrichments (Gene Ontology RNA and DNA binding, complexes, conde
 over-representation tests run with clusterProfiler's enricher (scripts/enrich_sets.R, so Rscript must be on PATH).
 
 It also writes --pred-iface-out: every residue of an explorer protein at a ProtVar predicted interface, as runs with
-the number of partners and the best pDockQ; scripts/36c splits it into docs/data/pred_iface/pNN.json, which the
+the number of partners, the best pDockQ and the partners along each run, and every partner with its gene, best pDockQ
+and whether the ProtVar API serves the model; scripts/36c splits it into docs/data/pred_iface/pNN.json, which the
 explorer loads per protein.
 
 Stages that make many requests cache every answer: the PDBe interface lookup (about 5,000 calls) and the
@@ -759,7 +760,8 @@ def load_nucleic_acid_binding(folder: Path, keep: set) -> dict:
             exp = r['encore_experiment']
             # an ENCORE experiment with a released ENCODE counterpart re-analyses the same data
             out['eclip'].append([r['uniprot_accession'], exp, r['cell_line'], int(r['n_windows']), [er[exp].get(k, 0) for k in ECLIP_REGIONS],
-                                 eg[exp][:ECLIP_TOP], 'ENCORE', kmer5.get(exp, []), wins[exp], r['encode_experiment'] if r['encode_status'] == 'released' else ''])
+                                 eg[exp][:ECLIP_TOP], 'ENCORE', kmer5.get(exp, []), wins[exp], r['encode_experiment'] if r['encode_status'] == 'released' else '',
+                                 [r['geo_series'], [x.strip() for x in r['geo_samples_ip'].split(';') if x.strip()]]])
     log(f"Binding beyond structures: RNA Bind-n-Seq for {len({x[0] for x in out['rbns']}):,} methylated proteins, HTR-SELEX for "
         f"{len({x[0] for x in out['htrselex']}):,}, JASPAR for {len({x[0] for x in out['jaspar']}):,}, eCLIP for {len({x[0] for x in out['eclip'] if x[6] == 'ENCODE'}):,} (ENCODE) and "
         f"{len({x[0] for x in out['eclip'] if x[6] == 'ENCORE'}):,} (ENCORE)")
@@ -1198,25 +1200,36 @@ def load_protvar(cache: Path, refresh: bool, keep: set):
     return out
 
 
-def predicted_interface_runs(pred: dict) -> dict:
-    """acc -> [[start, end, partners, best pDockQ x100], ...]: runs of consecutive residues at the predicted interface
-    with any partner (pDockQ at or above the lowest tier), with the most partners and the best pDockQ along the run."""
-    out = {}
+def predicted_interface_runs(pred: dict, gene_of: dict, model_order) -> tuple[dict, dict]:
+    """acc -> [[start, end, partners, best pDockQ x100, [partner index, ...]], ...]: runs of consecutive residues at the
+    predicted interface with any partner (pDockQ at or above the lowest tier), with the most partners and the best pDockQ
+    along the run and every partner whose interface touches it; and acc -> [[partner, gene, pDockQ x100, model], ...],
+    best pDockQ first (model: 1 if the ProtVar API serves the pair as [acc, partner], 2 as [partner, acc], 0 if not)."""
+    out, who = {}, {}
     for acc, sides in pred.items():
-        partners, best = defaultdict(set), {}
-        for other, score, _, pos_all, _ in sides:
+        partners, best, top = defaultdict(set), {}, {}
+        for other, score, _, pos_all, first in sides:
+            if score > top.get(other, (-1,))[0]:
+                top[other] = (score, first)
             for pos in pos_all:
                 partners[pos].add(other)
                 best[pos] = max(best.get(pos, 0.0), score)
-        runs = []
+        order = sorted(top, key=lambda o: (-top[o][0], o))
+        idx = {o: k for k, o in enumerate(order)}
+        mo = {o: model_order(acc, o, top[o][1]) for o in order}
+        who[acc] = [[o, gene_of.get(o, ''), round(top[o][0] * 100), 1 if mo[o] == (1 if top[o][1] else 2) else 2 if mo[o] else 0]
+                    for o in order]
+        runs, along = [], []
         for pos in sorted(partners):
             n, q = len(partners[pos]), round(best[pos] * 100)
             if runs and pos == runs[-1][1] + 1:
                 runs[-1][1:] = [pos, max(runs[-1][2], n), max(runs[-1][3], q)]
+                along[-1] |= partners[pos]
             else:
                 runs.append([pos, pos, n, q])
-        out[acc] = runs
-    return out
+                along.append(set(partners[pos]))
+        out[acc] = [r + [sorted(idx[o] for o in s)] for r, s in zip(runs, along)]
+    return out, who
 
 
 def load_protvar_served(cache: Path, refresh: bool):
@@ -2374,7 +2387,7 @@ def write_release_tables(outdir: Path, d: dict):
             for a, b in runs(at):
                 rows.append([acc, a, b, t, 'at_residue', max(len(at[q]) for q in range(a, b + 1)) if t == 'pdb_protein' else '', '', 'PDBe-KB'])
     for acc, rs in d['pred_iface'].items():
-        for a, b, n, q in rs:
+        for a, b, n, q, *_ in rs:
             rows.append([acc, a, b, 'predicted_interface', 'at_residue', n, f'{q / 100:.2f}', 'ProtVar'])
     for i, r_pos, r_bits, d_xl, d_peps, d_bind, _in_int, frags, d_cand, c_xl, c_adj, p_pep, p_lysc, _p_meas, b_spans, b_seg, _b_cov in d['xl_prot']:
         acc = prots[i][0]
@@ -2525,7 +2538,7 @@ def write_release_tables(outdir: Path, d: dict):
           ['top_target_genes', 'top_target_peaks', 'top_5mers', 'top_5mer_ratios', 'same_data_as'],
           [[acc, src, exp, cell, n, *regions, '; '.join(g for g, _ in genes), '; '.join(str(c) for _, c in genes),
             '; '.join(k for k, _ in kmers), '; '.join(str(v) for _, v in kmers), same]
-           for acc, exp, cell, n, regions, genes, src, kmers, _wins, same in nab.get('eclip', [])])
+           for acc, exp, cell, n, regions, genes, src, kmers, _wins, same, *_ in nab.get('eclip', [])])
     log(f'wrote the release interaction tables to {outdir}')
 
 
@@ -2960,7 +2973,7 @@ def main():
             pred_enrich[str(t)][f] = {'pooled': [a, b, c, d, sig(math.log2(odds)) if odds else None, sig(p)],
                                        'mh': [sig(math.log2(mh_or)) if mh_or and math.isfinite(mh_or) else None, sig(mh_p), used]}
     log(f'Predicted interfaces: {len(pred_rows):,} methylated sites at a predicted heterodimer interface')
-    pred_iface = predicted_interface_runs({acc: pred[acc] for acc in meth_accs if '-' not in acc and acc in pred})
+    pred_iface, pred_partners = predicted_interface_runs({acc: pred[acc] for acc in meth_accs if '-' not in acc and acc in pred}, gene_of, model_order)
 
     # Predicted-contact gallery: every methylarginine within 5 Å of the partner in a served ProtVar model
     # (pDockQ >= 0.5) or an AlphaFold DB human heterodimer, with salt bridges, H-bonds, cation-pi and pLDDT.
@@ -3888,7 +3901,8 @@ def main():
                                   'peaks or windows by region ' + '|'.join(ECLIP_REGIONS), f'top {ECLIP_TOP} genes [[gene, peaks or windows]]', 'source (ENCODE|ENCORE)',
                                   'top 5-mers against the other RBPs\' windows or peaks [[kmer, R]]',
                                   f'ENCORE: its top {ECLIP_WIN} windows reproducible in at most {ECLIP_SHARED:.0%} of the ENCORE experiments [[gene, region, mean log2 odds ratio, experiments sharing it, RNA sequence]]',
-                                  'ENCORE: the released ENCODE experiment whose data it re-analyses, if any']},
+                                  'ENCORE: the released ENCODE experiment whose data it re-analyses, if any',
+                                  'ENCORE: [GEO series, [GEO samples of the immunoprecipitates]]']},
                 'na_regions': ['accession', 'rna|dna', 'start', 'end', 'PDB entries', 'distinct complexes (bound sequences) read',
                                '[[bound segment: contacted nucleotides in brackets, ' + str(SEG_FLANK) + ' each side, … between clusters; example entry; molecule name; entries; chain type], ...] most entries first',
                                'distinct segments', 'methylarginine sites in the region'],
@@ -3974,8 +3988,9 @@ def main():
     Path(args.out).write_text(json.dumps(out, separators=(',', ':'), ensure_ascii=False))
     Path(args.pred_iface_out).write_text(json.dumps({
         'meta': {'generated': out['meta']['generated'], 'source': out['meta']['sources']['protvar'], 'pdockq_min': PRED_TIERS[0],
-                 'fields': ['start', 'end', 'partners (most along the run)', 'best pDockQ x100']},
-        'prot': pred_iface}, separators=(',', ':')))
+                 'fields': ['start', 'end', 'partners (most along the run)', 'best pDockQ x100', 'partners along the run (indices into partners)'],
+                 'partner_fields': ['accession', 'gene', 'best pDockQ x100', 'ProtVar model: 1 served as [protein, partner], 2 as [partner, protein], 0 not served']},
+        'prot': pred_iface, 'partners': pred_partners}, separators=(',', ':'), ensure_ascii=False))
     log(f'wrote {args.pred_iface_out}: predicted interface runs for {len(pred_iface):,} proteins '
         f'({Path(args.pred_iface_out).stat().st_size / 1e6:.2f} MB)')
     if args.tables_out:

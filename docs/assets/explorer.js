@@ -405,6 +405,8 @@
   const ptmFromCplm = (t) => (t[3] || 0) > 1;
   const ptmName = (t, p) => PTM_PREFIX[t[1]] + t[2] + rn(t[0], p);
   const ptmSourceNote = (p) => (p.ptms.some(ptmFromCplm) ? 'the PTM master table and CPLM 4.0' : 'the PTM master table');
+  // The master table is an iPTMnet export: the protein's iPTMnet entry lists each site with its sources and publications.
+  const iptmnetLink = (p, text) => '<a href="https://research.bioinformatics.udel.edu/iptmnet/entry/' + encodeURIComponent(p.acc.split('-')[0]) + '/" target="_blank" rel="noopener" title="Each site with its sources and PubMed references in iPTMnet">' + (text || 'iPTMnet entry') + ' ↗</a>';
   const PADJ = 0.05;
   // Perturbation flags (s.trf): bits 2t (down) and 2t + 1 (up) for Maron treatment t (0 GSK591, 1 MS023, adj. p <= 0.05),
   // then the CARM1 knockout (Shishkova 2017; >= twofold, p < 0.05 in either cell line) as perturbation 2.
@@ -416,7 +418,8 @@
   const hpaMeta = () => M.hpa || null;
   // Locations as text: main ones (Approved or better) for tables, or all with their reliability for downloads.
   const hpaText = (p, mainOnly) => (hpaMeta() ? p.hpa.filter((x) => (mainOnly ? x[2] && x[1] >= HPA_SURE : true)).sort((a, b) => b[2] - a[2] || b[1] - a[1]).map((x) => hpaMeta().locations[x[0]] + (mainOnly ? '' : ' (' + ['uncertain', 'approved', 'supported', 'enhanced'][x[1]] + (x[2] ? ', main' : '') + ')')).join(mainOnly ? ', ' : '; ') : '');
-  const hpaLink = (p) => 'https://www.proteinatlas.org/search/' + encodeURIComponent(p.acc.split('-')[0]);
+  // The HPA entry's subcellular section when UniProt names the Ensembl gene, else HPA's search for the accession.
+  const hpaLink = (p) => { const u = UNIDATA.get(p.acc), g = u && u.ensg && u.ensg[0]; return g ? 'https://www.proteinatlas.org/' + encodeURIComponent(g) + '/subcellular' : 'https://www.proteinatlas.org/search/' + encodeURIComponent(p.acc.split('-')[0]); };
   // Maron 2021 methyl-IP antibodies named by the residue state they recognise.
   const IP_LABEL = { MMA: 'Rme1', ADMA: 'Rme2a', SDMA: 'Rme2s' };
   const IP_HELP = { MMA: 'monomethylarginine (MMA) antibody', ADMA: 'asymmetric dimethylarginine (ADMA) antibody', SDMA: 'symmetric dimethylarginine (SDMA) antibody' };
@@ -816,6 +819,8 @@
             start: f.location && f.location.start && f.location.start.value,
             end: f.location && f.location.end && f.location.end.value,
             from: alt.originalSequence || '', to: (alt.alternativeSequences || []).join('/'), id: f.featureId || '',
+            // the publications UniProt cites for the feature
+            pm: Array.from(new Set((f.evidences || []).filter((e) => e.source === 'PubMed' && e.id).map((e) => e.id))),
           };
         }).filter((f) => f.start && f.end);
         const special = ['Natural variant', 'Mutagenesis', 'Modified residue'];
@@ -828,6 +833,8 @@
           variants: all.filter((f) => f.type === 'Natural variant'),
           mutagen: all.filter((f) => f.type === 'Mutagenesis'),
           methylR: new Map(all.filter((f) => f.type === 'Modified residue' && /arginine/i.test(f.desc) && /methyl/i.test(f.desc)).map((f) => [f.start, f.desc])),
+          methylPm: all.filter((f) => f.type === 'Modified residue' && /arginine/i.test(f.desc) && /methyl/i.test(f.desc))
+            .reduce((m, f) => m.set(f.start, Array.from(new Set((m.get(f.start) || []).concat(f.pm)))), new Map()),
           rg: rgBoxes(seq),
           diseases: (d.comments || []).filter((c) => c.commentType === 'DISEASE').map((c) => ({
             name: (c.disease && c.disease.diseaseId) || '', acronym: (c.disease && c.disease.acronym) || '', id: (c.disease && c.disease.diseaseAccession) || '',
@@ -846,7 +853,7 @@
         // so they are left out; name, gene, diseases and cross-references are kept.
         const ref = REFMD5.get(acc);
         if (ref && out.md5 && ref !== out.md5) {
-          Object.assign(out, { drift: true, seq: '', len: null, feats: [], variants: [], mutagen: [], methylR: new Map(), rg: [] });
+          Object.assign(out, { drift: true, seq: '', len: null, feats: [], variants: [], mutagen: [], methylR: new Map(), methylPm: new Map(), rg: [] });
         }
         return out;
       })
@@ -5553,6 +5560,14 @@
     }
   }
 
+  // Where a methylation degree comes from (scripts/36 STATE_SOURCES and DESIGN_LABEL), linked to the study or the UniProt entry.
+  function stateSourceHtml(label, p) {
+    if (/^UniProt/.test(label)) return '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(p.acc.split('-')[0]) + '/entry#ptm_processing" target="_blank" rel="noopener">' + esc(label) + '</a>';
+    const study = Object.keys(STUDY_DOI).find((k) => label.startsWith(k));
+    return study ? doiLink(STUDY_DOI[study], esc(label)) : esc(label);
+  }
+  // The publications UniProt cites for a feature, as PubMed links.
+  const uniPmHtml = (ids) => (ids && ids.length ? ' <span class="muted">· PubMed ' + ids.slice(0, 4).map((id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">' + esc(id) + '</a>').join(', ') + (ids.length > 4 ? ' +' + (ids.length - 4) : '') + '</span>' : '');
   function fillEvidence(j, ev) {
     const cellEl = document.getElementById('ev-' + j);
     if (!cellEl) return;
@@ -5564,7 +5579,7 @@
     let html = '';
     if (s.tr.length) {
       const call = (e) => { const dir = trDir(e); return dir ? '<b>' + (dir === 'down' ? '▼ decreased' : '▲ increased') + '</b>' : e[3] != null && e[3] <= PADJ && e.length > 5 && e[5] && e[6] ? '<span class="muted">peptides disagree</span>' : '<span class="muted">—</span>'; };
-      html += '<p><b>PRMT inhibitor response</b> (Maron et al. 2021 Table S3, vs DMSO, over the site\'s peptides: median change, lowest adj. p, and the call from the peptides at adj. p ≤ 0.05)</p><table><thead><tr><th>Methyl-IP</th><th>Inhibitor</th><th>Median change</th><th>Lowest adj. p</th><th>Peptides' + (s.tr.some((e) => e.length > 5) ? ' (sig. ▼/▲)' : '') + '</th><th>Call</th></tr></thead><tbody>' +
+      html += '<p><b>PRMT inhibitor response</b> (' + doiLink(STUDY_DOI['Maron 2021'], 'Maron et al. 2021') + ' Table S3, vs DMSO, over the site\'s peptides: median change, lowest adj. p, and the call from the peptides at adj. p ≤ 0.05)</p><table><thead><tr><th>Methyl-IP</th><th>Inhibitor</th><th>Median change</th><th>Lowest adj. p</th><th>Peptides' + (s.tr.some((e) => e.length > 5) ? ' (sig. ▼/▲)' : '') + '</th><th>Call</th></tr></thead><tbody>' +
         s.tr.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]).map((e) => { const [ip, t, d, q, n] = e; return '<tr><td>' + ipLabel(M.maron_ips[ip]) + '</td><td>' + M.maron_treatments[t] + ' <span class="muted">' + TREAT_HELP[M.maron_treatments[t]] + '</span></td><td class="num">' + fmtL2(d) + '</td><td class="num">' + (q != null && q <= PADJ ? '<b>' + fmtP(q) + '</b>' : fmtP(q)) + '</td><td class="num">' + (n == null ? '—' : n) + (e.length > 5 ? ' <span class="muted">(' + e[5] + '/' + e[6] + ')</span>' : '') + '</td><td>' + call(e) + '</td></tr>'; }).join('') + '</tbody></table>';
     }
     if (s.ko.length && koMeta()) {
@@ -5577,10 +5592,10 @@
       const vs = at(u.variants), mg = at(u.mutagen);
       const uni = u.methylR.get(s.pos);
       if (uni || vs.length || mg.length) {
-        html += '<p><b>UniProt at ' + rl(s.pos, P[s.p]) + '</b></p><ul class="term-list">' +
-          (uni ? '<li>Modified residue: ' + esc(uni) + '</li>' : '') +
-          vs.map((v) => '<li>Natural variant ' + esc(v.from) + '→' + esc(v.to) + ': ' + esc(v.desc || '—') + (v.id ? ' <span class="muted">(' + esc(v.id) + ')</span>' : '') + '</li>').join('') +
-          mg.map((v) => '<li>Mutagenesis ' + esc(v.from) + '→' + esc(v.to) + (v.start !== v.end ? ' (' + rn(v.start, P[s.p]) + '–' + rn(v.end, P[s.p]) + ')' : '') + ': ' + esc(v.desc || '—') + '</li>').join('') + '</ul>';
+        html += '<p><b>UniProt at ' + rl(s.pos, P[s.p]) + '</b> <span class="muted small">(<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(p.acc.split('-')[0]) + '/entry" target="_blank" rel="noopener">current entry ↗</a>)</span></p><ul class="term-list">' +
+          (uni ? '<li>Modified residue: ' + esc(uni) + uniPmHtml((u.methylPm && u.methylPm.get(s.pos)) || []) + '</li>' : '') +
+          vs.map((v) => '<li>Natural variant ' + esc(v.from) + '→' + esc(v.to) + ': ' + esc(v.desc || '—') + (v.id ? ' <span class="muted">(' + esc(v.id) + ')</span>' : '') + uniPmHtml(v.pm) + '</li>').join('') +
+          mg.map((v) => '<li>Mutagenesis ' + esc(v.from) + '→' + esc(v.to) + (v.start !== v.end ? ' (' + rn(v.start, P[s.p]) + '–' + rn(v.end, P[s.p]) + ')' : '') + ': ' + esc(v.desc || '—') + uniPmHtml(v.pm) + '</li>').join('') + '</ul>';
       }
     }
     if (af) {
@@ -5592,7 +5607,7 @@
     }
     const near = [];
     for (const t of p.ptms) { const d = t[0] - s.pos; if (Math.abs(d) <= 10) near.push(ptmName(t, p) + ' (' + (d > 0 ? '+' : '') + d + ')'); }
-    if (near.length) html += '<p><b>Other PTMs within ±10 aa</b> <span class="muted">(' + ptmSourceNote(p) + '; not exhaustive)</span>: ' + esc(near.join(', ')) + '</p>';
+    if (near.length) html += '<p><b>Other PTMs within ±10 aa</b> <span class="muted">(' + ptmSourceNote(p) + '; not exhaustive; records and publications: ' + iptmnetLink(p) + ')</span>: ' + esc(near.join(', ')) + '</p>';
     if (s.win) html += '<p><b>Window ±15:</b> ' + windowHtml(s.win, 15, s.j) + ' <span class="muted small">hover a residue for what is recorded there</span></p>';
     if (rows && rows.length) html += sourceRowsHtml(s, rows, ev);
     else if (!ev) html += '<p class="note">The evidence file did not load.</p>';
@@ -5647,6 +5662,12 @@
       return k === site ? '<span class="c" title="This site">' + t + '</span>' : t;
     }).join('') + '</span>';
   }
+  // The publications UniProt's current entry cites for the methylarginine at pos, and the entry's PTM section.
+  function uniprotSiteRefs(p, pos) {
+    const base = p.acc.split('-')[0], u = UNIDATA.get(p.acc), ids = (u && u.methylPm && u.methylPm.get(pos)) || [];
+    return (ids.length ? 'PubMed ' + ids.slice(0, 6).map((id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">' + esc(id) + '</a>').join(', ') + (ids.length > 6 ? ' +' + (ids.length - 6) : '') + ' (current UniProt entry) · ' : '') +
+      '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(base) + '/entry#ptm_processing" target="_blank" rel="noopener">UniProt ' + esc(base) + ' PTM/processing ↗</a>';
+  }
   function sourceRowsHtml(s, rows, ev) {
     const p = P[s.p];
     const states = rows.map((r) => r[5] || '');
@@ -5660,8 +5681,11 @@
       // the compilation it came through (its download date and terms are those of Table S5).
       const via = tbl === 'maron_s5' && st !== 'PhosphoSitePlus' ? '' : (SOURCE_TABLE_LABEL[tbl] || tbl.replace(/_/g, ' '));
       const pmids = r[2] ? r[2].split(/[;,\s]+/).filter(Boolean) : [];
+      const pmList = (ids) => ids.map((id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">' + esc(id) + '</a>').join(', ');
+      // A UniProt record has no publication of its own in the staged table: the current entry's MOD_RES evidence names it.
+      const uni = tbl === 'uniprot' ? uniprotSiteRefs(p, s.pos) : '';
       const viaParts = [via ? (st === 'ProMetheusDB' || STUDY_TABLES.has(tbl) ? esc(via.replace(/^[^,]+ et al\. \d{4}, /, '')) : 'via ' + esc(via)) : '',
-        pmids.length ? 'PubMed ' + pmids.map((id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">' + esc(id) + '</a>').join(', ') : ''].filter(Boolean);
+        pmids.length ? 'PubMed ' + pmList(pmids) : '', uni].filter(Boolean);
       const src = '<b' + (refText ? ' title="' + esc(refText) + '"' : '') + '>' + name + '</b>' +
         (viaParts.length ? '<span class="src-via">' + viaParts.join(' · ') + '</span>' : '') +
         (refText && !(st && STUDY_DOI[st]) && !own && refText !== st ? '<span class="src-ref">' + esc(refText) + '</span>' : '');
@@ -5673,7 +5697,7 @@
         '<span class="src-map ' + rs[0] + '">' + (rs[0] === 'ok' ? '✓ ' : '⚠ ') + esc(rs[1]) + '</span>';
       return '<tr><td data-label="Source">' + src + '</td>' +
         '<td data-label="Peptide" class="pep">' + pepHtml(r[3], s) + (showEnzyme && r[4] ? '<span class="src-via">Enzyme: ' + esc(r[4]) + '</span>' : '') +
-          (r[10] ? '<span class="src-via">' + esc(r[10]) + '</span>' : '') + '</td>' +
+          (r[10] ? '<span class="src-via">' + esc(r[10]).replace(/IEDB epitope (\d+)/g, (m, id) => '<a href="https://www.iedb.org/epitope/' + id + '" target="_blank" rel="noopener" title="The epitope, its assays and references in IEDB">IEDB epitope ' + id + ' ↗</a>') + '</span>' : '') + '</td>' +
         (showState ? '<td data-label="State">' + (r[5] ? esc(r[5]) : '<span class="muted">not given</span>') + '</td>' : '') +
         '<td data-label="Reported as">' + map + '</td></tr>';
     }).join('');
@@ -5778,7 +5802,7 @@
       '<button class="btn quiet small" type="button" data-sc="link" title="Copy a link that opens this page with ' + rl(s.pos, P[s.p]) + ' selected">Copy link</button><button class="btn quiet small" type="button" data-sc="close" aria-label="Close the site summary">×</button></div></div>' +
       '<div class="sc-grid"><section class="sc-ix"><h4>Interaction evidence' + docLink('ix-status') + '</h4>' + ix + '</section>' +
       '<section><h4>Site</h4><dl class="sc-kv">' + pub('Window ±7', windowHtml(s.win, 7, s.j)) + pub('Motifs', motifTags(s.mot)) + pub('Context', contextHtml(s).replace('<br>', ' · ')) +
-      pub('Methylation state', s.stx ? s.stx.map((x) => esc(x[1].replace(/; /g, ', ')) + ' <span class="muted">' + esc(x[0]) + '</span>').join('<br>') : '<span class="muted">no source gives a degree</span>') +
+      pub('Methylation state', s.stx ? s.stx.map((x) => esc(x[1].replace(/; /g, ', ')) + ' <span class="muted">' + stateSourceHtml(x[0], p) + '</span>').join('<br>') : '<span class="muted">no source gives a degree</span>') +
       pub('Nearest methyl-R', s.nn == null ? '—' : s.nn + ' aa') + pub('PRMT loss', treatHtml(s)) + pub('Maron IP', ipTags(s.ip) || '—') + pub('Variants', siteVariantsHtml(s, p)) + pub('AlphaFold', afCell(p, s)) +
       pub('Reported by', risButton(M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => studyRef(k)), P[s.p].label + '_R' + s.pos + '_references', 'RIS') + '<ul class="sc-refs">' + M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => { const r = studyRef(k); return '<li>' + (r[1] ? '<a href="https://doi.org/' + r[1] + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">' + esc(studyLabel(M.studies[k][0])) + '</a>' : '<span title="' + esc(r[0]) + '">' + esc(studyLabel(M.studies[k][0])) + '</span>') + '</li>'; }).join('') + '</ul>' +
         (xenograftOnly(s) ? '<p class="small warn-text">Reported only from breast cancer xenografts grown in mice (Ma et al. 2023): where the human and mouse sequences agree, the peptide can come from the mouse stroma.</p>' : '') +
@@ -5880,6 +5904,9 @@
     const iprTable = !ipr ? '<p class="note">Loading InterPro domains…</p>' : !ipr.length ? '<p class="muted">InterPro 108.0 has no domain or repeat for this protein.</p>' : iprTableHtml(ipr, 'InterPro domain', inside, near);
     const famTable = !iprFam || !iprFam.length ? '' : '<p class="flabel" style="margin:1rem 0 .4rem">InterPro families and superfamilies</p>' + iprTableHtml(iprFam, 'Family or superfamily', inside, near);    box.innerHTML = '<h3>Domains &amp; regions</h3><p class="sub">UniProt domains and regions, and InterPro domains, with the methylarginines in each.</p>' + table +
       '<p class="flabel" style="margin:1rem 0 .4rem">InterPro domains (108.0, as the analyses use them)</p>' + iprTable + famTable +
+      '<p class="flabel" style="margin:1rem 0 .4rem">Disordered regions (MobiDB consensus, as the analyses use them)</p><p class="small">' +
+      (p.idr && p.idr.length ? p.idr.map(([a, b]) => rn(a, p) + '–' + rn(b, p)).join(', ') : '<span class="muted">none in the MobiDB export</span>') +
+      ' · <a href="https://mobidb.org/' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">MobiDB entry ↗</a></p>' +
       '<p class="flabel" style="margin:1rem 0 .4rem">Pipeline domain context (InterPro)</p><div class="tags">' +
       Object.entries(ctx).sort((a, b) => b[1] - a[1]).map(([k, n]) => '<span class="tag">' + esc(k) + ' · ' + n + '</span>').join('') + '</div>' +
       '<div class="tags" style="margin-top:.35rem">' + Object.entries(cls).filter(([k]) => k && k !== 'No domain annotation').sort((a, b) => b[1] - a[1]).map(([k, n]) => '<button class="chip" type="button" data-cls="' + esc(k) + '" title="Sites whose nearest InterPro domain is in this class; click to filter all sites by it">' + esc(k) + ' · ' + n + '</button>').join('') + '</div>';
@@ -6094,6 +6121,7 @@
     const u = UNIDATA.get(p.acc);
     const uni = u === undefined ? '<p class="note">Loading UniProt…</p>' : !u ? '<p class="muted">UniProt unavailable.</p>' :
       u.diseases.length ? '<ul class="term-list uni-dis">' + u.diseases.map((d) => '<li><b>' + esc(d.name) + '</b>' + (d.acronym ? ' (' + esc(d.acronym) + ')' : '') +
+        (d.id ? ' <a href="https://www.uniprot.org/diseases/' + encodeURIComponent(d.id) + '" target="_blank" rel="noopener" title="The UniProt disease entry">' + esc(d.id) + ' ↗</a>' : '') +
         (d.mim ? ' <a href="https://omim.org/entry/' + encodeURIComponent(d.mim) + '" target="_blank" rel="noopener">MIM ' + esc(d.mim) + ' ↗</a>' : '') +
         (d.note ? '<br><span class="muted small">' + esc(d.note.length > 220 ? d.note.slice(0, 218) + '…' : d.note) + '</span>' : '') + '</li>').join('') + '</ul>' :
         '<p class="muted">No disease involvement curated in UniProt.</p>';
@@ -6118,7 +6146,9 @@
       diseaseOntologyHtml(p) + diseaseFamiliesHtml(p, ev) +
       '<details class="dataset-ctx"' + (UI.ctx === 'dataset' ? ' open' : '') + '><summary class="flabel">Dataset context: DisGeNET terms significant across all methylarginine proteins that include ' + esc(p.label) + '</summary>' +
       '<p class="note">These terms were tested for enrichment across the whole methylarginine set (DOSE enrichDGN; ' + dgnTested() + ', so broader terms are never tested on their own)' +
-        '; the gene–term link is DisGeNET\'s, the statistics are about the set. Association, not causation.</p>' + dg + '</details>';
+        '; the gene–term link is DisGeNET\'s, the statistics are about the set. Association, not causation. ' +
+        'Each term links to its UMLS concept in NCBI MedGen, not to a gene–disease record: the DisGeNET table DOSE ships carries no record identifier, so the publications behind a link are found in DisGeNET itself (' +
+        '<a href="https://disgenet.com/" target="_blank" rel="noopener">disgenet.com ↗</a>).</p>' + dg + '</details>';
     $$('[data-fam]', box).forEach((b2) => b2.addEventListener('click', (e) => { e.preventDefault(); setTerm('disease', termSlug('disease', b2.dataset.fam === 'als' ? 'als' : +b2.dataset.fam), 'proteins'); }));
     $$('[data-doterm]', box).forEach((b2) => b2.addEventListener('click', (e) => { e.preventDefault(); setTerm('doterm', b2.dataset.doterm, 'proteins'); }));
     // Summary line: UniProt-curated diseases, then the audited families (in the card's order) whose gene sets hold the gene.
@@ -6218,7 +6248,7 @@
     near.sort((a, b) => a[2] - b[2] || a[0][0] - b[0][0]);
     const cplmN = p.ptms.filter(ptmFromCplm).length;
     box.innerHTML = '<h3>Other PTMs</h3><p class="sub">Other modifications recorded on this protein.</p>' +
-      '<p class="note ptm-caveat"><b>Not an exhaustive list:</b> it holds only what the pipeline\'s cross-PTM master table contains (an iPTMnet export of HPRD, literature mining and other curated sources, plus UniProt), so modifications reported elsewhere, for example in PhosphoSitePlus or recent proteomics studies, may be missing.</p>' +
+      '<p class="note ptm-caveat"><b>Not an exhaustive list:</b> it holds only what the pipeline\'s cross-PTM master table contains (an iPTMnet export of HPRD, literature mining and other curated sources, plus UniProt), so modifications reported elsewhere, for example in PhosphoSitePlus or recent proteomics studies, may be missing.' + (p.ptms.length ? ' Each record with its sources and publications: ' + iptmnetLink(p, 'iPTMnet entry of ' + esc(p.label)) + '.' : '') + '</p>' +
       (p.ptms.length ? '<dl class="kv">' + counts.map((c, g) => (c ? '<dt>' + PTM_LABEL[g] + '</dt><dd>' + c + (g === 3 && cplmN ? ' <span class="muted">(' + cplmN + ' in CPLM 4.0)</span>' : '') + '</dd>' : '')).join('') + '</dl>' +
         (near.length ? '<p style="margin:.9rem 0 .4rem"><b>Within 10 aa of a methyl-R</b></p><div class="tags">' + near.slice(0, 40).map(([t, pos, d]) => '<span class="tag" title="' + esc(d + ' aa from ' + rl(pos, p) + ' · ' + ptmSources(t).join(', ')) + '">' + esc(ptmName(t, p)) + ' · ' + rl(pos, p) + '</span>').join('') + '</div>' + (near.length > 40 ? '<p class="note">' + (near.length - 40) + ' more not shown.</p>' : '') : '<p class="note">None within 10 aa of a methylarginine.</p>')
         : '<p class="muted">None in the master table for this accession, which does not mean the protein has no other modifications.</p>');
@@ -9044,7 +9074,7 @@
     for (const [acc, id, name, cls, fam, pfm, cons] of b.jaspar || []) if (pIndex.has(acc)) push(nab.jaspar, pIndex.get(acc), { id, name, cls, fam, pfm, cons });
     // eCLIP: ENCODE peaks or ENCORE windows (Her et al. 2026), each with its top 5-mers against the other RBPs and, for
     // ENCORE, its top windows specific to the RBP with their RNA sequence
-    for (const [acc, exp, cell, n, regions, genes, src, kmers, wins, same] of b.eclip || []) if (pIndex.has(acc)) push(nab.eclip, pIndex.get(acc), { exp, cell, n, regions, genes, src: src || 'ENCODE', kmers: kmers || [], wins: wins || [], same: same || '' });
+    for (const [acc, exp, cell, n, regions, genes, src, kmers, wins, same, geo] of b.eclip || []) if (pIndex.has(acc)) push(nab.eclip, pIndex.get(acc), { exp, cell, n, regions, genes, src: src || 'ENCODE', kmers: kmers || [], wins: wins || [], same: same || '', geo: geo || null });
     // HTR-SELEX models (Jolma et al. 2020), primary before secondary
     for (const [acc, id, kind, type, exp, cycle, olig, pfm, cons] of b.htrselex || []) if (pIndex.has(acc)) push(nab.selex, pIndex.get(acc), { id, kind, type, exp, cycle, olig, pfm, cons });
     nab.selex.forEach((list) => list.sort((a, c) => (a.type !== 'Primary') - (c.type !== 'Primary') || (a.exp !== 'Experiment_1') - (c.exp !== 'Experiment_1')));
@@ -9704,7 +9734,7 @@
         '; ENCODE <a href="https://www.encodeproject.org/experiments/' + encodeURIComponent(x.exp) + '/" target="_blank" rel="noopener">' + esc(x.exp) + ' ↗</a>.</p></div>').join('') + '</section>' : '') +
         (sx.length ? '<section class="na-sec"><h4>Preferred RNA in vitro (HTR-SELEX)</h4><div class="nab-grid">' + sx.map((m) => '<figure class="nab-mat">' + pfmLogoSvg(m.pfm, false, pal, { h: 60, cw: 16 }).svg +
           '<figcaption><span class="mono">' + esc(m.cons) + '</span><br><span class="muted small">' + esc([m.type === 'Primary' ? 'primary' : 'secondary', m.kind === 'structured' ? 'within a stem-loop' : 'linear', m.olig, m.exp === 'Experiment_1' ? '' : 'replicate', 'cycle ' + m.cycle].filter(Boolean).join(' · ')) +
-          '</span></figcaption></figure>').join('') + '</div><p class="note">RNA selected by the purified protein (or its RNA-binding domains) from random 40-nucleotide RNA over several cycles (Jolma et al., <i>Genome Res</i> 30:962, 2020, Supplemental Tables S2 and S3, CC BY-NC 4.0). ' +
+          '</span></figcaption></figure>').join('') + '</div><p class="note">RNA selected by the purified protein (or its RNA-binding domains) from random 40-nucleotide RNA over several cycles (' + doiLink('10.1101/gr.258848.119', 'Jolma et al., <i>Genome Res</i> 30:962, 2020') + ', Supplemental Tables S2 and S3, CC BY-NC 4.0). ' +
           (sx.some((m) => m.kind === 'structured') ? '"Within a stem-loop": the motif sits in the loop of a hairpin whose flanking bases pair.' : '') + '</p></section>' : '');
     }
     const jm = IX.nab.jaspar.get(p.i) || [];
@@ -9721,7 +9751,11 @@
     return '<div class="ec-grid">' + ex.map((x) => {
       const tot = x.regions.reduce((a, b) => a + b, 0) || 1;
       const enc = x.src === 'ENCORE';
-      const link = enc ? '<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE315407" target="_blank" rel="noopener" title="' + esc(x.exp) + '">ENCORE, GEO GSE315407 ↗</a> (' + doiLink('10.1016/j.cels.2026.101588', 'Her et al. 2026') + ')'
+      const geoUrl = (acc) => 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=' + encodeURIComponent(acc);
+      // an ENCORE experiment names its own GEO series and IP samples; data exported before v1.3.0's link pass name the super-series
+      const link = enc ? (x.geo && x.geo[0] ? 'ENCORE ' + esc(x.exp) + ', <a href="' + geoUrl(x.geo[0]) + '" target="_blank" rel="noopener" title="The GEO series holding this experiment">GEO ' + esc(x.geo[0]) + ' ↗</a>' +
+          (x.geo[1] && x.geo[1].length ? ' <span class="muted">(IP ' + x.geo[1].map((g) => '<a href="' + geoUrl(g) + '" target="_blank" rel="noopener">' + esc(g) + '</a>').join(', ') + ')</span>' : '')
+        : '<a href="' + geoUrl('GSE315407') + '" target="_blank" rel="noopener" title="' + esc(x.exp) + '">ENCORE, GEO GSE315407 ↗</a>') + ' (' + doiLink('10.1016/j.cels.2026.101588', 'Her et al. 2026') + ')'
         : '<a href="https://www.encodeproject.org/experiments/' + encodeURIComponent(x.exp) + '/" target="_blank" rel="noopener">' + esc(x.exp) + ' ↗</a>';
       const kmers = x.kmers.length ? '<p class="flabel">5-mers most enriched against other RBPs</p><div class="tags">' + x.kmers.map(([k, r]) => '<span class="tag mono" title="' + esc(k + ': ' + r + '× as frequent in the top ' + (enc ? 'windows' : 'peaks') + ' as in the other RBPs\' (same mix of regions)') + '">' + esc(k) + ' <span class="muted">' + r + '×</span></span>').join('') + '</div>' : '';
       const wins = x.wins.length ? '<p class="flabel">Top windows specific to ' + esc(p.label) + '</p>' + x.wins.map(([g, reg, l2, nx, seq]) => '<p class="ec-win"><span class="mono">' + esc(seq) + '</span><br><span class="muted">' + esc(g) + ' · ' + esc(ECLIP_LABEL[ECLIP_KEYS.indexOf(reg)] || reg) + ' · log2 odds ratio ' + l2 + ' · in ' + nx + ' of the ENCORE experiments</span></p>').join('') : '';
@@ -9858,11 +9892,16 @@
     return shardFiles.get(key);
   }
   // Predicted protein-contact runs (ProtVar, scripts/37), per protein; a protein page open when they arrive redraws.
-  const PRED_IFACE = new Map();
+  // Each run is [start, end, partners, best pDockQ x100, [indices into the protein's partners]]; a partner is
+  // [accession, gene, best pDockQ x100, model] (model: 1 the ProtVar API serves [protein, partner], 2 [partner, protein], 0 none).
+  const PRED_IFACE = new Map(), PRED_PARTNERS = new Map();
   function loadPredIface(acc) {
     const a = acc.split('-')[0];
     // a failed fetch is not remembered: the next call tries again
-    return shardFile('pred_iface', a).then((d) => { if (d && !PRED_IFACE.has(a)) PRED_IFACE.set(a, d.prot[a] || []); return PRED_IFACE.get(a) || []; });
+    return shardFile('pred_iface', a).then((d) => {
+      if (d && !PRED_IFACE.has(a)) { PRED_IFACE.set(a, d.prot[a] || []); PRED_PARTNERS.set(a, (d.partners && d.partners[a]) || []); }
+      return PRED_IFACE.get(a) || [];
+    });
   }
   // InterPro domains and families of the explorer's proteins (scripts/36c, InterPro 108.0 as the analyses use it), per
   // protein; a protein page open when they arrive redraws its map and domain card.
@@ -9960,16 +9999,17 @@
     const xl = x.xl, items = [];
     if (xl) {
       const n = (list, one, many) => fmt(list.length) + ' ' + (list.length === 1 ? one : many);
-      if (xl.rnaPos.length) items.push(n(xl.rnaPos, 'residue', 'residues') + ' crosslinked to RNA (pepR-MS compendium)' + (xl.rnaPos.length <= 12 ? ': ' + 'residues ' + xl.rnaPos.join(', ') : ''));
-      if (xl.rbd.length) items.push(n(xl.rbd, 'RNA-bound fragment', 'RNA-bound fragments') + ' (RBDmap, HeLa): ' + xl.rbd.slice(0, 6).map(([a, b]) => a + '–' + b).join(', ') + (xl.rbd.length > 6 ? ' …' : ''));
-      if (xl.capAdj.length || xl.capXl.length) items.push(fmt(xl.capAdj.length + xl.capXl.length) + ' CAPRI peptides crosslinked to RNA or next to a crosslink (HEK293)');
-      if (xl.pclap.length) items.push(n(xl.pclap, 'RNA-binding peptide', 'RNA-binding peptides') + ' (pCLAP, HEK293)');
-      if (xl.rbrid.length) items.push(n(xl.rbrid, 'stretch', 'stretches') + ' under RBR-ID+ peptides (K562)');
-      if (xl.dnaPos.length || xl.dnaPeps.length) items.push(fmt(xl.dnaPos.length + xl.dnaPeps.length) + ' DNA-crosslinked residues or peptides (MCF7)');
-      if (xl.dnaInt) items.push('In the MCF7 DNA interactome (Trendel 2025)');
+      // each line in words, with the study it comes from (items are HTML)
+      if (xl.rnaPos.length) items.push(esc(n(xl.rnaPos, 'residue', 'residues') + ' crosslinked to RNA') + ' (' + doiLink(PEPR_DOI, 'pepR-MS compendium') + ')' + (xl.rnaPos.length <= 12 ? ': residues ' + esc(xl.rnaPos.join(', ')) : ''));
+      if (xl.rbd.length) items.push(esc(n(xl.rbd, 'RNA-bound fragment', 'RNA-bound fragments')) + ' (' + doiLink(RBDMAP_DOI, 'RBDmap') + ', HeLa): ' + esc(xl.rbd.slice(0, 6).map(([a, b]) => a + '–' + b).join(', ')) + (xl.rbd.length > 6 ? ' …' : ''));
+      if (xl.capAdj.length || xl.capXl.length) items.push(esc(fmt(xl.capAdj.length + xl.capXl.length)) + ' ' + doiLink(CAPRI_DOI, 'CAPRI') + ' peptides crosslinked to RNA or next to a crosslink (HEK293)');
+      if (xl.pclap.length) items.push(esc(n(xl.pclap, 'RNA-binding peptide', 'RNA-binding peptides')) + ' (' + doiLink(PCLAP_DOI, 'pCLAP') + ', HEK293)');
+      if (xl.rbrid.length) items.push(esc(n(xl.rbrid, 'stretch', 'stretches')) + ' under ' + doiLink(RBRID_DOI, 'RBR-ID') + '+ peptides (K562)');
+      if (xl.dnaPos.length || xl.dnaPeps.length) items.push(esc(fmt(xl.dnaPos.length + xl.dnaPeps.length)) + ' DNA-crosslinked residues or peptides (MCF7, ' + doiLink(DNAXL_DOI, 'Trendel et al. 2025') + ')');
+      if (xl.dnaInt) items.push('In the MCF7 DNA interactome (' + doiLink(DNAXL_DOI, 'Trendel et al. 2025') + ')');
     }
-    return '<div class="card"><div class="card-head"><div><h3>RNA and DNA binding in cells</h3><p class="sub">The in-cell experiments the release compiles, as for the methylated proteins; the protein map draws each mark.</p></div></div>' +
-      (items.length ? '<ul class="tight">' + items.map((t) => '<li>' + esc(t) + '</li>').join('') + '</ul>' : '<p class="muted">None of the in-cell RNA or DNA experiments the release compiles found ' + esc(x.gene || x.acc) + ' binding.</p>') +
+    return '<div class="card"><div class="card-head"><div><h3>RNA and DNA binding in cells</h3><p class="sub">The in-cell experiments the release compiles, as for the methylated proteins; the protein map draws each mark (rest on one for its records).</p></div></div>' +
+      (items.length ? '<ul class="tight">' + items.map((t) => '<li>' + t + '</li>').join('') + '</ul>' : '<p class="muted">None of the in-cell RNA or DNA experiments the release compiles found ' + esc(x.gene || x.acc) + ' binding.</p>') +
       '<div id="unl-eclip"></div></div>';
   }
   function renderUnlisted(el, key) {
@@ -10012,12 +10052,15 @@
         fact(fmt(partners.length), 'Methylated partners', 'STRING physical, score ≥ ' + (F.ixScore / 1000).toFixed(1), null) + fact(fmt(cxs.length), 'Complexes', 'with methylated members', null) + '</div>' +
         figureCard(p) +
         '<div class="card" id="unl-partners"><div class="card-head"><div><h3>Methylated proteins that bind ' + esc(p.label) + '</h3><p class="sub">STRING physical interactions at score ≥ ' + (F.ixScore / 1000).toFixed(1) + ', most confident first; the number is each protein\'s methylarginine sites.</p></div>' +
-        (partners.length ? '<div class="exp"><button class="btn small" type="button" data-setq="binds:' + esc(quoteTerm(ix.gene)) + '">Select these ' + fmt(partners.length) + '</button></div>' : '') + '</div>' +
+        '<div class="exp">' + (partners.length ? '<button class="btn small" type="button" data-setq="binds:' + esc(quoteTerm(ix.gene)) + '">Select these ' + fmt(partners.length) + '</button>' : '') +
+          '<a class="btn quiet small" href="https://string-db.org/cgi/network?identifiers=' + a + '&amp;species=9606" target="_blank" rel="noopener" title="Its interactions and their evidence in STRING">STRING ↗</a></div></div>' +
         (partners.length ? '<div class="gene-chips">' + partners.slice(0, PLIM).map(([q]) => chip(q)).join('') + (partners.length > PLIM ? ' <button class="linkish" type="button" id="unl-more">+' + (partners.length - PLIM) + ' more</button>' : '') + '</div>'
           : '<p class="muted">' + (k < 0 ? 'STRING lists no physical partner for ' + esc(p.label) + ' in the interaction data.' : 'No methylated protein binds it at this score.') + '</p>') + '</div>' +
         '<div class="card"><div class="card-head"><div><h3>Complexes and condensates</h3><p class="sub">Complex Portal curated and hu.MAP 3.0 predicted complexes with methylated members, and CD-CODE condensates; each opens the methylated proteins it holds.</p></div></div>' +
-        (cxs.length ? '<p class="flabel">Complexes</p><div class="chips">' + cxs.slice(0, 24).map((c) => '<button class="chip" type="button" data-setq="complex:' + esc(quoteTerm(c.id)) + '" title="' + esc(c.id + (c.pred ? ' (hu.MAP, predicted)' : ' (Complex Portal)') + ': ' + fmt(c.m) + ' of ' + fmt(c.n) + ' members methylated') + '">' + esc(c.name) + ' <span class="muted">' + c.m + '/' + c.n + '</span></button>').join('') + (cxs.length > 24 ? ' <span class="muted">+' + (cxs.length - 24) + ' more</span>' : '') + '</div>' : '<p class="muted">No complex with methylated members.</p>') +
-        (conds.length ? '<p class="flabel">Condensates (CD-CODE)</p><div class="chips">' + conds.map((c) => '<button class="chip" type="button" data-cond="' + c + '" title="' + esc(M.condensates[c][3] + ' members, ' + M.condensates[c][4] + ' methylated') + '">' + esc(M.condensates[c][0]) + '</button>').join('') + '</div>' : '<p class="muted">In no CD-CODE condensate.</p>') + '</div>' +
+        (cxs.length ? '<p class="flabel">Complexes</p><div class="chips">' + cxs.slice(0, 24).map((c) => '<span class="chip-pair"><button class="chip" type="button" data-setq="complex:' + esc(quoteTerm(c.id)) + '" title="' + esc(c.id + (c.pred ? ' (hu.MAP, predicted)' : ' (Complex Portal)') + ': ' + fmt(c.m) + ' of ' + fmt(c.n) + ' members methylated; selects them') + '">' + esc(c.name !== '-' ? c.name : c.id) + ' <span class="muted">' + c.m + '/' + c.n + '</span></button>' +
+          '<a class="chip-src" href="https://www.ebi.ac.uk/complexportal/complex/' + encodeURIComponent(c.id) + '" target="_blank" rel="noopener" title="' + esc(c.id + ' in Complex Portal') + '" aria-label="' + esc(c.id + ' in Complex Portal') + '">↗</a></span>').join('') + (cxs.length > 24 ? ' <span class="muted">+' + (cxs.length - 24) + ' more</span>' : '') + '</div>' : '<p class="muted">No complex with methylated members.</p>') +
+        (conds.length ? '<p class="flabel">Condensates (CD-CODE)</p><div class="chips">' + conds.map((c) => '<span class="chip-pair"><button class="chip" type="button" data-cond="' + c + '" title="' + esc(M.condensates[c][3] + ' members, ' + M.condensates[c][4] + ' methylated; selects them') + '">' + esc(M.condensates[c][0]) + '</button>' +
+          '<a class="chip-src" href="https://cd-code.org/condensates/' + encodeURIComponent(M.condensates[c][1]) + '" target="_blank" rel="noopener" title="' + esc(M.condensates[c][0] + ' in CD-CODE') + '" aria-label="' + esc(M.condensates[c][0] + ' in CD-CODE') + '">↗</a></span>').join('') + '</div>' : '<p class="muted">In no CD-CODE condensate.</p>') + '</div>' +
         unlistedCellsHtml(x) +
         '<div class="card" id="card-dom"><h3>Domains and families</h3><p class="sub">InterPro 108.0 entries; UniProt domains and regions load with the map.</p>' +
         (x.dom && x.dom.length ? '<p class="flabel">InterPro domains</p>' + iprTableHtml(x.dom, 'InterPro domain', null, null) : '<p class="muted">InterPro 108.0 has no domain or repeat for this protein.</p>') +
@@ -10037,7 +10080,9 @@
         if (!box || !current()) return;
         const exps = Array.from(ECLIP_LOGOS.data.values()).filter((e) => e.acc === x.acc);
         box.innerHTML = exps.length ? '<p class="flabel">RNA crosslinked in cells (eCLIP): the enriched 5-mers of each experiment</p><div class="ec-row">' +
-          exps.map((e) => '<div class="ec-cell"><span class="muted small">' + esc(e.src + ' · ' + e.cell + ' · ' + e.exp) + '</span>' + ecLogoHtml(e.exp) + '</div>').join('') + '</div>' : '';
+          exps.map((e) => '<div class="ec-cell"><span class="muted small">' + esc(e.src + ' · ' + e.cell) + ' · ' +
+            (/^ENCSR/.test(e.exp) ? '<a href="https://www.encodeproject.org/experiments/' + encodeURIComponent(e.exp) + '/" target="_blank" rel="noopener">' + esc(e.exp) + ' ↗</a>'
+              : '<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE315407" target="_blank" rel="noopener" title="ENCORE eCLIP in GEO (Her et al. 2026)">' + esc(e.exp) + ' ↗</a>') + '</span>' + ecLogoHtml(e.exp) + '</div>').join('') + '</div>' : '';
       });
       loadUniProt(x.acc).then((u) => {
         if (!current()) return;
@@ -10800,13 +10845,14 @@
   // The methylarginines of p at a protein interface, as the RNA and DNA card lists those at RNA or DNA interfaces: in PDB
   // structures, the partner residues with a heavy atom within 4 Å of the arginine side chain (precomputed contacts) or,
   // where those were not measured, the partners PDBe-KB lists; then predicted heterodimer interfaces (ProtVar).
+  const rcsbLink = (id) => '<a href="https://www.rcsb.org/structure/' + encodeURIComponent(id.toUpperCase()) + '" target="_blank" rel="noopener">' + esc(id.toUpperCase()) + '</a>';
   function protIfaceHtml(p) {
     const sites = p.sites.map((j) => S[j]);
     const pdb = sites.filter((s) => s.iface & 3), pred = sites.filter((s) => !(s.iface & 3) && ((s.pred && s.pred.hits.length) || (s.gal || []).some((g) => galPass(g, GAL_DEFAULT))));
     const pdbLine = (s) => {
       const groups = contactGroups(s).filter((g) => g.k >= 0);
       const parts = groups.length ? groups.slice(0, 4).map((g) => '<b>' + esc(g.name) + '</b> ' + esc(g.labels.slice(0, 6).join(' ')) + (g.labels.length > 6 ? ' +' + (g.labels.length - 6) : '') +
-        ' <span class="muted">(' + g.pdbs.slice(0, 3).map((x) => x.toUpperCase()).join(', ') + (g.pdbs.length > 3 ? ' +' + (g.pdbs.length - 3) : '') + ')</span>').join('; ') + (groups.length > 4 ? '; +' + (groups.length - 4) + ' partners' : '')
+        ' <span class="muted">(' + g.pdbs.slice(0, 3).map(rcsbLink).join(', ') + (g.pdbs.length > 3 ? ' +' + (g.pdbs.length - 3) : '') + ')</span>').join('; ') + (groups.length > 4 ? '; +' + (groups.length - 4) + ' partners' : '')
         : (s.ifP || []).filter((k) => k >= 0).map((k) => '<b>' + esc(k === P[s.p].i ? P[s.p].label + ' (other copy)' : ixGene(k)) + '</b>').join(', ');
       return '<li><button class="linkish strong" type="button" data-pos="' + s.pos + '">' + rl(s.pos, P[s.p]) + '</button> ' + pill(s.st) + (parts ? ' contacts ' + parts : '') +
         ' <span class="muted small">at the interface in ' + fmt(s.ifN || (s.ifPdb || []).length) + ' entr' + ((s.ifN || 0) === 1 ? 'y' : 'ies') + '</span></li>';
@@ -10815,7 +10861,12 @@
       const best = (s.gal || []).filter((g) => galPass(g, GAL_DEFAULT)).sort(galRank)[0];
       const hits = s.pred ? s.pred.hits : [];
       return '<li><button class="linkish strong" type="button" data-pos="' + s.pos + '">' + rl(s.pos, P[s.p]) + '</button> ' + pill(s.st) +
-        (hits.length ? ' ' + hits.slice(0, 4).map(([k, sc]) => '<b>' + esc(ixGene(k)) + '</b> <span class="muted">pDockQ ' + (sc / 100).toFixed(2) + '</span>').join(', ') + (s.pred.n > Math.min(4, hits.length) ? ' +' + (s.pred.n - Math.min(4, hits.length)) : '') : '') +
+        (hits.length ? ' ' + hits.slice(0, 4).map(([k, sc, first, model]) => {
+          // the model file, in the order the ProtVar API serves the pair (its first accession is chain A)
+          const x = IX.prot[k], base = p.acc.split('-')[0], f = model === 2 ? !first : !!first;
+          return '<b>' + esc(ixGene(k)) + '</b> <span class="muted">pDockQ ' + (sc / 100).toFixed(2) + '</span>' +
+            (model && x ? ' <a class="small" href="' + PROTVAR_MODEL.apply(null, f ? [base, x.acc] : [x.acc, base]) + '" target="_blank" rel="noopener" title="AlphaFold-Multimer model of the pair (PDB file) from the ProtVar API">model ↗</a>' : '');
+        }).join(', ') + (s.pred.n > Math.min(4, hits.length) ? ' +' + (s.pred.n - Math.min(4, hits.length)) : '') : '') +
         (best ? (hits.length ? '; ' : ' ') + esc(galBondText(best)) : '') + '</li>';
     };
     return '<div class="ix-grid"><section><h4>Methylarginines at protein interfaces</h4>' +
@@ -14014,14 +14065,12 @@
       if (!e.target.closest('.feat, .head')) showTip(e, residueInsight(p, pos));
     });
     svg.addEventListener('mouseleave', () => { xhair.setAttribute('visibility', 'hidden'); hideTip(); });
-    // the evidence pop-ups read the records near a protein's sites; a protein without sites keeps the marks' hover text
-    if (!p.unl) {
-      $$('[data-ev]', svg).forEach((f) => f.addEventListener('click', (e) => {
-        const [kind, a, b] = f.dataset.ev.split(':');
-        showEvidence(e, p, kind, +a, +b);
-      }));
-      bindEvidenceHover(svg, p);
-    }
+    // the evidence pop-ups, with their links (a protein without sites has its in-cell records only)
+    $$('[data-ev]', svg).forEach((f) => f.addEventListener('click', (e) => {
+      const [kind, a, b] = f.dataset.ev.split(':');
+      showEvidence(e, p, kind, +a, +b);
+    }));
+    bindEvidenceHover(svg, p);
     svg.addEventListener('pointermove', (e) => {
       if (start == null) return;
       const cur = Math.max(g.ML, Math.min(g.W - g.MR, toX(e)));
@@ -14202,6 +14251,16 @@
     if (r.kind === 1) return '<li>' + IA_REGION[r.code].replace(/^./, (c) => c.toUpperCase()) + ' binding region <b>' + span + '</b> for ' + who + tail + '</li>';
     return '<li><b>' + span + '</b> methylated in the interaction with ' + who + tail + '</li>';
   }
+  // ProtVar partners of a predicted interface, best pDockQ first: each opens its page here, and its model downloads from
+  // the ProtVar API when the API serves the pair (the 2024 interface table lists more pairs than the API serves).
+  function predPartnerList(base, list) {
+    const one = ([acc, gene, q, model]) => '<li><a class="linkish" href="#' + encodeURIComponent(acc) + '" title="' + esc('Open ' + (gene || acc) + ' (' + acc + ')') + '">' + esc(gene || acc) + '</a> ' +
+      '<span class="muted">pDockQ ' + (q / 100).toFixed(2) + '</span>' +
+      (model ? ' · <a href="' + PROTVAR_MODEL.apply(null, model === 1 ? [base, acc] : [acc, base]) + '" target="_blank" rel="noopener" title="AlphaFold-Multimer model of the pair (PDB file) from the ProtVar API">model ↗</a>' : ' · <span class="muted">model not served</span>') + '</li>';
+    const top = list.slice(0, 8), rest = list.slice(8);
+    return '<ul class="xl-peps">' + top.map(one).join('') + '</ul>' +
+      (rest.length ? '<details class="pred-more"><summary>' + rest.length + ' more partner' + (rest.length === 1 ? '' : 's') + '</summary><ul class="xl-peps">' + rest.map(one).join('') + '</ul></details>' : '');
+  }
   // The evidence behind a contact mark on residues a..b of protein p, with links to the studies and PDB entries.
   // A fragment's sequence with its methylarginines underlined.
   const fragHtml = (frag, start, methyl, xl) => frag.split('').map((c, k) => { const t = methyl.includes(start + k) ? '<u>' + esc(c) + '</u>' : esc(c); return xl && xl.includes(start + k) ? '<b class="xl-res">' + t + '</b>' : t; }).join('');
@@ -14212,7 +14271,8 @@
     const inR = (pos) => pos >= a && pos <= b, overlap = ([x, y]) => y >= a && x <= b;
     const methyl = p.sites.map((j) => S[j].pos).filter(inR);
     const items = [];
-    const xp = ixReady() ? IX.xlProt.get(p.i) : null;
+    // a protein without a site carries its own in-cell records (scripts/37 --unlisted-out)
+    const xp = p.unl ? p.unl.xl : ixReady() ? IX.xlProt.get(p.i) : null;
     if (kind === 'rna' && xp) {
       xp.rnaPos.forEach((pos, k) => {
         if (!inR(pos)) return;
@@ -14267,13 +14327,18 @@
       }
       if (items.length) items.push('<li class="muted">Curated by IntAct from the publications listed; every feature here matches the canonical UniProt sequence at its range. <a href="https://www.ebi.ac.uk/intact/search?query=' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">All IntAct interactions of ' + esc(p.label) + ' ↗</a></li>');
     } else if (kind === 'pred') {
-      for (const [x, y, n, q] of (predIfaceOf(p) || []).filter(([x, y]) => x <= b && y >= a)) {
-        items.push('<li>Residues <b>' + rn(x, p) + '–' + rn(y, p) + '</b> at the predicted interface with up to ' + n + ' partner' + (n === 1 ? '' : 's') + ' (best pDockQ ' + (q / 100).toFixed(2) + '; ProtVar AlphaFold-Multimer models of human pairs)</li>');
+      const base = p.acc.split('-')[0], who = PRED_PARTNERS.get(base) || [];
+      for (const [x, y, n, q, along] of (predIfaceOf(p) || []).filter(([x, y]) => x <= b && y >= a)) {
+        const named = (along || []).map((k) => who[k]).filter(Boolean);
+        items.push('<li>Residues <b>' + rn(x, p) + '–' + rn(y, p) + '</b> at the predicted interface with ' + (named.length ? named.length : 'up to ' + n) + ' partner' + ((named.length || n) === 1 ? '' : 's') + ' (best pDockQ ' + (q / 100).toFixed(2) + ')' +
+          (named.length ? predPartnerList(base, named) : '') + '</li>');
       }
       for (const j of p.sites.filter((k) => inR(S[k].pos))) {
         const names = ixPartners(S[j]).pred;
         items.push('<li><b>' + rl(S[j].pos, p) + '</b> at a predicted interface' + (names.length ? ' with ' + esc(names.join(', ')) : '') + ' (ProtVar AlphaFold-Multimer models or AlphaFold DB complexes)</li>');
       }
+      if (items.length) items.push('<li class="muted">Interface residues (within 5 Å of the partner) from ProtVar\'s ' + '<a href="https://ftp.ebi.ac.uk/pub/databases/ProtVar/predictions/interfaces/2024.05.28_interface_summary_5A.tsv.gz" target="_blank" rel="noopener">2024 interface table ↗</a>' +
+        ' of AlphaFold-Multimer models of human pairs, pDockQ ≥ 0.23 (' + doiLink('10.1038/s41594-022-00910-8', 'Burke et al. 2023') + ').</li>');
     } else if (kind.startsWith('pdb')) {
       const ifd = IFDATA.get(p.acc.split('-')[0]);
       const keys = kind === 'pdbna' ? ['rna', 'dna'] : kind === 'pdbprot' ? ['protein', 'self'] : [kind.slice(4)];
@@ -15174,7 +15239,8 @@
           '<div class="tbl-wrap cons-wrap"><table class="cons-tbl"><thead><tr><th>Species</th>' + sites.map((q) => '<th><button type="button" class="linkish" data-cpos="' + q + '">' + rn(q, p) + '</button></th>').join('') + '</tr></thead><tbody>' +
           '<tr><th>Human</th>' + sites.map((q) => { const a = u && u.seq ? u.seq[q - 1] : 'R'; return '<td class="' + cls(a) + '">' + esc(a || '·') + '</td>'; }).join('') + '</tr>' +
           per.map((x) => '<tr><th>' + esc(x.r.name) + ' <span class="muted">' + Math.round(x.r.pid) + '%</span></th>' + x.v.map((a) => '<td class="' + cls(a) + '">' + esc(a == null ? '·' : a) + '</td>').join('') + '</tr>').join('') +
-          '</tbody></table></div><p class="note">R: the arginine is conserved; K: conservative change; other letters: substituted; – gap; · position not mapped (the Ensembl protein differs here). Click a position for its alignment.</p>' +
+          '</tbody></table></div><p class="note">R: the arginine is conserved; K: conservative change; other letters: substituted; – gap; · position not mapped (the Ensembl protein differs here). Click a position for its alignment. ' +
+          'Orthologues and their alignments: <a href="https://www.ensembl.org/Homo_sapiens/Gene/Compara_Ortholog?g=' + encodeURIComponent(ensg) + '" target="_blank" rel="noopener">Ensembl ' + esc(ensg) + ' orthologues ↗</a>.</p>' +
           '<div class="fig-controls"><label class="fig-ctl">Site <select id="cons-pos">' + sites.map((q) => '<option value="' + q + '"' + (q === UI.consPos ? ' selected' : '') + '>' + rl(q) + '</option>').join('') + '</select></label>' +
           '<label class="fig-ctl">Flank <select id="cons-flank">' + [5, 10, 15, 20].map((v) => '<option value="' + v + '"' + (v === UI.consFlank ? ' selected' : '') + '>±' + v + '</option>').join('') + '</select></label></div>' +
           '<div class="fig-preview" id="cons-fig"></div>';
