@@ -7412,15 +7412,17 @@
     renderViewControls();
     // The PDB chain that resolves most of this protein opens first, unless the reader chose AlphaFold (UI.mv.src).
     const start = () => {
+      // the search runs either way: it labels the Experimental switch even when AlphaFold opens first
+      const found = bestPdb(p);
       renderPdbList(p); renderHomologList(p); renderPredList(p); renderSrcSwitch(p);
-      if (UI.mv.src === 'af') return startAf();
+      if (UI.mv.src === 'af') { found.then(() => renderSrcSwitch(p)); return startAf(); }
       if (!mol || mol.p.i !== p.i) holder.innerHTML = '<div class="af-placeholder">Finding the experimental structure that resolves most of ' + esc(p.label) + '…</div>';
-      return bestPdb(p).then((b) => {
+      return found.then((b) => {
         if (UI.detail !== p.i || !document.body.contains(holder)) return;
         renderSrcSwitch(p);
         // The reader switched to AlphaFold, or opened another structure, while the search ran.
         if (UI.mv.src === 'af' || (mol && mol.p.i === p.i)) return;
-        if (!b) return startAf();
+        if (!b || b.failed) return startAf();
         renderAfSide(p, AFDATA.get(p.acc));
         return showPdb(p, b.e, null, true).then(() => { if (!mol || mol.mode !== 'pdb') return startAf(); enable(); bindButtons(); if (UI.highlight != null) focusStructure(UI.highlight); });
       }, () => startAf());
@@ -8318,8 +8320,12 @@
   // The PDB chain of this protein with the most observed residues: candidates are the chains whose UniProt mapping spans
   // most of the protein (top 8), each read for the residues it actually models (PDBe polymer coverage); ties go to more
   // resolved methylarginines, then better resolution.
+  // When PDBe answers for none of the candidates, the result is { failed: true }, and the next call asks again rather
+  // than taking it for "no experimental structure".
+  const BEST_FAILED = new Set();
   function bestPdb(p) {
     if (p.iso) return Promise.resolve(null);
+    if (BEST_FAILED.delete(p.acc)) liveCache.delete('bestpdb:' + p.acc);
     return live('bestpdb:' + p.acc, () => loadPdb(p.acc).then((res) => {
       const span = (e) => { const ch = e.maps.length ? e.maps[0].chain : null; return e.maps.filter((m) => m.chain === ch).reduce((n, m) => n + m.unpEnd - m.unpStart + 1, 0); };
       const cand = res.entries.filter((e) => e.maps.length).sort((a, b) => span(b) - span(a)).slice(0, 8);
@@ -8329,6 +8335,7 @@
           for (const m of e.maps.filter((x) => x.chain === det.chain)) for (const [a, b] of det.coverage) obs += Math.max(0, Math.min(b, m.end) - Math.max(a, m.start) + 1);
           return { e, det, obs, nSites: pdbSites(p, e, det).filter((x) => x[2]).length };
         }).filter((x) => x.obs > 0);
+        if ((cand.length && !list.some((x) => x && x.det && x.det.coverage)) || (res.failed && !scored.length)) { BEST_FAILED.add(p.acc); return { failed: true }; }
         scored.sort((a, b) => b.obs - a.obs || b.nSites - a.nSites || (a.e.resolution || 99) - (b.e.resolution || 99));
         return scored[0] || null;
       });
@@ -8341,23 +8348,27 @@
     const box = $('#af-src');
     if (!box) return;
     const best = liveCache.get('bestpdb:' + p.acc);
-    const draw = (b) => {
+    const draw = (got) => {
       if (UI.detail !== p.i) return;
+      const looking = got === 'looking', failed = !!(got && got.failed), b = failed || looking ? null : got;
       const mode = !mol || mol.p.i !== p.i ? null : mol.mode === 'af' ? 'af' : mol.pdb && !mol.pdb.pred && !mol.pdb.homolog && b && mol.pdb.e.id === b.e.id ? 'pdb' : null;
       box.innerHTML = '<div class="seg" role="group" aria-label="Structure shown"><span>Show</span>' +
-        '<button type="button" data-src="pdb" aria-pressed="' + (mode === 'pdb') + '"' + (b ? ' title="' + esc(b.e.id.toUpperCase() + ' chain ' + b.det.chain + ': ' + b.obs + ' residues of ' + p.label + ' observed' + (b.e.resolution ? ', ' + b.e.resolution.toFixed(1) + ' Å' : '')) + '"' : ' disabled title="No experimental structure maps to this protein"') + '>' +
-        (b ? 'Experimental · PDB ' + b.e.id.toUpperCase() : 'Experimental (none)') + '</button>' +
+        '<button type="button" data-src="pdb" aria-pressed="' + (mode === 'pdb') + '"' + (b ? ' title="' + esc(b.e.id.toUpperCase() + ' chain ' + b.det.chain + ': ' + b.obs + ' residues of ' + p.label + ' observed' + (b.e.resolution ? ', ' + b.e.resolution.toFixed(1) + ' Å' : '')) + '"' : failed ? ' title="PDBe did not say which residues the PDB entries model; click to ask again"' : looking ? ' disabled' : ' disabled title="No PDB entry models any of this protein"') + '>' +
+        (b ? 'Experimental · PDB ' + b.e.id.toUpperCase() : failed ? 'Experimental (PDBe not answering; retry)' : looking ? 'Experimental (looking…)' : 'Experimental (none)') + '</button>' +
         '<button type="button" data-src="af" aria-pressed="' + (mode === 'af') + '">AlphaFold model</button></div>' +
         (b ? '<span class="muted small">' + fmt(b.obs) + ' residues observed' + (b.nSites ? ', ' + b.nSites + ' methylarginine' + (b.nSites === 1 ? '' : 's') : '') + '</span>' : '');
       $$('[data-src]', box).forEach((btn) => btn.addEventListener('click', () => {
         UI.mv.src = btn.dataset.src;
         store.set('mx-view', JSON.stringify(UI.mv));
         if (btn.dataset.src === 'pdb' && b) showPdb(p, b.e, null, true);
-        else if (btn.dataset.src === 'af') showAf(p);
+        else if (btn.dataset.src === 'pdb' && failed) {
+          btn.textContent = 'Experimental (asking PDBe…)';
+          bestPdb(p).then((nb) => { renderSrcSwitch(p); if (nb && !nb.failed && UI.detail === p.i) showPdb(p, nb.e, null, true); });
+        } else if (btn.dataset.src === 'af') showAf(p);
       }));
       sum3d(p, 'af', mode === 'pdb' ? 'PDB ' + b.e.id.toUpperCase() + ' chain ' + b.det.chain + ', ' + fmt(b.obs) + ' residues observed' : mode === 'af' ? (UI.sum3d && UI.sum3d.afText) || 'AlphaFold DB model' : (UI.sum3d && UI.sum3d.af) || '');
     };
-    if (best) best.then(draw); else draw(null);
+    if (best) { draw('looking'); best.then(draw); } else draw(null);
   }
 
   // Switch the viewer to the AlphaFold model (creating the viewer if a PDB entry never loaded).
