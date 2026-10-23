@@ -1,8 +1,8 @@
 {
-  "title": "Human methylarginine sites, v1.2.0 (PTM_Pipeline)",
+  "title": "Human methylarginine sites, v1.3.0 (PTM_Pipeline)",
   "upload_type": "dataset",
-  "version": "v1.2.0",
-  "description": "<p>The human protein arginine methylation sites of DeAngelo, Silverstein &amp; Shechter, Cell Chem Biol 33:1404-1421 (2026), with the code that builds them and the Methylarginine Site Explorer website. v1.2.0 reads each of 18 studies and databases from its own tables and keeps as a site only an arginine that one of its records passes five site tests for: 11,601 sites on 4,432 proteins, 360 of them placed by the paralog rule and flagged paralog_assigned. The 2,406 arginines that a study reports, or an earlier release had, and that no record passes every test for are kept as lower-confidence sites with their test results. releases/v1.2.0/CHANGES.md says what changed since v1.1.0; v1.1.0 and the published version (v1.0.0) are also included.</p>",
+  "version": "v1.3.0",
+  "description": "<p>The human protein arginine methylation sites of DeAngelo, Silverstein &amp; Shechter, Cell Chem Biol 33:1404-1421 (2026), with the code that builds them and the Methylarginine Site Explorer website. v1.3.0 keeps the 11,601 sites on 4,432 proteins of v1.2.0 (and its 2,406 lower-confidence sites) and adds what methylated arginines contact: RNA and DNA in PDB structures, with the bound sequences; RNA- and DNA-binding evidence from living cells (crosslinked residues and peptides, RBDmap, CAPRI, pCLAP, RBR-ID and the DNA interactome), tested within each protein against its other arginines and, at the protein level, among the proteins each experiment measured (the reviewed proteome where it lists none); and what their proteins bind in vitro and in cells (RNA Bind-n-Seq, HTR-SELEX, JASPAR, ENCODE and ENCORE eCLIP). The residue-level analyses (motifs, disorder, domains, structural context, distances to RNA and DNA) are also given within proteins (Mantel-Haenszel, van Elteren). releases/v1.3.0/CHANGES.md says what changed since v1.2.0; v1.2.0, v1.1.0 and the published version (v1.0.0) are also included.</p>",
   "creators": [
     {"name": "DeAngelo, J. D."},
     {"name": "Silverstein, A. M."},
