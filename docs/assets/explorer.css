@@ -210,7 +210,7 @@ button, input, select { font: inherit; color: inherit; }
 }
 .suggest li { display: flex; gap: 0.6rem; align-items: baseline; padding: 0.4rem 0.6rem; border-radius: 0.4rem; cursor: pointer; }
 .suggest li[aria-selected="true"], .suggest li:hover { background: var(--teal-wash); }
-.suggest li b { min-width: 4.5rem; }
+.suggest li b { min-width: 4.5rem; flex: none; max-width: 48%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .suggest li span { color: var(--muted); font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .suggest li em { margin-left: auto; font-style: normal; font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
 .query-note { font-size: 0.82rem; color: var(--muted); min-height: 0; }
@@ -806,7 +806,7 @@ footer.site a:hover { color: var(--accent); }
 .tag.pred.pred-hi { background: color-mix(in srgb, var(--teal-wash) 60%, transparent); border-style: solid; }
 .tag.ix-prmt { background: var(--ink); color: var(--surface); }
 .tag.ix-tudor { background: transparent; color: var(--ink-2); border: 1px dashed var(--ink-2); }
-.tag.go-exp { background: var(--brand-ink); color: #fff; }
+.tag.go-exp { background: var(--brand-ink); color: var(--surface); }
 .tag.cx-cur { background: var(--teal-wash); color: var(--brand-ink); }
 .ix-tabs { margin: 0.2rem 0 0.9rem; flex-wrap: wrap; }
 .ix-tabs .n { font-weight: 400; opacity: 0.75; margin-left: 0.1rem; }
@@ -1889,7 +1889,7 @@ html.filters-pinned #rail-done, .a-mode .focus-bar.hub:not(.ret) { display: none
 .fb-top { flex: none; margin-left: auto; min-height: 2.25rem; padding: 0.25rem 0.75rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink-2); font: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
 .fb-top:hover, .fb-top:focus-visible { border-color: var(--accent); color: var(--accent-dark); }
 .fb-top[hidden] { display: none; }
-.pin-btn[aria-pressed="true"] { border-color: var(--teal-600); color: var(--teal); }
+.pin-btn[aria-pressed="true"] { border-color: var(--teal-600); color: var(--brand-ink); }
 @media (max-width: 1099px) { .pin-btn { display: none; } }
 .crumb-back { margin-left: 0.6rem; font-size: 0.82rem; }
 /* filters pinned to the left (wide screens) */
@@ -2143,3 +2143,10 @@ details.fold.p-row > summary:has(> .fold-pic:not(:empty)) .fold-sum { white-spac
 .ris-btn { white-space: nowrap; }
 .sc-refs + .ris-btn, .pub .ris-btn { margin: 0.2rem 0; }
 .pg-kmers { display: grid; grid-template-columns: repeat(2, auto); gap: 0.1rem 0.5rem; font-size: 0.78rem; color: var(--ink); }
+
+/* Keyboard: a first stop that jumps past the header, search and tabs to the page itself */
+.skip-link { position: absolute; left: -9999px; top: 0.5rem; z-index: 100; padding: 0.5rem 0.9rem; border-radius: 0.4rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-weight: 600; }
+.skip-link:focus { left: 1rem; }
+#content:focus { outline: none; }
+/* Phones: the lower-confidence switch lives in the Filters panel, not at the end of the tab strip */
+@media (max-width: 600px) { .tabs .lc-switch { display: none !important; } }

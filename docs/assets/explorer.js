@@ -23,6 +23,9 @@
   // ---------------------------------------------------------------- helpers
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  // A search typed while the data load, with Enter pressed or not, runs once the page is ready (init).
+  const early = { enter: false, key: (e) => { if (e.key === 'Enter') { early.enter = true; e.preventDefault(); } } };
+  if ($('#q')) $('#q').addEventListener('keydown', early.key);
   const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ESC[c]);
   const fmt = (n) => (n == null ? '—' : Number(n).toLocaleString('en-US'));
@@ -1006,7 +1009,7 @@
       }
       for (const c of s.ko) s.trf |= (c[4] ? TRF_KO_DOWN : 0) | (c[5] ? TRF_KO_UP : 0);
     }
-    IDX = { gene: new Map(), acc: new Map(), uid: new Map(), alias: new Map() };
+    IDX = { gene: new Map(), acc: new Map(), uid: new Map(), alias: new Map(), norm: new Map() };
     const add = (map, key, i) => { if (!key) return; key = key.toUpperCase(); if (!map.has(key)) map.set(key, []); if (!map.get(key).includes(i)) map.get(key).push(i); };
     for (const p of P) {
       add(IDX.gene, p.gene, p.i);
@@ -1014,7 +1017,11 @@
       if (p.acc.includes('-')) add(IDX.acc, p.acc.split('-')[0], p.i);
       add(IDX.uid, p.uid, p.i);
       for (const a of p.aliases) add(IDX.alias, a, p.i);
+      // symbols and synonyms without hyphens, spaces and dots: TDP-43, hnRNP A1
+      for (const a of [p.gene].concat(p.aliases)) add(IDX.norm, normSym(a), p.i);
     }
+    // Histone shorthand as papers write it (H4R3, H3R2): the canonical entries of histone H4 and H3.1, and H3.3.
+    for (const [short, acc] of HISTONE_SHORT) { const h = IDX.acc.get(acc); if (h && !IDX.gene.has(short)) for (const i of h) add(IDX.alias, short, i); }
 
     const dv = M.provenance && M.provenance.dataset_version;
     $('#data-version').innerHTML = (dv ? 'dataset <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases/' + encodeURIComponent(dv) + '">' + esc(dv) + '</a> · ' : '') + 'data exported ' + esc(M.generated);
@@ -1034,6 +1041,9 @@
     compute();
     route();
     loadInteractions();
+    $('#q').removeEventListener('keydown', early.key);
+    const typed = $('#q').value.trim();
+    if (typed && typed !== q0) $('#q').dispatchEvent(early.enter ? new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }) : new Event('input', { bubbles: true }));
   }
 
   function nearestDistance(sorted, pos) {
@@ -1046,14 +1056,32 @@
   }
 
   // ----------------------------------------------------------------- search
-  // Exact lookup: accession, current symbol, UniProt entry name, then synonyms and source-reported symbols.
+  // Exact lookup: accession, current symbol, UniProt entry name, then synonyms and source-reported symbols, then the
+  // same without hyphens, spaces and dots (TDP-43, hnRNP A1).
+  const normSym = (x) => String(x || '').toUpperCase().replace(/[-\s._/]/g, '');
+  const HISTONE_SHORT = [['H4', 'P62805'], ['H3', 'P68431'], ['H3.1', 'P68431'], ['H3.3', 'P84243']];
   function lookup(token) {
     const key = token.toUpperCase();
     const hit = IDX.acc.get(key) || IDX.gene.get(key) || IDX.uid.get(key);
     if (hit) return { hit, alias: false };
-    const al = IDX.alias.get(key);
+    const al = IDX.alias.get(key) || (normSym(key).length >= 3 ? IDX.norm.get(normSym(key)) : null);
     return al ? { hit: al, alias: true } : null;
   }
+  // Symbols one edit away (a letter added, dropped, changed or two swapped): "did you mean" for a word that names no
+  // protein, most sites first.
+  function nearSymbols(word, max) {
+    const w = word.toUpperCase();
+    if (w.length < 3 || /\d{3,}/.test(w)) return [];
+    const one = (a, b) => {
+      if (a === b || Math.abs(a.length - b.length) > 1) return false;
+      let i = 0;
+      while (i < a.length && i < b.length && a[i] === b[i]) i++;
+      if (a.length === b.length) return a.slice(i + 1) === b.slice(i + 1) || (a[i] === b[i + 1] && a[i + 1] === b[i] && a.slice(i + 2) === b.slice(i + 2));
+      return a.length > b.length ? a.slice(i + 1) === b.slice(i) : a.slice(i) === b.slice(i + 1);
+    };
+    return P.filter((p) => !p.iso && p.gene && one(w, p.gene.toUpperCase())).sort((a, b) => b.sites.length - a.sites.length).slice(0, max || 3);
+  }
+  const typoHtml = (word) => { const near = nearSymbols(word); return near.length ? ' Did you mean ' + near.map((p) => '<button class="linkish" type="button" data-typo="' + p.i + '">' + esc(p.label) + '</button>').join(', ') + '?' : ''; };
   const lookupExact = (token) => { const l = lookup(token); return l ? l.hit : null; };
 
   function parseQuery(text) {
@@ -1088,9 +1116,16 @@
       if (!hit.some((i) => P[i].sites.some((j) => S[j].pos === uni(i)))) missingSites.push(P[hit[0]].label + ' R' + typed);
     };
     const noteAlias = (tok, l) => { if (l.alias) viaAlias.push(tok + ' → ' + l.hit.map((i) => P[i].label).join('/')); };
-    for (const tok of tokens) {
+    for (let k = 0; k < tokens.length; k++) {
+      const tok = tokens[k];
       const l = lookup(tok);
       if (l) { l.hit.forEach((i) => proteins.add(i)); last = l.hit; noteAlias(tok, l); continue; }
+      // a name written as two words (hnRNP A1, TDP 43)
+      const l2 = k + 1 < tokens.length && !/^R?\d+$/i.test(tokens[k + 1]) ? lookup(tok + tokens[k + 1]) : null;
+      if (l2) { l2.hit.forEach((i) => proteins.add(i)); last = l2.hit; noteAlias(tok + ' ' + tokens[k + 1], l2); k++; continue; }
+      // a histone site written as one word (H4R3, H3R2)
+      const hm = tok.match(/^(H2A|H2B|H3(?:\.[13])?|H4)R(\d+)$/i), lh = hm && lookup(hm[1]);
+      if (lh) { addPos(lh.hit, +hm[2]); last = lh.hit; noteAlias(hm[1], lh); continue; }
       // An isoform accession (P35637-2) names the protein, not a site: its suffix is not a residue number.
       const iso = tok.match(/^([OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2})-\d+$/i);
       const li = iso && lookup(iso[1]);
@@ -1114,14 +1149,14 @@
       }
       const concepts = conceptSuggestions(raw);
       return { raw, proteins: new Set(), positions: null,
-        note: 'No protein in the union matches “' + esc(raw) + '”.' + (concepts.length ? ' Did you mean ' + concepts.slice(0, 4).map((c) => '<button class="linkish" type="button" data-setq="' + esc(c.term) + '" title="' + esc(c.sub) + '">' + esc(c.label) + '</button>').join(', ') + '?' : ' Try a gene symbol (PRMT5), a UniProt accession (O14744) or part of a protein name.') };
+        note: 'No protein in this dataset matches “' + esc(raw) + '”.' + (tokens.length === 1 ? typoHtml(raw) : '') + (concepts.length ? ' Did you mean ' + concepts.slice(0, 4).map((c) => '<button class="linkish" type="button" data-setq="' + esc(c.term) + '" title="' + esc(c.sub) + '">' + esc(c.label) + '</button>').join(', ') + '?' : ' Try a gene symbol (PRMT5), a UniProt accession (O14744) or part of a protein name.') };
     }
     const notes = [];
     const matched = tokens.length - missing.length;
     // A gene list gets a count; a single protein with its sites needs none.
     if (tokens.length > 1 && (proteins.size > 1 || missing.length)) notes.push('<b>' + fmt(proteins.size) + '</b> protein' + (proteins.size === 1 ? '' : 's') + ' from ' + fmt(matched) + ' of ' + fmt(tokens.length) + ' search words.');
     if (viaAlias.length) notes.push('Matched by synonym: ' + viaAlias.slice(0, 10).map(esc).join(', ') + '.');
-    if (missing.length) notes.push('Not in the methylarginine union: ' + missing.slice(0, 25).map(esc).join(', ') + (missing.length > 25 ? ' and ' + (missing.length - 25) + ' more' : '') + '.');
+    if (missing.length) notes.push('Not in this dataset: ' + missing.slice(0, 25).map(esc).join(', ') + (missing.length > 25 ? ' and ' + (missing.length - 25) + ' more' : '') + '.' + (missing.length === 1 ? typoHtml(missing[0]) : ''));
     if (missingSites.length) notes.push('No methylation reported at ' + missingSites.slice(0, 10).map(esc).join(', ') + '.');
     if (histoneNote) notes.push('Histone residues are numbered without the initiator methionine (H3 R2 is UniProt R3).');
     return { raw, proteins, positions: positions.size ? positions : null, note: notes.join(' ') };
@@ -1131,19 +1166,22 @@
     const tok = text.split(/[\s,;]+/).pop() || '';
     if (!tok) return [];
     const t = tok.toLowerCase();
-    const exact = [], prefix = [], alias = [], named = [];
+    const exact = [], prefix = [], alias = [], accs = [], named = [], tn = normSym(t);
     for (const p of P) {
       const g = p.gene.toLowerCase();
+      const ex = p.aliases.find((x) => x.toLowerCase() === t || (tn.length >= 3 && normSym(x) === tn));
       if (g === t || p.acc.toLowerCase() === t) exact.push([p, '']);
-      else if (g.startsWith(t) || p.acc.toLowerCase().startsWith(t)) prefix.push([p, '']);
+      else if (ex) exact.push([p, ex]);
+      else if (g.startsWith(t)) prefix.push([p, '']);
       else {
-        const a = p.aliases.find((x) => x.toLowerCase().startsWith(t));
+        const a = p.aliases.find((x) => x.toLowerCase().startsWith(t) || (tn.length >= 3 && normSym(x).startsWith(tn)));
         if (a) alias.push([p, a]);
+        else if (p.acc.toLowerCase().startsWith(t)) accs.push([p, '']);
         else if (t.length >= 3 && p.name.toLowerCase().includes(t)) named.push([p, '']);
       }
     }
     const bySites = (a, b) => b[0].sites.length - a[0].sites.length;
-    return exact.concat(prefix.sort(bySites), alias.sort(bySites), named.sort(bySites)).slice(0, 8);
+    return exact.concat(prefix.sort(bySites), alias.sort(bySites), accs.sort(bySites), named.sort(bySites)).slice(0, 8);
   }
 
   // ----------------------------------------------------------- search terms
@@ -2043,6 +2081,9 @@
       const hit = lookupExact(accPart);
       if (hit && hit.length) {
         view = 'protein';
+        // A search for one protein selects it; following a link to another protein leaves that search behind, so the
+        // other page is not shown faded as outside the reader's filters. Other selections stay.
+        if (Q.plain && Q.proteins && Q.proteins.size === 1 && !hit.some((i) => Q.proteins.has(i)) && constraints().length === 1) { setQuery(queryText('', Q.tokens)); compute(); }
         const site = /^R?(\d+)$/i.exec(sitePart || '');
         if (UI.detail !== hit[0]) {
           UI.detail = hit[0]; UI.zoom = null; UI.openEvidence.clear(); UI.pIx = ''; UI.highlight = null;
@@ -2103,6 +2144,7 @@
     else if (UI.view === 'protein') renderProtein(el, P[UI.detail]);
     else if (UI.view === 'unlisted') renderUnlisted(el, UI.unl);
     if (!UI.secsOn) applyRailTab();
+    tabsInView();
     UI.hubR = R;
     UI.hubDetail = UI.view === 'protein' ? UI.detail : null;
   }
@@ -2692,6 +2734,18 @@
       try { if (!p.matches(CLAMP_SEL)) return; } catch (err) { return; }
       p.classList.toggle('unclamp');
     });
+    // The skip link moves keyboard focus to the page below the search and tabs.
+    const skip = $('#skip-link');
+    if (skip) skip.addEventListener('click', () => { const c = $('#content'); c.focus({ preventScroll: true }); c.scrollIntoView({ block: 'start' }); });
+    // "Did you mean" symbols in the search note search that protein and open it.
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest ? e.target.closest('[data-typo]') : null;
+      if (!b) return;
+      const q = P[+b.dataset.typo];
+      setQuery(q.gene || q.acc);
+      compute();
+      openProtein(q.i);
+    });
     // "Did you mean" filter suggestions in the search note replace the search with the term.
     document.addEventListener('click', (e) => {
       const b = e.target.closest ? e.target.closest('[data-setq]') : null;
@@ -2711,7 +2765,7 @@
     const list = $('#suggest');
     let sel = -1;
     let items = [];
-    const hideList = () => { list.hidden = true; input.setAttribute('aria-expanded', 'false'); sel = -1; };
+    const hideList = () => { list.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); sel = -1; };
     // An explicit close (Enter, a pick, Escape, leaving the box) also stops a list waiting on data from reopening.
     let shut = 0;
     const closeList = () => { shut++; hideList(); };
@@ -2724,11 +2778,14 @@
       const prots = !/:/.test(w) && plainWords.length <= 1 ? suggestions(w) : [];
       const concepts = !/:/.test(w) ? conceptSuggestions(plainWords.join(' ')) : [];
       // An exact protein match stays first; concept filters follow, then the other protein matches.
-      const exactN = prots.length && prots[0][0].gene.toLowerCase() === w.toLowerCase() ? 1 : 0;
+      const exactN = prots.length && (prots[0][0].gene.toLowerCase() === w.toLowerCase() || prots[0][1]) ? 1 : 0;
       // a protein without a site that the word names exactly leads the list
       if (!PROTEOME.byAcc && w.length >= 2 && !/:/.test(w)) { const g = shut; loadProteome().then(() => { if (g === shut && document.activeElement === input) drawList(); }); }
       const ux = !exactN && !/:/.test(w) && plainWords.length <= 1 && w.length >= 2 && !prots.some(([p]) => p.acc.toLowerCase() === w.toLowerCase()) ? unlistedKey(w) : null;
-      items = terms.map((t) => ({ term: t })).concat(ux ? [{ unl: ux }] : [], prots.slice(0, exactN).map(([p, alias]) => ({ p, alias })), concepts.map((t) => ({ term: t })), prots.slice(exactN).map(([p, alias]) => ({ p, alias }))).slice(0, 10);
+      // proteins whose symbol starts with the word come before concept filters (PRMT: PRMT1, PRMT5 before complexes)
+      let lead = 0;
+      while (lead < Math.min(prots.length, 5) && (lead < exactN || prots[lead][0].gene.toLowerCase().startsWith(w.toLowerCase()))) lead++;
+      items = terms.map((t) => ({ term: t })).concat(ux ? [{ unl: ux }] : [], prots.slice(0, lead).map(([p, alias]) => ({ p, alias })), concepts.map((t) => ({ term: t })), prots.slice(lead).map(([p, alias]) => ({ p, alias }))).slice(0, 10);
       if (!items.length || !w) { hideList(); return; }
       list.innerHTML = items.map((it, k) => '<li role="option" id="sg-' + k + '" aria-selected="' + (k === sel) + '" data-k="' + k + '">' + (it.unl
         ? '<b>' + esc(it.unl.gene || it.unl.acc) + '</b><span>' + esc(it.unl.acc) + ' · no methylarginine site in this release' + (it.unl.lc && !LC_ON ? ' (' + it.unl.lc + ' lower-confidence)' : '') + '</span><em>page</em>'
@@ -2737,6 +2794,7 @@
         : '<b>' + esc(it.p.label) + '</b><span>' + (it.alias ? 'synonym ' + esc(it.alias) + ' · ' : '') + esc(it.p.name || it.p.acc) + '</span><em>' + it.p.sites.length + ' site' + (it.p.sites.length === 1 ? '' : 's') + '</em>') + '</li>').join('');
       list.hidden = false;
       input.setAttribute('aria-expanded', 'true');
+      if (sel >= 0) input.setAttribute('aria-activedescendant', 'sg-' + sel); else input.removeAttribute('aria-activedescendant');
     };
     // A search made only of terms lists sites (or proteins for protein terms); plain words list proteins.
     const landing = () => (!Q.plain && Q.tokens.length ? termView() : 'proteins');
@@ -2760,7 +2818,7 @@
         compute();
         // One word that names no protein of the set exactly: a protein without a site opens its own page.
         const w1 = !Q.tokens.length && Q.plain ? Q.plain.trim() : '';
-        if (w1 && !/[\s,;]/.test(w1) && !(lookupExact(w1) || []).length && !/[:_/-]R?\d+$/i.test(w1)) {
+        if (w1 && !/[\s,;]/.test(w1) && !(Q.proteins && Q.proteins.size) && !/[:_/-]R?\d+$/i.test(w1)) {
           loadProteome().then(() => { const x = unlistedKey(w1); if (x) openUnlisted(x); else if (UI.view === 'overview') go(landing()); });
           return;
         }
@@ -4423,7 +4481,7 @@
       if (!UI_A) return foldHtml(key, title, inner, false, sum || '', null, { q });
       A_ROWS.push({ key, title, summary: sum, group: null });
       const was = UI.pOpen && UI.pOpen.p === p.i ? UI.pOpen.open.get(key) : undefined;
-      return '<details class="fold p-row" data-fold="' + key + '"' + ((was != null ? was : foldIsOpen(key, key === 'p-3d')) ? ' open' : '') + '><summary class="fold-head"><span class="pm" aria-hidden="true"></span>' +
+      return '<details class="fold p-row" data-fold="' + key + '"' + ((was != null ? was : foldIsOpen(key, key === 'p-3d' || key === 'p-sites')) ? ' open' : '') + '><summary class="fold-head"><span class="pm" aria-hidden="true"></span>' +
         '<span class="fold-title">' + esc(title) + '</span><span class="fold-sum" id="fold-sum-' + key + '">' + esc(sum || '') + '</span><span class="fold-pic" data-pic-of="' + key + '"></span></summary>' + inner + '</details>';
     };
     A_ROWS.length = 0;
@@ -4549,7 +4607,7 @@
       if (!current()) return;
       renderSiteTable(p);
     });
-    if (UI.highlight != null) setTimeout(() => flashSite(UI.highlight, true), 60);
+    if (UI.highlight != null) setTimeout(() => flashSite(UI.highlight, 'now'), 60);
     if (UI.pendingContact) { const pc = UI.pendingContact; UI.pendingContact = null; setTimeout(() => openContactStructure(p, pc.pdb, pc.pos), 400); }
     if (UI.pendingModel) { const g = UI.pendingModel; UI.pendingModel = null; setTimeout(() => viewGalleryModel(p, g), 400); }
   }
@@ -4901,6 +4959,8 @@
   }, true);
   let spyRaf = 0;
   window.addEventListener('scroll', () => { if (!spyRaf) spyRaf = requestAnimationFrame(() => { spyRaf = 0; secSpy(); }); }, { passive: true });
+  // A hover tip does not outlive the scroll (on touch screens nothing else would close it).
+  window.addEventListener('scroll', () => { const t = document.getElementById('tip'); if (t && !t.hidden) hideTip(); }, { passive: true });
   // ---- Layout A (the default; ?ui=old for the previous layout, ?ui=a back; remembered in this browser). A page leads with one question,
   // its answer in a sentence and the figure that gives it, then tiles: one per section of the scorecard, each a title,
   // a small picture and one line. A tile opens its section as the scorecard's row does (the focus view); the scorecard
@@ -5634,6 +5694,7 @@
   const xenograftOnly = (s) => { const k = M.studies.findIndex((x) => x[0] === 'Ma 2023'); return k >= 0 && s.study === 1 << k; };
   // Site card: one methylarginine at a glance, interaction evidence first. Opens when a site is searched or clicked.
   function renderSiteCard(pos, scroll) {
+    hideTip();
     const box = $('#site-card');
     if (!box || UI.detail == null) return;
     const p = P[UI.detail];
@@ -5705,7 +5766,20 @@
       }
       else if (act === 'close') { UI.highlight = null; box.hidden = true; box.innerHTML = ''; setSiteHash(p, null); const cs = $('#crumb-site'); if (cs) cs.hidden = true; $$('#psites tr.row.sel').forEach((r) => r.classList.remove('sel')); drawMap(p, UNIDATA.get(p.acc)); }
     }));
-    if (scroll) box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    if (scroll) scrollBelowBars(box, scroll !== 'now');
+  }
+  // Scroll an element to just below the sticky search bar and the page strip; again once the page above it has
+  // settled (the map grows when UniProt answers), unless the reader has scrolled in the meantime.
+  function scrollBelowBars(el, smooth) {
+    const place = () => {
+      const cs = getComputedStyle(document.documentElement), fb = $('.focus-bar');
+      const off = (parseFloat(cs.getPropertyValue('--toolbar-h')) || 0) + (fb && !fb.hidden && fb.offsetHeight ? fb.offsetHeight : 0) + 12;
+      const y = Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY - off));
+      window.scrollTo({ top: y, behavior: smooth ? 'smooth' : 'auto' });
+      return y;
+    };
+    const y0 = place();
+    setTimeout(() => { if (el.isConnected && !el.hidden && Math.abs(window.scrollY - y0) < 6) { smooth = false; place(); } }, 1500);
   }
 
   function flashSite(pos, scroll) {
@@ -6613,8 +6687,8 @@
       '<div class="fig-controls">' + (p.unl ? '' : '<label class="fig-ctl">Colour sites by <select id="fig-color">' + Object.keys(COLOR_MODES).map((k) => '<option value="' + k + '"' + (f.color === k ? ' selected' : '') + '>' + esc(COLOR_MODES[k].name) + '</option>').join('') + '</select></label>' +
       '<div class="seg" role="group" aria-label="Site labels"><span>Site labels</span>' + [['auto', 'Auto'], ['all', 'All'], ['none', 'None']].map(([k, l]) => '<button type="button" data-lab="' + k + '" aria-pressed="' + (f.labels === k) + '">' + l + '</button>').join('') + '</div>') +
       '<details class="col-menu rows-menu"><summary class="btn quiet small">Rows</summary><div class="col-pop" id="rows-pop">' + rowsMenuHtml() + '</div></details>' + '</div>' +
-      // the key under a "Key" toggle on narrow screens, where it would otherwise fill the screen above the map
-      '<details class="key-fold"' + (narrowScreen() ? '' : ' open') + '><summary>Key</summary><div class="legend" id="fig-legend"></div></details><div class="map-box" id="map-box"></div>' +
+      // the key under the map, so the drawing comes first (a toggle on narrow screens, where it would fill the screen)
+      '<div class="map-box" id="map-box"></div><details class="key-fold"' + (narrowScreen() ? '' : ' open') + '><summary>Key</summary><div class="legend" id="fig-legend"></div></details>' +
       '<p class="note screen-only">Drag across the map to zoom; Interaction evidence at a glance follows the same zoom. SVG and PNG exports reproduce this view on a white background with a title and legend.</p></div>';
   }
 
@@ -14079,7 +14153,8 @@
     };
     const sec = (id, title, html) => {
       const subs = Array.from(html.matchAll(/<div class="doc-sub" id="doc-[^"]+"><h4>([^<]+)<\/h4>/g), (m) => m[1].replace(/&amp;/g, '&'));
-      return '<section class="doc-sec" id="doc-' + id + '">' + foldHtml('doc-' + id, title, '<div class="card prose doc-body">' + html + '</div>', false, subs.length ? subs.join(' · ') : DOC_SUM[id] || '') + '</section>';
+      // Getting started is open at first; the others open from the contents or a link
+      return '<section class="doc-sec" id="doc-' + id + '">' + foldHtml('doc-' + id, title, '<div class="card prose doc-body">' + html + '</div>', id === 'start', subs.length ? subs.join(' · ') : DOC_SUM[id] || '') + '</section>';
     };
     const sub = (id, title, html) => '<div class="doc-sub" id="doc-' + id + '"><h4>' + esc(title) + '</h4>' + html + '</div>';
     const parts = [
@@ -14245,7 +14320,7 @@
         '<p>Use <b>Download TSV</b> on the Proteins or Sites view to export the current selection. The data files are regenerated from pipeline outputs with <code>python scripts/36_export_site_explorer_data.py</code>; see the repository README.</p>' +
         '<p class="note">Data exported ' + esc(M.generated) + ' · ' + fmt(M.n_sites) + ' sites · ' + fmt(M.n_proteins) + ' proteins.</p>'],
     ];
-    el.innerHTML = '<div class="docs"><nav class="docs-toc card" aria-label="Documentation contents"><p class="flabel">Contents</p><ol>' +
+    el.innerHTML = resultsHead('Documentation', 'How to use the explorer, where every number comes from, and how to cite it.') + '<div class="docs"><nav class="docs-toc card" aria-label="Documentation contents"><p class="flabel">Contents</p><ol>' +
       parts.map(([id, title]) => '<li><button class="linkish" type="button" data-doc="' + id + '">' + esc(title) + '</button></li>').join('') + '</ol>' +
       '<p class="docs-all"><button class="linkish" type="button" id="docs-open">Open all</button> · <button class="linkish" type="button" id="docs-close">Close all</button></p></nav>' +
       '<div class="fold-list docs-body">' + parts.map(([id, title, html]) => sec(id, title, html)).join('') + '</div></div>';
