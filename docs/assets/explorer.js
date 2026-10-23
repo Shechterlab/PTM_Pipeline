@@ -2417,10 +2417,60 @@
     applyRailTab();
     if (focus) $('#rt-' + t).focus();
   }
+  // Pinned, the panel is the first column of the page under the header (sticky as the page scrolls), with an edge to
+  // drag to its width; unpinned, it is a drawer over the page again.
+  const RAIL_W = { min: 240, max: 480, def: 320, key: 'mse-rail-w' };
+  function railWidth(w) {
+    const root = document.documentElement, layout = $('#layout');
+    if (w == null) { root.style.removeProperty('--rail-w'); return null; }
+    w = Math.round(Math.max(RAIL_W.min, Math.min(RAIL_W.max, (layout ? layout.clientWidth : window.innerWidth) * 0.4, w)));
+    root.style.setProperty('--rail-w', w + 'px');
+    return w;
+  }
+  const railW = (() => { try { return +localStorage.getItem(RAIL_W.key) || null; } catch (e) { return null; } })();
+  if (railW) railWidth(railW);
+  const saveRailW = (w) => { try { if (w == null) localStorage.removeItem(RAIL_W.key); else localStorage.setItem(RAIL_W.key, String(w)); } catch (e) { /* storage blocked */ } };
+  function railGrip() {
+    let grip = $('#rail-grip');
+    if (grip) return grip;
+    grip = document.createElement('div');
+    grip.id = 'rail-grip'; grip.className = 'rail-grip'; grip.tabIndex = 0;
+    grip.setAttribute('role', 'separator'); grip.setAttribute('aria-orientation', 'vertical');
+    grip.setAttribute('aria-label', 'Width of the side panel: drag, or use the arrow keys; double-click resets it');
+    grip.title = 'Drag to resize the side panel; double-click resets it';
+    const reflow = () => window.dispatchEvent(new Event('resize'));
+    grip.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      grip.setPointerCapture(e.pointerId);
+      const x0 = e.clientX, w0 = $('#rail').getBoundingClientRect().width;
+      document.documentElement.classList.add('rail-drag');
+      let w = w0;
+      const move = (ev) => { w = railWidth(w0 + ev.clientX - x0); };
+      const up = () => {
+        grip.removeEventListener('pointermove', move); grip.removeEventListener('pointerup', up); grip.removeEventListener('pointercancel', up);
+        document.documentElement.classList.remove('rail-drag');
+        saveRailW(w); reflow();
+      };
+      grip.addEventListener('pointermove', move); grip.addEventListener('pointerup', up); grip.addEventListener('pointercancel', up);
+    });
+    grip.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      saveRailW(railWidth($('#rail').getBoundingClientRect().width + (e.shiftKey ? 64 : 16) * (e.key === 'ArrowRight' ? 1 : -1)));
+      reflow();
+    });
+    grip.addEventListener('dblclick', () => { railWidth(null); saveRailW(null); reflow(); });
+    return grip;
+  }
   function applyPin() {
-    const rail = $('#rail'), bg = $('#drawer-bg'), on = pinned();
+    const rail = $('#rail'), bg = $('#drawer-bg'), on = pinned(), layout = $('#layout');
     if (!rail) return;
+    const was = document.documentElement.classList.contains('filters-pinned');
     document.documentElement.classList.toggle('filters-pinned', on);
+    if (on && layout && rail.parentElement !== layout) { layout.prepend(rail); rail.after(railGrip()); }
+    if (!on && rail.parentElement !== document.body) { document.body.insertBefore(rail, $('#tip')); const g = $('#rail-grip'); if (g) g.remove(); }
+    if (on !== was) requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
     if (on) {
       rail.hidden = false; rail.classList.add('on'); bg.hidden = true; bg.classList.remove('on');
       pageParts().forEach((el) => { el.inert = false; });
@@ -2481,6 +2531,7 @@
     $('#drawer-bg').addEventListener('click', () => closeFilters());
     applyPin();
     if (PIN_MQ && PIN_MQ.addEventListener) PIN_MQ.addEventListener('change', applyPin);
+    window.addEventListener('resize', debounce(() => { const w = (() => { try { return +localStorage.getItem(RAIL_W.key) || null; } catch (e) { return null; } })(); if (w) railWidth(w); }, 150));
     // the panel's tabs and its list of sections (drawn again with the page, so bound once here)
     $('#rail').addEventListener('click', (e) => {
       const t = e.target.closest('[data-rtab]');
@@ -2667,19 +2718,10 @@
       else go(t.dataset.view);
     }));
     window.addEventListener('hashchange', route);
-    // Back and Forward between entries whose query strings differ fire popstate, not hashchange (the filters and the
-    // search are in the query string): restore them from the URL, then route.
+    // Back and Forward go between pages and sections and keep the selection as it is (Clear all undoes it): the
+    // address of the step returned to takes the current search and filters.
     window.addEventListener('popstate', () => {
-      const params = new URLSearchParams(location.search);
-      const want = JSON.stringify(filterParams(filtersFromParams(params))) + '|' + (params.get('q') || '');
-      const have = JSON.stringify(filterParams(F)) + '|' + (Q.raw || '');
-      if (want !== have) {
-        F = filtersFromParams(params);
-        $('#q').value = params.get('q') || '';
-        Q = parseQuery($('#q').value);
-        $('#q-clear').hidden = !Q.raw;
-        afterFilterChange();
-      }
+      syncUrl();
       route();
     });
     const home = $('.home-link');
@@ -3160,6 +3202,8 @@
     return { lo, hi, ticks, xp: (v) => ((v - lo) / (hi - lo)) * 100 };
   }
 
+  // A chart row significant at q <= PADJ but within MIN_EFFECT either way: about the same (grey), as in the tiles.
+  const sameFx = (spec, r) => !spec.noSig && !spec.counts && !!r.sig && r.value != null && Number.isFinite(r.value) && !aBig(r.value);
   // A compact chart's narrow track labels 0 and every other tick when it has more than five.
   const tickShown = (spec, sc, i) => !spec.compact || sc.ticks.length <= 5 || (i - sc.ticks.indexOf(0)) % 2 === 0;
 
@@ -3175,10 +3219,10 @@
     return heads + '<div class="hbars' + cls + '" role="list">' + rows.map((r, k) => {
       const v = r.value == null ? 0 : r.value;
       const a = sc.xp(Math.min(0, v)), b = sc.xp(Math.max(0, v));
-      return (r.head ? '<div class="hb-head" role="presentation">' + esc(r.head) + '</div>' : '') + '<button class="hb' + (r.sub ? ' sub' : '') + (r.depth === 2 ? ' sub2' : '') + (r.extraRow ? ' extra-row' : '') + (spec.sel && !r.sel ? ' off' : '') + (r.noClick ? ' noclick' : '') + '" type="button" role="listitem" data-k="' + k + '"' + (r.noClick ? ' aria-disabled="true"' : '') + ' aria-label="' + esc(r.label + (r.note ? ' (' + r.note + ')' : '') + ': ' + (spec.valueLabel || (spec.fold ? 'log2 fold enrichment' : 'log2 OR')) + ' ' + vfmt(r.value) + (spec.noSig ? '' : r.sig ? ', significant' : ', not significant') + (spec.sel && r.sel != null ? ', ' + r.sel + ' selected ' + spec.sel.unit : '')) + '">' +
+      return (r.head ? '<div class="hb-head" role="presentation">' + esc(r.head) + '</div>' : '') + '<button class="hb' + (r.sub ? ' sub' : '') + (r.depth === 2 ? ' sub2' : '') + (r.extraRow ? ' extra-row' : '') + (spec.sel && !r.sel ? ' off' : '') + (r.noClick ? ' noclick' : '') + '" type="button" role="listitem" data-k="' + k + '"' + (r.noClick ? ' aria-disabled="true"' : '') + ' aria-label="' + esc(r.label + (r.note ? ' (' + r.note + ')' : '') + ': ' + (spec.valueLabel || (spec.fold ? 'log2 fold enrichment' : 'log2 OR')) + ' ' + vfmt(r.value) + (spec.noSig ? '' : sameFx(spec, r) ? ', significant but within ' + MIN_EFFECT + '×, about the same' : r.sig ? ', significant' : ', not significant') + (spec.sel && r.sel != null ? ', ' + r.sel + ' selected ' + spec.sel.unit : '')) + '">' +
         '<span class="hb-label">' + esc(r.label) + (r.note ? '<span class="hb-note">' + esc(r.note) + '</span>' : '') + '</span>' + (spec.extraCol ? '<span class="hb-extra">' + esc(r.extra || '') + '</span>' : '') +
         '<span class="hb-track"><span class="hb-zero" style="left:' + sc.xp(0).toFixed(2) + '%"></span>' +
-        '<span class="hb-bar' + (r.sig || spec.noSig ? '' : ' ns') + (v < 0 ? ' neg' : '') + (spec.selTest ? ' sel-bar' : '') + '" style="left:' + a.toFixed(2) + '%;width:' + (r.value == null ? 0 : Math.max(0.6, b - a)).toFixed(2) + '%"></span>' +
+        '<span class="hb-bar' + (r.sig || spec.noSig ? '' : ' ns') + (sameFx(spec, r) ? ' same' : '') + (v < 0 ? ' neg' : '') + (spec.selTest ? ' sel-bar' : '') + '" style="left:' + a.toFixed(2) + '%;width:' + (r.value == null ? 0 : Math.max(0.6, b - a)).toFixed(2) + '%"></span>' +
         (spec.selTest && r.ref != null ? '<span class="hb-ref" style="left:' + sc.xp(r.ref).toFixed(2) + '%"></span>' : '') + '</span>' +
         '<span class="hb-val">' + vfmt(r.value) + '</span>' + (spec.sel ? selCell(r.sel) : '') + '</button>';
     }).join('') + '</div>' +
@@ -3197,7 +3241,7 @@
   // Catch-all bars (no annotation, unknown) are left out of it.
   function chartSummary(spec, n, lead) {
     const f = spec.format || fmtL2, short = (r) => String(r.label).split(' · ')[0];
-    const rows = spec.rows.filter((r) => r.value != null && !/^(no |not |unknown|unassigned|other\b)/i.test(short(r)) && (spec.noSig || (r.sig && r.value > 0)))
+    const rows = spec.rows.filter((r) => r.value != null && !/^(no |not |unknown|unassigned|other\b)/i.test(short(r)) && (spec.noSig || (r.sig && r.value > 0 && aBig(r.value))))
       .sort((a, b) => (spec.keepOrder ? 0 : b.value - a.value)).slice(0, n || 2);
     const list = rows.map((r) => short(r) + ' ' + f(r.value)).join(', ');
     if (spec.noSig) return list;
@@ -3213,14 +3257,14 @@
     const v = (r) => (re ? r.ref : r.value), sig = (r) => (re ? r.refQ != null && r.refQ <= PADJ : !!r.sig);
     const short = (r) => String(r.label).split(' · ')[0];
     const ok = (r) => v(r) != null && Number.isFinite(v(r)) && !/^(no |not |unknown|unassigned|other\b)/i.test(short(r));
-    const up = spec.rows.filter((r) => ok(r) && sig(r) && v(r) > 0).sort((a, b) => v(b) - v(a));
-    const down = spec.fold ? [] : spec.rows.filter((r) => ok(r) && sig(r) && v(r) < 0).sort((a, b) => v(a) - v(b));
+    const up = spec.rows.filter((r) => ok(r) && sig(r) && v(r) > 0 && aBig(v(r))).sort((a, b) => v(b) - v(a));
+    const down = spec.fold ? [] : spec.rows.filter((r) => ok(r) && sig(r) && v(r) < 0 && aBig(v(r))).sort((a, b) => v(a) - v(b));
     const eff = (r) => (spec.fold ? fx(Math.pow(2, v(r))) + '-fold' : 'OR ' + fx(Math.pow(2, v(r))));
     const list = (rows, k) => rows.slice(0, k).map((r) => esc(short(r)) + ' <span class="an">' + eff(r) + '</span>').join(', ') + (rows.length > k ? ' +' + (rows.length - k) : '');
     if (up.length) return am(1) + list(up, n) + (down.length ? '; ' + am(-1) + list(down, 1) : '');
     if (down.length) return am(-1) + list(down, n);
     if (!whole && spec.selTest && !spec.rows.some((r) => r.value != null)) return am(0) + 'too few to test';
-    return am(0) + (spec.fold ? 'none over-represented' : 'none differs') + ' at q ≤ ' + PADJ;
+    return am(0) + (spec.fold ? 'none over-represented' : 'none differs') + (spec.rows.some((r) => ok(r) && sig(r)) ? ' by ' + MIN_EFFECT + '× or more' : ' at q ≤ ' + PADJ);
   }
 
   function chartCard(spec, cls) {
@@ -3232,7 +3276,8 @@
   // Words of a chart's significance key, the same on the page and in its exports.
   // Protein-set charts with fold enrichment (spec.fold) test for enrichment only (one-sided), so they have no depleted key.
   const sigKey = (spec) => [['', spec.compact ? 'Enriched (q ≤ 0.05)' : 'More than expected, q ≤ 0.05']]
-    .concat(spec.fold ? [] : [['neg', spec.compact ? 'Depleted (q ≤ 0.05)' : 'Less than expected, q ≤ 0.05']], [['ns', 'Not significant']]);
+    .concat(spec.fold ? [] : [['neg', spec.compact ? 'Depleted (q ≤ 0.05)' : 'Less than expected, q ≤ 0.05']],
+      spec.rows.some((r) => sameFx(spec, r)) ? [['same', 'About the same: q ≤ 0.05 but within ' + MIN_EFFECT + '×']] : [], [['ns', 'Not significant']]);
   const chartAxis = (spec) => spec.axis || (spec.fold ? 'log2 fold enrichment vs all proteins' : 'log2 odds ratio vs background');
   // Lines of at most `width` px of text at font size fs.
   function wrapText(text, width, fs, pal) {
@@ -3280,7 +3325,7 @@
         '<text x="24" y="' + (y - 5) + '" font-size="9.5" font-weight="700" letter-spacing="0.4" fill="' + pal.muted + '">' + esc(r.head.toUpperCase()) + '</text>';
       const v = r.value == null ? 0 : r.value;
       const a = X(Math.min(0, v)), b = X(Math.max(0, v));
-      const fill = spec.counts ? pal.seq[3] : v < 0 ? pal.down[3] : pal.up[3];
+      const fill = spec.counts ? pal.seq[3] : sameFx(spec, r) ? pal.muted : v < 0 ? pal.down[3] : pal.up[3];
       const ns = !spec.noSig && !r.sig;
       const depth = r.depth || (r.sub ? 1 : 0), bh = depth === 2 ? 5 : depth ? 8 : 10;
       if (depth) g += '<rect x="20" y="' + (y + 1) + '" width="' + (W - 36) + '" height="' + (rowH - 2) + '" rx="3" fill="' + pal.panel + '" fill-opacity="' + (depth === 2 ? 0.9 : 0.5) + '"/>';
@@ -3304,7 +3349,7 @@
       for (const line of wrapText(spec.treeNote.replace(/<[^>]+>/g, ''), W - 48, 10, pal)) { ny += 14; g += '<text x="24" y="' + ny + '" font-size="10" fill="' + pal.muted + '">' + esc(line) + '</text>'; }
       ny += 8;
     }
-    const swatch = { '': SWATCH.fill(pal.up[3]), neg: SWATCH.fill(pal.down[3]),
+    const swatch = { '': SWATCH.fill(pal.up[3]), neg: SWATCH.fill(pal.down[3]), same: SWATCH.fill(pal.muted),
       ns: (a, b) => '<rect x="' + r1(a) + '" y="' + r1(b - 5) + '" width="20" height="10" rx="2" fill="' + pal.bg + '" stroke="' + pal.muted + '" stroke-width="1.4"/>' };
     const items = spec.noSig ? [] : sigKey(spec).map(([c, l]) => [swatch[c], l]);
     if (spec.selTest) items.unshift([(a, b) => '<line x1="' + r1(a + 10) + '" x2="' + r1(a + 10) + '" y1="' + r1(b - 6) + '" y2="' + r1(b + 6) + '" stroke="' + pal.ink + '" stroke-width="2"/>', 'whole dataset; bars: your selection, ' + selTestText(spec.selTest)]);
@@ -3895,7 +3940,7 @@
         const where = pick(motif, 2, 1, 'sequence motif').concat(pick(sctx || disorder, 1, 1, sctx ? 'structural context' : 'disorder'));
         const which = pick(pan || func, 1, 0, pan ? 'PANTHER class' : 'protein class').concat(pick(cond, 1, 0, 'CD-CODE condensate'), pick(loc, 1, 0, 'Human Protein Atlas location'), pick(dis, 1, 0, 'disease gene set'));
         // the tiles lead, each charting its strongest effects; the figure is drawn only when none of them has one
-        const anyEffect = [motif, sctx || disorder, pan || func, cond].some((spec) => spec && spec.rows.some((r) => ok(r) && r.sig && r.value > 0));
+        const anyEffect = [motif, sctx || disorder, pan || func, cond].some((spec) => spec && spec.rows.some((r) => ok(r) && r.sig && r.value > 0 && aBig(r.value)));
         const tipKey = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span><i class="aq-pt same"></i>about the same (within ' + MIN_EFFECT + '×)</span><span class="a-info" tabindex="0" data-tip="' +
           esc('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against all reviewed human proteins (fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; an effect within ' + MIN_EFFECT + '× either way counts as about the same. Open a tile for every test.') + '">How to read</span>';
         lead = anyEffect ? { q: 'What kinds of proteins are arginine methylated?', hi: '<div class="a-key a-key-line">' + tipKey + '</div>' }
@@ -3911,10 +3956,15 @@
       }
       const chartTile = (spec) => {
         if (!spec) return null;
-        // the strongest rows: four (motifs: four and the two of the other sign, DR among them), the picture alone
-        const motifTile = spec.id === 'ch-motif';
-        const rows = pick(spec, 4, spec.fold ? 0 : motifTile ? 2 : 1, '');
-        return { vis: rows.length ? aForest([[null, rows]], { compact: true }) : '', head: rows.length ? '' : 'none differs (q ≤ ' + PADJ + ')', whole: '' };
+        const differ = (r) => ok(r) && r.sig && aBig(r.value), row = (r) => ({ label: short(r), main: { or: 2 ** r.value, sig: true, q: r.q, fold: !!spec.fold } });
+        const up = spec.rows.filter((r) => differ(r) && r.value > 0).sort((a, b) => b.value - a.value);
+        const dn = spec.fold ? [] : spec.rows.filter((r) => differ(r) && r.value < 0).sort((a, b) => a.value - b.value);
+        const nUp = Math.min(up.length, dn.length ? 5 : 7), nDn = Math.min(dn.length, 7 - nUp, up.length ? 2 : 7);
+        // then, as the opened chart shows them, the significant ones within MIN_EFFECT (grey, about the same)
+        const same = spec.rows.filter((r) => ok(r) && r.sig && !aBig(r.value)).sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+        const rows = up.slice(0, nUp).concat(dn.slice(0, nDn)).concat(same.slice(0, Math.max(0, 7 - nUp - nDn))).map(row);
+        const more = up.length + dn.length + same.length - rows.length;
+        return { vis: rows.length ? aForest([[null, rows]], { compact: true }) + (more ? '<span class="a-more-n">+' + more + ' more</span>' : '') : '', head: rows.length ? '' : 'none differs (q ≤ ' + PADJ + ')', whole: '' };
       };
       const ixStack = (ss) => { if (!ixReady()) return ''; const k = { exp: 0, pred: 0, none: 0 }; for (const s of ss) k[ixStatus(s)]++; return aStack([{ n: k.exp, cls: 'exp', label: 'Experimental evidence', key: 'experimental' }, { n: k.pred, cls: 'pred', label: 'Predicted only', key: 'predicted' }, { n: k.none, cls: 'none', label: 'None recorded' }]); };
       const studies = (ss) => { let m = 0; for (const s of ss) m |= s.study; return popcount(m); };
@@ -4432,7 +4482,7 @@
     const lane = (whole) => {
       const re = whole && spec.selTest;
       return { label: whole ? 'all' : 'sel', pts: spec.rows.filter(ok).map((r) => {
-        const v = re ? r.ref : r.value, sig = re ? r.refQ != null && r.refQ <= PADJ : !!r.sig;
+        const v = re ? r.ref : r.value, sig = (re ? r.refQ != null && r.refQ <= PADJ : !!r.sig) && v != null && aBig(v);
         return { v: v != null && Number.isFinite(v) ? v : null, dir: sig && v ? Math.sign(v) : 0 };
       }) };
     };
