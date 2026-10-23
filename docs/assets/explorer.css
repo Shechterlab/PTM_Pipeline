@@ -1853,6 +1853,19 @@ html.drawer-open { overflow: hidden; }
 .sp-g button:hover:not(:disabled), .sp-g button:focus-visible { background: var(--surface-2); color: var(--accent-dark); }
 .sp-g button[aria-current="true"] { background: color-mix(in srgb, var(--teal-600) 14%, var(--surface)); color: var(--ink); font-weight: 600; }
 .sp-g button:disabled { opacity: 0.45; cursor: default; }
+.sp-head { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin-bottom: -0.2rem; font-size: 0.8rem; color: var(--muted); }
+/* sections pinned on the right (wide screens), as the filters are on the left */
+:root { --sec-pin-w: 17rem; }
+.sec-rail { position: fixed; z-index: 30; inset: 0 0 0 auto; width: var(--sec-pin-w); display: flex; flex-direction: column; background: var(--surface); border-left: 1px solid var(--line); }
+.sec-rail[hidden] { display: none; }
+.sr-body { flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; display: grid; align-content: start; gap: 0.9rem; padding: 0.8rem 1rem 1.2rem; }
+.sr-all { justify-self: start; min-height: 2.1rem; padding: 0.25rem 0.85rem; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+.sr-all[aria-current="true"] { border-color: var(--teal-600); background: var(--teal-600); color: #fff; }
+html.secs-pinned body { padding-right: var(--sec-pin-w); }
+html.secs-pinned .sec-menu, html.secs-pinned .focus-bar.hub { display: none; }
+.pin-btn[aria-pressed="true"] { border-color: var(--teal-600); color: var(--teal); }
+@media (max-width: 1099px) { .pin-btn { display: none; } }
+@media print { .sec-rail { display: none !important; } html.secs-pinned body { padding-right: 0; } }
 .crumb-back { margin-left: 0.6rem; font-size: 0.82rem; }
 /* filters pinned to the left (wide screens) */
 :root { --rail-pin-w: 21rem; }
@@ -1862,7 +1875,6 @@ html.filters-pinned #rail-show, html.filters-pinned .rail-sel, html.filters-pinn
 /* in an open section, the card's own index stays under the section strip */
 .a-mode.focus-mode .card-index { position: sticky; top: calc(var(--toolbar-h) + var(--strip-h, 3rem) + env(safe-area-inset-top, 0px)); z-index: 18; margin-inline: -0.1rem; padding-inline: 0.1rem; background: var(--surface); }
 .a-head:empty { display: none; }
-.rail-pin[aria-pressed="true"] { border-color: var(--teal-600); color: var(--teal); }
 .hg-tree { fill: none; stroke: var(--teal-600); stroke-width: 1.6; stroke-linecap: round; }
 .a-grp.a-wide { flex-basis: 100%; }
 .ui-a .p-top > .facts { display: none; }

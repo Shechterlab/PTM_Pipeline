@@ -2051,6 +2051,7 @@
   function renderView() {
     const el = $('#content');
     hideTip();
+    renderSecRail(false);
     if (UI.view === 'overview') renderOverview(el);
     else if (UI.view === 'proteins') renderProteins(el);
     else if (UI.view === 'sites') renderSites(el);
@@ -2261,7 +2262,7 @@
     // The drawer: what is selected now, the filters by topic, and a foot that says what they leave and closes onto it.
     rail.innerHTML =
       '<div class="drawer-head"><h2 id="rail-title">Filters</h2>' +
-      '<button class="btn quiet small rail-pin" type="button" id="rail-pin" aria-pressed="' + pinned() + '" title="' + (pinned() ? 'Let the filters close again' : 'Keep the filters open on the left') + '">' + (pinned() ? 'Unpin' : 'Pin') + '</button>' +
+      '<button class="btn quiet small rail-pin pin-btn" type="button" id="rail-pin" aria-pressed="' + pinned() + '" title="' + (pinned() ? 'Let the filters close again' : 'Keep the filters open on the left') + '">' + (pinned() ? 'Unpin' : 'Pin') + '</button>' +
       '<button class="btn quiet small" type="button" id="rail-done" title="Close the filters (Esc)">Close</button></div>' +
       '<div class="drawer-body">' +
       '<div class="rail-sel scope" id="rail-sel" aria-live="polite"></div>' +
@@ -2445,7 +2446,7 @@
   function initRail() {
     $('#drawer-bg').addEventListener('click', () => closeFilters());
     applyPin();
-    if (PIN_MQ && PIN_MQ.addEventListener) PIN_MQ.addEventListener('change', applyPin);
+    if (PIN_MQ && PIN_MQ.addEventListener) PIN_MQ.addEventListener('change', () => { applyPin(); renderSecRail(!!$('#content .hub-list')); });
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape' || $('#rail').hidden || pinned()) return;
       // Escape closes an open menu or suggestion list inside the drawer first
@@ -4383,13 +4384,49 @@
     for (const r of A_ROWS) if (r.group == null) r.group = title;
     return html ? '<section class="hub-sec"><h3 class="hub-group">' + esc(title) + '</h3>' + (extra || '') + html + '</section>' : '';
   };
-  // Layout A's Sections menu: every section of the page by group (A_ROWS), the open one marked.
-  const secMenuHtml = () => {
+  // Layout A's sections of the page by group (A_ROWS), the open one marked: a Sections menu in the section bar, or,
+  // pinned (as the filters are, on screens 1100 px and wider), a column on the right.
+  const A_ON_TOP = new Set(['ix-ex']);   // drawn at the top of its page in layout A, so not a section to go to
+  const secGroupsHtml = (cur) => {
     const groups = [];
-    for (const r of A_ROWS) { let g = groups.find((x) => x[0] === r.group); if (!g) groups.push(g = [r.group, []]); g[1].push(r); }
-    return '<details class="sec-menu"><summary>Sections</summary><div class="sec-pop">' + groups.map(([g, rows]) => '<div class="sp-g">' + (g ? '<p class="sp-h">' + esc(g) + '</p>' : '') +
-      rows.map((r) => '<button type="button" data-asec="' + r.key + '" aria-current="false"' + ((r.meta || {}).empty ? ' disabled title="' + esc(r.meta.empty) + '"' : '') + '>' + esc(r.title) + '</button>').join('') + '</div>').join('') + '</div></details>';
+    for (const r of A_ROWS.filter((x) => !A_ON_TOP.has(x.key))) { let g = groups.find((x) => x[0] === r.group); if (!g) groups.push(g = [r.group, []]); g[1].push(r); }
+    return groups.map(([g, rows]) => '<div class="sp-g">' + (g ? '<p class="sp-h">' + esc(g) + '</p>' : '') +
+      rows.map((r) => '<button type="button" data-asec="' + r.key + '" aria-current="' + (r.key === cur) + '"' + ((r.meta || {}).empty ? ' disabled title="' + esc(r.meta.empty) + '"' : '') + '>' + esc(r.title) + '</button>').join('') + '</div>').join('');
   };
+  const secMenuHtml = () => '<details class="sec-menu"><summary>Sections</summary><div class="sec-pop"><div class="sp-head"><span>Sections of this page</span>' +
+    '<button type="button" class="btn quiet small pin-btn" data-secpin title="Keep the sections open on the right">Pin</button></div>' + secGroupsHtml(UI.focus) + '</div></details>';
+  let pinSections = (() => { try { return localStorage.getItem('mse-pin-sections') === '1'; } catch (e) { return false; } })();
+  const secsPinned = () => pinSections && UI_A && (!PIN_MQ || PIN_MQ.matches);
+  // The pinned column follows the page: drawn by hubApply on a page with sections, cleared by renderView before each page.
+  function renderSecRail(on) {
+    let sr = $('#sec-rail');
+    if (!sr) {
+      sr = document.createElement('aside');
+      sr.id = 'sec-rail'; sr.className = 'sec-rail'; sr.hidden = true;
+      sr.setAttribute('aria-label', 'Sections of this page');
+      document.body.appendChild(sr);
+      sr.addEventListener('click', (e) => {
+        if (e.target.closest('[data-secpin]')) { setSecPin(false); return; }
+        const b = e.target.closest('[data-asec]');
+        if (!b || b.disabled) return;
+        if (b.dataset.asec) UI.hubFrom = b.dataset.asec;
+        hubFocus(b.dataset.asec || null);
+      });
+    }
+    const show = on && secsPinned();
+    document.documentElement.classList.toggle('secs-pinned', show);
+    sr.hidden = !show;
+    if (!show) return;
+    sr.innerHTML = '<div class="drawer-head"><h2>Sections</h2><button type="button" class="btn quiet small pin-btn" data-secpin aria-pressed="true" title="Let the sections close again">Unpin</button></div>' +
+      '<div class="sr-body"><button type="button" class="sr-all" data-asec="" aria-current="' + !UI.focus + '">All sections</button>' + secGroupsHtml(UI.focus) + '</div>';
+    syncToolbar();
+  }
+  function setSecPin(v) {
+    pinSections = v;
+    try { localStorage.setItem('mse-pin-sections', v ? '1' : '0'); } catch (e) { /* storage blocked: this visit only */ }
+    $$('details.sec-menu[open]').forEach((d) => { d.open = false; });
+    renderSecRail(!!$('#content .hub-list'));
+  }
   const focusBarHtml = () => '<nav class="focus-bar" aria-label="Sections of this page" hidden><button type="button" class="fb-back" data-fb="back">‹ All sections</button>' + (UI_A ? secMenuHtml() : '') +
     '<span class="fb-crumb"></span><span class="fb-pos"></span><span class="fb-step"><button type="button" data-fb="-1">‹ Previous</button><button type="button" data-fb="1">Next ›</button></span></nav>';
   // Where the page's sections live in the address: the view, or the protein's accession.
@@ -4460,6 +4497,7 @@
         $$('.sec-menu [data-asec]', bar).forEach((b) => b.setAttribute('aria-current', String(on && b.dataset.asec === d.dataset.fold)));
         const m = $('.sec-menu', bar);
         if (m) m.open = false;
+        renderSecRail(true);
         document.documentElement.style.setProperty('--strip-h', bar.offsetHeight + 'px');
       }
     };
@@ -4782,6 +4820,7 @@
   function bindAHome(root) {
     root.classList.toggle('a-mode', UI_A);
     $$('.sec-menu [data-asec]', root).forEach((b) => b.addEventListener('click', () => { const m = b.closest('details'); if (m) m.open = false; UI.hubFrom = b.dataset.asec; hubFocus(b.dataset.asec); }));
+    $$('.sec-menu [data-secpin]', root).forEach((b) => b.addEventListener('click', () => setSecPin(true)));
     const home = $('.a-home', root);
     if (!home) return;
     $$('[data-go]', home).forEach((b) => b.addEventListener('click', () => { if (b.getAttribute('aria-disabled') === 'true') return; UI.hubFrom = b.dataset.go; hubFocus(b.dataset.go); }));
