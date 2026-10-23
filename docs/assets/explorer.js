@@ -369,6 +369,7 @@
     const H = {
       'Sites': 'The methylarginine sites of this release on the protein, coloured as chosen above; click one for its card',
       'InterPro': 'Domains and repeats from InterPro 108.0, the intervals the domain context of the analyses uses: each entry\'s member-database hits (Pfam, SMART, PROSITE and others) merged, and where two entries cover the same stretch the one on more of these proteins named, the other in its tooltip. Homologous superfamilies only for a protein with no domain or repeat. Hover a box for the entry',
+      'InterPro families': 'Families and homologous superfamilies from InterPro 108.0 (a protein whose only entries are superfamilies has them in the InterPro row instead): each entry\'s member-database hits (PANTHER, Pfam, CATH-Gene3D, SUPERFAMILY and others) merged, and where two entries cover the same stretch the one on more reviewed human proteins labels it, the other listed in its hover',
       'Regions': 'UniProt features of type Region: stretches the curators describe, such as an acidic disordered region, an RNA-binding RGG box or an interaction with a partner, with the evidence UniProt cites on the entry; and Motif features (outlined). ' +
         'UniProt\'s Disordered regions are left out here, as disorder is drawn on the chain from MobiDB. Features ' + uni,
       'Composition': 'UniProt Compositional bias features (for example basic and acidic residues), ' + uni,
@@ -473,7 +474,7 @@
   // in this browser). Lysine methylation and the other PTMs come from the pipeline's cross-PTM master table.
   const MAP_OVERLAYS = [['domains', 'Domains'], ['disorder', 'Disorder (wavy chain)'], ['dense', 'Dense methyl-R windows']];
   // Evidence rows follow the shared order: RNA/DNA crosslinks, then PDB interfaces, then IntAct.
-  const MAP_ROWS = [['ipr', 'Domains (InterPro)'], ['regions', 'Regions'], ['charge', 'Charge (EMBOSS, 5-aa mean)'], ['bias', 'Composition'], ['rg', 'RG/RGG-rich'],
+  const MAP_ROWS = [['ipr', 'Domains (InterPro)'], ['iprfam', 'Families and superfamilies (InterPro)'], ['regions', 'Regions'], ['charge', 'Charge (EMBOSS, 5-aa mean)'], ['bias', 'Composition'], ['rg', 'RG/RGG-rich'],
     ['args', 'All arginines'], ['variants', 'Variants and mutagenesis'], ['kme', 'Lys methylation'], ['phospho', 'Phosphorylation'], ['kacyl', 'Lys acylation'],
     ['ub', 'Ubiquitin / SUMO'], ['xl', 'RNA/DNA crosslinks'], ['iface', 'Contacts in PDB structures'], ['intact', 'IntAct mutations and binding regions'], ['pred', 'Predicted protein contacts'],
     ['lowconf', 'Lower-confidence evidence']];
@@ -547,7 +548,7 @@
       argOther: '#76848B',
       rnaBg: 'rgba(123,79,191,0.14)', dnaBg: 'rgba(183,121,31,0.16)', proteinBg: 'rgba(14,116,144,0.12)', rnaInk: '#5B3A96', dnaInk: '#7A4F10', proteinInk: '#0B5A70',
       domain: '#B9DDE6', domainInk: '#0F3B47', dis: '#8796A0', rg: '#F5D6DE', rgInk: '#7A2E45',
-      bias: '#FDE3D4', region: '#E3ECF6', dense: 'rgba(17,24,39,0.07)',
+      bias: '#FDE3D4', region: '#E3ECF6', family: '#ECE4CF', familyInk: '#4D4123', dense: 'rgba(17,24,39,0.07)',
       kme: '#A21CAF', ptm: '#6B7F88', variant: '#8A99A3', mark: '#111827', arg: '#155E75',
       domain3d: '#6FB8CF', rg3d: '#E08AA3', chain3d: '#DCE3E7',
       seq: ['#DCE2E5', '#B3BFC5', '#8396A0', '#566A73', '#26343B'], rnaPale: '#CDB8EE', dnaPale: '#EBD3A6',
@@ -560,7 +561,7 @@
       argOther: '#B8C3C8',
       rnaBg: 'rgba(123,79,191,0.3)', dnaBg: 'rgba(183,121,31,0.3)', proteinBg: 'rgba(63,181,207,0.22)', rnaInk: '#D2BDF5', dnaInk: '#EFCA85', proteinInk: '#9BDDEC',
       domain: '#1F5566', domainInk: '#E3F4F8', dis: '#8FA6B0', rg: '#5A2C3A', rgInk: '#F6C9D6',
-      bias: '#4A2A1C', region: '#213847', dense: 'rgba(232,239,242,0.09)',
+      bias: '#4A2A1C', region: '#213847', family: '#40391F', familyInk: '#F0E6C8', dense: 'rgba(232,239,242,0.09)',
       kme: '#D46BE0', ptm: '#8FA3AB', variant: '#7E8E95', mark: '#F3F6F7', arg: '#6CC6DB',
       domain3d: '#4E9DB3', rg3d: '#C06C86', chain3d: '#D0D9DD',
       seq: ['#2E3B41', '#3F5059', '#5C717B', '#8DA2AB', '#C9D6DB'], rnaPale: '#5B4A80', dnaPale: '#6B5530',
@@ -2052,6 +2053,9 @@
         if (site) { UI.highlight = +site[1] + (P[hit[0]].hist ? 1 : 0); siteInHash = true; }
         else if (/^p-[a-z0-9]+$/.test(sitePart || '')) focus = sitePart;
         rememberProtein(hit[0]);
+      } else if (UNIPROT_ACC.test(accPart) || unlistedKey(accPart)) {
+        // a protein without a site: its light page
+        view = 'unlisted'; UI.unl = accPart.toUpperCase();
       }
     }
     // Only the section changed (a scorecard row, Back): show it without drawing the page again.
@@ -2059,7 +2063,7 @@
     UI.focus = focus;
     if (samePage) { setDocTitle(); hubApply($('#content')); return; }
     UI.view = view;
-    if (!['protein', 'about'].includes(view)) UI.lastView = view;
+    if (!['protein', 'about', 'unlisted'].includes(view)) UI.lastView = view;
     setDocTitle();
     if (view !== 'report' && view !== 'compare') setPrintPageStyle(false);
     $$('.tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.view === view)));
@@ -2097,11 +2101,18 @@
     else if (UI.view === 'compare') renderCompare(el);
     else if (UI.view === 'about') renderAbout(el);
     else if (UI.view === 'protein') renderProtein(el, P[UI.detail]);
+    else if (UI.view === 'unlisted') renderUnlisted(el, UI.unl);
     if (!UI.secsOn) applyRailTab();
     UI.hubR = R;
     UI.hubDetail = UI.view === 'protein' ? UI.detail : null;
   }
 
+  // A protein without a site: its light page. The word typed to find it leaves the search, as it selects no site.
+  function openUnlisted(x) {
+    if (Q.plain && unlistedKey(Q.plain.trim()) === x) { setQuery(queryText('', Q.tokens)); compute(); }
+    go('protein', x.acc);
+    window.scrollTo({ top: 0 });
+  }
   function openProtein(i, pos) {
     UI.highlight = pos == null ? null : pos;
     if (UI.detail !== i) { UI.detail = i; UI.zoom = null; UI.openEvidence.clear(); UI.pIx = ''; }
@@ -2119,7 +2130,7 @@
   function setDocTitle() {
     baseTitle = baseTitle || document.title;
     const p = UI.view === 'protein' && UI.detail != null ? P[UI.detail] : null;
-    document.title = (p ? p.label + (UI.highlight != null ? ' ' + rl(UI.highlight, p) : '') : VIEW_NAMES[UI.view] || '') + ' · ' + baseTitle.split(' · ')[0];
+    document.title = (p ? p.label + (UI.highlight != null ? ' ' + rl(UI.highlight, p) : '') : UI.view === 'unlisted' ? UI.unlLabel || UI.unl : VIEW_NAMES[UI.view] || '') + ' · ' + baseTitle.split(' · ')[0];
   }
   // Proteins opened in this session, newest first, for the breadcrumb bar.
   function rememberProtein(i) {
@@ -2700,7 +2711,10 @@
     const list = $('#suggest');
     let sel = -1;
     let items = [];
-    const closeList = () => { list.hidden = true; input.setAttribute('aria-expanded', 'false'); sel = -1; };
+    const hideList = () => { list.hidden = true; input.setAttribute('aria-expanded', 'false'); sel = -1; };
+    // An explicit close (Enter, a pick, Escape, leaving the box) also stops a list waiting on data from reopening.
+    let shut = 0;
+    const closeList = () => { shut++; hideList(); };
     // The word being typed: key:value terms get value suggestions, a lone plain word gets protein suggestions.
     const lastWord = () => { const m = /(?:^|\s)((?:[A-Za-z]+:"[^"]*"?)|[^\s]*)$/.exec(input.value); return m ? m[1] : ''; };
     const drawList = () => {
@@ -2711,9 +2725,14 @@
       const concepts = !/:/.test(w) ? conceptSuggestions(plainWords.join(' ')) : [];
       // An exact protein match stays first; concept filters follow, then the other protein matches.
       const exactN = prots.length && prots[0][0].gene.toLowerCase() === w.toLowerCase() ? 1 : 0;
-      items = terms.map((t) => ({ term: t })).concat(prots.slice(0, exactN).map(([p, alias]) => ({ p, alias })), concepts.map((t) => ({ term: t })), prots.slice(exactN).map(([p, alias]) => ({ p, alias }))).slice(0, 10);
-      if (!items.length || !w) { closeList(); return; }
-      list.innerHTML = items.map((it, k) => '<li role="option" id="sg-' + k + '" aria-selected="' + (k === sel) + '" data-k="' + k + '">' + (it.term
+      // a protein without a site that the word names exactly leads the list
+      if (!PROTEOME.byAcc && w.length >= 2 && !/:/.test(w)) { const g = shut; loadProteome().then(() => { if (g === shut && document.activeElement === input) drawList(); }); }
+      const ux = !exactN && !/:/.test(w) && plainWords.length <= 1 && w.length >= 2 && !prots.some(([p]) => p.acc.toLowerCase() === w.toLowerCase()) ? unlistedKey(w) : null;
+      items = terms.map((t) => ({ term: t })).concat(ux ? [{ unl: ux }] : [], prots.slice(0, exactN).map(([p, alias]) => ({ p, alias })), concepts.map((t) => ({ term: t })), prots.slice(exactN).map(([p, alias]) => ({ p, alias }))).slice(0, 10);
+      if (!items.length || !w) { hideList(); return; }
+      list.innerHTML = items.map((it, k) => '<li role="option" id="sg-' + k + '" aria-selected="' + (k === sel) + '" data-k="' + k + '">' + (it.unl
+        ? '<b>' + esc(it.unl.gene || it.unl.acc) + '</b><span>' + esc(it.unl.acc) + ' · no methylarginine site in this release' + (it.unl.lc && !LC_ON ? ' (' + it.unl.lc + ' lower-confidence)' : '') + '</span><em>page</em>'
+        : it.term
         ? '<b class="sg-term">' + esc(it.term.label) + '</b><span>' + esc(it.term.sub || '') + '</span><em>filter</em>'
         : '<b>' + esc(it.p.label) + '</b><span>' + (it.alias ? 'synonym ' + esc(it.alias) + ' · ' : '') + esc(it.p.name || it.p.acc) + '</span><em>' + it.p.sites.length + ' site' + (it.p.sites.length === 1 ? '' : 's') + '</em>') + '</li>').join('');
       list.hidden = false;
@@ -2739,6 +2758,12 @@
         closeList();
         setQuery(input.value);
         compute();
+        // One word that names no protein of the set exactly: a protein without a site opens its own page.
+        const w1 = !Q.tokens.length && Q.plain ? Q.plain.trim() : '';
+        if (w1 && !/[\s,;]/.test(w1) && !(lookupExact(w1) || []).length && !/[:_/-]R?\d+$/i.test(w1)) {
+          loadProteome().then(() => { const x = unlistedKey(w1); if (x) openUnlisted(x); else if (UI.view === 'overview') go(landing()); });
+          return;
+        }
         if (R.prots.length === 1) openProtein(R.prots[0].i, Q.positions && Q.positions.size ? Array.from(Q.positions.values())[0].values().next().value : null);
         // One protein named with a site it lacks: open the protein; the note under the search says the site is not in the set.
         else if (!R.prots.length && Q.proteins && Q.proteins.size === 1 && Q.positions) openProtein(Q.proteins.values().next().value);
@@ -2753,6 +2778,7 @@
     });
     const pick = (it) => {
       const w = lastWord(), head = input.value.slice(0, input.value.length - w.length);
+      if (it.unl) { closeList(); openUnlisted(it.unl); return; }
       if (it.term) {
         // A key keeps the list open for its values; a value completes the term and applies it. A concept term
         // replaces the plain words it was suggested for.
@@ -3098,16 +3124,21 @@
     if (words.length !== 1) return '';
     const w = words[0].toUpperCase().replace(/-\d+$/, '');
     let k = partnerByGene(w);
-    if (k < 0) { const x = IX.prot.find((y) => y.acc.toUpperCase() === w); k = x ? x.k : -1; }
-    if (k < 0) return '';
-    const x = IX.prot[k], nb = boundBy(F.ixScore).get(k) || 0;
-    const cx = (IX.cxOf.get(k) || []).map((c) => IX.cx[c]).filter((c) => !c.pred && c.m > 0).sort((a, b) => b.m - a.m);
+    if (k < 0) { const y = IX.prot.find((z) => z.acc.toUpperCase() === w); k = y ? y.k : -1; }
+    if (k >= 0 && IX.prot[k].p >= 0) k = -1;
+    const ux = unlistedKey(w);
+    if (!PROTEOME.byAcc) loadProteome().then(() => { if (unlistedKey(w) && $('#content .card.empty') && !$('#content .unl-empty')) renderView(); });
+    if (k < 0 && !ux) return '';
+    const x = k >= 0 ? IX.prot[k] : ux, nb = k >= 0 ? boundBy(F.ixScore).get(k) || 0 : 0;
+    const cx = (k >= 0 ? IX.cxOf.get(k) || [] : []).map((c) => IX.cx[c]).filter((c) => !c.pred && c.m > 0).sort((a, b) => b.m - a.m);
     const acts = (nb ? ['<button class="chip" type="button" data-setq="binds:' + esc(quoteTerm(x.gene)) + '">The ' + fmt(nb) + ' methylated protein' + (nb === 1 ? '' : 's') + ' that bind ' + esc(x.gene) + '</button>'] : [])
       .concat(cx.slice(0, 3).map((c) => '<button class="chip" type="button" data-setq="complex:' + esc(quoteTerm(c.id)) + '" title="' + esc(c.id + ': ' + fmt(c.m) + ' of ' + fmt(c.n) + ' members methylated') + '">' + esc(c.name) + '</button>'));
-    return '<div class="card empty"><b>No methylarginine site on ' + esc(x.gene) + ' (' + esc(x.acc) + ')' + (LC_ON ? ', at either confidence' : '') + '</b>' +
+    const lc = ux && ux.lc;
+    return '<div class="card empty unl-empty"><b>No methylarginine site on ' + esc(x.gene) + ' (' + esc(x.acc) + ')' + (LC_ON ? ', at either confidence' : '') + '</b>' +
       'None of the studies and databases compiled here reports one' + (LC_ON ? '' : ' that passes the site tests') + '. Absent here means not reported, not shown to be unmethylated.' +
-      (acts.length ? '<p>It appears here as a partner:</p><div class="empty-tries">' + acts.join('') + '</div>' : '') +
-      (LC_ON ? '' : '<p><a class="btn small" href="' + esc(lcUrl(true)) + '">Look among lower-confidence sites</a></p>') + '</div>';
+      '<p><a class="btn small" href="#' + encodeURIComponent(x.acc.split('-')[0]) + '">Open ' + esc(x.gene || x.acc) + '\'s page</a>' +
+      (!LC_ON && lc ? ' <a class="btn small quiet" href="' + esc(lcUrl(true)) + '">Show its ' + lc + ' lower-confidence site' + (lc === 1 ? '' : 's') + '</a>' : '') + '</p>' +
+      (acts.length ? '<p>It appears here as a partner:</p><div class="empty-tries">' + acts.join('') + '</div>' : '') + '</div>';
   }
 
   function emptyState() {
@@ -5557,7 +5588,7 @@
     const x = IX.prot[k];
     if (!x) return '';
     return x.p >= 0 ? '<button class="linkish gene-ref" type="button" data-i="' + x.p + '" title="' + esc('Open ' + x.gene + ' (' + x.acc + ')' + (extra ? ': ' + extra : '')) + '">' + esc(x.gene) + '</button>'
-      : '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(x.acc) + '/entry" target="_blank" rel="noopener" title="' + esc(x.gene + ' in UniProt' + (extra ? ': ' + extra : '')) + '">' + esc(x.gene) + '</a>';
+      : unlistedLink(x, 'gene-ref unl');
   }
   const bindGeneRefs = (root) => $$('.gene-ref[data-i]', root).forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); hideTip(); openProtein(+b.dataset.i); }));
   // Who probably writes and who might read one methylarginine: the methylation evidence at the site (Maron IPs,
@@ -5694,6 +5725,24 @@
   }
 
   // Domains & regions: UniProt features with the methyl-R sites they hold, plus the pipeline's InterPro classes.
+  // InterPro entries as a table: name (with the entries covering the same stretch), entry link, range, and the sites
+  // inside and within 20 aa (inside and near take the entry; a protein without sites passes null).
+  // An entry in several pieces (repeats, PRINTS fingerprints) is one row with its ranges.
+  function iprTableHtml(list, head, inside, near) {
+    const counts = !!inside, rows = [], byIpr = new Map();
+    for (const f of list) {
+      let r = byIpr.get(f.ipr);
+      if (!r) { r = { f, parts: [], also: new Set() }; byIpr.set(f.ipr, r); rows.push(r); }
+      r.parts.push(f);
+      f.also.forEach((a) => r.also.add(a));
+    }
+    const sum = (fn, r) => r.parts.reduce((t, f) => t + fn(f), 0);
+    return '<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>' + esc(head) + '</th><th>Entry</th><th class="r">Range</th>' +
+      (counts ? '<th class="r" title="Methylarginine sites inside the entry">Sites in</th><th class="r hide-xs" title="Sites within 20 aa outside the entry">±20 aa</th>' : '') + '</tr></thead><tbody>' +
+      rows.map((r) => { const f = r.f, n = counts ? sum(inside, r) : 0, also = Array.from(r.also); return '<tr' + (n ? ' class="has"' : '') + '><td>' + esc(f.name) + (also.length ? ' <span class="muted small" title="' + esc('Same stretch: ' + also.join('; ')) + '">+' + also.length + '</span>' : '') +
+        '</td><td><a href="https://www.ebi.ac.uk/interpro/entry/InterPro/' + esc(f.ipr) + '/" target="_blank" rel="noopener">' + esc(f.ipr) + ' ↗</a></td><td class="r num">' + r.parts.map((x) => x.start + '–' + x.end).join(', ') + '</td>' +
+        (counts ? '<td class="r num">' + n + '</td><td class="r num hide-xs">' + sum(near, r) + '</td>' : '') + '</tr>'; }).join('') + '</tbody></table></div>';
+  }
   function renderDomainCard(p, u) {
     const box = $('#card-dom');
     if (!box) return;
@@ -5714,12 +5763,10 @@
         feats.map((f) => { const n = inside(f); const ins = pos.filter((x) => x >= f.start && x <= f.end).map((x) => rl(x, p)); return '<tr' + (n ? ' class="has"' : '') + '><td>' + (f.rg ? '<span title="' + esc('Found in the sequence: ' + RG_HELP + (ins.length ? '. Methylarginines inside: ' + ins.join(', ') : '')) + '">' + esc(f.name) + '</span>' : '<a href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(p.acc.split('-')[0]) + '/entry#family_and_domains" target="_blank" rel="noopener" title="' + esc(f.kind + ' ' + f.name + ', ' + rn(f.start, p) + '–' + rn(f.end, p) + ' (UniProt)' + (ins.length ? '. Methylarginines inside: ' + ins.join(', ') : '')) + '">' + esc(f.name) + '</a>') + '</td><td><span class="tag kind-' + f.kind.replace(/[^A-Za-z]/g, '') + '">' + esc(f.kind) + '</span></td><td class="r num">' + rn(f.start, p) + '–' + rn(f.end, p) + '</td><td class="r num">' + (n || '<span class="muted">0</span>') + '</td><td class="r num hide-xs">' + (near(f) || '<span class="muted">0</span>') + '</td></tr>'; }).join('') +
         '</tbody></table></div>' : '<p class="muted">UniProt annotates no domains or regions for this entry.</p>';
     }
-    const ipr = iprOf(p);
-    const iprTable = !ipr ? '<p class="note">Loading InterPro domains…</p>' : !ipr.length ? '<p class="muted">InterPro 108.0 has no domain or repeat for this protein.</p>' :
-      '<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>InterPro domain</th><th>Entry</th><th class="r">Range</th><th class="r" title="Methylarginine sites inside the domain">Sites in</th><th class="r hide-xs" title="Sites within 20 aa outside the domain">±20 aa</th></tr></thead><tbody>' +
-      ipr.map((f) => { const n = inside(f); return '<tr' + (n ? ' class="has"' : '') + '><td>' + esc(f.name) + (f.also.length ? ' <span class="muted small" title="' + esc('Same stretch: ' + f.also.join('; ')) + '">+' + f.also.length + '</span>' : '') + '</td><td><a href="https://www.ebi.ac.uk/interpro/entry/InterPro/' + esc(f.ipr) + '/" target="_blank" rel="noopener">' + esc(f.ipr) + ' ↗</a></td><td class="r num">' + f.start + '–' + f.end + '</td><td class="r num">' + n + '</td><td class="r num hide-xs">' + near(f) + '</td></tr>'; }).join('') + '</tbody></table></div>';
-    box.innerHTML = '<h3>Domains &amp; regions</h3><p class="sub">UniProt domains and regions, and InterPro domains, with the methylarginines in each.</p>' + table +
-      '<p class="flabel" style="margin:1rem 0 .4rem">InterPro domains (108.0, as the analyses use them)</p>' + iprTable +
+    const ipr = iprOf(p), iprFam = iprOf(p, true);
+    const iprTable = !ipr ? '<p class="note">Loading InterPro domains…</p>' : !ipr.length ? '<p class="muted">InterPro 108.0 has no domain or repeat for this protein.</p>' : iprTableHtml(ipr, 'InterPro domain', inside, near);
+    const famTable = !iprFam || !iprFam.length ? '' : '<p class="flabel" style="margin:1rem 0 .4rem">InterPro families and superfamilies</p>' + iprTableHtml(iprFam, 'Family or superfamily', inside, near);    box.innerHTML = '<h3>Domains &amp; regions</h3><p class="sub">UniProt domains and regions, and InterPro domains, with the methylarginines in each.</p>' + table +
+      '<p class="flabel" style="margin:1rem 0 .4rem">InterPro domains (108.0, as the analyses use them)</p>' + iprTable + famTable +
       '<p class="flabel" style="margin:1rem 0 .4rem">Pipeline domain context (InterPro)</p><div class="tags">' +
       Object.entries(ctx).sort((a, b) => b[1] - a[1]).map(([k, n]) => '<span class="tag">' + esc(k) + ' · ' + n + '</span>').join('') + '</div>' +
       '<div class="tags" style="margin-top:.35rem">' + Object.entries(cls).filter(([k]) => k && k !== 'No domain annotation').sort((a, b) => b[1] - a[1]).map(([k, n]) => '<button class="chip" type="button" data-cls="' + esc(k) + '" title="Sites whose nearest InterPro domain is in this class; click to filter all sites by it">' + esc(k) + ' · ' + n + '</button>').join('') + '</div>';
@@ -6563,8 +6610,8 @@
     const f = UI.fig;
     return '<div class="card fig-card"><div class="card-head"><div><h3>' + esc(mapTitle(p)) + '</h3><p class="sub" id="map-sub">' + esc(p.acc) + ' · loading UniProt features…</p></div>' +
       '<div class="exp" role="group" aria-label="Figure export"><button type="button" id="zoom-reset" hidden>Reset zoom</button><button type="button" id="fig-svg">SVG</button><button type="button" id="fig-png">PNG</button></div></div>' +
-      '<div class="fig-controls"><label class="fig-ctl">Colour sites by <select id="fig-color">' + Object.keys(COLOR_MODES).map((k) => '<option value="' + k + '"' + (f.color === k ? ' selected' : '') + '>' + esc(COLOR_MODES[k].name) + '</option>').join('') + '</select></label>' +
-      '<div class="seg" role="group" aria-label="Site labels"><span>Site labels</span>' + [['auto', 'Auto'], ['all', 'All'], ['none', 'None']].map(([k, l]) => '<button type="button" data-lab="' + k + '" aria-pressed="' + (f.labels === k) + '">' + l + '</button>').join('') + '</div>' +
+      '<div class="fig-controls">' + (p.unl ? '' : '<label class="fig-ctl">Colour sites by <select id="fig-color">' + Object.keys(COLOR_MODES).map((k) => '<option value="' + k + '"' + (f.color === k ? ' selected' : '') + '>' + esc(COLOR_MODES[k].name) + '</option>').join('') + '</select></label>' +
+      '<div class="seg" role="group" aria-label="Site labels"><span>Site labels</span>' + [['auto', 'Auto'], ['all', 'All'], ['none', 'None']].map(([k, l]) => '<button type="button" data-lab="' + k + '" aria-pressed="' + (f.labels === k) + '">' + l + '</button>').join('') + '</div>') +
       '<details class="col-menu rows-menu"><summary class="btn quiet small">Rows</summary><div class="col-pop" id="rows-pop">' + rowsMenuHtml() + '</div></details>' + '</div>' +
       // the key under a "Key" toggle on narrow screens, where it would otherwise fill the screen above the map
       '<details class="key-fold"' + (narrowScreen() ? '' : ' open') + '><summary>Key</summary><div class="legend" id="fig-legend"></div></details><div class="map-box" id="map-box"></div>' +
@@ -6573,12 +6620,12 @@
 
   function bindFigure(p) {
     const rerender = () => drawMap(p, UNIDATA.get(p.acc));
-    $('#fig-color').addEventListener('change', (e) => { UI.fig.color = e.target.value; rerender(); styleStructure(); renderAfSide(p, AFDATA.get(p.acc)); });
+    if ($('#fig-color')) $('#fig-color').addEventListener('change', (e) => { UI.fig.color = e.target.value; rerender(); styleStructure(); renderAfSide(p, AFDATA.get(p.acc)); });
     $$('[data-lab]').forEach((b) => b.addEventListener('click', () => { UI.fig.labels = b.dataset.lab; $$('[data-lab]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); rerender(); }));
     bindRowsMenu(p);
     const exportFig = (kind) => {
       const out = mapSvg(p, UNIDATA.get(p.acc), { pal: EXPORT_PAL, forExport: true });
-      exportFigure(kind, out, (p.gene || p.acc) + '_methylarginine_map' + (UI.zoom ? '_' + out.v0 + '-' + out.v1 : ''));
+      exportFigure(kind, out, (p.gene || p.acc) + (p.unl ? '_protein_map' : '_methylarginine_map') + (UI.zoom ? '_' + out.v0 + '-' + out.v1 : ''));
     };
     $('#fig-svg').addEventListener('click', () => exportFig('svg'));
     $('#fig-png').addEventListener('click', () => exportFig('png'));
@@ -6671,7 +6718,7 @@
     };
 
     if (titled0) {
-      const sub = p.acc + ' · ' + fmt(len) + ' aa · ' + p.sites.length + ' methylarginine site' + (p.sites.length === 1 ? '' : 's') + (p.hist ? ' · histone numbering (no initiator Met)' : '') + (UI.zoom && !o.full ? ' · showing residues ' + rn(v0, p) + '–' + rn(v1, p) : '');
+      const sub = p.acc + ' · ' + fmt(len) + ' aa · ' + (p.unl ? 'no methylarginine site in this release' : p.sites.length + ' methylarginine site' + (p.sites.length === 1 ? '' : 's')) + (p.hist ? ' · histone numbering (no initiator Met)' : '') + (UI.zoom && !o.full ? ' · showing residues ' + rn(v0, p) + '–' + rn(v1, p) : '');
       g += '<text x="0" y="26" font-size="' + fitFs(mapTitle(p), 19, W - MR, pal, 700) + '" font-weight="700" fill="' + pal.ink + '">' + esc(mapTitle(p)) + '</text>' +
         '<text x="0" y="46" font-size="' + fitFs(sub, 11.5, W - MR, pal) + '" fill="' + pal.muted + '">' + esc(sub) + '</text>';
     }
@@ -6683,7 +6730,7 @@
       }
       if (wins.length) legend.push([SWATCH.fill(pal.dense), 'Dense methyl-R window']);
     }
-    tlabel('Sites', headTop + 10);
+    if (p.sites.length) tlabel('Sites', headTop + 10);
     const dis = shownDisorder(p, u);
     const chain = chainSvg(pal, cx, v0, v1, base, 8, dis, (svg, a, b) => svg.replace(/\/>$/, ' class="feat"' + tip('<b>Disordered</b> ' + nspan(a, b) + '<br>' + esc(dis.source)) + '/>'));
     g += chain.bars + chain.waves;
@@ -6776,6 +6823,16 @@
       boxTrack('InterPro', list, pal.domain, pal.domainInk, (f) => iprLabel(f.name), (f) => '<b>' + esc(f.name) + '</b> (' + esc(f.ipr) + ', ' + esc(f.type.replace('_', ' ')) + ')<br>' + nspan(f.start, f.end) +
         (f.also.length ? '<br>Same stretch: ' + f.also.map(esc).join('; ') : '') + '<br><span class="muted">InterPro 108.0</span>', all.length);
       if (list.length) legend.push([SWATCH.fill(pal.domain), 'Domain or repeat (InterPro)']);
+    };
+    rows.iprfam = () => {
+      const all = iprOf(p, true);
+      if (!all) return;
+      const list = all.filter((f) => visible(f.start, f.end));
+      // an entry in several pieces (PRINTS fingerprints) is named once, on its first piece
+      const first = new Set(list.map((f) => list.find((g) => g.ipr === f.ipr)));
+      boxTrack('InterPro families', list, pal.family, pal.familyInk, (f) => (first.has(f) ? f.name : ''), (f) => '<b>' + esc(f.name) + '</b> (' + esc(f.ipr) + ', ' + esc(f.type.replace('_', ' ')) + ')<br>' + nspan(f.start, f.end) +
+        (f.also.length ? '<br>Same stretch: ' + f.also.map(esc).join('; ') : '') + '<br><span class="muted">InterPro 108.0</span>', all.length);
+      if (list.length) legend.push([SWATCH.fill(pal.family), 'Family or superfamily (InterPro)']);
     };
     rows.regions = () => {
       const all = feats.filter((f) => (f.type === 'Region' && f.desc !== 'Disordered') || f.type === 'Motif'), list = all.filter((f) => visible(f.start, f.end));
@@ -7077,9 +7134,9 @@
     $('#zoom-reset').hidden = !UI.zoom;
     // The page legend lists exactly what the map drew, with the same marks (the export legend uses the same list).
     const pal = screenPalette(), hol = (k) => !!(out.mode.hollow && out.mode.hollow[k]);
-    $('#fig-legend').innerHTML = '<span class="legend-title">' + esc(out.mode.name) + '</span>' +
-      out.mode.cats.map((c, k) => '<span>' + swatchHtml(SWATCH.head(pal, out.colors[k], hol(k))) + esc(c) + '</span>').join('') +
-      (out.legend.length ? '<span class="legend-break"></span>' + out.legend.map(([draw, label]) => '<span>' + swatchHtml(draw) + esc(label) + '</span>').join('') : '');
+    $('#fig-legend').innerHTML = (p.sites.length ? '<span class="legend-title">' + esc(out.mode.name) + '</span>' +
+      out.mode.cats.map((c, k) => '<span>' + swatchHtml(SWATCH.head(pal, out.colors[k], hol(k))) + esc(c) + '</span>').join('') + (out.legend.length ? '<span class="legend-break"></span>' : '') : '') +
+      out.legend.map(([draw, label]) => '<span>' + swatchHtml(draw) + esc(label) + '</span>').join('');
     box.innerHTML = out.svg;
     bindMap(box, p, u, out);
   }
@@ -8412,7 +8469,7 @@
     const pv = ixReady() && !isoform ? predPartners(p) : [];
     const geneLink = (k) => {
       const x = IX.prot[k];
-      return x.p >= 0 && x.p !== p.i ? '<button class="linkish strong" type="button" data-open="' + x.p + '">' + esc(x.gene) + '</button>' : '<b>' + esc(x.gene) + '</b>';
+      return x.p >= 0 && x.p !== p.i ? '<button class="linkish strong" type="button" data-open="' + x.p + '">' + esc(x.gene) + '</button>' : x.p >= 0 ? '<b>' + esc(x.gene) + '</b>' : unlistedLink(x, 'linkish strong');
     };
     const pvRows = pv.slice(0, UI.predAll ? pv.length : 12).map((r) => '<tr><td>' + geneLink(r.k) + ' <span class="muted mono">' + esc(IX.prot[r.k].acc) + '</span></td>' +
       '<td class="r num">' + (r.sc / 100).toFixed(2) + '</td><td>' + r.sites.slice(0, 10).map((x) => '' + rl(x)).join(', ') + (r.sites.length > 10 ? ' +' + (r.sites.length - 10) : '') + '</td>' +
@@ -9510,7 +9567,7 @@
   function loadInterpro() {
     if (!INTERPRO.promise) INTERPRO.promise = fetch('data/methylarg_interpro.json' + (ASSET_V ? '?v=' + encodeURIComponent(ASSET_V) : ''))
       .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then((d) => { INTERPRO.meta = d.meta; INTERPRO.names = d.names; INTERPRO.data = d.prot || {}; }, () => { INTERPRO.data = {}; INTERPRO.names = []; })
+      .then((d) => { INTERPRO.meta = d.meta; INTERPRO.names = d.names; INTERPRO.data = d.prot || {}; INTERPRO.fam = d.fam || {}; }, () => { INTERPRO.data = {}; INTERPRO.fam = {}; INTERPRO.names = []; })
       .then(() => {
         const p = UI.view === 'protein' && UI.detail != null ? P[UI.detail] : null;
         if (p && $('#map-box')) drawMap(p, UNIDATA.get(p.acc));
@@ -9518,13 +9575,144 @@
       });
     return INTERPRO.promise;
   }
-  // A protein's InterPro domains [{start, end, ipr, name, type, also: [names]}], [] for none or an isoform, null until loaded.
+  // A protein's InterPro domains, or with fam its families and superfamilies: [{start, end, ipr, name, type, also:
+  // [names]}], [] for none or an isoform, null until loaded. A protein without a site carries its own (unlistedPage).
   const iprLabel = (name) => name.replace(/ domain$/i, '');
-  function iprOf(p) {
+  const iprList = (rows, N) => (rows || []).map(([start, end, k, also]) => ({ start, end, ipr: N[k][0], name: N[k][1], type: N[k][2], also: (also || []).map((x) => N[x][0] + ' ' + N[x][1]) }));
+  function iprOf(p, fam) {
     if (p.iso) return [];
+    if (p.unl) return fam ? p.unl.fam : p.unl.dom;
     if (!INTERPRO.data) { loadInterpro(); return null; }
-    const N = INTERPRO.names;
-    return (INTERPRO.data[p.acc] || []).map(([start, end, k, also]) => ({ start, end, ipr: N[k][0], name: N[k][1], type: N[k][2], also: (also || []).map((x) => N[x][0] + ' ' + N[x][1]) }));
+    return iprList((fam ? INTERPRO.fam : INTERPRO.data)[p.acc], INTERPRO.names);
+  }
+  // ------------------------------------------------------------- proteins without a site
+  // The reviewed human proteins with no site in this view (scripts/36c): an index for search (accession, gene, the
+  // lower-confidence sites of the other view), read on first need, and each protein's record (name, length, MobiDB
+  // disorder, InterPro domains and families, CD-CODE condensates) from one of 64 shard files. Their page is light: the
+  // protein map from UniProt and these records, the methylated proteins that bind them, their complexes and condensates.
+  const PROTEOME = { byAcc: null, byGene: null, shards: 64, promise: null, shardP: new Map() };
+  const UNIPROT_ACC = /^([OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2})$/i;
+  function loadProteome() {
+    if (!PROTEOME.promise) PROTEOME.promise = fetch('data/methylarg_proteome.json' + (ASSET_V ? '?v=' + encodeURIComponent(ASSET_V) : ''))
+      .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then((d) => {
+        PROTEOME.shards = d.shards || 64; PROTEOME.byAcc = new Map(); PROTEOME.byGene = new Map();
+        for (const [acc, gene, lc] of d.prot) {
+          const x = { acc, gene, lc };
+          PROTEOME.byAcc.set(acc.toUpperCase(), x);
+          if (gene && !PROTEOME.byGene.has(gene.toUpperCase())) PROTEOME.byGene.set(gene.toUpperCase(), x);
+        }
+      }, () => { PROTEOME.byAcc = new Map(); PROTEOME.byGene = new Map(); PROTEOME.failed = true; });
+    return PROTEOME.promise;
+  }
+  // The shard of an accession, as scripts/36c computes it.
+  const proteomeShard = (acc) => { let h = 0; for (const c of acc) h = (h * 31 + c.charCodeAt(0)) % 1000003; return h % PROTEOME.shards; };
+  // The protein without a site a search word names (accession, isoform accession or gene symbol), or null; null too
+  // until the index has loaded.
+  function unlistedKey(word) {
+    if (!PROTEOME.byAcc || !word) return null;
+    const w = String(word).trim().toUpperCase().replace(/-\d+$/, '');
+    return PROTEOME.byAcc.get(w) || PROTEOME.byGene.get(w) || null;
+  }
+  // The index entry with its record filled in from its shard, or null when no reviewed protein without a site matches.
+  function loadUnlisted(word) {
+    return loadProteome().then(() => {
+      const x = unlistedKey(word);
+      if (!x || x.len) return x;
+      const k = proteomeShard(x.acc);
+      if (!PROTEOME.shardP.has(k)) {
+        PROTEOME.shardP.set(k, fetch('data/proteome/p' + String(k).padStart(2, '0') + '.json' + (ASSET_V ? '?v=' + encodeURIComponent(ASSET_V) : ''))
+          .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .catch(() => { PROTEOME.shardP.delete(k); return null; }));
+      }
+      return PROTEOME.shardP.get(k).then((d) => {
+        const r = d && d.prot[x.acc];
+        if (r) Object.assign(x, { name: r[0], len: r[1], idr: r[2], dom: iprList(r[3], d.names), fam: iprList(r[4], d.names), cd: r[5] });
+        return x;
+      });
+    });
+  }
+  // A protein without a site in the shape the protein map draws: no sites, its own disorder and InterPro entries.
+  const unlistedProtein = (x) => ({ i: -1, acc: x.acc, gene: x.gene, label: x.gene || x.acc, name: x.name || '', len: x.len || null, maxPos: x.len || 100,
+    sites: [], sig: [], ptms: [], idr: x.idr || null, hist: false, iso: false, unrev: false, aliases: [], unl: { dom: x.dom || [], fam: x.fam || [] } });
+  // The interaction data's index of an accession (its STRING partners and complexes), or -1.
+  const ixIndexOf = (acc) => (ixReady() ? IX.prot.findIndex((y) => y.acc === acc) : -1);
+  // A link to the page of a protein outside the set (the interaction data names it).
+  const unlistedLink = (x, cls) => '<a class="' + (cls || 'linkish') + '" href="#' + encodeURIComponent(x.acc.split('-')[0]) + '" title="' + esc(x.gene + ' (' + x.acc + '): no methylarginine site in this release; opens its page') + '">' + esc(x.gene) + '</a>';
+
+  function renderUnlisted(el, key) {
+    el.innerHTML = '<div class="card"><p class="note">Looking up ' + esc(key) + '…</p></div>';
+    const current = () => UI.view === 'unlisted' && UI.unl === key;
+    Promise.all([loadUnlisted(key), loadInteractions()]).then(([x]) => {
+      if (!current()) return;
+      if (!x) {
+        el.innerHTML = '<div class="card empty"><b>No reviewed human protein ' + esc(key) + ' here</b>' +
+          (PROTEOME.failed ? 'The list of proteins without a site did not load; try again later.' : 'This release covers the reviewed human proteins of UniProt 2026_03 (Swiss-Prot); ' + esc(key) + ' is not one of them, or names a protein by another symbol.') +
+          (UNIPROT_ACC.test(key) ? '<p><a class="btn small quiet" href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(key) + '/entry" target="_blank" rel="noopener">' + esc(key) + ' in UniProt ↗</a></p>' : '') + '</div>';
+        return;
+      }
+      UI.unlLabel = x.gene || x.acc;
+      setDocTitle();
+      const p = unlistedProtein(x), k = ixIndexOf(x.acc), ix = k >= 0 ? IX.prot[k] : null;
+      const ext = (href, label) => '<a class="btn quiet small" href="' + href + '" target="_blank" rel="noopener">' + label + ' ↗</a>';
+      const a = encodeURIComponent(x.acc);
+      // the methylated proteins that bind it (STRING physical, at the panel's confidence), most confident first
+      const partners = k < 0 ? [] : P.map((q) => [q, ((q.partners || []).find(([kk]) => kk === k) || [0, 0])[1]]).filter(([, sc]) => sc >= F.ixScore).sort((m, n) => n[1] - m[1] || n[0].sites.length - m[0].sites.length);
+      const cxs = k < 0 ? [] : (IX.cxOf.get(k) || []).map((c) => IX.cx[c]).filter((c) => c.m > 0).sort((m, n) => m.pred - n.pred || n.m - m.m);
+      const conds = (x.cd || []).map((id) => M.condensates.findIndex((c) => c[1] === id)).filter((c) => c >= 0);
+      const roles = ix ? partnerClassText(ix) : '';
+      const go_ = ix ? [ix.flags & IXF.rna ? 'RNA binding' : '', ix.flags & IXF.dna ? 'DNA binding' : ''].filter(Boolean) : [];
+      const chip = (q) => '<button class="gene-chip" type="button" data-i="' + q.i + '" title="' + esc(q.label + ': ' + q.sites.length + ' methylarginine site' + (q.sites.length === 1 ? '' : 's')) + '">' + esc(q.label) + ' <span class="muted">' + q.sites.length + '</span></button>';
+      const PLIM = 40;
+      el.innerHTML = '<nav class="crumbs" aria-label="Where you are"><ol><li><button class="linkish" type="button" data-crumb="overview">Overview</button></li>' +
+        '<li><button class="linkish" type="button" data-crumb="proteins">Proteins</button></li><li aria-current="page"><b>' + esc(p.label) + '</b> <span class="muted small">no methylarginine site</span></li></ol></nav>' +
+        '<div class="detail-head"><div class="detail-title"><h2>' + esc(p.label) + '</h2><span class="pn">' + esc(p.name) + '</span></div>' +
+        '<div class="detail-links"><span class="tag mono">' + esc(x.acc) + '</span>' + (roles ? '<span class="tag">' + esc(roles) + '</span>' : '') + go_.map((t) => '<span class="tag" title="Gene Ontology">' + t + '</span>').join('') +
+        ext('https://www.uniprot.org/uniprotkb/' + a + '/entry', 'UniProt') +
+        '<details class="links-more"><summary class="btn quiet small">More links</summary><div class="links-menu">' + ext('https://alphafold.ebi.ac.uk/entry/' + a, 'AlphaFold') +
+        ext('https://www.ebi.ac.uk/interpro/protein/UniProt/' + a + '/', 'InterPro') + ext('https://www.ebi.ac.uk/pdbe/pdbe-kb/proteins/' + a, 'PDBe-KB') + ext('https://mobidb.org/' + a, 'MobiDB') +
+        ext('https://www.ebi.ac.uk/complexportal/home?query=' + a, 'Complex Portal') + '</div></details></div></div>' +
+        '<div class="filter-note unl-note"><b>No methylarginine site on ' + esc(p.label) + ' in this release' + (LC_ON ? ', at either confidence' : '') + '.</b> ' +
+        'None of the studies and databases compiled here reports one' + (LC_ON ? '' : ' that passes the site tests') + '; absent here means not reported, not shown to be unmethylated. ' +
+        'This page shows what the release holds on it: its sequence features, the methylated proteins that bind it, and its complexes and condensates.' +
+        (!LC_ON && x.lc ? ' <a class="btn small" href="' + esc(lcUrl(true)) + '">Show its ' + x.lc + ' lower-confidence site' + (x.lc === 1 ? '' : 's') + '</a>' : '') + '</div>' +
+        '<div class="facts">' + fact(x.len ? fmt(x.len) : '—', 'Residues', 'UniProt 2026_03', null) + fact('<span id="arg-count">—</span>', 'Arginines', '<span id="arg-frac">loading from UniProt</span>', null) +
+        fact(fmt(partners.length), 'Methylated partners', 'STRING physical, score ≥ ' + (F.ixScore / 1000).toFixed(1), null) + fact(fmt(cxs.length), 'Complexes', 'with methylated members', null) + '</div>' +
+        figureCard(p) +
+        '<div class="card" id="unl-partners"><div class="card-head"><div><h3>Methylated proteins that bind ' + esc(p.label) + '</h3><p class="sub">STRING physical interactions at score ≥ ' + (F.ixScore / 1000).toFixed(1) + ', most confident first; the number is each protein\'s methylarginine sites.</p></div>' +
+        (partners.length ? '<div class="exp"><button class="btn small" type="button" data-setq="binds:' + esc(quoteTerm(ix.gene)) + '">Select these ' + fmt(partners.length) + '</button></div>' : '') + '</div>' +
+        (partners.length ? '<div class="gene-chips">' + partners.slice(0, PLIM).map(([q]) => chip(q)).join('') + (partners.length > PLIM ? ' <button class="linkish" type="button" id="unl-more">+' + (partners.length - PLIM) + ' more</button>' : '') + '</div>'
+          : '<p class="muted">' + (k < 0 ? 'STRING lists no physical partner for ' + esc(p.label) + ' in the interaction data.' : 'No methylated protein binds it at this score.') + '</p>') + '</div>' +
+        '<div class="card"><div class="card-head"><div><h3>Complexes and condensates</h3><p class="sub">Complex Portal curated and hu.MAP 3.0 predicted complexes with methylated members, and CD-CODE condensates; each opens the methylated proteins it holds.</p></div></div>' +
+        (cxs.length ? '<p class="flabel">Complexes</p><div class="chips">' + cxs.slice(0, 24).map((c) => '<button class="chip" type="button" data-setq="complex:' + esc(quoteTerm(c.id)) + '" title="' + esc(c.id + (c.pred ? ' (hu.MAP, predicted)' : ' (Complex Portal)') + ': ' + fmt(c.m) + ' of ' + fmt(c.n) + ' members methylated') + '">' + esc(c.name) + ' <span class="muted">' + c.m + '/' + c.n + '</span></button>').join('') + (cxs.length > 24 ? ' <span class="muted">+' + (cxs.length - 24) + ' more</span>' : '') + '</div>' : '<p class="muted">No complex with methylated members.</p>') +
+        (conds.length ? '<p class="flabel">Condensates (CD-CODE)</p><div class="chips">' + conds.map((c) => '<button class="chip" type="button" data-cond="' + c + '" title="' + esc(M.condensates[c][3] + ' members, ' + M.condensates[c][4] + ' methylated') + '">' + esc(M.condensates[c][0]) + '</button>').join('') + '</div>' : '<p class="muted">In no CD-CODE condensate.</p>') + '</div>' +
+        '<div class="card" id="card-dom"><h3>Domains and families</h3><p class="sub">InterPro 108.0 entries; UniProt domains and regions load with the map.</p>' +
+        (x.dom && x.dom.length ? '<p class="flabel">InterPro domains</p>' + iprTableHtml(x.dom, 'InterPro domain', null, null) : '<p class="muted">InterPro 108.0 has no domain or repeat for this protein.</p>') +
+        (x.fam && x.fam.length ? '<p class="flabel" style="margin-top:1rem">InterPro families and superfamilies</p>' + iprTableHtml(x.fam, 'Family or superfamily', null, null) : '') + '<div id="unl-uni"></div></div>';
+      $$('[data-crumb]', el).forEach((b) => b.addEventListener('click', () => { go(b.dataset.crumb); window.scrollTo({ top: 0 }); }));
+      $$('.gene-chip[data-i]', el).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.i)));
+      $$('[data-cond]', el).forEach((b) => b.addEventListener('click', () => setTerm('condensate', termSlug('condensate', +b.dataset.cond), 'proteins')));
+      const more = $('#unl-more', el);
+      if (more) more.addEventListener('click', () => { more.insertAdjacentHTML('beforebegin', partners.slice(PLIM).map(([q]) => chip(q)).join('')); $$('.gene-chip[data-i]', more.parentNode).forEach((b) => { if (!b.dataset.bound) { b.dataset.bound = '1'; b.addEventListener('click', () => openProtein(+b.dataset.i)); } }); more.remove(); });
+      $$('.gene-chip[data-i]', el).forEach((b) => { b.dataset.bound = '1'; });
+      UI.zoom = null;
+      bindFigure(p);
+      drawMap(p, UNIDATA.get(x.acc));
+      loadUniProt(x.acc).then((u) => {
+        if (!current()) return;
+        drawMap(p, u);
+        if (u && u.seq) {
+          const n = (u.seq.match(/R/g) || []).length;
+          $('#arg-count').textContent = fmt(n);
+          $('#arg-frac').textContent = pctText(n, u.seq.length) + '% of residues';
+        } else $('#arg-frac').textContent = 'UniProt did not answer';
+        const feats = u ? u.feats.filter((f) => ['Domain', 'Repeat', 'Zinc finger', 'Region', 'Motif'].includes(f.type) && f.desc !== 'Disordered') : [];
+        const box = $('#unl-uni');
+        if (box && feats.length) box.innerHTML = '<p class="flabel" style="margin-top:1rem">UniProt domains and regions</p><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Feature</th><th>Type</th><th class="r">Range</th></tr></thead><tbody>' +
+          feats.map((f) => '<tr><td>' + esc(f.desc || f.type) + '</td><td>' + esc(f.type) + '</td><td class="r num">' + f.start + '–' + f.end + '</td></tr>').join('') + '</tbody></table></div>';
+      });
+      loadPdbIface(x.acc).then(() => { if (current()) drawMap(p, UNIDATA.get(x.acc)); }, () => {});
+    });
   }
   // eCLIP logos (scripts/43f): per experiment, the 5-mers most enriched in its top peaks or windows against the other
   // RBPs', aligned and weighted by enrichment. One file for both tiers, read on first use; what waits for it fills in then.
@@ -10370,14 +10558,14 @@
         const holder = $('#ix-net', box);
         if (!holder) return;
         holder.innerHTML = ixNetSvg(net, screenPalette(), false);
-        const openNode = (k) => { hideTip(); const x = IX.prot[k]; if (x.p >= 0) { if (x.p !== p.i) openProtein(x.p); } else window.open('https://www.uniprot.org/uniprotkb/' + encodeURIComponent(x.acc) + '/entry', '_blank', 'noopener'); };
+        const openNode = (k) => { hideTip(); const x = IX.prot[k]; if (x.p >= 0) { if (x.p !== p.i) openProtein(x.p); } else go('protein', x.acc.split('-')[0]); };
         mountNetCy(holder, net, openNode);
         $$('.nd', holder).forEach((nd) => {
           const k = +nd.dataset.k;
           nd.addEventListener('mouseenter', (e) => showTip(e, nd.getAttribute('data-tip')));
           nd.addEventListener('mousemove', moveTip);
           nd.addEventListener('mouseleave', hideTip);
-          const open = () => { hideTip(); const x = IX.prot[k]; if (x.p >= 0) { if (x.p !== p.i) openProtein(x.p); } else window.open('https://www.uniprot.org/uniprotkb/' + encodeURIComponent(x.acc) + '/entry', '_blank', 'noopener'); };
+          const open = () => { hideTip(); const x = IX.prot[k]; if (x.p >= 0) { if (x.p !== p.i) openProtein(x.p); } else go('protein', x.acc.split('-')[0]); };
           nd.addEventListener('click', open);
           nd.addEventListener('keydown', (e) => { if (e.key === 'Enter') open(); });
         });
@@ -12800,7 +12988,7 @@
         shown.map((r, ri) => {
           const s = S[r.j], p = P[s.p], g = r.models[0], x = IX.prot[r.k];
           return '<tr><td class="nw"><button class="linkish strong" type="button" data-galsite="' + ri + '">' + esc(p.label) + ' ' + rl(s.pos, P[s.p]) + '</button></td>' +
-            '<td>' + (x.p >= 0 ? '<button class="linkish" type="button" data-open="' + x.p + '">' + esc(x.gene) + '</button>' : '<b>' + esc(x.gene) + '</b>') + ' ' + partnerTags(x) + '</td>' +
+            '<td>' + (x.p >= 0 ? '<button class="linkish" type="button" data-open="' + x.p + '">' + esc(x.gene) + '</button>' : unlistedLink(x)) + ' ' + partnerTags(x) + '</td>' +
             '<td>' + bonds(g) + '</td>' +
             '<td>' + r.models.map((m, mi) => '<button class="tag pred' + (m.src === 0 ? '' : ' pred-hi') + '" type="button" data-galmodel="' + ri + ':' + mi + '" title="Open this model at ' + rl(s.pos, P[s.p]) + '">' + esc(galModelText(m)) + '</button>').join(' ') + '</td>' +
             '<td class="r num">' + g.plR + ' / ' + g.plP + '</td><td class="r num hide-xs">' + g.d.toFixed(1) + ' Å</td>' +
@@ -13986,6 +14174,8 @@
         'Maron Table S3 methyl-IP recovery is shown separately (Maron IP); the IPs are named by the state their antibody recognises: Rme1 (MMA antibody), Rme2a (ADMA antibody) and Rme2s (SDMA antibody). The neutral-loss call and the antibody that recovered a site can differ; both are shown as reported.</li>' +
       '<li><b>PRMT inhibitor response</b> uses Maron Table S3 <code>GSK591_vs_DMSO</code> and <code>MS023_vs_DMSO</code> per methyl-IP: a site counts as decreased (or increased) when its peptides with adjusted p ≤ 0.05 all fell (or all rose); sites whose significant peptides disagree get no call. The pipeline\'s summary table (scripts/16) uses a different rule, the lowest adjusted p with the sign of the median over all peptides, and differs for some sites. GSK591 inhibits PRMT5; MS023 inhibits type I PRMTs. The <b>CARM1 knockout</b> response (Shishkova et al. 2017) is staged by scripts/41 and shown beside it (see PRMT inhibitor and knockout response).</li>' +
       '<li><b>Motifs, disorder, domains and functional classes</b> are defined under Overview charts. Protein figures draw ' + (P.some((q) => q.idr) ? 'the same MobiDB disorder intervals' : 'UniProt\'s disordered regions (the MobiDB intervals are not in this export)') + '.</li>' +
+      '<li><b>InterPro on the protein map</b>: the Domains row shows InterPro 108.0 domains and repeats (homologous superfamilies for a protein with neither); the Families and superfamilies row (off at first; Rows menu) shows the family entries and the other superfamilies. Each entry\'s member-database hits are merged where they overlap, and where two entries cover the same stretch the one on more reviewed human proteins names it, the other listed in its hover (scripts/36c).</li>' +
+      '<li><b>Proteins without a site</b>: every other reviewed human protein of UniProt 2026_03 has a light page (search its gene or accession, or follow a partner outside the set): its protein map from UniProt, MobiDB and InterPro, the methylated proteins that bind it (STRING), and its complexes and CD-CODE condensates. Absent from the release means not reported by the compiled sources, not shown to be unmethylated.</li>' +
       '<li><b>RG/RGG-rich segments</b> in the figure and domain table: ' + esc(RG_HELP.charAt(0).toLowerCase() + RG_HELP.slice(1)) + '.</li>' +
       '<li><b>Clustering</b>: nearest methyl-R spacing and maximum sites in 3–50 aa windows per protein; dense windows come from a multiscale rolling-window scan against a same-protein arginine null (1,000 permutations, q ≤ 0.05). Architecture classes describe proteins with ≥3 sites in a 20 aa span.</li>' +
       '<li><b>Arg enrichment</b> (see Arginine enrichment of a protein) groups sites by UniProt accession. (v1.0.0 grouped them by accession and gene symbol, so a protein whose sources used two symbols, such as MRE11/MRE11A, was tested in two parts.)</li>' +

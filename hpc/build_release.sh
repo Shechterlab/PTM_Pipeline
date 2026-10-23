@@ -200,9 +200,13 @@ for f in sites evidence interactions pred_iface; do
   cp "$SITE/methylarg_$f.json" "$SITE_OUT/methylarg_$f.json"
   cp "$SITE_ALL/methylarg_$f.json" "$SITE_OUT/methylarg_${f}_all.json"
 done
-# InterPro domains of the explorer's proteins (scripts/36c), for the protein map's domain row; one file for both tiers
-step "InterPro domains (scripts/36c)" python "$CODE/scripts/36c_export_interpro_domains.py" --intervals "$IN/annotation/interpro_108.0_domain_intervals.tsv" \
-  --sites-json "$SITE_OUT/methylarg_sites_all.json" --out "$SITE_OUT/methylarg_interpro.json"
+# InterPro domains and families of the explorer's proteins (scripts/36c), one file for both tiers; and every other reviewed
+# protein (an index and 64 record files under proteome/) for the light pages of proteins without a site
+step "InterPro domains and the proteins without a site (scripts/36c)" python "$CODE/scripts/36c_export_interpro_domains.py" \
+  --intervals "$IN/annotation/interpro_108.0_domain_intervals.tsv" --all-intervals "$IN/annotation/interpro_108.0_all_entry_intervals.tsv" \
+  --entries "$IN/reference/uniprot_human_reviewed_2026_03_entries.tsv" --disorder "$IN/annotation/mobidb_disorder_intervals_2026-03-30.tsv" \
+  --cdcode "$IN/annotation/cdcode_protein_membership_v2.2.tsv" --sites-json "$SITE_OUT/methylarg_sites.json" --sites-all-json "$SITE_OUT/methylarg_sites_all.json" \
+  --out "$SITE_OUT/methylarg_interpro.json" --proteome-out "$SITE_OUT/methylarg_proteome.json"
 # eCLIP logos (scripts/43f), one file for both tiers: the 5-mers enriched in each experiment's peaks or windows, aligned
 step "eCLIP logos (scripts/43f)" python "$CODE/scripts/43f_eclip_logos.py" --inputs "$IN/nucleic_acid" --out "$SITE_OUT/methylarg_eclip_logos.json"
 echo "[release] done: $OUT and $SITE_OUT/"
