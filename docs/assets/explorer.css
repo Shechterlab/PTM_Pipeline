@@ -1924,7 +1924,7 @@ html.pdf-export.pdf-cards :has(> #ix-ex-q), html.pdf-export.pdf-cards .exp, html
 html.pdf-export.pdf-cards .a-tile, html.pdf-export.pdf-cards .a-hi-c { box-shadow: none !important; }
 html.pdf-export.pdf-cards .a-head { display: block !important; overflow: visible !important; -webkit-line-clamp: unset !important; line-clamp: none !important; }
 html.pdf-export.pdf-cards .a-start { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-html.pdf-export.pdf-cards .a-tiles > .a-tile:only-child { grid-column: 1 / -1; }
+html.pdf-export.pdf-cards .a-tiles > :only-child { grid-column: 1 / -1; }
 html.pdf-export.pdf-cards .a-key-line { margin-bottom: 0.7rem; }
 /* the PRMT tile: each perturbation's rows under its name */
 .hb.hb-more { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); box-shadow: inset 3px 0 0 var(--accent); transition: background 0.6s; }
@@ -2038,6 +2038,12 @@ details.fold.p-row > summary:has(> .fold-pic:not(:empty)) .fold-sum { white-spac
 .a-meters.tight.wide .am-row { grid-template-columns: 7.4rem minmax(0, 1fr) 2.9rem; }
 /* Starting points: short lists side by side, each item a way in */
 .a-grp.a-full { flex-basis: 100%; }
+/* every card exports: a tile's buttons show on hover or focus, over its top right; a card's sit in its head */
+.a-tile-w { position: relative; display: grid; min-width: 0; }
+.texp { position: absolute; top: 0.55rem; right: 2.1rem; z-index: 1; padding: 0.1rem; border-radius: 6px; background: var(--surface); opacity: 0; pointer-events: none; transition: opacity 0.15s; }
+.a-tile-w:hover .texp, .a-tile-w:focus-within .texp { opacity: 1; pointer-events: auto; }
+@media (hover: none) { .texp { display: none; } }
+.cexp-float { float: right; margin: 0 0 0.4rem 0.8rem; }
 .a-start { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.7rem 1.4rem; }
 .a-start-col { display: grid; align-content: start; gap: 0.35rem; min-width: 0; }
 .a-start-h { margin: 0; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }

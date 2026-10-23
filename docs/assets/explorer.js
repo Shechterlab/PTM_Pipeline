@@ -2775,6 +2775,21 @@
     syncToolbar();
     window.addEventListener('resize', debounce(syncToolbar, 150));
     window.addEventListener('resize', debounce(tabsFade, 150));
+    // every card's export buttons, added as cards render (many fill in later), and their clicks, taken before the
+    // card's own handlers (a card head can sit in a fold's summary)
+    const content = $('#content');
+    if (content && window.MutationObserver) {
+      let queued = 0;
+      new MutationObserver(() => { if (!queued) queued = requestAnimationFrame(() => { queued = 0; addCardExports(content); }); }).observe(content, { childList: true, subtree: true });
+      addCardExports(content);
+    }
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-cexp], [data-texp]');
+      if (!b) return;
+      e.preventDefault(); e.stopPropagation();
+      const w = b.closest('.a-tile-w'), el = b.dataset.cexp ? b.closest('.card') : w && $('.a-tile', w);
+      if (el && !b.disabled) cardExport(b.dataset.cexp || b.dataset.texp, el, b);
+    }, true);
     let wasNarrow = window.innerWidth < NARROW + 80;
     window.addEventListener('resize', debounce(() => {
       const now = window.innerWidth < NARROW + 80;
@@ -4915,8 +4930,9 @@
       const vis = o.vis != null ? o.vis : !empty && m.fig ? hubFig(m.fig) : '';
       const head = o.head != null ? o.head : empty ? esc(empty) : m.sel != null ? m.sel : esc(r.summary || '');
       const whole = scoped && !empty ? (o.whole != null ? o.whole : m.all || '') : '';
-      return '<button type="button" class="a-tile' + (empty ? ' off' : '') + (vis ? '' : ' novis') + '" data-go="' + r.key + '"' + (empty ? ' aria-disabled="true"' : '') + '><span class="a-tt">' + esc(r.title) + '</span>' +
-        (vis ? '<span class="a-vis">' + vis + '</span>' : '') + '<span class="a-head" data-sum-of="' + r.key + '"' + (o.head != null ? ' data-fixed' : '') + '>' + head + '</span>' + (whole ? '<span class="a-whole"><span>Whole dataset</span> ' + whole + '</span>' : '') + '</button>';
+      return '<div class="a-tile-w"><button type="button" class="a-tile' + (empty ? ' off' : '') + (vis ? '' : ' novis') + '" data-go="' + r.key + '"' + (empty ? ' aria-disabled="true"' : '') + '><span class="a-tt">' + esc(r.title) + '</span>' +
+        (vis ? '<span class="a-vis">' + vis + '</span>' : '') + '<span class="a-head" data-sum-of="' + r.key + '"' + (o.head != null ? ' data-fixed' : '') + '>' + head + '</span>' + (whole ? '<span class="a-whole"><span>Whole dataset</span> ' + whole + '</span>' : '') + '</button>' +
+        (empty ? '' : '<span class="exp texp" role="group" aria-label="Export this card">' + cexpBtns(['pdf', 'svg', 'png'], 'data-texp') + '</span>') + '</div>';
     };
     return '<div class="a-home hub-only">' +
       '<p class="print-only pdf-scope">' + (scoped ? '' : 'All ' + fmt(S.length) + ' sites on ' + fmt(P.length) + ' proteins · ') + new Date().toISOString().slice(0, 10) + '</p>' +
@@ -12861,6 +12877,23 @@
     out.push('html.pdf-export .report-runfoot { display: none !important; }');
     return (printRulesCss.css = out.join('\n'));
   }
+  // The copy of the page an export is drawn from: light, under the print rules (no controls), without the side panel,
+  // which when pinned would keep its column and squeeze the page into what is left.
+  function exportClone(doc, cls) {
+    const de = doc.documentElement;
+    de.classList.add('pdf-export');
+    if (cls) de.classList.add(cls);
+    de.classList.remove('filters-pinned', 'drawer-open');
+    de.setAttribute('data-theme', 'light');
+    for (const [k, v] of Object.entries(TOKENS.light)) {
+      if (Array.isArray(v)) v.forEach((c, i) => de.style.setProperty('--t-' + k + '-' + i, c));
+      else de.style.setProperty('--t-' + k, v);
+    }
+    for (const id of ['rail', 'rail-grip', 'drawer-bg']) { const x = doc.getElementById(id); if (x) x.style.display = 'none'; }
+    const st = doc.createElement('style');
+    st.textContent = printRulesCss();
+    doc.head.appendChild(st);
+  }
   // jsPDF's built-in fonts cover Latin-1 only.
   const pdfText = (t) => String(t).replace(/[–—]/g, '-').replace(/[≥]/g, '>=').replace(/[≤]/g, '<=').replace(/[^\x20-\xff]/g, '');
   async function downloadPdf(root, label, filename, cls) {
@@ -12870,18 +12903,12 @@
     const guess = root.scrollHeight * Math.max(1, root.clientWidth / PDF_WIDTH);
     const scale = Math.max(1, Math.min(2, 30000 / Math.max(guess, 1)));
     let cuts = [], avoid = [];
-    if (!root.id) root.id = 'pdf-root';
+    const lent = !root.id;
+    if (lent) root.id = 'pdf-root';
     const canvas = await window.html2canvas(root, {
       scale, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: PDF_WIDTH,
       onclone: (doc) => {
-        doc.documentElement.classList.add('pdf-export');
-        if (cls) doc.documentElement.classList.add(cls);
-        // a pinned side panel would keep its column and squeeze the page into what is left
-        doc.documentElement.classList.remove('filters-pinned', 'drawer-open');
-        for (const id of ['rail', 'rail-grip', 'drawer-bg']) { const x = doc.getElementById(id); if (x) x.style.display = 'none'; }
-        const st = doc.createElement('style');
-        st.textContent = printRulesCss();
-        doc.head.appendChild(st);
+        exportClone(doc, cls);
         return (doc.fonts ? doc.fonts.ready : Promise.resolve()).then(() => {
           const el = doc.getElementById(root.id), top = el.getBoundingClientRect().top;
           // figures drawn to the screen's width take the printed box's width, scaled by their viewBox (given one
@@ -12943,7 +12970,181 @@
       pdf.text(cite, pg.side, pg.h - 7);
       pdf.text('Page ' + (n + 1) + ' of ' + pages.length, pg.w - pg.side, pg.h - 7, { align: 'right' });
     });
+    if (lent) root.removeAttribute('id');
     pdf.save(filename);
+  }
+  // ------------------------------------------------------------- every card: PDF, SVG and PNG
+  // Each card of a page, and each tile of a cards page, exports as a PDF (A4, as the page's PDF), an SVG (vector: the card
+  // as laid out, its boxes, text and figures) and a PNG, all drawn light and without controls. A card that already
+  // exports its chart as SVG and PNG keeps those and gains the PDF.
+  const CEXP_TIP = { pdf: 'This card as an A4 PDF', svg: 'This card as an SVG (vector, editable)', png: 'This card as a PNG image' };
+  const cexpBtns = (kinds, attr) => kinds.map((k) => '<button type="button" ' + attr + '="' + k + '" title="' + CEXP_TIP[k] + '">' + k.toUpperCase() + '</button>').join('');
+  const cardTitle = (el) => { const h = el.matches('.a-tile') ? $('.a-tt', el) : el.querySelector('h3, h2, h4'); return h ? h.textContent.replace(/\s+/g, ' ').trim() : ''; };
+  function addCardExports(root) {
+    for (const card of $$('.card', root)) {
+      if (card.matches('#card-af, #site-card, .a-sel') || (card.parentElement && card.parentElement.closest('.card')) || !cardTitle(card)) continue;
+      if (card.querySelector('[data-cexp]')) continue;
+      const head = card.querySelector(':scope > .card-head'), own = head && head.querySelector('.exp');
+      if (own) {
+        const has = (t) => $$('button', own).some((b) => b.textContent.trim() === t);
+        // beside the card's own file exports, before the first of them (after view controls such as Reset zoom)
+        const first = $$('button', own).find((b) => /^(SVG|PNG|TSV)$/.test(b.textContent.trim()));
+        const html = cexpBtns(['pdf'].concat(has('SVG') ? [] : ['svg'], has('PNG') ? [] : ['png']), 'data-cexp');
+        if (first) first.insertAdjacentHTML('beforebegin', html); else own.insertAdjacentHTML('beforeend', html);
+      } else {
+        const g = '<div class="exp cexp" role="group" aria-label="Export this card">' + cexpBtns(['pdf', 'svg', 'png'], 'data-cexp') + '</div>';
+        if (head) head.insertAdjacentHTML('beforeend', g); else card.insertAdjacentHTML('afterbegin', g.replace('exp cexp', 'exp cexp cexp-float'));
+      }
+    }
+  }
+  // A card found again after the page is redrawn (light, for an export from a dark page): by id, tile, or place.
+  function cardLocator(el) {
+    if (el.id) return () => document.getElementById(el.id);
+    if (el.matches('.a-tile')) { const k = el.dataset.go; return () => $('.a-tile[data-go="' + k + '"]'); }
+    const all = $$('#content .card'), k = all.indexOf(el);
+    return () => $$('#content .card')[k] || null;
+  }
+  async function cardExport(kind, el, btn) {
+    const title = cardTitle(el) || 'card', day = new Date().toISOString().slice(0, 10), sel = constraints().length > 0;
+    const where = UI.view === 'protein' && P[UI.detail] ? P[UI.detail].label : VIEW_NAMES[UI.view] || 'Overview';
+    const name = 'methylarginines_' + (where + '_' + title).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 70) + (sel ? '_selection' : '') + '_' + day;
+    const tile = el.matches('.a-tile'), locate = cardLocator(el), de = document.documentElement, prev = de.getAttribute('data-theme'), y = window.scrollY;
+    // a dark cards page is redrawn light (its figures take the light palette), as for the page's PDF; a protein page
+    // draws its figures for print, as its report does
+    const relight = themeName() === 'dark' && UI.view !== 'protein', print = UI.view === 'protein';
+    const label = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = '…'; }
+    try {
+      if (relight) { de.setAttribute('data-theme', 'light'); applyTokens('light'); renderView(); window.scrollTo(0, y); el = locate() || el; }
+      if (print) preparePrint();
+      if (kind === 'pdf') await downloadPdf(el, title + ' · ' + (sel ? selectionText() : where) + ' · ' + day, name + '.pdf', tile ? 'pdf-cards' : '');
+      else if (kind === 'png') await cardPng(el, name, title, tile);
+      else exportFigure('svg', await cardSvg(el, tile), name);
+    } catch (e) {
+      alert('This card could not be exported (' + e.message + ').');
+    } finally {
+      if (print) restorePrint();
+      if (relight) { if (prev == null) de.removeAttribute('data-theme'); else de.setAttribute('data-theme', prev); applyTokens(); renderView(); window.scrollTo(0, y); }
+      else if (btn && document.body.contains(btn)) { btn.disabled = false; btn.textContent = label; }
+    }
+  }
+  async function cardPng(el, name, title, tile) {
+    await Promise.all(PDF_LIBS.map(loadScript));
+    const canvas = await window.html2canvas(el, { scale: 3, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: PDF_WIDTH, onclone: (doc) => exportClone(doc, tile ? 'pdf-cards' : '') });
+    pngWithCredit(canvas.toDataURL('image/png'), name + '.png', title);
+  }
+  // The card as an SVG, traced from the same copy the PDF and PNG are drawn from (light, at the printed width, under the
+  // print rules): its boxes (backgrounds and borders, rounded as drawn), its text line by line in its own font, size,
+  // weight and colour, and its figures nested where they stand. The copy's own drawing is a token one, not used.
+  async function cardSvg(el, tile) {
+    await Promise.all(PDF_LIBS.map(loadScript));
+    let fig = null;
+    const lent = !el.id;
+    if (lent) el.id = 'cexp-root';
+    try {
+      await window.html2canvas(el, { scale: 0.05, logging: false, backgroundColor: null, windowWidth: PDF_WIDTH,
+        onclone: (doc) => { exportClone(doc, tile ? 'pdf-cards' : ''); return (doc.fonts ? doc.fonts.ready : Promise.resolve()).then(() => { const c = doc.getElementById(el.id); if (c) fig = domToSvg(c); }); } });
+    } finally { if (lent) el.removeAttribute('id'); }
+    if (!fig || !fig.W) throw new Error('nothing to draw');
+    return fig;
+  }
+  function domToSvg(root) {
+    // the element's own document and window: the export copy lives in a frame of its own
+    const doc = root.ownerDocument, win = doc.defaultView, getComputedStyle = (e) => win.getComputedStyle(e);
+    const R0 = root.getBoundingClientRect(), out = [], n1 = (v) => Math.round(v * 10) / 10;
+    const col = (c) => {
+      let m = /^rgba?\(([^)]+)\)$/.exec(c || ''), v, a = 1;
+      if (m) { v = m[1].split(/[\s,/]+/).filter(Boolean).map(parseFloat); a = v.length > 3 ? v[3] : 1; v = v.slice(0, 3); }
+      else if ((m = /^color\(srgb ([^)]+)\)$/.exec(c || ''))) { const q = m[1].split(/[\s/]+/).filter(Boolean).map(parseFloat); v = q.slice(0, 3).map((x) => x * 255); a = q.length > 3 ? q[3] : 1; }
+      else return null;
+      return a > 0 ? { c: 'rgb(' + v.map((x) => Math.round(x)).join(',') + ')', a: Math.round(a * 1000) / 1000 } : null;
+    };
+    const op = (attr, c) => (c.a < 1 ? ' ' + attr + '="' + c.a + '"' : '');
+    const box = (cs, r) => {
+      const x = r.left - R0.left, y = r.top - R0.top, w = r.width, h = r.height, bg = col(cs.backgroundColor);
+      const sides = ['Top', 'Right', 'Bottom', 'Left'].map((k) => { const sty = cs['border' + k + 'Style'], wd = parseFloat(cs['border' + k + 'Width']) || 0; return { w: wd, c: wd && sty !== 'none' && sty !== 'hidden' ? col(cs['border' + k + 'Color']) : null, dash: sty === 'dashed' ? '4 3' : sty === 'dotted' ? '1 2' : '' }; });
+      const s0 = sides[0], same = sides.every((q) => q.w === s0.w && (q.c ? q.c.c : '') === (s0.c ? s0.c.c : ''));
+      const rx = Math.min(parseFloat(cs.borderTopLeftRadius) || 0, w / 2, h / 2), sw = same && s0.c ? s0.w : 0;
+      if (bg || sw) out.push('<rect x="' + n1(x + sw / 2) + '" y="' + n1(y + sw / 2) + '" width="' + n1(Math.max(0, w - sw)) + '" height="' + n1(Math.max(0, h - sw)) + '"' + (rx ? ' rx="' + n1(rx) + '"' : '') +
+        ' fill="' + (bg ? bg.c + '"' + op('fill-opacity', bg) : 'none"') + (sw ? ' stroke="' + s0.c.c + '" stroke-width="' + sw + '"' + op('stroke-opacity', s0.c) + (s0.dash ? ' stroke-dasharray="' + s0.dash + '"' : '') : '') + '/>');
+      if (!same) sides.forEach((q, k) => {
+        if (!q.c) return;
+        const e = [[x, y + q.w / 2, x + w, y + q.w / 2], [x + w - q.w / 2, y, x + w - q.w / 2, y + h], [x, y + h - q.w / 2, x + w, y + h - q.w / 2], [x + q.w / 2, y, x + q.w / 2, y + h]][k];
+        out.push('<line x1="' + n1(e[0]) + '" y1="' + n1(e[1]) + '" x2="' + n1(e[2]) + '" y2="' + n1(e[3]) + '" stroke="' + q.c.c + '" stroke-width="' + q.w + '"' + op('stroke-opacity', q.c) + (q.dash ? ' stroke-dasharray="' + q.dash + '"' : '') + '/>');
+      });
+    };
+    // the distance from the top of a run of text to its baseline, for each font
+    const base = new Map();
+    const baseOf = (cs) => {
+      const key = [cs.fontFamily, cs.fontSize, cs.fontWeight, cs.fontStyle].join('|');
+      if (!base.has(key)) {
+        const sp = doc.createElement('span');
+        sp.style.cssText = 'position:absolute;left:-9999px;top:0;white-space:nowrap;line-height:normal';
+        Object.assign(sp.style, { fontFamily: cs.fontFamily, fontSize: cs.fontSize, fontWeight: cs.fontWeight, fontStyle: cs.fontStyle });
+        sp.innerHTML = 'Hg<i style="display:inline-block;width:1px;height:0;vertical-align:baseline"></i>';
+        doc.body.appendChild(sp);
+        const rg = doc.createRange();
+        rg.selectNodeContents(sp.firstChild);
+        base.set(key, sp.lastChild.getBoundingClientRect().top - rg.getBoundingClientRect().top);
+        sp.remove();
+      }
+      return base.get(key);
+    };
+    const text = (node, cs, clip) => {
+      const str = node.textContent, c = col(cs.color);
+      if (!c || !/\S/.test(str)) return;
+      const tt = cs.textTransform, rg = doc.createRange(), lines = [], re = /\S+/g;
+      let m;
+      while ((m = re.exec(str))) {
+        rg.setStart(node, m.index); rg.setEnd(node, m.index + m[0].length);
+        const r = rg.getBoundingClientRect();
+        if (!r.width || !r.height) continue;
+        if (clip && (r.left < clip.left - 1 || r.right > clip.right + 1 || r.top < clip.top - 1 || r.bottom > clip.bottom + 1)) continue;
+        let ln = lines.find((l) => Math.abs(l.top - r.top) < r.height / 2);
+        if (!ln) lines.push(ln = { top: r.top, x: r.left, w: [] });
+        ln.x = Math.min(ln.x, r.left);
+        ln.w.push(tt === 'uppercase' ? m[0].toUpperCase() : tt === 'lowercase' ? m[0].toLowerCase() : m[0]);
+      }
+      const b = baseOf(cs), ls = parseFloat(cs.letterSpacing) || 0;
+      for (const ln of lines) {
+        out.push('<text x="' + n1(ln.x - R0.left) + '" y="' + n1(ln.top - R0.top + b) + '" font-family="' + esc(cs.fontFamily) + '" font-size="' + parseFloat(cs.fontSize) + '"' +
+          (+cs.fontWeight !== 400 ? ' font-weight="' + cs.fontWeight + '"' : '') + (cs.fontStyle === 'italic' ? ' font-style="italic"' : '') + (ls ? ' letter-spacing="' + n1(ls) + '"' : '') +
+          ' fill="' + c.c + '"' + op('fill-opacity', c) + '>' + esc(ln.w.join(' ')) + '</text>');
+      }
+    };
+    // an inline figure keeps its own drawing; what its style sheet sets is written onto it
+    const PROPS = ['fill', 'stroke', 'stroke-width', 'stroke-dasharray', 'fill-opacity', 'stroke-opacity', 'opacity', 'font-family', 'font-size', 'font-weight'];
+    const figure = (svg, r) => {
+      const cl = svg.cloneNode(true), src = [svg].concat($$('*', svg)), dst = [cl].concat($$('*', cl));
+      src.forEach((e, i) => {
+        const d = dst[i], cs = getComputedStyle(e);
+        if (!d || !d.setAttribute) return;
+        if (cs.display === 'none') { d.setAttribute('display', 'none'); return; }
+        for (const p of PROPS) { const v = cs.getPropertyValue(p); if (v && v !== 'normal' && v !== 'auto') d.setAttribute(p, v); }
+      });
+      const w = +svg.getAttribute('width') || r.width, h = +svg.getAttribute('height') || r.height;
+      if (!cl.getAttribute('viewBox')) cl.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+      cl.removeAttribute('style'); cl.removeAttribute('class');
+      cl.setAttribute('x', n1(r.left - R0.left)); cl.setAttribute('y', n1(r.top - R0.top)); cl.setAttribute('width', n1(r.width)); cl.setAttribute('height', n1(r.height));
+      out.push(new XMLSerializer().serializeToString(cl));
+    };
+    const inter = (a, r) => (a ? { left: Math.max(a.left, r.left), right: Math.min(a.right, r.right), top: Math.max(a.top, r.top), bottom: Math.min(a.bottom, r.bottom) } : { left: r.left, right: r.right, top: r.top, bottom: r.bottom });
+    const walk = (el, clip) => {
+      const cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0) return;
+      const r = el.getBoundingClientRect();
+      if (el.localName === 'svg' && el.namespaceURI === 'http://www.w3.org/2000/svg') { if (r.width && r.height) figure(el, r); return; }
+      if (el.tagName === 'IMG') { if (r.width) out.push('<image href="' + esc(el.currentSrc || el.src) + '" x="' + n1(r.left - R0.left) + '" y="' + n1(r.top - R0.top) + '" width="' + n1(r.width) + '" height="' + n1(r.height) + '"/>'); return; }
+      const o = +cs.opacity < 1;
+      if (o) out.push('<g opacity="' + cs.opacity + '">');
+      if (r.width && r.height) box(cs, r);
+      const c = cs.overflowX !== 'visible' || cs.overflowY !== 'visible' ? inter(clip, r) : clip;
+      for (const n of el.childNodes) { if (n.nodeType === 3) text(n, cs, c); else if (n.nodeType === 1) walk(n, c); }
+      if (o) out.push('</g>');
+    };
+    walk(root, null);
+    const W = Math.ceil(R0.width), H = Math.ceil(R0.height);
+    return { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' + out.join('') + '</svg>', W, H };
   }
   // Report and comparison pages: the same, with the page's own preparation for print.
   function reportPdf(btn, label, filename) {
