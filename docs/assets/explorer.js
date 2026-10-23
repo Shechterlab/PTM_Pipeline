@@ -3230,7 +3230,7 @@
     return { lo, hi, ticks, xp: (v) => ((v - lo) / (hi - lo)) * 100 };
   }
 
-  // A chart row significant at q <= PADJ but within MIN_EFFECT either way: about the same (grey), as in the tiles.
+  // A chart row significant at q <= PADJ but within the page's minimum effect either way: about the same (grey), as in the tiles.
   const sameFx = (spec, r) => !spec.noSig && !spec.counts && !!r.sig && r.value != null && Number.isFinite(r.value) && !aBig(r.value);
   // A compact chart's narrow track labels 0 and every other tick when it has more than five.
   const tickShown = (spec, sc, i) => !spec.compact || sc.ticks.length <= 5 || (i - sc.ticks.indexOf(0)) % 2 === 0;
@@ -3247,7 +3247,7 @@
     return heads + '<div class="hbars' + cls + '" role="list">' + rows.map((r, k) => {
       const v = r.value == null ? 0 : r.value;
       const a = sc.xp(Math.min(0, v)), b = sc.xp(Math.max(0, v));
-      return (r.head ? '<div class="hb-head" role="presentation">' + esc(r.head) + '</div>' : '') + '<button class="hb' + (r.sub ? ' sub' : '') + (r.depth === 2 ? ' sub2' : '') + (r.extraRow ? ' extra-row' : '') + (spec.sel && !r.sel ? ' off' : '') + (r.noClick ? ' noclick' : '') + '" type="button" role="listitem" data-k="' + k + '"' + (r.noClick ? ' aria-disabled="true"' : '') + ' aria-label="' + esc(r.label + (r.note ? ' (' + r.note + ')' : '') + ': ' + (spec.valueLabel || (spec.fold ? 'log2 fold enrichment' : 'log2 OR')) + ' ' + vfmt(r.value) + (spec.noSig ? '' : sameFx(spec, r) ? ', significant but within ' + MIN_EFFECT + '×, about the same' : r.sig ? ', significant' : ', not significant') + (spec.sel && r.sel != null ? ', ' + r.sel + ' selected ' + spec.sel.unit : '')) + '">' +
+      return (r.head ? '<div class="hb-head" role="presentation">' + esc(r.head) + '</div>' : '') + '<button class="hb' + (r.sub ? ' sub' : '') + (r.depth === 2 ? ' sub2' : '') + (r.extraRow ? ' extra-row' : '') + (spec.sel && !r.sel ? ' off' : '') + (r.noClick ? ' noclick' : '') + '" type="button" role="listitem" data-k="' + k + '"' + (r.noClick ? ' aria-disabled="true"' : '') + ' aria-label="' + esc(r.label + (r.note ? ' (' + r.note + ')' : '') + ': ' + (spec.valueLabel || (spec.fold ? 'log2 fold enrichment' : 'log2 OR')) + ' ' + vfmt(r.value) + (spec.noSig ? '' : sameFx(spec, r) ? ', significant but within ' + minEffect() + '×, about the same' : r.sig ? ', significant' : ', not significant') + (spec.sel && r.sel != null ? ', ' + r.sel + ' selected ' + spec.sel.unit : '')) + '">' +
         '<span class="hb-label">' + esc(r.label) + (r.note ? '<span class="hb-note">' + esc(r.note) + '</span>' : '') + '</span>' + (spec.extraCol ? '<span class="hb-extra">' + esc(r.extra || '') + '</span>' : '') +
         '<span class="hb-track"><span class="hb-zero" style="left:' + sc.xp(0).toFixed(2) + '%"></span>' +
         '<span class="hb-bar' + (r.sig || spec.noSig ? '' : ' ns') + (sameFx(spec, r) ? ' same' : '') + (v < 0 ? ' neg' : '') + (spec.selTest ? ' sel-bar' : '') + '" style="left:' + a.toFixed(2) + '%;width:' + (r.value == null ? 0 : Math.max(0.6, b - a)).toFixed(2) + '%"></span>' +
@@ -3292,7 +3292,7 @@
     if (up.length) return am(1) + list(up, n) + (down.length ? '; ' + am(-1) + list(down, 1) : '');
     if (down.length) return am(-1) + list(down, n);
     if (!whole && spec.selTest && !spec.rows.some((r) => r.value != null)) return am(0) + 'too few to test';
-    return am(0) + (spec.fold ? 'none over-represented' : 'none differs') + (spec.rows.some((r) => ok(r) && sig(r)) ? ' by ' + MIN_EFFECT + '× or more' : ' at q ≤ ' + PADJ);
+    return am(0) + (spec.fold ? 'none over-represented' : 'none differs') + (spec.rows.some((r) => ok(r) && sig(r)) ? ' by ' + minEffect() + '× or more' : ' at q ≤ ' + PADJ);
   }
 
   function chartCard(spec, cls) {
@@ -3305,7 +3305,7 @@
   // Protein-set charts with fold enrichment (spec.fold) test for enrichment only (one-sided), so they have no depleted key.
   const sigKey = (spec) => [['', spec.compact ? 'Enriched (q ≤ 0.05)' : 'More than expected, q ≤ 0.05']]
     .concat(spec.fold ? [] : [['neg', spec.compact ? 'Depleted (q ≤ 0.05)' : 'Less than expected, q ≤ 0.05']],
-      spec.rows.some((r) => sameFx(spec, r)) ? [['same', 'About the same: q ≤ 0.05 but within ' + MIN_EFFECT + '×']] : [], [['ns', 'Not significant']]);
+      spec.rows.some((r) => sameFx(spec, r)) ? [['same', 'About the same: q ≤ 0.05 but within ' + minEffect() + '×']] : [], [['ns', 'Not significant']]);
   const chartAxis = (spec) => spec.axis || (spec.fold ? 'log2 fold enrichment vs all proteins' : 'log2 odds ratio vs background');
   // Lines of at most `width` px of text at font size fs.
   function wrapText(text, width, fs, pal) {
@@ -3968,8 +3968,8 @@
         const which = pick(pan || func, 1, 0, pan ? 'PANTHER class' : 'protein class').concat(pick(cond, 1, 0, 'CD-CODE condensate'), pick(loc, 1, 0, 'Human Protein Atlas location'), pick(dis, 1, 0, 'disease gene set'));
         // the tiles lead, each charting its strongest effects; the figure is drawn only when none of them has one
         const anyEffect = [motif, sctx || disorder, pan || func, cond].some((spec) => spec && spec.rows.some((r) => ok(r) && r.sig && r.value > 0 && aBig(r.value)));
-        const tipKey = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span><i class="aq-pt same"></i>about the same (within ' + MIN_EFFECT + '×)</span><span class="a-info" tabindex="0" data-tip="' +
-          esc('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against all reviewed human proteins (fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; an effect within ' + MIN_EFFECT + '× either way counts as about the same. Open a tile for every test.') + '">How to read</span>';
+        const tipKey = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span><i class="aq-pt same"></i>about the same (within ' + minEffect() + '×)</span><span class="a-info" tabindex="0" data-tip="' +
+          esc('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against all reviewed human proteins (fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; an effect within ' + minEffect() + '× either way counts as about the same. Open a tile for every test.') + '">How to read</span>';
         lead = anyEffect ? { q: 'What kinds of proteins are arginine methylated?', hi: '<div class="a-key a-key-line">' + tipKey + '</div>' }
           : { q: 'What kinds of proteins are arginine methylated?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
             fig: aForest([['Where in the protein', where], ['Which proteins', which]], { subTip: true }) };
@@ -3987,7 +3987,7 @@
         const up = spec.rows.filter((r) => differ(r) && r.value > 0).sort((a, b) => b.value - a.value);
         const dn = spec.fold ? [] : spec.rows.filter((r) => differ(r) && r.value < 0).sort((a, b) => a.value - b.value);
         const nUp = Math.min(up.length, dn.length ? 5 : 7), nDn = Math.min(dn.length, 7 - nUp, up.length ? 2 : 7);
-        // then, as the opened chart shows them, the significant ones within MIN_EFFECT (grey, about the same)
+        // then, as the opened chart shows them, the significant ones within the minimum effect (grey, about the same)
         const same = spec.rows.filter((r) => ok(r) && r.sig && !aBig(r.value)).sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
         const nSame = Math.max(0, 7 - nUp - nDn), rows = up.slice(0, nUp).concat(dn.slice(0, nDn)).concat(same.slice(0, nSame)).map(row);
         const left = up.slice(nUp).concat(dn.slice(nDn), same.slice(nSame)), more = left.length;
@@ -4430,7 +4430,7 @@
   const AM_PATH = { up: 'M5 1.5 9 8.5H1z', down: 'M5 8.5 9 1.5H1z', ns: '' };
   const am = (dir) => { const k = dir > 0 ? 'up' : dir < 0 ? 'down' : 'ns'; return '<svg class="dirm ' + k + '" viewBox="0 0 10 10" aria-hidden="true">' + (k === 'ns' ? '<circle cx="5" cy="5" r="3.4" fill="none" stroke="currentColor" stroke-width="1.6"/>' : '<path d="' + AM_PATH[k] + '" fill="currentColor"/>') + '</svg>'; };
   // effect sizes as a reader reads them; a selection defined by the feature itself gives unbounded odds ratios
-  const fx = (x) => (x >= 1000 ? '> 1,000' : x >= 10 ? x.toFixed(0) : x >= 1 ? x.toFixed(1) : x >= 0.01 ? x.toFixed(2) : '< 0.01');
+  const fx = (x) => (x >= 1000 ? '> 1,000' : x >= 10 ? x.toFixed(0) : x >= 1.2 ? x.toFixed(1) : x >= 0.01 ? x.toFixed(2) : '< 0.01');
   // The head of a scorecard: what its columns hold, and how to read the markers and the selection's labels.
   function hubHtml(single) {
     const scoped = constraints().length > 0;
@@ -4726,9 +4726,11 @@
   const A_ROWS = [];
   const aOr = (m) => (m && m.or != null && m.or > 0 && Number.isFinite(m.or) ? m.or : null);
   const aSig = (m) => (m.sig != null ? !!m.sig : m.p != null && m.p <= 0.05);
-  // Effects within MIN_EFFECT either way read "about the same", however small their p (grey, not coloured).
-  const MIN_EFFECT = 1.25;
-  const aBig = (l2) => Math.abs(l2) >= Math.log2(MIN_EFFECT);
+  // Effects within the page's minimum either way read "about the same", however small their q (grey, not coloured):
+  // 1.1x on the Overview, whose protein-set enrichments over the whole proteome are modest by nature, 1.25x elsewhere.
+  const MIN_EFFECT_AT = { overview: 1.1 };
+  const minEffect = () => MIN_EFFECT_AT[UI.view] || 1.25;
+  const aBig = (l2) => Math.abs(l2) >= Math.log2(minEffect());
   const aDir = (m) => (m && aOr(m) && aSig(m) ? (!aBig(Math.log2(m.or)) ? 'same' : m.or > 1 ? 'up' : 'down') : 'ns');
   const aX = (v, lo, hi) => (100 * (Math.max(lo, Math.min(hi, Math.log2(v))) - lo) / (hi - lo)).toFixed(2) + '%';
   const aTip = (label, m, what) => '<b>' + esc(label) + '</b>' + (what ? '<br>' + esc(what) : '') + '<br>' + (aOr(m) ? (m.fold ? 'fold ' : 'OR ') + fmtOr(m.or, m.lo, m.hi) + (m.q != null ? ', q ' + fmtP(m.q) : m.p != null ? ', p ' + fmtP(m.p) : '') + (m.used ? ' · ' + fmt(m.used) + ' informative proteins' : '') : 'too few to test');
