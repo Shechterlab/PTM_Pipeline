@@ -2094,10 +2094,11 @@
     const sel = cons.length ? fmt(R.sites.length) + ' site' + (R.sites.length === 1 ? '' : 's') + ' · ' + (selectionText().length > 60 ? selectionText().slice(0, 58) + '…' : selectionText()) : 'all sites';
     const recent = (UI.recent || []).filter((i) => i !== p.i).slice(0, 5);
     return '<nav class="crumbs" aria-label="Where you are"><ol>' +
-      (from !== 'overview' ? '<li><button class="linkish" type="button" data-crumb="overview">Overview</button></li>' : '') +
-      '<li><button class="linkish" type="button" data-crumb="' + from + '">' + esc(VIEW_NAMES[from] || 'Results') + '</button> <span class="muted small">(' + esc(sel) + ')</span></li>' +
+      '<li><button class="linkish" type="button" data-crumb="overview">Overview</button></li>' +
+      '<li><button class="linkish" type="button" data-crumb="proteins">' + esc(VIEW_NAMES.proteins || 'Proteins') + '</button> <span class="muted small">(' + esc(sel) + ')</span></li>' +
       '<li aria-current="page"><b>' + esc(p.label) + '</b></li>' +
-      '<li id="crumb-site"' + (UI.highlight == null ? ' hidden' : '') + '>' + (UI.highlight == null ? '' : esc(rl(UI.highlight, p))) + '</li></ol>' +
+      '<li id="crumb-site"' + (UI.highlight == null ? ' hidden' : '') + '>' + (UI.highlight == null ? '' : esc(rl(UI.highlight, p))) + '</li><li id="crumb-sec" hidden></li></ol>' +
+      (from !== 'proteins' && from !== 'overview' ? '<button class="linkish crumb-back" type="button" data-crumb="' + from + '">‹ Back to ' + esc(VIEW_NAMES[from] || 'results') + '</button>' : '') +
       (recent.length ? '<span class="crumb-recent"><span class="muted small">Recent</span> ' + recent.map((i) => '<button class="linkish" type="button" data-open-p="' + i + '">' + esc(P[i].label) + '</button>').join(' · ') + '</span>' : '') + '</nav>';
   }
 
@@ -2260,6 +2261,7 @@
     // The drawer: what is selected now, the filters by topic, and a foot that says what they leave and closes onto it.
     rail.innerHTML =
       '<div class="drawer-head"><h2 id="rail-title">Filters</h2>' +
+      '<button class="btn quiet small rail-pin" type="button" id="rail-pin" aria-pressed="' + pinned() + '" title="' + (pinned() ? 'Let the filters close again' : 'Keep the filters open on the left') + '">' + (pinned() ? 'Unpin' : 'Pin') + '</button>' +
       '<button class="btn quiet small" type="button" id="rail-done" title="Close the filters (Esc)">Close</button></div>' +
       '<div class="drawer-body">' +
       '<div class="rail-sel scope" id="rail-sel" aria-live="polite"></div>' +
@@ -2367,7 +2369,8 @@
       el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') run(e); });
     });
     $('#rail-clear').addEventListener('click', clearAll);
-    $('#rail-done').addEventListener('click', () => closeFilters());
+    $('#rail-done').addEventListener('click', () => (pinned() ? setPin(false) : closeFilters()));
+    $('#rail-pin').addEventListener('click', () => setPin(!pinned()));
     $('#rail-show').addEventListener('click', () => closeFilters());
   }
 
@@ -2376,8 +2379,39 @@
   // or Show results close them). Filters apply as they are set; the drawer's foot counts what they leave.
   const pageParts = () => [$('header.hero'), $('#toolbar'), $('main'), $('footer.site')].filter(Boolean);
   let filtersOpener = null;
+  // Pinned (screens 1100 px and wider): the filters stay open as a column on the left, the page beside them and in use;
+  // remembered in this browser where storage allows.
+  const PIN_MQ = window.matchMedia ? window.matchMedia('(min-width: 1100px)') : null;
+  let pinFilters = (() => { try { return localStorage.getItem('mse-pin-filters') === '1'; } catch (e) { return false; } })();
+  const pinned = () => pinFilters && (!PIN_MQ || PIN_MQ.matches);
+  function applyPin() {
+    const rail = $('#rail'), bg = $('#drawer-bg'), on = pinned();
+    if (!rail) return;
+    document.documentElement.classList.toggle('filters-pinned', on);
+    if (on) {
+      rail.hidden = false; rail.classList.add('on'); bg.hidden = true; bg.classList.remove('on');
+      pageParts().forEach((el) => { el.inert = false; });
+      document.documentElement.classList.remove('drawer-open');
+      rail.setAttribute('role', 'region'); rail.removeAttribute('aria-modal');
+    } else {
+      rail.setAttribute('role', 'dialog'); rail.setAttribute('aria-modal', 'true');
+      if (!document.documentElement.classList.contains('drawer-open')) { rail.classList.remove('on'); rail.hidden = true; }
+    }
+    const b = $('#rail-pin');
+    if (b) { b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Unpin' : 'Pin'; b.title = on ? 'Let the filters close again' : 'Keep the filters open on the left'; }
+    const fb = $('#filters-btn');
+    if (fb) fb.setAttribute('aria-expanded', String(on || !rail.hidden));
+    syncToolbar();
+  }
+  function setPin(v) {
+    pinFilters = v;
+    try { localStorage.setItem('mse-pin-filters', v ? '1' : '0'); } catch (e) { /* storage blocked: this visit only */ }
+    if (!v) closeFilters(true);
+    applyPin();
+  }
   function openFilters(sec) {
     const rail = $('#rail'), bg = $('#drawer-bg');
+    if (pinned()) { const d = sec && $('#rail details[data-sec="' + sec + '"]'); if (d) { d.open = true; d.scrollIntoView({ block: 'start' }); } ($(d ? 'summary' : '#rail-pin', d || rail) || rail).focus({ preventScroll: !!d }); return; }
     if (!rail.hidden && rail.classList.contains('on')) return;
     filtersOpener = document.activeElement;
     rail.hidden = false; bg.hidden = false;
@@ -2393,9 +2427,9 @@
     const first = d ? $('summary', d) : $('#rail-done');
     if (first) first.focus({ preventScroll: !!d });
   }
-  function closeFilters() {
+  function closeFilters(force) {
     const rail = $('#rail'), bg = $('#drawer-bg');
-    if (rail.hidden) return;
+    if (rail.hidden || (pinned() && !force)) return;
     rail.classList.remove('on'); bg.classList.remove('on');
     pageParts().forEach((el) => { el.inert = false; });
     document.documentElement.classList.remove('drawer-open');
@@ -2410,8 +2444,10 @@
   }
   function initRail() {
     $('#drawer-bg').addEventListener('click', () => closeFilters());
+    applyPin();
+    if (PIN_MQ && PIN_MQ.addEventListener) PIN_MQ.addEventListener('change', applyPin);
     document.addEventListener('keydown', (e) => {
-      if (e.key !== 'Escape' || $('#rail').hidden) return;
+      if (e.key !== 'Escape' || $('#rail').hidden || pinned()) return;
       // Escape closes an open menu or suggestion list inside the drawer first
       if (e.target.closest && e.target.closest('.suggest, details.saved-menu[open]')) return;
       e.preventDefault();
@@ -3810,8 +3846,8 @@
         const anyEffect = [motif, sctx || disorder, pan || func, cond].some((spec) => spec && spec.rows.some((r) => ok(r) && r.sig && r.value > 0));
         const tipKey = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span><i class="aq-pt same"></i>about the same (within ' + MIN_EFFECT + '×)</span><span class="a-info" tabindex="0" data-tip="' +
           esc('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against all reviewed human proteins (fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; an effect within ' + MIN_EFFECT + '× either way counts as about the same. Open a tile for every test.') + '">How to read</span>';
-        lead = anyEffect ? { q: 'What sets methylarginine sites apart?', hi: '<div class="a-key a-key-line">' + tipKey + '</div>' }
-          : { q: 'What sets methylarginine sites apart?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
+        lead = anyEffect ? { q: 'What kinds of proteins are arginine methylated?', hi: '<div class="a-key a-key-line">' + tipKey + '</div>' }
+          : { q: 'What kinds of proteins are arginine methylated?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
             fig: aForest([['Where in the protein', where], ['Which proteins', which]], { subTip: true }) };
       } else {
         const rows = profileRows() || [], sig = rows.filter((r) => r.q <= 0.05);
@@ -3824,12 +3860,18 @@
       }
       const chartTile = (spec) => {
         if (!spec) return null;
-        const rows = pick(spec, 3, spec.fold ? 0 : 1, '');
+        // motifs: the four strongest of either sign and the two of the other (DR among them), the others three and one
+        const motifTile = spec.id === 'ch-motif';
+        const rows = pick(spec, motifTile ? 4 : 3, spec.fold ? 0 : motifTile ? 2 : 1, '');
+        // the line: how many of the rows tested differ by at least MIN_EFFECT, out of how many
+        const noun = { 'ch-pan': 'groups', 'ch-func': 'classes', 'ch-dis': 'families', 'ch-do': 'terms', 'ch-cond': 'condensates', 'ch-loc': 'locations', 'ch-motif': 'motifs', 'ch-struct': 'classes', 'ch-disorder': 'classes' }[spec.id] || 'rows';
         const cnt = (whole) => {
           const re = whole && spec.selTest, v = (r) => (re ? r.ref : r.value), sg = (r) => (re ? r.refQ != null && r.refQ <= PADJ : !!r.sig);
-          const u = spec.rows.filter((r) => ok(r) && sg(r) && v(r) > 0 && aBig(v(r))).length, d = spec.fold ? 0 : spec.rows.filter((r) => ok(r) && sg(r) && v(r) < 0 && aBig(v(r))).length;
-          return u || d ? (u ? '<b>' + u + '</b> ' + (spec.fold ? 'over-represented' : 'more often') : '') + (u && d ? ' · ' : '') + (d ? '<b>' + d + '</b> less often' : '') + ' (≥ ' + MIN_EFFECT + '×)'
-            : 'none differs by ≥ ' + MIN_EFFECT + '× (q ≤ ' + PADJ + ')';
+          const tested = spec.rows.filter((r) => ok(r) && !r.sub), tot = tested.length;
+          const u = tested.filter((r) => sg(r) && v(r) > 0 && aBig(v(r))).length, d = spec.fold ? 0 : tested.filter((r) => sg(r) && v(r) < 0 && aBig(v(r))).length;
+          if (!u && !d) return 'none of ' + tot + ' ' + noun + ' differs by ≥ ' + MIN_EFFECT + '×';
+          return spec.fold ? '<b>' + u + ' of ' + tot + '</b> ' + noun + ' over-represented ≥ ' + MIN_EFFECT + '×'
+            : '<b>' + u + '</b> more often, <b>' + d + '</b> less often, of ' + tot + ' ' + noun + ' (≥ ' + MIN_EFFECT + '×)';
         };
         return { vis: rows.length ? aForest([[null, rows]], { compact: true }) : '', head: cnt(false), whole: scoped && spec.selTest ? cnt(true) : '' };
       };
@@ -3849,8 +3891,8 @@
       // G3BP1, or a selection's proteins with the most sites
       const ex = scoped ? R.prots.map((p) => [p, p.sites.filter((j) => R.shown.has(j)).length]).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([p]) => p)
         : ['HNRNPA1', 'FUS', 'G3BP1'].map((g) => pickReviewed(lookupExact(g))).filter(Boolean);
-      const maps = ex.length ? '<h3 class="a-gh">' + (scoped ? 'Your proteins with the most sites' : 'Where the sites are, on three RNA-binding proteins') + '</h3>' + aMapsHtml(ex, '') : '';
-      return aHome(lead, ov, scoped ? [] : ['sel-enriched'], { 'What kinds of proteins are methylated': maps });
+      const maps = ex.length ? '<h3 class="a-gh">' + (scoped ? 'Your proteins with the most sites, drawn' : 'Three RNA-binding proteins, drawn') + '</h3>' + aMapsHtml(ex, '') : '';
+      return aHome(lead, ov, scoped ? [] : ['sel-enriched'], { 'Starting points': maps });
     }
     A_ROWS.length = 0;
     const hubList = '<div class="hub-list">' +
@@ -4398,6 +4440,13 @@
       list.classList.toggle('focus', on);
       $$('details.hub-row', list).forEach((x) => { const cur = x === d; x.classList.toggle('cur', cur); if (cur && !x.open) x.open = true; else if (!cur && x.open) x.open = false; });
       $$('.hub-sec', list).forEach((s) => s.classList.toggle('cur', on && s.contains(d)));
+      $$('.a-secs [data-asec]', root).forEach((b) => {
+        const cur = b.dataset.asec === (on ? d.dataset.fold : '');
+        b.setAttribute('aria-current', cur ? 'true' : 'false');
+        if (cur && on) b.scrollIntoView({ block: 'nearest', inline: 'center' });
+      });
+      const cs = $('#crumb-sec', root);
+      if (cs) { cs.hidden = !on; cs.textContent = on ? $('.fold-title', d).textContent : ''; }
       const bar = $('.focus-bar', root);
       if (bar) {
         bar.hidden = !on;
@@ -4509,6 +4558,7 @@
     cls: () => '<svg viewBox="0 0 64 24"><path d="M4 16 q6 -12 12 0 t12 0 t12 0 t12 0" class="hg-rna"/><circle cx="58" cy="8" r="3.6" class="hg-site"/></svg>',
     dna: () => '<svg viewBox="0 0 64 24"><path d="M4 6 C14 6 18 18 28 18 S42 6 52 6" class="hg-dna"/><path d="M4 18 C14 18 18 6 28 6 S42 18 52 18" class="hg-dna"/><circle cx="58" cy="12" r="3.6" class="hg-site"/></svg>',
     pins: () => '<svg viewBox="0 0 64 24"><line x1="2" y1="18" x2="62" y2="18" class="hg-idr"/>' + [12, 26, 34, 48].map((x, k) => '<line x1="' + x + '" y1="18" x2="' + x + '" y2="' + (k % 2 ? 6 : 9) + '" class="hg-stem"/><circle cx="' + x + '" cy="' + (k % 2 ? 6 : 9) + '" r="3.2" class="hg-site"/>').join('') + '</svg>',
+    drops: () => '<svg viewBox="0 0 64 24"><circle cx="16" cy="12" r="9" class="hg-drop"/><circle cx="36" cy="9" r="5.5" class="hg-drop"/><circle cx="50" cy="15" r="4" class="hg-drop"/><circle cx="14" cy="10" r="2.4" class="hg-site"/></svg>',
     tree: () => '<svg viewBox="0 0 64 24"><path d="M4 12 H20 M20 5 V19 M20 5 H36 M20 19 H36 M36 1.5 V8.5 M36 1.5 H50 M36 8.5 H50" class="hg-tree"/><circle cx="54" cy="1.5" r="2.6" class="hg-site"/><circle cx="54" cy="8.5" r="2.6" class="hg-site"/><circle cx="40" cy="19" r="2.6" class="hg-site"/></svg>',
     pdb: () => '<svg viewBox="0 0 64 24"><path d="M4 12 c3 -9 9 -9 12 0 s9 9 12 0 s9 -9 12 0 s9 9 12 0" class="hg-helix"/><circle cx="58" cy="12" r="3.6" class="hg-site"/></svg>',
     ppi: () => '<svg viewBox="0 0 64 24"><ellipse cx="20" cy="12" rx="15" ry="9" class="hg-blob"/><ellipse cx="44" cy="12" rx="15" ry="9" class="hg-blob b"/><circle cx="32" cy="12" r="3.6" class="hg-site"/></svg>',
@@ -4521,6 +4571,17 @@
   const aStack = (parts) => { const tot = parts.reduce((a, p) => a + p.n, 0) || 1; return '<div class="a-stack"><div class="as-bar">' + parts.map((p) => '<i class="' + p.cls + '" style="flex-grow:' + p.n + '" data-tip="' + esc('<b>' + p.label + '</b><br>' + fmt(p.n) + ' (' + pctText(p.n, tot) + '%)') + '"></i>').join('') + '</div><div class="as-key">' + parts.filter((p) => p.key).map((p) => '<span><i class="' + p.cls + '"></i>' + esc(p.key) + ' ' + pctText(p.n, tot) + '%</span>').join('') + '</div></div>'; };
   const aBigN = (items) => '<div class="a-big">' + items.map(([n, label, cls]) => '<span class="' + (cls || '') + '"><b>' + n + '</b> ' + esc(label) + '</span>').join('') + '</div>';
   // The page's lead and its tiles. ov: {key: {vis, head, whole}} replaces a tile's picture or words; skip: keys left out.
+  // Layout A's section strip: every section of the page by group, sticky under the toolbar, the one open marked; it
+  // replaces the focus bar, so a section is one click from any other and from the tiles ("All sections").
+  function aSecsHtml() {
+    const groups = [];
+    for (const r of A_ROWS) { let g = groups.find((x) => x[0] === r.group); if (!g) groups.push(g = [r.group, []]); g[1].push(r); }
+    return '<nav class="a-secs" aria-label="Sections of this page"><div class="as-scroll"><i class="as-fade l" aria-hidden="true"></i>' +
+      '<button type="button" class="as-all" data-asec="" aria-current="true">All sections</button>' +
+      groups.map(([g, rows]) => (g ? '<span class="as-g">' + esc(g) + '</span>' : '') + rows.map((r) => '<button type="button" class="as-c" data-asec="' + r.key + '" aria-current="false"' +
+        ((r.meta || {}).empty ? ' disabled title="' + esc(r.meta.empty) + '"' : '') + '>' + esc(r.title) + '</button>').join('')).join('') +
+      '<i class="as-fade r" aria-hidden="true"></i></div></nav>';
+  }
   // ins: { group name: html } drawn, full width, after that group's tiles.
   function aHome(lead, ov = {}, skip = [], ins = {}) {
     const scoped = constraints().length > 0, groups = [];
@@ -4538,7 +4599,7 @@
       return '<button type="button" class="a-tile' + (empty ? ' off' : '') + (vis ? '' : ' novis') + '" data-go="' + r.key + '"' + (empty ? ' aria-disabled="true"' : '') + '><span class="a-tt">' + esc(r.title) + '</span>' +
         (vis ? '<span class="a-vis">' + vis + '</span>' : '') + '<span class="a-head" data-sum-of="' + r.key + '"' + (o.head != null ? ' data-fixed' : '') + '>' + head + '</span>' + (whole ? '<span class="a-whole"><span>Whole dataset</span> ' + whole + '</span>' : '') + '</button>';
     };
-    return '<div class="a-home hub-only">' +
+    return aSecsHtml() + '<div class="a-home hub-only">' +
       (lead ? '<section class="a-lead"><h2 class="a-q">' + lead.q + '</h2>' + (lead.pic || '') + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') + (lead.hi || '') +
         (lead.fig ? '<div class="card a-fig">' + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
       '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>' +
@@ -4610,17 +4671,32 @@
     if (!box || !UI_A || UI.detail !== p.i) return;
     const sites = p.sites.map((j) => S[j]), n = sites.length, of = (k) => k + ' of ' + n;
     const u = UNIDATA.get(p.acc), argN = p.argN || (u && u.seq ? (u.seq.match(/R/g) || []).length : null);
-    const mi = new Set(['RG', 'RGG', 'GRG'].map((x) => M.motifs.indexOf(x)).filter((k) => k >= 0));
-    const nMot = sites.filter((s) => bits(s.mot).some((b) => mi.has(b))).length;
+    // the motif family most of its methylarginines sit in, of those methylarginines favour across the dataset
+    const motifEff = new Map((M.overview.motifs || []).map((r) => [r[0], r]));
+    const fams = [['RG or RGG', 'RGG', ['RG', 'RGG', 'GRG']], ['DR', 'DR', ['DR']], ['GAR', 'GAR', ['GAR']], ['RXR', 'RXR', ['RXR']]]
+      .map(([label, show, names]) => { const ks = new Set(names.map((x) => M.motifs.indexOf(x)).filter((k) => k >= 0)); return { label, show, names, n: sites.filter((s) => bits(s.mot).some((b) => ks.has(b))).length }; });
+    const mot = fams.reduce((a, b) => (b.n > a.n ? b : a), fams[0]), nMot = mot.n, mEff = motifEff.get(mot.show);
     const dIdx = M.disorder_classes.indexOf('disordered'), nDis = sites.filter((s) => s.dc === dIdx).length;
     const cards = [{ go: 'p-seq', kind: 'Sites', glyph: aGlyph.pins(), big: argN ? fmt(n) + ' of ' + fmt(argN) : fmt(n), dir: 'n', label: argN ? 'arginines methylated' : 'methylarginines',
       tip: '<b>' + esc(p.label) + '</b>: ' + fmt(n) + ' methylarginine' + (n === 1 ? '' : 's') + (argN ? ' of ' + fmt(argN) + ' arginines' : '') + (p.shrink != null ? '<br>Arginine methylation enrichment: log2 ' + fmtL2(p.shrink) + (p.argQ != null ? ', q ' + fmtP(p.argQ) : '') : '') },
-      { go: 'p-seq', kind: 'Sequence motif', glyph: aGlyph.motif('RGG'), big: of(nMot), dir: 'n', label: 'in RG or RGG motifs', tip: 'Methylarginines in an RG, RGG or GRG motif' },
+      { go: 'p-seq', kind: 'Sequence motif', glyph: aGlyph.motif(mot.show), big: of(nMot), dir: 'n', label: 'in ' + mot.label + ' motifs',
+        tip: 'Methylarginines in a' + (mot.names.length > 1 ? 'n ' + mot.names.join(', ').replace(/, (?=[^,]*$)/, ' or ') : ' ' + mot.names[0]) + ' motif' + (mEff ? '<br>Across the dataset, ' + mot.show + ' surrounds methylarginines ' + fx(2 ** mEff[4]) + '× as often as the other arginines of the same proteins (q ' + fmtP(mEff[5]) + ')' : '') },
       { go: 'p-dom', kind: 'Position in the protein', glyph: aGlyph.struct(), big: of(nDis), dir: 'n', label: 'in disordered regions', tip: 'Methylarginines in regions MobiDB calls disordered' }];
     if (ixReady()) {
       const nR = sites.filter((s) => (s.ev || 0) & EV_RNA_CELLS).length;
       cards.push({ go: 'p-na', kind: 'RNA · in living cells', glyph: aGlyph.cls(), big: of(nR), dir: 'n', label: 'in RNA-bound regions', tip: 'Methylarginines crosslinked to RNA, or inside an RNA-bound peptide or fragment (RBDmap, CAPRI, pCLAP) or under an RBR-ID+ peptide' });
     }
+    // the category it belongs to that methylated proteins are most over-represented in (PANTHER, CD-CODE condensates)
+    const cats = [], pm = pantherMeta(), ovw = M.overview;
+    if (pm && p.pan) {
+      const [g, c, sk] = p.pan;
+      [[ovw.panther_groups, [g]], [ovw.panther_classes, c >= 0 ? [c] : []], [ovw.panther_subclasses || [], sk || []]]
+        .forEach(([table, ks]) => ks.forEach((k) => { const r = table[k]; if (r && r[0] !== pm.unclassified) cats.push({ name: r[0], l2: r[4], q: r[5], kind: 'Protein class', go: 'p-func' }); }));
+    }
+    for (const k of p.cond || []) { const c = M.condensates[k]; if (c) cats.push({ name: c[0], l2: c[7] != null ? c[7] : c[5], q: c[8] != null ? c[8] : c[6], kind: 'Condensate', go: 'p-cond' }); }
+    const top = cats.filter((x) => x.l2 != null && x.q != null && x.q <= PADJ && x.l2 > 0 && aBig(x.l2)).sort((a, b) => b.l2 - a.l2)[0];
+    if (top) cards.push({ go: top.go, kind: top.kind, glyph: top.kind === 'Condensate' ? aGlyph.drops() : aGlyph.cls(), big: fx(2 ** top.l2) + '×', dir: 'up', label: top.name,
+      tip: '<b>' + esc(top.name) + '</b>: ' + esc(p.label) + ' belongs to it. Across the dataset, methylated proteins are ' + fx(2 ** top.l2) + '× over-represented in it (q ' + fmtP(top.q) + ')' });
     const ck = CONS_KEEP.get(p.i);
     if (ck && ck.me != null && ck.other != null) cards.push({ go: 'p-cons', kind: 'Conservation', glyph: aGlyph.tree(), big: Math.round(100 * ck.me) + '%', dir: 'n', label: 'still R in orthologues (others ' + Math.round(100 * ck.other) + '%)',
       tip: 'On average, the share of species whose orthologue still has an arginine at a methylarginine (' + fmt(ck.n1) + ') and at the other arginines (' + fmt(ck.n2) + ')' + (ck.p != null ? '; Wilcoxon rank-sum p ' + fmtP(ck.p) : '') });
@@ -4720,6 +4796,7 @@
   }
   function bindAHome(root) {
     root.classList.toggle('a-mode', UI_A);
+    $$('.a-secs [data-asec]', root).forEach((b) => b.addEventListener('click', () => { const k = b.dataset.asec; if (k) UI.hubFrom = k; hubFocus(k || null); }));
     const home = $('.a-home', root);
     if (!home) return;
     $$('[data-go]', home).forEach((b) => b.addEventListener('click', () => { if (b.getAttribute('aria-disabled') === 'true') return; UI.hubFrom = b.dataset.go; hubFocus(b.dataset.go); }));
@@ -10978,7 +11055,6 @@
       ov['ixs-intact'] = cmp((on) => [tRow('Binding region', 'short binding regions', 'intact_enrich', ['peptide_disordered'], on), tRow('Mutation', 'mutations with an effect', 'intact_enrich', ['mutation'], on)]);
       // The answer: four cards (RNA and DNA in living cells, solved structures, protein interfaces) and one sentence.
       const big = (m) => (aDir(m) === 'ns' ? 'No difference' : fx(m.or) + '×');
-      const flat = (m) => ['ns', 'same'].includes(aDir(m));
       const tipRows = (rows) => rows.map((r) => esc(r.label) + ': ' + (aOr(r.main) ? fmtOr(r.main.or, r.main.lo, r.main.hi) + (r.main.p != null ? ', p ' + fmtP(r.main.p) : '') : 'too few to test')).join('<br>');
       const vs = (scoped ? 'The methylarginines of your selection' : 'Methylarginines') + ' against the other arginines of the same proteins';
       const hiCards = [];
@@ -10986,16 +11062,21 @@
         label: 'in RNA-bound peptides' + (ors.length && ors.length < testable.length ? ' (' + ors.length + ' of ' + testable.length + ' experiments)' : ''),
         tip: '<b>' + vs + '</b>, counting only the arginines each experiment measured<br>' + tipRows(cells) });
       if (aOr(dna.main)) hiCards.push({ go: 'ixs-cells', kind: 'DNA · in living cells', glyph: aGlyph.dna(), big: big(dna.main), dir: aDir(dna.main), label: 'at DNA-crosslinked residues', tip: '<b>' + vs + '</b><br>' + tipRows([dna]) });
-      const stRows = [rnaSt, dnaSt].filter((r) => aOr(r.main)), stSame = stRows.length && stRows.every((r) => flat(r.main));
-      if (stRows.length) hiCards.push({ go: 'ix-na', kind: 'Solved structures', glyph: aGlyph.pdb(), big: stRows.every((r) => aDir(r.main) === 'ns') ? 'No difference' : stRows.map((r) => fx(r.main.or) + '×').join(' · '), dir: stSame ? 'ns' : aDir(stRows[0].main),
-        label: 'within 4 Å of RNA or DNA', tip: '<b>' + vs + '</b>, side chain within 4 Å in PDB entries<br>' + tipRows(stRows) });
-      if (aOr(prot[1].main)) hiCards.push({ go: 'ixs-predicted', kind: 'Protein partners', glyph: aGlyph.ppi(), big: big(prot[1].main), dir: aDir(prot[1].main), label: 'at predicted protein interfaces',
-        tip: '<b>' + vs + '</b><br>' + tipRows(prot) });
-      // the sentence: what holds in cells, then whether the structures agree
+      // the residue crosslinked itself; protein partners (STRING); and, to explore rather than to test, the
+      // methylarginines in contact with RNA or DNA in solved structures
+      const xlRes = test('xl_enrich', ['rna_xl'], scoped);
+      if (aOr(xlRes)) hiCards.push({ go: 'ixs-cells', kind: 'RNA · in living cells', glyph: aGlyph.cls(), big: big(xlRes), dir: aDir(xlRes), label: 'at the crosslinked residue itself',
+        tip: '<b>' + vs + '</b><br>The residue crosslinked to RNA (pepR-MS compendium, 5 datasets): ' + fmtOr(xlRes.or, xlRes.lo, xlRes.hi) + (xlRes.p != null ? ', p ' + fmtP(xlRes.p) : '') });
+      if (pm.distinct) hiCards.push({ go: 'ixs-partners', kind: 'Protein partners', glyph: aGlyph.ppi(), big: pctText(pm.distinctMeth, pm.distinct) + '%', dir: 'n',
+        label: 'of their partners are methylated (' + pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of human proteins)', tip: 'High-confidence STRING partners (score ≥ 0.7) of ' + (scoped ? 'the proteins of your selection' : 'the methylated proteins') + ': ' + fmt(pm.distinctMeth) + ' of ' + fmt(pm.distinct) + ' carry a methylarginine' });
+      const nR = naN(R.sites, 'rna'), nD = naN(R.sites, 'dna');
+      if (nR || nD) hiCards.push({ go: 'ix-na', kind: 'Solved structures · to explore', glyph: aGlyph.pdb(), big: fmt(nR) + ' · ' + fmt(nD), dir: 'n', label: 'methylarginines in contact with RNA · with DNA',
+        tip: 'Methylarginines with RNA or DNA within 4 Å of the side chain in PDB entries, with the bound sequences. Structures show where to look; they are not a test of enrichment.' });
+      // the sentence: what holds in cells
       const inCells = [ors.length && 'in RNA-bound peptides', aDir(dna.main) === 'up' && 'at DNA crosslinks'].filter(Boolean);
       const who = scoped ? 'the methylarginines of your selection' : 'methylarginines';
       const answer = (inCells.length ? 'In living cells, ' + who + ' sit ' + inCells.join(' and ') + ' more often than the other arginines of the same proteins' : 'In living cells, ' + who + ' are not enriched at RNA or DNA contacts') +
-        (stSame ? '; in solved structures, they are no closer to RNA or DNA.' : '.');
+        '.';
       const more = '<p class="a-more"><button type="button" class="linkish" data-go="ix-nac">Every contact test, with tables ›</button></p>';
       return aHome({ q: 'Are methylarginines enriched at contacts with RNA, DNA or other proteins?', pic: exHtml, verdict: answer, hi: hiCards.length ? aHighlights(hiCards) + more : more }, ov, ['ix-ex', 'ix-nac']);
     }
@@ -11219,7 +11300,7 @@
     const groups = [['Protein arginine methyltransferases', prmtRows, prmtRows.length], ['Tudor-domain proteins', tudorAll.slice(0, 12), tudorAll.length],
       ['WD40-repeat proteins', wdAll.slice(0, 12), wdAll.length], ['PHD-finger proteins', phdAll.slice(0, 12), phdAll.length]];
     const maxN = Math.max(1, ...groups.flatMap((gr) => gr[1].map((r) => r.n)));
-    const barList = (list) => '<div class="hbars">' + list.map(({ x, n }) => '<button class="hb" type="button" data-partner="' + x.k + '"><span class="hb-label">' + esc(x.gene) + (x.p >= 0 ? ' <span class="muted">· methylated</span>' : '') + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / maxN).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span></button>').join('') + '</div>';
+    const barList = (list) => '<div class="hbars">' + list.map(({ x, n }) => '<button class="hb" type="button" data-partner="' + x.k + '"><span class="hb-label">' + esc(x.gene) + (x.p >= 0 ? ' <span class="tag src" title="' + esc(x.gene + ' itself carries reported methylarginine sites (it is in this dataset)') + '">itself methylated</span>' : '') + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / maxN).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span></button>').join('') + '</div>';
     const pm = partnerShare(prots);
     return '<div id="ch-readers"><p class="sub">' + (scoped ? 'Proteins of your selection' : 'Methylated proteins') + ' bound by PRMTs and by Tudor, WD40 or PHD proteins (STRING ≥ 0.7). Click a bar to list them.</p>' +
       '<div class="two-col">' + groups.map(([label, list, n]) => '<div><p class="flabel">' + esc(label) + (n > list.length ? ' <span class="muted">(top ' + list.length + ' of ' + n + ')</span>' : '') + '</p>' + (list.length ? barList(list) : '<p class="note">None at this confidence.</p>') + '</div>').join('') + '</div>' +
