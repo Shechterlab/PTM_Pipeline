@@ -630,6 +630,17 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .af-viewer { position: relative; height: 460px; border-radius: 0.7rem; overflow: hidden; background: var(--surface-2); border: 1px solid var(--line); }
 .af-placeholder { position: absolute; inset: 0; display: grid; place-items: center; padding: 1.5rem; text-align: center; color: var(--muted); font-size: 0.88rem; }
 .af-side { display: grid; gap: 0.5rem; font-size: 0.85rem; min-width: 0; }
+/* the 3D card at the size of the window: a modal dialog holding its head, controls, viewer and side panel */
+.af-dialog { width: calc(100vw - 2rem); height: calc(100dvh - 2rem); max-width: none; max-height: none; padding: 1rem 1.2rem; border: 0; border-radius: 0.9rem; background: var(--surface); color: var(--ink); overscroll-behavior: contain; }
+.af-dialog[open] { display: flex; flex-direction: column; gap: 0.6rem; }
+.af-dialog::backdrop { background: rgb(0 0 0 / 0.5); overflow: hidden; overscroll-behavior: contain; }
+.af-dialog .af-wrap { flex: 1; min-height: 0; grid-template-columns: minmax(0, 1fr) 19rem; align-items: stretch; }
+.af-dialog .af-wrap > div:first-child { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-height: 0; }
+.af-dialog .af-viewer { height: auto; min-height: 320px; }
+.af-dialog .af-side { overflow: auto; min-height: 0; }
+.af-dialog .card-head .sub { display: none; }
+#af-move[aria-pressed="true"], #af-big[aria-pressed="true"] { border-color: var(--accent); color: var(--accent-dark); }
+@media (max-width: 760px) { .af-dialog { width: 100vw; height: 100dvh; max-height: none; border-radius: 0; padding: 0.7rem; } .af-dialog .af-wrap { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; } .af-dialog .af-side { max-height: 30vh; } }
 .af-side .flabel { margin: 0.3rem 0 0; }
 .af-side .note { margin: 0; }
 .af-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.2rem; font-size: 0.8rem; }

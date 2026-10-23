@@ -4346,7 +4346,7 @@
         prow('p-ix', 'Protein interactions', '<div class="card" id="card-ix"></div>', 'Partners, complexes and predicted models', 'loading…') +
         prow('p-na', 'RNA and DNA interactions', '<div class="card" id="card-na"></div>', 'Crosslinks, structures, binding motifs and eCLIP targets', 'loading…')) +
       hubSec('Sites and structure',
-        prow('p-sites', 'Sites', '<div class="card tbl-card" id="card-sites"><div class="card-pad"><div class="card-head"><div><h3>Sites</h3><p class="sub">Click a row for details of the site.</p></div><div class="actions" id="psites-tools"></div></div><div id="psites-ix"></div></div>' +
+        prow('p-sites', 'Methylarginine sites', '<div class="card tbl-card" id="card-sites"><div class="card-pad"><div class="card-head"><div><h3>Methylarginine sites</h3><p class="sub">Click a row for details of the site.</p></div><div class="actions" id="psites-tools"></div></div><div id="psites-ix"></div></div>' +
       '<div class="tbl-wrap" id="psites"></div><p class="note uni-extra" id="uni-extra" hidden></p><div class="card-pad" id="psites-cite"></div></div>', 'Every site with its evidence, state and sources', fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites shown') +
         prow('p-3d', '3D structure', structureCard(p), 'AlphaFold DB model and experimental structures', UI_A ? 'loading…' : 'loads when opened')) +
       // The context toggle applies to the cards of its section (and the Complexes tab of Protein interactions).
@@ -5306,7 +5306,7 @@
     if (seg) { seg.innerHTML = pIxSegHtml(p); bindDocLinks(seg); }
     const ixF = UI.pIx || '';
     const nShown = rows.filter((s) => R.shown.has(s.j)).length;
-    setFoldSummary('p-sites', fmt(rows.length) + ' site' + (rows.length === 1 ? '' : 's') + (nShown < rows.length ? ', ' + fmt(nShown) + ' match your filters' : '') +
+    setFoldSummary('p-sites', fmt(rows.length) + ' methylarginine' + (rows.length === 1 ? '' : 's') + (nShown < rows.length ? ', ' + fmt(nShown) + ' match your filters' : '') +
       (ixReady() ? ' · ' + ['exp', 'pred', 'none'].map((k) => [rows.filter((x) => ixStatus(x) === k).length, k]).filter((x) => x[0]).map(([n, k]) => fmt(n) + ' ' + IXS[k][0].toLowerCase()).join(', ') : '') +
       (ixF ? ' · showing ' + IXS[ixF][0].toLowerCase() + ' only' : ''));
     box.innerHTML = '<table class="tbl stackable">' + colHead(cols, { dir: 1 }, null) + '<tbody>' +
@@ -7012,7 +7012,7 @@
   // ------------------------------------------------------------- 3D structure
   function structureCard(p) {
     return '<div class="card" id="card-af"><div class="card-head"><div><h3>3D structure</h3><p class="sub" id="af-sub">The best-resolved PDB chain or the AlphaFold model, coloured like the protein map. Click a residue to zoom in.</p></div>' +
-      '<div class="exp" role="group" aria-label="Structure controls"><button type="button" id="af-reset" disabled title="Turn and zoom the structure back to where it started">Reset view</button><button type="button" id="af-spin" disabled aria-pressed="false">Spin</button><button type="button" id="af-png" disabled>PNG</button><button type="button" id="af-cxc" disabled title="ChimeraX command script that rebuilds this view">ChimeraX</button><button type="button" id="af-pml" disabled title="PyMOL script that rebuilds this view">PyMOL</button><button type="button" id="af-cif" disabled title="The coordinates shown as mmCIF, with the methylarginines listed">mmCIF</button><button type="button" id="af-pdbf" disabled title="The coordinates shown as PDB, with the methylarginines in REMARK 999">PDB</button></div></div>' +
+      '<div class="exp" role="group" aria-label="Structure controls"><button type="button" id="af-reset" disabled title="Turn and zoom the structure back to where it started">Reset view</button><button type="button" id="af-spin" disabled aria-pressed="false">Spin</button><button type="button" id="af-move" disabled aria-pressed="false" title="Drag to slide the structure across the view instead of turning it (Ctrl-drag does the same at any time)">Move</button><button type="button" id="af-big" disabled aria-pressed="false" title="Show the structure at the size of the window (Esc returns)">Expand</button><button type="button" id="af-png" disabled>PNG</button><button type="button" id="af-cxc" disabled title="ChimeraX command script that rebuilds this view">ChimeraX</button><button type="button" id="af-pml" disabled title="PyMOL script that rebuilds this view">PyMOL</button><button type="button" id="af-cif" disabled title="The coordinates shown as mmCIF, with the methylarginines listed">mmCIF</button><button type="button" id="af-pdbf" disabled title="The coordinates shown as PDB, with the methylarginines in REMARK 999">PDB</button></div></div>' +
       '<div class="af-src" id="af-src"></div>' +
       '<div class="af-controls" id="af-controls"></div>' +
       '<div class="af-wrap"><div><div class="af-viewer" id="af-viewer"><div class="af-placeholder">Loading the structure…</div></div><p class="note af-msg" id="af-msg" aria-live="polite"></p></div><div class="af-side" id="af-side"></div></div>' +
@@ -7079,6 +7079,9 @@
       if (msg) msg.textContent = '';
     };
     $('#af-spin').onclick = (e) => { if (!mol) return; mol.spin = !mol.spin; mol.viewer.spin(mol.spin ? 'y' : false); e.currentTarget.setAttribute('aria-pressed', String(mol.spin)); };
+    $('#af-move').onclick = (e) => { UI.mvMove = !UI.mvMove; e.currentTarget.setAttribute('aria-pressed', String(!!UI.mvMove)); };
+    $('#af-move').setAttribute('aria-pressed', String(!!UI.mvMove));
+    $('#af-big').onclick = () => afExpand(!$('#af-dialog') || !$('#af-dialog').open);
     $('#af-png').onclick = () => {
       if (!mol) return;
       const src = mol.mode === 'pdb' ? 'PDB ' + mol.pdb.e.id.toUpperCase() : 'AlphaFold DB model';
@@ -7086,9 +7089,65 @@
     };
   }
 
+  // Move: a drag slides the structure across the view instead of turning it. 3Dmol.js slides it when Ctrl is held, so
+  // while Move is on each drag reaches it with Ctrl set.
+  function bindMoveMode(el) {
+    if (!el || el.dataset.move) return;
+    el.dataset.move = '1';
+    const fwd = (ev) => {
+      if (!UI.mvMove || !ev.isTrusted || ev.ctrlKey) return;
+      let copy;
+      try {
+        copy = ev.type.startsWith('touch')
+          ? new TouchEvent(ev.type, { bubbles: true, cancelable: true, composed: true, touches: [...ev.touches], targetTouches: [...ev.targetTouches], changedTouches: [...ev.changedTouches], ctrlKey: true })
+          : new MouseEvent(ev.type, { bubbles: true, cancelable: true, composed: true, view: window, clientX: ev.clientX, clientY: ev.clientY, screenX: ev.screenX, screenY: ev.screenY, button: ev.button, buttons: ev.buttons, ctrlKey: true, shiftKey: ev.shiftKey, altKey: ev.altKey, metaKey: ev.metaKey });
+      } catch (e) { return; }
+      ev.stopImmediatePropagation();
+      ev.preventDefault();
+      ev.target.dispatchEvent(copy);
+    };
+    el.addEventListener('mousemove', fwd, true);
+    el.addEventListener('touchmove', fwd, { capture: true, passive: false });
+  }
+  // Expand: the card's head, controls, viewer and side panel move into a dialog the size of the window (Esc, or the
+  // button again, returns them); the live viewer moves with them.
+  function afExpand(on) {
+    const card = $('#card-af');
+    let dlg = $('#af-dialog');
+    if (on) {
+      if (!card || !mol) return;
+      if (!dlg) {
+        dlg = document.createElement('dialog');
+        dlg.id = 'af-dialog';
+        dlg.className = 'af-dialog';
+        dlg.setAttribute('aria-label', '3D structure');
+        document.body.appendChild(dlg);
+        dlg.addEventListener('close', () => afExpand(false));
+      }
+      const parts = ['.card-head', '#af-src', '#af-controls', '.af-wrap'].map((q) => $(q, card)).filter(Boolean);
+      if (!parts.length || dlg.open) return;
+      const mark = document.createElement('div');
+      mark.id = 'af-dialog-mark';
+      mark.hidden = true;
+      parts[0].before(mark);
+      dlg.append(...parts);
+      dlg.showModal();
+    } else {
+      const mark = $('#af-dialog-mark');
+      if (dlg) { if (mark) mark.after(...Array.from(dlg.children)); else dlg.replaceChildren(); if (dlg.open) dlg.close(); }
+      if (mark) mark.remove();
+    }
+    const b = $('#af-big');
+    if (b) { b.setAttribute('aria-pressed', String(!!on)); b.textContent = on ? 'Close' : 'Expand'; }
+    if (mol && mol.el && mol.el.offsetWidth) requestAnimationFrame(() => { mol.viewer.resize(); mol.viewer.render(); });
+  }
   function initStructure(p) {
     const holder = $('#af-viewer');
     if (!holder) return;
+    // a redrawn page closes the large view first (its parts belong to the card being replaced)
+    const dlg = $('#af-dialog');
+    if (dlg && dlg.open) dlg.close();
+    bindMoveMode(holder);
     renderAfSide(p, AFDATA.get(p.acc));
     const enable = () => AF_BUTTONS.forEach((id) => { const b = $(id); if (b) b.disabled = false; });
     const bindButtons = () => bindAfButtons(p);
@@ -7096,6 +7155,7 @@
     if (mol && mol.p.i === p.i && mol.el) {
       holder.replaceWith(mol.el);
       mol.el.id = 'af-viewer';
+      bindMoveMode(mol.el);
       if (mol.el.offsetWidth) mol.viewer.resize();
       renderViewControls();
       styleStructure(false);
@@ -7553,7 +7613,7 @@
     return m ? m.unpStart + (rn - m.start) : null;
   }
 
-  const AF_BUTTONS = ['#af-reset', '#af-spin', '#af-png', '#af-cxc', '#af-pml', '#af-cif', '#af-pdbf'];
+  const AF_BUTTONS = ['#af-reset', '#af-spin', '#af-move', '#af-big', '#af-png', '#af-cxc', '#af-pml', '#af-cif', '#af-pdbf'];
 
   // ----- the 3D view outside the browser: ChimeraX and PyMOL scripts that rebuild it (model, colouring, methylarginine
   // side chains in their site colours, labels, focused residue, light background) and the coordinates with the
