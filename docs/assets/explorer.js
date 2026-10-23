@@ -3411,6 +3411,7 @@
   }
 
   function bindBars(container, rows, onClick) {
+    if (!container) return;
     $$('.hb[data-k]', container).forEach((b) => {
       const r = rows[+b.dataset.k];
       b.addEventListener('click', () => { if (!r.noClick) onClick(r); });
@@ -3907,6 +3908,7 @@
   }
 
   function renderOverview(el) { renderDash(el, 'overview'); }
+  const SEL_MIN = { prots: 10, sites: 30 };
   function renderDash(el, page) {
     const ov = M.overview;
     UI.charts = {};
@@ -3929,6 +3931,11 @@
     const multi = M.n_sites - repDist[0];
     // With a selection, the same reports-per-site rows count its sites too (as markSelection does for the charts).
     const selOn = constraints().length > 0, repSel = [0, 0, 0, 0, 0];
+    // A selection is compared with the rest (enriched features, protein sets, motifs, structural context) only when it
+    // is big enough for the tests to mean something; a smaller one gets its list and the counts.
+    const testable = !selOn || (R.prots.length >= SEL_MIN.prots && R.sites.length >= SEL_MIN.sites);
+    // its untested sections stay in the page, hidden (their controls still bind), and out of its tiles and Sections
+    const untested = (html) => (testable ? html : '<div hidden>' + html + '</div>');
     if (selOn) for (const s of R.sites) repSel[Math.min(5, popcount(s.study)) - 1]++;
     const one = R.prots.length === 1 ? R.prots[0] : null;
     // The landing page is a scorecard of the dataset's questions (hubHtml): each row answers for the selection and the
@@ -3973,13 +3980,22 @@
         lead = anyEffect ? { q: 'What kinds of proteins are arginine methylated?', hi: '<div class="a-key a-key-line">' + tipKey + '</div>' }
           : { q: 'What kinds of proteins are arginine methylated?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
             fig: aForest([['Where in the protein', where], ['Which proteins', which]], { subTip: true }) };
+      } else if (!testable) {
+        lead = { q: 'Your selection', pic: selListHtml(), verdict: '<span class="a-note">Too few to compare with the other sites: the tests need at least ' + SEL_MIN.prots + ' proteins and ' + SEL_MIN.sites +
+          ' sites, and this selection has ' + fmt(R.prots.length) + ' protein' + (R.prots.length === 1 ? '' : 's') + ' and ' + fmt(R.sites.length) + ' site' + (R.sites.length === 1 ? '' : 's') + '. The counts below hold for any selection.</span>' };
       } else {
         const rows = profileRows() || [], sig = rows.filter((r) => r.q <= 0.05);
         const up = sig.filter((r) => r.fold > 1).slice(0, 6), dn = sig.filter((r) => r.fold < 1).slice(0, 3);
         const fr = (r) => ({ label: r.ft.label, main: { or: r.fold, sig: true, q: r.q, fold: true } });
-        lead = { q: 'What sets your selection apart?', key: '<span><i class="aq-pt up"></i>more common</span><span><i class="aq-pt down"></i>less common</span><span class="a-key-note">Your ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + ' (q ≤ 0.05)</span>',
+        lead = { q: 'Your selection', pic: selListHtml(), figHead: 'What sets it apart from the other sites?', key: '<span><i class="aq-pt up"></i>more common</span><span><i class="aq-pt down"></i>less common</span><span class="a-key-note">Your ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + ' (q ≤ 0.05)</span>',
           verdict: !rows.length ? 'Too few sites to compare with the rest.' : up.length || dn.length ? '' : 'Nothing in your selection differs from the other sites at q ≤ 0.05.',
           fig: up.length || dn.length ? aForest([['More common', up.map(fr)], ['Less common', dn.map(fr)]], { noneOf: 'your sites' }) : '', go: 'sel-enriched', goText: 'Every feature, with counts' };
+      }
+      function selListHtml() {
+        const ps = R.prots.map((p) => [p, p.sites.filter((j) => R.shown.has(j)).length]).sort((a, b) => b[1] - a[1] || a[0].label.localeCompare(b[0].label)), show = ps.slice(0, 30);
+        return '<div class="a-sel"><p class="a-sel-what">' + esc(selectionText()) + ' · <b>' + fmt(R.sites.length) + '</b> site' + (R.sites.length === 1 ? '' : 's') + ' on <b>' + fmt(R.prots.length) + '</b> protein' + (R.prots.length === 1 ? '' : 's') + '</p>' +
+          '<div class="a-pills">' + show.map(([p, n]) => '<button type="button" class="a-pill" data-open-p="' + p.i + '" title="Open ' + esc(p.label) + ': ' + n + ' site' + (n === 1 ? '' : 's') + ' in your selection">' + esc(p.label) + '<b>' + n + '</b></button>').join('') +
+          (ps.length > show.length ? '<button type="button" class="linkish a-sel-more" data-go-view="proteins">+' + fmt(ps.length - show.length) + ' more on the Proteins page</button>' : '') + '</div></div>';
       }
       const chartTile = (spec) => {
         if (!spec) return null;
@@ -4015,25 +4031,23 @@
         'ov-start': { vis: '<span class="a-pills">' + topSites.slice(0, 8).map((p) => '<span class="a-pill">' + esc(p.label) + '<b>' + p.sites.length + '</b></span>').join('') + '</span>', head: 'The proteins with the most sites, and quick selections' },
       };
       for (const k of Object.keys(ov)) if (!ov[k]) delete ov[k];
-      // three proteins drawn after the kinds of protein, before where in the protein: the reviewed HNRNPA1, FUS and
-      // G3BP1, or a selection's proteins with the most sites
-      const ex = scoped ? R.prots.map((p) => [p, p.sites.filter((j) => R.shown.has(j)).length]).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([p]) => p) : exProts();
-      const maps = ex.length ? '<h3 class="a-gh">' + (scoped ? 'Your proteins with the most sites, drawn' : 'Three methylated proteins, drawn at random' +
-        ' <button type="button" class="linkish a-reshuffle" data-ex-shuffle>Draw three others</button>') + '</h3>' + aMapsHtml(ex, '') : '';
+      // the opening page only: three proteins at random, after the starting points
+      const ex = scoped ? [] : exProts();
+      const maps = ex.length ? '<h3 class="a-gh">Randomly selected proteins <button type="button" class="linkish a-reshuffle" data-ex-shuffle>Draw three others</button></h3>' + aMapsHtml(ex, '') : '';
       return aHome(lead, ov, ['sel-enriched'], { 'Starting points': maps });
     }
     A_ROWS.length = 0;
     const hubList = '<div class="hub-list">' +
-      hubSec('Your selection', (selOn ? profileCardHtml(true) : '') || row('sel-enriched', 'Enriched features', '', 'What sets a selection apart from the other sites?', 'needs', null, '', 'Make a selection (search, or Filters) to see the site features over-represented in it.')) +
-      hubSec('What kinds of proteins are methylated',
+      untested(hubSec('Your selection', (selOn ? profileCardHtml(true) : '') || row('sel-enriched', 'Enriched features', '', 'What sets a selection apart from the other sites?', 'needs', null, '', 'Make a selection (search, or Filters) to see the site features over-represented in it.'))) +
+      untested(hubSec(selOn ? 'What kinds of proteins are in your selection' : 'What kinds of proteins are methylated',
         chartRow('ov-pan', pan || func, 'Which protein classes are over-represented among methylated proteins?') +
         chartRow('ov-dis', dis, 'Which disease gene sets are over-represented?') +
         chartRow('ov-cond', cond, 'Which biomolecular condensates are over-represented (CD-CODE' + (thr ? ', confidence ≥ ' + thr : '') + ')?') +
-        chartRow('ov-loc', loc, 'Which subcellular locations are over-represented (Human Protein Atlas)?')) +
-      hubSec('Where in the protein',
+        chartRow('ov-loc', loc, 'Which subcellular locations are over-represented (Human Protein Atlas)?'))) +
+      untested(hubSec('Where in the protein',
         chartRow('ov-motif', motif, 'Which sequence motifs surround methylarginines, against the other arginines of the same proteins?') +
         row('ov-struct', sctx ? 'Structural context' : 'Disorder and domains', structHtml, 'Are methylarginines in disordered regions or domains, against the other arginines of the same proteins?', 'retest',
-          chartAnswer(sctx || disorder), chartAnswer(sctx || disorder, true), null, chartFig(sctx || disorder, scoped))) +
+          chartAnswer(sctx || disorder), chartAnswer(sctx || disorder, true), null, chartFig(sctx || disorder, scoped)))) +
       hubSec('Interactions',
         row('ov-ix', 'Interactions and binding', ixOverviewHtml(), 'How many sites have interaction evidence? The Interactions page tests it.', 'count', ixCount(selOn ? R.sites : S), ixCount(S), null,
           ixReady() ? pctFig(share((s) => ixStatus(s) === 'exp')) : null)) +
@@ -4044,15 +4058,16 @@
       repDist.map((n, k) => '<button class="hb' + (selOn && !repSel[k] ? ' off' : '') + '" type="button" data-rep="' + (k + 1) + '"><span class="hb-label">' + (k === 4 ? '5 or more' : (k + 1) + (k ? ' sources' : ' source')) + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / repDist[0]).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span>' + (selOn ? selCell(repSel[k]) : '') + '</button>').join('') +
       '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) are reported by two or more' + (selOn ? '; ' + fmt(R.sites.length - repSel[0]) + ' of the ' + fmt(R.sites.length) + ' selected' : '') + '. Databases such as PhosphoSitePlus compile published studies, so two sources can rest on the same measurement. Click a row to keep sites with at least that many.</p></div></div></div>', 'Which studies and databases report the sites?', 'count', provCount(selOn ? R.sites : S), provCount(S), null, pctFig(share((s) => popcount(s.study) >= 2))) +
         row('ov-treat', 'PRMT inhibitor and knockout response', '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor and knockout response</h3><p class="sub">Sites that change when PRMT5 or type I PRMTs are inhibited (Maron et al. 2021)' + (koMeta() ? ' or CARM1 is knocked out (Shishkova et al. 2017)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable() + '</div>', 'Which sites lose methylation when PRMTs are inhibited or knocked out?', 'count', treatSummary(selOn ? R.sites : S, true), treatSummary(S, true), null, pctFig(topDown))) +
-      hubSec('Starting points',
+      (selOn ? '' : hubSec('Starting points',
         row('ov-start', 'Starting points', '<div class="card wide starts" id="ov-start"><h3>Starting points</h3><div class="starts-grid">' +
       '<div><h4>Quick selections</h4><div class="gene-chips">' + (UI.quick || []).map((q, k) => '<button class="gene-chip" type="button" data-quick="' + k + '">' + esc(q[1]) + '<span>' + q[0] + '</span></button>').join('') + '</div></div>' +
       '<div><h4>Most methyl-R sites</h4>' + geneChips(topSites, (p) => p.sites.length) + '</div>' +
       '<div><h4>Highest arginine-methylation enrichment</h4>' + geneChips(topArg, (p) => fmtL2(p.shrink)) + '</div>' +
       '<div><h4>Most significant methylarginine clustering (permutation test)</h4>' + geneChips(topDense, (p) => { const w = p.sig.slice().sort((a, b) => b[4] - a[4])[0]; return w[3] + '/' + w[0] + ' aa'; }) + '</div>' +
       '</div></div>', 'Quick selections, and the proteins with the most sites, the strongest enrichment and clustering', 'whole',
-          'Quick selections and notable proteins', 'Quick selections and notable proteins')) +
+          'Quick selections and notable proteins', 'Quick selections and notable proteins'))) +
       '</div>';
+    if (!testable) for (let i = A_ROWS.length - 1; i >= 0; i--) if (['sel-enriched', 'ov-pan', 'ov-dis', 'ov-cond', 'ov-loc', 'ov-motif', 'ov-struct'].includes(A_ROWS[i].key)) A_ROWS.splice(i, 1);
     el.innerHTML =
       (one ? '<p class="hub-legend hub-only">Your selection is one protein. <button class="linkish" type="button" id="ov-open-one">Open ' + esc(one.label) + ' →</button></p>' : '') +
       hubHtml() + (UI_A ? focusBarHtml() + ovAHome() : focusBarHtml()) + hubList;
@@ -4093,7 +4108,8 @@
     });
     if (loc) {
       bindBars($('#ch-loc', el), loc.rows, (r) => pickTerm('location', termSlug('location', r.key), 'proteins'));
-      $('#loc-more', el).addEventListener('click', () => { UI.allLoc = !UI.allLoc; renderDash(el, page); });
+      const lm = $('#loc-more', el);
+      if (lm) lm.addEventListener('click', () => { UI.allLoc = !UI.allLoc; renderDash(el, page); });
     }
     const ct = $('#cond-thr', el);
     if (ct) ct.addEventListener('change', () => { UI.condThr = +ct.value; UI.allCond = false; renderDash(el, page); });
@@ -4583,7 +4599,7 @@
     if (root && $('.p-folds', root)) { foldsApply(root); return; }
     const list = root && $('.hub-list', root);
     if (!list) return;
-    const all = $$('details.hub-row', list).filter((d) => !d.classList.contains('hub-empty'));
+    const all = $$('details.hub-row', list).filter((d) => !d.classList.contains('hub-empty') && !d.closest('[hidden]'));
     const d = UI.focus ? all.find((x) => x.dataset.fold === UI.focus) : null;
     // A redraw of the same page and section (a filter, a control inside a card) keeps the scroll position.
     const on = !!d, shownKey = hubBase() + '/' + (on ? d.dataset.fold : ''), prev = UI.hubShown, changed = prev !== shownKey;
@@ -4827,9 +4843,9 @@
         (vis ? '<span class="a-vis">' + vis + '</span>' : '') + '<span class="a-head" data-sum-of="' + r.key + '"' + (o.head != null ? ' data-fixed' : '') + '>' + head + '</span>' + (whole ? '<span class="a-whole"><span>Whole dataset</span> ' + whole + '</span>' : '') + '</button>';
     };
     return '<div class="a-home hub-only">' +
-      '<p class="print-only pdf-scope">' + (scoped ? 'Selection: ' + esc(selectionText()) + ' · ' + fmt(R.sites.length) + ' sites on ' + fmt(R.prots.length) + ' proteins' : 'All ' + fmt(S.length) + ' sites on ' + fmt(P.length) + ' proteins') + ' · ' + new Date().toISOString().slice(0, 10) + '</p>' +
+      '<p class="print-only pdf-scope">' + (scoped ? '' : 'All ' + fmt(S.length) + ' sites on ' + fmt(P.length) + ' proteins · ') + new Date().toISOString().slice(0, 10) + '</p>' +
       (lead ? '<section class="a-lead"><div class="a-q-row"><h2 class="a-q">' + lead.q + '</h2><button type="button" class="btn small screen-only" data-pdf-page title="This page\'s cards as an A4 PDF, for ' + (scoped ? 'your selection' : 'all sites') + '">Download PDF</button></div>' + (lead.pic || '') + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') + (lead.hi || '') +
-        (lead.fig ? '<div class="card a-fig">' + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
+        (lead.fig ? '<div class="card a-fig">' + (lead.figHead ? '<h3 class="a-fig-h">' + esc(lead.figHead) + '</h3>' : '') + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
       '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>' +
         (ins[g] ? '<section class="a-grp a-wide">' + ins[g] + '</section>' : '')).join('') + '</div>' +
       '<p class="a-proto">New layout <button type="button" class="linkish" data-ui="old">Switch to the previous layout</button></p></div>';
@@ -5074,6 +5090,8 @@
   function bindAHome(root) {
     root.classList.toggle('a-mode', UI_A);
     $$('[data-pdf-page]', root).forEach((b) => b.addEventListener('click', () => pagePdf(b)));
+    $$('.a-sel [data-open-p]', root).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.openP)));
+    $$('.a-sel [data-go-view]', root).forEach((b) => b.addEventListener('click', () => { go(b.dataset.goView); window.scrollTo({ top: 0 }); }));
     const home = $('.a-home', root);
     if (!home) return;
     $$('[data-go]', home).forEach((b) => b.addEventListener('click', (e) => {
