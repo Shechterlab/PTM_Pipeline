@@ -14377,6 +14377,8 @@
       pop.id = 'evpop'; pop.className = 'evpop'; pop.setAttribute('role', 'dialog'); pop.hidden = true;
       document.body.appendChild(pop);
       document.addEventListener('keydown', (k) => { if (k.key === 'Escape') pop.hidden = true; });
+      // a link in the card to another page here (a partner's page) closes the card, as does any route change
+      window.addEventListener('hashchange', () => { pop.hidden = true; });
       document.addEventListener('pointerdown', (k) => { if (!pop.hidden && !pop.contains(k.target) && !k.target.closest('[data-ev]')) pop.hidden = true; });
       pop.addEventListener('mouseenter', () => clearTimeout(EVHOVER.close));
       pop.addEventListener('mouseleave', evHoverLeave);
@@ -14667,6 +14669,11 @@
       ['provenance', 'Dataset provenance', provenanceHtml()],
       ['licences', 'Data sources, versions and licences', '' +
       '<p>Every external source behind the explorer, with the release used and its licence. Please cite the sources you rely on.</p>' +
+      '<p><b>From a record to its source.</b> Each record links to the place that holds it: a site\'s source rows to the study\'s paper (DOI), PubMed, the IEDB epitope or the UniProt entry, whose MOD_RES evidence names the publications; ' +
+      'PDB contacts to the RCSB entry; predicted contacts to the ProtVar model file of each partner and to ProtVar\'s interface table; crosslinks, RBDmap, CAPRI, pCLAP and RBR-ID to their papers; IntAct features to PubMed and the IntAct interaction; ' +
+      'eCLIP to the ENCODE experiment or the ENCORE GEO series and samples; RNA Bind-n-Seq to ENCODE, JASPAR profiles to JASPAR, HTR-SELEX to its paper; complexes, condensates and partners to Complex Portal, CD-CODE and STRING; ' +
+      'other PTMs to the protein\'s iPTMnet entry; locations to the Human Protein Atlas; disorder to MobiDB; orthologues to Ensembl. Two links reach a page rather than the record, because the inputs carry no record identifier: ' +
+      'DisGeNET terms open their UMLS concept in MedGen, and a UniProt record\'s publications are those the current UniProt entry cites (the pipeline staged release 2026_03 without them).</p>' +
       '<p class="screen-only">' + risButton(DATA_SOURCES.flatMap(([, rows]) => rows.filter((r) => r[4]).map((r) => [r[4], r[5]])), 'methylarginine_explorer_data_sources', 'Download every data source\'s citation (RIS)') + '</p>' +
       DATA_SOURCES.map(([group, rows]) => '<h4>' + esc(group) + '</h4><div class="tbl-wrap"><table class="tbl compact src-tbl"><thead><tr><th>Source</th><th>Used for</th><th>Version</th><th>Licence</th><th>Citation</th></tr></thead><tbody>' +
         rows.map(([name, use, ver, lic, cite, doi]) => '<tr><td><b>' + esc(name) + '</b></td><td>' + esc(use) + '</td><td>' + esc((typeof ver === 'function' ? ver() : ver) || '—') + '</td><td>' + esc(lic || '—') + '</td><td>' + (cite ? esc(cite) + (doi ? ' · ' + doiLink(doi) : '') : '—') + '</td></tr>').join('') + '</tbody></table></div>').join('') +
