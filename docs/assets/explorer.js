@@ -3230,7 +3230,7 @@
     return { lo, hi, ticks, xp: (v) => ((v - lo) / (hi - lo)) * 100 };
   }
 
-  // A chart row significant at q <= PADJ but within the page's minimum effect either way: about the same (grey), as in the tiles.
+  // A chart row significant at q <= PADJ but within the minimum effect either way: about the same (grey), as in the tiles.
   const sameFx = (spec, r) => !spec.noSig && !spec.counts && !!r.sig && r.value != null && Number.isFinite(r.value) && !aBig(r.value);
   // A compact chart's narrow track labels 0 and every other tick when it has more than five.
   const tickShown = (spec, sc, i) => !spec.compact || sc.ticks.length <= 5 || (i - sc.ticks.indexOf(0)) % 2 === 0;
@@ -3495,7 +3495,7 @@
         (hasProteome && condShare && protShare ? '<br><span class="small muted">' + condShare + '% of condensate proteins are methylated, against ' + protShare + '% of all reviewed proteins: most condensates are enriched relative to the proteome, and few relative to other condensates.</span>' : '') + '<br>' + thrSel,
       tools: condTools,
       subText: 'CD-CODE condensates: methylated members vs ' + vsBg(bgName) + (thr ? ' (CD-CODE ' + ((IX && IX.meta && IX.meta.cdcode_version) || '') + ', confidence ≥ ' + thr + ')' : ' (pipeline CD-CODE export, all memberships)') + (UI.condSort === 'fold' ? ', by fold enrichment' : ', by q'), extraCol: true, extraName: 'methylated_of_members',
-      rows: condAll.map(({ c, k, n, m, l2, q }) => ({ label: c[0], value: l2, q, sig: sigq(q), key: k, extra: m + '/' + n,
+      rows: condAll.map(({ c, k, n, m, l2, q }) => ({ label: c[0], value: l2, q, sig: sigq(q), key: k, extra: m + '/' + n, allIn: n > 0 && m === n ? n : 0, note: n > 0 && m === n ? 'all methylated' : '',
         title: '<b>' + esc(c[0]) + '</b> · CD-CODE ' + esc(c[1]) + (c[2] !== 'biomolecular' ? ' · ' + esc(c[2]) : '') + '<br>' + m + ' of ' + n + ' counted members methylated (' + pct(m, n) + '%)' + (thr ? ' (confidence ≥ ' + thr + ')' : '') +
           '<br>Against ' + (condBg === 'proteome' ? 'all reviewed human proteins' : 'all proteins in any condensate') + ': ' + effName() + ' ' + fmtL2(l2) + ', q ' + fmtP(q) +
           (!thr && hasProteome ? '<br><span class="muted">' + (condBg === 'proteome' ? 'vs other condensates: ' + fmtL2(c[5]) + ', q ' + fmtP(c[6]) : 'vs the proteome: ' + fmtL2(c[7]) + ', q ' + fmtP(c[8])) + '</span>' : '') })),
@@ -3983,12 +3983,16 @@
       }
       const chartTile = (spec) => {
         if (!spec) return null;
-        const differ = (r) => ok(r) && r.sig && aBig(r.value), row = (r) => ({ label: short(r), main: { or: 2 ** r.value, sig: true, q: r.q, fold: !!spec.fold } });
-        const up = spec.rows.filter((r) => differ(r) && r.value > 0).sort((a, b) => b.value - a.value);
-        const dn = spec.fold ? [] : spec.rows.filter((r) => differ(r) && r.value < 0).sort((a, b) => a.value - b.value);
+        // a set whose members are all methylated is as enriched as a set can be: tagged "all"
+        const row = (r) => ({ label: short(r), main: { or: 2 ** r.value, sig: true, q: r.q, fold: !!spec.fold }, tag: r.allIn ? 'all' : '',
+          tipMore: r.allIn ? 'All ' + r.allIn + ' members are methylated, so ' + fx(2 ** r.value) + '× is the most enrichment a set can reach' : '' });
+        const differ = (r) => ok(r) && r.sig && aBig(r.value);
+        const kept = spec.keepOrder ? () => 0 : null;
+        const up = spec.rows.filter((r) => differ(r) && r.value > 0).sort(kept || ((a, b) => b.value - a.value));
+        const dn = spec.fold ? [] : spec.rows.filter((r) => differ(r) && r.value < 0).sort(kept || ((a, b) => a.value - b.value));
         const nUp = Math.min(up.length, dn.length ? 5 : 7), nDn = Math.min(dn.length, 7 - nUp, up.length ? 2 : 7);
         // then, as the opened chart shows them, the significant ones within the minimum effect (grey, about the same)
-        const same = spec.rows.filter((r) => ok(r) && r.sig && !aBig(r.value)).sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+        const same = spec.rows.filter((r) => ok(r) && r.sig && !aBig(r.value)).sort(kept || ((a, b) => Math.abs(b.value) - Math.abs(a.value)));
         const nSame = Math.max(0, 7 - nUp - nDn), rows = up.slice(0, nUp).concat(dn.slice(0, nDn)).concat(same.slice(0, nSame)).map(row);
         const left = up.slice(nUp).concat(dn.slice(nDn), same.slice(nSame)), more = left.length;
         return { vis: rows.length ? aForest([[null, rows]], { compact: true }) + (more ? '<span class="a-more-n" data-more="' + esc(JSON.stringify(left.map((r) => r.label))) + '" title="Open the section at the ' + more + ' not shown here">+' + more + ' more ›</span>' : '') : '', head: rows.length ? '' : 'none differs (q ≤ ' + PADJ + ')', whole: '' };
@@ -3996,20 +4000,26 @@
       const ixStack = (ss) => { if (!ixReady()) return ''; const k = { exp: 0, pred: 0, none: 0 }; for (const s of ss) k[ixStatus(s)]++; return aStack([{ n: k.exp, cls: 'exp', label: 'Experimental evidence', key: 'experimental' }, { n: k.pred, cls: 'pred', label: 'Predicted only', key: 'predicted' }, { n: k.none, cls: 'none', label: 'None recorded' }]); };
       const studies = (ss) => { let m = 0; for (const s of ss) m |= s.study; return popcount(m); };
       const multiShare = share((s) => popcount(s.study) >= 2);
-      const tr = treatRows(scoped ? R.sites : S).filter((r) => r.n).sort((a, b) => b.down / b.n - a.down / a.n).slice(0, 2);
+      const trAll = treatRows(scoped ? R.sites : S).filter((r) => r.n);
+      const trName = (r) => (r.t === 2 ? r.cell : ipLabel(r.ipName) + ' IP');
+      const trVis = [['GSK591', 'GSK591 · PRMT5 inhibitor'], ['MS023', 'MS023 · type I PRMT inhibitor'], ['CARM1 KO', 'CARM1 knockout · Rme2a IP']].map(([name, head]) => {
+        const rs = trAll.filter((r) => r.name === name);
+        return rs.length ? '<p class="am-h">' + esc(head) + '</p>' + aMeters(rs.map((r) => ({ label: trName(r), v: r.down / r.n, text: pct(r.down, r.n) + '%', cls: 'down',
+          tip: '<b>' + esc(r.name + ', ' + trName(r)) + '</b><br>' + fmt(r.down) + ' of ' + fmt(r.n) + ' measured sites decreased' + (r.up ? '; ' + fmt(r.up) + ' increased' : '') })), { tight: true }) : '';
+      }).join('');
       const ov = {
         'ov-pan': chartTile(pan || func), 'ov-dis': chartTile(dis), 'ov-cond': chartTile(cond), 'ov-loc': chartTile(loc), 'ov-motif': chartTile(motif), 'ov-struct': chartTile(sctx || disorder),
         'ov-ix': ixReady() ? { vis: ixStack(scoped ? R.sites : S), head: '<b>' + fmt((scoped ? R.sites : S).filter((s) => ixStatus(s) === 'exp').length) + '</b> sites with experimental evidence' } : { vis: '' },
         'ov-study': { vis: aMeters([{ label: 'Reported by two or more', v: multiShare(scoped ? R.sites : S), text: pctText(Math.round(1000 * (multiShare(scoped ? R.sites : S) || 0)), 1000) + '%', cls: 'sel' }]), head: '<b>' + studies(scoped ? R.sites : S) + '</b> studies and databases report ' + (scoped ? 'your sites' : 'the sites') },
-        'ov-treat': { vis: aMeters(tr.map((r) => ({ label: r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName)), v: r.down / r.n, text: pct(r.down, r.n) + '% lost', cls: 'down' }))), head: 'Methylation lost on PRMT inhibition or knockout' },
+        'ov-treat': { vis: trVis ? '<div class="a-treat">' + trVis + '</div>' : '', head: 'Share of the measured sites that lose methylation' },
         'ov-start': { vis: '<span class="a-pills">' + topSites.slice(0, 8).map((p) => '<span class="a-pill">' + esc(p.label) + '<b>' + p.sites.length + '</b></span>').join('') + '</span>', head: 'The proteins with the most sites, and quick selections' },
       };
       for (const k of Object.keys(ov)) if (!ov[k]) delete ov[k];
       // three proteins drawn after the kinds of protein, before where in the protein: the reviewed HNRNPA1, FUS and
       // G3BP1, or a selection's proteins with the most sites
-      const ex = scoped ? R.prots.map((p) => [p, p.sites.filter((j) => R.shown.has(j)).length]).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([p]) => p)
-        : ['HNRNPA1', 'FUS', 'G3BP1'].map((g) => pickReviewed(lookupExact(g))).filter(Boolean);
-      const maps = ex.length ? '<h3 class="a-gh">' + (scoped ? 'Your proteins with the most sites, drawn' : 'Three RNA-binding proteins, drawn') + '</h3>' + aMapsHtml(ex, '') : '';
+      const ex = scoped ? R.prots.map((p) => [p, p.sites.filter((j) => R.shown.has(j)).length]).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([p]) => p) : exProts();
+      const maps = ex.length ? '<h3 class="a-gh">' + (scoped ? 'Your proteins with the most sites, drawn' : 'Three methylated proteins, drawn at random' +
+        ' <button type="button" class="linkish a-reshuffle" data-ex-shuffle>Draw three others</button>') + '</h3>' + aMapsHtml(ex, '') : '';
       return aHome(lead, ov, ['sel-enriched'], { 'Starting points': maps });
     }
     A_ROWS.length = 0;
@@ -4726,10 +4736,9 @@
   const A_ROWS = [];
   const aOr = (m) => (m && m.or != null && m.or > 0 && Number.isFinite(m.or) ? m.or : null);
   const aSig = (m) => (m.sig != null ? !!m.sig : m.p != null && m.p <= 0.05);
-  // Effects within the page's minimum either way read "about the same", however small their q (grey, not coloured):
-  // 1.1x on the Overview, whose protein-set enrichments over the whole proteome are modest by nature, 1.25x elsewhere.
-  const MIN_EFFECT_AT = { overview: 1.1 };
-  const minEffect = () => MIN_EFFECT_AT[UI.view] || 1.25;
+  // Effects within 1.1x either way read "about the same", however small their q (grey, not coloured), on every page.
+  const MIN_EFFECT = 1.1;
+  const minEffect = () => MIN_EFFECT;
   const aBig = (l2) => Math.abs(l2) >= Math.log2(minEffect());
   const aDir = (m) => (m && aOr(m) && aSig(m) ? (!aBig(Math.log2(m.or)) ? 'same' : m.or > 1 ? 'up' : 'down') : 'ns');
   const aX = (v, lo, hi) => (100 * (Math.max(lo, Math.min(hi, Math.log2(v))) - lo) / (hi - lo)).toFixed(2) + '%';
@@ -4756,10 +4765,14 @@
       if (!rows.length) continue;
       if (g) h += '<div class="aq-grp">' + esc(g) + '</div>';
       for (const r of rows) {
-        h += '<div class="aq-lab"' + (o.compact || (o.subTip && r.sub) ? ' title="' + esc(r.label + (r.sub ? ' (' + r.sub + ')' : '')) + '"' : '') + '>' + esc(r.label) + (r.sub && !o.subTip ? '<small>' + esc(r.sub) + '</small>' : '') + '</div>' +
-          '<div class="aq-plot">' + grid + mark(r.ghost, true, aTip(r.label, r.ghost, o.ghostName)) +
-          mark(r.main, false, none(r.main) ? '<b>' + esc(r.label) + '</b><br>None of ' + esc(o.noneOf || 'these sites') + (r.main.q != null ? ', q ' + fmtP(r.main.q) : '') : aTip(r.label, r.main, r.mainName || o.mainName)) + '</div>' +
-          '<div class="aq-val"><b class="' + (none(r.main) ? 'down' : aDir(r.main)) + '">' + val(r.main) + '</b>' + (aOr(r.ghost) ? '<small>' + esc(o.ghostShort || '') + ' ' + val(r.ghost) + '</small>' : '') + '</div>';
+        // the row's test (its effect and q, and what that means), on its label, mark and value alike
+        const name = r.label + (r.sub && (o.compact || o.subTip) ? ' (' + r.sub + ')' : '');
+        const tip = (none(r.main) ? '<b>' + esc(name) + '</b><br>None of ' + esc(o.noneOf || 'these sites') + (r.main.q != null ? ', q ' + fmtP(r.main.q) : '') : aTip(name, r.main, r.mainName || o.mainName)) +
+          (aDir(r.main) === 'same' ? '<br>Significant, but within ' + minEffect() + '× either way: about the same' : '') + (r.tipMore ? '<br>' + r.tipMore : '');
+        const tipAt = ' data-tip="' + esc(tip) + '"';
+        h += '<div class="aq-lab"' + (o.compact || (o.subTip && r.sub) ? tipAt : '') + '>' + (r.tag ? '<span class="aq-tag">' + esc(r.tag) + '</span>' : '') + esc(r.label) + (r.sub && !o.subTip ? '<small>' + esc(r.sub) + '</small>' : '') + '</div>' +
+          '<div class="aq-plot">' + grid + mark(r.ghost, true, aTip(r.label, r.ghost, o.ghostName)) + mark(r.main, false, tip) + '</div>' +
+          '<div class="aq-val"' + (o.compact ? tipAt : '') + '><b class="' + (none(r.main) ? 'down' : aDir(r.main)) + '">' + val(r.main) + '</b>' + (aOr(r.ghost) ? '<small>' + esc(o.ghostShort || '') + ' ' + val(r.ghost) + '</small>' : '') + '</div>';
       }
     }
     const lab = (k) => (k < 0 ? '1/' + 2 ** -k : String(2 ** k)) + '×';
@@ -4987,10 +5000,23 @@
     const draw = () => maps.forEach((b, k) => {
       if (!document.body.contains(b)) return;
       const p = P[+b.dataset.mapP];
-      b.innerHTML = contactCartoonSvg(p, UNIDATA.get(p.acc), null, { pal: Object.assign(screenPalette(), { bg: cssVar('--surface') }), W: Math.max(560, Math.round(b.clientWidth || 900)), noLanes: true, noLegend: k < maps.length - 1 }).svg;
+      b.innerHTML = '<span class="a-map-go" aria-hidden="true">Open ' + esc(p.label) + ' ›</span>' +
+        contactCartoonSvg(p, UNIDATA.get(p.acc), null, { pal: Object.assign(screenPalette(), { bg: cssVar('--surface') }), W: Math.max(560, Math.round(b.clientWidth || 900)), noLanes: true, noLegend: k < maps.length - 1 }).svg;
     });
     draw();
     maps.forEach((b) => { const p = P[+b.dataset.mapP]; loadUniProt(p.acc).then(draw, () => {}); b.addEventListener('click', () => openProtein(p.i)); });
+    const sh = $('[data-ex-shuffle]', root), card = $('.a-maps', root);
+    if (sh && card) sh.addEventListener('click', () => { card.outerHTML = aMapsHtml(exProts(true), ''); bindAMaps(root); }, { once: true });
+  }
+  // The Overview's three proteins: drawn at random from the reviewed ones with five or more sites and a length a map
+  // shows well, kept for the visit until the reader asks for others.
+  function exProts(fresh) {
+    if (fresh || !UI.exProts) {
+      const pool = P.filter((p) => !p.unrev && !p.iso && p.sites.length >= 5 && (p.len || p.maxPos) <= 1500), pick = new Set();
+      while (pick.size < Math.min(3, pool.length)) pick.add(pool[Math.floor(Math.random() * pool.length)].i);
+      UI.exProts = [...pick];
+    }
+    return UI.exProts.map((i) => P[i]);
   }
   // Tiles whose pictures need data that arrives after the page was drawn (a protein's interaction evidence).
   function aRefreshTiles(root, ov) {
@@ -8108,7 +8134,7 @@
         const others = accs.map((acc, k) => [acc, k]).filter(([acc]) => acc !== base);
         if (!others.length) return '<b>' + esc(p.label) + '</b> <span class="tag">homodimer</span>';
         return others.map(([acc, k]) => {
-          const ki = IX.byAcc.get(acc);
+          const ki = IX && IX.byAcc ? IX.byAcc.get(acc) : null;
           const name = (x.gene || [])[k] || acc;
           const org = (x.taxId || [])[k] !== 9606 ? ' <span class="tag" title="' + esc((x.organismScientificName || [])[k] || '') + '">' + esc((x.organismScientificName || [])[k] || 'non-human') + '</span>' : '';
           return (ki != null ? geneLink(ki) : '<b>' + esc(name) + '</b>') + ' <span class="muted mono">' + esc(acc) + '</span>' + org;
@@ -11348,7 +11374,7 @@
       hubSec('Partners and complexes',
         row('ixs-partners', 'Writers, readers and other partners', sec('partners'), 'Which PRMTs and reader-domain proteins bind the methylated proteins?', 'count', [partAns(scoped ? R.prots : P), partAns(P)], null, partFig) +
         row('ix-wr', 'Writers and readers sharing substrates', wrHtml, 'Which methylated proteins are bound by both a PRMT and a Tudor-domain protein?', 'count',
-          ['PRMT and Tudor partners shared by ' + (scoped ? 'your ' + fmt(R.prots.length) : 'all ' + fmt(P.length)) + ' proteins (STRING)', 'PRMT and Tudor partners shared by all ' + fmt(P.length) + ' proteins (STRING)']) +
+          ['PRMT–Tudor pairs that bind the same methylated proteins (STRING), across ' + (scoped ? 'your ' + fmt(R.prots.length) : 'all ' + fmt(P.length)) + ' proteins', 'PRMT–Tudor pairs that bind the same methylated proteins (STRING), across all ' + fmt(P.length) + ' proteins']) +
         row('ixs-complexes', 'Protein complexes', sec('complexes'), 'Which complexes have more methylated members than expected?', 'retest', [cxAns(scoped), cxAns(false)], null, cxFig) +
         row('ixs-intact', 'Curated interaction features (IntAct)', sec('intact'), 'Are methylarginines at curated mutation sites and short binding regions more often?', 'retest',
           both([['intact_enrich', ['peptide_disordered'], 'short binding region (disordered R)'], ['intact_enrich', ['mutation'], 'mutation with an effect']]), null,
