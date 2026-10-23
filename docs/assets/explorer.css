@@ -1842,30 +1842,34 @@ html.drawer-open { overflow: hidden; }
 /* layout A's section bar: always under the toolbar; on the tiles it holds the Sections menu, in a section also the way
    back, where it is, and the previous and next sections */
 .focus-bar.hub .fb-back, .focus-bar.hub .fb-pos, .focus-bar.hub .fb-step { display: none; }
-.sec-menu { position: relative; flex: none; }
-.sec-menu > summary { list-style: none; display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.25rem; padding: 0.25rem 0.85rem; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--ink); font-size: 0.82rem; font-weight: 600; cursor: pointer; }
-.sec-menu > summary::-webkit-details-marker { display: none; }
-.sec-menu > summary::after { content: "▾"; font-size: 0.72rem; color: var(--muted); }
-.sec-menu[open] > summary, .sec-menu > summary:hover, .sec-menu > summary:focus-visible { border-color: var(--accent); color: var(--accent-dark); }
-.sec-pop { position: absolute; top: calc(100% + 0.4rem); left: 0; z-index: 40; width: min(58rem, calc(100vw - 2rem)); max-height: min(70vh, 34rem); overflow: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 0.9rem 1.2rem; padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 12px 32px rgb(0 0 0 / 0.16); }
+.sec-btn { flex: none; display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.25rem; padding: 0.25rem 0.85rem 0.25rem 0.7rem; border: 1.5px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+.sec-btn svg { width: 15px; height: 15px; }
+.sec-btn:hover, .sec-btn:focus-visible { border-color: var(--accent); color: var(--accent-dark); }
 .sp-h { margin: 0 0 0.3rem; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
 .sp-g button { display: block; width: 100%; padding: 0.4rem 0.55rem; border: 0; border-radius: 6px; background: none; color: var(--ink-2); font: inherit; font-size: 0.86rem; text-align: left; cursor: pointer; }
 .sp-g button:hover:not(:disabled), .sp-g button:focus-visible { background: var(--surface-2); color: var(--accent-dark); }
 .sp-g button[aria-current="true"] { background: color-mix(in srgb, var(--teal-600) 14%, var(--surface)); color: var(--ink); font-weight: 600; }
 .sp-g button:disabled { opacity: 0.45; cursor: default; }
-.sp-head { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin-bottom: -0.2rem; font-size: 0.8rem; color: var(--muted); }
-/* sections pinned on the right (wide screens), as the filters are on the left */
-:root { --sec-pin-w: 17rem; }
-.sec-rail { position: fixed; z-index: 30; inset: 0 0 0 auto; width: var(--sec-pin-w); display: flex; flex-direction: column; background: var(--surface); border-left: 1px solid var(--line); }
-.sec-rail[hidden] { display: none; }
-.sr-body { flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; display: grid; align-content: start; gap: 0.9rem; padding: 0.8rem 1rem 1.2rem; }
+/* the side panel's tabs: the sections of the page and the filters */
+.rail-tabs { display: none; gap: 0.25rem; margin-right: auto; }
+.rail.tabbed .rail-tabs { display: flex; }
+.rail.tabbed #rail-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.rail-tabs button { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.1rem; padding: 0.25rem 0.75rem 0.25rem 0.6rem; border: 1px solid transparent; border-radius: 999px; background: none; color: var(--ink-2); font: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; }
+.rail-tabs button svg { width: 15px; height: 15px; }
+.rail-tabs button:hover { color: var(--accent-dark); }
+.rail-tabs button[aria-selected="true"] { border-color: var(--line-strong); background: var(--surface-2); color: var(--ink); }
+.drawer-body[hidden], .drawer-foot[hidden] { display: none; }
+.rail-secs { gap: 0.9rem; }
 .sr-all { justify-self: start; min-height: 2.1rem; padding: 0.25rem 0.85rem; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
 .sr-all[aria-current="true"] { border-color: var(--teal-600); background: var(--teal-600); color: #fff; }
-html.secs-pinned body { padding-right: var(--sec-pin-w); }
-html.secs-pinned .sec-menu, html.secs-pinned .focus-bar.hub { display: none; }
+html.filters-pinned .sec-btn, html.filters-pinned .focus-bar.hub:not(.ret), html.filters-pinned #rail-done { display: none; }
+/* a protein page's bar: the way back to the page it came from, and Top once scrolled */
+.focus-bar.hub .fb-back.fb-ret { display: inline-flex; }
+.fb-top { flex: none; margin-left: auto; min-height: 2.25rem; padding: 0.25rem 0.75rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink-2); font: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+.fb-top:hover, .fb-top:focus-visible { border-color: var(--accent); color: var(--accent-dark); }
+.fb-top[hidden] { display: none; }
 .pin-btn[aria-pressed="true"] { border-color: var(--teal-600); color: var(--teal); }
 @media (max-width: 1099px) { .pin-btn { display: none; } }
-@media print { .sec-rail { display: none !important; } html.secs-pinned body { padding-right: 0; } }
 .crumb-back { margin-left: 0.6rem; font-size: 0.82rem; }
 /* filters pinned to the left (wide screens) */
 :root { --rail-pin-w: 21rem; }
@@ -1875,6 +1879,8 @@ html.filters-pinned #rail-show, html.filters-pinned .rail-sel, html.filters-pinn
 /* in an open section, the card's own index stays under the section strip */
 .a-mode.focus-mode .card-index { position: sticky; top: calc(var(--toolbar-h) + var(--strip-h, 3rem) + env(safe-area-inset-top, 0px)); z-index: 18; margin-inline: -0.1rem; padding-inline: 0.1rem; background: var(--surface); }
 .a-head:empty { display: none; }
+/* an effect of zero (none of the sites): a left-pointing mark at the scale's end */
+.aq-pt.aq-none { width: 0; height: 0; margin: 0 0 0 0.15rem; box-shadow: none; border-radius: 0; background: none; border-style: solid; border-width: 5px 8px 5px 0; border-color: transparent var(--t-down-3, var(--ink-2)) transparent transparent; transform: translateY(-50%); }
 .hg-tree { fill: none; stroke: var(--teal-600); stroke-width: 1.6; stroke-linecap: round; }
 .a-grp.a-wide { flex-basis: 100%; }
 .ui-a .p-top > .facts { display: none; }
@@ -1890,6 +1896,17 @@ html.filters-pinned #rail-show, html.filters-pinned .rail-sel, html.filters-pinn
 /* layout A's protein page: the map, then the numbers */
 .ui-a .p-top { display: flex; flex-direction: column; gap: 0.9rem; }
 .ui-a .p-top > details.fold { order: 1; }
+.p-folds { display: grid; gap: 0.6rem; min-width: 0; }
+.p-folds .hub-sec { gap: 0.6rem; }
+.fold-pic { flex: 0 0 15rem; margin-left: auto; min-width: 0; font-size: 0.75rem; }
+.fold-pic:empty, details.fold[open] > summary > .fold-pic { display: none; }
+.fold-pic .a-big b { font-size: 1.35rem; }
+.fold-pic .a-big .dna b { font-size: 1.1rem; }
+details.fold .fold-pic .at-key, details.fold .fold-pic .am-foot, details.fold .fold-pic .as-key { display: none; }
+.fold-pic .a-note { display: block; color: var(--muted); line-height: 1.3; }
+details.fold.p-row > summary:has(> .fold-pic:not(:empty)) .fold-sum { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
+@media (max-width: 900px) { .fold-pic { display: none; } }
+@media print { .fold-pic { display: none !important; } }
 .a-pills { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 .a-vis:has(> .a-pills) { min-height: 0; }
 .a-pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.3rem 0.2rem 0.6rem; border-radius: 99px; background: var(--surface-2); font-size: 0.8rem; font-weight: 600; color: var(--ink); }

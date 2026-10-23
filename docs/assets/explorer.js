@@ -2020,7 +2020,7 @@
       }
     }
     // Only the section changed (a scorecard row, Back): show it without drawing the page again.
-    const samePage = !siteInHash && view === UI.view && UI.hubR === R && UI.hubDetail === (view === 'protein' ? UI.detail : null) && $('#content .hub-list');
+    const samePage = !siteInHash && view === UI.view && UI.hubR === R && UI.hubDetail === (view === 'protein' ? UI.detail : null) && $('#content .hub-list, #content .p-folds');
     UI.focus = focus;
     if (samePage) { setDocTitle(); hubApply($('#content')); return; }
     UI.view = view;
@@ -2051,7 +2051,8 @@
   function renderView() {
     const el = $('#content');
     hideTip();
-    renderSecRail(false);
+    UI.secsOn = false; UI.spy = null;
+    applyRailTab();
     if (UI.view === 'overview') renderOverview(el);
     else if (UI.view === 'proteins') renderProteins(el);
     else if (UI.view === 'sites') renderSites(el);
@@ -2099,7 +2100,7 @@
       '<li><button class="linkish" type="button" data-crumb="proteins">' + esc(VIEW_NAMES.proteins || 'Proteins') + '</button> <span class="muted small">(' + esc(sel) + ')</span></li>' +
       '<li aria-current="page"><b>' + esc(p.label) + '</b></li>' +
       '<li id="crumb-site"' + (UI.highlight == null ? ' hidden' : '') + '>' + (UI.highlight == null ? '' : esc(rl(UI.highlight, p))) + '</li></ol>' +
-      (from !== 'proteins' && from !== 'overview' ? '<button class="linkish crumb-back" type="button" data-crumb="' + from + '">‹ Back to ' + esc(VIEW_NAMES[from] || 'results') + '</button>' : '') +
+      (!UI_A && from !== 'proteins' && from !== 'overview' ? '<button class="linkish crumb-back" type="button" data-crumb="' + from + '">‹ Back to ' + esc(VIEW_NAMES[from] || 'results') + '</button>' : '') +
       (recent.length ? '<span class="crumb-recent"><span class="muted small">Recent</span> ' + recent.map((i) => '<button class="linkish" type="button" data-open-p="' + i + '">' + esc(P[i].label) + '</button>').join(' · ') + '</span>' : '') + '</nav>';
   }
 
@@ -2258,13 +2259,17 @@
   function renderRail() {
     const rail = $('#rail');
     const open = new Set($$('details[open]', rail).map((d) => d.dataset.sec));
-    const firstRender = !rail.children.length, scrollTop = firstRender ? 0 : ($('.drawer-body', rail) || {}).scrollTop || 0;
-    // The drawer: what is selected now, the filters by topic, and a foot that says what they leave and closes onto it.
+    const firstRender = !rail.children.length, scrollTop = firstRender ? 0 : ($('#rail-fil', rail) || {}).scrollTop || 0;
+    // The side panel: in layout A two tabs, the sections of the page and the filters; the filters are what is selected
+    // now, the filters by topic, and a foot that says what they leave and closes onto it.
     rail.innerHTML =
       '<div class="drawer-head"><h2 id="rail-title">Filters</h2>' +
-      '<button class="btn quiet small rail-pin pin-btn" type="button" id="rail-pin" aria-pressed="' + pinned() + '" title="' + (pinned() ? 'Let the filters close again' : 'Keep the filters open on the left') + '">' + (pinned() ? 'Unpin' : 'Pin') + '</button>' +
-      '<button class="btn quiet small" type="button" id="rail-done" title="Close the filters (Esc)">Close</button></div>' +
-      '<div class="drawer-body">' +
+      '<div class="rail-tabs" role="tablist" aria-label="Side panel"><button type="button" role="tab" id="rt-sec" data-rtab="sec" aria-controls="rail-secs">' + SECS_ICON + 'Sections</button>' +
+      '<button type="button" role="tab" id="rt-fil" data-rtab="fil" aria-controls="rail-fil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"></path></svg>Filters</button></div>' +
+      '<button class="btn quiet small rail-pin pin-btn" type="button" id="rail-pin" aria-pressed="' + pinned() + '" title="' + (pinned() ? PIN_OFF : PIN_ON) + '">' + (pinned() ? 'Unpin' : 'Pin') + '</button>' +
+      '<button class="btn quiet small" type="button" id="rail-done" title="Close (Esc)">Close</button></div>' +
+      '<div class="drawer-body rail-secs" id="rail-secs" role="tabpanel" aria-labelledby="rt-sec" hidden></div>' +
+      '<div class="drawer-body" id="rail-fil" role="tabpanel" aria-labelledby="rt-fil">' +
       '<div class="rail-sel scope" id="rail-sel" aria-live="polite"></div>' +
       '<p class="rail-note">Each filter narrows the selection; a site must match all of them. Every page then shows the selection, and its tests run again on it.</p>' +
       SECTIONS.map(([key, title, dflt]) => '<details data-sec="' + key + '"' + ((firstRender ? dflt : open.has(key)) ? ' open' : '') + '><summary><span>' + esc(title) + '</span>' +
@@ -2273,7 +2278,8 @@
       '<div class="drawer-foot"><span class="df-count" id="rail-count" aria-live="polite"></span>' +
       '<button class="btn small quiet rail-clear" type="button" id="rail-clear" hidden title="Clear the search and every filter">Clear all</button>' +
       '<button class="btn small primary" type="button" id="rail-show">Show results</button></div>';
-    $('.drawer-body', rail).scrollTop = scrollTop;
+    $('#rail-fil', rail).scrollTop = scrollTop;
+    applyRailTab();
     bindRail();
     renderRailState();
     renderScope();
@@ -2385,6 +2391,32 @@
   const PIN_MQ = window.matchMedia ? window.matchMedia('(min-width: 1100px)') : null;
   let pinFilters = (() => { try { return localStorage.getItem('mse-pin-filters') === '1'; } catch (e) { return false; } })();
   const pinned = () => pinFilters && (!PIN_MQ || PIN_MQ.matches);
+  const PIN_ON = 'Keep this panel open on the left', PIN_OFF = 'Let this panel close again';
+  // The panel's tabs (layout A, on a page with sections): Sections lists them by group, the one open or in view
+  // marked; a click goes to it (closing the panel unless it is pinned). The tab last chosen is remembered.
+  let railTab = (() => { try { return localStorage.getItem('mse-rail-tab') === 'sec' ? 'sec' : 'fil'; } catch (e) { return 'fil'; } })();
+  const hasSecs = () => UI_A && !!UI.secsOn;
+  function applyRailTab() {
+    const rail = $('#rail'), secs = hasSecs(), tab = secs ? railTab : 'fil';
+    if (!rail || !$('#rail-secs', rail)) return;
+    rail.classList.toggle('tabbed', secs);
+    $('#rail-title', rail).textContent = secs ? 'Sections and filters' : 'Filters';
+    for (const t of ['sec', 'fil']) {
+      const b = $('[data-rtab="' + t + '"]', rail);
+      b.setAttribute('aria-selected', String(tab === t));
+      b.tabIndex = tab === t ? 0 : -1;
+      $('#' + b.getAttribute('aria-controls'), rail).hidden = tab !== t;
+    }
+    $('.drawer-foot', rail).hidden = tab !== 'fil';
+    const box = $('#rail-secs', rail), inplace = !!$('#content .p-folds');
+    box.innerHTML = !secs ? '' : (inplace ? '' : '<button type="button" class="sr-all" data-asec="" aria-current="' + !UI.focus + '">All sections</button>') + secGroupsHtml(inplace ? UI.spy : UI.focus);
+  }
+  function setRailTab(t, focus) {
+    railTab = t;
+    try { localStorage.setItem('mse-rail-tab', t); } catch (e) { /* storage blocked: this visit only */ }
+    applyRailTab();
+    if (focus) $('#rt-' + t).focus();
+  }
   function applyPin() {
     const rail = $('#rail'), bg = $('#drawer-bg'), on = pinned();
     if (!rail) return;
@@ -2399,7 +2431,7 @@
       if (!document.documentElement.classList.contains('drawer-open')) { rail.classList.remove('on'); rail.hidden = true; }
     }
     const b = $('#rail-pin');
-    if (b) { b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Unpin' : 'Pin'; b.title = on ? 'Let the filters close again' : 'Keep the filters open on the left'; }
+    if (b) { b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Unpin' : 'Pin'; b.title = on ? PIN_OFF : PIN_ON; }
     const fb = $('#filters-btn');
     if (fb) fb.setAttribute('aria-expanded', String(on || !rail.hidden));
     syncToolbar();
@@ -2410,8 +2442,10 @@
     if (!v) closeFilters(true);
     applyPin();
   }
-  function openFilters(sec) {
+  function openFilters(sec, tab) {
     const rail = $('#rail'), bg = $('#drawer-bg');
+    if (hasSecs()) setRailTab(tab || 'fil');
+    if (pinned() && tab === 'sec') { $('#rt-sec').focus(); return; }
     if (pinned()) { const d = sec && $('#rail details[data-sec="' + sec + '"]'); if (d) { d.open = true; d.scrollIntoView({ block: 'start' }); } ($(d ? 'summary' : '#rail-pin', d || rail) || rail).focus({ preventScroll: !!d }); return; }
     if (!rail.hidden && rail.classList.contains('on')) return;
     filtersOpener = document.activeElement;
@@ -2425,7 +2459,7 @@
     renderRailState();
     const d = sec && $('#rail details[data-sec="' + sec + '"]');
     if (d) { d.open = true; d.scrollIntoView({ block: 'start' }); }
-    const first = d ? $('summary', d) : $('#rail-done');
+    const first = d ? $('summary', d) : hasSecs() ? $('#rt-' + railTab) : $('#rail-done');
     if (first) first.focus({ preventScroll: !!d });
   }
   function closeFilters(force) {
@@ -2446,7 +2480,23 @@
   function initRail() {
     $('#drawer-bg').addEventListener('click', () => closeFilters());
     applyPin();
-    if (PIN_MQ && PIN_MQ.addEventListener) PIN_MQ.addEventListener('change', () => { applyPin(); renderSecRail(!!$('#content .hub-list')); });
+    if (PIN_MQ && PIN_MQ.addEventListener) PIN_MQ.addEventListener('change', applyPin);
+    // the panel's tabs and its list of sections (drawn again with the page, so bound once here)
+    $('#rail').addEventListener('click', (e) => {
+      const t = e.target.closest('[data-rtab]');
+      if (t) { setRailTab(t.dataset.rtab, true); return; }
+      const b = e.target.closest('#rail-secs [data-asec]');
+      if (!b || b.disabled) return;
+      if (!pinned()) closeFilters();
+      if (b.dataset.asec) UI.hubFrom = b.dataset.asec;
+      hubFocus(b.dataset.asec || null);
+    });
+    $('#rail').addEventListener('keydown', (e) => {
+      const t = e.target.closest('[data-rtab]');
+      if (!t || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return;
+      e.preventDefault();
+      setRailTab(t.dataset.rtab === 'sec' ? 'fil' : 'sec', true);
+    });
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape' || $('#rail').hidden || pinned()) return;
       // Escape closes an open menu or suggestion list inside the drawer first
@@ -2489,6 +2539,7 @@
       const s = e.target.closest ? e.target.closest('details.fold > summary') : null;
       if (!s || (e.target.closest('a, button, select, input') && e.target.closest('a, button, select, input') !== s)) return;
       const d = s.parentElement;
+      if (d.classList.contains('hub-row')) return;
       foldState[d.dataset.fold] = !d.open;
       store.set(FOLD_STORE, JSON.stringify(foldState));
     });
@@ -3855,9 +3906,8 @@
         const up = sig.filter((r) => r.fold > 1).slice(0, 6), dn = sig.filter((r) => r.fold < 1).slice(0, 3);
         const fr = (r) => ({ label: r.ft.label, main: { or: r.fold, sig: true, q: r.q, fold: true } });
         lead = { q: 'What sets your selection apart?', key: '<span><i class="aq-pt up"></i>more common</span><span><i class="aq-pt down"></i>less common</span><span class="a-key-note">Your ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + ' (q ≤ 0.05)</span>',
-          verdict: !rows.length ? 'Too few sites to compare with the rest.' : up.length || dn.length ? '<b>More common in your selection:</b> ' + lst(up.slice(0, 3).map(fr)) + (dn.length ? '. <b>Less common:</b> ' + dn.slice(0, 2).map((r) => esc(r.ft.label) + ' <span class="an">' + fx(r.fold) + '×</span>').join(', ') : '') + '.'
-            : 'Nothing in your selection differs from the other sites at q ≤ 0.05.',
-          fig: up.length || dn.length ? aForest([['More common', up.map(fr)], ['Less common', dn.map(fr)]]) : '', go: 'sel-enriched', goText: 'Every feature, with counts' };
+          verdict: !rows.length ? 'Too few sites to compare with the rest.' : up.length || dn.length ? '' : 'Nothing in your selection differs from the other sites at q ≤ 0.05.',
+          fig: up.length || dn.length ? aForest([['More common', up.map(fr)], ['Less common', dn.map(fr)]], { noneOf: 'your sites' }) : '', go: 'sel-enriched', goText: 'Every feature, with counts' };
       }
       const chartTile = (spec) => {
         if (!spec) return null;
@@ -4089,9 +4139,17 @@
     const ext = (href, label) => '<a class="btn quiet small" href="' + href + '" target="_blank" rel="noopener">' + label + ' ↗</a>';
     const base = p.acc.split('-')[0];
     const filtered = constraints().length > 0;
-    const prow = (key, title, inner, q, sum) => foldHtml(key, title, inner, false, sum || '', null, { q });
+    // Layout A: every section a fold that opens where it is, several at once, as in v1.2 (the 3D structure open at
+    // first), with a small picture in its header while closed; the previous layout: a scorecard row that opens alone.
+    const prow = (key, title, inner, q, sum) => {
+      if (!UI_A) return foldHtml(key, title, inner, false, sum || '', null, { q });
+      A_ROWS.push({ key, title, summary: sum, group: null });
+      const was = UI.pOpen && UI.pOpen.p === p.i ? UI.pOpen.open.get(key) : undefined;
+      return '<details class="fold p-row" data-fold="' + key + '"' + ((was != null ? was : foldIsOpen(key, key === 'p-3d')) ? ' open' : '') + '><summary class="fold-head"><span class="pm" aria-hidden="true"></span>' +
+        '<span class="fold-title">' + esc(title) + '</span><span class="fold-sum" id="fold-sum-' + key + '">' + esc(sum || '') + '</span><span class="fold-pic" data-pic-of="' + key + '"></span></summary>' + inner + '</details>';
+    };
     A_ROWS.length = 0;
-    const hubList = '<div class="hub-list single">' +
+    const hubList = '<div class="' + (UI_A ? 'p-folds' : 'hub-list single') + '">' +
       hubSec('Interactions',
         prow('p-cc', 'Interaction evidence at a glance', contactCardHtml(), 'Which evidence lies along the protein, site by site', 'loading…') +
         prow('p-ix', 'Protein interactions', '<div class="card" id="card-ix"></div>', 'Partners, complexes and predicted models', 'loading…') +
@@ -4099,7 +4157,7 @@
       hubSec('Sites and structure',
         prow('p-sites', 'Sites', '<div class="card tbl-card" id="card-sites"><div class="card-pad"><div class="card-head"><div><h3>Sites</h3><p class="sub">Click a row for details of the site.</p></div><div class="actions" id="psites-tools"></div></div><div id="psites-ix"></div></div>' +
       '<div class="tbl-wrap" id="psites"></div><p class="note uni-extra" id="uni-extra" hidden></p><div class="card-pad" id="psites-cite"></div></div>', 'Every site with its evidence, state and sources', fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites shown') +
-        prow('p-3d', '3D structure', structureCard(p), 'AlphaFold DB model and experimental structures', 'loads when opened')) +
+        prow('p-3d', '3D structure', structureCard(p), 'AlphaFold DB model and experimental structures', UI_A ? 'loading…' : 'loads when opened')) +
       // The context toggle applies to the cards of its section (and the Complexes tab of Protein interactions).
       hubSec('Protein context',
         prow('p-cond', 'Location and condensates', '<div class="card" id="card-cond"></div>', 'Human Protein Atlas locations and CD-CODE condensates') +
@@ -4114,7 +4172,7 @@
       '</div>';
     el.innerHTML =
       '<div class="print-only print-head" id="print-head"></div>' +
-      crumbsHtml(p) + (UI_A ? focusBarHtml() : '') +
+      crumbsHtml(p) + (UI_A ? focusBarHtml(UI.lastView || 'proteins') : '') +
       '<div class="detail-head">' +
       '<div class="detail-title"><h2>' + esc(p.label) + '</h2><span class="pn" id="pname">' + esc(p.name) + '</span></div>' +
       (p.aliases.length ? '<p class="aliases">Also reported as ' + p.aliases.map((a) => '<span>' + esc(a) + '</span>').join(', ') + '</p>' : '') +
@@ -4151,7 +4209,7 @@
       '</div>' +
       foldHtml('p-map', 'Protein map', figureCard(p), true, fmt(p.sites.length) + ' methylarginine site' + (p.sites.length === 1 ? '' : 's')) + '</div>' +
       '<div class="card" id="site-card" hidden></div>' +
-      (UI_A ? aHome(null, protAOv(p)) : focusBarHtml()) + hubList +
+      (UI_A ? hubList + '<p class="a-proto">New layout <button type="button" class="linkish" data-ui="old">Switch to the previous layout</button></p>' : focusBarHtml() + hubList) +
       '<div class="print-only print-foot"><p>' + esc(siteName()) + ' · ' + esc(siteUrl()) + '</p><p>Cite: ' + esc(PAPER.cite) + ' https://doi.org/' + esc(PAPER.doi) + '</p><p>Sites: methylarginine union from PTM_Pipeline. Features, variants and sequence: UniProt. Predicted structure, pLDDT and AlphaMissense: AlphaFold DB. Experimental structures: RCSB PDB and PDBe (SIFTS). Condensates: CD-CODE. Partners: STRING; complexes: Complex Portal and hu.MAP; predicted complexes: ProtVar and AlphaFold DB; crosslinks: pepR-MS compendium, RBDmap, Trendel et al. 2025; IntAct; locations: Human Protein Atlas; disease: DisGeNET (via DOSE), UniProt and Open Targets; orthologues: Ensembl Compara. Licences and citations: the Documentation page.</p></div>';
 
     $$('[data-crumb]', el).forEach((b) => b.addEventListener('click', () => { go(b.dataset.crumb); window.scrollTo({ top: 0 }); }));
@@ -4159,9 +4217,11 @@
     $('#print-page', el).addEventListener('click', (e) => savePdf(p, e.currentTarget, 'print'));
     bindCtx(p);
     bindFacts(p);
+    if (UI_A) A_ROWS.unshift({ key: 'p-map', title: 'Protein map', group: '' });
     bindHub(el, p.label);
+    bindFolds(el, p.label);
     bindAHome(el);
-    if (UI_A) { renderProtCards(p); aLoadTiles(p); }
+    if (UI_A) { renderProtCards(p); aRefreshTiles(el, protAOv(p)); aLoadTiles(p); }
     $$('[data-open-p]', el).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.openP)));
     const pfc = $('#pf-clear', el);
     if (pfc) pfc.addEventListener('click', clearFilters);
@@ -4259,7 +4319,7 @@
   // Folds: a card behind a one-line header (title + summary) that opens on click. The card inside keeps its id, so
   // its render function writes to it whether the fold is open or not. Open/closed is remembered per fold key; print
   // opens every fold (preparePrint).
-  const FOLD_STORE = 'mse.folds.v1';
+  const FOLD_STORE = 'mse.folds.v2';
   // Card help text clamped to one line by the stylesheet (same selector there); a click shows it all.
   const CLAMP_SEL = '.card-head p.sub:not(:has(select, input, .warn, .warn-text)), .card > p.sub:not(:has(select, input, .warn, .warn-text)), .card-pad p.sub:not(:has(select, input, .warn, .warn-text))';
   const foldState = (() => { try { return JSON.parse(store.get(FOLD_STORE) || '{}') || {}; } catch (e) { return {}; } })();
@@ -4393,45 +4453,16 @@
     return groups.map(([g, rows]) => '<div class="sp-g">' + (g ? '<p class="sp-h">' + esc(g) + '</p>' : '') +
       rows.map((r) => '<button type="button" data-asec="' + r.key + '" aria-current="' + (r.key === cur) + '"' + ((r.meta || {}).empty ? ' disabled title="' + esc(r.meta.empty) + '"' : '') + '>' + esc(r.title) + '</button>').join('') + '</div>').join('');
   };
-  const secMenuHtml = () => '<details class="sec-menu"><summary>Sections</summary><div class="sec-pop"><div class="sp-head"><span>Sections of this page</span>' +
-    '<button type="button" class="btn quiet small pin-btn" data-secpin title="Keep the sections open on the right">Pin</button></div>' + secGroupsHtml(UI.focus) + '</div></details>';
-  let pinSections = (() => { try { return localStorage.getItem('mse-pin-sections') === '1'; } catch (e) { return false; } })();
-  const secsPinned = () => pinSections && UI_A && (!PIN_MQ || PIN_MQ.matches);
-  // The pinned column follows the page: drawn by hubApply on a page with sections, cleared by renderView before each page.
-  function renderSecRail(on) {
-    let sr = $('#sec-rail');
-    if (!sr) {
-      sr = document.createElement('aside');
-      sr.id = 'sec-rail'; sr.className = 'sec-rail'; sr.hidden = true;
-      sr.setAttribute('aria-label', 'Sections of this page');
-      document.body.appendChild(sr);
-      sr.addEventListener('click', (e) => {
-        if (e.target.closest('[data-secpin]')) { setSecPin(false); return; }
-        const b = e.target.closest('[data-asec]');
-        if (!b || b.disabled) return;
-        if (b.dataset.asec) UI.hubFrom = b.dataset.asec;
-        hubFocus(b.dataset.asec || null);
-      });
-    }
-    const show = on && secsPinned();
-    document.documentElement.classList.toggle('secs-pinned', show);
-    sr.hidden = !show;
-    if (!show) return;
-    sr.innerHTML = '<div class="drawer-head"><h2>Sections</h2><button type="button" class="btn quiet small pin-btn" data-secpin aria-pressed="true" title="Let the sections close again">Unpin</button></div>' +
-      '<div class="sr-body"><button type="button" class="sr-all" data-asec="" aria-current="' + !UI.focus + '">All sections</button>' + secGroupsHtml(UI.focus) + '</div>';
-    syncToolbar();
-  }
-  function setSecPin(v) {
-    pinSections = v;
-    try { localStorage.setItem('mse-pin-sections', v ? '1' : '0'); } catch (e) { /* storage blocked: this visit only */ }
-    $$('details.sec-menu[open]').forEach((d) => { d.open = false; });
-    renderSecRail(!!$('#content .hub-list'));
-  }
-  const focusBarHtml = () => '<nav class="focus-bar" aria-label="Sections of this page" hidden><button type="button" class="fb-back" data-fb="back">‹ All sections</button>' + (UI_A ? secMenuHtml() : '') +
-    '<span class="fb-crumb"></span><span class="fb-pos"></span><span class="fb-step"><button type="button" data-fb="-1">‹ Previous</button><button type="button" data-fb="1">Next ›</button></span></nav>';
+  const SECS_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"></path></svg>';
+  const focusBarHtml = (ret) => '<nav class="focus-bar' + (ret ? ' ret' : '') + '" aria-label="Sections of this page" hidden>' +
+    (ret ? '<button type="button" class="fb-back fb-ret" data-crumb="' + ret + '" title="Back to the ' + esc(VIEW_NAMES[ret] || 'previous') + ' page">‹ ' + esc(VIEW_NAMES[ret] || 'Back') + '</button>' : '<button type="button" class="fb-back" data-fb="back">‹ All sections</button>') +
+    (UI_A ? '<button type="button" class="sec-btn" data-secs aria-haspopup="dialog" aria-controls="rail" title="The sections of this page, in the side panel with the filters">' + SECS_ICON + 'Sections</button>' : '') +
+    '<span class="fb-crumb"></span><span class="fb-pos"></span><span class="fb-step"><button type="button" data-fb="-1">‹ Previous</button><button type="button" data-fb="1">Next ›</button></span>' +
+    (ret ? '<button type="button" class="fb-top" data-fb-top hidden title="Back to the top of the page">↑ Top</button>' : '') + '</nav>';
   // Where the page's sections live in the address: the view, or the protein's accession.
   const hubBase = () => (UI.view === 'protein' && UI.detail != null ? P[UI.detail].acc : UI.view);
   function hubFocus(key) {
+    if ($('#content .p-folds')) { foldGo(key); return; }
     const want = '#' + hubBase() + (key ? '/' + key : '');
     if (location.hash !== want) histSet('pushState', location.pathname + location.search + want);
     UI.focus = key || null;
@@ -4440,6 +4471,7 @@
   function bindHub(root, label) {
     const list = $('.hub-list', root);
     if (!list) return;
+    UI.secsOn = UI_A;
     list.classList.toggle('scoped', constraints().length > 0);
     list.dataset.label = label || '';
     $$('details.hub-row', list).forEach((d) => {
@@ -4461,6 +4493,7 @@
   }
   // Show the scorecard, or the one section UI.focus names (an unknown or empty one shows the scorecard).
   function hubApply(root) {
+    if (root && $('.p-folds', root)) { foldsApply(root); return; }
     const list = root && $('.hub-list', root);
     if (!list) return;
     const all = $$('details.hub-row', list).filter((d) => !d.classList.contains('hub-empty'));
@@ -4494,10 +4527,7 @@
       }
       if (bar && UI_A) {
         if (!on) $('.fb-crumb', bar).innerHTML = '<b>' + esc(list.dataset.label || VIEW_NAMES[UI.view] || '') + '</b> · ' + all.length + ' sections';
-        $$('.sec-menu [data-asec]', bar).forEach((b) => b.setAttribute('aria-current', String(on && b.dataset.asec === d.dataset.fold)));
-        const m = $('.sec-menu', bar);
-        if (m) m.open = false;
-        renderSecRail(true);
+        applyRailTab();
         document.documentElement.style.setProperty('--strip-h', bar.offsetHeight + 'px');
       }
     };
@@ -4516,6 +4546,71 @@
       vt.updateCallbackDone.then(after, after);
     } else { apply(); after(); }
   }
+  // A one-page protein (layout A): the section bar, the section named in the address opened and brought into view.
+  function bindFolds(root, label) {
+    const folds = $('.p-folds', root);
+    if (!folds) return;
+    folds.dataset.label = label || '';
+    UI.secsOn = true; UI.spy = null;
+    const bar = $('.focus-bar', root);
+    if (bar) { bar.hidden = false; bar.classList.add('hub'); }
+    const top = $('[data-fb-top]', root);
+    if (top) top.addEventListener('click', () => foldGo(null));
+    hubApply(root);
+  }
+  function foldsApply(root) {
+    const shown = hubBase() + '/' + (UI.focus || ''), changed = UI.hubShown !== shown;
+    UI.hubShown = shown;
+    secSpy(true);
+    applyRailTab();
+    const bar = $('.focus-bar', root);
+    if (bar) document.documentElement.style.setProperty('--strip-h', bar.offsetHeight + 'px');
+    if (changed && UI.focus) requestAnimationFrame(() => foldGo(UI.focus, true));
+  }
+  const barBottom = () => {
+    const bar = $('#content .focus-bar:not([hidden])');
+    return (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--toolbar-h')) || 0) + (bar && bar.offsetHeight && getComputedStyle(bar).display !== 'none' ? bar.offsetHeight : 0);
+  };
+  function foldGo(key, instant) {
+    const d = key ? $('#content details.fold[data-fold="' + key + '"]') : null;
+    if (key && !d) return;
+    const want = '#' + hubBase() + (key && key !== 'p-map' ? '/' + key : '');
+    if (location.hash !== want) histSet(instant ? 'replaceState' : 'pushState', location.pathname + location.search + want);
+    UI.focus = key && key !== 'p-map' ? key : null;
+    UI.hubShown = hubBase() + '/' + (UI.focus || '');
+    if (d && !d.open) d.open = true;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const top = d ? Math.max(0, d.getBoundingClientRect().top + window.scrollY - barBottom() - 10) : 0;
+    window.scrollTo({ top, behavior: instant || reduce ? 'auto' : 'smooth' });
+    if (d) $(':scope > summary', d).focus({ preventScroll: true });
+    window.dispatchEvent(new Event('resize'));   // charts drawn to their box's width
+  }
+  // The section in view: the last whose header has passed under the bar (the last of all at the foot of the page).
+  function secSpy(force) {
+    const folds = $('#content .p-folds');
+    if (!folds) return;
+    const rows = $$('#content .p-top > details.fold[data-fold="p-map"], #content .p-folds details.p-row'), line = barBottom() + 24;
+    let cur = null;
+    for (const d of rows) { if (d.getBoundingClientRect().top <= line) cur = d; else break; }
+    if (rows.length && window.scrollY > 0 && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = rows[rows.length - 1];
+    const k = cur ? cur.dataset.fold : '';
+    if (!force && k === UI.spy) return;
+    UI.spy = k;
+    const crumb = $('#content .focus-bar .fb-crumb'), r = A_ROWS.find((x) => x.key === k);
+    const top = $('#content .focus-bar [data-fb-top]');
+    if (top) top.hidden = !k;
+    if (crumb) crumb.innerHTML = '<b>' + esc(folds.dataset.label) + '</b>' + (r ? (r.group ? ' › ' + esc(r.group) : '') + ' › ' + esc(r.title) : ' · ' + A_ROWS.length + ' sections');
+    $$('#rail-secs [data-asec]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.asec === k)));
+  }
+  // what the reader opens or closes on a one-page protein, kept through a redraw of the same protein
+  document.addEventListener('toggle', (e) => {
+    const d = e.target;
+    if (!d.matches || !d.matches('details.p-row') || UI.detail == null) return;
+    if (!UI.pOpen || UI.pOpen.p !== UI.detail) UI.pOpen = { p: UI.detail, open: new Map() };
+    UI.pOpen.open.set(d.dataset.fold, d.open);
+  }, true);
+  let spyRaf = 0;
+  window.addEventListener('scroll', () => { if (!spyRaf) spyRaf = requestAnimationFrame(() => { spyRaf = 0; secSpy(); }); }, { passive: true });
   // ---- Layout A (the default; ?ui=old for the previous layout, ?ui=a back; remembered in this browser). A page leads with one question,
   // its answer in a sentence and the figure that gives it, then tiles: one per section of the scorecard, each a title,
   // a small picture and one line. A tile opens its section as the scorecard's row does (the focus view); the scorecard
@@ -4557,20 +4652,23 @@
     const X = (v) => aX(v, lo, hi), ticks = [];
     for (let k = lo; k <= hi; k++) if (!o.compact || hi - lo <= 3 || k === lo || k === 0 || k === hi) ticks.push(k);
     const grid = ticks.map((k) => '<i class="aq-g' + (k ? '' : ' mid') + '" style="left:' + X(2 ** k) + '"></i>').join('');
+    const none = (m) => !!m && m.or === 0 && aSig(m);
     const mark = (m, gh, tip) => {
+      if (!gh && none(m)) return '<i class="aq-pt down aq-none" style="left:0" data-tip="' + esc(tip) + '"></i>';
       if (!aOr(m)) return '';
       const ci = m.lo > 0 && m.hi > 0 && Number.isFinite(m.hi) ? '<i class="aq-ci' + (gh ? ' gh' : ' ' + aDir(m)) + '" style="left:' + X(m.lo) + ';width:calc(' + X(m.hi) + ' - ' + X(m.lo) + ')"></i>' : '';
       return ci + '<i class="' + (gh ? 'aq-gh' : 'aq-pt ' + aDir(m)) + '" style="left:' + X(m.or) + '" data-tip="' + esc(tip) + '"></i>';
     };
-    const val = (m) => (aOr(m) ? fx(m.or) + '×' : '—');
+    const val = (m) => (aOr(m) ? fx(m.or) + '×' : none(m) ? 'none' : '—');
     let h = '';
     for (const [g, rows] of groups) {
       if (!rows.length) continue;
       if (g) h += '<div class="aq-grp">' + esc(g) + '</div>';
       for (const r of rows) {
         h += '<div class="aq-lab"' + (o.compact || (o.subTip && r.sub) ? ' title="' + esc(r.label + (r.sub ? ' (' + r.sub + ')' : '')) + '"' : '') + '>' + esc(r.label) + (r.sub && !o.subTip ? '<small>' + esc(r.sub) + '</small>' : '') + '</div>' +
-          '<div class="aq-plot">' + grid + mark(r.ghost, true, aTip(r.label, r.ghost, o.ghostName)) + mark(r.main, false, aTip(r.label, r.main, r.mainName || o.mainName)) + '</div>' +
-          '<div class="aq-val"><b class="' + aDir(r.main) + '">' + val(r.main) + '</b>' + (aOr(r.ghost) ? '<small>' + esc(o.ghostShort || '') + ' ' + val(r.ghost) + '</small>' : '') + '</div>';
+          '<div class="aq-plot">' + grid + mark(r.ghost, true, aTip(r.label, r.ghost, o.ghostName)) +
+          mark(r.main, false, none(r.main) ? '<b>' + esc(r.label) + '</b><br>None of ' + esc(o.noneOf || 'these sites') + (r.main.q != null ? ', q ' + fmtP(r.main.q) : '') : aTip(r.label, r.main, r.mainName || o.mainName)) + '</div>' +
+          '<div class="aq-val"><b class="' + (none(r.main) ? 'down' : aDir(r.main)) + '">' + val(r.main) + '</b>' + (aOr(r.ghost) ? '<small>' + esc(o.ghostShort || '') + ' ' + val(r.ghost) + '</small>' : '') + '</div>';
       }
     }
     const lab = (k) => (k < 0 ? '1/' + 2 ** -k : String(2 ** k)) + '×';
@@ -4805,6 +4903,15 @@
   }
   // Tiles whose pictures need data that arrives after the page was drawn (a protein's interaction evidence).
   function aRefreshTiles(root, ov) {
+    const folds = root && $('.p-folds', root);
+    if (folds) {
+      for (const [k, o] of Object.entries(ov)) {
+        const pic = o && o.vis && $('.fold-pic[data-pic-of="' + k + '"]', folds), sum = o && o.head && $('#fold-sum-' + k, folds);
+        if (pic) pic.innerHTML = o.vis;
+        if (sum && sum.textContent === 'loading…') { sum.innerHTML = o.head; sum.title = sum.textContent; }
+      }
+      return;
+    }
     const home = root && $('.a-home', root);
     if (!home) return;
     for (const [k, o] of Object.entries(ov)) {
@@ -4819,8 +4926,7 @@
   }
   function bindAHome(root) {
     root.classList.toggle('a-mode', UI_A);
-    $$('.sec-menu [data-asec]', root).forEach((b) => b.addEventListener('click', () => { const m = b.closest('details'); if (m) m.open = false; UI.hubFrom = b.dataset.asec; hubFocus(b.dataset.asec); }));
-    $$('.sec-menu [data-secpin]', root).forEach((b) => b.addEventListener('click', () => setSecPin(true)));
+    $$('[data-secs]', root).forEach((b) => b.addEventListener('click', () => openFilters(null, 'sec')));
     const home = $('.a-home', root);
     if (!home) return;
     $$('[data-go]', home).forEach((b) => b.addEventListener('click', () => { if (b.getAttribute('aria-disabled') === 'true') return; UI.hubFrom = b.dataset.go; hubFocus(b.dataset.go); }));
@@ -6601,7 +6707,7 @@
   // ------------------------------------------------------------- 3D structure
   function structureCard(p) {
     return '<div class="card" id="card-af"><div class="card-head"><div><h3>3D structure</h3><p class="sub" id="af-sub">The best-resolved PDB chain or the AlphaFold model, coloured like the protein map. Click a residue to zoom in.</p></div>' +
-      '<div class="exp" role="group" aria-label="Structure controls"><button type="button" id="af-reset" disabled>Reset view</button><button type="button" id="af-spin" disabled aria-pressed="false">Spin</button><button type="button" id="af-png" disabled>PNG</button><button type="button" id="af-cxc" disabled title="ChimeraX command script that rebuilds this view">ChimeraX</button><button type="button" id="af-pml" disabled title="PyMOL script that rebuilds this view">PyMOL</button><button type="button" id="af-cif" disabled title="The coordinates shown as mmCIF, with the methylarginines listed">mmCIF</button><button type="button" id="af-pdbf" disabled title="The coordinates shown as PDB, with the methylarginines in REMARK 999">PDB</button></div></div>' +
+      '<div class="exp" role="group" aria-label="Structure controls"><button type="button" id="af-reset" disabled title="Turn and zoom the structure back to where it started">Reset view</button><button type="button" id="af-spin" disabled aria-pressed="false">Spin</button><button type="button" id="af-png" disabled>PNG</button><button type="button" id="af-cxc" disabled title="ChimeraX command script that rebuilds this view">ChimeraX</button><button type="button" id="af-pml" disabled title="PyMOL script that rebuilds this view">PyMOL</button><button type="button" id="af-cif" disabled title="The coordinates shown as mmCIF, with the methylarginines listed">mmCIF</button><button type="button" id="af-pdbf" disabled title="The coordinates shown as PDB, with the methylarginines in REMARK 999">PDB</button></div></div>' +
       '<div class="af-src" id="af-src"></div>' +
       '<div class="af-controls" id="af-controls"></div>' +
       '<div class="af-wrap"><div><div class="af-viewer" id="af-viewer"><div class="af-placeholder">Loading the structure…</div></div><p class="note af-msg" id="af-msg" aria-live="polite"></p></div><div class="af-side" id="af-side"></div></div>' +
@@ -6947,7 +7053,7 @@
       sel('vw-ldir', 'Light from', VIEW_LDIR, V.ldir) +
       sel('vw-bg', 'Background', VIEW_BGS, V.bg) + '</div>' +
       '<div class="chips af-toggles" aria-label="Show">' + VIEW_TOGGLES.filter((t) => !t[3] || pdbMode).map((t) => '<button class="chip" type="button" data-vw="' + t[0] + '" aria-pressed="' + !!V[t[0]] + '" title="' + esc(t[2]) + '">' + esc(t[1]) + '</button>').join('') +
-      '<button class="linkish" type="button" id="vw-default">Default view</button></div>' +
+      '<button class="linkish" type="button" id="vw-default" title="Style, colour, surface and lighting back to their defaults">Default settings</button></div>' +
       '<div class="legend af-key" id="af-key">' + (mol ? viewColorKeyHtml(key) : '') + '</div>';
     const save = () => store.set('mx-view', JSON.stringify(V));
     const change = (k, val, reSurface) => { V[k] = val; save(); if (mol) styleStructure(reSurface); renderViewControls(); };
@@ -12960,7 +13066,7 @@
   });
   // Popout menus (Columns, Rows, network options, More links, Saved outside the filter rail) close on a click outside
   // them or on Escape, not only on their own button; a click or tap also clears a hover tooltip.
-  const openPopouts = () => $$('details.col-menu[open], details.links-more[open], details.saved-menu[open], details.sec-menu[open]').filter((d) => !d.closest('.rail'));
+  const openPopouts = () => $$('details.col-menu[open], details.links-more[open], details.saved-menu[open]').filter((d) => !d.closest('.rail'));
   document.addEventListener('pointerdown', (e) => {
     openPopouts().forEach((d) => { if (!d.contains(e.target)) d.open = false; });
     if (tipFor) { tipFor = null; hideTip(); }
