@@ -8076,6 +8076,44 @@
     return pr;
   }
 
+  // What each PDB entry is (RCSB Data API, GraphQL): its title and the other molecules in it, for the entries a list
+  // shows, 80 per request. PDB_WHAT holds the answers (null when the lookup failed); a failed id is asked again later.
+  const pdbMeta = new Map(), PDB_WHAT = new Map();
+  function loadPdbMeta(ids) {
+    const want = Array.from(new Set(ids.map((id) => id.toUpperCase()))).filter((id) => !pdbMeta.has(id));
+    for (let k = 0; k < want.length; k += 80) {
+      const chunk = want.slice(k, k + 80);
+      const pr = withTimeout(fetch('https://data.rcsb.org/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query:
+        '{ entries(entry_ids: ' + JSON.stringify(chunk) + ') { rcsb_id struct { title } polymer_entities { rcsb_polymer_entity { pdbx_description } ' +
+        'rcsb_polymer_entity_container_identifiers { uniprot_ids } entity_poly { rcsb_entity_polymer_type } } } }' }) })
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.status)))), 20000)
+        .then((d) => new Map(((d.data || {}).entries || []).map((en) => [en.rcsb_id, en])));
+      for (const id of chunk) {
+        pdbMeta.set(id, pr.then((m) => { const en = m.get(id) || null; PDB_WHAT.set(id, en); return en; })
+          .catch(() => { pdbMeta.delete(id); PDB_WHAT.set(id, null); return null; }));
+      }
+    }
+    return Promise.all(ids.map((id) => pdbMeta.get(id.toUpperCase())));
+  }
+  // The molecules of an entry other than protein base: RNA and DNA first, each named as deposited.
+  function pdbPartners(en, base) {
+    const out = [];
+    for (const x of (en && en.polymer_entities) || []) {
+      if (((x.rcsb_polymer_entity_container_identifiers || {}).uniprot_ids || []).includes(base)) continue;
+      const type = (x.entity_poly || {}).rcsb_entity_polymer_type || '';
+      const desc = pdbDesc((x.rcsb_polymer_entity || {}).pdbx_description || type);
+      out.push([/RNA/.test(type) ? 0 : /DNA/.test(type) ? 1 : 2, /RNA/.test(type) ? 'RNA: ' + desc : /DNA/.test(type) ? 'DNA: ' + desc : desc]);
+    }
+    return Array.from(new Set(out.sort((a, b) => a[0] - b[0] || a[1].localeCompare(b[1], undefined, { numeric: true })).map((x) => x[1])));
+  }
+  // An entry's title and, after it, what else it holds (the first max named, the rest counted; all of them on hover).
+  function pdbWhatHtml(en, base, max) {
+    if (!en) return '';
+    const parts = pdbPartners(en, base);
+    return '<span class="pdb-title">' + esc(((en.struct || {}).title) || '') + '</span>' + (parts.length ? '<span class="pdb-with">With ' + esc(parts.slice(0, max).join('; ')) +
+      (parts.length > max ? ' <span class="more" data-tip="' + esc(parts.slice(max).join('; ')) + '">and ' + (parts.length - max) + ' more</span>' : '') + '</span>' : '<span class="pdb-with">No other protein or nucleic acid</span>');
+  }
+
   // Observed residues for the mapped chain and any methylarginine residues modelled in the entry.
   function loadPdbDetail(e, withMods) {
     if (pdbDetail.has(e.id)) return pdbDetail.get(e.id);
@@ -8092,6 +8130,7 @@
       .catch(() => []);
     const pr = Promise.all([cov, mod]).then(([coverage, modres]) => ({ chain, coverage, modres }));
     pdbDetail.set(e.id, pr);
+    pr.then((d) => { if (d.chain && !d.coverage) pdbDetail.delete(e.id); });   // a failed lookup is asked again next time
     return pr;
   }
 
@@ -8128,6 +8167,7 @@
     loadPdb(p.acc).then((res) => {
       if (UI.detail !== p.i || !document.body.contains(box)) return;
       const inRange = (e) => e.maps.length ? p.sites.filter((j) => e.maps.some((m) => S[j].pos >= m.unpStart && S[j].pos <= m.unpEnd)).length : 0;
+      const base = p.acc.split('-')[0];
       const entries = res.entries.map((e) => ({ e, n: inRange(e), meth: res.methyl.has(e.id) }))
         .sort((a, b) => (b.meth - a.meth) || (b.n - a.n) || ((a.e.resolution || 99) - (b.e.resolution || 99)));
       const nMeth = res.methyl.size, nNa = entries.filter(({ e }) => res.na.get(e.id)).length;
@@ -8142,9 +8182,10 @@
       const shown = UI.pdbAll ? entries : entries.slice(0, 10);
       sub.innerHTML = fmt(entries.length) + ' PDB entr' + (entries.length === 1 ? 'y maps' : 'ies map') + ' to ' + esc(p.acc.split('-')[0]) + (res.methyl.size ? '; <b>' + res.methyl.size + '</b> model a methylated arginine in this protein' : '') +
         '.' + (res.failed ? ' The PDBe list timed out, so only methylarginine-containing entries are shown.' : '');
-      box.innerHTML = '<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>PDB</th><th>Method</th><th class="r hide-xs">Resolution</th><th class="hide-xs">Chain · UniProt range</th><th>Methylarginines</th><th><span class="sr-only">View</span></th></tr></thead><tbody>' +
+      box.innerHTML = '<div class="tbl-wrap"><table class="tbl compact pdb-tbl"><thead><tr><th>PDB entry</th><th>Method</th><th class="r hide-xs">Resolution</th><th class="hide-xs">Chain · UniProt range</th><th>Methylarginines</th><th><span class="sr-only">View</span></th></tr></thead><tbody>' +
         shown.map(({ e, n, meth }) => '<tr data-id="' + e.id + '"><td><a href="https://www.rcsb.org/structure/' + e.id.toUpperCase() + '" target="_blank" rel="noopener"><b>' + e.id.toUpperCase() + '</b></a>' + (meth ? ' <span class="tag var" title="A methylated arginine residue is modelled in this protein\'s chain">methyl-R in model</span>' : '') +
-          (res.na.get(e.id) && res.na.get(e.id).rna ? ' <span class="tag na-rna" title="The entry contains RNA">RNA</span>' : '') + (res.na.get(e.id) && res.na.get(e.id).dna ? ' <span class="tag na-dna" title="The entry contains DNA">DNA</span>' : '') + '</td>' +
+          (res.na.get(e.id) && res.na.get(e.id).rna ? ' <span class="tag na-rna" title="The entry contains RNA">RNA</span>' : '') + (res.na.get(e.id) && res.na.get(e.id).dna ? ' <span class="tag na-dna" title="The entry contains DNA">DNA</span>' : '') +
+          '<div class="pdb-what" data-what="' + e.id + '">' + pdbWhatHtml(PDB_WHAT.get(e.id.toUpperCase()), base, 4) + '</div></td>' +
           '<td>' + esc(methodShort(e.method)) + '</td><td class="r num hide-xs">' + (e.resolution ? e.resolution.toFixed(1) + ' Å' : '—') + '</td>' +
           '<td class="hide-xs">' + (e.maps.length ? esc(e.maps[0].chain) + (e.chains.length > 1 ? ' (+' + (e.chains.length - 1) + ')' : '') + ' · ' + e.maps.filter((m) => m.chain === e.maps[0].chain).map((m) => m.unpStart + '–' + m.unpEnd).join(', ') : '—') + '</td>' +
           '<td class="pdb-sites" data-n="' + n + '">' + (n ? n + ' in construct…' : '<span class="muted">none in construct</span>') + '</td>' +
@@ -8152,14 +8193,21 @@
         '</tbody></table></div>' + (entries.length > 10 ? '<button class="linkish" type="button" id="pdb-more" style="margin-top:.5rem">' + (UI.pdbAll ? 'Show the first 10' : 'Show all ' + fmt(entries.length) + ' entries') + '</button>' : '');
       const more = $('#pdb-more', box);
       if (more) more.addEventListener('click', () => { UI.pdbAll = !UI.pdbAll; renderPdbList(p); });
+      // what each entry is: its title and the other molecules in it
+      loadPdbMeta(shown.map(({ e }) => e.id)).then((ens) => {
+        if (UI.detail !== p.i) return;
+        shown.forEach(({ e }, k) => { const cell = $('[data-what="' + e.id + '"]', box); if (cell && ens[k]) cell.innerHTML = pdbWhatHtml(ens[k], base, 4); });
+      });
       shown.forEach(({ e, n, meth }) => {
         if (!n && !meth) return;
         loadPdbDetail(e, meth).then((det) => {
           const cell = $('tr[data-id="' + e.id + '"] .pdb-sites', box);
           if (!cell) return;
           const ss = pdbSites(p, e, det);
-          const obs = det.coverage ? ss.filter((x) => x[2]) : ss;
+          const obs = ss.filter((x) => x[2]);
           const mods = det.modres.map((r) => '<span class="tag uni" title="' + esc(r.chem_comp_name) + ' (' + esc(r.chem_comp_id) + ')">' + esc(r.chem_comp_id) + ' ' + esc(r.chain_id) + esc(r.author_residue_number) + '</span>').join(' ');
+          // without PDBe's observed residues the sites can only be counted in the construct
+          if (det.chain && !det.coverage) { cell.innerHTML = (n ? n + ' in construct' : '—') + ' <span class="muted">(PDBe did not return the observed residues; try again later)</span>' + (mods ? '<br>' + mods : ''); return; }
           cell.innerHTML = (obs.length ? '<b>' + obs.length + '</b> resolved: ' + obs.slice(0, 8).map((x) => '' + rl(x[0])).join(', ') + (obs.length > 8 ? ' …' : '') : '<span class="muted">' + (n ? n + ' in construct, none resolved' : '—') + '</span>') + (mods ? '<br>' + mods : '');
         });
       });
@@ -8239,10 +8287,17 @@
         '<p class="note">A related protein, not ' + esc(p.label) + ' itself: positions come from the RCSB sequence alignment (MMseqs2), and the contacts are those of the homologous arginine.</p>' +
         (mol.afPdb ? '<p><button class="btn quiet small" type="button" id="back-af">Back to AlphaFold model</button></p>' : '');
     } else side.innerHTML = '<p class="flabel">Showing PDB entry</p><dl class="kv"><dt>Entry</dt><dd><a href="https://www.rcsb.org/structure/' + e.id.toUpperCase() + '" target="_blank" rel="noopener">' + e.id.toUpperCase() + ' ↗</a></dd>' +
+      (() => {   // what the entry is, once RCSB answers (the panel draws again then)
+        const id = e.id.toUpperCase(), en = PDB_WHAT.get(id), base = p.acc.split('-')[0];
+        if (en === undefined) loadPdbMeta([id]).then(() => { if (mol && mol.mode === 'pdb' && mol.pdb && mol.pdb.e === e && !mol.pdb.pred && !mol.pdb.homolog) renderPdbSide(p); });
+        if (!en) return en === undefined ? '<dt>Structure</dt><dd class="muted">loading…</dd>' : '';
+        const parts = pdbPartners(en, base);
+        return '<dt>Structure</dt><dd>' + esc((en.struct || {}).title || '') + '</dd><dt>With</dt><dd>' + (parts.length ? esc(parts.slice(0, 8).join('; ')) + (parts.length > 8 ? ' <span class="pdb-more" data-tip="' + esc(parts.slice(8).join('; ')) + '">and ' + (parts.length - 8) + ' more</span>' : '') : 'no other protein or nucleic acid') + '</dd>';
+      })() +
       '<dt>Method</dt><dd>' + esc(methodShort(e.method)) + (e.resolution ? ', ' + e.resolution.toFixed(1) + ' Å' : '') + (/NMR/i.test(e.method || '') ? ' (first model of the ensemble)' : '') + '</dd><dt>Chain</dt><dd>' + esc(det.chain || '—') + ' (coloured by its features; other chains by what they are)</dd></dl>' +
       (det.modres.length ? '<p class="flabel">Methylated arginines in the model</p><div class="tags">' + det.modres.map((r) => '<span class="tag var" title="' + esc(r.chem_comp_name) + '">' + esc(r.chem_comp_id) + ' ' + esc(r.chain_id) + esc(r.author_residue_number) + '</span>').join('') + '</div><p class="note">Drawn in the methylated colour.</p>' : '') +
       '<div class="af-focus"><p class="flabel">Focus a site <span class="muted">(resolved in this chain)</span></p>' +
-      (sites.length ? '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '">' + modeDot(mode, mode.cat(s), colors[mode.cat(s)] || pal.none) + rl(s.pos, P[s.p]) + ' · ' + esc(det.chain) + toAuth.get(s.pos) + '</button>').join('') + '</div>' : '<p class="note">None of this protein\'s methylarginines are resolved in this chain.</p>') + '</div>' +
+      (sites.length ? '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '">' + modeDot(mode, mode.cat(s), colors[mode.cat(s)] || pal.none) + rl(s.pos, P[s.p]) + ' · ' + esc(det.chain) + toAuth.get(s.pos) + '</button>').join('') + '</div>' : '<p class="note">' + (det.chain && !det.coverage ? 'PDBe did not return the residues observed in this chain, so its methylarginines cannot be placed; try again later.' : 'None of this protein\'s methylarginines are resolved in this chain.') + '</p>') + '</div>' +
       contactsHtml() +
       (mol.afPdb ? '<p><button class="btn quiet small" type="button" id="back-af">Back to AlphaFold model</button></p>' : '');
     $$('.contact-list [data-pos]', side).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
@@ -14383,7 +14438,7 @@
       '<ul>' +
       '<li><b>UniProt</b>: the function summary under the protein name; domains, regions, disordered segments and compositional bias for the map; natural variants and mutagenesis (variants at a methylarginine are highlighted, with their disease notes); and UniProt\'s own modified-residue term for each site (asymmetric, symmetric or monomethylarginine). Methylarginines that UniProt annotates but the union lacks are listed under the site table.</li>' +
       '<li><b>AlphaFold DB</b>: the predicted model, coloured as on the protein map by default (domains, disordered stretches, RG/RGG segments; other chains of PDB entries as another protein or another copy of this one) or by pLDDT (very high > 90, confident 70–90, low 50–70, very low < 50), the pLDDT at each site, and the mean AlphaMissense pathogenicity of the 19 R→X substitutions at each site (likely benign < 0.34, likely pathogenic ≥ 0.564). Low pLDDT usually marks disordered segments, where most methylarginines are located.</li>' +
-      '<li><b>Experimental structures</b>: PDBe SIFTS mappings list the PDB entries for the protein; observed-residue ranges determine which methylarginines are actually resolved in the mapped chain. An RCSB search flags entries whose chain for this protein contains a methylated arginine residue (chemical components 2MR, DA2 or NMM); those residues are drawn in the methylated colour when the entry is viewed. NMR entries show the first model of the ensemble.</li>' +
+      '<li><b>Experimental structures</b>: PDBe SIFTS mappings list the PDB entries for the protein, each with its title and the other molecules it holds (RCSB Data API), so the list says what each structure is; observed-residue ranges determine which methylarginines are actually resolved in the mapped chain. An RCSB search flags entries whose chain for this protein contains a methylated arginine residue (chemical components 2MR, DA2 or NMM); those residues are drawn in the methylated colour when the entry is viewed. NMR entries show the first model of the ensemble.</li>' +
       '</ul>' +
       ''],
       ['interactions', 'Interactions', '' +
