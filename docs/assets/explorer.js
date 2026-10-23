@@ -3820,19 +3820,16 @@
         card(pan || func, 'ov-pan', 'Protein class', aGlyph.cls, (l) => l, 'more methylated proteins than among all human proteins');
         card(cond, 'ov-cond', 'Condensate', aGlyph.cond, (l) => l, 'more methylated proteins than among all human proteins');
         // the cards lead; the tiles below chart every test, so the figure is drawn only when no card can be
-        const tipKey = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span class="a-info" tabindex="0" data-tip="' +
-          esc('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against all reviewed human proteins (fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; open a tile for every test.') + '">How to read</span>';
-        const ex = ['HNRNPA1', 'FUS', 'G3BP1'].map((g) => pickReviewed(lookupExact(g))).filter(Boolean);
-        const pic = ex.length ? aMapsHtml(ex, 'Methylarginines on three RNA-binding proteins. Click one to open it.') : '';
-        lead = hi.length ? { q: 'What sets methylarginine sites apart?', pic, hi: aHighlights(hi) + '<div class="a-key a-key-line">' + tipKey + '</div>' }
-          : { q: 'What sets methylarginine sites apart?', pic, key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
+        const tipKey = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span><i class="aq-pt same"></i>about the same (within ' + MIN_EFFECT + '×)</span><span class="a-info" tabindex="0" data-tip="' +
+          esc('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against all reviewed human proteins (fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; an effect within ' + MIN_EFFECT + '× either way counts as about the same. Open a tile for every test.') + '">How to read</span>';
+        lead = hi.length ? { q: 'What sets methylarginine sites apart?', hi: '<div class="a-key a-key-line">' + tipKey + '</div>' }
+          : { q: 'What sets methylarginine sites apart?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
             fig: aForest([['Where in the protein', where], ['Which proteins', which]], { subTip: true }) };
       } else {
         const rows = profileRows() || [], sig = rows.filter((r) => r.q <= 0.05);
         const up = sig.filter((r) => r.fold > 1).slice(0, 6), dn = sig.filter((r) => r.fold < 1).slice(0, 3);
         const fr = (r) => ({ label: r.ft.label, main: { or: r.fold, sig: true, q: r.q, fold: true } });
-        const ex = R.prots.map((p) => [p, p.sites.filter((j) => R.shown.has(j)).length]).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([p]) => p);
-        lead = { q: 'What sets your selection apart?', pic: ex.length ? aMapsHtml(ex, 'The proteins of your selection with the most sites. Click one to open it.') : '', key: '<span><i class="aq-pt up"></i>more common</span><span><i class="aq-pt down"></i>less common</span><span class="a-key-note">Your ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + ' (q ≤ 0.05)</span>',
+        lead = { q: 'What sets your selection apart?', key: '<span><i class="aq-pt up"></i>more common</span><span><i class="aq-pt down"></i>less common</span><span class="a-key-note">Your ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + ' (q ≤ 0.05)</span>',
           verdict: !rows.length ? 'Too few sites to compare with the rest.' : up.length || dn.length ? '<b>More common in your selection:</b> ' + lst(up.slice(0, 3).map(fr)) + (dn.length ? '. <b>Less common:</b> ' + dn.slice(0, 2).map((r) => esc(r.ft.label) + ' <span class="an">' + fx(r.fold) + '×</span>').join(', ') : '') + '.'
             : 'Nothing in your selection differs from the other sites at q ≤ 0.05.',
           fig: up.length || dn.length ? aForest([['More common', up.map(fr)], ['Less common', dn.map(fr)]]) : '', go: 'sel-enriched', goText: 'Every feature, with counts' };
@@ -3842,8 +3839,9 @@
         const rows = pick(spec, 3, spec.fold ? 0 : 1, '');
         const cnt = (whole) => {
           const re = whole && spec.selTest, v = (r) => (re ? r.ref : r.value), sg = (r) => (re ? r.refQ != null && r.refQ <= PADJ : !!r.sig);
-          const u = spec.rows.filter((r) => ok(r) && sg(r) && v(r) > 0).length, d = spec.fold ? 0 : spec.rows.filter((r) => ok(r) && sg(r) && v(r) < 0).length;
-          return u || d ? (u ? '<b>' + u + '</b> ' + (spec.fold ? 'over-represented' : 'more often') : '') + (u && d ? ' · ' : '') + (d ? '<b>' + d + '</b> less often' : '') : 'none differs (q ≤ ' + PADJ + ')';
+          const u = spec.rows.filter((r) => ok(r) && sg(r) && v(r) > 0 && aBig(v(r))).length, d = spec.fold ? 0 : spec.rows.filter((r) => ok(r) && sg(r) && v(r) < 0 && aBig(v(r))).length;
+          return u || d ? (u ? '<b>' + u + '</b> ' + (spec.fold ? 'over-represented' : 'more often') : '') + (u && d ? ' · ' : '') + (d ? '<b>' + d + '</b> less often' : '') + ' (≥ ' + MIN_EFFECT + '×)'
+            : 'none differs by ≥ ' + MIN_EFFECT + '× (q ≤ ' + PADJ + ')';
         };
         return { vis: rows.length ? aForest([[null, rows]], { compact: true }) : '', head: cnt(false), whole: scoped && spec.selTest ? cnt(true) : '' };
       };
@@ -3859,7 +3857,12 @@
         'ov-start': { vis: '<span class="a-pills">' + topSites.slice(0, 8).map((p) => '<span class="a-pill">' + esc(p.label) + '<b>' + p.sites.length + '</b></span>').join('') + '</span>', head: 'The proteins with the most sites, and quick selections' },
       };
       for (const k of Object.keys(ov)) if (!ov[k]) delete ov[k];
-      return aHome(lead, ov, scoped ? [] : ['sel-enriched']);
+      // three proteins drawn after the kinds of protein, before where in the protein: the reviewed HNRNPA1, FUS and
+      // G3BP1, or a selection's proteins with the most sites
+      const ex = scoped ? R.prots.map((p) => [p, p.sites.filter((j) => R.shown.has(j)).length]).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([p]) => p)
+        : ['HNRNPA1', 'FUS', 'G3BP1'].map((g) => pickReviewed(lookupExact(g))).filter(Boolean);
+      const maps = ex.length ? '<h3 class="a-gh">' + (scoped ? 'Your proteins with the most sites' : 'Where the sites are, on three RNA-binding proteins') + '</h3>' + aMapsHtml(ex, '') : '';
+      return aHome(lead, ov, scoped ? [] : ['sel-enriched'], { 'What kinds of proteins are methylated': maps });
     }
     A_ROWS.length = 0;
     const hubList = '<div class="hub-list">' +
@@ -4112,7 +4115,7 @@
       '<button class="btn small quiet" type="button" id="print-page" title="Print this protein page (the print dialog can also save a PDF with selectable text)">Print</button></div></div>' +
       // The protein's identity stays; its facts and map head the page (they give way to a section opened alone), and
       // every other card is a row of the protein's sections (bindHub).
-      '<div class="hub-only p-top">' + (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
+      '<div class="hub-only p-top">' + (UI_A ? '<div class="a-hi p-hi" id="p-hi"></div>' : '') + (filtered && shownN < p.sites.length ? '<div class="filter-note">' + fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites match your filters; the others are faded. <button class="linkish" type="button" id="pf-clear">Clear filters</button></div>' : '') +
       '<div id="drift-note"></div>' +
       (p.unrev ? (() => {
         const twin = p.reviewedTwin, nDup = p.sites.filter((j) => S[j].dup != null).length;
@@ -4137,7 +4140,7 @@
     bindFacts(p);
     bindHub(el, p.label);
     bindAHome(el);
-    if (UI_A) aLoadTiles(p);
+    if (UI_A) { renderProtCards(p); aLoadTiles(p); }
     $$('[data-open-p]', el).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.openP)));
     const pfc = $('#pf-clear', el);
     if (pfc) pfc.addEventListener('click', clearFilters);
@@ -4466,7 +4469,10 @@
   const A_ROWS = [];
   const aOr = (m) => (m && m.or != null && m.or > 0 && Number.isFinite(m.or) ? m.or : null);
   const aSig = (m) => (m.sig != null ? !!m.sig : m.p != null && m.p <= 0.05);
-  const aDir = (m) => (m && aOr(m) && aSig(m) ? (m.or > 1 ? 'up' : 'down') : 'ns');
+  // Effects within MIN_EFFECT either way read "about the same", however small their p (grey, not coloured).
+  const MIN_EFFECT = 1.25;
+  const aBig = (l2) => Math.abs(l2) >= Math.log2(MIN_EFFECT);
+  const aDir = (m) => (m && aOr(m) && aSig(m) ? (!aBig(Math.log2(m.or)) ? 'same' : m.or > 1 ? 'up' : 'down') : 'ns');
   const aX = (v, lo, hi) => (100 * (Math.max(lo, Math.min(hi, Math.log2(v))) - lo) / (hi - lo)).toFixed(2) + '%';
   const aTip = (label, m, what) => '<b>' + esc(label) + '</b>' + (what ? '<br>' + esc(what) : '') + '<br>' + (aOr(m) ? (m.fold ? 'fold ' : 'OR ') + fmtOr(m.or, m.lo, m.hi) + (m.q != null ? ', q ' + fmtP(m.q) : m.p != null ? ', p ' + fmtP(m.p) : '') + (m.used ? ' · ' + fmt(m.used) + ' informative proteins' : '') : 'too few to test');
   // Effects on one log2 scale: groups of rows, each a main estimate (a dot, filled where p ≤ 0.05) and an optional
@@ -4501,10 +4507,11 @@
   }
   // A set of tests in a few words: which differ, and how.
   const aSay = (rows) => {
-    const up = rows.filter((r) => aDir(r.main) === 'up'), dn = rows.filter((r) => aDir(r.main) === 'down');
+    const up = rows.filter((r) => aDir(r.main) === 'up'), dn = rows.filter((r) => aDir(r.main) === 'down'), same = rows.filter((r) => aDir(r.main) === 'same');
     const one = (r) => esc(r.say || r.label) + ' <b>' + fx(r.main.or) + '×</b>';
     if (!rows.some((r) => aOr(r.main))) return 'Too few to test';
-    return up.length || dn.length ? (up.length ? 'More often: ' + up.map(one).join(', ') : '') + (up.length && dn.length ? '; ' : '') + (dn.length ? (up.length ? 'less' : 'Less') + ' often: ' + dn.map(one).join(', ') : '') : 'No difference (p > 0.05)';
+    return up.length || dn.length ? (up.length ? 'More often: ' + up.map(one).join(', ') : '') + (up.length && dn.length ? '; ' : '') + (dn.length ? (up.length ? 'less' : 'Less') + ' often: ' + dn.map(one).join(', ') : '')
+      : same.length ? 'About the same: ' + same.map(one).join(', ') : 'No difference (p > 0.05)';
   };
   // A page's headline effects as cards: a small glyph of what the effect is about, the effect as a big number, its
   // name and kind; each opens its section, and its tooltip says what was compared.
@@ -4515,6 +4522,8 @@
     cond: () => '<svg viewBox="0 0 64 24"><circle cx="16" cy="12" r="9" class="hg-drop"/><circle cx="36" cy="9" r="5.5" class="hg-drop"/><circle cx="50" cy="15" r="4" class="hg-drop"/><circle cx="14" cy="10" r="2.4" class="hg-site"/></svg>',
     loc: () => '<svg viewBox="0 0 64 24"><ellipse cx="32" cy="12" rx="28" ry="10" class="hg-cell"/><circle cx="36" cy="12" r="5.5" class="hg-nuc"/></svg>',
     dna: () => '<svg viewBox="0 0 64 24"><path d="M4 6 C14 6 18 18 28 18 S42 6 52 6" class="hg-dna"/><path d="M4 18 C14 18 18 6 28 6 S42 18 52 18" class="hg-dna"/><circle cx="58" cy="12" r="3.6" class="hg-site"/></svg>',
+    pins: () => '<svg viewBox="0 0 64 24"><line x1="2" y1="18" x2="62" y2="18" class="hg-idr"/>' + [12, 26, 34, 48].map((x, k) => '<line x1="' + x + '" y1="18" x2="' + x + '" y2="' + (k % 2 ? 6 : 9) + '" class="hg-stem"/><circle cx="' + x + '" cy="' + (k % 2 ? 6 : 9) + '" r="3.2" class="hg-site"/>').join('') + '</svg>',
+    tree: () => '<svg viewBox="0 0 64 24"><path d="M4 12 H20 M20 5 V19 M20 5 H36 M20 19 H36 M36 1.5 V8.5 M36 1.5 H50 M36 8.5 H50" class="hg-tree"/><circle cx="54" cy="1.5" r="2.6" class="hg-site"/><circle cx="54" cy="8.5" r="2.6" class="hg-site"/><circle cx="40" cy="19" r="2.6" class="hg-site"/></svg>',
     pdb: () => '<svg viewBox="0 0 64 24"><path d="M4 12 c3 -9 9 -9 12 0 s9 9 12 0 s9 -9 12 0 s9 9 12 0" class="hg-helix"/><circle cx="58" cy="12" r="3.6" class="hg-site"/></svg>',
     ppi: () => '<svg viewBox="0 0 64 24"><ellipse cx="20" cy="12" rx="15" ry="9" class="hg-blob"/><ellipse cx="44" cy="12" rx="15" ry="9" class="hg-blob b"/><circle cx="32" cy="12" r="3.6" class="hg-site"/></svg>',
   };
@@ -4524,9 +4533,10 @@
   const aMeters = (rows, o = {}) => '<div class="a-meters' + (o.tight ? ' tight' : '') + '">' + rows.map((r) => '<div class="am-row"' + (r.tip ? ' data-tip="' + esc(r.tip) + '"' : '') + '><span class="am-l">' + esc(r.label) + '</span><span class="am-t"><i class="' + (r.cls || '') + '" style="width:' + (100 * Math.max(0, Math.min(1, r.v || 0))).toFixed(1) + '%"></i>' +
     (r.ref != null ? '<b style="left:' + (100 * r.ref).toFixed(1) + '%"></b>' : '') + '</span><span class="am-v">' + esc(r.text) + '</span></div>').join('') + (o.foot ? '<div class="am-foot">' + o.foot + '</div>' : '') + '</div>';
   const aStack = (parts) => { const tot = parts.reduce((a, p) => a + p.n, 0) || 1; return '<div class="a-stack"><div class="as-bar">' + parts.map((p) => '<i class="' + p.cls + '" style="flex-grow:' + p.n + '" data-tip="' + esc('<b>' + p.label + '</b><br>' + fmt(p.n) + ' (' + pctText(p.n, tot) + '%)') + '"></i>').join('') + '</div><div class="as-key">' + parts.filter((p) => p.key).map((p) => '<span><i class="' + p.cls + '"></i>' + esc(p.key) + ' ' + pctText(p.n, tot) + '%</span>').join('') + '</div></div>'; };
-  const aBig = (items) => '<div class="a-big">' + items.map(([n, label, cls]) => '<span class="' + (cls || '') + '"><b>' + n + '</b> ' + esc(label) + '</span>').join('') + '</div>';
+  const aBigN = (items) => '<div class="a-big">' + items.map(([n, label, cls]) => '<span class="' + (cls || '') + '"><b>' + n + '</b> ' + esc(label) + '</span>').join('') + '</div>';
   // The page's lead and its tiles. ov: {key: {vis, head, whole}} replaces a tile's picture or words; skip: keys left out.
-  function aHome(lead, ov = {}, skip = []) {
+  // ins: { group name: html } drawn, full width, after that group's tiles.
+  function aHome(lead, ov = {}, skip = [], ins = {}) {
     const scoped = constraints().length > 0, groups = [];
     for (const r of A_ROWS) {
       if (skip.includes(r.key)) continue;
@@ -4545,7 +4555,8 @@
     return '<div class="a-home hub-only">' +
       (lead ? '<section class="a-lead"><h2 class="a-q">' + lead.q + '</h2>' + (lead.pic || '') + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') + (lead.hi || '') +
         (lead.fig ? '<div class="card a-fig">' + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
-      '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>').join('') + '</div>' +
+      '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>' +
+        (ins[g] ? '<section class="a-grp a-wide">' + ins[g] + '</section>' : '')).join('') + '</div>' +
       '<p class="a-proto">New layout <button type="button" class="linkish" data-ui="old">Switch to the previous layout</button></p></div>';
   }
   // A protein drawn as small lanes along its length: each lane a label and marks, a box for a stretch [a, b], a tick
@@ -4580,7 +4591,7 @@
       for (const r of regs) (r.kind === 'dna' ? dna : rna).push({ a: r.a != null ? r.a : r.start, b: r.b != null ? r.b : r.end, cls: (r.kind === 'dna' ? 'dna' : 'rna') + ' pdb', tip: (r.kind === 'dna' ? 'DNA' : 'RNA') + ' contact in PDB structures' });
       if (rna.length || dna.length) ov['p-na'] = { vis: aTrack(len, [{ label: 'RNA', items: rna }, { label: 'DNA', items: dna }, { label: 'Sites', items: pins('site') }]) };
       const partners = typeof partnersAt === 'function' ? partnersAt(p, 700).length : 0, cx = (p.cx || []).length;   // curated and predicted, as the card counts them
-      ov['p-ix'] = { vis: aBig([[fmt(partners), 'partners'], [fmt(cx), cx === 1 ? 'complex' : 'complexes', 'dna']]) };
+      ov['p-ix'] = { vis: aBigN([[fmt(partners), 'partners'], [fmt(cx), cx === 1 ? 'complex' : 'complexes', 'dna']]) };
     }
     if (p.idr && p.idr.length) ov['p-dom'] = { vis: aTrack(len, [{ label: 'Disorder', items: p.idr.map(([a, b]) => ({ a, b, cls: 'idr', tip: 'Disordered ' + a + '–' + b + ' (MobiDB)' })) }, { label: 'Sites', items: pins('site') }]) };
     if (p.ptms && p.ptms.length) ov['p-ptm'] = { vis: aTrack(len, [{ label: 'PTMs', items: p.ptms.map(([q, g]) => ({ a: q, b: q, cls: 'ptm', tip: PTM_LABEL[g] + ' ' + q })) }, { label: 'Sites', items: pins('site') }]) };
@@ -4588,8 +4599,8 @@
     ov['p-cluster'] = { vis: aTrack(len, [{ label: 'Clusters', items: cl.map(([a, b, n]) => ({ a, b, cls: 'clu', tip: n + ' sites, ' + a + '–' + b })), always: true }, { label: 'Sites', items: pins('site') }]) };
     if (p.argN) ov['p-seq'] = { vis: aMeters([{ label: 'Arginines methylated', v: p.sites.length / p.argN, text: fmt(p.sites.length) + ' of ' + fmt(p.argN), cls: 'sel' }]) };
     const nDis = p.dis ? popcount(p.dis) : 0;
-    if (p.cond && p.cond.length || (p.hpa && p.hpa.length)) ov['p-cond'] = { vis: aBig([[fmt((p.cond || []).length), (p.cond || []).length === 1 ? 'condensate' : 'condensates'], [fmt((p.hpa || []).length), (p.hpa || []).length === 1 ? 'location' : 'locations', 'dna']]) };
-    if (nDis) ov['p-dis'] = { vis: aBig([[fmt(nDis), nDis === 1 ? 'disease family' : 'disease families']]) };
+    if (p.cond && p.cond.length || (p.hpa && p.hpa.length)) ov['p-cond'] = { vis: aBigN([[fmt((p.cond || []).length), (p.cond || []).length === 1 ? 'condensate' : 'condensates'], [fmt((p.hpa || []).length), (p.hpa || []).length === 1 ? 'location' : 'locations', 'dna']]) };
+    if (nDis) ov['p-dis'] = { vis: aBigN([[fmt(nDis), nDis === 1 ? 'disease family' : 'disease families']]) };
     // Protein class: the share of each of this protein's PANTHER classes that is methylated, the tick at the share of
     // all reviewed proteins.
     const pm = pantherMeta(), ovw = M.overview;
@@ -4602,6 +4613,33 @@
         { foot: ref != null ? 'Share of each class methylated · <b>|</b> all reviewed proteins, ' + pct(M.n_proteins, pm.universe) + '%' : '' }) };
     }
     return ov;
+  }
+  // A protein page's headline cards (layout A), under its map: how many of its arginines are methylated, and how
+  // many of its methylarginines sit in RG/RGG motifs, in disordered regions and in RNA-bound regions in cells, and
+  // whether they are still arginines in orthologues. Drawn again as the interaction data and orthologues arrive.
+  const CONS_KEEP = new Map();
+  const EV_RNA_CELLS = 1 | 2 | 1024 | 2048 | 4096;
+  function renderProtCards(p) {
+    const box = $('#p-hi');
+    if (!box || !UI_A || UI.detail !== p.i) return;
+    const sites = p.sites.map((j) => S[j]), n = sites.length, of = (k) => k + ' of ' + n;
+    const u = UNIDATA.get(p.acc), argN = p.argN || (u && u.seq ? (u.seq.match(/R/g) || []).length : null);
+    const mi = new Set(['RG', 'RGG', 'GRG'].map((x) => M.motifs.indexOf(x)).filter((k) => k >= 0));
+    const nMot = sites.filter((s) => bits(s.mot).some((b) => mi.has(b))).length;
+    const dIdx = M.disorder_classes.indexOf('disordered'), nDis = sites.filter((s) => s.dc === dIdx).length;
+    const cards = [{ go: 'p-seq', kind: 'Sites', glyph: aGlyph.pins(), big: argN ? fmt(n) + ' of ' + fmt(argN) : fmt(n), dir: 'n', label: argN ? 'arginines methylated' : 'methylarginines',
+      tip: '<b>' + esc(p.label) + '</b>: ' + fmt(n) + ' methylarginine' + (n === 1 ? '' : 's') + (argN ? ' of ' + fmt(argN) + ' arginines' : '') + (p.shrink != null ? '<br>Arginine methylation enrichment: log2 ' + fmtL2(p.shrink) + (p.argQ != null ? ', q ' + fmtP(p.argQ) : '') : '') },
+      { go: 'p-seq', kind: 'Sequence motif', glyph: aGlyph.motif('RGG'), big: of(nMot), dir: 'n', label: 'in RG or RGG motifs', tip: 'Methylarginines in an RG, RGG or GRG motif' },
+      { go: 'p-dom', kind: 'Position in the protein', glyph: aGlyph.struct(), big: of(nDis), dir: 'n', label: 'in disordered regions', tip: 'Methylarginines in regions MobiDB calls disordered' }];
+    if (ixReady()) {
+      const nR = sites.filter((s) => (s.ev || 0) & EV_RNA_CELLS).length;
+      cards.push({ go: 'p-na', kind: 'RNA · in living cells', glyph: aGlyph.cls(), big: of(nR), dir: 'n', label: 'in RNA-bound regions', tip: 'Methylarginines crosslinked to RNA, or inside an RNA-bound peptide or fragment (RBDmap, CAPRI, pCLAP) or under an RBR-ID+ peptide' });
+    }
+    const ck = CONS_KEEP.get(p.i);
+    if (ck && ck.me != null && ck.other != null) cards.push({ go: 'p-cons', kind: 'Conservation', glyph: aGlyph.tree(), big: Math.round(100 * ck.me) + '%', dir: 'n', label: 'still R in orthologues (others ' + Math.round(100 * ck.other) + '%)',
+      tip: 'On average, the share of species whose orthologue still has an arginine at a methylarginine (' + fmt(ck.n1) + ') and at the other arginines (' + fmt(ck.n2) + ')' + (ck.p != null ? '; Wilcoxon rank-sum p ' + fmtP(ck.p) : '') });
+    box.innerHTML = aHighlights(cards);
+    $$('[data-go]', box).forEach((b) => b.addEventListener('click', () => { UI.hubFrom = b.dataset.go; hubFocus(b.dataset.go); }));
   }
   // Tiles whose data load when a protein page opens in layout A: the AlphaFold model (pLDDT along the protein), the PDB
   // chains mapped to it (PDBe SIFTS) and the Ensembl orthologues. Each fills its tile when it arrives, if the page is
@@ -4656,6 +4694,8 @@
       withTimeout(loadOrthologs(ensg), 60000).then((orthos) => {
         if (!here() || !orthos.length) return;
         const ck = consKeep(u, orthoModel(p, u, orthos));
+        CONS_KEEP.set(p.i, ck);
+        renderProtCards(p);
         const rows = ck.species.filter((x) => x.m).map((x) => ({ label: x.r.name, v: x.n / x.m, ref: x.om ? x.on / x.om : null, text: x.n + '/' + x.m,
           tip: '<b>' + esc(x.r.name) + '</b> (' + Math.round(x.r.pid) + '% identical)<br>R at ' + x.n + ' of ' + x.m + ' methylarginines (' + pct(x.n, x.m) + '%)' + (x.om ? '<br>R at ' + pct(x.on, x.om) + '% of the other arginines (the tick)' : '') }));
         if (rows.length) fill({ 'p-cons': { vis: aMeters(rows, { tight: true, foot: 'Methylarginines still R in each species · <b>|</b> the protein\'s other arginines' }) } });
@@ -9488,6 +9528,7 @@
 
   // Fact tile on a protein page: its sites by interaction status (ixStatus; STATUS_HELP says what each means).
   function ixFact(p) {
+    renderProtCards(p);
     const v = $('#ix-fact'), sub = $('#ix-fact-sub');
     if (!v || !sub) return;
     if (!IX) return;
@@ -10937,10 +10978,10 @@
       const ov = {
         'ix-evmap': { vis: stack(c), head: '<b>' + fmt(c.exp) + '</b> sites (' + pctText(c.exp, R.sites.length || 1) + '%) with experimental evidence', whole: fmt(cw.exp) + ' of ' + fmt(S.length) },
         'ix-prox': { vis: proxSvg(), head: aOr(p0) && aOr(p20) ? 'CAPRI: <b>' + fx(p0.or) + '×</b> inside, ' + fx(p20.or) + '× within 20 residues' : 'Odds ratio by distance from RNA-binding residues' },
-        'ix-na': { vis: aBig([[fmt(naN(R.sites, 'rna')), 'in contact with RNA'], [fmt(naN(R.sites, 'dna')), 'with DNA', 'dna']]), head: 'methylarginines in PDB structures, with the bound sequences', whole: fmt(naN(S, 'rna')) + ' RNA, ' + fmt(naN(S, 'dna')) + ' DNA' },
+        'ix-na': { vis: aBigN([[fmt(naN(R.sites, 'rna')), 'in contact with RNA'], [fmt(naN(R.sites, 'dna')), 'with DNA', 'dna']]), head: 'methylarginines in PDB structures, with the bound sequences', whole: fmt(naN(S, 'rna')) + ' RNA, ' + fmt(naN(S, 'dna')) + ' DNA' },
         'ixs-go': { vis: aMeters(goM(go)), head: 'Methylated proteins vs ' + (FOLD() ? 'all reviewed' : 'other') + ' human proteins (GO)' },
         'ixs-partners': { vis: pm.distinct ? aMeters([{ label: 'Partners methylated', v: pm.distinctMeth / pm.distinct, ref: pRef, text: pctText(pm.distinctMeth, pm.distinct) + '%', cls: 'sel' }]) : '', head: pm.distinct ? 'of ' + fmt(pm.distinct) + ' partners (tick: ' + pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of human proteins)' : 'no high-confidence partners' },
-        'ixs-complexes': { vis: aBig([[fmt(cxs.length), 'complexes enriched']]), head: cxs.length ? 'Top: ' + esc(cxs[0].name) : 'none enriched (q ≤ ' + PADJ + ')', whole: scoped ? fmt(cxRows(false).length) + ' enriched' : '' },
+        'ixs-complexes': { vis: aBigN([[fmt(cxs.length), 'complexes enriched']]), head: cxs.length ? 'Top: ' + esc(cxs[0].name) : 'none enriched (q ≤ ' + PADJ + ')', whole: scoped ? fmt(cxRows(false).length) + ' enriched' : '' },
         'ix-ex': { vis: exPins, head: 'Drawn for <b>' + esc(ex.label) + '</b>; type any protein to redraw it' },
         'ixs-cells': { vis: aForest([[null, cells.map((r) => ({ label: r.label.split(' ')[0], main: r.main }))]], { compact: true }), head: ctlRng },
       };
@@ -10951,6 +10992,7 @@
       ov['ixs-intact'] = cmp((on) => [tRow('Binding region', 'short binding regions', 'intact_enrich', ['peptide_disordered'], on), tRow('Mutation', 'mutations with an effect', 'intact_enrich', ['mutation'], on)]);
       // The answer: four cards (RNA and DNA in living cells, solved structures, protein interfaces) and one sentence.
       const big = (m) => (aDir(m) === 'ns' ? 'No difference' : fx(m.or) + '×');
+      const flat = (m) => ['ns', 'same'].includes(aDir(m));
       const tipRows = (rows) => rows.map((r) => esc(r.label) + ': ' + (aOr(r.main) ? fmtOr(r.main.or, r.main.lo, r.main.hi) + (r.main.p != null ? ', p ' + fmtP(r.main.p) : '') : 'too few to test')).join('<br>');
       const vs = (scoped ? 'The methylarginines of your selection' : 'Methylarginines') + ' against the other arginines of the same proteins';
       const hiCards = [];
@@ -10958,8 +11000,8 @@
         label: 'in RNA-bound peptides' + (ors.length && ors.length < testable.length ? ' (' + ors.length + ' of ' + testable.length + ' experiments)' : ''),
         tip: '<b>' + vs + '</b>, counting only the arginines each experiment measured<br>' + tipRows(cells) });
       if (aOr(dna.main)) hiCards.push({ go: 'ixs-cells', kind: 'DNA · in living cells', glyph: aGlyph.dna(), big: big(dna.main), dir: aDir(dna.main), label: 'at DNA-crosslinked residues', tip: '<b>' + vs + '</b><br>' + tipRows([dna]) });
-      const stRows = [rnaSt, dnaSt].filter((r) => aOr(r.main)), stSame = stRows.length && stRows.every((r) => aDir(r.main) === 'ns');
-      if (stRows.length) hiCards.push({ go: 'ix-na', kind: 'Solved structures', glyph: aGlyph.pdb(), big: stSame ? 'No difference' : stRows.map((r) => fx(r.main.or) + '×').join(' · '), dir: stSame ? 'ns' : aDir(stRows[0].main),
+      const stRows = [rnaSt, dnaSt].filter((r) => aOr(r.main)), stSame = stRows.length && stRows.every((r) => flat(r.main));
+      if (stRows.length) hiCards.push({ go: 'ix-na', kind: 'Solved structures', glyph: aGlyph.pdb(), big: stRows.every((r) => aDir(r.main) === 'ns') ? 'No difference' : stRows.map((r) => fx(r.main.or) + '×').join(' · '), dir: stSame ? 'ns' : aDir(stRows[0].main),
         label: 'within 4 Å of RNA or DNA', tip: '<b>' + vs + '</b>, side chain within 4 Å in PDB entries<br>' + tipRows(stRows) });
       if (aOr(prot[1].main)) hiCards.push({ go: 'ixs-predicted', kind: 'Protein partners', glyph: aGlyph.ppi(), big: big(prot[1].main), dir: aDir(prot[1].main), label: 'at predicted protein interfaces',
         tip: '<b>' + vs + '</b><br>' + tipRows(prot) });
@@ -10967,7 +11009,7 @@
       const inCells = [ors.length && 'in RNA-bound peptides', aDir(dna.main) === 'up' && 'at DNA crosslinks'].filter(Boolean);
       const who = scoped ? 'the methylarginines of your selection' : 'methylarginines';
       const answer = (inCells.length ? 'In living cells, ' + who + ' sit ' + inCells.join(' and ') + ' more often than the other arginines of the same proteins' : 'In living cells, ' + who + ' are not enriched at RNA or DNA contacts') +
-        (stSame ? '; in solved structures, they are not closer to RNA or DNA.' : '.');
+        (stSame ? '; in solved structures, they are no closer to RNA or DNA.' : '.');
       const more = '<p class="a-more"><button type="button" class="linkish" data-go="ix-nac">Every contact test, with tables ›</button></p>';
       return aHome({ q: 'Are methylarginines enriched at contacts with RNA, DNA or other proteins?', pic: exHtml, verdict: answer, hi: hiCards.length ? aHighlights(hiCards) + more : more }, ov, ['ix-ex', 'ix-nac']);
     }

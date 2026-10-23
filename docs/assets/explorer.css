@@ -1838,6 +1838,13 @@ html.drawer-open { overflow: hidden; }
 .hg-blob { fill: color-mix(in srgb, var(--teal-600) 22%, var(--surface)); stroke: var(--teal-600); stroke-width: 1.2; }
 .hg-blob.b { fill: color-mix(in srgb, var(--ink-2) 14%, var(--surface)); stroke: var(--ink-2); }
 .a-hi-n.ns { font-size: 1.45rem; line-height: 1.6rem; color: var(--muted); }
+.a-hi-n.same { color: var(--muted); }
+.a-hi-n.n { font-size: 1.9rem; color: var(--teal); }
+.hg-stem { stroke: var(--line-strong); stroke-width: 1.2; }
+.hg-tree { fill: none; stroke: var(--teal-600); stroke-width: 1.6; stroke-linecap: round; }
+.a-grp.a-wide { flex-basis: 100%; }
+.ui-a .p-top > .facts { display: none; }
+.ui-a .p-top > .p-hi { order: 2; }
 .a-more { margin: 0.1rem 0 0; font-size: 0.86rem; }
 /* layout A: proteins drawn as maps */
 .a-maps { display: grid; gap: 0.2rem; padding: 0.7rem 0.9rem 0.6rem; }
@@ -1849,7 +1856,6 @@ html.drawer-open { overflow: hidden; }
 /* layout A's protein page: the map, then the numbers */
 .ui-a .p-top { display: flex; flex-direction: column; gap: 0.9rem; }
 .ui-a .p-top > details.fold { order: 1; }
-.ui-a .p-top > .facts { order: 2; }
 .a-pills { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 .a-vis:has(> .a-pills) { min-height: 0; }
 .a-pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.3rem 0.2rem 0.6rem; border-radius: 99px; background: var(--surface-2); font-size: 0.8rem; font-weight: 600; color: var(--ink); }
@@ -1873,6 +1879,8 @@ html.drawer-open { overflow: hidden; }
 .aq-ci.gh { color: var(--line-strong); }
 .aq-pt { position: absolute; top: 50%; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 2px var(--surface); }
 .aq-pt.ns { width: 10px; height: 10px; margin: -5px 0 0 -5px; border: 2px solid currentColor; background: var(--surface); }
+.aq .same, .a-key .same { color: var(--line-strong); }
+.aq-val b.same { color: var(--muted); }
 .aq-gh { position: absolute; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border: 1.5px solid var(--muted); background: var(--surface); transform: rotate(45deg); }
 .aq .up, .a-key .up { color: var(--t-up-3); }
 .aq .down, .a-key .down { color: var(--t-down-3); }
