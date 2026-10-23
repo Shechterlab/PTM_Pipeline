@@ -3806,23 +3806,11 @@
       if (!scoped) {
         const where = pick(motif, 2, 1, 'sequence motif').concat(pick(sctx || disorder, 1, 1, sctx ? 'structural context' : 'disorder'));
         const which = pick(pan || func, 1, 0, pan ? 'PANTHER class' : 'protein class').concat(pick(cond, 1, 0, 'CD-CODE condensate'), pick(loc, 1, 0, 'Human Protein Atlas location'), pick(dis, 1, 0, 'disease gene set'));
-        // the headline cards: the strongest motif and structural class, protein class and condensate
-        const top = (spec) => (spec ? spec.rows.filter((r) => ok(r) && r.sig && r.value > 0).sort((a, b) => b.value - a.value)[0] : null);
-        const hi = [];
-        const card = (spec, go, kind, glyph, label, vs) => {
-          const r = top(spec);
-          if (!r) return;
-          const or = 2 ** r.value;
-          hi.push({ go, kind, glyph: glyph(short(r)), big: fx(or) + '×', label: label(short(r)), tip: '<b>' + esc(short(r)) + '</b><br>' + fx(or) + '× ' + vs + (r.q != null ? ', q ' + fmtP(r.q) : '') });
-        };
-        card(motif, 'ov-motif', 'Sequence motif', aGlyph.motif, (l) => l + ' motif', 'more often around methylarginines than around the other arginines of the same proteins');
-        card(sctx || disorder, 'ov-struct', 'Position in the protein', aGlyph.struct, (l) => l.replace(/^IDR\b/, 'Disordered,'), 'more often at methylarginines than at the other arginines of the same proteins');
-        card(pan || func, 'ov-pan', 'Protein class', aGlyph.cls, (l) => l, 'more methylated proteins than among all human proteins');
-        card(cond, 'ov-cond', 'Condensate', aGlyph.cond, (l) => l, 'more methylated proteins than among all human proteins');
-        // the cards lead; the tiles below chart every test, so the figure is drawn only when no card can be
+        // the tiles lead, each charting its strongest effects; the figure is drawn only when none of them has one
+        const anyEffect = [motif, sctx || disorder, pan || func, cond].some((spec) => spec && spec.rows.some((r) => ok(r) && r.sig && r.value > 0));
         const tipKey = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span><i class="aq-pt same"></i>about the same (within ' + MIN_EFFECT + '×)</span><span class="a-info" tabindex="0" data-tip="' +
           esc('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against all reviewed human proteins (fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; an effect within ' + MIN_EFFECT + '× either way counts as about the same. Open a tile for every test.') + '">How to read</span>';
-        lead = hi.length ? { q: 'What sets methylarginine sites apart?', hi: '<div class="a-key a-key-line">' + tipKey + '</div>' }
+        lead = anyEffect ? { q: 'What sets methylarginine sites apart?', hi: '<div class="a-key a-key-line">' + tipKey + '</div>' }
           : { q: 'What sets methylarginine sites apart?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
             fig: aForest([['Where in the protein', where], ['Which proteins', which]], { subTip: true }) };
       } else {
@@ -4519,8 +4507,6 @@
     motif: (m) => '<span class="hg-seq">' + esc(m).split('').map((c) => '<i' + (c === 'R' ? ' class="r"' : '') + '>' + esc(c) + '</i>').join('') + '</span>',
     struct: () => '<svg viewBox="0 0 64 24"><rect x="2" y="7" width="20" height="10" rx="4" class="hg-dom"/><path d="M22 12 q4 -6 8 0 t8 0 t8 0 t8 0" class="hg-idr"/><circle cx="56" cy="12" r="3.6" class="hg-site"/></svg>',
     cls: () => '<svg viewBox="0 0 64 24"><path d="M4 16 q6 -12 12 0 t12 0 t12 0 t12 0" class="hg-rna"/><circle cx="58" cy="8" r="3.6" class="hg-site"/></svg>',
-    cond: () => '<svg viewBox="0 0 64 24"><circle cx="16" cy="12" r="9" class="hg-drop"/><circle cx="36" cy="9" r="5.5" class="hg-drop"/><circle cx="50" cy="15" r="4" class="hg-drop"/><circle cx="14" cy="10" r="2.4" class="hg-site"/></svg>',
-    loc: () => '<svg viewBox="0 0 64 24"><ellipse cx="32" cy="12" rx="28" ry="10" class="hg-cell"/><circle cx="36" cy="12" r="5.5" class="hg-nuc"/></svg>',
     dna: () => '<svg viewBox="0 0 64 24"><path d="M4 6 C14 6 18 18 28 18 S42 6 52 6" class="hg-dna"/><path d="M4 18 C14 18 18 6 28 6 S42 18 52 18" class="hg-dna"/><circle cx="58" cy="12" r="3.6" class="hg-site"/></svg>',
     pins: () => '<svg viewBox="0 0 64 24"><line x1="2" y1="18" x2="62" y2="18" class="hg-idr"/>' + [12, 26, 34, 48].map((x, k) => '<line x1="' + x + '" y1="18" x2="' + x + '" y2="' + (k % 2 ? 6 : 9) + '" class="hg-stem"/><circle cx="' + x + '" cy="' + (k % 2 ? 6 : 9) + '" r="3.2" class="hg-site"/>').join('') + '</svg>',
     tree: () => '<svg viewBox="0 0 64 24"><path d="M4 12 H20 M20 5 V19 M20 5 H36 M20 19 H36 M36 1.5 V8.5 M36 1.5 H50 M36 8.5 H50" class="hg-tree"/><circle cx="54" cy="1.5" r="2.6" class="hg-site"/><circle cx="54" cy="8.5" r="2.6" class="hg-site"/><circle cx="40" cy="19" r="2.6" class="hg-site"/></svg>',

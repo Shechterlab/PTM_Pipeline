@@ -1830,9 +1830,6 @@ html.drawer-open { overflow: hidden; }
 .hg-idr, .hg-rna { fill: none; stroke: var(--line-strong); stroke-width: 2; stroke-linecap: round; }
 .hg-rna { stroke: var(--t-rnaInk, var(--teal-600)); }
 .hg-site { fill: var(--accent); }
-.hg-drop { fill: color-mix(in srgb, var(--accent) 22%, var(--surface)); stroke: color-mix(in srgb, var(--accent) 60%, var(--surface)); stroke-width: 1.2; }
-.hg-cell { fill: var(--surface-2); stroke: var(--line-strong); stroke-width: 1.2; }
-.hg-nuc { fill: color-mix(in srgb, var(--teal-600) 35%, var(--surface)); }
 .hg-dna { fill: none; stroke: var(--t-dnaInk, var(--accent-dark)); stroke-width: 2; stroke-linecap: round; }
 .hg-helix { fill: none; stroke: var(--teal-600); stroke-width: 2; stroke-linecap: round; }
 .hg-blob { fill: color-mix(in srgb, var(--teal-600) 22%, var(--surface)); stroke: var(--teal-600); stroke-width: 1.2; }
