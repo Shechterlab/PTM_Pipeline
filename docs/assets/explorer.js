@@ -553,7 +553,7 @@
       domain: '#B9DDE6', domainInk: '#0F3B47', dis: '#8796A0', rg: '#F5D6DE', rgInk: '#7A2E45',
       bias: '#FDE3D4', region: '#E3ECF6', family: '#ECE4CF', familyInk: '#4D4123', dense: 'rgba(17,24,39,0.07)',
       kme: '#A21CAF', ptm: '#6B7F88', variant: '#8A99A3', mark: '#111827', arg: '#155E75',
-      domain3d: '#6FB8CF', rg3d: '#E08AA3', chain3d: '#DCE3E7',
+      domain3d: '#6FB8CF', rg3d: '#E08AA3', chain3d: '#DCE3E7', ctx3d: '#CFC8BC', ctxSelf3d: '#B3C6CD',
       seq: ['#DCE2E5', '#B3BFC5', '#8396A0', '#566A73', '#26343B'], rnaPale: '#CDB8EE', dnaPale: '#EBD3A6',
       up: ['#F6D0CD', '#EF9A94', '#E34948', '#A8302F'], down: ['#DCE3E7', '#A9B7BF', '#6C818C', '#3B4F5A'], mid: '#F0EFEC',
     },
@@ -566,7 +566,7 @@
       domain: '#1F5566', domainInk: '#E3F4F8', dis: '#8FA6B0', rg: '#5A2C3A', rgInk: '#F6C9D6',
       bias: '#4A2A1C', region: '#213847', family: '#40391F', familyInk: '#F0E6C8', dense: 'rgba(232,239,242,0.09)',
       kme: '#D46BE0', ptm: '#8FA3AB', variant: '#7E8E95', mark: '#F3F6F7', arg: '#6CC6DB',
-      domain3d: '#4E9DB3', rg3d: '#C06C86', chain3d: '#D0D9DD',
+      domain3d: '#4E9DB3', rg3d: '#C06C86', chain3d: '#D0D9DD', ctx3d: '#6B665D', ctxSelf3d: '#55707A',
       seq: ['#2E3B41', '#3F5059', '#5C717B', '#8DA2AB', '#C9D6DB'], rnaPale: '#5B4A80', dnaPale: '#6B5530',
       up: ['#5A2523', '#8E3330', '#D2524F', '#F09A95'], down: ['#26343B', '#3D5260', '#6C8592', '#A9BDC7'], mid: '#1A2D35',
     },
@@ -7250,11 +7250,14 @@
 
   // ------------------------------------------------------------- 3D structure
   function structureCard(p) {
-    return '<div class="card" id="card-af"><div class="card-head"><div><h3>3D structure</h3><p class="sub" id="af-sub">The best-resolved PDB chain or the AlphaFold model, coloured like the protein map. Click a residue to zoom in.</p></div>' +
+    return '<div class="card" id="card-af"><div class="card-head"><div><h3>3D structure</h3><p class="sub" id="af-sub">The best-resolved PDB chain (or any entry from the menu) or the AlphaFold model, coloured like the protein map. Drag to turn, scroll to zoom, right-drag or the arrows to slide; click a residue to zoom in.</p></div>' +
       '<div class="exp" role="group" aria-label="Structure controls"><button type="button" id="af-reset" disabled title="Turn and zoom the structure back to where it started">Reset view</button><button type="button" id="af-spin" disabled aria-pressed="false">Spin</button><button type="button" id="af-move" disabled aria-pressed="false" title="Drag to slide the structure across the view instead of turning it (Ctrl-drag does the same at any time)">Move</button><button type="button" id="af-big" disabled aria-pressed="false" title="Show the structure at the size of the window (Esc returns)">Expand</button><button type="button" id="af-png" disabled>PNG</button><button type="button" id="af-cxc" disabled title="ChimeraX command script that rebuilds this view">ChimeraX</button><button type="button" id="af-pml" disabled title="PyMOL script that rebuilds this view">PyMOL</button><button type="button" id="af-cif" disabled title="The coordinates shown as mmCIF, with the methylarginines listed">mmCIF</button><button type="button" id="af-pdbf" disabled title="The coordinates shown as PDB, with the methylarginines in REMARK 999">PDB</button></div></div>' +
       '<div class="af-src" id="af-src"></div>' +
       '<div class="af-controls" id="af-controls"></div>' +
-      '<div class="af-wrap"><div><div class="af-viewer" id="af-viewer"><div class="af-placeholder">Loading the structure…</div></div><p class="note af-msg" id="af-msg" aria-live="polite"></p></div><div class="af-side" id="af-side"></div></div>' +
+      '<div class="af-wrap"><div class="af-stage"><div class="af-viewer" id="af-viewer"><div class="af-placeholder">Loading the structure…</div></div>' +
+      '<div class="af-pan" role="group" aria-label="Slide the structure" title="Slide the structure; or drag with the right button, or turn Move on, or use the arrow keys">' +
+      [['up', 0, -1, '↑'], ['left', -1, 0, '←'], ['right', 1, 0, '→'], ['down', 0, 1, '↓']].map(([k, x, y, t]) => '<button type="button" class="pan-' + k + '" data-pan="' + x + ',' + y + '" aria-label="Slide ' + k + '">' + t + '</button>').join('') + '</div>' +
+      '<p class="note af-msg" id="af-msg" aria-live="polite"></p></div><div class="af-side" id="af-side"></div></div>' +
       foldHtml('p-pdb', 'Experimental structures (PDB)', '<div class="pdb-block"><div class="card-head"><div><h3 class="h4">Experimental structures (PDB)</h3><p class="sub" id="pdb-sub">Looking up PDB entries…</p></div>' +
       '<div class="exp"><a class="exp-link" href="https://www.ebi.ac.uk/pdbe/pdbe-kb/proteins/' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">PDBe-KB ↗</a></div></div><div id="pdb-list"></div></div>', false, 'looking up…', 'sub-fold') +
       foldHtml('p-hom', 'Homologous experimental structures', '<div class="pdb-block" id="hom-block"><div class="card-head"><div><h3 class="h4">Homologous experimental structures</h3><p class="sub" id="hom-sub">Searching the PDB for related proteins…</p></div></div><div id="hom-list"></div></div>', false, 'searching…', 'sub-fold') +
@@ -7312,7 +7315,7 @@
       if (mol.label) { mol.viewer.removeLabel(mol.label); mol.label = null; }
       mol.focus = null;
       styleStructure(false);
-      mol.viewer.zoomTo();
+      zoomHome(mol.viewer);
       mol.viewer.render();
       const msg = $('#af-msg');
       if (msg) msg.textContent = '';
@@ -7320,6 +7323,7 @@
     $('#af-spin').onclick = (e) => { if (!mol) return; mol.spin = !mol.spin; mol.viewer.spin(mol.spin ? 'y' : false); e.currentTarget.setAttribute('aria-pressed', String(mol.spin)); };
     $('#af-move').onclick = (e) => { UI.mvMove = !UI.mvMove; e.currentTarget.setAttribute('aria-pressed', String(!!UI.mvMove)); };
     $('#af-move').setAttribute('aria-pressed', String(!!UI.mvMove));
+    $$('[data-pan]').forEach((b) => { const [x, y] = b.dataset.pan.split(',').map(Number); b.onclick = (ev) => panStructure(x, y, ev.shiftKey ? 3 : 1); });
     $('#af-big').onclick = () => afExpand(!$('#af-dialog') || !$('#af-dialog').open);
     $('#af-png').onclick = () => {
       if (!mol) return;
@@ -7329,12 +7333,32 @@
   }
 
   // Move: a drag slides the structure across the view instead of turning it. 3Dmol.js slides it when Ctrl is held, so
-  // while Move is on each drag reaches it with Ctrl set.
+  // while Move is on each drag reaches it with Ctrl set. A right-button drag slides it too (3Dmol would zoom), and the
+  // arrow keys slide it once the viewer has focus.
   function bindMoveMode(el) {
     if (!el || el.dataset.move) return;
     el.dataset.move = '1';
+    let rightPan = false;
+    el.addEventListener('mousedown', (ev) => {
+      // 3Dmol.js cancels mousedown, which would keep focus (and so the arrow keys) away from the viewer
+      if (ev.isTrusted && document.activeElement !== el) el.focus({ preventScroll: true });
+      if (!ev.isTrusted || ev.button !== 2) return;
+      rightPan = true;
+      ev.stopImmediatePropagation();
+      ev.preventDefault();
+      ev.target.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, composed: true, view: window, clientX: ev.clientX, clientY: ev.clientY, screenX: ev.screenX, screenY: ev.screenY, button: 0, buttons: 1, ctrlKey: true }));
+      window.addEventListener('mouseup', () => { rightPan = false; }, { once: true, capture: true });
+    }, true);
+    el.addEventListener('contextmenu', (ev) => { ev.preventDefault(); ev.stopImmediatePropagation(); }, true);
+    el.tabIndex = 0;
+    el.addEventListener('keydown', (ev) => {
+      const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[ev.key];
+      if (!d || !mol || !mol.viewer) return;
+      ev.preventDefault();
+      panStructure(d[0], d[1], ev.shiftKey ? 3 : 1);
+    });
     const fwd = (ev) => {
-      if (!UI.mvMove || !ev.isTrusted || ev.ctrlKey) return;
+      if (!(UI.mvMove || rightPan) || !ev.isTrusted || ev.ctrlKey) return;
       let copy;
       try {
         copy = ev.type.startsWith('touch')
@@ -7347,6 +7371,13 @@
     };
     el.addEventListener('mousemove', fwd, true);
     el.addEventListener('touchmove', fwd, { capture: true, passive: false });
+  }
+  // Slide the view by a twentieth of the viewer's width per step (the arrow pad and the arrow keys).
+  function panStructure(dx, dy, steps = 1) {
+    if (!mol || !mol.viewer) return;
+    const w = (mol.el && mol.el.clientWidth) || 600;
+    mol.viewer.translate(dx * w * 0.05 * steps, dy * w * 0.05 * steps);
+    mol.viewer.render();
   }
   // Expand: the card's head, controls, viewer and side panel move into a dialog the size of the window (Esc, or the
   // button again, returns them); the live viewer moves with them.
@@ -7422,9 +7453,10 @@
         renderSrcSwitch(p);
         // The reader switched to AlphaFold, or opened another structure, while the search ran.
         if (UI.mv.src === 'af' || (mol && mol.p.i === p.i)) return;
-        if (!b || b.failed) return startAf();
+        const pick = pdbPicked(p);
+        if (!pick && (!b || b.failed)) return startAf();
         renderAfSide(p, AFDATA.get(p.acc));
-        return showPdb(p, b.e, null, true).then(() => { if (!mol || mol.mode !== 'pdb') return startAf(); enable(); bindButtons(); if (UI.highlight != null) focusStructure(UI.highlight); });
+        return showPdb(p, pick || b.e, null, true).then(() => { if (!mol || mol.mode !== 'pdb') return startAf(); enable(); bindButtons(); if (UI.highlight != null) focusStructure(UI.highlight); });
       }, () => startAf());
     };
     const startAf = () => loadAF(p.acc).then((af) => {
@@ -7565,7 +7597,8 @@
   // The map's feature colours in 3D: the same hues a step stronger (domain3d, rg3d), as pale fills read as white on a lit
   // cartoon; disordered stretches in the disorder grey, the rest of the chain light; other chains in the partner colours
   // (another protein; another copy of this one).
-  const features3d = (tok) => ({ domain: tok.domain3d, rg: tok.rg3d, dis: tok.dis, chain: tok.chain3d, protein: tok.protein, self: tok.self });
+  // other chains of an experimental entry recede (ctx3d) so this protein's colours lead; a predicted partner keeps its colour
+  const features3d = (tok) => ({ domain: tok.domain3d, rg: tok.rg3d, dis: tok.dis, chain: tok.chain3d, protein: tok.ctx3d, self: tok.ctxSelf3d, partner: tok.protein });
   function viewColorFn(key, tok = TOKENS[themeName()]) {
     const grey = '#9AA6B2';
     if (key === 'plddt' && mol.mode === 'pdb') return (a) => PLDDT_BANDS[plddtBand(a.b)][1];
@@ -7581,7 +7614,7 @@
       // Chains that SIFTS maps to this same protein are copies of it (homo-oligomers).
       const copies = mol.mode === 'pdb' && !mol.pdb.pred && !mol.pdb.homolog ? new Set(mol.pdb.e.maps.map((m) => m.chain)) : new Set();
       return (a) => {
-        if (mol.mode === 'pdb' && a.chain !== mol.pdb.chain) return copies.has(a.chain) ? C.self : C.protein;
+        if (mol.mode === 'pdb' && a.chain !== mol.pdb.chain) return mol.pdb.pred ? C.partner : copies.has(a.chain) ? C.self : C.protein;
         const pos = unpOf(a);
         return pos == null ? C.chain : inR(pos, rg) ? C.rg : inR(pos, doms) ? C.domain : inR(pos, dis) ? C.dis : C.chain;
       };
@@ -7626,7 +7659,7 @@
     const parts = {
       plddt: () => PLDDT_BANDS.map((b) => sw(b[1], b[2])).join(''),
       features: () => sw(C.domain, 'Domain, repeat or zinc finger (UniProt)') + sw(C.dis, 'Disordered (' + (mol.p.idr ? 'MobiDB' : 'UniProt') + ')') + sw(C.rg, 'RG/RGG-rich segment') + sw(C.chain, 'Rest of the chain') +
-        (mol.mode === 'pdb' ? sw(C.protein, mol.pdb.pred ? 'Partner: ' + mol.pdb.pred.partnerLabel : 'Another protein') + (mol.pdb.pred || mol.pdb.homolog ? '' : sw(C.self, 'Another copy of this protein')) : ''),
+        (mol.mode === 'pdb' ? sw(mol.pdb.pred ? C.partner : C.protein, mol.pdb.pred ? 'Partner: ' + mol.pdb.pred.partnerLabel : 'Another protein') + (mol.pdb.pred || mol.pdb.homolog ? '' : sw(C.self, 'Another copy of this protein')) : ''),
       chain: () => Array.from(modelChains().order.keys()).slice(0, 8).map((c, k) => sw(CHAIN_COLORS[k % CHAIN_COLORS.length], 'Chain ' + c + (mol.pdb && c === mol.pdb.chain ? ' (this protein)' : mol.pdb && mol.pdb.pred && mol.pdb.pred.names[c] ? ' (' + mol.pdb.pred.names[c] + ')' : ''))).join('') + (modelChains().order.size > 8 ? '<span class="muted">+' + (modelChains().order.size - 8) + ' more</span>' : ''),
       rainbow: () => grad(RAINBOW, 'N-terminus', 'C-terminus'),
       ss: () => sw(SS_COLORS.h, 'Helix') + sw(SS_COLORS.s, 'Strand') + sw(SS_COLORS.c, 'Coil'),
@@ -7692,6 +7725,13 @@
     if (pdbMode) for (const r of pdb.det.modres) if (r.chain_id === pdb.chain && !out.has(+r.author_residue_number)) out.set(+r.author_residue_number, pal.meth);
     return out;
   }
+  // Where the camera starts and Reset view returns: this protein's chain in an experimental entry (a big complex would
+  // otherwise fill the view with other chains), the whole model otherwise.
+  function zoomHome(viewer) {
+    const pdb = mol && mol.mode === 'pdb' ? mol.pdb : null;
+    if (pdb && pdb.chain && !pdb.pred && viewer.selectedAtoms({ chain: pdb.chain }).length) viewer.zoomTo({ chain: pdb.chain });
+    else viewer.zoomTo();
+  }
   function styleStructure(reSurface) {
     if (!mol || mol.p.i !== UI.detail) return;
     const { viewer, p } = mol;
@@ -7721,6 +7761,10 @@
       spheres: () => ({ sphere: { colorfunc: tinted } }),
     }[V.style] || (() => ({ cartoon: { colorfunc: base } }));
     viewer.setStyle({}, rep());
+    if (pdbMode && !pdb.pred && key === 'features' && (V.style === 'cartoon' || V.style === 'trace')) {
+      viewer.setStyle({ predicate: (a) => a.chain !== pdb.chain && !isNuc(a) },
+        { cartoon: Object.assign(V.style === 'trace' ? { style: 'trace', thickness: 0.25 } : {}, { colorfunc: base, opacity: 0.55 }) });
+    }
     if (pdbMode) {
       viewer.setStyle({ predicate: (a) => a.hetflag && !isPolymer(a) }, V.ligands ? { stick: { radius: 0.18, colorscheme: 'greenCarbon' } } : {});
       if (!V.others) viewer.setStyle({ predicate: (a) => a.chain !== pdb.chain }, {});
@@ -8072,7 +8116,9 @@
         naSets[0].forEach((id) => naMap.set(id, { rna: true, dna: false }));
         naSets[1].forEach((id) => { const v = naMap.get(id) || { rna: false, dna: false }; v.dna = true; naMap.set(id, v); });
       }
-      return { entries: Array.from(byId.values()), methyl: meth, failed: list === null, na: naMap, naFailed: !naSets };
+      const out = { entries: Array.from(byId.values()), methyl: meth, failed: list === null, na: naMap, naFailed: !naSets };
+      PDB_RES.set(base, out);
+      return out;
     });
     pdbCache.set(base, pr);
     return pr;
@@ -8162,6 +8208,8 @@
     setFoldSummary('p-3d', ['af', 'pdb', 'hom'].map((x) => UI.sum3d[x]).filter(Boolean).join(' · '));
   }
 
+  // Methylarginines each PDB entry resolves (PDB_RESOLVED, by entry id) and the entries already asked about.
+  const PDB_RESOLVED = new Map(), PDB_TRIED = new Set();
   function renderPdbList(p) {
     const box = $('#pdb-list');
     const sub = $('#pdb-sub');
@@ -8170,8 +8218,20 @@
       if (UI.detail !== p.i || !document.body.contains(box)) return;
       const inRange = (e) => e.maps.length ? p.sites.filter((j) => e.maps.some((m) => S[j].pos >= m.unpStart && S[j].pos <= m.unpEnd)).length : 0;
       const base = p.acc.split('-')[0];
-      const entries = res.entries.map((e) => ({ e, n: inRange(e), meth: res.methyl.has(e.id) }))
-        .sort((a, b) => (b.meth - a.meth) || (b.n - a.n) || ((a.e.resolution || 99) - (b.e.resolution || 99)));
+      // Entries that model a methylated arginine come first, then those that resolve the most methylarginines (their
+      // observed residues read from PDBe for up to 40 entries whose construct covers a site), then the most sites in
+      // the construct, then the best resolution.
+      const entries = res.entries.map((e) => ({ e, n: inRange(e), meth: res.methyl.has(e.id) }));
+      const toRead = entries.filter(({ e, n, meth }) => (n || meth) && !PDB_TRIED.has(e.id)).sort((a, b) => b.n - a.n).slice(0, 40);
+      if (toRead.length) {
+        toRead.forEach(({ e }) => PDB_TRIED.add(e.id));
+        sub.textContent = 'Reading which residues each PDB entry models…';
+        withTimeout(Promise.all(toRead.map(({ e, meth }) => loadPdbDetail(e, meth).then((det) => {
+          if (det.coverage) PDB_RESOLVED.set(e.id, pdbSites(p, e, det).filter((x) => x[2]).length);
+        }))), 8000).catch(() => {}).then(() => { if (UI.detail === p.i && document.body.contains(box)) renderPdbList(p); });
+        return;
+      }
+      entries.sort((a, b) => (b.meth - a.meth) || ((PDB_RESOLVED.get(b.e.id) || 0) - (PDB_RESOLVED.get(a.e.id) || 0)) || (b.n - a.n) || ((a.e.resolution || 99) - (b.e.resolution || 99)));
       const nMeth = res.methyl.size, nNa = entries.filter(({ e }) => res.na.get(e.id)).length;
       const pdbSum = entries.length ? fmt(entries.length) + ' entr' + (entries.length === 1 ? 'y' : 'ies') + (nNa ? ', ' + nNa + ' with RNA or DNA' : '') + (nMeth ? ', ' + nMeth + ' model a methyl-R' : '') : res.failed ? 'lookup timed out' : 'none';
       setFoldSummary('p-pdb', pdbSum);
@@ -8215,6 +8275,7 @@
       });
       $$('[data-view]', box).forEach((b) => b.addEventListener('click', () => {
         const e = entries.find((x) => x.e.id === b.dataset.view).e;
+        UI.pdbPick = { acc: p.acc, id: e.id };   // the switch above now offers this entry
         showPdb(p, e, b);
       }));
     });
@@ -8248,7 +8309,7 @@
       mol.pdb = { e, det, chain: det.chain, toAuth: new Map(sites.map((x) => [x[0], x[1]])), toUnp: new Map(sites.map((x) => [x[1], x[0]])) };
       renderViewControls();
       styleStructure();
-      viewer.zoomTo();
+      zoomHome(viewer);
       viewer.render();
       AF_BUTTONS.forEach((id) => { const b = $(id); if (b) b.disabled = false; });
       renderPdbSide(p);
@@ -8342,33 +8403,75 @@
     }));
   }
 
-  // AlphaFold model | best PDB chain. The choice is remembered (UI.mv.src); homologs and predicted complexes opened from
-  // the lists below leave both unpressed.
+  // AlphaFold model | an experimental entry: the chain that resolves most of the protein (bestPdb), or the one the reader
+  // picks from the menu beside it (UI.pdbPick, this visit) or opens from the list below. The choice of model is
+  // remembered (UI.mv.src); homologs and predicted complexes opened from the lists below leave both unpressed.
+  const PDB_RES = new Map(), PDB_MENU_META = new Set();
+  const pdbPicked = (p) => {
+    const r = PDB_RES.get(p.acc.split('-')[0]);
+    return UI.pdbPick && UI.pdbPick.acc === p.acc && r ? r.entries.find((e) => e.id === UI.pdbPick.id) || null : null;
+  };
+  // The entries in the list's order (renderPdbList): a methylated residue modelled, then methylarginines resolved, then
+  // sites in the construct, then resolution.
+  function pdbMenuEntries(p, res) {
+    const inRange = (e) => (e.maps.length ? p.sites.filter((j) => e.maps.some((m) => S[j].pos >= m.unpStart && S[j].pos <= m.unpEnd)).length : 0);
+    return res.entries.filter((e) => e.maps.length || res.methyl.has(e.id)).map((e) => ({ e, n: inRange(e), meth: res.methyl.has(e.id), r: PDB_RESOLVED.get(e.id) }))
+      .sort((a, b) => (b.meth - a.meth) || ((b.r || 0) - (a.r || 0)) || (b.n - a.n) || ((a.e.resolution || 99) - (b.e.resolution || 99)));
+  }
+  function pdbOptLabel({ e, n, r, meth }) {
+    const en = PDB_WHAT.get(e.id.toUpperCase()), title = en && en.struct && en.struct.title;
+    const sites = meth ? 'models a methyl-R' : r != null ? (r ? r + ' site' + (r === 1 ? '' : 's') + ' resolved' : 'no site resolved') : n ? n + ' site' + (n === 1 ? '' : 's') + ' in construct' : 'no site in construct';
+    return e.id.toUpperCase() + ' · ' + methodShort(e.method) + (e.resolution ? ' ' + e.resolution.toFixed(1) + ' Å' : '') + ' · ' + sites + (title ? ' · ' + shorten(title, 52) : '');
+  }
   function renderSrcSwitch(p) {
     const box = $('#af-src');
     if (!box) return;
     const best = liveCache.get('bestpdb:' + p.acc);
-    const draw = (got) => {
+    const draw = (got, res) => {
       if (UI.detail !== p.i) return;
       const looking = got === 'looking', failed = !!(got && got.failed), b = failed || looking ? null : got;
-      const mode = !mol || mol.p.i !== p.i ? null : mol.mode === 'af' ? 'af' : mol.pdb && !mol.pdb.pred && !mol.pdb.homolog && b && mol.pdb.e.id === b.e.id ? 'pdb' : null;
+      const own = mol && mol.p.i === p.i && mol.mode === 'pdb' && mol.pdb && !mol.pdb.pred && !mol.pdb.homolog ? mol.pdb : null;
+      const mode = !mol || mol.p.i !== p.i ? null : mol.mode === 'af' ? 'af' : own ? 'pdb' : null;
+      const picked = pdbPicked(p), target = own ? own.e : picked || (b && b.e);
+      const list = res ? pdbMenuEntries(p, res) : [];
+      // titles for the menu, asked for once per protein
+      if (list.length > 1 && !PDB_MENU_META.has(p.acc)) {
+        PDB_MENU_META.add(p.acc);
+        const missing = list.map(({ e }) => e.id).filter((id) => !PDB_WHAT.has(id.toUpperCase())).slice(0, 240);
+        if (missing.length) loadPdbMeta(missing).then(() => renderSrcSwitch(p));
+      }
+      const tip = b && (!target || target.id === b.e.id) ? b.e.id.toUpperCase() + ' chain ' + b.det.chain + ': ' + b.obs + ' residues of ' + p.label + ' observed' + (b.e.resolution ? ', ' + b.e.resolution.toFixed(1) + ' Å' : '') + ' (the chain that models most of the protein)' : target ? 'PDB ' + target.id.toUpperCase() : '';
       box.innerHTML = '<div class="seg" role="group" aria-label="Structure shown"><span>Show</span>' +
-        '<button type="button" data-src="pdb" aria-pressed="' + (mode === 'pdb') + '"' + (b ? ' title="' + esc(b.e.id.toUpperCase() + ' chain ' + b.det.chain + ': ' + b.obs + ' residues of ' + p.label + ' observed' + (b.e.resolution ? ', ' + b.e.resolution.toFixed(1) + ' Å' : '')) + '"' : failed ? ' title="PDBe did not say which residues the PDB entries model; click to ask again"' : looking ? ' disabled' : ' disabled title="No PDB entry models any of this protein"') + '>' +
-        (b ? 'Experimental · PDB ' + b.e.id.toUpperCase() : failed ? 'Experimental (PDBe not answering; retry)' : looking ? 'Experimental (looking…)' : 'Experimental (none)') + '</button>' +
+        '<button type="button" data-src="pdb" aria-pressed="' + (mode === 'pdb') + '"' + (target ? ' title="' + esc(tip) + '"' : failed ? ' title="PDBe did not say which residues the PDB entries model; click to ask again"' : looking ? ' disabled' : ' disabled title="No PDB entry models any of this protein"') + '>' +
+        (target ? 'Experimental · PDB ' + target.id.toUpperCase() : failed ? 'Experimental (PDBe not answering; retry)' : looking ? 'Experimental (looking…)' : 'Experimental (none)') + '</button>' +
         '<button type="button" data-src="af" aria-pressed="' + (mode === 'af') + '">AlphaFold model</button></div>' +
-        (b ? '<span class="muted small">' + fmt(b.obs) + ' residues observed' + (b.nSites ? ', ' + b.nSites + ' methylarginine' + (b.nSites === 1 ? '' : 's') : '') + '</span>' : '');
+        (list.length > 1 ? '<label class="fig-ctl pdb-pick">Entry <select id="pdb-pick" aria-label="Experimental entry to show">' +
+          list.map((x) => '<option value="' + esc(x.e.id) + '"' + (target && x.e.id === target.id ? ' selected' : '') + '>' + esc(pdbOptLabel(x)) + '</option>').join('') + '</select></label>' : '') +
+        (b && target && target.id === b.e.id ? '<span class="muted small">' + fmt(b.obs) + ' residues observed' + (b.nSites ? ', ' + b.nSites + ' methylarginine' + (b.nSites === 1 ? '' : 's') : '') + '</span>' :
+          own && PDB_RESOLVED.has(own.e.id) ? '<span class="muted small">' + PDB_RESOLVED.get(own.e.id) + ' methylarginine' + (PDB_RESOLVED.get(own.e.id) === 1 ? '' : 's') + ' resolved</span>' : '');
       $$('[data-src]', box).forEach((btn) => btn.addEventListener('click', () => {
         UI.mv.src = btn.dataset.src;
         store.set('mx-view', JSON.stringify(UI.mv));
-        if (btn.dataset.src === 'pdb' && b) showPdb(p, b.e, null, true);
+        if (btn.dataset.src === 'pdb' && target) { if (!own || own.e.id !== target.id) showPdb(p, target, null, true); }
         else if (btn.dataset.src === 'pdb' && failed) {
           btn.textContent = 'Experimental (asking PDBe…)';
           bestPdb(p).then((nb) => { renderSrcSwitch(p); if (nb && !nb.failed && UI.detail === p.i) showPdb(p, nb.e, null, true); });
         } else if (btn.dataset.src === 'af') showAf(p);
       }));
-      sum3d(p, 'af', mode === 'pdb' ? 'PDB ' + b.e.id.toUpperCase() + ' chain ' + b.det.chain + ', ' + fmt(b.obs) + ' residues observed' : mode === 'af' ? (UI.sum3d && UI.sum3d.afText) || 'AlphaFold DB model' : (UI.sum3d && UI.sum3d.af) || '');
+      const pick = $('#pdb-pick', box);
+      if (pick) pick.addEventListener('change', () => {
+        const x = list.find((y) => y.e.id === pick.value);
+        if (!x) return;
+        UI.pdbPick = { acc: p.acc, id: x.e.id };
+        UI.mv.src = 'pdb';
+        store.set('mx-view', JSON.stringify(UI.mv));
+        showPdb(p, x.e, null, true);
+      });
+      sum3d(p, 'af', mode === 'pdb' ? 'PDB ' + own.e.id.toUpperCase() + ' chain ' + (own.chain || '') + (b && own.e.id === b.e.id ? ', ' + fmt(b.obs) + ' residues observed' : '') : mode === 'af' ? (UI.sum3d && UI.sum3d.afText) || 'AlphaFold DB model' : (UI.sum3d && UI.sum3d.af) || '');
     };
-    if (best) { draw('looking'); best.then(draw); } else draw(null);
+    const resP = loadPdb(p.acc).catch(() => null);
+    if (best) { draw('looking', PDB_RES.get(p.acc.split('-')[0]) || null); Promise.all([best, resP]).then(([g, r]) => draw(g, r)); }
+    else { draw(null, PDB_RES.get(p.acc.split('-')[0]) || null); resP.then((r) => { if (!liveCache.get('bestpdb:' + p.acc)) draw(null, r); }); }
   }
 
   // Switch the viewer to the AlphaFold model (creating the viewer if a PDB entry never loaded).
@@ -8596,7 +8699,7 @@
         toAuth: new Map(pairs), toUnp: new Map(pairs.map(([a, b]) => [b, a])), homolog: Object.assign({}, h, { authToQuery }) };
       renderViewControls();
       styleStructure();
-      viewer.zoomTo();
+      zoomHome(viewer);
       viewer.render();
       AF_BUTTONS.forEach((k) => { const b = $(k); if (b) b.disabled = false; });
       bindAfButtons(p);   // a homolog can be the first structure opened
@@ -14449,7 +14552,7 @@
       '<ul>' +
       '<li><b>UniProt</b>: the function summary under the protein name; domains, regions, disordered segments and compositional bias for the map; natural variants and mutagenesis (variants at a methylarginine are highlighted, with their disease notes); and UniProt\'s own modified-residue term for each site (asymmetric, symmetric or monomethylarginine). Methylarginines that UniProt annotates but the union lacks are listed under the site table.</li>' +
       '<li><b>AlphaFold DB</b>: the predicted model, coloured as on the protein map by default (domains, disordered stretches, RG/RGG segments; other chains of PDB entries as another protein or another copy of this one) or by pLDDT (very high > 90, confident 70–90, low 50–70, very low < 50), the pLDDT at each site, and the mean AlphaMissense pathogenicity of the 19 R→X substitutions at each site (likely benign < 0.34, likely pathogenic ≥ 0.564). Low pLDDT usually marks disordered segments, where most methylarginines are located.</li>' +
-      '<li><b>Experimental structures</b>: PDBe SIFTS mappings list the PDB entries for the protein, each with its title and the other molecules it holds (RCSB Data API), so the list says what each structure is; observed-residue ranges determine which methylarginines are actually resolved in the mapped chain. An RCSB search flags entries whose chain for this protein contains a methylated arginine residue (chemical components 2MR, DA2 or NMM); those residues are drawn in the methylated colour when the entry is viewed. NMR entries show the first model of the ensemble.</li>' +
+      '<li><b>Experimental structures</b>: PDBe SIFTS mappings list the PDB entries for the protein, each with its title and the other molecules it holds (RCSB Data API), so the list says what each structure is. Entries that model a methylated arginine come first, then those that resolve the most methylarginines. The viewer opens on the chain that models most of the protein; the Entry menu beside the switch, or View in the list, shows any other entry. In a complex the camera frames this protein\'s chain and, in the feature colouring, the other chains are drawn pale and half transparent. Drag turns the structure, scroll zooms, and a right-button drag, the arrow pad, the arrow keys or Move slide it; observed-residue ranges determine which methylarginines are actually resolved in the mapped chain. An RCSB search flags entries whose chain for this protein contains a methylated arginine residue (chemical components 2MR, DA2 or NMM); those residues are drawn in the methylated colour when the entry is viewed. NMR entries show the first model of the ensemble.</li>' +
       '</ul>' +
       ''],
       ['interactions', 'Interactions', '' +

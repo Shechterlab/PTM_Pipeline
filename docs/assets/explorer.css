@@ -2160,3 +2160,14 @@ ul.tight li { margin: 0.15rem 0; }
 .pdb-what .pdb-title { display: block; color: var(--ink); }
 .pdb-what .pdb-with { display: block; color: var(--muted); font-size: 0.8rem; }
 .pdb-what .more, .pdb-more { cursor: help; text-decoration: underline dotted; text-underline-offset: 2px; }
+
+/* 3D viewer: the arrow pad that slides the structure (top right of the viewer) */
+.af-stage { position: relative; min-width: 0; }
+.af-pan { position: absolute; top: 0.55rem; right: 0.55rem; z-index: 2; display: grid; grid-template-columns: repeat(3, 1.75rem); grid-template-rows: repeat(3, 1.75rem); gap: 2px; opacity: 0.85; }
+.af-pan:hover, .af-pan:focus-within { opacity: 1; }
+.af-pan button { display: grid; place-items: center; padding: 0; font: inherit; font-size: 0.85rem; line-height: 1; color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 0.35rem; cursor: pointer; }
+.af-pan button:hover { border-color: var(--accent); color: var(--accent); }
+.af-pan .pan-up { grid-area: 1 / 2; } .af-pan .pan-left { grid-area: 2 / 1; } .af-pan .pan-right { grid-area: 2 / 3; } .af-pan .pan-down { grid-area: 3 / 2; }
+.af-viewer:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media print { .af-pan { display: none !important; } }
+#af-src .pdb-pick select { max-width: min(30rem, 100%); text-overflow: ellipsis; }
