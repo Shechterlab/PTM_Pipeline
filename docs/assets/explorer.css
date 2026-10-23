@@ -1813,10 +1813,8 @@ html.drawer-open { overflow: hidden; }
 }
 
 /* ---- Layout A (prototype, ?ui=a): a page's question, its answer and one figure, then tiles that open its sections. */
-.a-mode .hub-legend, .a-mode .hub-head, .a-mode .ix-facts, .a-mode .a-try, .a-mode .hub-list:not(.focus) { display: none; }
+.a-mode .hub-legend, .a-mode .hub-head, .a-mode .ix-facts, .a-mode .hub-list:not(.focus) { display: none; }
 .a-home { display: grid; gap: 1.5rem; margin: 0.25rem 0 2rem; }
-.a-proto { display: flex; align-items: center; gap: 0.6rem; margin: 0; font-size: 0.78rem; color: var(--muted); }
-.a-proto::before { content: ""; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); }
 .a-lead { display: grid; gap: 0.6rem; }
 .a-q { margin: 0; font: 500 clamp(1.35rem, 1.05rem + 1.1vw, 1.8rem)/1.2 var(--font-display); color: var(--ink); }
 .a-verdict { margin: 0; max-width: 64rem; font-size: 1.02rem; line-height: 1.5; color: var(--ink-2); }
@@ -1931,7 +1929,7 @@ html.filters-pinned #rail-show, html.filters-pinned .rail-sel, html.filters-pinn
 details.hub-row[hidden] { display: none !important; }
 /* the PDF of a cards page: its tiles, not the sections behind them */
 html.pdf-export.pdf-cards .a-home { display: block !important; }
-html.pdf-export.pdf-cards .a-mode .hub-list:not(.focus), html.pdf-export.pdf-cards .a-proto, html.pdf-export.pdf-cards .a-reshuffle, html.pdf-export.pdf-cards .a-more-n, html.pdf-export.pdf-cards .a-info, html.pdf-export.pdf-cards .a-more, html.pdf-export.pdf-cards .tile-go { display: none !important; }
+html.pdf-export.pdf-cards .a-mode .hub-list:not(.focus), html.pdf-export.pdf-cards .a-reshuffle, html.pdf-export.pdf-cards .a-more-n, html.pdf-export.pdf-cards .a-info, html.pdf-export.pdf-cards .a-more, html.pdf-export.pdf-cards .tile-go { display: none !important; }
 html.pdf-export.pdf-cards .a-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 html.pdf-export.pdf-cards .a-grp { flex-basis: 100% !important; max-width: none !important; }
 html.pdf-export.pdf-cards :has(> #ix-ex-q), html.pdf-export.pdf-cards .exp, html.pdf-export.pdf-cards .a-map-go { display: none !important; }
@@ -2150,3 +2148,8 @@ details.fold.p-row > summary:has(> .fold-pic:not(:empty)) .fold-sum { white-spac
 #content:focus { outline: none; }
 /* Phones: the lower-confidence switch lives in the Filters panel, not at the end of the tab strip */
 @media (max-width: 600px) { .tabs .lc-switch { display: none !important; } }
+/* Light pages: the in-cell evidence list and the eCLIP logos of a protein without a site */
+ul.tight { margin: 0.3rem 0 0.6rem; padding-left: 1.2rem; }
+ul.tight li { margin: 0.15rem 0; }
+.ec-row { display: flex; flex-wrap: wrap; gap: 0.8rem 1.2rem; }
+.ec-cell { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }

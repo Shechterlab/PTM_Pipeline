@@ -11,6 +11,8 @@ d = N - M - n + k.
 """
 from __future__ import annotations
 
+import hashlib
+import json
 import shutil
 import subprocess
 from dataclasses import dataclass, field
@@ -35,36 +37,57 @@ class Job:
     extra: dict = field(default_factory=dict)
 
 
+def inputs_key(files: dict[str, str], row: dict, runner: bytes) -> str:
+    """What a job's results depend on: its input files' text, its settings and the R script."""
+    h = hashlib.sha256(runner)
+    for name in sorted(files):
+        h.update(f'\0{name}\0{files[name]}'.encode())
+    h.update(json.dumps({k: str(v) for k, v in row.items() if k not in ('target', 'universe', 'sets', 'names')}, sort_keys=True).encode())
+    return h.hexdigest()
+
+
 def run(jobs: list[Job], workdir: Path) -> dict[str, pd.DataFrame]:
-    rscript = shutil.which('Rscript')
-    if not rscript:
-        raise SystemExit('Rscript is not on PATH: the enrichment tests need R with clusterProfiler and DOSE (environment file)')
     workdir = Path(workdir)
     workdir.mkdir(parents=True, exist_ok=True)
-    rows = []
+    out = workdir / 'results'
+    runner = RUNNER.read_bytes()
+    rows, keys = [], {}
     for j in jobs:
         d = workdir / j.job
         d.mkdir(exist_ok=True)
-        (d / 'target.txt').write_text('\n'.join(sorted({str(x) for x in j.target})) + '\n')
-        (d / 'universe.txt').write_text('\n'.join(sorted({str(x) for x in j.universe})) + '\n')
-        sets = names = ''
+        files = {'target.txt': '\n'.join(sorted({str(x) for x in j.target})) + '\n',
+                 'universe.txt': '\n'.join(sorted({str(x) for x in j.universe})) + '\n'}
         if j.sets is not None:
-            j.sets.iloc[:, :2].set_axis(['term', 'gene'], axis=1).drop_duplicates().to_csv(d / 'sets.tsv', sep='\t', index=False)
-            sets = str(d / 'sets.tsv')
+            files['sets.tsv'] = j.sets.iloc[:, :2].set_axis(['term', 'gene'], axis=1).drop_duplicates().to_csv(sep='\t', index=False)
         if j.names is not None:
-            j.names.iloc[:, :2].set_axis(['term', 'name'], axis=1).drop_duplicates().to_csv(d / 'names.tsv', sep='\t', index=False)
-            names = str(d / 'names.tsv')
-        rows.append({'job': j.job, 'tool': j.tool, 'target': str(d / 'target.txt'), 'universe': str(d / 'universe.txt'), 'sets': sets,
-                     'names': names, 'whole_universe': str(j.whole_universe).lower(), 'min_size': j.min_size, 'max_size': j.max_size})
+            files['names.tsv'] = j.names.iloc[:, :2].set_axis(['term', 'name'], axis=1).drop_duplicates().to_csv(sep='\t', index=False)
+        for name, text in files.items():
+            (d / name).write_text(text)
+        row = {'job': j.job, 'tool': j.tool, 'target': str(d / 'target.txt'), 'universe': str(d / 'universe.txt'),
+               'sets': str(d / 'sets.tsv') if 'sets.tsv' in files else '', 'names': str(d / 'names.tsv') if 'names.tsv' in files else '',
+               'whole_universe': str(j.whole_universe).lower(), 'min_size': j.min_size, 'max_size': j.max_size}
+        rows.append(row)
+        keys[j.job] = inputs_key(files, row, runner)
     # one jobs table and log per call, named after its jobs: several calls can share a workdir
     tag = '_'.join(j.job for j in jobs)[:120]
     jobs_file, log = workdir / f'jobs_{tag}.tsv', workdir / f'enrich_sets_{tag}.log'
-    pd.DataFrame(rows).to_csv(jobs_file, sep='\t', index=False)
-    out = workdir / 'results'
-    proc = subprocess.run([rscript, str(RUNNER), str(jobs_file), str(out)], capture_output=True, text=True)
-    log.write_text(proc.stdout + proc.stderr)
-    if proc.returncode:
-        raise SystemExit(f'scripts/enrich_sets.R failed (log: {log}):\n{proc.stderr[-2000:]}')
+    jobs_file.write_text(pd.DataFrame(rows).to_csv(sep='\t', index=False))
+    # A job's results are reused when the stamp R left beside them (written only after it succeeded) names the same
+    # inputs, settings and script; otherwise R runs again.
+    stamp = lambda job: out / f'{job}.inputs.sha256'  # noqa: E731
+    if not ((out / 'versions.tsv').exists() and all((out / f'{job}.tsv').exists() and stamp(job).exists()
+                                                    and stamp(job).read_text().strip() == key for job, key in keys.items())):
+        rscript = shutil.which('Rscript')
+        if not rscript:
+            raise SystemExit('Rscript is not on PATH: the enrichment tests need R with clusterProfiler and DOSE (environment file)')
+        for job in keys:
+            stamp(job).unlink(missing_ok=True)
+        proc = subprocess.run([rscript, str(RUNNER), str(jobs_file), str(out)], capture_output=True, text=True)
+        log.write_text(proc.stdout + proc.stderr)
+        if proc.returncode:
+            raise SystemExit(f'scripts/enrich_sets.R failed (log: {log}):\n{proc.stderr[-2000:]}')
+        for job, key in keys.items():
+            stamp(job).write_text(key + '\n')
     results = {}
     for j in jobs:
         t = pd.read_csv(out / f'{j.job}.tsv', sep='\t', dtype={'ID': str, 'Description': str, 'geneID': str}, keep_default_na=False, na_values=[''])

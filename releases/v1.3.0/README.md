@@ -87,7 +87,7 @@ The annotation and interaction sources keep their own terms too (`licence` in `i
 
 ## How it was built
 
-`bash hpc/build_release.sh v1.3.0` at commit `9272c0d7f825e631e8471848d8128104cdf3801c` of https://github.com/Shechterlab/PTM_Pipeline:
+`bash hpc/build_release.sh v1.3.0` at commit `4d9dbbba972e67277f4b2509d103f6009e406aff+uncommitted` of https://github.com/Shechterlab/PTM_Pipeline:
 
 1. checks every input against `inputs/MANIFEST.tsv`;
 2. parses the source tables and places each record on the reference sequence (`scripts/02_remap_arg_methyl_to_canonical.py`);
@@ -105,7 +105,8 @@ The annotation and interaction sources keep their own terms too (`licence` in `i
 `statistics_v1.3.0.tsv` holds every test behind the summaries: its analysis and category, the 2x2 counts a, b, c and d, the effect, p, q and the method:
 
 - **Protein and gene sets** (method `enricher`): PANTHER and functional classes, CD-CODE condensates, Human Protein Atlas locations, disease families and Gene Ontology RNA and DNA binding; the complexes, Disease Ontology terms and DisGeNET terms, tested the same way, are in `supporting/`. Over-representation analysis in R with clusterProfiler::enricher, and DOSE::enrichDGN for the DisGeNET terms (`scripts/enrich_sets.R`; DOSE 4.4.0, R 4.5.3, clusterProfiler 4.18.4). For a set holding M of the N members of the background, where n of the N are methylarginine-containing proteins (or their genes) and k of those are in the set, p is the one-sided hypergeometric probability of k or more, `fold_enrichment` is (k/n)/(M/N), and q is the Benjamini-Hochberg adjusted p over the sets of the analysis; a = k, b = n - k, c = M - k and d = N - M - n + k. A set is tested when it holds a methylarginine-containing protein and its size is within the analysis's range. Backgrounds: the reviewed human proteome (classes, Gene Ontology, complexes), the proteins of any human CD-CODE condensate (condensates), the proteins the Human Protein Atlas profiled (locations), the reviewed human genes with a DisGeNET term (disease families and DisGeNET terms) and those with a Disease Ontology term (Disease Ontology).
-- **Arginines** (methods `fisher` and `mantel_haenszel`): motifs, disorder, domain context and the interaction tests compare methylated arginines with the other arginines of the same proteins: two-sided Fisher exact test (scipy) with the sample odds ratio after adding 0.5 to each cell, and for the interaction tests also the Mantel-Haenszel common odds ratio with each protein a stratum (statsmodels); q is Benjamini-Hochberg within the analysis and method.
+- **Arginines** (methods `fisher` and `mantel_haenszel`): motifs, disorder, domain context, nearest domain class, structural context and the interaction tests compare methylated arginines with the other arginines of the same proteins: two-sided Fisher exact test (scipy) with the sample odds ratio after adding 0.5 to each cell, pooled over the arginines of the methylated proteins, and the Mantel-Haenszel common odds ratio with each protein a stratum (statsmodels), which compares each protein's methylated arginines with its own other arginines; q is Benjamini-Hochberg within the analysis and method.
+- **Proteins found binding RNA or DNA in cells** (`interaction_statistics`, analysis binding_protein, method `fisher`): methylarginine-containing proteins against the other reviewed human proteins among the proteins each experiment measured (the reviewed proteome where it lists none): two-sided Fisher exact test, the sample odds ratio and fold enrichment, q Benjamini-Hochberg over the experiments.
 
 ## Columns
 
@@ -328,7 +329,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `d` | integer | background not in the category. |
 | `odds_ratio` | number | odds ratio, for the 2x2 tests (methods fisher, mantel_haenszel); empty for method enricher. |
 | `log2_odds_ratio` | number | its log2. |
-| `fold_enrichment` | number | fold enrichment (k/n over M/N) as clusterProfiler reports it, for method enricher; empty otherwise. |
+| `fold_enrichment` | number | fold enrichment (k/n over M/N) as clusterProfiler reports it, for method enricher, and likewise for analysis binding_protein; empty otherwise. |
 | `log2_fold_enrichment` | number | its log2. |
 | `p` | number | p value. |
 | `q` | number | Benjamini-Hochberg adjusted p value within the analysis and method, over all its strata and categories. |
@@ -351,7 +352,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `d` | integer | background not in the category. |
 | `odds_ratio` | number | odds ratio, for the 2x2 tests (methods fisher, mantel_haenszel); empty for method enricher. |
 | `log2_odds_ratio` | number | its log2. |
-| `fold_enrichment` | number | fold enrichment (k/n over M/N) as clusterProfiler reports it, for method enricher; empty otherwise. |
+| `fold_enrichment` | number | fold enrichment (k/n over M/N) as clusterProfiler reports it, for method enricher, and likewise for analysis binding_protein; empty otherwise. |
 | `log2_fold_enrichment` | number | its log2. |
 | `p` | number | p value. |
 | `q` | number | Benjamini-Hochberg adjusted p value within the analysis and method, over all its strata and categories. |

@@ -1,7 +1,7 @@
 # Interaction inputs
 
-These tables hold the data behind the website's interaction views (`docs/data/methylarg_interactions.json` and
-`docs/data/methylarg_pred_iface.json`).
+These tables hold the data behind the website's interaction views (`docs/data/methylarg_interactions.json`, and the
+predicted interface residues that `scripts/36c_export_interpro_domains.py` splits into `docs/data/pred_iface/`).
 
 `scripts/37_export_interaction_data.py` downloaded them into a cache between 16 and 19 October 2026
 (`PTM_data/interactions_cache`: 36,550 files, 658 MB, not in Git). `scripts/37a_stage_interactions.py` then turned

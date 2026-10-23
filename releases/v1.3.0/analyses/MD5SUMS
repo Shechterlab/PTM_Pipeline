@@ -1,4 +1,4 @@
-f5a5393306141618f07fadb70c99d1c6  README.md
+ef8b66a4be61a2c12226d7d99505cc6e  README.md
 4ca30e3ea04b7dac9c8c7634cd00acfd  clustering/arg_methyl_multiscale_density_significant_regions.tsv
 f8fd20e569c6a19ce326bfa3c837200c  clustering/arg_methyl_multiscale_density_window_summary.tsv
 1dc2c9abf48204fae2a5abb0b11fcbf4  clustering/nearest_neighbor_curve_vs_null.tsv
@@ -26,4 +26,4 @@ e92562550ff777fdcb323391c774823f  motifs/positional_amino_acid_enrichment.tsv
 362554eb89d7127c32948a643b9150e2  other_ptms/ptm_context_comparison.tsv
 70a6988712a7fa2cdb6967c4431f3cb9  other_ptms/ptm_idr_binary_comparison.tsv
 8819029b36f288954909fa152e4f9460  panther/panther_class_enrichment.tsv
-f1a52c5ab7ce85ee559b9a736994b6e0  statistics_v1.3.0.tsv
+74e6f4265fc881c74e3dedb41f22a89f  statistics_v1.3.0.tsv

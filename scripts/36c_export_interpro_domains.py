@@ -14,16 +14,20 @@ domain context of the analyses uses, and interpro_108.0_all_entry_intervals.tsv 
 
 Writes two files:
 
-  docs/data/methylarg_interpro.json, for the proteins of the site data (docs/data/methylarg_sites_all.json, which
-  holds the lower-confidence tier's proteins too): {meta, names: [[InterPro accession, name, type]], prot: {accession:
-  [[start, end, index into names, [indices of entries covering the same stretch]?], ...]}, fam: {accession: [...]}}.
+  docs/data/interpro/pNN.json, for the proteins of the site data (docs/data/methylarg_sites_all.json, which holds the
+  lower-confidence tier's proteins too), one file per shard(accession): {names: [[InterPro accession, name, type]], prot:
+  {accession: [domains, families]}}, each [[start, end, index into names, [indices of entries covering the same
+  stretch]?], ...]; and docs/data/pred_iface/pNN.json, the predicted protein-contact runs of scripts/37 (--pred-iface,
+  the view with lower-confidence sites, whose proteins include the others'), {prot: {accession: runs}}: a protein page
+  reads one small file of each.
 
   docs/data/methylarg_proteome.json and docs/data/proteome/pNN.json, for the reviewed human proteins of UniProt
   2026_03 with no site in the default view (docs/data/methylarg_sites.json), which the explorer shows on a light page.
   The index is small, for search: {meta, shards, prot: [[accession, gene, lower-confidence sites]]}. Each protein's
   record is in shard shard(accession) (shard() below; the explorer computes the same): {names, prot: {accession:
-  [protein name, length, disorder [[start, end]], domains, families, CD-CODE condensate ids]}}, with domains and
-  families indexing that shard's own names.
+  [protein name, length, disorder [[start, end]], domains, families, CD-CODE condensate ids, in-cell RNA/DNA evidence
+  (scripts/37 --unlisted-out, the explorer's xl_prot row without the index) or null]}}, with domains and families
+  indexing that shard's own names.
 """
 from __future__ import annotations
 
@@ -90,6 +94,14 @@ def split(entries: dict, names: dict) -> tuple[list[str], list[str]]:
     return (dom, fam + sup) if dom else (sup, fam)
 
 
+def rel(path: Path) -> str:
+    """A path as the metadata records it: relative to the repository when inside it, so builds anywhere agree."""
+    try:
+        return str(Path(path).resolve().relative_to(Path(__file__).resolve().parents[1]))
+    except ValueError:
+        return str(path)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--intervals', default='inputs/annotation/interpro_108.0_domain_intervals.tsv', type=Path)
@@ -99,9 +111,12 @@ def main() -> None:
     ap.add_argument('--cdcode', default='inputs/annotation/cdcode_protein_membership_v2.2.tsv', type=Path)
     ap.add_argument('--sites-json', default='docs/data/methylarg_sites.json', type=Path)
     ap.add_argument('--sites-all-json', default='docs/data/methylarg_sites_all.json', type=Path)
-    ap.add_argument('--out', default='docs/data/methylarg_interpro.json', type=Path)
+    ap.add_argument('--out-dir', default='docs/data', type=Path, help='writes interpro/ and pred_iface/ shards here')
+    ap.add_argument('--pred-iface', required=True, type=Path,
+                    help='scripts/37 --pred-iface-out of the view with lower-confidence sites, split into <out-dir>/pred_iface/')
     ap.add_argument('--proteome-out', default='docs/data/methylarg_proteome.json', type=Path)
     ap.add_argument('--shards', type=int, default=64, help='detail files under <proteome-out dir>/proteome/')
+    ap.add_argument('--binding', required=True, type=Path, help='the in-cell RNA/DNA evidence of these proteins (scripts/37 --unlisted-out)')
     ap.add_argument('--release', default='InterPro 108.0')
     a = ap.parse_args()
 
@@ -141,13 +156,39 @@ def main() -> None:
         'generated': dt.date.today().isoformat(),
         'script': 'scripts/36c_export_interpro_domains.py',
         'release': a.release,
-        'source': [str(a.intervals), str(a.all_intervals)],
+        'source': [rel(a.intervals), rel(a.all_intervals)],
         'rule': 'Domains: InterPro entries of type domain or repeat (homologous superfamilies for a protein with neither). Families: entries of type family and the other homologous superfamilies. '
                 'Each entry\'s member-database hits merged where they overlap; an entry covering the same stretch as a more widely used one of its kind (80% reciprocal overlap) is a note on it',
         'proteins': len(prot), 'with_families': len(fam), 'of_proteins': len(site_accs), 'entries': len(order),
     }
-    a.out.write_text(json.dumps({'meta': meta, 'names': [[i, names[i][0], names[i][1]] for i in order], 'prot': prot, 'fam': fam}, separators=(',', ':')), encoding='utf-8')
-    print(f'{len(prot):,} of {len(site_accs):,} proteins with InterPro domains, {len(fam):,} with families ({len(order):,} entries) -> {a.out}')
+    # one file per shard, each with the names its proteins use
+    by_shard = [{'index': {}, 'prot': {}} for _ in range(a.shards)]
+    def local(sh: dict, rows: list) -> list:
+        # the rows with their entries numbered in the shard's own names
+        num = lambda k: sh['index'].setdefault(k, len(sh['index']))  # noqa: E731
+        return [[r[0], r[1], num(r[2])] + ([[num(x) for x in r[3]]] if len(r) > 3 else []) for r in rows]
+    for acc in sorted(set(prot) | set(fam)):
+        sh = by_shard[shard(acc, a.shards)]
+        sh['prot'][acc] = [local(sh, prot.get(acc, [])), local(sh, fam.get(acc, []))]
+    idir = a.out_dir / 'interpro'
+    idir.mkdir(parents=True, exist_ok=True)
+    for k, sh in enumerate(by_shard):
+        inv = sorted(sh['index'], key=sh['index'].get)
+        (idir / f'p{k:02d}.json').write_text(json.dumps({'names': [[order[i], names[order[i]][0], names[order[i]][1]] for i in inv], 'prot': sh['prot']},
+                                                        separators=(',', ':')), encoding='utf-8')
+    (idir / 'meta.json').write_text(json.dumps(meta, separators=(',', ':')), encoding='utf-8')
+    print(f'{len(prot):,} of {len(site_accs):,} proteins with InterPro domains, {len(fam):,} with families ({len(order):,} entries) -> {idir} ({a.shards} files)')
+    # predicted protein contacts, per protein (both inputs are required: a missing file stops the build)
+    pi = json.loads(a.pred_iface.read_text(encoding='utf-8'))
+    pdir = a.out_dir / 'pred_iface'
+    pdir.mkdir(parents=True, exist_ok=True)
+    parts = [{} for _ in range(a.shards)]
+    for acc, runs in pi['prot'].items():
+        parts[shard(acc, a.shards)][acc] = runs
+    for k, part in enumerate(parts):
+        (pdir / f'p{k:02d}.json').write_text(json.dumps({'prot': part}, separators=(',', ':')), encoding='utf-8')
+    (pdir / 'meta.json').write_text(json.dumps(pi.get('meta', {}), separators=(',', ':')), encoding='utf-8')
+    print(f'predicted contact runs of {len(pi["prot"]):,} proteins -> {pdir} ({a.shards} files)')
 
     # every reviewed protein without a site in the default view
     idr: dict[str, list] = defaultdict(list)
@@ -159,6 +200,7 @@ def main() -> None:
         for r in csv.DictReader(fh, delimiter='\t'):
             if r['condensate_id'] not in cd[r['uniprotkb_ac']]:
                 cd[r['uniprotkb_ac']].append(r['condensate_id'])
+    binding = json.loads(a.binding.read_text(encoding='utf-8'))['prot']
     shards = [{'index': {}, 'prot': {}} for _ in range(a.shards)]
     index_rows = []
     with open(a.entries, encoding='utf-8') as fh:
@@ -171,15 +213,15 @@ def main() -> None:
             index_rows.append([acc, r['Gene Names (primary)'] or '', lc_sites.get(acc, 0)])
             sh['prot'][acc] = [r['Protein names'].split(' (')[0] if r['Protein names'] else '', int(r['Length']), [list(x) for x in merge(idr.get(acc, []))],
                                collapse(hits[acc], dom_ids, use, sh['index']) if dom_ids else [],
-                               collapse(hits[acc], fam_ids, use, sh['index']) if fam_ids else [], cd.get(acc, [])]
+                               collapse(hits[acc], fam_ids, use, sh['index']) if fam_ids else [], cd.get(acc, []), binding.get(acc)]
     pmeta = {
         'generated': dt.date.today().isoformat(),
         'script': 'scripts/36c_export_interpro_domains.py',
-        'reference': str(a.entries), 'disorder': str(a.disorder), 'condensates': str(a.cdcode), 'interpro': meta['rule'],
-        'rule': 'Reviewed human proteins of UniProt 2026_03 with no methylarginine site in the default view; lower-confidence sites counted from ' + str(a.sites_all_json),
+        'reference': rel(a.entries), 'disorder': rel(a.disorder), 'condensates': rel(a.cdcode), 'interpro': meta['rule'],
+        'rule': 'Reviewed human proteins of UniProt 2026_03 with no methylarginine site in the default view; lower-confidence sites counted from ' + rel(a.sites_all_json),
         'proteins': len(index_rows), 'with_lower_confidence_sites': sum(1 for x in index_rows if x[2]),
         'fields': ['accession', 'gene', 'lower_confidence_sites'],
-        'shard_fields': ['protein_name', 'length', 'disorder_intervals', 'interpro_domains', 'interpro_families', 'cdcode_condensates'],
+        'shard_fields': ['protein_name', 'length', 'disorder_intervals', 'interpro_domains', 'interpro_families', 'cdcode_condensates', 'in_cell_rna_dna_evidence'],
         'shard_rule': 'h = 0; for each character c: h = (h * 31 + code(c)) mod 1000003; shard = h mod shards',
     }
     a.proteome_out.write_text(json.dumps({'meta': pmeta, 'shards': a.shards, 'prot': index_rows}, separators=(',', ':')), encoding='utf-8')

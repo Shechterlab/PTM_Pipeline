@@ -252,6 +252,40 @@ structure_context	idr_mid_domain	all	673	12767	5675	200388	1.31975	0.400264			1.
 structure_context	idr_near_domain	all	332	13108	3085	202978	1.11299	0.154441			0.110494	0.110494	mantel_haenszel	other arginines of the same protein, each protein a stratum	1620	0.977591	1.26714
 structure_context	no_disorder_annotation	all	9	13431	293	205770							mantel_haenszel	other arginines of the same protein, each protein a stratum	0		
 structure_context	ordered_outside_domain	all	3054	10386	57576	148487	0.8713	-0.198759			4.42078e-08	6.63117e-08	mantel_haenszel	other arginines of the same protein, each protein a stratum	4097	0.828365	0.916461
+domain_context	boundary	all	1200	12240	16896	189167	0.958225	-0.0615642			0.225743	0.225743	mantel_haenszel	other arginines of the same protein, each protein a stratum	3531	0.894891	1.02604
+domain_context	distal	all	4396	9044	51586	154477	2.07605	1.05384			4.3973e-150	1.08518e-149	mantel_haenszel	other arginines of the same protein, each protein a stratum	2924	1.96169	2.19708
+domain_context	in_domain	all	4492	8948	88937	117126	0.523692	-0.933209			5.42588e-150	1.08518e-149	mantel_haenszel	other arginines of the same protein, each protein a stratum	3742	0.498415	0.550252
+domain_context	inter_domain_linker	all	1504	11936	28536	177527	1.38007	0.464738			2.9102e-17	3.88026e-17	mantel_haenszel	other arginines of the same protein, each protein a stratum	1570	1.28084	1.48698
+domain_context	no_domain_annotation	all	1848	11592	20108	185955							mantel_haenszel	other arginines of the same protein, each protein a stratum	0		
+domain_class	Catalytic enzyme domain	all	899	12541	16961	189102	0.887539	-0.172117			0.170013	0.266427	mantel_haenszel	other arginines of the same protein, each protein a stratum	343	0.751494	1.04821
+domain_class	Chromatin catalytic / remodeler	all	105	13335	1548	204515	0.963042	-0.0543287			0.930796	0.977629	mantel_haenszel	other arginines of the same protein, each protein a stratum	59	0.648916	1.42923
+domain_class	Chromatin reader	all	122	13318	2774	203289	0.606643	-0.721081			0.0005232	0.0034008	mantel_haenszel	other arginines of the same protein, each protein a stratum	84	0.461515	0.797407
+domain_class	DNA-binding	all	170	13270	2124	203939	1.39988	0.485308			0.00677585	0.0292338	mantel_haenszel	other arginines of the same protein, each protein a stratum	110	1.0967	1.78688
+domain_class	No domain annotation	all	1848	11592	20108	185955							mantel_haenszel	other arginines of the same protein, each protein a stratum	0		
+domain_class	Other domain	all	7590	5850	131144	74919	1.04132	0.05841			0.336101	0.436931	mantel_haenszel	other arginines of the same protein, each protein a stratum	1020	0.959995	1.12953
+domain_class	Protein-protein repeat / scaffold	all	431	13009	8427	197636	0.82499	-0.277552			0.0651907	0.121069	mantel_haenszel	other arginines of the same protein, each protein a stratum	228	0.67664	1.00586
+domain_class	RNA helicase	all	246	13194	4189	201874	0.504054	-0.988349			2.86454e-05	0.00037239	mantel_haenszel	other arginines of the same protein, each protein a stratum	47	0.366379	0.693463
+domain_class	RNA-associated zinc finger	all	123	13317	1465	204598	1.62093	0.696824			0.0330827	0.0800208	mantel_haenszel	other arginines of the same protein, each protein a stratum	35	1.06523	2.46654
+domain_class	RRM / KH RNA-binding	all	1089	12351	4863	201200	0.998366	-0.00235994			0.977629	0.977629	mantel_haenszel	other arginines of the same protein, each protein a stratum	116	0.834734	1.19407
+domain_class	Repeat / superfamily	all	539	12901	11185	194878	1.29009	0.367472			0.00899502	0.0292338	mantel_haenszel	other arginines of the same protein, each protein a stratum	227	1.06665	1.56034
+domain_class	Ribosome / RNP structural	all	241	13199	1061	205002	1.43242	0.518458			0.0369327	0.0800208	mantel_haenszel	other arginines of the same protein, each protein a stratum	36	1.02042	2.01078
+domain_class	Sm / Lsm	all	14	13426	42	206021	0.586694	-0.76932			0.18445	0.266427	mantel_haenszel	other arginines of the same protein, each protein a stratum	6	0.27723	1.2416
+domain_class	dsRNA-binding	all	23	13417	172	205891	0.993071	-0.0100316			0.898121	0.977629	mantel_haenszel	other arginines of the same protein, each protein a stratum	16	0.547224	1.80217
+disorder	disorder_boundary	all	3107	10333	50677	155386	0.931184	-0.102862			0.00193315	0.00193315	mantel_haenszel	other arginines of the same protein, each protein a stratum	4580	0.889839	0.97445
+disorder	disordered	all	6675	6765	67806	138257	2.00303	1.00218			7.91815e-217	2.37544e-216	mantel_haenszel	other arginines of the same protein, each protein a stratum	4195	1.91425	2.09592
+disorder	no_disorder_annotation	all	9	13431	293	205770							mantel_haenszel	other arginines of the same protein, each protein a stratum	0		
+disorder	ordered	all	3649	9791	87287	118776	0.507524	-0.978452			1.00404e-169	1.50606e-169	mantel_haenszel	other arginines of the same protein, each protein a stratum	4339	0.483427	0.532822
+motif	CARM1_hydrophobic_proline	all	5892	7548	74660	131403	1.41169	0.497428			1.60181e-67	2.51712e-67	mantel_haenszel	other arginines of the same protein, each protein a stratum	4672	1.35741	1.46815
+motif	CARM1_proline_rich	all	6715	6725	85225	120838	1.43318	0.519218			5.09668e-73	9.34391e-73	mantel_haenszel	other arginines of the same protein, each protein a stratum	4680	1.37794	1.49064
+motif	DR	all	1454	11986	8583	197480	2.95453	1.56293			1.54458e-259	4.24759e-259	mantel_haenszel	other arginines of the same protein, each protein a stratum	3473	2.76709	3.15467
+motif	ER	all	651	12789	16582	189481	0.593667	-0.752275			4.56537e-34	5.5799e-34	mantel_haenszel	other arginines of the same protein, each protein a stratum	3923	0.545382	0.646227
+motif	GAR	all	104	13336	928	205135	1.71261	0.776198			1.93261e-06	2.12587e-06	mantel_haenszel	other arginines of the same protein, each protein a stratum	797	1.36945	2.14177
+motif	GRG	all	1020	12420	983	205080	14.1958	3.8274			0	0	mantel_haenszel	other arginines of the same protein, each protein a stratum	1191	12.5219	16.0935
+motif	RD	all	400	13040	10894	195169	0.517801	-0.949529			1.48793e-34	2.04591e-34	mantel_haenszel	other arginines of the same protein, each protein a stratum	3561	0.465093	0.576483
+motif	RE	all	448	12992	16320	189743	0.403536	-1.30923			5.68396e-76	1.25047e-75	mantel_haenszel	other arginines of the same protein, each protein a stratum	3911	0.365174	0.445927
+motif	RG	all	3748	9692	12068	193995	6.13218	2.6164			0	0	mantel_haenszel	other arginines of the same protein, each protein a stratum	3982	5.83039	6.44959
+motif	RGG	all	937	12503	765	205298	18.0773	4.17611			0	0	mantel_haenszel	other arginines of the same protein, each protein a stratum	1087	15.7081	20.8039
+motif	RXR	all	2357	11083	33134	172929	0.991981	-0.011616			0.768387	0.768387	mantel_haenszel	other arginines of the same protein, each protein a stratum	3962	0.942055	1.04455
 disease_family	Cancer / neoplasia	all	3792	633	9807	2754			1.07038	0.0981271	2.43978e-29	1.95182e-28	enricher	other reviewed human genes (Entrez) with a DisGeNET term			
 disease_family	Ataxia / cerebellar degeneration	all	646	3779	1182	11379			1.35654	0.439937	8.09328e-21	3.23731e-20	enricher	other reviewed human genes (Entrez) with a DisGeNET term			
 disease_family	Developmental / congenital syndromes	all	2487	1938	6207	6354			1.09808	0.134983	4.24189e-15	1.13117e-14	enricher	other reviewed human genes (Entrez) with a DisGeNET term			

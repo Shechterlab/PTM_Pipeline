@@ -1,6 +1,6 @@
 # Analyses of v1.3.0 with its lower-confidence sites, rerun with the current pipeline
 
-The analyses of the release, run on its 13,445 sites on 4,749 proteins with the code of commit `9272c0d` (2026-10-23), so that every release is analysed the same way (hpc/release_analyses.sh). The sites kept pending (flag one_sided_window) are left out, as in the release build. The lower-confidence sites whose own evidence covers the arginine and leaves the methyl group on an arginine (in_analyses_with_lower_confidence in the release's lower-confidence site table) are counted as sites; the others are left out.
+The analyses of the release, run on its 13,445 sites on 4,749 proteins with the code of commit `4d9dbbb+uncommitted` (2026-10-23), so that every release is analysed the same way (hpc/release_analyses.sh). The sites kept pending (flag one_sided_window) are left out, as in the release build. The lower-confidence sites whose own evidence covers the arginine and leaves the methyl group on an arginine (in_analyses_with_lower_confidence in the release's lower-confidence site table) are counted as sites; the others are left out.
 
 `statistics_v1.3.0.tsv` holds every test in one table (columns as in the release's statistics table: analysis, category, the 2x2 counts a-d, effect, p, BH q, background). The folders hold the result tables:
 

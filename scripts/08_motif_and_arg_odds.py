@@ -12,6 +12,8 @@ from scipy.stats import binomtest, fisher_exact
 from common import (
     BREWER_COLORS,
     add_q_values,
+    benjamini_hochberg,
+    mantel_haenszel_ci,
     annotate_barh,
     apply_paper_style,
     balanced_category_subset,
@@ -89,6 +91,28 @@ def motif_enrichment(target: pd.DataFrame, background: pd.DataFrame, motif_colum
         })
     out = add_q_values(pd.DataFrame(rows))
     return out.sort_values(['odds_ratio', 'target_count'], ascending=[False, False])
+
+
+def motif_within_protein(target: pd.DataFrame, background: pd.DataFrame, motif_columns: list[str]) -> pd.DataFrame:
+    """Each motif family: methylarginines against the other arginines of the same protein, each protein a stratum
+    (Mantel-Haenszel common odds ratio, Robins-Breslow-Greenland 95% CI, continuity-corrected CMH test; BH over the
+    families), as scripts/07 within_protein_enrichment does for the structural classes. It asks whether, within a
+    protein, a methylarginine sits in the motif more often than the protein's other arginines."""
+    proteins = sorted(set(target['canonical_UniProtAC']) & set(background['canonical_UniProtAC']))
+    t = target[target['canonical_UniProtAC'].isin(proteins)].groupby('canonical_UniProtAC')
+    b = background[background['canonical_UniProtAC'].isin(proteins)].groupby('canonical_UniProtAC')
+    n_t, n_b = t.size(), b.size()
+    rows = []
+    for column in motif_columns:
+        a, c = t[column].sum().reindex(proteins, fill_value=0), b[column].sum().reindex(proteins, fill_value=0)
+        tables = [(int(a[q]), int(n_t[q] - a[q]), int(c[q]), int(n_b[q] - c[q])) for q in proteins]
+        odds, lo, hi, p, used = mantel_haenszel_ci(tables)
+        rows.append({'category': column.replace('motif_', ''), 'target_count': int(a.sum()), 'target_total': int(n_t.sum()),
+                     'background_count': int(c.sum()), 'background_total': int(n_b.sum()), 'n_strata': used,
+                     'mh_odds_ratio': odds, 'ci_low': lo, 'ci_high': hi, 'p_value': p})
+    out = pd.DataFrame(rows)
+    out['q_value'] = benjamini_hochberg(out['p_value'].astype(float))
+    return out
 
 
 def positional_enrichment(target_windows: pd.Series, background_windows: pd.Series) -> pd.DataFrame:
@@ -214,6 +238,7 @@ def main() -> None:
 
     motif_vs_methyl_proteins = motif_enrichment(sites, background_nonmethyl, motif_columns, 'arginines_in_methylated_proteins')
     motif_vs_proteome = motif_enrichment(sites, all_arg_proteome, motif_columns, 'all_proteome_arginines')
+    motif_within = motif_within_protein(sites, background_nonmethyl, motif_columns)
     positional = positional_enrichment(sites['window_15'], background_nonmethyl['window_15'])
 
     arg_counts = residue_background_from_sequences(sequences, residue='R')[['canonical_UniProtAC', 'site_key']].groupby('canonical_UniProtAC').size().rename('arginine_count').reset_index()
@@ -282,6 +307,7 @@ def main() -> None:
     save_table(per_protein_background('motif', sites['canonical_UniProtAC'], background_nonmethyl, flags=motif_columns),
                outdir / 'background_per_protein.tsv')
     save_table(motif_vs_proteome, outdir / 'motif_family_enrichment_vs_all_proteome_arginines.tsv')
+    save_table(motif_within, outdir / 'motif_family_within_protein.tsv')
     save_table(positional, outdir / 'positional_amino_acid_enrichment.tsv')
     save_table(protein_counts, outdir / 'per_protein_arg_odds.tsv')
     save_table(protein_counts, outdir / 'per_protein_shrinkage_prioritization.tsv')

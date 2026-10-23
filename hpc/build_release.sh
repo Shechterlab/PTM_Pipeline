@@ -172,7 +172,7 @@ interactions() {   # $1 site data folder, $2 interaction tables out
     --sites-json "$1/methylarg_sites.json" --out "$1/methylarg_interactions.json" \
     --pred-iface-out "$1/methylarg_pred_iface.json" --tables "$IN/interactions" --topup-cache "$WORK/interactions_topup" \
     --tables-out "$2" --reference-fasta "$FASTA" --nucleic-acid "$IN/nucleic_acid" \
-    --measured-sites "$CODE/releases/v1.0.0/human_methylarginine_sites_v1.0.0.tsv"
+    --measured-sites "$CODE/releases/v1.0.0/human_methylarginine_sites_v1.0.0.tsv" --unlisted-out "$1/methylarg_binding_unlisted.json"
 }
 # both tiers first: when they lack data, so may the sites, and one top-up covers both
 step "interaction evidence with lower-confidence sites (scripts/37)" interactions "$SITE_ALL" "$WORK/interactions_with_lower_confidence"
@@ -196,7 +196,7 @@ python "$CODE/scripts/release_analyses.py" collect --sites "$OUT/human_methylarg
 python "$CODE/scripts/release_analyses.py" collect --sites "$OUT/human_methylarginine_sites_$VERSION.tsv" \
   --lower-confidence "$OUT/human_methylarginine_lower_confidence_sites_$VERSION.tsv" --work "$WORK_LC" \
   --inputs "$IN" --version "$VERSION" --out "$OUT/analyses_with_lower_confidence" > /dev/null
-for f in sites evidence interactions pred_iface; do
+for f in sites evidence disease interactions; do
   cp "$SITE/methylarg_$f.json" "$SITE_OUT/methylarg_$f.json"
   cp "$SITE_ALL/methylarg_$f.json" "$SITE_OUT/methylarg_${f}_all.json"
 done
@@ -206,7 +206,8 @@ step "InterPro domains and the proteins without a site (scripts/36c)" python "$C
   --intervals "$IN/annotation/interpro_108.0_domain_intervals.tsv" --all-intervals "$IN/annotation/interpro_108.0_all_entry_intervals.tsv" \
   --entries "$IN/reference/uniprot_human_reviewed_2026_03_entries.tsv" --disorder "$IN/annotation/mobidb_disorder_intervals_2026-03-30.tsv" \
   --cdcode "$IN/annotation/cdcode_protein_membership_v2.2.tsv" --sites-json "$SITE_OUT/methylarg_sites.json" --sites-all-json "$SITE_OUT/methylarg_sites_all.json" \
-  --out "$SITE_OUT/methylarg_interpro.json" --proteome-out "$SITE_OUT/methylarg_proteome.json"
+  --out-dir "$SITE_OUT" --pred-iface "$SITE_ALL/methylarg_pred_iface.json" --proteome-out "$SITE_OUT/methylarg_proteome.json" \
+  --binding "$SITE/methylarg_binding_unlisted.json"
 # eCLIP logos (scripts/43f), one file for both tiers: the 5-mers enriched in each experiment's peaks or windows, aligned
 step "eCLIP logos (scripts/43f)" python "$CODE/scripts/43f_eclip_logos.py" --inputs "$IN/nucleic_acid" --out "$SITE_OUT/methylarg_eclip_logos.json"
 echo "[release] done: $OUT and $SITE_OUT/"

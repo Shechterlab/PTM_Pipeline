@@ -21,9 +21,9 @@ Sources
 The protein-set enrichments (Gene Ontology RNA and DNA binding, complexes, condensates by CD-CODE confidence) are
 over-representation tests run with clusterProfiler's enricher (scripts/enrich_sets.R, so Rscript must be on PATH).
 
-It also writes docs/data/methylarg_pred_iface.json (--pred-iface-out): every residue of an explorer protein at a ProtVar
-predicted interface, as runs with the number of partners and the best pDockQ, which the explorer loads only when a
-figure draws the predicted lane.
+It also writes --pred-iface-out: every residue of an explorer protein at a ProtVar predicted interface, as runs with
+the number of partners and the best pDockQ; scripts/36c splits it into docs/data/pred_iface/pNN.json, which the
+explorer loads per protein.
 
 Stages that make many requests cache every answer: the PDBe interface lookup (about 5,000 calls) and the
 structure contacts (about 5,500 calls). Run them alone first with --fetch-interfaces-only / --fetch-contacts-only.
@@ -1935,6 +1935,31 @@ def fisher_2x2(a, b, c, d):
     return p, ((a + 0.5) * (d + 0.5)) / ((b + 0.5) * (c + 0.5))
 
 
+def van_elteren(groups):
+    """Stratified Wilcoxon rank-sum test (van Elteren 1960): groups holds (x, y) per stratum; a stratum counts when both are
+    non-empty, weighted 1 / (n + 1), with the tie-corrected variance. Returns z (positive: x larger), the two-sided p,
+    the strata used and the median over strata of median(x) - median(y)."""
+    num_, var, used, diffs = 0.0, 0.0, 0, []
+    for x, y in groups:
+        m, n = len(x), len(y)
+        if not m or not n:
+            continue
+        both = np.concatenate([np.asarray(x, float), np.asarray(y, float)])
+        N = m + n
+        ranks = sps.rankdata(both)
+        _, ties = np.unique(both, return_counts=True)
+        v = m * n / 12 * ((N + 1) - ((ties ** 3 - ties).sum() / (N * (N - 1)) if N > 1 else 0))
+        w = 1 / (N + 1)
+        num_ += w * (ranks[:m].sum() - m * (N + 1) / 2)
+        var += w * w * v
+        used += 1
+        diffs.append(float(np.median(x) - np.median(y)))
+    if not used or var <= 0:
+        return None, None, used, None
+    z = num_ / math.sqrt(var)
+    return z, float(2 * sps.norm.sf(abs(z))), used, float(np.median(diffs))
+
+
 def bh(pvals):
     """Benjamini-Hochberg adjusted p values (scipy)."""
     return [float(q) for q in sps.false_discovery_control(pvals, method='bh')] if len(pvals) else []
@@ -2428,6 +2453,8 @@ def write_release_tables(outdir: Path, d: dict):
             st[k][12] = q
     for an, cat, stratum, a, b, c, dd, fold, p, q, background in d['set_tests']:
         st.append([an, cat, stratum, a, b, c, dd, None, None, fold, math.log2(fold), p, q, 'enricher', background, None])
+    for an, cat, stratum, a, b, c, dd, odds, fold, p, q, background in d.get('bind_tests', []):
+        st.append([an, cat, stratum, a, b, c, dd, odds, math.log2(odds) if odds else None, fold, math.log2(fold) if fold else None, p, q, 'fisher', background, None])
     fmt = lambda x: '' if x is None else f'{x:.6g}' if isinstance(x, float) else x  # noqa: E731
     write('interaction_statistics.tsv', ['analysis', 'category', 'stratum', 'a', 'b', 'c', 'd', 'odds_ratio', 'log2_odds_ratio',
                                          'fold_enrichment', 'log2_fold_enrichment', 'p', 'q', 'method', 'background', 'n_strata'],
@@ -2510,8 +2537,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--sites-json', default='docs/data/methylarg_sites.json')
     ap.add_argument('--out', default='docs/data/methylarg_interactions.json')
-    ap.add_argument('--pred-iface-out', default='docs/data/methylarg_pred_iface.json',
-                    help='every predicted interface residue of the explorer proteins, loaded by the explorer on demand')
+    ap.add_argument('--pred-iface-out', default='PTM_data/methylarg_pred_iface.json',
+                    help='every predicted interface residue of the explorer proteins (scripts/36c splits it into docs/data/pred_iface/)')
     ap.add_argument('--cache', default='PTM_data/interactions_cache')
     ap.add_argument('--string-min-score', type=int, default=700, help='STRING physical score floor (0-1000); 700 = high confidence. Protein pages fetch lower-confidence links live.')
     ap.add_argument('--workers', type=int, default=6, help='parallel PDBe requests')
@@ -2536,6 +2563,8 @@ def main():
     ap.add_argument('--measured-sites', default='releases/v1.0.0/human_methylarginine_sites_v1.0.0.tsv',
                     help='with --tables: the sites the frozen model measurements were made at (the published union)')
     ap.add_argument('--tables-out', default='', help='also write the interaction tables of a release into this folder')
+    ap.add_argument('--unlisted-out', default='',
+                    help='also write the in-cell RNA and DNA evidence of the reviewed proteins without a site here (scripts/36c puts it on their light pages)')
     ap.add_argument('--enrichment-workdir', default='',
                     help='where the clusterProfiler runs keep their inputs and results (default: <tables-out>/enricher, '
                          'or PTM_data/interactions_enricher)')
@@ -3165,6 +3194,64 @@ def main():
     for key, tabs in xl_strata.items():
         xl_enrich[key]['or'] = or_summary(tabs.values())
         release_tests.append(('crosslink', XL_TEST[key], 'all', list(tabs.values()), 'other arginines of the same proteins (proteins with that evidence)'))
+    # Protein level: are methylated proteins over-represented among the proteins each in-cell experiment found binding RNA
+    # or DNA? Against the proteins the experiment measured where it lists them (the detection control: a protein it could
+    # not see cannot be found binding), else the reviewed proteome. Fisher's exact test; BH over the experiments.
+    universe = set(proteome)
+    meth_set = {base_acc(a) for a in meth_accs if '-' not in a} & universe
+    has = lambda dct: {a for a, v in dct.items() if v}  # noqa: E731
+    bound_of = lambda name, part: {a for a, v in bgs.get(name, {}).items() if v and v.get(part)}  # noqa: E731
+    bind_sets = [
+        ('rna_xl', 'RNA-crosslinked residue (pepR-MS compendium)', has(rna_xl), None),
+        ('rna_rbdmap', 'RNA-bound fragment (RBDmap)', bound_of('rbdmap', 'bound') | has(rbd_frag), bound_of('rbdmap', 'meas') or None),
+        ('rna_capri', 'Peptide next to an RNA crosslink (CAPRI)', bound_of('capri', 'bound') | has(capri['adj']), bound_of('capri', 'meas') or None),
+        ('rna_pclap', 'RNA-binding peptide (pCLAP)', has(pclap['pep']), (has(pclap['measured']) | has(pclap['pep'])) or None),
+        ('rna_rbrid', 'RBR-ID+ residue (RBR-ID)', has(rbrid['pos']), has(rbrid['cov']) or None),
+        ('dna_xl', 'DNA-crosslinked residue or peptide (Trendel 2025)', has(dna_xl) | has(dna_peps), None),
+        ('dna_interactome', 'DNA interactome protein (Trendel 2025)', set(dna_int), None),
+    ]
+    bind_tests, bind_release, ps, raw_p = {}, [], [], []
+    for key, label, bound, measured in bind_sets:
+        U = (measured & universe) if measured else universe
+        bnd = bound & U
+        a = len(bnd & meth_set)
+        b = len(meth_set & U) - a
+        c = len(bnd) - a
+        dd = len(U) - a - b - c
+        if not (a + b) or not (a + c):
+            continue
+        p, _ = fisher_2x2(a, b, c, dd)
+        odds = (a * dd) / (b * c) if b * c else None
+        lo, hi = woolf_ci(a, b, c, dd) if a and b and c and dd else (None, None)
+        fold = (a / (a + b)) / ((a + c) / len(U))
+        bind_tests[key] = [a, b, c, dd, sig(odds) if odds else None, sig(lo) if lo and math.isfinite(lo) else None,
+                           sig(hi) if hi and math.isfinite(hi) else None, sig(p), None, sig(fold), len(U), 'measured' if measured else 'proteome', label]
+        ps.append(key)
+        raw_p.append((p, odds, fold))
+    for key, (p, odds, fold), q in zip(ps, raw_p, bh([x[0] for x in raw_p])):
+        bind_tests[key][8] = sig(q)
+        a, b, c, dd, *_, bg, label = bind_tests[key]
+        bind_release.append(('binding_protein', key, 'all', a, b, c, dd, odds, fold, p, q,
+                             'other reviewed human proteins the experiment measured' if bg == 'measured' else 'other reviewed human proteins'))
+    log('Protein-level binding: ' + '; '.join(f'{k} OR {v[4]} (q {v[8]}, {v[10]:,} {v[11]})' for k, v in bind_tests.items()))
+    # The same evidence for the reviewed proteins without a site, as xl_prot rows without the index, for their light pages.
+    unlisted_xl = {}
+    if args.unlisted_out:
+        for acc in sorted(universe - meth_set):
+            r_map, d_map, peps, binds, frags = rna_xl.get(acc, {}), dna_xl.get(acc, {}), dna_peps.get(acc, []), dna_bind.get(acc, []), rbd_frag.get(acc, [])
+            c_xl, c_adj = capri['xl'].get(acc, []), capri['adj'].get(acc, [])
+            p_pep, p_lysc = pclap['pep'].get(acc, []), pclap['lysc'].get(acc, [])
+            b_spans, b_seg = rbrid['spans'].get(acc, []), rbrid['seg'].get(acc, [])
+            if r_map or d_map or peps or binds or frags or acc in dna_int or c_xl or c_adj or p_pep or b_spans or b_seg:
+                unlisted_xl[acc] = [sorted(r_map), [r_map[q] for q in sorted(r_map)], sorted(q for q, v in d_map.items() if v & D_XL), sorted(set(peps)), sorted(set(binds)),
+                                    1 if acc in dna_int else 0, sorted(set(frags)), sorted(q for q, v in d_map.items() if v == D_CAND),
+                                    sorted({(a, b) for a, b, _ in c_xl}), sorted({(a, b) for a, b, _ in c_adj}), sorted({(a, b) for a, b, _ in p_pep}),
+                                    sorted(set(p_lysc)), [], [list(x) for x in b_spans], [list(x) for x in b_seg], []]
+        Path(args.unlisted_out).write_text(json.dumps({'meta': {'generated': dt.date.today().isoformat(),
+                                                                'fields': 'xl_prot without the protein index; pCLAP and RBR-ID measured coverage left empty'},
+                                                       'prot': unlisted_xl}, separators=(',', ':')))
+        log(f'wrote {args.unlisted_out}: in-cell RNA/DNA evidence of {len(unlisted_xl):,} reviewed proteins without a site')
+
     seq_prox = {}
     for key, tabs in prox_strata.items():
         track, dmax = key.split(':')
@@ -3519,6 +3606,7 @@ def main():
         # in an entry with that kind of nucleic acid, by its minimum distance over the entries: within CONTACT_CUTOFF and
         # within PROXIMAL_CUTOFF, methylarginines against the others, each protein a stratum.
         dists = defaultdict(lambda: ([], []))   # kind -> (methylarginine distances, other distances), those within the cutoff
+        dists_by = defaultdict(lambda: defaultdict(lambda: ([], [])))   # kind -> accession -> the same, per protein
         for (acc, q), by_kind in sorted(arg_mod.items()):
             meth = (acc, q) in site_at
             for kind in ('rna', 'dna', 'any'):
@@ -3530,6 +3618,7 @@ def main():
                     dist_strata.add((kind, cut), acc, q, (0 if meth else 2) + (0 if d is not None and d <= cut else 1))
                 if d is not None:
                     dists[kind][0 if meth else 1].append(d)
+                    dists_by[kind][acc][0 if meth else 1].append(d)
             row = [acc, q, site_at.get((acc, q)), meth]
             for kind in ('rna', 'dna'):
                 best = arg_best.get((acc, q, kind))
@@ -3543,6 +3632,10 @@ def main():
         for kind, (m, o) in dists.items():
             u, p_mw = mann_whitney(m, o)
             na_dist_stats[f'{kind}_distance'] = [len(m), sig(float(np.median(m))) if m else None, len(o), sig(float(np.median(o))) if o else None, sig(p_mw)]
+            # the same within each protein (van Elteren): proteins with both kinds of arginine within the cutoff
+            z, p_ve, used, dmed = van_elteren(list(dists_by[kind].values()))
+            na_dist_stats[f'{kind}_distance_within'] = [sig(z) if z is not None else None, sig(p_ve) if p_ve is not None else None, used,
+                                                        sig(dmed) if dmed is not None else None]
         # Distances within PROXIMAL_CUTOFF by type of RNA or DNA, in 1 Å bins: methylarginines and the other arginines.
         bins = defaultdict(lambda: [[0] * int(PROXIMAL_CUTOFF), [0] * int(PROXIMAL_CUTOFF)])
         for (acc, q, ntype), d in arg_type.items():
@@ -3775,7 +3868,11 @@ def main():
                             'the other arginines of the same proteins, likewise (every entry with the protein and RNA or DNA)'],
                 'seq_prox': '{rna_xl|rna_rbdmap|rna_capri_adj|rna_capri_xl|rna_pclap|rna_rbrid}: {0|3|5|10|20}: or_summary of methylarginines against the other arginines of proteins with that evidence, within that many residues along the sequence of the nearest evidence residue (0: at or inside it)',
                 'na_dist_stats': '{rna|dna|any}_within_{4|8}a: or_summary of methylarginines against the other arginines modelled with that kind, within the cutoff; '
-                                 '{kind}_distance: [n methylarginines within 8 Å, median Å, n other, median Å, Mann-Whitney p]',
+                                 '{kind}_distance: [n methylarginines within 8 Å, median Å, n other, median Å, Mann-Whitney p (pooled)]; '
+                                 '{kind}_distance_within: [van Elteren z (positive: methylarginines farther), p, proteins, median of per-protein median differences Å]',
+                'bind_tests': '{rna_xl|rna_rbdmap|rna_capri|rna_pclap|rna_rbrid|dna_xl|dna_interactome: [methylated bound, methylated not bound, other bound, '
+                              'other not bound, odds ratio, 95% CI low, high, Fisher p, BH q, fold enrichment, proteins in the background, '
+                              '"measured" (the proteins the experiment measured) or "proteome" (reviewed proteome), label]}',
                 'nab': {'rbns': ['accession', 'ENCODE experiment', 'protein concentration', f'top {RBNS_TOP} 5-mers [[kmer, R]]', 'ENCODE logos [[k, logo, [[A, C, G, U] per position]]]'],
                         'jaspar': ['accession', 'matrix', 'name', 'TF class', 'TF family', '[[A, C, G, T] counts per position]', 'IUPAC consensus'],
                         'htrselex': ['accession', 'model', 'linear|structured', 'Primary|Secondary', 'experiment', 'selection cycle', 'monomeric|dimeric',
@@ -3856,6 +3953,7 @@ def main():
         'xl_prot': xl_prot,
         'xl_seq': xl_seq,
         'xl_enrich': xl_enrich,
+        'bind_tests': bind_tests,
         'xl_sets': [label for _, label in RNA_XL_SETS],
         'xl_types': xl_types, 'xl_type_contrast': xl_type_contrast,
         'xl_freq': xl_freq,
@@ -3878,7 +3976,7 @@ def main():
             'prots': prots, 'sites': sites, 'vocab': vocab, 'gene_of': gene_of, 'iface_detail': iface_detail, 'xl_rows': xl_rows,
             'pred_all': pred_all, 'gallery': gallery, 'intact_rows': intact_rows, 'partners': partners, 'domain_classes': domain_classes,
             'meth_base': meth_base, 'cx_rows': cx_rows, 'iface_residues': iface_residues, 'pred_iface': pred_iface, 'xl_prot': xl_prot,
-            'intact_prot': intact_prot, 'tests': release_tests, 'set_tests': set_tests, 'complexes': cx_release, 'go': go, 'xl_seq': xl_seq_all, 'capri': capri, 'pclap': pclap, 'rbrid': rbrid,
+            'intact_prot': intact_prot, 'tests': release_tests, 'set_tests': set_tests, 'bind_tests': bind_release, 'complexes': cx_release, 'go': go, 'xl_seq': xl_seq_all, 'capri': capri, 'pclap': pclap, 'rbrid': rbrid,
             'proteome': proteome, 'na_rows': na_rows, 'chains_na': chains_na, 'na_regions': region_json, 'nab': nab, 'near_rows': near_rows, 'prox_rows': prox_rows, 'arg_rows': arg_rows})
     log(f'wrote {args.out}: {len(vocab):,} proteins, {sum(len(r) // 2 for r in string_rows):,} partner links, '
         f'{len(cx_rows):,} complexes with methylated members, {len(site_rows):,} sites at PDB interfaces '

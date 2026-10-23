@@ -126,7 +126,9 @@ def collect(args) -> None:
         shutil.copyfile(work / src / name, out / folder / name)
         kept.append((f'{folder}/{name}', what))
     commit = subprocess.run(['git', '-C', str(CODE), 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True).stdout.strip()
-    dirty = subprocess.run(['git', '-C', str(CODE), 'status', '--porcelain', '--untracked-files=no'], capture_output=True, text=True).stdout.strip()
+    # the code and inputs only: the build has rewritten the release's own files by now (release_docs.CODE_PATHS)
+    dirty = subprocess.run(['git', '-C', str(CODE), 'status', '--porcelain', '--untracked-files=no', '--', 'scripts', 'hpc', 'config', 'envs', 'inputs'],
+                           capture_output=True, text=True).stdout.strip()
     n_sites, n_prot = len(sites), sites['accession'].nunique()
     tier = (' with its lower-confidence sites' if args.lower_confidence else '')
     lines = [f'# Analyses of {args.version}{tier}, rerun with the current pipeline', '',

@@ -3,7 +3,8 @@
 
     python scripts/36_export_site_explorer_data.py --release releases/v1.1.0 --outdir docs/data
 
-Writes docs/data/methylarg_sites.json (proteins, sites, vocabularies, overview tests) and methylarg_evidence.json (per-site
+Writes docs/data/methylarg_sites.json (proteins, sites, vocabularies, overview tests), methylarg_disease.json (the DisGeNET terms of
+the proteins, for the protein pages) and methylarg_evidence.json (per-site
 source records, disease terms), the format docs/assets/explorer.js reads: vocabularies, bit masks and arrays. Every value
 comes from the release tables. Sites the release keeps pending (flag one_sided_window) are left out, as they are of
 every analysis; the only other inputs are the MobiDB disorder intervals the protein maps draw
@@ -94,6 +95,13 @@ class Vocab:
         for x in labels:
             m |= 1 << self.index(x)
         return m
+
+
+def within_rows(stats: pd.DataFrame, analysis: str) -> list:
+    """The within-protein rows of an analysis (method mantel_haenszel): [class, log2 OR, its 95% CI (log2), q, strata]."""
+    l2 = lambda v: num(math.log2(float(v))) if num(v) and float(v) > 0 and math.isfinite(float(v)) else None  # noqa: E731
+    return [[r['category'], l2(r['odds_ratio']), l2(r.get('odds_ratio_ci_low')), l2(r.get('odds_ratio_ci_high')), sig(r['q']), integer(r['n_strata'])]
+            for r in stats[(stats['analysis'] == analysis) & (stats['method'] == 'mantel_haenszel')].to_dict('records')]
 
 
 def overview_rows(stats: pd.DataFrame, analysis: str, extra=None) -> list[list]:
@@ -481,11 +489,9 @@ def main() -> None:
                 'domain_classes': overview_rows(stats, 'domain_class'),
                 'structure_context': overview_rows(stats, 'structure_context'),
                 # [class, Mantel-Haenszel log2 OR, its 95% CI (log2), q, informative strata]: within each protein
-                'structure_context_within': [[r['category'], num(math.log2(float(r['odds_ratio']))) if num(r['odds_ratio']) else None,
-                                              num(math.log2(float(r['odds_ratio_ci_low']))) if num(r.get('odds_ratio_ci_low')) else None,
-                                              num(math.log2(float(r['odds_ratio_ci_high']))) if num(r.get('odds_ratio_ci_high')) else None,
-                                              sig(r['q']), integer(r['n_strata'])]
-                                             for r in stats[(stats['analysis'] == 'structure_context') & (stats['method'] == 'mantel_haenszel')].to_dict('records')],
+                **{key + '_within': within_rows(stats, analysis) for key, analysis in (('structure_context', 'structure_context'), ('motifs', 'motif'),
+                                                                                         ('disorder', 'disorder'), ('domain_context', 'domain_context'),
+                                                                                         ('domain_classes', 'domain_class'))},
                 # [family, methylated genes, genes, fold enrichment, q]
                 'disease_families': [[r['family'], int(r['n_methylated_genes']), int(r['n_genes']), num(r['fold_enrichment']), sig(r['q'])]
                                      for r in disease_families.to_dict('records')],
@@ -588,7 +594,9 @@ def main() -> None:
             bg_rows.append(row)
         evidence_payload['arginine_background'] = {'analyses': [[a, classes[a]] for a in analyses], 'proteins': bg_rows}
     outdir.mkdir(parents=True, exist_ok=True)
-    for name, data in (('methylarg_sites.json', payload), ('methylarg_evidence.json', evidence_payload)):
+    # The DisGeNET terms again on their own, for the protein pages' Disease card (a small file instead of the evidence).
+    disease_payload = {k: evidence_payload[k] for k in ('disease_terms', 'disease_terms_tested', 'protein_disease_terms')}
+    for name, data in (('methylarg_sites.json', payload), ('methylarg_evidence.json', evidence_payload), ('methylarg_disease.json', disease_payload)):
         path = outdir / name
         path.write_text(json.dumps(data, separators=(',', ':'), ensure_ascii=False), encoding='utf-8')
         print(f'wrote {path} ({path.stat().st_size / 1e6:.2f} MB)')

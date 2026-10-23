@@ -79,11 +79,15 @@ def md5(path: Path) -> str:
     return hashlib.md5(path.read_bytes()).hexdigest()
 
 
+CODE_PATHS = ('scripts', 'hpc', 'config', 'envs', 'inputs')   # what a build runs and reads
+
+
 def commit() -> str:
-    """HEAD, with '+uncommitted' when tracked files differ from it (the release was built from a working tree)."""
+    """HEAD, with '+uncommitted' when the tracked code or inputs differ from it (the release was built from a working
+    tree). The outputs (releases/, docs/) are left out: a rebuild rewrites them as it goes."""
     try:
         head = subprocess.run(['git', 'rev-parse', 'HEAD'], capture_output=True, text=True, cwd=REPO).stdout.strip() or 'unknown'
-        dirty = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=no'], capture_output=True, text=True, cwd=REPO).stdout.strip()
+        dirty = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=no', '--', *CODE_PATHS], capture_output=True, text=True, cwd=REPO).stdout.strip()
         return head + ('+uncommitted' if dirty else '')
     except OSError:
         return 'unknown'
@@ -352,11 +356,16 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'Ontology, complexes), the proteins of any human CD-CODE condensate (condensates), the proteins the Human Protein '
         'Atlas profiled (locations), the reviewed human genes with a DisGeNET term (disease families and DisGeNET terms) '
         'and those with a Disease Ontology term (Disease Ontology).',
-        '- **Arginines** (methods `fisher` and `mantel_haenszel`): motifs, disorder, domain context and the interaction '
-        'tests compare methylated arginines with the other arginines of the same proteins: two-sided Fisher exact test '
-        '(scipy) with the sample odds ratio after adding 0.5 to each cell, and for the interaction tests also the '
-        'Mantel-Haenszel common odds ratio with each protein a stratum (statsmodels); q is Benjamini-Hochberg within the '
-        'analysis and method.',
+        '- **Arginines** (methods `fisher` and `mantel_haenszel`): motifs, disorder, domain context, nearest domain class, '
+        'structural context and the interaction tests compare methylated arginines with the other arginines of the same '
+        'proteins: two-sided Fisher exact test (scipy) with the sample odds ratio after adding 0.5 to each cell, pooled '
+        'over the arginines of the methylated proteins, and the Mantel-Haenszel common odds ratio with each protein a '
+        'stratum (statsmodels), which compares each protein\'s methylated arginines with its own other arginines; q is '
+        'Benjamini-Hochberg within the analysis and method.',
+        '- **Proteins found binding RNA or DNA in cells** (`interaction_statistics`, analysis binding_protein, method '
+        '`fisher`): methylarginine-containing proteins against the other reviewed human proteins among the proteins each '
+        'experiment measured (the reviewed proteome where it lists none): two-sided Fisher exact test, the sample odds '
+        'ratio and fold enrichment, q Benjamini-Hochberg over the experiments.',
         '',
         '## Columns',
         '',

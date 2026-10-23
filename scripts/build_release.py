@@ -1200,6 +1200,12 @@ def main() -> None:
     changes = build_changes(records, main_sites, list(prev_sites['site_id']), shift, entry)
     studies = build_studies(records, main_sites)
     proteins, extra = release_tables.proteins_table(aroot, inputs, sites, placed, entry, reference)
+    # The protein-level tests made here count the proteins the analyses count: sites kept pending left out, and in the
+    # view the lower-confidence sites the analyses with lower-confidence sites leave out (release_analyses.release_sites)
+    counted = ~sites['flags'].str.contains('one_sided_window', regex=False)
+    if 'in_analyses_with_lower_confidence' in sites.columns:
+        counted &= sites['in_analyses_with_lower_confidence'].astype(str).str.lower() == 'true'
+    proteins.attrs['analysed'] = set(sites.loc[counted, 'uniprot_accession'])
     statistics = release_tables.statistics(aroot, proteins)
     for column, *_ in rc.STATISTICS_COLUMNS:   # a column only some analyses fill (the 95% CI of an odds ratio)
         if column not in statistics.columns:

@@ -102,11 +102,18 @@ def statistics(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
     if (root / 'domain_context' / 'structure_context_enrichment.tsv').exists():
         rows += from_fractions(read(root / 'domain_context' / 'structure_context_enrichment.tsv'), 'category',
                                'structure_context', 'other arginines of the methylated proteins')
-    # The same classes within each protein (scripts/07 within_protein_enrichment): Mantel-Haenszel, with its 95% CI.
-    if (root / 'domain_context' / 'structure_context_within_protein.tsv').exists():
-        for r in read(root / 'domain_context' / 'structure_context_within_protein.tsv').to_dict('records'):
+    # The same classes within each protein (scripts/07 within_protein_enrichment, scripts/08 motif_within_protein):
+    # Mantel-Haenszel, with its 95% CI.
+    for analysis, path in (('structure_context', 'domain_context/structure_context_within_protein.tsv'),
+                           ('domain_context', 'domain_context/domain_context_within_protein.tsv'),
+                           ('domain_class', 'domain_context/domain_class_within_protein.tsv'),
+                           ('disorder', 'domain_context/disorder_context_within_protein.tsv'),
+                           ('motif', 'motif_arg_odds/motif_family_within_protein.tsv')):
+        if not (root / path).exists():
+            continue
+        for r in read(root / path).to_dict('records'):
             a, c, odds = int(r['target_count']), int(r['background_count']), num(r['mh_odds_ratio'])
-            rows.append({'analysis': 'structure_context', 'category': r['category'], 'stratum': 'all', 'a': a, 'b': int(r['target_total']) - a,
+            rows.append({'analysis': analysis, 'category': r['category'], 'stratum': 'all', 'a': a, 'b': int(r['target_total']) - a,
                          'c': c, 'd': int(r['background_total']) - c, 'odds_ratio': odds,
                          'log2_odds_ratio': math.log2(odds) if odds and odds > 0 and math.isfinite(odds) else None,
                          'odds_ratio_ci_low': num(r['ci_low']), 'odds_ratio_ci_high': num(r['ci_high']),
@@ -160,7 +167,7 @@ def hpa_rows(proteins: pd.DataFrame, workdir: Path) -> list[dict]:
     hpa = proteins.attrs['hpa_all']
     confident = hpa[hpa['reliability'] != 'Uncertain']
     universe = set(confident['canonical_UniProtAC'])
-    methylated = universe & set(proteins['uniprot_accession'])
+    methylated = universe & proteins.attrs.get('analysed', set(proteins['uniprot_accession']))
     res = run([Job('hpa_location', methylated, universe, sets=confident[['location', 'canonical_UniProtAC']], whole_universe=True)], workdir)['hpa_location']
     return [{'analysis': 'hpa_location', 'category': r['ID'], 'stratum': 'all', 'a': r['a'], 'b': r['b'], 'c': r['c'], 'd': r['d'],
              'fold_enrichment': r['FoldEnrichment'], 'log2_fold_enrichment': math.log2(r['FoldEnrichment']),

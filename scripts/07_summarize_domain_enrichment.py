@@ -465,6 +465,11 @@ def main() -> None:
         tested_sites = annotated_sites[has_background]
         structure_enrichment = fisher_like_enrichment(tested_sites['structure_context'], methyl_protein_arg['structure_context'])
         structure_within = within_protein_enrichment(tested_sites, methyl_protein_arg, 'structure_context')
+    # The pooled classes again within each protein (Mantel-Haenszel), as for the structural context.
+    context_within = within_protein_enrichment(tested_sites, methyl_protein_arg, 'domain_context_class')
+    class_within = within_protein_enrichment(tested_sites, methyl_protein_arg, 'nearest_domain_class')
+    disorder_within = (within_protein_enrichment(tested_sites, methyl_protein_arg, 'disorder_context_class')
+                       if 'disorder_context_class' in tested_sites.columns and 'disorder_context_class' in methyl_protein_arg.columns else pd.DataFrame())
     tested_proteins = tested_sites['canonical_UniProtAC']
     background_per_protein = pd.concat(
         [per_protein_background('domain_context', tested_proteins, methyl_protein_arg, col='domain_context_class'),
@@ -526,6 +531,10 @@ def main() -> None:
     save_table(annotated_sites, outdir / 'sites_with_domain_context.tsv')
     save_table(context_enrichment, outdir / 'domain_context_enrichment.tsv')
     save_table(domain_class_enrichment, outdir / 'domain_class_enrichment.tsv')
+    save_table(context_within, outdir / 'domain_context_within_protein.tsv')
+    save_table(class_within, outdir / 'domain_class_within_protein.tsv')
+    if not disorder_within.empty:
+        save_table(disorder_within, outdir / 'disorder_context_within_protein.tsv')
     if not structure_enrichment.empty:
         save_table(structure_enrichment, outdir / 'structure_context_enrichment.tsv')
         save_table(structure_within, outdir / 'structure_context_within_protein.tsv')
