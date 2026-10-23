@@ -766,6 +766,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
             '',
         ]
     lines += nucleic_acid_section(ctx, files, previous)
+    lines += crosslink_section(files, previous)
     lines += analysis_section(files, previous)
     if since_v11:
         lines += [
@@ -878,10 +879,14 @@ def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
     for key, text in (('rna_bind_n_seq', 'ENCODE RNA Bind-n-Seq (in vitro): the most enriched 5-mers and logos'),
                       ('htr_selex', 'HTR-SELEX (in vitro, Jolma et al., Genome Res 30:962, 2020, CC BY-NC 4.0): linear and stem-loop RNA motifs'),
                       ('dna_motifs', 'JASPAR 2026 CORE vertebrates DNA-binding profiles (CC BY 4.0)'),
-                      ('eclip', 'ENCODE eCLIP in K562 and HepG2 cells: peaks by transcript region (GENCODE v50 basic) and the genes with the most peaks')):
+                      ('eclip', 'eCLIP in K562 and HepG2 cells: peaks by transcript region (GENCODE v50 basic) and the genes with the most peaks')):
         if key in files:
             df = files[key][1]
-            out.append(f"- `{files[key][0]}`: {text}, for {n(df['uniprot_accession'].nunique())} methylated proteins.")
+            by = ''
+            if key == 'eclip' and 'source' in df.columns:
+                parts = {'ENCODE': 'ENCODE', 'ENCORE': 'ENCORE (Her et al., Cell Systems 2026, GEO GSE315407)'}
+                by = ' (' + ', '.join(f"{n(g['uniprot_accession'].nunique())} from {parts.get(src, src)}" for src, g in df.groupby('source')) + ')'
+            out.append(f"- `{files[key][0]}`: {text}, for {n(df['uniprot_accession'].nunique())} methylated proteins{by}.")
     out += ['', 'The website shows them on protein pages (RNA and DNA interactions: where the protein binds, the bound sequences '
             'in contact with each methylarginine with a logo and a type filter, its preferences and eCLIP targets), on a site\'s card, in '
             'the site tables (Bound RNA/DNA, with the search term bound:), and for a selection in the Interactions view.'
@@ -890,6 +895,37 @@ def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
             '`inputs/nucleic_acid/` (scripts/43_stage_nucleic_acid_binding.py). RNAcompete (CISBP-RNA) states no licence and '
             'is not included.', '']
     return out
+
+
+def crosslink_section(files: dict, previous: str) -> list:
+    """CHANGES.md: the RNA-binding evidence from living cells added in v1.3.0 (CAPRI, pCLAP, RBR-ID), and the tests that
+    count only the arginines each experiment measured."""
+    if 'residue_evidence' not in files or previous not in ('v1.0.0', 'v1.1.0', 'v1.2.0'):
+        return []
+    res, stats = files['residue_evidence'][1], files['statistics'][1]
+    kinds = [('capri_xl_peptide', 'capri_adj_peptide', 'CAPRI (Panhale et al., Nat Commun 2019, doi:10.1038/s41467-019-10585-3, HEK293): peptides crosslinked to RNA and the peptides released next to them'),
+             ('pclap_peptide', 'pclap_lysc_region', 'pCLAP (Mullari et al., J Proteome Res 16:2762, 2017, doi:10.1021/acs.jproteome.7b00042, HEK293): RNA-binding peptides and the Lys-C peptides around them'),
+             ('rbrid_residue', 'rbrid_region', 'RBR-ID (Oksuz et al., Mol Cell 83:2449, 2023, doi:10.1016/j.molcel.2023.06.012, K562 nuclei): residues under a peptide depleted when RNA is crosslinked, and regions of residue score >= 3')]
+    out = []
+    for a, b, text in kinds:
+        got = res[res['evidence_type'].isin([a, b])]
+        if len(got):
+            out.append(f"- {text}: {n(len(got))} stretches on {n(got['uniprot_accession'].nunique())} proteins (`evidence_type` {a}, {b}).")
+    if not out:
+        return []
+    mh = stats[(stats['analysis'] == 'crosslink') & (stats['method'] == 'mantel_haenszel') & stats['category'].str.endswith('_among_measured')]
+    names = {'capri_adj_peptide_among_measured': 'CAPRI', 'pclap_peptide_among_measured': 'pCLAP', 'rbdmap_peptide_among_measured': 'RBDmap',
+             'rbrid_residue_among_measured': 'RBR-ID'}
+    tests = '; '.join(f"{names.get(r['category'], r['category'])} OR {float(r['odds_ratio']):.2f} (p {float(r['p']):.2g}, {r['n_strata']} proteins)"
+                      for r in mh.to_dict('records') if r['odds_ratio'] and r['p'])
+    return ['## RNA crosslinking in living cells', '',
+            f'Besides the crosslinked residues (pepR-MS compendium) and RBDmap fragments of {previous}, three experiments in living cells are '
+            'added to `supporting/residue_evidence`, each with its own evidence type:', ''] + out + [
+            '', 'A peptide experiment can only report arginines in peptides it measured, so `interaction_statistics` (analysis crosslink) '
+            'also tests each one among those arginines alone (categories ending in _among_measured, from the measured peptides staged in '
+            '`inputs/interactions/`): methylarginines against the other arginines of the same proteins, each protein a stratum'
+            + (': ' + tests if tests else '') + '. `sequence_proximity` tests whether methylarginines lie within a given distance along '
+            'the sequence of each kind of RNA-binding residue more often than the other arginines of the same proteins.', '']
 
 
 def analysis_section(files: dict, previous: str) -> list:
