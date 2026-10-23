@@ -6273,7 +6273,8 @@
       // The lane's labels stay outside the clip; its marks are clipped to the residues in view.
       const cut = g.indexOf('</g>') + 4;
       g = outer + g.slice(0, cut) + '<g clip-path="url(#' + clip + ')">' + g.slice(cut) + '</g>';
-      if (!panel) g += '<text x="' + (x1 + 10) + '" y="' + (cy + 3.5) + '" font-size="10" fill="' + (hits.length ? pal.ink : pal.muted) + '">' + hits.length + ' methyl-R</text>';
+      if (!panel) g += '<text x="' + (x1 + 10) + '" y="' + (cy + (weak.length ? 0.5 : 3.5)) + '" font-size="10" fill="' + (hits.length ? pal.ink : pal.muted) + '">' + hits.length + ' methyl-R</text>' +
+        (weak.length ? '<text x="' + (x1 + 10) + '" y="' + (cy + 10.5) + '" font-size="8.5" fill="' + pal.muted + '">+' + weak.length + ' weaker</text>' : '');
     });
     // Lollipops last: stems and heads by interaction status (solid experimental, hollow predicted only).
     for (const h of heads) {
