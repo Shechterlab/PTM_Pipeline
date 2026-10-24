@@ -793,7 +793,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
             '',
         ]
     lines += nucleic_acid_section(ctx, files, previous)
-    lines += crosslink_section(files, previous)
+    lines += crosslink_section(files, previous, Path(ctx['inputs']))
     lines += analysis_section(files, previous)
     lines += review_section(ctx, files, previous)
     if since_v11:
@@ -925,7 +925,7 @@ def nucleic_acid_section(ctx: dict, files: dict, previous: str) -> list:
     return out
 
 
-def crosslink_section(files: dict, previous: str) -> list:
+def crosslink_section(files: dict, previous: str, inputs: Path) -> list:
     """CHANGES.md: the RNA-binding evidence from living cells added in v1.3.0 (CAPRI, pCLAP, RBR-ID), and the tests that
     count only the arginines each experiment measured."""
     if 'residue_evidence' not in files or previous not in ('v1.0.0', 'v1.1.0', 'v1.2.0'):
@@ -933,7 +933,7 @@ def crosslink_section(files: dict, previous: str) -> list:
     res, stats = files['residue_evidence'][1], files['statistics'][1]
     kinds = [('capri_xl_peptide', 'capri_adj_peptide', 'CAPRI (Panhale et al., Nat Commun 2019, doi:10.1038/s41467-019-10585-3, HEK293): peptides crosslinked to RNA and the peptides released next to them'),
              ('pclap_peptide', 'pclap_lysc_region', 'pCLAP (Mullari et al., J Proteome Res 16:2762, 2017, doi:10.1021/acs.jproteome.7b00042, HEK293): RNA-binding peptides and the Lys-C peptides around them'),
-             ('rbrid_residue', 'rbrid_region', 'RBR-ID (Oksuz et al., Mol Cell 83:2449, 2023, doi:10.1016/j.molcel.2023.06.012, K562 nuclei): residues under a peptide depleted when RNA is crosslinked (called on the biological samples, BH q < 0.05), and regions of residue score at or above the staged threshold (2)')]
+             ('rbrid_residue', 'rbrid_region', 'RBR-ID (Oksuz et al., Mol Cell 83:2449, 2023, doi:10.1016/j.molcel.2023.06.012, K562 nuclei): residues under a peptide depleted when RNA is crosslinked (called on the biological samples, BH q < 0.05), and regions of residue score at or above the staged threshold (' + rbrid_threshold(inputs) + ')')]
     out = []
     for a, b, text in kinds:
         got = res[res['evidence_type'].isin([a, b])]
@@ -956,6 +956,15 @@ def crosslink_section(files: dict, previous: str) -> list:
             'the sequence of each kind of RNA-binding residue more often than the other arginines of the same proteins.', '']
 
 
+def rbrid_threshold(inputs: Path) -> str:
+    """The residue score threshold of the staged RBR-ID regions (column residue_score_threshold), or '?' when not staged."""
+    path = Path(inputs) / 'interactions/rbrid_oksuz2023_k562_segments.tsv'
+    if not path.exists():
+        return '?'
+    vals = set(pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False, usecols=['residue_score_threshold'])['residue_score_threshold'])
+    return f'{float(vals.pop()):g}' if len(vals) == 1 else '?'
+
+
 def review_section(ctx: dict, files: dict, previous: str) -> list:
     """CHANGES.md: what v1.3.1 corrected after the review of v1.3.0 (how evidence is called and described; the sites stay)."""
     if previous != 'v1.3.0':
@@ -973,7 +982,8 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
         table.append(f'| `{c}` | ' + ' | '.join(f"{n(int((prev[col] == old_name(c)).sum()))} → {n(int((sites[col] == c).sum()))}" for col, _ in calls) + ' |')
     inh, carm = files['maron_inhibitors'][1], files['carm1_ko'][1]
     inh_changed = inh[inh['call'].isin(changed)]
-    multi_only = inh_changed[inh_changed['call_single_site_peptides'] == '']
+    # a change resting only on peptides with another methylarginine: no single-site peptide, or none of them changed
+    multi_only = inh_changed[inh_changed['call_single_site_peptides'].isin(['', 'no_significant_change'])]
     one_cond = inh_changed[num(inh_changed['n_one_condition_peptides']) == num(inh_changed['n_peptides'])]
     carm_changed = carm[carm['call'].isin(changed)]
     carm_diff = int((carm['call'] != carm['call_source_rule']).sum())
@@ -990,9 +1000,9 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
            'stays as a description only.', ''] + table + ['',
            '- A peptide that carries several methylarginines reports them together, so its change cannot be given to one of '
            'them. The tables now count those peptides (`n_multi_site_peptides`) and give the call from the single-site '
-           f'peptides alone (`call_single_site_peptides`, empty when there are none). Of the {n(len(inh_changed))} site and '
-           f'antibody rows of `supporting/maron2021_inhibitors` with a change, {n(len(multi_only))} rest only on peptides '
-           'carrying another methylarginine.',
+           f'peptides alone (`call_single_site_peptides`, empty when there are none). Of the {n(len(inh_changed))} site, antibody '
+           f'and inhibitor rows of `supporting/maron2021_inhibitors` with a change, {n(len(multi_only))} rest only on peptides '
+           'carrying another methylarginine (no single-site peptide, or none of those changed).',
            '- Most rows of Table S3 hold imputed values; where one condition is a constant imputed value, the peptide was '
            f'detected in the other condition only. `n_imputed_peptides` and `n_one_condition_peptides` count them; '
            f'{n(len(one_cond))} of the rows with a change have every peptide detected in one condition only.',
@@ -1008,6 +1018,7 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
     if pep_path.exists() and res_path.exists():
         pep = pd.read_csv(pep_path, sep='\t', dtype=str, keep_default_na=False)
         res = pd.read_csv(res_path, sep='\t', dtype=str, keep_default_na=False)
+        thr = rbrid_threshold(inputs)
         pos, pub = pep['rbrid_positive'] == 'true', pep['rbrid_positive_published'] == 'true'
         stats = files['statistics'][1]
         mh = stats[(stats['analysis'] == 'crosslink') & (stats['method'] == 'mantel_haenszel')].set_index('category')
@@ -1027,7 +1038,7 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
                 f"| Methylarginines against the other arginines of the same proteins (Mantel-Haenszel) | {test('rbrid_residue')} | {test('rbrid_residue_published_rule')} |",
                 '',
                 'The residue score threshold of the RBR-ID regions is now set by a rule fixed in advance: the lowest of 1, 2, 3 '
-                'and 5 whose permutation false-discovery rate is under 10 % (2; it was 3 in v1.3.0).', '']
+                f'and 5 whose permutation false-discovery rate is under 10 % ({thr}; v1.3.0 used 3).', '']
     # localisation
     if 'localised_by' in sites.columns:
         curated = sites['curated_only'].astype(str).str.lower() == 'true'
@@ -1042,8 +1053,8 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
             'analyses folder); in v1.3.0 the two analyses READMEs were rewritten after their checksums.',
             '- `release.json` records the Python and package versions that wrote the release (`python_environment`).',
             '- Website: a test run on a selection made by the feature it tests is shown as descriptive and left out of the '
-            'multiple-testing correction; other selection tests are labelled exploratory. Proteins without a site get their '
-            'STRING partner network and 3D structures.', '']
+            'multiple-testing correction; other selection tests are labelled exploratory. Proteins without a site get their 3D '
+            'structures and, when they are in the interaction data, their STRING partner network.', '']
     return out
 
 

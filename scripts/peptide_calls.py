@@ -52,6 +52,8 @@ def combine_calls(calls) -> str:
 def site_response(peptides: list, cutoff: float, min_abs_log2: float = 0.0, strict: bool = False) -> dict:
     """peptides: [(adjusted p, log2 change, methylarginines on the peptide), ...] for one site and condition. A peptide
     changes at p <= cutoff (p < cutoff when strict) with |log2| >= min_abs_log2."""
+    missing = lambda v: v is None or (isinstance(v, float) and math.isnan(v))  # noqa: E731
+    peptides = [(None if missing(q) else q, d, n) for q, d, n in peptides]
     changed = lambda q, d: q is not None and (q < cutoff if strict else q <= cutoff) and abs(d) >= min_abs_log2  # noqa: E731
     down = sum(changed(q, d) and d < 0 for q, d, _ in peptides)
     up = sum(changed(q, d) and d > 0 for q, d, _ in peptides)
@@ -61,8 +63,8 @@ def site_response(peptides: list, cutoff: float, min_abs_log2: float = 0.0, stri
     ds = sorted(d for _, d, _ in peptides)
     mid = len(ds) // 2
     median = (ds[mid] if len(ds) % 2 else (ds[mid - 1] + ds[mid]) / 2) if ds else None
-    best = min(peptides, key=lambda x: (x[0] is None, x[0] if x[0] is not None else 0))
+    best = min(peptides, key=lambda x: (x[0] is None, x[0] if x[0] is not None else 0)) if peptides else (None, None, 0)
     return {'n_peptides': len(peptides), 'n_decreased': down, 'n_increased': up,
             'n_multi_site_peptides': sum(n > 1 for _, _, n in peptides), 'log2_median': median,
-            'log2_strongest': best[1], 'adj_p_min': best[0], 'call': peptide_call(down, up),
+            'log2_strongest': best[1], 'adj_p_min': best[0], 'call': peptide_call(down, up) if peptides else '',
             'call_single_site_peptides': peptide_call(s_down, s_up) if single else ''}

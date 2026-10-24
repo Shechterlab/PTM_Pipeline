@@ -27,4 +27,12 @@ echo "[analyses] $VERSION: analyses"
 run_analyses
 python "$CODE/scripts/release_analyses.py" collect --sites "$SITES" ${MAP:+--map "$MAP"} --work "$WORK" --inputs "$IN" \
   --version "$VERSION" --out "$OUT"
+# analyses/ lies inside the release folder, so its top-level checksums change with it (v1.3.0 shipped them stale)
+REL="$CODE/releases/$VERSION"
+if [ "$(realpath -m "$OUT")" = "$(realpath -m "$REL/analyses")" ] && [ -f "$REL/MD5SUMS" ]; then
+  python -c "import sys; sys.path.insert(0, '$CODE/scripts'); from pathlib import Path; import release_docs; release_docs.write_md5sums(Path('$REL'))"
+  for sums in "$REL/MD5SUMS" "$OUT/MD5SUMS"; do
+    (cd "$(dirname "$sums")" && md5sum -c --quiet MD5SUMS) || { echo "[analyses] checksums do not match in $(dirname "$sums")"; exit 1; }
+  done
+fi
 echo "[analyses] $VERSION: done -> $OUT"

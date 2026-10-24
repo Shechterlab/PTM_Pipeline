@@ -360,6 +360,8 @@
   // How the records placing a site localise its methyl group (site field localised_mask over M.localised_by, from
   // v1.3.1): a localisation score or a sequence that leaves one possible arginine, or curation only. Different kinds of
   // evidence, without one shared error rate.
+  // The residue score threshold of the RBR-ID regions, as staged (scripts/37 meta rbrid_check; exports before v1.3.1 used 3).
+  const rbridThr = () => { const c = IX && IX.meta && IX.meta.rbrid_check; return c && c.threshold != null ? c.threshold : 3; };
   const LOC_CURATED = new Set(['curated_database', 'curated_experimental']);
   const LOC_LABEL = { localisation_score: 'localisation score', one_methylatable_residue: 'one methylatable residue on the peptide',
     every_arginine_dimethylated: 'every arginine on the peptide dimethylated', curated_experimental: 'UniProt, experimental evidence (curated)',
@@ -437,13 +439,13 @@
   const TREAT_OPTIONS = [
     ['', 'Any site'],
     ['tested', 'Measured with PRMT inhibitors (Maron 2021)'],
-    ['0:down', 'A peptide decreased with GSK591 (PRMT5i)'],
-    ['1:down', 'A peptide decreased with MS023 (type I PRMTi)'],
-    ['0:up', 'A peptide increased with GSK591'],
-    ['1:up', 'A peptide increased with MS023'],
+    ['0:down', 'Called decreased with GSK591 (PRMT5i): a peptide down, none up'],
+    ['1:down', 'Called decreased with MS023 (type I PRMTi): a peptide down, none up'],
+    ['0:up', 'Called increased with GSK591: a peptide up, none down'],
+    ['1:up', 'Called increased with MS023: a peptide up, none down'],
     ['ko', 'Measured in CARM1 KO cells (Shishkova 2017)'],
-    ['2:down', 'A peptide decreased in CARM1 KO'],
-    ['2:up', 'A peptide increased in CARM1 KO'],
+    ['2:down', 'Called decreased in CARM1 KO: a peptide down, none up'],
+    ['2:up', 'Called increased in CARM1 KO: a peptide up, none down'],
   ];
   // A site's interaction status, as every table tip, filter and report states it (EV_EXP, EV_PRED below).
   const STATUS_HELP = 'Experimental: an RNA or DNA crosslink at this residue (alone or as one of a crosslink\'s candidate residues), an RBDmap RNA-bound fragment covering it, or a PDB interface. Predicted only: at the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23) or a confident predicted contact, with no experimental evidence. IntAct records are shown but do not set the status.';
@@ -4521,16 +4523,17 @@
     const km = koMeta();
     if (km) km.cell_lines.forEach((cell, c) => {
       const v = SS.map((s) => s.ko.find((x) => x[0] === c)).filter(Boolean);
-      rows.push({ name: 'CARM1 KO', ipName: 'ADMA', t: 2, k: c, cell, n: v.length, down: v.filter((x) => x[4]).length, up: v.filter((x) => x[5]).length, med: median(v.map((x) => x[1])) });
+      // counted as the filter (treatPass) lists them: decreased means a peptide down and none up
+      rows.push({ name: 'CARM1 KO', ipName: 'ADMA', t: 2, k: c, cell, n: v.length, down: v.filter((x) => respCall(x[4], x[5]) === 'down').length, up: v.filter((x) => respCall(x[4], x[5]) === 'up').length, med: median(v.map((x) => x[1])) });
     });
     return rows;
   }
   // The two rows with the largest decreased share, for a folded header.
   function treatSummary(sites, html) {
-    // ranked by the number of sites lost, as the tile ranks them
+    // ranked by the number of sites called decreased, as the tile ranks them
     const top = treatRows(sites).filter((r) => r.n).sort((a, b) => b.down - a.down || b.n - a.n).slice(0, 2);
-    if (!html) return top.length ? 'most sites lost: ' + top.map((r) => r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName)) + ' ' + fmt(r.down) + ' of ' + fmt(r.n)).join(', ') : '';
-    return top.length ? 'Most sites lost: ' + top.map((r) => esc(r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName))) + ' <span class="an">' + fmt(r.down) + '</span> of ' + fmt(r.n)).join(', ') : 'none of these sites was measured';
+    if (!html) return top.length ? 'most sites called decreased: ' + top.map((r) => r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName)) + ' ' + fmt(r.down) + ' of ' + fmt(r.n)).join(', ') : '';
+    return top.length ? 'Most sites called decreased: ' + top.map((r) => esc(r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName))) + ' <span class="an">' + fmt(r.down) + '</span> of ' + fmt(r.n)).join(', ') : 'none of these sites was measured';
   }
   function treatTable() {
     const km = koMeta(), all = treatRows();
@@ -5769,12 +5772,13 @@
   function writerReaderHtml(s, p) {
     const ipName = (n) => s.ip & (1 << M.maron_ips.indexOf(n));
     const site = [];
-    if (ipName('SDMA')) site.push('a peptide carrying it was recovered by the SDMA antibody (symmetric dimethylation, made by PRMT5)');
-    if (ipName('ADMA')) site.push('by the ADMA antibody (asymmetric dimethylation, made by type I PRMTs such as PRMT1 and CARM1)');
-    if (ipName('MMA')) site.push('by the MMA antibody (monomethylation, which any PRMT can make)');
-    if (s.trf & 1) site.push('a peptide carrying it decreased with the PRMT5 inhibitor GSK591');
-    if (s.trf & 4) site.push('a peptide carrying it decreased with the type I PRMT inhibitor MS023');
-    if (s.trf & TRF_KO_DOWN) site.push('a peptide carrying it decreased in CARM1 knockout cells');
+    // the antibodies that recovered a peptide carrying it, in one phrase
+    const ips = [['SDMA', 'SDMA (symmetric dimethylation, made by PRMT5)'], ['ADMA', 'ADMA (asymmetric dimethylation, made by type I PRMTs such as PRMT1 and CARM1)'],
+      ['MMA', 'MMA (monomethylation, which any PRMT can make)']].filter(([n]) => ipName(n)).map(([, t]) => t);
+    if (ips.length) site.push('a peptide carrying it was recovered by the ' + (ips.length > 1 ? ips.slice(0, -1).join(', ') + ' and ' + ips[ips.length - 1] + ' antibodies' : ips[0] + ' antibody'));
+    if (s.trf & 1) site.push('a peptide carrying it decreased with the PRMT5 inhibitor GSK591, and none increased');
+    if (s.trf & 4) site.push('a peptide carrying it decreased with the type I PRMT inhibitor MS023, and none increased');
+    if (s.trf & TRF_KO_DOWN) site.push('a peptide carrying it decreased in CARM1 knockout cells, and none increased');
     else if (s.ko.length && s.trc[2] === '') site.push('no significant change detected in CARM1 knockout cells');
     if (s.trc.includes('mixed')) site.push('peptides changed in opposite directions with ' + ['GSK591', 'MS023', 'CARM1 loss'].filter((_, t) => s.trc[t] === 'mixed').join(' and '));
     if (s.trf & 2 || s.trf & 8 || s.trf & TRF_KO_UP) site.push('a peptide carrying it increased with ' + [s.trf & 2 ? 'GSK591' : '', s.trf & 8 ? 'MS023' : '', s.trf & TRF_KO_UP ? 'CARM1 loss' : ''].filter(Boolean).join(' and ') + ' (when one PRMT is lost, others can methylate its substrates: Dhar et al. 2013)');
@@ -7171,7 +7175,7 @@
         for (const [a, b] of xp.rbridCov) if (inView(a, b)) g += MARK.box(x(Math.max(a, v0)) - 0.5, y + 5, x(Math.min(b, v1) + 1) - x(Math.max(a, v0)), 1.5, 'var(--line-strong)', '');
         const inSeg = (a, b) => xp.rbridSeg.some(([c, d]) => a <= d && b >= c);
         for (const [a, b, sc] of xp.rbrid) if (inView(a, b)) g += box(a, b, pal.rna, sc == null ? 0.14 : Math.min(0.8, 0.12 + 0.3 * Math.log10(1 + sc)), '<b>RBR-ID+ residues</b> ' + nspan(a, b) +
-          '<br>under a peptide depleted when RNA is 4SU-labelled and crosslinked' + (sc != null ? '; highest residue score ' + sc + (inSeg(a, b) ? ' (region of score ≥ 3)' : '') : '') + '; Oksuz et al. 2023, K562 nuclei', 'rna');
+          '<br>under a peptide depleted when RNA is 4SU-labelled and crosslinked' + (sc != null ? '; highest residue score ' + sc + (inSeg(a, b) ? ' (region of score ≥ ' + rbridThr() + ')' : '') : '') + '; Oksuz et al. 2023, K562 nuclei', 'rna');
         legend.push([SWATCH.fill(pal.rna, 0.45), 'RBR-ID+ residues (darker: higher residue score; grey line: measured)']);
         y += 18;
       }
@@ -9282,7 +9286,7 @@
     [64, 'CAPRI RNA-crosslinked peptide (XL)', 'Inside a peptide identified with an RNA adduct in HEK293 cells (CAPRI XL-peptide, Panhale et al. 2019)'],
     [512, 'pCLAP RNA-binding region', 'Inside the Lys-C peptide around a peptide enriched from UV-crosslinked RNA-protein complexes in HEK293 cells (pCLAP, Mullari et al. 2017)'],
     [256, 'pCLAP RNA-binding peptide', 'Inside a peptide enriched from UV-crosslinked RNA-protein complexes in HEK293 cells (pCLAP, Mullari et al. 2017)'],
-    [1024, 'RBR-ID+ residue', 'Under a peptide depleted when RNA is labelled with 4-thiouridine and crosslinked in K562 nuclei (RBR-ID, Oksuz et al. 2023; log2 +4SU/−4SU < 0, p < 0.05)'],
+    [1024, 'RBR-ID+ residue', 'Under a peptide depleted when RNA is labelled with 4-thiouridine and crosslinked in K562 nuclei (RBR-ID, Oksuz et al. 2023; called on the biological samples, Benjamini–Hochberg q < 0.05)'],
     [8, 'DNA crosslink at this residue', 'The DNA crosslink is localised to this residue alone (Trendel et al. 2025)'],
     [32, 'DNA crosslink candidate', 'A candidate residue of a DNA crosslink; most DNA crosslinks are not localised to a single residue'], [16, 'UniProt DNA-binding region']];
   const xlSets = (bits) => (IX.xlSets || []).filter((_, k) => bits & (1 << k)).concat(bits & 32 ? ['pepR-MS focused site'] : []);
@@ -10045,7 +10049,7 @@
   // The protein whose page is open: a methylated protein's page (UI.detail), or the light page of a protein without a site
   // (UI.unlP). A light page's protein carries its index in the interaction data as i (-1 when it has none), so the
   // structure and network code can treat both alike.
-  const pageOpen = (p) => !!p && (p.unl ? UI.view === 'unlisted' && UI.unlP === p : UI.detail === p.i);
+  const pageOpen = (p) => !!p && (p.unl ? UI.view === 'unlisted' && UI.unlP === p : UI.view === 'protein' && UI.detail === p.i);
   const sameProt = (a, b) => a === b || (!a.unl && !b.unl && a.i === b.i);
   const xlOfProt = (p) => (p.unl ? p.unl.xl : ixReady() ? IX.xlProt.get(p.i) : null);
   // A protein without a site in the shape the protein map draws: no sites, its own disorder and InterPro entries.
@@ -10902,15 +10906,17 @@
       body: new URLSearchParams({ identifiers: enspId(p.i), species: '9606', network_type: UI.net.type, required_score: String(min), limit: '2000', caller_identity: STRING_CALLER }),
     }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then((rows) => {
-        const seen = new Map();
+        const seen = new Map(), outside = new Set();
         for (const e of rows) {
           const k = IX.byEnsp.get(+String(e.stringId_B).replace(/^9606\.ENSP/, ''));
           const sc = stringScore(e);
-          if (k == null || k === p.i || sc < min) continue;
+          if (k === p.i || sc < min) continue;
+          // partners outside the interaction data (none of them methylated): counted, not drawn
+          if (k == null) { outside.add(e.stringId_B); continue; }
           seen.set(k, Math.max(seen.get(k) || 0, sc));
         }
-        return Array.from(seen.entries()).sort((x, y) => y[1] - x[1]);
-      })).then((list) => (list ? { list, live: true } : fallback()));
+        return Object.assign(Array.from(seen.entries()).sort((x, y) => y[1] - x[1]), { outside: outside.size });
+      })).then((list) => (list ? { list, live: true, outside: list.outside || 0 } : fallback()));
   }
 
   function netOptsHtml() {
@@ -11003,12 +11009,12 @@
       const box = $('#ix-partners', body);
       if (!box || !pageOpen(p) || UI.ixTab !== 'proteins' || UI.ixMin !== minAsked) return;
       const { all, min, shown, top, netList, missingPins } = netSelection(res, minAsked);
-      const nMeth = all.filter(([k]) => k < IX.nP).length;
+      const nMeth = all.filter(([k]) => k < IX.nP).length, nAll = all.length + (res.outside || 0);
       const predMap = new Map(predPartners(p).map((r) => [r.k, r]));
       box.innerHTML = (res.failed && p.unl ? '<p class="note">STRING did not answer; showing only the methylated partners, from the export (score ≥ 0.7).</p>' : res.failed && minAsked < IX.meta.string_min_score ? '<p class="note">STRING did not answer; showing the high-confidence (≥ 0.7) links from the export instead.</p>' : '') +
         (all.length ? '<div class="ix-net-box" id="ix-net"></div><p class="note" id="ix-net-note"></p><div id="ix-paths"></div>' : '<p class="note">No STRING ' + esc(UI.net.type) + ' partners at this confidence.</p>') +
-        '<p class="sub">' + fmt(all.length) + ' ' + UI.net.type + ' partners at score ≥ ' + (min / 1000).toFixed(2).replace(/0$/, '') + (netAllChannels() ? '' : ' on ' + NET_CHANNELS.filter(([c]) => netChannels().includes(c)).map(([, , n]) => n.toLowerCase()).join(', ')) + (res.live ? ' (live from STRING)' : '') +
-        (UI.net.show !== 'all' ? ', ' + fmt(shown.length) + ' of them ' + esc(NET_SHOW[UI.net.show][0].toLowerCase().replace(/ \(in this set\)/, '')) : '') + '; <b>' + fmt(nMeth) + '</b> (' + pctText(nMeth, all.length || 1) + '%) are themselves in this methylarginine set, against ' +
+        '<p class="sub">' + fmt(nAll) + ' ' + UI.net.type + ' partners at score ≥ ' + (min / 1000).toFixed(2).replace(/0$/, '') + (netAllChannels() ? '' : ' on ' + NET_CHANNELS.filter(([c]) => netChannels().includes(c)).map(([, , n]) => n.toLowerCase()).join(', ')) + (res.live ? ' (live from STRING)' : '') + (res.outside ? ', ' + fmt(res.outside) + ' of them outside the interaction data and not drawn (none is in this methylarginine set)' : '') +
+        (UI.net.show !== 'all' ? ', ' + fmt(shown.length) + ' of them ' + esc(NET_SHOW[UI.net.show][0].toLowerCase().replace(/ \(in this set\)/, '')) : '') + '; <b>' + fmt(nMeth) + '</b> (' + pctText(nMeth, nAll || 1) + '%) are themselves in this methylarginine set, against ' +
         pctText(IX.meta.methylated_in_proteome, IX.meta.proteome_size) + '% of the reviewed proteome. ' +
         (nMeth ? '<button class="linkish" type="button" id="ix-list">List the methylated partners' + (min < 700 ? ' (≥ 0.7)' : '') + '</button>' : '') + '</p>' +
         (all.length ? '<div class="tbl-wrap ix-tbl"><table class="tbl compact"><thead><tr><th>Partner</th><th class="r">STRING</th><th>Methyl-R sites</th><th>Annotations</th><th class="hide-sm" title="ProtVar AlphaFold-Multimer model of this pair places a methylarginine of ' + esc(p.label) + ' within 5 Å of the partner">Predicted interface</th><th class="hide-sm">Shared complexes</th></tr></thead><tbody>' +
@@ -12104,8 +12110,8 @@
     if (dom >= 0) add('dom', 'Structure', 'Inside an InterPro domain', (s) => s.dctx === dom, (f) => { f.domctx = new Set([dom]); });
     [[1, 'Rme1 called (any source, alone or with Rme2)'], [2, 'Rme2 called (any source, alone or with Rme1)']].forEach(([v, l]) => add('st' + v, 'Methylation', l, (s) => s.st === v || s.st === 3, (f) => { f.states.add(v); f.states.add(3); }));
     M.maron_ips.forEach((n, b) => add('ip' + b, 'Methylation', 'Recovered by the ' + n + ' IP (' + ipLabel(n) + ')', (s) => s.ip & (1 << b), (f) => { f.ips.add(b); }));
-    add('gsk', 'PRMT loss', 'Decreased with GSK591 (PRMT5i)', (s) => s.trf & 1, (f) => { f.treat = '0:down'; });
-    add('ms', 'PRMT loss', 'Decreased with MS023 (type I PRMTi)', (s) => s.trf & 4, (f) => { f.treat = '1:down'; });
+    add('gsk', 'PRMT loss', 'Called decreased with GSK591 (PRMT5i)', (s) => s.trf & 1, (f) => { f.treat = '0:down'; });
+    add('ms', 'PRMT loss', 'Called decreased with MS023 (type I PRMTi)', (s) => s.trf & 4, (f) => { f.treat = '1:down'; });
     if (koMeta()) add('ko', 'PRMT loss', 'Decreased in CARM1 knockout cells', (s) => s.trf & TRF_KO_DOWN, (f) => { f.treat = '2:down'; });
     add('nn5', 'Clustering', 'Another methyl-R within 5 aa', (s) => s.nn != null && s.nn <= 5, (f) => { f.nn = 5; });
     add('rep2', 'Provenance', 'Reported by ≥2 sources (studies or databases)', (s) => popcount(s.study) >= 2, (f) => { f.minRep = 2; });
@@ -12904,7 +12910,8 @@
       row('rna_pclap', 'Inside a pCLAP RNA-binding region (Lys-C peptide)', 512) + row('rna_pclap_nonrg', '… excluding RG/GR dipeptides') + row('rna_pclap_pep', 'Inside a pCLAP RNA-binding peptide', 256) +
       row('rna_pclap_cov', '… only arginines inside a peptide pCLAP measured (detection control)') +
       row('rna_rbrid', 'An RBR-ID+ residue (under a peptide depleted with crosslinked RNA)', 1024) + row('rna_rbrid_nonrg', '… excluding RG/GR dipeptides') +
-      row('rna_rbrid_cov', '… only arginines under a peptide RBR-ID measured (detection control)') + row('rna_rbrid_seg', 'Inside an RBR-ID region of residue score ≥ 3') +
+      row('rna_rbrid_cov', '… only arginines under a peptide RBR-ID measured (detection control)') + row('rna_rbrid_published', '… by the published rule (runs as replicates, unadjusted p < 0.05; sensitivity test)') +
+      row('rna_rbrid_seg', 'Inside an RBR-ID region of residue score ≥ ' + rbridThr()) +
       row('dna_xl', 'A DNA crosslink localised to this residue', 8) + row('dna_cand', '… or one of its candidate residues', 32) + row('dna_pep', 'Inside a DNA-crosslinked peptide') + row('dna_bind', 'Inside a UniProt DNA-binding region', 16) + '</tbody></table></div>' +
       '<p class="note">Counts are arginines of the canonical sequences of proteins with that evidence; a row\'s site list also includes the few sites outside them. About half of the crosslinks are localised to several candidate residues; "single localisation" keeps only residues to which at least one crosslink is localised alone. Few DNA crosslinks are localised to one residue, so the DNA test is based on candidate residues.</p>' +
       '<h4 style="margin-top:1rem">By methylation class</h4>' +
@@ -13030,10 +13037,11 @@
       ['xl_enrich', ['rna_pclap_nonrg'], '… outside RG/GR dipeptides', 'Inside a pCLAP RNA-binding region, outside RG/GR dipeptides'],
       ['xl_enrich', ['rna_pclap_pep'], 'Inside an RNA-binding peptide (pCLAP)', 'Inside a pCLAP RNA-binding peptide'],
       ['xl_enrich', ['rna_pclap_cov'], '… among arginines pCLAP measured', 'Inside a pCLAP RNA-binding peptide, counting only arginines inside a measured peptide'],
-      ['xl_enrich', ['rna_rbrid'], 'An RBR-ID+ residue', 'Under an RBR-ID+ peptide (K562; log2 +4SU/−4SU < 0, p < 0.05)'],
+      ['xl_enrich', ['rna_rbrid'], 'An RBR-ID+ residue', 'Under an RBR-ID+ peptide (K562; called on the biological samples, Benjamini–Hochberg q < 0.05)'],
       ['xl_enrich', ['rna_rbrid_nonrg'], '… outside RG/GR dipeptides', 'An RBR-ID+ residue, outside RG/GR dipeptides'],
       ['xl_enrich', ['rna_rbrid_cov'], '… among arginines RBR-ID measured', 'An RBR-ID+ residue, counting only arginines under a measured peptide'],
-      ['xl_enrich', ['rna_rbrid_seg'], 'In an RBR-ID region (score ≥ 3)', 'Inside an RBR-ID region of smoothed residue score ≥ 3'],
+      ['xl_enrich', ['rna_rbrid_published'], '… by the published rule (sensitivity)', 'Under a peptide the published RBR-ID rule calls (every run counted as a replicate, unadjusted p < 0.05): the reproduction of Oksuz et al. 2023, a sensitivity test beside the main call'],
+      ['xl_enrich', ['rna_rbrid_seg'], 'In an RBR-ID region (high score)', 'Inside an RBR-ID region: smoothed residue score at or above the staged threshold'],
       ['xl_enrich', ['dna_xl'], 'DNA crosslink localised to the residue'],
       ['xl_enrich', ['dna_cand'], '… or one of its candidate residues', 'DNA crosslink at the residue or one of its candidate residues'],
       ['xl_enrich', ['dna_pep'], 'Inside a DNA-crosslinked peptide'],
@@ -14706,7 +14714,7 @@
           '<p><b>Binding regions.</b> On a protein page, the RNA and DNA interactions card lists the regions that bind nucleic acid: runs of residues in direct contact in structures (analysed once per distinct complex in every entry; runs separated by up to 3 residues are joined), with the nucleic-acid segments they contact and their type; runs of residues UV-crosslinked to RNA or DNA in living cells (joined in the same way); RBDmap fragments crosslinked to RNA in HeLa cells; and UniProt DNA-binding regions. Each row gives the UniProt domains it overlaps, the methylarginines within it and those within 5 residues of either end, with their distance from it. Release file supporting/nucleic_acid_regions.</p>' +
           '<p><b>Sequence preference and targets from selection experiments.</b> RNA Bind-n-Seq (ENCODE; Dominguez et al. 2018): the 5-mers enriched in RNA recovered by the purified protein from a random library, relative to the input, with ENCODE\'s logos. HTR-SELEX (Jolma et al. 2020, <i>Genome Res</i> 30:962, CC BY-NC 4.0): RNA selected by the purified protein or its RNA-binding domains from random 40-nucleotide RNA over several cycles, as position frequency matrices of linear motifs and of motifs in the loop of a stem-loop, primary and secondary (86 proteins). JASPAR 2026 CORE vertebrates (CC BY 4.0): DNA-binding profiles from SELEX and ChIP-based experiments; a heterodimer\'s profile is listed for both partners. eCLIP (ENCODE; Van Nostrand et al. 2020): RNA crosslinked to the protein in K562 and HepG2 cells, as reproducible peaks assigned to GENCODE v50 basic transcripts, with the genes with the most peaks; these reflect expression as well as preference. For a selection, the Interactions view lists these for the selected proteins and the genes with eCLIP peaks for two or more of them. RNAcompete (CISBP-RNA) states no licence and is not included. Release files supporting/rna_bind_n_seq, htr_selex, dna_motifs and eclip.</p>') +
         sub('ix-prox', 'Sequence proximity to RNA-binding residues', '<p>For each kind of residue-level RNA evidence from cells (residues crosslinked to RNA in the pepR-MS compendium, RBDmap fragments, CAPRI ADJ- and XL-peptides, pCLAP RNA-binding peptides), every arginine of a protein with that evidence gets its distance along the canonical sequence to the nearest residue with it: 0 for the crosslinked residue itself or a residue inside the fragment or peptide. Within 0, 3, 5, 10 and 20 residues, methylarginines are compared with the other arginines of the same proteins (Mantel–Haenszel odds ratio with its 95% CI, each protein a stratum; scripts/37 seq_prox, release statistics analysis sequence_proximity). With a selection, its sites are compared with the other arginines of their proteins, and a tick marks the whole dataset. q: Benjamini–Hochberg across the panels of the card. The site table\'s RNA/DNA column also gives each site\'s nearest distance to each kind of evidence on hover.</p>') +
-        sub('ix-nac', 'Are methylarginines at RNA and DNA contacts?', '<p>One forest plot of every within-protein test of a nucleic-acid contact: RNA crosslinked to the residue in cells (pepR-MS compendium; localised to it alone; outside RG/GR dipeptides), inside an RNA-bound fragment (RBDmap, HeLa; and outside RG/GR dipeptides), inside an RNA-bound peptide next to a crosslink or inside an RNA-crosslinked peptide (CAPRI, HEK293: Panhale et al. 2019, ADJ- and XL-peptides; ADJ also outside RG/GR dipeptides), inside a pCLAP RNA-binding region or peptide (Mullari et al. 2017, HEK293; also outside RG/GR dipeptides, and counting only the arginines inside a peptide pCLAP measured, a control for detection; CAPRI and RBDmap get the same control from the peptides each measured, scripts/43f), an RBR-ID+ residue (Oksuz et al. 2023, K562; also outside RG/GR dipeptides, among measured arginines only, and inside a region of residue score ≥ 3), DNA crosslinked to the residue or one of its candidate residues and inside a DNA-crosslinked peptide (Trendel et al. 2025), at an RNA or DNA interface in a PDB structure (PDBe-KB), side chain within 4 or 8 Å of RNA or DNA in a PDB entry, and inside a UniProt DNA-binding region. ' +
+        sub('ix-nac', 'Are methylarginines at RNA and DNA contacts?', '<p>One forest plot of every within-protein test of a nucleic-acid contact: RNA crosslinked to the residue in cells (pepR-MS compendium; localised to it alone; outside RG/GR dipeptides), inside an RNA-bound fragment (RBDmap, HeLa; and outside RG/GR dipeptides), inside an RNA-bound peptide next to a crosslink or inside an RNA-crosslinked peptide (CAPRI, HEK293: Panhale et al. 2019, ADJ- and XL-peptides; ADJ also outside RG/GR dipeptides), inside a pCLAP RNA-binding region or peptide (Mullari et al. 2017, HEK293; also outside RG/GR dipeptides, and counting only the arginines inside a peptide pCLAP measured, a control for detection; CAPRI and RBDmap get the same control from the peptides each measured, scripts/43f), an RBR-ID+ residue (Oksuz et al. 2023, K562; also outside RG/GR dipeptides, among measured arginines only, by the published rule as a sensitivity test, and inside a region of residue score ≥ ' + rbridThr() + '), DNA crosslinked to the residue or one of its candidate residues and inside a DNA-crosslinked peptide (Trendel et al. 2025), at an RNA or DNA interface in a PDB structure (PDBe-KB), side chain within 4 or 8 Å of RNA or DNA in a PDB entry, and inside a UniProt DNA-binding region. ' +
           'Each test compares a protein\'s methylarginines with its other arginines (Mantel–Haenszel odds ratio, Robins–Breslow–Greenland 95% CI, continuity-corrected test; each protein a stratum), over the proteins with that kind of evidence and the arginines it resolves; q is Benjamini–Hochberg across the card. With a selection, its methylarginines are compared with the other arginines of their proteins, and a tick marks the whole dataset. The same tests, with their pooled counts, are in the sections below and in the release statistics (analyses crosslink, pdb_interface, nucleic_acid_distance).</p>') +
         sub('ix-evmap', 'How the evidence fits together', '<p>Counted per site or per protein. For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink localised to the residue or with it as a candidate residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), three IntAct record types (a mutation that changed an interaction, a short binding region, the arginine curated as methylated in an interaction; these do not set the status), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. The protein-context table shows, for the sites with each kind of evidence, the share on proteins annotated as RNA- or DNA-binding (Gene Ontology), in a CD-CODE condensate, physically linked to a PRMT or a Tudor-domain reader (STRING ≥ 0.7) or in a Complex Portal curated complex, against all selected sites; each cell lists those sites. Counted per protein, the same layout combines these protein properties and whether any of the protein\'s sites carries contact evidence. Below the site view, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
         sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a dimethylarginine state call (ProMetheusDB, Maron Table S2, UniProt or Wei 2020), the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the plain odds ratio with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ 0.05 are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions should be interpreted with caution.</p>') +
@@ -14780,7 +14788,7 @@
       '<li><b>Complexes</b>: Complex Portal curated complexes and hu.MAP 3.0 predicted complexes (CC0). Enrichment of methylated members is a one-sided hypergeometric test against the reviewed human proteome, BH-adjusted separately for curated and predicted complexes. Members are counted once per protein (two processed chains of one precursor are one member); a member slot that Complex Portal fills with interchangeable proteins (e.g. the three calmodulins) counts each of them, and the member list shows each methylated one.</li>' +
       '<li><b>RNA and DNA binding</b>: Gene Ontology GO:0003723 and GO:0003677 including child terms (QuickGO/GOA, CC BY 4.0); experimental evidence means EXP, IDA, IPI, IMP, IGI, IEP or their high-throughput equivalents. Protein pages add live ENCODE eCLIP and TF ChIP-seq experiments and ChIP-Atlas target genes (CC BY 4.0).</li>' +
       '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two entries with the highest PDB IDs (roughly the most recent) per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were extracted from the atomic coordinates (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylated arginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
-      '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue crosslinked to RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016, HeLa), and CAPRI RNA-bound peptides (Panhale et al. 2019, HEK293): XL-peptides identified with an RNA adduct, and ADJ-peptides, the Lys-C peptides released next to a crosslink; and pCLAP RNA-binding peptides (Mullari et al. 2017, HEK293), which scripts/43d derives from the deposited MaxQuant search with the authors\' rule (UV-crosslinked against non-crosslinked samples, ≥ 3 of 4 valid values, two-sided t-test with s0 0.1 and a 5% permutation FDR), each with the Lys-C peptide around it, the authors\' RNA-binding region. pCLAP also records every peptide it measured, so one test counts only arginines inside a measured peptide: whether a stretch is detected at all explains much of the enrichment of methylarginines inside RNA-binding peptides. RBR-ID (Oksuz et al. 2023, K562 nuclei; method of He et al. 2016) labels RNA with 4-thiouridine and crosslinks it with 312 nm UV: a peptide crosslinked to RNA changes mass, so its unmodified signal drops. scripts/43c re-scores the deposited DIA-NN report as the authors describe; a residue counts as RBR-ID+ when an RBR-ID+ peptide (log2 +4SU/−4SU < 0, p < 0.05, the published cut-off) covers it, and the map shades it by its residue score. RBR-ID also records what it measured, so it gets the same detection control. CAPRI\'s, pCLAP\'s and RBR-ID\'s searches, like pepR-MS\'s, did not allow methylarginine, so a peptide with a methylarginine was identified only from its unmethylated molecules; its spans are used, not its adduct localisation scores, which place the base and the rest of the nucleotide on different residues. DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence' + (IX && IX.meta && IX.meta.xl_check ? ' (' + fmt(IX.meta.xl_check.matched) + ' matched, ' + fmt(IX.meta.xl_check.dropped) + ' dropped)' : '') + '. Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides. A table above it asks the protein-level question: are methylated proteins over-represented among the proteins each experiment found bound, compared with every protein that experiment measured (the reviewed proteome where a study gives no measured list)?</li>' +
+      '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue crosslinked to RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016, HeLa), and CAPRI RNA-bound peptides (Panhale et al. 2019, HEK293): XL-peptides identified with an RNA adduct, and ADJ-peptides, the Lys-C peptides released next to a crosslink; and pCLAP RNA-binding peptides (Mullari et al. 2017, HEK293), which scripts/43d derives from the deposited MaxQuant search with the authors\' rule (UV-crosslinked against non-crosslinked samples, ≥ 3 of 4 valid values, two-sided t-test with s0 0.1 and a 5% permutation FDR), each with the Lys-C peptide around it, the authors\' RNA-binding region. pCLAP also records every peptide it measured, so one test counts only arginines inside a measured peptide: whether a stretch is detected at all explains much of the enrichment of methylarginines inside RNA-binding peptides. RBR-ID (Oksuz et al. 2023, K562 nuclei; method of He et al. 2016) labels RNA with 4-thiouridine and crosslinks it with 312 nm UV: a peptide crosslinked to RNA changes mass, so its unmodified signal drops. scripts/43c re-scores the deposited DIA-NN report; a residue counts as RBR-ID+ when an RBR-ID+ peptide covers it: one lower with crosslinked RNA across the five biological samples per condition (each run fitted for its sample and acquisition date, Student\'s t, Benjamini–Hochberg q < 0.05). The published rule, which counts every run as a replicate at unadjusted p < 0.05, calls about three times as many peptides; it is kept as a sensitivity test, and the map shades it by its residue score. RBR-ID also records what it measured, so it gets the same detection control. CAPRI\'s, pCLAP\'s and RBR-ID\'s searches, like pepR-MS\'s, did not allow methylarginine, so a peptide with a methylarginine was identified only from its unmethylated molecules; its spans are used, not its adduct localisation scores, which place the base and the rest of the nucleotide on different residues. DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence' + (IX && IX.meta && IX.meta.xl_check ? ' (' + fmt(IX.meta.xl_check.matched) + ' matched, ' + fmt(IX.meta.xl_check.dropped) + ' dropped)' : '') + '. Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides. A table above it asks the protein-level question: are methylated proteins over-represented among the proteins each experiment found bound, compared with every protein that experiment measured (the reviewed proteome where a study gives no measured list)?</li>' +
       '<li><b>IntAct</b>: curated features of interaction participants (' + doiLink('10.1093/nar/gkab1006', 'del Toro et al. 2022') + '; CC BY 4.0), exported by scripts/37 when their curated sequence matches the canonical UniProt sequence at their range: mutations and their effect on an interaction (disrupts, decreases, increases, causes, no effect), regions mapped as sufficient, necessary, binding-associated or direct-interaction regions for a partner, and methylated arginines of participants. At a site, a mutation of up to 3 residues that changed an interaction, a binding region of up to ' + ((IX && IX.ia && IX.ia.peptide_max) || 20) + ' residues and a methylated-residue record are listed as IntAct evidence and can be filtered on; they do not set the site\'s interaction status. Longer regions appear only on the protein map. The IntAct map row (and its lane in the cartoon and comparison) is off until switched on in the Rows menu. The Interactions tab tests methylated against other arginines of the same proteins.</li>' +
       '<li><b>Interactive network</b>: on a protein page the partner network is drawn with Cytoscape.js (' + doiLink('10.1093/bioinformatics/btv557', 'Franz et al. 2016') + '): drag nodes, zoom with the + and − buttons, lay it out again or reset it; hover a node for its details and click it to open the protein. SVG, PNG and Cytoscape exports keep the arrangement on screen; print and the Figures tab use the drawn layout.</li>' +
       '<li><b>STRING network options</b>: on a protein page, the network can be physical or functional (all associations), scored on chosen evidence channels (STRING\'s own rule: remove the 0.041 prior from each channel score, combine, add the prior back), limited to methylated partners, PRMTs and reader domains or RNA/DNA binders, labelled and sized as needed, extended with pinned genes, and opened on string-db.org with the same settings. Options are remembered in this browser.</li>' +
@@ -15412,7 +15420,10 @@
   const respStatus = (s, t) => (respMeasured(s, t) ? RESP_WORD[s.trc[t]] : 'not_measured');
   function respSingle(s, t) {
     if (!respMeasured(s, t)) return 'not_measured';
-    const codes = (t < 2 ? s.tr.filter((e) => e[1] === t && e.length > 8).map((e) => e[8]) : s.ko.filter((c) => c.length > 7).map((c) => c[7])).filter((c) => c != null);
+    // rows of an export before v1.3.1 stop short of the single-site call: not recorded, so left empty
+    const rows = t < 2 ? s.tr.filter((e) => e[1] === t && e.length > 8).map((e) => e[8]) : s.ko.filter((c) => c.length > 7).map((c) => c[7]);
+    if (!rows.length) return '';
+    const codes = rows.filter((c) => c != null);
     return codes.length ? RESP_WORD[respCombine(codes.map(callDir))] : 'not_resolved';
   }
   function siteTsv(rows) {

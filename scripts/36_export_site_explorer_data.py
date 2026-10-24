@@ -275,17 +275,22 @@ def main() -> None:
     row_of = {int(r): i for i, r in enumerate(records['record_id'])}
     by_site = {r['site_id']: [row_of[int(x)] for x in L(r['record_ids'])] for r in sites.to_dict('records')}
     rec = records.to_dict('records')
+    # A release before v1.3.1 has no multi-site, single-site, imputation or source-rule fields: its rows stop short of them,
+    # which the website reads as not recorded.
     tr = defaultdict(list)
+    tr_full = 'n_multi_site_peptides' in inhibitors.columns
     for r in inhibitors.to_dict('records'):
         tr[r['site_id']].append([MARON_IPS.index(r['antibody']), MARON_TREATMENTS.index(r['inhibitor']), num(r['log2_diff_median']),
-                                 sig(r['adj_p_min']), int(r['n_peptides']), int(r['n_decreased']), int(r['n_increased']),
-                                 int(r['n_multi_site_peptides']), call_code(r['call_single_site_peptides']),
-                                 int(r['n_imputed_peptides']), int(r['n_one_condition_peptides'])])
+                                 sig(r['adj_p_min']), int(r['n_peptides']), int(r['n_decreased']), int(r['n_increased'])]
+                                + ([int(r['n_multi_site_peptides']), call_code(r['call_single_site_peptides']),
+                                    int(r['n_imputed_peptides']), int(r['n_one_condition_peptides'])] if tr_full else []))
     ko = defaultdict(list)
+    ko_full = 'n_multi_site_peptides' in carm1.columns
     for r in carm1.to_dict('records'):
         ko[r['site_id']].append([CELL_LINES.index(r['cell_line']), num(r['log2_ko_over_wt']), sig(r['p']), int(r['n_peptides']),
-                                 int(r['n_decreased']), int(r['n_increased']), int(r['n_multi_site_peptides']),
-                                 call_code(r['call_single_site_peptides']), call_code(r['call_source_rule']), sig(r['q'])])
+                                 int(r['n_decreased']), int(r['n_increased'])]
+                                + ([int(r['n_multi_site_peptides']), call_code(r['call_single_site_peptides']),
+                                    call_code(r['call_source_rule']), sig(r['q'])] if ko_full else []))
     disorder_classes, domain_contexts, domain_classes = Vocab(), Vocab(), Vocab()
     structure_contexts = Vocab(list(rc.CODES['structure_context']))   # fixed order: inside a folded domain to deep in a disordered region
     interpro, interpro_idx = [], {}
