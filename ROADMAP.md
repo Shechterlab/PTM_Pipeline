@@ -45,8 +45,18 @@ methylates it, under what conditions, and with what consequence, with each kind 
 6. **Protein abundance.** Matched total proteomes come first, where a study has them: they correct a peptide's change
    for its protein's change in the same samples. Otherwise [PaxDb](https://pax-db.org) integrated abundances, as a
    detection covariate for the enrichment tests (abundant proteins are more often reported as methylated).
-7. **Cell-line context.** [DepMap](https://depmap.org/portal/) dependency and the CCLE proteomes, for the PRMTs and
-   for methylated proteins, as protein-page context.
+7. **Cell-line dependency ([DepMap](https://depmap.org/portal/)).** One dated DepMap Public release, staged from its
+   downloads with the licence its download prompt gives (the DepMap forum describes the Broad's DepMap data as CC BY 4.0;
+   to be checked per file). Three uses, each labelled as cell-line genetics, not methylation:
+   - a **protein-page card**, on light pages too: the CRISPR gene effect (Chronos) across cell lines, whether the gene
+     is commonly essential, and the CCLE protein level where measured;
+   - a **writer layer**: the dependencies on each PRMT, including the known PRMT5 dependency of MTAP-deleted lines
+     (Kryukov et al. 2016, Science 351:1214, [doi:10.1126/science.aad5214](https://doi.org/10.1126/science.aad5214);
+     Mavrakis et al. 2016, Science 351:1208, [doi:10.1126/science.aad5944](https://doi.org/10.1126/science.aad5944)),
+     and which methylated proteins' dependencies correlate with a PRMT's across lines, as a suggestion of a pathway
+     beside the perturbation layers, never as evidence that the PRMT methylates the site;
+   - a **protein-set test**: whether methylated proteins are more often commonly essential than other proteins, with
+     abundance as a covariate, since essential and abundant proteins are also the most often detected.
 8. **Pathways.** [Reactome](https://reactome.org) as a further protein-set annotation, under the same
    over-representation test and with the same reported-site caveat.
 
