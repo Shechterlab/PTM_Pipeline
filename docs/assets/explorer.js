@@ -2741,6 +2741,13 @@
       const [kind, a, c] = b.dataset.ev.split(':');
       showEvidence(e, P[+b.dataset.evp], kind, +a, +c);
     }, true);
+    // A partner's name (geneRef) opens its page, wherever it is drawn; containers that bind it themselves stop the event.
+    document.addEventListener('click', (e) => {
+      const g = e.target.closest ? e.target.closest('.gene-ref[data-i]') : null;
+      if (!g || g.dataset.bound) return;
+      hideTip();
+      openProtein(+g.dataset.i);
+    });
     // A fold remembers being opened or closed by a click on its header (not by print, which opens them all).
     document.addEventListener('click', (e) => {
       const s = e.target.closest ? e.target.closest('details.fold > summary') : null;
@@ -5713,7 +5720,7 @@
     return x.p >= 0 ? '<button class="linkish gene-ref" type="button" data-i="' + x.p + '" title="' + esc('Open ' + x.gene + ' (' + x.acc + ')' + (extra ? ': ' + extra : '')) + '">' + esc(x.gene) + '</button>'
       : unlistedLink(x, 'gene-ref unl');
   }
-  const bindGeneRefs = (root) => $$('.gene-ref[data-i]', root).forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); hideTip(); openProtein(+b.dataset.i); }));
+  const bindGeneRefs = (root) => $$('.gene-ref[data-i]', root).forEach((b) => { b.dataset.bound = '1'; b.addEventListener('click', (e) => { e.stopPropagation(); hideTip(); openProtein(+b.dataset.i); }); });
   // Who probably writes and who might read one methylarginine: the methylation evidence at the site (Maron IPs,
   // inhibitor responses and the CARM1 knockout) and the PRMTs and Tudor-domain proteins that physically bind the whole protein (STRING ≥ 0.7).
   function writerReaderHtml(s, p) {
@@ -8995,7 +9002,8 @@
     // interaction file of another export would put every row on the wrong protein).
     const bad = P.findIndex((p, k) => !d.proteins[k] || d.proteins[k][0] !== p.acc);
     if (bad >= 0) throw new Error('methylarg_interactions.json does not match the sites file (protein ' + bad + ')');
-    const prot = d.proteins.map((r, k) => ({ k, acc: r[0], gene: (r[1] || r[0]).replace(/; /g, '/'), flags: r[2], ensp: r[3], p: k < nP ? k : -1 }));
+    // noGene: the export names no gene, which marks partners outside the reviewed human proteins (IntAct curates other species)
+    const prot = d.proteins.map((r, k) => ({ k, acc: r[0], gene: (r[1] || r[0]).replace(/; /g, '/'), flags: r[2], ensp: r[3], p: k < nP ? k : -1, noGene: !r[1] }));
     const byEnsp = new Map();
     prot.forEach((x) => { if (x.ensp && !byEnsp.has(x.ensp)) byEnsp.set(x.ensp, x.k); });
     const geneOf = (k) => (prot[k] ? prot[k].gene : '?');
@@ -9992,7 +10000,9 @@
   // The interaction data's index of an accession (its STRING partners and complexes), or -1.
   const ixIndexOf = (acc) => (ixReady() ? IX.prot.findIndex((y) => y.acc === acc) : -1);
   // A link to the page of a protein outside the set (the interaction data names it).
-  const unlistedLink = (x, cls) => '<a class="' + (cls || 'linkish') + '" href="#' + encodeURIComponent(x.acc.split('-')[0]) + '" title="' + esc(x.gene + ' (' + x.acc + '): no methylarginine site in this release; opens its page') + '">' + esc(x.gene) + '</a>';
+  const unlistedLink = (x, cls) => (x.noGene
+    ? '<a class="' + (cls || 'linkish') + '" href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(x.acc) + '/entry" target="_blank" rel="noopener" title="' + esc(x.acc + ': no gene symbol in the interaction data (often another species); opens UniProt') + '">' + esc(x.gene) + ' ↗</a>'
+    : '<a class="' + (cls || 'linkish') + '" href="#' + encodeURIComponent(x.acc.split('-')[0]) + '" title="' + esc(x.gene + ' (' + x.acc + '): no methylarginine site in this release; opens its page') + '">' + esc(x.gene) + '</a>');
 
   // The in-cell RNA and DNA evidence of a protein without a site (scripts/37 --unlisted-out), in words; the map draws it.
   function unlistedCellsHtml(x) {
@@ -14234,7 +14244,8 @@
   const PEPR_DOI = '10.1101/2025.09.05.674461', RBDMAP_DOI = '10.1016/j.molcel.2016.06.029', DNAXL_DOI = '10.1016/j.cell.2025.04.037', CAPRI_DOI = '10.1038/s41467-019-10585-3', PCLAP_DOI = '10.1021/acs.jproteome.7b00042', RBRID_DOI = '10.1016/j.molcel.2023.06.012';
   const EV_TITLE = { pred: 'Predicted protein contacts (AlphaFold-Multimer models)', rna: 'RNA crosslinks in living cells', dna: 'DNA crosslinks in living cells', 'pdb-rna': 'RNA contacts in PDB structures', 'pdb-dna': 'DNA contacts in PDB structures', 'pdb-protein': 'Protein contacts in PDB structures', 'pdb-self': 'Self-contacts in PDB structures', pdbna: 'RNA/DNA contacts in PDB structures', pdbprot: 'Protein contacts in PDB structures', intact: 'Interaction features curated in IntAct' };
   const pmidLink = (id) => '<a href="https://pubmed.ncbi.nlm.nih.gov/' + encodeURIComponent(id) + '/" target="_blank" rel="noopener">PubMed ' + esc(id) + '</a>';
-  const iaPartnerText = (list, n) => esc(list.map(ixGene).join(', ')) + (n > list.length ? ' and ' + (n - list.length) + ' more' : '');
+  // IntAct partners, each opening its page here (a methylated protein's, or the light page of one without a site)
+  const iaPartnerText = (list, n) => list.map((k) => (IX.prot[k] ? geneRef(k, 'IntAct partner') : esc(ixGene(k)))).join(', ') + (n > list.length ? ' and ' + (n - list.length) + ' more' : '');
   // One IntAct record (a site-level record carries PubMed ids and interaction ACs; a map-track record only counts).
   // The publications (PubMed) and IntAct interactions behind a curated feature, as links.
   function iaRefsHtml(pmids, acs) {
@@ -14251,10 +14262,34 @@
     if (r.kind === 1) return '<li>' + IA_REGION[r.code].replace(/^./, (c) => c.toUpperCase()) + ' binding region <b>' + span + '</b> for ' + who + tail + '</li>';
     return '<li><b>' + span + '</b> methylated in the interaction with ' + who + tail + '</li>';
   }
+  // The partners predicted to contact one methylarginine: ProtVar heterodimer interfaces (pDockQ ≥ 0.23; the model file
+  // where the ProtVar API serves the pair) and the models measured for the contact gallery (ProtVar, AlphaFold DB
+  // complexes), each partner once with its page, its scores and its models.
+  function predSiteHtml(s, p) {
+    const base = p.acc.split('-')[0], by = new Map();
+    const one = (k) => { if (!by.has(k)) by.set(k, { k, sc: null, url: '', af: [], bond: '' }); return by.get(k); };
+    const pvUrl = (k, first, model) => { const x = IX.prot[k]; if (!x || !model) return ''; const f = model === 2 ? !first : !!first; return PROTVAR_MODEL.apply(null, f ? [base, x.acc] : [x.acc, base]); };
+    for (const [k, sc, first, model] of (s.pred && s.pred.hits) || []) { const e = one(k); e.sc = sc; e.url = pvUrl(k, first, model) || e.url; }
+    for (const g of s.gal || []) {
+      const e = one(g.k);
+      if (g.src === 0) { if (!e.url) e.url = pvUrl(g.k, g.ref === 1, 1); if (e.sc == null) e.sc = g.score; }
+      else if (g.ref && !e.af.some((m) => m.ref === g.ref)) e.af.push(g);
+      if (!e.bond && galPass(g, GAL_DEFAULT)) e.bond = galBondText(g);
+    }
+    const list = Array.from(by.values()).sort((x, y) => (y.sc || 0) - (x.sc || 0));
+    const more = s.pred && s.pred.n > s.pred.hits.length ? s.pred.n - s.pred.hits.length : 0;
+    const li = (e) => '<li>' + (IX.prot[e.k] ? geneRef(e.k, 'predicted partner') : esc(ixGene(e.k))) +
+      (e.sc != null ? ' <span class="muted">ProtVar pDockQ ' + (e.sc / 100).toFixed(2) + '</span>' : '') +
+      (e.url ? ' · <a href="' + e.url + '" target="_blank" rel="noopener" title="AlphaFold-Multimer model of the pair (PDB file) from the ProtVar API">model ↗</a>' : e.sc != null ? ' · <span class="muted">model not served</span>' : '') +
+      e.af.map((g) => ' · <a href="https://alphafold.ebi.ac.uk/entry/' + encodeURIComponent(g.ref) + '" target="_blank" rel="noopener" title="The complex in AlphaFold DB">AlphaFold DB ' + esc(g.ref) + ' ↗</a> <span class="muted">ipTM ' + (g.score / 100).toFixed(2) + '</span>').join('') +
+      (e.bond ? '<br><span class="muted small">' + esc(e.bond) + '</span>' : '') + '</li>';
+    return '<li><b>' + rl(s.pos, p) + '</b> at the predicted interface with ' + list.length + (more ? '+' : '') + ' partner' + (list.length === 1 && !more ? '' : 's') +
+      '<ul class="xl-peps">' + list.map(li).join('') + '</ul>' + (more ? '<span class="muted small">and ' + more + ' more in the ProtVar table (the stretch below lists them when it has loaded)</span>' : '') + '</li>';
+  }
   // ProtVar partners of a predicted interface, best pDockQ first: each opens its page here, and its model downloads from
   // the ProtVar API when the API serves the pair (the 2024 interface table lists more pairs than the API serves).
   function predPartnerList(base, list) {
-    const one = ([acc, gene, q, model]) => '<li><a class="linkish" href="#' + encodeURIComponent(acc) + '" title="' + esc('Open ' + (gene || acc) + ' (' + acc + ')') + '">' + esc(gene || acc) + '</a> ' +
+    const one = ([acc, gene, q, model]) => '<li><a class="linkish gene-ref" href="#' + encodeURIComponent(acc) + '" title="' + esc('Open ' + (gene || acc) + ' (' + acc + ')') + '">' + esc(gene || acc) + '</a> ' +
       '<span class="muted">pDockQ ' + (q / 100).toFixed(2) + '</span>' +
       (model ? ' · <a href="' + PROTVAR_MODEL.apply(null, model === 1 ? [base, acc] : [acc, base]) + '" target="_blank" rel="noopener" title="AlphaFold-Multimer model of the pair (PDB file) from the ProtVar API">model ↗</a>' : ' · <span class="muted">model not served</span>') + '</li>';
     const top = list.slice(0, 8), rest = list.slice(8);
@@ -14328,15 +14363,15 @@
       if (items.length) items.push('<li class="muted">Curated by IntAct from the publications listed; every feature here matches the canonical UniProt sequence at its range. <a href="https://www.ebi.ac.uk/intact/search?query=' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">All IntAct interactions of ' + esc(p.label) + ' ↗</a></li>');
     } else if (kind === 'pred') {
       const base = p.acc.split('-')[0], who = PRED_PARTNERS.get(base) || [];
+      const atSites = new Set(p.sites.filter((k) => inR(S[k].pos)).flatMap((j) => ((S[j].pred && S[j].pred.hits) || []).map(([k]) => IX.prot[k] && IX.prot[k].acc)));
       for (const [x, y, n, q, along] of (predIfaceOf(p) || []).filter(([x, y]) => x <= b && y >= a)) {
-        const named = (along || []).map((k) => who[k]).filter(Boolean);
-        items.push('<li>Residues <b>' + rn(x, p) + '–' + rn(y, p) + '</b> at the predicted interface with ' + (named.length ? named.length : 'up to ' + n) + ' partner' + ((named.length || n) === 1 ? '' : 's') + ' (best pDockQ ' + (q / 100).toFixed(2) + ')' +
-          (named.length ? predPartnerList(base, named) : '') + '</li>');
+        const named = (along || []).map((k) => who[k]).filter(Boolean), rest = named.filter((w) => !atSites.has(w[0]));
+        const count = named.length || n;
+        items.push('<li>Residues <b>' + rn(x, p) + '–' + rn(y, p) + '</b> at the predicted interface with ' + (named.length ? count : 'up to ' + n) + ' partner' + (count === 1 ? '' : 's') + ' (best pDockQ ' + (q / 100).toFixed(2) + ')' +
+          (rest.length ? (rest.length < named.length ? '; besides those at the site:' : '') + predPartnerList(base, rest) : named.length ? ': the partners above' : '') + '</li>');
       }
-      for (const j of p.sites.filter((k) => inR(S[k].pos))) {
-        const names = ixPartners(S[j]).pred;
-        items.push('<li><b>' + rl(S[j].pos, p) + '</b> at a predicted interface' + (names.length ? ' with ' + esc(names.join(', ')) : '') + ' (ProtVar AlphaFold-Multimer models or AlphaFold DB complexes)</li>');
-      }
+      // the sites with a predicted partner first, then the stretch
+      items.unshift(...p.sites.filter((k) => inR(S[k].pos) && ((S[k].pred && S[k].pred.hits.length) || (S[k].gal || []).length)).map((j) => predSiteHtml(S[j], p)));
       if (items.length) items.push('<li class="muted">Interface residues (within 5 Å of the partner) from ProtVar\'s ' + '<a href="https://ftp.ebi.ac.uk/pub/databases/ProtVar/predictions/interfaces/2024.05.28_interface_summary_5A.tsv.gz" target="_blank" rel="noopener">2024 interface table ↗</a>' +
         ' of AlphaFold-Multimer models of human pairs, pDockQ ≥ 0.23 (' + doiLink('10.1038/s41594-022-00910-8', 'Burke et al. 2023') + ').</li>');
     } else if (kind.startsWith('pdb')) {
@@ -14386,16 +14421,28 @@
     if (hover && !pop.hidden && !pop.dataset.hover) return;   // a card the reader clicked open stays
     pop.dataset.hover = hover ? '1' : '';
     hideTip();
-    pop.innerHTML = contactEvidenceHtml(p, kind, a, b);
+    const key = p.acc + ':' + kind + ':' + a + ':' + b;
+    pop.dataset.key = key;
+    const fill = () => {
+      pop.innerHTML = contactEvidenceHtml(p, kind, a, b);
+      $('.evpop-x', pop).addEventListener('click', () => { pop.hidden = true; });
+      bindContactLinks(pop);
+      $$('[data-cpdb]', pop).forEach((x) => x.addEventListener('click', () => { pop.hidden = true; }));
+      $$('[data-goto-site]', pop).forEach((x) => x.addEventListener('click', () => {
+        pop.hidden = true;
+        const pos = +x.dataset.gotoSite;
+        if (UI.view === 'protein' && UI.detail === p.i) { UI.highlight = pos; flashSite(pos, true); } else openProtein(p.i, pos);
+      }));
+    };
+    fill();
     pop.hidden = false;
-    $('.evpop-x', pop).addEventListener('click', () => { pop.hidden = true; });
-    bindContactLinks(pop);
-    $$('[data-cpdb]', pop).forEach((x) => x.addEventListener('click', () => { pop.hidden = true; }));
-    $$('[data-goto-site]', pop).forEach((x) => x.addEventListener('click', () => {
-      pop.hidden = true;
-      const pos = +x.dataset.gotoSite;
-      if (UI.view === 'protein' && UI.detail === p.i) { UI.highlight = pos; flashSite(pos, true); } else openProtein(p.i, pos);
-    }));
+    // opened outside the protein page (a site table chip), the protein's predicted-contact runs and partners load now
+    if (kind === 'pred' && !p.iso && !p.unl && predIfaceOf(p) === null) loadPredIface(p.acc).then(() => {
+      if (pop.hidden || pop.dataset.key !== key) return;
+      fill();
+      const r = pop.getBoundingClientRect();   // the longer card stays on screen
+      if (r.bottom > window.innerHeight - 8) pop.style.top = Math.max(8, window.innerHeight - r.height - 8) + 'px';
+    });
     const w = pop.offsetWidth, h = pop.offsetHeight;
     let left = e.clientX + 12, top = e.clientY + 12;
     if (left + w > window.innerWidth - 8) left = Math.max(8, e.clientX - w - 12);
