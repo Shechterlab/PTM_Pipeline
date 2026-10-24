@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- The site's name: change it here, in <title> and in the h1 below. Figure credits read application-name. -->
+  <title>Methylarginine Site Explorer v1.3.0 (archived) · Shechter Lab</title>
+  <meta name="application-name" content="Methylarginine Site Explorer">
+  <meta name="description" content="Human protein arginine methylation sites from DeAngelo, Silverstein &amp; Shechter, Cell Chemical Biology 2026: interactions, structures, ontology, disease, condensates, motifs and provenance, with exportable figures.">
+  <link rel="icon" href="assets/methylarginine-icon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/methylarginine-icon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/methylarginine-search-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Serif:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="assets/explorer.css?v=v1.3.0-archive">
+  <script>
+    try { var t = localStorage.getItem('mre-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+  </script>
+</head>
+<body>
+  <!-- Frozen copy of the explorer as released at v1.3.0. Do not update. -->
+  <div role="note" style="background:var(--scope-bg);color:var(--ink);border-bottom:2px solid var(--accent);font:500 0.95rem/1.45 var(--font-body);padding:0.7rem 16px;text-align:center">
+    <strong>Archived version v1.3.0</strong>: the explorer as released before the corrections of v1.3.1 (inhibitor and knockout calls, RBR-ID on biological samples). Its data are not updated.
+    The current version is <a href="../" style="color:var(--accent-dark);font-weight:600">here</a>
+    (<a href="https://github.com/Shechterlab/PTM_Pipeline/blob/main/releases/v1.3.1/CHANGES.md" style="color:var(--accent-dark)">what changed</a>).
+  </div>
+  <button class="skip-link" type="button" id="skip-link">Skip to results</button>
+  <header class="hero">
+    <div class="hero-art" id="hero-art"><svg viewBox="0 12 496 136" role="img" aria-label="Monomethylarginine (Rme1), asymmetric dimethylarginine (Rme2a) and symmetric dimethylarginine (Rme2s)" font-family="Inter, system-ui, sans-serif" stroke-width="1.6" stroke-linecap="round"><path d="M2.0,63.0 q3,2 0,4 q-3,2 0,4 q3,2 0,4" fill="none" stroke="currentColor"/><line x1="6.0" y1="70.0" x2="23.0" y2="60.0" stroke="currentColor"/><line x1="23.0" y1="60.0" x2="40.0" y2="70.0" stroke="currentColor"/><line x1="40.0" y1="70.0" x2="57.0" y2="60.0" stroke="currentColor"/><line x1="57.0" y1="60.0" x2="68.8" y2="67.0" stroke="currentColor"/><line x1="79.2" y1="67.0" x2="91.0" y2="60.0" stroke="currentColor"/><line x1="91.0" y1="60.0" x2="102.8" y2="67.0" stroke="currentColor"/><line x1="88.6" y1="60.0" x2="88.6" y2="47.0" stroke="currentColor"/><line x1="93.4" y1="60.0" x2="93.4" y2="47.0" stroke="currentColor"/><text x="74.0" y="74.5" text-anchor="middle" font-size="13" fill="currentColor">N</text><text x="74.0" y="88.0" text-anchor="middle" font-size="13" fill="currentColor">H</text><text x="87.0" y="44.0" text-anchor="start" font-size="13" fill="currentColor">NH<tspan font-size="9.5" dy="3.5">2</tspan><tspan font-size="10" dy="-10">+</tspan></text><text x="108.0" y="74.5" text-anchor="middle" font-size="13" fill="currentColor">N</text><text x="108.0" y="88.0" text-anchor="middle" font-size="13" fill="currentColor">H</text><line x1="113.2" y1="67.0" x2="123.6" y2="61.0" stroke="#fdba74"/><text x="127.3" y="59.0" text-anchor="start" font-size="13" fill="#fdba74">CH<tspan font-size="9.5" dy="3.5">3</tspan></text><text x="70.0" y="128.0" text-anchor="middle" font-size="14" fill="currentColor" font-weight="600">Rme1</text><text x="70.0" y="143.0" text-anchor="middle" font-size="11.5" fill="currentColor">monomethyl</text><path d="M170.0,63.0 q3,2 0,4 q-3,2 0,4 q3,2 0,4" fill="none" stroke="currentColor"/><line x1="174.0" y1="70.0" x2="191.0" y2="60.0" stroke="currentColor"/><line x1="191.0" y1="60.0" x2="208.0" y2="70.0" stroke="currentColor"/><line x1="208.0" y1="70.0" x2="225.0" y2="60.0" stroke="currentColor"/><line x1="225.0" y1="60.0" x2="236.8" y2="67.0" stroke="currentColor"/><line x1="247.2" y1="67.0" x2="259.0" y2="60.0" stroke="currentColor"/><line x1="259.0" y1="60.0" x2="270.8" y2="67.0" stroke="currentColor"/><line x1="256.6" y1="60.0" x2="256.6" y2="47.0" stroke="currentColor"/><line x1="261.4" y1="60.0" x2="261.4" y2="47.0" stroke="currentColor"/><text x="242.0" y="74.5" text-anchor="middle" font-size="13" fill="currentColor">N</text><text x="242.0" y="88.0" text-anchor="middle" font-size="13" fill="currentColor">H</text><text x="255.0" y="44.0" text-anchor="start" font-size="13" fill="currentColor">NH<tspan font-size="9.5" dy="3.5">2</tspan><tspan font-size="10" dy="-10">+</tspan></text><text x="276.0" y="74.0" text-anchor="middle" font-size="13" fill="currentColor">N</text><line x1="281.2" y1="67.0" x2="291.6" y2="61.0" stroke="#fdba74"/><text x="295.3" y="59.0" text-anchor="start" font-size="13" fill="#fdba74">CH<tspan font-size="9.5" dy="3.5">3</tspan></text><line x1="276.0" y1="76.0" x2="276.0" y2="85.0" stroke="#fdba74"/><text x="276.0" y="100.0" text-anchor="middle" font-size="13" fill="#fdba74">CH<tspan font-size="9.5" dy="3.5">3</tspan></text><text x="238.0" y="128.0" text-anchor="middle" font-size="14" fill="currentColor" font-weight="600">Rme2a</text><text x="238.0" y="143.0" text-anchor="middle" font-size="11.5" fill="currentColor">asymmetric dimethyl</text><path d="M338.0,63.0 q3,2 0,4 q-3,2 0,4 q3,2 0,4" fill="none" stroke="currentColor"/><line x1="342.0" y1="70.0" x2="359.0" y2="60.0" stroke="currentColor"/><line x1="359.0" y1="60.0" x2="376.0" y2="70.0" stroke="currentColor"/><line x1="376.0" y1="70.0" x2="393.0" y2="60.0" stroke="currentColor"/><line x1="393.0" y1="60.0" x2="404.8" y2="67.0" stroke="currentColor"/><line x1="415.2" y1="67.0" x2="427.0" y2="60.0" stroke="currentColor"/><line x1="427.0" y1="60.0" x2="438.8" y2="67.0" stroke="currentColor"/><line x1="424.6" y1="60.0" x2="424.6" y2="47.0" stroke="currentColor"/><line x1="429.4" y1="60.0" x2="429.4" y2="47.0" stroke="currentColor"/><text x="410.0" y="74.5" text-anchor="middle" font-size="13" fill="currentColor">N</text><text x="410.0" y="88.0" text-anchor="middle" font-size="13" fill="currentColor">H</text><text x="423.0" y="44.0" text-anchor="start" font-size="13" fill="currentColor">NH<tspan font-size="10" dy="-7">+</tspan></text><line x1="421.8" y1="37.0" x2="411.4" y2="31.0" stroke="#fdba74"/><text x="407.7" y="29.0" text-anchor="end" font-size="13" fill="#fdba74">H<tspan font-size="9.5" dy="3.5">3</tspan><tspan dy="-3.5">C</tspan></text><text x="444.0" y="74.5" text-anchor="middle" font-size="13" fill="currentColor">N</text><text x="444.0" y="88.0" text-anchor="middle" font-size="13" fill="currentColor">H</text><line x1="449.2" y1="67.0" x2="459.6" y2="61.0" stroke="#fdba74"/><text x="463.3" y="59.0" text-anchor="start" font-size="13" fill="#fdba74">CH<tspan font-size="9.5" dy="3.5">3</tspan></text><text x="406.0" y="128.0" text-anchor="middle" font-size="14" fill="currentColor" font-weight="600">Rme2s</text><text x="406.0" y="143.0" text-anchor="middle" font-size="11.5" fill="currentColor">symmetric dimethyl</text></svg></div>
+    <div class="wrap">
+      <div class="brand">
+        <h1><a class="home-link" href="#overview" title="Back to the overview"><img class="site-mark full" src="assets/methylarginine-search.svg" alt="" width="50" height="50"><img class="site-mark small" src="assets/methylarginine-icon.svg" alt="" width="26" height="26"><span>Methylarginine Site Explorer</span></a></h1>
+        <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="brand-side" aria-label="Lab and site links"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        <div class="brand-side" id="brand-side">
+          <a class="brand-mark" href="https://www.shechterlab.org/" title="Shechter Lab, Albert Einstein College of Medicine">
+            <img src="assets/shechterlab-icon.svg" alt="" width="30" height="30">
+            <span>Shechter Lab<small>Albert Einstein College of Medicine</small></span>
+          </a>
+          <nav class="brand-links" aria-label="Site and lab links">
+            <a href="#about" id="docs-link">Documentation</a>
+            <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases/v1.3.0">Code &amp; data (v1.3.0)</a>
+            <a href="https://www.shechterlab.org/research/">Research</a>
+            <a href="https://www.shechterlab.org/publications/">Publications</a>
+          </nav>
+        </div>
+      </div>
+      <div class="lede" id="lede"><p class="lede-cite"><span class="cite-long">Please cite DeAngelo, Silverstein &amp; Shechter, <a href="https://doi.org/10.1016/j.chembiol.2026.09.011"><i>Protein arginine methylation rewires molecular interactions</i></a>, Cell Chem Biol 2026, and the original data sources</span><span class="cite-short">Cite <a href="https://doi.org/10.1016/j.chembiol.2026.09.011">DeAngelo <i>et al.</i>, Cell Chem Biol 2026</a> and the data sources</span> (<button class="linkish" type="button" data-doc="cite">how to cite</button>).</p>
+        <p class="lede-note"><a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases/v1.3.0">v1.3.0</a> · <button class="linkish" type="button" data-doc="versions">about this version</button></p></div>
+      <div class="hero-stats" id="hero-stats" aria-label="Dataset summary"></div>
+    </div>
+  </header>
+
+  <div class="toolbar" id="toolbar">
+    <div class="wrap">
+      <div class="search" role="search">
+        <div class="search-field">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <label class="sr-only" for="q">Search genes, UniProt accessions, protein names or sites</label>
+          <input id="q" type="search" autocomplete="off" spellcheck="false"
+            placeholder="Gene, accession, site (FUS R216), gene list, or a filter such as motif:RGG or disease:als"
+            aria-controls="suggest" aria-autocomplete="list" aria-expanded="false">
+          <button class="search-clear" id="q-clear" type="button" aria-label="Clear search" hidden>×</button>
+          <ul class="suggest" id="suggest" role="listbox" hidden></ul>
+        </div>
+      </div>
+      <div class="scope" id="scope" aria-live="polite"></div>
+      <div class="query-note" id="query-note" aria-live="polite"></div>
+      <div class="tabs" id="tabs" role="tablist" aria-label="Views">
+        <button class="tab" role="tab" id="tab-overview" data-view="overview" aria-selected="true">Overview</button>
+        <button class="tab in-sel" role="tab" id="tab-proteins" data-view="proteins" aria-selected="false">Proteins <span class="count" id="count-proteins">–</span></button>
+        <button class="tab in-sel" role="tab" id="tab-sites" data-view="sites" aria-selected="false">Sites <span class="count" id="count-sites">–</span></button>
+        <button class="tab in-sel tab-feature" role="tab" id="tab-interactions" data-view="interactions" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="6" cy="6" r="2.5"></circle><circle cx="18" cy="7" r="2.5"></circle><circle cx="12" cy="18" r="2.5"></circle><path d="M8.3 7.2 15.6 7M7.3 8.2l3.6 7.6M16.8 9.2l-3.6 6.6"></path></svg>Interactions</button>
+        <button class="tab" role="tab" id="tab-protein" data-view="protein" aria-selected="false" hidden>Protein</button>
+        <label class="lc-switch" id="lc-switch" title="Show the lower-confidence sites, hatched: arginines the studies report as methylated, or that an earlier release had as sites, whose records each fail at least one site test. Off by default." hidden>
+          <input type="checkbox" id="lc-toggle"><span class="lc-swatch" aria-hidden="true"></span>Lower-confidence sites</label>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <div class="lc-note" id="lc-note" hidden></div>
+    <div class="layout" id="layout">
+      <div class="content" id="content" tabindex="-1">
+        <div class="loading" id="loading"><div class="spinner"></div><p>Loading methylarginine sites…</p></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <p>© <span id="year">2026</span> Shechter Lab · <a href="https://einsteinmed.edu/departments/biochemistry">Department of Biochemistry</a>, <a href="https://einsteinmed.edu">Albert Einstein College of Medicine</a><br>
+        Cite: DeAngelo, Silverstein &amp; Shechter, <i>Cell Chem Biol</i> 33:1404–1421 (2026), <a href="https://doi.org/10.1016/j.chembiol.2026.09.011">doi:10.1016/j.chembiol.2026.09.011</a>, and the original studies that reported the sites you use (<button class="linkish" type="button" data-doc="cite">How to cite</button>)<br>
+        Built from <a href="https://github.com/Shechterlab/PTM_Pipeline">Shechterlab/PTM_Pipeline</a> · <span id="data-version"></span><br>
+        Data and content <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> · code MIT · third-party data under their own licences (<a href="https://github.com/Shechterlab/PTM_Pipeline/blob/main/LICENSE.md">LICENSE</a>, <a href="#about">Documentation</a>)</p>
+      <div class="theme-switch" role="group" aria-label="Color theme">
+        <button type="button" data-theme-set="light">Light</button>
+        <button type="button" data-theme-set="system">System</button>
+        <button type="button" data-theme-set="dark">Dark</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- The filters: a drawer over the dimmed page, opened from the scope bar's Filters button. -->
+  <div class="drawer-bg" id="drawer-bg" hidden></div>
+  <aside class="rail drawer" id="rail" role="dialog" aria-modal="true" aria-labelledby="rail-title" hidden></aside>
+  <div class="tip" id="tip" hidden></div>
+  <script src="assets/explorer.js?v=v1.3.0-archive"></script>
+</body>
+</html>

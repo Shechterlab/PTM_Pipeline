@@ -795,6 +795,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
     lines += nucleic_acid_section(ctx, files, previous)
     lines += crosslink_section(files, previous)
     lines += analysis_section(files, previous)
+    lines += review_section(ctx, files, previous)
     if since_v11:
         lines += [
         '## Methylation degree',
@@ -953,6 +954,97 @@ def crosslink_section(files: dict, previous: str) -> list:
             '`inputs/interactions/`): methylarginines against the other arginines of the same proteins, each protein a stratum'
             + (': ' + tests if tests else '') + '. `sequence_proximity` tests whether methylarginines lie within a given distance along '
             'the sequence of each kind of RNA-binding residue more often than the other arginines of the same proteins.', '']
+
+
+def review_section(ctx: dict, files: dict, previous: str) -> list:
+    """CHANGES.md: what v1.3.1 corrected after the review of v1.3.0 (how evidence is called and described; the sites stay)."""
+    if previous != 'v1.3.0':
+        return []
+    sites, prev = files['sites'][1], ctx['previous_sites']
+    num = lambda x: pd.to_numeric(x, errors='coerce').fillna(0).astype(int)  # noqa: E731
+    changed = {'decreased', 'increased', 'mixed'}
+    calls = [('maron2021_GSK591_call', 'GSK591 (type II PRMT inhibitor)'), ('maron2021_MS023_call', 'MS023 (type I PRMT inhibitor)'),
+             ('carm1_ko_call', 'CARM1 knockout')]
+    order = ['decreased', 'increased', 'mixed', 'no_significant_change']
+    old_name = lambda c: 'no_change' if c == 'no_significant_change' else c  # noqa: E731
+    table = ['| Sites called | ' + ' | '.join(f'{label}: {previous} → this version' for _, label in calls) + ' |',
+             '|---|' + '---:|' * len(calls)]
+    for c in order:
+        table.append(f'| `{c}` | ' + ' | '.join(f"{n(int((prev[col] == old_name(c)).sum()))} → {n(int((sites[col] == c).sum()))}" for col, _ in calls) + ' |')
+    inh, carm = files['maron_inhibitors'][1], files['carm1_ko'][1]
+    inh_changed = inh[inh['call'].isin(changed)]
+    multi_only = inh_changed[inh_changed['call_single_site_peptides'] == '']
+    one_cond = inh_changed[num(inh_changed['n_one_condition_peptides']) == num(inh_changed['n_peptides'])]
+    carm_changed = carm[carm['call'].isin(changed)]
+    carm_diff = int((carm['call'] != carm['call_source_rule']).sum())
+    out = ['## Corrections after the review of v1.3.0', '',
+           f'{ctx["version"]} keeps the sites, records and placements of {previous}. It changes how some evidence is called and '
+           'described, after an outside review of v1.3.0.', '',
+           '### Inhibitor and knockout responses: one rule, read at the peptide level', '',
+           'Maron et al. 2021 Table S3 and the CARM1 knockout of Shishkova et al. 2017 measure methylated peptides, not sites. '
+           'A site\'s call over the peptides that carry it is now `decreased` when at least one peptide decreased and none '
+           'increased, `increased` likewise, `mixed` when peptides changed in opposite directions, and `no_significant_change` '
+           '(in place of `no_change`) when none changed: measured, not shown to be unchanged. The release, the website and the '
+           'Maron 2021 summaries of the analyses (`scripts/16`) now share this rule (`scripts/peptide_calls.py`); the summaries '
+           'had called a site from its median change, which can have the opposite sign to a significant peptide. The median '
+           'stays as a description only.', ''] + table + ['',
+           '- A peptide that carries several methylarginines reports them together, so its change cannot be given to one of '
+           'them. The tables now count those peptides (`n_multi_site_peptides`) and give the call from the single-site '
+           f'peptides alone (`call_single_site_peptides`, empty when there are none). Of the {n(len(inh_changed))} site and '
+           f'antibody rows of `supporting/maron2021_inhibitors` with a change, {n(len(multi_only))} rest only on peptides '
+           'carrying another methylarginine.',
+           '- Most rows of Table S3 hold imputed values; where one condition is a constant imputed value, the peptide was '
+           f'detected in the other condition only. `n_imputed_peptides` and `n_one_condition_peptides` count them; '
+           f'{n(len(one_cond))} of the rows with a change have every peptide detected in one condition only.',
+           '- CARM1 knockout: a peptide now changes at Benjamini-Hochberg q < 0.05 (the study\'s p values adjusted over the '
+           'quantified peptides of each cell line) and a twofold change; the study\'s own rule (nominal p < 0.05) is kept as '
+           f'`call_source_rule`. {n(len(carm_changed))} site and cell-line rows change under the adjusted rule; the two rules '
+           f'differ on {n(carm_diff)} rows.',
+           '- Neither study measured total protein in the same samples, so a peptide\'s change can also be a change in its '
+           'protein. The website calls a decrease after a PRMT inhibitor "Writer suggested", not a writer.', '']
+    # RBR-ID: biological samples and an adjusted p, the published rule kept as a reproduction
+    inputs = Path(ctx['inputs'])
+    pep_path, res_path = inputs / 'interactions/rbrid_oksuz2023_k562_peptides.tsv', inputs / 'interactions/rbrid_oksuz2023_k562_positive_residues.tsv'
+    if pep_path.exists() and res_path.exists():
+        pep = pd.read_csv(pep_path, sep='\t', dtype=str, keep_default_na=False)
+        res = pd.read_csv(res_path, sep='\t', dtype=str, keep_default_na=False)
+        pos, pub = pep['rbrid_positive'] == 'true', pep['rbrid_positive_published'] == 'true'
+        stats = files['statistics'][1]
+        mh = stats[(stats['analysis'] == 'crosslink') & (stats['method'] == 'mantel_haenszel')].set_index('category')
+        test = lambda cat: (f"OR {float(mh.at[cat, 'odds_ratio']):.2f}, p {float(mh.at[cat, 'p']):.2g}, {mh.at[cat, 'n_strata']} proteins"  # noqa: E731
+                            if cat in mh.index and mh.at[cat, 'odds_ratio'] not in ('', None) else 'not tested')
+        out += ['### RBR-ID: called on the biological samples', '',
+                'RBR-ID (Oksuz et al. 2023) measured five biological samples per condition, each in up to three runs. v1.3.0 '
+                'followed the published rule, which counts every run as an independent observation and calls a peptide at '
+                'unadjusted p < 0.05. The call is now made on the samples: each peptide\'s values are fitted for sample and '
+                'acquisition date, compared with Student\'s t test (at least three samples per condition), and called at '
+                'Benjamini-Hochberg q < 0.05 with a decrease on crosslinking. The published rule is kept beside it as a '
+                'reproduction (columns ending in `_published` in `inputs/interactions/`, and the test category '
+                '`rbrid_residue_published_rule`).', '',
+                '| | Biological samples, BH (used) | Published rule |', '|---|---:|---:|',
+                f'| RBR-ID+ peptides | {n(int(pos.sum()))} | {n(int(pub.sum()))} |',
+                f"| Residues under them | {n(int((num(res['rbrid_positive_peptides']) > 0).sum()))} | {n(int((num(res['published_rule_peptides']) > 0).sum()))} |",
+                f"| Methylarginines against the other arginines of the same proteins (Mantel-Haenszel) | {test('rbrid_residue')} | {test('rbrid_residue_published_rule')} |",
+                '',
+                'The residue score threshold of the RBR-ID regions is now set by a rule fixed in advance: the lowest of 1, 2, 3 '
+                'and 5 whose permutation false-discovery rate is under 10 % (2; it was 3 in v1.3.0).', '']
+    # localisation
+    if 'localised_by' in sites.columns:
+        curated = sites['curated_only'].astype(str).str.lower() == 'true'
+        out += ['### How each site is localised', '',
+                'Sites rest on different kinds of evidence, which do not share one error rate. The site table now names them: '
+                '`localised_by` (a localisation score, a peptide that leaves one possible arginine, or a curated annotation) and '
+                f'`curated_only`, true for the {n(int(curated.sum()))} of {n(len(sites))} sites that only a curated annotation '
+                '(UniProt with experimental evidence, PhosphoSitePlus as compiled in 2021) places. The website can leave them '
+                'out (Filters, Provenance).', '']
+    out += ['### Release files and the website', '',
+            '- The checksums are written after every other file, and the build checks them (`MD5SUMS` here and in each '
+            'analyses folder); in v1.3.0 the two analyses READMEs were rewritten after their checksums.',
+            '- `release.json` records the Python and package versions that wrote the release (`python_environment`).',
+            '- Website: a test run on a selection made by the feature it tests is shown as descriptive and left out of the '
+            'multiple-testing correction; other selection tests are labelled exploratory. Proteins without a site get their '
+            'STRING partner network and 3D structures.', '']
+    return out
 
 
 def analysis_section(files: dict, previous: str) -> list:

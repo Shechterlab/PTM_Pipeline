@@ -29,7 +29,7 @@ dictionary and a record of what changed since the release before.
 | Folder | Holds |
 |---|---|
 | [`releases/`](releases/) | the site union, one folder per version |
-| [`docs/`](docs/) | the Methylarginine Site Explorer (GitHub Pages); `docs/v1.0.0/` is the published version and `docs/v1.1.0/` and `docs/v1.2.0/` the releases since, unchanged |
+| [`docs/`](docs/) | the Methylarginine Site Explorer (GitHub Pages); `docs/v1.0.0/` is the published version and `docs/v1.1.0/`, `docs/v1.2.0/` and `docs/v1.3.0/` the releases since, unchanged |
 | [`inputs/`](inputs/) | every file a release and the website are built from, with `MANIFEST.tsv` |
 | [`provenance/`](provenance/) | where the sites come from, in one page |
 | [`scripts/`](scripts/) | the pipeline, numbered by step |
