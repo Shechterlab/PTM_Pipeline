@@ -4678,13 +4678,13 @@
     bindFigure(p);
     drawMap(p, UNIDATA.get(p.acc));
     initStructure(p);
-    const current = () => UI.detail === p.i && UI.view === 'protein';
+    const current = () => pageOpen(p) && UI.view === 'protein';
     loadDisease().then((ev) => { if (current()) renderDiseaseCard(p, ev); });
     loadUniProt(p.acc).then((u) => {
       if (!current()) return;
       drawMap(p, u);
       // A 3D model that loaded first gets its feature colours now.
-      if (mol && mol.p.i === p.i && viewColorKey() === 'features') { styleStructure(); mol.viewer.render(); renderViewControls(); }
+      if (mol && sameProt(mol.p, p) && viewColorKey() === 'features') { styleStructure(); mol.viewer.render(); renderViewControls(); }
       loadDisease().then((ev) => { if (current()) renderDiseaseCard(p, ev); });
       renderSequence(p, u);
       renderConsCard(p, u);
@@ -5238,7 +5238,7 @@
   const EV_RNA_CELLS = 1 | 2 | 1024 | 2048 | 4096;
   function renderProtCards(p) {
     const box = $('#p-hi');
-    if (!box || !UI_A || UI.detail !== p.i) return;
+    if (!box || !UI_A || !pageOpen(p)) return;
     const sites = p.sites.map((j) => S[j]), n = sites.length, of = (k) => k + ' of ' + n;
     const u = UNIDATA.get(p.acc), argN = p.argN || (u && u.seq ? (u.seq.match(/R/g) || []).length : null);
     // the motif family most of its methylarginines sit in, of those methylarginines favour across the dataset
@@ -5278,7 +5278,7 @@
   // still this protein's. A lookup that fails, or does not answer within its time, leaves a line saying so in the tile;
   // the page and the other tiles carry on.
   function aLoadTiles(p) {
-    const here = () => UI_A && UI.detail === p.i && UI.view === 'protein';
+    const here = () => UI_A && pageOpen(p) && UI.view === 'protein';
     const fill = (ov) => { if (here()) aRefreshTiles($('#content'), ov); };
     const note = (text) => '<span class="a-note">' + text + '</span>';
     const pins = () => p.sites.map((j) => ({ a: S[j].pos, cls: 'site', tip: '<b>' + p.label + ' R' + S[j].pos + '</b>' }));
@@ -6020,7 +6020,7 @@
     if (bar) { bar.outerHTML = ctxToggleHtml(p); bindCtx(p); }
     renderCondCard(p);
     renderFuncCard(p);
-    loadDisease().then((ev) => { if (UI.detail === p.i) renderDiseaseCard(p, ev); });
+    loadDisease().then((ev) => { if (pageOpen(p)) renderDiseaseCard(p, ev); });
     if (UI.ixTab === 'complexes') renderIxCard(p);
   }
 
@@ -6103,7 +6103,7 @@
     $$('[data-loc]', box).forEach((b2) => b2.addEventListener('click', () => setTerm('location', termSlug('location', +b2.dataset.loc), 'proteins')));
     $$('[data-cv]', box).forEach((b2) => b2.addEventListener('click', () => setCtx(p, b2.dataset.cv === 'context' ? 'dataset' : 'protein')));
     bindRefs(box);
-    if (mem && view === 'protein') loadPubmed(mem.flatMap((m) => m.pmids)).then((fresh) => { if (fresh && UI.detail === p.i && UI.ctx !== 'dataset') renderCondCard(p); });
+    if (mem && view === 'protein') loadPubmed(mem.flatMap((m) => m.pmids)).then((fresh) => { if (fresh && pageOpen(p) && UI.ctx !== 'dataset') renderCondCard(p); });
     $$('button[data-k]', box).forEach((b2) => b2.addEventListener('click', () => setTerm('condensate', termSlug('condensate', +b2.dataset.k), 'proteins')));
     // Summary line: main HPA locations, then the condensates and the most confident membership.
     const hm = hpaMeta();
@@ -6211,7 +6211,7 @@
     if (u && u.ensg && u.ensg.length) {
       loadOpenTargets(u.ensg[0]).then((d) => {
         const el = $('#ot-box', box);
-        if (!el || UI.detail !== p.i) return;
+        if (!el || !pageOpen(p)) return;
         if (!d) { el.innerHTML = '<p class="muted">Open Targets did not answer.</p>'; return; }
         if (!d.rows.length) { el.innerHTML = '<p class="muted">No Open Targets disease associations.</p>'; return; }
         el.innerHTML = '<ul class="ot-list">' + d.rows.map((r) => {
@@ -6774,7 +6774,7 @@
     }
     // either source still missing: load both, and redraw only when one arrived (a failed fetch does not loop)
     const base = p.acc.split('-')[0], had = IFDATA.has(base) + 2 * PRED_IFACE.has(base);
-    if (!p.iso && had !== 3) loadIface(p.acc).then(() => { if (UI.detail === p.i && IFDATA.has(base) + 2 * PRED_IFACE.has(base) !== had) renderContactCard(p); }, () => {});
+    if (!p.iso && had !== 3) loadIface(p.acc).then(() => { if (pageOpen(p) && IFDATA.has(base) + 2 * PRED_IFACE.has(base) !== had) renderContactCard(p); }, () => {});
   }
 
   // Rows menu: overlays and rows with a checkbox each; rows also move up and down. Choices are remembered.
@@ -7360,7 +7360,8 @@
       '<p class="note af-msg" id="af-msg" aria-live="polite"></p></div><div class="af-side" id="af-side"></div></div>' +
       foldHtml('p-pdb', 'Experimental structures (PDB)', '<div class="pdb-block"><div class="card-head"><div><h3 class="h4">Experimental structures (PDB)</h3><p class="sub" id="pdb-sub">Looking up PDB entries…</p></div>' +
       '<div class="exp"><a class="exp-link" href="https://www.ebi.ac.uk/pdbe/pdbe-kb/proteins/' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">PDBe-KB ↗</a></div></div><div id="pdb-list"></div></div>', false, 'looking up…', 'sub-fold') +
-      foldHtml('p-hom', 'Homologous experimental structures', '<div class="pdb-block" id="hom-block"><div class="card-head"><div><h3 class="h4">Homologous experimental structures</h3><p class="sub" id="hom-sub">Searching the PDB for related proteins…</p></div></div><div id="hom-list"></div></div>', false, 'searching…', 'sub-fold') +
+      // the homolog search looks for structures at the methylarginines, which a light page's protein has none of
+      (p.unl ? '' : foldHtml('p-hom', 'Homologous experimental structures', '<div class="pdb-block" id="hom-block"><div class="card-head"><div><h3 class="h4">Homologous experimental structures</h3><p class="sub" id="hom-sub">Searching the PDB for related proteins…</p></div></div><div id="hom-list"></div></div>', false, 'searching…', 'sub-fold')) +
       foldHtml('p-pred', 'Predicted complexes', '<div class="pdb-block" id="pred-block"><div class="card-head"><div><h3 class="h4">Predicted complexes</h3><p class="sub" id="pred-sub">Looking up predicted complexes…</p></div></div><div id="pred-list"></div></div>', false, 'looking up…', 'sub-fold') + '</div>';
   }
 
@@ -7380,7 +7381,7 @@
     if (!side) return;
     if (af === undefined) { side.innerHTML = '<p class="note">Looking up AlphaFold DB…</p>'; return; }
     const legend = (counts) => '<ul class="af-legend">' + PLDDT_BANDS.map((b, k) => '<li><i style="background:' + b[1] + '"></i>' + esc(b[2]) + (counts ? '<b class="num">' + counts[k] + '</b>' : '') + '</li>').join('') + '</ul>';
-    if (mol && mol.mode === 'pdb' && mol.p.i === p.i) { renderPdbSide(p); return; }
+    if (mol && mol.mode === 'pdb' && sameProt(mol.p, p)) { renderPdbSide(p); return; }
     if (!af) { side.innerHTML = '<p class="note">No AlphaFold DB model for ' + esc(p.acc) + '. Experimental structures, if any, are listed below.</p>'; return; }
     const counts = [0, 0, 0, 0];
     let n = 0, amSum = 0, amN = 0, amLp = 0;
@@ -7396,11 +7397,11 @@
     side.innerHTML = '<dl class="kv"><dt>Model</dt><dd><a href="https://alphafold.ebi.ac.uk/entry/' + encodeURIComponent(p.acc.split('-')[0]) + '" target="_blank" rel="noopener">' + esc(af.entry.entryId) + ' v' + esc(af.entry.latestVersion || '') + ' ↗</a></dd>' +
       '<dt>Mean pLDDT</dt><dd>' + (af.entry.globalMetricValue != null ? af.entry.globalMetricValue.toFixed(1) : '—') + '</dd>' +
       (af.entry.paeImageUrl ? '<dt>PAE</dt><dd><a href="' + esc(af.entry.paeImageUrl) + '" target="_blank" rel="noopener">Predicted aligned error ↗</a></dd>' : '') + '</dl>' +
-      '<p class="flabel">Methylarginines by model confidence (pLDDT)</p>' +
+      '<p class="flabel">' + (p.unl ? 'Model confidence (pLDDT)' : 'Methylarginines by model confidence (pLDDT)') + '</p>' +
       (n ? '<div class="af-stack">' + counts.map((c, k) => (c ? '<i style="flex:' + c + ';background:' + PLDDT_BANDS[k][1] + '" title="' + esc(PLDDT_BANDS[k][2]) + ': ' + c + '"></i>' : '')).join('') + '</div>' : '') +
       legend(n ? counts : null) +
       (amN ? '<p class="note">AlphaMissense: mean R→X pathogenicity ' + (amSum / amN).toFixed(2) + ' across sites; ' + amLp + ' of ' + amN + ' sites have a mean at or above 0.564, the cut-off AlphaMissense uses for a likely pathogenic single variant.</p>' : '') +
-      '<div class="af-focus screen-only"><p class="flabel">Focus a site</p><div class="chips af-sites">' + p.sites.map((j) => S[j]).map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '">' + modeDot(mode, mode.cat(s), colors[mode.cat(s)] || pal.none) + rl(s.pos, P[s.p]) + '</button>').join('') + '</div></div>';
+      (p.unl ? '' : '<div class="af-focus screen-only"><p class="flabel">Focus a site</p><div class="chips af-sites">' + p.sites.map((j) => S[j]).map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '">' + modeDot(mode, mode.cat(s), colors[mode.cat(s)] || pal.none) + rl(s.pos, P[s.p]) + '</button>').join('') + '</div></div>');
     $$('.af-sites .chip', side).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
   }
 
@@ -7522,7 +7523,7 @@
     const enable = () => AF_BUTTONS.forEach((id) => { const b = $(id); if (b) b.disabled = false; });
     const bindButtons = () => bindAfButtons(p);
     // Re-renders of the same protein keep the live viewer instead of rebuilding it.
-    if (mol && mol.p.i === p.i && mol.el) {
+    if (mol && sameProt(mol.p, p) && mol.el) {
       holder.replaceWith(mol.el);
       mol.el.id = 'af-viewer';
       bindMoveMode(mol.el);
@@ -7547,12 +7548,12 @@
       const found = bestPdb(p);
       renderPdbList(p); renderHomologList(p); renderPredList(p); renderSrcSwitch(p);
       if (UI.mv.src === 'af') { found.then(() => renderSrcSwitch(p)); return startAf(); }
-      if (!mol || mol.p.i !== p.i) holder.innerHTML = '<div class="af-placeholder">Finding the experimental structure that resolves most of ' + esc(p.label) + '…</div>';
+      if (!mol || !sameProt(mol.p, p)) holder.innerHTML = '<div class="af-placeholder">Finding the experimental structure that resolves most of ' + esc(p.label) + '…</div>';
       return found.then((b) => {
-        if (UI.detail !== p.i || !document.body.contains(holder)) return;
+        if (!pageOpen(p) || !document.body.contains(holder)) return;
         renderSrcSwitch(p);
         // The reader switched to AlphaFold, or opened another structure, while the search ran.
-        if (UI.mv.src === 'af' || (mol && mol.p.i === p.i)) return;
+        if (UI.mv.src === 'af' || (mol && sameProt(mol.p, p))) return;
         const pick = pdbPicked(p);
         if (!pick && (!b || b.failed)) return startAf();
         renderAfSide(p, AFDATA.get(p.acc));
@@ -7560,19 +7561,19 @@
       }, () => startAf());
     };
     const startAf = () => loadAF(p.acc).then((af) => {
-      if (UI.detail !== p.i || !document.body.contains(holder)) return;
+      if (!pageOpen(p) || !document.body.contains(holder)) return;
       renderAfSide(p, af);
       if (!UI.sum3d || UI.sum3d.i !== p.i) UI.sum3d = { i: p.i };
       UI.sum3d.afText = af ? 'AlphaFold DB model, mean pLDDT ' + (af.entry.globalMetricValue != null ? af.entry.globalMetricValue.toFixed(1) : '—') : 'no AlphaFold DB model';
-      if (!mol || mol.p.i !== p.i || mol.mode === 'af') sum3d(p, 'af', UI.sum3d.afText);
+      if (!mol || !sameProt(mol.p, p) || mol.mode === 'af') sum3d(p, 'af', UI.sum3d.afText);
       if (!af) {
-        if (!mol || mol.p.i !== p.i) holder.innerHTML = '<div class="af-placeholder">No AlphaFold DB model for ' + esc(p.acc) + '. AlphaFold DB does not cover every isoform, and for human proteins longer than 2,700 residues it offers only fragment downloads. Experimental structures, if any, can be viewed from the list below.</div>';
+        if (!mol || !sameProt(mol.p, p)) holder.innerHTML = '<div class="af-placeholder">No AlphaFold DB model for ' + esc(p.acc) + '. AlphaFold DB does not cover every isoform, and for human proteins longer than 2,700 residues it offers only fragment downloads. Experimental structures, if any, can be viewed from the list below.</div>';
         return;
       }
-      if (mol && mol.p.i === p.i) return;
+      if (mol && sameProt(mol.p, p)) return;
       holder.innerHTML = '<div class="af-placeholder">Loading the 3D viewer…</div>';
       return Promise.all([load3Dmol(), fetchText(af.entry.pdbUrl)]).then(([lib, pdb]) => {
-        if (UI.detail !== p.i || !document.body.contains(holder)) return;
+        if (!pageOpen(p) || !document.body.contains(holder)) return;
         holder.innerHTML = '';
         const viewer = lib.createViewer(holder, { backgroundColor: cssVar('--surface-2') || '#eef5f7', antialias: true });
         viewer.addModel(pdb, 'pdb');
@@ -7731,7 +7732,7 @@
     if (key === 'hydro') return (a) => { const v = KD[baseResn(a.resn)]; return v == null ? CHARGE_COLORS.other : ramp(HYDRO, (v + 4.5) / 9); };
     if (key === 'xl') {
       // This protein's residues in UniProt numbering (AlphaFold and predicted models directly, PDB entries through SIFTS).
-      const xp = ixReady() ? IX.xlProt.get(mol.p.i) : null;
+      const xp = xlOfProt(mol.p);
       const rna = new Set(xp ? xp.rnaPos : []), dna = new Set(xp ? xp.dnaPos : []);
       const inR = (pos, list) => list.some(([a, b]) => pos >= a && pos <= b);
       const unpOf = atomToUnp();
@@ -7765,13 +7766,13 @@
       ss: () => sw(SS_COLORS.h, 'Helix') + sw(SS_COLORS.s, 'Strand') + sw(SS_COLORS.c, 'Coil'),
       charge: () => sw(CHARGE_COLORS.basic, 'Basic (R, K)') + sw(CHARGE_COLORS.his, 'His') + sw(CHARGE_COLORS.acidic, 'Acidic (D, E)') + sw(CHARGE_COLORS.other, 'Other'),
       hydro: () => grad(HYDRO, 'Hydrophilic', 'Hydrophobic') + '<span class="muted">Kyte–Doolittle</span>',
-      xl: () => (ixReady() && IX.xlProt.get(mol.p.i) ? sw(XL.rna, 'RNA-crosslinked residue') + sw(XL.dna, 'DNA-crosslinked residue') + sw(XL.both, 'Both') + sw(XL.rbd, 'RNA-bound fragment or peptide (RBDmap, CAPRI, pCLAP)') + sw(XL.dnaReg, 'DNA crosslink candidate, crosslinked peptide or DNA-binding region') + sw(XL.none, 'No crosslink') + (mol.mode === 'pdb' && !mol.pdb.pred ? sw(XL.other, 'Other chains') : '') :
+      xl: () => (xlOfProt(mol.p) ? sw(XL.rna, 'RNA-crosslinked residue') + sw(XL.dna, 'DNA-crosslinked residue') + sw(XL.both, 'Both') + sw(XL.rbd, 'RNA-bound fragment or peptide (RBDmap, CAPRI, pCLAP)') + sw(XL.dnaReg, 'DNA crosslink candidate, crosslinked peptide or DNA-binding region') + sw(XL.none, 'No crosslink') + (mol.mode === 'pdb' && !mol.pdb.pred ? sw(XL.other, 'Other chains') : '') :
         '<span class="muted">No RNA or DNA crosslinks recorded for this protein</span>'),
       uniform: () => '',
     };
     return '<span class="legend-title">' + esc((VIEW_COLORS.find((o) => o[0] === key) || ['', ''])[1]) + '</span>' + (parts[key] || parts.uniform)() +
-      (() => { const pal = screenPalette(), mode = COLOR_MODES[UI.fig.color] || COLOR_MODES.state, cs = mode.colors(pal);
-        return '<span class="legend-title">Methylarginines, ' + esc(mode.name.toLowerCase()) + '</span>' + mode.cats.map((c, k) => '<span>' + modeDot(mode, k, cs[k] === pal.none ? pal.meth : cs[k]) + esc(c) + '</span>').join(''); })() +
+      (mol && mol.p.unl ? '' : (() => { const pal = screenPalette(), mode = COLOR_MODES[UI.fig.color] || COLOR_MODES.state, cs = mode.colors(pal);
+        return '<span class="legend-title">Methylarginines, ' + esc(mode.name.toLowerCase()) + '</span>' + mode.cats.map((c, k) => '<span>' + modeDot(mode, k, cs[k] === pal.none ? pal.meth : cs[k]) + esc(c) + '</span>').join(''); })()) +
       (mol && mol.mode === 'pdb' && mol.naKinds ? Array.from(mol.naKinds).map((k) => '<span><i class="sq" style="background:' + naColor(k) + '"></i>' + k + '</span>').join('') : '') +
       (UI.mv.contacts && mol && mol.focus ? '<span><i class="sq" style="background:' + ELEM_GREY.map.C + '"></i>Contacts within 5 Å</span>' : '');
   }
@@ -7791,7 +7792,7 @@
       sel('vw-bright', 'Brightness', VIEW_BRIGHT, V.bright) +
       sel('vw-ldir', 'Light from', VIEW_LDIR, V.ldir) +
       sel('vw-bg', 'Background', VIEW_BGS, V.bg) + '</div>' +
-      '<div class="chips af-toggles" aria-label="Show">' + VIEW_TOGGLES.filter((t) => !t[3] || pdbMode).map((t) => '<button class="chip" type="button" data-vw="' + t[0] + '" aria-pressed="' + !!V[t[0]] + '" title="' + esc(t[2]) + '">' + esc(t[1]) + '</button>').join('') +
+      '<div class="chips af-toggles" aria-label="Show">' + VIEW_TOGGLES.filter((t) => (!t[3] || pdbMode) && !(t[0] === 'labels' && mol && mol.p.unl)).map((t) => '<button class="chip" type="button" data-vw="' + t[0] + '" aria-pressed="' + !!V[t[0]] + '" title="' + esc(t[2]) + '">' + esc(t[1]) + '</button>').join('') +
       '<button class="linkish" type="button" id="vw-default" title="Style, colour, surface and lighting back to their defaults">Default settings</button></div>' +
       '<div class="legend af-key" id="af-key">' + (mol ? viewColorKeyHtml(key) : '') + '</div>';
     const save = () => store.set('mx-view', JSON.stringify(V));
@@ -7833,7 +7834,7 @@
     else viewer.zoomTo();
   }
   function styleStructure(reSurface) {
-    if (!mol || mol.p.i !== UI.detail) return;
+    if (!mol || !pageOpen(mol.p)) return;
     const { viewer, p } = mol;
     const V = UI.mv;
     const pdbMode = mol.mode === 'pdb';
@@ -8150,7 +8151,7 @@
   }
 
   function focusStructure(pos) {
-    if (!mol || mol.p.i !== UI.detail) return;
+    if (!mol || !pageOpen(mol.p)) return;
     const { viewer } = mol;
     if (mol.label) { viewer.removeLabel(mol.label); mol.label = null; }
     const pdbMode = mol.mode === 'pdb';
@@ -8315,7 +8316,7 @@
     const sub = $('#pdb-sub');
     if (!box) return;
     loadPdb(p.acc).then((res) => {
-      if (UI.detail !== p.i || !document.body.contains(box)) return;
+      if (!pageOpen(p) || !document.body.contains(box)) return;
       const inRange = (e) => e.maps.length ? p.sites.filter((j) => e.maps.some((m) => S[j].pos >= m.unpStart && S[j].pos <= m.unpEnd)).length : 0;
       const base = p.acc.split('-')[0];
       // Entries that model a methylated arginine come first, then those that resolve the most methylarginines (their
@@ -8328,7 +8329,7 @@
         sub.textContent = 'Reading which residues each PDB entry models…';
         withTimeout(Promise.all(toRead.map(({ e, meth }) => loadPdbDetail(e, meth).then((det) => {
           if (det.coverage) PDB_RESOLVED.set(e.id, pdbSites(p, e, det).filter((x) => x[2]).length);
-        }))), 8000).catch(() => {}).then(() => { if (UI.detail === p.i && document.body.contains(box)) renderPdbList(p); });
+        }))), 8000).catch(() => {}).then(() => { if (pageOpen(p) && document.body.contains(box)) renderPdbList(p); });
         return;
       }
       entries.sort((a, b) => (b.meth - a.meth) || ((PDB_RESOLVED.get(b.e.id) || 0) - (PDB_RESOLVED.get(a.e.id) || 0)) || (b.n - a.n) || ((a.e.resolution || 99) - (b.e.resolution || 99)));
@@ -8357,7 +8358,7 @@
       if (more) more.addEventListener('click', () => { UI.pdbAll = !UI.pdbAll; renderPdbList(p); });
       // what each entry is: its title and the other molecules in it
       loadPdbMeta(shown.map(({ e }) => e.id)).then((ens) => {
-        if (UI.detail !== p.i) return;
+        if (!pageOpen(p)) return;
         shown.forEach(({ e }, k) => { const cell = $('[data-what="' + e.id + '"]', box); if (cell && ens[k]) cell.innerHTML = pdbWhatHtml(ens[k], base, 4); });
       });
       shown.forEach(({ e, n, meth }) => {
@@ -8382,7 +8383,7 @@
   }
 
   function showPdb(p, e, btn, quiet) {
-    const holder = mol && mol.p.i === p.i ? mol.el : $('#af-viewer');
+    const holder = mol && sameProt(mol.p, p) ? mol.el : $('#af-viewer');
     if (!holder) return;
     if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
     const nmr = /NMR/i.test(e.method || '');
@@ -8390,8 +8391,8 @@
       ? fetchText('https://files.rcsb.org/download/' + e.id.toUpperCase() + '.pdb').then((t) => [t, 'pdb']).catch(() => fetchText('https://files.rcsb.org/download/' + e.id.toUpperCase() + '.cif').then((t) => [t, 'cif']))
       : fetchText('https://files.rcsb.org/download/' + e.id.toUpperCase() + '.cif').then((t) => [t, 'cif']);
     return Promise.all([load3Dmol(), file, loadPdb(p.acc).then((res) => loadPdbDetail(e, res.methyl.has(e.id)))]).then(([lib, [cif, fmtName], det]) => {
-      if (UI.detail !== p.i) return;
-      if (!mol || mol.p.i !== p.i) {
+      if (!pageOpen(p)) return;
+      if (!mol || !sameProt(mol.p, p)) {
         disposeStructure();
         holder.innerHTML = '';
         mol = { viewer: lib.createViewer(holder, { backgroundColor: cssVar('--surface-2') || '#eef5f7', antialias: true }), p, el: holder, label: null, spin: false, mode: 'af', afPdb: null };
@@ -8464,6 +8465,7 @@
       contactsHtml() +
       (mol.afPdb ? '<p><button class="btn quiet small" type="button" id="back-af">Back to AlphaFold model</button></p>' : '');
     $$('.contact-list [data-pos]', side).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
+    if (p.unl) $$('.af-focus', side).forEach((x) => x.remove());   // a protein without a site has none to focus
     $$('.af-sites .chip', side).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.pos; flashSite(+b.dataset.pos, false); }));
     const back = $('#back-af', side);
     if (back) back.addEventListener('click', () => {
@@ -8518,9 +8520,10 @@
     return res.entries.filter((e) => e.maps.length || res.methyl.has(e.id)).map((e) => ({ e, n: inRange(e), meth: res.methyl.has(e.id), r: PDB_RESOLVED.get(e.id) }))
       .sort((a, b) => (b.meth - a.meth) || ((b.r || 0) - (a.r || 0)) || (b.n - a.n) || ((a.e.resolution || 99) - (b.e.resolution || 99)));
   }
-  function pdbOptLabel({ e, n, r, meth }) {
+  function pdbOptLabel({ e, n, r, meth }, light) {
     const en = PDB_WHAT.get(e.id.toUpperCase()), title = en && en.struct && en.struct.title;
-    const sites = meth ? 'models a methyl-R' : r != null ? (r ? r + ' site' + (r === 1 ? '' : 's') + ' resolved' : 'no site resolved') : n ? n + ' site' + (n === 1 ? '' : 's') + ' in construct' : 'no site in construct';
+    const cover = () => { const m = e.maps[0]; return m ? 'residues ' + m.unpStart + '–' + m.unpEnd : 'no mapped range'; };
+    const sites = light ? cover() : meth ? 'models a methyl-R' : r != null ? (r ? r + ' site' + (r === 1 ? '' : 's') + ' resolved' : 'no site resolved') : n ? n + ' site' + (n === 1 ? '' : 's') + ' in construct' : 'no site in construct';
     return e.id.toUpperCase() + ' · ' + methodShort(e.method) + (e.resolution ? ' ' + e.resolution.toFixed(1) + ' Å' : '') + ' · ' + sites + (title ? ' · ' + shorten(title, 52) : '');
   }
   function renderSrcSwitch(p) {
@@ -8528,10 +8531,10 @@
     if (!box) return;
     const best = liveCache.get('bestpdb:' + p.acc);
     const draw = (got, res) => {
-      if (UI.detail !== p.i) return;
+      if (!pageOpen(p)) return;
       const looking = got === 'looking', failed = !!(got && got.failed), b = failed || looking ? null : got;
-      const own = mol && mol.p.i === p.i && mol.mode === 'pdb' && mol.pdb && !mol.pdb.pred && !mol.pdb.homolog ? mol.pdb : null;
-      const mode = !mol || mol.p.i !== p.i ? null : mol.mode === 'af' ? 'af' : own ? 'pdb' : null;
+      const own = mol && sameProt(mol.p, p) && mol.mode === 'pdb' && mol.pdb && !mol.pdb.pred && !mol.pdb.homolog ? mol.pdb : null;
+      const mode = !mol || !sameProt(mol.p, p) ? null : mol.mode === 'af' ? 'af' : own ? 'pdb' : null;
       const picked = pdbPicked(p), target = own ? own.e : picked || (b && b.e);
       const list = res ? pdbMenuEntries(p, res) : [];
       // titles for the menu, asked for once per protein
@@ -8546,7 +8549,7 @@
         (target ? 'Experimental · PDB ' + target.id.toUpperCase() : failed ? 'Experimental (PDBe not answering; retry)' : looking ? 'Experimental (looking…)' : 'Experimental (none)') + '</button>' +
         '<button type="button" data-src="af" aria-pressed="' + (mode === 'af') + '">AlphaFold model</button></div>' +
         (list.length > 1 ? '<label class="fig-ctl pdb-pick">Entry <select id="pdb-pick" aria-label="Experimental entry to show">' +
-          list.map((x) => '<option value="' + esc(x.e.id) + '"' + (target && x.e.id === target.id ? ' selected' : '') + '>' + esc(pdbOptLabel(x)) + '</option>').join('') + '</select></label>' : '') +
+          list.map((x) => '<option value="' + esc(x.e.id) + '"' + (target && x.e.id === target.id ? ' selected' : '') + '>' + esc(pdbOptLabel(x, !!p.unl)) + '</option>').join('') + '</select></label>' : '') +
         (b && target && target.id === b.e.id ? '<span class="muted small">' + fmt(b.obs) + ' residues observed' + (b.nSites ? ', ' + b.nSites + ' methylarginine' + (b.nSites === 1 ? '' : 's') : '') + '</span>' :
           own && PDB_RESOLVED.has(own.e.id) ? '<span class="muted small">' + PDB_RESOLVED.get(own.e.id) + ' methylarginine' + (PDB_RESOLVED.get(own.e.id) === 1 ? '' : 's') + ' resolved</span>' : '');
       $$('[data-src]', box).forEach((btn) => btn.addEventListener('click', () => {
@@ -8555,7 +8558,7 @@
         if (btn.dataset.src === 'pdb' && target) { if (!own || own.e.id !== target.id) showPdb(p, target, null, true); }
         else if (btn.dataset.src === 'pdb' && failed) {
           btn.textContent = 'Experimental (asking PDBe…)';
-          bestPdb(p).then((nb) => { renderSrcSwitch(p); if (nb && !nb.failed && UI.detail === p.i) showPdb(p, nb.e, null, true); });
+          bestPdb(p).then((nb) => { renderSrcSwitch(p); if (nb && !nb.failed && pageOpen(p)) showPdb(p, nb.e, null, true); });
         } else if (btn.dataset.src === 'af') showAf(p);
       }));
       const pick = $('#pdb-pick', box);
@@ -8577,14 +8580,14 @@
   // Switch the viewer to the AlphaFold model (creating the viewer if a PDB entry never loaded).
   function showAf(p) {
     return loadAF(p.acc).then((af) => {
-      if (UI.detail !== p.i) return;
+      if (!pageOpen(p)) return;
       const msg = $('#af-msg');
       if (!af) { if (msg) msg.textContent = 'AlphaFold DB has no model for ' + p.acc + '.'; return; }
-      return Promise.all([load3Dmol(), mol && mol.p.i === p.i && mol.afPdb ? mol.afPdb : fetchText(af.entry.pdbUrl)]).then(([lib, pdb]) => {
-        if (UI.detail !== p.i) return;
-        const holder = mol && mol.p.i === p.i ? mol.el : $('#af-viewer');
+      return Promise.all([load3Dmol(), mol && sameProt(mol.p, p) && mol.afPdb ? mol.afPdb : fetchText(af.entry.pdbUrl)]).then(([lib, pdb]) => {
+        if (!pageOpen(p)) return;
+        const holder = mol && sameProt(mol.p, p) ? mol.el : $('#af-viewer');
         if (!holder) return;
-        if (!mol || mol.p.i !== p.i) {
+        if (!mol || !sameProt(mol.p, p)) {
           disposeStructure();
           holder.innerHTML = '';
           mol = { viewer: lib.createViewer(holder, { backgroundColor: cssVar('--surface-2') || '#eef5f7', antialias: true }), p, el: holder, label: null, spin: false, mode: 'af', afPdb: pdb };
@@ -8712,7 +8715,7 @@
     const sub = $('#hom-sub');
     if (!box) return;
     loadHomologs(p).then((list) => {
-      if (UI.detail !== p.i || !document.body.contains(box)) return;
+      if (!pageOpen(p) || !document.body.contains(box)) return;
       if (list == null) { sub.textContent = 'The RCSB sequence search did not answer.'; box.innerHTML = ''; setFoldSummary('p-hom', 'search did not answer'); return; }
       // Per methylarginine: entries where the aligned residue is a modelled arginine. Entries with a partner first,
       // then higher identity, then better resolution.
@@ -8759,7 +8762,7 @@
 
   // Load a homologous PDB entry; residues map through the alignment (entity index -> author number via PDBe coverage).
   function showHomolog(p, h, btn, focusPos) {
-    const holder = mol && mol.p.i === p.i ? mol.el : $('#af-viewer');
+    const holder = mol && sameProt(mol.p, p) ? mol.el : $('#af-viewer');
     if (!holder) return Promise.resolve();
     if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
     const id = h.entry.toLowerCase();
@@ -8776,8 +8779,8 @@
       .then((d) => (d ? (d[id] || []).filter((r) => METHYL_R_CODES.includes(r.chem_comp_id)) : [])).catch(() => []);
     revealCard($('#card-af'));
     return Promise.all([load3Dmol(), file, cov, mods]).then(([lib, [text, fmtName], segs, modres]) => {
-      if (UI.detail !== p.i) return;
-      if (!mol || mol.p.i !== p.i) {
+      if (!pageOpen(p)) return;
+      if (!mol || !sameProt(mol.p, p)) {
         disposeStructure();
         holder.innerHTML = '';
         mol = { viewer: lib.createViewer(holder, { backgroundColor: cssVar('--surface-2') || '#eef5f7', antialias: true }), p, el: holder, label: null, spin: false, mode: 'af', afPdb: null };
@@ -8852,11 +8855,11 @@
       '<td>' + (r.model ? '<button class="btn quiet small" type="button" data-pv="' + r.k + '">View</button>' : '<span class="muted" title="The ProtVar API serves no model for this pair; its interface comes from an earlier model set">no model</span>') + '</td></tr>').join('');
     const pvHtml = !ixReady() ? '<p class="note">Loading interaction data…</p>' :
       isoform ? '<p class="note">Predicted complexes use canonical sequences; open the canonical entry for ' + esc(base) + '.</p>' :
-      pv.length ? '<p class="flabel">ProtVar: partners with a methylarginine at the predicted interface</p><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Partner</th><th class="r">pDockQ</th><th title="Methylarginines within 5 Å of the partner in the ProtVar 2024 interface table">Methyl-R ≤ 5 Å</th><th><span class="sr-only">View</span></th></tr></thead><tbody>' + pvRows + '</tbody></table></div>' +
+      p.unl ? '' : pv.length ? '<p class="flabel">ProtVar: partners with a methylarginine at the predicted interface</p><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Partner</th><th class="r">pDockQ</th><th title="Methylarginines within 5 Å of the partner in the ProtVar 2024 interface table">Methyl-R ≤ 5 Å</th><th><span class="sr-only">View</span></th></tr></thead><tbody>' + pvRows + '</tbody></table></div>' +
         (pv.length > 12 ? '<button class="linkish" type="button" id="pred-more">' + (UI.predAll ? 'Show the top 12' : 'Show all ' + fmt(pv.length) + ' partners') + '</button>' : '') :
       '<p class="note">No ProtVar model (pDockQ ≥ 0.23) places one of these methylarginines at an interface.</p>';
     box.innerHTML = pvHtml + '<div id="afcx-list"><p class="note">Looking up AlphaFold DB complexes…</p></div>';
-    const pvSum = !ixReady() ? '' : isoform ? 'canonical entries only' : fmt(pv.length) + ' ProtVar partner' + (pv.length === 1 ? '' : 's') + ' at a site';
+    const pvSum = !ixReady() || p.unl ? '' : isoform ? 'canonical entries only' : fmt(pv.length) + ' ProtVar partner' + (pv.length === 1 ? '' : 's') + ' at a site';
     setFoldSummary('p-pred', pvSum);
     if (sub) sub.innerHTML = 'AlphaFold-Multimer models of protein pairs, without modifications (pDockQ ≥ 0.23 acceptable, ≥ 0.5 confident).';
     $$('[data-open]', box).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.open)));
@@ -8866,7 +8869,7 @@
     if (isoform) { $('#afcx-list', box).innerHTML = ''; return; }
     loadAfComplexes(base).then((list) => {
       const hold = $('#afcx-list', box);
-      if (!hold || UI.detail !== p.i) return;
+      if (!hold || !pageOpen(p)) return;
       if (list == null) { hold.innerHTML = '<p class="note">AlphaFold DB did not answer.</p>'; return; }
       setFoldSummary('p-pred', pvSum + (pvSum ? ' · ' : '') + fmt(list.length) + ' AlphaFold DB complex' + (list.length === 1 ? '' : 'es'));
       if (!list.length) { hold.innerHTML = '<p class="note">AlphaFold DB has no predicted complex for ' + esc(base) + '.</p>'; return; }
@@ -8930,14 +8933,14 @@
 
   // Load a predicted complex into the 3D panel. spec() resolves to {url, chain, names, ...}; numbering is UniProt.
   function showModel(p, spec, btn, focusPos) {
-    const holder = mol && mol.p.i === p.i ? mol.el : $('#af-viewer');
+    const holder = mol && sameProt(mol.p, p) ? mol.el : $('#af-viewer');
     if (!holder) return Promise.resolve();
     if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
     revealCard($('#card-af'));
     return Promise.all([load3Dmol(), spec()]).then(([lib, m]) => fetchText(m.url).then((text) => [lib, m, text])).then(([lib, m, text]) => {
-      if (UI.detail !== p.i) return;
+      if (!pageOpen(p)) return;
       if (!/^ATOM/m.test(text)) throw new Error('empty model');
-      if (!mol || mol.p.i !== p.i) {
+      if (!mol || !sameProt(mol.p, p)) {
         disposeStructure();
         holder.innerHTML = '';
         mol = { viewer: lib.createViewer(holder, { backgroundColor: cssVar('--surface-2') || '#eef5f7', antialias: true }), p, el: holder, label: null, spin: false, mode: 'af', afPdb: null };
@@ -10039,6 +10042,12 @@
     return { rnaPos: rnaPos || [], rnaBits: rnaBits || [], dnaPos: dnaPos || [], dnaPeps: dnaPeps || [], dnaBind: dnaBind || [], dnaInt: !!dnaInt, rbd: rbd || [], dnaCand: dnaCand || [],
       capXl: capXl || [], capAdj: capAdj || [], pclap: pclap || [], pclapLysc: pclapLysc || [], pclapMeas: pclapMeas || [], rbrid: rbrid || [], rbridSeg: rbridSeg || [], rbridCov: rbridCov || [] };
   }
+  // The protein whose page is open: a methylated protein's page (UI.detail), or the light page of a protein without a site
+  // (UI.unlP). A light page's protein carries its index in the interaction data as i (-1 when it has none), so the
+  // structure and network code can treat both alike.
+  const pageOpen = (p) => !!p && (p.unl ? UI.view === 'unlisted' && UI.unlP === p : UI.detail === p.i);
+  const sameProt = (a, b) => a === b || (!a.unl && !b.unl && a.i === b.i);
+  const xlOfProt = (p) => (p.unl ? p.unl.xl : ixReady() ? IX.xlProt.get(p.i) : null);
   // A protein without a site in the shape the protein map draws: no sites, its own disorder and InterPro entries.
   const unlistedProtein = (x) => ({ i: -1, acc: x.acc, gene: x.gene, label: x.gene || x.acc, name: x.name || '', len: x.len || null, maxPos: x.len || 100,
     sites: [], sig: [], ptms: [], idr: x.idr || null, hist: false, iso: false, unrev: false, aliases: [], unl: { dom: x.dom || [], fam: x.fam || [], xl: x.xl || null } });
@@ -10080,12 +10089,17 @@
       }
       UI.unlLabel = x.gene || x.acc;
       setDocTitle();
-      const p = unlistedProtein(x), k = ixIndexOf(x.acc), ix = k >= 0 ? IX.prot[k] : null;
+      // one protein object per page, so the 3D viewer and the network survive a redraw
+      if (!UI.unlP || UI.unlP.acc !== x.acc) UI.unlP = unlistedProtein(x);
+      const p = UI.unlP, k = ixIndexOf(x.acc), ix = k >= 0 ? IX.prot[k] : null;
+      UI.highlight = null;
       const ext = (href, label) => '<a class="btn quiet small" href="' + href + '" target="_blank" rel="noopener">' + label + ' ↗</a>';
       const a = encodeURIComponent(x.acc);
       // the methylated proteins that bind it (STRING physical, at the panel's confidence), most confident first
       const partners = k < 0 ? [] : P.map((q) => [q, ((q.partners || []).find(([kk]) => kk === k) || [0, 0])[1]]).filter(([, sc]) => sc >= F.ixScore).sort((m, n) => n[1] - m[1] || n[0].sites.length - m[0].sites.length);
       const cxs = k < 0 ? [] : (IX.cxOf.get(k) || []).map((c) => IX.cx[c]).filter((c) => c.m > 0).sort((m, n) => m.pred - n.pred || n.m - m.m);
+      // what the network and structure cards read: its index in the interaction data, complexes and methylated partners
+      Object.assign(p, { i: k, cx: k < 0 ? [] : IX.cxOf.get(k) || [], partners: partners.map(([q, sc]) => [q.i, sc]) });
       const conds = (x.cd || []).map((id) => M.condensates.findIndex((c) => c[1] === id)).filter((c) => c >= 0);
       const roles = ix ? partnerClassText(ix) : '';
       const go_ = ix ? [ix.flags & IXF.rna ? 'RNA binding' : '', ix.flags & IXF.dna ? 'DNA binding' : ''].filter(Boolean) : [];
@@ -10101,7 +10115,7 @@
         ext('https://www.ebi.ac.uk/complexportal/home?query=' + a, 'Complex Portal') + '</div></details></div></div>' +
         '<div class="filter-note unl-note"><b>No methylarginine site on ' + esc(p.label) + ' in this release' + (LC_ON ? ', at either confidence' : '') + '.</b> ' +
         'None of the studies and databases compiled here reports one' + (LC_ON ? '' : ' that passes the site tests') + '; absent here means not reported, not shown to be unmethylated. ' +
-        'This page shows what the release holds on it: its sequence features, the methylated proteins that bind it, and its complexes and condensates.' +
+        'This page shows what the release holds on it: its sequence features, the proteins that bind it (the methylated ones marked), its structures, and its complexes and condensates.' +
         (!LC_ON && x.lc ? ' <a class="btn small" href="' + esc(lcUrl(true)) + '">Show its ' + x.lc + ' lower-confidence site' + (x.lc === 1 ? '' : 's') + '</a>' : '') + '</div>' +
         '<div class="facts">' + fact(x.len ? fmt(x.len) : '—', 'Residues', 'UniProt 2026_03', null) + fact('<span id="arg-count">—</span>', 'Arginines', '<span id="arg-frac">loading from UniProt</span>', null) +
         fact(fmt(partners.length), 'Methylated partners', 'STRING physical, score ≥ ' + (F.ixScore / 1000).toFixed(1), null) + fact(fmt(cxs.length), 'Complexes', 'with methylated members', null) + '</div>' +
@@ -10111,6 +10125,8 @@
           '<a class="btn quiet small" href="https://string-db.org/cgi/network?identifiers=' + a + '&amp;species=9606" target="_blank" rel="noopener" title="Its interactions and their evidence in STRING">STRING ↗</a></div></div>' +
         (partners.length ? '<div class="gene-chips">' + partners.slice(0, PLIM).map(([q]) => chip(q)).join('') + (partners.length > PLIM ? ' <button class="linkish" type="button" id="unl-more">+' + (partners.length - PLIM) + ' more</button>' : '') + '</div>'
           : '<p class="muted">' + (k < 0 ? 'STRING lists no physical partner for ' + esc(p.label) + ' in the interaction data.' : 'No methylated protein binds it at this score.') + '</p>') + '</div>' +
+        (k >= 0 ? '<div class="card" id="card-ix"></div>' : '') +
+        structureCard(p) +
         '<div class="card"><div class="card-head"><div><h3>Complexes and condensates</h3><p class="sub">Complex Portal curated and hu.MAP 3.0 predicted complexes with methylated members, and CD-CODE condensates; each opens the methylated proteins it holds.</p></div></div>' +
         (cxs.length ? '<p class="flabel">Complexes</p><div class="chips">' + cxs.slice(0, 24).map((c) => '<span class="chip-pair"><button class="chip" type="button" data-setq="complex:' + esc(quoteTerm(c.id)) + '" title="' + esc(c.id + (c.pred ? ' (hu.MAP, predicted)' : ' (Complex Portal)') + ': ' + fmt(c.m) + ' of ' + fmt(c.n) + ' members methylated; selects them') + '">' + esc(c.name !== '-' ? c.name : c.id) + ' <span class="muted">' + c.m + '/' + c.n + '</span></button>' +
           '<a class="chip-src" href="https://www.ebi.ac.uk/complexportal/complex/' + encodeURIComponent(c.id) + '" target="_blank" rel="noopener" title="' + esc(c.id + ' in Complex Portal') + '" aria-label="' + esc(c.id + ' in Complex Portal') + '">↗</a></span>').join('') + (cxs.length > 24 ? ' <span class="muted">+' + (cxs.length - 24) + ' more</span>' : '') + '</div>' : '<p class="muted">No complex with methylated members.</p>') +
@@ -10129,6 +10145,8 @@
       UI.zoom = null;
       bindFigure(p);
       drawMap(p, UNIDATA.get(x.acc));
+      initStructure(p);
+      if (k >= 0) renderUnlIx(p);
       // eCLIP logos of this protein, if ENCODE or ENCORE assayed it
       loadEclipLogos().then(() => {
         const box = $('#unl-eclip');
@@ -10155,6 +10173,17 @@
       loadPdbIface(x.acc).then(() => { if (current()) drawMap(p, UNIDATA.get(x.acc)); }, () => {});
     });
   }
+  // A light page's partner network: the protein's STRING partners, asked live (the export holds the links of methylated
+  // proteins only), drawn and coloured as on a methylated protein's page, so a reader or writer shows its methylated
+  // partners among the rest.
+  function renderUnlIx(p) {
+    const box = $('#card-ix');
+    if (!box) return;
+    box.innerHTML = '<div class="card-head"><div><h3>Protein interactions</h3><p class="sub">The proteins ' + esc(p.label) + ' binds (STRING, among the ' + fmt(IX.prot.length) + ' proteins of the interaction data), coloured by their own methylarginines.</p></div><div class="exp" id="ix-exp"></div></div><div id="ix-body"></div>';
+    UI.ixTab = 'proteins';
+    renderIxProteins(p, $('#ix-body', box));
+  }
+
   // eCLIP logos (scripts/43f): per experiment, the 5-mers most enriched in its top peaks or windows against the other
   // RBPs', aligned and weighted by enrichment. One file for both tiers, read on first use; what waits for it fills in then.
   const ECLIP_LOGOS = { data: null, promise: null, meta: null };
@@ -10296,7 +10325,7 @@
       const e = res.entries.find((x) => x.id === pdb);
       if (!e) { window.open('https://www.rcsb.org/structure/' + pdb.toUpperCase(), '_blank', 'noopener'); return null; }
       return showPdb(p, e, null);
-    }).then(() => { if (UI.detail === p.i && mol && mol.mode === 'pdb') { UI.highlight = pos; focusStructure(pos); } });
+    }).then(() => { if (pageOpen(p) && mol && mol.mode === 'pdb') { UI.highlight = pos; focusStructure(pos); } });
   }
   function bindContactLinks(box) {
     $$('[data-cpdb]', box).forEach((b) => b.addEventListener('click', (e) => {
@@ -10864,7 +10893,7 @@
   function partnersFor(p, min) {
     const floor = IX.meta.string_min_score;
     const fallback = () => ({ list: partnersAt(p, floor), live: false, failed: true });
-    if (!netLive(min)) return Promise.resolve({ list: partnersAt(p, min), live: false });
+    if (!netLive(min) && !p.unl) return Promise.resolve({ list: partnersAt(p, min), live: false });
     const me = IX.prot[p.i];
     if (!me || !me.ensp) return Promise.resolve(fallback());
     // A channel subset never scores above STRING's combined score, so asking for >= min loses nothing.
@@ -10937,7 +10966,7 @@
     const colors = mode.colors(pal);
     const exp = $('#ix-exp');
     if (exp) exp.innerHTML = '<button type="button" id="ix-svg">SVG</button><button type="button" id="ix-png">PNG</button><button type="button" id="ix-tsv">TSV</button><button type="button" id="ix-cyjs" title="The network as shown, with its layout and attributes, for Cytoscape (File > Import > Network from File)">Cytoscape</button>';
-    body.innerHTML = protIfaceHtml(p) + '<h4 class="ix-net-head">Physical partners (STRING)</h4><div class="fig-controls">' +
+    body.innerHTML = (p.unl ? '' : protIfaceHtml(p)) + '<h4 class="ix-net-head">Physical partners (STRING)</h4><div class="fig-controls">' +
       '<label class="fig-ctl">Show top <select id="ix-top">' + [5, 10, 20, 30, 50, 75, 100].map((n) => '<option value="' + n + '"' + (UI.ixTop === n ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label>' +
       '<label class="fig-ctl">Confidence <select id="ix-min">' + IX_SCORES.map(([v, l]) => '<option value="' + v + '"' + (UI.ixMin === v ? ' selected' : '') + '>' + esc(l) + '</option>').join('') + '</select></label>' +
       '<label class="fig-ctl">Partners <select id="ix-show">' + Object.keys(NET_SHOW).map((k) => '<option value="' + k + '"' + (UI.net.show === k ? ' selected' : '') + '>' + esc(NET_SHOW[k][0]) + '</option>').join('') + '</select></label>' +
@@ -10972,11 +11001,11 @@
     const minAsked = UI.ixMin;
     partnersFor(p, minAsked).then((res) => {
       const box = $('#ix-partners', body);
-      if (!box || UI.detail !== p.i || UI.ixTab !== 'proteins' || UI.ixMin !== minAsked) return;
+      if (!box || !pageOpen(p) || UI.ixTab !== 'proteins' || UI.ixMin !== minAsked) return;
       const { all, min, shown, top, netList, missingPins } = netSelection(res, minAsked);
       const nMeth = all.filter(([k]) => k < IX.nP).length;
       const predMap = new Map(predPartners(p).map((r) => [r.k, r]));
-      box.innerHTML = (res.failed && minAsked < IX.meta.string_min_score ? '<p class="note">STRING did not answer; showing the high-confidence (≥ 0.7) links from the export instead.</p>' : '') +
+      box.innerHTML = (res.failed && p.unl ? '<p class="note">STRING did not answer; showing only the methylated partners, from the export (score ≥ 0.7).</p>' : res.failed && minAsked < IX.meta.string_min_score ? '<p class="note">STRING did not answer; showing the high-confidence (≥ 0.7) links from the export instead.</p>' : '') +
         (all.length ? '<div class="ix-net-box" id="ix-net"></div><p class="note" id="ix-net-note"></p><div id="ix-paths"></div>' : '<p class="note">No STRING ' + esc(UI.net.type) + ' partners at this confidence.</p>') +
         '<p class="sub">' + fmt(all.length) + ' ' + UI.net.type + ' partners at score ≥ ' + (min / 1000).toFixed(2).replace(/0$/, '') + (netAllChannels() ? '' : ' on ' + NET_CHANNELS.filter(([c]) => netChannels().includes(c)).map(([, , n]) => n.toLowerCase()).join(', ')) + (res.live ? ' (live from STRING)' : '') +
         (UI.net.show !== 'all' ? ', ' + fmt(shown.length) + ' of them ' + esc(NET_SHOW[UI.net.show][0].toLowerCase().replace(/ \(in this set\)/, '')) : '') + '; <b>' + fmt(nMeth) + '</b> (' + pctText(nMeth, all.length || 1) + '%) are themselves in this methylarginine set, against ' +
@@ -11031,7 +11060,7 @@
       if (!netList.length) { $('#ix-net', box).innerHTML = '<p class="note">No partner of this kind at this confidence.</p>'; return; }
       draw(ixNetModel(p, netList, min, null, shown.length));
       const ids = [p.i].concat(netList.map(([k]) => k));
-      loadStringNet(ids, min).then((extra) => { if (extra && UI.detail === p.i && UI.ixTab === 'proteins' && UI.ixMin === minAsked && document.body.contains(box)) draw(ixNetModel(p, netList, min, extra, shown.length)); });
+      loadStringNet(ids, min).then((extra) => { if (extra && pageOpen(p) && UI.ixTab === 'proteins' && UI.ixMin === minAsked && document.body.contains(box)) draw(ixNetModel(p, netList, min, extra, shown.length)); });
       $('#ix-string').onclick = () => {
         const net = UI.ixNet;
         if (!net) return;
@@ -11149,7 +11178,7 @@
     fillBindDomains(body, p);
     bindLogoTips(body);
     $$('.ec-gene', body).forEach((b) => b.addEventListener('click', () => { setPlain(b.dataset.gene); go('proteins'); window.scrollTo({ top: 0 }); }));
-    const alive = () => UI.detail === p.i && body.dataset.kind === kind && document.body.contains(body);
+    const alive = () => pageOpen(p) && body.dataset.kind === kind && document.body.contains(body);
     loadQuickGO(p.acc.split('-')[0], term).then((rows) => {
       const el = $('#ix-go', body);
       if (!el || !alive()) return;
@@ -13510,7 +13539,7 @@
   // Open a gallery model on its protein page, focused on the site.
   function openGalleryModel(g) {
     const s = S[g.j], p = P[s.p];
-    if (UI.view === 'protein' && UI.detail === p.i) { viewGalleryModel(p, g); return; }
+    if (UI.view === 'protein' && pageOpen(p)) { viewGalleryModel(p, g); return; }
     UI.pendingModel = g;
     openProtein(p.i, s.pos);
   }
@@ -13638,7 +13667,7 @@
   }
 
   function contactsHtml() {
-    if (!mol || mol.mode !== 'pdb') return '';
+    if (!mol || mol.mode !== 'pdb' || mol.p.unl) return '';   // contacts of methylarginines: none on a light page
     if (!mol.pdb.contacts) mol.pdb.contacts = pdbContacts();
     const list = mol.pdb.contacts;
     const hasNa = mol.viewer.selectedAtoms({ predicate: isNuc }).length > 0;
@@ -13709,7 +13738,7 @@
       netBox.after(div);
       printUndo.push(() => div.remove());
     }
-    if (mol && mol.p.i === p.i && mol.el && document.body.contains(mol.el)) {
+    if (mol && sameProt(mol.p, p) && mol.el && document.body.contains(mol.el)) {
       try {
         const v = mol.viewer;
         v.setBackgroundColor(UI.mv.bg === 'black' ? '#000000' : '#FFFFFF');
@@ -13746,7 +13775,7 @@
       const t0 = Date.now();
       (function poll() {
         const af = AFDATA.get(p.acc);
-        if ((mol && mol.p.i === p.i) || af === null || Date.now() - t0 > 15000) resolve();
+        if ((mol && sameProt(mol.p, p)) || af === null || Date.now() - t0 > 15000) resolve();
         else setTimeout(poll, 200);
       })();
     });
@@ -13754,7 +13783,7 @@
       .then(viewerReady)
       .then(() => new Promise((r) => setTimeout(r, 500)))
       .then(() => {
-        if (UI.detail !== p.i) return null;
+        if (!pageOpen(p)) return null;
         preparePrint();
         printReady = true;
         // The snapshot is a data URI; wait for it to decode so it is in the printout.
@@ -13762,7 +13791,7 @@
         return img && img.decode ? settle(img.decode(), 5000) : null;
       })
       .then(() => {
-        if (UI.detail !== p.i || !printReady) return null;
+        if (!pageOpen(p) || !printReady) return null;
         if (mode === 'print') { window.print(); return null; }
         btn.textContent = 'Writing PDF…';
         return downloadPdf($('#content'), p.label + ' (' + p.acc + ') · ' + new Date().toISOString().slice(0, 10),
@@ -14483,7 +14512,7 @@
       $$('[data-goto-site]', pop).forEach((x) => x.addEventListener('click', () => {
         pop.hidden = true;
         const pos = +x.dataset.gotoSite;
-        if (UI.view === 'protein' && UI.detail === p.i) { UI.highlight = pos; flashSite(pos, true); } else openProtein(p.i, pos);
+        if (UI.view === 'protein' && pageOpen(p)) { UI.highlight = pos; flashSite(pos, true); } else openProtein(p.i, pos);
       }));
     };
     fill();
@@ -14723,7 +14752,7 @@
       '<li><b>PRMT inhibitor response</b> uses Maron Table S3 <code>GSK591_vs_DMSO</code> and <code>MS023_vs_DMSO</code> per methyl-IP: a site counts as decreased (or increased) when its peptides with adjusted p ≤ 0.05 all fell (or all rose); sites whose significant peptides disagree get no call. The pipeline\'s summary table (scripts/16) uses a different rule, the lowest adjusted p with the sign of the median over all peptides, and differs for some sites. GSK591 inhibits PRMT5; MS023 inhibits type I PRMTs. The <b>CARM1 knockout</b> response (Shishkova et al. 2017) is staged by scripts/41 and shown beside it (see PRMT inhibitor and knockout response).</li>' +
       '<li><b>Motifs, disorder, domains and functional classes</b> are defined under Overview charts. Protein figures draw ' + (P.some((q) => q.idr) ? 'the same MobiDB disorder intervals' : 'UniProt\'s disordered regions (the MobiDB intervals are not in this export)') + '.</li>' +
       '<li><b>InterPro on the protein map</b>: the Domains row shows InterPro 108.0 domains and repeats (homologous superfamilies for a protein with neither); the Families and superfamilies row (off at first; Rows menu) shows the family entries and the other superfamilies. Each entry\'s member-database hits are merged where they overlap, and where two entries cover the same stretch the one on more reviewed human proteins names it, the other listed in its hover (scripts/36c).</li>' +
-      '<li><b>Proteins without a site</b>: every other reviewed human protein of UniProt 2026_03 has a light page (search its gene or accession, or follow a partner outside the set): its protein map from UniProt, MobiDB and InterPro, the methylated proteins that bind it (STRING), and its complexes and CD-CODE condensates. Absent from the release means not reported by the compiled sources, not shown to be unmethylated.</li>' +
+      '<li><b>Proteins without a site</b>: every other reviewed human protein of UniProt 2026_03 has a light page (search its gene or accession, or follow a partner outside the set): its protein map from UniProt, MobiDB and InterPro, its STRING partner network with the methylated partners marked (useful for a putative reader or writer), its 3D structures (PDB entries, the AlphaFold model and AlphaFold DB complexes), its in-cell RNA and DNA binding, and its complexes and CD-CODE condensates. Absent from the release means not reported by the compiled sources, not shown to be unmethylated.</li>' +
       '<li><b>RG/RGG-rich segments</b> in the figure and domain table: ' + esc(RG_HELP.charAt(0).toLowerCase() + RG_HELP.slice(1)) + '.</li>' +
       '<li><b>Clustering</b>: nearest methyl-R spacing and maximum sites in 3–50 aa windows per protein; dense windows come from a multiscale rolling-window scan against a same-protein arginine null (1,000 permutations, q ≤ 0.05). Architecture classes describe proteins with ≥3 sites in a 20 aa span.</li>' +
       '<li><b>Arg enrichment</b> (see Arginine enrichment of a protein) groups sites by UniProt accession. (v1.0.0 grouped them by accession and gene symbol, so a protein whose sources used two symbols, such as MRE11/MRE11A, was tested in two parts.)</li>' +
@@ -15334,7 +15363,7 @@
       const body = $('#cons-body', box);
       body.innerHTML = '<p class="note">Loading orthologues from Ensembl Compara…</p>';
       loadOrthologs(ensg).then((orthos) => {
-        if (UI.detail !== p.i || !document.body.contains(box)) return;
+        if (!pageOpen(p) || !document.body.contains(box)) return;
         if (!orthos.length) { body.innerHTML = '<p class="note">Ensembl lists no orthologue in these species.</p>'; return; }
         const model = orthoModel(p, u, orthos);
         const sites = model.sites;
