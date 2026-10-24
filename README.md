@@ -84,7 +84,10 @@ What a build needs besides the repository:
 
 - **R** (clusterProfiler and DOSE, in the environment file) for the tests of protein and gene sets. A work root that
   already holds their results for the same inputs, settings and R script (`scripts/enrichment.py` checks a SHA-256 of
-  all three) reuses them, so a rebuild that changes nothing those tests read runs without R.
+  all three) reuses them, so a rebuild that changes nothing those tests read runs without R. Without R, a stored
+  clusterProfiler result whose checksum differs is kept only if recomputing it from the inputs (every count, the
+  hypergeometric p, the Benjamini-Hochberg q and the proteins in each set) gives the stored values; the DisGeNET terms
+  (DOSE, from its own bundled data) need R whenever their inputs change.
 - **The network** only to derive the two PRIDE tables above, and when `inputs/interactions/` lacks interaction data for
   a site (a protein or structure the staged tables do not cover): `scripts/37` then fetches it into
   `WORK_ROOT/interactions_topup` and the build stops before writing the release, with the command that stages it
