@@ -196,6 +196,13 @@ python "$CODE/scripts/release_analyses.py" collect --sites "$OUT/human_methylarg
 python "$CODE/scripts/release_analyses.py" collect --sites "$OUT/human_methylarginine_sites_$VERSION.tsv" \
   --lower-confidence "$OUT/human_methylarginine_lower_confidence_sites_$VERSION.tsv" --work "$WORK_LC" \
   --inputs "$IN" --version "$VERSION" --out "$OUT/analyses_with_lower_confidence" > /dev/null
+# The release's checksums last: collect has just rewritten analyses*/ (their README names the commit), so the top-level
+# MD5SUMS written with the release is out of date until it is written again here. Every manifest is then verified.
+python -c "import sys; sys.path.insert(0, '$CODE/scripts'); from pathlib import Path; import release_docs; release_docs.write_md5sums(Path('$OUT'))"
+for sums in "$OUT/MD5SUMS" "$OUT/analyses/MD5SUMS" "$OUT/analyses_with_lower_confidence/MD5SUMS"; do
+  (cd "$(dirname "$sums")" && md5sum -c --quiet MD5SUMS) || { echo "[release] checksums do not match in $(dirname "$sums")"; exit 1; }
+done
+echo "[release] checksums verified: $OUT"
 for f in sites evidence disease interactions; do
   cp "$SITE/methylarg_$f.json" "$SITE_OUT/methylarg_$f.json"
   cp "$SITE_ALL/methylarg_$f.json" "$SITE_OUT/methylarg_${f}_all.json"
