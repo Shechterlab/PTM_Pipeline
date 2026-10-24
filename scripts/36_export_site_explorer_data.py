@@ -52,6 +52,11 @@ PADJ = 0.05
 DO_ROOT = 'DOID:4'
 
 
+# The response calls (scripts/peptide_calls.py), as indices; an empty call (no single-site peptide) is null.
+CALLS = ['no_significant_change', 'decreased', 'increased', 'mixed']
+call_code = lambda c: CALLS.index(c) if c else None  # noqa: E731
+
+
 def read(path: Path) -> pd.DataFrame:
     return pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False, low_memory=False)
 
@@ -272,11 +277,14 @@ def main() -> None:
     tr = defaultdict(list)
     for r in inhibitors.to_dict('records'):
         tr[r['site_id']].append([MARON_IPS.index(r['antibody']), MARON_TREATMENTS.index(r['inhibitor']), num(r['log2_diff_median']),
-                                 sig(r['adj_p_min']), int(r['n_peptides']), int(r['n_decreased']), int(r['n_increased'])])
+                                 sig(r['adj_p_min']), int(r['n_peptides']), int(r['n_decreased']), int(r['n_increased']),
+                                 int(r['n_multi_site_peptides']), call_code(r['call_single_site_peptides']),
+                                 int(r['n_imputed_peptides']), int(r['n_one_condition_peptides'])])
     ko = defaultdict(list)
     for r in carm1.to_dict('records'):
         ko[r['site_id']].append([CELL_LINES.index(r['cell_line']), num(r['log2_ko_over_wt']), sig(r['p']), int(r['n_peptides']),
-                                 int(r['n_decreased']), int(r['n_increased'])])
+                                 int(r['n_decreased']), int(r['n_increased']), int(r['n_multi_site_peptides']),
+                                 call_code(r['call_single_site_peptides']), call_code(r['call_source_rule']), sig(r['q'])])
     disorder_classes, domain_contexts, domain_classes = Vocab(), Vocab(), Vocab()
     structure_contexts = Vocab(list(rc.CODES['structure_context']))   # fixed order: inside a folded domain to deep in a disordered region
     interpro, interpro_idx = [], {}
@@ -525,10 +533,17 @@ def main() -> None:
                             'domain_context', 'interpro', 'domain_class', 'domain_edge_distance', 'domain_side', 'window_31',
                             'motif_mask', 'window_center_mismatch', 'source_positions_original', 'maron_s2_state_mask',
                             'maron_ip_mask', 'maron_treatment', 'study_mask', 'carm1_ko', 'state_detail', 'paralogs', 'structure_context'],
-            'maron_treatment_fields': ['ip', 'treatment', 'median change', 'lowest adj. p', 'peptide rows',
-                                       f'peptides down at adj. p <= {PADJ:g}', f'peptides up at adj. p <= {PADJ:g}'],
+            'maron_treatment_fields': ['ip', 'treatment', 'median change (descriptive)', 'lowest adj. p', 'peptide rows',
+                                       f'peptides down at adj. p <= {PADJ:g}', f'peptides up at adj. p <= {PADJ:g}',
+                                       'peptides carrying another methylarginine', 'call over single-site peptides (index into calls, or null)',
+                                       'peptides with imputed values', 'peptides detected in one condition only'],
+            'calls': CALLS,
+            'carm1_ko_fields': ['cell line', 'median log2 KO/WT', 'lowest p', 'peptides', 'peptides down (twofold, BH q < 0.05)',
+                                'peptides up', 'peptides carrying another methylarginine', 'call over single-site peptides',
+                                'call by the source study\'s rule (twofold, nominal p < 0.05)', 'lowest q'],
             'carm1_ko': {'study': ko_note.get('study', 'Shishkova 2017'), 'doi': ko_note.get('doi', '10.1038/ncomms15571'),
-                         'cell_lines': CELL_LINES, 'rule': ko_note.get('rule', ''), 'input_sha256': ko_note.get('input_sha256'),
+                         'cell_lines': CELL_LINES, 'rule': 'peptide log2 KO/WT <= -1 (down) or >= 1 (up) at BH q < 0.05 (the study\'s p values adjusted over the quantified peptides of each cell line); the study\'s own rule, nominal p < 0.05, is given for comparison',
+                         'source_rule': ko_note.get('rule', ''), 'input_sha256': ko_note.get('input_sha256'),
                          'placed_sites': len(ko_placed), 'placed_sites_down': len(ko_placed_down),
                          'union_sites': len(ko_sites),
                          'union_sites_down': int(carm1.groupby('site_id')['n_decreased'].agg(lambda x: x.astype(int).sum() > 0).sum()),

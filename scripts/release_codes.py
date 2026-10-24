@@ -252,10 +252,10 @@ CODES: dict[str, dict[str, str]] = {
         'S3': 'Maron et al. 2021 Table S3: methylpeptides from MMA, ADMA and SDMA immunoprecipitation after GSK591, MS023 or DMSO',
     },
     'call': {
-        'decreased': 'lower with the treatment: at least one decreased peptide (or row) and none increased',
-        'increased': 'higher with the treatment: at least one increased peptide (or row) and none decreased',
-        'mixed': 'peptides (or rows) change in opposite directions',
-        'no_change': 'no significant change',
+        'decreased': 'a peptide carrying the site was lower with the treatment: at least one decreased peptide (or row) and none increased',
+        'increased': 'a peptide carrying the site was higher with the treatment: at least one increased peptide (or row) and none decreased',
+        'mixed': 'peptides (or rows) changed in opposite directions',
+        'no_significant_change': 'measured, and no peptide changed significantly: not evidence that the site is unchanged',
     },
     'cell_line': {'MCF7': 'MCF7 breast cancer cells', 'MDA-MB-231': 'MDA-MB-231 breast cancer cells'},
     'motif': {
@@ -562,9 +562,9 @@ SITE_COLUMNS = [
     ('methyl_state_evidence', 'list<code>', 'state_evidence', 'which of these give a degree, in code order'),
     ('maron2021_s3_antibodies', 'list<code>', 'antibody', 'antibodies whose immunoprecipitation recovered the site in Maron et al. 2021 Table S3 (supporting/maron2021_detection)'),
     ('dimethyl_type_neutral_loss', 'list<code>', 'dimethyl_type', 'the dimethylarginine type Hartel et al. 2019 called at the site from neutral losses in the fragment spectra, independent of the antibody used (both when both were called). Shown beside maron2021_s3_antibodies, which says which antibodies recovered the site; the two can differ'),
-    ('maron2021_GSK591_call', 'code', 'call', f'response to GSK591 in Maron et al. 2021 Table S3, combined over antibodies (supporting/maron2021_inhibitors: a peptide changes at adjusted p <= {PADJ_CUTOFF}), empty when not measured'),
+    ('maron2021_GSK591_call', 'code', 'call', f'response to GSK591 in Maron et al. 2021 Table S3, combined over antibodies (supporting/maron2021_inhibitors: a peptide changes at adjusted p <= {PADJ_CUTOFF}): peptide-level evidence, as a peptide carrying several methylarginines gives each the same values (the supporting table separates single-site peptides); empty when not measured'),
     ('maron2021_MS023_call', 'code', 'call', 'response to MS023, as for GSK591'),
-    ('carm1_ko_call', 'code', 'call', 'response to CARM1 knockout (Shishkova et al. 2017), combined over cell lines (supporting/carm1_ko), empty when not measured'),
+    ('carm1_ko_call', 'code', 'call', 'response to CARM1 knockout (Shishkova et al. 2017), combined over cell lines (supporting/carm1_ko: twofold at BH q < 0.05): peptide-level evidence; empty when not measured'),
     ('motifs', 'list<code>', 'motif', 'sequence motifs around the site (scripts/08), in code order'),
     ('disorder', 'code', 'disorder', 'MobiDB predicted disorder at the site (scripts/06)'),
     ('disorder_edge_distance', 'integer', '', 'residues to the nearest edge of a disordered region (a protein end is not an edge), empty with no annotation or when the region spans the whole protein'),
@@ -744,10 +744,14 @@ MARON_INHIBITOR_COLUMNS = [
     ('n_peptides', 'integer', '', 'peptide rows carrying the site with a measured difference'),
     ('n_decreased', 'integer', '', f'of these, lower with the inhibitor at adjusted p <= {PADJ_CUTOFF}'),
     ('n_increased', 'integer', '', f'higher with the inhibitor at adjusted p <= {PADJ_CUTOFF}'),
-    ('log2_diff_median', 'number', '', 'median log2 intensity difference, inhibitor minus DMSO'),
+    ('n_multi_site_peptides', 'integer', '', 'of the peptides, those carrying another methylarginine too: their change cannot be given to one site'),
+    ('n_imputed_peptides', 'integer', '', 'of the peptides, those with imputed intensities (Maron et al. 2021 imputed missing values; Table S3 column imputed)'),
+    ('n_one_condition_peptides', 'integer', '', 'of the peptides, those detected in one condition only (the other\'s three values are the imputed constant): read as detected with DMSO and not with the inhibitor (or the reverse); their p value reflects the imputation, not a measured change'),
+    ('log2_diff_median', 'number', '', 'median log2 intensity difference over the peptides, inhibitor minus DMSO: descriptive only, not the effect of a test (it can have the sign opposite to call)'),
     ('log2_diff_strongest', 'number', '', 'the difference of the peptide with the lowest adjusted p'),
     ('adj_p_min', 'number', '', 'the lowest adjusted p value (Maron et al. 2021)'),
-    ('call', 'code', 'call', 'decreased, increased, mixed or no_change over the peptides, peptides with several arginines give each the same values'),
+    ('call', 'code', 'call', 'over the peptides carrying the site by the shared rule (scripts/peptide_calls.py; the analyses of scripts/16 use the same): peptide-level evidence, as a peptide with several methylarginines gives each the same values'),
+    ('call_single_site_peptides', 'code', 'call', 'the same over the peptides carrying no other methylarginine, the evidence that can be read as a change at this site; empty when every peptide carries another'),
 ]
 
 CARM1_COLUMNS = [
@@ -756,9 +760,13 @@ CARM1_COLUMNS = [
     ('n_peptides', 'integer', '', 'peptides carrying the site'),
     ('log2_ko_over_wt', 'number', '', 'median log2 knockout / parental intensity over the peptides'),
     ('p', 'number', '', 'the lowest p value over the peptides (Shishkova et al. 2017)'),
-    ('n_decreased', 'integer', '', 'peptides at log2 <= -1 and p < 0.05'),
-    ('n_increased', 'integer', '', 'peptides at log2 >= 1 and p < 0.05'),
-    ('call', 'code', 'call', 'a peptide decreases at log2 <= -1 and p < 0.05, increases at log2 >= 1 and p < 0.05 (scripts/41), combined over peptides'),
+    ('q', 'number', '', 'the lowest BH q value over the peptides (their p values adjusted over the quantified peptides of the cell line)'),
+    ('n_decreased', 'integer', '', 'peptides at log2 <= -1 and q < 0.05'),
+    ('n_increased', 'integer', '', 'peptides at log2 >= 1 and q < 0.05'),
+    ('n_multi_site_peptides', 'integer', '', 'of the peptides, those carrying another methylarginine too'),
+    ('call', 'code', 'call', 'a peptide decreases at log2 <= -1 and q < 0.05, increases at log2 >= 1 and q < 0.05, combined over the peptides carrying the site by the shared rule (scripts/peptide_calls.py): peptide-level evidence'),
+    ('call_single_site_peptides', 'code', 'call', 'the same over the peptides carrying no other methylarginine; empty when every peptide carries another'),
+    ('call_source_rule', 'code', 'call', 'the call by the source study\'s rule (twofold at nominal p < 0.05; Shishkova et al. 2017), for comparison'),
 ]
 
 CODES['analysis'] = {

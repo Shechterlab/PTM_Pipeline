@@ -9,6 +9,8 @@ import numpy as np
 import pandas as pd
 from scipy.stats import fisher_exact
 
+import peptide_calls as pc
+
 from common import (
     BREWER_COLORS,
     add_q_values,
@@ -133,7 +135,7 @@ def collapse_s2_site_state(df: pd.DataFrame) -> pd.DataFrame:
     return base
 
 
-def collapse_s3_site_treatment(df: pd.DataFrame) -> pd.DataFrame:
+def collapse_s3_site_treatment(df: pd.DataFrame, padj_cutoff: float = 0.05) -> pd.DataFrame:
     if df.empty:
         return df.copy()
     grouped = (
@@ -154,6 +156,19 @@ def collapse_s3_site_treatment(df: pd.DataFrame) -> pd.DataFrame:
         )
         .reset_index()
     )
+    # The site's call over its peptides by the rule the release uses (scripts/peptide_calls.py): a peptide changes at
+    # adjusted p <= the cut-off; the median above is descriptive only.
+    keys = ['canonical_UniProtAC', 'gene', 'position', 'ip', 'treatment']
+    calls = {}
+    for k, g in df.groupby(keys, dropna=False):
+        vals = [(float(q) if pd.notna(q) else None, float(d), int(n)) for q, d, n in
+                zip(g['treatment_padj'], g['treatment_diff'], g['methylarginines_on_peptide']) if pd.notna(d)]
+        calls[k] = pc.site_response(vals, padj_cutoff) if vals else None
+    for col, field in (('peptides_decreased', 'n_decreased'), ('peptides_increased', 'n_increased'),
+                       ('multi_site_peptides', 'n_multi_site_peptides'), ('call', 'call'),
+                       ('call_single_site_peptides', 'call_single_site_peptides')):
+        grouped[col] = [calls[k][field] if calls.get(k) else ('' if field.startswith('call') else 0)
+                        for k in zip(*(grouped[c] for c in keys))]
     grouped['site_key'] = site_key_frame(grouped)
     return grouped
 
@@ -222,6 +237,7 @@ def s3_sites(path: str | Path) -> pd.DataFrame:
                     'begin_pos': pd.to_numeric(row.get('Begin.Pos'), errors='coerce'),
                     'end_pos': pd.to_numeric(row.get('End.Pos'), errors='coerce'),
                     'modifications': str(row.get('Modifications', '')).strip(),
+                    'methylarginines_on_peptide': len(mods),
                     'sheet': sheet,
                     'table': 'Table_S3',
                 })
@@ -266,8 +282,11 @@ def motif_by_group(df: pd.DataFrame, group_col: str) -> pd.DataFrame:
 
 def treatment_summary(df: pd.DataFrame, padj_cutoff: float) -> pd.DataFrame:
     out = df.copy()
-    out['sig_down'] = out['treatment_padj_min'].notna() & (out['treatment_padj_min'] <= padj_cutoff) & (out['treatment_diff_median'] < 0)
-    out['sig_up'] = out['treatment_padj_min'].notna() & (out['treatment_padj_min'] <= padj_cutoff) & (out['treatment_diff_median'] > 0)
+    # decreased / increased by the shared rule (the release's): the lowest adjusted p belongs to one peptide, so it is not
+    # paired with the median direction of all of them
+    out['sig_down'] = out['call'].eq('decreased')
+    out['sig_up'] = out['call'].eq('increased')
+    out['mixed'] = out['call'].eq('mixed')
     rows = []
     for (treatment, ip), group in out.groupby(['treatment', 'ip'], dropna=False):
         rows.append({
@@ -280,6 +299,7 @@ def treatment_summary(df: pd.DataFrame, padj_cutoff: float) -> pd.DataFrame:
             'mean_diff': group['treatment_diff_mean'].mean(),
             'sig_down_sites': int(group['sig_down'].sum()),
             'sig_up_sites': int(group['sig_up'].sum()),
+            'mixed_sites': int(group['mixed'].sum()),
             'fraction_sig_down_sites': float(group['sig_down'].mean()),
             'fraction_sig_up_sites': float(group['sig_up'].mean()),
         })
@@ -302,7 +322,7 @@ def main() -> None:
     s3 = attach_window(s3_sites(args.table_s3), sequences)
     s2_site_state = collapse_s2_site_state(s2)
     s2_valid = s2_site_state[s2_site_state['sequence_validated']].copy()
-    s3_site_treatment = collapse_s3_site_treatment(s3)
+    s3_site_treatment = collapse_s3_site_treatment(s3, args.padj_cutoff)
     s3_site_ip = collapse_s3_site_ip(s3_site_treatment)
     s3_valid = s3_site_ip[s3_site_ip['sequence_validated']].copy()
 

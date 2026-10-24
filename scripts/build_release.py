@@ -43,6 +43,7 @@ import pandas as pd
 SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 
+import peptide_calls as pc  # noqa: E402
 import release_codes as rc  # noqa: E402
 import release_docs  # noqa: E402
 import release_tables  # noqa: E402
@@ -72,6 +73,7 @@ INPUT = {
     'maron_s2': 'sources/maron2021_tableS2_methylarginine_ip_sites.xlsx',
     'maron_s3': 'sources/maron2021_tableS3_methylpeptides_prmt_inhibitors.xlsx',
     'carm1': 'layers/carm1_ko_sites.tsv',
+    'carm1_peptides': 'layers/carm1_ko_peptides.tsv',
     'uniprot_states': 'annotation/uniprot_2026_03_methylarginine_mod_res.tsv',
 }
 DOMAIN_ONTOLOGY = SCRIPTS.parent / 'config' / 'domain_class_ontology.json'
@@ -459,21 +461,8 @@ def place_maron_peptide(reference: dict, accession: str, peptide: str, begin, po
     return key(acc, begin + offset)
 
 
-def combine_calls(calls: list[str]) -> str:
-    """Site call over rows (antibodies, or cell lines): decreased when a row is decreased and none increased or mixed;
-    increased likewise; mixed when rows disagree or one is mixed; no_change when all are."""
-    calls = set(calls)
-    if not calls:
-        return ''
-    if calls <= {'no_change'}:
-        return 'no_change'
-    if 'mixed' in calls or {'decreased', 'increased'} <= calls:
-        return 'mixed'
-    return 'decreased' if 'decreased' in calls else 'increased'
-
-
-def peptide_call(n_down: int, n_up: int) -> str:
-    return 'mixed' if n_down and n_up else 'decreased' if n_down else 'increased' if n_up else 'no_change'
+# The response calls (Maron inhibitors, CARM1 knockout) come from one rule, shared with scripts/16 (scripts/peptide_calls.py).
+combine_calls, peptide_call = pc.combine_calls, pc.peptide_call
 
 
 def maron_tables(inputs: Path, reference: dict, site_ids: set) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
@@ -494,7 +483,8 @@ def maron_tables(inputs: Path, reference: dict, site_ids: set) -> tuple[pd.DataF
     for sheet, drug in (('Control_vs_GSK591', 'GSK591'), ('Control_vs_MS023', 'MS023')):
         df = pd.read_excel(inputs / INPUT['maron_s3'], sheet_name=sheet)
         for _, r in df.iterrows():
-            for pos, _degree in re.findall(r'R(\d+)me([12])', str(r['Modifications'])):
+            mods = re.findall(r'R(\d+)me([12])', str(r['Modifications']))
+            for pos, _degree in mods:
                 counts[f's3_{drug}_site_rows'] += 1
                 site = place_maron_peptide(reference, r['Accession'], r['Sequence'], r['Begin.Pos'], int(pos))
                 if not site:
@@ -504,7 +494,12 @@ def maron_tables(inputs: Path, reference: dict, site_ids: set) -> tuple[pd.DataF
                 detected[(site, ip)].add((str(r['Sequence']), str(r['Modifications'])))
                 diff, padj = pd.to_numeric(r[f'{drug}_vs_DMSO_diff'], errors='coerce'), pd.to_numeric(r[f'{drug}_vs_DMSO_p.adj'], errors='coerce')
                 if pd.notna(diff) and pd.notna(padj):
-                    measured[(site, ip, drug)].append((float(padj), float(diff)))
+                    # Maron et al. imputed missing intensities (columns imputed, num_NAs) with a constant low value: a
+                    # condition whose three values are equal was not detected, and the peptide's p then reflects the
+                    # imputation, not a measured change.
+                    groups = [pd.to_numeric(pd.Series([r[f'{g}_{k}'] for k in (1, 2, 3)]), errors='coerce') for g in ('DMSO', drug)]
+                    const = [bool(v.notna().all() and v.max() - v.min() < 1e-9) for v in groups]
+                    measured[(site, ip, drug)].append((float(padj), float(diff), len(mods), bool(r['imputed']), const[0] != const[1]))
     detection = [{'site_id': s, 'maron_table': 'S2', 'antibody': '', 'methyl_states': join(ordered(states, list(rc.CODES['methyl_state']))),
                   'n_peptides': len(s2_peptides[s])} for s, states in s2_states.items() if s in site_ids]
     detection += [{'site_id': s, 'maron_table': 'S3', 'antibody': ip, 'methyl_states': '', 'n_peptides': len(peps)}
@@ -513,12 +508,13 @@ def maron_tables(inputs: Path, reference: dict, site_ids: set) -> tuple[pd.DataF
     for (s, ip, drug), values in measured.items():
         if s not in site_ids:
             continue
-        down = sum(p <= rc.PADJ_CUTOFF and d < 0 for p, d in values)
-        up = sum(p <= rc.PADJ_CUTOFF and d > 0 for p, d in values)
-        strongest = min(values)
-        inhibitors.append({'site_id': s, 'antibody': ip, 'inhibitor': drug, 'n_peptides': len(values), 'n_decreased': down,
-                           'n_increased': up, 'log2_diff_median': float(pd.Series([d for _, d in values]).median()),
-                           'log2_diff_strongest': strongest[1], 'adj_p_min': strongest[0], 'call': peptide_call(down, up)})
+        r = pc.site_response([v[:3] for v in values], rc.PADJ_CUTOFF)
+        inhibitors.append({'site_id': s, 'antibody': ip, 'inhibitor': drug, 'n_peptides': r['n_peptides'],
+                           'n_decreased': r['n_decreased'], 'n_increased': r['n_increased'],
+                           'n_multi_site_peptides': r['n_multi_site_peptides'], 'n_imputed_peptides': sum(v[3] for v in values),
+                           'n_one_condition_peptides': sum(v[4] for v in values), 'log2_diff_median': r['log2_median'],
+                           'log2_diff_strongest': r['log2_strongest'], 'adj_p_min': r['adj_p_min'], 'call': r['call'],
+                           'call_single_site_peptides': r['call_single_site_peptides']})
     order = {c: k for k, c in enumerate(rc.ANTIBODY_ORDER)}
     detection = pd.DataFrame(detection, columns=[c for c, *_ in rc.MARON_DETECTION_COLUMNS])
     detection = detection.assign(_s=detection['site_id'].map(split_key), _a=detection['antibody'].map(lambda a: order.get(a, -1)))
@@ -529,22 +525,38 @@ def maron_tables(inputs: Path, reference: dict, site_ids: set) -> tuple[pd.DataF
     return detection, inhibitors, dict(counts)
 
 
+CARM1_Q_CUTOFF, CARM1_P_SOURCE, CARM1_LOG2_CUTOFF = 0.05, 0.05, 1.0   # BH q < 0.05; the source study: nominal p < 0.05; twofold
+
+
 def carm1_table(inputs: Path, site_ids: set) -> pd.DataFrame:
-    words = {'down': 'decreased', 'up': 'increased', 'unchanged': 'no_change', 'mixed': 'mixed'}
-    layer = read_tsv(inputs / INPUT['carm1'])
-    out = pd.DataFrame({
-        'site_id': [key(a, p) for a, p in zip(layer['canonical_UniProtAC'], layer['position'])],
-        'cell_line': layer['cell_line'],
-        'n_peptides': layer['peptides'].astype(int),
-        'log2_ko_over_wt': layer['median_log2_ko_wt'].astype(float),
-        'p': layer['min_p'].astype(float),
-        'n_decreased': layer['peptides_down'].astype(int),
-        'n_increased': layer['peptides_up'].astype(int),
-        'call': layer['call'].map(words),
-    })
-    if out['call'].isna().any():
-        raise SystemExit(f"unknown CARM1 knockout calls: {sorted(set(layer['call']) - set(words))}")
-    out = out[out['site_id'].isin(site_ids)]
+    """The CARM1 knockout response of each site and cell line, from the staged peptides (scripts/41): a peptide changes at
+    |log2 KO/WT| >= 1 and BH q < 0.05 (the p values of Shishkova et al. 2017 Supplementary Data 1, adjusted over the
+    quantified peptides of each cell line), combined over the peptides carrying the site by the shared rule; the source
+    study's own rule (nominal p < 0.05) is kept beside it."""
+    pep = read_tsv(inputs / INPUT['carm1_peptides'])
+    pep = pep[pep['call'] != 'not_quantified'].copy()
+    pep['log2'], pep['p'] = pep['log2_ko_wt'].astype(float), pep['p'].astype(float)
+    pep['q'] = 0.0
+    for cell, g in pep.groupby('cell_line'):
+        pep.loc[g.index, 'q'] = pc.bh(g['p'].tolist())
+    pep = pep[pep['canonical_start'] != '']
+    groups = defaultdict(list)
+    for r in pep.itertuples(index=False):
+        positions = [int(x) for x in r.methyl_positions.split(';') if x]
+        for pos in positions:
+            groups[(key(r.canonical_UniProtAC, pos), r.cell_line)].append((r.q, r.log2, len(positions), r.p))
+    rows = []
+    for (site, cell), vals in groups.items():
+        if site not in site_ids:
+            continue
+        res = pc.site_response([(q, d, n) for q, d, n, _ in vals], CARM1_Q_CUTOFF, CARM1_LOG2_CUTOFF, strict=True)
+        nominal = pc.site_response([(p_, d, n) for _, d, n, p_ in vals], CARM1_P_SOURCE, CARM1_LOG2_CUTOFF, strict=True)
+        rows.append({'site_id': site, 'cell_line': cell, 'n_peptides': res['n_peptides'],
+                     'log2_ko_over_wt': round(res['log2_median'], 3), 'p': min(v[3] for v in vals), 'q': min(v[0] for v in vals),
+                     'n_decreased': res['n_decreased'], 'n_increased': res['n_increased'],
+                     'n_multi_site_peptides': res['n_multi_site_peptides'], 'call': res['call'],
+                     'call_single_site_peptides': res['call_single_site_peptides'], 'call_source_rule': nominal['call']})
+    out = pd.DataFrame(rows, columns=[c for c, *_ in rc.CARM1_COLUMNS])
     return out.assign(_s=out['site_id'].map(split_key)).sort_values(['_s', 'cell_line']).drop(columns='_s').reset_index(drop=True)
 
 
