@@ -972,7 +972,7 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
     sites, prev = files['sites'][1], ctx['previous_sites']
     num = lambda x: pd.to_numeric(x, errors='coerce').fillna(0).astype(int)  # noqa: E731
     changed = {'decreased', 'increased', 'mixed'}
-    calls = [('maron2021_GSK591_call', 'GSK591 (type II PRMT inhibitor)'), ('maron2021_MS023_call', 'MS023 (type I PRMT inhibitor)'),
+    calls = [('maron2021_GSK591_call', 'GSK591 (PRMT5 inhibitor)'), ('maron2021_MS023_call', 'MS023 (type I PRMT inhibitor)'),
              ('carm1_ko_call', 'CARM1 knockout')]
     order = ['decreased', 'increased', 'mixed', 'no_significant_change']
     old_name = lambda c: 'no_change' if c == 'no_significant_change' else c  # noqa: E731
@@ -980,6 +980,8 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
              '|---|' + '---:|' * len(calls)]
     for c in order:
         table.append(f'| `{c}` | ' + ' | '.join(f"{n(int((prev[col] == old_name(c)).sum()))} → {n(int((sites[col] == c).sum()))}" for col, _ in calls) + ' |')
+    same_calls = all((prev.set_index('site_id')[col].replace('no_change', 'no_significant_change').reindex(sites['site_id']).fillna('').values
+                      == sites[col].values).all() for col, _ in calls)
     inh, carm = files['maron_inhibitors'][1], files['carm1_ko'][1]
     inh_changed = inh[inh['call'].isin(changed)]
     # a change resting only on peptides with another methylarginine: no single-site peptide, or none of them changed
@@ -997,7 +999,7 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
            '(in place of `no_change`) when none changed: measured, not shown to be unchanged. The release, the website and the '
            'Maron 2021 summaries of the analyses (`scripts/16`) now share this rule (`scripts/peptide_calls.py`); the summaries '
            'had called a site from its median change, which can have the opposite sign to a significant peptide. The median '
-           'stays as a description only.', ''] + table + ['',
+           'stays as a description only.' + (f' Every site keeps its {previous} call; only `no_change` is renamed.' if same_calls else ''), ''] + table + ['',
            '- A peptide that carries several methylarginines reports them together, so its change cannot be given to one of '
            'them. The tables now count those peptides (`n_multi_site_peptides`) and give the call from the single-site '
            f'peptides alone (`call_single_site_peptides`, empty when there are none). Of the {n(len(inh_changed))} site, antibody '
@@ -1008,8 +1010,9 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
            f'{n(len(one_cond))} of the rows with a change have every peptide detected in one condition only.',
            '- CARM1 knockout: a peptide now changes at Benjamini-Hochberg q < 0.05 (the study\'s p values adjusted over the '
            'quantified peptides of each cell line) and a twofold change; the study\'s own rule (nominal p < 0.05) is kept as '
-           f'`call_source_rule`. {n(len(carm_changed))} site and cell-line rows change under the adjusted rule; the two rules '
-           f'differ on {n(carm_diff)} rows.',
+           f'`call_source_rule`. ' + (f'Both rules call the same {n(len(carm_changed))} site and cell-line rows changed, each the same way.'
+                                        if not carm_diff else f'{n(len(carm_changed))} site and cell-line rows are called changed under the '
+                                        f'adjusted rule; the two rules differ on {n(carm_diff)} rows.'),
            '- Neither study measured total protein in the same samples, so a peptide\'s change can also be a change in its '
            'protein. The website calls a decrease after a PRMT inhibitor "Writer suggested", not a writer.', '']
     # RBR-ID: biological samples and an adjusted p, the published rule kept as a reproduction
