@@ -357,6 +357,16 @@
     ['Organelles and membranes', ['Mitochondria', 'Endoplasmic reticulum', 'Golgi apparatus', 'Vesicles', 'Plasma membrane']],
   ];
   const structCodes = () => M.structure_contexts || STRUCT_CODES;
+  // How the records placing a site localise its methyl group (site field localised_mask over M.localised_by, from
+  // v1.3.1): a localisation score or a sequence that leaves one possible arginine, or curation only. Different kinds of
+  // evidence, without one shared error rate.
+  const LOC_CURATED = new Set(['curated_database', 'curated_experimental']);
+  const LOC_LABEL = { localisation_score: 'localisation score', one_methylatable_residue: 'one methylatable residue on the peptide',
+    every_arginine_dimethylated: 'every arginine on the peptide dimethylated', curated_experimental: 'UniProt, experimental evidence (curated)',
+    curated_database: 'PhosphoSitePlus 2021 (curated)' };
+  const locCodes = (s) => (s.loc == null ? [] : (M.localised_by || []).filter((_, b) => s.loc >> b & 1).map(([k]) => k));
+  // true when a score or a sequence localises the site (an export without the field: every site)
+  const locatedByData = (s) => s.loc == null || locCodes(s).some((k) => !LOC_CURATED.has(k));
   // A site's class index in structCodes() when the export has none (as scripts/common.py structure_context).
   function structOf(s) {
     const dc = M.disorder_classes[s.dc], dx = M.domain_contexts[s.dctx];
@@ -717,7 +727,7 @@
   const DEFAULT_FILTERS = () => ({
     // Motif, study, domain class, functional class, disease, condensate, complex, GO and partner filters are search
     // terms (motif:RGG …) held in Q, not here.
-    states: new Set(), ips: new Set(), sources: new Set(), s2: new Set(), multi: false, reviewed: false, minRep: 0,
+    states: new Set(), ips: new Set(), sources: new Set(), s2: new Set(), multi: false, reviewed: false, minRep: 0, located: false,
     treat: '', disorder: new Set(), domctx: new Set(), sctx: new Set(),
     nn: 0, ptmGroup: '', ptmDist: 0,
     anyCond: false, minSites: 1, dense: false, arch: '', argEnriched: false,
@@ -1001,7 +1011,7 @@
     S = data.sites.map((r, j) => ({
       j, p: r[0], pos: r[1], st: r[2], src: r[3], refs: r[4], dc: r[5], dEdge: r[6], dctx: r[7], ipr: r[8],
       dcls: r[9], domDist: r[10], domSide: r[11], win: r[12], mot: r[13], mis: !!r[14], orig: r[15],
-      s2: r[16], ip: r[17], tr: r[18], study: r[19] || 0, ko: named(M.site_fields, r, 'carm1_ko', []), stx: named(M.site_fields, r, 'state_detail', null), sctx: named(M.site_fields, r, 'structure_context', null), par: named(M.site_fields, r, 'paralogs', null), nn: null, ptmD: null, trf: 0,
+      s2: r[16], ip: r[17], tr: r[18], study: r[19] || 0, ko: named(M.site_fields, r, 'carm1_ko', []), stx: named(M.site_fields, r, 'state_detail', null), sctx: named(M.site_fields, r, 'structure_context', null), par: named(M.site_fields, r, 'paralogs', null), loc: named(M.site_fields, r, 'localised_mask', null), nn: null, ptmD: null, trf: 0,
       iface: 0, ifP: null, ifPdb: null, ifN: 0, contacts: null, modelledMe: '', geo: null, modelled: null,
     }));
     for (const s of S) { P[s.p].sites.push(s.j); if (s.sctx == null) s.sctx = structOf(s); }
@@ -1801,6 +1811,7 @@
     if (f.multi && popcount(s.src) < 2) return false;
     if (f.reviewed && P[s.p].unrev) return false;
     if (f.minRep && popcount(s.study) < f.minRep) return false;
+    if (f.located && !locatedByData(s)) return false;
     if (f.treat && !treatPass(s, f.treat)) return false;
     if (f.disorder.size && !f.disorder.has(s.dc)) return false;
     if (f.domctx.size && !f.domctx.has(s.dctx)) return false;
@@ -1917,6 +1928,7 @@
     F.sources.forEach((v) => add('prov', SOURCE_LABEL[M.sources[v]], () => F.sources.delete(v)));
     if (F.multi) add('prov', '≥2 source tables', () => { F.multi = false; });
     if (F.reviewed) add('prov', 'Reviewed UniProt entries only', () => { F.reviewed = false; });
+    if (F.located) add('prov', 'Localised by a score or sequence', () => { F.located = false; });
     if (F.treat) add('treat', treatLabel(F.treat), () => { F.treat = ''; });
     if (F.feats) F.feats.split(',').forEach((k) => { const ft = featureMap().get(k); if (ft) add('profile', ft.label, () => { F.feats = F.feats.split(',').filter((x) => x !== k).join(','); }); });
     F.disorder.forEach((v) => add('struct', DISORDER_LABEL[M.disorder_classes[v]], () => F.disorder.delete(v)));
@@ -2349,6 +2361,8 @@
         '<div class="fgroup"><span class="flabel">Reported by study or database (match any)</span>' +
         termChips('study', M.studyOrder.map((k) => [termSlug('study', k), studyLabel(M.studies[k][0]) + ' · ' + compact(M.studies[k][2]), M.studies[k][1] || STUDY_HELP[M.studies[k][0]] || ''])) + '</div>' +
         '<div class="fgroup"><label class="flabel" for="f-minrep">Sources reporting the site</label>' + sel('f-minrep', options(withCurrent([[2, '≥2 studies or databases'], [3, '≥3'], [4, '≥4'], [5, '≥5']], F.minRep, (v) => '≥' + v), F.minRep || '', 'Any'), !!F.minRep) + '</div>' +
+        (M.localised_by ? '<div class="fgroup"><span class="flabel" title="How the records placing a site localise the methyl group to this arginine: a localisation score, a peptide sequence that leaves one possible arginine, or a curated annotation only (UniProt with experimental evidence, PhosphoSitePlus as compiled in 2021). These kinds of evidence do not share one error rate.">Localisation</span>' +
+          '<label class="check"><input type="checkbox" id="f-located"' + (F.located ? ' checked' : '') + '> Localised by a score or sequence (leaves out ' + fmt(S.filter((x) => !locatedByData(x)).length) + (LC_ON ? ' curated-only or unlocalised sites' : ' curated-only sites') + ')</label></div>' : '') +
         // The source-table filter of the compiled-table releases; from v1.2.0 each table is a study, so the study filter
         // above replaces it (it is still shown when a link sets it).
         (!localisedOnly() || F.sources.size || F.multi ? '<div class="fgroup"><span class="flabel">Pipeline source table</span>' + chipRow('sources', M.sources.map((n, k) => [k, SOURCE_LABEL[n], SOURCE_HELP[n]]).filter(([k]) => !localisedOnly() || F.sources.has(k) || S.some((x) => x.src & (1 << k))), F.sources) +
@@ -2484,6 +2498,7 @@
     };
     bind('f-multi', (el) => { F.multi = el.checked; });
     bind('f-reviewed', (el) => { F.reviewed = el.checked; });
+    bind('f-located', (el) => { F.located = el.checked; });
     bind('f-minrep', (el) => { F.minRep = +el.value || 0; });
     bind('f-treat', (el) => { F.treat = el.value; });
     bind('f-nn', (el) => { F.nn = +el.value || 0; });
@@ -3947,11 +3962,12 @@
     // background, have loaded; until then (or for an export without it) the selection's counts beside the whole dataset.
     const vocab = (list, k) => (k == null || k < 0 ? null : list[k]);
     const residue = [
-      [sctx, { analysis: 'structure_context', classOf: (s) => vocab(structCodes(), s.sctx), within: sctxWithin }, (r) => ix(structCodes(), r.key) >= 0 && ((s) => s.sctx === ix(structCodes(), r.key))],
-      [motif, { analysis: 'motif', classes: M.motifs, inClass: (s, c) => !!(s.mot & (1 << M.motifs.indexOf(c))), within: effOn(motifW) }, (r) => ix(M.motifs, r.key) >= 0 && ((s) => s.mot & (1 << ix(M.motifs, r.key)))],
-      [disorder, { analysis: 'disorder', classOf: (s) => vocab(M.disorder_classes, s.dc), within: effOn(disW) }, (r) => ix(M.disorder_classes, r.key) >= 0 && ((s) => s.dc === ix(M.disorder_classes, r.key))],
-      [domctx, { analysis: 'domain_context', classOf: (s) => vocab(M.domain_contexts, s.dctx), within: effOn(dctxW) }, (r) => ix(M.domain_contexts, r.key) >= 0 && ((s) => s.dctx === ix(M.domain_contexts, r.key))],
-      [domcls, { analysis: 'domain_class', classOf: (s) => vocab(M.domain_classes, s.dcls), within: effOn(dclsW) }, (r) => ix(M.domain_classes, r.key) >= 0 && ((s) => s.dcls === ix(M.domain_classes, r.key))],
+      // selectedBy: the selection was made with this chart's own feature, so its tests would be circular
+      [sctx, { analysis: 'structure_context', classOf: (s) => vocab(structCodes(), s.sctx), within: sctxWithin, selectedBy: () => F.sctx.size > 0 || F.disorder.size > 0 || F.domctx.size > 0 || featSel('dis') || featSel('dom') }, (r) => ix(structCodes(), r.key) >= 0 && ((s) => s.sctx === ix(structCodes(), r.key))],
+      [motif, { analysis: 'motif', classes: M.motifs, inClass: (s, c) => !!(s.mot & (1 << M.motifs.indexOf(c))), within: effOn(motifW), selectedBy: () => termValues('motif').length > 0 || termValues('window').length > 0 || featSel('mot') }, (r) => ix(M.motifs, r.key) >= 0 && ((s) => s.mot & (1 << ix(M.motifs, r.key)))],
+      [disorder, { analysis: 'disorder', classOf: (s) => vocab(M.disorder_classes, s.dc), within: effOn(disW), selectedBy: () => F.disorder.size > 0 || F.sctx.size > 0 || featSel('dis') }, (r) => ix(M.disorder_classes, r.key) >= 0 && ((s) => s.dc === ix(M.disorder_classes, r.key))],
+      [domctx, { analysis: 'domain_context', classOf: (s) => vocab(M.domain_contexts, s.dctx), within: effOn(dctxW), selectedBy: () => F.domctx.size > 0 || F.sctx.size > 0 || featSel('dom') }, (r) => ix(M.domain_contexts, r.key) >= 0 && ((s) => s.dctx === ix(M.domain_contexts, r.key))],
+      [domcls, { analysis: 'domain_class', classOf: (s) => vocab(M.domain_classes, s.dcls), within: effOn(dclsW), selectedBy: () => termValues('domain').length > 0 }, (r) => ix(M.domain_classes, r.key) >= 0 && ((s) => s.dcls === ix(M.domain_classes, r.key))],
     ];
     let waiting = false;
     for (const [spec, cfg, test] of residue) {
@@ -3969,10 +3985,10 @@
     // Protein-set charts: recomputed for the selection against the same background (selSetTest).
     const reviewed = (p) => !p.unrev, proteomeN = (pantherMeta() && pantherMeta().universe) || +(cs.reviewed_proteome_proteins || 0);
     const condMember = (r) => (thr ? (p) => (cdMemberships(p) || []).some((c) => c.ci === r.key && c.score >= thr) : (p) => p.cond.includes(r.key));
-    selSetTest(cond, condBg === 'proteome' ? { N: +cs.reviewed_proteome_proteins, inBg: reviewed, member: condMember, M: (r) => +String(r.extra).split('/')[1], bg: 'reviewed proteome' }
-      : { N: +cs.condensate_universe_proteins, inBg: (p) => (thr ? (cdMemberships(p) || []).length > 0 : p.cond.length > 0), member: condMember, M: (r) => +String(r.extra).split('/')[1], bg: 'proteins in any condensate' });
-    if (loc) selSetTest(loc, { N: hm.universe, inBg: (p) => p.hpa.some((x) => x[1] >= HPA_SURE), member: (r) => (p) => p.hpa.some((x) => x[0] === r.key && x[1] >= HPA_SURE), M: (r) => +String(r.extra).split('/')[1], bg: 'HPA-profiled proteins' });
-    if (pan) selSetTest(pan, { N: pantherMeta().universe, inBg: reviewed, member: (r) => pantherTest(r.key), M: (r) => r.nums[1], bg: 'reviewed proteome', family: (r) => r.kind });
+    selSetTest(cond, condBg === 'proteome' ? { N: +cs.reviewed_proteome_proteins, inBg: reviewed, member: condMember, M: (r) => +String(r.extra).split('/')[1], bg: 'reviewed proteome', kinds: ['condensate'] }
+      : { N: +cs.condensate_universe_proteins, inBg: (p) => (thr ? (cdMemberships(p) || []).length > 0 : p.cond.length > 0), member: condMember, M: (r) => +String(r.extra).split('/')[1], bg: 'proteins in any condensate', kinds: ['condensate'] });
+    if (loc) selSetTest(loc, { N: hm.universe, inBg: (p) => p.hpa.some((x) => x[1] >= HPA_SURE), member: (r) => (p) => p.hpa.some((x) => x[0] === r.key && x[1] >= HPA_SURE), M: (r) => +String(r.extra).split('/')[1], bg: 'HPA-profiled proteins', kinds: ['location'] });
+    if (pan) selSetTest(pan, { N: pantherMeta().universe, inBg: reviewed, member: (r) => pantherTest(r.key), M: (r) => r.nums[1], bg: 'reviewed proteome', family: (r) => r.kind, kinds: ['panther'] });
     // Order and cut the lists after testing every row: by the selection's results when there is one.
     const num = (v, d) => (v == null || !Number.isFinite(v) ? d : v);
     if (pan && pan.selTest) pan.rows = resortRanked(pan.rows, (r) => r.label === pantherMeta().unclassified);
@@ -3982,12 +3998,12 @@
       if (loc.selTest) loc.rows.sort((a, b) => num(b.value, -99) - num(a.value, -99));
       loc.rows = locCurated ? LOC_MAIN.flatMap(([group, names]) => loc.rows.filter((r) => names.includes(r.label)).map((r, i) => Object.assign(r, { head: i ? undefined : group }))) : UI.allLoc ? loc.rows : loc.rows.slice(0, 14);
     }
-    selSetTest(func, { N: proteomeN, inBg: reviewed, M: (r) => r.bgM, family: (r) => r.kind,
+    selSetTest(func, { N: proteomeN, inBg: reviewed, M: (r) => r.bgM, family: (r) => r.kind, kinds: ['class', 'subclass'],
       member: (r) => (r.kind === 'sub' ? ix(M.func_subclasses, r.key) >= 0 && ((p) => p.sub & 2 ** ix(M.func_subclasses, r.key)) : ix(M.func_classes, r.key) >= 0 && ((p) => p.func & 2 ** ix(M.func_classes, r.key))), bg: 'reviewed proteome' });
     // Disease sets count genes. A family needs the size of the DisGeNET background (v1.3.0 exports); without it the
     // chart keeps the whole-dataset test with the selection's counts.
     const dgnBg = M.disease_family_sets && M.disease_family_sets.background;
-    if (dgnBg && M.protein_fields.includes('disgenet_background')) selSetTest(fams, { N: dgnBg[1], inBg: (p) => p.dgnBg === 1, id: (p) => p.gene || p.acc, unit: 'genes', member: (r) => r.fk >= 0 && familyMember(r.fk), M: (r) => r.nums[1], bg: 'genes with a DisGeNET term', family: (r) => r.audited });
+    if (dgnBg && M.protein_fields.includes('disgenet_background')) selSetTest(fams, { N: dgnBg[1], inBg: (p) => p.dgnBg === 1, id: (p) => p.gene || p.acc, unit: 'genes', kinds: ['disease', 'dterm'], member: (r) => r.fk >= 0 && familyMember(r.fk), M: (r) => r.nums[1], bg: 'genes with a DisGeNET term', family: (r) => r.audited });
     else markSelection(fams, 'proteins', (r) => r.fk >= 0 && familyMember(r.fk), 'Selected proteins in the family\'s gene set');
     if (func.selTest) func.rows = resortRanked(func.rows);
     if (fams.selTest) fams.rows = fams.rows.sort(byFamily).map(famHead);
@@ -4018,6 +4034,11 @@
     for (const p of R.prots) { const id = cfg.id ? cfg.id(p) : p.acc.split('-')[0]; if (id && !seen.has(id) && cfg.inBg(p)) { seen.add(id); sel.push(p); } }
     const n = sel.length, N = cfg.N;
     spec.selTest = { n, N, unit: cfg.unit || 'proteins', bg: cfg.bg, what: selectionText() };
+    // A selection made with this chart's kind of set (a condensate, a location...) cannot test those sets: the result is
+    // set by the selection. Such rows, and any row whose set holds every selected protein, are shown as counts only.
+    const kinds = cfg.kinds || [];
+    const selectedBy = kinds.some((k) => termValues(k).length) || (kinds.includes('condensate') && !!(F.anyCond || F.condConf));
+    spec.selTest.circular = selectedBy;
     const tested = [];
     for (const r of spec.rows) {
       const M = cfg.M(r), t = cfg.member(r);
@@ -4030,11 +4051,12 @@
       const k = ids.size;
       r.selK = k; r.selM = M;
       r.value = k ? +Math.log2((k / n) / (M / N)).toFixed(3) : null;
-      r.p = k ? hyperSf(k, N, M, n) : null;
-      if (k) tested.push(r);
+      r.circular = !!k && (selectedBy || k === n);
+      r.p = k && !r.circular ? hyperSf(k, N, M, n) : null;
+      if (k && !r.circular) tested.push(r);
       r.extra = ofTotal(k, M); r.extraRaw = k; if (r.nums) r.nums = [k, M];
       r.selNote = '<br><b>Your selection</b>: ' + fmt(k) + ' of its ' + fmt(n) + ' ' + spec.selTest.unit + ' in the background are in this set of ' + fmt(M) +
-        (k ? '; log2 fold enrichment ' + fmtL2(r.value) : '; not tested (none in the set)');
+        (!k ? '; not tested (none in the set)' : r.circular ? '; log2 fold ' + fmtL2(r.value) + ', descriptive: ' + (selectedBy ? 'your selection was made with this kind of set' : 'every selected protein is in this set') + ', so a test would be circular' : '; log2 fold enrichment ' + fmtL2(r.value));
     }
     // BH within each family of tests, as the pipeline adjusts each analysis apart (PANTHER groups, classes and
     // subclasses; broad classes and subclasses; audited and additional disease families).
@@ -4042,11 +4064,12 @@
     for (const r of tested) { const f = cfg.family ? cfg.family(r) : ''; if (!fam.has(f)) fam.set(f, []); fam.get(f).push(r); }
     for (const list of fam.values()) bhAdjust(list, (x) => x.p);
     for (const r of spec.rows) {
-      if (r.selK) { r.sig = r.q != null && r.q <= PADJ; r.selNote += ', q ' + fmtP(r.q); }
+      if (r.selK && !r.circular) { r.sig = r.q != null && r.q <= PADJ; r.selNote += ', q ' + fmtP(r.q) + ' (exploratory)'; }
       r.selNote += '<br><span class="muted">Whole dataset: ' + (r.ref == null ? 'not tested' : fmtL2(r.ref) + ', q ' + fmtP(r.refQ)) + ' (tick)</span>';
       r.title = (r.title || '') + r.selNote;
     }
-    spec.selTest.note = '; your selection, ' + fmt(n) + ' ' + spec.selTest.unit + ' of ' + fmt(N) + ' in the background (' + selectionText() + ')';
+    spec.selTest.note = '; your selection, ' + fmt(n) + ' ' + spec.selTest.unit + ' of ' + fmt(N) + ' in the background (' + selectionText() + '): ' +
+      (selectedBy ? 'descriptive only, as the selection was made with these sets' : 'exploratory, one-sided hypergeometric against the ' + (cfg.bg || 'background') + ', BH within ' + (cfg.family ? 'each family of this chart' : 'this chart') + ', not adjusted for the other selections tried');
     spec.subText = (spec.subText || '') + spec.selTest.note;
   }
 
@@ -4098,6 +4121,8 @@
   const OTHER_CLASS = 'Other / unclassified';
   // cfg: analysis, classOf(site) -> class name (one class per site), or inClass(site, class) for overlapping classes
   // (motifs) with classes the list to test; within: Mantel–Haenszel rather than pooled.
+  // Whether the profile filters (F.feats) hold a feature whose key starts with prefix (mot…, dis…, dom…).
+  const featSel = (prefix) => !!F.feats && F.feats.split(',').some((k) => k.startsWith(prefix));
   function selResidueTest(spec, cfg) {
     if (!spec || !constraints().length) return false;
     const bg = argBackground(), A = bg && bg[cfg.analysis];
@@ -4127,19 +4152,23 @@
         res.set(c, { a, value: +Math.log2(or).toFixed(3), p: n && N ? fisherP(a, b, cc, d) : null, bgShare: N ? cc / N : null });
       }
     }
-    bhAdjust([...res.values()]);
-    spec.selTest = { n, N, unit: 'sites', what: selectionText(), text: fmt(n) + ' sites, against the ' + fmt(N) + ' other arginines of their ' + fmt(byProt.size) + ' proteins',
+    // a selection made with this feature (or a class holding every selected site) gives counts, not a test
+    const selectedBy = !!(cfg.selectedBy && cfg.selectedBy());
+    for (const x of res.values()) if (selectedBy || (x.a && x.a === n)) { x.circular = true; x.p = null; }
+    bhAdjust([...res.values()].filter((x) => !x.circular));
+    spec.selTest = { n, N, unit: 'sites', what: selectionText(), circular: selectedBy, text: fmt(n) + ' sites, against the ' + fmt(N) + ' other arginines of their ' + fmt(byProt.size) + ' proteins',
       method: cfg.within ? 'Mantel–Haenszel odds ratio with each protein a stratum, BH across the classes' : 'Fisher\'s exact test, Haldane–Anscombe odds ratio, BH across the classes' };
     for (const r of spec.rows) {
       const x = res.get(r.key);
       r.ref = r.value; r.refQ = r.q;
       if (!x) { r.value = null; r.q = null; r.sig = false; continue; }
-      r.value = x.value; r.q = x.q != null ? x.q : null; r.p = x.p; r.sig = r.q != null && r.q <= PADJ; r.extra = fmt(x.a); r.extraRaw = x.a; r.selK = x.a;
+      r.value = x.value; r.circular = !!x.circular; r.q = !x.circular && x.q != null ? x.q : null; r.p = x.p; r.sig = r.q != null && r.q <= PADJ; r.extra = fmt(x.a); r.extraRaw = x.a; r.selK = x.a;
       r.selNote = '<br><b>Your selection</b>: ' + fmt(x.a) + ' of its ' + fmt(n) + ' sites' + (cfg.within ? '; within proteins (Mantel–Haenszel, ' + fmt(x.used) + ' informative proteins)' : ' (' + pctText(x.a, n || 1) + '%) vs ' + (x.bgShare == null ? '–' : (100 * x.bgShare).toFixed(1)) + '% of the other arginines of their proteins') +
-        '; log2 OR ' + fmtL2(r.value) + ', q ' + fmtP(r.q) + '<br><span class="muted">Whole dataset: ' + (r.ref == null ? 'not tested' : 'log2 OR ' + fmtL2(r.ref) + ', q ' + fmtP(r.refQ)) + ' (tick)</span>';
+        '; log2 OR ' + fmtL2(r.value) + (x.circular ? ', descriptive: ' + (selectedBy ? 'your selection was made with this feature' : 'every selected site is in this class') + ', so a test would be circular' : ', q ' + fmtP(r.q) + ' (exploratory)') +
+        '<br><span class="muted">Whole dataset: ' + (r.ref == null ? 'not tested' : 'log2 OR ' + fmtL2(r.ref) + ', q ' + fmtP(r.refQ)) + ' (tick)</span>';
       r.title = (r.title || '') + r.selNote;
     }
-    spec.selTest.note = '; your selection: ' + spec.selTest.text + ' (' + selectionText() + ')';
+    spec.selTest.note = '; your selection: ' + spec.selTest.text + ' (' + selectionText() + '): ' + (selectedBy ? 'descriptive only, as the selection was made with this feature' : 'exploratory, BH across the classes of this chart, not adjusted for the other selections tried');
     spec.subText = (spec.subText || '') + spec.selTest.note;
     return true;
   }
@@ -4152,7 +4181,7 @@
     if (!dm || !constraints().length) return null;
     if (doSelCache && doSelCache.R === R) return doSelCache.spec;
     const spec = { rows: dm.terms.map((t, k) => ({ value: t[5] ? +Math.log2(t[5]).toFixed(3) : null, q: t[6], dok: k, nums: [t[3], t[4]] })) };
-    selSetTest(spec, { N: dm.background[1], inBg: (p) => !!p.doTerms && p.doTerms.has(dm.root), id: (p) => p.gene || p.acc, unit: 'genes',
+    selSetTest(spec, { N: dm.background[1], inBg: (p) => !!p.doTerms && p.doTerms.has(dm.root), id: (p) => p.gene || p.acc, unit: 'genes', kinds: ['doterm', 'disease', 'dterm'],
       member: (r) => (p) => !!p.doTerms && p.doTerms.has(r.dok), M: (r) => r.nums[1], bg: 'genes with a Disease Ontology term' });
     doSelCache = { R, spec };
     return spec;
@@ -12173,12 +12202,13 @@
     // Answers for the scorecard: each section's deciding test on the selection and on every site.
     const selJ = scoped ? new Set(R.sites.map((s) => s.j)) : null, selP = scoped ? new Set(R.sites.map((s) => s.p)) : null;
     const test = ixSelTest;
-    const mhAns = (label, m) => {
+    const mhAns = (label, m, on) => {
       if (!m || m.or == null || Number.isNaN(m.or)) return am(0) + esc(label) + ': too few to test';
+      if (on && ixCircular()) return am(0) + esc(label) + ' <span class="an">OR ' + (Number.isFinite(m.or) ? fx(m.or) : '> 1,000') + '</span> <span class="muted">descriptive (selected by interaction evidence)</span>';
       const dir = m.p != null && m.p <= 0.05 ? (m.or > 1 ? 1 : -1) : 0;
       return am(dir) + esc(label) + ' <span class="an">OR ' + (Number.isFinite(m.or) ? fx(m.or) : '> 1,000') + '</span> <span class="muted">p ' + fmtP(m.p) + '</span>';
     };
-    const tests = (list, on) => list.map(([g, path, label]) => { const m = test(g, path, on); return m ? mhAns(label, m) : ''; }).filter(Boolean).join('; ');
+    const tests = (list, on) => list.map(([g, path, label]) => { const m = test(g, path, on); return m ? mhAns(label, m, on) : ''; }).filter(Boolean).join('; ');
     const both = (list) => [tests(list, scoped), scoped ? tests(list, false) : ''];
     const nacAns = (rows) => {
       if (!rows || !rows.length) return '';
@@ -13261,8 +13291,13 @@
   }
   const ixRes = (group) => { const v = ixSel(); return v ? v[group] : IX[IX_GROUP[group]] || {}; };
   // The note under a section's heading while a selection is set: what its tests compare, or that a part is not retested.
+  // A selection made with interaction evidence (a crosslink, interface, predicted contact, evidence or bound-RNA filter)
+  // cannot test that evidence: the page's tests on it are then descriptive.
+  const ixCircular = () => constraints().some((c) => c.group === 'ix') || ['bound', 'incell', 'interaction'].some((k) => termValues(k).length > 0);
   const ixScope = Object.assign((whole) => (!constraints().length ? '' : '<p class="scope-note' + (whole ? ' whole' : '') + '">' + (whole ? '<b>Whole dataset.</b> ' + whole
-    : '<b>Your selection.</b> Its ' + fmt(R.sites.length) + ' sites against the other arginines of their proteins; the release\'s other sites are left out. Clear the selection for the whole dataset.') + '</p>'), {
+    : '<b>Your selection.</b> Its ' + fmt(R.sites.length) + ' sites against the other arginines of their proteins; the release\'s other sites are left out. ' +
+      (ixCircular() ? '<b>Descriptive only:</b> the selection was made with interaction evidence, so these tests cannot test that evidence. ' : 'Exploratory: not adjusted for the other selections tried. ') +
+      'Clear the selection for the whole dataset.') + '</p>'), {
     // protein-set tests: the selected proteins against the same background as all methylated proteins
     protein: () => (!constraints().length ? '' : '<p class="scope-note"><b>Your selection.</b> Its ' + fmt(R.prots.length) + ' proteins tested against the same background as all methylated proteins. Clear the selection for the whole dataset.</p>'),
   });
@@ -14197,6 +14232,7 @@
       (s.win ? windowHtml(s.win, 7) + '<br>' : '') +
       esc(DISORDER_LABEL[M.disorder_classes[s.dc]] || '') + ' · ' + esc(DOMAIN_LABEL[M.domain_contexts[s.dctx]] || '') + (ipr ? ' (' + esc(ipr) + ')' : '') + '<br>' +
       'Reported by ' + M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => esc(studyLabel(M.studies[k][0]))).join(', ') +
+      (s.loc != null ? '<br>Localised by ' + (locCodes(s).map((k) => esc(LOC_LABEL[k] || k)).join(', ') || 'none of its records') + (s.loc && !locatedByData(s) ? ' (curated only)' : '') : '') +
       (s.trf ? '<br>' + PERTURB.map(([label, down]) => (s.trf & down ? '▼' + label + ' ' : '') + (s.trf & (down << 1) ? '▲' + label + ' ' : '')).join('') : '');
   }
 
@@ -14753,6 +14789,10 @@
       '<li>The stronger pattern is clustering: methylarginines lie closer together than the protein\'s other arginines would by chance.</li>' +
       '<li>Motif and clustering annotations need the arginine on the canonical sequence: ' + fmt(M.window_flags.missing) + ' sites have no usable sequence window and ' + fmt(M.window_flags.center_not_r) + ' are not an arginine there (flagged with !).</li>' +
       '<li>Coverage follows the source compilations: methylation reported only in low-throughput studies that no source compiled is not in the union.</li>' +
+      '<li><b>Enrichment is of reported sites and proteins.</b> The union pools studies with different cells, antibodies, proteases and detection limits, so a protein-set enrichment against the reviewed proteome also reflects which proteins are expressed, abundant and detectable in those experiments, and which the antibodies recover. Tests within proteins (each protein a stratum) remove differences between proteins, not peptide detectability or antibody preference within a protein. Where an experiment lists the proteins it measured, its protein-level test uses them as the background; elsewhere none is available, and no correction for abundance, length or arginine content is made.</li>' +
+      '<li><b>Tests on a selection are exploratory.</b> Each is BH-adjusted within its chart, not for the other selections tried. A test on the feature that made the selection (a condensate chart after selecting a condensate, a motif chart after selecting a motif, the interaction tests after selecting by interaction evidence) is circular: the page then shows counts and marks the result descriptive.</li>' +
+      '<li><b>Sites do not share one error rate.</b> A site enters the union when one record passes the five site tests under its own source\'s localisation (a localisation score at the study\'s threshold, a sequence that leaves one possible arginine, or a curated annotation: UniProt with experimental evidence, PhosphoSitePlus as compiled in 2021 without its evidence categories). These are different kinds of evidence, not one false-discovery rate; the site table names each site\'s localisation methods, and the Provenance filters can keep sites with a localisation score or sequence, without the curated-only ones.</li>' +
+      '<li><b>Responses to PRMT inhibitors and CARM1 loss are peptide-level.</b> A call says a peptide carrying the site changed, which a peptide with several methylarginines does for any of them; neither the inhibitor nor the knockout data were corrected for total protein (see PRMT inhibitor and knockout response).</li>' +
       '</ul>' +
       ''],
       ['downloads', 'Downloads', '<p class="note">' + esc(PSP_NOTICE) + ' Site downloads that include PhosphoSitePlus® sites carry these terms; DisGeNET-derived disease terms are CC BY-NC-SA 4.0.</p>' +
@@ -15351,7 +15391,7 @@
       'window_15', 'window_31', 'motifs', 'disorder_context', 'disorder_edge_distance', 'domain_context', 'nearest_interpro', 'nearest_domain_class',
       'domain_edge_distance', 'domain_side', 'nearest_methyl_r_distance', 'GSK591_response', 'GSK591_response_single_site_peptides',
       'MS023_response', 'MS023_response_single_site_peptides', 'maron_s3_measurements', 'CARM1_KO_response', 'CARM1_KO_response_single_site_peptides',
-      'carm1_ko_measurements', 'condensates', 'functional_classes', 'reported_by', 'reporting_sources', 'references', 'reported_by_doi', 'pdb_interface_partners', 'pdb_interface_entries', 'pdb_interface_entries_total', 'pdb_contacts', 'predicted_interface_partners_pdockq', 'predicted_interface_partners_total', 'rna_dna_crosslinks', 'intact_records',
+      'carm1_ko_measurements', 'condensates', 'functional_classes', 'reported_by', 'reporting_sources', 'localised_by', 'curated_only', 'references', 'reported_by_doi', 'pdb_interface_partners', 'pdb_interface_entries', 'pdb_interface_entries_total', 'pdb_contacts', 'predicted_interface_partners_pdockq', 'predicted_interface_partners_total', 'rna_dna_crosslinks', 'intact_records',
       'bound_rna_dna', 'bound_types', 'bound_sequence', 'bound_sequence_offset', 'crosslinks_within_5'];
     // With lower-confidence sites shown: which tier, whether the statistics with them count it, and the tests it fails.
     head.push('shared_with_paralogs');
@@ -15371,6 +15411,7 @@
         respStatus(s, 2), respSingle(s, 2), s.ko.map(([c, l2, pv, n]) => koMeta().cell_lines[c] + ':' + l2 + ':' + pv + ':' + n).join(';'),
         p.cond.map((k) => M.condensates[k][0]).join(';'), bits(p.func).map((b) => M.func_classes[b]).join(';'),
         bits(s.study).map((b) => M.studies[b][0]).join(';'), popcount(s.study),
+        locCodes(s).join(';'), s.loc == null ? '' : locatedByData(s) || !s.loc ? 'no' : 'yes',
         s.refs.map((k) => M.refs[k]).join(' | '), bits(s.study).map((b) => studyRef(b)[1]).filter(Boolean).join(';'),
         ixReady() ? ifaceText(s) : '', (s.ifPdb || []).join(';'), ixReady() ? (s.ifN || (s.ifPdb || []).length) : '', ixReady() ? contactText(s) : '',
         ixReady() ? predText(s) : '', ixReady() ? (s.pred ? s.pred.n || s.pred.hits.length : 0) : '', ixReady() ? xlText(s) : '', ixReady() ? iaText(s) : '',

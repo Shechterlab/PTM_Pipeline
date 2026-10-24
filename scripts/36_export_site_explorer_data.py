@@ -28,6 +28,7 @@ import release_codes as rc
 # Source tables: the three compiled tables of v1.1.0 (Maron2021 is Table S5), then one per study table (bits of the
 # site field source_mask).
 SOURCES = ['Maron2021', 'ProMetheusDB', 'human_ptm_master', *rc.STUDY_TABLES]
+LOCALISED = list(rc.CODES['localised_by'])   # fixed order, as the site table lists them
 SOURCE_OF_TABLE = {'maron2021_s5': 'Maron2021', 'prometheusdb_mmc2': 'ProMetheusDB', 'ptm_master': 'human_ptm_master',
                    **{t: t for t in SOURCES[3:]}}
 RAW_TABLE = {'maron2021_s5': 'maron_s5', 'prometheusdb_mmc2': 'prometheus_mmc2', 'ptm_master': 'human_ptm_master',
@@ -330,6 +331,9 @@ def main() -> None:
             # the paralog rule: the other entries holding the site's sequence, as [accession, gene]
             [[a, gene_of(a)] for a in L(s.get('shared_with_paralogs', ''))] or None,
             structure_contexts.index(s['structure_context']) if s.get('structure_context') else None,
+            # how the site's records localise the methyl group (a release before v1.3.1 gives it per record only)
+            sum(1 << LOCALISED.index(x) for x in (L(s['localised_by']) if 'localised_by' in s
+                                                  else {rec[i]['localised_by'] for i in ids} - {''})),
         ])
     # evidence rows: table and study codes as vocabularies
     source_tables, remap_statuses = Vocab(), Vocab()
@@ -474,6 +478,8 @@ def main() -> None:
             'func_classes': func_classes.values, 'func_subclasses': func_subclasses.values,
             'disorder_classes': disorder_classes.values, 'domain_contexts': domain_contexts.values, 'domain_classes': domain_classes.values,
             'structure_contexts': structure_contexts.values,
+            # localised_mask bits: [code, what it means]; curated_database and curated_experimental alone = curated only
+            'localised_by': [[k, rc.CODES['localised_by'][k]] for k in LOCALISED],
             'disease_families': families,
             # the eight audited families (the original pipeline's hand-checked rules) come first; the others are rule-based additions (scripts/disease_families.py)
             'disease_family_audited': [r['audited'] == 'true' for r in disease_families.to_dict('records')],
@@ -532,7 +538,8 @@ def main() -> None:
             'site_fields': ['protein', 'position', 'state', 'source_mask', 'refs', 'disorder_class', 'disorder_edge_distance',
                             'domain_context', 'interpro', 'domain_class', 'domain_edge_distance', 'domain_side', 'window_31',
                             'motif_mask', 'window_center_mismatch', 'source_positions_original', 'maron_s2_state_mask',
-                            'maron_ip_mask', 'maron_treatment', 'study_mask', 'carm1_ko', 'state_detail', 'paralogs', 'structure_context'],
+                            'maron_ip_mask', 'maron_treatment', 'study_mask', 'carm1_ko', 'state_detail', 'paralogs', 'structure_context',
+                            'localised_mask'],
             'maron_treatment_fields': ['ip', 'treatment', 'median change (descriptive)', 'lowest adj. p', 'peptide rows',
                                        f'peptides down at adj. p <= {PADJ:g}', f'peptides up at adj. p <= {PADJ:g}',
                                        'peptides carrying another methylarginine', 'call over single-site peptides (index into calls, or null)',
@@ -636,6 +643,7 @@ def check(outdir: Path, sites: pd.DataFrame, proteins: pd.DataFrame, records: pd
                 or m['disorder_classes'][s[5]] != r['disorder'] or m['domain_contexts'][s[7]] != r['domain'] \
                 or m['domain_classes'][s[9]] != r['nearest_domain_class'] \
                 or (r.get('structure_context') and m['structure_contexts'][s[23]] != r['structure_context']) \
+                or ('localised_by' in r and [m['localised_by'][k][0] for k in range(len(LOCALISED)) if s[24] >> k & 1] != L(r['localised_by'])) \
                 or {m['studies'][k][0] for k in range(len(m['studies'])) if s[19] >> k & 1} != {web_name[x] for x in L(r['studies'])}:
             bad.append(r['site_id'])
     n_records = sum(len(x) for x in e['sites'])

@@ -525,6 +525,8 @@ def maron_tables(inputs: Path, reference: dict, site_ids: set) -> tuple[pd.DataF
     return detection, inhibitors, dict(counts)
 
 
+# Localisation by curation alone (UniProt with experimental evidence, PhosphoSitePlus as compiled): site field curated_only.
+CURATED_LOCALISATION = {'curated_database', 'curated_experimental'}
 CARM1_Q_CUTOFF, CARM1_P_SOURCE, CARM1_LOG2_CUTOFF = 0.05, 0.05, 1.0   # BH q < 0.05; the source study: nominal p < 0.05; twofold
 
 
@@ -674,6 +676,7 @@ def build_sites(records, union, pending, reference, entry, previous_sites, place
         if studies == ['Ma2023']:
             flags.append('xenograft_only')
         reported = sorted({int(float(p)) for p in group['reported_position'] if clean(p)})
+        localised = {x for x in group['localised_by'] if x}
         in_previous = group['_previous_lifted'].eq(site).any() or site in previous_sites
         renumbered = group['reason_code'].eq('reference_renumbered').any()
         if in_previous:
@@ -701,6 +704,9 @@ def build_sites(records, union, pending, reference, entry, previous_sites, place
             'source_tables': join(ordered(group['source_table'], list(rc.SOURCE_TABLES))),
             'n_records': len(group),
             'record_ids': join(sorted(group['record_id'])),
+            # how the site's records localise it: a score, a sequence, or curation only
+            'localised_by': join(ordered(localised, list(rc.CODES['localised_by']))),
+            'curated_only': bool(localised) and localised <= CURATED_LOCALISATION,
             'reported_positions': join(reported) if any(p != pos for p in reported) else '',
             'dimethyl_type_neutral_loss': join(ordered({t for x in group['_rme2_type'] for t in x.split('; ') if t}, list(rc.CODES['dimethyl_type']))),
             'flags': join(flags),

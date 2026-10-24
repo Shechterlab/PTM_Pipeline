@@ -593,6 +593,8 @@ SITE_COLUMNS = [
     ('source_tables', 'list<code>', 'source_table', 'the source tables of its records, in code order'),
     ('n_records', 'integer', '', 'number of source records placed on the site'),
     ('record_ids', 'list<integer>', '', 'the records behind the site (record_id in supporting/source_records), ascending'),
+    ('localised_by', 'list<code>', 'localised_by', 'how its records localise the methyl group to this arginine, in code order: the kinds of evidence behind the site, which do not share one error rate'),
+    ('curated_only', 'boolean', '', 'true when every record placing the site is a curated annotation (UniProt with experimental evidence, PhosphoSitePlus as compiled in 2021), with no localisation score or sequence behind it'),
     ('reported_positions', 'list<integer>', '', 'positions the records report, ascending, only when one differs from position'),
     ('flags', 'list<code>', 'flag', 'cautions, in code order'),
     ('shared_with_paralogs', 'list<string>', '', 'for a site flagged paralog_assigned: the other reviewed entries whose sequence holds the same peptide or window at an arginine, sorted'),
