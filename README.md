@@ -36,6 +36,7 @@ dictionary and a record of what changed since the release before.
 | [`config/`](config/) | the functional and domain-class ontologies, and the accepted paralog placements |
 | [`hpc/`](hpc/) | the release build, and the cluster scripts of the published run |
 | [`envs/`](envs/) | the conda environment, and the resolved Python packages of the latest build |
+| [`ROADMAP.md`](ROADMAP.md) | what is planned after the current release |
 
 ## Data staging
 
