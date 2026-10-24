@@ -2,7 +2,7 @@
 """Stage RBR-ID of K562 nuclei (Oksuz et al. 2023; PRIDE PXD035484) as peptide and RNA-binding-region tables.
 
     python -I scripts/43c_stage_rbrid.py --cache <download dir> --out inputs/interactions \
-        [--fasta inputs/reference/uniprot_human_reviewed_2026_03.fasta] [--threshold 3.0] [--min-runs 3]
+        [--fasta inputs/reference/uniprot_human_reviewed_2026_03.fasta] [--threshold T] [--min-samples 3] [--alpha 0.05]
 
 RBR-ID (He et al., Mol Cell 64:416, 2016, doi:10.1016/j.molcel.2016.09.034) crosslinks RNA to protein in cells
 pulsed or not with 4-thiouridine (4SU) and irradiated with 312 nm UV. A peptide crosslinked to RNA changes mass, so
@@ -32,22 +32,32 @@ Choices this script makes where the papers are silent (each is a command-line op
     itself applies to its matrices after match-between-runs (--reanalyse). The report holds rows above these.
   - Peptide = stripped sequence: all precursors (charge states, oxidised Met, N-terminal acetyl) summed per run,
     as MaxQuant's peptides table (He et al. 2016) sums them.
-  - The t test is on the normalised abundances on their linear scale, as both papers word it (--scale log2 runs it
-    on log2 values instead), over the 15 runs of each condition (technical replicates as the authors counted them,
-    "5 x 3"). The 5 x 5 test on the means of technical replicates is given beside it (p_5v5).
-  - Minimum runs: a t test needs >= --min-runs (3) quantified runs in each condition. A peptide absent from all 15
-    runs of one condition gets Fisher's test (as the authors); one seen in 1-2 runs of a condition gets no test.
-  - Fisher-tested peptides have no finite ratio, so they get no score and add nothing to residue scores; they keep
-    their p, q and direction, and count as RBR-ID+ when seen only in controls with p < 0.05.
-  - Score uses the unadjusted p (He et al. 2016); q (BH) is given beside it.
+  - The primary call (from v1.3.1; the unsuffixed columns) takes the biological samples as the units: the three runs
+    of a sample are technical replicates, so the 15 runs of a condition are not 15 independent observations. Each
+    peptide's log2 normalised values are fitted as sample + acquisition date (the dates are the technical replicates,
+    and a run resembles the runs of its date more than the runs of its sample: see the checks below), and the 5
+    date-adjusted sample values of each condition are compared by Student's t test (>= --min-samples, 3, per
+    condition; --no-date-adjust averages the runs instead). A peptide in no sample of one condition gets Fisher's test
+    on the samples. p values are adjusted together (BH) and a peptide is RBR-ID+ at q < --alpha (0.05) when depleted
+    in +4SU (or absent from every +4SU sample).
+  - The published analysis is kept as a reproduction (the _published columns): the t test on the normalised values
+    on their linear scale, as both papers word it (--scale log2 runs it on log2 values instead), over the 15 runs of
+    each condition (technical replicates as the authors counted them, "5 x 3"), >= --min-runs (3) runs per condition,
+    Fisher's test for a peptide absent from every run of one condition, and RBR-ID+ at unadjusted p < 0.05 and
+    depleted. It treats technical replicates as independent and does not adjust p, so it calls about three times as
+    many peptides as the primary call; it is a sensitivity view, not the evidence the release counts.
+  - Fisher-tested peptides have no finite ratio, so they get no score and add nothing to residue scores.
+  - Score uses the unadjusted p of each analysis (He et al. 2016); residue scores and regions use the primary one.
   - Residue scores: only residues covered by at least one scored peptide get a value (He et al. plot the others as
     gaps), and the smoother runs over those positions in one pass per protein.
-  - RBR segment: maximal run of consecutive covered residues whose smoothed residue score is >= --threshold (3.0).
-    The papers give no residue-level cut-off. A score of 3 is, for one peptide alone, a 3.4-fold depletion at
-    p = 0.05, 1.7-fold at p = 0.01 or 1.26-fold at p = 0.001 (overlapping peptides add up). The default was set by a
-    rule fixed before any comparison with methylarginines: the lowest of 1, 2, 3 and 5 at which the label-permutation
-    estimate of the residue false-discovery rate (below) is under 10%. With the defaults the estimates were 19% at 1,
-    10.8% at 2, 7.3% at 3 and 4.2% at 5; the script prints them and the manifest keeps the one at the threshold.
+  - RBR segment: maximal run of consecutive covered residues whose smoothed residue score is >= the threshold.
+    The papers give no residue-level cut-off. The threshold follows a rule fixed before any comparison with
+    methylarginines (THRESHOLD_GRID): the lowest of 1, 2, 3 and 5 at which the label-permutation estimate of the residue
+    false-discovery rate (below) is under 10% (--threshold overrides it). With the published 15 x 15 scores (v1.3.0) the
+    estimates were 19% at 1, 10.8% at 2, 7.3% at 3 and 4.2% at 5, so the threshold was 3; with the primary scores
+    (v1.3.1) they are 11.7% at 1, 6.1% at 2, 4.0% at 3 and 2.1% at 5, so it is 2. A score of 2 is, for one peptide
+    alone, a 2.3-fold depletion at p = 0.05 (overlapping peptides add up). The script prints the estimates; the
+    segments table carries the threshold and the manifest the estimate at it.
   - Permutation null: the 10 samples split 5 vs 5 with 2 or 3 samples swapped between the groups (the 200 balanced
     splits; technical replicates stay together), --null-permutations (20) of them drawn with --seed (1), each scored as
     the real split. Estimated FDR at a threshold = mean null fraction / observed fraction of scored residues at or
@@ -64,27 +74,30 @@ Run-to-condition design (worked out here; PRIDE has no SDRF or experimental-desi
   script checks that the 30 runs are exactly these, and prints checks from the data. On this report:
   - each run's most correlated run has the same condition in 30 of 30 runs, the same date in 21 and is of the same
     sample in 4 (the date weighs more than the sample);
-  - significant changes (p < 0.05) are 9,218 depletions and 10,493 enrichments in +4SU. Median normalisation lifts
-    the rest when abundant RNA-binding proteins are depleted;
-  - RBR-ID+ peptides: 26.6% over RRM domains, 29.7% elsewhere in RRM proteins, 13.2% in other proteins.
+  - over the 15 runs (published analysis), significant changes (p < 0.05) are 9,218 depletions and 10,493 enrichments
+    in +4SU; over the samples (primary), 7,787 and 9,174 at p < 0.05 and 3,096 and 5,346 at q < 0.05. Median
+    normalisation lifts the rest when abundant RNA-binding proteins are depleted;
+  - RBR-ID+ peptides (primary call) of the scored ones: 7.7% over RRM domains, 12.3% elsewhere in RRM proteins, 4.5% in
+    other proteins (26.6%, 29.7% and 13.2% by the published rule).
   Not printed but checked: HNRNPC MIAGQVLDINLAAEPK (74-89), the peptide He et al. 2016 show depleted in mouse cells
-  (same sequence and numbering), is depleted in samples 6-10 (log2 -0.40, p = 0.004), as are most peptides of its RRM
-  (VFIGNLNTLVVK, IVGCSVHK, NARAAVAGEDGR: p < 0.02), while its peptides from residue 188 on are not (p > 0.1).
+  (same sequence and numbering), is RBR-ID+ by both calls (primary log2 -0.41, p = 0.005, q = 0.04; published log2
+  -0.40, p = 0.004); of the other peptides of its RRM, VFIGNLNTLVVK is RBR-ID+ by both, IVGCSVHK and NARAAVAGEDGR by
+  the published rule only (sample-level q 0.26 and 0.12).
 
 Search caveat: the DIA-NN search allowed carbamidomethyl-Cys (fixed), Met oxidation and protein N-terminal acetyl
 only (log: --unimod4, --var-mod UniMod:35 and UniMod:1). No arginine methylation was searched, so a peptide carrying
 a methylarginine is quantified only through its unmethylated form, and its depletion says nothing about the methyl
 form. The script counts the UniMod ids in Modified.Sequence to confirm it.
 
-Residue scores are staged only at or above the published cut-off
-------------------------------------------------------------------
+Residues are staged only under an RBR-ID+ peptide
+--------------------------------------------------
 Neither paper sets a cut-off on residue scores. The published cut-off is the peptide one: He et al. 2016,
 Experimental Procedures, "Peptides with log2(fold-change) < 0 and p value < 0.05 (Student's t test) were considered
-primary hits"; Oksuz et al. 2023, STAR Methods, "RBR-ID+ peptides (p-val<0.05, log2FC<0)". The residue table
-therefore holds a residue, with its residue scores, only when at least one RBR-ID+ peptide covers it (unadjusted
-p < 0.05 and depleted in +4SU; a peptide absent from every +4SU run counts with Fisher p < 0.05, the test Oksuz et
-al. use for such peptides). He et al. also removed peptides that passed the same cut-off without UV; this dataset has
-no no-UV samples, so that filter cannot be applied. The full profile (about 0.7 million scored residues) is not
+primary hits"; Oksuz et al. 2023, STAR Methods, "RBR-ID+ peptides (p-val<0.05, log2FC<0)". The residue table holds a
+residue, with its residue scores, when at least one peptide covers it that the primary call (POSITIVE_RULE) or the
+published rule (PUBLISHED_RULE) makes RBR-ID+, with the number of peptides each rule calls over it: the release counts
+the residues of the primary call, and the published rule is its sensitivity test. He et al. also removed peptides that
+passed the same cut-off without UV; this dataset has no no-UV samples, so that filter cannot be applied. The full profile (about 0.7 million scored residues) is not
 staged: residue_profiles() recomputes it from the peptide table in seconds. The measured background (which residues,
 and so which arginines, any peptide covered) is staged as intervals in the coverage table.
 
@@ -144,11 +157,17 @@ RAW_FILES = 'raw_rbrid_files.tsv'
 RUNS = 'rbrid_oksuz2023_k562_runs.tsv'
 RESIDUES = 'rbrid_oksuz2023_k562_positive_residues.tsv'
 COVERAGE = 'rbrid_oksuz2023_k562_coverage.tsv'
-POSITIVE_RULE = ('a residue under at least one RBR-ID+ peptide: log2(+4SU/-4SU) < 0 and unadjusted p < 0.05 (Student t '
-                 'test), the primary-hit cut-off of He et al. 2016 (Experimental Procedures) and the RBR-ID+ definition '
-                 'of Oksuz et al. 2023 (STAR Methods, Figure S5 analysis), or, for a peptide in no +4SU run, Fisher p '
-                 '< 0.05 (Oksuz et al. 2023 test such peptides with Fisher\'s exact test). Neither paper sets a '
-                 'cut-off on residue scores')
+POSITIVE_RULE = ('a residue under at least one RBR-ID+ peptide, called on the biological samples: the 5 date-adjusted '
+                 'sample values per condition compared by Student t test (Fisher test on the samples for a peptide in no '
+                 'sample of one condition), Benjamini-Hochberg q < 0.05 and depleted in +4SU (or absent from every +4SU '
+                 'sample). Neither paper sets a cut-off on residue scores')
+PUBLISHED_RULE = ('the published rule (reproduction): log2(+4SU/-4SU) < 0 and unadjusted p < 0.05 by Student t test over '
+                  'the 15 runs of each condition, the primary-hit cut-off of He et al. 2016 and the RBR-ID+ definition of '
+                  'Oksuz et al. 2023 (STAR Methods, Figure S5 analysis), or Fisher p < 0.05 for a peptide in no +4SU run. '
+                  'It counts the technical replicates as independent observations and does not adjust p')
+# The residue threshold rule, fixed before any comparison with methylarginines: the lowest of these at which the
+# label-permutation estimate of the residue false-discovery rate is under THRESHOLD_FDR.
+THRESHOLD_GRID, THRESHOLD_FDR = (1.0, 2.0, 3.0, 5.0), 0.10
 
 
 def log(*a):
@@ -430,45 +449,95 @@ def _nanmean_rows(X):
         return np.nanmean(X, 1)
 
 
-def peptide_stats(norm: np.ndarray, plus: np.ndarray, sample: np.ndarray, min_runs: int, min_samples: int, scale: str,
-                  full: bool = True) -> dict:
-    """norm: peptides x runs of median-normalised intensities (NaN = not quantified); plus: +4SU runs; sample: the
-    sample of each run. Returns the per-peptide columns (He et al. 2016 ratio and score, Oksuz et al. 2023 tests)."""
-    P, M = norm[:, plus], norm[:, ~plus]
-    n_p, n_m = (~np.isnan(P)).sum(1), (~np.isnan(M)).sum(1)
-    mean_p, mean_m = _nanmean_rows(P), _nanmean_rows(M)
+def date_adjusted_samples(L: np.ndarray, sample: np.ndarray, date: np.ndarray, iters: int = 30):
+    """Per peptide, its log2 values fitted as sample + acquisition date (the two-way additive model, by alternating
+    means: exact least squares for complete data, and it converges with missing runs). Returns peptides x samples of
+    the sample terms, the date-adjusted sample means, and the sample order. Each sample has one run per date."""
+    samples, dates = sorted(set(sample.tolist())), sorted(set(date.tolist()))
+    pairs = list(zip(sample.tolist(), date.tolist()))
+    if len(set(pairs)) != len(pairs):
+        raise SystemExit('a sample has two runs on one date: the additive date model assumes one')
+    Y = np.full((L.shape[0], len(samples), len(dates)), np.nan)
+    for j, (sm, d) in enumerate(pairs):
+        Y[:, samples.index(sm), dates.index(d)] = L[:, j]
+    eff = np.zeros((L.shape[0], len(dates)))
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', RuntimeWarning)
+        for _ in range(iters):
+            s_eff = np.nanmean(Y - eff[:, None, :], axis=2)
+            eff = np.nanmean(Y - s_eff[:, :, None], axis=1)
+            eff = np.nan_to_num(eff - np.nanmean(eff, axis=1, keepdims=True))
+        s_eff = np.nanmean(Y - eff[:, None, :], axis=2)
+    return s_eff, samples
+
+
+def peptide_stats(norm: np.ndarray, plus: np.ndarray, sample: np.ndarray, date: np.ndarray, min_runs: int,
+                  min_samples: int, scale: str, alpha: float = 0.05, adjust_date: bool = True, full: bool = True) -> dict:
+    """norm: peptides x runs of median-normalised intensities (NaN = not quantified); plus: +4SU runs; sample and date:
+    the biological sample and the acquisition date of each run. Returns the per-peptide columns.
+
+    Primary analysis (unsuffixed columns): the biological samples are the units. Each peptide's log2 values are fitted
+    as sample + acquisition date (the three dates are the technical replicates, and runs of one date resemble each other
+    more than the runs of one sample do), and the 5 date-adjusted sample values of each condition are compared by
+    Student's t test (at least min_samples per condition); a peptide in no sample of one condition gets Fisher's test on
+    the samples it was quantified in. p values are adjusted together (Benjamini-Hochberg), and a peptide is RBR-ID+ when
+    q < alpha and it is depleted in +4SU (or absent from every +4SU sample). Score = -log2 ratio x (log10 p)^2 (He et al.
+    2016) with these p values.
+    Published analysis (_published columns), the reproduction of Oksuz et al. 2023 and He et al. 2016: the 15 runs of
+    each condition as independent values, Student's t test on the normalised values (scale), Fisher's test for peptides
+    absent from every run of one condition, and RBR-ID+ at unadjusted p < 0.05 and depleted."""
     with np.errstate(all='ignore'):
-        log2r = np.log2(mean_p / mean_m)
-        tv = np.log2(norm) if scale == 'log2' else norm
-    p = _ttest(tv[:, plus], tv[:, ~plus], min_runs)
+        L = np.log2(norm)
+    if adjust_date:
+        S, samples = date_adjusted_samples(L, sample, date)
+    else:
+        samples = sorted(set(sample.tolist()))
+        S = np.column_stack([_nanmean_rows(L[:, sample == sm]) for sm in samples])
+    splus = np.array([bool(plus[sample == sm][0]) for sm in samples])
+    n_sp, n_sm = (~np.isnan(S[:, splus])).sum(1), (~np.isnan(S[:, ~splus])).sum(1)
+    with np.errstate(all='ignore'):
+        lr = _nanmean_rows(S[:, splus]) - _nanmean_rows(S[:, ~splus])
+    p = _ttest(S[:, splus], S[:, ~splus], min_samples)
     test = np.where(np.isnan(p), '', 't').astype(object)
     with np.errstate(all='ignore'):
-        score = np.where(test == 't', -log2r * np.log10(p) ** 2, np.nan)
-    out = {'runs_minus_4su': n_m, 'runs_plus_4su': n_p, 'mean_minus_4su': mean_m, 'mean_plus_4su': mean_p,
-           'log2_ratio': np.where(test == 't', log2r, np.nan), 'rbrid_score': score}
+        score = np.where(test == 't', -lr * np.log10(p) ** 2, np.nan)
+    out = {'samples_minus_4su': n_sm, 'samples_plus_4su': n_sp, 'log2_ratio': np.where(test == 't', lr, np.nan),
+           'rbrid_score': score}
     if not full:
         return out
+    NSP, NSM = int(splus.sum()), int((~splus).sum())
+    cache = {}
+    for k in np.flatnonzero((n_sp == 0) ^ (n_sm == 0)):
+        key = (int(n_sp[k]), int(n_sm[k]))
+        if key not in cache:
+            cache[key] = stats.fisher_exact([[key[0], NSP - key[0]], [key[1], NSM - key[1]]])[1]
+        p[k], test[k] = cache[key], 'fisher'
+    q = bh(p)
+    positive = (q < alpha) & (((test == 't') & (lr < 0)) | ((test == 'fisher') & (n_sp == 0)))
+    out.update({'test': test, 'p': p, 'q': q, 'rbrid_positive': positive})
+
+    # the published analysis: 15 runs per condition as independent values, nominal p
+    P_, M_ = norm[:, plus], norm[:, ~plus]
+    n_p, n_m = (~np.isnan(P_)).sum(1), (~np.isnan(M_)).sum(1)
+    mean_p, mean_m = _nanmean_rows(P_), _nanmean_rows(M_)
+    with np.errstate(all='ignore'):
+        log2r = np.log2(mean_p / mean_m)
+        tv = L if scale == 'log2' else norm
+    pp = _ttest(tv[:, plus], tv[:, ~plus], min_runs)
+    tp = np.where(np.isnan(pp), '', 't').astype(object)
+    with np.errstate(all='ignore'):
+        sp = np.where(tp == 't', -log2r * np.log10(pp) ** 2, np.nan)
     NP, NM = int(plus.sum()), int((~plus).sum())
     cache = {}
     for k in np.flatnonzero((n_p == 0) ^ (n_m == 0)):
         key = (int(n_p[k]), int(n_m[k]))
         if key not in cache:
             cache[key] = stats.fisher_exact([[key[0], NP - key[0]], [key[1], NM - key[1]]])[1]
-        p[k], test[k] = cache[key], 'fisher'
-    q = bh(p)
-    positive = (p < 0.05) & (((test == 't') & (log2r < 0)) | ((test == 'fisher') & (n_p == 0)))
-    # 5 x 5: technical replicates averaged per sample first
-    samples = sorted(set(sample.tolist()))
-    S = np.column_stack([_nanmean_rows(norm[:, sample == s]) for s in samples])
-    splus = np.array([bool(plus[sample == s][0]) for s in samples])
-    with np.errstate(all='ignore'):
-        Sv = np.log2(S) if scale == 'log2' else S
-        p5 = _ttest(Sv[:, splus], Sv[:, ~splus], min_samples)
-        log2r5 = np.log2(_nanmean_rows(S[:, splus]) / _nanmean_rows(S[:, ~splus]))
-        score5 = np.where(np.isnan(p5), np.nan, -log2r5 * np.log10(p5) ** 2)
-    out.update({'test': test, 'p': p, 'q': q, 'rbrid_positive': positive,
-                'samples_minus_4su': (~np.isnan(S[:, ~splus])).sum(1), 'samples_plus_4su': (~np.isnan(S[:, splus])).sum(1),
-                'log2_ratio_5v5': np.where(np.isnan(p5), np.nan, log2r5), 'p_5v5': p5, 'rbrid_score_5v5': score5})
+        pp[k], tp[k] = cache[key], 'fisher'
+    pos_pub = (pp < 0.05) & (((tp == 't') & (log2r < 0)) | ((tp == 'fisher') & (n_p == 0)))
+    out.update({'runs_minus_4su': n_m, 'runs_plus_4su': n_p, 'mean_minus_4su': mean_m, 'mean_plus_4su': mean_p,
+                'log2_ratio_published': np.where(tp == 't', log2r, np.nan), 'test_published': tp, 'p_published': pp,
+                'q_published': bh(pp), 'rbrid_score_published': sp, 'rbrid_positive_published': pos_pub})
     return out
 
 
@@ -649,7 +718,7 @@ def find_segments(profiles: dict, threshold: float) -> list:
     return segs
 
 
-def segment_table(segs: list, profiles: dict, table: pd.DataFrame, ref: Reference) -> pd.DataFrame:
+def segment_table(segs: list, profiles: dict, table: pd.DataFrame, ref: Reference, threshold: float) -> pd.DataFrame:
     scored = table[np.isfinite(table['rbrid_score'])]
     by_acc = {a: g for a, g in scored.groupby('uniprot_accession')}
     rows = []
@@ -661,29 +730,40 @@ def segment_table(segs: list, profiles: dict, table: pd.DataFrame, ref: Referenc
                      'max_residue_score': sm[idx].max(), 'mean_residue_score': sm[idx].mean(),
                      'max_summed_score': summed[idx].max(), 'peptides': len(over),
                      'rbrid_positive_peptides': int(over['rbrid_positive'].sum()), 'best_p': over['p'].min(),
-                     'protein_length': len(ref.seq[acc]), 'protein_scored_residues': len(pos)})
+                     'published_rule_peptides': int(over['rbrid_positive_published'].sum()),
+                     'protein_length': len(ref.seq[acc]), 'protein_scored_residues': len(pos),
+                     'residue_score_threshold': threshold})
     return pd.DataFrame(rows).sort_values(['uniprot_accession', 'start']).reset_index(drop=True)
 
 
 def positive_residues(table: pd.DataFrame, profiles: dict, ref: Reference) -> pd.DataFrame:
-    """Residues that pass the published cut-off: under at least one RBR-ID+ peptide (POSITIVE_RULE). Each keeps its
-    residue scores (summed and smoothed, from all scored peptides over it; empty when only a Fisher-tested peptide
-    covers it). No residue outside this rule is staged."""
+    """Residues under at least one RBR-ID+ peptide, by the primary call (POSITIVE_RULE: biological samples, q) or by
+    the published rule (PUBLISHED_RULE: runs, unadjusted p), with the number of peptides each rule calls over it and the
+    best p of each. Each keeps its residue scores (summed and smoothed, from all scored peptides over it; empty when no
+    t-tested peptide covers it). No residue outside both rules is staged."""
     rows = []
-    for acc, g in table[table['rbrid_positive'].astype(bool)].groupby('uniprot_accession'):
+    pos = table['rbrid_positive'].astype(bool).to_numpy()
+    pub = table['rbrid_positive_published'].astype(bool).to_numpy()
+    for acc, g in table[pos | pub].groupby('uniprot_accession'):
         seq = ref.seq[acc]
         L = len(seq)
         cnt, best = np.zeros(L + 2, dtype=int), np.full(L + 2, np.inf)
-        for s, e, p in zip(g['start'], g['end'], g['p']):
-            cnt[s:e + 1] += 1
-            best[s:e + 1] = np.minimum(best[s:e + 1], p)
+        cnt_p, best_p = np.zeros(L + 2, dtype=int), np.full(L + 2, np.inf)
+        for s, e, pv, pvp, a, b in zip(g['start'], g['end'], g['p'], g['p_published'], g['rbrid_positive'], g['rbrid_positive_published']):
+            if a:
+                cnt[s:e + 1] += 1
+                best[s:e + 1] = np.minimum(best[s:e + 1], pv)
+            if b:
+                cnt_p[s:e + 1] += 1
+                best_p[s:e + 1] = np.minimum(best_p[s:e + 1], pvp)
         prof = profiles.get(acc)
         sc = dict(zip(prof[0].tolist(), zip(prof[1].tolist(), prof[2].tolist()))) if prof else {}
-        for i in np.flatnonzero(cnt[1:L + 1] > 0) + 1:
+        for i in np.flatnonzero((cnt[1:L + 1] > 0) | (cnt_p[1:L + 1] > 0)) + 1:
             summed, smooth = sc.get(int(i), (np.nan, np.nan))
             rows.append({'uniprot_accession': acc, 'gene': ref.gene_of.get(acc, ''), 'position': int(i),
-                         'residue': seq[i - 1], 'rbrid_positive_peptides': int(cnt[i]), 'best_p': best[i],
-                         'summed_score': summed, 'residue_score': smooth})
+                         'residue': seq[i - 1], 'rbrid_positive_peptides': int(cnt[i]),
+                         'best_p': best[i] if cnt[i] else np.nan, 'published_rule_peptides': int(cnt_p[i]),
+                         'best_p_published': best_p[i] if cnt_p[i] else np.nan, 'summed_score': summed, 'residue_score': smooth})
     return pd.DataFrame(rows)
 
 
@@ -727,9 +807,13 @@ def design_checks(norm: np.ndarray, design: pd.DataFrame, st: dict, table: pd.Da
     out.append(f'runs whose two most correlated runs (log2 intensities of the {int(full.sum()):,} peptides quantified in '
                f'all 30) are the other two runs of the same sample: {same_sample} of 30; whose most correlated run has the '
                f'same acquisition date: {same_date} of 30; the same condition: {same_cond} of 30')
-    sig = (st['test'] == 't') & (st['p'] < 0.05)
-    dep = int((st['log2_ratio'][sig] < 0).sum())
-    out.append(f't-tested peptides with p < 0.05: {int(sig.sum()):,}; depleted in +4SU {dep:,}, enriched {int(sig.sum()) - dep:,}')
+    for label, tk, pk, qk, lk in (('biological samples (primary)', 'test', 'p', 'q', 'log2_ratio'),
+                                  ('15 runs per condition (published)', 'test_published', 'p_published', 'q_published', 'log2_ratio_published')):
+        t_ = st[tk] == 't'
+        for cut, col in (('p < 0.05', pk), ('q < 0.05', qk)):
+            sig = t_ & (st[col] < 0.05)
+            dep = int((st[lk][sig] < 0).sum())
+            out.append(f't-tested peptides, {label}, {cut}: {int(sig.sum()):,}; depleted in +4SU {dep:,}, enriched {int(sig.sum()) - dep:,}')
     if interpro and interpro.exists():
         iv = pd.read_csv(interpro, sep='\t', usecols=['canonical_UniProtAC', 'interpro_accession', 'fragment_start', 'fragment_end'])
         rrm = iv[iv['interpro_accession'] == 'IPR000504']
@@ -753,7 +837,7 @@ def permutation_null(norm, design, row_of, table, lengths, args, observed: dict,
     of the 5 samples swapped between the groups (200 such splits), --null-permutations of them at random. Each is
     scored exactly as the real split, and the fraction of scored residues at or above each threshold is compared."""
     import itertools
-    sample = design['sample'].to_numpy()
+    sample, date = design['sample'].to_numpy(), design['acquisition_date'].to_numpy()
     minus, plus = set(range(1, 6)), set(range(6, 11))
     splits = [set(c) for c in itertools.combinations(range(1, 11), 5) if len(set(c) & minus) in (2, 3)]
     rng = np.random.default_rng(args.seed)
@@ -764,12 +848,13 @@ def permutation_null(norm, design, row_of, table, lengths, args, observed: dict,
     acc, st_, en = table['uniprot_accession'].to_numpy(), table['start'].to_numpy(), table['end'].to_numpy()
     for k, i in enumerate(picks):
         plus_p = np.isin(sample, sorted(splits[i]))
-        sc = peptide_stats(norm, plus_p, sample, args.min_runs, args.min_samples, args.scale, full=False)['rbrid_score'][row_of]
+        sc = peptide_stats(norm, plus_p, sample, date, args.min_runs, args.min_samples, args.scale, args.alpha,
+                           not args.no_date_adjust, full=False)['rbrid_score'][row_of]
         prof = residue_profiles(acc, st_, en, sc, lengths)
         vals = np.concatenate([v[2] for v in prof.values()])
         for T in grid:
             res[T].append(float((vals >= T).mean()))
-        segs_null.append(len(find_segments(prof, args.threshold)))
+        segs_null.append({T: len(find_segments(prof, T)) for T in grid})
     rows = []
     for T in grid:
         o, nl = float((obs >= T).mean()), float(np.mean(res[T]))
@@ -833,9 +918,12 @@ def main():
     ap.add_argument('--manifest', default=str(root / 'inputs' / 'MANIFEST.tsv'), help="'' to leave the manifest alone")
     ap.add_argument('--qvalue', type=float, default=0.01, help='Q.Value, Lib.Q.Value and Lib.PG.Q.Value cut-off')
     ap.add_argument('--min-runs', type=int, default=3, help='quantified runs per condition for the t test (of 15)')
-    ap.add_argument('--min-samples', type=int, default=3, help='quantified samples per condition for the 5 x 5 test')
-    ap.add_argument('--scale', choices=['linear', 'log2'], default='linear', help='scale of the values the t test compares')
-    ap.add_argument('--threshold', type=float, default=3.0, help='smoothed residue score that makes an RBR residue')
+    ap.add_argument('--min-samples', type=int, default=3, help='quantified samples per condition for the primary 5 x 5 test')
+    ap.add_argument('--alpha', type=float, default=0.05, help='BH q cut-off of the primary RBR-ID+ call')
+    ap.add_argument('--no-date-adjust', action='store_true', help='average the technical replicates without the date term')
+    ap.add_argument('--scale', choices=['linear', 'log2'], default='linear', help='scale of the published 15 x 15 t test')
+    ap.add_argument('--threshold', type=float, default=None,
+                    help='smoothed residue score that makes an RBR residue (default: the threshold rule, THRESHOLD_GRID)')
     ap.add_argument('--null-permutations', type=int, default=20)
     ap.add_argument('--seed', type=int, default=1)
     args = ap.parse_args()
@@ -863,12 +951,13 @@ def main():
     design['peptides_quantified'] = (~np.isnan(X)).sum(0)
     design['median_peptide_intensity'] = med
     plus = (design['condition'] == 'plus_4SU').to_numpy()
-    sample = design['sample'].to_numpy()
-    st = peptide_stats(norm, plus, sample, args.min_runs, args.min_samples, args.scale)
+    sample, date = design['sample'].to_numpy(), design['acquisition_date'].to_numpy()
+    st = peptide_stats(norm, plus, sample, date, args.min_runs, args.min_samples, args.scale, args.alpha, not args.no_date_adjust)
     pep_all = pd.DataFrame(st, index=mat.index)
     log(f'{info["report_rows"]:,} report rows; {info["rows_passing_filter"]:,} pass the q-value filter; '
         f'{info["precursors_passing"]:,} precursors, {info["peptides"]:,} peptides')
-    log('tests:', dict(Counter(pep_all['test'].replace('', 'none'))))
+    log('tests (biological samples):', dict(Counter(pep_all['test'].replace('', 'none'))),
+        '| tests (published, runs):', dict(Counter(pep_all['test_published'].replace('', 'none'))))
 
     ref = Reference(args.fasta, args.entries, args.history)
     placed, dropped = place_peptides(ann, ref)
@@ -879,40 +968,54 @@ def main():
     lengths = {a: len(s) for a, s in ref.seq.items()}
     log(f'placed {len(table):,} peptides on {table["uniprot_accession"].nunique():,} entries:',
         dict(Counter(table['mapped_by'])), f'| dropped {len(dropped):,}:', dict(Counter(dropped['reason'])))
+    both = table['rbrid_positive'].astype(bool) & table['rbrid_positive_published'].astype(bool)
+    log(f'RBR-ID+ peptides: {int(table["rbrid_positive"].sum()):,} by the primary call (biological samples, q < {args.alpha}), '
+        f'{int(table["rbrid_positive_published"].sum()):,} by the published rule (runs, p < 0.05), {int(both.sum()):,} by both')
 
     # residue scores come from the peptide scores as written (4 significant digits), so the staged table reproduces them
     table['rbrid_score'] = [float(fmt(v)) if np.isfinite(v) else np.nan for v in table['rbrid_score']]
     profiles = residue_profiles(table['uniprot_accession'].to_numpy(), table['start'].to_numpy(), table['end'].to_numpy(),
                                 table['rbrid_score'].to_numpy(), lengths)
+    null = None
+    if args.null_permutations > 0:
+        grid = sorted(set(THRESHOLD_GRID) | {0.5} | ({args.threshold} if args.threshold else set()))
+        null = permutation_null(norm, design, row_of, table, lengths, args, profiles, grid)
+        log(null.to_string(index=False))
+    if args.threshold is None:
+        if null is None:
+            raise SystemExit('the threshold rule needs the permutation null: give --threshold or --null-permutations > 0')
+        ok = [T for T in THRESHOLD_GRID if null.loc[null.threshold == T, 'estimated_fdr'].iloc[0] < THRESHOLD_FDR]
+        args.threshold = ok[0] if ok else max(THRESHOLD_GRID)
+        log(f'threshold rule: the lowest of {THRESHOLD_GRID} with an estimated residue FDR under {THRESHOLD_FDR:.0%}: '
+            f'{args.threshold}' + ('' if ok else ' (none passes: the highest is used)'))
+    if null is not None:
+        log(f'segments at {args.threshold} under the null: {[x.get(args.threshold) for x in null.attrs["segments_null"]]}')
     segs = find_segments(profiles, args.threshold)
-    seg = segment_table(segs, profiles, table, ref)
+    seg = segment_table(segs, profiles, table, ref, args.threshold)
     scored_res = sum(len(v[0]) for v in profiles.values())
     log(f'{len(profiles):,} proteins with scored residues ({scored_res:,} residues); {len(seg):,} segments >= '
         f'{args.threshold} in {seg["uniprot_accession"].nunique():,} proteins ({int(seg["length"].sum()):,} residues)')
     res = positive_residues(table, profiles, ref)
-    res_regions = int(((res['uniprot_accession'] != res['uniprot_accession'].shift())
-                       | (res['position'] != res['position'].shift() + 1)).sum())
-    log(f'published cut-off ({POSITIVE_RULE.split(":")[0]}): {len(res):,} residues in {res_regions:,} runs of consecutive '
-        f'residues, {res["uniprot_accession"].nunique():,} proteins; {int(res["residue_score"].notna().sum()):,} with a '
-        f'residue score; {int((res["residue_score"] >= args.threshold).sum()):,} also >= {args.threshold}')
+    prim = res[res['rbrid_positive_peptides'] > 0]
+    res_regions = int(((prim['uniprot_accession'] != prim['uniprot_accession'].shift())
+                       | (prim['position'] != prim['position'].shift() + 1)).sum())
+    log(f'primary call: {len(prim):,} residues in {res_regions:,} runs of consecutive residues, '
+        f'{prim["uniprot_accession"].nunique():,} proteins; {int(prim["residue_score"].notna().sum()):,} with a residue score; '
+        f'{int((prim["residue_score"] >= args.threshold).sum()):,} also >= {args.threshold} | published rule: '
+        f'{int((res["published_rule_peptides"] > 0).sum()):,} residues')
     cov = coverage_intervals(table, ref)
     for kind, g in cov.groupby('coverage'):
         log(f'coverage {kind}: {len(g):,} intervals, {int(g["length"].sum()):,} residues, {g["uniprot_accession"].nunique():,} proteins')
     checks = design_checks(norm, design, st, table, args.interpro)
     for c in checks:
         log('check:', c)
-    null = None
-    if args.null_permutations > 0:
-        grid = sorted({0.5, 1.0, 2.0, 3.0, 5.0, args.threshold})
-        null = permutation_null(norm, design, row_of, table, lengths, args, profiles, grid)
-        log(null.to_string(index=False))
-        log(f'segments at {args.threshold} under the null: {null.attrs["segments_null"]}')
 
     # ---- tables
     cols = ['uniprot_accession', 'gene', 'start', 'end', 'peptide', 'mapped_by', 'also_in', 'diann_protein_ids',
-            'diann_genes', 'precursors', 'runs_minus_4su', 'runs_plus_4su', 'mean_minus_4su', 'mean_plus_4su', 'log2_ratio',
-            'test', 'p', 'q', 'rbrid_score', 'rbrid_positive', 'samples_minus_4su', 'samples_plus_4su', 'log2_ratio_5v5',
-            'p_5v5', 'rbrid_score_5v5']
+            'diann_genes', 'precursors', 'runs_minus_4su', 'runs_plus_4su', 'samples_minus_4su', 'samples_plus_4su',
+            'mean_minus_4su', 'mean_plus_4su', 'log2_ratio', 'test', 'p', 'q', 'rbrid_score', 'rbrid_positive',
+            'log2_ratio_published', 'test_published', 'p_published', 'q_published', 'rbrid_score_published',
+            'rbrid_positive_published']
     table = table[cols].sort_values(['uniprot_accession', 'start', 'end']).reset_index(drop=True)
     n_pep = write_tsv(table, out / PEPTIDES)
     n_seg = write_tsv(seg, out / SEGMENTS)
@@ -936,9 +1039,13 @@ def main():
         n_prot = table['uniprot_accession'].nunique()
         n_scored = int(np.isfinite(table['rbrid_score']).sum())
         how = (f'scripts/43c_stage_rbrid.py: report filtered at Q.Value, Lib.Q.Value and Lib.PG.Q.Value <= {args.qvalue}; '
-               f'precursors summed per stripped sequence and run; median-normalised per run; Student t test on the '
-               f'{args.scale} normalised values, 15 vs 15 runs, at least {args.min_runs} runs per condition; Fisher test '
-               f'when absent from one condition; BH q; score = -log2(+4SU/-4SU) x (log10 p)^2 (He et al. 2016). Placed by '
+               f'precursors summed per stripped sequence and run; median-normalised per run. Primary: log2 values fitted as '
+               f'sample + acquisition date{"" if not args.no_date_adjust else " (off)"}, Student t test on the 5 vs 5 '
+               f'date-adjusted sample values (at least {args.min_samples} per condition), Fisher test on the samples when '
+               f'absent from one condition, BH q, RBR-ID+ at q < {args.alpha} and depleted. Published (reproduction, '
+               f'_published columns): Student t test on the {args.scale} normalised values, 15 vs 15 runs, at least '
+               f'{args.min_runs} runs per condition, Fisher test on the runs, RBR-ID+ at p < 0.05. Score = '
+               f'-log2(+4SU/-4SU) x (log10 p)^2 (He et al. 2016). Placed by '
                f'exact unique match to inputs/reference/uniprot_human_reviewed_2026_03.fasta via the accession given, '
                f'else the gene ({len(dropped):,} peptides dropped)')
         src = f'{PRIDE_FTP}/{REPORT}'
@@ -947,16 +1054,19 @@ def main():
             {'file': f'{out.name}/{PEPTIDES}', 'rows': n_pep,
              'content': (f'RBR-ID (K562 nuclei, 4-thiouridine and 312 nm UV vs UV alone; DIA, DIA-NN 1.8.1): {n_pep:,} '
                          f'peptides on {n_prot:,} reviewed canonical entries with start and end, runs quantified per '
-                         f'condition (of 15), mean normalised intensities, log2 +4SU/-4SU, p (t or Fisher), BH q, RBR-ID '
-                         f'score ({n_scored:,} scored), RBR-ID+ call (p < 0.05, depleted), and the 5 x 5 test on sample '
-                         f'means. The search did not allow methylarginine'),
+                         f'condition (of 15) and samples (of 5), mean normalised intensities; the primary analysis on the '
+                         f'biological samples (log2 ratio, p, BH q, RBR-ID score, {n_scored:,} scored; RBR-ID+ at q < '
+                         f'{args.alpha}, depleted: {int(table["rbrid_positive"].sum()):,}) and the published analysis on '
+                         f'the runs (_published; RBR-ID+ at p < 0.05: {int(table["rbrid_positive_published"].sum()):,}). '
+                         f'The search did not allow methylarginine'),
              'derived_from': f'PXD035484/{REPORT}', 'how_made_or_checked': how, 'original_name': REPORT},
             {'file': f'{out.name}/{RESIDUES}', 'rows': n_res,
-             'content': (f'RBR-ID residues at or above the published cut-off, {POSITIVE_RULE}: {n_res:,} residues '
-                         f'({res_regions:,} runs of consecutive residues) in {res["uniprot_accession"].nunique():,} '
-                         f'proteins, each with the number of RBR-ID+ peptides over it, their best p, and its residue scores '
-                         f'(summed peptide scores and the super-smoothed score of He et al. 2016; empty where only a '
-                         f'Fisher-tested peptide covers it). No other residue is staged'),
+             'content': (f'RBR-ID residues under an RBR-ID+ peptide: {POSITIVE_RULE} ({len(prim):,} residues, '
+                         f'{res_regions:,} runs of consecutive residues, {prim["uniprot_accession"].nunique():,} proteins), '
+                         f'or by {PUBLISHED_RULE} ({int((res["published_rule_peptides"] > 0).sum()):,} residues); each with '
+                         f'the number of peptides each rule calls over it, their best p, and its residue scores (summed '
+                         f'peptide scores and the super-smoothed score of He et al. 2016, from the primary p values; empty '
+                         f'where no t-tested peptide covers it). No other residue is staged'),
              'derived_from': f'{out.name}/{PEPTIDES}',
              'how_made_or_checked': 'scripts/43c_stage_rbrid.py positive_residues', 'original_name': ''},
             {'file': f'{out.name}/{COVERAGE}', 'rows': n_cov,
@@ -969,10 +1079,10 @@ def main():
              'original_name': ''},
             {'file': f'{out.name}/{SEGMENTS}', 'rows': n_seg,
              'content': (f'RBR-ID RNA-binding regions: runs of consecutive residues whose residue score (peptide scores '
-                         f'summed per residue, smoothed with Friedman\'s super smoother; He et al. 2016) is >= '
-                         f'{args.threshold}, with the maximum and mean residue score, the peptides over them and the best p. '
-                         f'The threshold is this script\'s choice (no published residue cut-off): the lowest of 1, 2, 3, 5 '
-                         f'with a label-permutation FDR estimate under 10%'),
+                         f'summed per residue, smoothed with Friedman\'s super smoother; He et al. 2016; primary p values) '
+                         f'is >= {args.threshold}, with the maximum and mean residue score, the peptides over them, the RBR-ID+ '
+                         f'peptides by each rule and the best p. The threshold is this script\'s rule (no published residue '
+                         f'cut-off): the lowest of 1, 2, 3, 5 with a label-permutation FDR estimate under 10%'),
              'derived_from': f'{out.name}/{PEPTIDES}',
              'how_made_or_checked': ('scripts/43c_stage_rbrid.py (residue_profiles, find_segments; the super smoother is a '
                                      'port of R stats::supsmu checked against R 4.5.3)'

@@ -1753,14 +1753,18 @@ def load_rbrid(folder: Path, seq: dict):
     paths = {k: folder / v for k, v in RBRID_TABLES.items()}
     if not all(x.exists() for x in paths.values()):
         log(f'RBR-ID: tables not found in {folder} (scripts/43c_stage_rbrid.py writes them); left out')
-        return {k: {} for k in ('pos', 'spans', 'seg', 'cov', 'pep')}, {'available': False}
+        return {k: {} for k in ('pos', 'pos_published', 'spans', 'seg', 'cov', 'pep')}, {'available': False}
     check = Counter()
-    pos, score = defaultdict(set), {}
+    pos, pos_pub, score = defaultdict(set), defaultdict(set), {}
     with open(paths['pos'], encoding='utf-8') as fh:
         for r in csv.DictReader(fh, delimiter='\t'):
             acc, q, s = r['uniprot_accession'], int(r['position']), seq.get(r['uniprot_accession'], '')
             if q > len(s) or s[q - 1] != r['residue']:
                 check['dropped_residues'] += 1
+                continue
+            if int(r.get('published_rule_peptides') or 0) > 0:
+                pos_pub[acc].add(q)
+            if int(r['rbrid_positive_peptides'] or 0) == 0:   # under a peptide the published rule calls, not the primary one
                 continue
             pos[acc].add(q)
             if r['residue_score']:
@@ -1773,8 +1777,10 @@ def load_rbrid(folder: Path, seq: dict):
             out.append((a, b, round(max(sc), 1) if sc else None))
         spans[acc] = out
     seg, cov, pep = defaultdict(list), defaultdict(list), defaultdict(list)
+    threshold = None
     with open(paths['seg'], encoding='utf-8') as fh:
         for r in csv.DictReader(fh, delimiter='\t'):
+            threshold = float(r.get('residue_score_threshold') or 3.0)   # staged before v1.3.1: the threshold was 3
             if r['uniprot_accession'] in seq:
                 seg[r['uniprot_accession']].append((int(r['start']), int(r['end']), round(float(r['max_residue_score']), 1)))
     with open(paths['cov'], encoding='utf-8') as fh:
@@ -1790,8 +1796,10 @@ def load_rbrid(folder: Path, seq: dict):
                 check['dropped_peptides'] += 1
                 continue
             pep[acc].append((a, b, r['peptide'], float(r['log2_ratio']) if r['log2_ratio'] else None, float(r['p'])))
-    res = {'pos': dict(pos), 'spans': spans, 'seg': dict(seg), 'cov': dict(cov), 'pep': dict(pep)}
-    return res, {'available': True, 'residues': sum(len(v) for v in pos.values()), 'proteins': len(pos),
+    threshold = 3.0 if threshold is None else threshold
+    res = {'pos': dict(pos), 'pos_published': dict(pos_pub), 'spans': spans, 'seg': dict(seg), 'cov': dict(cov), 'pep': dict(pep)}
+    return res, {'available': True, 'threshold': threshold, 'residues_published_rule': sum(len(v) for v in pos_pub.values()),
+                 'residues': sum(len(v) for v in pos.values()), 'proteins': len(pos),
                  'positive_peptides': sum(len(v) for v in pep.values()), 'regions': sum(len(v) for v in seg.values()),
                  'proteins_measured': len(cov), **{k: v for k, v in check.items()}}
 
@@ -2236,7 +2244,7 @@ XL_TEST = {'rna_xl': 'rna_crosslink', 'rna_xl_single': 'rna_crosslink_single_res
            'rna_capri_xl_nonrg': 'capri_xl_peptide_outside_rg', 'rna_capri_adj_nonrg': 'capri_adj_peptide_outside_rg',
            'rna_pclap': 'pclap_lysc_region', 'rna_pclap_pep': 'pclap_peptide', 'rna_pclap_nonrg': 'pclap_lysc_region_outside_rg',
            'rna_pclap_cov': 'pclap_peptide_among_measured', 'rna_rbrid': 'rbrid_residue', 'rna_rbrid_nonrg': 'rbrid_residue_outside_rg',
-           'rna_rbrid_cov': 'rbrid_residue_among_measured', 'rna_rbrid_seg': 'rbrid_region',
+           'rna_rbrid_cov': 'rbrid_residue_among_measured', 'rna_rbrid_seg': 'rbrid_region', 'rna_rbrid_published': 'rbrid_residue_published_rule',
            'rna_capri_cov': 'capri_adj_peptide_among_measured', 'rna_rbdmap_cov': 'rbdmap_peptide_among_measured'}
 INTACT_TEST = {'mutation': 'mutation_changes_interaction', 'peptide': 'binding_region', 'peptide_disordered': 'binding_region_disordered'}
 # Sequence proximity: the distances (residues along the sequence; 0 is inside) at which each arginine is tested for
@@ -3094,7 +3102,8 @@ def main():
     rbrid, rbrid_check = load_rbrid(Path(args.rbrid or args.tables or 'inputs/interactions'), {a: v[2] for a, v in proteome.items()})
     if rbrid_check.get('available'):
         log(f"RBR-ID: {rbrid_check['residues']:,} residues under {rbrid_check['positive_peptides']:,} RBR-ID+ peptides on {rbrid_check['proteins']:,} proteins; "
-            f"{rbrid_check['regions']:,} regions of residue score >= 3; {rbrid_check['proteins_measured']:,} proteins measured")
+            f"{rbrid_check['regions']:,} regions of residue score >= {rbrid_check['threshold']:g}; {rbrid_check['proteins_measured']:,} proteins measured; "
+            f"{rbrid_check['residues_published_rule']:,} residues by the published rule")
     # The peptides CAPRI and RBDmap measured: the detection controls of their tests.
     bgs, bg_check = load_backgrounds(Path(args.tables or 'inputs/interactions'), {a: v[2] for a, v in proteome.items()})
     for name, v in bg_check.items():
@@ -3111,6 +3120,7 @@ def main():
         c_xl, c_adj = capri['xl'].get(acc, []), capri['adj'].get(acc, [])
         p_pep, p_lysc, p_meas = pclap['pep'].get(acc, []), pclap['lysc'].get(acc, []), pclap['measured'].get(acc, [])
         b_pos, b_spans, b_seg, b_cov, b_pep = (rbrid[k].get(acc, set() if k == 'pos' else []) for k in ('pos', 'spans', 'seg', 'cov', 'pep'))
+        b_pub = rbrid.get('pos_published', {}).get(acc, set())   # the published rule (runs as replicates, nominal p): a sensitivity test
         r_single = rna_single.get(acc, set())
         site_pos = {sites[j][1] for j in by_prot_sites[i]}
         def near_bits(pos):
@@ -3145,7 +3155,7 @@ def main():
                             # pCLAP: RNA-binding peptides, their Lys-C peptides, peptides measured but not RNA-binding
                             sorted({(a, b) for a, b, _ in p_pep}), sorted(set(p_lysc)), sorted(set(p_meas) - {(a, b) for a, b, _ in p_pep}),
                             # RBR-ID: residues under RBR-ID+ peptides as runs with their highest residue score, regions of
-                            # residue score >= 3, and the residues measured at all
+                            # residue score >= the staged threshold, and the residues measured at all
                             [list(x) for x in b_spans], [list(x) for x in b_seg], sorted(b_cov)])
         seq_ = proteome.get(acc, ('', '', ''))[2]
         if not seq_:
@@ -3157,6 +3167,7 @@ def main():
                                 ('rna_pclap', lambda q: any(a <= q <= b for a, b in p_lysc), bool(p_lysc)),
                                 ('rna_pclap_pep', lambda q: any(a <= q <= b for a, b, _ in p_pep), bool(p_pep)),
                                 ('rna_rbrid', lambda q: q in b_pos, bool(b_pos)),
+                                ('rna_rbrid_published', lambda q: q in b_pub, bool(b_pub)),
                                 ('rna_rbrid_seg', lambda q: any(a <= q <= b for a, b, _ in b_seg), bool(b_seg)),
                                 ('dna_xl', lambda q: bool(d_map.get(q, 0) & D_XL), any(v & D_XL for v in d_map.values())),
                                 ('dna_cand', lambda q: bool(d_map.get(q, 0)), bool(d_map)), ('dna_pep', lambda q: any(a <= q <= b for a, b in peps), bool(peps)),

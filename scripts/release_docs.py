@@ -914,7 +914,7 @@ def crosslink_section(files: dict, previous: str) -> list:
     res, stats = files['residue_evidence'][1], files['statistics'][1]
     kinds = [('capri_xl_peptide', 'capri_adj_peptide', 'CAPRI (Panhale et al., Nat Commun 2019, doi:10.1038/s41467-019-10585-3, HEK293): peptides crosslinked to RNA and the peptides released next to them'),
              ('pclap_peptide', 'pclap_lysc_region', 'pCLAP (Mullari et al., J Proteome Res 16:2762, 2017, doi:10.1021/acs.jproteome.7b00042, HEK293): RNA-binding peptides and the Lys-C peptides around them'),
-             ('rbrid_residue', 'rbrid_region', 'RBR-ID (Oksuz et al., Mol Cell 83:2449, 2023, doi:10.1016/j.molcel.2023.06.012, K562 nuclei): residues under a peptide depleted when RNA is crosslinked, and regions of residue score >= 3')]
+             ('rbrid_residue', 'rbrid_region', 'RBR-ID (Oksuz et al., Mol Cell 83:2449, 2023, doi:10.1016/j.molcel.2023.06.012, K562 nuclei): residues under a peptide depleted when RNA is crosslinked (called on the biological samples, BH q < 0.05), and regions of residue score at or above the staged threshold (2)')]
     out = []
     for a, b, text in kinds:
         got = res[res['evidence_type'].isin([a, b])]
