@@ -965,6 +965,23 @@ def rbrid_threshold(inputs: Path) -> str:
     return f'{float(vals.pop()):g}' if len(vals) == 1 else '?'
 
 
+def rbrid_site_changes(prev: pd.DataFrame, sites: pd.DataFrame) -> list:
+    """The sites whose interaction evidence gains or loses rbrid_residue, and the interaction_status changes that follow."""
+    if 'interaction_evidence' not in prev.columns or 'interaction_evidence' not in sites.columns:
+        return []
+    m = sites[['site_id', 'interaction_evidence', 'interaction_status']].merge(
+        prev[['site_id', 'interaction_evidence', 'interaction_status']], on='site_id', suffixes=('', '_prev'))
+    has = lambda col: m[col].str.split('; ').map(lambda v: 'rbrid_residue' in v)  # noqa: E731
+    lost, gained = int((has('interaction_evidence_prev') & ~has('interaction_evidence')).sum()), int((~has('interaction_evidence_prev') & has('interaction_evidence')).sum())
+    moved = m[m['interaction_status'] != m['interaction_status_prev']]
+    if not (lost or gained or len(moved)):
+        return []
+    by = moved.groupby(['interaction_status_prev', 'interaction_status']).size()
+    return [f'With fewer RBR-ID+ peptides, {n(lost)} sites lose `rbrid_residue` from `interaction_evidence` and {n(gained)} gain it. '
+            + (f'{n(len(moved))} sites change `interaction_status`: ' + ', '.join(f'{n(int(v))} from {a} to {b}' for (a, b), v in by.items())
+               + '. These are the sites whose only experimental evidence of RNA or DNA contact was, or now is, RBR-ID.' if len(moved) else ''), '']
+
+
 def review_section(ctx: dict, files: dict, previous: str) -> list:
     """CHANGES.md: what v1.3.1 corrected after the review of v1.3.0 (how evidence is called and described; the sites stay)."""
     if previous != 'v1.3.0':
@@ -1041,7 +1058,7 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
                 f"| Methylarginines against the other arginines of the same proteins (Mantel-Haenszel) | {test('rbrid_residue')} | {test('rbrid_residue_published_rule')} |",
                 '',
                 'The residue score threshold of the RBR-ID regions is now set by a rule fixed in advance: the lowest of 1, 2, 3 '
-                f'and 5 whose permutation false-discovery rate is under 10 % ({thr}; v1.3.0 used 3).', '']
+                f'and 5 whose permutation false-discovery rate is under 10 % ({thr}; v1.3.0 used 3).', ''] + rbrid_site_changes(prev, sites)
     # localisation
     if 'localised_by' in sites.columns:
         curated = sites['curated_only'].astype(str).str.lower() == 'true'
