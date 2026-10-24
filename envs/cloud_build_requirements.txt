@@ -1,0 +1,30 @@
+# The Python packages, resolved, of the environment that built v1.3.1 (Python 3.11.17, no conda; its release.json
+# records them under python_environment). Install with
+#   python3.11 -m venv .venv && .venv/bin/pip install -r envs/cloud_build_requirements.txt
+# R is not in it: the enrichment tests need R 4.5 with clusterProfiler and DOSE (envs/ptm_pipeline_hpc.yml), unless the
+# work root already holds their results for the same inputs (scripts/enrichment.py). The staging scripts (scripts/00_*)
+# also need requests.
+contourpy==1.3.3
+cycler==0.12.1
+et_xmlfile==2.0.0
+fonttools==4.67.0
+formulaic==1.2.2
+interface_meta==2.0.1
+kiwisolver==1.5.1
+matplotlib==3.11.2
+narwhals==2.27.1
+numpy==2.2.6
+openpyxl==3.1.5
+packaging==26.3
+pandas==2.2.3
+patsy==1.0.3
+pillow==13.0.0
+pyparsing==3.3.3
+python_dateutil==3.0.0
+pytz==2026.5
+scipy==1.17.1
+six==1.17.0
+statsmodels==0.15.0
+typing_extensions==4.16.0
+tzdata==2026.5
+wrapt==2.5.1

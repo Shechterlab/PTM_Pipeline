@@ -156,6 +156,22 @@ def check_codes(outdir: Path, files: dict) -> None:
                 raise SystemExit(f'{name}: column {column} holds values that are not codes: {sorted(unknown)[:5]}')
 
 
+# The packages the pipeline imports (envs/ptm_pipeline_hpc.yml); release.json records the versions that wrote it.
+PYTHON_PACKAGES = ('numpy', 'pandas', 'scipy', 'statsmodels', 'matplotlib', 'openpyxl', 'requests', 'reportlab', 'pillow')
+
+
+def python_environment() -> dict:
+    import platform
+    from importlib import metadata
+    found = {'python': platform.python_version()}
+    for name in PYTHON_PACKAGES:
+        try:
+            found[name] = metadata.version(name)
+        except metadata.PackageNotFoundError:
+            pass
+    return found
+
+
 def write_release_json(outdir: Path, ctx: dict, files: dict) -> None:
     manifest = pd.read_csv(ctx['inputs'] / 'MANIFEST.tsv', sep='\t', dtype=str, keep_default_na=False)
     record = {
@@ -174,6 +190,8 @@ def write_release_json(outdir: Path, ctx: dict, files: dict) -> None:
         'annotation': {'InterPro': '108.0', 'MobiDB': 'export of 2026-03-30', 'domain_ontology': 'config/domain_class_ontology.json'},
         # The tools of the enrichment tests (scripts/enrich_sets.R), as the analyses recorded them.
         'enrichment_tools': ctx.get('enrichment_tools', {}),
+        # The Python that wrote the release and the packages the pipeline imports (envs/ has the environments).
+        'python_environment': python_environment(),
         'phosphositeplus': {'downloaded': '2021-05-22', 'via': 'Maron et al. 2021 Table S5',
                             'terms': 'CC BY-NC-SA 3.0 Unported, inputs/licences/phosphositeplus_terms_2021-07-11_web-archive.pdf'},
         'files': [],
