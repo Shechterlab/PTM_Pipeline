@@ -155,12 +155,8 @@ class Out:
         return len(rows)
 
     def write_manifest(self, manifest: Path):
-        lines = manifest.read_text(encoding='utf-8').splitlines()
-        head = lines[0].split('\t')
-        names = {m['file'] for m in self.manifest}
-        keep = [ln for ln in lines[1:] if ln.split('\t')[0] not in names]
-        keep += ['\t'.join(str(m.get(c, '')) for c in head) for m in self.manifest]
-        manifest.write_text('\n'.join([lines[0]] + keep) + '\n', encoding='utf-8')
+        from common import update_manifest
+        update_manifest(manifest, self.manifest)
 
 
 # ---- RNA Bind-n-Seq ------------------------------------------------------------------------------------------------------

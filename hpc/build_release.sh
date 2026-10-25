@@ -21,7 +21,9 @@
 #   6. the website's data from the release and from that view (scripts/36) and the interaction evidence of their sites
 #      (scripts/37, from inputs/interactions/), then scripts/build_release.py again with the interaction tables, which
 #      writes releases/VERSION/ with the statistics of the second run and both analyses' result tables (analyses/,
-#      analyses_with_lower_confidence/); the website data go to docs/data/ (SITE_OUT), the view's as methylarg_*_all.json.
+#      analyses_with_lower_confidence/); the website data go to docs/data/ (SITE_OUT), the view's as methylarg_*_all.json;
+#   7. the annotation layers (scripts/release_layers.py): checked against MANIFEST.tsv first; each build_release.py pass
+#      adds their site and protein columns and statistics, and their website files are written from the release last.
 # Every input comes from inputs/ and must match inputs/MANIFEST.tsv (the files it lists as in Git, and the pCLAP and
 # RBDmap peptides, which scripts/43d and scripts/43f derive from PRIDE when they are absent). WORK_ROOT (default: a temporary directory) holds the
 # intermediate results. The build needs the network for those derivations and when inputs/interactions/ lacks data for a site: scripts/37 then fetches it into WORK_ROOT/interactions_topup, and the build stops, before
@@ -54,6 +56,8 @@ fi
 echo "[release] checking inputs against $IN/MANIFEST.tsv"
 . "$CODE/hpc/analyses.sh"
 check_inputs
+# the annotation layers the release joins to its sites and proteins (scripts/release_layers.py LAYERS)
+python "$CODE/scripts/release_layers.py" check --inputs "$IN"
 
 # Tables derived from PRIDE and kept out of Git (EMBL-EBI terms of use): the pCLAP peptides (scripts/43d, from the
 # MaxQuant output) and the RBDmap measured peptides (scripts/43f, from the peptide and quantification tables). When one
@@ -217,4 +221,8 @@ step "InterPro domains and the proteins without a site (scripts/36c)" python "$C
   --binding "$SITE/methylarg_binding_unlisted.json"
 # eCLIP logos (scripts/43f), one file for both tiers: the 5-mers enriched in each experiment's peaks or windows, aligned
 step "eCLIP logos (scripts/43f)" python "$CODE/scripts/43f_eclip_logos.py" --inputs "$IN/nucleic_acid" --out "$SITE_OUT/methylarg_eclip_logos.json"
+# Each annotation layer's website files, from the release (scripts/release_layers.py: DepMap, PRISM and TCGA to
+# SITE_OUT/depmap/ by scripts/44c, with the release's statistics of the layer)
+step "annotation layers' website files (scripts/release_layers.py)" python "$CODE/scripts/release_layers.py" website --release "$OUT" \
+  --inputs "$IN" --site-out "$SITE_OUT"
 echo "[release] done: $OUT and $SITE_OUT/"

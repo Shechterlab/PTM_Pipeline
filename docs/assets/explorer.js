@@ -393,6 +393,8 @@
       'Arginines': 'Every arginine of the UniProt sequence; the methylarginines in their colour',
       'Variants': 'UniProt natural variants (with those UniProt imports from ClinVar and other sources), ' + uni,
       'Mutagenesis': 'UniProt mutagenesis features that change an arginine, ' + uni,
+      'Tumours (TCGA)': 'Somatic missense and stop changes at the protein\'s arginines in the 32 TCGA PanCancer Atlas studies (MC3 calls, through cBioPortal); a taller tick where more tumours carry one. Only changes whose position is an arginine of the canonical UniProt sequence',
+      'Cell lines (DepMap)': 'Somatic missense and stop changes at the protein\'s arginines in DepMap 24Q4 cancer cell lines; a taller tick where more lines carry one. Only changes on the canonical isoform whose position is an arginine of the canonical UniProt sequence',
       'RNA crosslink': 'Residues UV-crosslinked to RNA in living cells (pepR-MS compendium: re-analysis of Kramer 2014, XRNAX, RBS-ID, pRBS-ID and pepR-MS) RBDmap RNA-bound fragments (Castello et al. 2016, HeLa) and CAPRI RNA-bound peptides (Panhale et al. 2019, HEK293; paler: ADJ-peptides next to a crosslink); click a mark for the studies and peptides',
       'DNA crosslink': 'Residues UV-crosslinked to DNA in MCF7 cells, alone or as candidates, and crosslinked peptides (Trendel et al. 2025); UniProt DNA-binding regions; click a mark for the records',
       'RNA contact (PDB)': 'Residues at an RNA interface in experimentally determined structures (PDBe-KB interface residues, read live); click for the PDB entries',
@@ -493,11 +495,11 @@
   const MAP_OVERLAYS = [['domains', 'Domains'], ['disorder', 'Disorder (wavy chain)'], ['dense', 'Dense methyl-R windows']];
   // Evidence rows follow the shared order: RNA/DNA crosslinks, then PDB interfaces, then IntAct.
   const MAP_ROWS = [['ipr', 'Domains (InterPro)'], ['iprfam', 'Families and superfamilies (InterPro)'], ['regions', 'Regions'], ['charge', 'Charge (EMBOSS, 5-aa mean)'], ['bias', 'Composition'], ['rg', 'RG/RGG-rich'],
-    ['args', 'All arginines'], ['variants', 'Variants and mutagenesis'], ['kme', 'Lys methylation'], ['phospho', 'Phosphorylation'], ['kacyl', 'Lys acylation'],
+    ['args', 'All arginines'], ['variants', 'Variants and mutagenesis'], ['cancer', 'Changes in tumours and cell lines'], ['kme', 'Lys methylation'], ['phospho', 'Phosphorylation'], ['kacyl', 'Lys acylation'],
     ['ub', 'Ubiquitin / SUMO'], ['xl', 'RNA/DNA crosslinks'], ['iface', 'Contacts in PDB structures'], ['intact', 'IntAct mutations and binding regions'], ['pred', 'Predicted protein contacts'],
     ['lowconf', 'Lower-confidence evidence']];
   const MAP_PTM_KEYS = ['phospho', 'kacyl', 'ub', 'kme'];
-  const MAP_DEFAULT_ON = ['domains', 'dense', 'ipr', 'regions', 'disorder', 'charge', 'rg', 'args', 'variants', 'kme', 'phospho', 'kacyl', 'ub', 'xl', 'iface', 'pred'];
+  const MAP_DEFAULT_ON = ['domains', 'dense', 'ipr', 'regions', 'disorder', 'charge', 'rg', 'args', 'variants', 'cancer', 'kme', 'phospho', 'kacyl', 'ub', 'xl', 'iface', 'pred'];
   // IntAct shows by default on a protein where IntAct records a mutation of one of its arginines (UI.fig.intact 'auto');
   // the Rows menu turns it on or off everywhere ('on' | 'off'). The cartoon and comparison follow the same switch.
   const iaArgMut = (p) => {
@@ -3687,10 +3689,29 @@
     $$('[data-exp][data-chart]', root).forEach((b) => b.addEventListener('click', () => {
       const spec = UI.charts[b.dataset.chart];
       const name = 'methylarginine_' + spec.id.replace(/^ch-/, '');
-      if (b.dataset.exp === 'tsv') { download(name + '.tsv', chartTsv(spec)); return; }
-      exportFigure(b.dataset.exp, chartSvg(spec), name);
+      if (b.dataset.exp === 'tsv') { download(name + '.tsv', spec.figTsv ? spec.figTsv() : chartTsv(spec)); return; }
+      exportFigure(b.dataset.exp, spec.figSvg ? figExportSvg(spec) : chartSvg(spec), name);
     }));
   }
+  // A figure drawn by its own function (spec.figSvg: the SVG as on the page, styled by explorer.css classes) as a
+  // stand-alone export: its title and subtitle above it, and the classes' export colours (spec.figCss) inside it, as
+  // exports and print are always light. Hover text is left out.
+  function figExportSvg(spec) {
+    const pal = EXPORT_PAL, m = spec.figSvg().replace(/ data-tip="[^"]*"/g, '');
+    const vb = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(m), w = vb ? +vb[1] : 460, h = vb ? +vb[2] : 200;
+    const W = Math.round(Math.max(w, 460) + 48), sub = wrapText(spec.subText || '', W - 48, 11, pal), top = 44 + sub.length * 15, H = Math.round(top + h + 12);
+    const inner = m.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+    return { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + pal.font + '\'>' +
+      (spec.figCss ? '<style>' + spec.figCss(pal) + '</style>' : '') + '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' +
+      '<text x="24" y="30" font-size="15" font-weight="700" fill="' + pal.ink + '">' + esc(spec.title) + '</text>' +
+      sub.map((l, i) => '<text x="24" y="' + (48 + i * 15) + '" font-size="11" fill="' + pal.muted + '">' + esc(l) + '</text>').join('') +
+      '<g transform="translate(24,' + top + ')">' + inner + '</g></svg>', W, H };
+  }
+  // A figure of that kind with its export buttons: registered with the charts, so its SVG, PNG and TSV come from it.
+  const figBlock = (spec, label) => {
+    UI.charts[spec.id] = spec;
+    return '<div class="fig-block"><div class="fig-head">' + (label ? '<span class="flabel">' + label + '</span>' : '<span></span>') + expButtons(spec.id) + '</div>' + spec.figSvg() + '</div>';
+  };
 
   function bindBars(container, rows, onClick) {
     if (!container) return;
@@ -4398,6 +4419,7 @@
       const ov = {
         'ov-pan': chartTile(pan || func), 'ov-dis': chartTile(dis), 'ov-cond': chartTile(cond), 'ov-loc': chartTile(loc), 'ov-motif': chartTile(motif), 'ov-struct': structTile(),
         'ov-ix': ixReady() ? ixTile() : { vis: '' },
+        'ov-dep': { vis: '<span class="dep-ov-vis"></span>', head: '<span class="dep-ov-head">loading DepMap…</span>', whole: '' },
         'ov-study': provTile(),
         'ov-treat': { vis: trVis ? '<div class="a-treat">' + trVis + '</div>' : '', head: 'Sites with a peptide that decreased with each PRMT inhibitor (Maron 2021) or CARM1 knockout (Shishkova 2017)' },
         'ov-start': { vis: startVis(), head: 'Click a protein to open it, or a selection to apply it', full: true },
@@ -4423,6 +4445,10 @@
       hubSec('Interactions',
         row('ov-ix', 'Interactions and binding', ixOverviewHtml(), 'How many sites have interaction evidence? The Interactions page tests it.', 'count', ixCount(selOn ? R.sites : S), ixCount(S), null,
           ixReady() ? pctFig(share((s) => ixStatus(s) === 'exp')) : null)) +
+      hubSec('Cancer cell lines',
+        row('ov-dep', 'Cancer cell dependency', '<div class="card wide" id="ch-dep"><div class="card-head"><div><h3>Cancer cell dependency</h3><p class="sub">How much 1,178 cancer cell lines depend on ' + (scoped ? 'the proteins of your selection' : 'the methylated proteins') +
+          ' in DepMap\'s CRISPR knockout screens. Cancer cell genetics, not evidence about methylation.</p></div></div><div id="ch-dep-body"><p class="note">Loading DepMap…</p></div></div>',
+          'Do cancer cell lines depend on these proteins more than on others? (DepMap CRISPR screens)', 'retest', 'loading DepMap…', 'loading DepMap…', null, null)) +
       hubSec('Sources and responses',
         row('ov-study', 'Provenance', '<div class="card wide chart-card" id="ch-study"><div class="card-head"><div><h3>Provenance</h3><p class="sub">' + study.subHtml + '</p></div>' + expButtons('ch-study') + '</div>' +
       '<div class="two-col"><div>' + hbars(study) + '</div>' +
@@ -4448,6 +4474,7 @@
     bindHub(el, 'Overview');
     bindAHome(el);
     bindAMaps(el);
+    renderDepOverview(el, selOn, testable);
     const oo = $('#ov-open-one', el);
     if (oo) oo.addEventListener('click', () => openProtein(one.i));
     $$('[data-quick]', el).forEach((b) => b.addEventListener('click', () => { const q = UI.quick[+b.dataset.quick]; if (q) q[2](); }));
@@ -4639,6 +4666,7 @@
       hubSec('Protein context',
         prow('p-cond', 'Location and condensates', '<div class="card" id="card-cond"></div>', 'Human Protein Atlas locations and CD-CODE condensates') +
         prow('p-dis', 'Disease associations', '<div class="card" id="card-dis"></div>', 'UniProt, DisGeNET and Open Targets') +
+        prow('p-depmap', 'Cancer cell lines and tumours', '<div class="card" id="card-depmap"></div>', 'DepMap CRISPR dependency; changes at its arginines in TCGA tumours and DepMap cell lines', 'loading…') +
         prow('p-func', 'Protein class', '<div class="card" id="card-func"></div>', 'PANTHER and keyword classes') +
         prow('p-dom', 'Domains and regions', '<div class="card" id="card-dom"></div>', 'UniProt domains and regions, InterPro classes') +
         prow('p-cons', 'Conservation across species', '<div class="card" id="card-cons"></div>', 'Orthologue alignments from Ensembl Compara'), ctxToggleHtml(p)) +
@@ -4707,6 +4735,7 @@
     renderCondCard(p);
     renderFuncCard(p);
     renderDiseaseCard(p, null);
+    renderDepmapCard(p);
     renderClusterCard(p);
     renderPtmCard(p);
     renderIxCard(p);
@@ -4744,6 +4773,12 @@
       } else if (argN == null) $('#arg-frac').textContent = 'UniProt unavailable';
     });
     loadIface(p.acc).then(() => { if (current()) drawMap(p, UNIDATA.get(p.acc)); });
+    loadDepmap(p.acc).then((d) => {
+      if (!d || !current()) return;
+      drawMap(p, UNIDATA.get(p.acc));
+      const sc = $('#site-card');
+      if (sc && !sc.hidden && UI.highlight != null) renderSiteCard(UI.highlight);
+    });
     loadAF(p.acc).then((af) => {
       if (!current()) return;
       renderSiteTable(p);
@@ -5893,7 +5928,7 @@
       '<div class="sc-grid"><section class="sc-ix"><h4>Interaction evidence' + docLink('ix-status') + '</h4>' + ix + '</section>' +
       '<section><h4>Site</h4><dl class="sc-kv">' + pub('Window ±7', windowHtml(s.win, 7, s.j)) + pub('Motifs', motifTags(s.mot)) + pub('Context', contextHtml(s).replace('<br>', ' · ')) +
       pub('Methylation state', s.stx ? s.stx.map((x) => esc(x[1].replace(/; /g, ', ')) + ' <span class="muted">' + stateSourceHtml(x[0], p) + '</span>').join('<br>') : '<span class="muted">no source gives a degree</span>') +
-      pub('Nearest methyl-R', s.nn == null ? '—' : s.nn + ' aa') + pub('PRMT loss', treatHtml(s)) + pub('Maron IP', ipTags(s.ip) || '—') + pub('Variants', siteVariantsHtml(s, p)) + pub('AlphaFold', afCell(p, s)) +
+      pub('Nearest methyl-R', s.nn == null ? '—' : s.nn + ' aa') + pub('PRMT loss', treatHtml(s)) + pub('Maron IP', ipTags(s.ip) || '—') + pub('Variants', siteVariantsHtml(s, p)) + pub('In cancers', dmSiteHtml(s, p)) + pub('AlphaFold', afCell(p, s)) +
       pub('Reported by', risButton(M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => studyRef(k)), P[s.p].label + '_R' + s.pos + '_references', 'RIS') + '<ul class="sc-refs">' + M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => { const r = studyRef(k); return '<li>' + (r[1] ? '<a href="https://doi.org/' + r[1] + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">' + esc(studyLabel(M.studies[k][0])) + '</a>' : '<span title="' + esc(r[0]) + '">' + esc(studyLabel(M.studies[k][0])) + '</span>') + '</li>'; }).join('') + '</ul>' +
         (xenograftOnly(s) ? '<p class="small warn-text">Reported only from breast cancer xenografts grown in mice (Ma et al. 2023): where the human and mouse sequences agree, the peptide can come from the mouse stroma.</p>' : '') +
         '<p class="muted small">Cite these for ' + rl(s.pos, P[s.p]) + ', with ' + esc(PAPER.short) + ' for the compilation.</p>') + '</dl></section>' +
@@ -7150,6 +7185,33 @@
       };
       track('Variants', u.variants, false);
       track('Mutagenesis', u.mutagen.filter((f) => f.from === 'R' || f.from.includes('R')), true);
+    };
+    // Somatic changes at arginines in tumours (TCGA) and cell lines (DepMap): a tick per changed arginine, taller where
+    // more samples carry one; inked and labelled at a methylarginine, as the variants are.
+    rows.cancer = () => {
+      const d = !p.iso && DEPMAP.meta ? DEPMAP.prot.get(p.acc.split('-')[0]) : null;
+      if (!d || !(d.t || d.m)) return;
+      let anyHit = false, drawn = false;
+      for (const [kind, name, unit] of [['t', 'Tumours (TCGA)', 'tumour'], ['m', 'Cell lines (DepMap)', 'cell line']]) {
+        const all = dmByPos(d[kind], kind);
+        const list = Array.from(all.values()).filter((o) => visible(o.pos, o.pos)).sort((a, b) => a.pos - b.pos);
+        if (!list.length) { if (zoomed && all.size) emptyRow(name); continue; }
+        tlabel(name, y);
+        gridLine(y);
+        drawn = true;
+        const right = { v: -1e9 };
+        for (const o of list) {
+          const hit = methylPos.has(o.pos), xx = x(o.pos), hh = Math.min(16, 6 + 3 * Math.log2(o.n));
+          anyHit = anyHit || hit;
+          g += MARK.tick(xx, y, hh, hit ? pal.mark : pal.variant, ' class="feat"' + tip('<b>' + esc(dmAltText(o, p)) + '</b> in ' + dmPlural(o.n, unit) + (hit ? ' · at a methylarginine' : '') + '<br>' + esc(dmWho(o, kind, 6)) +
+            (kind === 'm' && o.am != null ? '<br>AlphaMissense ' + (o.am / 100).toFixed(2) : '') + (o.hot ? '<br>DepMap hotspot' : '')), hit ? 3 : 2);
+          if (hit) labelAt(xx, y, dmAltText(o, p), right);
+        }
+        y += 20;
+      }
+      if (!drawn) return;
+      legend.push([SWATCH.tick(pal.variant), 'Change at an arginine in tumours (TCGA) or cell lines (DepMap)']);
+      if (anyHit) legend.push([SWATCH.tick(pal.mark), 'Change at a methylarginine']);
     };
     // Other PTMs from the cross-PTM master table (and CPLM 4.0 for lysine methylation), one row per group.
     const ptmRow = (gi) => {
@@ -10057,6 +10119,372 @@
       }, () => { PROTEOME.byAcc = new Map(); PROTEOME.byGene = new Map(); PROTEOME.failed = true; });
     return PROTEOME.promise;
   }
+  // ---------------------------------------------------------------- cancer cell lines and tumours
+  // DepMap, PRISM and TCGA (scripts/44c, data/depmap/): per protein, the CRISPR gene effect across DepMap's cancer cell
+  // lines and the protein changes at its arginines in cell lines (DepMap Public 24Q4) and tumours (TCGA PanCancer Atlas,
+  // through cBioPortal); on a PRMT's page, its dependency by MTAP status and the PRISM viability of its inhibitors
+  // (prmt.json). Cancer genetics, not evidence about methylation. Each file is read on first use; one that failed is
+  // tried again next time.
+  const DEPMAP = { meta: null, metaP: null, prmt: null, prmtP: null, prot: new Map() };
+  const DEPMAP_PRMTS = ['PRMT1', 'PRMT2', 'PRMT3', 'CARM1', 'PRMT5', 'PRMT6', 'PRMT7', 'PRMT8', 'PRMT9'];
+  const DM_DOI = { depmap: '10.25452/figshare.plus.27993248', prism: '10.6084/m9.figshare.25917643', tsherniak: '10.1016/j.cell.2017.06.010',
+    chronos: '10.1186/s13059-021-02540-7', corsello: '10.1038/s43018-019-0018-6', mc3: '10.1016/j.cels.2018.03.002', pancan: '10.1016/j.cell.2018.03.022',
+    cbio: '10.1158/2159-8290.CD-12-0095', cbio2: '10.1126/scisignal.2004088', am: '10.1126/science.adg7492', kryukov: '10.1126/science.aad5214', mavrakis: '10.1126/science.aad5944' };
+  const DM_SCREEN = { 'REP.PRIMARY': 'Repurposing primary screen', 'REP.1M': 'Repurposing-1M screen', 'REP.300': 'Repurposing-300 screen' };
+  const dmJson = (name) => fetch('data/depmap/' + name + (ASSET_V ? '?v=' + encodeURIComponent(ASSET_V) : '')).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
+  function loadDepmapMeta() {
+    if (!DEPMAP.metaP) DEPMAP.metaP = dmJson('meta.json').then((m) => (DEPMAP.meta = m)).catch(() => { DEPMAP.metaP = null; return null; });
+    return DEPMAP.metaP;
+  }
+  function loadDepmapPrmt() {
+    if (!DEPMAP.prmtP) DEPMAP.prmtP = dmJson('prmt.json').then((m) => (DEPMAP.prmt = m)).catch(() => { DEPMAP.prmtP = null; return null; });
+    return DEPMAP.prmtP;
+  }
+  // A protein's record ({} when the files hold nothing on it), or null when a file did not load.
+  function loadDepmap(acc) {
+    const a = acc.split('-')[0];
+    if (DEPMAP.prot.has(a)) return Promise.resolve(DEPMAP.prot.get(a));
+    return Promise.all([loadDepmapMeta(), shardFile('depmap', a)]).then(([m, d]) => {
+      if (!m || !d) return null;
+      DEPMAP.prot.set(a, d.prot[a] || {});
+      return DEPMAP.prot.get(a);
+    });
+  }
+  const dmNum = (v, nd) => (v < 0 ? '−' : '') + Math.abs(v).toFixed(nd == null ? 2 : nd);
+  const dmPlural = (n, one, many) => fmt(n) + ' ' + (n === 1 ? one : many || one + 's');
+  // A protein's changes at one arginine, from its t (TCGA) or m (DepMap) rows: position, [[residue, samples, row]], samples.
+  function dmByPos(list, kind) {
+    const by = new Map();
+    for (const r of list || []) {
+      const n = kind === 't' ? r[2].reduce((t, x) => t + x[1], 0) : r[2].length;
+      if (!by.has(r[0])) by.set(r[0], { pos: r[0], alts: [], n: 0, hot: 0, am: null });
+      const o = by.get(r[0]);
+      o.alts.push([r[1], n, r]);
+      o.n += n;
+      if (kind === 'm') { o.hot |= r[3]; if (r[4] != null) o.am = Math.max(o.am == null ? 0 : o.am, r[4]); }
+    }
+    return by;
+  }
+  const dmAltText = (o, p) => o.alts.map(([a, n]) => rl(o.pos, p) + a + (n > 1 ? ' ×' + n : '')).join(', ');
+  // Who carries them: TCGA studies with their samples, or DepMap cell lines with their lineage.
+  function dmWho(o, kind, max) {
+    const dm = DEPMAP.meta;
+    if (kind === 't') {
+      const per = new Map();
+      for (const [, , r] of o.alts) for (const [si, n] of r[2]) per.set(si, (per.get(si) || 0) + n);
+      return Array.from(per).sort((a, b) => b[1] - a[1]).map(([si, n]) => dm.studies[si][0] + ' ' + n).join(', ');
+    }
+    const lines = o.alts.flatMap(([, , r]) => r[2]).map((k) => dm.models[k]);
+    const shown = lines.slice(0, max || 4).map((m) => m[1] + (m[2] >= 0 ? ' (' + dm.lineages[m[2]] + ')' : ''));
+    return shown.join(', ') + (lines.length > shown.length ? ' and ' + (lines.length - shown.length) + ' more' : '');
+  }
+  const dmStudyTip = (o, p) => o.alts.map(([a, , r]) => rl(o.pos, p) + a + ': ' + r[2].map(([si, n]) => DEPMAP.meta.studies[si][1] + ' ' + n).join(', ')).join('; ');
+  // The site card's line on a methylarginine.
+  function dmSiteHtml(s, p) {
+    const d = DEPMAP.prot.get(p.acc.split('-')[0]);
+    if (!d || !DEPMAP.meta) return '<span class="muted">loading…</span>';
+    const t = dmByPos((d.t || []).filter((r) => r[0] === s.pos), 't').get(s.pos), m = dmByPos((d.m || []).filter((r) => r[0] === s.pos), 'm').get(s.pos);
+    if (!t && !m) return '<span class="muted">no change in TCGA tumours or DepMap cell lines</span>';
+    return [t ? esc(dmAltText(t, p)) + ' in ' + dmPlural(t.n, 'tumour') + ' <span class="muted">(TCGA: ' + esc(dmWho(t, 't')) + ')</span>' : '',
+      m ? esc(dmAltText(m, p)) + ' in ' + dmPlural(m.n, 'cell line') + ' <span class="muted">(DepMap: ' + esc(dmWho(m, 'm', 3)) + ')</span>' : ''].filter(Boolean).join('<br>');
+  }
+  // Histogram of a gene's effect across the screened lines, with the two reference values of the Chronos scale.
+  // The DepMap figures' classes (explorer.css .dm-*) in the export colours.
+  const dmFigCss = (pal) => '.dm-bar{fill:' + pal.protein + '}.dm-ref{stroke:' + pal.muted + ';stroke-width:1;stroke-dasharray:3 3}.dm-reft,.dm-tick{font-size:11px;fill:' + pal.muted + '}' +
+    '.dm-axt{font-size:11.5px;fill:' + pal.ink + '}.dm-axis{stroke:' + pal.backbone + '}.dm-blab{font-size:12px;fill:' + pal.ink + '}.dm-box line{stroke:' + pal.muted + ';stroke-width:1.4}' +
+    '.dm-box rect{fill:' + pal.stem + '}.dm-box .dm-med{stroke:' + pal.ink + ';stroke-width:2.2}.dm-box.dm-del rect,.dm-box.dm-sel rect{fill:' + pal.accent + ';fill-opacity:0.55}' +
+    '.dm-box.dm-int rect,.dm-box.dm-meth rect{fill:' + pal.protein + ';fill-opacity:0.55}.dm-box rect.dm-hit{fill:none}';
+  // A layer's statistics rows from the release (its meta.json: stats, stats_fields; scripts/release_layers.py), as
+  // objects, for one analysis (and method).
+  function layerStats(meta, analysis, method) {
+    if (!meta || !meta.stats || !meta.stats_fields) return [];
+    return meta.stats.map((r) => Object.fromEntries(meta.stats_fields.map((f, i) => [f, r[i]]))).filter((r) => r.analysis === analysis && (!method || r.method === method));
+  }
+  const dmStats = (analysis, method) => layerStats(DEPMAP.meta, analysis, method);
+  // A box-plot figure (dmBoxSvg rows) as a chart spec: the figure, and its quantiles as TSV.
+  const dmBoxSpec = (id, title, subText, rows, axis) => ({ id, title, subText, figCss: dmFigCss, figSvg: () => dmBoxSvg(rows, axis),
+    figTsv: () => '# ' + subText + '\ngroup\tp05\tp25\tmedian\tp75\tp95\tn\n' + rows.filter((r) => r[1]).map((r) => [r[0]].concat(r[1].map((x, i) => (i < 5 ? +(+x).toFixed(4) : x))).join('\t')).join('\n') + '\n' });
+  function dmHistSvg(g, edges, gene) {
+    const hist = g[12], W = 460, H = 150, ML = 40, MR = 12, MT = 20, MB = 36;
+    const lo = edges[0], hi = edges[edges.length - 1], x = (v) => ML + ((v - lo) / (hi - lo)) * (W - ML - MR);
+    const max = Math.max(1, ...hist), y = (n) => MT + (1 - n / max) * (H - MT - MB);
+    let s = '';
+    for (const [v, t, anchor] of [[0, 'no effect', 'start'], [-1, 'median of common essentials', 'end']]) {
+      s += '<line class="dm-ref" x1="' + r1(x(v)) + '" x2="' + r1(x(v)) + '" y1="' + (MT - 6) + '" y2="' + (H - MB) + '"/>' +
+        '<text class="dm-reft" x="' + r1(x(v) + (anchor === 'start' ? 3 : -3)) + '" y="' + (MT - 8) + '" text-anchor="' + anchor + '">' + t + '</text>';
+    }
+    hist.forEach((n, k) => {
+      if (!n) return;
+      const x0 = x(edges[k]) + 0.6, w = Math.max(1, x(edges[k + 1]) - x(edges[k]) - 1.2);
+      const range = k === 0 ? 'below ' + dmNum(edges[1], 1) : k === hist.length - 1 ? 'above ' + dmNum(edges[k], 1) : dmNum(edges[k], 1) + ' to ' + dmNum(edges[k + 1], 1);
+      s += '<rect class="dm-bar" x="' + r1(x0) + '" y="' + r1(y(n)) + '" width="' + r1(w) + '" height="' + r1(H - MB - y(n)) + '" rx="1" data-tip="' +
+        esc('<b>' + esc(gene) + ' gene effect ' + range + '</b><br>' + dmPlural(n, 'cell line')) + '"/>';
+    });
+    s += '<line class="dm-axis" x1="' + ML + '" x2="' + (W - MR) + '" y1="' + (H - MB) + '" y2="' + (H - MB) + '"/>';
+    for (let v = lo; v <= hi + 1e-9; v += 1) s += '<line class="dm-axis" x1="' + r1(x(v)) + '" x2="' + r1(x(v)) + '" y1="' + (H - MB) + '" y2="' + (H - MB + 4) + '"/><text class="dm-tick" x="' + r1(x(v)) + '" y="' + (H - MB + 15) + '" text-anchor="middle">' + dmNum(v, 0) + '</text>';
+    s += '<text class="dm-tick" x="' + (ML - 5) + '" y="' + (MT + 4) + '" text-anchor="end">' + fmt(max) + '</text><text class="dm-tick" x="' + (ML - 5) + '" y="' + (H - MB) + '" text-anchor="end">0</text>' +
+      '<text class="dm-tick" x="' + (ML - 5) + '" y="' + (MT + 16) + '" text-anchor="end">lines</text>' +
+      '<text class="dm-axt" x="' + r1((ML + W - MR) / 2) + '" y="' + (H - 3) + '" text-anchor="middle">gene effect per cell line (Chronos); lower: stronger dependency</text>';
+    return '<svg class="dm-hist" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc('Histogram of ' + gene + ' gene effect across ' + g[0] + ' cell lines') + '">' + s + '</svg>';
+  }
+  // Horizontal box plots from quantiles [5th, 25th, median, 75th, 95th percentile, n]: the box the middle half, the
+  // whiskers the 5th to 95th percentile, the bar the median.
+  function dmBoxSvg(rows, axis) {
+    // the label column fits the longest label with its count (about 6.6 units a character at 12px)
+    const longest = Math.max(...rows.map((r) => r[0].length + (r[1] ? String(fmt(r[1][5])).length + 3 : 0)));
+    const W = 460, ML = Math.min(210, Math.max(110, Math.round(16 + 6.6 * longest))), MR = 12, RH = 24, MT = 6, MB = 34, H = MT + rows.length * RH + MB;
+    const vals = rows.flatMap((r) => (r[1] ? [r[1][0], r[1][4]] : [])).concat([0]);
+    let lo = Math.min(...vals), hi = Math.max(...vals);
+    const pad = (hi - lo) * 0.05 || 0.5;
+    lo -= pad; hi += pad;
+    const x = (v) => ML + ((v - lo) / (hi - lo)) * (W - ML - MR);
+    const step = [0.1, 0.2, 0.25, 0.5, 1, 2].find((st) => (hi - lo) / st <= 7) || 5;
+    let s = '<line class="dm-ref" x1="' + r1(x(0)) + '" x2="' + r1(x(0)) + '" y1="' + MT + '" y2="' + (H - MB) + '"/>';
+    rows.forEach(([label, q, cls, tp], k) => {
+      const cy = MT + k * RH + RH / 2;
+      s += '<text class="dm-blab" x="' + (ML - 8) + '" y="' + r1(cy + 4) + '" text-anchor="end">' + esc(label) + (q ? ' (' + fmt(q[5]) + ')' : '') + '</text>';
+      if (!q) { s += '<text class="dm-tick" x="' + ML + '" y="' + r1(cy + 4) + '">no lines</text>'; return; }
+      const t = ' data-tip="' + esc((tp ? tp + '<br>' : '') + 'median ' + dmNum(q[2]) + '; middle half ' + dmNum(q[1]) + ' to ' + dmNum(q[3]) + '; 5th–95th percentile ' + dmNum(q[0]) + ' to ' + dmNum(q[4]) + '; ' + dmPlural(q[5], 'line')) + '"';
+      s += '<g class="dm-box ' + (cls || '') + '"' + t + '><line x1="' + r1(x(q[0])) + '" x2="' + r1(x(q[4])) + '" y1="' + r1(cy) + '" y2="' + r1(cy) + '"/>' +
+        '<rect x="' + r1(x(q[1])) + '" y="' + r1(cy - 7) + '" width="' + r1(Math.max(1.5, x(q[3]) - x(q[1]))) + '" height="14" rx="2"/>' +
+        '<line class="dm-med" x1="' + r1(x(q[2])) + '" x2="' + r1(x(q[2])) + '" y1="' + r1(cy - 8) + '" y2="' + r1(cy + 8) + '"/>' +
+        '<rect class="dm-hit" x="' + r1(x(q[0])) + '" y="' + r1(cy - 10) + '" width="' + r1(Math.max(4, x(q[4]) - x(q[0]))) + '" height="20" fill="transparent"/></g>';
+    });
+    s += '<line class="dm-axis" x1="' + ML + '" x2="' + (W - MR) + '" y1="' + (H - MB) + '" y2="' + (H - MB) + '"/>';
+    for (let v0 = Math.ceil(lo / step) * step; v0 <= hi + 1e-9; v0 += step) { const v = Math.abs(v0) < 1e-9 ? 0 : v0; s += '<line class="dm-axis" x1="' + r1(x(v)) + '" x2="' + r1(x(v)) + '" y1="' + (H - MB) + '" y2="' + (H - MB + 4) + '"/><text class="dm-tick" x="' + r1(x(v)) + '" y="' + (H - MB + 15) + '" text-anchor="middle">' + dmNum(v, step < 0.5 ? 2 : step < 1 ? 1 : 0) + '</text>'; }
+    s += '<text class="dm-axt" x="' + ML + '" y="' + (H - 3) + '">' + esc(axis) + '</text>';
+    return '<svg class="dm-boxes" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(axis) + '">' + s + '</svg>';
+  }
+  const dmMtapRows = (r, what) => [['All lines', r.all, '', what + ', all lines'], ['MTAP deleted', r.mtap_deleted, 'dm-del', what + ', lines with no MTAP copy (PureCN)'], ['MTAP intact', r.mtap_intact, 'dm-int', what + ', lines with at least one MTAP copy']];
+  // A PRMT's page: its dependency by MTAP status and the PRISM viability of its inhibitors.
+  function dmPrmtHtml(gene, pr) {
+    const r = pr.genes[gene], comps = Object.entries(pr.prism).filter(([, c]) => c.target === gene), dm = DEPMAP.meta;
+    if (!r) return '';
+    const dd = r.mtap_deleted, di = r.mtap_intact;
+    let h = '<section class="dm-sec dm-prmt"><h4>' + esc(gene) + ' across cancer cell lines: MTAP and inhibitors</h4>' +
+      '<p class="small">' + dmPlural(r.dependent_lines, 'line') + ' of ' + fmt(r.all[5]) + ' depend on ' + esc(gene) + ' (probability ≥ 0.5). ' +
+      (dd && di ? 'Lines without MTAP (0 copies, ' + fmt(dd[5]) + ' lines) have a median gene effect of ' + dmNum(dd[2]) + ', against ' + dmNum(di[2]) + ' in lines with MTAP (' + fmt(di[5]) + '; Mann–Whitney p ' + fmtP(r.mtap_p) + ').' : '') +
+      (gene === 'PRMT5' ? ' MTAP loss leaves its substrate MTA, which partly inhibits PRMT5, so these lines depend on it more (' + doiLink(DM_DOI.kryukov, 'Kryukov et al. 2016') + '; ' + doiLink(DM_DOI.mavrakis, 'Mavrakis et al. 2016') + ').' : '') + '</p>' +
+      figBlock(dmBoxSpec('ch-dm-prmt', gene + ' gene effect by MTAP status', 'DepMap Public 24Q4 CRISPR (Chronos): ' + gene + ' gene effect per cell line, all lines and by MTAP copy number (PureCN; deleted = 0 copies); boxes the middle half, whiskers the 5th to 95th percentile',
+        dmMtapRows(r, esc(gene) + ' gene effect'), gene + ' gene effect per line (Chronos)'));
+    if (!comps.length) return h + '<p class="muted small">PRISM Repurposing 24Q2 has no inhibitor of ' + esc(gene) + '. Its PRMT inhibitors are EPZ015666, GSK3326595 and JNJ-64619178 (PRMT5), EPZ020411 (PRMT6) and SGC-707 (PRMT3).</p></section>';
+    comps.forEach(([name, c], k) => {
+      const on = c.rho != null && c.rho > 0 && c.rho_p <= 0.05;
+      h += '<h5 class="dm-comp">' + esc(name) + ' <span class="muted small">PRISM ' + esc(DM_SCREEN[c.screen] || c.screen) + ', ' + dm.prism.dose_uM + ' µM for ' + dm.prism.days + ' days</span></h5>' +
+        figBlock(dmBoxSpec('ch-dm-prism-' + k, name + ' (' + gene + ' inhibitor): viability by MTAP status', 'PRISM Repurposing 24Q2, ' + dm.prism.dose_uM + ' µM for ' + dm.prism.days + ' days: log2 viability against vehicle per cell line, all lines and by MTAP copy number; boxes the middle half, whiskers the 5th to 95th percentile',
+          dmMtapRows(c, 'log2 viability with ' + name), 'log2 viability against vehicle (0: no effect)')) +
+        '<p class="small">' + (c.rho != null ? 'Spearman ρ with ' + esc(gene) + ' gene effect ' + dmNum(c.rho) + ' over ' + fmt(c.rho_lines) + ' lines (p ' + fmtP(c.rho_p) + '): ' +
+          (on ? 'lines that depend more on ' + esc(gene) + ' lose ' + (c.rho < 0.3 ? 'somewhat ' : '') + 'more viability, the direction of an on-target effect.' : 'no positive relation with dependency on ' + esc(gene) + '.') : '') +
+        (c.mtap_p != null && c.mtap_deleted && c.mtap_intact ? ' Median log2 viability ' + dmNum(c.mtap_deleted[2]) + ' in lines without MTAP against ' + dmNum(c.mtap_intact[2]) + ' with it (Mann–Whitney p ' + fmtP(c.mtap_p) + ').' : '') +
+        ' Most sensitive: ' + c.most_sensitive.slice(0, 5).map(([m, v]) => esc(dm.models[m][1]) + ' ' + dmNum(v)).join(', ') + '.</p>';
+    });
+    return h + '</section>';
+  }
+  // The release's test of changes at methylarginines (analysis cancer_change, within protein), in a sentence: whether a
+  // methylated arginine is changed more or less often than the other arginines of its protein.
+  function dmChangeTestHtml() {
+    const mh = new Map(dmStats('cancer_change', 'mantel_haenszel').map((r) => [r.category, r]));
+    const t = mh.get('tcga_tumours'), c = mh.get('depmap_cell_lines');
+    if (!t || !c) return '';
+    const how = (r) => (r.odds_ratio_ci_high != null && r.odds_ratio_ci_high < 1 && r.q <= PADJ ? 'less often than' : r.odds_ratio_ci_low != null && r.odds_ratio_ci_low > 1 && r.q <= PADJ ? 'more often than' : 'about as often as');
+    const est = (r) => 'Mantel–Haenszel odds ratio ' + dmNum(r.odds_ratio) + ', 95% CI ' + dmNum(r.odds_ratio_ci_low) + '–' + dmNum(r.odds_ratio_ci_high) + ', q ' + fmtP(r.q);
+    return '<p class="small muted">Across the methylated proteins, a methylated arginine is changed in tumours ' + how(t) + ' the other arginines of its protein (' + est(t) + ', ' + fmt(t.n_strata) + ' proteins), and in cell lines ' + how(c) + ' them (' + est(c) + '). ' +
+      'Release statistics, analysis <code>cancer_change</code>. Not adjusted for codon: arginine codons with a CpG (CGN) mutate most in cancers, and the codons of methylated and other arginines may differ.</p>';
+  }
+  function renderDepmapCard(p) {
+    const box = $('#card-depmap');
+    if (!box) return;
+    const gene = p.label, isPrmt = DEPMAP_PRMTS.includes(gene);
+    const head = (sub) => '<div class="card-head"><div><h3>Cancer cell lines and tumours</h3><p class="sub">' + sub + '</p></div>' +
+      '<div class="exp"><a class="btn quiet small" href="https://depmap.org/portal/gene/' + encodeURIComponent(gene) + '?tab=overview" target="_blank" rel="noopener" title="' + esc(gene) + ' in the DepMap portal">DepMap ↗</a>' +
+      '<a class="btn quiet small" href="https://www.cbioportal.org/results/mutations?cancer_study_list=' + encodeURIComponent('laml_tcga_pan_can_atlas_2018,acc_tcga_pan_can_atlas_2018,blca_tcga_pan_can_atlas_2018,lgg_tcga_pan_can_atlas_2018,brca_tcga_pan_can_atlas_2018,cesc_tcga_pan_can_atlas_2018,chol_tcga_pan_can_atlas_2018,coadread_tcga_pan_can_atlas_2018,dlbc_tcga_pan_can_atlas_2018,esca_tcga_pan_can_atlas_2018,gbm_tcga_pan_can_atlas_2018,hnsc_tcga_pan_can_atlas_2018,kich_tcga_pan_can_atlas_2018,kirc_tcga_pan_can_atlas_2018,kirp_tcga_pan_can_atlas_2018,lihc_tcga_pan_can_atlas_2018,luad_tcga_pan_can_atlas_2018,lusc_tcga_pan_can_atlas_2018,meso_tcga_pan_can_atlas_2018,ov_tcga_pan_can_atlas_2018,paad_tcga_pan_can_atlas_2018,pcpg_tcga_pan_can_atlas_2018,prad_tcga_pan_can_atlas_2018,sarc_tcga_pan_can_atlas_2018,skcm_tcga_pan_can_atlas_2018,stad_tcga_pan_can_atlas_2018,tgct_tcga_pan_can_atlas_2018,thym_tcga_pan_can_atlas_2018,thca_tcga_pan_can_atlas_2018,ucs_tcga_pan_can_atlas_2018,ucec_tcga_pan_can_atlas_2018,uvm_tcga_pan_can_atlas_2018') + '&gene_list=' + encodeURIComponent(gene) + '" target="_blank" rel="noopener" title="' + esc(gene) + ' mutations in the TCGA PanCancer Atlas studies, in cBioPortal">cBioPortal ↗</a></div></div>';
+    box.innerHTML = head('Loading DepMap and TCGA…');
+    Promise.all([loadDepmap(p.acc), isPrmt ? loadDepmapPrmt() : null]).then(([d, pr]) => {
+      if (!box.isConnected || !pageOpen(p)) return;
+      const dm = DEPMAP.meta;
+      if (!d || !dm) { box.innerHTML = head('') + '<p class="muted">The DepMap and TCGA files did not load; try again later.</p>'; setFoldSummary('p-depmap', 'did not load'); return; }
+      const g = d.g, meth = new Set(p.sites.map((j) => S[j].pos)), T = dmByPos(d.t, 't'), Mc = dmByPos(d.m, 'm');
+      let h = head('Cancer genetics, not evidence about methylation: how much ' + esc(dm.depmap.crispr_lines.toLocaleString('en-US')) + ' cancer cell lines depend on ' + esc(gene) + ' in DepMap\'s CRISPR screens, and the protein changes at its arginines in ' +
+        fmt(dm.tcga.sequenced_samples || 0) + ' TCGA tumours and ' + fmt(dm.depmap.mutation_call_lines) + ' DepMap cell lines.');
+      // dependency
+      h += '<div class="dm-grid"><section class="dm-sec"><h4>Dependency in CRISPR knockout screens</h4>';
+      if (!g) h += '<p class="muted">DepMap 24Q4 did not screen ' + esc(gene) + ', or names it by another gene.</p>';
+      else {
+        h += '<p class="dm-call">' + (g[11] ? '<span class="tag dm-ce" data-tip="In DepMap\'s list of commonly essential genes: in at least 90% of cell lines it ranks among the line\'s strongest dependencies">commonly essential</span> ' : '') +
+          '<b>' + fmt(g[9]) + ' of ' + fmt(g[10]) + '</b> lines depend on ' + esc(gene) + ' (dependency probability ≥ 0.5); median gene effect <b>' + dmNum(g[2]) + '</b>.</p>' +
+          figBlock({ id: 'ch-dm-hist', title: gene + ' gene effect across cancer cell lines', figCss: dmFigCss, figSvg: () => dmHistSvg(g, dm.hist_edges, gene),
+            subText: 'DepMap Public 24Q4 CRISPR knockout screens (Chronos), ' + fmt(g[0]) + ' lines: ' + fmt(g[9]) + ' depend on ' + gene + ' (dependency probability ≥ 0.5); median gene effect ' + dmNum(g[2]) + '. 0: no effect; −1: the median of commonly essential genes',
+            figTsv: () => '# ' + gene + ' gene effect per cell line (Chronos), DepMap Public 24Q4: cell lines per bin; the first bin also holds the lines below its lower edge and the last those above\nfrom\tto\tcell_lines\n' +
+              g[12].map((n, k) => [dm.hist_edges[k], dm.hist_edges[k + 1], n].join('\t')).join('\n') + '\n' }) +
+          (g[13].length ? '<p class="small"><span class="flabel">Most dependent lineages</span> ' + g[13].map(([li, n, mean]) => esc(dm.lineages[li]) + ' ' + dmNum(mean) + ' <span class="muted">(' + n + ' lines)</span>').join(' · ') + ' <span class="muted">(mean gene effect; lineages of at least 10 lines)</span></p>' : '');
+      }
+      h += '</section>';
+      // changes at arginines
+      h += '<section class="dm-sec"><h4>Changes at its arginines</h4>';
+      const nT = Array.from(T.keys()).filter((q) => meth.has(q)).length, nM = Array.from(Mc.keys()).filter((q) => meth.has(q)).length;
+      const u = UNIDATA.get(p.acc), nR = u && u.seq ? (u.seq.match(/R/g) || []).length : null;
+      const oT = T.size - nT, oM = Mc.size - nM;
+      if (meth.size) {
+        h += '<p class="small">' + fmt(nT) + ' of its ' + dmPlural(meth.size, 'methylarginine') + ' ' + (nT === 1 || meth.size === 1 ? 'is' : 'are') + ' changed in at least one tumour and ' + fmt(nM) + ' in at least one cell line. ' +
+          'Of its other ' + (nR != null ? fmt(nR - meth.size) + ' ' : '') + 'arginines, ' + fmt(oT) + ' ' + (oT === 1 ? 'is' : 'are') + ' changed in a tumour and ' + fmt(oM) + ' in a cell line.</p>';
+        const rows = Array.from(new Set(Array.from(T.keys()).concat(Array.from(Mc.keys())).filter((q) => meth.has(q)))).map((q) => [q, T.get(q), Mc.get(q)])
+          .sort((a, b) => ((b[1] ? b[1].n : 0) + (b[2] ? b[2].n : 0)) - ((a[1] ? a[1].n : 0) + (a[2] ? a[2].n : 0)) || a[0] - b[0]);
+        if (rows.length) {
+          h += '<div class="tbl-wrap dm-tbl"><table><thead><tr><th>Site</th><th>Tumours (TCGA)</th><th>Cell lines (DepMap)</th><th title="AlphaMissense pathogenicity of the substitution, as DepMap reports it (0 benign to 1 pathogenic)">AlphaMissense</th></tr></thead><tbody>' +
+            rows.slice(0, 12).map(([q, t, m]) => '<tr><td><button class="linkish" type="button" data-dm-site="' + q + '">' + rl(q, p) + '</button></td>' +
+              '<td>' + (t ? '<span data-tip="' + esc(esc(dmStudyTip(t, p))) + '">' + esc(dmAltText(t, p)) + '</span> <span class="muted small">(' + esc(dmWho(t, 't')) + ')</span>' : '<span class="muted">—</span>') + '</td>' +
+              '<td>' + (m ? esc(dmAltText(m, p)) + ' <span class="muted small">(' + esc(dmWho(m, 'm', 2)) + ')</span>' + (m.hot ? ' <span class="tag" title="DepMap marks the change a hotspot">hotspot</span>' : '') : '<span class="muted">—</span>') + '</td>' +
+              '<td class="num">' + (m && m.am != null ? (m.am / 100).toFixed(2) : '<span class="muted">—</span>') + '</td></tr>').join('') + '</tbody></table></div>' +
+            (rows.length > 12 ? '<p class="muted small">' + (rows.length - 12) + ' more sites changed; the protein map draws them all.</p>' : '');
+        }
+      } else h += '<p class="small">' + dmPlural(T.size, 'arginine') + ' changed in at least one tumour, ' + fmt(Mc.size) + ' in at least one cell line' + (nR != null ? ', of its ' + fmt(nR) : '') + '; the protein map draws them.</p>';
+      if (meth.size) h += dmChangeTestHtml();
+      h += '</section></div>';
+      if (isPrmt && pr) h += dmPrmtHtml(gene, pr);
+      h += '<p class="note small">' + doiLink(DM_DOI.depmap, 'DepMap Public 24Q4') + ' (' + doiLink(DM_DOI.tsherniak, 'Tsherniak et al. 2017') + '; Chronos, ' + doiLink(DM_DOI.chronos, 'Dempster et al. 2021') + '), ' +
+        (isPrmt ? doiLink(DM_DOI.prism, 'PRISM Repurposing 24Q2') + ' (' + doiLink(DM_DOI.corsello, 'Corsello et al. 2020') + '), ' : '') + 'CC BY 4.0; TCGA PanCancer Atlas mutations (' + doiLink(DM_DOI.pancan, 'Hoadley et al. 2018') + '; MC3, ' + doiLink(DM_DOI.mc3, 'Ellrott et al. 2018') + ') through ' +
+        doiLink(DM_DOI.cbio, 'cBioPortal') + ' (ODC Open Database License), fetched ' + esc(dm.tcga.fetched || '') + '. A change counts at an arginine only on the canonical UniProt sequence: changes on other isoforms, or whose position is not an arginine there, are left out. AlphaMissense: ' + doiLink(DM_DOI.am, 'Cheng et al. 2023') + '.</p>';
+      box.innerHTML = h;
+      $$('svg [data-tip]', box).forEach((el) => {
+        el.addEventListener('mouseenter', (e) => showTip(e, el.getAttribute('data-tip')));
+        el.addEventListener('mousemove', moveTip);
+        el.addEventListener('mouseleave', hideTip);
+      });
+      $$('[data-dm-site]', box).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.dmSite; flashSite(+b.dataset.dmSite, true); drawMap(p, UNIDATA.get(p.acc)); }));
+      bindChartExports(box);
+      setFoldSummary('p-depmap', [g ? (g[11] ? 'commonly essential' : fmt(g[9]) + ' of ' + fmt(g[10]) + ' lines depend on it') : 'not screened in DepMap',
+        meth.size ? (nT ? dmPlural(nT, 'site') : 'no site') + ' changed in tumours' : (T.size ? dmPlural(T.size, 'arginine') : 'no arginine') + ' changed in tumours'].join(' · '));
+    });
+  }
+  // The Overview's comparison (genes.json): each screened protein's median gene effect, common-essential call and
+  // dependent lines, read when the Overview first draws its section.
+  function loadDepmapGenes() {
+    if (!DEPMAP.genesP) DEPMAP.genesP = Promise.all([loadDepmapMeta(), dmJson('genes.json')]).then(([m, g]) => {
+      if (!m) return null;
+      const by = new Map();
+      g.acc.forEach((a, k) => by.set(a, k));
+      return (DEPMAP.genes = Object.assign(g, { by }));
+    }).catch(() => { DEPMAP.genesP = null; return null; });
+    return DEPMAP.genesP;
+  }
+  // Two-sided Mann-Whitney test, normal approximation with the tie correction: [p, median x, median y].
+  function mwuP(x, y) {
+    const n1 = x.length, n2 = y.length;
+    if (!n1 || !n2) return [null, null, null];
+    const all = x.map((v) => [v, 0]).concat(y.map((v) => [v, 1])).sort((a, b) => a[0] - b[0]);
+    let r1 = 0, ties = 0;
+    for (let i = 0; i < all.length;) {
+      let j = i;
+      while (j + 1 < all.length && all[j + 1][0] === all[i][0]) j++;
+      const rank = (i + j) / 2 + 1, t = j - i + 1;
+      for (let k = i; k <= j; k++) if (all[k][1] === 0) r1 += rank;
+      ties += t * t * t - t;
+      i = j + 1;
+    }
+    const n = n1 + n2, u = r1 - (n1 * (n1 + 1)) / 2, mu = (n1 * n2) / 2;
+    const sd = Math.sqrt(((n1 * n2) / 12) * (n + 1 - ties / (n * (n - 1))));
+    const z = sd ? (Math.abs(u - mu) - 0.5) / sd : 0;
+    const med = (v) => { const s = v.slice().sort((a, b) => a - b), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+    return [Math.min(1, erfc(Math.max(0, z) / Math.SQRT2)), med(x), med(y)];
+  }
+  // A set of proteins (P indices) as screened entries: their genes.json rows, one per canonical accession.
+  const dmRows = (G, prots) => Array.from(new Set(prots.map((p) => G.by.get(p.acc.split('-')[0])).filter((k) => k != null)));
+  const dmQuant = (G, rows) => {
+    if (!rows.length) return null;
+    const v = rows.map((k) => G.median[k] / 1000).sort((a, b) => a - b), q = (f) => { const h = (v.length - 1) * f, lo = Math.floor(h); return v[lo] + (v[Math.min(lo + 1, v.length - 1)] - v[lo]) * (h - lo); };
+    return [q(0.05), q(0.25), q(0.5), q(0.75), q(0.95), v.length];
+  };
+  // One comparison: a set of screened proteins against another (common essential: Fisher; median gene effect:
+  // Mann-Whitney).
+  function dmCompare(G, a, b) {
+    const ce = (rows) => rows.filter((k) => G.ce[k] === '1').length;
+    const x = ce(a), y = ce(b), t = [x, a.length - x, y, b.length - y];
+    const [p, ma, mb] = mwuP(a.map((k) => G.median[k] / 1000), b.map((k) => G.median[k] / 1000));
+    return { ceA: x, nA: a.length, ceB: y, nB: b.length, ci: oddsCi(...t), ceP: fisherP(...t), medA: ma, medB: mb, medP: p };
+  }
+  const dmCmpHtml = (label, c) => '<tr><th scope="row">' + label + '</th><td class="num">' + pctText(c.ceA, c.nA || 1) + '% <span class="muted">against</span> ' + pctText(c.ceB, c.nB || 1) + '%</td>' +
+    '<td class="num">' + (c.ci.or != null ? fx(c.ci.or) + (c.ci.lo != null ? ' <span class="muted">[' + fx(c.ci.lo) + '–' + fx(c.ci.hi) + ']</span>' : '') : '—') + '</td><td class="num">' + fmtP(c.ceP) + '</td>' +
+    '<td class="num">' + dmNum(c.medA) + ' <span class="muted">against</span> ' + dmNum(c.medB) + '</td><td class="num">' + fmtP(c.medP) + '</td></tr>';
+  // The dependency classes (code dependency_class of the release) as a protein-set chart: the whole dataset's test from
+  // the release statistics (analysis depmap_dependency: clusterProfiler enricher, methylated against all screened
+  // proteins), retested for a selection against the same background (selSetTest), with its SVG, PNG and TSV exports.
+  const DEP_CLASS_LABEL = { common_essential: 'Commonly essential', most_lines: 'Most lines (≥ 50%)', some_lines: 'Some lines (5–50%)', few_or_none: 'Few or none (< 5%)' };
+  function dmClassSpec(G, scoped) {
+    const dm = DEPMAP.meta, st = new Map(dmStats('depmap_dependency').map((r) => [r.category, r]));
+    const codes = (dm.dependency_classes || []).map((c) => c[0]), help = new Map(dm.dependency_classes || []);
+    const any = st.values().next().value, N = any ? any.a + any.b + any.c + any.d : G.acc.length;
+    const rows = codes.map((code, ci) => {
+      const r = st.get(code), label = DEP_CLASS_LABEL[code] || code;
+      const M = r ? r.a + r.c : Array.from(G.cls).filter((c) => +c === ci).length;
+      return { label, key: code, ci, M, value: r && r.fold_enrichment ? +Math.log2(r.fold_enrichment).toFixed(3) : null, q: r ? r.q : null, sig: !!r && r.q != null && r.q <= PADJ,
+        extra: r ? ofTotal(r.a, M) : '', extraRaw: r ? r.a : '', noClick: true,
+        title: '<b>' + esc(label) + '</b> · ' + esc(help.get(code) || '') + '<br>' + (r ? fmt(r.a) + ' of the ' + fmt(M) + ' screened proteins in this class are methylated (' + pct(r.a, M) + '%), against ' +
+          pct(r.a + r.b, N) + '% of all ' + fmt(N) + ' screened proteins; fold enrichment ' + fx(r.fold_enrichment) + ', q ' + fmtP(r.q) : 'no methylated protein in this class') };
+    });
+    const spec = { id: 'ch-dep-cls', title: 'DepMap dependency class', fold: true, keepOrder: true, extraCol: true, extraName: 'methylated_of_screened', rows, N,
+      subText: 'DepMap Public 24Q4 dependency classes, methylated proteins vs all ' + fmt(N) + ' screened reviewed proteins (one per gene); release statistics, analysis depmap_dependency',
+      axis: 'log2 fold enrichment vs all screened proteins' };
+    if (scoped) {
+      const at = (p) => G.by.get(p.acc.split('-')[0]);
+      selSetTest(spec, { N, inBg: (p) => at(p) != null, member: (r) => (p) => G.cls[at(p)] === String(r.ci), M: (r) => r.M, bg: 'screened proteins' });
+    }
+    return spec;
+  }
+  // The Overview's section and tile: how much cancer cell lines depend on the proteins of the selection (or on all
+  // methylated proteins), against the other methylated proteins and against all screened reviewed proteins.
+  function renderDepOverview(el, scoped, testable) {
+    const box = $('#ch-dep-body', el), tv = $('.dep-ov-vis', el), th = $('.dep-ov-head', el);
+    if (!box && !tv) return;
+    const view = UI.view, rq = R;
+    loadDepmapGenes().then((G) => {
+      if (UI.view !== view || R !== rq) return;
+      if (!G) { if (box) box.innerHTML = '<p class="muted">The DepMap files did not load; try again later.</p>'; if (th) th.textContent = 'did not load'; return; }
+      const dm = DEPMAP.meta, sel = scoped ? R.prots : P;
+      const selRows = dmRows(G, sel), methRows = dmRows(G, P), methSet = new Set(methRows), selSet = new Set(selRows);
+      const allRows = G.acc.map((_, k) => k), otherScreened = allRows.filter((k) => !(scoped ? selSet : methSet).has(k));
+      const otherMeth = methRows.filter((k) => !selSet.has(k));
+      const ce = (rows) => rows.filter((k) => G.ce[k] === '1').length;
+      const share = (rows) => (rows.length ? ce(rows) / rows.length : 0);
+      const sh = [[scoped ? 'Your selection' : 'Methylated proteins', share(selRows), scoped ? 'sel' : 'meth', selRows.length]]
+        .concat(scoped ? [['All methylated proteins', share(methRows), 'meth', methRows.length]] : [], [['All screened proteins', share(allRows), 'all', allRows.length]]);
+      const mx = Math.max(...sh.map((x) => x[1]), 0.01);
+      if (tv) tv.innerHTML = aMeters(sh.map(([label, v, cls, n]) => ({ label, v: v / mx, text: pctText(Math.round(v * 1000), 1000) + '%', cls: 'count',
+        tip: '<b>' + esc(label) + '</b><br>' + pctText(Math.round(v * 1000), 1000) + '% of ' + fmt(n) + ' screened proteins commonly essential in DepMap' })), { tight: true, wide: true });
+      if (th) th.innerHTML = '<b>' + pctText(ce(selRows), selRows.length || 1) + '%</b> of ' + (scoped ? 'your' : 'methylated') + ' proteins commonly essential in cancer cell lines, against ' + pctText(ce(allRows), allRows.length) + '% of all screened proteins';
+      if (!box) return;
+      const c1 = scoped ? dmCompare(G, selRows, otherMeth) : null, c2 = dmCompare(G, selRows, otherScreened);
+      const most = sel.map((p) => [p, G.by.get(p.acc.split('-')[0])]).filter(([, k]) => k != null).sort((a, b) => G.median[a[1]] - G.median[b[1]]);
+      const seen = new Set(), uniq = most.filter(([, k]) => !seen.has(k) && seen.add(k));
+      const selective = uniq.filter(([, k]) => G.cls[k] === '2').sort((a, b) => G.dependent[b[1]] / G.lines[b[1]] - G.dependent[a[1]] / G.lines[a[1]]);
+      const chip = ([p, k], sub) => '<button class="gene-chip" type="button" data-i="' + p.i + '" title="' + esc(p.label + ': median gene effect ' + dmNum(G.median[k] / 1000) + ', ' + G.dependent[k] + ' of ' + G.lines[k] + ' lines depend on it' + (G.ce[k] === '1' ? '; commonly essential' : '')) + '">' + esc(p.label) + '<span>' + sub + '</span></button>';
+      const cls = dmClassSpec(G, scoped);
+      UI.charts[cls.id] = cls;
+      const boxRows = [[scoped ? 'Your selection' : 'Methylated proteins', dmQuant(G, selRows), scoped ? 'dm-sel' : 'dm-meth', 'Median gene effect of each protein'], scoped ? ['All methylated', dmQuant(G, methRows), 'dm-meth', 'Median gene effect of each methylated protein'] : null,
+        ['All screened proteins', dmQuant(G, allRows), '', 'Median gene effect of each screened reviewed protein']].filter(Boolean);
+      const boxSpec = dmBoxSpec('ch-dep-box', 'Median gene effect of each protein', 'DepMap Public 24Q4 CRISPR (Chronos): each protein\'s median gene effect across the ' + fmt(dm.depmap.crispr_lines) + ' lines; boxes the middle half of the proteins, whiskers the 5th to 95th percentile; lower is a stronger dependency',
+        boxRows, 'median gene effect per protein (Chronos)');
+      box.innerHTML = '<p class="small">' + fmt(selRows.length) + ' of ' + (scoped ? 'your ' + fmt(sel.length) : 'the ' + fmt(P.length) + ' methylated') + ' proteins were screened (DepMap 24Q4, ' + fmt(dm.depmap.crispr_lines) + ' cell lines). ' +
+          'A protein\'s score is its median gene effect across the lines (Chronos: 0 no effect, −1 the median of commonly essential genes; lower is a stronger dependency).</p>' +
+        '<div class="dm-chart"><div class="fig-head"><span class="flabel">' + esc(cls.title) + '</span>' + expButtons(cls.id) + '</div>' + hbars(cls) + oraNote(cls) + '</div>' +
+        figBlock(boxSpec, 'Median gene effect of each protein') +
+        (testable ? '<div class="tbl-wrap dm-tbl"><table><thead><tr><th>Compared with</th><th>Commonly essential</th><th title="Odds ratio with its 95% interval (Woolf)">Odds ratio</th><th title="Fisher exact test, two-sided">p</th><th>Median score</th><th title="Mann–Whitney test, two-sided">p</th></tr></thead><tbody>' +
+          (c1 ? dmCmpHtml('The other methylated proteins (' + fmt(c1.nB) + ')', c1) : '') + dmCmpHtml('The other screened proteins (' + fmt(c2.nB) + ')', c2) + '</tbody></table></div>' +
+          '<p class="small muted">Essential proteins are abundant, and abundant proteins are the ones mass spectrometry finds most often, so methylated proteins are expected to look more essential than the proteome whatever their methylation does' +
+          (scoped ? '; the comparison with the other methylated proteins shares that bias and is the fairer one.' : '. A selection is also compared with the other methylated proteins, which share that bias.') + '</p>'
+          : '<p class="small muted">' + selTooFew() + '</p>') +
+        (uniq.length ? '<p class="flabel">Strongest dependencies' + (scoped ? ' in your selection' : '') + '</p><div class="gene-chips">' + uniq.slice(0, 12).map((x) => chip(x, dmNum(G.median[x[1]] / 1000))).join('') + '</div>' : '') +
+        (selective.length ? '<p class="flabel">Selective dependencies <span class="muted">(not commonly essential; 5% to under half of the lines depend on them, share shown)</span></p><div class="gene-chips">' +
+          selective.slice(0, 12).map((x) => chip(x, pctText(G.dependent[x[1]], G.lines[x[1]]) + '%')).join('') + '</div>' : '') +
+        dmChangeTestHtml().replace('<p class="small muted">', '<p class="small muted"><b>Changes at methylarginines</b> (whole dataset). ') +
+        '<p class="note small">' + doiLink(DM_DOI.depmap, 'DepMap Public 24Q4') + ' (CC BY 4.0; ' + doiLink(DM_DOI.tsherniak, 'Tsherniak et al. 2017') + '; Chronos, ' + doiLink(DM_DOI.chronos, 'Dempster et al. 2021') + '). ' +
+          'Commonly essential: DepMap\'s list of genes that at least 90% of lines rank among their strongest dependencies. A line depends on a gene when DepMap\'s dependency probability is at least 0.5. Each protein\'s page has its full distribution, lineages and mutations.</p>';
+      bindBars($('.dm-chart', box), cls.rows, () => {});
+      bindChartExports(box);
+      $$('.gene-chip[data-i]', box).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.i)));
+      $$('svg [data-tip]', box).forEach((e) => { e.addEventListener('mouseenter', (ev) => showTip(ev, e.getAttribute('data-tip'))); e.addEventListener('mousemove', moveTip); e.addEventListener('mouseleave', hideTip); });
+      setFoldSummary('ov-dep', pctText(ce(selRows), selRows.length || 1) + '% commonly essential');
+    });
+  }
   // The shard of an accession, as scripts/36c computes it.
   const proteomeShard = (acc) => { let h = 0; for (const c of acc) h = (h * 31 + c.charCodeAt(0)) % 1000003; return h % PROTEOME.shards; };
   // The protein without a site a search word names (accession, isoform accession or gene symbol), or null; null too
@@ -10183,6 +10611,7 @@
         (conds.length ? '<p class="flabel">Condensates (CD-CODE)</p><div class="chips">' + conds.map((c) => '<span class="chip-pair"><button class="chip" type="button" data-cond="' + c + '" title="' + esc(M.condensates[c][3] + ' members, ' + M.condensates[c][4] + ' methylated; selects them') + '">' + esc(M.condensates[c][0]) + '</button>' +
           '<a class="chip-src" href="https://cd-code.org/condensates/' + encodeURIComponent(M.condensates[c][1]) + '" target="_blank" rel="noopener" title="' + esc(M.condensates[c][0] + ' in CD-CODE') + '" aria-label="' + esc(M.condensates[c][0] + ' in CD-CODE') + '">↗</a></span>').join('') + '</div>' : '<p class="muted">In no CD-CODE condensate.</p>') + '</div>' +
         unlistedCellsHtml(x) +
+        '<div class="card" id="card-depmap"></div>' +
         '<div class="card" id="card-dom"><h3>Domains and families</h3><p class="sub">InterPro 108.0 entries; UniProt domains and regions load with the map.</p>' +
         (x.dom && x.dom.length ? '<p class="flabel">InterPro domains</p>' + iprTableHtml(x.dom, 'InterPro domain', null, null) : '<p class="muted">InterPro 108.0 has no domain or repeat for this protein.</p>') +
         (x.fam && x.fam.length ? '<p class="flabel" style="margin-top:1rem">InterPro families and superfamilies</p>' + iprTableHtml(x.fam, 'Family or superfamily', null, null) : '') + '<div id="unl-uni"></div></div>';
@@ -10197,6 +10626,8 @@
       drawMap(p, UNIDATA.get(x.acc));
       initStructure(p);
       if (k >= 0) renderUnlIx(p);
+      renderDepmapCard(p);
+      loadDepmap(x.acc).then((d) => { if (d && current()) drawMap(p, UNIDATA.get(x.acc)); });
       // eCLIP logos of this protein, if ENCODE or ENCORE assayed it
       loadEclipLogos().then(() => {
         const box = $('#unl-eclip');

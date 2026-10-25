@@ -29,6 +29,8 @@ from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
+import release_layers
+
 MONO = 'Consolas'
 FIXED_TIME = datetime.datetime(2026, 1, 1)
 WIDTH = {  # characters, for columns whose content is wider than their name
@@ -45,6 +47,7 @@ TOPICS = [
     ('methyl_states_reported', '9A3412'),   # methylation evidence
     ('motifs', '3F6212'),                   # context
     ('interaction_status', '6D28D9'),       # interactions
+    *((layer.site_columns[0][0], layer.topic) for layer in release_layers.LAYERS if layer.site_columns),   # the layers'
     ('n_studies', '1E40AF'),                # sources
     ('flags', '854D0E'),                    # status
     ('in_previous_version', '374151'),      # change

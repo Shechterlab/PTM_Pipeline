@@ -1,13 +1,16 @@
 # Layer inputs
 
-These tables hold three annotation layers. The website shows them on protein and site pages; none of them adds
-methylarginine sites to the union.
+These tables hold four annotation layers. The website shows them on protein and site pages; none of them adds
+methylarginine sites to the union. Each layer is registered in `scripts/release_layers.py`, which lists its files (the
+release build checks them against `../MANIFEST.tsv` first) and, for the cancer layer, the columns and tests it adds to
+the release (`../../ADDING_A_SOURCE.md` says how to add one).
 
 | Layer | Made by | Files |
 |---|---|---|
 | CPLM 4.0 lysine methylation | `scripts/39_stage_cplm4_lys_methylation.py` | `cplm4_human_lys_methyl_validated.tsv`, `cplm4_human_lys_methyl_rejected.tsv`, `cplm4_summary.json` |
 | CARM1 knockout response (Shishkova et al. 2017) | `scripts/41_stage_carm1_ko_sites.py` | `carm1_ko_peptides.tsv`, `carm1_ko_sites.tsv`, `carm1_ko_summary.json` |
 | Human Protein Atlas 25.1 subcellular locations | `scripts/42_stage_hpa_subcellular.py` | `hpa_subcellular_locations.tsv`, `hpa_summary.json` |
+| Cancer cell lines and tumours: DepMap Public 24Q4 (CRISPR gene effect, changes at arginines, MTAP copy number), PRISM Repurposing 24Q2 (PRMT inhibitors) and TCGA PanCancer Atlas changes at arginines (cBioPortal) | `scripts/44b_fetch_tcga_arginine_changes.py` (network), then `scripts/44_stage_depmap.py`; the release build adds its columns and tests (`scripts/release_layers.py`) and `scripts/44c_export_depmap.py` writes the website's `docs/data/depmap/` from the release | `depmap_24q4_gene_effect_summary.tsv`, `depmap_24q4_arginine_changes.tsv`, `depmap_24q4_models.tsv`, `depmap_24q4_prmt_gene_effect.tsv`, `prism_24q2_prmt_inhibitors.tsv`, `tcga_pancan_arginine_changes.tsv`, `tcga_pancan_studies.tsv`, `depmap_summary.json` |
 
 - `../MANIFEST.tsv` (one manifest for all of `inputs/`) describes each file: rows, MD5, what it holds, source, version, citation, licence and how it
   was made.

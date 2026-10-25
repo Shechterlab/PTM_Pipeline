@@ -886,23 +886,9 @@ def write_tsv(df: pd.DataFrame, path: Path) -> int:
 
 
 def update_manifest(manifest: Path, rows: list):
-    """Replace the rows of these files, or add them after the last interactions/ row."""
-    lines = manifest.read_text(encoding='utf-8').splitlines()
-    head = lines[0].split('\t')
-    new = {r['file']: '\t'.join(str(r.get(c, '')) for c in head) for r in rows}
-    body, done = [], set()
-    for ln in lines[1:]:
-        f = ln.split('\t')[0]
-        if f in new:
-            body.append(new[f])
-            done.add(f)
-        else:
-            body.append(ln)
-    rest = [new[r['file']] for r in rows if r['file'] not in done]
-    if rest:
-        last = max((i for i, ln in enumerate(body) if ln.startswith('interactions/')), default=len(body) - 1)
-        body[last + 1:last + 1] = rest
-    manifest.write_text('\n'.join([lines[0]] + body) + '\n', encoding='utf-8')
+    """Replace the rows of these files, or add them after the last row of their folder (common.update_manifest)."""
+    import common
+    common.update_manifest(manifest, rows)
 
 
 def main():

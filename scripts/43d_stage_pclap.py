@@ -478,12 +478,8 @@ def stage(args) -> dict:
 
 
 def write_manifest(manifest: Path, new: list[dict]):
-    lines = manifest.read_text(encoding='utf-8').splitlines()
-    head = lines[0].split('\t')
-    names = {m['file'] for m in new}
-    keep = [ln for ln in lines[1:] if ln.split('\t')[0] not in names]
-    keep += ['\t'.join(str(m.get(c, '')) for c in head) for m in new]
-    manifest.write_text('\n'.join([lines[0]] + keep) + '\n', encoding='utf-8')
+    from common import update_manifest
+    update_manifest(manifest, new)
     log(f'{manifest.name}: {len(new)} rows written')
 
 

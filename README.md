@@ -40,6 +40,7 @@ dictionary and a record of what changed since the release before.
 | [`hpc/`](hpc/) | the release build, and the cluster scripts of the published run |
 | [`envs/`](envs/) | the conda environment, and the resolved Python packages of the latest build |
 | [`ROADMAP.md`](ROADMAP.md) | what is planned after the current release |
+| [`ADDING_A_SOURCE.md`](ADDING_A_SOURCE.md) | how to add a data source: staging, registering a layer (`scripts/release_layers.py`), the website, checks |
 
 ## Data staging
 
