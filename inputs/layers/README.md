@@ -1,8 +1,8 @@
 # Layer inputs
 
-These tables hold four annotation layers. The website shows them on protein and site pages; none of them adds
+These tables hold the annotation layers. The website shows them on protein and site pages; none of them adds
 methylarginine sites to the union. Each layer is registered in `scripts/release_layers.py`, which lists its files (the
-release build checks them against `../MANIFEST.tsv` first) and, for the cancer layer, the columns and tests it adds to
+release build checks them against `../MANIFEST.tsv` first) and the columns, tables and tests each adds to
 the release (`../../ADDING_A_SOURCE.md` says how to add one).
 
 | Layer | Made by | Files |
@@ -10,7 +10,10 @@ the release (`../../ADDING_A_SOURCE.md` says how to add one).
 | CPLM 4.0 lysine methylation | `scripts/39_stage_cplm4_lys_methylation.py` | `cplm4_human_lys_methyl_validated.tsv`, `cplm4_human_lys_methyl_rejected.tsv`, `cplm4_summary.json` |
 | CARM1 knockout response (Shishkova et al. 2017) | `scripts/41_stage_carm1_ko_sites.py` | `carm1_ko_peptides.tsv`, `carm1_ko_sites.tsv`, `carm1_ko_summary.json` |
 | Human Protein Atlas 25.1 subcellular locations | `scripts/42_stage_hpa_subcellular.py` | `hpa_subcellular_locations.tsv`, `hpa_summary.json` |
-| Cancer cell lines and tumours: DepMap Public 24Q4 (CRISPR gene effect, changes at arginines, MTAP copy number), PRISM Repurposing 24Q2 (PRMT inhibitors) and TCGA PanCancer Atlas changes at arginines (cBioPortal) | `scripts/44b_fetch_tcga_arginine_changes.py` (network), then `scripts/44_stage_depmap.py`; the release build adds its columns and tests (`scripts/release_layers.py`) and `scripts/44c_export_depmap.py` writes the website's `docs/data/depmap/` from the release | `depmap_24q4_gene_effect_summary.tsv`, `depmap_24q4_arginine_changes.tsv`, `depmap_24q4_models.tsv`, `depmap_24q4_prmt_gene_effect.tsv`, `prism_24q2_prmt_inhibitors.tsv`, `tcga_pancan_arginine_changes.tsv`, `tcga_pancan_studies.tsv`, `depmap_summary.json` |
+| Cancer cell lines and tumours: DepMap Public 24Q4 (CRISPR gene effect, changes at arginines, MTAP copy number), PRISM Repurposing 24Q2 (PRMT inhibitors) and the TCGA MC3 somatic calls at arginines (GDC open access) | `scripts/44b_extract_tcga_mc3.py` (from the MC3 public MAF, the GDC cases of TCGA and UniProt's Ensembl cross-references), then `scripts/44_stage_depmap.py`; the release build adds its columns and tests (`scripts/release_layers.py`) and `scripts/44c_export_depmap.py` writes the website's `docs/data/depmap/` from the release | `depmap_24q4_gene_effect_summary.tsv`, `depmap_24q4_arginine_changes.tsv`, `depmap_24q4_models.tsv`, `depmap_24q4_prmt_gene_effect.tsv`, `prism_24q2_prmt_inhibitors.tsv`, `tcga_mc3_arginine_changes.tsv`, `tcga_mc3_projects.tsv`, `depmap_summary.json` |
+| Writer perturbations: PRMT7 knockout (Szewczyk et al. 2020), PRMT1 knockdown (Hartel et al. 2019), PRMT5 inhibitor (Lu et al. 2024), PRMT7, CARM1 and PRMT5 knockdowns and the PRMT7 inhibitor SGC3027 (Li et al. 2021) | `scripts/45_stage_prmt7_szewczyk2020.py`, `scripts/46_stage_hartel2019_prmt1_kd.py`, `scripts/51_stage_lu2024_prmt5.py`, `scripts/50_stage_li2021_perturbations.py` | `prmt7_ko_*`, `hartel2019_prmt1_kd_*`, `lu2024_prmt5_*`, `li2021_*` |
+| PaxDb 6.1 protein abundance | `scripts/47_stage_paxdb.py` | `paxdb_human_integrated_abundance.tsv`, `paxdb_summary.json` |
+| Reactome 97 pathways | `scripts/48_stage_reactome.py` | `reactome_human_protein_pathways.tsv`, `reactome_human_pathways.tsv`, `reactome_summary.json` |
 
 - `../MANIFEST.tsv` (one manifest for all of `inputs/`) describes each file: rows, MD5, what it holds, source, version, citation, licence and how it
   was made.
@@ -55,6 +58,18 @@ the best reliability and counts a location as main when any of the genes has it 
   with:
   - whether it is a main (1) or additional (0) location;
   - the HPA reliability (Enhanced, Supported, Approved, Uncertain).
+
+- **`tcga_mc3_arginine_changes.tsv`** (274,408 rows, 9,064 tumour samples): somatic missense and stop changes at
+  arginines of reviewed canonical proteins in TCGA tumours, from the MC3 public MAF of the GDC
+  (`mc3.v0.2.8.PUBLIC.maf.gz`, Ellrott et al. 2018; the calls of the PanCancer Atlas). Calls are kept as MC3 kept them:
+  FILTER `PASS`, and in OV and LAML also `wga` alone. The change is read on a transcript that UniProt 2026_03 assigns to
+  the entry's displayed isoform, from the MAF's `all_effects` (`mapped_by` `canonical_transcript`, 95% of rows); where
+  the variant falls in no such transcript, on the MAF's own transcript, placed through the UniProt entry it names or
+  the gene symbol (`maf_transcript`). Either way a change counts only where the canonical sequence has an arginine at
+  its position. GDC open-access data carry no licence; the GDC's data access policies (NIH Genomic Data Sharing policy)
+  ask that TCGA and the MC3 publication be acknowledged and that no one try to identify participants.
+- **`tcga_mc3_projects.tsv`** (33 rows): each TCGA project, with its tumour samples in the MAF (10,294 in all), those
+  with a kept call, and the arginine changes extracted.
 
 ## CPLM tables are not redistributed
 

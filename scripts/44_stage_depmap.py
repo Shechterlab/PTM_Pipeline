@@ -3,7 +3,7 @@
 
 Cell-line genetics, not methylation: DepMap's CRISPR screens knock out whole genes, so the gene effect and the common-
 essential call are about a protein; the residue-level data are the somatic protein changes at arginines, in cell lines
-(DepMap) and in tumours (TCGA, scripts/44b_fetch_tcga_arginine_changes.py).
+(DepMap) and in tumours (TCGA MC3 calls from the GDC, scripts/44b_extract_tcga_mc3.py).
 
 Sources
   DepMap Public 24Q4 (Broad Institute; CC BY 4.0; doi:10.25452/figshare.plus.27993248): CRISPRGeneEffect.csv (Chronos
@@ -12,13 +12,14 @@ Sources
     OmicsSomaticMutations.csv, OmicsAbsoluteCNGene.csv (PureCN absolute copy number; MTAP at 0 copies is deleted).
   PRISM Repurposing Public 24Q2 (CC BY 4.0; doi:10.6084/m9.figshare.25917643): log2 viability of each cell line after 5
     days at 2.5 uM (Extended_Primary_Data_Matrix), for the PRMT inhibitors it holds.
-  TCGA PanCancer Atlas via cBioPortal (ODC Open Database License): the raw changes scripts/44b fetched.
+  TCGA MC3 somatic calls (the TCGA PanCancer Atlas calls; GDC open access, NIH Genomic Data Sharing policy): the
+    arginine changes scripts/44b extracted from mc3.v0.2.8.PUBLIC.maf.gz, and the TCGA projects of the GDC.
 
 A UniProt entry takes the Entrez gene of its primary gene name in org.Hs.eg.db (--symbol-entrez, as the disease tests
 do); when the name has several Entrez genes, the one DepMap screened. A protein change counts at an arginine of the
 canonical sequence only when it is a missense or stop change at an R, its transcript is the canonical isoform (DepMap:
-UniprotID unlabelled or -1; TCGA: the transcript cBioPortal annotates) and the canonical sequence has an R at its
-position.
+UniprotID unlabelled or -1; TCGA: a transcript UniProt assigns to the canonical isoform, else the MAF's transcript on the
+entry its SWISSPROT field names or of its gene symbol) and the canonical sequence has an R at its position.
 
 Outputs (in --outdir)
   depmap_24q4_gene_effect_summary.tsv   per UniProt entry: lines screened, gene effect quantiles and histogram, lines
@@ -28,9 +29,9 @@ Outputs (in --outdir)
   depmap_24q4_models.tsv                the cell lines: name, lineage, disease, which data they have, MTAP copy number
   depmap_24q4_prmt_gene_effect.tsv      gene effect and dependency probability of each PRMT in each line
   prism_24q2_prmt_inhibitors.tsv        log2 viability per line and PRMT inhibitor
-  tcga_pancan_arginine_changes.tsv      per tumour sample and change at a canonical arginine (the sample ID names the
+  tcga_mc3_arginine_changes.tsv         per tumour sample and change at a canonical arginine (the sample ID names the
                                         patient; residue * is a stop)
-  tcga_pancan_studies.tsv               the 32 studies: name, sequenced samples, citation, PubMed IDs
+  tcga_mc3_projects.tsv                 the 33 TCGA projects: name, tumour samples in the MAF
   depmap_summary.json                   inputs (MD5), versions, counts, what was dropped and why
 """
 from __future__ import annotations
@@ -67,12 +68,14 @@ DM_CIT = ('DepMap, Broad (2024): DepMap Public 24Q4, doi:10.25452/figshare.plus.
           'Dempster et al., Genome Biol 22:343 (2021)')
 PR_SRC = ('https://doi.org/10.6084/m9.figshare.25917643 (Repurposing_Public_24Q2_Extended_Primary_Data_Matrix.csv, '
           'Repurposing_Public_24Q2_Extended_Primary_Compound_List.csv)')
-TC_SRC = ('https://www.cbioportal.org/api (the 32 *_tcga_pan_can_atlas_2018 studies, mutations of their sequenced samples), by '
-          'scripts/44b_fetch_tcga_arginine_changes.py')
-TC_CIT = ('Hoadley et al., Cell 173:291 (2018); Ellrott et al., Cell Syst 6:271 (2018); cBioPortal: Cerami et al., Cancer Discov 2:401 '
-          '(2012), Gao et al., Sci Signal 6:pl1 (2013), de Bruijn et al., Cancer Res 83:3861 (2023)')
-TC_LIC = ('ODC Open Database License 1.0 (cBioPortal data, with attribution to the original studies; '
-          'https://docs.cbioportal.org/user-guide/faq/); this derived table under the same licence')
+TC_SRC = ('https://gdc.cancer.gov/about-data/publications/mc3-2017 (mc3.v0.2.8.PUBLIC.maf.gz, '
+          'https://api.gdc.cancer.gov/data/1c8cfe5f-e52d-41ba-94da-f15ea1337efc) and the GDC cases endpoint (TCGA projects), by '
+          'scripts/44b_extract_tcga_mc3.py')
+TC_VER = 'MC3 public MAF v0.2.8 (GDC publication page, downloaded 2026-10-25); GDC cases fetched 2026-10-25'
+TC_CIT = ('The Cancer Genome Atlas Research Network; Ellrott et al., Cell Syst 6:271 (2018), doi:10.1016/j.cels.2018.03.002 (MC3); '
+          'Hoadley et al., Cell 173:291 (2018), doi:10.1016/j.cell.2018.03.022 (PanCancer Atlas)')
+TC_LIC = ('GDC open-access data (NIH Genomic Data Sharing policy; no licence stated): acknowledge TCGA and the MC3 publication, and '
+          'make no attempt to identify participants (https://gdc.cancer.gov/access-data/data-access-policies)')
 HOW = ('scripts/44_stage_depmap.py; checked against reference/uniprot_human_reviewed_2026_03.fasta (a change counts only where the '
        'canonical sequence has an arginine at its position)')
 MANIFEST_ROWS = {
@@ -92,14 +95,15 @@ MANIFEST_ROWS = {
         'PRISM Repurposing Public 24Q2 (Figshare v1, 2024-05-31), downloaded 2026-10-25',
         'Corsello et al., Nat Cancer 1:235 (2020); PRISM Repurposing Public 24Q2, doi:10.6084/m9.figshare.25917643', 'CC BY 4.0',
         'Repurposing_Public_24Q2_Extended_Primary_Data_Matrix.csv; Repurposing_Public_24Q2_Extended_Primary_Compound_List.csv'),
-    'tcga_pancan_arginine_changes.tsv': ('TCGA PanCancer Atlas somatic missense and stop changes at arginines of reviewed canonical proteins: '
-        'one row per tumour sample and change (residue * a stop), with the RefSeq transcript cBioPortal annotates and the tumour read counts',
-        TC_SRC, 'cBioPortal web API, fetched 2026-10-25', TC_CIT, TC_LIC, 'tcga_pancan_arginine_changes_raw.tsv'),
-    'tcga_pancan_studies.tsv': ('The 32 TCGA PanCancer Atlas studies: name, cancer type, sample list, sequenced samples, citation, PubMed IDs, '
-        'arginine changes fetched', TC_SRC, 'cBioPortal web API, fetched 2026-10-25', TC_CIT, TC_LIC, ''),
+    'tcga_mc3_arginine_changes.tsv': ('TCGA MC3 somatic missense and stop changes at arginines of reviewed canonical proteins: one row per '
+        'tumour sample and change (residue * a stop), calls with FILTER PASS (OV and LAML also wga alone, as Ellrott et al. 2018), with '
+        'the Ensembl transcript of the MAF, its FILTER and the tumour read counts', TC_SRC, TC_VER, TC_CIT, TC_LIC,
+        'tcga_mc3_arginine_changes_raw.tsv (from mc3.v0.2.8.PUBLIC.maf.gz)'),
+    'tcga_mc3_projects.tsv': ('The 33 TCGA projects of the MC3 MAF: name, tumour samples in the MAF, those with a kept call, arginine '
+        'changes extracted', TC_SRC, TC_VER, TC_CIT, TC_LIC, 'gdc_tcga_cases.tsv; mc3.v0.2.8.PUBLIC.maf.gz'),
     'depmap_summary.json': ('Counts, versions and input MD5s of the DepMap, PRISM and TCGA staging, and the records left out and why',
-        DM_SRC + '; ' + PR_SRC + '; ' + TC_SRC, 'DepMap Public 24Q4; PRISM Repurposing Public 24Q2; cBioPortal fetched 2026-10-25', DM_CIT,
-        'CC BY 4.0 (DepMap, PRISM); ODC Open Database License (TCGA through cBioPortal)', ''),
+        DM_SRC + '; ' + PR_SRC + '; ' + TC_SRC, 'DepMap Public 24Q4; PRISM Repurposing Public 24Q2; ' + TC_VER, DM_CIT,
+        'CC BY 4.0 (DepMap, PRISM); GDC open-access data (TCGA MC3)', ''),
 }
 # Their downloads, for raw_files.tsv: Figshare file IDs (the Figshare MD5 of each matched on download).
 FIGSHARE_IDS = {'CRISPRGeneEffect.csv': 51064667, 'CRISPRGeneDependency.csv': 51064631, 'CRISPRInferredCommonEssentials.csv': 51064916,
@@ -142,10 +146,19 @@ def write_manifest(manifest: Path, out: Path, dep: Path, prism: Path, tcga: Path
         raw.append({'file': name, 'url': f'https://ndownloader.figshare.com/files/{fid}', 'bytes': p.stat().st_size, 'md5': md5_file(p),
                     'sha256': sha256(p), 'downloaded': '2026-10-25', 'version': ver + ' (Figshare MD5 matches)', 'kept': 'release_asset'})
     if tcga:
-        p = tcga / 'tcga_pancan_arginine_changes_raw.tsv'
-        raw.append({'file': p.name, 'url': 'https://www.cbioportal.org/api (scripts/44b_fetch_tcga_arginine_changes.py)', 'bytes': p.stat().st_size,
-                    'md5': md5_file(p), 'sha256': sha256(p), 'downloaded': '2026-10-25',
-                    'version': 'cBioPortal web API answers, filtered to missense and stop changes at R', 'kept': 'release_asset'})
+        ext = json.loads((tcga / 'tcga_mc3_extract.json').read_text())
+        maf = Path(ext['maf']['path'])
+        raw.append({'file': maf.name, 'url': ext['maf']['url'], 'bytes': maf.stat().st_size, 'md5': md5_file(maf), 'sha256': sha256(maf),
+                    'downloaded': '2026-10-25', 'version': 'MC3 public MAF v0.2.8 (GDC publication page mc3-2017)',
+                    'kept': 'not kept: 753 MB, served by the GDC at this URL (open access); MD5 and SHA-256 identify it'})
+        for name, url, ver in (('gdc_tcga_cases.tsv', ext['cases']['url'], 'GDC cases of TCGA, fetched 2026-10-25'),
+                               (ext['uniprot']['ensembl']['file'], ext['uniprot']['ensembl']['url'], 'UniProt 2026_03, Ensembl cross-references'),
+                               (ext['uniprot']['isoforms']['file'], ext['uniprot']['isoforms']['url'], 'UniProt 2026_03, alternative products'),
+                               ('tcga_mc3_arginine_changes_raw.tsv', 'scripts/44b_extract_tcga_mc3.py from ' + maf.name,
+                                'the missense and stop changes at R of the kept calls')):
+            p = tcga / name
+            raw.append({'file': name, 'url': url, 'bytes': p.stat().st_size, 'md5': md5_file(p), 'sha256': sha256(p),
+                        'downloaded': '2026-10-25', 'version': ver, 'kept': 'release_asset'})
     upsert_tsv_rows(out / 'raw_files.tsv', raw)
     refresh_manifest_row(manifest, out / 'raw_files.tsv', f'{folder}/raw_files.tsv', content=RAW_FILES_CONTENT, how_made_or_checked=RAW_FILES_CHECKED)
 
@@ -164,7 +177,8 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--depmap', required=True, help='folder with the DepMap 24Q4 files')
     ap.add_argument('--prism', required=True, help='folder with the PRISM Repurposing 24Q2 files')
-    ap.add_argument('--tcga', default='', help='folder with scripts/44b output (tcga_pancan_arginine_changes_raw.tsv)')
+    ap.add_argument('--tcga', default='', help='folder with scripts/44b output (tcga_mc3_arginine_changes_raw.tsv, tcga_mc3_projects.tsv, '
+                    'tcga_mc3_extract.json) and gdc_tcga_cases.tsv')
     ap.add_argument('--fasta', default='inputs/reference/uniprot_human_reviewed_2026_03.fasta')
     ap.add_argument('--entries', default='inputs/reference/uniprot_human_reviewed_2026_03_entries.tsv')
     ap.add_argument('--symbol-entrez', default='inputs/disease/orghsegdb_3.22.0_symbol_entrez.tsv')
@@ -279,12 +293,22 @@ def main() -> None:
     if missing:
         raise SystemExit(f'PRISM matrix lacks {missing}')
 
-    # TCGA changes at canonical arginines
+    # TCGA changes at canonical arginines: on the entry whose canonical transcript carries it (scripts/44b), else on the entry
+    # the MAF's SWISSPROT field names, else on the entries of the gene symbol
     tchanges, tcga_meta = pd.DataFrame(), {}
     if args.tcga:
-        t = pd.read_csv(Path(args.tcga) / 'tcga_pancan_arginine_changes_raw.tsv', sep='\t', dtype=str, keep_default_na=False)
-        studies = pd.read_csv(Path(args.tcga) / 'tcga_pancan_studies.tsv', sep='\t', dtype=str, keep_default_na=False)
+        t = pd.read_csv(Path(args.tcga) / 'tcga_mc3_arginine_changes_raw.tsv', sep='\t', dtype=str, keep_default_na=False)
+        projects = pd.read_csv(Path(args.tcga) / 'tcga_mc3_projects.tsv', sep='\t', dtype=str, keep_default_na=False)
+        ext = json.loads((Path(args.tcga) / 'tcga_mc3_extract.json').read_text())
         dropped['tcga_changes_at_R'] = len(t)
+        t = t[t['project_id'] != '']
+        dropped['tcga_changes_patient_not_in_gdc'] = dropped['tcga_changes_at_R'] - len(t)
+        entry_acc = {}
+        for line in open(args.fasta, encoding='utf-8'):
+            if line.startswith('>'):
+                parts = line[1:].split('|')
+                if len(parts) >= 3:
+                    entry_acc[parts[2].split()[0]] = parts[1]
         accs_of = {}
         for acc, e in acc_entrez.items():
             accs_of.setdefault(e, []).append(acc)
@@ -294,26 +318,33 @@ def main() -> None:
                 for e in entrez_of.get(g, []):
                     if (g, e) in own:
                         accs_of.setdefault(e, []).append(acc)
-        t = t[t['protein_change'].str.match(TCGA_CHANGE)]
+        t = t[t['protein_change'].str.match(TCGA_CHANGE)].copy()
         t['position'] = t['protein_change'].str.extract(r'^R(\d+)')[0].astype(int)
         rows = []
         for r in t.itertuples(index=False):
-            hits = [a for a in accs_of.get(r.entrez_id, []) if residue_is(canonical, a, r.position)]
-            if not accs_of.get(r.entrez_id):
+            if r.canonical_UniProtAC:
+                cands = [r.canonical_UniProtAC] if r.canonical_UniProtAC in canonical else []
+            elif r.swissprot in entry_acc:
+                cands = [entry_acc[r.swissprot]]
+            else:
+                es = [e for e in entrez_of.get(r.hugo_symbol, []) if (r.hugo_symbol, e) in own] or entrez_of.get(r.hugo_symbol, [])
+                cands = sorted({a for e in es for a in accs_of.get(e, [])})
+            hits = [a for a in cands if residue_is(canonical, a, r.position)]
+            if not cands:
                 dropped['tcga_changes_gene_without_entry'] += 1
             elif not hits:
                 dropped['tcga_changes_not_R_on_canonical'] += 1
             for a in hits:
-                rows.append({'canonical_UniProtAC': a, 'position': r.position, 'alt': r.protein_change[-1], 'study_id': r.study_id,
-                             'sample_id': r.sample_id, 'refseq_mrna_id': r.refseq_mrna_id, 'tumor_alt_count': r.tumor_alt_count,
-                             'tumor_ref_count': r.tumor_ref_count})
-        tchanges = pd.DataFrame(rows).drop_duplicates(['canonical_UniProtAC', 'position', 'alt', 'sample_id']).sort_values(['canonical_UniProtAC', 'position', 'alt', 'study_id', 'sample_id'])
-        fetch = json.loads((Path(args.tcga) / 'tcga_pancan_fetch.json').read_text())
-        tcga_meta = {'fetched': fetch['fetched'], 'api': fetch['api'], 'studies': len(studies),
-                     'sequenced_samples': int(studies['sequenced_samples'].astype(int).sum()),
-                     'raw_md5': md5_file(Path(args.tcga) / 'tcga_pancan_arginine_changes_raw.tsv'),
-                     'studies_md5': md5_file(Path(args.tcga) / 'tcga_pancan_studies.tsv')}
-        save_table(studies, out / 'tcga_pancan_studies.tsv')
+                rows.append({'canonical_UniProtAC': a, 'position': r.position, 'alt': r.protein_change[-1], 'project_id': r.project_id,
+                             'sample_id': r.sample_id, 'transcript_id': r.transcript_id, 'mapped_by': r.mapped_by, 'filter': r.filter,
+                             'tumor_alt_count': r.tumor_alt_count, 'tumor_ref_count': r.tumor_ref_count})
+        tchanges = pd.DataFrame(rows).drop_duplicates(['canonical_UniProtAC', 'position', 'alt', 'sample_id']).sort_values(
+            ['canonical_UniProtAC', 'position', 'alt', 'project_id', 'sample_id'])
+        tcga_meta = {'source': 'GDC MC3 public MAF', 'maf': ext['maf']['file'], 'maf_md5': ext['maf']['md5'], 'cases_md5': ext['cases']['md5'],
+                     'rule': ext['rule'], 'projects': len(projects), 'tumour_samples': int(projects['tumour_samples'].astype(int).sum()),
+                     'raw_md5': md5_file(Path(args.tcga) / 'tcga_mc3_arginine_changes_raw.tsv'),
+                     'projects_md5': md5_file(Path(args.tcga) / 'tcga_mc3_projects.tsv')}
+        save_table(projects, out / 'tcga_mc3_projects.tsv')
 
     # models
     used = set(effect.index) | set(dchanges['model_id']) | set(pr['model_id'])
@@ -332,7 +363,7 @@ def main() -> None:
     save_table(prmt, out / 'depmap_24q4_prmt_gene_effect.tsv')
     save_table(pr, out / 'prism_24q2_prmt_inhibitors.tsv')
     if len(tchanges):
-        save_table(tchanges, out / 'tcga_pancan_arginine_changes.tsv')
+        save_table(tchanges, out / 'tcga_mc3_arginine_changes.tsv')
     names = ['CRISPRGeneEffect.csv', 'CRISPRGeneDependency.csv', 'CRISPRInferredCommonEssentials.csv', 'AchillesCommonEssentialControls.csv',
              'Model.csv', 'OmicsSomaticMutations.csv', 'OmicsAbsoluteCNGene.csv']
     pnames = ['Repurposing_Public_24Q2_Extended_Primary_Data_Matrix.csv', 'Repurposing_Public_24Q2_Extended_Primary_Compound_List.csv']

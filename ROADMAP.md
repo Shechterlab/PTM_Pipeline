@@ -78,15 +78,16 @@ script written; the staged tables wait in a scratch folder for the decisions not
    gives single-dose (2.5 µM, 5-day) viability across its cell lines for five PRMT inhibitors: three of PRMT5
    (EPZ015666, GSK3326595, JNJ-64619178), EPZ020411 (PRMT6) and SGC-707 (PRMT3); it has no GSK591, MS023 or
    MRTX1719. DepMap's screens are of whole genes, so the residue-level use is the somatic mutations it calls
-   (`OmicsSomaticMutations`), with TCGA PanCancer Atlas from [cBioPortal](https://www.cbioportal.org) beside them. A
-   preview is on the `feature/depmap` branch (`scripts/44*`, `inputs/layers/`); the release build now carries it
-   (`scripts/release_layers.py`: four site columns, four protein columns, analyses `depmap_dependency` and
-   `cancer_change`). Open: the TCGA columns derive from cBioPortal data under the ODbL, whose share-alike clause
-   reaches a derived database; keep them on the website only, publish them under the ODbL, or take MC3 from the GDC. Counting missense and stop changes on the
-   canonical sequence, 7.3% of the 11,601 methylated arginines of v1.3.1 are changed in at least one DepMap cell line and
-   28.3% in at least one TCGA tumour, against 6.9% and 30.6% of the other arginines of the same proteins: within protein
-   (Mantel-Haenszel), odds ratio 0.95 (0.88-1.03) in cell lines and 0.89 (0.85-0.93) in tumours, not adjusted for codon
-   context (CpG-containing CGN codons mutate most). So the page reports mutations at a site as observations. Uses, each
+   (`OmicsSomaticMutations`), with the TCGA MC3 somatic calls beside them. A preview is on the `feature/depmap` branch
+   (`scripts/44*`, `inputs/layers/`); the release build now carries it (`scripts/release_layers.py`: four site columns, four
+   protein columns, analyses `depmap_dependency` and `cancer_change`). *Changed on 25 October*: TCGA now comes from the
+   GDC's MC3 public MAF ([mc3-2017](https://gdc.cancer.gov/about-data/publications/mc3-2017); open access, no licence, NIH
+   Genomic Data Sharing policy) instead of cBioPortal, whose ODbL share-alike would have reached the release tables. Calls
+   are kept as MC3 kept them (FILTER PASS; in OV and LAML also `wga` alone; Ellrott et al. 2018), and each change is read on
+   the transcript UniProt assigns to the canonical isoform. Of the 11,168 methylarginines the analyses count on screened
+   proteins, 7.4% are changed in at least one DepMap cell line and 27.2% in at least one TCGA tumour, against 7.0% and
+   29.0% of the other arginines of the same proteins: within protein (Mantel-Haenszel), odds ratio 0.95 (0.88-1.03) in
+   cell lines and 0.90 (0.86-0.94) in tumours, not adjusted for codon context (CpG-containing CGN codons mutate most). So the page reports mutations at a site as observations. Uses, each
    labelled as cancer genetics, not methylation:
    - a **protein-page card**, on light pages too: the CRISPR gene effect (Chronos) across cell lines, whether the gene
      is commonly essential, and the CCLE protein level where measured;

@@ -394,7 +394,7 @@
       'Arginines': 'Every arginine of the UniProt sequence; the methylarginines in their colour',
       'Variants': 'UniProt natural variants (with those UniProt imports from ClinVar and other sources), ' + uni,
       'Mutagenesis': 'UniProt mutagenesis features that change an arginine, ' + uni,
-      'Tumours (TCGA)': 'Somatic missense and stop changes at the protein\'s arginines in the 32 TCGA PanCancer Atlas studies (MC3 calls, through cBioPortal); a taller tick where more tumours carry one. Only changes whose position is an arginine of the canonical UniProt sequence',
+      'Tumours (TCGA)': 'Somatic missense and stop changes at the protein\'s arginines in TCGA tumours (the MC3 calls of the 33 TCGA projects, from the GDC; calls that pass MC3\'s filters); a taller tick where more tumours carry one. Only changes whose position is an arginine of the canonical UniProt sequence',
       'Cell lines (DepMap)': 'Somatic missense and stop changes at the protein\'s arginines in DepMap 24Q4 cancer cell lines; a taller tick where more lines carry one. Only changes on the canonical isoform whose position is an arginine of the canonical UniProt sequence',
       'RNA crosslink': 'Residues UV-crosslinked to RNA in living cells (pepR-MS compendium: re-analysis of Kramer 2014, XRNAX, RBS-ID, pRBS-ID and pepR-MS) RBDmap RNA-bound fragments (Castello et al. 2016, HeLa) and CAPRI RNA-bound peptides (Panhale et al. 2019, HEK293; paler: ADJ-peptides next to a crosslink); click a mark for the studies and peptides',
       'DNA crosslink': 'Residues UV-crosslinked to DNA in MCF7 cells, alone or as candidates, and crosslinked peptides (Trendel et al. 2025); UniProt DNA-binding regions; click a mark for the records',
@@ -10135,15 +10135,15 @@
   }
   // ---------------------------------------------------------------- cancer cell lines and tumours
   // DepMap, PRISM and TCGA (scripts/44c, data/depmap/): per protein, the CRISPR gene effect across DepMap's cancer cell
-  // lines and the protein changes at its arginines in cell lines (DepMap Public 24Q4) and tumours (TCGA PanCancer Atlas,
-  // through cBioPortal); on a PRMT's page, its dependency by MTAP status and the PRISM viability of its inhibitors
+  // lines and the protein changes at its arginines in cell lines (DepMap Public 24Q4) and tumours (TCGA MC3 calls, from
+  // the GDC); on a PRMT's page, its dependency by MTAP status and the PRISM viability of its inhibitors
   // (prmt.json). Cancer genetics, not evidence about methylation. Each file is read on first use; one that failed is
   // tried again next time.
   const DEPMAP = { meta: null, metaP: null, prmt: null, prmtP: null, prot: new Map() };
   const DEPMAP_PRMTS = ['PRMT1', 'PRMT2', 'PRMT3', 'CARM1', 'PRMT5', 'PRMT6', 'PRMT7', 'PRMT8', 'PRMT9'];
   const DM_DOI = { depmap: '10.25452/figshare.plus.27993248', prism: '10.6084/m9.figshare.25917643', tsherniak: '10.1016/j.cell.2017.06.010',
     chronos: '10.1186/s13059-021-02540-7', corsello: '10.1038/s43018-019-0018-6', mc3: '10.1016/j.cels.2018.03.002', pancan: '10.1016/j.cell.2018.03.022',
-    cbio: '10.1158/2159-8290.CD-12-0095', cbio2: '10.1126/scisignal.2004088', am: '10.1126/science.adg7492', kryukov: '10.1126/science.aad5214', mavrakis: '10.1126/science.aad5944' };
+    am: '10.1126/science.adg7492', kryukov: '10.1126/science.aad5214', mavrakis: '10.1126/science.aad5944' };
   const DM_SCREEN = { 'REP.PRIMARY': 'Repurposing primary screen', 'REP.1M': 'Repurposing-1M screen', 'REP.300': 'Repurposing-300 screen' };
   const dmJson = (name) => fetch('data/depmap/' + name + (ASSET_V ? '?v=' + encodeURIComponent(ASSET_V) : '')).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
   function loadDepmapMeta() {
@@ -10310,8 +10310,7 @@
     if (!box) return;
     const gene = p.label, isPrmt = DEPMAP_PRMTS.includes(gene);
     const head = (sub) => '<div class="card-head"><div><h3>Cancer cell lines and tumours</h3><p class="sub">' + sub + '</p></div>' +
-      '<div class="exp"><a class="btn quiet small" href="https://depmap.org/portal/gene/' + encodeURIComponent(gene) + '?tab=overview" target="_blank" rel="noopener" title="' + esc(gene) + ' in the DepMap portal">DepMap ↗</a>' +
-      '<a class="btn quiet small" href="https://www.cbioportal.org/results/mutations?cancer_study_list=' + encodeURIComponent('laml_tcga_pan_can_atlas_2018,acc_tcga_pan_can_atlas_2018,blca_tcga_pan_can_atlas_2018,lgg_tcga_pan_can_atlas_2018,brca_tcga_pan_can_atlas_2018,cesc_tcga_pan_can_atlas_2018,chol_tcga_pan_can_atlas_2018,coadread_tcga_pan_can_atlas_2018,dlbc_tcga_pan_can_atlas_2018,esca_tcga_pan_can_atlas_2018,gbm_tcga_pan_can_atlas_2018,hnsc_tcga_pan_can_atlas_2018,kich_tcga_pan_can_atlas_2018,kirc_tcga_pan_can_atlas_2018,kirp_tcga_pan_can_atlas_2018,lihc_tcga_pan_can_atlas_2018,luad_tcga_pan_can_atlas_2018,lusc_tcga_pan_can_atlas_2018,meso_tcga_pan_can_atlas_2018,ov_tcga_pan_can_atlas_2018,paad_tcga_pan_can_atlas_2018,pcpg_tcga_pan_can_atlas_2018,prad_tcga_pan_can_atlas_2018,sarc_tcga_pan_can_atlas_2018,skcm_tcga_pan_can_atlas_2018,stad_tcga_pan_can_atlas_2018,tgct_tcga_pan_can_atlas_2018,thym_tcga_pan_can_atlas_2018,thca_tcga_pan_can_atlas_2018,ucs_tcga_pan_can_atlas_2018,ucec_tcga_pan_can_atlas_2018,uvm_tcga_pan_can_atlas_2018') + '&gene_list=' + encodeURIComponent(gene) + '" target="_blank" rel="noopener" title="' + esc(gene) + ' mutations in the TCGA PanCancer Atlas studies, in cBioPortal">cBioPortal ↗</a></div></div>';
+      '<div class="exp"><a class="btn quiet small" href="https://depmap.org/portal/gene/' + encodeURIComponent(gene) + '?tab=overview" target="_blank" rel="noopener" title="' + esc(gene) + ' in the DepMap portal">DepMap ↗</a></div></div>';
     box.innerHTML = head('Loading DepMap and TCGA…');
     Promise.all([loadDepmap(p.acc), isPrmt ? loadDepmapPrmt() : null]).then(([d, pr]) => {
       if (!box.isConnected || !pageOpen(p)) return;
@@ -10356,8 +10355,8 @@
       h += '</section></div>';
       if (isPrmt && pr) h += dmPrmtHtml(gene, pr);
       h += '<p class="note small">' + doiLink(DM_DOI.depmap, 'DepMap Public 24Q4') + ' (' + doiLink(DM_DOI.tsherniak, 'Tsherniak et al. 2017') + '; Chronos, ' + doiLink(DM_DOI.chronos, 'Dempster et al. 2021') + '), ' +
-        (isPrmt ? doiLink(DM_DOI.prism, 'PRISM Repurposing 24Q2') + ' (' + doiLink(DM_DOI.corsello, 'Corsello et al. 2020') + '), ' : '') + 'CC BY 4.0; TCGA PanCancer Atlas mutations (' + doiLink(DM_DOI.pancan, 'Hoadley et al. 2018') + '; MC3, ' + doiLink(DM_DOI.mc3, 'Ellrott et al. 2018') + ') through ' +
-        doiLink(DM_DOI.cbio, 'cBioPortal') + ' (ODC Open Database License), fetched ' + esc(dm.tcga.fetched || '') + '. A change counts at an arginine only on the canonical UniProt sequence: changes on other isoforms, or whose position is not an arginine there, are left out. AlphaMissense: ' + doiLink(DM_DOI.am, 'Cheng et al. 2023') + '.</p>';
+        (isPrmt ? doiLink(DM_DOI.prism, 'PRISM Repurposing 24Q2') + ' (' + doiLink(DM_DOI.corsello, 'Corsello et al. 2020') + '), ' : '') + 'CC BY 4.0; TCGA: the MC3 somatic calls (' + doiLink(DM_DOI.mc3, 'Ellrott et al. 2018') + '), the mutations of the PanCancer Atlas (' + doiLink(DM_DOI.pancan, 'Hoadley et al. 2018') + '), from the ' +
+        '<a href="https://gdc.cancer.gov/about-data/publications/mc3-2017" target="_blank" rel="noopener">GDC</a> (open access; calls with FILTER PASS, and in OV and LAML also wga alone), based upon data generated by the TCGA Research Network. A change counts at an arginine only on the canonical UniProt sequence: changes on other isoforms, or whose position is not an arginine there, are left out. AlphaMissense: ' + doiLink(DM_DOI.am, 'Cheng et al. 2023') + '.</p>';
       box.innerHTML = h;
       $$('svg [data-tip]', box).forEach((el) => {
         el.addEventListener('mouseenter', (e) => showTip(e, el.getAttribute('data-tip')));
