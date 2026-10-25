@@ -265,7 +265,7 @@ CANCER = Layer(
                              'other reviewed human proteins whose gene DepMap screened. The classes partition the screened entries. Essential '
                              'proteins are abundant, and abundant proteins are the ones mass spectrometry finds most, so methylated proteins '
                              'are expected to be enriched among commonly essential genes whatever methylation does',
-        'cancer_change': 'methylarginines with a missense or stop change in at least one TCGA tumour (MC3 calls; category tcga_tumours) or '
+        'cancer_change': 'methylarginines with a missense or stop change in at least one TCGA tumour (MC3 calls, category tcga_tumours) or '
                          'DepMap 24Q4 cell line (depmap_cell_lines), against the other arginines of the methylated proteins whose gene DepMap '
                          'screened: pooled (method fisher) and within each protein (method mantel_haenszel, each protein a stratum). Sites of '
                          'the table that the analyses leave out are in neither group. Arginine codons CGN hold a CpG, the dinucleotide that '
@@ -348,32 +348,32 @@ PERTURBATIONS = [
                  primary_why='with 2 against 2 samples, Benjamini-Hochberg over the t-test p values leaves almost nothing, and the '
                              'permutation FDR is the call its authors made'),
     Perturbation('prmt5i_epz015666_hela', 'PRMT5i EPZ015666, HeLa', 'PRMT5 inhibitor EPZ015666 against untreated HeLa cells, SDMA '
-                 'antibody after ulilysin digestion, SILAC (Lu et al. 2024); the treated channel is read from the data, as the '
+                 'antibody after ulilysin digestion, SILAC (Lu et al. 2024). The treated channel is read from the data, as the '
                  'readable text does not state it', 'PRMT5', 'inhibitor', 'HeLa', 'Lu et al., J Proteome Res 23:1014-1027 (2024)',
                  '10.1021/acs.jproteome.3c00724', 'lu2024_prmt5_peptides.tsv', 'log2_inhibitor_control', 'p', 'bh', 'call',
                  'twofold at nominal p < 0.05, inferred: it reproduces 254 of the 255 sites of the study\'s Table 1.4 that map to the '
                  'reference and adds none (the study states no threshold in the text that could be read)'),
     Perturbation('prmt7_kd_hek293', 'PRMT7 KD, HEK293', 'PRMT7 siRNA knockdown against control siRNA in HEK293 cells, '
-                 'monomethylarginine antibody, SILAC, one experiment (Supplementary Data 1, repeat 1; Li et al. 2021)', 'PRMT7', 'knockdown',
+                 'monomethylarginine antibody, SILAC, one experiment (Supplementary Data 1, repeat 1, Li et al. 2021)', 'PRMT7', 'knockdown',
                  'HEK293', *LI2021, 'li2021_peptides.tsv', 'log2_treated_control', '', '', 'call_source', LI2021_RULE,
                  select={'comparison': 'PRMT7_si'}, primary='study', source_sites=('li2021_sites.tsv', 'call_source'),
                  localised=('localised_by', 'search'),
                  primary_why='one SILAC experiment and no test across replicates: Proteome Discoverer\'s adjusted p is not one, so the '
                              'release\'s rule is not applied'),
     Perturbation('prmt7i_sgc3027_hek293', 'PRMT7i SGC3027, HEK293', 'PRMT7 inhibitor SGC3027 against untreated HEK293 cells, '
-                 'monomethylarginine antibody, SILAC, one experiment (Supplementary Data 3; Li et al. 2021); heavy is read as treated, '
+                 'monomethylarginine antibody, SILAC, one experiment (Supplementary Data 3, Li et al. 2021). Heavy is read as treated, '
                  'as the paper reads its ratios, though one sentence of its Methods says the reverse', 'PRMT7', 'inhibitor', 'HEK293', *LI2021,
                  'li2021_peptides.tsv', 'log2_treated_control', '', '', 'call_source', LI2021_RULE, select={'comparison': 'PRMT7_SGC3027'},
                  primary='study', source_sites=('li2021_sites.tsv', 'call_source'), localised=('localised_by', 'search'),
                  primary_why='one SILAC experiment and no test across replicates, so the release\'s rule is not applied'),
     Perturbation('carm1_kd_hek293', 'CARM1 KD, HEK293', 'CARM1 (PRMT4) siRNA knockdown against control siRNA in HEK293 cells, '
-                 'monomethylarginine then ADMA antibodies, SILAC, one experiment (Supplementary Data 5; Li et al. 2021)', 'CARM1', 'knockdown',
+                 'monomethylarginine then ADMA antibodies, SILAC, one experiment (Supplementary Data 5, Li et al. 2021)', 'CARM1', 'knockdown',
                  'HEK293', *LI2021, 'li2021_peptides.tsv', 'log2_treated_control', '', '', 'call_source', LI2021_RULE,
                  select={'comparison': 'PRMT4_si'}, primary='study', source_sites=('li2021_sites.tsv', 'call_source'),
                  localised=('localised_by', 'search'),
                  primary_why='one SILAC experiment and no p value, so the release\'s rule is not applied'),
     Perturbation('prmt5_kd_hek293', 'PRMT5 KD, HEK293', 'PRMT5 siRNA knockdown against control siRNA in HEK293 cells, '
-                 'monomethylarginine then SDMA antibodies, SILAC, one experiment (Supplementary Data 6; Li et al. 2021): the decreased '
+                 'monomethylarginine then SDMA antibodies, SILAC, one experiment (Supplementary Data 6, Li et al. 2021): the decreased '
                  'sites only, as the study lists them, so a site without a row may have been measured unchanged', 'PRMT5', 'knockdown',
                  'HEK293', *LI2021, 'li2021_peptides.tsv', 'log2_treated_control', '', '', 'call_source', LI2021_RULE,
                  select={'comparison': 'PRMT5_si'}, primary='study', source_sites=('li2021_sites.tsv', 'call_source'),
@@ -524,9 +524,9 @@ def perturbation_website(release: Path, version: str, inputs: Path, site_out: Pa
 
 
 def perturbation_code(d: Perturbation) -> str:
-    primary = (f'; the call follows the study\'s rule ({d.primary_why}), the release\'s rule is kept beside it' if d.primary == 'study'
-               else '; the call follows the release\'s rule, the study\'s is kept beside it')
-    return f'{d.description}; the study\'s rule: {d.source_rule}{primary}'
+    primary = (f'The call follows the study\'s rule ({d.primary_why}), and the release\'s rule is kept beside it' if d.primary == 'study'
+               else 'The call follows the release\'s rule, and the study\'s is kept beside it')
+    return f'{d.description}. The study\'s rule: {d.source_rule}. {primary}'
 
 
 PERTURBATION = Layer(
@@ -716,7 +716,7 @@ REACTOME = Layer(
     ],
     analyses={
         'reactome_pathway': f'methylated proteins (by entry) in a Reactome 97 pathway, against the other reviewed human proteins with at '
-                            f'least one Reactome pathway; a pathway holds the proteins of all its sub-pathways (UniProt2Reactome_All_Levels), '
+                            f'least one Reactome pathway. A pathway holds the proteins of all its sub-pathways (UniProt2Reactome_All_Levels), '
                             f'and pathways of {REACTOME_MIN} to {REACTOME_MAX} such proteins are tested. Pathways nest, so neighbouring '
                             f'tests share proteins (inputs/layers/reactome_human_pathways.tsv gives each pathway\'s parents). Methylated '
                             f'proteins are much more abundant than the others (PaxDb), and abundant proteins are the ones mass spectrometry '
@@ -770,7 +770,7 @@ CURATION = Layer(
     files=['functional_experiments.tsv'], staging=['curated by hand; scripts/49_check_functional_curation.py'],
     licence='CC BY-NC-SA 4.0 (this repository\'s data licence); the facts are from the papers cited', citation='the paper of each row',
     codes={'experiment_kind': {'methylated_vs_unmethylated': 'the same protein or peptide with and without (or with less) methylation',
-                               'site_mutation': 'the arginine mutated (R to K keeps the charge, R to A removes it; both remove the methyl group)',
+                               'site_mutation': 'the arginine mutated (R to K keeps the charge and R to A removes it, and both remove the methyl group)',
                                'prmt_inhibitor': 'a PRMT inhibitor in cells', 'prmt_knockdown': 'a PRMT knocked down',
                                'prmt_knockout': 'a PRMT knocked out', 'correlation': 'methylation and a readout measured together, no perturbation',
                                'prediction': 'a computational prediction'},
@@ -880,8 +880,15 @@ def statistics(sites: pd.DataFrame, inputs, sequences: dict, workdir: Path) -> l
 # ---- Command line ------------------------------------------------------------------------------------------------------
 
 def check(inputs: Path) -> list[str]:
+    """The layer files against MANIFEST.tsv, and every code meaning and study text free of the release's separators (';'
+    between list items and in data_dictionary.tsv value_meanings; tab and newline anywhere), which the build would
+    otherwise meet only when it writes the tables."""
+    import release_codes as rc
     manifest = pd.read_csv(inputs / 'MANIFEST.tsv', sep='\t', dtype=str, keep_default_na=False).set_index('file')
-    bad = []
+    bad = [f'code {k}.{c} holds ";", a tab or a newline' for k, codes in rc.CODES.items() for c, m in codes.items()
+           if any(x in str(m) for x in (';', '\t', '\n'))]
+    bad += [f'{name} {k} holds ";", a tab or a newline' for name in ('STUDY_LICENCE', 'STUDY_NOTE', 'STUDY_QUALITY')
+            for k, v in getattr(rc, name, {}).items() if any(x in str(v) for x in (';', '\t', '\n'))]
     for layer in LAYERS:
         for name in layer.files:
             rel, path = f'{layer.folder}/{name}', inputs / layer.folder / name
@@ -908,7 +915,7 @@ def main() -> None:
     if args.cmd == 'check':
         bad = check(inputs)
         if bad:
-            raise SystemExit('the layer inputs do not match MANIFEST.tsv:\n  ' + '\n  '.join(bad))
+            raise SystemExit('the layer inputs or texts are not ready for a release:\n  ' + '\n  '.join(bad))
         print(f'{sum(len(layer.files) for layer in LAYERS)} layer files of {len(LAYERS)} layers match MANIFEST.tsv')
     else:
         release = Path(args.release)
