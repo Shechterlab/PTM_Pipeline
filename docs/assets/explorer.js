@@ -148,7 +148,7 @@
       ['MobiDB', 'Disorder context (predicted consensus disorder, prediction-disorder-th_50); the disordered regions on protein figures when the export carries them', 'Human export of 30 Mar 2026', 'Not stated on mobidb.org (CC BY 4.0 reported elsewhere)', 'Piovesan et al., Nucleic Acids Res 53:D495 (2025)', '10.1093/nar/gkae969'],
       ['CD-CODE', 'Condensate membership (filters and enrichment); per-protein confidence on protein pages', 'Export of 18 Mar 2026; API release 2.3', 'CC BY-NC 4.0 (non-commercial)', 'Rostam et al., Nat Methods 20:673 (2023)', '10.1038/s41592-023-01831-0'],
       ['DisGeNET (via DOSE)', 'Disease enrichment terms and families', 'As bundled with DOSE 4.4.0 (Bioconductor)', 'CC BY-NC-SA 4.0 (non-commercial)', 'Piñero et al., Nucleic Acids Res (2019 update)', '10.1093/nar/gkz1021'],
-      ['DOSE', 'Over-representation test (enrichDGN), run in Python by scripts/14 with the same statistics; gene symbols to Entrez genes with org.Hs.eg.db 3.22.0', 'DOSE 4.4.0', 'Artistic-2.0 (software)', 'Yu et al., Bioinformatics 31:608 (2015)', '10.1093/bioinformatics/btu684'],
+      ['DOSE', 'DisGeNET term-gene table of DOSE 4.4.0, tested with clusterProfiler enricher by scripts/14; gene symbols to Entrez genes with org.Hs.eg.db 3.22.0', 'DOSE 4.4.0', 'Artistic-2.0 (software)', 'Yu et al., Bioinformatics 31:608 (2015)', '10.1093/bioinformatics/btu684'],
     ]],
     ['Interactions and structures (exported with scripts/37)', [
       ['STRING', 'Physical partners (score ≥ 0.7 exported; lower scores live)', 'v12.5', 'CC BY 4.0', 'Szklarczyk et al., Nucleic Acids Res 53:D730 (2025)', '10.1093/nar/gkae1113'],
@@ -1374,13 +1374,13 @@
     if (kind === 'c') return (p) => !!p.pan && p.pan[1] === n;
     return (p) => !!p.pan && p.pan[2].includes(n);
   }
-  // Term-level disease enrichment (scripts/14_disease_enrichment.py, DOSE enrichDGN as the pipeline runs it):
+  // Term-level disease enrichment (scripts/14_disease_enrichment.py, clusterProfiler enricher on DOSE's DisGeNET terms):
   // only terms with 10-300 genes in the universe are tested, and terms with p.adjust <= 0.05 are kept.
   const DGN_TERMS = { min: 10, max: 300, padj: 0.05 };
   const dgnTested = () => 'terms of ' + DGN_TERMS.min + '–' + DGN_TERMS.max + ' genes, p.adjust ≤ ' + DGN_TERMS.padj;
   // Methylated proteins in the enriched DisGeNET terms of disease family k (what disease:<family> lists).
   const diseaseTermCount = (k) => (k >= 0 ? P.reduce((n, p) => n + (p.dis & 2 ** k ? 1 : 0), 0) : 0);
-  // The enriched DisGeNET terms (DOSE enrichDGN), for the Disease card's DisGeNET view. Rows of evidence.disease_terms:
+  // The enriched DisGeNET terms (clusterProfiler enricher on DOSE's DisGeNET terms), for the Disease card's DisGeNET view. Rows of evidence.disease_terms:
   // [UMLS id, name, family, methylated, adj. p, genes of the term, fold enrichment] (the last two from v1.2.0). The terms
   // of the audited families come first; most of the others are DisGeNET's clinical signs (the additional families).
   const DIS_TERMS_SHOWN = 25, DIS_TERMS_PER_FAMILY = 5;
@@ -1415,7 +1415,7 @@
     } else {
       body = (UI.disTermsAll ? pool : pool.slice(0, DIS_TERMS_SHOWN)).map((t) => termRow(t, false)).join('');
     }
-    return '<div class="dis-terms"><p class="note">' + fmt(terms.length) + (tested ? ' of the ' + fmt(tested.terms) + ' DisGeNET terms tested' : ' DisGeNET terms') + ' (' + DGN_TERMS.min + '–' + DGN_TERMS.max + ' genes) are enriched among methylated proteins (DOSE enrichDGN, adj. p ≤ ' + DGN_TERMS.padj + '). ' +
+    return '<div class="dis-terms"><p class="note">' + fmt(terms.length) + (tested ? ' of the ' + fmt(tested.terms) + ' DisGeNET terms tested' : ' DisGeNET terms') + ' (' + DGN_TERMS.min + '–' + DGN_TERMS.max + ' genes) are enriched among methylated proteins (clusterProfiler enricher on DOSE\'s DisGeNET terms, adj. p ≤ ' + DGN_TERMS.padj + '). ' +
       fmt(n('audited')) + ' belong to the ' + nAudited() + ' audited disease families; ' + fmt(n('additional')) + ' to the additional families, mostly clinical signs such as facial features; ' + fmt(n('none')) + ' to none.' + (tested ? ' Every tested term is in the release (supporting/disease_terms_tested).' : '') +
       (constraints().length ? ' <b>Whole dataset:</b> these terms are not retested for your selection, because the site data hold the genes of the enriched terms only; the families above are.' : '') + '</p>' +
       '<div class="dis-term-controls"><label class="small">Show <select id="dis-fam">' + opt('audited', 'audited disease families (' + fmt(n('audited')) + ')') +
@@ -1495,7 +1495,7 @@
     const v = M.enrichment_tools || {};
     const ver = ['R', 'clusterProfiler', 'DOSE'].filter((k) => v[k]).map((k) => k + ' ' + esc(v[k])).join(', ');
     return '<p><b>Protein-set tests.</b> The charts of protein sets (protein classes, disease, condensates and subcellular locations; on the Interactions tab, Gene Ontology binding and complexes) are over-representation analyses (ORA) run in R with clusterProfiler\'s <code>enricher</code> (' +
-      doiLink('10.1089/omi.2011.0118', 'Yu et al. 2012') + '; ' + doiLink('10.1016/j.xinn.2021.100141', 'Wu et al. 2021') + '), and the DisGeNET terms with DOSE\'s <code>enrichDGN</code> (' + doiLink('10.1093/bioinformatics/btu684', 'Yu et al. 2015') + '). ' +
+      doiLink('10.1089/omi.2011.0118', 'Yu et al. 2012') + '; ' + doiLink('10.1016/j.xinn.2021.100141', 'Wu et al. 2021') + '), the DisGeNET terms too, on the DisGeNET term-gene table of DOSE 4.4.0 (' + doiLink('10.1093/bioinformatics/btu684', 'Yu et al. 2015') + '; the test DOSE\'s <code>enrichDGN</code> ran, which later DOSE releases removed). ' +
       'For a set holding M of the N proteins of the background, when n of the N carry a methylarginine and k of those are in the set, p is the one-sided hypergeometric probability of k or more methylated members, and the bar is log2 of the fold enrichment, (k/n)/(M/N): the share of methylated proteins in the set over the share of all background proteins in it. ' +
       'q is the Benjamini–Hochberg adjusted p value over the sets of one chart (each level of a nested chart, and the additional disease families apart). A set is tested when it has at least one methylated member and its size is within the chart\'s range. The test is for over-representation, so a bar below zero is not significant. ' +
       'Backgrounds: the reviewed human proteome (protein classes, Gene Ontology binding, complexes), the proteins in any human CD-CODE condensate (condensates), the proteins the Human Protein Atlas profiled (locations), and the reviewed human genes with a Disease Ontology term or with a DisGeNET term (disease, as in DOSE). ' +
@@ -1508,7 +1508,7 @@
     const dm = doMeta();
     const more = M.disease_families.length > nAudited() ? ', and the terms not assigned to an audited family to ' + (M.disease_families.length - nAudited()) + ' additional families by further rules (scripts/disease_families.py ADDITIONAL_FAMILY_RULES; rule-based and not audited, mostly clinical signs), shown with “Show more families” and BH-adjusted apart' : '';
     const famRules = 'DisGeNET terms (the gene–term mapping shipped with DOSE) are assigned to ' + nAudited() + ' audited families by label rules with a fixed precedence (scripts/disease_families.py FAMILY_RULES: the original pipeline\'s hand-checked rules)' + more + '. Each family\'s gene set is the union of its terms\' genes, each gene counted once. ';
-    const clicks = 'Clicking a family (or <code>disease:cancer</code>, <code>disease:als</code> in the search) lists the methylated proteins of its gene set, which is what its test counts. “Show the DisGeNET terms” lists the terms of ' + DGN_TERMS.min + '–' + DGN_TERMS.max + ' genes enriched among methylated proteins (DOSE enrichDGN, ' + dgnTested() + '); a click on a term lists the methylated proteins it names (<code>dterm:</code>). Protein pages name every family whose gene set holds the protein and how many of its terms are enriched.';
+    const clicks = 'Clicking a family (or <code>disease:cancer</code>, <code>disease:als</code> in the search) lists the methylated proteins of its gene set, which is what its test counts. “Show the DisGeNET terms” lists the terms of ' + DGN_TERMS.min + '–' + DGN_TERMS.max + ' genes enriched among methylated proteins (clusterProfiler enricher on DOSE\'s DisGeNET terms, ' + dgnTested() + '); a click on a term lists the methylated proteins it names (<code>dterm:</code>). Protein pages name every family whose gene set holds the protein and how many of its terms are enriched.';
     const caveat = '<p>These are enrichments of disease gene sets among methylated proteins: association, not causation. Terms and families overlap (a gene is in many), so they are not independent findings.</p>';
     if (!dm) {
       return '<p>' + famRules + 'A bar is that family\'s two-sided Fisher exact test, methylated proteins against the rest of the reviewed human genes, BH-adjusted across the audited families (the additional families among themselves).</p><p>' + clicks + '</p>' + caveat;
@@ -3247,7 +3247,7 @@
     }
     if (one('dterm') != null && UI.dis) {
       const t = UI.dis.disease_terms[one('dterm')];
-      if (t) card('DisGeNET term' + (t[2] >= 0 ? ' · ' + M.disease_families[t[2]] : ''), t[1], esc(t[0]) + ' · enriched among methylated proteins (DOSE enrichDGN, adj. p ' + fmtP(t[4]) + '); listed: the methylated proteins of the ' + fmt(t[3]) + ' methylated genes it names. <a href="https://www.ncbi.nlm.nih.gov/medgen/?term=' + encodeURIComponent(t[0]) + '" target="_blank" rel="noopener">MedGen ↗</a>');
+      if (t) card('DisGeNET term' + (t[2] >= 0 ? ' · ' + M.disease_families[t[2]] : ''), t[1], esc(t[0]) + ' · enriched among methylated proteins (clusterProfiler enricher on DOSE\'s DisGeNET terms, adj. p ' + fmtP(t[4]) + '); listed: the methylated proteins of the ' + fmt(t[3]) + ' methylated genes it names. <a href="https://www.ncbi.nlm.nih.gov/medgen/?term=' + encodeURIComponent(t[0]) + '" target="_blank" rel="noopener">MedGen ↗</a>');
     }
     if (one('doterm') != null && doMeta()) {
       const dm = doMeta(), t = dm.terms[one('doterm')];
@@ -6226,7 +6226,7 @@
         const fi = M.disease_families.indexOf(g);
         return '<details><summary>' + (fi >= 0 ? '<button class="linkish strong" type="button" data-fam="' + fi + '">' + esc(g) + '</button>' : '<span class="strong">' + esc(g) + '</span>') +
           ' <span class="muted">' + terms.length + ' term' + (terms.length === 1 ? '' : 's') + '</span></summary><ul class="term-list">' +
-          terms.map((t) => '<li title="' + esc('Term enrichment across all methylarginine proteins (DOSE enrichDGN): p.adjust ' + fmtP(t[4])) + '"><a href="https://www.ncbi.nlm.nih.gov/medgen/?term=' + encodeURIComponent(t[0]) + '" target="_blank" rel="noopener" title="' + esc(t[0] + ' (UMLS) in NCBI MedGen') + '">' + esc(t[1]) + '</a> <span class="muted">· ' + esc(t[0]) + (UI.ctx === 'dataset' ? ' · p.adj ' + (t[4] != null ? fmtP(t[4]) : '—') : '') + '</span></li>').join('') + '</ul></details>';
+          terms.map((t) => '<li title="' + esc('Term enrichment across all methylarginine proteins (clusterProfiler enricher on DOSE\'s DisGeNET terms): p.adjust ' + fmtP(t[4])) + '"><a href="https://www.ncbi.nlm.nih.gov/medgen/?term=' + encodeURIComponent(t[0]) + '" target="_blank" rel="noopener" title="' + esc(t[0] + ' (UMLS) in NCBI MedGen') + '">' + esc(t[1]) + '</a> <span class="muted">· ' + esc(t[0]) + (UI.ctx === 'dataset' ? ' · p.adj ' + (t[4] != null ? fmtP(t[4]) : '—') : '') + '</span></li>').join('') + '</ul></details>';
       }).join('') + '</div>' : '<p class="muted">' + esc(p.label) + ' is in none of the enriched DisGeNET terms.</p>';
     } else dg = '<p class="note">Loading terms…</p>';
     box.innerHTML = '<h3>Disease associations</h3>' +
@@ -6235,7 +6235,7 @@
       '<p class="flabel">Open Targets association scores</p><div id="ot-box">' + (u && u.ensg && u.ensg.length ? '<p class="note">Loading Open Targets…</p>' : '<p class="muted">' + (u === undefined ? 'Waiting for UniProt…' : 'No Ensembl gene for this entry.') + '</p>') + '</div>' +
       diseaseOntologyHtml(p) + diseaseFamiliesHtml(p, ev) +
       '<details class="dataset-ctx"' + (UI.ctx === 'dataset' ? ' open' : '') + '><summary class="flabel">Dataset context: DisGeNET terms significant across all methylarginine proteins that include ' + esc(p.label) + '</summary>' +
-      '<p class="note">These terms were tested for enrichment across the whole methylarginine set (DOSE enrichDGN; ' + dgnTested() + ', so broader terms are never tested on their own)' +
+      '<p class="note">These terms were tested for enrichment across the whole methylarginine set (clusterProfiler enricher on DOSE\'s DisGeNET terms; ' + dgnTested() + ', so broader terms are never tested on their own)' +
         '; the gene–term link is DisGeNET\'s, the statistics are about the set. Association, not causation. ' +
         'Each term links to its UMLS concept in NCBI MedGen, not to a gene–disease record: the DisGeNET table DOSE ships carries no record identifier, so the publications behind a link are found in DisGeNET itself (' +
         '<a href="https://disgenet.com/" target="_blank" rel="noopener">disgenet.com ↗</a>).</p>' + dg + '</details>';
@@ -6266,7 +6266,7 @@
   function diseaseFamiliesHtml(p, ev) {
     if (!p.disFam) return '';
     const sets = M.disease_family_sets, rows = M.overview.disease_families;
-    // Enriched terms naming the gene (DOSE enrichDGN), by family.
+    // Enriched terms naming the gene (clusterProfiler enricher on DOSE's DisGeNET terms), by family.
     const enr = {};
     if (ev) for (const k of ev.protein_disease_terms[p.i] || []) {
       const f = ev.disease_terms[k][2];
@@ -14799,7 +14799,7 @@
       '<li><b>Clustering</b>: nearest methyl-R spacing and maximum sites in 3–50 aa windows per protein; dense windows come from a multiscale rolling-window scan against a same-protein arginine null (1,000 permutations, q ≤ 0.05). Architecture classes describe proteins with ≥3 sites in a 20 aa span.</li>' +
       '<li><b>Arg enrichment</b> (see Arginine enrichment of a protein) groups sites by UniProt accession. (v1.0.0 grouped them by accession and gene symbol, so a protein whose sources used two symbols, such as MRE11/MRE11A, was tested in two parts.)</li>' +
       '<li><b>Condensates</b> are CD-CODE memberships; condensate-level enrichment uses condensates with at least five members.</li>' +
-      '<li><b>Disease</b> associations list DisGeNET terms enriched among methylarginine proteins (DOSE enrichDGN, ' + dgnTested() + ') that include the gene or one of its synonyms, grouped into the disease families; the family filters (<code>disease:als</code>, …) list each family\'s full gene set' + (doMeta() ? ', and the Disease Ontology terms that hold the gene, most specific first (<code>doterm:</code>; see Disease)' : ' (see Disease families)') + '.</li>' +
+      '<li><b>Disease</b> associations list DisGeNET terms enriched among methylarginine proteins (clusterProfiler enricher on DOSE\'s DisGeNET terms, ' + dgnTested() + ') that include the gene or one of its synonyms, grouped into the disease families; the family filters (<code>disease:als</code>, …) list each family\'s full gene set' + (doMeta() ? ', and the Disease Ontology terms that hold the gene, most specific first (<code>doterm:</code>; see Disease)' : ' (see Disease families)') + '.</li>' +
       '</ul>' +
       ''],
       ['protein-pages', 'Live annotations on protein pages', '' +

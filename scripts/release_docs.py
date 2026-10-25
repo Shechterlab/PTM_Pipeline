@@ -235,8 +235,8 @@ FILE_ROWS = {
     'dna_motifs': 'methylated protein and JASPAR 2026 DNA-binding profile',
     'htr_selex': 'methylated protein and HTR-SELEX RNA-binding model (Jolma et al. 2020)',
     'eclip': 'methylated protein and ENCODE eCLIP experiment: peaks by transcript region and the genes with most peaks (in cells)',
-    'disease_terms': 'enriched DisGeNET term (DOSE enrichDGN)',
-    'disease_terms_tested': 'DisGeNET term DOSE enrichDGN tested, enriched or not',
+    'disease_terms': 'enriched DisGeNET term (clusterProfiler enricher on the DisGeNET terms of DOSE 4.4.0)',
+    'disease_terms_tested': 'DisGeNET term tested (clusterProfiler enricher on the DisGeNET terms of DOSE 4.4.0), enriched or not',
     'disease_ontology': 'Disease Ontology term tested (clusterProfiler enricher on the gene sets of DOSE enrichDO)',
     'disease_families': 'disease family: terms and genes',
     'arginine_background': 'protein and residue test: the other arginines of the protein, in all and in each class or motif',
@@ -363,8 +363,8 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         '',
         '- **Protein and gene sets** (method `enricher`): PANTHER and functional classes, CD-CODE condensates, Human Protein '
         'Atlas locations, disease families and Gene Ontology RNA and DNA binding; the complexes, Disease Ontology terms and '
-        'DisGeNET terms, tested the same way, are in `supporting/`. Over-representation analysis in R with clusterProfiler::enricher, and '
-        'DOSE::enrichDGN for the DisGeNET terms (`scripts/enrich_sets.R`; '
+        'DisGeNET terms, tested the same way, are in `supporting/`. Over-representation analysis in R with clusterProfiler::enricher, the '
+        'DisGeNET terms on DOSE 4.4.0\'s DisGeNET term-gene table (the test DOSE::enrichDGN ran; `scripts/enrich_sets.R`; '
         + ', '.join(f'{k} {v}' for k, v in ctx.get('enrichment_tools', {}).items()) + '). '
         'For a set holding M of the N members of the background, where n of the N are methylarginine-containing proteins '
         '(or their genes) and k of those are in the set, p is the one-sided hypergeometric probability of k or more, '
@@ -511,7 +511,7 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         'BH-adjusted separately (statistics: disease_family_additional). They are not audited.',
         '- **Protein-set tests.** Every test of protein or gene sets (PANTHER and functional classes, CD-CODE condensates, '
         'Human Protein Atlas locations, disease families, Gene Ontology binding, complexes) is an over-representation '
-        'analysis with clusterProfiler::enricher, and the DisGeNET terms with DOSE::enrichDGN (scripts/enrich_sets.R; '
+        'analysis with clusterProfiler::enricher, the DisGeNET terms on DOSE 4.4.0\'s DisGeNET term-gene table (scripts/enrich_sets.R; '
         'statistics: method enricher, with fold enrichment): p is the one-sided hypergeometric probability, fold enrichment '
         '(k/n)/(M/N), q Benjamini-Hochberg over the sets of the analysis (README, Statistics). The disease families are tested '
         'against the reviewed human genes with a DisGeNET term. The Human Disease Ontology is added, with the gene sets of '
@@ -808,7 +808,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
         '',
         '- Every test of protein or gene sets (PANTHER and functional classes, CD-CODE condensates, Human Protein Atlas '
         'locations, disease families, Gene Ontology binding, complexes) is an over-representation analysis with '
-        'clusterProfiler::enricher, and the DisGeNET terms with DOSE::enrichDGN (scripts/enrich_sets.R; statistics: method '
+        'clusterProfiler::enricher, the DisGeNET terms on DOSE 4.4.0\'s DisGeNET term-gene table (scripts/enrich_sets.R; statistics: method '
         'enricher, with fold enrichment): p is the one-sided hypergeometric probability, fold enrichment (k/n)/(M/N), q '
         'Benjamini-Hochberg over the sets of the analysis (README, Statistics). The disease families are tested against the '
         'reviewed human genes with a DisGeNET term.',
@@ -1068,6 +1068,12 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
                 f'`curated_only`, true for the {n(int(curated.sum()))} of {n(len(sites))} sites that only a curated annotation '
                 '(UniProt with experimental evidence, PhosphoSitePlus as compiled in 2021) places. The website can leave them '
                 'out (Filters, Provenance).', '']
+    if 'disease_terms_tested' in files:
+        out += ['### DisGeNET terms tested with clusterProfiler', '',
+                'The DisGeNET terms are now tested like every other protein or gene set, with clusterProfiler\'s enricher, on DOSE '
+                '4.4.0\'s DisGeNET term-gene table (`inputs/disease/dose_4.4.0_disgenet_term_genes.tsv`). That is the test DOSE\'s '
+                'enrichDGN ran on the same data, which later DOSE releases removed. Every count, p value and q value of the '
+                f"{n(len(files['disease_terms_tested'][1]))} tested terms is unchanged.", '']
     out += ['### Release files and the website', '',
             '- The checksums are written after every other file, and the build checks them (`MD5SUMS` here and in each '
             'analyses folder); in v1.3.0 the two analyses READMEs were rewritten after their checksums.',

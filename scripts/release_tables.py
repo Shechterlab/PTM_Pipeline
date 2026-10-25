@@ -6,7 +6,7 @@ published PTM_results/) and the frozen inputs, and returns tables in the release
 
   proteins            one row per protein of the site table
   statistics          every enrichment test the website or the paper reports, with its 2x2 counts
-  disease_terms       enriched DisGeNET terms (DOSE enrichDGN: p, BH-adjusted p and q all <= 0.05)
+  disease_terms       enriched DisGeNET terms (clusterProfiler enricher on the DisGeNET terms of DOSE 4.4.0: p, BH-adjusted p and q all <= 0.05)
   disease_terms_tested     every DisGeNET term DOSE tested, enriched or not
   disease_ontology    every Disease Ontology term tested
   density_windows     significant methylarginine density windows (scripts/28)
@@ -385,7 +385,7 @@ def _clean_name(names: pd.Series) -> pd.Series:
 
 
 def disease_terms_tested_table(root: Path, proteins: pd.DataFrame) -> pd.DataFrame:
-    """Every DisGeNET term DOSE enrichDGN tested, enriched or not (scripts/14 disease_terms_tested.tsv)."""
+    """Every DisGeNET term tested (clusterProfiler enricher on the DisGeNET terms of DOSE 4.4.0), enriched or not (scripts/14 disease_terms_tested.tsv)."""
     t = read(root / 'disease' / 'disease_terms_tested.tsv')
     accs = _accessions_of(proteins)
     return pd.DataFrame({

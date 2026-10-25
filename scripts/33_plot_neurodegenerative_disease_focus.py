@@ -65,7 +65,7 @@ def main() -> None:
         ])
     parts.extend([
         f'<text x="{left+plot_width/2:.1f}" y="{height-20}" text-anchor="middle" class="label">Fold enrichment vs reviewed-human background</text>',
-        f'<text x="{width-12}" y="{height-8}" text-anchor="end" class="note">One-sided hypergeometric test (DOSE enrichDGN); BH adjustment across terms</text>',
+        f'<text x="{width-12}" y="{height-8}" text-anchor="end" class="note">One-sided hypergeometric test (clusterProfiler enricher, DOSE DisGeNET terms); BH adjustment across terms</text>',
         '</svg>',
     ])
     PREFIX.with_suffix(".svg").write_text("\n".join(parts), encoding="utf-8")

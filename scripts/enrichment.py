@@ -1,4 +1,4 @@
-"""Over-representation tests with published tools: clusterProfiler::enricher and DOSE::enrichDGN, run by
+"""Over-representation tests with published tools: clusterProfiler::enricher (and DOSE::enrichDGN, which no analysis uses now), run by
 scripts/enrich_sets.R (Rscript on PATH, from the pipeline's environment).
 
     from enrichment import Job, run
@@ -81,7 +81,7 @@ def run(jobs: list[Job], workdir: Path) -> dict[str, pd.DataFrame]:
         rscript = shutil.which('Rscript')
         if not rscript:
             # Without R, results already here are kept only if every count, p value and q value they hold follows from
-            # this call's inputs (enricher jobs; DOSE's enrichDGN reads its own bundled data and cannot be checked).
+            # this call's inputs (enricher jobs; an enrichDGN job reads DOSE's bundled data and cannot be checked).
             fresh = lambda job: stamp(job).exists() and stamp(job).read_text().strip() == keys[job]  # noqa: E731
             why = {r['job']: '' if fresh(r['job']) else verify_cached(r, out / f"{r['job']}.tsv") for r in rows} \
                 if (out / 'versions.tsv').exists() else {'': 'no results'}

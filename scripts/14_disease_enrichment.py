@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Disease enrichment of the methylarginine proteins, with published tools (scripts/enrichment.py runs them in R):
 
-- DisGeNET terms: DOSE::enrichDGN (Yu et al., Bioinformatics 31:608, 2015), as the published analysis ran it
-  (scripts/14_disease_enrichment.R): the target is the Entrez genes of the methylarginine proteins, the universe the
-  Entrez genes of every reviewed protein (DOSE keeps those with a DisGeNET term), terms of 10 to 300 genes. Enriched:
-  pvalue, p.adjust and qvalue at most 0.05, as the published run cut them.
+- DisGeNET terms: clusterProfiler::enricher on DOSE 4.4.0's DisGeNET term-gene table (--term-genes, exported by
+  scripts/00_export_disease_tables.R), the test DOSE::enrichDGN runs on the same data (Yu et al., Bioinformatics 31:608,
+  2015), which the published analysis used (scripts/14_disease_enrichment.R) and later DOSE releases dropped: the target
+  is the Entrez genes of the methylarginine proteins, the universe the Entrez genes of every reviewed protein (the
+  background is those with a DisGeNET term, as in DOSE), terms of 10 to 300 genes. Enriched: pvalue, p.adjust and qvalue
+  at most 0.05, as the published run cut them.
 - Disease Ontology: clusterProfiler::enricher on the gene sets DOSE's enrichDO tests (each Disease Ontology term with
   the genes of the terms under it; inputs/disease/hdo_<release>_term_genes.tsv, exported by
   scripts/00_export_disease_ontology.R; the same results as enrichDO), the same target and universe (the background is
@@ -135,7 +137,7 @@ def main() -> None:
     do_terms = pd.read_csv(args.ontology_terms, sep='\t', dtype=str, keep_default_na=False)
     fam_sets = lambda names: pd.DataFrame([(f, g) for f in names for g in fam_genes[f]], columns=['term', 'gene'])  # noqa: E731
     jobs = [
-        Job('disgenet_terms', target, universe, tool='enrichDGN', min_size=MIN_SIZE, max_size=MAX_SIZE),
+        Job('disgenet_terms', target, universe, sets=tg[['term_id', 'entrez_id']], names=tg[['term_id', 'term_name']], min_size=MIN_SIZE, max_size=MAX_SIZE),
         Job('disease_ontology', target, universe, sets=do_genes[['term_id', 'entrez_id']], names=do_terms[['term_id', 'name']], min_size=MIN_SIZE),
         Job('disease_family', target & annotated, annotated, sets=fam_sets(AUDITED_FAMILIES), whole_universe=True),
         Job('disease_family_additional', target & annotated, annotated, sets=fam_sets(ADDITIONAL_FAMILIES), whole_universe=True),
@@ -187,7 +189,7 @@ def main() -> None:
     pd.DataFrame([{'canonical_UniProtAC': acc, 'gene_symbol': s, 'disgenet_background': bool(set(entrez_of.get(s, [])) & annotated)}
                   for acc, s in zip(target_rows['canonical_UniProtAC'], target_rows['gene_symbol'])]).to_csv(
         outdir / 'disease_background_proteins.tsv', sep='\t', index=False, lineterminator='\n')
-    print(f'DisGeNET (enrichDGN): {len(dgn)} terms tested, {len(terms)} enriched; Disease Ontology (enricher): {len(do)} terms tested, '
+    print(f'DisGeNET (enricher): {len(dgn)} terms tested, {len(terms)} enriched; Disease Ontology (enricher): {len(do)} terms tested, '
           f'{int((do["p.adjust"] <= CUTOFF).sum())} with p.adjust <= {CUTOFF}; families: {int((fams["BH_adjusted_p"] <= CUTOFF).sum())} of {len(fams)}; '
           f'target {len(target)} of {len(universe)} genes; {len({r["canonical_UniProtAC"] for r in prot})} proteins in a family')
 

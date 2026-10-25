@@ -85,12 +85,12 @@ rebuilt with `PREVIOUS=releases/v1.0.0 STUDIES='' LOCALISED_ONLY=0 bash hpc/buil
 
 What a build needs besides the repository:
 
-- **R** (clusterProfiler and DOSE, in the environment file) for the tests of protein and gene sets. A work root that
-  already holds their results for the same inputs, settings and R script (`scripts/enrichment.py` checks a SHA-256 of
-  all three) reuses them, so a rebuild that changes nothing those tests read runs without R. Without R, a stored
-  clusterProfiler result whose checksum differs is kept only if recomputing it from the inputs (every count, the
-  hypergeometric p, the Benjamini-Hochberg q and the proteins in each set) gives the stored values; the DisGeNET terms
-  (DOSE, from its own bundled data) need R whenever their inputs change.
+- **R** (clusterProfiler, in the environment file) for the tests of protein and gene sets. A work root that already
+  holds their results for the same inputs, settings and R script (`scripts/enrichment.py` checks a SHA-256 of all three)
+  reuses them, so a rebuild that changes nothing those tests read runs without R. Without R, a stored result whose
+  checksum differs is kept only if recomputing it from the inputs (every count, the hypergeometric p, the
+  Benjamini-Hochberg q and the proteins in each set) gives the stored values. DOSE is needed only to re-export its
+  DisGeNET table (`scripts/00_export_disease_tables.R`).
 - **The network** only to derive the two PRIDE tables above, and when `inputs/interactions/` lacks interaction data for
   a site (a protein or structure the staged tables do not cover): `scripts/37` then fetches it into
   `WORK_ROOT/interactions_topup` and the build stops before writing the release, with the command that stages it
@@ -111,7 +111,7 @@ What a build needs besides the repository:
 | `17_*` to `35_*` | extended analyses and the paper's figures |
 | `36_*`, `37_*` | the website's data: sites, evidence and interactions (`37a` stages the interaction inputs) |
 | `39_*` to `42_*` | the website's annotation layers (CARM1 knockout, Human Protein Atlas; CPLM 4.0 for v1.0.0) and the lysine and arginine methylation co-occurrence |
-| `enrichment.py`, `enrich_sets.R` | the over-representation tests of protein and gene sets (clusterProfiler `enricher`, DOSE `enrichDGN`), which the analyses call |
+| `enrichment.py`, `enrich_sets.R` | the over-representation tests of protein and gene sets (clusterProfiler `enricher`; the DisGeNET terms on DOSE 4.4.0's DisGeNET table), which the analyses call |
 | `build_release.py`, `release_*.py` | writing a release folder |
 
 `hpc/slurm_run_integration.sh` and `scripts/run_extended_analyses.sh` are the workflow of the published run with its
