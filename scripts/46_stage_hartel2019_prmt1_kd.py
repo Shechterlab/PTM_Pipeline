@@ -23,13 +23,25 @@ Each peptide is placed on the canonical sequence of the base accession of its fi
 Hartel records of scripts/00_stage_study_sites.py take): it must occur there exactly once. Its marks are read as
 scripts/00 reads them (hartel_quant_mods: the residue on the peptide, the degree, the ptmRS probability). A placement is
 position_verified when the first master is the canonical entry and the table's own start for it ('Peptide Position in
-Master Proteins') is the start found; every verified peptide's methyl positions are also checked against the table's
-'Protein Accession and Methyl Site'. A peptide changes at q < 0.05 (decreased for log2 < 0, increased for > 0; no
+Master Proteins') is the start found, else placed_by_sequence. The table's own sites on the first master ('Protein
+Accession and Methyl Site'), as offsets from its start there, must be the marks' offsets ('Modifications'); a peptide
+whose two columns disagree (3 rows: S9 SARGTRGGGFGAHGRGR, S9 GEGGEFSVDRPIIDRPIRGR, S10 LSPLLPGGGGRGSR) is kept as
+sites_differ_from_table and gives no site, as scripts/00 drops the same rows (position_inconsistent_with_peptide,
+position_list_mismatch). A peptide changes at q < 0.05 (decreased for log2 < 0, increased for > 0; no
 fold-change minimum, as S0 already enters the test); calls over the peptides carrying a site follow
 scripts/peptide_calls.py (site_response: decreased, increased, mixed, no_significant_change, and the call from the
 site's single-site peptides). call_rme1 and call_rme2 apply the same rule to the peptides that carry the site as
 monomethyl or dimethyl arginine. call_source_flag applies it to the paper's own flag instead of q: the flag marks one
-S10 peptide at q = 0.0504 (GGGFGGNDNFGRGGNFSGR, R12 me1, log2 1.87) that the q rule leaves unchanged.
+S10 peptide at q = 0.0504 (GGGFGGNDNFGRGGNFSGR, R12 me1, log2 1.87) that the q rule leaves unchanged (its site, HNRNPA1
+R218, changes through another peptide, so the site calls agree). The flag reproduces the paper's peptide counts (119 MMA:
+5 SCX + 114 IAP, 61 up and 58 down; DMA 2 SCX, 4 ADMA, 3 SDMA; 4 mixed). With 2 against 2 samples and S0 = 0.5 the
+Perseus q weighs the fold change: 44 of the 132 flagged peptides have nominal p >= 0.05, and BH over the tables' p
+values would keep 2 peptides (the summary counts both); a reader of these calls should know they are the paper's.
+
+The peptide table keeps table_row (1-based among the table's data rows), the marks' offsets on the peptide,
+methyl_positions and methyl_degrees (aligned, ';'), ptmRS, the four log2 abundances as given, log2_kd_control, p, q,
+t, paper_significant and the peptide's call; other_master_entries lists the other entries a shared peptide's masters
+name (the peptide is placed on the first only, as the records are).
 
 Outputs (in --outdir, default $PTM_RESULTS_ROOT/hartel2019_prmt1_kd)
   hartel2019_prmt1_kd_peptides.tsv   every peptide of S8-S12 and S15 with its placement, marks, log2, p, q and call
@@ -69,6 +81,7 @@ TEST = ('Perseus 1.6.2.3 two-sample t test with permutation-based FDR, q < 0.05,
         'sample medians; peptides quantified in all four samples (2 shControl, 2 shPRMT1); ptmRS localisation >= 75 % '
         '(methods: Identification and Quantitation of Peptides; Experimental Design and Statistical Rationale)')
 ARG_TABLES = ('S8', 'S9', 'S10', 'S11', 'S12', 'S15')
+PLACED = ('position_verified', 'placed_by_sequence')   # the placements whose methyl positions make sites
 LYS_TABLES = ('S13', 'S14')
 COL = {'fold': 'log2 Fold Change (shPRMT1 / shControl)', 'q': 'Perseus t-test q value', 'mlogp': '-log10(Perseus p-value)',
        't': 'Perseus t-test t-statistic', 'flag': 'Significant Perseus t-test q < 0.05'}
@@ -174,9 +187,19 @@ def peptide_rows(tables: dict, canonical: dict[str, str], dropped: Counter, chec
             positions = [start + off - 1 for off in offsets] if start else []
             if start and any(not residue_is(canonical, acc, p, 'R') for p in positions):
                 raise SystemExit(f'{label} row {k}: a placed methyl position is not an R of {acc}')
-            if status == 'position_verified':
+            if start:
+                if '-' not in masters[0] and status == 'placed_by_sequence':
+                    checks['canonical_master_start_differs_from_table'] += 1
+                # the table's sites on the first master, as offsets from the table's start there: must be the marks' offsets
                 given = sorted(set(s00.hartel_protein_sites(r[H['Protein Accession and Methyl Site']]).get(masters[0], [])))
-                checks['verified_sites_match_table' if given == sorted(positions) else 'verified_sites_differ_from_table'] += 1
+                starts = reported_starts(r[H['Peptide Position in Master Proteins']], masters[0])
+                if not given or not starts:
+                    checks['sites_not_checked:no_table_sites_for_first_master'] += 1
+                elif any([g - s + 1 for g in given] == offsets for s in starts):
+                    checks['sites_match_table'] += 1
+                else:
+                    checks['sites_differ_from_table'] += 1
+                    status = 'sites_differ_from_table'
             fold, q, mlogp = (r[H[COL[c]]] for c in ('fold', 'q', 'mlogp'))
             if not all(isinstance(v, (int, float)) for v in (fold, q, mlogp)):
                 raise SystemExit(f'{label} row {k}: fold change, q or -log10 p not a number')
@@ -184,7 +207,7 @@ def peptide_rows(tables: dict, canonical: dict[str, str], dropped: Counter, chec
             call = pc.site_response([(float(q), float(fold), len(offsets))], Q_CUTOFF, MIN_ABS_LOG2, strict=STRICT)['call']
             others = sorted({m.split('-')[0] for m in masters} - {acc})
             rows.append({
-                'table': label, 'sheet': sheet, 'enrichment': enrichment, 'row': k, 'peptide': peptide,
+                'table': label, 'sheet': sheet, 'enrichment': enrichment, 'table_row': k, 'peptide': peptide,
                 'modifications': s00.text(r[H['Modifications']]), 'master_accessions': ';'.join(masters),
                 'gene': s00.text(r[H['Gene Symbol']]).split(';')[0].strip() if 'Gene Symbol' in H else '',
                 'reported_start': ';'.join(str(s) for s in reported_starts(r[H['Peptide Position in Master Proteins']], masters[0])) if masters else '',
@@ -200,14 +223,16 @@ def peptide_rows(tables: dict, canonical: dict[str, str], dropped: Counter, chec
                 'log2_kd_control': float(fold), 'p': p, 'q': float(q), 't': r[H[COL['t']]],
                 'paper_significant': s00.text(r[H[COL['flag']]]) == '+', 'call': call,
             })
-            if not start:
-                dropped[f'peptides_not_placed:{status}'] += 1
+            if status not in PLACED:
+                dropped[f'peptides_without_sites:{status}'] += 1
+                if rows[-1]['paper_significant']:
+                    dropped[f'flagged_peptides_without_sites:{status}'] += 1
     return rows
 
 
 def site_rows(peptides: pd.DataFrame, canonical: dict[str, str]) -> pd.DataFrame:
     groups = defaultdict(list)
-    for r in peptides[peptides['canonical_start'] != ''].itertuples(index=False):
+    for r in peptides[peptides['placement'].isin(PLACED)].itertuples(index=False):
         for pos, degree in zip(r.methyl_positions.split(';'), r.methyl_degrees.split(';')):
             groups[(r.canonical_UniProtAC, int(pos))].append((r.q, r.log2_kd_control, r.n_methylarginines, degree,
                                                               r.paper_significant, r.table, r.gene))
@@ -325,7 +350,7 @@ def main() -> None:
     save_table(peptides, outdir / 'hartel2019_prmt1_kd_peptides.tsv')
     save_table(sites, outdir / 'hartel2019_prmt1_kd_sites.tsv')
 
-    placed = peptides[peptides['canonical_start'] != '']
+    placed = peptides[peptides['placement'].isin(PLACED)]
     changed_sites = sites[sites['call'] != pc.NO_CHANGE]
     flagged_sites = sites[sites['call_source_flag'] != pc.NO_CHANGE]
     disagree = peptides[(peptides['call'] != pc.NO_CHANGE) != peptides['paper_significant']]
@@ -350,6 +375,16 @@ def main() -> None:
         'peptides': {t: int((peptides['table'] == t).sum()) for t in ARG_TABLES},
         'peptide_calls': {t: dict(sorted(Counter(g['call']).items())) for t, g in peptides.groupby('table', sort=False)},
         'peptides_paper_flag': {t: int(g['paper_significant'].sum()) for t, g in peptides.groupby('table', sort=False)},
+        'q_and_p': {
+            'flagged_peptides_with_p_at_least_0.05': int((peptides['paper_significant'] & (peptides['p'] >= 0.05)).sum()),
+            'flagged_peptides_p_max': float(peptides.loc[peptides['paper_significant'], 'p'].max()),
+            'unflagged_peptides_with_p_below_0.05': int((~peptides['paper_significant'] & (peptides['p'] < 0.05)).sum()),
+            'peptides_with_q_0': int((peptides['q'] == 0).sum()),
+            'bh_over_p_within_table_below_0.05': {t: sum(q < Q_CUTOFF for q in pc.bh(g['p'].tolist()))
+                                                  for t, g in peptides.groupby('table', sort=False)},
+            'note': ('Perseus q (permutation-based FDR with S0 = 0.5, 2 against 2 samples) is not BH of p: it weighs the fold '
+                     'change, so peptides with large log2 pass at nominal p above 0.05, and BH over the given p would keep few'),
+        },
         'flag_and_q_disagree': [f'{r.table} {r.peptide} {r.modifications} q={r.q:g} flag={"+" if r.paper_significant else ""}'
                                 for r in disagree.itertuples(index=False)],
         'sites': int(len(sites)), 'site_proteins': int(sites['canonical_UniProtAC'].nunique()),
