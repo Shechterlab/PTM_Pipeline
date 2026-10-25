@@ -1094,6 +1094,7 @@
     renderLcSwitch();
     bindDocLinks($('footer.site'));
     bindDocLinks($('#lede'));
+    bindDocLinks($('.brand-links'));
     compute();
     route();
     loadInteractions();
@@ -1467,11 +1468,33 @@
     'DOID:0014667': ['inherited and acquired metabolic', 'A disease that involves errors in metabolic processes of building or degradation of molecules.'],
     'DOID:0050117': ['viral, bacterial, parasitic, fungal', ''],
   };
+  // The release's main tables, from the repository, and what to cite with them.
+  function downloadDocHtml() {
+    const v = (M.provenance && M.provenance.dataset_version) || '';
+    const tree = 'https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases' + (v ? '/' + v : '');
+    if (!/^v\d+\.\d+\.\d+$/.test(v)) return '<p>The data of each version are in <a href="' + tree + '" target="_blank" rel="noopener">releases/</a>.</p>';
+    const raw = (f) => 'https://github.com/Shechterlab/PTM_Pipeline/raw/main/releases/' + v + '/' + f;
+    const page = (f) => 'https://github.com/Shechterlab/PTM_Pipeline/blob/main/releases/' + v + '/' + f;
+    const nLc = M.lower_confidence_sites ? M.lower_confidence_sites.sites.length : 0;
+    const file = (href, label, what) => '<li><a class="btn small" href="' + href + '" target="_blank" rel="noopener">' + esc(label) + (href.includes('/raw/') ? ' ↓' : ' ↗') + '</a> ' + what + '</li>';
+    return '<p>The tables of this version (' + esc(v) + ') as released, one row per site with its evidence, annotation and calls. The release README and the data dictionary describe every column and code.</p><ul class="dl-list">' +
+      file(raw('human_methylarginine_sites_' + v + '.xlsx'), 'Sites (Excel)', 'the main data sheet: ' + fmt(M.n_sites - nLc) + ' methylarginine sites, one sheet') +
+      file(raw('human_methylarginine_sites_' + v + '.tsv'), 'Sites (TSV)', 'the same table as tab-separated text') +
+      file(raw('human_methylarginine_proteins_' + v + '.tsv'), 'Proteins (TSV)', 'one row per methylated protein') +
+      (M.lower_confidence_view || nLc ? file(raw('human_methylarginine_lower_confidence_sites_' + v + '.tsv'), 'Lower-confidence sites (TSV)', 'arginines reported as methylated whose records fail a site test, with the test results; not counted as sites') : '') +
+      file(raw('studies_' + v + '.tsv'), 'Studies (TSV)', 'every study and database behind the sites, with its citation, DOI and licence') +
+      file(raw('data_dictionary.tsv'), 'Data dictionary (TSV)', 'every column of every table, and the meaning of every code') +
+      file(page('README.md'), 'README', 'the tables and the methods') + file(page('CHANGES.md'), 'What changed', 'since the previous version') + '</ul>' +
+      '<p>The statistics, supporting tables, both analyses and checksums are in the <a href="' + tree + '" target="_blank" rel="noopener">release folder</a>. The tables here are CC BY-NC-SA 4.0; third-party data keep their own terms, and PhosphoSitePlus® sites are for non-commercial use (CC BY-NC-SA 3.0).</p>' +
+      '<p><b>Cite</b> ' + esc(PAPER.cite) + ' ' + doiLink(PAPER.doi) + ', and the studies that reported the sites you use (the studies table lists each with its DOI; How to cite says more).</p>' +
+      '<p class="screen-only">' + risButton([[PAPER.cite, PAPER.doi]], 'methylarginine_explorer_paper', 'Download the paper\'s citation (RIS)') + ' ' +
+      risButton([[PAPER.cite, PAPER.doi]].concat(M.studyOrder.map((k) => studyRef(k))), 'methylarginine_sources_of_the_sites', 'Download every study and database behind the sites (RIS)') + '</p>';
+  }
   // Methods text for the protein-set tests (v1.2.0 exports): what the test is, its numbers and its backgrounds.
   function setTestDocHtml() {
     const v = M.enrichment_tools || {};
     const ver = ['R', 'clusterProfiler', 'DOSE'].filter((k) => v[k]).map((k) => k + ' ' + esc(v[k])).join(', ');
-    return '<p><b>Protein-set tests.</b> The charts of protein sets (protein classes, disease, condensates and subcellular locations; on the Interactions tab, Gene Ontology binding and complexes) are over-representation analyses run in R with clusterProfiler\'s <code>enricher</code> (' +
+    return '<p><b>Protein-set tests.</b> The charts of protein sets (protein classes, disease, condensates and subcellular locations; on the Interactions tab, Gene Ontology binding and complexes) are over-representation analyses (ORA) run in R with clusterProfiler\'s <code>enricher</code> (' +
       doiLink('10.1089/omi.2011.0118', 'Yu et al. 2012') + '; ' + doiLink('10.1016/j.xinn.2021.100141', 'Wu et al. 2021') + '), and the DisGeNET terms with DOSE\'s <code>enrichDGN</code> (' + doiLink('10.1093/bioinformatics/btu684', 'Yu et al. 2015') + '). ' +
       'For a set holding M of the N proteins of the background, when n of the N carry a methylarginine and k of those are in the set, p is the one-sided hypergeometric probability of k or more methylated members, and the bar is log2 of the fold enrichment, (k/n)/(M/N): the share of methylated proteins in the set over the share of all background proteins in it. ' +
       'q is the Benjamini–Hochberg adjusted p value over the sets of one chart (each level of a nested chart, and the additional disease families apart). A set is tested when it has at least one methylated member and its size is within the chart\'s range. The test is for over-representation, so a bar below zero is not significant. ' +
@@ -3546,7 +3569,16 @@
   function chartCard(spec, cls) {
     UI.charts[spec.id] = spec;
     return '<div class="card chart-card' + (cls ? ' ' + cls : '') + '" id="' + spec.id + '"><div class="card-head"><div><h3>' + esc(spec.title) + '</h3><p class="sub">' + spec.subHtml + '</p></div>' + expButtons(spec.id) + '</div>' +
-      (spec.tools ? '<div class="chart-tools">' + spec.tools + '</div>' : '') + hbars(spec) + (spec.footHtml || '') + '</div>';
+      (spec.tools ? '<div class="chart-tools">' + spec.tools + '</div>' : '') + hbars(spec) + (spec.footHtml || '') + (spec.fold ? oraNote(spec) : '') + '</div>';
+  }
+  // Under every protein-set chart: the test, what the bar measures, against which background, and the multiple-testing
+  // set. The background is the one the chart's axis names.
+  function oraNote(spec) {
+    const bg = String(spec.axis || '').replace(/^log2 fold enrichment vs (all )?/, '') || 'background proteins';
+    const unit = /genes/.test(bg) ? 'genes' : 'proteins';
+    return '<p class="note ora-note"><b>How this is tested: over-representation analysis (ORA).</b> For each set, a one-sided hypergeometric test asks whether methylarginine-containing ' + unit +
+      ' fall in it more often than all ' + esc(bg) + ' do. The bar is the log2 fold enrichment, log2[(k/n) ÷ (M/N)]: the share of the n methylated ' + unit + ' that are in the set (k) over the share of all N ' + esc(bg) +
+      ' that are (M); 1 means twice as often, 0 no difference. Filled bars have a Benjamini–Hochberg q ≤ 0.05 across this chart\'s sets. The sites were reported by studies, not sampled, so well-studied and abundant ' + unit + ' weigh more.' + docLink('overview') + '</p>';
   }
 
   // Words of a chart's significance key, the same on the page and in its exports.
@@ -14653,7 +14685,7 @@
       about: 'what the explorer is and the paper to cite', cite: 'the original studies, the evidence resources and the paper',
       sources: localisedOnly() ? 'every study from its own tables, PhosphoSitePlus, ProMetheusDB, UniProt and IEDB' : 'Maron 2021, ProMetheusDB, the PTM master table and the studies behind them', processing: 'remapping, gene symbols, state, inhibitor response, clustering, enrichment',
       'protein-pages': 'protein map rows, the evidence cartoon, UniProt, AlphaFold DB and PDB', interactions: 'partners, complexes, binding, interfaces, crosslinks, IntAct, statistics',
-      provenance: 'what the site positions refer to', licences: 'every source with its version, licence and citation', guardrails: 'what the data can and cannot say', downloads: 'TSV downloads and their terms',
+      provenance: 'what the site positions refer to', licences: 'every source with its version, licence and citation', guardrails: 'what the data can and cannot say', downloads: 'the release tables (Excel and TSV), citations, selection downloads and their terms',
     };
     const sec = (id, title, html) => {
       const subs = Array.from(html.matchAll(/<div class="doc-sub" id="doc-[^"]+"><h4>([^<]+)<\/h4>/g), (m) => m[1].replace(/&amp;/g, '&'));
@@ -14832,7 +14864,7 @@
       '<li><b>Responses to PRMT inhibitors and CARM1 loss are peptide-level.</b> A call says a peptide carrying the site changed, which a peptide with several methylarginines does for any of them; neither the inhibitor nor the knockout data were corrected for total protein (see PRMT inhibitor and knockout response).</li>' +
       '</ul>' +
       ''],
-      ['downloads', 'Downloads', '<p class="note">' + esc(PSP_NOTICE) + ' Site downloads that include PhosphoSitePlus® sites carry these terms; DisGeNET-derived disease terms are CC BY-NC-SA 4.0.</p>' +
+      ['downloads', 'Download the data', downloadDocHtml() + '<p class="note">' + esc(PSP_NOTICE) + ' Site downloads that include PhosphoSitePlus® sites carry these terms; DisGeNET-derived disease terms are CC BY-NC-SA 4.0.</p>' +
         '<p>Use <b>Download TSV</b> on the Proteins or Sites view to export the current selection. The data files are regenerated from pipeline outputs with <code>python scripts/36_export_site_explorer_data.py</code>; see the repository README.</p>' +
         '<p class="note">Data exported ' + esc(M.generated) + ' · ' + fmt(M.n_sites) + ' sites · ' + fmt(M.n_proteins) + ' proteins.</p>'],
     ];
@@ -14856,7 +14888,7 @@
     $$('[data-doc]', root).forEach((b) => {
       if (b.dataset.docBound) return;
       b.dataset.docBound = '1';
-      b.addEventListener('click', () => openDoc(b.dataset.doc));
+      b.addEventListener('click', (e) => { if (b.tagName === 'A') e.preventDefault(); openDoc(b.dataset.doc); });
     });
   }
   function openDoc(key) {
