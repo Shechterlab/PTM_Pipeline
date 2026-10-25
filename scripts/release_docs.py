@@ -802,6 +802,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
     lines += crosslink_section(files, previous, Path(ctx['inputs']))
     lines += analysis_section(files, previous)
     lines += review_section(ctx, files, previous)
+    lines += release_layers.changes_section(files, ctx['version'], previous)
     if since_v11:
         lines += [
         '## Methylation degree',

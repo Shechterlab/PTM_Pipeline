@@ -62,6 +62,9 @@ class Layer:
     supporting: Callable | None = None      # (sites, inputs, version) -> {key: (path in the release, frame, columns)}
     supporting_rows: dict[str, str] = field(default_factory=dict)  # key -> what one row of that table is (README)
     folder: str = 'layers'                  # where its files are, under inputs/
+    since: str = ''                         # the release that added it (CHANGES.md describes it there)
+    summary: str = ''                       # what it adds, for CHANGES.md
+    changes: Callable | None = None         # (files of the release) -> sentences with its counts, for CHANGES.md
 
 
 def read_layer(inputs, name: str) -> pd.DataFrame:
@@ -206,6 +209,12 @@ def cancer_stats(sites: pd.DataFrame, inputs, sequences: dict, workdir: Path) ->
     return rows + pooled + within
 
 
+def cancer_changes(files: dict) -> list[str]:
+    sites = files['sites'][1]
+    t, d = (sites['tcga_changes'] != ''), (sites['depmap_changes'] != '')
+    return [f'{int(t.sum()):,} sites have a change in at least one tumour and {int(d.sum()):,} in at least one cell line.']
+
+
 def cancer_website(release: Path, version: str, inputs: Path, site_out: Path) -> None:
     subprocess.run([sys.executable, str(HERE / '44c_export_depmap.py'), '--layers', str(inputs / 'layers'), '--out', str(site_out / 'depmap'),
                     '--sites', str(release / f'human_methylarginine_sites_{version}.tsv'),
@@ -262,7 +271,13 @@ CANCER = Layer(
                          'mutates most often in tumours, so codon use as well as selection shapes the comparison',
     },
     site_values=cancer_site_values, protein_values=cancer_protein_values, stats=cancer_stats, website=cancer_website,
-    topic='9F1239',
+    topic='9F1239', since='v1.4.0',
+    summary='Cancer genetics beside the sites, not evidence about methylation: how much DepMap\'s CRISPR-screened cancer cell lines '
+            'depend on each methylated protein (protein columns `depmap_*`), and the missense and stop changes of each methylarginine '
+            'in TCGA PanCancer Atlas tumours and DepMap cell lines (site columns `tcga_changes`, `depmap_changes`). Two tests: '
+            'dependency classes of the methylated proteins (analysis `depmap_dependency`) and changes at methylarginines against the '
+            'other arginines of their proteins (analysis `cancer_change`).',
+    changes=lambda files: cancer_changes(files),
 )
 
 def release_table(release: Path, name: str) -> pd.DataFrame:
@@ -403,6 +418,18 @@ def perturbation_supporting(sites: pd.DataFrame, inputs, version: str) -> dict:
                                      PERTURBATION_COLUMNS)}
 
 
+def perturbation_changes(files: dict) -> list[str]:
+    t = files['writer_perturbations'][1]
+    out = []
+    for d in PERTURBATIONS:
+        x = t[t['perturbation'] == d.key]
+        if len(x):
+            dec, inc, differ = int((x['call'] == 'decreased').sum()), int((x['call'] == 'increased').sum()), int((x['call'] != x['call_source_rule']).sum())
+            out.append(f'{d.label} ({d.study}): {len(x):,} sites quantified, {dec:,} decreased and {inc:,} increased by the release\'s rule; '
+                       f'the study\'s rule calls {differ:,} of them differently.')
+    return out
+
+
 def perturbation_website(release: Path, version: str, inputs: Path, site_out: Path) -> None:
     """SITE_OUT/perturbations.json: the datasets, and for each site of the release its rows of supporting/writer_perturbations."""
     t = release_table(release, f'supporting/writer_perturbations_{version}.tsv')
@@ -444,7 +471,14 @@ PERTURBATION = Layer(
                                  'mixed': 'peptides changed in opposite directions',
                                  'no_significant_change': 'quantified, and no peptide changed by the rule: not evidence that the site is unchanged',
                                  'not_tested': 'quantified, but the study gives no p value, so the rule cannot be applied'}},
-    site_values=perturbation_site_values, supporting=perturbation_supporting, website=perturbation_website,
+    site_values=perturbation_site_values, supporting=perturbation_supporting, website=perturbation_website, since='v1.4.0',
+    summary='Knockouts, knockdowns and inhibitors of the PRMTs that quantified methylated peptides, called by one rule for all '
+            f'(a peptide changes at |log2| >= {RELEASE_LOG2:g} and q < {RELEASE_Q:g}; a site is decreased when a peptide carrying it '
+            'decreased and none increased: scripts/peptide_calls.py, as the CARM1 knockout of v1.3.1), with each study\'s own rule '
+            'beside it (`call_source_rule`). Peptide-level evidence with no total-protein correction. Site columns `perturbations`, '
+            '`perturbation_calls`, `perturbation_calls_source_rule`; one row per site and perturbation in `supporting/writer_perturbations`. '
+            'The CARM1 knockout rows equal `supporting/carm1_ko`, which stays.',
+    changes=lambda files: perturbation_changes(files),
     supporting_rows={'writer_perturbations': 'site and knockout, knockdown or inhibitor (PRMT1, PRMT5, PRMT7, CARM1): its peptides, '
                                              'change, and the call by the release\'s rule and by the study\'s'},
     topic='5B21B6',
@@ -463,6 +497,12 @@ def paxdb_protein_values(proteins: pd.DataFrame, inputs) -> pd.DataFrame:
     entry = proteins['uniprot_accession'].str.split('-').str[0]   # an isoform takes its entry's value
     pick = lambda col: [float(p.at[a, col]) if a in p.index else None for a in entry]  # noqa: E731
     return pd.DataFrame({'paxdb_abundance_ppm': pick('abundance_ppm'), 'paxdb_percentile': pick('percentile')}, index=proteins.index)
+
+
+def paxdb_changes(files: dict) -> list[str]:
+    p = files['proteins'][1]
+    v = pd.to_numeric(p['paxdb_percentile'], errors='coerce')
+    return [f'{int(v.notna().sum()):,} of {len(p):,} proteins have a value; their median percentile is {v.median():.0f}.']
 
 
 def paxdb_website(release: Path, version: str, site_out: Path) -> None:
@@ -490,6 +530,10 @@ PAXDB = Layer(
          '100 the most abundant)'),
     ],
     protein_values=paxdb_protein_values, website=lambda release, version, inputs, site_out: paxdb_website(release, version, site_out),
+    since='v1.4.0',
+    summary='Protein abundance from PaxDb 6.1 (whole-organism integrated dataset) for each protein (`paxdb_abundance_ppm`, `paxdb_percentile`): '
+            'a covariate for detection, since mass spectrometry finds abundant proteins most.',
+    changes=lambda files: paxdb_changes(files),
 )
 
 
@@ -539,6 +583,15 @@ def reactome_stats(sites: pd.DataFrame, inputs, sequences: dict, workdir: Path) 
 REACTOME_LISTED_Q = 0.05   # pathways below the top level the website lists: q at most this
 
 
+def reactome_changes(files: dict) -> list[str]:
+    st = files['statistics'][1]
+    q = pd.to_numeric(st['q'], errors='coerce')
+    fold = pd.to_numeric(st['fold_enrichment'], errors='coerce')
+    top, low = st['analysis'] == 'reactome_top_level', st['analysis'] == 'reactome_pathway'
+    return [f'{int((top & (q <= 0.05) & (fold > 1)).sum())} of the {int(top.sum())} top-level pathways, and {int((low & (q <= 0.05) & (fold > 1)).sum()):,} '
+            f'of the {int(low.sum()):,} pathways of {REACTOME_MIN} to {REACTOME_MAX} proteins at any level, are enriched at q <= 0.05.']
+
+
 def reactome_website(release: Path, version: str, inputs: Path, site_out: Path) -> None:
     """SITE_OUT/reactome.json: the top-level pathways, each protein's, and the release statistics of the top level and of
     the pathways below it at q <= 0.05 (for the Overview: the whole dataset's tests and a selection's retest)."""
@@ -582,7 +635,11 @@ REACTOME = Layer(
                             f'finds most, so pathways of abundant proteins are expected to be enriched whatever methylation does',
         'reactome_top_level': 'the same for the 29 Reactome top-level pathways, whatever their size (a protein can be in several)',
     },
-    protein_values=reactome_protein_values, stats=reactome_stats, website=reactome_website,
+    protein_values=reactome_protein_values, stats=reactome_stats, website=reactome_website, since='v1.4.0',
+    summary='Reactome release 97 pathways of each protein (`reactome_top_level`, `reactome_n_pathways`), and two over-representation '
+            'tests of the methylated proteins against the reviewed proteins with a pathway (analyses `reactome_top_level`, `reactome_pathway`; '
+            'clusterProfiler enricher, as the other protein sets).',
+    changes=lambda files: reactome_changes(files),
 )
 
 
@@ -632,6 +689,12 @@ CURATION = Layer(
            'direction': {'increased': 'the readout rose', 'decreased': 'the readout fell', 'no_change': 'the readout did not change'},
            'read_from': {'full_text': 'the full text was read', 'abstract': 'only the abstract was read'}},
     supporting=curation_supporting, website=lambda release, version, inputs, site_out: curation_website(release, version, site_out),
+    since='v1.4.0',
+    summary='Experiments from the literature on the methylation of a site or protein (`supporting/functional_experiments`), curated by hand '
+            'from the papers (inputs/curation/README.md): what was done, what was measured and which way it changed. Kept apart from the '
+            'site table and every statistic.',
+    changes=lambda files: [f"{len(files['functional_experiments'][1]):,} experiments so far, from "
+                           f"{files['functional_experiments'][1]['doi'].nunique()} papers."],
     supporting_rows={'functional_experiments': 'curated experiment on a site or a protein\'s methylation: perturbation, readout, '
                                                'direction and reference (kept apart from every statistic)'},
 )
@@ -672,6 +735,23 @@ def readme_section() -> list[str]:
         lines.append(f'| {layer.title} | {code(Path(s).name for s in layer.staging)} | {"; ".join(adds)} | {layer.licence} |')
     lines += ['', 'Cite them as: ' + '; '.join(f'{layer.title}: {layer.citation}' for layer in LAYERS) + '.', '']
     return lines
+
+
+def changes_section(files: dict, version: str, previous: str) -> list[str]:
+    """CHANGES.md: the layers added after the previous release, with their counts in this one."""
+    v = lambda x: tuple(int(k) for k in x.lstrip('v').split('.'))  # noqa: E731
+    new = [layer for layer in LAYERS if layer.since and v(previous) < v(layer.since) <= v(version)]
+    if not new:
+        return []
+    out = ['## New annotation layers', '',
+           f'{version} adds {len(new)} layers of annotation beside the sites. None adds, removes or moves a site; their columns, tables '
+           'and tests are in `README.md`, `data_dictionary.tsv` and the statistics table, and scripts/release_layers.py builds them.', '']
+    for layer in new:
+        out += [f'### {layer.title}', '', layer.summary, '']
+        if layer.changes:
+            out += [f'- {x}' for x in layer.changes(files)] + ['']
+        out += [f'Source: {layer.citation}. Licence: {layer.licence}.', '']
+    return out
 
 
 def site_columns() -> list[tuple]:

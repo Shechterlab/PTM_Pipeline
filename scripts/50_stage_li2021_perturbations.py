@@ -554,7 +554,7 @@ def site_rows(arm: Arm, peptides: list[dict], canonical: dict[str, str], genes: 
             'comparison': arm.comparison, 'canonical_UniProtAC': acc, 'position': pos, 'residue': canonical[acc][pos - 1],
             'gene': genes.get(acc, ''), 'cell_line': CELL_LINE, 'enzyme': arm.enzyme, 'perturbation': arm.perturbation,
             'degrees': ';'.join(d for d in ('Rme1', 'Rme2') if any(d in v[2] for v in vals)),
-            'localised_by_search': any(v[3] == 'search' for v in vals),
+            'localised_by_search': any(v[3] == 'search' for v in vals) if any(p['annotated_sequence'] for p in peps) else '',
             'n_peptides': len(peps), 'n_multi_site_peptides': sum(p['n_methylarginines'] > 1 for p in peps),
             'log2_median': (l2[mid] if len(l2) % 2 else (l2[mid - 1] + l2[mid]) / 2),
             'log2_min': l2[0], 'ratio_min': min(p['ratio_heavy_light'] for p in peps),
