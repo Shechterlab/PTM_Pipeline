@@ -2329,7 +2329,7 @@
   // Biology first (the protein, the methyl mark and what writes it, its sequence and structural setting, what binds it),
   // where the record comes from last.
   const SECTIONS = [
-    ['protein', 'Protein function & disease', false], ['methyl', 'Methylation state', false], ['treat', 'PRMT inhibitors & knockout', false],
+    ['protein', 'Protein function & disease', false], ['methyl', 'Methylation state', false], ['treat', 'PRMT inhibitors, knockouts & knockdowns', false],
     ['motif', 'Sequence motif', false], ['struct', 'Structural context', false], ['ix', 'Interactions & binding', false],
     ['cluster', 'Clustering & crosstalk', false], ['prov', 'Provenance', false],
   ];
@@ -2416,7 +2416,7 @@
         (!localisedOnly() || F.sources.size || F.multi ? '<div class="fgroup"><span class="flabel">Pipeline source table</span>' + chipRow('sources', M.sources.map((n, k) => [k, SOURCE_LABEL[n], SOURCE_HELP[n]]).filter(([k]) => !localisedOnly() || F.sources.has(k) || S.some((x) => x.src & (1 << k))), F.sources) +
         '<label class="check"><input type="checkbox" id="f-multi"' + (F.multi ? ' checked' : '') + '> In ≥2 source tables at the same position</label>' : '<div class="fgroup">') +
         (P.some((p) => p.unrev) ? '<label class="check" title="' + esc(unrevHelp()) + '"><input type="checkbox" id="f-reviewed"' + (F.reviewed ? ' checked' : '') + '> Reviewed UniProt entries only</label>' : '') + '</div>';
-      case 'treat': return '<div class="fgroup"><label class="flabel" for="f-treat">PRMT inhibitor or knockout response</label>' + sel('f-treat', options(treatOptions().some((o) => o[0] === F.treat) ? treatOptions() : treatOptions().concat([[F.treat, treatLabel(F.treat)]]), F.treat), !!F.treat) + '</div>';
+      case 'treat': return '<div class="fgroup"><label class="flabel" for="f-treat">PRMT inhibitor, knockout or knockdown response</label>' + sel('f-treat', options(treatOptions().some((o) => o[0] === F.treat) ? treatOptions() : treatOptions().concat([[F.treat, treatLabel(F.treat)]]), F.treat), !!F.treat) + '</div>';
       case 'motif': {
         const pt = patternToken();
         return '<div class="fgroup"><label class="flabel" for="f-motifq">Find a motif (2–10 residues)</label>' +
@@ -12831,6 +12831,7 @@
     add('gsk', 'PRMT loss', 'Called decreased with GSK591 (PRMT5i)', (s) => s.trf & 1, (f) => { f.treat = '0:down'; });
     add('ms', 'PRMT loss', 'Called decreased with MS023 (type I PRMTi)', (s) => s.trf & 4, (f) => { f.treat = '1:down'; });
     if (koMeta()) add('ko', 'PRMT loss', 'Decreased in CARM1 knockout cells', (s) => s.trf & TRF_KO_DOWN, (f) => { f.treat = '2:down'; });
+    ptExtra().forEach((k) => { const d = M.perturbations[k]; add('pt' + k, 'PRMT loss', 'Called decreased with ' + d[1] + ' (' + ptRuleNote(d) + ')', (s) => ptCall(s, k) === 'decreased', (f) => { f.treat = 'p:' + d[0] + ':down'; }); });
     add('nn5', 'Clustering', 'Another methyl-R within 5 aa', (s) => s.nn != null && s.nn <= 5, (f) => { f.nn = 5; });
     add('rep2', 'Provenance', 'Reported by ≥2 sources (studies or databases)', (s) => popcount(s.study) >= 2, (f) => { f.minRep = 2; });
     if (ixReady()) EV_SETS.forEach(([b, l]) => add('ev' + b, 'Interactions', l, (s) => (s.ev || 0) & b, (f) => { f.evAll |= b; f.evExact = false; }));
