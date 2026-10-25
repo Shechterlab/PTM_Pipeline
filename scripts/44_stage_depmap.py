@@ -45,7 +45,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from common import entrez_by_symbol, entrez_of_entries, md5_file, own_entrez, parse_fasta, residue_is, save_table, update_manifest, upsert_tsv_rows
+from common import (entrez_by_symbol, entrez_of_entries, md5_file, own_entrez, parse_fasta, refresh_manifest_row, residue_is, save_table,
+                    update_manifest, upsert_tsv_rows)
 
 PRMTS = ['PRMT1', 'PRMT2', 'PRMT3', 'CARM1', 'PRMT5', 'PRMT6', 'PRMT7', 'PRMT8', 'PRMT9']
 # PRISM's PRMT inhibitors (its compound list names them; the target is the enzyme each was developed against)
@@ -107,6 +108,13 @@ FIGSHARE_IDS = {'CRISPRGeneEffect.csv': 51064667, 'CRISPRGeneDependency.csv': 51
                 'Repurposing_Public_24Q2_Extended_Primary_Compound_List.csv': 46630981}
 
 
+RAW_FILES_CONTENT = ('URL, size, MD5, SHA-256 and download date of the raw files behind the layer tables (HPA 25.1, Shishkova 2017 '
+                     'Supplementary Data 1, CPLM 4.0, the UniProt FASTA they were checked with, DepMap Public 24Q4, PRISM Repurposing '
+                     '24Q2, and the cBioPortal answers for TCGA)')
+RAW_FILES_CHECKED = ('Written with the layer staging (scripts/39, 41, 42, 44); independent re-downloads on 2026-10-20 had the same MD5 '
+                     '(HPA, Shishkova 2017, CPLM); the DepMap and PRISM files match the MD5 Figshare gives (2026-10-25)')
+
+
 def write_manifest(manifest: Path, out: Path, dep: Path, prism: Path, tcga: Path | None) -> None:
     """The staged tables' rows in inputs/MANIFEST.tsv, and their downloads' rows in the layer folder's raw_files.tsv."""
     import hashlib
@@ -139,6 +147,7 @@ def write_manifest(manifest: Path, out: Path, dep: Path, prism: Path, tcga: Path
                     'md5': md5_file(p), 'sha256': sha256(p), 'downloaded': '2026-10-25',
                     'version': 'cBioPortal web API answers, filtered to missense and stop changes at R', 'kept': 'release_asset'})
     upsert_tsv_rows(out / 'raw_files.tsv', raw)
+    refresh_manifest_row(manifest, out / 'raw_files.tsv', f'{folder}/raw_files.tsv', content=RAW_FILES_CONTENT, how_made_or_checked=RAW_FILES_CHECKED)
 
 
 def gene_columns(cols) -> dict[str, str]:

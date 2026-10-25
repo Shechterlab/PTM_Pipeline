@@ -774,6 +774,19 @@ def update_manifest(manifest: str | Path, rows: list[dict], fmt=str) -> None:
     upsert_tsv_rows(manifest, rows, fmt)
 
 
+def refresh_manifest_row(manifest: str | Path, path: str | Path, rel: str, **fields) -> None:
+    """The row of a file a staging run rewrote in part (a folder's raw_files.tsv) in inputs/MANIFEST.tsv: its bytes, MD5
+    and rows as they are now, its other fields kept unless given."""
+    path = Path(path)
+    table = pd.read_csv(manifest, sep='\t', dtype=str, keep_default_na=False)
+    old = table[table['file'] == rel]
+    row = old.iloc[0].to_dict() if len(old) else {'file': rel, 'redistribution': 'git'}
+    with open(path, encoding='utf-8') as fh:
+        n = sum(1 for _ in fh) - 1
+    row.update({'bytes': path.stat().st_size, 'md5': md5_file(path), 'rows': n}, **fields)
+    update_manifest(manifest, [row])
+
+
 def entrez_by_symbol(path: str | Path) -> dict[str, list[str]]:
     """Gene symbol -> its Entrez genes in org.Hs.eg.db (inputs/disease/orghsegdb_*_symbol_entrez.tsv), in file order."""
     sym = pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False)
