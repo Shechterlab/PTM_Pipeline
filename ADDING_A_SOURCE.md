@@ -47,8 +47,15 @@ fill is picked up by the build, the data dictionary, the workbook and the README
 | `protein_columns` and `protein_values(proteins, inputs)` | The same for the protein table |
 | `codes` | The code lists of coded columns (`data_dictionary.tsv` prints them) |
 | `analyses` and `stats(sites, inputs, sequences, workdir)` | Statistics analyses with their description, and the function that returns their rows in the columns of `release_codes.STATISTICS_COLUMNS` |
+| `supporting(sites, inputs, version)` and `supporting_rows` | Tables of the release's `supporting/` folder, as `{key: (path, frame, columns)}`, and what one row of each is (the README lists them) |
 | `website(release, version, inputs, site_out)` | Writes the layer's website files from the release (the build's last step) |
 | `topic` | Header colour of its site columns in the workbook |
+| `folder` | Where its files are under `inputs/` (`layers` unless set) |
+| `since`, `summary` and `changes(files)` | The release that adds it, what it adds, and sentences with its counts: `CHANGES.md` describes the layer under "New annotation layers" in that release |
+
+A layer of knockouts, knockdowns or inhibitors needs no new code: add a `Perturbation` to `PERTURBATIONS` (its staged
+peptide table, the columns of log2 change, p and adjusted p or `'bh'`, and the column of the study's own call). Every
+arm is then called by the same rule and shown in the same tables and website cards.
 
 Test the way the other tests are done, so that a layer's numbers mean what the rest of the release's do:
 
@@ -67,7 +74,9 @@ Test the way the other tests are done, so that a layer's numbers mean what the r
 ## 3. Show it on the website
 
 - **Per-protein data** go in 64 shard files named by `shard_of(accession)` (as `scripts/44c_export_depmap.py` and
-  `scripts/36c` compute it). A page loads only its protein's file.
+  `scripts/36c` compute it). A page loads only its protein's file. A small layer (a few hundred kB) can write one file,
+  which `loadLayer(name)` in `docs/assets/explorer.js` fetches once, when a card first needs it (`perturbations.json`,
+  `reactome.json`, `paxdb.json`, `curation.json`).
 - **The release's statistics of the layer** go into the layer's `meta.json` as `stats` rows with `stats_fields`. The
   website then shows the release's own numbers (`layerStats` in `docs/assets/explorer.js`) and does not compute them a
   second time.
