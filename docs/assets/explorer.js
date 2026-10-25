@@ -4684,8 +4684,8 @@
       fact(p.shrink == null ? '—' : fmtL2(p.shrink), 'Arg enrichment (log2)', p.argQ == null ? 'not tested (needs ≥2 sites and ≥10 arginines on a reviewed canonical sequence)' : 'shrinkage estimate; Fisher q ' + fmtP(p.argQ), 'enrich', 'How the arginine enrichment is computed') +
       fact('<span id="ix-fact">…</span>', 'Sites with experimental interaction evidence', '<span id="ix-fact-sub">loading interaction data</span>', 'ixexp', 'List these sites') +
       '</div>' +
-      foldHtml('p-map', 'Protein map', figureCard(p), true, fmt(p.sites.length) + ' methylarginine site' + (p.sites.length === 1 ? '' : 's')) + '</div>' +
-      '<div class="card" id="site-card" hidden></div>' +
+      foldHtml('p-map', 'Protein map', figureCard(p), true, fmt(p.sites.length) + ' methylarginine site' + (p.sites.length === 1 ? '' : 's')) +
+      '<div class="card" id="site-card" hidden></div></div>' +
       (UI_A ? hubList : focusBarHtml() + hubList) +
       '<div class="print-only print-foot"><p>' + esc(siteName()) + ' · ' + esc(siteUrl()) + '</p><p>Cite: ' + esc(PAPER.cite) + ' https://doi.org/' + esc(PAPER.doi) + '</p><p>Sites: methylarginine union from PTM_Pipeline. Features, variants and sequence: UniProt. Predicted structure, pLDDT and AlphaMissense: AlphaFold DB. Experimental structures: RCSB PDB and PDBe (SIFTS). Condensates: CD-CODE. Partners: STRING; complexes: Complex Portal and hu.MAP; predicted complexes: ProtVar and AlphaFold DB; crosslinks: pepR-MS compendium, RBDmap, Trendel et al. 2025; IntAct; locations: Human Protein Atlas; disease: DisGeNET (via DOSE), UniProt and Open Targets; orthologues: Ensembl Compara. Licences and citations: the Documentation page.</p></div>';
 
@@ -5919,15 +5919,27 @@
       }
       else if (act === 'close') { UI.highlight = null; box.hidden = true; box.innerHTML = ''; setSiteHash(p, null); const cs = $('#crumb-site'); if (cs) cs.hidden = true; $$('#psites tr.row.sel').forEach((r) => r.classList.remove('sel')); drawMap(p, UNIDATA.get(p.acc)); }
     }));
-    if (scroll) scrollBelowBars(box, scroll !== 'now');
+    if (scroll) scrollBelowBars(box, scroll !== 'now', siteView(box, s.pos));
   }
-  // Scroll an element to just below the sticky search bar and the page strip; again once the page above it has
-  // settled (the map grows when UniProt answers), unless the reader has scrolled in the meantime.
-  function scrollBelowBars(el, smooth) {
+  // A selected site is shown on the protein map with its card below: the card's head comes 150 px above the bottom
+  // of the window, as far as the site's lollipop on the map stays 40 px below the bars. Without an open map, the card
+  // goes under the bars.
+  function siteView(box, pos) {
+    const fold = $('#content details.fold[data-fold="p-map"]'), draw = $('#map-box');
+    if (!fold || !fold.open || !draw || !draw.offsetHeight) return null;
+    const top = (el) => el.getBoundingClientRect().top + window.scrollY;
+    return (off) => {
+      const head = $('#map-box .head[data-pos="' + pos + '"]') || draw;
+      return Math.max(top(fold) - off, Math.min(top(box) - (window.innerHeight - 150), top(head) - off - 40));
+    };
+  }
+  // Scroll an element to just below the sticky search bar and the page strip (or to where at(offset) says); again once
+  // the page above it has settled (the map grows when UniProt answers), unless the reader has scrolled in the meantime.
+  function scrollBelowBars(el, smooth, at) {
     const place = () => {
       const cs = getComputedStyle(document.documentElement), fb = $('.focus-bar');
       const off = (parseFloat(cs.getPropertyValue('--toolbar-h')) || 0) + (fb && !fb.hidden && fb.offsetHeight ? fb.offsetHeight : 0) + 12;
-      const y = Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY - off));
+      const y = Math.max(0, Math.round(at ? at(off) : el.getBoundingClientRect().top + window.scrollY - off));
       window.scrollTo({ top: y, behavior: smooth ? 'smooth' : 'auto' });
       return y;
     };

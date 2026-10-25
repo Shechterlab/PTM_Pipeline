@@ -1958,9 +1958,9 @@ html.pdf-export.pdf-cards .a-key-line { margin-bottom: 0.7rem; }
 .a-gh .a-reshuffle { margin-left: 0.6rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0; text-transform: none; }
 .a-map:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .a-map svg { display: block; width: 100%; height: auto; }
-/* layout A's protein page: the map, then the numbers */
+/* layout A's protein page: the map (with the selected site's card under it), then the numbers */
 .ui-a .p-top { display: flex; flex-direction: column; gap: 0.9rem; }
-.ui-a .p-top > details.fold { order: 1; }
+.ui-a .p-top > details.fold, .ui-a .p-top > #site-card { order: 1; }
 .p-folds { display: grid; gap: 0.6rem; min-width: 0; }
 .p-folds .hub-sec { gap: 0.6rem; }
 .fold-pic { flex: 0 0 15rem; margin-left: auto; min-width: 0; font-size: 0.75rem; }
