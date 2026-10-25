@@ -7,9 +7,11 @@ methylates it, under what conditions, and with what consequence, with each kind 
 
 ### Work packages
 
-Status on 25 October 2026 (branch `feature/depmap`): each source below is downloaded, its licence read and its staging
-script written; the staged tables wait in a scratch folder for the decisions noted against them, and none is in
-`inputs/` yet except the curated layer and DepMap.
+Status on 25 October 2026 (branch `feature/depmap`, not merged): every source below except PhosphoSitePlus is staged
+into `inputs/`, registered in `scripts/release_layers.py` and shown on the website. Decided on 25 October: TCGA from the
+GDC's MC3 calls instead of cBioPortal; the PRMT1 knockdown and the Li et al. 2021 arms called by the study's own rule,
+with the release's rule kept beside it; every arm in the Overview response table, the site table's PRMT loss column
+and its filter.
 
 
 1. **PRMT7 and monomethylarginine.** Szewczyk et al. 2020, *Pharmacological inhibition of PRMT7 links arginine
@@ -22,7 +24,12 @@ script written; the staged tables wait in a scratch folder for the decisions not
    immunoprecipitation, SILAC); SGC3027 was tested by western blot only. 343 of 346 peptides placed (99 by residue
    alone, to be checked against the sequence versions searched); the paper's rule (log2 <= -1, BH-adjusted p < 0.01)
    gives its 29 depleted peptides. Open: the licence of the supplementary files (none stated beside the article's CC BY).
-   Li et al. 2021, already included, has the SGC3027 and PRMT7 knockdown arms with statistics: stage them next.
+   Li et al. 2021, already included as a study, is staged for its perturbations too (`scripts/50`): PRMT7, CARM1 and
+   PRMT5 knockdowns and SGC3027 in HEK293, one SILAC experiment each. Its lists' calls are reproduced (297, 503 and 660
+   sites for PRMT7, SGC3027 and CARM1; 428 of the paper's 429 for PRMT5, which lists its decreased sites only). Proteome
+   Discoverer's adjusted p is not a test across replicates, so the release's rule is not applied and the call is the
+   study's. SGC3027's channel follows the paper's reading of its ratios, against one Methods sentence; the data agree
+   with the knockdown more often than not (45 against 22 twofold changes). Repeat 2 of the knockdown is staged, not used.
 2. **PRMT5 substrates from ETD.** Lu et al. 2024, *ETD-Based Proteomic Profiling Improves Arginine Methylation
    Identification and Reveals Novel PRMT5 Substrates*, J Proteome Res 23:1014–1027,
    [doi:10.1021/acs.jproteome.3c00724](https://doi.org/10.1021/acs.jproteome.3c00724): sDMA sites localised with
@@ -40,8 +47,8 @@ script written; the staged tables wait in a scratch folder for the decisions not
    `inputs/` already holds as raw downloads. Read the other included studies the same way for knockdowns, knockouts and
    inhibitor arms.
    *Staged* (`scripts/46`): Hartel's 119 are changed peptides, not Rme1 sites (the tables' flag gives them exactly);
-   751 sites, 129 changed. Open: the paper's Perseus permutation FDR on 2 against 2 samples keeps 132 peptides, the
-   release's BH rule 2. A survey of the other included studies found 40 perturbation arms
+   751 sites, 129 changed. The paper's Perseus permutation FDR on 2 against 2 samples keeps 132 peptides, the release's
+   BH rule 2: decided on 25 October to call this arm by the paper's rule, with the BH call kept beside it. A survey of the other included studies found 40 perturbation arms
    (Li 2021, Fong 2019, Musiani 2019, Larsen 2016 and Fedoriw 2019 the most useful).
 4. **A curated layer of functional experiments.** One row per experiment and site: the protein and site, the
    experiment (methylated against unmethylated protein or peptide; a site mutation, with R→K and R→A noted as removing
