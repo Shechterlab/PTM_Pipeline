@@ -1499,7 +1499,9 @@
       'For a set holding M of the N proteins of the background, when n of the N carry a methylarginine and k of those are in the set, p is the one-sided hypergeometric probability of k or more methylated members, and the bar is log2 of the fold enrichment, (k/n)/(M/N): the share of methylated proteins in the set over the share of all background proteins in it. ' +
       'q is the Benjamini–Hochberg adjusted p value over the sets of one chart (each level of a nested chart, and the additional disease families apart). A set is tested when it has at least one methylated member and its size is within the chart\'s range. The test is for over-representation, so a bar below zero is not significant. ' +
       'Backgrounds: the reviewed human proteome (protein classes, Gene Ontology binding, complexes), the proteins in any human CD-CODE condensate (condensates), the proteins the Human Protein Atlas profiled (locations), and the reviewed human genes with a Disease Ontology term or with a DisGeNET term (disease, as in DOSE). ' +
-      'Every tested set, with k, n, M, N, fold enrichment, p and q, is in the release statistics table (method enricher; scripts/enrich_sets.R)' + (ver ? '; ' + ver : '') + '.</p>';
+      'The sites were reported by studies, not sampled, so well-studied and abundant proteins are over-represented among the methylated ones, and a set rich in them can look enriched for that reason alone (Guardrails). ' +
+      'Every tested set, with k, n, M, N, fold enrichment, p and q, is in the release statistics table (method enricher; scripts/enrich_sets.R)' + (ver ? '; ' + ver : '') + '. ' +
+      'Documentation: <a href="' + ORA_DOCS + '" target="_blank" rel="noopener">over-representation analysis in clusterProfiler ↗</a>, <a href="https://bioconductor.org/packages/clusterProfiler/" target="_blank" rel="noopener">clusterProfiler ↗</a> and <a href="https://bioconductor.org/packages/DOSE/" target="_blank" rel="noopener">DOSE ↗</a> (Bioconductor).</p>';
   }
   // Methods text for the Disease card.
   function diseaseDocHtml() {
@@ -3571,14 +3573,14 @@
     return '<div class="card chart-card' + (cls ? ' ' + cls : '') + '" id="' + spec.id + '"><div class="card-head"><div><h3>' + esc(spec.title) + '</h3><p class="sub">' + spec.subHtml + '</p></div>' + expButtons(spec.id) + '</div>' +
       (spec.tools ? '<div class="chart-tools">' + spec.tools + '</div>' : '') + hbars(spec) + (spec.footHtml || '') + (spec.fold ? oraNote(spec) : '') + '</div>';
   }
-  // Under every protein-set chart: the test, what the bar measures, against which background, and the multiple-testing
-  // set. The background is the one the chart's axis names.
+  // Under every protein-set chart, one line: the test and tool, the background the chart's axis names, what the bar is,
+  // and links to the method (setTestDocHtml) and the tool's documentation.
+  const ORA_DOCS = 'https://yulab-smu.top/biomedical-knowledge-mining-book/enrichment-foundations.html';
   function oraNote(spec) {
     const bg = String(spec.axis || '').replace(/^log2 fold enrichment vs (all )?/, '') || 'background proteins';
-    const unit = /genes/.test(bg) ? 'genes' : 'proteins';
-    return '<p class="note ora-note"><b>How this is tested: over-representation analysis (ORA).</b> For each set, a one-sided hypergeometric test asks whether methylarginine-containing ' + unit +
-      ' fall in it more often than all ' + esc(bg) + ' do. The bar is the log2 fold enrichment, log2[(k/n) ÷ (M/N)]: the share of the n methylated ' + unit + ' that are in the set (k) over the share of all N ' + esc(bg) +
-      ' that are (M); 1 means twice as often, 0 no difference. Filled bars have a Benjamini–Hochberg q ≤ 0.05 across this chart\'s sets. The sites were reported by studies, not sampled, so well-studied and abundant ' + unit + ' weigh more.' + docLink('overview') + '</p>';
+    return '<p class="note ora-note"><b>Over-representation analysis</b> (one-sided hypergeometric test, clusterProfiler <code>enricher</code>) against all ' + esc(bg) +
+      ': the bar is log2 fold enrichment, (k/n) ÷ (M/N); filled bars have Benjamini–Hochberg q ≤ 0.05.' + docLink('overview') +
+      ' · <a href="' + ORA_DOCS + '" target="_blank" rel="noopener">clusterProfiler documentation ↗</a></p>';
   }
 
   // Words of a chart's significance key, the same on the page and in its exports.
