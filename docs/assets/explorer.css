@@ -2203,6 +2203,9 @@ ul.tight li { margin: 0.15rem 0; }
 .dm-box .dm-med { stroke: var(--ink); stroke-width: 2.2; }
 .dm-box.dm-del rect { fill: var(--accent); fill-opacity: 0.55; }
 .dm-box.dm-int rect { fill: var(--teal-600); fill-opacity: 0.55; }
+.dm-box.dm-sel rect { fill: var(--accent); fill-opacity: 0.6; }
+.dm-box.dm-meth rect { fill: var(--teal-600); fill-opacity: 0.55; }
+.dm-tbl th[scope="row"] { font-weight: 500; text-align: left; }
 
 .dm-tbl table { font-size: 0.84rem; }
 .dm-tbl td { vertical-align: top; }

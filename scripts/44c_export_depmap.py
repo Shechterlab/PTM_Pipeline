@@ -11,6 +11,8 @@ Writes docs/data/depmap/:
   meta.json   releases, licences, histogram edges, lineages, cell lines [id, name, lineage index, MTAP absolute copy
               number], TCGA studies, counts, and the tests of whether a methylated arginine is changed more often than
               the other arginines of its protein (--sites): pooled Fisher and within-protein Mantel-Haenszel
+  genes.json  every screened entry, for the Overview's comparisons: accessions, median gene effect x1000, common
+              essential (a string of 0 and 1), dependent lines, lines screened
   prmt.json   the PRMT panel: each PRMT's gene effect across the CRISPR lines and by MTAP status (0 copies = deleted),
               and each PRISM PRMT inhibitor's log2 viability, by MTAP status and against its target's gene effect
 
@@ -90,6 +92,12 @@ def main() -> None:
         for k in ('m', 't'):
             if k in v:
                 v[k].sort(key=lambda x: (x[0], x[1]))
+
+    gs = g.sort_values('canonical_UniProtAC')
+    (out / 'genes.json').write_text(json.dumps({
+        'acc': gs['canonical_UniProtAC'].tolist(), 'median': [int(round(float(v) * 1000)) for v in gs['median']],
+        'ce': ''.join('1' if v == 'True' else '0' for v in gs['common_essential']),
+        'dependent': gs['dependent_lines'].astype(int).tolist(), 'lines': gs['lines'].astype(int).tolist()}, separators=(',', ':')), encoding='utf-8')
 
     shards = [dict() for _ in range(SHARDS)]
     for acc in sorted(prot):

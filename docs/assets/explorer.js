@@ -4400,6 +4400,7 @@
       const ov = {
         'ov-pan': chartTile(pan || func), 'ov-dis': chartTile(dis), 'ov-cond': chartTile(cond), 'ov-loc': chartTile(loc), 'ov-motif': chartTile(motif), 'ov-struct': structTile(),
         'ov-ix': ixReady() ? ixTile() : { vis: '' },
+        'ov-dep': { vis: '<span class="dep-ov-vis"></span>', head: '<span class="dep-ov-head">loading DepMap…</span>', whole: '' },
         'ov-study': provTile(),
         'ov-treat': { vis: trVis ? '<div class="a-treat">' + trVis + '</div>' : '', head: 'Sites with a peptide that decreased with each PRMT inhibitor (Maron 2021) or CARM1 knockout (Shishkova 2017)' },
         'ov-start': { vis: startVis(), head: 'Click a protein to open it, or a selection to apply it', full: true },
@@ -4425,6 +4426,10 @@
       hubSec('Interactions',
         row('ov-ix', 'Interactions and binding', ixOverviewHtml(), 'How many sites have interaction evidence? The Interactions page tests it.', 'count', ixCount(selOn ? R.sites : S), ixCount(S), null,
           ixReady() ? pctFig(share((s) => ixStatus(s) === 'exp')) : null)) +
+      hubSec('Cancer cell lines',
+        row('ov-dep', 'Cancer cell dependency', '<div class="card wide" id="ch-dep"><div class="card-head"><div><h3>Cancer cell dependency</h3><p class="sub">How much 1,178 cancer cell lines depend on ' + (scoped ? 'the proteins of your selection' : 'the methylated proteins') +
+          ' in DepMap\'s CRISPR knockout screens. Cancer cell genetics, not evidence about methylation.</p></div></div><div id="ch-dep-body"><p class="note">Loading DepMap…</p></div></div>',
+          'Do cancer cell lines depend on these proteins more than on others? (DepMap CRISPR screens)', 'retest', 'loading DepMap…', 'loading DepMap…', null, null)) +
       hubSec('Sources and responses',
         row('ov-study', 'Provenance', '<div class="card wide chart-card" id="ch-study"><div class="card-head"><div><h3>Provenance</h3><p class="sub">' + study.subHtml + '</p></div>' + expButtons('ch-study') + '</div>' +
       '<div class="two-col"><div>' + hbars(study) + '</div>' +
@@ -4450,6 +4455,7 @@
     bindHub(el, 'Overview');
     bindAHome(el);
     bindAMaps(el);
+    renderDepOverview(el, selOn, testable);
     const oo = $('#ov-open-one', el);
     if (oo) oo.addEventListener('click', () => openProtein(one.i));
     $$('[data-quick]', el).forEach((b) => b.addEventListener('click', () => { const q = UI.quick[+b.dataset.quick]; if (q) q[2](); }));
@@ -10190,7 +10196,9 @@
   // Horizontal box plots from quantiles [5th, 25th, median, 75th, 95th percentile, n]: the box the middle half, the
   // whiskers the 5th to 95th percentile, the bar the median.
   function dmBoxSvg(rows, axis) {
-    const W = 460, ML = 132, MR = 12, RH = 24, MT = 6, MB = 34, H = MT + rows.length * RH + MB;
+    // the label column fits the longest label with its count (about 6.6 units a character at 12px)
+    const longest = Math.max(...rows.map((r) => r[0].length + (r[1] ? String(fmt(r[1][5])).length + 3 : 0)));
+    const W = 460, ML = Math.min(210, Math.max(110, Math.round(16 + 6.6 * longest))), MR = 12, RH = 24, MT = 6, MB = 34, H = MT + rows.length * RH + MB;
     const vals = rows.flatMap((r) => (r[1] ? [r[1][0], r[1][4]] : [])).concat([0]);
     let lo = Math.min(...vals), hi = Math.max(...vals);
     const pad = (hi - lo) * 0.05 || 0.5;
@@ -10210,7 +10218,7 @@
     });
     s += '<line class="dm-axis" x1="' + ML + '" x2="' + (W - MR) + '" y1="' + (H - MB) + '" y2="' + (H - MB) + '"/>';
     for (let v0 = Math.ceil(lo / step) * step; v0 <= hi + 1e-9; v0 += step) { const v = Math.abs(v0) < 1e-9 ? 0 : v0; s += '<line class="dm-axis" x1="' + r1(x(v)) + '" x2="' + r1(x(v)) + '" y1="' + (H - MB) + '" y2="' + (H - MB + 4) + '"/><text class="dm-tick" x="' + r1(x(v)) + '" y="' + (H - MB + 15) + '" text-anchor="middle">' + dmNum(v, step < 0.5 ? 2 : step < 1 ? 1 : 0) + '</text>'; }
-    s += '<text class="dm-axt" x="' + r1((ML + W - MR) / 2) + '" y="' + (H - 3) + '" text-anchor="middle">' + esc(axis) + '</text>';
+    s += '<text class="dm-axt" x="' + ML + '" y="' + (H - 3) + '">' + esc(axis) + '</text>';
     return '<svg class="dm-boxes" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(axis) + '">' + s + '</svg>';
   }
   const dmMtapRows = (r, what) => [['All lines', r.all, '', what + ', all lines'], ['MTAP deleted', r.mtap_deleted, 'dm-del', what + ', lines with no MTAP copy (PureCN)'], ['MTAP intact', r.mtap_intact, 'dm-int', what + ', lines with at least one MTAP copy']];
@@ -10223,15 +10231,15 @@
       '<p class="small">' + dmPlural(r.dependent_lines, 'line') + ' of ' + fmt(r.all[5]) + ' depend on ' + esc(gene) + ' (probability ≥ 0.5). ' +
       (dd && di ? 'Lines without MTAP (0 copies, ' + fmt(dd[5]) + ' lines) have a median gene effect of ' + dmNum(dd[2]) + ', against ' + dmNum(di[2]) + ' in lines with MTAP (' + fmt(di[5]) + '; Mann–Whitney p ' + fmtP(r.mtap_p) + ').' : '') +
       (gene === 'PRMT5' ? ' MTAP loss leaves its substrate MTA, which partly inhibits PRMT5, so these lines depend on it more (' + doiLink(DM_DOI.kryukov, 'Kryukov et al. 2016') + '; ' + doiLink(DM_DOI.mavrakis, 'Mavrakis et al. 2016') + ').' : '') + '</p>' +
-      dmBoxSvg(dmMtapRows(r, esc(gene) + ' gene effect'), esc(gene) + ' gene effect (Chronos); lower is a stronger dependency');
+      dmBoxSvg(dmMtapRows(r, esc(gene) + ' gene effect'), esc(gene) + ' gene effect per line (Chronos)');
     if (!comps.length) return h + '<p class="muted small">PRISM Repurposing 24Q2 has no inhibitor of ' + esc(gene) + '. Its PRMT inhibitors are EPZ015666, GSK3326595 and JNJ-64619178 (PRMT5), EPZ020411 (PRMT6) and SGC-707 (PRMT3).</p></section>';
     for (const [name, c] of comps) {
       const on = c.rho != null && c.rho > 0 && c.rho_p <= 0.05;
       h += '<h5 class="dm-comp">' + esc(name) + ' <span class="muted small">PRISM ' + esc(DM_SCREEN[c.screen] || c.screen) + ', ' + dm.prism.dose_uM + ' µM for ' + dm.prism.days + ' days</span></h5>' +
-        dmBoxSvg(dmMtapRows(c, 'log2 viability with ' + name), 'log2 viability relative to vehicle (0 = no effect)') +
+        dmBoxSvg(dmMtapRows(c, 'log2 viability with ' + name), 'log2 viability against vehicle (0: no effect)') +
         '<p class="small">' + (c.rho != null ? 'Spearman ρ with ' + esc(gene) + ' gene effect ' + dmNum(c.rho) + ' over ' + fmt(c.rho_lines) + ' lines (p ' + fmtP(c.rho_p) + '): ' +
           (on ? 'lines that depend more on ' + esc(gene) + ' lose ' + (c.rho < 0.3 ? 'somewhat ' : '') + 'more viability, the direction of an on-target effect.' : 'no positive relation with dependency on ' + esc(gene) + '.') : '') +
-        (c.mtap_p != null ? ' MTAP deleted against intact: Mann–Whitney p ' + fmtP(c.mtap_p) + '.' : '') +
+        (c.mtap_p != null && c.mtap_deleted && c.mtap_intact ? ' Median log2 viability ' + dmNum(c.mtap_deleted[2]) + ' in lines without MTAP against ' + dmNum(c.mtap_intact[2]) + ' with it (Mann–Whitney p ' + fmtP(c.mtap_p) + ').' : '') +
         ' Most sensitive: ' + c.most_sensitive.slice(0, 5).map(([k, v]) => esc(dm.models[k][1]) + ' ' + dmNum(v)).join(', ') + '.</p>';
     }
     return h + '</section>';
@@ -10297,6 +10305,99 @@
       $$('[data-dm-site]', box).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.dmSite; flashSite(+b.dataset.dmSite, true); drawMap(p, UNIDATA.get(p.acc)); }));
       setFoldSummary('p-depmap', [g ? (g[11] ? 'commonly essential' : fmt(g[9]) + ' of ' + fmt(g[10]) + ' lines depend on it') : 'not screened in DepMap',
         meth.size ? (nT ? dmPlural(nT, 'site') : 'no site') + ' changed in tumours' : (T.size ? dmPlural(T.size, 'arginine') : 'no arginine') + ' changed in tumours'].join(' · '));
+    });
+  }
+  // The Overview's comparison (genes.json): each screened protein's median gene effect, common-essential call and
+  // dependent lines, read when the Overview first draws its section.
+  function loadDepmapGenes() {
+    if (!DEPMAP.genesP) DEPMAP.genesP = Promise.all([loadDepmapMeta(), dmJson('genes.json')]).then(([m, g]) => {
+      if (!m) return null;
+      const by = new Map();
+      g.acc.forEach((a, k) => by.set(a, k));
+      return (DEPMAP.genes = Object.assign(g, { by }));
+    }).catch(() => { DEPMAP.genesP = null; return null; });
+    return DEPMAP.genesP;
+  }
+  // Two-sided Mann-Whitney test, normal approximation with the tie correction: [p, median x, median y].
+  function mwuP(x, y) {
+    const n1 = x.length, n2 = y.length;
+    if (!n1 || !n2) return [null, null, null];
+    const all = x.map((v) => [v, 0]).concat(y.map((v) => [v, 1])).sort((a, b) => a[0] - b[0]);
+    let r1 = 0, ties = 0;
+    for (let i = 0; i < all.length;) {
+      let j = i;
+      while (j + 1 < all.length && all[j + 1][0] === all[i][0]) j++;
+      const rank = (i + j) / 2 + 1, t = j - i + 1;
+      for (let k = i; k <= j; k++) if (all[k][1] === 0) r1 += rank;
+      ties += t * t * t - t;
+      i = j + 1;
+    }
+    const n = n1 + n2, u = r1 - (n1 * (n1 + 1)) / 2, mu = (n1 * n2) / 2;
+    const sd = Math.sqrt(((n1 * n2) / 12) * (n + 1 - ties / (n * (n - 1))));
+    const z = sd ? (Math.abs(u - mu) - 0.5) / sd : 0;
+    const med = (v) => { const s = v.slice().sort((a, b) => a - b), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+    return [Math.min(1, erfc(Math.max(0, z) / Math.SQRT2)), med(x), med(y)];
+  }
+  // A set of proteins (P indices) as screened entries: their genes.json rows, one per canonical accession.
+  const dmRows = (G, prots) => Array.from(new Set(prots.map((p) => G.by.get(p.acc.split('-')[0])).filter((k) => k != null)));
+  const dmQuant = (G, rows) => {
+    if (!rows.length) return null;
+    const v = rows.map((k) => G.median[k] / 1000).sort((a, b) => a - b), q = (f) => { const h = (v.length - 1) * f, lo = Math.floor(h); return v[lo] + (v[Math.min(lo + 1, v.length - 1)] - v[lo]) * (h - lo); };
+    return [q(0.05), q(0.25), q(0.5), q(0.75), q(0.95), v.length];
+  };
+  // One comparison: a set of screened proteins against another (common essential: Fisher; median gene effect:
+  // Mann-Whitney).
+  function dmCompare(G, a, b) {
+    const ce = (rows) => rows.filter((k) => G.ce[k] === '1').length;
+    const x = ce(a), y = ce(b), t = [x, a.length - x, y, b.length - y];
+    const [p, ma, mb] = mwuP(a.map((k) => G.median[k] / 1000), b.map((k) => G.median[k] / 1000));
+    return { ceA: x, nA: a.length, ceB: y, nB: b.length, ci: oddsCi(...t), ceP: fisherP(...t), medA: ma, medB: mb, medP: p };
+  }
+  const dmCmpHtml = (label, c) => '<tr><th scope="row">' + label + '</th><td class="num">' + pctText(c.ceA, c.nA || 1) + '% <span class="muted">against</span> ' + pctText(c.ceB, c.nB || 1) + '%</td>' +
+    '<td class="num">' + (c.ci.or != null ? fx(c.ci.or) + (c.ci.lo != null ? ' <span class="muted">[' + fx(c.ci.lo) + '–' + fx(c.ci.hi) + ']</span>' : '') : '—') + '</td><td class="num">' + fmtP(c.ceP) + '</td>' +
+    '<td class="num">' + dmNum(c.medA) + ' <span class="muted">against</span> ' + dmNum(c.medB) + '</td><td class="num">' + fmtP(c.medP) + '</td></tr>';
+  // The Overview's section and tile: how much cancer cell lines depend on the proteins of the selection (or on all
+  // methylated proteins), against the other methylated proteins and against all screened reviewed proteins.
+  function renderDepOverview(el, scoped, testable) {
+    const box = $('#ch-dep-body', el), tv = $('.dep-ov-vis', el), th = $('.dep-ov-head', el);
+    if (!box && !tv) return;
+    const view = UI.view, rq = R;
+    loadDepmapGenes().then((G) => {
+      if (UI.view !== view || R !== rq) return;
+      if (!G) { if (box) box.innerHTML = '<p class="muted">The DepMap files did not load; try again later.</p>'; if (th) th.textContent = 'did not load'; return; }
+      const dm = DEPMAP.meta, sel = scoped ? R.prots : P;
+      const selRows = dmRows(G, sel), methRows = dmRows(G, P), methSet = new Set(methRows), selSet = new Set(selRows);
+      const allRows = G.acc.map((_, k) => k), otherScreened = allRows.filter((k) => !(scoped ? selSet : methSet).has(k));
+      const otherMeth = methRows.filter((k) => !selSet.has(k));
+      const ce = (rows) => rows.filter((k) => G.ce[k] === '1').length;
+      const sh = [[scoped ? 'Your selection' : 'Methylated proteins', selRows]].concat(scoped ? [['All methylated proteins', methRows]] : [], [['All screened proteins', allRows]]);
+      const mx = Math.max(...sh.map(([, rows]) => ce(rows) / (rows.length || 1)), 0.01);
+      if (tv) tv.innerHTML = aMeters(sh.map(([label, rows]) => ({ label, v: ce(rows) / (rows.length || 1) / mx, text: pctText(ce(rows), rows.length || 1) + '%', cls: 'count',
+        tip: '<b>' + esc(label) + '</b><br>' + fmt(ce(rows)) + ' of ' + fmt(rows.length) + ' screened proteins (' + pctText(ce(rows), rows.length || 1) + '%) commonly essential in DepMap' })), { tight: true, wide: true });
+      if (th) th.innerHTML = '<b>' + pctText(ce(selRows), selRows.length || 1) + '%</b> of ' + (scoped ? 'your' : 'methylated') + ' proteins commonly essential in cancer cell lines, against ' + pctText(ce(allRows), allRows.length) + '% of all screened proteins';
+      if (!box) return;
+      const c1 = scoped ? dmCompare(G, selRows, otherMeth) : null, c2 = dmCompare(G, selRows, otherScreened);
+      const most = sel.map((p) => [p, G.by.get(p.acc.split('-')[0])]).filter(([, k]) => k != null).sort((a, b) => G.median[a[1]] - G.median[b[1]]);
+      const seen = new Set(), uniq = most.filter(([, k]) => !seen.has(k) && seen.add(k));
+      const selective = uniq.filter(([, k]) => G.ce[k] === '0' && G.dependent[k] / G.lines[k] >= 0.05 && G.dependent[k] / G.lines[k] <= 0.5).sort((a, b) => G.dependent[b[1]] / G.lines[b[1]] - G.dependent[a[1]] / G.lines[a[1]]);
+      const chip = ([p, k], sub) => '<button class="gene-chip" type="button" data-i="' + p.i + '" title="' + esc(p.label + ': median gene effect ' + dmNum(G.median[k] / 1000) + ', ' + G.dependent[k] + ' of ' + G.lines[k] + ' lines depend on it' + (G.ce[k] === '1' ? '; commonly essential' : '')) + '">' + esc(p.label) + '<span>' + sub + '</span></button>';
+      box.innerHTML = '<p class="small">' + fmt(selRows.length) + ' of ' + (scoped ? 'your ' + fmt(sel.length) : 'the ' + fmt(P.length) + ' methylated') + ' proteins were screened (DepMap 24Q4, ' + fmt(dm.depmap.crispr_lines) + ' cell lines). ' +
+          'A protein\'s score is its median gene effect across the lines (Chronos: 0 no effect, −1 the median of commonly essential genes; lower is a stronger dependency).</p>' +
+        dmBoxSvg([[scoped ? 'Your selection' : 'Methylated proteins', dmQuant(G, selRows), scoped ? 'dm-sel' : 'dm-meth', 'Median gene effect of each protein'], scoped ? ['All methylated proteins', dmQuant(G, methRows), 'dm-meth', 'Median gene effect of each methylated protein'] : null,
+          ['All screened proteins', dmQuant(G, allRows), '', 'Median gene effect of each screened reviewed protein']].filter(Boolean), 'median gene effect per protein (Chronos)') +
+        (testable ? '<div class="tbl-wrap dm-tbl"><table><thead><tr><th>Compared with</th><th>Commonly essential</th><th title="Odds ratio with its 95% interval (Woolf)">Odds ratio</th><th title="Fisher exact test, two-sided">p</th><th>Median of the protein scores</th><th title="Mann–Whitney test, two-sided">p</th></tr></thead><tbody>' +
+          (c1 ? dmCmpHtml('The other methylated proteins (' + fmt(c1.nB) + ')', c1) : '') + dmCmpHtml('The other screened proteins (' + fmt(c2.nB) + ')', c2) + '</tbody></table></div>' +
+          '<p class="small muted">Essential proteins are abundant, and abundant proteins are the ones mass spectrometry finds most often, so methylated proteins are expected to look more essential than the proteome whatever their methylation does' +
+          (scoped ? '; the comparison with the other methylated proteins shares that bias and is the fairer one.' : '. A selection is also compared with the other methylated proteins, which share that bias.') + '</p>'
+          : '<p class="small muted">' + selTooFew() + '</p>') +
+        (uniq.length ? '<p class="flabel">Strongest dependencies' + (scoped ? ' in your selection' : '') + '</p><div class="gene-chips">' + uniq.slice(0, 12).map((x) => chip(x, dmNum(G.median[x[1]] / 1000))).join('') + '</div>' : '') +
+        (selective.length ? '<p class="flabel">Selective dependencies <span class="muted">(5–50% of lines depend on them, share shown; not commonly essential)</span></p><div class="gene-chips">' +
+          selective.slice(0, 12).map((x) => chip(x, pctText(G.dependent[x[1]], G.lines[x[1]]) + '%')).join('') + '</div>' : '') +
+        '<p class="note small">' + doiLink(DM_DOI.depmap, 'DepMap Public 24Q4') + ' (CC BY 4.0; ' + doiLink(DM_DOI.tsherniak, 'Tsherniak et al. 2017') + '; Chronos, ' + doiLink(DM_DOI.chronos, 'Dempster et al. 2021') + '). ' +
+          'Commonly essential: DepMap\'s list of genes that at least 90% of lines rank among their strongest dependencies. A line depends on a gene when DepMap\'s dependency probability is at least 0.5. Each protein\'s page has its full distribution, lineages and mutations.</p>';
+      $$('.gene-chip[data-i]', box).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.i)));
+      $$('svg [data-tip]', box).forEach((e) => { e.addEventListener('mouseenter', (ev) => showTip(ev, e.getAttribute('data-tip'))); e.addEventListener('mousemove', moveTip); e.addEventListener('mouseleave', hideTip); });
+      setFoldSummary('ov-dep', pctText(ce(selRows), selRows.length || 1) + '% commonly essential');
     });
   }
   // The shard of an accession, as scripts/36c computes it.
