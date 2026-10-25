@@ -1,0 +1,140 @@
+{
+  "reactome": {
+    "release": "97",
+    "release_source": "https://reactome.org/ContentService/data/database/version answered 97 on 2026-10-25; https://reactome.org/download-data rewrites its links to download.reactome.org/<that version>/. A folder download.reactome.org/98/ (files dated 2026-10-22) exists but the site did not serve it as current",
+    "licence": "CC0 (https://reactome.org/license, 1 c: \"All data in the Reactome database and files derived from that data are licensed under the Creative Commons Public Domain Dedication (CC0)\")",
+    "citation": "Ragueneau et al., The Reactome Knowledgebase 2026, Nucleic Acids Res (2025), doi:10.1093/nar/gkaf1223; Reactome release 97",
+    "downloaded": "2026-10-25"
+  },
+  "inputs": {
+    "UniProt2Reactome_All_Levels.txt": {
+      "url": "https://download.reactome.org/97/UniProt2Reactome_All_Levels.txt",
+      "last_modified": "2026-06-24 19:18:42 GMT",
+      "md5": "60949cad639e1c8567b7585a13fdc1ca",
+      "etag": "6ff6a10c934261389750f2bb8dffb427-15",
+      "etag_matches": true
+    },
+    "UniProt2Reactome.txt": {
+      "url": "https://download.reactome.org/97/UniProt2Reactome.txt",
+      "last_modified": "2026-06-24 19:18:40 GMT",
+      "md5": "b1ee9e6203ecfe6b87def95413919714",
+      "etag": "7d51554a754f6ce155c705d5e78d914c-6",
+      "etag_matches": true
+    },
+    "ReactomePathways.txt": {
+      "url": "https://download.reactome.org/97/ReactomePathways.txt",
+      "last_modified": "2026-06-24 19:18:39 GMT",
+      "md5": "63953262f948a43232e01ac18c9606d2",
+      "etag": "63953262f948a43232e01ac18c9606d2",
+      "etag_matches": true
+    },
+    "ReactomePathwaysRelation.txt": {
+      "url": "https://download.reactome.org/97/ReactomePathwaysRelation.txt",
+      "last_modified": "2026-06-24 19:18:40 GMT",
+      "md5": "4cd76055c4ea7d18308d5993f160533d",
+      "etag": "4cd76055c4ea7d18308d5993f160533d",
+      "etag_matches": true
+    },
+    "api_events_toplevel_9606.json": {
+      "url": "https://reactome.org/ContentService/data/pathways/top/9606",
+      "last_modified": "",
+      "md5": "3d5e92c73e59650b56908b35017fdacd"
+    }
+  },
+  "reference": {
+    "fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+    "reference_entries": 20416
+  },
+  "all_levels_file": {
+    "rows_all_species": 942792,
+    "rows_human": 161425,
+    "human_accessions": 12155,
+    "isoform_accessions": 316,
+    "isoform_accessions_of_reference_entries": 310,
+    "reference_entries_reached_by_isoforms": 200,
+    "reference_entries_reached_only_by_isoforms": 87,
+    "isoform_rows": 4374,
+    "accessions_not_in_reference": 499,
+    "rows_not_in_reference": 4837,
+    "rows_kept": 156588,
+    "evidence_rows": {
+      "IEA": 32205,
+      "TAS": 124383
+    }
+  },
+  "lowest_level_file": {
+    "rows_all_species": 324818,
+    "rows_human": 54699,
+    "human_accessions": 12155,
+    "isoform_accessions": 316,
+    "isoform_accessions_of_reference_entries": 310,
+    "reference_entries_reached_by_isoforms": 200,
+    "reference_entries_reached_only_by_isoforms": 87,
+    "isoform_rows": 1570,
+    "accessions_not_in_reference": 499,
+    "rows_not_in_reference": 1649,
+    "rows_kept": 53050,
+    "evidence_rows": {
+      "IEA": 10381,
+      "TAS": 42669
+    }
+  },
+  "names_differing_from_ReactomePathways": 0,
+  "pairs": 137953,
+  "pairs_lowest_level": 48304,
+  "pairs_by_evidence": {
+    "IEA": 15018,
+    "IEA;TAS": 16921,
+    "TAS": 106014
+  },
+  "pairs_lowest_level_not_in_all_levels": 0,
+  "pairs_all_levels_not_lowest_or_ancestor": 0,
+  "pairs_ancestor_of_lowest_not_in_all_levels": 0,
+  "entries_with_a_pathway": 11433,
+  "entries_without_a_pathway": 8983,
+  "pathways_human": 2883,
+  "top_level_pathways": 29,
+  "top_level_check": {
+    "content_service_top_level": 29,
+    "same_as_relation_roots": true,
+    "md5": "3d5e92c73e59650b56908b35017fdacd"
+  },
+  "pathways_with_several_parents": 34,
+  "pathways_under_several_top_level": 33,
+  "max_depth": 9,
+  "pathways_with_reviewed_proteins": 2835,
+  "pathways_10_to_500_reviewed_proteins_all_levels": 1739,
+  "pathways_10_to_500_reviewed_proteins_lowest_level": 1220,
+  "pathways_over_500_reviewed_proteins_all_levels": 33,
+  "top_level_sizes": {
+    "Hemostasis": 686,
+    "Neuronal System": 414,
+    "Developmental Biology": 1530,
+    "Metabolism": 2195,
+    "Reproduction": 127,
+    "Extracellular matrix organization": 321,
+    "Cell-Cell communication": 327,
+    "Signal Transduction": 2573,
+    "Cell Cycle": 658,
+    "Disease": 2118,
+    "Immune System": 2405,
+    "Organelle biogenesis and maintenance": 323,
+    "Transport of small molecules": 720,
+    "Metabolism of proteins": 2100,
+    "Muscle contraction": 204,
+    "Chromatin organization": 341,
+    "Programmed Cell Death": 198,
+    "Vesicle-mediated transport": 735,
+    "DNA Replication": 153,
+    "DNA Repair": 346,
+    "Gene expression (Transcription)": 1493,
+    "Metabolism of RNA": 738,
+    "Cellular responses to stimuli": 879,
+    "Digestion and absorption": 28,
+    "Protein localization": 164,
+    "Autophagy": 160,
+    "Sensory Perception": 639,
+    "Drug ADME": 110,
+    "Circadian clock": 111
+  }
+}

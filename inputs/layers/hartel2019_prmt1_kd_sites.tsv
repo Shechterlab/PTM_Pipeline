@@ -1,0 +1,752 @@
+canonical_UniProtAC	position	residue	gene	degrees	tables	n_peptides	n_decreased	n_increased	n_multi_site_peptides	log2_median	log2_strongest	q_min	call	call_single_site_peptides	call_rme1	call_rme2	call_source_flag
+A0AV96	405	R	RBM47	Rme2	S12	1	0	0	0	0.53	0.53012085	0.528711111	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+A6NHQ4	9	R	EPOP	Rme2	S11	1	0	0	0	0.21	0.210204124	0.994553191	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+A8CG34	188	R	POM121C	Rme1	S8	1	0	0	0	0.032	0.03222549	0.987012987	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+C9JLR9	15	R	C11orf95	Rme1	S10	1	0	0	0	0.399	0.398810387	0.445071429	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O00148	57	R	DDX39A	Rme1	S10	1	0	0	0	-1.467	-1.467499733	0.082744526	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O00267	681	R	SUPT5H	Rme1	S10	1	0	0	1	1.015	1.015107155	0.158524272	no_significant_change		no_significant_change		no_significant_change
+O00267	696	R	SUPT5H	Rme1	S10	1	0	0	1	1.015	1.015107155	0.158524272	no_significant_change		no_significant_change		no_significant_change
+O00268	424	R	TAF4	Rme2	S11	1	0	0	0	1.657	1.656793594	0.128	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O00268	754	R	TAF4	Rme2	S9	1	0	0	0	0.616	0.616175115	0.555291429	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O00401	307	R	WASL	Rme1;Rme2	S10;S12	2	0	0	0	-1.18	-1.10105896	0.149927461	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+O00483	47	R	NDUFA4	Rme1	S10	1	0	0	0	-0.496	-0.49579525	0.371175385	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O00512	1254	R	BCL9	Rme1	S10	1	0	0	0	-2.244	-2.244084358	0.119607362	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O00571	88	R	DDX3X	Rme1	S10	2	2	0	1	-1.707	-1.811491966	0.030222222	decreased	decreased	decreased		decreased
+O00571	93	R	DDX3X	Rme1	S10	1	1	0	1	-1.811	-1.811491966	0.030222222	decreased		decreased		decreased
+O14497	1276	R	ARID1A	Rme1	S10	1	0	0	0	-0.56	-0.559675217	0.313278912	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O14686	2903	R	KMT2D	Rme2	S11	2	0	0	1	-0.829	-2.020652771	0.136	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O14686	2905	R	KMT2D	Rme2	S11	1	0	0	1	-2.021	-2.020652771	0.136	no_significant_change			no_significant_change	no_significant_change
+O14686	3727	R	KMT2D	Rme2	S11	1	0	0	0	-0.636	-0.635971069	0.7426	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O14686	4212	R	KMT2D	Rme2	S9	1	0	0	0	-0.409	-0.409293294	0.654450262	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O14776	28	R	TCERG1	Rme2	S11	1	0	0	1	1.738	1.737602234	0.442064516	no_significant_change			no_significant_change	no_significant_change
+O14776	30	R	TCERG1	Rme2	S11	1	0	0	1	1.738	1.737602234	0.442064516	no_significant_change			no_significant_change	no_significant_change
+O14908	240	R	GIPC1	Rme1	S8	1	0	0	0	-0.717	-0.717424661	0.436695652	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O14979	33	R	HNRNPDL	Rme1	S8	1	0	0	0	-1.02	-1.020424426	0.234526316	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O15164	497	R	TRIM24	Rme2	S9	1	0	0	0	1.33	1.330496103	0.218943396	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O15370	145	R	SOX12	Rme1	S10	1	1	0	0	-2.623	-2.622830391	0.039325301	decreased	decreased	decreased		decreased
+O15371	99	R	EIF3D	Rme2	S11	1	0	0	1	-1.135	-1.135203362	0.427578947	no_significant_change			no_significant_change	no_significant_change
+O15371	103	R	EIF3D	Rme2	S11	1	0	0	1	-1.135	-1.135203362	0.427578947	no_significant_change			no_significant_change	no_significant_change
+O15446	162	R	CD3EAP	Rme2	S11	1	0	0	0	-0.583	-0.582716942	0.865548387	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O43237	397	R	DYNC1LI2	Rme1	S8;S10	2	0	0	0	0.183	0.480106875	0.485283019	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O43251	381	R	RBFOX2	Rme1	S10	1	0	0	0	1.166	1.166485786	0.120345679	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O43347	197	R	MSI1	Rme1	S10	2	0	0	1	-0.948	-1.121499062	0.126736842	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O43347	199	R	MSI1	Rme1	S10	1	0	0	1	-0.774	-0.773531914	0.196902128	no_significant_change		no_significant_change		no_significant_change
+O43390	500	R	HNRNPR	Rme2	S9	1	0	0	1	-0.053	-0.052728117	0.994754098	no_significant_change			no_significant_change	no_significant_change
+O43390	502	R	HNRNPR	Rme2	S9	1	0	0	1	-0.053	-0.052728117	0.994754098	no_significant_change			no_significant_change	no_significant_change
+O43432	692	R	EIF4G3	Rme2	S9	1	0	0	0	1.833	1.832748353	0.209980198	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O43516	33	R	WIPF1	Rme2	S11	1	0	0	0	0.801	0.800575256	0.644	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O43516	134	R	WIPF1	Rme1	S10	1	0	0	0	-2.826	-2.826294899	0.131511111	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O43516	149	R	WIPF1	Rme2	S9	1	0	0	0	0.232	0.232167229	0.89026009	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O43809	15	R	NUDT21	Rme1	S10	1	0	0	0	-0.35	-0.349850655	0.532712644	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O43823	109	R	AKAP8	Rme1	S10	1	0	0	0	-1.175	-1.174998283	0.156248804	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O43824	55	R	GTPBP6	Rme1	S10	1	0	0	0	-2.156	-2.156305313	0.055794872	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O43896	958	R	KIF1C	Rme2	S9	1	0	0	0	-0.992	-0.991563201	0.210857143	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O60293	62	R	ZFC3H1	Rme2	S9	1	0	0	0	-2.545	-2.545411736	0.165666667	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O60293	95	R	ZFC3H1	Rme2	S9;S11	2	0	0	2	-1.827	-1.660340831	0.148878049	no_significant_change			no_significant_change	no_significant_change
+O60293	99	R	ZFC3H1	Rme2	S9;S11	2	0	0	2	-1.827	-1.660340831	0.148878049	no_significant_change			no_significant_change	no_significant_change
+O60331	459	R	PIP5K1C	Rme1	S10	1	1	0	0	-1.519	-1.518823624	0.042252427	decreased	decreased	decreased		decreased
+O60493	43	R	SNX3	Rme1	S10	1	0	0	0	-1.776	-1.775998116	0.064955224	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O60506	496	R	SYNCRIP	Rme2	S9	1	0	0	1	-0.041	-0.04122889	1.0	no_significant_change			no_significant_change	no_significant_change
+O60506	498	R	SYNCRIP	Rme2	S9	1	0	0	1	-0.041	-0.04122889	1.0	no_significant_change			no_significant_change	no_significant_change
+O60573	241	R	EIF4E2	Rme1	S10	1	0	0	0	-0.874	-0.874334335	0.155504762	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O75306	118	R	NDUFS2	Rme2	S9	1	0	0	0	-0.275	-0.274885789	0.830277512	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O75400	9	R	PRPF40A	Rme1	S10	1	0	0	0	-1.707	-1.706596375	0.19774359	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O75525	206	R	KHDRBS3	Rme2	S9	1	0	0	0	0.726	0.726416111	0.555862069	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O76041	795	R	NEBL	Rme1;Rme2	S10;S12	2	0	0	0	-0.257	-0.813492775	0.315905085	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+O94842	481	R	TOX4	Rme2	S11	1	0	0	0	-0.845	-0.844705582	0.715636364	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O94874	433	R	UFL1	Rme1	S10	1	0	0	0	-1.834	-1.834121704	0.091297297	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O94906	23	R	PRPF6	Rme2	S9;S12	2	0	0	0	1.129	3.260547638	0.238	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O94906	31	R	PRPF6	Rme2	S9	1	0	0	0	-0.155	-0.154675335	0.946140351	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+O94913	864	R	PCF11	Rme2	S11	1	0	0	1	0.463	0.462999344	0.877244444	no_significant_change			no_significant_change	no_significant_change
+O94913	877	R	PCF11	Rme2	S11	1	0	0	1	0.463	0.462999344	0.877244444	no_significant_change			no_significant_change	no_significant_change
+O94913	890	R	PCF11	Rme2	S11	1	0	0	1	0.3	0.300492287	1.0	no_significant_change			no_significant_change	no_significant_change
+O94913	903	R	PCF11	Rme2	S11	1	0	0	1	0.3	0.300492287	1.0	no_significant_change			no_significant_change	no_significant_change
+O94913	1051	R	PCF11	Rme2	S11	1	0	0	1	-0.128	-0.127874374	1.0	no_significant_change			no_significant_change	no_significant_change
+O94913	1062	R	PCF11	Rme2	S11	1	0	0	1	-0.128	-0.127874374	1.0	no_significant_change			no_significant_change	no_significant_change
+O94913	1074	R	PCF11	Rme2	S11	1	0	0	1	-0.074	-0.073827744	1.0	no_significant_change			no_significant_change	no_significant_change
+O94913	1086	R	PCF11	Rme2	S11	1	0	0	1	-0.074	-0.073827744	1.0	no_significant_change			no_significant_change	no_significant_change
+O94913	1093	R	PCF11	Rme2	S11	1	0	0	1	-0.074	-0.073827744	1.0	no_significant_change			no_significant_change	no_significant_change
+O95425	1203	R	SVIL	Rme1	S10	1	0	0	0	-1.582	-1.582024574	0.0595	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+O95429	53	R	BAG4	Rme1	S10	1	0	0	0	-0.125	-0.125019073	0.829983914	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P00492	45	R	HPRT1	Rme1	S10	1	0	0	0	-0.979	-0.979354858	0.222519685	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P04264	602	R	KRT1	Rme1	S8;S10	2	0	0	0	0.063	1.40364933	0.11165	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P04908	89	R	HIST1H2AB	Rme1	S10	1	0	0	0	-1.294	-1.293828011	0.148649215	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P05387	38	R	RPLP2	Rme1	S10	1	0	0	0	-3.182	-3.182309151	0.055322034	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P05783	55	R	KRT18	Rme1	S10	1	1	0	0	-2.451	-2.450660706	0.0	decreased	decreased	decreased		decreased
+P06454	90	R	PTMA	Rme1	S10	1	0	0	0	-0.962	-0.961636543	0.271857143	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P06733	50	R	ENO1	Rme1	S10	1	0	0	0	-1.235	-1.234566689	0.096052632	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P06748	291	R	NPM1	Rme1	S10	1	0	0	0	-0.574	-0.574472427	0.362775	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P07196	23	R	NEFL	Rme2	S11	1	0	0	0	-2.798	-2.798435211	0.2176	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P07197	42	R	NEFM	Rme1;Rme2	S9;S10	2	0	0	0	-1.408	-2.538887262	0.151322034	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+P07437	162	R	TUBB	Rme1	S10	1	0	0	0	-0.018	-0.017717361	0.975246073	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P07814	1152	R	EPRS	Rme1	S10	1	0	0	0	-0.563	-0.56287384	0.356176101	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P07900	201	R	HSP90AA1	Rme1	S10	1	0	0	0	-0.975	-0.975420952	0.159169811	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P07900	355	R	HSP90AA1	Rme1	S10	1	0	0	0	-0.586	-0.586073875	0.262705036	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P07900	510	R	HSP90AA1	Rme1	S10	1	0	0	0	-0.704	-0.704366684	0.230259542	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P07910	61	R	HNRNPC	Rme1	S10	1	0	0	0	-0.318	-0.317681313	0.501750725	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P07910	135	R	HNRNPC	Rme1	S10	1	0	0	0	-0.663	-0.66317749	0.299042254	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P08238	337	R	HSP90AB1	Rme1	S10	1	0	0	0	-0.88	-0.880472183	0.128818182	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P08621	201	R	SNRNP70	Rme1	S10	1	1	0	0	-3.004	-3.00404644	0.0	decreased	decreased	decreased		decreased
+P08670	13	R	VIM	Rme1	S8	1	0	0	0	-1.863	-1.863187015	0.091047619	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P08670	36	R	VIM	Rme1	S8	1	0	0	0	-1.462	-1.461927205	0.100631579	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P08670	50	R	VIM	Rme1	S10	1	1	0	0	-2.551	-2.551054001	0.0	decreased	decreased	decreased		decreased
+P08670	113	R	VIM	Rme1	S10	1	0	0	0	-0.455	-0.455311775	0.431253012	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P09012	152	R	SNRPA	Rme1	S10	1	0	0	0	0.018	0.01791954	0.969931759	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P09651	14	R	HNRNPA1	Rme1	S10	1	0	0	0	-0.869	-0.869407654	0.312724832	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P09651	140	R	HNRNPA1	Rme1	S10	1	0	0	0	-0.679	-0.679415703	0.233186312	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P09651	194	R	HNRNPA1	Rme1;Rme2	S9;S10	2	0	1	0	0.717	2.292284012	0.018758621	increased	increased	increased	no_significant_change	increased
+P09651	206	R	HNRNPA1	Rme1;Rme2	S8;S9;S10;S11;S12	9	0	4	4	2.171	5.357498407	0.0	increased	increased	increased	increased	increased
+P09651	218	R	HNRNPA1	Rme1;Rme2	S9;S10;S11;S12	7	0	1	6	1.729	2.171485901	0.043272727	increased	no_significant_change	increased	no_significant_change	increased
+P09651	225	R	HNRNPA1	Rme1;Rme2	S8;S9;S10;S11;S12	10	0	2	5	1.633	4.342100203	0.0	increased	increased	increased	no_significant_change	increased
+P09651	336	R	HNRNPA1	Rme1	S8	1	0	0	0	-0.847	-0.847217679	0.2228	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P09651	352	R	HNRNPA1	Rme1	S8;S10	2	0	0	0	-0.884	-1.593071193	0.106222222	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P09651	370	R	HNRNPA1	Rme1	S8;S10	3	0	0	0	-1.412	-1.841413289	0.07648	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P09874	156	R	PARP1	Rme1	S10	1	0	0	0	-0.827	-0.826859474	0.34775873	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P09874	582	R	PARP1	Rme1	S10	1	0	0	0	0.08	0.080472946	0.907819629	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P0C0S5	23	R	H2AFZ	Rme1	S10	1	0	0	0	-1.033	-1.032671928	0.112467532	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P0CG12	17	R	CHTF8	Rme2	S11	1	0	0	0	0.128	0.128145218	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P0CG12	146	R	CHTF8	Rme2	S11	2	0	0	1	0.16	0.111380577	0.992314607	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P0CG12	160	R	CHTF8	Rme2	S11	1	0	0	1	0.111	0.111380577	0.992314607	no_significant_change			no_significant_change	no_significant_change
+P0CG12	172	R	CHTF8	Rme1	S10	1	0	0	0	-0.921	-0.921277046	0.328703583	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P0CG12	186	R	CHTF8	Rme2	S9	1	0	0	1	-1.055	-1.054760814	0.206065934	no_significant_change			no_significant_change	no_significant_change
+P0CG12	201	R	CHTF8	Rme2	S9	1	0	0	1	-1.055	-1.054760814	0.206065934	no_significant_change			no_significant_change	no_significant_change
+P0CG12	225	R	CHTF8	Rme2	S9	1	0	0	1	-1.102	-1.101945221	0.279179487	no_significant_change			no_significant_change	no_significant_change
+P0CG12	239	R	CHTF8	Rme2	S9	1	0	0	1	-1.102	-1.101945221	0.279179487	no_significant_change			no_significant_change	no_significant_change
+P10070	910	R	GLI2	Rme2	S11	1	0	0	0	-0.174	-0.174109459	0.987549296	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P10809	141	R	HSPD1	Rme1	S10	1	0	0	0	-0.928	-0.928096771	0.254895522	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P11940	432	R	PABPC1	Rme1	S10	1	0	0	0	3.67	3.669697762	0.05903876	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P11940	481	R	PABPC1	Rme2	S9	1	0	0	1	-2.176	-2.175794482	0.144551724	no_significant_change			no_significant_change	no_significant_change
+P11940	493	R	PABPC1	Rme2	S9;S11;S12	4	0	0	1	-0.651	-2.175794482	0.144551724	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P12236	155	R	SLC25A6	Rme1	S10	1	0	0	0	-0.616	-0.616423607	0.309896194	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P12270	2111	R	TPR	Rme1	S10	1	0	0	0	-0.011	-0.010728836	0.975375	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P12270	2345	R	TPR	Rme2	S11;S12	2	0	0	2	-0.039	-0.096940994	0.902376812	no_significant_change			no_significant_change	no_significant_change
+P12270	2354	R	TPR	Rme2	S11;S12	2	0	0	2	-0.039	-0.096940994	0.902376812	no_significant_change			no_significant_change	no_significant_change
+P13073	41	R	COX4I1	Rme1	S10	1	0	0	0	-1.608	-1.608235359	0.167631336	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P13639	264	R	EEF2	Rme1	S10	1	0	0	0	-1.675	-1.674738884	0.087492958	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P13639	698	R	EEF2	Rme1	S10	1	0	0	0	-1.847	-1.846692085	0.154762887	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P14174	87	R	MIF	Rme1	S10	1	0	0	0	-0.615	-0.614952087	0.363640867	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P14678	108	R	SNRPB	Rme2	S9;S11;S12	3	0	0	3	-0.532	2.332231522	0.155428571	no_significant_change			no_significant_change	no_significant_change
+P14678	112	R	SNRPB	Rme2	S9;S11;S12	7	0	0	3	-0.488	2.332231522	0.155428571	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P14678	147	R	SNRPB	Rme2	S12	1	0	0	1	-2.098	-2.098080635	0.346181818	no_significant_change			no_significant_change	no_significant_change
+P14678	172	R	SNRPB	Rme2	S12	1	0	0	1	-2.098	-2.098080635	0.346181818	no_significant_change			no_significant_change	no_significant_change
+P14678	181	R	SNRPB	Rme2	S12	1	0	0	1	-2.098	-2.098080635	0.346181818	no_significant_change			no_significant_change	no_significant_change
+P14866	46	R	HNRNPL	Rme1	S10	1	0	0	0	-0.572	-0.57188797	0.288876325	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P16989	288	R	YBX3	Rme1	S10	1	1	0	0	-2.107	-2.10720253	0.038857143	decreased	decreased	decreased		decreased
+P16989	337	R	YBX3	Rme1	S8	1	0	0	1	-3.233	-3.233024571	0.114	no_significant_change		no_significant_change		no_significant_change
+P16989	338	R	YBX3	Rme1	S8	1	0	0	1	-3.233	-3.233024571	0.114	no_significant_change		no_significant_change		no_significant_change
+P17844	478	R	DDX5	Rme1	S10	1	0	0	0	-0.611	-0.611344337	0.21157377	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P18583	943	R	SON	Rme2	S11	1	0	0	0	-0.273	-0.273328781	0.957659864	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P18583	982	R	SON	Rme2	S9	1	0	0	1	0.972	0.972044051	0.342308943	no_significant_change			no_significant_change	no_significant_change
+P18583	985	R	SON	Rme2	S9	1	0	0	1	0.972	0.972044051	0.342308943	no_significant_change			no_significant_change	no_significant_change
+P18583	989	R	SON	Rme2	S9;S15	4	1	0	3	-0.135	-1.242820442	0.0	decreased	no_significant_change		decreased	decreased
+P18583	996	R	SON	Rme1;Rme2	S9;S15	2	1	0	2	-1.372	-1.242820442	0.0	decreased		decreased	no_significant_change	decreased
+P19338	656	R	NCL	Rme1	S10	1	0	0	0	1.211	1.211295128	0.200435146	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P19338	660	R	NCL	Rme2	S9	1	0	0	1	2.712	2.712008476	0.195428571	no_significant_change			no_significant_change	no_significant_change
+P19338	666	R	NCL	Rme2	S9	1	0	0	1	2.712	2.712008476	0.195428571	no_significant_change			no_significant_change	no_significant_change
+P19338	681	R	NCL	Rme2	S9	1	0	0	1	3.232	3.232428879	0.1824	no_significant_change			no_significant_change	no_significant_change
+P19338	687	R	NCL	Rme2	S9	1	0	0	1	3.232	3.232428879	0.1824	no_significant_change			no_significant_change	no_significant_change
+P19338	691	R	NCL	Rme2	S9	1	0	0	1	3.232	3.232428879	0.1824	no_significant_change			no_significant_change	no_significant_change
+P19484	8	R	TFEB	Rme2	S11	1	0	0	0	0.667	0.666980743	0.705623188	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P20290	19	R	BTF3	Rme1	S10	1	1	0	0	-1.275	-1.275406837	0.048141593	decreased	decreased	decreased		decreased
+P20700	14	R	LMNB1	Rme1	S10	1	0	0	0	-0.519	-0.519231796	0.282496454	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P22087	8	R	FBL	Rme1;Rme2	S9;S10;S12	3	0	1	1	1.583	2.108653069	0.031085714	increased	increased	increased	no_significant_change	increased
+P22087	15	R	FBL	Rme1;Rme2	S10;S12	2	0	0	1	1.128	1.364032745	0.056576	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+P22087	45	R	FBL	Rme2	S9;S12	3	0	0	3	4.089	4.088632047	0.133428571	no_significant_change			no_significant_change	no_significant_change
+P22087	59	R	FBL	Rme2	S9;S12	3	0	0	3	4.089	4.088632047	0.133428571	no_significant_change			no_significant_change	no_significant_change
+P22087	70	R	FBL	Rme2	S9	1	0	0	1	4.959	4.959288415	0.160941176	no_significant_change			no_significant_change	no_significant_change
+P22626	12	R	HNRNPA2B1	Rme1	S10	1	0	0	0	-0.805	-0.80493927	0.264554745	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P22626	129	R	HNRNPA2B1	Rme1	S10	1	0	0	0	-1.087	-1.086818695	0.194934498	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P22626	203	R	HNRNPA2B1	Rme1	S8;S10	5	1	0	3	-1.347	-1.573216438	0.029808219	decreased	no_significant_change	decreased		decreased
+P22626	213	R	HNRNPA2B1	Rme1	S8;S10	7	2	0	4	-1.389	-1.573216438	0.029808219	decreased	no_significant_change	decreased		decreased
+P22626	228	R	HNRNPA2B1	Rme1	S10	4	2	0	3	-1.318	-1.573216438	0.029808219	decreased	no_significant_change	decreased		decreased
+P22626	238	R	HNRNPA2B1	Rme1	S10	3	0	0	2	0.646	-0.92199707	0.126	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P22626	266	R	HNRNPA2B1	Rme1	S10	1	0	0	1	0.646	0.645848274	0.223286822	no_significant_change		no_significant_change		no_significant_change
+P23246	7	R	SFPQ	Rme2	S9;S11;S12	3	0	0	3	-1.5	-2.327234149	0.118956522	no_significant_change			no_significant_change	no_significant_change
+P23246	9	R	SFPQ	Rme2	S9;S11;S12	5	0	0	3	-1.5	-2.327234149	0.118956522	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P23246	19	R	SFPQ	Rme2	S9	2	0	0	2	-0.296	-0.552936062	0.571278689	no_significant_change			no_significant_change	no_significant_change
+P23246	25	R	SFPQ	Rme1;Rme2	S9;S10	3	0	1	2	-0.038	2.629962921	0.0	increased	increased	increased	no_significant_change	increased
+P23246	32	R	SFPQ	Rme2	S9	1	0	0	1	-0.553	-0.552936062	0.571278689	no_significant_change			no_significant_change	no_significant_change
+P23246	681	R	SFPQ	Rme1;Rme2	S8;S10;S15	4	0	0	3	-0.584	-0.396854401	0.316548495	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+P23246	693	R	SFPQ	Rme1;Rme2	S8;S9;S10;S12;S15	6	0	0	3	-0.699	-0.993949564	0.433052632	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+P23786	51	R	CPT2	Rme2	S11	1	0	0	0	0.545	0.545422554	0.9176	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P26373	74	R	RPL13	Rme1	S10	1	1	0	0	-3.03	-3.03014946	0.0	decreased	decreased	decreased		decreased
+P26583	110	R	HMGB2	Rme1	S8	1	0	0	0	1.027	1.02715072	0.493647059	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P27824	400	R	CANX	Rme1	S10	1	0	0	0	0.66	0.660299301	0.319574751	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P30041	106	R	PRDX6	Rme1	S10	1	0	0	0	-1.086	-1.085577965	0.115360947	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P31942	129	R	HNRNPH3	Rme1	S10	1	0	0	0	1.246	1.245597839	0.111741935	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P31942	323	R	HNRNPH3	Rme1;Rme2	S8;S10;S12	4	0	0	1	0.351	-1.596263885	0.16235514	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+P31942	343	R	HNRNPH3	Rme1	S10	2	0	0	1	-1.114	-1.596263885	0.16235514	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P31943	217	R	HNRNPH1	Rme2	S9	1	0	0	1	0.806	0.806377172	0.312727273	no_significant_change			no_significant_change	no_significant_change
+P31943	224	R	HNRNPH1	Rme2	S9	1	0	0	1	0.806	0.806377172	0.312727273	no_significant_change			no_significant_change	no_significant_change
+P31943	233	R	HNRNPH1	Rme1	S8;S10	3	0	0	1	-1.289	-1.289300919	0.065443609	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P31943	259	R	HNRNPH1	Rme1	S10	2	0	0	1	0.516	0.534248352	0.23230303	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P33240	402	R	CSTF2	Rme1	S10	1	1	0	0	-2.008	-2.00770092	0.044408163	decreased	decreased	decreased		decreased
+P33240	468	R	CSTF2	Rme2	S9	1	0	0	1	-0.892	-0.891778052	0.556658824	no_significant_change			no_significant_change	no_significant_change
+P33240	475	R	CSTF2	Rme2	S9	2	0	0	1	-1.292	-1.693153054	0.209191489	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P34897	416	R	SHMT2	Rme1	S10	1	0	0	0	-2.521	-2.52105999	0.165888889	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P35232	41	R	PHB	Rme1	S10	1	0	0	0	-0.893	-0.892947197	0.22242471	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P35527	490	R	KRT9	Rme1	S8	1	0	0	0	0.393	0.392808318	0.708235294	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P35580	1930	R	MYH10	Rme1	S10	1	1	0	0	-1.446	-1.445809364	0.026864198	decreased	decreased	decreased		decreased
+P35637	216	R	FUS	Rme2	S9;S11;S12	3	0	0	3	-0.507	-1.101709366	0.183142857	no_significant_change			no_significant_change	no_significant_change
+P35637	218	R	FUS	Rme2	S9;S11;S12	5	0	0	3	-0.423	3.890530169	0.119771429	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P35637	244	R	FUS	Rme2	S9	1	0	1	1	7.824	7.8240906	0.0	increased			increased	increased
+P35637	248	R	FUS	Rme2	S9	1	0	1	1	7.824	7.8240906	0.0	increased			increased	increased
+P35637	251	R	FUS	Rme1;Rme2	S9;S15	3	0	1	3	-0.156	7.8240906	0.0	increased		no_significant_change	increased	increased
+P35637	259	R	FUS	Rme2	S9;S15	2	0	0	2	-0.64	-1.124428391	0.309579832	no_significant_change			no_significant_change	no_significant_change
+P35637	388	R	FUS	Rme2	S9	1	0	0	1	0.396	0.396131858	0.704162437	no_significant_change			no_significant_change	no_significant_change
+P35637	394	R	FUS	Rme2	S9	2	0	0	2	0.16	0.396131858	0.704162437	no_significant_change			no_significant_change	no_significant_change
+P35637	407	R	FUS	Rme2	S9	3	0	0	2	0.131	0.396131858	0.704162437	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P35637	503	R	FUS	Rme1	S10	1	0	1	0	2.317	2.317354202	0.029013333	increased	increased	increased		increased
+P36578	97	R	RPL4	Rme1	S10	1	1	0	0	-2.071	-2.071391106	0.019428571	decreased	decreased	decreased		decreased
+P38159	101	R	RBMX	Rme1	S8	1	0	0	0	-1.081	-1.080677807	0.243902439	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P38159	110	R	RBMX	Rme2	S9;S12	2	0	0	2	2.323	5.411374211	0.178453333	no_significant_change			no_significant_change	no_significant_change
+P38159	113	R	RBMX	Rme2	S9;S12	2	0	0	2	2.323	5.411374211	0.178453333	no_significant_change			no_significant_change	no_significant_change
+P38159	125	R	RBMX	Rme1	S8;S10	3	0	0	1	-1.127	-0.921581268	0.116047619	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P38159	144	R	RBMX	Rme1	S10	1	0	0	1	-0.922	-0.921581268	0.116047619	no_significant_change		no_significant_change		no_significant_change
+P38159	164	R	RBMX	Rme1	S8;S10	2	0	0	1	-0.923	-2.196898617	0.112	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P38159	172	R	RBMX	Rme1	S8	2	0	0	1	-1.867	-1.5375981	0.083130435	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P38159	298	R	RBMX	Rme1	S10	1	1	0	0	-1.539	-1.539050102	0.045757009	decreased	decreased	decreased		decreased
+P38159	369	R	RBMX	Rme1	S10	2	0	2	1	2.27	1.882779121	0.0	increased	increased	increased		increased
+P38159	373	R	RBMX	Rme1	S10	1	0	1	1	2.658	2.658136368	0.020923077	increased		increased		increased
+P38432	393	R	COIL	Rme2	S9;S12	2	0	0	0	-0.612	-1.223460287	0.403380282	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P40425	15	R	PBX2	Rme1	S10	1	0	0	0	-2.436	-2.436044693	0.14205291	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P42575	22	R	CASP2	Rme1	S10	1	1	0	0	-1.681	-1.680787086	0.04427907	decreased	decreased	decreased		decreased
+P46783	153	R	RPS10	Rme1	S10	1	0	0	0	-1.168	-1.168318748	0.133740113	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P48382	338	R	RFX5	Rme2	S11	1	0	0	1	0.398	0.397989273	1.0	no_significant_change			no_significant_change	no_significant_change
+P48382	354	R	RFX5	Rme2	S11	1	0	0	1	0.398	0.397989273	1.0	no_significant_change			no_significant_change	no_significant_change
+P48634	722	R	PRRC2A	Rme1	S10	1	0	0	0	-1.091	-1.091444969	0.217371429	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P48634	1172	R	PRRC2A	Rme2	S9	1	0	0	1	-0.415	-0.414726973	0.667125	no_significant_change			no_significant_change	no_significant_change
+P48634	1176	R	PRRC2A	Rme2	S9	1	0	0	1	-0.415	-0.414726973	0.667125	no_significant_change			no_significant_change	no_significant_change
+P49247	42	R	RPIA	Rme2	S11	1	0	0	0	-0.294	-0.293789864	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P49247	52	R	RPIA	Rme1	S10	1	1	0	0	-2.002	-2.001677513	0.0	decreased	decreased	decreased		decreased
+P49368	5	R	CCT3	Rme1	S10	1	0	0	0	-1.49	-1.490382195	0.118878049	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P49419	3	R	ALDH7A1	Rme2	S11	1	0	0	1	0.708	0.707713127	0.834987952	no_significant_change			no_significant_change	no_significant_change
+P49419	6	R	ALDH7A1	Rme2	S11	1	0	0	1	0.708	0.707713127	0.834987952	no_significant_change			no_significant_change	no_significant_change
+P49750	761	R	YLPM1	Rme1;Rme2	S10;S11	2	0	0	0	-0.842	-1.37399292	0.118157576	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+P49750	784	R	YLPM1	Rme1;Rme2	S8;S9	3	0	0	1	0.021	0.440862432	0.563	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+P49750	789	R	YLPM1	Rme2	S9;S11	2	0	0	2	-0.699	-1.131367683	0.6296	no_significant_change			no_significant_change	no_significant_change
+P49750	794	R	YLPM1	Rme2	S9;S11	2	0	0	2	-0.699	-1.131367683	0.6296	no_significant_change			no_significant_change	no_significant_change
+P49750	796	R	YLPM1	Rme2	S11	1	0	0	1	-1.131	-1.131367683	0.6296	no_significant_change			no_significant_change	no_significant_change
+P49750	831	R	YLPM1	Rme2	S9	1	0	0	0	0.738	0.737526059	0.401555556	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P49750	1513	R	YLPM1	Rme1;Rme2	S9;S15	2	0	0	2	-0.141	-0.597291185	0.5456	no_significant_change		no_significant_change	no_significant_change	no_significant_change
+P49750	1527	R	YLPM1	Rme2	S9	2	0	0	1	0.572	0.827931941	0.556584795	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P49750	1534	R	YLPM1	Rme2	S15	1	0	0	1	-0.597	-0.597291185	0.5456	no_significant_change			no_significant_change	no_significant_change
+P49750	1758	R	YLPM1	Rme1;Rme2	S9;S10	2	0	0	0	-0.039	0.807456017	0.202126582	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+P49792	1016	R	RANBP2	Rme2	S9	1	0	0	0	-1.668	-1.668343067	0.194734177	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P50548	224	R	ERF	Rme2	S11	1	0	0	0	-1.352	-1.352067947	0.430564103	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P51116	399	R	FXR2	Rme1	S8;S10	2	0	0	0	-0.41	-0.459835052	0.360777429	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P51610	504	R	HCFC1	Rme1;Rme2	S8;S9	2	0	0	0	1.388	1.472863346	0.333333333	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+P51610	847	R	HCFC1	Rme2	S9	1	0	0	1	-1.161	-1.16058588	0.453987097	no_significant_change			no_significant_change	no_significant_change
+P51610	855	R	HCFC1	Rme2	S9;S11	3	0	0	1	-1.022	-1.022414297	0.438826667	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P51610	1219	R	HCFC1	Rme2	S9;S11	2	0	0	0	-0.869	-1.137852684	0.193563218	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P51816	685	R	AFF2	Rme2	S11;S12	2	0	0	0	0.159	-0.15596199	0.788125	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P51991	161	R	HNRNPA3	Rme1	S10	1	0	0	0	-0.357	-0.35697937	0.456140762	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P51991	214	R	HNRNPA3	Rme2	S11	1	0	0	1	-0.518	-0.517742157	1.0	no_significant_change			no_significant_change	no_significant_change
+P51991	216	R	HNRNPA3	Rme1;Rme2	S9;S10;S11	4	0	2	3	3.582	3.518285751	0.0	increased	increased	increased	no_significant_change	increased
+P51991	226	R	HNRNPA3	Rme1;Rme2	S9;S10;S15	4	0	3	3	3.174	3.924868584	0.0	increased	increased	increased	increased	increased
+P51991	239	R	HNRNPA3	Rme2	S9;S15	2	0	1	2	3.013	2.701250672	0.0	increased			increased	increased
+P51991	246	R	HNRNPA3	Rme1;Rme2	S8;S9;S10;S11;S12;S15	7	0	4	2	3.324	3.812443733	0.0	increased	increased	increased	increased	increased
+P51991	257	R	HNRNPA3	Rme1	S15	1	0	1	1	2.701	2.701250672	0.0	increased		increased		increased
+P51991	376	R	HNRNPA3	Rme1	S10	1	0	0	0	-0.992	-0.991823196	0.199448276	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P52298	146	R	NCBP2	Rme1	S10	1	1	0	0	-1.948	-1.947926521	0.043770115	decreased	decreased	decreased		decreased
+P52597	212	R	HNRNPF	Rme1	S10	1	1	0	0	-2.029	-2.028944016	0.02176	decreased	decreased	decreased		decreased
+P54577	418	R	YARS	Rme1	S10	1	0	0	0	-1.051	-1.051478386	0.303191638	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P54819	202	R	AK2	Rme1	S10	1	0	0	0	-0.153	-0.15267086	0.739093923	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P55265	26	R	ADAR	Rme2	S11	1	0	0	0	-0.448	-0.448002815	0.91414433	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P55795	233	R	HNRNPH2	Rme1	S10	2	0	0	1	-0.668	-1.270235062	0.093706667	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P55795	259	R	HNRNPH2	Rme1	S10	1	0	0	1	-0.066	-0.065817833	0.883361702	no_significant_change		no_significant_change		no_significant_change
+P60709	95	R	ACTB	Rme1	S10	1	0	0	0	0.44	0.439789772	0.534247839	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P60709	290	R	ACTB	Rme1	S10	1	0	0	0	-0.743	-0.743182182	0.323629139	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P60709	312	R	ACTB	Rme1	S10	1	0	0	0	-0.169	-0.168768883	0.748527473	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P61081	169	R	UBE2M	Rme1	S10	1	0	0	0	-1.773	-1.773379326	0.058584615	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P61353	36	R	RPL27	Rme1	S10	1	0	0	0	-2.285	-2.285253525	0.088821918	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P61604	15	R	HSPE1	Rme1	S10	1	0	0	0	-0.206	-0.206103325	0.783501355	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P61978	201	R	HNRNPK	Rme1	S10	1	0	0	0	-0.451	-0.45057106	0.394495413	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P61978	256	R	HNRNPK	Rme1;Rme2	S8;S9;S10;S11;S12	7	0	2	4	0.271	5.869625568	0.0	increased	increased	increased	no_significant_change	increased
+P61978	258	R	HNRNPK	Rme2	S9;S11;S12	4	0	0	4	0.041	-0.220121861	0.82862963	no_significant_change			no_significant_change	no_significant_change
+P61978	268	R	HNRNPK	Rme2	S9	1	0	0	0	-0.955	-0.954824537	0.556439306	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P61978	286	R	HNRNPK	Rme1	S10	1	1	0	0	-1.337	-1.336929321	0.041846154	decreased	decreased	decreased		decreased
+P61978	296	R	HNRNPK	Rme1;Rme2	S9;S10	3	0	1	1	4.366	4.391097069	0.0	increased	increased	increased	no_significant_change	increased
+P61978	299	R	HNRNPK	Rme2	S9	1	0	0	1	1.57	1.570421219	0.149584906	no_significant_change			no_significant_change	no_significant_change
+P61978	305	R	HNRNPK	Rme1	S8	1	0	0	0	-0.899	-0.899184592	0.592275862	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P61978	316	R	HNRNPK	Rme1	S10	1	1	0	0	-2.161	-2.1606884	0.046795699	decreased	decreased	decreased		decreased
+P61978	325	R	HNRNPK	Rme1	S10	1	0	0	0	-1.011	-1.011417389	0.166862385	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P62258	141	R	YWHAE	Rme1	S10	1	0	0	0	-0.33	-0.329699516	0.456141593	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P62306	85	R	SNRPF	Rme1	S10	1	0	0	0	-0.93	-0.929985046	0.307766323	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P62318	118	R	SNRPD3	Rme2	S11;S12	2	0	0	0	0.646	-1.010495186	0.28	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+P62424	229	R	RPL7A	Rme1	S10	1	0	0	0	-1.687	-1.687366486	0.153183673	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P62633	32	R	CNBP	Rme2	S9	1	0	0	1	-0.853	-0.852660656	0.432	no_significant_change			no_significant_change	no_significant_change
+P62633	34	R	CNBP	Rme2	S9	1	0	0	1	-0.853	-0.852660656	0.432	no_significant_change			no_significant_change	no_significant_change
+P62633	79	R	CNBP	Rme1	S10	1	0	0	0	-0.025	-0.024876595	0.964263852	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P62753	154	R	RPS6	Rme1	S10	1	0	0	0	-1.93	-1.930495262	0.153969231	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P62805	24	R	HIST1H4A	Rme1;Rme2	S8;S9;S12	3	0	0	0	1.764	2.292490005	0.272	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+P62805	36	R	HIST1H4A	Rme1	S10	1	0	0	0	-0.721	-0.721335411	0.312	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P62805	46	R	HIST1H4A	Rme1	S10	1	0	0	0	-2.205	-2.205010414	0.056765217	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P62805	56	R	HIST1H4A	Rme1	S10	1	0	0	0	-0.899	-0.898886681	0.297992982	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P62805	68	R	HIST1H4A	Rme1	S10	1	0	0	0	-0.065	-0.064951897	0.957904762	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P62826	166	R	RAN	Rme1	S10	1	0	0	0	-0.856	-0.855628967	0.219552	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P62995	241	R	TRA2B	Rme1;Rme2	S8;S9;S10;S11;S12	5	0	1	0	-0.286	2.807785034	0.0	increased	increased	increased	no_significant_change	increased
+P67809	199	R	YBX1	Rme1	S10	1	0	0	0	-1.9	-1.900147438	0.056275862	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P68363	339	R	TUBA1B	Rme1	S8	1	0	0	0	-1.704	-1.704271436	0.143741935	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P68431	50	R	HIST1H3A	Rme1	S10	1	0	0	0	-0.626	-0.625787735	0.348866242	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P68431	64	R	HIST1H3A	Rme1	S10	1	0	0	0	-0.989	-0.988520622	0.220433735	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P78344	23	R	EIF4G2	Rme1	S10	1	1	0	0	-4.076	-4.075666428	0.0	decreased	decreased	decreased		decreased
+P78344	360	R	EIF4G2	Rme1	S10	1	0	0	0	-1.029	-1.028948784	0.13224581	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P84090	96	R	ERH	Rme1	S10	1	0	0	0	-0.743	-0.742674828	0.258823529	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P84243	43	R	H3F3A	Rme1	S8	1	0	0	0	-0.533	-0.533210635	0.721454545	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P98179	90	R	RBM3	Rme1;Rme2	S9;S15	2	0	0	2	-0.81	-1.192610025	0.203288889	no_significant_change		no_significant_change	no_significant_change	no_significant_change
+P98179	99	R	RBM3	Rme2	S9;S15	2	0	0	2	-0.81	-1.192610025	0.203288889	no_significant_change			no_significant_change	no_significant_change
+P98179	105	R	RBM3	Rme1;Rme2	S9;S10;S11;S12	4	0	0	0	-0.599	-0.59220916	0.430222222	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+P98179	131	R	RBM3	Rme1	S10	1	0	0	0	-1.906	-1.905714035	0.068503704	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+P98179	145	R	RBM3	Rme1	S10	1	0	0	0	-3.126	-3.12596035	0.058137405	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q00587	53	R	CDC42EP1	Rme1	S10	1	0	0	0	-0.006	-0.00640583	0.992207792	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q00839	484	R	HNRNPU	Rme1	S10	1	0	0	0	-1.737	-1.737021446	0.212444444	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q00839	707	R	HNRNPU	Rme2	S9	1	0	0	1	4.743	4.742810041	0.3648	no_significant_change			no_significant_change	no_significant_change
+Q00839	709	R	HNRNPU	Rme2	S9	1	0	0	1	4.743	4.742810041	0.3648	no_significant_change			no_significant_change	no_significant_change
+Q00839	715	R	HNRNPU	Rme2	S9	1	0	0	1	4.743	4.742810041	0.3648	no_significant_change			no_significant_change	no_significant_change
+Q00839	733	R	HNRNPU	Rme2	S9;S11;S12	3	0	0	3	-0.336	-0.43990612	0.591397849	no_significant_change			no_significant_change	no_significant_change
+Q00839	739	R	HNRNPU	Rme1;Rme2	S9;S10;S11;S12	6	0	2	3	1.279	3.162666321	0.0	increased	increased	increased	increased	increased
+Q00839	762	R	HNRNPU	Rme2	S11	1	0	0	1	-0.056	-0.055890083	0.991562842	no_significant_change			no_significant_change	no_significant_change
+Q00839	768	R	HNRNPU	Rme2	S9;S11	2	0	1	2	2.507	5.07058996	0.0	increased			increased	increased
+Q00839	773	R	HNRNPU	Rme2	S9	1	0	1	1	5.071	5.07058996	0.0	increased			increased	increased
+Q01804	1061	R	OTUD4	Rme1	S10	1	0	1	0	6.138	6.137742043	0.0	increased	increased	increased		increased
+Q01844	455	R	EWSR1	Rme1;Rme2	S8;S9;S10;S11;S12	7	0	2	0	0.095	4.678651407	0.0	increased	increased	increased	no_significant_change	increased
+Q01844	464	R	EWSR1	Rme1	S10	1	0	1	1	3.694	3.693565369	0.022666667	increased		increased		increased
+Q01844	471	R	EWSR1	Rme1;Rme2	S8;S9;S10;S11	6	0	1	1	0.38	3.693565369	0.022666667	increased	no_significant_change	increased	no_significant_change	increased
+Q01844	494	R	EWSR1	Rme2	S9	1	0	0	1	1.191	1.190591961	0.314622951	no_significant_change			no_significant_change	no_significant_change
+Q01844	500	R	EWSR1	Rme2	S9	1	0	0	1	1.191	1.190591961	0.314622951	no_significant_change			no_significant_change	no_significant_change
+Q01844	503	R	EWSR1	Rme2	S9	1	0	0	1	1.971	1.970643163	0.146814815	no_significant_change			no_significant_change	no_significant_change
+Q01844	506	R	EWSR1	Rme2	S9	1	0	0	1	1.971	1.970643163	0.146814815	no_significant_change			no_significant_change	no_significant_change
+Q01844	603	R	EWSR1	Rme2	S9	1	0	0	1	4.509	4.509083509	0.152	no_significant_change			no_significant_change	no_significant_change
+Q01844	607	R	EWSR1	Rme2	S9	1	0	0	1	4.509	4.509083509	0.152	no_significant_change			no_significant_change	no_significant_change
+Q01844	615	R	EWSR1	Rme1;Rme2	S9;S10;S11;S12	5	0	1	0	0.071	2.826648712	0.0	increased	increased	increased	no_significant_change	increased
+Q02978	78	R	SLC25A11	Rme1	S10	1	0	0	0	-0.553	-0.553233147	0.563507163	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q03252	73	R	LMNB2	Rme1	S10	1	0	0	0	-0.451	-0.4510355	0.446718101	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q04637	48	R	EIF4G1	Rme2	S9;S11	2	0	0	1	-0.647	-1.012747049	0.230458716	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q04637	55	R	EIF4G1	Rme2	S9	1	0	0	1	-1.013	-1.012747049	0.230458716	no_significant_change			no_significant_change	no_significant_change
+Q04637	685	R	EIF4G1	Rme1	S10	1	1	0	0	-1.797	-1.796803474	0.043089109	decreased	decreased	decreased		decreased
+Q04637	694	R	EIF4G1	Rme1	S10	1	1	0	0	-2.206	-2.20608902	0.046297872	decreased	decreased	decreased		decreased
+Q04637	1032	R	EIF4G1	Rme1	S10	2	2	0	1	-2.083	-2.146663666	0.0	decreased	decreased	decreased		decreased
+Q04637	1042	R	EIF4G1	Rme1	S10	1	1	0	1	-2.147	-2.146663666	0.0	decreased		decreased		decreased
+Q04724	6	R	TLE1	Rme2	S9	1	0	0	0	-1.668	-1.668166166	0.144820513	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q04726	6	R	TLE3	Rme2	S9	1	0	0	0	-0.125	-0.124883769	0.908214286	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q06787	471	R	FMR1	Rme1	S10	1	0	0	1	-0.933	-0.932881355	0.150874372	no_significant_change		no_significant_change		no_significant_change
+Q06787	474	R	FMR1	Rme1	S10	1	0	0	1	-0.933	-0.932881355	0.150874372	no_significant_change		no_significant_change		no_significant_change
+Q07666	282	R	KHDRBS1	Rme2	S9	1	0	0	1	2.232	2.2321769	0.128827586	no_significant_change			no_significant_change	no_significant_change
+Q07666	284	R	KHDRBS1	Rme2	S9;S12	3	0	0	3	1.659	2.2321769	0.128827586	no_significant_change			no_significant_change	no_significant_change
+Q07666	289	R	KHDRBS1	Rme2	S9;S11;S12	5	0	0	5	1.399	2.2321769	0.128827586	no_significant_change			no_significant_change	no_significant_change
+Q07666	291	R	KHDRBS1	Rme1;Rme2	S8;S9;S10;S11;S12	7	0	3	5	1.659	5.96103704	0.0	increased	increased	increased	no_significant_change	increased
+Q07666	302	R	KHDRBS1	Rme1;Rme2	S10;S11	2	0	1	2	2.002	4.540624619	0.0	increased		increased	no_significant_change	increased
+Q07666	304	R	KHDRBS1	Rme1	S10	1	0	1	1	4.074	4.073589325	0.0	increased		increased		increased
+Q07666	310	R	KHDRBS1	Rme1	S10	1	0	1	1	4.074	4.073589325	0.0	increased		increased		increased
+Q07666	325	R	KHDRBS1	Rme1;Rme2	S9;S10;S11	4	0	2	2	1.017	1.506729126	0.0272	increased	increased	increased	no_significant_change	increased
+Q07666	331	R	KHDRBS1	Rme1;Rme2	S8;S9;S10;S11;S12;S15	11	0	2	7	0.122	1.506729126	0.0272	increased	increased	increased	no_significant_change	increased
+Q07666	340	R	KHDRBS1	Rme1;Rme2	S9;S10;S11;S12	4	0	0	4	-0.354	1.312285423	0.114335404	no_significant_change		no_significant_change	no_significant_change	no_significant_change
+Q07666	346	R	KHDRBS1	Rme2	S9;S11;S12;S15	4	0	0	4	-0.676	-1.464753866	0.187609756	no_significant_change			no_significant_change	no_significant_change
+Q07666	348	R	KHDRBS1	Rme2	S15	1	0	0	1	-0.618	-0.618435889	0.7264	no_significant_change			no_significant_change	no_significant_change
+Q07890	1321	R	SOS2	Rme2	S11	1	0	0	0	-1.062	-1.061601639	0.629142857	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q07955	93	R	SRSF1	Rme2	S9	2	0	0	2	-1.553	-1.836402752	0.146360656	no_significant_change			no_significant_change	no_significant_change
+Q07955	97	R	SRSF1	Rme2	S9	2	0	0	2	-1.553	-1.836402752	0.146360656	no_significant_change			no_significant_change	no_significant_change
+Q07955	109	R	SRSF1	Rme2	S9	2	0	0	2	-1.553	-1.836402752	0.146360656	no_significant_change			no_significant_change	no_significant_change
+Q08211	1160	R	DHX9	Rme1	S10	1	1	0	0	-2.347	-2.347334862	0.019781818	decreased	decreased	decreased		decreased
+Q08211	1219	R	DHX9	Rme1;Rme2	S9;S15	2	0	1	2	4.481	4.590169609	0.0	increased		increased	no_significant_change	increased
+Q08211	1223	R	DHX9	Rme2	S9;S15	2	0	1	2	4.481	4.590169609	0.0	increased			increased	increased
+Q08211	1227	R	DHX9	Rme2	S15	1	0	1	1	4.59	4.590169609	0.0	increased			increased	increased
+Q08211	1249	R	DHX9	Rme2	S9;S11;S12	3	0	2	3	4.724	4.723907471	0.0	increased			increased	increased
+Q08211	1253	R	DHX9	Rme2	S9;S11;S12	3	0	2	3	4.724	4.723907471	0.0	increased			increased	increased
+Q08211	1265	R	DHX9	Rme2	S9;S11;S12	3	0	2	3	4.724	4.723907471	0.0	increased			increased	increased
+Q12830	92	R	BPTF	Rme1;Rme2	S9;S10	2	0	1	1	0.935	2.707659721	0.0	increased	increased	increased	no_significant_change	increased
+Q12830	95	R	BPTF	Rme2	S9	2	0	0	2	-0.425	-0.836772561	0.235185841	no_significant_change			no_significant_change	no_significant_change
+Q12830	101	R	BPTF	Rme2	S9	1	0	0	1	-0.014	-0.013994813	0.994199203	no_significant_change			no_significant_change	no_significant_change
+Q12830	2162	R	BPTF	Rme2	S9;S11	2	0	0	2	0.16	-0.613161817	0.568043243	no_significant_change			no_significant_change	no_significant_change
+Q12830	2184	R	BPTF	Rme2	S9;S11	2	0	0	2	0.16	-0.613161817	0.568043243	no_significant_change			no_significant_change	no_significant_change
+Q12830	2191	R	BPTF	Rme2	S9;S11	2	0	0	2	0.16	-0.613161817	0.568043243	no_significant_change			no_significant_change	no_significant_change
+Q12906	609	R	ILF3	Rme1;Rme2	S8;S9;S10;S11;S12	6	0	0	0	-0.64	1.182653427	0.084857143	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q13151	291	R	HNRNPA0	Rme1;Rme2	S9;S10;S11;S12	4	0	1	0	-0.061	2.738945961	0.0	increased	increased	increased	no_significant_change	increased
+Q13155	26	R	AIMP2	Rme1;Rme2	S8;S9;S10;S11	4	0	0	0	-0.735	-0.752737999	0.157758454	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q13227	312	R	GPS2	Rme2	S9;S11	3	0	0	2	-0.39	-0.481209993	0.560409091	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q13227	323	R	GPS2	Rme2	S9;S11	2	0	0	2	-0.435	-0.481209993	0.560409091	no_significant_change			no_significant_change	no_significant_change
+Q13243	88	R	SRSF5	Rme1	S10	1	0	0	0	-1.312	-1.311964989	0.132988764	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q13283	435	R	G3BP1	Rme1;Rme2	S8;S9;S10;S11;S12	6	0	0	0	-0.763	1.125624657	0.079352941	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q13283	447	R	G3BP1	Rme2	S9;S11;S12	3	0	0	3	-1.188	-1.268571377	0.144	no_significant_change			no_significant_change	no_significant_change
+Q13283	460	R	G3BP1	Rme2	S9;S11;S12	4	0	0	3	-0.45	-1.268571377	0.144	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q13303	28	R	KCNAB2	Rme2	S11	1	0	0	0	-0.248	-0.248082161	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q13310	454	R	PABPC4	Rme2	S9	1	0	0	1	-0.663	-0.663318813	0.36989313	no_significant_change			no_significant_change	no_significant_change
+Q13310	459	R	PABPC4	Rme2	S9	1	0	0	1	-0.663	-0.663318813	0.36989313	no_significant_change			no_significant_change	no_significant_change
+Q13310	463	R	PABPC4	Rme2	S9	1	0	0	1	-0.663	-0.663318813	0.36989313	no_significant_change			no_significant_change	no_significant_change
+Q13310	509	R	PABPC4	Rme2	S11	1	0	0	1	0.332	0.331562042	1.0	no_significant_change			no_significant_change	no_significant_change
+Q13310	518	R	PABPC4	Rme2	S9;S11	3	0	0	1	-0.148	-0.148391578	0.930761062	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q13310	530	R	PABPC4	Rme2	S9;S11	2	0	0	0	-0.629	-1.528466851	0.212715789	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q13330	636	R	MTA1	Rme1	S10	1	0	0	0	-0.527	-0.526945114	0.313777778	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q13435	205	R	SF3B2	Rme2	S11	1	0	0	1	-0.01	-0.010163307	1.0	no_significant_change			no_significant_change	no_significant_change
+Q13435	216	R	SF3B2	Rme1;Rme2	S10;S11	3	0	0	1	-0.01	-0.947500229	0.221647059	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q13435	222	R	SF3B2	Rme2	S9;S11;S15	3	0	0	2	-0.485	-0.484763682	0.4932	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q13435	245	R	SF3B2	Rme1;Rme2	S10;S11;S15	3	0	0	2	0.169	0.79357338	0.265570909	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q13435	502	R	SF3B2	Rme2	S9;S11	2	0	0	0	0.001	-0.367805719	0.750935961	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q13509	162	R	TUBB3	Rme1	S10	1	0	0	0	-0.442	-0.441693306	0.331572816	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q13885	121	R	TUBB2A	Rme1	S10	1	0	0	0	-0.811	-0.811354637	0.357299685	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q13885	251	R	TUBB2A	Rme1	S10	1	0	0	0	-0.425	-0.424869537	0.348179487	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q13895	40	R	BYSL	Rme1	S10	1	1	0	0	-3.377	-3.376646042	0.031536232	decreased	decreased	decreased		decreased
+Q14011	94	R	CIRBP	Rme2	S11	1	0	0	1	0.116	0.11608696	0.992426036	no_significant_change			no_significant_change	no_significant_change
+Q14011	101	R	CIRBP	Rme2	S11	1	0	0	1	0.116	0.11608696	0.992426036	no_significant_change			no_significant_change	no_significant_change
+Q14011	154	R	CIRBP	Rme1	S10	1	0	0	0	-0.622	-0.622000694	0.437652695	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q14103	138	R	HNRNPD	Rme1	S10	1	0	0	0	-0.155	-0.155274391	0.802767568	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q14103	272	R	HNRNPD	Rme1;Rme2	S9;S10;S11	7	0	2	4	1.264	3.084996223	0.0	increased	increased	increased	no_significant_change	increased
+Q14103	278	R	HNRNPD	Rme1;Rme2	S9;S10;S11	4	0	1	4	0.606	3.084996223	0.0	increased		increased	no_significant_change	increased
+Q14103	280	R	HNRNPD	Rme2	S11	1	0	0	1	-0.052	-0.052145004	0.986795699	no_significant_change			no_significant_change	no_significant_change
+Q14103	345	R	HNRNPD	Rme1;Rme2	S9;S10;S11;S12	5	0	0	0	-0.073	-1.701545417	0.176105263	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q14151	835	R	SAFB2	Rme1	S10	1	0	0	0	-0.525	-0.52461338	0.274761566	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q14151	842	R	SAFB2	Rme1	S10	1	1	0	0	-2.19	-2.190466881	0.032	decreased	decreased	decreased		decreased
+Q14151	903	R	SAFB2	Rme1;Rme2	S9;S10	2	0	1	0	2.19	3.849814415	0.0	increased	increased	increased	no_significant_change	increased
+Q14444	633	R	CAPRIN1	Rme1;Rme2	S9;S10	2	0	1	0	-0.022	1.700203896	0.027544304	increased	increased	increased	no_significant_change	increased
+Q14498	109	R	RBM39	Rme1	S10	1	0	0	0	-0.578	-0.57780838	0.312491468	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q14686	413	R	NCOA6	Rme2	S9	1	0	0	0	0.326	0.326219533	0.70840404	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q14686	1047	R	NCOA6	Rme2	S11	2	0	0	1	-0.22	-0.516150475	0.784195122	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q14686	1058	R	NCOA6	Rme2	S11	1	0	0	1	-0.516	-0.516150475	0.784195122	no_significant_change			no_significant_change	no_significant_change
+Q14686	1067	R	NCOA6	Rme2	S11	1	0	0	0	0.874	0.873873711	0.752	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q14687	232	R	GSE1	Rme1	S10	1	0	0	0	-0.343	-0.342791557	0.466472303	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q14781	247	R	CBX2	Rme1	S8;S10	2	0	0	0	-0.814	-1.348927975	0.079666667	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q14966	1465	R	ZNF638	Rme1	S10	1	0	0	0	-1.554	-1.554056168	0.13078453	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q14974	15	R	KPNB1	Rme1	S10	1	0	0	0	-0.289	-0.288741112	0.451573964	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q14978	683	R	NOLC1	Rme1	S10	1	1	0	0	-1.826	-1.826190948	0.0	decreased	decreased	decreased		decreased
+Q15020	906	R	SART3	Rme1	S8;S10	2	0	0	0	-0.512	-0.564367294	0.332258065	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q15025	599	R	TNIP1	Rme2	S11	1	0	0	0	0.39	0.389982224	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q15047	495	R	SETDB1	Rme2	S9	1	0	0	0	-0.453	-0.453003407	0.567284916	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q15056	19	R	EIF4H	Rme2	S11;S12	2	0	0	0	-1.361	-1.238490105	0.253866667	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q15056	166	R	EIF4H	Rme2	S9	1	0	0	0	-0.869	-0.868604839	0.34048	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q15056	191	R	EIF4H	Rme1	S10	1	0	0	0	-1.739	-1.738534927	0.085467626	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q15084	409	R	PDIA6	Rme1	S10	1	0	0	0	-0.393	-0.393437386	0.365876543	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q15233	135	R	NONO	Rme1	S10	1	0	0	0	-0.849	-0.848932266	0.155940887	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q15424	811	R	SAFB	Rme1	S10	1	0	0	0	0.088	0.088335991	0.828301075	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q15424	868	R	SAFB	Rme2	S9	2	0	0	2	0.677	1.564293921	0.15545098	no_significant_change			no_significant_change	no_significant_change
+Q15424	874	R	SAFB	Rme1;Rme2	S9;S10	3	0	1	2	1.564	4.852989197	0.0	increased	increased	increased	no_significant_change	increased
+Q15424	884	R	SAFB	Rme2	S9	1	0	0	1	-0.211	-0.210531846	0.834242991	no_significant_change			no_significant_change	no_significant_change
+Q15459	578	R	SF3A1	Rme2	S9	1	0	0	0	0.109	0.108670384	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q15596	1173	R	NCOA2	Rme2	S11	1	0	0	1	1.815	1.814534187	0.569230769	no_significant_change			no_significant_change	no_significant_change
+Q15596	1177	R	NCOA2	Rme2	S11	1	0	0	1	1.815	1.814534187	0.569230769	no_significant_change			no_significant_change	no_significant_change
+Q15596	1190	R	NCOA2	Rme2	S11	1	0	0	1	1.815	1.814534187	0.569230769	no_significant_change			no_significant_change	no_significant_change
+Q15654	111	R	TRIP6	Rme1	S8	1	0	0	0	-0.854	-0.853749096	0.328545455	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q15654	186	R	TRIP6	Rme1	S10	1	0	0	1	0.395	0.395353317	0.374503067	no_significant_change		no_significant_change		no_significant_change
+Q15654	205	R	TRIP6	Rme1	S10	2	0	0	1	0.634	0.872548103	0.216487805	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q15654	238	R	TRIP6	Rme1	S10	1	0	0	0	-1.287	-1.28720665	0.127678161	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q15717	205	R	ELAVL1	Rme1	S10	1	0	0	0	-1.103	-1.102930069	0.089434483	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q15717	206	R	ELAVL1	Rme1	S8	2	0	0	1	-0.823	-1.684171319	0.112470588	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q15717	217	R	ELAVL1	Rme1;Rme2	S8;S9;S10;S11	5	0	0	1	-0.379	-0.635661121	0.513166667	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q15788	1131	R	NCOA1	Rme2	S11	1	0	0	0	0.897	0.897457123	0.632761905	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q16890	133	R	TPD52L1	Rme2	S11	1	0	0	0	-0.129	-0.128851891	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q1KMD3	656	R	HNRNPUL2	Rme1;Rme2	S9;S10;S11;S12	4	0	0	0	-0.424	-0.64817977	0.559952663	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q1KMD3	684	R	HNRNPUL2	Rme1;Rme2	S9;S10;S11	3	0	1	0	0.666	2.695487022	0.0	increased	increased	increased	no_significant_change	increased
+Q1KMD3	738	R	HNRNPUL2	Rme1	S10	1	1	0	0	-1.781	-1.781023026	0.041846154	decreased	decreased	decreased		decreased
+Q2TAM9	31	R	TUSC1	Rme2	S9	1	0	0	1	-0.678	-0.677543819	0.406241135	no_significant_change			no_significant_change	no_significant_change
+Q2TAM9	33	R	TUSC1	Rme2	S9	1	0	0	1	-0.678	-0.677543819	0.406241135	no_significant_change			no_significant_change	no_significant_change
+Q52LJ0	396	R	FAM98B	Rme2	S9;S12	2	0	0	2	0.706	0.801733434	0.311533333	no_significant_change			no_significant_change	no_significant_change
+Q52LJ0	402	R	FAM98B	Rme2	S9;S12	2	0	0	2	0.706	0.801733434	0.311533333	no_significant_change			no_significant_change	no_significant_change
+Q52LJ0	408	R	FAM98B	Rme2	S9;S12	2	0	0	2	0.706	0.801733434	0.311533333	no_significant_change			no_significant_change	no_significant_change
+Q53ET0	161	R	CRTC2	Rme2	S11	1	0	0	0	-0.175	-0.175143242	0.999220779	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q5BKZ1	149	R	ZNF326	Rme1	S10	1	0	0	0	-0.6	-0.600122452	0.259778598	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q5BKZ1	173	R	ZNF326	Rme1	S8;S10	2	0	0	0	0.174	0.330437303	0.684	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q5BKZ1	175	R	ZNF326	Rme2	S9;S12	2	0	0	0	0.472	0.539600879	0.419972789	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q5BKZ1	200	R	ZNF326	Rme2	S12	1	0	0	1	0.381	0.38132	0.806193548	no_significant_change			no_significant_change	no_significant_change
+Q5BKZ1	202	R	ZNF326	Rme2	S12	1	0	0	1	0.381	0.38132	0.806193548	no_significant_change			no_significant_change	no_significant_change
+Q5BKZ1	204	R	ZNF326	Rme2	S12	1	0	0	1	0.381	0.38132	0.806193548	no_significant_change			no_significant_change	no_significant_change
+Q5BKZ1	235	R	ZNF326	Rme1;Rme2	S8;S9	2	0	0	0	0.303	1.547230706	0.228512821	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q5H9F3	816	R	BCORL1	Rme1	S10	1	0	0	0	-0.253	-0.2531147	0.583022727	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q5JRA6	1859	R	MIA3	Rme2	S11	1	0	0	0	1.555	1.555480957	0.438666667	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q5JVS0	70	R	HABP4	Rme1	S10	1	0	1	0	3.876	3.875976563	0.0	increased	increased	increased		increased
+Q5PRF9	602	R	SAMD4B	Rme2	S11	1	0	0	0	-0.308	-0.308195114	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q5VT52	1366	R	RPRD2	Rme2	S11	1	0	0	0	-1.565	-1.564902306	0.372857143	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q63ZY3	105	R	KANK2	Rme2	S11	1	0	0	1	-1.327	-1.326539993	0.4198	no_significant_change			no_significant_change	no_significant_change
+Q63ZY3	117	R	KANK2	Rme2	S11	2	0	0	1	-0.716	-1.326539993	0.4198	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q69YN4	1626	R	KIAA1429	Rme1	S10	1	0	1	0	2.029	2.029234886	0.046188679	increased	increased	increased		increased
+Q69YN4	1687	R	KIAA1429	Rme2	S9	1	0	0	1	-0.339	-0.3389768	0.736237624	no_significant_change			no_significant_change	no_significant_change
+Q69YN4	1694	R	KIAA1429	Rme2	S9	1	0	0	1	-0.339	-0.3389768	0.736237624	no_significant_change			no_significant_change	no_significant_change
+Q69YN4	1697	R	KIAA1429	Rme2	S9	1	0	0	1	-0.339	-0.3389768	0.736237624	no_significant_change			no_significant_change	no_significant_change
+Q69YN4	1723	R	KIAA1429	Rme1	S10	1	0	0	0	-0.101	-0.100527763	0.839679144	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q69YN4	1741	R	KIAA1429	Rme2	S9;S11	2	0	0	0	0.693	0.910368413	0.400559441	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q6N021	1682	R	TET2	Rme2	S11	1	0	0	0	0.198	0.198334694	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q6NSJ2	444	R	PHLDB3	Rme1	S10	1	0	0	0	-0.44	-0.440227509	0.467836257	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q6NUQ4	29	R	TMEM214	Rme1;Rme2	S8;S9	2	0	0	0	-0.013	-1.13654232	0.221158879	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q6W2J9	266	R	BCOR	Rme2	S11	1	0	0	0	1.158	1.157811165	0.74976	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q6Y7W6	149	R	GIGYF2	Rme1	S10	1	0	0	0	-0.156	-0.156347275	0.741141274	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q6ZRS2	1372	R	SRCAP	Rme2	S11	1	0	0	0	3.272	3.272257805	0.116571429	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q6ZW31	640	R	SYDE1	Rme1	S10	1	0	0	0	-1.029	-1.029227257	0.215611336	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q709C8	3519	R	VPS13C	Rme1	S10	1	1	0	0	-1.893	-1.893169403	0.045333333	decreased	decreased	decreased		decreased
+Q709F0	619	R	ACAD11	Rme1	S10	1	0	0	0	-1.313	-1.313259125	0.157492537	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q71U36	121	R	TUBA1A	Rme1	S10	1	0	0	0	-0.583	-0.582847595	0.405487805	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q7Z4W1	21	R	DCXR	Rme1	S8	1	0	0	0	-0.457	-0.457378346	0.48637037	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q7Z6J9	316	R	TSEN54	Rme1	S10	1	0	0	0	-1.143	-1.143306732	0.179802691	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q86U42	238	R	PABPN1	Rme1	S10	1	1	0	0	-1.632	-1.632291794	0.045810526	decreased	decreased	decreased		decreased
+Q86U42	259	R	PABPN1	Rme2	S11	2	0	0	2	-0.267	-0.247385979	0.99447482	no_significant_change			no_significant_change	no_significant_change
+Q86U42	263	R	PABPN1	Rme2	S11	2	0	0	2	-0.267	-0.247385979	0.99447482	no_significant_change			no_significant_change	no_significant_change
+Q86U42	265	R	PABPN1	Rme2	S11	1	0	0	1	-0.247	-0.247385979	0.99447482	no_significant_change			no_significant_change	no_significant_change
+Q86UU0	680	R	BCL9L	Rme2	S11	1	0	0	0	-0.632	-0.632165909	0.716	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q86V81	38	R	ALYREF	Rme1;Rme2	S9;S10	2	0	0	0	-1.775	-3.276557922	0.19795671	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q86V81	50	R	ALYREF	Rme1;Rme2	S9;S10;S11;S12	4	0	0	0	-0.891	2.172539711	0.114512821	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q86V81	58	R	ALYREF	Rme2	S9	1	0	0	1	-1.875	-1.875219285	0.145333333	no_significant_change			no_significant_change	no_significant_change
+Q86V81	63	R	ALYREF	Rme1;Rme2	S8;S9;S11;S12	5	0	0	1	-0.476	2.803710371	0.101333333	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q86V81	73	R	ALYREF	Rme1;Rme2	S8;S9	2	0	0	0	-2.502	-2.307844579	0.104	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q86V81	197	R	ALYREF	Rme1;Rme2	S10;S11	2	0	0	0	-0.012	0.477432251	0.331189711	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q86V81	204	R	ALYREF	Rme1;Rme2	S8;S9;S10;S11;S12	6	0	1	1	0.129	2.117153168	0.042786517	increased	no_significant_change	increased	no_significant_change	increased
+Q86V81	216	R	ALYREF	Rme1	S10	1	0	1	1	2.117	2.117153168	0.042786517	increased		increased		increased
+Q86WJ1	9	R	CHD1L	Rme1	S10	1	0	0	0	-1.081	-1.080793381	0.126948571	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q86WR7	320	R	PROSER2	Rme1;Rme2	S10;S12	2	0	0	0	0.357	1.167853355	0.264608696	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q86XP3	12	R	DDX42	Rme1	S10	1	1	0	0	-3.615	-3.614645004	0.0	decreased	decreased	decreased		decreased
+Q86YP4	213	R	GATAD2A	Rme1	S8	1	0	0	0	-0.367	-0.366699919	0.73830137	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q86YP4	258	R	GATAD2A	Rme2	S9	1	0	0	1	0.261	0.2610102	0.802146341	no_significant_change			no_significant_change	no_significant_change
+Q86YP4	273	R	GATAD2A	Rme2	S9	2	0	0	1	0.102	0.2610102	0.802146341	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q86YR5	421	R	GPSM1	Rme1	S10	1	0	0	0	-0.742	-0.74178791	0.326578947	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q8IUE6	21	R	HIST2H2AB	Rme1	S10	1	1	0	0	-1.972	-1.971796989	0.023148936	decreased	decreased	decreased		decreased
+Q8IVW6	361	R	ARID3B	Rme1;Rme2	S10;S11	2	0	0	1	-0.613	-0.884059906	0.116742515	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q8IVW6	379	R	ARID3B	Rme1	S10	1	0	0	1	-0.884	-0.884059906	0.116742515	no_significant_change		no_significant_change		no_significant_change
+Q8IVW6	402	R	ARID3B	Rme1	S10	1	0	0	0	-0.647	-0.647331238	0.329116883	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q8IWI9	1761	R	MGA	Rme2	S9;S11	3	0	0	3	-0.05	1.2551651	0.637192982	no_significant_change			no_significant_change	no_significant_change
+Q8IWI9	1775	R	MGA	Rme2	S9;S11	2	0	0	2	0.863	1.775063515	0.457702128	no_significant_change			no_significant_change	no_significant_change
+Q8IWI9	1786	R	MGA	Rme2	S9;S11	4	0	0	4	0.603	1.775063515	0.457702128	no_significant_change			no_significant_change	no_significant_change
+Q8IZ40	479	R	RCOR2	Rme2	S11	1	0	0	1	0.065	0.064554214	0.986173913	no_significant_change			no_significant_change	no_significant_change
+Q8IZ40	498	R	RCOR2	Rme2	S11	1	0	0	1	0.065	0.064554214	0.986173913	no_significant_change			no_significant_change	no_significant_change
+Q8IZT6	8	R	ASPM	Rme1	S10	1	0	0	0	-0.414	-0.413776398	0.4464	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q8N1G1	191	R	REXO1	Rme1	S10	1	0	0	0	-0.272	-0.272192001	0.456141176	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q8N3J3	295	R	C17orf53	Rme2	S11	1	0	0	0	1.69	1.689767838	0.580392157	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8N3J3	329	R	C17orf53	Rme2	S11	1	0	0	1	-0.657	-0.657121658	0.734871795	no_significant_change			no_significant_change	no_significant_change
+Q8N3J3	337	R	C17orf53	Rme2	S11	2	0	0	1	-0.08	-0.657121658	0.734871795	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8N9B5	87	R	JMY	Rme2	S9	1	0	0	0	-0.365	-0.365038604	0.650328042	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8NAF0	92	R	ZNF579	Rme1;Rme2	S9;S10	2	0	0	0	-1.403	-1.280518532	0.180612613	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q8NC51	163	R	SERBP1	Rme2	S9	1	0	0	0	0.034	0.034497172	0.99415261	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8NC51	177	R	SERBP1	Rme2	S12	1	0	0	1	2.156	2.155666351	0.2176	no_significant_change			no_significant_change	no_significant_change
+Q8NC51	181	R	SERBP1	Rme2	S12	1	0	0	1	2.156	2.155666351	0.2176	no_significant_change			no_significant_change	no_significant_change
+Q8NC51	201	R	SERBP1	Rme1	S10	1	0	0	0	-0.657	-0.657038689	0.308827586	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q8NC51	216	R	SERBP1	Rme1	S10	1	1	0	0	-2.401	-2.400616646	0.0	decreased	decreased	decreased		decreased
+Q8NC51	367	R	SERBP1	Rme2	S9	1	0	0	0	1.068	1.067595005	0.665230769	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8NC96	180	R	NECAP1	Rme1	S10	1	0	0	0	-1.534	-1.533679962	0.059968504	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q8ND83	471	R	SLAIN1	Rme2	S9;S11	2	0	0	0	-0.443	-0.413673177	0.565348315	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8ND83	543	R	SLAIN1	Rme1;Rme2	S8;S9;S11	3	0	0	0	-0.522	-1.127600402	0.223333333	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q8NEZ4	2454	R	KMT2C	Rme2	S11	1	0	0	0	1.18	1.179848671	0.435058824	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8NEZ4	4139	R	KMT2C	Rme2	S11	1	0	0	0	0.173	0.173480034	0.996283871	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8NF64	245	R	ZMIZ2	Rme2	S11	1	0	0	1	0.451	0.451461792	0.968235294	no_significant_change			no_significant_change	no_significant_change
+Q8NF64	262	R	ZMIZ2	Rme2	S11	1	0	0	1	0.451	0.451461792	0.968235294	no_significant_change			no_significant_change	no_significant_change
+Q8NFD5	608	R	ARID1B	Rme2	S9	1	0	0	1	0.185	0.18482548	0.830362791	no_significant_change			no_significant_change	no_significant_change
+Q8NFD5	640	R	ARID1B	Rme2	S9	1	0	0	1	0.185	0.18482548	0.830362791	no_significant_change			no_significant_change	no_significant_change
+Q8NI36	744	R	WDR36	Rme2	S11	1	0	0	0	-2.247	-2.246670723	0.280761905	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8TAP9	7	R	MPLKIP	Rme2	S9	1	0	0	1	-0.186	-0.1864224	0.931453744	no_significant_change			no_significant_change	no_significant_change
+Q8TAP9	28	R	MPLKIP	Rme2	S9	1	0	0	1	-0.186	-0.1864224	0.931453744	no_significant_change			no_significant_change	no_significant_change
+Q8TAP9	37	R	MPLKIP	Rme2	S9	1	0	0	1	-0.186	-0.1864224	0.931453744	no_significant_change			no_significant_change	no_significant_change
+Q8TAP9	59	R	MPLKIP	Rme2	S9	1	0	0	1	1.063	1.063342474	0.539927273	no_significant_change			no_significant_change	no_significant_change
+Q8TAP9	68	R	MPLKIP	Rme2	S9	1	0	0	1	1.063	1.063342474	0.539927273	no_significant_change			no_significant_change	no_significant_change
+Q8TAP9	77	R	MPLKIP	Rme2	S9	2	0	0	1	0.538	1.063342474	0.539927273	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8TAP9	117	R	MPLKIP	Rme2	S9	1	0	0	0	-1.406	-1.405735254	0.2105	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8TF74	37	R	WIPF2	Rme2	S11	1	0	0	0	-0.408	-0.408473015	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8WUF5	400	R	PPP1R13L	Rme2	S11	1	0	0	0	-0.824	-0.823863029	0.625358491	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8WUM4	757	R	PDCD6IP	Rme2	S9	1	0	0	0	-0.711	-0.711448848	0.571130435	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8WXF1	4	R	PSPC1	Rme1;Rme2	S10;S11	2	0	0	0	-0.987	-0.704704285	0.231426415	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q8WXF1	507	R	PSPC1	Rme1;Rme2	S8;S10;S12	3	0	0	0	0.157	-0.937487602	0.218677291	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q8WXI9	286	R	GATAD2B	Rme1;Rme2	S8;S9	2	0	0	0	0.102	0.446715644	0.578666667	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q8WXX7	1103	R	AUTS2	Rme2	S11	1	0	0	0	-0.658	-0.658057213	0.626206897	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8WYB5	1912	R	KAT6B	Rme2	S11	1	0	0	0	-0.924	-0.924433708	0.767012346	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q8WYH8	126	R	ING5	Rme1	S10	1	0	0	0	-0.605	-0.605158806	0.258725926	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q92530	205	R	PSMF1	Rme1	S10	1	0	0	0	-1.629	-1.62904644	0.088113475	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q92530	231	R	PSMF1	Rme1	S10	1	0	0	0	-0.918	-0.918334961	0.181035714	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q92576	1785	R	PHF3	Rme2	S9	1	0	0	1	-0.903	-0.902581735	0.374666667	no_significant_change			no_significant_change	no_significant_change
+Q92576	1790	R	PHF3	Rme2	S9	2	0	0	2	-0.686	-0.902581735	0.374666667	no_significant_change			no_significant_change	no_significant_change
+Q92576	1799	R	PHF3	Rme2	S9	2	0	0	2	-0.686	-0.902581735	0.374666667	no_significant_change			no_significant_change	no_significant_change
+Q92576	1911	R	PHF3	Rme1	S10	1	1	0	0	-2.211	-2.210785866	0.0	decreased	decreased	decreased		decreased
+Q92686	68	R	NRGN	Rme1	S10	1	0	0	0	-0.639	-0.638999939	0.223661538	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q92734	385	R	TFG	Rme1;Rme2	S8;S9;S10	3	0	0	1	-0.536	-0.536349297	0.324444444	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q92734	400	R	TFG	Rme1	S10	2	0	0	1	-0.602	-0.666846275	0.303722222	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q92750	87	R	TAF4B	Rme2	S11	1	0	0	0	0.541	0.541172981	0.878593407	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q92804	185	R	TAF15	Rme2	S9	1	0	0	1	-2.82	-2.820498586	0.155666667	no_significant_change			no_significant_change	no_significant_change
+Q92804	187	R	TAF15	Rme2	S9	1	0	0	1	-2.82	-2.820498586	0.155666667	no_significant_change			no_significant_change	no_significant_change
+Q92804	206	R	TAF15	Rme1;Rme2	S9;S10	2	0	1	0	0.273	1.951795578	0.044865979	increased	increased	increased	no_significant_change	increased
+Q92804	326	R	TAF15	Rme1;Rme2	S9;S10;S11	3	0	1	0	1.408	4.369539261	0.0	increased	increased	increased	no_significant_change	increased
+Q92804	395	R	TAF15	Rme1;Rme2	S9;S10	2	0	1	0	1.599	2.51392746	0.018133333	increased	increased	increased	no_significant_change	increased
+Q92804	431	R	TAF15	Rme1	S10	1	0	0	0	-0.974	-0.97387886	0.222126984	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q92804	459	R	TAF15	Rme1	S10	1	0	0	1	-1.056	-1.056342125	0.192246696	no_significant_change		no_significant_change		no_significant_change
+Q92804	467	R	TAF15	Rme1	S10	1	0	0	1	-1.056	-1.056342125	0.192246696	no_significant_change		no_significant_change		no_significant_change
+Q92804	528	R	TAF15	Rme1;Rme2	S9;S10;S11	3	0	1	3	-0.166	3.802882195	0.0	increased		increased	no_significant_change	increased
+Q92804	535	R	TAF15	Rme1;Rme2	S9;S10;S11	3	0	1	3	-0.166	3.802882195	0.0	increased		increased	no_significant_change	increased
+Q92804	562	R	TAF15	Rme2	S9;S11	2	0	0	2	-2.347	-2.389766973	0.124363636	no_significant_change			no_significant_change	no_significant_change
+Q92804	570	R	TAF15	Rme1;Rme2	S9;S10;S11	4	0	1	2	-1.227	3.850424767	0.0	increased	increased	increased	no_significant_change	increased
+Q92841	81	R	DDX17	Rme1	S10	2	0	0	0	-0.955	-1.250177383	0.152406091	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q92841	88	R	DDX17	Rme1	S10	1	0	0	0	-1.052	-1.051609993	0.130065934	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q92841	555	R	DDX17	Rme1	S10	1	0	0	0	-0.627	-0.626610756	0.22697318	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q92945	411	R	KHSRP	Rme2	S9;S11;S12;S15	5	0	0	5	0.097	2.431297302	0.386666667	no_significant_change			no_significant_change	no_significant_change
+Q92945	413	R	KHSRP	Rme1;Rme2	S9;S11;S12;S15	7	0	0	7	-0.911	-1.591827512	0.234522523	no_significant_change		no_significant_change	no_significant_change	no_significant_change
+Q92945	415	R	KHSRP	Rme1;Rme2	S9;S10;S11;S12	7	0	0	5	-0.802	-1.591827512	0.234522523	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q92945	442	R	KHSRP	Rme1	S10	1	0	0	0	-0.996	-0.99605751	0.138273224	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q93015	219	R	NAT6	Rme2	S9	1	0	0	0	-1.073	-1.073422909	0.223153846	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q96A72	87	R	MAGOHB	Rme1	S10	1	0	0	0	-1.049	-1.049160957	0.137021277	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q96AE4	359	R	FUBP1	Rme2	S9;S11;S12	4	0	0	4	-0.742	2.69254303	0.181333333	no_significant_change			no_significant_change	no_significant_change
+Q96AE4	361	R	FUBP1	Rme2	S9;S11;S12	6	0	0	6	-0.444	2.69254303	0.181333333	no_significant_change			no_significant_change	no_significant_change
+Q96AE4	363	R	FUBP1	Rme1;Rme2	S9;S10;S11;S12	6	0	0	5	-0.106	2.69254303	0.181333333	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q96BH1	437	R	RNF25	Rme2	S9	1	0	0	0	-3.317	-3.316568062	0.210461538	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q96DI7	265	R	SNRNP40	Rme1	S10	1	0	0	0	-1.678	-1.677823067	0.113063291	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q96DT7	126	R	ZBTB10	Rme1	S10	1	0	0	0	-0.764	-0.764217377	0.213322314	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q96EK4	83	R	THAP11	Rme1	S10	1	1	0	0	-1.739	-1.739091873	0.028631579	decreased	decreased	decreased		decreased
+Q96EV2	1028	R	RBM33	Rme1	S8;S10	2	1	0	0	-2.044	-1.922891617	0.041391304	decreased	decreased	decreased		decreased
+Q96EV2	1070	R	RBM33	Rme1	S10	1	0	0	1	0.802	0.802483559	0.196067797	no_significant_change		no_significant_change		no_significant_change
+Q96EV2	1078	R	RBM33	Rme1	S10	1	0	0	1	0.802	0.802483559	0.196067797	no_significant_change		no_significant_change		no_significant_change
+Q96GM5	50	R	SMARCD1	Rme2	S9;S11	2	0	0	2	-0.411	-1.553034067	0.261147826	no_significant_change			no_significant_change	no_significant_change
+Q96GM5	60	R	SMARCD1	Rme2	S9;S11	2	0	0	2	-0.411	-1.553034067	0.261147826	no_significant_change			no_significant_change	no_significant_change
+Q96GM5	88	R	SMARCD1	Rme2	S11	1	0	0	0	1.081	1.081445694	0.438171429	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q96HA1	223	R	POM121	Rme1;Rme2	S10;S11	2	0	0	0	-0.636	-0.343868256	0.415027356	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q96JK9	996	R	MAML3	Rme2	S11	1	0	0	0	-0.796	-0.79578495	0.726686567	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q96PC5	1365	R	MIA2	Rme2	S11	1	0	0	1	0.006	0.00554657	0.999544041	no_significant_change			no_significant_change	no_significant_change
+Q96PC5	1374	R	MIA2	Rme2	S11	1	0	0	1	0.006	0.00554657	0.999544041	no_significant_change			no_significant_change	no_significant_change
+Q96PU8	242	R	QKI	Rme1	S10	2	0	0	1	-0.429	-0.661230087	0.247700375	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q96PU8	256	R	QKI	Rme1	S10	1	0	0	1	-0.661	-0.661230087	0.247700375	no_significant_change		no_significant_change		no_significant_change
+Q96PV6	374	R	LENG8	Rme1;Rme2	S9;S10	3	0	0	2	-0.415	-0.459704459	0.568542373	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q96PV6	382	R	LENG8	Rme2	S9	2	0	0	2	-0.437	-0.459704459	0.568542373	no_significant_change			no_significant_change	no_significant_change
+Q96PV6	392	R	LENG8	Rme2	S9	1	0	0	1	-0.415	-0.414501395	0.66585567	no_significant_change			no_significant_change	no_significant_change
+Q96QC0	665	R	PPP1R10	Rme2	S9;S11	2	0	0	0	-0.882	-1.561852187	0.158978723	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q96QC0	688	R	PPP1R10	Rme1	S10	1	0	0	0	-1.291	-1.290886879	0.05769697	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q96QC0	693	R	PPP1R10	Rme1	S15	1	1	0	1	-3.627	-3.626606006	0.0	decreased		decreased		decreased
+Q96QC0	705	R	PPP1R10	Rme2	S9;S15	2	1	0	2	-2.958	-3.626606006	0.0	decreased			decreased	decreased
+Q96QC0	707	R	PPP1R10	Rme2	S9;S15	2	1	0	2	-2.958	-3.626606006	0.0	decreased			decreased	decreased
+Q96T58	108	R	SPEN	Rme1	S10	1	0	0	0	-0.973	-0.973227501	0.090685315	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q96T58	3312	R	SPEN	Rme1	S10	1	0	0	0	0.794	0.794470787	0.26365343	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q99497	27	R	PARK7	Rme1	S10	1	0	0	0	-0.48	-0.479641914	0.324356436	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q99590	1151	R	SCAF11	Rme1	S10	1	0	0	0	-0.793	-0.79310894	0.159297561	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q99700	640	R	ATXN2	Rme1	S8;S10	2	0	0	0	-0.719	-1.447213173	0.182257778	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q99729	245	R	HNRNPAB	Rme1;Rme2	S8;S9;S10	3	0	0	0	-0.744	-1.304972097	0.192752941	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q99729	322	R	HNRNPAB	Rme1;Rme2	S8;S9;S10;S11	4	0	0	0	-0.483	-2.448428631	0.162434783	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q99832	306	R	CCT7	Rme1	S10	1	0	0	0	-1.274	-1.274039268	0.181451327	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q99959	125	R	PKP2	Rme1	S10	1	0	0	0	-1.105	-1.105280876	0.174836364	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9BTC0	1893	R	DIDO1	Rme2	S9;S11	2	0	0	2	-0.608	-0.666678905	0.480301887	no_significant_change			no_significant_change	no_significant_change
+Q9BTC0	1894	R	DIDO1	Rme2	S9;S11	2	0	0	2	-0.608	-0.666678905	0.480301887	no_significant_change			no_significant_change	no_significant_change
+Q9BTC0	1977	R	DIDO1	Rme2	S9	1	0	0	1	-2.206	-2.206384875	0.121481481	no_significant_change			no_significant_change	no_significant_change
+Q9BTC0	1982	R	DIDO1	Rme2	S9;S11	3	0	0	3	-0.762	-2.206384875	0.121481481	no_significant_change			no_significant_change	no_significant_change
+Q9BTC0	1993	R	DIDO1	Rme2	S9;S11	3	0	0	3	-0.762	-2.206384875	0.121481481	no_significant_change			no_significant_change	no_significant_change
+Q9BTD8	130	R	RBM42	Rme1	S10	1	0	0	0	-1.368	-1.368347168	0.090055556	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9BTD8	153	R	RBM42	Rme2	S9	1	0	0	1	0.974	0.974031001	0.396637681	no_significant_change			no_significant_change	no_significant_change
+Q9BTD8	158	R	RBM42	Rme2	S9	2	0	0	1	1.775	2.576014042	0.168	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9BUJ2	181	R	HNRNPUL1	Rme1	S10	1	0	0	0	-1.09	-1.090203285	0.15556	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9BUJ2	618	R	HNRNPUL1	Rme2	S9;S12	2	0	0	2	0.1	0.683066368	0.542634146	no_significant_change			no_significant_change	no_significant_change
+Q9BUJ2	620	R	HNRNPUL1	Rme1;Rme2	S9;S10;S12	3	0	0	2	-0.386	0.683066368	0.542634146	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q9BUJ2	645	R	HNRNPUL1	Rme1;Rme2	S9;S10;S11	4	0	3	3	2.704	2.922568321	0.0	increased	increased	increased	increased	increased
+Q9BUJ2	656	R	HNRNPUL1	Rme1;Rme2	S9;S10;S11	4	0	3	3	2.666	2.922568321	0.0	increased	increased	increased	increased	increased
+Q9BUT9	65	R	MCRIP2	Rme2	S11	1	0	0	0	-0.245	-0.244714737	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9BWW4	161	R	SSBP3	Rme2	S9	1	0	0	1	-0.561	-0.560753167	0.607187166	no_significant_change			no_significant_change	no_significant_change
+Q9BWW4	165	R	SSBP3	Rme2	S9	1	0	0	1	-0.561	-0.560753167	0.607187166	no_significant_change			no_significant_change	no_significant_change
+Q9BXF3	835	R	CECR2	Rme2	S9	1	0	0	1	-1.022	-1.022218347	0.163885714	no_significant_change			no_significant_change	no_significant_change
+Q9BXF3	861	R	CECR2	Rme2	S9	1	0	0	1	-1.022	-1.022218347	0.163885714	no_significant_change			no_significant_change	no_significant_change
+Q9BXF3	870	R	CECR2	Rme2	S11	1	0	0	0	0.106	0.106432915	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9BYN0	16	R	SRXN1	Rme1;Rme2	S9;S10	2	0	0	0	-1.174	-0.910201073	0.198817391	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q9BZ67	217	R	FRMD8	Rme1	S10	1	1	0	0	-1.967	-1.967000961	0.0	decreased	decreased	decreased		decreased
+Q9BZZ5	500	R	API5	Rme1	S15	1	0	0	1	0.632	0.632011399	0.605333333	no_significant_change		no_significant_change		no_significant_change
+Q9BZZ5	504	R	API5	Rme2	S15	1	0	0	1	0.632	0.632011399	0.605333333	no_significant_change			no_significant_change	no_significant_change
+Q9BZZ5	507	R	API5	Rme2	S9;S15	2	0	0	2	0.929	1.226443857	0.195813953	no_significant_change			no_significant_change	no_significant_change
+Q9BZZ5	510	R	API5	Rme2	S9	1	0	0	1	1.226	1.226443857	0.195813953	no_significant_change			no_significant_change	no_significant_change
+Q9C0C2	66	R	TNKS1BP1	Rme1;Rme2	S8;S9	2	0	0	0	0.157	0.310955226	0.717169231	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q9C0J8	16	R	WDR33	Rme2	S11	1	0	0	0	-0.094	-0.094304085	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9C0J8	915	R	WDR33	Rme2	S11	1	0	0	0	0.064	0.064275742	0.980843243	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9C0J8	1035	R	WDR33	Rme1	S10	1	0	0	0	-0.918	-0.917919159	0.164130233	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9C0J8	1047	R	WDR33	Rme1	S10	1	1	0	0	-2.381	-2.380634308	0.0	decreased	decreased	decreased		decreased
+Q9C0J8	1067	R	WDR33	Rme1	S10	1	1	0	0	-1.448	-1.44754982	0.049454545	decreased	decreased	decreased		decreased
+Q9C0J8	1144	R	WDR33	Rme1	S10	1	0	0	0	-1.216	-1.21644783	0.136043011	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9C0J8	1257	R	WDR33	Rme1	S10	1	1	0	0	-1.945	-1.945224762	0.021333333	decreased	decreased	decreased		decreased
+Q9C0J8	1262	R	WDR33	Rme2	S12	1	0	0	0	1.519	1.519033432	0.439135135	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9C0J8	1315	R	WDR33	Rme1;Rme2	S9;S10;S11	3	0	1	0	-0.403	3.286738396	0.0	increased	increased	increased	no_significant_change	increased
+Q9H074	21	R	PAIP1	Rme2	S12	1	0	0	0	-0.735	-0.734536171	0.384470588	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9H089	14	R	LSG1	Rme2	S11	1	0	0	0	-1.828	-1.82789135	0.136	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9H0D6	824	R	XRN2	Rme1;Rme2	S9;S11;S15	5	0	0	5	-0.429	-1.096298009	0.295254237	no_significant_change		no_significant_change	no_significant_change	no_significant_change
+Q9H0D6	847	R	XRN2	Rme2	S9;S11;S15	8	0	0	7	0.015	-1.096298009	0.295254237	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9H0D6	851	R	XRN2	Rme2	S9;S11;S15	5	0	0	5	0.042	-0.82704556	0.388411765	no_significant_change			no_significant_change	no_significant_change
+Q9H0D6	870	R	XRN2	Rme2	S9	1	0	0	0	-0.934	-0.934178084	0.476585987	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9H0D6	883	R	XRN2	Rme1	S10	1	0	0	0	-1.047	-1.046976089	0.117445783	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9H0D6	921	R	XRN2	Rme1	S10	1	0	0	0	-1.075	-1.074853897	0.114682353	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9H0D6	946	R	XRN2	Rme1;Rme2	S10;S11	2	0	0	0	-1.418	-1.301644325	0.054857143	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q9H2U1	34	R	DHX36	Rme2	S9	1	0	0	1	-2.344	-2.344124423	0.2736	no_significant_change			no_significant_change	no_significant_change
+Q9H2U1	47	R	DHX36	Rme2	S9	1	0	0	1	-2.344	-2.344124423	0.2736	no_significant_change			no_significant_change	no_significant_change
+Q9H2U1	50	R	DHX36	Rme2	S9	1	0	0	1	-2.344	-2.344124423	0.2736	no_significant_change			no_significant_change	no_significant_change
+Q9H307	54	R	PNN	Rme1;Rme2	S10;S11;S12	4	0	0	3	-0.64	1.161813736	0.201277311	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q9H307	56	R	PNN	Rme1;Rme2	S10;S11;S12	3	0	0	3	-1.012	-1.132891655	0.292727273	no_significant_change		no_significant_change	no_significant_change	no_significant_change
+Q9H307	63	R	PNN	Rme1	S10	1	1	0	0	-1.737	-1.736577988	0.043959596	decreased	decreased	decreased		decreased
+Q9H3H3	29	R	C11orf68	Rme1	S10	1	0	0	0	-0.913	-0.913486481	0.159924171	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9H5H4	259	R	ZNF768	Rme1	S10	1	0	0	0	0.444	0.444189072	0.418181818	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9H5H4	272	R	ZNF768	Rme1	S8;S10	2	0	0	0	-1.334	-1.2266922	0.090684564	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9H6A9	274	R	PCNX3	Rme1	S10	1	1	0	0	-1.399	-1.398640633	0.049009009	decreased	decreased	decreased		decreased
+Q9H7E2	245	R	TDRD3	Rme2	S9	1	0	0	0	-1.555	-1.554784656	0.123294118	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9H7E9	27	R	C8orf33	Rme1	S10	1	1	0	0	-1.526	-1.526006699	0.049908257	decreased	decreased	decreased		decreased
+Q9H7S9	544	R	ZNF703	Rme2	S11	1	0	0	0	-0.499	-0.498828888	0.77030137	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9HAH7	408	R	FBRS	Rme2	S11	1	0	0	0	0.074	0.073793411	0.991516484	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9HCD6	1706	R	TANC2	Rme1	S10	1	0	0	0	-0.093	-0.092508316	0.881834667	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9HCD6	1770	R	TANC2	Rme2	S9	1	0	0	0	1.126	1.125971913	0.1923	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9NQ92	18	R	COPRS	Rme1	S10	1	0	0	1	-1.433	-1.432877541	0.057032258	no_significant_change		no_significant_change		no_significant_change
+Q9NQ92	26	R	COPRS	Rme1	S10	1	0	0	1	-1.433	-1.432877541	0.057032258	no_significant_change		no_significant_change		no_significant_change
+Q9NQH7	155	R	XPNPEP3	Rme1	S10	1	0	0	0	-0.676	-0.676095009	0.224155642	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9NQS1	37	R	AVEN	Rme2	S9	1	0	0	0	-0.479	-0.479355216	0.566666667	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9NR12	103	R	PDLIM7	Rme2	S11	1	0	0	0	-0.735	-0.734592438	0.754210526	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9NR30	725	R	DDX21	Rme1	S10	1	0	0	0	-1.006	-1.006289482	0.198592275	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9NRF2	270	R	SH2B1	Rme1	S10	1	0	0	0	-1.221	-1.221288681	0.135315508	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9NSV4	7	R	DIAPH3	Rme2	S11	1	0	0	0	0.799	0.798571587	0.922262626	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9NUD5	94	R	ZCCHC3	Rme1	S10	1	1	0	0	-1.831	-1.830905914	0.032969697	decreased	decreased	decreased		decreased
+Q9NUL3	131	R	STAU2	Rme2	S11	1	0	0	1	-1.891	-1.891122818	0.448242424	no_significant_change			no_significant_change	no_significant_change
+Q9NUL3	137	R	STAU2	Rme2	S11	1	0	0	1	-1.891	-1.891122818	0.448242424	no_significant_change			no_significant_change	no_significant_change
+Q9NUQ3	12	R	TXLNG	Rme1	S10	2	0	0	1	-1.239	-1.249526978	0.125271676	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9NUQ3	24	R	TXLNG	Rme1	S10	2	1	0	1	-1.681	-2.133639336	0.027897436	decreased	decreased	decreased		decreased
+Q9NW82	573	R	WDR70	Rme1;Rme2	S8;S9;S10	3	0	0	0	0.441	-1.367891222	0.272206897	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q9NX05	977	R	FAM120C	Rme2	S12	1	0	0	0	0.373	0.372684479	0.64090566	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9NYL2	683	R	MAP3K20	Rme2	S9;S11	2	0	0	2	-1.776	-2.670727082	0.127030303	no_significant_change			no_significant_change	no_significant_change
+Q9NYL2	693	R	MAP3K20	Rme2	S9;S11	2	0	0	2	-1.776	-2.670727082	0.127030303	no_significant_change			no_significant_change	no_significant_change
+Q9NYP3	64	R	DONSON	Rme1;Rme2	S9;S10	2	0	1	0	1.163	2.217098236	0.033476923	increased	increased	increased	no_significant_change	increased
+Q9NZB2	884	R	FAM120A	Rme2	S9;S12	2	0	0	2	-0.853	-0.977286808	0.350730159	no_significant_change			no_significant_change	no_significant_change
+Q9NZB2	886	R	FAM120A	Rme2	S9;S12	2	0	0	2	-0.853	-0.977286808	0.350730159	no_significant_change			no_significant_change	no_significant_change
+Q9NZB2	982	R	FAM120A	Rme1	S8	1	0	0	0	0.008	0.007912934	0.9932	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9NZM4	1384	R	BICRA	Rme2	S11	1	0	0	0	-1.022	-1.022336006	0.726646154	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9P0J7	159	R	KCMF1	Rme1;Rme2	S9;S15	2	0	0	2	-1.135	-1.80699601	0.16339726	no_significant_change		no_significant_change	no_significant_change	no_significant_change
+Q9P0J7	165	R	KCMF1	Rme2	S9;S15	2	0	0	2	-1.135	-1.80699601	0.16339726	no_significant_change			no_significant_change	no_significant_change
+Q9P0W8	15	R	SPATA7	Rme2	S11	1	0	0	0	-0.576	-0.57563591	0.759891892	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9P2D1	286	R	CHD7	Rme2	S11	1	0	0	0	0.184	0.18433094	0.973473684	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9P2E3	44	R	ZNFX1	Rme1	S10	1	0	0	0	-2.027	-2.027182579	0.096688742	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9P2K3	445	R	RCOR3	Rme2	S11	1	0	0	1	0.692	0.691809654	0.885209302	no_significant_change			no_significant_change	no_significant_change
+Q9P2K3	457	R	RCOR3	Rme2	S11	1	0	0	1	0.692	0.691809654	0.885209302	no_significant_change			no_significant_change	no_significant_change
+Q9P2N5	411	R	RBM27	Rme2	S11	1	0	0	0	0.211	0.211203575	0.998352941	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9P2N5	455	R	RBM27	Rme2	S11	1	0	0	0	0.168	0.167556763	0.997068323	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9P2N5	943	R	RBM27	Rme2	S9;S12	2	0	0	0	-0.131	-0.632749315	0.618978723	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9P2N5	961	R	RBM27	Rme2	S11	1	0	0	1	1.67	1.669940948	0.268	no_significant_change			no_significant_change	no_significant_change
+Q9P2N5	963	R	RBM27	Rme2	S11	1	0	0	1	1.67	1.669940948	0.268	no_significant_change			no_significant_change	no_significant_change
+Q9UBC1	291	R	NFKBIL1	Rme1	S10	1	0	0	0	-0.571	-0.570696831	0.314837838	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9UDT6	12	R	CLIP2	Rme1	S10	1	0	1	0	2.604	2.603749275	0.034	increased	increased	increased		increased
+Q9UEG4	618	R	ZNF629	Rme2	S11	1	0	0	0	-0.097	-0.096952438	0.988950276	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9UKZ1	41	R	CNOT11	Rme1	S10	1	0	0	0	-0.582	-0.581528664	0.27088172	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9ULX6	171	R	AKAP8L	Rme1	S10	2	0	0	1	-1.418	-1.646635056	0.057967213	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9ULX6	179	R	AKAP8L	Rme1	S10	1	0	0	1	-1.189	-1.188921928	0.112352201	no_significant_change		no_significant_change		no_significant_change
+Q9ULX6	208	R	AKAP8L	Rme1	S10	1	0	0	0	-1.331	-1.330993652	0.136778378	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9UMN6	49	R	KMT2B	Rme1	S10	1	1	0	0	-3.048	-3.047787666	0.030647887	decreased	decreased	decreased		decreased
+Q9UN86	468	R	G3BP2	Rme1;Rme2	S9;S10;S12	3	0	0	0	0.198	3.703055903	0.141714286	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q9UP83	309	R	COG5	Rme1	S10	1	1	0	0	-1.549	-1.548604965	0.042311111	decreased	decreased	decreased		decreased
+Q9UPN9	515	R	TRIM33	Rme2	S9;S11	2	0	0	0	-0.896	-1.648587896	0.116444444	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9UPN9	598	R	TRIM33	Rme2	S9;S11	2	0	0	2	-0.384	-0.541507363	0.469179487	no_significant_change			no_significant_change	no_significant_change
+Q9UPN9	604	R	TRIM33	Rme2	S9;S11	3	0	0	2	-0.227	-0.541507363	0.469179487	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9UPQ9	1429	R	TNRC6B	Rme1	S10	1	1	0	0	-2.866	-2.86625576	0.026322581	decreased	decreased	decreased		decreased
+Q9UQ35	2207	R	SRRM2	Rme1	S10	1	0	0	0	-0.556	-0.555996895	0.429957958	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9UQ35	2288	R	SRRM2	Rme1	S10	1	0	0	0	-0.769	-0.769148827	0.166100457	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9UQ35	2384	R	SRRM2	Rme1;Rme2	S10;S11	2	0	0	0	-0.582	-0.849354744	0.195789474	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q9Y242	14	R	TCF19	Rme1	S10	1	0	0	0	-0.582	-0.581816673	0.300447552	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9Y2W1	66	R	THRAP3	Rme2	S11	1	0	0	0	-0.036	-0.036422729	1.0	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9Y2W1	91	R	THRAP3	Rme2	S9;S11;S12	3	0	0	3	1.829	2.736050606	0.136	no_significant_change			no_significant_change	no_significant_change
+Q9Y2W1	101	R	THRAP3	Rme1;Rme2	S9;S10;S11;S12	4	0	1	3	2.282	3.190937042	0.0	increased	increased	increased	no_significant_change	increased
+Q9Y2W1	825	R	THRAP3	Rme1;Rme2	S9;S10	2	0	1	0	2.793	3.404159546	0.0	increased	increased	increased	no_significant_change	increased
+Q9Y2W1	839	R	THRAP3	Rme2	S9	1	0	0	1	2.543	2.542740613	0.135225806	no_significant_change			no_significant_change	no_significant_change
+Q9Y2W1	841	R	THRAP3	Rme2	S9	1	0	0	1	2.543	2.542740613	0.135225806	no_significant_change			no_significant_change	no_significant_change
+Q9Y2W1	845	R	THRAP3	Rme2	S9	1	0	0	1	2.543	2.542740613	0.135225806	no_significant_change			no_significant_change	no_significant_change
+Q9Y3C6	72	R	PPIL1	Rme1	S10	1	1	0	0	-1.832	-1.83163166	0.042666667	decreased	decreased	decreased		decreased
+Q9Y3T6	120	R	R3HCC1	Rme2	S9	1	0	0	0	-0.845	-0.845050961	0.236654545	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9Y3X0	131	R	CCDC9	Rme2	S9;S12	2	0	0	2	-0.434	-0.808054775	0.371849624	no_significant_change			no_significant_change	no_significant_change
+Q9Y3X0	133	R	CCDC9	Rme2	S9;S12	2	0	0	2	-0.434	-0.808054775	0.371849624	no_significant_change			no_significant_change	no_significant_change
+Q9Y3X0	135	R	CCDC9	Rme2	S9;S12	2	0	0	2	-0.434	-0.808054775	0.371849624	no_significant_change			no_significant_change	no_significant_change
+Q9Y3Y2	97	R	CHTOP	Rme1;Rme2	S9;S10;S11;S12	4	0	1	0	0.583	4.411994934	0.0	increased	increased	increased	no_significant_change	increased
+Q9Y3Y2	128	R	CHTOP	Rme1;Rme2	S10;S11	4	0	2	2	3.088	3.801848412	0.0	increased	increased	increased	no_significant_change	increased
+Q9Y3Y2	134	R	CHTOP	Rme1;Rme2	S10;S11	2	0	1	2	3.474	4.573864937	0.02825974	increased		increased	no_significant_change	increased
+Q9Y3Y2	203	R	CHTOP	Rme2	S9	1	0	0	0	2.145	2.145345166	0.152489796	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9Y4E5	158	R	ZNF451	Rme1	S8;S10	2	0	0	0	-0.287	-0.595344856	0.494615385	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9Y520	255	R	PRRC2C	Rme2	S9;S11	2	0	0	0	0.811	1.231394768	0.57024	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9Y520	279	R	PRRC2C	Rme1;Rme2	S10;S12	2	0	0	2	-1.534	-0.90668869	0.150708333	no_significant_change		no_significant_change	no_significant_change	no_significant_change
+Q9Y520	281	R	PRRC2C	Rme1;Rme2	S10;S11;S12	5	0	0	2	-1.253	-0.90668869	0.150708333	no_significant_change	no_significant_change	no_significant_change	no_significant_change	no_significant_change
+Q9Y570	16	R	PPME1	Rme1	S8	1	0	0	0	-0.497	-0.497115672	0.573236364	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9Y5S2	671	R	CDC42BPB	Rme1	S10	1	1	0	0	-2.319	-2.319194794	0.029405405	decreased	decreased	decreased		decreased
+Q9Y5U2	240	R	TSSC4	Rme1	S10	1	1	0	0	-2.473	-2.472647667	0.032477612	decreased	decreased	decreased		decreased
+Q9Y618	1711	R	NCOR2	Rme1	S10	1	0	0	0	-0.658	-0.658022881	0.325508197	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9Y6K1	171	R	DNMT3A	Rme1	S10	1	0	0	0	-1.475	-1.474754333	0.113783439	no_significant_change	no_significant_change	no_significant_change		no_significant_change
+Q9Y6Q9	1171	R	NCOA3	Rme2	S9;S11	3	0	0	2	1.732	1.732234955	0.36	no_significant_change	no_significant_change		no_significant_change	no_significant_change
+Q9Y6Q9	1177	R	NCOA3	Rme2	S9;S11	2	0	0	2	1.121	-0.784247994	0.43592053	no_significant_change			no_significant_change	no_significant_change
+Q9Y6Q9	1188	R	NCOA3	Rme2	S9	1	0	0	1	-0.784	-0.784247994	0.43592053	no_significant_change			no_significant_change	no_significant_change

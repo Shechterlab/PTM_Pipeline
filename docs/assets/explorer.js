@@ -61,7 +61,7 @@
   const SOURCE_LABEL = { Maron2021: 'Maron 2021 Table S5 (PhosphoSitePlus rows from v1.2.0)', ProMetheusDB: 'ProMetheusDB', human_ptm_master: 'PTM master table (compiled)',
     larsen2016: 'Larsen 2016', maron2021: 'Maron 2021 Tables S2–S3', guo2014: 'Guo 2014', musiani2019: 'Musiani 2019', fong2019: 'Fong 2019',
     li2021: 'Li 2021', fedoriw2019: 'Fedoriw 2019', uniprot: 'UniProt MOD_RES', lim2020: 'Lim 2020', wei2020: 'Wei 2020', iedb: 'IEDB epitopes',
-    hartel2019: 'Hartel 2019', geoghegan2015: 'Geoghegan 2015', sylvestersen2014: 'Sylvestersen 2014', lu2025: 'Lu 2025', ma2023: 'Ma 2023' };
+    hartel2019: 'Hartel 2019', geoghegan2015: 'Geoghegan 2015', sylvestersen2014: 'Sylvestersen 2014', lu2025: 'Lu 2025', ma2023: 'Ma 2023', lu2024: 'Lu 2024' };
   const SOURCE_HELP = {
     Maron2021: 'Maron et al. 2021 (iScience) Table S5: compiled human methylarginine sites, without localisation (from v1.2.0 its rows add no site; each study is read from its own table)',
     ProMetheusDB: 'ProMetheusDB methyl-proteome (mmc2), with Rme1/Rme2 calls; a record counts where one of its peptides localises the methyl group by mass',
@@ -102,6 +102,7 @@
     'Sylvestersen 2014': 'HEK293T cells, monomethylarginine antibodies (added in v1.2.0)',
     'Lu 2025': 'HeLa cells, peptides enriched with the SMN Tudor domain; the dimethylarginine sites a peptide localises by mass (added in v1.2.0)',
     'Ma 2023': 'Breast cancer xenografts grown in mice, ADMA antibody (added in v1.2.0)',
+    'Lu 2024': 'HeLa cells, SDMA antibody after ulilysin digestion, sites localised by ETD (ptmRS at least 98%); the same laboratory as Lu 2025, other experiments (added in v1.4.0)',
   };
   // DOIs of the studies and databases behind the union (each checked against Crossref).
   const STUDY_DOI = {
@@ -110,7 +111,7 @@
     'Guo 2014': '10.1074/mcp.O113.027870', 'Fedoriw 2019': '10.1016/j.ccell.2019.05.014', 'Wei 2020': '10.3389/fcell.2020.545934',
     'Lim 2020': '10.1186/s12953-020-00162-8', 'Li 2021': '10.1038/s41467-021-21963-1', IEDB: '10.1093/nar/gky1006', UniProt: '10.1093/nar/gkae1010',
     'Hartel 2019': '10.1074/mcp.RA119.001625', 'Geoghegan 2015': '10.1038/ncomms7758', 'Sylvestersen 2014': '10.1074/mcp.O113.032748',
-    'Lu 2025': '10.1038/s44319-025-00599-y', 'Ma 2023': '10.1021/jasms.3c00154',
+    'Lu 2025': '10.1038/s44319-025-00599-y', 'Ma 2023': '10.1021/jasms.3c00154', 'Lu 2024': '10.1021/acs.jproteome.3c00724',
   };
   const doiLink = (doi, text) => '<a href="https://doi.org/' + doi + '" target="_blank" rel="noopener">' + (text == null ? 'doi:' + doi : text) + '</a>';
   const PSP_NOTICE = 'PhosphoSitePlus® data (www.phosphosite.org) are licensed under CC BY-NC-SA 3.0: non-commercial use, with attribution, and adaptations shared under the same licence.';

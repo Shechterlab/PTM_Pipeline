@@ -108,11 +108,11 @@ FIGSHARE_IDS = {'CRISPRGeneEffect.csv': 51064667, 'CRISPRGeneDependency.csv': 51
                 'Repurposing_Public_24Q2_Extended_Primary_Compound_List.csv': 46630981}
 
 
-RAW_FILES_CONTENT = ('URL, size, MD5, SHA-256 and download date of the raw files behind the layer tables (HPA 25.1, Shishkova 2017 '
-                     'Supplementary Data 1, CPLM 4.0, the UniProt FASTA they were checked with, DepMap Public 24Q4, PRISM Repurposing '
-                     '24Q2, and the cBioPortal answers for TCGA)')
-RAW_FILES_CHECKED = ('Written with the layer staging (scripts/39, 41, 42, 44); independent re-downloads on 2026-10-20 had the same MD5 '
-                     '(HPA, Shishkova 2017, CPLM); the DepMap and PRISM files match the MD5 Figshare gives (2026-10-25)')
+# The description of inputs/layers/raw_files.tsv, the same whichever staging script last wrote rows into it.
+RAW_FILES_CONTENT = ('URL, size, MD5, SHA-256 and download date of the raw files behind the layer tables, one row per download '
+                     '(each staging script registered in scripts/release_layers.py adds its own)')
+RAW_FILES_CHECKED = ('Written with the layer staging; each script records the MD5 of what it read (the source\'s own MD5 where it '
+                     'publishes one, as Figshare does for DepMap and PRISM)')
 
 
 def write_manifest(manifest: Path, out: Path, dep: Path, prism: Path, tcga: Path | None) -> None:

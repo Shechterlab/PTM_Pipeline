@@ -34,6 +34,7 @@ STUDIES = [
     ('Sylvestersen2014', 'Sylvestersen 2014', 'Sylvestersen KB et al., Mol Cell Proteomics 13:2072-2088 (2014)', '10.1074/mcp.O113.032748'),
     ('Lu2025', 'Lu 2025', 'Lu L et al., EMBO Rep 26:5649-5672 (2025)', '10.1038/s44319-025-00599-y'),
     ('Ma2023', 'Ma 2023', 'Ma M et al., J Am Soc Mass Spectrom 34:1692-1700 (2023)', '10.1021/jasms.3c00154'),
+    ('Lu2024', 'Lu 2024', 'Lu L et al., J Proteome Res 23:1014-1027 (2024)', '10.1021/acs.jproteome.3c00724'),
 ]
 # The studies read from their own tables (scripts/00_stage_study_sites.py, inputs/sources/<table>_methylarginine_records.tsv),
 # in the order the build reads them (after the three compiled tables, so that record_ids stay those of v1.1.0).
@@ -41,10 +42,10 @@ STUDY_TABLES = {
     'larsen2016': 'Larsen2016', 'maron2021': 'Maron2021', 'guo2014': 'Guo2014', 'musiani2019': 'Musiani2019',
     'fong2019': 'Fong2019', 'li2021': 'Li2021', 'fedoriw2019': 'Fedoriw2019', 'uniprot': 'UniProt', 'lim2020': 'Lim2020',
     'wei2020': 'Wei2020', 'iedb': 'IEDB', 'hartel2019': 'Hartel2019', 'geoghegan2015': 'Geoghegan2015',
-    'sylvestersen2014': 'Sylvestersen2014', 'lu2025': 'Lu2025', 'ma2023': 'Ma2023',
+    'sylvestersen2014': 'Sylvestersen2014', 'lu2025': 'Lu2025', 'ma2023': 'Ma2023', 'lu2024': 'Lu2024',
 }
-# The studies new in v1.2.0 (not in the compiled tables v1.1.0 read).
-STUDIES_ADDED = ['Hartel2019', 'Geoghegan2015', 'Sylvestersen2014', 'Lu2025', 'Ma2023']
+# The studies not in the compiled tables v1.1.0 read (v1.2.0: Hartel2019 to Ma2023; v1.4.0: Lu2024).
+STUDIES_ADDED = ['Hartel2019', 'Geoghegan2015', 'Sylvestersen2014', 'Lu2025', 'Ma2023', 'Lu2024']
 
 
 def study_of(source_table: str, source, reference) -> str:
@@ -85,6 +86,7 @@ STUDY_LICENCE = {
     'Sylvestersen2014': 'CC BY 4.0 (the article and its supplement, from 2020-10-12, and PRIDE PXD000559, CC0)',
     'Lu2025': 'CC BY 4.0 (the article and Dataset EV1)',
     'Ma2023': 'CC0 (PRIDE PXD038203 Table S1), the article is not open access',
+    'Lu2024': 'CC BY-NC 4.0 (Supporting Information 2 and 3 as ACS publishes them on figshare), PRIDE PXD037425 CC0; the article is not open access',
 }
 STUDY_NOTE = {
     'Hartel2019': 'HEK293T and LN229 cells. ADMA and SDMA assigned from characteristic neutral losses (dimethylamine, methylamine) of dimethylarginine peptides (reported_methyl_state Rme2a, Rme2s), the other dimethylarginines as Rme2',
@@ -92,6 +94,7 @@ STUDY_NOTE = {
     'Sylvestersen2014': 'HEK293T cells, monomethylarginine antibody enrichment',
     'Lu2025': 'HeLa cells, enrichment with the SMN Tudor domain',
     'Ma2023': 'breast cancer patient-derived xenografts grown in mice, ADMA antibody enrichment. A peptide assigned to a human protein can come from the mouse stroma where the two sequences agree',
+    'Lu2024': 'HeLa cells, ulilysin digests enriched with the PTMScan sdme-RG (SDMA) antibody: SILAC with the PRMT5 inhibitor EPZ015666, and heavy-methyl SILAC. The same laboratory and cell line as Lu2025, in other experiments (PRIDE PXD037425 and PXD053390)',
     'PSP': 'downloaded 22 May 2021 (date from the Shechter lab), as compiled in Maron et al. 2021 Table S5',
     'Maron2021': "the study's own data: Tables S2 and S3, localised with the authors' Proteome Discoverer and Byonic search results",
 }
@@ -114,6 +117,12 @@ STUDY_QUALITY = {
               'dimethylated (155 sites), and the other 588 are kept as lower-confidence evidence.',
     'Ma2023': 'MaxQuant ADMA-antibody sites with a 31-residue window, localisation probability >= 0.75, 1 % FDR. Tumours '
               'grown in mice: a peptide identical in mouse and human can come from mouse stroma (flag xenograft_only).',
+    'Lu2024': 'Proteome Discoverer 2.4 peptide groups (SEQUEST HT, ptmRS; mono- and dimethylation of K and R searched) with the '
+              'methylated arginine marked and its ptmRS probability. Read from Supporting Information 2 Table 1.1 (the SILAC '
+              'experiment) and Supporting Information 3 Table 2.1 (the light identifications of the heavy-methyl SILAC experiment, '
+              'all Confidence High at Percolator q <= 0.01): a mark is kept at ptmRS >= 98 %, the study\'s criterion for an '
+              'unambiguous site (Figure S2 legend). The monomethylarginines of Table 1.3 whose methyl group ptmRS does not place '
+              '(the authors give it an unmarked arginine of the peptide, mostly its first) are kept as lower-confidence evidence.',
     # The studies compiled in Maron et al. 2021 Table S5, and the databases, now read from their own tables: the
     # study's methods (from the article and its tables), and what was kept. The compiled rows of a study read here add
     # no site of their own.
@@ -202,6 +211,7 @@ SOURCE_TABLES = {
     'sylvestersen2014': ('sylvestersen2014', 'Sylvestersen et al. 2014 supplementary tables, staged (scripts/00_stage_study_sites.py)'),
     'lu2025': ('lu2025', 'Lu et al. 2025 Dataset EV1, staged (scripts/00_stage_study_sites.py)'),
     'ma2023': ('ma2023', 'Ma et al. 2023 Table S1 (PRIDE PXD038203), staged (scripts/00_stage_study_sites.py)'),
+    'lu2024': ('lu2024', 'Lu et al. 2024 Supporting Information Tables 1.1, 1.3 and 2.1, staged (scripts/00_stage_study_sites.py)'),
     'larsen2016': ('larsen2016', 'Larsen et al. 2016 Table S1, staged (scripts/00_stage_study_sites.py)'),
     'maron2021': ('maron2021', 'Maron et al. 2021 Tables S2 and S3 with the authors\' Proteome Discoverer and Byonic search results, staged (scripts/00_stage_study_sites.py)'),
     'guo2014': ('guo2014', 'Guo et al. 2014 supplementary Tables S2 and S3, staged (scripts/00_stage_study_sites.py)'),

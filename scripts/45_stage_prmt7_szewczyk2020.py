@@ -19,8 +19,11 @@ input proteome) gives the FASTA header, and so the sequence version, of each ent
 
 Each row is placed at its reported position on the canonical sequence of its leading (first) accession, and kept when
 that residue is an arginine (common.residue_is): position_verified when the entry has the sequence version that was
-searched, residue_matches when the input proteome does not hold the entry. The other accessions of a shared peptide are
-listed, not placed (the position is numbered on the leading entry). Rows of one entry whose replicate H/L ratios are
+searched. An entry the input proteome does not hold is checked against the sequence UniProt had in release 2018_08
+(UniSave, --history, fetched once with --fetch-history): position_verified_unisave when that sequence is the reference
+sequence, lifted when it differs and the 15 residues around the arginine occur once in the reference sequence (the
+position then moves with them), and dropped otherwise. The other accessions of a shared peptide are listed, not placed
+(the position is numbered on the leading entry). Rows of one entry whose replicate H/L ratios are
 all identical are one quantified peptide carrying those methylarginines together.
 
 A peptide is decreased at log2 KO/WT <= -1 with adjusted P < 0.01: the paper's rule (Methods, "Significant hits were
@@ -67,29 +70,35 @@ SD2_SHEET = 'IP_All_Hits_Sites'
 SD2_COLUMNS = {'protein': 'protein', 'gene': 'gene names', 'log2': 'logfc', 'p': 'p.value', 'q': 'adj.p.val', 'site': 'site',
                'depleted': 'significantly depleted', 'psp': 'previously_ observed_ phosphositedb'}
 RATIOS = ['ratio_hl_r1', 'ratio_hl_r2', 'ratio_hl_r3', 'ratio_hl_r4']
-KEPT = ('position_verified', 'residue_matches', 'residue_matches_sequence_changed')
+KEPT = ('position_verified', 'position_verified_unisave', 'lifted')
+SEARCHED_RELEASE = '2018_08'   # the UniProt release the paper searched (Supplementary Data 3)
+UNISAVE = 'https://rest.uniprot.org/unisave/'
 
 # What inputs/MANIFEST.tsv and inputs/layers/raw_files.tsv say of the staged tables and their downloads.
 ESM = 'https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41467-020-16271-z/MediaObjects/'
 SD2_NAME, SD3_NAME = '41467_2020_16271_MOESM5_ESM.xlsx', '41467_2020_16271_MOESM6_ESM.xlsx'
-LICENCE = ('Article CC BY 4.0 (nature.com Rights and permissions; Crossref licence, version of record); the Supplementary Data files '
-           'carry no licence statement of their own on the publisher\'s pages (read 2026-10-25)')
-REDISTRIBUTION = 'checksum_only'   # 'git' once the Supplementary Data are known to be under the article's licence
-HOW = ('scripts/45_stage_prmt7_szewczyk2020.py; checked against reference/uniprot_human_reviewed_2026_03.fasta (kept where the leading '
-       'entry has an arginine at the reported position; sequence versions compared with the 2018_08 FASTA headers of Supplementary Data 3)')
+LICENCE = ('CC BY 4.0: the article\'s licence (nature.com Rights and permissions; Crossref), taken to cover its Supplementary Data, '
+           'which state none of their own (the lab\'s decision of 2026-10-25, as for the CARM1 knockout of Shishkova et al. 2017)')
+REDISTRIBUTION = 'git'
+HOW = ('scripts/45_stage_prmt7_szewczyk2020.py; checked against reference/uniprot_human_reviewed_2026_03.fasta: the reported position on '
+       'the sequence version searched (the 2018_08 FASTA headers of Supplementary Data 3, or UniSave for entries they lack, '
+       'layers/prmt7_ko_searched_sequences.tsv), kept where it is an arginine there and maps to the reference sequence')
 MANIFEST_ROWS = {
     'prmt7_ko_peptides.tsv': ('Rme1 peptides quantified by monomethylarginine immunoprecipitation of SILAC-labelled PRMT7 knockout and parental '
         'HCT116 cells (Supplementary Data 2, one row each, named by Rme1 site), placed at the reported position on the canonical sequence, with '
         f'log2 KO/WT, p, BH-adjusted p and call (decreased: log2 <= -1, increased: >= 1, both at adjusted p < {Q_CUTOFF:g})'),
     'prmt7_ko_sites.tsv': ('One row per canonical methylarginine and comparison (PRMT7 KO vs WT, HCT116): its peptides, median log2 KO/WT, lowest '
         'p and adjusted p, and the call by scripts/peptide_calls.py over all its peptides and over its single-site peptides'),
+    'prmt7_ko_searched_sequences.tsv': ('The sequence UniProt release 2018_08 had for each entry of Supplementary Data 2 that the input '
+        'proteome of Supplementary Data 3 does not list (UniSave: entry version, sequence version, sequence), to check and move '
+        'their positions to the reference sequence'),
     'prmt7_ko_summary.json': ('Counts, rule and input MD5s of the PRMT7 knockout staging, and the rows left out and why (file names only; '
         'counts and checksums, no source values)'),
 }
 RAW_FILES = {SD2_NAME: 'Supplementary Data 2 (Identification of monomethyl arginine peptides in PRMT7 WT and KO cells); publisher file '
                        'Last-Modified 2023-12-04',
              SD3_NAME: 'Supplementary Data 3 (Input peptide level analysis in PRMT7 WT and KO cells); publisher file Last-Modified 2023-12-04'}
-RAW_KEPT = 'checksum_only (no licence stated for the Supplementary Data; article CC BY 4.0)'
+RAW_KEPT = 'release_asset (CC BY 4.0, the article\'s licence)'
 
 
 def number(v) -> float | None:
@@ -163,15 +172,49 @@ def reference_versions(path: Path) -> dict[str, int]:
     return out
 
 
-def place(row, canonical: dict[str, str], searched: dict[str, int], reference: dict[str, int]) -> str:
-    """Placement status of one row at its reported position on its leading entry's canonical sequence."""
-    if row.leading not in canonical:
-        return 'accession_not_in_canonical_fasta'
-    if not residue_is(canonical, row.leading, row.reported_position):
-        return 'residue_not_arginine'
-    if row.leading not in searched:
-        return 'residue_matches'
-    return 'position_verified' if searched[row.leading] == reference.get(row.leading) else 'residue_matches_sequence_changed'
+def fetch_history(accessions: list[str], release: str = SEARCHED_RELEASE) -> pd.DataFrame:
+    """For each entry, the UniSave entry version current in UniProt release `release`, and its sequence. Releases before
+    2010 are numbered otherwise ('15.0/55.0') and come before any 'YYYY_MM' release."""
+    from urllib.request import urlopen
+    dated = lambda r: re.fullmatch(r'\d{4}_\d{2}', r) is not None  # noqa: E731
+    rows = []
+    for acc in sorted(set(accessions)):
+        with urlopen(f'{UNISAVE}{acc}?format=json', timeout=120) as fh:
+            versions = json.load(fh)['results']
+        before = [v for v in versions if not dated(v['firstRelease'].split('/')[0]) or v['firstRelease'].split('/')[0] <= release]
+        if not before:
+            rows.append({'accession': acc, 'release': release, 'entry_version': '', 'sequence_version': '', 'sequence': ''})
+            continue
+        v = max(before, key=lambda x: x['entryVersion'])
+        last = v['lastRelease'].split('/')[0]
+        if dated(last) and last < release:   # the entry was gone by then
+            rows.append({'accession': acc, 'release': release, 'entry_version': '', 'sequence_version': '', 'sequence': ''})
+            continue
+        with urlopen(f'{UNISAVE}{acc}?format=fasta&versions={v["entryVersion"]}', timeout=120) as fh:
+            seq = ''.join(line.strip() for line in fh.read().decode().splitlines() if line and not line.startswith('>'))
+        rows.append({'accession': acc, 'release': release, 'entry_version': v['entryVersion'], 'sequence_version': v['sequenceVersion'], 'sequence': seq})
+    return pd.DataFrame(rows)
+
+
+def place(row, canonical: dict[str, str], searched: dict[str, int], reference: dict[str, int], history: dict[str, str]) -> tuple[str, int | None]:
+    """Placement of one row at its reported position: (status, position on the leading entry's canonical sequence)."""
+    acc, pos = row.leading, row.reported_position
+    if acc not in canonical:
+        return 'accession_not_in_canonical_fasta', None
+    if acc in searched and searched[acc] == reference.get(acc):
+        return ('position_verified', pos) if residue_is(canonical, acc, pos) else ('residue_not_arginine', None)
+    old = history.get(acc, '')
+    if not old:
+        return 'no_searched_sequence', None
+    if not (0 < pos <= len(old) and old[pos - 1] == 'R'):
+        return 'not_arginine_in_searched_sequence', None
+    if old == canonical[acc]:
+        return 'position_verified_unisave', pos
+    window = old[max(0, pos - 8):pos + 7]
+    hits = [m.start() for m in re.finditer(f'(?={re.escape(window)})', canonical[acc])]
+    if len(hits) != 1:
+        return 'not_lifted', None
+    return 'lifted', hits[0] + (pos - 1 - max(0, pos - 8)) + 1
 
 
 def call(log2: float | None, q: float | None) -> str:
@@ -194,6 +237,8 @@ def main() -> None:
     ap.add_argument('--sd2', required=True, help=f'Szewczyk 2020 Supplementary Data 2 ({SD2_NAME})')
     ap.add_argument('--sd3', required=True, help=f'Szewczyk 2020 Supplementary Data 3 ({SD3_NAME}), for the sequence versions searched')
     ap.add_argument('--fasta', default='inputs/reference/uniprot_human_reviewed_2026_03.fasta')
+    ap.add_argument('--history', default='', help='the 2018_08 sequences of the entries Supplementary Data 3 lacks (prmt7_ko_searched_sequences.tsv)')
+    ap.add_argument('--fetch-history', action='store_true', help='fetch them from UniSave into --history first (network)')
     ap.add_argument('--downloaded', default='2026-10-25', help='the date the two files were downloaded (raw_files.tsv)')
     ap.add_argument('--outdir', required=True)
     ap.add_argument('--manifest', default='', help='inputs/MANIFEST.tsv: also write the rows there (and into raw_files.tsv in --outdir); '
@@ -204,12 +249,24 @@ def main() -> None:
     peptides = read_sd2(sd2)
     canonical = parse_fasta(fasta)
     searched, reference = searched_versions(sd3), reference_versions(fasta)
-    peptides['placement'] = [place(r, canonical, searched, reference) for r in peptides.itertuples(index=False)]
+    need = sorted({a for a in peptides['leading'] if a in canonical and not (a in searched and searched[a] == reference.get(a))})
+    if args.fetch_history:
+        if not args.history:
+            raise SystemExit('--fetch-history needs --history, the file to write')
+        save_table(fetch_history(need), Path(args.history))
+    hist = pd.read_csv(args.history, sep='\t', dtype=str, keep_default_na=False) if args.history else pd.DataFrame(columns=['accession', 'sequence'])
+    history = dict(zip(hist['accession'], hist['sequence']))
+    missing = [a for a in need if a not in history]
+    if args.history and missing:
+        raise SystemExit(f'{args.history} lacks {missing}: fetch it again (--fetch-history)')
+    where = [place(r, canonical, searched, reference, history) for r in peptides.itertuples(index=False)]
+    peptides['placement'] = [w[0] for w in where]
+    peptides['canonical_position'] = [w[1] for w in where]
     placed = peptides['placement'].isin(KEPT)
     peptides['canonical_UniProtAC'] = peptides['leading'].where(placed, '')
     peptides['searched_sequence_version'] = [str(searched[a]) if a in searched else '' for a in peptides['leading']]
     peptides['reference_sequence_version'] = [str(reference[a]) if reference.get(a) is not None else '' for a in peptides['leading']]
-    peptides['methyl_positions'] = [str(p) if k else '' for p, k in zip(peptides['reported_position'], placed)]
+    peptides['methyl_positions'] = [str(int(p)) if k else '' for p, k in zip(peptides['canonical_position'], placed)]
     peptides['call'] = [call(f, q) for f, q in zip(peptides['log2_ko_wt'], peptides['q'])]
 
     # One quantified peptide can carry several of the sites the table names: those rows of the entry have the same
@@ -235,7 +292,7 @@ def main() -> None:
     # Sites: each placed, quantified row gives its site one peptide.
     groups = defaultdict(list)
     for r in peptides[placed & peptides['call'].ne('not_quantified')].itertuples(index=False):
-        groups[(r.canonical_UniProtAC, r.reported_position)].append(r)
+        groups[(r.canonical_UniProtAC, int(r.canonical_position))].append(r)
     sites = []
     for (acc, pos), rows in sorted(groups.items()):
         res = pc.site_response([(r.q, r.log2_ko_wt, r.n_methyl_sites) for r in rows], Q_CUTOFF, LOG2_CUTOFF, strict=True)
@@ -258,6 +315,11 @@ def main() -> None:
     peptides = peptides.assign(comparison=COMPARISON, cell_line=CELL_LINE)[columns]
     save_table(peptides, out / 'prmt7_ko_peptides.tsv')
     save_table(sites, out / 'prmt7_ko_sites.tsv')
+    if args.history:
+        # the searched sequences are staged beside the tables, so the staging can be run again offline
+        hp = Path(args.history)
+        if hp.resolve() != (out / 'prmt7_ko_searched_sequences.tsv').resolve():
+            save_table(pd.read_csv(hp, sep='\t', dtype=str, keep_default_na=False), out / 'prmt7_ko_searched_sequences.tsv')
     q_bh = pc.bh(peptides['p'].tolist())
     summary = {
         'study': STUDY, 'doi': DOI, 'article_licence': 'CC BY 4.0', 'raw_data': 'MassIVE MSV000084773 (doi:10.25345/C5GQ37), not used',
@@ -296,9 +358,10 @@ def main() -> None:
                       'how_made_or_checked': HOW if not name.endswith('.json') else 'scripts/45_stage_prmt7_szewczyk2020.py', 'original_name': ''})
     raw = [{'file': p.name, 'url': ESM + p.name, 'bytes': p.stat().st_size, 'md5': md5_file(p), 'sha256': sha256_file(p),
             'downloaded': args.downloaded, 'version': RAW_FILES[p.name], 'kept': RAW_KEPT} for p in (sd2, sd3)]
-    for rows, name, cols in ((mrows, 'manifest_rows.tsv', list(mrows[0])), (raw, 'raw_files_rows.tsv', list(raw[0]))):
-        save_table(pd.DataFrame(rows, columns=cols), out / name)
-    if args.manifest:
+    if not args.manifest:   # staged elsewhere for review: the rows to add once the tables move into inputs/layers/
+        for rows, name, cols in ((mrows, 'manifest_rows.tsv', list(mrows[0])), (raw, 'raw_files_rows.tsv', list(raw[0]))):
+            save_table(pd.DataFrame(rows, columns=cols), out / name)
+    else:
         update_manifest(args.manifest, mrows)
         upsert_tsv_rows(out / 'raw_files.tsv', raw)
         refresh_manifest_row(args.manifest, out / 'raw_files.tsv', 'layers/raw_files.tsv')

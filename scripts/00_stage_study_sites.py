@@ -85,6 +85,32 @@ paper's threshold, with 1 % FDR; every row meets it). Five rows have their prote
 they are read from the cells' content, not their header. The sheet names proteins by UniProt entry name (ROA1, ARI1B),
 not gene symbol, so reported_gene is left empty.
 
+Lu et al. 2024, J Proteome Res 23:1014-1027, doi:10.1021/acs.jproteome.3c00724 (the article is not open access; the
+supporting information is CC BY-NC 4.0 on ACS's figshare portal, DOIs 10.1021/acs.jproteome.3c00724.s002 and .s003;
+PRIDE PXD037425, CC0). HeLa peptides digested with ulilysin, enriched with the PTMScan sdme-RG antibody (#13563) and
+searched with SEQUEST HT and ptmRS in Proteome Discoverer 2.4, mono- and dimethylation of K and R variable (PRIDE
+PXD037425 protocols). Read: Supporting Information 2 Table 1.1 (the 391 methyl peptide groups of the SILAC experiment
+with the PRMT5 inhibitor EPZ015666) and Supporting Information 3 Table 2.1 (the peptide groups of the heavy-methyl
+SILAC experiment; the light-channel identifications, columns '.x'). Each row gives the peptide, its marks with their
+ptmRS probabilities ('3xDimethyl [R1(100); R8(99.4)]'; a methyl group ptmRS does not place reads '[R]', '[R/K]') and
+the span on its master proteins; the position is the first master's start plus the offset, checked against the table's
+own 'Modifications in Master Proteins'. Kept: ptmRS >= 98 %, the study's own criterion for an unambiguous site ("Unambiguous
+sites mean that localization probabilities with ptmRS Node in PD 2.4 were not less than 98%", Figure S2 legend; the
+article's methods could not be read). The marks between 75 % (the lowest Proteome Discoverer places) and 98 % are kept not
+localised (below_threshold). Table 2.1's light rows are all Confidence High at Percolator q <= 0.01 (the export's own
+filter; the article's FDR could not be read); Table 1.1 gives no score and is read as the study's quantified list. Table
+1.3 lists 41 monomethylarginine sites; for 40 of them Table 1.1's peptides carry the methyl group unplaced ('1xMethyl [R]'),
+and the authors give it the position of an arginine left unmarked, mostly the peptide's first: such a site is kept with
+those peptides, not localised (several_residues). Five of them sit on an arginine those peptides carry as a placed
+dimethylarginine (ptmRS 100 %), so the peptide's mass puts the methyl group elsewhere: kept by position only, not
+localised (search_disagrees).
+The heavy-channel identifications of Table 2.1 (marks without probabilities) are not read. Tables 1.2 (335 Rme2 sites)
+and 1.3 are the study's site lists and are checked against the peptides (Table 1.2 is exactly Table 1.1's placed
+dimethylarginines); the note names the sites of Table 1.4 (dimethylarginines that fell on EPZ015666, 'PRMT5-regulated'),
+Table 2.2 (sites validated by heavy-methyl SILAC) and Table 2.3 (both). rme2_type is left empty: the enrichment is for
+SDMA, but the tables call no type per residue. The SILAC response to EPZ015666 is staged apart
+(stage_lu2024_prmt5.py).
+
 Output columns: study_id, reported_accession, reported_gene, reported_position, peptide (this record's arginine marked
 R(me1) or R(me2)), window, methyl_degree (Rme1, Rme2), rme2_type, cell_type, enrichment, localisation_probability (0-1),
 n_source_rows, source_tables, note. Lists are joined with '; '.
@@ -773,6 +799,238 @@ def read_ma(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
     return out
 
 
+# ------------------------------------------------------------------------------------------------------ Lu 2024
+LU2024_MIN_PTMRS, LU2024_MAX_Q = 98.0, 0.01
+LU2024_CELL, LU2024_ENRICHMENT = 'HeLa', 'SDMA antibody (PTMScan sdme-RG #13563)'
+PD_GROUP = re.compile(r'(\d+)x([A-Za-z]+) \[([^\]]*)\]')
+
+
+def lu2024_marks(value) -> tuple[list[tuple[str, int, str, float | None]], Counter]:
+    """'1xMethyl [R]; 3xDimethyl [R1(100); R8(99.4)]' -> the methyl marks ptmRS places, as (residue, offset, kind,
+    probability), and the number of methyl groups of each kind it does not place ('[R]', '[R/K]', or a group
+    holding fewer placed residues than it states)."""
+    placed, unplaced = [], Counter()
+    for n, kind, body in PD_GROUP.findall(text(value)):
+        if kind not in ('Methyl', 'Dimethyl', 'Trimethyl'):
+            continue
+        here = 0
+        for tok in (t.strip() for t in body.split(';') if t.strip()):
+            m = re.fullmatch(r'([A-Z])(\d+)(?:\(([\d.]+)\))?', tok)
+            if m:
+                placed.append((m.group(1), int(m.group(2)), kind, float(m.group(3)) if m.group(3) else None))
+                here += 1
+        unplaced[kind] += int(n) - here
+    return placed, unplaced
+
+
+def lu2024_starts(value, master: str) -> list[int]:
+    """'P07195 [158-169]; P00338 [157-168]' -> the peptide's starts on master ([158] for P07195)."""
+    starts, current = [], None
+    for token in text(value).split(';'):
+        m = re.fullmatch(r'\s*(\S+)?\s*\[(\d+)-(\d+)\]\s*', token)
+        if m:
+            current = m.group(1) or current
+            if current == master:
+                starts.append(int(m.group(2)))
+    return starts
+
+
+def lu2024_master_sites(value, master: str) -> set[tuple[str, int, str]]:
+    """'Q07666 3xMethyl [R302; R]; 2xDimethyl [R289(99.6); R291]' -> {('R', 302, 'Methyl'), ('R', 289, 'Dimethyl'),
+    ('R', 291, 'Dimethyl')}: the placed marks the table gives on master."""
+    out, current = set(), None
+    for m in re.finditer(r'(?:([A-Z0-9-]+) )?\d+x([A-Za-z]+) \[([^\]]*)\]', text(value)):
+        current = m.group(1) or current
+        if current != master:
+            continue
+        for res, pos in re.findall(r'([A-Z])(\d+)', m.group(3)):
+            out.add((res, int(pos), m.group(2)))
+    return out
+
+
+def lu2024_sitelist(wb, sheet: str) -> list[tuple[str, int]]:
+    """A site list of the supplement (sheet title in row 1, 'UniprotKB', 'Sites' in row 2): [(accession, position)]."""
+    out = []
+    for r in list(wb[sheet].iter_rows(values_only=True))[2:]:
+        if r and text(r[0]):
+            m = re.fullmatch(r'R(\d+)', text(r[1]))
+            if not m:
+                raise SystemExit(f'Lu 2024 {sheet}: site {r[1]!r} is not an arginine position')
+            out.append((text(r[0]), int(m.group(1))))
+    return out
+
+
+def lu2024_peptide_rows(rows, H, label, suffix, stats, out, unplaced_me1, notes):
+    """Site rows of one peptide-group table (Table 1.1, or Table 2.1's light channel with suffix '.x')."""
+    col = lambda name: H[name + suffix]  # noqa: E731
+    for r in rows:
+        peptide = re.sub(r'^\[.*?\]\.|\.\[.*?\]$', '', text(r[col('Annotated Sequence')])).upper()
+        masters = accessions(r[col('Master Protein Accessions')])
+        if masters == ['0']:
+            stats['rows_dropped:no_master_protein'] += 1
+            continue
+        if not masters or not all(ACCESSION.fullmatch(a) for a in masters):
+            stats['rows_dropped:not_uniprot_accession'] += 1
+            continue
+        placed, unplaced = lu2024_marks(r[col('Modifications')])
+        for kind, n in unplaced.items():
+            stats[f'methyl_groups_not_placed_by_ptmrs:{kind}'] += n
+        if unplaced['Methyl']:
+            unplaced_me1.append((masters[0], peptide, r, placed))
+        marks = [(res, off, k, p) for res, off, k, p in placed if k in ('Methyl', 'Dimethyl', 'Trimethyl')]
+        if not marks:
+            stats['rows_without_placed_methyl_mark'] += 1
+            continue
+        kinds = defaultdict(set)
+        for res, off, k, _ in marks:
+            kinds[(res, off)].add(k)
+        staged = [(res, off, k) for res, off, k, _ in marks if res == 'R' and k in DEGREE and len(kinds[(res, off)]) == 1]
+        # the start on the first master that agrees with the table's own positions there of the marks staged
+        listed = lu2024_master_sites(r[col('Modifications in Master Proteins')], masters[0])
+        starts = lu2024_starts(r[col('Positions in Master Proteins')], masters[0])
+        fits = [s for s in starts if all((res, s + off - 1, k) in listed for res, off, k in staged)]
+        if len(fits) != 1:
+            stats['site_rows_dropped:position_inconsistent_with_peptide'] += len(staged)
+            continue
+        start = fits[0]
+        degrees = {off: DEGREE[k] for res, off, k in staged}
+        # the mass fixes the arrangement only when every methyl group of the row is placed
+        by_mass = '' if any(unplaced.values()) else mass_localised(peptide, degrees, 'RK')
+        for res, off, k, prob in marks:
+            if res != 'R' or k not in DEGREE:
+                stats['marks_dropped:lysine_or_trimethyl'] += 1
+                continue
+            if len(kinds[(res, off)]) > 1:
+                if k == 'Methyl':
+                    stats['site_rows_dropped:same_arginine_me1_and_me2'] += 1
+                continue
+            if not 1 <= off <= len(peptide) or peptide[off - 1] != 'R':
+                stats['site_rows_dropped:marked_residue_not_R'] += 1
+                continue
+            if prob is not None and prob >= LU2024_MIN_PTMRS:
+                localised, why = 'localisation_score', ''
+            elif by_mass:
+                localised, why = by_mass, ''
+            else:
+                localised, why = '', 'below_threshold' if prob is not None else 'no_localising_evidence'
+                stats['site_rows_not_localised:ptmrs_below_98' if prob is not None else 'site_rows_not_localised:no_ptmrs'] += 1
+            position = start + off - 1
+            note = notes(masters[0], position, DEGREE[k], label)
+            out.append(site_row(masters, '', position, DEGREE[k], LU2024_CELL, LU2024_ENRICHMENT, label, peptide, off,
+                                loc=None if prob is None else prob / 100, note=note, localised=localised, why=why))
+
+
+def read_lu2024(paths: list[Path], stats: Counter, ctx: dict) -> list[dict]:
+    books = {}
+    for path in paths:
+        for name in load_workbook(path, read_only=True).sheetnames:
+            books[name] = path
+    for sheet in ('Table1.1', 'Table1.2', 'Table1.3', 'Table1.4', 'Table2.1', 'Table2.2', 'Table2.3'):
+        if sheet not in books:
+            raise SystemExit(f'Lu 2024 sheet {sheet!r} not in {[str(p) for p in paths]}')
+    wb1 = load_workbook(books['Table1.1'], read_only=True, data_only=True)
+    wb2 = load_workbook(books['Table2.1'], read_only=True, data_only=True)
+    lists = {s: lu2024_sitelist(wb1 if s.startswith('Table1') else wb2, s)
+             for s in ('Table1.2', 'Table1.3', 'Table1.4', 'Table2.2', 'Table2.3')}
+    for s, sites in lists.items():
+        stats[f'rows_read:{s.replace("Table", "Table ")}'] += len(sites)
+        title = text(next(wb1[s].iter_rows(values_only=True))[0] if s.startswith('Table1') else next(wb2[s].iter_rows(values_only=True))[0])
+        stated = re.search(r'\((\d+)\)', title)
+        if stated and int(stated.group(1)) != len(sites):
+            raise SystemExit(f'Lu 2024 {s}: the title states {stated.group(1)} sites, it lists {len(sites)}')
+    me1_listed = set(lists['Table1.3'])
+    regulated, validated, both = set(lists['Table1.4']), set(lists['Table2.2']), set(lists['Table2.3'])
+
+    def notes(acc, pos, degree, table=''):
+        out = []
+        if degree == 'Rme2' and (acc, pos) in regulated:
+            out.append('PRMT5-regulated (Table 1.4)')
+        if (acc, pos) in validated:
+            out.append('site in Table 2.2 (hmSILAC validated)')
+        if degree == 'Rme2' and (acc, pos) in both:
+            out.append('PRMT5-regulated, hmSILAC validated (Table 2.3)')
+        if table == 'Table 1.1' and degree == 'Rme1' and (acc, pos) not in me1_listed:
+            out.append('not in Table 1.3')
+        return out
+
+    out, unplaced_me1 = [], []
+    rows = list(wb1['Table1.1'].iter_rows(values_only=True))
+    H1 = {text(h): k for k, h in enumerate(rows[1]) if h is not None}
+    data1 = [r for r in rows[2:] if r and text(r[0])]
+    stats['rows_read:Table 1.1'] += len(data1)
+    lu2024_peptide_rows(data1, H1, 'Table 1.1', '', stats, out, unplaced_me1, notes)
+
+    rows = list(wb2['Table2.1'].iter_rows(values_only=True))
+    H2 = {text(h): k for k, h in enumerate(rows[1]) if h is not None}
+    data2 = [r for r in rows[2:] if r and text(r[0])]
+    stats['rows_read:Table 2.1'] += len(data2)
+    light = []
+    for r in data2:
+        if r[H2['ID.x']] is None:
+            stats['rows_skipped:heavy_channel_only'] += 1
+            continue
+        q = r[H2['Percolator q-Value (by Search Engine): Sequest HT.x']]
+        if text(r[H2['Confidence.x']]) != 'High' or q is None or float(q) > LU2024_MAX_Q:
+            stats['rows_dropped:not_high_confidence_or_q_above_0.01'] += 1
+            continue
+        light.append(r)
+    lu2024_peptide_rows(light, H2, 'Table 2.1', '.x', stats, out, [], notes)
+
+    # Table 1.2 is the placed dimethylarginines of Table 1.1, whatever their probability
+    placed_me2 = set()
+    for r in data1:
+        acc = accessions(r[H1['Master Protein Accessions']])[0]
+        placed_me2 |= {(acc, pos) for res, pos, k in lu2024_master_sites(r[H1['Modifications in Master Proteins']], acc)
+                       if res == 'R' and k == 'Dimethyl'}
+    if placed_me2 != set(lists['Table1.2']):
+        raise SystemExit(f'Lu 2024: Table 1.2 differs from the dimethylarginines Table 1.1 places '
+                         f'({len(placed_me2 ^ set(lists["Table1.2"]))} sites)')
+    stats['table_1.2_sites_equal_placed_table_1.1_dimethylarginines'] = len(placed_me2)
+
+    # Table 1.3: monomethylarginine sites; where Table 1.1 places none at the site, the peptides that carry an unplaced
+    # methyl group and an unmarked arginine at the site, kept not localised
+    have = {(r['accessions'][0], r['position']) for r in out if r['table'] == 'Table 1.1' and r['degree'] == 'Rme1'}
+    for acc, pos in lists['Table1.3']:
+        if (acc, pos) in have:
+            stats['table_1.3_sites_placed_by_ptmrs'] += 1
+            continue
+        found, dimethylated_here = 0, 0
+        for master, peptide, r, placed in unplaced_me1:
+            if master != acc:
+                continue
+            marked = {off for res, off, k, _ in placed if k in ('Methyl', 'Dimethyl', 'Trimethyl')}
+            dimethyl = {off for res, off, k, _ in placed if res == 'R' and k == 'Dimethyl'}
+            for start in lu2024_starts(r[H1['Positions in Master Proteins']], acc):
+                off = pos - start + 1
+                if off in dimethyl:
+                    dimethylated_here += 1
+                if 1 <= off <= len(peptide) and peptide[off - 1] == 'R' and off not in marked:
+                    degrees = {o: DEGREE[k] for res, o, k, _ in placed if res == 'R' and k in DEGREE}
+                    degrees[off] = 'Rme1'
+                    localised = mass_localised(peptide, degrees, 'RK')
+                    note = ['Table 1.3 site; ptmRS does not place the methyl group (Table 1.1)'] + notes(acc, pos, 'Rme1')
+                    out.append(site_row(accessions(r[H1['Master Protein Accessions']]), '', pos, 'Rme1', LU2024_CELL,
+                                        LU2024_ENRICHMENT, 'Table 1.3', peptide, off, note=note, localised=localised,
+                                        why='' if localised else 'several_residues'))
+                    found += 1
+        if found:
+            stats['table_1.3_sites_with_unplaced_methyl_peptide'] += 1
+            stats['site_rows_not_localised:table_1.3_methyl_not_placed'] += found
+        elif dimethylated_here:
+            # the peptides with the unplaced methyl group carry a dimethyl group ptmRS places at this very arginine,
+            # so their mass puts the methyl group on another residue: kept by position only, not localised
+            stats['table_1.3_sites_where_the_peptides_place_a_dimethyl_group'] += 1
+            note = ['Table 1.3 site; the Table 1.1 peptides with the unplaced methyl group carry a dimethyl group placed '
+                    'at this arginine'] + notes(acc, pos, 'Rme1')
+            out.append(site_row([acc], '', pos, 'Rme1', LU2024_CELL, LU2024_ENRICHMENT, 'Table 1.3', note=note,
+                                why='search_disagrees'))
+        else:
+            stats['table_1.3_sites_without_peptide'] += 1
+            out.append(site_row([acc], '', pos, 'Rme1', LU2024_CELL, LU2024_ENRICHMENT, 'Table 1.3',
+                                note=notes(acc, pos, 'Rme1'), why='no_localising_evidence'))
+    return out
+
+
 # ------------------------------------------------------------------------------------------------------ Guo 2014
 GUO_MIN_MODSCORE, GUO_MAX_PPM = 13.0, 10.0
 GUO_ANTIBODY = {'Me-R4-100': 'MMA antibody Me-R4-100', 'D5A12': 'MMA antibody R*GG (D5A12)', 'D4H5': 'ADMA antibody D4H5',
@@ -1452,7 +1710,7 @@ STUDIES = {'hartel2019': ('Hartel2019', read_hartel, ()), 'geoghegan2015': ('Geo
            'li2021': ('Li2021', read_li, ()), 'fedoriw2019': ('Fedoriw2019', read_fedoriw, ('reference', 'genes')),
            'lim2020': ('Lim2020', read_lim, ()), 'wei2020': ('Wei2020', read_wei, ()), 'maron2021': ('Maron2021', read_maron, ()),
            'musiani2019': ('Musiani2019', read_musiani, ('reference', 'genes')), 'larsen2016': ('Larsen2016', read_larsen, ()),
-           'uniprot': ('UniProt', read_uniprot, ()), 'iedb': ('IEDB', read_iedb, ())}
+           'uniprot': ('UniProt', read_uniprot, ()), 'iedb': ('IEDB', read_iedb, ()), 'lu2024': ('Lu2024', read_lu2024, ())}
 
 
 def table_key(label: str):
