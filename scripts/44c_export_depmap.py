@@ -9,10 +9,12 @@ Writes docs/data/depmap/:
                     null, likely loss of function], ...]
                 t: TCGA changes at arginines, [[position, residue, [[study index, samples], ...]], ...]
   meta.json   releases, licences, histogram edges, lineages, cell lines [id, name, lineage index, MTAP absolute copy
-              number], TCGA studies, counts, and the tests of whether a methylated arginine is changed more often than
-              the other arginines of its protein (--sites): pooled Fisher and within-protein Mantel-Haenszel
+              number], TCGA studies, counts, and stats: the release's statistics rows of the layer (analyses
+              depmap_dependency and cancer_change, scripts/release_layers.py), read from --statistics, or made with the
+              same code from --sites when that release has none
   genes.json  every screened entry, for the Overview's comparisons: accessions, median gene effect x1000, common
-              essential (a string of 0 and 1), dependent lines, lines screened
+              essential (a string of 0 and 1), dependency class (a string of indices into meta.dependency_classes),
+              dependent lines, lines screened
   prmt.json   the PRMT panel: each PRMT's gene effect across the CRISPR lines and by MTAP status (0 copies = deleted),
               and each PRISM PRMT inhibitor's log2 viability, by MTAP status and against its target's gene effect
 
@@ -23,13 +25,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
+import tempfile
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from scipy.stats import fisher_exact, mannwhitneyu, spearmanr
+from scipy.stats import mannwhitneyu, spearmanr
 
-from common import mantel_haenszel_ci, parse_fasta
+import release_layers
+from common import parse_fasta
 
 SHARDS = 64
 
@@ -45,11 +50,47 @@ def num(v, nd=3):
     return None if pd.isna(v) or v == '' else round(float(v), nd)
 
 
+STAT_FIELDS = ['analysis', 'category', 'method', 'a', 'b', 'c', 'd', 'odds_ratio', 'odds_ratio_ci_low', 'odds_ratio_ci_high',
+               'fold_enrichment', 'p', 'q', 'n_strata', 'background']
+
+
+def layer_stats(args, layers: Path) -> dict:
+    """The layer's statistics rows as the release has them (--statistics, or the statistics table beside --sites), or,
+    for a release made before the layer was registered, made with the same code (scripts/release_layers.py) from its site
+    table, the sites kept pending left out (the enrichment test then needs R, as in the build)."""
+    analyses = set(release_layers.CANCER.analyses)
+    sites_path = Path(args.sites)
+    path = Path(args.statistics) if args.statistics else sites_path.with_name(sites_path.name.replace('human_methylarginine_sites_', 'statistics_'))
+    rows, source = [], ''
+    if path.exists():
+        st = pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False)
+        rows = st[st['analysis'].isin(analyses)].to_dict('records')
+        source = path.name
+    if not rows:
+        sites = pd.read_csv(sites_path, sep='\t', dtype=str, keep_default_na=False)
+        frame = pd.DataFrame({'uniprot_accession': sites['uniprot_accession'], 'position': sites['position'].astype(int),
+                              'counted': ~sites['flags'].str.contains('one_sided_window', regex=False)})
+        with tempfile.TemporaryDirectory() as work:
+            rows = [{k: ('' if v is None or (isinstance(v, float) and math.isnan(v)) else v) for k, v in r.items()}
+                    for r in release_layers.cancer_stats(frame, layers.parent, parse_fasta(args.fasta), Path(work))]
+        source = f'scripts/release_layers.py on {sites_path.name}'
+
+    def val(k, v):
+        if k in ('analysis', 'category', 'method', 'background'):
+            return v
+        if v in ('', None):
+            return None
+        x = float(v)
+        return int(x) if k in 'abcd' or k == 'n_strata' else float(f'{x:.4g}')
+    return {'rows': [[val(k, r.get(k, '')) for k in STAT_FIELDS] for r in rows], 'from': source, 'fields': STAT_FIELDS}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--layers', default='inputs/layers')
     ap.add_argument('--out', default='docs/data/depmap')
     ap.add_argument('--sites', default='releases/v1.3.1/human_methylarginine_sites_v1.3.1.tsv', help='the release site table')
+    ap.add_argument('--statistics', default='', help="the release's statistics table (default: next to --sites, when it exists)")
     ap.add_argument('--fasta', default='inputs/reference/uniprot_human_reviewed_2026_03.fasta')
     args = ap.parse_args()
     L, out = Path(args.layers), Path(args.out)
@@ -94,9 +135,12 @@ def main() -> None:
                 v[k].sort(key=lambda x: (x[0], x[1]))
 
     gs = g.sort_values('canonical_UniProtAC')
+    classes = list(release_layers.CANCER.codes['dependency_class'])
+    cls = release_layers.gene_effect(str(L.parent))['dependency_class']
     (out / 'genes.json').write_text(json.dumps({
         'acc': gs['canonical_UniProtAC'].tolist(), 'median': [int(round(float(v) * 1000)) for v in gs['median']],
         'ce': ''.join('1' if v == 'True' else '0' for v in gs['common_essential']),
+        'cls': ''.join(str(classes.index(cls[a])) for a in gs['canonical_UniProtAC']),
         'dependent': gs['dependent_lines'].astype(int).tolist(), 'lines': gs['lines'].astype(int).tolist()}, separators=(',', ':')), encoding='utf-8')
 
     shards = [dict() for _ in range(SHARDS)]
@@ -106,31 +150,7 @@ def main() -> None:
         (out / f'p{k:02d}.json').write_text(json.dumps({'prot': s}, separators=(',', ':')), encoding='utf-8')
 
     cn = lambda v: None if v == '' else float(v)  # noqa: E731
-    # Is a methylated arginine changed (in at least one line or tumour) more often than the other arginines of the same
-    # proteins? Pooled over the methylated proteins (Fisher), and within protein (Mantel-Haenszel, a protein a stratum).
-    canonical = parse_fasta(args.fasta)
-    sites = pd.read_csv(args.sites, sep='\t', dtype=str, keep_default_na=False, usecols=['uniprot_accession', 'position'])
-    sites = sites[sites['uniprot_accession'].isin(canonical)]
-    meth = set(zip(sites['uniprot_accession'], sites['position'].astype(int)))
-    prots = sorted(set(sites['uniprot_accession']))
-    tests = {}
-    for key, name, who in (('depmap', 'depmap_24q4_arginine_changes.tsv', 'model_id'), ('tcga', 'tcga_pancan_arginine_changes.tsv', 'sample_id')):
-        if not (L / name).exists():
-            continue
-        hit = set(map(tuple, read(name)[['canonical_UniProtAC', 'position']].drop_duplicates().assign(position=lambda x: x['position'].astype(int)).to_numpy().tolist()))
-        a = b = c = d = 0
-        tables = []
-        for acc in prots:
-            rs = [k + 1 for k, ch in enumerate(canonical[acc]) if ch == 'R']
-            mm = [r for r in rs if (acc, r) in meth]
-            oo = [r for r in rs if (acc, r) not in meth]
-            a1, c1 = sum((acc, r) in hit for r in mm), sum((acc, r) in hit for r in oo)
-            a, b, c, d = a + a1, b + len(mm) - a1, c + c1, d + len(oo) - c1
-            tables.append((a1, len(mm) - a1, c1, len(oo) - c1))
-        orr, p = fisher_exact([[a, b], [c, d]])
-        mh, lo, hi, mp, used = mantel_haenszel_ci(tables)
-        tests[key] = {'meth_changed': a, 'meth': a + b, 'other_changed': c, 'other': c + d, 'pooled_or': round(orr, 3), 'pooled_p': float(f'{p:.3g}'),
-                      'mh_or': round(mh, 3), 'mh_lo': round(lo, 3), 'mh_hi': round(hi, 3), 'mh_p': float(f'{mp:.3g}'), 'proteins': used}
+    stats = layer_stats(args, L)
     meta = {
         'depmap': {'release': summary['depmap']['release'], 'doi': summary['depmap']['doi'], 'licence': summary['depmap']['licence'],
                    'crispr_lines': summary['crispr_lines'], 'crispr_genes': summary['crispr_genes'],
@@ -143,7 +163,8 @@ def main() -> None:
         'models': [[r.model_id, r.cell_line, lin_ix.get(r.lineage, -1), cn(r.mtap_absolute_cn)] for r in models.itertuples(index=False)],
         'studies': [[r.study_id.replace('_tcga_pan_can_atlas_2018', '').upper(), r.name.replace(' (TCGA, PanCancer Atlas)', ''), int(r.sequenced_samples)]
                     for r in studies.itertuples(index=False)] if len(studies) else [],
-        'tests': tests, 'sites_table': Path(args.sites).name,
+        'stats': stats['rows'], 'stats_fields': stats['fields'], 'stats_from': stats['from'], 'sites_table': Path(args.sites).name,
+        'dependency_classes': [[k, v] for k, v in release_layers.CANCER.codes['dependency_class'].items()],
     }
     (out / 'meta.json').write_text(json.dumps(meta, separators=(',', ':')), encoding='utf-8')
 

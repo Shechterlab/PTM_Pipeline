@@ -46,6 +46,7 @@ sys.path.insert(0, str(SCRIPTS))
 import peptide_calls as pc  # noqa: E402
 import release_codes as rc  # noqa: E402
 import release_docs  # noqa: E402
+import release_layers  # noqa: E402
 import release_tables  # noqa: E402
 from common import classify_by_patterns, structure_context  # noqa: E402
 
@@ -1190,6 +1191,7 @@ def main() -> None:
     carm1_calls = carm1.groupby('site_id')['call'].agg(list)
     sites['carm1_ko_call'] = sites['site_id'].map(lambda s: combine_calls(carm1_calls.get(s, [])))
     sites = pd.concat([sites, context_annotations(sites, inputs)], axis=1)
+    sites = release_layers.add_site_values(sites, inputs)
     ix = interaction_tables(Path(args.interactions), sites if args.with_lower_confidence else sites.iloc[:n_main]) if args.interactions else None
     analysed = ~sites['flags'].str.contains('one_sided_window', regex=False)   # sites kept pending are left out
     sites['interaction_status'] = sites['site_id'].map(ix['status']).fillna('none').where(analysed, '') if ix else ''
@@ -1218,13 +1220,15 @@ def main() -> None:
     changes = build_changes(records, main_sites, list(prev_sites['site_id']), shift, entry)
     studies = build_studies(records, main_sites)
     proteins, extra = release_tables.proteins_table(aroot, inputs, sites, placed, entry, reference)
+    proteins = release_layers.add_protein_values(proteins, inputs)
     # The protein-level tests made here count the proteins the analyses count: sites kept pending left out, and in the
     # view the lower-confidence sites the analyses with lower-confidence sites leave out (release_analyses.release_sites)
     counted = ~sites['flags'].str.contains('one_sided_window', regex=False)
     if 'in_analyses_with_lower_confidence' in sites.columns:
         counted &= sites['in_analyses_with_lower_confidence'].astype(str).str.lower() == 'true'
     proteins.attrs['analysed'] = set(sites.loc[counted, 'uniprot_accession'])
-    statistics = release_tables.statistics(aroot, proteins)
+    statistics = pd.concat([release_tables.statistics(aroot, proteins), pd.DataFrame(release_layers.statistics(
+        sites[['uniprot_accession', 'position']].assign(counted=counted), inputs, reference, aroot))], ignore_index=True)
     for column, *_ in rc.STATISTICS_COLUMNS:   # a column only some analyses fill (the 95% CI of an odds ratio)
         if column not in statistics.columns:
             statistics[column] = None
@@ -1237,7 +1241,7 @@ def main() -> None:
             proteins[column] = proteins['uniprot_accession'].map(summary[column]).fillna('')   # empty: only pending sites
         statistics = pd.concat([statistics, ix['statistics']], ignore_index=True)
     else:
-        for column, *_ in rc.PROTEIN_COLUMNS[-7:]:
+        for column in rc.INTERACTION_PROTEIN_COLUMNS:
             proteins[column] = ''
     disease_terms = release_tables.disease_terms_table(aroot, proteins)
 

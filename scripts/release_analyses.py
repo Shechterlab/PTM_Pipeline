@@ -31,7 +31,9 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_release as br  # noqa: E402
 import release_codes as rc  # noqa: E402
+import release_layers  # noqa: E402
 import release_tables as rt  # noqa: E402
+from common import parse_fasta  # noqa: E402
 
 CODE = Path(__file__).resolve().parents[1]
 # The result tables kept, by folder: (analysis output folder, file, what it holds).
@@ -90,6 +92,19 @@ def release_sites(sites_path: Path, map_path: str, lower_path: str = '') -> pd.D
     return out.assign(accession=acc_pos[0], position=acc_pos[1])
 
 
+def layer_sites(sites_path: Path, map_path: str, lower_path: str, counted: pd.DataFrame) -> pd.DataFrame:
+    """Every site of the release's table (and of its lower-confidence table when given), and whether the analyses count it,
+    as release_layers.statistics takes them. v1.0.0 (map_path): its counted sites only, renumbered."""
+    ids = set(counted['site_id'])
+    if map_path:
+        table = counted[['site_id']]
+    else:
+        table = pd.concat([pd.read_csv(p, sep='\t', dtype=str, keep_default_na=False, usecols=['site_id'])
+                           for p in (sites_path, lower_path) if p], ignore_index=True)
+    acc_pos = table['site_id'].str.split(':R', expand=True)
+    return pd.DataFrame({'uniprot_accession': acc_pos[0], 'position': acc_pos[1].astype(int), 'counted': table['site_id'].isin(ids)})
+
+
 def prepare(args) -> None:
     sites = release_sites(Path(args.sites), args.map, args.lower_confidence)
     entries = pd.read_csv(args.entries, sep='\t', dtype=str, keep_default_na=False).set_index('Entry')
@@ -115,7 +130,9 @@ def collect(args) -> None:
     sites = release_sites(Path(args.sites), args.map, args.lower_confidence)
     proteins = pd.DataFrame({'uniprot_accession': sorted(set(sites['accession']))})
     proteins.attrs['hpa_all'] = rt.read(Path(args.inputs) / 'layers' / 'hpa_subcellular_locations.tsv')
-    stats = rt.statistics(work, proteins)
+    stats = pd.concat([rt.statistics(work, proteins), pd.DataFrame(release_layers.statistics(
+        layer_sites(Path(args.sites), args.map, args.lower_confidence, sites), args.inputs,
+        parse_fasta(Path(args.inputs) / 'reference' / 'uniprot_human_reviewed_2026_03.fasta'), work))], ignore_index=True)
     for name, *_ in rc.STATISTICS_COLUMNS:
         if name not in stats.columns:
             stats[name] = ''

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import re
 from common import STRUCTURE_MID, STRUCTURE_NEAR  # residues: the disordered-region bins of structure_context
+import release_layers  # the annotation layers: their site and protein columns, codes and analyses
 
 CONTEXT_WINDOW = 20  # residues: the boundary window of scripts/05 and scripts/06
 PADJ_CUTOFF = 0.05   # Maron 2021 Table S3: a peptide changes when its adjusted p value is at most this (scripts/16)
@@ -587,6 +588,7 @@ SITE_COLUMNS = [
     ('bound_sequence_type', 'code', 'nucleic_acid_type', 'the type of its chain'),
     ('bound_sequence_molecule', 'string', '', 'its molecule name in the PDB entries (the most common one)'),
     ('bound_sequence_entries', 'integer', '', 'number of PDB entries containing it'),
+    *release_layers.site_columns(),
     ('n_studies', 'integer', '', 'number of studies or databases reporting the site'),
     ('studies', 'list<code>', 'study', 'the studies or databases reporting the site, in the order of the studies file, PhosphoSitePlus is PSP, as its terms ask'),
     ('study_dois', 'list<string>', '', 'their DOIs, in the same order'),
@@ -801,6 +803,9 @@ CODES['method'] = {
     'fisher': 'two-sided Fisher exact test (scipy), q = Benjamini-Hochberg within the analysis and method. The odds ratio adds 0.5 to each cell (Haldane-Anscombe), except for analysis binding_protein: the sample odds ratio a*d/(b*c), and fold_enrichment (a/(a+b))/((a+c)/(a+b+c+d))',
     'mantel_haenszel': 'Mantel-Haenszel common odds ratio with each protein a stratum, and the continuity-corrected Cochran-Mantel-Haenszel test (statsmodels), a b c d are the pooled counts. q = Benjamini-Hochberg within the analysis and method',
 }
+for _layer in release_layers.LAYERS:
+    CODES.update(_layer.codes)
+    CODES['analysis'].update(_layer.analyses)
 CODES['htr_selex_kind'] = {'linear': 'a linear motif (Jolma et al. 2020, Supplemental Table S2)',
                            'structured': 'a motif within a stem-loop, whose flanks pair (Supplemental Table S3)'}
 CODES['ptm_type'] = {'phospho': 'phosphorylation (S, T, Y)', 'lys_acyl': 'lysine acylation', 'ub_sumo': 'ubiquitination or SUMOylation (K)', 'lys_methyl': 'lysine methylation'}
@@ -859,7 +864,11 @@ PROTEIN_COLUMNS = [
     ('n_string_partners', 'integer', '', 'STRING 12.5 physical partners at score >= 0.7 (supporting/protein_partners)'),
     ('n_partners_methylated', 'integer', '', 'of these, proteins of the site table'),
     ('n_complexes', 'integer', '', 'Complex Portal and hu.MAP complexes the protein is in (supporting/complexes)'),
+    *release_layers.protein_columns(),
 ]
+# The protein columns the interaction tables fill (empty without them)
+INTERACTION_PROTEIN_COLUMNS = ('n_sites_experimental', 'n_sites_predicted_only', 'go_rna_binding', 'go_dna_binding', 'n_string_partners',
+                               'n_partners_methylated', 'n_complexes')
 
 STATISTICS_COLUMNS = [
     ('analysis', 'code', 'analysis', 'what was tested'),
