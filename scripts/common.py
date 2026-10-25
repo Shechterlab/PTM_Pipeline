@@ -725,3 +725,96 @@ def canonical_site_table(
     out['site'] = out[residue_col] + out[position_col].astype(str)
     out['site_key'] = out[accession_col] + ':' + out['site']
     return out
+
+
+# ---- Staging inputs ----------------------------------------------------------------------------------------------------
+# What every staging script needs: the MD5 of what it wrote, its rows in inputs/MANIFEST.tsv (and a layer's raw downloads
+# in raw_files.tsv), the Entrez gene of a UniProt entry, and whether a position of a reference sequence holds a residue.
+
+def md5_file(path: str | Path) -> str:
+    import hashlib
+    h = hashlib.md5()
+    with open(path, 'rb') as fh:
+        for block in iter(lambda: fh.read(1 << 20), b''):
+            h.update(block)
+    return h.hexdigest()
+
+
+def upsert_tsv_rows(path: str | Path, rows: list[dict], fmt=str) -> None:
+    """Put rows (dicts keyed by the file's columns; a missing column is left empty) into a TSV keyed by its first column:
+    a row whose key is already there replaces it in place, a new row goes after the last row of its folder (the key up to
+    its first '/'), or at the end. The other rows and their order stay as they are, so re-staging the same files gives the
+    same file."""
+    path = Path(path)
+    lines = path.read_text(encoding='utf-8').splitlines()
+    head = lines[0].split('\t')
+    key = head[0]
+    text = {str(r[key]): '\t'.join(fmt(r.get(c, '')) for c in head) for r in rows}
+    body, done = [], set()
+    for ln in lines[1:]:
+        k = ln.split('\t')[0]
+        if k in text:
+            body.append(text[k])
+            done.add(k)
+        else:
+            body.append(ln)
+    for r in rows:
+        k = str(r[key])
+        if k in done:
+            continue
+        folder = k.split('/')[0] + '/' if '/' in k else None
+        last = max((i for i, ln in enumerate(body) if folder and ln.startswith(folder)), default=len(body) - 1)
+        body.insert(last + 1, text[k])
+        done.add(k)
+    path.write_text('\n'.join([lines[0]] + body) + '\n', encoding='utf-8')
+
+
+def update_manifest(manifest: str | Path, rows: list[dict], fmt=str) -> None:
+    """The rows of the files a staging run wrote, into inputs/MANIFEST.tsv (upsert_tsv_rows)."""
+    upsert_tsv_rows(manifest, rows, fmt)
+
+
+def entrez_by_symbol(path: str | Path) -> dict[str, list[str]]:
+    """Gene symbol -> its Entrez genes in org.Hs.eg.db (inputs/disease/orghsegdb_*_symbol_entrez.tsv), in file order."""
+    sym = pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False)
+    return sym.groupby('symbol', sort=False)['entrez_id'].agg(list).to_dict()
+
+
+def own_entrez(path: str | Path) -> set[tuple[str, str]]:
+    """The (symbol, Entrez) pairs where org.Hs.eg.db gives the gene that symbol as its own (entrez_symbol true)."""
+    sym = pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False)
+    own = sym[sym['entrez_symbol'] == 'true']
+    return set(zip(own['symbol'], own['entrez_id']))
+
+
+def entrez_of_entries(entries: str | Path, symbol_entrez: str | Path, allowed: set[str] | None = None,
+                      reference: dict | None = None) -> tuple[dict[str, str], dict[str, str], dict[str, int]]:
+    """Each reviewed UniProt entry's Entrez gene, as the disease tests map genes: the first of its primary gene names
+    (UniProt entries table) to its Entrez genes in org.Hs.eg.db. With allowed (e.g. the genes a screen holds), only those
+    count; of several, the one org.Hs.eg.db gives the name as its own. Returns (accession -> Entrez, accession -> gene
+    name, counts of the entries left without one, by reason); reference limits the entries to its accessions."""
+    table = pd.read_csv(entries, sep='\t', dtype=str, keep_default_na=False)
+    of, own = entrez_by_symbol(symbol_entrez), own_entrez(symbol_entrez)
+    acc_entrez, acc_gene, dropped = {}, {}, defaultdict(int)
+    for acc, names in zip(table['Entry'], table['Gene Names (primary)']):
+        if (reference is not None and acc not in reference) or not names:
+            continue
+        g = names.split(';')[0].strip()
+        cands = of.get(g, [])
+        hit = [e for e in cands if allowed is None or e in allowed]
+        if len(hit) > 1:
+            hit = [e for e in hit if (g, e) in own] or hit
+        acc_gene[acc] = g
+        if len(hit) == 1:
+            acc_entrez[acc] = hit[0]
+        elif not cands:
+            dropped['without_entrez'] += 1
+        else:
+            dropped['entrez_not_allowed' if not hit else 'several_entrez'] += 1
+    return acc_entrez, acc_gene, dict(dropped)
+
+
+def residue_is(sequences: dict[str, str], accession: str, position: int, residue: str = 'R') -> bool:
+    """Whether the reference sequence of accession has residue at position (1-based)."""
+    seq = sequences.get(accession)
+    return bool(seq) and 1 <= int(position) <= len(seq) and seq[int(position) - 1] == residue

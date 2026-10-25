@@ -37,7 +37,6 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
-import hashlib
 import json
 import re
 from collections import Counter
@@ -46,7 +45,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from common import parse_fasta, save_table
+from common import entrez_by_symbol, entrez_of_entries, md5_file, own_entrez, parse_fasta, residue_is, save_table, update_manifest, upsert_tsv_rows
 
 PRMTS = ['PRMT1', 'PRMT2', 'PRMT3', 'CARM1', 'PRMT5', 'PRMT6', 'PRMT7', 'PRMT8', 'PRMT9']
 # PRISM's PRMT inhibitors (its compound list names them; the target is the enzyme each was developed against)
@@ -59,12 +58,87 @@ DEPMAP_CHANGE = re.compile(r'^p\.R(\d+)([ACDEFGHIKLMNPQSTVWY]|Ter)$')
 TCGA_CHANGE = re.compile(r'^R(\d+)([ACDEFGHIKLMNPQSTVWY*])$')
 
 
-def md5(path: Path) -> str:
-    h = hashlib.md5()
-    with open(path, 'rb') as f:
-        for block in iter(lambda: f.read(1 << 20), b''):
-            h.update(block)
-    return h.hexdigest()
+# What inputs/MANIFEST.tsv says of each staged table (--manifest): content, source, version, citation, licence, inputs.
+DM_SRC = ('https://doi.org/10.25452/figshare.plus.27993248 (Figshare+ files CRISPRGeneEffect.csv, CRISPRGeneDependency.csv, '
+          'CRISPRInferredCommonEssentials.csv, AchillesCommonEssentialControls.csv, Model.csv, OmicsSomaticMutations.csv, OmicsAbsoluteCNGene.csv)')
+DM_VER = 'DepMap Public 24Q4 (Figshare+ v1, published 2024-12-10), downloaded 2026-10-25'
+DM_CIT = ('DepMap, Broad (2024): DepMap Public 24Q4, doi:10.25452/figshare.plus.27993248; Tsherniak et al., Cell 170:564 (2017); '
+          'Dempster et al., Genome Biol 22:343 (2021)')
+PR_SRC = ('https://doi.org/10.6084/m9.figshare.25917643 (Repurposing_Public_24Q2_Extended_Primary_Data_Matrix.csv, '
+          'Repurposing_Public_24Q2_Extended_Primary_Compound_List.csv)')
+TC_SRC = ('https://www.cbioportal.org/api (the 32 *_tcga_pan_can_atlas_2018 studies, mutations of their sequenced samples), by '
+          'scripts/44b_fetch_tcga_arginine_changes.py')
+TC_CIT = ('Hoadley et al., Cell 173:291 (2018); Ellrott et al., Cell Syst 6:271 (2018); cBioPortal: Cerami et al., Cancer Discov 2:401 '
+          '(2012), Gao et al., Sci Signal 6:pl1 (2013), de Bruijn et al., Cancer Res 83:3861 (2023)')
+TC_LIC = ('ODC Open Database License 1.0 (cBioPortal data, with attribution to the original studies; '
+          'https://docs.cbioportal.org/user-guide/faq/); this derived table under the same licence')
+HOW = ('scripts/44_stage_depmap.py; checked against reference/uniprot_human_reviewed_2026_03.fasta (a change counts only where the '
+       'canonical sequence has an arginine at its position)')
+MANIFEST_ROWS = {
+    'depmap_24q4_gene_effect_summary.tsv': ('Per reviewed UniProt entry (primary gene name to Entrez by org.Hs.eg.db), DepMap CRISPR gene '
+        'effect (Chronos) across the screened lines: quantiles, histogram (20 bins, -3 to 1), lines with dependency probability >= 0.5, common '
+        'essential, the 3 most dependent lineages', DM_SRC, DM_VER, DM_CIT, 'CC BY 4.0',
+        'CRISPRGeneEffect.csv; CRISPRGeneDependency.csv; CRISPRInferredCommonEssentials.csv; AchillesCommonEssentialControls.csv; Model.csv'),
+    'depmap_24q4_arginine_changes.tsv': ('DepMap somatic missense and stop changes at arginines of reviewed canonical proteins: one row per cell '
+        'line and change, with allele fraction, hotspot, likely loss of function and AlphaMissense as DepMap gives them', DM_SRC, DM_VER,
+        DM_CIT + '; AlphaMissense: Cheng et al., Science 381:eadg7492 (2023)', 'CC BY 4.0', 'OmicsSomaticMutations.csv'),
+    'depmap_24q4_models.tsv': ('The DepMap cell lines the other tables name: name, Oncotree lineage and disease, which data they have, MTAP '
+        'absolute copy number (PureCN)', DM_SRC, DM_VER, DM_CIT, 'CC BY 4.0', 'Model.csv; OmicsAbsoluteCNGene.csv; CRISPRGeneEffect.csv; OmicsSomaticMutations.csv'),
+    'depmap_24q4_prmt_gene_effect.tsv': ('CRISPR gene effect and dependency probability of PRMT1, PRMT2, PRMT3, CARM1, PRMT5, PRMT6, PRMT7, '
+        'PRMT8 and PRMT9 in each screened line', DM_SRC, DM_VER, DM_CIT, 'CC BY 4.0', 'CRISPRGeneEffect.csv; CRISPRGeneDependency.csv'),
+    'prism_24q2_prmt_inhibitors.tsv': ('PRISM log2 viability (5 days, 2.5 uM) of each cell line with the five PRMT inhibitors PRISM holds: '
+        'EPZ015666, GSK3326595, JNJ-64619178 (PRMT5), EPZ020411 (PRMT6), SGC-707 (PRMT3)', PR_SRC,
+        'PRISM Repurposing Public 24Q2 (Figshare v1, 2024-05-31), downloaded 2026-10-25',
+        'Corsello et al., Nat Cancer 1:235 (2020); PRISM Repurposing Public 24Q2, doi:10.6084/m9.figshare.25917643', 'CC BY 4.0',
+        'Repurposing_Public_24Q2_Extended_Primary_Data_Matrix.csv; Repurposing_Public_24Q2_Extended_Primary_Compound_List.csv'),
+    'tcga_pancan_arginine_changes.tsv': ('TCGA PanCancer Atlas somatic missense and stop changes at arginines of reviewed canonical proteins: '
+        'one row per tumour sample and change (residue * a stop), with the RefSeq transcript cBioPortal annotates and the tumour read counts',
+        TC_SRC, 'cBioPortal web API, fetched 2026-10-25', TC_CIT, TC_LIC, 'tcga_pancan_arginine_changes_raw.tsv'),
+    'tcga_pancan_studies.tsv': ('The 32 TCGA PanCancer Atlas studies: name, cancer type, sample list, sequenced samples, citation, PubMed IDs, '
+        'arginine changes fetched', TC_SRC, 'cBioPortal web API, fetched 2026-10-25', TC_CIT, TC_LIC, ''),
+    'depmap_summary.json': ('Counts, versions and input MD5s of the DepMap, PRISM and TCGA staging, and the records left out and why',
+        DM_SRC + '; ' + PR_SRC + '; ' + TC_SRC, 'DepMap Public 24Q4; PRISM Repurposing Public 24Q2; cBioPortal fetched 2026-10-25', DM_CIT,
+        'CC BY 4.0 (DepMap, PRISM); ODC Open Database License (TCGA through cBioPortal)', ''),
+}
+# Their downloads, for raw_files.tsv: Figshare file IDs (the Figshare MD5 of each matched on download).
+FIGSHARE_IDS = {'CRISPRGeneEffect.csv': 51064667, 'CRISPRGeneDependency.csv': 51064631, 'CRISPRInferredCommonEssentials.csv': 51064916,
+                'AchillesCommonEssentialControls.csv': 51063560, 'Model.csv': 51065297, 'OmicsSomaticMutations.csv': 51065732,
+                'OmicsAbsoluteCNGene.csv': 51065303, 'Repurposing_Public_24Q2_Extended_Primary_Data_Matrix.csv': 46630984,
+                'Repurposing_Public_24Q2_Extended_Primary_Compound_List.csv': 46630981}
+
+
+def write_manifest(manifest: Path, out: Path, dep: Path, prism: Path, tcga: Path | None) -> None:
+    """The staged tables' rows in inputs/MANIFEST.tsv, and their downloads' rows in the layer folder's raw_files.tsv."""
+    import hashlib
+    folder = out.name
+    rows = []
+    for name, (content, source, version, citation, licence, derived) in MANIFEST_ROWS.items():
+        path = out / name
+        if not path.exists():
+            continue
+        n = '' if name.endswith('.json') else sum(1 for _ in open(path, encoding='utf-8')) - 1
+        rows.append({'file': f'{folder}/{name}', 'bytes': path.stat().st_size, 'md5': md5_file(path), 'rows': n, 'redistribution': 'git',
+                     'content': content, 'source': source, 'version_or_date': version, 'citation': citation, 'licence': licence,
+                     'derived_from': derived, 'how_made_or_checked': HOW if name != 'depmap_summary.json' else 'scripts/44_stage_depmap.py'})
+    update_manifest(manifest, rows)
+    raw = []
+    def sha256(p: Path) -> str:
+        h = hashlib.sha256()
+        with open(p, 'rb') as fh:
+            for block in iter(lambda: fh.read(1 << 20), b''):
+                h.update(block)
+        return h.hexdigest()
+    for name, fid in FIGSHARE_IDS.items():
+        p = (prism if name.startswith('Repurposing') else dep) / name
+        ver = 'PRISM Repurposing Public 24Q2' if name.startswith('Repurposing') else 'DepMap Public 24Q4'
+        raw.append({'file': name, 'url': f'https://ndownloader.figshare.com/files/{fid}', 'bytes': p.stat().st_size, 'md5': md5_file(p),
+                    'sha256': sha256(p), 'downloaded': '2026-10-25', 'version': ver + ' (Figshare MD5 matches)', 'kept': 'release_asset'})
+    if tcga:
+        p = tcga / 'tcga_pancan_arginine_changes_raw.tsv'
+        raw.append({'file': p.name, 'url': 'https://www.cbioportal.org/api (scripts/44b_fetch_tcga_arginine_changes.py)', 'bytes': p.stat().st_size,
+                    'md5': md5_file(p), 'sha256': sha256(p), 'downloaded': '2026-10-25',
+                    'version': 'cBioPortal web API answers, filtered to missense and stop changes at R', 'kept': 'release_asset'})
+    upsert_tsv_rows(out / 'raw_files.tsv', raw)
 
 
 def gene_columns(cols) -> dict[str, str]:
@@ -86,36 +160,23 @@ def main() -> None:
     ap.add_argument('--entries', default='inputs/reference/uniprot_human_reviewed_2026_03_entries.tsv')
     ap.add_argument('--symbol-entrez', default='inputs/disease/orghsegdb_3.22.0_symbol_entrez.tsv')
     ap.add_argument('--outdir', required=True)
+    ap.add_argument('--manifest', default='', help='inputs/MANIFEST.tsv: write the rows of the tables staged (and of their downloads '
+                    'in raw_files.tsv beside them), as scripts/43d does; empty to leave both alone')
     args = ap.parse_args()
     dep, prism, out = Path(args.depmap), Path(args.prism), Path(args.outdir)
     canonical = parse_fasta(args.fasta)
     dropped = Counter()
 
-    # UniProt entry -> Entrez gene
-    entries = pd.read_csv(args.entries, sep='\t', dtype=str, keep_default_na=False)
-    sym = pd.read_csv(args.symbol_entrez, sep='\t', dtype=str, keep_default_na=False)
-    entrez_of = sym.groupby('symbol')['entrez_id'].agg(list).to_dict()
-    own = set(zip(sym.loc[sym['entrez_symbol'] == 'true', 'symbol'], sym.loc[sym['entrez_symbol'] == 'true', 'entrez_id']))
-
+    # UniProt entry -> Entrez gene (common.entrez_of_entries, as the disease tests map genes), among the genes screened
+    entrez_of, own = entrez_by_symbol(args.symbol_entrez), own_entrez(args.symbol_entrez)
     effect = pd.read_csv(dep / 'CRISPRGeneEffect.csv', index_col=0)
     dependency = pd.read_csv(dep / 'CRISPRGeneDependency.csv', index_col=0).reindex(index=effect.index, columns=effect.columns)
     screened = gene_columns(effect.columns)
-    acc_entrez, acc_gene = {}, {}
-    for acc, names in zip(entries['Entry'], entries['Gene Names (primary)']):
-        if acc not in canonical or not names:
-            continue
-        g = names.split(';')[0].strip()
-        cands = entrez_of.get(g, [])
-        hit = [e for e in cands if e in screened]
-        if len(hit) > 1:
-            hit = [e for e in hit if (g, e) in own] or hit
-        acc_gene[acc] = g
-        if len(hit) == 1:
-            acc_entrez[acc] = hit[0]
-        elif cands:
-            dropped['entries_with_entrez_not_screened' if not hit else 'entries_with_several_screened_entrez'] += 1
-        else:
-            dropped['entries_without_entrez'] += 1
+    acc_entrez, acc_gene, missed = entrez_of_entries(args.entries, args.symbol_entrez, allowed=set(screened), reference=canonical)
+    for why, key in (('without_entrez', 'entries_without_entrez'), ('entrez_not_allowed', 'entries_with_entrez_not_screened'),
+                     ('several_entrez', 'entries_with_several_screened_entrez')):
+        if missed.get(why):
+            dropped[key] += missed[why]
 
     # gene effect summaries
     models = pd.read_csv(dep / 'Model.csv', dtype=str, keep_default_na=False).set_index('ModelID')
@@ -181,7 +242,7 @@ def main() -> None:
     dropped['depmap_calls_not_in_reference'] = int((~m['canonical_UniProtAC'].isin(canonical)).sum())
     m = m[m['canonical_UniProtAC'].isin(canonical)]
     m['position'] = m['ProteinChange'].str.extract(r'p\.R(\d+)')[0].astype(int)
-    on_r = [p <= len(canonical[a]) and canonical[a][p - 1] == 'R' for a, p in zip(m['canonical_UniProtAC'], m['position'])]
+    on_r = [residue_is(canonical, a, p) for a, p in zip(m['canonical_UniProtAC'], m['position'])]
     dropped['depmap_calls_not_R_on_canonical'] = int(len(m) - sum(on_r))
     m = m[on_r]
     alt = m['ProteinChange'].str.extract(r'p\.R\d+(.+)$')[0].replace('Ter', '*')
@@ -228,7 +289,7 @@ def main() -> None:
         t['position'] = t['protein_change'].str.extract(r'^R(\d+)')[0].astype(int)
         rows = []
         for r in t.itertuples(index=False):
-            hits = [a for a in accs_of.get(r.entrez_id, []) if r.position <= len(canonical[a]) and canonical[a][r.position - 1] == 'R']
+            hits = [a for a in accs_of.get(r.entrez_id, []) if residue_is(canonical, a, r.position)]
             if not accs_of.get(r.entrez_id):
                 dropped['tcga_changes_gene_without_entry'] += 1
             elif not hits:
@@ -241,8 +302,8 @@ def main() -> None:
         fetch = json.loads((Path(args.tcga) / 'tcga_pancan_fetch.json').read_text())
         tcga_meta = {'fetched': fetch['fetched'], 'api': fetch['api'], 'studies': len(studies),
                      'sequenced_samples': int(studies['sequenced_samples'].astype(int).sum()),
-                     'raw_md5': md5(Path(args.tcga) / 'tcga_pancan_arginine_changes_raw.tsv'),
-                     'studies_md5': md5(Path(args.tcga) / 'tcga_pancan_studies.tsv')}
+                     'raw_md5': md5_file(Path(args.tcga) / 'tcga_pancan_arginine_changes_raw.tsv'),
+                     'studies_md5': md5_file(Path(args.tcga) / 'tcga_pancan_studies.tsv')}
         save_table(studies, out / 'tcga_pancan_studies.tsv')
 
     # models
@@ -269,9 +330,9 @@ def main() -> None:
     summary = {
         'generated': dt.date.today().isoformat(),
         'depmap': {'release': 'DepMap Public 24Q4', 'doi': '10.25452/figshare.plus.27993248', 'licence': 'CC BY 4.0',
-                   'input_md5': {n: md5(dep / n) for n in names}},
+                   'input_md5': {n: md5_file(dep / n) for n in names}},
         'prism': {'release': 'PRISM Repurposing Public 24Q2', 'doi': '10.6084/m9.figshare.25917643', 'licence': 'CC BY 4.0',
-                  'dose_uM': 2.5, 'days': 5, 'input_md5': {n: md5(prism / n) for n in pnames}},
+                  'dose_uM': 2.5, 'days': 5, 'input_md5': {n: md5_file(prism / n) for n in pnames}},
         'tcga': tcga_meta,
         'crispr_lines': int(len(effect.index)), 'crispr_genes': int(len(screened)), 'common_essential_genes': len(common),
         'entries_with_gene_effect': int(len(summary_table)), 'entries_common_essential': int(summary_table['common_essential'].sum()),
@@ -283,6 +344,8 @@ def main() -> None:
         'dropped': dict(sorted(dropped.items())),
     }
     (out / 'depmap_summary.json').write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')
+    if args.manifest:
+        write_manifest(Path(args.manifest), out, dep, prism, Path(args.tcga) if args.tcga else None)
     print(json.dumps({k: v for k, v in summary.items() if k not in ('lineages_ranked', 'histogram_edges')}, indent=2))
 
 

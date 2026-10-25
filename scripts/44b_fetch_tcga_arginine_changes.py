@@ -29,6 +29,8 @@ import time
 import urllib.request
 from pathlib import Path
 
+from common import own_entrez
+
 API = 'https://www.cbioportal.org/api'
 CHANGE = re.compile(r'^R(\d+)([A-Z*])$')
 KEEP_TYPES = {'Missense_Mutation', 'Nonsense_Mutation'}
@@ -59,7 +61,7 @@ def main() -> None:
     args = ap.parse_args()
     out = Path(args.outdir)
     out.mkdir(parents=True, exist_ok=True)
-    genes = sorted({int(r['entrez_id']) for r in csv.DictReader(open(args.symbol_entrez), delimiter='\t') if r['entrez_symbol'] == 'true'})
+    genes = sorted({int(e) for _, e in own_entrez(args.symbol_entrez)})
     studies = sorted((s for s in call('/studies?projection=DETAILED') if s['studyId'].endswith('_tcga_pan_can_atlas_2018')), key=lambda s: s['studyId'])
     rows, meta = [], []
     for s in studies:

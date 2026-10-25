@@ -992,16 +992,15 @@ def stage_capri(w: Writer, c: Path) -> list[Path]:
 
 
 def add_to_manifest(w: Writer, manifest: Path):
-    """Put the rows of the tables this run wrote into the inputs MANIFEST (replacing rows of the same files)."""
-    m = manifest.read_text(encoding='utf-8').splitlines()
-    head = m[0].split('\t')
-    names = {r[0] for r in w.manifest}
-    keep = [line for line in m[1:] if line.split('\t')[0] not in names]
+    """Put the rows of the tables this run wrote into the inputs MANIFEST (common.update_manifest: a file already listed
+    keeps its place)."""
+    from common import update_manifest
+    rows = []
     for r in w.manifest:
         rec = dict(zip(MANIFEST_COLUMNS, r))
         rec['how_made_or_checked'] = rec.pop('how_made')
-        keep.append('\t'.join(cell(rec.get(h, '')) for h in head))
-    manifest.write_text('\n'.join([m[0]] + keep) + '\n', encoding='utf-8')
+        rows.append(rec)
+    update_manifest(manifest, rows, fmt=cell)
     print(f'{len(w.manifest)} rows in {manifest}')
 
 
