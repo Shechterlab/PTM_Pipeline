@@ -54,8 +54,12 @@ fill is picked up by the build, the data dictionary, the workbook and the README
 | `since`, `summary` and `changes(files)` | The release that adds it, what it adds, and sentences with its counts: `CHANGES.md` describes the layer under "New annotation layers" in that release |
 
 A layer of knockouts, knockdowns or inhibitors needs no new code: add a `Perturbation` to `PERTURBATIONS` (its staged
-peptide table, the columns of log2 change, p and adjusted p or `'bh'`, and the column of the study's own call). Every
-arm is then called by the same rule and shown in the same tables and website cards.
+peptide table, the columns of log2 change, p and adjusted p or `'bh'` (or `''` when the study gives no p), and the
+column of the study's own call). Every arm is then called by the release's rule and by the study's, and shown in the
+same tables and website cards. Set `primary='study'` (with `primary_why`) only when the release's rule cannot be the
+sound call, as for 2 against 2 samples or a single experiment; `source_sites` when the study calls sites rather than
+peptides; `localised` when some positions were assigned without the search localising them; `changed_only` when the
+study lists its changed sites only.
 
 Test the way the other tests are done, so that a layer's numbers mean what the rest of the release's do:
 
