@@ -4421,6 +4421,7 @@
         'ov-pan': chartTile(pan || func), 'ov-dis': chartTile(dis), 'ov-cond': chartTile(cond), 'ov-loc': chartTile(loc), 'ov-motif': chartTile(motif), 'ov-struct': structTile(),
         'ov-ix': ixReady() ? ixTile() : { vis: '' },
         'ov-dep': { vis: '<span class="dep-ov-vis"></span>', head: '<span class="dep-ov-head">loading DepMap…</span>', whole: '' },
+        'ov-path': { vis: '<span class="path-ov-vis"></span>', head: '<span class="path-ov-head">loading Reactome…</span>', whole: '' },
         'ov-study': provTile(),
         'ov-treat': { vis: trVis ? '<div class="a-treat">' + trVis + '</div>' : '', head: 'Sites with a peptide that decreased with each PRMT inhibitor (Maron 2021) or CARM1 knockout (Shishkova 2017)' },
         'ov-start': { vis: startVis(), head: 'Click a protein to open it, or a selection to apply it', full: true },
@@ -4438,7 +4439,9 @@
         chartRow('ov-pan', pan || func, 'Which protein classes are over-represented among methylated proteins?') +
         chartRow('ov-dis', dis, 'Which disease gene sets are over-represented?') +
         chartRow('ov-cond', cond, 'Which biomolecular condensates are over-represented (CD-CODE' + (thr ? ', confidence ≥ ' + thr : '') + ')?') +
-        chartRow('ov-loc', loc, 'Which subcellular locations are over-represented (Human Protein Atlas)?'))) +
+        chartRow('ov-loc', loc, 'Which subcellular locations are over-represented (Human Protein Atlas)?') +
+        row('ov-path', 'Reactome pathways', '<div class="card wide" id="ch-path"><div class="card-head"><div><h3>Reactome pathways</h3><p class="sub">Which Reactome pathways hold more ' + (scoped ? 'proteins of your selection' : 'methylated proteins') + ' than expected, against all reviewed proteins with a pathway.</p></div></div>' +
+          '<div id="ch-path-body"><p class="note">Loading Reactome…</p></div></div>', 'Which Reactome pathways are over-represented?', 'retest', 'loading Reactome…', 'loading Reactome…', null, null))) +
       untested(hubSec('Where in the protein',
         chartRow('ov-motif', motif, 'Which sequence motifs surround methylarginines, against the other arginines of the same proteins?') +
         row('ov-struct', sctx ? 'Structural context' : 'Disorder and domains', structHtml, 'Are methylarginines in disordered regions or domains, against the other arginines of the same proteins?', 'retest',
@@ -4466,7 +4469,7 @@
       '</div></div>', 'Quick selections, and the proteins with the most sites, the strongest enrichment and clustering', 'whole',
           'Quick selections and notable proteins', 'Quick selections and notable proteins'))) +
       '</div>';
-    if (!testable) for (let i = A_ROWS.length - 1; i >= 0; i--) if (['sel-enriched', 'ov-pan', 'ov-dis', 'ov-cond', 'ov-loc', 'ov-motif', 'ov-struct'].includes(A_ROWS[i].key)) A_ROWS.splice(i, 1);
+    if (!testable) for (let i = A_ROWS.length - 1; i >= 0; i--) if (['sel-enriched', 'ov-pan', 'ov-dis', 'ov-cond', 'ov-loc', 'ov-path', 'ov-motif', 'ov-struct'].includes(A_ROWS[i].key)) A_ROWS.splice(i, 1);
     el.innerHTML =
       (one ? '<p class="hub-legend hub-only">Your selection is one protein. <button class="linkish" type="button" id="ov-open-one">Open ' + esc(one.label) + ' →</button></p>' : '') +
       hubHtml() + (UI_A ? focusBarHtml() + ovAHome() : focusBarHtml()) + hubList;
@@ -4476,6 +4479,7 @@
     bindAHome(el);
     bindAMaps(el);
     renderDepOverview(el, selOn, testable);
+    if (testable) renderPathOverview(el, selOn);
     const oo = $('#ov-open-one', el);
     if (oo) oo.addEventListener('click', () => openProtein(one.i));
     $$('[data-quick]', el).forEach((b) => b.addEventListener('click', () => { const q = UI.quick[+b.dataset.quick]; if (q) q[2](); }));
@@ -4662,6 +4666,8 @@
       hubSec('Sites and structure',
         prow('p-sites', 'Methylarginine sites', '<div class="card tbl-card" id="card-sites"><div class="card-pad"><div class="card-head"><div><h3>Methylarginine sites</h3><p class="sub">Click a row for details of the site.</p></div><div class="actions" id="psites-tools"></div></div><div id="psites-ix"></div></div>' +
       '<div class="tbl-wrap" id="psites"></div><p class="note uni-extra" id="uni-extra" hidden></p><div class="card-pad" id="psites-cite"></div></div>', 'Every site with its evidence, state and sources', fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites shown') +
+        prow('p-pert', 'Writer perturbations', '<div class="card" id="card-pert"></div>', 'Its sites in PRMT knockouts, knockdowns and inhibitors', 'loading…') +
+        prow('p-exp', 'Experiments on its methylation', '<div class="card" id="card-exp"></div>', 'Curated from the literature', 'loading…').replace('<details ', '<details hidden ') +
         prow('p-3d', '3D structure', structureCard(p), 'AlphaFold DB model and experimental structures', UI_A ? 'loading…' : 'loads when opened')) +
       // The context toggle applies to the cards of its section (and the Complexes tab of Protein interactions).
       hubSec('Protein context',
@@ -4669,6 +4675,7 @@
         prow('p-dis', 'Disease associations', '<div class="card" id="card-dis"></div>', 'UniProt, DisGeNET and Open Targets') +
         prow('p-depmap', 'Cancer cell lines and tumours', '<div class="card" id="card-depmap"></div>', 'DepMap CRISPR dependency; changes at its arginines in TCGA tumours and DepMap cell lines', 'loading…') +
         prow('p-func', 'Protein class', '<div class="card" id="card-func"></div>', 'PANTHER and keyword classes') +
+        prow('p-path', 'Pathways and abundance', '<div class="card" id="card-path"></div>', 'Reactome pathways; PaxDb abundance across human tissues', 'loading…') +
         prow('p-dom', 'Domains and regions', '<div class="card" id="card-dom"></div>', 'UniProt domains and regions, InterPro classes') +
         prow('p-cons', 'Conservation across species', '<div class="card" id="card-cons"></div>', 'Orthologue alignments from Ensembl Compara'), ctxToggleHtml(p)) +
       hubSec('Sequence features',
@@ -4737,6 +4744,9 @@
     renderFuncCard(p);
     renderDiseaseCard(p, null);
     renderDepmapCard(p);
+    renderPertCard(p);
+    renderCurationCard(p);
+    renderPathCard(p);
     renderClusterCard(p);
     renderPtmCard(p);
     renderIxCard(p);
@@ -5710,6 +5720,7 @@
         '<div class="tbl-wrap"><table><thead><tr><th>Cells</th><th>log2 KO/WT</th><th>Lowest q</th><th>Peptides (▼/▲)</th><th>Peptide call</th><th>Single-site peptides</th><th>Source study\'s rule</th></tr></thead><tbody>' +
         s.ko.map((c) => { const [ci, l2, pv, n, nd, nu, multi, sc, src, q] = c; return '<tr><td>' + esc(km.cell_lines[ci]) + '</td><td class="num">' + fmtL2(l2) + '</td><td class="num">' + (q != null ? (nd || nu ? '<b>' + fmtP(q) + '</b>' : fmtP(q)) : fmtP(pv)) + '</td><td class="num">' + n + ' <span class="muted">(' + nd + '/' + nu + ')</span>' + (multi ? '<br><span class="muted small">' + multi + ' with another methyl-R</span>' : '') + '</td><td>' + word(respCall(nd, nu)) + '</td><td>' + (c.length > 7 ? (sc == null ? '<span class="muted">none</span>' : word(callDir(sc))) : '—') + '</td><td>' + (c.length > 8 && src != null ? word(callDir(src)) : '—') + '</td></tr>'; }).join('') + '</tbody></table></div>';
     }
+    const pertAt = html.length;
     if (u) {
       const at = (list) => list.filter((f) => f.start <= s.pos && f.end >= s.pos);
       const vs = at(u.variants), mg = at(u.mutagen);
@@ -5735,7 +5746,9 @@
     if (rows && rows.length) html += sourceRowsHtml(s, rows, ev);
     else if (!ev) html += '<p class="note">The evidence file did not load.</p>';
     if (s.refs.length && !(rows && rows.length)) html += '<p><b>References:</b> ' + s.refs.map((k) => esc(M.refs[k])).join('; ') + '</p>';
-    cellEl.innerHTML = html || '<span class="muted">No additional evidence.</span>';
+    const pert = '<div class="pert-ev" id="pert-ev-' + j + '"></div>';
+    cellEl.innerHTML = html ? html.slice(0, pertAt) + pert + html.slice(pertAt) : pert + '<span class="muted no-ev">No additional evidence.</span>';
+    fillPerturbations(j);
   }
 
   // ------------------------------------------------------------- source rows
@@ -10486,6 +10499,191 @@
       setFoldSummary('ov-dep', pctText(ce(selRows), selRows.length || 1) + '% commonly essential');
     });
   }
+  // ---- Layers of v1.4.0 (scripts/release_layers.py, data/*.json): writer perturbations (one release rule for every
+  // knockout, knockdown and inhibitor, beside each study's own), Reactome pathways, PaxDb abundance and the curated
+  // functional experiments. Each file loads when a card first needs it; a file that fails can be asked for again.
+  const LAYER = {};
+  function loadLayer(name) {
+    if (!LAYER[name]) {
+      LAYER[name] = fetch('data/' + name + '.json' + (ASSET_V ? '?v=' + encodeURIComponent(ASSET_V) : ''))
+        .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .catch(() => { delete LAYER[name]; return null; });
+    }
+    return LAYER[name];
+  }
+  const siteKey = (s) => P[s.p].acc + ':R' + s.pos;
+  const PERT_WORD = { decreased: 'a peptide decreased', increased: 'a peptide increased', mixed: 'peptides changed in opposite directions',
+    no_significant_change: 'no significant change', not_tested: 'not tested: the study gives no p value' };
+  const PERT_MARK = { decreased: ['▼', 'down'], increased: ['▲', 'up'], mixed: ['↕', 'mix'], no_significant_change: ['○', 'ns'], not_tested: ['?', 'ns'] };
+  // The rows of perturbations.json as objects; [key, label, description, enzyme, kind, cells, study, doi, the study's rule].
+  const pertRows = (D, s) => (D.sites[siteKey(s)] || []).map((e) => Object.fromEntries(D.fields.map((f, i) => [f, e[i]])));
+  const pertInfo = (D, k) => { const d = D.perturbations[k]; return { key: d[0], label: d[1], desc: d[2], enzyme: d[3], kind: d[4], cells: d[5], study: d[6], doi: d[7], rule: d[8] }; };
+  const pertCall = (D, i) => (i == null || i < 0 ? '' : D.calls[i]);
+  const pertWordHtml = (c) => (c === 'decreased' ? '<b>▼ ' + PERT_WORD[c] + '</b>' : c === 'increased' ? '<b>▲ ' + PERT_WORD[c] + '</b>' : c ? '<span class="muted">' + esc(PERT_WORD[c] || c) + '</span>' : '<span class="muted">—</span>');
+  const pertTip = (D, r, title) => {
+    const d = pertInfo(D, r.perturbation), c = pertCall(D, r.call), sc = pertCall(D, r.call_source_rule), ss = pertCall(D, r.call_single_site_peptides);
+    return '<b>' + esc(title ? title + ' · ' + d.label : d.label) + '</b><br>' + esc(PERT_WORD[c] || c) + ' (release rule)<br>log2 perturbed/control ' + fmtL2(r.log2_treated_over_control) + ' (median), lowest q ' + fmtP(r.q) + '<br>' +
+      r.n_peptides + ' peptide' + (r.n_peptides === 1 ? '' : 's') + ': ' + r.n_decreased + ' ▼, ' + r.n_increased + ' ▲' + (r.n_multi_site_peptides ? '; ' + r.n_multi_site_peptides + ' with another methyl-R' : '') +
+      '<br>Single-site peptides: ' + esc(ss ? PERT_WORD[ss] : 'none') + '<br>By the study\'s rule: ' + esc(PERT_WORD[sc] || '—');
+  };
+  const pertRuleNote = (D) => 'One rule for every perturbation: a peptide changes at ' + esc(D.rule.replace(/, combined.*$/, '')) + ' (q: the study\'s adjusted p where it gives one, else its p adjusted here, Benjamini–Hochberg), ' +
+    'and a site is decreased when a peptide carrying it decreased and none increased. Each study\'s own rule is kept beside it. Peptide-level evidence with no total-protein correction: a peptide with several methylarginines changes for any of them.';
+
+  // The site's evidence panel: its rows in the knockouts, knockdowns and inhibitors other than the CARM1 knockout,
+  // which has its own table above.
+  function fillPerturbations(j) {
+    const box = document.getElementById('pert-ev-' + j);
+    if (!box) return;
+    loadLayer('perturbations').then((D) => {
+      if (!D || !box.isConnected) return;
+      const s = S[j], rows = pertRows(D, s).filter((r) => pertInfo(D, r.perturbation).enzyme !== 'CARM1');
+      if (!rows.length) return;
+      const none = box.parentNode && $('.no-ev', box.parentNode);
+      if (none) none.remove();
+      box.innerHTML = '<p><b>PRMT knockouts, knockdowns and inhibitors</b> (over the peptides carrying this site). ' + pertRuleNote(D) + '</p>' +
+        '<div class="tbl-wrap"><table><thead><tr><th>Perturbation</th><th>log2 perturbed/control</th><th>Lowest q</th><th>Peptides (▼/▲)</th><th>Peptide call</th><th>Single-site peptides</th><th>Study\'s rule</th></tr></thead><tbody>' +
+        rows.map((r) => {
+          const d = pertInfo(D, r.perturbation);
+          return '<tr><td>' + doiLink(d.doi, esc(d.label)) + '<br><span class="muted small">' + esc(d.study.replace(/,.*?\((\d{4})\)$/, ' $1')) + '</span></td><td class="num">' + fmtL2(r.log2_treated_over_control) + '</td>' +
+            '<td class="num">' + (r.n_decreased || r.n_increased ? '<b>' + fmtP(r.q) + '</b>' : fmtP(r.q)) + '</td><td class="num">' + r.n_peptides + ' <span class="muted">(' + r.n_decreased + '/' + r.n_increased + ')</span>' +
+            (r.n_multi_site_peptides ? '<br><span class="muted small">' + r.n_multi_site_peptides + ' with another methyl-R</span>' : '') + '</td><td>' + pertWordHtml(pertCall(D, r.call)) + '</td>' +
+            '<td>' + (r.call_single_site_peptides < 0 ? '<span class="muted">none: every peptide carries another methylarginine</span>' : pertWordHtml(pertCall(D, r.call_single_site_peptides))) + '</td>' +
+            '<td title="' + esc(d.rule) + '">' + pertWordHtml(pertCall(D, r.call_source_rule)) + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+    });
+  }
+
+  // The protein page: its sites against every perturbation that quantified one of them, one mark per site and
+  // perturbation (the release's call; hover for the numbers and the study's own call).
+  function renderPertCard(p) {
+    const box = $('#card-pert');
+    if (!box) return;
+    loadLayer('perturbations').then((D) => {
+      if (!box.isConnected) return;
+      const head = '<div class="card-head"><div><h3>Writer perturbations</h3><p class="sub">Its sites in PRMT knockouts, knockdowns and inhibitors: did a peptide carrying the site change?</p></div></div>';
+      if (!D) { box.innerHTML = head + '<p class="muted">The perturbation file did not load; try again later.</p>'; setFoldSummary('p-pert', 'did not load'); return; }
+      const sites = p.sites.map((j) => [S[j], pertRows(D, S[j])]).filter(([, rows]) => rows.length).sort((a, b) => a[0].pos - b[0].pos);
+      const used = D.perturbations.map((_, k) => k).filter((k) => sites.some(([, rows]) => rows.some((r) => r.perturbation === k)));
+      if (!sites.length) {
+        box.innerHTML = head + '<p class="muted">None of its sites was quantified in these experiments (' + D.perturbations.map((d) => esc(d[1])).join('; ') + ').</p>';
+        setFoldSummary('p-pert', 'not measured');
+        return;
+      }
+      const cell = (s, k) => {
+        const r = sites.find(([x]) => x === s)[1].find((x) => x.perturbation === k);
+        if (!r) return '<td class="pert-c muted" title="Not quantified">&nbsp;</td>';
+        const c = pertCall(D, r.call), [mark, cls] = PERT_MARK[c] || ['?', 'muted'];
+        return '<td class="pert-c" data-tip="' + esc(pertTip(D, r, rl(s.pos, p))) + '"><span class="pmark ' + cls + '">' + mark + '</span>' + (pertCall(D, r.call_source_rule) !== c ? '<sup class="muted" aria-label="the study\'s rule differs">†</sup>' : '') + '</td>';
+      };
+      const down = sites.filter(([, rows]) => rows.some((r) => pertCall(D, r.call) === 'decreased')).length;
+      box.innerHTML = head +
+        '<div class="tbl-wrap"><table class="pert-tbl"><thead><tr><th scope="col">Site</th>' + used.map((k) => { const d = pertInfo(D, k); return '<th scope="col" title="' + esc(d.desc) + '">' + esc(d.label) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        sites.map(([s]) => '<tr><th scope="row">' + rl(s.pos, p) + '</th>' + used.map((k) => cell(s, k)).join('') + '</tr>').join('') + '</tbody></table></div>' +
+        '<p class="pert-key">' + [['down', '▼', 'a peptide decreased'], ['up', '▲', 'increased'], ['mix', '↕', 'peptides disagree'], ['ns', '○', 'no significant change'], ['ns', '?', 'no p value'], ['ns', '†', 'the study\'s own rule calls it differently']]
+          .map(([c, m, t]) => '<span><span class="pmark ' + c + '">' + m + '</span> ' + t + '</span>').join('') + '<span>blank: not quantified · hover a mark for its numbers</span></p>' +
+        '<p class="note small">' + pertRuleNote(D) + ' Sources: ' + used.map((k) => { const d = pertInfo(D, k); return doiLink(d.doi, esc(d.study)); }).filter((v, i, a) => a.indexOf(v) === i).join('; ') + '.</p>';
+      setFoldSummary('p-pert', fmt(down) + ' of ' + fmt(sites.length) + ' quantified sites decreased in at least one');
+    });
+  }
+
+  // The protein page: the entry's Reactome top-level pathways and PaxDb abundance.
+  function renderPathCard(p) {
+    const box = $('#card-path');
+    if (!box) return;
+    Promise.all([loadLayer('reactome'), loadLayer('paxdb')]).then(([RX, PX]) => {
+      if (!box.isConnected) return;
+      const a = p.acc.split('-')[0];
+      const head = '<div class="card-head"><div><h3>Pathways and abundance</h3><p class="sub">Reactome pathways of the entry, and how abundant it is across human tissues (PaxDb).</p></div>' +
+        '<div class="exp"><a class="btn quiet small" href="https://reactome.org/content/query?q=' + encodeURIComponent(a) + '&amp;species=Homo+sapiens" target="_blank" rel="noopener" title="' + esc(p.label) + ' in Reactome">Reactome ↗</a></div></div>';
+      if (!RX && !PX) { box.innerHTML = head + '<p class="muted">The pathway and abundance files did not load; try again later.</p>'; setFoldSummary('p-path', 'did not load'); return; }
+      const tops = RX && RX.prot[a] ? RX.prot[a].map((k) => RX.top[k]) : [], ab = PX ? PX.prot[a] : null;
+      const ppm = (v) => (v >= 100 ? fmt(Math.round(v)) : v >= 1 ? v.toPrecision(3) : v.toPrecision(2));
+      box.innerHTML = head +
+        '<p class="flabel">Reactome top-level pathways</p>' + (!RX ? '<p class="muted">The Reactome file did not load.</p>' : tops.length ?
+          '<div class="tags">' + tops.map(([id, name]) => '<a class="tag" href="https://reactome.org/content/detail/' + encodeURIComponent(id) + '" target="_blank" rel="noopener">' + esc(name) + '</a>').join(' ') + '</div>' +
+          '<p class="small muted">The pathways it is in at any level below these; its lowest-level pathways are in the protein table (<code>reactome_n_pathways</code>).</p>' : '<p class="muted">Reactome gives this entry no pathway.</p>') +
+        '<p class="flabel">Abundance</p>' + (!PX ? '<p class="muted">The PaxDb file did not load.</p>' : ab ?
+          aMeters([{ label: 'Percentile', v: ab[1] / 100, text: Math.round(ab[1]) + '', cls: 'count', tip: '<b>' + esc(p.label) + '</b><br>' + ppm(ab[0]) + ' ppm; more abundant than ' + Math.round(ab[1]) + '% of reviewed entries with a value' }], { tight: true, wide: true }) +
+          '<p class="small">' + ppm(ab[0]) + ' parts per million of the proteome; more abundant than ' + Math.round(ab[1]) + '% of the reviewed human entries PaxDb gives a value.</p>' : '<p class="muted">PaxDb has no value for this entry.</p>') +
+        '<p class="note small">Abundance is a detection covariate: mass spectrometry finds abundant proteins most, so they are more likely to have sites found whatever methylation does. ' +
+        'PaxDb 6.1 integrates whole-organism datasets, not the cells the sites come from (' + doiLink('10.1016/j.mcpro.2023.100640', 'Huang et al. 2023') + ', CC BY 4.0). Reactome release 97 (' + doiLink('10.1093/nar/gkaf1223', 'Ragueneau et al. 2026') + ', CC0).</p>';
+      setFoldSummary('p-path', [RX ? (tops.length ? sumList(tops.map((t) => t[1]), 2) : 'no Reactome pathway') : '', PX ? (ab ? 'abundance percentile ' + Math.round(ab[1]) : 'no PaxDb value') : ''].filter(Boolean).join('; '));
+    });
+  }
+
+  // The protein page: experiments from the literature on its methylation, as curated (inputs/curation/); the fold is
+  // shown only when the protein has some.
+  function renderCurationCard(p) {
+    const box = $('#card-exp');
+    if (!box) return;
+    loadLayer('curation').then((C) => {
+      if (!C || !box.isConnected) return;
+      const f = (name) => C.fields.indexOf(name), a = p.acc.split('-')[0];
+      const rows = C.rows.filter((r) => r[f('uniprot_accession')] === a);
+      const fold = box.closest('details');
+      if (!rows.length) { if (fold) fold.hidden = true; return; }
+      if (fold) fold.hidden = false;
+      const v = (r, name) => r[f(name)] || '';
+      box.innerHTML = '<div class="card-head"><div><h3>Experiments on its methylation</h3><p class="sub">Curated from the papers: what was done, what was measured and what changed. Kept apart from the site table and every statistic.</p></div></div>' +
+        '<div class="tbl-wrap"><table><thead><tr><th>Site</th><th>Experiment</th><th>Readout</th><th>Change</th><th>Finding</th><th>Paper</th></tr></thead><tbody>' +
+        rows.map((r) => {
+          const dir = v(r, 'direction'), pos = v(r, 'position');
+          return '<tr><td>' + (pos ? rl(+pos, p) + (v(r, 'in_release') === 'true' ? '' : ' <span class="muted small">not a site of this release</span>') : esc(v(r, 'region'))) + '</td>' +
+            '<td>' + esc(v(r, 'perturbation')) + '<br><span class="muted small">' + esc([v(r, 'system'), v(r, 'species')].filter(Boolean).join(', ')) + '</span></td><td>' + esc(v(r, 'readout')) + '</td>' +
+            '<td>' + (dir === 'decreased' ? '<span class="pmark down">▼</span> fell' : dir === 'increased' ? '<span class="pmark up">▲</span> rose' : dir === 'no_change' ? 'no change' : '—') + '</td>' +
+            '<td>' + esc(v(r, 'finding')) + (v(r, 'figure') ? ' <span class="muted small">(' + esc(v(r, 'figure')) + ')</span>' : '') + (v(r, 'read_from') === 'abstract' ? ' <span class="muted small">from the abstract</span>' : '') + '</td>' +
+            '<td>' + doiLink(v(r, 'doi'), esc(v(r, 'reference'))) + '</td></tr>';
+        }).join('') + '</tbody></table></div>' +
+        '<p class="note small">The table is in the release (<code>supporting/functional_experiments</code>); inputs/curation/README.md describes the fields. The curation is small and growing; a protein without rows has not been curated, not shown to lack experiments.</p>';
+      setFoldSummary('p-exp', rows.length + (rows.length === 1 ? ' experiment' : ' experiments'));
+    });
+  }
+
+  // The Overview: Reactome top-level pathways among the methylated proteins (release statistics, analysis
+  // reactome_top_level), retested for a selection against the same background, and the pathways below the top level
+  // the release finds enriched.
+  function reactomeTopSpec(RX, scoped) {
+    const st = layerStats(RX, 'reactome_top_level'), by = new Map(st.map((r) => [r.category, r]));
+    const any = st[0], N = any ? any.a + any.b + any.c + any.d : 0;
+    const rows = RX.top.map(([id, name], ti) => {
+      const r = by.get(id), M = r ? r.a + r.c : 0;
+      return { label: name, key: id, ti, M, value: r && r.fold_enrichment ? +Math.log2(r.fold_enrichment).toFixed(3) : null, q: r ? r.q : null, sig: !!r && r.q != null && r.q <= PADJ,
+        extra: r ? ofTotal(r.a, M) : '', extraRaw: r ? r.a : '', noClick: true,
+        title: '<b>' + esc(name) + '</b><br>' + (r ? fmt(r.a) + ' of its ' + fmt(M) + ' proteins are methylated (' + pct(r.a, M) + '%), against ' + pct(r.a + r.b, N) + '% of all ' + fmt(N) + ' proteins with a pathway; fold enrichment ' + fx(r.fold_enrichment) + ', q ' + fmtP(r.q) : 'not tested') };
+    }).sort((x, y) => (y.value == null ? -99 : y.value) - (x.value == null ? -99 : x.value));
+    const spec = { id: 'ch-path-top', title: 'Reactome top-level pathways', fold: true, extraCol: true, extraName: 'methylated_of_pathway', rows, N, keepOrder: true,
+      subText: 'Reactome 97 top-level pathways (a protein counts in every one it is in at any level), methylated proteins vs all ' + fmt(N) + ' reviewed proteins with a pathway; release statistics, analysis reactome_top_level',
+      axis: 'log2 fold enrichment vs all proteins with a Reactome pathway' };
+    if (scoped) selSetTest(spec, { N, inBg: (p) => !!RX.prot[p.acc.split('-')[0]], member: (r) => (p) => (RX.prot[p.acc.split('-')[0]] || []).includes(r.ti), M: (r) => r.M, bg: 'proteins with a Reactome pathway' });
+    return spec;
+  }
+  function renderPathOverview(el, scoped) {
+    const box = $('#ch-path-body', el), tv = $('.path-ov-vis', el), th = $('.path-ov-head', el);
+    if (!box && !tv) return;
+    const view = UI.view, rq = R;
+    loadLayer('reactome').then((RX) => {
+      if (UI.view !== view || R !== rq) return;
+      if (!RX) { if (box) box.innerHTML = '<p class="muted">The Reactome file did not load; try again later.</p>'; if (th) th.textContent = 'did not load'; return; }
+      const spec = reactomeTopSpec(RX, scoped);
+      UI.charts[spec.id] = spec;
+      const top = spec.rows.filter((r) => r.value != null && (scoped ? r.p != null : r.sig)).sort((x, y) => y.value - x.value).slice(0, 4);
+      if (tv) tv.innerHTML = aMeters(top.map((r) => ({ label: r.label, v: Math.max(0, r.value) / Math.max(0.01, ...top.map((x) => x.value)), text: fx(2 ** r.value) + '×', cls: 'count', tip: r.title })), { tight: true, wide: true });
+      if (th) th.innerHTML = top.length ? 'Most enriched: <b>' + esc(top[0].label) + '</b> (' + fx(2 ** top[0].value) + '×)' : 'No top-level pathway enriched';
+      if (!box) return;
+      const deep = layerStats(RX, 'reactome_pathway').slice().sort((x, y) => x.p - y.p).slice(0, 15);
+      box.innerHTML = '<div class="pa-chart"><div class="fig-head"><span class="flabel">' + esc(spec.title) + '</span>' + expButtons(spec.id) + '</div>' + hbars(spec) + oraNote(spec) + '</div>' +
+        (deep.length ? '<p class="flabel">Pathways below the top level, whole dataset <span class="muted">(the ' + deep.length + ' with the lowest p of the ' + fmt(layerStats(RX, 'reactome_pathway').length) + ' at q ≤ ' + RX.listed_q + '; pathways of ' + RX.sizes[0] + '–' + RX.sizes[1] + ' proteins tested)</span></p>' +
+          '<div class="tbl-wrap"><table><thead><tr><th>Pathway</th><th>Top level</th><th class="num">Methylated</th><th class="num">Fold</th><th class="num">q</th></tr></thead><tbody>' +
+          deep.map((r) => { const w = RX.pathways[r.category] || [r.category, '', 0]; return '<tr><td><a href="https://reactome.org/content/detail/' + encodeURIComponent(r.category) + '" target="_blank" rel="noopener">' + esc(w[0]) + '</a></td><td class="small">' + esc(w[1]) + '</td><td class="num">' + ofTotal(r.a, r.a + r.c) + '</td><td class="num">' + fx(r.fold_enrichment) + '</td><td class="num">' + fmtP(r.q) + '</td></tr>'; }).join('') +
+          '</tbody></table></div>' : '') +
+        '<p class="small muted">Methylated proteins are much more abundant than the others (PaxDb), and mass spectrometry finds abundant proteins most, so pathways of abundant proteins are expected to be enriched whatever methylation does. Pathways nest, so neighbouring tests share proteins.</p>' +
+        '<p class="note small">Reactome release 97 (' + doiLink('10.1093/nar/gkaf1223', 'Ragueneau et al. 2026') + '; CC0), UniProt2Reactome_All_Levels. Each protein\'s page lists its pathways.</p>';
+      bindBars($('.pa-chart', box), spec.rows, () => {});
+      bindChartExports(box);
+      setFoldSummary('ov-path', th ? th.textContent : '');
+    });
+  }
+
   // The shard of an accession, as scripts/36c computes it.
   const proteomeShard = (acc) => { let h = 0; for (const c of acc) h = (h * 31 + c.charCodeAt(0)) % 1000003; return h % PROTEOME.shards; };
   // The protein without a site a search word names (accession, isoform accession or gene symbol), or null; null too

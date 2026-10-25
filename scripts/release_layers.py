@@ -265,6 +265,14 @@ CANCER = Layer(
     topic='9F1239',
 )
 
+def release_table(release: Path, name: str) -> pd.DataFrame:
+    return pd.read_csv(Path(release) / name, sep='\t', dtype=str, keep_default_na=False)
+
+
+def write_json(path: Path, payload: dict) -> None:
+    path.write_text(json.dumps(payload, separators=(',', ':'), ensure_ascii=False), encoding='utf-8')
+
+
 # ---- Writer perturbations: knockouts, knockdowns and inhibitors -------------------------------------------------------
 
 RELEASE_Q, RELEASE_LOG2 = 0.05, 1.0   # the release's rule for every perturbation: |log2| >= 1 at q < 0.05 (as the CARM1 knockout)
@@ -397,20 +405,21 @@ def perturbation_supporting(sites: pd.DataFrame, inputs, version: str) -> dict:
 
 def perturbation_website(release: Path, version: str, inputs: Path, site_out: Path) -> None:
     """SITE_OUT/perturbations.json: the datasets, and for each site of the release its rows of supporting/writer_perturbations."""
-    t = pd.read_csv(release / f'supporting/writer_perturbations_{version}.tsv', sep='\t', dtype=str, keep_default_na=False)
+    t = release_table(release, f'supporting/writer_perturbations_{version}.tsv')
     keys = [d.key for d in PERTURBATIONS]
     calls = list(PERTURBATION.codes['perturbation_call'])
     num = lambda v, nd=3: None if v == '' else float(f'{float(v):.{nd}g}')  # noqa: E731
     sites = defaultdict(list)
     for r in t.itertuples(index=False):
         sites[r.site_id].append([keys.index(r.perturbation), calls.index(r.call), calls.index(r.call_source_rule) if r.call_source_rule else -1,
-                                 num(r.log2_treated_over_control), num(r.q), int(r.n_peptides),
-                                 calls.index(r.call_single_site_peptides) if r.call_single_site_peptides else -1])
-    payload = {'fields': ['perturbation', 'call', 'call_source_rule', 'log2_treated_over_control', 'q', 'n_peptides', 'call_single_site_peptides'],
+                                 num(r.log2_treated_over_control), num(r.q), int(r.n_peptides), int(r.n_decreased), int(r.n_increased),
+                                 int(r.n_multi_site_peptides), calls.index(r.call_single_site_peptides) if r.call_single_site_peptides else -1])
+    payload = {'fields': ['perturbation', 'call', 'call_source_rule', 'log2_treated_over_control', 'q', 'n_peptides', 'n_decreased',
+                          'n_increased', 'n_multi_site_peptides', 'call_single_site_peptides'],
                'calls': calls, 'rule': f'|log2| >= {RELEASE_LOG2:g} at q < {RELEASE_Q:g}, combined over the peptides carrying the site',
                'perturbations': [[d.key, d.label, d.description, d.enzyme, d.kind, d.cell_line, d.study, d.doi, d.source_rule] for d in PERTURBATIONS],
                'version': version, 'sites': dict(sorted(sites.items()))}
-    (site_out / 'perturbations.json').write_text(json.dumps(payload, separators=(',', ':')), encoding='utf-8')
+    write_json(site_out / 'perturbations.json', payload)
 
 
 PERTURBATION = Layer(
@@ -456,6 +465,14 @@ def paxdb_protein_values(proteins: pd.DataFrame, inputs) -> pd.DataFrame:
     return pd.DataFrame({'paxdb_abundance_ppm': pick('abundance_ppm'), 'paxdb_percentile': pick('percentile')}, index=proteins.index)
 
 
+def paxdb_website(release: Path, version: str, site_out: Path) -> None:
+    """SITE_OUT/paxdb.json: abundance and percentile of each entry of the release's protein table."""
+    p = release_table(release, f'human_methylarginine_proteins_{version}.tsv')
+    p = p[p['paxdb_abundance_ppm'] != '']
+    prot = {a.split('-')[0]: [float(f'{float(v):.4g}'), float(c)] for a, v, c in zip(p['uniprot_accession'], p['paxdb_abundance_ppm'], p['paxdb_percentile'])}
+    write_json(site_out / 'paxdb.json', {'version': version, 'fields': ['abundance_ppm', 'percentile'], 'prot': dict(sorted(prot.items()))})
+
+
 PAXDB = Layer(
     key='paxdb', title='PaxDb 6.1 protein abundance',
     files=['paxdb_human_integrated_abundance.tsv', 'paxdb_summary.json'],
@@ -472,7 +489,7 @@ PAXDB = Layer(
         ('paxdb_percentile', 'number', '', 'percentile of that abundance among the 18,805 reviewed entries with a value (ties averaged; '
          '100 the most abundant)'),
     ],
-    protein_values=paxdb_protein_values,
+    protein_values=paxdb_protein_values, website=lambda release, version, inputs, site_out: paxdb_website(release, version, site_out),
 )
 
 
@@ -519,6 +536,32 @@ def reactome_stats(sites: pd.DataFrame, inputs, sequences: dict, workdir: Path) 
     return rows
 
 
+REACTOME_LISTED_Q = 0.05   # pathways below the top level the website lists: q at most this
+
+
+def reactome_website(release: Path, version: str, inputs: Path, site_out: Path) -> None:
+    """SITE_OUT/reactome.json: the top-level pathways, each protein's, and the release statistics of the top level and of
+    the pathways below it at q <= 0.05 (for the Overview: the whole dataset's tests and a selection's retest)."""
+    _, pathways = reactome(str(inputs))
+    top = pathways[pathways['depth'] == '0'].sort_values('name')
+    index = {name: k for k, name in enumerate(top['name'])}
+    p = release_table(release, f'human_methylarginine_proteins_{version}.tsv')
+    prot = {}
+    for a, names in zip(p['uniprot_accession'], p['reactome_top_level']):
+        if names:
+            prot[a.split('-')[0]] = sorted(index[x] for x in names.split('; '))
+    fields = ['analysis', 'category', 'a', 'b', 'c', 'd', 'fold_enrichment', 'p', 'q']
+    st = release_table(release, f'statistics_{version}.tsv')
+    st = st[(st['analysis'] == 'reactome_top_level') | ((st['analysis'] == 'reactome_pathway') & (pd.to_numeric(st['q']) <= REACTOME_LISTED_Q))]
+    num = lambda f, v: int(v) if f in 'abcd' else float(f'{float(v):.4g}') if f in ('fold_enrichment', 'p', 'q') else v  # noqa: E731
+    listed = sorted(set(st.loc[st['analysis'] == 'reactome_pathway', 'category']))
+    write_json(site_out / 'reactome.json', {
+        'version': version, 'top': [[i, n] for i, n in zip(top.index, top['name'])], 'prot': dict(sorted(prot.items())),
+        'stats_fields': fields, 'stats': [[num(f, r[f]) for f in fields] for r in st.to_dict('records')],
+        'pathways': {i: [pathways.at[i, 'name'], pathways.at[i, 'top_level_names'], int(pathways.at[i, 'n_reviewed_proteins'])] for i in listed},
+        'listed_q': REACTOME_LISTED_Q, 'sizes': [REACTOME_MIN, REACTOME_MAX]})
+
+
 REACTOME = Layer(
     key='reactome', title='Reactome 97 pathways',
     files=['reactome_human_protein_pathways.tsv', 'reactome_human_pathways.tsv', 'reactome_summary.json'],
@@ -539,7 +582,7 @@ REACTOME = Layer(
                             f'finds most, so pathways of abundant proteins are expected to be enriched whatever methylation does',
         'reactome_top_level': 'the same for the 29 Reactome top-level pathways, whatever their size (a protein can be in several)',
     },
-    protein_values=reactome_protein_values, stats=reactome_stats,
+    protein_values=reactome_protein_values, stats=reactome_stats, website=reactome_website,
 )
 
 
@@ -571,6 +614,12 @@ def curation_supporting(sites: pd.DataFrame, inputs, version: str) -> dict:
     return {'functional_experiments': (f'supporting/functional_experiments_{version}.tsv', t, CURATION_COLUMNS)}
 
 
+def curation_website(release: Path, version: str, site_out: Path) -> None:
+    """SITE_OUT/curation.json: the curated experiments as the release table has them."""
+    t = release_table(release, f'supporting/functional_experiments_{version}.tsv')
+    write_json(site_out / 'curation.json', {'version': version, 'fields': list(t.columns), 'rows': t.values.tolist()})
+
+
 CURATION = Layer(
     key='curation', title='Curated functional experiments', folder='curation',
     files=['functional_experiments.tsv'], staging=['curated by hand; scripts/49_check_functional_curation.py'],
@@ -582,7 +631,7 @@ CURATION = Layer(
                                'prediction': 'a computational prediction'},
            'direction': {'increased': 'the readout rose', 'decreased': 'the readout fell', 'no_change': 'the readout did not change'},
            'read_from': {'full_text': 'the full text was read', 'abstract': 'only the abstract was read'}},
-    supporting=curation_supporting,
+    supporting=curation_supporting, website=lambda release, version, inputs, site_out: curation_website(release, version, site_out),
     supporting_rows={'functional_experiments': 'curated experiment on a site or a protein\'s methylation: perturbation, readout, '
                                                'direction and reference (kept apart from every statistic)'},
 )
