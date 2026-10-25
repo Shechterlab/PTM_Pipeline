@@ -55,10 +55,13 @@ methylates it, under what conditions, and with what consequence, with each kind 
    gives single-dose (2.5 µM, 5-day) viability across its cell lines for five PRMT inhibitors: three of PRMT5
    (EPZ015666, GSK3326595, JNJ-64619178), EPZ020411 (PRMT6) and SGC-707 (PRMT3); it has no GSK591, MS023 or
    MRTX1719. DepMap's screens are of whole genes, so the residue-level use is the somatic mutations it calls
-   (`OmicsSomaticMutations`), with TCGA from [cBioPortal](https://www.cbioportal.org) beside them: a first, pooled count on
-   v1.3.1 finds 771 of 11,601 methylated arginines changed in at least one cell line (6.6%) against 6.7% of the other
-   arginines of the same proteins (odds ratio 1.00), so the card reports mutations at a site as observations, not as a
-   test result. Uses, each labelled as cell-line genetics, not methylation:
+   (`OmicsSomaticMutations`), with TCGA PanCancer Atlas from [cBioPortal](https://www.cbioportal.org) beside them. A
+   preview is on the `feature/depmap` branch (`scripts/44*`, `inputs/layers/`). Counting missense and stop changes on the
+   canonical sequence, 7.3% of the 11,601 methylated arginines of v1.3.1 are changed in at least one DepMap cell line and
+   28.3% in at least one TCGA tumour, against 6.9% and 30.6% of the other arginines of the same proteins: within protein
+   (Mantel-Haenszel), odds ratio 0.95 (0.88-1.03) in cell lines and 0.89 (0.85-0.93) in tumours, not adjusted for codon
+   context (CpG-containing CGN codons mutate most). So the page reports mutations at a site as observations. Uses, each
+   labelled as cancer genetics, not methylation:
    - a **protein-page card**, on light pages too: the CRISPR gene effect (Chronos) across cell lines, whether the gene
      is commonly essential, and the CCLE protein level where measured;
    - a **writer layer**: the dependencies on each PRMT, including the known PRMT5 dependency of MTAP-deleted lines

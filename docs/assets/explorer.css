@@ -2182,3 +2182,29 @@ ul.tight li { margin: 0.15rem 0; }
 /* More ProtVar partners in an evidence card */
 .pred-more { margin: 0.2rem 0 0 0.9rem; }
 .pred-more > summary { cursor: pointer; color: var(--muted); font-size: 0.85em; }
+/* Cancer cell lines and tumours (DepMap, PRISM, TCGA): two columns on wide cards, the PRMT panel under them */
+.dm-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.1rem; margin-top: 0.4rem; }
+.dm-grid > *, .dm-prmt { min-width: 0; }
+.dm-sec h4 { margin: 0 0 0.4rem; font-size: 0.92rem; }
+.dm-prmt { margin-top: 1.2rem; padding-top: 0.9rem; border-top: 1px solid var(--line); }
+.dm-comp { margin: 1rem 0 0.2rem; font-size: 0.88rem; }
+.dm-call { margin: 0 0 0.3rem; }
+.dm-ce { background: var(--teal-wash); color: var(--teal); border-color: transparent; }
+.dm-hist, .dm-boxes { display: block; width: 100%; height: auto; max-width: 34rem; margin: 0.2rem 0 0.4rem; font-family: var(--font-body); }
+.dm-bar { fill: var(--teal-600); }
+.dm-bar:hover { fill: var(--teal); }
+.dm-ref { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+.dm-reft, .dm-tick { font-size: 11px; fill: var(--muted); }
+.dm-axt { font-size: 11.5px; fill: var(--ink-2); }
+.dm-axis { stroke: var(--line-strong); }
+.dm-blab { font-size: 12px; fill: var(--ink-2); }
+.dm-box line { stroke: var(--muted); stroke-width: 1.4; }
+.dm-box rect { fill: var(--line-strong); }
+.dm-box .dm-med { stroke: var(--ink); stroke-width: 2.2; }
+.dm-box.dm-del rect { fill: var(--accent); fill-opacity: 0.55; }
+.dm-box.dm-int rect { fill: var(--teal-600); fill-opacity: 0.55; }
+
+.dm-tbl table { font-size: 0.84rem; }
+.dm-tbl td { vertical-align: top; }
+/* the hover target over the whole whisker stays invisible */
+.dm-boxes .dm-box rect.dm-hit { fill: transparent; }
