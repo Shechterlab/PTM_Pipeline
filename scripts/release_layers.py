@@ -15,7 +15,7 @@ Each layer is registered once, in LAYERS, with its staged files and what the bui
     python scripts/release_layers.py website --release releases/v1.4.0 --inputs inputs --site-out docs/data
         each layer's website files, from the release (hpc/build_release.sh runs it last)
 
-docs/ADDING_A_SOURCE.md says how to add a layer. The layers registered before this file existed (CPLM 4.0, the CARM1
+ADDING_A_SOURCE.md says how to add a layer. The layers registered before this file existed (CPLM 4.0, the CARM1
 knockout, the Human Protein Atlas) are listed with their files only; their columns and tests are made where they were
 before (build_release.carm1_table, release_tables.hpa_rows, scripts/36).
 """
@@ -55,6 +55,7 @@ class Layer:
     stats: Callable | None = None           # (sites with a boolean column counted, inputs, sequences, workdir) -> rows
     website: Callable | None = None         # (release folder, version, inputs, site out) -> None
     topic: str = ''                         # header fill of its site columns in the workbook (release_workbook.TOPICS)
+    elsewhere: str = ''                     # what it adds that is made outside this file (layers registered before it)
 
 
 def read_layer(inputs, name: str) -> pd.DataFrame:
@@ -261,13 +262,34 @@ CANCER = Layer(
 LAYERS = [
     Layer('cplm4', 'CPLM 4.0 lysine methylation', ['cplm4_summary.json'], ['scripts/39_stage_cplm4_lys_methylation.py'],
           'All rights reserved (© The CUCKOO Workgroup; no licence stated): the tables stay out of Git, checksum_only in MANIFEST.tsv',
-          'Zhang et al., Nucleic Acids Res 50:D451 (2022)'),
+          'Zhang et al., Nucleic Acids Res 50:D451 (2022)', elsewhere='the lysine methylation sites the website draws on the protein maps (scripts/36)'),
     Layer('carm1_ko', 'CARM1 knockout response (Shishkova et al. 2017)', ['carm1_ko_peptides.tsv', 'carm1_ko_sites.tsv', 'carm1_ko_summary.json'],
-          ['scripts/41_stage_carm1_ko_sites.py'], 'CC BY 4.0', 'Shishkova et al., Nat Commun 8:15571 (2017)'),
+          ['scripts/41_stage_carm1_ko_sites.py'], 'CC BY 4.0', 'Shishkova et al., Nat Commun 8:15571 (2017)',
+          elsewhere='site column `carm1_ko_call` and `supporting/carm1_ko` (scripts/build_release.py)'),
     Layer('hpa', 'Human Protein Atlas 25.1 subcellular locations', ['hpa_subcellular_locations.tsv', 'hpa_summary.json'],
-          ['scripts/42_stage_hpa_subcellular.py'], 'CC BY 4.0', 'Thul et al., Science 356:eaal3321 (2017)'),
+          ['scripts/42_stage_hpa_subcellular.py'], 'CC BY 4.0', 'Thul et al., Science 356:eaal3321 (2017)',
+          elsewhere='protein column `hpa_locations`, `supporting/hpa_locations` and analysis `hpa_location` (scripts/release_tables.py)'),
     CANCER,
 ]
+
+
+def readme_section() -> list[str]:
+    """The release README's section on the layers (scripts/release_docs.py)."""
+    code = lambda names: ', '.join(f'`{c}`' for c in names)  # noqa: E731
+    lines = ['## Annotation layers', '',
+             'Data from other resources, joined to the sites and proteins by accession and position; none adds a site. Each is '
+             'staged into `inputs/layers/` (its files listed, with checksums, in `inputs/MANIFEST.tsv`) and registered in '
+             '`scripts/release_layers.py`, which the build reads for the columns and tests a layer adds '
+             '(`ADDING_A_SOURCE.md`).', '',
+             '| Layer | Staged by | Adds | Licence |', '|---|---|---|---|']
+    for layer in LAYERS:
+        adds = ([f'site columns {code(c[0] for c in layer.site_columns)}'] if layer.site_columns else []) \
+            + ([f'protein columns {code(c[0] for c in layer.protein_columns)}'] if layer.protein_columns else []) \
+            + ([f'analyses {code(layer.analyses)} in the statistics table'] if layer.analyses else []) \
+            + ([layer.elsewhere] if layer.elsewhere else [])
+        lines.append(f'| {layer.title} | {code(Path(s).name for s in layer.staging)} | {"; ".join(adds)} | {layer.licence} |')
+    lines += ['', 'Cite them as: ' + '; '.join(f'{layer.title}: {layer.citation}' for layer in LAYERS) + '.', '']
+    return lines
 
 
 def site_columns() -> list[tuple]:

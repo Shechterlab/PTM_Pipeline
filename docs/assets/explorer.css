@@ -2211,3 +2211,7 @@ ul.tight li { margin: 0.15rem 0; }
 .dm-tbl td { vertical-align: top; }
 /* the hover target over the whole whisker stays invisible */
 .dm-boxes .dm-box rect.dm-hit { fill: transparent; }
+/* A figure drawn by its own function, with its export buttons (figBlock), and the DepMap class chart */
+.fig-block, .dm-chart { margin: 0.7rem 0 0.5rem; min-width: 0; }
+.fig-head { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin: 0 0 0.3rem; flex-wrap: wrap; }
+.fig-head .flabel { margin: 0; }

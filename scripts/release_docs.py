@@ -13,6 +13,7 @@ from pathlib import Path
 import pandas as pd
 
 import release_codes as rc
+import release_layers
 from disease_families import ADDITIONAL_FAMILIES, AUDITED_FAMILIES
 
 REPO = Path(__file__).resolve().parent.parent
@@ -356,13 +357,14 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'computed on earlier UniProt sequences and moved to these (`inputs/annotation/interval_lift_to_uniprot_2026_03.tsv`).',
         f"- **Previous version:** `releases/{previous}/` (git tag {previous}).",
         '',
+        *release_layers.readme_section(),
         '## Statistics',
         '',
         f"`{files['statistics'][0]}` holds every test behind the summaries: its analysis and category, the 2x2 counts a, b, "
         'c and d, the effect, p, q and the method:',
         '',
         '- **Protein and gene sets** (method `enricher`): PANTHER and functional classes, CD-CODE condensates, Human Protein '
-        'Atlas locations, disease families and Gene Ontology RNA and DNA binding; the complexes, Disease Ontology terms and '
+        'Atlas locations, disease families, Gene Ontology RNA and DNA binding and DepMap dependency classes; the complexes, Disease Ontology terms and '
         'DisGeNET terms, tested the same way, are in `supporting/`. Over-representation analysis in R with clusterProfiler::enricher, the '
         'DisGeNET terms on DOSE 4.4.0\'s DisGeNET term-gene table (the test DOSE::enrichDGN ran; `scripts/enrich_sets.R`; '
         + ', '.join(f'{k} {v}' for k, v in ctx.get('enrichment_tools', {}).items()) + '). '
@@ -373,9 +375,11 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'protein and its size is within the analysis\'s range. Backgrounds: the reviewed human proteome (classes, Gene '
         'Ontology, complexes), the proteins of any human CD-CODE condensate (condensates), the proteins the Human Protein '
         'Atlas profiled (locations), the reviewed human genes with a DisGeNET term (disease families and DisGeNET terms) '
-        'and those with a Disease Ontology term (Disease Ontology).',
+        'and those with a Disease Ontology term (Disease Ontology), and the reviewed proteins whose gene DepMap 24Q4 screened '
+        '(dependency classes).',
         '- **Arginines** (methods `fisher` and `mantel_haenszel`): motifs, disorder, domain context, nearest domain class, '
-        'structural context and the interaction tests compare methylated arginines with the other arginines of the same '
+        'structural context, the interaction tests and the changes in tumours and cell lines (cancer_change) compare '
+        'methylated arginines with the other arginines of the same '
         'proteins: two-sided Fisher exact test (scipy) with the sample odds ratio after adding 0.5 to each cell, pooled '
         'over the arginines of the methylated proteins, and the Mantel-Haenszel common odds ratio with each protein a '
         'stratum (statsmodels), which compares each protein\'s methylated arginines with its own other arginines; q is '

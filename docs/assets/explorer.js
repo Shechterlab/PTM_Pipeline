@@ -3689,10 +3689,29 @@
     $$('[data-exp][data-chart]', root).forEach((b) => b.addEventListener('click', () => {
       const spec = UI.charts[b.dataset.chart];
       const name = 'methylarginine_' + spec.id.replace(/^ch-/, '');
-      if (b.dataset.exp === 'tsv') { download(name + '.tsv', chartTsv(spec)); return; }
-      exportFigure(b.dataset.exp, chartSvg(spec), name);
+      if (b.dataset.exp === 'tsv') { download(name + '.tsv', spec.figTsv ? spec.figTsv() : chartTsv(spec)); return; }
+      exportFigure(b.dataset.exp, spec.figSvg ? figExportSvg(spec) : chartSvg(spec), name);
     }));
   }
+  // A figure drawn by its own function (spec.figSvg: the SVG as on the page, styled by explorer.css classes) as a
+  // stand-alone export: its title and subtitle above it, and the classes' export colours (spec.figCss) inside it, as
+  // exports and print are always light. Hover text is left out.
+  function figExportSvg(spec) {
+    const pal = EXPORT_PAL, m = spec.figSvg().replace(/ data-tip="[^"]*"/g, '');
+    const vb = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(m), w = vb ? +vb[1] : 460, h = vb ? +vb[2] : 200;
+    const W = Math.round(Math.max(w, 460) + 48), sub = wrapText(spec.subText || '', W - 48, 11, pal), top = 44 + sub.length * 15, H = Math.round(top + h + 12);
+    const inner = m.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+    return { svg: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + pal.font + '\'>' +
+      (spec.figCss ? '<style>' + spec.figCss(pal) + '</style>' : '') + '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' +
+      '<text x="24" y="30" font-size="15" font-weight="700" fill="' + pal.ink + '">' + esc(spec.title) + '</text>' +
+      sub.map((l, i) => '<text x="24" y="' + (48 + i * 15) + '" font-size="11" fill="' + pal.muted + '">' + esc(l) + '</text>').join('') +
+      '<g transform="translate(24,' + top + ')">' + inner + '</g></svg>', W, H };
+  }
+  // A figure of that kind with its export buttons: registered with the charts, so its SVG, PNG and TSV come from it.
+  const figBlock = (spec, label) => {
+    UI.charts[spec.id] = spec;
+    return '<div class="fig-block"><div class="fig-head">' + (label ? '<span class="flabel">' + label + '</span>' : '<span></span>') + expButtons(spec.id) + '</div>' + spec.figSvg() + '</div>';
+  };
 
   function bindBars(container, rows, onClick) {
     if (!container) return;
@@ -10170,6 +10189,21 @@
       m ? esc(dmAltText(m, p)) + ' in ' + dmPlural(m.n, 'cell line') + ' <span class="muted">(DepMap: ' + esc(dmWho(m, 'm', 3)) + ')</span>' : ''].filter(Boolean).join('<br>');
   }
   // Histogram of a gene's effect across the screened lines, with the two reference values of the Chronos scale.
+  // The DepMap figures' classes (explorer.css .dm-*) in the export colours.
+  const dmFigCss = (pal) => '.dm-bar{fill:' + pal.protein + '}.dm-ref{stroke:' + pal.muted + ';stroke-width:1;stroke-dasharray:3 3}.dm-reft,.dm-tick{font-size:11px;fill:' + pal.muted + '}' +
+    '.dm-axt{font-size:11.5px;fill:' + pal.ink + '}.dm-axis{stroke:' + pal.backbone + '}.dm-blab{font-size:12px;fill:' + pal.ink + '}.dm-box line{stroke:' + pal.muted + ';stroke-width:1.4}' +
+    '.dm-box rect{fill:' + pal.stem + '}.dm-box .dm-med{stroke:' + pal.ink + ';stroke-width:2.2}.dm-box.dm-del rect,.dm-box.dm-sel rect{fill:' + pal.accent + ';fill-opacity:0.55}' +
+    '.dm-box.dm-int rect,.dm-box.dm-meth rect{fill:' + pal.protein + ';fill-opacity:0.55}.dm-box rect.dm-hit{fill:none}';
+  // A layer's statistics rows from the release (its meta.json: stats, stats_fields; scripts/release_layers.py), as
+  // objects, for one analysis (and method).
+  function layerStats(meta, analysis, method) {
+    if (!meta || !meta.stats || !meta.stats_fields) return [];
+    return meta.stats.map((r) => Object.fromEntries(meta.stats_fields.map((f, i) => [f, r[i]]))).filter((r) => r.analysis === analysis && (!method || r.method === method));
+  }
+  const dmStats = (analysis, method) => layerStats(DEPMAP.meta, analysis, method);
+  // A box-plot figure (dmBoxSvg rows) as a chart spec: the figure, and its quantiles as TSV.
+  const dmBoxSpec = (id, title, subText, rows, axis) => ({ id, title, subText, figCss: dmFigCss, figSvg: () => dmBoxSvg(rows, axis),
+    figTsv: () => '# ' + subText + '\ngroup\tp05\tp25\tmedian\tp75\tp95\tn\n' + rows.filter((r) => r[1]).map((r) => [r[0]].concat(r[1].map((x, i) => (i < 5 ? +(+x).toFixed(4) : x))).join('\t')).join('\n') + '\n' });
   function dmHistSvg(g, edges, gene) {
     const hist = g[12], W = 460, H = 150, ML = 40, MR = 12, MT = 20, MB = 36;
     const lo = edges[0], hi = edges[edges.length - 1], x = (v) => ML + ((v - lo) / (hi - lo)) * (W - ML - MR);
@@ -10231,18 +10265,31 @@
       '<p class="small">' + dmPlural(r.dependent_lines, 'line') + ' of ' + fmt(r.all[5]) + ' depend on ' + esc(gene) + ' (probability ≥ 0.5). ' +
       (dd && di ? 'Lines without MTAP (0 copies, ' + fmt(dd[5]) + ' lines) have a median gene effect of ' + dmNum(dd[2]) + ', against ' + dmNum(di[2]) + ' in lines with MTAP (' + fmt(di[5]) + '; Mann–Whitney p ' + fmtP(r.mtap_p) + ').' : '') +
       (gene === 'PRMT5' ? ' MTAP loss leaves its substrate MTA, which partly inhibits PRMT5, so these lines depend on it more (' + doiLink(DM_DOI.kryukov, 'Kryukov et al. 2016') + '; ' + doiLink(DM_DOI.mavrakis, 'Mavrakis et al. 2016') + ').' : '') + '</p>' +
-      dmBoxSvg(dmMtapRows(r, esc(gene) + ' gene effect'), esc(gene) + ' gene effect per line (Chronos)');
+      figBlock(dmBoxSpec('ch-dm-prmt', gene + ' gene effect by MTAP status', 'DepMap Public 24Q4 CRISPR (Chronos): ' + gene + ' gene effect per cell line, all lines and by MTAP copy number (PureCN; deleted = 0 copies); boxes the middle half, whiskers the 5th to 95th percentile',
+        dmMtapRows(r, esc(gene) + ' gene effect'), gene + ' gene effect per line (Chronos)'));
     if (!comps.length) return h + '<p class="muted small">PRISM Repurposing 24Q2 has no inhibitor of ' + esc(gene) + '. Its PRMT inhibitors are EPZ015666, GSK3326595 and JNJ-64619178 (PRMT5), EPZ020411 (PRMT6) and SGC-707 (PRMT3).</p></section>';
-    for (const [name, c] of comps) {
+    comps.forEach(([name, c], k) => {
       const on = c.rho != null && c.rho > 0 && c.rho_p <= 0.05;
       h += '<h5 class="dm-comp">' + esc(name) + ' <span class="muted small">PRISM ' + esc(DM_SCREEN[c.screen] || c.screen) + ', ' + dm.prism.dose_uM + ' µM for ' + dm.prism.days + ' days</span></h5>' +
-        dmBoxSvg(dmMtapRows(c, 'log2 viability with ' + name), 'log2 viability against vehicle (0: no effect)') +
+        figBlock(dmBoxSpec('ch-dm-prism-' + k, name + ' (' + gene + ' inhibitor): viability by MTAP status', 'PRISM Repurposing 24Q2, ' + dm.prism.dose_uM + ' µM for ' + dm.prism.days + ' days: log2 viability against vehicle per cell line, all lines and by MTAP copy number; boxes the middle half, whiskers the 5th to 95th percentile',
+          dmMtapRows(c, 'log2 viability with ' + name), 'log2 viability against vehicle (0: no effect)')) +
         '<p class="small">' + (c.rho != null ? 'Spearman ρ with ' + esc(gene) + ' gene effect ' + dmNum(c.rho) + ' over ' + fmt(c.rho_lines) + ' lines (p ' + fmtP(c.rho_p) + '): ' +
           (on ? 'lines that depend more on ' + esc(gene) + ' lose ' + (c.rho < 0.3 ? 'somewhat ' : '') + 'more viability, the direction of an on-target effect.' : 'no positive relation with dependency on ' + esc(gene) + '.') : '') +
         (c.mtap_p != null && c.mtap_deleted && c.mtap_intact ? ' Median log2 viability ' + dmNum(c.mtap_deleted[2]) + ' in lines without MTAP against ' + dmNum(c.mtap_intact[2]) + ' with it (Mann–Whitney p ' + fmtP(c.mtap_p) + ').' : '') +
-        ' Most sensitive: ' + c.most_sensitive.slice(0, 5).map(([k, v]) => esc(dm.models[k][1]) + ' ' + dmNum(v)).join(', ') + '.</p>';
-    }
+        ' Most sensitive: ' + c.most_sensitive.slice(0, 5).map(([m, v]) => esc(dm.models[m][1]) + ' ' + dmNum(v)).join(', ') + '.</p>';
+    });
     return h + '</section>';
+  }
+  // The release's test of changes at methylarginines (analysis cancer_change, within protein), in a sentence: whether a
+  // methylated arginine is changed more or less often than the other arginines of its protein.
+  function dmChangeTestHtml() {
+    const mh = new Map(dmStats('cancer_change', 'mantel_haenszel').map((r) => [r.category, r]));
+    const t = mh.get('tcga_tumours'), c = mh.get('depmap_cell_lines');
+    if (!t || !c) return '';
+    const how = (r) => (r.odds_ratio_ci_high != null && r.odds_ratio_ci_high < 1 && r.q <= PADJ ? 'less often than' : r.odds_ratio_ci_low != null && r.odds_ratio_ci_low > 1 && r.q <= PADJ ? 'more often than' : 'about as often as');
+    const est = (r) => 'Mantel–Haenszel odds ratio ' + dmNum(r.odds_ratio) + ', 95% CI ' + dmNum(r.odds_ratio_ci_low) + '–' + dmNum(r.odds_ratio_ci_high) + ', q ' + fmtP(r.q);
+    return '<p class="small muted">Across the methylated proteins, a methylated arginine is changed in tumours ' + how(t) + ' the other arginines of its protein (' + est(t) + ', ' + fmt(t.n_strata) + ' proteins), and in cell lines ' + how(c) + ' them (' + est(c) + '). ' +
+      'Release statistics, analysis <code>cancer_change</code>. Not adjusted for codon: arginine codons with a CpG (CGN) mutate most in cancers, and the codons of methylated and other arginines may differ.</p>';
   }
   function renderDepmapCard(p) {
     const box = $('#card-depmap');
@@ -10265,7 +10312,10 @@
       else {
         h += '<p class="dm-call">' + (g[11] ? '<span class="tag dm-ce" data-tip="In DepMap\'s list of commonly essential genes: in at least 90% of cell lines it ranks among the line\'s strongest dependencies">commonly essential</span> ' : '') +
           '<b>' + fmt(g[9]) + ' of ' + fmt(g[10]) + '</b> lines depend on ' + esc(gene) + ' (dependency probability ≥ 0.5); median gene effect <b>' + dmNum(g[2]) + '</b>.</p>' +
-          dmHistSvg(g, dm.hist_edges, gene) +
+          figBlock({ id: 'ch-dm-hist', title: gene + ' gene effect across cancer cell lines', figCss: dmFigCss, figSvg: () => dmHistSvg(g, dm.hist_edges, gene),
+            subText: 'DepMap Public 24Q4 CRISPR knockout screens (Chronos), ' + fmt(g[0]) + ' lines: ' + fmt(g[9]) + ' depend on ' + gene + ' (dependency probability ≥ 0.5); median gene effect ' + dmNum(g[2]) + '. 0: no effect; −1: the median of commonly essential genes',
+            figTsv: () => '# ' + gene + ' gene effect per cell line (Chronos), DepMap Public 24Q4: cell lines per bin; the first bin also holds the lines below its lower edge and the last those above\nfrom\tto\tcell_lines\n' +
+              g[12].map((n, k) => [dm.hist_edges[k], dm.hist_edges[k + 1], n].join('\t')).join('\n') + '\n' }) +
           (g[13].length ? '<p class="small"><span class="flabel">Most dependent lineages</span> ' + g[13].map(([li, n, mean]) => esc(dm.lineages[li]) + ' ' + dmNum(mean) + ' <span class="muted">(' + n + ' lines)</span>').join(' · ') + ' <span class="muted">(mean gene effect; lineages of at least 10 lines)</span></p>' : '');
       }
       h += '</section>';
@@ -10288,9 +10338,7 @@
             (rows.length > 12 ? '<p class="muted small">' + (rows.length - 12) + ' more sites changed; the protein map draws them all.</p>' : '');
         }
       } else h += '<p class="small">' + dmPlural(T.size, 'arginine') + ' changed in at least one tumour, ' + fmt(Mc.size) + ' in at least one cell line' + (nR != null ? ', of its ' + fmt(nR) : '') + '; the protein map draws them.</p>';
-      const ts = dm.tests;
-      if (meth.size && ts && ts.tcga && ts.depmap) h += '<p class="small muted">Across the methylated proteins, a methylated arginine is changed in tumours a little less often than the other arginines of its protein (Mantel–Haenszel odds ratio ' + dmNum(ts.tcga.mh_or) + ', 95% CI ' + dmNum(ts.tcga.mh_lo) + '–' + dmNum(ts.tcga.mh_hi) + ', ' + fmt(ts.tcga.proteins) + ' proteins), and as often in cell lines (' +
-        dmNum(ts.depmap.mh_or) + ', ' + dmNum(ts.depmap.mh_lo) + '–' + dmNum(ts.depmap.mh_hi) + '). Not adjusted for codon: arginine codons with a CpG (CGN) mutate most in cancers, and the codons of methylated and other arginines may differ.</p>';
+      if (meth.size) h += dmChangeTestHtml();
       h += '</section></div>';
       if (isPrmt && pr) h += dmPrmtHtml(gene, pr);
       h += '<p class="note small">' + doiLink(DM_DOI.depmap, 'DepMap Public 24Q4') + ' (' + doiLink(DM_DOI.tsherniak, 'Tsherniak et al. 2017') + '; Chronos, ' + doiLink(DM_DOI.chronos, 'Dempster et al. 2021') + '), ' +
@@ -10303,6 +10351,7 @@
         el.addEventListener('mouseleave', hideTip);
       });
       $$('[data-dm-site]', box).forEach((b) => b.addEventListener('click', () => { UI.highlight = +b.dataset.dmSite; flashSite(+b.dataset.dmSite, true); drawMap(p, UNIDATA.get(p.acc)); }));
+      bindChartExports(box);
       setFoldSummary('p-depmap', [g ? (g[11] ? 'commonly essential' : fmt(g[9]) + ' of ' + fmt(g[10]) + ' lines depend on it') : 'not screened in DepMap',
         meth.size ? (nT ? dmPlural(nT, 'site') : 'no site') + ' changed in tumours' : (T.size ? dmPlural(T.size, 'arginine') : 'no arginine') + ' changed in tumours'].join(' · '));
     });
@@ -10356,6 +10405,31 @@
   const dmCmpHtml = (label, c) => '<tr><th scope="row">' + label + '</th><td class="num">' + pctText(c.ceA, c.nA || 1) + '% <span class="muted">against</span> ' + pctText(c.ceB, c.nB || 1) + '%</td>' +
     '<td class="num">' + (c.ci.or != null ? fx(c.ci.or) + (c.ci.lo != null ? ' <span class="muted">[' + fx(c.ci.lo) + '–' + fx(c.ci.hi) + ']</span>' : '') : '—') + '</td><td class="num">' + fmtP(c.ceP) + '</td>' +
     '<td class="num">' + dmNum(c.medA) + ' <span class="muted">against</span> ' + dmNum(c.medB) + '</td><td class="num">' + fmtP(c.medP) + '</td></tr>';
+  // The dependency classes (code dependency_class of the release) as a protein-set chart: the whole dataset's test from
+  // the release statistics (analysis depmap_dependency: clusterProfiler enricher, methylated against all screened
+  // proteins), retested for a selection against the same background (selSetTest), with its SVG, PNG and TSV exports.
+  const DEP_CLASS_LABEL = { common_essential: 'Commonly essential', most_lines: 'Most lines (≥ 50%)', some_lines: 'Some lines (5–50%)', few_or_none: 'Few or none (< 5%)' };
+  function dmClassSpec(G, scoped) {
+    const dm = DEPMAP.meta, st = new Map(dmStats('depmap_dependency').map((r) => [r.category, r]));
+    const codes = (dm.dependency_classes || []).map((c) => c[0]), help = new Map(dm.dependency_classes || []);
+    const any = st.values().next().value, N = any ? any.a + any.b + any.c + any.d : G.acc.length;
+    const rows = codes.map((code, ci) => {
+      const r = st.get(code), label = DEP_CLASS_LABEL[code] || code;
+      const M = r ? r.a + r.c : Array.from(G.cls).filter((c) => +c === ci).length;
+      return { label, key: code, ci, M, value: r && r.fold_enrichment ? +Math.log2(r.fold_enrichment).toFixed(3) : null, q: r ? r.q : null, sig: !!r && r.q != null && r.q <= PADJ,
+        extra: r ? ofTotal(r.a, M) : '', extraRaw: r ? r.a : '', noClick: true,
+        title: '<b>' + esc(label) + '</b> · ' + esc(help.get(code) || '') + '<br>' + (r ? fmt(r.a) + ' of the ' + fmt(M) + ' screened proteins in this class are methylated (' + pct(r.a, M) + '%), against ' +
+          pct(r.a + r.b, N) + '% of all ' + fmt(N) + ' screened proteins; fold enrichment ' + fx(r.fold_enrichment) + ', q ' + fmtP(r.q) : 'no methylated protein in this class') };
+    });
+    const spec = { id: 'ch-dep-cls', title: 'DepMap dependency class', fold: true, keepOrder: true, extraCol: true, extraName: 'methylated_of_screened', rows, N,
+      subText: 'DepMap Public 24Q4 dependency classes, methylated proteins vs all ' + fmt(N) + ' screened reviewed proteins (one per gene); release statistics, analysis depmap_dependency',
+      axis: 'log2 fold enrichment vs all screened proteins' };
+    if (scoped) {
+      const at = (p) => G.by.get(p.acc.split('-')[0]);
+      selSetTest(spec, { N, inBg: (p) => at(p) != null, member: (r) => (p) => G.cls[at(p)] === String(r.ci), M: (r) => r.M, bg: 'screened proteins' });
+    }
+    return spec;
+  }
   // The Overview's section and tile: how much cancer cell lines depend on the proteins of the selection (or on all
   // methylated proteins), against the other methylated proteins and against all screened reviewed proteins.
   function renderDepOverview(el, scoped, testable) {
@@ -10370,31 +10444,42 @@
       const allRows = G.acc.map((_, k) => k), otherScreened = allRows.filter((k) => !(scoped ? selSet : methSet).has(k));
       const otherMeth = methRows.filter((k) => !selSet.has(k));
       const ce = (rows) => rows.filter((k) => G.ce[k] === '1').length;
-      const sh = [[scoped ? 'Your selection' : 'Methylated proteins', selRows]].concat(scoped ? [['All methylated proteins', methRows]] : [], [['All screened proteins', allRows]]);
-      const mx = Math.max(...sh.map(([, rows]) => ce(rows) / (rows.length || 1)), 0.01);
-      if (tv) tv.innerHTML = aMeters(sh.map(([label, rows]) => ({ label, v: ce(rows) / (rows.length || 1) / mx, text: pctText(ce(rows), rows.length || 1) + '%', cls: 'count',
-        tip: '<b>' + esc(label) + '</b><br>' + fmt(ce(rows)) + ' of ' + fmt(rows.length) + ' screened proteins (' + pctText(ce(rows), rows.length || 1) + '%) commonly essential in DepMap' })), { tight: true, wide: true });
+      const share = (rows) => (rows.length ? ce(rows) / rows.length : 0);
+      const sh = [[scoped ? 'Your selection' : 'Methylated proteins', share(selRows), scoped ? 'sel' : 'meth', selRows.length]]
+        .concat(scoped ? [['All methylated proteins', share(methRows), 'meth', methRows.length]] : [], [['All screened proteins', share(allRows), 'all', allRows.length]]);
+      const mx = Math.max(...sh.map((x) => x[1]), 0.01);
+      if (tv) tv.innerHTML = aMeters(sh.map(([label, v, cls, n]) => ({ label, v: v / mx, text: pctText(Math.round(v * 1000), 1000) + '%', cls: 'count',
+        tip: '<b>' + esc(label) + '</b><br>' + pctText(Math.round(v * 1000), 1000) + '% of ' + fmt(n) + ' screened proteins commonly essential in DepMap' })), { tight: true, wide: true });
       if (th) th.innerHTML = '<b>' + pctText(ce(selRows), selRows.length || 1) + '%</b> of ' + (scoped ? 'your' : 'methylated') + ' proteins commonly essential in cancer cell lines, against ' + pctText(ce(allRows), allRows.length) + '% of all screened proteins';
       if (!box) return;
       const c1 = scoped ? dmCompare(G, selRows, otherMeth) : null, c2 = dmCompare(G, selRows, otherScreened);
       const most = sel.map((p) => [p, G.by.get(p.acc.split('-')[0])]).filter(([, k]) => k != null).sort((a, b) => G.median[a[1]] - G.median[b[1]]);
       const seen = new Set(), uniq = most.filter(([, k]) => !seen.has(k) && seen.add(k));
-      const selective = uniq.filter(([, k]) => G.ce[k] === '0' && G.dependent[k] / G.lines[k] >= 0.05 && G.dependent[k] / G.lines[k] <= 0.5).sort((a, b) => G.dependent[b[1]] / G.lines[b[1]] - G.dependent[a[1]] / G.lines[a[1]]);
+      const selective = uniq.filter(([, k]) => G.cls[k] === '2').sort((a, b) => G.dependent[b[1]] / G.lines[b[1]] - G.dependent[a[1]] / G.lines[a[1]]);
       const chip = ([p, k], sub) => '<button class="gene-chip" type="button" data-i="' + p.i + '" title="' + esc(p.label + ': median gene effect ' + dmNum(G.median[k] / 1000) + ', ' + G.dependent[k] + ' of ' + G.lines[k] + ' lines depend on it' + (G.ce[k] === '1' ? '; commonly essential' : '')) + '">' + esc(p.label) + '<span>' + sub + '</span></button>';
+      const cls = dmClassSpec(G, scoped);
+      UI.charts[cls.id] = cls;
+      const boxRows = [[scoped ? 'Your selection' : 'Methylated proteins', dmQuant(G, selRows), scoped ? 'dm-sel' : 'dm-meth', 'Median gene effect of each protein'], scoped ? ['All methylated', dmQuant(G, methRows), 'dm-meth', 'Median gene effect of each methylated protein'] : null,
+        ['All screened proteins', dmQuant(G, allRows), '', 'Median gene effect of each screened reviewed protein']].filter(Boolean);
+      const boxSpec = dmBoxSpec('ch-dep-box', 'Median gene effect of each protein', 'DepMap Public 24Q4 CRISPR (Chronos): each protein\'s median gene effect across the ' + fmt(dm.depmap.crispr_lines) + ' lines; boxes the middle half of the proteins, whiskers the 5th to 95th percentile; lower is a stronger dependency',
+        boxRows, 'median gene effect per protein (Chronos)');
       box.innerHTML = '<p class="small">' + fmt(selRows.length) + ' of ' + (scoped ? 'your ' + fmt(sel.length) : 'the ' + fmt(P.length) + ' methylated') + ' proteins were screened (DepMap 24Q4, ' + fmt(dm.depmap.crispr_lines) + ' cell lines). ' +
           'A protein\'s score is its median gene effect across the lines (Chronos: 0 no effect, −1 the median of commonly essential genes; lower is a stronger dependency).</p>' +
-        dmBoxSvg([[scoped ? 'Your selection' : 'Methylated proteins', dmQuant(G, selRows), scoped ? 'dm-sel' : 'dm-meth', 'Median gene effect of each protein'], scoped ? ['All methylated proteins', dmQuant(G, methRows), 'dm-meth', 'Median gene effect of each methylated protein'] : null,
-          ['All screened proteins', dmQuant(G, allRows), '', 'Median gene effect of each screened reviewed protein']].filter(Boolean), 'median gene effect per protein (Chronos)') +
-        (testable ? '<div class="tbl-wrap dm-tbl"><table><thead><tr><th>Compared with</th><th>Commonly essential</th><th title="Odds ratio with its 95% interval (Woolf)">Odds ratio</th><th title="Fisher exact test, two-sided">p</th><th>Median of the protein scores</th><th title="Mann–Whitney test, two-sided">p</th></tr></thead><tbody>' +
+        '<div class="dm-chart"><div class="fig-head"><span class="flabel">' + esc(cls.title) + '</span>' + expButtons(cls.id) + '</div>' + hbars(cls) + oraNote(cls) + '</div>' +
+        figBlock(boxSpec, 'Median gene effect of each protein') +
+        (testable ? '<div class="tbl-wrap dm-tbl"><table><thead><tr><th>Compared with</th><th>Commonly essential</th><th title="Odds ratio with its 95% interval (Woolf)">Odds ratio</th><th title="Fisher exact test, two-sided">p</th><th>Median score</th><th title="Mann–Whitney test, two-sided">p</th></tr></thead><tbody>' +
           (c1 ? dmCmpHtml('The other methylated proteins (' + fmt(c1.nB) + ')', c1) : '') + dmCmpHtml('The other screened proteins (' + fmt(c2.nB) + ')', c2) + '</tbody></table></div>' +
           '<p class="small muted">Essential proteins are abundant, and abundant proteins are the ones mass spectrometry finds most often, so methylated proteins are expected to look more essential than the proteome whatever their methylation does' +
           (scoped ? '; the comparison with the other methylated proteins shares that bias and is the fairer one.' : '. A selection is also compared with the other methylated proteins, which share that bias.') + '</p>'
           : '<p class="small muted">' + selTooFew() + '</p>') +
         (uniq.length ? '<p class="flabel">Strongest dependencies' + (scoped ? ' in your selection' : '') + '</p><div class="gene-chips">' + uniq.slice(0, 12).map((x) => chip(x, dmNum(G.median[x[1]] / 1000))).join('') + '</div>' : '') +
-        (selective.length ? '<p class="flabel">Selective dependencies <span class="muted">(5–50% of lines depend on them, share shown; not commonly essential)</span></p><div class="gene-chips">' +
+        (selective.length ? '<p class="flabel">Selective dependencies <span class="muted">(not commonly essential; 5% to under half of the lines depend on them, share shown)</span></p><div class="gene-chips">' +
           selective.slice(0, 12).map((x) => chip(x, pctText(G.dependent[x[1]], G.lines[x[1]]) + '%')).join('') + '</div>' : '') +
+        dmChangeTestHtml().replace('<p class="small muted">', '<p class="small muted"><b>Changes at methylarginines</b> (whole dataset). ') +
         '<p class="note small">' + doiLink(DM_DOI.depmap, 'DepMap Public 24Q4') + ' (CC BY 4.0; ' + doiLink(DM_DOI.tsherniak, 'Tsherniak et al. 2017') + '; Chronos, ' + doiLink(DM_DOI.chronos, 'Dempster et al. 2021') + '). ' +
           'Commonly essential: DepMap\'s list of genes that at least 90% of lines rank among their strongest dependencies. A line depends on a gene when DepMap\'s dependency probability is at least 0.5. Each protein\'s page has its full distribution, lineages and mutations.</p>';
+      bindBars($('.dm-chart', box), cls.rows, () => {});
+      bindChartExports(box);
       $$('.gene-chip[data-i]', box).forEach((b) => b.addEventListener('click', () => openProtein(+b.dataset.i)));
       $$('svg [data-tip]', box).forEach((e) => { e.addEventListener('mouseenter', (ev) => showTip(ev, e.getAttribute('data-tip'))); e.addEventListener('mousemove', moveTip); e.addEventListener('mouseleave', hideTip); });
       setFoldSummary('ov-dep', pctText(ce(selRows), selRows.length || 1) + '% commonly essential');
