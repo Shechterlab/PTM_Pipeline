@@ -353,17 +353,18 @@ def perturbation_rows(inputs: str) -> pd.DataFrame:
         pep = read_layer(inputs, d.peptides)
         for col, value in d.select.items():
             pep = pep[pep[col] == value]
-        pep = pep[(pep['canonical_UniProtAC'] != '') & (pep['methyl_positions'] != '')].copy()
+        pep = pep.copy()
         pep['rel_log2'] = pd.to_numeric(pep[d.log2], errors='coerce')
         pep['rel_p'] = pd.to_numeric(pep[d.p], errors='coerce') if d.p else float('nan')
         pep = pep[pep['rel_log2'].notna()]
-        if d.q == 'bh':
+        if d.q == 'bh':   # over every quantified peptide of the comparison, placed on the reference or not (as v1.3.1's CARM1 table)
             pep['rel_q'] = float('nan')
             tested = pep[pep['rel_p'].notna()]
             for _, g in (tested.groupby(d.bh_groups) if d.bh_groups else [((), tested)]):
                 pep.loc[g.index, 'rel_q'] = pc.bh(g['rel_p'].tolist())
         else:
             pep['rel_q'] = pd.to_numeric(pep[d.q], errors='coerce')
+        pep = pep[(pep['canonical_UniProtAC'] != '') & (pep['methyl_positions'] != '')]
         groups = defaultdict(list)
         for r in pep.itertuples(index=False):
             positions = [int(float(x)) for x in str(r.methyl_positions).split(';') if x]
