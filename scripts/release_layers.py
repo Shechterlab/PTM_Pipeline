@@ -292,9 +292,12 @@ def write_json(path: Path, payload: dict) -> None:
 
 # ---- Writer perturbations: knockouts, knockdowns and inhibitors -------------------------------------------------------
 
-RELEASE_Q, RELEASE_LOG2 = 0.05, 1.0   # the release's rule for every perturbation: |log2| >= 1 at q < 0.05 (as the CARM1 knockout)
+RELEASE_Q, RELEASE_LOG2 = 0.05, 1.0   # the release's rule: |log2| >= 1 at q < 0.05 (as the CARM1 knockout of v1.3.1)
 SOURCE_CALL = {'down': 'decreased', 'up': 'increased', 'unchanged': 'no_significant_change', 'mixed': 'mixed',
                'decreased': 'decreased', 'increased': 'increased', 'no_significant_change': 'no_significant_change'}
+LI2021 = ('Li WJ et al., Nat Commun 12:1946 (2021)', '10.1038/s41467-021-21963-1')
+LI2021_RULE = ('more than twofold lower on the methylation ratio (H/L < 0.5) in one SILAC experiment, no test (the study\'s rule, as '
+               'its lists give it per site)')
 
 
 @dataclass
@@ -310,11 +313,19 @@ class Perturbation:
     peptides: str        # its staged peptide table in inputs/layers/ (canonical_UniProtAC, methyl_positions)
     log2: str            # the column of log2 treated / control
     p: str               # the column of the peptide p value, '' when the study gives none
-    q: str               # the column of an adjusted p value to use as given, or 'bh': p adjusted here
+    q: str               # the column of an adjusted p value to use as given, 'bh': p adjusted here, '': none (the release's rule
+                         # cannot be applied)
     source_call: str     # the column of each peptide's call by the study's own rule
     source_rule: str
     select: dict = field(default_factory=dict)       # column -> value: the rows of this arm in a shared table
     bh_groups: list = field(default_factory=list)    # columns within which p is adjusted ('bh')
+    primary: str = 'release'                         # whose rule makes `call`: 'release' or 'study'
+    primary_why: str = ''                            # why the study's rule, when it is primary
+    source_sites: tuple = ()                         # (staged site table, column): the study's own call per site, where it calls
+                                                     # sites rather than peptides (keyed by canonical_UniProtAC, position and select)
+    localised: tuple = ()                            # (column, value): a peptide counts as single-site only when its one position
+                                                     # has this value (positions aligned with methyl_positions)
+    changed_only: bool = False                       # the study lists its changed sites only: no row is not "unchanged"
 
 
 PERTURBATIONS = [
@@ -334,21 +345,49 @@ PERTURBATIONS = [
                  'label-free, 2 against 2 biological replicates, SCX and antibody enrichments (Hartel et al. 2019)', 'PRMT1', 'knockdown',
                  'HEK293T', 'Hartel et al., Mol Cell Proteomics 18:2149-2164 (2019)', '10.1074/mcp.RA119.001625',
                  'hartel2019_prmt1_kd_peptides.tsv', 'log2_kd_control', 'p', 'bh', 'call',
-                 'Perseus t-test with permutation-based FDR q < 0.05 and S0 = 0.5 (the study\'s rule; 2 against 2 samples allow few '
-                 'distinct permutations)', bh_groups=['table']),
+                 'Perseus t-test with permutation-based FDR q < 0.05 and S0 = 0.5 (the study\'s rule)', bh_groups=['table'], primary='study',
+                 primary_why='with 2 against 2 samples, Benjamini-Hochberg over the t-test p values leaves almost nothing; the study\'s '
+                             'permutation FDR is the call its authors made (decided for v1.4.0)'),
     Perturbation('prmt5i_epz015666_hela', 'PRMT5i EPZ015666, HeLa', 'PRMT5 inhibitor EPZ015666 against untreated HeLa cells, SDMA '
                  'antibody after ulilysin digestion, SILAC (Lu et al. 2024); the treated channel is read from the data, as the '
                  'readable text does not state it', 'PRMT5', 'inhibitor', 'HeLa', 'Lu et al., J Proteome Res 23:1014-1027 (2024)',
                  '10.1021/acs.jproteome.3c00724', 'lu2024_prmt5_peptides.tsv', 'log2_inhibitor_control', 'p', 'bh', 'call',
                  'twofold at nominal p < 0.05, inferred: it reproduces 254 of the 255 sites of the study\'s Table 1.4 that map to the '
                  'reference and adds none (the study states no threshold in the text that could be read)'),
+    Perturbation('prmt7_kd_hek293', 'PRMT7 KD, HEK293', 'PRMT7 siRNA knockdown against control siRNA in HEK293 cells, '
+                 'monomethylarginine antibody, SILAC, one experiment (Supplementary Data 1, repeat 1; Li et al. 2021)', 'PRMT7', 'knockdown',
+                 'HEK293', *LI2021, 'li2021_peptides.tsv', 'log2_treated_control', '', '', 'call_source', LI2021_RULE,
+                 select={'comparison': 'PRMT7_si'}, primary='study', source_sites=('li2021_sites.tsv', 'call_source'),
+                 localised=('localised_by', 'search'),
+                 primary_why='one SILAC experiment and no test across replicates: Proteome Discoverer\'s adjusted p is not one, so the '
+                             'release\'s rule is not applied'),
+    Perturbation('prmt7i_sgc3027_hek293', 'PRMT7i SGC3027, HEK293', 'PRMT7 inhibitor SGC3027 against untreated HEK293 cells, '
+                 'monomethylarginine antibody, SILAC, one experiment (Supplementary Data 3; Li et al. 2021); heavy is read as treated, '
+                 'as the paper reads its ratios, though one sentence of its Methods says the reverse', 'PRMT7', 'inhibitor', 'HEK293', *LI2021,
+                 'li2021_peptides.tsv', 'log2_treated_control', '', '', 'call_source', LI2021_RULE, select={'comparison': 'PRMT7_SGC3027'},
+                 primary='study', source_sites=('li2021_sites.tsv', 'call_source'), localised=('localised_by', 'search'),
+                 primary_why='one SILAC experiment and no test across replicates, so the release\'s rule is not applied'),
+    Perturbation('carm1_kd_hek293', 'CARM1 KD, HEK293', 'CARM1 (PRMT4) siRNA knockdown against control siRNA in HEK293 cells, '
+                 'monomethylarginine then ADMA antibodies, SILAC, one experiment (Supplementary Data 5; Li et al. 2021)', 'CARM1', 'knockdown',
+                 'HEK293', *LI2021, 'li2021_peptides.tsv', 'log2_treated_control', '', '', 'call_source', LI2021_RULE,
+                 select={'comparison': 'PRMT4_si'}, primary='study', source_sites=('li2021_sites.tsv', 'call_source'),
+                 localised=('localised_by', 'search'),
+                 primary_why='one SILAC experiment and no p value, so the release\'s rule is not applied'),
+    Perturbation('prmt5_kd_hek293', 'PRMT5 KD, HEK293', 'PRMT5 siRNA knockdown against control siRNA in HEK293 cells, '
+                 'monomethylarginine then SDMA antibodies, SILAC, one experiment (Supplementary Data 6; Li et al. 2021): the decreased '
+                 'sites only, as the study lists them, so a site without a row may have been measured unchanged', 'PRMT5', 'knockdown',
+                 'HEK293', *LI2021, 'li2021_peptides.tsv', 'log2_treated_control', '', '', 'call_source', LI2021_RULE,
+                 select={'comparison': 'PRMT5_si'}, primary='study', source_sites=('li2021_sites.tsv', 'call_source'),
+                 localised=('localised_by', 'search'), changed_only=True,
+                 primary_why='one SILAC experiment, no p value, and only its decreased sites listed'),
 ]
 
 
 @functools.lru_cache(maxsize=4)
 def perturbation_rows(inputs: str) -> pd.DataFrame:
-    """One row per site and perturbation: the release's call (|log2| >= 1 at q < 0.05, by scripts/peptide_calls.py over the
-    peptides carrying the site, q adjusted here where the study gives p only) and the call by the study's own rule."""
+    """One row per site and perturbation. The release's rule (|log2| >= 1 at q < 0.05, scripts/peptide_calls.py over the
+    peptides carrying the site, q adjusted here where the study gives p only) and the study's own rule are both kept;
+    `call` is the one the perturbation names as primary."""
     import peptide_calls as pc
     rows = []
     for d in PERTURBATIONS:
@@ -364,24 +403,44 @@ def perturbation_rows(inputs: str) -> pd.DataFrame:
             tested = pep[pep['rel_p'].notna()]
             for _, g in (tested.groupby(d.bh_groups) if d.bh_groups else [((), tested)]):
                 pep.loc[g.index, 'rel_q'] = pc.bh(g['rel_p'].tolist())
-        else:
+        elif d.q:
             pep['rel_q'] = pd.to_numeric(pep[d.q], errors='coerce')
+        else:
+            pep['rel_q'] = float('nan')
         pep = pep[(pep['canonical_UniProtAC'] != '') & (pep['methyl_positions'] != '')]
+        site_call = {}
+        if d.source_sites:
+            st = read_layer(inputs, d.source_sites[0])
+            for col, value in d.select.items():
+                st = st[st[col] == value]
+            site_call = {(a, int(p)): SOURCE_CALL.get(c, '') for a, p, c in zip(st['canonical_UniProtAC'], st['position'], st[d.source_sites[1]])}
         groups = defaultdict(list)
-        for r in pep.itertuples(index=False):
-            positions = [int(float(x)) for x in str(r.methyl_positions).split(';') if x]
+        for r in pep.to_dict('records'):
+            positions = [int(float(x)) for x in str(r['methyl_positions']).split(';') if x]
+            how = str(r[d.localised[0]]).split(';') if d.localised else []
+            single = len(positions) == 1 and (not d.localised or how[:1] == [d.localised[1]])
             for pos in positions:
-                groups[(r.canonical_UniProtAC, pos)].append((r.rel_q, r.rel_log2, len(positions), r.rel_p, SOURCE_CALL.get(getattr(r, d.source_call), '')))
+                groups[(r['canonical_UniProtAC'], pos)].append((r['rel_q'], r['rel_log2'], len(positions), r['rel_p'],
+                                                                SOURCE_CALL.get(r[d.source_call], ''), single))
         for (acc, pos), vals in sorted(groups.items()):
-            res = pc.site_response([(q, l2, n) for q, l2, n, _, _ in vals], RELEASE_Q, RELEASE_LOG2, strict=True)
+            res = pc.site_response([(q, l2, 1 if single else 2) for q, l2, _, _, _, single in vals], RELEASE_Q, RELEASE_LOG2, strict=True)
             tested = any(not pd.isna(q) for q, *_ in vals)
-            ps = [p for *_, p, _ in vals if not pd.isna(p)]
-            rows.append({'site_id': f'{acc}:R{pos}', 'perturbation': d.key, 'n_peptides': res['n_peptides'],
+            ps = [p for _, _, _, p, _, _ in vals if not pd.isna(p)]
+            release = res['call'] if tested else 'not_tested'
+            release_single = (res['call_single_site_peptides'] or '') if tested else ''
+            source = site_call.get((acc, pos), '') if d.source_sites else pc.combine_calls(c for *_, c, _ in vals)
+            source_single = pc.combine_calls(c for *_, c, single in vals if single)
+            if d.primary == 'study':
+                call, single_call = source or 'not_tested', source_single
+                n_down = sum(c == 'decreased' for *_, c, _ in vals)
+                n_up = sum(c == 'increased' for *_, c, _ in vals)
+            else:
+                call, single_call, n_down, n_up = release, release_single, res['n_decreased'], res['n_increased']
+            rows.append({'site_id': f'{acc}:R{pos}', 'perturbation': d.key, 'n_peptides': len(vals),
                          'log2_treated_over_control': round(res['log2_median'], 3), 'p': min(ps) if ps else None,
-                         'q': res['adj_p_min'] if tested else None, 'n_decreased': res['n_decreased'], 'n_increased': res['n_increased'],
-                         'n_multi_site_peptides': res['n_multi_site_peptides'], 'call': res['call'] if tested else 'not_tested',
-                         'call_single_site_peptides': (res['call_single_site_peptides'] or '') if tested else '',
-                         'call_source_rule': pc.combine_calls(c for *_, c in vals)})
+                         'q': res['adj_p_min'] if tested else None, 'n_decreased': n_down, 'n_increased': n_up,
+                         'n_multi_site_peptides': sum(n > 1 for _, _, n, _, _, _ in vals), 'call': call, 'call_rule': d.primary,
+                         'call_single_site_peptides': single_call, 'call_release_rule': release, 'call_source_rule': source})
     return pd.DataFrame(rows)
 
 
@@ -390,12 +449,13 @@ def perturbation_site_values(sites: pd.DataFrame, inputs) -> pd.DataFrame:
     order = {d.key: k for k, d in enumerate(PERTURBATIONS)}
     by = defaultdict(list)
     for r in t.itertuples(index=False):
-        by[r.site_id].append((order[r.perturbation], r.perturbation, r.call, r.call_source_rule))
+        by[r.site_id].append((order[r.perturbation], r.perturbation, r.call, r.call_release_rule, r.call_source_rule or 'not_tested'))
     ids = sites['uniprot_accession'] + ':R' + sites['position'].astype(int).astype(str)
     vals = [sorted(by.get(s, [])) for s in ids]
     return pd.DataFrame({'perturbations': [join(x[1] for x in v) for v in vals],
                          'perturbation_calls': [join(x[2] for x in v) for v in vals],
-                         'perturbation_calls_source_rule': [join(x[3] or 'not_tested' for x in v) for v in vals]}, index=sites.index)
+                         'perturbation_calls_release_rule': [join(x[3] for x in v) for v in vals],
+                         'perturbation_calls_source_rule': [join(x[4] for x in v) for v in vals]}, index=sites.index)
 
 
 PERTURBATION_COLUMNS = [
@@ -404,13 +464,18 @@ PERTURBATION_COLUMNS = [
     ('n_peptides', 'integer', '', 'quantified peptides carrying the site'),
     ('log2_treated_over_control', 'number', '', 'median log2 perturbed / control over those peptides: descriptive, not the effect of a test'),
     ('p', 'number', '', 'the lowest p value over the peptides, as the study gives it'),
-    ('q', 'number', '', f'the lowest q over the peptides: the study\'s adjusted p where it gives one, else its p adjusted here (Benjamini-Hochberg, within the comparison); empty when the study gives no p'),
-    ('n_decreased', 'integer', '', f'peptides at log2 <= -{RELEASE_LOG2:g} and q < {RELEASE_Q:g}'),
-    ('n_increased', 'integer', '', f'peptides at log2 >= {RELEASE_LOG2:g} and q < {RELEASE_Q:g}'),
+    ('q', 'number', '', 'the lowest q over the peptides: the study\'s adjusted p where it gives one, else its p adjusted here (Benjamini-Hochberg, within the comparison); empty when the study gives no p'),
+    ('n_decreased', 'integer', '', 'peptides called decreased by the rule `call` follows'),
+    ('n_increased', 'integer', '', 'peptides called increased by the rule `call` follows'),
     ('n_multi_site_peptides', 'integer', '', 'of the peptides, those carrying another methylarginine too'),
-    ('call', 'code', 'perturbation_call', f'the release\'s rule for every perturbation: a peptide changes at |log2| >= {RELEASE_LOG2:g} and q < {RELEASE_Q:g}, combined over the peptides carrying the site (scripts/peptide_calls.py): peptide-level evidence'),
-    ('call_single_site_peptides', 'code', 'perturbation_call', 'the same over the peptides carrying no other methylarginine; empty when every peptide carries another'),
-    ('call_source_rule', 'code', 'perturbation_call', 'the call by the study\'s own rule (code perturbation), for comparison'),
+    ('call', 'code', 'perturbation_call', 'the call: by the rule `call_rule` names (the perturbation\'s code says why); peptide-level evidence'),
+    ('call_rule', 'code', 'perturbation_rule', 'whose rule `call` follows'),
+    ('call_single_site_peptides', 'code', 'perturbation_call', 'the same over the peptides that carry no other methylarginine and whose '
+     'one mark the search localised; empty when there are none'),
+    ('call_release_rule', 'code', 'perturbation_call', f'the release\'s rule: a peptide changes at |log2| >= {RELEASE_LOG2:g} and q < {RELEASE_Q:g}, '
+     'combined over the peptides carrying the site (scripts/peptide_calls.py); not_tested where the study gives no p value'),
+    ('call_source_rule', 'code', 'perturbation_call', 'the study\'s own rule (code perturbation); empty where the study makes no call '
+     '(as for a dimethylated site in a monomethylation list)'),
 ]
 
 
@@ -426,10 +491,15 @@ def perturbation_changes(files: dict) -> list[str]:
     out = []
     for d in PERTURBATIONS:
         x = t[t['perturbation'] == d.key]
-        if len(x):
-            dec, inc, differ = int((x['call'] == 'decreased').sum()), int((x['call'] == 'increased').sum()), int((x['call'] != x['call_source_rule']).sum())
-            out.append(f'{d.label} ({d.study}): {len(x):,} sites quantified, {dec:,} decreased and {inc:,} increased by the release\'s rule; '
-                       f'the study\'s rule calls {differ:,} of them differently.')
+        if not len(x):
+            continue
+        dec, inc = int((x['call'] == 'decreased').sum()), int((x['call'] == 'increased').sum())
+        rule = 'the study\'s rule' if d.primary == 'study' else 'the release\'s rule'
+        tested = x[(x['call_release_rule'] != 'not_tested') & (x['call_source_rule'] != '')]
+        other = (f'; the two rules differ at {int((tested["call_release_rule"] != tested["call_source_rule"]).sum()):,} of the '
+                 f'{len(tested):,} sites both call') if len(tested) else '; the release\'s rule cannot be applied'
+        out.append(f'{d.label} ({d.study}): {len(x):,} sites{" listed" if d.changed_only else " quantified"}, {dec:,} decreased and '
+                   f'{inc:,} increased by {rule}{other}.')
     return out
 
 
@@ -438,49 +508,65 @@ def perturbation_website(release: Path, version: str, inputs: Path, site_out: Pa
     t = release_table(release, f'supporting/writer_perturbations_{version}.tsv')
     keys = [d.key for d in PERTURBATIONS]
     calls = list(PERTURBATION.codes['perturbation_call'])
+    ix = lambda c: calls.index(c) if c else -1  # noqa: E731
     num = lambda v, nd=3: None if v == '' else float(f'{float(v):.{nd}g}')  # noqa: E731
     sites = defaultdict(list)
     for r in t.itertuples(index=False):
-        sites[r.site_id].append([keys.index(r.perturbation), calls.index(r.call), calls.index(r.call_source_rule) if r.call_source_rule else -1,
+        sites[r.site_id].append([keys.index(r.perturbation), ix(r.call), ix(r.call_release_rule), ix(r.call_source_rule),
                                  num(r.log2_treated_over_control), num(r.q), int(r.n_peptides), int(r.n_decreased), int(r.n_increased),
-                                 int(r.n_multi_site_peptides), calls.index(r.call_single_site_peptides) if r.call_single_site_peptides else -1])
-    payload = {'fields': ['perturbation', 'call', 'call_source_rule', 'log2_treated_over_control', 'q', 'n_peptides', 'n_decreased',
-                          'n_increased', 'n_multi_site_peptides', 'call_single_site_peptides'],
+                                 int(r.n_multi_site_peptides), ix(r.call_single_site_peptides)])
+    payload = {'fields': ['perturbation', 'call', 'call_release_rule', 'call_source_rule', 'log2_treated_over_control', 'q', 'n_peptides',
+                          'n_decreased', 'n_increased', 'n_multi_site_peptides', 'call_single_site_peptides'],
                'calls': calls, 'rule': f'|log2| >= {RELEASE_LOG2:g} at q < {RELEASE_Q:g}, combined over the peptides carrying the site',
-               'perturbations': [[d.key, d.label, d.description, d.enzyme, d.kind, d.cell_line, d.study, d.doi, d.source_rule] for d in PERTURBATIONS],
+               'perturbations': [[d.key, d.label, d.description, d.enzyme, d.kind, d.cell_line, d.study, d.doi, d.source_rule, d.primary,
+                                  d.primary_why, int(d.changed_only)] for d in PERTURBATIONS],
                'version': version, 'sites': dict(sorted(sites.items()))}
     write_json(site_out / 'perturbations.json', payload)
+
+
+def perturbation_code(d: Perturbation) -> str:
+    primary = (f'; the call follows the study\'s rule ({d.primary_why}), the release\'s rule is kept beside it' if d.primary == 'study'
+               else '; the call follows the release\'s rule, the study\'s is kept beside it')
+    return f'{d.description}; the study\'s rule: {d.source_rule}{primary}'
 
 
 PERTURBATION = Layer(
     key='writer_perturbations', title='Writer perturbations (PRMT knockouts, knockdowns and inhibitors)',
     files=['prmt7_ko_peptides.tsv', 'prmt7_ko_sites.tsv', 'prmt7_ko_searched_sequences.tsv', 'prmt7_ko_summary.json',
            'hartel2019_prmt1_kd_peptides.tsv', 'hartel2019_prmt1_kd_sites.tsv', 'hartel2019_prmt1_kd_summary.json',
-           'lu2024_prmt5_peptides.tsv', 'lu2024_prmt5_sites.tsv', 'lu2024_prmt5_summary.json'],
+           'lu2024_prmt5_peptides.tsv', 'lu2024_prmt5_sites.tsv', 'lu2024_prmt5_summary.json',
+           'li2021_peptides.tsv', 'li2021_sites.tsv', 'li2021_summary.json'],
     staging=['scripts/41_stage_carm1_ko_sites.py', 'scripts/45_stage_prmt7_szewczyk2020.py', 'scripts/46_stage_hartel2019_prmt1_kd.py',
-             'scripts/51_stage_lu2024_prmt5.py'],
-    licence='CC BY 4.0 (Shishkova et al. 2017; Szewczyk et al. 2020; Hartel et al. 2019, from 2020-09-15); CC BY-NC 4.0 (Lu et al. 2024 supporting information)',
+             'scripts/51_stage_lu2024_prmt5.py', 'scripts/50_stage_li2021_perturbations.py'],
+    licence='CC BY 4.0 (Shishkova et al. 2017; Szewczyk et al. 2020; Hartel et al. 2019, from 2020-09-15; Li et al. 2021, its Supplementary '
+            'Data taken as covered by the article\'s licence); CC BY-NC 4.0 (Lu et al. 2024 supporting information)',
     citation='; '.join(sorted({f'{d.study}, doi:{d.doi}' for d in PERTURBATIONS})),
     site_columns=[
         ('perturbations', 'list<code>', 'perturbation', 'the knockouts, knockdowns and inhibitors that quantified a peptide carrying the '
-         'site, in code order (supporting/writer_perturbations)'),
-        ('perturbation_calls', 'list<code>', 'perturbation_call', f'for each of them, the release\'s call (|log2| >= {RELEASE_LOG2:g} at q < '
-         f'{RELEASE_Q:g}, the same rule for every perturbation): peptide-level evidence, same order'),
+         'site (or, for one that lists only its changed sites, listed it), in code order (supporting/writer_perturbations)'),
+        ('perturbation_calls', 'list<code>', 'perturbation_call', 'for each of them, the call by the rule its code names (the release\'s, '
+         f'|log2| >= {RELEASE_LOG2:g} at q < {RELEASE_Q:g}, unless the study\'s is primary): peptide-level evidence, same order'),
+        ('perturbation_calls_release_rule', 'list<code>', 'perturbation_call', 'for each of them, the call by the release\'s rule, same order'),
         ('perturbation_calls_source_rule', 'list<code>', 'perturbation_call', 'for each of them, the call by the study\'s own rule, same order'),
     ],
-    codes={'perturbation': {d.key: f'{d.description}; the study\'s rule: {d.source_rule}' for d in PERTURBATIONS},
+    codes={'perturbation': {d.key: perturbation_code(d) for d in PERTURBATIONS},
            'perturbation_call': {'decreased': 'a peptide carrying the site was lower with the perturbation: at least one decreased and none increased',
                                  'increased': 'a peptide carrying the site was higher with the perturbation: at least one increased and none decreased',
                                  'mixed': 'peptides changed in opposite directions',
                                  'no_significant_change': 'quantified, and no peptide changed by the rule: not evidence that the site is unchanged',
-                                 'not_tested': 'quantified, but the study gives no p value, so the rule cannot be applied'}},
+                                 'not_tested': 'quantified, but the rule cannot be applied: the study gives no p value (release\'s rule) or '
+                                               'makes no call on the site (study\'s rule)'},
+           'perturbation_rule': {'release': f'the release\'s rule, the same for every perturbation: |log2| >= {RELEASE_LOG2:g} at q < {RELEASE_Q:g}',
+                                 'study': 'the study\'s own rule, where the perturbation\'s code says why'}},
     site_values=perturbation_site_values, supporting=perturbation_supporting, website=perturbation_website, since='v1.4.0',
-    summary='Knockouts, knockdowns and inhibitors of the PRMTs that quantified methylated peptides, called by one rule for all '
+    summary='Knockouts, knockdowns and inhibitors of the PRMTs that quantified methylated peptides. Each is called by the release\'s rule '
             f'(a peptide changes at |log2| >= {RELEASE_LOG2:g} and q < {RELEASE_Q:g}; a site is decreased when a peptide carrying it '
-            'decreased and none increased: scripts/peptide_calls.py, as the CARM1 knockout of v1.3.1), with each study\'s own rule '
-            'beside it (`call_source_rule`). Peptide-level evidence with no total-protein correction. Site columns `perturbations`, '
-            '`perturbation_calls`, `perturbation_calls_source_rule`; one row per site and perturbation in `supporting/writer_perturbations`. '
-            'The CARM1 knockout rows equal `supporting/carm1_ko`, which stays.',
+            'decreased and none increased: scripts/peptide_calls.py, as the CARM1 knockout of v1.3.1) and by the study\'s own rule. '
+            '`call` follows the release\'s rule, except where the study\'s is the only sound call: the PRMT1 knockdown (2 against 2 '
+            'samples) and the four Li et al. 2021 arms (one SILAC experiment each, no test). Peptide-level evidence with no total-protein '
+            'correction. Site columns `perturbations`, `perturbation_calls`, `perturbation_calls_release_rule`, '
+            '`perturbation_calls_source_rule`; one row per site and perturbation in `supporting/writer_perturbations`. The CARM1 knockout '
+            'rows equal `supporting/carm1_ko`, which stays.',
     changes=lambda files: perturbation_changes(files),
     supporting_rows={'writer_perturbations': 'site and knockout, knockdown or inhibitor (PRMT1, PRMT5, PRMT7, CARM1): its peptides, '
                                              'change, and the call by the release\'s rule and by the study\'s'},

@@ -25,7 +25,7 @@ Each export is a Proteome Discoverer hierarchy (protein, peptide group, and for 
 gives the peptide, its modifications as PD placed them ('1xMethyl [R11]', or '1xMethyl [R]' / '[R/K]' when PD did not
 localise the mark), its master proteins, # PSMs, 'Abundance Ratio: (Heavy) / (Light)' (PD floors it at 0.01, when the
 heavy channel has no signal, and caps it at 100) and, in SD1 and SD3 only, 'Abundance Ratio Adj. P-Value'. The paper
-does not say how PD computed that adjusted p; each export holds one light and one heavy sample (SD1 repeat 1 holds its 15
+does not say how PD computed that adjusted p; each export compares one SILAC pair of cultures (SD1 repeat 1 enters its 15
 raw files as 15 sample pairs), so it is not a test over biological replicates. It is kept as given.
 
 The lists give, per site, the accession, gene, unmarked peptide, the position in the protein and the peptide, # PSMs,
@@ -35,11 +35,11 @@ repeat 2 holds 19 of the 245 listed PRMT7 peptides, so the PRMT7 lists come from
 methylation ratio, not the normalised one: "297 MMA sites ... had at least a two-fold reduction ... when methylation was
 normalized to protein levels, only the change in 25 methylation sites (from 20 proteins) was due to the change in protein
 levels" (the list holds those 25 rows with normalised ratio > 0.5). 'Abolished' ("completely abolished") rows are the
-listed rows at the 0.01 floor. The sheet names say FC>2, the text "at least two-fold"; the one methyl-R peptide group at a
-ratio of exactly 0.5 (SD5, Q8TD08 R449) is not listed, so the paper's rule is read as H/L < 0.5. SD6's 'raw data' sheet is
-not the export the PRMT5 lists come from (10,282 master proteins, few methyl-arginine peptide groups, most listed peptides
-absent and the listed ratios not there: see the summary), so PRMT5 has the listed sites only, and no quantified-but-unlisted
-site.
+listed rows at the 0.01 floor. The sheet names say FC>2, the text "at least two-fold"; of the two methyl-arginine peptide
+groups at exactly 0.5, the one whose site no other group lists (SD5, Q8TD08 R449) is not listed, so the paper's rule is read
+as H/L < 0.5. SD6's 'raw data' sheet is not the export the PRMT5 lists come from (10,282 master proteins; 34 of the 337
+listed peptides among its 422 methyl-arginine peptide groups, and 26 of the 843 list rows' ratios: see the summary), so
+PRMT5 has the listed sites only, and no quantified-but-unlisted site.
 
 SGC3027: the Methods say "light and heavy labeled cells were treated with or without SGC3027, respectively", which read
 literally makes the heavy channel the untreated one; the paper reads the H/L values of its SGC3027 lists as decreases
@@ -51,8 +51,10 @@ Comparisons: PRMT7_si (SD1 repeat 1, the paper's), PRMT7_si_rep2 (SD1 repeat 2: 
 rows carry the uniform call only), PRMT7_SGC3027, PRMT4_si and PRMT5_si (lists only).
 
 Placement. Each quantified methyl-arginine peptide group (H/L given) is placed on the canonical sequence of its first master
-protein, or of the master the lists name when they put a shared peptide on another: it must occur there exactly once
-(position_verified when that is PD's start on the master, else placed_by_sequence). Its sites are the arginines PD localised a methyl mark to, and those the paper's lists give for it
+protein, or of the master the lists name when they put a shared peptide on another only: it must occur there exactly once
+(position_verified when that is PD's start on the master, else placed_by_sequence). The lists name both entries of a few
+shared peptides (TNPO1/TNPO2, RBMX/RBMXL1, EP300/CREBBP, SNRPB/SNRPN, POM121C/POM121, CSTF2/CSTF2T); those are staged once,
+on the first master, and the summary lists the other entry's sites. Its sites are the arginines PD localised a methyl mark to, and those the paper's lists give for it
 (the lists name every arginine of a peptide whose mark PD did not localise, as scripts/00_stage_study_sites.py reads them);
 positions are kept only where the canonical sequence has an arginine (common.residue_is). A list row not traced to a group
 (all of PRMT5) is a peptide of its own, placed the same way on its accession; its sites are the listed positions.
@@ -693,7 +695,8 @@ def main() -> None:
         rule_dec = s[s['call_source_rule_peptides'] == 'decreased'] if len(s) else s
         # where each listed site (accession and reported position) went
         outcome, rank = {}, {'staged_at_the_reported_position': 0, 'staged_at_another_position (the canonical sequence differs from '
-                                                                       'the one searched)': 1, 'staged_on_another_entry': 2}
+                                                                       'the one searched)': 1,
+                             'staged_on_the_other_entry_of_a_shared_peptide (the lists name both; the peptide is placed once)': 2}
         for r in lists:
             k = (r['accession'], r['reported_position'])
             if '_staged' in r:
@@ -704,7 +707,9 @@ def main() -> None:
             if k not in outcome or rank.get(o, 9) < rank.get(outcome[k], 9):
                 outcome[k] = o
         remapped = sorted(f'{r["accession"]} R{r["reported_position"]} -> R{r["_staged"][1]}' for r in lists if '_staged' in r
-                          and r['_staged'] != (r['accession'].split('-')[0], r['reported_position']))
+                          and r['_staged'][0] == r['accession'].split('-')[0] and r['_staged'][1] != r['reported_position'])
+        other_entry = sorted(f'{r["accession"]} R{r["reported_position"]} ({r["gene"]}) -> {r["_staged"][0]} R{r["_staged"][1]}' for r in lists
+                             if '_staged' in r and r['_staged'][0] != r['accession'].split('-')[0])
         not_staged = sorted({f'{r["accession"]} R{r["reported_position"]} ({r["gene"]} {r["peptide"]}): {outcome[(r["accession"], r["reported_position"])]}'
                              for r in lists if outcome[(r['accession'], r['reported_position'])].startswith('not_staged')})
         norm = [r for r in lists if r['kind'] == 'fc2' and r['normalised_ratio'] > SOURCE_CUTOFF]
@@ -724,7 +729,8 @@ def main() -> None:
                                          'abolished': len(abolished_sites), 'abolished_proteins': len({a for a, _ in abolished_sites}),
                                          'abolished_not_in_fc2_lists': len(abolished_sites - fc2)},
             'listed_sites_outcome': dict(sorted(Counter(outcome.values()).items())),
-            'listed_sites_remapped': sorted(set(remapped)), 'listed_sites_not_staged': not_staged,
+            'listed_sites_remapped': sorted(set(remapped)), 'listed_sites_on_the_other_entry': sorted(set(other_entry)),
+            'listed_sites_not_staged': not_staged,
             'list_fc2_rows_with_normalised_ratio_above_0.5': {'rows': len(norm), 'proteins': len({r['accession'] for r in norm})},
             'list_rows_where_normalised_differs_from_ratio_over_protein_ratio': arith,
             'checks': dict(sorted(checks.items())),
@@ -785,8 +791,9 @@ def main() -> None:
         'orientation': ORIENTATION, 'log2_treated_control': 'log2 of the export\'s Abundance Ratio (Heavy)/(Light) (of the listed ratio for list-only peptides)',
         'normalisation': NORMALISATION, 'replicates': REPLICATES,
         'adjusted_p': ('Proteome Discoverer 2.2 "Abundance Ratio Adj. P-Value: (Heavy) / (Light)" of SD1 and SD3, as given; the paper does not '
-                       'describe it, and with one light and one heavy sample per export it is not a test over biological replicates. SD5 '
-                       'gives none. Every peptide group at the 0.01 floor has the same adjusted p within an export: '
+                       'describe it. Each export compares one SILAC pair of cultures (SD1 repeat 1 enters its 15 raw files as 15 sample '
+                       'pairs), so it is not a test over biological replicates. SD5 gives none. Every peptide group at the 0.01 floor (and '
+                       'at the 100 ceiling) has the same adjusted p within an export, so every abolished peptide passes the uniform rule: '
                        + '; '.join(f'{c} {v}' for c, v in adj_floor.items())),
         'paper_rule': PAPER_RULE, 'source_rule': SOURCE_RULE, 'uniform_rule': UNIFORM_RULE,
         'boundary': {'groups_at_H/L_0.5': boundary,

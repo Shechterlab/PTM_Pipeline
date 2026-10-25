@@ -424,7 +424,7 @@
   const iptmnetLink = (p, text) => '<a href="https://research.bioinformatics.udel.edu/iptmnet/entry/' + encodeURIComponent(p.acc.split('-')[0]) + '/" target="_blank" rel="noopener" title="Each site with its sources and PubMed references in iPTMnet">' + (text || 'iPTMnet entry') + ' ↗</a>';
   const PADJ = 0.05;
   // Perturbation flags (s.trf): bits 2t (down) and 2t + 1 (up) for Maron treatment t (0 GSK591, 1 MS023, adj. p <= 0.05),
-  // then the CARM1 knockout (Shishkova 2017; >= twofold, p < 0.05 in either cell line) as perturbation 2.
+  // then the CARM1 knockout (Shishkova 2017; >= twofold at BH q < 0.05 in either cell line) as perturbation 2.
   const TRF_KO_DOWN = 16, TRF_KO_UP = 32;
   const koMeta = () => M.carm1_ko || null;
   // Human Protein Atlas: reliability codes 0 Uncertain .. 3 Enhanced; locations count from Approved (1) up, as in the
@@ -439,6 +439,19 @@
   const IP_LABEL = { MMA: 'Rme1', ADMA: 'Rme2a', SDMA: 'Rme2s' };
   const IP_HELP = { MMA: 'monomethylarginine (MMA) antibody', ADMA: 'asymmetric dimethylarginine (ADMA) antibody', SDMA: 'symmetric dimethylarginine (SDMA) antibody' };
   const ipLabel = (name) => IP_LABEL[name] || name;
+  // The knockouts, knockdowns and inhibitors of v1.4.0 (M.perturbations, supporting/writer_perturbations) other than the
+  // CARM1 knockout, which s.ko already carries: indices into M.perturbations; a site's call there (s.pt rows are
+  // [perturbation, call index into M.perturbation_calls, rules disagree, median log2]).
+  const ptExtra = () => (M.perturbations || []).map((d, k) => k).filter((k) => !/^carm1_ko/.test(M.perturbations[k][0]));
+  const ptCall = (s, k) => { const e = s.pt.find((x) => x[0] === k); return e ? M.perturbation_calls[e[1]] : null; };
+  const ptByKey = (key) => (M.perturbations || []).findIndex((d) => d[0] === key);
+  const ptRuleNote = (d) => (d[7] === 'study' ? 'the study\'s rule' : 'the release\'s rule') + (d[8] ? '; lists its decreased sites only' : '');
+  const treatOptions = () => TREAT_OPTIONS.concat(ptExtra().flatMap((k) => {
+    const d = M.perturbations[k];
+    return [['p:' + d[0], 'Measured with ' + d[1] + ' (' + d[5].replace(/,.*?\((\d{4})\)$/, ' $1') + ')'],
+      ['p:' + d[0] + ':down', 'Called decreased with ' + d[1] + ' (' + ptRuleNote(d) + ')']]
+      .concat(S.some((s) => ptCall(s, k) === 'increased') ? [['p:' + d[0] + ':up', 'Called increased with ' + d[1] + ' (' + ptRuleNote(d) + ')']] : []);
+  }));
   const TREAT_OPTIONS = [
     ['', 'Any site'],
     ['tested', 'Measured with PRMT inhibitors (Maron 2021)'],
@@ -1016,7 +1029,7 @@
     S = data.sites.map((r, j) => ({
       j, p: r[0], pos: r[1], st: r[2], src: r[3], refs: r[4], dc: r[5], dEdge: r[6], dctx: r[7], ipr: r[8],
       dcls: r[9], domDist: r[10], domSide: r[11], win: r[12], mot: r[13], mis: !!r[14], orig: r[15],
-      s2: r[16], ip: r[17], tr: r[18], study: r[19] || 0, ko: named(M.site_fields, r, 'carm1_ko', []), stx: named(M.site_fields, r, 'state_detail', null), sctx: named(M.site_fields, r, 'structure_context', null), par: named(M.site_fields, r, 'paralogs', null), loc: named(M.site_fields, r, 'localised_mask', null), nn: null, ptmD: null, trf: 0,
+      s2: r[16], ip: r[17], tr: r[18], study: r[19] || 0, ko: named(M.site_fields, r, 'carm1_ko', []), pt: named(M.site_fields, r, 'perturbations', []), stx: named(M.site_fields, r, 'state_detail', null), sctx: named(M.site_fields, r, 'structure_context', null), par: named(M.site_fields, r, 'paralogs', null), loc: named(M.site_fields, r, 'localised_mask', null), nn: null, ptmD: null, trf: 0,
       iface: 0, ifP: null, ifPdb: null, ifN: 0, contacts: null, modelledMe: '', geo: null, modelled: null,
     }));
     for (const s of S) { P[s.p].sites.push(s.j); if (s.sctx == null) s.sctx = structOf(s); }
@@ -1814,6 +1827,10 @@
   // f.treat: 'tested', 'ko', '<t>:<dir>' (in any methyl-IP or cell line) or '<t>:<dir>:<k>' (in Maron methyl-IP k, or
   // CARM1 knockout cell line k when t is 2), so a row of the PRMT table lists exactly the sites it counts.
   function treatPass(s, v) {
+    if (v.startsWith('p:')) {
+      const [, key, dir] = v.split(':'), k = ptByKey(key), c = k < 0 ? null : ptCall(s, k);
+      return dir ? c === (dir === 'down' ? 'decreased' : 'increased') : c != null;
+    }
     if (v === 'tested') return s.tr.length > 0;
     if (v === 'ko') return s.ko.length > 0;
     const [t, dir, k] = v.split(':');
@@ -1822,6 +1839,7 @@
     return s.tr.some((x) => x[1] === +t && x[0] === +k && trDir(x) === dir);
   }
   function treatLabel(v) {
+    if (v.startsWith('p:')) { const o = treatOptions().find((x) => x[0] === v); return o ? o[1] : v; }
     const [t, dir, k] = v.split(':');
     const base = TREAT_OPTIONS.find((o) => o[0] === (k == null ? v : t + ':' + dir));
     return (base ? base[1] : v) + (k == null ? '' : +t === 2 ? ', ' + (koMeta() ? koMeta().cell_lines[+k] : k) + ' cells' : ', ' + ipLabel(M.maron_ips[+k]) + ' IP');
@@ -2398,7 +2416,7 @@
         (!localisedOnly() || F.sources.size || F.multi ? '<div class="fgroup"><span class="flabel">Pipeline source table</span>' + chipRow('sources', M.sources.map((n, k) => [k, SOURCE_LABEL[n], SOURCE_HELP[n]]).filter(([k]) => !localisedOnly() || F.sources.has(k) || S.some((x) => x.src & (1 << k))), F.sources) +
         '<label class="check"><input type="checkbox" id="f-multi"' + (F.multi ? ' checked' : '') + '> In ≥2 source tables at the same position</label>' : '<div class="fgroup">') +
         (P.some((p) => p.unrev) ? '<label class="check" title="' + esc(unrevHelp()) + '"><input type="checkbox" id="f-reviewed"' + (F.reviewed ? ' checked' : '') + '> Reviewed UniProt entries only</label>' : '') + '</div>';
-      case 'treat': return '<div class="fgroup"><label class="flabel" for="f-treat">PRMT inhibitor or knockout response</label>' + sel('f-treat', options(TREAT_OPTIONS.some((o) => o[0] === F.treat) ? TREAT_OPTIONS : TREAT_OPTIONS.concat([[F.treat, treatLabel(F.treat)]]), F.treat), !!F.treat) + '</div>';
+      case 'treat': return '<div class="fgroup"><label class="flabel" for="f-treat">PRMT inhibitor or knockout response</label>' + sel('f-treat', options(treatOptions().some((o) => o[0] === F.treat) ? treatOptions() : treatOptions().concat([[F.treat, treatLabel(F.treat)]]), F.treat), !!F.treat) + '</div>';
       case 'motif': {
         const pt = patternToken();
         return '<div class="fgroup"><label class="flabel" for="f-motifq">Find a motif (2–10 residues)</label>' +
@@ -3123,16 +3141,22 @@
   const PERTURB = [
     ['GSK591', 1, 'PRMT5 inhibitor (Maron 2021)', 'adj. p ≤ 0.05', (s) => s.tr.some((r) => r[1] === 0)],
     ['MS023', 4, 'type I PRMT inhibitor (Maron 2021)', 'adj. p ≤ 0.05', (s) => s.tr.some((r) => r[1] === 1)],
-    ['CARM1 KO', TRF_KO_DOWN, 'CARM1 (PRMT4) knockout, MCF7 and MDA-MB-231 (Shishkova 2017)', 'at least twofold, p < 0.05', (s) => s.ko.length > 0],
+    ['CARM1 KO', TRF_KO_DOWN, 'CARM1 (PRMT4) knockout, MCF7 and MDA-MB-231 (Shishkova 2017)', 'at least twofold, BH q < 0.05', (s) => s.ko.length > 0],
   ];
   function treatHtml(s) {
-    if (!s.tr.length && !s.ko.length) return '<span class="muted">—</span>';
+    const extra = ptExtra().filter((k) => ptCall(s, k) != null);
+    if (!s.tr.length && !s.ko.length && !extra.length) return '<span class="muted">—</span>';
     const parts = [];
     for (const [label, down, help, rule] of PERTURB) {
       if (s.trf & down) parts.push('<span class="trend down" title="' + esc('Decreased with ' + label + ' (' + help + '), ' + rule) + '"><b>▼</b>' + esc(label) + '</span>');
       if (s.trf & (down << 1)) parts.push('<span class="trend up" title="' + esc('Increased with ' + label + ' (' + help + '), ' + rule) + '"><b>▲</b>' + esc(label) + '</span>');
     }
-    const measured = PERTURB.filter((x) => x[4](s)).map((x) => x[0]);
+    for (const k of extra) {
+      const d = M.perturbations[k], c = ptCall(s, k), tip = d[1] + ' (' + d[5] + '), ' + ptRuleNote(d);
+      if (c === 'decreased') parts.push('<span class="trend down" title="' + esc('Decreased with ' + tip) + '"><b>▼</b>' + esc(d[1].split(',')[0]) + '</span>');
+      if (c === 'increased') parts.push('<span class="trend up" title="' + esc('Increased with ' + tip) + '"><b>▲</b>' + esc(d[1].split(',')[0]) + '</span>');
+    }
+    const measured = PERTURB.filter((x) => x[4](s)).map((x) => x[0]).concat(extra.map((k) => M.perturbations[k][1]));
     return parts.join(' ') || '<span class="muted" title="' + esc('Measured (' + measured.join(', ') + '); no significant change') + '">n.s.</span>';
   }
 
@@ -3433,7 +3457,7 @@
     { k: 'ix', label: 'Interaction evidence', sort: 'ix', opt: true, tdCls: 'ix-col', tip: STATUS_HELP, td: (s) => ixCell(s, 2) },
     { k: 'na', label: 'RNA/DNA contacts', sort: 'na', opt: true, cls: 'hide-xs', tdCls: 'na-col', menu: 'RNA/DNA contacts (structures) and crosslinks (cells)',
       tip: 'RNA or DNA within 4 Å of the arginine side chain in PDB structures (direct contact); in a complex without one, within 8 Å (tagged with the distance); in a complex with neither, within 4 Å of a residue at i ± 1–5 (tagged via i+k); with its type. And the nearest UV-crosslinked residue within i ± 5 in living cells, with an eCLIP tag when ENCODE eCLIP data exist for the protein. Hover a cell for every sequence window, the crosslinked residues within i ± 10 and the protein-level binding data (RNA Bind-n-Seq, JASPAR, eCLIP)', td: boundCell },
-    { k: 'prmti', label: 'PRMT loss', sort: 'prmti', opt: true, menu: 'PRMT inhibitor or knockout response', tip: 'Change after GSK591 (PRMT5i) or MS023 (type I PRMTi), Maron 2021 Table S3, adj. p ≤ 0.05; or in CARM1 knockout cells, Shishkova 2017, at least twofold with p < 0.05', td: treatHtml },
+    { k: 'prmti', label: 'PRMT loss', sort: 'prmti', opt: true, menu: 'PRMT inhibitor or knockout response', tip: 'Change after GSK591 (PRMT5i) or MS023 (type I PRMTi), Maron 2021 Table S3, adj. p ≤ 0.05; or in CARM1 knockout cells, Shishkova 2017, at least twofold at BH q < 0.05; and the knockouts, knockdowns and inhibitors added in v1.4.0 (PRMT1, PRMT5, PRMT7, CARM1), each by the rule it names', td: treatHtml },
     { k: 'src', label: 'Reported by', sort: 'src', opt: true, cls: 'hide-sm', td: (s) => '<div class="tags">' + studyTags(s.study, 2, P[s.p].acc) + '</div>' },
     { k: 'ctx', label: 'Context', sort: 'ctx', opt: true, menu: 'Disorder and domain context', cls: 'hide-xs', tdCls: 'nw', td: contextHtml },
     { k: 'nn', label: 'Nearest methyl-R', sort: 'nn', opt: true, cls: 'r hide-sm', tdCls: 'num', td: (s) => (s.nn == null ? '<span class="muted">—</span>' : s.nn + ' aa') },
@@ -3453,7 +3477,11 @@
     ip: (s) => s.ip || null,
     iface: (s) => s.iface || null,
     // Most informative first when descending: decreased by both inhibitors, GSK591, MS023, increased, n.s., not measured.
-    prmti: (s) => (!s.tr.length && !s.ko.length ? null : 2 * popcount(s.trf & (1 | 4 | TRF_KO_DOWN)) + (s.trf & (2 | 8 | TRF_KO_UP) ? 1 : 0)),
+    prmti: (s) => {
+      const extra = ptExtra().map((k) => ptCall(s, k)).filter((c) => c != null);
+      if (!s.tr.length && !s.ko.length && !extra.length) return null;
+      return 2 * (popcount(s.trf & (1 | 4 | TRF_KO_DOWN)) + extra.filter((c) => c === 'decreased').length) + (s.trf & (2 | 8 | TRF_KO_UP) || extra.includes('increased') ? 1 : 0);
+    },
   };
 
   function renderSites(el) {
@@ -4414,16 +4442,16 @@
       // every perturbation and methyl-IP, ranked by the number of sites with a peptide that decreased
       const trAll = treatRows(scoped ? R.sites : S).filter((r) => r.n).sort((a, b) => b.down - a.down || b.n - a.n);
       const trMax = Math.max(1, ...trAll.map((r) => r.down));
-      const trName = (r) => (r.t === 2 ? 'CARM1 KO ' + r.cell : r.name + ' ' + ipLabel(r.ipName));
+      const trName = (r) => (r.t === 2 ? 'CARM1 KO ' + r.cell : r.t === 'p' ? r.name : r.name + ' ' + ipLabel(r.ipName));
       const trVis = trAll.length ? aMeters(trAll.map((r) => ({ label: trName(r), v: r.down / trMax, text: fmt(r.down), cls: 'down',
-        tip: '<b>' + esc(r.t === 2 ? 'CARM1 knockout, ' + r.cell + ' (Rme2a IP)' : r.name + ' (' + (TREAT_HELP[r.name] || '') + '), ' + ipLabel(r.ipName) + ' IP') + '</b><br>' + fmt(r.down) + ' of ' + fmt(r.n) + ' measured sites with a peptide that decreased (' + pct(r.down, r.n) + '%)' + (r.up ? '; ' + fmt(r.up) + ' increased' : '') })), { tight: true }) : '';
+        tip: '<b>' + esc(r.t === 2 ? 'CARM1 knockout, ' + r.cell + ' (Rme2a IP)' : r.t === 'p' ? r.name + ' (' + r.d[5] + '; ' + ptRuleNote(r.d) + ')' : r.name + ' (' + (TREAT_HELP[r.name] || '') + '), ' + ipLabel(r.ipName) + ' IP') + '</b><br>' + fmt(r.down) + ' of ' + fmt(r.n) + (r.t === 'p' && r.d[8] ? ' listed' : ' measured') + ' sites with a peptide that decreased (' + pct(r.down, r.n) + '%)' + (r.up ? '; ' + fmt(r.up) + ' increased' : '') })), { tight: true }) : '';
       const ov = {
         'ov-pan': chartTile(pan || func), 'ov-dis': chartTile(dis), 'ov-cond': chartTile(cond), 'ov-loc': chartTile(loc), 'ov-motif': chartTile(motif), 'ov-struct': structTile(),
         'ov-ix': ixReady() ? ixTile() : { vis: '' },
         'ov-dep': { vis: '<span class="dep-ov-vis"></span>', head: '<span class="dep-ov-head">loading DepMap…</span>', whole: '' },
         'ov-path': { vis: '<span class="path-ov-vis"></span>', head: '<span class="path-ov-head">loading Reactome…</span>', whole: '' },
         'ov-study': provTile(),
-        'ov-treat': { vis: trVis ? '<div class="a-treat">' + trVis + '</div>' : '', head: 'Sites with a peptide that decreased with each PRMT inhibitor (Maron 2021) or CARM1 knockout (Shishkova 2017)' },
+        'ov-treat': { vis: trVis ? '<div class="a-treat">' + trVis + '</div>' : '', head: 'Sites with a peptide that decreased with each PRMT inhibitor, knockout or knockdown' },
         'ov-start': { vis: startVis(), head: 'Click a protein to open it, or a selection to apply it', full: true },
       };
       for (const k of Object.keys(ov)) if (!ov[k]) delete ov[k];
@@ -4459,7 +4487,7 @@
       '<div><p class="flabel" style="margin:0 0 .5rem">Studies or databases reporting each site</p><div class="hbars rep-dist' + (selOn ? ' has-sel' : '') + '">' +
       repDist.map((n, k) => '<button class="hb' + (selOn && !repSel[k] ? ' off' : '') + '" type="button" data-rep="' + (k + 1) + '"><span class="hb-label">' + (k === 4 ? '5 or more' : (k + 1) + (k ? ' sources' : ' source')) + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / repDist[0]).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span>' + (selOn ? selCell(repSel[k]) : '') + '</button>').join('') +
       '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) are reported by two or more' + (selOn ? '; ' + fmt(R.sites.length - repSel[0]) + ' of the ' + fmt(R.sites.length) + ' selected' : '') + '. Databases such as PhosphoSitePlus compile published studies, so two sources can rest on the same measurement. Click a row to keep sites with at least that many.</p></div></div></div>', 'Which studies and databases report the sites?', 'count', provCount(selOn ? R.sites : S), provCount(S), null, pctFig(share((s) => popcount(s.study) >= 2))) +
-        row('ov-treat', 'PRMT inhibitor and knockout response', '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor and knockout response</h3><p class="sub">Sites that change when PRMT5 or type I PRMTs are inhibited (Maron et al. 2021)' + (koMeta() ? ' or CARM1 is knocked out (Shishkova et al. 2017)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable() + '</div>', 'Which sites carry a peptide that decreases when PRMTs are inhibited or knocked out?', 'count', treatSummary(selOn ? R.sites : S, true), treatSummary(S, true), null, pctFig(topDown))) +
+        row('ov-treat', 'PRMT inhibitor and knockout response', '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor and knockout response</h3><p class="sub">Sites that change when PRMT5 or type I PRMTs are inhibited (Maron et al. 2021)' + (koMeta() ? ' or CARM1 is knocked out (Shishkova et al. 2017)' : '') + (ptExtra().length ? ', and when PRMT1, PRMT5, PRMT7 or CARM1 is knocked out, knocked down or inhibited (Szewczyk et al. 2020, Hartel et al. 2019, Lu et al. 2024, Li et al. 2021)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable() + '</div>', 'Which sites carry a peptide that decreases when PRMTs are inhibited or knocked out?', 'count', treatSummary(selOn ? R.sites : S, true), treatSummary(S, true), null, pctFig(topDown))) +
       (selOn ? '' : hubSec('Explore',
         row('ov-start', 'Starting points', '<div class="card wide starts" id="ov-start"><h3>Starting points</h3><div class="starts-grid">' +
       '<div><h4>Quick selections</h4><div class="gene-chips">' + (UI.quick || []).map((q, k) => '<button class="gene-chip" type="button" data-quick="' + k + '">' + esc(q[1]) + '<span>' + q[0] + '</span></button>').join('') + '</div></div>' +
@@ -4574,7 +4602,7 @@
 
   // The PRMT loss table, every row counted from union sites so that its click lists exactly its sites: Maron 2021 per
   // inhibitor and methyl-IP (sites measured in that IP; changed at adj. p <= 0.05), then CARM1 knockout per cell line
-  // (Shishkova 2017; at least twofold with p < 0.05). Medians are true medians of the per-site changes.
+  // (Shishkova 2017; at least twofold at BH q < 0.05), then the v1.4.0 perturbations. Medians are true medians of the per-site changes.
   const median = (v) => { if (!v.length) return null; const a = v.slice().sort((x, y) => x - y), h = a.length >> 1; return a.length % 2 ? a[h] : (a[h - 1] + a[h]) / 2; };
   function treatRows(sites) {
     const rows = [], SS = sites || S;
@@ -4592,14 +4620,22 @@
       // counted as the filter (treatPass) lists them: decreased means a peptide down and none up
       rows.push({ name: 'CARM1 KO', ipName: 'ADMA', t: 2, k: c, cell, n: v.length, down: v.filter((x) => respCall(x[4], x[5]) === 'down').length, up: v.filter((x) => respCall(x[4], x[5]) === 'up').length, med: median(v.map((x) => x[1])) });
     });
+    // the v1.4.0 knockouts, knockdowns and inhibitors, each called by the rule its code names
+    for (const k of ptExtra()) {
+      const d = M.perturbations[k], v = SS.map((s) => s.pt.find((x) => x[0] === k)).filter(Boolean);
+      const callOf = (x) => M.perturbation_calls[x[1]];
+      rows.push({ name: d[1], ipName: '', t: 'p', key: d[0], k, d, n: v.length, down: v.filter((x) => callOf(x) === 'decreased').length,
+        up: v.filter((x) => callOf(x) === 'increased').length, med: median(v.map((x) => x[3]).filter((x) => x != null)) });
+    }
     return rows;
   }
+  const trRowName = (r) => (r.t === 'p' ? r.name : r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName)));
   // The two rows with the largest decreased share, for a folded header.
   function treatSummary(sites, html) {
     // ranked by the number of sites called decreased, as the tile ranks them
     const top = treatRows(sites).filter((r) => r.n).sort((a, b) => b.down - a.down || b.n - a.n).slice(0, 2);
-    if (!html) return top.length ? 'most sites called decreased: ' + top.map((r) => r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName)) + ' ' + fmt(r.down) + ' of ' + fmt(r.n)).join(', ') : '';
-    return top.length ? 'Most sites called decreased: ' + top.map((r) => esc(r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName))) + ' <span class="an">' + fmt(r.down) + '</span> of ' + fmt(r.n)).join(', ') : 'none of these sites was measured';
+    if (!html) return top.length ? 'most sites called decreased: ' + top.map((r) => trRowName(r) + ' ' + fmt(r.down) + ' of ' + fmt(r.n)).join(', ') : '';
+    return top.length ? 'Most sites called decreased: ' + top.map((r) => esc(trRowName(r)) + ' <span class="an">' + fmt(r.down) + '</span> of ' + fmt(r.n)).join(', ') : 'none of these sites was measured';
   }
   function treatTable() {
     const km = koMeta(), all = treatRows();
@@ -4609,16 +4645,19 @@
     const selDown = (v) => R.sites.reduce((n, s) => n + (treatPass(s, v) ? 1 : 0), 0);
     return '<div class="tbl-wrap"><table class="tbl treat-tbl"><thead><tr><th>Perturbation</th><th>Methyl-IP</th><th class="r">Sites</th><th>Decreased</th><th class="hide-xs">Increased</th><th class="r hide-sm">Median change</th>' + (selOn ? '<th class="r" title="Selected sites decreased in this row">Selected, decreased</th>' : '') + '</tr></thead><tbody>' +
       all.map((r) => {
-        const ko = r.t === 2, v = r.t + ':down:' + r.k;
+        const ko = r.t === 2, ext = r.t === 'p', v = ext ? 'p:' + r.key + ':down' : r.t + ':down:' + r.k;
         const down = r.n ? r.down / r.n : 0, up = r.n ? r.up / r.n : 0;
         const sd = selOn ? selDown(v) : 0;
-        const sitesTip = ko ? r.n + ' union sites measured in ' + r.cell + ' cells' : r.n + ' union sites measured in the ' + r.ipName + ' IP' + (r.s3 != null && r.s3 > r.n ? '; Maron Table S3 lists ' + r.s3 + ' sites in this IP, ' + (r.s3 - r.n) + ' of them not in the union' : '');
-        return '<tr class="row' + (selOn && !sd ? ' off' : '') + '" tabindex="0" data-treat="' + v + '"><td><b>' + esc(r.name) + '</b> <span class="muted">' + esc(ko ? r.cell + ' cells' : TREAT_HELP[r.name] || '') + '</span></td><td><span class="tag ip" title="' + esc(IP_HELP[r.ipName] || '') + '">' + esc(ipLabel(r.ipName)) + '</span></td><td class="r num" title="' + esc(sitesTip) + '">' + fmt(r.n) + '</td>' +
+        const sitesTip = ext ? r.n + ' union sites ' + (r.d[8] ? 'listed as decreased (the study lists no unchanged site)' : 'quantified') : ko ? r.n + ' union sites measured in ' + r.cell + ' cells' : r.n + ' union sites measured in the ' + r.ipName + ' IP' + (r.s3 != null && r.s3 > r.n ? '; Maron Table S3 lists ' + r.s3 + ' sites in this IP, ' + (r.s3 - r.n) + ' of them not in the union' : '');
+        const sub = ext ? r.d[5].replace(/,.*?\((\d{4})\)$/, ' $1') + ' · ' + ptRuleNote(r.d) : ko ? r.cell + ' cells' : TREAT_HELP[r.name] || '';
+        return '<tr class="row' + (selOn && !sd ? ' off' : '') + '" tabindex="0" data-treat="' + v + '"><td><b>' + esc(r.name) + '</b> <span class="muted">' + esc(sub) + '</span></td><td>' + (ext ? '<span class="muted">' + esc(r.d[3]) + '</span>' : '<span class="tag ip" title="' + esc(IP_HELP[r.ipName] || '') + '">' + esc(ipLabel(r.ipName)) + '</span>') + '</td><td class="r num" title="' + esc(sitesTip) + '">' + fmt(r.n) + '</td>' +
           '<td><div class="meter-row"><span class="meter down"><i style="width:' + (100 * down / max).toFixed(1) + '%"></i></span><span class="num">' + r.down + ' (' + (100 * down).toFixed(0) + '%)</span></div></td>' +
           '<td class="hide-xs"><div class="meter-row"><span class="meter up"><i style="width:' + (100 * up / max).toFixed(1) + '%"></i></span><span class="num">' + r.up + ' (' + (100 * up).toFixed(0) + '%)</span></div></td>' +
           '<td class="r num hide-sm">' + fmtL2(r.med) + '</td>' + (selOn ? '<td class="r">' + (sd ? selCell(sd) : '<span class="muted">0</span>') + '</td>' : '') + '</tr>';
       }).join('') + '</tbody></table></div><p class="note">Every row counts union sites: Maron rows the sites measured in that methyl-IP (Table S3 also measured sites outside the union; hover a site count), changed when their peptides at adj. p ≤ 0.05 agree on the direction' +
-      (km ? '; CARM1 KO rows the sites measured in that cell line, changed at least twofold with p < 0.05' : '') + '. Median change: the median per-site <code>&lt;inhibitor&gt;_vs_DMSO_diff</code> (Maron Table S3)' + (km ? ' or log2 knockout/parental (CARM1 KO)' : '') + '. Click a row for its decreased sites' + (selOn ? ' (within the selection)' : '') + '.</p>';
+      (km ? '; CARM1 KO rows the sites measured in that cell line, changed at least twofold at BH q < 0.05' : '') +
+      (ptExtra().length ? '; the rows after them (v1.4.0) the sites each knockout, knockdown or inhibitor quantified, called by the release\'s rule (twofold at q < 0.05) unless the row says the study\'s rule: the PRMT1 knockdown (2 against 2 samples) and the Li et al. 2021 arms (one SILAC experiment each, no test). The PRMT5 knockdown of Li et al. lists only its decreased sites' : '') +
+      '. Median change: the median per-site <code>&lt;inhibitor&gt;_vs_DMSO_diff</code> (Maron Table S3)' + (km ? ' or log2 perturbed/control (the other rows)' : '') + '. Click a row for its decreased sites' + (selOn ? ' (within the selection)' : '') + '.</p>';
   }
 
   // --------------------------------------------------------------- protein
@@ -10516,17 +10555,21 @@
   const PERT_MARK = { decreased: ['▼', 'down'], increased: ['▲', 'up'], mixed: ['↕', 'mix'], no_significant_change: ['○', 'ns'], not_tested: ['?', 'ns'] };
   // The rows of perturbations.json as objects; [key, label, description, enzyme, kind, cells, study, doi, the study's rule].
   const pertRows = (D, s) => (D.sites[siteKey(s)] || []).map((e) => Object.fromEntries(D.fields.map((f, i) => [f, e[i]])));
-  const pertInfo = (D, k) => { const d = D.perturbations[k]; return { key: d[0], label: d[1], desc: d[2], enzyme: d[3], kind: d[4], cells: d[5], study: d[6], doi: d[7], rule: d[8] }; };
+  const pertInfo = (D, k) => { const d = D.perturbations[k]; return { key: d[0], label: d[1], desc: d[2], enzyme: d[3], kind: d[4], cells: d[5], study: d[6], doi: d[7], rule: d[8], primary: d[9], why: d[10], listsOnly: !!d[11] }; };
+  // the release's and the study's rules both call the site, and disagree
+  const pertDiffer = (D, r) => { const a = pertCall(D, r.call_release_rule), b = pertCall(D, r.call_source_rule); return !!a && !!b && a !== 'not_tested' && b !== 'not_tested' && a !== b; };
+  const pertRuleName = (d) => (d.primary === 'study' ? 'the study\'s rule' : 'the release\'s rule');
   const pertCall = (D, i) => (i == null || i < 0 ? '' : D.calls[i]);
   const pertWordHtml = (c) => (c === 'decreased' ? '<b>▼ ' + PERT_WORD[c] + '</b>' : c === 'increased' ? '<b>▲ ' + PERT_WORD[c] + '</b>' : c ? '<span class="muted">' + esc(PERT_WORD[c] || c) + '</span>' : '<span class="muted">—</span>');
   const pertTip = (D, r, title) => {
-    const d = pertInfo(D, r.perturbation), c = pertCall(D, r.call), sc = pertCall(D, r.call_source_rule), ss = pertCall(D, r.call_single_site_peptides);
-    return '<b>' + esc(title ? title + ' · ' + d.label : d.label) + '</b><br>' + esc(PERT_WORD[c] || c) + ' (release rule)<br>log2 perturbed/control ' + fmtL2(r.log2_treated_over_control) + ' (median), lowest q ' + fmtP(r.q) + '<br>' +
+    const d = pertInfo(D, r.perturbation), c = pertCall(D, r.call), ss = pertCall(D, r.call_single_site_peptides);
+    const rc = pertCall(D, r.call_release_rule), sc = pertCall(D, r.call_source_rule);
+    return '<b>' + esc(title ? title + ' · ' + d.label : d.label) + '</b><br>' + esc(PERT_WORD[c] || c) + ' (' + pertRuleName(d) + ')<br>log2 perturbed/control ' + fmtL2(r.log2_treated_over_control) + ' (median)' + (r.q != null ? ', lowest q ' + fmtP(r.q) : '') + '<br>' +
       r.n_peptides + ' peptide' + (r.n_peptides === 1 ? '' : 's') + ': ' + r.n_decreased + ' ▼, ' + r.n_increased + ' ▲' + (r.n_multi_site_peptides ? '; ' + r.n_multi_site_peptides + ' with another methyl-R' : '') +
-      '<br>Single-site peptides: ' + esc(ss ? PERT_WORD[ss] : 'none') + '<br>By the study\'s rule: ' + esc(PERT_WORD[sc] || '—');
+      '<br>Single-site peptides: ' + esc(ss ? PERT_WORD[ss] : 'none') + '<br>Release\'s rule: ' + esc(PERT_WORD[rc] || '—') + '<br>Study\'s rule: ' + esc(PERT_WORD[sc] || '—') + (d.listsOnly ? '<br>The study lists only its decreased sites.' : '');
   };
-  const pertRuleNote = (D) => 'One rule for every perturbation: a peptide changes at ' + esc(D.rule.replace(/, combined.*$/, '')) + ' (q: the study\'s adjusted p where it gives one, else its p adjusted here, Benjamini–Hochberg), ' +
-    'and a site is decreased when a peptide carrying it decreased and none increased. Each study\'s own rule is kept beside it. Peptide-level evidence with no total-protein correction: a peptide with several methylarginines changes for any of them.';
+  const pertRuleNote = (D) => 'The release\'s rule: a peptide changes at ' + esc(D.rule.replace(/, combined.*$/, '')) + ' (q: the study\'s adjusted p where it gives one, else its p adjusted here, Benjamini–Hochberg), ' +
+    'and a site is decreased when a peptide carrying it decreased and none increased. It makes the call except where the study\'s own rule is the sound one: the PRMT1 knockdown (2 against 2 samples) and the Li et al. 2021 arms (one SILAC experiment each, no test). Both rules are kept. Peptide-level evidence with no total-protein correction: a peptide with several methylarginines changes for any of them.';
 
   // The site's evidence panel: its rows in the knockouts, knockdowns and inhibitors other than the CARM1 knockout,
   // which has its own table above.
@@ -10535,19 +10578,19 @@
     if (!box) return;
     loadLayer('perturbations').then((D) => {
       if (!D || !box.isConnected) return;
-      const s = S[j], rows = pertRows(D, s).filter((r) => pertInfo(D, r.perturbation).enzyme !== 'CARM1');
+      const s = S[j], rows = pertRows(D, s).filter((r) => !/^carm1_ko/.test(pertInfo(D, r.perturbation).key));
       if (!rows.length) return;
       const none = box.parentNode && $('.no-ev', box.parentNode);
       if (none) none.remove();
       box.innerHTML = '<p><b>PRMT knockouts, knockdowns and inhibitors</b> (over the peptides carrying this site). ' + pertRuleNote(D) + '</p>' +
-        '<div class="tbl-wrap"><table><thead><tr><th>Perturbation</th><th>log2 perturbed/control</th><th>Lowest q</th><th>Peptides (▼/▲)</th><th>Peptide call</th><th>Single-site peptides</th><th>Study\'s rule</th></tr></thead><tbody>' +
+        '<div class="tbl-wrap"><table><thead><tr><th>Perturbation</th><th>log2 perturbed/control</th><th>Lowest q</th><th>Peptides (▼/▲)</th><th>Call</th><th>Single-site peptides</th><th>Release\'s rule</th><th>Study\'s rule</th></tr></thead><tbody>' +
         rows.map((r) => {
           const d = pertInfo(D, r.perturbation);
           return '<tr><td>' + doiLink(d.doi, esc(d.label)) + '<br><span class="muted small">' + esc(d.study.replace(/,.*?\((\d{4})\)$/, ' $1')) + '</span></td><td class="num">' + fmtL2(r.log2_treated_over_control) + '</td>' +
             '<td class="num">' + (r.n_decreased || r.n_increased ? '<b>' + fmtP(r.q) + '</b>' : fmtP(r.q)) + '</td><td class="num">' + r.n_peptides + ' <span class="muted">(' + r.n_decreased + '/' + r.n_increased + ')</span>' +
-            (r.n_multi_site_peptides ? '<br><span class="muted small">' + r.n_multi_site_peptides + ' with another methyl-R</span>' : '') + '</td><td>' + pertWordHtml(pertCall(D, r.call)) + '</td>' +
-            '<td>' + (r.call_single_site_peptides < 0 ? '<span class="muted">none: every peptide carries another methylarginine</span>' : pertWordHtml(pertCall(D, r.call_single_site_peptides))) + '</td>' +
-            '<td title="' + esc(d.rule) + '">' + pertWordHtml(pertCall(D, r.call_source_rule)) + '</td></tr>';
+            (r.n_multi_site_peptides ? '<br><span class="muted small">' + r.n_multi_site_peptides + ' with another methyl-R</span>' : '') + '</td><td>' + pertWordHtml(pertCall(D, r.call)) + '<br><span class="muted small">' + pertRuleName(d) + (d.listsOnly ? '; lists decreased sites only' : '') + '</span></td>' +
+            '<td>' + (r.call_single_site_peptides < 0 ? '<span class="muted">none: no peptide carries this site alone, localised by the search</span>' : pertWordHtml(pertCall(D, r.call_single_site_peptides))) + '</td>' +
+            '<td>' + pertWordHtml(pertCall(D, r.call_release_rule)) + '</td><td title="' + esc(d.rule) + '">' + pertWordHtml(pertCall(D, r.call_source_rule)) + '</td></tr>';
         }).join('') + '</tbody></table></div>';
     });
   }
@@ -10572,13 +10615,13 @@
         const r = sites.find(([x]) => x === s)[1].find((x) => x.perturbation === k);
         if (!r) return '<td class="pert-c muted" title="Not quantified">&nbsp;</td>';
         const c = pertCall(D, r.call), [mark, cls] = PERT_MARK[c] || ['?', 'muted'];
-        return '<td class="pert-c" data-tip="' + esc(pertTip(D, r, rl(s.pos, p))) + '"><span class="pmark ' + cls + '">' + mark + '</span>' + (pertCall(D, r.call_source_rule) !== c ? '<sup class="muted" aria-label="the study\'s rule differs">†</sup>' : '') + '</td>';
+        return '<td class="pert-c" data-tip="' + esc(pertTip(D, r, rl(s.pos, p))) + '"><span class="pmark ' + cls + '">' + mark + '</span>' + (pertDiffer(D, r) ? '<sup class="muted" aria-label="the two rules differ">†</sup>' : '') + '</td>';
       };
       const down = sites.filter(([, rows]) => rows.some((r) => pertCall(D, r.call) === 'decreased')).length;
       box.innerHTML = head +
-        '<div class="tbl-wrap"><table class="pert-tbl"><thead><tr><th scope="col">Site</th>' + used.map((k) => { const d = pertInfo(D, k); return '<th scope="col" title="' + esc(d.desc) + '">' + esc(d.label) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        '<div class="tbl-wrap"><table class="pert-tbl"><thead><tr><th scope="col">Site</th>' + used.map((k) => { const d = pertInfo(D, k); return '<th scope="col" title="' + esc(d.desc + '. Call: ' + pertRuleName(d) + '.') + '">' + esc(d.label) + (d.primary === 'study' ? '<sup class="muted" title="the study\'s rule">s</sup>' : '') + '</th>'; }).join('') + '</tr></thead><tbody>' +
         sites.map(([s]) => '<tr><th scope="row">' + rl(s.pos, p) + '</th>' + used.map((k) => cell(s, k)).join('') + '</tr>').join('') + '</tbody></table></div>' +
-        '<p class="pert-key">' + [['down', '▼', 'a peptide decreased'], ['up', '▲', 'increased'], ['mix', '↕', 'peptides disagree'], ['ns', '○', 'no significant change'], ['ns', '?', 'no p value'], ['ns', '†', 'the study\'s own rule calls it differently']]
+        '<p class="pert-key">' + [['ns', 's', 'column called by the study\'s rule'], ['down', '▼', 'a peptide decreased'], ['up', '▲', 'increased'], ['mix', '↕', 'peptides disagree'], ['ns', '○', 'no significant change'], ['ns', '?', 'the rule cannot be applied'], ['ns', '†', 'the release\'s and the study\'s rules differ']]
           .map(([c, m, t]) => '<span><span class="pmark ' + c + '">' + m + '</span> ' + t + '</span>').join('') + '<span>blank: not quantified · hover a mark for its numbers</span></p>' +
         '<p class="note small">' + pertRuleNote(D) + ' Sources: ' + used.map((k) => { const d = pertInfo(D, k); return doiLink(d.doi, esc(d.study)); }).filter((v, i, a) => a.indexOf(v) === i).join('; ') + '.</p>';
       setFoldSummary('p-pert', fmt(down) + ' of ' + fmt(sites.length) + ' quantified sites decreased in at least one');
