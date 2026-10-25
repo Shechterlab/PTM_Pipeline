@@ -296,8 +296,7 @@ RELEASE_Q, RELEASE_LOG2 = 0.05, 1.0   # the release's rule: |log2| >= 1 at q < 0
 SOURCE_CALL = {'down': 'decreased', 'up': 'increased', 'unchanged': 'no_significant_change', 'mixed': 'mixed',
                'decreased': 'decreased', 'increased': 'increased', 'no_significant_change': 'no_significant_change'}
 LI2021 = ('Li WJ et al., Nat Commun 12:1946 (2021)', '10.1038/s41467-021-21963-1')
-LI2021_RULE = ('more than twofold lower on the methylation ratio (H/L < 0.5) in one SILAC experiment, no test (the study\'s rule, as '
-               'its lists give it per site)')
+LI2021_RULE = 'more than twofold lower on the methylation ratio (H/L < 0.5) in one SILAC experiment, no test, as its lists give it per site'
 
 
 @dataclass
@@ -331,23 +330,23 @@ class Perturbation:
 PERTURBATIONS = [
     Perturbation('carm1_ko_mcf7', 'CARM1 KO, MCF7', 'CARM1 knockout against parental MCF7 cells, ADMA immunoprecipitation, label-free '
                  '(Shishkova et al. 2017)', 'CARM1', 'knockout', 'MCF7', 'Shishkova et al., Nat Commun 8:15571 (2017)', '10.1038/ncomms15571',
-                 'carm1_ko_peptides.tsv', 'log2_ko_wt', 'p', 'bh', 'call', 'twofold at nominal p < 0.05 (the study\'s rule)',
+                 'carm1_ko_peptides.tsv', 'log2_ko_wt', 'p', 'bh', 'call', 'twofold at nominal p < 0.05',
                  select={'cell_line': 'MCF7'}),
     Perturbation('carm1_ko_mdamb231', 'CARM1 KO, MDA-MB-231', 'CARM1 knockout against parental MDA-MB-231 cells, ADMA '
                  'immunoprecipitation, label-free (Shishkova et al. 2017)', 'CARM1', 'knockout', 'MDA-MB-231',
                  'Shishkova et al., Nat Commun 8:15571 (2017)', '10.1038/ncomms15571', 'carm1_ko_peptides.tsv', 'log2_ko_wt', 'p', 'bh', 'call',
-                 'twofold at nominal p < 0.05 (the study\'s rule)', select={'cell_line': 'MDA-MB-231'}),
+                 'twofold at nominal p < 0.05', select={'cell_line': 'MDA-MB-231'}),
     Perturbation('prmt7_ko_hct116', 'PRMT7 KO, HCT116', 'PRMT7 knockout against parental HCT116 cells, monomethylarginine '
                  'immunoprecipitation, SILAC, 4 replicates (Szewczyk et al. 2020)', 'PRMT7', 'knockout', 'HCT116',
                  'Szewczyk et al., Nat Commun 11:2396 (2020)', '10.1038/s41467-020-16271-z', 'prmt7_ko_peptides.tsv', 'log2_ko_wt', 'p', 'q', 'call',
-                 'twofold at BH-adjusted p < 0.01 (the study\'s rule; its adjusted p values are used as given)'),
+                 'twofold at BH-adjusted p < 0.01 (its adjusted p values are used as given)'),
     Perturbation('prmt1_kd_hek293t', 'PRMT1 KD, HEK293T', 'PRMT1 shRNA knockdown against a non-targeting shRNA in HEK293T cells, '
                  'label-free, 2 against 2 biological replicates, SCX and antibody enrichments (Hartel et al. 2019)', 'PRMT1', 'knockdown',
                  'HEK293T', 'Hartel et al., Mol Cell Proteomics 18:2149-2164 (2019)', '10.1074/mcp.RA119.001625',
                  'hartel2019_prmt1_kd_peptides.tsv', 'log2_kd_control', 'p', 'bh', 'call',
-                 'Perseus t-test with permutation-based FDR q < 0.05 and S0 = 0.5 (the study\'s rule)', bh_groups=['table'], primary='study',
-                 primary_why='with 2 against 2 samples, Benjamini-Hochberg over the t-test p values leaves almost nothing; the study\'s '
-                             'permutation FDR is the call its authors made (decided for v1.4.0)'),
+                 'Perseus t-test with permutation-based FDR q < 0.05 and S0 = 0.5', bh_groups=['table'], primary='study',
+                 primary_why='with 2 against 2 samples, Benjamini-Hochberg over the t-test p values leaves almost nothing, and the '
+                             'permutation FDR is the call its authors made'),
     Perturbation('prmt5i_epz015666_hela', 'PRMT5i EPZ015666, HeLa', 'PRMT5 inhibitor EPZ015666 against untreated HeLa cells, SDMA '
                  'antibody after ulilysin digestion, SILAC (Lu et al. 2024); the treated channel is read from the data, as the '
                  'readable text does not state it', 'PRMT5', 'inhibitor', 'HeLa', 'Lu et al., J Proteome Res 23:1014-1027 (2024)',
