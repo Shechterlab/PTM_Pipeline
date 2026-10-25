@@ -86,7 +86,7 @@ STUDY_LICENCE = {
     'Sylvestersen2014': 'CC BY 4.0 (the article and its supplement, from 2020-10-12, and PRIDE PXD000559, CC0)',
     'Lu2025': 'CC BY 4.0 (the article and Dataset EV1)',
     'Ma2023': 'CC0 (PRIDE PXD038203 Table S1), the article is not open access',
-    'Lu2024': 'CC BY-NC 4.0 (Supporting Information 2 and 3 as ACS publishes them on figshare), PRIDE PXD037425 CC0; the article is not open access',
+    'Lu2024': 'CC BY-NC 4.0 (Supporting Information 2 and 3 as ACS publishes them on figshare), PRIDE PXD037425 CC0, and the article is not open access',
 }
 STUDY_NOTE = {
     'Hartel2019': 'HEK293T and LN229 cells. ADMA and SDMA assigned from characteristic neutral losses (dimethylamine, methylamine) of dimethylarginine peptides (reported_methyl_state Rme2a, Rme2s), the other dimethylarginines as Rme2',
@@ -117,7 +117,7 @@ STUDY_QUALITY = {
               'dimethylated (155 sites), and the other 588 are kept as lower-confidence evidence.',
     'Ma2023': 'MaxQuant ADMA-antibody sites with a 31-residue window, localisation probability >= 0.75, 1 % FDR. Tumours '
               'grown in mice: a peptide identical in mouse and human can come from mouse stroma (flag xenograft_only).',
-    'Lu2024': 'Proteome Discoverer 2.4 peptide groups (SEQUEST HT, ptmRS; mono- and dimethylation of K and R searched) with the '
+    'Lu2024': 'Proteome Discoverer 2.4 peptide groups (SEQUEST HT and ptmRS, with mono- and dimethylation of K and R searched) with the '
               'methylated arginine marked and its ptmRS probability. Read from Supporting Information 2 Table 1.1 (the SILAC '
               'experiment) and Supporting Information 3 Table 2.1 (the light identifications of the heavy-methyl SILAC experiment, '
               'all Confidence High at Percolator q <= 0.01): a mark is kept at ptmRS >= 98 %, the study\'s criterion for an '
