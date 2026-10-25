@@ -245,6 +245,7 @@ FILE_ROWS = {
     'condensates': 'CD-CODE condensate: name, type, members and methylated members',
     'hpa_locations': 'protein and Human Protein Atlas location',
     'other_ptm_sites': 'other modification on a protein of the release (PTM master table)',
+    **release_layers.supporting_file_rows(),
 }
 
 
