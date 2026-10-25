@@ -18,6 +18,7 @@ The archive branches point at:
 | `release/v1.1.0` | `1b62772`, which published `releases/v1.1.0/` |
 | `release/v1.2.0` | `e3ffa38`, which published `releases/v1.2.0/` |
 | `release/v1.3.0` | `8371a5a`, v1.3.0 as reviewed and served |
+| `release/v1.3.1` | the commit that published `releases/v1.3.1/` (the corrections after the review of v1.3.0) |
 
 Older names are kept for their links and may be deleted: `release-v1.1.0` (merged into `main`), `v1.0.0_archive` (the
 repository before the reorganisation; the README links it), `inputs-april-2026-update` and the `claude/*` branches.
