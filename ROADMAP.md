@@ -41,20 +41,34 @@ methylates it, under what conditions, and with what consequence, with each kind 
 5. **PhosphoSitePlus, directly.** The sites now come from the 2021 download compiled in Maron et al. 2021 Table S5,
    without PhosphoSitePlus's evidence categories. A direct, dated download
    ([phosphosite.org](https://www.phosphosite.org)) would give them, and the curated-only sites (site field
-   `curated_only`) could then be split by evidence.
+   `curated_only`) could then be split by evidence. Its current
+   [terms](https://www.phosphosite.org/psp/legal/terms-and-conditions) give no right to download or redistribute data
+   without a written agreement with Cell Signaling Technology, so this waits for one; the same terms bear on the
+   PhosphoSitePlus-derived sites the releases carry now, which is for the lab to settle with them.
 6. **Protein abundance.** Matched total proteomes come first, where a study has them: they correct a peptide's change
    for its protein's change in the same samples. Otherwise [PaxDb](https://pax-db.org) integrated abundances, as a
    detection covariate for the enrichment tests (abundant proteins are more often reported as methylated).
-7. **Cell-line dependency ([DepMap](https://depmap.org/portal/)).** One dated DepMap Public release, staged from its
-   downloads with the licence its download prompt gives (the DepMap forum describes the Broad's DepMap data as CC BY 4.0;
-   to be checked per file). Three uses, each labelled as cell-line genetics, not methylation:
+7. **Cell-line dependency ([DepMap](https://depmap.org/portal/)).** DepMap Public 24Q4 from Figshare (CC BY 4.0,
+   [doi:10.25452/figshare.plus.27993248](https://doi.org/10.25452/figshare.plus.27993248)), the latest release
+   published there; later releases are downloaded behind a browser check from the portal, under its own terms. PRISM
+   Repurposing Public 24Q2 (CC BY 4.0, [doi:10.6084/m9.figshare.25917643](https://doi.org/10.6084/m9.figshare.25917643))
+   gives single-dose (2.5 µM, 5-day) viability across its cell lines for five PRMT inhibitors: three of PRMT5
+   (EPZ015666, GSK3326595, JNJ-64619178), EPZ020411 (PRMT6) and SGC-707 (PRMT3); it has no GSK591, MS023 or
+   MRTX1719. DepMap's screens are of whole genes, so the residue-level use is the somatic mutations it calls
+   (`OmicsSomaticMutations`), with TCGA from [cBioPortal](https://www.cbioportal.org) beside them: a first, pooled count on
+   v1.3.1 finds 771 of 11,601 methylated arginines changed in at least one cell line (6.6%) against 6.7% of the other
+   arginines of the same proteins (odds ratio 1.00), so the card reports mutations at a site as observations, not as a
+   test result. Uses, each labelled as cell-line genetics, not methylation:
    - a **protein-page card**, on light pages too: the CRISPR gene effect (Chronos) across cell lines, whether the gene
      is commonly essential, and the CCLE protein level where measured;
    - a **writer layer**: the dependencies on each PRMT, including the known PRMT5 dependency of MTAP-deleted lines
      (Kryukov et al. 2016, Science 351:1214, [doi:10.1126/science.aad5214](https://doi.org/10.1126/science.aad5214);
      Mavrakis et al. 2016, Science 351:1208, [doi:10.1126/science.aad5944](https://doi.org/10.1126/science.aad5944)),
      and which methylated proteins' dependencies correlate with a PRMT's across lines, as a suggestion of a pathway
-     beside the perturbation layers, never as evidence that the PRMT methylates the site;
+     beside the perturbation layers, never as evidence that the PRMT methylates the site; and, on each PRMT's page,
+     the PRISM viability of cell lines treated with its inhibitors;
+   - a **site-level mutation row**: the cell lines (DepMap) and tumours (TCGA) whose protein carries a change at the
+     arginine, with AlphaMissense where DepMap gives it;
    - a **protein-set test**: whether methylated proteins are more often commonly essential than other proteins, with
      abundance as a covariate, since essential and abundant proteins are also the most often detected.
 8. **Pathways.** [Reactome](https://reactome.org) as a further protein-set annotation, under the same
