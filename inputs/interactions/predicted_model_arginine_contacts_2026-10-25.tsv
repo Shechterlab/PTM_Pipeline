@@ -1,0 +1,3 @@
+source	model	uniprot_accession	chain	position	partner_accession	min_distance_a	clash	salt_bridge	hydrogen_bond	cation_pi	plddt_arginine	plddt_partner_min	partner_residues
+ProtVar	P05787_P63104	P63104	B	60	P05787	2	true	true	true	false	85	76	A:D479:hb+sb
+ProtVar	P63104_Q969F2	P63104	A	60	Q969F2	1.3	true	true	true	false	94	66	B:E254:hb+sb

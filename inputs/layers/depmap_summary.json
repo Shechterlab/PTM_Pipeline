@@ -26,12 +26,15 @@
     }
   },
   "tcga": {
-    "fetched": "2026-10-25",
-    "api": "https://www.cbioportal.org/api",
-    "studies": 32,
-    "sequenced_samples": 10443,
-    "raw_md5": "64c1fcc857cc4fcdc33f6c417a9085ac",
-    "studies_md5": "51daaa83894cd02674e0f57a41a1b559"
+    "source": "GDC MC3 public MAF",
+    "maf": "mc3.v0.2.8.PUBLIC.maf.gz",
+    "maf_md5": "639ad8f8386e98dacc22e439188aa8fa",
+    "cases_md5": "edbbdadd30c3c96d5ffcc24996aedecd",
+    "rule": "FILTER PASS; in TCGA-OV and TCGA-LAML also FILTER wga alone (Ellrott et al. 2018); a missense or stop change at an R of a transcript UniProt 2026_03 assigns to a reviewed entry's displayed isoform (all_effects); where the variant falls in no such transcript, a Missense_Mutation or Nonsense_Mutation at an R of the MAF transcript (HGVSp_Short)",
+    "projects": 33,
+    "tumour_samples": 10294,
+    "raw_md5": "e60dd8ff6000b8e3b611c1c2b73f3548",
+    "projects_md5": "891b8caf4f6bf049e619e82a56b4b037"
   },
   "crispr_lines": 1178,
   "crispr_genes": 17916,
@@ -89,7 +92,7 @@
   ],
   "mutation_call_lines": 1929,
   "depmap_arginine_changes": 53209,
-  "tcga_arginine_changes": 295466,
+  "tcga_arginine_changes": 274408,
   "prism_lines": 898,
   "prism_compounds": {
     "EPZ015666": 473,
@@ -107,8 +110,9 @@
     "depmap_calls_on_other_isoforms": 5591,
     "entries_with_entrez_not_screened": 2321,
     "entries_without_entrez": 84,
-    "tcga_changes_at_R": 309972,
-    "tcga_changes_gene_without_entry": 1242,
-    "tcga_changes_not_R_on_canonical": 13363
+    "tcga_changes_at_R": 288315,
+    "tcga_changes_gene_without_entry": 1310,
+    "tcga_changes_not_R_on_canonical": 12594,
+    "tcga_changes_patient_not_in_gdc": 0
   }
 }

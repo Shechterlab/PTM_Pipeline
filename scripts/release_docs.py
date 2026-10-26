@@ -245,6 +245,7 @@ FILE_ROWS = {
     'condensates': 'CD-CODE condensate: name, type, members and methylated members',
     'hpa_locations': 'protein and Human Protein Atlas location',
     'other_ptm_sites': 'other modification on a protein of the release (PTM master table)',
+    **release_layers.supporting_file_rows(),
 }
 
 
@@ -327,9 +328,10 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'source (the `studies` column does), and that web pages showing PSP-derived sites link them to the PSP protein '
         'page (www.phosphosite.org/uniprotAccAction?id=<UniProt accession>).',
         '',
-        'The annotation and interaction sources keep their own terms too (`licence` in `inputs/MANIFEST.tsv`). Four are '
+        'The annotation and interaction sources keep their own terms too (`licence` in `inputs/MANIFEST.tsv`). Five are '
         'non-commercial: the DisGeNET terms behind the disease tables (CC BY-NC-SA 4.0), CD-CODE condensates (CC BY-NC 4.0), '
-        'the pepR-MS RNA crosslink compendium (CC BY-NC) and the DNA crosslinks of Trendel et al. 2025 (CC BY-NC 4.0). Maron '
+        'the pepR-MS RNA crosslink compendium (CC BY-NC), the DNA crosslinks of Trendel et al. 2025 (CC BY-NC 4.0) and the '
+        'supporting information of Lu et al. 2024 (CC BY-NC 4.0). Maron '
         'et al. 2021 and ProMetheusDB supplements are CC BY-NC-ND 4.0: the release redistributes records derived from them, '
         'not the tables themselves.',
         '',
@@ -800,6 +802,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
     lines += crosslink_section(files, previous, Path(ctx['inputs']))
     lines += analysis_section(files, previous)
     lines += review_section(ctx, files, previous)
+    lines += release_layers.changes_section(files, ctx['version'], previous)
     if since_v11:
         lines += [
         '## Methylation degree',

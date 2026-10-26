@@ -1,0 +1,5 @@
+disorder_context_class	site_count	boundary_window
+disordered	5895	20
+ordered	3099	20
+disorder_boundary	2631	20
+no_disorder_annotation	7	20

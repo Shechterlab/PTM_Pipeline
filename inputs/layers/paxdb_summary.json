@@ -1,0 +1,575 @@
+{
+  "paxdb": {
+    "version": "6.1",
+    "string_version": "12.0",
+    "version_source": "https://pax-db.org (site config PAXDB_VERSION 6.1; \"What's new\": v6.0 -> v6.1 (May 2026)); https://pax-db.org/downloads/latest/ lists the 6.1 files",
+    "licence": "CC BY 4.0 (https://pax-db.org/license: \"Creative Commons Attribution 4.0 International (CC BY 4.0) applies to all copyrightable parts of our database\")",
+    "citation": "Huang et al., Mol Cell Proteomics 22:100640 (2023), doi:10.1016/j.mcpro.2023.100640 (PaxDb 5.0); PaxDb 6.1, https://pax-db.org",
+    "downloaded": "2026-10-25"
+  },
+  "inputs": {
+    "9606.zip": {
+      "url": "https://pax-db.org/downloads/6.1/datasets/9606.zip",
+      "last_modified": "2026-07-09 11:19:44 GMT",
+      "md5": "9ee96fdb969b11d5e19aae88761046ed"
+    },
+    "paxdb-uniprot-crossreferences.txt": {
+      "url": "https://pax-db.org/downloads/6.1/paxdb-uniprot-crossreferences.txt",
+      "last_modified": "2026-07-09 11:18:14 GMT",
+      "md5": "39e3c7c5839327e523df85b73d2aeaae"
+    },
+    "paxdb-uniprot-links-v6.1.zip": {
+      "url": "https://pax-db.org/downloads/6.1/paxdb-uniprot-links-v6.1.zip",
+      "last_modified": "2026-07-09 11:20:28 GMT",
+      "md5": "2dfbbd6c5ad7e2252d2d3c628262e1f9"
+    }
+  },
+  "reference": {
+    "fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+    "entries_md5": "07057d3bda4051dd23f9f90b0a425916",
+    "uniprot_string_md5": "db7f56ec66218744d5452fa77479aa17",
+    "reference_entries": 20416
+  },
+  "dataset": {
+    "member": "9606/9606-WHOLE_ORGANISM-integrated.txt",
+    "member_date": "2026-05-29",
+    "member_bytes": 644763,
+    "member_md5": "015fffcea060250a3aafd0bd294e909b",
+    "id": "2882570067",
+    "name": "H.sapiens - Whole organism (Integrated)",
+    "score": "31.9",
+    "coverage": "99",
+    "organ": "WHOLE_ORGANISM",
+    "integrated": "true",
+    "publication_year": "2026",
+    "weights": {
+      "Human_PeptideAtlas_2011-08_Ens62.new": 0.747,
+      "9606-PA_201408": 0.075,
+      "HsapiensBuild242_May2010.peptides.new": 0.043,
+      "peptideatlaBuild_March2009.peptides.new": 0.041,
+      "Human_iBAQ_Khan_2013": 0.038,
+      "9606_GPM_201408": 0.036,
+      "GPM_2012_09_Homo_sapiens_-_ensembl": 0.02
+    },
+    "proteins": 19483,
+    "ppm_total": 999996.6
+  },
+  "download_members": 419,
+  "other_integrated_datasets": {
+    "count": 51,
+    "staged": false,
+    "why": "each covers a subset of the proteome and the set would be ~50 columns or ~0.5 M rows; only the whole-organism dataset is staged",
+    "datasets": [
+      {
+        "file": "9606-ADRENAL_GLAND-integrated.txt",
+        "organ": "ADRENAL_GLAND",
+        "name": "H.sapiens - Adrenal gland (Integrated)",
+        "score": "39.3",
+        "coverage": "65",
+        "proteins": 12892,
+        "weighted_datasets": 4
+      },
+      {
+        "file": "9606-AMNIOTIC_FLUID-integrated.txt",
+        "organ": "AMNIOTIC_FLUID",
+        "name": "H.sapiens - Amniotic fluid (Integrated)",
+        "score": "6.8",
+        "coverage": "6",
+        "proteins": 1277,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-ASTROCYTE-integrated.txt",
+        "organ": "ASTROCYTE",
+        "name": "H.sapiens - Astrocyte (Integrated)",
+        "score": "31.7",
+        "coverage": "53",
+        "proteins": 10420,
+        "weighted_datasets": 4
+      },
+      {
+        "file": "9606-BRAIN-integrated.txt",
+        "organ": "BRAIN",
+        "name": "H.sapiens - Brain (Integrated)",
+        "score": "32.4",
+        "coverage": "69",
+        "proteins": 13594,
+        "weighted_datasets": 10
+      },
+      {
+        "file": "9606-CEREBRAL_CORTEX-integrated.txt",
+        "organ": "CEREBRAL_CORTEX",
+        "name": "H.sapiens - Cerebral cortex (Integrated)",
+        "score": "29.6",
+        "coverage": "59",
+        "proteins": 11677,
+        "weighted_datasets": 3
+      },
+      {
+        "file": "9606-CEREBROSPINAL_FLUID-integrated.txt",
+        "organ": "CEREBROSPINAL_FLUID",
+        "name": "H.sapiens - Cerebrospinal fluid (Integrated)",
+        "score": "11.5",
+        "coverage": "19",
+        "proteins": 3813,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-COLON-integrated.txt",
+        "organ": "COLON",
+        "name": "H.sapiens - Colon (Integrated)",
+        "score": "35.3",
+        "coverage": "67",
+        "proteins": 13225,
+        "weighted_datasets": 8
+      },
+      {
+        "file": "9606-DUODENUM-integrated.txt",
+        "organ": "DUODENUM",
+        "name": "H.sapiens - Duodenum (Integrated)",
+        "score": "18.9",
+        "coverage": "54",
+        "proteins": 10667,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-EGG_CELL-integrated.txt",
+        "organ": "EGG_CELL",
+        "name": "H.sapiens - Egg cell (Integrated)",
+        "score": "12.9",
+        "coverage": "17",
+        "proteins": 3270,
+        "weighted_datasets": 5
+      },
+      {
+        "file": "9606-ENDOMETRIUM-integrated.txt",
+        "organ": "ENDOMETRIUM",
+        "name": "H.sapiens - Endometrium (Integrated)",
+        "score": "20.6",
+        "coverage": "54",
+        "proteins": 10666,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-ESOPHAGUS-integrated.txt",
+        "organ": "ESOPHAGUS",
+        "name": "H.sapiens - Esophagus (Integrated)",
+        "score": "32.7",
+        "coverage": "65",
+        "proteins": 12834,
+        "weighted_datasets": 7
+      },
+      {
+        "file": "9606-FALLOPIAN_TUBE-integrated.txt",
+        "organ": "FALLOPIAN_TUBE",
+        "name": "H.sapiens - Fallopian tube (Integrated)",
+        "score": "24.2",
+        "coverage": "58",
+        "proteins": 11357,
+        "weighted_datasets": 3
+      },
+      {
+        "file": "9606-FRONTAL_CORTEX-integrated.txt",
+        "organ": "FRONTAL_CORTEX",
+        "name": "H.sapiens - Frontal cortex (Integrated)",
+        "score": "22.3",
+        "coverage": "59",
+        "proteins": 11605,
+        "weighted_datasets": 4
+      },
+      {
+        "file": "9606-GALLBLADDER-integrated.txt",
+        "organ": "GALLBLADDER",
+        "name": "H.sapiens - Gallbladder (Integrated)",
+        "score": "29.2",
+        "coverage": "58",
+        "proteins": 11440,
+        "weighted_datasets": 4
+      },
+      {
+        "file": "9606-HEART-integrated.txt",
+        "organ": "HEART",
+        "name": "H.sapiens - Heart (Integrated)",
+        "score": "37.7",
+        "coverage": "69",
+        "proteins": 13500,
+        "weighted_datasets": 9
+      },
+      {
+        "file": "9606-INTERVERTEBRAL_DISC-integrated.txt",
+        "organ": "INTERVERTEBRAL_DISC",
+        "name": "H.sapiens - Intervertebral disc (Integrated)",
+        "score": "9.2",
+        "coverage": "5",
+        "proteins": 1025,
+        "weighted_datasets": 3
+      },
+      {
+        "file": "9606-KERATINOCYTE-integrated.txt",
+        "organ": "KERATINOCYTE",
+        "name": "H.sapiens - Keratinocyte (Integrated)",
+        "score": "17.7",
+        "coverage": "29",
+        "proteins": 5683,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-KIDNEY-integrated.txt",
+        "organ": "KIDNEY",
+        "name": "H.sapiens - Kidney (Integrated)",
+        "score": "36.8",
+        "coverage": "59",
+        "proteins": 11590,
+        "weighted_datasets": 7
+      },
+      {
+        "file": "9606-LIVER-integrated.txt",
+        "organ": "LIVER",
+        "name": "H.sapiens - Liver (Integrated)",
+        "score": "28.5",
+        "coverage": "81",
+        "proteins": 15891,
+        "weighted_datasets": 13
+      },
+      {
+        "file": "9606-LUNG-integrated.txt",
+        "organ": "LUNG",
+        "name": "H.sapiens - Lung (Integrated)",
+        "score": "32.4",
+        "coverage": "67",
+        "proteins": 13214,
+        "weighted_datasets": 8
+      },
+      {
+        "file": "9606-LYMPH_NODE-integrated.txt",
+        "organ": "LYMPH_NODE",
+        "name": "H.sapiens - Lymph node (Integrated)",
+        "score": "35.5",
+        "coverage": "54",
+        "proteins": 10590,
+        "weighted_datasets": 3
+      },
+      {
+        "file": "9606-OVARY-integrated.txt",
+        "organ": "OVARY",
+        "name": "H.sapiens - Ovary (Integrated)",
+        "score": "17.8",
+        "coverage": "51",
+        "proteins": 10089,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-PANCREAS-integrated.txt",
+        "organ": "PANCREAS",
+        "name": "H.sapiens - Pancreas (Integrated)",
+        "score": "33.8",
+        "coverage": "65",
+        "proteins": 12861,
+        "weighted_datasets": 5
+      },
+      {
+        "file": "9606-PLACENTA-integrated.txt",
+        "organ": "PLACENTA",
+        "name": "H.sapiens - Placenta (Integrated)",
+        "score": "36.5",
+        "coverage": "65",
+        "proteins": 12791,
+        "weighted_datasets": 5
+      },
+      {
+        "file": "9606-PLASMA-integrated.txt",
+        "organ": "PLASMA",
+        "name": "H.sapiens - Plasma (Integrated)",
+        "score": "15.8",
+        "coverage": "38",
+        "proteins": 7537,
+        "weighted_datasets": 30
+      },
+      {
+        "file": "9606-PLATELET-integrated.txt",
+        "organ": "PLATELET",
+        "name": "H.sapiens - Platelet (Integrated)",
+        "score": "24.0",
+        "coverage": "40",
+        "proteins": 7931,
+        "weighted_datasets": 8
+      },
+      {
+        "file": "9606-PROSTATE_GLAND-integrated.txt",
+        "organ": "PROSTATE_GLAND",
+        "name": "H.sapiens - Prostate gland (Integrated)",
+        "score": "32.2",
+        "coverage": "64",
+        "proteins": 12560,
+        "weighted_datasets": 5
+      },
+      {
+        "file": "9606-PROXIMAL_TUBULE-integrated.txt",
+        "organ": "PROXIMAL_TUBULE",
+        "name": "H.sapiens - Proximal tubule (Integrated)",
+        "score": "14.6",
+        "coverage": "20",
+        "proteins": 3915,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-RECTUM-integrated.txt",
+        "organ": "RECTUM",
+        "name": "H.sapiens - Rectum (Integrated)",
+        "score": "37.3",
+        "coverage": "61",
+        "proteins": 12004,
+        "weighted_datasets": 3
+      },
+      {
+        "file": "9606-RENAL_GLOMERULUS-integrated.txt",
+        "organ": "RENAL_GLOMERULUS",
+        "name": "H.sapiens - Renal glomerulus (Integrated)",
+        "score": "13.8",
+        "coverage": "20",
+        "proteins": 3946,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-RETINA-integrated.txt",
+        "organ": "RETINA",
+        "name": "H.sapiens - Retina (Integrated)",
+        "score": "25.6",
+        "coverage": "55",
+        "proteins": 10823,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-SALIVA-integrated.txt",
+        "organ": "SALIVA",
+        "name": "H.sapiens - Saliva (Integrated)",
+        "score": "14.8",
+        "coverage": "32",
+        "proteins": 6208,
+        "weighted_datasets": 4
+      },
+      {
+        "file": "9606-SALIVA_SECRETING_GLAND-integrated.txt",
+        "organ": "SALIVA_SECRETING_GLAND",
+        "name": "H.sapiens - Saliva secreting gland (Integrated)",
+        "score": "41.7",
+        "coverage": "54",
+        "proteins": 10647,
+        "weighted_datasets": 3
+      },
+      {
+        "file": "9606-SEMINAL_VESICLE-integrated.txt",
+        "organ": "SEMINAL_VESICLE",
+        "name": "H.sapiens - Seminal vesicle (Integrated)",
+        "score": "12.6",
+        "coverage": "21",
+        "proteins": 4181,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-SERUM-integrated.txt",
+        "organ": "SERUM",
+        "name": "H.sapiens - Serum (Integrated)",
+        "score": "13.6",
+        "coverage": "9",
+        "proteins": 1857,
+        "weighted_datasets": 4
+      },
+      {
+        "file": "9606-SKELETAL_MUSCLE-integrated.txt",
+        "organ": "SKELETAL_MUSCLE",
+        "name": "H.sapiens - Skeletal muscle (Integrated)",
+        "score": "31.0",
+        "coverage": "53",
+        "proteins": 10463,
+        "weighted_datasets": 6
+      },
+      {
+        "file": "9606-SKIN-integrated.txt",
+        "organ": "SKIN",
+        "name": "H.sapiens - Skin (Integrated)",
+        "score": "31.4",
+        "coverage": "66",
+        "proteins": 13068,
+        "weighted_datasets": 13
+      },
+      {
+        "file": "9606-SKIN_FIBROBLAST-integrated.txt",
+        "organ": "SKIN_FIBROBLAST",
+        "name": "H.sapiens - Skin fibroblast (Integrated)",
+        "score": "19.9",
+        "coverage": "34",
+        "proteins": 6703,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-SMALL_INTESTINE-integrated.txt",
+        "organ": "SMALL_INTESTINE",
+        "name": "H.sapiens - Small intestine (Integrated)",
+        "score": "19.5",
+        "coverage": "56",
+        "proteins": 10967,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-SPINAL_CORD-integrated.txt",
+        "organ": "SPINAL_CORD",
+        "name": "H.sapiens - Spinal cord (Integrated)",
+        "score": "24.7",
+        "coverage": "42",
+        "proteins": 8177,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-SPLEEN-integrated.txt",
+        "organ": "SPLEEN",
+        "name": "H.sapiens - Spleen (Integrated)",
+        "score": "27.0",
+        "coverage": "59",
+        "proteins": 11542,
+        "weighted_datasets": 4
+      },
+      {
+        "file": "9606-STOMACH-integrated.txt",
+        "organ": "STOMACH",
+        "name": "H.sapiens - Stomach (Integrated)",
+        "score": "30.6",
+        "coverage": "62",
+        "proteins": 12199,
+        "weighted_datasets": 4
+      },
+      {
+        "file": "9606-TESTIS-integrated.txt",
+        "organ": "TESTIS",
+        "name": "H.sapiens - Testis (Integrated)",
+        "score": "38.2",
+        "coverage": "80",
+        "proteins": 15744,
+        "weighted_datasets": 8
+      },
+      {
+        "file": "9606-THYROID_GLAND-integrated.txt",
+        "organ": "THYROID_GLAND",
+        "name": "H.sapiens - Thyroid gland (Integrated)",
+        "score": "28.6",
+        "coverage": "61",
+        "proteins": 12004,
+        "weighted_datasets": 4
+      },
+      {
+        "file": "9606-TONSIL-integrated.txt",
+        "organ": "TONSIL",
+        "name": "H.sapiens - Tonsil (Integrated)",
+        "score": "29.7",
+        "coverage": "53",
+        "proteins": 10510,
+        "weighted_datasets": 3
+      },
+      {
+        "file": "9606-URINARY_BLADDER-integrated.txt",
+        "organ": "URINARY_BLADDER",
+        "name": "H.sapiens - Urinary bladder (Integrated)",
+        "score": "30.3",
+        "coverage": "59",
+        "proteins": 11692,
+        "weighted_datasets": 3
+      },
+      {
+        "file": "9606-URINE-integrated.txt",
+        "organ": "URINE",
+        "name": "H.sapiens - Urine (Integrated)",
+        "score": "15.8",
+        "coverage": "18",
+        "proteins": 3614,
+        "weighted_datasets": 4
+      },
+      {
+        "file": "9606-UTERINE_CERVIX-integrated.txt",
+        "organ": "UTERINE_CERVIX",
+        "name": "H.sapiens - Uterine cervix (Integrated)",
+        "score": "11.6",
+        "coverage": "22",
+        "proteins": 4301,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-UTERUS-integrated.txt",
+        "organ": "UTERUS",
+        "name": "H.sapiens - Uterus (Integrated)",
+        "score": "14.2",
+        "coverage": "27",
+        "proteins": 5272,
+        "weighted_datasets": 3
+      },
+      {
+        "file": "9606-VALVE_INTERSTITIAL_CELL-integrated.txt",
+        "organ": "VALVE_INTERSTITIAL_CELL",
+        "name": "H.sapiens - Valve interstitial cell (Integrated)",
+        "score": "19.1",
+        "coverage": "36",
+        "proteins": 7122,
+        "weighted_datasets": 2
+      },
+      {
+        "file": "9606-VERMIFORM_APPENDIX-integrated.txt",
+        "organ": "VERMIFORM_APPENDIX",
+        "name": "H.sapiens - Vermiform appendix (Integrated)",
+        "score": "14.0",
+        "coverage": "49",
+        "proteins": 9588,
+        "weighted_datasets": 2
+      }
+    ]
+  },
+  "mapping": {
+    "paxdb_cross_reference_human_rows": 88155,
+    "paxdb_cross_reference_reference_entries": 18975,
+    "paxdb_vs_uniprot_cross_reference": {
+      "agree": 18831,
+      "disagree": 0,
+      "paxdb_only": 144,
+      "uniprot_only": 10
+    },
+    "uniprot_cross_reference_entries_added": 10,
+    "uniprot_cross_reference_string_ids_already_taken": 0,
+    "entries_with_several_string_proteins_with_value": 0,
+    "string_proteins_given_to_several_entries": 0,
+    "staged_entries_whose_paxdb_gene_name_is_a_uniprot_primary_gene": 18282,
+    "paxdb_uniprot_links_entry_names": {
+      "human_rows": 19399,
+      "entry_name_is_a_reference_entry_name": 18502,
+      "dataset_proteins_named": 18335,
+      "agree_with_staged": 18328,
+      "differ_from_staged": 2,
+      "name_of_an_entry_not_staged": 5,
+      "input_md5": "2dfbbd6c5ad7e2252d2d3c628262e1f9"
+    }
+  },
+  "staged_entries": 18805,
+  "staged_by": {
+    "paxdb_xref": 18795,
+    "uniprot_xref": 10
+  },
+  "entries_without_value": 1611,
+  "entries_without_value_by_reason": {
+    "entries_not_cross_referenced_to_string": 1431,
+    "entries_paxdb_xref_string_protein_not_in_dataset": 180
+  },
+  "dataset_proteins_not_staged": {
+    "cross_referenced_to_no_reference_entry": 392,
+    "not_in_paxdb_cross_reference": 286
+  },
+  "unstaged_proteins_named_like_a_staged_entry_gene": {
+    "dataset_proteins": 147,
+    "entries": 96,
+    "same_value_as_the_entry": 123,
+    "note": "dataset proteins left out whose PaxDb gene name is a primary gene of a staged entry, mostly further gene copies of an entry (e.g. the H4C genes of P62805, HBA1 of P69905): the entry keeps the value of its cross-referenced protein, not the sum of its copies"
+  },
+  "abundance_ppm_quantiles_staged": {
+    "min": 3e-07,
+    "q25": 0.046,
+    "median": 0.338,
+    "q75": 4.45,
+    "max": 82964.0
+  }
+}

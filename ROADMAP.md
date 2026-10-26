@@ -7,9 +7,11 @@ methylates it, under what conditions, and with what consequence, with each kind 
 
 ### Work packages
 
-Status on 25 October 2026 (branch `feature/depmap`): each source below is downloaded, its licence read and its staging
-script written; the staged tables wait in a scratch folder for the decisions noted against them, and none is in
-`inputs/` yet except the curated layer and DepMap.
+Status on 26 October 2026 (built as v1.4.0 on `feature/depmap` and merged into `develop`; on `main` once reviewed):
+every source below except PhosphoSitePlus is staged into `inputs/`, registered in `scripts/release_layers.py` and shown
+on the website. Decided on 25 October: TCGA from the GDC's MC3 calls instead of cBioPortal; the PRMT1 knockdown and the
+Li et al. 2021 arms called by the study's own rule, with the release's rule kept beside it; every arm in the Overview
+response table, the site table's PRMT loss column and its filter.
 
 
 1. **PRMT7 and monomethylarginine.** Szewczyk et al. 2020, *Pharmacological inhibition of PRMT7 links arginine
@@ -22,7 +24,12 @@ script written; the staged tables wait in a scratch folder for the decisions not
    immunoprecipitation, SILAC); SGC3027 was tested by western blot only. 343 of 346 peptides placed (99 by residue
    alone, to be checked against the sequence versions searched); the paper's rule (log2 <= -1, BH-adjusted p < 0.01)
    gives its 29 depleted peptides. Open: the licence of the supplementary files (none stated beside the article's CC BY).
-   Li et al. 2021, already included, has the SGC3027 and PRMT7 knockdown arms with statistics: stage them next.
+   Li et al. 2021, already included as a study, is staged for its perturbations too (`scripts/50`): PRMT7, CARM1 and
+   PRMT5 knockdowns and SGC3027 in HEK293, one SILAC experiment each. Its lists' calls are reproduced (297, 503 and 660
+   sites for PRMT7, SGC3027 and CARM1; 428 of the paper's 429 for PRMT5, which lists its decreased sites only). Proteome
+   Discoverer's adjusted p is not a test across replicates, so the release's rule is not applied and the call is the
+   study's. SGC3027's channel follows the paper's reading of its ratios, against one Methods sentence; the data agree
+   with the knockdown more often than not (45 against 22 twofold changes). Repeat 2 of the knockdown is staged, not used.
 2. **PRMT5 substrates from ETD.** Lu et al. 2024, *ETD-Based Proteomic Profiling Improves Arginine Methylation
    Identification and Reveals Novel PRMT5 Substrates*, J Proteome Res 23:1014–1027,
    [doi:10.1021/acs.jproteome.3c00724](https://doi.org/10.1021/acs.jproteome.3c00724): sDMA sites localised with
@@ -40,8 +47,8 @@ script written; the staged tables wait in a scratch folder for the decisions not
    `inputs/` already holds as raw downloads. Read the other included studies the same way for knockdowns, knockouts and
    inhibitor arms.
    *Staged* (`scripts/46`): Hartel's 119 are changed peptides, not Rme1 sites (the tables' flag gives them exactly);
-   751 sites, 129 changed. Open: the paper's Perseus permutation FDR on 2 against 2 samples keeps 132 peptides, the
-   release's BH rule 2. A survey of the other included studies found 40 perturbation arms
+   751 sites, 129 changed. The paper's Perseus permutation FDR on 2 against 2 samples keeps 132 peptides, the release's
+   BH rule 2: decided on 25 October to call this arm by the paper's rule, with the BH call kept beside it. A survey of the other included studies found 40 perturbation arms
    (Li 2021, Fong 2019, Musiani 2019, Larsen 2016 and Fedoriw 2019 the most useful).
 4. **A curated layer of functional experiments.** One row per experiment and site: the protein and site, the
    experiment (methylated against unmethylated protein or peptide; a site mutation, with R→K and R→A noted as removing
@@ -78,15 +85,16 @@ script written; the staged tables wait in a scratch folder for the decisions not
    gives single-dose (2.5 µM, 5-day) viability across its cell lines for five PRMT inhibitors: three of PRMT5
    (EPZ015666, GSK3326595, JNJ-64619178), EPZ020411 (PRMT6) and SGC-707 (PRMT3); it has no GSK591, MS023 or
    MRTX1719. DepMap's screens are of whole genes, so the residue-level use is the somatic mutations it calls
-   (`OmicsSomaticMutations`), with TCGA PanCancer Atlas from [cBioPortal](https://www.cbioportal.org) beside them. A
-   preview is on the `feature/depmap` branch (`scripts/44*`, `inputs/layers/`); the release build now carries it
-   (`scripts/release_layers.py`: four site columns, four protein columns, analyses `depmap_dependency` and
-   `cancer_change`). Open: the TCGA columns derive from cBioPortal data under the ODbL, whose share-alike clause
-   reaches a derived database; keep them on the website only, publish them under the ODbL, or take MC3 from the GDC. Counting missense and stop changes on the
-   canonical sequence, 7.3% of the 11,601 methylated arginines of v1.3.1 are changed in at least one DepMap cell line and
-   28.3% in at least one TCGA tumour, against 6.9% and 30.6% of the other arginines of the same proteins: within protein
-   (Mantel-Haenszel), odds ratio 0.95 (0.88-1.03) in cell lines and 0.89 (0.85-0.93) in tumours, not adjusted for codon
-   context (CpG-containing CGN codons mutate most). So the page reports mutations at a site as observations. Uses, each
+   (`OmicsSomaticMutations`), with the TCGA MC3 somatic calls beside them. A preview is on the `feature/depmap` branch
+   (`scripts/44*`, `inputs/layers/`); the release build now carries it (`scripts/release_layers.py`: four site columns, four
+   protein columns, analyses `depmap_dependency` and `cancer_change`). *Changed on 25 October*: TCGA now comes from the
+   GDC's MC3 public MAF ([mc3-2017](https://gdc.cancer.gov/about-data/publications/mc3-2017); open access, no licence, NIH
+   Genomic Data Sharing policy) instead of cBioPortal, whose ODbL share-alike would have reached the release tables. Calls
+   are kept as MC3 kept them (FILTER PASS; in OV and LAML also `wga` alone; Ellrott et al. 2018), and each change is read on
+   the transcript UniProt assigns to the canonical isoform. Of the 11,168 methylarginines the analyses count on screened
+   proteins, 7.4% are changed in at least one DepMap cell line and 27.2% in at least one TCGA tumour, against 7.0% and
+   29.0% of the other arginines of the same proteins: within protein (Mantel-Haenszel), odds ratio 0.95 (0.88-1.03) in
+   cell lines and 0.90 (0.86-0.94) in tumours, not adjusted for codon context (CpG-containing CGN codons mutate most). So the page reports mutations at a site as observations. Uses, each
    labelled as cancer genetics, not methylation:
    - a **protein-page card**, on light pages too: the CRISPR gene effect (Chronos) across cell lines, whether the gene
      is commonly essential, and the CCLE protein level where measured;

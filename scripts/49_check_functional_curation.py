@@ -60,6 +60,7 @@ def problems(t: pd.DataFrame, seqs: dict) -> list[str]:
         for col in ('perturbation', 'readout', 'finding', 'reference'):
             if not r[col]:
                 why.append(f'{col} empty')
+        why += [f'{col} holds a semicolon (the release separates list items with it)' for col, v in r.items() if ';' in v]
         bad += [f'{e}: {w}' for w in why]
     return bad
 

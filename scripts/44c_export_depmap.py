@@ -7,9 +7,9 @@ Writes docs/data/depmap/:
                     common essential (0/1), histogram counts, [[lineage index, lines, mean], ...]]
                 m: DepMap changes at arginines, [[position, residue, [cell line indices], hotspot, AlphaMissense x100 or
                     null, likely loss of function], ...]
-                t: TCGA changes at arginines, [[position, residue, [[study index, samples], ...]], ...]
+                t: TCGA changes at arginines, [[position, residue, [[project index, tumour samples], ...]], ...]
   meta.json   releases, licences, histogram edges, lineages, cell lines [id, name, lineage index, MTAP absolute copy
-              number], TCGA studies, counts, and stats: the release's statistics rows of the layer (analyses
+              number], TCGA projects (meta.studies: [code, name, tumour samples]), counts, and stats: the release's statistics rows of the layer (analyses
               depmap_dependency and cancer_change, scripts/release_layers.py), read from --statistics, or made with the
               same code from --sites when that release has none
   genes.json  every screened entry, for the Overview's comparisons: accessions, median gene effect x1000, common
@@ -122,12 +122,12 @@ def main() -> None:
             None if pd.isna(am) else int(round(am * 100)), int((grp['likely_lof'] == 'True').any())])
 
     studies = pd.DataFrame()
-    if (L / 'tcga_pancan_arginine_changes.tsv').exists():
-        studies = read('tcga_pancan_studies.tsv')
-        six = {s: k for k, s in enumerate(studies['study_id'])}
-        t = read('tcga_pancan_arginine_changes.tsv')
+    if (L / 'tcga_mc3_arginine_changes.tsv').exists():
+        studies = read('tcga_mc3_projects.tsv')
+        six = {s: k for k, s in enumerate(studies['project_id'])}
+        t = read('tcga_mc3_arginine_changes.tsv')
         for (acc, pos, alt), grp in t.groupby(['canonical_UniProtAC', 'position', 'alt'], sort=True):
-            per = grp.groupby('study_id')['sample_id'].nunique()
+            per = grp.groupby('project_id')['sample_id'].nunique()
             prot.setdefault(acc, {}).setdefault('t', []).append([int(pos), alt, sorted([six[s], int(n)] for s, n in per.items())])
     for v in prot.values():
         for k in ('m', 't'):
@@ -157,12 +157,12 @@ def main() -> None:
                    'common_essential_genes': summary['common_essential_genes'], 'mutation_call_lines': summary['mutation_call_lines'],
                    'mtap_deleted_lines': summary['mtap_deleted_lines'], 'mtap_lines_with_cn': summary['mtap_lines_with_cn']},
         'prism': {k: summary['prism'][k] for k in ('release', 'doi', 'licence', 'dose_uM', 'days')} | {'lines': summary['prism_lines']},
-        'tcga': {k: summary['tcga'][k] for k in ('fetched', 'studies', 'sequenced_samples')} if summary.get('tcga') else {},
+        'tcga': {'source': summary['tcga']['source'], 'maf': summary['tcga']['maf'], 'rule': summary['tcga']['rule'],
+                 'projects': summary['tcga']['projects'], 'sequenced_samples': summary['tcga']['tumour_samples']} if summary.get('tcga') else {},
         'hist_edges': summary['histogram_edges'], 'lineages': lineages,
         'lineage_lines': summary['lineages_ranked'],
         'models': [[r.model_id, r.cell_line, lin_ix.get(r.lineage, -1), cn(r.mtap_absolute_cn)] for r in models.itertuples(index=False)],
-        'studies': [[r.study_id.replace('_tcga_pan_can_atlas_2018', '').upper(), r.name.replace(' (TCGA, PanCancer Atlas)', ''), int(r.sequenced_samples)]
-                    for r in studies.itertuples(index=False)] if len(studies) else [],
+        'studies': [[r.project_id.replace('TCGA-', ''), r.name, int(r.tumour_samples)] for r in studies.itertuples(index=False)] if len(studies) else [],
         'stats': stats['rows'], 'stats_fields': stats['fields'], 'stats_from': stats['from'], 'sites_table': Path(args.sites).name,
         'dependency_classes': [[k, v] for k, v in release_layers.CANCER.codes['dependency_class'].items()],
     }

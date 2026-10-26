@@ -19,6 +19,7 @@ and writes --outdir (releases/VERSION), for version V and previous version P:
   human_methylarginine_proteins_V.tsv   one row per protein: identity, function, enrichment, clustering, context
   statistics_V.tsv                      every enrichment test the website or the paper reports, with its 2x2 counts
   supporting/disease_terms_V.tsv, disease_terms_tested_V.tsv, disease_ontology_V.tsv, density_windows_V.tsv, hpa_locations_V.tsv, other_ptm_sites_V.tsv
+  supporting/writer_perturbations_V.tsv, functional_experiments_V.tsv and the other tables of the layers (scripts/release_layers.py)
   data_dictionary.tsv                   every column of every table, with its codes
   release.json                          version, counts, inputs and files
   README.md, CHANGES.md, MD5SUMS
@@ -1269,6 +1270,7 @@ def main() -> None:
         'disease_families': (f'supporting/disease_families_{version}.tsv', release_tables.disease_families_table(aroot), rc.DISEASE_FAMILY_COLUMNS),
         'arginine_background': (f'supporting/arginine_background_{version}.tsv', release_tables.arginine_background_table(aroot), rc.ARGININE_BACKGROUND_COLUMNS),
     }
+    files.update(release_layers.supporting_tables(sites, inputs, version))
     if args.statistics_with_lower_confidence:
         files['statistics_with_lower_confidence'] = (f'statistics_with_lower_confidence_{version}.tsv',
                                                      read_tsv(Path(args.statistics_with_lower_confidence)), rc.STATISTICS_COLUMNS)

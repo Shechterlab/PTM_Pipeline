@@ -1,0 +1,755 @@
+{
+  "study": "Li 2021",
+  "doi": "10.1038/s41467-021-21963-1",
+  "licence": "CC BY 4.0 (the article; its Supplementary Data are taken as covered by the article's licence)",
+  "pride": "PXD022424 (raw MS files, not used)",
+  "cell_line": "HEK293",
+  "inputs": {
+    "41467_2021_21963_MOESM3_ESM.xlsx": {
+      "md5": "21e1166f1ea7159d15cdfbcae3562afe",
+      "label": "Supplementary Data 1",
+      "manifest_row": "sources/raw/li2021/41467_2021_21963_MOESM3_ESM.xlsx",
+      "sheets_read": [
+        "PRMT7-regulated me1 (FC>2)",
+        "PRMT7-regulated me1 (abolished)",
+        "repeat 1",
+        "repeat 2"
+      ]
+    },
+    "41467_2021_21963_MOESM5_ESM.xlsx": {
+      "md5": "045ed22a66da85bda77fc366dbeae8da",
+      "label": "Supplementary Data 3",
+      "manifest_row": "sources/raw/li2021/41467_2021_21963_MOESM5_ESM.xlsx",
+      "sheets_read": [
+        "Raw data",
+        "SGC3027-regulated me1 (FC>2)",
+        "SGC3027regulated me1(abolished)"
+      ]
+    },
+    "41467_2021_21963_MOESM7_ESM.xlsx": {
+      "md5": "1e506d8ce029ea384a870fc320b5cf7a",
+      "label": "Supplementary Data 5",
+      "manifest_row": "sources/raw/li2021/41467_2021_21963_MOESM7_ESM.xlsx",
+      "sheets_read": [
+        "PRMT4-regulated me1 (FC>2)",
+        "PRMT4-regulated me1 (abolished)",
+        "PRMT4-regulated me2 (FC>2)",
+        "PRMT4-regulated me2 (abolished)",
+        "raw data"
+      ]
+    },
+    "41467_2021_21963_MOESM8_ESM.xlsx": {
+      "md5": "44de5d315be0f11fc32a635e5402d16d",
+      "label": "Supplementary Data 6",
+      "manifest_row": "sources/raw/li2021/41467_2021_21963_MOESM8_ESM.xlsx",
+      "sheets_read": [
+        "PRMT5-regulated me1 (FC>2)",
+        "PRMT5-regulated me1 (abolished)",
+        "PRMT5-regulated me2 (FC>2)",
+        "PRMT5-regulated me2 (abolished)",
+        "raw data"
+      ]
+    }
+  },
+  "canonical_fasta": {
+    "file": "uniprot_human_reviewed_2026_03.fasta",
+    "md5": "c75aad9d197cbba00f51063f65a96ac4",
+    "sequences": 20416
+  },
+  "orientation": {
+    "knockdown": "heavy = siRNA against the PRMT, light = control siRNA: \"Light and heavy labeled cells were transfected with control siRNA and siRNA specifically targeting PRMT4, 5 or 7, respectively\" (Methods, Cell labeling by SILAC); \"SILAC labeled wild-type (light) or PRMT7-knockdown (heavy) cells (Fig. 1d)\" (Results). The lists' ratio (siPRMTx/siCTL) is the export's Abundance Ratio (Heavy)/(Light) of the same peptide group",
+    "inhibitor": "heavy = SGC3027, light = untreated, as the paper reads its SGC3027 lists (\"Upon SGC3027 treatment, 503 MMA sites ... had at least two-fold reduction\"; the listed ratios are the export's H/L). The Methods sentence \"light and heavy labeled cells were treated with or without SGC3027, respectively\" read literally says the reverse; the list headers say siPRMT7/siCTL (copied from SD1). See sgc3027_orientation_check"
+  },
+  "log2_treated_control": "log2 of the export's Abundance Ratio (Heavy)/(Light) (of the listed ratio for list-only peptides)",
+  "normalisation": "None applied here. The export's Abundance Ratio (Heavy)/(Light) is Proteome Discoverer 2.2's (its normalisation settings are not stated). The lists add a protein-level ratio from a separate proteome and the \"normalized ratio\" = methylation ratio / protein ratio; the paper calls on the methylation ratio and uses the normalised one only to say how many changes protein levels explain (25 PRMT7 sites)",
+  "replicates": "Not stated in the paper for the SILAC methylomes. SD1 holds two exports, \"repeat 1\" (raw files siPRMT7-Methylation-SILAC-1 to 10 and -Dimethylation-SILAC-1 to 5, as 15 light/heavy sample pairs) and \"repeat 2\" (AD293-sIPRMT7-SILAC-..., one sample pair); the PRMT7 lists come from repeat 1 only. SD3 and SD5 hold one export each (one light/heavy sample pair)",
+  "adjusted_p": "Proteome Discoverer 2.2 \"Abundance Ratio Adj. P-Value: (Heavy) / (Light)\" of SD1 and SD3, as given; the paper does not describe it. Each export compares one SILAC pair of cultures (SD1 repeat 1 enters its 15 raw files as 15 sample pairs), so it is not a test over biological replicates. SD5 gives none. Every peptide group at the 0.01 floor (and at the 100 ceiling) has the same adjusted p within an export, so every abolished peptide passes the uniform rule: PRMT7_si [3.7647591725804e-17]; PRMT7_si_rep2 [4.85056113408151e-17]; PRMT7_SGC3027 [3.63233724653148e-17]",
+  "paper_rule": "\"297 MMA sites from 174 proteins had at least a two-fold reduction in mono-methylation signals\" and \"methylation at 176 MMA sites from 108 proteins was completely abolished when PRMT7 was knocked down\" (Results); sheet names \"(FC>2)\" and \"(abolished)\"; no statistical test is stated for the ratios",
+  "source_rule": "peptide H/L < 0.5 (more than twofold lower with the perturbation): decreased; abolished at the Proteome Discoverer floor H/L = 0.01. Site: decreased when the paper's lists (FC>2 or abolished, me1 or me2) name it, no_significant_change when a quantified peptide in the lists' scope carries it",
+  "uniform_rule": "peptide log2 treated/control <= -1 (decreased) or >= 1 (increased) with the export's adjusted p < 0.05; sites by scripts/peptide_calls.site_response (strict)",
+  "boundary": {
+    "groups_at_H/L_0.5": [
+      "PRMT7_SGC3027 Q96G74 RGGGVGVGGGGTGVGGGDRDR 1xMethyl [R1] H/L=0.5 listed=False",
+      "PRMT4_si Q8TD08 PSGRGAAPSLTSQAAAQVANQALIR 1xMethyl [R4] H/L=0.5 listed=False"
+    ],
+    "reading": "sheet names say FC>2 and the one group at exactly 0.5 whose site is listed by no other group is not listed: H/L < 0.5"
+  },
+  "comparisons": {
+    "PRMT7_si": {
+      "source": "Supplementary Data 1 (41467_2021_21963_MOESM3_ESM.xlsx)",
+      "export_sheet": "repeat 1",
+      "lists": [
+        "PRMT7-regulated me1 (FC>2)",
+        "PRMT7-regulated me1 (abolished)"
+      ],
+      "perturbation": "siPRMT7 / siCTL",
+      "enzyme": "PRMT7",
+      "kind": "knockdown",
+      "degrees_called_by_the_paper": [
+        "Rme1"
+      ],
+      "note": "SD1 repeat 1, the experiment the paper's PRMT7 lists come from",
+      "export": {
+        "master_protein_rows": 5223,
+        "peptide_group_rows": 48130,
+        "psm_rows": 366903,
+        "repeated_under_another_master": 29,
+        "peptide_groups": 45897,
+        "methyl_arginine_groups": 1438,
+        "adjusted_p_column": 1
+      },
+      "peptide_rows": 1209,
+      "peptide_rows_placed": 1198,
+      "placement": {
+        "peptide_ambiguous": 8,
+        "peptide_not_in_canonical": 3,
+        "placed_by_sequence": 20,
+        "position_verified": 1178
+      },
+      "peptide_call_source": {
+        "(none)": 86,
+        "decreased": 274,
+        "no_significant_change": 849
+      },
+      "peptide_call_uniform": {
+        "decreased": 242,
+        "increased": 148,
+        "no_significant_change": 819
+      },
+      "peptides_abolished": 180,
+      "list_rows": {
+        "PRMT7-regulated me1 (FC>2)": 297,
+        "PRMT7-regulated me1 (abolished)": 176
+      },
+      "listed_sites_as_reported": {
+        "fc2_or_abolished": 297,
+        "proteins": 174,
+        "abolished": 176,
+        "abolished_proteins": 108,
+        "abolished_not_in_fc2_lists": 0
+      },
+      "listed_sites_outcome": {
+        "not_staged:peptide_ambiguous": 2,
+        "staged_at_another_position (the canonical sequence differs from the one searched)": 2,
+        "staged_at_the_reported_position": 289,
+        "staged_on_the_other_entry_of_a_shared_peptide (the lists name both; the peptide is placed once)": 4
+      },
+      "listed_sites_remapped": [
+        "O75319 R366 -> R319",
+        "Q01433 R99 -> R45"
+      ],
+      "listed_sites_on_the_other_entry": [
+        "O14787 R802 (TNPO2) -> Q92973 R803",
+        "O14787 R809 (TNPO2) -> Q92973 R810",
+        "Q96E39 R368 (RBMXL1) -> P38159 R369",
+        "Q96E39 R372 (RBMXL1) -> P38159 R373"
+      ],
+      "listed_sites_not_staged": [
+        "P18583 R1031 (SON SMMSPMAER): not_staged:peptide_ambiguous",
+        "Q92804 R459 (TAF15 GGYGGDRGGGYGGDR): not_staged:peptide_ambiguous"
+      ],
+      "list_fc2_rows_with_normalised_ratio_above_0.5": {
+        "rows": 25,
+        "proteins": 20
+      },
+      "list_rows_where_normalised_differs_from_ratio_over_protein_ratio": 0,
+      "checks": {
+        "list_rows_assigned_to_several_groups": 0,
+        "list_rows_matching_several_groups": 2,
+        "list_rows_not_traced_to_a_group": 0,
+        "list_rows_traced_to_a_group": 473
+      },
+      "sites": 861,
+      "site_proteins": 448,
+      "sites_by_degree": {
+        "Rme1": 715,
+        "Rme1;Rme2": 85,
+        "Rme2": 61
+      },
+      "site_call_source": {
+        "(none)": 32,
+        "decreased": 291,
+        "no_significant_change": 538
+      },
+      "sites_decreased_source": 291,
+      "proteins_decreased_source": 173,
+      "sites_abolished_source": 173,
+      "proteins_abolished_source": 106,
+      "sites_quantified_in_scope": 829,
+      "sites_decreased_not_localised_by_search": 37,
+      "site_call_source_rule_peptides": {
+        "(none)": 32,
+        "decreased": 307,
+        "no_significant_change": 522
+      },
+      "sites_rule_decreased_not_listed": 16,
+      "sites_listed_rule_not_decreased": 0,
+      "site_call_uniform": {
+        "decreased": 245,
+        "increased": 112,
+        "mixed": 21,
+        "no_significant_change": 483
+      },
+      "site_call_uniform_single_site_peptides": {
+        "(none)": 169,
+        "decreased": 153,
+        "increased": 90,
+        "mixed": 5,
+        "no_significant_change": 444
+      },
+      "paper": {
+        "sites_detected": 1031,
+        "proteins_detected": 513,
+        "sites_quantified": 939,
+        "sites_decreased": 297,
+        "proteins_decreased": 174,
+        "sites_abolished": 176,
+        "proteins_abolished": 108,
+        "explained_by_protein_level": "25 sites from 20 proteins",
+        "where": "Results, \"Global profiling of PRMT7 substrates in HEK293 cells\"; Fig. 1e (MMA sites)"
+      },
+      "proteins_rule_decreased": 173,
+      "sites_quantified_counting_every_arginine_of_unlocalised_peptides": 947
+    },
+    "PRMT7_si_rep2": {
+      "source": "Supplementary Data 1 (41467_2021_21963_MOESM3_ESM.xlsx)",
+      "export_sheet": "repeat 2",
+      "lists": [],
+      "perturbation": "siPRMT7 / siCTL",
+      "enzyme": "PRMT7",
+      "kind": "knockdown",
+      "degrees_called_by_the_paper": [],
+      "note": "SD1 repeat 2, a second SILAC experiment: the paper reports no call from it, so call_source is empty",
+      "export": {
+        "master_protein_rows": 3868,
+        "peptide_group_rows": 31416,
+        "psm_rows": 258022,
+        "repeated_under_another_master": 46,
+        "peptide_groups": 29676,
+        "methyl_arginine_groups": 1819,
+        "adjusted_p_column": 1
+      },
+      "peptide_rows": 1506,
+      "peptide_rows_placed": 1489,
+      "placement": {
+        "peptide_ambiguous": 16,
+        "peptide_not_in_canonical": 1,
+        "placed_by_sequence": 31,
+        "position_verified": 1458
+      },
+      "peptide_call_source": {
+        "(none)": 1506
+      },
+      "peptide_call_uniform": {
+        "decreased": 269,
+        "increased": 137,
+        "no_significant_change": 1100
+      },
+      "peptides_abolished": 157,
+      "list_rows": {},
+      "listed_sites_as_reported": {
+        "fc2_or_abolished": 0,
+        "proteins": 0,
+        "abolished": 0,
+        "abolished_proteins": 0,
+        "abolished_not_in_fc2_lists": 0
+      },
+      "listed_sites_outcome": {},
+      "listed_sites_remapped": [],
+      "listed_sites_on_the_other_entry": [],
+      "listed_sites_not_staged": [],
+      "list_fc2_rows_with_normalised_ratio_above_0.5": {
+        "rows": 0,
+        "proteins": 0
+      },
+      "list_rows_where_normalised_differs_from_ratio_over_protein_ratio": 0,
+      "checks": {
+        "list_rows_not_traced_to_a_group": 0
+      },
+      "sites": 834,
+      "site_proteins": 435,
+      "sites_by_degree": {
+        "Rme1": 688,
+        "Rme1;Rme2": 109,
+        "Rme2": 37
+      },
+      "site_call_source": {
+        "(none)": 834
+      },
+      "sites_decreased_source": 0,
+      "proteins_decreased_source": 0,
+      "sites_abolished_source": 0,
+      "proteins_abolished_source": 0,
+      "sites_quantified_in_scope": 0,
+      "sites_decreased_not_localised_by_search": 0,
+      "site_call_source_rule_peptides": {
+        "(none)": 834
+      },
+      "sites_rule_decreased_not_listed": 0,
+      "sites_listed_rule_not_decreased": 0,
+      "site_call_uniform": {
+        "decreased": 186,
+        "increased": 96,
+        "mixed": 22,
+        "no_significant_change": 530
+      },
+      "site_call_uniform_single_site_peptides": {
+        "(none)": 157,
+        "decreased": 123,
+        "increased": 70,
+        "mixed": 4,
+        "no_significant_change": 480
+      },
+      "paper": {},
+      "sites_quantified_counting_every_arginine_of_unlocalised_peptides": 1231
+    },
+    "PRMT7_SGC3027": {
+      "source": "Supplementary Data 3 (41467_2021_21963_MOESM5_ESM.xlsx)",
+      "export_sheet": "Raw data",
+      "lists": [
+        "SGC3027-regulated me1 (FC>2)",
+        "SGC3027regulated me1(abolished)"
+      ],
+      "perturbation": "SGC3027 / untreated",
+      "enzyme": "PRMT7",
+      "kind": "inhibitor",
+      "degrees_called_by_the_paper": [
+        "Rme1"
+      ],
+      "note": "SGC3027 concentration and duration not given for the profiling",
+      "export": {
+        "master_protein_rows": 5127,
+        "peptide_group_rows": 52012,
+        "psm_rows": 339438,
+        "repeated_under_another_master": 49,
+        "peptide_groups": 49447,
+        "methyl_arginine_groups": 1631,
+        "adjusted_p_column": 1
+      },
+      "peptide_rows": 1345,
+      "peptide_rows_placed": 1326,
+      "placement": {
+        "peptide_ambiguous": 18,
+        "peptide_not_in_canonical": 1,
+        "placed_by_sequence": 26,
+        "position_verified": 1300
+      },
+      "peptide_call_source": {
+        "(none)": 153,
+        "decreased": 485,
+        "no_significant_change": 707
+      },
+      "peptide_call_uniform": {
+        "decreased": 522,
+        "increased": 135,
+        "no_significant_change": 688
+      },
+      "peptides_abolished": 305,
+      "list_rows": {
+        "SGC3027-regulated me1 (FC>2)": 503,
+        "SGC3027regulated me1(abolished)": 337
+      },
+      "listed_sites_as_reported": {
+        "fc2_or_abolished": 503,
+        "proteins": 274,
+        "abolished": 337,
+        "abolished_proteins": 194,
+        "abolished_not_in_fc2_lists": 0
+      },
+      "listed_sites_outcome": {
+        "not_staged:peptide_ambiguous": 4,
+        "staged_at_another_position (the canonical sequence differs from the one searched)": 5,
+        "staged_at_the_reported_position": 491,
+        "staged_on_the_other_entry_of_a_shared_peptide (the lists name both; the peptide is placed once)": 3
+      },
+      "listed_sites_remapped": [
+        "Q5XG87 R125 -> R145",
+        "Q9HCJ0 R313 -> R523",
+        "Q9HD15 R45 -> R33",
+        "Q9HD15 R46 -> R34",
+        "Q9P2M7 R188 -> R194"
+      ],
+      "listed_sites_on_the_other_entry": [
+        "Q92793 R2366 (CREBBP) -> Q09472 R2330",
+        "Q96E39 R125 (RBMXL1) -> P38159 R125",
+        "Q96E39 R144 (RBMXL1) -> P38159 R144"
+      ],
+      "listed_sites_not_staged": [
+        "Q92804 R459 (TAF15 SGGGYGGDRGGGYGGDR): not_staged:peptide_ambiguous",
+        "Q92804 R467 (TAF15 SGGGYGGDRGGGYGGDR): not_staged:peptide_ambiguous",
+        "Q92804 R475 (TAF15 GGYGGDRGGGYGGDRGGYGGDR): not_staged:peptide_ambiguous",
+        "Q92804 R483 (TAF15 GGYGGDRGGGYGGDRGGYGGDR): not_staged:peptide_ambiguous"
+      ],
+      "list_fc2_rows_with_normalised_ratio_above_0.5": {
+        "rows": 43,
+        "proteins": 34
+      },
+      "list_rows_where_normalised_differs_from_ratio_over_protein_ratio": 0,
+      "checks": {
+        "list_rows_assigned_to_several_groups": 6,
+        "list_rows_matching_several_groups": 8,
+        "list_rows_not_traced_to_a_group": 0,
+        "list_rows_traced_to_a_group": 840
+      },
+      "sites": 909,
+      "site_proteins": 447,
+      "sites_by_degree": {
+        "Rme1": 732,
+        "Rme1;Rme2": 126,
+        "Rme2": 51
+      },
+      "site_call_source": {
+        "(none)": 34,
+        "decreased": 496,
+        "no_significant_change": 379
+      },
+      "sites_decreased_source": 496,
+      "proteins_decreased_source": 273,
+      "sites_abolished_source": 330,
+      "proteins_abolished_source": 193,
+      "sites_quantified_in_scope": 875,
+      "sites_decreased_not_localised_by_search": 123,
+      "site_call_source_rule_peptides": {
+        "(none)": 34,
+        "decreased": 504,
+        "no_significant_change": 371
+      },
+      "sites_rule_decreased_not_listed": 8,
+      "sites_listed_rule_not_decreased": 0,
+      "site_call_uniform": {
+        "decreased": 490,
+        "increased": 75,
+        "mixed": 31,
+        "no_significant_change": 313
+      },
+      "site_call_uniform_single_site_peptides": {
+        "(none)": 241,
+        "decreased": 301,
+        "increased": 69,
+        "mixed": 7,
+        "no_significant_change": 291
+      },
+      "paper": {
+        "sites_detected": 1126,
+        "proteins_detected": 524,
+        "sites_quantified": 1027,
+        "sites_decreased": 503,
+        "proteins_decreased": 274,
+        "where": "Results, \"Global profiling of PRMT7 substrates in HEK293 cells\"; Supplementary Fig. 1b (MMA sites; no abolished count in the text)"
+      },
+      "proteins_rule_decreased": 273,
+      "sites_quantified_counting_every_arginine_of_unlocalised_peptides": 1036
+    },
+    "PRMT4_si": {
+      "source": "Supplementary Data 5 (41467_2021_21963_MOESM7_ESM.xlsx)",
+      "export_sheet": "raw data",
+      "lists": [
+        "PRMT4-regulated me1 (FC>2)",
+        "PRMT4-regulated me1 (abolished)",
+        "PRMT4-regulated me2 (FC>2)",
+        "PRMT4-regulated me2 (abolished)"
+      ],
+      "perturbation": "siPRMT4 / siCTL",
+      "enzyme": "CARM1 (PRMT4)",
+      "kind": "knockdown",
+      "degrees_called_by_the_paper": [
+        "Rme1",
+        "Rme2"
+      ],
+      "note": "MMA then ADMA antibody; the export gives no adjusted p",
+      "export": {
+        "master_protein_rows": 5865,
+        "peptide_group_rows": 66957,
+        "repeated_under_another_master": 27,
+        "peptide_groups": 63974,
+        "methyl_arginine_groups": 2012,
+        "adjusted_p_column": 0
+      },
+      "peptide_rows": 1484,
+      "peptide_rows_placed": 1470,
+      "placement": {
+        "peptide_ambiguous": 10,
+        "peptide_not_in_canonical": 4,
+        "placed_by_sequence": 24,
+        "position_verified": 1446
+      },
+      "peptide_call_source": {
+        "decreased": 775,
+        "no_significant_change": 709
+      },
+      "peptide_call_uniform": {
+        "(no adjusted p)": 1484
+      },
+      "peptides_abolished": 690,
+      "list_rows": {
+        "PRMT4-regulated me1 (FC>2)": 572,
+        "PRMT4-regulated me1 (abolished)": 507,
+        "PRMT4-regulated me2 (FC>2)": 304,
+        "PRMT4-regulated me2 (abolished)": 273
+      },
+      "listed_sites_as_reported": {
+        "fc2_or_abolished": 660,
+        "proteins": 301,
+        "abolished": 592,
+        "abolished_proteins": 276,
+        "abolished_not_in_fc2_lists": 0
+      },
+      "listed_sites_outcome": {
+        "not_staged:peptide_ambiguous": 1,
+        "not_staged:peptide_not_in_canonical": 2,
+        "staged_at_another_position (the canonical sequence differs from the one searched)": 6,
+        "staged_at_the_reported_position": 646,
+        "staged_on_the_other_entry_of_a_shared_peptide (the lists name both; the peptide is placed once)": 5
+      },
+      "listed_sites_remapped": [
+        "O75319 R366 -> R319",
+        "Q14669 R422 -> R470",
+        "Q8NFD5 R1590 -> R1673",
+        "Q8NFD5 R404 -> R487",
+        "Q8NI36 R800 -> R744",
+        "Q96AP0 R437 -> R351"
+      ],
+      "listed_sites_on_the_other_entry": [
+        "P63162 R236 (SNRPN) -> P14678 R236",
+        "P63162 R239 (SNRPN) -> P14678 R239",
+        "Q92793 R2366 (CREBBP) -> Q09472 R2330",
+        "Q96HA1 R229 (POM121) -> A8CG34 R206",
+        "Q9H0L4 R338 (CSTF2T) -> P33240 R330"
+      ],
+      "listed_sites_not_staged": [
+        "P18583 R1031 (SON SMMSPMAER): not_staged:peptide_ambiguous",
+        "Q03518 R30 (TAP1 APPSFPPPAASRGGLGGTR): not_staged:peptide_not_in_canonical",
+        "Q03518 R37 (TAP1 APPSFPPPAASRGGLGGTR): not_staged:peptide_not_in_canonical"
+      ],
+      "list_fc2_rows_with_normalised_ratio_above_0.5": {
+        "rows": 26,
+        "proteins": 14
+      },
+      "list_rows_where_normalised_differs_from_ratio_over_protein_ratio": 0,
+      "checks": {
+        "list_rows_assigned_to_several_groups": 16,
+        "list_rows_matching_several_groups": 24,
+        "list_rows_not_traced_to_a_group": 0,
+        "list_rows_traced_to_a_group": 1656
+      },
+      "sites": 1064,
+      "site_proteins": 491,
+      "sites_by_degree": {
+        "Rme1": 717,
+        "Rme1;Rme2": 227,
+        "Rme2": 120
+      },
+      "site_call_source": {
+        "decreased": 652,
+        "no_significant_change": 412
+      },
+      "sites_decreased_source": 652,
+      "proteins_decreased_source": 299,
+      "sites_abolished_source": 585,
+      "proteins_abolished_source": 273,
+      "sites_quantified_in_scope": 1064,
+      "sites_decreased_not_localised_by_search": 84,
+      "site_call_source_rule_peptides": {
+        "decreased": 654,
+        "no_significant_change": 410
+      },
+      "sites_rule_decreased_not_listed": 2,
+      "sites_listed_rule_not_decreased": 0,
+      "site_call_uniform": {
+        "(no adjusted p)": 1064
+      },
+      "site_call_uniform_single_site_peptides": {
+        "(none)": 1064
+      },
+      "paper": {
+        "sites_detected": 1504,
+        "mma_sites_detected": 1036,
+        "adma_sites_detected": 588,
+        "proteins_detected": 665,
+        "sites_decreased": 660,
+        "proteins_decreased": 301,
+        "sites_abolished": 592,
+        "proteins_abolished": 276,
+        "where": "Results, \"Features of arginine methylation mediated by PRMT members\"; Fig. 3a (mono- and dimethyl sites after removing duplicates; the quantified count is in Fig. 3a only)"
+      },
+      "proteins_rule_decreased": 299,
+      "sites_quantified_counting_every_arginine_of_unlocalised_peptides": 1184
+    },
+    "PRMT5_si": {
+      "source": "Supplementary Data 6 (41467_2021_21963_MOESM8_ESM.xlsx)",
+      "export_sheet": "",
+      "lists": [
+        "PRMT5-regulated me1 (FC>2)",
+        "PRMT5-regulated me1 (abolished)",
+        "PRMT5-regulated me2 (FC>2)",
+        "PRMT5-regulated me2 (abolished)"
+      ],
+      "perturbation": "siPRMT5 / siCTL",
+      "enzyme": "PRMT5",
+      "kind": "knockdown",
+      "degrees_called_by_the_paper": [
+        "Rme1",
+        "Rme2"
+      ],
+      "note": "MMA then SDMA antibody; the lists only (the workbook's raw data sheet is not their export), so no unlisted site is quantified",
+      "export": {},
+      "peptide_rows": 360,
+      "peptide_rows_placed": 359,
+      "placement": {
+        "peptide_ambiguous": 1,
+        "position_verified": 359
+      },
+      "peptide_call_source": {
+        "decreased": 360
+      },
+      "peptide_call_uniform": {
+        "(no adjusted p)": 360
+      },
+      "peptides_abolished": 206,
+      "list_rows": {
+        "PRMT5-regulated me1 (FC>2)": 375,
+        "PRMT5-regulated me1 (abolished)": 208,
+        "PRMT5-regulated me2 (FC>2)": 154,
+        "PRMT5-regulated me2 (abolished)": 106
+      },
+      "listed_sites_as_reported": {
+        "fc2_or_abolished": 428,
+        "proteins": 244,
+        "abolished": 261,
+        "abolished_proteins": 155,
+        "abolished_not_in_fc2_lists": 0
+      },
+      "listed_sites_outcome": {
+        "staged_at_the_reported_position": 428
+      },
+      "listed_sites_remapped": [],
+      "listed_sites_on_the_other_entry": [],
+      "listed_sites_not_staged": [],
+      "list_fc2_rows_with_normalised_ratio_above_0.5": {
+        "rows": 25,
+        "proteins": 20
+      },
+      "list_rows_where_normalised_differs_from_ratio_over_protein_ratio": 0,
+      "checks": {
+        "list_rows_not_traced_to_a_group": 843
+      },
+      "sites": 428,
+      "site_proteins": 244,
+      "sites_by_degree": {
+        "Rme1": 275,
+        "Rme1;Rme2": 99,
+        "Rme2": 54
+      },
+      "site_call_source": {
+        "decreased": 428
+      },
+      "sites_decreased_source": 428,
+      "proteins_decreased_source": 244,
+      "sites_abolished_source": 259,
+      "proteins_abolished_source": 155,
+      "sites_quantified_in_scope": 428,
+      "sites_decreased_not_localised_by_search": 0,
+      "site_call_source_rule_peptides": {
+        "decreased": 428
+      },
+      "sites_rule_decreased_not_listed": 0,
+      "sites_listed_rule_not_decreased": 0,
+      "site_call_uniform": {
+        "(no adjusted p)": 428
+      },
+      "site_call_uniform_single_site_peptides": {
+        "(none)": 428
+      },
+      "paper": {
+        "sites_detected": 1216,
+        "mma_sites_detected": 1131,
+        "sdma_sites_detected": 366,
+        "proteins_detected": 585,
+        "sites_decreased": 429,
+        "proteins_decreased": 244,
+        "sites_abolished": 238,
+        "proteins_abolished": 146,
+        "where": "Results, \"Features of arginine methylation mediated by PRMT members\"; Fig. 3a"
+      },
+      "proteins_rule_decreased": 244
+    }
+  },
+  "dropped": {
+    "PRMT7_si": {
+      "groups_not_placed:peptide_ambiguous": 8,
+      "groups_not_placed:peptide_not_in_canonical": 3,
+      "groups_not_quantified (no H/L)": 229,
+      "list_rows_on_groups_not_placed": 3,
+      "placed_groups_without_a_site (marks not localised, not listed)": 145
+    },
+    "PRMT7_si_rep2": {
+      "groups_not_placed:peptide_ambiguous": 16,
+      "groups_not_placed:peptide_not_in_canonical": 1,
+      "groups_not_quantified (no H/L)": 313,
+      "list_rows_on_groups_not_placed": 0,
+      "placed_groups_without_a_site (marks not localised, not listed)": 388
+    },
+    "PRMT7_SGC3027": {
+      "groups_not_placed:peptide_ambiguous": 18,
+      "groups_not_placed:peptide_not_in_canonical": 1,
+      "groups_not_quantified (no H/L)": 286,
+      "list_rows_on_groups_not_placed": 8,
+      "placed_groups_without_a_site (marks not localised, not listed)": 210
+    },
+    "PRMT4_si": {
+      "groups_not_placed:peptide_ambiguous": 10,
+      "groups_not_placed:peptide_not_in_canonical": 4,
+      "groups_not_quantified (no H/L)": 528,
+      "list_rows_on_groups_not_placed": 9,
+      "placed_groups_without_a_site (marks not localised, not listed)": 151
+    },
+    "PRMT5_si": {
+      "groups_not_quantified (no H/L)": 0,
+      "list_peptides_not_placed:peptide_ambiguous": 1,
+      "list_rows_on_peptides_not_placed": 4
+    }
+  },
+  "sgc3027_orientation_check": {
+    "question": "is the SGC3027 H/L treated/untreated? (the Methods sentence read literally says untreated/treated)",
+    "with_PRMT7_si": {
+      "groups_in_both": 455,
+      "spearman": 0.057,
+      "both_decreased": 39,
+      "both_increased": 6,
+      "twofold_same_direction": 45,
+      "twofold_opposite_direction": 22
+    },
+    "with_PRMT7_si_rep2": {
+      "groups_in_both": 894,
+      "spearman": 0.004,
+      "both_decreased": 63,
+      "both_increased": 20,
+      "twofold_same_direction": 83,
+      "twofold_opposite_direction": 42
+    },
+    "reading": "more groups change twofold the same way as with siPRMT7 than the opposite way: heavy = SGC3027, as the paper reads it"
+  },
+  "prmt7_repeats": {
+    "repeat1_vs_repeat2": {
+      "groups_in_both": 473,
+      "spearman": 0.079,
+      "both_decreased": 24,
+      "both_increased": 4,
+      "twofold_same_direction": 28,
+      "twofold_opposite_direction": 15
+    },
+    "note": "the two siPRMT7 exports agree weakly; the paper's lists use repeat 1 only"
+  },
+  "sd6_raw_data_check": {
+    "sheet": "raw data",
+    "master_proteins": 10282,
+    "peptide_groups": 185828,
+    "methyl_arginine_groups": 422,
+    "listed_peptides": 337,
+    "listed_peptides_with_a_methyl_arginine_group_here": 34,
+    "list_rows": 843,
+    "list_rows_whose_ratio_a_group_here_has": 26,
+    "conclusion": "not the export the PRMT5 lists come from; not used"
+  },
+  "shared_peptides_placed_on_first_master": 95
+}

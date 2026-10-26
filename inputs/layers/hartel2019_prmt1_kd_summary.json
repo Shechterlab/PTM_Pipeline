@@ -1,0 +1,197 @@
+{
+  "study": "Hartel 2019",
+  "doi": "10.1074/mcp.RA119.001625",
+  "pride": "PXD012357",
+  "licence": "CC BY 4.0 (Crossref, from 2020-09-15); PRIDE PXD012357 CC0",
+  "comparison": "HEK293T shPRMT1 / shControl (stable shRNA), 2 biological replicates each, per enrichment",
+  "test": "Perseus 1.6.2.3 two-sample t test with permutation-based FDR, q < 0.05, S0 = 0.5, on log2 abundances normalised to sample medians; peptides quantified in all four samples (2 shControl, 2 shPRMT1); ptmRS localisation >= 75 % (methods: Identification and Quantitation of Peptides; Experimental Design and Statistical Rationale)",
+  "rule": "peptide Perseus permutation-based FDR q < 0.05 as given (S0 = 0.5 inside the test; no fold-change minimum): decreased for log2 shPRMT1/shControl < 0, increased for > 0; sites by scripts/peptide_calls.site_response",
+  "p_and_q": "as given in Tables S8-S15: p = 10^-(-log10(Perseus p-value)), q = Perseus t-test q value; nothing recomputed",
+  "inputs": {
+    "153496_0_supp_351381_ptfjl4.xlsx": {
+      "md5": "910609263b161945f6d9f1c1ca768f9c",
+      "tables": [
+        "S8",
+        "S9",
+        "S10",
+        "S11",
+        "S12",
+        "S13",
+        "S14",
+        "S15"
+      ],
+      "manifest_row": "sources/raw/hartel2019/153496_0_supp_351381_ptfjl4.xlsx"
+    }
+  },
+  "canonical_fasta": {
+    "file": "uniprot_human_reviewed_2026_03.fasta",
+    "md5": "c75aad9d197cbba00f51063f65a96ac4",
+    "sequences": 20416
+  },
+  "rows_read": {
+    "S8": 78,
+    "S9": 247,
+    "S10": 382,
+    "S11": 194,
+    "S12": 73,
+    "S15": 14,
+    "S13": 39,
+    "S14": 45
+  },
+  "not_staged": {
+    "lysine_tables": {
+      "S13": {
+        "rows": 39,
+        "flagged_significant": 1,
+        "flagged": [
+          "HMGN2 P05204 1xMethyl [K40]"
+        ]
+      },
+      "S14": {
+        "rows": 45,
+        "flagged_significant": 0,
+        "flagged": []
+      }
+    },
+    "why": "lysine methylation (S13 SCX mono/di/tri-methyl K, S14 pan-methyl-K IAP): no methylarginine"
+  },
+  "placement": {
+    "accession_not_in_canonical_fasta": 1,
+    "peptide_ambiguous": 8,
+    "peptide_not_in_canonical": 36,
+    "placed_by_sequence": 213,
+    "position_verified": 727,
+    "sites_differ_from_table": 3
+  },
+  "dropped": {
+    "flagged_peptides_without_sites:peptide_ambiguous": 1,
+    "flagged_peptides_without_sites:peptide_not_in_canonical": 3,
+    "peptides_without_sites:accession_not_in_canonical_fasta": 1,
+    "peptides_without_sites:peptide_ambiguous": 8,
+    "peptides_without_sites:peptide_not_in_canonical": 36,
+    "peptides_without_sites:sites_differ_from_table": 3
+  },
+  "checks": {
+    "canonical_master_start_differs_from_table": 3,
+    "sites_differ_from_table": 3,
+    "sites_match_table": 939,
+    "sites_not_checked:no_table_sites_for_first_master": 1
+  },
+  "placed_peptides_shared_with_other_entries": 18,
+  "same_peptide_and_marks_in_two_scx_fractions": 8,
+  "peptides": {
+    "S8": 78,
+    "S9": 247,
+    "S10": 382,
+    "S11": 194,
+    "S12": 73,
+    "S15": 14
+  },
+  "peptide_calls": {
+    "S8": {
+      "increased": 5,
+      "no_significant_change": 73
+    },
+    "S9": {
+      "increased": 2,
+      "no_significant_change": 245
+    },
+    "S10": {
+      "decreased": 58,
+      "increased": 55,
+      "no_significant_change": 269
+    },
+    "S11": {
+      "increased": 4,
+      "no_significant_change": 190
+    },
+    "S12": {
+      "increased": 3,
+      "no_significant_change": 70
+    },
+    "S15": {
+      "decreased": 2,
+      "increased": 2,
+      "no_significant_change": 10
+    }
+  },
+  "peptides_paper_flag": {
+    "S8": 5,
+    "S9": 2,
+    "S10": 114,
+    "S11": 4,
+    "S12": 3,
+    "S15": 4
+  },
+  "q_and_p": {
+    "flagged_peptides_with_p_at_least_0.05": 44,
+    "flagged_peptides_p_max": 0.17441642478119293,
+    "unflagged_peptides_with_p_below_0.05": 82,
+    "peptides_with_q_0": 64,
+    "bh_over_p_within_table_below_0.05": {
+      "S8": 0,
+      "S9": 0,
+      "S10": 0,
+      "S11": 0,
+      "S12": 2,
+      "S15": 0
+    },
+    "note": "Perseus q (permutation-based FDR with S0 = 0.5, 2 against 2 samples) is not BH of p: it weighs the fold change, so peptides with large log2 pass at nominal p above 0.05, and BH over the given p would keep few"
+  },
+  "flag_and_q_disagree": [
+    "S10 GGGFGGNDNFGRGGNFSGR 1xMethyl [R12(100)] q=0.0503704 flag=+"
+  ],
+  "sites": 751,
+  "site_proteins": 355,
+  "site_calls": {
+    "decreased": 61,
+    "increased": 68,
+    "no_significant_change": 622
+  },
+  "site_calls_single_site_peptides": {
+    "(none)": 258,
+    "decreased": 51,
+    "increased": 42,
+    "no_significant_change": 400
+  },
+  "site_calls_rme1": {
+    "(not Rme1)": 344,
+    "decreased": 58,
+    "increased": 57,
+    "no_significant_change": 292
+  },
+  "site_calls_rme2": {
+    "(not Rme2)": 301,
+    "decreased": 3,
+    "increased": 17,
+    "no_significant_change": 430
+  },
+  "site_calls_source_flag": {
+    "decreased": 61,
+    "increased": 68,
+    "no_significant_change": 622
+  },
+  "changed_sites": {
+    "q_rule": 129,
+    "q_rule_proteins": 73,
+    "paper_flag": 129,
+    "paper_flag_proteins": 73
+  },
+  "paper": {
+    "arginine_sites_changed": 127,
+    "proteins": 78,
+    "mma_changed": 119,
+    "mma_changed_scx": 5,
+    "mma_changed_iap": 114,
+    "mma_peptides_increased": 61,
+    "mma_peptides_decreased": 58,
+    "dma_peptides_increased": {
+      "S9": 2,
+      "S11": 4,
+      "S12": 3
+    },
+    "mixed_peptides_changed": 4,
+    "lysine_sites_changed": 1,
+    "note": "The Results count the 119 as peptides (\"Of the total 119 significantly changing methyl peptides, 5 came from SCX enrichment, and 114 from IAP enrichment\"); the Discussion calls them sites (\"119 of 127, or 93.7%\")"
+  }
+}

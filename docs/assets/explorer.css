@@ -2215,3 +2215,15 @@ ul.tight li { margin: 0.15rem 0; }
 .fig-block, .dm-chart { margin: 0.7rem 0 0.5rem; min-width: 0; }
 .fig-head { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin: 0 0 0.3rem; flex-wrap: wrap; }
 .fig-head .flabel { margin: 0; }
+
+/* Writer perturbations on the protein page: one mark per site and perturbation */
+.pert-tbl th[scope="col"] { font-size: 0.8rem; font-weight: 600; white-space: normal; min-width: 5.5rem; max-width: 8rem; padding: 0 0.6rem 0.3rem; text-align: center; vertical-align: bottom; }
+.pert-tbl th[scope="row"] { font-family: var(--font-mono); font-weight: 500; white-space: nowrap; }
+.pert-tbl td.pert-c { text-align: center; font-size: 0.95rem; cursor: default; }
+.pert-tbl td.pert-c sup { font-size: 0.65rem; margin-left: 1px; }
+.pmark { font-style: normal; }
+.pmark.down { color: var(--t-down-3); }
+.pmark.up { color: var(--t-up-3); }
+.pmark.mix { color: var(--ink-2); }
+.pmark.ns { color: var(--muted); }
+.pert-key { display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; font-size: 0.8rem; color: var(--muted); margin: 0.4rem 0; }

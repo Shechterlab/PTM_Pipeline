@@ -62,6 +62,9 @@ run_analyses() {
   step "multiscale density (scripts/28)" python "$CODE/scripts/28_multiscale_methylarg_density_null.py" \
     --sites "$WORK/domain_context/sites_with_domain_context.tsv" --fasta "$FASTA" --permutations 10000 \
     --outdir "$WORK/methyl_arg_clustering"
+  # scripts/25 derives its cluster examples from the site context only when the file is absent: remove it, or a second
+  # run in the same WORK_ROOT reads the sites of the first
+  rm -f "$WORK/domain_context/domain_edge_class_20aa_cluster_examples.tsv"
   step "domain-cluster architectures (scripts/25)" python "$CODE/scripts/25_classify_domain_cluster_architectures.py" \
     --clusters "$WORK/domain_context/domain_edge_class_20aa_cluster_examples.tsv" \
     --site-context "$WORK/domain_context/sites_with_domain_context.tsv" --outdir "$WORK/domain_context" --cluster-threshold 3
