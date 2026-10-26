@@ -1,0 +1,51 @@
+{
+  "study": "Lu 2024",
+  "doi": "10.1021/acs.jproteome.3c00724",
+  "rule": "peptide log2 EPZ015666/control (= -LH) <= -1 (down) or >= 1 (up) with nominal p < 0.05 (scripts/41 call); reproduces 255 of the 256 sites of Table 1.4 and adds none",
+  "treated_channel": "heavy (inferred: Table 1.5 calls the Table 1.4 sites downregulated, and they have light > heavy)",
+  "input": "pr3c00724_si_002.xlsx",
+  "input_md5": "4fa5bb97161c48245bd4d2688b2e16c6",
+  "input_sha256": "abcc475be6fd1ea9012aae8785049fe01b75175de9e67df7323acf83a375c038",
+  "canonical_fasta": "uniprot_human_reviewed_2026_03.fasta",
+  "peptides": 391,
+  "placement": {
+    "position_verified": 387,
+    "accession_not_in_canonical_fasta": 2,
+    "placed_by_sequence": 2
+  },
+  "peptide_calls": {
+    "down": 264,
+    "unchanged": 121,
+    "not_quantified": 5,
+    "up": 1
+  },
+  "sites": {
+    "down": 253,
+    "unchanged": 79,
+    "mixed": 2,
+    "up": 1
+  },
+  "unique_sites": 335,
+  "sites_rme2": 331,
+  "paper_table_1_2_sites": 335,
+  "paper_table_1_4_sites": 256,
+  "paper_table_1_2_not_placed_on_canonical": [
+    "H3BRQ4:R40"
+  ],
+  "paper_table_1_4_on_canonical": 255,
+  "paper_table_1_2_sites_without_a_quantified_peptide": [
+    "O14979:R408",
+    "Q13151:R291",
+    "Q7Z5P9:R2504"
+  ],
+  "rme2_sites_down_or_mixed_by_rule": 254,
+  "rule_vs_table_1_4": {
+    "both": 254,
+    "rule_only": [],
+    "table_1_4_only": [
+      "P19338:R691"
+    ]
+  },
+  "abundance_minimum_of_table": 70053.1796875,
+  "peptides_with_an_abundance_at_the_minimum": 182
+}

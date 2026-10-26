@@ -9,11 +9,14 @@ them, and the [Methylarginine Site Explorer](https://shechterlab.github.io/PTM_P
 
 | Version | Sites | Data | Website |
 |---|---|---|---|
-| **v1.3.1** (current) | 11,601 sites on 4,432 proteins, and 2,406 lower-confidence sites | [`releases/v1.3.1/`](releases/v1.3.1/) ([what changed](releases/v1.3.1/CHANGES.md)) | [`docs/`](docs/) |
+| **v1.4.0** (current) | 11,632 sites on 4,439 proteins, and 2,396 lower-confidence sites | [`releases/v1.4.0/`](releases/v1.4.0/) ([what changed](releases/v1.4.0/CHANGES.md)) | [`docs/`](docs/) |
+| v1.3.1 | 11,601 sites on 4,432 proteins, and 2,406 lower-confidence sites | [`releases/v1.3.1/`](releases/v1.3.1/) ([what changed](releases/v1.3.1/CHANGES.md)) | [`docs/v1.3.1/`](docs/v1.3.1/) |
 | v1.3.0 | 11,601 sites on 4,432 proteins, and 2,406 lower-confidence sites | [`releases/v1.3.0/`](releases/v1.3.0/) ([what changed](releases/v1.3.0/CHANGES.md)) | [`docs/v1.3.0/`](docs/v1.3.0/) |
 | v1.2.0 | 11,601 sites on 4,432 proteins, and 2,406 lower-confidence sites | [`releases/v1.2.0/`](releases/v1.2.0/) ([what changed](releases/v1.2.0/CHANGES.md)) | [`docs/v1.2.0/`](docs/v1.2.0/) |
 | v1.1.0 | 13,365 sites on 4,723 proteins, and 6 pending | [`releases/v1.1.0/`](releases/v1.1.0/) ([what changed](releases/v1.1.0/CHANGES.md)) | [`docs/v1.1.0/`](docs/v1.1.0/) |
 | v1.0.0 (published with the paper) | 13,719 sites on 5,090 accessions | [`releases/v1.0.0/`](releases/v1.0.0/) | [`docs/v1.0.0/`](docs/v1.0.0/) |
+
+v1.4.0 adds 31 sites, from Lu et al. 2024 (10 of them lower-confidence sites in v1.3.1), and five annotation layers that describe sites without adding any: the responses to PRMT knockouts, knockdowns and inhibitors (CARM1, PRMT1, PRMT5 and PRMT7, from five studies, each site called at twofold and q < 0.05 and by the published criteria), cancer genetics (DepMap dependencies, and the changes of each methylarginine in DepMap cell lines and in TCGA tumours, the MC3 calls from the GDC), Reactome pathways, PaxDb protein abundance, and experiments on the function of a site's methylation curated from the literature.
 
 v1.3.1 keeps the sites of v1.3.0 and corrects how some of their evidence is called, after an outside review: one rule reads the PRMT inhibitor and CARM1 knockout responses at the level of the peptides measured (with the call from peptides carrying no other methylarginine beside it), RBR-ID is called on its biological samples with an adjusted p value (the published rule kept as a sensitivity test), and each site names how it is localised. Proteins without a site get 3D structures and partner networks on the website. [`ROADMAP.md`](ROADMAP.md) lists what comes next.
 
@@ -32,7 +35,7 @@ dictionary and a record of what changed since the release before.
 | Folder | Holds |
 |---|---|
 | [`releases/`](releases/) | the site union, one folder per version |
-| [`docs/`](docs/) | the Methylarginine Site Explorer (GitHub Pages); `docs/v1.0.0/` is the published version and `docs/v1.1.0/`, `docs/v1.2.0/` and `docs/v1.3.0/` the releases since, unchanged |
+| [`docs/`](docs/) | the Methylarginine Site Explorer (GitHub Pages); `docs/v1.0.0/` is the published version and `docs/v1.1.0/`, `docs/v1.2.0/`, `docs/v1.3.0/` and `docs/v1.3.1/` the releases since, unchanged |
 | [`inputs/`](inputs/) | every file a release and the website are built from, with `MANIFEST.tsv` |
 | [`provenance/`](provenance/) | where the sites come from, in one page |
 | [`scripts/`](scripts/) | the pipeline, numbered by step |
@@ -40,6 +43,7 @@ dictionary and a record of what changed since the release before.
 | [`hpc/`](hpc/) | the release build, and the cluster scripts of the published run |
 | [`envs/`](envs/) | the conda environment, and the resolved Python packages of the latest build |
 | [`ROADMAP.md`](ROADMAP.md) | what is planned after the current release |
+| [`ADDING_A_SOURCE.md`](ADDING_A_SOURCE.md) | how to add a data source: staging, registering a layer (`scripts/release_layers.py`), the website, checks |
 
 ## Data staging
 
@@ -64,7 +68,7 @@ redistributed. A derived table must match its MD5 in the manifest, or the build 
 ```bash
 conda env create -n ptm_pipeline -f envs/ptm_pipeline_hpc.yml
 conda activate ptm_pipeline
-PREVIOUS=releases/v1.3.0 bash hpc/build_release.sh v1.3.1 WORK_ROOT
+PREVIOUS=releases/v1.3.1 bash hpc/build_release.sh v1.4.0 WORK_ROOT
 ```
 
 The environment file gives version ranges. The exact Python packages of the latest build are in

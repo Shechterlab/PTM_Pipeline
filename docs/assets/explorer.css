@@ -148,6 +148,8 @@ button, input, select { font: inherit; color: inherit; }
 .hero .lede p { margin: 0; }
 .hero .lede .lede-cite { font-size: 0.82rem; color: rgba(255, 255, 255, 0.72); }
 .hero .lede .lede-note { font-size: 0.8rem; line-height: 1.45; color: rgba(255, 255, 255, 0.72); }
+/* what the site holds, in one line */
+.hero .lede .lede-what { font-size: 0.98rem; line-height: 1.5; color: rgba(255, 255, 255, 0.92); }
 .hero .lede .cite-short { display: none; }
 @media (max-width: 640px) {
   .hero .lede .cite-long { display: none; }
@@ -1461,6 +1463,9 @@ body.slim .hero { border-bottom-width: 3px; }
 /* The selection: every search term and filter, joined by "and" because a site must match them all. */
 .scope .and { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
 .scope-tools { display: flex; align-items: center; gap: 0.35rem; margin-left: auto; }
+.scope-apart { font-weight: 600; color: var(--accent-dark); white-space: nowrap; text-decoration-color: var(--accent); }
+.scope-apart:hover { color: var(--accent); }
+.rail .scope-apart { display: none; }
 .saved-menu { position: relative; }
 .saved-menu > summary { list-style: none; }
 .saved-menu > summary::-webkit-details-marker { display: none; }
@@ -1979,6 +1984,7 @@ details.fold.p-row > summary:has(> .fold-pic:not(:empty)) .fold-sum { white-spac
 .ui-a .hero .lede { display: flex; flex-wrap: wrap; gap: 0.2rem 0.9rem; align-items: baseline; }
 .ui-a .hero .lede .cite-long { display: none; }
 .ui-a .hero .lede .cite-short { display: inline; }
+.ui-a .hero .lede .lede-what { flex-basis: 100%; }
 .ui-a .hero-art { top: 5.6rem; height: 8.6rem; }
 .a-key-line { margin: 0.1rem 0 0; }
 .a-more { margin: 0.55rem 0 0; font-size: 0.86rem; }
@@ -2182,3 +2188,48 @@ ul.tight li { margin: 0.15rem 0; }
 /* More ProtVar partners in an evidence card */
 .pred-more { margin: 0.2rem 0 0 0.9rem; }
 .pred-more > summary { cursor: pointer; color: var(--muted); font-size: 0.85em; }
+/* Cancer cell lines and tumours (DepMap, PRISM, TCGA): two columns on wide cards, the PRMT panel under them */
+.dm-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.1rem; margin-top: 0.4rem; }
+.dm-grid > *, .dm-prmt { min-width: 0; }
+.dm-sec h4 { margin: 0 0 0.4rem; font-size: 0.92rem; }
+.dm-prmt { margin-top: 1.2rem; padding-top: 0.9rem; border-top: 1px solid var(--line); }
+.dm-comp { margin: 1rem 0 0.2rem; font-size: 0.88rem; }
+.dm-call { margin: 0 0 0.3rem; }
+.dm-ce { background: var(--teal-wash); color: var(--teal); border-color: transparent; }
+.dm-hist, .dm-boxes { display: block; width: 100%; height: auto; max-width: 34rem; margin: 0.2rem 0 0.4rem; font-family: var(--font-body); }
+.dm-bar { fill: var(--teal-600); }
+.dm-bar:hover { fill: var(--teal); }
+.dm-ref { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+.dm-reft, .dm-tick { font-size: 11px; fill: var(--muted); }
+.dm-axt { font-size: 11.5px; fill: var(--ink-2); }
+.dm-axis { stroke: var(--line-strong); }
+.dm-blab { font-size: 12px; fill: var(--ink-2); }
+.dm-box line { stroke: var(--muted); stroke-width: 1.4; }
+.dm-box rect { fill: var(--line-strong); }
+.dm-box .dm-med { stroke: var(--ink); stroke-width: 2.2; }
+.dm-box.dm-del rect { fill: var(--accent); fill-opacity: 0.55; }
+.dm-box.dm-int rect { fill: var(--teal-600); fill-opacity: 0.55; }
+.dm-box.dm-sel rect { fill: var(--accent); fill-opacity: 0.6; }
+.dm-box.dm-meth rect { fill: var(--teal-600); fill-opacity: 0.55; }
+.dm-tbl th[scope="row"] { font-weight: 500; text-align: left; }
+
+.dm-tbl table { font-size: 0.84rem; }
+.dm-tbl td { vertical-align: top; }
+/* the hover target over the whole whisker stays invisible */
+.dm-boxes .dm-box rect.dm-hit { fill: transparent; }
+/* A figure drawn by its own function, with its export buttons (figBlock), and the DepMap class chart */
+.fig-block, .dm-chart { margin: 0.7rem 0 0.5rem; min-width: 0; }
+.fig-head { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin: 0 0 0.3rem; flex-wrap: wrap; }
+.fig-head .flabel { margin: 0; }
+
+/* Writer perturbations on the protein page: one mark per site and perturbation */
+.pert-tbl th[scope="col"] { font-size: 0.8rem; font-weight: 600; white-space: normal; min-width: 5.5rem; max-width: 8rem; padding: 0 0.6rem 0.3rem; text-align: center; vertical-align: bottom; }
+.pert-tbl th[scope="row"] { font-family: var(--font-mono); font-weight: 500; white-space: nowrap; }
+.pert-tbl td.pert-c { text-align: center; font-size: 0.95rem; cursor: default; }
+.pert-tbl td.pert-c sup { font-size: 0.65rem; margin-left: 1px; }
+.pmark { font-style: normal; }
+.pmark.down { color: var(--t-down-3); }
+.pmark.up { color: var(--t-up-3); }
+.pmark.mix { color: var(--ink-2); }
+.pmark.ns { color: var(--muted); }
+.pert-key { display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; font-size: 0.8rem; color: var(--muted); margin: 0.4rem 0; }

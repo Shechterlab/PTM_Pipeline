@@ -1,0 +1,1934 @@
+model_id	cell_line	lineage	primary_disease	crispr	mutation_calls	prism	mtap_absolute_cn
+ACH-000001	NIH:OVCAR-3	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	4.0
+ACH-000002	HL-60	Myeloid	Acute Myeloid Leukemia	False	True	True	1.0
+ACH-000004	HEL	Myeloid	Acute Myeloid Leukemia	True	True	True	0.0
+ACH-000005	HEL 92.1.7	Myeloid	Acute Myeloid Leukemia	True	True	True	0.0
+ACH-000006	MONO-MAC-6	Myeloid	Acute Myeloid Leukemia	False	True	True	2.0
+ACH-000007	LS513	Bowel	Colorectal Adenocarcinoma	True	True	True	
+ACH-000008	A101D	Skin	Melanoma	False	True	True	0.0
+ACH-000009	C2BBe1	Bowel	Colorectal Adenocarcinoma	True	True	False	2.0
+ACH-000010				False	False	True	
+ACH-000011	253J	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	0.0
+ACH-000012	HCC-827	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000013	ONCO-DG-1	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	3.0
+ACH-000014	Hs 294T	Skin	Melanoma	True	True	True	0.0
+ACH-000015	NCI-H1581	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000017	SK-BR-3	Breast	Invasive Breast Carcinoma	True	True	False	
+ACH-000018	T24	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	2.0
+ACH-000019	MCF7	Breast	Invasive Breast Carcinoma	True	True	True	0.0
+ACH-000020	MHH-CALL-2	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	0.0
+ACH-000021	NCI-H1693	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000022	PA-TU-8988S	Pancreas	Pancreatic Adenocarcinoma	True	True	True	1.0
+ACH-000023	PA-TU-8988T	Pancreas	Pancreatic Adenocarcinoma	True	True	True	2.0
+ACH-000024	OPM-2	Lymphoid	Mature B-Cell Neoplasms	True	True	False	3.0
+ACH-000025	CH-157MN	CNS/Brain	Meningothelial Tumor	True	True	True	
+ACH-000026	253J-BV	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	0.0
+ACH-000027	GOS-3	CNS/Brain	Diffuse Glioma	False	True	True	0.5
+ACH-000028	KPL-1	Breast	Invasive Breast Carcinoma	True	True	False	0.0
+ACH-000029	HCC-827-GR5	Lung	Non-Small Cell Lung Cancer	True	True	False	
+ACH-000030	PC-14	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000031	Panc 02.13	Pancreas	Pancreatic Adenocarcinoma	False	True	False	0.0
+ACH-000032	MHH-CALL-3	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	0.5
+ACH-000035	NCI-H1650	Lung	Non-Small Cell Lung Cancer	True	True	True	0.0
+ACH-000036	U343	CNS/Brain	Diffuse Glioma	True	True	True	2.0
+ACH-000037	S-117	Soft Tissue	Sarcoma, NOS	True	True	True	
+ACH-000038	EHEB	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	2.0
+ACH-000039	SK-N-MC	Bone	Ewing Sarcoma	True	True	True	2.0
+ACH-000040	U-118 MG	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000041	RD-ES	Bone	Ewing Sarcoma	True	True	True	1.0
+ACH-000042	Panc 02.03	Pancreas	Pancreatic Adenocarcinoma	True	True	True	
+ACH-000043	Hs 895.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000044	MDA-MB-134-VI	Breast	Invasive Breast Carcinoma	False	True	False	
+ACH-000045	MV4-11	Myeloid	Acute Myeloid Leukemia	True	True	False	
+ACH-000046	ACHN	Kidney	Renal Cell Carcinoma	False	True	True	0.0
+ACH-000047	GCIY	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	3.0
+ACH-000048	TOV-112D	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	4.0
+ACH-000050	NCI-H929	Lymphoid	Mature B-Cell Neoplasms	False	True	False	
+ACH-000051	TE 617.T	Soft Tissue	Rhabdomyosarcoma	False	True	True	2.0
+ACH-000052	A-673	Bone	Ewing Sarcoma	True	True	True	0.5
+ACH-000053	KARPAS-299	Lymphoid	Mature T and NK Neoplasms	True	True	True	
+ACH-000054	HT-1080	Soft Tissue	Fibrosarcoma	True	True	True	0.0
+ACH-000055	D283 Med	CNS/Brain	Embryonal Tumor	True	True	False	
+ACH-000056	DOHH-2	Lymphoid	Mature B-Cell Neoplasms	False	True	True	0.0
+ACH-000058	ML-1	Thyroid	Well-Differentiated Thyroid Cancer	False	True	False	2.0
+ACH-000059	SUP-B15	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	True	0.0
+ACH-000060	Panc 10.05	Pancreas	Pancreatic Adenocarcinoma	True	True	True	
+ACH-000061	HH	Lymphoid	Non-Hodgkin Lymphoma	False	True	True	2.0
+ACH-000062	RERF-LC-MS	Lung	Non-Small Cell Lung Cancer	False	True	True	4.0
+ACH-000063	Hs 616.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000065	OCI-AML5	Myeloid	Acute Myeloid Leukemia	False	True	True	1.0
+ACH-000066	HCC4006	Lung	Non-Small Cell Lung Cancer	False	True	True	0.0
+ACH-000067	Hs 683	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000068	REC-1	Lymphoid	Mature B-Cell Neoplasms	False	True	False	
+ACH-000069	Hs 611.T	Lymphoid	Hodgkin Lymphoma	False	True	True	2.0
+ACH-000070	697	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	True	2.0
+ACH-000072	MEG-01	Myeloid	Myeloproliferative Neoplasms	False	True	True	2.0
+ACH-000073	GRANTA-519	Lymphoid	Mature B-Cell Neoplasms	False	True	True	0.0
+ACH-000074	KU812	Myeloid	Myeloproliferative Neoplasms	True	True	True	2.0
+ACH-000075	U-87 MG	CNS/Brain	Diffuse Glioma	True	True	True	
+ACH-000076	NCO2	Myeloid	Myeloproliferative Neoplasms	True	True	True	2.0
+ACH-000077	MJ	Lymphoid	Non-Hodgkin Lymphoma	True	True	False	2.0
+ACH-000078	MHH-NB-11	Peripheral Nervous System	Neuroblastoma	True	True	True	2.0
+ACH-000079	TE 125.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000080	BDCM	Myeloid	Acute Myeloid Leukemia	False	True	True	2.0
+ACH-000081	GDM-1	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-000082	G-292, clone A141B1	Bone	Osteosarcoma	True	True	True	1.0
+ACH-000083	Hs 281.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000085	T3M-4	Pancreas	Pancreatic Adenocarcinoma	True	True	False	2.0
+ACH-000086	ACC-MESO-1	Pleura	Pleural Mesothelioma	True	True	True	2.0
+ACH-000087	SK-ES-1	Bone	Ewing Sarcoma	True	True	True	1.0
+ACH-000089	NCI-H684	Bowel	Colorectal Adenocarcinoma	False	True	False	4.0
+ACH-000090	PC-3	Prostate	Prostate Adenocarcinoma	True	True	True	2.0
+ACH-000091	OV56	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	False	True	True	
+ACH-000092	NCI-H2452	Pleura	Pleural Mesothelioma	True	True	True	0.0
+ACH-000093	Panc 05.04	Pancreas	Pancreatic Adenocarcinoma	True	True	True	
+ACH-000094	HPAF-II	Pancreas	Pancreatic Adenocarcinoma	True	True	True	2.0
+ACH-000095	D341 Med	CNS/Brain	Embryonal Tumor	True	True	False	
+ACH-000096	G-401	Kidney	Rhabdoid Cancer	True	True	True	2.0
+ACH-000097	ZR-75-1	Breast	Invasive Breast Carcinoma	True	True	True	3.0
+ACH-000098	GAMG	CNS/Brain	Diffuse Glioma	True	True	True	1.0
+ACH-000099	SIMA	Peripheral Nervous System	Neuroblastoma	True	True	True	2.0
+ACH-000100	RH-41	Soft Tissue	Rhabdomyosarcoma	True	True	False	2.0
+ACH-000101	KE-37	Lymphoid	Mature T and NK Neoplasms	True	True	True	0.0
+ACH-000102	GMS-10	CNS/Brain	Diffuse Glioma	False	True	True	3.0
+ACH-000103	Caov-4	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	2.0
+ACH-000104	Loucy	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	False	1.0
+ACH-000105	ALL-SIL	Lymphoid	Mature T and NK Neoplasms	False	True	True	0.5
+ACH-000106	JVM-2	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-000107	Capan-2	Pancreas	Pancreatic Adenocarcinoma	False	True	True	2.0
+ACH-000108	KP-3	Pancreas	Adenosquamous Carcinoma of the Pancreas	True	True	True	
+ACH-000109	NCI-H3255	Lung	Non-Small Cell Lung Cancer	False	True	False	0.0
+ACH-000110	NCC-StC-K140	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	False	0.0
+ACH-000111	HCC1187	Breast	Invasive Breast Carcinoma	True	True	False	
+ACH-000112	SIG-M5	Myeloid	Acute Myeloid Leukemia	False	True	False	3.0
+ACH-000113	OCI-AML2	Myeloid	Acute Myeloid Leukemia	True	True	True	2.0
+ACH-000114	SU.86.86	Pancreas	Pancreatic Adenocarcinoma	True	True	False	0.0
+ACH-000115	VCaP	Prostate	Prostate Adenocarcinoma	True	True	False	4.0
+ACH-000116	OAW28	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	4.0
+ACH-000117	EFM-192A	Breast	Invasive Breast Carcinoma	False	True	True	2.0
+ACH-000118	HUP-T3	Pancreas	Pancreatic Adenocarcinoma	True	True	True	0.0
+ACH-000119	Hs 863.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000120	CHP-212	Peripheral Nervous System	Neuroblastoma	True	True	True	
+ACH-000121	NCI-H2405	Lung	Non-Small Cell Lung Cancer	False	True	False	
+ACH-000122	SUP-T11	Lymphoid	Mature T and NK Neoplasms	False	True	True	1.0
+ACH-000123	COV434	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	2.0
+ACH-000124	OCI-LY-19	Lymphoid	Mature B-Cell Neoplasms	True	True	True	0.0
+ACH-000125	TO 175.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000126	KG-1-C	CNS/Brain	Diffuse Glioma	False	True	False	
+ACH-000127	SLR 20	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	False	3.0
+ACH-000128	LN-319	CNS/Brain	Diffuse Glioma	True	True	False	5.0
+ACH-000129	NCI-H1341	Lung	SMARCA4-deficient undifferentiated tumor	False	True	True	3.0
+ACH-000130	NALM-19	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	0.0
+ACH-000131	Hs 229.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000132	JHOS-2	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	0.0
+ACH-000133	Hs 729	Fibroblast	Non-Cancerous	True	True	True	3.0
+ACH-000134	Hs 274.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000136	CHP-126	Peripheral Nervous System	Neuroblastoma	False	True	False	
+ACH-000137	8-MG-BA	CNS/Brain	Diffuse Glioma	True	True	True	2.0
+ACH-000138	CFPAC-1	Pancreas	Pancreatic Adenocarcinoma	True	True	True	2.0
+ACH-000139	Panc 03.27	Pancreas	Pancreatic Adenocarcinoma	True	True	True	1.5
+ACH-000140	Pfeiffer	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-000141	SNU-308	Biliary Tract	Intracholecystic Papillary Neoplasm	True	True	True	1.98
+ACH-000142	CAL-29	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	0.0
+ACH-000143	HCC2429	Lung	Non-Small Cell Lung Cancer	True	True	False	
+ACH-000144	RERF-GC-1B	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	1.0
+ACH-000145	SK-LMS-1	Soft Tissue	Leiomyosarcoma	True	True	True	2.0
+ACH-000146	THP-1	Myeloid	Acute Myeloid Leukemia	True	True	True	
+ACH-000147	T-47D	Breast	Invasive Breast Carcinoma	True	True	True	2.0
+ACH-000148	Hs 578T	Breast	Invasive Breast Carcinoma	True	True	False	3.0
+ACH-000149	SK-N-SH	Peripheral Nervous System	Neuroblastoma	True	True	True	
+ACH-000150	HCC2935	Lung	Non-Small Cell Lung Cancer	False	True	False	0.0
+ACH-000151	JM1	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	True	0.0
+ACH-000152	M059K	CNS/Brain	Diffuse Glioma	True	True	True	4.0
+ACH-000153	NCI-H2052	Pleura	Pleural Mesothelioma	True	True	True	
+ACH-000154	Hs 888.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000155	SW 1990	Pancreas	Pancreatic Adenocarcinoma	True	True	True	0.29
+ACH-000156	MHH-CALL-4	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	1.0
+ACH-000157	A4/Fuk	Lymphoid	Mature B-Cell Neoplasms	False	True	False	
+ACH-000158	OCI-LY3	Lymphoid	Mature B-Cell Neoplasms	False	True	True	0.0
+ACH-000159	OS-RC-2	Kidney	Renal Cell Carcinoma	True	True	True	0.0
+ACH-000160	BT-12	CNS/Brain	Embryonal Tumor	True	True	True	
+ACH-000161	COR-L105	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000162	GA-10	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-000163	SW579	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	0.0
+ACH-000164	PANC-1	Pancreas	Pancreatic Adenocarcinoma	True	True	True	0.0
+ACH-000165	Hs 751.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000166	Kasumi-6	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-000167	KE-97	Lymphoid	Mature B-Cell Neoplasms	True	True	True	2.0
+ACH-000168	NOMO-1	Myeloid	Acute Myeloid Leukemia	True	True	True	
+ACH-000169	RD	Soft Tissue	Rhabdomyosarcoma	True	True	True	1.0
+ACH-000171	VMRC-RCZ	Kidney	Renal Cell Carcinoma	False	True	True	
+ACH-000172	TM-87	Soft Tissue	Rhabdoid Cancer	True	True	True	
+ACH-000173	JHUEM-3	Uterus	Endometrial Carcinoma	False	True	False	
+ACH-000174	CAL-62	Thyroid	Anaplastic Thyroid Cancer	True	True	True	0.0
+ACH-000175	TE159T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000176	LOU-NH91	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000177	NCI-H660	Prostate	Prostate Small Cell Carcinoma	False	True	False	3.0
+ACH-000178	Hs 766T	Pancreas	Pancreatic Adenocarcinoma	True	True	True	3.0
+ACH-000179	NCI-H1618	Lung	Lung Neuroendocrine Tumor	False	True	False	3.0
+ACH-000180	Hs 839.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000181	SCC-9	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000182	SNU-869	Ampulla of Vater	Ampullary Carcinoma	True	True	True	1.0
+ACH-000183	L-363	Lymphoid	Mature B-Cell Neoplasms	True	True	True	1.0
+ACH-000184	Hs  343.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000186	NCI-H2444	Lung	Non-Small Cell Lung Cancer	False	True	True	2.0
+ACH-000187	COR-L311	Lung	Lung Neuroendocrine Tumor	True	True	False	2.0
+ACH-000188	SCC-25	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	0.67
+ACH-000189	RCC10RGB	Kidney	Renal Cell Carcinoma	True	True	True	2.0
+ACH-000190	HD-MY-Z	Myeloid	Acute Myeloid Leukemia	True	True	True	2.0
+ACH-000191	BHT-101	Thyroid	Anaplastic Thyroid Cancer	True	True	True	
+ACH-000192	MFE-280	Uterus	Endometrial Carcinoma	True	True	True	2.0
+ACH-000193	KARPAS-620	Lymphoid	Mature B-Cell Neoplasms	False	True	True	2.0
+ACH-000195	Set-2	Myeloid	Acute Myeloid Leukemia	True	True	False	
+ACH-000196	HCC1599	Breast	Invasive Breast Carcinoma	False	True	False	4.0
+ACH-000197	TALL-1	Lymphoid	Mature T and NK Neoplasms	False	True	True	3.0
+ACH-000198	EOL-1	Myeloid	Myeloproliferative Neoplasms	True	True	True	
+ACH-000200	NMC-G1	CNS/Brain	Diffuse Glioma	True	True	False	2.0
+ACH-000201	A-204	Kidney	Rhabdoid Cancer	False	True	True	
+ACH-000202	COLO-320	Bowel	Colorectal Adenocarcinoma	True	True	True	1.0
+ACH-000203	NH-6	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-000204	LP-1	Lymphoid	Mature B-Cell Neoplasms	True	True	True	3.0
+ACH-000205	PK-59	Pancreas	Pancreatic Adenocarcinoma	False	True	True	2.0
+ACH-000206	C8166	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	True	True	True	2.0
+ACH-000207	Detroit 562	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000208	U-178	CNS/Brain	Diffuse Glioma	True	True	True	2.0
+ACH-000209	SNU-1079	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	2.0
+ACH-000210	CADO-ES1	Bone	Ewing Sarcoma	True	True	True	0.0
+ACH-000211	Daoy	CNS/Brain	Embryonal Tumor	True	True	True	0.0
+ACH-000212	CAL-120	Breast	Invasive Breast Carcinoma	True	True	True	3.0
+ACH-000213	HUP-T4	Pancreas	Pancreatic Adenocarcinoma	True	True	True	0.0
+ACH-000214	Hs 675.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000215	LN382	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000216	JH-EsoAd1	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	0.0
+ACH-000217	JHH-6	Liver	Hepatocellular Carcinoma	True	True	True	3.0
+ACH-000218	PL-21	Myeloid	Acute Myeloid Leukemia	False	True	True	3.0
+ACH-000219	A-375	Skin	Melanoma	True	True	True	4.0
+ACH-000220	Mino	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-000221	SNU-398	Liver	Hepatocellular Carcinoma	True	True	True	2.0
+ACH-000222	AsPC-1	Pancreas	Pancreatic Adenocarcinoma	True	True	True	
+ACH-000223	HCC1937	Breast	Invasive Breast Carcinoma	True	True	True	
+ACH-000224	Hs 819.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000225	ECC12	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	False	2.0
+ACH-000226	SUP-M2	Lymphoid	Mature T and NK Neoplasms	True	True	False	
+ACH-000227	KP-N-YN	Peripheral Nervous System	Neuroblastoma	True	True	True	
+ACH-000228	BICR 31	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	1.5
+ACH-000231	KALS-1	CNS/Brain	Diffuse Glioma	True	True	True	4.0
+ACH-000232	U-251 MG	CNS/Brain	Diffuse Glioma	True	True	True	0.75
+ACH-000233	DEL	Lymphoid	Mature T and NK Neoplasms	True	True	True	3.0
+ACH-000234	Caki-2	Kidney	Renal Cell Carcinoma	True	True	False	
+ACH-000235	Panc 04.03	Pancreas	Pancreatic Adenocarcinoma	True	True	True	2.0
+ACH-000236	SW1417	Bowel	Colorectal Adenocarcinoma	False	True	False	2.0
+ACH-000237	JHOM-1	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-000238	SCC-4	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	3.0
+ACH-000239	HuG1-N	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	0.0
+ACH-000240	Hs 600.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000241	JK-1	Myeloid	Myeloproliferative Neoplasms	False	True	False	1.0
+ACH-000242	RT4	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	0.0
+ACH-000243	DAN-G	Pancreas	Pancreatic Adenocarcinoma	True	True	True	
+ACH-000244	DK-MG	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000245	BL-41	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-000246	SLR 23	Kidney	Renal Cell Carcinoma	True	True	False	1.0
+ACH-000247	OCUM-1	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	2.0
+ACH-000248	AU565	Breast	Invasive Breast Carcinoma	True	True	True	3.0
+ACH-000249	CL-11	Bowel	Colorectal Adenocarcinoma	True	True	True	2.0
+ACH-000250	KMRC-20	Kidney	Renal Cell Carcinoma	True	True	True	4.0
+ACH-000251	NCI-H2887	Lung	Non-Small Cell Lung Cancer	True	True	False	4.0
+ACH-000252	LS1034	Bowel	Colorectal Adenocarcinoma	True	True	True	3.0
+ACH-000253	COLO 201	Bowel	Colorectal Adenocarcinoma	True	True	False	3.0
+ACH-000254	SCC-15	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	False	3.0
+ACH-000255	LMSU	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	0.0
+ACH-000256	COV318	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	3.0
+ACH-000257	COR-L279	Lung	Lung Neuroendocrine Tumor	True	True	True	3.0
+ACH-000258	Du4475	Breast	Invasive Breast Carcinoma	True	True	True	4.0
+ACH-000259	KELLY	Peripheral Nervous System	Neuroblastoma	True	True	True	2.0
+ACH-000260	SK-N-AS	Peripheral Nervous System	Neuroblastoma	True	True	True	
+ACH-000261	RERF-LC-AI	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000262	UOK101	Kidney	Renal Cell Carcinoma	True	True	False	2.5
+ACH-000263	KASUMI-1	Myeloid	Acute Myeloid Leukemia	True	True	False	1.0
+ACH-000264	Calu-6	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000265	KP-4	Pancreas	Pancreatic Adenocarcinoma	True	True	True	0.0
+ACH-000266	SNU-213	Pancreas	Pancreatic Adenocarcinoma	True	True	True	1.0
+ACH-000267	HDLM-2	Lymphoid	Hodgkin Lymphoma	False	True	False	3.0
+ACH-000268	SNU-245	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	2.0
+ACH-000269	AM-38	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000270	HPAC	Pancreas	Pancreatic Adenocarcinoma	False	True	True	1.5
+ACH-000271	SU-DHL-10	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-000272	SLR 24	Kidney	Renal Cell Carcinoma	True	True	False	2.0
+ACH-000273	SF539	CNS/Brain	Diffuse Glioma	True	True	True	3.0
+ACH-000274	Hs 852.T	Skin	Melanoma	True	True	True	1.0
+ACH-000275	Hs 834.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000276	HCC38	Breast	Invasive Breast Carcinoma	True	True	True	
+ACH-000277	HCC1419	Breast	Invasive Breast Carcinoma	True	True	True	
+ACH-000278	COV362	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	1.0
+ACH-000279	EWS502	Bone	Ewing Sarcoma	True	True	True	2.0
+ACH-000280	SNU-840	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	0.0
+ACH-000281	KP-2	Pancreas	Pancreatic Adenocarcinoma	True	True	True	1.0
+ACH-000283	A1207	CNS/Brain	Diffuse Glioma	False	True	True	
+ACH-000284	Hs 840.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000285	Toledo	Lymphoid	Mature B-Cell Neoplasms	False	True	False	1.0
+ACH-000286	SNU-1033	Bowel	Colorectal Adenocarcinoma	True	True	False	3.0
+ACH-000287	NU-DUL-1	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-000288	BT-549	Breast	Invasive Breast Carcinoma	True	True	True	4.0
+ACH-000289	SNU-466	CNS/Brain	Diffuse Glioma	False	True	True	0.0
+ACH-000290	NCI-H209	Lung	Lung Neuroendocrine Tumor	True	True	False	4.0
+ACH-000291	OV-90	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	
+ACH-000292	NCI-H841	Lung	SMARCA4-deficient undifferentiated tumor	True	True	True	
+ACH-000293	KLE	Uterus	Endometrial Carcinoma	True	True	True	
+ACH-000294	NB-4	Myeloid	Acute Myeloid Leukemia	True	True	True	0.0
+ACH-000295	EM-2	Myeloid	Myeloproliferative Neoplasms	True	True	True	0.0
+ACH-000296	OUMS-23	Bowel	Colorectal Adenocarcinoma	True	True	True	2.0
+ACH-000297	NCI-H889	Lung	Lung Neuroendocrine Tumor	False	True	False	6.0
+ACH-000298	NCI-H2029	Lung	Lung Neuroendocrine Tumor	False	True	False	5.0
+ACH-000299	HNT-34	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-000301	LAMA-84	Myeloid	Myeloproliferative Neoplasms	False	True	True	2.0
+ACH-000302	SNU-1077	Uterus	Endometrial Carcinoma	True	True	True	4.0
+ACH-000303	SNU-5	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	2.0
+ACH-000304	WM-115	Skin	Melanoma	True	True	False	1.0
+ACH-000305	EC-GI-10	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	7.0
+ACH-000307	PK-1	Pancreas	Pancreatic Adenocarcinoma	True	True	True	1.0
+ACH-000308	EFO-21	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	2.0
+ACH-000309	SK-LU-1	Lung	Non-Small Cell Lung Cancer	False	True	True	0.0
+ACH-000310	IMR-32	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-000311	NCI-H2122	Lung	Non-Small Cell Lung Cancer	True	True	True	1.0
+ACH-000312	SK-N-BE(2)	Peripheral Nervous System	Neuroblastoma	True	True	True	2.0
+ACH-000313	KMRC-3	Kidney	Renal Cell Carcinoma	True	True	True	1.0
+ACH-000314	HCC-2108	Lung	Non-Small Cell Lung Cancer	False	True	True	2.0
+ACH-000315	KARPAS-422	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-000316	SNU-886	Liver	Hepatocellular Carcinoma	True	True	True	1.0
+ACH-000317	TUHR14TKB	Kidney	Renal Cell Carcinoma	True	True	False	
+ACH-000318	TE-10	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	0.0
+ACH-000319	MPP 89	Pleura	Pleural Mesothelioma	True	True	True	5.0
+ACH-000320	PSN1	Pancreas	Pancreatic Adenocarcinoma	True	True	True	0.0
+ACH-000321	MOLM-6	Myeloid	Myeloproliferative Neoplasms	False	True	False	2.0
+ACH-000322	HT-144	Skin	Melanoma	True	True	True	
+ACH-000323	42-MG-BA	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000324	JHOC-5	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-000325	SNU-620	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	7.0
+ACH-000326	JURL-MK1	Myeloid	Myeloproliferative Neoplasms	True	True	True	0.0
+ACH-000327	NCI-H1395	Lung	Non-Small Cell Lung Cancer	False	True	False	2.0
+ACH-000328	LN-215	CNS/Brain	Diffuse Glioma	False	True	False	
+ACH-000329	CCF-STTG1	CNS/Brain	Diffuse Glioma	True	True	True	1.0
+ACH-000330	EFM-19	Breast	Invasive Breast Carcinoma	True	True	True	0.0
+ACH-000331	IST-MES2	Pleura	Pleural Mesothelioma	True	True	True	0.0
+ACH-000332	YAPC	Pancreas	Pancreatic Adenocarcinoma	True	True	True	2.0
+ACH-000334	DB	Lymphoid	Mature B-Cell Neoplasms	True	True	False	4.0
+ACH-000335	MSTO-211H	Pleura	Pleural Mesothelioma	True	True	True	1.0
+ACH-000336	OCI-AML3	Myeloid	Acute Myeloid Leukemia	True	True	True	2.0
+ACH-000337	NCI-H3122	Lung	Non-Small Cell Lung Cancer	True	True	False	
+ACH-000338	SR-786	Lymphoid	Mature T and NK Neoplasms	True	True	True	1.0
+ACH-000339	HCC-461	Lung	Non-Small Cell Lung Cancer	True	True	False	2.0
+ACH-000340	Hs 870.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000341	SK-N-FI	Peripheral Nervous System	Neuroblastoma	True	True	True	2.0
+ACH-000342	CL-14	Bowel	Colorectal Adenocarcinoma	False	True	False	4.0
+ACH-000343	NCI-H522	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000344	SNU-668	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	0.0
+ACH-000345	KP-N-RT-BM-1	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-000346	JVM-3	Lymphoid	Mature B-Cell Neoplasms	True	True	True	2.0
+ACH-000347	QGP-1	Pancreas	Pancreatic Neuroendocrine Tumor	False	True	True	3.0
+ACH-000348	RPMI-7951	Skin	Melanoma	True	True	True	
+ACH-000349	HCC1500	Breast	Breast Ductal Carcinoma In Situ	False	True	False	0.0
+ACH-000350	COLO-678	Bowel	Colorectal Adenocarcinoma	True	True	True	0.0
+ACH-000351	MKN1	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	True	2.0
+ACH-000352	HCC1428	Breast	Invasive Breast Carcinoma	True	True	True	3.0
+ACH-000353	TE-15	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	False	True	True	0.0
+ACH-000354	Capan-1	Pancreas	Pancreatic Adenocarcinoma	True	True	False	0.0
+ACH-000355	NCI-H82	Lung	Lung Neuroendocrine Tumor	True	True	True	2.0
+ACH-000356	MKN-45	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	
+ACH-000357	JeKo-1	Lymphoid	Mature B-Cell Neoplasms	False	True	True	
+ACH-000358	NCI-H69	Lung	Lung Neuroendocrine Tumor	False	True	False	
+ACH-000359	MG-63	Bone	Osteosarcoma	True	True	True	0.0
+ACH-000360	NCI-H508	Bowel	Colorectal Adenocarcinoma	False	True	True	4.0
+ACH-000361	SK-HEP-1	Liver	Hepatocellular Carcinoma	True	True	True	0.0
+ACH-000362	MOLM-13	Myeloid	Acute Myeloid Leukemia	True	True	True	0.5
+ACH-000363	SK-MM-2	Lymphoid	Mature B-Cell Neoplasms	True	True	False	1.0
+ACH-000364	U-2 OS	Bone	Osteosarcoma	True	True	True	2.0
+ACH-000365	SU-DHL-4	Lymphoid	Mature B-Cell Neoplasms	True	True	True	2.0
+ACH-000366	SK-N-DZ	Peripheral Nervous System	Neuroblastoma	True	True	True	
+ACH-000367	NCI-H226	Pleura	Pleural Mesothelioma	True	True	True	
+ACH-000368	SNU-1105	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000369	MOLM-16	Myeloid	Acute Myeloid Leukemia	False	True	False	4.0
+ACH-000370	SNU-626	CNS/Brain	Diffuse Glioma	True	True	False	4.0
+ACH-000371	RL	Lymphoid	Mature B-Cell Neoplasms	True	True	True	2.0
+ACH-000372	P12-ICHIKAWA	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	True	0.0
+ACH-000373	SKM-1	Myeloid	Acute Myeloid Leukemia	True	True	True	2.0
+ACH-000374	HCC1143	Breast	Invasive Breast Carcinoma	True	True	True	1.0
+ACH-000375	G-402	Kidney	Renal Cell Carcinoma	True	True	True	
+ACH-000376	SF-295	CNS/Brain	Diffuse Glioma	True	True	True	0.5
+ACH-000377	SNU-478	Ampulla of Vater	Ampullary Carcinoma	True	True	False	2.0
+ACH-000378	NCI-H647	Lung	Non-Small Cell Lung Cancer	True	True	True	0.0
+ACH-000379	NCI-H1781	Lung	Non-Small Cell Lung Cancer	False	True	False	2.0
+ACH-000380	KMS-12-BM	Lymphoid	Mature B-Cell Neoplasms	False	True	True	4.0
+ACH-000381	T84	Bowel	Colorectal Adenocarcinoma	True	True	True	1.0
+ACH-000382	COR-L24	Lung	Lung Neuroendocrine Tumor	False	True	False	
+ACH-000383	OE33	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	5.0
+ACH-000384	SW 780	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	False	True	True	0.0
+ACH-000385	SK-RC-52	Kidney	Renal Cell Carcinoma	True	True	False	2.0
+ACH-000386	KG-1	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-000387	TF-1	Myeloid	Acute Myeloid Leukemia	True	True	True	2.0
+ACH-000388	NU-DHL-1	Lymphoid	Mature B-Cell Neoplasms	False	True	True	0.0
+ACH-000389	H4	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000390	LUDLU-1	Lung	Non-Small Cell Lung Cancer	True	True	True	0.0
+ACH-000391	MHH-ES-1	Bone	Ewing Sarcoma	True	True	True	2.0
+ACH-000392	Calu-3	Lung	Non-Small Cell Lung Cancer	False	True	False	2.0
+ACH-000393	HLF	Liver	Hepatocellular Carcinoma	True	True	True	3.0
+ACH-000394	NCI-H2081	Lung	Lung Neuroendocrine Tumor	False	True	False	5.0
+ACH-000395	NCI-H520	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000396	J82	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	4.0
+ACH-000397	TEN	Uterus	Endometrial Carcinoma	True	True	True	2.0
+ACH-000398	RI-1	Lymphoid	Mature B-Cell Neoplasms	True	True	True	2.0
+ACH-000399	NCI-H2196	Lung	Lung Neuroendocrine Tumor	False	True	False	
+ACH-000400	SK-CO-1	Bowel	Colorectal Adenocarcinoma	False	True	False	6.0
+ACH-000401	COLO-800	Skin	Melanoma	True	True	True	2.0
+ACH-000402	BL-70	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-000403	NCI-H747	Bowel	Colorectal Adenocarcinoma	True	True	True	2.0
+ACH-000404	K029AX	Skin	Melanoma	True	True	True	1.0
+ACH-000405	MEC-1	Lymphoid	Mature B-Cell Neoplasms	True	True	False	
+ACH-000406	U-937	Myeloid	Acute Myeloid Leukemia	True	True	True	2.0
+ACH-000407	SNU-685	Uterus	Endometrial Carcinoma	True	True	True	3.0
+ACH-000408	TE-5	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000409	OVSAHO	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	False	True	False	2.0
+ACH-000410	Saos-2	Bone	Osteosarcoma	True	True	True	
+ACH-000411	769-P	Kidney	Renal Cell Carcinoma	True	True	True	
+ACH-000412	SNU-1197	Bowel	Colorectal Adenocarcinoma	False	True	False	2.0
+ACH-000414	NCI-H1944	Lung	Non-Small Cell Lung Cancer	True	True	True	1.0
+ACH-000415	BICR 6	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	1.0
+ACH-000416	NCI-H838	Lung	Non-Small Cell Lung Cancer	True	True	True	0.0
+ACH-000417	Panc 08.13	Pancreas	Pancreatic Adenocarcinoma	True	True	True	3.0
+ACH-000418	SW 1353	Bone	Chondrosarcoma	False	True	True	2.0
+ACH-000419	KMS-28BM	Lymphoid	Mature B-Cell Neoplasms	False	True	True	
+ACH-000420	SNU-449	Liver	Hepatocellular Carcinoma	True	True	True	0.0
+ACH-000421	SW837	Bowel	Colorectal Adenocarcinoma	True	True	True	2.0
+ACH-000422	SNU-475	Liver	Hepatocellular Carcinoma	True	True	False	2.0
+ACH-000423	SK-MEL-3	Skin	Melanoma	False	True	True	2.0
+ACH-000424	TC-71	Bone	Ewing Sarcoma	True	True	True	1.0
+ACH-000425	UACC-62	Skin	Melanoma	True	True	True	3.0
+ACH-000426	KMS-20	Lymphoid	Mature B-Cell Neoplasms	True	True	False	4.0
+ACH-000427	NCI-N87	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	
+ACH-000428	UO-31	Kidney	Renal Cell Carcinoma	False	True	True	2.0
+ACH-000429	A-704	Kidney	Renal Cell Carcinoma	False	True	True	
+ACH-000430	TYK-nu	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	1.0
+ACH-000431	NCI-H1694	Lung	Lung Neuroendocrine Tumor	True	True	True	
+ACH-000432	BV-173	Myeloid	Myeloproliferative Neoplasms	False	True	True	2.0
+ACH-000433	Caki-1	Kidney	Renal Cell Carcinoma	True	True	True	
+ACH-000434	NCI-H1915	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000435	EFE-184	Uterus	Endometrial Carcinoma	True	True	True	3.0
+ACH-000436	OCI-My7	Lymphoid	Mature B-Cell Neoplasms	True	True	False	4.0
+ACH-000437	SW 1088	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000438	Lu-65	Lung	Non-Small Cell Lung Cancer	True	True	False	
+ACH-000439	ME-1	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-000440	CA46	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-000441	SH-4	Skin	Melanoma	True	True	True	0.0
+ACH-000442	RERF-LC-Sq1	Lung	Non-Small Cell Lung Cancer	True	True	False	0.0
+ACH-000443	OVKATE	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	False	True	True	1.0
+ACH-000444	LU99	Lung	Non-Small Cell Lung Cancer	True	True	True	0.0
+ACH-000445	KNS-60	CNS/Brain	Diffuse Glioma	True	True	True	
+ACH-000446	KP-N-SI9s	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-000447	NCI-H2228	Lung	Non-Small Cell Lung Cancer	False	True	True	0.0
+ACH-000448	NCI-H1666	Lung	Non-Small Cell Lung Cancer	True	True	False	0.0
+ACH-000449	MES-SA	Uterus	Uterine Sarcoma/Mesenchymal	False	True	True	0.0
+ACH-000450	MEL-HO	Skin	Melanoma	True	True	True	
+ACH-000451	NCI-H2085	Lung	Non-Small Cell Lung Cancer	False	True	False	2.0
+ACH-000452	TE-8	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	2.5
+ACH-000453	MOLP-2	Lymphoid	Mature B-Cell Neoplasms	False	True	True	4.0
+ACH-000454	HCC-95	Lung	Non-Small Cell Lung Cancer	True	True	True	1.0
+ACH-000455	LN-428	CNS/Brain	Diffuse Glioma	True	True	False	0.0
+ACH-000456	B-CPAP	Thyroid	Poorly Differentiated Thyroid Cancer	True	True	True	2.0
+ACH-000457	CAL-54	Kidney	Renal Cell Carcinoma	False	True	True	0.0
+ACH-000458	CJM	Skin	Melanoma	True	True	True	
+ACH-000459	TUHR10TKB	Kidney	Renal Cell Carcinoma	True	True	False	0.0
+ACH-000460	SNU-8	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	
+ACH-000461	SNU-1196	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	2.0
+ACH-000462	NALM-1	Myeloid	Myeloproliferative Neoplasms	False	True	False	0.0
+ACH-000463	NCI-H460	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000464	CAS-1	CNS/Brain	Diffuse Glioma	True	True	True	0.5
+ACH-000465	SK-MEL-1	Skin	Melanoma	False	True	False	2.0
+ACH-000466	SNU-216	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	2.0
+ACH-000467	HCC-56	Bowel	Colorectal Adenocarcinoma	True	True	True	5.0
+ACH-000468	PK-45H	Pancreas	Pancreatic Adenocarcinoma	True	True	True	0.0
+ACH-000469	YH-13	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000470	SW1463	Bowel	Colorectal Adenocarcinoma	True	True	True	3.0
+ACH-000471	Li-7	Liver	Hepatocellular Carcinoma	True	True	True	0.0
+ACH-000472	HSC-2	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000473	RT-112	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	
+ACH-000475	huH-1	Liver	Hepatocellular Carcinoma	True	True	True	1.0
+ACH-000476	JHH-4	Liver	Hepatocellular Carcinoma	True	True	True	3.0
+ACH-000477	Malme-3M	Skin	Melanoma	True	True	True	0.0
+ACH-000478	SNU-387	Liver	Hepatocellular Carcinoma	True	True	False	0.0
+ACH-000479	KNS-81	CNS/Brain	Diffuse Glioma	True	True	True	
+ACH-000480	HuH-7	Liver	Hepatocellular Carcinoma	True	True	True	2.0
+ACH-000481	NCI-H2170	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000482	RERF-LC-KJ	Lung	Non-Small Cell Lung Cancer	False	True	True	2.0
+ACH-000483	SNU-182	Liver	Hepatocellular Carcinoma	True	True	True	4.0
+ACH-000484	VMRC-RCW	Kidney	Renal Cell Carcinoma	True	True	True	2.0
+ACH-000485	GSU	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	4.0
+ACH-000486	KU-19-19	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	0.0
+ACH-000487	F-36P	Myeloid	Myelodysplastic Syndromes	True	True	False	0.0
+ACH-000488	TE-11	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	3.0
+ACH-000489	SW1116	Bowel	Colorectal Adenocarcinoma	True	True	True	2.0
+ACH-000490	SF767	Cervix	Cervical Squamous Cell Carcinoma	True	True	False	2.0
+ACH-000491	NCI-H716	Bowel	Colorectal Adenocarcinoma	True	True	False	1.0
+ACH-000492	MUTZ-5	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	0.0
+ACH-000493	SNU-423	Liver	Hepatocellular Carcinoma	True	True	True	4.0
+ACH-000494	OELE	Ovary/Fallopian Tube	Non-Cancerous	False	True	False	2.0
+ACH-000495	TUHR4TKB	Kidney	Renal Cell Carcinoma	True	True	True	2.0
+ACH-000496	NCI-H1792	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000498	KO52	Myeloid	Acute Myeloid Leukemia	True	True	False	2.0
+ACH-000499	EW8	Bone	Ewing Sarcoma	True	True	True	2.0
+ACH-000500	SNU-46	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	3.0
+ACH-000501	LS123	Bowel	Colorectal Adenocarcinoma	True	True	False	2.0
+ACH-000502	TCC-PAN2	Pancreas	Pancreatic Adenocarcinoma	True	True	True	0.0
+ACH-000503	BICR 16	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	1.0
+ACH-000504	SNB75	CNS/Brain	Diffuse Glioma	True	True	True	3.0
+ACH-000505	RKN	Soft Tissue	Leiomyosarcoma	True	True	True	3.0
+ACH-000506	NCI-H146	Lung	Lung Neuroendocrine Tumor	False	True	False	4.0
+ACH-000507	KE-39	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	2.0
+ACH-000508	COR-L88	Lung	Lung Neuroendocrine Tumor	False	True	True	3.0
+ACH-000509	HuT 78	Lymphoid	Mature T and NK Neoplasms	False	True	True	
+ACH-000510	NCI-H1299	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000511	Calu-1	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000512	INA6	Lymphoid	Mature B-Cell Neoplasms	True	True	False	4.0
+ACH-000513	SNU-1272	Kidney	Renal Cell Carcinoma	False	True	False	1.0
+ACH-000514	NCI-H1092	Lung	Lung Neuroendocrine Tumor	True	True	True	4.0
+ACH-000515	HCC-33	Lung	Lung Neuroendocrine Tumor	True	True	True	3.0
+ACH-000516	CAL-78	Bone	Chondrosarcoma	True	True	True	1.0
+ACH-000517	SNU-410	Pancreas	Pancreatic Adenocarcinoma	True	True	True	
+ACH-000518	CAL-33	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000519	PEER	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	True	True	False	0.5
+ACH-000520	59M	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	1.0
+ACH-000521	NCI-H2030	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000522	UM-UC-3	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	False	0.0
+ACH-000523	NCI-H1184	Lung	Lung Neuroendocrine Tumor	False	True	False	4.0
+ACH-000524	KURAMOCHI	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	3.0
+ACH-000525	NCI-H2171	Lung	Lung Neuroendocrine Tumor	True	True	True	1.0
+ACH-000527	OVISE	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	4.0
+ACH-000528	ABC-1	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000529	T1-73	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000530	DMS 114	Lung	SMARCA4-deficient undifferentiated tumor	False	True	False	2.0
+ACH-000531	RS-5	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000532	SNU-61	Bowel	Colorectal Adenocarcinoma	True	True	True	2.0
+ACH-000533	NCI-H2004 RT	Kidney	Rhabdoid Cancer	True	True	True	2.0
+ACH-000534	WSU-DLCL2	Lymphoid	Mature B-Cell Neoplasms	False	True	True	2.0
+ACH-000535	BxPC-3	Pancreas	Pancreatic Adenocarcinoma	True	True	True	0.0
+ACH-000536	BT-20	Breast	Invasive Breast Carcinoma	False	True	False	2.0
+ACH-000537	SNU-761	Liver	Hepatocellular Carcinoma	True	True	True	2.0
+ACH-000538	HUTU80	Bowel	Small Bowel Cancer	False	True	False	2.0
+ACH-000540	Hs 606.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000541	KMS-34	Lymphoid	Mature B-Cell Neoplasms	True	True	True	5.0
+ACH-000542	Hey-A8	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	0.0
+ACH-000543	SNU-489	CNS/Brain	Diffuse Glioma	False	True	True	1.0
+ACH-000544	OE21	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	3.0
+ACH-000545	VM-CUB1	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	3.0
+ACH-000546	HSC-4	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	5.0
+ACH-000547	HT-1197	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	2.0
+ACH-000548	BHY	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000549	SNU-1076	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000550	IGR-39	Skin	Melanoma	True	True	True	0.0
+ACH-000551	K-562	Myeloid	Myeloproliferative Neoplasms	True	True	True	
+ACH-000552	HT-29	Bowel	Colorectal Adenocarcinoma	True	True	True	3.0
+ACH-000553	Sq-1	Lung	Non-Small Cell Lung Cancer	False	True	True	1.0
+ACH-000554	UACC-893	Breast	Invasive Breast Carcinoma	True	True	False	2.0
+ACH-000555	A-498	Kidney	Renal Cell Carcinoma	False	True	True	4.0
+ACH-000556	SIHA	Cervix	Cervical Squamous Cell Carcinoma	True	True	False	4.0
+ACH-000557	AML-193	Myeloid	Acute Myeloid Leukemia	True	True	False	2.0
+ACH-000558	A-172	CNS/Brain	Diffuse Glioma	True	True	True	0.01
+ACH-000559	NCI-H1836	Lung	Lung Neuroendocrine Tumor	True	True	False	4.0
+ACH-000560	ECC10	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	True	4.0
+ACH-000561	T.T	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000562	HCC-78	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000563	EBC-1	Lung	Non-Small Cell Lung Cancer	True	True	True	1.0
+ACH-000564	KHM-1B	Lymphoid	Mature B-Cell Neoplasms	False	True	True	2.0
+ACH-000565	RCM-1	Bowel	Colorectal Adenocarcinoma	True	True	True	3.0
+ACH-000566	SW-1710	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	False	True	True	0.0
+ACH-000567	ST486	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-000568	UACC-812	Breast	Invasive Breast Carcinoma	False	True	False	2.0
+ACH-000569	IST-MES1	Pleura	Pleural Mesothelioma	True	True	True	0.0
+ACH-000570	YKG1	CNS/Brain	Diffuse Glioma	True	True	True	0.33
+ACH-000571	T98G	CNS/Brain	Diffuse Glioma	True	True	True	
+ACH-000572	G-361	Skin	Melanoma	False	True	True	2.0
+ACH-000573	MDA-MB-436	Breast	Invasive Breast Carcinoma	True	True	True	
+ACH-000574	FU-OV-1	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	False	True	False	4.0
+ACH-000576	KMS-27	Lymphoid	Mature B-Cell Neoplasms	True	True	True	2.0
+ACH-000577	JHH-2	Liver	Hepatocellular Carcinoma	True	True	False	
+ACH-000579	UACC-257	Skin	Melanoma	True	True	True	
+ACH-000580	C32	Skin	Melanoma	True	True	True	0.33
+ACH-000581	SNU-16	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	
+ACH-000582	COLO 741	Skin	Melanoma	False	True	True	0.0
+ACH-000583	MC116	Lymphoid	Non-Hodgkin Lymphoma	True	True	True	2.0
+ACH-000584	JHOS-4	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	1.0
+ACH-000585	EPLC-272H	Lung	Non-Small Cell Lung Cancer	True	True	False	3.0
+ACH-000586	NCI-H1876	Lung	Lung Neuroendocrine Tumor	False	True	True	5.0
+ACH-000587	NCI-H1975	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000588	KMS-26	Lymphoid	Mature B-Cell Neoplasms	True	True	False	3.0
+ACH-000589	NCI-H1437	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000590	NCI-H2073	Lung	Non-Small Cell Lung Cancer	False	True	False	2.0
+ACH-000591	LN-235	CNS/Brain	Diffuse Glioma	True	True	False	3.0
+ACH-000592	TM-31	CNS/Brain	Diffuse Glioma	True	True	True	1.0
+ACH-000593	BC-3C	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	1.0
+ACH-000594	DMS 153	Lung	Lung Neuroendocrine Tumor	False	True	False	
+ACH-000595	LN-229	CNS/Brain	Diffuse Glioma	True	True	True	2.5
+ACH-000596	LCLC-97TM1	Lung	Non-Small Cell Lung Cancer	True	True	False	
+ACH-000597	TTC-709	Soft Tissue	Rhabdoid Cancer	True	True	True	2.0
+ACH-000598	KMS-21BM	Lymphoid	Mature B-Cell Neoplasms	False	True	True	3.0
+ACH-000599	PA-TU-8902	Pancreas	Pancreatic Adenocarcinoma	True	True	True	6.0
+ACH-000601	MIA PaCa-2	Pancreas	Pancreatic Adenocarcinoma	True	True	True	
+ACH-000602	M-07e	Myeloid	Acute Myeloid Leukemia	True	True	False	2.0
+ACH-000603	BEN	Lung	Non-Small Cell Lung Cancer	False	True	True	2.0
+ACH-000604	KYO-1	Myeloid	Myeloproliferative Neoplasms	True	True	True	0.0
+ACH-000605	TE-6	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	0.0
+ACH-000606	PE/CA-PJ34 (clone C12)	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	2.0
+ACH-000607	KYM-1	Soft Tissue	Rhabdomyosarcoma	True	True	True	
+ACH-000608	COV644	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	2.0
+ACH-000609	SF126	CNS/Brain	Diffuse Glioma	True	True	True	0.5
+ACH-000610	NCI-H2227	Lung	Lung Neuroendocrine Tumor	False	True	False	2.0
+ACH-000611	SU-DHL-6	Lymphoid	Mature B-Cell Neoplasms	False	True	False	3.0
+ACH-000612	HuT 102	Lymphoid	Mature T and NK Neoplasms	False	True	False	2.0
+ACH-000613	HOS	Bone	Osteosarcoma	False	True	True	0.0
+ACH-000614	RVH-421	Skin	Melanoma	True	True	True	1.0
+ACH-000615	SK-MEL-28	Skin	Melanoma	False	True	True	3.0
+ACH-000616	Hs 746T	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	
+ACH-000617	OVCAR-4	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	False	True	False	
+ACH-000618	SNU-1041	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	1.0
+ACH-000619	PE/CA-PJ15	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000620	JHH-1	Liver	Hepatocellular Carcinoma	True	True	True	4.0
+ACH-000621	MDA-MB-157	Breast	Invasive Breast Carcinoma	True	True	False	
+ACH-000622	KNS-42	CNS/Brain	Diffuse Glioma	True	True	True	2.0
+ACH-000623	SNU-201	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000624	HCC1806	Breast	Breast Ductal Carcinoma In Situ	True	True	True	0.5
+ACH-000625	Hep 3B2.1-7	Liver	Hepatocellular Carcinoma	False	True	True	3.0
+ACH-000626	U266B1	Lymphoid	Mature B-Cell Neoplasms	False	True	True	2.0
+ACH-000627	LCLC-103H	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000628	NCI-H596	Lung	Non-Small Cell Lung Cancer	False	True	True	3.0
+ACH-000630	YD-8	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	1.0
+ACH-000631	KS-1	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000632	Hs 944.T	Skin	Melanoma	True	True	True	2.0
+ACH-000633	FU97	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	3.0
+ACH-000634	LN-340	CNS/Brain	Diffuse Glioma	True	True	False	0.75
+ACH-000635	SNU-119	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	False	True	True	7.0
+ACH-000636	RPMI-8402	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	True	
+ACH-000637	KYSE-520	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	1.0
+ACH-000638	NCI-H441	Lung	Non-Small Cell Lung Cancer	True	True	True	1.0
+ACH-000639	NCI-H211	Lung	Lung Neuroendocrine Tumor	True	True	True	1.0
+ACH-000640	SK-MEL-31	Skin	Melanoma	False	True	False	1.0
+ACH-000641	CMK	Myeloid	Acute Myeloid Leukemia	False	True	False	0.0
+ACH-000643	HDQ-P1	Breast	Invasive Breast Carcinoma	False	True	True	2.0
+ACH-000644	COLO 829	Skin	Melanoma	False	True	False	2.0
+ACH-000645	JL-1	Pleura	Pleural Mesothelioma	True	True	True	1.0
+ACH-000646	OVMANA	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	3.0
+ACH-000647	TE-1	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	1.0
+ACH-000648	NCI-H28	Pleura	Pleural Mesothelioma	True	True	True	2.0
+ACH-000649	786-O	Kidney	Renal Cell Carcinoma	True	True	True	3.0
+ACH-000650	IGR-37	Skin	Melanoma	False	True	True	1.0
+ACH-000651	SW 620	Bowel	Colorectal Adenocarcinoma	True	True	True	2.0
+ACH-000652	SUIT-2	Pancreas	Pancreatic Adenocarcinoma	True	True	True	4.0
+ACH-000653	JJN-3	Lymphoid	Mature B-Cell Neoplasms	True	True	True	2.0
+ACH-000654	Raji	Lymphoid	Mature B-Cell Neoplasms	True	True	False	1.0
+ACH-000655	SF268	CNS/Brain	Diffuse Glioma	True	True	False	0.0
+ACH-000656	SU-DHL-8	Lymphoid	Mature B-Cell Neoplasms	True	True	True	2.0
+ACH-000657	A2780	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-000658	KMS-18	Lymphoid	Mature B-Cell Neoplasms	False	False	True	
+ACH-000659	SCLC-21H	Lung	Lung Neuroendocrine Tumor	False	True	True	
+ACH-000660	SU-DHL-5	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-000661	WM1799	Skin	Melanoma	True	True	True	1.0
+ACH-000662	COR-L23	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000663	OVTOKO	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	3.0
+ACH-000664	SU-DHL-1	Lymphoid	Mature T and NK Neoplasms	True	True	True	2.0
+ACH-000665	SK-MES-1	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000666	NCI-H1355	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000667	HCC-44	Lung	Non-Small Cell Lung Cancer	True	True	True	4.0
+ACH-000668	HCC70	Breast	Invasive Breast Carcinoma	True	True	False	
+ACH-000669	SW 900	Lung	Non-Small Cell Lung Cancer	False	True	True	0.0
+ACH-000670	SBC-5	Lung	Lung Neuroendocrine Tumor	False	True	True	3.0
+ACH-000671	HuH-6	Liver	Hepatoblastoma	True	True	True	3.0
+ACH-000672	IA-LM	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000673	LN-443	CNS/Brain	Diffuse Glioma	True	True	False	0.0
+ACH-000674	NUGC-4	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	True	1.5
+ACH-000675	NCI-H1734	Lung	Non-Small Cell Lung Cancer	False	True	False	2.0
+ACH-000676	LN-464	CNS/Brain	Diffuse Glioma	True	True	True	2.0
+ACH-000677	SW 1573	Lung	Non-Small Cell Lung Cancer	True	True	True	0.0
+ACH-000678	MKN7	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	True	0.5
+ACH-000679	OE-19	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	False	True	True	2.0
+ACH-000680	SW948	Bowel	Colorectal Adenocarcinoma	False	True	True	2.0
+ACH-000681	A549	Lung	Non-Small Cell Lung Cancer	True	True	True	0.0
+ACH-000682	SNU-1066	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000683	SNU-503	Bowel	Colorectal Adenocarcinoma	True	True	False	3.0
+ACH-000684	KMRC-1	Kidney	Renal Cell Carcinoma	True	True	True	3.0
+ACH-000685	L3.3	Pancreas	Adenosquamous Carcinoma of the Pancreas	True	True	True	2.0
+ACH-000686	SNU-878	Liver	Hepatocellular Carcinoma	False	True	True	2.0
+ACH-000687	CI-1	Lymphoid	Non-Hodgkin Lymphoma	False	True	True	2.0
+ACH-000688	OV7	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-000689	RH-18	Soft Tissue	Rhabdomyosarcoma	False	True	False	3.0
+ACH-000691	HCC2157	Breast	Invasive Breast Carcinoma	False	True	False	6.0
+ACH-000692	SNU-899	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	True	4.0
+ACH-000693	KYSE-180	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000694	TE-9	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	1.0
+ACH-000695	COR-L47	Lung	Lung Neuroendocrine Tumor	True	True	False	2.0
+ACH-000696	OVCAR-8	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	2.0
+ACH-000697	A3/KAW	Lymphoid	Mature B-Cell Neoplasms	True	True	True	0.0
+ACH-000698	DMS 53	Lung	Lung Neuroendocrine Tumor	True	True	True	2.0
+ACH-000699	HCC1395	Breast	Invasive Breast Carcinoma	True	True	True	
+ACH-000700	NCI-H2882	Lung	Non-Small Cell Lung Cancer	True	True	False	0.0
+ACH-000701	RMUG-S	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	1.0
+ACH-000702	L-1236	Lymphoid	Hodgkin Lymphoma	True	True	False	4.0
+ACH-000703	DMS 79	Lung	Lung Neuroendocrine Tumor	False	True	True	4.0
+ACH-000704	OAW42	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	3.0
+ACH-000705	LC-1F	Lung	Non-Small Cell Lung Cancer	False	True	False	
+ACH-000706	EKVX	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000707	P3HR-1	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-000708	SNU-283	Bowel	Colorectal Adenocarcinoma	False	True	False	4.0
+ACH-000709	KMRC-2	Kidney	Renal Cell Carcinoma	True	True	False	1.0
+ACH-000711	JIMT-1	Breast	Invasive Breast Carcinoma	True	True	True	2.0
+ACH-000712	HCC-1833	Lung	Non-Small Cell Lung Cancer	False	True	False	1.0
+ACH-000713	Caov-3	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-000714	KMS-11	Lymphoid	Mature B-Cell Neoplasms	True	True	True	3.0
+ACH-000715	SNU-1214	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	True	1.0
+ACH-000716	TT2609-C02	Thyroid	Well-Differentiated Thyroid Cancer	True	True	True	2.0
+ACH-000717	COLO-680N	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000718	NCI-H2291	Lung	Non-Small Cell Lung Cancer	True	True	False	2.0
+ACH-000719	RMG-I	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-000720	TCCSUP	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	
+ACH-000721	HMC-1-8	Breast	Invasive Breast Carcinoma	True	True	True	
+ACH-000722	SNU-C1	Bowel	Colorectal Adenocarcinoma	True	True	False	4.0
+ACH-000723	YD-10B	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	True	5.0
+ACH-000724	HT-1376	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	4.0
+ACH-000725	HCC202	Breast	Breast Ductal Carcinoma In Situ	True	True	False	5.0
+ACH-000726	TE-14	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	False	True	True	0.0
+ACH-000727	NCI-H2066	Lung	Lung Neuroendocrine Tumor	False	True	False	4.0
+ACH-000728	KASUMI-2	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	True	2.0
+ACH-000729	NCI-H1963	Lung	Lung Neuroendocrine Tumor	False	True	False	
+ACH-000730	SK-MEL-5	Skin	Melanoma	False	True	True	0.0
+ACH-000732	PE/CA-PJ41 (clone D2)	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	1.0
+ACH-000733	NCI-H1838	Lung	Non-Small Cell Lung Cancer	False	True	True	1.0
+ACH-000734	JHH-5	Liver	Hepatocellular Carcinoma	True	True	True	3.0
+ACH-000735	PE/CA-PJ49	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	0.5
+ACH-000736	SNU-601	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	2.0
+ACH-000738	GB-1	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000739	Hep G2	Liver	Hepatoblastoma	True	True	True	
+ACH-000740	A-253	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	3.0
+ACH-000741	U-BLC1	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	2.0
+ACH-000743	COR-L95	Lung	Lung Neuroendocrine Tumor	False	True	False	2.0
+ACH-000744	NCI-H1623	Lung	Non-Small Cell Lung Cancer	False	True	True	1.0
+ACH-000745	MOLP-8	Lymphoid	Mature B-Cell Neoplasms	False	True	False	0.0
+ACH-000746	GSS	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	2.0
+ACH-000747	NCI-H1703	Lung	Non-Small Cell Lung Cancer	True	True	True	1.0
+ACH-000748	SJSA-1	Bone	Osteosarcoma	True	True	True	
+ACH-000749	DMS 273	Lung	Lung Neuroendocrine Tumor	True	True	True	3.0
+ACH-000750	LOX IMVI	Skin	Melanoma	False	True	True	1.0
+ACH-000751	OCI-M1	Myeloid	Acute Myeloid Leukemia	False	True	True	2.0
+ACH-000752	NCI-H196	Lung	SMARCA4-deficient undifferentiated tumor	False	True	True	4.0
+ACH-000753	JMSU-1	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	4.0
+ACH-000754	L-428	Lymphoid	Hodgkin Lymphoma	True	True	False	3.0
+ACH-000755	HCC2218	Breast	Breast Ductal Carcinoma In Situ	False	True	False	4.0
+ACH-000756	GI-1	CNS/Brain	Diffuse Glioma	True	True	True	4.0
+ACH-000757	A427	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000758	MKN74	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	2.0
+ACH-000759	MDA-MB-175-VII	Breast	Invasive Breast Carcinoma	False	True	True	3.0
+ACH-000760	LNZ308	CNS/Brain	Diffuse Glioma	True	True	True	
+ACH-000761	NUGC-2	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	False	0.5
+ACH-000762	YD-38	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	3.0
+ACH-000763	MM1-S	Lymphoid	Mature B-Cell Neoplasms	True	True	True	1.0
+ACH-000764	SH-10-TC	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	
+ACH-000765	WM983B	Skin	Melanoma	True	True	True	1.0
+ACH-000766	NCI-H1648	Lung	Non-Small Cell Lung Cancer	True	True	True	0.0
+ACH-000767	NCI-H526	Lung	Lung Neuroendocrine Tumor	True	True	False	4.0
+ACH-000768	MDA-MB-231	Breast	Invasive Breast Carcinoma	True	True	True	0.0
+ACH-000769	LK-2	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000770	P31/FUJ	Myeloid	Acute Myeloid Leukemia	True	True	False	2.0
+ACH-000771	BICR 56	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000772	TE 441.T	Soft Tissue	CIC-DUX4 Sarcoma	False	True	False	2.0
+ACH-000773	Ki-JK	Lymphoid	Mature T and NK Neoplasms	True	True	False	4.0
+ACH-000774	RERF-LC-Ad2	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000775	NCI-H727	Lung	Lung Neuroendocrine Tumor	True	True	True	1.0
+ACH-000776	ONS-76	CNS/Brain	Embryonal Tumor	True	True	True	
+ACH-000777	KYSE-30	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000778	HSC-3	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	3.0
+ACH-000779	PC-9	Lung	Non-Small Cell Lung Cancer	False	True	False	2.0
+ACH-000780	NCI-H1105	Lung	Lung Neuroendocrine Tumor	False	True	True	
+ACH-000781	NCI-H2023	Lung	Non-Small Cell Lung Cancer	True	True	True	0.0
+ACH-000782	SEM	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	True	2.0
+ACH-000783	CAMA-1	Breast	Invasive Breast Carcinoma	True	True	True	4.0
+ACH-000784	KYSE-70	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	1.0
+ACH-000785	NCI-H2126	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000786	Daudi	Lymphoid	Mature B-Cell Neoplasms	False	True	False	
+ACH-000787	LXF-289	Lung	Non-Small Cell Lung Cancer	True	True	True	4.0
+ACH-000788	A2058	Skin	Melanoma	True	True	True	
+ACH-000789	NCI-H810	Lung	Non-Small Cell Lung Cancer	False	True	False	2.0
+ACH-000790	SHP-77	Lung	Lung Neuroendocrine Tumor	True	True	True	
+ACH-000791	RERF-LC-Ad1	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000792	BFTC-909	Kidney	Renal Cell Carcinoma	True	True	True	
+ACH-000793	KATO III	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	
+ACH-000794	BICR 22	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000795	MOLT-13	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	True	0.0
+ACH-000796	MCAS	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	3.0
+ACH-000797	HLF-a	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-000798	CL-40	Bowel	Colorectal Adenocarcinoma	True	True	False	2.0
+ACH-000799	Hs 695T	Skin	Melanoma	True	True	False	2.0
+ACH-000800	NCI-H446	Lung	Lung Neuroendocrine Tumor	True	True	True	4.0
+ACH-000801	Hs 936.T	Skin	Melanoma	True	True	False	2.0
+ACH-000802	BFTC-905	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	0.5
+ACH-000803	COLO 668	Lung	Lung Neuroendocrine Tumor	False	True	True	3.0
+ACH-000804	NB-1	Peripheral Nervous System	Neuroblastoma	True	True	True	4.0
+ACH-000805	COLO-679	Skin	Melanoma	True	True	True	2.0
+ACH-000806	L-540	Lymphoid	Hodgkin Lymphoma	False	True	False	4.0
+ACH-000807	SNU-738	CNS/Brain	Diffuse Glioma	True	True	False	0.0
+ACH-000808	HuH28	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	False	True	True	2.0
+ACH-000809	KYSE-410	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	3.0
+ACH-000810	SK-MEL-30	Skin	Melanoma	True	True	True	2.0
+ACH-000811	SK-OV-3	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-000812	COLO-783	Skin	Melanoma	False	True	True	2.0
+ACH-000813	T3M-10	Lung	Non-Small Cell Lung Cancer	False	True	True	2.0
+ACH-000814	Hs 939.T	Skin	Melanoma	False	True	True	2.0
+ACH-000815	KM-H2	Lymphoid	Hodgkin Lymphoma	False	True	True	1.56
+ACH-000816	NCI-H524	Lung	Lung Neuroendocrine Tumor	False	True	True	
+ACH-000817	RPMI 8226	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-000818	BT-483	Breast	Invasive Breast Carcinoma	False	True	False	3.0
+ACH-000819	LN-18	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-000820	SW403	Bowel	Colorectal Adenocarcinoma	True	True	False	3.0
+ACH-000821	EJM	Lymphoid	Mature B-Cell Neoplasms	True	True	False	4.0
+ACH-000822	SK-MEL-24	Skin	Melanoma	True	True	True	
+ACH-000823	KYSE-140	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	4.0
+ACH-000824	KYSE-510	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	3.0
+ACH-000825	HOP-92	Lung	Non-Small Cell Lung Cancer	False	True	False	2.0
+ACH-000826	CAL-12T	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000827	WM793	Skin	Melanoma	True	True	True	4.0
+ACH-000828	ZR-75-30	Breast	Invasive Breast Carcinoma	False	True	False	3.0
+ACH-000829	HuNS1	Lymphoid	Mature B-Cell Neoplasms	True	True	False	
+ACH-000830	NCI-H1436	Lung	Lung Neuroendocrine Tumor	False	True	False	
+ACH-000831	HEC-50B	Uterus	Endometrial Carcinoma	True	True	True	0.0
+ACH-000832	CAL 27	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	
+ACH-000833	RH-30	Soft Tissue	Rhabdomyosarcoma	True	True	True	3.0
+ACH-000834	UM-UC-1	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	0.5
+ACH-000835	GCT	Soft Tissue	Undifferentiated Pleomorphic Sarcoma/Malignant Fibrous Histiocytoma/High-Grade Spindle Cell Sarcoma	True	True	True	2.0
+ACH-000836	YD-15	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000837	NCI-H322	Lung	Non-Small Cell Lung Cancer	True	True	True	0.0
+ACH-000838	AMO-1	Lymphoid	Mature B-Cell Neoplasms	True	True	True	3.0
+ACH-000839	SCaBER	Bladder/Urinary Tract	Bladder Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000840	HCC-366	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000841	NCI-H2087	Lung	Non-Small Cell Lung Cancer	True	True	True	1.0
+ACH-000842	SW 480	Bowel	Colorectal Adenocarcinoma	False	True	True	2.0
+ACH-000843	HARA	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000844	DMS 454	Lung	Lung Neuroendocrine Tumor	False	True	False	3.0
+ACH-000845	NCI-H1373	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000846	FaDu	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	
+ACH-000847	HGC-27	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	
+ACH-000848	JHH-7	Liver	Hepatocellular Carcinoma	True	True	True	2.0
+ACH-000849	MDA-MB-468	Breast	Invasive Breast Carcinoma	True	True	True	2.0
+ACH-000851	MOR/CPR	Lung	Non-Small Cell Lung Cancer	True	True	False	
+ACH-000852	NCI-H1435	Lung	Non-Small Cell Lung Cancer	False	True	True	
+ACH-000853	NCI-H661	Lung	Non-Small Cell Lung Cancer	True	True	True	4.0
+ACH-000855	KYSE-150	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000856	CAL-51	Breast	Invasive Breast Carcinoma	True	True	True	
+ACH-000857	CAL-85-1	Breast	Invasive Breast Carcinoma	False	True	False	4.0
+ACH-000858	KNS-62	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000859	HCC1954	Breast	Breast Ductal Carcinoma In Situ	True	True	True	3.0
+ACH-000860	NCI-H358	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000861	HOP-62	Lung	Non-Small Cell Lung Cancer	True	True	False	2.0
+ACH-000862	KMBC-2	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	3.0
+ACH-000863	DBTRG-05MG	CNS/Brain	Diffuse Glioma	True	True	True	1.5
+ACH-000864	COLO 684	Uterus	Endometrial Carcinoma	True	True	False	2.0
+ACH-000865	KYSE-450	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000866	NCI-H1048	Lung	Lung Neuroendocrine Tumor	True	True	True	
+ACH-000867	ChaGo-K-1	Lung	Non-Small Cell Lung Cancer	True	True	True	1.0
+ACH-000868	HCC-1195	Lung	Non-Small Cell Lung Cancer	False	True	True	4.0
+ACH-000869	NCI-H1568	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000870	NCI-H1930	Lung	Lung Neuroendocrine Tumor	False	True	True	4.0
+ACH-000871	NCI-H510	Lung	Lung Neuroendocrine Tumor	True	True	False	3.0
+ACH-000872	HCC515	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000873	KYSE-270	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	2.0
+ACH-000874	RS4;11	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	False	0.0
+ACH-000875	NCI-H2347	Lung	Non-Small Cell Lung Cancer	False	True	True	2.0
+ACH-000876	MDA-MB-415	Breast	Invasive Breast Carcinoma	True	True	False	3.0
+ACH-000877	EB1	Lymphoid	Mature B-Cell Neoplasms	False	True	True	2.0
+ACH-000878	HCC-15	Lung	Non-Small Cell Lung Cancer	True	True	True	0.0
+ACH-000879	MFE-296	Uterus	Endometrial Carcinoma	True	True	True	
+ACH-000880	AGS	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	2.0
+ACH-000881	MEL-JUSO	Skin	Melanoma	True	True	True	0.0
+ACH-000882	IGR-1	Skin	Melanoma	True	True	True	0.0
+ACH-000883	SW 1783	CNS/Brain	Diffuse Glioma	False	True	True	4.0
+ACH-000884	MDA-MB-435S	Skin	Melanoma	True	True	True	3.0
+ACH-000885	TOV-21G	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-000886	NCI-H2009	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000887	SF-172	CNS/Brain	Diffuse Glioma	True	True	False	0.0
+ACH-000888	NCI-H1793	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000889	KMM-1	Lymphoid	Mature B-Cell Neoplasms	True	True	False	
+ACH-000890	SW 1271	Lung	SMARCA4-deficient undifferentiated tumor	True	True	True	0.25
+ACH-000891	HCC-1438	Lung	Non-Small Cell Lung Cancer	False	True	True	2.0
+ACH-000892	NCI-H1563	Lung	Non-Small Cell Lung Cancer	False	True	True	0.0
+ACH-000893	NCI-H1651	Lung	Non-Small Cell Lung Cancer	False	True	True	0.0
+ACH-000894	NCI-H1869	Lung	Non-Small Cell Lung Cancer	True	True	False	3.0
+ACH-000895	CL-34	Bowel	Colorectal Adenocarcinoma	False	True	True	2.0
+ACH-000896	647-V	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	2.0
+ACH-000897	FTC-238	Thyroid	Well-Differentiated Thyroid Cancer	False	True	True	3.0
+ACH-000898	SNU-719	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	2.0
+ACH-000899	WM88	Skin	Melanoma	True	True	True	0.5
+ACH-000900	NCI-H23	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000901	HCC-1359	Lung	Non-Small Cell Lung Cancer	True	True	True	
+ACH-000902	CAL-148	Breast	Invasive Breast Carcinoma	False	True	True	2.0
+ACH-000903	FTC-133	Thyroid	Well-Differentiated Thyroid Cancer	True	True	True	4.0
+ACH-000905	5637	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	4.0
+ACH-000906	ES-2	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-000907	SNU-349	Kidney	Renal Cell Carcinoma	True	True	False	2.0
+ACH-000908	SNU-520	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	False	2.0
+ACH-000909	JHUEM-2	Uterus	Endometrial Carcinoma	False	True	True	2.0
+ACH-000910	MDA-MB-453	Breast	Invasive Breast Carcinoma	True	True	True	
+ACH-000911	NUGC-3	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	3.0
+ACH-000912	NCI-H2286	Lung	Lung Neuroendocrine Tumor	True	True	False	1.0
+ACH-000913	ESS-1	Uterus	Uterine Sarcoma/Mesenchymal	True	True	True	
+ACH-000914	HT	Lymphoid	Mature B-Cell Neoplasms	True	True	True	2.0
+ACH-000915	IPC-298	Skin	Melanoma	True	True	True	2.0
+ACH-000916	NCI-H1573	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000917	TE-4	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	True	1.0
+ACH-000918	MOLT-16	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	True	1.0
+ACH-000919	IM95	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	
+ACH-000920	CML-T1	Myeloid	Myeloproliferative Neoplasms	True	True	True	
+ACH-000921	NCI-H157-DM	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000922	RCH-ACV	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	True	2.0
+ACH-000924	NCI-H2172	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000925	DV-90	Lung	Non-Small Cell Lung Cancer	False	True	True	2.0
+ACH-000926	HT-55	Bowel	Colorectal Adenocarcinoma	True	True	True	
+ACH-000927	BT-474	Breast	Invasive Breast Carcinoma	False	True	True	1.0
+ACH-000928	JHUEM-1	Uterus	Endometrial Carcinoma	True	True	False	
+ACH-000929	NCI-H2110	Lung	Non-Small Cell Lung Cancer	True	True	True	2.0
+ACH-000930	HCC1569	Breast	Invasive Breast Carcinoma	False	True	False	3.0
+ACH-000932	SNU-1	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	
+ACH-000933	SNU-324	Pancreas	Pancreatic Adenocarcinoma	False	True	False	2.0
+ACH-000934	MDA-MB-361	Breast	Invasive Breast Carcinoma	True	True	True	
+ACH-000935	MDST8	Bowel	Colorectal Adenocarcinoma	True	True	True	4.0
+ACH-000936	EFO-27	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-000937	PF-382	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	True	True	True	
+ACH-000938	NALM-6	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	True	0.0
+ACH-000939	SK-UT-1	Uterus	Uterine Sarcoma/Mesenchymal	True	True	True	
+ACH-000940	AN3 CA	Uterus	Endometrial Carcinoma	False	True	True	
+ACH-000941	HEC-1-B	Uterus	Endometrial Carcinoma	True	True	True	4.0
+ACH-000942	HPB-ALL	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	True	2.0
+ACH-000943	RKO	Bowel	Colorectal Adenocarcinoma	True	True	True	4.0
+ACH-000944	NAMALWA	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-000945	NCI-H650	Lung	Non-Small Cell Lung Cancer	True	True	True	3.0
+ACH-000946	HEC-265	Uterus	Endometrial Carcinoma	True	True	True	2.0
+ACH-000947	OVK18	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-000948	23132/87	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	
+ACH-000949	TGBC11TKB	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	False	2.0
+ACH-000950	LoVo	Bowel	Colorectal Adenocarcinoma	True	True	True	
+ACH-000951	NCI-H2342	Lung	Non-Small Cell Lung Cancer	False	True	False	2.0
+ACH-000952	MDA PCa 2b	Prostate	Prostate Adenocarcinoma	False	True	True	2.0
+ACH-000953	SUP-T1	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	True	True	False	1.0
+ACH-000954	HEC-1-A	Uterus	Endometrial Carcinoma	False	True	True	
+ACH-000955	SNU-407	Bowel	Colorectal Adenocarcinoma	False	True	True	
+ACH-000956	22Rv1	Prostate	Prostate Adenocarcinoma	True	True	True	
+ACH-000957	LS 180	Bowel	Colorectal Adenocarcinoma	True	True	True	2.0
+ACH-000958	SW48	Bowel	Colorectal Adenocarcinoma	True	True	True	
+ACH-000959	SNU-C4	Bowel	Colorectal Adenocarcinoma	True	True	True	2.0
+ACH-000960	Reh	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	False	0.0
+ACH-000961	Ishikawa (Heraklio) 02 ER-	Uterus	Endometrial Carcinoma	True	True	True	
+ACH-000962	OC 314	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	3.0
+ACH-000963	CCK-81	Bowel	Colorectal Adenocarcinoma	True	True	True	3.0
+ACH-000964	MOLT-3	Lymphoid	Mature T and NK Neoplasms	False	True	True	
+ACH-000965	RL95-2	Uterus	Endometrial Carcinoma	True	True	True	
+ACH-000966	IGROV1	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-000967	SNU-C2A	Bowel	Colorectal Adenocarcinoma	False	True	True	
+ACH-000968	COLO 792	Skin	Melanoma	True	True	True	3.0
+ACH-000969	KM12	Bowel	Colorectal Adenocarcinoma	True	True	False	
+ACH-000970	SNU-C5	Bowel	Colorectal Adenocarcinoma	True	True	True	
+ACH-000971	HCT 116	Bowel	Colorectal Adenocarcinoma	True	True	True	
+ACH-000972	HEC-151	Uterus	Endometrial Carcinoma	True	True	True	2.0
+ACH-000973	639-V	Bladder/Urinary Tract	Urethral Cancer	True	True	True	2.0
+ACH-000974	SNG-M	Uterus	Endometrial Carcinoma	True	True	True	
+ACH-000975	HCC2450	Lung	Non-Small Cell Lung Cancer	True	True	False	4.0
+ACH-000976	HuCCT1	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	4.0
+ACH-000977	LNCaP clone FGC	Prostate	Prostate Adenocarcinoma	True	True	True	2.0
+ACH-000978	EN	Uterus	Endometrial Carcinoma	True	True	True	2.0
+ACH-000979	DU 145	Prostate	Prostate Adenocarcinoma	True	True	True	2.0
+ACH-000980	NCI-H1155	Lung	Non-Small Cell Lung Cancer	True	True	False	2.0
+ACH-000981	DND-41	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	True	
+ACH-000982	GP2d	Bowel	Colorectal Adenocarcinoma	False	True	True	
+ACH-000983	KCL-22	Myeloid	Myeloproliferative Neoplasms	True	True	True	2.0
+ACH-000984	HEC-6	Uterus	Endometrial Carcinoma	True	True	True	4.0
+ACH-000985	LS411N	Bowel	Colorectal Adenocarcinoma	True	True	True	4.0
+ACH-000986	HT115	Bowel	Colorectal Adenocarcinoma	True	True	True	
+ACH-000987	MeWo	Skin	Melanoma	False	True	True	1.0
+ACH-000988	MFE-319	Uterus	Endometrial Carcinoma	True	True	True	2.0
+ACH-000989	SNU-175	Bowel	Colorectal Adenocarcinoma	False	True	False	
+ACH-000990	HEC-108	Uterus	Endometrial Carcinoma	False	True	True	3.0
+ACH-000991	SNU-81	Bowel	Colorectal Adenocarcinoma	True	True	True	2.0
+ACH-000992	BICR 18	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	True	
+ACH-000993	JHUEM-7	Uterus	Endometrial Carcinoma	True	True	True	2.0
+ACH-000994	HEC-59	Uterus	Endometrial Carcinoma	True	True	True	4.0
+ACH-000995	JURKAT	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	True	True	True	0.0
+ACH-000996	HEC-251	Uterus	Endometrial Carcinoma	True	True	True	
+ACH-000997	HCT-15	Bowel	Colorectal Adenocarcinoma	True	True	True	2.0
+ACH-000998	CW-2	Bowel	Colorectal Adenocarcinoma	False	True	True	2.0
+ACH-000999	SNU-1040	Bowel	Colorectal Adenocarcinoma	False	True	False	
+ACH-001001	143B	Bone	Osteosarcoma	True	True	True	0.0
+ACH-001002	451Lu	Skin	Melanoma	False	True	False	2.0
+ACH-001016	Becker	CNS/Brain	Diffuse Glioma	True	True	True	2.0
+ACH-001019	BroLi	Skin	Merkel Cell Carcinoma	False	True	False	
+ACH-001020	BT-16	CNS/Brain	Embryonal Tumor	True	True	True	2.0
+ACH-001021	C3A	Liver	Hepatoblastoma	False	True	False	2.0
+ACH-001022	CB-AGPN	Bone	Ewing Sarcoma	False	True	True	
+ACH-001023	CGTH-W-1	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	False	0.0
+ACH-001024	CHL-1	Skin	Melanoma	False	True	True	4.0
+ACH-001028	CHLA-06	CNS/Brain	Embryonal Tumor	True	True	True	
+ACH-001029	CHLA-10	Bone	Ewing Sarcoma	True	True	True	2.0
+ACH-001030	CHLA-218	Bone	Ewing Sarcoma	False	True	False	0.0
+ACH-001031	CHLA-266	CNS/Brain	Embryonal Tumor	True	True	False	
+ACH-001032	CHLA-32	Bone	Ewing Sarcoma	False	True	False	3.0
+ACH-001033	CHLA-57	CNS/Brain	Embryonal Tumor	True	True	True	
+ACH-001034	CHLA-9	Bone	Ewing Sarcoma	False	True	False	
+ACH-001035	CHLA-99	Bone	Ewing Sarcoma	False	True	False	2.0
+ACH-001036	CMK-11-5	Myeloid	Acute Myeloid Leukemia	True	True	False	0.0
+ACH-001038	COG-E-352	Bone	Ewing Sarcoma	True	True	True	1.5
+ACH-001039	COLO 205	Bowel	Colorectal Adenocarcinoma	True	True	False	3.0
+ACH-001041	CHL-1-DM	Skin	Melanoma	True	True	False	2.0
+ACH-001046	COR-L26	Lung	Lung Neuroendocrine Tumor	False	True	False	4.0
+ACH-001048	COV504	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	0.0
+ACH-001049	CPC-N	Lung	Lung Neuroendocrine Tumor	False	True	False	2.0
+ACH-001050	CW9019	Soft Tissue	Rhabdomyosarcoma	True	True	True	0.0
+ACH-001053	D425	CNS/Brain	Embryonal Tumor	True	True	False	3.0
+ACH-001054	D458	CNS/Brain	Embryonal Tumor	True	True	False	2.0
+ACH-001057	DERL-2	Lymphoid	Mature T and NK Neoplasms	False	True	False	0.0
+ACH-001059	DL	Soft Tissue	Rhabdoid Cancer	False	True	True	2.0
+ACH-001060	DL-40	Lymphoid	Mature T and NK Neoplasms	False	True	False	3.0
+ACH-001061	DLD-1	Bowel	Colorectal Adenocarcinoma	True	True	False	2.0
+ACH-001064	EB-2	Lymphoid	Mature B-Cell Neoplasms	False	True	False	6.0
+ACH-001065	Evsa-T	Breast	Invasive Breast Carcinoma	True	True	False	2.0
+ACH-001066	EWS-834	Bone	Ewing Sarcoma	False	True	False	3.0
+ACH-001067	F5	CNS/Brain	Meningothelial Tumor	True	True	False	
+ACH-001068	FE-PD	Lymphoid	Mature T and NK Neoplasms	False	True	False	
+ACH-001075	NCI-H292	Lung	Non-Small Cell Lung Cancer	True	True	True	0.0
+ACH-001081	HCC2998	Bowel	Colorectal Adenocarcinoma	True	True	False	1.0
+ACH-001086	HeLa	Cervix	Cervical Adenocarcinoma	False	True	False	6.0
+ACH-001089	HLE	Liver	Hepatocellular Carcinoma	False	True	False	2.0
+ACH-001093	Hs 604.T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-001096	JR	Soft Tissue	Rhabdomyosarcoma	True	True	True	
+ACH-001097	KARPAS-384	Lymphoid	Mature T and NK Neoplasms	False	True	False	1.0
+ACH-001098	KCI-MOH1	Pancreas	Pancreatic Adenocarcinoma	True	True	False	3.0
+ACH-001099	KD	Soft Tissue	Rhabdoid Cancer	True	True	True	2.0
+ACH-001100	KHYG-1	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	False	1.0
+ACH-001106	KOPN-8	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	True	2.0
+ACH-001107	KP-1N	Pancreas	Pancreatic Adenocarcinoma	True	True	False	0.0
+ACH-001111	L82	Lymphoid	Mature T and NK Neoplasms	True	True	True	5.0
+ACH-001113	LC-1/sq-SF	Lung	Non-Small Cell Lung Cancer	False	True	True	
+ACH-001118	M059J	CNS/Brain	Diffuse Glioma	False	True	False	
+ACH-001119	Mac-2A	Lymphoid	Mature T and NK Neoplasms	True	True	False	2.0
+ACH-001125	MOG-G-CCM	CNS/Brain	Diffuse Glioma	False	True	False	5.0
+ACH-001126	MOG-G-UVW	CNS/Brain	Diffuse Glioma	True	True	False	2.0
+ACH-001127	MOLT-4	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	False	0.02
+ACH-001128	MON	Soft Tissue	Rhabdoid Cancer	True	True	True	2.0
+ACH-001129	MONO-MAC-1	Myeloid	Acute Myeloid Leukemia	True	True	True	
+ACH-001130	MOTN-1	Lymphoid	Mature T and NK Neoplasms	False	True	False	2.0
+ACH-001132	MTA	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	False	3.0
+ACH-001134	MYLA	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	True	True	False	1.0
+ACH-001136	NCI-H187	Lung	Lung Neuroendocrine Tumor	False	True	False	2.0
+ACH-001137	NCI-H1993	Lung	Non-Small Cell Lung Cancer	True	True	False	2.0
+ACH-001138	NCI-H2141	Lung	Lung Neuroendocrine Tumor	False	True	False	4.0
+ACH-001143	NKL	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	False	
+ACH-001145	OC 316	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	3.0
+ACH-001147	OCI-Ly12	Lymphoid	Mature T and NK Neoplasms	False	True	False	2.0
+ACH-001148	OCILY-132	Lymphoid	Mature B-Cell Neoplasms	False	True	True	4.0
+ACH-001151	OVCAR-5	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	0.0
+ACH-001162	PCM6	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-001163	CCLF_PEDS_0001_T	Kidney	Renal Cell Carcinoma	True	True	True	2.0
+ACH-001164	CCLF_PEDS_0003_T	Soft Tissue	Undifferentiated Pleomorphic Sarcoma/Malignant Fibrous Histiocytoma/High-Grade Spindle Cell Sarcoma	True	True	True	2.0
+ACH-001172	U-251 MG DM	CNS/Brain	Diffuse Glioma	True	True	False	2.0
+ACH-001182	RPMI 6666	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	2.0
+ACH-001183	RT112/84	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	False	0.0
+ACH-001184	SCMC-RM2	Soft Tissue	Rhabdomyosarcoma	True	True	True	
+ACH-001188	SH-SY5Y	Peripheral Nervous System	Neuroblastoma	True	True	False	
+ACH-001190	SK-MEL-2	Skin	Melanoma	True	True	True	
+ACH-001192	SK-NEP-1	Bone	Ewing Sarcoma	True	True	True	
+ACH-001193	SK-PN-DW	Bone	Ewing Sarcoma	True	True	True	3.0
+ACH-001194	SK-RC-31	Kidney	Renal Cell Carcinoma	True	True	False	1.0
+ACH-001196	SMS-CTR	Soft Tissue	Rhabdomyosarcoma	True	True	True	2.0
+ACH-001197	SMZ-1	Lymphoid	Non-Hodgkin Lymphoma	True	True	False	1.0
+ACH-001199	SNUC2B	Bowel	Colorectal Adenocarcinoma	False	True	False	
+ACH-001200	STM91-01	Kidney	Rhabdoid Cancer	False	True	True	3.0
+ACH-001201	SU-MB-002	CNS/Brain	Embryonal Tumor	False	True	False	2.0
+ACH-001203	SUP-HD1	Lymphoid	Hodgkin Lymphoma	False	True	False	5.0
+ACH-001205	TC-32	Bone	Ewing Sarcoma	True	True	True	0.0
+ACH-001206	TTC-466	Bone	Ewing Sarcoma	False	True	False	3.0
+ACH-001208	TK-10	Kidney	Renal Cell Carcinoma	False	True	False	3.0
+ACH-001209	TOM-1	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	0.5
+ACH-001210	TTC-1240	Kidney	Rhabdoid Cancer	False	True	True	2.0
+ACH-001211	TTC-549	Soft Tissue	Rhabdoid Cancer	True	True	True	2.0
+ACH-001212	TTC-642	Soft Tissue	Rhabdoid Cancer	False	False	True	
+ACH-001227	UPCI-SCC-090	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	4.0
+ACH-001228	UPCI-SCC-152	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	4.0
+ACH-001229	UPCI-SCC-154	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	2.0
+ACH-001232	UW228	CNS/Brain	Embryonal Tumor	True	True	True	3.0
+ACH-001233	VMRC-LCD	Lung	Non-Small Cell Lung Cancer	True	True	False	0.0
+ACH-001239	WM-266-4	Skin	Melanoma	True	True	True	2.0
+ACH-001270	1273/99	Soft Tissue	Synovial Sarcoma	True	True	False	3.0
+ACH-001274	SW982	Soft Tissue	Synovial Sarcoma	True	True	False	
+ACH-001275	OSA 1777	Bone	Osteosarcoma	True	True	False	2.0
+ACH-001277	Yamato	Soft Tissue	Synovial Sarcoma	True	True	False	6.0
+ACH-001278	BIN-67	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	
+ACH-001279	SCCOHT-1	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	2.0
+ACH-001280	SCS-214	Soft Tissue	Synovial Sarcoma	True	True	False	5.0
+ACH-001282	CHLA-258	Bone	Ewing Sarcoma	False	True	False	0.0
+ACH-001283	TC-106	Bone	Ewing Sarcoma	True	True	True	
+ACH-001289	COG-AR-359	CNS/Brain	Embryonal Tumor	True	True	True	2.0
+ACH-001293				False	False	True	
+ACH-001295	Y-79	Eye	Retinoblastoma	True	True	False	2.0
+ACH-001300	CHLA-15	Peripheral Nervous System	Neuroblastoma	True	True	True	2.0
+ACH-001301	COG-N-278	Peripheral Nervous System	Neuroblastoma	True	True	True	2.0
+ACH-001302	COG-N-305	Peripheral Nervous System	Neuroblastoma	True	True	False	
+ACH-001303	NB-1643	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-001306	8305C	Thyroid	Anaplastic Thyroid Cancer	True	True	True	6.0
+ACH-001307	8505C	Thyroid	Anaplastic Thyroid Cancer	True	True	True	3.0
+ACH-001310	HA1E	Kidney	Non-Cancerous	True	True	True	2.0
+ACH-001318	PLC/PRF/5	Liver	Hepatocellular Carcinoma	True	True	True	1.0
+ACH-001321	TT	Thyroid	Medullary Thyroid Cancer	False	True	True	1.0
+ACH-001322	CME-1	Soft Tissue	Synovial Sarcoma	True	True	False	1.0
+ACH-001328	A-431	Skin	Cutaneous Squamous Cell Carcinoma	True	True	False	4.0
+ACH-001329	ANGM-CSS	CNS/Brain	Diffuse Glioma	True	True	True	0.5
+ACH-001331	BICR 10	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	1.0
+ACH-001332	BICR 78	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	0.0
+ACH-001333	C-33 A	Cervix	Cervical Squamous Cell Carcinoma	True	True	True	
+ACH-001334	C-4 I	Cervix	Cervical Squamous Cell Carcinoma	True	True	True	2.0
+ACH-001335	C-4 II	Cervix	Cervical Squamous Cell Carcinoma	True	True	False	2.0
+ACH-001336	Ca Ski	Cervix	Cervical Squamous Cell Carcinoma	True	True	True	4.0
+ACH-001338	CHP-134	Peripheral Nervous System	Neuroblastoma	True	True	False	
+ACH-001339	Colo 794	Skin	Melanoma	False	True	False	
+ACH-001340	COV413A	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	2.0
+ACH-001341	DoTc2 4510	Cervix	Mixed Cervical Carcinoma	True	True	True	4.0
+ACH-001344	GI-ME-N	Peripheral Nervous System	Neuroblastoma	True	True	True	3.0
+ACH-001345	GP5d	Bowel	Colorectal Adenocarcinoma	True	True	True	2.0
+ACH-001346	H103	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-001347	H157	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	6.0
+ACH-001349				False	False	True	
+ACH-001350	HTC-C3	Thyroid	Anaplastic Thyroid Cancer	False	True	False	2.0
+ACH-001353	JOPACA-1	Pancreas	Pancreatic Adenocarcinoma	True	True	True	1.5
+ACH-001354	LAN-2	Peripheral Nervous System	Neuroblastoma	True	True	False	
+ACH-001355	LAN-6	Peripheral Nervous System	Neuroblastoma	False	True	False	0.0
+ACH-001356	MB-1	Thyroid	Anaplastic Thyroid Cancer	True	True	True	0.0
+ACH-001358	MDA-MB-330	Breast	Invasive Breast Carcinoma	False	True	False	3.0
+ACH-001359	ME-180	Cervix	Cervical Squamous Cell Carcinoma	False	True	False	4.0
+ACH-001360	MS751	Cervix	Cervical Squamous Cell Carcinoma	True	True	True	4.0
+ACH-001362	NCI-H1770	Lung	Non-Small Cell Lung Cancer	False	True	False	3.0
+ACH-001363	NCI-H2135	Lung	Non-Small Cell Lung Cancer	False	True	False	3.0
+ACH-001364	NCI-H345	Lung	Lung Neuroendocrine Tumor	False	True	False	3.0
+ACH-001365	NCI-H847	Lung	Lung Neuroendocrine Tumor	False	True	False	2.0
+ACH-001366	NGP	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-001367	NMB	Peripheral Nervous System	Neuroblastoma	True	True	False	1.0
+ACH-001368	OAC-M5.1	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	
+ACH-001369	OCI-C5x	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	False	True	True	2.0
+ACH-001370	OCI-P5x	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-001373	OV17R	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	False	True	True	3.0
+ACH-001374	PA-1 [PA1]	Ovary/Fallopian Tube	Ovarian Germ Cell Tumor	True	True	True	2.0
+ACH-001375	PACADD-119	Pancreas	Pancreatic Adenocarcinoma	True	True	True	0.0
+ACH-001376	PACADD-135	Pancreas	Pancreatic Adenocarcinoma	False	True	False	2.0
+ACH-001377	PACADD-137	Pancreas	Pancreatic Adenocarcinoma	True	True	True	
+ACH-001378	PACADD-159	Pancreas	Pancreatic Adenocarcinoma	False	True	False	
+ACH-001379	PACADD-161	Pancreas	Pancreatic Adenocarcinoma	True	True	True	2.0
+ACH-001380	PACADD-165	Pancreas	Pancreatic Adenocarcinoma	True	True	False	2.0
+ACH-001382	PACADD-188	Pancreas	Pancreatic Adenocarcinoma	True	True	False	4.0
+ACH-001383	PWR-1E	Prostate	Non-Cancerous	False	True	False	2.0
+ACH-001384	RO82-W-1	Thyroid	Well-Differentiated Thyroid Cancer	False	True	True	4.0
+ACH-001385	RPMI 2650	Head and Neck	Head and Neck Carcinoma, Other	True	True	False	2.0
+ACH-001386	SCLC-22H	Lung	Lung Neuroendocrine Tumor	True	True	False	2.0
+ACH-001388	SUM-102PT	Breast	Invasive Breast Carcinoma	True	True	False	0.0
+ACH-001389	SUM-1315MO2	Breast	Invasive Breast Carcinoma	True	True	False	0.0
+ACH-001390	SUM-149PT	Breast	Invasive Breast Carcinoma	True	True	True	0.0
+ACH-001391	SUM-159PT	Breast	Invasive Breast Carcinoma	True	True	True	1.0
+ACH-001392	SUM-185PE	Breast	Invasive Breast Carcinoma	True	True	False	2.0
+ACH-001393	SUM-190PT	Breast	Invasive Breast Carcinoma	True	True	False	
+ACH-001394	SUM-229PE	Breast	Invasive Breast Carcinoma	True	True	False	0.0
+ACH-001395	SUM-44PE	Breast	Invasive Breast Carcinoma	False	True	False	
+ACH-001396	SUM-52PE	Breast	Invasive Breast Carcinoma	True	True	False	3.0
+ACH-001398	SW 156	Kidney	Renal Cell Carcinoma	True	True	True	0.0
+ACH-001399	SW 626	Bowel	Colorectal Adenocarcinoma	True	True	True	6.0
+ACH-001400	SW 954	Vulva/Vagina	Squamous Cell Carcinoma of the Vulva/Vagina	True	True	True	
+ACH-001401	SW-13	Adrenal Gland	Adrenocortical Carcinoma	True	True	True	2.0
+ACH-001402	SW756	Cervix	Cervical Squamous Cell Carcinoma	True	True	True	3.0
+ACH-001403	TO14	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	2.0
+ACH-001407	UM-UC-13	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	
+ACH-001408	UM-UC-14	Bladder/Urinary Tract	Urethral Cancer	True	True	False	
+ACH-001409	UM-UC-16	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	False	0.0
+ACH-001410	UM-UC-4	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	False	True	False	2.0
+ACH-001411	UM-UC-5	Bladder/Urinary Tract	Bladder Squamous Cell Carcinoma	True	True	True	0.0
+ACH-001412	UM-UC-10	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	3.0
+ACH-001413	UM-UC-11	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	0.0
+ACH-001414	UM-UC-6	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	
+ACH-001415	UM-UC7	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	True	4.0
+ACH-001416	UM-UC9	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	True	True	False	2.0
+ACH-001417	UMC-11	Lung	Lung Neuroendocrine Tumor	False	True	False	5.0
+ACH-001418	UWB1.289	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	
+ACH-001419	VP229	Breast	Invasive Breast Carcinoma	True	True	False	1.0
+ACH-001421	WERI-Rb-1	Eye	Retinoblastoma	True	True	True	2.0
+ACH-001422	WPE1-NA22	Prostate	Non-Cancerous	True	True	False	2.0
+ACH-001423	CCLF_PEDS_0002_T	Kidney	Wilms' Tumor	False	True	False	2.0
+ACH-001427	CCLF_PEDS_0007_T	Bone	Ewing Sarcoma	False	True	False	2.0
+ACH-001428	CCLF_PEDS_0010_T	Bone	Ewing Sarcoma	False	True	False	4.0
+ACH-001430	TC-138	Bone	Ewing Sarcoma	True	True	False	1.0
+ACH-001431	TC-205	Bone	Ewing Sarcoma	True	True	True	0.5
+ACH-001433	CCLF_PEDS_0008_T	Soft Tissue	Epithelioid Sarcoma	True	True	False	4.0
+ACH-001435	1156QE/8	Testis	Non-Seminomatous Germ Cell Tumor	False	True	False	2.0
+ACH-001436	1411H	Testis	Non-Seminomatous Germ Cell Tumor	True	True	False	4.0
+ACH-001437	1618-K	Testis	Non-Seminomatous Germ Cell Tumor	False	True	True	3.0
+ACH-001438	1777N Rpmet	Testis	Non-Seminomatous Germ Cell Tumor	False	True	True	
+ACH-001440	833KE	Testis	Non-Seminomatous Germ Cell Tumor	False	True	False	2.0
+ACH-001441	92-1	Eye	Ocular Melanoma	False	True	True	3.0
+ACH-001442	A388	Skin	Cutaneous Squamous Cell Carcinoma	True	True	True	1.0
+ACH-001443	ASH-3	Thyroid	Anaplastic Thyroid Cancer	True	True	False	
+ACH-001445	BICR 3	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	False	
+ACH-001447	BJAB	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-001449	BL-2	Lymphoid	Mature B-Cell Neoplasms	False	True	True	1.0
+ACH-001450	BLUE-1	Lymphoid	Mature B-Cell Neoplasms	True	True	True	2.0
+ACH-001451	BOKU	Cervix	Cervical Squamous Cell Carcinoma	True	True	True	2.0
+ACH-001452	BONNA-12	Lymphoid	Mature B-Cell Neoplasms	False	True	True	3.0
+ACH-001453	BPH-1	Prostate	Non-Cancerous	True	True	False	4.0
+ACH-001454	C10	Bowel	Colorectal Adenocarcinoma	True	True	False	0.0
+ACH-001456	C125PM	Bowel	Colorectal Adenocarcinoma	False	True	False	5.0
+ACH-001458	C75	Bowel	Colorectal Adenocarcinoma	True	True	True	5.0
+ACH-001459	C80	Bowel	Colorectal Adenocarcinoma	True	True	True	4.0
+ACH-001460	C84	Bowel	Colorectal Adenocarcinoma	True	True	False	2.0
+ACH-001461	C99	Bowel	Colorectal Adenocarcinoma	True	True	False	3.0
+ACH-001465	CHLA-136	Peripheral Nervous System	Neuroblastoma	False	True	False	2.0
+ACH-001481	CHLA-90	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-001484	CI	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-001485	CII	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	4.0
+ACH-001489	COR-L32	Lung	Non-Small Cell Lung Cancer	False	True	False	3.0
+ACH-001490	COR-L321	Lung	Non-Small Cell Lung Cancer	False	True	False	2.0
+ACH-001492	DOGKIT	Lymphoid	Mature B-Cell Neoplasms	False	True	False	1.0
+ACH-001493	DOGUM	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-001494	EGI-1	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	0.0
+ACH-001495	EMTOKA	Uterus	Endometrial Carcinoma	True	True	True	2.0
+ACH-001496	ESO26	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	2.0
+ACH-001497	ESO51	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	2.0
+ACH-001498	Farage	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-001500	FLO-1	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	2.0
+ACH-001502	GCT-27	Testis	Non-Seminomatous Germ Cell Tumor	True	True	True	2.0
+ACH-001503	GUMBUS	Lymphoid	Mature B-Cell Neoplasms	False	True	False	
+ACH-001508	H314	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	4.0
+ACH-001509	H357	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	3.0
+ACH-001510	H376	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	3.0
+ACH-001511	H413	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-001512				False	False	True	
+ACH-001513	HCA-1	Cervix	Cervical Adenocarcinoma	True	True	True	2.0
+ACH-001515	HCS-2	Cervix	Cervical Squamous Cell Carcinoma	True	True	False	4.0
+ACH-001516	HCSC-1	Cervix	Cervical Adenocarcinoma	False	True	True	3.0
+ACH-001517	HEC-1	Uterus	Endometrial Carcinoma	True	True	True	3.0
+ACH-001518	HEC-116	Uterus	Endometrial Carcinoma	True	True	True	
+ACH-001519	H-EMC-SS	Bone	Chondrosarcoma	False	True	False	2.0
+ACH-001520	HG-3	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	False	2.0
+ACH-001521	HKA-1	Skin	Cutaneous Squamous Cell Carcinoma	True	True	True	3.0
+ACH-001522	HMY-1	Skin	Melanoma	True	True	False	1.0
+ACH-001523	HSC-1	Skin	Cutaneous Squamous Cell Carcinoma	True	True	True	2.0
+ACH-001524	HSC-5	Skin	Cutaneous Squamous Cell Carcinoma	True	True	True	2.0
+ACH-001525	HT-3	Cervix	Cervical Adenocarcinoma	True	True	True	4.0
+ACH-001526	HuO9	Bone	Osteosarcoma	True	True	True	
+ACH-001528	IHH-4	Thyroid	Well-Differentiated Thyroid Cancer	True	True	True	0.0
+ACH-001529	JAR	Uterus	Gestational Trophoblastic Disease	True	True	True	3.0
+ACH-001530	JEG-3	Uterus	Gestational Trophoblastic Disease	True	True	True	4.0
+ACH-001532	JMU-RTK-2	Kidney	Rhabdoid Cancer	True	True	True	2.0
+ACH-001533	KARPAS 1718	Lymphoid	Mature B-Cell Neoplasms	True	True	True	
+ACH-001536	KKU-100	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	0.0
+ACH-001537	KKU-055	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	False	True	True	
+ACH-001538	KKU-213	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	
+ACH-001539	KML-1	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-001540	KMLS-1	Soft Tissue	Liposarcoma	False	True	False	2.0
+ACH-001541	KMS-28PE	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-001542	KON	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	3.0
+ACH-001543	KOSC-2	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-001544	KYAE-1	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	2.0
+ACH-001547	LO68	Pleura	Pleural Mesothelioma	True	True	False	4.0
+ACH-001548	LS	Peripheral Nervous System	Neuroblastoma	True	True	True	
+ACH-001549	Lu-135	Lung	Lung Neuroendocrine Tumor	True	True	False	6.0
+ACH-001550	MCC13	Skin	Merkel Cell Carcinoma	True	True	True	2.0
+ACH-001551	MCC14/2	Skin	Merkel Cell Carcinoma	True	True	True	4.0
+ACH-001552	MCC26	Skin	Merkel Cell Carcinoma	True	True	True	4.0
+ACH-001554	mel-202	Eye	Ocular Melanoma	True	True	False	2.0
+ACH-001555	Mero-14	Pleura	Pleural Mesothelioma	True	True	False	0.0
+ACH-001556	Mero-25	Pleura	Pleural Mesothelioma	True	True	False	1.0
+ACH-001557	Mero-41	Pleura	Pleural Mesothelioma	True	True	False	0.0
+ACH-001558	Mero-48a	Pleura	Pleural Mesothelioma	True	True	False	0.0
+ACH-001559	Mero-82	Pleura	Pleural Mesothelioma	True	True	False	4.0
+ACH-001560	Mero-83	Pleura	Pleural Mesothelioma	True	True	False	0.0
+ACH-001561	Mero-84	Pleura	Pleural Mesothelioma	False	True	False	0.0
+ACH-001562	Mero-95	Pleura	Pleural Mesothelioma	True	True	False	2.0
+ACH-001563	MM127	Skin	Melanoma	True	True	True	2.5
+ACH-001566	MM370	Skin	Melanoma	True	True	False	1.0
+ACH-001567	MM383	Skin	Melanoma	True	True	False	2.0
+ACH-001568	MM386	Skin	Melanoma	True	True	False	2.0
+ACH-001569	MM415	Skin	Melanoma	False	True	False	2.0
+ACH-001570	MM426	Skin	Melanoma	True	True	False	1.0
+ACH-001571	Mo	Lymphoid	Mature B-Cell Neoplasms	False	True	False	
+ACH-001573	MOLM-1	Myeloid	Myeloproliferative Neoplasms	False	True	False	3.0
+ACH-001574	MOLM-14	Myeloid	Acute Myeloid Leukemia	True	True	True	0.5
+ACH-001577	MUTZ-8	Myeloid	Acute Myeloid Leukemia	True	True	False	3.0
+ACH-001578	NCCIT	Testis	Non-Seminomatous Germ Cell Tumor	True	True	True	2.0
+ACH-001591	NCI-H1417	Lung	Lung Neuroendocrine Tumor	False	True	False	0.0
+ACH-001598	NCI-H295R	Adrenal Gland	Adrenocortical Carcinoma	False	True	False	2.0
+ACH-001599	NCI-H64	Lung	Lung Neuroendocrine Tumor	False	True	False	3.0
+ACH-001603	NH-12	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-001605	no.10	CNS/Brain	Diffuse Glioma	True	True	False	4.0
+ACH-001606	no.11	CNS/Brain	Diffuse Glioma	True	True	False	3.0
+ACH-001607	NOZ	Biliary Tract	Intracholecystic Papillary Neoplasm	True	True	True	4.0
+ACH-001608	NP 2	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-001609	NP 3	CNS/Brain	Diffuse Glioma	True	True	True	0.5
+ACH-001610	NP 5	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-001611	NP 8	CNS/Brain	Diffuse Glioma	True	True	False	2.0
+ACH-001613	OCI-AML4	Myeloid	Acute Myeloid Leukemia	True	True	False	2.0
+ACH-001616	OCI-LY18	Lymphoid	Mature B-Cell Neoplasms	True	True	True	3.0
+ACH-001617	OCI-LY7	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-001618	OCI-M2	Myeloid	Acute Myeloid Leukemia	True	True	False	2.0
+ACH-001619	OCUG-1	Biliary Tract	Intracholecystic Papillary Neoplasm	True	True	True	3.0
+ACH-001622	Onda 7	CNS/Brain	Diffuse Glioma	True	True	False	2.0
+ACH-001623	Onda 8	CNS/Brain	Diffuse Glioma	True	True	False	0.0
+ACH-001624	Onda 9	CNS/Brain	Diffuse Glioma	True	True	True	0.0
+ACH-001625	OSC-19	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	
+ACH-001626	OSC-20	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	3.0
+ACH-001627	P4E6	Prostate	Non-Cancerous	True	True	False	1.0
+ACH-001628	PEA1	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	4.0
+ACH-001630	PEO1	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	
+ACH-001632	PEO4	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	0.0
+ACH-001634	PGA-1	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-001636	Ramos	Lymphoid	Mature B-Cell Neoplasms	False	True	False	
+ACH-001638	RC-K8	Lymphoid	Mature B-Cell Neoplasms	False	True	True	2.0
+ACH-001639	ROS-50	Lymphoid	Mature B-Cell Neoplasms	True	True	False	
+ACH-001641	SAT	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	2.0
+ACH-001642	SCC-3	Lymphoid	Non-Hodgkin Lymphoma	True	True	True	2.0
+ACH-001643	SCCH-196	Bone	Ewing Sarcoma	True	True	False	
+ACH-001645	SEKI	Skin	Melanoma	True	True	False	3.0
+ACH-001647	SHI-1	Myeloid	Acute Myeloid Leukemia	True	True	False	1.0
+ACH-001648	Shmac 4	Prostate	Non-Cancerous	True	True	False	0.5
+ACH-001649	Shmac 5	Prostate	Non-Cancerous	True	True	True	
+ACH-001650	SISO	Cervix	Cervical Adenocarcinoma	True	True	True	3.0
+ACH-001651	SKG-I	Cervix	Cervical Squamous Cell Carcinoma	True	True	True	3.0
+ACH-001652	SKG-II	Cervix	Cervical Squamous Cell Carcinoma	True	True	True	4.0
+ACH-001653	SK-GT-2	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	2.0
+ACH-001654	SK-GT-4	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	0.0
+ACH-001655	SKN	Uterus	Uterine Sarcoma/Mesenchymal	True	True	True	
+ACH-001656	SKNO-1	Myeloid	Acute Myeloid Leukemia	True	True	True	3.0
+ACH-001662	SNU-2372	Breast	Invasive Breast Carcinoma	True	True	True	1.0
+ACH-001664	SNU-638	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	True	2.0
+ACH-001667	SU-CCS-1	Soft Tissue	Clear Cell Sarcoma	False	True	False	0.25
+ACH-001668	SUSA	Testis	Non-Seminomatous Germ Cell Tumor	True	True	True	2.0
+ACH-001669	TANOUE	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	True	2.0
+ACH-001670	TASK1	CNS/Brain	Embryonal Tumor	True	True	True	0.0
+ACH-001671	Tera-1	Testis	Non-Seminomatous Germ Cell Tumor	False	True	False	2.0
+ACH-001672	Tera-2	Testis	Non-Seminomatous Germ Cell Tumor	False	True	False	3.0
+ACH-001673	TFK-1	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	0.0
+ACH-001674	TGW	Peripheral Nervous System	Neuroblastoma	True	True	True	
+ACH-001675	TR146	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	
+ACH-001676	Ty-82	Head and Neck	Head and Neck Carcinoma, Other	True	True	False	2.0
+ACH-001677	U-2904	Lymphoid	Mature B-Cell Neoplasms	True	True	True	2.0
+ACH-001678	U-2940	Lymphoid	Mature B-Cell Neoplasms	False	True	True	2.0
+ACH-001679	U-2973	Lymphoid	Mature B-Cell Neoplasms	False	True	True	1.0
+ACH-001680	U-698-M	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	2.0
+ACH-001683	UACC-3133	Breast	Invasive Breast Carcinoma	True	True	False	
+ACH-001684	UCSD-AML1	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-001685	U-HO1	Lymphoid	Hodgkin Lymphoma	True	True	False	2.0
+ACH-001686	ULA	Lymphoid	Mature B-Cell Neoplasms	False	True	True	2.0
+ACH-001687	UM-RC-3	Kidney	Renal Cell Carcinoma	True	True	True	4.0
+ACH-001688	UM-RC-7	Kidney	Renal Cell Carcinoma	True	True	True	
+ACH-001690	UPCI-SCC-026	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	4.0
+ACH-001691	UPCI-SCC-029A	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	
+ACH-001692	UPCI-SCC-040	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	2.0
+ACH-001693	UPCI-SCC-072	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	True	2.0
+ACH-001694	UPCI-SCC-074	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	2.0
+ACH-001695	UPCI-SCC-099	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	2.0
+ACH-001696	UPCI-SCC-111	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	3.0
+ACH-001697	UPCI-SCC-114	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	False	1.5
+ACH-001698	UPCI-SCC-116	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	2.0
+ACH-001699	UPCI-SCC-131	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	3.0
+ACH-001700	UPCI-SCC-172	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	False	2.0
+ACH-001701	UPCI-SCC-200	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	0.0
+ACH-001702	VA-ES-BJ	Soft Tissue	Epithelioid Sarcoma	True	True	True	0.0
+ACH-001703	VAL	Lymphoid	Mature B-Cell Neoplasms	False	True	True	
+ACH-001704	VMRC-MELG	Skin	Melanoma	False	True	False	3.0
+ACH-001705	VP267	Breast	Invasive Breast Carcinoma	False	True	False	1.0
+ACH-001707	WA-OSEL	Lymphoid	Mature B-Cell Neoplasms	True	True	True	3.0
+ACH-001708	WSU-FSCCL	Lymphoid	Mature B-Cell Neoplasms	False	True	False	0.0
+ACH-001709	WSU-NHL	Lymphoid	Mature B-Cell Neoplasms	True	True	False	
+ACH-001711	PFSK-1	CNS/Brain	Embryonal Tumor	True	True	True	3.0
+ACH-001712	Hs 860.T	Bone	Osteosarcoma	False	True	False	2.0
+ACH-001715	CAL-72	Bone	Osteosarcoma	True	True	True	1.5
+ACH-001716	GOTO	Peripheral Nervous System	Neuroblastoma	False	True	False	2.0
+ACH-001719	OCI-C4P	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	
+ACH-001735	SEMK2	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	False	2.0
+ACH-001736	HB1119	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	False	2.0
+ACH-001737	CTV-1-DM	Lymphoid	Mature T and NK Neoplasms	True	True	False	0.0
+ACH-001738	CCRF-CEM	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	False	
+ACH-001740	RH28	Soft Tissue	Rhabdomyosarcoma	True	True	True	4.0
+ACH-001745	RhJT	Soft Tissue	Rhabdomyosarcoma	True	True	True	3.0
+ACH-001750	TTC442	Soft Tissue	Rhabdomyosarcoma	True	True	True	3.0
+ACH-001751	Rh36	Soft Tissue	Rhabdomyosarcoma	False	True	True	3.0
+ACH-001765	Rh4	Soft Tissue	Rhabdomyosarcoma	True	True	True	3.0
+ACH-001767	CCLF_PEDS_0018_T	Fibroblast	Non-Cancerous	False	True	False	2.0
+ACH-001786	SNU-1544	Bowel	Colorectal Adenocarcinoma	True	True	True	3.0
+ACH-001791	LPS6	Soft Tissue	Liposarcoma	True	True	False	
+ACH-001793	LPS27	Soft Tissue	Liposarcoma	True	True	False	
+ACH-001794	93T449	Soft Tissue	Liposarcoma	True	True	True	2.0
+ACH-001795	94T778	Soft Tissue	Liposarcoma	True	True	True	4.0
+ACH-001796	95T1000	Soft Tissue	Liposarcoma	True	True	True	2.0
+ACH-001799	LPS141	Soft Tissue	Liposarcoma	True	True	True	
+ACH-001802	LPS853	Soft Tissue	Liposarcoma	True	True	False	
+ACH-001804	LPS510	Soft Tissue	Liposarcoma	True	True	False	
+ACH-001807	LPS067	Soft Tissue	Liposarcoma	False	True	False	3.0
+ACH-001813	C242	Bone	Osteosarcoma	False	True	False	2.0
+ACH-001814	OS252	Bone	Osteosarcoma	True	True	False	4.0
+ACH-001817	C393	Bone	Osteosarcoma	False	True	False	2.0
+ACH-001818	C396	Bone	Osteosarcoma	False	True	False	2.0
+ACH-001819	MFM-223	Breast	Invasive Breast Carcinoma	True	True	False	1.0
+ACH-001820	COLO 824	Breast	Breast Neoplasm, NOS	True	True	False	
+ACH-001828	HCC1739 BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-001834	ICC10	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	4.0
+ACH-001835	ICC10-6	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	False	2.0
+ACH-001836	ICC10-8	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	False	
+ACH-001838	ICC12	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	3.0
+ACH-001839	ICC13-7	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	1.0
+ACH-001841	ICC15	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	
+ACH-001842	ICC2	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	False	1.5
+ACH-001843	ICC3	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	False	
+ACH-001844	ICC4	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	4.0
+ACH-001845	ICC5	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	False	True	False	3.0
+ACH-001846	ICC6	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	False	True	False	2.0
+ACH-001847	ICC7	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	False	True	False	0.0
+ACH-001848	ICC8	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	0.0
+ACH-001849	ICC9	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	3.0
+ACH-001850	G415	Biliary Tract	Intracholecystic Papillary Neoplasm	True	True	True	2.0
+ACH-001852	HKGZ-CC	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	
+ACH-001853	KMCH-1	Liver	Hepatocellular Carcinoma plus Intrahepatic Cholangiocarcinoma	True	True	True	3.0
+ACH-001854	MMNK-1	Biliary Tract	Non-Cancerous	False	True	True	
+ACH-001855	OZ	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	False	True	True	0.0
+ACH-001856	RBE	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	
+ACH-001857	SG231	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	
+ACH-001858	SSP-25	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	
+ACH-001861	TGBC1TKB	Biliary Tract	Intracholecystic Papillary Neoplasm	True	True	True	2.0
+ACH-001862	TGBC52TKB	Ampulla of Vater	Ampullary Carcinoma	True	True	True	3.0
+ACH-001863	TKKK	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	False	2.0
+ACH-001864	YSCCC	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	0.0
+ACH-001949	MA-MEL-46	Skin	Melanoma	False	True	False	
+ACH-001953	MA-MEL-27	Skin	Melanoma	False	True	False	3.0
+ACH-001958	MS1	Lung	Lung Neuroendocrine Tumor	False	True	False	2.0
+ACH-001959	CC-LP-1	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	1.0
+ACH-001960	CC-SW-1	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	2.0
+ACH-001961	GB2	Biliary Tract	Intracholecystic Papillary Neoplasm	True	True	True	
+ACH-001970	MM253	Skin	Melanoma	True	True	False	
+ACH-001971	MM466	Skin	Melanoma	False	True	False	2.0
+ACH-001972	MM473	Skin	Melanoma	True	True	False	2.0
+ACH-001973	MM485	Skin	Melanoma	True	True	False	1.0
+ACH-001974	MM537	Skin	Melanoma	False	True	False	0.0
+ACH-001975	MM576	Skin	Melanoma	True	True	False	1.0
+ACH-001976	MM603	Skin	Melanoma	False	True	False	3.0
+ACH-001977	NO36	Pleura	Pleural Mesothelioma	True	True	False	1.0
+ACH-001978	NZM1	Skin	Melanoma	False	True	False	
+ACH-001979	NZM11	Skin	Melanoma	False	True	False	1.0
+ACH-001980	NZM12	Skin	Melanoma	False	True	False	1.0
+ACH-001981	NZM2	Skin	Melanoma	False	True	False	
+ACH-001982	NZM3	Skin	Melanoma	True	True	False	1.0
+ACH-001983	NZM30	Skin	Melanoma	False	True	False	0.0
+ACH-001984	NZM4	Skin	Melanoma	False	True	False	
+ACH-001985	NZM40	Skin	Melanoma	False	True	False	3.0
+ACH-001986	NZM42	Skin	Melanoma	True	True	False	2.0
+ACH-001987	NZM43	Skin	Melanoma	False	True	False	0.0
+ACH-001988	NZM5	Skin	Melanoma	False	True	False	1.0
+ACH-001989	NZM6	Skin	Melanoma	False	True	False	2.0
+ACH-001990	NZM7	Skin	Melanoma	True	True	False	3.0
+ACH-001991	NZOV9	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	True	2.0
+ACH-001992	ONE58	Pleura	Pleural Mesothelioma	True	True	False	0.0
+ACH-001993	NALM-16	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	False	0.0
+ACH-001994	ICC16	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	False	True	False	
+ACH-001996	ICC18	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	False	True	False	0.0
+ACH-001997	ECC2	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	True	2.0
+ACH-001999	950-5-BIK	Pancreas	Pancreatic Adenocarcinoma	True	True	True	4.0
+ACH-002001	A375 SKIN CJ1	Skin	Melanoma	True	True	False	4.0
+ACH-002002	A375 SKIN CJ2	Skin	Melanoma	True	True	False	4.0
+ACH-002003	A375 SKIN CJ3	Skin	Melanoma	True	True	False	4.0
+ACH-002004	UACC62 SKIN CJ1	Skin	Melanoma	True	True	False	1.5
+ACH-002005	SK-MEL-19	Skin	Melanoma	True	True	False	3.0
+ACH-002010	MP41	Eye	Ocular Melanoma	False	True	True	3.0
+ACH-002011	MP46	Eye	Ocular Melanoma	False	True	False	1.0
+ACH-002013	MM28	Eye	Ocular Melanoma	False	True	False	3.0
+ACH-002014	Mel270	Eye	Ocular Melanoma	True	True	False	
+ACH-002015	Mel285	Eye	Ocular Melanoma	True	True	True	3.0
+ACH-002016	Mel290	Eye	Ocular Melanoma	True	True	True	2.0
+ACH-002017	Omm1	Eye	Ocular Melanoma	False	True	False	3.0
+ACH-002018	Omm2.5	Eye	Ocular Melanoma	True	True	False	2.0
+ACH-002019	HOKUG	Cervix	Glassy Cell Carcinoma of the Cervix	True	True	False	2.0
+ACH-002020	SKG-IIIa	Cervix	Cervical Squamous Cell Carcinoma	True	True	False	1.0
+ACH-002021	T3M-3	Uterus	Gestational Trophoblastic Disease	True	True	False	4.0
+ACH-002022				False	False	True	
+ACH-002023	TGBC18TKB	Ampulla of Vater	Ampullary Carcinoma	True	True	True	4.0
+ACH-002024	ECC4	Bowel	Colorectal Adenocarcinoma	True	True	False	3.0
+ACH-002025	TT1TKB	Bowel	Colorectal Adenocarcinoma	True	True	True	
+ACH-002026	HHUA	Uterus	Endometrial Carcinoma	True	True	False	2.0
+ACH-002027	HOUA-I	Uterus	Endometrial Carcinoma	True	True	False	2.0
+ACH-002029	SAS	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	4.0
+ACH-002030	Sa3	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	3.0
+ACH-002033	HMMME	Pleura	Pleural Mesothelioma	True	True	False	0.0
+ACH-002034	T3M-11	Lung	Non-Small Cell Lung Cancer	False	True	False	2.0
+ACH-002035	LCAM1	Lung	Non-Small Cell Lung Cancer	True	True	False	3.0
+ACH-002036	WA-hT	Lung	Lung Neuroendocrine Tumor	False	True	False	3.0
+ACH-002038	HSKTC	Ovary/Fallopian Tube	Ovarian Cancer, Other	False	True	True	4.0
+ACH-002039	PK-8	Pancreas	Pancreatic Adenocarcinoma	True	True	True	0.0
+ACH-002040	HMV-II	Vulva/Vagina	Mucosal Melanoma of the Vulva/Vagina	True	True	False	2.0
+ACH-002041	HOTHC	Thyroid	Anaplastic Thyroid Cancer	True	True	True	2.0
+ACH-002042	T3M-5	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	True	3.0
+ACH-002043	Ca9-22	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	1.0
+ACH-002044	HSQ-89	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	0.0
+ACH-002045	HO-1-u-1	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	2.0
+ACH-002046	HTMMT	Uterus	Endometrial Carcinoma	True	True	True	6.0
+ACH-002047	HIRS-BM	Uterus	Endometrial Carcinoma	False	True	False	3.0
+ACH-002048	RMS-YM	Soft Tissue	Rhabdomyosarcoma	True	True	True	0.5
+ACH-002050	HTST	Other	Extra Gonadal Germ Cell Tumor	False	True	False	2.0
+ACH-002051	Lu-134-A	Lung	Lung Neuroendocrine Tumor	True	True	False	4.0
+ACH-002052	Lu-139	Lung	Lung Neuroendocrine Tumor	True	True	False	3.0
+ACH-002055	TL-1	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-002058	ATN-1	Lymphoid	Mature T and NK Neoplasms	False	True	False	4.0
+ACH-002059	P30/OHK	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	True	True	False	0.5
+ACH-002060	MY	Myeloid	Acute Leukemias of Ambiguous Lineage	False	True	False	0.0
+ACH-002061	P2UR/K-562	Myeloid	Myeloproliferative Neoplasms	True	True	False	
+ACH-002062	SLVL	Lymphoid	Mature B-Cell Neoplasms	True	True	False	3.0
+ACH-002065	HS-PSS	Peripheral Nervous System	Nerve Sheath Tumor	False	True	False	0.0
+ACH-002066	HS-Sch-2	Peripheral Nervous System	Nerve Sheath Tumor	True	True	False	
+ACH-002067	NOS-1	Bone	Osteosarcoma	True	True	False	3.0
+ACH-002069	HS-Os-1	Bone	Osteosarcoma	True	True	False	
+ACH-002070	HKBMM	CNS/Brain	Meningothelial Tumor	True	True	False	2.0
+ACH-002074	Lu-143	Lung	Lung Neuroendocrine Tumor	False	True	False	2.0
+ACH-002075	Lu-138	Lung	Lung Neuroendocrine Tumor	False	True	False	3.0
+ACH-002077	Lu-165	Lung	Lung Neuroendocrine Tumor	True	True	False	2.0
+ACH-002080	TN-2	Peripheral Nervous System	Neuroblastoma	True	True	False	
+ACH-002083	NB69	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-002084	MMAc	Skin	Melanoma	True	True	False	4.0
+ACH-002089	201T	Lung	Non-Small Cell Lung Cancer	False	True	False	0.0
+ACH-002090	BB65-RCC	Kidney	Renal Cell Carcinoma	False	True	False	2.0
+ACH-002091	CAL-39	Vulva/Vagina	Squamous Cell Carcinoma of the Vulva/Vagina	False	True	False	0.0
+ACH-002092	CHSA0011	Bone	Chondrosarcoma	False	True	False	2.0
+ACH-002093	CHSA0108	Bone	Chondrosarcoma	False	True	False	0.0
+ACH-002094	CHSA8926	Bone	Chondrosarcoma	False	True	False	2.0
+ACH-002095	COR-L303	Lung	Lung Neuroendocrine Tumor	False	True	False	3.0
+ACH-002096	CP50-MEL-B	Skin	Melanoma	False	True	False	2.0
+ACH-002097	CP66-MEL	Skin	Melanoma	False	True	False	2.0
+ACH-002098	CP67-MEL	Skin	Melanoma	False	True	False	0.0
+ACH-002099	CS1	Bone	Chondrosarcoma	False	True	False	1.0
+ACH-002100	DJM-1	Skin	Cutaneous Squamous Cell Carcinoma	False	True	False	1.0
+ACH-002101	EMC-BAC-1	Lung	Non-Small Cell Lung Cancer	False	True	False	0.5
+ACH-002102	EMC-BAC-2	Lung	Non-Small Cell Lung Cancer	False	True	False	0.0
+ACH-002103	ES1	Bone	Ewing Sarcoma	False	True	False	1.0
+ACH-002104	ES3	Bone	Ewing Sarcoma	False	True	False	
+ACH-002105	ES4	Bone	Ewing Sarcoma	True	True	False	2.0
+ACH-002106	ES5	Bone	Ewing Sarcoma	True	True	False	3.0
+ACH-002107	ES6	Bone	Ewing Sarcoma	False	True	False	2.0
+ACH-002108	ES7	Bone	Ewing Sarcoma	False	True	False	4.0
+ACH-002109	ES8	Bone	Ewing Sarcoma	True	True	False	0.0
+ACH-002110	EW-1	Bone	Ewing Sarcoma	True	True	False	0.5
+ACH-002111	EW-11	Bone	Ewing Sarcoma	False	True	False	2.0
+ACH-002112	EW-12	Bone	Ewing Sarcoma	False	True	False	2.0
+ACH-002113	EW-13	Bone	Ewing Sarcoma	False	True	False	1.0
+ACH-002114	EW-16	Bone	Ewing Sarcoma	True	True	False	0.0
+ACH-002115	EW-18	Bone	Ewing Sarcoma	False	True	False	2.0
+ACH-002116	EW-22	Bone	Ewing Sarcoma	True	True	False	
+ACH-002117	EW-24	Bone	Ewing Sarcoma	False	True	False	3.0
+ACH-002118	EW-3	Bone	Ewing Sarcoma	False	True	False	4.0
+ACH-002119	EW-7	Bone	Ewing Sarcoma	True	True	False	3.0
+ACH-002120	GAK	Vulva/Vagina	Mucosal Melanoma of the Vulva/Vagina	False	True	False	
+ACH-002121	G-MEL	Skin	Melanoma	False	True	False	1.0
+ACH-002122	GT3TKB	Lung	Non-Small Cell Lung Cancer	False	True	False	1.0
+ACH-002123	H2369	Pleura	Pleural Mesothelioma	False	True	False	0.0
+ACH-002124	H2373	Pleura	Pleural Mesothelioma	False	True	False	0.0
+ACH-002125	H2461	Pleura	Pleural Mesothelioma	False	True	False	
+ACH-002126	H2591	Pleura	Pleural Mesothelioma	False	True	False	0.0
+ACH-002127	H2595	Pleura	Pleural Mesothelioma	False	True	False	0.0
+ACH-002128	H2722	Pleura	Pleural Mesothelioma	False	True	False	
+ACH-002129	H2731	Pleura	Pleural Mesothelioma	False	True	False	0.0
+ACH-002130	H2795	Pleura	Pleural Mesothelioma	False	True	False	0.0
+ACH-002131	H2803	Pleura	Pleural Mesothelioma	False	True	False	0.5
+ACH-002132	H2804	Pleura	Pleural Mesothelioma	False	True	False	2.0
+ACH-002133	H2810	Pleura	Pleural Mesothelioma	False	True	False	0.0
+ACH-002134	H2818	Pleura	Pleural Mesothelioma	False	True	False	0.0
+ACH-002135	H2869	Pleura	Pleural Mesothelioma	False	True	False	2.0
+ACH-002136	H290	Pleura	Pleural Mesothelioma	False	True	False	0.0
+ACH-002139	HA7-RCC	Kidney	Renal Cell Carcinoma	False	True	False	4.0
+ACH-002140	Hey	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	0.0
+ACH-002141	HSC-39	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	0.0
+ACH-002142	HuO-3N1	Bone	Osteosarcoma	False	True	False	4.0
+ACH-002143	IST-MEL1	Skin	Melanoma	True	True	False	3.0
+ACH-002144	IST-SL1	Lung	Lung Neuroendocrine Tumor	False	True	False	3.0
+ACH-002145	IST-SL2	Lung	Lung Neuroendocrine Tumor	False	True	False	
+ACH-002146	JHOS-3	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	False	True	False	3.0
+ACH-002147	K2	Skin	Melanoma	False	True	False	2.0
+ACH-002148	K5	Thyroid	Well-Differentiated Thyroid Cancer	False	True	False	0.0
+ACH-002149	KGN	Ovary/Fallopian Tube	Sex Cord Stromal Tumor	False	True	False	0.0
+ACH-002150	LB1047-RCC	Kidney	Renal Cell Carcinoma	True	True	False	0.0
+ACH-002151	LB2241-RCC	Kidney	Renal Cell Carcinoma	False	True	False	0.0
+ACH-002152	LB2518-MEL	Skin	Melanoma	False	True	False	2.0
+ACH-002153	LB373-MEL-D	Skin	Melanoma	False	True	False	3.0
+ACH-002154	LB647-SCLC	Lung	Lung Neuroendocrine Tumor	False	True	False	
+ACH-002155	LB996-RCC	Kidney	Renal Cell Carcinoma	False	True	False	0.5
+ACH-002156	LC-1-sq	Lung	Non-Small Cell Lung Cancer	True	True	False	0.0
+ACH-002157	LC-2-ad	Lung	Non-Small Cell Lung Cancer	False	True	False	0.0
+ACH-002159	M14	Skin	Melanoma	False	True	False	3.0
+ACH-002160	MC-IXC	Bone	Ewing Sarcoma	True	True	False	2.0
+ACH-002161	MKN28	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	1.0
+ACH-002162	MMAC-SF	Skin	Melanoma	False	True	False	2.0
+ACH-002163	MRK-nu-1	Breast	Invasive Breast Carcinoma	False	True	False	4.0
+ACH-002164	MZ1-PC	Pancreas	Pancreatic Adenocarcinoma	False	True	False	4.0
+ACH-002165	MZ2-MEL	Skin	Melanoma	False	True	False	1.0
+ACH-002166	MZ7-mel	Skin	Melanoma	False	True	False	2.0
+ACH-002167	NCC010	Kidney	Renal Cell Carcinoma	False	True	False	
+ACH-002168	NCC021	Kidney	Renal Cell Carcinoma	False	True	False	2.0
+ACH-002169	NCI-H1304	Lung	Lung Neuroendocrine Tumor	False	True	False	2.0
+ACH-002170	NCI-H1688	Lung	Lung Neuroendocrine Tumor	False	True	False	2.0
+ACH-002171	NCI-H250	Lung	Lung Neuroendocrine Tumor	False	True	False	3.0
+ACH-002173	NCI-H378	Lung	Lung Neuroendocrine Tumor	False	True	False	
+ACH-002174	NCI-H720	Lung	Lung Neuroendocrine Tumor	False	True	False	2.0
+ACH-002175	NCI-H740	Lung	Lung Neuroendocrine Tumor	False	True	False	4.0
+ACH-002177	NCI-H835	Lung	Lung Neuroendocrine Tumor	False	True	False	7.0
+ACH-002178	NY	Bone	Osteosarcoma	False	True	False	3.0
+ACH-002179	OCUB-M	Breast	Invasive Breast Carcinoma	True	True	False	2.0
+ACH-002180	OMC-1	Cervix	Cervical Squamous Cell Carcinoma	False	True	False	4.0
+ACH-002181	OVCA420	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	2.0
+ACH-002182	OVCA433	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	False	True	False	3.0
+ACH-002183	OVMIU	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	2.0
+ACH-002186	PL4	Pancreas	Pancreatic Adenocarcinoma	True	True	False	
+ACH-002187	RCC-AB	Kidney	Renal Cell Carcinoma	False	True	False	2.0
+ACH-002188	RCC-ER	Kidney	Renal Cell Carcinoma	False	True	False	2.0
+ACH-002189	RCC-FG2	Kidney	Renal Cell Carcinoma	True	True	False	1.0
+ACH-002190	RCC-JF	Kidney	Renal Cell Carcinoma	False	True	False	2.0
+ACH-002191	RCC-JW	Kidney	Renal Cell Carcinoma	False	True	False	1.0
+ACH-002192	RCC-MF	Kidney	Renal Cell Carcinoma	False	True	False	1.0
+ACH-002193	RERF-LC-FM	Lung	Lung Neuroendocrine Tumor	False	True	False	6.0
+ACH-002195	RXF393	Kidney	Renal Cell Carcinoma	False	True	False	0.0
+ACH-002196	SBC-1	Lung	Lung Neuroendocrine Tumor	False	True	False	2.0
+ACH-002197	SBC-3	Lung	Lung Neuroendocrine Tumor	False	True	False	2.0
+ACH-002198	SCH	Other	Extra Gonadal Germ Cell Tumor	True	True	False	2.0
+ACH-002199	SN12C	Kidney	Renal Cell Carcinoma	False	True	False	2.0
+ACH-002200	SW962	Vulva/Vagina	Mucosal Melanoma of the Vulva/Vagina	False	True	False	2.0
+ACH-002201	TC-YIK	Cervix	Small Cell Carcinoma of the Cervix	False	True	False	2.0
+ACH-002202	TMK-1	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	3.0
+ACH-002204	U-CH2	Bone	Chordoma	True	True	False	0.0
+ACH-002205	WM1552C	Skin	Melanoma	False	True	False	0.0
+ACH-002206	WM278	Skin	Melanoma	False	True	False	3.0
+ACH-002207	WM35	Skin	Melanoma	False	True	False	0.0
+ACH-002208	YMB-1-E	Breast	Invasive Breast Carcinoma	False	True	False	3.0
+ACH-002209	ALL-PO	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	2.0
+ACH-002210	ARH-77	Myeloid	Non-Cancerous	True	True	False	2.0
+ACH-002211	BALL-1	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	1.0
+ACH-002212	BB30-HNC	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	3.0
+ACH-002213	BB49-HNC	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	False	3.0
+ACH-002214	BC-1	Lymphoid	Mature B-Cell Neoplasms	True	True	False	
+ACH-002215	BC-3	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-002216	BE-13	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	False	2.0
+ACH-002218	CESS	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-002220	CRO-AP2	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-002221	CTB-1	Lymphoid	Mature B-Cell Neoplasms	False	True	False	1.0
+ACH-002222	CTV-1	Lymphoid	Mature T and NK Neoplasms	False	True	False	0.0
+ACH-002223	D-245MG	CNS/Brain	Diffuse Glioma	False	True	False	0.0
+ACH-002224	D-247MG	CNS/Brain	Diffuse Glioma	False	True	False	0.0
+ACH-002225	D-263MG	CNS/Brain	Diffuse Glioma	False	True	False	2.0
+ACH-002226	D-336MG	CNS/Brain	Diffuse Glioma	False	True	False	0.0
+ACH-002227	D-392MG	CNS/Brain	Diffuse Glioma	False	True	False	0.0
+ACH-002228	D-423MG	CNS/Brain	Diffuse Glioma	True	True	False	3.0
+ACH-002229	D-502MG	CNS/Brain	Diffuse Glioma	True	True	False	1.0
+ACH-002230	D-542MG	CNS/Brain	Diffuse Glioma	True	True	False	
+ACH-002231	D-566MG	CNS/Brain	Diffuse Glioma	False	True	False	0.0
+ACH-002232	DG-75	Lymphoid	Mature B-Cell Neoplasms	False	True	False	
+ACH-002233	DIFI	Bowel	Colorectal Adenocarcinoma	True	True	False	5.0
+ACH-002234	DOK	Head and Neck	Head and Neck Carcinoma, Other	True	True	False	2.0
+ACH-002235	DSH1	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	False	True	False	0.0
+ACH-002236	EB-3	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-002237	ETK-1	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	False	True	False	0.26
+ACH-002238	GR-ST	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	
+ACH-002239	H3118	Head and Neck	Salivary Carcinoma	True	True	False	2.0
+ACH-002240	H9	Lymphoid	Mature T and NK Neoplasms	False	True	False	0.0
+ACH-002241	HAL-01	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	0.0
+ACH-002242	HC-1	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-002243	HCE-4	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	False	2.0
+ACH-002244	HO-1-N-1	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	False	4.0
+ACH-002245	Hs-445	Lymphoid	Hodgkin Lymphoma	False	True	False	2.0
+ACH-002246	Hs 633.T	Soft Tissue	Fibrosarcoma	False	True	False	0.0
+ACH-002247	IM-9	Myeloid	Non-Cancerous	True	True	False	2.0
+ACH-002248	IMR-5	Peripheral Nervous System	Neuroblastoma	False	True	False	2.0
+ACH-002249	JHU-011	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	
+ACH-002250	JHU-022	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	2.02
+ACH-002251	JHU-029	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	0.0
+ACH-002252	JiyoyeP-2003	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-002253	JSC-1	Lymphoid	Mature B-Cell Neoplasms	False	True	False	3.0
+ACH-002254	KARPAS-1106P	Lymphoid	Mature B-Cell Neoplasms	False	True	False	4.0
+ACH-002255	KARPAS-231	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-002256	KARPAS-45	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	False	3.0
+ACH-002257	KINGS-1	CNS/Brain	Diffuse Glioma	True	True	False	0.0
+ACH-002258	KMOE-2	Myeloid	Acute Myeloid Leukemia	False	True	False	4.0
+ACH-002259	KNS-81-FD	CNS/Brain	Diffuse Glioma	False	True	False	4.0
+ACH-002261	KP-N-YS	Peripheral Nervous System	Neuroblastoma	True	True	False	
+ACH-002262	KY821	Myeloid	Acute Myeloid Leukemia	False	True	False	1.0
+ACH-002263	KYSE-220	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	True	True	False	0.5
+ACH-002264	KYSE-50	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	False	True	False	0.0
+ACH-002265	LB771-HNC	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	3.0
+ACH-002266	LB831-BLC	Bladder/Urinary Tract	Bladder Urothelial Carcinoma	False	True	False	4.0
+ACH-002267	LC4-1	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	
+ACH-002268	LN-405	CNS/Brain	Diffuse Glioma	False	True	False	3.0
+ACH-002269	LNZTA3WT4	CNS/Brain	Diffuse Glioma	True	True	False	4.0
+ACH-002270	MC-CAR	B lymphoblast	Non-Cancerous	False	True	False	2.0
+ACH-002271	MFH-ino	Soft Tissue	Undifferentiated Pleomorphic Sarcoma/Malignant Fibrous Histiocytoma/High-Grade Spindle Cell Sarcoma	False	True	False	0.0
+ACH-002272	MHH-PREB-1	Lymphoid	Non-Hodgkin Lymphoma	False	True	False	2.0
+ACH-002273	ML-2	Myeloid	Acute Myeloid Leukemia	False	True	False	0.0
+ACH-002274	MLMA	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-002275	MN-60	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-002276	MY-M12	Myeloid	Acute Leukemias of Ambiguous Lineage	False	True	False	0.0
+ACH-002277	NB(TU)1-10	Peripheral Nervous System	Neuroblastoma	False	True	False	2.0
+ACH-002278	NB10	Peripheral Nervous System	Neuroblastoma	True	True	False	3.0
+ACH-002279	NB12	Peripheral Nervous System	Neuroblastoma	False	True	False	3.0
+ACH-002280	NB13	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-002281	NB14	Peripheral Nervous System	Neuroblastoma	False	True	False	2.0
+ACH-002282	NB17	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-002283	NB5	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-002284	NB6	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-002285	NB7	Peripheral Nervous System	Neuroblastoma	True	True	False	0.5
+ACH-002286	NCI-H128	Lung	Lung Neuroendocrine Tumor	False	True	False	3.0
+ACH-002287	NCI-H630	Bowel	Colorectal Adenocarcinoma	False	True	False	5.0
+ACH-002288	NEC8	Testis	Non-Seminomatous Germ Cell Tumor	False	True	False	3.0
+ACH-002289	NK-92MI	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	False	2.0
+ACH-002290	NKM-1	Myeloid	Acute Myeloid Leukemia	False	True	False	0.0
+ACH-002291	NTERA-2 cl.D1	Testis	Non-Seminomatous Germ Cell Tumor	True	True	False	3.0
+ACH-002292	OACp4C	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	False	0.0
+ACH-002293	P32-ISH	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-002294	PCI-15A	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	5.0
+ACH-002295	PCI-30	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	2.0
+ACH-002296	PCI-38	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	2.0
+ACH-002297	PCI-4B	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	
+ACH-002298	PCI-6A	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	3.0
+ACH-002299	QIMR-WIL	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-002300	Ramos-2G6-4C10	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-002301	RF-48	Lymphoid	Non-Hodgkin Lymphoma	False	True	False	2.0
+ACH-002302	RPMI-8866	Myeloid	Myeloproliferative Neoplasms	False	True	False	2.0
+ACH-002304	SK-MG-1	CNS/Brain	Diffuse Glioma	True	True	False	1.0
+ACH-002305	SKN-3	Head and Neck	Head and Neck Squamous Cell Carcinoma	True	True	False	2.0
+ACH-002306	STS-0421	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	False	5.0
+ACH-002307	SU-DHL-16	Lymphoid	Non-Hodgkin Lymphoma	False	True	False	2.0
+ACH-002308	SUP-B8	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	2.0
+ACH-002309	SW684	Soft Tissue	Fibrosarcoma	False	True	False	3.0
+ACH-002310	SW872	Soft Tissue	Liposarcoma	False	True	False	4.0
+ACH-002311	TE-12	Esophagus/Stomach	Esophageal Squamous Cell Carcinoma	False	True	False	3.0
+ACH-002312	TGBC24TKB	Biliary Tract	Intracholecystic Papillary Neoplasm	False	True	False	2.0
+ACH-002313	TK	Lymphoid	Non-Hodgkin Lymphoma	False	True	False	3.0
+ACH-002314	TUR	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-002316	WIL2-NS	Myeloid	Hereditary Spherocytosis	False	True	False	2.0
+ACH-002317	YT	Lymphoid	T-Lymphoblastic Leukemia/Lymphoma	False	True	False	3.0
+ACH-002336	HCET	Eye	Non-Cancerous	False	True	False	4.0
+ACH-002337	JHU-028	Lung	Non-Small Cell Lung Cancer	False	True	False	0.0
+ACH-002339	MOT	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-002340	NBSUSSR	Peripheral Nervous System	Neuroblastoma	False	True	False	2.0
+ACH-002342	BB30P BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002343	BB49EBV	Normal	Non-Cancerous	False	True	False	2.0
+ACH-002344	BB65EBV	Normal	Non-Cancerous	False	True	False	2.0
+ACH-002345	CaR-1	Bowel	Colorectal Adenocarcinoma	False	True	False	
+ACH-002346	CP50EBV	Normal	Non-Cancerous	False	True	False	2.0
+ACH-002347	CP66EBV	Normal	Non-Cancerous	False	True	False	2.0
+ACH-002348	HSJD-DIPG-007	CNS/Brain	Diffuse Glioma	False	True	False	3.0
+ACH-002349	GBM001	CNS/Brain	Diffuse Glioma	False	True	False	0.0
+ACH-002350	HA7EBV	Normal	Non-Cancerous	False	True	False	2.0
+ACH-002351	L542	Normal	Non-Cancerous	False	True	False	2.0
+ACH-002352	LB1047EBV	Normal	Non-Cancerous	False	True	False	2.0
+ACH-002353	LB2241EBV	Normal	Non-Cancerous	False	True	False	2.0
+ACH-002354	LB2518EBV	Normal	Non-Cancerous	False	True	False	2.0
+ACH-002355	LB373EBV	Normal	Non-Cancerous	False	True	False	2.0
+ACH-002356	LB647P BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002357	LB771P BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002358	LB831-EBV	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002360	MZ1B	Normal	Non-Cancerous	False	True	False	4.0
+ACH-002361	MZ7B	Normal	Non-Cancerous	False	True	False	2.0
+ACH-002362	NCI-BL128	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002363	NCI-BL1395	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002364	NCI-BL1437	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002365	NCI-BL1770	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002366	NCI-BL2009	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002367	NCI-BL2052	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002368	NCI-BL2087	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002369	NCI-BL209	Lymphoid	Non-Cancerous	False	True	False	4.0
+ACH-002370	NCI-BL2122	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002371	NCI-BL2126	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002372	NCI-BL2171	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002373	HCC1187 BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002374	HCC1599BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002375	HCC1937 BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002376	LS1034-PBL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002377	HCC38 BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002379	J82EBV	Normal	Non-Cancerous	False	True	False	2.0
+ACH-002380	COLO829 BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002381	HCC2157 BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002382	HCC1395 BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002383	HCC2218 BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002384	HCC1954 BL	Lymphoid	Non-Cancerous	False	True	False	2.0
+ACH-002386	M00921	Skin	Melanoma	False	True	False	2.0
+ACH-002387	M1203273	Skin	Melanoma	False	True	False	3.0
+ACH-002388	MET2B	Skin	Melanoma	False	True	False	4.0
+ACH-002389	ACN	Peripheral Nervous System	Neuroblastoma	False	True	False	3.0
+ACH-002392	SC-1	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-002397	KMH-2	Thyroid	Anaplastic Thyroid Cancer	False	True	False	3.0
+ACH-002399	21NT	Breast	Invasive Breast Carcinoma	True	True	False	3.0
+ACH-002400	21MT1	Breast	Invasive Breast Carcinoma	True	True	False	2.0
+ACH-002401	21MT2	Breast	Invasive Breast Carcinoma	True	True	False	2.0
+ACH-002403	CCLF_MELM_0001_T	Skin	Melanoma	False	True	False	3.0
+ACH-002404	CCLF_MELM_0002_T	Skin	Melanoma	False	True	False	2.0
+ACH-002405	CCLF_MELM_0003_T	Skin	Melanoma	False	True	False	1.0
+ACH-002407	CCLF_MELM_0005_T	Skin	Melanoma	False	True	False	0.0
+ACH-002409	CCLF_NEURO_0006_T	CNS/Brain	Diffuse Glioma	False	True	False	0.0
+ACH-002419	CCLF_OVPA_0001_T	Uterus	Endometrial Carcinoma	False	True	False	2.0
+ACH-002431	CCLF_PEDS_0014_T1	Peripheral Nervous System	Neuroblastoma	False	True	False	2.0
+ACH-002433	CCLF_PEDS_0019_T	Bone	Osteosarcoma	False	True	False	1.0
+ACH-002435	CCLF_PEDS_0022_T	Kidney	Wilms' Tumor	False	True	False	
+ACH-002438	CCLF_PEDS_0026_T	Kidney	Wilms' Tumor	False	True	False	2.0
+ACH-002440	CCLF_THYR_0008_T	Thyroid	Well-Differentiated Thyroid Cancer	False	True	False	4.0
+ACH-002444	CCLF_UPGI_0003_T	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	False	3.0
+ACH-002445	CCLF_UPGI_0004_T	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	False	
+ACH-002446	CCLF_UPGI_0005_T	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	0.0
+ACH-002458	HT144 SKIN FV1	Skin	Melanoma	True	True	False	
+ACH-002459	HT144 SKIN FV3	Skin	Melanoma	False	True	False	1.0
+ACH-002460	HT144 SKIN FV2	Skin	Melanoma	True	True	False	1.0
+ACH-002461	RVH421 SKIN FV1	Skin	Melanoma	True	True	False	1.0
+ACH-002462	RPE1-ss48	Eye	Non-Cancerous	True	True	False	2.0
+ACH-002463	RPE1-ss77	Eye	Non-Cancerous	True	True	False	2.0
+ACH-002464	RPE1-ss6	Eye	Non-Cancerous	True	True	False	2.0
+ACH-002465	RPE1-ss119	Eye	Non-Cancerous	True	True	False	
+ACH-002466	RPE1-ss111	Eye	Non-Cancerous	False	True	False	3.0
+ACH-002467	RPE1-ss51	Eye	Non-Cancerous	True	True	False	2.0
+ACH-002470	OS186	Bone	Osteosarcoma	True	True	False	5.0
+ACH-002471	OS052	Bone	Osteosarcoma	True	True	False	
+ACH-002475	HAP1	Myeloid	Myeloproliferative Neoplasms	True	True	False	3.0
+ACH-002478	BC-2	Lymphoid	Mature B-Cell Neoplasms	True	True	False	2.0
+ACH-002485	MAVER-1	Lymphoid	Mature B-Cell Neoplasms	True	True	False	0.0
+ACH-002486	MES-OV	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	
+ACH-002490	NCI-H1882	Lung	Lung Neuroendocrine Tumor	True	True	False	5.0
+ACH-002497	NCI-H920	Lung	Non-Small Cell Lung Cancer	False	True	False	
+ACH-002499	UACC-3199	Breast	Invasive Breast Carcinoma	True	True	False	4.0
+ACH-002500	Z-138	Lymphoid	Mature B-Cell Neoplasms	True	True	False	
+ACH-002501	RMZ	Soft Tissue	Rhabdomyosarcoma	False	True	False	7.0
+ACH-002508	WM3211	Skin	Melanoma	True	True	False	5.0
+ACH-002509	WM4235	Skin	Melanoma	False	True	False	0.0
+ACH-002510	M040416	Skin	Melanoma	True	True	False	1.0
+ACH-002511	M140325	Skin	Melanoma	True	True	False	2.0
+ACH-002512	MM160113	Skin	Melanoma	True	True	False	0.67
+ACH-002522	SNU-2292	Lung	Non-Small Cell Lung Cancer	True	True	False	0.0
+ACH-002523	SNU-739	Liver	Hepatocellular Carcinoma	True	True	False	2.0
+ACH-002524	SNU-251	Ovary/Fallopian Tube	Ovarian Epithelial Tumor	True	True	False	0.0
+ACH-002526	SNU-1327	Lung	Non-Small Cell Lung Cancer	True	True	False	0.0
+ACH-002528	SNU-267	Kidney	Renal Cell Carcinoma	True	True	False	0.0
+ACH-002530	SNU-977	Bowel	Colorectal Adenocarcinoma	True	True	False	4.0
+ACH-002531	SNU-2535	Lung	Non-Small Cell Lung Cancer	True	True	False	
+ACH-002532	SNU-1411	Bowel	Colorectal Adenocarcinoma	False	True	False	
+ACH-002533	SNU-482	Kidney	Renal Cell Carcinoma	True	True	False	2.0
+ACH-002535	SNU-254	Bowel	Colorectal Adenocarcinoma	True	True	False	2.0
+ACH-002538	SNU-1235	Bowel	Colorectal Adenocarcinoma	True	True	False	4.0
+ACH-002539	SNU-1460	Bowel	Colorectal Adenocarcinoma	False	True	False	4.0
+ACH-002543	SNU-1406	Bowel	Colorectal Adenocarcinoma	False	True	False	4.0
+ACH-002544	SNU-1750	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	4.0
+ACH-002643	GRANTA-452	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	0.0
+ACH-002647	CCC-5	Biliary Tract	Intraductal Papillary Neoplasm of the Bile Duct	True	True	False	0.0
+ACH-002648	CX-03	Uterus	Endometrial Carcinoma	False	True	False	3.0
+ACH-002650	ETCC-016	Lung	Non-Small Cell Lung Cancer	True	True	False	0.4
+ACH-002651	FKH-1	Myeloid	Acute Myeloid Leukemia	False	True	False	
+ACH-002653	JIH-5	Myeloid	Acute Leukemias of Ambiguous Lineage	False	True	False	
+ACH-002654	JVE-015	Bowel	Colorectal Adenocarcinoma	True	True	False	5.0
+ACH-002659	JVE-127	Bowel	Colorectal Adenocarcinoma	True	True	False	2.0
+ACH-002660	JVE-187	Bowel	Colorectal Adenocarcinoma	True	True	False	4.0
+ACH-002662	JVE-207	Bowel	Colorectal Adenocarcinoma	True	True	False	4.0
+ACH-002664	JVE-253	Bowel	Colorectal Adenocarcinoma	True	True	False	2.0
+ACH-002665	JVE-367	Bowel	Gastrointestinal Neuroendocrine Tumors	False	True	False	2.0
+ACH-002667	JVE-528	Bowel	Colorectal Adenocarcinoma	False	True	False	4.0
+ACH-002668	KASUMI-3	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-002669	KP-363T	Bowel	Colorectal Adenocarcinoma	True	True	False	2.0
+ACH-002672	MAPAC-HS-77	Pancreas	Pancreatic Adenocarcinoma	True	True	False	
+ACH-002675	SH-2	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-002676	TK-6	Myeloid	Myeloproliferative Neoplasms	False	True	False	2.0
+ACH-002677	U-2946	Lymphoid	Mature B-Cell Neoplasms	True	True	False	1.0
+ACH-002678	WILL-1	Lymphoid	Mature B-Cell Neoplasms	True	True	False	
+ACH-002680	170-MG-BA	CNS/Brain	Diffuse Glioma	True	True	False	0.0
+ACH-002681	538-MG-BA	CNS/Brain	Diffuse Glioma	True	True	False	0.0
+ACH-002687	WM3772F	Eye	Ocular Melanoma	True	True	False	1.0
+ACH-002688	OS457	Bone	Osteosarcoma	False	True	False	
+ACH-002689	OS525	Bone	Osteosarcoma	False	True	False	1.0
+ACH-002690	OS526	Bone	Osteosarcoma	True	True	False	2.0
+ACH-002693	S462	Peripheral Nervous System	Nerve Sheath Tumor	True	True	False	
+ACH-002695	STS26T	Peripheral Nervous System	Nerve Sheath Tumor	False	True	False	4.0
+ACH-002703	OANC1	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	False	
+ACH-002705	IS076P	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	3.0
+ACH-002706	IS076A	Esophagus/Stomach	Esophagogastric Adenocarcinoma	True	True	False	
+ACH-002709	CMS	Myeloid	Acute Myeloid Leukemia	True	True	False	
+ACH-002710	MPNST-724	Peripheral Nervous System	Nerve Sheath Tumor	True	True	False	2.0
+ACH-002711	UM-HACC-2A	Head and Neck	Salivary Carcinoma	True	True	False	
+ACH-002716	MO-91	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-002778	NCC-OS1-X2-C1	Bone	Osteosarcoma	True	True	False	3.0
+ACH-002780	NCC-ES1-C1	Bone	Ewing Sarcoma	True	True	False	2.0
+ACH-002781	NCC-dCS1-C1	Bone	Chondrosarcoma	False	True	False	2.0
+ACH-002782	NCC-UPS1-C1	Soft Tissue	Undifferentiated Pleomorphic Sarcoma/Malignant Fibrous Histiocytoma/High-Grade Spindle Cell Sarcoma	True	True	False	1.0
+ACH-002784	NCC-UPS2-C1	Soft Tissue	Undifferentiated Pleomorphic Sarcoma/Malignant Fibrous Histiocytoma/High-Grade Spindle Cell Sarcoma	True	True	False	0.0
+ACH-002785	NCC-LMS1-C1	Soft Tissue	Leiomyosarcoma	True	True	False	2.0
+ACH-002787	NCC-pRMS1-C1	Soft Tissue	Rhabdomyosarcoma	False	True	False	2.0
+ACH-002790	NCC-SS2-C1	Soft Tissue	Synovial Sarcoma	False	True	False	2.0
+ACH-002792	NCC-CCS1B-C1	Soft Tissue	Clear Cell Sarcoma	True	True	False	
+ACH-002794	NCC-MFS1-C1	Soft Tissue	Myxofibrosarcoma	False	True	False	1.0
+ACH-002795	NCC-CDS1-X1-C1	Soft Tissue	CIC-DUX4 Sarcoma	False	True	False	2.0
+ACH-002796	NCC-CDS1-X3-C1	Soft Tissue	CIC-DUX4 Sarcoma	False	True	False	2.0
+ACH-002798	NCC-DFSP2-C1	Skin	Dermatofibrosarcoma Protuberans	False	True	False	2.0
+ACH-002799	NCC-MPNST1-C1	Peripheral Nervous System	Nerve Sheath Tumor	True	True	False	
+ACH-002800	NCC-MPNST2-C1	Peripheral Nervous System	Nerve Sheath Tumor	True	True	False	1.5
+ACH-002801	NCC-MPNST3-C1	Peripheral Nervous System	Nerve Sheath Tumor	False	True	False	
+ACH-002802	NCC-MPNST3-X2-C1	Peripheral Nervous System	Nerve Sheath Tumor	False	True	False	1.5
+ACH-002806	TB096	CNS/Brain	Diffuse Glioma	True	True	False	2.0
+ACH-002834	OS384	Bone	Osteosarcoma	True	True	False	
+ACH-002843	CCLF_RARE_0020_T	Soft Tissue	Desmoid/Aggressive Fibromatosis	False	True	False	2.0
+ACH-002846	YUSEEP-M 16-3517	Skin	Melanoma	False	True	False	
+ACH-002847	YUHOIN	Skin	Melanoma	True	True	False	0.0
+ACH-002886	VACO 432	Bowel	Colorectal Adenocarcinoma	False	True	False	
+ACH-002921	BCK4	Breast	Invasive Breast Carcinoma	False	True	False	2.0
+ACH-002922	SK-N-MM	Peripheral Nervous System	Neuroblastoma	True	True	False	2.0
+ACH-002924	UPMM2	Eye	Ocular Melanoma	False	True	False	3.0
+ACH-002925	UPMM3	Eye	Ocular Melanoma	True	True	False	3.0
+ACH-002926	UPMD1	Eye	Ocular Melanoma	True	True	False	2.0
+ACH-002927	UPMD2	Eye	Ocular Melanoma	False	True	False	2.0
+ACH-002928	MM100511	Skin	Melanoma	True	True	False	
+ACH-002932	CCLF_NEURO_0001_T	Bowel	Colorectal Adenocarcinoma	False	True	False	
+ACH-002936	CCLF_PEDS_0043_T	Soft Tissue	Rhabdomyosarcoma	False	True	False	4.0
+ACH-002937	CCLF_PEDS_0020_T	Kidney	Wilms' Tumor	False	True	False	2.0
+ACH-002946	UKE-1	Myeloid	Acute Myeloid Leukemia	False	True	False	3.0
+ACH-002994	WSU-AML	Myeloid	Acute Myeloid Leukemia	False	True	False	2.0
+ACH-002996	CI34601	Lung	Non-Small Cell Lung Cancer	False	True	False	7.0
+ACH-003012	A549_CRAF_KD	Lung	Non-Small Cell Lung Cancer	True	True	False	0.0
+ACH-003061	NCI-H774	Lung	Lung Neuroendocrine Tumor	False	True	False	4.0
+ACH-003071	NCI-H748	Lung	Lung Neuroendocrine Tumor	False	True	False	3.0
+ACH-003099	UCSF-OT-1109	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	False	3.0
+ACH-003100	EJ-1	Lymphoid	Mature B-Cell Neoplasms	False	True	False	1.0
+ACH-003101	Z-119	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	1.0
+ACH-003103	Z-181	Lymphoid	B-Lymphoblastic Leukemia/Lymphoma	False	True	False	0.0
+ACH-003105	VMM917	Skin	Melanoma	False	True	False	0.0
+ACH-003106	RC	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-003107	JMP-1	Lymphoid	Mature B-Cell Neoplasms	False	True	False	0.0
+ACH-003108	HF	Lymphoid	Mature B-Cell Neoplasms	False	True	False	2.0
+ACH-003111	Hs 856.T	Soft Tissue	Undifferentiated Pleomorphic Sarcoma/Malignant Fibrous Histiocytoma/High-Grade Spindle Cell Sarcoma	False	True	False	2.0
+ACH-003119	NCI-H1450	Lung	Lung Neuroendocrine Tumor	False	True	False	5.0
+ACH-003120	NCI-H1607	Lung	Lung Neuroendocrine Tumor	False	True	False	6.0
+ACH-003121	NCI-H2679	Lung	Lung Neuroendocrine Tumor	False	True	False	3.0
+ACH-003125	ASPS-KY	Soft Tissue	Alveolar Soft Part Sarcoma	False	True	False	2.0
+ACH-003177	NRH-UPS1	Soft Tissue	Undifferentiated Pleomorphic Sarcoma/Malignant Fibrous Histiocytoma/High-Grade Spindle Cell Sarcoma	True	True	False	0.0
+ACH-003180	NRH-UPS2	Soft Tissue	Undifferentiated Pleomorphic Sarcoma/Malignant Fibrous Histiocytoma/High-Grade Spindle Cell Sarcoma	True	True	False	3.0
+ACH-003181	NRH-LMS1	Soft Tissue	Leiomyosarcoma	False	True	False	0.0
+ACH-003183	NRH-MFS3	Soft Tissue	Myxofibrosarcoma	False	True	False	
+ACH-003184	NRH-LMS2	Soft Tissue	Leiomyosarcoma	False	True	False	2.0
+ACH-003191	NRH-GCT2	Bone	Giant Cell Tumor of Bone	False	True	False	
+ACH-003273	CHRF-288-11	Myeloid	Acute Myeloid Leukemia	False	True	False	0.0
+ACH-003426	CCLF_NEURO_0046_T	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	False	2.0
+ACH-003429	CCLF_PANC_0074_T	Pancreas	Pancreatic Adenocarcinoma	False	True	False	2.0
+ACH-003430	CCLF_PANC_0002_T	Pancreas	Pancreatic Adenocarcinoma	False	True	False	0.0
+ACH-003433	CCLF_PANC_0019_T	Pancreas	Pancreatic Adenocarcinoma	False	True	False	0.0
+ACH-003437	CCLF_UPGI_0078_T	Esophagus/Stomach	Esophagogastric Adenocarcinoma	False	True	False	0.0
+ACH-003438	CCLF_NEURO_0005_T	CNS/Brain	Diffuse Glioma	False	True	False	3.0
+ACH-003451	CCLF_PEDS_0048_T	Kidney	Wilms' Tumor	False	True	False	2.0
+ACH-003455	CCLF_MELM_0004_T	Skin	Melanoma	False	True	False	2.0
+ACH-003456	CCLF_MELM_0006_T	Skin	Melanoma	False	True	False	2.0
+ACH-003458	CCLF_MELM_0010_T	Skin	Melanoma	False	True	False	2.0
+ACH-003459	CCLF_MELM_0011_T	Skin	Melanoma	False	True	False	2.0
+ACH-003460	CCLF_HEME_0001_T	Lymphoid	Mature B-Cell Neoplasms	False	True	False	1.0
+ACH-003463	CCLF_HEME_0004_T	Lymphoid	Mature T and NK Neoplasms	False	True	False	2.0
+ACH-003465	CCLF_HNSC_0004_T	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	False	4.0
+ACH-003468	CCLF_THYR_0003_T	Thyroid	Anaplastic Thyroid Cancer	False	True	False	2.0
+ACH-003469	CCLF_THYR_0004_T	Thyroid	Anaplastic Thyroid Cancer	False	True	False	3.0
+ACH-003470	CCLF_THYR_0005_T	Thyroid	Anaplastic Thyroid Cancer	False	True	False	2.0
+ACH-003471	CCLF_THYR_0006_T	Thyroid	Well-Differentiated Thyroid Cancer	False	True	False	0.0
+ACH-003472	CCLF_THYR_0009_T	Thyroid	Medullary Thyroid Cancer	False	True	False	1.0
+ACH-003473	CCLF_PEDS_0013_T	Soft Tissue	Rhabdomyosarcoma	False	True	False	2.0
+ACH-003474	CCLF_HNSC_0001_T	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	False	3.0
+ACH-003475	CCLF_HNSC_0003_T	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	False	4.0
+ACH-003476	CCLF_HNSC_0002_T	Head and Neck	Head and Neck Squamous Cell Carcinoma	False	True	False	4.0
+ACH-003480	CCLF_THYR_0001_T	Thyroid	Anaplastic Thyroid Cancer	False	True	False	3.0

@@ -1,0 +1,72 @@
+{
+  "study": "Szewczyk 2020",
+  "doi": "10.1038/s41467-020-16271-z",
+  "article_licence": "CC BY 4.0",
+  "raw_data": "MassIVE MSV000084773 (doi:10.25345/C5GQ37), not used",
+  "comparison": "PRMT7_KO_vs_WT",
+  "cell_line": "HCT116",
+  "rule": "peptide log2 KO/WT <= -1 (decreased) or >= 1 (increased) with BH-adjusted p < 0.01; sites by scripts/peptide_calls.py",
+  "source_rule": "Significant hits were called as H/L ratio of <-1 (knockout cells (H) relative to control (L)) and a Benjamini-Hochberg adjusted p-value of <0.01 (n = 4) (Methods; Fig. 2c legend; Supplementary Table 4)",
+  "inputs": {
+    "41467_2020_16271_MOESM5_ESM.xlsx": {
+      "md5": "ab7988fb50e64d46f97b0f7b4b911a0a",
+      "sheet": "IP_All_Hits_Sites"
+    },
+    "41467_2020_16271_MOESM6_ESM.xlsx": {
+      "md5": "b380a591569c24b69edbc998e2f46859",
+      "use": "FASTA header sequence versions"
+    },
+    "uniprot_human_reviewed_2026_03.fasta": {
+      "md5": "c75aad9d197cbba00f51063f65a96ac4"
+    }
+  },
+  "rows": 346,
+  "entries": 190,
+  "placement": {
+    "accession_not_in_canonical_fasta": 1,
+    "lifted": 4,
+    "position_verified": 244,
+    "position_verified_unisave": 97
+  },
+  "dropped": {
+    "accession_not_in_canonical_fasta": [
+      "U2AF1;U2AF1L4 (R165)"
+    ]
+  },
+  "shared_peptides": {
+    "HSPA1B;HSPA1A;HSPA6 (R469)": {
+      "placed_on": "P0DMV9",
+      "other_accessions": "P17066"
+    },
+    "SNRPB/N (R147)": {
+      "placed_on": "P14678",
+      "other_accessions": "P63162"
+    }
+  },
+  "multi_site_peptides": {
+    "peptides": 5,
+    "rows": 12
+  },
+  "peptide_calls": {
+    "decreased": 29,
+    "increased": 3,
+    "no_significant_change": 314
+  },
+  "source_significantly_depleted": 29,
+  "rule_disagrees_with_source": [],
+  "rows_at_log2_cutoff": 0,
+  "adj_p_minus_bh_of_p_max_abs": 0.000467,
+  "sites": {
+    "decreased": 29,
+    "increased": 3,
+    "no_significant_change": 313
+  },
+  "sites_single_site_call": {
+    "decreased": 29,
+    "increased": 3,
+    "no_significant_change": 301,
+    "none": 12
+  },
+  "unique_sites": 345,
+  "downloaded": "2026-10-25"
+}

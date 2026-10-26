@@ -23,7 +23,9 @@ from pathlib import Path
 
 import pandas as pd
 
+import disease_families as dfam
 import release_codes as rc
+import release_layers
 
 # Source tables: the three compiled tables of v1.1.0 (Maron2021 is Table S5), then one per study table (bits of the
 # site field source_mask).
@@ -152,6 +154,8 @@ def main() -> None:
     ap.add_argument('--inputs', default='inputs', help='frozen inputs (MobiDB intervals, layer notes)')
     ap.add_argument('--disorder-intervals', default='annotation/mobidb_disorder_intervals_2026-03-30.tsv', help='relative to --inputs')
     ap.add_argument('--panther-ontology', default='annotation/panther_19.0_protein_class_ontology.tsv', help='relative to --inputs')
+    ap.add_argument('--disgenet-terms', default='disease/dose_4.4.0_disgenet_term_genes.tsv',
+                    help='DOSE\'s DisGeNET term-gene table, relative to --inputs: the largest terms of each disease family')
     ap.add_argument('--panther-groups', default='config/panther_class_groups.json')
     ap.add_argument('--outdir', default='docs/data')
     ap.add_argument('--check', action='store_true', help='decode the written files and compare them with the release tables')
@@ -168,6 +172,8 @@ def main() -> None:
     records = t('supporting/source_records_{v}.tsv')
     inhibitors = t('supporting/maron2021_inhibitors_{v}.tsv')
     carm1 = t('supporting/carm1_ko_{v}.tsv')
+    pert_path = rel / f'supporting/writer_perturbations_{v}.tsv'   # v1.4.0 on
+    perturbations = read(pert_path) if pert_path.exists() else pd.DataFrame(columns=['site_id', 'perturbation', 'call'])
     disease_terms = t('supporting/disease_terms_{v}.tsv')
     terms_tested = t('supporting/disease_terms_tested_{v}.tsv')
     disease_ontology = t('supporting/disease_ontology_{v}.tsv')
@@ -290,7 +296,16 @@ def main() -> None:
         ko[r['site_id']].append([CELL_LINES.index(r['cell_line']), num(r['log2_ko_over_wt']), sig(r['p']), int(r['n_peptides']),
                                  int(r['n_decreased']), int(r['n_increased'])]
                                 + ([int(r['n_multi_site_peptides']), call_code(r['call_single_site_peptides']),
-                                    call_code(r['call_source_rule']), sig(r['q'])] if ko_full else []))
+                                    call_code(r['call_published']), sig(r['q'])] if ko_full else []))
+    # each site's knockouts, knockdowns and inhibitors (supporting/writer_perturbations): [perturbation index, call index
+    # (PERT_CALLS), 1 when the twofold, q < 0.05 and the published calls both call the site and disagree, median log2 change]
+    pert_keys = [d.key for d in release_layers.PERTURBATIONS]
+    pert_calls = list(release_layers.PERTURBATION.codes['perturbation_call'])
+    pt = defaultdict(list)
+    for r in perturbations.to_dict('records'):
+        both = r['call_twofold_q05'] not in ('', 'not_tested') and r['call_published'] not in ('', 'not_tested')
+        pt[r['site_id']].append([pert_keys.index(r['perturbation']), pert_calls.index(r['call']),
+                                 int(both and r['call_twofold_q05'] != r['call_published']), num(r['log2_treated_over_control'])])
     disorder_classes, domain_contexts, domain_classes = Vocab(), Vocab(), Vocab()
     structure_contexts = Vocab(list(rc.CODES['structure_context']))   # fixed order: inside a folded domain to deep in a disordered region
     interpro, interpro_idx = [], {}
@@ -339,6 +354,7 @@ def main() -> None:
             # how the site's records localise the methyl group (a release before v1.3.1 gives it per record only)
             sum(1 << LOCALISED.index(x) for x in (L(s['localised_by']) if 'localised_by' in s
                                                   else {rec[i]['localised_by'] for i in ids} - {''})),
+            sorted(pt.get(sid, [])),
         ])
     # evidence rows: table and study codes as vocabularies
     source_tables, remap_statuses = Vocab(), Vocab()
@@ -428,6 +444,23 @@ def main() -> None:
             row.append(int(p['disgenet_background'] == 'true'))
     group_of = {ontology.at[c, 'name']: g['name'] for g in panther_config['groups'] for c in g['classes']}
     top_of = {n: ontology.at[ontology.at[by_name[n], 'top_level_id'], 'name'] for n in ps}
+
+    def class_info(name: str) -> list:
+        """[PANTHER accession, the first sentence of its definition] of a class, empty for No PANTHER protein class."""
+        c = by_name.get(name)
+        if c is None:
+            return ['', '']
+        d = str(ontology.at[c, 'definition'] or '').strip()
+        return [c, d.split('. ')[0].rstrip('.') + '.' if d else '']
+
+    # The largest DisGeNET terms of each disease family (terms assigned as scripts/14 assigns them), naming what it holds
+    tg = pd.read_csv(inputs / args.disgenet_terms, sep='\t', dtype=str, keep_default_na=False, quoting=3, usecols=['term_id', 'term_name'])
+    fam_terms = defaultdict(list)
+    for (term, name), n in tg.groupby(['term_id', 'term_name']).size().items():
+        fam, status, *_ = dfam.classify(name)
+        if status == 'included':
+            fam_terms[fam].append((int(n), name))
+    family_top = [[nm for _, nm in sorted(fam_terms.get(f, []), key=lambda x: (-x[0], x[1]))[:6]] for f in families]
     totals = lambda r: [int(r['a']) + int(r['c'])]  # noqa: E731
 
     payload = {
@@ -539,12 +572,14 @@ def main() -> None:
                                *(['disgenet_background'] if dgn_background else [])],
             'panther': {'version': panther_config['panther_version'], 'unclassified': panther_config['unclassified'],
                         'groups': pg, 'classes': pc, 'subclasses': ps,
+                        # [accession, definition] of each class and subclass, in the order of classes and subclasses
+                        'class_info': [class_info(n) for n in pc], 'subclass_info': [class_info(n) for n in ps],
                         'universe': int(stats[stats['analysis'] == 'panther_group'].iloc[0][['a', 'b', 'c', 'd']].astype(int).sum())},
             'site_fields': ['protein', 'position', 'state', 'source_mask', 'refs', 'disorder_class', 'disorder_edge_distance',
                             'domain_context', 'interpro', 'domain_class', 'domain_edge_distance', 'domain_side', 'window_31',
                             'motif_mask', 'window_center_mismatch', 'source_positions_original', 'maron_s2_state_mask',
                             'maron_ip_mask', 'maron_treatment', 'study_mask', 'carm1_ko', 'state_detail', 'paralogs', 'structure_context',
-                            'localised_mask'],
+                            'localised_mask', 'perturbations'],
             'maron_treatment_fields': ['ip', 'treatment', 'median change (descriptive)', 'lowest adj. p', 'peptide rows',
                                        f'peptides down at adj. p <= {PADJ:g}', f'peptides up at adj. p <= {PADJ:g}',
                                        'peptides carrying another methylarginine', 'call over single-site peptides (index into calls, or null)',
@@ -552,9 +587,14 @@ def main() -> None:
             'calls': CALLS,
             'carm1_ko_fields': ['cell line', 'median log2 KO/WT', 'lowest p', 'peptides', 'peptides down (twofold, BH q < 0.05)',
                                 'peptides up', 'peptides carrying another methylarginine', 'call over single-site peptides',
-                                'call by the source study\'s rule (twofold, nominal p < 0.05)', 'lowest q'],
+                                'published call (twofold, nominal p < 0.05)', 'lowest q'],
+            # the knockouts, knockdowns and inhibitors of supporting/writer_perturbations (scripts/release_layers.py):
+            # [key, label, enzyme, kind, cells, study, doi, which call is `call` (twofold_q05 or published), changed sites only (0/1)]
+            'perturbations': [[d.key, d.label, d.enzyme, d.kind, d.cell_line, d.study, d.doi, d.primary, int(d.changed_only)]
+                              for d in release_layers.PERTURBATIONS] if len(perturbations) else [],
+            'perturbation_calls': pert_calls,
             'carm1_ko': {'study': ko_note.get('study', 'Shishkova 2017'), 'doi': ko_note.get('doi', '10.1038/ncomms15571'),
-                         'cell_lines': CELL_LINES, 'rule': 'peptide log2 KO/WT <= -1 (down) or >= 1 (up) at BH q < 0.05 (the study\'s p values adjusted over the quantified peptides of each cell line); the study\'s own rule, nominal p < 0.05, is given for comparison',
+                         'cell_lines': CELL_LINES, 'rule': 'peptide log2 KO/WT <= -1 (down) or >= 1 (up) at BH q < 0.05 (the study\'s p values adjusted over the quantified peptides of each cell line); the published call, twofold at nominal p < 0.05, is shown too',
                          'source_rule': ko_note.get('rule', ''), 'input_sha256': ko_note.get('input_sha256'),
                          'placed_sites': len(ko_placed), 'placed_sites_down': len(ko_placed_down),
                          'union_sites': len(ko_sites),
@@ -567,6 +607,8 @@ def main() -> None:
                                     sig(r['p']), sig(r['q'])] for n, r in hpa_stats.iterrows()]},
             'disease_family_sets': {'version': 'audited_v1', 'fields': ['terms', 'genes', 'methylarginine_genes'],
                                     'families': [[int(r['n_terms']), int(r['n_genes']), int(r['n_methylated_genes'])] for r in disease_families.to_dict('records')],
+                                    # each family's six largest DisGeNET terms (most genes first)
+                                    'top_terms': family_top,
                                     # [methylated genes, genes] with a DisGeNET term: the background of every family test
                                     **({'background': [int(disease_families['n_methylated_genes_tested'].iloc[0]), int(disease_families['n_genes_tested'].iloc[0])]}
                                        if dgn_background else {})},

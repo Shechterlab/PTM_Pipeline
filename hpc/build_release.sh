@@ -21,7 +21,9 @@
 #   6. the website's data from the release and from that view (scripts/36) and the interaction evidence of their sites
 #      (scripts/37, from inputs/interactions/), then scripts/build_release.py again with the interaction tables, which
 #      writes releases/VERSION/ with the statistics of the second run and both analyses' result tables (analyses/,
-#      analyses_with_lower_confidence/); the website data go to docs/data/ (SITE_OUT), the view's as methylarg_*_all.json.
+#      analyses_with_lower_confidence/); the website data go to docs/data/ (SITE_OUT), the view's as methylarg_*_all.json;
+#   7. the annotation layers (scripts/release_layers.py): checked against MANIFEST.tsv first; each build_release.py pass
+#      adds their site and protein columns and statistics, and their website files are written from the release last.
 # Every input comes from inputs/ and must match inputs/MANIFEST.tsv (the files it lists as in Git, and the pCLAP and
 # RBDmap peptides, which scripts/43d and scripts/43f derive from PRIDE when they are absent). WORK_ROOT (default: a temporary directory) holds the
 # intermediate results. The build needs the network for those derivations and when inputs/interactions/ lacks data for a site: scripts/37 then fetches it into WORK_ROOT/interactions_topup, and the build stops, before
@@ -29,7 +31,7 @@
 #
 # Environment (optional): PREVIOUS, the release the changes are traced from (default releases/v1.2.0); RELEASE_OUT, where
 # the release goes (default releases/VERSION); SITE_OUT, where the website data go (default docs/data); STUDIES, the
-# study tables read (default all sixteen, inputs/sources/<study>_methylarginine_records.tsv); LOCALISED_ONLY (default 1),
+# study tables read (default all seventeen, inputs/sources/<study>_methylarginine_records.tsv); LOCALISED_ONLY (default 1),
 # 0 to place records without localisation as v1.1.0 did. v1.1.0 itself: PREVIOUS=releases/v1.0.0 STUDIES=''
 # LOCALISED_ONLY=0.
 
@@ -41,7 +43,7 @@ IN="$CODE/inputs"
 WORK=${2:-$(mktemp -d)}
 OUT=${RELEASE_OUT:-$CODE/releases/$VERSION}
 PREVIOUS=${PREVIOUS:-$CODE/releases/v1.2.0}
-STUDIES=${STUDIES-larsen2016 maron2021 guo2014 musiani2019 fong2019 li2021 fedoriw2019 uniprot lim2020 wei2020 iedb hartel2019 geoghegan2015 sylvestersen2014 lu2025 ma2023}
+STUDIES=${STUDIES-larsen2016 maron2021 guo2014 musiani2019 fong2019 li2021 fedoriw2019 uniprot lim2020 wei2020 iedb hartel2019 geoghegan2015 sylvestersen2014 lu2025 ma2023 lu2024}
 LOCALISED_ONLY=${LOCALISED_ONLY:-1}
 SITE_OUT=${SITE_OUT:-$CODE/docs/data}
 FASTA="$IN/reference/uniprot_human_reviewed_2026_03.fasta"
@@ -54,6 +56,8 @@ fi
 echo "[release] checking inputs against $IN/MANIFEST.tsv"
 . "$CODE/hpc/analyses.sh"
 check_inputs
+# the annotation layers the release joins to its sites and proteins (scripts/release_layers.py LAYERS)
+python "$CODE/scripts/release_layers.py" check --inputs "$IN"
 
 # Tables derived from PRIDE and kept out of Git (EMBL-EBI terms of use): the pCLAP peptides (scripts/43d, from the
 # MaxQuant output) and the RBDmap measured peptides (scripts/43f, from the peptide and quantification tables). When one
@@ -203,6 +207,7 @@ for sums in "$OUT/MD5SUMS" "$OUT/analyses/MD5SUMS" "$OUT/analyses_with_lower_con
   (cd "$(dirname "$sums")" && md5sum -c --quiet MD5SUMS) || { echo "[release] checksums do not match in $(dirname "$sums")"; exit 1; }
 done
 echo "[release] checksums verified: $OUT"
+mkdir -p "$SITE_OUT"
 for f in sites evidence disease interactions; do
   cp "$SITE/methylarg_$f.json" "$SITE_OUT/methylarg_$f.json"
   cp "$SITE_ALL/methylarg_$f.json" "$SITE_OUT/methylarg_${f}_all.json"
@@ -217,4 +222,8 @@ step "InterPro domains and the proteins without a site (scripts/36c)" python "$C
   --binding "$SITE/methylarg_binding_unlisted.json"
 # eCLIP logos (scripts/43f), one file for both tiers: the 5-mers enriched in each experiment's peaks or windows, aligned
 step "eCLIP logos (scripts/43f)" python "$CODE/scripts/43f_eclip_logos.py" --inputs "$IN/nucleic_acid" --out "$SITE_OUT/methylarg_eclip_logos.json"
+# Each annotation layer's website files, from the release (scripts/release_layers.py: DepMap, PRISM and TCGA to
+# SITE_OUT/depmap/ by scripts/44c, with the release's statistics of the layer)
+step "annotation layers' website files (scripts/release_layers.py)" python "$CODE/scripts/release_layers.py" website --release "$OUT" \
+  --inputs "$IN" --site-out "$SITE_OUT"
 echo "[release] done: $OUT and $SITE_OUT/"

@@ -45,6 +45,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from common import entrez_by_symbol
 from disease_families import ADDITIONAL_FAMILIES, ALL_FAMILIES, AUDITED_FAMILIES, classify
 from enrichment import Job, run
 
@@ -84,8 +85,7 @@ def main() -> None:
     labels = labels[labels['gene_symbol'] != '']
     target_rows = labels[labels['is_arg_methyl_protein'].map(is_true)]
 
-    sym = pd.read_csv(args.symbol_entrez, sep='\t', dtype=str, keep_default_na=False)
-    entrez_of = sym.groupby('symbol')['entrez_id'].agg(list).to_dict()
+    entrez_of = entrez_by_symbol(args.symbol_entrez)
     # A gene is named by the symbol of the protein that brought it in, the symbol the release maps back to proteins.
     name_of = {}
     for s in labels['gene_symbol']:

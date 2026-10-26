@@ -13,6 +13,7 @@ from pathlib import Path
 import pandas as pd
 
 import release_codes as rc
+import release_layers
 from disease_families import ADDITIONAL_FAMILIES, AUDITED_FAMILIES
 
 REPO = Path(__file__).resolve().parent.parent
@@ -244,6 +245,7 @@ FILE_ROWS = {
     'condensates': 'CD-CODE condensate: name, type, members and methylated members',
     'hpa_locations': 'protein and Human Protein Atlas location',
     'other_ptm_sites': 'other modification on a protein of the release (PTM master table)',
+    **release_layers.supporting_file_rows(),
 }
 
 
@@ -326,9 +328,10 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'source (the `studies` column does), and that web pages showing PSP-derived sites link them to the PSP protein '
         'page (www.phosphosite.org/uniprotAccAction?id=<UniProt accession>).',
         '',
-        'The annotation and interaction sources keep their own terms too (`licence` in `inputs/MANIFEST.tsv`). Four are '
+        'The annotation and interaction sources keep their own terms too (`licence` in `inputs/MANIFEST.tsv`). Five are '
         'non-commercial: the DisGeNET terms behind the disease tables (CC BY-NC-SA 4.0), CD-CODE condensates (CC BY-NC 4.0), '
-        'the pepR-MS RNA crosslink compendium (CC BY-NC) and the DNA crosslinks of Trendel et al. 2025 (CC BY-NC 4.0). Maron '
+        'the pepR-MS RNA crosslink compendium (CC BY-NC), the DNA crosslinks of Trendel et al. 2025 (CC BY-NC 4.0) and the '
+        'supporting information of Lu et al. 2024 (CC BY-NC 4.0). Maron '
         'et al. 2021 and ProMetheusDB supplements are CC BY-NC-ND 4.0: the release redistributes records derived from them, '
         'not the tables themselves.',
         '',
@@ -356,13 +359,14 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'computed on earlier UniProt sequences and moved to these (`inputs/annotation/interval_lift_to_uniprot_2026_03.tsv`).',
         f"- **Previous version:** `releases/{previous}/` (git tag {previous}).",
         '',
+        *release_layers.readme_section(),
         '## Statistics',
         '',
         f"`{files['statistics'][0]}` holds every test behind the summaries: its analysis and category, the 2x2 counts a, b, "
         'c and d, the effect, p, q and the method:',
         '',
         '- **Protein and gene sets** (method `enricher`): PANTHER and functional classes, CD-CODE condensates, Human Protein '
-        'Atlas locations, disease families and Gene Ontology RNA and DNA binding; the complexes, Disease Ontology terms and '
+        'Atlas locations, disease families, Gene Ontology RNA and DNA binding and DepMap dependency classes; the complexes, Disease Ontology terms and '
         'DisGeNET terms, tested the same way, are in `supporting/`. Over-representation analysis in R with clusterProfiler::enricher, the '
         'DisGeNET terms on DOSE 4.4.0\'s DisGeNET term-gene table (the test DOSE::enrichDGN ran; `scripts/enrich_sets.R`; '
         + ', '.join(f'{k} {v}' for k, v in ctx.get('enrichment_tools', {}).items()) + '). '
@@ -373,9 +377,11 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'protein and its size is within the analysis\'s range. Backgrounds: the reviewed human proteome (classes, Gene '
         'Ontology, complexes), the proteins of any human CD-CODE condensate (condensates), the proteins the Human Protein '
         'Atlas profiled (locations), the reviewed human genes with a DisGeNET term (disease families and DisGeNET terms) '
-        'and those with a Disease Ontology term (Disease Ontology).',
+        'and those with a Disease Ontology term (Disease Ontology), and the reviewed proteins whose gene DepMap 24Q4 screened '
+        '(dependency classes).',
         '- **Arginines** (methods `fisher` and `mantel_haenszel`): motifs, disorder, domain context, nearest domain class, '
-        'structural context and the interaction tests compare methylated arginines with the other arginines of the same '
+        'structural context, the interaction tests and the changes in tumours and cell lines (cancer_change) compare '
+        'methylated arginines with the other arginines of the same '
         'proteins: two-sided Fisher exact test (scipy) with the sample odds ratio after adding 0.5 to each cell, pooled '
         'over the arginines of the methylated proteins, and the Mantel-Haenszel common odds ratio with each protein a '
         'stratum (statsmodels), which compares each protein\'s methylated arginines with its own other arginines; q is '
@@ -537,8 +543,7 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         'they come from a splice variant. '
         + (('Some are reported at another position, in the numbering of an isoform, and match one complete flank (15 '
             'residues and the arginine) here: ' + ', '.join(shifted) + '. ') if shifted else '')
-        + 'The pipeline leaves these records unplaced; the release keeps the sites, flagged and left out of every '
-        'analysis, until the policy is decided: '
+        + 'These records are left unplaced; the sites are listed, flagged and left out of every analysis: '
         + ', '.join(f"{g} R{split_key(s)[1]}" for g, s in zip(pending['gene'], pending['site_id'])) + '.',
         f"- **Paralog windows** ({c['flags'].get('paralog_window', 0)} sites, flag `paralog_window`): a window or "
         'peptide matches another reviewed entry exactly and the named entry within 2 residues. The other entry is a '
@@ -796,6 +801,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
     lines += crosslink_section(files, previous, Path(ctx['inputs']))
     lines += analysis_section(files, previous)
     lines += review_section(ctx, files, previous)
+    lines += release_layers.changes_section(files, ctx['version'], previous)
     if since_v11:
         lines += [
         '## Methylation degree',
@@ -1005,7 +1011,7 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
     multi_only = inh_changed[inh_changed['call_single_site_peptides'].isin(['', 'no_significant_change'])]
     one_cond = inh_changed[num(inh_changed['n_one_condition_peptides']) == num(inh_changed['n_peptides'])]
     carm_changed = carm[carm['call'].isin(changed)]
-    carm_diff = int((carm['call'] != carm['call_source_rule']).sum())
+    carm_diff = int((carm['call'] != carm[next(c for c in ('call_published', 'call_source_rule') if c in carm.columns)]).sum())
     out = ['## Corrections after the review of v1.3.0', '',
            f'{ctx["version"]} keeps the sites, records and placements of {previous}. It changes how some evidence is called and '
            'described, after an outside review of v1.3.0.', '',
