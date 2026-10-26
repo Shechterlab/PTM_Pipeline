@@ -203,6 +203,9 @@
     short: 'DeAngelo, Silverstein & Shechter, Cell Chem Biol 2026',
     doi: '10.1016/j.chembiol.2026.09.011',
   };
+  // The Zenodo archive of the GitHub releases, by the DOI that stands for every version: it opens the most recent and
+  // stays the same from release to release (also in the header badge and the footer of index.html).
+  const ARCHIVE_DOI = '10.5281/zenodo.22696798';
   // The site's name and address come from the page itself (<meta name="application-name"> in index.html and the
   // current URL), so renaming or moving the site updates every figure credit.
   const siteName = () => { const m = document.querySelector('meta[name="application-name"]'); return (m && m.content) || document.title.split(' · ')[0]; };
@@ -2829,12 +2832,13 @@
       hideTip();
       openProtein(+g.dataset.i);
     });
-    // A fold remembers being opened or closed by a click on its header (not by print, which opens them all).
+    // A fold remembers being opened or closed by a click on its header (not by print, which opens them all); a protein
+    // page's sections do not (foldIsOpen).
     document.addEventListener('click', (e) => {
       const s = e.target.closest ? e.target.closest('details.fold > summary') : null;
       if (!s || (e.target.closest('a, button, select, input') && e.target.closest('a, button, select, input') !== s)) return;
       const d = s.parentElement;
-      if (d.classList.contains('hub-row')) return;
+      if (d.classList.contains('hub-row') || (d.dataset.fold || '').startsWith('p-')) return;
       foldState[d.dataset.fold] = !d.open;
       store.set(FOLD_STORE, JSON.stringify(foldState));
     });
@@ -4728,13 +4732,13 @@
     const ext = (href, label) => '<a class="btn quiet small" href="' + href + '" target="_blank" rel="noopener">' + label + ' ↗</a>';
     const base = p.acc.split('-')[0];
     const filtered = constraints().length > 0;
-    // Layout A: every section a fold that opens where it is, several at once, as in v1.2 (the 3D structure open at
-    // first), with a small picture in its header while closed; the previous layout: a scorecard row that opens alone.
+    // Layout A: every section a fold that opens where it is, several at once, as in v1.2 (all closed at first, under the
+    // open protein map), with a small picture in its header while closed; the previous layout: a scorecard row that
+    // opens alone.
     const prow = (key, title, inner, q, sum) => {
       if (!UI_A) return foldHtml(key, title, inner, false, sum || '', null, { q });
       A_ROWS.push({ key, title, summary: sum, group: null });
-      const was = UI.pOpen && UI.pOpen.p === p.i ? UI.pOpen.open.get(key) : undefined;
-      return '<details class="fold p-row" data-fold="' + key + '"' + ((was != null ? was : foldIsOpen(key, key === 'p-3d' || key === 'p-sites')) ? ' open' : '') + '><summary class="fold-head"><span class="pm" aria-hidden="true"></span>' +
+      return '<details class="fold p-row" data-fold="' + key + '"' + (foldIsOpen(key, false) ? ' open' : '') + '><summary class="fold-head"><span class="pm" aria-hidden="true"></span>' +
         '<span class="fold-title">' + esc(title) + '</span><span class="fold-sum" id="fold-sum-' + key + '">' + esc(sum || '') + '</span><span class="fold-pic" data-pic-of="' + key + '"></span></summary>' + inner + '</details>';
     };
     A_ROWS.length = 0;
@@ -4926,7 +4930,13 @@
   // Card help text clamped to one line by the stylesheet (same selector there); a click shows it all.
   const CLAMP_SEL = '.card-head p.sub:not(:has(select, input, .warn, .warn-text)), .card > p.sub:not(:has(select, input, .warn, .warn-text)), .card-pad p.sub:not(:has(select, input, .warn, .warn-text))';
   const foldState = (() => { try { return JSON.parse(store.get(FOLD_STORE) || '{}') || {}; } catch (e) { return {}; } })();
-  const foldIsOpen = (key, dflt) => (Object.prototype.hasOwnProperty.call(foldState, key) ? !!foldState[key] : !!dflt);
+  // A protein page's sections (keys p-…) open as the page sets them, the protein map alone, and keep what the reader
+  // opens or closes through a redraw of the same protein (UI.pOpen); the next protein, or a reload, starts afresh.
+  // Other folds remember being opened or closed in this browser.
+  const foldIsOpen = (key, dflt) => {
+    if (key.startsWith('p-')) { const was = UI.pOpen && UI.pOpen.p === UI.detail ? UI.pOpen.open.get(key) : undefined; return was != null ? was : !!dflt; }
+    return Object.prototype.hasOwnProperty.call(foldState, key) ? !!foldState[key] : !!dflt;
+  };
   // meta: the fold is a row of a page's scorecard (hubHtml): meta.q the question it answers, meta.how how a selection
   // reaches it (HOW_TEXT), meta.sel and meta.all the answers for what is shown and for the whole dataset (html, built
   // with esc), meta.empty why there is nothing to show. A scorecard row starts closed; bindHub opens it on its own.
@@ -5220,7 +5230,7 @@
   // what the reader opens or closes on a one-page protein, kept through a redraw of the same protein
   document.addEventListener('toggle', (e) => {
     const d = e.target;
-    if (!d.matches || !d.matches('details.p-row') || UI.detail == null) return;
+    if (!d.matches || !d.matches('details.fold[data-fold^="p-"]') || UI.detail == null) return;
     if (!UI.pOpen || UI.pOpen.p !== UI.detail) UI.pOpen = { p: UI.detail, open: new Map() };
     UI.pOpen.open.set(d.dataset.fold, d.open);
   }, true);
@@ -15486,11 +15496,11 @@
       ['about', 'About', '<p>The explorer indexes the integrated human methylarginine union assembled by the <a href="https://github.com/Shechterlab/PTM_Pipeline">PTM_Pipeline</a> for the review below. It runs entirely in your browser; UniProt, AlphaFold DB, PDB, Ensembl and other annotations on protein pages are fetched live.</p>' +
         '<p><b>Cite:</b> ' + esc(PAPER.cite) + ' <a href="https://doi.org/' + PAPER.doi + '">doi:' + PAPER.doi + '</a>, and the original studies and resources (see How to cite).</p>'],
       ['versions', 'Versions', '<p><b>' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>. This explorer was reorganised after its first release. It uses the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences (v1.1.0)' + (localisedOnly() ? '. From v1.2.0 every study is read from its own tables and ' + LOCALISED_RULE + (addedStudies().length ? '; ' + addedStudies().length + ' studies were added (' + esc(addedStudies().join(', ')) + ')' : '') : addedStudies().length ? ' and the sites of ' + addedStudies().length + ' more studies (v1.2.0: ' + esc(addedStudies().join(', ')) + ')' : '') + changesText(': ') + ' (see <a href="' + changesLink() + '" target="_blank" rel="noopener">what changed</a>). The published version (<a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases/v1.0.0" target="_blank" rel="noopener">v1.0.0</a>) remains available <a href="v1.0.0/">here</a>, and the releases since, v1.1.0 <a href="v1.1.0/">here</a>, v1.2.0 <a href="v1.2.0/">here</a>, v1.3.0 <a href="v1.3.0/">here</a> and v1.3.1 <a href="v1.3.1/">here</a>. The repository as it stood before the reorganisation is kept in the <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/v1.0.0_archive" target="_blank" rel="noopener">v1.0.0_archive</a> tag.</p>' +
-        '<p>The data of each version, with every table and column described, are in <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases" target="_blank" rel="noopener">releases/</a>.</p>'],
+        '<p>The data of each version, with every table and column described, are in <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases" target="_blank" rel="noopener">releases/</a>. The GitHub releases are archived on Zenodo, ' + doiLink(ARCHIVE_DOI) + ': it opens the most recent version and lists every version with its own DOI.</p>'],
       ['cite', 'How to cite', '<p>The sites here were measured and first reported by other groups; this explorer compiles them. When you use sites or evidence from it, please cite:</p><ol>' +
         '<li><b>The original studies or databases that reported the sites you use.</b> Every list of sites (Proteins, Sites, protein pages, the insight report and the comparison) ends with <i>How to cite these sites</i>: the reporting studies with how many of the sites each reported, full references and DOIs, a <i>Copy references</i> button and <i>Download citations (RIS)</i>, a file for EndNote, Zotero, Mendeley or Papers with each DOI\'s full record from doi.org. The site card lists the studies behind one site, and the Sites TSV has a <code>reported_by_doi</code> column.</li>' +
         '<li><b>The resources behind any evidence you rely on</b>: for example the pepR-MS compendium and the datasets it re-analyses for RNA crosslinks, Trendel et al. 2025 for DNA crosslinks, PDBe-KB for interfaces, ProtVar and AlphaFold for predicted complexes, CD-CODE for condensates and STRING or Complex Portal for partners. The same lists name them for the sites in view; every resource is in <i>Data sources, versions and licences</i> below with its citation and licence.</li>' +
-        '<li><b>' + esc(PAPER.cite) + '</b> ' + doiLink(PAPER.doi) + ', for the compiled, remapped union and this explorer.</li></ol>' +
+        '<li><b>' + esc(PAPER.cite) + '</b> ' + doiLink(PAPER.doi) + ', for the compiled, remapped union and this explorer. For the data, add their archive on Zenodo, ' + doiLink(ARCHIVE_DOI) + ' (every version; each also has its own DOI there).</li></ol>' +
         '<p>The studies and databases behind the union, with their references, are listed under ' + (localisedOnly() ? 'Sources of the sites' : 'Sources in the union') + '. PhosphoSitePlus® sites carry a non-commercial licence (CC BY-NC-SA 3.0).</p>' +
         '<p class="screen-only">' + risButton([[PAPER.cite, PAPER.doi]], 'methylarginine_explorer_paper', 'Download this paper\'s citation (RIS)') + ' ' +
         risButton([[PAPER.cite, PAPER.doi]].concat(M.studyOrder.map((k) => studyRef(k))), 'methylarginine_sources_of_the_sites', 'Download every study and database behind the sites (RIS)') + '</p>'],

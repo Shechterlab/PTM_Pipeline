@@ -1,5 +1,7 @@
 # PTM_Pipeline: human methylarginine sites
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22696798.svg)](https://doi.org/10.5281/zenodo.22696798)
+
 The human protein arginine methylation sites of DeAngelo, Silverstein & Shechter, *Protein arginine methylation
 rewires molecular interactions*, Cell Chem Biol 33:1404–1421 (2026),
 [doi:10.1016/j.chembiol.2026.09.011](https://doi.org/10.1016/j.chembiol.2026.09.011): the data, the code that builds
@@ -123,6 +125,8 @@ figures; they read staged files from `PTM_data/` and write `PTM_results/` (paths
 
 ## Cite and licence
 
-Cite the paper and the studies that reported the sites you use (each release's studies table lists them). Code is MIT;
+Cite the paper and the studies that reported the sites you use (each release's studies table lists them). For the
+data, add their archive on Zenodo, [doi:10.5281/zenodo.22696798](https://doi.org/10.5281/zenodo.22696798), which
+opens the most recent version and lists every version with its own DOI. Code is MIT;
 data and content are CC BY-NC-SA 4.0; third-party data keep their own terms, and PhosphoSitePlus®, DisGeNET, CD-CODE,
 the pepR-MS compendium and the Trendel et al. 2025 DNA crosslinks are non-commercial. See [LICENSE.md](LICENSE.md).

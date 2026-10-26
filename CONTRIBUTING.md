@@ -35,5 +35,6 @@ v1.1.0 reorganisation). `release-v1.1.0` was merged into `main` and deleted.
    `CHANGES.md`. A published version's folder is never rewritten.
 4. Check: `md5sum -c MD5SUMS` inside the release folder, and the website served locally
    (`python -m http.server` inside `docs/`).
-5. Merge into `develop`; when the version is ready, merge `develop` into `main`, create `release/vX.Y.Z` from that
-   commit, and publish the GitHub release from it.
+5. Merge into `develop`; when the version is ready, set its version in `.zenodo.json` and `CITATION.cff` (Zenodo
+   reads `.zenodo.json` from the tagged commit), merge `develop` into `main`, create `release/vX.Y.Z` from that commit,
+   and publish the GitHub release from it.
