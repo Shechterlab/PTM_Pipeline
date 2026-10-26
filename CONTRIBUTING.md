@@ -38,5 +38,5 @@ v1.1.0 reorganisation). `release-v1.1.0` was merged into `main` and deleted.
 5. Merge into `develop`; when the version is ready, set its version in `.zenodo.json` and `CITATION.cff` (Zenodo
    reads `.zenodo.json` from the tagged commit), merge `develop` into `main`, create `release/vX.Y.Z` from that commit,
    and publish the GitHub release from it.
-6. Once Zenodo has archived the release, put its DOI in `ARCHIVE` in `docs/assets/explorer.js` and in the README's
-   badge and Cite section.
+6. Once Zenodo has archived the release, put its DOI in the README's version badge and Cite section. The website
+   gives the DOI of every version (10.5281/zenodo.22696798), which does not change.
