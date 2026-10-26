@@ -7,7 +7,7 @@ methylates it, under what conditions, and with what consequence, with each kind 
 
 ### Work packages
 
-Status on 26 October 2026 (built as v1.4.0 on `feature/depmap` and merged into `develop`; on `main` once reviewed):
+Status on 26 October 2026 (released as v1.4.0 on `main`, branch `release/v1.4.0`):
 every source below except PhosphoSitePlus is staged into `inputs/`, registered in `scripts/release_layers.py` and shown
 on the website. Decided on 25 October: TCGA from the GDC's MC3 calls instead of cBioPortal; the PRMT1 knockdown and the
 Li et al. 2021 arms called by the published criteria, with the twofold, q < 0.05 call beside it; every arm in the Overview

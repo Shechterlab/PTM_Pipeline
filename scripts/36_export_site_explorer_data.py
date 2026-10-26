@@ -587,7 +587,7 @@ def main() -> None:
             'calls': CALLS,
             'carm1_ko_fields': ['cell line', 'median log2 KO/WT', 'lowest p', 'peptides', 'peptides down (twofold, BH q < 0.05)',
                                 'peptides up', 'peptides carrying another methylarginine', 'call over single-site peptides',
-                                'call by the source study\'s rule (twofold, nominal p < 0.05)', 'lowest q'],
+                                'published call (twofold, nominal p < 0.05)', 'lowest q'],
             # the knockouts, knockdowns and inhibitors of supporting/writer_perturbations (scripts/release_layers.py):
             # [key, label, enzyme, kind, cells, study, doi, which call is `call` (twofold_q05 or published), changed sites only (0/1)]
             'perturbations': [[d.key, d.label, d.enzyme, d.kind, d.cell_line, d.study, d.doi, d.primary, int(d.changed_only)]
