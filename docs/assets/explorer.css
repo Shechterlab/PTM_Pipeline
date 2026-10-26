@@ -148,6 +148,9 @@ button, input, select { font: inherit; color: inherit; }
 .hero .lede p { margin: 0; }
 .hero .lede .lede-cite { font-size: 0.82rem; color: rgba(255, 255, 255, 0.72); }
 .hero .lede .lede-note { font-size: 0.8rem; line-height: 1.45; color: rgba(255, 255, 255, 0.72); }
+/* what the site holds and what a reader can do, in one sentence (the second half hidden on phones) */
+.hero .lede .lede-what { font-size: 0.98rem; line-height: 1.5; color: rgba(255, 255, 255, 0.92); max-width: 46rem; }
+@media (max-width: 560px) { .hero .lede .lede-what .lede-more { display: none; } }
 .hero .lede .cite-short { display: none; }
 @media (max-width: 640px) {
   .hero .lede .cite-long { display: none; }
@@ -1979,6 +1982,7 @@ details.fold.p-row > summary:has(> .fold-pic:not(:empty)) .fold-sum { white-spac
 .ui-a .hero .lede { display: flex; flex-wrap: wrap; gap: 0.2rem 0.9rem; align-items: baseline; }
 .ui-a .hero .lede .cite-long { display: none; }
 .ui-a .hero .lede .cite-short { display: inline; }
+.ui-a .hero .lede .lede-what { flex-basis: 100%; }
 .ui-a .hero-art { top: 5.6rem; height: 8.6rem; }
 .a-key-line { margin: 0.1rem 0 0; }
 .a-more { margin: 0.55rem 0 0; font-size: 0.86rem; }
