@@ -1,5 +1,8 @@
 # PTM_Pipeline: human methylarginine sites
 
+[![DOI, every version](https://zenodo.org/badge/DOI/10.5281/zenodo.22696798.svg)](https://doi.org/10.5281/zenodo.22696798) every version ·
+[![DOI, v1.4.0](https://zenodo.org/badge/DOI/10.5281/zenodo.23674710.svg)](https://doi.org/10.5281/zenodo.23674710) v1.4.0
+
 The human protein arginine methylation sites of DeAngelo, Silverstein & Shechter, *Protein arginine methylation
 rewires molecular interactions*, Cell Chem Biol 33:1404–1421 (2026),
 [doi:10.1016/j.chembiol.2026.09.011](https://doi.org/10.1016/j.chembiol.2026.09.011): the data, the code that builds
@@ -123,6 +126,10 @@ figures; they read staged files from `PTM_data/` and write `PTM_results/` (paths
 
 ## Cite and licence
 
-Cite the paper and the studies that reported the sites you use (each release's studies table lists them). Code is MIT;
+Cite the paper and the studies that reported the sites you use (each release's studies table lists them). For the
+data of one version, add its archive on Zenodo: v1.4.0 is
+[doi:10.5281/zenodo.23674710](https://doi.org/10.5281/zenodo.23674710) and v1.0.0
+[doi:10.5281/zenodo.22696799](https://doi.org/10.5281/zenodo.22696799);
+[doi:10.5281/zenodo.22696798](https://doi.org/10.5281/zenodo.22696798) gathers every version. Code is MIT;
 data and content are CC BY-NC-SA 4.0; third-party data keep their own terms, and PhosphoSitePlus®, DisGeNET, CD-CODE,
 the pepR-MS compendium and the Trendel et al. 2025 DNA crosslinks are non-commercial. See [LICENSE.md](LICENSE.md).

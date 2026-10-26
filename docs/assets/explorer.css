@@ -158,6 +158,13 @@ button, input, select { font: inherit; color: inherit; }
 .hero .lede a { color: #fff; text-decoration-color: #fdba74; }
 .hero .lede a:hover { color: #fdba74; }
 .hero .lede .linkish { color: #fff; font-size: inherit; text-decoration-color: #fdba74; }
+/* the Zenodo DOI of the version shown, as the usual two-part badge */
+.doi-badge { display: inline-flex; vertical-align: 0.05em; border-radius: 3px; overflow: hidden; font-size: 0.72rem; line-height: 1.6; white-space: nowrap; text-decoration: none; }
+.doi-badge span { padding: 0 0.4rem; color: #fff; }
+.doi-badge span:first-child { background: #555; font-weight: 600; }
+.doi-badge span:last-child { background: #1d6fb8; }
+.hero .lede a.doi-badge:hover span:last-child { background: #155a96; }
+.doi-badge:focus-visible { outline: 2px solid #fdba74; outline-offset: 2px; }
 .hero .lede .linkish:hover { color: #fdba74; }
 .hero-stats { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.25rem; }
 .stat {

@@ -203,6 +203,12 @@
     short: 'DeAngelo, Silverstein & Shechter, Cell Chem Biol 2026',
     doi: '10.1016/j.chembiol.2026.09.011',
   };
+  // The Zenodo archive of the GitHub releases: one DOI for every version, and one for the version this page shows. A
+  // version's DOI exists once its GitHub release is published, so ARCHIVE is updated after each release.
+  const ARCHIVE = { version: 'v1.4.0', doi: '10.5281/zenodo.23674710', all: '10.5281/zenodo.22696798' };
+  // the version's own DOI when the page shows that version's data, otherwise the DOI of every version
+  const archiveOwn = () => !!(M && M.provenance && M.provenance.dataset_version === ARCHIVE.version);
+  const archiveDoi = () => (archiveOwn() ? ARCHIVE.doi : ARCHIVE.all);
   // The site's name and address come from the page itself (<meta name="application-name"> in index.html and the
   // current URL), so renaming or moving the site updates every figure credit.
   const siteName = () => { const m = document.querySelector('meta[name="application-name"]'); return (m && m.content) || document.title.split(' · ')[0]; };
@@ -1097,6 +1103,10 @@
 
     const dv = M.provenance && M.provenance.dataset_version;
     $('#data-version').innerHTML = (dv ? 'dataset <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases/' + encodeURIComponent(dv) + '">' + esc(dv) + '</a> · ' : '') + 'data exported ' + esc(M.generated);
+    $('#doi-badge').innerHTML = ' · <a class="doi-badge" href="https://doi.org/' + archiveDoi() + '" target="_blank" rel="noopener" title="' +
+      (archiveOwn() ? esc(dv) + ' archived on Zenodo (every version: doi:' + ARCHIVE.all + ')' : 'Every version, archived on Zenodo') +
+      '"><span>DOI</span><span>' + archiveDoi() + '</span></a>';
+    $('#data-archive').innerHTML = ' · archived on Zenodo, ' + (archiveOwn() ? esc(dv) + ' ' + doiLink(ARCHIVE.doi) + ', every version ' : '') + doiLink(ARCHIVE.all);
     if (window.matchMedia && window.matchMedia('(max-width: 560px)').matches) $('#q').placeholder = 'Gene, site, gene list or motif:RGG';
     $('#year').textContent = new Date().getFullYear();
     renderHero();
@@ -15486,11 +15496,11 @@
       ['about', 'About', '<p>The explorer indexes the integrated human methylarginine union assembled by the <a href="https://github.com/Shechterlab/PTM_Pipeline">PTM_Pipeline</a> for the review below. It runs entirely in your browser; UniProt, AlphaFold DB, PDB, Ensembl and other annotations on protein pages are fetched live.</p>' +
         '<p><b>Cite:</b> ' + esc(PAPER.cite) + ' <a href="https://doi.org/' + PAPER.doi + '">doi:' + PAPER.doi + '</a>, and the original studies and resources (see How to cite).</p>'],
       ['versions', 'Versions', '<p><b>' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>. This explorer was reorganised after its first release. It uses the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences (v1.1.0)' + (localisedOnly() ? '. From v1.2.0 every study is read from its own tables and ' + LOCALISED_RULE + (addedStudies().length ? '; ' + addedStudies().length + ' studies were added (' + esc(addedStudies().join(', ')) + ')' : '') : addedStudies().length ? ' and the sites of ' + addedStudies().length + ' more studies (v1.2.0: ' + esc(addedStudies().join(', ')) + ')' : '') + changesText(': ') + ' (see <a href="' + changesLink() + '" target="_blank" rel="noopener">what changed</a>). The published version (<a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases/v1.0.0" target="_blank" rel="noopener">v1.0.0</a>) remains available <a href="v1.0.0/">here</a>, and the releases since, v1.1.0 <a href="v1.1.0/">here</a>, v1.2.0 <a href="v1.2.0/">here</a>, v1.3.0 <a href="v1.3.0/">here</a> and v1.3.1 <a href="v1.3.1/">here</a>. The repository as it stood before the reorganisation is kept in the <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/v1.0.0_archive" target="_blank" rel="noopener">v1.0.0_archive</a> tag.</p>' +
-        '<p>The data of each version, with every table and column described, are in <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases" target="_blank" rel="noopener">releases/</a>.</p>'],
+        '<p>The data of each version, with every table and column described, are in <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases" target="_blank" rel="noopener">releases/</a>. The GitHub releases are archived on Zenodo: ' + (archiveOwn() ? esc(ARCHIVE.version) + ' ' + doiLink(ARCHIVE.doi) + '; ' : '') + 'every version ' + doiLink(ARCHIVE.all) + ', which opens the most recent.</p>'],
       ['cite', 'How to cite', '<p>The sites here were measured and first reported by other groups; this explorer compiles them. When you use sites or evidence from it, please cite:</p><ol>' +
         '<li><b>The original studies or databases that reported the sites you use.</b> Every list of sites (Proteins, Sites, protein pages, the insight report and the comparison) ends with <i>How to cite these sites</i>: the reporting studies with how many of the sites each reported, full references and DOIs, a <i>Copy references</i> button and <i>Download citations (RIS)</i>, a file for EndNote, Zotero, Mendeley or Papers with each DOI\'s full record from doi.org. The site card lists the studies behind one site, and the Sites TSV has a <code>reported_by_doi</code> column.</li>' +
         '<li><b>The resources behind any evidence you rely on</b>: for example the pepR-MS compendium and the datasets it re-analyses for RNA crosslinks, Trendel et al. 2025 for DNA crosslinks, PDBe-KB for interfaces, ProtVar and AlphaFold for predicted complexes, CD-CODE for condensates and STRING or Complex Portal for partners. The same lists name them for the sites in view; every resource is in <i>Data sources, versions and licences</i> below with its citation and licence.</li>' +
-        '<li><b>' + esc(PAPER.cite) + '</b> ' + doiLink(PAPER.doi) + ', for the compiled, remapped union and this explorer.</li></ol>' +
+        '<li><b>' + esc(PAPER.cite) + '</b> ' + doiLink(PAPER.doi) + ', for the compiled, remapped union and this explorer. For the data of one version, add its archive on Zenodo, ' + doiLink(archiveDoi()) + '.</li></ol>' +
         '<p>The studies and databases behind the union, with their references, are listed under ' + (localisedOnly() ? 'Sources of the sites' : 'Sources in the union') + '. PhosphoSitePlus® sites carry a non-commercial licence (CC BY-NC-SA 3.0).</p>' +
         '<p class="screen-only">' + risButton([[PAPER.cite, PAPER.doi]], 'methylarginine_explorer_paper', 'Download this paper\'s citation (RIS)') + ' ' +
         risButton([[PAPER.cite, PAPER.doi]].concat(M.studyOrder.map((k) => studyRef(k))), 'methylarginine_sources_of_the_sites', 'Download every study and database behind the sites (RIS)') + '</p>'],
