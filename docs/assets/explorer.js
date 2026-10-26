@@ -4073,8 +4073,14 @@
     const condMember = (r) => (thr ? (p) => (cdMemberships(p) || []).some((c) => c.ci === r.key && c.score >= thr) : (p) => p.cond.includes(r.key));
     selSetTest(cond, condBg === 'proteome' ? { N: +cs.reviewed_proteome_proteins, inBg: reviewed, member: condMember, M: (r) => +String(r.extra).split('/')[1], bg: 'reviewed proteome', kinds: ['condensate'] }
       : { N: +cs.condensate_universe_proteins, inBg: (p) => (thr ? (cdMemberships(p) || []).length > 0 : p.cond.length > 0), member: condMember, M: (r) => +String(r.extra).split('/')[1], bg: 'proteins in any condensate', kinds: ['condensate'] });
-    if (loc) selSetTest(loc, { N: hm.universe, inBg: (p) => p.hpa.some((x) => x[1] >= HPA_SURE), member: (r) => (p) => p.hpa.some((x) => x[0] === r.key && x[1] >= HPA_SURE), M: (r) => +String(r.extra).split('/')[1], bg: 'HPA-profiled proteins', kinds: ['location'] });
-    if (pan) selSetTest(pan, { N: pantherMeta().universe, inBg: reviewed, member: (r) => pantherTest(r.key), M: (r) => r.nums[1], bg: 'reviewed proteome', family: (r) => r.kind, kinds: ['panther'] });
+    // the locations of fewer than 10 profiled proteins, and the class of the proteins PANTHER leaves unclassified, are
+    // tested by the release but not drawn
+    const locSmall = hm ? hm.enrichment.filter((r) => r[1] + r[3] < 10).map((r) => ({ key: r[0], extra: r[1] + '/' + (r[1] + r[3]) })) : [];
+    if (loc) selSetTest(loc, { N: hm.universe, inBg: (p) => p.hpa.some((x) => x[1] >= HPA_SURE), member: (r) => (p) => p.hpa.some((x) => x[0] === r.key && x[1] >= HPA_SURE), M: (r) => +String(r.extra).split('/')[1], bg: 'HPA-profiled proteins', kinds: ['location'], hidden: locSmall });
+    // (its proteins, class -1, are the unclassified group's)
+    const uncG = pan && UI.panLevel ? ov.panther_groups.findIndex((r) => r[0] === pm.unclassified) : -1;
+    const panHidden = uncG >= 0 ? ov.panther_classes.filter((x) => x[0] === pm.unclassified).map((x) => ({ key: 'g' + uncG, kind: 'c', nums: [x[1], x[x.length - 1]] })) : [];
+    if (pan) selSetTest(pan, { N: pantherMeta().universe, inBg: reviewed, member: (r) => pantherTest(r.key), M: (r) => r.nums[1], bg: 'reviewed proteome', family: (r) => r.kind, kinds: ['panther'], hidden: panHidden });
     // Order and cut the lists after testing every row: by the selection's results when there is one.
     const num = (v, d) => (v == null || !Number.isFinite(v) ? d : v);
     if (pan && pan.selTest) pan.rows = resortRanked(pan.rows, (r) => r.label === pantherMeta().unclassified);
@@ -4113,7 +4119,8 @@
   // its N) are tested against each set (k of its M), one-sided hypergeometric with fold enrichment and BH across the
   // chart's rows, as scripts/enrichment.py tests all methylated proteins. Each bar then shows the selection, with a
   // tick at the whole-dataset value (row.ref). cfg: N, inBg(p), member(row) -> test(p), M(row), id(p) (proteins counted
-  // once by canonical accession, genes by symbol), unit, bg (what the background is).
+  // once by canonical accession, genes by symbol), unit, bg (what the background is), hidden (rows the chart does not draw
+  // but the release tests: tested with the others, so BH runs over the same family as the release's).
   function selSetTest(spec, cfg) {
     if (!spec || !constraints().length) return;
     const seen = new Set(), sel = [];
@@ -4126,7 +4133,7 @@
     const selectedBy = kinds.some((k) => termValues(k).length) || (kinds.includes('condensate') && !!(F.anyCond || F.condConf));
     spec.selTest.circular = selectedBy;
     const tested = [];
-    for (const r of spec.rows) {
+    for (const r of spec.rows.concat(cfg.hidden || [])) {
       const M = cfg.M(r), t = cfg.member(r);
       r.ref = r.value;
       r.refQ = r.q;
@@ -4155,7 +4162,8 @@
       r.title = (r.title || '') + r.selNote;
     }
     spec.selTest.note = '; your selection, ' + fmt(n) + ' ' + spec.selTest.unit + ' of ' + fmt(N) + ' in the background (' + selectionText() + '): ' +
-      (selectedBy ? 'descriptive only, as the selection was made with these sets' : 'exploratory, one-sided hypergeometric against the ' + (cfg.bg || 'background') + ', BH within ' + (cfg.family ? 'each family of this chart' : 'this chart') + ', not adjusted for the other selections tried');
+      (selectedBy ? 'descriptive only, as the selection was made with these sets' : 'exploratory, one-sided hypergeometric against the ' + (cfg.bg || 'background') + ', BH within ' + (cfg.family ? 'each family of this chart' : 'this chart') +
+        (cfg.hidden && cfg.hidden.length ? ' (with the ' + cfg.hidden.length + ' set' + (cfg.hidden.length === 1 ? '' : 's') + ' the release tests but the chart leaves out)' : '') + ', not adjusted for the other selections tried');
     spec.subText = (spec.subText || '') + spec.selTest.note;
   }
 
