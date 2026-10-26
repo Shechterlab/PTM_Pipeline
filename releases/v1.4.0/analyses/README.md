@@ -1,6 +1,6 @@
 # Analyses of v1.4.0, rerun with the current pipeline
 
-The analyses of the release, run on its 11,632 sites on 4,439 proteins with the code of commit `42b71c8` (2026-10-26), so that every release is analysed the same way (hpc/release_analyses.sh). The sites kept pending (flag one_sided_window) are left out, as in the release build.
+The analyses of the release, run on its 11,632 sites on 4,439 proteins with the code of commit `c0cc845` (2026-10-26), so that every release is analysed the same way (hpc/release_analyses.sh). The sites kept pending (flag one_sided_window) are left out, as in the release build.
 
 `statistics_v1.4.0.tsv` holds every test in one table (columns as in the release's statistics table: analysis, category, the 2x2 counts a-d, effect, p, BH q, background). The folders hold the result tables:
 
