@@ -7,11 +7,11 @@ methylates it, under what conditions, and with what consequence, with each kind 
 
 ### Work packages
 
-Status on 25 October 2026 (branch `feature/depmap`, not merged): every source below except PhosphoSitePlus is staged
-into `inputs/`, registered in `scripts/release_layers.py` and shown on the website. Decided on 25 October: TCGA from the
-GDC's MC3 calls instead of cBioPortal; the PRMT1 knockdown and the Li et al. 2021 arms called by the study's own rule,
-with the release's rule kept beside it; every arm in the Overview response table, the site table's PRMT loss column
-and its filter.
+Status on 26 October 2026 (built as v1.4.0 on `feature/depmap` and merged into `develop`; on `main` once reviewed):
+every source below except PhosphoSitePlus is staged into `inputs/`, registered in `scripts/release_layers.py` and shown
+on the website. Decided on 25 October: TCGA from the GDC's MC3 calls instead of cBioPortal; the PRMT1 knockdown and the
+Li et al. 2021 arms called by the study's own rule, with the release's rule kept beside it; every arm in the Overview
+response table, the site table's PRMT loss column and its filter.
 
 
 1. **PRMT7 and monomethylarginine.** Szewczyk et al. 2020, *Pharmacological inhibition of PRMT7 links arginine
