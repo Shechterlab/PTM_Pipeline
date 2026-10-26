@@ -207,6 +207,7 @@ for sums in "$OUT/MD5SUMS" "$OUT/analyses/MD5SUMS" "$OUT/analyses_with_lower_con
   (cd "$(dirname "$sums")" && md5sum -c --quiet MD5SUMS) || { echo "[release] checksums do not match in $(dirname "$sums")"; exit 1; }
 done
 echo "[release] checksums verified: $OUT"
+mkdir -p "$SITE_OUT"
 for f in sites evidence disease interactions; do
   cp "$SITE/methylarg_$f.json" "$SITE_OUT/methylarg_$f.json"
   cp "$SITE_ALL/methylarg_$f.json" "$SITE_OUT/methylarg_${f}_all.json"
