@@ -2832,12 +2832,13 @@
       hideTip();
       openProtein(+g.dataset.i);
     });
-    // A fold remembers being opened or closed by a click on its header (not by print, which opens them all).
+    // A fold remembers being opened or closed by a click on its header (not by print, which opens them all); a protein
+    // page's sections do not (foldIsOpen).
     document.addEventListener('click', (e) => {
       const s = e.target.closest ? e.target.closest('details.fold > summary') : null;
       if (!s || (e.target.closest('a, button, select, input') && e.target.closest('a, button, select, input') !== s)) return;
       const d = s.parentElement;
-      if (d.classList.contains('hub-row')) return;
+      if (d.classList.contains('hub-row') || (d.dataset.fold || '').startsWith('p-')) return;
       foldState[d.dataset.fold] = !d.open;
       store.set(FOLD_STORE, JSON.stringify(foldState));
     });
@@ -4731,13 +4732,13 @@
     const ext = (href, label) => '<a class="btn quiet small" href="' + href + '" target="_blank" rel="noopener">' + label + ' ↗</a>';
     const base = p.acc.split('-')[0];
     const filtered = constraints().length > 0;
-    // Layout A: every section a fold that opens where it is, several at once, as in v1.2 (the 3D structure open at
-    // first), with a small picture in its header while closed; the previous layout: a scorecard row that opens alone.
+    // Layout A: every section a fold that opens where it is, several at once, as in v1.2 (all closed at first, under the
+    // open protein map), with a small picture in its header while closed; the previous layout: a scorecard row that
+    // opens alone.
     const prow = (key, title, inner, q, sum) => {
       if (!UI_A) return foldHtml(key, title, inner, false, sum || '', null, { q });
       A_ROWS.push({ key, title, summary: sum, group: null });
-      const was = UI.pOpen && UI.pOpen.p === p.i ? UI.pOpen.open.get(key) : undefined;
-      return '<details class="fold p-row" data-fold="' + key + '"' + ((was != null ? was : foldIsOpen(key, key === 'p-3d' || key === 'p-sites')) ? ' open' : '') + '><summary class="fold-head"><span class="pm" aria-hidden="true"></span>' +
+      return '<details class="fold p-row" data-fold="' + key + '"' + (foldIsOpen(key, false) ? ' open' : '') + '><summary class="fold-head"><span class="pm" aria-hidden="true"></span>' +
         '<span class="fold-title">' + esc(title) + '</span><span class="fold-sum" id="fold-sum-' + key + '">' + esc(sum || '') + '</span><span class="fold-pic" data-pic-of="' + key + '"></span></summary>' + inner + '</details>';
     };
     A_ROWS.length = 0;
@@ -4929,7 +4930,13 @@
   // Card help text clamped to one line by the stylesheet (same selector there); a click shows it all.
   const CLAMP_SEL = '.card-head p.sub:not(:has(select, input, .warn, .warn-text)), .card > p.sub:not(:has(select, input, .warn, .warn-text)), .card-pad p.sub:not(:has(select, input, .warn, .warn-text))';
   const foldState = (() => { try { return JSON.parse(store.get(FOLD_STORE) || '{}') || {}; } catch (e) { return {}; } })();
-  const foldIsOpen = (key, dflt) => (Object.prototype.hasOwnProperty.call(foldState, key) ? !!foldState[key] : !!dflt);
+  // A protein page's sections (keys p-…) open as the page sets them, the protein map alone, and keep what the reader
+  // opens or closes through a redraw of the same protein (UI.pOpen); the next protein, or a reload, starts afresh.
+  // Other folds remember being opened or closed in this browser.
+  const foldIsOpen = (key, dflt) => {
+    if (key.startsWith('p-')) { const was = UI.pOpen && UI.pOpen.p === UI.detail ? UI.pOpen.open.get(key) : undefined; return was != null ? was : !!dflt; }
+    return Object.prototype.hasOwnProperty.call(foldState, key) ? !!foldState[key] : !!dflt;
+  };
   // meta: the fold is a row of a page's scorecard (hubHtml): meta.q the question it answers, meta.how how a selection
   // reaches it (HOW_TEXT), meta.sel and meta.all the answers for what is shown and for the whole dataset (html, built
   // with esc), meta.empty why there is nothing to show. A scorecard row starts closed; bindHub opens it on its own.
@@ -5223,7 +5230,7 @@
   // what the reader opens or closes on a one-page protein, kept through a redraw of the same protein
   document.addEventListener('toggle', (e) => {
     const d = e.target;
-    if (!d.matches || !d.matches('details.p-row') || UI.detail == null) return;
+    if (!d.matches || !d.matches('details.fold[data-fold^="p-"]') || UI.detail == null) return;
     if (!UI.pOpen || UI.pOpen.p !== UI.detail) UI.pOpen = { p: UI.detail, open: new Map() };
     UI.pOpen.open.set(d.dataset.fold, d.open);
   }, true);
