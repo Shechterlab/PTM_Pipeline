@@ -1463,6 +1463,9 @@ body.slim .hero { border-bottom-width: 3px; }
 /* The selection: every search term and filter, joined by "and" because a site must match them all. */
 .scope .and { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
 .scope-tools { display: flex; align-items: center; gap: 0.35rem; margin-left: auto; }
+.scope-apart { font-weight: 600; color: var(--accent-dark); white-space: nowrap; text-decoration-color: var(--accent); }
+.scope-apart:hover { color: var(--accent); }
+.rail .scope-apart { display: none; }
 .saved-menu { position: relative; }
 .saved-menu > summary { list-style: none; }
 .saved-menu > summary::-webkit-details-marker { display: none; }

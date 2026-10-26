@@ -10,7 +10,7 @@ methylates it, under what conditions, and with what consequence, with each kind 
 Status on 26 October 2026 (built as v1.4.0 on `feature/depmap` and merged into `develop`; on `main` once reviewed):
 every source below except PhosphoSitePlus is staged into `inputs/`, registered in `scripts/release_layers.py` and shown
 on the website. Decided on 25 October: TCGA from the GDC's MC3 calls instead of cBioPortal; the PRMT1 knockdown and the
-Li et al. 2021 arms called by the study's own rule, with the release's rule kept beside it; every arm in the Overview
+Li et al. 2021 arms called by the published criteria, with the twofold, q < 0.05 call beside it; every arm in the Overview
 response table, the site table's PRMT loss column and its filter.
 
 
@@ -27,8 +27,8 @@ response table, the site table's PRMT loss column and its filter.
    Li et al. 2021, already included as a study, is staged for its perturbations too (`scripts/50`): PRMT7, CARM1 and
    PRMT5 knockdowns and SGC3027 in HEK293, one SILAC experiment each. Its lists' calls are reproduced (297, 503 and 660
    sites for PRMT7, SGC3027 and CARM1; 428 of the paper's 429 for PRMT5, which lists its decreased sites only). Proteome
-   Discoverer's adjusted p is not a test across replicates, so the release's rule is not applied and the call is the
-   study's. SGC3027's channel follows the paper's reading of its ratios, against one Methods sentence; the data agree
+   Discoverer's adjusted p is not a test across replicates, so there is no twofold, q < 0.05 call and the call is the
+   published one. SGC3027's channel follows the paper's reading of its ratios, against one Methods sentence; the data agree
    with the knockdown more often than not (45 against 22 twofold changes). Repeat 2 of the knockdown is staged, not used.
 2. **PRMT5 substrates from ETD.** Lu et al. 2024, *ETD-Based Proteomic Profiling Improves Arginine Methylation
    Identification and Reveals Novel PRMT5 Substrates*, J Proteome Res 23:1014–1027,

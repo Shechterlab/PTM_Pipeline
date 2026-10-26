@@ -394,7 +394,7 @@ CODES: dict[str, dict[str, str]] = {
         'phd': 'has a PHD finger',
     },
     'flag': {
-        'one_sided_window': "the site's only records are windows that match the entry exactly on one side of the reported arginine (at least 6 residues, the arginine included) and not on the other, and no other reviewed entry holds the window. Some come from another isoform of the protein. The pipeline leaves these records unplaced: the site is kept, and left out of the analyses, until the policy is decided",
+        'one_sided_window': "the site's only records are windows that match the entry exactly on one side of the reported arginine (at least 6 residues, the arginine included) and not on the other, and no other reviewed entry holds the window. Some come from another isoform of the protein. These records are left unplaced: the site is listed, flagged, and left out of the analyses, as its window may come from another isoform",
         'paralog_window': 'a supporting window or peptide matches another reviewed entry exactly and this entry within 2 residues (open, accepted in config/remap_evidence_allowlist.tsv). The other entry is a paralog, except at RBM39 R109, where a 6-residue peptide differs from RBM39 only at an isobaric I/L and also occurs in CCDC13',
         'near_match_only': 'every supporting record matches the entry within 2 residues, not exactly (a variant or sequence conflict)',
         'arginine_from_position': 'the evidence of every supporting record covers other arginines of the entry too (a peptide with several arginines, or a window or peptide found more than once): the positions the sources report pick this one (evidence_check agrees_reported_arginine)',
@@ -436,7 +436,7 @@ CODES: dict[str, dict[str, str]] = {
         'evidence_mismatch': 'the previous version kept the reported arginine although the source peptide or window does not match the entry there',
         'window_padding': 'the window is padded where it runs off a protein end. The padding now gives the cut side',
         'ambiguous_evidence': 'the evidence supports several sites equally. This version leaves the record unplaced',
-        'one_sided_window': 'the site is kept pending a decision (flag one_sided_window)',
+        'one_sided_window': 'the site is listed but left out of the analyses (flag one_sided_window)',
         'reference_renumbered': 'the same residue under a new number: UniProt 2026_03 extends the sequence at the N-terminus (RAB12, +96)',
         'new_record': 'a source record this version reads for the first time (a study table read for the first time) supports the site',
         'not_localised': 'the source gives nothing that localises the methyl group to one residue (a compiled record, or a study without localisation scores whose peptide leaves several residues): this version places only localised records',
@@ -780,7 +780,7 @@ CARM1_COLUMNS = [
     ('n_multi_site_peptides', 'integer', '', 'of the peptides, those carrying another methylarginine too'),
     ('call', 'code', 'call', 'a peptide decreases at log2 <= -1 and q < 0.05, increases at log2 >= 1 and q < 0.05, combined over the peptides carrying the site by the shared rule (scripts/peptide_calls.py): peptide-level evidence'),
     ('call_single_site_peptides', 'code', 'call', 'the same over the peptides carrying no other methylarginine; empty when every peptide carries another'),
-    ('call_source_rule', 'code', 'call', 'the call by the source study\'s rule (twofold at nominal p < 0.05; Shishkova et al. 2017), for comparison'),
+    ('call_published', 'code', 'call', 'the published call: twofold at nominal p < 0.05 (Shishkova et al. 2017)'),
 ]
 
 CODES['analysis'] = {
