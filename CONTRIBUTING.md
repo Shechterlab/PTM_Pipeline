@@ -21,8 +21,10 @@ The archive branches point at:
 | `release/v1.3.1` | the commit that published `releases/v1.3.1/` (the corrections after the review of v1.3.0) |
 | `release/v1.4.0` | the commit that published `releases/v1.4.0/` (the Lu 2024 sites and five annotation layers) |
 
-Older names are kept for their links and may be deleted: `release-v1.1.0` (merged into `main`), `v1.0.0_archive` (the
-repository before the reorganisation; the README links it), `inputs-april-2026-update` and the `claude/*` branches.
+Older branches were kept as tags and deleted on 26 October 2026: `v1.0.0_archive` (the repository before the
+reorganisation; the README and the website link it), `archive/inputs-april-2026-update` (the frozen pipeline inputs of
+April 2026), and `archive/claude/epic-franklin-oni9ft` and `archive/claude/awesome-thompson-7j9n92` (work before the
+v1.1.0 reorganisation). `release-v1.1.0` was merged into `main` and deleted.
 
 ## Making a change
 
