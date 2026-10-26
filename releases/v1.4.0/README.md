@@ -44,7 +44,7 @@ Every site has its sequence, methylation evidence, structural context, the studi
 | `supporting/condensates_v1.4.0.tsv` | CD-CODE condensate: name, type, members and methylated members |
 | `supporting/hpa_locations_v1.4.0.tsv` | protein and Human Protein Atlas location |
 | `supporting/other_ptm_sites_v1.4.0.tsv` | other modification on a protein of the release (PTM master table) |
-| `supporting/writer_perturbations_v1.4.0.tsv` | site and knockout, knockdown or inhibitor (PRMT1, PRMT5, PRMT7, CARM1): its peptides, change, and the call by the release's rule and by the study's |
+| `supporting/writer_perturbations_v1.4.0.tsv` | site and knockout, knockdown or inhibitor (PRMT1, PRMT5, PRMT7, CARM1): its peptides, change, and the twofold, q < 0.05 and published calls |
 | `supporting/functional_experiments_v1.4.0.tsv` | curated experiment on a site or a protein's methylation: perturbation, readout, direction and reference (kept apart from every statistic) |
 | `data_dictionary.tsv` | column of every table, with its codes and their meanings |
 | `release.json` | the release: version, counts, reference, inputs, files with MD5 |
@@ -90,7 +90,7 @@ The annotation and interaction sources keep their own terms too (`licence` in `i
 
 ## How it was built
 
-`bash hpc/build_release.sh v1.4.0` at commit `42b71c856b6a7d99e92a641dfcf0160e4c0a342c` of https://github.com/Shechterlab/PTM_Pipeline:
+`bash hpc/build_release.sh v1.4.0` at commit `c0cc84513706044724e6a74269771af72c6368f5` of https://github.com/Shechterlab/PTM_Pipeline:
 
 1. checks every input against `inputs/MANIFEST.tsv`;
 2. parses the source tables and places each record on the reference sequence (`scripts/02_remap_arg_methyl_to_canonical.py`);
@@ -113,7 +113,7 @@ Data from other resources, joined to the sites and proteins by accession and pos
 | CARM1 knockout response (Shishkova et al. 2017) | `41_stage_carm1_ko_sites.py` | site column `carm1_ko_call` and `supporting/carm1_ko` (scripts/build_release.py) | CC BY 4.0 |
 | Human Protein Atlas 25.1 subcellular locations | `42_stage_hpa_subcellular.py` | protein column `hpa_locations`, `supporting/hpa_locations` and analysis `hpa_location` (scripts/release_tables.py) | CC BY 4.0 |
 | Cancer cell lines and tumours | `44b_extract_tcga_mc3.py`, `44_stage_depmap.py` | site columns `tcga_changes`, `tcga_change_tumours`, `depmap_changes`, `depmap_change_lines`; protein columns `depmap_gene_effect_median`, `depmap_lines_screened`, `depmap_dependent_lines`, `depmap_dependency_class`; analyses `depmap_dependency`, `cancer_change` in the statistics table | DepMap Public 24Q4 and PRISM Repurposing 24Q2: CC BY 4.0; TCGA MC3 calls: GDC open-access data (NIH Genomic Data Sharing policy, no licence stated) |
-| Writer perturbations (PRMT knockouts, knockdowns and inhibitors) | `41_stage_carm1_ko_sites.py`, `45_stage_prmt7_szewczyk2020.py`, `46_stage_hartel2019_prmt1_kd.py`, `51_stage_lu2024_prmt5.py`, `50_stage_li2021_perturbations.py` | site columns `perturbations`, `perturbation_calls`, `perturbation_calls_release_rule`, `perturbation_calls_source_rule`; supporting tables `supporting/writer_perturbations` | CC BY 4.0 (Shishkova et al. 2017; Szewczyk et al. 2020; Hartel et al. 2019, from 2020-09-15; Li et al. 2021, its Supplementary Data taken as covered by the article's licence); CC BY-NC 4.0 (Lu et al. 2024 supporting information) |
+| Writer perturbations (PRMT knockouts, knockdowns and inhibitors) | `41_stage_carm1_ko_sites.py`, `45_stage_prmt7_szewczyk2020.py`, `46_stage_hartel2019_prmt1_kd.py`, `51_stage_lu2024_prmt5.py`, `50_stage_li2021_perturbations.py` | site columns `perturbations`, `perturbation_calls`, `perturbation_calls_twofold_q05`, `perturbation_calls_published`; supporting tables `supporting/writer_perturbations` | CC BY 4.0 (Shishkova et al. 2017; Szewczyk et al. 2020; Hartel et al. 2019, from 2020-09-15; Li et al. 2021, its Supplementary Data taken as covered by the article's licence); CC BY-NC 4.0 (Lu et al. 2024 supporting information) |
 | PaxDb 6.1 protein abundance | `47_stage_paxdb.py` | protein columns `paxdb_abundance_ppm`, `paxdb_percentile` | CC BY 4.0 |
 | Reactome 97 pathways | `48_stage_reactome.py` | protein columns `reactome_top_level`, `reactome_n_pathways`; analyses `reactome_pathway`, `reactome_top_level` in the statistics table | CC0 (Reactome data; reactome.org/license) |
 | Curated functional experiments | `49_check_functional_curation.py` | supporting tables `supporting/functional_experiments` | CC BY-NC-SA 4.0 (this repository's data licence); the facts are from the papers cited |
@@ -186,9 +186,9 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `depmap_changes` | list&lt;string&gt; | missense and stop changes of the arginine in DepMap 24Q4 cell lines (OmicsSomaticMutations, on the canonical UniProt isoform), most lines first. |
 | `depmap_change_lines` | list&lt;integer&gt; | for each of these changes, the cell lines with it, same order. |
 | `perturbations` | list&lt;code&gt; | the knockouts, knockdowns and inhibitors that quantified a peptide carrying the site (or, for one that lists only its changed sites, listed it), in code order (supporting/writer_perturbations). Codes: `carm1_ko_mcf7`, `carm1_ko_mdamb231`, `prmt7_ko_hct116`, `prmt1_kd_hek293t`, `prmt5i_epz015666_hela`, `prmt7_kd_hek293`, `prmt7i_sgc3027_hek293`, `carm1_kd_hek293`, `prmt5_kd_hek293`. |
-| `perturbation_calls` | list&lt;code&gt; | for each of them, the call by the rule its code names (the release's, |log2| >= 1 at q < 0.05, unless the study's is primary): peptide-level evidence, same order. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
-| `perturbation_calls_release_rule` | list&lt;code&gt; | for each of them, the call by the release's rule, same order. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
-| `perturbation_calls_source_rule` | list&lt;code&gt; | for each of them, the call by the study's own rule, same order. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
+| `perturbation_calls` | list&lt;code&gt; | for each of them, the call (twofold at q < 0.05, or the published call where its code says so): peptide-level evidence, same order. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
+| `perturbation_calls_twofold_q05` | list&lt;code&gt; | for each of them, the call at |log2| >= 1 and q < 0.05, same order. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
+| `perturbation_calls_published` | list&lt;code&gt; | for each of them, the published call, same order. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
 | `n_studies` | integer | number of studies or databases reporting the site. |
 | `studies` | list&lt;code&gt; | the studies or databases reporting the site, in the order of the studies file, PhosphoSitePlus is PSP, as its terms ask. Codes: see `data_dictionary.tsv`. |
 | `study_dois` | list&lt;string&gt; | their DOIs, in the same order. |
@@ -316,9 +316,9 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `depmap_changes` | list&lt;string&gt; | missense and stop changes of the arginine in DepMap 24Q4 cell lines (OmicsSomaticMutations, on the canonical UniProt isoform), most lines first. |
 | `depmap_change_lines` | list&lt;integer&gt; | for each of these changes, the cell lines with it, same order. |
 | `perturbations` | list&lt;code&gt; | the knockouts, knockdowns and inhibitors that quantified a peptide carrying the site (or, for one that lists only its changed sites, listed it), in code order (supporting/writer_perturbations). Codes: `carm1_ko_mcf7`, `carm1_ko_mdamb231`, `prmt7_ko_hct116`, `prmt1_kd_hek293t`, `prmt5i_epz015666_hela`, `prmt7_kd_hek293`, `prmt7i_sgc3027_hek293`, `carm1_kd_hek293`, `prmt5_kd_hek293`. |
-| `perturbation_calls` | list&lt;code&gt; | for each of them, the call by the rule its code names (the release's, |log2| >= 1 at q < 0.05, unless the study's is primary): peptide-level evidence, same order. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
-| `perturbation_calls_release_rule` | list&lt;code&gt; | for each of them, the call by the release's rule, same order. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
-| `perturbation_calls_source_rule` | list&lt;code&gt; | for each of them, the call by the study's own rule, same order. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
+| `perturbation_calls` | list&lt;code&gt; | for each of them, the call (twofold at q < 0.05, or the published call where its code says so): peptide-level evidence, same order. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
+| `perturbation_calls_twofold_q05` | list&lt;code&gt; | for each of them, the call at |log2| >= 1 and q < 0.05, same order. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
+| `perturbation_calls_published` | list&lt;code&gt; | for each of them, the published call, same order. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
 | `n_studies` | integer | number of studies or databases reporting the site. |
 | `studies` | list&lt;code&gt; | the studies or databases reporting the site, in the order of the studies file, PhosphoSitePlus is PSP, as its terms ask. Codes: see `data_dictionary.tsv`. |
 | `study_dois` | list&lt;string&gt; | their DOIs, in the same order. |
@@ -539,7 +539,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `n_multi_site_peptides` | integer | of the peptides, those carrying another methylarginine too. |
 | `call` | code | a peptide decreases at log2 <= -1 and q < 0.05, increases at log2 >= 1 and q < 0.05, combined over the peptides carrying the site by the shared rule (scripts/peptide_calls.py): peptide-level evidence. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`. |
 | `call_single_site_peptides` | code | the same over the peptides carrying no other methylarginine; empty when every peptide carries another. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`. |
-| `call_source_rule` | code | the call by the source study's rule (twofold at nominal p < 0.05; Shishkova et al. 2017), for comparison. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`. |
+| `call_published` | code | the published call: twofold at nominal p < 0.05 (Shishkova et al. 2017). Codes: `decreased`, `increased`, `mixed`, `no_significant_change`. |
 
 ### `supporting/site_interactions_v1.4.0.tsv`
 
@@ -880,14 +880,14 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `log2_treated_over_control` | number | median log2 perturbed / control over those peptides: descriptive, not the effect of a test. |
 | `p` | number | the lowest p value over the peptides, as the study gives it. |
 | `q` | number | the lowest q over the peptides: the study's adjusted p where it gives one, else its p adjusted here (Benjamini-Hochberg, within the comparison); empty when the study gives no p. |
-| `n_decreased` | integer | peptides called decreased by the rule `call` follows. |
-| `n_increased` | integer | peptides called increased by the rule `call` follows. |
+| `n_decreased` | integer | peptides called decreased by the criteria of `call`. |
+| `n_increased` | integer | peptides called increased by the criteria of `call`. |
 | `n_multi_site_peptides` | integer | of the peptides, those carrying another methylarginine too. |
-| `call` | code | the call: by the rule `call_rule` names (the perturbation's code says why); peptide-level evidence. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
-| `call_rule` | code | whose rule `call` follows. Codes: `release`, `study`. |
+| `call` | code | the call: `call_twofold_q05` or `call_published`, as `call_criteria` says (the perturbation's code says why); peptide-level evidence. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
+| `call_criteria` | code | which of the two calls `call` is. Codes: `twofold_q05`, `published`. |
 | `call_single_site_peptides` | code | the same over the peptides that carry no other methylarginine and whose one mark the search localised; empty when there are none. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
-| `call_release_rule` | code | the release's rule: a peptide changes at |log2| >= 1 and q < 0.05, combined over the peptides carrying the site (scripts/peptide_calls.py); not_tested where the study gives no p value. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
-| `call_source_rule` | code | the study's own rule (code perturbation); empty where the study makes no call (as for a dimethylated site in a monomethylation list). Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
+| `call_twofold_q05` | code | the same criteria for every perturbation: a peptide changes at |log2| >= 1 and q < 0.05, combined over the peptides carrying the site (scripts/peptide_calls.py); not_tested where the study gives no p value. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
+| `call_published` | code | by the published criteria (code perturbation); empty where the study makes no call (as for a dimethylated site in a monomethylation list). Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
 
 ### `supporting/functional_experiments_v1.4.0.tsv`
 

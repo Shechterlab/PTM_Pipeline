@@ -535,8 +535,8 @@ CARM1_Q_CUTOFF, CARM1_P_SOURCE, CARM1_LOG2_CUTOFF = 0.05, 0.05, 1.0   # BH q < 0
 def carm1_table(inputs: Path, site_ids: set) -> pd.DataFrame:
     """The CARM1 knockout response of each site and cell line, from the staged peptides (scripts/41): a peptide changes at
     |log2 KO/WT| >= 1 and BH q < 0.05 (the p values of Shishkova et al. 2017 Supplementary Data 1, adjusted over the
-    quantified peptides of each cell line), combined over the peptides carrying the site by the shared rule; the source
-    study's own rule (nominal p < 0.05) is kept beside it."""
+    quantified peptides of each cell line), combined over the peptides carrying the site by the shared rule; and the
+    published call (twofold at nominal p < 0.05)."""
     pep = read_tsv(inputs / INPUT['carm1_peptides'])
     pep = pep[pep['call'] != 'not_quantified'].copy()
     pep['log2'], pep['p'] = pep['log2_ko_wt'].astype(float), pep['p'].astype(float)
@@ -559,7 +559,7 @@ def carm1_table(inputs: Path, site_ids: set) -> pd.DataFrame:
                      'log2_ko_over_wt': round(res['log2_median'], 3), 'p': min(v[3] for v in vals), 'q': min(v[0] for v in vals),
                      'n_decreased': res['n_decreased'], 'n_increased': res['n_increased'],
                      'n_multi_site_peptides': res['n_multi_site_peptides'], 'call': res['call'],
-                     'call_single_site_peptides': res['call_single_site_peptides'], 'call_source_rule': nominal['call']})
+                     'call_single_site_peptides': res['call_single_site_peptides'], 'call_published': nominal['call']})
     out = pd.DataFrame(rows, columns=[c for c, *_ in rc.CARM1_COLUMNS])
     return out.assign(_s=out['site_id'].map(split_key)).sort_values(['_s', 'cell_line']).drop(columns='_s').reset_index(drop=True)
 

@@ -543,8 +543,7 @@ def write_changes(outdir: Path, ctx: dict, files: dict) -> None:
         'they come from a splice variant. '
         + (('Some are reported at another position, in the numbering of an isoform, and match one complete flank (15 '
             'residues and the arginine) here: ' + ', '.join(shifted) + '. ') if shifted else '')
-        + 'The pipeline leaves these records unplaced; the release keeps the sites, flagged and left out of every '
-        'analysis, until the policy is decided: '
+        + 'These records are left unplaced; the sites are listed, flagged and left out of every analysis: '
         + ', '.join(f"{g} R{split_key(s)[1]}" for g, s in zip(pending['gene'], pending['site_id'])) + '.',
         f"- **Paralog windows** ({c['flags'].get('paralog_window', 0)} sites, flag `paralog_window`): a window or "
         'peptide matches another reviewed entry exactly and the named entry within 2 residues. The other entry is a '
@@ -1012,7 +1011,7 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
     multi_only = inh_changed[inh_changed['call_single_site_peptides'].isin(['', 'no_significant_change'])]
     one_cond = inh_changed[num(inh_changed['n_one_condition_peptides']) == num(inh_changed['n_peptides'])]
     carm_changed = carm[carm['call'].isin(changed)]
-    carm_diff = int((carm['call'] != carm['call_source_rule']).sum())
+    carm_diff = int((carm['call'] != carm[next(c for c in ('call_published', 'call_source_rule') if c in carm.columns)]).sum())
     out = ['## Corrections after the review of v1.3.0', '',
            f'{ctx["version"]} keeps the sites, records and placements of {previous}. It changes how some evidence is called and '
            'described, after an outside review of v1.3.0.', '',

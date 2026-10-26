@@ -1,4 +1,4 @@
-site_id	cell_line	n_peptides	log2_ko_over_wt	p	q	n_decreased	n_increased	n_multi_site_peptides	call	call_single_site_peptides	call_source_rule
+site_id	cell_line	n_peptides	log2_ko_over_wt	p	q	n_decreased	n_increased	n_multi_site_peptides	call	call_single_site_peptides	call_published
 A0AV96:R394	MCF7	2	0.028	0.0506157	0.0588327	0	0	1	no_significant_change	no_significant_change	no_significant_change
 A0AV96:R394	MDA-MB-231	1	0.08	0.154776	0.195213	0	0	0	no_significant_change	no_significant_change	no_significant_change
 A0AV96:R405	MCF7	1	0.254	0.0506157	0.0588327	0	0	1	no_significant_change		no_significant_change
