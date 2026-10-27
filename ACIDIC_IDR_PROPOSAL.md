@@ -61,11 +61,15 @@ but not study coverage; the tract rule is a convention, hence the sweep; disorde
 
 ## Recommendation: a layer here first, a separate site later
 
-*Decided 27 October 2026:* a broader IDR Explorer is built now, in `docs/` of MicroDomains (branch
-`ccr-b90e3503-xnxh85`, `Analysis/scripts/build_idr_explorer.py`). It reads this repository's reference, disorder,
-InterPro rows, methylarginine release and iPTMnet table, and calls its code (`scripts/36c`, `scripts/09`,
-`common.parse_fasta`) rather than copying it; this repository keeps the staging below, so the work packages still apply
-and the site picks up each new layer on its next build. The reasons first given for waiting:
+*Decided 27 October 2026:* a broader IDR Explorer is built now, as its own public repository,
+[Shechterlab/idr-explorer](https://github.com/Shechterlab/idr-explorer) (site in `docs/`, with `idrkit`, the sequence
+definitions MicroDomains and glu_proteomics share). Its data are built by MicroDomains
+(`Analysis/scripts/build_idr_explorer.py`), which reads this repository's reference, disorder, InterPro rows,
+methylarginine release, iPTMnet table, UniProt modified residues (`scripts/53`) and PTMeXchange sites (`scripts/54`),
+and calls its code (`scripts/36c`, `scripts/09`, `common.parse_fasta`) rather than copying it. This repository keeps
+the staging below, so the work packages still apply and the site picks up each new layer on its next build. The public
+data that could be staged next, with licences and URLs, are surveyed in `PUBLIC_DATA_SURVEY.md`.
+The reasons first given for waiting:
 
 - **The data are the bottleneck, not the viewer.** UniProt annotates polyglutamylation at 19 human sites (below), and a
   search found no proteome-scale table of glutamylation sites to stage (van Dijk et al. 2008 screened for substrate
@@ -85,7 +89,8 @@ repository.
 
 ## Work packages on `feature/acidic-idr`
 
-1. **UniProt modified residues, all of them.** Stage every MOD_RES of the reference release (2026_03) the way
+1. **UniProt modified residues, all of them.** *Staged: `scripts/53_stage_uniprot_mod_res.py` (2026_03; 55,484
+   rows; 184 sites on 95 entries name CK2 among their kinases).* Stage every MOD_RES of the reference release (2026_03) the way
    `scripts/00_stage_uniprot_methylarginine.py` stages the methylarginines (CC BY 4.0, `git`): accession, position,
    residue, term, class (phospho, acetyl, glutamyl, glycyl, ADP-ribosyl, citrulline, ...), the kinase UniProt names
    ("Phosphoserine; by CK2"), evidence code and class. Counts in the current UniProt release (reviewed human, queried
@@ -115,7 +120,8 @@ repository.
    (within protein, as the release's residue tests are done).
 5. **Website.** A map row of acidic tracts; one row for glutamylation, ADP-ribosylation and citrullination; CK2 marked
    on the phosphorylation row; the layer's statistics in its `meta.json`. Bump `?v=` in `docs/index.html`.
-6. **For MicroDomains.** The other-PTM sites, with source, enzyme and evidence, as a supporting table of the release, so
+6. **For MicroDomains.** *Half done: MicroDomains now rescored its acidic pole on all 121,444 flanks and reads an
+   export it checks against `inputs/MANIFEST.tsv` MD5s; the supporting table of the release is still to make.* The other-PTM sites, with source, enzyme and evidence, as a supporting table of the release, so
    MicroDomains reads a version rather than an export; then rescore its acidic pole on the full-proteome flanks.
 
 ## Decisions for the lab
