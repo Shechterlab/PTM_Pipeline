@@ -1542,6 +1542,9 @@
       'q is the Benjamini–Hochberg adjusted p value over the sets of one chart (each level of a nested chart, and the additional disease families apart). A set is tested when it has at least one methylated member and its size is within the chart\'s range. The test is for over-representation, so a bar below zero is not significant. ' +
       'Backgrounds: the reviewed human proteome (protein classes, Gene Ontology binding, complexes), the proteins in any human CD-CODE condensate (condensates), the proteins the Human Protein Atlas profiled (locations), and the reviewed human genes with a Disease Ontology term or with a DisGeNET term (disease, as in DOSE). ' +
       'The sites were reported by studies, not sampled, so well-studied and abundant proteins are over-represented among the methylated ones, and a set rich in them can look enriched for that reason alone (Guardrails). ' +
+      (M.abundance_strata ? 'So each of these tests is also repeated within abundance deciles (from v1.4.1): the proteins of its background are split into the ten deciles of PaxDb 6.1 abundance, plus one group without a value, and the Mantel–Haenszel odds ratio over the groups (95% CI, Cochran–Mantel–Haenszel test, BH within each chart) asks whether the set is more frequent among the methylated proteins than among other proteins of similar abundance. ' +
+        'The mark after a bar gives the result for the whole dataset (✓ more than expected, ○ no difference, ▼ fewer), the hover the numbers, the chart\'s TSV the columns; a selection\'s retests are not adjusted. ' +
+        'The rows are in the release statistics table (method mantel_haenszel; scripts/abundance_strata.py), and for the condensates counted at a CD-CODE confidence in the interaction data, as their tests are. Abundance matching does not remove the other differences in detection (length, digestion, antibodies). ' : '') +
       'Every tested set, with k, n, M, N, fold enrichment, p and q, is in the release statistics table (method enricher; scripts/enrich_sets.R)' + (ver ? '; ' + ver : '') + '. ' +
       'Documentation: <a href="' + ORA_DOCS + '" target="_blank" rel="noopener">over-representation analysis in clusterProfiler ↗</a>, <a href="https://bioconductor.org/packages/clusterProfiler/" target="_blank" rel="noopener">clusterProfiler ↗</a> and <a href="https://bioconductor.org/packages/DOSE/" target="_blank" rel="noopener">DOSE ↗</a> (Bioconductor).</p>';
   }
@@ -3617,17 +3620,17 @@
     return heads + '<div class="hbars' + cls + '" role="list">' + rows.map((r, k) => {
       const v = r.value == null ? 0 : r.value;
       const a = sc.xp(Math.min(0, v)), b = sc.xp(Math.max(0, v));
-      return (r.head ? '<div class="hb-head" role="presentation">' + esc(r.head) + '</div>' : '') + '<button class="hb' + (r.sub ? ' sub' : '') + (r.depth === 2 ? ' sub2' : '') + (r.extraRow ? ' extra-row' : '') + (spec.sel && !r.sel ? ' off' : '') + (r.noClick ? ' noclick' : '') + '" type="button" role="listitem" data-k="' + k + '"' + (r.noClick ? ' aria-disabled="true"' : '') + ' aria-label="' + esc(r.label + (r.note ? ' (' + r.note + ')' : '') + ': ' + (spec.valueLabel || (spec.fold ? 'log2 fold enrichment' : 'log2 OR')) + ' ' + vfmt(r.value) + (spec.noSig ? '' : sameFx(spec, r) ? ', significant but within ' + minEffect() + '×, about the same' : r.sig ? ', significant' : ', not significant') + (spec.sel && r.sel != null ? ', ' + r.sel + ' selected ' + spec.sel.unit : '')) + '">' +
+      return (r.head ? '<div class="hb-head" role="presentation">' + esc(r.head) + '</div>' : '') + '<button class="hb' + (r.sub ? ' sub' : '') + (r.depth === 2 ? ' sub2' : '') + (r.extraRow ? ' extra-row' : '') + (spec.sel && !r.sel ? ' off' : '') + (r.noClick ? ' noclick' : '') + '" type="button" role="listitem" data-k="' + k + '"' + (r.noClick ? ' aria-disabled="true"' : '') + ' aria-label="' + esc(r.label + (r.note ? ' (' + r.note + ')' : '') + ': ' + (spec.valueLabel || (spec.fold ? 'log2 fold enrichment' : 'log2 OR')) + ' ' + vfmt(r.value) + (spec.noSig ? '' : sameFx(spec, r) ? ', significant but within ' + minEffect() + '×, about the same' : r.sig ? ', significant' : ', not significant') + (spec.sel && r.sel != null ? ', ' + r.sel + ' selected ' + spec.sel.unit : '') + (adjMark(spec, r) ? '; within abundance deciles: ' + ABUND[adjMark(spec, r)][1] : '')) + '">' +
         '<span class="hb-label">' + esc(r.label) + (r.note ? '<span class="hb-note">' + esc(r.note) + '</span>' : '') + '</span>' + (spec.extraCol ? '<span class="hb-extra">' + esc(r.extra || '') + '</span>' : '') +
         '<span class="hb-track"><span class="hb-zero" style="left:' + sc.xp(0).toFixed(2) + '%"></span>' +
         '<span class="hb-bar' + (r.sig || spec.noSig ? '' : ' ns') + (sameFx(spec, r) ? ' same' : '') + (v < 0 ? ' neg' : '') + (spec.selTest ? ' sel-bar' : '') + '" style="left:' + a.toFixed(2) + '%;width:' + (r.value == null ? 0 : Math.max(0.6, b - a)).toFixed(2) + '%"></span>' +
         (spec.selTest && r.ref != null ? '<span class="hb-ref" style="left:' + sc.xp(r.ref).toFixed(2) + '%"></span>' : '') + '</span>' +
-        '<span class="hb-val">' + vfmt(r.value) + '</span>' + (spec.sel ? selCell(r.sel) : '') + '</button>';
+        '<span class="hb-val">' + vfmt(r.value) + (adjMark(spec, r) ? '<i class="hb-adj ' + adjMark(spec, r) + '" aria-hidden="true">' + ABUND[adjMark(spec, r)][0] + '</i>' : '') + '</span>' + (spec.sel ? selCell(r.sel) : '') + '</button>';
     }).join('') + '</div>' +
       '<div class="hb-axis' + cls + '" aria-hidden="true"><span></span>' + (spec.extraCol ? '<span></span>' : '') + '<span class="ticks">' + sc.ticks.map((t, i) => '<span style="left:' + sc.xp(t).toFixed(2) + '%">' + (tickShown(spec, sc, i) ? tfmt(t) : '') + '</span>').join('') + '</span><span></span>' + (spec.sel ? '<span></span>' : '') + '</div>' +
       (spec.treeNote && rows.some((r) => r.sub) ? '<p class="chart-tree-note">' + spec.treeNote + '</p>' : '') +
       '<div class="chart-key">' + (spec.selTest ? '<span class="sel-test-key"><b>Your selection:</b>&nbsp;' + esc(selTestText(spec.selTest)) + '</span><span><i class="ref"></i>whole dataset</span>' : '') +
-      (spec.noSig ? '' : sigKey(spec).map(([c, l]) => '<span><i' + (c ? ' class="' + c + '"' : '') + '></i>' + l + '</span>').join('')) + (spec.sel ? selKeyHtml(spec.sel) : '') + '<span>' + esc(chartAxis(spec)) + '</span></div>';
+      (spec.noSig ? '' : sigKey(spec).map(([c, l]) => '<span><i' + (c ? ' class="' + c + '"' : '') + '></i>' + l + '</span>').join('')) + (spec.sel ? selKeyHtml(spec.sel) : '') + (spec.adj && !spec.selTest ? '<span class="adj-key">' + ADJ_KEY + '</span>' : '') + '<span>' + esc(chartAxis(spec)) + '</span></div>';
   }
   // The selection's count in a bar (orange dot, as the Filtered flag), blank where none of it is there.
   const selCell = (n) => '<span class="hb-sel">' + (n ? '<i></i>' + fmt(n) : '') + '</span>';
@@ -3679,6 +3682,41 @@
       ': the bar is log2 fold enrichment, (k/n) ÷ (M/N); filled bars have Benjamini–Hochberg q ≤ 0.05.' + docLink('overview') +
       ' · <a href="' + ORA_DOCS + '" target="_blank" rel="noopener">clusterProfiler documentation ↗</a></p>';
   }
+
+  // Protein-set tests within PaxDb abundance deciles (release statistics, method mantel_haenszel; scripts/abundance_strata.py),
+  // for the whole dataset: mass spectrometry finds abundant proteins most, so a set rich in them can look enriched among
+  // the methylated proteins whatever methylation does. withAbundance gives a chart's rows the test (r.adj) for their
+  // hover text, a mark after the value (whole dataset only: none while a selection retests the chart) and TSV columns.
+  // [log2 OR, log2 CI low, log2 CI high, q] as the exports write it (±99: an odds ratio of infinity or 0) -> the test
+  const abundTest = (r) => (r ? { l2: r[0] != null && Math.abs(r[0]) >= 99 ? Math.sign(r[0]) * Infinity : r[0], lo: r[1], hi: r[2], q: r[3] } : null);
+  const abundanceOf = (analysis, category) => abundTest(M.abundance_strata && M.abundance_strata[analysis] && M.abundance_strata[analysis][category]);
+  const abundDir = (a) => (a.q != null && a.q <= PADJ && a.l2 != null ? (a.l2 > 0 ? 'up' : 'down') : 'ns');
+  const ABUND = { up: ['✓', 'more than expected'], ns: ['○', 'no difference'], down: ['▼', 'fewer than expected'] };
+  const abundOr = (a) => (a.l2 == null ? '–' : a.l2 === Infinity ? '∞' : a.l2 === -Infinity ? '0' : fx(Math.pow(2, a.l2)));
+  const abundText = (a) => 'OR ' + abundOr(a) + (a.lo != null && a.hi != null ? ' (95% CI ' + fx(Math.pow(2, a.lo)) + '–' + fx(Math.pow(2, a.hi)) + ')' : '') +
+    (Number.isFinite(a.l2) || a.l2 == null ? '' : a.l2 > 0 ? ' (every member methylated)' : ' (no member methylated)') + ', q ' + fmtP(a.q) + ': ' + ABUND[abundDir(a)][1];
+  const abundTsv = (v) => (v == null ? '' : v === Infinity ? 'inf' : v === -Infinity ? '-inf' : v);
+  // withAbundance(spec, analysis of a row, its category in the release statistics (default its label)), or with
+  // testOf(row) giving the test directly (withAbundanceOf)
+  const withAbundance = (spec, analysisOf, categoryOf) => (M.abundance_strata ? withAbundanceOf(spec, (r) => abundanceOf(analysisOf(r), categoryOf ? categoryOf(r) : r.label)) : spec);
+  function withAbundanceOf(spec, testOf) {
+    if (!spec) return spec;
+    for (const r of spec.rows) {
+      const a = testOf(r);
+      if (!a) continue;
+      r.adj = a;
+      r.title = (r.title || '') + '<br><b>Within abundance deciles</b> (whole dataset, PaxDb 6.1): ' + abundText(a);
+    }
+    if (!spec.rows.some((r) => r.adj)) return spec;
+    spec.adj = true;
+    spec.tsvCols = (spec.tsvCols || []).concat([['abundance_deciles_log2_odds_ratio', (r) => (r.adj ? abundTsv(r.adj.l2) : '')],
+      ['abundance_deciles_log2_ci_low', (r) => (r.adj && r.adj.lo != null ? r.adj.lo : '')], ['abundance_deciles_log2_ci_high', (r) => (r.adj && r.adj.hi != null ? r.adj.hi : '')],
+      ['abundance_deciles_q', (r) => (r.adj && r.adj.q != null ? r.adj.q : '')]]);
+    return spec;
+  }
+  // the mark after a row's value: shown where either test is significant, and not while a selection retests the chart
+  const adjMark = (spec, r) => (spec.adj && !spec.selTest && r.adj && ((r.sig && r.value > 0) || abundDir(r.adj) !== 'ns') ? abundDir(r.adj) : '');
+  const ADJ_KEY = 'Within abundance deciles: ✓ more than expected · ○ no difference · ▼ fewer';
 
   // Words of a chart's significance key, the same on the page and in its exports.
   // Protein-set charts with fold enrichment (spec.fold) test for enrichment only (one-sided), so they have no depleted key.
@@ -3745,7 +3783,7 @@
       g += '<rect x="' + r1(a) + '" y="' + r1(y + 11 - bh / 2) + '" width="' + r1(Math.max(1, b - a)) + '" height="' + bh + '" rx="2" fill="' + (ns ? pal.bg : fill) + '" stroke="' + fill + '" stroke-width="' + (ns ? 1.4 : 0) + '"' +
         (r.extraRow || depth === 2 ? ' fill-opacity="' + (depth === 2 ? 0.55 : 0.7) + '"' : '') + '/>';
       if (spec.selTest && r.ref != null) g += '<line x1="' + r1(X(r.ref)) + '" x2="' + r1(X(r.ref)) + '" y1="' + r1(y + 11 - bh / 2 - 3) + '" y2="' + r1(y + 11 + bh / 2 + 3) + '" stroke="' + pal.ink + '" stroke-width="2"/>';
-      g += '<text x="' + (W - selW - 16) + '" y="' + (y + 14) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="end">' + esc(r.value == null ? '–' : vfmt(r.value)) + '</text></g>';
+      g += '<text x="' + (W - selW - 16) + '" y="' + (y + 14) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="end">' + esc(r.value == null ? '–' : vfmt(r.value) + (adjMark(spec, r) ? ' ' + ABUND[adjMark(spec, r)][0] : '')) + '</text></g>';
       if (spec.sel && r.sel) g += '<circle cx="' + (W - selW - 4) + '" cy="' + (y + 11) + '" r="3.5" fill="' + pal.accent + '"/><text x="' + (W - 16) + '" y="' + (y + 14) + '" font-size="10.5" font-weight="700" fill="' + pal.accent + '" text-anchor="end">' + fmt(r.sel) + '</text>';
     });
     const ay = bottom + 16;
@@ -3759,6 +3797,7 @@
     const swatch = { '': SWATCH.fill(pal.up[3]), neg: SWATCH.fill(pal.down[3]), same: SWATCH.fill(pal.muted),
       ns: (a, b) => '<rect x="' + r1(a) + '" y="' + r1(b - 5) + '" width="20" height="10" rx="2" fill="' + pal.bg + '" stroke="' + pal.muted + '" stroke-width="1.4"/>' };
     const items = spec.noSig ? [] : sigKey(spec).map(([c, l]) => [swatch[c], l]);
+    if (spec.adj && !spec.selTest) items.push([(a, b) => '<text x="' + r1(a + 10) + '" y="' + r1(b + 4) + '" font-size="11" text-anchor="middle" fill="' + pal.ink + '">✓</text>', ADJ_KEY]);
     if (spec.selTest) items.unshift([(a, b) => '<line x1="' + r1(a + 10) + '" x2="' + r1(a + 10) + '" y1="' + r1(b - 6) + '" y2="' + r1(b + 6) + '" stroke="' + pal.ink + '" stroke-width="2"/>', 'whole dataset; bars: your selection, ' + selTestText(spec.selTest)]);
     if (spec.sel) items.push([(a, b) => '<circle cx="' + r1(a + 10) + '" cy="' + r1(b) + '" r="3.5" fill="' + pal.accent + '"/>', spec.sel.noun + ', of ' + fmt(spec.sel.n) + ' (' + (spec.sel.what.length > 70 ? spec.sel.what.slice(0, 68) + '…' : spec.sel.what) + ')']);
     const key = items.length ? svgLegend(pal, items, 24, ny, W - 48, { fs: 10 }) : null;
@@ -3895,7 +3934,7 @@
     const thr = confTable && confTable[String(UI.condThr)] ? UI.condThr : 0;
     const condRow = (c) => (condBg === 'proteome' ? { l2: c[7], q: c[8] } : { l2: c[5], q: c[6] });
     const bySort = UI.condSort === 'fold' ? (a, b) => (b.l2 - a.l2) || (b.m - a.m) : (a, b) => (a.q - b.q) || (b.l2 - a.l2);
-    const condAll = (thr ? confTable[String(thr)].map(([k, n, m, l2, , q]) => ({ k, c: M.condensates[k], n, m, l2, q })) :
+    const condAll = (thr ? confTable[String(thr)].map(([k, n, m, l2, , q, ...adj]) => ({ k, c: M.condensates[k], n, m, l2, q, adj: adj.length >= 4 ? abundTest(adj) : null })) :
       M.condensates.map((c, k) => Object.assign({ k, c, n: c[3], m: c[4] }, condRow(c)))).filter((x) => x.l2 != null).sort(bySort);
     const cs = M.condensate_summary || {};
     const condShare = +cs.condensate_universe_proteins ? pct(+cs.methyl_proteins_in_any_condensate, +cs.condensate_universe_proteins) : null;
@@ -3913,7 +3952,7 @@
         (hasProteome && condShare && protShare ? '<br><span class="small muted">' + condShare + '% of condensate proteins are methylated, against ' + protShare + '% of all reviewed proteins: most condensates are enriched relative to the proteome, and few relative to other condensates.</span>' : '') + '<br>' + thrSel,
       tools: condTools,
       subText: 'CD-CODE condensates: methylated members vs ' + vsAll(bgName) + (thr ? ' (CD-CODE ' + ((IX && IX.meta && IX.meta.cdcode_version) || '') + ', confidence ≥ ' + thr + ')' : ' (pipeline CD-CODE export, all memberships)') + (UI.condSort === 'fold' ? ', by fold enrichment' : ', by q'), extraCol: true, extraName: 'methylated_of_members',
-      rows: condAll.map(({ c, k, n, m, l2, q }) => ({ label: condName(k), value: l2, q, sig: sigq(q), key: k, extra: m + '/' + n, allIn: n > 0 && m === n ? n : 0, note: n > 0 && m === n ? 'all ' + n + ' members methylated' : '',
+      rows: condAll.map(({ c, k, n, m, l2, q, adj }) => ({ label: condName(k), value: l2, q, sig: sigq(q), key: k, adjT: adj, extra: m + '/' + n, allIn: n > 0 && m === n ? n : 0, note: n > 0 && m === n ? 'all ' + n + ' members methylated' : '',
         title: '<b>' + esc(c[0]) + '</b> · CD-CODE ' + esc(c[1]) + (c[2] !== 'biomolecular' ? ' · ' + esc(c[2]) : '') + (condDrivers(k).length ? '<br>Drivers (methylated): ' + esc(condDrivers(k).join(', ')) : '') + '<br>' + m + ' of ' + n + ' counted members methylated (' + pct(m, n) + '%)' + (thr ? ' (confidence ≥ ' + thr + ')' : '') +
           '<br>Against ' + (condBg === 'proteome' ? 'all reviewed human proteins' : 'all proteins in any condensate') + ': ' + effName() + ' ' + fmtL2(l2) + ', q ' + fmtP(q) +
           (!thr && hasProteome ? '<br><span class="muted">' + (condBg === 'proteome' ? 'vs other condensates: ' + fmtL2(c[5]) + ', q ' + fmtP(c[6]) : 'vs the proteome: ' + fmtL2(c[7]) + ', q ' + fmtP(c[8])) + '</span>' : '') })),
@@ -4144,6 +4183,14 @@
       loadEvidence().then((ev) => { UI.evdWait = false; if (ev && ev.arginine_background) { UI.evd = ev; if (UI.view === 'overview') renderView(); } });
     }
     markSelection(study, 'sites', (r) => (s) => s.study & 2 ** r.key);
+    // Protein-set charts: each row's test within abundance deciles, whole dataset (withAbundance; the condensates with
+    // every membership counted, as the release tests them), then recomputed for the selection (selSetTest).
+    if (thr) withAbundanceOf(cond, (r) => r.adjT);
+    else withAbundance(cond, () => (condBg === 'proteome' ? 'condensate_proteome' : 'condensate'), (r) => M.condensates[r.key][1]);
+    withAbundance(loc, () => 'hpa_location');
+    withAbundance(pan, (r) => ({ g: 'panther_group', c: 'panther_class', s: 'panther_subclass' })[r.kind]);
+    withAbundance(func, (r) => (r.kind === 'sub' ? 'functional_subclass' : 'functional_class'), (r) => r.key);
+    withAbundance(fams, (r) => (r.audited ? 'disease_family' : 'disease_family_additional'), (r) => r.key);
     // Protein-set charts: recomputed for the selection against the same background (selSetTest).
     const reviewed = (p) => !p.unrev, proteomeN = (pantherMeta() && pantherMeta().universe) || +(cs.reviewed_proteome_proteins || 0);
     const condMember = (r) => (thr ? (p) => (cdMemberships(p) || []).some((c) => c.ci === r.key && c.score >= thr) : (p) => p.cond.includes(r.key));
@@ -10557,7 +10604,7 @@
   // proteins), retested for a selection against the same background (selSetTest), with its SVG, PNG and TSV exports.
   const DEP_CLASS_LABEL = { common_essential: 'Commonly essential', most_lines: 'Most lines (≥ 50%)', some_lines: 'Some lines (5–50%)', few_or_none: 'Few or none (< 5%)' };
   function dmClassSpec(G, scoped) {
-    const dm = DEPMAP.meta, st = new Map(dmStats('depmap_dependency').map((r) => [r.category, r]));
+    const dm = DEPMAP.meta, st = new Map(dmStats('depmap_dependency', 'enricher').map((r) => [r.category, r]));
     const codes = (dm.dependency_classes || []).map((c) => c[0]), help = new Map(dm.dependency_classes || []);
     const any = st.values().next().value, N = any ? any.a + any.b + any.c + any.d : G.acc.length;
     const rows = codes.map((code, ci) => {
@@ -10571,6 +10618,7 @@
     const spec = { id: 'ch-dep-cls', title: 'DepMap dependency class', fold: true, keepOrder: true, extraCol: true, extraName: 'methylated_of_screened', rows, N,
       subText: 'DepMap Public 24Q4 dependency classes, methylated proteins vs all ' + fmt(N) + ' screened reviewed proteins (one per gene); release statistics, analysis depmap_dependency',
       axis: 'log2 fold enrichment vs all screened proteins' };
+    withAbundance(spec, () => 'depmap_dependency', (r) => r.key);
     if (scoped) {
       const at = (p) => G.by.get(p.acc.split('-')[0]);
       selSetTest(spec, { N, inBg: (p) => at(p) != null, member: (r) => (p) => G.cls[at(p)] === String(r.ci), M: (r) => r.M, bg: 'screened proteins' });
@@ -10797,6 +10845,7 @@
     const spec = { id: 'ch-path-top', title: 'Reactome top-level pathways', fold: true, extraCol: true, extraName: 'methylated_of_pathway', rows, N, keepOrder: true,
       subText: 'Reactome 97 top-level pathways (a protein counts in every one it is in at any level), methylated proteins vs all ' + fmt(N) + ' reviewed proteins with a pathway; release statistics, analysis reactome_top_level',
       axis: 'log2 fold enrichment vs all proteins with a Reactome pathway' };
+    withAbundance(spec, () => 'reactome_top_level', (r) => r.key);
     if (scoped) selSetTest(spec, { N, inBg: (p) => !!RX.prot[p.acc.split('-')[0]], member: (r) => (p) => (RX.prot[p.acc.split('-')[0]] || []).includes(r.ti), M: (r) => r.M, bg: 'proteins with a Reactome pathway' });
     return spec;
   }
@@ -10814,12 +10863,22 @@
       if (th) th.innerHTML = top.length ? 'Most enriched: <b>' + esc(top[0].label) + '</b> (' + fx(2 ** top[0].value) + '×)' : 'No top-level pathway enriched';
       if (!box) return;
       const deep = layerStats(RX, 'reactome_pathway').slice().sort((x, y) => x.p - y.p).slice(0, 15);
+      // each listed pathway's test within PaxDb abundance deciles (whole dataset), as a mark and odds ratio
+      const adjCell = (id) => {
+        const a = abundanceOf('reactome_pathway', id);
+        if (!a) return '<td class="num muted">–</td>';
+        const d = abundDir(a);
+        return '<td class="num" title="' + esc('Within abundance deciles (PaxDb 6.1): ' + abundText(a)) + '"><i class="hb-adj ' + d + '">' + ABUND[d][0] + '</i> ' + abundOr(a) + '</td>';
+      };
+      const adjCol = deep.some((r) => abundanceOf('reactome_pathway', r.category));
       box.innerHTML = '<div class="pa-chart"><div class="fig-head"><span class="flabel">' + esc(spec.title) + '</span>' + expButtons(spec.id) + '</div>' + hbars(spec) + oraNote(spec) + '</div>' +
         (deep.length ? '<p class="flabel">Pathways below the top level, whole dataset <span class="muted">(the ' + deep.length + ' with the lowest p of the ' + fmt(layerStats(RX, 'reactome_pathway').length) + ' at q ≤ ' + RX.listed_q + '; pathways of ' + RX.sizes[0] + '–' + RX.sizes[1] + ' proteins tested)</span></p>' +
-          '<div class="tbl-wrap"><table><thead><tr><th>Pathway</th><th>Top level</th><th class="num">Methylated</th><th class="num">Fold</th><th class="num">q</th></tr></thead><tbody>' +
-          deep.map((r) => { const w = RX.pathways[r.category] || [r.category, '', 0]; return '<tr><td><a href="https://reactome.org/content/detail/' + encodeURIComponent(r.category) + '" target="_blank" rel="noopener">' + esc(w[0]) + '</a></td><td class="small">' + esc(w[1]) + '</td><td class="num">' + ofTotal(r.a, r.a + r.c) + '</td><td class="num">' + fx(r.fold_enrichment) + '</td><td class="num">' + fmtP(r.q) + '</td></tr>'; }).join('') +
+          '<div class="tbl-wrap"><table><thead><tr><th>Pathway</th><th>Top level</th><th class="num">Methylated</th><th class="num">Fold</th><th class="num">q</th>' +
+          (adjCol ? '<th class="num" title="Mantel–Haenszel odds ratio within PaxDb abundance deciles; ✓ more than expected, ○ no difference, ▼ fewer (q ≤ ' + PADJ + ')">Within abundance deciles</th>' : '') + '</tr></thead><tbody>' +
+          deep.map((r) => { const w = RX.pathways[r.category] || [r.category, '', 0]; return '<tr><td><a href="https://reactome.org/content/detail/' + encodeURIComponent(r.category) + '" target="_blank" rel="noopener">' + esc(w[0]) + '</a></td><td class="small">' + esc(w[1]) + '</td><td class="num">' + ofTotal(r.a, r.a + r.c) + '</td><td class="num">' + fx(r.fold_enrichment) + '</td><td class="num">' + fmtP(r.q) + '</td>' + (adjCol ? adjCell(r.category) : '') + '</tr>'; }).join('') +
           '</tbody></table></div>' : '') +
-        '<p class="small muted">Methylated proteins are much more abundant than the others (PaxDb), and mass spectrometry finds abundant proteins most, so pathways of abundant proteins are expected to be enriched whatever methylation does. Pathways nest, so neighbouring tests share proteins.</p>' +
+        '<p class="small muted">Methylated proteins are much more abundant than the others (PaxDb), and mass spectrometry finds abundant proteins most, so pathways of abundant proteins are expected to be enriched whatever methylation does. ' +
+          (adjCol || spec.adj ? 'The marks repeat each test within PaxDb abundance deciles (Mantel–Haenszel, whole dataset): ✓ more than expected, ○ no difference, ▼ fewer. ' : '') + 'Pathways nest, so neighbouring tests share proteins.</p>' +
         '<p class="note small">Reactome release 97 (' + doiLink('10.1093/nar/gkaf1223', 'Ragueneau et al. 2026') + '; CC0), UniProt2Reactome_All_Levels. Each protein\'s page lists its pathways.</p>';
       bindBars($('.pa-chart', box), spec.rows, () => {});
       bindChartExports(box);
@@ -13619,20 +13678,31 @@
       'pepR-MS and the DNA crosslinks give no such list, so their background is the reviewed proteome, and their odds ratios also reflect abundance. The residue tests below ask the different question of where, within a protein, its methylarginines lie.</p>';
   }
 
+  // a go_enrich row's test within PaxDb abundance deciles (from v1.4.1: [7..10], log2 OR, its CI and q), or null
+  const goAdj = (r) => (r && r.length > 10 ? abundTest(r.slice(7, 11)) : null);
   function ixSecGo() {
     const g = IX.goEnrich, sel = goSelection();
+    // the whole dataset's rows also show their test within abundance deciles; a selection's retests are not adjusted
+    const adjCol = !sel && Object.values(g).some((r) => goAdj(r));
+    const adjCell = (r) => {
+      const a = goAdj(r);
+      if (!a) return '<td class="r num muted">–</td>';
+      const d = abundDir(a);
+      return '<td class="r num" title="' + esc('Within abundance deciles (PaxDb 6.1): ' + abundText(a)) + '"><i class="hb-adj ' + d + '">' + ABUND[d][0] + '</i> ' + abundOr(a) + '</td>';
+    };
     const goRow = (key, label, chip, exp) => {
       const r = sel ? sel[key] : g[key];
       if (!r) return '';
       // [methylated with, methylated, other with, other, log2 effect, p (, q from v1.2.0)]
       const [a, n1, c, n2, l2, pv, q] = r;
       const bg = FOLD() ? [a + c, n1 + n2] : [c, n2];
-      return '<tr class="row" tabindex="0" data-go="' + chip + '" data-goexp="' + (exp ? 1 : 0) + '"><td><b>' + esc(label) + '</b></td><td class="r num">' + fmt(a) + ' / ' + fmt(n1) + ' (' + pctText(a, n1 || 1) + '%)</td><td class="r num">' + fmt(bg[0]) + ' / ' + fmt(bg[1]) + ' (' + pctText(bg[0], bg[1] || 1) + '%)</td><td class="r num">' + fmtL2(l2) + '</td><td class="r num">' + fmtP(q != null ? q : pv) + '</td></tr>';
+      return '<tr class="row" tabindex="0" data-go="' + chip + '" data-goexp="' + (exp ? 1 : 0) + '"><td><b>' + esc(label) + '</b></td><td class="r num">' + fmt(a) + ' / ' + fmt(n1) + ' (' + pctText(a, n1 || 1) + '%)</td><td class="r num">' + fmt(bg[0]) + ' / ' + fmt(bg[1]) + ' (' + pctText(bg[0], bg[1] || 1) + '%)</td><td class="r num">' + fmtL2(l2) + '</td><td class="r num">' + fmtP(q != null ? q : pv) + '</td>' + (adjCol ? adjCell(r) : '') + '</tr>';
     };
     const hasQ = Object.values(g).some((r) => r && r[6] != null);
-    return ixScope.protein() + '<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Gene Ontology</th><th class="r">' + (sel ? 'Selected proteins' : 'Methylated proteins') + '</th><th class="r">' + (FOLD() ? 'All proteins' : 'Other proteins') + '</th><th class="r">' + effHead() + '</th><th class="r">' + (hasQ ? 'q' : 'p') + '</th></tr></thead><tbody>' +
+    return ixScope.protein() + '<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Gene Ontology</th><th class="r">' + (sel ? 'Selected proteins' : 'Methylated proteins') + '</th><th class="r">' + (FOLD() ? 'All proteins' : 'Other proteins') + '</th><th class="r">' + effHead() + '</th><th class="r">' + (hasQ ? 'q' : 'p') + '</th>' +
+      (adjCol ? '<th class="r" title="Mantel–Haenszel odds ratio within PaxDb abundance deciles; ✓ more than expected, ○ no difference, ▼ fewer (q ≤ ' + PADJ + ')">Within abundance deciles</th>' : '') + '</tr></thead><tbody>' +
       goRow('rna', 'RNA binding', 1, false) + goRow('rna_exp', 'RNA binding, experimental', 1, true) + goRow('dna', 'DNA binding', 2, false) + goRow('dna_exp', 'DNA binding, experimental', 2, true) + '</tbody></table></div>' +
-      '<p class="note">' + (FOLD() ? 'Methylated proteins against all reviewed human proteins (clusterProfiler enricher: one-sided hypergeometric test, fold enrichment, Benjamini–Hochberg q over the four annotations)' : 'Methylated vs other reviewed human proteins (Fisher exact test)') + ', <a href="https://www.ebi.ac.uk/QuickGO/term/GO:0003723" target="_blank" rel="noopener">GO:0003723</a> and <a href="https://www.ebi.ac.uk/QuickGO/term/GO:0003677" target="_blank" rel="noopener">GO:0003677</a> including child terms. The counts are reviewed entries; a row\'s list also includes unreviewed entries with the annotation (' + fmt(P.filter((p) => p.unrev && p.ixFlags & IXF.rna).length) + ' for RNA binding, ' + fmt(P.filter((p) => p.unrev && p.ixFlags & IXF.dna).length) + ' for DNA binding). Click a row to list the proteins.</p>';
+      '<p class="note">' + (FOLD() ? 'Methylated proteins against all reviewed human proteins (clusterProfiler enricher: one-sided hypergeometric test, fold enrichment, Benjamini–Hochberg q over the four annotations)' : 'Methylated vs other reviewed human proteins (Fisher exact test)') + ', <a href="https://www.ebi.ac.uk/QuickGO/term/GO:0003723" target="_blank" rel="noopener">GO:0003723</a> and <a href="https://www.ebi.ac.uk/QuickGO/term/GO:0003677" target="_blank" rel="noopener">GO:0003677</a> including child terms.' + (adjCol ? ' The last column repeats each test within PaxDb abundance deciles (Mantel–Haenszel odds ratio, whole dataset), since mass spectrometry finds abundant proteins most.' : '') + ' The counts are reviewed entries; a row\'s list also includes unreviewed entries with the annotation (' + fmt(P.filter((p) => p.unrev && p.ixFlags & IXF.rna).length) + ' for RNA binding, ' + fmt(P.filter((p) => p.unrev && p.ixFlags & IXF.dna).length) + ' for DNA binding). Click a row to list the proteins.</p>';
   }
 
   // The interface test repeated within proteins (Mantel–Haenszel, each protein a stratum) and restricted to
@@ -15545,7 +15615,7 @@
         sub('report', 'Insight report', '<p>One printable page for the current selection: the selection and a link that reopens it, headline numbers, what sets it apart, the site and protein evidence maps with the protein-context table, the sequence logo and alignment (±7, first 30 sites), the proteins on one residue scale (up to 8, UniProt features fetched live), the proteins with most selected sites with their evidence, and the methods and citation. It opens the browser\'s print dialog; choose Save as PDF.</p>')],
       ['about', 'About', '<p>The explorer indexes the integrated human methylarginine union assembled by the <a href="https://github.com/Shechterlab/PTM_Pipeline">PTM_Pipeline</a> for the review below. It runs entirely in your browser; UniProt, AlphaFold DB, PDB, Ensembl and other annotations on protein pages are fetched live. Visits are counted with <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a>, which sets no cookies and keeps nothing that identifies a visitor.</p>' +
         '<p><b>Cite:</b> ' + esc(PAPER.cite) + ' <a href="https://doi.org/' + PAPER.doi + '">doi:' + PAPER.doi + '</a>, and the original studies and resources (see How to cite).</p>'],
-      ['versions', 'Versions', '<p><b>' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>. This explorer was reorganised after its first release. It uses the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences (v1.1.0)' + (localisedOnly() ? '. From v1.2.0 every study is read from its own tables and ' + LOCALISED_RULE + (addedStudies().length ? '; ' + addedStudies().length + ' studies were added (' + esc(addedStudies().join(', ')) + ')' : '') : addedStudies().length ? ' and the sites of ' + addedStudies().length + ' more studies (v1.2.0: ' + esc(addedStudies().join(', ')) + ')' : '') + changesText(': ') + ' (see <a href="' + changesLink() + '" target="_blank" rel="noopener">what changed</a>). The published version (<a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases/v1.0.0" target="_blank" rel="noopener">v1.0.0</a>) remains available <a href="v1.0.0/">here</a>, and the releases since, v1.1.0 <a href="v1.1.0/">here</a>, v1.2.0 <a href="v1.2.0/">here</a>, v1.3.0 <a href="v1.3.0/">here</a> and v1.3.1 <a href="v1.3.1/">here</a>. The repository as it stood before the reorganisation is kept in the <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/v1.0.0_archive" target="_blank" rel="noopener">v1.0.0_archive</a> tag.</p>' +
+      ['versions', 'Versions', '<p><b>' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>. This explorer was reorganised after its first release. It uses the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences (v1.1.0)' + (localisedOnly() ? '. From v1.2.0 every study is read from its own tables and ' + LOCALISED_RULE + (addedStudies().length ? '; ' + addedStudies().length + ' studies were added (' + esc(addedStudies().join(', ')) + ')' : '') : addedStudies().length ? ' and the sites of ' + addedStudies().length + ' more studies (v1.2.0: ' + esc(addedStudies().join(', ')) + ')' : '') + changesText(': ') + ' (see <a href="' + changesLink() + '" target="_blank" rel="noopener">what changed</a>). The published version (<a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases/v1.0.0" target="_blank" rel="noopener">v1.0.0</a>) remains available <a href="v1.0.0/">here</a>, and the releases since, v1.1.0 <a href="v1.1.0/">here</a>, v1.2.0 <a href="v1.2.0/">here</a>, v1.3.0 <a href="v1.3.0/">here</a>, v1.3.1 <a href="v1.3.1/">here</a> and v1.4.0 <a href="v1.4.0/">here</a>. The repository as it stood before the reorganisation is kept in the <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/v1.0.0_archive" target="_blank" rel="noopener">v1.0.0_archive</a> tag.</p>' +
         '<p>The data of each version, with every table and column described, are in <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases" target="_blank" rel="noopener">releases/</a>. The GitHub releases are archived on Zenodo, ' + doiLink(ARCHIVE_DOI) + ': it opens the most recent version and lists every version with its own DOI.</p>'],
       ['cite', 'How to cite', '<p>The sites here were measured and first reported by other groups; this explorer compiles them. When you use sites or evidence from it, please cite:</p><ol>' +
         '<li><b>The original studies or databases that reported the sites you use.</b> Every list of sites (Proteins, Sites, protein pages, the insight report and the comparison) ends with <i>How to cite these sites</i>: the reporting studies with how many of the sites each reported, full references and DOIs, a <i>Copy references</i> button and <i>Download citations (RIS)</i>, a file for EndNote, Zotero, Mendeley or Papers with each DOI\'s full record from doi.org. The site card lists the studies behind one site, and the Sites TSV has a <code>reported_by_doi</code> column.</li>' +
@@ -15566,7 +15636,7 @@
       ['processing', 'How sites were processed', '' +
       '<ul>' +
       '<li>Source rows were remapped to canonical UniProt sequences by their reported windows, peptides or positions and deduplicated by canonical accession and position. The original reported accession and position are kept in each site\'s evidence.</li>' +
-      '<li><b>This is version ' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>: the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences (v1.1.0)' + (localisedOnly() ? ', each study read from its own tables (v1.2.0)' : '') + (addedStudies().length ? ' and the sites of ' + addedStudies().length + ' more studies (v1.2.0: ' + esc(addedStudies().join(', ')) + ')' : '') + '. Peptides keep the reported arginine instead of being moved to the arginine nearest their middle, rows are filed under the reviewed entry their sequence matches, and windows centred on a lysine or cut short at a protein end are read correctly. ' + changesText('', true) + ' (<a href="' + changesLink() + '" target="_blank" rel="noopener">what changed</a>). Every record is checked against its own evidence and every site is an arginine of the reference sequence. ' + (M.n_pending_not_shown ? fmt(M.n_pending_not_shown) + ' sites whose source windows match the entry on one side of the arginine only are kept pending in the release (flag <code>one_sided_window</code>) and are not shown here. ' : '') + 'The published version is at <a href="v1.0.0/">v1.0.0</a>, the releases since at <a href="v1.1.0/">v1.1.0</a>, <a href="v1.2.0/">v1.2.0</a>, <a href="v1.3.0/">v1.3.0</a> and <a href="v1.3.1/">v1.3.1</a>.</li>' +
+      '<li><b>This is version ' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>: the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences (v1.1.0)' + (localisedOnly() ? ', each study read from its own tables (v1.2.0)' : '') + (addedStudies().length ? ' and the sites of ' + addedStudies().length + ' more studies (v1.2.0: ' + esc(addedStudies().join(', ')) + ')' : '') + '. Peptides keep the reported arginine instead of being moved to the arginine nearest their middle, rows are filed under the reviewed entry their sequence matches, and windows centred on a lysine or cut short at a protein end are read correctly. ' + changesText('', true) + ' (<a href="' + changesLink() + '" target="_blank" rel="noopener">what changed</a>). Every record is checked against its own evidence and every site is an arginine of the reference sequence. ' + (M.n_pending_not_shown ? fmt(M.n_pending_not_shown) + ' sites whose source windows match the entry on one side of the arginine only are kept pending in the release (flag <code>one_sided_window</code>) and are not shown here. ' : '') + 'The published version is at <a href="v1.0.0/">v1.0.0</a>, the releases since at <a href="v1.1.0/">v1.1.0</a>, <a href="v1.2.0/">v1.2.0</a>, <a href="v1.3.0/">v1.3.0</a>, <a href="v1.3.1/">v1.3.1</a> and <a href="v1.4.0/">v1.4.0</a>.</li>' +
       (localisedOnly() ? '<li><b>Site specificity.</b> Each study is read from its own tables, and ' + LOCALISED_RULE + '. A record must also pass the study\'s false discovery rate. A peptide repeated within a protein, or found only in another protein, adds no site. A peptide or window found once in each of several paralogs (identical copies such as HNRNPA1 and HNRNPA1L2, or the histone H3 variants) gives one site, on the copy most of its records assign it to, flagged <b>paralog</b>: mass spectrometry cannot distinguish the paralogs (the paralog rule; search <code>confidence:paralog-assigned</code>). Where a study gives no localisation score, the peptide decides: it localises the site when it holds no other residue the search could methylate (no other arginine, and no lysine where lysine methylation was searched), or when every such residue is a dimethylated arginine. PhosphoSitePlus sites (downloaded 22 May 2021, as compiled in Maron et al. 2021 Table S5) are accepted as curated and placed from their window under the same rule. The other compiled rows of Table S5 are superseded by each study\'s own table and stay in the release\'s source records. Records that fail a test are kept. The arginine each reports is a <b>lower-confidence site</b>, as is every site of an earlier release that no longer passes: never in the release\'s counts and tests, shown hatched only when the reader switches Lower-confidence sites on (<button class="linkish" type="button" data-doc="site-tests">site tests</button>). Where a record leaves its methyl group on one of several residues, the candidates are its <b>lower-confidence evidence</b> (protein map row Lower-confidence evidence, Rows menu; release file supporting/lower_confidence_evidence). <button class="linkish" type="button" data-doc="study-quality">Data quality, study by study</button>.</li>' +
         '<li id="doc-site-tests"><b>Site tests.</b> Every record has passed its study\'s identification filter (false discovery rate or score) before it is read. It is then put to five tests at the arginine its study reports: ' +
         SITE_TESTS.map(([, label, help]) => '<i>' + esc(label) + '</i>: ' + esc(help)).join(' ') +
@@ -15646,7 +15716,7 @@
       '<li>The stronger pattern is clustering: methylarginines lie closer together than the protein\'s other arginines would by chance.</li>' +
       '<li>Motif and clustering annotations need the arginine on the canonical sequence: ' + fmt(M.window_flags.missing) + ' sites have no usable sequence window and ' + fmt(M.window_flags.center_not_r) + ' are not an arginine there (flagged with !).</li>' +
       '<li>Coverage follows the source compilations: methylation reported only in low-throughput studies that no source compiled is not in the union.</li>' +
-      '<li><b>Enrichment is of reported sites and proteins.</b> The union pools studies with different cells, antibodies, proteases and detection limits, so a protein-set enrichment against the reviewed proteome also reflects which proteins are expressed, abundant and detectable in those experiments, and which the antibodies recover. Tests within proteins (each protein a stratum) remove differences between proteins, not peptide detectability or antibody preference within a protein. Where an experiment lists the proteins it measured, its protein-level test uses them as the background; elsewhere none is available, and no correction for abundance, length or arginine content is made.</li>' +
+      '<li><b>Enrichment is of reported sites and proteins.</b> The union pools studies with different cells, antibodies, proteases and detection limits, so a protein-set enrichment against the reviewed proteome also reflects which proteins are expressed, abundant and detectable in those experiments, and which the antibodies recover. Tests within proteins (each protein a stratum) remove differences between proteins, not peptide detectability or antibody preference within a protein. Where an experiment lists the proteins it measured, its protein-level test uses them as the background; elsewhere none is available' + (M.abundance_strata ? '. Each protein-set test is also repeated within PaxDb abundance deciles, shown beside it (✓ the set is more frequent among methylated proteins than among proteins of similar abundance, ○ no different, ▼ less frequent); that matches abundance only, and no correction for length or arginine content is made.' : ', and no correction for abundance, length or arginine content is made.') + '</li>' +
       '<li><b>Tests on a selection are exploratory.</b> Each is BH-adjusted within its chart, not for the other selections tried. A test on the feature that made the selection (a condensate chart after selecting a condensate, a motif chart after selecting a motif, the interaction tests after selecting by interaction evidence) is circular: the page then shows counts and marks the result descriptive.</li>' +
       '<li><b>Sites do not share one error rate.</b> A site enters the union when one record passes the five site tests under its own source\'s localisation (a localisation score at the study\'s threshold, a sequence that leaves one possible arginine, or a curated annotation: UniProt with experimental evidence, PhosphoSitePlus as compiled in 2021 without its evidence categories). These are different kinds of evidence, not one false-discovery rate; the site table names each site\'s localisation methods, and the Provenance filters can keep sites with a localisation score or sequence, without the curated-only ones.</li>' +
       '<li><b>Responses to PRMT inhibitors and CARM1 loss are peptide-level.</b> A call says a peptide carrying the site changed, which a peptide with several methylarginines does for any of them; neither the inhibitor nor the knockout data were corrected for total protein (see PRMT inhibitor and knockout response).</li>' +

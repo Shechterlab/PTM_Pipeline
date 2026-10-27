@@ -23,6 +23,7 @@ from pathlib import Path
 
 import pandas as pd
 
+import abundance_strata
 import disease_families as dfam
 import release_codes as rc
 import release_layers
@@ -110,6 +111,24 @@ def within_rows(stats: pd.DataFrame, analysis: str) -> list:
     l2 = lambda v: num(math.log2(float(v))) if num(v) and float(v) > 0 and math.isfinite(float(v)) else None  # noqa: E731
     return [[r['category'], l2(r['odds_ratio']), l2(r.get('odds_ratio_ci_low')), l2(r.get('odds_ratio_ci_high')), sig(r['q']), integer(r['n_strata'])]
             for r in stats[(stats['analysis'] == analysis) & (stats['method'] == 'mantel_haenszel')].to_dict('records')]
+
+
+def abundance_rows(stats: pd.DataFrame) -> dict:
+    """The protein-set tests within PaxDb abundance deciles (scripts/abundance_strata.py), for the whole dataset:
+    {analysis: {category: [log2 OR (+-abundance_strata.WEB_INF where it is infinite or 0), its 95% CI (log2), q,
+    informative strata]}}. Reactome pathways below the top level: the ones the website lists (q <=
+    release_layers.REACTOME_LISTED_Q in their own test)."""
+    l2 = lambda v: num(math.log2(float(v))) if num(v) and float(v) > 0 and math.isfinite(float(v)) else None  # noqa: E731
+    rows = stats[(stats['method'] == 'mantel_haenszel') & stats['background'].str.endswith(abundance_strata.SUFFIX)]
+    listed = set(stats.loc[(stats['analysis'] == 'reactome_pathway') & (stats['method'] == 'enricher')
+                           & (pd.to_numeric(stats['q'], errors='coerce') <= release_layers.REACTOME_LISTED_Q), 'category'])
+    out = {}
+    for r in rows.to_dict('records'):
+        if r['analysis'] == 'reactome_pathway' and r['category'] not in listed:
+            continue
+        out.setdefault(r['analysis'], {})[r['category']] = [abundance_strata.web_log2(r['odds_ratio']), l2(r.get('odds_ratio_ci_low')), l2(r.get('odds_ratio_ci_high')),
+                                                            sig(r['q']), integer(r['n_strata'])]
+    return out
 
 
 def overview_rows(stats: pd.DataFrame, analysis: str, extra=None) -> list[list]:
@@ -385,8 +404,8 @@ def main() -> None:
             treatments.append([drug, ip, len(g), int((g['call'] == 'decreased').sum()), int((g['call'] == 'increased').sum()),
                                num(statistics.median(g['log2_diff_median'].astype(float))) if len(g) else None])
     # Each condensate against the other condensate proteins and against the reviewed proteome (scripts/12).
-    cond_stats = stats[stats['analysis'] == 'condensate'].set_index('category')
-    cond_proteome = stats[stats['analysis'] == 'condensate_proteome'].set_index('category')
+    cond_stats = stats[(stats['analysis'] == 'condensate') & (stats['method'] == 'enricher')].set_index('category')
+    cond_proteome = stats[(stats['analysis'] == 'condensate_proteome') & (stats['method'] == 'enricher')].set_index('category')
     tested = lambda t, c: [effect(t.loc[c]), sig(t.at[c, 'q'])] if c in t.index else [None, None]  # noqa: E731
     cond_rows = [[r['condensate_name'], r['condensate_id'], r['condensate_type'], int(r['n_members']), int(r['n_members_methylated']),
                   *tested(cond_stats, r['condensate_id']), *tested(cond_proteome, r['condensate_id'])]
@@ -396,7 +415,7 @@ def main() -> None:
     universe = int(cond_stats['a'].astype(int).iloc[0] + cond_stats['b'].astype(int).iloc[0] + cond_stats['c'].astype(int).iloc[0]
                    + cond_stats['d'].astype(int).iloc[0]) if len(cond_stats) else 0
     proteome_n = int(cond_proteome.iloc[0][['a', 'b', 'c', 'd']].astype(int).sum()) if len(cond_proteome) else 0
-    hpa_stats = stats[stats['analysis'] == 'hpa_location'].set_index('category')
+    hpa_stats = stats[(stats['analysis'] == 'hpa_location') & (stats['method'] == 'enricher')].set_index('category')
     hpa_universe = int(hpa_stats.iloc[0][['a', 'b', 'c', 'd']].astype(int).sum()) if len(hpa_stats) else 0
     hpa_methyl = int(hpa_stats.iloc[0][['a', 'b']].astype(int).sum()) if len(hpa_stats) else 0
     layer = lambda name: json.loads((inputs / 'layers' / name).read_text()) if (inputs / 'layers' / name).exists() else {}  # noqa: E731
@@ -428,9 +447,9 @@ def main() -> None:
             out.append(ontology.at[c, 'name'])
             c = ontology.at[c, 'parent_id']
         return out
-    pg = [r['category'] for r in stats[stats['analysis'] == 'panther_group'].to_dict('records')]
-    pc = [r['category'] for r in stats[stats['analysis'] == 'panther_class'].to_dict('records')]
-    ps = [r['category'] for r in stats[stats['analysis'] == 'panther_subclass'].to_dict('records')]
+    pg = [r['category'] for r in stats[(stats['analysis'] == 'panther_group') & (stats['method'] == 'enricher')].to_dict('records')]
+    pc = [r['category'] for r in stats[(stats['analysis'] == 'panther_class') & (stats['method'] == 'enricher')].to_dict('records')]
+    ps = [r['category'] for r in stats[(stats['analysis'] == 'panther_subclass') & (stats['method'] == 'enricher')].to_dict('records')]
     for p, row in zip(proteins.to_dict('records'), protein_rows):
         inside = {x for leaf in L(p['panther_classes']) for x in above(leaf)}
         row.append([pg.index(p['panther_group']), pc.index(p['panther_class']) if p['panther_class'] else -1,
@@ -526,6 +545,9 @@ def main() -> None:
             'set_effect': 'log2_fold_enrichment',
             'enrichment_tools': info.get('enrichment_tools', {}),
             'condensates': cond_rows,
+            # the protein-set tests again within PaxDb abundance deciles, whole dataset (scripts/abundance_strata.py)
+            'abundance_strata': abundance_rows(stats),
+            'abundance_strata_fields': ['log2_odds_ratio', 'log2_ci_low', 'log2_ci_high', 'q_value', 'strata'],
             'condensate_fields': ['name', 'cdcode_id', 'type', 'members', 'methyl_members', 'log2_fold_enrichment', 'q_value',
                                   'log2_fold_enrichment_vs_proteome', 'q_value_vs_proteome'],
             'condensate_summary': {'methyl_proteins_total': str(len(methylated)), 'condensate_universe_proteins': str(universe),
@@ -574,7 +596,7 @@ def main() -> None:
                         'groups': pg, 'classes': pc, 'subclasses': ps,
                         # [accession, definition] of each class and subclass, in the order of classes and subclasses
                         'class_info': [class_info(n) for n in pc], 'subclass_info': [class_info(n) for n in ps],
-                        'universe': int(stats[stats['analysis'] == 'panther_group'].iloc[0][['a', 'b', 'c', 'd']].astype(int).sum())},
+                        'universe': int(stats[(stats['analysis'] == 'panther_group') & (stats['method'] == 'enricher')].iloc[0][['a', 'b', 'c', 'd']].astype(int).sum())},
             'site_fields': ['protein', 'position', 'state', 'source_mask', 'refs', 'disorder_class', 'disorder_edge_distance',
                             'domain_context', 'interpro', 'domain_class', 'domain_edge_distance', 'domain_side', 'window_31',
                             'motif_mask', 'window_center_mismatch', 'source_positions_original', 'maron_s2_state_mask',
