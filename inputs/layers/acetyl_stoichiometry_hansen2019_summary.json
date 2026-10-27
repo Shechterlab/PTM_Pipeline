@@ -1,0 +1,33 @@
+{
+  "script": "scripts/58_stage_acetyl_stoichiometry_hansen2019.py",
+  "downloaded": "2026-10-27",
+  "source": {
+    "file": "41467_2019_9024_MOESM4_ESM.xlsx",
+    "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-019-09024-0/MediaObjects/41467_2019_9024_MOESM4_ESM.xlsx",
+    "md5": "956012ef4dcf995fc5c758119667cca2",
+    "sites_sheet_rows": 6829,
+    "peptide_sheet_rows": 22039
+  },
+  "reference": {
+    "fasta": "../inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+    "md5": "c75aad9d197cbba00f51063f65a96ac4"
+  },
+  "rows": 6776,
+  "proteins": 2464,
+  "stoichiometry_fraction": {
+    "median": 0.00023568,
+    "q90": 0.001622395,
+    "max": 0.2,
+    "above_measurable_range": 13
+  },
+  "placed_by": {
+    "position": 6683,
+    "isoform_peptide": 58,
+    "gene_peptide": 35
+  },
+  "duplicates_after_placing": 17,
+  "left_out": {
+    "no listed protein, isoform or gene places it": 34,
+    "not in reference": 2
+  }
+}

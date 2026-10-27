@@ -1,0 +1,39 @@
+{
+  "script": "scripts/56_stage_adpr_hendriks2021.py",
+  "downloaded": "2026-10-27",
+  "source": {
+    "file": "41467_2021_26172_MOESM5_ESM.xlsx",
+    "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-021-26172-4/MediaObjects/41467_2021_26172_MOESM5_ESM.xlsx",
+    "md5": "892328a93547eebe86faaf149e8ec699",
+    "sheet": "Hendriks_DataS2",
+    "rows": 2758
+  },
+  "reference": {
+    "fasta": "../inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+    "md5": "c75aad9d197cbba00f51063f65a96ac4"
+  },
+  "rows": 2653,
+  "proteins": 1071,
+  "by_residue": {
+    "S": 2386,
+    "Y": 127,
+    "R": 98,
+    "H": 12,
+    "K": 10,
+    "T": 8,
+    "C": 5,
+    "D": 4,
+    "E": 3
+  },
+  "placed_by": {
+    "position": 2647,
+    "isoform_peptide": 6
+  },
+  "duplicates_after_placing": 2,
+  "left_out": {
+    "isoform: no single canonical position": 40,
+    "residue differs": 31,
+    "not in reference": 27,
+    "no peptide places it": 5
+  }
+}

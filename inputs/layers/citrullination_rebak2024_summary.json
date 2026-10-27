@@ -1,0 +1,40 @@
+{
+  "script": "scripts/55_stage_citrullination_rebak2024.py",
+  "downloaded": "2026-10-27",
+  "source": {
+    "file": "41594_2024_1214_MOESM3_ESM.xlsx",
+    "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41594-024-01214-9/MediaObjects/41594_2024_1214_MOESM3_ESM.xlsx",
+    "md5": "779e084424b14487a4211410dfd69b74",
+    "sheet": "Supp_Table3_Cit_Sites",
+    "rows": 14056
+  },
+  "reference": {
+    "fasta": "../inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+    "md5": "c75aad9d197cbba00f51063f65a96ac4"
+  },
+  "rows": 13535,
+  "proteins": 3911,
+  "identified_in": {
+    "HL60": 828,
+    "HL60_Cal15": 949,
+    "NLC": 2540,
+    "NLC_Cal15": 3554,
+    "NLC_Cal30": 4176,
+    "NLC_Cal30_GSKstudy": 11891,
+    "GSK_484_1uM": 11002,
+    "GSK_484_5uM": 9322,
+    "GSK_484_20uM": 8338
+  },
+  "placed_by": {
+    "position": 13470,
+    "isoform_peptide": 36,
+    "gene_peptide": 29
+  },
+  "duplicates_after_placing": 11,
+  "left_out": {
+    "residue differs": 131,
+    "isoform or gene: no single canonical position": 347,
+    "no peptide places it": 19,
+    "not in reference": 13
+  }
+}

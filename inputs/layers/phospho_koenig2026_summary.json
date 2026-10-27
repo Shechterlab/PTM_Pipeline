@@ -1,0 +1,60 @@
+{
+  "script": "scripts/57_stage_phospho_koenig2026.py",
+  "downloaded": "2026-10-27",
+  "files": {
+    "Phosphosites_and_ProteinGroups_Tables.zip": {
+      "md5": "80cb28d69b53b133b4dfcc628d866b91",
+      "url": "https://zenodo.org/api/records/21469258/files/Phosphosites_and_ProteinGroups_Tables.zip/content"
+    },
+    "Site_Stoichiometry.zip": {
+      "md5": "cd9f4307d3686f33ce783f2d93393dcf",
+      "url": "https://zenodo.org/api/records/21469258/files/Site_Stoichiometry.zip/content"
+    }
+  },
+  "reference": {
+    "fasta": "../inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+    "md5": "c75aad9d197cbba00f51063f65a96ac4"
+  },
+  "sites": {
+    "source_rows": 107112,
+    "rows": 91658,
+    "proteins": 10499,
+    "by_residue": {
+      "S": 66770,
+      "T": 17586,
+      "Y": 7302
+    },
+    "cell_lines_detected_quantiles": {
+      "0.25": 1.0,
+      "0.5": 4.0,
+      "0.75": 15.0
+    },
+    "in_all_33_cell_lines": 5135,
+    "placed_by": {
+      "position": 91657,
+      "gene_window": 1
+    },
+    "left_out": {
+      "not in reference": 66,
+      "residue differs": 1072,
+      "flanking region differs": 114,
+      "isoform or gene: no single canonical position": 12,
+      "no site position": 60
+    }
+  },
+  "stoichiometry": {
+    "source_rows": 94555,
+    "rows": 51650,
+    "sites": 19823,
+    "cell_lines": 33,
+    "median_control_pct": 13.607,
+    "median_stim_pct": 16.82795,
+    "left_out": {
+      "status Break rule": 41860,
+      "status No change": 431,
+      "residue differs": 478,
+      "not in reference": 63,
+      "peptide does not place it": 73
+    }
+  }
+}

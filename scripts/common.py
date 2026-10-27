@@ -831,3 +831,115 @@ def residue_is(sequences: dict[str, str], accession: str, position: int, residue
     """Whether the reference sequence of accession has residue at position (1-based)."""
     seq = sequences.get(accession)
     return bool(seq) and 1 <= int(position) <= len(seq) and seq[int(position) - 1] == residue
+
+
+# ---- placing a source's sites on the reference (scripts 55-58)
+
+def sha256_file(path: str | Path) -> str:
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, 'rb') as fh:
+        for block in iter(lambda: fh.read(1 << 20), b''):
+            h.update(block)
+    return h.hexdigest()
+
+
+def fasta_genes(path: str | Path) -> dict[str, str]:
+    """Accession -> gene name (GN=) of each entry of a UniProt FASTA; entries without GN= are left out."""
+    genes = {}
+    with open(path, encoding='utf-8') as fh:
+        for ln in fh:
+            if ln.startswith('>'):
+                acc = ln[1:].split()[0].split('|')
+                m = re.search(r'\bGN=(\S+)', ln)
+                if len(acc) > 1 and m:
+                    genes[acc[1]] = m.group(1)
+    return genes
+
+
+def unique_gene_accessions(genes: dict[str, str]) -> dict[str, str]:
+    """Gene name -> accession for the gene names that name exactly one reference entry."""
+    by = defaultdict(list)
+    for acc, g in genes.items():
+        by[g].append(acc)
+    return {g: accs[0] for g, accs in by.items() if len(accs) == 1}
+
+
+def marked_peptide(text: str, tag: str) -> tuple[str, list[int]]:
+    """A MaxQuant-style modified peptide ('_AAR(ci)K(ac)SAPATK_', 'S(ADPr)TGGK') -> its plain sequence and the 1-based
+    positions of the residues carrying '(tag)'; other modifications are dropped."""
+    plain, marks = [], []
+    for m in re.finditer(r'([A-Z])(\(([^)]*)\))?', re.sub(r'^_|_$', '', re.sub(r'^_?\([^)]*\)', '', str(text)))):
+        plain.append(m.group(1))
+        if m.group(3) == tag:
+            marks.append(len(plain))
+    return ''.join(plain), marks
+
+
+def peptide_places(seq: str, pos: int, peptides: Iterable[tuple[str, list[int]]]) -> bool:
+    """Does any (plain peptide, 1-based marked positions) put a marked residue on pos of seq?"""
+    for plain, marks in peptides:
+        if not plain:
+            continue
+        start = seq.find(plain)
+        while start >= 0:
+            if any(start + k == pos for k in marks):
+                return True
+            start = seq.find(plain, start + 1)
+    return False
+
+
+def peptide_positions(seq: str, peptides: Iterable[tuple[str, list[int]]]) -> set[int]:
+    """Every position of seq on which a peptide's marked residue falls."""
+    out = set()
+    for plain, marks in peptides:
+        start = seq.find(plain) if plain else -1
+        while start >= 0:
+            out.update(start + k for k in marks)
+            start = seq.find(plain, start + 1)
+    return out
+
+
+def window_matches(seq: str, pos: int, window: str, pad: str = '_') -> bool:
+    """Does a source's sequence window (odd length, centred on the site, padded with pad past either end) agree with seq
+    around pos, residue for residue?"""
+    w = str(window)
+    if not w or len(w) % 2 == 0:
+        return False
+    half = len(w) // 2
+    for i, aa in enumerate(w):
+        p = pos - half + i
+        if aa == pad:
+            if 1 <= p <= len(seq):
+                return False
+        elif not (1 <= p <= len(seq)) or seq[p - 1] != aa:
+            return False
+    return True
+
+
+def window_positions(seq: str, window: str, pad: str = '_') -> list[int]:
+    """Every position of seq whose surroundings match the window (window_matches)."""
+    w = str(window)
+    core = w.strip(pad)
+    if not core or len(w) % 2 == 0:
+        return []
+    lead = len(w) - len(w.lstrip(pad))
+    half = len(w) // 2
+    out, start = [], seq.find(core)
+    while start >= 0:
+        pos = start + 1 + half - lead
+        if window_matches(seq, pos, w, pad):
+            out.append(pos)
+        start = seq.find(core, start + 1)
+    return out
+
+
+def write_stage_rows(out: Path, mrows: list[dict], rrows: list[dict], manifest: str | Path, raw_files: str | Path) -> None:
+    """manifest_rows.tsv and raw_files_rows.tsv of a staging folder, in the columns of inputs/MANIFEST.tsv and
+    inputs/layers/raw_files.tsv (read from their header lines)."""
+    with open(manifest, encoding='utf-8') as fh:
+        mcols = fh.readline().rstrip('\n').split('\t')
+    with open(raw_files, encoding='utf-8') as fh:
+        rcols = fh.readline().rstrip('\n').split('\t')
+    pd.DataFrame([{c: r.get(c, '') for c in mcols} for r in mrows]).to_csv(out / 'manifest_rows.tsv', sep='\t', index=False)
+    pd.DataFrame([{c: r.get(c, '') for c in rcols} for r in rrows]).to_csv(out / 'raw_files_rows.tsv', sep='\t', index=False)
