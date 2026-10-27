@@ -61,7 +61,11 @@ but not study coverage; the tract rule is a convention, hence the sweep; disorde
 
 ## Recommendation: a layer here first, a separate site later
 
-Not a separate site yet:
+*Decided 27 October 2026:* a broader IDR Explorer is built now, in `docs/` of MicroDomains (branch
+`ccr-b90e3503-xnxh85`, `Analysis/scripts/build_idr_explorer.py`). It reads this repository's reference, disorder,
+InterPro rows, methylarginine release and iPTMnet table, and calls its code (`scripts/36c`, `scripts/09`,
+`common.parse_fasta`) rather than copying it; this repository keeps the staging below, so the work packages still apply
+and the site picks up each new layer on its next build. The reasons first given for waiting:
 
 - **The data are the bottleneck, not the viewer.** UniProt annotates polyglutamylation at 19 human sites (below), and a
   search found no proteome-scale table of glutamylation sites to stage (van Dijk et al. 2008 screened for substrate
