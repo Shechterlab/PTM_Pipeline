@@ -4528,7 +4528,7 @@
       const trMax = Math.max(1, ...trAll.map((r) => r.down));
       const trName = (r) => (r.t === 2 ? 'CARM1 KO ' + r.cell : r.t === 'p' ? r.name : r.name + ' ' + ipLabel(r.ipName));
       const trVis = trAll.length ? aMeters(trAll.map((r) => ({ label: trName(r), v: r.down / trMax, text: fmt(r.down), cls: 'down',
-        tip: '<b>' + esc(r.t === 2 ? 'CARM1 knockout, ' + r.cell + ' (Rme2a IP)' : r.t === 'p' ? r.name + ' (' + r.d[5] + '; ' + ptRuleNote(r.d) + ')' : r.name + ' (' + (TREAT_HELP[r.name] || '') + '), ' + ipLabel(r.ipName) + ' IP') + '</b><br>' + fmt(r.down) + ' of ' + fmt(r.n) + (r.t === 'p' && r.d[8] ? ' listed' : ' measured') + ' sites with a peptide that decreased (' + pct(r.down, r.n) + '%)' + (r.up ? '; ' + fmt(r.up) + ' increased' : '') })), { tight: true }) : '';
+        tip: '<b>' + esc(r.t === 2 ? 'CARM1 knockout, ' + r.cell + ' (Rme2a IP)' : r.t === 'p' ? r.name + ' (' + r.d[5] + '; ' + ptRuleNote(r.d) + ')' : r.name + ' (' + (TREAT_HELP[r.name] || '') + '), ' + ipLabel(r.ipName) + ' IP') + '</b><br>' + (trListed(r) ? fmt(r.down) + ' sites listed as decreased; the study lists only its decreased sites, so there is no share' : fmt(r.down) + ' of ' + fmt(r.n) + ' measured sites with a peptide that decreased (' + pct(r.down, r.n) + '%)' + (r.up ? '; ' + fmt(r.up) + ' increased' : '')) })), { tight: true }) : '';
       const ov = {
         'ov-pan': chartTile(pan || func), 'ov-dis': chartTile(dis), 'ov-cond': chartTile(cond), 'ov-loc': chartTile(loc), 'ov-motif': chartTile(motif), 'ov-struct': structTile(),
         'ov-ix': ixReady() ? ixTile() : { vis: '' },
@@ -4714,16 +4714,20 @@
     return rows;
   }
   const trRowName = (r) => (r.t === 'p' ? r.name : r.name + ' ' + (r.t === 2 ? r.cell : ipLabel(r.ipName)));
+  // A perturbation whose study lists only the sites it changed (the PRMT5 knockdown of Li et al. 2021): its count has
+  // no denominator, so it is never a share.
+  const trListed = (r) => r.t === 'p' && !!r.d[8];
   // The two rows with the largest decreased share, for a folded header.
   function treatSummary(sites, html) {
     // ranked by the number of sites called decreased, as the tile ranks them
     const top = treatRows(sites).filter((r) => r.n).sort((a, b) => b.down - a.down || b.n - a.n).slice(0, 2);
-    if (!html) return top.length ? 'most sites called decreased: ' + top.map((r) => trRowName(r) + ' ' + fmt(r.down) + ' of ' + fmt(r.n)).join(', ') : '';
-    return top.length ? 'Most sites called decreased: ' + top.map((r) => esc(trRowName(r)) + ' <span class="an">' + fmt(r.down) + '</span> of ' + fmt(r.n)).join(', ') : 'none of these sites was measured';
+    const of = (r) => (trListed(r) ? ' listed' : ' of ' + fmt(r.n));
+    if (!html) return top.length ? 'most sites called decreased: ' + top.map((r) => trRowName(r) + ' ' + fmt(r.down) + of(r)).join(', ') : '';
+    return top.length ? 'Most sites called decreased: ' + top.map((r) => esc(trRowName(r)) + ' <span class="an">' + fmt(r.down) + '</span>' + of(r)).join(', ') : 'none of these sites was measured';
   }
   function treatTable() {
     const km = koMeta(), all = treatRows();
-    const max = Math.max(...all.map((r) => (r.n ? Math.max(r.down, r.up) / r.n : 0)), 0.01);
+    const max = Math.max(...all.map((r) => (r.n && !trListed(r) ? Math.max(r.down, r.up) / r.n : 0)), 0.01);
     // With a selection: its sites each row's click keeps.
     const selOn = constraints().length > 0;
     const selDown = (v) => R.sites.reduce((n, s) => n + (treatPass(s, v) ? 1 : 0), 0);
@@ -4735,8 +4739,9 @@
         const sitesTip = ext ? r.n + ' union sites ' + (r.d[8] ? 'listed as decreased (the study lists no unchanged site)' : 'quantified') : ko ? r.n + ' union sites measured in ' + r.cell + ' cells' : r.n + ' union sites measured in the ' + r.ipName + ' IP' + (r.s3 != null && r.s3 > r.n ? '; Maron Table S3 lists ' + r.s3 + ' sites in this IP, ' + (r.s3 - r.n) + ' of them not in the union' : '');
         const sub = ext ? r.d[5].replace(/,.*?\((\d{4})\)$/, ' $1') + ' · ' + ptRuleNote(r.d) : ko ? r.cell + ' cells' : TREAT_HELP[r.name] || '';
         return '<tr class="row' + (selOn && !sd ? ' off' : '') + '" tabindex="0" data-treat="' + v + '"><td><b>' + esc(r.name) + '</b> <span class="muted">' + esc(sub) + '</span></td><td>' + (ext ? '<span class="muted">' + esc(r.d[3]) + '</span>' : '<span class="tag ip" title="' + esc(IP_HELP[r.ipName] || '') + '">' + esc(ipLabel(r.ipName)) + '</span>') + '</td><td class="r num" title="' + esc(sitesTip) + '">' + fmt(r.n) + '</td>' +
+          (trListed(r) ? '<td><div class="meter-row"><span class="meter down"></span><span class="num" title="The study lists only its decreased sites, so there is no share">' + r.down + ' listed</span></div></td><td class="hide-xs"><span class="muted">not listed</span></td>' :
           '<td><div class="meter-row"><span class="meter down"><i style="width:' + (100 * down / max).toFixed(1) + '%"></i></span><span class="num">' + r.down + ' (' + (100 * down).toFixed(0) + '%)</span></div></td>' +
-          '<td class="hide-xs"><div class="meter-row"><span class="meter up"><i style="width:' + (100 * up / max).toFixed(1) + '%"></i></span><span class="num">' + r.up + ' (' + (100 * up).toFixed(0) + '%)</span></div></td>' +
+          '<td class="hide-xs"><div class="meter-row"><span class="meter up"><i style="width:' + (100 * up / max).toFixed(1) + '%"></i></span><span class="num">' + r.up + ' (' + (100 * up).toFixed(0) + '%)</span></div></td>') +
           '<td class="r num hide-sm">' + fmtL2(r.med) + '</td>' + (selOn ? '<td class="r">' + (sd ? selCell(sd) : '<span class="muted">0</span>') + '</td>' : '') + '</tr>';
       }).join('') + '</tbody></table></div><p class="note">Every row counts union sites: Maron rows the sites measured in that methyl-IP (Table S3 also measured sites outside the union; hover a site count), changed when their peptides at adj. p ≤ 0.05 agree on the direction' +
       (km ? '; CARM1 KO rows the sites measured in that cell line, changed at least twofold at BH q < 0.05' : '') +
@@ -10745,6 +10750,12 @@
 
   // The protein page: experiments from the literature on its methylation, as curated (inputs/curation/); the fold is
   // shown only when the protein has some.
+  // what the curation holds so far: experiments, papers and the last day one was added
+  const curationScope = (C) => {
+    const f = (name) => C.fields.indexOf(name), papers = new Set(C.rows.map((r) => r[f('doi')] || r[f('reference')]));
+    const last = C.rows.map((r) => r[f('curated_on')]).filter(Boolean).sort().pop();
+    return fmt(C.rows.length) + ' experiment' + (C.rows.length === 1 ? '' : 's') + ' from ' + fmt(papers.size) + ' paper' + (papers.size === 1 ? '' : 's') + (last ? ', last curated ' + last : '');
+  };
   function renderCurationCard(p) {
     const box = $('#card-exp');
     if (!box) return;
@@ -10766,7 +10777,7 @@
             '<td>' + esc(v(r, 'finding')) + (v(r, 'figure') ? ' <span class="muted small">(' + esc(v(r, 'figure')) + ')</span>' : '') + (v(r, 'read_from') === 'abstract' ? ' <span class="muted small">from the abstract</span>' : '') + '</td>' +
             '<td>' + doiLink(v(r, 'doi'), esc(v(r, 'reference'))) + '</td></tr>';
         }).join('') + '</tbody></table></div>' +
-        '<p class="note small">The table is in the release (<code>supporting/functional_experiments</code>); inputs/curation/README.md describes the fields. The curation is small and growing; a protein without rows has not been curated, not shown to lack experiments.</p>';
+        '<p class="note small">The table is in the release (<code>supporting/functional_experiments</code>); inputs/curation/README.md describes the fields. The curation is small and growing (' + curationScope(C) + '); a protein without rows has not been curated, not shown to lack experiments.</p>';
       setFoldSummary('p-exp', rows.length + (rows.length === 1 ? ' experiment' : ' experiments'));
     });
   }
