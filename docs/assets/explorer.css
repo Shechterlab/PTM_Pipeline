@@ -512,6 +512,11 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .hb-bar.neg.ns { box-shadow: inset 0 0 0 1.5px var(--t-down-3); }
 .hb-bar.same, .hb-bar.neg.same { background: color-mix(in srgb, var(--muted) 75%, var(--surface)); }
 .hb-val { text-align: right; font-size: 0.76rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+/* A protein-set test repeated within PaxDb abundance deciles (whole dataset): a mark after the value and in tables. */
+.hb-adj { font-style: normal; margin-left: 0.18rem; font-size: 0.72rem; }
+.hb-adj.up { color: var(--t-up-3); }
+.hb-adj.down { color: var(--t-down-3); }
+.hb-adj.ns { color: var(--muted); }
 .hb-axis { display: grid; grid-template-columns: minmax(6.5rem, 40%) minmax(0, 1fr) 3.4rem; gap: 0.6rem; padding: 0 0.4rem; }
 .hbars.has-extra .hb, .hb-axis.has-extra { grid-template-columns: minmax(6.5rem, 34%) 4.6rem minmax(0, 1fr) 3.4rem; }
 .hb-extra { text-align: right; font-size: 0.74rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }

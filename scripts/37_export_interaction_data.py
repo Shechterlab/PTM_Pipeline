@@ -54,6 +54,7 @@ import pandas as pd
 from scipy import stats as sps
 
 from common import mantel_haenszel, mantel_haenszel_ci
+import abundance_strata  # noqa: E402
 from enrichment import Job, run as run_enrichment
 from interaction_inputs import merge_member
 
@@ -1145,12 +1146,14 @@ def load_modelled_methyl_r(cache: Path, refresh: bool, workers: int):
     return out
 
 
-def cdcode_threshold_enrichment(cd, proteome, meth_base, uids, workdir, thresholds=(1, 2, 3, 4)):
+def cdcode_threshold_enrichment(cd, proteome, meth_base, uids, workdir, thresholds=(1, 2, 3, 4), abundance=None):
     """Methylated share of each condensate counting only members at or above a CD-CODE confidence score, against two
     backgrounds, as scripts/12 tests all memberships: the proteins in any human CD-CODE condensate (at any score), and
     the reviewed human proteome. clusterProfiler enricher, one job per score and background, condensates with at
     least five counted members. ({score: rows} against condensate proteins, {score: rows} against the proteome), each
-    row [condensate index, members, methylated members, log2 fold enrichment, p, q]."""
+    row [condensate index, members, methylated members, log2 fold enrichment, p, q]; with abundance (PaxDb percentile by
+    accession), each test also within its background's abundance deciles (scripts/abundance_strata.py), BH within the
+    job: + [log2 OR, its 95% CI (log2), q]."""
     backgrounds = {'condensates': {a for uid in uids for a in cd.get(uid, {}) if a in proteome}, 'proteome': set(proteome)}
     jobs = []
     for t in thresholds:
@@ -1164,8 +1167,14 @@ def cdcode_threshold_enrichment(cd, proteome, meth_base, uids, workdir, threshol
     out = ({}, {})
     for t in thresholds:
         for k, suffix in enumerate(('', '_proteome')):
-            r = res[f'condensate_confidence_{t}{suffix}']
+            job = f'condensate_confidence_{t}{suffix}'
+            r = res[job]
             rows = [[int(x.ID), int(x.M), int(x.k), sig(math.log2(x.FoldEnrichment)), sig(x.pvalue), sig(x['p.adjust'])] for _, x in r.iterrows()]
+            if abundance is not None and len(r):
+                mh = abundance_strata.job_tests(Path(workdir) / job, abundance, [(str(x.ID), (int(x.a), int(x.b), int(x.c), int(x.d))) for _, x in r.iterrows()], job)
+                l2 = lambda v: sig(math.log2(v)) if v and v > 0 and math.isfinite(v) else None  # noqa: E731
+                for row, (odds, lo, hi, _p, _n), q in zip(rows, mh, abundance_strata.bh([m[3] for m in mh])):
+                    row += [abundance_strata.web_log2(odds, 3), l2(lo), l2(hi), sig(q) if q is not None else None]
             out[k][str(t)] = sorted(rows)
     return out
 
@@ -3743,7 +3752,9 @@ def main():
     cond_meta = explorer['meta'].get('condensates', [])
     cd_uids = [c[1] for c in cond_meta]
     cd, cd_version = load_cdcode(cache, args.refresh, cd_uids, args.workers)
-    cond_conf, cond_conf_proteome = cdcode_threshold_enrichment(cd, proteome, meth_base, cd_uids, enrich_dir)
+    inputs_root = Path(args.tables or 'inputs/interactions').parent
+    cond_conf, cond_conf_proteome = cdcode_threshold_enrichment(cd, proteome, meth_base, cd_uids, enrich_dir,
+                                                                abundance=abundance_strata.abundance(inputs_root)['protein'])
     # How CD-CODE confidence scores are distributed over human memberships (scores cluster at 1-2 and 4-5).
     score_hist = Counter(m[0] for uid in cd_uids for a, m in cd.get(uid, {}).items() if a in proteome)
     cond_score_hist = {str(k): v for k, v in sorted(score_hist.items())}
@@ -3804,6 +3815,14 @@ def main():
         set_tests.append(('go_binding', x.ID.replace('_exp', '') + '_binding' + ('_experimental' if x.ID.endswith('_exp') else ''), 'all',
                           int(x.a), int(x.b), int(x.c), int(x.d), float(x.FoldEnrichment), float(x.pvalue), float(x['p.adjust']),
                           'all reviewed human proteins'))
+    # The same tests within PaxDb abundance deciles (scripts/abundance_strata.py, as the release's statistics have them):
+    # appended to each go_enrich entry as [log2 OR, its 95% CI (log2), q].
+    go_rows = pd.DataFrame([dict(zip(('analysis', 'category', 'stratum', 'a', 'b', 'c', 'd'), t[:7]), method='enricher', background=t[10])
+                            for t in set_tests if t[0] == 'go_binding'])
+    l2 = lambda v: sig(math.log2(v)) if v and v > 0 and math.isfinite(v) else None  # noqa: E731
+    for r in abundance_strata.rows(go_rows, None, enrich_dir.parent, inputs_root):
+        go_enrich[abundance_strata.TERM_OF['go_binding'](r['category'])] += [abundance_strata.web_log2(r['odds_ratio'], 3), l2(r['odds_ratio_ci_low']), l2(r['odds_ratio_ci_high']),
+                                                                              sig(r['q']) if r['q'] is not None else None]
 
     # STRING ids (numeric ENSP part) let the browser ask STRING for edges among a protein's partners.
     def ensp(acc):
@@ -3886,7 +3905,8 @@ def main():
                 'complexes': ['id', 'name', 'predicted', 'members (index or list of alternatives)', 'n', 'methylated', 'fold', 'p', 'q'],
                 'iface': ['site', 'mask', 'partners (-1 RNA, -2 DNA, else protein index)', 'pdb ids (first 8)', 'pdb count'],
                 'enrich': '[methylated at, methylated not at, other R at, other R not at, log2 OR, p] over structurally observed arginines',
-                'go_enrich': '[methylated with term, methylated reviewed, other with term, other reviewed, log2 fold enrichment, p, BH q]',
+                'go_enrich': '[methylated with term, methylated reviewed, other with term, other reviewed, log2 fold enrichment, p, BH q, '
+                             'and within PaxDb abundance deciles: log2 OR (+-99 where infinite or 0), its 95% CI (log2), BH q]',
                 'enrich_strata': '{type: {all|ordered|domain: {pooled: [a, b, c, d, log2 OR, p], mh: [log2 MH OR, CMH p, informative proteins]}}}',
                 'contacts': ['site', '[partner (-1 RNA, -2 DNA, -3 ligand, -4 unmapped chain, else protein index), pdb, residue labels]', 'methylated residue modelled (2MR/DA2/NMM)'],
                 'na': ['site', 'rna|dna|hybrid', f'window: the chain\'s sequence {NA_WINDOW} nt each side of the nucleotide closest to the arginine (at), or of the one its closest '
@@ -3924,7 +3944,8 @@ def main():
                 'geometry_summary': '{levy_counts, na_counts: {1 methylated, 0 control}, core|base: {pooled, mh}}',
                 'modelled': ['site', 'PDB entries modelling a methylated arginine there', 'residue names'],
                 'modelled_gaps': ['protein index', 'UniProt positions modelled as methylarginine but not in the union', 'PDB entries'],
-                'cond_conf': '{min stars: [[condensate index, members, methylated, log2 fold enrichment, p, q], ...]}',
+                'cond_conf': '{min stars: [[condensate index, members, methylated, log2 fold enrichment, p, q, and within PaxDb '
+                             'abundance deciles: log2 OR (+-99 where infinite or 0), its 95% CI (log2), BH q], ...]}',
                 'cond_conf_proteome': 'as cond_conf, against the reviewed human proteome instead of the proteins in any condensate',
                 'cond_score_hist': '{CD-CODE confidence score: memberships of reviewed human proteins}',
                 'pred': ['site', '[[partner index, pDockQ x 100, 1 if this protein is ProtVar uniprot_id1, served model: 1 same order, 2 reversed, 0 none], ...] (top 12)', 'predicted partners'],

@@ -12,6 +12,7 @@ from pathlib import Path
 
 import pandas as pd
 
+import abundance_strata
 import release_codes as rc
 import release_layers
 from disease_families import ADDITIONAL_FAMILIES, AUDITED_FAMILIES
@@ -379,6 +380,17 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'Atlas profiled (locations), the reviewed human genes with a DisGeNET term (disease families and DisGeNET terms) '
         'and those with a Disease Ontology term (Disease Ontology), and the reviewed proteins whose gene DepMap 24Q4 screened '
         '(dependency classes).',
+        '- **Proteins, within abundance deciles** (method `mantel_haenszel`, the background ending "each PaxDb abundance '
+        'decile a stratum"): mass spectrometry finds abundant proteins most, so a set rich in abundant proteins can look '
+        'enriched among the methylated proteins whatever methylation does. Each protein-level over-representation test '
+        'above (PANTHER, functional classes, Reactome, Human Protein Atlas locations, condensates, DepMap dependency, '
+        'Gene Ontology binding, disease families) is run again with its background split into the deciles of PaxDb 6.1 '
+        'abundance, plus one stratum for the proteins without a PaxDb value: the Mantel-Haenszel common odds ratio with its '
+        'Robins-Breslow-Greenland 95% CI and the continuity-corrected two-sided Cochran-Mantel-Haenszel test (statsmodels), '
+        'q Benjamini-Hochberg within the analysis. The sets and the pooled a, b, c, d are those of the enricher row beside '
+        'it; genes (disease families) take the highest PaxDb value of their reviewed entries. This is a sensitivity test, '
+        'reported beside the test it repeats: it asks whether an enrichment holds among proteins of similar abundance, and '
+        'removes any real association of methylation with abundance too (`scripts/abundance_strata.py`).',
         '- **Arginines** (methods `fisher` and `mantel_haenszel`): motifs, disorder, domain context, nearest domain class, '
         'structural context, the interaction tests and the changes in tumours and cell lines (cancer_change) compare '
         'methylated arginines with the other arginines of the same '
@@ -802,6 +814,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
     lines += analysis_section(files, previous)
     lines += review_section(ctx, files, previous)
     lines += release_layers.changes_section(files, ctx['version'], previous)
+    lines += abundance_strata.changes_section(files, ctx['version'], previous)
     if since_v11:
         lines += [
         '## Methylation degree',
@@ -1104,7 +1117,7 @@ def analysis_section(files: dict, previous: str) -> list:
                 f"binned by the distance to the nearest domain edge (within {rc.STRUCTURE_NEAR}, {rc.STRUCTURE_NEAR + 1}-{rc.STRUCTURE_MID}, "
                 f"more than {rc.STRUCTURE_MID}). `{files['statistics'][0]}` (analysis structure_context) compares methylarginines with "
                 'the other arginines of the same proteins in each class. The disorder and domain columns and their tests are unchanged.', '']
-    cp = stats[stats['analysis'] == 'condensate_proteome']
+    cp = stats[(stats['analysis'] == 'condensate_proteome') & (stats['method'] == 'enricher')]
     if len(cp):
         q = cp['q'].astype(float)
         out += ['## Condensates against the proteome', '',

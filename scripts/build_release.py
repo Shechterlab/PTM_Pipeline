@@ -44,6 +44,7 @@ import pandas as pd
 SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 
+import abundance_strata  # noqa: E402
 import peptide_calls as pc  # noqa: E402
 import release_codes as rc  # noqa: E402
 import release_docs  # noqa: E402
@@ -1244,6 +1245,9 @@ def main() -> None:
     else:
         for column in rc.INTERACTION_PROTEIN_COLUMNS:
             proteins[column] = ''
+    # The protein-level tests again within PaxDb abundance deciles, beside their rows (scripts/abundance_strata.py)
+    statistics = pd.concat([statistics, pd.DataFrame(abundance_strata.rows(
+        statistics, aroot, Path(args.interactions) if args.interactions else None, inputs))], ignore_index=True)
     disease_terms = release_tables.disease_terms_table(aroot, proteins)
 
     files = {

@@ -671,6 +671,7 @@ REACTOME_LISTED_Q = 0.05   # pathways below the top level the website lists: q a
 
 def reactome_changes(files: dict) -> list[str]:
     st = files['statistics'][1]
+    st = st[st['method'] == 'enricher']   # the tests themselves, not the same sets within abundance deciles
     q = pd.to_numeric(st['q'], errors='coerce')
     fold = pd.to_numeric(st['fold_enrichment'], errors='coerce')
     top, low = st['analysis'] == 'reactome_top_level', st['analysis'] == 'reactome_pathway'
@@ -691,6 +692,7 @@ def reactome_website(release: Path, version: str, inputs: Path, site_out: Path) 
             prot[a.split('-')[0]] = sorted(index[x] for x in names.split('; '))
     fields = ['analysis', 'category', 'a', 'b', 'c', 'd', 'fold_enrichment', 'p', 'q']
     st = release_table(release, f'statistics_{version}.tsv')
+    st = st[st['method'] == 'enricher']   # the within-abundance-decile rows reach the site through scripts/36 (abundance_strata)
     st = st[(st['analysis'] == 'reactome_top_level') | ((st['analysis'] == 'reactome_pathway') & (pd.to_numeric(st['q']) <= REACTOME_LISTED_Q))]
     num = lambda f, v: int(v) if f in 'abcd' else float(f'{float(v):.4g}') if f in ('fold_enrichment', 'p', 'q') else v  # noqa: E731
     listed = sorted(set(st.loc[st['analysis'] == 'reactome_pathway', 'category']))

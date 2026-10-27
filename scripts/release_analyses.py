@@ -29,6 +29,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import abundance_strata  # noqa: E402
 import build_release as br  # noqa: E402
 import release_codes as rc  # noqa: E402
 import release_layers  # noqa: E402
@@ -133,6 +134,8 @@ def collect(args) -> None:
     stats = pd.concat([rt.statistics(work, proteins), pd.DataFrame(release_layers.statistics(
         layer_sites(Path(args.sites), args.map, args.lower_confidence, sites), args.inputs,
         parse_fasta(Path(args.inputs) / 'reference' / 'uniprot_human_reviewed_2026_03.fasta'), work))], ignore_index=True)
+    # the protein-level tests again within PaxDb abundance deciles, as in the release (scripts/abundance_strata.py)
+    stats = pd.concat([stats, pd.DataFrame(abundance_strata.rows(stats, work, None, Path(args.inputs)))], ignore_index=True)
     for name, *_ in rc.STATISTICS_COLUMNS:
         if name not in stats.columns:
             stats[name] = ''
