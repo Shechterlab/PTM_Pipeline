@@ -1,0 +1,67 @@
+{
+  "release": "2026_03",
+  "script": "scripts/53_stage_uniprot_mod_res.py",
+  "raw": {
+    "file": "uniprot_human_reviewed_mod_res_2026_03.tsv",
+    "md5": "bd9c272c0ba73c3c72740f6fe0fe4533"
+  },
+  "reference": {
+    "fasta": "../inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+    "md5": "c75aad9d197cbba00f51063f65a96ac4"
+  },
+  "rows": 55484,
+  "entries": 9462,
+  "by_class": {
+    "phospho": 40918,
+    "acetyl_K": 4355,
+    "acyl_K": 3404,
+    "acetyl_Nterm": 2268,
+    "other": 2006,
+    "methyl_R": 1671,
+    "methyl_K": 507,
+    "adp_ribosyl": 214,
+    "citrulline": 117,
+    "glutamyl": 19,
+    "glycyl": 5
+  },
+  "by_evidence_class": {
+    "experimental": 39504,
+    "by_similarity": 15280,
+    "other": 700
+  },
+  "phospho_with_enzyme": 3864,
+  "ck2_sites": 184,
+  "ck2_entries": 95,
+  "top_enzymes": {
+    "autocatalysis": 593,
+    "PKA": 194,
+    "FAM20C": 189,
+    "CK2": 173,
+    "CDK1": 135,
+    "PKC": 125,
+    "GSK3-beta": 72,
+    "PLK1": 70,
+    "AMPK": 69,
+    "SRC": 64,
+    "ATM": 58,
+    "ABL1": 51,
+    "PKB/AKT1": 48,
+    "MAPK1": 45,
+    "MTOR": 38,
+    "CDK2": 37,
+    "CK1": 36,
+    "CDK5": 35,
+    "MAPK": 32,
+    "PDPK1": 31,
+    "PRKDC": 29,
+    "STK4/MST1": 28,
+    "MAPK8": 25,
+    "TBK1": 24,
+    "AURKB": 24
+  },
+  "left_out": {
+    "on_an_isoform": 796,
+    "residue_not_as_named": 2,
+    "not_in_reference": 6
+  }
+}
