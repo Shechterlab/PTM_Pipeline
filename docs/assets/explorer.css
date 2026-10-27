@@ -2273,3 +2273,8 @@ ul.tight li { margin: 0.15rem 0; }
 .preview-tag { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 0.3rem; vertical-align: middle; }
 .preview-flag { font-size: 0.8rem; color: var(--accent-dark, var(--accent)); margin: 0 0 0.5rem; }
 .cell-places th { font-weight: 600; width: 14rem; }
+.cg-line.u0 { stroke: var(--t-up-0); } .cg-line.u1 { stroke: var(--t-up-1); } .cg-line.u2 { stroke: var(--t-up-2); } .cg-line.u3 { stroke: var(--t-up-3); }
+.cg-line.d0 { stroke: var(--t-down-0); } .cg-line.d1 { stroke: var(--t-down-1); } .cg-line.d2 { stroke: var(--t-down-2); } .cg-line.d3 { stroke: var(--t-down-3); }
+.cg-line.ns, .cg-line.na { stroke: var(--line-strong); }
+.cell-grid-wrap { max-width: 860px; margin-top: 1rem; }
+.cell-grid-wrap svg { width: 100%; height: auto; display: block; }

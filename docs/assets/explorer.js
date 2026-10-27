@@ -10944,6 +10944,7 @@
     '.cg-c.ns{fill:' + pal.mid + '}.cg-c.na{fill:none;stroke:' + pal.grid + ';stroke-dasharray:2 3}.cg-t{font-size:11px;fill:' + pal.ink + '}.cg-t.t2,.cg-t.t3{fill:#fff}.nu-part{stroke:' + pal.ink + ';stroke-opacity:.25;stroke-width:.8}.cg-m{font-size:10.5px;fill:' + pal.muted + '}' +
     '.cg-h{font-size:11px;font-weight:700;fill:' + pal.ink + '}.cg-g{font-size:11px;font-weight:700;fill:' + pal.muted + ';letter-spacing:.04em}.cg-r{font-size:12px;fill:' + pal.ink + '}.cg-l{stroke:' + pal.grid + '}' +
     '.nu-env{fill:none;stroke-width:9}.nu-env.na,.nu-env.ns{stroke:' + pal.mid + '}' + [0, 1, 2, 3].map((i) => '.nu-env.u' + i + '{stroke:' + pal.up[i] + '}.nu-env.d' + i + '{stroke:' + pal.down[i] + '}').join('') +
+    [0, 1, 2, 3].map((i) => '.cg-line.u' + i + '{stroke:' + pal.up[i] + '}.cg-line.d' + i + '{stroke:' + pal.down[i] + '}').join('') + '.cg-line.ns,.cg-line.na{stroke:' + pal.backbone + '}' +
     '.nu-pore{stroke:' + pal.bg + ';stroke-width:4}.nu-num{font-size:11px;font-weight:700;fill:' + pal.ink + '}.nu-dot{fill:' + pal.bg + ';stroke:' + pal.ink + ';stroke-width:1}.nu-out{fill:none;stroke:' + pal.ink + ';stroke-opacity:.35}';
   // one cell of the grid: the map's category for the row, its test within abundance deciles
   function cellGridCell(SC, key, cat) {
@@ -10984,43 +10985,80 @@
       const r = SC.tests[k].find((x) => x[0] === map[k]);
       return [group, label, cellDs(SC, k).name, map[k], r[1], r[2], r[3], r[4], abundTsv(cellAdj(r).l2), r[8]].join('\t');
     }))).join('\n') + '\n';
-  // the nucleus: each part coloured by the median of the maps' odds ratios within abundance deciles (when at least half
-  // of the maps that have the part find it significant that way; grey otherwise), numbered to the list beside it
-  function cellNucleusParts(SC) {
-    const parts = [];
+  // Each part of the drawings coloured by the median of the maps' odds ratios within abundance deciles (when at least
+  // half of the maps that have the part find it significant that way; grey otherwise), numbered to a list beside it.
+  const CELL_NUC = ['chromatin', 'nucleoplasm', 'nucleolus', 'speckles', 'paraspeckles', 'bodies', 'envelope'];
+  const CELL_SHORT = { hpa: 'Atlas', hcm: 'Cell map', hcm_safe: 'domains', oip: 'IP', chep: 'ChEP' };
+  function cellParts(SC) {
+    const parts = {};
     for (const [, rows] of SC.groups) for (const [label, map, part] of rows) {
       if (!part) continue;
       const cells = CELL_ORDER.map((k) => [k, cellGridCell(SC, k, map[k])]).filter(([, c]) => c);
       const vals = cells.map(([, c]) => c.a.l2).filter((v) => v != null && Number.isFinite(v)).sort((x, y) => x - y), h = vals.length / 2;
       const med = vals.length ? (vals.length % 2 ? vals[Math.floor(h)] : (vals[h - 1] + vals[h]) / 2) : null;
       const agree = cells.length && cells.filter(([, c]) => c.tone[0] === (med > 0 ? 'u' : 'd')).length * 2 >= cells.length;
-      parts.push({ part, label, cells, a: { l2: med, q: agree ? 0 : 1 }, tone: med == null ? 'na' : cellTone({ l2: med, q: agree ? 0 : 1 }) });
+      parts[part] = { part, label, cells, a: { l2: med, q: agree ? 0 : 1 }, tone: med == null ? 'na' : cellTone({ l2: med, q: agree ? 0 : 1 }) };
     }
     return parts;
   }
+  // the drawing's helpers: fill class, hover text, numbered marker and the numbered list
+  function cellDraw(SC, keys) {
+    const P = cellParts(SC), on = keys.filter((k) => P[k]);
+    on.forEach((k, i) => { P[k].n = i + 1; });
+    const fill = (k) => 'cg-c ' + (P[k] ? P[k].tone : 'na');
+    const tip = (k) => (P[k] ? ' data-tip="' + esc('<b>' + P[k].label + '</b><br>' + P[k].cells.map(([key, c]) => esc(cellDs(SC, key).name) + ': ' + cellOr(c.a) + (c.tone === 'ns' ? ' (no difference)' : '')).join('<br>')) + '"' : '');
+    const num = (k, x, y) => (P[k] ? '<g' + tip(k) + '><circle class="nu-dot" cx="' + x + '" cy="' + y + '" r="8"/><text class="nu-num" x="' + x + '" y="' + (y + 4) + '" text-anchor="middle">' + P[k].n + '</text></g>' : '');
+    const list = (x0) => {
+      let y = 22, g = '';
+      for (const k of on) {
+        const p = P[k];
+        g += '<g' + tip(k) + '><circle class="nu-dot" cx="' + x0 + '" cy="' + (y - 4) + '" r="8"/><text class="nu-num" x="' + x0 + '" y="' + y + '" text-anchor="middle">' + p.n + '</text>' +
+          '<rect class="' + fill(k) + '" x="' + (x0 + 14) + '" y="' + (y - 11) + '" width="14" height="14" rx="3"/><text class="cg-r" x="' + (x0 + 36) + '" y="' + y + '">' + esc(p.label) + '</text>' +
+          '<text class="cg-m" x="' + (x0 + 36) + '" y="' + (y + 15) + '">' + esc(p.cells.map(([key, c]) => CELL_SHORT[key] + ' ' + cellOr(c.a) + (c.tone === 'ns' ? ' n.s.' : '')).join(' · ')) + '</text></g>';
+        y += 38;
+      }
+      return { svg: g, height: y };
+    };
+    return { P, fill, tip, num, list };
+  }
+  const blobSvg = (cx, cy, rx, ry, rot) => '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '" transform="rotate(' + rot + ' ' + cx + ' ' + cy + ')"/>';
   function cellNucleusSvg(SC) {
-    const P = Object.fromEntries(cellNucleusParts(SC).map((p, i) => [p.part, Object.assign(p, { n: i + 1 })]));
-    const fill = (k) => 'cg-c ' + (P[k] ? P[k].tone : 'na'), tip = (k) => (P[k] ? ' data-tip="' + esc('<b>' + P[k].label + '</b><br>' + P[k].cells.map(([key, c]) => esc(cellDs(SC, key).name) + ': ' + cellOr(c.a) + (c.tone === 'ns' ? ' (no difference)' : '')).join('<br>')) + '"' : '');
-    const num = (k, x, y) => (P[k] ? '<circle class="nu-dot" cx="' + x + '" cy="' + y + '" r="8"/><text class="nu-num" x="' + x + '" y="' + (y + 4) + '" text-anchor="middle">' + P[k].n + '</text>' : '');
-    const blob = (cx, cy, rx, ry, rot) => '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '" transform="rotate(' + rot + ' ' + cx + ' ' + cy + ')"/>';
+    const { P, fill, tip, num, list } = cellDraw(SC, CELL_NUC);
     let g = '<g' + tip('nucleoplasm') + '><ellipse class="' + fill('nucleoplasm') + '" cx="190" cy="170" rx="166" ry="136" fill-opacity=".55"/></g>';
-    g += '<g class="nu-part ' + fill('chromatin') + '"' + tip('chromatin') + '>' + [[92, 120, 34, 18, 30], [70, 190, 22, 36, 10], [130, 262, 40, 16, -12], [250, 268, 36, 16, 8], [312, 200, 18, 40, -6], [292, 100, 30, 16, 28], [190, 62, 40, 14, 0], [170, 210, 20, 12, 40]].map((b) => blob(...b)).join('') + '</g>';
+    g += '<g class="nu-part ' + fill('chromatin') + '"' + tip('chromatin') + '>' + [[92, 120, 34, 18, 30], [70, 190, 22, 36, 10], [130, 262, 40, 16, -12], [250, 268, 36, 16, 8], [312, 200, 18, 40, -6], [292, 100, 30, 16, 28], [190, 62, 40, 14, 0], [170, 210, 20, 12, 40]].map((b) => blobSvg(...b)).join('') + '</g>';
     g += '<g' + tip('nucleolus') + '><circle class="nu-part ' + fill('nucleolus') + '" cx="205" cy="150" r="42"/></g>';
-    g += '<g class="nu-part ' + fill('speckles') + '"' + tip('speckles') + '>' + [[128, 160, 14, 10, 20], [262, 200, 15, 11, -15], [150, 228, 11, 8, 0], [258, 128, 12, 9, 30], [110, 214, 9, 7, 10]].map((b) => blob(...b)).join('') + '</g>';
-    g += '<g class="nu-part ' + fill('paraspeckles') + '"' + tip('paraspeckles') + '>' + [[146, 132, 4, 7, 0], [154, 134, 4, 7, 0], [278, 162, 4, 7, 20], [285, 165, 4, 7, 20]].map((b) => blob(...b)).join('') + '</g>';
+    g += '<g class="nu-part ' + fill('speckles') + '"' + tip('speckles') + '>' + [[128, 160, 14, 10, 20], [262, 200, 15, 11, -15], [150, 228, 11, 8, 0], [258, 128, 12, 9, 30], [110, 214, 9, 7, 10]].map((b) => blobSvg(...b)).join('') + '</g>';
+    g += '<g class="nu-part ' + fill('paraspeckles') + '"' + tip('paraspeckles') + '>' + [[146, 132, 4, 7, 0], [154, 134, 4, 7, 0], [278, 162, 4, 7, 20], [285, 165, 4, 7, 20]].map((b) => blobSvg(...b)).join('') + '</g>';
     g += '<g class="nu-part ' + fill('bodies') + '"' + tip('bodies') + '>' + [[226, 236, 7], [98, 150, 6], [300, 140, 6]].map(([x, y, r]) => '<circle cx="' + x + '" cy="' + y + '" r="' + r + '"/>').join('') + '</g>';
     g += '<g' + tip('envelope') + '><ellipse class="nu-env ' + (P.envelope ? P.envelope.tone : 'na') + '" cx="190" cy="170" rx="166" ry="136"/>' +
       [20, 75, 130, 200, 250, 310].map((t) => { const r = t * Math.PI / 180, x = 190 + 166 * Math.cos(r), y = 170 + 136 * Math.sin(r); return '<line class="nu-pore" x1="' + (x - 3 * Math.sin(r)).toFixed(1) + '" y1="' + (y + 3 * Math.cos(r)).toFixed(1) + '" x2="' + (x + 3 * Math.sin(r)).toFixed(1) + '" y2="' + (y - 3 * Math.cos(r)).toFixed(1) + '"/>'; }).join('') + '</g>';
     g += num('nucleoplasm', 190, 290) + num('chromatin', 92, 120) + num('nucleolus', 205, 150) + num('speckles', 262, 200) + num('paraspeckles', 150, 118) + num('bodies', 226, 236) + num('envelope', 350, 120);
-    // the list: number, part, each map's odds ratio
-    let y = 22, list = '';
-    for (const p of Object.values(P).sort((a, b) => a.n - b.n)) {
-      list += '<g' + tip(p.part) + '><circle class="nu-dot" cx="402" cy="' + (y - 4) + '" r="8"/><text class="nu-num" x="402" y="' + y + '" text-anchor="middle">' + p.n + '</text>' +
-        '<rect class="' + fill(p.part) + '" x="416" y="' + (y - 11) + '" width="14" height="14" rx="3"/><text class="cg-r" x="438" y="' + y + '">' + esc(p.label) + '</text>' +
-        '<text class="cg-m" x="438" y="' + (y + 15) + '">' + esc(p.cells.map(([key, c]) => ({ hpa: 'Atlas', hcm: 'Cell map', hcm_safe: 'domains', oip: 'IP', chep: 'ChEP' })[key] + ' ' + cellOr(c.a) + (c.tone === 'ns' ? ' n.s.' : '')).join(' · ')) + '</text></g>';
-      y += 40;
-    }
-    return '<svg class="cell-nucleus" viewBox="0 0 700 ' + Math.max(320, y) + '" role="img" aria-label="The nucleus, each part coloured by the odds ratio of methylated proteins within abundance deciles">' + g + list + '</svg>';
+    const L = list(402);
+    return '<svg class="cell-nucleus" viewBox="0 0 700 ' + Math.max(320, L.height) + '" role="img" aria-label="The nucleus, each part coloured by the odds ratio of methylated proteins within abundance deciles">' + g + L.svg + '</svg>';
+  }
+  // the whole cell: membranes, organelles and granules of the cytoplasm around the nucleus (drawn as one, as in the zoom)
+  const CELL_CYTO = ['pm', 'cytosol', 'actin', 'microtubules', 'centrosome', 'er', 'ribosomes', 'golgi', 'mito', 'endolyso', 'perox', 'granules', 'pbodies'];
+  function cellWholeSvg(SC) {
+    const { P, fill, tip, num, list } = cellDraw(SC, CELL_CYTO), nuc = cellParts(SC);
+    const ntone = nuc.nucleoplasm ? nuc.nucleoplasm.tone : 'na';
+    let g = '<g' + tip('cytosol') + '><path class="' + fill('cytosol') + '" fill-opacity=".45" d="M40,170 C40,70 120,22 210,24 C300,26 372,80 368,175 C364,270 300,330 200,330 C100,330 40,270 40,170 Z"/></g>';
+    g += '<g' + tip('actin') + '><path class="cg-line ' + (P.actin ? P.actin.tone : 'na') + '" fill="none" stroke-width="3" stroke-dasharray="5 3" d="M52,170 C52,80 126,36 210,38 C292,40 356,90 352,175 C348,262 290,316 200,316 C108,316 52,260 52,170 Z"/></g>';
+    g += '<g' + tip('pm') + '><path class="cg-line ' + (P.pm ? P.pm.tone : 'na') + '" fill="none" stroke-width="7" d="M40,170 C40,70 120,22 210,24 C300,26 372,80 368,175 C364,270 300,330 200,330 C100,330 40,270 40,170 Z"/></g>';
+    g += '<g' + tip('microtubules') + '>' + [[250, 248, 340, 160], [250, 248, 320, 300], [250, 248, 170, 310], [250, 248, 330, 230], [250, 248, 120, 280]].map(([x1, y1, x2, y2]) => '<line class="cg-line ' + (P.microtubules ? P.microtubules.tone : 'na') + '" stroke-width="1.6" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '"/>').join('') + '</g>';
+    g += '<g' + tip('er') + '>' + [62, 74, 86].map((r) => '<path class="cg-line ' + (P.er ? P.er.tone : 'na') + '" fill="none" stroke-width="4" d="M' + (150 + 0.2 * r) + ',' + (180 - r) + ' A' + r + ',' + (r * 0.85) + ' 0 0 1 ' + (150 + r) + ',' + (195 + 0.1 * r) + '"/>').join('') + '</g>';
+    g += '<g class="' + fill('ribosomes') + '"' + tip('ribosomes') + '>' + [[205, 103], [222, 112], [236, 128], [244, 146], [248, 166], [214, 96], [232, 120], [250, 184]].map(([x, y]) => '<circle cx="' + x + '" cy="' + y + '" r="2.2"/>').join('') + '</g>';
+    g += '<g' + tip('nucleus') + '><ellipse class="cg-c ' + ntone + '" cx="150" cy="185" rx="62" ry="54" fill-opacity=".8"/><text class="cg-m" x="150" y="189" text-anchor="middle">nucleus →</text></g>';
+    g += '<g' + tip('golgi') + '>' + [0, 8, 16, 24].map((d) => '<path class="cg-line ' + (P.golgi ? P.golgi.tone : 'na') + '" fill="none" stroke-width="4" stroke-linecap="round" d="M' + (276 + d) + ',' + (120 + d / 2) + ' q 18,' + (30 - d / 3) + ' 0,' + (60 - d) + '"/>').join('') + '</g>';
+    g += '<g class="nu-part ' + fill('mito') + '"' + tip('mito') + '>' + [[100, 92, 20, 8, -25], [300, 250, 22, 8, 20], [90, 268, 18, 7, 35], [330, 120, 16, 7, -60]].map((b) => blobSvg(...b)).join('') + '</g>';
+    g += '<g class="nu-part ' + fill('endolyso') + '"' + tip('endolyso') + '>' + [[318, 196, 8], [334, 214, 6], [286, 290, 7], [64, 216, 6]].map(([x, y, r]) => '<circle cx="' + x + '" cy="' + y + '" r="' + r + '"/>').join('') + '</g>';
+    g += '<g class="nu-part ' + fill('perox') + '"' + tip('perox') + '>' + [[260, 70, 4], [70, 140, 4], [186, 296, 4]].map(([x, y, r]) => '<circle cx="' + x + '" cy="' + y + '" r="' + r + '"/>').join('') + '</g>';
+    g += '<g class="nu-part ' + fill('granules') + '"' + tip('granules') + '>' + [[196, 60, 11, 7, 15], [240, 296, 10, 6, -20], [62, 186, 6, 9, 0]].map((b) => blobSvg(...b)).join('') + '</g>';
+    g += '<g class="nu-part ' + fill('pbodies') + '"' + tip('pbodies') + '>' + [[226, 70, 4], [262, 304, 4], [120, 300, 4]].map(([x, y, r]) => '<circle cx="' + x + '" cy="' + y + '" r="' + r + '"/>').join('') + '</g>';
+    g += '<g class="nu-part ' + fill('centrosome') + '"' + tip('centrosome') + '><rect x="244" y="243" width="5" height="12" rx="1"/><rect x="251" y="245" width="12" height="5" rx="1"/></g>';
+    g += num('pm', 368, 210) + num('cytosol', 78, 122) + num('actin', 58, 232) + num('microtubules', 310, 292) + num('centrosome', 262, 232) + num('er', 178, 106) + num('ribosomes', 226, 100) +
+      num('golgi', 306, 152) + num('mito', 100, 92) + num('endolyso', 326, 200) + num('perox', 260, 70) + num('granules', 196, 60) + num('pbodies', 120, 300);
+    const L = list(402);
+    return '<svg class="cell-whole" viewBox="0 0 700 ' + Math.max(350, L.height) + '" role="img" aria-label="The cell, each compartment coloured by the odds ratio of methylated proteins within abundance deciles">' + g + L.svg + '</svg>';
   }
   const cellFigSpec = (id, title, subText, svg, tsv) => ({ id, title, subText, figCss: cellFigCss, figSvg: svg, figTsv: tsv });
   const CELL_KEY = '<span class="cell-key"><i class="cg-k u3"></i><i class="cg-k u1"></i> more methylated proteins than among proteins of similar abundance the same map places</span><span class="cell-key"><i class="cg-k ns"></i> no difference (q > 0.05)</span><span class="cell-key"><i class="cg-k d1"></i><i class="cg-k d3"></i> fewer</span><span class="cell-key"><i class="cg-k na"></i> not a compartment of that map</span><span>numbers: odds ratio within PaxDb abundance deciles</span>';
@@ -11031,17 +11069,19 @@
     loadLayer('subcellular').then((SC) => {
       if (UI.view !== view || R !== rq) return;
       if (!SC) { if (box) box.innerHTML = '<p class="muted">The subcellular maps did not load.</p>'; if (th) th.textContent = 'did not load'; return; }
-      const parts = cellNucleusParts(SC), up = parts.filter((p) => /^u/.test(p.tone)).sort((a, b) => b.a.l2 - a.a.l2);
+      const parts = Object.values(cellParts(SC)), up = parts.filter((p) => /^u/.test(p.tone)).sort((a, b) => b.a.l2 - a.a.l2);
       if (tv) tv.innerHTML = aMeters(up.slice(0, 4).map((p) => ({ label: p.label, v: Math.min(1, p.a.l2 / 3), text: cellOr(p.a), cls: 'count', tip: '<b>' + esc(p.label) + '</b><br>median odds ratio within abundance deciles across ' + p.cells.length + ' map' + (p.cells.length === 1 ? '' : 's') })), { tight: true, wide: true });
-      if (th) th.innerHTML = up.length ? 'In the nucleus, every map enriches <b>' + esc(up.slice(0, 3).map((p) => p.label.toLowerCase()).join(', ')) + '</b>, among proteins of similar abundance' : 'No nuclear part enriched in every map';
+      if (th) th.innerHTML = up.length ? 'Most enriched among proteins of similar abundance: <b>' + esc(up.slice(0, 3).map((p) => p.label.toLowerCase()).join(', ')) + '</b>' : 'No compartment enriched in the maps';
       if (!box) return;
       const key = UI.cellMap && cellDs(SC, UI.cellMap) ? UI.cellMap : 'hcm', spec = cellSpec(SC, key, scoped);
       UI.charts[spec.id] = spec;
       const grid = cellFigSpec('ch-cell-grid', 'Where in the cell: compartments against maps', 'Odds ratio of methylated proteins in each compartment within PaxDb abundance deciles, against the other proteins the same map places (Mantel–Haenszel). Preview of v1.5.0; whole dataset.', () => cellGridSvg(SC), () => cellGridTsv(SC));
+      const whole = cellFigSpec('ch-cell-whole', 'Where in the cell', 'Each compartment coloured by the median odds ratio, within PaxDb abundance deciles, of the maps that have it; grey where the maps disagree or show no difference. The nucleus is drawn in full beside it. Preview of v1.5.0; whole dataset.', () => cellWholeSvg(SC), () => cellGridTsv(SC));
       const nuc = cellFigSpec('ch-cell-nucleus', 'Where in the nucleus', 'Each part coloured by the median odds ratio, within PaxDb abundance deciles, of the maps that have it; grey where the maps disagree or show no difference. Preview of v1.5.0; whole dataset.', () => cellNucleusSvg(SC), () => cellGridTsv(SC));
       box.innerHTML = '<p class="preview-flag">Preview, not released: built from the pilot of ' + esc(new Date().toISOString().slice(0, 10)) + ' for review.</p>' +
         '<p class="small">Four maps of where proteins sit, made by different methods in different cells. Each map is tested only against the proteins it places, so a compartment is enriched when methylated proteins are more common there than among the other proteins the same experiment detected; and again among proteins of similar abundance (PaxDb deciles), the comparison the colours show.</p>' +
-        '<div class="cell-two">' + figBlock(nuc, 'The nucleus') + figBlock(grid, 'Compartments against maps') + '</div>' + '<div class="chart-key">' + CELL_KEY + '</div>' +
+        '<div class="cell-two">' + figBlock(whole, 'The cell') + figBlock(nuc, 'The nucleus') + '</div>' + '<div class="chart-key">' + CELL_KEY + '</div>' +
+        '<div class="cell-grid-wrap">' + figBlock(grid, 'Compartments against maps') + '</div>' +
         '<div class="cell-one"><div class="fig-head"><span class="flabel">One map at a time</span><span class="seg cell-maps" role="group" aria-label="Map">' +
           CELL_ORDER.filter((k) => cellDs(SC, k)).map((k) => '<button type="button" data-cellmap="' + k + '" aria-pressed="' + (k === key) + '">' + esc(cellDs(SC, k).key === 'hcm_safe' ? 'Cell map, domains' : cellDs(SC, k).name) + '</button>').join('') + '</span>' + expButtons(spec.id) + '</div>' +
           hbars(spec) + '<p class="note ora-note">' + esc(spec.subText) + ' Over-representation (one-sided hypergeometric), the bar log2 fold enrichment; the mark after it, the test within abundance deciles.</p></div>' +
