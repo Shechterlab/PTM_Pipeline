@@ -12,6 +12,20 @@
   // own data files (data/methylarg_*_all.json), its statistics computed with the lower-confidence sites whose methyl
   // group is on an arginine. Off, the page is the release as it stands.
   const LC_ON = (() => { try { return new URLSearchParams(location.search).get('lc') === '1'; } catch (e) { return false; } })();
+  // The address #toggle-goatcounter, opened or typed into an open page, stops counting this browser's visits, or
+  // starts it again (countVisit), as GoatCounter's own script does; the page then shows the Overview. Bound before the
+  // router, so it reads the address first.
+  const toggleCounting = () => {
+    if (location.hash !== '#toggle-goatcounter') return;
+    try {
+      const off = localStorage.getItem('skipgc') === 't';
+      if (off) localStorage.removeItem('skipgc'); else localStorage.setItem('skipgc', 't');
+      history.replaceState(null, '', location.pathname + location.search);
+      window.alert(off ? 'Visits from this browser are counted again.' : 'Visits from this browser are no longer counted.');
+    } catch (e) { /* storage blocked: nothing to toggle */ }
+  };
+  toggleCounting();
+  window.addEventListener('hashchange', toggleCounting);
   const dataUrl = (name) => 'data/' + (LC_ON ? name.replace(/\.json$/, '_all.json') : name) + (ASSET_V ? '?v=' + encodeURIComponent(ASSET_V) : '');
   // The page with lower-confidence sites on or off, at the same view and search.
   function lcUrl(on) {
@@ -2296,6 +2310,31 @@
     baseTitle = baseTitle || document.title;
     const p = UI.view === 'protein' && UI.detail != null ? P[UI.detail] : null;
     document.title = (p ? p.label + (UI.highlight != null ? ' ' + rl(UI.highlight, p) : '') : UI.view === 'unlisted' ? UI.unlLabel || UI.unl : VIEW_NAMES[UI.view] || '') + ' · ' + baseTitle.split(' · ')[0];
+    countVisit(p);
+  }
+  // Visits on shechterlab.github.io are counted by GoatCounter (goatcounter.com): no cookies, and nothing kept that
+  // identifies a visitor. One count per page of the explorer, a tab or a protein (path #overview, #Q13148), not per
+  // selection, site or redraw; previews, copies and local servers count nothing. count.js loads with the first count.
+  const COUNTER = { host: 'shechterlab.github.io', code: 'methylarginine' };
+  let counted = '';
+  function countVisit(p) {
+    if (!COUNTER.code || location.hostname !== COUNTER.host) return;
+    const key = p ? p.acc : UI.view === 'unlisted' ? UI.unl : UI.view;
+    if (!key || key === counted) return;
+    counted = key;
+    const hit = { path: location.pathname + '#' + key, title: (p ? p.label : UI.view === 'unlisted' ? UI.unlLabel || UI.unl : VIEW_NAMES[UI.view] || key) + ' · ' + baseTitle.split(' · ')[0] };
+    const gc = window.goatcounter;
+    if (gc && gc.count) { gc.count(hit); return; }
+    countVisit.next = hit;
+    if (countVisit.loading) return;
+    countVisit.loading = true;
+    window.goatcounter = { no_onload: true };
+    const js = document.createElement('script');
+    js.async = true;
+    js.src = 'https://gc.zgo.at/count.js';
+    js.dataset.goatcounter = 'https://' + COUNTER.code + '.goatcounter.com/count';
+    js.addEventListener('load', () => { if (window.goatcounter.count && countVisit.next) window.goatcounter.count(countVisit.next); countVisit.next = null; });
+    document.head.appendChild(js);
   }
   // Proteins opened in this session, newest first, for the breadcrumb bar.
   function rememberProtein(i) {
@@ -15493,7 +15532,7 @@
         sub('compare', 'Comparing two selections', '<p>Save a selection with a name (<b>Save</b>, next to the selection in the bar under the search box, on the Enriched features card or on the report); saved selections stay in this browser. Change the search or filters, open <b>Saved</b> and press <b>Compare</b> next to the saved one: it is A, and the current selection is B. The comparison shows both selections, their overlap, a paragraph on each, the interaction status split, the site features that differ between them (Fisher\'s exact test, Benjamini–Hochberg across features; up to 16 with q ≤ 0.05, or the 16 closest, faded, when none is), each as the share of A and of B with the ratio, side-by-side logos and the proteins with most sites. ' +
           'Sites in both selections count on both sides, which makes the test conservative. The link keeps both selections (<code>A=</code> holds the first), and the page prints with the same header, citation and page numbers as the report.</p>') +
         sub('report', 'Insight report', '<p>One printable page for the current selection: the selection and a link that reopens it, headline numbers, what sets it apart, the site and protein evidence maps with the protein-context table, the sequence logo and alignment (±7, first 30 sites), the proteins on one residue scale (up to 8, UniProt features fetched live), the proteins with most selected sites with their evidence, and the methods and citation. It opens the browser\'s print dialog; choose Save as PDF.</p>')],
-      ['about', 'About', '<p>The explorer indexes the integrated human methylarginine union assembled by the <a href="https://github.com/Shechterlab/PTM_Pipeline">PTM_Pipeline</a> for the review below. It runs entirely in your browser; UniProt, AlphaFold DB, PDB, Ensembl and other annotations on protein pages are fetched live.</p>' +
+      ['about', 'About', '<p>The explorer indexes the integrated human methylarginine union assembled by the <a href="https://github.com/Shechterlab/PTM_Pipeline">PTM_Pipeline</a> for the review below. It runs entirely in your browser; UniProt, AlphaFold DB, PDB, Ensembl and other annotations on protein pages are fetched live. Visits are counted with <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a>, which sets no cookies and keeps nothing that identifies a visitor.</p>' +
         '<p><b>Cite:</b> ' + esc(PAPER.cite) + ' <a href="https://doi.org/' + PAPER.doi + '">doi:' + PAPER.doi + '</a>, and the original studies and resources (see How to cite).</p>'],
       ['versions', 'Versions', '<p><b>' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>. This explorer was reorganised after its first release. It uses the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences (v1.1.0)' + (localisedOnly() ? '. From v1.2.0 every study is read from its own tables and ' + LOCALISED_RULE + (addedStudies().length ? '; ' + addedStudies().length + ' studies were added (' + esc(addedStudies().join(', ')) + ')' : '') : addedStudies().length ? ' and the sites of ' + addedStudies().length + ' more studies (v1.2.0: ' + esc(addedStudies().join(', ')) + ')' : '') + changesText(': ') + ' (see <a href="' + changesLink() + '" target="_blank" rel="noopener">what changed</a>). The published version (<a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases/v1.0.0" target="_blank" rel="noopener">v1.0.0</a>) remains available <a href="v1.0.0/">here</a>, and the releases since, v1.1.0 <a href="v1.1.0/">here</a>, v1.2.0 <a href="v1.2.0/">here</a>, v1.3.0 <a href="v1.3.0/">here</a> and v1.3.1 <a href="v1.3.1/">here</a>. The repository as it stood before the reorganisation is kept in the <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/v1.0.0_archive" target="_blank" rel="noopener">v1.0.0_archive</a> tag.</p>' +
         '<p>The data of each version, with every table and column described, are in <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases" target="_blank" rel="noopener">releases/</a>. The GitHub releases are archived on Zenodo, ' + doiLink(ARCHIVE_DOI) + ': it opens the most recent version and lists every version with its own DOI.</p>'],
