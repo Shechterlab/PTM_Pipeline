@@ -1,0 +1,67 @@
+{
+  "script": "scripts/54_stage_ptmexchange_sites.py",
+  "downloaded": "2026-10-27",
+  "files": {
+    "Human_GSB_Acetyl_all_prots_1106.csv.gz": {
+      "md5": "34be3587e71dd0e4f650bd33568af4d0",
+      "pride": "PXD079218"
+    },
+    "Human_GSB_Methyl_all_prots_0406.csv.gz": {
+      "md5": "e6165fc6200ad8c44c7dc48601222296",
+      "pride": "PXD076372"
+    },
+    "Human_GSB_SUMO_all_prots_0924.csv.gz": {
+      "md5": "c2b7471c28b8cfec6cd77b7733523a0c",
+      "pride": "PXD068489"
+    },
+    "Human_GSB_Ubiq_all_prots_1106.csv.gz": {
+      "md5": "029109a168bf5c2281a7176ae405037f",
+      "pride": "PXD068989"
+    }
+  },
+  "reference": {
+    "fasta": "../inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+    "md5": "c75aad9d197cbba00f51063f65a96ac4"
+  },
+  "rows": 169599,
+  "by_ptm": {
+    "ubiquitin_K": 115050,
+    "sumo_K": 35073,
+    "acetyl_K": 17652,
+    "methyl_R": 1767,
+    "methyl_K": 57
+  },
+  "by_ptm_confidence": {
+    "acetyl_K Bronze": 4626,
+    "acetyl_K Gold": 4808,
+    "acetyl_K Silver": 8218,
+    "methyl_K Bronze": 40,
+    "methyl_K Gold": 1,
+    "methyl_K Silver": 16,
+    "methyl_R Bronze": 1267,
+    "methyl_R Gold": 155,
+    "methyl_R Silver": 345,
+    "sumo_K Bronze": 12813,
+    "sumo_K Gold": 8521,
+    "sumo_K Silver": 13739,
+    "ubiquitin_K Bronze": 33683,
+    "ubiquitin_K Gold": 44045,
+    "ubiquitin_K Silver": 37322
+  },
+  "left_out": {
+    "Human_GSB_Acetyl_all_prots_1106.csv.gz: decoy": 882,
+    "Human_GSB_Acetyl_all_prots_1106.csv.gz: not in reference": 12,
+    "Human_GSB_Acetyl_all_prots_1106.csv.gz: residue differs": 33,
+    "Human_GSB_Acetyl_all_prots_1106.csv.gz: no peptide places it": 3,
+    "Human_GSB_Methyl_all_prots_0406.csv.gz: decoy": 276,
+    "Human_GSB_Methyl_all_prots_0406.csv.gz: not in reference": 4,
+    "Human_GSB_SUMO_all_prots_0924.csv.gz: not in reference": 75,
+    "Human_GSB_SUMO_all_prots_0924.csv.gz: residue differs": 278,
+    "Human_GSB_SUMO_all_prots_0924.csv.gz: residue A": 2333,
+    "Human_GSB_SUMO_all_prots_0924.csv.gz: no peptide places it": 351,
+    "Human_GSB_Ubiq_all_prots_1106.csv.gz: decoy": 7498,
+    "Human_GSB_Ubiq_all_prots_1106.csv.gz: not in reference": 80,
+    "Human_GSB_Ubiq_all_prots_1106.csv.gz: residue differs": 299,
+    "Human_GSB_Ubiq_all_prots_1106.csv.gz: no peptide places it": 18
+  }
+}
