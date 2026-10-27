@@ -2315,7 +2315,7 @@
   // Visits on shechterlab.github.io are counted by GoatCounter (goatcounter.com): no cookies, and nothing kept that
   // identifies a visitor. One count per page of the explorer, a tab or a protein (path #overview, #Q13148), not per
   // selection, site or redraw; previews, copies and local servers count nothing. count.js loads with the first count.
-  const COUNTER = { host: 'shechterlab.github.io', code: 'methylarginine' };
+  const COUNTER = { host: 'shechterlab.github.io', code: 'shechterlab' };
   let counted = '';
   function countVisit(p) {
     if (!COUNTER.code || location.hostname !== COUNTER.host) return;
