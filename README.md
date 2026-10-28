@@ -11,13 +11,16 @@ them, and the [Methylarginine Site Explorer](https://shechterlab.github.io/PTM_P
 
 | Version | Sites | Data | Website |
 |---|---|---|---|
-| **v1.4.1** (current) | 11,632 sites on 4,439 proteins, and 2,396 lower-confidence sites | [`releases/v1.4.1/`](releases/v1.4.1/) ([what changed](releases/v1.4.1/CHANGES.md)) | [`docs/`](docs/) |
+| **v1.4.2** (current) | 11,632 sites on 4,439 proteins, and 2,396 lower-confidence sites | the data of v1.4.1, [`releases/v1.4.1/`](releases/v1.4.1/) (the website changed; see below) | [`docs/`](docs/) |
+| v1.4.1 | 11,632 sites on 4,439 proteins, and 2,396 lower-confidence sites | [`releases/v1.4.1/`](releases/v1.4.1/) ([what changed](releases/v1.4.1/CHANGES.md)) | [`docs/v1.4.1/`](docs/v1.4.1/) |
 | v1.4.0 | 11,632 sites on 4,439 proteins, and 2,396 lower-confidence sites | [`releases/v1.4.0/`](releases/v1.4.0/) ([what changed](releases/v1.4.0/CHANGES.md)) | [`docs/v1.4.0/`](docs/v1.4.0/) |
 | v1.3.1 | 11,601 sites on 4,432 proteins, and 2,406 lower-confidence sites | [`releases/v1.3.1/`](releases/v1.3.1/) ([what changed](releases/v1.3.1/CHANGES.md)) | [`docs/v1.3.1/`](docs/v1.3.1/) |
 | v1.3.0 | 11,601 sites on 4,432 proteins, and 2,406 lower-confidence sites | [`releases/v1.3.0/`](releases/v1.3.0/) ([what changed](releases/v1.3.0/CHANGES.md)) | [`docs/v1.3.0/`](docs/v1.3.0/) |
 | v1.2.0 | 11,601 sites on 4,432 proteins, and 2,406 lower-confidence sites | [`releases/v1.2.0/`](releases/v1.2.0/) ([what changed](releases/v1.2.0/CHANGES.md)) | [`docs/v1.2.0/`](docs/v1.2.0/) |
 | v1.1.0 | 13,365 sites on 4,723 proteins, and 6 pending | [`releases/v1.1.0/`](releases/v1.1.0/) ([what changed](releases/v1.1.0/CHANGES.md)) | [`docs/v1.1.0/`](docs/v1.1.0/) |
 | v1.0.0 (published with the paper) | 13,719 sites on 5,090 accessions | [`releases/v1.0.0/`](releases/v1.0.0/) | [`docs/v1.0.0/`](docs/v1.0.0/) |
+
+v1.4.2 changes the website only; its data are those of v1.4.1. A search, a quick selection, or a link to a protein class, disease, condensate or location that selects at least 10 proteins and 30 sites now opens on the Overview, where every section is retested on it: the Overview and Interactions tabs carry a "selection" badge, the protein sections come in the order in which they usually tell most about a selection, and what sets a selection's sites apart from the others is a closed section below them. A preview card, "Where in the cell", compares the methylated proteins (or a selection) with other proteins of similar abundance in six maps of the cell: the Human Protein Atlas, the Human Cell Map and its finer domains, organelle IP, the speckle, lamina and PML-body proximity proteomes of Barutcu et al. 2022, and chromatin fractionation. Each protein's page lists where the maps place it and where the RNAs it binds (eCLIP) gather in maps of RNA and DNA (APEX-seq, nuclear-body APEX2-seq, TSA-seq and Hi-C subcompartments). The preview's maps come from pilots ([`scripts/pilots/where_in_cell/`](scripts/pilots/where_in_cell/)) and are not part of the release tables.
 
 v1.4.1 keeps every site and value of v1.4.0 and repeats each protein-level over-representation test within PaxDb protein abundance deciles (a Mantel–Haenszel odds ratio over the deciles of the test's own background), because mass spectrometry finds abundant proteins most and the methylated proteins are mostly abundant ones. The new rows sit beside the tests they repeat in the statistics table, and the website marks each protein-set chart with the result. The RNA associations hold at about half their size (Gene Ontology RNA binding, odds ratio 6.7 without the deciles and 3.7 within them; Reactome Metabolism of RNA, 5.7 and 3.2), DNA binding and the nucleoplasm grow stronger, and of the enriched sets 205 of 597 Reactome pathways and 5 of 23 disease families remain enriched among proteins of similar abundance ([what changed](releases/v1.4.1/CHANGES.md)).
 
@@ -40,7 +43,7 @@ dictionary and a record of what changed since the release before.
 | Folder | Holds |
 |---|---|
 | [`releases/`](releases/) | the site union, one folder per version |
-| [`docs/`](docs/) | the Methylarginine Site Explorer (GitHub Pages); `docs/v1.0.0/` is the published version and `docs/v1.1.0/`, `docs/v1.2.0/`, `docs/v1.3.0/`, `docs/v1.3.1/` and `docs/v1.4.0/` the releases since, unchanged |
+| [`docs/`](docs/) | the Methylarginine Site Explorer (GitHub Pages); `docs/v1.0.0/` is the published version and `docs/v1.1.0/`, `docs/v1.2.0/`, `docs/v1.3.0/`, `docs/v1.3.1/`, `docs/v1.4.0/` and `docs/v1.4.1/` the releases since, unchanged |
 | [`inputs/`](inputs/) | every file a release and the website are built from, with `MANIFEST.tsv` |
 | [`provenance/`](provenance/) | where the sites come from, in one page |
 | [`scripts/`](scripts/) | the pipeline, numbered by step |
