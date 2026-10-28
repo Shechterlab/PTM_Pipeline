@@ -4583,7 +4583,7 @@
         'ov-ix': ixReady() ? ixTile() : { vis: '' },
         'ov-dep': { vis: '<span class="dep-ov-vis"></span>', head: '<span class="dep-ov-head">loading DepMap…</span>', whole: '' },
         'ov-path': { vis: '<span class="path-ov-vis"></span>', head: '<span class="path-ov-head">loading Reactome…</span>', whole: '' },
-        'ov-cell': { vis: '<span class="cell-ov-vis"></span>', head: '<span class="cell-ov-head">loading the subcellular maps…</span>', whole: '' },
+        'ov-cell': { vis: '<span class="cell-ov-vis"></span>', head: '<span class="cell-ov-head">loading the maps of the cell…</span>', whole: '' },
         'ov-study': provTile(),
         'ov-treat': { vis: trVis ? '<div class="a-treat">' + trVis + '</div>' : '', head: 'Sites with a peptide that decreased with each PRMT inhibitor, knockout or knockdown' },
         'ov-start': { vis: startVis(), head: 'Click a protein to open it, or a selection to apply it', full: true },
@@ -4605,8 +4605,8 @@
         row('ov-path', 'Reactome pathways', '<div class="card wide" id="ch-path"><div class="card-head"><div><h3>Reactome pathways</h3><p class="sub">Which Reactome pathways hold more ' + (scoped ? 'proteins of your selection' : 'methylated proteins') + ' than expected, against all reviewed proteins with a pathway.</p></div></div>' +
           '<div id="ch-path-body"><p class="note">Loading Reactome…</p></div></div>', 'Which Reactome pathways are over-represented?', 'retest', 'loading Reactome…', 'loading Reactome…', null, null))) +
       untested(hubSec('Where in the cell',
-        row('ov-cell', 'Where in the cell', '<div class="card wide" id="ch-cell"><div class="card-head"><div><h3>Where in the cell <span class="preview-tag">preview</span></h3><p class="sub">Which compartments hold more ' + (scoped ? 'proteins of your selection' : 'methylated proteins') + ' than expected, in four maps made by imaging, proximity labelling, organelle pull-down and chromatin fractionation.</p></div></div>' +
-          '<div id="ch-cell-body"><p class="note">Loading the subcellular maps…</p></div></div>', 'Which compartments of the cell, and of the nucleus, hold methylated proteins? (four maps, each against the proteins it places)', 'retest', 'loading the subcellular maps…', 'loading the subcellular maps…', null, null))) +
+        row('ov-cell', 'Where in the cell', '<div class="card wide" id="ch-cell"><div class="card-head"><div><h3>Where in the cell <span class="preview-tag">preview</span></h3><p class="sub">Where ' + (scoped ? 'the proteins of your selection' : 'methylated proteins') + ', their transcripts and their genes sit in the cell, compared with others of similar abundance or expression.</p></div></div>' +
+          '<div id="ch-cell-body"><p class="note">Loading the maps of the cell…</p></div></div>', 'Where do methylated proteins, their transcripts and their genes sit in the cell?', 'retest', 'loading the maps of the cell…', 'loading the maps of the cell…', null, null))) +
       untested(hubSec('Where in the protein',
         chartRow('ov-motif', motif, 'Which sequence motifs surround methylarginines, against the other arginines of the same proteins?') +
         row('ov-struct', sctx ? 'Structural context' : 'Disorder and domains', structHtml, 'Are methylarginines in disordered regions or domains, against the other arginines of the same proteins?', 'retest',
@@ -10894,17 +10894,19 @@
     });
   }
 
-  // ---- Where in the cell (preview of v1.5.0; data/subcellular.json): four maps of where proteins sit, each tested
-  // against the proteins it places (its own detected proteins), as the release tests protein sets: one-sided
-  // hypergeometric with fold enrichment, and the Mantel-Haenszel odds ratio within PaxDb abundance deciles of the same
-  // proteins (two-sided). A compartment grid shows the maps side by side; a nucleus drawing, its parts.
+  // ---- Where in the cell (preview of v1.5.0). Three layers, one at a time: where the proteins sit (four protein maps,
+  // data/subcellular.json), where their transcripts sit (APEX-seq and nuclear-body APEX2-seq) and where their genes sit
+  // (TSA-seq), the last two in data/subcellular_na.json. Each map is tested against what it places itself (its own
+  // detected proteins, transcripts or genes): one-sided hypergeometric with fold enrichment, and the Mantel–Haenszel odds
+  // ratio within deciles of abundance (proteins: PaxDb) or of expression in the same cells (transcripts, genes),
+  // two-sided. The drawings, the grid and the chart show one layer; a part of the drawings opens its numbers and members.
   const CELL_ORDER = ['hpa', 'hcm', 'hcm_safe', 'oip', 'chep'];
   const CELL_ICP = { 'ICP >= 0.8 (chromatin)': 'Chromatin (probability ≥ 0.8)', 'ICP 0.5-0.8': 'Probability 0.5–0.8', 'ICP 0.2-0.5': 'Probability 0.2–0.5', 'ICP < 0.2 (not chromatin)': 'Not chromatin (probability < 0.2)' };
   const cellLabel = (c) => CELL_ICP[c] || (c === 'ER' || c === 'ERGIC' ? c : c.replace(/_/g, ' ').replace(/^p-body$/, 'P-body').replace(/^14-3-3 /, '14-3-3 ').replace(/^./, (x) => x.toUpperCase()));
-  const cellDs = (SC, key) => SC.datasets.find((d) => d.key === key);
+  const cellDs = (L, key) => L.datasets.find((d) => d.key === key);
   // the grid's column heads: method, map, cells
   const CELL_HEAD = { hpa: ['Imaging', 'Protein Atlas'], hcm: ['Proximity', 'Cell Map'], hcm_safe: ['Proximity', 'Cell Map domains'], oip: ['Organelle IP', 'Hein 2025'], chep: ['Chromatin', 'ChEP'] };
-  // a protein's category in one map ('' when the map does not place it)
+  // a protein's category in one protein map ('' when the map does not place it)
   function cellCatOf(SC, acc, key) {
     const r = SC.proteins[acc.split('-')[0]];
     if (key === 'hpa' || !r) return '';
@@ -10914,30 +10916,54 @@
   }
   // [category, members, methylated, log2 fold, q, log2 OR within deciles, CI low, CI high, q] -> its test within deciles
   const cellAdj = (r) => abundTest([r[5], r[6], r[7], r[8]]);
-  // a protein's categories in one map: its HPA locations (Approved or better), else its one category of cellCatOf
-  function cellCatsOf(SC, acc, key) {
-    if (key !== 'hpa') { const c = cellCatOf(SC, acc, key); return c ? [c] : []; }
-    const r = SC.proteins[acc.split('-')[0]];
-    return r && r[4] ? r[4].map((i) => SC.categories.hpa[i]) : [];
+  // The layers, each read the same way: L.catsOf(acc, map) -> its categories there, L.stratum(acc, map) -> its decile
+  // there (0-9, 10 without a value, -1 when the map does not place it), with the words the card uses for it.
+  const CELL_LAYERS = [['protein', 'Proteins'], ['rna', 'RNA'], ['dna', 'DNA']];
+  const cellLayerMemo = new Map();
+  function cellProteinLayer(SC) {
+    if (cellLayerMemo.has(SC)) return cellLayerMemo.get(SC);
+    const di = (key) => SC.decile_maps.indexOf(key);
+    const L = { key: 'protein', datasets: SC.datasets, order: CELL_ORDER.filter((k) => SC.datasets.some((d) => d.key === k)), head: CELL_HEAD, tests: SC.tests, groups: SC.groups, names: {},
+      accs: Object.keys(SC.proteins), unit: 'proteins', label: cellLabel,
+      catsOf: (acc, key) => { if (key !== 'hpa') { const c = cellCatOf(SC, acc, key); return c ? [c] : []; } const r = SC.proteins[acc.split('-')[0]]; return r && r[4] ? r[4].map((i) => SC.categories.hpa[i]) : []; },
+      stratum: (acc, key) => { const r = SC.proteins[acc.split('-')[0]], c = r && r[5][di(key)]; return c == null || c === '-' ? -1 : c === 'x' ? 10 : +c; },
+      what: (scoped) => (scoped ? 'proteins of your selection' : 'methylated proteins'), alike: 'other proteins of similar abundance', alikeShort: 'of similar abundance',
+      question: 'Where do methylated proteins sit in the cell?', selectedBy: (key) => key === 'hpa' && termValues('location').length > 0 };
+    cellLayerMemo.set(SC, L);
+    return L;
+  }
+  function cellNaLayer(NA, key) {
+    const id = NA.layers[key];
+    if (cellLayerMemo.has(id)) return cellLayerMemo.get(id);
+    const mi = (k) => NA.maps.indexOf(k), di = NA.maps.length;
+    const rna = key === 'rna';
+    const L = { key, datasets: id.datasets, order: id.datasets.map((d) => d.key), head: id.head, tests: id.tests, groups: id.groups, names: id.names || {},
+      accs: Object.keys(NA.genes), unit: rna ? 'transcripts' : 'genes', label: (c) => c,
+      catsOf: (acc, k) => { const g = NA.genes[acc.split('-')[0]]; return g ? g[mi(k)].map((i) => id.categories[k][i]) : []; },
+      stratum: (acc, k) => { const g = NA.genes[acc.split('-')[0]], c = g && g[di][mi(k)]; return c == null || c === '-' ? -1 : c === 'x' ? 10 : +c; },
+      what: (scoped) => (rna ? (scoped ? 'transcripts of your selection' : 'transcripts of methylated proteins') : (scoped ? 'genes of your selection' : 'genes of methylated proteins')),
+      alike: rna ? 'other transcripts expressed at similar levels in the same cells' : 'other genes expressed at similar levels in the same cells', alikeShort: 'expressed at similar levels',
+      question: rna ? 'Where do the transcripts of methylated proteins sit?' : 'Where in the nucleus do the genes of methylated proteins sit?', selectedBy: () => false };
+    cellLayerMemo.set(id, L);
+    return L;
   }
   // log2 of a Mantel–Haenszel odds ratio, ±Infinity where it is infinite or 0, as abundTest reads the exports
   const cellL2 = (or) => (or == null ? null : or === Infinity ? Infinity : or <= 0 ? -Infinity : Math.log2(or));
-  // A set of proteins tested in one map as the pilots test the methylated proteins: the set's proteins the map places
-  // against the map's other proteins, each PaxDb abundance decile of the map's proteins a stratum (Mantel–Haenszel odds
-  // ratio with its 95% CI and the continuity-corrected Cochran–Mantel–Haenszel test, mhTest; BH over the map's
-  // compartments). A compartment that holds every protein of the set, or every compartment of a map the set was chosen
-  // by (selectedBy), is counted but not tested (circular).
-  function cellMh(SC, key, inSet, selectedBy) {
-    const di = SC.decile_maps.indexOf(key), S = 11, zero = () => new Array(S).fill(0), all = zero(), sel = zero(), per = new Map();
-    for (const r of SC.tests[key]) per.set(r[0], { M: zero(), k: zero() });
+  // A set of proteins tested in one map as the pilots test the methylated proteins: the set's members the map places
+  // against the map's other members, each decile a stratum (Mantel–Haenszel odds ratio with its 95% CI and the
+  // continuity-corrected Cochran–Mantel–Haenszel test, mhTest; BH over the map's compartments). A compartment that holds
+  // every member of the set, or every compartment of a map the set was chosen by (selectedBy), is counted but not tested.
+  function cellMh(L, key, inSet, selectedBy) {
+    const S = 11, zero = () => new Array(S).fill(0), all = zero(), sel = zero(), per = new Map();
+    for (const r of L.tests[key]) per.set(r[0], { M: zero(), k: zero() });
     let n = 0, N = 0;
-    for (const acc in SC.proteins) {
-      const c = SC.proteins[acc][5][di];
-      if (c == null || c === '-') continue;
-      const s = c === 'x' ? S - 1 : +c, on = inSet(acc);
+    for (const acc of L.accs) {
+      const s = L.stratum(acc, key);
+      if (s < 0) continue;
+      const on = inSet(acc);
       all[s]++; N++;
       if (on) { sel[s]++; n++; }
-      for (const cat of cellCatsOf(SC, acc, key)) { const t = per.get(cat); if (t) { t.M[s]++; if (on) t.k[s]++; } }
+      for (const cat of L.catsOf(acc, key)) { const t = per.get(cat); if (t) { t.M[s]++; if (on) t.k[s]++; } }
     }
     const res = new Map(), tested = [], sum = (v) => v.reduce((x, y) => x + y, 0);
     for (const [cat, t] of per) {
@@ -10953,49 +10979,50 @@
     bhAdjust(tested);
     return { n, N, res };
   }
-  // the selection's tests in one map (cellMh), kept while the selection stands
+  // the selection's tests in one map of a layer (cellMh), kept while the selection stands
   let cellSelMemo = null;
-  function cellSelTests(SC, key) {
-    if (!cellSelMemo || cellSelMemo.R !== R || cellSelMemo.SC !== SC) cellSelMemo = { R, SC, maps: {} };
-    if (!cellSelMemo.maps[key]) {
+  function cellSelTests(L, key) {
+    if (!cellSelMemo || cellSelMemo.R !== R) cellSelMemo = { R, maps: new Map() };
+    const id = L.key + ':' + key;
+    if (!cellSelMemo.maps.has(id)) {
       const sel = new Set(R.prots.map((p) => p.acc.split('-')[0]));
-      cellSelMemo.maps[key] = cellMh(SC, key, (a) => sel.has(a), key === 'hpa' && termValues('location').length > 0);
+      cellSelMemo.maps.set(id, cellMh(L, key, (a) => sel.has(a), L.selectedBy(key)));
     }
-    return cellSelMemo.maps[key];
+    return cellSelMemo.maps.get(id);
   }
-  const cellSelText = (x) => (x.circular ? fmt(x.k) + ' of ' + fmt(x.M) + ' selected; not tested: ' + (x.k === x.n ? 'every selected protein is here' : 'your selection was made with these locations')
-    : fmt(x.k) + ' of the ' + fmt(x.M) + ' proteins the map places here are in your selection (' + fmt(x.n) + ' of ' + fmt(x.N) + ' placed); ' + abundText(x.a));
+  // how much more (or less) often, in words: "2.1 times as likely", "half as likely"
+  const cellTimes = (a) => (a.l2 == null ? '' : a.l2 === Infinity ? 'found only here' : a.l2 === -Infinity ? 'never found here' : fx(Math.pow(2, a.l2)) + ' times as likely');
+  const cellSelText = (L, x) => (x.circular ? fmt(x.k) + ' of the ' + fmt(x.M) + ' ' + L.unit + ' here are in your selection; ' + (x.k === x.n ? 'every one of the selection is here, so there is nothing to compare' : 'the selection was made with these locations, so it cannot be compared with them')
+    : fmt(x.k) + ' of the ' + fmt(x.M) + ' ' + L.unit + ' the map places here are in your selection (' + fmt(x.n) + ' of its ' + fmt(x.N) + ' are placed); ' + abundText(x.a));
 
-  function cellSpec(SC, key, scoped) {
-    const ds = cellDs(SC, key), N = ds.universe, n = ds.methylated;
-    const rows = SC.tests[key].map((r) => ({ label: cellLabel(r[0]), key: r[0], M: r[1], value: r[3], q: r[4], sig: r[4] != null && r[4] <= PADJ, adjT: cellAdj(r),
+  function cellSpec(L, key, scoped) {
+    const ds = cellDs(L, key), N = ds.universe, n = ds.methylated, u = L.unit;
+    const rows = L.tests[key].map((r) => ({ label: L.label(r[0]), key: r[0], M: r[1], value: r[3], q: r[4], sig: r[4] != null && r[4] <= PADJ, adjT: cellAdj(r),
       extra: ofTotal(r[2], r[1]), extraRaw: r[2], noClick: true,
-      title: '<b>' + esc(cellLabel(r[0])) + '</b> · ' + esc(ds.name) + '<br>' + fmt(r[2]) + ' of the ' + fmt(r[1]) + ' proteins the map places here are methylated (' + pct(r[2], r[1]) + '%), against ' + pct(n, N) + '% of all ' + fmt(N) +
-        '; fold enrichment ' + fx(Math.pow(2, r[3])) + ', q ' + fmtP(r[4]) }))
+      title: '<b>' + esc(L.label(r[0])) + '</b> · ' + esc(ds.name) + '<br>' + fmt(r[2]) + ' of the ' + fmt(r[1]) + ' ' + u + ' the map places here belong to methylated proteins (' + pct(r[2], r[1]) + '%), against ' + pct(n, N) + '% of all ' + fmt(N) +
+        '; ' + fx(Math.pow(2, r[3])) + ' times the share, q ' + fmtP(r[4]) }))
       .sort((a, b) => (b.value == null ? -99 : b.value) - (a.value == null ? -99 : a.value));
-    const spec = { id: 'ch-cell-' + key, title: ds.name + ': ' + ds.method.toLowerCase(), fold: true, keepOrder: true, extraCol: true, extraName: 'methylated_of_placed', rows, N,
-      subText: ds.name + ' (' + ds.ref + '; ' + ds.cells + '): ' + ds.how + '. Methylated proteins against all ' + fmt(N) + ' proteins the map places. Preview',
-      axis: 'log2 fold enrichment vs all proteins the map places' };
+    const spec = { id: 'ch-cell-' + L.key + '-' + key, title: ds.name + ': ' + ds.method.toLowerCase(), fold: true, keepOrder: true, extraCol: true, extraName: 'methylated_of_placed', rows, N,
+      subText: ds.name + ' (' + ds.ref + ', ' + ds.cells + '): ' + ds.how,
+      axis: 'log2 of how many times the share of all ' + u + ' the map places' };
     withAbundanceOf(spec, (r) => r.adjT);
     if (scoped) {
-      const inBg = key === 'hpa' ? (p) => p.hpa.some((x) => x[1] >= HPA_SURE) : (p) => !!cellCatOf(SC, p.acc, key);
-      const hm = hpaMeta(), locIdx = (name) => (hm ? hm.locations.indexOf(name) : -1);
-      selSetTest(spec, { N, inBg, member: (r) => (key === 'hpa' ? (p) => p.hpa.some((x) => x[0] === locIdx(r.key) && x[1] >= HPA_SURE) : (p) => cellCatOf(SC, p.acc, key) === r.key),
-        M: (r) => r.M, bg: 'proteins the map places', kinds: key === 'hpa' ? ['location'] : [] });
-      // the marks repeat the selection's test within abundance deciles (cellSelTests), in place of the whole dataset's
-      const T = cellSelTests(SC, key);
+      selSetTest(spec, { N, inBg: (p) => L.stratum(p.acc, key) >= 0, member: (r) => (p) => L.catsOf(p.acc, key).includes(r.key),
+        M: (r) => r.M, bg: u + ' the map places', kinds: L.key === 'protein' && key === 'hpa' ? ['location'] : [] });
+      // the marks repeat the selection's comparison within the deciles (cellSelTests), in place of the whole dataset's
+      const T = cellSelTests(L, key);
       for (const r of spec.rows) {
         const x = T.res.get(r.key);
         if (!x) continue;
         r.adj = x.circular || x.a.l2 == null ? null : x.a;
-        r.title += '<br><b>Your selection within abundance deciles</b>: ' + cellSelText(x);
+        r.title += '<br><b>Your selection, ' + esc(L.alikeShort) + '</b>: ' + cellSelText(L, x);
       }
       spec.selAdj = true;
       spec.rows = resortRanked(spec.rows);
     }
     return spec;
   }
-  // colour class of an abundance-matched odds ratio: up0-3 / down0-3 by size where q <= 0.05, else ns
+  // colour class of an odds ratio within the deciles: up0-3 / down0-3 by size where q <= 0.05, else ns
   function cellTone(a) {
     if (!a || a.l2 == null) return 'na';
     if (a.q == null || a.q > PADJ) return 'ns';
@@ -11011,94 +11038,106 @@
     '.cd-o{stroke:' + pal.ink + ';stroke-opacity:.3;stroke-width:.9}.cd-in{fill:none;stroke:' + pal.ink + ';stroke-opacity:.38;stroke-width:1.1}' +
     '.cd-gap{fill:none;stroke:' + pal.bg + '}.cd-shade{fill:' + pal.ink + ';fill-opacity:.1}.cd-ink{fill:' + pal.ink + ';fill-opacity:.55}.cd-lead{fill:none;stroke:' + pal.ink + ';stroke-opacity:.55;stroke-width:1}' +
     '.cd-dot{fill:' + pal.ink + ';stroke:' + pal.bg + ';stroke-width:1.5}.cd-name{font-size:13.5px;font-weight:700;fill:' + pal.ink + '}.cd-val{font-size:12.5px;fill:' + pal.ink + '}.cd-val tspan.m{fill:' + pal.muted + '}' +
-    '.cd-cap{font-size:12px;font-weight:700;fill:' + pal.muted + ';letter-spacing:.06em}';
-  // The tests behind the card: the whole dataset's (the pilots' rows, SC.tests) or a selection's (cellSelTests).
-  // One cell of the grid: the map's category for the row, its test within abundance deciles.
-  function cellGridCell(SC, key, cat, scoped) {
-    const r = cat && SC.tests[key].find((x) => x[0] === cat);
+    '.cd-hit,.cg-hit{fill:transparent}';
+  // One cell of the grid: the map's category for the row, its comparison within the deciles (the whole dataset's from
+  // the pilots' rows, a selection's from cellSelTests).
+  function cellGridCell(L, key, cat, scoped) {
+    const r = cat && L.tests[key] && L.tests[key].find((x) => x[0] === cat);
     if (!r) return null;
-    const ds = cellDs(SC, key), head = '<b>' + esc(ds.name) + '</b> (' + esc(ds.method) + ', ' + esc(ds.cells) + '): ' + esc(cellLabel(cat)) + '<br>';
+    const ds = cellDs(L, key), head = '<b>' + esc(ds.name) + '</b> (' + esc(ds.method) + ', ' + esc(ds.cells) + '): ' + esc(L.label(cat)) + '<br>';
     if (scoped) {
-      const x = cellSelTests(SC, key).res.get(cat);
+      const x = cellSelTests(L, key).res.get(cat);
       if (!x) return null;
       const a = x.circular ? { l2: null, q: null } : x.a;
-      return { a, circular: x.circular, tone: x.circular ? 'na' : cellTone(a), short: x.circular ? 'counts only' : cellOr(a) + (cellTone(a) === 'ns' ? ' n.s.' : ''),
-        tip: head + '<b>Your selection</b>: ' + cellSelText(x) + '<br><span class="muted">Whole dataset: ' + abundText(cellAdj(r)) + '</span>' };
+      return { a, k: x.k, M: x.M, circular: x.circular, tone: x.circular ? 'na' : cellTone(a),
+        tip: head + '<b>Your selection</b>: ' + cellSelText(L, x) + '<br><span class="muted">Methylated proteins: ' + abundText(cellAdj(r)) + '</span>' };
     }
     const a = cellAdj(r);
-    return { a, tone: cellTone(a), short: cellOr(a) + (cellTone(a) === 'ns' ? ' n.s.' : ''), tip: head + fmt(r[2]) + ' of ' + fmt(r[1]) + ' methylated (' + pct(r[2], r[1]) + '%); fold enrichment ' +
-      fx(Math.pow(2, r[3])) + ', q ' + fmtP(r[4]) + '<br><b>Within abundance deciles</b>: ' + abundText(a) };
+    return { a, k: r[2], M: r[1], tone: cellTone(a), tip: head + fmt(r[2]) + ' of ' + fmt(r[1]) + ' ' + L.unit + ' here belong to methylated proteins (' + pct(r[2], r[1]) + '%)<br><b>Against ' + esc(L.alike) + '</b>: ' + abundText(a) };
   }
-  function cellGridSvg(SC, scoped) {
-    const cols = CELL_ORDER.filter((k) => cellDs(SC, k)), LW = 236, CW = 92, RH = 22, HH = 46, W = LW + cols.length * CW + 8;
+  function cellGridSvg(L, scoped) {
+    const cols = L.order, LW = 300, CW = 100, RH = 24, HH = 46, W = LW + cols.length * CW + 8;
     let y = HH + 4, g = '';
     cols.forEach((k, i) => {
-      const ds = cellDs(SC, k), x = LW + i * CW + CW / 2;
-      g += '<text class="cg-h" x="' + x + '" y="14" text-anchor="middle">' + esc(CELL_HEAD[k][0]) + '</text><text class="cg-m" x="' + x + '" y="28" text-anchor="middle">' + esc(CELL_HEAD[k][1]) + '</text>' +
-        '<text class="cg-m" x="' + x + '" y="41" text-anchor="middle">' + esc(ds.cells) + '</text>';
+      const ds = cellDs(L, k), x = LW + i * CW + CW / 2;
+      g += '<text class="cg-h" x="' + x + '" y="14" text-anchor="middle">' + esc(L.head[k][0]) + '</text><text class="cg-m" x="' + x + '" y="28" text-anchor="middle">' + esc(L.head[k][1]) + '</text>' +
+        (L.head[k][1] === ds.cells ? '' : '<text class="cg-m" x="' + x + '" y="41" text-anchor="middle">' + esc(ds.cells) + '</text>');
     });
-    for (const [group, rows] of SC.groups) {
+    L.groups.forEach(([group, rows], gi) => {
       g += '<text class="cg-g" x="0" y="' + (y + 14) + '">' + esc(group.toUpperCase()) + '</text>';
       y += RH;
-      for (const [label, map] of rows) {
-        g += '<text class="cg-r" x="10" y="' + (y + 15) + '">' + esc(label) + '</text>';
+      rows.forEach(([label, map], ri) => {
+        g += '<g class="cg-row" data-row="' + gi + '.' + ri + '" role="button" tabindex="0" aria-label="' + esc(label + ': open its numbers and members') + '"><rect class="cg-hit" x="0" y="' + y + '" width="' + W + '" height="' + RH + '"/><text class="cg-r" x="10" y="' + (y + 16) + '">' + esc(label) + '</text>';
         cols.forEach((k, i) => {
-          const c = cellGridCell(SC, k, map[k], scoped), x = LW + i * CW + 4;
+          const c = cellGridCell(L, k, map[k], scoped), x = LW + i * CW + 4;
           if (!c) { g += '<rect class="cg-c na" x="' + x + '" y="' + (y + 2) + '" width="' + (CW - 8) + '" height="' + (RH - 4) + '" rx="3"/>'; return; }
           g += '<g data-tip="' + esc(c.tip) + '"><rect class="cg-c ' + c.tone + '" x="' + x + '" y="' + (y + 2) + '" width="' + (CW - 8) + '" height="' + (RH - 4) + '" rx="3"/>' +
-            '<text class="cg-t t' + c.tone.slice(1) + '" x="' + (x + (CW - 8) / 2) + '" y="' + (y + 15) + '" text-anchor="middle">' + esc(c.circular ? '·' : cellOr(c.a)) + '</text></g>';
+            '<text class="cg-t t' + c.tone.slice(1) + '" x="' + (x + (CW - 8) / 2) + '" y="' + (y + 16) + '" text-anchor="middle">' + esc(c.circular ? '·' : cellOr(c.a)) + '</text></g>';
         });
+        g += '</g>';
         y += RH;
-      }
+      });
       y += 6;
-    }
-    return '<svg class="cell-grid" viewBox="0 0 ' + W + ' ' + y + '" role="img" aria-label="Compartments against maps: odds ratio ' + (scoped ? 'of your selection' : 'of methylated proteins') + ' within abundance deciles">' + g + '</svg>';
+    });
+    return '<svg class="cell-grid" viewBox="0 0 ' + W + ' ' + y + '" role="img" aria-label="Compartments against maps: how much more likely ' + esc(L.what(scoped)) + ' are to sit in each">' + g + '</svg>';
   }
-  function cellGridTsv(SC, scoped) {
-    const head = scoped ? '# Where in the cell (preview): your selection (' + selectionText() + ') in each map, within PaxDb abundance deciles, against the other proteins the map places\n' +
-      'group\tcompartment\tmap\tmap_category\tmembers\tselected\tselected_placed\tplaced\tabundance_deciles_log2_odds_ratio\tabundance_deciles_log2_ci_low\tabundance_deciles_log2_ci_high\tabundance_deciles_p\tabundance_deciles_q\tnot_tested\n'
-      : '# Where in the cell (preview): each map\'s test within PaxDb abundance deciles; methylated proteins against the proteins the map places\n' +
-      'group\tcompartment\tmap\tmap_category\tmembers\tmethylated\tlog2_fold_enrichment\tq\tabundance_deciles_log2_odds_ratio\tabundance_deciles_q\n';
-    return head + SC.groups.flatMap(([group, rows]) => rows.flatMap(([label, map]) => CELL_ORDER.filter((k) => map[k]).map((k) => {
-      const r = SC.tests[k].find((x) => x[0] === map[k]);
-      if (!scoped) return [group, label, cellDs(SC, k).name, map[k], r[1], r[2], r[3], r[4], abundTsv(cellAdj(r).l2), r[8]].join('\t');
-      const x = cellSelTests(SC, k).res.get(map[k]), a = x.a, v = (u) => (u == null ? '' : +u.toFixed(4));
-      return [group, label, cellDs(SC, k).name, map[k], x.M, x.k, x.n, x.N, abundTsv(a.l2 == null || !Number.isFinite(a.l2) ? a.l2 : +a.l2.toFixed(4)), v(a.lo), v(a.hi), a.p == null ? '' : a.p, a.q == null ? '' : a.q,
-        x.circular ? (x.k === x.n ? 'every selected protein is here' : 'selection made with these locations') : ''].join('\t');
+  function cellGridTsv(L, scoped) {
+    const head = scoped ? '# Where in the cell (preview): ' + L.what(true) + ' (' + selectionText() + ') in each map, against ' + L.alike + ' the map places\n' +
+      'group\tcompartment\tmap\tmap_category\tmembers\tselected\tselected_placed\tplaced\tlog2_odds_ratio_within_deciles\tlog2_ci_low\tlog2_ci_high\tp\tq\tnot_compared\n'
+      : '# Where in the cell (preview): ' + L.what(false) + ' in each map, against ' + L.alike + ' the map places\n' +
+      'group\tcompartment\tmap\tmap_category\tmembers\tmethylated\tlog2_fold_enrichment\tq\tlog2_odds_ratio_within_deciles\tq_within_deciles\n';
+    return head + L.groups.flatMap(([group, rows]) => rows.flatMap(([label, map]) => L.order.filter((k) => map[k]).map((k) => {
+      const r = L.tests[k].find((x) => x[0] === map[k]);
+      if (!scoped) return [group, label, cellDs(L, k).name, map[k], r[1], r[2], r[3], r[4], abundTsv(cellAdj(r).l2), r[8]].join('\t');
+      const x = cellSelTests(L, k).res.get(map[k]), a = x.a, v = (u) => (u == null ? '' : +u.toFixed(4));
+      return [group, label, cellDs(L, k).name, map[k], x.M, x.k, x.n, x.N, abundTsv(a.l2 == null || !Number.isFinite(a.l2) ? a.l2 : +a.l2.toFixed(4)), v(a.lo), v(a.hi), a.p == null ? '' : a.p, a.q == null ? '' : a.q,
+        x.circular ? (x.k === x.n ? 'every selected member is here' : 'selection made with these locations') : ''].join('\t');
     }))).join('\n') + '\n';
   }
 
-  // ---- The drawings. Each part is coloured by the median of the maps' odds ratios within abundance deciles, when at
-  // least half of the maps that have the part find a difference that way; grey otherwise. Every part is named in a
-  // column beside the drawing, with a leader line to it.
-  const CELL_SHORT = { hpa: 'Atlas', hcm: 'Cell map', hcm_safe: 'domains', oip: 'IP', chep: 'ChEP' };
+  // ---- The drawings. Each part is coloured by the median of the maps' odds ratios within the deciles, when at least
+  // half of the maps that have the part find a difference that way; grey otherwise; outlined only where no map of the
+  // layer measures it. Every measured part is named beside the drawing with a leader line, and opens its numbers.
   const CELL_NAME = { pm: 'Plasma membrane', actin: 'Actin cortex', cytosol: 'Cytosol', er: 'Endoplasmic reticulum', ribosomes: 'Ribosomes, translation', golgi: 'Golgi apparatus',
     mito: 'Mitochondria', endolyso: 'Endosomes, lysosomes', perox: 'Peroxisomes', granules: 'Stress granules', pbodies: 'P-bodies', microtubules: 'Microtubules', centrosome: 'Centrosome',
-    nucleoplasm: 'Nucleoplasm', chromatin: 'Chromatin', nucleolus: 'Nucleolus', speckles: 'Nuclear speckles', paraspeckles: 'Paraspeckles', bodies: 'Nuclear bodies', envelope: 'Envelope and pores' };
-  function cellParts(SC, scoped) {
+    nucleoplasm: 'Nucleoplasm', chromatin: 'Chromatin', nucleolus: 'Nucleolus', speckles: 'Nuclear speckles', paraspeckles: 'Paraspeckles', bodies: 'Nuclear bodies', envelope: 'Nuclear envelope',
+    pores: 'Nuclear pores', periphery: 'Lamina-associated chromatin', cajal: 'Cajal bodies', pml: 'PML bodies' };
+  // a part a layer does not measure on its own takes the colour of the part it belongs to (Cajal and PML bodies are
+  // nuclear bodies, pores sit in the envelope, the chromatin along the lamina is chromatin)
+  const CELL_WITHIN = { cajal: 'bodies', pml: 'bodies', pores: 'envelope', periphery: 'chromatin' };
+  const cellPartName = (L, k) => L.names[k] || CELL_NAME[k];
+  // the parts of the drawings, and the grid's rows, with the comparison each shows
+  function cellRowSummary(L, row, scoped) {
+    const [label, map, part] = row;
+    const all = L.order.map((k) => [k, cellGridCell(L, k, map[k], scoped)]).filter(([, c]) => c), cells = all.filter(([, c]) => !c.circular);
+    const vals = cells.map(([, c]) => c.a.l2).filter((v) => v != null && Number.isFinite(v)).sort((x, y) => x - y), h = vals.length / 2;
+    const med = vals.length ? (vals.length % 2 ? vals[Math.floor(h)] : (vals[h - 1] + vals[h]) / 2) : null;
+    const agree = cells.length && cells.filter(([, c]) => c.tone[0] === (med > 0 ? 'u' : 'd')).length * 2 >= cells.length;
+    const up = cells.some(([, c]) => c.tone[0] === 'u'), down = cells.some(([, c]) => c.tone[0] === 'd');
+    const tone = med == null ? 'na' : cellTone({ l2: med, q: agree ? 0 : 1 });
+    return { part, label, row, cells: all, a: { l2: med }, tone,
+      value: tone === 'na' ? (all.length ? 'not compared' : 'not in these maps') : tone === 'ns' ? (up && down ? 'maps disagree' : 'no difference') : cellOr({ l2: med }),
+      maps: cells.length ? cells.length + (cells.length === 1 ? ' map' : ' maps') : '' };
+  }
+  function cellParts(L, scoped) {
     const parts = {};
-    for (const [, rows] of SC.groups) for (const [label, map, part] of rows) {
-      if (!part) continue;
-      const all = CELL_ORDER.map((k) => [k, cellGridCell(SC, k, map[k], scoped)]).filter(([, c]) => c), cells = all.filter(([, c]) => !c.circular);
-      const vals = cells.map(([, c]) => c.a.l2).filter((v) => v != null && Number.isFinite(v)).sort((x, y) => x - y), h = vals.length / 2;
-      const med = vals.length ? (vals.length % 2 ? vals[Math.floor(h)] : (vals[h - 1] + vals[h]) / 2) : null;
-      const agree = cells.length && cells.filter(([, c]) => c.tone[0] === (med > 0 ? 'u' : 'd')).length * 2 >= cells.length;
-      const up = cells.some(([, c]) => c.tone[0] === 'u'), down = cells.some(([, c]) => c.tone[0] === 'd');
-      const tone = med == null ? 'na' : cellTone({ l2: med, q: agree ? 0 : 1 });
-      parts[part] = { part, label, cells: all, a: { l2: med }, tone,
-        value: tone === 'na' ? (all.length ? 'not tested' : 'not in these maps') : tone === 'ns' ? (up && down ? 'maps disagree' : 'no difference') : cellOr({ l2: med }),
-        maps: cells.length ? cells.length + (cells.length === 1 ? ' map' : ' maps') : '' };
-    }
+    L.groups.forEach(([, rows], gi) => rows.forEach((row, ri) => { if (row[2]) parts[row[2]] = Object.assign(cellRowSummary(L, row, scoped), { id: gi + '.' + ri }); }));
     return parts;
   }
-  // the helpers of a drawing: fill and stroke classes of a part, its hover text, and its labels
-  function cellDraw(SC, scoped) {
-    const P = cellParts(SC, scoped);
-    const tone = (k) => (P[k] ? P[k].tone : 'na');
+  // the helpers of a drawing: fill and stroke classes of a part, its hover text (and data-part, which opens it), and
+  // its labels
+  function cellDraw(L, scoped) {
+    const P = cellParts(L, scoped);
+    const own = (k) => (P[k] ? k : P[CELL_WITHIN[k]] ? CELL_WITHIN[k] : null);
+    const tone = (k) => (own(k) ? P[own(k)].tone : 'na');
     const fill = (k) => 'cg-c ' + tone(k), line = (k) => 'cg-line ' + tone(k);
-    const tip = (k, name) => (P[k] ? ' data-tip="' + esc('<b>' + esc(name || CELL_NAME[k] || P[k].label) + '</b>' + (name ? ' (as ' + esc(P[k].label.toLowerCase()) + ')' : '') + ': ' + esc(P[k].value) +
-      (P[k].tone[0] === 'u' || P[k].tone[0] === 'd' ? (P[k].maps === '1 map' ? ' (1 map)' : ', median of ' + P[k].maps) : '') + '<br>' +
-      P[k].cells.map(([key, c]) => esc(cellDs(SC, key).name) + ': ' + (c.circular ? 'counts only' : esc(cellOr(c.a)) + (c.a.q != null ? ', q ' + fmtP(c.a.q) : '') + (c.tone === 'ns' ? ' (no difference)' : ''))).join('<br>')) + '"' : '');
+    const tip = (k0, name) => {
+      const k = own(k0);
+      return k ? ' data-part="' + k + '" data-tip="' + esc('<b>' + esc(name || cellPartName(L, k)) + '</b>: ' + esc(P[k].value) +
+        (P[k].tone[0] === 'u' || P[k].tone[0] === 'd' ? (P[k].maps === '1 map' ? ' as likely (1 map)' : ' as likely, median of ' + P[k].maps) : '') + '<br>' +
+        P[k].cells.map(([key, c]) => esc(cellDs(L, key).name) + ': ' + (c.circular ? 'not compared' : esc(cellOr(c.a)) + (c.a.q != null ? ', q ' + fmtP(c.a.q) : '') + (c.tone === 'ns' ? ' (no difference)' : ''))).join('<br>') +
+        '<br><span class="muted">Click for its numbers and ' + esc(L.unit) + '</span>') + '"' : '';
+    };
     // labels: [{ k, side 'l' or 'r', x, y the anchor, name }] in columns of width col; the labels of a side keep the
     // order of their anchors' heights and stay gap apart
     const labels = (items, W, H, col) => {
@@ -11108,11 +11147,12 @@
         for (let i = 0; i < ys.length; i++) ys[i] = Math.max(ys[i], i ? ys[i - 1] + gap : top);
         for (let i = ys.length - 1; i >= 0; i--) ys[i] = Math.min(ys[i], i < ys.length - 1 ? ys[i + 1] - gap : bot);
         list.forEach((it, i) => {
-          const p = P[it.k], y = ys[i], L = side === 'l', edge = L ? col : W - col, tx = L ? edge - 14 : edge + 14, anc = L ? 'end' : 'start', bx = L ? edge - 7 : edge + 1;
-          const elbow = L ? edge + 12 : edge - 12;
-          g += '<g' + tip(it.k, it.name) + '><polyline class="cd-lead" points="' + edge + ',' + (y - 5) + ' ' + elbow + ',' + (y - 5) + ' ' + it.x + ',' + it.y + '"/><circle class="cd-dot" cx="' + it.x + '" cy="' + it.y + '" r="3"/>' +
+          const p = P[it.k], y = ys[i], left = side === 'l', edge = left ? col : W - col, tx = left ? edge - 14 : edge + 14, anc = left ? 'end' : 'start', bx = left ? edge - 7 : edge + 1;
+          const elbow = left ? edge + 12 : edge - 12;
+          g += '<g class="cd-label"' + tip(it.k, it.name) + ' role="button" tabindex="0"><polyline class="cd-lead" points="' + edge + ',' + (y - 5) + ' ' + elbow + ',' + (y - 5) + ' ' + it.x + ',' + it.y + '"/><circle class="cd-dot" cx="' + it.x + '" cy="' + it.y + '" r="3"/>' +
+            '<rect class="cd-hit" x="' + (left ? 0 : edge) + '" y="' + (y - 18) + '" width="' + col + '" height="38"/>' +
             '<rect class="' + fill(it.k) + ' cd-o" x="' + bx + '" y="' + (y - 17) + '" width="6" height="32" rx="2"/>' +
-            '<text class="cd-name" x="' + tx + '" y="' + y + '" text-anchor="' + anc + '">' + esc(it.name || CELL_NAME[it.k] || p.label) + '</text>' +
+            '<text class="cd-name" x="' + tx + '" y="' + y + '" text-anchor="' + anc + '">' + esc(it.name || cellPartName(L, it.k)) + '</text>' +
             '<text class="cd-val" x="' + tx + '" y="' + (y + 16) + '" text-anchor="' + anc + '">' + (p.tone[0] === 'u' || p.tone[0] === 'd' ? '<tspan font-weight="700">' + esc(p.value) + '</tspan>' : '<tspan class="m">' + esc(p.value) + '</tspan>') +
             (p.maps ? '<tspan class="m"> · ' + esc(p.maps) + '</tspan>' : '') + '</text></g>';
         });
@@ -11179,8 +11219,8 @@
   const CELL_CT = [[330, 150], [300, 265], [360, 360], [450, 95], [465, 225], [480, 350], [600, 95], [615, 335], [705, 170], [715, 285]];
 
   // The whole cell: membranes, organelles and granules around the nucleus (drawn whole here, in its parts below).
-  function cellWholeSvg(SC, scoped) {
-    const D = cellDraw(SC, scoped), W = 1000, H = 500, cx = 500, cy = 250, rx = 285, ry = 206;
+  function cellWholeSvg(L, scoped) {
+    const D = cellDraw(L, scoped), W = 1000, H = 500, cx = 500, cy = 250, rx = 285, ry = 206;
     const shape = [1, 0.97, 1.02, 0.99, 1.03, 0.98, 1.01, 0.97, 1.02, 1, 0.98, 1.02], body = cellSmooth(cellBlob(cx, cy, rx, ry, shape));
     const nx = 452, ny = 262, nrx = 110, nry = 94, nuc = cellSmooth(cellBlob(nx, ny, nrx, nry, [1, 1.02, 0.98, 1.01, 0.99, 1.02, 1, 0.98]));
     let g = '<g' + D.tip('cytosol') + '><path class="' + D.fill('cytosol') + '" fill-opacity=".34" d="' + body + '"/></g>';
@@ -11250,14 +11290,14 @@
   }
   // The nucleus as chromosome territories with interchromatin channels between them (the nucleoplasm), where speckles,
   // paraspeckles and nuclear bodies sit; heterochromatin lines the envelope and the nucleolus.
-  function cellNucleusSvg(SC, scoped) {
-    const D = cellDraw(SC, scoped), W = 1000, H = 470, cx = 500, cy = 235, rx = 262, ry = 190;
+  function cellNucleusSvg(L, scoped) {
+    const D = cellDraw(L, scoped), W = 1000, H = 470, cx = 500, cy = 235, rx = 262, ry = 190;
     const shape = [1, 1.02, 0.98, 1.01, 0.99, 1.02, 1, 0.98, 1.01, 0.99], body = cellSmooth(cellBlob(cx, cy, rx, ry, shape));
     // the nucleoplasm shows in the channels between the territories
     let g = '<g' + D.tip('nucleoplasm') + '><path class="' + D.fill('nucleoplasm') + '" fill-opacity=".55" d="' + body + '"/></g>';
     // chromatin: territories, with heterochromatin along the envelope
-    g += '<g' + D.tip('chromatin') + '>' + cellTerritories(CELL_CT, cx, cy, rx - 12, ry - 12, 13).map((d) => '<path class="' + D.fill('chromatin') + ' cd-o" d="' + d + '"/>').join('') +
-      '<path class="' + D.line('chromatin') + '" fill="none" stroke-width="9" d="' + cellSmooth(cellBlob(cx, cy, rx * 0.965, ry * 0.955, shape)) + '"/></g>';
+    g += '<g' + D.tip('chromatin') + '>' + cellTerritories(CELL_CT, cx, cy, rx - 12, ry - 12, 13).map((d) => '<path class="' + D.fill('chromatin') + ' cd-o" d="' + d + '"/>').join('') + '</g>';
+    g += '<g' + D.tip('periphery') + '><path class="' + D.line('periphery') + '" fill="none" stroke-width="9" d="' + cellSmooth(cellBlob(cx, cy, rx * 0.965, ry * 0.955, shape)) + '"/></g>';
     // nucleolus, ringed by heterochromatin, with fibrillar centres
     const nucleolus = cellSmooth(cellBlob(592, 214, 56, 50, [1, 1.06, 0.95, 1.04, 0.97, 1.05, 0.98, 1.03, 0.96, 1.02]));
     g += '<g' + D.tip('chromatin') + '><path class="' + D.line('chromatin') + '" fill="none" stroke-width="7" d="' + nucleolus + '"/></g>';
@@ -11271,81 +11311,187 @@
     g += '<g' + D.tip('paraspeckles') + '>' + [[349, 216, 74], [356, 212, 74], [653, 287, 27], [646, 283, 27]].map(([x, y, r]) =>
       '<ellipse class="' + D.fill('paraspeckles') + ' cd-o" cx="' + x + '" cy="' + y + '" rx="3.4" ry="8" transform="rotate(' + r + ' ' + x + ' ' + y + ')"/>').join('') + '</g>';
     // nuclear bodies in the channels: PML bodies (rings) and Cajal bodies
-    g += '<g' + D.tip('bodies') + '>' + [[390, 122], [548, 342], [710, 228]].map(([x, y]) => '<circle class="' + D.line('bodies') + '" fill="none" stroke-width="3.6" cx="' + x + '" cy="' + y + '" r="7"/>').join('') +
-      [[410, 166], [525, 95]].map(([x, y]) => '<circle class="' + D.fill('bodies') + ' cd-o" cx="' + x + '" cy="' + y + '" r="7.5"/>').join('') + '</g>';
+    g += '<g' + D.tip('pml') + '>' + [[390, 122], [548, 342], [710, 228]].map(([x, y]) => '<circle class="' + D.line('pml') + '" fill="none" stroke-width="3.6" cx="' + x + '" cy="' + y + '" r="7"/>').join('') + '</g>';
+    g += '<g' + D.tip('cajal') + '>' + [[410, 166], [525, 95]].map(([x, y]) => '<circle class="' + D.fill('cajal') + ' cd-o" cx="' + x + '" cy="' + y + '" r="7.5"/>').join('') + '</g>';
     // the envelope: two membranes, with pore complexes
-    let pores = '';
+    let gaps = '', pores = '';
     for (let t = 8; t < 368; t += 20) {
       const r = t * Math.PI / 180, x = cx + rx * Math.cos(r), y = cy + ry * Math.sin(r), qx = Math.cos(r) * 7, qy = Math.sin(r) * 7, px = -Math.sin(r) * 3.5, py = Math.cos(r) * 3.5;
-      pores += '<line class="cd-gap" stroke-width="5" x1="' + (x - qx).toFixed(1) + '" y1="' + (y - qy).toFixed(1) + '" x2="' + (x + qx).toFixed(1) + '" y2="' + (y + qy).toFixed(1) + '"/>' +
-        [1, -1].map((s) => '<line class="' + D.line('envelope') + '" stroke-width="2.2" stroke-linecap="round" x1="' + (x - qx + s * px).toFixed(1) + '" y1="' + (y - qy + s * py).toFixed(1) + '" x2="' + (x + qx + s * px).toFixed(1) + '" y2="' + (y + qy + s * py).toFixed(1) + '"/>').join('');
+      gaps += '<line class="cd-gap" stroke-width="5" x1="' + (x - qx).toFixed(1) + '" y1="' + (y - qy).toFixed(1) + '" x2="' + (x + qx).toFixed(1) + '" y2="' + (y + qy).toFixed(1) + '"/>';
+      pores += [1, -1].map((s) => '<line class="' + D.line('pores') + '" stroke-width="2.6" stroke-linecap="round" x1="' + (x - qx + s * px).toFixed(1) + '" y1="' + (y - qy + s * py).toFixed(1) + '" x2="' + (x + qx + s * px).toFixed(1) + '" y2="' + (y + qy + s * py).toFixed(1) + '"/>').join('');
     }
-    g += '<g' + D.tip('envelope') + '><path class="' + D.line('envelope') + '" fill="none" stroke-width="11" d="' + body + '"/><path class="cd-gap" stroke-width="3" d="' + body + '"/>' + pores + '</g>';
+    g += '<g' + D.tip('envelope') + '><path class="' + D.line('envelope') + '" fill="none" stroke-width="11" d="' + body + '"/><path class="cd-gap" stroke-width="3" d="' + body + '"/>' + gaps + '</g>';
+    g += '<g' + D.tip('pores') + '>' + pores + '</g>';
     // anchors: chromatin inside territory A, the nucleoplasm in the channel between territories B and C
     g += D.labels([
-      { k: 'chromatin', side: 'l', x: 322, y: 160 }, { k: 'speckles', side: 'l', x: 379, y: 234 }, { k: 'nucleoplasm', side: 'l', x: 330, y: 312 },
-      { k: 'bodies', side: 'r', x: 548, y: 342 }, { k: 'nucleolus', side: 'r', x: 620, y: 190 }, { k: 'paraspeckles', side: 'r', x: 653, y: 287 }, { k: 'envelope', side: 'r', x: 762, y: 240 },
+      { k: 'bodies', side: 'l', x: 390, y: 122 }, { k: 'cajal', side: 'l', x: 410, y: 166 }, { k: 'chromatin', side: 'l', x: 322, y: 160 }, { k: 'speckles', side: 'l', x: 379, y: 234 }, { k: 'nucleoplasm', side: 'l', x: 330, y: 312 },
+      { k: 'nucleolus', side: 'r', x: 620, y: 190 }, { k: 'envelope', side: 'r', x: 762, y: 240 }, { k: 'paraspeckles', side: 'r', x: 653, y: 287 }, { k: 'periphery', side: 'r', x: 729, y: 312 }, { k: 'pores', side: 'r', x: 675, y: 376 },
     ], W, H, 200);
     return '<svg class="cell-nucleus" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="The nucleus, each part coloured by the odds ratio ' + (scoped ? 'of your selection' : 'of methylated proteins') + ' within abundance deciles">' + g + '</svg>';
   }
   const cellFigSpec = (id, title, subText, svg, tsv) => ({ id, title, subText, figCss: cellFigCss, figSvg: svg, figTsv: tsv });
-  const cellKey = (scoped) => '<span class="cell-key"><i class="cg-k u3"></i><i class="cg-k u1"></i> more ' + (scoped ? 'proteins of your selection' : 'methylated proteins') + ' than among proteins of similar abundance the same map places</span><span class="cell-key"><i class="cg-k ns"></i> no difference (q > 0.05), or the maps disagree</span><span class="cell-key"><i class="cg-k d1"></i><i class="cg-k d3"></i> fewer</span><span class="cell-key"><i class="cg-k na"></i> not a compartment of that map' + (scoped ? ', or counts only' : '') + '</span><span>numbers: odds ratio within PaxDb abundance deciles (the median of the maps in the drawings)</span>';
+  const cellKey = (L) => '<span class="cell-key"><i class="cg-k u3"></i><i class="cg-k u1"></i> more likely than ' + esc(L.alike) + '</span><span class="cell-key"><i class="cg-k ns"></i> no clear difference</span>' +
+    '<span class="cell-key"><i class="cg-k d1"></i><i class="cg-k d3"></i> less likely</span><span class="cell-key"><i class="cg-k na"></i> not measured</span><span>numbers: how many times as likely (odds ratio; in the drawings, the median of the maps)</span>';
+  // the layer the card shows, loaded on first use
+  const cellLoad = (key) => (key === 'protein' ? loadLayer('subcellular').then((SC) => SC && cellProteinLayer(SC)) : loadLayer('subcellular_na').then((NA) => NA && cellNaLayer(NA, key)));
+  // what each layer shows, in a sentence or two
+  function cellIntro(L, scoped) {
+    const who = L.what(scoped);
+    if (L.key === 'rna') return 'APEX2 labels the RNA next to a marked compartment, so these maps place transcripts: across the cell in HEK293T cells (APEX-seq) and at speckles, the lamina and nuclear bodies in HEK293 cells. ' +
+      'A part is red where the ' + esc(who) + ' are more likely to sit than ' + esc(L.alike) + ', blue where they are less likely, grey where there is no clear difference; parts these maps do not measure are drawn in outline.';
+    if (L.key === 'dna') return 'TSA-seq measures how close each stretch of DNA lies to nuclear speckles and to the nuclear lamina in K562 cells. Genes near speckles are among the most active in the cell, and genes at the lamina mostly silent. ' +
+      'A part is red where the ' + esc(who) + ' are more likely to lie than ' + esc(L.alike) + ', blue where they are less likely, grey where there is no clear difference.';
+    return 'Four maps place proteins in the cell, made by imaging, proximity labelling, organelle pull-down and chromatin fractionation in different cells. ' +
+      'A part is red where ' + esc(who) + ' are more likely to sit than ' + esc(L.alike) + ' in the same map, blue where they are less likely, grey where there is no clear difference.';
+  }
   function renderCellOverview(el, scoped) {
     const box = $('#ch-cell-body', el), tv = $('.cell-ov-vis', el), th = $('.cell-ov-head', el);
     if (!box && !tv) return;
-    const view = UI.view, rq = R;
-    loadLayer('subcellular').then((SC) => {
+    const view = UI.view, rq = R, lk = UI.cellLayer || 'protein';
+    Promise.all([cellLoad('protein'), cellLoad(lk)]).then(([PL, L]) => {
       if (UI.view !== view || R !== rq) return;
-      if (!SC) { if (box) box.innerHTML = '<p class="muted">The subcellular maps did not load.</p>'; if (th) th.textContent = 'did not load'; return; }
-      const parts = Object.values(cellParts(SC, scoped)), up = parts.filter((p) => /^u/.test(p.tone)).sort((a, b) => b.a.l2 - a.a.l2);
-      const whom = scoped ? 'your selection' : 'methylated proteins';
-      if (tv) tv.innerHTML = aMeters(up.slice(0, 4).map((p) => ({ label: CELL_NAME[p.part] || p.label, v: Math.min(1, p.a.l2 / 3), text: cellOr(p.a), cls: 'count', tip: '<b>' + esc(p.label) + '</b><br>median odds ratio of ' + whom + ' within abundance deciles across ' + p.maps })), { tight: true, wide: true });
-      if (th) th.innerHTML = up.length ? (scoped ? 'Your selection, most enriched among proteins of similar abundance: ' : 'Most enriched among proteins of similar abundance: ') + '<b>' + esc(up.slice(0, 3).map((p) => (CELL_NAME[p.part] || p.label).toLowerCase()).join(', ')) + '</b>'
-        : scoped ? 'Your selection: no compartment enriched among proteins of similar abundance' : 'No compartment enriched in the maps';
+      if (!PL || !L) { if (box) box.innerHTML = '<p class="muted">The maps did not load.</p>'; if (th) th.textContent = 'did not load'; return; }
+      // the hub tile and the fold's summary: where the proteins sit
+      const parts = Object.values(cellParts(PL, scoped)), up = parts.filter((p) => /^u/.test(p.tone)).sort((a, b) => b.a.l2 - a.a.l2);
+      if (tv) tv.innerHTML = aMeters(up.slice(0, 4).map((p) => ({ label: CELL_NAME[p.part] || p.label, v: Math.min(1, p.a.l2 / 3), text: cellOr(p.a), cls: 'count', tip: '<b>' + esc(p.label) + '</b><br>' + esc(PL.what(scoped)) + ' are ' + esc(cellTimes(p.a)) + ' to sit here as ' + esc(PL.alike) + ' (median of ' + p.maps + ')' })), { tight: true, wide: true });
+      if (th) th.innerHTML = up.length ? (scoped ? 'Your selection is most enriched in ' : 'Methylated proteins are most enriched in ') + '<b>' + esc(up.slice(0, 3).map((p) => (CELL_NAME[p.part] || p.label).toLowerCase()).join(', ')) + '</b>'
+        : scoped ? 'Your selection is not enriched in any part of the cell' : 'Methylated proteins are not enriched in any part of the cell';
       if (!box) return;
-      const key = UI.cellMap && cellDs(SC, UI.cellMap) ? UI.cellMap : 'hcm', spec = cellSpec(SC, key, scoped);
+      UI.cellMap = UI.cellMap || {};
+      const key = UI.cellMap[L.key] && cellDs(L, UI.cellMap[L.key]) ? UI.cellMap[L.key] : L.order[0], spec = cellSpec(L, key, scoped);
       UI.charts[spec.id] = spec;
-      const n = scoped ? cellSelTests(SC, 'hcm').n : 0;
-      const how = scoped ? 'your selection (' + selectionText() + ') against the other proteins each map places, within PaxDb abundance deciles (Mantel–Haenszel; exploratory, BH within each map)'
-        : 'methylated proteins against the other proteins each map places, within PaxDb abundance deciles (Mantel–Haenszel)';
-      const grid = cellFigSpec('ch-cell-grid', 'Where in the cell: compartments against maps', 'Odds ratio of ' + how + '. Preview of v1.5.0.', () => cellGridSvg(SC, scoped), () => cellGridTsv(SC, scoped));
-      const whole = cellFigSpec('ch-cell-whole', 'Where in the cell', 'Each compartment coloured by the median odds ratio of the maps that have it: ' + how + '; grey where the maps disagree or show no difference. Preview of v1.5.0.', () => cellWholeSvg(SC, scoped), () => cellGridTsv(SC, scoped));
-      const nuc = cellFigSpec('ch-cell-nucleus', 'Where in the nucleus', 'Each part coloured by the median odds ratio of the maps that have it: ' + how + '; grey where the maps disagree or show no difference. Preview of v1.5.0.', () => cellNucleusSvg(SC, scoped), () => cellGridTsv(SC, scoped));
-      box.innerHTML = '<p class="preview-flag">Preview, not released: built from the pilot of ' + esc(new Date().toISOString().slice(0, 10)) + ' for review.</p>' +
-        '<p class="small">Four maps of where proteins sit, made by different methods in different cells. Each map is tested only against the proteins it places, so a compartment is enriched when ' + (scoped ? 'proteins of your selection' : whom) + ' are more common there than among the other proteins the same experiment detected, ' +
-        'here among proteins of similar abundance (PaxDb deciles). ' + (scoped ? '<b>Retested for your selection</b>: ' + fmt(n) + ' of its proteins are placed by the Human Cell Map; each map counts its own. ' : '') + 'Hover a part for each map\'s result.</p>' +
-        '<div class="chart-key">' + cellKey(scoped) + '</div>' +
-        '<div class="cell-fig">' + figBlock(whole, 'The cell') + '</div><div class="cell-fig">' + figBlock(nuc, 'The nucleus') + '</div>' +
+      const who = L.what(scoped), cap = (t) => t + ': each part coloured by how many times as likely ' + who + ' are to sit there as ' + L.alike + ' (odds ratio; the median of the maps that have it), grey where the maps disagree or show no clear difference. Preview of v1.5.0.';
+      const grid = cellFigSpec('ch-cell-grid', 'Where in the cell: compartments against maps', 'How many times as likely ' + who + ' are to sit in each compartment as ' + L.alike + ' the same map places (odds ratio). Preview of v1.5.0.', () => cellGridSvg(L, scoped), () => cellGridTsv(L, scoped));
+      const whole = cellFigSpec('ch-cell-whole', 'Where in the cell', cap('The cell'), () => cellWholeSvg(L, scoped), () => cellGridTsv(L, scoped));
+      const nuc = cellFigSpec('ch-cell-nucleus', 'Where in the nucleus', cap('The nucleus'), () => cellNucleusSvg(L, scoped), () => cellGridTsv(L, scoped));
+      const placed = scoped ? cellSelTests(L, L.order[0]) : null;
+      box.innerHTML = '<div class="cell-tools"><span class="flabel">Colour by</span><span class="seg" role="group" aria-label="Colour by">' +
+          CELL_LAYERS.map(([k, t]) => '<button type="button" data-celllayer="' + k + '" aria-pressed="' + (k === L.key) + '">' + t + '</button>').join('') + '</span>' +
+          '<span class="muted small">' + esc(L.question) + '</span></div>' +
+        '<p class="preview-flag">Preview of v1.5.0: these maps are not yet part of a release.</p>' +
+        '<p class="small">' + cellIntro(L, scoped) + (scoped ? ' Your selection: ' + fmt(placed.n) + ' of its ' + esc(L.unit) + ' are placed by ' + esc(cellDs(L, L.order[0]).name) + '; each map counts its own.' : '') +
+          ' <b>Click a part, a label or a row of the grid</b> for its numbers and its proteins.</p>' +
+        '<div class="chart-key">' + cellKey(L) + '</div>' +
+        (L.key === 'dna' ? '' : '<div class="cell-fig">' + figBlock(whole, 'The cell') + '</div>') + '<div class="cell-fig">' + figBlock(nuc, 'The nucleus') + '</div>' +
+        '<div class="cell-detail" hidden></div>' +
         '<div class="cell-grid-wrap">' + figBlock(grid, 'Compartments against maps') + '</div>' +
         '<div class="cell-one"><div class="fig-head"><span class="flabel">One map at a time</span><span class="seg cell-maps" role="group" aria-label="Map">' +
-          CELL_ORDER.filter((k) => cellDs(SC, k)).map((k) => '<button type="button" data-cellmap="' + k + '" aria-pressed="' + (k === key) + '">' + esc(cellDs(SC, k).key === 'hcm_safe' ? 'Cell map, domains' : cellDs(SC, k).name) + '</button>').join('') + '</span>' + expButtons(spec.id) + '</div>' +
-          hbars(spec) + '<p class="note ora-note">' + esc(spec.subText.replace(/\.?$/, '.')) + ' Over-representation (one-sided hypergeometric), the bar log2 fold enrichment; the mark after it, the test within abundance deciles' + (scoped ? ' of your selection' : '') + '.</p></div>' +
-        '<p class="note small">Maps: ' + SC.datasets.map((d) => esc(d.name) + ' (' + doiLink(d.doi, d.ref) + '; ' + esc(d.cells) + '; ' + esc(d.licence) + '; ' + fmt(d.universe) + ' proteins placed, ' + pct(d.methylated, d.universe) + '% methylated)').join('; ') +
-        '. The Human Protein Atlas row uses the release statistics (v1.4.1). The nuclear-body map of Dyakov et al. (bioRxiv 2024; CC BY-NC-ND) is left out until it can be reused.</p>';
+          L.order.map((k) => '<button type="button" data-cellmap="' + k + '" aria-pressed="' + (k === key) + '">' + esc(k === 'hcm_safe' ? 'Cell map, domains' : cellDs(L, k).name) + '</button>').join('') + '</span>' + expButtons(spec.id) + '</div>' +
+          hbars(spec) + '<p class="note ora-note">' + esc(spec.subText.replace(/\.?$/, '.')) + ' Bars: how many times the share of all ' + esc(L.unit) + ' this map places (log2), filled where the difference is significant. ' +
+          'Marks: the same comparison against ' + esc(L.alike) + ' (✓ more likely, ○ no clear difference, ▼ less likely).</p></div>' +
+        '<p class="note small">Maps: ' + L.datasets.map((d) => esc(d.name) + ' (' + doiLink(d.doi, d.ref) + '; ' + esc(d.cells) + '; ' + esc(d.licence) + '; ' + fmt(d.universe) + ' ' + esc(L.unit) + ' placed, ' + pct(d.methylated, d.universe) + '% ' + (L.key === 'protein' ? 'methylated' : 'from methylated proteins') + ')').join('; ') + '. ' +
+          (L.key === 'protein' ? 'The Human Protein Atlas column repeats the release\'s location comparison (v1.4.1). A proteomic map of nuclear bodies (Dyakov et al., bioRxiv 2024) is not shown: its licence (CC BY-NC-ND) does not allow derived works.'
+            : L.key === 'rna' ? 'Expression: the mean of each study\'s own control or input libraries.' : 'Expression: K562 total RNA-seq (ENCODE ENCSR109IQO).') + '</p>';
       bindBars($('.cell-one', box), spec.rows, () => {});
       bindChartExports(box);
-      $$('[data-cellmap]', box).forEach((b) => b.addEventListener('click', () => { UI.cellMap = b.dataset.cellmap; renderCellOverview(el, scoped); }));
+      $$('[data-cellmap]', box).forEach((b) => b.addEventListener('click', () => { UI.cellMap[L.key] = b.dataset.cellmap; renderCellOverview(el, scoped); }));
+      $$('[data-celllayer]', box).forEach((b) => b.addEventListener('click', () => { if (b.dataset.celllayer !== L.key) { UI.cellLayer = b.dataset.celllayer; UI.cellRow = null; renderCellOverview(el, scoped); } }));
       $$('svg [data-tip]', box).forEach((e) => { e.addEventListener('mouseenter', (ev) => showTip(ev, e.getAttribute('data-tip'))); e.addEventListener('mousemove', moveTip); e.addEventListener('mouseleave', hideTip); });
+      // a part of a drawing, its label or a row of the grid opens its numbers and members under that figure
+      const parts2 = cellParts(L, scoped), rowOf = (id) => { const [gi, ri] = id.split('.').map(Number); return L.groups[gi] && L.groups[gi][1][ri]; };
+      const open = (id, at) => {
+        const row = rowOf(id), panel = $('.cell-detail', box);
+        if (!row || !panel) return;
+        if (UI.cellRow !== L.key + ':' + id) UI.cellAll = false;
+        UI.cellRow = L.key + ':' + id;
+        const blk = at && at.closest('.cell-fig, .cell-grid-wrap');
+        if (blk) blk.after(panel);
+        panel.innerHTML = cellDetailHtml(L, row, scoped);
+        panel.hidden = false;
+        $$('[data-part], .cg-row', box).forEach((g) => g.classList.toggle('on', g.dataset.row === id || (row[2] && g.dataset.part === row[2])));
+        bindCellDetail(panel, L, row, scoped);
+        if (at) panel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      };
+      const pick = (ev) => {
+        const t = ev.target.closest('[data-part], [data-row]');
+        if (!t || !box.contains(t)) return;
+        hideTip();
+        open(t.dataset.row || (parts2[t.dataset.part] && parts2[t.dataset.part].id), t);
+      };
+      const keyPick = (ev) => { if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.closest('[data-part], [data-row]')) { ev.preventDefault(); pick(ev); } };
+      if (box.cellPick) { box.removeEventListener('click', box.cellPick); box.removeEventListener('keydown', box.cellKey); }
+      box.cellPick = pick; box.cellKey = keyPick;
+      box.addEventListener('click', pick);
+      box.addEventListener('keydown', keyPick);
+      if (UI.cellRow && UI.cellRow.startsWith(L.key + ':')) open(UI.cellRow.slice(L.key.length + 1), null);
       setFoldSummary('ov-cell', th ? th.textContent : '');
     });
   }
-  // The protein page: where each map places this protein.
+  // The members of a row of the grid (a part of the drawings): the proteins of the set (methylated proteins, or the
+  // selection) that each map places in the row's compartment, with the maps that place them.
+  function cellMembers(L, row, scoped) {
+    const map = row[1], out = new Map();
+    for (const p of scoped ? R.prots : P) {
+      const a = p.acc.split('-')[0];
+      if (out.has(a)) continue;
+      const maps = L.order.filter((k) => map[k] && L.catsOf(a, k).includes(map[k]));
+      if (maps.length) out.set(a, { acc: a, gene: p.gene || a, maps });
+    }
+    return [...out.values()].sort((x, y) => y.maps.length - x.maps.length || x.gene.localeCompare(y.gene));
+  }
+  function cellDetailHtml(L, row, scoped) {
+    const s = cellRowSummary(L, row, scoped), [label, map] = row, name = row[2] ? cellPartName(L, row[2]) : label, who = L.what(scoped);
+    const Who = who.charAt(0).toUpperCase() + who.slice(1);
+    const verdict = s.tone[0] === 'u' || s.tone[0] === 'd' ? Who + ' are <b>' + esc(cellTimes(s.a)) + '</b> to sit here as ' + esc(L.alike) + (s.cells.length > 1 ? ' (the median of ' + s.maps + ')' : '') + '.'
+      : s.tone === 'ns' ? (s.value === 'maps disagree' ? 'The maps disagree: some place ' + esc(who) + ' here more often than ' + esc(L.alike) + ', others less often.' : Who + ' sit here about as often as ' + esc(L.alike) + '.')
+        : 'No map compares ' + esc(who) + ' here.';
+    const rows = L.order.filter((k) => map[k]).map((k) => {
+      const ds = cellDs(L, k), r = L.tests[k].find((x) => x[0] === map[k]), c = cellGridCell(L, k, map[k], scoped);
+      const counts = scoped ? (c ? fmt(c.k) + ' of ' + fmt(c.M) + ' are in your selection' : '–')
+        : fmt(r[2]) + ' of ' + fmt(r[1]) + ' (' + pct(r[2], r[1]) + '%) ' + (L.key === 'protein' ? 'are methylated' : 'belong to methylated proteins') + ', against ' + pct(ds.methylated, ds.universe) + '% of all the map places';
+      const cmp = !c ? '–' : c.circular ? 'not compared' : '<b>' + esc(cellOr(c.a)) + '</b>' + (c.a.lo != null && c.a.hi != null ? ' <span class="muted">(' + fx(Math.pow(2, c.a.lo)) + '–' + fx(Math.pow(2, c.a.hi)) + ')</span>' : '') +
+        ', q ' + fmtP(c.a.q) + ' · ' + ABUND[abundDir(c.a)][1];
+      return '<tr><th scope="row">' + (ds.url ? '<a href="' + esc(ds.url) + '" target="_blank" rel="noopener">' + esc(ds.name) + '</a>' : esc(ds.name)) + '<br><span class="muted small">' + esc(ds.method) + ', ' + esc(ds.cells) + '</span></th>' +
+        '<td>' + esc(L.label(map[k])) + '</td><td>' + counts + '</td><td>' + cmp + '</td></tr>';
+    }).join('');
+    const mem = cellMembers(L, row, scoped), shown = UI.cellAll ? mem : mem.slice(0, 150), multi = L.order.filter((k) => map[k]).length > 1;
+    const memWord = L.key === 'protein' ? (scoped ? 'Proteins of your selection placed here' : 'Methylated proteins placed here') : L.key === 'rna' ? (scoped ? 'Proteins of your selection whose transcripts sit here' : 'Methylated proteins whose transcripts sit here')
+      : (scoped ? 'Proteins of your selection whose genes lie here' : 'Methylated proteins whose genes lie here');
+    return '<div class="cell-detail-head"><h4>' + esc(name) + ' <span class="muted">· ' + esc(CELL_LAYERS.find(([k]) => k === L.key)[1]) + '</span></h4><button class="btn quiet small" type="button" data-cellclose aria-label="Close">Close</button></div>' +
+      '<p>' + verdict + '</p>' +
+      '<div class="tbl-wrap"><table class="tbl compact cell-detail-tbl"><thead><tr><th>Map</th><th>Its compartment</th><th>Here</th><th>Against ' + esc(L.alike) + '</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<div class="cell-members"><div class="fig-head"><span class="flabel">' + esc(memWord) + ' (' + fmt(mem.length) + ')</span>' +
+        (mem.length ? '<button class="btn small" type="button" data-cellselect>Select these ' + fmt(mem.length) + ' proteins</button><button class="btn quiet small" type="button" data-celltsv>Download TSV</button>' : '') + '</div>' +
+        (mem.length ? '<p class="chips">' + shown.map((m) => '<a class="cell-chip" href="#' + encodeURIComponent(m.acc) + '" title="' + esc(m.gene + ' (' + m.acc + '): placed here by ' + m.maps.map((k) => cellDs(L, k).name).join(', ')) + '">' + esc(m.gene) +
+          (multi && m.maps.length > 1 ? '<sup>' + m.maps.length + '</sup>' : '') + '</a>').join('') + '</p>' + (mem.length > shown.length ? '<button class="btn quiet small" type="button" data-cellall>Show all ' + fmt(mem.length) + '</button>' : '') +
+          (multi ? '<p class="note small">A number after a name: how many maps place it here.</p>' : '') : '<p class="muted">None.</p>') + '</div>';
+  }
+  function bindCellDetail(panel, L, row, scoped) {
+    const close = $('[data-cellclose]', panel), sel = $('[data-cellselect]', panel), tsv = $('[data-celltsv]', panel), all = $('[data-cellall]', panel);
+    if (close) close.addEventListener('click', () => { panel.hidden = true; UI.cellRow = null; $$('.on[data-part], .cg-row.on', panel.parentNode).forEach((g) => g.classList.remove('on')); });
+    if (sel) sel.addEventListener('click', () => applyQueryText(cellMembers(L, row, scoped).map((m) => m.gene).join(' '), 'proteins'));
+    if (tsv) tsv.addEventListener('click', () => {
+      const m = cellMembers(L, row, scoped), map = row[1];
+      download('where_in_cell_' + (row[2] || row[0]).replace(/\W+/g, '_').toLowerCase() + '_' + L.key + '.tsv',
+        '# ' + row[0] + ' (' + L.key + '): ' + L.what(scoped) + ' placed here\ngene\taccession\t' + L.order.filter((k) => map[k]).map((k) => cellDs(L, k).name).join('\t') + '\n' +
+        m.map((x) => [x.gene, x.acc].concat(L.order.filter((k) => map[k]).map((k) => (x.maps.includes(k) ? 'yes' : ''))).join('\t')).join('\n') + '\n');
+    });
+    if (all) all.addEventListener('click', () => { UI.cellAll = true; panel.innerHTML = cellDetailHtml(L, row, scoped); bindCellDetail(panel, L, row, scoped); });
+  }
+  // The protein page: where each map places this protein, its transcript and its gene.
   function renderCellPlaces(p) {
     const box = $('#card-cell');
     if (!box) return;
-    loadLayer('subcellular').then((SC) => {
+    Promise.all([loadLayer('subcellular'), loadLayer('subcellular_na')]).then(([SC, NA]) => {
       if (!SC || !box.isConnected) return;
-      const a = p.acc.split('-')[0], r = SC.proteins[a], hm = hpaMeta();
+      const a = p.acc.split('-')[0], r = SC.proteins[a], hm = hpaMeta(), PL = cellProteinLayer(SC);
       const hpa = hm && p.hpa && p.hpa.length ? p.hpa.filter((x) => x[1] >= HPA_SURE).sort((x, y) => y[2] - x[2]).map((x) => hm.locations[x[0]] + (x[2] ? '' : ' (additional)')).join(', ') : '';
       const icp = r && r[3] >= 0 ? r[3] / 1000 : null;
-      const line = (key, val) => { const ds = cellDs(SC, key); return '<tr><th scope="row">' + esc(ds.name) + '<br><span class="muted small">' + esc(ds.method) + ', ' + esc(ds.cells) + '</span></th><td>' + (val || '<span class="muted">not placed: the map did not detect it, or could not place it</span>') + '</td></tr>'; };
-      box.innerHTML = '<div class="card-head"><div><h3>Where the maps place it</h3><p class="sub">Four maps of where proteins sit, by different methods. Preview of v1.5.0.</p></div></div>' +
-        '<div class="tbl-wrap"><table class="tbl compact cell-places"><tbody>' +
-        line('hpa', esc(hpa)) +
-        line('hcm', r && r[0] >= 0 ? '<b>' + esc(cellLabel(SC.categories.hcm[r[0]])) + '</b>' + (cellCatOf(SC, a, 'hcm_safe') ? ' · domain: ' + esc(cellLabel(cellCatOf(SC, a, 'hcm_safe'))) : '') : '') +
-        line('oip', cellCatOf(SC, a, 'oip') ? '<b>' + esc(cellLabel(cellCatOf(SC, a, 'oip'))) + '</b>' : '') +
-        line('chep', icp == null ? '' : '<span class="mini-bar" style="width:8rem;display:inline-block"><i style="width:' + (100 * icp).toFixed(0) + '%"></i></span> <b>' + icp.toFixed(2) + '</b> ' + esc(cellLabel(cellCatOf(SC, a, 'chep')).toLowerCase())) +
-        '</tbody></table></div>';
+      const line = (L, key, val, what) => { const ds = cellDs(L, key); return '<tr><th scope="row">' + esc(ds.name) + '<br><span class="muted small">' + esc(ds.method) + ', ' + esc(ds.cells) + '</span></th><td>' + (val || '<span class="muted">' + esc(what || 'not placed by this map') + '</span>') + '</td></tr>'; };
+      const list = (L, key) => { const c = L.catsOf(a, key); return L.stratum(a, key) < 0 ? '' : c.length ? '<b>' + c.map((x) => esc(L.label(x))).join(', ') + '</b>' : 'none of its compartments'; };
+      let na = '';
+      if (NA) {
+        const RL = cellNaLayer(NA, 'rna'), DL = cellNaLayer(NA, 'dna');
+        na = '<tr class="sub-head"><th colspan="2">Its transcript</th></tr>' + line(RL, 'apex', list(RL, 'apex'), 'not detected') + line(RL, 'nb', list(RL, 'nb'), 'not detected') +
+          '<tr class="sub-head"><th colspan="2">Its gene</th></tr>' + line(DL, 'tsa', list(DL, 'tsa') === 'none of its compartments' ? 'between speckles and the lamina' : list(DL, 'tsa'));
+      }
+      box.innerHTML = '<div class="card-head"><div><h3>Where the maps place it</h3><p class="sub">Where maps of the cell place this protein, its transcript and its gene. Preview of v1.5.0.</p></div></div>' +
+        '<div class="tbl-wrap"><table class="tbl compact cell-places"><tbody><tr class="sub-head"><th colspan="2">The protein</th></tr>' +
+        line(PL, 'hpa', esc(hpa)) +
+        line(PL, 'hcm', r && r[0] >= 0 ? '<b>' + esc(cellLabel(SC.categories.hcm[r[0]])) + '</b>' + (cellCatOf(SC, a, 'hcm_safe') ? ' · domain: ' + esc(cellLabel(cellCatOf(SC, a, 'hcm_safe'))) : '') : '') +
+        line(PL, 'oip', cellCatOf(SC, a, 'oip') ? '<b>' + esc(cellLabel(cellCatOf(SC, a, 'oip'))) + '</b>' : '') +
+        line(PL, 'chep', icp == null ? '' : '<span class="mini-bar" style="width:8rem;display:inline-block"><i style="width:' + (100 * icp).toFixed(0) + '%"></i></span> <b>' + icp.toFixed(2) + '</b> ' + esc(cellLabel(cellCatOf(SC, a, 'chep')).toLowerCase())) +
+        na + '</tbody></table></div>';
     });
   }
 
