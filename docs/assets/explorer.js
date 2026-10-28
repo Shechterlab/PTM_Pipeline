@@ -1748,17 +1748,29 @@
   }
   const setTerm = (key, text, view) => editTerms(key, text, 'set', view);
   const addTerm = (key, text, view) => editTerms(key, text, 'add', view);
+  // view: the page to show after it, or a function choosing it once the selection is computed (searchLanding)
   function applyQueryText(text, view) {
     setQuery(text);
     UI.pageP = 50; UI.pageS = 100;
     compute();
-    if (view && view !== UI.view) go(view); else renderView();
+    const to = typeof view === 'function' ? view() : view;
+    if (to && to !== UI.view) go(to); else renderView();
   }
   const termValues = (key) => Q.tokens.filter((t) => t.key === key).flatMap((t) => t.vals);
   // The single value of a key when the search holds exactly one, for context cards and rail selects.
   const singleTerm = (key) => { const t = Q.tokens.filter((x) => x.key === key); return t.length === 1 && t[0].vals.length === 1 ? t[0].vals[0] : null; };
   // Where a search made only of terms should land: sites when any term is about sites.
   const termView = () => (Q.siteT.length ? 'sites' : 'proteins');
+  // Where a search lands. Made on the Overview (fromOverview), a selection large enough to test (terms, or a list of
+  // genes) stays there, where every card is retested on it; otherwise, and from any other page, terms list sites or
+  // proteins (termView) and plain words list proteins.
+  function searchLanding(fromOverview = UI.view === 'overview') {
+    const words = Q.plain ? Q.plain.trim().split(/[\s,;]+/).filter(Boolean).length : 0;
+    if (fromOverview && ((Q.tokens.length && !words) || words > 1) && selTestable()) return 'overview';
+    return !Q.plain && Q.tokens.length ? termView() : 'proteins';
+  }
+  // Moves to where a search lands, or redraws the page when it lands where it is.
+  const goLanding = (fromOverview) => { const to = searchLanding(fromOverview); if (to === UI.view) renderView(); else go(to); };
 
   // Values offered while typing key:…, and keys offered while typing their first letters.
   function termSuggestions(tok) {
@@ -2106,7 +2118,7 @@
       $$('[data-try]', box).forEach((b) => b.addEventListener('click', () => {
         setPlain(b.dataset.try); compute();
         if (R.prots.length === 1) openProtein(R.prots[0].i, Q.positions ? Array.from(Q.positions.values())[0].values().next().value : null);
-        else go(Q.tokens && Q.tokens.length && !Q.plain ? termView() : 'proteins');
+        else goLanding();
       }));
       bindSaved(box);
     } else {
@@ -2927,7 +2939,7 @@
       const b = e.target.closest ? e.target.closest('[data-setq]') : null;
       if (!b) return;
       $('#q').value = b.dataset.setq;
-      applyQueryText(b.dataset.setq, termView());
+      applyQueryText(b.dataset.setq, searchLanding);
     });
     document.addEventListener('mouseover', (e) => {
       const r = winRes(e);
@@ -2972,13 +2984,20 @@
       input.setAttribute('aria-expanded', 'true');
       if (sel >= 0) input.setAttribute('aria-activedescendant', 'sg-' + sel); else input.removeAttribute('aria-activedescendant');
     };
-    // A search made only of terms lists sites (or proteins for protein terms); plain words list proteins.
-    const landing = () => (!Q.plain && Q.tokens.length ? termView() : 'proteins');
+    // Typing on the Overview moves to where the search lands (searchLanding); on any other page it stays. On the
+    // Overview a word that may still become a term (dis… of disease:als) waits for its value, so that a term typed there
+    // is not first taken for a protein's name.
+    // typing that began on the Overview may move to the protein list as the first gene is typed; Enter still lands where
+    // a search made on the Overview does
+    let fromOverview = false;
+    input.addEventListener('focus', () => { fromOverview = UI.view === 'overview'; });
+    const keyTyping = () => { const w = lastWord().toLowerCase(); return !!w && (w.endsWith(':') || (!w.includes(':') && TERM_KEYS.some((k) => k.startsWith(w)))); };
     const apply = debounce(() => {
+      if (UI.view === 'overview' && keyTyping()) return;
       setQuery(input.value);
       UI.pageP = 50; UI.pageS = 100;
       compute();
-      if (UI.view === 'overview' && Q.raw && !lastWord().endsWith(':')) go(landing());
+      if (UI.view === 'overview' && Q.raw) goLanding();
       else renderView();
     }, 220);
     input.addEventListener('input', () => { $('#q-clear').hidden = !input.value; sel = -1; drawList(); apply(); });
@@ -2995,14 +3014,14 @@
         // One word that names no protein of the set exactly: a protein without a site opens its own page.
         const w1 = !Q.tokens.length && Q.plain ? Q.plain.trim() : '';
         if (w1 && !/[\s,;]/.test(w1) && !(Q.proteins && Q.proteins.size) && !/[:_/-]R?\d+$/i.test(w1)) {
-          loadProteome().then(() => { const x = unlistedKey(w1); if (x) openUnlisted(x); else if (UI.view === 'overview') go(landing()); });
+          loadProteome().then(() => { const x = unlistedKey(w1); if (x) openUnlisted(x); else if (UI.view === 'overview') goLanding(); });
           return;
         }
         if (R.prots.length === 1) openProtein(R.prots[0].i, Q.positions && Q.positions.size ? Array.from(Q.positions.values())[0].values().next().value : null);
         // One protein named with a site it lacks: open the protein; the note under the search says the site is not in the set.
         else if (!R.prots.length && Q.proteins && Q.proteins.size === 1 && Q.positions) openProtein(Q.proteins.values().next().value);
         else if (Q.positions) go('sites');
-        else go(landing());
+        else goLanding(UI.view === 'overview' || fromOverview);
       }
     });
     input.addEventListener('blur', () => setTimeout(closeList, 150));
@@ -3025,7 +3044,7 @@
         setQuery(input.value);
         UI.pageP = 50; UI.pageS = 100;
         compute();
-        if (UI.view === 'overview') go(landing()); else renderView();
+        if (UI.view === 'overview') goLanding(); else renderView();
         return;
       }
       closeList();
@@ -16170,7 +16189,7 @@
     const sub = (id, title, html) => '<div class="doc-sub" id="doc-' + id + '"><h4>' + esc(title) + '</h4>' + html + '</div>';
     const parts = [
       ['start', 'Getting started', '<ul>' +
-        '<li><b>Search</b> for a gene symbol or synonym (FUS, TDP43), a UniProt accession, part of a protein name, a site (FUS R216) or a pasted gene list. The bar under the search box lists every active filter; click one to remove it.</li>' +
+        '<li><b>Search</b> for a gene symbol or synonym (FUS, TDP43), a UniProt accession, part of a protein name, a site (FUS R216) or a pasted gene list. A search made on the Overview that selects at least ' + SEL_MIN.prots + ' proteins and ' + SEL_MIN.sites + ' sites (terms such as <code>disease:als</code>, or a gene list) stays on the Overview, where every section is retested on it; one protein opens its page, and a smaller selection opens the Proteins (or Sites) list. The bar under the search box lists every active filter; click one to remove it.</li>' +
         '<li><b>Filter</b> with the <b>Filters</b> button that leads the bar under the search box (a drawer of filters by topic, whose foot counts the sites and proteins they leave), or click a bar in any chart. The bar then shows the selection on every view. The address keeps the view, the search and the filters (and the protein and site, <code>#P35637/R216</code>), so a copied link reopens the same place.</li>' +
         '<li><b>Sections as questions.</b> The Overview, the Interactions page and each protein page list their sections as rows: the question a section answers and its answer, for a selection beside the whole dataset\'s, with how the selection reaches it: <i>Retested</i> (the same test run again on the selection, against the same background), <i>Counted</i> (the selection\'s sites or proteins counted, without a test) or <i>Whole dataset only</i>. A filled red triangle marks more than expected, a slate one less, a ring no significant difference at 0.05 (the answer gives the q or p value it rests on). A row opens its section alone, with its figures, tables and downloads; <i>Previous</i> and <i>Next</i> step through the sections, <i>All sections</i> (or the browser\'s Back) returns, and the address keeps the section (<code>#interactions/ix-nac</code>), so a link opens it.</li>' +
         '<li><b>Views</b>: Overview (dataset charts), Proteins and Sites (tables, TSV download), Interactions (partners, complexes, structures and RNA/DNA crosslinks), Figures (alignment, logo and protein comparison from the current selection) and a page per protein (map, sites, interactions, conservation, 3D structure and sequence).</li>' +
