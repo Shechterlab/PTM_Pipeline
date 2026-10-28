@@ -2131,13 +2131,16 @@
     syncToolbar();
   }
 
-  // The tab bar names what its views show: all data, or the selection (in orange). The protein tab is there on a
-  // protein page, and when the selection is one protein (then in orange too).
+  // The tab bar names what its views show: all data, or the selection (in orange), the Overview with a "selection"
+  // badge as the lists carry their counts. The protein tab is there on a protein page, and when the selection is one
+  // protein (then in orange too).
   function updateSelectionTabs(cons) {
     const tabs = $('#tabs');
     if (!tabs) return;
     const on = (cons || constraints()).length > 0;
     tabs.classList.toggle('filtered', on);
+    const badge = $('#scope-overview');
+    if (badge) { badge.hidden = !on; $('#tab-overview').title = on ? 'Every analysis here is retested on your selection' : ''; }
     const ptab = $('#tab-protein');
     const one = on && R && R.prots.length === 1 ? R.prots[0].i : null;
     const i = UI.view === 'protein' && UI.detail != null ? UI.detail : one;
