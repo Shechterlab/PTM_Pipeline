@@ -28,10 +28,10 @@ def resolve(ctx, ids, symbol=''):
     hits = ctx['by_symbol'].get(symbol, set())
     return next(iter(hits)) if len(hits) == 1 else ''
 
-def tests(ctx, universe, sets, min_size=5, values=None):
+def tests(ctx, universe, sets, min_size=5, values=None, target=None):
     """values: the per-identifier measure whose deciles are the strata (default PaxDb abundance; the RNA and DNA layers
-    pass expression in the cells each dataset measured)."""
-    meth = ctx['meth']
+    pass expression in the cells each dataset measured). target: the set compared (default the methylated proteins)."""
+    meth = ctx['meth'] if target is None else target
     universe = sorted(universe)
     is_t = np.array([u in meth for u in universe]); n, N = int(is_t.sum()), len(universe)
     codes, layers = np.unique(ctx['A'].strata(universe, ctx['pax'] if values is None else values).to_numpy(dtype=str), return_inverse=True)

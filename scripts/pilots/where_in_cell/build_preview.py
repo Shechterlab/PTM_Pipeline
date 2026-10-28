@@ -14,7 +14,8 @@ def rows_of(t):
 hcm = pd.read_csv(sc / 'hcm_pilot.tsv', sep='\t')
 tests = {'hcm': rows_of(hcm[hcm.background == 'localised (NMF)']), 'hcm_safe': rows_of(hcm[hcm.background == 'localised (SAFE)']),
          'oip': rows_of(pd.read_csv(sc / 'oip_pilot.tsv', sep='\t')),
-         'chep': rows_of(pd.read_csv(sc / 'chrom_pilot.tsv', sep='\t').query("compartment != 'ICP >= 0.5'"))}
+         'chep': rows_of(pd.read_csv(sc / 'chrom_pilot.tsv', sep='\t').query("compartment != 'ICP >= 0.5'")),
+         'apexms': rows_of(pd.read_csv(sc / 'apexms_pilot.tsv', sep='\t'))}
 st = pd.read_csv(repo / 'releases/v1.4.1/statistics_v1.4.1.tsv', sep='\t', dtype=str, keep_default_na=False)
 num = lambda x: float(x) if x not in ('', None) else None
 en = st[(st.analysis == 'hpa_location') & (st.method == 'enricher')]
@@ -32,6 +33,8 @@ datasets = [
          ref='Hein et al. 2025', doi='10.1016/j.cell.2024.11.028', licence='BSD-3 (analysis repository)', url='https://github.com/czbiohub-sf/Organelle_IP_analyses_and_figures'),
     dict(key='chep', name='Chromatin probability', method='Fractionation', how='how reliably a protein comes down with chromatin across many conditions, as a probability', cells='human cell lines',
          ref='Kustatscher et al. 2014', doi='10.1002/embj.201387614', licence='CC BY', url='https://doi.org/10.1002/embj.201387614'),
+    dict(key='apexms', name='Speckle and lamina proteomes', method='Proximity labelling', how='APEX2 on speckle markers (SRSF1, SRSF7, RNPS1), lamins (LMNA, LMNB1) and a PML-body marker (SP100) labels the proteins around them; a protein belongs where SAINT gives it a probability of at least 0.9 (speckles: with two of the three markers)', cells='HEK293',
+         ref='Barutcu et al. 2022', doi='10.1016/j.molcel.2021.12.010', licence='Mol Cell Table S1 (calls derived from it); raw data MassIVE MSV000087649', url='https://doi.org/10.1016/j.molcel.2021.12.010'),
     dict(key='hpa', name='Human Protein Atlas', method='Imaging', how='antibody staining in many cell lines; the locations seen with approved or better reliability (those holding 20 or more proteins)', cells='many cell lines',
          ref='HPA 25.1', doi='10.1126/science.aal3321', licence='CC BY 4.0', url='https://www.proteinatlas.org/humanproteome/subcellular'),
 ]
@@ -39,10 +42,10 @@ for d in datasets:
     t = tests[d['key']]
     if d['key'] == 'hpa':
         r0 = en.iloc[0]; d['universe'] = int(r0.a) + int(r0.b) + int(r0.c) + int(r0.d); d['methylated'] = int(r0.a) + int(r0.b)
-hp, op, cp = (json.load(open(sc / f)) for f in ('hcm_protein.json', 'oip_protein.json', 'chrom_protein.json'))
+hp, op, cp, ap = (json.load(open(sc / f)) for f in ('hcm_protein.json', 'oip_protein.json', 'chrom_protein.json', 'apexms_protein.json'))
 prot = pd.read_csv(repo / 'releases/v1.4.1/human_methylarginine_proteins_v1.4.1.tsv', sep='\t', dtype=str, keep_default_na=False)
 meth = {a.split('-')[0] for a in prot.uniprot_accession}
-universes = {'hcm': set(hp), 'hcm_safe': {a for a, v in hp.items() if v[1] not in ('no prediction', '-')}, 'oip': {a for a, v in op.items() if v != 'unclassified'}, 'chep': set(cp)}
+universes = {'hcm': set(hp), 'hcm_safe': {a for a, v in hp.items() if v[1] not in ('no prediction', '-')}, 'oip': {a for a, v in op.items() if v != 'unclassified'}, 'chep': set(cp), 'apexms': set(ap)}
 for d in datasets:
     if d['key'] in universes:
         d['universe'] = len(universes[d['key']]); d['methylated'] = len(universes[d['key']] & meth)
@@ -54,13 +57,13 @@ hpa_ds = next(d for d in datasets if d['key'] == 'hpa')
 assert len(hpa_sets) == hpa_ds['universe'], (len(hpa_sets), hpa_ds['universe'])
 universes['hpa'] = set(hpa_sets)
 cats = {'hcm': sorted({v[0] for v in hp.values()}), 'hcm_safe': sorted({v[1] for v in hp.values()}), 'oip': sorted(set(op.values())),
-        'hpa': sorted(set(confident['location']))}
+        'hpa': sorted(set(confident['location'])), 'apexms': sorted({c for v in ap.values() for c in v})}
 # Each protein's PaxDb decile among the proteins each map places, as the tests stratify (abundance_strata.strata):
 # one character per map of MAPS, 0-9 (the least to the most abundant), x without a PaxDb value, - not placed.
 sys.path.insert(0, str(Path(__file__).parent))
 import lib
 ctx = lib.setup(repo)
-MAPS = ['hcm', 'hcm_safe', 'oip', 'chep', 'hpa']
+MAPS = ['hcm', 'hcm_safe', 'oip', 'chep', 'hpa', 'apexms']
 dec = {k: ctx['A'].strata(sorted(universes[k]), ctx['pax']).to_dict() for k in MAPS}
 code = lambda k, a: '-' if a not in universes[k] else 'x' if dec[k][a] == 'none' else str(int(dec[k][a]) - 1)
 # chromatin probability x1000, kept on its side of each bin edge the pilot uses (0.2, 0.5, 0.8)
@@ -70,11 +73,11 @@ def icp_code(v):
         if v < edge / 1000 and c >= edge: c = edge - 1
     return c
 proteins = {}
-for a in sorted(set(hp) | set(op) | set(cp) | set(hpa_sets)):
+for a in sorted(set(hp) | set(op) | set(cp) | set(hpa_sets) | set(ap)):
     h = hp.get(a)
     proteins[a] = [cats['hcm'].index(h[0]) if h else -1, cats['hcm_safe'].index(h[1]) if h else -1,
                    cats['oip'].index(op[a]) if a in op else -1, icp_code(cp[a]) if a in cp else -1,
-                   [cats['hpa'].index(x) for x in hpa_sets.get(a, [])], ''.join(code(k, a) for k in MAPS)]
+                   [cats['hpa'].index(x) for x in hpa_sets.get(a, [])], ''.join(code(k, a) for k in MAPS), [cats['apexms'].index(x) for x in ap.get(a, [])]]
 # the compartment grid: [group, [[row, {dataset: its category}, nucleus part or '']]]
 G = lambda **k: k
 groups = [
@@ -82,10 +85,11 @@ groups = [
         ['Chromatin', G(hcm='chromatin', chep='ICP >= 0.8 (chromatin)'), 'chromatin'],
         ['Nucleoplasm', G(hcm='nucleoplasm', oip='nucleus', hpa='Nucleoplasm'), 'nucleoplasm'],
         ['Nucleolus', G(hcm='nucleolus', oip='nucleolus', hpa='Nucleoli'), 'nucleolus'],
-        ['Nuclear speckles', G(hcm_safe='splicing speckles, nucleolus', hpa='Nuclear speckles'), 'speckles'],
+        ['Nuclear speckles', G(hcm_safe='splicing speckles, nucleolus', hpa='Nuclear speckles', apexms='Nuclear speckles'), 'speckles'],
         ['Paraspeckles', G(hcm_safe='paraspeckles'), 'paraspeckles'],
         ['Nuclear bodies (PML, Cajal …)', G(hcm='nuclear body', hpa='Nuclear bodies'), 'bodies'],
-        ['Nuclear envelope', G(hcm='nuclear outer membrane-ER membrane network', hpa='Nuclear membrane'), 'envelope'],
+        ['PML bodies', G(apexms='PML bodies'), 'pml'],
+        ['Nuclear envelope and lamina', G(hcm='nuclear outer membrane-ER membrane network', hpa='Nuclear membrane', apexms='Nuclear lamina'), 'envelope'],
         ['Nuclear pores', G(hcm_safe='nuclear pore'), 'pores'],
         ['Mitotic chromosome', G(hpa='Mitotic chromosome'), '']]],
     ['Cytoplasm', [
@@ -110,34 +114,42 @@ for g in groups:
     for row in g[1]:
         for k, c in list(row[1].items()):
             assert c in have[k], (k, c)
-# ---- RNA and DNA layers (pilot_layers.py): where the transcripts and the genes sit, written beside the file as
-# subcellular_na.json and loaded when the card is coloured by them
+# ---- RNA and DNA layers (pilot_layers.py): which compartments hold the RNAs that methylated proteins bind (eCLIP), as
+# RNAs (APEX-seq, nuclear-body APEX2-seq) and as genes (TSA-seq); written beside the file as subcellular_na.json and
+# loaded when the card is coloured by them
 lt = pd.read_csv(sc / 'layer_tests.tsv', sep='\t')
 lg = json.load(open(sc / 'layer_genes.json'))
 geo = lambda g: f'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={g}'  # noqa: E731
 na_ds = {
     'apex': dict(key='apex', name='APEX-seq', method='RNA proximity labelling', cells='HEK293T', ref='Fazal et al. 2019', doi='10.1016/j.cell.2019.05.027',
-                 how='APEX2 placed in eight compartments labels the RNAs around it; a transcript belongs to a compartment when it is labelled more than in the control (FDR < 0.05)',
+                 how='APEX2 placed in eight compartments labels the RNAs around it; an RNA belongs to a compartment when it is labelled more than in the control (FDR < 0.05)',
                  licence='GEO GSE116008, no restrictions', url=geo('GSE116008')),
     'nb': dict(key='nb', name='Nuclear-body APEX2-seq', method='RNA proximity labelling', cells='HEK293', ref='Barutcu et al. 2022', doi='10.1016/j.molcel.2021.12.010',
-               how='APEX2 on markers of speckles, the lamina, the nucleolus and nuclear bodies; a transcript belongs to a body when it is labelled at least twice as much as by nucleoplasmic APEX2 in both replicates',
+               how='APEX2 on markers of speckles, the lamina and nuclear bodies; an RNA belongs to a body when it is labelled at least twice as much as by nucleoplasmic APEX2 in both replicates',
                licence='GEO GSE176439, no restrictions', url=geo('GSE176439')),
     'tsa': dict(key='tsa', name='TSA-seq', method='DNA distance mapping', cells='K562', ref='Chen et al. 2018', doi='10.1083/jcb.201807108',
-                how='tyramide signal spreading from speckles (SON) and from the lamina (lamin B) marks DNA by its distance; a gene is near when its signal is in the top tenth of the genome',
+                how='tyramide signal spreading from speckles (SON) and from the lamina (lamin B) marks DNA by its distance; a gene lies near when its signal is in the top tenth of the genome',
                 licence='GEO GSE81553, no restrictions', url=geo('GSE81553')),
 }
 NA_MAPS = ['apex', 'nb', 'tsa']
-na_uni = {k: {a for a, g in lg.items() if k in g['cats']} for k in NA_MAPS}
-na_cats = {k: sorted({c for a in na_uni[k] for c in lg[a]['cats'][k]}) for k in NA_MAPS}
-na_tests = {k: rows_of(lt[lt['map'] == k].rename(columns={'compartment': 'compartment'})) for k in NA_MAPS}
+gids = sorted(lg['genes'])
+gix = {g: i for i, g in enumerate(gids)}
+na_uni = {k: {g for g in gids if k in lg['genes'][g]['cats']} for k in NA_MAPS}
+na_cats = {k: sorted({c for g in na_uni[k] for c in lg['genes'][g]['cats'][k]}) for k in NA_MAPS}
+pick = lambda k, who: lt[(lt['map'] == k) & (lt['bound_by'] == who)]  # noqa: E731
+na_tests = {k: rows_of(pick(k, 'methylated')) for k in NA_MAPS}
+na_ref = {k: rows_of(pick(k, 'other')) for k in NA_MAPS}
+bound = set().union(*[set(v) for a, v in lg['targets'].items() if a in meth])
+other = set().union(*[set(v) for a, v in lg['targets'].items() if a not in meth])
 for k in NA_MAPS:
-    na_ds[k]['universe'] = len(na_uni[k]); na_ds[k]['methylated'] = len(na_uni[k] & meth)
-    na_ds[k]['expression'] = {'apex': 'mean CPM of the control libraries', 'nb': 'mean CPM of the inputs', 'tsa': 'K562 total RNA-seq TPM (ENCODE ENCSR109IQO)'}[k]
-na_dec = {k: ctx['A'].strata(sorted(na_uni[k]), pd.Series({a: lg[a]['expr'][k] for a in na_uni[k]}).where(lambda v: v >= 0)).to_dict() for k in NA_MAPS}
-na_code = lambda k, a: '-' if a not in na_uni[k] else 'x' if na_dec[k][a] == 'none' else str(int(na_dec[k][a]) - 1)  # noqa: E731
-na_genes = {a: [[na_cats[k].index(c) for c in lg[a]['cats'].get(k, [])] for k in NA_MAPS] + [''.join(na_code(k, a) for k in NA_MAPS)] for a in sorted(lg)}
+    na_ds[k]['universe'] = len(na_uni[k]); na_ds[k]['methylated'] = len(na_uni[k] & bound); na_ds[k]['reference'] = len(na_uni[k] & other)
+na_dec = {k: ctx['A'].strata(sorted(na_uni[k]), pd.Series({g: lg['genes'][g]['expr'][k] for g in na_uni[k]})).to_dict() for k in NA_MAPS}
+na_code = lambda k, g: '-' if g not in na_uni[k] else 'x' if na_dec[k][g] == 'none' else str(int(na_dec[k][g]) - 1)  # noqa: E731
+gname = lambda g: lg['names'].get(g) if isinstance(lg['names'].get(g), str) and lg['names'].get(g) else g  # noqa: E731
+na_genes = [[gname(g)] + [[na_cats[k].index(c) for c in lg['genes'][g]['cats'].get(k, [])] for k in NA_MAPS] + [''.join(na_code(k, g) for k in NA_MAPS)] for g in gids]
+na_rbps = {a: [lg['rbps'].get(a, a)] + sorted(gix[g] for g in v) for a, v in sorted(lg['targets'].items()) if v}
 na_layers = {
-    'rna': dict(key='rna', label='RNA', title='Where their transcripts sit', datasets=[na_ds['apex'], na_ds['nb']],
+    'rna': dict(key='rna', label='RNA', datasets=[na_ds['apex'], na_ds['nb']],
                 head={'apex': ['APEX-seq', 'HEK293T'], 'nb': ['Nuclear bodies', 'HEK293']},
                 names={'nucleoplasm': 'Nucleus', 'envelope': 'Nuclear lamina'},
                 groups=[['Nucleus', [['Nucleus', G(apex='Nucleus'), 'nucleoplasm'], ['Nucleolus', G(apex='Nucleolus'), 'nucleolus'],
@@ -147,25 +159,28 @@ na_layers = {
                                      ['Nuclear lamina', G(apex='Nuclear lamina', nb='Nuclear lamina'), 'envelope'], ['Nuclear pores', G(apex='Nuclear pore'), 'pores']]],
                         ['Cytoplasm', [['Cytosol', G(apex='Cytosol'), 'cytosol'], ['ER membrane', G(apex='ER membrane'), 'er'],
                                        ['Outer mitochondrial membrane', G(apex='Outer mitochondrial membrane'), 'mito'], ['Mitochondrial matrix', G(apex='Mitochondrial matrix'), '']]]]),
-    'dna': dict(key='dna', label='DNA', title='Where their genes sit', datasets=[na_ds['tsa']], head={'tsa': ['TSA-seq', 'K562']},
+    'dna': dict(key='dna', label='DNA', datasets=[na_ds['tsa']], head={'tsa': ['TSA-seq', 'K562']},
                 names={'speckles': 'Near speckles', 'periphery': 'Near the lamina'},
                 groups=[['Nucleus', [['Near nuclear speckles', G(tsa='Near nuclear speckles'), 'speckles'], ['Near the nuclear lamina', G(tsa='Near the nuclear lamina'), 'periphery']]]]),
 }
 for L in na_layers.values():
     L['tests'] = {d['key']: na_tests[d['key']] for d in L['datasets']}
+    L['ref_tests'] = {d['key']: na_ref[d['key']] for d in L['datasets']}
     L['categories'] = {d['key']: na_cats[d['key']] for d in L['datasets']}
     for g in L['groups']:
         for row in g[1]:
             for k, c in row[1].items():
                 assert c in {r[0] for r in L['tests'][k]}, (k, c)
-json.dump(dict(preview=True, maps=NA_MAPS, layers=na_layers, genes=na_genes, test_fields=['category', 'members', 'methylated', 'log2 fold enrichment', 'q', 'log2 OR within expression deciles', 'CI low', 'CI high', 'q'],
-               gene_fields=['category indices in each map of maps', 'expression decile among the genes each map places (0-9; x no value; - not placed)']),
+json.dump(dict(preview=True, maps=NA_MAPS, layers=na_layers, genes=na_genes, rbps=na_rbps,
+               test_fields=['category', 'members', 'bound by methylated proteins (ref_tests: by eCLIP proteins without a methylarginine)', 'log2 fold enrichment', 'q', 'log2 OR within expression deciles', 'CI low', 'CI high', 'q'],
+               gene_fields=['symbol', 'category indices in each map of maps', '...', '...', 'expression decile among the genes each map places (0-9; x no value; - not placed)'],
+               rbp_fields=['symbol', 'indices of the genes its eCLIP targets (ENCODE and ENCORE)']),
           open(out.parent / 'subcellular_na.json', 'w'), separators=(',', ':'))
-print('RNA/DNA layers', {k: (na_ds[k]['universe'], na_ds[k]['methylated']) for k in NA_MAPS}, len(na_genes), (out.parent / 'subcellular_na.json').stat().st_size)
+print('RNA/DNA layers', {k: (na_ds[k]['universe'], na_ds[k]['methylated'], na_ds[k]['reference']) for k in NA_MAPS}, len(na_genes), len(na_rbps), (out.parent / 'subcellular_na.json').stat().st_size)
 
 json.dump(dict(preview=True, generated='pilot', datasets=datasets, tests=tests, test_fields=['category', 'members', 'methylated', 'log2 fold enrichment', 'q', 'log2 OR within abundance deciles', 'CI low', 'CI high', 'q'],
                groups=groups, categories=cats, proteins=proteins, decile_maps=MAPS,
                protein_fields=['hcm NMF index', 'hcm SAFE index', 'oip index', 'chromatin probability x1000', 'hpa location indices (Approved or better)',
-                               'PaxDb decile among the proteins each map of decile_maps places (0-9; x no value; - not placed)']),
+                               'PaxDb decile among the proteins each map of decile_maps places (0-9; x no value; - not placed)', 'apexms category indices']),
           open(out, 'w'), separators=(',', ':'))
 print({d['key']: (d['universe'], d['methylated']) for d in datasets}, len(proteins), out.stat().st_size)
