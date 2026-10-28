@@ -10894,13 +10894,12 @@
     });
   }
 
-  // ---- Where in the cell (preview of v1.5.0). Three layers, one at a time, each comparing methylated proteins with other
-  // proteins: where the proteins sit (six protein maps, data/subcellular.json); where the RNAs they bind gather (APEX-seq,
-  // nuclear-body APEX2-seq) and where the genes of those RNAs lie (TSA-seq, Hi-C subcompartments), for the proteins with
-  // eCLIP data (data/subcellular_na.json). Each map is tested against the proteins it places (or, for RNA and DNA, the
-  // eCLIP'd proteins it tests): one-sided hypergeometric with fold enrichment, and the Mantel–Haenszel odds ratio within
-  // PaxDb abundance deciles, two-sided. The drawings, the grid and the chart show one layer; a part of the drawings opens
-  // its numbers and members.
+  // ---- Where in the cell (preview of v1.5.0): where methylated proteins sit, by six protein maps (data/subcellular.json).
+  // Each map is tested against the proteins it places: one-sided hypergeometric with fold enrichment, and the
+  // Mantel–Haenszel odds ratio within PaxDb abundance deciles, two-sided. The drawings, the grid and the chart show the
+  // same tests; a part of the drawings opens its numbers and members. Where the RNAs that proteins bind gather (eCLIP
+  // against maps of RNA and DNA, data/subcellular_na.json) is one sentence on the card and a few rows on each protein's
+  // page.
   const CELL_ORDER = ['hpa', 'hcm', 'hcm_safe', 'oip', 'apexms', 'chep'];
   const CELL_ICP = { 'ICP >= 0.8 (chromatin)': 'Chromatin (probability ≥ 0.8)', 'ICP 0.5-0.8': 'Probability 0.5–0.8', 'ICP 0.2-0.5': 'Probability 0.2–0.5', 'ICP < 0.2 (not chromatin)': 'Not chromatin (probability < 0.2)' };
   const cellLabel = (c) => CELL_ICP[c] || (c === 'ER' || c === 'ERGIC' ? c : c.replace(/_/g, ' ').replace(/^p-body$/, 'P-body').replace(/^14-3-3 /, '14-3-3 ').replace(/^./, (x) => x.toUpperCase()));
@@ -10917,10 +10916,9 @@
   }
   // [category, members, methylated, log2 fold, q, log2 OR within deciles, CI low, CI high, q] -> its test within deciles
   const cellAdj = (r) => abundTest([r[5], r[6], r[7], r[8]]);
-  // The layers, each read the same way: L.catsOf(acc, map) -> its categories there, L.stratum(acc, map) -> its PaxDb
-  // decile there (0-9, 10 without a value, -1 when the map does not place it), with the words the card uses for it:
+  // The protein maps, read through one object: L.catsOf(acc, map) -> its categories there, L.stratum(acc, map) -> its
+  // PaxDb decile there (0-9, 10 without a value, -1 when the map does not place it), with the words the card uses:
   // L.verb(where) what a protein does there, L.here the proteins a map counts in a compartment, L.all all it counts.
-  const CELL_LAYERS = [['protein', 'Proteins'], ['rna', 'RNAs they bind'], ['dna', 'Genes of those RNAs']];
   const cellLayerMemo = new Map();
   const cellBase = (list) => new Set(list.map((p) => p.acc.split('-')[0]));
   function cellProteinLayer(SC) {
@@ -10938,36 +10936,22 @@
       setOf: (scoped) => cellBase(scoped ? R.prots : P),
       what: (scoped) => (scoped ? 'proteins of your selection' : 'methylated proteins'), inWord: (scoped) => (scoped ? 'are in your selection' : 'are methylated'),
       alike: 'other proteins of similar abundance', alikeShort: 'of similar abundance', others: 'proteins without a methylarginine',
-      verb: (w) => 'sit ' + w, here: 'proteins the map places here', all: 'the proteins the map places', within: CELL_WITHIN,
+      verb: (w) => 'sit ' + w, here: 'proteins the map places here', all: 'the proteins the map places',
       question: 'Where do methylated proteins sit in the cell?', selectedBy: (key) => key === 'hpa' && termValues('location').length > 0 };
     cellLayerMemo.set(SC, L);
     return L;
   }
-  // The RNA and DNA layers: each protein with eCLIP data (ENCODE, ENCORE) is a unit. Its bound RNAs gather in a
-  // compartment of an RNA map when the map places them there more often than other RNAs of similar expression and gene
-  // length (and
-  // its genes lie in a part of the nucleus of a DNA map likewise); its calls there are [category, log2 OR, q], q <= 0.05.
-  // A protein belongs to a compartment where its RNAs gather (odds ratio above 1), and a map tests the proteins with at
-  // least 20 bound RNAs it places.
-  function cellNaLayer(NA, key) {
-    const id = NA.layers[key];
-    if (cellLayerMemo.has(id)) return cellLayerMemo.get(id);
-    const mi = (k) => NA.maps.indexOf(k), rna = key === 'rna', rec = (acc) => NA.proteins[acc.split('-')[0]];
-    const calls = (acc, k) => { const r = rec(acc); return r ? r[2][mi(k)].map(([i, l2, q]) => [NA.categories[k][i], l2, q]) : []; };
-    const L = { key, datasets: id.datasets, order: id.datasets.map((d) => d.key), head: id.head, tests: id.tests, groups: id.groups, names: id.names || {}, few: id.few || [],
-      accs: Object.keys(NA.proteins), unit: 'proteins', label: (c) => c, calls, name: (acc) => { const r = rec(acc); return r ? r[0] : acc; },
-      catsOf: (acc, k) => calls(acc, k).filter((c) => c[1] > 0).map((c) => c[0]),
-      stratum: (acc, k) => { const r = rec(acc), c = r && r[1][mi(k)]; return c == null || c === '-' ? -1 : c === 'x' ? 10 : +c; },
-      setOf: (scoped) => cellBase(scoped ? R.prots : P),
-      what: (scoped) => (scoped ? 'proteins of your selection' : 'methylated proteins'), inWord: (scoped) => (scoped ? 'are in your selection' : 'are methylated'),
-      alike: 'other eCLIP\'d proteins of similar abundance', alikeShort: 'of similar abundance', others: 'eCLIP\'d proteins without a methylarginine',
-      verb: rna ? (w) => 'bind RNAs that gather ' + w : (w) => 'bind RNAs whose genes lie ' + w,
-      here: rna ? 'proteins whose bound RNAs gather here' : 'proteins whose bound RNAs\' genes lie here', all: 'the eCLIP\'d proteins the map tests',
-      // the DNA layer's parts of the nucleus are subcompartments in their own right: none takes another's colour
-      within: rna ? CELL_WITHIN : {},
-      question: rna ? 'Do methylated proteins bind RNAs that gather in particular compartments?' : 'Do the genes of those RNAs lie in particular parts of the nucleus?', selectedBy: () => false };
-    cellLayerMemo.set(id, L);
-    return L;
+  // Where the RNAs that proteins with eCLIP data bind gather (data/subcellular_na.json, pilot_layers.py): per map, the
+  // compartments where a protein's bound RNAs (or their genes) gather more or less than other RNAs of similar expression
+  // and gene length, as [compartment, log2 odds ratio, q] with q <= 0.05; null where the map places fewer than 20 of them.
+  const cellClipCalls = (NA, acc, key) => { const r = NA.proteins[acc.split('-')[0]], c = r && r[1][NA.maps.indexOf(key)]; return c ? c.map(([i, l2, q]) => [NA.categories[key][i], l2, q]) : null; };
+  // The card's sentence on them: in each map, the methylated eCLIP'd proteins against the others whose bound RNAs gather
+  // in each compartment, within PaxDb deciles (rows as the protein maps' tests); any compartment where they differ is named.
+  function cellClipSentence(NA) {
+    const ds = NA.maps.map((k) => NA.datasets[k]), n = Math.max(...ds.map((d) => d.universe)), m = Math.max(...ds.map((d) => d.methylated));
+    const diff = NA.maps.flatMap((k) => NA.tests[k].filter((r) => r[8] != null && r[8] <= PADJ).map((r) => esc(r[0]) + ', ' + esc(cellTimes(cellAdj(r))) + ' (' + esc(NA.datasets[k].name) + ', q ' + fmtP(r[8]) + ')'));
+    return 'Methylated RNA-binding proteins bind RNAs that gather in the same compartments as other RNA-binding proteins\' RNAs' + (diff.length ? ', except at ' + diff.join('; ') : '') +
+      ' (eCLIP for ' + fmt(n) + ' proteins, ' + fmt(m) + ' of them methylated, against ' + ds.map((d) => esc(d.name.replace(/^[A-Z](?=[a-z-]*(\s|$))/, (c) => c.toLowerCase()))).join(', ').replace(/, ([^,]*)$/, ' and $1') + ', within abundance deciles; each protein\'s page shows where its bound RNAs gather).';
   }
   // log2 of a Mantel–Haenszel odds ratio, ±Infinity where it is infinite or 0, as abundTest reads the exports
   const cellL2 = (or) => (or == null ? null : or === Infinity ? Infinity : or <= 0 ? -Infinity : Math.log2(or));
@@ -11031,7 +11015,7 @@
     withAbundanceOf(spec, (r) => r.adjT);
     if (scoped) {
       selSetTest(spec, { N, inBg: (p) => L.stratum(p.acc, key) >= 0, member: (r) => (p) => L.catsOf(p.acc, key).includes(r.key),
-        M: (r) => r.M, bg: L.all.replace(/^the /, ''), kinds: L.key === 'protein' && key === 'hpa' ? ['location'] : [], unit: u });
+        M: (r) => r.M, bg: L.all.replace(/^the /, ''), kinds: key === 'hpa' ? ['location'] : [], unit: u });
       // the marks repeat the selection's comparison within the deciles (cellSelTests), in place of the whole dataset's
       const T = cellSelTests(L, key);
       for (const r of spec.rows) {
@@ -11108,16 +11092,14 @@
     return '<svg class="cell-grid" viewBox="0 0 ' + W + ' ' + y + '" role="img" aria-label="Compartments against maps: how much more likely ' + esc(L.what(scoped)) + ' are to ' + esc(L.verb('in each')) + '">' + g + '</svg>';
   }
   function cellGridTsv(L, scoped) {
-    // members: the proteins the map places in the compartment (RNA and DNA: whose bound RNAs gather there)
-    const na = L.key !== 'protein', v = (u) => (u == null ? '' : u);
+    const v = (u) => (u == null ? '' : u);
     const head = scoped ? '# Where in the cell (preview): ' + L.what(true) + ' (' + selectionText() + ') in each map, against ' + L.alike + '; members: ' + L.here + '\n' +
       'group\tcompartment\tmap\tmap_category\tmembers\tselected\tselected_placed\tplaced\tlog2_odds_ratio_within_deciles\tlog2_ci_low\tlog2_ci_high\tp\tq\tnot_compared\n'
       : '# Where in the cell (preview): ' + L.what(false) + ' in each map, against ' + L.alike + '; members: ' + L.here + '\n' +
-      'group\tcompartment\tmap\tmap_category\tmembers\tmethylated\tlog2_fold_enrichment\tq\tlog2_odds_ratio_within_deciles\tq_within_deciles' +
-      (na ? '\tmedian_log2_or_bound_rnas_methylated\tmedian_log2_or_bound_rnas_others\tq_medians' : '') + '\n';
+      'group\tcompartment\tmap\tmap_category\tmembers\tmethylated\tlog2_fold_enrichment\tq\tlog2_odds_ratio_within_deciles\tq_within_deciles\n';
     return head + L.groups.flatMap(([group, rows]) => rows.flatMap(([label, map]) => L.order.filter((k) => map[k]).map((k) => {
       const r = L.tests[k].find((x) => x[0] === map[k]);
-      if (!scoped) return [group, label, cellDs(L, k).name, map[k], r[1], r[2], r[3], r[4], abundTsv(cellAdj(r).l2), r[8]].concat(na ? [abundTsv(cellL2m(r[9])), abundTsv(cellL2m(r[10])), v(r[11])] : []).join('\t');
+      if (!scoped) return [group, label, cellDs(L, k).name, map[k], r[1], r[2], r[3], r[4], abundTsv(cellAdj(r).l2), r[8]].join('\t');
       const x = cellSelTests(L, k).res.get(map[k]), a = x.a, f4 = (u) => (u == null ? '' : +u.toFixed(4));
       return [group, label, cellDs(L, k).name, map[k], x.M, x.k, x.n, x.N, abundTsv(a.l2 == null || !Number.isFinite(a.l2) ? a.l2 : +a.l2.toFixed(4)), f4(a.lo), f4(a.hi), v(a.p), v(a.q),
         x.circular ? (x.k === x.n ? 'every selected member is here' : 'selection made with these locations') : ''].join('\t');
@@ -11132,8 +11114,7 @@
     nucleoplasm: 'Nucleoplasm', chromatin: 'Chromatin', nucleolus: 'Nucleolus', speckles: 'Nuclear speckles', paraspeckles: 'Paraspeckles', bodies: 'Nuclear bodies', envelope: 'Nuclear envelope',
     pores: 'Nuclear pores', periphery: 'Lamina-associated chromatin', perinucleolar: 'Perinucleolar chromatin', cajal: 'Cajal bodies', pml: 'PML bodies' };
   // a part a layer does not measure on its own takes the colour of the part it belongs to (Cajal and PML bodies are
-  // nuclear bodies, pores sit in the envelope, the chromatin along the lamina and round the nucleolus is chromatin);
-  // each layer says which of these it uses (L.within)
+  // nuclear bodies, pores sit in the envelope, the chromatin along the lamina and round the nucleolus is chromatin)
   const CELL_WITHIN = { cajal: 'bodies', pml: 'bodies', pores: 'envelope', periphery: 'chromatin', perinucleolar: 'chromatin' };
   const cellPartName = (L, k) => L.names[k] || CELL_NAME[k];
   // the parts of the drawings, and the grid's rows, with the comparison each shows
@@ -11158,7 +11139,7 @@
   // its labels
   function cellDraw(L, scoped) {
     const P = cellParts(L, scoped);
-    const own = (k) => (P[k] ? k : P[L.within[k]] ? L.within[k] : null);
+    const own = (k) => (P[k] ? k : P[CELL_WITHIN[k]] ? CELL_WITHIN[k] : null);
     const tone = (k) => (own(k) ? P[own(k)].tone : 'na');
     const fill = (k) => 'cg-c ' + tone(k), line = (k) => 'cg-line ' + tone(k);
     const tip = (k0, name) => {
@@ -11362,41 +11343,21 @@
   const cellFigSpec = (id, title, subText, svg, tsv) => ({ id, title, subText, figCss: cellFigCss, figSvg: svg, figTsv: tsv });
   const cellKey = (L) => '<span class="cell-key"><i class="cg-k u3"></i><i class="cg-k u1"></i> more likely than ' + esc(L.alike) + '</span><span class="cell-key"><i class="cg-k ns"></i> no clear difference</span>' +
     '<span class="cell-key"><i class="cg-k d1"></i><i class="cg-k d3"></i> less likely</span><span class="cell-key"><i class="cg-k na"></i> not measured</span><span>numbers: how many times as likely (odds ratio; in the drawings, the median of the maps)</span>';
-  // the layer the card shows, loaded on first use
-  const cellLoad = (key) => (key === 'protein' ? loadLayer('subcellular').then((SC) => SC && cellProteinLayer(SC)) : loadLayer('subcellular_na').then((NA) => NA && cellNaLayer(NA, key)));
-  // what each layer shows, in a sentence or two
+  // what the card shows, in a sentence or two
   function cellIntro(L, scoped) {
-    const tail = 'A part is red where ' + esc(L.what(scoped)) + ' are more likely to ' + esc(L.verb('there')) + ' than ' + esc(L.alike) + ', blue where they are less likely, grey where there is no clear difference';
-    if (L.key === 'rna') return 'eCLIP shows which RNAs each protein binds in cells (ENCODE and ENCORE; K562 and HepG2). Two maps say where those RNAs gather: APEX-seq across the cell (HEK293T) and nuclear-body APEX2-seq at speckles, the lamina and nuclear bodies (HEK293). ' +
-      'A protein\'s bound RNAs gather in a compartment when the map places more of them there than of other RNAs of similar expression and gene length (long genes collect more eCLIP peaks, and compartments differ in gene length). ' + tail + '; parts these maps do not measure are drawn in outline.';
-    if (L.key === 'dna') return 'The genes of the RNAs each protein binds, placed in the nucleus by two maps: TSA-seq measures how close each gene lies to nuclear speckles and to the lamina (K562), and Hi-C sorts the genome into subcompartments by the contacts it makes (GM12878): ' +
-      'A1 beside speckles, A2 elsewhere in active chromatin, B1 repressed by Polycomb, B2 round the nucleolus, B3 at the lamina. A protein\'s bound RNAs come from a part when more of their genes lie there than of other genes of similar expression and length. ' + tail + '.';
-    return 'Six maps from five studies place proteins in the cell, made by imaging, proximity labelling, organelle pull-down and chromatin fractionation in different cells. ' + tail + '; each map compares only the proteins it places.';
+    return 'Six maps from five studies place proteins in the cell, made by imaging, proximity labelling, organelle pull-down and chromatin fractionation in different cells. ' +
+      'A part is red where ' + esc(L.what(scoped)) + ' are more likely to ' + esc(L.verb('there')) + ' than ' + esc(L.alike) + ', blue where they are less likely, grey where there is no clear difference; each map compares only the proteins it places.';
   }
-  // the proteins the RNA and DNA layers compare, and the compartments they leave out
-  function cellNaNote(L) {
-    const m = cellBase(P), yes = L.accs.filter((a) => m.has(a)).length, rna = L.key === 'rna';
-    const few = L.few.map(([row, k, cat, placed, n]) => esc(cat) + ' (' + esc(cellDs(L, k).name) + ', ' + (placed < 20 ? fmt(placed) + (rna ? ' RNAs' : ' genes') + ' placed' : fmt(n) + (n === 1 ? ' protein' : ' proteins')) + ')');
-    return 'Proteins: the ' + fmt(L.accs.length) + ' with eCLIP data (ENCODE; ENCORE: the genes with most reproducible peaks in each experiment, pooled over a protein\'s experiments) and at least 20 bound RNAs a map places; ' +
-      fmt(yes) + ' of them are methylated, so every comparison rests on the ' + fmt(L.accs.length - yes) + ' others. A protein counts in a compartment when its bound RNAs gather there clearly (q ≤ 0.05), which depends on how many RNAs it binds; ' +
-      'each part\'s panel also compares how strongly the bound RNAs of each group gather there, counted or not. ' +
-      (few.length ? 'Not compared, as fewer than five proteins\' bound RNAs gather there or the map places fewer than 20 ' + (rna ? 'RNAs' : 'genes') + ' there: ' + few.join('; ') + '. ' : '') +
-      'Expression: ' + L.datasets.map((d) => esc(d.name) + ', ' + esc(d.expression)).join('; ') + '.';
-  }
-  // what a selection stands for in a layer, in a sentence
-  function cellSelIntro(L) {
-    if (L.key === 'protein') return ' Your selection: ' + fmt(cellSelTests(L, L.order[0]).n) + ' of its proteins are placed by ' + esc(cellDs(L, L.order[0]).name) + '; each map counts its own.';
-    const withClip = [...cellBase(R.prots)].filter((a) => L.order.some((k) => L.stratum(a, k) >= 0)).length;
-    return withClip ? ' Your selection: ' + fmt(withClip) + ' of its proteins have eCLIP data; each map compares them with the other eCLIP\'d proteins it tests.'
-      : ' <b>None of the proteins in your selection has eCLIP data</b>, so this layer has nothing to show for it.';
-  }
+  // what a selection stands for, in a sentence
+  const cellSelIntro = (L) => ' Your selection: ' + fmt(cellSelTests(L, L.order[0]).n) + ' of its proteins are placed by ' + esc(cellDs(L, L.order[0]).name) + '; each map counts its own.';
   function renderCellOverview(el, scoped) {
     const box = $('#ch-cell-body', el), tv = $('.cell-ov-vis', el), th = $('.cell-ov-head', el);
     if (!box && !tv) return;
-    const view = UI.view, rq = R, lk = UI.cellLayer || 'protein';
-    Promise.all([cellLoad('protein'), cellLoad(lk)]).then(([PL, L]) => {
+    const view = UI.view, rq = R;
+    Promise.all([loadLayer('subcellular'), loadLayer('subcellular_na')]).then(([SC, NA]) => {
       if (UI.view !== view || R !== rq) return;
-      if (!PL || !L) { if (box) box.innerHTML = '<p class="muted">The maps did not load.</p>'; if (th) th.textContent = 'did not load'; return; }
+      const PL = SC && cellProteinLayer(SC), L = PL;
+      if (!PL) { if (box) box.innerHTML = '<p class="muted">The maps did not load.</p>'; if (th) th.textContent = 'did not load'; return; }
       // the hub tile and the fold's summary: where the proteins sit
       const parts = Object.values(cellParts(PL, scoped)), up = parts.filter((p) => /^u/.test(p.tone)).sort((a, b) => b.a.l2 - a.a.l2);
       if (tv) tv.innerHTML = aMeters(up.slice(0, 4).map((p) => ({ label: CELL_NAME[p.part] || p.label, v: Math.min(1, p.a.l2 / 3), text: cellOr(p.a), cls: 'count', tip: '<b>' + esc(p.label) + '</b><br>' + esc(PL.what(scoped)) + ' are ' + esc(cellTimes(p.a)) + ' to sit here as ' + esc(PL.alike) + ' (median of ' + p.maps + ')' })), { tight: true, wide: true });
@@ -11410,27 +11371,23 @@
       const grid = cellFigSpec('ch-cell-grid', 'Where in the cell: compartments against maps', 'How many times as likely ' + who + ' are to ' + L.verb('in each compartment') + ' as ' + L.alike + ' in the same map (odds ratio). Preview of v1.5.0.', () => cellGridSvg(L, scoped), () => cellGridTsv(L, scoped));
       const whole = cellFigSpec('ch-cell-whole', 'Where in the cell', cap('The cell'), () => cellWholeSvg(L, scoped), () => cellGridTsv(L, scoped));
       const nuc = cellFigSpec('ch-cell-nucleus', 'Where in the nucleus', cap('The nucleus'), () => cellNucleusSvg(L, scoped), () => cellGridTsv(L, scoped));
-      box.innerHTML = '<div class="cell-tools"><span class="flabel">Colour by</span><span class="seg" role="group" aria-label="Colour by">' +
-          CELL_LAYERS.map(([k, t]) => '<button type="button" data-celllayer="' + k + '" aria-pressed="' + (k === L.key) + '">' + t + '</button>').join('') + '</span>' +
-          '<span class="muted small">' + esc(L.question) + '</span></div>' +
-        '<p class="preview-flag">Preview of v1.5.0: these maps are not yet part of a release.</p>' +
-        '<p class="small">' + cellIntro(L, scoped) + (scoped ? cellSelIntro(L) : '') +
-          ' <b>Click a part, a label or a row of the grid</b> for its numbers and ' + (L.key === 'protein' ? 'its proteins' : 'the proteins whose bound RNAs ' + (L.key === 'rna' ? 'gather there' : 'come from genes there') + ', methylated and not') + '.</p>' +
+      box.innerHTML = '<p class="preview-flag">Preview of v1.5.0: these maps are not yet part of a release.</p>' +
+        '<p class="small">' + cellIntro(L, scoped) + (scoped ? cellSelIntro(L) : '') + ' <b>Click a part, a label or a row of the grid</b> for its numbers and its proteins.</p>' +
+        (NA ? '<p class="small cell-rna"><b>The RNAs they bind.</b> ' + cellClipSentence(NA) + '</p>' : '') +
         '<div class="chart-key">' + cellKey(L) + '</div>' +
-        (L.key === 'dna' ? '' : '<div class="cell-fig">' + figBlock(whole, 'The cell') + '</div>') + '<div class="cell-fig">' + figBlock(nuc, 'The nucleus') + '</div>' +
+        '<div class="cell-fig">' + figBlock(whole, 'The cell') + '</div><div class="cell-fig">' + figBlock(nuc, 'The nucleus') + '</div>' +
         '<div class="cell-detail" hidden></div>' +
         '<div class="cell-grid-wrap">' + figBlock(grid, 'Compartments against maps') + '</div>' +
         '<div class="cell-one"><div class="fig-head"><span class="flabel">One map at a time</span><span class="seg cell-maps" role="group" aria-label="Map">' +
           L.order.map((k) => '<button type="button" data-cellmap="' + k + '" aria-pressed="' + (k === key) + '">' + esc(k === 'hcm_safe' ? 'Cell map, domains' : cellDs(L, k).name) + '</button>').join('') + '</span>' + expButtons(spec.id) + '</div>' +
           hbars(spec) + '<p class="note ora-note">' + esc(spec.subText.replace(/\.?$/, '.')) + ' Bars: the share of ' + esc(L.what(false)) + ' among the ' + esc(L.here) + ', as a multiple of their share of ' + esc(L.all) + ' (log2), filled where the difference is significant. ' +
           'Marks: the same comparison against ' + esc(L.alike) + ' (✓ more likely, ○ no clear difference, ▼ less likely).</p></div>' +
-        '<p class="note small">Maps: ' + L.datasets.map((d) => esc(d.name) + ' (' + doiLink(d.doi, d.ref) + '; ' + esc(d.cells) + '; ' + esc(d.licence) + '; ' +
-          (L.key === 'protein' ? fmt(d.universe) + ' proteins placed' : fmt(d.placed) + (L.key === 'rna' ? ' RNAs' : ' genes') + ' placed, ' + fmt(d.universe) + ' eCLIP\'d proteins tested') + ', ' + pct(d.methylated, d.universe) + '% methylated)').join('; ') + '. ' +
-          (L.key === 'protein' ? 'The Human Protein Atlas column repeats the release\'s location comparison (v1.4.1). A proteomic map of nuclear bodies (Dyakov et al., bioRxiv 2024) is not shown: its licence (CC BY-NC-ND) does not allow derived works.' : cellNaNote(L)) + '</p>';
+        '<p class="note small">Maps: ' + L.datasets.map((d) => esc(d.name) + ' (' + doiLink(d.doi, d.ref) + '; ' + esc(d.cells) + '; ' + esc(d.licence) + '; ' + fmt(d.universe) + ' proteins placed, ' + pct(d.methylated, d.universe) + '% methylated)').join('; ') + '. ' +
+          'The Human Protein Atlas column repeats the release\'s location comparison (v1.4.1). A proteomic map of nuclear bodies (Dyakov et al., bioRxiv 2024) is not shown: its licence (CC BY-NC-ND) does not allow derived works.' +
+          (NA ? ' RNAs bound: eCLIP from ENCODE and ENCORE, placed by ' + NA.maps.map((k) => NA.datasets[k]).map((d) => esc(d.name) + ' (' + doiLink(d.doi, d.ref) + '; ' + esc(d.cells) + ')').join('; ') + '.' : '') + '</p>';
       bindBars($('.cell-one', box), spec.rows, () => {});
       bindChartExports(box);
       $$('[data-cellmap]', box).forEach((b) => b.addEventListener('click', () => { UI.cellMap[L.key] = b.dataset.cellmap; renderCellOverview(el, scoped); }));
-      $$('[data-celllayer]', box).forEach((b) => b.addEventListener('click', () => { if (b.dataset.celllayer !== L.key) { UI.cellLayer = b.dataset.celllayer; UI.cellRow = null; renderCellOverview(el, scoped); } }));
       $$('svg [data-tip]', box).forEach((e) => { e.addEventListener('mouseenter', (ev) => showTip(ev, e.getAttribute('data-tip'))); e.addEventListener('mousemove', moveTip); e.addEventListener('mouseleave', hideTip); });
       // a part of a drawing, its label or a row of the grid opens its numbers and members under that figure
       const parts2 = cellParts(L, scoped), rowOf = (id) => { const [gi, ri] = id.split('.').map(Number); return L.groups[gi] && L.groups[gi][1][ri]; };
@@ -11474,23 +11431,8 @@
     }
     return [...out.values()].sort((x, y) => y.maps.length - x.maps.length || x.gene.localeCompare(y.gene));
   }
-  // RNA and DNA layers: the eCLIP'd proteins whose bound RNAs gather in the row's compartment, in two groups: the set
-  // (methylated proteins, or the selection) and the others, out of the proteins the row's maps test; each with its odds
-  // ratio there (the median of its maps).
-  function cellNaMembers(L, row, scoped) {
-    const map = row[1], keys = L.order.filter((k) => map[k]), set = L.setOf(scoped);
-    const tested = L.accs.filter((a) => keys.some((k) => L.stratum(a, k) >= 0)), A = [], B = [];
-    for (const a of tested) {
-      const hits = keys.map((k) => [k, L.calls(a, k).find((c) => c[0] === map[k] && c[1] > 0)]).filter(([, c]) => c);
-      if (!hits.length) continue;
-      const v = hits.map(([, c]) => cellL2m(c[1])).sort((x, y) => x - y), h = v.length / 2;
-      (set.has(a) ? A : B).push({ acc: a, gene: L.name(a), maps: hits.map(([k]) => k), calls: hits, l2: v.length % 2 ? v[Math.floor(h)] : (v[h - 1] + v[h]) / 2 });
-    }
-    const by = (x, y) => y.l2 - x.l2 || x.gene.localeCompare(y.gene);
-    return { keys, A: A.sort(by), B: B.sort(by), nA: tested.filter((a) => set.has(a)).length, nB: tested.filter((a) => !set.has(a)).length };
-  }
   function cellDetailHtml(L, row, scoped) {
-    const s = cellRowSummary(L, row, scoped), [label, map] = row, name = row[2] ? cellPartName(L, row[2]) : label, who = L.what(scoped), prot = L.key === 'protein', here = L.verb('here');
+    const s = cellRowSummary(L, row, scoped), [label, map] = row, name = row[2] ? cellPartName(L, row[2]) : label, who = L.what(scoped), here = L.verb('here');
     const verdict = s.tone[0] === 'u' || s.tone[0] === 'd' ? cellCap(who) + ' are <b>' + esc(cellTimes(s.a)) + '</b> to ' + esc(here) + ' as ' + esc(L.alike) + (s.cells.length > 1 ? ' (the median of ' + s.maps + ')' : '') + '.'
       : s.tone === 'ns' ? (s.value === 'maps disagree' ? 'The maps disagree: in some, ' + esc(who) + ' are more likely to ' + esc(here) + ' than ' + esc(L.alike) + '; in others, less likely.' : cellCap(who) + ' ' + esc(here) + ' about as often as ' + esc(L.alike) + '.')
         : 'No map compares ' + esc(who) + ' here.';
@@ -11501,29 +11443,13 @@
     const rows = keys.map((k) => {
       const ds = cellDs(L, k), r = L.tests[k].find((x) => x[0] === map[k]), c = cellGridCell(L, k, map[k], scoped), x = scoped && cellSelTests(L, k).res.get(map[k]);
       const counts = scoped ? (x ? two(x.k, x.n, 'of your selection', x.M - x.k, x.N - x.n, 'others') : '–') : two(r[2], ds.methylated, 'methylated', r[1] - r[2], ds.universe - ds.methylated, 'without a methylarginine');
-      const extra = prot ? '' : scoped ? '<td>' + cmp(cellAdj(r)) + '</td>'
-        : '<td>' + (r[9] == null ? '–' : esc(cellOr({ l2: cellL2m(r[9]) })) + ' against ' + esc(cellOr({ l2: cellL2m(r[10]) })) + ', q ' + fmtP(r[11])) + '</td>';
       return '<tr><th scope="row">' + (ds.url ? '<a href="' + esc(ds.url) + '" target="_blank" rel="noopener">' + esc(ds.name) + '</a>' : esc(ds.name)) + '<br><span class="muted small">' + esc(ds.method) + ', ' + esc(ds.cells) + '</span></th>' +
-        '<td>' + esc(L.label(map[k])) + '</td><td>' + counts + '</td><td>' + (!c ? '–' : c.circular ? 'not compared' : cmp(c.a)) + '</td>' + extra + '</tr>';
+        '<td>' + esc(L.label(map[k])) + '</td><td>' + counts + '</td><td>' + (!c ? '–' : c.circular ? 'not compared' : cmp(c.a)) + '</td></tr>';
     }).join('');
-    const extraHead = prot ? '' : '<th>' + (scoped ? 'Methylated proteins, whole dataset' : (L.key === 'rna' ? 'How strongly their bound RNAs gather here' : 'How strongly the genes of their bound RNAs concentrate here') + ' <span class="muted">(median odds ratio: methylated against the others)</span>') + '</th>';
-    let html = '<div class="cell-detail-head"><h4>' + esc(name) + ' <span class="muted">· ' + esc(CELL_LAYERS.find(([k]) => k === L.key)[1]) + '</span></h4><button class="btn quiet small" type="button" data-cellclose aria-label="Close">Close</button></div>' +
+    let html = '<div class="cell-detail-head"><h4>' + esc(name) + '</h4><button class="btn quiet small" type="button" data-cellclose aria-label="Close">Close</button></div>' +
       '<p>' + verdict + '</p>' +
-      '<div class="tbl-wrap"><table class="tbl compact cell-detail-tbl"><thead><tr><th>Map</th><th>Its compartment</th><th>' + esc(cellCap(L.here)) + '</th><th>Against ' + esc(L.alike) + '</th>' + extraHead + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+      '<div class="tbl-wrap"><table class="tbl compact cell-detail-tbl"><thead><tr><th>Map</th><th>Its compartment</th><th>' + esc(cellCap(L.here)) + '</th><th>Against ' + esc(L.alike) + '</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
     const multi = keys.length > 1;
-    if (!prot) {
-      const M = cellNaMembers(L, row, scoped);
-      UI.cellSel = M.A;
-      const chip = (m) => '<a class="cell-chip" href="#' + encodeURIComponent(m.acc) + '" title="' + esc(m.gene + ' (' + m.acc + '): ' + m.calls.map(([k, c]) => cellDs(L, k).name + ' ' + cellOr({ l2: cellL2m(c[1]) }) + ', q ' + fmtP(c[2])).join('; ')) + '">' + esc(m.gene) +
-        ' <span class="muted">' + esc(cellOr({ l2: m.l2 })) + '</span>' + (multi && m.maps.length > 1 ? '<sup>' + m.maps.length + '</sup>' : '') + '</a>';
-      const list = (title, xs, n, btn) => '<div class="cell-members"><div class="fig-head"><span class="flabel">' + esc(title) + ' (' + fmt(xs.length) + ' of ' + fmt(n) + ', ' + pct(xs.length, n) + '%)</span>' +
-        (btn && xs.length ? '<button class="btn small" type="button" data-cellselect>Select these ' + fmt(xs.length) + ' proteins</button>' : '') + (btn ? '<button class="btn quiet small" type="button" data-celltsv>Download TSV</button>' : '') + '</div>' +
-        (xs.length ? '<p class="chips">' + xs.map(chip).join('') + '</p>' : '<p class="muted">None.</p>') + '</div>';
-      html += list((scoped ? 'Proteins of your selection' : 'Methylated proteins') + ' whose bound RNAs ' + (L.key === 'rna' ? 'gather here' : 'come from genes here'), M.A, M.nA, true) +
-        list((scoped ? 'Other eCLIP\'d proteins' : 'eCLIP\'d proteins without a methylarginine') + ' whose bound RNAs ' + (L.key === 'rna' ? 'gather here' : 'come from genes here'), M.B, M.nB, false) +
-        '<p class="note small">Beside each name: how many times as likely its bound RNAs are to ' + (L.key === 'rna' ? 'gather here' : 'come from genes here') + ' as other RNAs of similar expression and gene length' + (multi ? ' (the median of its maps; a number after it: how many maps find it)' : '') + '.</p>';
-      return html;
-    }
     const mem = cellMembers(L, row, scoped), shown = UI.cellAll ? mem : mem.slice(0, 150);
     html += '<div class="cell-members"><div class="fig-head"><span class="flabel">' + (scoped ? 'Proteins of your selection placed here' : 'Methylated proteins placed here') + ' (' + fmt(mem.length) + ')</span>' +
       (mem.length ? '<button class="btn small" type="button" data-cellselect>Select these ' + fmt(mem.length) + ' proteins</button><button class="btn quiet small" type="button" data-celltsv>Download TSV</button>' : '') + '</div>' +
@@ -11533,22 +11459,13 @@
     return html;
   }
   function bindCellDetail(panel, L, row, scoped) {
-    const close = $('[data-cellclose]', panel), sel = $('[data-cellselect]', panel), tsv = $('[data-celltsv]', panel), all = $('[data-cellall]', panel), prot = L.key === 'protein';
+    const close = $('[data-cellclose]', panel), sel = $('[data-cellselect]', panel), tsv = $('[data-celltsv]', panel), all = $('[data-cellall]', panel);
     if (close) close.addEventListener('click', () => { panel.hidden = true; UI.cellRow = null; $$('.on[data-part], .cg-row.on', panel.parentNode).forEach((g) => g.classList.remove('on')); });
-    if (sel) sel.addEventListener('click', () => applyQueryText((prot ? cellMembers(L, row, scoped) : UI.cellSel || []).map((m) => m.gene).join(' '), 'proteins'));
+    if (sel) sel.addEventListener('click', () => applyQueryText(cellMembers(L, row, scoped).map((m) => m.gene).join(' '), 'proteins'));
     if (tsv) tsv.addEventListener('click', () => {
-      const file = 'where_in_cell_' + (row[2] || row[0]).replace(/\W+/g, '_').toLowerCase() + '_' + L.key + '.tsv';
-      if (prot) {
-        const m = cellMembers(L, row, scoped), keys = L.order.filter((k) => row[1][k]);
-        download(file, '# ' + row[0] + ' (proteins): ' + L.what(scoped) + ' placed here\ngene\taccession\t' + keys.map((k) => cellDs(L, k).name).join('\t') + '\n' +
-          m.map((x) => [x.gene, x.acc].concat(keys.map((k) => (x.maps.includes(k) ? 'yes' : ''))).join('\t')).join('\n') + '\n');
-        return;
-      }
-      const M = cellNaMembers(L, row, scoped), meth = cellBase(P);
-      download(file, '# ' + row[0] + ' (' + L.key + '): eCLIP\'d proteins whose bound RNAs ' + (L.key === 'rna' ? 'gather here' : 'come from genes here') + '; log2 odds ratio against other RNAs of similar expression and gene length (q <= 0.05)\n' +
-        'gene\taccession\tmethylated\t' + (scoped ? 'in_selection\t' : '') + M.keys.map((k) => cellDs(L, k).name + '_log2_or').join('\t') + '\n' +
-        M.A.concat(M.B).map((x) => [x.gene, x.acc, meth.has(x.acc) ? 'yes' : 'no'].concat(scoped ? [M.A.includes(x) ? 'yes' : 'no'] : [])
-          .concat(M.keys.map((k) => { const c = x.calls.find(([kk]) => kk === k); return c ? abundTsv(cellL2m(c[1][1])) : ''; })).join('\t')).join('\n') + '\n');
+      const m = cellMembers(L, row, scoped), keys = L.order.filter((k) => row[1][k]);
+      download('where_in_cell_' + (row[2] || row[0]).replace(/\W+/g, '_').toLowerCase() + '.tsv', '# ' + row[0] + ': ' + L.what(scoped) + ' placed here\ngene\taccession\t' + keys.map((k) => cellDs(L, k).name).join('\t') + '\n' +
+        m.map((x) => [x.gene, x.acc].concat(keys.map((k) => (x.maps.includes(k) ? 'yes' : ''))).join('\t')).join('\n') + '\n');
     });
     if (all) all.addEventListener('click', () => { UI.cellAll = true; panel.innerHTML = cellDetailHtml(L, row, scoped); bindCellDetail(panel, L, row, scoped); });
   }
@@ -11561,33 +11478,27 @@
       const a = p.acc.split('-')[0], r = SC.proteins[a], hm = hpaMeta(), PL = cellProteinLayer(SC);
       const hpa = hm && p.hpa && p.hpa.length ? p.hpa.filter((x) => x[1] >= HPA_SURE).sort((x, y) => y[2] - x[2]).map((x) => hm.locations[x[0]] + (x[2] ? '' : ' (additional)')).join(', ') : '';
       const icp = r && r[3] >= 0 ? r[3] / 1000 : null;
-      const line = (L, key, val, what) => { const ds = cellDs(L, key); return '<tr><th scope="row">' + esc(ds.name) + '<br><span class="muted small">' + esc(ds.method) + ', ' + esc(ds.cells) + '</span></th><td>' + (val || '<span class="muted">' + esc(what || 'not placed by this map') + '</span>') + '</td></tr>'; };
-      const list = (L, key) => { const c = L.catsOf(a, key); return L.stratum(a, key) < 0 ? '' : c.length ? '<b>' + c.map((x) => esc(L.label(x))).join(', ') + '</b>' : 'none of its compartments'; };
-      // where the RNAs it binds (eCLIP) gather, and where their genes lie, against other RNAs of similar expression and gene length (the pilot's
-      // calls, q <= 0.05)
+      const line = (ds, val, what) => '<tr><th scope="row">' + esc(ds.name) + '<br><span class="muted small">' + esc(ds.method) + ', ' + esc(ds.cells) + '</span></th><td>' + (val || '<span class="muted">' + esc(what || 'not placed by this map') + '</span>') + '</td></tr>';
+      // where the RNAs it binds (eCLIP) gather, and where their genes lie: every map of RNA and DNA, from its calls
       let na = '';
       if (NA) {
-        const RL = cellNaLayer(NA, 'rna'), DL = cellNaLayer(NA, 'dna');
-        const where = (L, key, more, fewer, lab = (c) => c) => {
-          if (L.stratum(a, key) < 0) return '';
-          const c = L.calls(a, key).sort((u, v) => v[1] - u[1]), one = ([cat, l2]) => esc(lab(cat)) + ' ' + esc(cellOr({ l2: cellL2m(l2) }));
-          const up = c.filter((x) => x[1] > 0), down = c.filter((x) => x[1] < 0);
-          return (up.length ? more + ' <b>' + up.map(one).join(', ') + '</b>' : L.key === 'rna' ? 'in no compartment more than expected' : 'in no part of the nucleus more than expected') +
-            (down.length ? '; ' + fewer + ' ' + down.map(one).join(', ') : '');
+        const where = (key) => {
+          const c = cellClipCalls(NA, a, key);
+          if (!c) return '';
+          const one = ([cat, l2]) => esc(cat) + ' ' + esc(cellOr({ l2: cellL2m(l2) })), up = c.filter((x) => x[1] > 0).sort((u, v) => v[1] - u[1]), down = c.filter((x) => x[1] < 0).sort((u, v) => u[1] - v[1]);
+          return (up.length ? 'more than expected: <b>' + up.map(one).join(', ') + '</b>' : 'nowhere more than expected') + (down.length ? '; fewer: ' + down.map(one).join(', ') : '');
         };
-        const few = 'fewer than 20 of its bound RNAs placed by this map';
-        na = '<tr class="sub-head"><th colspan="2">Where the RNAs it binds gather (eCLIP), against other RNAs of similar expression and gene length</th></tr>' +
+        na = '<tr class="sub-head"><th colspan="2">Where the RNAs it binds gather (eCLIP) and where their genes lie, against other RNAs of similar expression and gene length</th></tr>' +
           (!NA.proteins[a] ? '<tr><td colspan="2" class="muted">No eCLIP data for this protein, or too few bound RNAs placed by these maps.</td></tr>'
-            : line(RL, 'apex', where(RL, 'apex', 'more at', 'fewer at'), few) + line(RL, 'nb', where(RL, 'nb', 'more at', 'fewer at'), few) +
-              line(DL, 'tsa', where(DL, 'tsa', 'more of their genes lie', 'fewer', (c) => c.toLowerCase()), few) + line(DL, 'sub', where(DL, 'sub', 'more of their genes lie in', 'fewer in'), few));
+            : NA.maps.map((k) => line(NA.datasets[k], where(k), 'fewer than 20 of its bound RNAs placed by this map')).join(''));
       }
       box.innerHTML = '<div class="card-head"><div><h3>Where the maps place it</h3><p class="sub">Where maps of the cell place this protein, where the RNAs it binds gather and where their genes lie. Preview of v1.5.0.</p></div></div>' +
         '<div class="tbl-wrap"><table class="tbl compact cell-places"><tbody><tr class="sub-head"><th colspan="2">The protein</th></tr>' +
-        line(PL, 'hpa', esc(hpa)) +
-        line(PL, 'hcm', r && r[0] >= 0 ? '<b>' + esc(cellLabel(SC.categories.hcm[r[0]])) + '</b>' + (cellCatOf(SC, a, 'hcm_safe') ? ' · domain: ' + esc(cellLabel(cellCatOf(SC, a, 'hcm_safe'))) : '') : '') +
-        line(PL, 'oip', cellCatOf(SC, a, 'oip') ? '<b>' + esc(cellLabel(cellCatOf(SC, a, 'oip'))) + '</b>' : '') +
-        line(PL, 'apexms', PL.stratum(a, 'apexms') < 0 ? '' : PL.catsOf(a, 'apexms').length ? '<b>' + PL.catsOf(a, 'apexms').map(esc).join(', ') + '</b>' : 'detected, in none of its compartments') +
-        line(PL, 'chep', icp == null ? '' : '<span class="mini-bar" style="width:8rem;display:inline-block"><i style="width:' + (100 * icp).toFixed(0) + '%"></i></span> <b>' + icp.toFixed(2) + '</b> ' + esc(cellLabel(cellCatOf(SC, a, 'chep')).toLowerCase())) +
+        line(cellDs(PL, 'hpa'), esc(hpa)) +
+        line(cellDs(PL, 'hcm'), r && r[0] >= 0 ? '<b>' + esc(cellLabel(SC.categories.hcm[r[0]])) + '</b>' + (cellCatOf(SC, a, 'hcm_safe') ? ' · domain: ' + esc(cellLabel(cellCatOf(SC, a, 'hcm_safe'))) : '') : '') +
+        line(cellDs(PL, 'oip'), cellCatOf(SC, a, 'oip') ? '<b>' + esc(cellLabel(cellCatOf(SC, a, 'oip'))) + '</b>' : '') +
+        line(cellDs(PL, 'apexms'), PL.stratum(a, 'apexms') < 0 ? '' : PL.catsOf(a, 'apexms').length ? '<b>' + PL.catsOf(a, 'apexms').map(esc).join(', ') + '</b>' : 'detected, in none of its compartments') +
+        line(cellDs(PL, 'chep'), icp == null ? '' : '<span class="mini-bar" style="width:8rem;display:inline-block"><i style="width:' + (100 * icp).toFixed(0) + '%"></i></span> <b>' + icp.toFixed(2) + '</b> ' + esc(cellLabel(cellCatOf(SC, a, 'chep')).toLowerCase())) +
         na + '</tbody></table></div>';
     });
   }

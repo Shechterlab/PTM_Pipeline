@@ -114,10 +114,10 @@ for g in groups:
     for row in g[1]:
         for k, c in list(row[1].items()):
             assert c in have[k], (k, c)
-# ---- RNA and DNA layers (pilot_layers.py): each protein with eCLIP data is a unit; it belongs to a compartment of an RNA
-# map when the RNAs it binds gather there (APEX-seq, nuclear-body APEX2-seq), and of a DNA map when the genes of those
-# RNAs lie there (TSA-seq, Hi-C subcompartments). Written beside the file as subcellular_na.json and loaded when the card
-# is coloured by them.
+# ---- RNA and DNA maps (pilot_layers.py): where the RNAs each protein with eCLIP data binds gather (APEX-seq,
+# nuclear-body APEX2-seq) and where their genes lie (TSA-seq, Hi-C subcompartments), and the methylated proteins
+# against the others in each compartment. Written beside the file as subcellular_na.json: the card states the
+# comparison in a sentence, and each protein's page lists its own calls.
 lt = pd.read_csv(sc / 'layer_tests.tsv', sep='\t')
 lp = json.load(open(sc / 'layer_proteins.json'))
 geo = lambda g: f'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={g}'  # noqa: E731
@@ -147,55 +147,15 @@ def na_rows(k):
 na_tests = {k: na_rows(k) for k in NA_MAPS}
 for k in NA_MAPS:
     na_ds[k]['universe'] = len(na_tested[k]); na_ds[k]['methylated'] = len(na_tested[k] & meth); na_ds[k]['placed'] = lp['placed'][k]
-# each protein's PaxDb decile among the eCLIP'd proteins each map tests (as lib.tests stratifies)
-na_dec = {k: ctx['A'].strata(sorted(na_tested[k]), ctx['pax']).to_dict() for k in NA_MAPS}
-na_code = lambda k, a: '-' if a not in na_tested[k] else 'x' if na_dec[k][a] == 'none' else str(int(na_dec[k][a]) - 1)  # noqa: E731
-na_prot = {a: [x['name'], ''.join(na_code(k, a) for k in NA_MAPS),
-               [[[na_cats[k].index(c), v, q] for c, v, q in x['calls'].get(k, []) if c in na_cats[k]] for k in NA_MAPS]]
+# each protein's calls in each map, null where the map tests it not (fewer than 20 of its bound RNAs placed)
+na_prot = {a: [x['name'], [[[na_cats[k].index(c), v, q] for c, v, q in x['calls'].get(k, []) if c in na_cats[k]] if k in x['tested'] else None for k in NA_MAPS]]
            for a, x in sorted(lp['proteins'].items()) if x['tested']}
-na_layers = {
-    'rna': dict(key='rna', label='RNA', datasets=[na_ds['apex'], na_ds['nb']],
-                head={'apex': ['APEX-seq', 'HEK293T'], 'nb': ['Nuclear bodies', 'HEK293']},
-                names={'nucleoplasm': 'Nucleus', 'envelope': 'Nuclear lamina'},
-                groups=[['Nucleus', [['Nucleus', G(apex='Nucleus'), 'nucleoplasm'], ['Nucleolus', G(apex='Nucleolus', nb='Nucleolus'), 'nucleolus'],
-                                     ['Nuclear speckles', G(nb='Nuclear speckles'), 'speckles'], ['PML bodies', G(nb='PML bodies'), 'pml'],
-                                     ['Cajal bodies', G(nb='Cajal bodies'), 'cajal'], ['Gems (SMN)', G(nb='Gems'), ''], ['Histone locus bodies', G(nb='Histone locus bodies'), ''],
-                                     ['Sam68 bodies', G(nb='Sam68 bodies'), ''],
-                                     ['Nuclear lamina', G(apex='Nuclear lamina', nb='Nuclear lamina'), 'envelope'], ['Nuclear pores', G(apex='Nuclear pore'), 'pores']]],
-                        ['Cytoplasm', [['Cytosol', G(apex='Cytosol'), 'cytosol'], ['ER membrane', G(apex='ER membrane'), 'er'],
-                                       ['Outer mitochondrial membrane', G(apex='Outer mitochondrial membrane'), 'mito'], ['Mitochondrial matrix', G(apex='Mitochondrial matrix'), '']]]]),
-    'dna': dict(key='dna', label='DNA', datasets=[na_ds['tsa'], na_ds['sub']], head={'tsa': ['TSA-seq', 'K562'], 'sub': ['Hi-C', 'GM12878']},
-                names={'speckles': 'Near speckles (A1)', 'chromatin': 'Active chromatin (A2)', 'perinucleolar': 'Perinucleolar chromatin (B2)', 'periphery': 'At the lamina (B3)'},
-                groups=[['Nucleus', [['Near nuclear speckles (A1)', G(tsa='Near nuclear speckles', sub='A1 (speckle-associated)'), 'speckles'],
-                                     ['Active chromatin (A2)', G(sub='A2 (active)'), 'chromatin'],
-                                     ['Polycomb chromatin (B1)', G(sub='B1 (Polycomb)'), ''],
-                                     ['Perinucleolar chromatin (B2)', G(sub='B2 (perinucleolar, pericentromeric)'), 'perinucleolar'],
-                                     ['At the nuclear lamina (B3)', G(tsa='Near the nuclear lamina', sub='B3 (lamina-associated)'), 'periphery'],
-                                     ['Chromosome 19 clusters (B4)', G(sub='B4 (chromosome 19 KZFP clusters)'), '']]]]),
-}
-# a row's cell is left out where the map places fewer than 20 RNAs (genes) in the compartment, or where fewer than five
-# proteins' bound RNAs gather there; L['few'] keeps [row, map, category, RNAs placed there, proteins whose RNAs gather there]
-for L in na_layers.values():
-    L['tests'] = {d['key']: na_tests[d['key']] for d in L['datasets']}
-    have_na = {k: {r[0] for r in v} for k, v in L['tests'].items()}
-    L['few'] = []
-    for g in L['groups']:
-        keep = []
-        for row in g[1]:
-            for k, c in list(row[1].items()):
-                if c not in have_na[k]:
-                    L['few'].append([row[0], k, c, lp['sizes'][k].get(c, 0), sum(1 for x in lp['proteins'].values() for cc, v, q in x['calls'].get(k, []) if cc == c and v > 0)])
-                    del row[1][k]
-            if row[1]:
-                keep.append(row)
-        g[1] = keep
-json.dump(dict(preview=True, maps=NA_MAPS, layers=na_layers, categories=na_cats, proteins=na_prot,
-               test_fields=['category', "eCLIP'd proteins whose bound RNAs gather there", 'methylated', 'log2 fold enrichment', 'q', 'log2 OR within PaxDb deciles', 'CI low', 'CI high', 'q',
+json.dump(dict(preview=True, maps=NA_MAPS, datasets=na_ds, tests=na_tests, categories=na_cats, proteins=na_prot,
+               test_fields=['compartment', "eCLIP'd proteins whose bound RNAs gather there", 'methylated', 'log2 fold enrichment', 'q', 'log2 OR within PaxDb deciles', 'CI low', 'CI high', 'q',
                             "median log2 OR of the methylated proteins' bound RNAs", 'of the other proteins', 'q (Mann-Whitney, BH per map)'],
-               protein_fields=['name', 'PaxDb decile among the proteins each map of maps tests (0-9; x no value; - not tested)',
-                               'per map: [category index, log2 OR of its bound RNAs within expression deciles, q] where q <= 0.05']),
+               protein_fields=['name', 'per map of maps: [category index, log2 OR of its bound RNAs within expression and gene-length deciles, q] where q <= 0.05; null where the map does not test it']),
           open(out.parent / 'subcellular_na.json', 'w'), separators=(',', ':'))
-print('RNA/DNA layers', {k: (na_ds[k]['universe'], na_ds[k]['methylated']) for k in NA_MAPS}, len(na_prot), {k: L['few'] for k, L in na_layers.items()}, (out.parent / 'subcellular_na.json').stat().st_size)
+print('RNA/DNA maps', {k: (na_ds[k]['universe'], na_ds[k]['methylated']) for k in NA_MAPS}, len(na_prot), (out.parent / 'subcellular_na.json').stat().st_size)
 
 json.dump(dict(preview=True, generated='pilot', datasets=datasets, tests=tests, test_fields=['category', 'members', 'methylated', 'log2 fold enrichment', 'q', 'log2 OR within abundance deciles', 'CI low', 'CI high', 'q'],
                groups=groups, categories=cats, proteins=proteins, decile_maps=MAPS,

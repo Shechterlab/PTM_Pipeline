@@ -21,7 +21,7 @@ HEK293; Mol Cell Table S1, SAINT; raw data MassIVE MSV000087649), comes from `pi
 SAINT's average probability is at least 0.9 (speckles: with two of the three markers SRSF1, SRSF7, RNPS1; lamina: LMNA
 or LMNB1; PML bodies: SP100); the proteins it places are every prey detected.
 
-The card's RNA and DNA layers (`pilot_layers.py`, written to `docs/data/subcellular_na.json`) ask whether methylated
+`pilot_layers.py` (written to `docs/data/subcellular_na.json` by `build_preview.py`) asks whether methylated
 proteins bind RNAs that gather in particular compartments more often than other RNA-binding proteins do. Each protein
 with eCLIP data (ENCODE and ENCORE, from `inputs/nucleic_acid/`: the genes with most reproducible peaks in each
 experiment, pooled over a protein's experiments) is a unit. Its bound RNAs gather in a compartment when an RNA map
@@ -43,6 +43,9 @@ alone, 24 proteins' bound RNAs "gathered" at the lamina; matched on both, one.
 Of the 230 eCLIP'd proteins, 186 carry a methylarginine; the maps test 219-220 (178-179 methylated), so every comparison
 rests on about 41 proteins without one. No compartment separates the two groups (lowest q 0.11: APEX-seq lamina, odds
 ratio 2.6), and neither do the sizes of their odds ratios.
+
+The card states this in one sentence, built from the file's tests, so a rebuild that finds a difference names it there;
+each protein's page lists where its own bound RNAs gather and where their genes lie, in every map that tests it.
 
 Exploratory, not on the page: within the methylated eCLIP'd proteins, those with a methylarginine at a residue-level RNA
 contact (an RNA crosslink at the residue, an RBR-ID residue, a CAPRI crosslinked peptide or a PDB contact; 65 of 179)

@@ -2277,7 +2277,6 @@ svg [data-tip]:hover .cd-lead { stroke-opacity: 1; stroke-width: 1.6; }
 .preview-flag { font-size: 0.8rem; color: var(--accent-dark, var(--accent)); margin: 0 0 0.5rem; }
 .cell-places th { font-weight: 600; width: 14rem; }
 .cell-places tr.sub-head th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding-top: 0.6rem; width: auto; }
-.cell-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
 .cd-hit, .cg-hit { fill: transparent; }
 svg [data-part], svg [data-row] { cursor: pointer; }
 svg [data-part]:focus-visible, svg [data-row]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
