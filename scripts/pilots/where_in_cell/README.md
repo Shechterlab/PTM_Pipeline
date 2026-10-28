@@ -26,8 +26,8 @@ proteins bind RNAs that gather in particular compartments more often than other 
 with eCLIP data (ENCODE and ENCORE, from `inputs/nucleic_acid/`: the genes with most reproducible peaks in each
 experiment, pooled over a protein's experiments) is a unit. Its bound RNAs gather in a compartment when an RNA map
 (APEX-seq, nuclear-body APEX2-seq) places them there more often than the other RNAs it places, within deciles of
-expression in the map's cells (Mantel-Haenszel; BH over every protein and compartment of the map; q <= 0.05, odds ratio
-above 1); the DNA maps (TSA-seq, Hi-C subcompartments) place the genes of those RNAs the same way. A map tests the
+expression in the map's cells crossed with deciles of gene length (GENCODE v19; Mantel-Haenszel; BH over every protein
+and compartment of the map; q <= 0.05, odds ratio above 1); the DNA maps (TSA-seq, Hi-C subcompartments) place the genes of those RNAs the same way. A map tests the
 proteins with at least 20 bound RNAs it places, and compartments where it places fewer than 20 RNAs (genes) are not
 tested. The methylated proteins are then compared with the other eCLIP'd proteins a map tests, within PaxDb abundance
 deciles (`lib.tests`, as for the protein maps; compartments where fewer than five proteins' RNAs gather are not
@@ -35,10 +35,23 @@ compared). A call depends on how many bound RNAs a map places, so each compartme
 protein's odds ratio, called or not: methylated against the others, two-sided Mann-Whitney U, BH per map. Genes are
 joined by Ensembl gene ID (nuclear-body counts, by a symbol naming a single gene).
 
+Gene length has to be matched as well as expression: eCLIP target lists favour long genes, whose introns collect more
+peaks, and compartments differ in it. The RNAs nuclear-body APEX2-seq places at the lamina come from genes of median
+319 kb (71% over 200 kb, against 9% of all it places), its speckle RNAs from genes of 12 kb. Matched on expression
+alone, 24 proteins' bound RNAs "gathered" at the lamina; matched on both, one.
+
 Of the 230 eCLIP'd proteins, 186 carry a methylarginine; the maps test 219-220 (178-179 methylated), so every comparison
-rests on about 41 proteins without one. In the pilot neither test separates the two groups in any compartment except one:
-proteins whose bound RNAs gather at the nuclear lamina by APEX-seq are more often methylated (odds ratio 3.1 within
-abundance deciles, q 0.03), while the sizes of their odds ratios do not differ (q 0.81).
+rests on about 41 proteins without one. No compartment separates the two groups (lowest q 0.11: APEX-seq lamina, odds
+ratio 2.6), and neither do the sizes of their odds ratios.
+
+Exploratory, not on the page: within the methylated eCLIP'd proteins, those with a methylarginine at a residue-level RNA
+contact (an RNA crosslink at the residue, an RBR-ID residue, a CAPRI crosslinked peptide or a PDB contact; 65 of 179)
+bind RNAs from speckle-associated genes less often than the rest (TSA-seq odds ratio 0.38, q 0.01; Hi-C A1 0.34,
+q 0.007, within PaxDb deciles). Against proteins whose residue-level RNA contacts are all at other residues (82), the
+difference shrinks (0.57, q 0.19; 0.50, q 0.12): it belongs mostly to well-characterised sequence-specific RNA-binding
+proteins, not to where their methylarginines sit. Proteins with a methylarginine anywhere in RNA-binding evidence
+(including RBDmap fragments and pCLAP and CAPRI peptides; 114 of 179) carry a median of 7 methylarginines against 1
+for the rest, so that split mostly sorts proteins by how many sites they have.
 
 | Layer | Map | File read | Source |
 |---|---|---|---|

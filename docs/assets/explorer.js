@@ -10944,7 +10944,8 @@
     return L;
   }
   // The RNA and DNA layers: each protein with eCLIP data (ENCODE, ENCORE) is a unit. Its bound RNAs gather in a
-  // compartment of an RNA map when the map places them there more often than other RNAs expressed at similar levels (and
+  // compartment of an RNA map when the map places them there more often than other RNAs of similar expression and gene
+  // length (and
   // its genes lie in a part of the nucleus of a DNA map likewise); its calls there are [category, log2 OR, q], q <= 0.05.
   // A protein belongs to a compartment where its RNAs gather (odds ratio above 1), and a map tests the proteins with at
   // least 20 bound RNAs it places.
@@ -11367,9 +11368,9 @@
   function cellIntro(L, scoped) {
     const tail = 'A part is red where ' + esc(L.what(scoped)) + ' are more likely to ' + esc(L.verb('there')) + ' than ' + esc(L.alike) + ', blue where they are less likely, grey where there is no clear difference';
     if (L.key === 'rna') return 'eCLIP shows which RNAs each protein binds in cells (ENCODE and ENCORE; K562 and HepG2). Two maps say where those RNAs gather: APEX-seq across the cell (HEK293T) and nuclear-body APEX2-seq at speckles, the lamina and nuclear bodies (HEK293). ' +
-      'A protein\'s bound RNAs gather in a compartment when the map places more of them there than of other RNAs expressed at similar levels. ' + tail + '; parts these maps do not measure are drawn in outline.';
+      'A protein\'s bound RNAs gather in a compartment when the map places more of them there than of other RNAs of similar expression and gene length (long genes collect more eCLIP peaks, and compartments differ in gene length). ' + tail + '; parts these maps do not measure are drawn in outline.';
     if (L.key === 'dna') return 'The genes of the RNAs each protein binds, placed in the nucleus by two maps: TSA-seq measures how close each gene lies to nuclear speckles and to the lamina (K562), and Hi-C sorts the genome into subcompartments by the contacts it makes (GM12878): ' +
-      'A1 beside speckles, A2 elsewhere in active chromatin, B1 repressed by Polycomb, B2 round the nucleolus, B3 at the lamina. A protein\'s bound RNAs come from a part when more of their genes lie there than of other genes expressed at similar levels. ' + tail + '.';
+      'A1 beside speckles, A2 elsewhere in active chromatin, B1 repressed by Polycomb, B2 round the nucleolus, B3 at the lamina. A protein\'s bound RNAs come from a part when more of their genes lie there than of other genes of similar expression and length. ' + tail + '.';
     return 'Six maps from five studies place proteins in the cell, made by imaging, proximity labelling, organelle pull-down and chromatin fractionation in different cells. ' + tail + '; each map compares only the proteins it places.';
   }
   // the proteins the RNA and DNA layers compare, and the compartments they leave out
@@ -11520,7 +11521,7 @@
         (xs.length ? '<p class="chips">' + xs.map(chip).join('') + '</p>' : '<p class="muted">None.</p>') + '</div>';
       html += list((scoped ? 'Proteins of your selection' : 'Methylated proteins') + ' whose bound RNAs ' + (L.key === 'rna' ? 'gather here' : 'come from genes here'), M.A, M.nA, true) +
         list((scoped ? 'Other eCLIP\'d proteins' : 'eCLIP\'d proteins without a methylarginine') + ' whose bound RNAs ' + (L.key === 'rna' ? 'gather here' : 'come from genes here'), M.B, M.nB, false) +
-        '<p class="note small">Beside each name: how many times as likely its bound RNAs are to ' + (L.key === 'rna' ? 'gather here' : 'come from genes here') + ' as other RNAs expressed at similar levels' + (multi ? ' (the median of its maps; a number after it: how many maps find it)' : '') + '.</p>';
+        '<p class="note small">Beside each name: how many times as likely its bound RNAs are to ' + (L.key === 'rna' ? 'gather here' : 'come from genes here') + ' as other RNAs of similar expression and gene length' + (multi ? ' (the median of its maps; a number after it: how many maps find it)' : '') + '.</p>';
       return html;
     }
     const mem = cellMembers(L, row, scoped), shown = UI.cellAll ? mem : mem.slice(0, 150);
@@ -11544,7 +11545,7 @@
         return;
       }
       const M = cellNaMembers(L, row, scoped), meth = cellBase(P);
-      download(file, '# ' + row[0] + ' (' + L.key + '): eCLIP\'d proteins whose bound RNAs ' + (L.key === 'rna' ? 'gather here' : 'come from genes here') + '; log2 odds ratio against other RNAs expressed alike (q <= 0.05)\n' +
+      download(file, '# ' + row[0] + ' (' + L.key + '): eCLIP\'d proteins whose bound RNAs ' + (L.key === 'rna' ? 'gather here' : 'come from genes here') + '; log2 odds ratio against other RNAs of similar expression and gene length (q <= 0.05)\n' +
         'gene\taccession\tmethylated\t' + (scoped ? 'in_selection\t' : '') + M.keys.map((k) => cellDs(L, k).name + '_log2_or').join('\t') + '\n' +
         M.A.concat(M.B).map((x) => [x.gene, x.acc, meth.has(x.acc) ? 'yes' : 'no'].concat(scoped ? [M.A.includes(x) ? 'yes' : 'no'] : [])
           .concat(M.keys.map((k) => { const c = x.calls.find(([kk]) => kk === k); return c ? abundTsv(cellL2m(c[1][1])) : ''; })).join('\t')).join('\n') + '\n');
@@ -11562,7 +11563,7 @@
       const icp = r && r[3] >= 0 ? r[3] / 1000 : null;
       const line = (L, key, val, what) => { const ds = cellDs(L, key); return '<tr><th scope="row">' + esc(ds.name) + '<br><span class="muted small">' + esc(ds.method) + ', ' + esc(ds.cells) + '</span></th><td>' + (val || '<span class="muted">' + esc(what || 'not placed by this map') + '</span>') + '</td></tr>'; };
       const list = (L, key) => { const c = L.catsOf(a, key); return L.stratum(a, key) < 0 ? '' : c.length ? '<b>' + c.map((x) => esc(L.label(x))).join(', ') + '</b>' : 'none of its compartments'; };
-      // where the RNAs it binds (eCLIP) gather, and where their genes lie, against other RNAs expressed alike (the pilot's
+      // where the RNAs it binds (eCLIP) gather, and where their genes lie, against other RNAs of similar expression and gene length (the pilot's
       // calls, q <= 0.05)
       let na = '';
       if (NA) {
@@ -11575,7 +11576,7 @@
             (down.length ? '; ' + fewer + ' ' + down.map(one).join(', ') : '');
         };
         const few = 'fewer than 20 of its bound RNAs placed by this map';
-        na = '<tr class="sub-head"><th colspan="2">Where the RNAs it binds gather (eCLIP), against other RNAs expressed alike</th></tr>' +
+        na = '<tr class="sub-head"><th colspan="2">Where the RNAs it binds gather (eCLIP), against other RNAs of similar expression and gene length</th></tr>' +
           (!NA.proteins[a] ? '<tr><td colspan="2" class="muted">No eCLIP data for this protein, or too few bound RNAs placed by these maps.</td></tr>'
             : line(RL, 'apex', where(RL, 'apex', 'more at', 'fewer at'), few) + line(RL, 'nb', where(RL, 'nb', 'more at', 'fewer at'), few) +
               line(DL, 'tsa', where(DL, 'tsa', 'more of their genes lie', 'fewer', (c) => c.toLowerCase()), few) + line(DL, 'sub', where(DL, 'sub', 'more of their genes lie in', 'fewer in'), few));

@@ -4,8 +4,10 @@
 Each protein with eCLIP data (ENCODE and ENCORE: the genes with most reproducible peaks or windows in each experiment,
 pooled over its experiments; inputs/nucleic_acid/) is a unit. Its bound RNAs gather in a compartment when they are
 placed there more often than the other RNAs (genes) a map places, within deciles of expression in the map's cells
-(Mantel-Haenszel; BH over every protein and compartment of the map; q <= 0.05 and odds ratio > 1); compartments where a
-map places fewer than 20 RNAs (genes) are not tested. Then, as for every
+crossed with deciles of gene length (GENCODE v19; 100 strata; Mantel-Haenszel; BH over every protein and compartment of
+the map; q <= 0.05 and odds ratio > 1). Gene length matters: eCLIP target lists favour long genes, whose introns collect
+more peaks, and compartments differ in it (the nuclear-body lamina RNAs come from genes of median 319 kb, the speckle
+RNAs from genes of 12 kb). Compartments where a map places fewer than 20 RNAs (genes) are not tested. Then, as for every
 protein-level test of the release, the methylated proteins are compared with the other eCLIP'd proteins a map can test
 (those with at least 20 bound RNAs it places), within PaxDb abundance deciles (lib.tests). A call depends on how many
 bound RNAs a map places, so the size of each protein's own odds ratio is compared too, whether or not it is called: the
@@ -106,6 +108,7 @@ for g, n in list(names.items()):
     by_symbol[n].add(g)
 for _, _, _, g, n in gtf:
     names.setdefault(g, n)
+glen = pd.Series({g: b - a for _, a, b, g, _ in gtf})  # gene length (bp); genes GENCODE v19 lacks have none
 
 # ---- Nuclear-body APEX2-seq (Barutcu 2022)
 c = pd.read_csv(dl / 'barutcu' / 'GSE176439_NuclearBody_APEX_seq_gene_counts.txt.gz', sep='\t', index_col=0, low_memory=False).apply(pd.to_numeric, errors='coerce').fillna(0)
@@ -183,7 +186,9 @@ size = defaultdict(lambda: defaultdict(dict))  # map -> compartment -> accession
 for key in MAPS:
     universe = sorted(g for g, x in genes.items() if key in x['cats'])
     pos = {g: i for i, g in enumerate(universe)}
-    codes, layer = np.unique(ctx['A'].strata(universe, pd.Series({g: genes[g]['expr'][key] for g in universe})).to_numpy(dtype=str), return_inverse=True)
+    by_expr = ctx['A'].strata(universe, pd.Series({g: genes[g]['expr'][key] for g in universe})).to_numpy(dtype=str)
+    by_len = ctx['A'].strata(universe, glen).to_numpy(dtype=str)
+    codes, layer = np.unique(np.char.add(np.char.add(by_expr, '|'), by_len), return_inverse=True)
     K = len(codes); n_all = np.bincount(layer, minlength=K)
     in_cat = {c: np.array([c in genes[g]['cats'][key] for g in universe]) for c in sorted({c for g in universe for c in genes[g]['cats'][key]})}
     sizes[key] = {c: int(v.sum()) for c, v in in_cat.items()}
