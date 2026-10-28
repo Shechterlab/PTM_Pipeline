@@ -1753,8 +1753,18 @@
     setQuery(text);
     UI.pageP = 50; UI.pageS = 100;
     compute();
-    const to = typeof view === 'function' ? view() : view;
-    if (to && to !== UI.view) go(to); else renderView();
+    showSelection(view);
+  }
+  // A selection made from the Overview or a protein page (a chart bar, a class, disease or condensate, a quick
+  // selection) for a list of proteins or sites opens on the Overview when it is large enough to test, where every card
+  // is retested on it; a smaller one opens the list, and the other pages keep the page they name.
+  const selectionView = (view) => ((view === 'proteins' || view === 'sites') && ['overview', 'protein', 'unlisted'].includes(UI.view) && constraints().length > 0 && selTestable() ? 'overview' : view);
+  // Shows the page a new selection opens on (view, or a function choosing it); one sent to the Overview from a section
+  // opened alone returns to the Overview's cards.
+  function showSelection(view) {
+    const to = typeof view === 'function' ? view() : selectionView(view);
+    if (to === 'overview' && to !== view && UI.view === 'overview' && UI.focus) go('overview');
+    else if (to && to !== UI.view) go(to); else renderView();
   }
   const termValues = (key) => Q.tokens.filter((t) => t.key === key).flatMap((t) => t.vals);
   // The single value of a key when the search holds exactly one, for context cards and rail selects.
@@ -2059,7 +2069,7 @@
     UI.pageP = 50; UI.pageS = 100;
     compute();
     renderRail();
-    if (view && view !== UI.view) go(view); else renderView();
+    showSelection(view);
   }
 
   // The selection: everything that narrows the sites (search terms and filters, which must all match), with its counts
@@ -4501,7 +4511,7 @@
       };
       const lst = (rows) => rows.filter((r) => r.main.or > 1).map((r) => esc(r.label) + ' <span class="an">' + fx(r.main.or) + '×</span>').join(', ');
       const key = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span class="a-info" tabindex="0" data-tip="' + esc('Where in the protein: methylarginines against the other arginines of the same proteins (within-protein odds ratios). Which proteins: methylated proteins against all reviewed human proteins (fold enrichment). Shown: q ≤ ' + PADJ + '.') + '">How to read</span>';
-      let lead;
+      let lead, apart = '';
       if (!scoped) {
         const where = pick(motif, 2, 1, 'sequence motif').concat(pick(sctx || disorder, 1, 1, sctx ? 'structural context' : 'disorder'));
         const which = pick(pan || func, 1, 0, pan ? 'PANTHER class' : 'protein class').concat(pick(cond, 1, 0, 'CD-CODE condensate'), pick(loc, 1, 0, 'Human Protein Atlas location'), pick(dis, 1, 0, 'disease gene set'));
@@ -4524,9 +4534,14 @@
         const rows = profileRows() || [], sig = rows.filter((r) => r.q <= 0.05 && !/\b(Other|Unclassified|unclassified)$/.test(r.ft.label));
         const up = sig.filter((r) => r.fold > 1).slice(0, 6).sort((a, b) => b.fold - a.fold), dn = sig.filter((r) => r.fold < 1).slice(0, 3).sort((a, b) => a.fold - b.fold);
         const fr = (r) => ({ label: r.ft.label, main: { or: r.fold, sig: true, q: r.q, fold: true } });
-        lead = { q: 'Your selection', pic: selListHtml(), figHead: 'What sets it apart from the other sites?', key: '<span><i class="aq-pt up"></i>more common</span><span><i class="aq-pt down"></i>less common</span><span class="a-key-note">Your ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + ' (q ≤ 0.05)</span>',
-          verdict: !rows.length ? 'Too few sites to compare with the rest.' : up.length || dn.length ? '' : 'Nothing in your selection differs from the other sites at q ≤ 0.05.',
-          fig: up.length || dn.length ? aForest([['More common', up.map(fr)], ['Less common', dn.map(fr)]], { noneOf: 'your sites' }) : '', go: 'sel-enriched', goText: 'Every feature, with counts' };
+        lead = { q: 'Your selection', pic: selListHtml() };
+        // what sets the selection's sites apart from the others: below the cards, closed until opened
+        const er = A_ROWS.find((r) => r.key === 'sel-enriched'), sum = er && er.meta && er.meta.sel != null ? er.meta.sel : '';
+        apart = '<details class="fold a-apart" data-fold="a-apart"' + (foldIsOpen('a-apart', false) ? ' open' : '') + '><summary class="fold-head"><span class="pm" aria-hidden="true"></span>' +
+          '<span class="fold-title">What sets it apart from the other sites?</span><span class="fold-sum">' + sum + '</span></summary><div class="card a-fig">' +
+          '<div class="a-key"><span><i class="aq-pt up"></i>more common</span><span><i class="aq-pt down"></i>less common</span><span class="a-key-note">Your ' + fmt(R.sites.length) + ' sites against the other ' + fmt(S.length - R.sites.length) + ' (q ≤ 0.05)</span></div>' +
+          (up.length || dn.length ? aForest([['More common', up.map(fr)], ['Less common', dn.map(fr)]], { noneOf: 'your sites' }) : '<p class="a-verdict">' + (!rows.length ? 'Too few sites to compare with the rest.' : 'Nothing in your selection differs from the other sites at q ≤ 0.05.') + '</p>') +
+          '<p class="a-more"><button type="button" class="linkish" data-go="sel-enriched">Every feature, with counts ›</button></p></div></details>';
       }
       const chartTile = (spec) => {
         if (!spec) return null;
@@ -4614,11 +4629,10 @@
       // the opening page only: three proteins at random, after the starting points
       const ex = scoped ? [] : exProts();
       const maps = ex.length ? '<h3 class="a-gh">Randomly selected proteins <button type="button" class="linkish a-reshuffle" data-ex-shuffle>Draw three others</button></h3>' + aMapsHtml(ex, '') : '';
-      return aHome(lead, ov, ['sel-enriched'], { Explore: maps });
+      return aHome(lead, ov, ['sel-enriched'], apart ? { 'Cancer cell lines': apart } : { Explore: maps });
     }
     A_ROWS.length = 0;
     const hubList = '<div class="hub-list">' +
-      untested(hubSec('Your selection', (selOn ? profileCardHtml(true) : '') || row('sel-enriched', 'Enriched features', '', 'What sets a selection apart from the other sites?', 'needs', null, '', 'Make a selection (search, or Filters) to see the site features over-represented in it.'))) +
       untested(hubSec(selOn ? 'Kinds of protein in your selection' : 'Kinds of protein',
         chartRow('ov-pan', pan || func, 'Which protein classes are over-represented among methylated proteins?') +
         chartRow('ov-dis', dis, 'Which disease gene sets are over-represented?') +
@@ -4640,6 +4654,7 @@
         row('ov-dep', 'Cancer cell dependency', '<div class="card wide" id="ch-dep"><div class="card-head"><div><h3>Cancer cell dependency</h3><p class="sub">How much 1,178 cancer cell lines depend on ' + (scoped ? 'the proteins of your selection' : 'the methylated proteins') +
           ' in DepMap\'s CRISPR knockout screens. Cancer cell genetics, not evidence about methylation.</p></div></div><div id="ch-dep-body"><p class="note">Loading DepMap…</p></div></div>',
           'Do cancer cell lines depend on these proteins more than on others? (DepMap CRISPR screens)', 'retest', 'loading DepMap…', 'loading DepMap…', null, null)) +
+      untested(hubSec('What sets it apart', (selOn ? profileCardHtml(true) : '') || row('sel-enriched', 'Enriched features', '', 'What sets a selection apart from the other sites?', 'needs', null, '', 'Make a selection (search, or Filters) to see the site features over-represented in it.'))) +
       hubSec('Sources and responses',
         row('ov-study', 'Provenance', '<div class="card wide chart-card" id="ch-study"><div class="card-head"><div><h3>Provenance</h3><p class="sub">' + study.subHtml + '</p></div>' + expButtons('ch-study') + '</div>' +
       '<div class="two-col"><div>' + hbars(study) + '</div>' +
@@ -5470,7 +5485,8 @@
         (lead.fig ? '<div class="card a-fig">' + (lead.figHead ? '<h3 class="a-fig-h">' + esc(lead.figHead) + '</h3>' : '') + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
       // a group whose tile asks for it (full) takes a row of its own
       '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp' + (rows.some((r) => ov[r.key] && ov[r.key].full) ? ' a-full' : '') + '" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>' +
-        (ins[g] ? '<section class="a-grp a-wide">' + ins[g] + '</section>' : '')).join('') + '</div></div>';
+        (ins[g] ? '<section class="a-grp a-wide">' + ins[g] + '</section>' : '')).join('') +
+      Object.keys(ins).filter((g) => ins[g] && !groups.some(([n]) => n === g)).map((g) => '<section class="a-grp a-wide">' + ins[g] + '</section>').join('') + '</div></div>';
   }
   // A protein drawn as small lanes along its length: each lane a label and marks, a box for a stretch [a, b], a tick
   // for one residue, a pin for a site (cls names its colour); the sites lane last, as on the protein map.
@@ -16192,7 +16208,7 @@
     const sub = (id, title, html) => '<div class="doc-sub" id="doc-' + id + '"><h4>' + esc(title) + '</h4>' + html + '</div>';
     const parts = [
       ['start', 'Getting started', '<ul>' +
-        '<li><b>Search</b> for a gene symbol or synonym (FUS, TDP43), a UniProt accession, part of a protein name, a site (FUS R216) or a pasted gene list. A search made on the Overview that selects at least ' + SEL_MIN.prots + ' proteins and ' + SEL_MIN.sites + ' sites (terms such as <code>disease:als</code>, or a gene list) stays on the Overview, where every section is retested on it; one protein opens its page, and a smaller selection opens the Proteins (or Sites) list. The bar under the search box lists every active filter; click one to remove it.</li>' +
+        '<li><b>Search</b> for a gene symbol or synonym (FUS, TDP43), a UniProt accession, part of a protein name, a site (FUS R216) or a pasted gene list. A search made on the Overview (terms such as <code>disease:als</code>, or a gene list), and a link on the Overview or a protein page that selects a class, disease, condensate, location or quick selection, opens on the Overview when it selects at least ' + SEL_MIN.prots + ' proteins and ' + SEL_MIN.sites + ' sites, with every section retested on it; one protein opens its page, and a smaller selection opens the Proteins (or Sites) list. On the Overview, what sets a selection\'s sites apart from the others is a closed section under the analyses. The bar under the search box lists every active filter; click one to remove it.</li>' +
         '<li><b>Filter</b> with the <b>Filters</b> button that leads the bar under the search box (a drawer of filters by topic, whose foot counts the sites and proteins they leave), or click a bar in any chart. The bar then shows the selection on every view. The address keeps the view, the search and the filters (and the protein and site, <code>#P35637/R216</code>), so a copied link reopens the same place.</li>' +
         '<li><b>Sections as questions.</b> The Overview, the Interactions page and each protein page list their sections as rows: the question a section answers and its answer, for a selection beside the whole dataset\'s, with how the selection reaches it: <i>Retested</i> (the same test run again on the selection, against the same background), <i>Counted</i> (the selection\'s sites or proteins counted, without a test) or <i>Whole dataset only</i>. A filled red triangle marks more than expected, a slate one less, a ring no significant difference at 0.05 (the answer gives the q or p value it rests on). A row opens its section alone, with its figures, tables and downloads; <i>Previous</i> and <i>Next</i> step through the sections, <i>All sections</i> (or the browser\'s Back) returns, and the address keeps the section (<code>#interactions/ix-nac</code>), so a link opens it.</li>' +
         '<li><b>Views</b>: Overview (dataset charts), Proteins and Sites (tables, TSV download), Interactions (partners, complexes, structures and RNA/DNA crosslinks), Figures (alignment, logo and protein comparison from the current selection) and a page per protein (map, sites, interactions, conservation, 3D structure and sequence).</li>' +
