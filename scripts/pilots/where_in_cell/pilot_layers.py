@@ -1,10 +1,17 @@
-"""Which compartments hold the RNAs that methylated proteins bind (pilot for the "Where in the cell" card's RNA and DNA
-layers; not part of a release).
+"""Do methylated proteins bind RNAs that gather in particular compartments, more than other RNA-binding proteins do?
+(pilot for the "Where in the cell" card's RNA and DNA layers; not part of a release)
 
-The RNAs bound by a protein are its eCLIP targets: the genes with most reproducible peaks (ENCODE, K562 and HepG2) or
-windows (ENCORE) in each experiment (inputs/nucleic_acid/encode_eclip_target_genes.tsv, encore_eclip_target_genes.tsv),
-pooled over its experiments. The compartments are those of three maps:
+Each protein with eCLIP data (ENCODE and ENCORE: the genes with most reproducible peaks or windows in each experiment,
+pooled over its experiments; inputs/nucleic_acid/) is a unit. Its bound RNAs gather in a compartment when they are
+placed there more often than the other RNAs (genes) a map places, within deciles of expression in the map's cells
+(Mantel-Haenszel; BH over every protein and compartment of the map; q <= 0.05 and odds ratio > 1); compartments where a
+map places fewer than 20 RNAs (genes) are not tested. Then, as for every
+protein-level test of the release, the methylated proteins are compared with the other eCLIP'd proteins a map can test
+(those with at least 20 bound RNAs it places), within PaxDb abundance deciles (lib.tests). A call depends on how many
+bound RNAs a map places, so the size of each protein's own odds ratio is compared too, whether or not it is called: the
+methylated proteins' log2 odds ratios against the others' (two-sided Mann-Whitney U; BH per map).
 
+The maps:
 RNA
 - APEX-seq (Fazal et al. 2019, Cell; HEK293T, poly(A) RNA; GEO GSE116008): an RNA belongs to a compartment when the
   compartment's APEX2 labelling exceeds its control at FDR < 0.05 (the study's DESeq2 table). Expression: mean CPM of
@@ -18,16 +25,17 @@ DNA
   when its SON (lamin B) TSA-seq signal, the mean of the two replicates over the gene and at least 20 kb, is in the top
   tenth of the genome's 20 kb bins. Genes expressed in K562 (total RNA-seq TPM >= 1, ENCODE ENCSR109IQO, the mean of the
   two replicates) are the ones the map places; that TPM is also their expression.
+- Hi-C subcompartments (Rao et al. 2014, Cell; GM12878; GEO GSE63525, GSE63525_GM12878_subcompartments.bed.gz): the
+  subcompartment (A1, A2, B1, B2, B3, B4) at the middle of a gene expressed in GM12878 (total RNA-seq TPM >= 1, ENCODE
+  ENCSR000AEE, the mean of the two replicates; also its expression).
 
 Genes are joined by Ensembl gene ID (version dropped); nuclear-body counts carry symbols only and are joined by a symbol
-that names a single gene. Each map compares the RNAs bound by methylated proteins with the other RNAs (genes) it places,
-within deciles of their expression in the same cells (lib.tests); the RNAs bound by eCLIP'd proteins without a
-methylarginine are compared the same way, for reference.
+that names a single gene.
 
     python pilot_layers.py REPO DL OUT
 DL holds apex/, barutcu/ (GSE176439_NuclearBody_APEX_seq_gene_counts.txt.gz), tsa/ (the GSE81553 bigWigs and
-gencode.v19.annotation.gtf.gz) and k562/ (ENCFF611MXW.tsv, ENCFF384BFE.tsv). Writes OUT/layer_tests.tsv and
-OUT/layer_genes.json.
+gencode.v19.annotation.gtf.gz), k562/ (ENCFF611MXW.tsv, ENCFF384BFE.tsv), hic/ (GSE63525_GM12878_subcompartments.bed.gz)
+and gm12878/ (ENCFF723ICA.tsv, ENCFF362RMV.tsv). Writes OUT/layer_tests.tsv and OUT/layer_proteins.json.
 """
 import sys, json, gzip, re
 from collections import defaultdict
@@ -134,9 +142,11 @@ for k in tracks:
         reps = [np.array([np.nan if x is None else x for x in w.stats(chrom, 0, nbins * BIN, type='mean', nBins=nbins)], dtype=float) for w in bw[k]]
         vals.append(np.nanmean(np.vstack(reps), axis=0))
     v = np.concatenate(vals); edges[k] = float(np.quantile(v[np.isfinite(v)], 0.9))
-tpm = pd.concat([pd.read_csv(dl / 'k562' / f, sep='\t', usecols=['gene_id', 'TPM']).set_index('gene_id')['TPM'] for f in ('ENCFF611MXW.tsv', 'ENCFF384BFE.tsv')], axis=1).mean(axis=1)
-tpm.index = [strip(i) for i in tpm.index]
-tpm = tpm.groupby(level=0).max()
+def encode_tpm(folder, files):
+    t = pd.concat([pd.read_csv(dl / folder / f, sep='\t', usecols=['gene_id', 'TPM']).set_index('gene_id')['TPM'] for f in files], axis=1).mean(axis=1)
+    t.index = [strip(i) for i in t.index]
+    return t.groupby(level=0).max()
+tpm = encode_tpm('k562', ('ENCFF611MXW.tsv', 'ENCFF384BFE.tsv'))
 n_tsa = 0
 for chrom, a, b, g, n in gtf:
     e = float(tpm.get(g, 0.0))
@@ -148,22 +158,78 @@ for chrom, a, b, g, n in gtf:
     if not (np.isfinite(s) and np.isfinite(l)):
         continue
     put(g, 'tsa', (['Near nuclear speckles'] if s >= edges['son'] else []) + (['Near the nuclear lamina'] if l >= edges['lmnb'] else []), e); n_tsa += 1
-print(f'genes placed: APEX-seq {sum("apex" in g["cats"] for g in genes.values())}, nuclear bodies {n_nb}, TSA-seq {n_tsa}; genes {len(genes)}; TSA top-tenth edges {edges}')
+# ---- Hi-C subcompartments (Rao 2014), genes expressed in GM12878
+sub = pd.read_csv(dl / 'hic' / 'GSE63525_GM12878_subcompartments.bed.gz', sep='\t', header=None, usecols=[0, 1, 2, 3], names=['chrom', 'a', 'b', 'sub'])
+sub = sub[sub['sub'].isin(['A1', 'A2', 'B1', 'B2', 'B3', 'B4'])]
+by_chrom = {c: (g['a'].to_numpy(), g['b'].to_numpy(), g['sub'].to_numpy()) for c, g in sub.sort_values(['chrom', 'a']).groupby('chrom')}
+gm = encode_tpm('gm12878', ('ENCFF723ICA.tsv', 'ENCFF362RMV.tsv'))
+SUBNAME = {'A1': 'A1 (speckle-associated)', 'A2': 'A2 (active)', 'B1': 'B1 (Polycomb)', 'B2': 'B2 (perinucleolar, pericentromeric)', 'B3': 'B3 (lamina-associated)', 'B4': 'B4 (chromosome 19 KZFP clusters)'}
+n_sub = 0
+for chrom, a, b, g, n in gtf:
+    e = float(gm.get(g, 0.0))
+    if chrom not in by_chrom or e < 1:
+        continue
+    starts, ends, lab = by_chrom[chrom]; m = (a + b) // 2; i = np.searchsorted(starts, m, side='right') - 1
+    if i >= 0 and m < ends[i]:
+        put(g, 'sub', [SUBNAME[lab[i]]], e); n_sub += 1
+print(f'genes placed: APEX-seq {sum("apex" in g["cats"] for g in genes.values())}, nuclear bodies {n_nb}, TSA-seq {n_tsa}, Hi-C subcompartments {n_sub}; genes {len(genes)}')
 
-# ---- tests: RNAs bound by methylated proteins (and, for reference, by eCLIP'd proteins without a methylarginine)
-bound = {'methylated': set().union(*[targets[a] for a in targets if a in meth]), 'other': set().union(*[targets[a] for a in targets if a not in meth])}
-rows = []
-for key in ('apex', 'nb', 'tsa'):
-    universe = {g for g, x in genes.items() if key in x['cats']}
-    values = pd.Series({g: genes[g]['expr'][key] for g in universe})
-    sets = defaultdict(set)
-    for g in universe:
-        for cat in genes[g]['cats'][key]:
-            sets[cat].add(g)
-    for who, s in bound.items():
-        t = lib.tests(ctx, universe, sets, min_size=10, values=values, target=s)
-        t.insert(0, 'bound_by', who); t.insert(0, 'map', key)
-        rows.append(t)
-        lib.show(t, f'{key}: RNAs bound by {who} proteins ({len(s & universe)} of {len(universe)})')
-pd.concat(rows).to_csv(out / 'layer_tests.tsv', sep='\t', index=False)
-json.dump({'genes': genes, 'names': {g: names.get(g, g) for g in genes}, 'targets': {a: sorted(s & set(genes)) for a, s in targets.items()}, 'rbps': rbp_name}, open(out / 'layer_genes.json', 'w'))
+# ---- each eCLIP'd protein: do the RNAs it binds gather in each compartment? (within expression deciles; BH per map)
+MAPS = ('apex', 'nb', 'tsa', 'sub')
+per = defaultdict(dict)   # accession -> map -> [[compartment, log2 OR, q], ...] where q <= 0.05
+tested = defaultdict(set)  # map -> accessions with at least 20 bound RNAs it places
+calls, tested_cats, sizes = {}, {}, {}
+size = defaultdict(lambda: defaultdict(dict))  # map -> compartment -> accession -> log2 OR (-inf for 0, inf for infinite)
+for key in MAPS:
+    universe = sorted(g for g, x in genes.items() if key in x['cats'])
+    pos = {g: i for i, g in enumerate(universe)}
+    codes, layer = np.unique(ctx['A'].strata(universe, pd.Series({g: genes[g]['expr'][key] for g in universe})).to_numpy(dtype=str), return_inverse=True)
+    K = len(codes); n_all = np.bincount(layer, minlength=K)
+    in_cat = {c: np.array([c in genes[g]['cats'][key] for g in universe]) for c in sorted({c for g in universe for c in genes[g]['cats'][key]})}
+    sizes[key] = {c: int(v.sum()) for c, v in in_cat.items()}
+    print(f'{key}: RNAs (genes) placed in each compartment ' + ', '.join(f'{c} {n}' for c, n in sizes[key].items()))
+    cats = tested_cats[key] = [c for c, v in in_cat.items() if v.sum() >= 20]
+    rows = []
+    for acc, t in targets.items():
+        idx = np.array(sorted(pos[g] for g in t if g in pos), dtype=int)
+        if len(idx) < 20:
+            continue
+        tested[key].add(acc)
+        sel = np.zeros(len(universe), dtype=bool); sel[idx] = True
+        n_sel = np.bincount(layer[sel], minlength=K)
+        for c in cats:
+            n_cat = np.bincount(layer[in_cat[c]], minlength=K); both = np.bincount(layer[sel & in_cat[c]], minlength=K)
+            tables = [(int(both[i]), int(n_sel[i] - both[i]), int(n_cat[i] - both[i]), int(n_all[i] - n_sel[i] - n_cat[i] + both[i])) for i in range(K)]
+            odds, lo, hi, p, used = ctx['mh'](tables)
+            rows.append([acc, c, odds, p])
+            if odds is not None:
+                size[key][c][acc] = float(np.log2(odds)) if odds > 0 else -np.inf
+    q = ctx['bh']([r[3] if r[3] is not None else 1.0 for r in rows])
+    calls[key] = defaultdict(set)
+    for (acc, c, odds, p), qq in zip(rows, q):
+        if qq <= 0.05 and odds is not None and odds > 0:
+            per[acc].setdefault(key, []).append([c, round(float(np.log2(odds)), 3) if np.isfinite(odds) else 99, float(f'{qq:.3g}')])
+            if odds > 1:
+                calls[key][c].add(acc)
+    print(f'{key}: {len(tested[key])} proteins tested; calls per compartment ' + ', '.join(f'{c} {len(v)}' for c, v in sorted(calls[key].items())))
+
+# ---- the methylated proteins against the other eCLIP'd proteins each map tests, within PaxDb abundance deciles
+from scipy.stats import mannwhitneyu
+out_rows = []
+for key in MAPS:
+    t = lib.tests(ctx, tested[key], {c: v for c, v in calls[key].items()}, min_size=5)
+    t.insert(0, 'map', key)
+    med = lambda v: float(np.median(v)) if len(v) else np.nan  # noqa: E731
+    yes = {c: [v for a, v in size[key][c].items() if a in meth] for c in t['compartment']}
+    no = {c: [v for a, v in size[key][c].items() if a not in meth] for c in t['compartment']}
+    t['log2_or_median_methylated'] = [med(yes[c]) for c in t['compartment']]
+    t['log2_or_median_other'] = [med(no[c]) for c in t['compartment']]
+    t['p_size'] = [float(mannwhitneyu(yes[c], no[c]).pvalue) if yes[c] and no[c] else np.nan for c in t['compartment']]
+    t['q_size'] = ctx['bh'](t['p_size'].fillna(1))
+    print(t[['compartment', 'log2_or_median_methylated', 'log2_or_median_other', 'p_size', 'q_size']].to_string(index=False, float_format=lambda v: f'{v:.3g}'))
+    out_rows.append(t)
+    lib.show(t, f'{key}: methylated among the proteins whose bound RNAs gather in each compartment ({len(tested[key] & meth)} of {len(tested[key])} methylated)')
+pd.concat(out_rows).to_csv(out / 'layer_tests.tsv', sep='\t', index=False)
+json.dump({'proteins': {a: {'name': rbp_name.get(a, a), 'tested': sorted(k for k in MAPS if a in tested[k]), 'calls': per.get(a, {})} for a in sorted(targets)},
+           'categories': tested_cats, 'sizes': sizes,
+           'placed': {k: sum(k in x['cats'] for x in genes.values()) for k in MAPS}}, open(out / 'layer_proteins.json', 'w'))
