@@ -3630,7 +3630,7 @@
       '<div class="hb-axis' + cls + '" aria-hidden="true"><span></span>' + (spec.extraCol ? '<span></span>' : '') + '<span class="ticks">' + sc.ticks.map((t, i) => '<span style="left:' + sc.xp(t).toFixed(2) + '%">' + (tickShown(spec, sc, i) ? tfmt(t) : '') + '</span>').join('') + '</span><span></span>' + (spec.sel ? '<span></span>' : '') + '</div>' +
       (spec.treeNote && rows.some((r) => r.sub) ? '<p class="chart-tree-note">' + spec.treeNote + '</p>' : '') +
       '<div class="chart-key">' + (spec.selTest ? '<span class="sel-test-key"><b>Your selection:</b>&nbsp;' + esc(selTestText(spec.selTest)) + '</span><span><i class="ref"></i>whole dataset</span>' : '') +
-      (spec.noSig ? '' : sigKey(spec).map(([c, l]) => '<span><i' + (c ? ' class="' + c + '"' : '') + '></i>' + l + '</span>').join('')) + (spec.sel ? selKeyHtml(spec.sel) : '') + (spec.adj && !spec.selTest ? '<span class="adj-key">' + ADJ_KEY + '</span>' : '') + '<span>' + esc(chartAxis(spec)) + '</span></div>';
+      (spec.noSig ? '' : sigKey(spec).map(([c, l]) => '<span><i' + (c ? ' class="' + c + '"' : '') + '></i>' + l + '</span>').join('')) + (spec.sel ? selKeyHtml(spec.sel) : '') + (adjShown(spec) ? '<span class="adj-key">' + ADJ_KEY + '</span>' : '') + '<span>' + esc(chartAxis(spec)) + '</span></div>';
   }
   // The selection's count in a bar (orange dot, as the Filtered flag), blank where none of it is there.
   const selCell = (n) => '<span class="hb-sel">' + (n ? '<i></i>' + fmt(n) : '') + '</span>';
@@ -3715,7 +3715,9 @@
     return spec;
   }
   // the mark after a row's value: shown where either test is significant, and not while a selection retests the chart
-  const adjMark = (spec, r) => (spec.adj && !spec.selTest && r.adj && ((r.sig && r.value > 0) || abundDir(r.adj) !== 'ns') ? abundDir(r.adj) : '');
+  // unless the chart repeats the selection's own test within the deciles (spec.selAdj, Where in the cell)
+  const adjShown = (spec) => spec.adj && (!spec.selTest || spec.selAdj);
+  const adjMark = (spec, r) => (adjShown(spec) && r.adj && ((r.sig && r.value > 0) || abundDir(r.adj) !== 'ns') ? abundDir(r.adj) : '');
   const ADJ_KEY = 'Within abundance deciles: ✓ more than expected · ○ no difference · ▼ fewer';
 
   // Words of a chart's significance key, the same on the page and in its exports.
@@ -3797,7 +3799,7 @@
     const swatch = { '': SWATCH.fill(pal.up[3]), neg: SWATCH.fill(pal.down[3]), same: SWATCH.fill(pal.muted),
       ns: (a, b) => '<rect x="' + r1(a) + '" y="' + r1(b - 5) + '" width="20" height="10" rx="2" fill="' + pal.bg + '" stroke="' + pal.muted + '" stroke-width="1.4"/>' };
     const items = spec.noSig ? [] : sigKey(spec).map(([c, l]) => [swatch[c], l]);
-    if (spec.adj && !spec.selTest) items.push([(a, b) => '<text x="' + r1(a + 10) + '" y="' + r1(b + 4) + '" font-size="11" text-anchor="middle" fill="' + pal.ink + '">✓</text>', ADJ_KEY]);
+    if (adjShown(spec)) items.push([(a, b) => '<text x="' + r1(a + 10) + '" y="' + r1(b + 4) + '" font-size="11" text-anchor="middle" fill="' + pal.ink + '">✓</text>', ADJ_KEY]);
     if (spec.selTest) items.unshift([(a, b) => '<line x1="' + r1(a + 10) + '" x2="' + r1(a + 10) + '" y1="' + r1(b - 6) + '" y2="' + r1(b + 6) + '" stroke="' + pal.ink + '" stroke-width="2"/>', 'whole dataset; bars: your selection, ' + selTestText(spec.selTest)]);
     if (spec.sel) items.push([(a, b) => '<circle cx="' + r1(a + 10) + '" cy="' + r1(b) + '" r="3.5" fill="' + pal.accent + '"/>', spec.sel.noun + ', of ' + fmt(spec.sel.n) + ' (' + (spec.sel.what.length > 70 ? spec.sel.what.slice(0, 68) + '…' : spec.sel.what) + ')']);
     const key = items.length ? svgLegend(pal, items, 24, ny, W - 48, { fs: 10 }) : null;
@@ -10906,12 +10908,64 @@
   function cellCatOf(SC, acc, key) {
     const r = SC.proteins[acc.split('-')[0]];
     if (key === 'hpa' || !r) return '';
-    if (key === 'chep') { const v = r[3]; return v < 0 ? '' : v >= 80 ? 'ICP >= 0.8 (chromatin)' : v >= 50 ? 'ICP 0.5-0.8' : v >= 20 ? 'ICP 0.2-0.5' : 'ICP < 0.2 (not chromatin)'; }
+    if (key === 'chep') { const v = r[3]; return v < 0 ? '' : v >= 800 ? 'ICP >= 0.8 (chromatin)' : v >= 500 ? 'ICP 0.5-0.8' : v >= 200 ? 'ICP 0.2-0.5' : 'ICP < 0.2 (not chromatin)'; }
     const i = r[{ hcm: 0, hcm_safe: 1, oip: 2 }[key]], c = i >= 0 ? SC.categories[key][i] : '';
     return c === 'no prediction' || c === '-' || c === 'unclassified' ? '' : c;
   }
   // [category, members, methylated, log2 fold, q, log2 OR within deciles, CI low, CI high, q] -> its test within deciles
   const cellAdj = (r) => abundTest([r[5], r[6], r[7], r[8]]);
+  // a protein's categories in one map: its HPA locations (Approved or better), else its one category of cellCatOf
+  function cellCatsOf(SC, acc, key) {
+    if (key !== 'hpa') { const c = cellCatOf(SC, acc, key); return c ? [c] : []; }
+    const r = SC.proteins[acc.split('-')[0]];
+    return r && r[4] ? r[4].map((i) => SC.categories.hpa[i]) : [];
+  }
+  // log2 of a Mantel–Haenszel odds ratio, ±Infinity where it is infinite or 0, as abundTest reads the exports
+  const cellL2 = (or) => (or == null ? null : or === Infinity ? Infinity : or <= 0 ? -Infinity : Math.log2(or));
+  // A set of proteins tested in one map as the pilots test the methylated proteins: the set's proteins the map places
+  // against the map's other proteins, each PaxDb abundance decile of the map's proteins a stratum (Mantel–Haenszel odds
+  // ratio with its 95% CI and the continuity-corrected Cochran–Mantel–Haenszel test, mhTest; BH over the map's
+  // compartments). A compartment that holds every protein of the set, or every compartment of a map the set was chosen
+  // by (selectedBy), is counted but not tested (circular).
+  function cellMh(SC, key, inSet, selectedBy) {
+    const di = SC.decile_maps.indexOf(key), S = 11, zero = () => new Array(S).fill(0), all = zero(), sel = zero(), per = new Map();
+    for (const r of SC.tests[key]) per.set(r[0], { M: zero(), k: zero() });
+    let n = 0, N = 0;
+    for (const acc in SC.proteins) {
+      const c = SC.proteins[acc][5][di];
+      if (c == null || c === '-') continue;
+      const s = c === 'x' ? S - 1 : +c, on = inSet(acc);
+      all[s]++; N++;
+      if (on) { sel[s]++; n++; }
+      for (const cat of cellCatsOf(SC, acc, key)) { const t = per.get(cat); if (t) { t.M[s]++; if (on) t.k[s]++; } }
+    }
+    const res = new Map(), tested = [], sum = (v) => v.reduce((x, y) => x + y, 0);
+    for (const [cat, t] of per) {
+      const k = sum(t.k), M = sum(t.M), circular = !!n && (selectedBy || k === n);
+      const x = { k, M, n, N, circular, a: { l2: null, lo: null, hi: null, q: null } };
+      if (n && !circular) {
+        const m = mhTest(t.k.map((ki, s) => [ki, sel[s] - ki, t.M[s] - ki, all[s] - sel[s] - t.M[s] + ki]));
+        x.a = { l2: cellL2(m.or), lo: m.lo ? Math.log2(m.lo) : null, hi: m.hi ? Math.log2(m.hi) : null, p: m.p, q: null, used: m.used };
+        if (m.p != null) tested.push(x.a);
+      }
+      res.set(cat, x);
+    }
+    bhAdjust(tested);
+    return { n, N, res };
+  }
+  // the selection's tests in one map (cellMh), kept while the selection stands
+  let cellSelMemo = null;
+  function cellSelTests(SC, key) {
+    if (!cellSelMemo || cellSelMemo.R !== R || cellSelMemo.SC !== SC) cellSelMemo = { R, SC, maps: {} };
+    if (!cellSelMemo.maps[key]) {
+      const sel = new Set(R.prots.map((p) => p.acc.split('-')[0]));
+      cellSelMemo.maps[key] = cellMh(SC, key, (a) => sel.has(a), key === 'hpa' && termValues('location').length > 0);
+    }
+    return cellSelMemo.maps[key];
+  }
+  const cellSelText = (x) => (x.circular ? fmt(x.k) + ' of ' + fmt(x.M) + ' selected; not tested: ' + (x.k === x.n ? 'every selected protein is here' : 'your selection was made with these locations')
+    : fmt(x.k) + ' of the ' + fmt(x.M) + ' proteins the map places here are in your selection (' + fmt(x.n) + ' of ' + fmt(x.N) + ' placed); ' + abundText(x.a));
+
   function cellSpec(SC, key, scoped) {
     const ds = cellDs(SC, key), N = ds.universe, n = ds.methylated;
     const rows = SC.tests[key].map((r) => ({ label: cellLabel(r[0]), key: r[0], M: r[1], value: r[3], q: r[4], sig: r[4] != null && r[4] <= PADJ, adjT: cellAdj(r),
@@ -10920,14 +10974,23 @@
         '; fold enrichment ' + fx(Math.pow(2, r[3])) + ', q ' + fmtP(r[4]) }))
       .sort((a, b) => (b.value == null ? -99 : b.value) - (a.value == null ? -99 : a.value));
     const spec = { id: 'ch-cell-' + key, title: ds.name + ': ' + ds.method.toLowerCase(), fold: true, keepOrder: true, extraCol: true, extraName: 'methylated_of_placed', rows, N,
-      subText: ds.name + ' (' + ds.ref + '; ' + ds.cells + '): ' + ds.how + '. Methylated proteins against all ' + fmt(N) + ' proteins the map places. Preview.',
+      subText: ds.name + ' (' + ds.ref + '; ' + ds.cells + '): ' + ds.how + '. Methylated proteins against all ' + fmt(N) + ' proteins the map places. Preview',
       axis: 'log2 fold enrichment vs all proteins the map places' };
     withAbundanceOf(spec, (r) => r.adjT);
     if (scoped) {
       const inBg = key === 'hpa' ? (p) => p.hpa.some((x) => x[1] >= HPA_SURE) : (p) => !!cellCatOf(SC, p.acc, key);
       const hm = hpaMeta(), locIdx = (name) => (hm ? hm.locations.indexOf(name) : -1);
       selSetTest(spec, { N, inBg, member: (r) => (key === 'hpa' ? (p) => p.hpa.some((x) => x[0] === locIdx(r.key) && x[1] >= HPA_SURE) : (p) => cellCatOf(SC, p.acc, key) === r.key),
-        M: (r) => r.M, bg: 'proteins the map places' });
+        M: (r) => r.M, bg: 'proteins the map places', kinds: key === 'hpa' ? ['location'] : [] });
+      // the marks repeat the selection's test within abundance deciles (cellSelTests), in place of the whole dataset's
+      const T = cellSelTests(SC, key);
+      for (const r of spec.rows) {
+        const x = T.res.get(r.key);
+        if (!x) continue;
+        r.adj = x.circular || x.a.l2 == null ? null : x.a;
+        r.title += '<br><b>Your selection within abundance deciles</b>: ' + cellSelText(x);
+      }
+      spec.selAdj = true;
       spec.rows = resortRanked(spec.rows);
     }
     return spec;
@@ -10939,22 +11002,34 @@
     const m = Math.abs(a.l2), s = m >= 2 ? 3 : m >= 1.2 ? 2 : m >= 0.5 ? 1 : 0;
     return (a.l2 > 0 ? 'u' : 'd') + s;
   }
-  const cellOr = (a) => (a.l2 == null ? '–' : a.l2 === Infinity ? '∞' : fx(Math.pow(2, a.l2)) + '×');
+  const cellOr = (a) => (a.l2 == null ? '–' : a.l2 === Infinity ? '∞' : a.l2 === -Infinity ? '0×' : fx(Math.pow(2, a.l2)) + '×');
+  // the drawings' styles, on the page (explorer.css) and in the exports (here, from the exported palette)
   const cellFigCss = (pal) => [0, 1, 2, 3].map((i) => '.cg-c.u' + i + '{fill:' + pal.up[i] + '}.cg-c.d' + i + '{fill:' + pal.down[i] + '}').join('') +
-    '.cg-c.ns{fill:' + pal.mid + '}.cg-c.na{fill:none;stroke:' + pal.grid + ';stroke-dasharray:2 3}.cg-t{font-size:11px;fill:' + pal.ink + '}.cg-t.t2,.cg-t.t3{fill:#fff}.nu-part{stroke:' + pal.ink + ';stroke-opacity:.25;stroke-width:.8}.cg-m{font-size:10.5px;fill:' + pal.muted + '}' +
-    '.cg-h{font-size:11px;font-weight:700;fill:' + pal.ink + '}.cg-g{font-size:11px;font-weight:700;fill:' + pal.muted + ';letter-spacing:.04em}.cg-r{font-size:12px;fill:' + pal.ink + '}.cg-l{stroke:' + pal.grid + '}' +
-    '.nu-env{fill:none;stroke-width:9}.nu-env.na,.nu-env.ns{stroke:' + pal.mid + '}' + [0, 1, 2, 3].map((i) => '.nu-env.u' + i + '{stroke:' + pal.up[i] + '}.nu-env.d' + i + '{stroke:' + pal.down[i] + '}').join('') +
+    '.cg-c.ns{fill:' + pal.mid + '}.cg-c.na{fill:none;stroke:' + pal.grid + ';stroke-dasharray:2 3}.cg-t{font-size:11px;fill:' + pal.ink + '}.cg-t.t2,.cg-t.t3{fill:#fff}.cg-m{font-size:10.5px;fill:' + pal.muted + '}' +
+    '.cg-h{font-size:11px;font-weight:700;fill:' + pal.ink + '}.cg-g{font-size:11px;font-weight:700;fill:' + pal.muted + ';letter-spacing:.04em}.cg-r{font-size:12px;fill:' + pal.ink + '}' +
     [0, 1, 2, 3].map((i) => '.cg-line.u' + i + '{stroke:' + pal.up[i] + '}.cg-line.d' + i + '{stroke:' + pal.down[i] + '}').join('') + '.cg-line.ns,.cg-line.na{stroke:' + pal.backbone + '}' +
-    '.nu-pore{stroke:' + pal.bg + ';stroke-width:4}.nu-num{font-size:11px;font-weight:700;fill:' + pal.ink + '}.nu-dot{fill:' + pal.bg + ';stroke:' + pal.ink + ';stroke-width:1}.nu-out{fill:none;stroke:' + pal.ink + ';stroke-opacity:.35}';
-  // one cell of the grid: the map's category for the row, its test within abundance deciles
-  function cellGridCell(SC, key, cat) {
+    '.cd-o{stroke:' + pal.ink + ';stroke-opacity:.3;stroke-width:.9}.cd-in{fill:none;stroke:' + pal.ink + ';stroke-opacity:.38;stroke-width:1.1}' +
+    '.cd-gap{fill:none;stroke:' + pal.bg + '}.cd-shade{fill:' + pal.ink + ';fill-opacity:.1}.cd-ink{fill:' + pal.ink + ';fill-opacity:.55}.cd-lead{fill:none;stroke:' + pal.ink + ';stroke-opacity:.55;stroke-width:1}' +
+    '.cd-dot{fill:' + pal.ink + ';stroke:' + pal.bg + ';stroke-width:1.5}.cd-name{font-size:13.5px;font-weight:700;fill:' + pal.ink + '}.cd-val{font-size:12.5px;fill:' + pal.ink + '}.cd-val tspan.m{fill:' + pal.muted + '}' +
+    '.cd-cap{font-size:12px;font-weight:700;fill:' + pal.muted + ';letter-spacing:.06em}';
+  // The tests behind the card: the whole dataset's (the pilots' rows, SC.tests) or a selection's (cellSelTests).
+  // One cell of the grid: the map's category for the row, its test within abundance deciles.
+  function cellGridCell(SC, key, cat, scoped) {
     const r = cat && SC.tests[key].find((x) => x[0] === cat);
     if (!r) return null;
-    const ds = cellDs(SC, key), a = cellAdj(r);
-    return { a, tone: cellTone(a), tip: '<b>' + esc(ds.name) + '</b> (' + esc(ds.method) + ', ' + esc(ds.cells) + '): ' + esc(cellLabel(cat)) + '<br>' + fmt(r[2]) + ' of ' + fmt(r[1]) + ' methylated (' + pct(r[2], r[1]) + '%); fold enrichment ' +
+    const ds = cellDs(SC, key), head = '<b>' + esc(ds.name) + '</b> (' + esc(ds.method) + ', ' + esc(ds.cells) + '): ' + esc(cellLabel(cat)) + '<br>';
+    if (scoped) {
+      const x = cellSelTests(SC, key).res.get(cat);
+      if (!x) return null;
+      const a = x.circular ? { l2: null, q: null } : x.a;
+      return { a, circular: x.circular, tone: x.circular ? 'na' : cellTone(a), short: x.circular ? 'counts only' : cellOr(a) + (cellTone(a) === 'ns' ? ' n.s.' : ''),
+        tip: head + '<b>Your selection</b>: ' + cellSelText(x) + '<br><span class="muted">Whole dataset: ' + abundText(cellAdj(r)) + '</span>' };
+    }
+    const a = cellAdj(r);
+    return { a, tone: cellTone(a), short: cellOr(a) + (cellTone(a) === 'ns' ? ' n.s.' : ''), tip: head + fmt(r[2]) + ' of ' + fmt(r[1]) + ' methylated (' + pct(r[2], r[1]) + '%); fold enrichment ' +
       fx(Math.pow(2, r[3])) + ', q ' + fmtP(r[4]) + '<br><b>Within abundance deciles</b>: ' + abundText(a) };
   }
-  function cellGridSvg(SC) {
+  function cellGridSvg(SC, scoped) {
     const cols = CELL_ORDER.filter((k) => cellDs(SC, k)), LW = 236, CW = 92, RH = 22, HH = 46, W = LW + cols.length * CW + 8;
     let y = HH + 4, g = '';
     cols.forEach((k, i) => {
@@ -10968,100 +11043,253 @@
       for (const [label, map] of rows) {
         g += '<text class="cg-r" x="10" y="' + (y + 15) + '">' + esc(label) + '</text>';
         cols.forEach((k, i) => {
-          const c = cellGridCell(SC, k, map[k]), x = LW + i * CW + 4;
+          const c = cellGridCell(SC, k, map[k], scoped), x = LW + i * CW + 4;
           if (!c) { g += '<rect class="cg-c na" x="' + x + '" y="' + (y + 2) + '" width="' + (CW - 8) + '" height="' + (RH - 4) + '" rx="3"/>'; return; }
           g += '<g data-tip="' + esc(c.tip) + '"><rect class="cg-c ' + c.tone + '" x="' + x + '" y="' + (y + 2) + '" width="' + (CW - 8) + '" height="' + (RH - 4) + '" rx="3"/>' +
-            '<text class="cg-t t' + c.tone.slice(1) + '" x="' + (x + (CW - 8) / 2) + '" y="' + (y + 15) + '" text-anchor="middle">' + esc(cellOr(c.a)) + '</text></g>';
+            '<text class="cg-t t' + c.tone.slice(1) + '" x="' + (x + (CW - 8) / 2) + '" y="' + (y + 15) + '" text-anchor="middle">' + esc(c.circular ? '·' : cellOr(c.a)) + '</text></g>';
         });
         y += RH;
       }
       y += 6;
     }
-    return '<svg class="cell-grid" viewBox="0 0 ' + W + ' ' + y + '" role="img" aria-label="Compartments against maps: odds ratio of methylated proteins within abundance deciles">' + g + '</svg>';
+    return '<svg class="cell-grid" viewBox="0 0 ' + W + ' ' + y + '" role="img" aria-label="Compartments against maps: odds ratio ' + (scoped ? 'of your selection' : 'of methylated proteins') + ' within abundance deciles">' + g + '</svg>';
   }
-  const cellGridTsv = (SC) => '# Where in the cell (preview): each map\'s test within PaxDb abundance deciles; methylated proteins against the proteins the map places\n' +
-    'group\tcompartment\tmap\tmap_category\tmembers\tmethylated\tlog2_fold_enrichment\tq\tabundance_deciles_log2_odds_ratio\tabundance_deciles_q\n' +
-    SC.groups.flatMap(([group, rows]) => rows.flatMap(([label, map]) => CELL_ORDER.filter((k) => map[k]).map((k) => {
+  function cellGridTsv(SC, scoped) {
+    const head = scoped ? '# Where in the cell (preview): your selection (' + selectionText() + ') in each map, within PaxDb abundance deciles, against the other proteins the map places\n' +
+      'group\tcompartment\tmap\tmap_category\tmembers\tselected\tselected_placed\tplaced\tabundance_deciles_log2_odds_ratio\tabundance_deciles_log2_ci_low\tabundance_deciles_log2_ci_high\tabundance_deciles_p\tabundance_deciles_q\tnot_tested\n'
+      : '# Where in the cell (preview): each map\'s test within PaxDb abundance deciles; methylated proteins against the proteins the map places\n' +
+      'group\tcompartment\tmap\tmap_category\tmembers\tmethylated\tlog2_fold_enrichment\tq\tabundance_deciles_log2_odds_ratio\tabundance_deciles_q\n';
+    return head + SC.groups.flatMap(([group, rows]) => rows.flatMap(([label, map]) => CELL_ORDER.filter((k) => map[k]).map((k) => {
       const r = SC.tests[k].find((x) => x[0] === map[k]);
-      return [group, label, cellDs(SC, k).name, map[k], r[1], r[2], r[3], r[4], abundTsv(cellAdj(r).l2), r[8]].join('\t');
+      if (!scoped) return [group, label, cellDs(SC, k).name, map[k], r[1], r[2], r[3], r[4], abundTsv(cellAdj(r).l2), r[8]].join('\t');
+      const x = cellSelTests(SC, k).res.get(map[k]), a = x.a, v = (u) => (u == null ? '' : +u.toFixed(4));
+      return [group, label, cellDs(SC, k).name, map[k], x.M, x.k, x.n, x.N, abundTsv(a.l2 == null || !Number.isFinite(a.l2) ? a.l2 : +a.l2.toFixed(4)), v(a.lo), v(a.hi), a.p == null ? '' : a.p, a.q == null ? '' : a.q,
+        x.circular ? (x.k === x.n ? 'every selected protein is here' : 'selection made with these locations') : ''].join('\t');
     }))).join('\n') + '\n';
-  // Each part of the drawings coloured by the median of the maps' odds ratios within abundance deciles (when at least
-  // half of the maps that have the part find it significant that way; grey otherwise), numbered to a list beside it.
-  const CELL_NUC = ['chromatin', 'nucleoplasm', 'nucleolus', 'speckles', 'paraspeckles', 'bodies', 'envelope'];
+  }
+
+  // ---- The drawings. Each part is coloured by the median of the maps' odds ratios within abundance deciles, when at
+  // least half of the maps that have the part find a difference that way; grey otherwise. Every part is named in a
+  // column beside the drawing, with a leader line to it.
   const CELL_SHORT = { hpa: 'Atlas', hcm: 'Cell map', hcm_safe: 'domains', oip: 'IP', chep: 'ChEP' };
-  function cellParts(SC) {
+  const CELL_NAME = { pm: 'Plasma membrane', actin: 'Actin cortex', cytosol: 'Cytosol', er: 'Endoplasmic reticulum', ribosomes: 'Ribosomes, translation', golgi: 'Golgi apparatus',
+    mito: 'Mitochondria', endolyso: 'Endosomes, lysosomes', perox: 'Peroxisomes', granules: 'Stress granules', pbodies: 'P-bodies', microtubules: 'Microtubules', centrosome: 'Centrosome',
+    nucleoplasm: 'Nucleoplasm', chromatin: 'Chromatin', nucleolus: 'Nucleolus', speckles: 'Nuclear speckles', paraspeckles: 'Paraspeckles', bodies: 'Nuclear bodies', envelope: 'Envelope and pores' };
+  function cellParts(SC, scoped) {
     const parts = {};
     for (const [, rows] of SC.groups) for (const [label, map, part] of rows) {
       if (!part) continue;
-      const cells = CELL_ORDER.map((k) => [k, cellGridCell(SC, k, map[k])]).filter(([, c]) => c);
+      const all = CELL_ORDER.map((k) => [k, cellGridCell(SC, k, map[k], scoped)]).filter(([, c]) => c), cells = all.filter(([, c]) => !c.circular);
       const vals = cells.map(([, c]) => c.a.l2).filter((v) => v != null && Number.isFinite(v)).sort((x, y) => x - y), h = vals.length / 2;
       const med = vals.length ? (vals.length % 2 ? vals[Math.floor(h)] : (vals[h - 1] + vals[h]) / 2) : null;
       const agree = cells.length && cells.filter(([, c]) => c.tone[0] === (med > 0 ? 'u' : 'd')).length * 2 >= cells.length;
-      parts[part] = { part, label, cells, a: { l2: med, q: agree ? 0 : 1 }, tone: med == null ? 'na' : cellTone({ l2: med, q: agree ? 0 : 1 }) };
+      const up = cells.some(([, c]) => c.tone[0] === 'u'), down = cells.some(([, c]) => c.tone[0] === 'd');
+      const tone = med == null ? 'na' : cellTone({ l2: med, q: agree ? 0 : 1 });
+      parts[part] = { part, label, cells: all, a: { l2: med }, tone,
+        value: tone === 'na' ? (all.length ? 'not tested' : 'not in these maps') : tone === 'ns' ? (up && down ? 'maps disagree' : 'no difference') : cellOr({ l2: med }),
+        maps: cells.length ? cells.length + (cells.length === 1 ? ' map' : ' maps') : '' };
     }
     return parts;
   }
-  // the drawing's helpers: fill class, hover text, numbered marker and the numbered list
-  function cellDraw(SC, keys) {
-    const P = cellParts(SC), on = keys.filter((k) => P[k]);
-    on.forEach((k, i) => { P[k].n = i + 1; });
-    const fill = (k) => 'cg-c ' + (P[k] ? P[k].tone : 'na');
-    const tip = (k) => (P[k] ? ' data-tip="' + esc('<b>' + P[k].label + '</b><br>' + P[k].cells.map(([key, c]) => esc(cellDs(SC, key).name) + ': ' + cellOr(c.a) + (c.tone === 'ns' ? ' (no difference)' : '')).join('<br>')) + '"' : '');
-    const num = (k, x, y) => (P[k] ? '<g' + tip(k) + '><circle class="nu-dot" cx="' + x + '" cy="' + y + '" r="8"/><text class="nu-num" x="' + x + '" y="' + (y + 4) + '" text-anchor="middle">' + P[k].n + '</text></g>' : '');
-    const list = (x0) => {
-      let y = 22, g = '';
-      for (const k of on) {
-        const p = P[k];
-        g += '<g' + tip(k) + '><circle class="nu-dot" cx="' + x0 + '" cy="' + (y - 4) + '" r="8"/><text class="nu-num" x="' + x0 + '" y="' + y + '" text-anchor="middle">' + p.n + '</text>' +
-          '<rect class="' + fill(k) + '" x="' + (x0 + 14) + '" y="' + (y - 11) + '" width="14" height="14" rx="3"/><text class="cg-r" x="' + (x0 + 36) + '" y="' + y + '">' + esc(p.label) + '</text>' +
-          '<text class="cg-m" x="' + (x0 + 36) + '" y="' + (y + 15) + '">' + esc(p.cells.map(([key, c]) => CELL_SHORT[key] + ' ' + cellOr(c.a) + (c.tone === 'ns' ? ' n.s.' : '')).join(' · ')) + '</text></g>';
-        y += 38;
+  // the helpers of a drawing: fill and stroke classes of a part, its hover text, and its labels
+  function cellDraw(SC, scoped) {
+    const P = cellParts(SC, scoped);
+    const tone = (k) => (P[k] ? P[k].tone : 'na');
+    const fill = (k) => 'cg-c ' + tone(k), line = (k) => 'cg-line ' + tone(k);
+    const tip = (k, name) => (P[k] ? ' data-tip="' + esc('<b>' + esc(name || CELL_NAME[k] || P[k].label) + '</b>' + (name ? ' (as ' + esc(P[k].label.toLowerCase()) + ')' : '') + ': ' + esc(P[k].value) +
+      (P[k].tone[0] === 'u' || P[k].tone[0] === 'd' ? (P[k].maps === '1 map' ? ' (1 map)' : ', median of ' + P[k].maps) : '') + '<br>' +
+      P[k].cells.map(([key, c]) => esc(cellDs(SC, key).name) + ': ' + (c.circular ? 'counts only' : esc(cellOr(c.a)) + (c.a.q != null ? ', q ' + fmtP(c.a.q) : '') + (c.tone === 'ns' ? ' (no difference)' : ''))).join('<br>')) + '"' : '');
+    // labels: [{ k, side 'l' or 'r', x, y the anchor, name }] in columns of width col; the labels of a side keep the
+    // order of their anchors' heights and stay gap apart
+    const labels = (items, W, H, col) => {
+      let g = '';
+      for (const side of ['l', 'r']) {
+        const list = items.filter((it) => it.side === side && P[it.k]).sort((a, b) => a.y - b.y), gap = 50, top = 30, bot = H - 26, ys = list.map((it) => it.y);
+        for (let i = 0; i < ys.length; i++) ys[i] = Math.max(ys[i], i ? ys[i - 1] + gap : top);
+        for (let i = ys.length - 1; i >= 0; i--) ys[i] = Math.min(ys[i], i < ys.length - 1 ? ys[i + 1] - gap : bot);
+        list.forEach((it, i) => {
+          const p = P[it.k], y = ys[i], L = side === 'l', edge = L ? col : W - col, tx = L ? edge - 14 : edge + 14, anc = L ? 'end' : 'start', bx = L ? edge - 7 : edge + 1;
+          const elbow = L ? edge + 12 : edge - 12;
+          g += '<g' + tip(it.k, it.name) + '><polyline class="cd-lead" points="' + edge + ',' + (y - 5) + ' ' + elbow + ',' + (y - 5) + ' ' + it.x + ',' + it.y + '"/><circle class="cd-dot" cx="' + it.x + '" cy="' + it.y + '" r="3"/>' +
+            '<rect class="' + fill(it.k) + ' cd-o" x="' + bx + '" y="' + (y - 17) + '" width="6" height="32" rx="2"/>' +
+            '<text class="cd-name" x="' + tx + '" y="' + y + '" text-anchor="' + anc + '">' + esc(it.name || CELL_NAME[it.k] || p.label) + '</text>' +
+            '<text class="cd-val" x="' + tx + '" y="' + (y + 16) + '" text-anchor="' + anc + '">' + (p.tone[0] === 'u' || p.tone[0] === 'd' ? '<tspan font-weight="700">' + esc(p.value) + '</tspan>' : '<tspan class="m">' + esc(p.value) + '</tspan>') +
+            (p.maps ? '<tspan class="m"> · ' + esc(p.maps) + '</tspan>' : '') + '</text></g>';
+        });
       }
-      return { svg: g, height: y };
+      return g;
     };
-    return { P, fill, tip, num, list };
+    return { P, tone, fill, line, tip, labels };
   }
-  const blobSvg = (cx, cy, rx, ry, rot) => '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '" transform="rotate(' + rot + ' ' + cx + ' ' + cy + ')"/>';
-  function cellNucleusSvg(SC) {
-    const { P, fill, tip, num, list } = cellDraw(SC, CELL_NUC);
-    let g = '<g' + tip('nucleoplasm') + '><ellipse class="' + fill('nucleoplasm') + '" cx="190" cy="170" rx="166" ry="136" fill-opacity=".55"/></g>';
-    g += '<g class="nu-part ' + fill('chromatin') + '"' + tip('chromatin') + '>' + [[92, 120, 34, 18, 30], [70, 190, 22, 36, 10], [130, 262, 40, 16, -12], [250, 268, 36, 16, 8], [312, 200, 18, 40, -6], [292, 100, 30, 16, 28], [190, 62, 40, 14, 0], [170, 210, 20, 12, 40]].map((b) => blobSvg(...b)).join('') + '</g>';
-    g += '<g' + tip('nucleolus') + '><circle class="nu-part ' + fill('nucleolus') + '" cx="205" cy="150" r="42"/></g>';
-    g += '<g class="nu-part ' + fill('speckles') + '"' + tip('speckles') + '>' + [[128, 160, 14, 10, 20], [262, 200, 15, 11, -15], [150, 228, 11, 8, 0], [258, 128, 12, 9, 30], [110, 214, 9, 7, 10]].map((b) => blobSvg(...b)).join('') + '</g>';
-    g += '<g class="nu-part ' + fill('paraspeckles') + '"' + tip('paraspeckles') + '>' + [[146, 132, 4, 7, 0], [154, 134, 4, 7, 0], [278, 162, 4, 7, 20], [285, 165, 4, 7, 20]].map((b) => blobSvg(...b)).join('') + '</g>';
-    g += '<g class="nu-part ' + fill('bodies') + '"' + tip('bodies') + '>' + [[226, 236, 7], [98, 150, 6], [300, 140, 6]].map(([x, y, r]) => '<circle cx="' + x + '" cy="' + y + '" r="' + r + '"/>').join('') + '</g>';
-    g += '<g' + tip('envelope') + '><ellipse class="nu-env ' + (P.envelope ? P.envelope.tone : 'na') + '" cx="190" cy="170" rx="166" ry="136"/>' +
-      [20, 75, 130, 200, 250, 310].map((t) => { const r = t * Math.PI / 180, x = 190 + 166 * Math.cos(r), y = 170 + 136 * Math.sin(r); return '<line class="nu-pore" x1="' + (x - 3 * Math.sin(r)).toFixed(1) + '" y1="' + (y + 3 * Math.cos(r)).toFixed(1) + '" x2="' + (x + 3 * Math.sin(r)).toFixed(1) + '" y2="' + (y - 3 * Math.cos(r)).toFixed(1) + '"/>'; }).join('') + '</g>';
-    g += num('nucleoplasm', 190, 290) + num('chromatin', 92, 120) + num('nucleolus', 205, 150) + num('speckles', 262, 200) + num('paraspeckles', 150, 118) + num('bodies', 226, 236) + num('envelope', 350, 120);
-    const L = list(402);
-    return '<svg class="cell-nucleus" viewBox="0 0 700 ' + Math.max(320, L.height) + '" role="img" aria-label="The nucleus, each part coloured by the odds ratio of methylated proteins within abundance deciles">' + g + L.svg + '</svg>';
+  // A smooth closed path through points (Catmull–Rom splines as cubic Béziers), and the points of an organic outline:
+  // an ellipse whose radius is scaled by f[i] at evenly spaced angles.
+  function cellSmooth(pts) {
+    const n = pts.length, P = (i) => pts[(i + n) % n], f = (v) => v.toFixed(1);
+    let d = 'M' + f(P(0)[0]) + ',' + f(P(0)[1]);
+    for (let i = 0; i < n; i++) {
+      const [x0, y0] = P(i - 1), [x1, y1] = P(i), [x2, y2] = P(i + 1), [x3, y3] = P(i + 2);
+      d += 'C' + [x1 + (x2 - x0) / 6, y1 + (y2 - y0) / 6, x2 - (x3 - x1) / 6, y2 - (y3 - y1) / 6, x2, y2].map(f).join(',');
+    }
+    return d + 'Z';
   }
-  // the whole cell: membranes, organelles and granules of the cytoplasm around the nucleus (drawn as one, as in the zoom)
-  const CELL_CYTO = ['pm', 'cytosol', 'actin', 'microtubules', 'centrosome', 'er', 'ribosomes', 'golgi', 'mito', 'endolyso', 'perox', 'granules', 'pbodies'];
-  function cellWholeSvg(SC) {
-    const { P, fill, tip, num, list } = cellDraw(SC, CELL_CYTO), nuc = cellParts(SC);
-    const ntone = nuc.nucleoplasm ? nuc.nucleoplasm.tone : 'na';
-    let g = '<g' + tip('cytosol') + '><path class="' + fill('cytosol') + '" fill-opacity=".45" d="M40,170 C40,70 120,22 210,24 C300,26 372,80 368,175 C364,270 300,330 200,330 C100,330 40,270 40,170 Z"/></g>';
-    g += '<g' + tip('actin') + '><path class="cg-line ' + (P.actin ? P.actin.tone : 'na') + '" fill="none" stroke-width="3" stroke-dasharray="5 3" d="M52,170 C52,80 126,36 210,38 C292,40 356,90 352,175 C348,262 290,316 200,316 C108,316 52,260 52,170 Z"/></g>';
-    g += '<g' + tip('pm') + '><path class="cg-line ' + (P.pm ? P.pm.tone : 'na') + '" fill="none" stroke-width="7" d="M40,170 C40,70 120,22 210,24 C300,26 372,80 368,175 C364,270 300,330 200,330 C100,330 40,270 40,170 Z"/></g>';
-    g += '<g' + tip('microtubules') + '>' + [[250, 248, 340, 160], [250, 248, 320, 300], [250, 248, 170, 310], [250, 248, 330, 230], [250, 248, 120, 280]].map(([x1, y1, x2, y2]) => '<line class="cg-line ' + (P.microtubules ? P.microtubules.tone : 'na') + '" stroke-width="1.6" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '"/>').join('') + '</g>';
-    g += '<g' + tip('er') + '>' + [62, 74, 86].map((r) => '<path class="cg-line ' + (P.er ? P.er.tone : 'na') + '" fill="none" stroke-width="4" d="M' + (150 + 0.2 * r) + ',' + (180 - r) + ' A' + r + ',' + (r * 0.85) + ' 0 0 1 ' + (150 + r) + ',' + (195 + 0.1 * r) + '"/>').join('') + '</g>';
-    g += '<g class="' + fill('ribosomes') + '"' + tip('ribosomes') + '>' + [[205, 103], [222, 112], [236, 128], [244, 146], [248, 166], [214, 96], [232, 120], [250, 184]].map(([x, y]) => '<circle cx="' + x + '" cy="' + y + '" r="2.2"/>').join('') + '</g>';
-    g += '<g' + tip('nucleus') + '><ellipse class="cg-c ' + ntone + '" cx="150" cy="185" rx="62" ry="54" fill-opacity=".8"/><text class="cg-m" x="150" y="189" text-anchor="middle">nucleus →</text></g>';
-    g += '<g' + tip('golgi') + '>' + [0, 8, 16, 24].map((d) => '<path class="cg-line ' + (P.golgi ? P.golgi.tone : 'na') + '" fill="none" stroke-width="4" stroke-linecap="round" d="M' + (276 + d) + ',' + (120 + d / 2) + ' q 18,' + (30 - d / 3) + ' 0,' + (60 - d) + '"/>').join('') + '</g>';
-    g += '<g class="nu-part ' + fill('mito') + '"' + tip('mito') + '>' + [[100, 92, 20, 8, -25], [300, 250, 22, 8, 20], [90, 268, 18, 7, 35], [330, 120, 16, 7, -60]].map((b) => blobSvg(...b)).join('') + '</g>';
-    g += '<g class="nu-part ' + fill('endolyso') + '"' + tip('endolyso') + '>' + [[318, 196, 8], [334, 214, 6], [286, 290, 7], [64, 216, 6]].map(([x, y, r]) => '<circle cx="' + x + '" cy="' + y + '" r="' + r + '"/>').join('') + '</g>';
-    g += '<g class="nu-part ' + fill('perox') + '"' + tip('perox') + '>' + [[260, 70, 4], [70, 140, 4], [186, 296, 4]].map(([x, y, r]) => '<circle cx="' + x + '" cy="' + y + '" r="' + r + '"/>').join('') + '</g>';
-    g += '<g class="nu-part ' + fill('granules') + '"' + tip('granules') + '>' + [[196, 60, 11, 7, 15], [240, 296, 10, 6, -20], [62, 186, 6, 9, 0]].map((b) => blobSvg(...b)).join('') + '</g>';
-    g += '<g class="nu-part ' + fill('pbodies') + '"' + tip('pbodies') + '>' + [[226, 70, 4], [262, 304, 4], [120, 300, 4]].map(([x, y, r]) => '<circle cx="' + x + '" cy="' + y + '" r="' + r + '"/>').join('') + '</g>';
-    g += '<g class="nu-part ' + fill('centrosome') + '"' + tip('centrosome') + '><rect x="244" y="243" width="5" height="12" rx="1"/><rect x="251" y="245" width="12" height="5" rx="1"/></g>';
-    g += num('pm', 368, 210) + num('cytosol', 78, 122) + num('actin', 58, 232) + num('microtubules', 310, 292) + num('centrosome', 262, 232) + num('er', 178, 106) + num('ribosomes', 226, 100) +
-      num('golgi', 306, 152) + num('mito', 100, 92) + num('endolyso', 326, 200) + num('perox', 260, 70) + num('granules', 196, 60) + num('pbodies', 120, 300);
-    const L = list(402);
-    return '<svg class="cell-whole" viewBox="0 0 700 ' + Math.max(350, L.height) + '" role="img" aria-label="The cell, each compartment coloured by the odds ratio of methylated proteins within abundance deciles">' + g + L.svg + '</svg>';
+  const cellBlob = (cx, cy, rx, ry, f, rot = 0) => f.map((s, i) => { const t = (2 * Math.PI * i) / f.length + rot; return [cx + rx * s * Math.cos(t), cy + ry * s * Math.sin(t)]; });
+  const cellArc = (cx, cy, rx, ry, a0, a1, step = 4) => { const pts = []; for (let t = a0; t <= a1 + 1e-9; t += step) { const r = t * Math.PI / 180; pts.push([cx + rx * Math.cos(r), cy + ry * Math.sin(r)]); } return pts; };
+  const cellPoly = (pts) => 'M' + pts.map(([x, y]) => x.toFixed(1) + ',' + y.toFixed(1)).join('L');
+  // where a ray from (x, y) at angle t (degrees) leaves the ellipse (cx, cy, rx, ry)
+  function cellRayOut(x, y, t, cx, cy, rx, ry) {
+    const r = t * Math.PI / 180, dx = Math.cos(r), dy = Math.sin(r), px = (x - cx) / rx, py = (y - cy) / ry, ux = dx / rx, uy = dy / ry;
+    const A = ux * ux + uy * uy, B = 2 * (px * ux + py * uy), C = px * px + py * py - 1, s = (-B + Math.sqrt(B * B - 4 * A * C)) / (2 * A);
+    return [x + s * dx, y + s * dy];
+  }
+  // a mitochondrion: a capsule with cristae, centred at (cx, cy), rotated rot degrees
+  const cellMito = (cx, cy, len, wid, rot, cls) => {
+    let z = '', up = true;
+    for (let x = -len / 2 + 9; x <= len / 2 - 9; x += 7) { z += (z ? 'L' : 'M') + x.toFixed(1) + ',' + (up ? -wid / 2 + 3.5 : wid / 2 - 3.5); up = !up; }
+    return '<g transform="translate(' + cx + ' ' + cy + ') rotate(' + rot + ')"><rect class="' + cls + ' cd-o" x="' + (-len / 2) + '" y="' + (-wid / 2) + '" width="' + len + '" height="' + wid + '" rx="' + (wid / 2) + '"/>' +
+      '<rect class="cd-in" x="' + (-len / 2 + 3) + '" y="' + (-wid / 2 + 3) + '" width="' + (len - 6) + '" height="' + (wid - 6) + '" rx="' + (wid / 2 - 3) + '"/><path class="cd-in" d="' + z + '"/></g>';
+  };
+
+  // Chromosome territories: an ellipse (cx, cy, rx, ry) divided among seed points (Voronoi cells), each cell inset by
+  // half of gap and its corners rounded (Chaikin), so that interchromatin channels gap wide run between them. Bodies
+  // that sit in the channels are placed at seed midpoints and junctions that no other seed is closer to.
+  function cellTerritories(seeds, cx, cy, rx, ry, gap) {
+    const ring = [];
+    for (let i = 0; i < 40; i++) { const t = (2 * Math.PI * i) / 40; ring.push([cx + rx * Math.cos(t), cy + ry * Math.sin(t)]); }
+    const clip = (poly, nx, ny, c) => { // the part of poly with nx * x + ny * y <= c
+      const out = [];
+      poly.forEach((p, i) => {
+        const q = poly[(i + 1) % poly.length], dp = nx * p[0] + ny * p[1] - c, dq = nx * q[0] + ny * q[1] - c;
+        if (dp <= 0) out.push(p);
+        if ((dp < 0) !== (dq < 0)) { const u = dp / (dp - dq); out.push([p[0] + u * (q[0] - p[0]), p[1] + u * (q[1] - p[1])]); }
+      });
+      return out;
+    };
+    return seeds.map((s, i) => {
+      let poly = ring;
+      seeds.forEach((o, j) => {
+        if (i === j) return;
+        const nx = o[0] - s[0], ny = o[1] - s[1], L = Math.hypot(nx, ny);
+        poly = clip(poly, nx / L, ny / L, (nx * (s[0] + o[0]) + ny * (s[1] + o[1])) / (2 * L) - gap / 2);
+      });
+      for (let k = 0; k < 2; k++) poly = poly.flatMap((p, m) => { const q = poly[(m + 1) % poly.length]; return [[0.75 * p[0] + 0.25 * q[0], 0.75 * p[1] + 0.25 * q[1]], [0.25 * p[0] + 0.75 * q[0], 0.25 * p[1] + 0.75 * q[1]]]; });
+      return cellPoly(poly) + 'Z';
+    });
+  }
+  // the seeds of the nucleus drawing's territories (A to J), in the drawing's coordinates
+  const CELL_CT = [[330, 150], [300, 265], [360, 360], [450, 95], [465, 225], [480, 350], [600, 95], [615, 335], [705, 170], [715, 285]];
+
+  // The whole cell: membranes, organelles and granules around the nucleus (drawn whole here, in its parts below).
+  function cellWholeSvg(SC, scoped) {
+    const D = cellDraw(SC, scoped), W = 1000, H = 500, cx = 500, cy = 250, rx = 285, ry = 206;
+    const shape = [1, 0.97, 1.02, 0.99, 1.03, 0.98, 1.01, 0.97, 1.02, 1, 0.98, 1.02], body = cellSmooth(cellBlob(cx, cy, rx, ry, shape));
+    const nx = 452, ny = 262, nrx = 110, nry = 94, nuc = cellSmooth(cellBlob(nx, ny, nrx, nry, [1, 1.02, 0.98, 1.01, 0.99, 1.02, 1, 0.98]));
+    let g = '<g' + D.tip('cytosol') + '><path class="' + D.fill('cytosol') + '" fill-opacity=".34" d="' + body + '"/></g>';
+    // microtubules from the centrosome towards the cortex
+    const [ox, oy] = [598, 352], mt = [-58, -30, -8, 14, 36, 62, 92, 122, 150, 172];
+    const mtCurve = (t) => { const [ex, ey] = cellRayOut(ox, oy, t, cx, cy, rx * 0.91, ry * 0.9); return [ex, ey, (ox + ex) / 2 + (ey - oy) * 0.08, (oy + ey) / 2 - (ex - ox) * 0.08]; };
+    g += '<g' + D.tip('microtubules') + '>' + mt.map((t) => {
+      const [ex, ey, mx, my] = mtCurve(t);
+      return '<path class="' + D.line('microtubules') + '" fill="none" stroke-width="1.8" stroke-linecap="round" d="M' + ox + ',' + oy + 'Q' + mx.toFixed(1) + ',' + my.toFixed(1) + ' ' + ex.toFixed(1) + ',' + ey.toFixed(1) + '"/>';
+    }).join('') + '</g>';
+    const [mex, mey, mmx, mmy] = mtCurve(36), u = 0.55, mtAt = [(1 - u) ** 2 * ox + 2 * u * (1 - u) * mmx + u * u * mex, (1 - u) ** 2 * oy + 2 * u * (1 - u) * mmy + u * u * mey];
+    // actin cortex under the membrane, then the membrane itself (two leaflets)
+    g += '<g' + D.tip('actin') + '><path class="' + D.line('actin') + '" fill="none" stroke-width="4" stroke-dasharray="7 3" d="' + cellSmooth(cellBlob(cx, cy, rx * 0.955, ry * 0.94, shape)) + '"/></g>';
+    g += '<g' + D.tip('pm') + '><path class="' + D.line('pm') + '" fill="none" stroke-width="8" d="' + body + '"/><path class="cd-gap" stroke-width="1.6" d="' + body + '"/></g>';
+    // rough ER: cisternae wrapped round the nucleus, studded with ribosomes
+    let er = '', rib = '';
+    [20, 34, 48].forEach((dr, i) => {
+      const pts = cellArc(nx, ny, nrx + dr, nry + dr * 0.92, -140 + i * 6, 22 - i * 4, 3);
+      er += '<path class="' + D.line('er') + '" fill="none" stroke-width="7" stroke-linecap="round" d="' + cellPoly(pts) + '"/><path class="cd-gap" stroke-width="1.8" stroke-linecap="round" d="' + cellPoly(pts) + '"/>';
+      cellArc(nx, ny, nrx + dr + 5.5, nry + (dr + 5.5) * 0.92, -136 + i * 6, 18 - i * 4, 7).forEach(([x, y]) => { rib += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="1.9"/>'; });
+    });
+    g += '<g' + D.tip('er') + '>' + er + '</g>';
+    // free polysomes in the cytosol
+    for (const [x0, y0, t0] of [[622, 112, 0], [395, 392, 30], [600, 422, -20], [252, 212, 80]]) {
+      for (let i = 0; i < 7; i++) { const t = (t0 + i * 26) * Math.PI / 180; rib += '<circle cx="' + (x0 + 13 * Math.cos(t) + i * 2.4).toFixed(1) + '" cy="' + (y0 + 9 * Math.sin(t)).toFixed(1) + '" r="2.2"/>'; }
+    }
+    g += '<g class="' + D.fill('ribosomes') + '"' + D.tip('ribosomes') + '>' + rib + '</g>';
+    // the nucleus, whole (its parts are drawn below): envelope with pores, territories and the nucleolus shaded
+    let pores = '';
+    for (let t = 0; t < 360; t += 26) { const r = t * Math.PI / 180, x = nx + nrx * Math.cos(r), y = ny + nry * Math.sin(r), qx = Math.cos(r) * 4, qy = Math.sin(r) * 4; pores += '<line class="cd-gap" stroke-width="3.2" x1="' + (x - qx).toFixed(1) + '" y1="' + (y - qy).toFixed(1) + '" x2="' + (x + qx).toFixed(1) + '" y2="' + (y + qy).toFixed(1) + '"/>'; }
+    const sc = (p) => [nx + (p[0] - 500) * (nrx / 262), ny + (p[1] - 235) * (nry / 190)];
+    g += '<g' + D.tip('nucleoplasm', 'Nucleus') + '><path class="' + D.fill('nucleoplasm') + '" fill-opacity=".85" d="' + nuc + '"/>' +
+      cellTerritories(CELL_CT.map(sc), nx, ny, nrx - 5, nry - 5, 5).map((d) => '<path class="cd-shade" d="' + d + '"/>').join('') +
+      '<path class="cd-shade" style="fill-opacity:.22" d="' + cellSmooth(cellBlob(...sc([592, 214]), 25, 24, [1, 1.05, 0.95, 1.02, 0.97, 1.04, 1, 0.96])) + '"/>' +
+      '<path fill="none" class="cd-o" stroke-width="3.5" d="' + nuc + '"/><path class="cd-gap" stroke-width="1" d="' + nuc + '"/>' + pores + '</g>';
+    // Golgi: stacked cisternae facing the ER, with vesicles
+    let golgi = '';
+    for (let i = 0; i < 5; i++) {
+      const x = 648 + i * 9, h = 40 - i * 4.5, d = 'M' + x + ',' + (206 - h) + 'Q' + (x + 16) + ',206 ' + x + ',' + (206 + h);
+      golgi += '<path class="' + D.line('golgi') + '" fill="none" stroke-width="6.5" stroke-linecap="round" d="' + d + '"/><path class="cd-gap" stroke-width="1.6" stroke-linecap="round" d="' + d + '"/>';
+    }
+    golgi += [[640, 158, 4], [652, 252, 3.5], [700, 172, 4], [704, 240, 3.5], [714, 206, 3]].map(([x, y, r]) => '<circle class="' + D.fill('golgi') + ' cd-o" cx="' + x + '" cy="' + y + '" r="' + r + '"/>').join('');
+    g += '<g' + D.tip('golgi') + '>' + golgi + '</g>';
+    // mitochondria
+    g += '<g' + D.tip('mito') + '>' + [[279, 168, 66, 26, 72], [384, 112, 70, 26, -8], [336, 398, 64, 24, 28], [652, 402, 70, 26, -18], [748, 222, 56, 22, 82]].map(([x, y, l, w, r]) => cellMito(x, y, l, w, r, D.fill('mito'))).join('') + '</g>';
+    // endosomes and lysosomes, with intraluminal vesicles
+    g += '<g' + D.tip('endolyso') + '>' + [[720, 298, 13], [702, 334, 10], [258, 268, 9]].map(([x, y, r]) => '<circle class="' + D.fill('endolyso') + ' cd-o" cx="' + x + '" cy="' + y + '" r="' + r + '"/>' +
+      [[-0.35, -0.3], [0.3, -0.2], [0, 0.35]].map(([a, b]) => '<circle class="cd-in" cx="' + (x + a * r).toFixed(1) + '" cy="' + (y + b * r).toFixed(1) + '" r="' + (r * 0.24).toFixed(1) + '"/>').join('')).join('') + '</g>';
+    // peroxisomes, with a crystalline core
+    g += '<g' + D.tip('perox') + '>' + [[298, 232, 8], [696, 120, 7], [470, 432, 7]].map(([x, y, r]) => '<circle class="' + D.fill('perox') + ' cd-o" cx="' + x + '" cy="' + y + '" r="' + r + '"/><rect class="cd-ink" x="' + (x - 2.5) + '" y="' + (y - 2.5) + '" width="5" height="5" transform="rotate(45 ' + x + ' ' + y + ')"/>').join('') + '</g>';
+    // stress granules and P-bodies: condensates without a membrane, drawn as droplets with a soft rim
+    const drop = (k, x, y, r, s) => { const d = cellSmooth(cellBlob(x, y, r, r * 0.9, [1, 0.93, 1.05, 0.95, 1.03, 0.92, 1.04, 0.96, 1.02, 0.94], s));
+      return '<path class="' + D.line(k) + '" fill="none" stroke-width="5" stroke-opacity=".35" d="' + d + '"/><path class="' + D.fill(k) + '" d="' + d + '"/>'; };
+    g += '<g' + D.tip('granules') + '>' + [[302, 322, 14, 0], [548, 414, 12, 1], [560, 90, 11, 0.5]].map(([x, y, r, s]) => drop('granules', x, y, r, s)).join('') + '</g>';
+    g += '<g' + D.tip('pbodies') + '>' + [[425, 420, 6], [730, 170, 6], [520, 112, 5], [274, 298, 5]].map(([x, y, r]) => drop('pbodies', x, y, r, 0)).join('') + '</g>';
+    // centrosome: a pair of centrioles in pericentriolar material
+    g += '<g' + D.tip('centrosome') + '><circle class="' + D.fill('centrosome') + '" fill-opacity=".45" cx="' + ox + '" cy="' + oy + '" r="17"/><rect class="' + D.fill('centrosome') + ' cd-o" x="' + (ox - 9) + '" y="' + (oy - 3) + '" width="13" height="6" rx="1.5"/>' +
+      '<rect class="' + D.fill('centrosome') + ' cd-o" x="' + (ox + 1) + '" y="' + (oy - 3) + '" width="6" height="13" rx="1.5"/></g>';
+    // the membrane anchors are vertices of its outline (at 180° and 120°), so they sit on it
+    g += D.labels([
+      { k: 'cytosol', side: 'l', x: 470, y: 80 }, { k: 'mito', side: 'l', x: 281, y: 152 }, { k: 'perox', side: 'l', x: 298, y: 232 }, { k: 'actin', side: 'l', x: 225, y: 250 },
+      { k: 'nucleoplasm', side: 'l', x: 372, y: 300, name: 'Nucleus' }, { k: 'granules', side: 'l', x: 302, y: 322 }, { k: 'pm', side: 'l', x: 353, y: 434 },
+      { k: 'ribosomes', side: 'r', x: 635, y: 112 }, { k: 'pbodies', side: 'r', x: 730, y: 170 }, { k: 'golgi', side: 'r', x: 666, y: 206 }, { k: 'er', side: 'r', x: 609, y: 274 },
+      { k: 'endolyso', side: 'r', x: 724, y: 296 }, { k: 'centrosome', side: 'r', x: ox + 6, y: oy + 8 }, { k: 'microtubules', side: 'r', x: +mtAt[0].toFixed(1), y: +mtAt[1].toFixed(1) },
+    ], W, H, 200);
+    return '<svg class="cell-whole" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="The cell, each compartment coloured by the odds ratio ' + (scoped ? 'of your selection' : 'of methylated proteins') + ' within abundance deciles">' + g + '</svg>';
+  }
+  // The nucleus as chromosome territories with interchromatin channels between them (the nucleoplasm), where speckles,
+  // paraspeckles and nuclear bodies sit; heterochromatin lines the envelope and the nucleolus.
+  function cellNucleusSvg(SC, scoped) {
+    const D = cellDraw(SC, scoped), W = 1000, H = 470, cx = 500, cy = 235, rx = 262, ry = 190;
+    const shape = [1, 1.02, 0.98, 1.01, 0.99, 1.02, 1, 0.98, 1.01, 0.99], body = cellSmooth(cellBlob(cx, cy, rx, ry, shape));
+    // the nucleoplasm shows in the channels between the territories
+    let g = '<g' + D.tip('nucleoplasm') + '><path class="' + D.fill('nucleoplasm') + '" fill-opacity=".55" d="' + body + '"/></g>';
+    // chromatin: territories, with heterochromatin along the envelope
+    g += '<g' + D.tip('chromatin') + '>' + cellTerritories(CELL_CT, cx, cy, rx - 12, ry - 12, 13).map((d) => '<path class="' + D.fill('chromatin') + ' cd-o" d="' + d + '"/>').join('') +
+      '<path class="' + D.line('chromatin') + '" fill="none" stroke-width="9" d="' + cellSmooth(cellBlob(cx, cy, rx * 0.965, ry * 0.955, shape)) + '"/></g>';
+    // nucleolus, ringed by heterochromatin, with fibrillar centres
+    const nucleolus = cellSmooth(cellBlob(592, 214, 56, 50, [1, 1.06, 0.95, 1.04, 0.97, 1.05, 0.98, 1.03, 0.96, 1.02]));
+    g += '<g' + D.tip('chromatin') + '><path class="' + D.line('chromatin') + '" fill="none" stroke-width="7" d="' + nucleolus + '"/></g>';
+    g += '<g' + D.tip('nucleolus') + '><path class="' + D.fill('nucleolus') + ' cd-o" d="' + nucleolus + '"/>' +
+      [[572, 198], [610, 204], [584, 234], [618, 236]].map(([x, y]) => '<circle class="cd-shade" cx="' + x + '" cy="' + y + '" r="10"/><circle class="cd-gap" stroke-width="5" cx="' + x + '" cy="' + y + '" r="3.2"/>').join('') + '</g>';
+    // nuclear speckles: clusters of interchromatin granules at channel junctions
+    const cluster = (x, y, r) => [[0, 0, 0.62], [0.55, -0.3, 0.5], [-0.5, -0.35, 0.48], [0.45, 0.45, 0.5], [-0.5, 0.4, 0.46], [0, -0.62, 0.42], [0.05, 0.62, 0.4]]
+      .map(([a, b, s]) => '<circle cx="' + (x + a * r).toFixed(1) + '" cy="' + (y + b * r).toFixed(1) + '" r="' + (s * r).toFixed(1) + '"/>').join('');
+    g += '<g class="' + D.fill('speckles') + ' cd-o"' + D.tip('speckles') + '>' + [[377, 224, 19], [415, 294, 16], [522, 150, 15], [665, 310, 17], [420, 355, 13]].map(([x, y, r]) => cluster(x, y, r)).join('') + '</g>';
+    // paraspeckles: small core–shell bodies in the channels beside speckles
+    g += '<g' + D.tip('paraspeckles') + '>' + [[349, 216, 74], [356, 212, 74], [653, 287, 27], [646, 283, 27]].map(([x, y, r]) =>
+      '<ellipse class="' + D.fill('paraspeckles') + ' cd-o" cx="' + x + '" cy="' + y + '" rx="3.4" ry="8" transform="rotate(' + r + ' ' + x + ' ' + y + ')"/>').join('') + '</g>';
+    // nuclear bodies in the channels: PML bodies (rings) and Cajal bodies
+    g += '<g' + D.tip('bodies') + '>' + [[390, 122], [548, 342], [710, 228]].map(([x, y]) => '<circle class="' + D.line('bodies') + '" fill="none" stroke-width="3.6" cx="' + x + '" cy="' + y + '" r="7"/>').join('') +
+      [[410, 166], [525, 95]].map(([x, y]) => '<circle class="' + D.fill('bodies') + ' cd-o" cx="' + x + '" cy="' + y + '" r="7.5"/>').join('') + '</g>';
+    // the envelope: two membranes, with pore complexes
+    let pores = '';
+    for (let t = 8; t < 368; t += 20) {
+      const r = t * Math.PI / 180, x = cx + rx * Math.cos(r), y = cy + ry * Math.sin(r), qx = Math.cos(r) * 7, qy = Math.sin(r) * 7, px = -Math.sin(r) * 3.5, py = Math.cos(r) * 3.5;
+      pores += '<line class="cd-gap" stroke-width="5" x1="' + (x - qx).toFixed(1) + '" y1="' + (y - qy).toFixed(1) + '" x2="' + (x + qx).toFixed(1) + '" y2="' + (y + qy).toFixed(1) + '"/>' +
+        [1, -1].map((s) => '<line class="' + D.line('envelope') + '" stroke-width="2.2" stroke-linecap="round" x1="' + (x - qx + s * px).toFixed(1) + '" y1="' + (y - qy + s * py).toFixed(1) + '" x2="' + (x + qx + s * px).toFixed(1) + '" y2="' + (y + qy + s * py).toFixed(1) + '"/>').join('');
+    }
+    g += '<g' + D.tip('envelope') + '><path class="' + D.line('envelope') + '" fill="none" stroke-width="11" d="' + body + '"/><path class="cd-gap" stroke-width="3" d="' + body + '"/>' + pores + '</g>';
+    // anchors: chromatin inside territory A, the nucleoplasm in the channel between territories B and C
+    g += D.labels([
+      { k: 'chromatin', side: 'l', x: 322, y: 160 }, { k: 'speckles', side: 'l', x: 379, y: 234 }, { k: 'nucleoplasm', side: 'l', x: 330, y: 312 },
+      { k: 'bodies', side: 'r', x: 548, y: 342 }, { k: 'nucleolus', side: 'r', x: 620, y: 190 }, { k: 'paraspeckles', side: 'r', x: 653, y: 287 }, { k: 'envelope', side: 'r', x: 762, y: 240 },
+    ], W, H, 200);
+    return '<svg class="cell-nucleus" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="The nucleus, each part coloured by the odds ratio ' + (scoped ? 'of your selection' : 'of methylated proteins') + ' within abundance deciles">' + g + '</svg>';
   }
   const cellFigSpec = (id, title, subText, svg, tsv) => ({ id, title, subText, figCss: cellFigCss, figSvg: svg, figTsv: tsv });
-  const CELL_KEY = '<span class="cell-key"><i class="cg-k u3"></i><i class="cg-k u1"></i> more methylated proteins than among proteins of similar abundance the same map places</span><span class="cell-key"><i class="cg-k ns"></i> no difference (q > 0.05)</span><span class="cell-key"><i class="cg-k d1"></i><i class="cg-k d3"></i> fewer</span><span class="cell-key"><i class="cg-k na"></i> not a compartment of that map</span><span>numbers: odds ratio within PaxDb abundance deciles</span>';
+  const cellKey = (scoped) => '<span class="cell-key"><i class="cg-k u3"></i><i class="cg-k u1"></i> more ' + (scoped ? 'proteins of your selection' : 'methylated proteins') + ' than among proteins of similar abundance the same map places</span><span class="cell-key"><i class="cg-k ns"></i> no difference (q > 0.05), or the maps disagree</span><span class="cell-key"><i class="cg-k d1"></i><i class="cg-k d3"></i> fewer</span><span class="cell-key"><i class="cg-k na"></i> not a compartment of that map' + (scoped ? ', or counts only' : '') + '</span><span>numbers: odds ratio within PaxDb abundance deciles (the median of the maps in the drawings)</span>';
   function renderCellOverview(el, scoped) {
     const box = $('#ch-cell-body', el), tv = $('.cell-ov-vis', el), th = $('.cell-ov-head', el);
     if (!box && !tv) return;
@@ -11069,23 +11297,29 @@
     loadLayer('subcellular').then((SC) => {
       if (UI.view !== view || R !== rq) return;
       if (!SC) { if (box) box.innerHTML = '<p class="muted">The subcellular maps did not load.</p>'; if (th) th.textContent = 'did not load'; return; }
-      const parts = Object.values(cellParts(SC)), up = parts.filter((p) => /^u/.test(p.tone)).sort((a, b) => b.a.l2 - a.a.l2);
-      if (tv) tv.innerHTML = aMeters(up.slice(0, 4).map((p) => ({ label: p.label, v: Math.min(1, p.a.l2 / 3), text: cellOr(p.a), cls: 'count', tip: '<b>' + esc(p.label) + '</b><br>median odds ratio within abundance deciles across ' + p.cells.length + ' map' + (p.cells.length === 1 ? '' : 's') })), { tight: true, wide: true });
-      if (th) th.innerHTML = up.length ? 'Most enriched among proteins of similar abundance: <b>' + esc(up.slice(0, 3).map((p) => p.label.toLowerCase()).join(', ')) + '</b>' : 'No compartment enriched in the maps';
+      const parts = Object.values(cellParts(SC, scoped)), up = parts.filter((p) => /^u/.test(p.tone)).sort((a, b) => b.a.l2 - a.a.l2);
+      const whom = scoped ? 'your selection' : 'methylated proteins';
+      if (tv) tv.innerHTML = aMeters(up.slice(0, 4).map((p) => ({ label: CELL_NAME[p.part] || p.label, v: Math.min(1, p.a.l2 / 3), text: cellOr(p.a), cls: 'count', tip: '<b>' + esc(p.label) + '</b><br>median odds ratio of ' + whom + ' within abundance deciles across ' + p.maps })), { tight: true, wide: true });
+      if (th) th.innerHTML = up.length ? (scoped ? 'Your selection, most enriched among proteins of similar abundance: ' : 'Most enriched among proteins of similar abundance: ') + '<b>' + esc(up.slice(0, 3).map((p) => (CELL_NAME[p.part] || p.label).toLowerCase()).join(', ')) + '</b>'
+        : scoped ? 'Your selection: no compartment enriched among proteins of similar abundance' : 'No compartment enriched in the maps';
       if (!box) return;
       const key = UI.cellMap && cellDs(SC, UI.cellMap) ? UI.cellMap : 'hcm', spec = cellSpec(SC, key, scoped);
       UI.charts[spec.id] = spec;
-      const grid = cellFigSpec('ch-cell-grid', 'Where in the cell: compartments against maps', 'Odds ratio of methylated proteins in each compartment within PaxDb abundance deciles, against the other proteins the same map places (Mantel–Haenszel). Preview of v1.5.0; whole dataset.', () => cellGridSvg(SC), () => cellGridTsv(SC));
-      const whole = cellFigSpec('ch-cell-whole', 'Where in the cell', 'Each compartment coloured by the median odds ratio, within PaxDb abundance deciles, of the maps that have it; grey where the maps disagree or show no difference. The nucleus is drawn in full beside it. Preview of v1.5.0; whole dataset.', () => cellWholeSvg(SC), () => cellGridTsv(SC));
-      const nuc = cellFigSpec('ch-cell-nucleus', 'Where in the nucleus', 'Each part coloured by the median odds ratio, within PaxDb abundance deciles, of the maps that have it; grey where the maps disagree or show no difference. Preview of v1.5.0; whole dataset.', () => cellNucleusSvg(SC), () => cellGridTsv(SC));
+      const n = scoped ? cellSelTests(SC, 'hcm').n : 0;
+      const how = scoped ? 'your selection (' + selectionText() + ') against the other proteins each map places, within PaxDb abundance deciles (Mantel–Haenszel; exploratory, BH within each map)'
+        : 'methylated proteins against the other proteins each map places, within PaxDb abundance deciles (Mantel–Haenszel)';
+      const grid = cellFigSpec('ch-cell-grid', 'Where in the cell: compartments against maps', 'Odds ratio of ' + how + '. Preview of v1.5.0.', () => cellGridSvg(SC, scoped), () => cellGridTsv(SC, scoped));
+      const whole = cellFigSpec('ch-cell-whole', 'Where in the cell', 'Each compartment coloured by the median odds ratio of the maps that have it: ' + how + '; grey where the maps disagree or show no difference. Preview of v1.5.0.', () => cellWholeSvg(SC, scoped), () => cellGridTsv(SC, scoped));
+      const nuc = cellFigSpec('ch-cell-nucleus', 'Where in the nucleus', 'Each part coloured by the median odds ratio of the maps that have it: ' + how + '; grey where the maps disagree or show no difference. Preview of v1.5.0.', () => cellNucleusSvg(SC, scoped), () => cellGridTsv(SC, scoped));
       box.innerHTML = '<p class="preview-flag">Preview, not released: built from the pilot of ' + esc(new Date().toISOString().slice(0, 10)) + ' for review.</p>' +
-        '<p class="small">Four maps of where proteins sit, made by different methods in different cells. Each map is tested only against the proteins it places, so a compartment is enriched when methylated proteins are more common there than among the other proteins the same experiment detected; and again among proteins of similar abundance (PaxDb deciles), the comparison the colours show.</p>' +
-        '<div class="cell-two">' + figBlock(whole, 'The cell') + figBlock(nuc, 'The nucleus') + '</div>' + '<div class="chart-key">' + CELL_KEY + '</div>' +
+        '<p class="small">Four maps of where proteins sit, made by different methods in different cells. Each map is tested only against the proteins it places, so a compartment is enriched when ' + (scoped ? 'proteins of your selection' : whom) + ' are more common there than among the other proteins the same experiment detected, ' +
+        'here among proteins of similar abundance (PaxDb deciles). ' + (scoped ? '<b>Retested for your selection</b>: ' + fmt(n) + ' of its proteins are placed by the Human Cell Map; each map counts its own. ' : '') + 'Hover a part for each map\'s result.</p>' +
+        '<div class="chart-key">' + cellKey(scoped) + '</div>' +
+        '<div class="cell-fig">' + figBlock(whole, 'The cell') + '</div><div class="cell-fig">' + figBlock(nuc, 'The nucleus') + '</div>' +
         '<div class="cell-grid-wrap">' + figBlock(grid, 'Compartments against maps') + '</div>' +
         '<div class="cell-one"><div class="fig-head"><span class="flabel">One map at a time</span><span class="seg cell-maps" role="group" aria-label="Map">' +
           CELL_ORDER.filter((k) => cellDs(SC, k)).map((k) => '<button type="button" data-cellmap="' + k + '" aria-pressed="' + (k === key) + '">' + esc(cellDs(SC, k).key === 'hcm_safe' ? 'Cell map, domains' : cellDs(SC, k).name) + '</button>').join('') + '</span>' + expButtons(spec.id) + '</div>' +
-          hbars(spec) + '<p class="note ora-note">' + esc(spec.subText) + ' Over-representation (one-sided hypergeometric), the bar log2 fold enrichment; the mark after it, the test within abundance deciles.</p></div>' +
-        (scoped ? '<p class="small muted">The grid and the nucleus are for the whole dataset; the chart above is retested for your selection.</p>' : '') +
+          hbars(spec) + '<p class="note ora-note">' + esc(spec.subText.replace(/\.?$/, '.')) + ' Over-representation (one-sided hypergeometric), the bar log2 fold enrichment; the mark after it, the test within abundance deciles' + (scoped ? ' of your selection' : '') + '.</p></div>' +
         '<p class="note small">Maps: ' + SC.datasets.map((d) => esc(d.name) + ' (' + doiLink(d.doi, d.ref) + '; ' + esc(d.cells) + '; ' + esc(d.licence) + '; ' + fmt(d.universe) + ' proteins placed, ' + pct(d.methylated, d.universe) + '% methylated)').join('; ') +
         '. The Human Protein Atlas row uses the release statistics (v1.4.1). The nuclear-body map of Dyakov et al. (bioRxiv 2024; CC BY-NC-ND) is left out until it can be reused.</p>';
       bindBars($('.cell-one', box), spec.rows, () => {});
@@ -11103,7 +11337,7 @@
       if (!SC || !box.isConnected) return;
       const a = p.acc.split('-')[0], r = SC.proteins[a], hm = hpaMeta();
       const hpa = hm && p.hpa && p.hpa.length ? p.hpa.filter((x) => x[1] >= HPA_SURE).sort((x, y) => y[2] - x[2]).map((x) => hm.locations[x[0]] + (x[2] ? '' : ' (additional)')).join(', ') : '';
-      const icp = r && r[3] >= 0 ? r[3] / 100 : null;
+      const icp = r && r[3] >= 0 ? r[3] / 1000 : null;
       const line = (key, val) => { const ds = cellDs(SC, key); return '<tr><th scope="row">' + esc(ds.name) + '<br><span class="muted small">' + esc(ds.method) + ', ' + esc(ds.cells) + '</span></th><td>' + (val || '<span class="muted">not placed: the map did not detect it, or could not place it</span>') + '</td></tr>'; };
       box.innerHTML = '<div class="card-head"><div><h3>Where the maps place it</h3><p class="sub">Four maps of where proteins sit, by different methods. Preview of v1.5.0.</p></div></div>' +
         '<div class="tbl-wrap"><table class="tbl compact cell-places"><tbody>' +

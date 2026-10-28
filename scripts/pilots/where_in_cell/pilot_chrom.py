@@ -21,4 +21,4 @@ bins = {'ICP >= 0.8 (chromatin)': set(icp[icp >= 0.8].index), 'ICP 0.5-0.8': set
 res = lib.tests(ctx, set(icp.index), bins)
 lib.show(res, 'chromatin probability (Kustatscher 2014), among scored proteins')
 res.to_csv(out / 'chrom_pilot.tsv', sep='\t', index=False)
-json.dump({a: round(float(v), 3) for a, v in icp.items()}, open(out / 'chrom_protein.json', 'w'))
+json.dump({a: round(float(v), 6) for a, v in icp.items()}, open(out / 'chrom_protein.json', 'w'))  # full precision: the website bins it

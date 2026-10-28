@@ -3,7 +3,10 @@
 Each map is tested against the proteins it places: methylated proteins (release v1.4.1) per compartment, one-sided
 hypergeometric with fold enrichment, and the Mantel-Haenszel odds ratio within PaxDb abundance deciles of the same
 proteins (`abundance_strata.py`). `build_preview.py` writes `docs/data/subcellular.json`, which the website's "Where in
-the cell" card (preview) and the protein page's "Where the maps place it" read.
+the cell" card (preview) and the protein page's "Where the maps place it" read. The file carries each protein's PaxDb
+decile among the proteins each map places, and the HPA locations of every HPA-profiled protein, so that the card repeats
+the tests within the deciles for a selection (Mantel-Haenszel in the browser; with all methylated proteins as the
+selection it gives the pilots' counts, odds ratios and confidence intervals).
 
 | Map | File read | Source and licence |
 |---|---|---|

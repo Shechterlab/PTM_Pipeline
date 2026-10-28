@@ -2246,10 +2246,11 @@ ul.tight li { margin: 0.15rem 0; }
 .pmark.ns { color: var(--muted); }
 .pert-key { display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; font-size: 0.8rem; color: var(--muted); margin: 0.4rem 0; }
 
-/* Where in the cell (preview): the compartment grid and the nucleus, coloured by the odds ratio within abundance deciles. */
-.cell-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
-@media (max-width: 1100px) { .cell-two { grid-template-columns: minmax(0, 1fr); } }
-.cell-two svg { width: 100%; height: auto; display: block; }
+/* Where in the cell (preview): the drawings of the cell and the nucleus and the compartment grid, coloured by the odds
+   ratio within abundance deciles. The drawings keep a readable size on narrow screens and scroll sideways instead. */
+.cell-fig { max-width: 1040px; margin-top: 0.75rem; }
+.cell-fig .fig-block { overflow-x: auto; }
+.cell-fig svg { width: 100%; min-width: 640px; height: auto; display: block; }
 .cell-one { margin-top: 1rem; }
 .cell-one .fig-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
 .cell-one .seg { flex-wrap: wrap; }
@@ -2259,14 +2260,16 @@ ul.tight li { margin: 0.15rem 0; }
 .cg-t { font-size: 11px; fill: var(--ink); } .cg-t.t2, .cg-t.t3 { fill: #fff; }
 :root[data-theme="dark"] .cg-t.t3 { fill: #111827; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .cg-t.t3 { fill: #111827; } }
-.nu-part { stroke: var(--ink); stroke-opacity: 0.25; stroke-width: 0.8; }
 .cg-m { font-size: 10.5px; fill: var(--muted); } .cg-h { font-size: 11px; font-weight: 700; fill: var(--ink); }
 .cg-g { font-size: 11px; font-weight: 700; fill: var(--muted); letter-spacing: 0.04em; } .cg-r { font-size: 12px; fill: var(--ink); }
-.nu-env { fill: none; stroke-width: 9; } .nu-env.na, .nu-env.ns { stroke: var(--t-mid); }
-.nu-env.u0 { stroke: var(--t-up-0); } .nu-env.u1 { stroke: var(--t-up-1); } .nu-env.u2 { stroke: var(--t-up-2); } .nu-env.u3 { stroke: var(--t-up-3); }
-.nu-env.d0 { stroke: var(--t-down-0); } .nu-env.d1 { stroke: var(--t-down-1); } .nu-env.d2 { stroke: var(--t-down-2); } .nu-env.d3 { stroke: var(--t-down-3); }
-.nu-pore { stroke: var(--surface); stroke-width: 4; }
-.nu-num { font-size: 11px; font-weight: 700; fill: var(--ink); } .nu-dot { fill: var(--surface); stroke: var(--ink); stroke-width: 1; }
+.cd-o { stroke: var(--ink); stroke-opacity: 0.3; stroke-width: 0.9; }
+.cd-in { fill: none; stroke: var(--ink); stroke-opacity: 0.38; stroke-width: 1.1; }
+.cd-gap { fill: none; stroke: var(--surface); }
+.cd-shade { fill: var(--ink); fill-opacity: 0.1; } .cd-ink { fill: var(--ink); fill-opacity: 0.55; }
+.cd-lead { fill: none; stroke: var(--ink); stroke-opacity: 0.55; stroke-width: 1; }
+.cd-dot { fill: var(--ink); stroke: var(--surface); stroke-width: 1.5; }
+.cd-name { font-size: 13.5px; font-weight: 700; fill: var(--ink); } .cd-val { font-size: 12.5px; fill: var(--ink); } .cd-val tspan.m { fill: var(--muted); }
+svg [data-tip]:hover .cd-lead { stroke-opacity: 1; stroke-width: 1.6; }
 .cell-key { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; }
 .cell-key i.cg-k { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
 .cg-k.na { background: none; border: 1px dashed var(--line-strong); } .cg-k.u3 { background: var(--t-up-3); } .cg-k.u1 { background: var(--t-up-1); } .cg-k.ns { background: var(--t-mid); border: 1px solid var(--line); } .cg-k.d1 { background: var(--t-down-1); } .cg-k.d3 { background: var(--t-down-3); }

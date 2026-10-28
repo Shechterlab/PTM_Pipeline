@@ -1,5 +1,6 @@
 """Preview data for the website's "Where in the cell" card (not a release file): per-dataset tests from the pilots, the HPA
-rows of the v1.4.1 statistics, the compartment grid, the nucleus parts and each protein's placement."""
+rows of the v1.4.1 statistics, the compartment grid, the parts of the drawings and each protein's placement, with its
+PaxDb decile in each map so the website can repeat the tests within abundance deciles for a selection."""
 import sys, json, math
 from pathlib import Path
 import pandas as pd
@@ -41,16 +42,39 @@ for d in datasets:
 hp, op, cp = (json.load(open(sc / f)) for f in ('hcm_protein.json', 'oip_protein.json', 'chrom_protein.json'))
 prot = pd.read_csv(repo / 'releases/v1.4.1/human_methylarginine_proteins_v1.4.1.tsv', sep='\t', dtype=str, keep_default_na=False)
 meth = {a.split('-')[0] for a in prot.uniprot_accession}
+universes = {'hcm': set(hp), 'hcm_safe': {a for a, v in hp.items() if v[1] not in ('no prediction', '-')}, 'oip': {a for a, v in op.items() if v != 'unclassified'}, 'chep': set(cp)}
 for d in datasets:
-    keys = {'hcm': hp, 'hcm_safe': {a: v for a, v in hp.items() if v[1] not in ('no prediction', '-')}, 'oip': {a: v for a, v in op.items() if v != 'unclassified'}, 'chep': cp}.get(d['key'])
-    if keys is not None:
-        d['universe'] = len(keys); d['methylated'] = len(set(keys) & meth)
-cats = {'hcm': sorted({v[0] for v in hp.values()}), 'hcm_safe': sorted({v[1] for v in hp.values()}), 'oip': sorted(set(op.values()))}
+    if d['key'] in universes:
+        d['universe'] = len(universes[d['key']]); d['methylated'] = len(universes[d['key']] & meth)
+# The release's HPA test: every protein with a location scored Approved or better (release_tables.hpa_rows)
+hpa_all = pd.read_csv(repo / 'inputs/layers/hpa_subcellular_locations.tsv', sep='\t', dtype=str, keep_default_na=False)
+confident = hpa_all[hpa_all['reliability'] != 'Uncertain']
+hpa_sets = confident.groupby('canonical_UniProtAC')['location'].agg(lambda s: sorted(set(s))).to_dict()
+hpa_ds = next(d for d in datasets if d['key'] == 'hpa')
+assert len(hpa_sets) == hpa_ds['universe'], (len(hpa_sets), hpa_ds['universe'])
+universes['hpa'] = set(hpa_sets)
+cats = {'hcm': sorted({v[0] for v in hp.values()}), 'hcm_safe': sorted({v[1] for v in hp.values()}), 'oip': sorted(set(op.values())),
+        'hpa': sorted(set(confident['location']))}
+# Each protein's PaxDb decile among the proteins each map places, as the tests stratify (abundance_strata.strata):
+# one character per map of MAPS, 0-9 (the least to the most abundant), x without a PaxDb value, - not placed.
+sys.path.insert(0, str(Path(__file__).parent))
+import lib
+ctx = lib.setup(repo)
+MAPS = ['hcm', 'hcm_safe', 'oip', 'chep', 'hpa']
+dec = {k: ctx['A'].strata(sorted(universes[k]), ctx['pax']).to_dict() for k in MAPS}
+code = lambda k, a: '-' if a not in universes[k] else 'x' if dec[k][a] == 'none' else str(int(dec[k][a]) - 1)
+# chromatin probability x1000, kept on its side of each bin edge the pilot uses (0.2, 0.5, 0.8)
+def icp_code(v):
+    c = round(v * 1000)
+    for edge in (200, 500, 800):
+        if v < edge / 1000 and c >= edge: c = edge - 1
+    return c
 proteins = {}
-for a in sorted(set(hp) | set(op) | set(cp)):
+for a in sorted(set(hp) | set(op) | set(cp) | set(hpa_sets)):
     h = hp.get(a)
     proteins[a] = [cats['hcm'].index(h[0]) if h else -1, cats['hcm_safe'].index(h[1]) if h else -1,
-                   cats['oip'].index(op[a]) if a in op else -1, round(cp[a] * 100) if a in cp else -1]
+                   cats['oip'].index(op[a]) if a in op else -1, icp_code(cp[a]) if a in cp else -1,
+                   [cats['hpa'].index(x) for x in hpa_sets.get(a, [])], ''.join(code(k, a) for k in MAPS)]
 # the compartment grid: [group, [[row, {dataset: its category}, nucleus part or '']]]
 G = lambda **k: k
 groups = [
@@ -86,6 +110,8 @@ for g in groups:
         for k, c in list(row[1].items()):
             assert c in have[k], (k, c)
 json.dump(dict(preview=True, generated='pilot', datasets=datasets, tests=tests, test_fields=['category', 'members', 'methylated', 'log2 fold enrichment', 'q', 'log2 OR within abundance deciles', 'CI low', 'CI high', 'q'],
-               groups=groups, categories=cats, proteins=proteins, protein_fields=['hcm NMF index', 'hcm SAFE index', 'oip index', 'chromatin probability x100']),
+               groups=groups, categories=cats, proteins=proteins, decile_maps=MAPS,
+               protein_fields=['hcm NMF index', 'hcm SAFE index', 'oip index', 'chromatin probability x1000', 'hpa location indices (Approved or better)',
+                               'PaxDb decile among the proteins each map of decile_maps places (0-9; x no value; - not placed)']),
           open(out, 'w'), separators=(',', ':'))
 print({d['key']: (d['universe'], d['methylated']) for d in datasets}, len(proteins), out.stat().st_size)
