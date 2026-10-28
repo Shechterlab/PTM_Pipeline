@@ -2141,16 +2141,18 @@
     syncToolbar();
   }
 
-  // The tab bar names what its views show: all data, or the selection (in orange), the Overview with a "selection"
-  // badge as the lists carry their counts. The protein tab is there on a protein page, and when the selection is one
-  // protein (then in orange too).
+  // The tab bar names what its views show: all data, or the selection (in orange), the Overview and Interactions with a
+  // "selection" badge as the lists carry their counts. The protein tab is there on a protein page, and when the
+  // selection is one protein (then in orange too).
   function updateSelectionTabs(cons) {
     const tabs = $('#tabs');
     if (!tabs) return;
     const on = (cons || constraints()).length > 0;
     tabs.classList.toggle('filtered', on);
-    const badge = $('#scope-overview');
-    if (badge) { badge.hidden = !on; $('#tab-overview').title = on ? 'Every analysis here is retested on your selection' : ''; }
+    for (const [v, tip] of [['overview', 'Every analysis here is retested on your selection'], ['interactions', 'Every section here is shown for your selection']]) {
+      const badge = $('#scope-' + v);
+      if (badge) { badge.hidden = !on; $('#tab-' + v).title = on ? tip : ''; }
+    }
     const ptab = $('#tab-protein');
     const one = on && R && R.prots.length === 1 ? R.prots[0].i : null;
     const i = UI.view === 'protein' && UI.detail != null ? UI.detail : one;
@@ -4634,15 +4636,15 @@
     A_ROWS.length = 0;
     const hubList = '<div class="hub-list">' +
       untested(hubSec(selOn ? 'Kinds of protein in your selection' : 'Kinds of protein',
+        // ordered by how much they usually tell about a selection: classes, condensates, where in the cell, locations, disease, pathways
         chartRow('ov-pan', pan || func, 'Which protein classes are over-represented among methylated proteins?') +
-        chartRow('ov-dis', dis, 'Which disease gene sets are over-represented?') +
         chartRow('ov-cond', cond, 'Which biomolecular condensates are over-represented (CD-CODE' + (thr ? ', confidence ≥ ' + thr : '') + ')?') +
+        row('ov-cell', 'Where in the cell', '<div class="card wide" id="ch-cell"><div class="card-head"><div><h3>Where in the cell <span class="preview-tag">preview</span></h3><p class="sub">Where ' + (scoped ? 'the proteins of your selection' : 'methylated proteins') + ' sit in the cell, and where the RNAs they bind gather, each compared with other proteins of similar abundance.</p></div></div>' +
+          '<div id="ch-cell-body"><p class="note">Loading the maps of the cell…</p></div></div>', 'Where do methylated proteins, and the RNAs they bind, sit in the cell?', 'retest', 'loading the maps of the cell…', 'loading the maps of the cell…', null, null) +
         chartRow('ov-loc', loc, 'Which subcellular locations are over-represented (Human Protein Atlas)?') +
+        chartRow('ov-dis', dis, 'Which disease gene sets are over-represented?') +
         row('ov-path', 'Reactome pathways', '<div class="card wide" id="ch-path"><div class="card-head"><div><h3>Reactome pathways</h3><p class="sub">Which Reactome pathways hold more ' + (scoped ? 'proteins of your selection' : 'methylated proteins') + ' than expected, against all reviewed proteins with a pathway.</p></div></div>' +
           '<div id="ch-path-body"><p class="note">Loading Reactome…</p></div></div>', 'Which Reactome pathways are over-represented?', 'retest', 'loading Reactome…', 'loading Reactome…', null, null))) +
-      untested(hubSec('Where in the cell',
-        row('ov-cell', 'Where in the cell', '<div class="card wide" id="ch-cell"><div class="card-head"><div><h3>Where in the cell <span class="preview-tag">preview</span></h3><p class="sub">Where ' + (scoped ? 'the proteins of your selection' : 'methylated proteins') + ' sit in the cell, and where the RNAs they bind gather, each compared with other proteins of similar abundance.</p></div></div>' +
-          '<div id="ch-cell-body"><p class="note">Loading the maps of the cell…</p></div></div>', 'Where do methylated proteins, and the RNAs they bind, sit in the cell?', 'retest', 'loading the maps of the cell…', 'loading the maps of the cell…', null, null))) +
       untested(hubSec('Where in the protein',
         chartRow('ov-motif', motif, 'Which sequence motifs surround methylarginines, against the other arginines of the same proteins?') +
         row('ov-struct', sctx ? 'Structural context' : 'Disorder and domains', structHtml, 'Are methylarginines in disordered regions or domains, against the other arginines of the same proteins?', 'retest',
