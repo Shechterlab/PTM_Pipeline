@@ -2,7 +2,7 @@
  "title": "Human methylarginine sites",
  "version": "v1.4.2",
  "previous_version": "v1.4.1",
- "code_commit": "35aa223d7cf7f83178d812bf5bb9bfc65fcd5f62",
+ "code_commit": "590e74294d4672e9906bf568708eb9ba87ed7634",
  "repository": "https://github.com/Shechterlab/PTM_Pipeline",
  "release_date": "2026-10-29",
  "paper": "DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011",
@@ -169,8 +169,8 @@
   },
   {
    "file": "statistics_v1.4.2.tsv",
-   "rows": 4634,
-   "md5": "cba17e2997bb1f9c642d159685da4bb8"
+   "rows": 4652,
+   "md5": "a70adf5e0538245f997ec97c04b9d028"
   },
   {
    "file": "supporting/disease_terms_v1.4.2.tsv",
@@ -234,8 +234,8 @@
   },
   {
    "file": "statistics_with_lower_confidence_v1.4.2.tsv",
-   "rows": 4644,
-   "md5": "8b170c18861bbcb3427a4a935ea62ee8"
+   "rows": 4662,
+   "md5": "36c48ea6c7e164ca7d2bc0036da9e45a"
   },
   {
    "file": "supporting/site_interactions_v1.4.2.tsv",
@@ -305,7 +305,7 @@
   {
    "file": "data_dictionary.tsv",
    "rows": 625,
-   "md5": "d58a2e76b6213056b096b541b7fc3ab5"
+   "md5": "6a08c82834f4e6be4a1f646c4737a5d3"
   },
   {
    "file": "human_methylarginine_sites_v1.4.2.xlsx",

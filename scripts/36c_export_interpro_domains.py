@@ -220,7 +220,7 @@ def main() -> None:
         'generated': dt.date.today().isoformat(),
         'script': 'scripts/36c_export_interpro_domains.py',
         'reference': rel(a.entries), 'disorder': rel(a.disorder), 'condensates': rel(a.cdcode), 'interpro': meta['rule'],
-        'rule': 'Reviewed human proteins of UniProt 2026_03 with no methylarginine site in the default view; lower-confidence sites counted from ' + rel(a.sites_all_json),
+        'rule': 'Reviewed human proteins of UniProt 2026_03 with no methylarginine site in the default view; lower-confidence sites counted from docs/data/' + a.sites_all_json.name,   # where the website publishes it, wherever this build wrote it
         'proteins': len(index_rows), 'with_lower_confidence_sites': sum(1 for x in index_rows if x[2]),
         'fields': ['accession', 'gene', 'lower_confidence_sites'],
         'shard_fields': ['protein_name', 'length', 'disorder_intervals', 'interpro_domains', 'interpro_families', 'cdcode_condensates', 'in_cell_rna_dna_evidence'],
