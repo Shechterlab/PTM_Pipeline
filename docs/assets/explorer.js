@@ -14986,7 +14986,7 @@
     const or = den > 0 ? num / den : Infinity;
     // continuity-corrected, the bracket floored at 0: a count within 0.5 of its expectation is no evidence (p = 1)
     const stat = Math.max(0, Math.abs(sa - sea) - 0.5) ** 2 / sva;
-    const pv = erfc(Math.sqrt(Math.max(stat, 0) / 2));
+    const pv = Math.min(1, erfc(Math.sqrt(Math.max(stat, 0) / 2)));   // the approximation can pass 1 by 3e-8
     let lo = null, hi = null;
     if (R > 0 && Sx > 0 && Number.isFinite(or) && or > 0) {
       const se = Math.sqrt(PR / (2 * R * R) + PSQR / (2 * R * Sx) + QS / (2 * Sx * Sx));

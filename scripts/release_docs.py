@@ -1129,7 +1129,9 @@ def cmh_section(ctx: dict, files: dict, previous: str) -> list:
     new = files['statistics'][1].astype(str)
     m = old[old['method'] == 'mantel_haenszel'].merge(new[new['method'] == 'mantel_haenszel'], on=key, suffixes=('_old', '_new'))
     num = lambda x: pd.to_numeric(x, errors='coerce')  # noqa: E731
-    changed = m[num(m['p_old']).round(12) != num(m['p_new']).round(12)]
+    # the previous release's p as written (6 significant digits) against this one's at the same precision
+    po, pn = num(m['p_old']), num(m['p_new']).map(lambda x: float(f'{x:.6g}') if pd.notna(x) else x)
+    changed = m[((po - pn).abs() > 1e-9 * pd.concat([po.abs(), pn.abs()], axis=1).max(axis=1)) | (po.isna() != pn.isna())]
     lost = m[(num(m['q_old']) <= 0.05) & ~(num(m['q_new']) <= 0.05)]
     gained = m[~(num(m['q_old']) <= 0.05) & (num(m['q_new']) <= 0.05)]
     label = lambda t: '; '.join(f'{r.analysis} {r.category}' + (f' ({r.stratum})' if r.stratum != 'all' else '') for r in t.head(10).itertuples())  # noqa: E731
@@ -1141,8 +1143,9 @@ def cmh_section(ctx: dict, files: dict, previous: str) -> list:
             f'almost none expected, say). {ctx["version"]} floors the bracket at zero (`scripts/common.py`, `cmh_statistic`), and the '
             'website\'s tests of a selection do the same. Odds ratios and their confidence intervals are unchanged.', '',
             f'Of the {len(m):,} Mantel-Haenszel rows of the statistics table that {previous} and {ctx["version"]} share, {len(changed):,} '
-            f'have a different p. {len(lost):,} were significant at q <= 0.05 and are not now' + (f' ({label(lost)}{" …" if len(lost) > 10 else ""})' if len(lost) else '')
-            + f', and {len(gained):,} the reverse' + (f' ({label(gained)}{" …" if len(gained) > 10 else ""})' if len(gained) else '') + '.', '']
+            f'have a different p, ' + ('and none crosses q <= 0.05 either way.' if not len(lost) and not len(gained) else
+            f'{len(lost):,} were significant at q <= 0.05 and are not now' + (f' ({label(lost)}{" …" if len(lost) > 10 else ""})' if len(lost) else '')
+            + f', and {len(gained):,} the reverse' + (f' ({label(gained)}{" …" if len(gained) > 10 else ""})' if len(gained) else '') + '.'), '']
 
 
 def analysis_section(files: dict, previous: str) -> list:
