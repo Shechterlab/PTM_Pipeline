@@ -52,6 +52,42 @@ GENE_MAPS = {
 }
 FILES = sorted({m[2] for m in PROTEIN_MAPS.values()} | {m[2] for m in GENE_MAPS.values()}) + ['cell_maps_summary.json']
 
+# The three regions of the cell, the first level of the website's card: the nucleus (its interior: nucleoplasm, chromatin,
+# nucleolus, nuclear bodies and speckles), the cytoplasm outside the membrane-bound organelles (cytosol, cytoskeleton,
+# centrosome, RNA granules, translation) and the organelles and membranes. The nuclear envelope counts with the
+# membranes: the Human Cell Map places its proteins in one network with the ER. Each region is tested as a compartment,
+# against the proteins the map places, in the maps that place proteins all over the cell; a compartment in no region
+# (NO_REGION) counts only among the others.
+REGIONS = ['Nucleus', 'Cytoplasm', 'Organelles and membranes']
+REGION_MAPS = {   # analysis -> the website's key, the map's name, and the compartment analysis it groups
+    'cell_region_hcm': ('hcm', 'Human Cell Map compartments', 'cell_hcm_compartment'),
+    'cell_region_organelle_ip': ('oip', 'Organelle IP', 'cell_organelle_ip'),
+    'cell_region_hpa': ('hpa', 'Human Protein Atlas locations', 'hpa_location'),
+}
+_N, _C, _M = REGIONS
+REGION_OF = {
+    'hcm': {**dict.fromkeys(['chromatin', 'nucleoplasm', 'nucleolus', 'nuclear body'], _N),
+            **dict.fromkeys(['cytoplasmic ribonucleoprotein granule', 'actin cytoskeleton, cytosol', 'microtubule cytoskeleton', 'centrosome'], _C),
+            **dict.fromkeys(['nuclear outer membrane-ER membrane network', 'ER membrane', 'ER lumen', 'Golgi apparatus', 'early endosome, recycling endosome',
+                             'endosome, lysosome', 'mitochondrial matrix', 'mitochondrial inner membrane, mitochondrial intermembrane space',
+                             'mitochondrial outer membrane, peroxisome', 'plasma membrane', 'cell junction'], _M)},
+    'oip': {**dict.fromkeys(['nucleus', 'nucleolus'], _N),
+            **dict.fromkeys(['cytosol', 'translation', 'stress_granule', 'p-body', 'actin_cytoskeleton', 'centrosome', 'proteasome', '14-3-3_scaffold'], _C),
+            **dict.fromkeys(['ER', 'ERGIC', 'Golgi', 'trans-Golgi', 'early_endosome', 'recycling_endosome', 'lysosome', 'mitochondrion', 'peroxisome',
+                             'plasma_membrane'], _M)},
+    'hpa': {**dict.fromkeys(['Nucleoplasm', 'Nucleoli', 'Nucleoli fibrillar center', 'Nucleoli rim', 'Nuclear bodies', 'Nuclear speckles',
+                             'Mitotic chromosome', 'Kinetochore'], _N),
+            **dict.fromkeys(['Cytosol', 'Cytoplasmic bodies', 'Aggresome', 'Rods & Rings', 'Actin filaments', 'Microtubules', 'Microtubule ends',
+                             'Intermediate filaments', 'Centrosome', 'Centriolar satellite', 'Mitotic spindle', 'Cytokinetic bridge', 'Midbody',
+                             'Midbody ring'], _C),
+            **dict.fromkeys(['Nuclear membrane', 'Endoplasmic reticulum', 'Golgi apparatus', 'Vesicles', 'Endosomes', 'Lysosomes', 'Mitochondria',
+                             'Peroxisomes', 'Lipid droplets', 'Plasma membrane', 'Cell Junctions', 'Focal adhesion sites', 'Cleavage furrow'], _M)},
+}
+NO_REGION = {'hcm': {'miscellaneous'}, 'oip': set(),
+             # cilia, and the structures of sperm
+             'hpa': {'Primary cilium', 'Primary cilium tip', 'Primary cilium transition zone', 'Basal body', 'Principal piece', 'Mid piece', 'End piece',
+                     'Flagellar centriole', 'Acrosome', 'Connecting piece', 'Equatorial segment', 'Calyx', 'Perinuclear theca', 'Annulus'}}
+
 
 def read(inputs, name: str) -> pd.DataFrame:
     return pd.read_csv(Path(inputs) / 'layers' / name, sep='\t', dtype=str, keep_default_na=False)
@@ -86,6 +122,32 @@ def protein_maps(inputs: str) -> dict[str, tuple[set, dict[str, set]]]:
     c = read(inputs, 'cell_map_chromatin_kustatscher2014.tsv')
     icp = c['interphase_chromatin_probability'].astype(float)
     out['cell_chromatin'] = (set(c['canonical_UniProtAC']), {name: set(c.loc[(icp >= lo) & (icp < hi), 'canonical_UniProtAC']) for name, lo, hi in CHEP_BINS})
+    return out
+
+
+def hpa_locations(inputs: str) -> tuple[set, dict[str, set]]:
+    """The Human Protein Atlas as the release tests it (analysis hpa_location): the proteins with a location scored
+    Approved or better, and each location's."""
+    hpa = pd.read_csv(Path(inputs) / 'layers' / 'hpa_subcellular_locations.tsv', sep='\t', dtype=str, keep_default_na=False)
+    confident = hpa[hpa['reliability'] != 'Uncertain']
+    return set(confident['canonical_UniProtAC']), groups(confident, 'location')
+
+
+@functools.lru_cache(maxsize=4)
+def region_maps(inputs: str) -> dict[str, tuple[set, dict[str, set]]]:
+    """analysis -> (the proteins the map places, {region: the members of its compartments}). Stops on a compartment
+    REGION_OF and NO_REGION do not name, so a new one is placed by hand."""
+    pm, out = protein_maps(inputs), {}
+    for analysis, (key, _, compartments) in REGION_MAPS.items():
+        universe, sets = hpa_locations(inputs) if key == 'hpa' else pm[compartments]
+        unknown = sorted(set(sets) - set(REGION_OF[key]) - NO_REGION[key])
+        if unknown:
+            raise SystemExit(f'cell_maps: no region for {key} {unknown} (REGION_OF, NO_REGION)')
+        regions = {r: set() for r in REGIONS}
+        for c, members in sets.items():
+            if c in REGION_OF[key]:
+                regions[REGION_OF[key][c]] |= members
+        out[analysis] = (universe, regions)
     return out
 
 
@@ -200,6 +262,11 @@ def stats(sites: pd.DataFrame, inputs, sequences: dict, workdir: Path) -> list[d
         universe, sets = pm[analysis]
         jobs.append(Job(analysis, target & universe, universe, sets=term2gene(sets), whole_universe=True, min_size=MIN_SET))
         background[analysis] = bg
+    for analysis, (_, label, compartments) in REGION_MAPS.items():
+        universe, sets = region_maps(str(inputs))[analysis]
+        jobs.append(Job(analysis, target & universe, universe, sets=term2gene(sets), whole_universe=True, min_size=MIN_SET))
+        background[analysis] = (PROTEIN_MAPS[compartments][3] if compartments in PROTEIN_MAPS else 'other proteins with an HPA 25.1 location (Approved or better)') + \
+            f'. A region is the {label} it holds (scripts/cell_maps.py, REGION_OF)'
     for analysis, (_, label, _, _) in GENE_MAPS.items():
         b = br[analysis]
         jobs.append(Job(analysis, target & b['tested'], b['tested'], sets=term2gene(b['calls']), whole_universe=True, min_size=MIN_SET))
@@ -308,6 +375,14 @@ def changes(files: dict) -> list[str]:
         out.append('Among proteins of similar abundance (odds ratio within PaxDb deciles, q <= 0.05), the methylated proteins sit more often in '
                    + ('; '.join(name(r) for _, r in more.iterrows()) or 'no compartment') + ', and less often in '
                    + ('; '.join(name(r) for _, r in fewer.iterrows()) or 'none') + '.')
+    # the regions of the cell, map by map
+    rg = st[st['analysis'].isin(list(REGION_MAPS)) & (st['method'] == 'mantel_haenszel')].assign(o=lambda t: num(t['odds_ratio']), qq=lambda t: num(t['q']))
+    if len(rg):
+        say = lambda r: f"{r['o']:.2g} ({REGION_MAPS[r['analysis']][1]}{'' if r['qq'] <= Q else ', no clear difference'})"  # noqa: E731
+        out.append('The regions of the cell (analyses cell_region_*: each map\'s compartments grouped into the nucleus, the cytoplasm outside '
+                   'the organelles, and the organelles and membranes with the nuclear envelope), odds ratio within PaxDb deciles: '
+                   + '; '.join(f'{region}, ' + ', '.join(say(r) for _, r in rg[rg['category'] == region].iterrows()) for region in REGIONS
+                               if (rg['category'] == region).any()) + '.')
     gm = st[st['analysis'].isin(list(GENE_MAPS))]
     en, adj, mw = (gm[gm['method'] == m] for m in ('enricher', 'mantel_haenszel', 'mann_whitney'))
     n_all = int((num(en['a']) + num(en['b']) + num(en['c']) + num(en['d'])).max()) if len(en) else 0
@@ -481,8 +556,16 @@ def website(release: Path, version: str, inputs: Path, site_out: Path) -> None:
             for k, cat in row[1].items():
                 if cat not in have[k]:
                     raise SystemExit(f'cell_maps: the grid names {k} {cat!r}, which the release does not test')
+    # the regions of the cell, the card's first level: their tests in each map, and the region of each compartment
+    regions = {'rows': [[r, {REGION_MAPS[a][0]: r for a in REGION_MAPS}, ''] for r in REGIONS], 'tests': {},
+               'of': {k: dict(sorted(v.items())) for k, v in REGION_OF.items()}}
+    for analysis, (key, _, _) in REGION_MAPS.items():
+        universe, sets = region_maps(str(inputs))[analysis]
+        if universe != universes[key]:
+            raise SystemExit(f'cell_maps: {analysis} places other proteins than the {key} map')
+        regions['tests'][key] = test_rows(st, analysis, {c: len(sets[c]) for c in REGIONS}, {c: len(sets[c] & meth) for c in REGIONS})
     write_json(site_out / 'subcellular.json', {
-        'version': version, 'datasets': datasets, 'tests': tests,
+        'version': version, 'datasets': datasets, 'tests': tests, 'regions': regions,
         'test_fields': ['category', 'members', 'methylated', 'log2 fold enrichment', 'q', 'log2 OR within abundance deciles', 'CI low', 'CI high', 'q'],
         'groups': GRID, 'categories': cats, 'proteins': proteins, 'decile_maps': maps,
         'protein_fields': ['hcm NMF index', 'hcm SAFE index', 'oip index', 'chromatin probability x1000', 'hpa location indices (Approved or better)',

@@ -2296,4 +2296,8 @@ svg .cg-row:hover .cg-hit, svg .cg-row.on .cg-hit { fill: var(--accent); fill-op
 .cg-line.d0 { stroke: var(--t-down-0); } .cg-line.d1 { stroke: var(--t-down-1); } .cg-line.d2 { stroke: var(--t-down-2); } .cg-line.d3 { stroke: var(--t-down-3); }
 .cg-line.ns, .cg-line.na { stroke: var(--line-strong); }
 .cell-grid-wrap { max-width: 860px; margin-top: 1rem; }
+/* the regions of the cell, the card's first level: a small grid above the drawings */
+.cell-regions-wrap { max-width: 620px; margin-top: 0.75rem; }
+.cell-regions-wrap svg { width: 100%; height: auto; display: block; }
+.cell-lead { font-size: 1rem; margin: 0 0 0.6rem; max-width: 62rem; }
 .cell-grid-wrap svg { width: 100%; height: auto; display: block; }

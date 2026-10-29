@@ -11008,6 +11008,22 @@
     cellLayerMemo.set(SC, L);
     return L;
   }
+  // The regions of the cell, the card's first level (data/subcellular.json regions, analyses cell_region_*): the protein
+  // layer with each map's compartments grouped into the nucleus, the cytoplasm outside the organelles, and the
+  // organelles and membranes (the nuclear envelope with them), in the maps that place proteins all over the cell.
+  const cellRegionMemo = new WeakMap();
+  function cellRegionLayer(SC) {
+    if (!SC.regions) return null;
+    if (cellRegionMemo.has(SC)) return cellRegionMemo.get(SC);
+    const L = cellProteinLayer(SC), of = SC.regions.of;
+    const RL = Object.assign({}, L, { key: 'region', tests: SC.regions.tests, groups: [['Regions of the cell', SC.regions.rows]],
+      order: L.order.filter((k) => SC.regions.tests[k]), label: (c) => c,
+      catsOf: (acc, key) => [...new Set(L.catsOf(acc, key).map((c) => of[key][c]).filter(Boolean))],
+      // the compartments a region holds in one map, by their names there
+      holds: (key, region) => Object.keys(of[key]).filter((c) => of[key][c] === region).map(L.label) });
+    cellRegionMemo.set(SC, RL);
+    return RL;
+  }
   // Where the RNAs that proteins with eCLIP data bind gather (data/subcellular_na.json, scripts/cell_maps.py): per map, the
   // compartments where a protein's bound RNAs (or their genes) gather more or less than other RNAs of similar expression
   // and gene length, as [compartment, log2 odds ratio, q] with q <= 0.05; null where the map places fewer than 20 of them.
@@ -11146,7 +11162,7 @@
       g += '<text class="cg-g" x="0" y="' + (y + 14) + '">' + esc(group.toUpperCase()) + '</text>';
       y += RH;
       rows.forEach(([label, map], ri) => {
-        g += '<g class="cg-row" data-row="' + gi + '.' + ri + '" role="button" tabindex="0" aria-label="' + esc(label + ': open its numbers and members') + '"><rect class="cg-hit" x="0" y="' + y + '" width="' + W + '" height="' + RH + '"/><text class="cg-r" x="10" y="' + (y + 16) + '">' + esc(label) + '</text>';
+        g += '<g class="cg-row" data-row="' + (L.key === 'region' ? 'r' : '') + gi + '.' + ri + '" role="button" tabindex="0" aria-label="' + esc(label + ': open its numbers and members') + '"><rect class="cg-hit" x="0" y="' + y + '" width="' + W + '" height="' + RH + '"/><text class="cg-r" x="10" y="' + (y + 16) + '">' + esc(label) + '</text>';
         cols.forEach((k, i) => {
           const c = cellGridCell(L, k, map[k], scoped), x = LW + i * CW + 4;
           if (!c) { g += '<rect class="cg-c na" x="' + x + '" y="' + (y + 2) + '" width="' + (CW - 8) + '" height="' + (RH - 4) + '" rx="3"/>'; return; }
@@ -11158,7 +11174,7 @@
       });
       y += 6;
     });
-    return '<svg class="cell-grid" viewBox="0 0 ' + W + ' ' + y + '" role="img" aria-label="Compartments against maps: how much more likely ' + esc(L.what(scoped)) + ' are to ' + esc(L.verb('in each')) + '">' + g + '</svg>';
+    return '<svg class="cell-grid" viewBox="0 0 ' + W + ' ' + y + '" role="img" aria-label="' + (L.key === 'region' ? 'Regions' : 'Compartments') + ' against maps: how much more likely ' + esc(L.what(scoped)) + ' are to ' + esc(L.verb('in each')) + '">' + g + '</svg>';
   }
   function cellGridTsv(L, scoped) {
     const v = (u) => (u == null ? '' : u);
@@ -11419,8 +11435,24 @@
     return 'Six maps from five studies place proteins in the cell, made by imaging, proximity labelling, organelle pull-down and chromatin fractionation in different cells. ' +
       'A part is red where ' + esc(L.what(scoped)) + ' are more likely to ' + esc(L.verb('there')) + ' than ' + esc(L.alike) + ', blue where they are less likely, grey where there is no clear difference; each map compares only the proteins it places.';
   }
+  // The card's first words, from the top down: the regions where the set sits more or less often than proteins of
+  // similar abundance, then the parts where most of all. Short, the tile's: the regions alone, whose numbers it draws.
+  function cellLead(regs, up, L, scoped, short) {
+    const who = cellCap(L.what(scoped)), num = (x) => (short ? '' : ' (' + esc(cellOr(x.a)) + ')');
+    const and = (xs) => (xs.length > 1 ? xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1] : xs[0] || '');
+    const one = (x) => '<b>' + esc(cellNameInText(x.label)) + '</b>' + num(x);
+    const more = regs.filter((x) => x.tone[0] === 'u').sort((a, b) => b.a.l2 - a.a.l2), less = regs.filter((x) => x.tone[0] === 'd').sort((a, b) => a.a.l2 - b.a.l2);
+    let t = more.length || less.length
+      ? who + ' sit ' + (more.length ? 'more often in the ' + and(more.map(one)) : '') + (more.length && less.length ? ', and ' : '') + (less.length ? 'less often in the ' + and(less.map(one)) : '')
+      : regs.length ? who + ' sit in the nucleus, the cytoplasm and the organelles about as often as ' + esc(L.alike) : '';
+    if (short) return t ? t + '.' : (scoped ? 'Your selection is not enriched in any part of the cell.' : 'Methylated proteins are not enriched in any part of the cell.');
+    if (t && (more.length || less.length)) t += ' than ' + esc(L.alike) + (regs.some((x) => x.cells.length > 1) ? ' (the median of the maps)' : '');
+    const most = up.slice(0, 3).map((x) => '<b>' + esc(cellNameInText(CELL_NAME[x.part] || x.label)) + '</b>' + num(x));
+    if (most.length) t += t ? '. Within them, most of all in ' + and(most) : who + ' are most enriched in ' + and(most);
+    return t ? t + '.' : (scoped ? 'Your selection is not enriched in any part of the cell.' : 'Methylated proteins are not enriched in any part of the cell.');
+  }
   // what a selection stands for, in a sentence
-  const cellSelIntro = (L) => ' Your selection: ' + fmt(cellSelTests(L, L.order[0]).n) + ' of its proteins are placed by ' + esc(cellDs(L, L.order[0]).name) + '; each map counts its own.';
+  const cellSelIntro =(L) => ' Your selection: ' + fmt(cellSelTests(L, L.order[0]).n) + ' of its proteins are placed by ' + esc(cellDs(L, L.order[0]).name) + '; each map counts its own.';
   function renderCellOverview(el, scoped) {
     const box = $('#ch-cell-body', el), tv = $('.cell-ov-vis', el), th = $('.cell-ov-head', el);
     if (!box && !tv) return;
@@ -11429,11 +11461,14 @@
       if (UI.view !== view || R !== rq) return;
       const PL = SC && cellProteinLayer(SC), L = PL;
       if (!PL) { if (box) box.innerHTML = '<p class="muted">The maps did not load.</p>'; if (th) th.textContent = 'did not load'; return; }
-      // the hub tile and the fold's summary: where the proteins sit
+      // the hub tile and the fold's summary, from the top down: the three regions, then the parts where most of all
+      const RL = cellRegionLayer(SC), regs = RL ? RL.groups[0][1].map((row) => cellRowSummary(RL, row, scoped)) : [];
       const parts = Object.values(cellParts(PL, scoped)), up = parts.filter((p) => /^u/.test(p.tone)).sort((a, b) => b.a.l2 - a.a.l2);
-      if (tv) tv.innerHTML = aMeters(up.slice(0, 4).map((p) => ({ label: CELL_NAME[p.part] || p.label, v: Math.min(1, p.a.l2 / 3), text: cellOr(p.a), cls: 'count', tip: '<b>' + esc(p.label) + '</b><br>' + esc(PL.what(scoped)) + ' are ' + esc(cellTimes(p.a)) + ' to sit here as ' + esc(PL.alike) + ' (median of ' + p.maps + ')' })), { tight: true, wide: true });
-      if (th) th.innerHTML = up.length ? (scoped ? 'Your selection is most enriched in ' : 'Methylated proteins are most enriched in ') + '<b>' + esc(up.slice(0, 3).map((p) => cellNameInText(CELL_NAME[p.part] || p.label)).join(', ')) + '</b>'
-        : scoped ? 'Your selection is not enriched in any part of the cell' : 'Methylated proteins are not enriched in any part of the cell';
+      const dot = (x, name) => ({ label: name, main: { or: x.a.l2 == null ? null : Math.pow(2, x.a.l2), sig: /^[ud]/.test(x.tone) },
+        tipMore: esc(cellCap(PL.what(scoped))) + ' against ' + esc(PL.alike) + (x.cells.length > 1 ? ', the median of ' + esc(x.maps) : '') + ':<br>' +
+          x.cells.map(([k, c]) => esc(cellDs(PL, k).name) + ' ' + (c.circular ? 'not compared' : esc(cellOr(c.a)) + (c.a.q != null ? ', q ' + fmtP(c.a.q) : ''))).join('<br>') });
+      if (tv) tv.innerHTML = aForest([[null, regs.map((x) => dot(x, x.label))], [up.length ? 'Most of all' : null, up.slice(0, 3).map((x) => dot(x, CELL_NAME[x.part] || x.label))]], { compact: true });
+      if (th) th.innerHTML = cellLead(regs, up, PL, scoped, true);
       if (!box) return;
       UI.cellMap = UI.cellMap || {};
       const key = UI.cellMap[L.key] && cellDs(L, UI.cellMap[L.key]) ? UI.cellMap[L.key] : L.order[0], spec = cellSpec(L, key, scoped);
@@ -11442,10 +11477,14 @@
       const grid = cellFigSpec('ch-cell-grid', 'Where in the cell: compartments against maps', 'How many times as likely ' + who + ' are to ' + L.verb('in each compartment') + ' as ' + L.alike + ' in the same map (odds ratio).', () => cellGridSvg(L, scoped), () => cellGridTsv(L, scoped));
       const whole = cellFigSpec('ch-cell-whole', 'Where in the cell', cap('The cell'), () => cellWholeSvg(L, scoped), () => cellGridTsv(L, scoped));
       const nuc = cellFigSpec('ch-cell-nucleus', 'Where in the nucleus', cap('The nucleus'), () => cellNucleusSvg(L, scoped), () => cellGridTsv(L, scoped));
-      box.innerHTML = '<p class="small">' + cellIntro(L, scoped) + (scoped ? cellSelIntro(L) : '') + ' <b>Click a part, a label or a row of the grid</b> for its numbers and its proteins.</p>' +
+      const regFig = RL && cellFigSpec('ch-cell-regions', 'Where in the cell: regions against maps', 'How many times as likely ' + who + ' are to ' + L.verb('in each region') + ' as ' + L.alike +
+        ' in the same map (odds ratio): the nucleus, the cytoplasm outside the organelles, and the organelles and membranes with the nuclear envelope.', () => cellGridSvg(RL, scoped), () => cellGridTsv(RL, scoped));
+      box.innerHTML = '<p class="cell-lead">' + cellLead(regs, up, L, scoped, false) + '</p>' +
+        '<p class="small">' + cellIntro(L, scoped) + (scoped ? cellSelIntro(L) : '') + ' <b>Click a region, a part, a label or a row of a grid</b> for its numbers and its proteins.</p>' +
         (NA ? '<p class="small cell-rna"><b>The RNAs they bind.</b> ' + cellClipSentence(NA) + '</p>' : '') +
         '<div class="chart-key">' + cellKey(L) + '</div>' +
-        '<div class="cell-fig">' + figBlock(whole, 'The cell') + '</div><div class="cell-fig">' + figBlock(nuc, 'The nucleus') + '</div>' +
+        (regFig ? '<div class="cell-regions-wrap">' + figBlock(regFig, 'Regions of the cell') + '</div>' : '') +
+        '<div class="cell-fig">' + figBlock(whole, 'Within them: the cell') + '</div><div class="cell-fig">' + figBlock(nuc, 'Within them: the nucleus') + '</div>' +
         '<div class="cell-detail" hidden></div>' +
         '<div class="cell-grid-wrap">' + figBlock(grid, 'Compartments against maps') + '</div>' +
         '<div class="cell-one"><div class="fig-head"><span class="flabel">One map at a time</span><span class="seg cell-maps" role="group" aria-label="Map">' +
@@ -11460,18 +11499,18 @@
       $$('[data-cellmap]', box).forEach((b) => b.addEventListener('click', () => { UI.cellMap[L.key] = b.dataset.cellmap; renderCellOverview(el, scoped); }));
       $$('svg [data-tip]', box).forEach((e) => { e.addEventListener('mouseenter', (ev) => showTip(ev, e.getAttribute('data-tip'))); e.addEventListener('mousemove', moveTip); e.addEventListener('mouseleave', hideTip); });
       // a part of a drawing, its label or a row of the grid opens its numbers and members under that figure
-      const parts2 = cellParts(L, scoped), rowOf = (id) => { const [gi, ri] = id.split('.').map(Number); return L.groups[gi] && L.groups[gi][1][ri]; };
+      const parts2 = cellParts(L, scoped), layerOf = (id) => (id[0] === 'r' ? RL : L), rowOf = (id) => { const [gi, ri] = id.replace(/^r/, '').split('.').map(Number), X = layerOf(id); return X && X.groups[gi] && X.groups[gi][1][ri]; };
       const open = (id, at) => {
         const row = rowOf(id), panel = $('.cell-detail', box);
         if (!row || !panel) return;
         if (UI.cellRow !== L.key + ':' + id) UI.cellAll = false;
         UI.cellRow = L.key + ':' + id;
-        const blk = at && at.closest('.cell-fig, .cell-grid-wrap');
+        const blk = at && at.closest('.cell-fig, .cell-grid-wrap, .cell-regions-wrap'), X = layerOf(id);
         if (blk) blk.after(panel);
-        panel.innerHTML = cellDetailHtml(L, row, scoped);
+        panel.innerHTML = cellDetailHtml(X, row, scoped);
         panel.hidden = false;
         $$('[data-part], .cg-row', box).forEach((g) => g.classList.toggle('on', g.dataset.row === id || (row[2] && g.dataset.part === row[2])));
-        bindCellDetail(panel, L, row, scoped);
+        bindCellDetail(panel, X, row, scoped);
         if (at) panel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       };
       const pick = (ev) => {
@@ -11514,11 +11553,11 @@
       const ds = cellDs(L, k), r = L.tests[k].find((x) => x[0] === map[k]), c = cellGridCell(L, k, map[k], scoped), x = scoped && cellSelTests(L, k).res.get(map[k]);
       const counts = scoped ? (x ? two(x.k, x.n, 'of your selection', x.M - x.k, x.N - x.n, 'others') : '–') : two(r[2], ds.methylated, 'methylated', r[1] - r[2], ds.universe - ds.methylated, 'without a methylarginine');
       return '<tr><th scope="row">' + (ds.url ? '<a href="' + esc(ds.url) + '" target="_blank" rel="noopener">' + esc(ds.name) + '</a>' : esc(ds.name)) + '<br><span class="muted small">' + esc(ds.method) + ', ' + esc(ds.cells) + '</span></th>' +
-        '<td>' + esc(L.label(map[k])) + '</td><td>' + counts + '</td><td>' + (!c ? '–' : c.circular ? 'not compared' : cmp(c.a)) + '</td></tr>';
+        '<td>' + (L.holds ? '<span class="small">' + esc(L.holds(k, map[k]).join(', ')) + '</span>' : esc(L.label(map[k]))) + '</td><td>' + counts + '</td><td>' + (!c ? '–' : c.circular ? 'not compared' : cmp(c.a)) + '</td></tr>';
     }).join('');
     let html = '<div class="cell-detail-head"><h4>' + esc(name) + '</h4><button class="btn quiet small" type="button" data-cellclose aria-label="Close">Close</button></div>' +
       '<p>' + verdict + '</p>' +
-      '<div class="tbl-wrap"><table class="tbl compact cell-detail-tbl"><thead><tr><th>Map</th><th>Its compartment</th><th>' + esc(cellCap(L.here)) + '</th><th>Against ' + esc(L.alike) + '</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+      '<div class="tbl-wrap"><table class="tbl compact cell-detail-tbl"><thead><tr><th>Map</th><th>' + (L.holds ? 'Its compartments' : 'Its compartment') + '</th><th>' + esc(cellCap(L.here)) + '</th><th>Against ' + esc(L.alike) + '</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
     const multi = keys.length > 1;
     const mem = cellMembers(L, row, scoped), shown = UI.cellAll ? mem : mem.slice(0, 150);
     html += '<div class="cell-members"><div class="fig-head"><span class="flabel">' + (scoped ? 'Proteins of your selection placed here' : 'Methylated proteins placed here') + ' (' + fmt(mem.length) + ')</span>' +

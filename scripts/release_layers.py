@@ -822,6 +822,12 @@ CELL = Layer(
                                       'against the other proteins those experiments detected',
         'cell_chromatin': 'the same for four bins of the interphase chromatin probability (Kustatscher et al. 2014: >= 0.8 chromatin, 0.5-0.8, '
                           '0.2-0.5, < 0.2 not chromatin), against the other proteins scored',
+        'cell_region_hcm': 'methylated proteins in a region of the cell (nucleus, cytoplasm outside the organelles, organelles and membranes), each '
+                           'the Human Cell Map compartments it holds (scripts/cell_maps.py, REGION_OF, the nuclear envelope with the membranes), '
+                           'against the other proteins the map localises',
+        'cell_region_organelle_ip': 'the same for the regions of the organelle IP clusters, against the other proteins it classifies',
+        'cell_region_hpa': 'the same for the regions of the Human Protein Atlas locations (cilia and sperm structures in none), against the other '
+                           'proteins HPA locates (Approved or better)',
         'eclip_rna_apexseq': 'methylated proteins among the proteins with eCLIP data (ENCODE, ENCORE) whose bound RNAs gather in an APEX-seq compartment '
                              '(Fazal et al. 2019, HEK293T, supporting/eclip_rna_compartments), against the other eCLIP\'d proteins it tests. Method '
                              'mann_whitney compares the size of every tested protein\'s odds ratio, called or not',
