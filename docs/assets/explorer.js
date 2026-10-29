@@ -2310,6 +2310,9 @@
     const el = $('#content');
     hideTip();
     UI.secsOn = false; UI.spy = null;
+    // A section opened alone hides the page's top (hubApply sets focus-mode again where the new page has one open);
+    // a page drawn after it, such as a protein opened from that section, starts with its top shown.
+    el.classList.remove('focus-mode');
     applyRailTab();
     if (UI.view === 'overview') renderOverview(el);
     else if (UI.view === 'proteins') renderProteins(el);
