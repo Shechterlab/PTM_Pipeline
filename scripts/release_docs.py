@@ -366,8 +366,8 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         f"`{files['statistics'][0]}` holds every test behind the summaries: its analysis and category, the 2x2 counts a, b, "
         'c and d, the effect, p, q and the method:',
         '',
-        '- **Protein and gene sets** (method `enricher`): PANTHER and functional classes, CD-CODE condensates, Human Protein '
-        'Atlas locations, disease families, Gene Ontology RNA and DNA binding and DepMap dependency classes; the complexes, Disease Ontology terms and '
+        '- **Protein and gene sets** (method `enricher`): PANTHER and functional classes, Reactome pathways, CD-CODE condensates, Human Protein '
+        'Atlas locations, the compartments of the maps of the cell, disease families, Gene Ontology RNA and DNA binding and DepMap dependency classes; the complexes, Disease Ontology terms and '
         'DisGeNET terms, tested the same way, are in `supporting/`. Over-representation analysis in R with clusterProfiler::enricher, the '
         'DisGeNET terms on DOSE 4.4.0\'s DisGeNET term-gene table (the test DOSE::enrichDGN ran; `scripts/enrich_sets.R`; '
         + ', '.join(f'{k} {v}' for k, v in ctx.get('enrichment_tools', {}).items()) + '). '
@@ -378,13 +378,13 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'protein and its size is within the analysis\'s range. Backgrounds: the reviewed human proteome (classes, Gene '
         'Ontology, complexes), the proteins of any human CD-CODE condensate (condensates), the proteins the Human Protein '
         'Atlas profiled (locations), the reviewed human genes with a DisGeNET term (disease families and DisGeNET terms) '
-        'and those with a Disease Ontology term (Disease Ontology), and the reviewed proteins whose gene DepMap 24Q4 screened '
-        '(dependency classes).',
+        'and those with a Disease Ontology term (Disease Ontology), the reviewed proteins whose gene DepMap 24Q4 screened '
+        '(dependency classes), and the proteins each map of the cell places (analyses cell_*).',
         '- **Proteins, within abundance deciles** (method `mantel_haenszel`, the background ending "each PaxDb abundance '
         'decile a stratum"): mass spectrometry finds abundant proteins most, so a set rich in abundant proteins can look '
         'enriched among the methylated proteins whatever methylation does. Each protein-level over-representation test '
-        'above (PANTHER, functional classes, Reactome, Human Protein Atlas locations, condensates, DepMap dependency, '
-        'Gene Ontology binding, disease families) is run again with its background split into the deciles of PaxDb 6.1 '
+        'above (PANTHER, functional classes, Reactome, Human Protein Atlas locations, the maps of the cell, condensates, '
+        'DepMap dependency, Gene Ontology binding, disease families, and the eCLIP\'d proteins below) is run again with its background split into the deciles of PaxDb 6.1 '
         'abundance, plus one stratum for the proteins without a PaxDb value: the Mantel-Haenszel common odds ratio with its '
         'Robins-Breslow-Greenland 95% CI and the continuity-corrected two-sided Cochran-Mantel-Haenszel test (statsmodels), '
         'q Benjamini-Hochberg within the analysis. The sets and the pooled a, b, c, d are those of the enricher row beside '
@@ -402,6 +402,15 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         '`fisher`): methylarginine-containing proteins against the other reviewed human proteins among the proteins each '
         'experiment measured (the reviewed proteome where it lists none): two-sided Fisher exact test, the sample odds '
         'ratio and fold enrichment, q Benjamini-Hochberg over the experiments.',
+        '- **Where the RNAs bound by proteins with eCLIP data gather** (analyses eclip_*, scripts/cell_maps.py): for each '
+        'protein with eCLIP data and each map of RNA or DNA (APEX-seq, nuclear-body APEX2-seq, TSA-seq, Hi-C '
+        'subcompartments), its bound RNAs against the other RNAs (genes) the map places, in each compartment: the '
+        'Mantel-Haenszel odds ratio within deciles of expression in the map\'s cells crossed with deciles of gene length, '
+        'q Benjamini-Hochberg over every protein and compartment of the map (`supporting/eclip_rna_compartments`; its RNAs '
+        'gather there at q <= 0.05 and odds ratio above 1). The methylated proteins are then tested against the other '
+        'eCLIP\'d proteins the map tests, as a protein set (methods `enricher` and `mantel_haenszel`, above), and the size '
+        'of every protein\'s odds ratio, called or not, is compared too (method `mann_whitney`: two-sided Mann-Whitney U, '
+        'a and c the methylated and the other proteins compared, q Benjamini-Hochberg within the map).',
         '',
         '## Columns',
         '',
