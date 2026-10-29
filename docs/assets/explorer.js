@@ -6739,9 +6739,10 @@
     if (!dv || dv === SITE_VERSION) return '';
     return '<p><b>' + esc(SITE_VERSION) + '</b> changes the website only; its data are those of ' + esc(dv) + '. The explorer as it was at ' + esc(dv) + ' is <a href="' + esc(dv) + '/">here</a>.</p>';
   }
-  // What this version changed on the website itself (Versions); what its data changed is in the release's CHANGES.md.
+  // What v1.4.2 changed on the website itself (Versions); what its data changed is in the release's CHANGES.md. A later
+  // version writes its own note here.
   function siteNoteHtml() {
-    return '<p><b>' + esc(SITE_VERSION) + '</b> on the website: <i>Where in the cell</i> compares the methylated proteins (or a selection) with other proteins of similar abundance in six maps of the cell, and each protein\'s page lists where the maps place it and where the RNAs it binds gather (the release\'s cell-map layer). ' +
+    return '<p><b>v1.4.2</b> on the website: <i>Where in the cell</i> compares the methylated proteins (or a selection) with other proteins of similar abundance in six maps of the cell, and each protein\'s page lists where the maps place it and where the RNAs it binds gather (the release\'s cell-map layer). ' +
       'A search, a quick selection, or a link to a protein class, disease, condensate or location that selects at least ' + SEL_MIN.prots + ' proteins and ' + SEL_MIN.sites + ' sites opens on the Overview, where every section is retested on it: the Overview and Interactions tabs carry a "selection" badge, the protein sections come in the order in which they usually tell most about a selection, and what sets a selection\'s sites apart is a closed section below them.</p>';
   }
   const changesLink = () => 'https://github.com/Shechterlab/PTM_Pipeline/blob/main/releases/' + encodeURIComponent((M.provenance && M.provenance.dataset_version) || 'v1.1.0') + '/CHANGES.md';
@@ -11015,7 +11016,9 @@
   // in each compartment, within PaxDb deciles (rows as the protein maps' tests); any compartment where they differ is named.
   function cellClipSentence(NA) {
     const ds = NA.maps.map((k) => NA.datasets[k]), n = Math.max(...ds.map((d) => d.universe)), m = Math.max(...ds.map((d) => d.methylated));
-    const diff = NA.maps.flatMap((k) => NA.tests[k].filter((r) => r[8] != null && r[8] <= PADJ).map((r) => esc(r[0]) + ', ' + esc(cellTimes(cellAdj(r))) + ' (' + esc(NA.datasets[k].name) + ', q ' + fmtP(r[8]) + ')'));
+    // a compartment where they differ within the deciles, or where the sizes of their odds ratios differ (Mann–Whitney, r[11])
+    const diff = NA.maps.flatMap((k) => NA.tests[k].filter((r) => (r[8] != null && r[8] <= PADJ) || (r[11] != null && r[11] <= PADJ)).map((r) => esc(r[0]) + ', ' +
+      (r[8] != null && r[8] <= PADJ ? esc(cellTimes(cellAdj(r))) + ' (' + esc(NA.datasets[k].name) + ', q ' + fmtP(r[8]) + ')' : 'their odds ratios ' + (r[9] > r[10] ? 'larger' : 'smaller') + ' (' + esc(NA.datasets[k].name) + ', Mann–Whitney q ' + fmtP(r[11]) + ')')));
     return 'Methylated RNA-binding proteins bind RNAs that gather in the same compartments as other RNA-binding proteins\' RNAs' + (diff.length ? ', except at ' + diff.join('; ') : '') +
       ' (eCLIP for ' + fmt(n) + ' proteins, ' + fmt(m) + ' of them methylated, against ' + ds.map((d) => esc(d.name.replace(/^[A-Z](?=[a-z-]*(\s|$))/, (c) => c.toLowerCase()))).join(', ').replace(/, ([^,]*)$/, ' and $1') + ', within abundance deciles; each protein\'s page shows where its bound RNAs gather).';
   }
@@ -14981,7 +14984,8 @@
     }
     if (!used || sva <= 0) return { or: null, lo: null, hi: null, p: null, used };
     const or = den > 0 ? num / den : Infinity;
-    const stat = (Math.abs(sa - sea) - 0.5) ** 2 / sva;
+    // continuity-corrected, the bracket floored at 0: a count within 0.5 of its expectation is no evidence (p = 1)
+    const stat = Math.max(0, Math.abs(sa - sea) - 0.5) ** 2 / sva;
     const pv = erfc(Math.sqrt(Math.max(stat, 0) / 2));
     let lo = null, hi = null;
     if (R > 0 && Sx > 0 && Number.isFinite(or) && or > 0) {

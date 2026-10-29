@@ -3,7 +3,9 @@
 and where RNAs gather and genes lie, by two RNA maps and two DNA maps.
 
 Protein maps (one row per reviewed entry the map places; an identifier list names its first reviewed accession, else
-the one entry its gene symbol names; an entry named twice keeps its first row, or for chromatin its highest probability)
+the one entry its gene symbol names; an entry named by several rows keeps the first that names its accession, else the
+first that names its symbol, and for chromatin its highest probability. Several rows name one accession only for
+identical copies, such as the histone H3 and H4 genes and SMN1 and SMN2 in the Human Cell Map)
   cell_map_hcm_go2021.tsv          Human Cell Map (Go et al. 2021, Nature 595:120; HEK293, BioID from 192 baits): each
                                    localised prey's NMF compartment and its SAFE domain (empty where SAFE gives none).
                                    humancellmap.org preys-v1.txt; CC BY 4.0
@@ -149,6 +151,14 @@ class Entries:
         return (next(iter(hits)), 'symbol') if len(hits) == 1 else ('', '')
 
 
+def first_per_entry(t: pd.DataFrame) -> pd.DataFrame:
+    """One row per entry: the first (in file order) matched by accession, else the first matched by gene symbol. A protein
+    group without a reviewed accession (a fragment, say) can come before the group that names the entry."""
+    t = t.assign(_row=np.arange(len(t)), _symbol=(t['mapped_by'] != 'accession'))
+    t = t[t['canonical_UniProtAC'] != ''].sort_values(['_symbol', '_row']).drop_duplicates('canonical_UniProtAC').sort_values('_row')
+    return t.drop(columns=['_row', '_symbol'])
+
+
 def protein_maps(dl: Path, ent: Entries) -> tuple[dict[str, pd.DataFrame], dict]:
     out, counts = {}, {}
     # Human Cell Map: the localised preys
@@ -156,7 +166,7 @@ def protein_maps(dl: Path, ent: Entries) -> tuple[dict[str, pd.DataFrame], dict]
     got = [ent.resolve([u], s) for u, s in zip(p['UniProt'], p['symbol'])]
     p['canonical_UniProtAC'], p['mapped_by'] = [g[0] for g in got], [g[1] for g in got]
     counts['hcm'] = {'preys': len(p), 'not_mapped': int((p['canonical_UniProtAC'] == '').sum())}
-    p = p[p['canonical_UniProtAC'] != ''].drop_duplicates('canonical_UniProtAC')
+    p = first_per_entry(p)
     safe = p['SAFE localization'].where(~p['SAFE localization'].isin(['no prediction', '-']), '')
     out['cell_map_hcm_go2021.tsv'] = pd.DataFrame({'canonical_UniProtAC': p['canonical_UniProtAC'], 'gene': p['canonical_UniProtAC'].map(ent.gene),
                                                    'hcm_symbol': p['symbol'], 'nmf_compartment': p['MMF localization'], 'safe_domain': safe,
@@ -167,7 +177,7 @@ def protein_maps(dl: Path, ent: Entries) -> tuple[dict[str, pd.DataFrame], dict]
     got = [ent.resolve(ids.split(';'), g) for ids, g in zip(t['Majority protein IDs'], t['Gene_name_canonical'])]
     t['canonical_UniProtAC'], t['mapped_by'] = [g[0] for g in got], [g[1] for g in got]
     counts['organelle_ip'] = {'protein_groups': len(t), 'not_mapped': int((t['canonical_UniProtAC'] == '').sum())}
-    t = t[t['canonical_UniProtAC'] != ''].drop_duplicates('canonical_UniProtAC')
+    t = first_per_entry(t)
     out['cell_map_organelle_ip_hein2025.tsv'] = pd.DataFrame({'canonical_UniProtAC': t['canonical_UniProtAC'], 'gene': t['canonical_UniProtAC'].map(ent.gene),
                                                               'oip_gene': t['Gene_name_canonical'], 'compartment': t['cluster_annotation'], 'mapped_by': t['mapped_by']})
     counts['organelle_ip'].update(staged=len(t), classified=int((t['cluster_annotation'] != 'unclassified').sum()))
@@ -361,9 +371,11 @@ def main() -> None:
     for name, df in tables.items():
         write_table(df, out / name)
     inputs_md5 = {f: md5_file(dl / f) for f in DOWNLOADS}
+    # the repository's own tables it read, under fixed names whatever path was given
+    repo_md5 = {'reference/' + Path(args.entries).name: md5_file(args.entries)}
+    repo_md5.update({f'nucleic_acid/{src}_eclip_target_genes.tsv': md5_file(Path(args.nucleic_acid) / f'{src}_eclip_target_genes.tsv') for src in ('encode', 'encore')})
     summary = {'staged_by': 'scripts/52_stage_cell_maps.py', 'protein_maps': pcounts, 'gene_maps': gcounts,
-               'eclip_gene_names_from': [f'{args.nucleic_acid}/encode_eclip_target_genes.tsv', f'{args.nucleic_acid}/encore_eclip_target_genes.tsv'],
-               'inputs_md5': inputs_md5, 'tables': {n: len(df) for n, df in tables.items()}}
+               'repository_inputs_md5': repo_md5, 'inputs_md5': inputs_md5, 'tables': {n: len(df) for n, df in tables.items()}}
     (out / 'cell_maps_summary.json').write_text(json.dumps(summary, indent=1, sort_keys=True) + '\n')
     downloaded = {f: datetime.fromtimestamp((dl / f).resolve().stat().st_mtime, timezone.utc).strftime('%Y-%m-%d') for f in DOWNLOADS}
     raw = [{'file': f, 'url': u, 'bytes': (dl / f).stat().st_size, 'md5': inputs_md5[f], 'sha256': sha256_file(dl / f),

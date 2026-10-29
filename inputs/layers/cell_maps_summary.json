@@ -1,8 +1,4 @@
 {
- "eclip_gene_names_from": [
-  "inputs/nucleic_acid/encode_eclip_target_genes.tsv",
-  "inputs/nucleic_acid/encore_eclip_target_genes.tsv"
- ],
  "gene_maps": {
   "dna_map_hic_rao2014.tsv": {
    "by_compartment": {
@@ -94,11 +90,16 @@
    "symbols_not_mapped": 27
   },
   "organelle_ip": {
-   "classified": 6947,
+   "classified": 6944,
    "not_mapped": 164,
    "protein_groups": 8541,
    "staged": 8044
   }
+ },
+ "repository_inputs_md5": {
+  "nucleic_acid/encode_eclip_target_genes.tsv": "68e05d3d97b9d60dbf2d06f3635ccfbc",
+  "nucleic_acid/encore_eclip_target_genes.tsv": "7570687754a02c04c5fba863c14f7cf3",
+  "reference/uniprot_human_reviewed_2026_03_entries.tsv": "07057d3bda4051dd23f9f90b0a425916"
  },
  "staged_by": "scripts/52_stage_cell_maps.py",
  "tables": {

@@ -12,8 +12,8 @@ RNA and DNA maps: APEX-seq, nuclear-body APEX2-seq, TSA-seq and Hi-C subcompartm
 eCLIP data (ENCODE and ENCORE, inputs/nucleic_acid/: the genes with most reproducible peaks or windows in each
 experiment, pooled over the protein's experiments) is a unit. Its bound RNAs gather in a compartment when a map places
 them there more often than the other RNAs it places, within deciles of expression in the map's cells crossed with
-deciles of gene length (GENCODE v19; Mantel-Haenszel, BH over every protein and compartment of the map; q <= 0.05 and
-odds ratio above 1). Gene length matters: eCLIP target lists favour long genes, whose introns collect more peaks, and
+deciles of gene length (GENCODE v19, whose missing genes are one more length stratum; Mantel-Haenszel, BH over every
+protein and compartment of the map; q <= 0.05 and odds ratio above 1). Gene length matters: eCLIP target lists favour long genes, whose introns collect more peaks, and
 compartments differ in it (the RNAs nuclear-body APEX2-seq places at the lamina come from genes of median 319 kb, its
 speckle RNAs from genes of 12 kb). A map tests the proteins with at least 20 bound RNAs it places, in the compartments
 where it places at least 20 RNAs. The methylated proteins are then compared with the other eCLIP'd proteins a map tests,
@@ -255,7 +255,8 @@ SUPPORTING_COLUMNS = [
     ('bound_rnas_placed', 'integer', '', 'the protein\'s bound RNAs (genes) the map places'),
     ('bound_rnas_in_compartment', 'integer', '', 'of these, those the map places in the compartment'),
     ('odds_ratio', 'number', '', 'Mantel-Haenszel odds ratio of its bound RNAs being in the compartment against the other RNAs the map places, '
-     'within deciles of expression in the map\'s cells crossed with deciles of gene length (GENCODE v19; 100 strata)'),
+     'within deciles of expression in the map\'s cells crossed with deciles of gene length (GENCODE v19; the genes v19 lacks '
+     'are one more length stratum within each expression decile)'),
     ('odds_ratio_ci_low', 'number', '', 'lower bound of its 95% confidence interval (Robins-Breslow-Greenland)'),
     ('odds_ratio_ci_high', 'number', '', 'upper bound'),
     ('p', 'number', '', 'continuity-corrected Cochran-Mantel-Haenszel test, two-sided'),
@@ -268,7 +269,8 @@ MAP_CODE = {'eclip_rna_apexseq': 'apexseq', 'eclip_rna_nuclear_body': 'nuclear_b
 
 
 def supporting(sites: pd.DataFrame, inputs, version: str) -> dict:
-    methylated = {entry(a) for a in sites['uniprot_accession']}
+    # the proteins the tests count as methylated: those with a site the analyses count (not only pending ones)
+    methylated = {entry(a) for a in sites.loc[~sites['flags'].str.contains('one_sided_window', regex=False), 'uniprot_accession']}
     _, names = eclip_targets(str(inputs))
     rows = []
     for analysis in GENE_MAPS:
@@ -295,8 +297,17 @@ def changes(files: dict) -> list[str]:
     parts = []
     for analysis, (_, label, _, _) in PROTEIN_MAPS.items():
         g = both['analysis'] == analysis
-        parts.append(f'{label} {int((up & g).sum())} of {int(g.sum())} ({int((held & g).sum())} within abundance deciles)')
+        parts.append(f'{label}, {int((up & g).sum())} of {int(g.sum())} ({int((held & g).sum())} of them also within abundance deciles)')
     out.append('Compartments where the methylated proteins are enriched at q <= 0.05 among the proteins each map places: ' + '; '.join(parts) + '.')
+    # the strongest differences among proteins of similar abundance, either way
+    mh = mh.assign(o=num(mh['odds_ratio']), qq=num(mh['q']))
+    name = lambda r: f"{PROTEIN_MAPS[r['analysis']][1]}: {r['category']} ({r['o']:.2g})"  # noqa: E731
+    more = mh[(mh['qq'] <= Q) & (mh['o'] > 1)].sort_values('o', ascending=False).head(6)
+    fewer = mh[(mh['qq'] <= Q) & (mh['o'] < 1)].sort_values('o').head(6)
+    if len(more) or len(fewer):
+        out.append('Among proteins of similar abundance (odds ratio within PaxDb deciles, q <= 0.05), the methylated proteins sit more often in '
+                   + ('; '.join(name(r) for _, r in more.iterrows()) or 'no compartment') + ', and less often in '
+                   + ('; '.join(name(r) for _, r in fewer.iterrows()) or 'none') + '.')
     gm = st[st['analysis'].isin(list(GENE_MAPS))]
     en, adj, mw = (gm[gm['method'] == m] for m in ('enricher', 'mantel_haenszel', 'mann_whitney'))
     n_all = int((num(en['a']) + num(en['b']) + num(en['c']) + num(en['d'])).max()) if len(en) else 0
@@ -415,7 +426,7 @@ def website(release: Path, version: str, inputs: Path, site_out: Path) -> None:
     inputs = Path(inputs)
     st = release_table(release, f'statistics_{version}.tsv')
     prot = release_table(release, f'human_methylarginine_proteins_{version}.tsv')
-    meth = {entry(a) for a in prot['uniprot_accession']}
+    meth = {entry(a) for a, n in zip(prot['uniprot_accession'], prot['n_sites']) if int(n or 0) > 0}   # as the tests count them
     pm = protein_maps(str(inputs))
     universes, tests, cats = {}, {}, {}
     for analysis, (key, _, _, _) in PROTEIN_MAPS.items():
@@ -510,8 +521,9 @@ def website(release: Path, version: str, inputs: Path, site_out: Path) -> None:
             if not len(s):
                 per.append(None)
                 continue
-            hit = s[(pd.to_numeric(s['q']) <= Q) & (pd.to_numeric(s['odds_ratio']) > 0)]
-            per.append([[na_cats[key].index(r.compartment), 99 if r.l2 == math.inf else round(float(r.l2), 3), sig(r.q)] for r in hit.itertuples()])
+            hit = s[(pd.to_numeric(s['q']) <= Q) & s['l2'].notna()]
+            per.append([[na_cats[key].index(r.compartment), 99 if r.l2 == math.inf else -99 if r.l2 == -math.inf else round(float(r.l2), 3), sig(r.q)]
+                        for r in hit.itertuples()])
         na_prot[a] = [names[a] or a, per]
     write_json(site_out / 'subcellular_na.json', {
         'version': version, 'maps': na_maps, 'datasets': na_ds, 'tests': na_tests, 'categories': na_cats, 'proteins': na_prot,

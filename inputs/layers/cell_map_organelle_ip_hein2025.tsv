@@ -14,7 +14,6 @@ P30305	CDC25B	CDC25B	14-3-3_scaffold	accession
 Q86X02	CDR2L	CDR2L	14-3-3_scaffold	accession
 Q9HC77	CPAP	CENPJ	14-3-3_scaffold	accession
 Q8N8E3	CEP112	CEP112	14-3-3_scaffold	accession
-Q5SW79	CEP170	CEP170	14-3-3_scaffold	symbol
 Q96L14	CEP170P1	CEP170	14-3-3_scaffold	accession
 Q9Y4F5	CEP170B	CEP170B	14-3-3_scaffold	accession
 O43822	CFAP410	CFAP410	14-3-3_scaffold	accession
@@ -77,7 +76,7 @@ P26045	PTPN3	PTPN3	14-3-3_scaffold	accession
 Q9H0H5	RACGAP1	RACGAP1	14-3-3_scaffold	accession
 P04049	RAF1	RAF1	14-3-3_scaffold	accession
 Q86X27	RALGPS2	RALGPS2	14-3-3_scaffold	accession
-Q9UJF2	RASAL2	RASAL2	14-3-3_scaffold	symbol
+Q9UJF2	RASAL2	RASAL2	14-3-3_scaffold	accession
 Q02833	RASSF7	RASSF7	14-3-3_scaffold	accession
 Q2KHR2	RFX7	RFX7	14-3-3_scaffold	accession
 Q6R327	RICTOR	RICTOR	14-3-3_scaffold	accession
@@ -131,7 +130,6 @@ P09543	CNP	CNP	plasma_membrane	accession
 P35221	CTNNA1	CTNNA1	plasma_membrane	accession
 P26232	CTNNA2	CTNNA2	plasma_membrane	accession
 P35222	CTNNB1	CTNNB1	plasma_membrane	accession
-O60716	CTNND1	CTNND1	plasma_membrane	symbol
 Q14999	CUL7	CUL7	plasma_membrane	symbol
 Q8IWF6	DENND6A	DENND6A	plasma_membrane	accession
 Q14126	DSG2	DSG2	plasma_membrane	accession
@@ -157,8 +155,6 @@ P63218	GNG5	GNG5	plasma_membrane	accession
 O60262	GNG7	GNG7	plasma_membrane	accession
 P13164	IFITM1	IFITM1	plasma_membrane	symbol
 P05556	ITGB1	ITGB1	plasma_membrane	accession
-Q9ULH0	KIDINS220	KIDINS220	plasma_membrane	symbol
-P01116	KRAS	KRAS	plasma_membrane	symbol
 Q15334	LLGL1	LLGL1	plasma_membrane	accession
 P29966	MARCKS	MARCKS	plasma_membrane	accession
 P49006	MARCKSL1	MARCKSL1	plasma_membrane	accession
@@ -176,7 +172,6 @@ Q16513	PKN2	PKN2	plasma_membrane	accession
 Q01970	PLCB3	PLCB3	plasma_membrane	accession
 Q8N3E9	PLCD3	PLCD3	plasma_membrane	accession
 Q9UNN8	PROCR	PROCR	plasma_membrane	accession
-Q9P2B2	PTGFRN	PTGFRN	plasma_membrane	symbol
 Q12974	PTP4A2	PTP4A2	plasma_membrane	accession
 P23470	PTPRG	PTPRG	plasma_membrane	accession
 P51153	RAB13	RAB13	plasma_membrane	accession
@@ -261,7 +256,7 @@ Q6IAA8	LAMTOR1	LAMTOR1	lysosome	accession
 Q9Y2Q5	LAMTOR2	LAMTOR2	lysosome	accession
 Q9UHA4	LAMTOR3	LAMTOR3	lysosome	accession
 Q0VGL1	LAMTOR4	LAMTOR4	lysosome	accession
-O43504	LAMTOR5	LAMTOR5	lysosome	symbol
+O43504	LAMTOR5	LAMTOR5	lysosome	accession
 Q99538	LGMN	LGMN	lysosome	accession
 P38571	LIPA	LIPA	lysosome	accession
 Q9GZU1	MCOLN1	MCOLN1	lysosome	accession
@@ -302,8 +297,7 @@ Q9NVC3	SLC38A7	SLC38A7	lysosome	accession
 Q8NBW4	SLC38A9	SLC38A9	lysosome	accession
 O95295	SNAPIN	SNAPIN	lysosome	accession
 Q9Y5W9	SNX11	SNX11	lysosome	accession
-Q9H2V7	SPNS1	SPNS1	lysosome	symbol
-Q14849	STARD3	STARD3	lysosome	symbol
+Q9H2V7	SPNS1	SPNS1	lysosome	accession
 O95772	STARD3NL	STARD3NL	lysosome	accession
 Q8N1F8	STK11IP	STK11IP	lysosome	accession
 Q86VP1	TAX1BP1	TAX1BP1	lysosome	accession
@@ -345,7 +339,6 @@ Q7Z3D6	DGLUCY	DGLUCY	mitochondrion	accession
 Q02127	DHODH	DHODH	mitochondrion	accession
 Q9NW81	DMAC2	DMAC2	mitochondrion	accession
 Q99766	DMAC2L	DMAC2L	mitochondrion	accession
-Q9BQ52	ELAC2	ELAC2	mitochondrion	symbol
 O95571	ETHE1	ETHE1	mitochondrion	accession
 Q9Y2C4	EXOG	EXOG	mitochondrion	accession
 Q96KR6	MIMS2	FAM210B	mitochondrion	accession
@@ -357,7 +350,6 @@ Q05932	FPGS	FPGS	mitochondrion	accession
 Q8N442	GUF1	GUF1	mitochondrion	accession
 Q9NRV9	HEBP1	HEBP1	mitochondrion	accession
 Q92506	HSD17B8	HSD17B8	mitochondrion	accession
-P10809	HSPD1	HSPD1	mitochondrion	symbol
 O43464	HTRA2	HTRA2	mitochondrion	symbol
 Q86U28	ISCA2	ISCA2	mitochondrion	accession
 Q96AB3	ISOC2	ISOC2	mitochondrion	accession
@@ -374,7 +366,6 @@ P39210	MPV17	MPV17	mitochondrion	accession
 Q9Y3D5	MRPS18C	MRPS18C	mitochondrion	accession
 Q9HD23	MRS2	MRS2	mitochondrion	accession
 P00395	MT-CO1	MT-CO1	mitochondrion	accession
-Q9Y6C9	MTCH2	MTCH2	mitochondrion	symbol
 Q9H019	MTFR1L	MTFR1L	mitochondrion	accession
 Q6P444	MTFR2	MTFR2	mitochondrion	accession
 Q5HYI7	MTX3	MTX3	mitochondrion	accession
@@ -450,7 +441,6 @@ P0DMU9	CT45A10	CT45A2	nucleus	accession
 Q9NXE8	CWC25	CWC25	nucleus	accession
 Q2TBE0	CWF19L2	CWF19L2	nucleus	accession
 Q9BTE7	DCUN1D5	DCUN1D5	nucleus	accession
-Q7L014	DDX46	DDX46	nucleus	symbol
 Q9H5Z1	DHX35	DHX35	nucleus	accession
 Q9NSV4	DIAPH3	DIAPH3	nucleus	accession
 O75319	DUSP11	DUSP11	nucleus	accession
@@ -490,7 +480,6 @@ Q9ULX3	NOB1	NOB1	nucleus	accession
 Q9H0G5	NSRP1	NSRP1	nucleus	accession
 Q96P11	NSUN5	NSUN5	nucleus	symbol
 Q9UGN5	PARP2	PARP2	nucleus	accession
-Q8IWS0	PHF6	PHF6	nucleus	symbol
 Q9BSJ6	PIMREG	PIMREG	nucleus	accession
 Q8NBT0	POC1A	POC1A	nucleus	accession
 P0DPB6	POLR1D	POLR1D	nucleus	accession
@@ -590,7 +579,6 @@ Q8N1G4	LRRC47	LRRC47	stress_granule	accession
 Q9BUT9	MCRIP2	MCRIP2	stress_granule	accession
 P53582	METAP1	METAP1	stress_granule	accession
 P50579	METAP2	METAP2	stress_granule	accession
-Q9BXJ9	NAA15	NAA15	stress_granule	symbol
 Q9HAN9	NMNAT1	NMNAT1	stress_granule	accession
 P30419	NMT1	NMT1	stress_granule	accession
 Q7Z417	NUFIP2	NUFIP2	stress_granule	accession
@@ -613,7 +601,7 @@ P62701	RPS4X	RPS4X	stress_granule	accession
 P46781	RPS9	RPS9	stress_granule	accession
 Q9Y3I0	RTCB	RTCB	stress_granule	accession
 Q9BY12	SCAPER	SCAPER	stress_granule	accession
-Q8NC51	SERBP1	SERBP1	stress_granule	symbol
+Q8NC51	SERBP1	SERBP1	stress_granule	accession
 Q86TU7	SETD3	SETD3	stress_granule	accession
 Q15477	SKIC2	SKIC2	stress_granule	accession
 Q6PGP7	SKIC3	SKIC3	stress_granule	accession
@@ -638,7 +626,6 @@ Q9NRN7	AASDHPPT	AASDHPPT	cytosol	accession
 Q13085	ACACA	ACACA	cytosol	accession
 P53396	ACLY	ACLY	cytosol	accession
 O95433	AHSA1	AHSA1	cytosol	accession
-O00170	AIP	AIP	cytosol	symbol
 P50995	ANXA11	ANXA11	cytosol	accession
 P20073	ANXA7	ANXA7	cytosol	accession
 Q07960	ARHGAP1	ARHGAP1	cytosol	accession
@@ -708,8 +695,6 @@ Q9NPQ8	RIC8A	RIC8A	cytosol	accession
 P13489	RNH1	RNH1	cytosol	accession
 Q99961	SH3GL1	SH3GL1	cytosol	accession
 Q9H2G2	SLK	SLK	cytosol	accession
-P40763	STAT3	STAT3	cytosol	symbol
-P16949	STMN1	STMN1	cytosol	symbol
 Q8TC07	TBC1D15	TBC1D15	cytosol	accession
 O75663	TIPRL	TIPRL	cytosol	accession
 Q9Y490	TLN1	TLN1	cytosol	accession
@@ -750,14 +735,12 @@ Q8N465	D2HGDH	D2HGDH	mitochondrion	accession
 Q96LL9	DNAJC30	DNAJC30	mitochondrion	accession
 Q5SXM8	DNLZ	DNLZ	mitochondrion	accession
 Q14249	ENDOG	ENDOG	mitochondrion	accession
-Q9NVH0	EXD2	EXD2	mitochondrion	symbol
 Q6P2I3	FAHD2B	FAHD2B	mitochondrion	accession
 Q9UKA2	FBXL4	FBXL4	mitochondrion	accession
 Q96HJ9	FMC1	FMC1	mitochondrion	accession
 P55789	GFER	GFER	mitochondrion	accession
 Q9NS18	GLRX2	GLRX2	mitochondrion	accession
 Q9HCL2	GPAM	GPAM	mitochondrion	accession
-Q969Y2	GTPBP3	GTPBP3	mitochondrion	symbol
 Q16777	H2AC20	H2AC20	mitochondrion	accession
 P86397	HTD2	HTD2	mitochondrion	accession
 O43766	LIAS	LIAS	mitochondrion	accession
@@ -769,7 +752,6 @@ Q9UJA3	MCM8	MCM8	mitochondrion	accession
 Q9NWR8	MCUB	MCUB	mitochondrion	accession
 Q6UB28	METAP1D	METAP1D	mitochondrion	accession
 Q9H7H0	METTL17	METTL17	mitochondrion	accession
-Q9GZY8	MFF	MFF	mitochondrion	symbol
 Q9UH92	MLX	MLX	mitochondrion	accession
 O95822	MLYCD	MLYCD	mitochondrion	accession
 Q8IVH4	MMAA	MMAA	mitochondrion	accession
@@ -783,7 +765,7 @@ P03891	MT-ND2	MT-ND2	mitochondrion	accession
 Q99551	MTERF1	MTERF1	mitochondrion	accession
 Q96DP5	MTFMT	MTFMT	mitochondrion	accession
 Q9H4K7	MTG2	MTG2	mitochondrion	accession
-Q9Y2Z2	MTO1	MTO1	mitochondrion	symbol
+Q9Y2Z2	MTO1	MTO1	mitochondrion	accession
 O75570	MTRF1	MTRF1	mitochondrion	accession
 Q9UGC7	MTRF1L	MTRF1L	mitochondrion	accession
 Q969V5	MUL1	MUL1	mitochondrion	accession
@@ -802,7 +784,6 @@ Q9HBH1	PDF	PDF	mitochondrion	accession
 Q9P2J9	PDP2	PDP2	mitochondrion	accession
 Q5T2R2	PDSS1	PDSS1	mitochondrion	accession
 Q6UWS5	PET117	PET117	mitochondrion	accession
-Q9H2U2	PPA2	PPA2	mitochondrion	symbol
 Q8NI37	PPTC7	PPTC7	mitochondrion	accession
 Q9Y3B1	PRELID3B	PRELID3B	mitochondrion	accession
 Q8N0Z8	PUSL1	PUSL1	mitochondrion	accession
@@ -926,7 +907,6 @@ Q9BV40	VAMP8	VAMP8	recycling_endosome	accession
 Q5JSH3	WDR44	WDR44	recycling_endosome	accession
 P11310	ACADM	ACADM	mitochondrion	accession
 P24752	ACAT1	ACAT1	mitochondrion	accession
-Q99798	ACO2	ACO2	mitochondrion	symbol
 Q9NPJ3	ACOT13	ACOT13	mitochondrion	accession
 P54819	AK2	AK2	mitochondrion	accession
 Q92667	AKAP1	AKAP1	mitochondrion	accession
@@ -960,7 +940,6 @@ O75616	ERAL1	ERAL1	mitochondrion	accession
 Q96A26	FAM162A	FAM162A	mitochondrion	accession
 Q8TAE8	GADD45GIP1	GADD45GIP1	mitochondrion	accession
 P0DPI2	GATD3	GATD3	mitochondrion	symbol
-O94925	GLS	GLS	mitochondrion	symbol
 P00367	GLUD1	GLUD1	mitochondrion	accession
 P00505	GOT2	GOT2	mitochondrion	accession
 Q9HAV7	GRPEL1	GRPEL1	mitochondrion	accession
@@ -983,6 +962,7 @@ Q9Y676	MRPS18B	MRPS18B	mitochondrion	accession
 Q92552	MRPS27	MRPS27	mitochondrion	accession
 P82930	MRPS34	MRPS34	mitochondrion	accession
 Q5VT66	MTARC1	MTARC1	mitochondrion	accession
+Q9Y6C9	MTCH2	MTCH2	mitochondrion	accession
 O75431	MTX2	MTX2	mitochondrion	accession
 O95299	NDUFA10	NDUFA10	mitochondrion	accession
 Q9P0J0	NDUFA13	NDUFA13	mitochondrion	accession
@@ -1032,7 +1012,7 @@ Q8N8A6	DDX51	DDX51	nucleolus	accession
 Q8TDD1	DDX54	DDX54	nucleolus	accession
 Q9H6R0	DHX33	DHX33	nucleolus	symbol
 O60832	DKC1	DKC1	nucleolus	accession
-Q5QJE6	DNTTIP2	DNTTIP2	nucleolus	symbol
+Q5QJE6	DNTTIP2	DNTTIP2	nucleolus	accession
 Q99848	EBNA1BP2	EBNA1BP2	nucleolus	accession
 Q96KQ7	EHMT2	EHMT2	nucleolus	accession
 Q9H501	ESF1	ESF1	nucleolus	accession
@@ -1044,7 +1024,7 @@ Q8WUU5	GATAD1	GATAD1	nucleolus	accession
 P32780	GTF2H1	GTF2H1	nucleolus	accession
 Q9BZE4	GTPBP4	GTPBP4	nucleolus	accession
 Q8TF76	HASPIN	HASPIN	nucleolus	accession
-Q9H583	HEATR1	HEATR1	nucleolus	symbol
+Q9H583	HEATR1	HEATR1	nucleolus	accession
 Q9NV31	IMP3	IMP3	nucleolus	accession
 Q96G21	IMP4	IMP4	nucleolus	accession
 Q8N9T8	KRI1	KRI1	nucleolus	accession
@@ -1074,7 +1054,6 @@ Q14690	PDCD11	PDCD11	nucleolus	accession
 O95602	POLR1A	POLR1A	nucleolus	accession
 Q9H9Y6	POLR1B	POLR1B	nucleolus	accession
 Q3B726	POLR1F	POLR1F	nucleolus	accession
-O15446	POLR1G	POLR1G	nucleolus	symbol
 Q9P1U0	POLR1H	POLR1H	nucleolus	accession
 Q9NQ55	PPAN	PPAN	nucleolus	accession
 Q15397	PUM3	PUM3	nucleolus	accession
@@ -1171,7 +1150,6 @@ Q6PK18	OGFOD3	OGFOD3	ER	accession
 Q8IVL6	P3H3	P3H3	ER	accession
 O15460	P4HA2	P4HA2	ER	accession
 Q8N5Y8	PARP16	PARP16	ER	accession
-P30101	PDIA3	PDIA3	ER	symbol
 O15173	PGRMC2	PGRMC2	ER	accession
 P37287	PIGA	PIGA	ER	accession
 Q14442	PIGH	PIGH	ER	accession
@@ -1182,7 +1160,6 @@ Q8NBL1	POGLUT1	POGLUT1	ER	accession
 Q6UW63	POGLUT2	POGLUT2	ER	accession
 Q7Z4H8	POGLUT3	POGLUT3	ER	accession
 Q9H5K3	POMK	POMK	ER	accession
-P14314	PRKCSH	PRKCSH	ER	symbol
 Q96HE9	PRR11	PRR11	ER	accession
 P48651	PTDSS1	PTDSS1	ER	accession
 Q9HBH5	RDH14	RDH14	ER	accession
@@ -1201,7 +1178,6 @@ Q5BJH2	TMEM128	TMEM128	ER	accession
 Q9H8H3	TMT1A	TMT1A	ER	accession
 Q71RG4	TMUB2	TMUB2	ER	accession
 Q9H1E5	TMX4	TMX4	ER	accession
-Q5JTV8	TOR1AIP1	TOR1AIP1	ER	symbol
 Q8NBM4	UBAC2	UBAC2	ER	accession
 Q8N2K1	UBE2J2	UBE2J2	ER	accession
 Q92890	UFD1	ufd1	ER	accession
@@ -1239,6 +1215,7 @@ Q9H3K2	GHITM	GHITM	mitochondrion	accession
 Q8TD30	GPT2	GPT2	mitochondrion	accession
 P07203	GPX1	GPX1	mitochondrion	accession
 Q8TAA5	GRPEL2	GRPEL2	mitochondrion	accession
+Q969Y2	GTPBP3	GTPBP3	mitochondrion	accession
 Q16774	GUK1	GUK1	mitochondrion	symbol
 Q5TEC6	H3-7	H3-7	mitochondrion	accession
 Q16775	HAGH	HAGH	mitochondrion	accession
@@ -1254,6 +1231,7 @@ Q96GW9	MARS2	MARS2	mitochondrion	accession
 Q96RQ3	MCCC1	MCCC1	mitochondrion	accession
 Q8NE86	MCU	MCU	mitochondrion	accession
 Q96AQ8	MCUR1	MCUR1	mitochondrion	accession
+Q9GZY8	MFF	MFF	mitochondrion	accession
 Q9BQ48	MRPL34	MRPL34	mitochondrion	accession
 Q9Y6G3	MRPL42	MRPL42	mitochondrion	accession
 Q4U2R6	MRPL51	MRPL51	mitochondrion	accession
@@ -1314,7 +1292,6 @@ Q14839	CHD4	CHD4	nucleus	accession
 P16220	CREB1	CREB1	nucleus	accession
 Q05D32	CTDSPL2	CTDSPL2	nucleus	accession
 Q8WYA6	CTNNBL1	CTNNBL1	nucleus	accession
-Q6UW02	CYP20A1	CYP20A1	nucleus	symbol
 Q8WXX5	DNAJC9	DNAJC9	nucleus	accession
 Q9H147	DNTTIP1	DNTTIP1	nucleus	accession
 Q9H9B1	EHMT1	EHMT1	nucleus	accession
@@ -1383,7 +1360,6 @@ Q99986	VRK1	VRK1	nucleus	accession
 Q01831	XPC	XPC	nucleus	accession
 P18887	XRCC1	XRCC1	nucleus	accession
 Q5VZL5	ZMYM4	ZMYM4	nucleus	accession
-Q9ULU4	ZMYND8	ZMYND8	nucleus	symbol
 Q8ND82	ZNF280C	ZNF280C	nucleus	accession
 Q9BZC7	ABCA2	ABCA2	early_endosome	accession
 Q6ULP2	AFTPH	AFTPH	early_endosome	accession
@@ -1394,7 +1370,7 @@ Q9BXS5	AP1M1	AP1M1	early_endosome	accession
 P61966	AP1S1	AP1S1	early_endosome	accession
 P56377	AP1S2	AP1S2	early_endosome	accession
 Q96PC3	AP1S3	AP1S3	early_endosome	accession
-O14617	AP3D1	AP3D1	early_endosome	symbol
+O14617	AP3D1	AP3D1	early_endosome	accession
 Q9Y6B7	AP4B1	AP4B1	early_endosome	accession
 Q9UPM8	AP4E1	AP4E1	early_endosome	accession
 Q9Y587	AP4S1	AP4S1	early_endosome	accession
@@ -1442,7 +1418,7 @@ Q9UJ41	RABGEF1	RABGEF1	early_endosome	accession
 P52306	RAP1GDS1	RAP1GDS1	early_endosome	accession
 A6NDU8	RIMOC1	RIMOC1	early_endosome	accession
 Q9BV68	RNF126	RNF126	early_endosome	accession
-Q9BVN2	RUSC1	RUSC1	early_endosome	symbol
+Q9BVN2	RUSC1	RUSC1	early_endosome	accession
 Q13530	SERINC3	SERINC3	early_endosome	accession
 O43765	SGTA	SGTA	early_endosome	accession
 Q8WU79	SMAP2	SMAP2	early_endosome	accession
@@ -1480,6 +1456,7 @@ O95067	CCNB2	CCNB2	ER	accession
 P27544	CERS1	CERS1	ER	accession
 O14967	CLGN	CLGN	ER	accession
 Q96JQ2	CLMN	CLMN	ER	accession
+Q6UW02	CYP20A1	CYP20A1	ER	accession
 P98153	DGCR2	DGCR2	ER	accession
 Q8TBM8	DNAJB14	DNAJB14	ER	accession
 Q9NVK5	FGFR1OP2	FGFR1OP2	ER	accession
@@ -1504,7 +1481,6 @@ Q99735	MGST2	MGST2	ER	accession
 A2RRP1	NBAS	NBAS	ER	accession
 Q5SWX8	ODR4	ODR4	ER	accession
 Q13438	OS9	OS9	ER	accession
-P13667	PDIA4	PDIA4	ER	symbol
 Q8NEN9	PDZD8	PDZD8	ER	accession
 Q99640	PKMYT1	PKMYT1	ER	accession
 Q8NAT1	POMGNT2	POMGNT2	ER	accession
@@ -1574,7 +1550,6 @@ O75460	ERN1	ERN1	ER	accession
 Q86YB8	ERO1B	ERO1B	ER	symbol
 Q9HBU6	ETNK1	ETNK1	ER	accession
 Q93063	EXT2	EXT2	ER	accession
-O60427	FADS1	FADS1	ER	symbol
 O95302	FKBP9	FKBP9	ER	accession
 Q8IWF2	FOXRED2	FOXRED2	ER	accession
 Q495W5	POFUT4	FUT11	ER	accession
@@ -1631,7 +1606,6 @@ Q9NX04	AIRIM	AIRIM	translation	accession
 Q9H8Y5	ANKZF1	ANKZF1	translation	accession
 Q9NRW3	APOBEC3C	APOBEC3C	translation	accession
 Q9BRD0	BUD13	BUD13	translation	accession
-Q14004	CDK13	CDK13	translation	symbol
 Q8WWK9	CKAP2	CKAP2	translation	symbol
 Q5F1R6	DNAJC21	DNAJC21	translation	accession
 Q8TEK3	DOT1L	DOT1L	translation	accession
@@ -1700,7 +1674,6 @@ Q5VYS8	TUT7	TUT7	translation	accession
 Q9UBK9	UXT	UXT	translation	accession
 Q14191	WRN	WRN	translation	accession
 Q9H869	YY1AP1	YY1AP1	translation	symbol
-Q7Z2W4	ZC3HAV1	ZC3HAV1	translation	symbol
 Q8WYQ9	ZCCHC14	ZCCHC14	translation	accession
 Q13795	ARFRP1	ARFRP1	Golgi	accession
 O94766	B3GAT3	B3GAT3	Golgi	accession
@@ -1794,11 +1767,9 @@ Q92828	CORO2A	CORO2A	actin_cytoskeleton	accession
 Q6ZU35	CRACD	CRACD	actin_cytoskeleton	symbol
 Q8WZ74	CTTNBP2	CTTNBP2	actin_cytoskeleton	accession
 O43293	DAPK3	DAPK3	actin_cytoskeleton	accession
-Q9UJU6	DBNL	DBNL	actin_cytoskeleton	symbol
 P78524	DENND2B	DENND2B	actin_cytoskeleton	accession
 Q9UQ16	DNM3	DNM3	actin_cytoskeleton	symbol
 Q6XZF7	DNMBP	DNMBP	actin_cytoskeleton	accession
-P11171	EPB41	EPB41	actin_cytoskeleton	symbol
 Q9H4G0	EPB41L1	EPB41L1	actin_cytoskeleton	symbol
 Q8IUD2	ERC1	ERC1	actin_cytoskeleton	accession
 Q0JRZ9	FCHO2	FCHO2	actin_cytoskeleton	accession
@@ -1819,10 +1790,8 @@ Q92614	MYO18A	MYO18A	actin_cytoskeleton	accession
 O43639	NCK2	NCK2	actin_cytoskeleton	accession
 Q0ZGT2	NEXN	NEXN	actin_cytoskeleton	accession
 O75052	NOS1AP	NOS1AP	actin_cytoskeleton	accession
-Q9Y6R0	NUMBL	NUMBL	actin_cytoskeleton	symbol
 Q9H792	PEAK1	PEAK1	actin_cytoskeleton	accession
 Q86SQ0	PHLDB2	PHLDB2	actin_cytoskeleton	accession
-Q13492	PICALM	PICALM	actin_cytoskeleton	symbol
 P42338	PIK3CB	PIK3CB	actin_cytoskeleton	accession
 Q6IQ23	PLEKHA7	PLEKHA7	actin_cytoskeleton	accession
 A1L390	PLEKHG3	PLEKHG3	actin_cytoskeleton	accession
@@ -1841,7 +1810,6 @@ Q9P2F8	SIPA1L2	SIPA1L2	actin_cytoskeleton	accession
 O60292	SIPA1L3	SIPA1L3	actin_cytoskeleton	accession
 Q13884	SNTB1	SNTB1	actin_cytoskeleton	accession
 Q8WV41	SNX33	SNX33	actin_cytoskeleton	accession
-Q13813	SPTAN1	SPTAN1	actin_cytoskeleton	symbol
 Q76I76	SSH2	SSH2	actin_cytoskeleton	accession
 O95425	SVIL	SVIL	actin_cytoskeleton	accession
 O43426	SYNJ1	SYNJ1	actin_cytoskeleton	accession
@@ -1872,10 +1840,10 @@ Q9H2U1	DHX36	DHX36	stress_granule	accession
 Q86Y13	DZIP3	DZIP3	stress_granule	accession
 P06730	EIF4E	EIF4E	stress_granule	accession
 Q12926	ELAVL2	ELAVL2	stress_granule	accession
-Q9NZB2	FAM120A	FAM120A	stress_granule	symbol
+Q9NZB2	FAM120A	FAM120A	stress_granule	accession
 Q9NX05	FAM120C	FAM120C	stress_granule	accession
 P78312	FAM193A	FAM193A	stress_granule	accession
-Q06787	FMR1	FMR1	stress_granule	symbol
+Q06787	FMR1	FMR1	stress_granule	accession
 Q96I24	FUBP3	FUBP3	stress_granule	accession
 P51114	FXR1	FXR1	stress_granule	accession
 P51116	FXR2	FXR2	stress_granule	accession
@@ -1893,7 +1861,7 @@ A1L020	MEX3A	MEX3A	stress_granule	accession
 Q9UHC7	MKRN1	MKRN1	stress_granule	accession
 Q9HCE1	MOV10	MOV10	stress_granule	accession
 O43347	MSI1	MSI1	stress_granule	accession
-Q96DH6	MSI2	MSI2	stress_granule	symbol
+Q96DH6	MSI2	MSI2	stress_granule	accession
 P0DPF3	NBPF9	NBPF9	stress_granule	accession
 P11940	PABPC1	PABPC1	stress_granule	accession
 Q13310	PABPC4	PABPC4	stress_granule	symbol
@@ -1902,7 +1870,7 @@ O75569	PRKRA	PRKRA	stress_granule	accession
 P48634	PRRC2A	PRRC2A	stress_granule	accession
 O95758	PTBP3	PTBP3	stress_granule	accession
 Q14671	PUM1	PUM1	stress_granule	symbol
-Q8TB72	PUM2	PUM2	stress_granule	symbol
+Q8TB72	PUM2	PUM2	stress_granule	accession
 Q00577	PURA	PURA	stress_granule	accession
 Q96QR8	PURB	PURB	stress_granule	accession
 Q15032	R3HDM1	R3HDM1	stress_granule	accession
@@ -1927,14 +1895,13 @@ P16989	YBX3	YBX3	stress_granule	accession
 Q9Y5A9	YTHDF2	YTHDF2	stress_granule	accession
 Q9NUD5	ZCCHC3	ZCCHC3	stress_granule	accession
 Q9UKU7	ACAD8	ACAD8	mitochondrion	accession
+Q99798	ACO2	ACO2	mitochondrion	accession
 O95831	AIFM1	AIFM1	mitochondrion	accession
-P49419	ALDH7A1	ALDH7A1	mitochondrion	symbol
 P25705	ATP5F1A	ATP5F1A	mitochondrion	accession
 P06576	ATP5F1B	ATP5F1B	mitochondrion	accession
 Q96IX5	ATP5MK	ATP5MK	mitochondrion	accession
 Q07021	C1QBP	C1QBP	mitochondrion	accession
 Q9Y6H1	CHCHD2	CHCHD2	mitochondrion	accession
-Q9H078	CLPB	CLPB	mitochondrion	symbol
 Q9NYJ1	COA4	COA4	mitochondrion	accession
 Q14061	COX17	COX17	mitochondrion	accession
 P14406	COX7A2	COX7A2	mitochondrion	accession
@@ -1953,6 +1920,7 @@ Q9Y241	HIGD1A	HIGD1A	mitochondrion	accession
 P52789	HK2	HK2	mitochondrion	accession
 Q99714	HSD17B10	HSD17B10	mitochondrion	accession
 P38646	HSPA9	HSPA9	mitochondrion	accession
+P10809	HSPD1	HSPD1	mitochondrion	accession
 P42704	LRPPRC	LRPPRC	mitochondrion	accession
 Q5VWZ2	LYPLAL1	LYPLAL1	mitochondrion	accession
 Q7Z434	MAVS	MAVS	mitochondrion	accession
@@ -2082,7 +2050,6 @@ P80723	BASP1	BASP1	plasma_membrane	accession
 Q9HB09	BCL2L12	BCL2L12	plasma_membrane	accession
 Q8N7R7	CCNYL1	CCNYL1	plasma_membrane	accession
 Q5ZPR3	CD276	CD276	plasma_membrane	accession
-P15529	CD46	CD46	plasma_membrane	symbol
 Q8TCZ2	CD99L2	CD99L2	plasma_membrane	accession
 Q8TCT0	CERK	CERK	plasma_membrane	accession
 P78310	CXADR	CXADR	plasma_membrane	accession
@@ -2102,6 +2069,7 @@ P15260	IFNGR1	IFNGR1	plasma_membrane	accession
 P06756	ITGAV	ITGAV	plasma_membrane	accession
 P23458	JAK1	JAK1	plasma_membrane	accession
 Q9BX67	JAM3	JAM3	plasma_membrane	accession
+Q9ULH0	KIDINS220	KIDINS220	plasma_membrane	accession
 Q8IWT6	LRRC8A	LRRC8A	plasma_membrane	accession
 Q8TDW0	LRRC8C	LRRC8C	plasma_membrane	accession
 Q86X29	LSR	LSR	plasma_membrane	accession
@@ -2116,6 +2084,7 @@ Q99959	PKP2	PKP2	plasma_membrane	accession
 Q99569	PKP4	PKP4	plasma_membrane	accession
 Q9HB21	PLEKHA1	PLEKHA1	plasma_membrane	accession
 O15162	PLSCR1	PLSCR1	plasma_membrane	accession
+Q9P2B2	PTGFRN	PTGFRN	plasma_membrane	accession
 P15151	PVR	PVR	plasma_membrane	accession
 P61225	RAP2B	RAP2B	plasma_membrane	accession
 O75695	RP2	RP2	plasma_membrane	accession
@@ -2155,7 +2124,7 @@ Q8N6S5	ARL6IP6	ARL6IP6	ERGIC	accession
 Q9UBV7	B4GALT7	B4GALT7	ERGIC	accession
 O75531	BANF1	BANF1	ERGIC	accession
 O15155	BET1	BET1	ERGIC	accession
-O43852	CALU	CALU	ERGIC	symbol
+O43852	CALU	CALU	ERGIC	accession
 Q9NRB3	CHST12	CHST12	ERGIC	accession
 Q9Y2B0	CNPY2	CNPY2	ERGIC	accession
 P53621	COPA	COPA	ERGIC	accession
@@ -2199,7 +2168,7 @@ Q9Y6B6	SAR1B	SAR1B	ERGIC	accession
 Q12770	SCAP	SCAP	ERGIC	accession
 Q8WVM8	SCFD1	SCFD1	ERGIC	accession
 P55735	SEC13	SEC13	ERGIC	accession
-O75396	SEC22B	SEC22B	ERGIC	symbol
+O75396	SEC22B	SEC22B	ERGIC	accession
 O95486	SEC24A	SEC24A	ERGIC	accession
 O94855	SEC24D	SEC24D	ERGIC	accession
 Q9C0D9	SELENOI	SELENOI	ERGIC	accession
@@ -2378,6 +2347,7 @@ P23786	CPT2	CPT2	mitochondrion	accession
 Q9NUL7	DDX28	DDX28	mitochondrion	accession
 Q96HY7	DHTKD1	DHTKD1	mitochondrion	accession
 Q5JPH6	EARS2	EARS2	mitochondrion	accession
+Q9NVH0	EXD2	EXD2	mitochondrion	accession
 Q96C01	TIMCC	FAM136A	mitochondrion	accession
 Q9NYY8	FASTKD2	FASTKD2	mitochondrion	accession
 P10109	FDX1	FDX1	mitochondrion	accession
@@ -2581,11 +2551,9 @@ Q9P0U4	CXXC1	CXXC1	nucleus	accession
 Q15398	DLGAP5	DLGAP5	nucleus	accession
 Q9Y485	DMXL1	DMXL1	nucleus	accession
 Q15329	E2F5	E2F5	nucleus	accession
-Q15723	ELF2	ELF2	nucleus	symbol
 Q09472	EP300	EP300	nucleus	accession
 Q9UPW0	FOXJ3	FOXJ3	nucleus	accession
 O75496	GMNN	GMNN	nucleus	accession
-P61978	HNRNPK	HNRNPK	nucleus	symbol
 Q9HBG6	IFT122	IFT122	nucleus	accession
 Q96SY0	INTS14	INTS14	nucleus	accession
 Q9Y4C1	KDM3A	KDM3A	nucleus	accession
@@ -2638,6 +2606,7 @@ O15014	ZNF609	ZNF609	nucleus	accession
 Q5JTZ9	AARS2	AARS2	mitochondrion	accession
 P42765	ACAA2	ACAA2	mitochondrion	accession
 P51649	ALDH5A1	ALDH5A1	mitochondrion	accession
+P49419	ALDH7A1	ALDH7A1	mitochondrion	accession
 O14874	BCKDK	BCKDK	mitochondrion	accession
 Q16740	CLPP	CLPP	mitochondrion	accession
 O76031	CLPX	CLPX	mitochondrion	accession
@@ -2647,6 +2616,7 @@ P08574	CYC1	CYC1	mitochondrion	accession
 Q6PI48	DARS2	DARS2	mitochondrion	accession
 Q7Z4W1	DCXR	DCXR	mitochondrion	accession
 Q9NVH1	DNAJC11	DNAJC11	mitochondrion	accession
+Q9BQ52	ELAC2	ELAC2	mitochondrion	accession
 Q96RP9	GFM1	GFM1	mitochondrion	accession
 P43304	GPD2	GPD2	mitochondrion	accession
 Q16836	HADH	HADH	mitochondrion	symbol
@@ -2741,6 +2711,7 @@ Q9HBE1	PATZ1	PATZ1	nucleolus	accession
 Q9Y5B6	PAXBP1	PAXBP1	nucleolus	accession
 O00541	PES1	PES1	nucleolus	accession
 Q92576	PHF3	PHF3	nucleolus	accession
+Q8IWS0	PHF6	PHF6	nucleolus	accession
 O75925	PIAS1	PIAS1	nucleolus	accession
 Q96BK5	PINX1	PINX1	nucleolus	accession
 Q99697	PITX2	PITX2	nucleolus	accession
@@ -2760,8 +2731,7 @@ Q9P0U3	SENP1	SENP1	nucleolus	accession
 O75940	SMNDC1	SMNDC1	nucleolus	accession
 Q5T280	SPOUT1	SPOUT1	nucleolus	accession
 Q8IYB3	SRRM1	SRRM1	nucleolus	accession
-Q6P1X5	TAF2	TAF2	nucleolus	symbol
-Q13428	TCOF1	TCOF1	nucleolus	symbol
+Q13428	TCOF1	TCOF1	nucleolus	accession
 Q96EK4	THAP11	THAP11	nucleolus	accession
 Q9Y3A2	UTP11	UTP11	nucleolus	accession
 Q9BVJ6	UTP14A	UTP14A	nucleolus	accession
@@ -2786,7 +2756,6 @@ Q9BQ39	DDX50	DDX50	nucleus	accession
 O43143	DHX15	DHX15	nucleus	accession
 Q13868	EXOSC2	EXOSC2	nucleus	accession
 Q15024	EXOSC7	EXOSC7	nucleus	accession
-P51610	HCFC1	HCFC1	nucleus	symbol
 Q9BUJ2	HNRNPUL1	HNRNPUL1	nucleus	accession
 Q13123	IK	IK	nucleus	accession
 Q9ULR0	ISY1	ISY1	nucleus	accession
@@ -2805,10 +2774,8 @@ O43395	PRPF3	PRPF3	nucleus	accession
 O43172	PRPF4	PRPF4	nucleus	symbol
 O94906	PRPF6	PRPF6	nucleus	accession
 Q15269	PWP2	PWP2	nucleus	accession
-Q9UKM9	RALY	RALY	nucleus	symbol
 Q96PK6	RBM14	RBM14	nucleus	accession
 Q96T37	RBM15	RBM15	nucleus	accession
-Q5T8P6	RBM26	RBM26	nucleus	symbol
 Q9BTD8	RBM42	RBM42	nucleus	accession
 Q15428	SF3A2	SF3A2	nucleus	accession
 Q13435	SF3B2	SF3B2	nucleus	accession
@@ -2844,7 +2811,7 @@ P23526	AHCY	AHCY	cytosol	accession
 P39687	ANP32A	ANP32A	cytosol	accession
 P08758	ANXA5	ANXA5	cytosol	accession
 P52565	ARHGDIA	ARHGDIA	cytosol	accession
-P31939	ATIC	ATIC	cytosol	symbol
+P31939	ATIC	ATIC	cytosol	accession
 P00918	CA2	CA2	cytosol	accession
 Q9Y2V2	CARHSP1	CARHSP1	cytosol	accession
 Q9NZZ3	CHMP5	CHMP5	cytosol	accession
@@ -2865,7 +2832,6 @@ P04406	GAPDH	GAPDH	cytosol	accession
 P22102	GART	GART	cytosol	accession
 O14908	GIPC1	GIPC1	cytosol	accession
 P06744	GPI	GPI	cytosol	symbol
-P09211	GSTP1	GSTP1	cytosol	symbol
 P12081	HARS1	HARS1	cytosol	accession
 P00492	HPRT1	HPRT1	cytosol	accession
 P12268	IMPDH2	IMPDH2	cytosol	symbol
@@ -2904,7 +2870,6 @@ P26639	TARS1	TARS1	cytosol	accession
 Q9BRA2	TXNDC17	TXNDC17	cytosol	accession
 Q04323	UBXN1	UBXN1	cytosol	accession
 P09936	UCHL1	UCHL1	cytosol	accession
-Q9UPQ3	AGAP1	AGAP1	unclassified	symbol
 Q96P47	AGAP3	AGAP3	unclassified	accession
 O00189	AP4M1	AP4M1	unclassified	symbol
 Q14CB8	ARHGAP19	ARHGAP19	unclassified	accession
@@ -2916,7 +2881,6 @@ O95503	CBX6	CBX6	unclassified	accession
 Q6P1N0	CC2D1A	CC2D1A	unclassified	accession
 Q71F23	CENPU	CENPU	unclassified	accession
 Q9P2B7	CFAP97	CFAP97	unclassified	accession
-P48729	CSNK1A1	CSNK1A1	unclassified	symbol
 O43583	DENR	DENR	unclassified	accession
 P00374	DHFR	DHFR	unclassified	accession
 Q13627	DYRK1A	DYRK1A	unclassified	symbol
@@ -2931,6 +2895,7 @@ Q13098	GPS1	GPS1	unclassified	accession
 Q13322	GRB10	GRB10	unclassified	accession
 P49841	GSK3B	GSK3B	unclassified	accession
 P21266	GSTM3	GSTM3	unclassified	accession
+P09211	GSTP1	GSTP1	unclassified	accession
 P29084	GTF2E2	GTF2E2	unclassified	accession
 O00178	GTPBP1	GTPBP1	unclassified	accession
 Q9Y450	HBS1L	HBS1L	unclassified	accession
@@ -3033,7 +2998,6 @@ Q96RU2	USP28	USP28	cytosol	accession
 Q96F45	ZNF503	ZNF503	cytosol	accession
 Q9H7S9	ZNF703	ZNF703	cytosol	accession
 O95229	ZWINT	ZWINT	cytosol	accession
-Q9NYF8	BCLAF1	BCLAF1	nucleus	symbol
 Q8WUD4	CCDC12	CCDC12	nucleus	accession
 Q92841	DDX17	DDX17	nucleus	accession
 P17844	DDX5	DDX5	nucleus	accession
@@ -3046,6 +3010,7 @@ Q9NP66	HMG20A	HMG20A	nucleus	accession
 Q14103	HNRNPD	HNRNPD	nucleus	accession
 O14979	HNRNPDL	HNRNPDL	nucleus	accession
 P31943	HNRNPH1	HNRNPH1	nucleus	accession
+P61978	HNRNPK	HNRNPK	nucleus	accession
 P52272	HNRNPM	HNRNPM	nucleus	accession
 Q00839	HNRNPU	HNRNPU	nucleus	accession
 Q12905	ILF2	ILF2	nucleus	accession
@@ -3078,10 +3043,9 @@ P14678	SNRPB	SNRPB	nucleus	accession
 P09234	SNRPC	SNRPC	nucleus	accession
 P62314	SNRPD1	SNRPD1	nucleus	accession
 P62318	SNRPD3	SNRPD3	nucleus	accession
-P18583	SON	SON	nucleus	symbol
 O75494	SRSF10	SRSF10	nucleus	accession
 Q08170	SRSF4	SRSF4	nucleus	accession
-O60506	SYNCRIP	SYNCRIP	nucleus	symbol
+O60506	SYNCRIP	SYNCRIP	nucleus	accession
 Q13148	TARDBP	TARDBP	nucleus	accession
 Q96J01	THOC3	THOC3	nucleus	accession
 Q86W42	THOC6	THOC6	nucleus	accession
@@ -3110,6 +3074,7 @@ Q96DA6	DNAJC19	DNAJC19	mitochondrion	accession
 P38117	ETFB	ETFB	mitochondrion	accession
 P22830	FECH	FECH	mitochondrion	accession
 Q16595	FXN	FXN	mitochondrion	accession
+O94925	GLS	GLS	mitochondrion	accession
 A4D1E9	GTPBP10	GTPBP10	mitochondrion	accession
 O43824	GTPBP6	GTPBP6	mitochondrion	accession
 P55084	HADHB	HADHB	mitochondrion	accession
@@ -3149,6 +3114,7 @@ P19404	NDUFV2	NDUFV2	mitochondrion	accession
 Q9BPW8	NIPSNAP1	NIPSNAP1	mitochondrion	accession
 O75323	NIPSNAP2	NIPSNAP2	mitochondrion	accession
 Q9H857	NT5DC2	NT5DC2	mitochondrion	accession
+Q9H2U2	PPA2	PPA2	mitochondrion	accession
 Q9H936	SLC25A22	SLC25A22	mitochondrion	accession
 P12236	SLC25A6	SLC25A6	mitochondrion	accession
 Q04837	SSBP1	SSBP1	mitochondrion	accession
@@ -3184,7 +3150,6 @@ Q01167	FOXK2	FOXK2	nucleus	accession
 P10071	GLI3	GLI3	nucleus	accession
 P16402	H1-3	H1-3	nucleus	accession
 P07910	HNRNPC	HNRNPC	nucleus	symbol
-P14866	HNRNPL	HNRNPL	nucleus	symbol
 Q9ULG1	INO80	INO80	nucleus	accession
 P05412	JUN	JUN	nucleus	accession
 O95235	KIF20A	KIF20A	nucleus	accession
@@ -3289,6 +3254,7 @@ Q9H6X2	ANTXR1	ANTXR1	plasma_membrane	accession
 P53680	AP2S1	AP2S1	plasma_membrane	accession
 P61769	B2M	B2M	plasma_membrane	accession
 Q03135	CAV1	CAV1	plasma_membrane	accession
+P15529	CD46	CD46	plasma_membrane	accession
 Q96FZ7	CHMP6	CHMP6	plasma_membrane	accession
 Q8NE01	CNNM3	CNNM3	plasma_membrane	accession
 Q12860	CNTN1	CNTN1	plasma_membrane	accession
@@ -3345,7 +3311,6 @@ Q9H0M0	WWP1	WWP1	plasma_membrane	accession
 O00308	WWP2	WWP2	plasma_membrane	accession
 Q9NUE0	ZDHHC18	ZDHHC18	plasma_membrane	accession
 O15084	ANKRD28	ANKRD28	unclassified	accession
-Q92625	ANKS1A	ANKS1A	unclassified	symbol
 Q8N6H7	ARFGAP2	ARFGAP2	unclassified	accession
 Q92888	ARHGEF1	ARHGEF1	unclassified	accession
 Q6NXE6	ARMC6	ARMC6	unclassified	accession
@@ -3385,7 +3350,6 @@ P09884	POLA1	POLA1	unclassified	accession
 Q9BUI4	POLR3C	POLR3C	unclassified	accession
 Q9UPN7	PPP6R1	PPP6R1	unclassified	accession
 O60678	PRMT3	PRMT3	unclassified	accession
-Q05397	PTK2	PTK2	unclassified	symbol
 Q2TAL8	QRICH1	QRICH1	unclassified	accession
 Q5R372	RABGAP1L	RABGAP1L	unclassified	accession
 Q8TEU7	RAPGEF6	RAPGEF6	unclassified	accession
@@ -3418,7 +3382,8 @@ A1XBS5	CIBAR1	CIBAR1	actin_cytoskeleton	accession
 Q16527	CSRP2	CSRP2	actin_cytoskeleton	accession
 Q5JSL3	DOCK11	DOCK11	actin_cytoskeleton	accession
 Q9Y4J8	DTNA	DTNA	actin_cytoskeleton	accession
-O43491	EPB41L2	EPB41L2	actin_cytoskeleton	symbol
+P11171	EPB41	EPB41	actin_cytoskeleton	accession
+O43491	EPB41L2	EPB41L2	actin_cytoskeleton	accession
 Q9Y2J2	EPB41L3	EPB41L3	actin_cytoskeleton	symbol
 Q9NV70	EXOC1	EXOC1	actin_cytoskeleton	accession
 Q96A65	EXOC4	EXOC4	actin_cytoskeleton	accession
@@ -3434,18 +3399,18 @@ Q9NUP9	LIN7C	LIN7C	actin_cytoskeleton	accession
 Q5VUJ6	LRCH2	LRCH2	actin_cytoskeleton	accession
 Q86V48	LUZP1	LUZP1	actin_cytoskeleton	accession
 O95819	MAP4K4	MAP4K4	actin_cytoskeleton	symbol
-O00159	MYO1C	MYO1C	actin_cytoskeleton	symbol
 P07196	NEFL	NEFL	actin_cytoskeleton	accession
 P07197	NEFM	NEFM	actin_cytoskeleton	accession
 O96013	PAK4	PAK4	actin_cytoskeleton	accession
 Q96IZ0	PAWR	PAWR	actin_cytoskeleton	accession
 P42356	PI4KA	PI4KA	actin_cytoskeleton	accession
+Q13492	PICALM	PICALM	actin_cytoskeleton	accession
 P27986	PIK3R1	PIK3R1	actin_cytoskeleton	accession
 O00459	PIK3R2	PIK3R2	actin_cytoskeleton	accession
 Q92569	PIK3R3	PIK3R3	actin_cytoskeleton	accession
 P48426	PIP4K2A	PIP4K2A	actin_cytoskeleton	accession
 P78356	PIP4K2B	PIP4K2B	actin_cytoskeleton	accession
-Q15149	PLEC	PLEC	actin_cytoskeleton	symbol
+Q15149	PLEC	PLEC	actin_cytoskeleton	accession
 Q13136	PPFIA1	PPFIA1	actin_cytoskeleton	accession
 Q86W92	PPFIBP1	PPFIBP1	actin_cytoskeleton	accession
 O75116	ROCK2	ROCK2	actin_cytoskeleton	accession
@@ -3455,6 +3420,7 @@ Q15019	SEPTIN2	SEPTIN2	actin_cytoskeleton	accession
 Q14141	SEPTIN6	SEPTIN6	actin_cytoskeleton	accession
 Q16181	SEPTIN7	SEPTIN7	actin_cytoskeleton	accession
 Q9UHD8	SEPTIN9	SEPTIN9	actin_cytoskeleton	symbol
+Q13813	SPTAN1	SPTAN1	actin_cytoskeleton	accession
 Q01082	SPTBN1	SPTBN1	actin_cytoskeleton	accession
 Q9BZF9	UACA	UACA	actin_cytoskeleton	accession
 Q70EL1	USP54	USP54	actin_cytoskeleton	accession
@@ -3552,6 +3518,8 @@ Q15818	NPTX1	NPTX1	ER	accession
 P07237	P4HB	P4HB	ER	accession
 P29122	PCSK6	PCSK6	ER	accession
 Q8NBM8	PCYOX1L	PCYOX1L	ER	accession
+P30101	PDIA3	PDIA3	ER	accession
+P13667	PDIA4	PDIA4	ER	accession
 Q15084	PDIA6	PDIA6	ER	accession
 Q8TBF5	PIGX	PIGX	ER	accession
 Q15165	PON2	PON2	ER	accession
@@ -3753,6 +3721,7 @@ P54132	BLM	BLM	nucleolus	accession
 Q9H8G2	CAAP1	CAAP1	nucleolus	accession
 O75909	CCNK	CCNK	nucleolus	accession
 Q12834	CDC20	CDC20	nucleolus	accession
+Q14004	CDK13	CDK13	nucleolus	accession
 Q9UFW8	CGGBP1	CGGBP1	nucleolus	accession
 Q13206	DDX10	DDX10	nucleolus	accession
 Q9GZR7	DDX24	DDX24	nucleolus	accession
@@ -3790,11 +3759,13 @@ Q9H4L4	SENP3	SENP3	nucleolus	accession
 Q14493	SLBP	SLBP	nucleolus	accession
 O95391	SLU7	SLU7	nucleolus	accession
 Q8ND04	SMG8	SMG8	nucleolus	accession
+P18583	SON	SON	nucleolus	accession
 Q86XZ4	SPATS2	SPATS2	nucleolus	accession
 Q9NUQ6	SPATS2L	SPATS2L	nucleolus	accession
 Q96SB4	SRPK1	SRPK1	nucleolus	accession
 P78362	SRPK2	SRPK2	nucleolus	accession
 Q12962	TAF10	TAF10	nucleolus	accession
+Q6P1X5	TAF2	TAF2	nucleolus	accession
 Q7Z7C8	TAF8	TAF8	nucleolus	accession
 Q9UPQ9	TNRC6B	TNRC6B	nucleolus	accession
 Q96GM8	TOE1	TOE1	nucleolus	accession
@@ -3818,7 +3789,6 @@ Q86T65	DAAM2	DAAM2	plasma_membrane	accession
 P98082	DAB2	DAB2	plasma_membrane	accession
 Q9Y2E4	DIP2C	DIP2C	plasma_membrane	accession
 Q9H7D0	DOCK5	DOCK5	plasma_membrane	accession
-Q03001	DST	DST	plasma_membrane	symbol
 Q9NZN4	EHD2	EHD2	plasma_membrane	accession
 Q9NZN3	EHD3	EHD3	plasma_membrane	accession
 Q9NVM1	EVA1B	EVA1B	plasma_membrane	accession
@@ -3903,7 +3873,6 @@ Q9H299	SH3BGRL3	SH3BGRL3	cytosol	accession
 Q00796	SORD	SORD	cytosol	accession
 O75391	SPAG7	SPAG7	cytosol	accession
 O43295	SRGAP3	SRGAP3	cytosol	accession
-Q9UH65	SWAP70	SWAP70	cytosol	symbol
 P62380	TBPL1	TBPL1	cytosol	accession
 Q68CL5	TPGS2	TPGS2	cytosol	accession
 P09493	TPM1	TPM1	cytosol	symbol
@@ -3925,7 +3894,6 @@ P19022	CDH2	CDH2	plasma_membrane	accession
 P56749	CLDN12	CLDN12	plasma_membrane	accession
 O15194	CTDSPL	CTDSPL	plasma_membrane	accession
 Q9Y4D1	DAAM1	DAAM1	plasma_membrane	accession
-Q12959	DLG1	DLG1	plasma_membrane	symbol
 Q92796	DLG3	DLG3	plasma_membrane	accession
 P52799	EFNB2	EFNB2	plasma_membrane	accession
 Q14156	EFR3A	EFR3A	plasma_membrane	accession
@@ -3944,6 +3912,7 @@ P08648	ITGA5	ITGA5	plasma_membrane	accession
 P23229	ITGA6	ITGA6	plasma_membrane	accession
 P14923	JUP	JUP	plasma_membrane	accession
 Q96J84	KIRREL1	KIRREL1	plasma_membrane	accession
+P01116	KRAS	KRAS	plasma_membrane	accession
 P43121	MCAM	MCAM	plasma_membrane	accession
 Q6UVY6	MOXD1	MOXD1	plasma_membrane	accession
 Q68D85	NCR3LG1	NCR3LG1	plasma_membrane	accession
@@ -3969,24 +3938,21 @@ Q9C0B5	ZDHHC5	ZDHHC5	plasma_membrane	accession
 Q6IQ32	ADNP2	ADNP2	nucleus	accession
 Q14CW9	ATXN7L3	ATXN7L3	nucleus	accession
 Q9BPU9	B9D2	B9D2	nucleus	accession
-Q9UIF8	BAZ2B	BAZ2B	nucleus	symbol
 Q8WY36	BBX	BBX	nucleus	accession
 Q9H165	BCL11A	BCL11A	nucleus	accession
 Q8WUZ0	BCL7C	BCL7C	nucleus	accession
 Q9NZM4	BICRA	BICRA	nucleus	accession
 O15392	BIRC5	BIRC5	nucleus	symbol
-O95696	BRD1	BRD1	nucleus	symbol
 Q9UKL3	CASP8AP2	CASP8AP2	nucleus	accession
 Q86V15	CASZ1	CASZ1	nucleus	accession
 Q69YH5	CDCA2	CDCA2	nucleus	accession
-Q99626	CDX2	CDX2	nucleus	symbol
 Q9BS16	CENPK	CENPK	nucleus	accession
 O95147	DUSP14	DUSP14	nucleus	accession
 Q96L91	EP400	EP400	nucleus	accession
 Q92826	HOXB13	HOXB13	nucleus	accession
 Q8NEZ4	KMT2C	KMT2C	nucleus	accession
 Q4FZB7	KMT5B	KMT5B	nucleus	accession
-Q96JN0	LCOR	LCOR	nucleus	symbol
+Q96JN0	LCOR	LCOR	nucleus	accession
 Q5T3J3	LRIF1	LRIF1	nucleus	accession
 Q15013	MAD2L1BP	MAD2L1BP	nucleus	accession
 Q9NS73	MBIP	MBIP	nucleus	accession
@@ -4010,7 +3976,6 @@ Q01664	TFAP4	TFAP4	nucleus	accession
 Q4W5G0	TIGD2	TIGD2	nucleus	accession
 Q96PU4	UHRF2	UHRF2	nucleus	accession
 Q5W0Q7	USPL1	USPL1	nucleus	accession
-P49750	YLPM1	YLPM1	nucleus	symbol
 Q13105	ZBTB17	ZBTB17	nucleus	accession
 Q9UKY1	ZHX1	ZHX1	nucleus	accession
 O60281	ZNF292	ZNF292	nucleus	accession
@@ -4019,7 +3984,6 @@ P59923	ZNF445	ZNF445	nucleus	accession
 P17097	ZNF7	ZNF7	nucleus	accession
 Q6IQ21	ZNF770	ZNF770	nucleus	accession
 O43309	ZSCAN12	ZSCAN12	nucleus	accession
-P61221	ABCE1	ABCE1	unclassified	symbol
 Q8WTS1	ABHD5	ABHD5	unclassified	accession
 Q7Z3E2	CCDC186	CCDC186	unclassified	accession
 O00622	CCN1	CCN1	unclassified	accession
@@ -4037,7 +4001,6 @@ Q8IV33	KIAA0825	KIAA0825	unclassified	accession
 P25391	LAMA1	LAMA1	unclassified	accession
 O95214	LEPROTL1	LEPROTL1	unclassified	accession
 P49917	LIG4	LIG4	unclassified	accession
-Q9UPQ0	LIMCH1	LIMCH1	unclassified	symbol
 Q8N2S1	LTBP4	LTBP4	unclassified	accession
 Q9BSK0	MARVELD1	MARVELD1	unclassified	accession
 P56270	MAZ	MAZ	unclassified	accession
@@ -4045,7 +4008,6 @@ Q96MC6	SLC71A1	MFSD14A	unclassified	accession
 Q9BRA0	NAA38	NAA38	unclassified	accession
 Q5HYW2	NHSL2	NHSL2	unclassified	accession
 O15259	NPHP1	NPHP1	unclassified	accession
-P06748	NPM1	NPM1	unclassified	symbol
 Q8N138	ORMDL3	ORMDL3	unclassified	accession
 Q9BUH6	PAXX	PAXX	unclassified	accession
 Q99453	PHOX2B	PHOX2B	unclassified	accession
@@ -4060,6 +4022,7 @@ Q9H228	S1PR5	S1PR5	unclassified	accession
 Q0VAQ4	SMAGP	SMAGP	unclassified	accession
 Q9HCB6	SPON1	SPON1	unclassified	accession
 Q8TCT7	SPPL2B	SPPL2B	unclassified	accession
+Q14849	STARD3	STARD3	unclassified	accession
 Q8IWU5	SULF2	SULF2	unclassified	accession
 P16035	TIMP2	TIMP2	unclassified	accession
 Q96I45	TMEM141	TMEM141	unclassified	accession
@@ -4187,6 +4150,7 @@ Q00535	CDK5	CDK5	actin_cytoskeleton	accession
 P23528	CFL1	CFL1	actin_cytoskeleton	accession
 P30622	CLIP1	CLIP1	actin_cytoskeleton	accession
 Q15417	CNN3	CNN3	actin_cytoskeleton	accession
+O60716	CTNND1	CTNND1	actin_cytoskeleton	accession
 Q9NUQ9	CYRIB	CYRIB	actin_cytoskeleton	accession
 P60981	DSTN	DSTN	actin_cytoskeleton	accession
 Q96KP1	EXOC2	EXOC2	actin_cytoskeleton	accession
@@ -4205,7 +4169,7 @@ P58546	MTPN	MTPN	actin_cytoskeleton	accession
 P35580	MYH10	MYH10	actin_cytoskeleton	accession
 P35579	MYH9	MYH9	actin_cytoskeleton	accession
 O14950	MYL12B	MYL12B	actin_cytoskeleton	accession
-P60660	MYL6	MYL6	actin_cytoskeleton	symbol
+P60660	MYL6	MYL6	actin_cytoskeleton	accession
 O15394	NCAM2	NCAM2	actin_cytoskeleton	symbol
 P62166	NCS1	NCS1	actin_cytoskeleton	accession
 O14737	PDCD5	PDCD5	actin_cytoskeleton	accession
@@ -4222,6 +4186,7 @@ Q9Y6E0	STK24	STK24	actin_cytoskeleton	accession
 P67936	TPM4	TPM4	actin_cytoskeleton	accession
 P61077	UBE2D3	UBE2D3	actin_cytoskeleton	accession
 O75934	BCAS2	BCAS2	nucleus	accession
+Q9NYF8	BCLAF1	BCLAF1	nucleus	accession
 P25440	BRD2	BRD2	nucleus	accession
 Q53HL2	CDCA8	CDCA8	nucleus	accession
 Q92879	CELF1	CELF1	nucleus	accession
@@ -4242,6 +4207,7 @@ Q99729	HNRNPAB	HNRNPAB	nucleus	accession
 P52597	HNRNPF	HNRNPF	nucleus	accession
 P55795	HNRNPH2	HNRNPH2	nucleus	accession
 P31942	HNRNPH3	HNRNPH3	nucleus	accession
+P14866	HNRNPL	HNRNPL	nucleus	accession
 O43390	HNRNPR	HNRNPR	nucleus	accession
 Q1KMD3	HNRNPUL2	HNRNPUL2	nucleus	accession
 Q9NQS7	INCENP	INCENP	nucleus	accession
@@ -4251,6 +4217,7 @@ Q96A72	MAGOHB	MAGOHB	nucleus	accession
 P43243	MATR3	MATR3	nucleus	symbol
 Q86U42	PABPN1	PABPN1	nucleus	accession
 Q8IXK0	PHC2	PHC2	nucleus	accession
+Q9UKM9	RALY	RALY	nucleus	accession
 P38159	RBMX	RBMX	nucleus	accession
 Q06330	RBPJ	RBPJ	nucleus	accession
 Q15424	SAFB	SAFB	nucleus	accession
@@ -4259,7 +4226,8 @@ P62308	SNRPG	SNRPGP15	nucleus	accession
 Q96T58	SPEN	SPEN	nucleus	accession
 Q13242	SRSF9	SRSF9	nucleus	accession
 Q9NXF1	TEX10	TEX10	nucleus	accession
-Q9Y2W1	THRAP3	THRAP3	nucleus	symbol
+Q9Y2W1	THRAP3	THRAP3	nucleus	accession
+P49750	YLPM1	YLPM1	nucleus	accession
 O95409	ZIC2	ZIC2	nucleus	accession
 Q14966	ZNF638	ZNF638	nucleus	accession
 Q9H6U8	ALG9	ALG9	ER	accession
@@ -4300,6 +4268,7 @@ Q969N2	PIGT	PIGT	ER	accession
 Q02809	PLOD1	PLOD1	ER	accession
 O00469	PLOD2	PLOD2	ER	accession
 P45877	PPIC	PPIC	ER	accession
+P14314	PRKCSH	PRKCSH	ER	accession
 Q9NXS2	QPCTL	QPCTL	ER	accession
 Q96AA3	RFT1	RFT1	ER	accession
 Q99470	SDF2	SDF2	ER	accession
@@ -4325,6 +4294,7 @@ Q5VT25	CDC42BPA	CDC42BPA	plasma_membrane	accession
 Q9P2M7	CGN	CGN	plasma_membrane	accession
 O14578	CIT	CIT	plasma_membrane	accession
 Q9UBT7	CTNNAL1	CTNNAL1	plasma_membrane	accession
+Q12959	DLG1	DLG1	plasma_membrane	accession
 Q9HCM4	EPB41L5	EPB41L5	plasma_membrane	accession
 O95208	EPN2	EPN2	plasma_membrane	accession
 Q96RT1	ERBIN	ERBIN	plasma_membrane	accession
@@ -4338,8 +4308,9 @@ O75970	MPDZ	MPDZ	plasma_membrane	accession
 Q00013	MPP1	MPP1	plasma_membrane	accession
 Q14168	MPP2	MPP2	plasma_membrane	symbol
 Q5T2T1	MPP7	MPP7	plasma_membrane	accession
-Q6WCQ1	MPRIP	MPRIP	plasma_membrane	symbol
+Q6WCQ1	MPRIP	MPRIP	plasma_membrane	accession
 O43795	MYO1B	MYO1B	plasma_membrane	accession
+O00159	MYO1C	MYO1C	plasma_membrane	accession
 O94832	MYO1D	MYO1D	plasma_membrane	accession
 Q9NZQ3	NCKIPSD	NCKIPSD	plasma_membrane	accession
 P48681	NES	NES	plasma_membrane	symbol
@@ -4410,8 +4381,8 @@ Q12768	WASHC5	WASHC5	early_endosome	accession
 P51825	AFF1	AF-4	nucleus	accession
 Q9Y6H3	ATP23	ATP23	nucleus	accession
 Q99728	BARD1	BARD1	nucleus	accession
+O95696	BRD1	BRD1	nucleus	accession
 Q9NSI6	BRWD1	BRWD1	nucleus	accession
-Q12873	CHD3	CHD3	nucleus	symbol
 Q9UDT6	CLIP2	CLIP2	nucleus	accession
 O75398	DEAF1	DEAF1	nucleus	accession
 Q5FWF5	ESCO1	ESCO1	nucleus	accession
@@ -4447,6 +4418,7 @@ O15119	TBX3	TBX3	nucleus	symbol
 Q96MW7	TIGD1	TIGD1	nucleus	accession
 O60315	ZEB2	ZEB2	nucleus	accession
 Q15326	ZMYND11	ZMYND11	nucleus	accession
+Q9ULU4	ZMYND8	ZMYND8	nucleus	accession
 Q9C0G0	ZNF407	ZNF407	nucleus	accession
 Q6P9G9	ZNF449	ZNF449	nucleus	accession
 Q9H582	ZNF644	ZNF644	nucleus	accession
@@ -4455,7 +4427,6 @@ Q8N1W2	ZNF710	ZNF710	nucleus	accession
 Q2TB10	ZNF800	ZNF800	nucleus	accession
 Q7L1Q6	BZW1	BZW1	stress_granule	accession
 Q9Y6E2	BZW2	BZW2	stress_granule	accession
-O75153	CLUH	CLUH	stress_granule	symbol
 Q17RY0	CPEB4	CPEB4	stress_granule	accession
 Q8TF46	DIS3L	DIS3L	stress_granule	accession
 Q9GZT9	EGLN1	EGLN1	stress_granule	accession
@@ -4483,7 +4454,6 @@ Q9BZK3	NACA4P	NACA4P	stress_granule	accession
 Q9H3P2	NELFA	NELFA	stress_granule	accession
 Q8WX92	NELFB	NELFB	stress_granule	symbol
 P18615	NELFE	NELFE	stress_granule	accession
-P15880	RPS2	RPS2	stress_granule	symbol
 Q9H074	PAIP1	PAIP1	stress_granule	accession
 Q9BPZ3	PAIP2	PAIP2	stress_granule	accession
 Q504Q3	PAN2	PAN2	stress_granule	accession
@@ -4517,7 +4487,7 @@ Q9UBS4	DNAJB11	DNAJB11	ER	accession
 Q15006	EMC2	EMC2	ER	accession
 Q9Y3B6	EMC9	EMC9	ER	accession
 P50402	EMD	EMD	ER	accession
-Q9BSJ8	ESYT1	ESYT1	ER	symbol
+Q9BSJ8	ESYT1	ESYT1	ER	accession
 Q9BUM1	G6PC3	G6PC3	ER	accession
 Q6ZS86	GK5	GK5	ER	accession
 Q8TCT9	HM13	HM13	ER	accession
@@ -4556,7 +4526,6 @@ Q8N5S9	CAMKK1	CAMKK1	cytosol	accession
 Q9BV29	CCDC32	CCDC32	cytosol	accession
 Q96G28	CFAP36	CFAP36	cytosol	accession
 Q9Y3E7	CHMP3	CHMP3	cytosol	accession
-Q9UBC2	EPS15L1	EPS15L1	cytosol	symbol
 Q9P2D6	FAM135A	FAM135A	cytosol	accession
 P49354	FNTA	FNTA	cytosol	accession
 O60547	GMDS	GMDS	cytosol	accession
@@ -4564,7 +4533,6 @@ P46926	GNPDA1	GNPDA1	cytosol	accession
 P28161	GSTM2	GSTM2	cytosol	accession
 P78417	GSTO1	GSTO1	cytosol	accession
 Q01581	HMGCS1	HMGCS1	cytosol	accession
-P53671	LIMK2	LIMK2	cytosol	symbol
 Q8NDC0	MAPK1IP1L	MAPK1IP1L	cytosol	accession
 Q9Y316	MEMO1	MEMO1	cytosol	accession
 P34949	MPI	MPI	cytosol	accession
@@ -4572,6 +4540,7 @@ Q9BV20	MRI1	MRI1	cytosol	accession
 Q13126	MTAP	MTAP	cytosol	accession
 Q15746	MYLK	MYLK	cytosol	accession
 Q12965	MYO1E	MYO1E	cytosol	accession
+Q9BXJ9	NAA15	NAA15	cytosol	accession
 Q8NBF2	NHLRC2	NHLRC2	cytosol	accession
 Q8WVJ2	NUDCD2	NUDCD2	cytosol	accession
 Q53GG5	PDLIM3	PDLIM3	cytosol	accession
@@ -4659,10 +4628,8 @@ O15054	KDM6B	KDM6B	nucleus	accession
 Q03111	MLLT1	MLLT1	nucleus	accession
 P03897	MT-ND3	MT-ND3	nucleus	symbol
 P40425	PBX2	PBX2	nucleus	accession
-Q9BY77	POLDIP3	POLDIP3	nucleus	symbol
 Q12972	PPP1R8	PPP1R8	nucleus	accession
 P78527	PRKDC	PRKDC	nucleus	accession
-O75475	PSIP1	PSIP1	nucleus	symbol
 Q86Y79	PTRH1	PTRH1	nucleus	accession
 Q8IUH3	RBM45	RBM45	nucleus	accession
 Q9HCM1	RESF1	RESF1	nucleus	accession
@@ -4696,6 +4663,7 @@ Q96A33	CCDC47	CCDC47	ER	accession
 Q96S66	CLCC1	CLCC1	ER	accession
 P00167	CYB5A	CYB5A	ER	accession
 Q9BW60	ELOVL1	ELOVL1	ER	accession
+O60427	FADS1	FADS1	ER	accession
 Q96CS3	FAF2	FAF2	ER	accession
 Q9UBU6	FAM8A1	FAM8A1	ER	accession
 Q96F46	IL17RA	IL17RA	ER	accession
@@ -4728,10 +4696,10 @@ Q5BJD5	TMEM41B	TMEM41B	ER	accession
 Q9H3N1	TMX1	TMX1	ER	accession
 Q9Y320	TMX2	TMX2	ER	accession
 Q96JJ7	TMX3	TMX3	ER	accession
+Q5JTV8	TOR1AIP1	TOR1AIP1	ER	accession
 Q8NFQ8	TOR1AIP2	TOR1AIP2	ER	accession
 O14657	TOR1B	TOR1B	ER	accession
 Q15629	TRAM1	TRAM1	ER	accession
-Q8NBS9	TXNDC5	TXNDC5	ER	symbol
 O94874	UFL1	UFL1	ER	accession
 Q96GC9	VMP1	VMP1	ER	accession
 O75844	ZMPSTE24	ZMPSTE24	ER	accession
@@ -4783,7 +4751,6 @@ O43808	SLC25A17	SLC25A17	peroxisome	accession
 Q86UB9	TMEM135	TMEM135	peroxisome	accession
 Q9H330	TMEM245	TMEM245	peroxisome	accession
 Q2T9J0	TYSND1	TYSND1	peroxisome	accession
-Q9BZZ5	API5	API5	nucleus	symbol
 Q9H0E9	BRD8	BRD8	nucleus	symbol
 Q9Y6J0	CABIN1	CABIN1	nucleus	accession
 Q6IPU0	CENPP	CENPP	nucleus	accession
@@ -4838,7 +4805,7 @@ O94973	AP2A2	AP2A2	actin_cytoskeleton	accession
 P63010	AP2B1	AP2B1	actin_cytoskeleton	accession
 Q96CW1	AP2M1	AP2M1	actin_cytoskeleton	accession
 Q92747	ARPC1A	ARPC1A	actin_cytoskeleton	accession
-O15143	ARPC1B	ARPC1B	actin_cytoskeleton	symbol
+O15143	ARPC1B	ARPC1B	actin_cytoskeleton	accession
 O15144	ARPC2	ARPC2	actin_cytoskeleton	accession
 O15145	ARPC3	ARPC3	actin_cytoskeleton	accession
 P59998	ARPC4	ARPC4	actin_cytoskeleton	accession
@@ -4853,16 +4820,20 @@ Q9ULV4	CORO1C	CORO1C	actin_cytoskeleton	accession
 Q14247	CTTN	CTTN	actin_cytoskeleton	accession
 Q9P2B4	CTTNBP2NL	CTTNBP2NL	actin_cytoskeleton	accession
 Q16643	DBN1	DBN1	actin_cytoskeleton	accession
+Q9UJU6	DBNL	DBNL	actin_cytoskeleton	accession
 P50570	DNM2	DNM2	actin_cytoskeleton	accession
+Q03001	DST	DST	actin_cytoskeleton	accession
 Q9BUP0	EFHD1	EFHD1	actin_cytoskeleton	accession
 Q96C19	EFHD2	EFHD2	actin_cytoskeleton	accession
 Q9Y6I3	EPN1	EPN1	actin_cytoskeleton	accession
 P42566	EPS15	EPS15	actin_cytoskeleton	accession
+Q9UBC2	EPS15L1	EPS15L1	actin_cytoskeleton	accession
 Q15811	ITSN1	ITSN1	actin_cytoskeleton	accession
 Q9UHB6	LIMA1	LIMA1	actin_cytoskeleton	accession
 O14910	LIN7A	LIN7A	actin_cytoskeleton	accession
 Q7Z406	MYH14	MYH14	actin_cytoskeleton	accession
 P35240	NF2	NF2	actin_cytoskeleton	accession
+Q9Y6R0	NUMBL	NUMBL	actin_cytoskeleton	accession
 Q9H8K7	PAAT	PAAT	actin_cytoskeleton	accession
 Q8N3R9	PALS1	PALS1	actin_cytoskeleton	accession
 Q99755	PIP5K1A	PIP5K1A	actin_cytoskeleton	symbol
@@ -4913,7 +4884,7 @@ Q99550	MPHOSPH9	MPHOSPH9	centrosome	symbol
 Q8N4C6	NIN	NIN	centrosome	accession
 Q5BJF6	ODF2	ODF2	centrosome	accession
 O75665	OFD1	OFD1	centrosome	accession
-Q15154	PCM1	PCM1	centrosome	symbol
+Q15154	PCM1	PCM1	centrosome	accession
 O95613	PCNT	PCNT	centrosome	accession
 Q8WXW3	PIBF1	PIBF1	centrosome	accession
 Q63HN8	RNF213	RNF213	centrosome	accession
@@ -4926,6 +4897,7 @@ Q53H12	AGK	AGK	mitochondrion	accession
 P78540	ARG2	ARG2	mitochondrion	accession
 Q8N5M1	ATPAF2	ATPAF2	mitochondrion	accession
 Q96BP2	CHCHD1	CHCHD1	mitochondrion	accession
+Q9H078	CLPB	CLPB	mitochondrion	accession
 Q8NI60	COQ8A	COQ8A	mitochondrion	accession
 Q9Y6N1	COX11	COX11	mitochondrion	accession
 Q16854	DGUOK	DGUOK	mitochondrion	accession
@@ -5022,13 +4994,11 @@ Q96AJ1	IFT38	CLUAP1	unclassified	accession
 Q8TB45	DEPTOR	DEPTOR	unclassified	accession
 Q16760	DGKD	DGKD	unclassified	accession
 P25686	DNAJB2	DNAJB2	unclassified	accession
-Q9NYP3	DONSON	DONSON	unclassified	symbol
 Q9UNI6	DUSP12	DUSP12	unclassified	accession
 Q9NRW4	DUSP22	DUSP22	unclassified	accession
 Q92567	FAM168A	FAM168A	unclassified	accession
 Q9Y247	FAM50B	FAM50B	unclassified	accession
 Q5JVS0	HABP4	HABP4	unclassified	accession
-Q9NX55	HYPK	HYPK	unclassified	symbol
 Q13099	IFT88	IFT88	unclassified	accession
 Q9H1B7	IRF2BPL	IRF2BPL	unclassified	accession
 P42679	MATK	MATK	unclassified	accession
@@ -5041,7 +5011,6 @@ Q86W56	PARG	PARG	unclassified	accession
 Q3KNV8	PCGF3	PCGF3	unclassified	accession
 Q9Y253	POLH	POLH	unclassified	accession
 Q9UGP5	POLL	POLL	unclassified	accession
-O43314	PPIP5K2	PPIP5K2	unclassified	symbol
 Q9H0Z9	RBM38	RBM38	unclassified	accession
 P0DJD0	RGPD1	RGPD1	unclassified	accession
 Q01826	SATB1	SATB1	unclassified	accession
@@ -5056,9 +5025,9 @@ P23025	XPA	XPA	unclassified	accession
 Q9HBF4	ZFYVE1	ZFYVE1	unclassified	accession
 O14628	ZNF195	ZNF195	unclassified	accession
 Q99856	ARID3A	ARID3A	nucleus	accession
-Q5H9F3	BCORL1	BCORL1	nucleus	symbol
 O60885	BRD4	BRD4	nucleus	accession
 Q96GN5	CDCA7L	CDCA7L	nucleus	accession
+Q99626	CDX2	CDX2	nucleus	accession
 Q9BXF3	CECR2	CECR2	nucleus	accession
 Q4G0S4	CYP27C1	CYP27C1	nucleus	accession
 P62508	ESRRG	ESRRG	nucleus	accession
@@ -5117,7 +5086,6 @@ Q8WV92	MITD1	MITD1	early_endosome	accession
 Q15843	NEDD8	NEDD8	early_endosome	accession
 Q96SN7	ORAI2	ORAI2	early_endosome	accession
 Q96RV3	PCNX1	PCNX1	early_endosome	accession
-P19174	PLCG1	PLCG1	early_endosome	symbol
 Q9H8W4	PLEKHF2	PLEKHF2	early_endosome	accession
 Q6ZMI0	PPP1R21	PPP1R21	early_endosome	accession
 Q9H3S7	PTPN23	PTPN23	early_endosome	accession
@@ -5163,6 +5131,7 @@ Q9BQ15	NABP2	NABP2	nucleus	accession
 P30414	NKTR	NKTR	nucleus	accession
 O94913	PCF11	PCF11	nucleus	accession
 Q8WW12	PCNP	PCNP	nucleus	accession
+Q9BY77	POLDIP3	POLDIP3	nucleus	accession
 O15514	POLR2D	POLR2D	nucleus	accession
 P19388	POLR2E	POLR2E	nucleus	accession
 P62487	POLR2G	POLR2G	nucleus	accession
@@ -5206,6 +5175,7 @@ P62277	RPS13	RPS13	translation	accession
 P62263	RPS14	RPS14	translation	accession
 P62249	RPS16	RPS16	translation	accession
 P08708	RPS17	RPS17	translation	accession
+P15880	RPS2	RPS2	translation	accession
 P62847	RPS24	RPS24	translation	accession
 P62857	RPS28	RPS28	translation	accession
 P23396	RPS3	RPS3	translation	accession
@@ -5217,7 +5187,9 @@ Q9GZS3	SKIC8	SKIC8	translation	accession
 Q7KZF4	SND1	SND1	translation	accession
 Q92547	TOPBP1	TOPBP1	translation	accession
 Q8WU90	ZC3H15	ZC3H15	translation	accession
+Q7Z2W4	ZC3HAV1	ZC3HAV1	translation	accession
 Q9H9F9	ACTR5	ACTR5	unclassified	accession
+Q9UPQ3	AGAP1	AGAP1	unclassified	accession
 P49418	AMPH	AMPH	unclassified	accession
 O43150	ASAP2	ASAP2	unclassified	accession
 Q8TDY4	ASAP3	ASAP3	unclassified	accession
@@ -5231,6 +5203,7 @@ Q86X53	ERICH1	ERICH1	unclassified	accession
 Q12894	IFRD2	IFRD2	unclassified	accession
 Q7Z4S6	KIF21A	KIF21A	unclassified	accession
 Q16363	LAMA4	LAMA4	unclassified	symbol
+Q9UPQ0	LIMCH1	LIMCH1	unclassified	accession
 Q9UPY8	MAPRE3	MAPRE3	unclassified	accession
 Q13614	MTMR2	MTMR2	unclassified	accession
 Q9H7P6	MVB12B	MVB12B	unclassified	accession
@@ -5248,6 +5221,7 @@ Q9H788	SH2D4A	SH2D4A	unclassified	accession
 O75182	SIN3B	SIN3B	unclassified	accession
 Q9H7B4	SMYD3	SMYD3	unclassified	accession
 Q96N06	SPATA33	SPATA33	unclassified	accession
+Q9UH65	SWAP70	SWAP70	unclassified	accession
 P15923	TCF3	TCF3	unclassified	symbol
 Q9BTF0	THUMPD2	THUMPD2	unclassified	accession
 O95379	TNFAIP8	TNFAIP8	unclassified	accession
@@ -5289,7 +5263,6 @@ Q9HD15	SRA1	SRA1	unclassified	accession
 Q8WUJ0	STYX	STYX	unclassified	accession
 Q1ZZU3	SWI5	SWI5	unclassified	accession
 Q9Y6J9	TAF6L	TAF6L	unclassified	accession
-O60907	TBL1X	TBL1X	unclassified	symbol
 Q13569	TDG	TDG	unclassified	accession
 Q5JUR7	TEX30	TEX30	unclassified	accession
 Q7Z2Z1	TICRR	TICRR	unclassified	accession
@@ -5351,7 +5324,6 @@ O75530	EED	EED	nucleus	accession
 Q86YP4	GATAD2A	GATAD2A	nucleus	accession
 P07305	H1-0	H1-0	nucleus	accession
 P16403	H1-2	H1-2	nucleus	accession
-Q9NRZ9	HELLS	HELLS	nucleus	symbol
 Q14527	HLTF	HLTF	nucleus	accession
 P52926	HMGA2	HMGA2	nucleus	accession
 P05114	HMGN1	HMGN1	nucleus	accession
@@ -5359,6 +5331,7 @@ Q5SSJ5	HP1BP3	HP1BP3	nucleus	accession
 Q14980	NUMA1	NUMA1	nucleus	accession
 Q9H307	PNN	PNN	nucleus	accession
 Q9Y3C6	PPIL1	PPIL1	nucleus	accession
+O75475	PSIP1	PSIP1	nucleus	accession
 P35251	RFC1	RFC1	nucleus	accession
 Q5UIP0	RIF1	RIF1	nucleus	accession
 Q99496	RNF2	RNF2	nucleus	accession
@@ -5405,7 +5378,6 @@ Q9BRX8	PRXL2A	PRXL2A	ER	accession
 P18031	PTPN1	PTPN1	ER	accession
 Q9Y3E5	PTRH2	PTRH2	ER	accession
 A6NKT7	RGPD3	RGPD3	ER	accession
-O95197	RTN3	RTN3	ER	symbol
 Q9BY50	SEC11C	SEC11C	ER	accession
 P60059	SEC61G	SEC61G	ER	accession
 O43826	SLC37A4	SLC37A4	ER	accession
@@ -5506,18 +5478,15 @@ Q5TB80	CEP162	CEP162	nucleus	accession
 Q9HAZ1	CLK4	CLK4	nucleus	accession
 P0CG12	DERPC	DERPC	nucleus	accession
 O00716	E2F3	E2F3	nucleus	accession
-P29692	EEF1D	EEF1D	nucleus	symbol
 P19622	EN2	EN2	nucleus	accession
 Q96SL8	FIZ1	FIZ1	nucleus	accession
 Q9BTV5	FSD1	FSD1	nucleus	accession
 Q9P0W2	HMG20B	HMG20B	nucleus	accession
-Q9UGU5	HMGXB4	HMGXB4	nucleus	symbol
 Q4KMZ1	IQCC	IQCC	nucleus	accession
 Q8NB78	KDM1B	KDM1B	nucleus	accession
 Q9UJU2	LEF1	LEF1	nucleus	accession
 Q969Q6	PPP2R3C	PPP2R3C	nucleus	accession
 Q96H35	RBM18	RBM18	nucleus	accession
-Q15637	SF1	SF1	nucleus	symbol
 Q15475	SIX1	SIX1	nucleus	accession
 Q9P270	SLAIN2	SLAIN2	nucleus	accession
 Q9BRL6	SRSF8	SRSF8	nucleus	accession
@@ -5539,7 +5508,6 @@ Q9UKY7	CDV3	CDV3	unclassified	accession
 O60231	DHX16	DHX16	unclassified	accession
 P31689	DNAJA1	DNAJA1	unclassified	accession
 O60884	DNAJA2	DNAJA2	unclassified	accession
-O75190	DNAJB6	DNAJB6	unclassified	symbol
 Q13144	EIF2B5	EIF2B5	unclassified	accession
 P48506	GCLC	GCLC	unclassified	accession
 Q9Y5Q8	GTF3C5	GTF3C5	unclassified	accession
@@ -5560,6 +5528,7 @@ O75150	RNF40	RNF40	unclassified	accession
 Q96P16	RPRD1A	RPRD1A	unclassified	accession
 Q5VT52	RPRD2	RPRD2	unclassified	accession
 Q96KG9	SCYL1	SCYL1	unclassified	accession
+O60907	TBL1X	TBL1X	unclassified	accession
 Q9UBB9	TFIP11	TFIP11	unclassified	accession
 Q9BVW5	TIPIN	TIPIN	unclassified	accession
 Q13263	TRIM28	TRIM28	unclassified	accession
@@ -5587,7 +5556,6 @@ P27361	MAPK3	MAPK3	cytosol	accession
 Q9HB07	MYG1	MYG1	cytosol	accession
 Q9NR45	NANS	NANS	cytosol	accession
 O43776	NARS1	NARS1	cytosol	accession
-P46934	NEDD4	NEDD4	cytosol	symbol
 Q6DKJ4	NXN	NXN	cytosol	accession
 P68402	PAFAH1B2	PAFAH1B2	cytosol	accession
 Q13153	PAK1	PAK1	cytosol	accession
@@ -5619,7 +5587,6 @@ P49427	CDC34	CDC34	cytosol	accession
 Q8WUH1	CHURC1	CHURC1	cytosol	accession
 O00273	DFFA	DFFA	cytosol	accession
 Q9NY33	DPP3	DPP3	cytosol	accession
-Q9NSG2	FIRRM	FIRRM	cytosol	symbol
 Q9H706	GAREM1	GAREM1	cytosol	accession
 A2RU49	HYKK	HYKK	cytosol	accession
 P29218	IMPA1	IMPA1	cytosol	accession
@@ -5637,7 +5604,6 @@ Q0VDG4	SCRN3	SCRN3	cytosol	accession
 Q96CW6	SLC7A6OS	SLC7A6OS	cytosol	accession
 P52788	SMS	SMS	cytosol	accession
 Q9NRG4	SMYD2	SMYD2	cytosol	accession
-O60504	SORBS3	SORBS3	cytosol	symbol
 Q8TE77	SSH3	SSH3	cytosol	accession
 Q96DR4	STARD4	STARD4	cytosol	accession
 Q9UGI8	TES	TES	cytosol	accession
@@ -5648,15 +5614,16 @@ Q8NF64	ZMIZ2	ZMIZ2	cytosol	accession
 O75312	ZPR1	ZPR1	cytosol	accession
 Q8TER5	ARHGEF40	ARHGEF40	unclassified	accession
 Q96CT7	CCDC124	CCDC124	unclassified	accession
+Q5SW79	CEP170	CEP170	unclassified	accession
 P49761	CLK3	CLK3	unclassified	accession
 Q9BQ75	CMSS1	CMSS1	unclassified	accession
-O00571	DDX3X	DDX3X	unclassified	symbol
 Q5TB30	DEPDC1	DEPDC1	unclassified	accession
 Q8WUY9	DEPDC1B	DEPDC1B	unclassified	accession
 Q96EX3	DYNC2I2	DYNC2I2	unclassified	accession
 Q96AY2	EME1	EME1	unclassified	accession
 Q14331	FRG1	FRG1	unclassified	accession
 Q9NVN8	GNL3L	GNL3L	unclassified	accession
+Q9UGU5	HMGXB4	HMGXB4	unclassified	accession
 P17481	HOXB8	HOXB8	unclassified	accession
 Q9BVV6	KIAA0586	KIAA0586	unclassified	accession
 Q8IWC1	MAP7D3	MAP7D3	unclassified	accession
@@ -5695,7 +5662,6 @@ P14868	DARS1	DARS1	unclassified	accession
 Q5TAQ9	DCAF8	DCAF8	unclassified	accession
 O43324	EEF1E1	EEF1E1	unclassified	accession
 P07814	EPRS1	EPRS1	unclassified	accession
-P11413	G6PD	G6PD	unclassified	symbol
 P41250	GARS1	GARS1	unclassified	accession
 P13807	GYS1	GYS1	unclassified	accession
 P41252	IARS1	IARS1	unclassified	accession
@@ -5765,6 +5731,7 @@ Q8NEZ2	VPS37A	VPS37A	cytosol	accession
 P14621	ACYP2	ACYP2	cytosol	accession
 P00568	AK1	AK1	cytosol	accession
 Q9NXW9	ALKBH4	ALKBH4	cytosol	accession
+Q92625	ANKS1A	ANKS1A	cytosol	accession
 P40121	CAPG	CAPG	cytosol	accession
 O75808	CAPN15	CAPN15	cytosol	accession
 P42773	CDKN2C	CDKN2C	cytosol	accession
@@ -5813,7 +5780,7 @@ P50990	CCT8	CCT8	actin_cytoskeleton	accession
 Q7L576	CYFIP1	CYFIP1	actin_cytoskeleton	accession
 Q96F07	CYFIP2	CYFIP2	actin_cytoskeleton	symbol
 O95163	ELP1	ELP1	actin_cytoskeleton	accession
-Q8N8S7	ENAH	ENAH	actin_cytoskeleton	symbol
+Q8N8S7	ENAH	ENAH	actin_cytoskeleton	accession
 Q12929	EPS8	EPS8	actin_cytoskeleton	accession
 Q13045	FLII	FLII	actin_cytoskeleton	accession
 Q13418	ILK	ILK	actin_cytoskeleton	accession
@@ -5880,11 +5847,12 @@ Q9Y3Y2	CHTOP	CHTOP	nucleus	accession
 Q6PD62	CTR9	CTR9	nucleus	accession
 Q9HCG8	CWC22	CWC22	nucleus	accession
 O15075	DCLK1	DCLK1	nucleus	accession
+O00571	DDX3X	DDX3X	nucleus	accession
 Q8IX18	DHX40	DHX40	nucleus	accession
 Q96CP2	FLYWCH2	FLYWCH2	nucleus	accession
 Q8WVC0	LEO1	LEO1	nucleus	accession
 Q9NQ29	LUC7L	LUC7L	nucleus	accession
-Q9Y383	LUC7L2	LUC7L2	nucleus	symbol
+Q9Y383	LUC7L2	LUC7L2	nucleus	accession
 O95232	LUC7L3	LUC7L3	nucleus	accession
 Q9HAF1	MEAF6	MEAF6	nucleus	accession
 P55081	MFAP1	MFAP1	nucleus	accession
@@ -5903,6 +5871,7 @@ Q9UQ35	SRRM2	SRRM2	nucleus	accession
 Q05519	SRSF11	SRSF11	nucleus	accession
 Q96GY0	ZC2HC1A	ZC2HC1A	nucleus	accession
 Q9Y2X9	ZNF281	ZNF281	nucleus	accession
+P61221	ABCE1	ABCE1	unclassified	accession
 Q86W34	AMZ2	AMZ2	unclassified	accession
 Q9UM13	ANAPC10	ANAPC10	unclassified	accession
 P27695	APEX1	APEX1	unclassified	accession
@@ -5943,7 +5912,6 @@ Q8NHZ8	CDC26	CDC26	unclassified	accession
 Q9Y2V0	CDIN1	CDIN1	unclassified	accession
 Q8N2M8	CLASRP	CLASRP	unclassified	symbol
 Q8NHY2	COP1	COP1	unclassified	accession
-Q13620	CUL4B	CUL4B	unclassified	symbol
 Q6ZUT9	DENND5B	DENND5B	unclassified	symbol
 Q17RN3	FAM98C	FAM98C	unclassified	accession
 Q8NEZ5	FBXO22	FBXO22	unclassified	accession
@@ -5978,6 +5946,7 @@ P29374	ARID4A	ARID4A	nucleus	accession
 P18846	ATF1	ATF1	nucleus	accession
 Q8TBE0	BAHD1	BAHD1	nucleus	accession
 Q8N9N5	BANP	BANP	nucleus	accession
+Q9UIF8	BAZ2B	BAZ2B	nucleus	accession
 Q6AI39	BICRAL	BICRAL	nucleus	accession
 Q9ULD4	BRPF3	BRPF3	nucleus	accession
 Q8WXD9	CASKIN1	CASKIN1	nucleus	accession
@@ -6002,7 +5971,6 @@ P78337	PITX1	PITX1	nucleus	accession
 Q562F6	SGO2	SGO2	nucleus	accession
 Q9BPZ2	SPIN2B	SPIN2B	nucleus	accession
 Q5SWH9	TMEM69	TMEM69	nucleus	accession
-Q15853	USF2	USF2	nucleus	symbol
 Q9Y6X8	ZHX2	ZHX2	nucleus	accession
 Q96PQ6	ZNF317	ZNF317	nucleus	accession
 Q9UID6	ZNF639	ZNF639	nucleus	accession
@@ -6093,7 +6061,6 @@ Q96C90	PPP1R14B	PPP1R14B	cytosol	accession
 Q96LA8	PRMT6	PRMT6	cytosol	accession
 P49023	PXN	PXN	cytosol	accession
 Q9H477	RBKS	RBKS	cytosol	accession
-Q8IZE3	SCYL3	SCYL3	cytosol	symbol
 Q7Z6B7	SRGAP1	SRGAP1	cytosol	accession
 Q96LD4	TRIM47	TRIM47	cytosol	accession
 P10599	TXN	TXN	cytosol	accession
@@ -6144,6 +6111,7 @@ Q8N1B3	CCNQ	CCNQ	nucleus	accession
 Q07687	DLX2	DLX2	nucleus	accession
 Q9UBC3	DNMT3B	DNMT3B	nucleus	accession
 Q9C005	DPY30	DPY30	nucleus	accession
+Q15723	ELF2	ELF2	nucleus	accession
 Q7Z589	EMSY	EMSY	nucleus	accession
 Q96IK5	GMCL1	GMCL1	nucleus	accession
 Q96JB3	HIC2	HIC2	nucleus	accession
@@ -6154,10 +6122,8 @@ Q86Y91	KIF18B	KIF18B	nucleus	accession
 Q6MZP7	LIN54	LIN54	nucleus	accession
 Q86VE0	MYPOP	MYPOP	nucleus	accession
 Q96L73	NSD1	NSD1	nucleus	accession
-Q9NTI5	PDS5B	PDS5B	nucleus	symbol
 O43374	RASA4	RASA4B	nucleus	accession
 Q9C0A6	SETD5	SETD5	nucleus	accession
-Q02086	SP2	SP2	nucleus	symbol
 Q15542	TAF5	TAF5	nucleus	accession
 Q0P6H9	TMEM62	TMEM62	nucleus	accession
 P04637	TP53	TP53	nucleus	accession
@@ -6183,6 +6149,7 @@ Q4VC44	FLYWCH1	FLYWCH1	unclassified	accession
 Q9H079	KATNBL1	KATNBL1	unclassified	accession
 O94819	KBTBD11	KBTBD11	unclassified	accession
 O75164	KDM4A	KDM4A	unclassified	accession
+P53671	LIMK2	LIMK2	unclassified	accession
 P61968	LMO4	LMO4	unclassified	accession
 Q12851	MAP4K2	MAP4K2	unclassified	accession
 Q9P086	MED11	MED11	unclassified	accession
@@ -6198,7 +6165,6 @@ Q15544	TAF11	TAF11	unclassified	accession
 Q5TEJ8	THEMIS2	THEMIS2	unclassified	accession
 Q9NQZ6	ZC4H2	ZC4H2	unclassified	accession
 Q96NB3	ZNF830	ZNF830	unclassified	accession
-P04075	ALDOA	ALDOA	cytosol	symbol
 P17707	AMD1	AMD1	cytosol	accession
 Q6NXT1	ANKRD54	ANKRD54	cytosol	accession
 Q9NWX5	ASB6	ASB6	cytosol	accession
@@ -6213,9 +6179,9 @@ Q8NDH6	ICA1L	ICA1L	cytosol	accession
 Q9NWZ3	IRAK4	IRAK4	cytosol	accession
 Q9BQ90	KLHDC3	KLHDC3	cytosol	symbol
 Q9UHB4	NDOR1	NDOR1	cytosol	accession
+P46934	NEDD4	NEDD4	cytosol	accession
 Q96AB6	NTAN1	NTAN1	cytosol	accession
 P61457	PCBD1	PCBD1	cytosol	accession
-Q5VU43	PDE4DIP	PDE4DIP	cytosol	symbol
 Q96AT9	RPE	RPE	cytosol	accession
 O76054	SEC14L2	SEC14L2	cytosol	accession
 P50453	SERPINB9	SERPINB9	cytosol	accession
@@ -6295,6 +6261,7 @@ Q9BTT0	ANP32E	ANP32E	unclassified	accession
 Q9P287	BCCIP	BCCIP	unclassified	accession
 Q9H3K6	BOLA2; BOLA2B	BOLA2	unclassified	accession
 P07384	CAPN1	CAPN1	unclassified	accession
+Q13620	CUL4B	CUL4B	unclassified	accession
 Q6ICB0	DESI1	DESI1	unclassified	accession
 P55039	DRG2	DRG2	unclassified	accession
 P62495	ETF1	ETF1	unclassified	accession
@@ -6344,6 +6311,7 @@ Q9UPN3	MACF1	MACF1	unclassified	accession
 Q96EN8	MOCOS	MOCOS	unclassified	accession
 Q08AG7	MZT1	MZT1	unclassified	accession
 Q9BZQ8	NIBAN1	NIBAN1	unclassified	accession
+Q05397	PTK2	PTK2	unclassified	accession
 Q9HD40	SEPSECS	SEPSECS	unclassified	accession
 C9J7I0	UMAD1	UMAD1	unclassified	accession
 Q16831	UPP1	UPP1	unclassified	accession
@@ -6351,6 +6319,7 @@ P13611	VCAN	VCAN	unclassified	accession
 Q96AP4	ZUP1	ZUP1	unclassified	accession
 Q15699	ALX1	ALX1	nucleus	accession
 O15265	ATXN7	ATXN7	nucleus	accession
+Q12873	CHD3	CHD3	nucleus	accession
 Q92800	EZH1	EZH1	nucleus	accession
 Q8NBZ0	INO80E	INO80E	nucleus	accession
 Q7L4E1	MIGA2	MIGA2	nucleus	accession
@@ -6438,6 +6407,7 @@ Q53HI1	UNC50	UNC50	Golgi	accession
 Q8NBZ7	UXS1	UXS1	Golgi	accession
 Q6UB99	ANKRD11	ANKRD11	nucleus	accession
 Q8NFD5	ARID1B	ARID1B	nucleus	symbol
+Q5H9F3	BCORL1	BCORL1	nucleus	accession
 A6H8Y1	BDP1	BDP1	nucleus	accession
 Q9HCU9	BRMS1	BRMS1	nucleus	accession
 Q8N9M1	C19orf47	C19orf47	nucleus	accession
@@ -6455,6 +6425,7 @@ P26367	PAX6	PAX6	nucleus	accession
 Q9P2W1	PSMC3IP	PSMC3IP	nucleus	accession
 Q96N64	PWWP2A	PWWP2A	nucleus	accession
 Q13127	REST	REST	nucleus	accession
+Q15637	SF1	SF1	nucleus	accession
 P12755	SKI	SKI	nucleus	accession
 Q86UV5	USP48	USP48	nucleus	accession
 A6NFI3	ZNF316	ZNF316	nucleus	accession
@@ -6475,6 +6446,7 @@ Q6PJ61	FBXO46	FBXO46	cytosol	accession
 P28676	GCA	GCA	cytosol	accession
 O60443	GSDME	GSDME	cytosol	accession
 Q1L5Z9	LONRF2	LONRF2	cytosol	accession
+P19174	PLCG1	PLCG1	cytosol	accession
 Q9NVM4	PRMT7	PRMT7	cytosol	accession
 Q96BW5	PTER	PTER	cytosol	accession
 Q99638	RAD9A	RAD9A	cytosol	accession
@@ -6494,6 +6466,7 @@ Q8IUF1	ZNG1B	ZNG1B	cytosol	accession
 Q9H1A4	ANAPC1	ANAPC1	unclassified	accession
 Q9BXC9	BBS2	BBS2	unclassified	accession
 Q8TD31	CCHCR1	CCHCR1	unclassified	accession
+O75190	DNAJB6	DNAJB6	unclassified	accession
 Q9NZJ0	DTL	DTL	unclassified	accession
 Q96CS2	HAUS1	HAUS1	unclassified	accession
 Q9H6D7	HAUS4	HAUS4	unclassified	accession
@@ -6552,7 +6525,7 @@ P29353	SHC1	SHC1	unclassified	accession
 Q9UH36	SRRD	SRRD	unclassified	accession
 Q9BW85	YJU2	YJU2	unclassified	accession
 O14965	AURKA	AURKA	nucleus	accession
-Q96GD4	AURKB	AURKB	nucleus	symbol
+Q96GD4	AURKB	AURKB	nucleus	accession
 Q13895	BYSL	BYSL	nucleus	accession
 Q13042	CDC16	CDC16	nucleus	accession
 Q99741	CDC6	CDC6	nucleus	accession
@@ -6561,6 +6534,7 @@ Q53EZ4	CEP55	CEP55	nucleus	accession
 Q5T6F0	DCAF12	DCAF12	nucleus	accession
 Q5BKY9	FAM133B	FAM133B	nucleus	accession
 Q9Y421	FAM32A	FAM32A	nucleus	accession
+Q9NRZ9	HELLS	HELLS	nucleus	accession
 P17482	HOXB9	HOXB9	nucleus	accession
 Q9H9L3	ISG20L2	ISG20L2	nucleus	accession
 Q9H825	METTL8	METTL8	nucleus	accession
@@ -6639,6 +6613,7 @@ Q9H267	VPS33B	VPS33B	cytosol	accession
 Q8N5D0	WDTC1	WDTC1	cytosol	accession
 P61163	ACTR1A	ACTR1A	unclassified	accession
 P42025	ACTR1B	ACTR1B	unclassified	accession
+P04075	ALDOA	ALDOA	unclassified	accession
 P09972	ALDOC	ALDOC	unclassified	accession
 P0DP25	CALM3	CALM3	unclassified	accession
 Q9Y592	CEP83	CEP83	unclassified	accession
@@ -6653,7 +6628,6 @@ P13639	EEF2	EEF2	unclassified	accession
 Q8NDI1	EHBP1	EHBP1	unclassified	accession
 P63241	EIF5A	EIF5A	unclassified	accession
 Q96EF6	FBXO17	FBXO17	unclassified	accession
-Q13642	FHL1	FHL1	unclassified	symbol
 Q9NWU2	GID8	GID8	unclassified	accession
 Q9NS86	LANCL2	LANCL2	unclassified	accession
 Q96EY5	MVB12A	MVB12A	unclassified	accession
@@ -6664,12 +6638,12 @@ P06454	PTMA	PTMA	unclassified	accession
 Q96S59	RANBP9	RANBP9	unclassified	accession
 Q68CZ1	RPGRIP1L	RPGRIP1L	unclassified	symbol
 O00506	STK25	STK25	unclassified	accession
+P16949	STMN1	STMN1	unclassified	accession
 O14907	TAX1BP3	TAX1BP3	unclassified	accession
 Q9NYG5	ANAPC11	ANAPC11	unclassified	accession
 Q9NR48	ASH1L	ASH1L	unclassified	accession
 P35790	CHKA	CHKA	unclassified	accession
 Q96JC9	EAF1	EAF1	unclassified	accession
-Q01844	EWSR1	EWSR1	unclassified	symbol
 Q6NZ36	FAAP20	FAAP20	unclassified	accession
 Q6PCT2	FBXL19	FBXL19	unclassified	accession
 Q9C091	GREB1L	GREB1L	unclassified	accession
@@ -6747,9 +6721,11 @@ Q9UPY6	WASF3	WASF3	actin_cytoskeleton	accession
 O00401	WASL	WASL	actin_cytoskeleton	accession
 O43516	WIPF1	WIPF1	actin_cytoskeleton	accession
 Q8TF74	WIPF2	WIPF2	actin_cytoskeleton	accession
+Q9BZZ5	API5	API5	nucleus	accession
 P41223	BUD31	BUD31	nucleus	accession
 Q96JM3	CHAMP1	CHAMP1	nucleus	accession
 Q86WW8	COA5	COA5	nucleus	accession
+P48729	CSNK1A1	CSNK1A1	nucleus	accession
 Q5RKV6	EXOSC6	EXOSC6	nucleus	accession
 Q9BXW9	FANCD2	FANCD2	nucleus	accession
 Q12789	GTF3C1	GTF3C1	nucleus	accession
@@ -6777,6 +6753,7 @@ Q8IX12	CCAR1	CCAR1	nucleus	accession
 Q9NXV6	CDKN2AIP	CDKN2AIP	nucleus	accession
 Q14011	CIRBP	CIRBP	nucleus	accession
 Q96EP5	DAZAP1	DAZAP1	nucleus	accession
+Q01844	EWSR1	EWSR1	nucleus	accession
 Q52LJ0	FAM98B	FAM98B	nucleus	accession
 P35637	FUS	FUS	nucleus	accession
 Q8WVV9	HNRNPLL	HNRNPLL	nucleus	accession
@@ -6808,6 +6785,7 @@ P41091	EIF2S3	EIF2S3	translation	accession
 Q9Y285	FARSA	FARSA	translation	accession
 P62861	FAU	FAU	translation	accession
 Q9H840	GEMIN7	GEMIN7	translation	accession
+Q9NX55	HYPK	HYPK	translation	accession
 O15479	MAGEB2	MAGEB2	translation	accession
 P27816	MAP4	MAP4	translation	symbol
 Q9Y3C7	MED31	MED31	translation	accession
@@ -6879,11 +6857,11 @@ P68366	TUBA4A	TUBA4A	cytosol	accession
 Q6IPR3	TYW3	TYW3	cytosol	accession
 Q9BSL1	UBAC1	UBAC1	cytosol	accession
 P10746	UROS	UROS	cytosol	accession
-Q9NQW7	XPNPEP1	XPNPEP1	cytosol	symbol
 Q9BVQ7	AFG2B	AFG2B	nucleus	accession
 Q96QE3	ATAD5	ATAD5	nucleus	accession
 P38398	BRCA1	BRCA1	nucleus	accession
 Q8IYA6	CKAP2L	CKAP2L	nucleus	accession
+P51610	HCFC1	HCFC1	nucleus	accession
 Q9NVR2	INTS10	INTS10	nucleus	accession
 Q96CB8	INTS12	INTS12	nucleus	accession
 Q9UL03	INTS6	INTS6	nucleus	accession
@@ -6915,7 +6893,6 @@ Q9UKT7	FBXL3	FBXL3	cytosol	accession
 Q9UM19	HPCAL4	HPCAL4	cytosol	accession
 Q13572	ITPK1	ITPK1	cytosol	accession
 O15066	KIF3B	KIF3B	cytosol	accession
-Q8NG31	KNL1	KNL1	cytosol	symbol
 Q9BQK8	LPIN3	LPIN3	cytosol	accession
 Q8NFP9	NBEA	NBEA	cytosol	accession
 O00221	NFKBIE	NFKBIE	cytosol	accession
@@ -6946,6 +6923,7 @@ Q9Y530	OARD1	OARD1	unclassified	accession
 Q9BYE7	PCGF6	PCGF6	unclassified	accession
 Q9BRX2	PELO	PELO	unclassified	accession
 Q13794	PMAIP1	PMAIP1	unclassified	accession
+Q5T8P6	RBM26	RBM26	unclassified	accession
 O14593	RFXANK	RFXANK	unclassified	accession
 A6NKF1	SAC3D1	SAC3D1	unclassified	accession
 Q8IYB5	SMAP1	SMAP1	unclassified	accession
@@ -6982,6 +6960,7 @@ Q9NRM2	ZNF277	ZNF277	cytosol	accession
 Q8IV38	ANKMY2	ANKMY2	cytosol	accession
 P04083	ANXA1	ANXA1	cytosol	accession
 O00512	BCL9	BCL9	cytosol	accession
+O75153	CLUH	CLUH	cytosol	accession
 Q49AN0	CRY2	CRY2	cytosol	accession
 Q8IWT3	CUL9	CUL9	cytosol	accession
 Q8N954	GPATCH11	GPATCH11	cytosol	accession
@@ -6993,10 +6972,10 @@ Q9NV35	NUDT15	NUDT15	cytosol	accession
 Q8TD55	PLEKHO2	PLEKHO2	cytosol	accession
 Q9Y5P8	PPP2R3B	PPP2R3B	cytosol	accession
 Q05513	PRKCZ	PRKCZ	cytosol	accession
+O60504	SORBS3	SORBS3	cytosol	accession
 Q07890	SOS2	SOS2	cytosol	accession
 Q15532	SS18	SS18	cytosol	accession
 Q9ULQ0	STRIP2	STRIP2	cytosol	accession
-Q13033	STRN3	STRN3	cytosol	symbol
 Q8NHU6	TDRD7	TDRD7	cytosol	accession
 Q96DC7	TMCO6	TMCO6	cytosol	accession
 Q12933	TRAF2	TRAF2	cytosol	accession
@@ -7045,7 +7024,7 @@ P61019	RAB2A	RAB2A	Golgi	accession
 Q15771	RAB30	RAB30	Golgi	accession
 P20336	RAB3A	RAB3A	Golgi	accession
 O95716	RAB3D	RAB3D	Golgi	accession
-P20340	RAB6A	RAB6A	Golgi	symbol
+P20340	RAB6A	RAB6A	Golgi	accession
 Q9NTJ5	SACM1L	SACM1L	Golgi	accession
 P36955	SERPINF1	SERPINF1	Golgi	accession
 Q9NZ72	STMN3	STMN3	Golgi	accession
@@ -7068,6 +7047,7 @@ Q9BRT6	LLPH	LLPH	nucleolus	accession
 O75586	MED6	MED6	nucleolus	accession
 Q9NZM5	NOP53	NOP53	nucleolus	accession
 Q86U38	NOP9	NOP9	nucleolus	accession
+P06748	NPM1	NPM1	nucleolus	accession
 O15160	POLR1C	POLR1C	nucleolus	accession
 P19387	POLR2C	POLR2C	nucleolus	accession
 Q15291	RBBP5	RBBP5	nucleolus	accession
@@ -7087,6 +7067,7 @@ Q8NI77	KIF18A	KIF18A	unclassified	accession
 Q71F56	MED13L	MED13L	unclassified	accession
 Q96DY7	MTBP	MTBP	unclassified	accession
 Q7Z494	NPHP3	NPHP3	unclassified	accession
+Q5VU43	PDE4DIP	PDE4DIP	unclassified	accession
 Q96QT6	PHF12	PHF12	unclassified	accession
 Q8N2W9	PIAS4	PIAS4	unclassified	accession
 Q92733	PRCC	PRCC	unclassified	accession
@@ -7106,6 +7087,7 @@ Q07002	CDK18	CDK18	cytosol	accession
 O75575	CRCP	CRCP	cytosol	accession
 P32321	DCTD	DCTD	cytosol	accession
 Q9UMR2	DDX19B	DDX19B	cytosol	accession
+Q7L014	DDX46	DDX46	cytosol	accession
 Q13574	DGKZ	DGKZ	cytosol	accession
 P49366	DHPS	DHPS	cytosol	accession
 Q13216	ERCC8	ERCC8	cytosol	accession
@@ -7126,6 +7108,7 @@ Q6ZRI6	PRMT2IP	C15orf39	unclassified	accession
 Q9HAW4	CLSPN	CLSPN	unclassified	accession
 Q5T1V6	DDX59	DDX59	unclassified	accession
 O75953	DNAJB5	DNAJB5	unclassified	accession
+Q9NYP3	DONSON	DONSON	unclassified	accession
 Q01658	DR1	DR1	unclassified	accession
 Q6ZRV2	SACK1H	FAM83H	unclassified	accession
 Q9UBN7	HDAC6	HDAC6	unclassified	accession
@@ -7151,6 +7134,7 @@ P33552	CKS2	CKS2	cytosol	accession
 P67870	CSNK2B	CSNK2B	cytosol	accession
 Q9NWV4	CZIB	CZIB	cytosol	accession
 P62942	FKBP1A	FKBP1A	cytosol	accession
+P11413	G6PD	G6PD	cytosol	accession
 P49773	HINT1	HINT1	cytosol	accession
 O75874	IDH1	IDH1	cytosol	accession
 P00338	LDHA	LDHA	cytosol	accession
@@ -7179,6 +7163,7 @@ P09874	PARP1	PARP1	nucleus	accession
 Q9H939	PSTPIP2	PSTPIP2	nucleus	accession
 Q9NYW8	RBAK	RBAK	nucleus	accession
 P28702	RXRB	RXRB	nucleus	accession
+Q02086	SP2	SP2	nucleus	accession
 Q9H9J4	USP42	USP42	nucleus	accession
 Q9NTW7	ZFP64	ZFP64	nucleus	accession
 Q969J2	ZKSCAN4	ZKSCAN4	nucleus	accession
@@ -7196,12 +7181,14 @@ Q76L83	ASXL2	ASXL2	nucleus	accession
 P07199	CENPB	CENPB	nucleus	accession
 Q9Y6K1	DNMT3A	DNMT3A	nucleus	accession
 Q52LR7	EPC2	EPC2	nucleus	accession
+Q13642	FHL1	FHL1	nucleus	accession
 P35453	HOXD13	HOXD13	nucleus	accession
 O75525	KHDRBS3	KHDRBS3	nucleus	accession
 Q6P1R3	MSANTD2	MSANTD2	nucleus	accession
 Q6P4R8	NFRKB	NFRKB	nucleus	accession
 O15370	SOX12	SOX12	nucleus	accession
 Q9H633	RPP21	TRIM39R	nucleus	accession
+Q15853	USF2	USF2	nucleus	accession
 Q9ULM3	YEATS2	YEATS2	nucleus	accession
 P37275	ZEB1	ZEB1	nucleus	accession
 P52739	ZBTB35	ZNF131	nucleus	accession
@@ -7218,11 +7205,13 @@ Q9H4L5	OSBPL3	OSBPL3	ER	accession
 Q9BZF3	OSBPL6	OSBPL6	ER	accession
 P10644	PRKAR1A	PRKAR1A	ER	accession
 Q9H6H4	REEP4	REEP4	ER	accession
+O95197	RTN3	RTN3	ER	accession
 Q9NQC3	RTN4	RTN4	ER	accession
 Q13188	STK3	STK3	ER	accession
 Q13043	STK4	STK4	ER	accession
 Q5VSL9	STRIP1	STRIP1	ER	accession
 O43815	STRN	STRN	ER	accession
+Q13033	STRN3	STRN3	ER	accession
 Q9NRL3	STRN4	STRN4	ER	accession
 Q9UL54	TAOK2	TAOK2	ER	accession
 O15498	YKT6	YKT6	ER	accession
@@ -7235,6 +7224,7 @@ P57737	CORO7	CORO7	cytosol	accession
 Q9BRF8	CPPED1	CPPED1	cytosol	accession
 Q6P1R4	DUS1L	DUS1L	cytosol	accession
 Q9UHY8	FEZ2	FEZ2	cytosol	accession
+Q9NSG2	FIRRM	FIRRM	cytosol	accession
 P48200	IREB2	IREB2	cytosol	accession
 Q6ZN16	MAP3K15	MAP3K15	cytosol	accession
 Q96RS6	NUDCD1	NUDCD1	cytosol	accession
@@ -7242,6 +7232,7 @@ Q9NZT2	OGFR	OGFR	cytosol	accession
 Q6P2P2	PRMT9	PRMT9	cytosol	accession
 Q15274	QPRT	QPRT	cytosol	accession
 Q13905	RAPGEF1	RAPGEF1	cytosol	accession
+Q8IZE3	SCYL3	SCYL3	cytosol	accession
 Q96LD8	SENP8	SENP8	cytosol	accession
 Q9UGK8	SERGEF	SERGEF	cytosol	accession
 Q16851	UGP2	UGP2	cytosol	symbol
@@ -7263,6 +7254,7 @@ Q9HCI7	MSL2	MSL2	14-3-3_scaffold	accession
 Q53F19	NCBP3	NCBP3	14-3-3_scaffold	accession
 Q96G61	NUDT11	NUDT11	14-3-3_scaffold	accession
 O00750	PIK3C2B	PIK3C2B	14-3-3_scaffold	accession
+O43314	PPIP5K2	PPIP5K2	14-3-3_scaffold	accession
 Q9Y2K5	R3HDM2	R3HDM2	14-3-3_scaffold	accession
 Q9BQF6	SENP7	SENP7	14-3-3_scaffold	accession
 Q7Z6J0	SH3RF1	SH3RF1	14-3-3_scaffold	accession
@@ -7273,6 +7265,7 @@ Q15018	ABRAXAS2	ABRAXAS2	cytosol	accession
 Q8N6N7	ACBD7	ACBD7	cytosol	accession
 P07311	ACYP1	ACYP1	cytosol	accession
 P55263	ADK	ADK	cytosol	accession
+O00170	AIP	AIP	cytosol	accession
 O95376	ARIH2	ARIH2	cytosol	accession
 Q9H993	DCPH1	ARMT1	cytosol	accession
 Q14194	CRMP1	CRMP1	cytosol	accession
@@ -7302,7 +7295,6 @@ Q53TQ3	INO80D	INO80D	cytosol	accession
 Q8WVZ9	KBTBD7	KBTBD7	cytosol	accession
 Q16877	PFKFB4	PFKFB4	cytosol	accession
 O75582	RPS6KA5	RPS6KA5	cytosol	accession
-O15027	SEC16A	SEC16A	cytosol	symbol
 Q99963	SH3GL3	SH3GL3	cytosol	accession
 Q96N21	TEPSIN	TEPSIN	cytosol	accession
 Q9BU02	THTPA	THTPA	cytosol	accession
@@ -7338,12 +7330,14 @@ O95260	ATE1	ATE1	cytosol	accession
 P01031	C5	C5	cytosol	accession
 Q8TDQ7	GNPDA2	GNPDA2	cytosol	accession
 Q8N371	KDM8	KDM8	cytosol	accession
+Q8NG31	KNL1	KNL1	cytosol	accession
 Q96S19	METTL26	METTL26	cytosol	accession
 P36639	NUDT1	NUDT1	cytosol	accession
 O60927	PPP1R11	PPP1R11	cytosol	accession
 Q6VN20	RANBP10	RANBP10	cytosol	accession
 Q9UBS8	RNF14	RNF14	cytosol	accession
 Q9UBF6	RNF7	RNF7	cytosol	accession
+P40763	STAT3	STAT3	cytosol	accession
 Q7RTN6	STRADA	STRADA	cytosol	accession
 Q5SRH9	TTC39A	TTC39A	cytosol	accession
 Q96S82	UBL7	UBL7	cytosol	accession
@@ -7434,7 +7428,6 @@ Q9BUW7	BBLN	BBLN	cytosol	accession
 Q12982	BNIP2	BNIP2	cytosol	accession
 P42575	CASP2	CASP2	cytosol	accession
 Q9Y315	DERA	DERA	cytosol	accession
-P33316	DUT	DUT	cytosol	symbol
 P53778	MAPK12	MAPK12	cytosol	accession
 Q9H8M7	MINDY3	MINDY3	cytosol	accession
 O95396	MOCS3	MOCS3	cytosol	accession
@@ -7525,6 +7518,7 @@ Q07812	BAX	BAX	mitochondrion	accession
 Q8N4T8	CBR4	CBR4	mitochondrion	accession
 Q7Z7K0	CMC1	CMC1	mitochondrion	accession
 Q9NRP2	CMC2	CMC2	mitochondrion	accession
+P33316	DUT	DUT	mitochondrion	accession
 O43716	GATC	GATC	mitochondrion	accession
 Q9BX68	HINT2	HINT2	mitochondrion	accession
 Q4VC31	MIX23	MIX23	mitochondrion	accession
@@ -7560,6 +7554,7 @@ Q9ULK4	MED23	MED23	nucleus	accession
 Q86Y39	NDUFA11	NDUFA11	nucleus	accession
 Q8IXH7	NELFCD	NELFCD	nucleus	accession
 Q86SE9	PCGF5	PCGF5	nucleus	accession
+O15446	POLR1G	POLR1G	nucleus	accession
 Q96BP3	PPWD1	PPWD1	nucleus	accession
 O43502	RAD51C	RAD51C	nucleus	accession
 Q9Y4B4	RAD54L2	RAD54L2	nucleus	accession
@@ -7603,6 +7598,7 @@ Q9H1P3	OSBPL2	OSBPL2	cytosol	accession
 Q9H999	PANK3	PANK3	cytosol	accession
 Q9HA65	TBC1D17	TBC1D17	cytosol	accession
 O95551	TDP2	TDP2	cytosol	accession
+Q9NQW7	XPNPEP1	XPNPEP1	cytosol	accession
 P35869	AHR	AHR	cytosol	accession
 P31749	AKT1	AKT1	cytosol	accession
 Q8NFJ9	BBS1	BBS1	cytosol	accession
@@ -7907,6 +7903,7 @@ Q9H3R5	CENPH	CENPH	nucleus	accession
 A0A2Z4LIS9	FOXO3B	FOXO3B	nucleus	accession
 Q92759	GTF2H4	GTF2H4	nucleus	accession
 Q15233	NONO	NONO	nucleus	accession
+Q9NTI5	PDS5B	PDS5B	nucleus	accession
 Q8WXF1	PSPC1	PSPC1	nucleus	accession
 O60216	RAD21	RAD21	nucleus	accession
 Q92878	RAD50	RAD50	nucleus	accession
@@ -7942,6 +7939,7 @@ O95273	CCNDBP1	CCNDBP1	unclassified	accession
 P19256	CD58	CD58	unclassified	accession
 Q14008	CKAP5	CKAP5	unclassified	accession
 P24534	EEF1B2	EEF1B2	unclassified	accession
+P29692	EEF1D	EEF1D	unclassified	accession
 P26641	EEF1G	EEF1G	unclassified	accession
 Q8NDN9	RCBTB1	RCBTB1	unclassified	accession
 Q9UNY4	TTF2	TTF2	unclassified	accession
@@ -7990,6 +7988,7 @@ O15318	POLR3G	POLR3G	cytosol	accession
 Q9ULI2	RIMKLB	RIMKLB	cytosol	accession
 Q7LG56	RRM2B	RRM2B	cytosol	accession
 Q9UIL1	SCOC	SCOC	cytosol	symbol
+O15027	SEC16A	SEC16A	cytosol	accession
 P55854	SUMO3	SUMO3	cytosol	accession
 O15231	ZNF185	ZNF185	cytosol	symbol
 Q9UK58	CCNL1	CCNL1	unclassified	accession
@@ -8036,6 +8035,7 @@ Q86UX6	STK32C	STK32C	cytosol	accession
 Q9Y222	DMTF1	DMTF1	unclassified	accession
 Q8NC69	KCTD6	KCTD6	unclassified	accession
 Q96LW4	PRIMPOL	PRIMPOL	unclassified	accession
+Q8NBS9	TXNDC5	TXNDC5	unclassified	accession
 O95789	ZMYM6	ZMYM6	unclassified	accession
 Q9BWD1	ACAT2	ACAT2	cytosol	accession
 Q15102	PAFAH1B3	PAFAH1B3	cytosol	accession

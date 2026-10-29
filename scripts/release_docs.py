@@ -405,7 +405,8 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         '- **Where the RNAs bound by proteins with eCLIP data gather** (analyses eclip_*, scripts/cell_maps.py): for each '
         'protein with eCLIP data and each map of RNA or DNA (APEX-seq, nuclear-body APEX2-seq, TSA-seq, Hi-C '
         'subcompartments), its bound RNAs against the other RNAs (genes) the map places, in each compartment: the '
-        'Mantel-Haenszel odds ratio within deciles of expression in the map\'s cells crossed with deciles of gene length, '
+        'Mantel-Haenszel odds ratio within deciles of expression in the map\'s cells crossed with deciles of gene length '
+        '(GENCODE v19; the genes it lacks are one more length stratum), '
         'q Benjamini-Hochberg over every protein and compartment of the map (`supporting/eclip_rna_compartments`; its RNAs '
         'gather there at q <= 0.05 and odds ratio above 1). The methylated proteins are then tested against the other '
         'eCLIP\'d proteins the map tests, as a protein set (methods `enricher` and `mantel_haenszel`, above), and the size '
@@ -824,6 +825,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
     lines += review_section(ctx, files, previous)
     lines += release_layers.changes_section(files, ctx['version'], previous)
     lines += abundance_strata.changes_section(files, ctx['version'], previous)
+    lines += cmh_section(ctx, files, previous)
     if since_v11:
         lines += [
         '## Methylation degree',
@@ -1110,6 +1112,37 @@ def review_section(ctx: dict, files: dict, previous: str) -> list:
             'multiple-testing correction; other selection tests are labelled exploratory. Proteins without a site get their 3D '
             'structures and, when they are in the interaction data, their STRING partner network.', '']
     return out
+
+
+CMH_FLOOR_SINCE = 'v1.4.2'
+
+
+def cmh_section(ctx: dict, files: dict, previous: str) -> list:
+    """CHANGES.md, in the release that floors the continuity correction (common.cmh_statistic): the Mantel-Haenszel rows of
+    the previous release whose p it changes, and those whose significance it changes."""
+    v = lambda x: tuple(int(k) for k in x.lstrip('v').split('.'))  # noqa: E731
+    path = Path(ctx.get('previous_dir') or '.') / f'statistics_{previous}.tsv'
+    if not (v(previous) < v(CMH_FLOOR_SINCE) <= v(ctx['version'])) or not path.exists():
+        return []
+    key = ['analysis', 'category', 'stratum', 'method']
+    old = pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False)
+    new = files['statistics'][1].astype(str)
+    m = old[old['method'] == 'mantel_haenszel'].merge(new[new['method'] == 'mantel_haenszel'], on=key, suffixes=('_old', '_new'))
+    num = lambda x: pd.to_numeric(x, errors='coerce')  # noqa: E731
+    changed = m[num(m['p_old']).round(12) != num(m['p_new']).round(12)]
+    lost = m[(num(m['q_old']) <= 0.05) & ~(num(m['q_new']) <= 0.05)]
+    gained = m[~(num(m['q_old']) <= 0.05) & (num(m['q_new']) <= 0.05)]
+    label = lambda t: '; '.join(f'{r.analysis} {r.category}' + (f' ({r.stratum})' if r.stratum != 'all' else '') for r in t.head(10).itertuples())  # noqa: E731
+    return ['## Corrected: the continuity correction of the Mantel-Haenszel test', '',
+            'The continuity-corrected Cochran-Mantel-Haenszel test subtracts 0.5 from |O - E|, the distance between the observed '
+            f'and expected counts, before squaring it. Up to {previous} the release took the statistic of statsmodels, which does not '
+            'stop at zero: where a count lay within 0.5 of its expectation and the variance was small, the squared negative bracket '
+            'gave a large statistic, and a test with nothing to report came out significant (a sparse set with none observed and '
+            f'almost none expected, say). {ctx["version"]} floors the bracket at zero (`scripts/common.py`, `cmh_statistic`), and the '
+            'website\'s tests of a selection do the same. Odds ratios and their confidence intervals are unchanged.', '',
+            f'Of the {len(m):,} Mantel-Haenszel rows of the statistics table that {previous} and {ctx["version"]} share, {len(changed):,} '
+            f'have a different p. {len(lost):,} were significant at q <= 0.05 and are not now' + (f' ({label(lost)}{" …" if len(lost) > 10 else ""})' if len(lost) else '')
+            + f', and {len(gained):,} the reverse' + (f' ({label(gained)}{" …" if len(gained) > 10 else ""})' if len(gained) else '') + '.', '']
 
 
 def analysis_section(files: dict, previous: str) -> list:

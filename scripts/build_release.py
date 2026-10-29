@@ -1311,7 +1311,7 @@ def main() -> None:
     counts.update(peptide_start_agreement(rows, typed, reference, root / 'parsed_maron' / 'maron_peptide_coordinates.tsv'))
     context = {'version': version, 'previous': previous, 'files': files, 'counts': counts, 'inputs': inputs, 'root': root,
                'uniprot_release': json.loads((inputs / INPUT['uniprot_release']).read_text()), 'records': records,
-               'sites': sites, 'changes': changes, 'studies': studies, 'release_date': args.date, 'previous_sites': prev_sites,
+               'sites': sites, 'changes': changes, 'studies': studies, 'release_date': args.date, 'previous_sites': prev_sites, 'previous_dir': prev_dir,
                'validation': validation(root, check), 'enrichment_tools': enrichment_tools(aroot),
                'study_examples': study_examples(records, reference)}
     release_docs.write_all(outdir, context)
