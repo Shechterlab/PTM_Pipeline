@@ -9,7 +9,7 @@
   // a new deploy never runs against cached code or data; bump it in index.html whenever docs/ changes.
   const ASSET_V = (() => { try { return new URL(document.currentScript.src).searchParams.get('v') || ''; } catch (e) { return ''; } })();
   // The website's version. Its data carry their own (M.provenance.dataset_version), which differs only when a version
-  // changes the website alone (v1.4.2, with the data of v1.4.1).
+  // changes the website alone (siteVersionHtml).
   const SITE_VERSION = 'v1.4.2';
   // Lower-confidence sites (?lc=1, the switch in the toolbar; off by default): the view with both tiers, read from its
   // own data files (data/methylarg_*_all.json), its statistics computed with the lower-confidence sites whose methyl
@@ -4642,7 +4642,7 @@
         // ordered by how much they usually tell about a selection: classes, condensates, where in the cell, locations, disease, pathways
         chartRow('ov-pan', pan || func, 'Which protein classes are over-represented among methylated proteins?') +
         chartRow('ov-cond', cond, 'Which biomolecular condensates are over-represented (CD-CODE' + (thr ? ', confidence ≥ ' + thr : '') + ')?') +
-        row('ov-cell', 'Where in the cell', '<div class="card wide" id="ch-cell"><div class="card-head"><div><h3>Where in the cell <span class="preview-tag">preview</span></h3><p class="sub">Where ' + (scoped ? 'the proteins of your selection' : 'methylated proteins') + ' sit in the cell, and where the RNAs they bind gather, each compared with other proteins of similar abundance.</p></div></div>' +
+        row('ov-cell', 'Where in the cell', '<div class="card wide" id="ch-cell"><div class="card-head"><div><h3>Where in the cell</h3><p class="sub">Where ' + (scoped ? 'the proteins of your selection' : 'methylated proteins') + ' sit in the cell, and where the RNAs they bind gather, each compared with other proteins of similar abundance.</p></div></div>' +
           '<div id="ch-cell-body"><p class="note">Loading the maps of the cell…</p></div></div>', 'Where do methylated proteins, and the RNAs they bind, sit in the cell?', 'retest', 'loading the maps of the cell…', 'loading the maps of the cell…', null, null) +
         chartRow('ov-loc', loc, 'Which subcellular locations are over-represented (Human Protein Atlas)?') +
         chartRow('ov-dis', dis, 'Which disease gene sets are over-represented?') +
@@ -6726,8 +6726,12 @@
   function siteVersionHtml() {
     const dv = M.provenance && M.provenance.dataset_version;
     if (!dv || dv === SITE_VERSION) return '';
-    return '<p><b>' + esc(SITE_VERSION) + '</b> changes the website only; its data are those of ' + esc(dv) + '. A search, a quick selection, or a link to a protein class, disease, condensate or location that selects at least ' + SEL_MIN.prots + ' proteins and ' + SEL_MIN.sites + ' sites opens on the Overview, where every section is retested on it: the Overview and Interactions tabs carry a "selection" badge, the protein sections come in the order in which they usually tell most about a selection, and what sets a selection\'s sites apart is a closed section below them. ' +
-      'A preview card, <i>Where in the cell</i>, compares the methylated proteins (or a selection) with other proteins of similar abundance in six maps of the cell, and each protein\'s page lists where the maps place it and where the RNAs it binds gather; its maps come from pilots and are not part of the release tables. The explorer as it was at ' + esc(dv) + ' is <a href="' + esc(dv) + '/">here</a>.</p>';
+    return '<p><b>' + esc(SITE_VERSION) + '</b> changes the website only; its data are those of ' + esc(dv) + '. The explorer as it was at ' + esc(dv) + ' is <a href="' + esc(dv) + '/">here</a>.</p>';
+  }
+  // What this version changed on the website itself (Versions); what its data changed is in the release's CHANGES.md.
+  function siteNoteHtml() {
+    return '<p><b>' + esc(SITE_VERSION) + '</b> on the website: <i>Where in the cell</i> compares the methylated proteins (or a selection) with other proteins of similar abundance in six maps of the cell, and each protein\'s page lists where the maps place it and where the RNAs it binds gather (the release\'s cell-map layer). ' +
+      'A search, a quick selection, or a link to a protein class, disease, condensate or location that selects at least ' + SEL_MIN.prots + ' proteins and ' + SEL_MIN.sites + ' sites opens on the Overview, where every section is retested on it: the Overview and Interactions tabs carry a "selection" badge, the protein sections come in the order in which they usually tell most about a selection, and what sets a selection\'s sites apart is a closed section below them.</p>';
   }
   const changesLink = () => 'https://github.com/Shechterlab/PTM_Pipeline/blob/main/releases/' + encodeURIComponent((M.provenance && M.provenance.dataset_version) || 'v1.1.0') + '/CHANGES.md';
   // The dataset's reference sequence for site positions, as the export recorded it.
@@ -10944,7 +10948,8 @@
     });
   }
 
-  // ---- Where in the cell (preview of v1.5.0): where methylated proteins sit, by six protein maps (data/subcellular.json).
+  // ---- Where in the cell: where methylated proteins sit, by six protein maps (data/subcellular.json, from the release's
+  // cell-map layer, scripts/cell_maps.py).
   // Each map is tested against the proteins it places: one-sided hypergeometric with fold enrichment, and the
   // Mantel–Haenszel odds ratio within PaxDb abundance deciles, two-sided. The drawings, the grid and the chart show the
   // same tests; a part of the drawings opens its numbers and members. Where the RNAs that proteins bind gather (eCLIP
@@ -10991,7 +10996,7 @@
     cellLayerMemo.set(SC, L);
     return L;
   }
-  // Where the RNAs that proteins with eCLIP data bind gather (data/subcellular_na.json, pilot_layers.py): per map, the
+  // Where the RNAs that proteins with eCLIP data bind gather (data/subcellular_na.json, scripts/cell_maps.py): per map, the
   // compartments where a protein's bound RNAs (or their genes) gather more or less than other RNAs of similar expression
   // and gene length, as [compartment, log2 odds ratio, q] with q <= 0.05; null where the map places fewer than 20 of them.
   const cellClipCalls = (NA, acc, key) => { const r = NA.proteins[acc.split('-')[0]], c = r && r[1][NA.maps.indexOf(key)]; return c ? c.map(([i, l2, q]) => [NA.categories[key][i], l2, q]) : null; };
@@ -11005,7 +11010,7 @@
   }
   // log2 of a Mantel–Haenszel odds ratio, ±Infinity where it is infinite or 0, as abundTest reads the exports
   const cellL2 = (or) => (or == null ? null : or === Infinity ? Infinity : or <= 0 ? -Infinity : Math.log2(or));
-  // A set of proteins tested in one map as the pilots test the methylated proteins: the set's members the map places
+  // A set of proteins tested in one map as the release tests the methylated proteins: the set's members the map places
   // against the map's other members, each decile a stratum (Mantel–Haenszel odds ratio with its 95% CI and the
   // continuity-corrected Cochran–Mantel–Haenszel test, mhTest; BH over the map's compartments). A compartment that holds
   // every member of the set, or every compartment of a map the set was chosen by (selectedBy), is counted but not tested.
@@ -11099,7 +11104,7 @@
     '.cd-dot{fill:' + pal.ink + ';stroke:' + pal.bg + ';stroke-width:1.5}.cd-name{font-size:13.5px;font-weight:700;fill:' + pal.ink + '}.cd-val{font-size:12.5px;fill:' + pal.ink + '}.cd-val tspan.m{fill:' + pal.muted + '}' +
     '.cd-hit,.cg-hit{fill:transparent}';
   // One cell of the grid: the map's category for the row, its comparison within the deciles (the whole dataset's from
-  // the pilots' rows, a selection's from cellSelTests).
+  // the release's rows, a selection's from cellSelTests).
   function cellGridCell(L, key, cat, scoped) {
     const r = cat && L.tests[key] && L.tests[key].find((x) => x[0] === cat);
     if (!r) return null;
@@ -11143,9 +11148,9 @@
   }
   function cellGridTsv(L, scoped) {
     const v = (u) => (u == null ? '' : u);
-    const head = scoped ? '# Where in the cell (preview): ' + L.what(true) + ' (' + selectionText() + ') in each map, against ' + L.alike + '; members: ' + L.here + '\n' +
+    const head = scoped ? '# Where in the cell: ' + L.what(true) + ' (' + selectionText() + ') in each map, against ' + L.alike + '; members: ' + L.here + '\n' +
       'group\tcompartment\tmap\tmap_category\tmembers\tselected\tselected_placed\tplaced\tlog2_odds_ratio_within_deciles\tlog2_ci_low\tlog2_ci_high\tp\tq\tnot_compared\n'
-      : '# Where in the cell (preview): ' + L.what(false) + ' in each map, against ' + L.alike + '; members: ' + L.here + '\n' +
+      : '# Where in the cell: ' + L.what(false) + ' in each map, against ' + L.alike + '; members: ' + L.here + '\n' +
       'group\tcompartment\tmap\tmap_category\tmembers\tmethylated\tlog2_fold_enrichment\tq\tlog2_odds_ratio_within_deciles\tq_within_deciles\n';
     return head + L.groups.flatMap(([group, rows]) => rows.flatMap(([label, map]) => L.order.filter((k) => map[k]).map((k) => {
       const r = L.tests[k].find((x) => x[0] === map[k]);
@@ -11417,12 +11422,11 @@
       UI.cellMap = UI.cellMap || {};
       const key = UI.cellMap[L.key] && cellDs(L, UI.cellMap[L.key]) ? UI.cellMap[L.key] : L.order[0], spec = cellSpec(L, key, scoped);
       UI.charts[spec.id] = spec;
-      const who = L.what(scoped), cap = (t) => t + ': each part coloured by how many times as likely ' + who + ' are to ' + L.verb('there') + ' as ' + L.alike + ' (odds ratio; the median of the maps that have it), grey where the maps disagree or show no clear difference. Preview of v1.5.0.';
-      const grid = cellFigSpec('ch-cell-grid', 'Where in the cell: compartments against maps', 'How many times as likely ' + who + ' are to ' + L.verb('in each compartment') + ' as ' + L.alike + ' in the same map (odds ratio). Preview of v1.5.0.', () => cellGridSvg(L, scoped), () => cellGridTsv(L, scoped));
+      const who = L.what(scoped), cap = (t) => t + ': each part coloured by how many times as likely ' + who + ' are to ' + L.verb('there') + ' as ' + L.alike + ' (odds ratio; the median of the maps that have it), grey where the maps disagree or show no clear difference.';
+      const grid = cellFigSpec('ch-cell-grid', 'Where in the cell: compartments against maps', 'How many times as likely ' + who + ' are to ' + L.verb('in each compartment') + ' as ' + L.alike + ' in the same map (odds ratio).', () => cellGridSvg(L, scoped), () => cellGridTsv(L, scoped));
       const whole = cellFigSpec('ch-cell-whole', 'Where in the cell', cap('The cell'), () => cellWholeSvg(L, scoped), () => cellGridTsv(L, scoped));
       const nuc = cellFigSpec('ch-cell-nucleus', 'Where in the nucleus', cap('The nucleus'), () => cellNucleusSvg(L, scoped), () => cellGridTsv(L, scoped));
-      box.innerHTML = '<p class="preview-flag">Preview of v1.5.0: these maps are not yet part of a release.</p>' +
-        '<p class="small">' + cellIntro(L, scoped) + (scoped ? cellSelIntro(L) : '') + ' <b>Click a part, a label or a row of the grid</b> for its numbers and its proteins.</p>' +
+      box.innerHTML = '<p class="small">' + cellIntro(L, scoped) + (scoped ? cellSelIntro(L) : '') + ' <b>Click a part, a label or a row of the grid</b> for its numbers and its proteins.</p>' +
         (NA ? '<p class="small cell-rna"><b>The RNAs they bind.</b> ' + cellClipSentence(NA) + '</p>' : '') +
         '<div class="chart-key">' + cellKey(L) + '</div>' +
         '<div class="cell-fig">' + figBlock(whole, 'The cell') + '</div><div class="cell-fig">' + figBlock(nuc, 'The nucleus') + '</div>' +
@@ -11433,7 +11437,7 @@
           hbars(spec) + '<p class="note ora-note">' + esc(spec.subText.replace(/\.?$/, '.')) + ' Bars: the share of ' + esc(L.what(false)) + ' among the ' + esc(L.here) + ', as a multiple of their share of ' + esc(L.all) + ' (log2), filled where the difference is significant. ' +
           'Marks: the same comparison against ' + esc(L.alike) + ' (✓ more likely, ○ no clear difference, ▼ less likely).</p></div>' +
         '<p class="note small">Maps: ' + L.datasets.map((d) => esc(d.name) + ' (' + doiLink(d.doi, d.ref) + '; ' + esc(d.cells) + '; ' + esc(d.licence) + '; ' + fmt(d.universe) + ' proteins placed, ' + pct(d.methylated, d.universe) + '% methylated)').join('; ') + '. ' +
-          'The Human Protein Atlas column repeats the release\'s location comparison (v1.4.1). A proteomic map of nuclear bodies (Dyakov et al., bioRxiv 2024) is not shown: its licence (CC BY-NC-ND) does not allow derived works.' +
+          'The release tests each map (statistics, analyses cell_* and eclip_*), and the Human Protein Atlas column repeats its location comparison (hpa_location). A proteomic map of nuclear bodies (Dyakov et al., bioRxiv 2024) is not shown: its licence (CC BY-NC-ND) does not allow derived works.' +
           (NA ? ' RNAs bound: eCLIP from ENCODE and ENCORE, placed by ' + NA.maps.map((k) => NA.datasets[k]).map((d) => esc(d.name) + ' (' + doiLink(d.doi, d.ref) + '; ' + esc(d.cells) + ')').join('; ') + '.' : '') + '</p>';
       bindBars($('.cell-one', box), spec.rows, () => {});
       bindChartExports(box);
@@ -11542,7 +11546,7 @@
           (!NA.proteins[a] ? '<tr><td colspan="2" class="muted">No eCLIP data for this protein, or too few bound RNAs placed by these maps.</td></tr>'
             : NA.maps.map((k) => line(NA.datasets[k], where(k), 'fewer than 20 of its bound RNAs placed by this map')).join(''));
       }
-      box.innerHTML = '<div class="card-head"><div><h3>Where the maps place it</h3><p class="sub">Where maps of the cell place this protein, where the RNAs it binds gather and where their genes lie. Preview of v1.5.0.</p></div></div>' +
+      box.innerHTML = '<div class="card-head"><div><h3>Where the maps place it</h3><p class="sub">Where maps of the cell place this protein, where the RNAs it binds gather and where their genes lie.</p></div></div>' +
         '<div class="tbl-wrap"><table class="tbl compact cell-places"><tbody><tr class="sub-head"><th colspan="2">The protein</th></tr>' +
         line(cellDs(PL, 'hpa'), esc(hpa)) +
         line(cellDs(PL, 'hcm'), r && r[0] >= 0 ? '<b>' + esc(cellLabel(SC.categories.hcm[r[0]])) + '</b>' + (cellCatOf(SC, a, 'hcm_safe') ? ' · domain: ' + esc(cellLabel(cellCatOf(SC, a, 'hcm_safe'))) : '') : '') +
@@ -16282,7 +16286,7 @@
         sub('report', 'Insight report', '<p>One printable page for the current selection: the selection and a link that reopens it, headline numbers, what sets it apart, the site and protein evidence maps with the protein-context table, the sequence logo and alignment (±7, first 30 sites), the proteins on one residue scale (up to 8, UniProt features fetched live), the proteins with most selected sites with their evidence, and the methods and citation. It opens the browser\'s print dialog; choose Save as PDF.</p>')],
       ['about', 'About', '<p>The explorer indexes the integrated human methylarginine union assembled by the <a href="https://github.com/Shechterlab/PTM_Pipeline">PTM_Pipeline</a> for the review below. It runs entirely in your browser; UniProt, AlphaFold DB, PDB, Ensembl and other annotations on protein pages are fetched live. Visits are counted with <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a>, which sets no cookies and keeps nothing that identifies a visitor.</p>' +
         '<p><b>Cite:</b> ' + esc(PAPER.cite) + ' <a href="https://doi.org/' + PAPER.doi + '">doi:' + PAPER.doi + '</a>, and the original studies and resources (see How to cite).</p>'],
-      ['versions', 'Versions', siteVersionHtml() + '<p><b>' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>. This explorer was reorganised after its first release. It uses the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences (v1.1.0)' + (localisedOnly() ? '. From v1.2.0 every study is read from its own tables and ' + LOCALISED_RULE + (addedStudies().length ? '; ' + addedStudies().length + ' studies were added (' + esc(addedStudies().join(', ')) + ')' : '') : addedStudies().length ? ' and the sites of ' + addedStudies().length + ' more studies (v1.2.0: ' + esc(addedStudies().join(', ')) + ')' : '') + changesText(': ') + ' (see <a href="' + changesLink() + '" target="_blank" rel="noopener">what changed</a>). The published version (<a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases/v1.0.0" target="_blank" rel="noopener">v1.0.0</a>) remains available <a href="v1.0.0/">here</a>, and the releases since, v1.1.0 <a href="v1.1.0/">here</a>, v1.2.0 <a href="v1.2.0/">here</a>, v1.3.0 <a href="v1.3.0/">here</a>, v1.3.1 <a href="v1.3.1/">here</a>, v1.4.0 <a href="v1.4.0/">here</a> and v1.4.1 <a href="v1.4.1/">here</a>. The repository as it stood before the reorganisation is kept in the <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/v1.0.0_archive" target="_blank" rel="noopener">v1.0.0_archive</a> tag.</p>' +
+      ['versions', 'Versions', siteVersionHtml() + siteNoteHtml() + '<p><b>' + esc((M.provenance && M.provenance.dataset_version) || '') + '</b>. This explorer was reorganised after its first release. It uses the sources and methods of ' + esc(PAPER.short) + ', mapped to ' + esc(referenceLabel()) + ', with corrections to how some source records were placed on UniProt sequences (v1.1.0)' + (localisedOnly() ? '. From v1.2.0 every study is read from its own tables and ' + LOCALISED_RULE + (addedStudies().length ? '; ' + addedStudies().length + ' studies were added (' + esc(addedStudies().join(', ')) + ')' : '') : addedStudies().length ? ' and the sites of ' + addedStudies().length + ' more studies (v1.2.0: ' + esc(addedStudies().join(', ')) + ')' : '') + changesText(': ') + ' (see <a href="' + changesLink() + '" target="_blank" rel="noopener">what changed</a>). The published version (<a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases/v1.0.0" target="_blank" rel="noopener">v1.0.0</a>) remains available <a href="v1.0.0/">here</a>, and the releases since, v1.1.0 <a href="v1.1.0/">here</a>, v1.2.0 <a href="v1.2.0/">here</a>, v1.3.0 <a href="v1.3.0/">here</a>, v1.3.1 <a href="v1.3.1/">here</a>, v1.4.0 <a href="v1.4.0/">here</a> and v1.4.1 <a href="v1.4.1/">here</a>. The repository as it stood before the reorganisation is kept in the <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/v1.0.0_archive" target="_blank" rel="noopener">v1.0.0_archive</a> tag.</p>' +
         '<p>The data of each version, with every table and column described, are in <a href="https://github.com/Shechterlab/PTM_Pipeline/tree/main/releases" target="_blank" rel="noopener">releases/</a>. The GitHub releases are archived on Zenodo, ' + doiLink(ARCHIVE_DOI) + ': it opens the most recent version and lists every version with its own DOI.</p>'],
       ['cite', 'How to cite', '<p>The sites here were measured and first reported by other groups; this explorer compiles them. When you use sites or evidence from it, please cite:</p><ol>' +
         '<li><b>The original studies or databases that reported the sites you use.</b> Every list of sites (Proteins, Sites, protein pages, the insight report and the comparison) ends with <i>How to cite these sites</i>: the reporting studies with how many of the sites each reported, full references and DOIs, a <i>Copy references</i> button and <i>Download citations (RIS)</i>, a file for EndNote, Zotero, Mendeley or Papers with each DOI\'s full record from doi.org. The site card lists the studies behind one site, and the Sites TSV has a <code>reported_by_doi</code> column.</li>' +

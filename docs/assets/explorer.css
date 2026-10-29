@@ -2246,7 +2246,7 @@ ul.tight li { margin: 0.15rem 0; }
 .pmark.ns { color: var(--muted); }
 .pert-key { display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; font-size: 0.8rem; color: var(--muted); margin: 0.4rem 0; }
 
-/* Where in the cell (preview): the drawings of the cell and the nucleus and the compartment grid, coloured by the odds
+/* Where in the cell: the drawings of the cell and the nucleus and the compartment grid, coloured by the odds
    ratio within abundance deciles. The drawings keep a readable size on narrow screens and scroll sideways instead. */
 .cell-fig { max-width: 1040px; margin-top: 0.75rem; }
 .cell-fig .fig-block { overflow-x: auto; }
@@ -2273,8 +2273,6 @@ svg [data-tip]:hover .cd-lead { stroke-opacity: 1; stroke-width: 1.6; }
 .cell-key { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; }
 .cell-key i.cg-k { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
 .cg-k.na { background: none; border: 1px dashed var(--line-strong); } .cg-k.u3 { background: var(--t-up-3); } .cg-k.u1 { background: var(--t-up-1); } .cg-k.ns { background: var(--t-mid); border: 1px solid var(--line); } .cg-k.d1 { background: var(--t-down-1); } .cg-k.d3 { background: var(--t-down-3); }
-.preview-tag { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 0.3rem; vertical-align: middle; }
-.preview-flag { font-size: 0.8rem; color: var(--accent-dark, var(--accent)); margin: 0 0 0.5rem; }
 .cell-places th { font-weight: 600; width: 14rem; }
 .cell-places tr.sub-head th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding-top: 0.6rem; width: auto; }
 .cd-hit, .cg-hit { fill: transparent; }

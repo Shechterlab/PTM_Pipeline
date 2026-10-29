@@ -1,0 +1,114 @@
+{
+ "eclip_gene_names_from": [
+  "inputs/nucleic_acid/encode_eclip_target_genes.tsv",
+  "inputs/nucleic_acid/encore_eclip_target_genes.tsv"
+ ],
+ "gene_maps": {
+  "dna_map_hic_rao2014.tsv": {
+   "by_compartment": {
+    "A1 (speckle-associated)": 4965,
+    "A2 (active)": 3451,
+    "B1 (Polycomb)": 506,
+    "B2 (perinucleolar, pericentromeric)": 201,
+    "B3 (lamina-associated)": 391,
+    "B4 (chromosome 19 KZFP clusters)": 172
+   },
+   "genes_placed": 9686
+  },
+  "dna_map_tsaseq_chen2018.tsv": {
+   "by_compartment": {
+    "Near nuclear speckles": 4309,
+    "Near the nuclear lamina": 12
+   },
+   "genes_placed": 10562
+  },
+  "nuclear_body_symbols_placed": 12947,
+  "rna_map_apexseq_fazal2019.tsv": {
+   "by_compartment": {
+    "Cytosol": 419,
+    "ER membrane": 1866,
+    "Mitochondrial matrix": 491,
+    "Nuclear lamina": 1365,
+    "Nuclear pore": 166,
+    "Nucleolus": 1315,
+    "Nucleus": 1269,
+    "Outer mitochondrial membrane": 1235
+   },
+   "genes_placed": 14697
+  },
+  "rna_map_nuclear_bodies_barutcu2022.tsv": {
+   "by_compartment": {
+    "Cajal bodies": 85,
+    "Gems": 54,
+    "Histone locus bodies": 21,
+    "Nuclear lamina": 230,
+    "Nuclear speckles": 465,
+    "Nucleolus": 8,
+    "PML bodies": 4,
+    "Sam68 bodies": 726
+   },
+   "genes_placed": 12947
+  },
+  "tsa_edges_top_tenth": {
+   "lmnb": 1.0840371262436361,
+   "son": 0.9792822713606057
+  }
+ },
+ "inputs_md5": {
+  "1-s2.0-S1097276521010728-mmc2.xlsx": "1b815129e782abced3d44ece70b63649",
+  "ENCFF362RMV.tsv": "5ece20c306ae906336cf62e7bb5462f6",
+  "ENCFF384BFE.tsv": "d3a74f96d2d47dee9a84730ed34769d9",
+  "ENCFF611MXW.tsv": "0b5bd054d75b1ec0df3b6a31f121d570",
+  "ENCFF723ICA.tsv": "a812e5a47245c8f8a44e400be7fcabd0",
+  "GSE116008_APEX_seq_counts_all_data_polyA_hek293t.txt.gz": "3c9445702184097ebe4e947d151843a7",
+  "GSE116008_APEX_seq_deseq2_all_data_polyA_hek293t.txt.gz": "ac9497ced7a070fd50d5ca43d30f8539",
+  "GSE176439_NuclearBody_APEX_seq_gene_counts.txt.gz": "0a56035ad5b7aa81e30a2cee849ee5ed",
+  "GSE63525_GM12878_subcompartments.bed.gz": "cd63e6fb10bbe763c5e4636f79522855",
+  "GSE81553_LaminB_TSA-Seq_Condition2.bw": "7fe342b6adacfa9e596acbe911cb131a",
+  "GSE81553_LaminB_TSA-Seq_Conditoin2_Replicate.bw": "01f507e5d511a9c895b8f1e98d60f1e6",
+  "GSE81553_SON_TSA-Seq_Condition2.Replicate.bw": "c3c327ceacbe10d7da652de0730dcbaf",
+  "GSE81553_SON_TSA-Seq_Condition2.bw": "8f2dceeb1fc3ce32b6fbdbefa740a3a2",
+  "cluster_annotation_Dec6.csv": "5c9539d25fecfd98370e55e3c53521c9",
+  "gencode.v19.annotation.gtf.gz": "bd83e28270e595d3bde6bfcb21c9748f",
+  "preys-v1.txt": "623b4c2506360567a407bb3845025f8a",
+  "supp.zip": "c2f270987ee511c33e5ea238a59bb963"
+ },
+ "protein_maps": {
+  "chromatin": {
+   "not_mapped": 21,
+   "protein_groups": 7635,
+   "staged": 7394
+  },
+  "hcm": {
+   "not_mapped": 52,
+   "preys": 4424,
+   "staged": 4369,
+   "with_safe_domain": 3216
+  },
+  "nuclear_bodies": {
+   "Nuclear lamina": 161,
+   "Nuclear speckles": 102,
+   "PML bodies": 131,
+   "preys": 2018,
+   "staged": 1991,
+   "symbols_not_mapped": 27
+  },
+  "organelle_ip": {
+   "classified": 6947,
+   "not_mapped": 164,
+   "protein_groups": 8541,
+   "staged": 8044
+  }
+ },
+ "staged_by": "scripts/52_stage_cell_maps.py",
+ "tables": {
+  "cell_map_chromatin_kustatscher2014.tsv": 7394,
+  "cell_map_hcm_go2021.tsv": 4369,
+  "cell_map_nuclear_bodies_barutcu2022.tsv": 1991,
+  "cell_map_organelle_ip_hein2025.tsv": 8044,
+  "dna_map_hic_rao2014.tsv": 9686,
+  "dna_map_tsaseq_chen2018.tsv": 10562,
+  "rna_map_apexseq_fazal2019.tsv": 14697,
+  "rna_map_nuclear_bodies_barutcu2022.tsv": 12947
+ }
+}

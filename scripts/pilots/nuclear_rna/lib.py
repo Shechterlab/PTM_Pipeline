@@ -1,4 +1,4 @@
-"""Shared pieces of the where-in-the-cell pilots: reviewed entries, methylated proteins, PaxDb, and the per-compartment
+"""Shared pieces of the pilots (first written for the where-in-the-cell pilots, now scripts/cell_maps.py): reviewed entries, methylated proteins, PaxDb, and the per-compartment
 tests (one-sided hypergeometric with fold enrichment among the dataset's localised proteins, and the Mantel-Haenszel odds
 ratio within PaxDb deciles of the same universe, two-sided; BH within each test family)."""
 import sys

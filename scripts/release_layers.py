@@ -787,6 +787,63 @@ CURATION = Layer(
                                                'direction and reference (kept apart from every statistic)'},
 )
 
+# ---- Maps of the cell (scripts/cell_maps.py) ---------------------------------------------------------------------------
+
+import cell_maps  # noqa: E402
+
+CELL = Layer(
+    key='cell', title='Maps of the cell',
+    files=cell_maps.FILES, staging=['scripts/52_stage_cell_maps.py'],
+    licence='Human Cell Map CC BY 4.0; organelle IP BSD-3; Kustatscher et al. 2014 CC BY; Barutcu et al. 2022 Table S1 (Elsevier): '
+            'the calls derived from it only; GEO and ENCODE data without restrictions; GENCODE open',
+    citation='Go et al., Nature 595:120 (2021), doi:10.1038/s41586-021-03592-2; Hein et al., Cell 188:1137 (2025), '
+             'doi:10.1016/j.cell.2024.11.028; Kustatscher et al., EMBO J 33:648 (2014), doi:10.1002/embj.201387614; Barutcu et al., Mol Cell '
+             '82:1035 (2022), doi:10.1016/j.molcel.2021.12.010; Fazal et al., Cell 178:473 (2019), doi:10.1016/j.cell.2019.05.027; Chen et al., '
+             'J Cell Biol 217:4025 (2018), doi:10.1083/jcb.201807108; Rao et al., Cell 159:1665 (2014), doi:10.1016/j.cell.2014.11.021; '
+             'ENCODE Project Consortium, Nature 583:699 (2020), doi:10.1038/s41586-020-2493-4',
+    protein_columns=[
+        ('hcm_compartment', 'string', '', 'the Human Cell Map compartment of the entry (Go et al. 2021, HEK293 BioID, NMF localisation); empty when the map does not localise it'),
+        ('hcm_domain', 'string', '', 'its Human Cell Map SAFE domain, the finer neighbourhood of proteins that label one another; empty when SAFE gives it none'),
+        ('organelle_ip_compartment', 'string', '', 'its organelle IP cluster (Hein et al. 2025, HEK293T), or unclassified; empty when organelle IP did not detect it'),
+        ('chromatin_probability', 'number', '', 'its interphase chromatin probability (Kustatscher et al. 2014): how reliably it comes down with chromatin; empty when not scored'),
+        ('nuclear_body_proteomes', 'list<string>', '', 'the nuclear speckles, lamina and PML bodies whose APEX2 proximity proteome holds it (Barutcu et al. 2022, '
+         'SAINT AvgP >= 0.9; speckles with two of the three markers); none when detected in none; empty when not detected'),
+        ('eclip_rna_compartments', 'list<string>', '', 'where the RNAs its eCLIP experiments bind gather, as map: compartment (q <= 0.05 and odds ratio above 1 '
+         'within expression and gene-length deciles; supporting/eclip_rna_compartments); none when a map tests it and they gather nowhere; '
+         'empty when no map tests it (no eCLIP data, or fewer than 20 bound RNAs placed)'),
+    ],
+    codes={'eclip_map': cell_maps.MAP_CODES},
+    analyses={
+        'cell_hcm_compartment': 'methylated proteins (by entry) in a Human Cell Map compartment (Go et al. 2021, HEK293 BioID, NMF), against the other '
+                                'proteins the map localises (compartments of at least 5 proteins)',
+        'cell_hcm_domain': 'the same for the Human Cell Map\'s SAFE domains, against the other proteins placed in one',
+        'cell_organelle_ip': 'the same for the organelle IP clusters (Hein et al. 2025, HEK293T), against the other proteins it classifies',
+        'cell_nuclear_body_proteome': 'the same for the nuclear speckle, lamina and PML-body APEX2 proteomes (Barutcu et al. 2022, SAINT AvgP >= 0.9), '
+                                      'against the other proteins those experiments detected',
+        'cell_chromatin': 'the same for four bins of the interphase chromatin probability (Kustatscher et al. 2014: >= 0.8 chromatin, 0.5-0.8, '
+                          '0.2-0.5, < 0.2 not chromatin), against the other proteins scored',
+        'eclip_rna_apexseq': 'methylated proteins among the proteins with eCLIP data (ENCODE, ENCORE) whose bound RNAs gather in an APEX-seq compartment '
+                             '(Fazal et al. 2019, HEK293T, supporting/eclip_rna_compartments), against the other eCLIP\'d proteins it tests. Method '
+                             'mann_whitney compares the size of every tested protein\'s odds ratio, called or not',
+        'eclip_rna_nuclear_body': 'the same for the nuclear bodies of nuclear-body APEX2-seq (Barutcu et al. 2022, Flp-In HEK293)',
+        'eclip_gene_tsaseq': 'the same for the genes of the bound RNAs near speckles or the lamina by TSA-seq (Chen et al. 2018, K562)',
+        'eclip_gene_hic': 'the same for the Hi-C subcompartment of the genes of the bound RNAs (Rao et al. 2014, GM12878)',
+    },
+    protein_values=cell_maps.protein_values, stats=cell_maps.stats, supporting=cell_maps.supporting, website=cell_maps.website,
+    supporting_rows={'eclip_rna_compartments': 'protein with eCLIP data, map and compartment: whether the RNAs it binds gather there, within '
+                                               'expression and gene-length deciles (every protein and compartment a map tests)'},
+    since='v1.4.2',
+    summary='Where the methylated proteins sit in the cell, by four maps beside the Human Protein Atlas: the Human Cell Map and its finer '
+            'domains, organelle IP, the nuclear speckle, lamina and PML-body proteomes, and chromatin probability (protein columns '
+            '`hcm_compartment`, `hcm_domain`, `organelle_ip_compartment`, `nuclear_body_proteomes`, `chromatin_probability`). Each map tests '
+            'the methylated proteins against the proteins it places, with enricher and within PaxDb abundance deciles. And where the RNAs '
+            'that proteins with eCLIP data bind gather, by two RNA maps (APEX-seq, nuclear-body APEX2-seq) and two DNA maps (TSA-seq, Hi-C '
+            'subcompartments), each protein\'s bound RNAs against the other RNAs a map places within expression and gene-length deciles '
+            '(`supporting/eclip_rna_compartments`, column `eclip_rna_compartments`); the methylated proteins are compared with the other '
+            'eCLIP\'d proteins in each compartment. The website showed these maps as a preview before this release.',
+    changes=cell_maps.changes,
+)
+
 LAYERS = [
     Layer('cplm4', 'CPLM 4.0 lysine methylation', ['cplm4_summary.json'], ['scripts/39_stage_cplm4_lys_methylation.py'],
           'All rights reserved (© The CUCKOO Workgroup; no licence stated): the tables stay out of Git, checksum_only in MANIFEST.tsv',
@@ -802,6 +859,7 @@ LAYERS = [
     PAXDB,
     REACTOME,
     CURATION,
+    CELL,
 ]
 
 
@@ -832,8 +890,10 @@ def changes_section(files: dict, version: str, previous: str) -> list[str]:
     if not new:
         return []
     out = ['## New annotation layers', '',
-           f'{version} adds {len(new)} layers of annotation beside the sites. None adds, removes or moves a site; their columns, tables '
-           'and tests are in `README.md`, `data_dictionary.tsv` and the statistics table, and scripts/release_layers.py builds them.', '']
+           (f'{version} adds {len(new)} layers of annotation beside the sites. None adds, removes or moves a site; their columns, tables '
+            'and tests are in `README.md`, `data_dictionary.tsv` and the statistics table, and scripts/release_layers.py builds them.' if len(new) > 1 else
+            f'{version} adds a layer of annotation beside the sites. It adds, removes or moves no site; its columns, tables and tests are in '
+            '`README.md`, `data_dictionary.tsv` and the statistics table, and scripts/release_layers.py builds them.'), '']
     for layer in new:
         out += [f'### {layer.title}', '', layer.summary, '']
         if layer.changes:
