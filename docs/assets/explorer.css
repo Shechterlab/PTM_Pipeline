@@ -1421,6 +1421,9 @@ details.fold > .card.tbl-card { padding-top: 0; }
 details.fold > .card.tbl-card > .card-pad:first-child { padding-top: 0.75rem; }
 details.fold > .card > h3:first-child, details.fold > .card > .card-head:first-child h3, details.fold > .card > .card-pad:first-child > .card-head h3 { display: none; }
 details.fold > .card > .card-head:first-child > div:first-child:not(:has(> :not(h3))) { display: none; }
+/* The maps' places, the second card of Location and condensates, keep their heading: the fold's title does not name them. */
+details.fold > #card-cell:not(:empty) { border-top: 1px solid var(--line); border-radius: 0; margin-top: 0.5rem; }
+details.fold > #card-cell > .card-head:first-child h3 { display: block; font-size: 1rem; }
 .fold-list { display: grid; gap: 0.6rem; min-width: 0; }
 /* Folds inside a card (the 3D card's structure lists): lighter, no shadow. */
 details.fold.sub-fold { margin-top: 0.75rem; box-shadow: none; border-radius: 0.6rem; }
