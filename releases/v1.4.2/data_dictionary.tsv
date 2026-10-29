@@ -450,7 +450,7 @@ supporting/eclip_rna_compartments_v1.4.2.tsv	map	code	apexseq; nuclear_body; tsa
 supporting/eclip_rna_compartments_v1.4.2.tsv	compartment	string			the compartment (a subcompartment for Hi-C)
 supporting/eclip_rna_compartments_v1.4.2.tsv	bound_rnas_placed	integer			the protein's bound RNAs (genes) the map places
 supporting/eclip_rna_compartments_v1.4.2.tsv	bound_rnas_in_compartment	integer			of these, those the map places in the compartment
-supporting/eclip_rna_compartments_v1.4.2.tsv	odds_ratio	number			Mantel-Haenszel odds ratio of its bound RNAs being in the compartment against the other RNAs the map places, within deciles of expression in the map's cells crossed with deciles of gene length (GENCODE v19; 100 strata)
+supporting/eclip_rna_compartments_v1.4.2.tsv	odds_ratio	number			Mantel-Haenszel odds ratio of its bound RNAs being in the compartment against the other RNAs the map places, within deciles of expression in the map's cells crossed with deciles of gene length (GENCODE v19; the genes v19 lacks are one more length stratum within each expression decile)
 supporting/eclip_rna_compartments_v1.4.2.tsv	odds_ratio_ci_low	number			lower bound of its 95% confidence interval (Robins-Breslow-Greenland)
 supporting/eclip_rna_compartments_v1.4.2.tsv	odds_ratio_ci_high	number			upper bound
 supporting/eclip_rna_compartments_v1.4.2.tsv	p	number			continuity-corrected Cochran-Mantel-Haenszel test, two-sided

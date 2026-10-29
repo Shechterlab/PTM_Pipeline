@@ -1,4 +1,4 @@
-60d6b4f4510ca6df89e693d37bc35faf  README.md
+5ac09c23c28e685e9a2ff45f7edf1b7c  README.md
 61c1f5efc826b84542ae11b9cd0f8e95  clustering/arg_methyl_multiscale_density_significant_regions.tsv
 2145ed307ddc19f433f75321575029ba  clustering/arg_methyl_multiscale_density_window_summary.tsv
 2394905c3998788fa92cf9c399064883  clustering/nearest_neighbor_curve_vs_null.tsv
@@ -26,4 +26,4 @@ b6460b1226ab6355ca6c6f97513aba96  disorder/idr_enrichment_vs_arginines_in_methyl
 324914c595e0aa139cbfcc708054e5e8  other_ptms/ptm_context_comparison.tsv
 b339d930145ccd5e3753b36c2e576baa  other_ptms/ptm_idr_binary_comparison.tsv
 4c3fd9d1bf6ecf5b317fd2272fcd302a  panther/panther_class_enrichment.tsv
-13fbd937268fb842af8993d5141e2449  statistics_v1.4.2.tsv
+6661bd538e80f805434025c999b488e7  statistics_v1.4.2.tsv

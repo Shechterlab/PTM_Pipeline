@@ -11186,6 +11186,8 @@
   // nuclear bodies, pores sit in the envelope, the chromatin along the lamina and round the nucleolus is chromatin)
   const CELL_WITHIN = { cajal: 'bodies', pml: 'bodies', pores: 'envelope', periphery: 'chromatin', perinucleolar: 'chromatin' };
   const cellPartName = (L, k) => L.names[k] || CELL_NAME[k];
+  // a compartment's name inside a sentence: lower case, but P-bodies, PML bodies, the ER, Golgi and Cajal keep their capitals
+  const cellNameInText = (s) => /^(?:[A-Z][A-Z-]|Golgi|Cajal)/.test(s) ? s : s.charAt(0).toLowerCase() + s.slice(1);
   // the parts of the drawings, and the grid's rows, with the comparison each shows
   function cellRowSummary(L, row, scoped) {
     const [label, map, part] = row;
@@ -11430,7 +11432,7 @@
       // the hub tile and the fold's summary: where the proteins sit
       const parts = Object.values(cellParts(PL, scoped)), up = parts.filter((p) => /^u/.test(p.tone)).sort((a, b) => b.a.l2 - a.a.l2);
       if (tv) tv.innerHTML = aMeters(up.slice(0, 4).map((p) => ({ label: CELL_NAME[p.part] || p.label, v: Math.min(1, p.a.l2 / 3), text: cellOr(p.a), cls: 'count', tip: '<b>' + esc(p.label) + '</b><br>' + esc(PL.what(scoped)) + ' are ' + esc(cellTimes(p.a)) + ' to sit here as ' + esc(PL.alike) + ' (median of ' + p.maps + ')' })), { tight: true, wide: true });
-      if (th) th.innerHTML = up.length ? (scoped ? 'Your selection is most enriched in ' : 'Methylated proteins are most enriched in ') + '<b>' + esc(up.slice(0, 3).map((p) => (CELL_NAME[p.part] || p.label).toLowerCase()).join(', ')) + '</b>'
+      if (th) th.innerHTML = up.length ? (scoped ? 'Your selection is most enriched in ' : 'Methylated proteins are most enriched in ') + '<b>' + esc(up.slice(0, 3).map((p) => cellNameInText(CELL_NAME[p.part] || p.label)).join(', ')) + '</b>'
         : scoped ? 'Your selection is not enriched in any part of the cell' : 'Methylated proteins are not enriched in any part of the cell';
       if (!box) return;
       UI.cellMap = UI.cellMap || {};

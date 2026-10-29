@@ -2,7 +2,7 @@
  "title": "Human methylarginine sites",
  "version": "v1.4.2",
  "previous_version": "v1.4.1",
- "code_commit": "f3ec8373ab9ebc138faaadceee4447f2643eb072",
+ "code_commit": "35aa223d7cf7f83178d812bf5bb9bfc65fcd5f62",
  "repository": "https://github.com/Shechterlab/PTM_Pipeline",
  "release_date": "2026-10-29",
  "paper": "DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011",
@@ -165,12 +165,12 @@
   {
    "file": "human_methylarginine_proteins_v1.4.2.tsv",
    "rows": 4439,
-   "md5": "339961c7a4e89ebaeb74101e18d6ddcb"
+   "md5": "05bb44ce35959d5749b474a0c5c690eb"
   },
   {
    "file": "statistics_v1.4.2.tsv",
    "rows": 4634,
-   "md5": "98c01a8267fd0e505a0e277be19eac1e"
+   "md5": "cba17e2997bb1f9c642d159685da4bb8"
   },
   {
    "file": "supporting/disease_terms_v1.4.2.tsv",
@@ -230,12 +230,12 @@
   {
    "file": "supporting/eclip_rna_compartments_v1.4.2.tsv",
    "rows": 4614,
-   "md5": "829a49147d1592351975800da84bc830"
+   "md5": "feaed0917ea9ed25898d6f179b12b608"
   },
   {
    "file": "statistics_with_lower_confidence_v1.4.2.tsv",
    "rows": 4644,
-   "md5": "85c968af178201f14398b2c4d0620513"
+   "md5": "8b170c18861bbcb3427a4a935ea62ee8"
   },
   {
    "file": "supporting/site_interactions_v1.4.2.tsv",
@@ -305,7 +305,7 @@
   {
    "file": "data_dictionary.tsv",
    "rows": 625,
-   "md5": "1ed5e851f58a455733c6215d206f402d"
+   "md5": "d58a2e76b6213056b096b541b7fc3ab5"
   },
   {
    "file": "human_methylarginine_sites_v1.4.2.xlsx",
@@ -2080,7 +2080,7 @@
   },
   {
    "file": "inputs/layers/cell_map_organelle_ip_hein2025.tsv",
-   "md5": "849679ff488f75aec13b7140410a0006",
+   "md5": "34f4a29d8e30955b4a9f7cbd0697a682",
    "version_or_date": "repository commit 65f22ac, downloaded 2026-10-27",
    "licence": "BSD-3-Clause (the analysis repository)",
    "redistribution": "git"
@@ -2129,7 +2129,7 @@
   },
   {
    "file": "inputs/layers/cell_maps_summary.json",
-   "md5": "d803c4603649203ca60f0486a106e70f",
+   "md5": "dcf678a3ad1717e9fe7c5e1e34835f43",
    "version_or_date": "downloaded 2026-10-28",
    "licence": "",
    "redistribution": "git"
