@@ -6742,7 +6742,7 @@
   // What v1.4.2 changed on the website itself (Versions); what its data changed is in the release's CHANGES.md. A later
   // version writes its own note here.
   function siteNoteHtml() {
-    return '<p><b>v1.4.2</b> on the website: <i>Where in the cell</i> compares the methylated proteins (or a selection) with other proteins of similar abundance in six maps of the cell, and each protein\'s page lists where the maps place it and where the RNAs it binds gather (the release\'s cell-map layer). ' +
+    return '<p><b>v1.4.2</b> on the website: <i>Where in the cell</i> compares the methylated proteins (or a selection) with other proteins of similar abundance in six maps of the cell, first in the nucleus, the cytoplasm and the organelles and membranes, then compartment by compartment, and each protein\'s page lists where the maps place it and where the RNAs it binds gather (the release\'s cell-map layer). ' +
       'A search, a quick selection, or a link to a protein class, disease, condensate or location that selects at least ' + SEL_MIN.prots + ' proteins and ' + SEL_MIN.sites + ' sites opens on the Overview, where every section is retested on it: the Overview and Interactions tabs carry a "selection" badge, the protein sections come in the order in which they usually tell most about a selection, and what sets a selection\'s sites apart is a closed section below them.</p>';
   }
   const changesLink = () => 'https://github.com/Shechterlab/PTM_Pipeline/blob/main/releases/' + encodeURIComponent((M.provenance && M.provenance.dataset_version) || 'v1.1.0') + '/CHANGES.md';
@@ -11006,6 +11006,7 @@
       verb: (w) => 'sit ' + w, here: 'proteins the map places here', all: 'the proteins the map places',
       question: 'Where do methylated proteins sit in the cell?', selectedBy: (key) => key === 'hpa' && termValues('location').length > 0 };
     cellLayerMemo.set(SC, L);
+    L.regionLayer = cellRegionLayer(SC);
     return L;
   }
   // The regions of the cell, the card's first level (data/subcellular.json regions, analyses cell_region_*): the protein
@@ -11016,7 +11017,8 @@
     if (!SC.regions) return null;
     if (cellRegionMemo.has(SC)) return cellRegionMemo.get(SC);
     const L = cellProteinLayer(SC), of = SC.regions.of;
-    const RL = Object.assign({}, L, { key: 'region', tests: SC.regions.tests, groups: [['Regions of the cell', SC.regions.rows]],
+    const part = { Nucleus: 'nucleus', Cytoplasm: 'cytoplasm', 'Organelles and membranes': 'membranes' };   // as the drawings name them
+    const RL = Object.assign({}, L, { key: 'region', tests: SC.regions.tests, groups: [['Regions of the cell', SC.regions.rows.map((r) => [r[0], r[1], r[2] || part[r[0]] || ''])]],
       order: L.order.filter((k) => SC.regions.tests[k]), label: (c) => c,
       catsOf: (acc, key) => [...new Set(L.catsOf(acc, key).map((c) => of[key][c]).filter(Boolean))],
       // the compartments a region holds in one map, by their names there
@@ -11151,7 +11153,7 @@
       '<br><b>Against ' + esc(L.alike) + '</b>: ' + abundText(a) };
   }
   function cellGridSvg(L, scoped) {
-    const cols = L.order, LW = 300, CW = 100, RH = 24, HH = 46, W = LW + cols.length * CW + 8;
+    const cols = L.order, LW = L.key === 'region' ? 190 : 300, CW = 100, RH = 24, HH = 46, W = LW + cols.length * CW + 8;
     let y = HH + 4, g = '';
     cols.forEach((k, i) => {
       const ds = cellDs(L, k), x = LW + i * CW + CW / 2;
@@ -11194,10 +11196,11 @@
   // ---- The drawings. Each part is coloured by the median of the maps' odds ratios within the deciles, when at least
   // half of the maps that have the part find a difference that way; grey otherwise; outlined only where no map of the
   // layer measures it. Every measured part is named beside the drawing with a leader line, and opens its numbers.
-  const CELL_NAME = { pm: 'Plasma membrane', actin: 'Actin cortex', cytosol: 'Cytosol', er: 'Endoplasmic reticulum', ribosomes: 'Ribosomes, translation', golgi: 'Golgi apparatus',
-    mito: 'Mitochondria', endolyso: 'Endosomes, lysosomes', perox: 'Peroxisomes', granules: 'Stress granules', pbodies: 'P-bodies', microtubules: 'Microtubules', centrosome: 'Centrosome',
+  const CELL_NAME = { pm: 'Plasma membrane', actin: 'Actin cortex', cytosol: 'Cytosol', er: 'Endoplasmic reticulum', ribosomes: 'Ribosomes and translation', golgi: 'Golgi apparatus',
+    mito: 'Mitochondria', endolyso: 'Endosomes and lysosomes', perox: 'Peroxisomes', granules: 'Stress granules', pbodies: 'P-bodies', microtubules: 'Microtubules', centrosome: 'Centrosome',
     nucleoplasm: 'Nucleoplasm', chromatin: 'Chromatin', nucleolus: 'Nucleolus', speckles: 'Nuclear speckles', paraspeckles: 'Paraspeckles', bodies: 'Nuclear bodies', envelope: 'Nuclear envelope',
-    pores: 'Nuclear pores', periphery: 'Lamina-associated chromatin', perinucleolar: 'Perinucleolar chromatin', cajal: 'Cajal bodies', pml: 'PML bodies' };
+    pores: 'Nuclear pores', periphery: 'Lamina-associated chromatin', perinucleolar: 'Perinucleolar chromatin', cajal: 'Cajal bodies', pml: 'PML bodies',
+    nucleus: 'Nucleus', cytoplasm: 'Cytoplasm', membranes: 'Organelles and membranes' };
   // a part a layer does not measure on its own takes the colour of the part it belongs to (Cajal and PML bodies are
   // nuclear bodies, pores sit in the envelope, the chromatin along the lamina and round the nucleolus is chromatin)
   const CELL_WITHIN = { cajal: 'bodies', pml: 'bodies', pores: 'envelope', periphery: 'chromatin', perinucleolar: 'chromatin' };
@@ -11220,6 +11223,8 @@
   function cellParts(L, scoped) {
     const parts = {};
     L.groups.forEach(([, rows], gi) => rows.forEach((row, ri) => { if (row[2]) parts[row[2]] = Object.assign(cellRowSummary(L, row, scoped), { id: gi + '.' + ri }); }));
+    const RL = L.regionLayer;
+    if (RL) RL.groups.forEach(([, rows], gi) => rows.forEach((row, ri) => { if (row[2]) parts[row[2]] = Object.assign(cellRowSummary(RL, row, scoped), { id: 'r' + gi + '.' + ri, region: true }); }));
     return parts;
   }
   // the helpers of a drawing: fill and stroke classes of a part, its hover text (and data-part, which opens it), and
@@ -11257,7 +11262,7 @@
       }
       return g;
     };
-    return { P, tone, fill, line, tip, labels };
+    return { P, tone, fill, line, tip, labels, has: (k) => !!P[k] };
   }
   // A smooth closed path through points (Catmull–Rom splines as cubic Béziers), and the points of an organic outline:
   // an ellipse whose radius is scaled by f[i] at evenly spaced angles.
@@ -11350,7 +11355,8 @@
     let pores = '';
     for (let t = 0; t < 360; t += 26) { const r = t * Math.PI / 180, x = nx + nrx * Math.cos(r), y = ny + nry * Math.sin(r), qx = Math.cos(r) * 4, qy = Math.sin(r) * 4; pores += '<line class="cd-gap" stroke-width="3.2" x1="' + (x - qx).toFixed(1) + '" y1="' + (y - qy).toFixed(1) + '" x2="' + (x + qx).toFixed(1) + '" y2="' + (y + qy).toFixed(1) + '"/>'; }
     const sc = (p) => [nx + (p[0] - 500) * (nrx / 262), ny + (p[1] - 235) * (nry / 190)];
-    g += '<g' + D.tip('nucleoplasm', 'Nucleus') + '><path class="' + D.fill('nucleoplasm') + '" fill-opacity=".85" d="' + nuc + '"/>' +
+    const whole = D.has('nucleus') ? 'nucleus' : 'nucleoplasm';
+    g += '<g' + D.tip(whole, 'Nucleus') + '><path class="' + D.fill(whole) + '" fill-opacity=".85" d="' + nuc + '"/>' +
       cellTerritories(CELL_CT.map(sc), nx, ny, nrx - 5, nry - 5, 5).map((d) => '<path class="cd-shade" d="' + d + '"/>').join('') +
       '<path class="cd-shade" style="fill-opacity:.22" d="' + cellSmooth(cellBlob(...sc([592, 214]), 25, 24, [1, 1.05, 0.95, 1.02, 0.97, 1.04, 1, 0.96])) + '"/>' +
       '<path fill="none" class="cd-o" stroke-width="3.5" d="' + nuc + '"/><path class="cd-gap" stroke-width="1" d="' + nuc + '"/>' + pores + '</g>';
@@ -11380,7 +11386,7 @@
     // the membrane anchors are vertices of its outline (at 180° and 120°), so they sit on it
     g += D.labels([
       { k: 'cytosol', side: 'l', x: 470, y: 80 }, { k: 'mito', side: 'l', x: 281, y: 152 }, { k: 'perox', side: 'l', x: 298, y: 232 }, { k: 'actin', side: 'l', x: 225, y: 250 },
-      { k: 'nucleoplasm', side: 'l', x: 372, y: 300, name: 'Nucleus' }, { k: 'granules', side: 'l', x: 302, y: 322 }, { k: 'pm', side: 'l', x: 353, y: 434 },
+      { k: D.has('nucleus') ? 'nucleus' : 'nucleoplasm', side: 'l', x: 372, y: 300, name: 'Nucleus' }, { k: 'granules', side: 'l', x: 302, y: 322 }, { k: 'pm', side: 'l', x: 353, y: 434 },
       { k: 'ribosomes', side: 'r', x: 635, y: 112 }, { k: 'pbodies', side: 'r', x: 730, y: 170 }, { k: 'golgi', side: 'r', x: 666, y: 206 }, { k: 'er', side: 'r', x: 609, y: 274 },
       { k: 'endolyso', side: 'r', x: 724, y: 296 }, { k: 'centrosome', side: 'r', x: ox + 6, y: oy + 8 }, { k: 'microtubules', side: 'r', x: +mtAt[0].toFixed(1), y: +mtAt[1].toFixed(1) },
     ], W, H, 200);
@@ -11445,6 +11451,7 @@
     let t = more.length || less.length
       ? who + ' sit ' + (more.length ? 'more often in the ' + and(more.map(one)) : '') + (more.length && less.length ? ', and ' : '') + (less.length ? 'less often in the ' + and(less.map(one)) : '')
       : regs.length ? who + ' sit in the nucleus, the cytoplasm and the organelles about as often as ' + esc(L.alike) : '';
+    if (short && (more.length || less.length)) return cellCap((more.length ? 'more often in the ' + and(more.map(one)) : '') + (more.length && less.length ? '; less in the ' : less.length ? 'less often in the ' : '') + and(less.map(one))) + '.';
     if (short) return t ? t + '.' : (scoped ? 'Your selection is not enriched in any part of the cell.' : 'Methylated proteins are not enriched in any part of the cell.');
     if (t && (more.length || less.length)) t += ' than ' + esc(L.alike) + (regs.some((x) => x.cells.length > 1) ? ' (the median of the maps)' : '');
     const most = up.slice(0, 3).map((x) => '<b>' + esc(cellNameInText(CELL_NAME[x.part] || x.label)) + '</b>' + num(x));
@@ -11463,7 +11470,7 @@
       if (!PL) { if (box) box.innerHTML = '<p class="muted">The maps did not load.</p>'; if (th) th.textContent = 'did not load'; return; }
       // the hub tile and the fold's summary, from the top down: the three regions, then the parts where most of all
       const RL = cellRegionLayer(SC), regs = RL ? RL.groups[0][1].map((row) => cellRowSummary(RL, row, scoped)) : [];
-      const parts = Object.values(cellParts(PL, scoped)), up = parts.filter((p) => /^u/.test(p.tone)).sort((a, b) => b.a.l2 - a.a.l2);
+      const parts = Object.values(cellParts(PL, scoped)).filter((p) => !p.region), up = parts.filter((p) => /^u/.test(p.tone)).sort((a, b) => b.a.l2 - a.a.l2);
       const dot = (x, name) => ({ label: name, main: { or: x.a.l2 == null ? null : Math.pow(2, x.a.l2), sig: /^[ud]/.test(x.tone) },
         tipMore: esc(cellCap(PL.what(scoped))) + ' against ' + esc(PL.alike) + (x.cells.length > 1 ? ', the median of ' + esc(x.maps) : '') + ':<br>' +
           x.cells.map(([k, c]) => esc(cellDs(PL, k).name) + ' ' + (c.circular ? 'not compared' : esc(cellOr(c.a)) + (c.a.q != null ? ', q ' + fmtP(c.a.q) : ''))).join('<br>') });
