@@ -7,6 +7,6 @@
   Controls: expression and read-depth deciles (Mantel-Haenszel), and the direction of change among significant events.
 - `pilot_maron_ms.py`: chromatin and chromatin-associated poly(A) RNA proteomics under GSK591 and MS023 (Maron et al.
   2022, eLife, Supplementary File 1): are methylated proteins over-represented among proteins that change?
-  Uses `../where_in_cell/lib.py`.
+  Uses `lib.py` beside it (the third argument is its folder).
 
 The rMATS table is the lab's own and is not in the repository.
