@@ -10986,7 +10986,10 @@
           '<div class="tbl-wrap"><table class="tbl compact sp-tbl"><thead><tr><th>Site</th><th>Partner</th><th>Evidence</th><th>Method</th><th>Site in it</th><th>Paper</th></tr></thead><tbody>' + list.slice(0, 60).map(tr).join('') + '</tbody></table></div>' +
           (list.length > 60 ? '<p class="muted small">The first 60 of ' + fmt(list.length) + '; narrow the selection to see the rest.</p>' : '') + '</details>';
       };
-      box.innerHTML = rows.length ? '<p class="sp-sum">' + (scoped ? 'In your selection, ' : 'Across the release, ') + SP_ACTS.map((c) => fmt(nSites(c)) + ' site' + (nSites(c) === 1 ? '' : 's') + ' ' + esc(SP_HEAD[c][0].replace(/^[A-Z](?=[a-z])/, (x) => x.toLowerCase()).replace(/ it\b/, ''))).join(', ') + '. The rest of each site\'s records (binding regions, unmodified structures, RNA and DNA, predictions) are on its card.</p>' + SP_ACTS.map(group).join('')
+      box.innerHTML = rows.length ? '<p class="sp-sum">' + (scoped ? 'In your selection: ' : 'Across the release: ') +
+        [[nSites('writes'), 'with a recorded methylating enzyme'], [nSites('removes'), 'with a demethylating one'], [nSites('binds_methylated'), 'bound by a partner while methylated'],
+          [nSites('mutation_changes_binding'), 'where mutating the arginine changes a binding']].map(([k, w]) => fmt(k) + ' site' + (k === 1 ? ' ' : 's ') + w).join(', ') +
+        '. The rest of each site\'s records (binding regions, unmodified structures, RNA and DNA, predictions) are on its card.</p>' + SP_ACTS.map(group).join('')
         : '<p class="muted">No site ' + (scoped ? 'of your selection ' : '') + 'has a record of a partner methylating, demethylating or binding it methylated.</p>';
       $$('[data-site]', box).forEach((b) => b.addEventListener('click', () => { const s = S[+b.dataset.site]; openProtein(s.p, s.pos); }));
       bindContactLinks(box);
