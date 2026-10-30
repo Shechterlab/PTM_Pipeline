@@ -3185,6 +3185,12 @@
       if (r && !r.disabled) { e.preventDefault(); downloadRis(JSON.parse(r.dataset.ris), r.dataset.risName || 'references', r); }
     });
     document.addEventListener('click', (e) => {
+      const f = e.target.closest('[data-fpdf]');
+      if (f) { e.preventDefault(); e.stopPropagation(); if (!f.disabled) pdfFromSvg(f); return; }
+      const d = e.target.closest('.doc-link[data-doc]');
+      if (d && !d.dataset.docBound) { e.preventDefault(); e.stopPropagation(); openDoc(d.dataset.doc); }
+    }, true);
+    document.addEventListener('click', (e) => {
       const b = e.target.closest('[data-cexp], [data-texp]');
       if (!b) return;
       e.preventDefault(); e.stopPropagation();
@@ -3749,7 +3755,12 @@
   const selCell = (n) => '<span class="hb-sel">' + (n ? '<i></i>' + fmt(n) : '') + '</span>';
   const selKeyHtml = (sel) => '<span class="sel-key"><i></i>' + esc(sel.noun) + ', of ' + fmt(sel.n) + '</span>';
 
-  const expButtons = (id) => '<div class="exp" role="group" aria-label="Export chart"><button type="button" data-exp="svg" data-chart="' + id + '">SVG</button><button type="button" data-exp="png" data-chart="' + id + '">PNG</button><button type="button" data-exp="tsv" data-chart="' + id + '">TSV</button></div>';
+  // Every export bar, of a figure, card or tile: these kinds in this order, then a Method link (addCardExports).
+  const EXP_KINDS = ['pdf', 'svg', 'png', 'tsv'];
+  const FIG_TIP = { pdf: 'This figure as a PDF (vector)', svg: 'This figure as an SVG (vector, editable)', png: 'This figure as a PNG image', tsv: 'The rows of this figure, with each test and its q, as a TSV table' };
+  // a chart's own bar: its PDF comes from its SVG (pdfNext), its SVG, PNG and TSV from its spec (bindChartExports)
+  const expButtons = (id) => '<div class="exp" role="group" aria-label="Export figure"><button type="button" data-fpdf title="' + FIG_TIP.pdf + '">PDF</button>' +
+    ['svg', 'png', 'tsv'].map((k) => '<button type="button" data-exp="' + k + '" data-chart="' + id + '" title="' + FIG_TIP[k] + '">' + k.toUpperCase() + '</button>').join('') + '</div>';
 
   // One-line summary of a chart for a folded header: its strongest significant enrichments (or largest counts).
   // Catch-all bars (no annotation, unknown) are left out of it.
@@ -4735,7 +4746,7 @@
         chartRow('ov-cond', cond, 'Which biomolecular condensates are over-represented (CD-CODE' + (thr ? ', confidence ≥ ' + thr : '') + ')?') +
         row('ov-cell', 'Where in the cell', '<div class="card wide" id="ch-cell"><div class="card-head"><div><h3>Where in the cell</h3><p class="sub">Where ' + (scoped ? 'the proteins of your selection' : 'methylated proteins') + ' sit in the cell, and where the RNAs they bind gather, each compared with other proteins of similar abundance.' + docLink('ov-cell') + '</p></div></div>' +
           '<div id="ch-cell-body"><p class="note">Loading the maps of the cell…</p></div></div>', 'Where do methylated proteins, and the RNAs they bind, sit in the cell?', 'retest', 'loading the maps of the cell…', 'loading the maps of the cell…', null, null) +
-        row('ov-path', 'Reactome pathways', '<div class="card wide" id="ch-path"><div class="card-head"><div><h3>Reactome pathways</h3><p class="sub">Which Reactome pathways hold more ' + (scoped ? 'proteins of your selection' : 'methylated proteins') + ' than expected, against all reviewed proteins with a pathway.</p></div></div>' +
+        row('ov-path', 'Reactome pathways', '<div class="card wide" id="ch-path"><div class="card-head"><div><h3>Reactome pathways</h3><p class="sub">Which Reactome pathways hold more ' + (scoped ? 'proteins of your selection' : 'methylated proteins') + ' than expected, against all reviewed proteins with a pathway.' + docLink('ov-reactome') + '</p></div></div>' +
           '<div id="ch-path-body"><p class="note">Loading Reactome…</p></div></div>', 'Which Reactome pathways are over-represented?', 'retest', 'loading Reactome…', 'loading Reactome…', null, null))) +
       untested(hubSec('Where in the protein',
         chartRow('ov-motif', motif, 'Which sequence motifs surround methylarginines, against the other arginines of the same proteins?') +
@@ -4746,7 +4757,7 @@
           ixReady() ? pctFig(share((s) => ixStatus(s) === 'exp')) : null)) +
       hubSec('Cancer cell lines',
         row('ov-dep', 'Cancer cell dependency', '<div class="card wide" id="ch-dep"><div class="card-head"><div><h3>Cancer cell dependency</h3><p class="sub">How much 1,178 cancer cell lines depend on ' + (scoped ? 'the proteins of your selection' : 'the methylated proteins') +
-          ' in DepMap\'s CRISPR knockout screens. Cancer cell genetics, not evidence about methylation.</p></div></div><div id="ch-dep-body"><p class="note">Loading DepMap…</p></div></div>',
+          ' in DepMap\'s CRISPR knockout screens. Cancer cell genetics, not evidence about methylation.' + docLink('ov-depmap') + '</p></div></div><div id="ch-dep-body"><p class="note">Loading DepMap…</p></div></div>',
           'Do cancer cell lines depend on these proteins more than on others? (DepMap CRISPR screens)', 'retest', 'loading DepMap…', 'loading DepMap…', null, null)) +
       untested(hubSec('What sets it apart', (selOn ? profileCardHtml(true) : '') || row('sel-enriched', 'Enriched features', '', 'What sets a selection apart from the other sites?', 'needs', null, '', 'Make a selection (search, or Filters) to see the site features over-represented in it.'))) +
       hubSec('Sources and responses',
@@ -16130,7 +16141,7 @@
   // Each card of a page, and each tile of a cards page, exports as a PDF (A4, as the page's PDF), an SVG (vector: the card
   // as laid out, its boxes, text and figures) and a PNG, all drawn light and without controls. A card that already
   // exports its chart as SVG and PNG keeps those and gains the PDF.
-  const CEXP_TIP = { pdf: 'This card as an A4 PDF', svg: 'This card as an SVG (vector, editable)', png: 'This card as a PNG image' };
+  const CEXP_TIP = { pdf: 'This card as an A4 PDF', svg: 'This card as an SVG (vector, editable)', png: 'This card as a PNG image', tsv: 'The tables and figures of this card as a TSV table' };
   const cexpBtns = (kinds, attr) => kinds.map((k) => '<button type="button" ' + attr + '="' + k + '" title="' + CEXP_TIP[k] + '">' + k.toUpperCase() + '</button>').join('');
   const cardTitle = (el) => { const h = el.matches('.a-tile') ? $('.a-tt', el) : el.querySelector('h3, h2, h4'); return h ? h.textContent.replace(/\s+/g, ' ').trim() : ''; };
   // ---- Concise text. An explanation longer than CX_MIN characters shows its lead, whole sentences up to about
@@ -16186,24 +16197,155 @@
       p.append(b, rest);
     }
   }
+  // ---- One export bar for every unit. Every card, tile and figure offers the same downloads in the same order, PDF,
+  // SVG, PNG and TSV, then a Method link to its part of the Method page. addCardExports completes what each draws:
+  //   a figure (an export group with an SVG button): its PDF is its own SVG drawn into a page of the same size
+  //     (pdfNext), and where it has no TSV of its own, its card's;
+  //   a card: PDF, SVG and PNG of the card as laid out (cardExport) and its TSV, read from what it shows (unitTsv);
+  //   a tile: the same, its TSV that of the section it opens.
+  // A unit's Method part is the first Method link it holds, else UNIT_DOC (by card id, or the key of the section it
+  // sits in), else its page's (PAGE_DOC). A new card needs nothing here unless it holds no Method link of its own.
+  const UNIT_DOC = {
+    'p-map': 'protein-pages', 'card-af': 'protein-pages', 'card-ptm': 'protein-pages', 'card-seq': 'protein-pages', 'card-cluster': 'processing',
+    'card-pert': 'ov-inhibitors', 'card-exp': 'ov-curated', 'card-cond': 'ov-condensates', 'card-cell': 'ov-cell', 'card-dis': 'ov-disease',
+    'card-depmap': 'ov-depmap', 'card-func': 'ov-ontology', 'card-path': 'ov-reactome', 'card-dom': 'ov-domains', 'ix-pref': 'ix-na', 'ov-start': 'start',
+    'ov-pan': 'ov-ontology', 'ov-dis': 'ov-disease', 'ov-cond': 'ov-condensates', 'ov-cell': 'ov-cell', 'ov-path': 'ov-reactome', 'ov-motif': 'ov-motifs',
+    'ov-struct': 'ov-structure', 'ov-ix': 'ix-nac', 'ov-dep': 'ov-depmap', 'ov-study': 'ov-provenance', 'ov-treat': 'ov-inhibitors',
+  };
+  const PAGE_DOC = { overview: 'overview', proteins: 'tables', sites: 'tables', interactions: 'interactions', protein: 'protein-pages', figures: 'figures' };
+  const expKind = (b) => { const t = b.textContent.trim(); return /^(PDF|SVG|PNG|TSV)$/.test(t) ? t.toLowerCase() : null; };
+  const isExpGroup = (g) => $$('button', g).some((b) => expKind(b));
+  const hasKind = (g, k) => $$('button', g).some((b) => expKind(b) === k);
+  // a button into its group at its place in EXP_KINDS: before the first export button of a later kind, else after the last
+  function placeKind(g, k, html) {
+    const later = $$('button', g).find((b) => expKind(b) && EXP_KINDS.indexOf(expKind(b)) > EXP_KINDS.indexOf(k));
+    if (later) later.insertAdjacentHTML('beforebegin', html);
+    else { const last = $$('button', g).filter((b) => expKind(b)).pop(); if (last) last.insertAdjacentHTML('afterend', html); else g.insertAdjacentHTML('beforeend', html); }
+  }
+  function unitDoc(el) {
+    const unit = el.closest('.card') || el, own = unit.querySelector('.doc-link'), fold = unit.closest('[data-fold]');
+    if (own) return own.dataset.doc;
+    return UNIT_DOC[unit.id] || (fold && UNIT_DOC[fold.dataset.fold]) || PAGE_DOC[UI.view] || 'start';
+  }
+  // a tile's section: the scorecard row it opens, whose cards hold its Method link
+  const tileSection = (key) => $('details[data-fold="' + key + '"]');
+  const tileDoc = (key) => { const sec = tileSection(key), own = sec && sec.querySelector('.doc-link'); return own ? own.dataset.doc : UNIT_DOC[key] || PAGE_DOC[UI.view] || 'start'; };
   function addCardExports(root) {
+    // cards: the card's own PDF, SVG and PNG, and its TSV, in its head (beside its figure's, when the head exports one)
     for (const card of $$('.card', root)) {
       if (card.matches('#card-af, .a-sel') || (card.parentElement && card.parentElement.closest('.card')) || !cardTitle(card)) continue;
       if (card.querySelector('[data-cexp]')) continue;
-      const head = card.querySelector(':scope > .card-head'), own = head && head.querySelector('.exp');
+      const head = card.querySelector(':scope > .card-head'), own = head && $$('.exp', head).find(isExpGroup);
       if (own) {
-        const has = (t) => $$('button', own).some((b) => b.textContent.trim() === t);
-        // beside the card's own file exports, before the first of them (after view controls such as Reset zoom)
-        const first = $$('button', own).find((b) => /^(SVG|PNG|TSV)$/.test(b.textContent.trim()));
-        const html = cexpBtns(['pdf'].concat(has('SVG') ? [] : ['svg'], has('PNG') ? [] : ['png']), 'data-cexp');
-        if (first) first.insertAdjacentHTML('beforebegin', html); else own.insertAdjacentHTML('beforeend', html);
+        // a head that exports its figure keeps that figure's PDF, the better one for a card that is a figure
+        const fig = hasKind(own, 'svg');
+        for (const k of EXP_KINDS) if (!hasKind(own, k) && !(k === 'pdf' && fig)) placeKind(own, k, cexpBtns([k], 'data-cexp'));
       } else {
-        const g = '<div class="exp cexp" role="group" aria-label="Export this card">' + cexpBtns(['pdf', 'svg', 'png'], 'data-cexp') + '</div>';
+        const g = '<div class="exp cexp" role="group" aria-label="Export this card">' + cexpBtns(EXP_KINDS, 'data-cexp') + '</div>';
         const close = head && head.querySelector('[data-sc="close"]');
         if (close) close.insertAdjacentHTML('beforebegin', g);
         else if (head) head.insertAdjacentHTML('beforeend', g); else card.insertAdjacentHTML('afterbegin', g.replace('exp cexp', 'exp cexp cexp-float'));
       }
     }
+    // figures: a PDF beside every SVG, the card's TSV where the figure has none, and the Method link where its head has none
+    for (const g of $$('.exp', root)) {
+      if (g.dataset.unit || g.closest('.texp') || !isExpGroup(g)) continue;
+      g.dataset.unit = '1';
+      if (hasKind(g, 'svg') && !hasKind(g, 'pdf')) placeKind(g, 'pdf', '<button type="button" data-fpdf title="' + FIG_TIP.pdf + '">PDF</button>');
+      if (!hasKind(g, 'tsv') && g.closest('.card')) placeKind(g, 'tsv', cexpBtns(['tsv'], 'data-cexp'));
+      const head = g.closest('.fig-head, .card-head') || g.parentElement;
+      if (!head.querySelector('.doc-link')) g.insertAdjacentHTML('afterend', docLink(unitDoc(g)));
+    }
+    // tiles: their TSV and Method link beside their PDF, SVG and PNG
+    for (const t of $$('.a-tile-w .texp', root)) {
+      if (t.dataset.unit) continue;
+      t.dataset.unit = '1';
+      const tile = t.parentElement.querySelector('.a-tile');
+      t.insertAdjacentHTML('beforeend', cexpBtns(['tsv'], 'data-texp') + docLink(tileDoc(tile.dataset.go)));
+    }
+  }
+  // A unit's TSV, read from what it shows, so any card has one: each figure's own TSV (its chart spec), each table as
+  // shown, each list of facts; a drawing with nothing tabular (the protein map, the 3D view) gives the sites of its
+  // protein, as the Sites table's TSV does. Under a head naming the unit, the selection, the site and its Method part.
+  async function unitTsv(el, title) {
+    const tile = el.matches('.a-tile'), src = tile ? tileSection(el.dataset.go) : el, parts = [];
+    const cell = (x) => String(x == null ? '' : x).replace(/\s+/g, ' ').trim();
+    const titleOf = (t) => {
+      const grp = t.closest('.sp-group');
+      if (grp) return grp.querySelector('summary').textContent;
+      for (let n = t.closest('.tbl-wrap') || t; n && n !== src; n = n.parentElement) {
+        for (let q = n.previousElementSibling; q; q = q.previousElementSibling) if (q.matches('h3, h4, h5, .flabel')) return q.textContent;
+      }
+      return 'Table';
+    };
+    if (src) {
+      for (const id of [...new Set($$('[data-chart]', src).map((b) => b.dataset.chart))]) {
+        const spec = UI.charts[id];
+        if (spec) parts.push('## ' + cell(spec.figTitle || spec.title || id) + '\n' + (spec.figTsv ? spec.figTsv() : chartTsv(spec)).trim());
+      }
+      for (const t of $$('table', src)) {
+        if (t.closest('svg')) continue;
+        const rows = $$('tr', t).filter((tr) => tr.closest('table') === t).map((tr) => $$(':scope > th, :scope > td', tr).map((c) => cell(c.textContent)));
+        if (rows.length) parts.push('## ' + cell(titleOf(t)) + '\n' + rows.map((r) => r.join('\t')).join('\n'));
+      }
+      for (const dl of $$('dl', src)) {
+        const kv = $$('dt', dl).filter((dt) => dt.closest('dl') === dl).map((dt) => cell(dt.textContent) + '\t' + cell(dt.nextElementSibling ? dt.nextElementSibling.textContent : ''));
+        if (kv.length) parts.push('## ' + cell(titleOf(dl)) + '\n' + kv.join('\n'));
+      }
+    }
+    const p = UI.view === 'protein' ? P[UI.detail] : null;
+    if (!parts.length && p && p.sites && p.sites.length) { await loadInteractions(); parts.push('## Methylarginine sites of ' + p.label + '\n' + siteTsv(p.sites.map((j) => S[j])).trim()); }
+    if (!parts.length) parts.push('## ' + cell(title) + '\n' + cell(el.textContent));
+    const sel = constraints().length > 0, doc = tile ? tileDoc(el.dataset.go) : unitDoc(el);
+    return ['# ' + cell(title), '# ' + (p ? p.label + ' (' + p.acc + ')' : sel ? 'selection: ' + cell(selectionText()) : 'all ' + fmt(S.length) + ' sites on ' + fmt(P.length) + ' proteins'),
+      '# ' + creditLines()[0] + ' · ' + new Date().toISOString().slice(0, 10), '# Method: the part "' + doc + '" of the Method page, ' + siteUrl().replace(/#.*$/, '') + '#about'].join('\n') + '\n\n' + parts.join('\n\n') + '\n';
+  }
+  // ---- A figure's PDF. The PDF button runs the figure's own SVG export with pdfNext set, and downloadBlob draws the SVG
+  // it would have saved into a PDF of the same size: vector through svg2pdf.js, or a 3× PNG in the page where that does
+  // not load. So every figure with an SVG export has a PDF, with no code of its own.
+  const SVG2PDF = 'https://cdn.jsdelivr.net/npm/svg2pdf.js@2.2.4/dist/svg2pdf.umd.min.js';
+  let pdfNext = null;
+  function pdfFromSvg(btn) {
+    const g = btn.closest('.exp'), svg = g && $$('button', g).find((b) => expKind(b) === 'svg' && !b.dataset.cexp);
+    if (!svg) return;
+    const mine = pdfNext = { btn, label: btn.textContent };
+    btn.disabled = true; btn.textContent = '…';
+    svg.click();
+    // an export that never saves an SVG (failed to load) must not turn a later SVG into a PDF
+    setTimeout(() => { if (pdfNext === mine) { pdfNext = null; btn.disabled = false; btn.textContent = mine.label; } }, 30000);
+  }
+  async function svgPdf(svgText, name) {
+    await loadScript(PDF_LIBS[1]);
+    const el = new DOMParser().parseFromString(svgText, 'image/svg+xml').documentElement;
+    const vb = (el.getAttribute('viewBox') || '').split(/[\s,]+/).map(Number);
+    const W = parseFloat(el.getAttribute('width')) || vb[2] || 800, H = parseFloat(el.getAttribute('height')) || vb[3] || 600;
+    const pdf = new window.jspdf.jsPDF({ unit: 'pt', format: [W * 0.75, H * 0.75], orientation: W >= H ? 'l' : 'p', compress: true });
+    try {
+      await loadScript(SVG2PDF);
+      // drawn from a copy in the document, where the browser has resolved its styles
+      const host = document.createElement('div');
+      host.style.cssText = 'position:fixed;left:-20000px;top:0;width:' + W + 'px;height:' + H + 'px;overflow:hidden';
+      host.appendChild(document.importNode(el, true));
+      document.body.appendChild(host);
+      try { await window.svg2pdf.svg2pdf(host.firstElementChild, pdf, { x: 0, y: 0, width: W * 0.75, height: H * 0.75 }); } finally { host.remove(); }
+    } catch (e) {
+      pdf.addImage(await svgDataUrl(svgText, W, H, 3), 'PNG', 0, 0, W * 0.75, H * 0.75);
+    }
+    downloadBlob(name + '.pdf', pdf.output('blob'));
+  }
+  // an SVG drawn on a white canvas at scale×, as a PNG data URL
+  function svgDataUrl(svgText, w, h, scale) {
+    return new Promise((resolve, reject) => {
+      const img = new Image(), url = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' }));
+      img.onload = () => {
+        const c = document.createElement('canvas'), f = Math.min(1, 16000 / (w * scale), 16000 / (h * scale));
+        c.width = Math.floor(w * scale * f); c.height = Math.floor(h * scale * f);
+        const ctx = c.getContext('2d'); ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url); resolve(c.toDataURL('image/png'));
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('the figure could not be drawn')); };
+      img.src = url;
+    });
   }
   // A card found again after the page is redrawn (light, for an export from a dark page): by id, tile, or place.
   function cardLocator(el) {
@@ -16216,6 +16358,7 @@
     const title = cardTitle(el) || 'card', day = new Date().toISOString().slice(0, 10), sel = constraints().length > 0;
     const where = UI.view === 'protein' && P[UI.detail] ? P[UI.detail].label : VIEW_NAMES[UI.view] || 'Overview';
     const name = 'methylarginines_' + (where + '_' + title).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 70) + (sel ? '_selection' : '') + '_' + day;
+    if (kind === 'tsv') { download(name + '.tsv', await unitTsv(el, title)); return; }
     const tile = el.matches('.a-tile'), locate = cardLocator(el), de = document.documentElement, prev = de.getAttribute('data-theme'), y = window.scrollY;
     // a dark cards page is redrawn light (its figures take the light palette), as for the page's PDF; a protein page
     // draws its figures for print, as its report does
@@ -16936,9 +17079,18 @@
         sub('ov-provenance', 'Provenance', '<p>' + (localisedOnly() ? 'Sites reported by each study and database, each taken from its own tables (its localised records), by ProMetheusDB, and by PhosphoSitePlus (downloaded 22 May 2021, compiled in Maron et al. 2021 Table S5; accepted as curated). The other rows of Table S5 are superseded by each study\'s own table' : 'Sites reported by each study compiled in Maron et al. 2021 Table S5, by ProMetheusDB and by curated UniProt/IEDB records' + (addedStudies().length ? ', and by the studies added in v1.2.0 (' + esc(addedStudies().join(', ')) + '), each read from its own supplementary table' : '')) + '; the column gives the sites reported only there. A report is one study or database.' + (addedStudies().includes('Ma 2023') ? ' Ma et al. 2023 measured breast cancer xenografts grown in mice: a site only they report is marked on its site summary, since where the human and mouse sequences agree the peptide can come from the mouse stroma.' : '') + '</p>') +
         sub('ov-inhibitors', 'PRMT inhibitors, knockouts and knockdowns', '<p>Maron et al. 2021 Table S3: methyl-peptides from each methyl-IP after GSK591 (PRMT5 inhibitor) or MS023 (type I PRMT inhibitor), compared with DMSO, with the authors\' log2 differences and adjusted p values. One rule turns peptides into a call for each methylarginine they carry, the same in the release, the analyses and this page (scripts/peptide_calls.py): a site is <i>decreased</i> when at least one peptide carrying it decreased at adjusted p ≤ 0.05 and none increased, <i>increased</i> likewise, <i>mixed</i> when peptides changed in opposite directions, and <i>no significant change</i> when none changed, which is not evidence that it is unchanged. The median change over the peptides is descriptive only and decides nothing.</p>' +
           '<p><b>What a call can and cannot say.</b> The measurements are of peptides, not of sites: a peptide carrying several methylarginines changes for any of them, so each site also gets the call from its single-site peptides alone (empty when every peptide carries another methylarginine), the only evidence that speaks for that arginine. Maron et al. imputed missing intensities with a constant low value (Table S3 columns <code>imputed</code> and <code>num_NAs</code>; 3,003 of its 3,583 rows hold imputed values): a peptide detected in one condition only then has a large difference and a small p that reflect the imputation, and reads as detected with DMSO but not with the inhibitor (or the reverse). Those peptides are counted per site. Neither study\'s tables carry a matched total-protein measurement, and none is applied, so a change can follow the protein\'s abundance rather than its methylation; the responses do not measure occupancy or show a direct substrate.</p>' +
-          (koMeta() ? '<p>CARM1 knockout: ' + doiLink(koMeta().doi, 'Shishkova et al. 2017') + ' (Nat Commun 8:15571), Supplementary Data 1, ADMA-enriched peptides quantified in parental and CARM1 knockout ' + esc(koMeta().cell_lines.join(' and ')) + ' cells. Each peptide is placed on the canonical sequence only where it occurs exactly once (scripts/41); a peptide changes at ' + esc(koMeta().rule.replace(/^peptide /, '')) + ', and the site\'s call follows the same rule as above. ' + fmt(koMeta().union_sites) + ' union sites were measured, ' + fmt(koMeta().union_sites_down) + ' of them with a peptide that decreased; ' + fmt(koMeta().not_in_union) + ' sites of the paper are not in the union and are not added. The site card suggests CARM1 as a writer of a site with a decreased peptide in knockout cells: indirect evidence, as above.</p>' : ''))],
+          (koMeta() ? '<p>CARM1 knockout: ' + doiLink(koMeta().doi, 'Shishkova et al. 2017') + ' (Nat Commun 8:15571), Supplementary Data 1, ADMA-enriched peptides quantified in parental and CARM1 knockout ' + esc(koMeta().cell_lines.join(' and ')) + ' cells. Each peptide is placed on the canonical sequence only where it occurs exactly once (scripts/41); a peptide changes at ' + esc(koMeta().rule.replace(/^peptide /, '')) + ', and the site\'s call follows the same rule as above. ' + fmt(koMeta().union_sites) + ' union sites were measured, ' + fmt(koMeta().union_sites_down) + ' of them with a peptide that decreased; ' + fmt(koMeta().not_in_union) + ' sites of the paper are not in the union and are not added. The site card suggests CARM1 as a writer of a site with a decreased peptide in knockout cells: indirect evidence, as above.</p>' : '')) +
+        sub('ov-depmap', 'Cancer cell dependency (DepMap)', '<p>How much cancer cell lines depend on each protein, from DepMap\'s genome-wide CRISPR knockout screens (' + doiLink(DM_DOI.depmap, 'DepMap Public 24Q4') + '; ' + doiLink(DM_DOI.tsherniak, 'Tsherniak et al. 2017') + ') scored by Chronos (' + doiLink(DM_DOI.chronos, 'Dempster et al. 2021') + '): a gene effect of 0 is no effect and −1 the median of the commonly essential genes, so lower is a stronger dependency, and a line depends on a gene when DepMap\'s dependency probability is at least 0.5. ' +
+          'A protein\'s score is its median gene effect across the screened lines, and its class one of four: commonly essential (DepMap\'s call: among the strongest dependencies of at least 90% of the lines), most lines (at least 50% depend on it), some lines (5% to under 50%, the selective dependencies) or few or none (under 5%). This is cancer cell genetics, not evidence about methylation.</p>' +
+          '<p>The Overview tests each class as a protein set: methylated proteins, or those of a selection, against all screened reviewed proteins, one per gene (clusterProfiler enricher: one-sided hypergeometric test, fold enrichment, Benjamini–Hochberg q; release statistics, analysis depmap_dependency), and repeats it within PaxDb abundance deciles. Its table adds single tests, not adjusted: the commonly essential share by a two-sided Fisher exact test with the sample odds ratio and its Woolf 95% interval, and the median scores by a two-sided Mann–Whitney test, against the other screened proteins and, for a selection, against the other methylated proteins. ' +
+          'Essential proteins are abundant, and mass spectrometry finds abundant proteins most, so methylated proteins are expected to look more essential than the proteome whatever their methylation does; the comparison with the other methylated proteins shares that bias and is the fairer one.</p>' +
+          '<p>A protein page shows the gene effect in every screened line and the tumour mutations at its arginines (TCGA: the MC3 somatic calls, ' + doiLink(DM_DOI.mc3, 'Ellrott et al. 2018') + ', from the GDC). A PRMT\'s page adds its dependency by MTAP status and the viability of the lines under its inhibitors in PRISM Repurposing 24Q2 (' + doiLink(DM_DOI.corsello, 'Corsello et al. 2020') + '). DepMap and PRISM data are CC BY 4.0.</p>') +
+        sub('ov-reactome', 'Reactome pathways and protein abundance', '<p>Reactome release 97 (' + doiLink('10.1093/nar/gkaf1223', 'Ragueneau et al. 2026') + '; CC0), UniProt2Reactome_All_Levels: a protein counts in every pathway it is in at any level. The Overview asks which top-level pathways hold more methylated proteins, or proteins of a selection, than expected against all reviewed proteins with a pathway (clusterProfiler enricher: one-sided hypergeometric test, fold enrichment, Benjamini–Hochberg q; release statistics, analysis reactome_top_level), and lists the pathways below the top level that the release finds enriched for the whole dataset (analysis reactome_pathway, pathways within a set range of sizes). Each pathway test is repeated within PaxDb abundance deciles (Mantel–Haenszel odds ratio), as for the other protein sets.</p>' +
+          '<p>A protein page lists its Reactome top-level pathways and its abundance: parts per million of the proteome, and its percentile among the reviewed entries with a value, from PaxDb 6.1 (' + doiLink('10.1016/j.mcpro.2023.100640', 'Huang et al. 2023') + '; CC BY 4.0), which integrates whole-organism datasets, not the cells the sites come from. Abundance is a detection covariate: mass spectrometry finds abundant proteins most, so they are more likely to have sites found whatever methylation does.</p>') +
+        sub('ov-curated', 'Experiments on a protein\'s methylation', '<p>Experiments from the literature on the methylation of a site or protein, curated by hand from the papers (<code>inputs/curation/</code>; in the release, <code>supporting/functional_experiments</code>): what was done (the same protein or peptide with and without methylation; the arginine mutated, where R to K keeps the charge, R to A removes it and both remove the methyl group; a PRMT inhibited, knocked down or knocked out; methylation and a readout measured together; or a computational prediction), in what cells or system, what was measured and which way it changed, with the paper, the figure and whether the full text or only the abstract was read. ' +
+          'A row names its site where the paper resolves one, else the region it concerns, and a site that is not a site of this release is marked. The experiments are kept apart from the site table and every statistic.</p>')],
       ['figures', 'Figures and alignments', '<p>Every exported figure (SVG or PNG, including 3D snapshots and the interaction network) ends with a credit line naming this site, its address and ' + esc(PAPER.short) + '. Printed protein pages carry the same.</p>' +
-        sub('fig-hub', 'Figure panels', '<p>Every chart, map and table has its own SVG, PNG and TSV buttons. The figure panels page (<b>Make figures</b> in the Proteins and Sites views) holds the figures of a selection that no single page draws: the site alignment and logo, the protein comparison on one scale and the two evidence maps, with the export size. One export size applies to all of them and to the panel exports on protein pages: screen layout, or a journal column width (85, 114 or 174 mm) with PNG at 300, 600 or 1000 dpi; SVGs are then sized in millimetres and PNGs record their resolution. At a column width the protein map, the cartoon and the comparison are laid out again for that width, so their text keeps its size; the other figures are scaled, and every card states the smallest text it will print at, with a warning below 5 pt.</p>') +
+        sub('fig-hub', 'Figure panels', '<p>Every card, tile and figure has the same export buttons, in the same order: PDF, SVG, PNG and TSV, then a Method link to its part of this page. A figure\'s PDF is its SVG on a page of the same size (vector); a card\'s PDF is the card on an A4 page; a TSV holds the rows of a figure, or the tables, figures and facts of a card, under a head naming what it shows, the selection and the Method part. The figure panels page (<b>Make figures</b> in the Proteins and Sites views) holds the figures of a selection that no single page draws: the site alignment and logo, the protein comparison on one scale and the two evidence maps, with the export size. One export size applies to all of them and to the panel exports on protein pages: screen layout, or a journal column width (85, 114 or 174 mm) with PNG at 300, 600 or 1000 dpi; SVGs are then sized in millimetres and PNGs record their resolution. At a column width the protein map, the cartoon and the comparison are laid out again for that width, so their text keeps its size; the other figures are scaled, and every card states the smallest text it will print at, with a warning below 5 pt.</p>') +
         sub('fig-files', 'Files for other programs', '<p>The 3D view exports a PNG snapshot; a ChimeraX command script (.cxc) and a PyMOL script (.pml) that open the same model (AlphaFold DB by its file address, PDB entries by ID, predicted complexes by their model address) and rebuild the view in the light colours: the colouring of every residue as shown, methylarginine side chains in their site colours, site labels, the focused residue and the side chains within 5 Å of it, surface and background; and the coordinates as mmCIF or PDB, unchanged, with the methylarginines of the protein listed (mmCIF: a comment block and an <code>_explorer_methylarginine</code> table; PDB: REMARK 999 lines). The partner network exports as Cytoscape JSON with its layout, node attributes and the colour of each node (map <code>fill_colour</code> with a passthrough mapping to keep them). The site alignment and the orthologue alignment export as FASTA with a Jalview features file that colours each methylarginine by methylation class.</p>') +
         sub('fig-colours', 'Colours and marks', '<p>Every figure, chip and legend uses one set of colours, each with one meaning, and one set of marks. Exports and print always use the light colours.</p>' + graphicKeyHtml() + '<p>Pale, dashed or outlined versions of a colour mean “nearby” or “region-level” (a fragment, a peptide, a long binding region); a hollow, dashed site head means predicted only, or measured without a change. Conventions with their own colours keep them: AlphaFold pLDDT bands, EMBOSS charge (blue basic, red acidic), element colours in 3D and residue chemistry in logos.</p>') +
         sub('fig-align', 'Site alignment and sequence logo', '<p>The selected sites (figure panels) are aligned at the methylated arginine using the ±15 residue windows of the canonical sequence; positions past a protein end are left blank. The logo uses every selected site with a window. "Frequency" stacks residue frequencies at each position; "Information" scales each stack by its information content, log2(20) minus the Shannon entropy and the small-sample correction 19/(2 ln2 n) (Schneider et al. 1986, ' + doiLink('10.1016/0022-2836(86)90165-8', 'J Mol Biol 188:415') + '), so the invariant central arginine reaches about 4.3 bits. Colours follow WebLogo\'s chemistry scheme (Crooks et al. 2004, ' + doiLink('10.1101/gr.849004', 'Genome Res 14:1188') + '). FASTA export writes the aligned windows with - for positions past a protein end.</p>') +
@@ -17743,6 +17895,13 @@
     return base + (m[2] || '');
   }
   function downloadBlob(name, blob) {
+    if (pdfNext && /\.svg$/i.test(name)) {
+      const job = pdfNext;
+      pdfNext = null;
+      blob.text().then((t) => svgPdf(t, name.replace(/\.svg$/i, ''))).catch((e) => alert('This figure could not be saved as a PDF (' + e.message + ').'))
+        .finally(() => { job.btn.disabled = false; job.btn.textContent = job.label; });
+      return;
+    }
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url; a.download = fileName(name);
