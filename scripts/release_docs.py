@@ -387,7 +387,7 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'decile a stratum"): mass spectrometry finds abundant proteins most, so a set rich in abundant proteins can look '
         'enriched among the methylated proteins whatever methylation does. Each protein-level over-representation test '
         'above (PANTHER, functional classes, Reactome, Human Protein Atlas locations, the maps of the cell, condensates, '
-        'DepMap dependency, Gene Ontology binding, disease families, and the eCLIP\'d proteins below) is run again with its background split into the deciles of PaxDb 6.1 '
+        'DepMap dependency, Gene Ontology binding, disease families, and the proteins found binding RNA or DNA in cells and the eCLIP\'d proteins below) is run again with its background split into the deciles of PaxDb 6.1 '
         'abundance, plus one stratum for the proteins without a PaxDb value: the Mantel-Haenszel common odds ratio with its '
         'Robins-Breslow-Greenland 95% CI (statsmodels) and the continuity-corrected two-sided Cochran-Mantel-Haenszel test, its '
         '|O - E| - 0.5 floored at zero (`common.cmh_statistic`), '
@@ -402,10 +402,13 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'over the arginines of the methylated proteins, and the Mantel-Haenszel common odds ratio with each protein a '
         'stratum (statsmodels), which compares each protein\'s methylated arginines with its own other arginines; q is '
         'Benjamini-Hochberg within the analysis and method.',
-        '- **Proteins found binding RNA or DNA in cells** (`interaction_statistics`, analysis binding_protein, method '
-        '`fisher`): methylarginine-containing proteins against the other reviewed human proteins among the proteins each '
-        'experiment measured (the reviewed proteome where it lists none): two-sided Fisher exact test, the sample odds '
-        'ratio and fold enrichment, q Benjamini-Hochberg over the experiments.',
+        '- **Proteins found binding RNA or DNA in cells** (`interaction_statistics`, analysis binding_protein, methods '
+        '`enricher` and `mantel_haenszel`): methylarginine-containing proteins against the other reviewed human proteins '
+        'among the proteins each experiment measured (the reviewed proteome where it lists none), tested as Gene Ontology '
+        'binding is: clusterProfiler enricher, one job per experiment since each has its own background, the one-sided '
+        'hypergeometric p and fold enrichment, q Benjamini-Hochberg over the experiments; and again within PaxDb abundance '
+        'deciles (above), since pepR-MS and the DNA crosslinks list no proteins measured and abundance can matter beyond '
+        'detection.',
         '- **Where the RNAs bound by proteins with eCLIP data gather** (analyses eclip_*, scripts/cell_maps.py): for each '
         'protein with eCLIP data and each map of RNA or DNA (APEX-seq, nuclear-body APEX2-seq, TSA-seq, Hi-C '
         'subcompartments), its bound RNAs against the other RNAs (genes) the map places, in each compartment: the '
@@ -697,7 +700,9 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
                 f"(`human_methylarginine_lower_confidence_sites_{ctx['version']}.tsv`), with the results of the record that passes most "
                 "tests, and are never in this release's counts and tests. The analyses were run a second time with the "
                 f"{n(analysed)} whose own evidence covers the arginine and leaves the methyl group on an arginine "
-                f"(`statistics_with_lower_confidence_{ctx['version']}.tsv`, `analyses_with_lower_confidence/`). The website shows "
+                f"(`statistics_with_lower_confidence_{ctx['version']}.tsv`, `analyses_with_lower_confidence/`); the other "
+                f"{n(len(lc_sites) - analysed)} are left out of that run's tests altogether, neither sites nor the other arginines "
+                'they are compared with. The website shows '
                 'them, hatched, when the reader switches Lower-confidence sites on, and its counts and charts then come from that '
                 'second run.',
                 '',

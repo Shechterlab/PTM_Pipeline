@@ -20,6 +20,7 @@ from common import (
     canonical_site_table,
     compact_q_label,
     count_over_total_labels,
+    left_out_site_keys,
     log2_odds_ratio,
     parse_fasta,
     per_protein_background,
@@ -31,6 +32,7 @@ from common import (
     set_symmetric_xlim,
     signed_bar_colors,
     style_axis,
+    with_background,
 )
 
 
@@ -225,7 +227,9 @@ def main() -> None:
     all_arg_proteome = residue_background_from_sequences(sequences, residue='R', flank=args.window_flank)
     all_arg_proteome = all_arg_proteome.rename(columns={f'window_{2 * args.window_flank + 1}': 'window_15'})
     all_arg_methyl_proteins = all_arg_proteome[all_arg_proteome['canonical_UniProtAC'].isin(methylated_proteins)].copy()
-    methyl_site_keys = set(sites['site_key'].astype(str))
+    # the sites the analyses leave out (scripts/release_analyses.py prepare: lower-confidence sites the view does not
+    # count) are neither methylarginines nor background arginines
+    methyl_site_keys = set(sites['site_key'].astype(str)) | left_out_site_keys(args.integrated_sites)
     background_nonmethyl = all_arg_methyl_proteins[~all_arg_methyl_proteins['site_key'].isin(methyl_site_keys)].copy()
     if not background_nonmethyl.empty:
         bg_flags = pd.DataFrame([family_flags(window) for window in background_nonmethyl['window_15']])
@@ -236,10 +240,14 @@ def main() -> None:
         proteome_flags = pd.DataFrame([family_flags(window) for window in all_arg_proteome['window_15']])
         all_arg_proteome = pd.concat([all_arg_proteome.reset_index(drop=True), proteome_flags], axis=1)
 
-    motif_vs_methyl_proteins = motif_enrichment(sites, background_nonmethyl, motif_columns, 'arginines_in_methylated_proteins')
+    # The tests against the other arginines of the same proteins count only the sites on a protein with such arginines
+    # (common.with_background, as scripts/07 and motif_within_protein count them): not MIF, whose every arginine is a
+    # site. The test against the proteome's arginines counts every site.
+    same_sites = with_background(sites, background_nonmethyl)
+    motif_vs_methyl_proteins = motif_enrichment(same_sites, background_nonmethyl, motif_columns, 'arginines_in_methylated_proteins')
     motif_vs_proteome = motif_enrichment(sites, all_arg_proteome, motif_columns, 'all_proteome_arginines')
     motif_within = motif_within_protein(sites, background_nonmethyl, motif_columns)
-    positional = positional_enrichment(sites['window_15'], background_nonmethyl['window_15'])
+    positional = positional_enrichment(same_sites['window_15'], background_nonmethyl['window_15'])
 
     arg_counts = residue_background_from_sequences(sequences, residue='R')[['canonical_UniProtAC', 'site_key']].groupby('canonical_UniProtAC').size().rename('arginine_count').reset_index()
     # One row per protein: sites of one accession can carry different gene symbols (aliases such as MRE11/MRE11A),
@@ -304,7 +312,7 @@ def main() -> None:
     outdir.mkdir(parents=True, exist_ok=True)
     save_table(sites, outdir / 'sequence_windows.tsv')
     save_table(motif_vs_methyl_proteins, outdir / 'motif_family_enrichment_vs_methylated_protein_arginines.tsv')
-    save_table(per_protein_background('motif', sites['canonical_UniProtAC'], background_nonmethyl, flags=motif_columns),
+    save_table(per_protein_background('motif', same_sites['canonical_UniProtAC'], background_nonmethyl, flags=motif_columns),
                outdir / 'background_per_protein.tsv')
     save_table(motif_vs_proteome, outdir / 'motif_family_enrichment_vs_all_proteome_arginines.tsv')
     save_table(motif_within, outdir / 'motif_family_within_protein.tsv')

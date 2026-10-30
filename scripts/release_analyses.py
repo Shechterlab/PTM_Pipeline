@@ -12,7 +12,8 @@ one_sided_window). v1.0.0 numbered its sites on an earlier UniProt release; --ma
 takes each v1.0.0 site to where v1.1.0 placed its records on the reference, and leaves out the sites v1.1.0 could not
 place. --lower-confidence adds the release's lower-confidence sites counted in the analyses with lower-confidence
 sites (in_analyses_with_lower_confidence: their own evidence covers the arginine, and it leaves the methyl group on an
-arginine), for the view with both tiers. collect writes the analyses' result tables, the statistics table of every test (release_tables.statistics), a
+arginine), for the view with both tiers; the other lower-confidence sites, and the pending ones, are listed beside the
+union (common.LEFT_OUT_SITES), and the residue tests leave them out of the background arginines too. collect writes the analyses' result tables, the statistics table of every test (release_tables.statistics), a
 README and MD5SUMS into --out, so every release can be compared with the same code.
 """
 from __future__ import annotations
@@ -34,7 +35,7 @@ import build_release as br  # noqa: E402
 import release_codes as rc  # noqa: E402
 import release_layers  # noqa: E402
 import release_tables as rt  # noqa: E402
-from common import parse_fasta  # noqa: E402
+from common import LEFT_OUT_SITES, parse_fasta  # noqa: E402
 
 CODE = Path(__file__).resolve().parents[1]
 # The result tables kept, by folder: (analysis output folder, file, what it holds).
@@ -93,6 +94,30 @@ def release_sites(sites_path: Path, map_path: str, lower_path: str = '') -> pd.D
     return out.assign(accession=acc_pos[0], position=acc_pos[1])
 
 
+def left_out_sites(sites_path: Path, map_path: str, lower_path: str = '') -> pd.DataFrame:
+    """The sites of the release's tables the analyses leave out altogether, neither methylarginines nor background
+    arginines (common.left_out_site_keys reads them): the sites kept pending (flag one_sided_window) and, with lower_path,
+    the lower-confidence sites the view with lower-confidence sites does not count (in_analyses_with_lower_confidence
+    false), as build_release.py and release_layers.change_tables leave them out. Without lower_path the lower-confidence
+    sites are not sites of the analysis and stay background arginines, as in the release's own tests."""
+    sites = pd.read_csv(sites_path, sep='\t', dtype=str, keep_default_na=False)
+    parts = []
+    if 'flags' in sites.columns:
+        parts.append(sites.loc[sites['flags'].str.contains('one_sided_window'), ['site_id']].assign(reason='pending'))
+    if lower_path:
+        lower = pd.read_csv(lower_path, sep='\t', dtype=str, keep_default_na=False)
+        parts.append(lower.loc[lower['in_analyses_with_lower_confidence'] != 'true', ['site_id']].assign(reason='lower_confidence_not_counted'))
+    out = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=['site_id', 'reason'])
+    if map_path and len(out):
+        ch = pd.read_csv(map_path, sep='\t', dtype=str, keep_default_na=False)
+        to = dict(zip(ch['previous_site_id'], ch['site_id'].where(ch['in_this_version'] == 'true', '')))
+        out['site_id'] = out['site_id'].map(lambda s: to.get(s, ''))
+        out = out[out['site_id'] != '']
+    out = out.drop_duplicates('site_id')
+    acc_pos = out['site_id'].str.split(':R', expand=True) if len(out) else pd.DataFrame({0: [], 1: []})
+    return pd.DataFrame({'site_key': out['site_id'], 'canonical_UniProtAC': acc_pos[0], 'position': acc_pos[1], 'reason': out['reason']})
+
+
 def layer_sites(sites_path: Path, map_path: str, lower_path: str, counted: pd.DataFrame) -> pd.DataFrame:
     """Every site of the release's table (and of its lower-confidence table when given), and whether the analyses count it,
     as release_layers.statistics takes them. v1.0.0 (map_path): its counted sites only, renumbered."""
@@ -123,6 +148,12 @@ def prepare(args) -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     union.to_csv(out, sep='\t', index=False)
     print(f'{len(union):,} sites on {union["canonical_UniProtAC"].nunique():,} proteins -> {out}')
+    # Beside it, the sites the analyses leave out of both groups (scripts/06, 07 and 08 drop them from the background
+    # arginines); always written, so that a table from an earlier prepare in the same WORK is not read.
+    left = left_out_sites(Path(args.sites), args.map, args.lower_confidence)
+    left = left[~left['site_key'].isin(set(union['site_key']))]
+    left.to_csv(out.parent / LEFT_OUT_SITES, sep='\t', index=False)
+    print(f'{len(left):,} sites left out of the analyses (neither sites nor background) -> {out.parent / LEFT_OUT_SITES}')
 
 
 def collect(args) -> None:

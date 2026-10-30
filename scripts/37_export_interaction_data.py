@@ -1886,6 +1886,10 @@ class Tables(dict):
     the feature, other arginines with and without), which also keep the methylarginines counted in a and b: the website
     repeats each test on a selection of sites from them (selection_tests)."""
 
+    # (accession, position) of the sites the tests leave out altogether, neither methylarginines nor other arginines: in
+    # the view with lower-confidence sites, those the analyses with lower-confidence sites do not count (main() sets it)
+    left_out: frozenset = frozenset()
+
     def __init__(self, keys=()):
         super().__init__({k: defaultdict(lambda: [0, 0, 0, 0]) for k in keys})
         self.sites = defaultdict(lambda: ([], []))
@@ -1895,6 +1899,8 @@ class Tables(dict):
         return self[key]
 
     def add(self, key, acc, pos, cell):
+        if (acc, pos) in self.left_out:
+            return
         self[key][acc][cell] += 1
         if cell < 2:
             self.sites[key][cell].append((acc, pos))
@@ -2257,8 +2263,15 @@ XL_TEST = {'rna_xl': 'rna_crosslink', 'rna_xl_single': 'rna_crosslink_single_res
            'rna_capri_cov': 'capri_adj_peptide_among_measured', 'rna_rbdmap_cov': 'rbdmap_peptide_among_measured'}
 INTACT_TEST = {'mutation': 'mutation_changes_interaction', 'peptide': 'binding_region', 'peptide_disordered': 'binding_region_disordered'}
 # Sequence proximity: the distances (residues along the sequence; 0 is inside) at which each arginine is tested for
-# lying near each kind of residue-level RNA evidence.
+# lying near each kind of residue-level RNA evidence, and the category of each track in the release statistics. Its own
+# map, not XL_TEST: the proximity track rna_pclap is the pCLAP RNA-binding peptides (XL_TEST's rna_pclap_pep), not the
+# Lys-C regions XL_TEST's rna_pclap tests.
 SEQ_PROX_D = (0, 3, 5, 10, 20)
+SEQ_PROX_TEST = {'rna_xl': 'rna_crosslink', 'rna_rbdmap': 'rbdmap_fragment', 'rna_capri_adj': 'capri_adj_peptide',
+                 'rna_capri_xl': 'capri_xl_peptide', 'rna_pclap': 'pclap_peptide', 'rna_rbrid': 'rbrid_residue'}
+# The clusterProfiler job of each binding_protein experiment (one per experiment: each has its own background), as
+# scripts/abundance_strata.py finds it.
+BIND_JOB = abundance_strata.TESTS['binding_protein'][1]
 
 
 def runs(positions):
@@ -2463,31 +2476,32 @@ def write_release_tables(outdir: Path, d: dict):
                             'fold_enrichment', 'p', 'q'], rows)
 
     # Statistics, in the columns of the release's statistics table. Residue tests: pooled Fisher (Haldane-Anscombe odds
-    # ratio) and, for the within-protein tests, Mantel-Haenszel with each protein as a stratum; q within each analysis
-    # and method. Protein-set tests: clusterProfiler enricher, fold enrichment and its BH p.adjust.
+    # ratio) and, for the within-protein tests, Mantel-Haenszel with each protein as a stratum, with its
+    # Robins-Breslow-Greenland 95% CI as the other within-protein rows (common.mantel_haenszel_ci); q within each analysis
+    # and method. Protein-set tests (go_binding, binding_protein): clusterProfiler enricher, fold enrichment and BH q over
+    # the sets of the analysis.
     st = []
     for an, cat, stratum, tabs, background in d['tests']:
         a, b, c, dd = (sum(t[k] for t in tabs) for k in range(4))
         if not a + b + c + dd:
             continue
         p, odds = fisher_2x2(a, b, c, dd)
-        st.append([an, cat, stratum, a, b, c, dd, odds, math.log2(odds), None, None, p, None, 'fisher', background, None])
+        st.append([an, cat, stratum, a, b, c, dd, odds, math.log2(odds), None, None, p, None, 'fisher', background, None, None, None])
         if len(tabs) > 1:
-            mh_or, mh_p, used = mantel_haenszel(tabs)
+            mh_or, lo, hi, mh_p, used = mantel_haenszel_ci(tabs)
             ok = mh_or is not None and math.isfinite(mh_or) and mh_or > 0
             st.append([an, cat, stratum, a, b, c, dd, mh_or if ok else None, math.log2(mh_or) if ok else None, None, None, mh_p,
-                       None, 'mantel_haenszel', background + ', each protein a stratum', used])
+                       None, 'mantel_haenszel', background + ', each protein a stratum', used, lo if ok else None, hi if ok else None])
     for key in dict.fromkeys((r[0], r[13]) for r in st):
         idx = [k for k, r in enumerate(st) if (r[0], r[13]) == key and r[11] is not None]
         for k, q in zip(idx, bh([st[k][11] for k in idx])):
             st[k][12] = q
     for an, cat, stratum, a, b, c, dd, fold, p, q, background in d['set_tests']:
-        st.append([an, cat, stratum, a, b, c, dd, None, None, fold, math.log2(fold), p, q, 'enricher', background, None])
-    for an, cat, stratum, a, b, c, dd, odds, fold, p, q, background in d.get('bind_tests', []):
-        st.append([an, cat, stratum, a, b, c, dd, odds, math.log2(odds) if odds else None, fold, math.log2(fold) if fold else None, p, q, 'fisher', background, None])
+        st.append([an, cat, stratum, a, b, c, dd, None, None, fold, math.log2(fold), p, q, 'enricher', background, None, None, None])
     fmt = lambda x: '' if x is None else f'{x:.6g}' if isinstance(x, float) else x  # noqa: E731
     write('interaction_statistics.tsv', ['analysis', 'category', 'stratum', 'a', 'b', 'c', 'd', 'odds_ratio', 'log2_odds_ratio',
-                                         'fold_enrichment', 'log2_fold_enrichment', 'p', 'q', 'method', 'background', 'n_strata'],
+                                         'fold_enrichment', 'log2_fold_enrichment', 'p', 'q', 'method', 'background', 'n_strata',
+                                         'odds_ratio_ci_low', 'odds_ratio_ci_high'],
                [[fmt(x) for x in r] for r in st])
 
     # One row per methylated protein
@@ -2641,6 +2655,18 @@ def main():
     meth_base = {}
     for i, acc in enumerate(meth_accs):
         meth_base.setdefault(base_acc(acc), i)
+    # The view with lower-confidence sites (scripts/36 marks each lower-confidence site counted or not): the sites the
+    # analyses with lower-confidence sites do not count (in_analyses_with_lower_confidence false) are left out of every
+    # test, neither methylarginines nor other arginines (Tables.left_out), and the protein-set tests count the proteins
+    # with a counted site (counted_base), as build_release.py, release_analyses.py and release_layers.change_tables do.
+    # The explorer data still show them. Without that list (the release itself) every site counts.
+    lc_sites = ((explorer.get('meta') or {}).get('lower_confidence_sites') or {}).get('sites') or []
+    left_out_sites = {int(r[0]) for r in lc_sites if not r[1]}
+    Tables.left_out = frozenset(x for j in left_out_sites for x in ((meth_accs[sites[j][0]], sites[j][1]), (base_acc(meth_accs[sites[j][0]]), sites[j][1])))
+    counted_base = {base_acc(meth_accs[s[0]]) for j, s in enumerate(sites) if j not in left_out_sites}
+    if left_out_sites:
+        log(f'{len(left_out_sites):,} lower-confidence sites the analyses do not count are left out of the tests; '
+            f'{len(counted_base):,} of {len(meth_base):,} proteins have a counted site')
     prmt_tudor = {acc for acc, (g, _, _) in proteome.items() if g in PRMT_GENES} | set(tudor)
     edges = load_string(cache, args.refresh, sid_to_acc, set(meth_base) | prmt_tudor, args.string_min_score)
     complexes = load_complexes(cache, args.refresh)
@@ -2793,7 +2819,7 @@ def main():
         boxes = rg_boxes(seq)
         rg_ctx = lambda pos: 'segment' if any(a <= pos <= b for a, b in boxes) else 'dipeptide' if pos < len(seq) and seq[pos] == 'G' else 'other'
         for pos in cov:
-            if pos > len(seq) or seq[pos - 1] != 'R':
+            if pos > len(seq) or seq[pos - 1] != 'R' or (acc, pos) in Tables.left_out:
                 continue
             m = mask_of(res_partners.get(pos, {}))
             meth = pos in site_pos
@@ -3236,9 +3262,13 @@ def main():
         release_tests.append(('crosslink', XL_TEST[key], 'all', list(tabs.values()), 'other arginines of the same proteins (proteins with that evidence)'))
     # Protein level: are methylated proteins over-represented among the proteins each in-cell experiment found binding RNA
     # or DNA? Against the proteins the experiment measured where it lists them (the detection control: a protein it could
-    # not see cannot be found binding), else the reviewed proteome. Fisher's exact test; BH over the experiments.
+    # not see cannot be found binding), else the reviewed proteome. The same test as go_binding: clusterProfiler enricher
+    # (one-sided hypergeometric, fold enrichment), one job per experiment since each has its own background, BH over the
+    # experiments; the same tests again within PaxDb abundance deciles (scripts/abundance_strata.py, below with go_binding).
+    # The methylated proteins are those with a site the analyses count (counted_base).
     universe = set(proteome)
-    meth_set = {base_acc(a) for a in meth_accs if '-' not in a} & universe
+    site_proteins = {base_acc(a) for a in meth_accs if '-' not in a} & universe   # proteins with a site of the explorer
+    meth_set = {a for a in universe if a in counted_base}
     has = lambda dct: {a for a, v in dct.items() if v}  # noqa: E731
     bound_of = lambda name, part: {a for a, v in bgs.get(name, {}).items() if v and v.get(part)}  # noqa: E731
     bind_sets = [
@@ -3250,34 +3280,40 @@ def main():
         ('dna_xl', 'DNA-crosslinked residue or peptide (Trendel 2025)', has(dna_xl) | has(dna_peps), None),
         ('dna_interactome', 'DNA interactome protein (Trendel 2025)', set(dna_int), None),
     ]
-    bind_tests, bind_release, ps, raw_p = {}, [], [], []
+    bind_jobs, bind_bg = [], {}
     for key, label, bound, measured in bind_sets:
         U = (measured & universe) if measured else universe
         bnd = bound & U
-        a = len(bnd & meth_set)
-        b = len(meth_set & U) - a
-        c = len(bnd) - a
-        dd = len(U) - a - b - c
-        if not (a + b) or not (a + c):
+        if not (meth_set & U) or not bnd:
             continue
-        p, _ = fisher_2x2(a, b, c, dd)
+        bind_bg[key] = (len(U), 'measured' if measured else 'proteome', label)
+        bind_jobs.append(Job(BIND_JOB.format(category=key), meth_set & U, U, sets=pd.DataFrame({'term': key, 'gene': sorted(bnd)}),
+                             whole_universe=True))
+    bind_res = run_enrichment(bind_jobs, enrich_dir) if bind_jobs else {}
+    bind_tests, bind_release, ps = {}, [], []
+    for key, *_ in bind_sets:
+        r = bind_res.get(BIND_JOB.format(category=key))
+        if r is None or not len(r):   # not tested: no methylated protein among the binders (enricher tests no such set)
+            continue
+        x = r.iloc[0]
+        a, b, c, dd = int(x.a), int(x.b), int(x.c), int(x.d)
+        # the website shows the sample odds ratio with its Woolf CI beside the test's fold enrichment
         odds = (a * dd) / (b * c) if b * c else None
         lo, hi = woolf_ci(a, b, c, dd) if a and b and c and dd else (None, None)
-        fold = (a / (a + b)) / ((a + c) / len(U))
+        n, bg, label = bind_bg[key]
         bind_tests[key] = [a, b, c, dd, sig(odds) if odds else None, sig(lo) if lo and math.isfinite(lo) else None,
-                           sig(hi) if hi and math.isfinite(hi) else None, sig(p), None, sig(fold), len(U), 'measured' if measured else 'proteome', label]
-        ps.append(key)
-        raw_p.append((p, odds, fold))
-    for key, (p, odds, fold), q in zip(ps, raw_p, bh([x[0] for x in raw_p])):
+                           sig(hi) if hi and math.isfinite(hi) else None, sig(float(x.pvalue)), None, sig(float(x.FoldEnrichment)), n, bg, label]
+        ps.append((key, float(x.pvalue), float(x.FoldEnrichment)))
+    for (key, p, fold), q in zip(ps, bh([x[1] for x in ps])):
         bind_tests[key][8] = sig(q)
-        a, b, c, dd, *_, bg, label = bind_tests[key]
-        bind_release.append(('binding_protein', key, 'all', a, b, c, dd, odds, fold, p, q,
-                             'other reviewed human proteins the experiment measured' if bg == 'measured' else 'other reviewed human proteins'))
-    log('Protein-level binding: ' + '; '.join(f'{k} OR {v[4]} (q {v[8]}, {v[10]:,} {v[11]})' for k, v in bind_tests.items()))
+        a, b, c, dd = bind_tests[key][:4]
+        bind_release.append(('binding_protein', key, 'all', a, b, c, dd, fold, p, q,
+                             'other reviewed human proteins the experiment measured' if bind_tests[key][11] == 'measured' else 'other reviewed human proteins'))
+    log('Protein-level binding: ' + '; '.join(f'{k} fold {v[9]} (q {v[8]}, {v[10]:,} {v[11]})' for k, v in bind_tests.items()))
     # The same evidence for the reviewed proteins without a site, as xl_prot rows without the index, for their light pages.
     unlisted_xl = {}
     if args.unlisted_out:
-        for acc in sorted(universe - meth_set):
+        for acc in sorted(universe - site_proteins):
             r_map, d_map, peps, binds, frags = rna_xl.get(acc, {}), dna_xl.get(acc, {}), dna_peps.get(acc, []), dna_bind.get(acc, []), rbd_frag.get(acc, [])
             c_xl, c_adj = capri['xl'].get(acc, []), capri['adj'].get(acc, [])
             p_pep, p_lysc = pclap['pep'].get(acc, []), pclap['lysc'].get(acc, [])
@@ -3296,7 +3332,7 @@ def main():
     for key, tabs in prox_strata.items():
         track, dmax = key.split(':')
         seq_prox.setdefault(track, {})[dmax] = or_summary(tabs.values())
-        release_tests.append(('sequence_proximity', XL_TEST[track], f'within_{dmax}_residues', list(tabs.values()),
+        release_tests.append(('sequence_proximity', SEQ_PROX_TEST[track], f'within_{dmax}_residues', list(tabs.values()),
                               'other arginines of the same proteins (proteins with that evidence)'))
     log('Sequence proximity (MH OR at 0/3/5/10/20 residues): ' + '; '.join(
         track + ' ' + '/'.join(str(v[str(dm)]['mh'][0]) for dm in SEQ_PROX_D) for track, v in seq_prox.items()))
@@ -3656,7 +3692,7 @@ def main():
                 d = min((arg_best[(acc, q, k)][0] for k in ('rna', 'dna') if (acc, q, k) in arg_best and (kind == 'any' or k == kind)), default=None)
                 for cut in (CONTACT_CUTOFF, PROXIMAL_CUTOFF):
                     dist_strata.add((kind, cut), acc, q, (0 if meth else 2) + (0 if d is not None and d <= cut else 1))
-                if d is not None:
+                if d is not None and (acc, q) not in Tables.left_out:
                     dists[kind][0 if meth else 1].append(d)
                     dists_by[kind][acc][0 if meth else 1].append(d)
             row = [acc, q, site_at.get((acc, q)), meth]
@@ -3807,7 +3843,7 @@ def main():
             codes = (g['rna'] if key.startswith('rna') else g['dna']) if g else set()
             if codes & GO_EXPERIMENTAL if key.endswith('_exp') else codes:
                 go_sets.append((key, acc))
-    go_test = run_enrichment([Job('go_binding', [a for a in proteome if a in meth_base], proteome, whole_universe=True,
+    go_test = run_enrichment([Job('go_binding', [a for a in proteome if a in counted_base], proteome, whole_universe=True,
                                   sets=pd.DataFrame(go_sets, columns=['term', 'gene']))], enrich_dir)['go_binding']
     go_enrich, set_tests = {}, []
     for _, x in go_test.iterrows():
@@ -3823,6 +3859,12 @@ def main():
     for r in abundance_strata.rows(go_rows, None, enrich_dir.parent, inputs_root):
         go_enrich[abundance_strata.TERM_OF['go_binding'](r['category'])] += [abundance_strata.web_log2(r['odds_ratio'], 3), l2(r['odds_ratio_ci_low']), l2(r['odds_ratio_ci_high']),
                                                                               sig(r['q']) if r['q'] is not None else None]
+    # and the binding experiments' tests: appended to each bind_tests entry (after its label) as [log2 OR, 95% CI (log2), q]
+    bind_rows = pd.DataFrame([dict(zip(('analysis', 'category', 'stratum', 'a', 'b', 'c', 'd'), t[:7]), method='enricher', background=t[10])
+                              for t in bind_release])
+    for r in abundance_strata.rows(bind_rows, None, enrich_dir.parent, inputs_root) if len(bind_rows) else []:
+        bind_tests[r['category']] += [abundance_strata.web_log2(r['odds_ratio'], 3), l2(r['odds_ratio_ci_low']), l2(r['odds_ratio_ci_high']),
+                                      sig(r['q']) if r['q'] is not None else None]
 
     # STRING ids (numeric ENSP part) let the browser ask STRING for edges among a protein's partners.
     def ensp(acc):
@@ -3922,8 +3964,10 @@ def main():
                                  '{kind}_distance: [n methylarginines within 8 Å, median Å, n other, median Å, Mann-Whitney p (pooled)]; '
                                  '{kind}_distance_within: [van Elteren z (positive: methylarginines farther), p, proteins, median of per-protein median differences Å]',
                 'bind_tests': '{rna_xl|rna_rbdmap|rna_capri|rna_pclap|rna_rbrid|dna_xl|dna_interactome: [methylated bound, methylated not bound, other bound, '
-                              'other not bound, odds ratio, 95% CI low, high, Fisher p, BH q, fold enrichment, proteins in the background, '
-                              '"measured" (the proteins the experiment measured) or "proteome" (reviewed proteome), label]}',
+                              'other not bound, sample odds ratio, its 95% CI (Woolf) low, high, p (clusterProfiler enricher: one-sided hypergeometric), '
+                              'BH q over the experiments, fold enrichment, proteins in the background, '
+                              '"measured" (the proteins the experiment measured) or "proteome" (reviewed proteome), label, '
+                              'then the test within PaxDb abundance deciles: log2 MH OR (+-99 where infinite or 0), its 95% CI (log2) low, high, BH q]}',
                 'nab': {'rbns': ['accession', 'ENCODE experiment', 'protein concentration', f'top {RBNS_TOP} 5-mers [[kmer, R]]', 'ENCODE logos [[k, logo, [[A, C, G, U] per position]]]'],
                         'jaspar': ['accession', 'matrix', 'name', 'TF class', 'TF family', '[[A, C, G, T] counts per position]', 'IUPAC consensus'],
                         'htrselex': ['accession', 'model', 'linear|structured', 'Primary|Secondary', 'experiment', 'selection cycle', 'monomeric|dimeric',
@@ -4030,7 +4074,7 @@ def main():
             'prots': prots, 'sites': sites, 'vocab': vocab, 'gene_of': gene_of, 'iface_detail': iface_detail, 'xl_rows': xl_rows,
             'pred_all': pred_all, 'gallery': gallery, 'intact_rows': intact_rows, 'partners': partners, 'domain_classes': domain_classes,
             'meth_base': meth_base, 'cx_rows': cx_rows, 'iface_residues': iface_residues, 'pred_iface': pred_iface, 'xl_prot': xl_prot,
-            'intact_prot': intact_prot, 'tests': release_tests, 'set_tests': set_tests, 'bind_tests': bind_release, 'complexes': cx_release, 'go': go, 'xl_seq': xl_seq_all, 'capri': capri, 'pclap': pclap, 'rbrid': rbrid,
+            'intact_prot': intact_prot, 'tests': release_tests, 'set_tests': set_tests + bind_release, 'complexes': cx_release, 'go': go, 'xl_seq': xl_seq_all, 'capri': capri, 'pclap': pclap, 'rbrid': rbrid,
             'proteome': proteome, 'na_rows': na_rows, 'chains_na': chains_na, 'na_regions': region_json, 'nab': nab, 'near_rows': near_rows, 'prox_rows': prox_rows, 'arg_rows': arg_rows})
     log(f'wrote {args.out}: {len(vocab):,} proteins, {sum(len(r) // 2 for r in string_rows):,} partner links, '
         f'{len(cx_rows):,} complexes with methylated members, {len(site_rows):,} sites at PDB interfaces '
