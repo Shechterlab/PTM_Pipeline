@@ -1377,6 +1377,8 @@ svg [data-ev]:hover { stroke: var(--ink); stroke-width: 0.8; }
 .sc-wr { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 0.6rem; }
 /* Who binds it: the interaction records at a site, grouped by what they show (scripts/interaction_sources.py) */
 .sc-wr .wr-site { display: contents; }
+.sc-wr .wr-site > div { display: grid; grid-template-columns: 12rem minmax(0, 1fr); gap: 0.6rem; align-items: baseline; }
+@media (max-width: 640px) { .sc-wr .wr-site > div { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; } }
 .sp-prot-sec { margin: 0 0 1rem; }
 .sp-prot-sec h4 { display: flex; align-items: center; gap: 0.4rem; }
 .sp-prot-tbl td { vertical-align: top; font-size: 0.8rem; }
