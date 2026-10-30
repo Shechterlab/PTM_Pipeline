@@ -650,6 +650,10 @@ def records(ev: pd.DataFrame, sites: pd.DataFrame, inputs, genes: dict[str, str]
             fl.append('no_publication')
         x['flags'] = '; '.join(ordered(fl, FLAGS))
     t = pd.DataFrame(rows, columns=[c for c, *_ in RECORD_COLUMNS])
+    # the release's format: '; ' separates the items of a list column and appears in no other value
+    for c, kind, *_ in RECORD_COLUMNS:
+        clean = lambda v: re.sub(r'\s*;\s*', ', ', re.sub(r'[\t\r\n]+', ' ', str(v))).strip()  # noqa: E731
+        t[c] = t[c].map(lambda v: '; '.join(x for x in (clean(i) for i in str(v).split('; ')) if x) if kind.startswith('list') else clean(v))
     t['_c'] = t['record_class'].map(list(CLASSES).index)
     t = t.sort_values(['site_id', '_c', 'partner_gene', 'partner_name', 'source', 'source_id'], kind='stable').drop(columns='_c').reset_index(drop=True)
     return t
@@ -658,8 +662,9 @@ def records(ev: pd.DataFrame, sites: pd.DataFrame, inputs, genes: dict[str, str]
 def label(r) -> str:
     """A partner as the site columns name it: the gene, else the name; the species when not human."""
     name = r.partner_gene or r.partner_name or r.partner_accession
-    sp = species(r.partner_species.split('; ')[0]) if r.partner_species else ''
-    return name + (f' ({sp})' if sp and sp != HUMAN and HUMAN not in r.partner_species.split('; ') else '')
+    names = re.split(r'[;,]\s*', r.partner_species) if r.partner_species else []
+    sp = species(names[0]) if names else ''
+    return name + (f' ({sp})' if sp and sp != HUMAN and HUMAN not in names else '')
 
 
 def site_values(t: pd.DataFrame, site_ids) -> pd.DataFrame:

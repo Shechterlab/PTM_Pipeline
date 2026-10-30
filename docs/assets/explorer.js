@@ -10817,7 +10817,8 @@
   const spState = (D, r) => D.states[r.state][0];
   const spFlag = (D, f) => D.flags[f][0];
   const shortSpecies = (sp) => { const m = /^([A-Z])[a-z]+ ([a-z]+)/.exec(sp || ''); return m ? m[1] + '. ' + m[2] : sp || ''; };
-  const notHuman = (sp) => !!sp && !sp.split('; ').includes('Homo sapiens');
+  const spList = (sp) => (sp || '').split(/[;,]\s*/).filter(Boolean);   // the organisms of a record (several for a chimeric entity)
+  const notHuman = (sp) => !!sp && !spList(sp).includes('Homo sapiens');
   function spPaperLink(D, k) {
     const x = D.papers[k];
     if (!x) return '';
@@ -10841,7 +10842,7 @@
       name = k != null && IX.prot[k] && !notHuman(r.species) ? geneRef(k, r.name) : '<span title="' + esc((r.name || '') + (r.accession ? ' (' + r.accession + ')' : '')) + '"><b>' + esc(r.gene || r.name || r.accession || 'a protein') + '</b></span>' +
         (r.accession && notHuman(r.species) ? ' <a class="small" href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(r.accession) + '/entry" target="_blank" rel="noopener">UniProt ↗</a>' : '');
     } else name = '<b>' + esc(kind === 'rna' ? 'RNA' : kind === 'dna' ? 'DNA' : kind === 'gene' ? 'Gene locus' : kind === 'small_molecule' ? 'Small molecule' : kind === 'peptide' ? 'Peptide or complex' : 'Other') + '</b>' + (r.name ? ' <span class="muted">' + esc(r.name.length > 60 ? r.name.slice(0, 58) + '…' : r.name) + '</span>' : '');
-    const sp = (kind === 'protein' || kind === 'self') && notHuman(r.species) ? ' <span class="sp-species" title="' + esc('The partner in the experiment is from ' + r.species) + '">' + esc(shortSpecies(r.species.split('; ')[0])) + '</span>' : '';
+    const sp = (kind === 'protein' || kind === 'self') && notHuman(r.species) ? ' <span class="sp-species" title="' + esc('The partner in the experiment is from ' + r.species) + '">' + esc(shortSpecies(spList(r.species)[0])) + '</span>' : '';
     const flags = r.flags.filter((f) => spFlag(D, f) !== 'partner_other_species' && spFlag(D, f) !== 'no_publication').map((f) => '<span class="sp-flag" title="' + esc(D.flags[f][1]) + '">' + esc(spFlag(D, f).replace(/_/g, ' ')) + '</span>').join(' ');
     return name + sp + (flags ? '<div>' + flags + '</div>' : '');
   }
@@ -11034,7 +11035,7 @@
     if (SP_DATA) draw(SP_DATA); else loadPartnerRecords().then(draw);
   }
   // The partners of one class at a site, by name (species when not human), for one-line summaries.
-  const spWho = (D, s, cls) => Array.from(new Set(spRows(D, siteKey(s)).filter((r) => spClass(D, r) === cls).map((r) => (r.gene || r.name || D.kinds[r.partner_kind]) + (notHuman(r.species) ? ' (' + shortSpecies(r.species.split('; ')[0]) + ')' : ''))));
+  const spWho = (D, s, cls) => Array.from(new Set(spRows(D, siteKey(s)).filter((r) => spClass(D, r) === cls).map((r) => (r.gene || r.name || D.kinds[r.partner_kind]) + (notHuman(r.species) ? ' (' + shortSpecies(spList(r.species)[0]) + ')' : ''))));
   const PERT_WORD = { decreased: 'a peptide decreased', increased: 'a peptide increased', mixed: 'peptides changed in opposite directions',
     no_significant_change: 'no significant change', not_tested: 'not tested: the study gives no p value' };
   const PERT_MARK = { decreased: ['▼', 'down'], increased: ['▲', 'up'], mixed: ['↕', 'mix'], no_significant_change: ['○', 'ns'], not_tested: ['?', 'ns'] };
