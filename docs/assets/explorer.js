@@ -50,8 +50,8 @@
   // A count of a total, short: the count in full, the total in thousands (1,012/3.4K).
   const ofTotal = (a, n) => fmt(a) + '/' + compact(n);
   const fmtP = (v) => (v == null ? '—' : v === 0 ? '< 1e-300' : v < 0.001 ? v.toExponential(1) : v < 0.1 ? v.toPrecision(2) : v.toFixed(2));
-  const fmtL2 = (v) => (v == null ? '—' : (v > 0 ? '+' : '') + v.toFixed(2));
-  const fmtL1 = (v) => (v == null ? '—' : (v > 0 ? '+' : '') + v.toFixed(1));
+  const fmtL2 = (v) => (v == null ? '—' : (v > 0 ? '+' : v < 0 && +v.toFixed(2) !== 0 ? '−' : '') + Math.abs(v).toFixed(2));
+  const fmtL1 = (v) => (v == null ? '—' : (v > 0 ? '+' : v < 0 && +v.toFixed(1) !== 0 ? '−' : '') + Math.abs(v).toFixed(1));
   const pct = (a, b) => (b ? Math.round((100 * a) / b) : 0);
   const pctText = (a, b) => (a > 0 && pct(a, b) === 0 ? '<1' : String(pct(a, b)));
   // The address may be out of reach (a frame that refuses URL changes): then the page keeps its place itself.
@@ -235,7 +235,8 @@
 
   const PAPER = {
     cite: 'DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33(10):1404–1421 (2026).',
-    short: 'DeAngelo, Silverstein & Shechter, Cell Chem Biol 2026',
+    // one short form for every credit (page footer, figure exports, PDFs and reports)
+    short: 'DeAngelo, Silverstein & Shechter, Cell Chem Biol 33:1404–1421 (2026)',
     doi: '10.1016/j.chembiol.2026.09.011',
   };
   // The Zenodo archive of the GitHub releases, by the DOI that stands for every version: it opens the most recent and
@@ -427,8 +428,8 @@
       'Mutagenesis': 'UniProt mutagenesis features that change an arginine, ' + uni,
       'Tumours (TCGA)': 'Somatic missense and stop changes at the protein\'s arginines in TCGA tumours (the MC3 calls of the 33 TCGA projects, from the GDC; calls that pass MC3\'s filters); a taller tick where more tumours carry one. Only changes whose position is an arginine of the canonical UniProt sequence',
       'Cell lines (DepMap)': 'Somatic missense and stop changes at the protein\'s arginines in DepMap 24Q4 cancer cell lines; a taller tick where more lines carry one. Only changes on the canonical isoform whose position is an arginine of the canonical UniProt sequence',
-      'RNA crosslink': 'Residues UV-crosslinked to RNA in living cells (pepR-MS compendium: re-analysis of Kramer 2014, XRNAX, RBS-ID, pRBS-ID and pepR-MS) RBDmap RNA-bound fragments (Castello et al. 2016, HeLa) and CAPRI RNA-bound peptides (Panhale et al. 2019, HEK293; paler: ADJ-peptides next to a crosslink); click a mark for the studies and peptides',
-      'DNA crosslink': 'Residues UV-crosslinked to DNA in MCF7 cells, alone or as candidates, and crosslinked peptides (Trendel et al. 2025); UniProt DNA-binding regions; click a mark for the records',
+      'RNA in cells': 'Residues UV-crosslinked to RNA in living cells (pepR-MS compendium: re-analysis of Kramer 2014, XRNAX, RBS-ID, pRBS-ID and pepR-MS) RBDmap RNA-bound fragments (Castello et al. 2016, HeLa) and CAPRI RNA-bound peptides (Panhale et al. 2019, HEK293; paler: ADJ-peptides next to a crosslink); click a mark for the studies and peptides',
+      'DNA in cells': 'Residues UV-crosslinked to DNA in MCF7 cells, alone or as candidates, and crosslinked peptides (Trendel et al. 2025); UniProt DNA-binding regions; click a mark for the records',
       'RNA contact (PDB)': 'Residues at an RNA interface in experimentally determined structures (PDBe-KB interface residues, read live); click for the PDB entries',
       'DNA contact (PDB)': 'Residues at a DNA interface in experimentally determined structures (PDBe-KB interface residues, read live); click for the PDB entries',
       'Protein contact (PDB)': 'Residues at an interface with another protein in experimentally determined structures (PDBe-KB interface residues, read live); click for the entries and partners',
@@ -1486,7 +1487,7 @@
   // ratios against the other proteins. Residue tests (motifs, disorder, domains) report odds ratios in both.
   const FOLD = () => M.set_effect === 'log2_fold_enrichment';
   const effName = () => (FOLD() ? 'log2 fold enrichment' : 'log2 OR');
-  const effHead = () => (FOLD() ? 'log2 FE' : 'log2 OR');
+  const effHead = () => (FOLD() ? 'fold' : 'OR');
   const vsBg = (what) => (FOLD() ? 'of all ' : 'of other ') + what;
   // the same background after "vs": all reviewed proteins, or the other ones
   const vsAll = (what) => (FOLD() ? 'all ' : 'other ') + what;
@@ -2455,9 +2456,9 @@
   // Biology first (the protein, the methyl mark and what writes it, its sequence and structural setting, what binds it),
   // where the record comes from last.
   const SECTIONS = [
-    ['protein', 'Protein function & disease', false], ['methyl', 'Methylation state', false], ['treat', 'PRMT inhibitors, knockouts & knockdowns', false],
-    ['motif', 'Sequence motif', false], ['struct', 'Structural context', false], ['ix', 'Interactions & binding', false],
-    ['cluster', 'Clustering & crosstalk', false], ['prov', 'Provenance', false],
+    ['protein', 'Protein function and disease', false], ['methyl', 'Methylation state', false], ['treat', 'PRMT inhibitors, knockouts and knockdowns', false],
+    ['motif', 'Sequence motif', false], ['struct', 'Structural context', false], ['ix', 'Interactions and binding', false],
+    ['cluster', 'Clustering and crosstalk', false], ['prov', 'Provenance', false],
   ];
 
   function chipRow(name, items, selected, dots) {
@@ -3633,7 +3634,7 @@
     { k: 'ix', label: 'Interaction evidence', sort: 'ix', opt: true, tdCls: 'ix-col', tip: STATUS_HELP, td: (s) => ixCell(s, 2) },
     { k: 'na', label: 'RNA/DNA contacts', sort: 'na', opt: true, cls: 'hide-xs', tdCls: 'na-col', menu: 'RNA/DNA contacts (structures) and crosslinks (cells)',
       tip: 'RNA or DNA within 4 Å of the arginine side chain in PDB structures (direct contact); in a complex without one, within 8 Å (tagged with the distance); in a complex with neither, within 4 Å of a residue at i ± 1–5 (tagged via i+k); with its type. And the nearest UV-crosslinked residue within i ± 5 in living cells, with an eCLIP tag when ENCODE eCLIP data exist for the protein. Hover a cell for every sequence window, the crosslinked residues within i ± 10 and the protein-level binding data (RNA Bind-n-Seq, JASPAR, eCLIP)', td: boundCell },
-    { k: 'prmti', label: 'PRMT loss', sort: 'prmti', opt: true, menu: 'PRMT inhibitor or knockout response', tip: 'Change after GSK591 (PRMT5i) or MS023 (type I PRMTi), Maron 2021 Table S3, adj. p ≤ 0.05; or in CARM1 knockout cells, Shishkova 2017, at least twofold at BH q < 0.05; and the knockouts, knockdowns and inhibitors added in v1.4.0 (PRMT1, PRMT5, PRMT7, CARM1), each by the rule it names', td: treatHtml },
+    { k: 'prmti', label: 'PRMT perturbation', sort: 'prmti', opt: true, menu: 'PRMT inhibitors, knockouts and knockdowns', tip: 'Change after GSK591 (PRMT5i) or MS023 (type I PRMTi), Maron 2021 Table S3, adj. p ≤ 0.05; or in CARM1 knockout cells, Shishkova 2017, at least twofold at BH q < 0.05; and the knockouts, knockdowns and inhibitors added in v1.4.0 (PRMT1, PRMT5, PRMT7, CARM1), each by the rule it names', td: treatHtml },
     { k: 'src', label: 'Reported by', sort: 'src', opt: true, cls: 'hide-sm', td: (s) => '<div class="tags">' + studyTags(s.study, 2, P[s.p].acc) + '</div>' },
     { k: 'ctx', label: 'Context', sort: 'ctx', opt: true, menu: 'Disorder and domain context', cls: 'hide-xs', tdCls: 'nw', td: contextHtml },
     { k: 'nn', label: 'Nearest methyl-R', sort: 'nn', opt: true, cls: 'r hide-sm', tdCls: 'num', td: (s) => (s.nn == null ? '<span class="muted">—</span>' : s.nn + ' aa') },
@@ -3715,11 +3716,16 @@
   // A compact chart's narrow track labels 0 and every other tick when it has more than five.
   const tickShown = (spec, sc, i) => !spec.compact || sc.ticks.length <= 5 || (i - sc.ticks.indexOf(0)) % 2 === 0;
 
+  // A log2 effect as the ratio it stands for, on every chart and tile: 2.45×, 0.71×
+  const ratioFmt = (v) => (v == null ? '—' : !Number.isFinite(v) ? (v > 0 ? '∞' : '0×') : fx(Math.pow(2, v)) + '×');
+  const chartFmt = (spec) => spec.format || ratioFmt;
+  // a tick of a log axis: the ratio to two figures (0.35×, 0.5×, 1×, 1.4×, 2×)
+  const chartTick = (spec) => spec.tick || ((t) => +Math.pow(2, t).toPrecision(2) + '×');
   function hbars(spec) {
     const rows = spec.rows;
     const sc = niceScale(rows);
-    const vfmt = spec.format || fmtL2;
-    const tfmt = spec.tick || ((t) => t);
+    const vfmt = chartFmt(spec);
+    const tfmt = chartTick(spec);
     const cls = (spec.extraCol ? ' has-extra' : '') + (spec.sel ? ' has-sel' : '') + (rows.some((r) => r.sub) ? ' tree' : '') + (spec.compact ? ' compact' : '');
     // Column headings for compact charts: what the numbers are, so they can stay short.
     const heads = spec.heads ? '<div class="hb-cols' + cls + '" aria-hidden="true"><span>' + esc(spec.heads[0]) + '</span>' + (spec.extraCol ? '<span>' + esc(countHead(spec)) + '</span>' : '') +
@@ -3737,7 +3743,7 @@
       '<div class="hb-axis' + cls + '" aria-hidden="true"><span></span>' + (spec.extraCol ? '<span></span>' : '') + '<span class="ticks">' + sc.ticks.map((t, i) => '<span style="left:' + sc.xp(t).toFixed(2) + '%">' + (tickShown(spec, sc, i) ? tfmt(t) : '') + '</span>').join('') + '</span><span></span>' + (spec.sel ? '<span></span>' : '') + '</div>' +
       (spec.treeNote && rows.some((r) => r.sub) ? '<p class="chart-tree-note">' + spec.treeNote + '</p>' : '') +
       '<div class="chart-key">' + (spec.selTest ? '<span class="sel-test-key"><b>Your selection:</b>&nbsp;' + esc(selTestText(spec.selTest)) + '</span><span><i class="ref"></i>whole dataset</span>' : '') +
-      (spec.noSig ? '' : sigKey(spec).map(([c, l]) => '<span><i' + (c ? ' class="' + c + '"' : '') + '></i>' + l + '</span>').join('')) + (spec.sel ? selKeyHtml(spec.sel) : '') + (adjShown(spec) ? '<span class="adj-key">' + ADJ_KEY + '</span>' : '') + '<span>' + esc(chartAxis(spec)) + '</span></div>';
+      (spec.noSig ? '' : sigKey(spec).map(([c, l]) => '<span><i' + (c ? ' class="' + c + '"' : '') + '></i>' + l + '</span>').join('')) + (spec.sel ? selKeyHtml(spec.sel) : '') + (adjShown(spec) ? '<span class="adj-key">' + ADJ_KEY + '</span>' : '') + '<span>' + esc(chartAxisWords(spec)) + '</span></div>';
   }
   // The selection's count in a bar (orange dot, as the Filtered flag), blank where none of it is there.
   const selCell = (n) => '<span class="hb-sel">' + (n ? '<i></i>' + fmt(n) : '') + '</span>';
@@ -3748,7 +3754,7 @@
   // One-line summary of a chart for a folded header: its strongest significant enrichments (or largest counts).
   // Catch-all bars (no annotation, unknown) are left out of it.
   function chartSummary(spec, n, lead) {
-    const f = spec.format || fmtL2, short = (r) => String(r.label).split(' · ')[0];
+    const f = chartFmt(spec), short = (r) => String(r.label).split(' · ')[0];
     const rows = spec.rows.filter((r) => r.value != null && !/^(no |not |unknown|unassigned|other\b)/i.test(short(r)) && (spec.noSig || (r.sig && r.value > 0 && aBig(r.value))))
       .sort((a, b) => (spec.keepOrder ? 0 : b.value - a.value)).slice(0, n || 2);
     const list = rows.map((r) => short(r) + ' ' + f(r.value)).join(', ');
@@ -3833,6 +3839,8 @@
     .concat(spec.fold ? [] : [['neg', spec.compact ? 'Depleted (q ≤ ' + PADJ + ')' : 'Less than expected, q ≤ ' + PADJ]],
       spec.rows.some((r) => sameFx(spec, r)) ? [['same', 'About the same: q ≤ 0.05 but within ' + minEffect() + '×']] : [], [['ns', 'Not significant']]);
   const chartAxis = (spec) => spec.axis || (spec.fold ? 'log2 fold enrichment vs all proteins' : 'log2 odds ratio vs background');
+  // the axis in words under a drawn chart, whose ticks give ratios on a log scale
+  const chartAxisWords = (spec) => (spec.format ? chartAxis(spec) : chartAxis(spec).replace(/^log2 of how many times /, 'how many times ').replace(/^log2 /, '') + ' (log scale)');
   // What the explorer counts, in words, and its tests in words (for figure exports and their TSVs; the Method help says
   // them at length): the one place another modification's explorer would change them.
   const WORDS = { sites: 'methylarginines', residues: 'arginines' };
@@ -3871,8 +3879,8 @@
     const rowH = 22, headH = 26;
     const sc = niceScale(rows);
     const X = (v) => x0 + (sc.xp(v) / 100) * (x1 - x0);
-    const vfmt = spec.format || fmtL2;
-    const tfmt = spec.tick || ((t) => t);
+    const vfmt = chartFmt(spec);
+    const tfmt = chartTick(spec);
     const sub = wrapText(spec.subText || '', W - 48, 11, pal);
     let g = '<text x="24" y="32" font-size="17" font-weight="700" fill="' + pal.ink + '">' + esc(spec.title) + '</text>' +
       sub.map((l, i) => '<text x="24" y="' + (52 + i * 15) + '" font-size="11" fill="' + pal.muted + '">' + esc(l) + '</text>').join('');
@@ -3880,7 +3888,7 @@
     if (spec.heads || qW) {
       const hy = top + 4, head = (x, text, end) => '<text x="' + x + '" y="' + hy + '" font-size="9.5" font-weight="700" fill="' + pal.muted + '"' + (end ? ' text-anchor="end"' : '') + '>' + esc(text) + '</text>';
       g += (spec.heads ? head(24, spec.heads[0]) + (spec.extraCol ? head(24 + labelW + extraW - 6, countHead(spec), true) : '') : '') +
-        head(xv, spec.heads ? spec.heads[3] : spec.fold ? 'log2 FE' : spec.valueLabel || 'log2 OR', true) + (qW ? head(W - selW - 16, 'q', true) : '') + (spec.sel ? head(W - 16, 'sel.', true) : '') +
+        head(xv, spec.heads ? spec.heads[3] : spec.valueLabel || (spec.fold ? 'fold' : 'OR'), true) + (qW ? head(W - selW - 16, 'q', true) : '') + (spec.sel ? head(W - 16, 'sel.', true) : '') +
         '<line x1="24" x2="' + (W - 16) + '" y1="' + (hy + 6) + '" y2="' + (hy + 6) + '" stroke="' + pal.grid + '"/>';
       top += 18;
     }
@@ -3916,7 +3924,7 @@
     });
     const ay = bottom + 16;
     for (const t of sc.ticks) g += '<text x="' + r1(X(t)) + '" y="' + ay + '" font-size="10" fill="' + pal.muted + '" text-anchor="middle">' + esc(String(tfmt(t))) + '</text>';
-    g += '<text x="' + r1((x0 + x1) / 2) + '" y="' + (ay + 16) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="middle">' + esc(chartAxis(spec)) + '</text>';
+    g += '<text x="' + r1((x0 + x1) / 2) + '" y="' + (ay + 16) + '" font-size="10.5" fill="' + pal.muted + '" text-anchor="middle">' + esc(chartAxisWords(spec)) + '</text>';
     let ny = ay + 22;
     if (spec.treeNote && rows.some((r) => r.sub)) {
       for (const line of wrapText(spec.treeNote.replace(/<[^>]+>/g, ''), W - 48, 10, pal)) { ny += 14; g += '<text x="24" y="' + ny + '" font-size="10" fill="' + pal.muted + '">' + esc(line) + '</text>'; }
@@ -4143,7 +4151,7 @@
       return {
         id: 'ch-pan', title: 'Protein classes', subHtml: 'Methylated proteins vs the reviewed human proteome, by PANTHER protein class (grouped); every protein is in one row.' + docLink('ov-ontology'),
         subText: 'PANTHER ' + pm.version + ' protein class groups' + (UI.panLevel ? ', classes' + (UI.panLevel > 1 ? ' and subclasses' : '') : '') + ' vs ' + vsAll('reviewed human proteins'),
-        rows, extraCol: true, extraName: 'methylated_of_proteins', extraTsv: ['methylated_proteins', 'proteins'], compact: true, format: fmtL1, heads: ['PANTHER group', 'methyl-R/all', '', effHead()], fold: FOLD(), axis: FOLD() ? 'log2 fold enrichment vs all reviewed proteins' : '',
+        rows, extraCol: true, extraName: 'methylated_of_proteins', extraTsv: ['methylated_proteins', 'proteins'], compact: true, heads: ['PANTHER group', 'methylated/all', '', effHead()], fold: FOLD(), axis: FOLD() ? 'log2 fold enrichment vs all reviewed proteins' : '',
         treeNote: 'Shaded, indented rows belong to the row above: the PANTHER classes of a group add up to it; subclasses (shaded further) are parts of their class and overlap, so they do not add up.',
         footHtml: '<p class="note">The groups add up to the reviewed proteome: ' + fmt(sumMe) + ' methylated of ' + fmt(sum) + ' proteins' +
           (unc ? ', ' + fmt(total(unc)) + ' of which PANTHER gives no class' : '') + '. Subclasses overlap (a protein is in each class above its own).</p>' +
@@ -4178,7 +4186,7 @@
     const fams = {
       id: 'ch-dis', title: dm ? 'Disease' : 'Disease families', figTitle: 'Disease families (DisGeNET)', subHtml: 'Genes of methylated proteins vs all reviewed human genes' + (FOLD() ? ' with a DisGeNET term' : '') + ', by disease family. Association, not causation.' + docLink('ov-disease'), tools: disToggle,
       subText: (UI.disMore ? 'Audited and additional' : 'Audited') + ' DisGeNET disease families vs ' + (FOLD() ? 'all reviewed human genes with a DisGeNET term' : 'the reviewed human genes'), axis: FOLD() ? 'log2 fold enrichment vs all genes with a DisGeNET term' : 'log2 odds ratio vs background', extraCol: true, extraName: 'methylarginine_proteins_of_family', extraTsv: ['methylated_genes', 'family_genes'],
-      firstSection: 'Audited families', compact: true, format: fmtL1, heads: ['Family', 'methyl-R/all', '', effHead()], fold: FOLD(),
+      firstSection: 'Audited families', compact: true, heads: ['Family', 'methylated/all genes', '', effHead()], fold: FOLD(),
       rows: ov.disease_families.filter((r) => UI.disMore || famAudited(M.disease_families.indexOf(r[0]))).map((r) => {
         const fk = M.disease_families.indexOf(r[0]), audited = famAudited(fk), e = famEff(r), q = r[4];
         return { label: r[0], value: e ? +Math.log2(e).toFixed(3) : null, q, sig: sigq(q), key: r[0], extra: ofTotal(r[1], r[2]), nums: [r[1], r[2]], extraRow: !audited, audited, fk,
@@ -4232,7 +4240,7 @@
         selTest: sd ? sd.selTest : undefined,
         id: 'ch-do', title: 'Disease', figTitle: 'Disease Ontology', subHtml: 'Genes of methylated proteins vs all reviewed human genes with a Disease Ontology term' + (tree ? ', by disease class' : '') + '. Association, not causation.' + docLink('ov-disease'), tools: disToggle,
         subText: 'Human Disease Ontology ' + (dm.release || '') + (tree ? ' classes' + (UI.doLevel ? ' and the terms under them' : '') + ' (terms of at least ' + DO_ROW + ' genes)' : ': the most specific enriched terms of at least ' + DO_SHORT + ' genes, and the largest classes that are not enriched') + ', vs all reviewed human genes with a Disease Ontology term' + (sd ? sd.selTest.note : ''),
-        rows, extraCol: true, extraName: 'methylated_of_genes', extraTsv: ['methylated_genes', 'genes'], compact: true, format: fmtL1, heads: ['Disease Ontology', 'methyl-R/all', '', 'log2 FE'], fold: true,
+        rows, extraCol: true, extraName: 'methylated_of_genes', extraTsv: ['methylated_genes', 'genes'], compact: true, heads: ['Disease Ontology', 'methylated/all genes', '', 'fold'], fold: true,
         firstSection: tree ? '' : 'Enriched', axis: 'log2 fold enrichment vs all genes with a Disease Ontology term', tsvCols: [['doid', (r) => r.key]],
         treeNote: 'Shaded, indented rows are terms under the row above: their genes are among its genes, and terms overlap, so they do not add up.',
         footHtml: (tree ? '' : '<p class="note">A term holds the genes of every term under it, so broad terms (cancer, nervous system disease) repeat the narrower ones: the list keeps the narrowest enriched term of each branch, of at least ' + DO_SHORT + ' genes.</p>') +
@@ -4431,7 +4439,7 @@
 
   // The count column of a chart: the selection's members of each set once the chart is retested for it.
   const selName = (name) => (/^(methylated|methylarginine)/.test(name) ? name.replace(/^(methylated|methylarginine)(_proteins)?/, 'selected') : 'selected_' + name);
-  const countHead = (spec) => (spec.selTest && /^methyl-R\//.test(spec.heads[1]) ? 'selected/all' : spec.heads[1]);
+  const countHead = (spec) => (spec.selTest && /^methylated\//.test(spec.heads[1]) ? spec.heads[1].replace(/^methylated/, 'selected') : spec.heads[1]);
 
   // A condensate's enrichment against the background the Condensates chart shows (UI.condBg): the reviewed proteome
   // (v1.3.0 exports on, the default) or the proteins in any condensate.
@@ -4601,15 +4609,14 @@
         return up.concat(dn).map((r) => ({ label: short(r), sub, main: { or: 2 ** r.value, sig: true, q: r.q, fold: !!spec.fold } }));
       };
       const lst = (rows) => rows.filter((r) => r.main.or > 1).map((r) => esc(r.label) + ' <span class="an">' + fx(r.main.or) + '×</span>').join(', ');
-      const key = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span class="a-info" tabindex="0" data-tip="' + esc('Where in the protein: methylarginines against the other arginines of the same proteins (within-protein odds ratios). Which proteins: methylated proteins against the background each tile names (fold enrichment). Shown: q ≤ ' + PADJ + '.') + '">How to read</span>';
+      const key = aSigKey('Where in the protein: methylarginines against the other arginines of the same proteins (within-protein odds ratios). Which proteins: methylated proteins against the background each tile names (fold enrichment). Shown: q ≤ ' + PADJ + '.');
       let lead, apart = '';
       if (!scoped) {
         const where = pick(motif, 2, 1, 'sequence motif').concat(pick(sctx || disorder, 1, 1, sctx ? 'structural context' : 'disorder'));
         const which = pick(pan || func, 1, 0, pan ? 'PANTHER class' : 'protein class').concat(pick(cond, 1, 0, 'CD-CODE condensate'), pick(dis, 1, 0, 'disease gene set'));
         // the tiles lead, each charting its strongest effects; the figure is drawn only when none of them has one
         const anyEffect = [motif, sctx || disorder, pan || func, cond].some((spec) => spec && spec.rows.some((r) => ok(r) && r.sig && r.value > 0 && aBig(r.value)));
-        const tipKey = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span><i class="aq-pt same"></i>about the same (within ' + minEffect() + '×)</span><span class="a-info" tabindex="0" data-tip="' +
-          esc('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against the background each tile names (all reviewed proteins, genes with a disease term, condensate proteins…; fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; an effect within ' + minEffect() + '× either way counts as about the same. Open a tile for every test.') + '">How to read</span>';
+        const tipKey = aSigKey('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against the background each tile names (all reviewed proteins, genes with a disease term, condensate proteins…; fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; an effect within ' + minEffect() + '× either way counts as about the same. Open a tile for every test.');
         lead = anyEffect ? { q: 'What kinds of proteins are arginine methylated?', hi: '<div class="a-key a-key-line">' + tipKey + '</div>' }
           : { q: 'What kinds of proteins are arginine methylated?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
             fig: aForest([['Where in the protein', where], ['Which proteins', which]], { subTip: true }) };
@@ -4636,6 +4643,7 @@
       }
       const chartTile = (spec) => {
         if (!spec) return null;
+        if (spec.selTest && spec.selTest.circular) return { vis: '', head: 'Your selection was made with this feature, so it is not tested here (descriptive only)', whole: '' };
         // a set whose members are all methylated is as enriched as a set can be: said on hover
         const row = (r) => ({ label: short(r), main: { or: 2 ** r.value, sig: true, q: r.q, fold: !!spec.fold },
           tipMore: r.allIn && !scoped ? 'All ' + r.allIn + ' members are methylated, so ' + fx(2 ** r.value) + '× is the most enrichment a set can reach' : '' });
@@ -4666,13 +4674,7 @@
       // at protein interfaces
       const ixTile = () => {
         const ss = scoped ? R.sites : S, on = scoped && testable;
-        const t = (label, g, path, what) => ({ label, main: ixSelTest(g, path, on), mainName: what });
-        const cells = [t('RNA-crosslinked residue', 'xl_enrich', ['rna_xl'], 'The residue crosslinked to RNA (pepR-MS compendium)'),
-          t('CAPRI peptide', 'xl_enrich', ['rna_capri_cov'], 'Among the arginines CAPRI measured (Panhale 2019)'), t('pCLAP peptide', 'xl_enrich', ['rna_pclap_cov'], 'Among the arginines pCLAP measured (Mullari 2017)'),
-          t('RBDmap peptide', 'xl_enrich', ['rna_rbdmap_cov'], 'Among the arginines RBDmap measured (Castello 2016)'), t('RBR-ID+ residue', 'xl_enrich', ['rna_rbrid_cov'], 'Among the arginines RBR-ID measured (Oksuz 2023)'),
-          t('DNA-crosslinked residue', 'xl_enrich', ['dna_cand'], 'A DNA-crosslinked residue or candidate (Trendel 2025)')].filter((r) => aOr(r.main));
-        const prot = [t('Protein interface (PDB)', 'enrich_strata', ['protein', 'all'], 'At a protein interface in a PDB entry (PDBe-KB)'),
-          t('Predicted interface', 'pred_enrich', ['0.23', 'all'], 'At an AlphaFold-Multimer interface, pDockQ ≥ 0.23 (ProtVar)')].filter((r) => aOr(r.main));
+        const [cells, prot] = ixOvRows(on).map(([, rows]) => rows);
         const exp = ss.filter((s) => ixStatus(s) === 'exp').length;
         return { test: uc1(TEST_WORDS.within(null, true)) + ' (in living cells, among the arginines each experiment measured); ' + TEST_WORDS.q('within each release analysis (crosslink, pdb_interface, predicted_interface), as the release statistics') + '.',
           vis: ixStack(ss) + (scoped && !testable ? '' : aForest([['In living cells', cells], ['Protein contacts', prot]], { compact: true })),
@@ -4753,7 +4755,7 @@
       '<div><p class="flabel" style="margin:0 0 .5rem">Studies or databases reporting each site</p><div class="hbars rep-dist' + (selOn ? ' has-sel' : '') + '">' +
       repDist.map((n, k) => '<button class="hb' + (selOn && !repSel[k] ? ' off' : '') + '" type="button" data-rep="' + (k + 1) + '"><span class="hb-label">' + (k === 4 ? '5 or more' : (k + 1) + (k ? ' sources' : ' source')) + '</span><span class="hb-track"><span class="hb-bar count" style="left:0;width:' + (100 * n / repDist[0]).toFixed(1) + '%"></span></span><span class="hb-val">' + fmt(n) + '</span>' + (selOn ? selCell(repSel[k]) : '') + '</button>').join('') +
       '</div><p class="note">' + fmt(multi) + ' sites (' + pct(multi, M.n_sites) + '%) are reported by two or more' + (selOn ? '; ' + fmt(R.sites.length - repSel[0]) + ' of the ' + fmt(R.sites.length) + ' selected' : '') + '. Databases such as PhosphoSitePlus compile published studies, so two sources can rest on the same measurement. Click a row to keep sites with at least that many.</p></div></div></div>', 'Which studies and databases report the sites?', 'count', provCount(selOn ? R.sites : S), provCount(S), null, pctFig(share((s) => popcount(s.study) >= 2))) +
-        row('ov-treat', 'PRMT inhibitor and knockout response', '<div class="card wide" id="ch-treat"><h3>PRMT inhibitor and knockout response</h3><p class="sub">Sites that change when a PRMT is inhibited' + (koMeta() || ptExtra().length ? ', knocked out or knocked down' : '') + '. Inhibitors of PRMT5 and type I PRMTs (Maron et al. 2021)' + (koMeta() ? ', CARM1 knockout (Shishkova et al. 2017)' : '') + (ptExtra().length ? ', and PRMT1, PRMT5, PRMT7 or CARM1 knockouts, knockdowns and inhibitors (Szewczyk et al. 2020, Hartel et al. 2019, Lu et al. 2024, Li et al. 2021)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable() + '</div>', 'Which sites carry a peptide that decreases when PRMTs are inhibited or knocked out?', 'count', treatSummary(selOn ? R.sites : S, true), treatSummary(S, true), null, pctFig(topDown))) +
+        row('ov-treat', 'PRMT inhibitors, knockouts and knockdowns', '<div class="card wide" id="ch-treat"><h3>PRMT inhibitors, knockouts and knockdowns</h3><p class="sub">Sites that change when a PRMT is inhibited' + (koMeta() || ptExtra().length ? ', knocked out or knocked down' : '') + '. Inhibitors of PRMT5 and type I PRMTs (Maron et al. 2021)' + (koMeta() ? ', CARM1 knockout (Shishkova et al. 2017)' : '') + (ptExtra().length ? ', and PRMT1, PRMT5, PRMT7 or CARM1 knockouts, knockdowns and inhibitors (Szewczyk et al. 2020, Hartel et al. 2019, Lu et al. 2024, Li et al. 2021)' : '') + '.' + docLink('ov-inhibitors') + '</p>' + treatTable() + '</div>', 'Which sites carry a peptide that decreases when PRMTs are inhibited or knocked out?', 'count', treatSummary(selOn ? R.sites : S, true), treatSummary(S, true), null, pctFig(topDown))) +
       (selOn ? '' : hubSec('Explore',
         row('ov-start', 'Starting points', '<div class="card wide starts" id="ov-start"><h3>Starting points</h3><div class="starts-grid">' +
       '<div><h4>Quick selections</h4><div class="gene-chips">' + (UI.quick || []).map((q, k) => '<button class="gene-chip" type="button" data-quick="' + k + '">' + esc(q[1]) + '<span>' + q[0] + '</span></button>').join('') + '</div></div>' +
@@ -4973,7 +4975,7 @@
       hubSec('Sites and structure',
         prow('p-sites', 'Methylarginine sites', '<div class="card tbl-card" id="card-sites"><div class="card-pad"><div class="card-head"><div><h3>Methylarginine sites</h3><p class="sub">Click a row for details of the site.</p></div><div class="actions" id="psites-tools"></div></div><div id="psites-ix"></div></div>' +
       '<div class="tbl-wrap" id="psites"></div><p class="note uni-extra" id="uni-extra" hidden></p><div class="card-pad" id="psites-cite"></div></div>', 'Every site with its evidence, state and sources', fmt(shownN) + ' of ' + fmt(p.sites.length) + ' sites shown') +
-        prow('p-pert', 'Writer perturbations', '<div class="card" id="card-pert"></div>', 'Its sites in PRMT knockouts, knockdowns and inhibitors', 'loading…') +
+        prow('p-pert', 'PRMT inhibitors, knockouts and knockdowns', '<div class="card" id="card-pert"></div>', 'Its sites in PRMT knockouts, knockdowns and inhibitors', 'loading…') +
         prow('p-exp', 'Experiments on its methylation', '<div class="card" id="card-exp"></div>', 'Curated from the literature', 'loading…').replace('<details ', '<details hidden ') +
         prow('p-3d', '3D structure', structureCard(p), 'AlphaFold DB model and experimental structures', UI_A ? 'loading…' : 'loads when opened')) +
       // The context toggle applies to the cards of its section (and the Complexes tab of Protein interactions).
@@ -5023,7 +5025,7 @@
       })() : '') +
       '<div class="facts">' +
       fact(fmt(p.sites.length), 'Methylarginine sites', shownN === p.sites.length ? (filtered ? 'all match your filters' : 'all reported sites') : fmt(shownN) + ' match current filters', 'sites', 'Open the site table') +
-      fact('<span id="arg-count">' + (argN == null ? '—' : fmt(argN)) + '</span>', 'Arginines', '<span id="arg-frac">' + (argN ? pctText(p.sites.length, argN) + '% methylated' : 'loading from UniProt') + '</span>', 'seq', 'Open the sequence: methylated arginines filled, the others bold') +
+      fact('<span id="arg-count">' + (argN == null ? '—' : fmt(argN)) + '</span>', 'Arginines', '<span id="arg-frac">' + (argN ? pctText(p.sites.length, argN) + '% methylated' : 'loading from UniProt') + '</span>', 'seq', 'Open the sequence: methylarginines filled, the others bold') +
       fact(p.shrink == null ? '—' : fmtL2(p.shrink), 'Arg enrichment (log2)', p.argQ == null ? 'not tested (needs ≥2 sites and ≥10 arginines on a reviewed canonical sequence)' : 'shrinkage estimate; Fisher q ' + fmtP(p.argQ), 'enrich', 'How the arginine enrichment is computed') +
       fact('<span id="ix-fact">…</span>', 'Sites with experimental interaction evidence', '<span id="ix-fact-sub">loading interaction data</span>', 'ixexp', 'List these sites') +
       '</div>' +
@@ -5501,9 +5503,8 @@
       const ci = m.lo > 0 && m.hi > 0 && Number.isFinite(m.hi) ? '<i class="aq-ci' + (gh ? ' gh' : ' ' + aDir(m)) + '" style="left:' + X(m.lo) + ';width:calc(' + X(m.hi) + ' - ' + X(m.lo) + ')"></i>' : '';
       return ci + '<i class="' + (gh ? 'aq-gh' : 'aq-pt ' + aDir(m)) + '" style="left:' + X(m.or) + '" data-tip="' + esc(tip) + '"></i>';
     };
-    // one number of decimals down the column: two when any value under 1.2 needs them to tell it from the 1.1x line
-    const dig = ms.some((m) => m.or >= 0.01 && m.or < 1.2) ? 2 : 1;
-    const fxc = (x) => (x >= 1000 ? '> 1,000' : x >= 10 ? x.toFixed(0) : x >= 0.01 ? x.toFixed(dig) : '< 0.01');
+    // one precision rule for a ratio wherever it appears (fx: two decimals under 1.2, to tell it from the 1.1x line)
+    const fxc = fx;
     const val = (m) => (aOr(m) ? fxc(m.or) + '×' : none(m) ? 'none' : '—');
     let h = '';
     for (const [g, rows] of groups) {
@@ -5556,6 +5557,10 @@
   const aBigN = (items) => '<div class="a-big">' + items.map(([n, label, cls]) => '<span class="' + (cls || '') + '"><b>' + n + '</b> ' + esc(label) + '</span>').join('') + '</div>';
   // The page's lead and its tiles. ov: {key: {vis, head, whole}} replaces a tile's picture or words; skip: keys left out.
   // ins: { group name: html } drawn, full width, after that group's tiles.
+  // The key to the marks of every tile and figure: the four states of effDir, in the same words everywhere.
+  const aSigKey = (tip) => '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span><i class="aq-pt same"></i>about the same (within ' + minEffect() + '×)</span>' +
+    '<span><i class="aq-pt ns"></i>no difference (q > ' + PADJ + ')</span>' + (tip ? '<span class="a-info" tabindex="0" data-tip="' + esc(tip) + '">How to read</span>' : '');
+  const A_KEY_TIP = 'Filled red: more often, filled slate: less often (q ≤ ' + PADJ + ' and at least ' + MIN_EFFECT + '× either way); grey: significant but within ' + MIN_EFFECT + '× either way; hollow: no difference. Open a tile for every test, its background and how its q is adjusted.';
   function aHome(lead, ov = {}, skip = [], ins = {}) {
     const scoped = constraints().length > 0, groups = [];
     for (const r of A_ROWS) {
@@ -5577,6 +5582,7 @@
     return '<div class="a-home hub-only">' +
       '<p class="print-only pdf-scope">' + (scoped ? '' : 'All ' + fmt(S.length) + ' sites on ' + fmt(P.length) + ' proteins · ') + new Date().toISOString().slice(0, 10) + '</p>' +
       (lead ? '<section class="a-lead"><div class="a-q-row"><h2 class="a-q">' + lead.q + '</h2><button type="button" class="btn small screen-only" data-pdf-page title="This page\'s cards as an A4 PDF, for ' + (scoped ? 'your selection' : 'all sites') + '">Download PDF</button></div>' + (lead.pic || '') + (lead.verdict ? '<p class="a-verdict">' + lead.verdict + '</p>' : '') + (lead.hi || '') +
+        (lead.noKey || lead.key || /a-key/.test(lead.hi || '') ? '' : '<div class="a-key a-key-line">' + aSigKey(A_KEY_TIP) + '</div>') +
         (lead.fig ? '<div class="card a-fig">' + (lead.figHead ? '<h3 class="a-fig-h">' + esc(lead.figHead) + '</h3>' : '') + (lead.key ? '<div class="a-key">' + lead.key + '</div>' : '') + lead.fig + (lead.go ? '<p class="a-more"><button type="button" class="linkish" data-go="' + lead.go + '">' + esc(lead.goText || 'Every test, with tables') + ' ›</button></p>' : '') + '</div>' : '') + '</section>' : '') +
       // a group whose tile asks for it (full) takes a row of its own
       '<div class="a-groups">' + groups.map(([g, rows]) => '<section class="a-grp' + (rows.some((r) => ov[r.key] && ov[r.key].full) ? ' a-full' : '') + '" style="--n:' + rows.length + '">' + (g ? '<h3 class="a-gh">' + esc(g) + '</h3>' : '') + '<div class="a-tiles">' + rows.map(tile).join('') + '</div></section>' +
@@ -5646,8 +5652,10 @@
     if (!box || !UI_A || !pageOpen(p)) return;
     const sites = p.sites.map((j) => S[j]), n = sites.length, of = (k) => k + ' of ' + n;
     const u = UNIDATA.get(p.acc), argN = p.argN || (u && u.seq ? (u.seq.match(/R/g) || []).length : null);
-    // the motif family most of its methylarginines sit in, of those methylarginines favour across the dataset
-    const motifEff = new Map((M.overview.motifs || []).map((r) => [r[0], r]));
+    // the motif family most of its methylarginines sit in, of those methylarginines favour across the dataset: the
+    // within-protein estimate, as the Overview shows by default ([motif, …, log2 OR at 4, q at 5]), else the pooled one
+    const within = M.overview.motifs_within || [];
+    const motifEff = new Map(within.length ? within.map((w) => [w[0], [w[0], null, null, null, w[1], w[4]]]) : (M.overview.motifs || []).map((r) => [r[0], r]));
     // the highest-scoring motif at its sites: of the motifs enriched at methylarginines across the dataset (q <= PADJ),
     // the most enriched that any of its methylarginines sits in (ties: more of its sites)
     const atSites = M.motifs.map((m, k) => ({ m, n: sites.filter((s) => (s.mot || 0) & (1 << k)).length, r: motifEff.get(m) }))
@@ -5657,8 +5665,8 @@
     const dIdx = M.disorder_classes.indexOf('disordered'), nDis = sites.filter((s) => s.dc === dIdx).length;
     const cards = [{ go: 'p-seq', kind: 'Sites', glyph: aGlyph.pins(), big: argN ? fmt(n) + ' of ' + fmt(argN) : fmt(n), dir: 'n', label: argN ? 'arginines methylated' : 'methylarginines',
       tip: '<b>' + esc(p.label) + '</b>: ' + fmt(n) + ' methylarginine' + (n === 1 ? '' : 's') + (argN ? ' of ' + fmt(argN) + ' arginines' : '') + (p.shrink != null ? '<br>Arginine methylation enrichment: log2 ' + fmtL2(p.shrink) + (p.argQ != null ? ', q ' + fmtP(p.argQ) : '') : '') },
-      { go: 'p-seq', kind: 'Sequence motif', glyph: aGlyph.motif(mot.show), big: of(nMot), dir: 'n', label: 'in ' + mot.label + ' motif' + (nMot === 1 ? '' : 's') + (mEff ? ' (' + fx(2 ** mEff[4]) + '× across the dataset)' : ''),
-        tip: top ? '<b>' + esc(MOTIF_LABEL[top.m] || top.m) + '</b>' + (MOTIF_HELP[top.m] ? ' (' + esc(MOTIF_HELP[top.m]) + ')' : '') + ': the most enriched motif at these methylarginines. Across the dataset it surrounds methylarginines ' + fx(2 ** mEff[4]) + '× as often as the other arginines of the same proteins (q ' + fmtP(mEff[5]) + ')' +
+      { go: 'p-seq', kind: 'Sequence motif', glyph: aGlyph.motif(mot.show), big: of(nMot), dir: 'n', label: 'in ' + mot.label + ' motif' + (nMot === 1 ? '' : 's') + (mEff ? ' (OR ' + fx(2 ** mEff[4]) + '× across the dataset)' : ''),
+        tip: top ? '<b>' + esc(MOTIF_LABEL[top.m] || top.m) + '</b>' + (MOTIF_HELP[top.m] ? ' (' + esc(MOTIF_HELP[top.m]) + ')' : '') + ': the most enriched motif at these methylarginines. Across the dataset, its odds ratio at methylarginines against the other arginines of the same proteins is ' + fx(2 ** mEff[4]) + '× (' + (within.length ? 'within proteins, Mantel–Haenszel' : 'pooled, Fisher') + '; q ' + fmtP(mEff[5]) + ')' +
           (atSites.length > 1 ? '<br>Other enriched motifs here: ' + atSites.slice(1).map((x) => esc(MOTIF_LABEL[x.m] || x.m) + ' ' + x.n + ' (' + fx(2 ** x.r[4]) + '×)').join(', ') : '')
           : 'None of these methylarginines sits in a motif enriched at methylarginines across the dataset' },
       { go: 'p-dom', kind: 'Position in the protein', glyph: aGlyph.struct(), big: of(nDis), dir: 'n', label: 'in disordered regions', tip: 'Methylarginines in regions MobiDB calls disordered' }];
@@ -5905,7 +5913,7 @@
       { k: 'win', label: 'Window ±7 · motifs', td: winCell },
       { k: 'ix', label: 'Interaction evidence', opt: true, tdCls: 'ix-col', tip: STATUS_HELP, td: (s) => ixCell(s, 3) },
       { k: 'na', label: 'RNA/DNA contacts', opt: true, tdCls: 'na-col', menu: 'RNA/DNA contacts (structures) and crosslinks (cells)', tip: 'RNA or DNA within 4 Å of the arginine side chain in PDB structures, within 8 Å (distance shown), or within 4 Å of a residue at i ± 1–5 (via i±k); and the nearest residue at i ± 0–5 UV-crosslinked in living cells, with eCLIP beside an RNA crosslink; hover for more', td: boundCell },
-      { k: 'prmti', label: 'PRMT loss', opt: true, menu: 'PRMT inhibitor or knockout response', td: treatHtml },
+      { k: 'prmti', label: 'PRMT perturbation', opt: true, menu: 'PRMT inhibitors, knockouts and knockdowns', td: treatHtml },
       { k: 'src', label: 'Reported by', opt: true, cls: 'hide-sm', td: (s) => '<div class="tags">' + studyTags(s.study, 3, P[s.p].acc) + '</div>' },
       { k: 'af', label: 'AlphaFold', opt: true, menu: 'AlphaFold pLDDT and AlphaMissense', tdCls: 'nw', tip: 'AlphaFold pLDDT at the site and mean AlphaMissense score for R→X', td: (s) => afCell(p, s) },
       { k: 'ctx', label: 'Context', opt: true, menu: 'Disorder and domain context', tdCls: 'nw', td: contextHtml },
@@ -6093,7 +6101,7 @@
     same_accession_evidence_near_match: ['warn', 'Peptide or window not in the current sequence; matched within 2 residues of the reported arginine'],
     canonical_evidence_near_match: ['warn', 'Peptide or window not in the current sequence; matched within 2 residues of the reported arginine'],
   };
-  // A source peptide with its methylated arginines marked ("R(me)" in ProMetheusDB), and this site's arginine
+  // A source peptide with its methylarginines marked ("R(me)" in ProMetheusDB), and this site's arginine
   // highlighted when the peptide can be placed on the site's sequence window without a mismatch.
   function pepHtml(pep, s) {
     if (!pep) return '<span class="muted">—</span>';
@@ -6258,7 +6266,7 @@
       '<div class="sc-grid"><section class="sc-ix"><h4>Interaction evidence' + docLink('ix-status') + '</h4>' + ix + '</section>' +
       '<section><h4>Site</h4><dl class="sc-kv">' + pub('Window ±7', windowHtml(s.win, 7, s.j)) + pub('Motifs', motifTags(s.mot)) + pub('Context', contextHtml(s).replace('<br>', ' · ')) +
       pub('Methylation state', s.stx ? s.stx.map((x) => esc(x[1].replace(/; /g, ', ')) + ' <span class="muted">' + stateSourceHtml(x[0], p) + '</span>').join('<br>') : '<span class="muted">no source gives a degree</span>') +
-      pub('Nearest methyl-R', s.nn == null ? '—' : s.nn + ' aa') + pub('PRMT loss', treatHtml(s)) + pub('Maron IP', ipTags(s.ip) || '—') + pub('Variants', siteVariantsHtml(s, p)) + pub('In cancers', dmSiteHtml(s, p)) + pub('AlphaFold', afCell(p, s)) +
+      pub('Nearest methyl-R', s.nn == null ? '—' : s.nn + ' aa') + pub('PRMT perturbation', treatHtml(s)) + pub('Maron IP', ipTags(s.ip) || '—') + pub('Variants', siteVariantsHtml(s, p)) + pub('In cancers', dmSiteHtml(s, p)) + pub('AlphaFold', afCell(p, s)) +
       pub('Reported by', risButton(M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => studyRef(k)), P[s.p].label + '_R' + s.pos + '_references', 'RIS') + '<ul class="sc-refs">' + M.studyOrder.filter((k) => s.study & (1 << k)).map((k) => { const r = studyRef(k); return '<li>' + (r[1] ? '<a href="https://doi.org/' + r[1] + '" target="_blank" rel="noopener" title="' + esc(r[0]) + '">' + esc(studyLabel(M.studies[k][0])) + '</a>' : '<span title="' + esc(r[0]) + '">' + esc(studyLabel(M.studies[k][0])) + '</span>') + '</li>'; }).join('') + '</ul>' +
         (xenograftOnly(s) ? '<p class="small warn-text">Reported only from breast cancer xenografts grown in mice (Ma et al. 2023): where the human and mouse sequences agree, the peptide can come from the mouse stroma.</p>' : '') +
         '<p class="muted small">Cite these for ' + rl(s.pos, P[s.p]) + ', with ' + esc(PAPER.short) + ' for the compilation.</p>') + '</dl></section>' +
@@ -6661,7 +6669,7 @@
       const name = '<button class="linkish strong" type="button" data-fam="' + k + '" title="List the methylated proteins of this family\'s gene set">' + esc(M.disease_families[k]) + '</button>';
       return '<li>' + name + (famAudited(k) ? '' : ' <span class="tag src" title="Rule-based family, not audited (scripts/disease_families.py)">additional</span>') + ' <span class="muted">· named in ' + fmt(n) + (tot ? ' of its ' + fmt(tot) : '') + ' term' + ((tot || n) === 1 ? '' : 's') +
         (ev ? (enr[k] ? ', ' + enr[k] + ' enriched' : ', none enriched') : '') + '</span>' +
-        (UI.ctx === 'dataset' && r ? ' <span class="tag' + (r[4] != null && r[4] <= PADJ ? '' : ' src') + '" title="' + esc('Family test across all methylarginine-containing proteins: ' + fmt(r[1]) + ' of ' + fmt(r[2]) + ' genes of the family are those of methylarginine-containing proteins, ' + (FOLD() ? 'fold enrichment ' : 'OR ') + (famEff(r) || 0).toFixed(2) + ', BH-adjusted p ' + fmtP(r[4])) + '">' + fmtL2(famEff(r) ? Math.log2(famEff(r)) : null) + '</span>' : '') + '</li>';
+        (UI.ctx === 'dataset' && r ? ' <span class="tag' + (r[4] != null && r[4] <= PADJ ? '' : ' src') + '" title="' + esc('Family test across all methylarginine-containing proteins: ' + fmt(r[1]) + ' of ' + fmt(r[2]) + ' genes of the family are those of methylarginine-containing proteins, ' + (FOLD() ? 'fold enrichment ' : 'OR ') + (famEff(r) || 0).toFixed(2) + ', q ' + fmtP(r[4])) + '">' + fmtL2(famEff(r) ? Math.log2(famEff(r)) : null) + '</span>' : '') + '</li>';
     });
     return '<p class="flabel">Disease families (DisGeNET)</p>' +
       (items.length ? '<ul class="term-list fam-list">' + items.join('') + '</ul>' : '<p class="muted">' + esc(p.label) + ' is in none of the family gene sets.</p>') +
@@ -6703,7 +6711,7 @@
       $('#map-box').scrollIntoView({ block: 'center', behavior: 'smooth' });
     }));
     setFoldSummary('p-cluster', !d ? 'needs sequence-confirmed sites' : d[0] == null ? 'one site' :
-      'median spacing ' + d[1] + ' aa' + (p.best ? ' · top window ' + p.best[3] + ' sites in ' + p.best[0] + ' aa, q ' + fmtP(p.best[5]) + (p.best[5] <= PADJ ? '' : ' (n.s.)') : '') + (sig.length ? ' · ' + sig.length + ' significant window' + (sig.length === 1 ? '' : 's') : ''));
+      'median spacing ' + d[1] + ' aa' + (p.best ? ' · top window ' + p.best[3] + ' sites in ' + p.best[0] + ' aa, q ' + fmtP(p.best[5]) + (p.best[5] <= PADJ ? '' : ' (not significant)') : '') + (sig.length ? ' · ' + sig.length + ' significant window' + (sig.length === 1 ? '' : 's') : ''));
   }
 
   function renderPtmCard(p) {
@@ -6852,7 +6860,7 @@
     siteAt.forEach((s, pos) => { if (seq[pos - 1] !== 'R') mismatch++; });
     const inRg = new Uint8Array(seq.length + 2);
     for (const b of u.rg) for (let k = b.start; k <= b.end; k++) inRg[k] = 1;
-    sub.innerHTML = 'Methylated arginines filled, other arginines bold, RG/RGG segments underlined. Click a filled R for its row.' +
+    sub.innerHTML = 'Methylarginines filled, other arginines bold, RG/RGG segments underlined. Click a filled R for its row.' +
       (mismatch ? ' <span class="warn">' + mismatch + ' reported site' + (mismatch === 1 ? ' does' : 's do') + ' not fall on R in this sequence version; positions follow the canonical UniProt sequences used here.</span>' : '');
     sub.classList.toggle('unclamp', !!mismatch);
     setFoldSummary('p-seq', fmt(seq.length) + ' aa · ' + fmt((seq.match(/R/g) || []).length) + ' arginines' + (mismatch ? ' · ' + mismatch + ' site' + (mismatch === 1 ? '' : 's') + ' not on R' : ''));
@@ -7006,12 +7014,12 @@
     const xp = ixReady() ? IX.xlProt.get(p.i) : null, ia = ixReady() ? IX.iaProt.get(p.i) : null;
     const on = (s, mask) => !!((s.ev || 0) & mask);
     return [
-      { key: 'rna', label: 'RNA crosslink', sub: 'in living cells', short: 'RNA crosslink', tiny: 'RNA xl', color: pal.rna,
+      { key: 'rna', label: 'RNA in cells', sub: 'crosslinked residue, or RNA-bound fragment or peptide', short: 'RNA in cells', tiny: 'RNA', color: pal.rna,
         help: 'Residues crosslinked to RNA by UV light in living cells (pepR-MS compendium); pale boxes are RNA-bound fragments (RBDmap), peptides (CAPRI, pCLAP) and RBR-ID+ residues',
         ticks: xp ? xp.rnaPos : [], boxes: xp ? xp.rbd.map(([a, b]) => [a, b, 0.25, 'RBDmap RNA-bound fragment']).concat(xp.capAdj.map(([a, b]) => [a, b, 0.18, 'CAPRI RNA-bound peptide (ADJ)']), xp.capXl.map(([a, b]) => [a, b, 0.42, 'CAPRI RNA-crosslinked peptide (XL)']), xp.pclap.map(([a, b]) => [a, b, 0.32, 'pCLAP RNA-binding peptide']), xp.rbrid.map(([a, b]) => [a, b, 0.22, 'RBR-ID+ residues'])) : [],
         hit: (s) => !!(s.xl && s.xl.r), weak: (s) => !!(s.xl && (s.xl.f || s.xl.n || s.xl.c)),
         at: 'at a residue crosslinked to RNA', near: 'within 3 residues of one, or inside an RNA-bound fragment or peptide from RBDmap, CAPRI, pCLAP or RBR-ID' },
-      { key: 'dna', label: 'DNA crosslink', sub: 'in living cells', short: 'DNA crosslink', tiny: 'DNA xl', color: pal.dna,
+      { key: 'dna', label: 'DNA in cells', sub: 'crosslinked residue or peptide', short: 'DNA in cells', tiny: 'DNA', color: pal.dna,
         help: 'Residues and peptides crosslinked to DNA by UV light in living cells (Trendel et al. 2025)',
         ticks: xp ? xp.dnaPos : [], boxes: xp ? xp.dnaPeps.map(([a, b]) => [a, b, 0.35, 'DNA-crosslinked peptide']).concat(xp.dnaCand.map((c) => [c, c, 0.7, 'DNA crosslink candidate residue'])) : [],
         hit: (s) => !!(s.xl && s.xl.d & 9), weak: (s) => !!(s.xl && s.xl.d & 2),
@@ -7611,7 +7619,7 @@
       const box = (a, b, color, op, label, kind) => MARK.box(x(Math.max(a, v0)) - 0.5, y - 4, x(Math.min(b, v1) + 1) - x(Math.max(a, v0)), 8, color, ' class="feat" data-ev="' + kind + ':' + a + ':' + b + '" fill-opacity="' + op + '"' + tip(label + more));
       const inView = (a, b) => b >= v0 && a <= v1;
       if (xp.rnaPos.length || xp.rbd.length || xp.capAdj.length || xp.capXl.length || xp.pclap.length) {
-        tlabel('RNA crosslink', y);
+        tlabel('RNA in cells', y);
         gridLine(y);
         for (const [a, b] of xp.capAdj) if (inView(a, b)) g += box(a, b, pal.rna, 0.16, '<b>CAPRI RNA-bound peptide (ADJ)</b> ' + nspan(a, b) + '<br>released next to an RNA crosslink; Panhale et al. 2019, HEK293', 'rna');
         for (const [a, b] of xp.rbd) if (inView(a, b)) g += box(a, b, pal.rna, 0.28, '<b>RBDmap RNA-bound fragment</b> ' + nspan(a, b) + '<br>Castello et al. 2016, HeLa', 'rna');
@@ -7638,7 +7646,7 @@
         y += 18;
       }
       if (xp.dnaPos.length || xp.dnaCand.length || xp.dnaPeps.length || xp.dnaBind.length) {
-        tlabel('DNA crosslink', y);
+        tlabel('DNA in cells', y);
         gridLine(y);
         for (const [a, b] of xp.dnaBind) if (inView(a, b)) g += box(a, b, pal.dna, 0.22, '<b>UniProt DNA-binding region</b> ' + nspan(a, b), 'dna');
         for (const [a, b] of xp.dnaPeps) if (inView(a, b)) g += box(a, b, pal.dna, 0.45, '<b>DNA-crosslinked peptide</b> ' + nspan(a, b) + '<br>Trendel et al. 2025, MCF7', 'dna');
@@ -7778,7 +7786,7 @@
     }
     const H = Math.ceil(y + 4);
     const svg = '<svg xmlns="http://www.w3.org/2000/svg" class="pmap" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family=\'' + (pal.font || EXPORT_PAL.font).replace(/'/g, '"') + '\'' +
-      ' role="img" aria-label="Map of ' + esc(p.label) + ' with ' + sites.length + ' methylated arginines">' +
+      ' role="img" aria-label="Map of ' + esc(p.label) + ' with ' + sites.length + ' methylarginines">' +
       (o.forExport ? '<rect width="' + W + '" height="' + H + '" fill="' + pal.bg + '"/>' : '') + g +
       (o.forExport ? '' : '<rect id="brush" x="0" y="0" width="0" height="' + H + '" fill="' + pal.brush + '" stroke="' + pal.accent + '" hidden/>' +
         '<line id="xhair" x1="0" x2="0" y1="0" y2="' + H + '" stroke="' + pal.accent + '" stroke-width="0.8" stroke-dasharray="3 2" pointer-events="none" visibility="hidden"/>') + '</svg>';
@@ -8908,7 +8916,7 @@
         (h.partners.length ? '<dt>With</dt><dd>' + h.partners.map((x) => esc(x)).join('; ') + '</dd>' : '') + '</dl>' +
         '<div class="af-focus"><p class="flabel">Focus a site <span class="muted">(aligned to this chain)</span></p>' + (sites.length ? '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '">' + modeDot(mode, mode.cat(s), colors[mode.cat(s)] || pal.none) + rl(s.pos, P[s.p]) + ' ≙ ' + esc(det.chain) + toAuth.get(s.pos) + '</button>').join('') + '</div>' :
           '<p class="note">No methylarginine of ' + esc(p.label) + ' aligns to a resolved arginine in this chain.</p>') + '</div>' +
-        (det.modres.length ? '<p class="flabel">Methylated arginines in the model</p><div class="tags">' + det.modres.map((r) => '<span class="tag var" title="' + esc(r.chem_comp_name) + '">' + esc(r.chem_comp_id) + ' ' + esc(r.chain_id) + esc(r.author_residue_number) + '</span>').join('') + '</div>' : '') +
+        (det.modres.length ? '<p class="flabel">Methylarginines in the model</p><div class="tags">' + det.modres.map((r) => '<span class="tag var" title="' + esc(r.chem_comp_name) + '">' + esc(r.chem_comp_id) + ' ' + esc(r.chain_id) + esc(r.author_residue_number) + '</span>').join('') + '</div>' : '') +
         contactsHtml() +
         '<p class="note">A related protein, not ' + esc(p.label) + ' itself: positions come from the RCSB sequence alignment (MMseqs2), and the contacts are those of the homologous arginine.</p>' +
         (mol.afPdb ? '<p><button class="btn quiet small" type="button" id="back-af">Back to AlphaFold model</button></p>' : '');
@@ -8921,7 +8929,7 @@
         return '<dt>Structure</dt><dd>' + esc((en.struct || {}).title || '') + '</dd><dt>With</dt><dd>' + (parts.length ? esc(parts.slice(0, 8).join('; ')) + (parts.length > 8 ? ' <span class="pdb-more" data-tip="' + esc(parts.slice(8).join('; ')) + '">and ' + (parts.length - 8) + ' more</span>' : '') : 'no other protein or nucleic acid') + '</dd>';
       })() +
       '<dt>Method</dt><dd>' + esc(methodShort(e.method)) + (e.resolution ? ', ' + e.resolution.toFixed(1) + ' Å' : '') + (/NMR/i.test(e.method || '') ? ' (first model of the ensemble)' : '') + '</dd><dt>Chain</dt><dd>' + esc(det.chain || '—') + ' (coloured by its features; other chains by what they are)</dd></dl>' +
-      (det.modres.length ? '<p class="flabel">Methylated arginines in the model</p><div class="tags">' + det.modres.map((r) => '<span class="tag var" title="' + esc(r.chem_comp_name) + '">' + esc(r.chem_comp_id) + ' ' + esc(r.chain_id) + esc(r.author_residue_number) + '</span>').join('') + '</div><p class="note">Drawn in the methylated colour.</p>' : '') +
+      (det.modres.length ? '<p class="flabel">Methylarginines in the model</p><div class="tags">' + det.modres.map((r) => '<span class="tag var" title="' + esc(r.chem_comp_name) + '">' + esc(r.chem_comp_id) + ' ' + esc(r.chain_id) + esc(r.author_residue_number) + '</span>').join('') + '</div><p class="note">Drawn in the methylated colour.</p>' : '') +
       '<div class="af-focus"><p class="flabel">Focus a site <span class="muted">(resolved in this chain)</span></p>' +
       (sites.length ? '<div class="chips af-sites">' + sites.map((s) => '<button class="chip" type="button" data-pos="' + s.pos + '">' + modeDot(mode, mode.cat(s), colors[mode.cat(s)] || pal.none) + rl(s.pos, P[s.p]) + ' · ' + esc(det.chain) + toAuth.get(s.pos) + '</button>').join('') + '</div>' : '<p class="note">' + (det.chain && !det.coverage ? 'PDBe did not return the residues observed in this chain, so its methylarginines cannot be placed; try again later.' : 'None of this protein\'s methylarginines are resolved in this chain.') + '</p>') + '</div>' +
       contactsHtml() +
@@ -10799,8 +10807,8 @@
       const sh = [[scoped ? 'Your selection' : 'Methylated proteins', share(selRows), scoped ? 'sel' : 'meth', selRows.length]]
         .concat(scoped ? [['All methylated proteins', share(methRows), 'meth', methRows.length]] : [], [['All screened proteins', share(allRows), 'all', allRows.length]]);
       const mx = Math.max(...sh.map((x) => x[1]), 0.01);
-      if (tv) tv.innerHTML = aMeters(sh.map(([label, v, cls, n]) => ({ label, v: v / mx, text: pctText(Math.round(v * 1000), 1000) + '%', cls: 'count',
-        tip: '<b>' + esc(label) + '</b><br>' + pctText(Math.round(v * 1000), 1000) + '% of ' + fmt(n) + ' screened proteins commonly essential in DepMap' })), { tight: true, wide: true });
+      if (tv) tv.innerHTML = aMeters(sh.map(([label, v, cls, n]) => ({ label, v: v / mx, text: pctText(Math.round(v * n), n) + '%', cls: 'count',
+        tip: '<b>' + esc(label) + '</b><br>' + pctText(Math.round(v * n), n) + '% of ' + fmt(n) + ' screened proteins commonly essential in DepMap' })), { tight: true, wide: true });
       if (th) th.innerHTML = '<b>' + pctText(ce(selRows), selRows.length || 1) + '%</b> of ' + (scoped ? 'your' : 'methylated') + ' proteins commonly essential in cancer cell lines, against ' + pctText(ce(allRows), allRows.length) + '% of all screened proteins';
       if (!box) return;
       const c1 = scoped ? dmCompare(G, selRows, otherMeth) : null, c2 = dmCompare(G, selRows, otherScreened);
@@ -11158,7 +11166,7 @@
     if (!box) return;
     loadLayer('perturbations').then((D) => {
       if (!box.isConnected) return;
-      const head = '<div class="card-head"><div><h3>Writer perturbations</h3><p class="sub">Its sites in PRMT knockouts, knockdowns and inhibitors: did a peptide carrying the site change?</p></div></div>';
+      const head = '<div class="card-head"><div><h3>PRMT inhibitors, knockouts and knockdowns</h3><p class="sub">Its sites in PRMT knockouts, knockdowns and inhibitors: did a peptide carrying the site change?</p></div></div>';
       if (!D) { box.innerHTML = head + '<p class="muted">The perturbation file did not load; try again later.</p>'; setFoldSummary('p-pert', 'did not load'); return; }
       const sites = p.sites.map((j) => [S[j], pertRows(D, S[j])]).filter(([, rows]) => rows.length).sort((a, b) => a[0].pos - b[0].pos);
       const used = D.perturbations.map((_, k) => k).filter((k) => sites.some(([, rows]) => rows.some((r) => r.perturbation === k)));
@@ -11272,7 +11280,8 @@
       const spec = reactomeTopSpec(RX, scoped);
       UI.charts[spec.id] = spec;
       const top = spec.rows.filter((r) => r.value != null && (scoped ? r.p != null : r.sig)).sort((x, y) => y.value - x.value).slice(0, 4);
-      if (tv) tv.innerHTML = aMeters(top.map((r) => ({ label: r.label, v: Math.max(0, r.value) / Math.max(0.01, ...top.map((x) => x.value)), text: fx(2 ** r.value) + '×', cls: 'count', tip: r.title, q: r.q })), { tight: true, wide: true });
+      // drawn as the other protein-set tiles are: fold enrichment on a log scale, coloured where it differs
+      if (tv) tv.innerHTML = aForest([[null, top.map((r) => ({ label: r.label, main: { or: 2 ** r.value, sig: !!r.sig, q: r.q, fold: true } }))]], { compact: true });
       if (th) th.innerHTML = top.length ? 'Most enriched: <b>' + esc(top[0].label) + '</b> (' + fx(2 ** top[0].value) + '×)' : 'No top-level pathway enriched';
       if (!box) return;
       const deep = layerStats(RX, 'reactome_pathway').slice().sort((x, y) => x.p - y.p).slice(0, 15);
@@ -11780,7 +11789,7 @@
   // what the card shows, in a sentence or two
   function cellIntro(L, scoped) {
     return 'Six maps from five studies place proteins in the cell, made by imaging, proximity labelling, organelle pull-down and chromatin fractionation in different cells. ' +
-      'A part is red where ' + esc(L.what(scoped)) + ' are more likely to ' + esc(L.verb('there')) + ' than ' + esc(L.alike) + ', blue where they are less likely, grey where there is no clear difference; each map compares only the proteins it places.';
+      'A part is red where ' + esc(L.what(scoped)) + ' are more likely to ' + esc(L.verb('there')) + ' than ' + esc(L.alike) + ', slate where they are less likely, grey where there is no clear difference; each map compares only the proteins it places.';
   }
   // The card's first words, from the top down: the regions where the set sits more or less often than proteins of
   // similar abundance, then the parts where most of all. Short, the tile's: the regions alone, whose numbers it draws.
@@ -12921,7 +12930,7 @@
     return '<section class="sp-prot-sec"><h4>Who binds its methylarginines' + docLink('ix-records') + '</h4><div class="sp-prot"><p class="note">Loading the interaction records…</p></div></section>' +
       '<section class="sp-prot-sec sp-as-partner" hidden></section>' +
       '<div class="ix-grid"><section><h4>Methylarginines at protein interfaces</h4>' +
-      (pdb.length ? '<ul class="ix-sites">' + pdb.map(pdbLine).join('') + '</ul>' : '<p class="muted">None of the methylated arginines is at a protein interface in a PDB structure (PDBe-KB).</p>') +
+      (pdb.length ? '<ul class="ix-sites">' + pdb.map(pdbLine).join('') + '</ul>' : '<p class="muted">None of the methylarginines is at a protein interface in a PDB structure (PDBe-KB).</p>') +
       '<p class="note">PDBe-KB interface residues across all PDB entries of this protein; the residues listed have a heavy atom within 4 Å of the arginine side chain (CD, NE, CZ, NH1, NH2). Methylation of these arginines would alter the contact.</p></section>' +
       '<section><h4>Predicted protein interfaces</h4>' +
       (pred.length ? '<ul class="ix-sites">' + pred.map(predLine).join('') + '</ul>' : '<p class="muted">No other methylarginine of ' + esc(p.label) + ' is at a predicted interface.</p>') +
@@ -13131,7 +13140,7 @@
         '<ul class="ix-sites">' + sites.map((s) => { const g = contactGroups(s).find((x) => x.k === (kind === 'rna' ? -1 : -2)); return '<li><button class="linkish strong" type="button" data-pos="' + s.pos + '">' + rl(s.pos, P[s.p]) + '</button> ' + pill(s.st) +
           (g ? ' contacts <b>' + esc(g.labels.slice(0, 8).join(' ')) + '</b> <span class="muted">(' + g.pdbs.map((x) => x.toUpperCase()).join(', ') + ')</span>' : '') +
           ' <span class="muted small">at the interface in ' + (s.ifN || (s.ifPdb || []).length) + ' entr' + ((s.ifN || 0) === 1 ? 'y' : 'ies') + '</span></li>'; }).join('') + '</ul>' :
-        '<p class="muted">None of the methylated arginines contacts ' + KIND + ' in a PDB structure (PDBe-KB).</p>') +
+        '<p class="muted">None of the methylarginines contacts ' + KIND + ' in a PDB structure (PDBe-KB).</p>') +
       '<p class="note">PDBe-KB interface residues across all PDB entries of this protein; methylation of these arginines would alter the contact.</p></section>' +
       bindWhereHtml(p, kind) +
       (naWs.length ? '<section class="na-sec"><h4>' + KIND + ' sequences at methylarginines in PDB structures</h4>' + naBlockHtml(naWs, kind, false, 60) + '<p class="note">' + NA_NOTE + '</p></section>' : '') +
@@ -13238,8 +13247,8 @@
       const [a, b, c, d] = xe.rna_xl.or.pooled, m = xe.rna_xl.or.mh;
       const one = xe.rna_xl_single && xe.rna_xl_single.or ? xe.rna_xl_single.or.mh : null;
       const dx = dirQ(m[0], qOf('xl_enrich', ['rna_xl']));
-      out.push({ sec: 'cells', head: 'In cells, methylated arginines are <b>' + dx + '</b> the residue crosslinked to RNA (' + pctText(a, a + b || 1) + '% vs ' + pctText(c, c + d || 1) + '% of other arginines of the same proteins).',
-        html: 'In living cells, methylated arginines are <b>' + dx + '</b> the residue crosslinked to RNA than the other arginines of the same proteins: ' +
+      out.push({ sec: 'cells', head: 'In cells, methylarginines are <b>' + dx + '</b> the residue crosslinked to RNA (' + pctText(a, a + b || 1) + '% vs ' + pctText(c, c + d || 1) + '% of other arginines of the same proteins).',
+        html: 'In living cells, methylarginines are <b>' + dx + '</b> the residue crosslinked to RNA than the other arginines of the same proteins: ' +
         pctText(a, a + b || 1) + '% vs ' + pctText(c, c + d || 1) + '% (within-protein ' + orQ(m, 'xl_enrich', ['rna_xl']) + ', ' + fmt(m[4]) + ' informative proteins' + (one ? '; crosslinks localised to a single residue only: ' + orQ(one, 'xl_enrich', ['rna_xl_single']) : '') + '). ' +
         'The crosslink database searches did not include methylation as a modification, so these crosslinks were identified on unmethylated forms of the peptides.' });
     }
@@ -13257,16 +13266,16 @@
     if (xe.dna_cand && xe.dna_cand.or) {
       const one = xe.dna_xl && xe.dna_xl.or ? xe.dna_xl.or.pooled : null, m = xe.dna_cand.or.mh, bind = xe.dna_bind && xe.dna_bind.or ? xe.dna_bind.or.mh : null;
       const dc = dirQ(m[0], qOf('xl_enrich', ['dna_cand']));
-      out.push({ sec: 'cells', head: 'Methylated arginines are <b>' + dc + '</b> a candidate residue of DNA crosslinks in cells.',
+      out.push({ sec: 'cells', head: 'Methylarginines are <b>' + dc + '</b> a candidate residue of DNA crosslinks in cells.',
         html: 'DNA crosslinks (Trendel et al. 2025, MCF7) are rarely localised to one residue: ' + (one ? fmt(one[0]) + ' methylarginine' + (one[0] === 1 ? ' carries one' : 's carry one') + ' localised to it alone. ' : '') +
-        'Counting every candidate residue, methylated arginines are <b>' + dc + '</b> a candidate than other arginines of the same proteins (' + orQ(m, 'xl_enrich', ['dna_cand']) + ')' +
+        'Counting every candidate residue, methylarginines are <b>' + dc + '</b> a candidate than other arginines of the same proteins (' + orQ(m, 'xl_enrich', ['dna_cand']) + ')' +
         (bind && bind[0] != null ? ', and they sit <b>' + dirQ(bind[0], qOf('xl_enrich', ['dna_bind'])) + '</b> inside UniProt DNA-binding regions (' + orQ(bind, 'xl_enrich', ['dna_bind']) + ')' : '') + '.' });
     }
     const st = IX.strata || {};
     if (st.rna && st.protein) {
       const r = st.rna.all, pr = st.protein.all, rq = qOf('enrich_strata', ['rna', 'all']), pq = qOf('enrich_strata', ['protein', 'all']);
-      out.push({ sec: 'pdb', head: 'In PDB structures, methylated arginines are at RNA interfaces <b>' + dirQ(or2(r.mh[0]), rq) + '</b> and at protein interfaces <b>' + dirQ(or2(pr.mh[0]), pq) + '</b> than other arginines of the same proteins.',
-        html: 'In PDB structures, methylated arginines sit at RNA interfaces <b>' + dirQ(or2(r.mh[0]), rq) + '</b> than other arginines of the same protein (OR ' + orNum(or2(r.mh[0])) + ', q ' + fmtP(rq) +
+      out.push({ sec: 'pdb', head: 'In PDB structures, methylarginines are at RNA interfaces <b>' + dirQ(or2(r.mh[0]), rq) + '</b> and at protein interfaces <b>' + dirQ(or2(pr.mh[0]), pq) + '</b> than other arginines of the same proteins.',
+        html: 'In PDB structures, methylarginines sit at RNA interfaces <b>' + dirQ(or2(r.mh[0]), rq) + '</b> than other arginines of the same protein (OR ' + orNum(or2(r.mh[0])) + ', q ' + fmtP(rq) +
         '; pooled across proteins OR ' + orNum(or2(r.pooled[4])) + ') and at protein interfaces <b>' + dirQ(or2(pr.mh[0]), pq) + '</b> (OR ' + orNum(or2(pr.mh[0])) + ', q ' + fmtP(pq) + ').' });
     }
     const pe = IX.predEnrich && IX.predEnrich['0.23'];
@@ -13280,8 +13289,8 @@
     if (pe && pe.all && pe.all.mh[0] != null) {
       const m = pe.all.mh;
       const mq = qOf('pred_enrich', ['0.23', 'all']);
-      out.push({ sec: 'predicted', head: 'In predicted complexes, methylated arginines are at the interface <b>' + dirQ(or2(m[0]), mq) + '</b> than other arginines of the same proteins.',
-        html: 'In AlphaFold-Multimer models of human protein pairs (ProtVar, pDockQ ≥ 0.23), methylated arginines sit at the predicted interface <b>' + dirQ(or2(m[0]), mq) + '</b> than other arginines of the same proteins (OR ' + orNum(or2(m[0])) + ', q ' + fmtP(mq) + ').' });
+      out.push({ sec: 'predicted', head: 'In predicted complexes, methylarginines are at the interface <b>' + dirQ(or2(m[0]), mq) + '</b> than other arginines of the same proteins.',
+        html: 'In AlphaFold-Multimer models of human protein pairs (ProtVar, pDockQ ≥ 0.23), methylarginines sit at the predicted interface <b>' + dirQ(or2(m[0]), mq) + '</b> than other arginines of the same proteins (OR ' + orNum(or2(m[0])) + ', q ' + fmtP(mq) + ').' });
     }
     if (IX.gallery && IX.gallery.length) {
       const rows = galRows(Object.assign({}, GAL_DEFAULT));
@@ -13311,6 +13320,17 @@
   }
 
   // Short version on the overview, pointing to the Interactions tab.
+  // The Overview's interaction tests (its tile and its section): within-protein tests in living cells and at protein
+  // contacts, each with its q from its release analysis (ixSelTest).
+  const IX_OV_TESTS = [
+    ['In living cells', [['RNA-crosslinked residue', 'xl_enrich', ['rna_xl'], 'The residue crosslinked to RNA (pepR-MS compendium)'],
+      ['CAPRI peptide', 'xl_enrich', ['rna_capri_cov'], 'Among the arginines CAPRI measured (Panhale 2019)'], ['pCLAP peptide', 'xl_enrich', ['rna_pclap_cov'], 'Among the arginines pCLAP measured (Mullari 2017)'],
+      ['RBDmap peptide', 'xl_enrich', ['rna_rbdmap_cov'], 'Among the arginines RBDmap measured (Castello 2016)'], ['RBR-ID+ residue', 'xl_enrich', ['rna_rbrid_cov'], 'Among the arginines RBR-ID measured (Oksuz 2023)'],
+      ['DNA-crosslinked residue', 'xl_enrich', ['dna_cand'], 'A DNA-crosslinked residue or candidate (Trendel 2025)']]],
+    ['Protein contacts', [['Protein interface (PDB)', 'enrich_strata', ['protein', 'all'], 'At a protein interface in a PDB entry (PDBe-KB)'],
+      ['Predicted interface', 'pred_enrich', ['0.23', 'all'], 'At an AlphaFold-Multimer interface, pDockQ ≥ 0.23 (ProtVar)']]],
+  ];
+  const ixOvRows = (on) => IX_OV_TESTS.map(([group, tests]) => [group, tests.map(([label, g, path, what]) => ({ label, g, path, main: ixSelTest(g, path, on), mainName: what })).filter((r) => aOr(r.main))]);
   function ixOverviewHtml() {
     if (!IX) return '<div class="card wide ix-feature" id="ch-ix"><h3>Interactions and binding</h3><p class="note">Loading interaction data…</p></div>';
     if (IX.failed) return '';
@@ -13323,8 +13343,13 @@
       for (const s of R.sites) n[ixStatus(s)]++;
       sel = '<p class="ix-sel"><span class="sel-key"><i></i>Your ' + fmt(R.sites.length) + ' site' + (R.sites.length === 1 ? '' : 's') + '</span> <span class="ixs ixs-exp"><i></i>' + fmt(n.exp) + ' experimental</span> <span class="ixs ixs-pred"><i></i>' + fmt(n.pred) + ' predicted only</span> <span class="ixs ixs-none"><i></i>' + fmt(n.none) + ' none</span> <span class="muted small">Below: the whole dataset.</span></p>';
     }
-    return '<div class="card wide ix-feature" id="ch-ix"><div class="card-head"><div><h3>Interactions and binding</h3><p class="sub">What methylated arginines contact: proteins, RNA and DNA.</p></div>' +
-      '<div class="exp"><button type="button" class="btn" data-ixgo="">Explore interactions →</button></div></div>' + sel + checkSiteHtml('ov-check') + findingsList(pick) + '</div>';
+    // the tile's tests, drawn with their q, for the selection when it can be tested
+    const on = constraints().length > 0 && ixReady() && selTestable(), groups = ixReady() ? ixOvRows(on) : [];
+    const fig = groups.some(([, rows]) => rows.length) ? '<div class="ix-ov-fig"><div class="a-key a-key-line">' + aSigKey('') + '</div>' + aForest(groups) +
+      '<p class="note">' + uc1(TEST_WORDS.within()) + (on ? ', for your selection' : '') + '; in living cells, among the arginines each experiment measured. ' + TEST_WORDS.q('within each release analysis (crosslink, pdb_interface, predicted_interface), as the release statistics') + '.' + docLink('ix-nac') +
+      ' <button type="button" class="linkish" data-ixov-tsv>Download TSV</button></p></div>' : '';
+    return '<div class="card wide ix-feature" id="ch-ix"><div class="card-head"><div><h3>Interactions and binding</h3><p class="sub">What methylarginines contact: proteins, RNA and DNA.' + docLink('ix-status') + '</p></div>' +
+      '<div class="exp"><button type="button" class="btn" data-ixgo="">Explore interactions →</button></div></div>' + sel + fig + checkSiteHtml('ov-check') + findingsList(pick) + '</div>';
   }
   // One protein drawn as the contacts cartoon, to show what each kind of evidence looks like along a sequence.
   // Default: the protein of the current selection with most experimental-contact sites, else HNRNPA1.
@@ -13810,7 +13835,7 @@
   // number. CSS page-margin boxes (Chromium-based browsers) carry them; elsewhere a repeated fixed footer carries the
   // citation without page numbers. The text comes from the page itself, so a renamed or moved site prints correctly.
   const cssStr = (t) => '"' + String(t).replace(/["\\]/g, '\\$&').replace(/\n/g, ' ') + '"';
-  const reportCite = () => 'Please cite DeAngelo, Silverstein & Shechter, Cell Chem Biol 33:1404–1421 (2026), doi:' + PAPER.doi;
+  const reportCite = () => 'Please cite ' + PAPER.short + ', doi:' + PAPER.doi;
   function setPrintPageStyle(on, label) {
     let st = document.getElementById('report-page-style');
     if (!on) { if (st) st.remove(); return; }
@@ -14080,10 +14105,10 @@
     if (dom >= 0) add('dom', 'Structure', 'Inside an InterPro domain', (s) => s.dctx === dom, (f) => { f.domctx = new Set([dom]); });
     [[1, 'Rme1 called (any source, alone or with Rme2)'], [2, 'Rme2 called (any source, alone or with Rme1)']].forEach(([v, l]) => add('st' + v, 'Methylation', l, (s) => s.st === v || s.st === 3, (f) => { f.states.add(v); f.states.add(3); }));
     M.maron_ips.forEach((n, b) => add('ip' + b, 'Methylation', 'Recovered by the ' + n + ' IP (' + ipLabel(n) + ')', (s) => s.ip & (1 << b), (f) => { f.ips.add(b); }));
-    add('gsk', 'PRMT loss', 'Called decreased with GSK591 (PRMT5i)', (s) => s.trf & 1, (f) => { f.treat = '0:down'; });
-    add('ms', 'PRMT loss', 'Called decreased with MS023 (type I PRMTi)', (s) => s.trf & 4, (f) => { f.treat = '1:down'; });
-    if (koMeta()) add('ko', 'PRMT loss', 'Decreased in CARM1 knockout cells', (s) => s.trf & TRF_KO_DOWN, (f) => { f.treat = '2:down'; });
-    ptExtra().forEach((k) => { const d = M.perturbations[k]; add('pt' + k, 'PRMT loss', 'Called decreased with ' + d[1] + ' (' + ptRuleNote(d) + ')', (s) => ptCall(s, k) === 'decreased', (f) => { f.treat = 'p:' + d[0] + ':down'; }); });
+    add('gsk', 'PRMT perturbation', 'Called decreased with GSK591 (PRMT5i)', (s) => s.trf & 1, (f) => { f.treat = '0:down'; });
+    add('ms', 'PRMT perturbation', 'Called decreased with MS023 (type I PRMTi)', (s) => s.trf & 4, (f) => { f.treat = '1:down'; });
+    if (koMeta()) add('ko', 'PRMT perturbation', 'Decreased in CARM1 knockout cells', (s) => s.trf & TRF_KO_DOWN, (f) => { f.treat = '2:down'; });
+    ptExtra().forEach((k) => { const d = M.perturbations[k]; add('pt' + k, 'PRMT perturbation', 'Called decreased with ' + d[1] + ' (' + ptRuleNote(d) + ')', (s) => ptCall(s, k) === 'decreased', (f) => { f.treat = 'p:' + d[0] + ':down'; }); });
     add('nn5', 'Clustering', 'Another methyl-R within 5 aa', (s) => s.nn != null && s.nn <= 5, (f) => { f.nn = 5; });
     add('rep2', 'Provenance', 'Reported by ≥2 sources (studies or databases)', (s) => popcount(s.study) >= 2, (f) => { f.minRep = 2; });
     if (ixReady()) EV_SETS.forEach(([b, l]) => add('ev' + b, 'Interactions', l, (s) => (s.ev || 0) & b, (f) => { f.evAll |= b; f.evExact = false; }));
@@ -14719,6 +14744,12 @@
 
   // "Details" links: open a section here, or go to the Interactions tab first.
   function bindIxGo(el) {
+    const tsv = $('[data-ixov-tsv]', el);
+    if (tsv) tsv.addEventListener('click', () => {
+      const on = constraints().length > 0 && selTestable();
+      download('methylarginine_interaction_tests.tsv', '# ' + uc1(TEST_WORDS.within()) + (on ? '; your selection: ' + selectionText() : '') + '; q: Benjamini–Hochberg within each release analysis\n' +
+        'group\ttest\tanalysis\todds_ratio\tci_low\tci_high\tp\tq\n' + ixOvRows(on).flatMap(([group, rows]) => rows.map((r) => [group, r.label, IX_ANALYSIS[r.g] || r.g, r.main.or, r.main.lo, r.main.hi, r.main.p, r.main.q == null ? '' : r.main.q].join('\t'))).join('\n') + '\n');
+    });
     $$('[data-ixgo]', el).forEach((b) => b.addEventListener('click', () => {
       const k = b.dataset.ixgo;
       if (UI.view === 'interactions') { if (k) openIxSection(k); return; }
@@ -14770,7 +14801,7 @@
       const [a, b, c, d, l2, pv] = r;
       return '<tr class="row" tabindex="0" data-iface="' + chip + '"><td><b>' + esc(label) + '</b></td><td class="r num">' + fmt(a) + ' / ' + fmt(a + b) + ' (' + pctText(a, a + b || 1) + '%)</td><td class="r num">' + fmt(c) + ' / ' + fmt(c + d) + ' (' + pctText(c, c + d || 1) + '%)</td><td class="r num">' + fmtL2(l2) + '</td><td class="r num">' + fmtP(pv) + '</td></tr>';
     };
-    return '<p class="sub">Are methylated arginines at PDB interfaces more often than other arginines of the same proteins? Only residues resolved in structures count.</p>' + ixScope() +
+    return '<p class="sub">Are methylarginines at PDB interfaces more often than other arginines of the same proteins? Only residues resolved in structures count.</p>' + ixScope() +
       strataTable() +
       '<details class="dataset-ctx"><summary class="flabel">Pooled across proteins (not controlled; click a row to filter sites)</summary><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Arginines at an interface with</th><th class="r">Methylated R</th><th class="r">Other R</th><th class="r">log2 OR</th><th class="r">p</th></tr></thead><tbody>' +
       ifRow('rna', 'RNA', 4) + ifRow('dna', 'DNA', 8) + ifRow('protein', 'Protein (incl. another copy of itself)', '1,2') + '</tbody></table></div>' +
@@ -14870,10 +14901,10 @@
     };
     return '<div class="tbl-wrap"><table class="tbl compact strata-tbl"><thead><tr><th>Within-protein test (log2 OR, Mantel–Haenszel)</th><th class="r">All observed R</th><th class="r">Ordered regions only</th><th class="r">Inside domains only</th></tr></thead><tbody>' +
       [['rna', 'RNA'], ['dna', 'DNA'], ['protein', 'Protein']].map(([k, l]) => '<tr><td><b>' + l + '</b></td>' + cell(k, 'all') + cell(k, 'ordered') + cell(k, 'domain') + '</tr>').join('') +
-      '</tbody></table></div><p class="note">Each protein is its own stratum (Cochran–Mantel–Haenszel), so methylated arginines are only compared with other arginines of the same protein. "Ordered" excludes UniProt disordered regions (MobiDB-lite); "inside domains" keeps residues in UniProt domain, repeat or zinc-finger features. Values near 0 mean no difference; hover a cell for the counts.</p>';
+      '</tbody></table></div><p class="note">Each protein is its own stratum (Cochran–Mantel–Haenszel), so methylarginines are only compared with other arginines of the same protein. "Ordered" excludes UniProt disordered regions (MobiDB-lite); "inside domains" keeps residues in UniProt domain, repeat or zinc-finger features. Values near 0 mean no difference; hover a cell for the counts.</p>';
   }
 
-  // Where in an interface methylated arginines sit (Levy core/rim/support, nucleic-acid hydrogen bonds) and the
+  // Where in an interface methylarginines sit (Levy core/rim/support, nucleic-acid hydrogen bonds) and the
   // RG/RGG context comparison, from the export's residue-environment analysis.
   function geometryHtml() {
     const gs = IX.geoSummary || {};
@@ -14909,8 +14940,8 @@
       };
       html += '<h4 style="margin-top:1rem">RG/RGG context</h4>' + ixScope() + '<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>Arginine context</th><th class="r">Methylated sites</th><th class="r">Seen in a PDB structure</th><th class="r">RNA interface (log2 OR, Mantel–Haenszel)</th><th class="r">Any interface</th></tr></thead><tbody>' +
         ctxRow('segment', 'In an RG/RGG-rich segment') + ctxRow('dipeptide', 'RG dipeptide elsewhere') + ctxRow('other', 'Other arginines') + '</tbody></table></div>' +
-        '<p class="note">Within each context, methylated arginines are compared with the other arginines of the same context and protein. RG/RGG-rich segments: ≥ 3 RG dipeptides whose consecutive RG arginines are at most 12 residues apart.' +
-        (rg.segment.rna && rg.segment.rna.mh && rg.segment.rna.mh[0] == null ? ' Only ' + fmt((rg.segment.cover || [0, 0])[1]) + ' methylated arginines in RG/RGG-rich segments are resolved in any PDB structure, too few for a within-protein test: these low-complexity regions are rarely crystallised or modelled.' : '') + '</p>';
+        '<p class="note">Within each context, methylarginines are compared with the other arginines of the same context and protein. RG/RGG-rich segments: ≥ 3 RG dipeptides whose consecutive RG arginines are at most 12 residues apart.' +
+        (rg.segment.rna && rg.segment.rna.mh && rg.segment.rna.mh[0] == null ? ' Only ' + fmt((rg.segment.cover || [0, 0])[1]) + ' methylarginines in RG/RGG-rich segments are resolved in any PDB structure, too few for a within-protein test: these low-complexity regions are rarely crystallised or modelled.' : '') + '</p>';
     }
     if (IX.nModelled) html += '<p class="note"><button class="linkish" type="button" id="geo-modelled">' + fmt(IX.nModelled) + ' union sites are modelled as a methylated arginine in at least one PDB entry</button>; PDB entries model a further ' + fmt(Array.from(IX.modelledGaps.values()).reduce((n, g) => n + g.pos.length, 0)) + ' methylated positions that the union lacks (listed on each protein page).</p>';
     return html;
@@ -14953,7 +14984,7 @@
     const fP = F_ ? [F_.spectra.p, F_.datasets.p, F_.multi && F_.multi.mh ? F_.multi.mh[3] : null] : [], fQ = bhOf(fP.filter((x) => x != null));
     const fq = (i) => (fP[i] == null ? '—' : '<span title="p ' + fmtP(fP[i]) + '">q ' + fmtP(fQ[fP.slice(0, i).filter((x) => x != null).length]) + '</span>');
     return '<h4 style="margin-top:1rem">RNA and DNA crosslinking in living cells (crosslinking mass spectrometry)</h4>' +
-      '<p class="sub">Are methylated arginines crosslinked to RNA or DNA in cells at higher odds than the other arginines of the same proteins (within-protein odds ratio)?</p>' + ixScope() +
+      '<p class="sub">Are methylarginines crosslinked to RNA or DNA in cells at higher odds than the other arginines of the same proteins (within-protein odds ratio)?</p>' + ixScope() +
       '<div class="tbl-wrap"><table class="tbl compact strata-tbl"><thead><tr><th>Arginine is…</th><th class="r">OR within protein [95% CI]</th><th class="r">Methylated R</th><th class="r">Other R</th><th class="r hide-xs">Informative / proteins</th></tr></thead><tbody>' +
       row('rna_xl', 'An RNA-crosslinked residue', 1) + row('rna_xl_single', '… localised to this residue alone (single localisation)') + row('rna_xl_nonrg', '… excluding RG/GR dipeptides') + row('rna_near', 'RNA-crosslinked residue at i ± 1–3', 2) + row('rna_rbdmap', 'Inside an RBDmap RNA-bound fragment', 4) + row('rna_rbdmap_nonrg', '… excluding RG/GR dipeptides') + row('rna_rbdmap_cov', '… inside an RBDpep peptide, only arginines inside a peptide RBDmap quantified (detection control)') +
       row('rna_capri_adj', 'Inside a CAPRI RNA-bound peptide next to a crosslink (ADJ)', 128) + row('rna_capri_adj_nonrg', '… excluding RG/GR dipeptides') + row('rna_capri_cov', '… only arginines inside a peptide CAPRI measured (detection control)') + row('rna_capri_xl', 'Inside a CAPRI RNA-crosslinked peptide (XL)', 64) +
@@ -15126,7 +15157,7 @@
         if (!e) continue;
         const tables = selTestTables(e, sel, prots), m = mhTest(tables);
         const [a, b, c, d] = [0, 1, 2, 3].map((k) => tables.reduce((n, t) => n + t[k], 0));
-        // or: the estimate when finite and positive; edge: 1 when no stratum has methylated arginines without the contact
+        // or: the estimate when finite and positive; edge: 1 when no stratum has methylarginines without the contact
         // (an unbounded odds ratio), -1 when none has them with it (zero)
         const ok = m.or != null && Number.isFinite(m.or) && m.or > 0, edge = m.or === Infinity ? 1 : m.or === 0 ? -1 : 0;
         rows.push({ group, label, full: full || label, key: g + ':' + path.join('/'), a, b, c, d, or: ok ? m.or : null, edge, lo: ok ? m.lo : null, hi: ok ? m.hi : null, p: m.p, used: m.used, proteins: tables.filter((t) => t[0] + t[1] > 0).length });
@@ -15220,7 +15251,7 @@
       ixScope() +
       '<p class="nac-read">' + (sig.length ? (up.length ? 'More often than the other arginines of the same proteins: <b>' + esc(up.slice(0, 3).join('; ')) + '</b>' + (up.length > 3 ? ' and ' + (up.length - 3) + ' more kinds below' : '') + '. ' : '') + (down.length ? 'Less often: <b>' + esc(down.slice(0, 3).join('; ')) + '</b>' + (down.length > 3 ? ' and ' + (down.length - 3) + ' more below' : '') + '.' : '') : 'No kind of contact differs between methylated and other arginines of the same proteins at q ≤ ' + PADJ + '.') + '</p>' +
       '<div class="nac-fig">' + nacForestSvg(rows, ref, screenPalette()).svg + '</div>' +
-      '<p class="note">An odds ratio above 1: the methylated arginines of a protein carry that contact more often than its other arginines. Each test counts only proteins with that kind of evidence (crosslinks, structures with RNA or DNA, a binding region), and arginines resolved there; "proteins" gives the informative strata (both kinds of arginine, both outcomes) of those with such a methylarginine. q: Benjamini–Hochberg within each test\'s analysis in the release statistics, as the release adjusts it. ' +
+      '<p class="note">An odds ratio above 1: the methylarginines of a protein carry that contact more often than its other arginines. Each test counts only proteins with that kind of evidence (crosslinks, structures with RNA or DNA, a binding region), and arginines resolved there; "proteins" gives the informative strata (both kinds of arginine, both outcomes) of those with such a methylarginine. q: Benjamini–Hochberg within each test\'s analysis in the release statistics, as the release adjusts it. ' +
       'Structures are mostly of unmethylated, recombinant protein without its disordered regions; crosslinking finds unmodified crosslinked peptides, so a fully methylated site can look depleted. Absence of evidence is not absence of contact.</p></div>';
   }
   function bindNac(root) {
@@ -16795,7 +16826,7 @@
         sub('tables', 'Tables, columns and the site card', '<p>The Proteins, Sites and protein-page tables show their core columns and a <b>Columns</b> menu for the rest (context, next methyl-R, Maron IP, AlphaFold, nearest domain …); the choice is remembered in this browser. On a phone each row becomes a labelled card. ' +
           'Clicking a site, or opening a link with a site in the search (<code>FUS R216</code>), opens the <b>site card</b> under the protein map: its interaction status and evidence with partners, what is known about the whole protein (labelled as such), sequence context, inhibitor response, AlphaFold confidence and reports.</p>') +
         sub('arg-enrich', 'Arginine enrichment of a protein', '<p>Shown on protein pages and in the Proteins table (script 08). For a protein with <i>a</i> methylarginine sites among <i>n</i> arginines of its canonical sequence, and the proteome-wide rate <i>r</i> (all union sites over all arginines of the canonical human sequences), the value is log2 of (<i>a</i> + 200<i>r</i>) / (<i>n</i> + 200) over <i>r</i>: a beta-binomial shrinkage estimate with a prior weight equivalent to 200 arginines, which shrinks the estimates for proteins with few arginines toward the proteome rate. The q-value is a two-sided Fisher\'s exact test of the protein\'s methylated and other arginines against those of all other proteins, Benjamini–Hochberg across the methylated proteins. Proteins with fewer than 2 sites or 10 arginines are not tested. The filter <i>Arginines methylated more than the proteome rate</i> keeps proteins with q ≤ 0.05 and a positive estimate.</p>')],
-      ['overview', 'Overview charts', (FOLD() ? setTestDocHtml() + '<p>Residue charts (motifs, disorder, domains, structural context) compare methylated arginines with the other arginines of the same proteins, and bars show log2 odds ratios; bars below zero can be significant. By default each bar is the Mantel–Haenszel odds ratio with each protein a stratum (continuity-corrected Cochran–Mantel–Haenszel test), which asks whether a protein\'s methylarginines fall in the class more often than its own other arginines. The <b>pooled</b> switch above the charts shows the odds ratio over all arginines of the methylated proteins instead (two-sided Fisher exact test, 0.5 added to each cell), which also reflects which proteins are methylated. ' : '<p>Bars show log2 odds ratios; ') + 'Filled bars have a Benjamini–Hochberg q ≤ 0.05, outlined bars do not. Without a selection the bars describe the whole dataset, and clicking a bar starts a selection. With a search or filter set, each chart is the same test run on the selection, with a tick at the whole dataset\'s value (Tests on a selection, below); a click on a bar narrows the selection, and the Enriched features row lists the site features over-represented in it. Exported charts and their TSV files carry the same counts.</p>' +
+      ['overview', 'Overview charts', (FOLD() ? setTestDocHtml() + '<p>Residue charts (motifs, disorder, domains, structural context) compare methylarginines with the other arginines of the same proteins, and bars show log2 odds ratios; bars below zero can be significant. By default each bar is the Mantel–Haenszel odds ratio with each protein a stratum (continuity-corrected Cochran–Mantel–Haenszel test), which asks whether a protein\'s methylarginines fall in the class more often than its own other arginines. The <b>pooled</b> switch above the charts shows the odds ratio over all arginines of the methylated proteins instead (two-sided Fisher exact test, 0.5 added to each cell), which also reflects which proteins are methylated. ' : '<p>Bars show log2 odds ratios; ') + 'Filled bars have a Benjamini–Hochberg q ≤ 0.05, outlined bars do not. Without a selection the bars describe the whole dataset, and clicking a bar starts a selection. With a search or filter set, each chart is the same test run on the selection, with a tick at the whole dataset\'s value (Tests on a selection, below); a click on a bar narrows the selection, and the Enriched features row lists the site features over-represented in it. Exported charts and their TSV files carry the same counts.</p>' +
         sub('ov-ontology', 'Protein classes', (pantherMeta() ? '<p><b>Protein classes (PANTHER ' + esc(pantherMeta().version) + ').</b> PANTHER gives each protein it classifies one top-level protein class (24 in all), and the overview groups these into ' + pantherMeta().groups.filter((g) => g !== pantherMeta().unclassified).length + ' (config/panther_class_groups.json). With the proteins PANTHER leaves unclassified, the groups partition the ' + fmt(pantherMeta().universe) + ' reviewed human proteins (' + esc(referenceLabel()) + '), so their counts add up to it. ' + (FOLD() ? 'Each row tests whether methylated proteins are over-represented in the class against all reviewed proteins (clusterProfiler enricher, as above; q within the groups, the classes or the subclasses).' : 'Each row compares methylated proteins with the other reviewed proteins (two-sided Fisher test; odds ratio with 0.5 added to each cell; Benjamini-Hochberg q within the groups, the classes or the subclasses).') + ' <i>Show the PANTHER classes</i> lists the top-level classes of each group; <i>Show the subclasses</i> lists every class below them with at least 10 proteins. A protein counts in every class above its own, so subclasses overlap. Search <code>panther:</code> for any of them. The release gives each protein\'s group, class, most specific classes and family (scripts/03b).</p>' : '') +
           '<p><b>Functional ontology (DeAngelo et al., 2026).</b> The keyword classes represented in DeAngelo et al., 2026 (config/functional_ontology.json, scripts/03), assigned from UniProt names, keywords and domains; a protein can belong to several, so these classes overlap and do not add up. The overview charts the PANTHER classes instead; the keyword classes stay as a filter (<code>class:</code>, <code>subclass:</code>), on protein pages, as an optional column of the Proteins table and in the release statistics (analyses functional_class and functional_subclass). ' + (FOLD() ? 'Each class is tested for over-representation of methylated proteins against all reviewed human proteins (clusterProfiler enricher, BH).' : 'Each class is compared between methylated proteins and the other reviewed human proteins (Fisher, BH).') + '</p>') +
         sub('ov-disease', doMeta() ? 'Disease' : 'Disease families', diseaseDocHtml()) +
@@ -16803,15 +16834,15 @@
           '<b>Protein sets</b> (protein and functional classes, disease families and Disease Ontology terms, condensates, subcellular locations, Gene Ontology RNA and DNA binding, complexes): the selected proteins, or their genes, take the place of all methylated proteins in the same one-sided hypergeometric test against the same background, with fold enrichment and Benjamini–Hochberg over the same family of tests (every tested Disease Ontology term; the audited and the additional disease families apart). ' +
           '<b>Residues</b> (motifs, disorder, domains, structural context, interfaces, crosslinks, distances to RNA and DNA): the selected methylarginines against the other arginines of their proteins, from per-protein counts (supporting/arginine_background, and selection_tests in the interaction data); the methylarginines not selected are left out of both sides. Pooled tests use Fisher\'s exact test with the Haldane–Anscombe odds ratio, within-protein tests the Mantel–Haenszel odds ratio with each protein a stratum. ' +
           'With every site selected, these give back the whole dataset\'s statistics. Parts that are not retested say <i>Whole dataset</i>: the DisGeNET term list (the site data hold the genes of the enriched terms only), the key findings, the interface geometry measured on sampled control arginines, the tests by methylation class and the crosslink frequencies. A selection made by a feature also tests that feature: sites chosen by the RGG motif are all RGG sites, so their RGG odds ratio says nothing new.</p>') +
-        sub('ov-motifs', 'Sequence motifs', '<p>Motifs are scored in the window i ± 7 on the canonical sequence and compared between methylated arginines and the other arginines of the same proteins: ' + M.motifs.map((m) => esc(MOTIF_LABEL[m]) + ' (' + esc(MOTIF_HELP[m]) + ')').join('; ') + '.</p>') +
+        sub('ov-motifs', 'Sequence motifs', '<p>Motifs are scored in the window i ± 7 on the canonical sequence and compared between methylarginines and the other arginines of the same proteins: ' + M.motifs.map((m) => esc(MOTIF_LABEL[m]) + ' (' + esc(MOTIF_HELP[m]) + ')').join('; ') + '.</p>') +
         sub('ov-condensates', 'Condensates', '<p>CD-CODE condensates with at least five counted members; ' + (FOLD() ? 'the bar is the log2 fold enrichment of methylated members (clusterProfiler enricher, BH; condensates with a methylated member are tested)' : 'the bar is the log2 odds ratio of methylated members against the other proteins in any human CD-CODE condensate (Fisher, BH)') + ', and the numbers are methylated / members. ' +
           (M.condensates.some((c) => c[7] != null) ? 'Two backgrounds answer two questions. <b>vs proteome</b> (the default) tests the members against every reviewed human protein: is the fraction of methylated members higher than in the reviewed proteome? <b>vs other condensates</b> tests them against the proteins in any human CD-CODE condensate: is that fraction higher than among all condensate proteins? ' + condBgShares() + ' so nearly every large condensate is enriched relative to the proteome (Cajal bodies, transcriptional condensates, stress granules, P-bodies), while few are enriched relative to other condensates; both tests are in the release (statistics, analyses condensate_proteome and condensate). The list is ordered by q, as fold enrichment cannot exceed the value where every member is methylated, which small condensates reach by chance; “by fold” orders it by the bar. ' : '') + ' "Count members" sets which memberships count: all of them, from the CD-CODE export of 2026-03-18 (scripts/12), or only those with CD-CODE confidence ≥ 2, 3 or 4 of 5, read from the CD-CODE ' + esc((IX && IX.meta && IX.meta.cdcode_version) || '') + ' API (scripts/37; reviewed proteins, tested against the same two backgrounds), so condensates whose membership derives from a single proteomics screen do not dominate the ranking. The default is ≥ 3. ' + condHistNote() + '</p>') +
         (hpaMeta() ? sub('ov-location', 'Subcellular location', '<p>Human Protein Atlas' + (hpaMeta().version ? ' ' + esc(hpaMeta().version) : '') + ' subcellular locations (' + doiLink('10.1126/science.aal3321', 'Thul et al. 2017') + '; CC BY 4.0), mapped to canonical UniProt entries with HPA\'s own Ensembl–UniProt table (scripts/42). Each location carries HPA\'s reliability (Enhanced, Supported, Approved or Uncertain); searches (<code>location:</code>), the filter and the test count Approved or better. The Human Protein Atlas is one of the six maps of <i>Where in the cell</i>, which tests each of its locations: ' + (FOLD() ? 'the log2 fold enrichment of methylated proteins against all ' + fmt(hpaMeta().universe) + ' HPA-profiled proteins (' + fmt(hpaMeta().methylated) + ' methylated proteins profiled; clusterProfiler enricher, Benjamini–Hochberg q)' : 'the log2 odds ratio of methylated against the other ' + fmt(hpaMeta().universe - hpaMeta().methylated) + ' HPA-profiled proteins (' + fmt(hpaMeta().methylated) + ' methylated proteins profiled; Fisher test, Benjamini–Hochberg q)') + ', and the odds ratio within PaxDb abundance deciles; choose <i>Human Protein Atlas</i> among its maps to see each location that holds 20 or more proteins. The Overview no longer has a separate card for these locations; its numbers were the same. Protein pages list the locations, main ones first, beside the CD-CODE condensates.</p>') : '') +
-        sub('ov-structure', 'Structural context', '<p>Disorder (MobiDB) and domains (InterPro domains and repeats) in one class per arginine, from inside a folded domain to deep in a disordered region: ' + STRUCT_CODES.filter((k) => k !== 'no_disorder_annotation').map((k) => esc(STRUCT_LABEL[k]) + ' = ' + esc(lc1(STRUCT_HELP[k]))).join('; ') + '. Two estimates compare methylarginines with the other arginines of the methylated proteins. <b>Within protein</b> (the default): the Mantel–Haenszel common odds ratio with each protein a stratum, with its Robins–Breslow–Greenland 95% confidence interval and the continuity-corrected Cochran–Mantel–Haenszel test; it asks whether, within a protein, the methylated arginines lie in a class more often than its other arginines. <b>Pooled</b>: the odds ratio over all arginines together (two-sided Fisher exact test), which also reflects which proteins are methylated, since proteins rich in disordered regions contribute more of both. q is Benjamini–Hochberg across the classes; both estimates are in the release statistics (analysis structure_context, methods mantel_haenszel and fisher), and the site table gives each site\'s class (column structure_context). The card replaces the separate disorder and domain charts, whose boundary classes are defined relative to different features (a disordered-region boundary, a domain boundary); both remain available in the card, under “Show the disorder and domain classes separately”, and in the filters.</p>') +
+        sub('ov-structure', 'Structural context', '<p>Disorder (MobiDB) and domains (InterPro domains and repeats) in one class per arginine, from inside a folded domain to deep in a disordered region: ' + STRUCT_CODES.filter((k) => k !== 'no_disorder_annotation').map((k) => esc(STRUCT_LABEL[k]) + ' = ' + esc(lc1(STRUCT_HELP[k]))).join('; ') + '. Two estimates compare methylarginines with the other arginines of the methylated proteins. <b>Within protein</b> (the default): the Mantel–Haenszel common odds ratio with each protein a stratum, with its Robins–Breslow–Greenland 95% confidence interval and the continuity-corrected Cochran–Mantel–Haenszel test; it asks whether, within a protein, the methylarginines lie in a class more often than its other arginines. <b>Pooled</b>: the odds ratio over all arginines together (two-sided Fisher exact test), which also reflects which proteins are methylated, since proteins rich in disordered regions contribute more of both. q is Benjamini–Hochberg across the classes; both estimates are in the release statistics (analysis structure_context, methods mantel_haenszel and fisher), and the site table gives each site\'s class (column structure_context). The card replaces the separate disorder and domain charts, whose boundary classes are defined relative to different features (a disordered-region boundary, a domain boundary); both remain available in the card, under “Show the disorder and domain classes separately”, and in the filters.</p>') +
         sub('ov-disorder', 'Disorder context', '<p>MobiDB disorder intervals: ' + Object.keys(DISORDER_LABEL).map((k) => esc(DISORDER_LABEL[k]) + ' = ' + esc(lc1(DISORDER_HELP[k] || ''))).join('; ') + '. Each class compares the fraction of methylarginines in it with the fraction of the other arginines of the same proteins (two-sided Fisher exact test, BH). Only sites on proteins of the reviewed reference sequences are tested, as only they contribute other arginines. The "no disorder annotation" class is tested but not drawn. The Structural context card combines these classes with the domain classes.</p>') +
         sub('ov-domains', 'Domains', '<p>Position relative to InterPro domains and repeats: ' + Object.keys(DOMAIN_LABEL).map((k) => esc(DOMAIN_LABEL[k]) + ' = ' + esc(lc1(DOMAIN_HELP[k]))).join('; ') + '. The nearest-domain class comes from the lab domain-class ontology (config/domain_class_ontology.json). As for disorder, only sites on proteins of the reviewed reference sequences are tested, against the other arginines of the same proteins.</p>') +
         sub('ov-provenance', 'Provenance', '<p>' + (localisedOnly() ? 'Sites reported by each study and database, each taken from its own tables (its localised records), by ProMetheusDB, and by PhosphoSitePlus (downloaded 22 May 2021, compiled in Maron et al. 2021 Table S5; accepted as curated). The other rows of Table S5 are superseded by each study\'s own table' : 'Sites reported by each study compiled in Maron et al. 2021 Table S5, by ProMetheusDB and by curated UniProt/IEDB records' + (addedStudies().length ? ', and by the studies added in v1.2.0 (' + esc(addedStudies().join(', ')) + '), each read from its own supplementary table' : '')) + '; the column gives the sites reported only there. A report is one study or database.' + (addedStudies().includes('Ma 2023') ? ' Ma et al. 2023 measured breast cancer xenografts grown in mice: a site only they report is marked on its site summary, since where the human and mouse sequences agree the peptide can come from the mouse stroma.' : '') + '</p>') +
-        sub('ov-inhibitors', 'PRMT inhibitor and knockout response', '<p>Maron et al. 2021 Table S3: methyl-peptides from each methyl-IP after GSK591 (PRMT5 inhibitor) or MS023 (type I PRMT inhibitor), compared with DMSO, with the authors\' log2 differences and adjusted p values. One rule turns peptides into a call for each methylarginine they carry, the same in the release, the analyses and this page (scripts/peptide_calls.py): a site is <i>decreased</i> when at least one peptide carrying it decreased at adjusted p ≤ 0.05 and none increased, <i>increased</i> likewise, <i>mixed</i> when peptides changed in opposite directions, and <i>no significant change</i> when none changed, which is not evidence that it is unchanged. The median change over the peptides is descriptive only and decides nothing.</p>' +
+        sub('ov-inhibitors', 'PRMT inhibitors, knockouts and knockdowns', '<p>Maron et al. 2021 Table S3: methyl-peptides from each methyl-IP after GSK591 (PRMT5 inhibitor) or MS023 (type I PRMT inhibitor), compared with DMSO, with the authors\' log2 differences and adjusted p values. One rule turns peptides into a call for each methylarginine they carry, the same in the release, the analyses and this page (scripts/peptide_calls.py): a site is <i>decreased</i> when at least one peptide carrying it decreased at adjusted p ≤ 0.05 and none increased, <i>increased</i> likewise, <i>mixed</i> when peptides changed in opposite directions, and <i>no significant change</i> when none changed, which is not evidence that it is unchanged. The median change over the peptides is descriptive only and decides nothing.</p>' +
           '<p><b>What a call can and cannot say.</b> The measurements are of peptides, not of sites: a peptide carrying several methylarginines changes for any of them, so each site also gets the call from its single-site peptides alone (empty when every peptide carries another methylarginine), the only evidence that speaks for that arginine. Maron et al. imputed missing intensities with a constant low value (Table S3 columns <code>imputed</code> and <code>num_NAs</code>; 3,003 of its 3,583 rows hold imputed values): a peptide detected in one condition only then has a large difference and a small p that reflect the imputation, and reads as detected with DMSO but not with the inhibitor (or the reverse). Those peptides are counted per site. Neither study\'s tables carry a matched total-protein measurement, and none is applied, so a change can follow the protein\'s abundance rather than its methylation; the responses do not measure occupancy or show a direct substrate.</p>' +
           (koMeta() ? '<p>CARM1 knockout: ' + doiLink(koMeta().doi, 'Shishkova et al. 2017') + ' (Nat Commun 8:15571), Supplementary Data 1, ADMA-enriched peptides quantified in parental and CARM1 knockout ' + esc(koMeta().cell_lines.join(' and ')) + ' cells. Each peptide is placed on the canonical sequence only where it occurs exactly once (scripts/41); a peptide changes at ' + esc(koMeta().rule.replace(/^peptide /, '')) + ', and the site\'s call follows the same rule as above. ' + fmt(koMeta().union_sites) + ' union sites were measured, ' + fmt(koMeta().union_sites_down) + ' of them with a peptide that decreased; ' + fmt(koMeta().not_in_union) + ' sites of the paper are not in the union and are not added. The site card suggests CARM1 as a writer of a site with a decreased peptide in knockout cells: indirect evidence, as above.</p>' : ''))],
       ['figures', 'Figures and alignments', '<p>Every exported figure (SVG or PNG, including 3D snapshots and the interaction network) ends with a credit line naming this site, its address and ' + esc(PAPER.short) + '. Printed protein pages carry the same.</p>' +
@@ -16912,9 +16943,9 @@
       '<li><b>Protein partners</b>: STRING v12.5 physical subnetwork (CC BY 4.0). High-confidence links (score ≥ 0.7) are part of the exported data and drive the filters and overview; protein pages fetch medium-confidence links (≥ 0.4) and the links among a protein\'s partners live from the STRING API. Partners are coloured by their own methylation in this set. PRMTs and proteins with a Tudor domain (InterPro IPR002999), WD40 repeats (IPR001680) or a PHD finger (IPR001965, IPR019787) are marked, from UniProt InterPro cross-references of reviewed human entries; "any other protein" in the filters means a partner in none of these classes. Tudor domains include the methylarginine readers SMN1, SMNDC1, TDRD3 and SND1; WD40 repeats include WDR77 (MEP50), the PRMT5 cofactor, and WDR5; many PHD fingers read the histone H3 N-terminus.</li>' +
       '<li><b>Complexes</b>: Complex Portal curated complexes and hu.MAP 3.0 predicted complexes (CC0). Enrichment of methylated members is a one-sided hypergeometric test against the reviewed human proteome, BH-adjusted separately for curated and predicted complexes. Members are counted once per protein (two processed chains of one precursor are one member); a member slot that Complex Portal fills with interchangeable proteins (e.g. the three calmodulins) counts each of them, and the member list shows each methylated one.</li>' +
       '<li><b>RNA and DNA binding</b>: Gene Ontology GO:0003723 and GO:0003677 including child terms (QuickGO/GOA, CC BY 4.0); experimental evidence means EXP, IDA, IPI, IMP, IGI, IEP or their high-throughput equivalents. Protein pages add live ENCODE eCLIP and TF ChIP-seq experiments and ChIP-Atlas target genes (CC BY 4.0).</li>' +
-      '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two entries with the highest PDB IDs (roughly the most recent) per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were extracted from the atomic coordinates (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylated arginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
+      '<li><b>Interfaces</b>: PDBe-KB lists every residue that contacts another protein, RNA or DNA in at least one PDB structure, in UniProt numbering. Sites carry these flags. For the two entries with the highest PDB IDs (roughly the most recent) per site and partner type, the residues within 4 Å of the arginine side chain (NE, CZ, NH1, NH2, CD) were extracted from the atomic coordinates (RCSB ModelServer, SIFTS SEQRES mapping), and partner residues are given in UniProt numbering. The overview compares methylarginines with the other structurally observed arginines of the same protein (Cochran–Mantel–Haenszel, each protein a stratum), also restricted to ordered regions (outside UniProt/MobiDB-lite disordered regions) and to residues inside UniProt domains. In the 3D view, nucleic acids are coloured and methylarginine side chains within 4 Å of RNA, DNA or another chain are listed.</li>' +
       '<li><b>RNA and DNA contact in living cells</b>: UV crosslinking mass spectrometry locates the residue crosslinked to RNA or DNA. RNA-crosslinked residues come from the pepR-MS supplement (Sha, Kuster & Trendel 2025), which re-analyses Kramer 2014, XRNAX 2019, RBS-ID 2020 and pRBS-ID 2021 alongside pepR-MS with one pipeline; RBDmap adds RNA-bound fragments (Castello et al. 2016, HeLa), and CAPRI RNA-bound peptides (Panhale et al. 2019, HEK293): XL-peptides identified with an RNA adduct, and ADJ-peptides, the Lys-C peptides released next to a crosslink; and pCLAP RNA-binding peptides (Mullari et al. 2017, HEK293), which scripts/43d derives from the deposited MaxQuant search with the authors\' rule (UV-crosslinked against non-crosslinked samples, ≥ 3 of 4 valid values, two-sided t-test with s0 0.1 and a 5% permutation FDR), each with the Lys-C peptide around it, the authors\' RNA-binding region. pCLAP also records every peptide it measured, so one test counts only arginines inside a measured peptide: whether a stretch is detected at all explains much of the enrichment of methylarginines inside RNA-binding peptides. RBR-ID (Oksuz et al. 2023, K562 nuclei; method of He et al. 2016) labels RNA with 4-thiouridine and crosslinks it with 312 nm UV: a peptide crosslinked to RNA changes mass, so its unmodified signal drops. scripts/43c re-scores the deposited DIA-NN report; a residue counts as RBR-ID+ when an RBR-ID+ peptide covers it: one lower with crosslinked RNA across the five biological samples per condition (each run fitted for its sample and acquisition date, Student\'s t, Benjamini–Hochberg q < 0.05). The published rule, which counts every run as a replicate at unadjusted p < 0.05, calls about three times as many peptides; it is kept as a sensitivity test, and the map shades it by its residue score. RBR-ID also records what it measured, so it gets the same detection control. CAPRI\'s, pCLAP\'s and RBR-ID\'s searches, like pepR-MS\'s, did not allow methylarginine, so a peptide with a methylarginine was identified only from its unmethylated molecules; its spans are used, not its adduct localisation scores, which place the base and the rest of the nucleotide on different residues. DNA-crosslinked peptides with localised residues and the DNA interactome come from Trendel et al. 2025 (MCF7); UniProt adds curated DNA-binding regions. Every position was checked against the canonical sequence' + (IX && IX.meta && IX.meta.xl_check ? ' (' + fmt(IX.meta.xl_check.matched) + ' matched, ' + fmt(IX.meta.xl_check.dropped) + ' dropped)' : '') + '. Sites are flagged at a crosslinked residue, within 3 residues, or inside a fragment, peptide or region, and the overview compares them with the other arginines of the same proteins, also without RG/GR dipeptides. A table above it asks the protein-level question: are methylated proteins over-represented among the proteins each experiment found bound, compared with every protein that experiment measured (the reviewed proteome where a study gives no measured list)?</li>' +
-      '<li><b>IntAct</b>: curated features of interaction participants (' + doiLink('10.1093/nar/gkab1006', 'del Toro et al. 2022') + '; CC BY 4.0), exported by scripts/37 when their curated sequence matches the canonical UniProt sequence at their range: mutations and their effect on an interaction (disrupts, decreases, increases, causes, no effect), regions mapped as sufficient, necessary, binding-associated or direct-interaction regions for a partner, and methylated arginines of participants. At a site, a mutation of up to 3 residues that changed an interaction, a binding region of up to ' + ((IX && IX.ia && IX.ia.peptide_max) || 20) + ' residues and a methylated-residue record are listed as IntAct evidence and can be filtered on; they do not set the site\'s interaction status. Longer regions appear only on the protein map. The IntAct map row (and its lane in the cartoon and comparison) is off until switched on in the Rows menu. The Interactions tab tests methylated against other arginines of the same proteins.</li>' +
+      '<li><b>IntAct</b>: curated features of interaction participants (' + doiLink('10.1093/nar/gkab1006', 'del Toro et al. 2022') + '; CC BY 4.0), exported by scripts/37 when their curated sequence matches the canonical UniProt sequence at their range: mutations and their effect on an interaction (disrupts, decreases, increases, causes, no effect), regions mapped as sufficient, necessary, binding-associated or direct-interaction regions for a partner, and methylarginines of participants. At a site, a mutation of up to 3 residues that changed an interaction, a binding region of up to ' + ((IX && IX.ia && IX.ia.peptide_max) || 20) + ' residues and a methylated-residue record are listed as IntAct evidence and can be filtered on; they do not set the site\'s interaction status. Longer regions appear only on the protein map. The IntAct map row (and its lane in the cartoon and comparison) is off until switched on in the Rows menu. The Interactions tab tests methylated against other arginines of the same proteins.</li>' +
       '<li><b>Interactive network</b>: on a protein page the partner network is drawn with Cytoscape.js (' + doiLink('10.1093/bioinformatics/btv557', 'Franz et al. 2016') + '): drag nodes, zoom with the + and − buttons, lay it out again or reset it; hover a node for its details and click it to open the protein. SVG, PNG and Cytoscape exports keep the arrangement on screen; print and the Figures tab use the drawn layout.</li>' +
       '<li><b>STRING network options</b>: on a protein page, the network can be physical or functional (all associations), scored on chosen evidence channels (STRING\'s own rule: remove the 0.041 prior from each channel score, combine, add the prior back), limited to methylated partners, PRMTs and proteins with Tudor, WD40 or PHD domains, or RNA/DNA binders, labelled and sized as needed, extended with pinned genes, and opened on string-db.org with the same settings. Options are remembered in this browser.</li>' +
       '<li><b>Writer and reader paths</b>: the protein network can add a second ring of PRMTs and Tudor-domain proteins that bind its partners (STRING ≥ 0.7).</li>' +
@@ -16996,7 +17027,11 @@
     openFoldOf(t);
     const own = t.querySelector(':scope > details.fold');
     if (own) own.open = true;
-    t.scrollIntoView({ block: 'start' });
+    // the route resets the scroll after rendering: scroll again once the page has settled
+    const to = () => t.scrollIntoView({ block: 'start' });
+    to();
+    requestAnimationFrame(() => requestAnimationFrame(to));
+    setTimeout(() => { if (Math.abs(t.getBoundingClientRect().top) > 80) to(); }, 250);
     t.classList.add('flash');
     setTimeout(() => t.classList.remove('flash'), 1600);
   }
@@ -17607,10 +17642,18 @@
 
   const cell = (v) => String(v == null ? '' : v).replace(/[\t\n\r]+/g, ' ');
 
+  // Every download is named one way: methylarginines_<what>[_selection]_<date>.<ext>
+  function fileName(name) {
+    const m = /^(.*?)(\.[A-Za-z0-9]+)?$/.exec(String(name));
+    let base = m[1].replace(/^methylarginine_/, 'methylarginines_');
+    if (!/^methylarginines_/.test(base)) base = 'methylarginines_' + base;
+    if (!/_\d{4}-\d{2}-\d{2}(?:_|$)/.test(base)) base += (constraints().length && !/_selection(?:_|$)/.test(base) ? '_selection' : '') + '_' + new Date().toISOString().slice(0, 10);
+    return base + (m[2] || '');
+  }
   function downloadBlob(name, blob) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = name;
+    a.href = url; a.download = fileName(name);
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 4000);
   }
