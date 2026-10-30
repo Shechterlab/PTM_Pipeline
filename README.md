@@ -55,6 +55,7 @@ dictionary and a record of what changed since the release before.
 | [`envs/`](envs/) | the conda environment, and the resolved Python packages of the latest build |
 | [`ROADMAP.md`](ROADMAP.md) | what is planned after the current release |
 | [`ADDING_A_SOURCE.md`](ADDING_A_SOURCE.md) | how to add a data source: staging, registering a layer (`scripts/release_layers.py`), the website, checks |
+| [`GENERALIZING.md`](GENERALIZING.md) | what ties the code to methylarginine, and the plan for a codebase that serves other modifications |
 
 ## Data staging
 
