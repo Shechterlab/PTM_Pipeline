@@ -850,6 +850,37 @@ CELL = Layer(
     changes=cell_maps.changes,
 )
 
+# ---- Provenance of the interaction records (scripts/interaction_sources.py) --------------------------------------------
+
+import interaction_sources  # noqa: E402
+
+SOURCES = Layer(
+    key='interaction_sources', title='Provenance of the interaction records', folder='interactions',
+    files=interaction_sources.FILES + [f'intact_{n}_human_{interaction_sources.INTACT_FEATURES}.tsv' for n in ('methylarginines', 'mutations')],
+    staging=['scripts/53_stage_interaction_sources.py', 'scripts/37a_stage_interactions.py'],
+    licence='PDB data CC0 1.0 (RCSB Data API and ModelServer); IntAct CC BY 4.0; PSI-MI and PSI-MOD (OLS) CC BY 4.0; PubMed citation data '
+            'under the NLM Terms and Conditions (courtesy of the U.S. National Library of Medicine)',
+    citation='Burley et al., Nucleic Acids Res 51:D488 (2023); Sehnal et al., Nucleic Acids Res 49:W431 (2021); del Toro et al., Nucleic '
+             'Acids Res 50:D648 (2022); Montecchi-Palazzi et al., Nat Biotechnol 26:864 (2008); McLaughlin et al., Nucleic Acids Res 53:D1318 '
+             '(2025); Sayers et al., Nucleic Acids Res 53:D20 (2025), doi:10.1093/nar/gkae979',
+    site_columns=interaction_sources.SITE_COLUMNS, topic='5B21B6',
+    codes={'interaction_class': interaction_sources.CLASSES, 'record_partner': interaction_sources.PARTNER_KINDS,
+           'site_state': interaction_sources.STATES, 'record_flag': interaction_sources.FLAGS},
+    elsewhere='its table and site columns are filled by scripts/build_release.py from supporting/site_interactions',
+    supporting_rows={'site_interaction_records': 'interaction record at a site: its PDB entry, IntAct interaction, study or model, method, '
+                                                 'species, paper, the state of the site in the experiment and what the record shows'},
+    website=interaction_sources.website, since='v1.4.3',
+    summary='Where every interaction record at a site comes from, and what it shows there. Each PDB row of '
+            '`supporting/site_interactions` is split into its entries and each IntAct row into its interactions; the crosslinks and '
+            'predicted models keep one row each. Every record gets its method, the species of both proteins, its paper, the state of the '
+            'site in that experiment (the residue a structure models; the methylarginine IntAct curates there; a mutation) and the other '
+            'marks of the protein, a class (writes, removes, binds methylated, binds unmodified, a mutation changing the binding, a binding '
+            'region, another reaction, RNA or DNA, not a protein, another copy, predicted) and flags for what to check '
+            '(`supporting/site_interaction_records`). The PDB entries that model a site as a methylarginine are read in full, '
+            'including peptides that PDBe-KB does not map to the human protein.',
+    changes=interaction_sources.changes,
+)
+
 LAYERS = [
     Layer('cplm4', 'CPLM 4.0 lysine methylation', ['cplm4_summary.json'], ['scripts/39_stage_cplm4_lys_methylation.py'],
           'All rights reserved (© The CUCKOO Workgroup; no licence stated): the tables stay out of Git, checksum_only in MANIFEST.tsv',
@@ -866,6 +897,7 @@ LAYERS = [
     REACTOME,
     CURATION,
     CELL,
+    SOURCES,
 ]
 
 
@@ -874,7 +906,8 @@ def readme_section() -> list[str]:
     code = lambda names: ', '.join(f'`{c}`' for c in names)  # noqa: E731
     lines = ['## Annotation layers', '',
              'Data from other resources, joined to the sites and proteins by accession and position; none adds a site. Each is '
-             'staged into `inputs/layers/` (its files listed, with checksums, in `inputs/MANIFEST.tsv`) and registered in '
+             'staged into `inputs/layers/` (the provenance of the interaction records into `inputs/interactions/`; its files listed, with '
+             'checksums, in `inputs/MANIFEST.tsv`) and registered in '
              '`scripts/release_layers.py`, which the build reads for the columns and tests a layer adds '
              '(`ADDING_A_SOURCE.md`).', '',
              '| Layer | Staged by | Adds | Licence |', '|---|---|---|---|']

@@ -226,4 +226,7 @@ step "eCLIP logos (scripts/43f)" python "$CODE/scripts/43f_eclip_logos.py" --inp
 # SITE_OUT/depmap/ by scripts/44c, with the release's statistics of the layer)
 step "annotation layers' website files (scripts/release_layers.py)" python "$CODE/scripts/release_layers.py" website --release "$OUT" \
   --inputs "$IN" --site-out "$SITE_OUT"
+# the interaction records of the view with lower-confidence sites, which the website reads when they are switched on
+step "interaction records with lower-confidence sites (scripts/interaction_sources.py)" python "$CODE/scripts/interaction_sources.py" \
+  --release "$VIEW" --site-out "$SITE_OUT" --name site_partners_all.json
 echo "[release] done: $OUT and $SITE_OUT/"

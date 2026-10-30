@@ -45,6 +45,7 @@ SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 
 import abundance_strata  # noqa: E402
+import interaction_sources  # noqa: E402
 import peptide_calls as pc  # noqa: E402
 import release_codes as rc  # noqa: E402
 import release_docs  # noqa: E402
@@ -1201,6 +1202,13 @@ def main() -> None:
     bound = bound_columns(ix) if ix else {}
     for c in rc.BOUND_SITE_COLUMNS:
         sites[c] = sites['site_id'].map(lambda s: bound[s][c] if s in bound else '')
+    # where each interaction record comes from and what it shows (scripts/interaction_sources.py)
+    # the release's sites only (the view's both tiers), as ix covers them
+    records_ix = interaction_sources.records(ix['sites'], sites if args.with_lower_confidence else sites.iloc[:n_main], inputs,
+                                             {a: clean(g).split(';')[0].strip() for a, g in meta['Gene Names (primary)'].items() if clean(g)}) if ix else None
+    provenance = interaction_sources.site_values(records_ix, sites['site_id']) if ix else None
+    for c, *_ in interaction_sources.SITE_COLUMNS:
+        sites[c] = provenance[c].values if ix else ''
     sites = sites[[c for c, *_ in rc.SITE_COLUMNS]]
     lc_sites = sites.iloc[n_main:].merge(lc_tests, on='site_id', how='left')
     lc_sites = lc_sites[[c for c, *_ in rc.LOWER_CONFIDENCE_SITE_COLUMNS]].reset_index(drop=True)
@@ -1284,6 +1292,7 @@ def main() -> None:
             'residue_evidence': (f'supporting/residue_evidence_{version}.tsv', ix['residues'], rc.RESIDUE_EVIDENCE_COLUMNS),
             'protein_partners': (f'supporting/protein_partners_{version}.tsv', ix['partners'], rc.PARTNER_COLUMNS),
             'complexes': (f'supporting/complexes_{version}.tsv', ix['complexes'], rc.COMPLEX_COLUMNS),
+            'site_interaction_records': (f'supporting/site_interaction_records_{version}.tsv', records_ix, interaction_sources.RECORD_COLUMNS),
         })
         if ix['nucleic_acid'] is not None:
             files['nucleic_acid_contacts'] = (f'supporting/nucleic_acid_contacts_{version}.tsv', ix['nucleic_acid'], rc.NUCLEIC_ACID_CONTACT_COLUMNS)
