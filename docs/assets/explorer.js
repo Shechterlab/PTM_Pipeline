@@ -189,6 +189,14 @@
       ['ProtVar', 'Predicted protein contacts (every interface residue within 5 Å) and served AlphaFold-Multimer models', 'Interface table 2024.05.28; served-model list af2complexes_interfaces_v1', 'CC BY 4.0', 'Stephenson et al., Nucleic Acids Res 52:W140 (2024)', '10.1093/nar/gkae413'],
       ['AlphaFold DB complexes', 'Predicted heterodimers (gallery and protein pages)', 'Exported (gallery); live API (protein pages)', 'CC BY 4.0', 'Han et al., preprint (2026): AlphaFold Database expands to proteome-scale quaternary structures', '10.64898/2026.03.27.714458'],
     ]],
+    ['Where each interaction record comes from (scripts/53, 30 October 2026)', [
+      ['RCSB PDB Data API', 'For every PDB entry at a site: title, method, resolution, primary citation, entities with their UniProt alignments and organisms, and the residue each models at the site', 'Answers saved 2026-10-30', 'CC0 (PDB data)', 'Burley et al., Nucleic Acids Res 51:D488 (2023)', '10.1093/nar/gkac1077'],
+      ['RCSB ModelServer (Mol*)', 'What a methylarginine modelled at a site touches: residues of other chains within 4 Å of its side chain', 'Answers saved 2026-10-30', 'CC0 (PDB data)', 'Sehnal et al., Nucleic Acids Res 49:W431 (2021)', '10.1093/nar/gkab314'],
+      ['IntAct web service', 'The binary records of the interactions at the sites: participants and species, features, detection method, interaction type, host organism, publication', 'Answers saved 2026-10-30', 'CC BY 4.0', 'del Toro et al., Nucleic Acids Res 50:D648 (2022)', '10.1093/nar/gkab1006'],
+      ['PSI-MI and PSI-MOD (OLS)', 'The names of IntAct\'s detection methods, interaction types and feature labels', 'Answers saved 2026-10-30', 'CC BY 4.0', 'Montecchi-Palazzi et al., Nat Biotechnol 26:864 (2008)', '10.1038/nbt0808-864'],
+      ['PubMed (NCBI E-utilities)', 'Titles of the IntAct papers, and the arginines their abstracts name by number; courtesy of the U.S. National Library of Medicine', 'Answers saved 2026-10-30', 'NLM Terms and Conditions', 'Sayers et al., Nucleic Acids Res 53:D20 (2025)', '10.1093/nar/gkae979'],
+      ['UniProt (partner names)', 'Gene and organism of partners that are not reviewed human entries', 'Answers saved 2026-10-30', 'CC BY 4.0', 'UniProt Consortium, Nucleic Acids Res 53:D609 (2025)', '10.1093/nar/gkae1010'],
+    ]],
     ['RNA and DNA crosslinking in living cells (exported with scripts/37)', [
       ['pepR-MS compendium', 'RNA-crosslinked residues: pepR-MS and re-analysed Kramer 2014, XRNAX, RBS-ID, pRBS-ID (Tables S2–S3)', 'bioRxiv v2 (2026) supplement', 'CC BY-NC', 'Sha, Kuster & Trendel, bioRxiv (2025)', '10.1101/2025.09.05.674461'],
       ['Kramer et al. 2014', 'RNA crosslinks (via pepR-MS re-analysis)', '', 'Journal article', 'Nat Methods 11:1064 (2014)', '10.1038/nmeth.3092'],

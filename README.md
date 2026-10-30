@@ -43,7 +43,7 @@ dictionary and a record of what changed since the release before.
 | Folder | Holds |
 |---|---|
 | [`releases/`](releases/) | the site union, one folder per version |
-| [`docs/`](docs/) | the Methylarginine Site Explorer (GitHub Pages); `docs/v1.0.0/` is the published version and `docs/v1.1.0/`, `docs/v1.2.0/`, `docs/v1.3.0/`, `docs/v1.3.1/`, `docs/v1.4.0/` and `docs/v1.4.1/` the releases since, unchanged |
+| [`docs/`](docs/) | the Methylarginine Site Explorer (GitHub Pages); `docs/v1.0.0/` is the published version and `docs/v1.1.0/`, `docs/v1.2.0/`, `docs/v1.3.0/`, `docs/v1.3.1/`, `docs/v1.4.0/`, `docs/v1.4.1/` and `docs/v1.4.2/` the releases since, unchanged |
 | [`inputs/`](inputs/) | every file a release and the website are built from, with `MANIFEST.tsv` |
 | [`provenance/`](provenance/) | where the sites come from, in one page |
 | [`scripts/`](scripts/) | the pipeline, numbered by step |
@@ -123,7 +123,7 @@ What a build needs besides the repository:
 | `17_*` to `35_*` | extended analyses and the paper's figures |
 | `36_*`, `37_*` | the website's data: sites, evidence and interactions (`37a` stages the interaction inputs) |
 | `39_*` to `42_*` | the website's annotation layers (CARM1 knockout, Human Protein Atlas; CPLM 4.0 for v1.0.0) and the lysine and arginine methylation co-occurrence |
-| `44_*` to `52_*`, `cell_maps.py` | the annotation layers registered in `release_layers.py`: DepMap, PRISM and TCGA, the writer perturbations, PaxDb, Reactome, the curated experiments and the maps of the cell |
+| `44_*` to `53_*`, `cell_maps.py`, `interaction_sources.py` | the annotation layers registered in `release_layers.py`: DepMap, PRISM and TCGA, the writer perturbations, PaxDb, Reactome, the curated experiments, the maps of the cell and the provenance of the interaction records |
 | `enrichment.py`, `enrich_sets.R` | the over-representation tests of protein and gene sets (clusterProfiler `enricher`; the DisGeNET terms on DOSE 4.4.0's DisGeNET table), which the analyses call |
 | `build_release.py`, `release_*.py` | writing a release folder |
 
