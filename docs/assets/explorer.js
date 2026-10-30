@@ -55,7 +55,7 @@
   const pct = (a, b) => (b ? Math.round((100 * a) / b) : 0);
   const pctText = (a, b) => (a > 0 && pct(a, b) === 0 ? '<1' : String(pct(a, b)));
   // The address may be out of reach (a frame that refuses URL changes): then the page keeps its place itself.
-  const histSet = (fn, url) => { try { history[fn](null, '', url); return true; } catch (e) { return false; } };
+  const histSet = (fn, url, state = null) => { try { history[fn](state, '', url); return true; } catch (e) { return false; } };
   const popcount = (n) => { let c = 0; while (n) { c += n & 1; n >>= 1; } return c; };
   const bits = (mask) => { const out = []; for (let i = 0; mask; i++, mask >>= 1) if (mask & 1) out.push(i); return out; };
   const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
@@ -807,6 +807,9 @@
     gal: { conf: 'confident', pl: 80, kind: 'bond', noPdb: false, xl: false, all: false },
     figs: { flank: 7, rows: 50, order: 'protein', logo: 'freq', nProt: 8, scale: 'common', color: 'state', lanes: true, sortP: 'default', prot: null }, consPos: null, consFlank: 10, docJump: null,
     evTop: 1, evAllRows: false, evMode: 'sites', cxOpen: new Set(), ixScrollMap: false, reportPrint: false,
+    // history: histQuiet while the address is only brought up to date (no Back step); typed while the search box applies
+    // what is typed, and typedStep the step that typing made (syncUrl)
+    histQuiet: true, typed: false, typedStep: 0,
   };
 
   // ------------------------------------------------------------------- load
@@ -1144,6 +1147,7 @@
     bindDocLinks($('.brand-links'));
     compute();
     route();
+    UI.histQuiet = false;
     loadInteractions();
     $('#q').removeEventListener('keydown', early.key);
     const typed = $('#q').value.trim();
@@ -2007,6 +2011,15 @@
     f.ixScore = Math.max(700, f.ixScore);
     return f;
   }
+  // A new selection is a step that Back undoes: the address it leaves keeps the search and filters it had. Changes made
+  // together (in one click, or within a moment), a search as it is typed and the page it opens on make one step.
+  const selKey = (q, f) => (q || '') + '|' + JSON.stringify(filterParams(f));
+  const urlSelKey = () => { const params = new URLSearchParams(location.search); return selKey(params.get('q'), filtersFromParams(params)); };
+  let selJust = false;   // a selection step was made in this task: the page it opens on joins it (go)
+  // Brings the address up to date without a step of its own: on Back and Forward, and where the page itself changes the
+  // search (a link that leaves a search behind, an old link's terms).
+  const quietly = (fn) => { const was = UI.histQuiet; UI.histQuiet = true; try { fn(); } finally { UI.histQuiet = was; } };
+  const selJoins = (st) => !!(st && st.sel && (selJust || (UI.typed ? st.sel === UI.typedStep : Date.now() - st.sel < 800)));
   function syncUrl() {
     const qs = new URLSearchParams();
     if (Q.raw) qs.set('q', Q.raw);
@@ -2015,7 +2028,14 @@
     if (LC_ON) qs.set('lc', '1');
     const s = qs.toString();
     const next = location.pathname + (s ? '?' + s : '') + location.hash;
-    if (next !== location.pathname + location.search + location.hash) histSet('replaceState', next);
+    if (next === location.pathname + location.search + location.hash) return;
+    const st = history.state;
+    if (UI.histQuiet || selJoins(st) || selKey(Q.raw, F) === urlSelKey()) { histSet('replaceState', next, st); return; }
+    const t = Date.now();
+    histSet('pushState', next, { sel: t });
+    if (UI.typed) UI.typedStep = t;
+    selJust = true;
+    setTimeout(() => { selJust = false; });
   }
   function copyLink(btn) {
     syncUrl();
@@ -2241,6 +2261,9 @@
   function go(view, acc) {
     const hash = view === 'protein' ? acc : view;
     if (location.hash.slice(1) === hash) { route(); return; }
+    // the page a new selection opens on is part of the selection's step
+    const st = history.state;
+    if (selJoins(st) && (selJust || UI.typed) && histSet('replaceState', location.pathname + location.search + '#' + hash, st)) { route(hash); return; }
     try { location.hash = hash; } catch (e) { /* refused: routed below */ }
     if (location.hash.slice(1) !== hash) route(hash);
   }
@@ -2264,7 +2287,7 @@
         view = 'protein';
         // A search for one protein selects it; following a link to another protein leaves that search behind, so the
         // other page is not shown faded as outside the reader's filters. Other selections stay.
-        if (Q.plain && Q.proteins && Q.proteins.size === 1 && !hit.some((i) => Q.proteins.has(i)) && constraints().length === 1) { setQuery(queryText('', Q.tokens)); compute(); }
+        if (Q.plain && Q.proteins && Q.proteins.size === 1 && !hit.some((i) => Q.proteins.has(i)) && constraints().length === 1) quietly(() => { setQuery(queryText('', Q.tokens)); compute(); });
         const site = /^R?(\d+)$/i.exec(sitePart || '');
         if (UI.detail !== hit[0]) {
           UI.detail = hit[0]; UI.zoom = null; UI.openEvidence.clear(); UI.pIx = ''; UI.highlight = null;
@@ -2890,9 +2913,7 @@
     $('#q').value = text;
     Q = parseQuery(text);
     $('#q-clear').hidden = !text;
-    const url = new URL(location.href);
-    if (text.trim()) url.searchParams.set('q', text.trim()); else url.searchParams.delete('q');
-    histSet('replaceState', url.pathname + url.search + url.hash);
+    syncUrl();
   }
 
   function syncToolbar() {
@@ -3030,13 +3051,19 @@
     let fromOverview = false;
     input.addEventListener('focus', () => { fromOverview = UI.view === 'overview'; });
     const keyTyping = () => { const w = lastWord().toLowerCase(); return !!w && (w.endsWith(':') || (!w.includes(':') && TERM_KEYS.some((k) => k.startsWith(w)))); };
+    // What the search box applies, with the page it lands on, is one Back step from the first word to Enter, a pick or
+    // leaving the box (syncUrl, go).
+    const typing = (fn) => { UI.typed = true; try { return fn(); } finally { UI.typed = false; } };
+    const typedEnd = () => { UI.typedStep = 0; };
     const apply = debounce(() => {
       if (UI.view === 'overview' && keyTyping()) return;
-      setQuery(input.value);
-      UI.pageP = 50; UI.pageS = 100;
-      compute();
-      if (UI.view === 'overview' && Q.raw) goLanding();
-      else renderView();
+      typing(() => {
+        setQuery(input.value);
+        UI.pageP = 50; UI.pageS = 100;
+        compute();
+        if (UI.view === 'overview' && Q.raw) goLanding();
+        else renderView();
+      });
     }, 220);
     input.addEventListener('input', () => { $('#q-clear').hidden = !input.value; sel = -1; drawList(); apply(); });
     input.addEventListener('keydown', (e) => {
@@ -3047,29 +3074,33 @@
         e.preventDefault();
         if (sel >= 0 && items[sel]) { pick(items[sel]); return; }
         closeList();
-        setQuery(input.value);
-        compute();
-        // One word that names no protein of the set exactly: a protein without a site opens its own page.
-        const w1 = !Q.tokens.length && Q.plain ? Q.plain.trim() : '';
-        if (w1 && !/[\s,;]/.test(w1) && !(Q.proteins && Q.proteins.size) && !/[:_/-]R?\d+$/i.test(w1)) {
-          loadProteome().then(() => { const x = unlistedKey(w1); if (x) openUnlisted(x); else if (UI.view === 'overview') goLanding(); });
-          return;
-        }
-        if (R.prots.length === 1) openProtein(R.prots[0].i, Q.positions && Q.positions.size ? Array.from(Q.positions.values())[0].values().next().value : null);
-        // One protein named with a site it lacks: open the protein; the note under the search says the site is not in the set.
-        else if (!R.prots.length && Q.proteins && Q.proteins.size === 1 && Q.positions) openProtein(Q.proteins.values().next().value);
-        else if (Q.positions) go('sites');
-        else goLanding(UI.view === 'overview' || fromOverview);
+        const later = typing(() => {
+          setQuery(input.value);
+          compute();
+          // One word that names no protein of the set exactly: a protein without a site opens its own page.
+          const w1 = !Q.tokens.length && Q.plain ? Q.plain.trim() : '';
+          if (w1 && !/[\s,;]/.test(w1) && !(Q.proteins && Q.proteins.size) && !/[:_/-]R?\d+$/i.test(w1)) {
+            loadProteome().then(() => typing(() => { const x = unlistedKey(w1); if (x) openUnlisted(x); else if (UI.view === 'overview') goLanding(); })).then(typedEnd);
+            return true;
+          }
+          if (R.prots.length === 1) openProtein(R.prots[0].i, Q.positions && Q.positions.size ? Array.from(Q.positions.values())[0].values().next().value : null);
+          // One protein named with a site it lacks: open the protein; the note under the search says the site is not in the set.
+          else if (!R.prots.length && Q.proteins && Q.proteins.size === 1 && Q.positions) openProtein(Q.proteins.values().next().value);
+          else if (Q.positions) go('sites');
+          else goLanding(UI.view === 'overview' || fromOverview);
+          return false;
+        });
+        if (!later) typedEnd();
       }
     });
-    input.addEventListener('blur', () => setTimeout(closeList, 150));
+    input.addEventListener('blur', () => { typedEnd(); setTimeout(closeList, 150); });
     list.addEventListener('mousedown', (e) => {
       const li = e.target.closest('li');
       if (li) { e.preventDefault(); pick(items[+li.dataset.k]); }
     });
     const pick = (it) => {
       const w = lastWord(), head = input.value.slice(0, input.value.length - w.length);
-      if (it.unl) { closeList(); openUnlisted(it.unl); return; }
+      if (it.unl) { closeList(); typing(() => openUnlisted(it.unl)); typedEnd(); return; }
       if (it.term) {
         // A key keeps the list open for its values; a value completes the term and applies it. A concept term
         // replaces the plain words it was suggested for.
@@ -3079,16 +3110,22 @@
         input.focus();
         if (it.term.open) { drawList(); return; }
         closeList();
-        setQuery(input.value);
-        UI.pageP = 50; UI.pageS = 100;
-        compute();
-        if (UI.view === 'overview') goLanding(); else renderView();
+        typing(() => {
+          setQuery(input.value);
+          UI.pageP = 50; UI.pageS = 100;
+          compute();
+          if (UI.view === 'overview') goLanding(); else renderView();
+        });
+        typedEnd();
         return;
       }
       closeList();
-      setQuery((head + (it.p.gene || it.p.acc)).trim());
-      compute();
-      openProtein(it.p.i);
+      typing(() => {
+        setQuery((head + (it.p.gene || it.p.acc)).trim());
+        compute();
+        openProtein(it.p.i);
+      });
+      typedEnd();
     };
     $('#q-clear').addEventListener('click', () => { setQuery(''); compute(); renderView(); input.focus(); });
     $$('.tab').forEach((t) => t.addEventListener('click', () => {
@@ -3096,10 +3133,20 @@
       else go(t.dataset.view);
     }));
     window.addEventListener('hashchange', route);
-    // Back and Forward go between pages and sections and keep the selection as it is (Clear all undoes it): the
-    // address of the step returned to takes the current search and filters.
+    // Back and Forward go between pages, sections and selections: the step returned to brings back its page with the
+    // search and filters it had. A page step keeps the selection, as a new selection is a step of its own (syncUrl).
     window.addEventListener('popstate', () => {
-      syncUrl();
+      typedEnd();
+      const params = new URLSearchParams(location.search);
+      if (selKey(params.get('q'), filtersFromParams(params)) !== selKey(Q.raw, F)) quietly(() => {
+        F = filtersFromParams(params);
+        $('#q').value = params.get('q') || '';
+        Q = parseQuery($('#q').value);
+        $('#q-clear').hidden = !Q.raw;
+        UI.pageP = 50; UI.pageS = 100;
+        renderRail();
+        compute();
+      });
       route();
     });
     const home = $('.home-link');
@@ -9593,7 +9640,7 @@
       if (lx.partner != null && IX.prot[+lx.partner]) extra.push('binds:' + quoteTerm(IX.prot[+lx.partner].gene));
       if (lx.cpx != null && IX.cx[+lx.cpx]) extra.push('complex:' + IX.cx[+lx.cpx].id);
     }
-    if (extra.length) setQuery([Q.raw].concat(extra).join(' ').trim());
+    if (extra.length) quietly(() => setQuery([Q.raw].concat(extra).join(' ').trim()));
     else if (Q.raw) Q = parseQuery(Q.raw);
     renderRail();
     compute();
