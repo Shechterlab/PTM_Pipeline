@@ -3678,7 +3678,7 @@
     el.innerHTML = resultsHead('Sites', fmt(rows.length) + ' of ' + fmt(S.length) + ' methylarginine sites on ' + fmt(R.prots.length) + ' protein' + (R.prots.length === 1 ? '' : 's'),
       '<button class="btn quiet small" type="button" data-go-figs>Make figures</button><button class="btn small" type="button" id="dl-sites">Download TSV</button>') +
       pagePart('sel', 'Your selection', contextCards()) + pagePart('enriched', 'Enriched features', profileCardHtml()) + pagePart('ix', 'Interaction evidence', ixSegHtml()) +
-      (rows.length ? pagePart('table', 'Site table', '<div class="card tbl-card"><div class="tbl-tools"><span class="muted small">Click a site to open it on its protein.</span>' + colMenu('sites', SITE_COLS) + '</div><div class="tbl-wrap"><table class="tbl stackable">' + colHead(cols, UI.sortS, key) + '<tbody>' +
+      (rows.length ? pagePart('table', 'Site table', '<div class="card tbl-card"><div class="tbl-tools"><span class="muted small">Click a site to open it on its protein.</span>' + colMenu('sites', SITE_COLS) + '</div><div class="tbl-wrap"><table class="tbl stackable sites-tbl">' + colHead(cols, UI.sortS, key) + '<tbody>' +
         shownRows.map((s) => '<tr class="row" tabindex="0" data-j="' + s.j + '">' + colRow(cols, s) + '</tr>').join('') +
         '</tbody></table></div><div class="tbl-foot"><span>Showing ' + fmt(shownRows.length) + ' of ' + fmt(rows.length) + '</span>' +
         (rows.length > shownRows.length ? '<button class="btn quiet small" type="button" id="more">Show 100 more</button>' : '') + '</div></div>') +
@@ -10894,11 +10894,46 @@
   const shortSpecies = (sp) => { const m = /^([A-Z])[a-z]+ ([a-z]+)/.exec(sp || ''); return m ? m[1] + '. ' + m[2] : sp || ''; };
   const spList = (sp) => (sp || '').split(/[;,]\s*/).filter(Boolean);   // the organisms of a record (several for a chimeric entity)
   const notHuman = (sp) => !!sp && !spList(sp).includes('Homo sapiens');
+  // The papers' citations as the sources write them (RCSB: "Mathys, H. et al., Mol.Cell (2014)"; PubMed: full journal
+  // names), shown in the explorer's style: "Mathys et al., Mol Cell (2014)", journals as NLM abbreviations. The TSV keeps
+  // the sources' text.
+  const JOURNAL_ABBR = {
+    'proceedings of the national academy of sciences of the united states of america': 'Proc Natl Acad Sci U S A', 'proc natl acad sci usa': 'Proc Natl Acad Sci U S A',
+    'proc natl acad sci u s a': 'Proc Natl Acad Sci U S A', 'the journal of biological chemistry': 'J Biol Chem', 'nature structural & molecular biology': 'Nat Struct Mol Biol',
+    'journal of structural biology': 'J Struct Biol', 'the journal of investigative dermatology': 'J Invest Dermatol', 'british journal of anaesthesia': 'Br J Anaesth',
+    "journal of alzheimer's disease : jad": 'J Alzheimers Dis', 'genetics in medicine : official journal of the american college of medical genetics': 'Genet Med',
+    'cell research': 'Cell Res', 'human molecular genetics': 'Hum Mol Genet', 'nature communications': 'Nat Commun', 'nature genetics': 'Nat Genet',
+    'nucleic acids research': 'Nucleic Acids Res', 'molecular neurodegeneration': 'Mol Neurodegener', 'circulation research': 'Circ Res',
+    'molecular systems biology': 'Mol Syst Biol', 'plos genetics': 'PLoS Genet', 'open biology': 'Open Biol', 'cell(cambridge mass )': 'Cell', 'cell(cambridge,mass.)': 'Cell',
+    'acta crystallogr sect d': 'Acta Crystallogr D', 'acta crystallogr sect f': 'Acta Crystallogr F',
+  };
+  const JOURNAL_CASE = { Embo: 'EMBO', Febs: 'FEBS', Plos: 'PLoS', Rna: 'RNA', Dna: 'DNA', Elife: 'eLife', Acs: 'ACS', Bmc: 'BMC', Iucrj: 'IUCrJ', Chembiochem: 'ChemBioChem',
+    Chemmedchem: 'ChemMedChem', Biorxiv: 'bioRxiv', Ebiomedicine: 'EBioMedicine', Iscience: 'iScience', Jacs: 'JACS', Pnas: 'PNAS', Rsc: 'RSC', ONE: 'One' };
+  function journalAbbr(j) {
+    const known = (x) => JOURNAL_ABBR[x.toLowerCase()] || JOURNAL_ABBR[x.toLowerCase().replace(/[.,]/g, ' ').replace(/\s+/g, ' ').trim()];
+    if (known(j)) return known(j);
+    if (/thesis/i.test(j)) return 'PhD thesis, ' + j.replace(/^.*?thesis[,\s]*/i, '');
+    if (/^to be published$/i.test(j)) return 'to be published';
+    // dotted abbreviations ("Nat.Struct.Mol.Biol.", "Acta Crystallogr.,Sect.D"), and names in capitals ("J BIOL CHEM")
+    let s = j.replace(/\.(?=\S)/g, ' ').replace(/\.\s*/g, ' ').replace(/\s*,\s*/g, ' ').replace(/\s+/g, ' ').replace(/ \)/g, ')').trim();
+    if (s === s.toUpperCase() && /[A-Z]{4}/.test(s)) s = s.toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase());
+    s = s.replace(/[A-Za-z]+/g, (w) => JOURNAL_CASE[w] || w);
+    return known(s) || s;
+  }
+  function citeLabel(c) {
+    // "Surname, I.J. et al." (RCSB) and "Surname IJ et al." (PubMed) -> "Surname et al."; a single author's initials go too
+    let s = c.replace(/( et al\.)+/g, ' et al.').replace(/^([^,]+), (?:[A-Z][a-z]?\.?[- ]?)+(?= et al\.|,)/, '$1').replace(/^([A-Z][^,]*?) [A-Z]{1,3}\.?(?= et al\.)/, '$1')
+      .replace(/ et al\.? ?,? */, ' et al., ');
+    if (/, to be published$/i.test(s)) return s.replace(/, to be published$/i, ', to be published');
+    // only "authors, journal (year)": a citation that already gives volume and pages, or names several papers, stays
+    const m = /^(.+? et al\.|[^,]+), (.+?) \((\d{4})\)$/.exec(s);
+    return m && !/\d|, /.test(m[2]) ? m[1] + ', ' + journalAbbr(m[2]) + ' (' + m[3] + ')' : s;
+  }
   function spPaperLink(D, k) {
     const x = D.papers[k];
     if (!x) return '';
     const [pm, doi, cite, title] = x, url = pm ? pubmedUrl(pm) : doi ? 'https://doi.org/' + doi : '';
-    const label = esc((cite || (pm ? 'PMID ' + pm : 'doi:' + doi)).replace(/ et al\.,? /, ' et al. ').replace(/, \(/, ' ('));
+    const label = esc(cite ? citeLabel(cite) : pm ? 'PMID ' + pm : 'doi:' + doi);
     return url ? '<a href="' + url + '" target="_blank" rel="noopener" title="' + esc((title ? title + ' ' : '') + (pm ? '(PMID ' + pm + ')' : doi ? '(doi:' + doi + ')' : '')) + '">' + label + '</a>' : label;
   }
   // The state of the site in the experiment as a short badge: R, Rme1, Rme2a, Rme2s, a mutation, another residue.
@@ -10928,7 +10963,7 @@
     const head = r.source === 'PDB' ? (ids.length === 1 ? 'PDB ' : ids.length + ' PDB entries: ') : r.source === 'IntAct' ? 'IntAct ' : esc(r.source) + (ids.length ? ' ' : '');
     return head + ids.slice(0, 4).map(link).join(', ') + (ids.length > 4 ? ' <details class="sp-more"><summary>+' + (ids.length - 4) + '</summary>' + ids.slice(4).map(link).join(', ') + '</details>' : '');
   }
-  const spSourceTip = (D, id) => { const x = D.sources[id]; if (!x) return ''; return [x[2] >= 0 ? D.texts[x[2]] : '', x[0] >= 0 ? D.texts[x[0]] : '', x[1] >= 0 && D.papers[x[1]] ? D.papers[x[1]][2] : ''].filter(Boolean).join(' · ') + '.'; };
+  const spSourceTip = (D, id) => { const x = D.sources[id]; if (!x) return ''; return [x[2] >= 0 ? D.texts[x[2]] : '', x[0] >= 0 ? D.texts[x[0]] : '', x[1] >= 0 && D.papers[x[1]] && D.papers[x[1]][2] ? citeLabel(D.papers[x[1]][2]) : ''].filter(Boolean).join(' · ') + '.'; };
   // The methods of a row: each entry's own (PDB: the method family, the resolutions as a range).
   function spMethodHtml(D, r) {
     const ms = r.methods.map((i) => D.texts[i]);
