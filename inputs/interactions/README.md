@@ -137,6 +137,31 @@ accessions only.
 - **`curated_sequence`** is filled in only where the check fails. Where it matches, the curated sequence is the
   canonical sequence at `ranges`.
 
+### Provenance of the records at the sites (30 October 2026)
+
+The tables above say that a partner contacts a residue in some PDB entries, or that an IntAct interaction maps a
+binding region, a mutation or a methylated residue there. They do not say how the interaction was found, in which
+species, in which paper, or whether the site was methylated in the experiment. `scripts/53_stage_interaction_sources.py`
+looked that up on 30 October 2026 for every record at a site of v1.4.2 (14,028 sites and lower-confidence sites of
+4,907 proteins), into the same cache (`rcsb/`, `modelserver_methyl/`, `intact_ws/`, `ols/`, `ncbi/`, `uniprot/`;
+563 files, 66 MB). The release layer `scripts/interaction_sources.py` reads these tables (release table
+`supporting/site_interaction_records`).
+
+| File | Rows | What it holds |
+|---|---:|---|
+| `pdb_entries_2026-10-30.tsv` | 6,842 | Every PDB entry with an interface or arginine contact at a site, or modelling a methylarginine: title, method, resolution, release date, primary citation (PubMed, DOI, first author, journal, year, title) and non-polymer ligands (RCSB Data API). |
+| `pdb_entities_2026-10-30.tsv` | 45,675 | Their polymer entities: type, description, the UniProt accessions they align to, source organisms. |
+| `pdb_site_residues_2026-10-30.tsv` | 73,525 | For each entity aligned to a site's protein, the residue it models at the site (ARG, a methylarginine 2MR, DA2 or NMM, or another residue), its entity position, and whether the 5 residues on each side match the human sequence: `matches`; `realigned` when the RCSB alignment is shifted (another isoform) and the site was found by its neighbours; `differs`. Also the other modified residues of the entity. |
+| `pdb_methylated_sites_2026-10-30.tsv` | 265 | Every methylarginine those entries model that is a site: by the entity's UniProt alignment, or by sequence (the longest stretch of the residues within 10 of it identical to the human sequence, at least 8 long and of 5 residue types). This finds peptides without a human UniProt mapping, orthologues identical around the site and the other histone variants sharing a tail (238 entries, 18 sites). |
+| `pdb_methylated_site_contacts_2026-10-30.tsv` | 264 | What each of those methylarginines touches: the residues of other chains within 4 Å of its side chain (RCSB ModelServer, first model, at most two copies of the entity). |
+| `intact_interactions_2026-10-30.tsv` | 1,202 | The binary IntAct records of the 1,102 interactions scripts/37 places at the sites: both participants (identifier, type, species, roles, features), detection method, interaction type, host organism, negative flag, MI score and publication. None is negative. |
+| `intact_terms_2026-10-30.tsv` | 105 | The PSI-MI names of their detection methods and interaction types, and the PSI-MI or PSI-MOD term of each feature label, matched exactly by name or synonym (OLS). |
+| `pubmed_papers_2026-10-30.tsv` | 139 | Title, first author, journal, year and DOI of the papers of those IntAct records (NCBI esummary), and the arginines their title and abstract name by number (efetch; only the numbers are kept). |
+| `uniprot_partner_names_2026-10-30.tsv` | 1,406 | Gene, organism and name of the partner accessions that are not reviewed human entries (UniProt REST), so a mouse or yeast partner is named by its gene. |
+| `interaction_sources_summary_2026-10-30.json` | | Counts of the staging. |
+
+A second run from the cache gives the same bytes.
+
 ### RNA and DNA crosslinks
 
 | File | Rows | What it holds |

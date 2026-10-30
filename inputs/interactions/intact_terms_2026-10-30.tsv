@@ -1,0 +1,106 @@
+kind	label	obo_id	name	match
+detection method		MI:0006	anti bait coimmunoprecipitation	identifier
+detection method		MI:0007	anti tag coimmunoprecipitation	identifier
+detection method		MI:0012	bioluminescence resonance energy transfer	identifier
+detection method		MI:0017	classical fluorescence spectroscopy	identifier
+detection method		MI:0018	two hybrid	identifier
+detection method		MI:0019	coimmunoprecipitation	identifier
+detection method		MI:0030	cross-linking study	identifier
+detection method		MI:0034	display technology	identifier
+detection method		MI:0045	experimental interaction detection	identifier
+detection method		MI:0047	far western blotting	identifier
+detection method		MI:0053	fluorescence polarization spectroscopy	identifier
+detection method		MI:0065	isothermal titration calorimetry	identifier
+detection method		MI:0077	nuclear magnetic resonance	identifier
+detection method		MI:0081	peptide array	identifier
+detection method		MI:0084	phage display	identifier
+detection method		MI:0089	protein array	identifier
+detection method		MI:0096	pull down	identifier
+detection method		MI:0099	scintillation proximity assay	identifier
+detection method		MI:0107	surface plasmon resonance	identifier
+detection method		MI:0114	x-ray crystallography	identifier
+interaction type		MI:0192	acetylation reaction	identifier
+interaction type		MI:0213	methylation reaction	identifier
+interaction type		MI:0217	phosphorylation reaction	identifier
+detection method		MI:0397	two hybrid array	identifier
+detection method		MI:0402	chromatin immunoprecipitation assay	identifier
+detection method		MI:0405	competition binding	identifier
+interaction type		MI:0407	direct interaction	identifier
+detection method		MI:0415	enzymatic study	identifier
+detection method		MI:0424	protein kinase assay	identifier
+detection method		MI:0435	protease assay	identifier
+detection method		MI:0515	methyltransferase assay	identifier
+interaction type		MI:0570	protein cleavage	identifier
+detection method		MI:0676	tandem affinity purification	identifier
+detection method		MI:0841	phosphotransferase assay	identifier
+interaction type		MI:0844	phosphotransfer reaction	identifier
+detection method		MI:0870	demethylase assay	identifier
+interaction type		MI:0871	demethylation reaction	identifier
+detection method		MI:0889	acetylase assay	identifier
+detection method		MI:0900	p8 filamentous phage display	identifier
+interaction type		MI:0914	association	identifier
+interaction type		MI:0915	physical association	identifier
+detection method		MI:0921	surface plasmon resonance array	identifier
+detection method		MI:1356	validated two hybrid	identifier
+interaction type		MI:2364	proximity	identifier
+detection method		MI:2437	holdup assay	identifier
+feature	13c label	MI:0379	13c label	exact
+feature	15n label	MI:0380	15n label	exact
+feature	35s radiolabel	MI:0371	35s radiolabel	exact
+feature	ac1res	MOD:00394	monoacetylated residue	exact
+feature	amidated residue	MOD:00674	amidated residue	exact
+feature	binding region	MI:0117	binding-associated region	exact
+feature	biotin tag	MI:0239	biotin tag	exact
+feature	egfp tag	MI:0734	enhanced green fluorescent protein tag	exact
+feature	fiash label	MI:0926	fiash label	exact
+feature	fitc labelled	MI:0377	fluorescein isothiocyanate label	exact
+feature	flag tag	MI:0518	flag tag	exact
+feature	fluorescein	MI:0939	fluorescein label	exact
+feature	fluorescent dye	MI:0857	fluorescent dye label	exact
+feature	fusion protein	MI:0240	fusion protein	exact
+feature	gal4 ad	MI:0690	gal4 activation domain	exact
+feature	gal4 dna bd	MI:0693	gal4 dna binding domain	exact
+feature	gfp tag	MI:0367	green fluorescent protein tag	exact
+feature	gst tag	MI:0519	glutathione s tranferase tag	exact
+feature	ha tag	MI:0520	ha tag	exact
+feature	his tag	MI:0521	his tag	exact
+feature	mbp tag	MI:0578	maltose binding protein tag	exact
+feature	me1arg	MOD:00414	monomethylated L-arginine	exact
+feature	mearg	MOD:00658	methylated arginine	exact
+feature	melys	MOD:00663	methylated lysine	exact
+feature	meres	MOD:00427	methylated residue	exact
+feature	mutation	MI:0118	mutation	exact
+feature	mutation decreasing	MI:0119	mutation decreasing interaction	exact
+feature	mutation decreasing rate	MI:1130	mutation decreasing interaction rate	exact
+feature	mutation decreasing strength	MI:1133	mutation decreasing interaction strength	exact
+feature	mutation disrupting	MI:0573	mutation disrupting interaction	exact
+feature	mutation disrupting rate	MI:1129	mutation disrupting interaction rate	exact
+feature	mutation disrupting strength	MI:1128	mutation disrupting interaction strength	exact
+feature	mutation increasing	MI:0382	mutation increasing interaction	exact
+feature	mutation increasing rate	MI:1131	mutation increasing interaction rate	exact
+feature	mutation increasing strength	MI:1132	mutation increasing interaction strength	exact
+feature	mutation with no effect	MI:2226	mutation with no effect	exact
+feature	myc tag	MI:0522	myc tag	exact
+feature	n6aclys	MOD:00064	N6-acetyl-L-lysine	exact
+feature	n6me1lys	MOD:00085	N6-methyl-L-lysine	exact
+feature	n6me2lys	MOD:00084	N6,N6-dimethyl-L-lysine	exact
+feature	n6me3+lys	MOD:00083	N6,N6,N6-trimethyl-L-lysine	exact
+feature	naclys	MOD:00723	N-acetylated L-lysine	exact
+feature	nnme2arg	MOD:00783	dimethylated L-arginine	exact
+feature	nono'me2arg	MOD:00076	symmetric dimethyl-L-arginine	exact
+feature	nonome2arg	MOD:00077	asymmetric dimethyl-L-arginine	exact
+feature	opser	MOD:00046	O-phospho-L-serine	exact
+feature	opthr	MOD:00047	O-phospho-L-threonine	exact
+feature	optyr	MOD:00048	O4'-phospho-L-tyrosine	exact
+feature	phosres	MOD:00696	phosphorylated residue	exact
+feature	radiolabelled	MI:0517	radiolabel	exact
+feature	renilla luciferase	MI:0896	renilla luciferase protein tag	exact
+feature	required to bind	MI:0429	necessary binding region	exact
+feature	rhodamine label	MI:1257	rhodamine label	exact
+feature	sufficient to bind	MI:0442	sufficient binding region	exact
+feature	tag	MI:0507	tag	exact
+feature	tandem tag	MI:0677	tandem tag	exact
+feature	tap tagged	MI:0524	calmodulin binding peptide plus protein a tag	exact
+feature	v5 tag	MI:0525	v5 tag	exact
+feature	xpress tag	MI:1270	xpress tag	exact
+feature	yfp tag	MI:0368	yellow fluorescent protein tag	exact
