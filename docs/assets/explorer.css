@@ -1424,6 +1424,14 @@ svg [data-ev]:hover { stroke: var(--ink); stroke-width: 0.8; }
   .sp-tbl td::before { content: attr(data-label) ': '; color: var(--muted); font-size: 0.72rem; }
   .sp-tbl td:first-child::before { content: ''; }
 }
+/* Exports draw at the printed width (PDF_WIDTH, 710 px), inside the phone rule above: keep the tables tables there, and
+   drop the disclosure marker, which the export draws as a list number. */
+html.pdf-export .sp-tbl thead { display: table-header-group; }
+html.pdf-export .sp-tbl tr { display: table-row; padding: 0; }
+html.pdf-export .sp-tbl td { display: table-cell; border-bottom: 1px solid var(--line); padding: 0.4rem 0.55rem; }
+html.pdf-export .sp-tbl td::before { content: none; }
+html.pdf-export .sp-group > summary { list-style: none; }
+html.pdf-export .sp-group > summary::-webkit-details-marker { display: none; }
 .sc-wr dl.sc-kv > div { grid-template-columns: 12rem minmax(0, 1fr); }
 @media (max-width: 640px) { .sc-wr dl.sc-kv > div { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; } }
 .var-item a { margin-left: 0.25rem; }

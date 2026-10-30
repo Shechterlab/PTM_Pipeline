@@ -16152,7 +16152,7 @@
   }
   function addCardExports(root) {
     for (const card of $$('.card', root)) {
-      if (card.matches('#card-af, #site-card, .a-sel') || (card.parentElement && card.parentElement.closest('.card')) || !cardTitle(card)) continue;
+      if (card.matches('#card-af, .a-sel') || (card.parentElement && card.parentElement.closest('.card')) || !cardTitle(card)) continue;
       if (card.querySelector('[data-cexp]')) continue;
       const head = card.querySelector(':scope > .card-head'), own = head && head.querySelector('.exp');
       if (own) {
@@ -16163,7 +16163,9 @@
         if (first) first.insertAdjacentHTML('beforebegin', html); else own.insertAdjacentHTML('beforeend', html);
       } else {
         const g = '<div class="exp cexp" role="group" aria-label="Export this card">' + cexpBtns(['pdf', 'svg', 'png'], 'data-cexp') + '</div>';
-        if (head) head.insertAdjacentHTML('beforeend', g); else card.insertAdjacentHTML('afterbegin', g.replace('exp cexp', 'exp cexp cexp-float'));
+        const close = head && head.querySelector('[data-sc="close"]');
+        if (close) close.insertAdjacentHTML('beforebegin', g);
+        else if (head) head.insertAdjacentHTML('beforeend', g); else card.insertAdjacentHTML('afterbegin', g.replace('exp cexp', 'exp cexp cexp-float'));
       }
     }
   }
