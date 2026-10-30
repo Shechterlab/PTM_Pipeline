@@ -335,6 +335,8 @@ CODES: dict[str, dict[str, str]] = {
         'intact_mutation': 'an IntAct mutation feature at the residue that changes an interaction',
         'intact_binding_region': 'inside an IntAct binding region',
         'intact_methylated': 'IntAct records the residue as methylated',
+        'pdb_methylated_contact': 'a PDB entry modelling the site as a methylarginine, with what its side chain touches (scripts/53, RCSB ModelServer), '
+                                  'which PDBe-KB does not list for the site: supporting/site_interaction_records only',
     },
     'localisation': {
         'at_residue': 'at this residue',
@@ -709,6 +711,7 @@ LOWER_CONFIDENCE_SITE_EXTRA = [
 BOUND_SITE_COLUMNS = ('bound_nucleic_acid', 'bound_nucleic_acid_types', 'bound_sequence', 'bound_sequence_offset', 'bound_sequence_distance_a', 'bound_sequence_type',
                       'bound_sequence_molecule', 'bound_sequence_entries')
 LOWER_CONFIDENCE_SITE_COLUMNS = [c for c in SITE_COLUMNS if c[0] not in ('interaction_status', 'interaction_evidence', *BOUND_SITE_COLUMNS, 'in_previous_version',
+                                                                         *(x[0] for x in release_layers.SOURCES.site_columns),
                                                                          'change_since_previous_version', 'change_reasons')] \
     + LOWER_CONFIDENCE_SITE_EXTRA
 # The site table of the view with lower-confidence sites (the website's, when it shows them): both tiers.

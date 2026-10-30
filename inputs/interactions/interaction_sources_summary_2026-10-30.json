@@ -1,0 +1,31 @@
+{
+ "date": "2026-10-30",
+ "intact": {
+  "binary_records": 1202,
+  "interactions_answered": 1102,
+  "interactions_asked": 1102,
+  "negative": 0,
+  "not_answered": []
+ },
+ "pdb": {
+  "chemical_components": 274,
+  "entities": 45675,
+  "entries_answered": 6842,
+  "entries_asked": 6842,
+  "methylated_by_sequence": 225,
+  "methylated_residues_read": 260,
+  "methylated_residues_with_contacts": 251,
+  "methylated_site_entries": 238,
+  "methylated_site_rows": 265,
+  "methylated_sites": 18,
+  "site_residue_not_arginine": 231,
+  "site_residues": 73525
+ },
+ "proteins": 4907,
+ "release": "releases/v1.4.2",
+ "sites": 14028,
+ "terms": {
+  "features_not_exact": [],
+  "rows": 105
+ }
+}

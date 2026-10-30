@@ -1375,6 +1375,44 @@ svg [data-ev]:hover { stroke: var(--ink); stroke-width: 0.8; }
 
 /* Site card: writer and reader across the card; variants one per line */
 .sc-wr { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 0.6rem; }
+/* Who binds it: the interaction records at a site, grouped by what they show (scripts/interaction_sources.py) */
+.sc-wr .wr-site { display: contents; }
+.sp-prot-sec { margin: 0 0 1rem; }
+.sp-prot-sec h4 { display: flex; align-items: center; gap: 0.4rem; }
+.sp-prot-tbl td { vertical-align: top; font-size: 0.8rem; }
+.sp-cls { display: inline-block; margin: 0 0.8rem 0.15rem 0; }
+.sp-cls b { font-weight: 600; color: var(--ink-2); }
+.sp-cls-writes b, .sp-cls-removes b, .sp-cls-binds_methylated b { color: var(--accent-dark); }
+.sc-sp { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 0.6rem; }
+.sp-sum { font-size: 0.84rem; color: var(--ink-2); margin: 0 0 0.45rem; }
+.sp-group { border: 1px solid var(--line); border-radius: var(--radius); margin: 0 0 0.4rem; background: var(--surface); }
+.sp-group > summary { cursor: pointer; padding: 0.35rem 0.6rem; font-size: 0.86rem; list-style-position: inside; }
+.sp-group > summary .muted { font-weight: 400; }
+.sp-group[open] > summary { border-bottom: 1px solid var(--line); background: var(--surface-2); border-radius: var(--radius) var(--radius) 0 0; }
+.sp-group .tbl-wrap { margin: 0; }
+.sp-group > .sp-all { margin: 0.25rem 0.6rem 0.4rem; }
+.sp-tbl td { vertical-align: top; font-size: 0.8rem; }
+.sp-tbl th { font-size: 0.74rem; }
+.sp-tbl td:first-child { min-width: 9rem; }
+.sp-state { display: inline-block; padding: 0 0.35rem; border-radius: 0.25rem; font-size: 0.74rem; font-weight: 600; white-space: nowrap; border: 1px solid var(--line-strong); color: var(--ink-2); }
+.sp-state.sp-me { background: var(--accent); border-color: var(--accent); color: #fff; }
+.sp-state.sp-r { background: var(--surface-2); }
+.sp-state.sp-mut { border-style: dashed; }
+.sp-state.sp-na { color: var(--muted); font-weight: 500; }
+.sp-marks { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+.sp-species { display: inline-block; font-size: 0.7rem; font-style: italic; padding: 0 0.3rem; border-radius: 0.25rem; background: var(--scope-bg); color: var(--accent-dark); }
+.sp-flag { display: inline-block; font-size: 0.68rem; padding: 0 0.3rem; margin: 0.15rem 0.2rem 0 0; border-radius: 0.25rem; border: 1px solid var(--accent); color: var(--accent-dark); cursor: help; }
+.sp-more { display: inline; }
+.sp-more > summary { display: inline; cursor: pointer; color: var(--teal-600); font-size: 0.76rem; }
+.sp-more[open] > summary { margin-right: 0.3rem; }
+.sp-binds-methylated > summary b, .sp-writes > summary b, .sp-removes > summary b { color: var(--accent-dark); }
+@media (max-width: 720px) {
+  .sp-tbl thead { display: none; }
+  .sp-tbl tr { display: block; border-bottom: 1px solid var(--line); padding: 0.3rem 0; }
+  .sp-tbl td { display: block; border: 0; padding: 0.1rem 0.5rem; }
+  .sp-tbl td::before { content: attr(data-label) ': '; color: var(--muted); font-size: 0.72rem; }
+  .sp-tbl td:first-child::before { content: ''; }
+}
 .sc-wr dl.sc-kv > div { grid-template-columns: 12rem minmax(0, 1fr); }
 @media (max-width: 640px) { .sc-wr dl.sc-kv > div { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; } }
 .var-item a { margin-left: 0.25rem; }
