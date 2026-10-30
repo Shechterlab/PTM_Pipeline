@@ -18,8 +18,12 @@ Sources
   ProtVar predicted interfaces (EMBL-EBI, CC BY 4.0) ....... AlphaFold-Multimer interface residues of human pairs
   IntAct features (EMBL-EBI, CC BY 4.0) .................... mutations that change an interaction, binding regions, methylated residues
 
-The protein-set enrichments (Gene Ontology RNA and DNA binding, complexes, condensates by CD-CODE confidence) are
-over-representation tests run with clusterProfiler's enricher (scripts/enrich_sets.R, so Rscript must be on PATH).
+The protein-set enrichments (Gene Ontology RNA and DNA binding, the proteins in-cell experiments found binding RNA or DNA,
+complexes, condensates by CD-CODE confidence) are over-representation tests run with clusterProfiler's enricher
+(scripts/enrich_sets.R, so Rscript must be on PATH). In the view with lower-confidence sites, the lower-confidence sites
+the analyses do not count are left out of the tests of the release's statistics: the residue tests (Tables.left_out) and
+go_binding and binding_protein (counted_base in main()); the complexes and the condensates by confidence, which only
+the website and supporting/complexes show, still count every protein of the explorer.
 
 It also writes --pred-iface-out: every residue of an explorer protein at a ProtVar predicted interface, as runs with
 the number of partners, the best pDockQ and the partners along each run, and every partner with its gene, best pDockQ
@@ -2656,10 +2660,11 @@ def main():
     for i, acc in enumerate(meth_accs):
         meth_base.setdefault(base_acc(acc), i)
     # The view with lower-confidence sites (scripts/36 marks each lower-confidence site counted or not): the sites the
-    # analyses with lower-confidence sites do not count (in_analyses_with_lower_confidence false) are left out of every
-    # test, neither methylarginines nor other arginines (Tables.left_out), and the protein-set tests count the proteins
-    # with a counted site (counted_base), as build_release.py, release_analyses.py and release_layers.change_tables do.
-    # The explorer data still show them. Without that list (the release itself) every site counts.
+    # analyses with lower-confidence sites do not count (in_analyses_with_lower_confidence false) are left out of the
+    # residue tests, neither methylarginines nor other arginines (Tables.left_out), and the protein-set tests of the
+    # statistics (go_binding, binding_protein) count the proteins with a counted site (counted_base), as build_release.py,
+    # release_analyses.py and release_layers.change_tables do. The explorer data still show them. Without that list (the
+    # release itself) every site counts.
     lc_sites = ((explorer.get('meta') or {}).get('lower_confidence_sites') or {}).get('sites') or []
     left_out_sites = {int(r[0]) for r in lc_sites if not r[1]}
     Tables.left_out = frozenset(x for j in left_out_sites for x in ((meth_accs[sites[j][0]], sites[j][1]), (base_acc(meth_accs[sites[j][0]]), sites[j][1])))
