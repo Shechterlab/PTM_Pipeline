@@ -67,6 +67,13 @@ CLASSES = {
     'self': 'another copy of the same protein in a PDB structure, or the protein with itself in IntAct',
     'predicted': 'a predicted complex model only (ProtVar, AlphaFold DB), not an observation',
 }
+# the classes in a sentence (CHANGES.md)
+CLASS_WORDS = {'writes': 'methylates the site', 'removes': 'demethylates it', 'binds_methylated': 'binds it methylated',
+               'binds_unmodified': 'binds it unmodified', 'binds_other_residue': 'binds a mutant or variant there',
+               'binds_state_not_read': 'at an interface whose residue could not be read', 'mutation_changes_binding': 'mutating it changes the binding',
+               'mutation_no_effect': 'mutating it leaves the binding unchanged', 'mutation_unspecified': 'mutated, effect not stated',
+               'binds_region': 'binds a region holding it', 'other_reaction': 'another reaction on the region', 'nucleic_acid': 'RNA or DNA',
+               'not_a_protein': 'not a protein partner', 'self': 'another copy of the protein', 'predicted': 'predicted only'}
 BINDS = ('binds_methylated', 'binds_unmodified', 'binds_other_residue', 'binds_state_not_read', 'binds_region')
 STATES = {
     'arginine': 'an unmodified arginine (PDB residue ARG)',
@@ -700,12 +707,13 @@ def changes(files: dict) -> list[str]:
            f'{t["site_id"].nunique():,} sites): the PDB entry, IntAct interaction, crosslinking study or predicted model, its method, the '
            f'species of both proteins, the paper ({papers[papers != ""].nunique():,} '
            f'papers behind the experimental records), the state of the site in the experiment and the other marks of the protein.',
-           'What the records show: ' + '; '.join(f'{k.replace("_", " ")} {n[k]:,}' for k in CLASSES if n[k]) + '.',
-           f'{meth["site_id"].nunique()} sites have a partner recorded binding them methylated ({len(meth):,} records, {meth["source_id"].nunique()} '
-           f'PDB entries and IntAct interactions). {len(new):,} of the records come from {new["source_id"].nunique()} PDB entries that model a site '
-           f'methylated and that PDBe-KB does not list for it: peptides without a human UniProt mapping, orthologues identical around the site, '
-           f'and the other histone variants sharing a tail.',
-           'Flags for the reader to check: ' + '; '.join(f'{k.replace("_", " ")} {fl[k]:,}' for k in FLAGS if fl[k]) + '.']
+           'What the records show: ' + '; '.join(f'{CLASS_WORDS[k]} {n[k]:,}' for k in CLASSES if n[k]) + '.',
+           f'{meth["site_id"].nunique()} sites have a partner recorded binding them methylated ({len(meth):,} records from '
+           f'{meth.loc[meth["source"] == "PDB", "source_id"].nunique()} PDB entries and {meth.loc[meth["source"] == "IntAct", "source_id"].nunique()} IntAct '
+           f'interactions). {new["source_id"].nunique()} PDB entries model a site methylated and are not among those PDBe-KB lists for it: peptides '
+           f'without a human UniProt mapping, orthologues identical around the site, and the other histone variants sharing a tail. Their '
+           f'{len(new):,} records are new: ' + ', '.join(f'{CLASS_WORDS[k]} {v:,}' for k, v in Counter(new['record_class']).most_common()) + '.',
+           'Flags for the reader to check (column flags): ' + '; '.join(f'{k} {fl[k]:,}' for k in FLAGS if fl[k]) + '.']
     if 'interaction_classes' in sites:
         w = sites['methylating_enzymes'].astype(str).str.len().gt(0).sum()
         out.append(f'Site columns interaction_classes, partners_binding_methylated, methylating_enzymes ({w} sites), demethylating_enzymes and '
