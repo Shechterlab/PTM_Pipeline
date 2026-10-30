@@ -6853,7 +6853,7 @@
     const sub = $('#seq-sub');
     if (!box) return;
     if (u && u.drift) { sub.textContent = driftText(p, u); sub.classList.add('unclamp'); setFoldSummary('p-seq', 'current UniProt sequence differs'); return; }
-    if (!u || !u.seq) { sub.textContent = 'The UniProt sequence could not be loaded. Open the UniProt entry for the full record.'; setFoldSummary('p-seq', 'UniProt unavailable'); return; }
+    if (!u || !u.seq) { sub.textContent = 'UniProt did not answer; try again later, or open the UniProt entry for the full record.'; setFoldSummary('p-seq', 'UniProt did not answer'); return; }
     const seq = u.seq;
     const siteAt = new Map(p.sites.map((j) => [S[j].pos, S[j]]));
     let mismatch = 0;
