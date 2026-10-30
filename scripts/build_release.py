@@ -1203,8 +1203,9 @@ def main() -> None:
     for c in rc.BOUND_SITE_COLUMNS:
         sites[c] = sites['site_id'].map(lambda s: bound[s][c] if s in bound else '')
     # where each interaction record comes from and what it shows (scripts/interaction_sources.py)
-    records_ix = interaction_sources.records(ix['sites'], sites, inputs, {a: clean(g).split(';')[0].strip() for a, g in meta['Gene Names (primary)'].items()
-                                                                           if clean(g)}) if ix else None
+    # the release's sites only (the view's both tiers), as ix covers them
+    records_ix = interaction_sources.records(ix['sites'], sites if args.with_lower_confidence else sites.iloc[:n_main], inputs,
+                                             {a: clean(g).split(';')[0].strip() for a, g in meta['Gene Names (primary)'].items() if clean(g)}) if ix else None
     provenance = interaction_sources.site_values(records_ix, sites['site_id']) if ix else None
     for c, *_ in interaction_sources.SITE_COLUMNS:
         sites[c] = provenance[c].values if ix else ''

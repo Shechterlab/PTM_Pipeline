@@ -10798,6 +10798,7 @@
     binds_methylated: ['Binds it methylated', 'the residue is a methylarginine in the experiment: modelled as one in a structure (2MR, DA2, NMM), or curated as methylated in IntAct'],
     mutation_changes_binding: ['Mutating it changes the binding', 'IntAct: a mutation of this residue (alone or with up to two neighbours) decreased, disrupted or increased the binding'],
     mutation_no_effect: ['Mutating it leaves the binding unchanged', 'IntAct: a mutation of this residue had no effect on the binding'],
+    mutation_unspecified: ['Mutated, effect not stated', 'IntAct: a mutation of this residue was tested; the record does not say how it changed the binding'],
     binds_unmodified: ['Binds it unmodified', 'structures that model an unmodified arginine here (PDBe-KB interface)'],
     binds_other_residue: ['Binds a mutant or variant', 'structures with another residue here: a mutated construct or a natural variant'],
     binds_state_not_read: ['At an interface, residue not read', 'PDBe-KB places an interface here, but the entry\'s sequence could not be matched to the site'],
@@ -10812,6 +10813,7 @@
   const SP_OPEN = new Set(['writes', 'removes', 'binds_methylated', 'mutation_changes_binding', 'binds_region', 'other_reaction', 'not_a_protein']);
   const spRows = (D, key) => (D && D.sites[key] ? D.sites[key].map((r) => Object.fromEntries(D.columns.map((c, i) => [c, r[i]]))) : []);
   const spClass = (D, r) => D.classes[r.class][0];
+  const spN = (r) => r.n || Math.max(1, r.ids.length);   // the records a row stands for
   const spState = (D, r) => D.states[r.state][0];
   const spFlag = (D, f) => D.flags[f][0];
   const shortSpecies = (sp) => { const m = /^([A-Z])[a-z]+ ([a-z]+)/.exec(sp || ''); return m ? m[1] + '. ' + m[2] : sp || ''; };
@@ -10838,7 +10840,7 @@
       const k = r.accession && IX && IX.byAcc ? IX.byAcc.get(r.accession) : null;
       name = k != null && IX.prot[k] && !notHuman(r.species) ? geneRef(k, r.name) : '<span title="' + esc((r.name || '') + (r.accession ? ' (' + r.accession + ')' : '')) + '"><b>' + esc(r.gene || r.name || r.accession || 'a protein') + '</b></span>' +
         (r.accession && notHuman(r.species) ? ' <a class="small" href="https://www.uniprot.org/uniprotkb/' + encodeURIComponent(r.accession) + '/entry" target="_blank" rel="noopener">UniProt ↗</a>' : '');
-    } else name = '<b>' + esc(kind === 'rna' ? 'RNA' : kind === 'dna' ? 'DNA' : kind === 'gene' ? 'Gene locus' : kind === 'small_molecule' ? 'Small molecule' : 'Other') + '</b>' + (r.name ? ' <span class="muted">' + esc(r.name.length > 60 ? r.name.slice(0, 58) + '…' : r.name) + '</span>' : '');
+    } else name = '<b>' + esc(kind === 'rna' ? 'RNA' : kind === 'dna' ? 'DNA' : kind === 'gene' ? 'Gene locus' : kind === 'small_molecule' ? 'Small molecule' : kind === 'peptide' ? 'Peptide or complex' : 'Other') + '</b>' + (r.name ? ' <span class="muted">' + esc(r.name.length > 60 ? r.name.slice(0, 58) + '…' : r.name) + '</span>' : '');
     const sp = (kind === 'protein' || kind === 'self') && notHuman(r.species) ? ' <span class="sp-species" title="' + esc('The partner in the experiment is from ' + r.species) + '">' + esc(shortSpecies(r.species.split('; ')[0])) + '</span>' : '';
     const flags = r.flags.filter((f) => spFlag(D, f) !== 'partner_other_species' && spFlag(D, f) !== 'no_publication').map((f) => '<span class="sp-flag" title="' + esc(D.flags[f][1]) + '">' + esc(spFlag(D, f).replace(/_/g, ' ')) + '</span>').join(' ');
     return name + sp + (flags ? '<div>' + flags + '</div>' : '');
@@ -10872,7 +10874,7 @@
     for (const r of rows) { const c = spClass(D, r); if (!by.has(c)) by.set(c, []); by.get(c).push(r); }
     const open = (opts && opts.open) || SP_OPEN;
     return Array.from(by.entries()).map(([c, list]) => {
-      const n = list.reduce((t, r) => t + Math.max(1, r.ids.length), 0), who = new Set(list.map((r) => r.gene || r.name || D.kinds[r.partner_kind]));
+      const n = list.reduce((t, r) => t + spN(r), 0), who = new Set(list.map((r) => r.gene || r.name || D.kinds[r.partner_kind]));
       const [head, help] = SP_HEAD[c] || [c, ''];
       const shown = list.slice(0, 8);
       const row = (r) => '<tr><td data-label="Partner">' + spPartnerHtml(D, r, s) + '</td><td data-label="Evidence">' + spSourceHtml(D, r, s) + '</td><td data-label="Method">' + spMethodHtml(D, r) + '</td>' +
@@ -10888,7 +10890,7 @@
     const rows = spRows(D, siteKey(s));
     if (!rows.length) return '';
     const n = new Map(), papers = new Set();
-    for (const r of rows) { const c = spClass(D, r); n.set(c, (n.get(c) || 0) + Math.max(1, r.ids.length)); if (c !== 'predicted') r.papers.forEach((k) => papers.add(k)); }
+    for (const r of rows) { const c = spClass(D, r); n.set(c, (n.get(c) || 0) + spN(r)); if (c !== 'predicted') r.papers.forEach((k) => papers.add(k)); }
     const total = Array.from(n.values()).reduce((a, b) => a + b, 0);
     return fmt(total) + ' interaction record' + (total === 1 ? '' : 's') + ' from ' + fmt(papers.size) + ' paper' + (papers.size === 1 ? '' : 's') + ' and datasets: ' +
       Array.from(n.entries()).map(([c, k]) => (SP_HEAD[c] ? SP_HEAD[c][0].toLowerCase() : c) + ' ' + fmt(k)).join(' · ');
@@ -10945,7 +10947,7 @@
         const parts = order.map((c) => {
           const list = spWho(D, s, c);
           if (!list.length) return '';
-          if (c === 'nucleic_acid') return '<span class="sp-cls"><b>RNA and DNA</b> ' + rows.filter((r) => spClass(D, r) === c).reduce((t, r) => t + Math.max(1, r.ids.length), 0) + ' records</span>';
+          if (c === 'nucleic_acid') return '<span class="sp-cls"><b>RNA and DNA</b> ' + rows.filter((r) => spClass(D, r) === c).reduce((t, r) => t + spN(r), 0) + ' records</span>';
           return '<span class="sp-cls sp-cls-' + c + '"><b>' + esc(SP_HEAD[c][0]) + '</b> ' + esc(list.slice(0, 5).join(', ')) + (list.length > 5 ? ' +' + (list.length - 5) : '') + '</span>';
         }).filter(Boolean);
         return '<tr><td><button class="linkish strong" type="button" data-pos="' + s.pos + '">' + rl(s.pos, P[s.p]) + '</button> ' + pill(s.st) + '</td><td>' + parts.join('') + '</td><td class="r num">' + papers.size + '</td></tr>';
@@ -16682,7 +16684,7 @@
           'The <b>Check a site</b> box on the Overview and Interactions pages answers the question for one site without leaving the page.</p>') +
         sub('ix-records', 'Who binds it: the interaction records at a site', '<p>Every interaction record at a site, with where it comes from (release file supporting/site_interaction_records, from v1.4.3). Each PDB interface is split into its PDB entries and each IntAct record into its interactions; crosslinks and predicted models keep one row each. ' +
           'For each: the <b>source</b> (the PDB entry, the IntAct interaction, the crosslinking study or the model); the <b>method</b> (the PDB experimental method and resolution; the IntAct detection method, interaction type and host organism, as PSI-MI names them); the <b>partner and its species</b> in the experiment; the <b>paper</b> (the PDB entry\'s primary citation; the IntAct publication, with its title from PubMed); and the <b>site in that experiment</b>: the residue the structure models there (ARG, or a methylarginine: NMM Rme1, DA2 Rme2a, 2MR Rme2s), the methylarginine IntAct curates at the residue, or a mutation of it, with the other modified residues of the protein after +. ' +
-          'The records are grouped by what they show: methylates it and demethylates it (an IntAct reaction with the methylarginine curated at this residue); binds it methylated; mutating it changes the binding or leaves it unchanged; binds it unmodified, or as another residue in a mutant or variant; binds a region holding it, with the state of the site not recorded; another reaction on the region (a reaction IntAct does not place at this residue, such as a lysine methyltransferase on a histone tail); RNA and DNA; a partner that is not a protein (a gene locus in chromatin immunoprecipitation); another copy of the protein; predicted only. ' +
+          'The records are grouped by what they show: methylates it and demethylates it (an IntAct reaction with the methylarginine curated at this residue); binds it methylated; mutating it changes the binding, leaves it unchanged, or was tested with no effect stated; binds it unmodified, or as another residue in a mutant or variant; binds a region holding it, with the state of the site not recorded; another reaction on the region (a reaction IntAct does not place at this residue, such as a lysine methyltransferase on a histone tail); RNA and DNA; a partner that is not a protein (a gene locus in chromatin immunoprecipitation); another copy of the protein; predicted only. An IntAct interaction with several partners gives one record per partner; where IntAct expanded a complex so that no binary record names the site\'s protein with a partner, the record keeps that partner with the interaction\'s method and paper. ' +
           'Structures that model the site methylated are read in full, including peptides PDBe-KB does not map to the human protein: an entity matches by its UniProt alignment, or by sequence when the residues around the methylarginine (at least 8, of 5 residue types) are identical to the human sequence (orthologues, synthetic peptides, and the other histone variants sharing a tail); what the methylated side chain touches within 4 Å is measured (RCSB ModelServer). The residue a structure models at the site is checked against the 5 residues on each side; where the alignment is shifted (another isoform) the site is found by its neighbours. ' +
           '<b>Flags</b> mark what to check: a partner or site protein from another species; an entity matched by sequence; a methylation the release does not report at the site; a methylation reaction whose product is not the kind the enzyme\'s PRMT type makes; an IntAct paper whose title names another member of the partner\'s family and not the partner (as for the JMJD4 records at H4 R3, from a paper on JMJD6); no publication. The records come from RCSB, IntAct, PSI-MI and PSI-MOD and PubMed as staged on 30 October 2026 (scripts/53_stage_interaction_sources.py).</p>') +
         sub('ix-na', 'RNA and DNA at methylarginines', '<p><b>Definitions.</b> Distances are between heavy atoms, measured from the arginine side chain (CD, NE, CZ, NH1, NH2) in the first model of each PDB entry (RCSB ModelServer; symmetry copies excluded). <b>Direct contact</b>: a side-chain heavy atom within 4 Å of a nucleotide heavy atom. <b>Proximal</b>: no direct contact in any entry of a distinct complex (the protein with the same set of nucleic-acid sequences), but a minimum distance of at most 8 Å; the tag gives that minimum distance over the entries of the complex (up to two copies of the protein in each). <b>Contact via a flanking residue</b> (tagged via i+k): the side chain is not within 8 Å, but a residue at i ± 1–5 is in direct contact. Every PDB entry in which PDBe-KB lists the site at an RNA or DNA interface is analysed.</p>' +

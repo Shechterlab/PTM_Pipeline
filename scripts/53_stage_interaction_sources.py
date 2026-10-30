@@ -65,8 +65,9 @@ INTACT = 'https://www.ebi.ac.uk/intact/ws/interaction/findInteractionWithFacet'
 OLS = 'https://www.ebi.ac.uk/ols4/api'
 ESUMMARY = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
 EFETCH = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
-# an arginine the abstract names by number: R3, Arg-3, arginine 3, H4R3 (histone marks), R3me2s
-ARG_NUMBER = re.compile(r'(?:(?<=H[1-4])|(?<=H2[AB])|(?<![A-Za-z0-9]))(?:R|Arg)\s?-?(\d{1,4})(?![\d.]*\s?(?:nM|µM|uM|mM|kDa))(?=me|[ACDEFGHIKLMNPQSTVWY]?(?:[^\w]|$))|\barginine[\s-]+(\d{1,4})\b')
+# an arginine the abstract names by number: R3, Arg-3, arginine 3, Arginine 3, p.Arg3Ala, H4R3 (histone marks), R3me2s
+ARG_NUMBER = re.compile(r'(?:(?<=H[1-4])|(?<=H2[AB])|(?<=p\.)|(?<![A-Za-z0-9]))(?:R|Arg)\s?-?(\d{1,4})(?![\d.]*\s?(?:nM|µM|uM|mM|kDa))'
+                        r'(?=me|[ACDEFGHIKLMNPQSTVWY]|Ala|Lys|Gly|Gln|Glu|His|Pro|Ser|Thr|Cys|Leu|Ile|Val|Met|Phe|Trp|Tyr|Asn|Asp|[^\w]|$)|\b[Aa]rginine[\s-]+(\d{1,4})\b')
 UNIPROT = 'https://rest.uniprot.org/uniprotkb/accessions'
 PEPTIDE_MAX, MUTATION_MAX = 20, 3      # as scripts/37 (INTACT_PEPTIDE_MAX, INTACT_MUT_MAX)
 ENTRY_QUERY = '''{entries(entry_ids:%s){rcsb_id struct{title} exptl{method} rcsb_entry_info{resolution_combined}
@@ -265,20 +266,21 @@ def residue_contacts(cache: Path, pdb: str, chain: str, label: int) -> dict:
     def fetch():
         url = MODELSERVER.format(pdb=pdb.lower()) + '?' + urllib.parse.urlencode(
             {'auth_asym_id': chain, 'label_seq_id': label, 'radius': CONTACT_CUTOFF + 1.5, 'model_nums': 1, 'encoding': 'cif'})
-        text = ''
+        text, status = None, 200
         for k in range(4):
             try:
                 with urllib.request.urlopen(urllib.request.Request(url), timeout=120) as r:
                     text = r.read().decode('utf-8', 'replace')
                 break
             except urllib.error.HTTPError as e:
-                if e.code in (400, 404):
+                if e.code in (400, 404):   # the server does not serve the residue: recorded as such
+                    text, status = '', e.code
                     break
                 time.sleep(3 * (k + 1))
             except Exception:  # noqa: BLE001 - retried
-                if k == 3:
-                    raise
                 time.sleep(3 * (k + 1))
+        if text is None:   # failed every try: stop rather than cache "touches nothing"
+            raise SystemExit(f'ModelServer did not answer for {pdb} chain {chain} residue {label}; run the staging again')
         atoms = parse_cif_atoms(text)
         me = [a for a in atoms if a.get('auth_asym_id') == chain and a.get('label_seq_id') == str(label)]
         side = [(float(a['Cartn_x']), float(a['Cartn_y']), float(a['Cartn_z'])) for a in me if a.get('label_atom_id') not in BACKBONE]
@@ -291,8 +293,11 @@ def residue_contacts(cache: Path, pdb: str, chain: str, label: int) -> dict:
             if d <= CONTACT_CUTOFF:
                 key = (ch, a.get('label_seq_id'), a.get('auth_seq_id'), comp)
                 seen[key] = min(d, seen.get(key, d))
-        return {'resn': me[0].get('label_comp_id') if me else '',
-                'hits': [[*key, round(d, 2)] for key, d in sorted(seen.items(), key=lambda kv: kv[1])]}
+        out = {'resn': me[0].get('label_comp_id') if me else '',
+               'hits': [[*key, round(d, 2)] for key, d in sorted(seen.items(), key=lambda kv: kv[1])]}
+        if status != 200:
+            out['http_status'] = status
+        return out
     return cached(cache, f'modelserver_methyl/{pdb.lower()}_{chain}_{label}.json', fetch)
 
 
@@ -552,7 +557,7 @@ def abstract_arginines(cache: Path, pmids: list[str]) -> dict[str, str]:
                 text = re.sub(r'<[^>]+>', ' ', ' '.join(re.findall(r'<(?:ArticleTitle|AbstractText)[^>]*>(.*?)</(?:ArticleTitle|AbstractText)>', art, re.S)))
                 found[pm] = sorted({int(a or b) for a, b in ARG_NUMBER.findall(text)})
             return found
-        ans = cached(cache, f'ncbi/arginines_{hashlib.md5(",".join(b).encode()).hexdigest()[:12]}.json', fetch)
+        ans = cached(cache, f'ncbi/arginines_{hashlib.md5((ARG_NUMBER.pattern + ",".join(b)).encode()).hexdigest()[:12]}.json', fetch)
         out.update({k: '; '.join(map(str, v)) for k, v in ans.items()})
         time.sleep(0.4)
     return out

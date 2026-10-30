@@ -56,6 +56,7 @@ CLASSES = {
     'binds_state_not_read': 'a PDB interface at the site whose residue there could not be read (no entity of the entry aligns to the site)',
     'mutation_changes_binding': 'mutating the site decreases, disrupts or increases the binding (IntAct)',
     'mutation_no_effect': 'mutating the site leaves the binding unchanged (IntAct)',
+    'mutation_unspecified': 'a mutation of the site was tested, its effect on the binding not stated (IntAct feature type mutation)',
     'binds_region': 'binds a region holding the site, the state of the site not recorded (IntAct binding region)',
     'other_reaction': 'an enzymatic reaction on a region holding the site that IntAct does not place at the site: acetylation, phosphorylation '
                       'or cleavage, a methylation or demethylation of another residue (a lysine methyltransferase on a histone tail), one where '
@@ -96,6 +97,7 @@ FLAGS = {
     'negative': 'IntAct records the interaction as not observed',
 }
 PARTNER_KINDS = {'protein': 'a protein', 'self': 'another copy of the site\'s protein', 'rna': 'RNA', 'dna': 'DNA',
+                 'peptide': 'a peptide or complex without a UniProt entry (IntAct: a synthetic peptide, a Complex Portal complex)',
                  'gene': 'a gene locus (IntAct participant type gene, from chromatin immunoprecipitation)',
                  'small_molecule': 'a small molecule', 'other': 'another participant type'}
 
@@ -196,8 +198,14 @@ def spans(ranges: str) -> list[tuple[int, int]]:
     return out
 
 
+UNIPROT_AC = re.compile(r'[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2}')
+
+
 def base(acc: str) -> str:
-    return re.split(r'[-_ ]', acc or '')[0]
+    """A UniProt accession without its isoform or chain suffix (P62805-1 -> P62805); other identifiers (EBI-, CPX-,
+    ENSG) as they are."""
+    head = re.split(r'[-_ ]', acc or '')[0]
+    return head if UNIPROT_AC.fullmatch(head) else (acc or '')
 
 
 def gene_family(gene: str) -> str:
@@ -244,7 +252,9 @@ def feature_items(features: str) -> list[tuple[str, str]]:
     out = []
     for f in (features or '').split(' | '):
         lab, _, rng = f.partition(':')
-        out.append((lab.strip(), rng.strip().strip(',').strip('()')))
+        # 'lys-21' of 'n6me1lys:(lys-21)', and of the longer form 'n6me1lys:MI:0335 (certain):21..21(lys-21)'
+        m = re.search(r'\(([^()]*)\)\s*$', rng)
+        out.append((lab.strip(), (m.group(1) if m else rng).strip().strip(',')))
     return [x for x in out if x[0]]
 
 
@@ -312,10 +322,12 @@ class Sources:
         for r in feat('methylarginines').itertuples():
             for a, b in spans(r.ranges):
                 self.ia_methyl[(r.interaction_ac, r.uniprot_accession)].append((a, b, r.feature_type))
-        self.ia_mut = defaultdict(list)             # (interaction ac, accession) -> [(start, end, feature type, resulting sequence)]
+        self.ia_mut = defaultdict(list)             # (interaction ac, accession) -> [(start, end, feature type, resulting residues)]
         for r in feat('mutations').itertuples():
-            for a, b in spans(r.ranges):
-                self.ia_mut[(r.interaction_ac, r.uniprot_accession)].append((a, b, r.feature_type, r.resulting_sequence))
+            sp, res = spans(r.ranges), r.resulting_sequence.split(',')
+            for k, (a, b) in enumerate(sp):
+                # one resulting sequence per range where IntAct gives one each, else the whole
+                self.ia_mut[(r.interaction_ac, r.uniprot_accession)].append((a, b, r.feature_type, res[k] if len(res) == len(sp) else r.resulting_sequence))
 
     def entity(self, pdb: str, ent_id: str):
         return next((e for e in self.entities.get(pdb, []) if e.entity_id == ent_id), None)
@@ -444,30 +456,62 @@ def host_text(host: str) -> str:
     return '' if h.lower() in ('', 'unknown', '-') else f'in {h}'
 
 
+CHANGES_BINDING = re.compile(r'decreas|disrupt|increas|caus')   # the IntAct mutation effects that change an interaction
+
+
+def ia_kind(b: dict, side: str) -> str:
+    """What an IntAct participant is: a protein, a peptide or complex without a UniProt entry, a gene locus (Ensembl gene,
+    or type gene), RNA, DNA, a small molecule."""
+    pid, t = b[f'participant_{side}'], b[f'participant_type_{side}']
+    if pid.startswith('ENSG'):
+        return 'gene'
+    k = IA_KIND.get(t, 'other')
+    return 'peptide' if k == 'protein' and not UNIPROT_AC.fullmatch(base(pid)) else k
+
+
+def row_partner_matches(r, b: dict, other: str, acc: str) -> bool:
+    """The binary's other participant is the partner of the site_interactions row r."""
+    o = base(b[f'participant_{other}'])
+    if r.partner_kind == 'protein':
+        return o == r.partner_accession
+    if r.partner_kind == 'self':
+        return o == acc
+    # scripts/37 files every participant that is not a protein as RNA, DNA or other; any such participant matches,
+    # the one of the same kind first (intact_records sorts them)
+    return ia_kind(b, other) != 'protein'
+
+
 def intact_records(ev: pd.DataFrame, src: Sources) -> list[dict]:
-    by = {}   # (site, ac) -> record, the strongest class when an interaction gives several rows
+    """One record per site, IntAct interaction and partner of site_interactions: the binary record of the site's protein
+    and that partner, or, where IntAct expanded a complex so that no binary names both (spoke expansion), the partner of
+    the row with the interaction's method and paper."""
+    by = {}   # (site, ac, partner) -> record; the strongest class when an interaction gives several rows
     order = list(CLASSES)
     for r in ev[ev['evidence_type'].str.startswith('intact_')].itertuples():
         acc, pos = r.site_id.split(':R')[0], int(r.site_id.split(':R')[1])
+        pkey = r.partner_accession if r.partner_kind == 'protein' else r.partner_kind
         for ac in re.findall(r'EBI-\d+', r.detail):
             binaries = src.intact.get(ac, [])
-            # the binary record whose participants are the site's protein and the partner
-            pick = []
-            for b in binaries:
-                for me, other in (('a', 'b'), ('b', 'a')):
-                    if base(b[f'participant_{me}']) != acc:
-                        continue
-                    o = base(b[f'participant_{other}'])
-                    hit = (o == r.partner_accession) if r.partner_kind == 'protein' else (o == acc) if r.partner_kind == 'self' else True
-                    pick.append((hit, me, other, b))
-            pick.sort(key=lambda x: not x[0])
-            if not pick:
+            if not binaries:
                 continue
-            _, me, other, b = pick[0]
-            kind = IA_KIND.get(b[f'participant_type_{other}'], 'other')
-            if base(b[f'participant_{other}']) == acc:
+            sides = [(me, other, b) for b in binaries for me, other in (('a', 'b'), ('b', 'a')) if base(b[f'participant_{me}']) == acc]
+            exact = sorted([(me, other, b) for me, other, b in sides if row_partner_matches(r, b, other, acc)],
+                           key=lambda x: ia_kind(x[2], x[1]) != r.partner_kind)
+            if not exact and r.partner_kind == 'self':
+                # scripts/37 files a partner it cannot name (a Complex Portal complex) as the protein itself: the
+                # interaction's own other participant
+                exact = [x for x in sides if base(x[2][f'participant_{x[1]}']) != acc][:1]
+            if exact:
+                me, other, b = exact[0]
+            else:   # no binary names the site's protein and this partner: the interaction's method and paper only
+                me, other, b = sides[0] if sides else (None, None, binaries[0])
+            matched = bool(exact)
+            kind = ia_kind(b, other) if matched else (r.partner_kind or 'other')
+            if matched and base(b[f'participant_{other}']) == acc:
                 kind = 'self'
-            mine = feature_items(b[f'features_{me}'])
+            if kind == 'other' and matched:
+                kind = ia_kind(b, other)
+            mine = feature_items(b[f'features_{me}']) if me else []
             # the state of the site: the methylarginine or mutation features scripts/37a staged with their ranges
             state, sdetail = 'not_recorded', ''
             here = [t for a, z, t in src.ia_methyl.get((ac, acc), []) if a <= pos <= z]
@@ -477,7 +521,7 @@ def intact_records(ev: pd.DataFrame, src: Sources) -> list[dict]:
             else:
                 muts = [(a, z, t, seq) for a, z, t, seq in src.ia_mut.get((ac, acc), []) if a <= pos <= z]
                 if muts:
-                    state, sdetail = 'mutated', '; '.join(sorted({f'{t}: ' + (f'R{pos} to {seq}' if a == z else f'residues {a}-{z} to {seq.replace(",", "")}')
+                    state, sdetail = 'mutated', '; '.join(sorted({f'{t}: ' + (f'R{pos} to {seq}' if a == z else f'residues {a}-{z} to {seq}')
                                                                   if seq and seq != '-' else t for a, z, t, seq in muts}))
             # the other marks of the site's participant, by IntAct's feature names (the curator's, whose numbering may be
             # the mature protein's); its methylarginines elsewhere by their staged ranges
@@ -485,10 +529,12 @@ def intact_records(ev: pd.DataFrame, src: Sources) -> list[dict]:
             marks = others + sorted({f'{rng} {LABEL_MARKS[lab]}' if re.search(r'\d', rng) else src.label.get(lab, lab)
                                      for lab, rng in mine if lab in LABEL_MARKS and lab not in METHYL_LABEL})
             itype = b['interaction_type_mi']
-            role_me, role_other = b[f'biological_role_{me}'], b[f'biological_role_{other}']
+            role_me = b[f'biological_role_{me}'] if me else ''
+            role_other = b[f'biological_role_{other}'] if matched else ''
             # the partner writes or removes the mark only where IntAct places the methylarginine at the site, or mutating
             # the site changes the reaction; a reaction elsewhere in the region (SETD7 on H3K4) is another reaction
-            at_site = state.startswith('Rme') or (state == 'mutated' and 'no effect' not in sdetail)
+            at_site = state.startswith('Rme') or (state == 'mutated' and bool(CHANGES_BINDING.search(sdetail)))
+            effect = (re.match(r'^([a-z ]+),', r.detail) or [None, ''])[1] if r.evidence_type == 'intact_mutation' else ''
             if itype in REACTIONS and not (role_me == 'enzyme' and role_other != 'enzyme') and at_site:
                 cls = REACTIONS[itype]
             elif itype and itype not in NOT_REACTION:
@@ -502,34 +548,44 @@ def intact_records(ev: pd.DataFrame, src: Sources) -> list[dict]:
             elif r.evidence_type == 'intact_methylated' or state.startswith('Rme'):
                 cls = 'binds_methylated'
             elif r.evidence_type == 'intact_mutation':
-                cls = 'mutation_no_effect' if 'no effect' in r.detail else 'mutation_changes_binding'
+                cls = 'mutation_no_effect' if effect == 'no effect' else 'mutation_unspecified' if effect in ('unspecified', '') else 'mutation_changes_binding'
             else:
                 cls = 'binds_region'
             host = b['host_organism']
-            psp = species(b[f'participant_species_{other}']) if kind in ('protein', 'self') else ''
+            taxid = b[f'participant_taxid_{other}'] if matched else ''
+            psp = species(b[f'participant_species_{other}']) if matched and kind in ('protein', 'self') and not taxid.startswith('-') else ''
             fl = []
-            if kind == 'protein' and b[f'participant_taxid_{other}'] not in ('9606', ''):
+            if kind == 'protein' and taxid not in ('9606', '') and not taxid.startswith('-'):   # -1 in vitro, -2 chemical synthesis
                 fl.append('partner_other_species')
-            if b[f'participant_taxid_{me}'] not in ('9606', ''):
+            if me and b[f'participant_taxid_{me}'] not in ('9606', '') and not b[f'participant_taxid_{me}'].startswith('-'):
                 fl.append('site_protein_other_species')
             if b['negative'] == 'true':
                 fl.append('negative')
             cite = ', '.join(x for x in (b['first_author'], b['journal'].split(' (')[0], f'({b["year"]})' if b['year'] else '') if x).replace(', (', ' (')
             paper = src.pubmed.get(b['pubmed'])
+            if matched:
+                pacc = base(b[f'participant_{other}']) if kind in ('protein', 'self') else b[f'participant_{other}']
+                pname = b[f'participant_description_{other}'] or b[f'participant_name_{other}']
+                pgene = (r.partner_gene if r.partner_accession and r.partner_accession == pacc else '') or src.genes.get(pacc, '') \
+                    or (b[f'participant_name_{other}'] if kind in ('protein', 'self') else '')
+            else:
+                pacc, pname, pgene = r.partner_accession, '', r.partner_gene or src.genes.get(r.partner_accession, '')
             rec = {'site_id': r.site_id, 'record_class': cls, 'evidence_types': r.evidence_type, 'partner_kind': kind,
-                   'partner_accession': base(b[f'participant_{other}']) if kind in ('protein', 'self') else b[f'participant_{other}'],
-                   'partner_gene': r.partner_gene or (b[f'participant_name_{other}'] if kind in ('protein', 'self') else ''),
-                   'partner_name': b[f'participant_description_{other}'] or b[f'participant_name_{other}'], 'partner_species': psp,
+                   'partner_accession': pacc, 'partner_gene': pgene, 'partner_name': pname, 'partner_species': psp,
                    'source': 'IntAct', 'source_id': ac, 'method': src.mi.get(b['detection_method_mi'], b['detection_method_mi']),
                    'context': ', '.join(x for x in (src.mi.get(itype, itype), host_text(host)) if x),
-                   'site_state': state, 'state_detail': sdetail, 'other_marks': '; '.join(marks), 'site_species': species(b[f'participant_species_{me}']),
-                   'detail': ' / '.join(x for x in (b[f'features_{me}'], b[f'features_{other}']) if x), 'pubmed': b['pubmed'],
-                   'doi': b['doi'] or (paper.doi if paper else ''), 'citation': cite, 'paper_title': paper.title if paper else b['paper_title'], '_flags': fl}
+                   'site_state': state, 'state_detail': sdetail, 'other_marks': '; '.join(marks),
+                   'site_species': species(b[f'participant_species_{me}']) if me else '',
+                   'detail': ' / '.join(x for x in ((b[f'features_{me}'] if me else ''), (b[f'features_{other}'] if matched else '')) if x)
+                             + ('' if matched else 'IntAct expanded a complex: no binary record names this partner with the site\'s protein'),
+                   'pubmed': b['pubmed'], 'doi': b['doi'] or (paper.doi if paper else ''), 'citation': cite,
+                   'paper_title': paper.title if paper else b['paper_title'], '_flags': fl}
             named = {int(x) for x in (paper.arginines_named.split('; ') if paper and paper.arginines_named else [])}
-            if named and pos not in named and pos - 1 not in named and cls in ('writes', 'removes', 'binds_methylated', 'mutation_changes_binding', 'mutation_no_effect'):
+            if named and pos not in named and pos - 1 not in named and cls in ('writes', 'removes', 'binds_methylated', 'mutation_changes_binding',
+                                                                              'mutation_no_effect', 'mutation_unspecified'):
                 rec['_flags'].append('paper_names_other_arginine')
                 rec['detail'] = (rec['detail'] + ' / ' if rec['detail'] else '') + 'the paper names arginine ' + ', '.join(map(str, sorted(named)))
-            k = (r.site_id, ac)
+            k = (r.site_id, ac, pkey)
             if k in by:
                 old = by[k]
                 old['evidence_types'] = '; '.join(sorted(set(old['evidence_types'].split('; ')) | {r.evidence_type}))
@@ -561,6 +617,7 @@ def other_records(ev: pd.DataFrame) -> list[dict]:
 def records(ev: pd.DataFrame, sites: pd.DataFrame, inputs, genes: dict[str, str]) -> pd.DataFrame:
     """supporting/site_interaction_records from supporting/site_interactions (ev) and the staged provenance."""
     src = Sources(inputs, genes)
+    sites = sites[~sites['flags'].astype(str).str.contains('one_sided_window', regex=False)]   # the sites the analyses count
     states = {}
     for r in sites.itertuples():
         states[r.site_id] = {x for c in ('methyl_states_reported', 'maron2021_s2_states', 'uniprot_states', 'states_by_study_design')
@@ -678,10 +735,14 @@ def website_payload(t: pd.DataFrame, version: str) -> dict:
     for r in t.itertuples():
         if r.source in ('PDB', 'IntAct') and r.source_id and r.source_id not in sources:
             sources[r.source_id] = [tid(r.method) if r.method else -1, pid(r), tid(r.context) if r.context else -1]
-        key = (r.record_class, r.partner_kind, r.partner_accession, r.partner_gene, r.partner_species, r.site_state, r.source, r.flags)
-        g = out[r.site_id].setdefault(key, {'ids': [], 'papers': set(), 'methods': set(), 'marks': set(), 'details': [], 'names': set(),
+        # a record without an id (a crosslink, an annotation) is a row of its own
+        key = (r.record_class, r.partner_kind, r.partner_accession, r.partner_gene, r.partner_species, r.site_state, r.source, r.flags,
+               r.evidence_types, '' if r.source_id else r.Index)
+        g = out[r.site_id].setdefault(key, {'ids': [], 'n': 0, 'papers': set(), 'methods': set(), 'marks': set(), 'details': [], 'names': set(),
                                             'state_detail': set(), 'context': set()})
-        g['ids'].append(r.source_id)
+        g['n'] += 1
+        if r.source_id:
+            g['ids'].append(r.source_id)
         p = pid(r)
         if p >= 0:
             g['papers'].add(p)
@@ -699,16 +760,16 @@ def website_payload(t: pd.DataFrame, version: str) -> dict:
     sites = {}
     for s, groups in out.items():
         rows = []
-        for (cls, kind, acc, gene, sp, state, source, fl), g in groups.items():
+        for (cls, kind, acc, gene, sp, state, source, fl, _, _), g in groups.items():
             rows.append([classes.index(cls), kinds.index(kind) if kind in kinds else len(kinds) - 1, acc, gene, '; '.join(sorted(g['names']))[:160], sp,
                          states.index(state), '; '.join(sorted(g['state_detail']))[:160], source, sorted(set(g['ids'])), sorted(g['methods']),
                          sorted(g['papers']), sorted(g['marks'], key=mark_key), g['details'], sorted(g['context']),
-                         [flags.index(f) for f in fl.split('; ') if f]])
+                         [flags.index(f) for f in fl.split('; ') if f], g['n']])
         sites[s] = rows
     return {'version': version, 'classes': [[k, v] for k, v in CLASSES.items()], 'kinds': kinds, 'states': [[k, v] for k, v in STATES.items()],
             'flags': [[k, v] for k, v in FLAGS.items()], 'papers': papers, 'texts': texts, 'sources': sources,
             'columns': ['class', 'partner_kind', 'accession', 'gene', 'name', 'species', 'state', 'state_detail', 'source', 'ids', 'methods',
-                        'papers', 'other_marks', 'details', 'context', 'flags'], 'sites': sites}
+                        'papers', 'other_marks', 'details', 'context', 'flags', 'n'], 'sites': sites}
 
 
 def website(release: Path, version: str, inputs: Path, site_out: Path, name: str = 'site_partners.json') -> None:
