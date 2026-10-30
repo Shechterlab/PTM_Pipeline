@@ -1421,6 +1421,9 @@ details.fold > .card.tbl-card { padding-top: 0; }
 details.fold > .card.tbl-card > .card-pad:first-child { padding-top: 0.75rem; }
 details.fold > .card > h3:first-child, details.fold > .card > .card-head:first-child h3, details.fold > .card > .card-pad:first-child > .card-head h3 { display: none; }
 details.fold > .card > .card-head:first-child > div:first-child:not(:has(> :not(h3))) { display: none; }
+/* The maps' places, the second card of Location and condensates, keep their heading: the fold's title does not name them. */
+details.fold > #card-cell:not(:empty) { border-top: 1px solid var(--line); border-radius: 0; margin-top: 0.5rem; }
+details.fold > #card-cell > .card-head:first-child h3 { display: block; font-size: 1rem; }
 .fold-list { display: grid; gap: 0.6rem; min-width: 0; }
 /* Folds inside a card (the 3D card's structure lists): lighter, no shadow. */
 details.fold.sub-fold { margin-top: 0.75rem; box-shadow: none; border-radius: 0.6rem; }
@@ -1441,18 +1444,18 @@ details.fold.sub-fold > .pdb-block > .card-head h3 { display: none; }
   .fold-sum:not(:empty)::before { content: none; }
 }
 
-/* Card help text shows one line; a click shows the rest (the selector matches CLAMP_SEL in explorer.js). */
-.card-head p.sub:not(:has(select, input, .warn, .warn-text)), .card > p.sub:not(:has(select, input, .warn, .warn-text)), .card-pad p.sub:not(:has(select, input, .warn, .warn-text)) {
-  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; line-clamp: 1; overflow: hidden; cursor: pointer;
-}
-.card-head p.sub.unclamp, .card > p.sub.unclamp, .card-pad p.sub.unclamp { display: block; -webkit-line-clamp: unset; line-clamp: none; overflow: visible; cursor: auto; }
+/* Concise text (conciseText): a long explanation shows its lead and a "more" button; the rest opens in place. */
+.cx-more { border: 0; background: none; padding: 0 0 0 0.35em; margin: 0; font: inherit; font-size: 0.92em; font-weight: 600; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
+.cx-more:hover { color: var(--accent-dark); }
+.cx-more:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
 
 @media print {
   details.fold { box-shadow: none; border: 1px solid #d5dde0; margin-bottom: 4mm; }
   details.fold > summary { padding: 2mm 3mm; border-bottom: 0; break-after: avoid; }
   details.fold > summary .pm, .fold-sum { display: none; }
   details.fold > .card { margin-bottom: 0; border: 0; }
-  .card-head p.sub, .card > p.sub, .card-pad p.sub { display: block !important; -webkit-line-clamp: unset !important; line-clamp: none !important; overflow: visible !important; }
+  .cx-rest[hidden] { display: inline !important; }
+  .cx-more { display: none !important; }
 }
 
 /* 3D card: which structure is shown (experimental PDB chain or the AlphaFold model). */
@@ -2246,7 +2249,7 @@ ul.tight li { margin: 0.15rem 0; }
 .pmark.ns { color: var(--muted); }
 .pert-key { display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; font-size: 0.8rem; color: var(--muted); margin: 0.4rem 0; }
 
-/* Where in the cell (preview): the drawings of the cell and the nucleus and the compartment grid, coloured by the odds
+/* Where in the cell: the drawings of the cell and the nucleus and the compartment grid, coloured by the odds
    ratio within abundance deciles. The drawings keep a readable size on narrow screens and scroll sideways instead. */
 .cell-fig { max-width: 1040px; margin-top: 0.75rem; }
 .cell-fig .fig-block { overflow-x: auto; }
@@ -2273,8 +2276,6 @@ svg [data-tip]:hover .cd-lead { stroke-opacity: 1; stroke-width: 1.6; }
 .cell-key { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; }
 .cell-key i.cg-k { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
 .cg-k.na { background: none; border: 1px dashed var(--line-strong); } .cg-k.u3 { background: var(--t-up-3); } .cg-k.u1 { background: var(--t-up-1); } .cg-k.ns { background: var(--t-mid); border: 1px solid var(--line); } .cg-k.d1 { background: var(--t-down-1); } .cg-k.d3 { background: var(--t-down-3); }
-.preview-tag { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 0.3rem; vertical-align: middle; }
-.preview-flag { font-size: 0.8rem; color: var(--accent-dark, var(--accent)); margin: 0 0 0.5rem; }
 .cell-places th { font-weight: 600; width: 14rem; }
 .cell-places tr.sub-head th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding-top: 0.6rem; width: auto; }
 .cd-hit, .cg-hit { fill: transparent; }
@@ -2295,4 +2296,12 @@ svg .cg-row:hover .cg-hit, svg .cg-row.on .cg-hit { fill: var(--accent); fill-op
 .cg-line.d0 { stroke: var(--t-down-0); } .cg-line.d1 { stroke: var(--t-down-1); } .cg-line.d2 { stroke: var(--t-down-2); } .cg-line.d3 { stroke: var(--t-down-3); }
 .cg-line.ns, .cg-line.na { stroke: var(--line-strong); }
 .cell-grid-wrap { max-width: 860px; margin-top: 1rem; }
+/* the regions of the cell, the card's first level: a small grid above the drawings */
+.cell-regions-wrap { max-width: 520px; margin-top: 0.75rem; }
+.cell-regions-wrap svg { width: 100%; height: auto; display: block; }
+/* the grids keep a readable size on a phone, and scroll sideways as the drawings do */
+.cell-regions-wrap .fig-block, .cell-grid-wrap .fig-block { overflow-x: auto; }
+.cell-regions-wrap svg { min-width: 400px; }
+.cell-grid-wrap svg { min-width: 640px; }
+.cell-lead { font-size: 1rem; margin: 0 0 0.6rem; max-width: 62rem; }
 .cell-grid-wrap svg { width: 100%; height: auto; display: block; }

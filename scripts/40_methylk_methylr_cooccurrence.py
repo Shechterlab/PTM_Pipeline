@@ -39,7 +39,7 @@ import pandas as pd
 from scipy.stats import chi2
 from statsmodels.stats.contingency_tables import StratifiedTable
 
-from common import BREWER_COLORS, apply_paper_style, parse_fasta, save_figure, save_table, style_axis
+from common import BREWER_COLORS, apply_paper_style, cmh_statistic, parse_fasta, save_figure, save_table, style_axis
 
 KME_GROUP = 'Lys methylation'
 # Same histone families as the explorer's histone numbering (core and linker histones and their variants).
@@ -144,7 +144,7 @@ def mh_test(df: pd.DataFrame, exposure: pd.Series, outcome: pd.Series, strata: l
         return res | {'mh_or': np.nan, 'ci_low': np.nan, 'ci_high': np.nan, 'cmh_chi2': np.nan, 'log10_p': np.nan}
     st = StratifiedTable(tables)
     lo, hi = st.oddsratio_pooled_confint()
-    stat = st.test_null_odds(correction=True).statistic
+    stat = cmh_statistic([(t[0, 0], t[0, 1], t[1, 0], t[1, 1]) for t in tables])
     # log10 p from the chi-square (1 df) survival function, which stays finite where p underflows to 0.
     return res | {'mh_or': st.oddsratio_pooled, 'ci_low': lo, 'ci_high': hi, 'cmh_chi2': stat, 'log10_p': chi2.logsf(stat, 1) / np.log(10)}
 

@@ -416,8 +416,22 @@ def informative_strata(tables):
     return [(a, b, c, d) for a, b, c, d in tables if a + b + c + d >= 2 and (a + b) and (c + d) and (a + c) and (b + d)]
 
 
+def cmh_statistic(tables) -> float:
+    """The continuity-corrected Cochran-Mantel-Haenszel statistic of 2x2 tables (a, b, c, d): (|O - E| - 0.5)^2 / V,
+    with the bracket floored at 0, so that a count within 0.5 of its expectation gives 0 (p = 1). statsmodels'
+    test_null_odds(correction=True) leaves the bracket negative there, and the square then grows as V shrinks: a sparse
+    test with nothing observed and almost nothing expected came out significant. NaN when V is 0."""
+    o = e = v = 0.0
+    for a, b, c, d in tables:
+        n = a + b + c + d
+        o += a
+        e += (a + b) * (a + c) / n
+        v += (a + b) * (c + d) * (a + c) * (b + d) / (n * n * (n - 1))
+    return max(0.0, abs(o - e) - 0.5) ** 2 / v if v > 0 else float('nan')
+
+
 def mantel_haenszel(tables):
-    """Mantel-Haenszel common odds ratio and the continuity-corrected CMH test (statsmodels StratifiedTable).
+    """Mantel-Haenszel common odds ratio (statsmodels StratifiedTable) and the continuity-corrected CMH test (cmh_statistic).
 
     Returns (odds, p, informative strata); odds may be inf when no stratum has b*c > 0."""
     strata = informative_strata(tables)
@@ -427,8 +441,9 @@ def mantel_haenszel(tables):
     st = StratifiedTable([np.array([[a, b], [c, d]], dtype=float) for a, b, c, d in strata])
     den = sum(b * c / (a + b + c + d) for a, b, c, d in strata)
     odds = float(st.oddsratio_pooled) if den > 0 else float('inf')
-    # statsmodels reports 1 - cdf, which underflows below ~1e-16; take its statistic to scipy's survival function.
-    return odds, float(chi2.sf(st.test_null_odds(correction=True).statistic, 1)), len(strata)
+    # scipy's survival function, which stays accurate where 1 - cdf underflows (below ~1e-16)
+    stat = cmh_statistic(strata)
+    return odds, (float(chi2.sf(stat, 1)) if math.isfinite(stat) else None), len(strata)
 
 
 def mantel_haenszel_ci(tables):
