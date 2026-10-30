@@ -11681,6 +11681,9 @@
   // half of gap and its corners rounded (Chaikin), so that interchromatin channels gap wide run between them. Bodies
   // that sit in the channels are placed at seed midpoints and junctions that no other seed is closer to.
   function cellTerritories(seeds, cx, cy, rx, ry, gap) {
+    return cellTerritoryPolys(seeds, cx, cy, rx, ry, gap).map((poly) => cellPoly(poly) + 'Z');
+  }
+  function cellTerritoryPolys(seeds, cx, cy, rx, ry, gap) {
     const ring = [];
     for (let i = 0; i < 40; i++) { const t = (2 * Math.PI * i) / 40; ring.push([cx + rx * Math.cos(t), cy + ry * Math.sin(t)]); }
     const clip = (poly, nx, ny, c) => { // the part of poly with nx * x + ny * y <= c
@@ -11700,8 +11703,37 @@
         poly = clip(poly, nx / L, ny / L, (nx * (s[0] + o[0]) + ny * (s[1] + o[1])) / (2 * L) - gap / 2);
       });
       for (let k = 0; k < 2; k++) poly = poly.flatMap((p, m) => { const q = poly[(m + 1) % poly.length]; return [[0.75 * p[0] + 0.25 * q[0], 0.75 * p[1] + 0.25 * q[1]], [0.25 * p[0] + 0.75 * q[0], 0.25 * p[1] + 0.75 * q[1]]]; });
-      return cellPoly(poly) + 'Z';
+      return poly;
     });
+  }
+  // Chromatin fibre inside a territory: a looping walk from its seed that turns back at the edge (inset by `inset`),
+  // drawn as a smooth curve. Seeded, so every drawing and export of the cell is the same.
+  function cellFibre(poly, start, seed, steps, inset) {
+    let st = seed * 2654435761 >>> 0;
+    const rnd = () => { st = (st + 0x6D2B79F5) >>> 0; let t = Math.imul(st ^ (st >>> 15), 1 | st); t ^= t + Math.imul(t ^ (t >>> 7), 61 | t); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const inside = (x, y) => {
+      let c = false;
+      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+        const [xi, yi] = poly[i], [xj, yj] = poly[j];
+        if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) c = !c;
+        // too close to this edge counts as outside
+        const ex = xj - xi, ey = yj - yi, L2 = ex * ex + ey * ey || 1, u = Math.max(0, Math.min(1, ((x - xi) * ex + (y - yi) * ey) / L2));
+        if (Math.hypot(x - xi - u * ex, y - yi - u * ey) < inset) return false;
+      }
+      return c;
+    };
+    let [x, y] = start, h = rnd() * 2 * Math.PI, curl = 0.5;
+    const pts = [[x, y]];
+    for (let i = 0; i < steps; i++) {
+      if (i % 9 === 0) curl = (rnd() < 0.5 ? -1 : 1) * (0.25 + rnd() * 0.45);
+      let tries = 0, nx, ny;
+      do { h += curl + (rnd() - 0.5) * 0.9 + (tries ? Math.PI * (0.6 + rnd() * 0.8) : 0); nx = x + 6.5 * Math.cos(h); ny = y + 6.5 * Math.sin(h); } while (!inside(nx, ny) && ++tries < 12);
+      if (tries >= 12) continue;
+      x = nx; y = ny; pts.push([x, y]);
+    }
+    let d = 'M' + pts[0][0].toFixed(1) + ',' + pts[0][1].toFixed(1);
+    for (let i = 1; i < pts.length - 1; i++) d += 'Q' + pts[i][0].toFixed(1) + ',' + pts[i][1].toFixed(1) + ' ' + ((pts[i][0] + pts[i + 1][0]) / 2).toFixed(1) + ',' + ((pts[i][1] + pts[i + 1][1]) / 2).toFixed(1);
+    return d;
   }
   // the seeds of the nucleus drawing's territories (A to J), in the drawing's coordinates
   const CELL_CT = [[330, 150], [300, 265], [360, 360], [450, 95], [465, 225], [480, 350], [600, 95], [615, 335], [705, 170], [715, 285]];
@@ -11732,7 +11764,7 @@
     });
     g += '<g' + D.tip('er') + '>' + er + '</g>';
     // free polysomes in the cytosol
-    for (const [x0, y0, t0] of [[622, 112, 0], [395, 392, 30], [600, 422, -20], [252, 212, 80]]) {
+    for (const [x0, y0, t0] of [[622, 112, 0], [395, 392, 30], [580, 404, -20], [252, 212, 80]]) {
       for (let i = 0; i < 7; i++) { const t = (t0 + i * 26) * Math.PI / 180; rib += '<circle cx="' + (x0 + 13 * Math.cos(t) + i * 2.4).toFixed(1) + '" cy="' + (y0 + 9 * Math.sin(t)).toFixed(1) + '" r="2.2"/>'; }
     }
     g += '<g class="' + D.fill('ribosomes') + '"' + D.tip('ribosomes') + '>' + rib + '</g>';
@@ -11753,13 +11785,13 @@
     }
     golgi += [[640, 158, 4], [652, 252, 3.5], [700, 172, 4], [704, 240, 3.5], [714, 206, 3]].map(([x, y, r]) => '<circle class="' + D.fill('golgi') + ' cd-o" cx="' + x + '" cy="' + y + '" r="' + r + '"/>').join('');
     g += '<g' + D.tip('golgi') + '>' + golgi + '</g>';
-    // mitochondria
-    g += '<g' + D.tip('mito') + '>' + [[279, 168, 66, 26, 72], [384, 112, 70, 26, -8], [336, 398, 64, 24, 28], [652, 402, 70, 26, -18], [748, 222, 56, 22, 82]].map(([x, y, l, w, r]) => cellMito(x, y, l, w, r, D.fill('mito'))).join('') + '</g>';
+    // mitochondria (every organelle lies inside the actin cortex, at most about 0.9 of the cell's radius with its width)
+    g += '<g' + D.tip('mito') + '>' + [[312, 188, 66, 26, 66], [384, 112, 70, 26, -8], [350, 378, 64, 24, 40], [482, 386, 60, 22, 6], [748, 222, 56, 22, 82]].map(([x, y, l, w, r]) => cellMito(x, y, l, w, r, D.fill('mito'))).join('') + '</g>';
     // endosomes and lysosomes, with intraluminal vesicles
     g += '<g' + D.tip('endolyso') + '>' + [[720, 298, 13], [702, 334, 10], [258, 268, 9]].map(([x, y, r]) => '<circle class="' + D.fill('endolyso') + ' cd-o" cx="' + x + '" cy="' + y + '" r="' + r + '"/>' +
       [[-0.35, -0.3], [0.3, -0.2], [0, 0.35]].map(([a, b]) => '<circle class="cd-in" cx="' + (x + a * r).toFixed(1) + '" cy="' + (y + b * r).toFixed(1) + '" r="' + (r * 0.24).toFixed(1) + '"/>').join('')).join('') + '</g>';
     // peroxisomes, with a crystalline core
-    g += '<g' + D.tip('perox') + '>' + [[298, 232, 8], [696, 120, 7], [470, 432, 7]].map(([x, y, r]) => '<circle class="' + D.fill('perox') + ' cd-o" cx="' + x + '" cy="' + y + '" r="' + r + '"/><rect class="cd-ink" x="' + (x - 2.5) + '" y="' + (y - 2.5) + '" width="5" height="5" transform="rotate(45 ' + x + ' ' + y + ')"/>').join('') + '</g>';
+    g += '<g' + D.tip('perox') + '>' + [[298, 232, 8], [684, 130, 7], [470, 432, 7]].map(([x, y, r]) => '<circle class="' + D.fill('perox') + ' cd-o" cx="' + x + '" cy="' + y + '" r="' + r + '"/><rect class="cd-ink" x="' + (x - 2.5) + '" y="' + (y - 2.5) + '" width="5" height="5" transform="rotate(45 ' + x + ' ' + y + ')"/>').join('') + '</g>';
     // stress granules and P-bodies: condensates without a membrane, drawn as droplets with a soft rim
     const drop = (k, x, y, r, s) => { const d = cellSmooth(cellBlob(x, y, r, r * 0.9, [1, 0.93, 1.05, 0.95, 1.03, 0.92, 1.04, 0.96, 1.02, 0.94], s));
       return '<path class="' + D.line(k) + '" fill="none" stroke-width="5" stroke-opacity=".35" d="' + d + '"/><path class="' + D.fill(k) + '" d="' + d + '"/>'; };
@@ -11770,7 +11802,7 @@
       '<rect class="' + D.fill('centrosome') + ' cd-o" x="' + (ox + 1) + '" y="' + (oy - 3) + '" width="6" height="13" rx="1.5"/></g>';
     // the membrane anchors are vertices of its outline (at 180° and 120°), so they sit on it
     g += D.labels([
-      { k: 'cytosol', side: 'l', x: 470, y: 80 }, { k: 'mito', side: 'l', x: 281, y: 152 }, { k: 'perox', side: 'l', x: 298, y: 232 }, { k: 'actin', side: 'l', x: 225, y: 250 },
+      { k: 'cytosol', side: 'l', x: 470, y: 80 }, { k: 'mito', side: 'l', x: 306, y: 175 }, { k: 'perox', side: 'l', x: 298, y: 232 }, { k: 'actin', side: 'l', x: 225, y: 250 },
       { k: D.has('nucleus') ? 'nucleus' : 'nucleoplasm', side: 'l', x: 372, y: 300, name: 'Nucleus' }, { k: 'granules', side: 'l', x: 302, y: 322 }, { k: 'pm', side: 'l', x: 353, y: 434 },
       { k: 'ribosomes', side: 'r', x: 635, y: 112 }, { k: 'pbodies', side: 'r', x: 730, y: 170 }, { k: 'golgi', side: 'r', x: 666, y: 206 }, { k: 'er', side: 'r', x: 609, y: 274 },
       { k: 'endolyso', side: 'r', x: 724, y: 296 }, { k: 'centrosome', side: 'r', x: ox + 6, y: oy + 8 }, { k: 'microtubules', side: 'r', x: +mtAt[0].toFixed(1), y: +mtAt[1].toFixed(1) },
@@ -11785,7 +11817,11 @@
     // the nucleoplasm shows in the channels between the territories
     let g = '<g' + D.tip('nucleoplasm') + '><path class="' + D.fill('nucleoplasm') + '" fill-opacity=".55" d="' + body + '"/></g>';
     // chromatin: territories, with heterochromatin along the envelope
-    g += '<g' + D.tip('chromatin') + '>' + cellTerritories(CELL_CT, cx, cy, rx - 12, ry - 12, 13).map((d) => '<path class="' + D.fill('chromatin') + ' cd-o" d="' + d + '"/>').join('') + '</g>';
+    const ct = cellTerritoryPolys(CELL_CT, cx, cy, rx - 12, ry - 12, 13);
+    // each territory with its chromatin fibre: faint ink over the fill, so the fill's colour (the odds ratio) reads unchanged
+    g += '<g' + D.tip('chromatin') + '>' + ct.map((poly) => '<path class="' + D.fill('chromatin') + ' cd-o" d="' + cellPoly(poly) + 'Z"/>').join('') +
+      '<g class="cd-fibre" fill="none" stroke="#1c1917" stroke-opacity=".14" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">' +
+      ct.map((poly, i) => '<path d="' + cellFibre(poly, CELL_CT[i], i + 1, 150, 5) + '"/>').join('') + '</g></g>';
     g += '<g' + D.tip('periphery') + '><path class="' + D.line('periphery') + '" fill="none" stroke-width="9" d="' + cellSmooth(cellBlob(cx, cy, rx * 0.965, ry * 0.955, shape)) + '"/></g>';
     // nucleolus, ringed by heterochromatin, with fibrillar centres
     const nucleolus = cellSmooth(cellBlob(592, 214, 56, 50, [1, 1.06, 0.95, 1.04, 0.97, 1.05, 0.98, 1.03, 0.96, 1.02]));
