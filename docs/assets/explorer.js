@@ -454,6 +454,8 @@
   // The master table is an iPTMnet export: the protein's iPTMnet entry lists each site with its sources and publications.
   const iptmnetLink = (p, text) => '<a href="https://research.bioinformatics.udel.edu/iptmnet/entry/' + encodeURIComponent(p.acc.split('-')[0]) + '/" target="_blank" rel="noopener" title="Each site with its sources and PubMed references in iPTMnet">' + (text || 'iPTMnet entry') + ' ↗</a>';
   const PADJ = 0.05;
+  // Effects within 1.1x either way read "about the same", however small their q (grey, not coloured), on every page.
+  const MIN_EFFECT = 1.1;
   // Perturbation flags (s.trf): bits 2t (down) and 2t + 1 (up) for Maron treatment t (0 GSK591, 1 MS023, adj. p <= 0.05),
   // then the CARM1 knockout (Shishkova 2017; >= twofold at BH q < 0.05 in either cell line) as perturbation 2.
   const TRF_KO_DOWN = 16, TRF_KO_UP = 32;
@@ -3784,7 +3786,7 @@
   function oraNote(spec) {
     const bg = String(spec.axis || '').replace(/^log2 fold enrichment vs (all )?/, '') || 'background proteins';
     return '<p class="note ora-note"><b>Over-representation analysis</b> (one-sided hypergeometric test, clusterProfiler <code>enricher</code>) against all ' + esc(bg) +
-      ': the bar is log2 fold enrichment, (k/n) ÷ (M/N); filled bars have Benjamini–Hochberg q ≤ 0.05.' + docLink('overview') +
+      ': the bar is log2 fold enrichment, (k/n) ÷ (M/N); filled bars have Benjamini–Hochberg q ≤ ' + PADJ + '.' + docLink('overview') +
       ' · <a href="' + ORA_DOCS + '" target="_blank" rel="noopener">clusterProfiler documentation ↗</a></p>';
   }
 
@@ -3795,8 +3797,8 @@
   // [log2 OR, log2 CI low, log2 CI high, q] as the exports write it (±99: an odds ratio of infinity or 0) -> the test
   const abundTest = (r) => (r ? { l2: r[0] != null && Math.abs(r[0]) >= 99 ? Math.sign(r[0]) * Infinity : r[0], lo: r[1], hi: r[2], q: r[3] } : null);
   const abundanceOf = (analysis, category) => abundTest(M.abundance_strata && M.abundance_strata[analysis] && M.abundance_strata[analysis][category]);
-  const abundDir = (a) => (a.q != null && a.q <= PADJ && a.l2 != null ? (a.l2 > 0 ? 'up' : 'down') : 'ns');
-  const ABUND = { up: ['✓', 'more than expected'], ns: ['○', 'no difference'], down: ['▼', 'fewer than expected'] };
+  const abundDir = (a) => (a.l2 == null ? 'ns' : effDir(Math.pow(2, a.l2), a.q != null && a.q <= PADJ));
+  const ABUND = { up: ['✓', 'more than expected'], same: ['≈', 'about the same (within ' + MIN_EFFECT + '×)'], ns: ['○', 'no difference'], down: ['▼', 'fewer than expected'] };
   const abundOr = (a) => (a.l2 == null ? '–' : a.l2 === Infinity ? '∞' : a.l2 === -Infinity ? '0' : fx(Math.pow(2, a.l2)));
   const abundText = (a) => 'OR ' + abundOr(a) + (a.lo != null && a.hi != null ? ' (95% CI ' + fx(Math.pow(2, a.lo)) + '–' + fx(Math.pow(2, a.hi)) + ')' : '') +
     (Number.isFinite(a.l2) || a.l2 == null ? '' : a.l2 > 0 ? ' (every member methylated)' : ' (no member methylated)') + ', q ' + fmtP(a.q) + ': ' + ABUND[abundDir(a)][1];
@@ -3823,12 +3825,12 @@
   // unless the chart repeats the selection's own test within the deciles (spec.selAdj, Where in the cell)
   const adjShown = (spec) => spec.adj && (!spec.selTest || spec.selAdj);
   const adjMark = (spec, r) => (adjShown(spec) && r.adj && ((r.sig && r.value > 0) || abundDir(r.adj) !== 'ns') ? abundDir(r.adj) : '');
-  const ADJ_KEY = 'Within abundance deciles: ✓ more than expected · ○ no difference · ▼ fewer';
+  const ADJ_KEY = 'Within abundance deciles (two-sided): ✓ more than expected · ≈ about the same · ○ no difference · ▼ fewer';
 
   // Words of a chart's significance key, the same on the page and in its exports.
   // Protein-set charts with fold enrichment (spec.fold) test for enrichment only (one-sided), so they have no depleted key.
-  const sigKey = (spec) => [['', spec.compact ? 'Enriched (q ≤ 0.05)' : 'More than expected, q ≤ 0.05']]
-    .concat(spec.fold ? [] : [['neg', spec.compact ? 'Depleted (q ≤ 0.05)' : 'Less than expected, q ≤ 0.05']],
+  const sigKey = (spec) => [['', spec.compact ? 'Enriched (q ≤ ' + PADJ + ')' : 'More than expected, q ≤ ' + PADJ]]
+    .concat(spec.fold ? [] : [['neg', spec.compact ? 'Depleted (q ≤ ' + PADJ + ')' : 'Less than expected, q ≤ ' + PADJ]],
       spec.rows.some((r) => sameFx(spec, r)) ? [['same', 'About the same: q ≤ 0.05 but within ' + minEffect() + '×']] : [], [['ns', 'Not significant']]);
   const chartAxis = (spec) => spec.axis || (spec.fold ? 'log2 fold enrichment vs all proteins' : 'log2 odds ratio vs background');
   // What the explorer counts, in words, and its tests in words (for figure exports and their TSVs; the Method help says
@@ -3844,7 +3846,7 @@
       : WORDS.sites + ' against the other ' + WORDS.residues + ' of the same proteins, pooled: two-sided Fisher exact test and its odds ratio, 0.5 added to each cell'),
     other: (axis) => 'two-sided Fisher exact test; the bar is the ' + axis,
     deciles: 'Mantel–Haenszel odds ratio, each PaxDb 6.1 abundance decile a stratum',
-    abundance: 'the same comparison within PaxDb 6.1 abundance deciles (Mantel–Haenszel odds ratio, each decile a stratum)',
+    abundance: 'the same comparison within PaxDb 6.1 abundance deciles (Mantel–Haenszel odds ratio, each decile a stratum; two-sided)',
     q: (scope) => 'q: Benjamini–Hochberg ' + scope,
   };
   // Lines of at most `width` px of text at font size fs.
@@ -3935,7 +3937,8 @@
   // proteins (within) or pooled over them (pooled), or another (other).
   const chartTestKind = (spec) => (spec.fold ? 'ora' : /Mantel/.test(chartAxis(spec)) ? 'within' : /Fisher/.test(chartAxis(spec)) ? 'pooled' : 'other');
   // The same in one sentence, under a tile in its exports and in the page's PDF.
-  const chartTestShort = (spec) => (spec.noSig ? '' : uc1(spec.test || TEST_WORDS[chartTestKind(spec)](chartTestKind(spec) === 'ora' ? chartAxis(spec).replace(/^log2 fold enrichment vs /, '') : chartAxis(spec), true)) + '; ' + TEST_WORDS.q('within the analysis') + '.');
+  const chartTestShort = (spec) => (spec.noSig ? '' : uc1(spec.test || TEST_WORDS[chartTestKind(spec)](chartTestKind(spec) === 'ora' ? chartAxis(spec).replace(/^log2 fold enrichment vs /, '') : chartAxis(spec), true)) + '; ' +
+    TEST_WORDS.q(spec.selTest ? 'within each family of tests of this chart, for your selection' : 'within the analysis') + '.');
   const uc1 = (t) => t.charAt(0).toUpperCase() + t.slice(1);
   // A chart's test in words, for its exports: what each row compares, the test and estimate, and how q is adjusted (the
   // Method help says the same at length). spec.test, when set, says it for charts the words below do not fit.
@@ -4371,7 +4374,7 @@
     const seen = new Set(), sel = [];
     for (const p of R.prots) { const id = cfg.id ? cfg.id(p) : p.acc.split('-')[0]; if (id && !seen.has(id) && cfg.inBg(p)) { seen.add(id); sel.push(p); } }
     const n = sel.length, N = cfg.N;
-    spec.selTest = { n, N, unit: cfg.unit || 'proteins', bg: cfg.bg, what: selectionText() };
+    spec.selTest = { n, N, unit: cfg.unit || 'proteins', bg: cfg.bg, what: selectionText(), method: 'one-sided hypergeometric, BH within each family of this chart' };
     // A selection made with this chart's kind of set (a condensate, a location...) cannot test those sets: the result is
     // set by the selection. Such rows, and any row whose set holds every selected protein, are shown as counts only.
     const kinds = cfg.kinds || [];
@@ -4598,7 +4601,7 @@
         return up.concat(dn).map((r) => ({ label: short(r), sub, main: { or: 2 ** r.value, sig: true, q: r.q, fold: !!spec.fold } }));
       };
       const lst = (rows) => rows.filter((r) => r.main.or > 1).map((r) => esc(r.label) + ' <span class="an">' + fx(r.main.or) + '×</span>').join(', ');
-      const key = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span class="a-info" tabindex="0" data-tip="' + esc('Where in the protein: methylarginines against the other arginines of the same proteins (within-protein odds ratios). Which proteins: methylated proteins against all reviewed human proteins (fold enrichment). Shown: q ≤ ' + PADJ + '.') + '">How to read</span>';
+      const key = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span class="a-info" tabindex="0" data-tip="' + esc('Where in the protein: methylarginines against the other arginines of the same proteins (within-protein odds ratios). Which proteins: methylated proteins against the background each tile names (fold enrichment). Shown: q ≤ ' + PADJ + '.') + '">How to read</span>';
       let lead, apart = '';
       if (!scoped) {
         const where = pick(motif, 2, 1, 'sequence motif').concat(pick(sctx || disorder, 1, 1, sctx ? 'structural context' : 'disorder'));
@@ -4606,7 +4609,7 @@
         // the tiles lead, each charting its strongest effects; the figure is drawn only when none of them has one
         const anyEffect = [motif, sctx || disorder, pan || func, cond].some((spec) => spec && spec.rows.some((r) => ok(r) && r.sig && r.value > 0 && aBig(r.value)));
         const tipKey = '<span><i class="aq-pt up"></i>more often</span><span><i class="aq-pt down"></i>less often</span><span><i class="aq-pt same"></i>about the same (within ' + minEffect() + '×)</span><span class="a-info" tabindex="0" data-tip="' +
-          esc('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against all reviewed human proteins (fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; an effect within ' + minEffect() + '× either way counts as about the same. Open a tile for every test.') + '">How to read</span>';
+          esc('In the tiles: where in the protein, methylarginines against the other arginines of the same proteins (within-protein odds ratios); which proteins, methylated proteins against the background each tile names (all reviewed proteins, genes with a disease term, condensate proteins…; fold enrichment). Each shows its strongest effects at q ≤ ' + PADJ + '; an effect within ' + minEffect() + '× either way counts as about the same. Open a tile for every test.') + '">How to read</span>';
         lead = anyEffect ? { q: 'What kinds of proteins are arginine methylated?', hi: '<div class="a-key a-key-line">' + tipKey + '</div>' }
           : { q: 'What kinds of proteins are arginine methylated?', key, verdict: '<b>Where in the protein:</b> ' + lst(where) + '. <b>Which proteins:</b> ' + lst(which) + '.',
             fig: aForest([['Where in the protein', where], ['Which proteins', which]], { subTip: true }) };
@@ -5245,7 +5248,7 @@
         return Object.assign(d, { y: y + offs[k] });
       });
       placed.sort((a, b) => Math.abs(a.q.dir) - Math.abs(b.q.dir)).forEach(({ q, x, y: yy }) => {
-        g += '<circle class="hf-pt ' + (q.dir > 0 ? 'up' : q.dir < 0 ? 'down' : 'ns') + '" cx="' + x.toFixed(1) + '" cy="' + yy.toFixed(1) + '" r="' + r + '"/>';
+        g += '<circle class="hf-pt ' + (q.same ? 'same' : q.dir > 0 ? 'up' : q.dir < 0 ? 'down' : 'ns') + '" cx="' + x.toFixed(1) + '" cy="' + yy.toFixed(1) + '" r="' + r + '"/>';
       });
     });
     return '<svg class="hub-fig" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" aria-hidden="true">' + g + '</svg>';
@@ -5265,15 +5268,16 @@
     const lane = (whole) => {
       const re = whole && spec.selTest;
       return { label: whole ? 'all' : 'sel', pts: spec.rows.filter(ok).map((r) => {
-        const v = re ? r.ref : r.value, sig = (re ? r.refQ != null && r.refQ <= PADJ : !!r.sig) && v != null && aBig(v);
-        return { v: v != null && Number.isFinite(v) ? v : null, dir: sig && v ? Math.sign(v) : 0 };
+        const v = re ? r.ref : r.value, sig = (re ? r.refQ != null && r.refQ <= PADJ : !!r.sig) && v != null;
+        return Object.assign({ v: v != null && Number.isFinite(v) ? v : null }, effPt(effDir(v != null ? Math.pow(2, v) : null, sig)));
       }) };
     };
     return { kind: 'or', lanes: scoped ? [lane(false), lane(true)] : [lane(true)] };
   }
   // A within-protein test as a dot: [Mantel–Haenszel result] -> point on the log2 scale (filled where q ≤ PADJ, or p ≤ 0.05
   // for a test with no q).
-  const mhPt = (m) => (!m || m.or == null || Number.isNaN(m.or) ? { v: null } : { v: Number.isFinite(m.or) ? (m.or > 0 ? Math.log2(m.or) : -99) : 99, lo: m.lo, hi: m.hi, dir: (m.q != null ? m.q <= PADJ : m.p != null && m.p <= 0.05) ? (m.or > 1 ? 1 : -1) : 0 });
+  const mhPt = (m) => (!m || m.or == null || Number.isNaN(m.or) ? { v: null } : Object.assign({ v: Number.isFinite(m.or) ? (m.or > 0 ? Math.log2(m.or) : -99) : 99, lo: m.lo, hi: m.hi },
+    effPt(effDir(m.or, m.q != null ? m.q <= PADJ : m.p != null && m.p <= PADJ))));
   const hubSec = (title, html, extra) => {
     for (const r of A_ROWS) if (r.group == null) r.group = title;
     return html ? '<section class="hub-sec"><h3 class="hub-group">' + esc(title) + '</h3>' + (extra || '') + html + '</section>' : '';
@@ -5470,10 +5474,14 @@
   const A_ROWS = [];
   const aOr = (m) => (m && m.or != null && m.or > 0 && Number.isFinite(m.or) ? m.or : null);
   const aSig = (m) => (m.sig != null ? !!m.sig : m.p != null && m.p <= 0.05);
-  // Effects within 1.1x either way read "about the same", however small their q (grey, not coloured), on every page.
-  const MIN_EFFECT = 1.1;
   const minEffect = () => MIN_EFFECT;
   const aBig = (l2) => Math.abs(l2) >= Math.log2(minEffect());
+  // The direction of an effect, by one rule on every page: significant (sig) and at least MIN_EFFECT either way is up or
+  // down; significant but within it, about the same ('same'); otherwise 'ns'. ratio: an odds ratio or fold enrichment
+  // (Infinity or 0 where every or no member counts).
+  const effDir = (ratio, sig) => (ratio == null || Number.isNaN(ratio) || !sig ? 'ns' : ratio === Infinity ? 'up' : ratio === 0 ? 'down' : !aBig(Math.log2(ratio)) ? 'same' : ratio > 1 ? 'up' : 'down');
+  // the same as a point of a scorecard figure: dir 1, -1 or 0, and same where it is about the same
+  const effPt = (d) => ({ dir: d === 'up' ? 1 : d === 'down' ? -1 : 0, same: d === 'same' });
   const aDir = (m) => (m && aOr(m) && aSig(m) ? (!aBig(Math.log2(m.or)) ? 'same' : m.or > 1 ? 'up' : 'down') : 'ns');
   const aX = (v, lo, hi) => (100 * (Math.max(lo, Math.min(hi, Math.log2(v))) - lo) / (hi - lo)).toFixed(2) + '%';
   const aTip = (label, m, what) => '<b>' + esc(label) + '</b>' + (what ? '<br>' + esc(what) : '') + '<br>' + (aOr(m) ? (m.fold ? 'fold ' : 'OR ') + fmtOr(m.or, m.lo, m.hi) + (m.q != null ? ', q ' + fmtP(m.q) : m.p != null ? ', p ' + fmtP(m.p) : '') + (m.used ? ' · ' + fmt(m.used) + ' informative proteins' : '') : 'too few to test');
@@ -5524,7 +5532,7 @@
     const one = (r) => esc(r.say || r.label) + ' <b>' + fx(r.main.or) + '×</b>';
     if (!rows.some((r) => aOr(r.main))) return 'Too few to test';
     return up.length || dn.length ? (up.length ? 'More often: ' + up.map(one).join(', ') : '') + (up.length && dn.length ? '; ' : '') + (dn.length ? (up.length ? 'less' : 'Less') + ' often: ' + dn.map(one).join(', ') : '')
-      : same.length ? 'About the same: ' + same.map(one).join(', ') : 'No difference (p > 0.05)';
+      : same.length ? 'About the same: ' + same.map(one).join(', ') : 'No difference (' + (rows.some((r) => r.main && r.main.q != null) ? 'q > ' + PADJ : 'p > 0.05') + ')';
   };
   // A page's headline effects as cards: a small glyph of what the effect is about, the effect as a big number, its
   // name and kind; each opens its section, and its tooltip says what was compared.
@@ -10615,7 +10623,7 @@
       h += '<h5 class="dm-comp">' + esc(name) + ' <span class="muted small">PRISM ' + esc(DM_SCREEN[c.screen] || c.screen) + ', ' + dm.prism.dose_uM + ' µM for ' + dm.prism.days + ' days</span></h5>' +
         figBlock(dmBoxSpec('ch-dm-prism-' + k, name + ' (' + gene + ' inhibitor): viability by MTAP status', 'PRISM Repurposing 24Q2, ' + dm.prism.dose_uM + ' µM for ' + dm.prism.days + ' days: log2 viability against vehicle per cell line, all lines and by MTAP copy number; boxes the middle half, whiskers the 5th to 95th percentile',
           dmMtapRows(c, 'log2 viability with ' + name), 'log2 viability against vehicle (0: no effect)')) +
-        '<p class="small">' + (c.rho != null ? 'Spearman ρ with ' + esc(gene) + ' gene effect ' + dmNum(c.rho) + ' over ' + fmt(c.rho_lines) + ' lines (p ' + fmtP(c.rho_p) + '): ' +
+        '<p class="small">' + (c.rho != null ? 'Spearman ρ with ' + esc(gene) + ' gene effect ' + dmNum(c.rho) + ' over ' + fmt(c.rho_lines) + ' lines (p ' + fmtP(c.rho_p) + ', a single test, not adjusted): ' +
           (on ? 'lines that depend more on ' + esc(gene) + ' lose ' + (c.rho < 0.3 ? 'somewhat ' : '') + 'more viability, the direction of an on-target effect.' : 'no positive relation with dependency on ' + esc(gene) + '.') : '') +
         (c.mtap_p != null && c.mtap_deleted && c.mtap_intact ? ' Median log2 viability ' + dmNum(c.mtap_deleted[2]) + ' in lines without MTAP against ' + dmNum(c.mtap_intact[2]) + ' with it (Mann–Whitney p ' + fmtP(c.mtap_p) + ').' : '') +
         ' Most sensitive: ' + c.most_sensitive.slice(0, 5).map(([m, v]) => esc(dm.models[m][1]) + ' ' + dmNum(v)).join(', ') + '.</p>';
@@ -10815,7 +10823,8 @@
         (testable ? '<div class="tbl-wrap dm-tbl"><table><thead><tr><th>Compared with</th><th>Commonly essential</th><th title="Odds ratio with its 95% interval (Woolf)">Odds ratio</th><th title="Fisher exact test, two-sided">p</th><th>Median score</th><th title="Mann–Whitney test, two-sided">p</th></tr></thead><tbody>' +
           (c1 ? dmCmpHtml('The other methylated proteins (' + fmt(c1.nB) + ')', c1) : '') + dmCmpHtml('The other screened proteins (' + fmt(c2.nB) + ')', c2) + '</tbody></table></div>' +
           '<p class="small muted">Essential proteins are abundant, and abundant proteins are the ones mass spectrometry finds most often, so methylated proteins are expected to look more essential than the proteome whatever their methylation does' +
-          (scoped ? '. The comparison with the other methylated proteins shares that bias and is the fairer one.' : '. A selection is also compared with the other methylated proteins, which share that bias.') + '</p>'
+          (scoped ? '. The comparison with the other methylated proteins shares that bias and is the fairer one.' : '. A selection is also compared with the other methylated proteins, which share that bias.') +
+          ' The table gives single tests (p, not adjusted): the commonly essential share as a two-sided Fisher test with the sample odds ratio and its Woolf 95% interval, and the median scores by a two-sided Mann–Whitney test. The dependency-class chart above gives the release\'s test of the same classes: one-sided hypergeometric, fold enrichment, Benjamini–Hochberg q.</p>'
           : '<p class="small muted">' + selTooFew() + '</p>') +
         (uniq.length ? '<p class="flabel">Strongest dependencies' + (scoped ? ' in your selection' : '') + '</p><div class="gene-chips">' + uniq.slice(0, 12).map((x) => chip(x, dmNum(G.median[x[1]] / 1000))).join('') + '</div>' : '') +
         (selective.length ? '<p class="flabel">Selective dependencies <span class="muted">(not commonly essential; 5% to under half of the lines depend on them, share shown)</span></p><div class="gene-chips">' +
@@ -11414,8 +11423,8 @@
     return cellSelMemo.maps.get(id);
   }
   const cellCap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
-  // how much more (or less) often, in words: "2.1 times as likely", "half as likely"
-  const cellTimes = (a) => (a.l2 == null ? '' : a.l2 === Infinity ? 'found only here' : a.l2 === -Infinity ? 'never found here' : fx(Math.pow(2, a.l2)) + ' times as likely');
+  // an odds ratio in words: "odds ratio 2.1" (not "2.1 times as likely": with large shares the two differ)
+  const cellTimes = (a) => (a.l2 == null ? '' : a.l2 === Infinity ? 'found only here' : a.l2 === -Infinity ? 'never found here' : 'odds ratio ' + fx(Math.pow(2, a.l2)));
   const cellSelText = (L, x) => (x.circular ? fmt(x.k) + ' of the ' + fmt(x.M) + ' ' + L.here + ' ' + L.inWord(true) + '; ' + (x.k === x.n ? 'every one of them is here, so there is nothing to compare' : 'the selection was made with these locations, so it cannot be compared with them')
     : fmt(x.k) + ' of the ' + fmt(x.M) + ' ' + L.here + ' ' + L.inWord(true) + ' (' + fmt(x.n) + ' of ' + L.all.replace(/^the /, 'the ' + fmt(x.N) + ' ') + '); ' + abundText(x.a));
 
@@ -11433,6 +11442,8 @@
     if (scoped) {
       selSetTest(spec, { N, inBg: (p) => L.stratum(p.acc, key) >= 0, member: (r) => (p) => L.catsOf(p.acc, key).includes(r.key),
         M: (r) => r.M, bg: L.all.replace(/^the /, ''), kinds: key === 'hpa' ? ['location'] : [], unit: u });
+      // the page holds the locations of at least 20 proteins (41 of the 48 the release tests): a selection is adjusted over those
+      if (key === 'hpa' && spec.selTest) spec.selTest.method = 'one-sided hypergeometric, BH over the ' + spec.rows.length + ' locations shown (the release adjusts the whole dataset over all its locations)';
       // the marks repeat the selection's comparison within the deciles (cellSelTests), in place of the whole dataset's
       const T = cellSelTests(L, key);
       for (const r of spec.rows) {
@@ -11449,7 +11460,7 @@
   // colour class of an odds ratio within the deciles: up0-3 / down0-3 by size where q <= 0.05, else ns
   function cellTone(a) {
     if (!a || a.l2 == null) return 'na';
-    if (a.q == null || a.q > PADJ) return 'ns';
+    if (a.q == null || a.q > PADJ || (Number.isFinite(a.l2) && !aBig(a.l2))) return 'ns';   // within MIN_EFFECT: no clear difference
     const m = Math.abs(a.l2), s = m >= 2 ? 3 : m >= 1.2 ? 2 : m >= 0.5 ? 1 : 0;
     return (a.l2 > 0 ? 'u' : 'd') + s;
   }
@@ -11566,8 +11577,8 @@
     const fill = (k) => 'cg-c ' + tone(k), line = (k) => 'cg-line ' + tone(k);
     const tip = (k0, name) => {
       const k = own(k0);
-      return k ? ' data-part="' + k + '" data-tip="' + esc('<b>' + esc(name || cellPartName(L, k)) + '</b>: ' + esc(P[k].value) +
-        (P[k].tone[0] === 'u' || P[k].tone[0] === 'd' ? (P[k].maps === '1 map' ? ' as likely (1 map)' : ' as likely, median of ' + P[k].maps) : '') + '<br>' +
+      return k ? ' data-part="' + k + '" data-tip="' + esc('<b>' + esc(name || cellPartName(L, k)) + '</b>: ' + (P[k].tone[0] === 'u' || P[k].tone[0] === 'd' ? 'odds ratio ' : '') + esc(P[k].value) +
+        (P[k].tone[0] === 'u' || P[k].tone[0] === 'd' ? (P[k].maps === '1 map' ? ' (1 map)' : ', median of ' + P[k].maps) : '') + '<br>' +
         P[k].cells.map(([key, c]) => esc(cellDs(L, key).name) + ': ' + (c.circular ? 'not compared' : esc(cellOr(c.a)) + (c.a.q != null ? ', q ' + fmtP(c.a.q) : '') + (c.tone === 'ns' ? ' (no difference)' : ''))).join('<br>') +
         '<br><span class="muted">Click for its numbers and proteins</span>') + '"' : '';
     };
@@ -11765,7 +11776,7 @@
   }
   const cellFigSpec = (id, title, subText, svg, tsv) => ({ id, title, subText, figCss: cellFigCss, figSvg: svg, figTsv: tsv });
   const cellKey = (L) => '<span class="cell-key"><i class="cg-k u3"></i><i class="cg-k u1"></i> more likely than ' + esc(L.alike) + '</span><span class="cell-key"><i class="cg-k ns"></i> no clear difference</span>' +
-    '<span class="cell-key"><i class="cg-k d1"></i><i class="cg-k d3"></i> less likely</span><span class="cell-key"><i class="cg-k na"></i> not measured</span><span>numbers: how many times as likely (odds ratio; in the drawings, the median of the maps)</span>';
+    '<span class="cell-key"><i class="cg-k d1"></i><i class="cg-k d3"></i> less likely</span><span class="cell-key"><i class="cg-k na"></i> not measured</span><span>numbers: odds ratios (in the drawings, the median of the maps)</span>';
   // what the card shows, in a sentence or two
   function cellIntro(L, scoped) {
     return 'Six maps from five studies place proteins in the cell, made by imaging, proximity labelling, organelle pull-down and chromatin fractionation in different cells. ' +
@@ -11810,15 +11821,14 @@
       UI.cellMap = UI.cellMap || {};
       const key = UI.cellMap[L.key] && cellDs(L, UI.cellMap[L.key]) ? UI.cellMap[L.key] : L.order[0], spec = cellSpec(L, key, scoped);
       UI.charts[spec.id] = spec;
-      const who = L.what(scoped), cap = (t) => t + ': each part coloured by how many times as likely ' + who + ' are to ' + L.verb('there') + ' as ' + L.alike + ' (odds ratio; the median of the maps that have it), grey where the maps disagree or show no clear difference.';
-      const grid = cellFigSpec('ch-cell-grid', 'Where in the cell: compartments against maps', 'How many times as likely ' + who + ' are to ' + L.verb('in each compartment') + ' as ' + L.alike + ' in the same map (odds ratio).', () => cellGridSvg(L, scoped), () => cellGridTsv(L, scoped));
+      const who = L.what(scoped), cap = (t) => t + ': each part coloured by the odds ratio of ' + who + ' against ' + L.alike + ' (the median of the maps that have it), grey where the maps disagree or show no clear difference.';
+      const grid = cellFigSpec('ch-cell-grid', 'Where in the cell: compartments against maps', 'The odds ratio of ' + who + ' against ' + L.alike + ', for each compartment in each map.', () => cellGridSvg(L, scoped), () => cellGridTsv(L, scoped));
       const whole = cellFigSpec('ch-cell-whole', 'Where in the cell', cap('The cell'), () => cellWholeSvg(L, scoped), () => cellGridTsv(L, scoped));
       const nuc = cellFigSpec('ch-cell-nucleus', 'Where in the nucleus', cap('The nucleus'), () => cellNucleusSvg(L, scoped), () => cellGridTsv(L, scoped));
       const cellTest = 'in each map, ' + who + ' against ' + L.alike + ': ' + TEST_WORDS.deciles + ', continuity-corrected Cochran–Mantel–Haenszel test. ' + TEST_WORDS.q('within the map') + '; coloured where q ≤ ' + PADJ + '; each q is in the TSV.';
       grid.test = cellTest;
       whole.test = nuc.test = cellTest + ' A part of the drawing takes the median odds ratio of the maps that place proteins there, grey where they disagree or show no clear difference.';
-      const regFig = RL && cellFigSpec('ch-cell-regions', 'Where in the cell: regions against maps', 'How many times as likely ' + who + ' are to ' + L.verb('in each region') + ' as ' + L.alike +
-        ' in the same map (odds ratio): the nucleus, the cytoplasm outside the organelles, and the organelles and membranes with the nuclear envelope.', () => cellGridSvg(RL, scoped), () => cellGridTsv(RL, scoped));
+      const regFig = RL && cellFigSpec('ch-cell-regions', 'Where in the cell: regions against maps', 'The odds ratio of ' + who + ' against ' + L.alike + ', for each region in each map: the nucleus, the cytoplasm outside the organelles, and the organelles and membranes with the nuclear envelope.', () => cellGridSvg(RL, scoped), () => cellGridTsv(RL, scoped));
       if (regFig) regFig.test = cellTest;
       box.innerHTML = '<p class="cell-lead">' + cellLead(regs, up, L, scoped, false) + '</p>' +
         '<p class="small">' + cellIntro(L, scoped) + (scoped ? cellSelIntro(L) : '') + ' <b>Click a region, a part, a label or a row of a grid</b> for its numbers and its proteins.</p>' +
@@ -11884,7 +11894,7 @@
   }
   function cellDetailHtml(L, row, scoped) {
     const s = cellRowSummary(L, row, scoped), [label, map] = row, name = row[2] ? cellPartName(L, row[2]) : label, who = L.what(scoped), here = L.verb('here');
-    const verdict = s.tone[0] === 'u' || s.tone[0] === 'd' ? cellCap(who) + ' are <b>' + esc(cellTimes(s.a)) + '</b> to ' + esc(here) + ' as ' + esc(L.alike) + (s.cells.length > 1 ? ' (the median of ' + s.maps + ')' : '') + '.'
+    const verdict = s.tone[0] === 'u' || s.tone[0] === 'd' ? cellCap(who) + ' are <b>' + (s.tone[0] === 'u' ? 'more' : 'less') + ' likely</b> to ' + esc(here) + ' than ' + esc(L.alike) + ' (' + esc(cellTimes(s.a)) + (s.cells.length > 1 ? ', the median of ' + s.maps : '') + ').'
       : s.tone === 'ns' ? (s.value === 'maps disagree' ? 'The maps disagree: in some, ' + esc(who) + ' are more likely to ' + esc(here) + ' than ' + esc(L.alike) + '; in others, less likely.' : cellCap(who) + ' ' + esc(here) + ' about as often as ' + esc(L.alike) + '.')
         : 'No map compares ' + esc(who) + ' here.';
     const keys = L.order.filter((k) => map[k]);
@@ -13221,7 +13231,7 @@
     const orNum = (v) => (v >= 10 ? v.toFixed(0) : v.toFixed(2));
     // each finding is called by its q (ixFamilyQ: the release's, for every site), as the tables below call it
     const qOf = (g, path) => ixFamilyQ(g, path, false);
-    const dirQ = (or, q) => (q != null && q <= PADJ ? (or > 1 ? 'more often' : 'less often') : 'not significantly more or less often');
+    const dirQ = (or, q) => ({ up: 'more often', down: 'less often', same: 'about as often (within ' + minEffect() + '×)', ns: 'not significantly more or less often' })[effDir(or, q != null && q <= PADJ)];
     const orQ = (o, g, path) => 'OR ' + fmtOr(o[0], o[1], o[2]) + ', q ' + fmtP(qOf(g, path));
     const xe = IX.xlEnrich || {}, T = IX.xlTypes || {};
     if (xe.rna_xl && xe.rna_xl.or) {
@@ -13490,7 +13500,7 @@
   // the sites with the row feature with the other selected sites: within protein by default (Mantel–Haenszel, each
   // protein a stratum, so a protein with many mapped sites does not dominate), or pooled across proteins. Colour is
   // the log2 odds ratio, shown only where q ≤ 0.05 (Benjamini–Hochberg across the matrix); other cells stay grey.
-  const CM_STEPS = [Math.log2(1.25), 1, Math.log2(3), Math.log2(5)];
+  const CM_STEPS = [Math.log2(MIN_EFFECT), 1, Math.log2(3), Math.log2(5)];
   function cmRows() {
     const ft = new Map(profileFeatures().map((f) => [f.key, f]));
     const ip = (n) => 'ip' + M.maron_ips.indexOf(n), mot = (m) => 'mot' + M.motifs.indexOf(m), dis = 'dis' + M.disorder_classes.indexOf('disordered');
@@ -13568,7 +13578,7 @@
     });
     for (const c of cm.cells) {
       const st = cm.mode === 'pooled' ? { or: c.po.or } : c.mh, l2 = st.or != null && st.or > 0 && Number.isFinite(st.or) ? Math.log2(st.or) : null;
-      const sig = c.a >= 3 && c.q != null && c.q <= 0.05, fill = c.a ? cmColor(l2, sig, pal) : pal.mid;
+      const sig = c.a >= 3 && c.q != null && c.q <= PADJ, fill = c.a ? cmColor(l2, sig, pal) : pal.mid;
       const x = lw + c.ci * cw, y = rowY(c.ri);
       const r = cm.rows[c.ri], col = cm.cols[c.ci];
       const label = !c.a ? '·' : st.or == null ? 'n/e' : st.or === 0 ? '0×' : !Number.isFinite(st.or) ? '∞' : (st.or >= 10 ? st.or.toFixed(0) : st.or.toFixed(st.or < 1 ? 2 : 1)) + '×';
@@ -13600,7 +13610,7 @@
     const scoped = constraints().length > 0, mode = UI.cmMode || 'within';
     return '<div class="card" id="ix-cm"><div class="card-head"><div><h3>Which sites carry which evidence</h3><p class="sub">' +
       (scoped ? 'The ' + fmt(R.sites.length) + ' sites in your selection' : 'All ' + fmt(R.sites.length) + ' methylarginines') +
-      ': do sites with each feature (rows) carry each kind of evidence (columns) more often? Red more, blue less (q ≤ 0.05).' + docLink('ix-cm') + '</p></div>' +
+      ': do sites with each feature (rows) carry each kind of evidence (columns) more often? Red more, slate less (q ≤ ' + PADJ + ', at least ' + MIN_EFFECT + '× either way).' + docLink('ix-cm') + '</p></div>' +
       '<div class="exp"><button type="button" data-cmex="svg">SVG</button><button type="button" data-cmex="png">PNG</button><button type="button" data-cmex="tsv">TSV</button></div></div>' +
       '<div class="fig-controls"><div class="seg" role="group" aria-label="Comparison"><span>Compare</span>' +
       [['within', 'Within protein'], ['pooled', 'Pooled']].map(([k, l]) => '<button type="button" data-cmmode="' + k + '" aria-pressed="' + (mode === k) + '">' + l + '</button>').join('') + '</div></div>' +
@@ -13683,7 +13693,7 @@
         const step = !c.a ? -1 : c.a === 1 ? 0 : c.a === 2 ? 1 : c.a <= 4 ? 2 : c.a <= 9 ? 3 : 4;
         // Outline needs two or more shared partners: with short partner lists one shared protein can pass the test alone.
         const inSearch = m.searched.has(IX.prot[w.k].gene.toUpperCase()) || m.searched.has(IX.prot[r.k].gene.toUpperCase());
-        const fill = step < 0 ? pal.mid : pal.seq[step], sig = !inSearch && c.a >= 2 && c.q != null && c.q <= 0.05;
+        const fill = step < 0 ? pal.mid : pal.seq[step], sig = !inSearch && c.a >= 2 && c.q != null && c.q <= PADJ;
         const genes = c.both.map((i) => P[i].label).sort();
         const tipHtml = '<b>' + esc(IX.prot[w.k].gene) + ' and ' + esc(IX.prot[r.k].gene) + '</b><br>' + fmt(c.a) + ' methylated protein' + (c.a === 1 ? '' : 's') + ' bind both' + (c.a ? ': ' + esc(genes.slice(0, 14).join(', ')) + (genes.length > 14 ? ' and ' + (genes.length - 14) + ' more' : '') : '') +
           (inSearch ? '<br>Your search already requires binding to ' + esc(m.searched.has(IX.prot[w.k].gene.toUpperCase()) ? IX.prot[w.k].gene : IX.prot[r.k].gene) + ', so this count is not tested' : '<br>Expected if independent: ' + c.exp.toFixed(1) + (c.p != null ? ' · Fisher p ' + fmtP(c.p) + ', q ' + fmtP(c.q) : '')) + (c.a ? '<br><i>Click to list their methylarginines</i>' : '');
@@ -14120,7 +14130,7 @@
         '<p class="note">No site feature differs significantly (BH q ≤ 0.05) between this selection and the other sites.</p>') +
       '<p class="note">Fisher\'s exact test per feature, Benjamini–Hochberg across the ' + rows.length + ' features tested. Sites in one protein are not independent, so read this as a pointer.</p></div>', false, sum, null, !hub ? null : {
         q: 'What sets your selection apart from the other sites?', how: 'needs', sel: am(up.length ? 1 : down.length ? -1 : 0) + esc(sum), all: '<span class="muted">compares the selection with the other sites</span>',
-        fig: { kind: 'or', lanes: [{ label: 'sel', pts: rows.map((r) => ({ v: r.fold > 0 ? Math.log2(r.fold) : -99, dir: r.q <= 0.05 ? (r.fold > 1 ? 1 : -1) : 0 })) }] } });
+        fig: { kind: 'or', lanes: [{ label: 'sel', pts: rows.map((r) => Object.assign({ v: r.fold > 0 ? Math.log2(r.fold) : -99 }, effPt(effDir(r.fold, r.q <= PADJ)))) }] } });
   }
 
   function bindProfile(el) {
@@ -14253,8 +14263,9 @@
     const both = (list) => [tests(list, scoped), scoped ? tests(list, false) : ''];
     const nacAns = (rows) => {
       if (!rows || !rows.length) return '';
-      const more = (r) => (r.or != null ? r.or > 1 : r.edge > 0), sig = rows.filter((r) => r.q != null && r.q <= PADJ), up = sig.filter(more), down = sig.filter((r) => !more(r));
-      if (!sig.length) return am(0) + 'none of ' + rows.length + ' kinds of contact differs (q ≤ ' + PADJ + ')';
+      const dir = (r) => effDir(r.or != null ? r.or : r.edge > 0 ? Infinity : r.edge < 0 ? 0 : null, r.q != null && r.q <= PADJ);
+      const up = rows.filter((r) => dir(r) === 'up'), down = rows.filter((r) => dir(r) === 'down'), sig = up.concat(down);
+      if (!sig.length) return am(0) + 'none of ' + rows.length + ' kinds of contact differs (q ≤ ' + PADJ + ', at least ' + minEffect() + '×)';
       const best = (up.length ? up : down).slice().sort((x, y) => x.q - y.q)[0];
       return am(up.length ? 1 : -1) + '<span class="an">' + sig.length + ' of ' + rows.length + '</span> differ; ' + (up.length ? 'more often ' : 'less often ') + esc(best.full.charAt(0).toLowerCase() + best.full.slice(1)) + ' <span class="an">OR ' + (best.or != null ? fx(best.or) : best.edge > 0 ? '> 1,000' : '0') + '</span>';
     };
@@ -14280,8 +14291,7 @@
     const lanes = (f) => (scoped ? [f(true), f(false)] : [f(false)]);
     const testsFig = (list) => ({ kind: 'or', lanes: lanes((on) => ({ label: on ? 'sel' : 'all', pts: list.map(([g, path]) => mhPt(test(g, path, on))) })) });
     const nacFig = { kind: 'or', lanes: lanes((on) => ({ label: on ? 'sel' : 'all', pts: ((on ? nacRows(selJ) : nacWhole()) || []).map((r) => {
-      const more = r.or != null ? r.or > 1 : r.edge > 0;
-      return { v: r.or != null ? Math.log2(r.or) : r.edge ? r.edge * 99 : null, dir: r.q != null && r.q <= PADJ ? (more ? 1 : -1) : 0 };
+      return Object.assign({ v: r.or != null ? Math.log2(r.or) : r.edge ? r.edge * 99 : null }, effPt(effDir(r.or != null ? r.or : r.edge > 0 ? Infinity : r.edge < 0 ? 0 : null, r.q != null && r.q <= PADJ)));
     }) })) };
     const pctLanes = (f, ref) => ({ kind: 'pct', lanes: lanes((on) => ({ label: on ? 'sel' : 'all', v: f(on), ref })) });
     const expShare = (on) => { const ss = on ? R.sites : S; return ss.length ? ss.filter((s) => ixStatus(s) === 'exp').length / ss.length : null; };
@@ -14290,10 +14300,10 @@
       const r = g && g[k];
       if (!r || r[4] == null) return { v: null };
       const qq = r[6] != null ? r[6] : r[5];
-      return { v: r[4], dir: qq != null && qq <= PADJ ? Math.sign(r[4]) : 0 };
+      return Object.assign({ v: r[4] }, effPt(effDir(Math.pow(2, r[4]), qq != null && qq <= PADJ)));
     }) }; }) };
     const cxFig = { kind: 'or', lanes: lanes((on) => { const sel = on ? cxSelection() : null; return { label: on ? 'sel' : 'all', pts: (IX.cx || []).filter((c) => !c.pred).map((c) => (sel ? Object.assign({}, c, sel.get(c.k) || { m: 0 }) : c))
-      .filter((c) => c.m >= 2 && c.fold > 0).map((c) => ({ v: Math.log2(c.fold), dir: c.q != null && c.q <= PADJ ? 1 : 0 })) }; }) };
+      .filter((c) => c.m >= 2 && c.fold > 0).map((c) => Object.assign({ v: Math.log2(c.fold) }, effPt(effDir(c.fold, c.q != null && c.q <= PADJ)))) }; }) };
     const partFig = pctLanes((on) => { const pm = partnerShare(on ? R.prots : P); return pm.distinct ? pm.distinctMeth / pm.distinct : null; }, IX.meta.proteome_size ? IX.meta.methylated_in_proteome / IX.meta.proteome_size : null);
     const sec = (k) => '<div class="ix-sec-body" id="ixs-' + k + '">' + body[k]() + '</div>';
     const nacHtml = nacCardHtml(), proxHtml = proxCardHtml(), naHtml = ixNaHtml(), wrHtml = ixWrMatrixHtml(), cmHtml = ixConnMatrixHtml(), exHtml = ixExampleHtml();
@@ -15015,7 +15025,7 @@
   }
   const ixOn = () => !!(constraints().length && IX && IX.selTests);
   // a within-protein test in words, by its q: log2 odds ratio, q
-  const ixDirQ = (l2, q) => (l2 == null || q == null ? 'not tested' : q <= PADJ ? (l2 > 0 ? 'more often' : 'less often') : 'not significantly more or less often');
+  const ixDirQ = (l2, q) => (l2 == null || q == null ? 'not tested' : ({ up: 'more often', down: 'less often', same: 'about as often (within ' + minEffect() + '×)', ns: 'not significantly more or less often' })[effDir(Math.pow(2, l2), q <= PADJ)]);
   const IX_GROUP = { enrich_strata: 'strata', rg_iface: 'rg', pred_enrich: 'predEnrich', intact_enrich: 'iaEnrich', xl_enrich: 'xlEnrich', na_dist_stats: 'naDistStats', seq_prox: 'seqProx' };
   let ixSelCache = null;
   function ixSel() {
@@ -15161,7 +15171,7 @@
     const refBy = new Map((ref || []).map((r) => [r.key, r]));
     for (const ln of lines) {
       if (ln.head) { g += '<text x="0" y="' + (ln.y + 17) + '" font-size="11" font-weight="700" fill="' + pal.ink + '">' + esc(ln.head) + '</text>'; continue; }
-      const r = ln.r, cy = ln.y + rowH / 2, sig = r.q != null && r.q <= PADJ, more = r.or != null ? r.or > 1 : r.edge > 0, col = !sig ? pal.muted : more ? up : down;
+      const r = ln.r, cy = ln.y + rowH / 2, d = effDir(r.or != null ? r.or : r.edge > 0 ? Infinity : r.edge < 0 ? 0 : null, r.q != null && r.q <= PADJ), sig = d !== 'ns', col = d === 'up' ? up : d === 'down' ? down : pal.muted;
       g += '<text x="10" y="' + r1(cy + 4) + '" font-size="11" fill="' + pal.ink + '">' + esc(r.label) + '</text>';
       if (r.or != null) {
         if (r.lo != null && r.hi != null) {
@@ -15300,7 +15310,7 @@
       if (path) g += '<path d="' + path + '" fill="none" stroke="' + pal.muted + '" stroke-width="1.2" stroke-opacity="0.7"/>';
       tr.forEach((r, i) => {
         if (!r) return;
-        const cx = X(i), sig = r.q != null && r.q <= PADJ, more = r.or != null ? r.or > 1 : r.edge > 0, col = !sig ? pal.muted : more ? up : down;
+        const cx = X(i), d = effDir(r.or != null ? r.or : r.edge > 0 ? Infinity : r.edge < 0 ? 0 : null, r.q != null && r.q <= PADJ), sig = d !== 'ns', col = d === 'up' ? up : d === 'down' ? down : pal.muted;
         if (r.or != null && r.lo != null && r.hi != null) g += '<line x1="' + r1(cx) + '" x2="' + r1(cx) + '" y1="' + r1(Y(l2(r.lo))) + '" y2="' + r1(Y(l2(r.hi))) + '" stroke="' + col + '" stroke-width="2" stroke-linecap="round"/>';
         const rf = refBy.get(r.key);
         if (rf && rf.or != null) g += '<line x1="' + r1(cx - 8) + '" x2="' + r1(cx + 8) + '" y1="' + r1(Y(l2(rf.or))) + '" y2="' + r1(Y(l2(rf.or))) + '" stroke="' + pal.ink + '" stroke-width="2"/>';
@@ -15331,7 +15341,7 @@
     const read = PROX_TRACKS.map(([k, label]) => {
       const tr = rows.filter((r) => r.track === k);
       if (!tr.length) return '';
-      const sig = tr.filter((r) => r.q != null && r.q <= PADJ && r.or != null), more = sig.filter((r) => r.or > 1), less = sig.filter((r) => r.or < 1);
+      const dir = (r) => effDir(r.or, r.q != null && r.q <= PADJ), more = tr.filter((r) => r.or != null && dir(r) === 'up'), less = tr.filter((r) => r.or != null && dir(r) === 'down');
       const at = tr.find((r) => r.d === 0), far = tr[tr.length - 1];
       return '<li><b>' + esc(label) + '</b>: OR ' + (at && at.or != null ? fx(at.or) : '–') + ' at or inside it, ' + (far && far.or != null ? fx(far.or) : '–') + ' within ' + far.d + ' residues; ' +
         (more.length ? 'more often ' + proxSpan(more.map((r) => r.d)) : less.length ? 'less often ' + proxSpan(less.map((r) => r.d)) : 'no distance differs') + ' (q ≤ ' + PADJ + ').</li>';
@@ -16828,11 +16838,11 @@
           '<p><b>Distance of methylarginines to RNA and DNA.</b> For every arginine of the methylated proteins modelled in a PDB entry that contains RNA or DNA (every entry in which PDBe-KB lists the protein with nucleic acid; up to two copies of the protein per entry), the minimum heavy-atom distance from its side chain to each RNA and DNA chain is recorded up to 8 Å. The Interactions view shows the distribution of this minimum distance by nucleic-acid type in 1 Å bins, for methylarginines and for the other arginines of the same proteins (bar height is the fraction of each group), and tests whether a larger fraction of methylarginines than of the other arginines lies within 4 Å or 8 Å: the Mantel–Haenszel odds ratio with each protein as a stratum, and the pooled Fisher odds ratio. Only arginines modelled in a structure are included, so disordered RGG regions, which contain many methylarginines, are largely absent; most structures contain unmethylated recombinant protein. Release files supporting/arginine_nucleic_acid_distances and interaction_statistics (analysis nucleic_acid_distance).</p>' +
           '<p><b>Binding regions.</b> On a protein page, the RNA and DNA interactions card lists the regions that bind nucleic acid: runs of residues in direct contact in structures (analysed once per distinct complex in every entry; runs separated by up to 3 residues are joined), with the nucleic-acid segments they contact and their type; runs of residues UV-crosslinked to RNA or DNA in living cells (joined in the same way); RBDmap fragments crosslinked to RNA in HeLa cells; and UniProt DNA-binding regions. Each row gives the UniProt domains it overlaps, the methylarginines within it and those within 5 residues of either end, with their distance from it. Release file supporting/nucleic_acid_regions.</p>' +
           '<p><b>Sequence preference and targets from selection experiments.</b> RNA Bind-n-Seq (ENCODE; Dominguez et al. 2018): the 5-mers enriched in RNA recovered by the purified protein from a random library, relative to the input, with ENCODE\'s logos. HTR-SELEX (Jolma et al. 2020, <i>Genome Res</i> 30:962, CC BY-NC 4.0): RNA selected by the purified protein or its RNA-binding domains from random 40-nucleotide RNA over several cycles, as position frequency matrices of linear motifs and of motifs in the loop of a stem-loop, primary and secondary (86 proteins). JASPAR 2026 CORE vertebrates (CC BY 4.0): DNA-binding profiles from SELEX and ChIP-based experiments; a heterodimer\'s profile is listed for both partners. eCLIP (ENCODE; Van Nostrand et al. 2020): RNA crosslinked to the protein in K562 and HepG2 cells, as reproducible peaks assigned to GENCODE v50 basic transcripts, with the genes with the most peaks; these reflect expression as well as preference. For a selection, the Interactions view lists these for the selected proteins and the genes with eCLIP peaks for two or more of them. RNAcompete (CISBP-RNA) states no licence and is not included. Release files supporting/rna_bind_n_seq, htr_selex, dna_motifs and eclip.</p>') +
-        sub('ix-prox', 'Sequence proximity to RNA-binding residues', '<p>For each kind of residue-level RNA evidence from cells (residues crosslinked to RNA in the pepR-MS compendium, RBDmap fragments, CAPRI ADJ- and XL-peptides, pCLAP RNA-binding peptides), every arginine of a protein with that evidence gets its distance along the canonical sequence to the nearest residue with it: 0 for the crosslinked residue itself or a residue inside the fragment or peptide. Within 0, 3, 5, 10 and 20 residues, methylarginines are compared with the other arginines of the same proteins (Mantel–Haenszel odds ratio with its 95% CI, each protein a stratum; scripts/37 seq_prox, release statistics analysis sequence_proximity). With a selection, its sites are compared with the other arginines of their proteins, and a tick marks the whole dataset. q: Benjamini–Hochberg within the release analysis sequence_proximity, as the release statistics adjust it. The site table\'s RNA/DNA column also gives each site\'s nearest distance to each kind of evidence on hover.</p>') +
+        sub('ix-prox', 'Sequence proximity to RNA-binding residues', '<p>For each kind of residue-level RNA evidence from cells (residues crosslinked to RNA in the pepR-MS compendium, RBDmap fragments, CAPRI ADJ- and XL-peptides, pCLAP RNA-binding peptides), every arginine of a protein with that evidence gets its distance along the canonical sequence to the nearest residue with it: 0 for the crosslinked residue itself or a residue inside the fragment or peptide. Within 0, 3, 5, 10 and 20 residues, methylarginines are compared with the other arginines of the same proteins (Mantel–Haenszel odds ratio with its 95% CI, each protein a stratum; scripts/37 seq_prox, release statistics analysis sequence_proximity). With a selection, its sites are compared with the other arginines of their proteins, and a tick marks the whole dataset. q: Benjamini–Hochberg within the release analysis sequence_proximity, as the release statistics adjust it. At distance 0 a track repeats a test of the RNA and DNA contact card (the crosslinked residue, an RBDmap fragment, a CAPRI or pCLAP peptide, an RBR-ID residue); there the release adjusts it within crosslink, so the same test can show a slightly different q on the two cards. The site table\'s RNA/DNA column also gives each site\'s nearest distance to each kind of evidence on hover.</p>') +
         sub('ix-nac', 'Are methylarginines at RNA and DNA contacts?', '<p>One forest plot of every within-protein test of a nucleic-acid contact: RNA crosslinked to the residue in cells (pepR-MS compendium; localised to it alone; outside RG/GR dipeptides), inside an RNA-bound fragment (RBDmap, HeLa; and outside RG/GR dipeptides), inside an RNA-bound peptide next to a crosslink or inside an RNA-crosslinked peptide (CAPRI, HEK293: Panhale et al. 2019, ADJ- and XL-peptides; ADJ also outside RG/GR dipeptides), inside a pCLAP RNA-binding region or peptide (Mullari et al. 2017, HEK293; also outside RG/GR dipeptides, and counting only the arginines inside a peptide pCLAP measured, a control for detection; CAPRI and RBDmap get the same control from the peptides each measured, scripts/43f), an RBR-ID+ residue (Oksuz et al. 2023, K562; also outside RG/GR dipeptides, among measured arginines only, by the published rule as a sensitivity test, and inside a region of residue score ≥ ' + rbridThr() + '), DNA crosslinked to the residue or one of its candidate residues and inside a DNA-crosslinked peptide (Trendel et al. 2025), at an RNA or DNA interface in a PDB structure (PDBe-KB), side chain within 4 or 8 Å of RNA or DNA in a PDB entry, and inside a UniProt DNA-binding region. ' +
           'Each test compares a protein\'s methylarginines with its other arginines (Mantel–Haenszel odds ratio, Robins–Breslow–Greenland 95% CI, continuity-corrected test; each protein a stratum), over the proteins with that kind of evidence and the arginines it resolves; q is Benjamini–Hochberg within each test\'s analysis in the release statistics (crosslink, pdb_interface, nucleic_acid_distance), as the release adjusts it, so that for every site the page gives the release\'s q; a selection\'s tests are adjusted the same way. Every within-protein test of the page follows this rule (the sequence-proximity tests within sequence_proximity, predicted interfaces within predicted_interface, IntAct within intact), and a test is called different where q ≤ 0.05; tests the release does not hold (RG contexts, crosslinks by methylation class, distance shifts, interface geometry) are adjusted among the tests of their own table. With a selection, its methylarginines are compared with the other arginines of their proteins, and a tick marks the whole dataset. The same tests, with their pooled counts, are in the sections below and in the release statistics (analyses crosslink, pdb_interface, nucleic_acid_distance).</p>') +
         sub('ix-evmap', 'How the evidence fits together', '<p>Counted per site or per protein. For every methylarginine in the current selection, which interaction evidence it carries: crosslinked to RNA at the residue (pepR-MS compendium), inside an RBDmap RNA-bound fragment, a DNA crosslink localised to the residue or with it as a candidate residue (Trendel et al. 2025), a protein or RNA/DNA interface in a PDB structure (PDBe-KB), three IntAct record types (a mutation that changed an interaction, a short binding region, the arginine curated as methylated in an interaction; these do not set the status), the interface of an AlphaFold-Multimer model (ProtVar, pDockQ ≥ 0.23), and a salt bridge or hydrogen bond in a confident predicted complex. Rows are the combinations that occur, largest first (an UpSet layout). A column total lists every site with that type; a row lists the sites with exactly that combination. Sites without any type are mostly in proteins never crystallised, modelled with a partner or crosslinked. The protein-context table shows, for the sites with each kind of evidence, the share on proteins annotated as RNA- or DNA-binding (Gene Ontology), in a CD-CODE condensate, physically linked to a PRMT or a Tudor-domain reader (STRING ≥ 0.7) or in a Complex Portal curated complex, against all selected sites; each cell lists those sites. Counted per protein, the same layout combines these protein properties and whether any of the protein\'s sites carries contact evidence. Below the site view, the proteins with most sites carrying a chosen type, with links to list the sites, draw their logo and alignment, or compare the proteins.</p>') +
-        sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a dimethylarginine state call (ProMetheusDB, Maron Table S2, UniProt or Wei 2020), the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the plain odds ratio with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ 0.05 are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions should be interpreted with caution.</p>') +
+        sub('ix-cm', 'Which sites carry which evidence', '<p>A matrix of site features (rows) against site-level interaction evidence (columns) for the sites in the current selection. Rows: the Maron et al. 2021 methyl-IP that recovered the site (Rme2s from the SDMA antibody, made by PRMT5; Rme2a from the ADMA antibody, made by type I PRMTs; Rme1), a decrease after the PRMT5 inhibitor GSK591 or the type I inhibitor MS023, a dimethylarginine state call (ProMetheusDB, Maron Table S2, UniProt or Wei 2020), the RGG, GAR, RXR and proline-rich (CARM1-type) motifs, and whether the site lies in a MobiDB disordered region or an InterPro domain. Columns are the evidence types of the evidence map. Each cell is an odds ratio comparing the sites with the row feature with the other selected sites. <b>Within protein</b> (the default) is the Mantel–Haenszel odds ratio with each protein a stratum, so it asks whether, inside the same protein, sites with the feature carry the evidence more often; only proteins with both kinds of site and both outcomes contribute. <b>Pooled</b> is the sample odds ratio (no 0.5 added to the cells, unlike the residue charts and the release statistics) with Fisher\'s exact test; it also reflects which proteins carry the feature. P values are adjusted by Benjamini–Hochberg across the matrix; only cells with q ≤ ' + PADJ + ' and an odds ratio of at least ' + MIN_EFFECT + '× either way are coloured, and the others stay grey with their odds ratio in the cell. Clicking a cell lists its sites with the feature and the evidence filter applied. Inhibitor responses and IPs come from one cell line and study, and absence of evidence is not evidence of no contact, so depletions should be interpreted with caution.</p>') +
         sub('ix-wr', 'PRMTs and Tudor proteins with shared partners', '<p>For the proteins in the current selection, each cell counts the methylated proteins that are STRING physical partners (score ≥ 0.7) of both a PRMT (rows) and a Tudor-domain protein (columns, InterPro IPR002999; the 12 with most shared partners are shown). The expected count assumes the two partner lists are independent among the selected methylated proteins that are in STRING; Fisher\'s exact test, Benjamini–Hochberg across the cells; outlined cells have at least two shared partners and q ≤ 0.05 (a single shared partner of two short lists can pass the test alone). Clicking a cell lists the proteins (binds: both partners). A physical link is to the whole protein, not to a site, and several Tudor proteins read methyllysine rather than methylarginine, so a shared partner is a candidate path to test, not a demonstrated one.</p>') +
         sub('profile', 'Enriched features of a selection', '<p>Shown on the Overview, Proteins and Sites views whenever a search or filter is set. Each site feature (motifs, disorder, methylation calls and IPs, PRMT inhibitor and CARM1 knockout response, close spacing, number of reporting sources, the interaction evidence types, and the functional class and HPA location of the site\'s protein) is compared between the selected sites and all other sites with the two-sided Fisher exact test, Benjamini–Hochberg-adjusted across the features tested (computed in the browser for the current selection, with the method of SciPy\'s fisher_exact; the two agree to 1e-12); up to 8 features more common and 4 less common at q ≤ 0.05 are listed, more common ones first. The ratio is the share in the selection over the share in the other sites. Clicking a more common feature narrows the selection to it. Sites of the same protein are not independent, so these comparisons are exploratory, not confirmatory; a selection built from a few proteins mostly reflects those proteins.</p>') +
         sub('compare', 'Comparing two selections', '<p>Save a selection with a name (<b>Save</b>, next to the selection in the bar under the search box, on the Enriched features card or on the report); saved selections stay in this browser. Change the search or filters, open <b>Saved</b> and press <b>Compare</b> next to the saved one: it is A, and the current selection is B. The comparison shows both selections, their overlap, a paragraph on each, the interaction status split, the site features that differ between them (Fisher\'s exact test, Benjamini–Hochberg across features; up to 16 with q ≤ 0.05, or the 16 closest, faded, when none is), each as the share of A and of B with the ratio, side-by-side logos and the proteins with most sites. ' +
