@@ -6570,7 +6570,6 @@ P14136	motif	RD	2
 P14136	motif	RE	5
 P14136	motif	RG	1
 P14136	motif	RXR	4
-P14174	motif	*	0
 P14314	motif	*	19
 P14314	motif	CARM1_hydrophobic_proline	7
 P14314	motif	CARM1_proline_rich	8
@@ -38695,7 +38694,6 @@ P14136	disorder	*	45
 P14136	disorder	disorder_boundary	13
 P14136	disorder	disordered	5
 P14136	disorder	ordered	27
-P14174	disorder	*	0
 P14314	disorder	*	19
 P14314	disorder	disorder_boundary	4
 P14314	disorder	disordered	5

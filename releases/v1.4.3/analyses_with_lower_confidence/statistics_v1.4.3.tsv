@@ -204,88 +204,88 @@ functional_subclass	Adhesion / intermediate filament scaffolds	all	64	4692	203	1
 functional_subclass	Other / unclassified	all	858	3898	3880	11780			0.777358	-0.363349	1	1	enricher	other reviewed human proteins			
 functional_subclass	Membrane / receptor / extracellular	all	543	4213	3906	11754			0.523922	-0.932577	1	1	enricher	other reviewed human proteins			
 functional_subclass	Poorly characterized / specialized	all	172	4584	1264	14396			0.514165	-0.959696	1	1	enricher	other reviewed human proteins			
-motif	RGG	all	937	12532	769	205797	20.0062	4.32238			0	0	fisher	other arginines of the methylated proteins			
-motif	GRG	all	1027	12442	979	205587	17.3327	4.11543			0	0	fisher	other arginines of the methylated proteins			
-motif	RG	all	3763	9706	12098	194468	6.23228	2.63976			0	0	fisher	other arginines of the methylated proteins			
-motif	DR	all	1458	12011	8596	197970	2.79633	1.48353			2.26299e-212	6.22323e-212	fisher	other arginines of the methylated proteins			
-motif	GAR	all	104	13365	931	205635	1.72602	0.787451			9.45848e-07	1.04043e-06	fisher	other arginines of the methylated proteins			
-motif	CARM1_proline_rich	all	6727	6742	85475	121091	1.41353	0.499302			8.00024e-84	1.46671e-83	fisher	other arginines of the methylated proteins			
-motif	CARM1_hydrophobic_proline	all	5902	7567	74876	131690	1.37181	0.456076			2.23906e-68	3.51852e-68	fisher	other arginines of the methylated proteins			
-motif	RXR	all	2373	11096	33194	173372	1.11716	0.159842			2.93163e-06	2.93163e-06	fisher	other arginines of the methylated proteins			
-motif	ER	all	652	12817	16604	189962	0.582397	-0.779925			5.06056e-46	6.95827e-46	fisher	other arginines of the methylated proteins			
-motif	RD	all	402	13067	10917	195649	0.551987	-0.857294			2.97194e-36	3.63237e-36	fisher	other arginines of the methylated proteins			
-motif	RE	all	448	13021	16353	190213	0.400619	-1.3197			5.17167e-103	1.13777e-102	fisher	other arginines of the methylated proteins			
-disorder	disordered	all	6690	6779	68037	138529	2.00935	1.00673			0	0	fisher	other arginines of the methylated proteins			
-disorder	disorder_boundary	all	3114	10355	50792	155774	0.922389	-0.116553			0.000114942	0.000153256	fisher	other arginines of the methylated proteins			
-disorder	ordered	all	3656	9813	87444	119122	0.507578	-0.978298			4.16844e-276	8.33689e-276	fisher	other arginines of the methylated proteins			
-disorder	no_disorder_annotation	all	9	13460	293	206273	0.496018	-1.01153			0.0214992	0.0214992	fisher	other arginines of the methylated proteins			
-domain_context	no_domain_annotation	all	1848	11616	20108	186458	1.47553	0.561229			2.13523e-46	3.55872e-46	fisher	other arginines of the methylated proteins			
-domain_context	distal	all	4411	9053	51681	154885	1.46031	0.546276			1.96728e-84	4.9182e-84	fisher	other arginines of the methylated proteins			
-domain_context	boundary	all	1201	12263	16931	189635	1.09732	0.133985			0.00341416	0.00341416	fisher	other arginines of the methylated proteins			
-domain_context	inter_domain_linker	all	1506	11958	28735	177831	0.779619	-0.359159			7.05763e-20	8.82203e-20	fisher	other arginines of the methylated proteins			
-domain_context	in_domain	all	4498	8966	89111	117455	0.661278	-0.59667			5.18373e-111	2.59186e-110	fisher	other arginines of the methylated proteins			
-domain_class	Sm / Lsm	all	15	13449	41	206525	5.73523	2.51985			9.18007e-07	1.60651e-06	fisher	other arginines of the methylated proteins			
-domain_class	RRM / KH RNA-binding	all	1093	12371	4859	201707	3.66882	1.87532			9.82462e-239	1.37545e-237	fisher	other arginines of the methylated proteins			
-domain_class	Ribosome / RNP structural	all	241	13223	1061	205505	3.53569	1.82199			3.31425e-53	1.54665e-52	fisher	other arginines of the methylated proteins			
-domain_class	dsRNA-binding	all	23	13441	172	206394	2.09184	1.06477			0.00245159	0.00343223	fisher	other arginines of the methylated proteins			
-domain_class	No domain annotation	all	1848	11616	20108	186458	1.47553	0.561229			2.13523e-46	7.47331e-46	fisher	other arginines of the methylated proteins			
-domain_class	RNA-associated zinc finger	all	126	13338	1462	205104	1.33003	0.411463			0.00323474	0.00411695	fisher	other arginines of the methylated proteins			
-domain_class	DNA-binding	all	171	13293	2147	204419	1.22804	0.296362			0.0129583	0.015118	fisher	other arginines of the methylated proteins			
-domain_class	Chromatin catalytic / remodeler	all	105	13359	1548	205018	1.04555	0.0642597			0.680221	0.680221	fisher	other arginines of the methylated proteins			
-domain_class	RNA helicase	all	246	13218	4189	202377	0.900813	-0.1507			0.113479	0.122208	fisher	other arginines of the methylated proteins			
-domain_class	Catalytic enzyme domain	all	900	12564	17010	189556	0.798657	-0.324353			6.72586e-11	1.56937e-10	fisher	other arginines of the methylated proteins			
-domain_class	Protein-protein repeat / scaffold	all	431	13033	8427	198139	0.778381	-0.361452			2.42926e-07	4.85852e-07	fisher	other arginines of the methylated proteins			
-domain_class	Other domain	all	7604	5860	131573	74993	0.73959	-0.435202			2.61764e-62	1.83235e-61	fisher	other arginines of the methylated proteins			
-domain_class	Repeat / superfamily	all	539	12925	11195	195371	0.728386	-0.457224			1.93554e-13	5.41951e-13	fisher	other arginines of the methylated proteins			
-domain_class	Chromatin reader	all	122	13342	2774	203792	0.674376	-0.568374			6.91397e-06	1.07551e-05	fisher	other arginines of the methylated proteins			
-structure_context	idr_mid_domain	all	674	12790	5679	200887	1.86525	0.89937			1.18509e-43	2.76522e-43	fisher	other arginines of the methylated proteins			
-structure_context	idr_far_from_domain	all	4897	8567	50721	155845	1.7564	0.812618			1.30423e-190	9.12961e-190	fisher	other arginines of the methylated proteins			
-structure_context	idr_near_domain	all	332	13132	3087	203479	1.66862	0.738657			2.27384e-16	2.65282e-16	fisher	other arginines of the methylated proteins			
-structure_context	domain_disordered	all	787	12677	8550	198016	1.43856	0.524622			1.22019e-19	1.70827e-19	fisher	other arginines of the methylated proteins			
-structure_context	ordered_outside_domain	all	3057	10407	57690	148876	0.758127	-0.399489			8.37061e-41	1.46486e-40	fisher	other arginines of the methylated proteins			
-structure_context	domain_folded	all	3708	9756	80546	126020	0.594701	-0.749763			3.08971e-161	1.0814e-160	fisher	other arginines of the methylated proteins			
-structure_context	no_disorder_annotation	all	9	13455	293	206273	0.496203	-1.011			0.0214864	0.0214864	fisher	other arginines of the methylated proteins			
-structure_context	domain_disordered	all	787	12677	8550	198016	1.09018	0.12457			0.0548449	0.0658139	mantel_haenszel	other arginines of the same protein, each protein a stratum	2047	0.996571	1.19259
-structure_context	domain_folded	all	3708	9756	80546	126020	0.507568	-0.978327			1.46965e-161	4.40896e-161	mantel_haenszel	other arginines of the same protein, each protein a stratum	3807	0.482769	0.533641
-structure_context	idr_far_from_domain	all	4897	8567	50721	155845	2.08407	1.0594			6.8418e-206	4.10508e-205	mantel_haenszel	other arginines of the same protein, each protein a stratum	3380	1.98344	2.18981
-structure_context	idr_mid_domain	all	674	12790	5679	200887	1.31853	0.398926			1.502e-08	3.00399e-08	mantel_haenszel	other arginines of the same protein, each protein a stratum	2069	1.19798	1.4512
-structure_context	idr_near_domain	all	332	13132	3087	203479	1.1105	0.151214			0.118248	0.118248	mantel_haenszel	other arginines of the same protein, each protein a stratum	1622	0.975413	1.2643
-structure_context	no_disorder_annotation	all	9	13455	293	206273							mantel_haenszel	other arginines of the same protein, each protein a stratum	0		
-structure_context	ordered_outside_domain	all	3057	10407	57690	148876	0.871027	-0.199211			4.01938e-08	6.02908e-08	mantel_haenszel	other arginines of the same protein, each protein a stratum	4104	0.828136	0.916139
-domain_context	boundary	all	1201	12263	16931	189635	0.955473	-0.0657128			0.195177	0.195177	mantel_haenszel	other arginines of the same protein, each protein a stratum	3538	0.892361	1.02305
-domain_context	distal	all	4411	9053	51681	154885	2.08223	1.05813			6.29538e-152	2.51815e-151	mantel_haenszel	other arginines of the same protein, each protein a stratum	2931	1.96769	2.20343
-domain_context	in_domain	all	4498	8966	89111	117455	0.522972	-0.935194			5.71693e-151	1.14339e-150	mantel_haenszel	other arginines of the same protein, each protein a stratum	3749	0.497752	0.54947
-domain_context	inter_domain_linker	all	1506	11958	28735	177831	1.38085	0.465552			2.49648e-17	3.32864e-17	mantel_haenszel	other arginines of the same protein, each protein a stratum	1572	1.2816	1.48777
-domain_context	no_domain_annotation	all	1848	11616	20108	186458							mantel_haenszel	other arginines of the same protein, each protein a stratum	0		
-domain_class	Catalytic enzyme domain	all	900	12564	17010	189556	0.887539	-0.172117			0.170013	0.276271	mantel_haenszel	other arginines of the same protein, each protein a stratum	343	0.751494	1.04821
-domain_class	Chromatin catalytic / remodeler	all	105	13359	1548	205018	0.963042	-0.0543287			0.930796	1	mantel_haenszel	other arginines of the same protein, each protein a stratum	59	0.648916	1.42923
-domain_class	Chromatin reader	all	122	13342	2774	203792	0.606643	-0.721081			0.0005232	0.0034008	mantel_haenszel	other arginines of the same protein, each protein a stratum	84	0.461515	0.797407
-domain_class	DNA-binding	all	171	13293	2147	204419	1.39246	0.477636			0.00770134	0.0300374	mantel_haenszel	other arginines of the same protein, each protein a stratum	110	1.09122	1.77686
-domain_class	No domain annotation	all	1848	11616	20108	186458							mantel_haenszel	other arginines of the same protein, each protein a stratum	0		
-domain_class	Other domain	all	7604	5860	131573	74993	1.04105	0.0580405			0.339137	0.440878	mantel_haenszel	other arginines of the same protein, each protein a stratum	1021	0.959772	1.12921
-domain_class	Protein-protein repeat / scaffold	all	431	13033	8427	198139	0.82499	-0.277552			0.0651907	0.121069	mantel_haenszel	other arginines of the same protein, each protein a stratum	228	0.67664	1.00586
-domain_class	RNA helicase	all	246	13218	4189	202377	0.504054	-0.988349			2.86454e-05	0.00037239	mantel_haenszel	other arginines of the same protein, each protein a stratum	47	0.366379	0.693463
-domain_class	RNA-associated zinc finger	all	126	13338	1462	205104	1.62093	0.696824			0.0330827	0.086015	mantel_haenszel	other arginines of the same protein, each protein a stratum	35	1.06523	2.46654
-domain_class	RRM / KH RNA-binding	all	1093	12371	4859	201707	1.00143	0.00205866			1	1	mantel_haenszel	other arginines of the same protein, each protein a stratum	116	0.837371	1.19763
-domain_class	Repeat / superfamily	all	539	12925	11195	195371	1.28892	0.366165			0.00924228	0.0300374	mantel_haenszel	other arginines of the same protein, each protein a stratum	228	1.06574	1.55885
-domain_class	Ribosome / RNP structural	all	241	13223	1061	205505	1.41477	0.500573			0.0432408	0.0936884	mantel_haenszel	other arginines of the same protein, each protein a stratum	36	1.00857	1.98459
-domain_class	Sm / Lsm	all	15	13449	41	206525	0.637304	-0.649945			0.264232	0.381669	mantel_haenszel	other arginines of the same protein, each protein a stratum	6	0.306437	1.32542
-domain_class	dsRNA-binding	all	23	13441	172	206394	0.993071	-0.0100316			1	1	mantel_haenszel	other arginines of the same protein, each protein a stratum	16	0.547224	1.80217
-disorder	disorder_boundary	all	3112	10352	50792	155774	0.930868	-0.103352			0.00181988	0.00181988	mantel_haenszel	other arginines of the same protein, each protein a stratum	4587	0.88957	0.974082
-disorder	disordered	all	6690	6774	68037	138529	2.00482	1.00347			5.91773e-218	1.77532e-217	mantel_haenszel	other arginines of the same protein, each protein a stratum	4202	1.91605	2.09769
-disorder	no_disorder_annotation	all	9	13455	293	206273							mantel_haenszel	other arginines of the same protein, each protein a stratum	0		
-disorder	ordered	all	3653	9811	87444	119122	0.507192	-0.979396			1.87917e-170	2.81875e-170	mantel_haenszel	other arginines of the same protein, each protein a stratum	4346	0.483133	0.532449
-motif	CARM1_hydrophobic_proline	all	5898	7566	74876	131690	1.40957	0.495253			4.6367e-67	7.28624e-67	mantel_haenszel	other arginines of the same protein, each protein a stratum	4679	1.35541	1.46589
-motif	CARM1_proline_rich	all	6723	6741	85475	121091	1.43093	0.516957			1.49553e-72	2.74181e-72	mantel_haenszel	other arginines of the same protein, each protein a stratum	4687	1.37583	1.48825
-motif	DR	all	1457	12007	8596	197970	2.95869	1.56496			7.62048e-261	2.09563e-260	mantel_haenszel	other arginines of the same protein, each protein a stratum	3478	2.77115	3.15892
-motif	ER	all	651	12813	16604	189962	0.592421	-0.755306			2.39205e-34	3.28907e-34	mantel_haenszel	other arginines of the same protein, each protein a stratum	3928	0.544242	0.644864
-motif	GAR	all	104	13360	931	205635	1.70321	0.768254			2.43028e-06	2.6733e-06	mantel_haenszel	other arginines of the same protein, each protein a stratum	799	1.36208	2.12976
-motif	GRG	all	1027	12437	979	205587	14.4088	3.84888			0	0	mantel_haenszel	other arginines of the same protein, each protein a stratum	1194	12.7089	16.3361
-motif	RD	all	402	13062	10917	195649	0.520107	-0.943119			2.85103e-34	3.4846e-34	mantel_haenszel	other arginines of the same protein, each protein a stratum	3568	0.467292	0.578891
-motif	RE	all	448	13016	16353	190213	0.402649	-1.31241			2.28417e-76	5.02518e-76	mantel_haenszel	other arginines of the same protein, each protein a stratum	3918	0.364373	0.444945
-motif	RG	all	3763	9701	12098	194468	6.15518	2.6218			0	0	mantel_haenszel	other arginines of the same protein, each protein a stratum	3989	5.8526	6.4734
-motif	RGG	all	937	12527	769	205797	17.946	4.16559			0	0	mantel_haenszel	other arginines of the same protein, each protein a stratum	1089	15.597	20.6488
-motif	RXR	all	2371	11093	33194	173372	0.998171	-0.00264047			0.954654	0.954654	mantel_haenszel	other arginines of the same protein, each protein a stratum	3969	0.948038	1.05096
+motif	RGG	all	937	12527	758	205436	20.2688	4.34119			0	0	fisher	other arginines of the methylated proteins			
+motif	GRG	all	1027	12437	958	205236	17.6893	4.14481			0	0	fisher	other arginines of the methylated proteins			
+motif	RG	all	3763	9701	12041	194153	6.25486	2.64498			0	0	fisher	other arginines of the methylated proteins			
+motif	DR	all	1457	12007	8581	197613	2.79518	1.48294			3.91141e-212	1.07564e-211	fisher	other arginines of the methylated proteins			
+motif	GAR	all	104	13360	930	205264	1.7254	0.786935			9.53379e-07	1.04872e-06	fisher	other arginines of the methylated proteins			
+motif	CARM1_proline_rich	all	6723	6741	85307	120887	1.4133	0.499063			1.03679e-83	1.90079e-83	fisher	other arginines of the methylated proteins			
+motif	CARM1_hydrophobic_proline	all	5898	7566	74740	131454	1.37109	0.455323			3.99485e-68	6.27763e-68	fisher	other arginines of the methylated proteins			
+motif	RXR	all	2371	11093	33107	173087	1.11762	0.160429			2.72919e-06	2.72919e-06	fisher	other arginines of the methylated proteins			
+motif	ER	all	651	12813	16579	189615	0.581499	-0.782151			3.06454e-46	4.21375e-46	fisher	other arginines of the methylated proteins			
+motif	RD	all	402	13062	10895	195299	0.552324	-0.856414			3.63755e-36	4.4459e-36	fisher	other arginines of the methylated proteins			
+motif	RE	all	448	13016	16326	189868	0.400708	-1.31938			4.89997e-103	1.07799e-102	fisher	other arginines of the methylated proteins			
+disorder	disordered	all	6690	6774	67845	138349	2.0139	1.00999			0	0	fisher	other arginines of the methylated proteins			
+disorder	disorder_boundary	all	3112	10352	50729	155465	0.921377	-0.118136			9.28349e-05	0.00012378	fisher	other arginines of the methylated proteins			
+disorder	ordered	all	3653	9811	87327	118867	0.506857	-0.980348			4.52668e-277	9.05335e-277	fisher	other arginines of the methylated proteins			
+disorder	no_disorder_annotation	all	9	13455	293	205901	0.495308	-1.0136			0.0215515	0.0215515	fisher	other arginines of the methylated proteins			
+domain_context	no_domain_annotation	all	1848	11616	20063	186131	1.47624	0.561929			1.65234e-46	2.7539e-46	fisher	other arginines of the methylated proteins			
+domain_context	distal	all	4411	9053	51553	154641	1.46163	0.547579			9.62324e-85	2.40581e-84	fisher	other arginines of the methylated proteins			
+domain_context	boundary	all	1201	12263	16904	189290	1.09707	0.133661			0.00341775	0.00341775	fisher	other arginines of the methylated proteins			
+domain_context	inter_domain_linker	all	1506	11958	28685	177509	0.779564	-0.359261			7.02229e-20	8.77786e-20	fisher	other arginines of the methylated proteins			
+domain_context	in_domain	all	4498	8966	88989	117205	0.660776	-0.597768			2.25813e-111	1.12906e-110	fisher	other arginines of the methylated proteins			
+domain_class	Sm / Lsm	all	15	13449	40	206154	5.86629	2.55245			7.27855e-07	1.27375e-06	fisher	other arginines of the methylated proteins			
+domain_class	RRM / KH RNA-binding	all	1093	12371	4842	201352	3.67522	1.87783			3.28953e-239	4.60534e-238	fisher	other arginines of the methylated proteins			
+domain_class	Ribosome / RNP structural	all	241	13223	1051	205143	3.56303	1.8331			1.05908e-53	4.94237e-53	fisher	other arginines of the methylated proteins			
+domain_class	dsRNA-binding	all	23	13441	172	206022	2.08807	1.06217			0.00248782	0.00348294	fisher	other arginines of the methylated proteins			
+domain_class	No domain annotation	all	1848	11616	20063	186131	1.47624	0.561929			1.65234e-46	5.78319e-46	fisher	other arginines of the methylated proteins			
+domain_class	RNA-associated zinc finger	all	126	13338	1455	204739	1.33405	0.415816			0.00315937	0.00402102	fisher	other arginines of the methylated proteins			
+domain_class	DNA-binding	all	171	13293	2142	204052	1.2287	0.297133			0.0129204	0.0150737	fisher	other arginines of the methylated proteins			
+domain_class	Chromatin catalytic / remodeler	all	105	13359	1546	204648	1.04501	0.0635182			0.680318	0.680318	fisher	other arginines of the methylated proteins			
+domain_class	RNA helicase	all	246	13218	4185	202009	0.900035	-0.151948			0.106676	0.114882	fisher	other arginines of the methylated proteins			
+domain_class	Catalytic enzyme domain	all	900	12564	16991	189203	0.798061	-0.32543			5.48599e-11	1.28006e-10	fisher	other arginines of the methylated proteins			
+domain_class	Protein-protein repeat / scaffold	all	431	13033	8425	197769	0.777112	-0.363806			1.94513e-07	3.89026e-07	fisher	other arginines of the methylated proteins			
+domain_class	Other domain	all	7604	5860	131345	74849	0.739452	-0.435473			2.19914e-62	1.5394e-61	fisher	other arginines of the methylated proteins			
+domain_class	Repeat / superfamily	all	539	12925	11170	195024	0.72872	-0.456564			2.20709e-13	6.17984e-13	fisher	other arginines of the methylated proteins			
+domain_class	Chromatin reader	all	122	13342	2767	203427	0.674871	-0.567316			6.89848e-06	1.0731e-05	fisher	other arginines of the methylated proteins			
+structure_context	idr_mid_domain	all	674	12790	5671	200523	1.8645	0.898787			1.24745e-43	2.91072e-43	fisher	other arginines of the methylated proteins			
+structure_context	idr_far_from_domain	all	4897	8567	50576	155618	1.75887	0.814646			1.51229e-191	1.05861e-190	fisher	other arginines of the methylated proteins			
+structure_context	idr_near_domain	all	332	13132	3073	203121	1.67327	0.742673			2.01878e-16	2.35524e-16	fisher	other arginines of the methylated proteins			
+structure_context	domain_disordered	all	787	12677	8525	197669	1.44025	0.526315			9.51417e-20	1.33198e-19	fisher	other arginines of the methylated proteins			
+structure_context	ordered_outside_domain	all	3057	10407	57607	148587	0.757745	-0.400215			5.67627e-41	9.93346e-41	fisher	other arginines of the methylated proteins			
+structure_context	domain_folded	all	3708	9756	80449	125745	0.594119	-0.751177			7.17459e-162	2.51111e-161	fisher	other arginines of the methylated proteins			
+structure_context	no_disorder_annotation	all	9	13455	293	205901	0.495308	-1.0136			0.0215515	0.0215515	fisher	other arginines of the methylated proteins			
+structure_context	domain_disordered	all	787	12677	8525	197669	1.0975	0.134222			0.0387578	0.0465093	mantel_haenszel	other arginines of the same protein, each protein a stratum	2044	1.00314	1.20073
+structure_context	domain_folded	all	3708	9756	80449	125745	0.50571	-0.983617			3.81786e-163	1.14536e-162	mantel_haenszel	other arginines of the same protein, each protein a stratum	3805	0.480982	0.53171
+structure_context	idr_far_from_domain	all	4897	8567	50576	155618	2.09016	1.06362			1.27504e-207	7.65023e-207	mantel_haenszel	other arginines of the same protein, each protein a stratum	3377	1.9892	2.19625
+structure_context	idr_mid_domain	all	674	12790	5671	200523	1.31102	0.390693			3.00306e-08	4.52814e-08	mantel_haenszel	other arginines of the same protein, each protein a stratum	2068	1.19098	1.44316
+structure_context	idr_near_domain	all	332	13132	3073	203121	1.12123	0.165081			0.0883189	0.0883189	mantel_haenszel	other arginines of the same protein, each protein a stratum	1615	0.98456	1.27687
+structure_context	no_disorder_annotation	all	9	13455	293	205901							mantel_haenszel	other arginines of the same protein, each protein a stratum	0		
+structure_context	ordered_outside_domain	all	3057	10407	57607	148587	0.869931	-0.201027			3.01876e-08	4.52814e-08	mantel_haenszel	other arginines of the same protein, each protein a stratum	4102	0.827086	0.914996
+domain_context	boundary	all	1201	12263	16904	189290	0.955781	-0.0652474			0.198743	0.198743	mantel_haenszel	other arginines of the same protein, each protein a stratum	3534	0.892585	1.02345
+domain_context	distal	all	4411	9053	51553	154641	2.08842	1.06241			2.93629e-153	1.17451e-152	mantel_haenszel	other arginines of the same protein, each protein a stratum	2931	1.9735	2.21003
+domain_context	in_domain	all	4498	8966	88989	117205	0.522108	-0.937579			1.0959e-151	2.19181e-151	mantel_haenszel	other arginines of the same protein, each protein a stratum	3746	0.496914	0.54858
+domain_context	inter_domain_linker	all	1506	11958	28685	177509	1.37723	0.461765			4.5508e-17	6.06773e-17	mantel_haenszel	other arginines of the same protein, each protein a stratum	1571	1.27819	1.48393
+domain_context	no_domain_annotation	all	1848	11616	20063	186131							mantel_haenszel	other arginines of the same protein, each protein a stratum	0		
+domain_class	Catalytic enzyme domain	all	900	12564	16991	189203	0.886965	-0.17305			0.167421	0.272059	mantel_haenszel	other arginines of the same protein, each protein a stratum	343	0.751052	1.04747
+domain_class	Chromatin catalytic / remodeler	all	105	13359	1546	204648	0.962274	-0.0554797			0.927437	1	mantel_haenszel	other arginines of the same protein, each protein a stratum	59	0.648571	1.42771
+domain_class	Chromatin reader	all	122	13342	2767	203427	0.604159	-0.726999			0.0004633	0.00301145	mantel_haenszel	other arginines of the same protein, each protein a stratum	84	0.459668	0.79407
+domain_class	DNA-binding	all	171	13293	2142	204052	1.39611	0.481408			0.00718875	0.026482	mantel_haenszel	other arginines of the same protein, each protein a stratum	110	1.0941	1.78147
+domain_class	No domain annotation	all	1848	11616	20063	186131							mantel_haenszel	other arginines of the same protein, each protein a stratum	0		
+domain_class	Other domain	all	7604	5860	131345	74849	1.0432	0.0610159			0.314661	0.40906	mantel_haenszel	other arginines of the same protein, each protein a stratum	1021	0.961699	1.13161
+domain_class	Protein-protein repeat / scaffold	all	431	13033	8425	197769	0.820493	-0.285437			0.0573768	0.106557	mantel_haenszel	other arginines of the same protein, each protein a stratum	228	0.673029	1.00027
+domain_class	RNA helicase	all	246	13218	4185	202009	0.504603	-0.98678			2.96809e-05	0.000385852	mantel_haenszel	other arginines of the same protein, each protein a stratum	47	0.366733	0.694304
+domain_class	RNA-associated zinc finger	all	126	13338	1455	204739	1.62127	0.697121			0.0333414	0.0722396	mantel_haenszel	other arginines of the same protein, each protein a stratum	35	1.06498	2.46812
+domain_class	RRM / KH RNA-binding	all	1093	12371	4842	201352	0.986152	-0.0201188			0.914181	1	mantel_haenszel	other arginines of the same protein, each protein a stratum	116	0.824161	1.17998
+domain_class	Repeat / superfamily	all	539	12925	11170	195024	1.29373	0.371533			0.00814832	0.026482	mantel_haenszel	other arginines of the same protein, each protein a stratum	228	1.06987	1.56442
+domain_class	Ribosome / RNP structural	all	241	13223	1051	205143	1.44308	0.529148			0.0304451	0.0722396	mantel_haenszel	other arginines of the same protein, each protein a stratum	36	1.02958	2.02264
+domain_class	Sm / Lsm	all	15	13449	40	206154	0.654789	-0.610898			0.303185	0.40906	mantel_haenszel	other arginines of the same protein, each protein a stratum	6	0.313648	1.36698
+domain_class	dsRNA-binding	all	23	13441	172	206022	0.991748	-0.0119541			1	1	mantel_haenszel	other arginines of the same protein, each protein a stratum	16	0.546574	1.79951
+disorder	disorder_boundary	all	3112	10352	50729	155465	0.929153	-0.106012			0.00138532	0.00138532	mantel_haenszel	other arginines of the same protein, each protein a stratum	4585	0.887907	0.972315
+disorder	disordered	all	6690	6774	67845	138349	2.01323	1.00951			1.84154e-220	5.52462e-220	mantel_haenszel	other arginines of the same protein, each protein a stratum	4198	1.92404	2.10656
+disorder	no_disorder_annotation	all	9	13455	293	205901							mantel_haenszel	other arginines of the same protein, each protein a stratum	0		
+disorder	ordered	all	3653	9811	87327	118867	0.50626	-0.98205			2.02952e-171	3.04428e-171	mantel_haenszel	other arginines of the same protein, each protein a stratum	4343	0.482239	0.531477
+motif	CARM1_hydrophobic_proline	all	5898	7566	74740	131454	1.41011	0.49581			4.09377e-67	6.43306e-67	mantel_haenszel	other arginines of the same protein, each protein a stratum	4677	1.35589	1.4665
+motif	CARM1_proline_rich	all	6723	6741	85307	120887	1.43334	0.519383			4.24053e-73	7.77431e-73	mantel_haenszel	other arginines of the same protein, each protein a stratum	4685	1.3781	1.4908
+motif	DR	all	1457	12007	8581	197613	2.96158	1.56637			5.34548e-261	1.47001e-260	mantel_haenszel	other arginines of the same protein, each protein a stratum	3472	2.77369	3.1622
+motif	ER	all	651	12813	16579	189615	0.591495	-0.757562			1.74319e-34	2.39688e-34	mantel_haenszel	other arginines of the same protein, each protein a stratum	3924	0.54335	0.643906
+motif	GAR	all	104	13360	930	205264	1.71612	0.779154			1.86499e-06	2.05149e-06	mantel_haenszel	other arginines of the same protein, each protein a stratum	799	1.37213	2.14635
+motif	GRG	all	1027	12437	958	205236	15.213	3.92724			0	0	mantel_haenszel	other arginines of the same protein, each protein a stratum	1190	13.3948	17.2781
+motif	RD	all	402	13062	10895	195299	0.52098	-0.940701			5.02937e-34	6.147e-34	mantel_haenszel	other arginines of the same protein, each protein a stratum	3565	0.46803	0.579919
+motif	RE	all	448	13016	16326	189868	0.403098	-1.3108			5.94103e-76	1.30703e-75	mantel_haenszel	other arginines of the same protein, each protein a stratum	3914	0.364737	0.445493
+motif	RG	all	3763	9701	12041	194153	6.20037	2.63235			0	0	mantel_haenszel	other arginines of the same protein, each protein a stratum	3986	5.89493	6.52164
+motif	RGG	all	937	12527	758	205436	18.7856	4.23156			0	0	mantel_haenszel	other arginines of the same protein, each protein a stratum	1088	16.3046	21.6441
+motif	RXR	all	2371	11093	33107	173087	1.00061	0.000877489			0.992007	0.992007	mantel_haenszel	other arginines of the same protein, each protein a stratum	3968	0.950304	1.05358
 disease_family	Cancer / neoplasia	all	3798	633	9801	2754			1.07062	0.0984532	1.38943e-29	1.11154e-28	enricher	other reviewed human genes (Entrez) with a DisGeNET term			
 disease_family	Ataxia / cerebellar degeneration	all	648	3783	1180	11375			1.3589	0.442442	4.22433e-21	1.68973e-20	enricher	other reviewed human genes (Entrez) with a DisGeNET term			
 disease_family	Developmental / congenital syndromes	all	2492	1939	6202	6353			1.0988	0.135926	2.55155e-15	6.80413e-15	enricher	other reviewed human genes (Entrez) with a DisGeNET term			

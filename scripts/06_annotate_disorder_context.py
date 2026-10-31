@@ -16,6 +16,7 @@ from common import (
     canonical_site_table,
     count_over_total_labels,
     fisher_like_enrichment,
+    left_out_site_keys,
     log2_odds_ratio,
     parse_fasta,
     per_protein_background,
@@ -26,6 +27,7 @@ from common import (
     set_symmetric_xlim,
     signed_bar_colors,
     style_axis,
+    with_background,
 )
 
 
@@ -291,18 +293,24 @@ def main() -> None:
             boundary_window=args.boundary_window,
             lengths=lengths,
         )
-        methyl_site_keys = set(annotated_sites['site_key'].astype(str))
+        # The sites the analyses leave out (scripts/release_analyses.py prepare: lower-confidence sites the view does not
+        # count) are neither methylarginines nor background arginines.
+        methyl_site_keys = set(annotated_sites['site_key'].astype(str)) | left_out_site_keys(args.sites)
         proteome_arg = proteome_arg[~proteome_arg['site_key'].isin(methyl_site_keys)].copy()
         methylated_proteins = sorted(set(annotated_sites['canonical_UniProtAC'].dropna().astype(str)))
         methyl_protein_arg = proteome_arg[proteome_arg['canonical_UniProtAC'].isin(methylated_proteins)].copy()
+        # The tests against the other arginines of the same proteins count only the sites on a protein with such
+        # arginines (common.with_background, as scripts/07 and the within-protein test count them): not MIF, whose
+        # every arginine is a site. The tests against the proteome's arginines count every site in the FASTA.
+        same_sites = with_background(tested_sites, methyl_protein_arg)
         enrich_all = fisher_like_enrichment(tested_sites['disorder_context_class'], proteome_arg['disorder_context_class'])
-        enrich_same = fisher_like_enrichment(tested_sites['disorder_context_class'], methyl_protein_arg['disorder_context_class'])
+        enrich_same = fisher_like_enrichment(same_sites['disorder_context_class'], methyl_protein_arg['disorder_context_class'])
         binary_all = fisher_like_enrichment(
             tested_sites[tested_sites['idr_binary_class'].notna()]['idr_binary_class'],
             proteome_arg[proteome_arg['idr_binary_class'].notna()]['idr_binary_class'],
         )
         binary_same = fisher_like_enrichment(
-            tested_sites[tested_sites['idr_binary_class'].notna()]['idr_binary_class'],
+            same_sites[same_sites['idr_binary_class'].notna()]['idr_binary_class'],
             methyl_protein_arg[methyl_protein_arg['idr_binary_class'].notna()]['idr_binary_class'],
         )
         proximal_binary_all = fisher_like_enrichment(
@@ -310,12 +318,12 @@ def main() -> None:
             proteome_arg[proteome_arg['idr_proximal_binary_class'].notna()]['idr_proximal_binary_class'],
         )
         proximal_binary_same = fisher_like_enrichment(
-            tested_sites[tested_sites['idr_proximal_binary_class'].notna()]['idr_proximal_binary_class'],
+            same_sites[same_sites['idr_proximal_binary_class'].notna()]['idr_proximal_binary_class'],
             methyl_protein_arg[methyl_protein_arg['idr_proximal_binary_class'].notna()]['idr_proximal_binary_class'],
         )
         save_table(enrich_all, outdir / 'idr_enrichment_vs_all_arginines.tsv')
         save_table(enrich_same, outdir / 'idr_enrichment_vs_arginines_in_methylated_proteins.tsv')
-        save_table(per_protein_background('disorder', tested_sites['canonical_UniProtAC'], methyl_protein_arg, col='disorder_context_class'),
+        save_table(per_protein_background('disorder', same_sites['canonical_UniProtAC'], methyl_protein_arg, col='disorder_context_class'),
                    outdir / 'background_per_protein.tsv')
         save_table(binary_all, outdir / 'idr_binary_enrichment_vs_all_arginines.tsv')
         save_table(binary_same, outdir / 'idr_binary_enrichment_vs_arginines_in_methylated_proteins.tsv')
@@ -341,16 +349,16 @@ def main() -> None:
             proteome_arg[proteome_arg['idr_edge_bin'].notna()]['idr_edge_bin'],
         )
         edge_bin_same = fisher_like_enrichment(
-            tested_sites[tested_sites['idr_edge_bin'].notna()]['idr_edge_bin'],
+            same_sites[same_sites['idr_edge_bin'].notna()]['idr_edge_bin'],
             methyl_protein_arg[methyl_protein_arg['idr_edge_bin'].notna()]['idr_edge_bin'],
         )
         edge_curve_same = cumulative_edge_curve(
-            tested_sites.loc[tested_sites['idr_edge_bin'].notna(), 'nearest_disorder_edge_distance'],
+            same_sites.loc[same_sites['idr_edge_bin'].notna(), 'nearest_disorder_edge_distance'],
             methyl_protein_arg.loc[methyl_protein_arg['idr_edge_bin'].notna(), 'nearest_disorder_edge_distance'],
             max_distance=40,
         )
         edge_roll_same = rolling_edge_curve(
-            tested_sites.loc[tested_sites['idr_edge_bin'].notna(), 'nearest_disorder_edge_distance'],
+            same_sites.loc[same_sites['idr_edge_bin'].notna(), 'nearest_disorder_edge_distance'],
             methyl_protein_arg.loc[methyl_protein_arg['idr_edge_bin'].notna(), 'nearest_disorder_edge_distance'],
             window_size=5,
             max_distance=40,

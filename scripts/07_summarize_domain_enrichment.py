@@ -17,6 +17,7 @@ from common import (
     benjamini_hochberg,
     classify_by_patterns,
     fisher_like_enrichment,
+    left_out_site_keys,
     load_json,
     log2_odds_ratio,
     mantel_haenszel_ci,
@@ -423,7 +424,9 @@ def main() -> None:
         proteome_arg = residue_background_from_sequences(sequences, residue='R')
         methylated_proteins = sorted(set(annotated_sites['canonical_UniProtAC'].dropna().astype(str)))
         methyl_protein_arg = proteome_arg[proteome_arg['canonical_UniProtAC'].isin(methylated_proteins)].copy()
-        methyl_site_keys = set(annotated_sites['site_key'].astype(str))
+        # the sites the analyses leave out (scripts/release_analyses.py prepare: lower-confidence sites the view does not
+        # count) are neither methylarginines nor background arginines
+        methyl_site_keys = set(annotated_sites['site_key'].astype(str)) | left_out_site_keys(annotated_path)
         methyl_protein_arg = methyl_protein_arg[~methyl_protein_arg['site_key'].isin(methyl_site_keys)].copy()
         methyl_protein_arg = annotate_background(methyl_protein_arg, intervals_by_acc, args.boundary_window, ontology)
     methyl_protein_arg['domain_edge_bin'] = pd.NA
@@ -442,8 +445,9 @@ def main() -> None:
         methyl_protein_arg = annotate_disorder_background(methyl_protein_arg, disorder_intervals_by_acc, args.boundary_window)
 
     # The tests compare sites with the other arginines of the same sequences, so they count only sites on proteins with
-    # background arginines (as scripts/08 does): not a protein whose every arginine is a site (MIF in v1.1.0, 5 sites),
-    # nor one outside the FASTA. The site table keeps all.
+    # background arginines (common.with_background; scripts/06 and 08 count their same-protein tests the same way, and
+    # the within-protein tests need such arginines): not a protein whose every arginine is a site (MIF in v1.1.0,
+    # 5 sites), nor one outside the FASTA. The site table keeps all.
     has_background = annotated_sites['canonical_UniProtAC'].isin(set(methyl_protein_arg['canonical_UniProtAC']))
     tested_sites = annotated_sites[has_background]
     context_enrichment = fisher_like_enrichment(
