@@ -387,7 +387,7 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'decile a stratum"): mass spectrometry finds abundant proteins most, so a set rich in abundant proteins can look '
         'enriched among the methylated proteins whatever methylation does. Each protein-level over-representation test '
         'above (PANTHER, functional classes, Reactome, Human Protein Atlas locations, the maps of the cell, condensates, '
-        'DepMap dependency, Gene Ontology binding, disease families, and the eCLIP\'d proteins below) is run again with its background split into the deciles of PaxDb 6.1 '
+        'DepMap dependency, Gene Ontology binding, disease families, and the proteins found binding RNA or DNA in cells and the eCLIP\'d proteins below) is run again with its background split into the deciles of PaxDb 6.1 '
         'abundance, plus one stratum for the proteins without a PaxDb value: the Mantel-Haenszel common odds ratio with its '
         'Robins-Breslow-Greenland 95% CI (statsmodels) and the continuity-corrected two-sided Cochran-Mantel-Haenszel test, its '
         '|O - E| - 0.5 floored at zero (`common.cmh_statistic`), '
@@ -402,10 +402,13 @@ def write_readme(outdir: Path, ctx: dict, files: dict) -> None:
         'over the arginines of the methylated proteins, and the Mantel-Haenszel common odds ratio with each protein a '
         'stratum (statsmodels), which compares each protein\'s methylated arginines with its own other arginines; q is '
         'Benjamini-Hochberg within the analysis and method.',
-        '- **Proteins found binding RNA or DNA in cells** (`interaction_statistics`, analysis binding_protein, method '
-        '`fisher`): methylarginine-containing proteins against the other reviewed human proteins among the proteins each '
-        'experiment measured (the reviewed proteome where it lists none): two-sided Fisher exact test, the sample odds '
-        'ratio and fold enrichment, q Benjamini-Hochberg over the experiments.',
+        '- **Proteins found binding RNA or DNA in cells** (`interaction_statistics`, analysis binding_protein, methods '
+        '`enricher` and `mantel_haenszel`): methylarginine-containing proteins against the other reviewed human proteins '
+        'among the proteins each experiment measured (the reviewed proteome where it lists none), tested as Gene Ontology '
+        'binding is: clusterProfiler enricher, one job per experiment since each has its own background, the one-sided '
+        'hypergeometric p and fold enrichment, q Benjamini-Hochberg over the experiments; and again within PaxDb abundance '
+        'deciles (above), since pepR-MS and the DNA crosslinks list no proteins measured and abundance can matter beyond '
+        'detection.',
         '- **Where the RNAs bound by proteins with eCLIP data gather** (analyses eclip_*, scripts/cell_maps.py): for each '
         'protein with eCLIP data and each map of RNA or DNA (APEX-seq, nuclear-body APEX2-seq, TSA-seq, Hi-C '
         'subcompartments), its bound RNAs against the other RNAs (genes) the map places, in each compartment: the '
@@ -697,7 +700,9 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
                 f"(`human_methylarginine_lower_confidence_sites_{ctx['version']}.tsv`), with the results of the record that passes most "
                 "tests, and are never in this release's counts and tests. The analyses were run a second time with the "
                 f"{n(analysed)} whose own evidence covers the arginine and leaves the methyl group on an arginine "
-                f"(`statistics_with_lower_confidence_{ctx['version']}.tsv`, `analyses_with_lower_confidence/`). The website shows "
+                f"(`statistics_with_lower_confidence_{ctx['version']}.tsv`, `analyses_with_lower_confidence/`); the other "
+                f"{n(len(lc_sites) - analysed)} are left out of that run's tests altogether, neither sites nor the other arginines "
+                'they are compared with. The website shows '
                 'them, hatched, when the reader switches Lower-confidence sites on, and its counts and charts then come from that '
                 'second run.',
                 '',
@@ -830,6 +835,7 @@ def write_changes_since_release(outdir: Path, ctx: dict, files: dict) -> None:
     lines += release_layers.changes_section(files, ctx['version'], previous)
     lines += abundance_strata.changes_section(files, ctx['version'], previous)
     lines += cmh_section(ctx, files, previous)
+    lines += stats_fix_section(ctx, files, previous)
     if since_v11:
         lines += [
         '## Methylation degree',
@@ -1150,6 +1156,107 @@ def cmh_section(ctx: dict, files: dict, previous: str) -> list:
             f'have a different p, ' + ('and none crosses q <= 0.05 either way.' if not len(lost) and not len(gained) else
             f'{len(lost):,} were significant at q <= 0.05 and are not now' + (f' ({label(lost)}{" …" if len(lost) > 10 else ""})' if len(lost) else '')
             + f', and {len(gained):,} the reverse' + (f' ({label(gained)}{" …" if len(gained) > 10 else ""})' if len(gained) else '') + '.'), '']
+
+
+STATS_FIX_SINCE = 'v1.4.3'
+# the interaction analyses whose within-protein (Mantel-Haenszel) rows gained their 95% CI in STATS_FIX_SINCE
+IX_MH_ANALYSES = ('pdb_interface', 'predicted_interface', 'crosslink', 'sequence_proximity', 'nucleic_acid_distance', 'intact')
+
+
+def stats_fix_section(ctx: dict, files: dict, previous: str) -> list:
+    """CHANGES.md, in the release that corrects the statistics found by the consistency audit (STATS_FIX_SINCE): the
+    binding experiments as enricher tests, the CIs of the interaction analyses' within-protein rows, the pCLAP category of
+    sequence_proximity, the pooled residue tests without MIF, and the view with lower-confidence sites leaving the sites it
+    does not count out of both sides. Each with the rows of the previous release it changes."""
+    v = lambda x: tuple(int(k) for k in x.lstrip('v').split('.'))  # noqa: E731
+    prev_dir = Path(ctx.get('previous_dir') or '.')
+    if not (v(previous) < v(STATS_FIX_SINCE) <= v(ctx['version'])) or not (prev_dir / f'statistics_{previous}.tsv').exists():
+        return []
+    key = ['analysis', 'category', 'stratum', 'method']
+    num = lambda x: pd.to_numeric(x, errors='coerce')  # noqa: E731
+    label = lambda t: '; '.join(f'{r.analysis} {r.category}' + (f' ({r.stratum})' if r.stratum != 'all' else '') + f' ({r.method})'  # noqa: E731
+                                for r in t.head(10).itertuples()) + (' …' if len(t) > 10 else '')
+
+    def compare(old: pd.DataFrame, new: pd.DataFrame, analyses=None):
+        """(rows shared, rows whose p changed, rows significant before and not now, the reverse)"""
+        # the same test under its new name or method is the same row: the pCLAP category of sequence_proximity, and
+        # binding_protein, a Fisher test before and an enricher test now
+        sp = (old['analysis'] == 'sequence_proximity') & (old['category'] == 'pclap_lysc_region')
+        bp = (old['analysis'] == 'binding_protein') & (old['method'] == 'fisher')
+        old = old.assign(category=old['category'].where(~sp, 'pclap_peptide'), method=old['method'].where(~bp, 'enricher'))
+        m = old.merge(new.astype(str), on=key, suffixes=('_old', '_new'))
+        if analyses is not None:
+            m = m[m['analysis'].isin(analyses)]
+        po, pn = num(m['p_old']), num(m['p_new']).map(lambda x: float(f'{x:.6g}') if pd.notna(x) else x)
+        changed = m[((po - pn).abs() > 1e-9 * pd.concat([po.abs(), pn.abs()], axis=1).max(axis=1)) | (po.isna() != pn.isna())]
+        lost = m[(num(m['q_old']) <= 0.05) & ~(num(m['q_new']) <= 0.05)]
+        gained = m[~(num(m['q_old']) <= 0.05) & (num(m['q_new']) <= 0.05)]
+        return m, changed, lost, gained
+
+    def crossing(lost, gained) -> str:
+        if not len(lost) and not len(gained):
+            return 'none crosses q <= 0.05 either way'
+        say = lambda t, what: ('none ' if not len(t) else f'{len(t):,} ') + what + (f' ({label(t)})' if len(t) else '')  # noqa: E731
+        return say(gained, 'became significant at q <= 0.05') + ' and ' + say(lost, 'stopped being significant')
+
+    old = pd.read_csv(prev_dir / f'statistics_{previous}.tsv', sep='\t', dtype=str, keep_default_na=False)
+    new = files['statistics'][1].astype(str)
+    out = ['## Corrected: statistics', '',
+           'A consistency audit of every test led to these corrections. The sites are unchanged; only rows of the statistics '
+           'tables change.', '']
+    # 1. the binding experiments
+    bn = new[new['analysis'] == 'binding_protein']
+    if len(bn):
+        b_new, b_abund = bn[bn['method'] == 'enricher'], bn[bn['method'] == 'mantel_haenszel']
+        _, b_changed, b_lost, b_gained = compare(old, new, ('binding_protein',))
+        b_changed = b_changed[b_changed['method'] == 'enricher']
+        out += [f'- **Proteins each in-cell experiment found binding RNA or DNA** (`binding_protein`, {len(b_new)} experiments). '
+                'Up to ' + previous + ' they were Fisher\'s exact tests; they are now clusterProfiler enricher tests (one-sided '
+                'hypergeometric), like every other protein-set test, with the same counts and fold enrichment. '
+                f'The p of {len(b_changed)} of the {len(b_new)} changes, and {crossing(b_lost, b_gained)}.' +
+                (f' Each is also repeated within PaxDb abundance deciles ({len(b_abund)} new rows, method mantel_haenszel), as the '
+                 'other protein-set tests have been since v1.4.1.' if len(b_abund) else '')]
+    # 2. CIs of the interaction analyses' within-protein rows
+    mh_old = old[(old['method'] == 'mantel_haenszel') & old['analysis'].isin(IX_MH_ANALYSES)]
+    mh_new = new[(new['method'] == 'mantel_haenszel') & new['analysis'].isin(IX_MH_ANALYSES)]
+    gained_ci = int(((mh_new['odds_ratio_ci_low'] != '') & (mh_new['odds_ratio_ci_low'] != 'nan')).sum()) if 'odds_ratio_ci_low' in mh_new else 0
+    had_ci = int((mh_old['odds_ratio_ci_low'] != '').sum()) if 'odds_ratio_ci_low' in mh_old else 0
+    if gained_ci > had_ci:
+        ix_changed = int((compare(old, new, IX_MH_ANALYSES)[1]['method'] == 'mantel_haenszel').sum())
+        out += [f'- **95% confidence intervals of the within-protein interaction tests.** {len(mh_new):,} Mantel-Haenszel rows of '
+                + ', '.join(f'`{a}`' for a in IX_MH_ANALYSES[:-1]) + f' and `{IX_MH_ANALYSES[-1]}` had no interval; {gained_ci:,} now carry the '
+                'Robins-Breslow-Greenland interval of the odds ratio (`odds_ratio_ci_low`, `odds_ratio_ci_high`), as every other '
+                'Mantel-Haenszel row does. ' + ('Their odds ratios and p are unchanged.' if not ix_changed else
+                f'The p of {ix_changed:,} of them also changes.')]
+    # 3. the pCLAP category of sequence_proximity
+    ren = int(((old['analysis'] == 'sequence_proximity') & (old['category'] == 'pclap_lysc_region')).sum())
+    if ren and not ((new['analysis'] == 'sequence_proximity') & (new['category'] == 'pclap_lysc_region')).any():
+        out += [f'- **`sequence_proximity`**: the pCLAP category is now `pclap_peptide`, as in `crosslink` ({ren} rows; was '
+                '`pclap_lysc_region`). The values are unchanged.']
+    # 4. the pooled residue tests count the sites the within-protein tests count
+    m, changed, lost, gained = compare(old, new, ('motif', 'disorder'))
+    pooled = changed[changed['method'] == 'fisher']
+    if len(pooled):
+        out += [f'- **The pooled residue tests count the sites the within-protein tests count.** The motif and disorder tests '
+                '(method fisher) counted the 5 sites of MIF, a protein whose every arginine is a site and so has no other '
+                'arginine to compare them with; the domain tests and the within-protein tests already left it out. '
+                f'The p of {len(pooled):,} rows changes slightly, and {crossing(lost, gained)}.']
+    # 5. the view with lower-confidence sites
+    lc_path = prev_dir / f'statistics_with_lower_confidence_{previous}.tsv'
+    if 'statistics_with_lower_confidence' in files and lc_path.exists():
+        lo = pd.read_csv(lc_path, sep='\t', dtype=str, keep_default_na=False)
+        ln = files['statistics_with_lower_confidence'][1].astype(str)
+        m, changed, lost, gained = compare(lo, ln)
+        by = changed.groupby('analysis').size().sort_values(ascending=False)
+        out += ['- **The view with lower-confidence sites** (`statistics_with_lower_confidence`). The lower-confidence sites this '
+                'view does not count (`in_analyses_with_lower_confidence` false) were left out of the methylarginines but '
+                'still counted among the other arginines of the residue tests, and their proteins counted as methylated in '
+                '`go_binding` and `binding_protein`. They are now left out of both sides (the lower-confidence view\'s '
+                'binding_protein rows also become enricher tests, as above). '
+                f'Of {len(m):,} rows the two versions share, {len(changed):,} have a different p'
+                + (' (' + ', '.join(f'{k} {v:,}' for k, v in by.items()) + ')' if len(by) else '') + f', and {crossing(lost, gained)}.']
+    out += ['', 'The website reads the same tables, so its charts and tables change with them.', '']
+    return out
 
 
 def analysis_section(files: dict, previous: str) -> list:

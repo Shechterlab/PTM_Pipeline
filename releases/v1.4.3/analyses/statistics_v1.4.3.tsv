@@ -202,21 +202,21 @@ functional_subclass	Adhesion / intermediate filament scaffolds	all	58	4381	209	1
 functional_subclass	Other / unclassified	all	794	3645	3944	12033			0.770745	-0.375674	1	1	enricher	other reviewed human proteins			
 functional_subclass	Membrane / receptor / extracellular	all	509	3930	3940	12037			0.526188	-0.92635	1	1	enricher	other reviewed human proteins			
 functional_subclass	Poorly characterized / specialized	all	151	4288	1285	14692			0.483624	-1.04804	1	1	enricher	other reviewed human proteins			
-motif	RGG	all	904	10728	736	194571	22.2729	4.47722			0	0	fisher	other arginines of the methylated proteins			
-motif	GRG	all	983	10649	943	194364	19.0248	4.24981			0	0	fisher	other arginines of the methylated proteins			
-motif	RG	all	3523	8109	11453	183854	6.97455	2.8021			0	0	fisher	other arginines of the methylated proteins			
-motif	DR	all	1332	10300	8180	187127	2.95915	1.56518			1.68685e-213	4.63883e-213	fisher	other arginines of the methylated proteins			
-motif	GAR	all	96	11536	889	194418	1.82829	0.870494			2.32192e-07	2.55411e-07	fisher	other arginines of the methylated proteins			
-motif	CARM1_proline_rich	all	5840	5792	81178	114129	1.41756	0.503408			3.37107e-74	6.18029e-74	fisher	other arginines of the methylated proteins			
-motif	CARM1_hydrophobic_proline	all	5146	6486	70986	124321	1.38954	0.474611			1.77035e-64	2.78197e-64	fisher	other arginines of the methylated proteins			
-motif	RXR	all	1955	9677	31393	163914	1.05505	0.0773088			0.0378206	0.0378206	fisher	other arginines of the methylated proteins			
-motif	ER	all	559	11073	15597	179710	0.582148	-0.780541			6.05854e-40	8.33049e-40	fisher	other arginines of the methylated proteins			
-motif	RD	all	342	11290	10291	185016	0.545355	-0.874733			1.24992e-32	1.52768e-32	fisher	other arginines of the methylated proteins			
-motif	RE	all	347	11285	15389	179918	0.359986	-1.47399			1.41036e-104	3.10278e-104	fisher	other arginines of the methylated proteins			
-disorder	disordered	all	5895	5737	64933	130374	2.06311	1.04482			3.1369e-308	1.25476e-307	fisher	other arginines of the methylated proteins			
-disorder	no_disorder_annotation	all	7	11625	66	195241	1.89409	0.921503			0.130244	0.130244	fisher	other arginines of the methylated proteins			
-disorder	disorder_boundary	all	2631	9001	47965	147342	0.898023	-0.155175			2.00326e-06	2.67101e-06	fisher	other arginines of the methylated proteins			
-disorder	ordered	all	3099	8533	82343	112964	0.498284	-1.00496			2.62018e-251	5.24036e-251	fisher	other arginines of the methylated proteins			
+motif	RGG	all	904	10723	736	194571	22.2832	4.47789			0	0	fisher	other arginines of the methylated proteins			
+motif	GRG	all	983	10644	943	194364	19.0337	4.25049			0	0	fisher	other arginines of the methylated proteins			
+motif	RG	all	3523	8104	11453	183854	6.97885	2.80299			0	0	fisher	other arginines of the methylated proteins			
+motif	DR	all	1331	10296	8180	187127	2.95808	1.56466			3.02694e-213	8.32409e-213	fisher	other arginines of the methylated proteins			
+motif	GAR	all	96	11531	889	194418	1.82908	0.87112			2.29909e-07	2.529e-07	fisher	other arginines of the methylated proteins			
+motif	CARM1_proline_rich	all	5836	5791	81178	114129	1.41683	0.502669			5.3927e-74	9.88661e-74	fisher	other arginines of the methylated proteins			
+motif	CARM1_hydrophobic_proline	all	5142	6485	70986	124321	1.38868	0.473711			3.2783e-64	5.15161e-64	fisher	other arginines of the methylated proteins			
+motif	RXR	all	1953	9674	31393	163914	1.0543	0.0762798			0.0402427	0.0402427	fisher	other arginines of the methylated proteins			
+motif	ER	all	558	11069	15597	179710	0.581318	-0.782601			4.55159e-40	6.25844e-40	fisher	other arginines of the methylated proteins			
+motif	RD	all	342	11285	10291	185016	0.545596	-0.874094			1.56155e-32	1.90857e-32	fisher	other arginines of the methylated proteins			
+motif	RE	all	347	11280	15389	179918	0.360145	-1.47335			1.90505e-104	4.1911e-104	fisher	other arginines of the methylated proteins			
+disorder	disordered	all	5895	5732	64933	130374	2.06491	1.04608			0	0	fisher	other arginines of the methylated proteins			
+disorder	no_disorder_annotation	all	7	11620	66	195241	1.8949	0.922124			0.13009	0.13009	fisher	other arginines of the methylated proteins			
+disorder	disorder_boundary	all	2629	8998	47965	147342	0.89764	-0.155791			1.78621e-06	2.38162e-06	fisher	other arginines of the methylated proteins			
+disorder	ordered	all	3096	8531	82343	112964	0.497919	-1.00602			1.39853e-251	2.79706e-251	fisher	other arginines of the methylated proteins			
 domain_context	distal	all	3947	7680	49198	146109	1.52637	0.610103			1.3282e-92	3.32051e-92	fisher	other arginines of the methylated proteins			
 domain_context	no_domain_annotation	all	1579	10048	18777	176530	1.47775	0.5634			2.01934e-40	3.36557e-40	fisher	other arginines of the methylated proteins			
 domain_context	boundary	all	1056	10571	15996	179311	1.12025	0.163824			0.000805459	0.000805459	fisher	other arginines of the methylated proteins			

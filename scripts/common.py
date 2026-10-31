@@ -410,6 +410,31 @@ def per_protein_background(analysis: str, tested, background: pd.DataFrame, col:
         ['canonical_UniProtAC', 'category'], kind='stable').reset_index(drop=True)
 
 
+# Sites of a release the analyses leave out altogether: neither methylarginines nor background arginines. scripts/
+# release_analyses.py prepare lists them beside the union it writes (WORK/integrated/): the lower-confidence sites the
+# view with lower-confidence sites does not count (in_analyses_with_lower_confidence false) and the sites kept pending,
+# as build_release.py and release_layers.change_tables leave them out of both groups.
+LEFT_OUT_SITES = 'human_arg_methyl_union_left_out.tsv'
+
+
+def left_out_site_keys(path: str | Path) -> set[str]:
+    """The site_keys (accession:Rposition) of the sites the analyses leave out, from the LEFT_OUT_SITES table beside a
+    union (WORK/integrated/<union>) or, for a table a later step wrote from the union (WORK/<step>/<table>), in
+    WORK/integrated/. Empty when there is no such table (a pipeline run without one leaves no site out)."""
+    p = Path(path)
+    for candidate in (p.parent / LEFT_OUT_SITES, p.parent.parent / 'integrated' / LEFT_OUT_SITES):
+        if candidate.exists():
+            return set(pd.read_csv(candidate, sep='\t', dtype=str, keep_default_na=False)['site_key'])
+    return set()
+
+
+def with_background(sites: pd.DataFrame, background: pd.DataFrame, col: str = 'canonical_UniProtAC') -> pd.DataFrame:
+    """The sites a same-protein residue test counts: those on a protein with at least one other arginine in background
+    (not a protein whose every arginine is a site, MIF in v1.1.0 with 5 sites, nor one outside the FASTA), so that the
+    pooled test (Fisher) and the within-protein test (Mantel-Haenszel) of a class count the same sites."""
+    return sites[sites[col].isin(set(background[col]))]
+
+
 # Within-protein tests: Mantel-Haenszel with each protein a stratum (scripts/07, scripts/37).
 def informative_strata(tables):
     """Strata that carry information for a Mantel-Haenszel analysis (no empty margin, at least two observations)."""
