@@ -27,8 +27,8 @@
   --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
   --radius-card: 1rem;
   --radius: 0.375rem;
-  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
+  --font-body: Arial, 'Helvetica Neue', Helvetica, Arimo, 'Liberation Sans', sans-serif;
+  --font-display: Arial, 'Helvetica Neue', Helvetica, Arimo, 'Liberation Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --toolbar-h: 7.25rem;
   color-scheme: light;
@@ -101,9 +101,11 @@ body::before {
   z-index: 40;
   background: var(--surface);
 }
+/* All text is Arial-like (Arial, Helvetica, or Arimo, Arial's metric twin, where neither is installed); headings are its
+   bold, as Arial has no medium weight. Sequences keep a monospace face, so residues line up. */
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: -0.01em;
   text-wrap: balance;
   margin: 0;
@@ -468,7 +470,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .tbl td.nw .tags { flex-wrap: nowrap; }
 .tbl-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem 1rem; font-size: 0.85rem; color: var(--muted); flex-wrap: wrap; }
 .empty { padding: 2.5rem 1.25rem; text-align: center; color: var(--muted); }
-.empty b { display: block; color: var(--ink); font-family: var(--font-display); font-weight: 500; font-size: 1.15rem; margin-bottom: 0.3rem; }
+.empty b { display: block; color: var(--ink); font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; margin-bottom: 0.3rem; }
 
 /* State pill: color carried by the dot, text stays in ink. */
 .pill { display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap; font-size: 0.82rem; }
@@ -930,8 +932,8 @@ svg.ix-net { display: block; width: 100%; height: auto; }
     --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
     --radius-card: 1rem;
     --radius: 0.375rem;
-    --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-    --font-display: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
+    --font-body: Arial, 'Helvetica Neue', Helvetica, Arimo, 'Liberation Sans', sans-serif;
+    --font-display: Arial, 'Helvetica Neue', Helvetica, Arimo, 'Liberation Sans', sans-serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
     --toolbar-h: 7.25rem;
     color-scheme: light;
@@ -1468,7 +1470,7 @@ details.fold > summary { list-style: none; cursor: pointer; display: flex; gap: 
 details.fold > summary::-webkit-details-marker { display: none; }
 details.fold > summary:hover .fold-title { color: var(--accent); }
 details.fold > summary .pm { margin-top: 0; }
-.fold-title { flex: none; font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; color: var(--ink); }
+.fold-title { flex: none; font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--ink); }
 .fold-sum { flex: 1 1 auto; min-width: 0; color: var(--muted); font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fold-sum:not(:empty)::before { content: "·"; margin-right: 0.5rem; }
 details.fold[open] > summary { border-bottom: 1px solid var(--line); }
@@ -1894,7 +1896,7 @@ html.drawer-open { overflow: hidden; }
 .a-mode .hub-legend, .a-mode .hub-head, .a-mode .ix-facts, .a-mode .hub-list:not(.focus) { display: none; }
 .a-home { display: grid; gap: 1.5rem; margin: 0.25rem 0 2rem; }
 .a-lead { display: grid; gap: 0.6rem; }
-.a-q { margin: 0; font: 500 clamp(1.35rem, 1.05rem + 1.1vw, 1.8rem)/1.2 var(--font-display); color: var(--ink); }
+.a-q { margin: 0; font: 700 clamp(1.35rem, 1.05rem + 1.1vw, 1.8rem)/1.2 var(--font-display); color: var(--ink); }
 .a-verdict { margin: 0; max-width: 64rem; font-size: 1.02rem; line-height: 1.5; color: var(--ink-2); }
 .a-verdict b { color: var(--ink); }
 .a-fig { padding: 1rem 1.1rem 0.85rem; }
