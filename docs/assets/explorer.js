@@ -661,7 +661,7 @@
   const EXPORT_PAL = Object.assign({
     bg: '#FFFFFF', ink: '#111827', muted: '#5F6F78', grid: '#E0E8EB', backbone: '#9AA6B2', stem: '#C7D4D9',
     backboneFill: '#EEF5F7', backboneEdge: '#C7D4D9', rtick: '#C7D4D9', ring: '#FFFFFF', panel: '#EEF5F7',
-    brush: 'rgba(194,65,12,0.16)', accent: '#C2410C', font: 'Arial, Helvetica, "Liberation Sans", sans-serif',
+    brush: 'rgba(194,65,12,0.16)', accent: '#C2410C', font: 'Arial, Helvetica, Arimo, "Liberation Sans", sans-serif',
   }, TOKENS.light);
   function screenPalette() {
     const v = cssVar;
@@ -16312,14 +16312,16 @@
   // not load. A view drawn only as a PNG (the 3D structure) gives that PNG on a page of its size. So every figure with an
   // SVG or PNG export has a PDF, with no code of its own.
   const SVG2PDF = 'https://cdn.jsdelivr.net/npm/svg2pdf.js@2.2.4/dist/svg2pdf.umd.min.js';
-  // DejaVu Sans Condensed, embedded in a figure's PDF: the standard PDF fonts cannot write − ≤ κ ✓ ○ ▼ and the like, and
-  // the condensed cut is about as wide as the page's font, which the figures' line breaks are measured in. Fetched once,
-  // when the first PDF is made.
-  const PDF_FONT = ['DejaVuSansCondensed.ttf', 'DejaVuSansCondensed-Bold.ttf'].map((f) => 'https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/' + f);
-  let pdfFontData = null;
+  // Arimo (Arial's metric twin), embedded in a figure's PDF, so its text is Arial-like as everywhere else and keeps − ≤ κ ○ ▼,
+  // which the standard PDF fonts cannot write; its widths are Arial's, which the figures' line breaks are measured in.
+  // The few characters Arimo lacks (✓ ▸ ◂) are set in DejaVu Sans, fetched only for a figure that has them.
+  const PDF_FONT = ['400Regular/Arimo_400Regular.ttf', '700Bold/Arimo_700Bold.ttf'].map((f) => 'https://cdn.jsdelivr.net/npm/@expo-google-fonts/arimo@0.4.1/' + f);
+  const PDF_FALLBACK = ['https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSans.ttf'];
+  const NOT_IN_ARIMO = /([\u2713\u25B8\u25C2])/;
+  const fontFiles = {};
   const b64 = (buf) => { const u = new Uint8Array(buf); let t = ''; for (let i = 0; i < u.length; i += 0x8000) t += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(t); };
-  const loadPdfFont = () => (pdfFontData = pdfFontData || Promise.all(PDF_FONT.map((u) => fetch(u).then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }).then(b64)))
-    .catch((e) => { pdfFontData = null; throw e; }));
+  const loadFonts = (urls) => Promise.all(urls.map((u) => (fontFiles[u] = fontFiles[u] || fetch(u).then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }).then(b64)
+    .catch((e) => { delete fontFiles[u]; throw e; }))));
   let pdfNext = null;
   // the export a figure's PDF is made from: its SVG, else its PNG (not the card's own buttons)
   const pdfSource = (g) => { const own = (k) => $$('button', g).find((b) => expKind(b) === k && !b.dataset.cexp); return own('svg') || own('png'); };
@@ -16345,14 +16347,36 @@
       host.style.cssText = 'position:fixed;left:-20000px;top:0;width:' + W + 'px;height:' + H + 'px;overflow:hidden';
       host.appendChild(document.importNode(el, true));
       document.body.appendChild(host);
-      // every text in DejaVu Sans where it loads (else the standard Helvetica, which loses the characters above)
+      // every text in Arimo where it loads (else the standard Helvetica, which loses the characters above); monospace
+      // text (sequences, logos) keeps the standard Courier, so its residues still line up
       try {
-        const [regular, bold] = await loadPdfFont();
-        pdf.addFileToVFS('DejaVuSans.ttf', regular); pdf.addFont('DejaVuSans.ttf', 'DejaVu Sans', 'normal');
-        pdf.addFileToVFS('DejaVuSans-Bold.ttf', bold); pdf.addFont('DejaVuSans-Bold.ttf', 'DejaVu Sans', 'bold');
-        const svgEl = host.firstElementChild;
-        [svgEl, ...svgEl.querySelectorAll('[font-family], [style], text, tspan')].forEach((n) => { n.setAttribute('font-family', 'DejaVu Sans'); if (n.style && n.style.fontFamily) n.style.fontFamily = 'DejaVu Sans'; });
-        svgEl.querySelectorAll('style').forEach((st) => { st.textContent = st.textContent.replace(/font-family\s*:[^;}]+/g, 'font-family: DejaVu Sans'); });
+        const [regular, bold] = await loadFonts(PDF_FONT);
+        pdf.addFileToVFS('Arimo-Regular.ttf', regular); pdf.addFont('Arimo-Regular.ttf', 'Arimo', 'normal');
+        pdf.addFileToVFS('Arimo-Bold.ttf', bold); pdf.addFont('Arimo-Bold.ttf', 'Arimo', 'bold');
+        const svgEl = host.firstElementChild, mono = (f) => /mono|courier|consolas|menlo/i.test(f || '');
+        [svgEl, ...svgEl.querySelectorAll('[font-family], [style], text, tspan')].forEach((n) => {
+          const f = n.getAttribute('font-family') || (n.style && n.style.fontFamily);
+          if (mono(f)) { n.setAttribute('font-family', 'courier'); if (n.style && n.style.fontFamily) n.style.fontFamily = 'courier'; return; }
+          n.setAttribute('font-family', 'Arimo'); if (n.style && n.style.fontFamily) n.style.fontFamily = 'Arimo';
+        });
+        svgEl.querySelectorAll('style').forEach((st) => { st.textContent = st.textContent.replace(/font-family\s*:([^;}]+)/g, (m, f) => 'font-family: ' + (mono(f) ? 'courier' : 'Arimo')); });
+        // the characters Arimo lacks, each in a span of DejaVu Sans
+        const walk = document.createTreeWalker(svgEl, NodeFilter.SHOW_TEXT), lack = [];
+        while (walk.nextNode()) if (NOT_IN_ARIMO.test(walk.currentNode.nodeValue) && !walk.currentNode.parentNode.closest('style')) lack.push(walk.currentNode);
+        if (lack.length) {
+          const [dejavu] = await loadFonts(PDF_FALLBACK);
+          pdf.addFileToVFS('DejaVuSans.ttf', dejavu); pdf.addFont('DejaVuSans.ttf', 'DejaVu Sans', 'normal'); pdf.addFont('DejaVuSans.ttf', 'DejaVu Sans', 'bold');
+          for (const t of lack) {
+            const frag = document.createDocumentFragment();
+            t.nodeValue.split(NOT_IN_ARIMO).forEach((part) => {
+              if (!part) return;
+              if (!NOT_IN_ARIMO.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+              const sp = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+              sp.setAttribute('font-family', 'DejaVu Sans'); sp.textContent = part; frag.appendChild(sp);
+            });
+            t.parentNode.replaceChild(frag, t);
+          }
+        }
         // the font has a regular and a bold cut only: a weight between them (600) would fall back to Times
         const wt = (w) => (/bold|[6-9]00/.test(String(w)) ? 'bold' : 'normal');
         svgEl.querySelectorAll('[font-weight], [style]').forEach((n) => { if (n.hasAttribute('font-weight')) n.setAttribute('font-weight', wt(n.getAttribute('font-weight'))); if (n.style && n.style.fontWeight) n.style.fontWeight = wt(n.style.fontWeight); });
