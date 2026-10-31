@@ -6841,7 +6841,9 @@
     return '<p><b>v1.4.3</b> on the website: every interaction record at a site says where it comes from. A site\'s card lists <i>Who binds it, and how it was found</i>: each partner with its PDB entry or IntAct interaction, method, species and paper, the state of the site in that experiment (an unmodified arginine, a methylarginine, a mutation) and the other marks of the protein, grouped by what the record shows (methylates it, binds it methylated, binds it unmodified, binds a region holding it, and more), with flags where a record needs checking. ' +
       'Protein pages add <i>Who binds its methylarginines</i> and the methylarginines of other proteins a protein is recorded binding or modifying, and the Interactions page lists the sites a partner methylates or binds methylated. STRING associations are labelled as associations of the whole protein. ' +
       'The Overview drops its <i>Subcellular location</i> card, a copy of the Human Protein Atlas map inside <i>Where in the cell</i>, and puts <i>Disease</i> in the first row. Every exported figure gives each row\'s q and, under the figure, its test: what is compared, the test and how q is adjusted. ' +
-      'The Interactions page\'s answers and the Overview\'s interaction tile call a test different by its Benjamini–Hochberg q, from the family its card adjusts it in, not by its p. Back now undoes a selection: each new search or filter set is a step of the browser history.</p>' +
+      'The Interactions page\'s answers and the Overview\'s interaction tile call a test different by its Benjamini–Hochberg q, from the family its card adjusts it in, not by its p. Back now undoes a selection: each new search or filter set is a step of the browser history. ' +
+      'Every card, tile and figure has the same exports, PDF, SVG, PNG and TSV, and a link to its part of the Method page (new parts for DepMap, Reactome and PaxDb, and the curated experiments); a figure\'s PDF is vector. ' +
+      'The release\'s statistics were corrected after an audit of every test (its CHANGES.md lists each change): the binding experiments are enricher tests with an abundance-matched repeat, shown beside each in the Interactions table, and the view with lower-confidence sites leaves the sites it does not count out of both sides of every test.</p>' +
       '<p><b>v1.4.2</b> on the website: <i>Where in the cell</i> compares the methylated proteins (or a selection) with other proteins of similar abundance in six maps of the cell, first in the nucleus, the cytoplasm and the organelles and membranes, then compartment by compartment, and each protein\'s page lists where the maps place it and where the RNAs it binds gather (the release\'s cell-map layer). ' +
       'A search, a quick selection, or a link to a protein class, disease, condensate or location that selects at least ' + SEL_MIN.prots + ' proteins and ' + SEL_MIN.sites + ' sites opens on the Overview, where every section is retested on it: the Overview and Interactions tabs carry a "selection" badge, the protein sections come in the order in which they usually tell most about a selection, and what sets a selection\'s sites apart is a closed section below them.</p>';
   }
@@ -16251,7 +16253,12 @@
     for (const g of $$('.exp', root)) {
       if (g.dataset.unit || g.closest('.texp') || !isExpGroup(g)) continue;
       g.dataset.unit = '1';
-      if (hasKind(g, 'svg') && !hasKind(g, 'pdf')) placeKind(g, 'pdf', '<button type="button" data-fpdf title="' + FIG_TIP.pdf + '">PDF</button>');
+      if ((hasKind(g, 'svg') || hasKind(g, 'png')) && !hasKind(g, 'pdf')) {
+        placeKind(g, 'pdf', '<button type="button" data-fpdf title="' + (hasKind(g, 'svg') ? FIG_TIP.pdf : 'This view as a PDF') + '">PDF</button>');
+        // the PDF is made from that export, so it is ready when the export is (a 3D view enables its buttons once loaded)
+        const src = pdfSource(g), pdf = $('[data-fpdf]', g);
+        if (src && pdf) { pdf.disabled = src.disabled; new MutationObserver(() => { if (!pdfNext || pdfNext.btn !== pdf) pdf.disabled = src.disabled; }).observe(src, { attributes: true, attributeFilter: ['disabled'] }); }
+      }
       if (!hasKind(g, 'tsv') && g.closest('.card')) placeKind(g, 'tsv', cexpBtns(['tsv'], 'data-cexp'));
       const head = g.closest('.fig-head, .card-head') || g.parentElement;
       if (!head.querySelector('.doc-link')) g.insertAdjacentHTML('afterend', docLink(unitDoc(g)));
@@ -16302,12 +16309,23 @@
   }
   // ---- A figure's PDF. The PDF button runs the figure's own SVG export with pdfNext set, and downloadBlob draws the SVG
   // it would have saved into a PDF of the same size: vector through svg2pdf.js, or a 3× PNG in the page where that does
-  // not load. So every figure with an SVG export has a PDF, with no code of its own.
+  // not load. A view drawn only as a PNG (the 3D structure) gives that PNG on a page of its size. So every figure with an
+  // SVG or PNG export has a PDF, with no code of its own.
   const SVG2PDF = 'https://cdn.jsdelivr.net/npm/svg2pdf.js@2.2.4/dist/svg2pdf.umd.min.js';
+  // DejaVu Sans Condensed, embedded in a figure's PDF: the standard PDF fonts cannot write − ≤ κ ✓ ○ ▼ and the like, and
+  // the condensed cut is about as wide as the page's font, which the figures' line breaks are measured in. Fetched once,
+  // when the first PDF is made.
+  const PDF_FONT = ['DejaVuSansCondensed.ttf', 'DejaVuSansCondensed-Bold.ttf'].map((f) => 'https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/' + f);
+  let pdfFontData = null;
+  const b64 = (buf) => { const u = new Uint8Array(buf); let t = ''; for (let i = 0; i < u.length; i += 0x8000) t += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(t); };
+  const loadPdfFont = () => (pdfFontData = pdfFontData || Promise.all(PDF_FONT.map((u) => fetch(u).then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }).then(b64)))
+    .catch((e) => { pdfFontData = null; throw e; }));
   let pdfNext = null;
+  // the export a figure's PDF is made from: its SVG, else its PNG (not the card's own buttons)
+  const pdfSource = (g) => { const own = (k) => $$('button', g).find((b) => expKind(b) === k && !b.dataset.cexp); return own('svg') || own('png'); };
   function pdfFromSvg(btn) {
-    const g = btn.closest('.exp'), svg = g && $$('button', g).find((b) => expKind(b) === 'svg' && !b.dataset.cexp);
-    if (!svg) return;
+    const g = btn.closest('.exp'), svg = g && pdfSource(g);
+    if (!svg || svg.disabled) return;
     const mine = pdfNext = { btn, label: btn.textContent };
     btn.disabled = true; btn.textContent = '…';
     svg.click();
@@ -16327,10 +16345,32 @@
       host.style.cssText = 'position:fixed;left:-20000px;top:0;width:' + W + 'px;height:' + H + 'px;overflow:hidden';
       host.appendChild(document.importNode(el, true));
       document.body.appendChild(host);
+      // every text in DejaVu Sans where it loads (else the standard Helvetica, which loses the characters above)
+      try {
+        const [regular, bold] = await loadPdfFont();
+        pdf.addFileToVFS('DejaVuSans.ttf', regular); pdf.addFont('DejaVuSans.ttf', 'DejaVu Sans', 'normal');
+        pdf.addFileToVFS('DejaVuSans-Bold.ttf', bold); pdf.addFont('DejaVuSans-Bold.ttf', 'DejaVu Sans', 'bold');
+        const svgEl = host.firstElementChild;
+        [svgEl, ...svgEl.querySelectorAll('[font-family], [style], text, tspan')].forEach((n) => { n.setAttribute('font-family', 'DejaVu Sans'); if (n.style && n.style.fontFamily) n.style.fontFamily = 'DejaVu Sans'; });
+        svgEl.querySelectorAll('style').forEach((st) => { st.textContent = st.textContent.replace(/font-family\s*:[^;}]+/g, 'font-family: DejaVu Sans'); });
+        // the font has a regular and a bold cut only: a weight between them (600) would fall back to Times
+        const wt = (w) => (/bold|[6-9]00/.test(String(w)) ? 'bold' : 'normal');
+        svgEl.querySelectorAll('[font-weight], [style]').forEach((n) => { if (n.hasAttribute('font-weight')) n.setAttribute('font-weight', wt(n.getAttribute('font-weight'))); if (n.style && n.style.fontWeight) n.style.fontWeight = wt(n.style.fontWeight); });
+      } catch (e) { /* Helvetica */ }
       try { await window.svg2pdf.svg2pdf(host.firstElementChild, pdf, { x: 0, y: 0, width: W * 0.75, height: H * 0.75 }); } finally { host.remove(); }
     } catch (e) {
       pdf.addImage(await svgDataUrl(svgText, W, H, 3), 'PNG', 0, 0, W * 0.75, H * 0.75);
     }
+    downloadBlob(name + '.pdf', pdf.output('blob'));
+  }
+  // a PNG on a page of its size (at 288 dpi, the scale the 3D snapshot is taken at)
+  async function pngPdf(blob, name) {
+    await loadScript(PDF_LIBS[1]);
+    const url = await new Promise((resolve) => { const r = new FileReader(); r.onload = () => resolve(r.result); r.readAsDataURL(blob); });
+    const img = await new Promise((resolve, reject) => { const i = new Image(); i.onload = () => resolve(i); i.onerror = () => reject(new Error('the image could not be read')); i.src = url; });
+    const w = img.width * 0.25, h = img.height * 0.25;
+    const pdf = new window.jspdf.jsPDF({ unit: 'pt', format: [w, h], orientation: w >= h ? 'l' : 'p', compress: true });
+    pdf.addImage(url, 'PNG', 0, 0, w, h);
     downloadBlob(name + '.pdf', pdf.output('blob'));
   }
   // an SVG drawn on a white canvas at scale×, as a PNG data URL
@@ -17895,10 +17935,10 @@
     return base + (m[2] || '');
   }
   function downloadBlob(name, blob) {
-    if (pdfNext && /\.svg$/i.test(name)) {
-      const job = pdfNext;
+    if (pdfNext && /\.(svg|png)$/i.test(name)) {
+      const job = pdfNext, base = name.replace(/\.(svg|png)$/i, '');
       pdfNext = null;
-      blob.text().then((t) => svgPdf(t, name.replace(/\.svg$/i, ''))).catch((e) => alert('This figure could not be saved as a PDF (' + e.message + ').'))
+      (/\.svg$/i.test(name) ? blob.text().then((t) => svgPdf(t, base)) : pngPdf(blob, base)).catch((e) => alert('This figure could not be saved as a PDF (' + e.message + ').'))
         .finally(() => { job.btn.disabled = false; job.btn.textContent = job.label; });
       return;
     }
