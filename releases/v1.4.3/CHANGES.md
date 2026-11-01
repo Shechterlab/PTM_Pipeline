@@ -31,6 +31,18 @@ Where every interaction record at a site comes from, and what it shows there. Ea
 
 Source: Burley et al., Nucleic Acids Res 51:D488 (2023); Sehnal et al., Nucleic Acids Res 49:W431 (2021); del Toro et al., Nucleic Acids Res 50:D648 (2022); Montecchi-Palazzi et al., Nat Biotechnol 26:864 (2008); McLaughlin et al., Nucleic Acids Res 53:D1318 (2025); Sayers et al., Nucleic Acids Res 53:D20 (2025), doi:10.1093/nar/gkae979. Licence: PDB data CC0 1.0 (RCSB Data API and ModelServer); IntAct CC BY 4.0; PSI-MI and PSI-MOD (OLS) CC BY 4.0; PubMed citation data under the NLM Terms and Conditions (courtesy of the U.S. National Library of Medicine).
 
+## Corrected: statistics
+
+A consistency audit of every test led to these corrections. The sites are unchanged; only rows of the statistics tables change.
+
+- **Proteins each in-cell experiment found binding RNA or DNA** (`binding_protein`, 7 experiments). Up to v1.4.2 they were Fisher's exact tests; they are now clusterProfiler enricher tests (one-sided hypergeometric), like every other protein-set test, with the same counts and fold enrichment. The p of 4 of the 7 changes, and none crosses q <= 0.05 either way. Each is also repeated within PaxDb abundance deciles (7 new rows, method mantel_haenszel), as the other protein-set tests have been since v1.4.1.
+- **95% confidence intervals of the within-protein interaction tests.** 82 Mantel-Haenszel rows of `pdb_interface`, `predicted_interface`, `crosslink`, `sequence_proximity`, `nucleic_acid_distance` and `intact` had no interval; 82 now carry the Robins-Breslow-Greenland interval of the odds ratio (`odds_ratio_ci_low`, `odds_ratio_ci_high`), as every other Mantel-Haenszel row does. Their odds ratios and p are unchanged.
+- **`sequence_proximity`**: the pCLAP category is now `pclap_peptide`, as in `crosslink` (10 rows; was `pclap_lysc_region`). The values are unchanged.
+- **The pooled residue tests count the sites the within-protein tests count.** The motif and disorder tests (method fisher) counted the 5 sites of MIF, a protein whose every arginine is a site and so has no other arginine to compare them with; the domain tests and the within-protein tests already left it out. The p of 12 rows changes slightly, and none crosses q <= 0.05 either way.
+- **The view with lower-confidence sites** (`statistics_with_lower_confidence`). The lower-confidence sites this view does not count (`in_analyses_with_lower_confidence` false) were left out of the methylarginines but still counted among the other arginines of the residue tests, and their proteins counted as methylated in `go_binding` and `binding_protein`. They are now left out of both sides (the lower-confidence view's binding_protein rows also become enricher tests, as above). Of 4,662 rows the two versions share, 248 have a different p (sequence_proximity 60, crosslink 50, domain_class 26, pdb_interface 24, motif 16, structure_context 13, nucleic_acid_distance 12, predicted_interface 12, domain_context 9, go_binding 8, binding_protein 7, disorder 6, intact 5), and 2 became significant at q <= 0.05 (structure_context domain_disordered (mantel_haenszel); binding_protein rna_pclap (enricher)) and none stopped being significant.
+
+The website reads the same tables, so its charts and tables change with them.
+
 ## Still open
 
 - **Paralog windows** (11 sites, flag `paralog_window`), accepted in `config/remap_evidence_allowlist.tsv`.

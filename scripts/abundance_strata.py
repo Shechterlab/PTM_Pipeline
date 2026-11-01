@@ -4,7 +4,8 @@ Mass spectrometry finds abundant proteins most often, so the methylated proteins
 PaxDb percentile of the methylated proteins is 74), and a protein set rich in abundant proteins can look enriched among
 them whatever their methylation does. This test asks whether each enrichment holds among proteins of similar abundance.
 
-For every protein-level test the release runs with clusterProfiler enricher (scripts/enrichment.py), it reads the test's own inputs (target, universe, sets in <root>/<folder>/enricher/<job>/), checks that
+For every protein-level test the release runs with clusterProfiler enricher (scripts/enrichment.py), it reads the test's own inputs (target, universe, sets in <root>/<folder>/enricher/<job>/; a test whose sets each have their own
+background, binding_protein, has one job per set), checks that
 they give the release's 2x2 counts for every set it tested (it stops otherwise), and adds one row per set:
 
   - strata: the deciles of PaxDb 6.1 abundance (whole-organism integrated dataset, inputs/layers/
@@ -17,8 +18,10 @@ they give the release's 2x2 counts for every set it tested (it stops otherwise),
 
 The disease families count genes (Entrez): a gene takes the highest PaxDb percentile of the reviewed entries whose
 primary gene symbol org.Hs.eg.db maps to it, as scripts/14 maps them. The rows sit beside the release's own; nothing
-the release reports is replaced. Tests already within proteins, or among the proteins an experiment measured, are not
-repeated: they control for detection in their own way.
+the release reports is replaced. The residue tests, already within proteins, are not repeated. The proteins found binding
+RNA or DNA in cells (binding_protein) are: four of its experiments are tested among the proteins they measured, which
+controls for detection, but the other three against the whole reviewed proteome, and abundance can matter beyond
+detection too.
 """
 from __future__ import annotations
 
@@ -35,7 +38,8 @@ SUFFIX = ', each PaxDb abundance decile a stratum'
 # The website's log2 odds ratio for an infinite odds ratio (every set member in the target, in every informative
 # stratum), and minus it for an odds ratio of 0: JSON has no infinity.
 WEB_INF = 99
-# analysis: (folder of its enricher job under the analyses root, or 'interactions' for the interactions root; job; identifiers)
+# analysis: (folder of its enricher job under the analyses root, or 'interactions' for the interactions root; job, or one
+# job per category where it holds {category}; identifiers)
 TESTS = {
     'panther_group': ('panther_class', 'panther_group', 'protein'),
     'panther_class': ('panther_class', 'panther_class', 'protein'),
@@ -63,6 +67,8 @@ TESTS = {
     'eclip_gene_hic': ('layers/cell', 'eclip_gene_hic', 'protein'),
     'disease_family': ('disease', 'disease_family', 'gene'),
     'disease_family_additional': ('disease', 'disease_family_additional', 'gene'),
+    # one clusterProfiler job per experiment, each against the proteins it measured or the reviewed proteome (scripts/37)
+    'binding_protein': ('interactions', 'binding_protein_{category}', 'protein'),
 }
 # the job's term for a release category, where scripts/37 renames it (rna_exp -> rna_binding_experimental)
 TERM_OF = {'go_binding': lambda c: c.replace('_binding_experimental', '_exp').replace('_binding', '')}
@@ -167,12 +173,20 @@ def rows(statistics: pd.DataFrame, analyses_root: Path, interactions_root: Path 
         tested = statistics[(statistics['analysis'] == analysis) & (statistics['method'] == 'enricher')].to_dict('records')
         if not tested:
             continue
-        root = interactions_root if folder == 'interactions' else Path(analyses_root) / folder
-        job_dir = Path(root) / 'enricher' / job if root else None
-        if job_dir is None or not (job_dir / 'target.txt').exists():
-            raise SystemExit(f'abundance_strata: the release has {analysis} rows but their inputs are not in {job_dir}')
+        root = interactions_root if folder == 'interactions' else (Path(analyses_root) / folder if analyses_root else None)
         counts = [tuple(int(float(r[x])) for x in 'abcd') for r in tested]
-        res = job_tests(job_dir, values[kind], [(TERM_OF.get(analysis, str)(r['category']), n) for r, n in zip(tested, counts)], analysis)
+        # the rows of each job (one job for most tests; one per category where the job names {category})
+        by_job: dict[str, list[int]] = {}
+        for k, r in enumerate(tested):
+            by_job.setdefault(job.format(category=r['category']), []).append(k)
+        res = [None] * len(tested)
+        for name, idx in by_job.items():
+            job_dir = Path(root) / 'enricher' / name if root else None
+            if job_dir is None or not (job_dir / 'target.txt').exists():
+                raise SystemExit(f'abundance_strata: the release has {analysis} rows but their inputs are not in {job_dir}')
+            for k, x in zip(idx, job_tests(job_dir, values[kind], [(TERM_OF.get(analysis, str)(tested[k]['category']), counts[k]) for k in idx], analysis)):
+                res[k] = x
+        # BH within the analysis, over all its sets whatever job tested them
         for r, (a, b, c, d), (odds, lo, hi, p, used), q in zip(tested, counts, res, bh([x[3] for x in res])):
             out.append({'analysis': analysis, 'category': r['category'], 'stratum': 'all', 'a': a, 'b': b, 'c': c, 'd': d,
                         'odds_ratio': odds, 'log2_odds_ratio': math.log2(odds) if odds and odds > 0 and math.isfinite(odds) else None,
@@ -187,7 +201,8 @@ LABELS = {'panther_group': 'PANTHER class groups', 'panther_class': 'PANTHER pro
           'reactome_top_level': 'Reactome top-level pathways', 'reactome_pathway': 'Reactome pathways (10 to 500 proteins)',
           'hpa_location': 'HPA locations', 'condensate': 'CD-CODE condensates, against other condensate proteins',
           'condensate_proteome': 'CD-CODE condensates, against the proteome', 'depmap_dependency': 'DepMap dependency classes',
-          'go_binding': 'GO RNA and DNA binding', 'disease_family': 'Disease families (audited)', 'disease_family_additional': 'Disease families (additional)'}
+          'go_binding': 'GO RNA and DNA binding', 'disease_family': 'Disease families (audited)', 'disease_family_additional': 'Disease families (additional)',
+          'binding_protein': 'Proteins found binding RNA or DNA in cells'}
 
 
 def changes_section(files: dict, version: str, previous: str) -> list[str]:
