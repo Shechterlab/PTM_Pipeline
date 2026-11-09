@@ -1,0 +1,79 @@
+uniprot_accession	model_id	motif_kind	motif_type	experiment	cycle	oligomer	length	consensus
+Q9Y2V2	jolma2020_linear_002	linear	Secondary	Experiment_1	3	dimeric	14	GCCAUGAUCAUGAU
+Q9Y2V2	jolma2020_linear_003	linear	Primary	Experiment_1	3	monomeric	15	UUGCCUUGUCCCGAU
+Q92879	jolma2020_linear_004	linear	Primary	Experiment_1	4b-	dimeric	11	UGUGUKUGUGU
+P16989	jolma2020_linear_007	linear	Primary	Experiment_1	4	monomeric	8	UAACAUCR
+P33240	jolma2020_linear_008	linear	Primary	Experiment_1	3	monomeric	14	RAGGCGUAGCGUYN
+Q9H0L4	jolma2020_linear_009	linear	Primary	Experiment_1	3b0	monomeric	10	CGUAGCGUYN
+Q96EP5	jolma2020_linear_011	linear	Primary	Experiment_1	4	dimeric	10	UUAGGUUAGK
+Q15717	jolma2020_linear_013	linear	Primary	Experiment_1	4b0	monomeric	10	UUUWUGNKUU
+Q14576	jolma2020_linear_014	linear	Primary	Experiment_1	4	monomeric	7	NUUUUNN
+P26378	jolma2020_linear_015	linear	Primary	Experiment_1	4b0	monomeric	10	KUUURKUUKN
+Q6NXG1	jolma2020_linear_016	linear	Primary	Replicate	4	dimeric	10	GGUGKKGGUG
+Q6NXG1	jolma2020_linear_017	linear	Primary	Experiment_1	4	dimeric	10	GGUGUGGUGN
+O94992	jolma2020_linear_018	linear	Primary	Experiment_1	3	monomeric	11	GNNKCGACGGG
+Q96MH2	jolma2020_linear_019	linear	Primary	Experiment_1	3	monomeric	10	GGCGACGGKN
+Q13151	jolma2020_linear_020	linear	Primary	Experiment_1	3	dimeric	11	KUAGKUUAGGU
+Q13151	jolma2020_linear_021	linear	Secondary	Experiment_1	3	dimeric	12	KUAGGUKUAGGU
+Q32P51	jolma2020_linear_022	linear	Primary	Experiment_1	4	dimeric	12	KUAGGUUAGGGW
+P51991	jolma2020_linear_023	linear	Primary	Experiment_1	4	dimeric	10	UWGGUUAGGG
+P07910	jolma2020_linear_024	linear	Primary	Experiment_1	4	monomeric	10	UUUUUGGUGG
+P14866	jolma2020_linear_026	linear	Primary	Experiment_1	3	dimeric	10	ACAUUACAYN
+Q8WVV9	jolma2020_linear_027	linear	Primary	Experiment_1	3	dimeric	10	GCAURCAYCM
+Q9NZI8	jolma2020_linear_028	linear	Primary	Experiment_1	4	monomeric	8	CAGKWWCA
+Q07666	jolma2020_linear_029	linear	Primary	Experiment_1	4	dimeric	7	UAAUAGU
+Q5VWX1	jolma2020_linear_030	linear	Primary	Experiment_1	4b0	dimeric	10	UAAACARUAA
+O75525	jolma2020_linear_031	linear	Primary	Experiment_1	4	dimeric	15	UAANNNNNNNNUAAN
+Q9BRS8	jolma2020_linear_032	linear	Primary	Experiment_1	4b-	monomeric	21	GUGUCUGYUNKNNYGAAGUCN
+Q4G0J3	jolma2020_linear_033	linear	Primary	Experiment_1	4b0	monomeric	11	GRUCGUGAUGN
+O60318	jolma2020_linear_034	linear	Primary	Experiment_1	3b-	monomeric	10	CGCCAGUGCG
+Q86XN8	jolma2020_linear_038	linear	Primary	Experiment_1	4	monomeric	10	UNURUUUAUU
+O43347	jolma2020_linear_039	linear	Primary	Experiment_1	4	dimeric	11	KUAGUKGUAGK
+Q96DH6	jolma2020_linear_040	linear	Primary	Experiment_1	4b-	dimeric	12	GUAGUGWGUAGK
+Q96DH6	jolma2020_linear_041	linear	Secondary	Experiment_1	4b-	dimeric	13	GUAGUNKNGUAGK
+Q15365	jolma2020_linear_045	linear	Primary	Experiment_1	3	dimeric	11	NCCUUNNCCUU
+Q14671	jolma2020_linear_046	linear	Primary	Experiment_1	4b0	monomeric	10	NUGUAAAUAG
+Q8TB72	jolma2020_linear_047	linear	Secondary	Experiment_1	2	monomeric	10	NNUGUAYAGN
+Q8TB72	jolma2020_linear_048	linear	Primary	Experiment_1	2	monomeric	12	NUGUAAAUAGKN
+Q96PU8	jolma2020_linear_049	linear	Primary	Experiment_1	3b-	monomeric	11	NUACUAACAWW
+Q96PU8	jolma2020_linear_050	linear	Secondary	Experiment_1	4b-	dimeric	16	ACUAACAWUACUAACA
+Q9NWB1	jolma2020_linear_051	linear	Secondary	Replicate	4	dimeric	12	GCAUGNNGCAUG
+Q96PK6	jolma2020_linear_052	linear	Primary	Experiment_1	4	monomeric	10	KGKUGSGUCG
+Q96PK6	jolma2020_linear_053	linear	Primary	Replicate	4	monomeric	7	NGCGUCG
+Q9NW13	jolma2020_linear_055	linear	Primary	Experiment_1	3	monomeric	15	GRGGCYGAGCGGUGG
+Q9NW13	jolma2020_linear_056	linear	Secondary	Experiment_1	3	monomeric	11	GUGGGUCUCGG
+Q9H0Z9	jolma2020_linear_057	linear	Primary	Experiment_1	4	monomeric	14	UGGUGUGUGUGKKN
+Q9BWF3	jolma2020_linear_058	linear	Secondary	Experiment_1	3	monomeric	10	CGGGGURUGN
+Q9BTD8	jolma2020_linear_059	linear	Primary	Experiment_1	4b0	monomeric	10	CGGAACUAAG
+Q15020	jolma2020_linear_072	linear	Primary	Experiment_1	3	monomeric	9	NGUUAGCRK
+P08621	jolma2020_linear_073	linear	Secondary	Experiment_1	3	monomeric	10	GUUCANGNGG
+P08621	jolma2020_linear_074	linear	Primary	Experiment_1	3	monomeric	10	GUUCAAGGUG
+P09012	jolma2020_linear_075	linear	Secondary	Experiment_1	2	monomeric	9	CAUUGCACN
+P09012	jolma2020_linear_076	linear	Primary	Experiment_1	2	monomeric	7	NNGCACN
+Q13148	jolma2020_linear_079	linear	Primary	Experiment_1	4	monomeric	10	GUGUGARUGK
+Q13148	jolma2020_linear_080	linear	Secondary	Experiment_1	4	dimeric	11	GUGUGAGUGUG
+P67809	jolma2020_linear_083	linear	Secondary	Experiment_1	4	monomeric	11	NUAACAUCGGG
+P26651	jolma2020_linear_096	linear	Secondary	Experiment_1	3	monomeric	13	KUAUUUAUGGUGG
+P26651	jolma2020_linear_097	linear	Primary	EXperiment_1	2	monomeric	9	UUAUUUAUU
+Q96KR1	jolma2020_linear_098	linear	Secondary	Replicate	4b0	monomeric	10	GUGACGGAUG
+Q96KR1	jolma2020_linear_099	linear	Primary	Replicate	4b0	monomeric	10	GUGCGGAUGY
+Q96KR1	jolma2020_linear_100	linear	Secondary	Experiment_1	4	monomeric	10	GGCACGGAUG
+Q96KR1	jolma2020_linear_101	linear	Primary	Experiment_1	4	monomeric	14	UUGCCGGAUGYCGY
+O95218	jolma2020_linear_102	linear	Secondary	Experiment_1	4	dimeric	12	NNGGUAGGUARK
+O95218	jolma2020_linear_103	linear	Primary	Experiment_1	4	dimeric	13	NNNGGUAAGGUAN
+P09651	jolma2020_structured_008	structured	Primary	Experiment_1	4		19	NNNGCAGUWYUAGGGYNNN
+P07910	jolma2020_structured_009	structured	Secondary	Experiment_1	4		25	NCGNGGGGUCUWAUUUUUAACNCRN
+Q9UHC7	jolma2020_structured_011	structured	Primary	Experiment_1	4		22	NNNNSYGUAAAKUGUAGNNNNN
+Q9UKM9	jolma2020_structured_012	structured	Primary	Experiment_1	3		25	NNNRKGGGUCUUWKUYUUAASYNNN
+Q9NWB1	jolma2020_structured_013	structured	Primary	Experiment_1	2		20	NNNNNGKUGCAUGNGNNNNN
+Q9BWF3	jolma2020_structured_015	structured	Primary	Experiment_1	3		21	NNNNNKGUUGCGCGGGGNNNN
+Q9BWF3	jolma2020_structured_016	structured	Secondary	Experiment_1	3		20	NNNNUGAGUGCGGUAGNNNN
+Q9BQ04	jolma2020_structured_017	structured	Primary	Experiment_1	3		21	NNNNGUGUUGCGCGRGKNNNN
+Q9BQ04	jolma2020_structured_018	structured	Secondary	Experiment_1	3		20	RNGNKGAGUGCGGUAGNNGC
+P78332	jolma2020_structured_019	structured	Primary	Experiment_1	2		23	NNNNNUGCGCUCCUNGCCNNNNN
+P78332	jolma2020_structured_020	structured	Secondary	Experiment_1	2		23	NNNNGYRYGCUCGUGCYNNNNNN
+Q5TC82	jolma2020_structured_033	structured	Primary	Experiment_1	4		16	NNYRCGUUUUAGNRNN
+Q9HBD1	jolma2020_structured_034	structured	Secondary	Experiment_1	2		15	NNCYUSURUNARGNN
+Q9HBD1	jolma2020_structured_035	structured	Secondary	Experiment_1	2		15	GNCUYRUAUYRAGNN
+Q9HBD1	jolma2020_structured_036	structured	Primary	Experiment_1	2		18	NNNURCGUUUUAGKANNN
+P67809	jolma2020_structured_038	structured	Primary	Experiment_1	4		17	NNGCCAYRNCAUCGNNN
