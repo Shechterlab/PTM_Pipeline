@@ -1,18 +1,20 @@
 {
   "dropped": {
     "not_human": 273145,
-    "not_in_reference": 281,
-    "on_an_isoform": 18636,
-    "other_ptm_type": 37929,
-    "other_residue": 6667,
-    "residue_mismatch": 470
+    "not_in_reference": 283,
+    "on_an_isoform": 18652,
+    "other_ptm_type": 32805,
+    "other_residue": 8888,
+    "residue_mismatch": 483
   },
   "files": {
+    "lysine_acylation": "iptmnet_6_2_lysine_acylation_sites.tsv",
     "methylarginine": "iptmnet_6_2_methylarginine_crosscheck.tsv",
     "methyllysine": "iptmnet_6_2_methyllysine_sites.tsv",
     "phosphorylation": "iptmnet_6_2_phosphorylation_sites.tsv"
   },
   "files_md5": {
+    "lysine_acylation": "35ab50913b2d59418691d6b38218ad7c",
     "methylarginine": "e72a2c1936819bff406ba7a723d9fedf",
     "methyllysine": "52eafbede475420ce5febefa02a6aef3",
     "phosphorylation": "259d6fb0456e5451afffccd0d7af5c6b"
@@ -32,11 +34,16 @@
   "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
   "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
   "rows": {
+    "lysine_acylation": 2672,
     "methylarginine": 807,
     "methyllysine": 234,
     "phosphorylation": 64117
   },
   "rows_by_evidence_class": {
+    "lysine_acylation": {
+      "experimental": 415,
+      "unspecified": 2257
+    },
     "methylarginine": {
       "experimental": 84,
       "unspecified": 723
@@ -52,6 +59,9 @@
     }
   },
   "rows_by_state": {
+    "lysine_acylation": {
+      "acetyl": 2672
+    },
     "methylarginine": {
       "me": 807
     },
@@ -63,6 +73,11 @@
     }
   },
   "rows_by_upstream_source": {
+    "lysine_acylation": {
+      "iedb": 146,
+      "pro": 270,
+      "unip": 2427
+    },
     "methylarginine": {
       "iedb": 84,
       "unip": 739

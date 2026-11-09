@@ -15,6 +15,11 @@ Marks, terms and states (a term is the feature description before its first ';')
   methyllysine     N6-methyllysine me1; N6,N6-dimethyllysine me2; N6,N6,N6-trimethyllysine me3;
                    N6-methylated lysine me (degree not stated)                                  residue K
   phosphorylation  Phosphoserine S, Phosphothreonine T, Phosphotyrosine Y: state phospho
+  lysine_acylation every N6-acyl lysine term the download holds, read from its feature descriptions: 'N6-<acyl>lysine' with
+                   the acyl group in plain or bracketed form ending in -yl or -oyl (N6-acetyllysine, N6-succinyllysine,
+                   N6-(2-hydroxyisobutyryl)lysine, ...); state = the acyl type (acetyl, succinyl, 2-hydroxyisobutyryl, ...),
+                   residue K. Not acylation: N6-methyl terms, N6-(ADP-ribosyl), N6-lipoyl, N6-biotinyl (cofactors and
+                   ADP-ribose), N6-(pyridoxal phosphate), N6-(retinylidene), N6-carboxy and microbial-infection terms
   methylarginine   Omega-N-methylarginine me1; Asymmetric dimethylarginine me2a; Symmetric dimethylarginine me2s;
                    Dimethylated arginine me2; Omega-N-methylated arginine me                    residue R
                    (a cross-check only: the methylarginine release has its own table)
@@ -42,6 +47,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from collections import Counter
 from datetime import date
 from pathlib import Path
@@ -56,6 +62,8 @@ URL = ('https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organi
 CITATION = 'UniProt Consortium, Nucleic Acids Res 53:D609-D617 (2025), doi:10.1093/nar/gkae1010'
 LICENSE = 'CC BY 4.0'
 # feature description (before ';') -> (mark, state, residue)
+ACYL_TERM = re.compile(r'N6-\(?([^()]*?(?:yl|oyl))\)?lysine')
+NOT_ACYL = {'methyl', 'ADP-ribosyl', 'lipoyl', 'biotinyl'}
 TERMS = {
     'N6-methyllysine': ('methyllysine', 'me1', 'K'),
     'N6,N6-dimethyllysine': ('methyllysine', 'me2', 'K'),
@@ -73,9 +81,17 @@ TERMS = {
 EXPERIMENTAL = {'ECO:0000269', 'ECO:0007744'}
 COLUMNS = ['canonical_UniProtAC', 'position', 'residue', 'mark', 'state', 'evidence', 'evidence_class', 'pmids',
            'source', 'source_release']
+def acyl_type(term: str):
+    """The acyl type of an 'N6-<acyl>lysine' term (acetyl, succinyl, 2-hydroxyisobutyryl, ...), else None."""
+    m = ACYL_TERM.fullmatch(term)
+    return m.group(1) if m and m.group(1) not in NOT_ACYL and 'methyl' not in m.group(1) else None
+
+
 OUT_NAME = {'methyllysine': 'uniprot_{rel}_methyllysine_sites.tsv', 'phosphorylation': 'uniprot_{rel}_phosphorylation_sites.tsv',
+            'lysine_acylation': 'uniprot_{rel}_lysine_acylation_sites.tsv',
             'methylarginine': 'uniprot_{rel}_methylarginine_crosscheck.tsv'}
 CONTENT = {
+    'lysine_acylation': 'UniProt N6-acyl lysine annotations (acetyl, succinyl, 2-hydroxyisobutyryl, beta-hydroxybutyryl, lactoyl, glutaryl, crotonyl, methacryl, isonicotinyl, benzoyl, butyryl, malonyl, propionyl: every N6-acyl term of the download) of the reviewed human entries, one row per residue and acyl type, with ECO evidence codes, their class and PubMed IDs',
     'methyllysine': 'UniProt N6-methyllysine, N6,N6-dimethyllysine and N6,N6,N6-trimethyllysine (and N6-methylated lysine, degree not stated) annotations of the reviewed human entries, one row per residue and state, with ECO evidence codes, their class (experimental or by-similarity) and PubMed IDs',
     'phosphorylation': 'UniProt phosphoserine, phosphothreonine and phosphotyrosine annotations of the reviewed human entries, one row per residue, with ECO evidence codes, their class (experimental or by-similarity) and PubMed IDs',
     'methylarginine': 'UniProt arginine methylation annotations (omega-N-methylarginine, asymmetric and symmetric dimethylarginine, dimethylated and omega-N-methylated arginine) of the reviewed human entries: a cross-check only, the methylarginine release has its own table',
@@ -100,7 +116,10 @@ def stage(entries: list[dict], reference: dict[str, str], release: str) -> tuple
         for feature in entry.get('features', []):
             if feature.get('type') != 'Modified residue':
                 continue
-            term = TERMS.get(feature_term(feature.get('description', '')))
+            name = feature_term(feature.get('description', ''))
+            term = TERMS.get(name)
+            if term is None and acyl_type(name):
+                term = ('lysine_acylation', acyl_type(name), 'K')
             if term is None:
                 continue
             mark, state, residue = term

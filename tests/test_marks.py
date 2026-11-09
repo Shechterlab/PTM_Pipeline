@@ -28,7 +28,7 @@ build = load('56_build_context_marks.py')
 cplm = load('39_stage_cplm4_lys_methylation.py')
 
 def context_files(folder):
-    return [folder / f'human_{m}_v1.5.0.tsv' for m in ('methyllysine_sites', 'phosphorylation_sites', 'methylarginine_crosscheck')]
+    return [folder / f'human_{m}_v1.5.0.tsv' for m in ('methyllysine_sites', 'phosphorylation_sites', 'lysine_acylation_sites', 'acetylation_sites', 'methylarginine_crosscheck')]
 
 
 REFERENCE = {'P00001': 'MKKRSTYKR', 'P00002': 'MKAK'}
@@ -121,7 +121,7 @@ def test_staged_tables_and_release_agree_with_manifest():
     manifest = list(csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t'))
     rows = {r['file']: r for r in manifest if r['file'].startswith('marks/')}
     tables = [f for f in rows if f.endswith('_sites.tsv') or f.endswith('_crosscheck.tsv')]
-    assert len(tables) == 7
+    assert len(tables) == 9
     for name in tables + ['marks/raw_files.tsv', 'marks/uniprot_ptm_sites_summary.json', 'marks/iptmnet_ptm_sites_summary.json',
                           'marks/cplm_ptm_sites_summary.json']:
         assert rows[name]['redistribution'] == 'git'
@@ -147,7 +147,7 @@ def test_staged_residues_match_reference():
     for path in (ROOT / 'inputs' / 'marks').glob('*_sites.tsv'):
         for r in csv.DictReader(open(path, encoding='utf-8'), delimiter='\t'):
             assert reference[r['canonical_UniProtAC']][int(r['position']) - 1] == r['residue']
-            assert r['residue'] in {'methyllysine': 'K', 'phosphorylation': 'STY'}[r['mark']]
+            assert r['residue'] in {'methyllysine': 'K', 'phosphorylation': 'STY', 'lysine_acylation': 'K'}[r['mark']]
 
 
 def test_iptmnet_staging():
@@ -225,8 +225,9 @@ def test_release_v1_5_0_is_consistent():
     for path in context_files(folder):
         with open(path, encoding='utf-8') as fh:
             header = next(csv.reader(fh, delimiter='\t'))
-        assert header[:11] == build.OUT_COLUMNS
-        assert header[11:12] == ([build.CPLM_COLUMN] if 'methyllysine' in path.name else ([] if 'phosph' in path.name else ['in_methylarginine_release']))
+        expected = [c if c != 'state' else 'acyl_type' for c in build.OUT_COLUMNS] if 'acylation' in path.name or 'acetylation' in path.name else build.OUT_COLUMNS
+        assert header[:11] == expected
+        assert header[11:12] == ([build.CPLM_COLUMN] if 'methyllysine' in path.name else ([] if 'phosph' in path.name or 'acyl' in path.name or 'acetyl' in path.name else ['in_methylarginine_release']))
     text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
     assert 'unchanged from v1.4.3' in text and 'CC BY-NC-SA 4.0' in text and 'CC BY 4.0' in text
     assert release['license'].startswith('CC BY-NC-SA 4.0')
@@ -348,3 +349,32 @@ def test_merge_adds_cplm_to_sources_without_changing_other_rows():
     assert out.iloc[1]['sources'] == 'CPLM' and out.iloc[1]['evidence_class'] == 'unspecified'
     assert build.overlap(out)['sites'] == {'UniProt + CPLM': 1, 'CPLM only': 1}
     assert 'cplm_evidence' not in build.merge([u.assign(upstream_sources='', cplm_evidence='')]).columns
+
+
+def test_acyl_terms_come_from_the_vocabulary():
+    assert stage.acyl_type('N6-acetyllysine') == 'acetyl'
+    assert stage.acyl_type('N6-(2-hydroxyisobutyryl)lysine') == '2-hydroxyisobutyryl'
+    assert stage.acyl_type('N6-(beta-hydroxybutyryl)lysine') == 'beta-hydroxybutyryl'
+    for term in ('N6-methyllysine', 'N6,N6-dimethyllysine', 'N6-acetyl-N6-methyllysine', 'N6-(ADP-ribosyl)lysine', 'N6-lipoyllysine',
+                 'N6-biotinyllysine', 'N6-(pyridoxal phosphate)lysine', 'N6-(retinylidene)lysine', 'N6-carboxylysine',
+                 '(Microbial infection) N6-acetyllysine', '5-hydroxylysine'):
+        assert stage.acyl_type(term) is None, term
+    tables, dropped = run([entry('P00001', REFERENCE['P00001'], feature('N6-acetyllysine', 2), feature('N6-succinyllysine; alternate', 2),
+                                 feature('N6-acetyllysine', 5), feature('N6-lipoyllysine', 3))])
+    acyl = tables['lysine_acylation']
+    assert list(zip(acyl['position'], acyl['state'], strict=True)) == [(2, 'acetyl'), (2, 'succinyl')]
+    assert dropped == {'residue_mismatch': 1} and set(acyl['mark']) == {'lysine_acylation'}
+
+
+def test_iptmnet_acetylation_and_acylation_table_of_the_release():
+    import pandas as pd
+    records = pd.DataFrame([dict(zip(iptm.FIELDS, ['ACETYLATION', 'hprd', 'P00001', 'G', 'Homo sapiens (Human)', 'K2', '', '', '', '9'], strict=True)),
+                            dict(zip(iptm.FIELDS, ['ACETYLATION', 'hprd', 'P00001', 'G', 'Homo sapiens (Human)', 'S5', '', '', '', ''], strict=True))])
+    tables, dropped = iptm.stage(records, REFERENCE, '6.2')
+    assert list(tables['lysine_acylation']['state']) == ['acetyl'] and dropped == {'other_residue': 1}
+    folder = ROOT / 'releases' / 'v1.5.0'
+    acyl = list(csv.DictReader(open(folder / 'human_lysine_acylation_sites_v1.5.0.tsv', encoding='utf-8'), delimiter='\t'))
+    acetyl = list(csv.DictReader(open(folder / 'human_acetylation_sites_v1.5.0.tsv', encoding='utf-8'), delimiter='\t'))
+    assert 'state' not in acyl[0] and 'acyl_type' in acyl[0]
+    assert [r for r in acyl if r['acyl_type'] == 'acetyl'] == acetyl
+    assert len({(r['canonical_UniProtAC'], r['position'], r['acyl_type']) for r in acyl}) == len(acyl)

@@ -44,7 +44,9 @@ import pandas as pd
 
 from common import md5_file
 
-MARKS = ['methyllysine', 'phosphorylation']
+MARKS = ['methyllysine', 'phosphorylation', 'lysine_acylation']
+ACYL = {'lysine_acylation', 'acetylation'}          # their `state` column is written as `acyl_type`
+FILE_MARKS = MARKS + ['acetylation']              # acetylation: the acetyl rows of lysine_acylation, as a table of its own
 SOURCE_ORDER = ['UniProt', 'iPTMnet', 'CPLM']
 CARRIED_FROM = 'v1.4.3'
 NOT_CARRIED = {'README.md', 'CHANGES.md', 'MD5SUMS', 'data_dictionary.tsv', 'release.json'}
@@ -74,7 +76,7 @@ UPSTREAM = {'hprd': 'HPRD', 'unip': 'UniProt', 'rlim': 'RLIMS-P text mining', 'r
 CODES = {
     'state': 'methyllysine: me1, me2, me3, me (degree not stated); phosphorylation: phospho; methylarginine: me1, me2a, me2s, me2 (type not stated), me (degree not stated)',
     'evidence_class': 'experimental, text-mined, by-similarity, unspecified',
-    'mark': 'methyllysine, phosphorylation, methylarginine',
+    'mark': 'methyllysine, phosphorylation, lysine_acylation, methylarginine',
     'sources': 'UniProt, iPTMnet, CPLM',
     'cplm_evidence': 'Exp., Exp./Dat., Dat.',
 }
@@ -82,7 +84,8 @@ DICTIONARY = [
     ('canonical_UniProtAC', 'string', 'reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)'),
     ('position', 'integer', 'residue number on that sequence, 1-based'),
     ('residue', 'code', 'one-letter code of the residue, checked against the reference sequence (K for methyllysine, S, T or Y for phosphorylation, R for methylarginine)'),
-    ('mark', 'code', 'the modification'),
+    ('mark', 'code', 'the modification (the acylation tables have lysine_acylation)'),
+    ('acyl_type', 'code', 'acylation tables only, in place of state: the acyl group on the lysine, as UniProt names it in its N6-<acyl>lysine terms (acetyl, succinyl, 2-hydroxyisobutyryl, beta-hydroxybutyryl, lactoyl, glutaryl, crotonyl, methacryl, isonicotinyl, benzoyl, butyryl, malonyl, propionyl); iPTMnet gives acetyl only. A residue with several acyl types has one row per type'),
     ('state', 'code', 'the state reported for the residue; a residue with several states has one row per state. iPTMnet and CPLM do not give a methylation degree (state me)'),
     ('sources', 'list<code>', 'the sources that report the residue and state, separated by "; "'),
     ('evidence_class', 'code', 'the best class of any source. experimental: UniProt ECO:0000269 or ECO:0007744, an iPTMnet record curated from an experiment (upstream hprd, sign, npro, pro, intact, iedb), or a CPLM record labelled Exp. or Exp./Dat. (CPLM curates these from experimental papers). text-mined: only RLIMS-P reports it. by-similarity: UniProt records with no experimental code (mainly ECO:0000250). unspecified: only iPTMnet\'s copy of UniProt (upstream unip), which has no ECO code, or only a CPLM record labelled Dat. (taken from another database; CPLM names no experiment). A site can hide by-similarity and unspecified rows by filtering on this column'),
@@ -232,7 +235,7 @@ def demote(text: str) -> str:
 
 
 def write_docs(out: Path, version, release_date, tables, cross, summaries, commit) -> dict:
-    files = {m: f'human_{m}_sites_{version}.tsv' for m in MARKS}
+    files = {m: f'human_{m}_sites_{version}.tsv' for m in FILE_MARKS}
     files['methylarginine'] = f'human_methylarginine_crosscheck_{version}.tsv'
     allt = {**tables, 'methylarginine': cross}
     releases = {s: set() for s in SOURCE_ORDER}
@@ -246,13 +249,13 @@ def write_docs(out: Path, version, release_date, tables, cross, summaries, commi
          f'{version} keeps the methylarginine data of {CARRIED_FROM} unchanged (`human_methylarginine_*`, '
          '`statistics_*`, `studies_*`, `supporting/` and `analyses*` are the v1.4.3 files, renamed `_v1.5.0` and otherwise unchanged apart from the '
          'strings that name the version inside a few of them; see CHANGES.md) and adds '
-         'tables of context marks: the lysine methylation sites (UniProt, iPTMnet and CPLM 4.0) and phosphorylation sites (UniProt and iPTMnet) of the human reviewed proteome, and the '
+         'tables of context marks: the lysine methylation sites (UniProt, iPTMnet and CPLM 4.0), phosphorylation sites (UniProt and iPTMnet) and lysine acylation sites (UniProt and iPTMnet; acetylation also as a table of its own) of the human reviewed proteome, and the '
          'arginine methylation records of UniProt and iPTMnet as a cross-check. Sites for each mark read their own table and show the '
          'others as context. Positions of the new tables are on UniProt release 2026_03, the reference of the methylarginine data.', '',
          '## Context marks', '', '| File | One row per |', '|---|---|']
-    for m in MARKS:
+    for m in FILE_MARKS:
         t = tables[m]
-        L.append(f'| `{files[m]}` | {m} residue and state ({len(t):,} rows on {t[["canonical_UniProtAC", "position"]].drop_duplicates().shape[0]:,} '
+        L.append(f'| `{files[m]}` | {m.replace("_", " ")} residue and {"acyl type" if m in ACYL else "state"} ({len(t):,} rows on {t[["canonical_UniProtAC", "position"]].drop_duplicates().shape[0]:,} '
                  f'residues of {t["canonical_UniProtAC"].nunique():,} proteins) |')
     L += [f'| `{files["methylarginine"]}` | arginine methylation record of UniProt or iPTMnet ({len(cross):,} rows), with whether the methylarginine data has the arginine. A cross-check, not a second methylarginine table |', '',
           'Columns are in `data_dictionary.tsv`. Each row says which sources report it (`sources`), the best `evidence_class`, UniProt\'s ECO codes, '
@@ -281,9 +284,10 @@ def write_docs(out: Path, version, release_date, tables, cross, summaries, commi
     arg = cross.drop_duplicates(['canonical_UniProtAC', 'position'])['in_methylarginine_release'].value_counts().sort_index()
     L += ['Arginines of the cross-check in the methylarginine data: ' + ', '.join(f'{k} {v:,}' for k, v in arg.items()) + '.', '']
     unip_only = {m: int(tables[m]['iptmnet_sources'].eq('unip').sum()) for m in MARKS}
+    unip_only_text = ', '.join(f'{unip_only[m]:,} {m.replace("_", " ")}' for m in MARKS)
     cp = tables['methyllysine']
     cp = cp[cp['sources'].str.contains('CPLM')]
-    L += [f'iPTMnet carries a copy of UniProt: {unip_only["methyllysine"]:,} methyllysine and {unip_only["phosphorylation"]:,} phosphorylation rows have `unip` as their only upstream database, '
+    L += [f'iPTMnet carries a copy of UniProt: {unip_only_text} rows have `unip` as their only upstream database, '
           'so "UniProt + iPTMnet" counts them as agreement of two sources when they are one.', '',
           f'CPLM 4.0 evidence of the {len(cp):,} methyllysine rows it reports (`cplm_evidence`): ' + ', '.join(f'{k} {v:,}' for k, v in cp['cplm_evidence'].value_counts().sort_index().items())
           + '. CPLM compiles records from other databases too (`Dat.`), so a residue that CPLM and UniProt or iPTMnet both report may rest on the same original record; the tables only record that the residue is shared.', '',
@@ -364,22 +368,27 @@ def main() -> None:
     summaries = {'uniprot': json.loads((inputs / 'uniprot_ptm_sites_summary.json').read_text(encoding='utf-8')),
                  'iptmnet': json.loads((inputs / 'iptmnet_ptm_sites_summary.json').read_text(encoding='utf-8')),
                  'cplm': json.loads((inputs / 'cplm_ptm_sites_summary.json').read_text(encoding='utf-8'))}
-    for m in MARKS:
-        tables[m].to_csv(out / f'human_{m}_sites_{version}.tsv', sep='\t', index=False, lineterminator='\n')
+    for m in FILE_MARKS:
+        t = tables[m].rename(columns={'state': 'acyl_type'}) if m in ACYL else tables[m]
+        t.to_csv(out / f'human_{m}_sites_{version}.tsv', sep='\t', index=False, lineterminator='\n')
     cross.to_csv(out / f'human_methylarginine_crosscheck_{version}.tsv', sep='\t', index=False, lineterminator='\n')
 
     # data dictionary: v1.4.3's, then the new tables
-    new = {**{m: f'human_{m}_sites_{version}.tsv' for m in MARKS}, 'methylarginine': f'human_methylarginine_crosscheck_{version}.tsv'}
+    new = {**{m: f'human_{m}_sites_{version}.tsv' for m in FILE_MARKS}, 'methylarginine': f'human_methylarginine_crosscheck_{version}.tsv'}
     lines = []
     for line in (src / 'data_dictionary.tsv').read_text(encoding='utf-8').rstrip('\n').split('\n'):
         name, rest = line.split('\t', 1)
         name = name.replace(f'_v1.4.2_to_{CARRIED_FROM}', f'_{CARRIED_FROM}_to_{version}')
         lines.append(renamed(name, version) + '\t' + rest)
-    for name in new.values():
+    for mark, name in new.items():
         for column, kind, description in DICTIONARY:
             if column == 'in_methylarginine_release' and 'crosscheck' not in name:
                 continue
             if column == 'cplm_evidence' and 'methyllysine' not in name:
+                continue
+            if column == 'acyl_type' and mark not in ACYL:
+                continue
+            if column == 'state' and mark in ACYL:
                 continue
             if column in ('evidence_class', 'state', 'mark', 'sources'):
                 values = CODES[column]
@@ -415,9 +424,9 @@ def main() -> None:
     changes += ['', '## New: context marks', '',
                 'Versioned tables of other marks, for sites of those marks to read (`README.md` has the sources, licenses, counts and how to cite). '
                 'The sources are UniProt and iPTMnet, which are openly licensed, and, for methyllysine only, CPLM 4.0, which is not (below).', '']
-    for m in MARKS:
+    for m in FILE_MARKS:
         c = counts[m]
-        changes.append(f'- `human_{m}_sites_{version}.tsv`: {c["rows"]:,} rows on {c["residues"]:,} residues of {c["proteins"]:,} proteins; by state '
+        changes.append(f'- `human_{m}_sites_{version}.tsv`: {c["rows"]:,} rows on {c["residues"]:,} residues of {c["proteins"]:,} proteins; by {"acyl type" if m in ACYL else "state"} '
                        + ', '.join(f'{k} {v:,}' for k, v in c['by_state'].items()) + '; by evidence class ' + ', '.join(f'{k} {v:,}' for k, v in c['by_evidence_class'].items())
                        + '; residues by source ' + ', '.join(f'{k} {v:,}' for k, v in sorted(c['by_source']['sites'].items())) + '.')
     c = counts['methylarginine_crosscheck']
@@ -434,7 +443,7 @@ def main() -> None:
                 '), so a reader can filter on it or leave CPLM out. CPLM rows are state `me` (CPLM gives no degree); `evidence_class` is experimental for Exp. and Exp./Dat., and unspecified for Dat. '
                 f'(a record CPLM took from another database). `pmids` holds the references that are PubMed IDs ({cc["rows_with_pubmed_ids"]:,} rows; the rest of CPLM\'s reference field is identifiers of other databases). '
                 f'Dropped on validation, nothing remapped: ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(cc['dropped'].items())) + '. '
-                'No lysine acylation is part of this release.', '',
+                'CPLM contributes no lysine acylation.', '',
                 'Code: `scripts/39_stage_cplm4_lys_methylation.py`, `scripts/54_stage_uniprot_ptm_sites.py`, `scripts/55_stage_iptmnet_ptm_sites.py`, `scripts/56_build_context_marks.py`; staged tables in `inputs/marks/`.']
     (out / 'CHANGES.md').write_text('\n'.join(changes) + '\n', encoding='utf-8')
 
