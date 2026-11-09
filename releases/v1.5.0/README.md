@@ -1,6 +1,6 @@
 # Human methylarginine sites and context marks, v1.5.0
 
-v1.5.0 keeps the methylarginine data of v1.4.3 unchanged (every file below under `human_methylarginine_*`, `statistics_*`, `studies_*`, `supporting/` and `analyses*` is the v1.4.3 file, byte for byte, under its own name) and adds tables of context marks: the lysine methylation and phosphorylation sites of the human reviewed proteome, and the arginine methylation records of UniProt and iPTMnet as a cross-check. Sites for each mark read their own table and show the others as context. Positions of the new tables are on UniProt release 2026_03, the reference of the methylarginine data.
+v1.5.0 keeps the methylarginine data of v1.4.3 unchanged (`human_methylarginine_*`, `statistics_*`, `studies_*`, `supporting/` and `analyses*` are the v1.4.3 files, renamed `_v1.5.0` and otherwise unchanged apart from the strings that name the version inside a few of them; see CHANGES.md) and adds tables of context marks: the lysine methylation and phosphorylation sites of the human reviewed proteome, and the arginine methylation records of UniProt and iPTMnet as a cross-check. Sites for each mark read their own table and show the others as context. Positions of the new tables are on UniProt release 2026_03, the reference of the methylarginine data.
 
 ## Context marks
 
@@ -63,7 +63,7 @@ Each count is of source records. UniProt: 641 on an isoform, 2 residue mismatch;
 
 ### How the context marks were made
 
-`python scripts/54_stage_uniprot_ptm_sites.py` and `python scripts/55_stage_iptmnet_ptm_sites.py` (inputs in `inputs/marks/`, downloads listed in `inputs/marks/raw_files.tsv`), then `python scripts/56_build_context_marks.py --version v1.5.0 --release-date 2026-11-09` at commit `d03f1db221d5388e14e286666d35115c2f26eff2` of https://github.com/Shechterlab/PTM_Pipeline.
+`python scripts/54_stage_uniprot_ptm_sites.py` and `python scripts/55_stage_iptmnet_ptm_sites.py` (inputs in `inputs/marks/`, downloads listed in `inputs/marks/raw_files.tsv`), then `python scripts/56_build_context_marks.py --version v1.5.0 --release-date 2026-11-09` at commit `d03f1db221d5388e14e286666d35115c2f26eff2 (scripts modified)` of https://github.com/Shechterlab/PTM_Pipeline.
 
 ### Cite
 
@@ -74,7 +74,7 @@ The paper below, and the sources you use:
 
 ## Methylarginine data (unchanged from v1.4.3)
 
-What follows is the README of v1.4.3, with its headings one level down. The files it names are in this folder under those names.
+What follows is the README of v1.4.3, with its headings one level down. The files it names are in this folder with `_v1.5.0` in place of `_v1.4.3`.
 
 ## Human methylarginine sites, v1.4.3
 
@@ -86,46 +86,46 @@ Every site has its sequence, methylation evidence, structural context, the studi
 
 | File | One row per |
 |---|---|
-| `human_methylarginine_sites_v1.4.3.tsv` | site, including the 0 sites kept pending (flag `one_sided_window`) |
-| `human_methylarginine_sites_v1.4.3.xlsx` | the same table as a spreadsheet |
-| `human_methylarginine_proteins_v1.4.3.tsv` | protein: names, site counts, functional classes, arginine enrichment, site density and clusters, condensates, locations, disease families, other PTMs, interactions |
-| `human_methylarginine_lower_confidence_sites_v1.4.3.tsv` | lower-confidence site: an arginine a study reports as methylated, or an earlier release had as a site, whose records each fail a site test, with the results of the tests |
-| `studies_v1.4.3.tsv` | study or database: citation, DOI, terms, counts |
-| `statistics_v1.4.3.tsv` | enrichment test behind the summaries: classes, motifs, disorder, domains, disease families, condensates, locations, interactions |
-| `statistics_with_lower_confidence_v1.4.3.tsv` | the same tests, run again with the lower-confidence sites whose own evidence covers the arginine and leaves the methyl group on an arginine |
-| `supporting/source_records_v1.4.3.tsv` | source record: what the study reported, its evidence, where each version placed it |
-| `supporting/lower_confidence_evidence_v1.4.3.tsv` | source record that adds no site (not localised, or not on one site of a protein it names), with where its methyl group could be |
-| `supporting/site_changes_v1.4.2_to_v1.4.3.tsv` | site of either version: kept, removed or added, and why |
-| `supporting/published_sites_v1.4.3.tsv` | site of v1.0.0 or v1.1.0: what it is in this release (a site, a lower-confidence site, or not on the reference) |
-| `supporting/maron2021_detection_v1.4.3.tsv` | site detected in Maron et al. 2021 Table S2 or S3 (per antibody) |
-| `supporting/maron2021_inhibitors_v1.4.3.tsv` | site, antibody and PRMT inhibitor in Maron et al. 2021 Table S3 |
-| `supporting/carm1_ko_v1.4.3.tsv` | site and cell line in the CARM1 knockout data of Shishkova et al. 2017 |
-| `supporting/site_interactions_v1.4.3.tsv` | piece of interaction evidence at a site: crosslinks and RNA-bound peptides (RBDmap, CAPRI), PDB interfaces, predicted interfaces and contacts, IntAct records |
-| `supporting/residue_evidence_v1.4.3.tsv` | run of residues of a protein with the same interaction evidence |
-| `supporting/protein_partners_v1.4.3.tsv` | protein and STRING physical partner (score >= 0.7) |
-| `supporting/complexes_v1.4.3.tsv` | Complex Portal or hu.MAP complex with a methylated member |
-| `supporting/nucleic_acid_contacts_v1.4.3.tsv` | site and RNA or DNA chain within 4 Å of its side chain in a PDB structure: the contacted nucleotides and the bound sequence around them |
-| `supporting/arginine_nucleic_acid_distances_v1.4.3.tsv` | arginine of a methylated protein modelled in a PDB entry with RNA or DNA: its minimum side-chain distance to each, methylated or not |
-| `supporting/nucleic_acid_proximal_sites_v1.4.3.tsv` | site, complex and kind of nucleic acid in which the arginine side chain is within 8 Å, not 4 Å, of RNA or DNA: the bound sequence around the closest nucleotide |
-| `supporting/nucleic_acid_near_sites_v1.4.3.tsv` | site and complex in which a residue at i ± 1–5, not the arginine side chain, is within 4 Å of RNA or DNA (the side chain not within 8 Å): the bound sequence there |
-| `supporting/nucleic_acid_regions_v1.4.3.tsv` | run of residues of a protein within 4 Å of RNA or DNA in PDB structures: the bound segments and the methylarginines inside it |
-| `supporting/rna_bind_n_seq_v1.4.3.tsv` | methylated protein and ENCODE RNA Bind-n-Seq experiment: its most enriched 5-mers and logos (in vitro) |
-| `supporting/dna_motifs_v1.4.3.tsv` | methylated protein and JASPAR 2026 DNA-binding profile |
-| `supporting/htr_selex_v1.4.3.tsv` | methylated protein and HTR-SELEX RNA-binding model (Jolma et al. 2020) |
-| `supporting/eclip_v1.4.3.tsv` | methylated protein and ENCODE eCLIP experiment: peaks by transcript region and the genes with most peaks (in cells) |
-| `supporting/disease_terms_v1.4.3.tsv` | enriched DisGeNET term (clusterProfiler enricher on the DisGeNET terms of DOSE 4.4.0) |
-| `supporting/disease_terms_tested_v1.4.3.tsv` | DisGeNET term tested (clusterProfiler enricher on the DisGeNET terms of DOSE 4.4.0), enriched or not |
-| `supporting/disease_ontology_v1.4.3.tsv` | Disease Ontology term tested (clusterProfiler enricher on the gene sets of DOSE enrichDO) |
-| `supporting/disease_families_v1.4.3.tsv` | disease family: terms and genes |
-| `supporting/arginine_background_v1.4.3.tsv` | protein and residue test: the other arginines of the protein, in all and in each class or motif |
-| `supporting/density_windows_v1.4.3.tsv` | protein and window width with site density significantly above the permutation null (q <= 0.05) |
-| `supporting/condensates_v1.4.3.tsv` | CD-CODE condensate: name, type, members and methylated members |
-| `supporting/hpa_locations_v1.4.3.tsv` | protein and Human Protein Atlas location |
-| `supporting/other_ptm_sites_v1.4.3.tsv` | other modification on a protein of the release (PTM master table) |
-| `supporting/writer_perturbations_v1.4.3.tsv` | site and knockout, knockdown or inhibitor (PRMT1, PRMT5, PRMT7, CARM1): its peptides, change, and the twofold, q < 0.05 and published calls |
-| `supporting/functional_experiments_v1.4.3.tsv` | curated experiment on a site or a protein's methylation: perturbation, readout, direction and reference (kept apart from every statistic) |
-| `supporting/eclip_rna_compartments_v1.4.3.tsv` | protein with eCLIP data, map and compartment: whether the RNAs it binds gather there, within expression and gene-length deciles (every protein and compartment a map tests) |
-| `supporting/site_interaction_records_v1.4.3.tsv` | interaction record at a site: its PDB entry, IntAct interaction, study or model, method, species, paper, the state of the site in the experiment and what the record shows |
+| `human_methylarginine_sites_v1.5.0.tsv` | site, including the 0 sites kept pending (flag `one_sided_window`) |
+| `human_methylarginine_sites_v1.5.0.xlsx` | the same table as a spreadsheet |
+| `human_methylarginine_proteins_v1.5.0.tsv` | protein: names, site counts, functional classes, arginine enrichment, site density and clusters, condensates, locations, disease families, other PTMs, interactions |
+| `human_methylarginine_lower_confidence_sites_v1.5.0.tsv` | lower-confidence site: an arginine a study reports as methylated, or an earlier release had as a site, whose records each fail a site test, with the results of the tests |
+| `studies_v1.5.0.tsv` | study or database: citation, DOI, terms, counts |
+| `statistics_v1.5.0.tsv` | enrichment test behind the summaries: classes, motifs, disorder, domains, disease families, condensates, locations, interactions |
+| `statistics_with_lower_confidence_v1.5.0.tsv` | the same tests, run again with the lower-confidence sites whose own evidence covers the arginine and leaves the methyl group on an arginine |
+| `supporting/source_records_v1.5.0.tsv` | source record: what the study reported, its evidence, where each version placed it |
+| `supporting/lower_confidence_evidence_v1.5.0.tsv` | source record that adds no site (not localised, or not on one site of a protein it names), with where its methyl group could be |
+| `supporting/site_changes_v1.4.3_to_v1.5.0.tsv` | site of either version: kept, removed or added, and why |
+| `supporting/published_sites_v1.5.0.tsv` | site of v1.0.0 or v1.1.0: what it is in this release (a site, a lower-confidence site, or not on the reference) |
+| `supporting/maron2021_detection_v1.5.0.tsv` | site detected in Maron et al. 2021 Table S2 or S3 (per antibody) |
+| `supporting/maron2021_inhibitors_v1.5.0.tsv` | site, antibody and PRMT inhibitor in Maron et al. 2021 Table S3 |
+| `supporting/carm1_ko_v1.5.0.tsv` | site and cell line in the CARM1 knockout data of Shishkova et al. 2017 |
+| `supporting/site_interactions_v1.5.0.tsv` | piece of interaction evidence at a site: crosslinks and RNA-bound peptides (RBDmap, CAPRI), PDB interfaces, predicted interfaces and contacts, IntAct records |
+| `supporting/residue_evidence_v1.5.0.tsv` | run of residues of a protein with the same interaction evidence |
+| `supporting/protein_partners_v1.5.0.tsv` | protein and STRING physical partner (score >= 0.7) |
+| `supporting/complexes_v1.5.0.tsv` | Complex Portal or hu.MAP complex with a methylated member |
+| `supporting/nucleic_acid_contacts_v1.5.0.tsv` | site and RNA or DNA chain within 4 Å of its side chain in a PDB structure: the contacted nucleotides and the bound sequence around them |
+| `supporting/arginine_nucleic_acid_distances_v1.5.0.tsv` | arginine of a methylated protein modelled in a PDB entry with RNA or DNA: its minimum side-chain distance to each, methylated or not |
+| `supporting/nucleic_acid_proximal_sites_v1.5.0.tsv` | site, complex and kind of nucleic acid in which the arginine side chain is within 8 Å, not 4 Å, of RNA or DNA: the bound sequence around the closest nucleotide |
+| `supporting/nucleic_acid_near_sites_v1.5.0.tsv` | site and complex in which a residue at i ± 1–5, not the arginine side chain, is within 4 Å of RNA or DNA (the side chain not within 8 Å): the bound sequence there |
+| `supporting/nucleic_acid_regions_v1.5.0.tsv` | run of residues of a protein within 4 Å of RNA or DNA in PDB structures: the bound segments and the methylarginines inside it |
+| `supporting/rna_bind_n_seq_v1.5.0.tsv` | methylated protein and ENCODE RNA Bind-n-Seq experiment: its most enriched 5-mers and logos (in vitro) |
+| `supporting/dna_motifs_v1.5.0.tsv` | methylated protein and JASPAR 2026 DNA-binding profile |
+| `supporting/htr_selex_v1.5.0.tsv` | methylated protein and HTR-SELEX RNA-binding model (Jolma et al. 2020) |
+| `supporting/eclip_v1.5.0.tsv` | methylated protein and ENCODE eCLIP experiment: peaks by transcript region and the genes with most peaks (in cells) |
+| `supporting/disease_terms_v1.5.0.tsv` | enriched DisGeNET term (clusterProfiler enricher on the DisGeNET terms of DOSE 4.4.0) |
+| `supporting/disease_terms_tested_v1.5.0.tsv` | DisGeNET term tested (clusterProfiler enricher on the DisGeNET terms of DOSE 4.4.0), enriched or not |
+| `supporting/disease_ontology_v1.5.0.tsv` | Disease Ontology term tested (clusterProfiler enricher on the gene sets of DOSE enrichDO) |
+| `supporting/disease_families_v1.5.0.tsv` | disease family: terms and genes |
+| `supporting/arginine_background_v1.5.0.tsv` | protein and residue test: the other arginines of the protein, in all and in each class or motif |
+| `supporting/density_windows_v1.5.0.tsv` | protein and window width with site density significantly above the permutation null (q <= 0.05) |
+| `supporting/condensates_v1.5.0.tsv` | CD-CODE condensate: name, type, members and methylated members |
+| `supporting/hpa_locations_v1.5.0.tsv` | protein and Human Protein Atlas location |
+| `supporting/other_ptm_sites_v1.5.0.tsv` | other modification on a protein of the release (PTM master table) |
+| `supporting/writer_perturbations_v1.5.0.tsv` | site and knockout, knockdown or inhibitor (PRMT1, PRMT5, PRMT7, CARM1): its peptides, change, and the twofold, q < 0.05 and published calls |
+| `supporting/functional_experiments_v1.5.0.tsv` | curated experiment on a site or a protein's methylation: perturbation, readout, direction and reference (kept apart from every statistic) |
+| `supporting/eclip_rna_compartments_v1.5.0.tsv` | protein with eCLIP data, map and compartment: whether the RNAs it binds gather there, within expression and gene-length deciles (every protein and compartment a map tests) |
+| `supporting/site_interaction_records_v1.5.0.tsv` | interaction record at a site: its PDB entry, IntAct interaction, study or model, method, species, paper, the state of the site in the experiment and what the record shows |
 | `data_dictionary.tsv` | column of every table, with its codes and their meanings |
 | `release.json` | the release: version, counts, reference, inputs, files with MD5 |
 | `CHANGES.md` | what changed since the previous version |
@@ -136,7 +136,7 @@ Tables are UTF-8, tab-separated, one header row. Lists are separated by `; `, bo
 
 ### Cite
 
-Cite DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011, and the studies of the sites you use (`studies` column, `studies_v1.4.3.tsv`):
+Cite DeAngelo JD, Silverstein AM, Shechter D. Protein arginine methylation rewires molecular interactions. Cell Chem Biol 33:1404-1421 (2026), doi:10.1016/j.chembiol.2026.09.011, and the studies of the sites you use (`studies` column, `studies_v1.5.0.tsv`):
 
 | Study or database | Citation | DOI | Records | Sites | Only here |
 |---|---|---|---:|---:|---:|
@@ -204,7 +204,7 @@ Cite them as: CPLM 4.0 lysine methylation: Zhang et al., Nucleic Acids Res 50:D4
 
 ### Statistics
 
-`statistics_v1.4.3.tsv` holds every test behind the summaries: its analysis and category, the 2x2 counts a, b, c and d, the effect, p, q and the method:
+`statistics_v1.5.0.tsv` holds every test behind the summaries: its analysis and category, the 2x2 counts a, b, c and d, the effect, p, q and the method:
 
 - **Protein and gene sets** (method `enricher`): PANTHER and functional classes, Reactome pathways, CD-CODE condensates, Human Protein Atlas locations, the compartments of the maps of the cell, disease families, Gene Ontology RNA and DNA binding and DepMap dependency classes; the complexes, Disease Ontology terms and DisGeNET terms, tested the same way, are in `supporting/`. Over-representation analysis in R with clusterProfiler::enricher, the DisGeNET terms on DOSE 4.4.0's DisGeNET term-gene table (the test DOSE::enrichDGN ran; `scripts/enrich_sets.R`; DOSE 4.4.0, R 4.5.3, clusterProfiler 4.18.4). For a set holding M of the N members of the background, where n of the N are methylarginine-containing proteins (or their genes) and k of those are in the set, p is the one-sided hypergeometric probability of k or more, `fold_enrichment` is (k/n)/(M/N), and q is the Benjamini-Hochberg adjusted p over the sets of the analysis; a = k, b = n - k, c = M - k and d = N - M - n + k. A set is tested when it holds a methylarginine-containing protein and its size is within the analysis's range. Backgrounds: the reviewed human proteome (classes, Gene Ontology, complexes), the proteins of any human CD-CODE condensate (condensates), the proteins the Human Protein Atlas profiled (locations), the reviewed human genes with a DisGeNET term (disease families and DisGeNET terms) and those with a Disease Ontology term (Disease Ontology), the reviewed proteins whose gene DepMap 24Q4 screened (dependency classes), and the proteins each map of the cell places (analyses cell_*). The analyses cell_region_* group the compartments of the Human Cell Map, organelle IP and the Human Protein Atlas into three regions of the cell, each tested as one set: the nucleus, the cytoplasm outside the organelles, and the organelles and membranes with the nuclear envelope (`scripts/cell_maps.py`, REGION_OF).
 - **Proteins, within abundance deciles** (method `mantel_haenszel`, the background ending "each PaxDb abundance decile a stratum"): mass spectrometry finds abundant proteins most, so a set rich in abundant proteins can look enriched among the methylated proteins whatever methylation does. Each protein-level over-representation test above (PANTHER, functional classes, Reactome, Human Protein Atlas locations, the maps of the cell, condensates, DepMap dependency, Gene Ontology binding, disease families, and the proteins found binding RNA or DNA in cells and the eCLIP'd proteins below) is run again with its background split into the deciles of PaxDb 6.1 abundance, plus one stratum for the proteins without a PaxDb value: the Mantel-Haenszel common odds ratio with its Robins-Breslow-Greenland 95% CI (statsmodels) and the continuity-corrected two-sided Cochran-Mantel-Haenszel test, its |O - E| - 0.5 floored at zero (`common.cmh_statistic`), q Benjamini-Hochberg within the analysis. The sets and the pooled a, b, c, d are those of the enricher row beside it; genes (disease families) take the highest PaxDb value of their reviewed entries. This is a sensitivity test, reported beside the test it repeats: it asks whether an enrichment holds among proteins of similar abundance, and removes any real association of methylation with abundance too (`scripts/abundance_strata.py`).
@@ -216,7 +216,7 @@ Cite them as: CPLM 4.0 lysine methylation: Zhang et al., Nucleic Acids Res 50:D4
 
 The same definitions, with every code and its meaning, are in `data_dictionary.tsv`.
 
-#### `human_methylarginine_sites_v1.4.3.tsv`
+#### `human_methylarginine_sites_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -295,7 +295,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `change_since_previous_version` | code | kept or added (removed sites are in supporting/site_changes). Codes: `kept`, `added`, `removed`. |
 | `change_reasons` | list&lt;code&gt; | why the site was added, or renumbered (CHANGES.md). Codes: see `data_dictionary.tsv`. |
 
-#### `human_methylarginine_proteins_v1.4.3.tsv`
+#### `human_methylarginine_proteins_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -367,7 +367,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `nuclear_body_proteomes` | list&lt;string&gt; | the nuclear speckles, lamina and PML bodies whose APEX2 proximity proteome holds it (Barutcu et al. 2022, SAINT AvgP >= 0.9; speckles with two of the three markers); none when detected in none; empty when not detected. |
 | `eclip_rna_compartments` | list&lt;string&gt; | where the RNAs its eCLIP experiments bind gather, as map: compartment (q <= 0.05 and odds ratio above 1 within expression and gene-length deciles; supporting/eclip_rna_compartments); none when a map tests it and they gather nowhere; empty when no map tests it (no eCLIP data, or fewer than 20 bound RNAs placed). |
 
-#### `human_methylarginine_lower_confidence_sites_v1.4.3.tsv`
+#### `human_methylarginine_lower_confidence_sites_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -437,7 +437,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `reasons` | list&lt;code&gt; | why its records add no site, in code order. Codes: `below_threshold`, `several_residues`, `search_disagrees`, `no_localising_evidence`, `window_fits_several`, `several_sites`, `other_protein`, `not_in_reference`. |
 | `in_earlier_versions` | list&lt;string&gt; | the earlier releases that had this site (v1.0.0, v1.1.0). |
 
-#### `studies_v1.4.3.tsv`
+#### `studies_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -459,7 +459,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `note` | string |  |
 | `quality` | string | what a record holds, how the study localised the methyl group, and what was kept. |
 
-#### `statistics_v1.4.3.tsv`
+#### `statistics_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -482,7 +482,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `odds_ratio_ci_low` | number | lower bound of the 95% confidence interval of the odds ratio (Robins-Breslow-Greenland, for the mantel_haenszel rows; empty where the odds ratio is infinite, 0 or not estimable), empty otherwise. |
 | `odds_ratio_ci_high` | number | upper bound, as for odds_ratio_ci_low. |
 
-#### `statistics_with_lower_confidence_v1.4.3.tsv`
+#### `statistics_with_lower_confidence_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -505,7 +505,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `odds_ratio_ci_low` | number | lower bound of the 95% confidence interval of the odds ratio (Robins-Breslow-Greenland, for the mantel_haenszel rows; empty where the odds ratio is infinite, 0 or not estimable), empty otherwise. |
 | `odds_ratio_ci_high` | number | upper bound, as for odds_ratio_ci_low. |
 
-#### `supporting/source_records_v1.4.3.tsv`
+#### `supporting/source_records_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -546,7 +546,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `change_since_previous_version` | code | how the placement changed. Codes: `same`, `moved`, `newly_placed`, `no_longer_placed`, `not_placed`, `new_record`. |
 | `reason_code` | code | why it changed. Codes: see `data_dictionary.tsv`. |
 
-#### `supporting/lower_confidence_evidence_v1.4.3.tsv`
+#### `supporting/lower_confidence_evidence_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -563,7 +563,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `evidence_kind` | code | the sequence evidence. Codes: `window_13`, `window_15`, `window_31`, `peptide`, `marked_peptide`, `position_only`. |
 | `evidence_sequence` | list&lt;string&gt; | the peptide (marked) or window. |
 
-#### `supporting/site_changes_v1.4.2_to_v1.4.3.tsv`
+#### `supporting/site_changes_v1.4.3_to_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -580,7 +580,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `records_now_at_or_previously_at` | list&lt;string&gt; | for a removed site, where its records are placed now; for an added site, where they were placed before; for a kept site, both, for the records that moved. |
 | `record_ids` | list&lt;integer&gt; | the records involved (supporting/source_records): those placed on a removed site before, or on an added site now, and for a kept site those that moved onto or off it. |
 
-#### `supporting/published_sites_v1.4.3.tsv`
+#### `supporting/published_sites_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -590,7 +590,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `status` | code | what it is in this release. Codes: `site`, `lower_confidence`, `not_in_reference`. |
 | `tests_failed` | list&lt;code&gt; | for a lower-confidence site, the tests its best record fails. Codes: `evidence_at_site`, `named_entry`, `unique_in_proteome`, `methyl_on_arginine`, `localised`. |
 
-#### `supporting/maron2021_detection_v1.4.3.tsv`
+#### `supporting/maron2021_detection_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -600,7 +600,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `methyl_states` | list&lt;code&gt; | the degrees called (Table S2 only). Codes: `Rme1`, `Rme2`, `Rme2a`, `Rme2s`, `Rme`. |
 | `n_peptides` | integer | distinct peptides (sequence and modifications) carrying the site. |
 
-#### `supporting/maron2021_inhibitors_v1.4.3.tsv`
+#### `supporting/maron2021_inhibitors_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -619,7 +619,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `call` | code | over the peptides carrying the site by the shared rule (scripts/peptide_calls.py; the analyses of scripts/16 use the same): peptide-level evidence, as a peptide with several methylarginines gives each the same values. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`. |
 | `call_single_site_peptides` | code | the same over the peptides carrying no other methylarginine, the evidence that can be read as a change at this site; empty when every peptide carries another. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`. |
 
-#### `supporting/carm1_ko_v1.4.3.tsv`
+#### `supporting/carm1_ko_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -636,7 +636,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `call_single_site_peptides` | code | the same over the peptides carrying no other methylarginine; empty when every peptide carries another. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`. |
 | `call_published` | code | the published call: twofold at nominal p < 0.05 (Shishkova et al. 2017). Codes: `decreased`, `increased`, `mixed`, `no_significant_change`. |
 
-#### `supporting/site_interactions_v1.4.3.tsv`
+#### `supporting/site_interactions_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -653,7 +653,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `detail` | string | for an RNA crosslink, the crosslinked peptides of that dataset with the crosslinked residue in brackets, its position and the RNA adduct masses (pepR-MS compendium Table S2); for an RBDmap fragment or a CAPRI peptide, its range and sequence; for a DNA crosslink, the crosslinked peptide with the candidate crosslinked residues in lower case (Trendel et al. 2025); bonds, pLDDT and partner residues of a predicted contact; effect, residues, PubMed and IntAct ids of an IntAct record. |
 | `counts_as_evidence` | boolean | the record is site-level evidence: crosslinks at or as a candidate residue, RBDmap fragments, CAPRI peptides, PDB interfaces, predicted interfaces, confident predicted contacts, and IntAct mutations that change an interaction, short binding regions and methylated residues. interaction_status counts all of these except IntAct. |
 
-#### `supporting/residue_evidence_v1.4.3.tsv`
+#### `supporting/residue_evidence_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -666,7 +666,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `best_score` | number | best pDockQ along the run (predicted interfaces). |
 | `sources` | list&lt;string&gt; | sources of the evidence. |
 
-#### `supporting/protein_partners_v1.4.3.tsv`
+#### `supporting/protein_partners_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -677,7 +677,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `partner_methylated` | boolean | the partner is a protein of the site table. |
 | `partner_classes` | list&lt;code&gt; | reader or writer classes of the partner. Codes: `prmt`, `tudor`, `wd40`, `phd`. |
 
-#### `supporting/complexes_v1.4.3.tsv`
+#### `supporting/complexes_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -691,7 +691,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `p` | number | clusterProfiler enricher p value (one-sided hypergeometric, P(X >= n_members_methylated)), against all reviewed human proteins. |
 | `q` | number | Benjamini-Hochberg over the tested complexes of the same curation (complexes of at least two reviewed proteins with a methylated member). Only complexes with a methylated member are listed; those of a single reviewed protein are listed without a test. |
 
-#### `supporting/nucleic_acid_contacts_v1.4.3.tsv`
+#### `supporting/nucleic_acid_contacts_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -713,7 +713,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `window` | string | the sequence window: 8 nucleotides on each side of the nucleotide nearest to the side chain, which is the 9th; - beyond the chain's ends. Windows of different sites align on their middle. |
 | `window_marked` | string | the window with the contacted nucleotides in brackets. |
 
-#### `supporting/arginine_nucleic_acid_distances_v1.4.3.tsv`
+#### `supporting/arginine_nucleic_acid_distances_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -730,7 +730,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `dna_type` | code | the type of that DNA chain. Codes: `rrna`, `trna`, `snrna`, `mrna`, `other_ncrna`, `viral_rna`, `rna_oligo`, `other_rna`, `nucleosomal_dna`, `telomeric_dna`, `other_dna`. |
 | `dna_example_pdb` | string | an entry with that minimum distance. |
 
-#### `supporting/nucleic_acid_proximal_sites_v1.4.3.tsv`
+#### `supporting/nucleic_acid_proximal_sites_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -749,7 +749,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `window` | string | 8 nucleotides on each side of the nucleotide nearest to the side chain (the 9th); - beyond the chain's ends. Aligns with the windows of supporting/nucleic_acid_contacts. |
 | `window_marked` | string | the window with every nucleotide within 8 Å of the side chain in brackets. |
 
-#### `supporting/nucleic_acid_near_sites_v1.4.3.tsv`
+#### `supporting/nucleic_acid_near_sites_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -769,7 +769,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `window` | string | 8 nucleotides on each side of the centre nucleotide (the 9th); - beyond the chain's ends. Aligns with the windows of supporting/nucleic_acid_contacts. |
 | `window_marked` | string | the window with every nucleotide contacted by a residue at i ± 1-5 in brackets. |
 
-#### `supporting/nucleic_acid_regions_v1.4.3.tsv`
+#### `supporting/nucleic_acid_regions_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -787,7 +787,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `segment_types` | list&lt;code&gt; | the type of each segment's chain. Codes: `rrna`, `trna`, `snrna`, `mrna`, `other_ncrna`, `viral_rna`, `rna_oligo`, `other_rna`, `nucleosomal_dna`, `telomeric_dna`, `other_dna`. |
 | `n_segments` | integer | distinct segments, including those not listed. |
 
-#### `supporting/rna_bind_n_seq_v1.4.3.tsv`
+#### `supporting/rna_bind_n_seq_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -798,7 +798,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `top_5mer_R` | list&lt;string&gt; | their enrichment R (frequency in the bound RNA over the input), in the same order. |
 | `logo_consensus` | list&lt;string&gt; | the consensus (IUPAC) of each logo ENCODE gives for the experiment, strongest first. |
 
-#### `supporting/dna_motifs_v1.4.3.tsv`
+#### `supporting/dna_motifs_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -810,7 +810,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `length` | integer | positions in the matrix. |
 | `consensus` | string | IUPAC consensus of the matrix. |
 
-#### `supporting/htr_selex_v1.4.3.tsv`
+#### `supporting/htr_selex_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -824,7 +824,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `length` | integer | positions in the model. |
 | `consensus` | string | IUPAC consensus of the position frequency matrix. |
 
-#### `supporting/eclip_v1.4.3.tsv`
+#### `supporting/eclip_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -845,7 +845,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `top_5mer_ratios` | list&lt;string&gt; | their frequency ratios, in the same order. |
 | `same_data_as` | string | ENCORE rows: the released ENCODE experiment whose data this re-analyses, if any (not independent evidence). |
 
-#### `supporting/disease_terms_v1.4.3.tsv`
+#### `supporting/disease_terms_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -861,7 +861,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `genes` | list&lt;string&gt; | the genes of the methylarginine-containing proteins in the term (symbols, org.Hs.eg.db). |
 | `uniprot_accessions` | list&lt;string&gt; | the proteins of the site table encoded by those genes. |
 
-#### `supporting/disease_terms_tested_v1.4.3.tsv`
+#### `supporting/disease_terms_tested_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -878,7 +878,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `genes` | list&lt;string&gt; | the genes of the methylarginine-containing proteins in the term (symbols). |
 | `uniprot_accessions` | list&lt;string&gt; | the proteins of the site table encoded by those genes. |
 
-#### `supporting/disease_ontology_v1.4.3.tsv`
+#### `supporting/disease_ontology_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -893,7 +893,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `genes` | list&lt;string&gt; | the genes of the methylarginine-containing proteins in the term (symbols). |
 | `uniprot_accessions` | list&lt;string&gt; | the proteins of the site table encoded by those genes. |
 
-#### `supporting/disease_families_v1.4.3.tsv`
+#### `supporting/disease_families_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -907,7 +907,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `fold_enrichment` | number | fold enrichment of the family (clusterProfiler::enricher against the reviewed human genes with a DisGeNET term; statistics: disease_family). |
 | `q` | number | its Benjamini-Hochberg adjusted p value (over the audited families, or over the additional ones). |
 
-#### `supporting/arginine_background_v1.4.3.tsv`
+#### `supporting/arginine_background_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -916,7 +916,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `category` | string | the class or motif of the test; * for all of the protein's other arginines. |
 | `other_arginines` | integer | the arginines of the protein that are not sites of the release, in the class or with the motif: the background of the test, which compares the sites with the other arginines of the same proteins. |
 
-#### `supporting/density_windows_v1.4.3.tsv`
+#### `supporting/density_windows_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -932,7 +932,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `q` | number | Benjamini-Hochberg q value over all protein-window tests. Only windows with q <= 0.05 are listed. |
 | `site_positions` | list&lt;integer&gt; | the sites in the window. |
 
-#### `supporting/condensates_v1.4.3.tsv`
+#### `supporting/condensates_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -942,7 +942,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `n_members` | integer | human proteins CD-CODE lists as members. |
 | `n_members_methylated` | integer | of these, proteins of the site table. |
 
-#### `supporting/hpa_locations_v1.4.3.tsv`
+#### `supporting/hpa_locations_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -953,7 +953,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `main` | boolean | a main location (otherwise additional). |
 | `reliability` | string | HPA reliability: Enhanced, Supported, Approved or Uncertain. |
 
-#### `supporting/other_ptm_sites_v1.4.3.tsv`
+#### `supporting/other_ptm_sites_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -965,7 +965,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `evidence` | list&lt;string&gt; | the databases the rows come from, as the master table names them. |
 | `n_records` | integer | rows of the master table. |
 
-#### `supporting/writer_perturbations_v1.4.3.tsv`
+#### `supporting/writer_perturbations_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -984,7 +984,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `call_twofold_q05` | code | the same criteria for every perturbation: a peptide changes at |log2| >= 1 and q < 0.05, combined over the peptides carrying the site (scripts/peptide_calls.py); not_tested where the study gives no p value. Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
 | `call_published` | code | by the published criteria (code perturbation); empty where the study makes no call (as for a dimethylated site in a monomethylation list). Codes: `decreased`, `increased`, `mixed`, `no_significant_change`, `not_tested`. |
 
-#### `supporting/functional_experiments_v1.4.3.tsv`
+#### `supporting/functional_experiments_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -1012,7 +1012,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `curated_on` | string | date of curation. |
 | `note` | string | anything else. |
 
-#### `supporting/eclip_rna_compartments_v1.4.3.tsv`
+#### `supporting/eclip_rna_compartments_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|
@@ -1030,7 +1030,7 @@ The same definitions, with every code and its meaning, are in `data_dictionary.t
 | `q` | number | Benjamini-Hochberg over every protein and compartment of the map. |
 | `gathers` | boolean | its bound RNAs gather in the compartment: q <= 0.05 and odds ratio above 1. |
 
-#### `supporting/site_interaction_records_v1.4.3.tsv`
+#### `supporting/site_interaction_records_v1.5.0.tsv`
 
 | Column | Type | Description |
 |---|---|---|

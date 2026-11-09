@@ -1,107 +1,514 @@
 {
   "carried_over": {
-    "STUDIES.md": "f8457953997aa143f90edfbd8b3ccf3d",
-    "analyses/MD5SUMS": "6d2ec5adc6364923a2b2de7d3009f25c",
-    "analyses/README.md": "ad0989624b39b1c888b4dcad9d512cec",
-    "analyses/clustering/arg_methyl_multiscale_density_significant_regions.tsv": "61c1f5efc826b84542ae11b9cd0f8e95",
-    "analyses/clustering/arg_methyl_multiscale_density_window_summary.tsv": "2145ed307ddc19f433f75321575029ba",
-    "analyses/clustering/nearest_neighbor_curve_vs_null.tsv": "2394905c3998788fa92cf9c399064883",
-    "analyses/clustering/nearest_neighbor_summary_5_10_20.tsv": "d58897d3516b1ff8fd7dbf5da01782d0",
-    "analyses/condensates/condensate_enrichment.tsv": "cef7dd5bbcf1f11a403cb0d7a63c0268",
-    "analyses/condensates/condensate_summary.tsv": "ab37583d1ed7df8eb34c5f98881d8717",
-    "analyses/disease/disease_families.tsv": "cb1b8d49397963db450e3c6265dc3dd7",
-    "analyses/disease/disease_input_summary.tsv": "7d4212b8944d17a9690b4a65e24f4737",
-    "analyses/disease/disease_ontology.tsv": "7b370a95a592374537815c372619fc31",
-    "analyses/disease/disease_terms.tsv": "817b2d5b042019e374179121613e6f86",
-    "analyses/disorder/disorder_context_summary.tsv": "af3e6ce228ac5287456ed851beb3017b",
-    "analyses/disorder/idr_edge_bin_enrichment_vs_all_disordered_arginines.tsv": "1ee54b9043f1fa188a99e8c45c6682cc",
-    "analyses/disorder/idr_enrichment_vs_all_arginines.tsv": "257340b9bd56036294d5cb09439fc4f0",
-    "analyses/disorder/idr_enrichment_vs_arginines_in_methylated_proteins.tsv": "79e64d1d34a9a87edb5315f2c620716d",
-    "analyses/domains/domain_class_enrichment.tsv": "9915e080b05686b29dae01ed3a30d772",
-    "analyses/domains/domain_cluster_architecture_summary_ge3.tsv": "8a426005e389a6660443e88d6c22cd3c",
-    "analyses/domains/domain_context_enrichment.tsv": "34135f09c00704f5ac0f52ed042dc2e0",
-    "analyses/domains/domain_context_summary.tsv": "2fa5b11be38792cdc41a05a63090328e",
-    "analyses/domains/domain_edge_distance_summary.tsv": "6e866de265d05597709e379ffb4fcf9b",
-    "analyses/functional_classes/arg_methyl_functional_class_broad_enrichment.tsv": "073b6726ea3018ca6e403cf17d2bcb07",
-    "analyses/functional_classes/arg_methyl_functional_class_subclass_enrichment.tsv": "8d1c88ed4f8fd73b6fdc604f4b593333",
-    "analyses/motifs/motif_family_enrichment_vs_all_proteome_arginines.tsv": "4757560db55dec0cb9f9c53ecd13de31",
-    "analyses/motifs/motif_family_enrichment_vs_methylated_protein_arginines.tsv": "cf65868f1e1cf33af5faf139e364237f",
-    "analyses/motifs/positional_amino_acid_enrichment.tsv": "dbc5ef74f494e3346185348d0013ef07",
-    "analyses/other_ptms/ptm_context_comparison.tsv": "324914c595e0aa139cbfcc708054e5e8",
-    "analyses/other_ptms/ptm_idr_binary_comparison.tsv": "b339d930145ccd5e3753b36c2e576baa",
-    "analyses/panther/panther_class_enrichment.tsv": "4c3fd9d1bf6ecf5b317fd2272fcd302a",
-    "analyses/statistics_v1.4.3.tsv": "1d9e86eef4677fe1cb7dc6fca9fde767",
-    "analyses_with_lower_confidence/MD5SUMS": "8195c1b6ad173907e2eaf07c8dbf2881",
-    "analyses_with_lower_confidence/README.md": "cba8d7737ddcbfae99320b7f80e64457",
-    "analyses_with_lower_confidence/clustering/arg_methyl_multiscale_density_significant_regions.tsv": "1fa9b3ff653b047a02ec1abf5dd07056",
-    "analyses_with_lower_confidence/clustering/arg_methyl_multiscale_density_window_summary.tsv": "c4668613c3dd90dea0cd625057d29cba",
-    "analyses_with_lower_confidence/clustering/nearest_neighbor_curve_vs_null.tsv": "fa79434b32a98055d532a4af72819b28",
-    "analyses_with_lower_confidence/clustering/nearest_neighbor_summary_5_10_20.tsv": "90fe7773b9e02fa1f1de62315e0da72a",
-    "analyses_with_lower_confidence/condensates/condensate_enrichment.tsv": "8644b6fddfd2ed08c9ab55e35cddf1ec",
-    "analyses_with_lower_confidence/condensates/condensate_summary.tsv": "833fa6be0001fef1c5d85b6e519db58d",
-    "analyses_with_lower_confidence/disease/disease_families.tsv": "bb9fa8237390d21da56c1b45095ab604",
-    "analyses_with_lower_confidence/disease/disease_input_summary.tsv": "dd7a70f0c391c98035029343b74c6fb1",
-    "analyses_with_lower_confidence/disease/disease_ontology.tsv": "6f797a78b9ac5d00cf0f627733a93581",
-    "analyses_with_lower_confidence/disease/disease_terms.tsv": "aea09b24e34256243d8c2c1438027a77",
-    "analyses_with_lower_confidence/disorder/disorder_context_summary.tsv": "423ca6626719d370ca1cee181c88a951",
-    "analyses_with_lower_confidence/disorder/idr_edge_bin_enrichment_vs_all_disordered_arginines.tsv": "ac1baf54bcaffff6cb788d6948c7f3dc",
-    "analyses_with_lower_confidence/disorder/idr_enrichment_vs_all_arginines.tsv": "18433ed3d47568809b060e7cf69199cf",
-    "analyses_with_lower_confidence/disorder/idr_enrichment_vs_arginines_in_methylated_proteins.tsv": "69400d536102139777b08ac4e3cfcf64",
-    "analyses_with_lower_confidence/domains/domain_class_enrichment.tsv": "eff6fc09668f0edd7b820de005c86e8c",
-    "analyses_with_lower_confidence/domains/domain_cluster_architecture_summary_ge3.tsv": "1ca006309cdb651b1e41b5ce8d214543",
-    "analyses_with_lower_confidence/domains/domain_context_enrichment.tsv": "6373d0160e8aceaa7a011c47ebfe75db",
-    "analyses_with_lower_confidence/domains/domain_context_summary.tsv": "0f5957ff64c168732aeb434d4f94250e",
-    "analyses_with_lower_confidence/domains/domain_edge_distance_summary.tsv": "14abf4fdbfc886a7eee334c2cf2cef23",
-    "analyses_with_lower_confidence/functional_classes/arg_methyl_functional_class_broad_enrichment.tsv": "f78221d8a738f49be38e02034ee68b99",
-    "analyses_with_lower_confidence/functional_classes/arg_methyl_functional_class_subclass_enrichment.tsv": "8326ec42097a17cc28daf6b935d70d6d",
-    "analyses_with_lower_confidence/motifs/motif_family_enrichment_vs_all_proteome_arginines.tsv": "2cc483640e47a358a40df9a7fca8bd93",
-    "analyses_with_lower_confidence/motifs/motif_family_enrichment_vs_methylated_protein_arginines.tsv": "8f4f3ef89de247fbce7b19e56b65e2ca",
-    "analyses_with_lower_confidence/motifs/positional_amino_acid_enrichment.tsv": "33174dad0efd596c827b9befeb569cbf",
-    "analyses_with_lower_confidence/other_ptms/ptm_context_comparison.tsv": "ed0652550dcabf98079e38b851bb1c6b",
-    "analyses_with_lower_confidence/other_ptms/ptm_idr_binary_comparison.tsv": "f2283b91ae43de2999770de4baba8cf7",
-    "analyses_with_lower_confidence/panther/panther_class_enrichment.tsv": "d7101c4b50ca7ee889196ff39af19c8e",
-    "analyses_with_lower_confidence/statistics_v1.4.3.tsv": "943dff2c27d23c73c39201ba1053a801",
-    "human_methylarginine_lower_confidence_sites_v1.4.3.tsv": "165074c4b977aa6ea8e0937ff6e92772",
-    "human_methylarginine_proteins_v1.4.3.tsv": "05bb44ce35959d5749b474a0c5c690eb",
-    "human_methylarginine_sites_v1.4.3.tsv": "50dd293d1a3dd94ce7a0fb3168eae3bd",
-    "human_methylarginine_sites_v1.4.3.xlsx": "f04bea85b24607619bea92c22b2f2c61",
-    "statistics_v1.4.3.tsv": "bdeb58f4dbbc713a3059930c363b074a",
-    "statistics_with_lower_confidence_v1.4.3.tsv": "c62a97c257bd354b8f4a336d9d9e65e9",
-    "studies_v1.4.3.tsv": "2132e4b6c309d92628360cddbccad3a9",
-    "supporting/arginine_background_v1.4.3.tsv": "1632ace3df199a4d6263da727aff0e64",
-    "supporting/arginine_nucleic_acid_distances_v1.4.3.tsv": "78f34a90f671ebdf75e8e1c19862d403",
-    "supporting/carm1_ko_v1.4.3.tsv": "1421435d03bec729120fd941f11390d0",
-    "supporting/complexes_v1.4.3.tsv": "e7b088eed51884aa6cd45e277763bcab",
-    "supporting/condensates_v1.4.3.tsv": "a5c0a4fba53cef8c778455562f76ac6f",
-    "supporting/density_windows_v1.4.3.tsv": "d707433811f76cd9659ff6c61e892c86",
-    "supporting/disease_families_v1.4.3.tsv": "2512f4b5cdf6897913d08ed3035c34e5",
-    "supporting/disease_ontology_v1.4.3.tsv": "efe543b7019105127166e47d5030b233",
-    "supporting/disease_terms_tested_v1.4.3.tsv": "ed047e8b2ece3d24b8f2a6bcae6900e3",
-    "supporting/disease_terms_v1.4.3.tsv": "cc8ac3be3307a3e9d91b765435e3116f",
-    "supporting/dna_motifs_v1.4.3.tsv": "b5ee0ac01e31897bd36ca2b7bc3cef0b",
-    "supporting/eclip_rna_compartments_v1.4.3.tsv": "feaed0917ea9ed25898d6f179b12b608",
-    "supporting/eclip_v1.4.3.tsv": "acfdad3a4a6f82f9d07866e3ced0a249",
-    "supporting/functional_experiments_v1.4.3.tsv": "f8902195b280b87bb64f85860213ddec",
-    "supporting/hpa_locations_v1.4.3.tsv": "8ad0da59e7ee3cdad22eb9e2ba132ee1",
-    "supporting/htr_selex_v1.4.3.tsv": "c89d0a813e1309bcb13fead0ca817229",
-    "supporting/lower_confidence_evidence_v1.4.3.tsv": "a0a3f43e62e06859f7f060e258cea85a",
-    "supporting/maron2021_detection_v1.4.3.tsv": "e3dd0ae6b9b40e1f59166f7edf6b44ca",
-    "supporting/maron2021_inhibitors_v1.4.3.tsv": "53261fec99cb1cbb731a525cdf3f8eed",
-    "supporting/nucleic_acid_contacts_v1.4.3.tsv": "de303766f58bf0b40acf68f13058e540",
-    "supporting/nucleic_acid_near_sites_v1.4.3.tsv": "a9e94161866c6427fbd274e4af1c07df",
-    "supporting/nucleic_acid_proximal_sites_v1.4.3.tsv": "1f699ba5d969eb071969f49a6dfca92d",
-    "supporting/nucleic_acid_regions_v1.4.3.tsv": "244126e0faf5b7fe803b66b01950c9d4",
-    "supporting/other_ptm_sites_v1.4.3.tsv": "fb852bc28016e6c1e504ae67ca7e7a68",
-    "supporting/protein_partners_v1.4.3.tsv": "8631f3df370c2b0cef0a02b8e0cfe20a",
-    "supporting/published_sites_v1.4.3.tsv": "018a6846c4f0ce68e0908c6645414113",
-    "supporting/residue_evidence_v1.4.3.tsv": "8a7764aa518675e594fdaffb4f8c3cc7",
-    "supporting/rna_bind_n_seq_v1.4.3.tsv": "7d2bccc6ce1482943997613d3ef741c8",
-    "supporting/site_changes_v1.4.2_to_v1.4.3.tsv": "649e5c82634bf27203113bac9ba83902",
-    "supporting/site_interaction_records_v1.4.3.tsv": "53c485e8980c6c8a3359837a507c5da1",
-    "supporting/site_interactions_v1.4.3.tsv": "6bcf76c1ea443a8fa28a5a71d2d3b15d",
-    "supporting/source_records_v1.4.3.tsv": "27a2e57f6e978fcba017c6e9c4b0240f",
-    "supporting/writer_perturbations_v1.4.3.tsv": "368e601f1752b6282ccff412cc0bc804"
+    "STUDIES.md": {
+      "from": "STUDIES.md",
+      "from_md5": "f8457953997aa143f90edfbd8b3ccf3d",
+      "md5": "880b429971eda2531d3477e71b350194"
+    },
+    "analyses/MD5SUMS": {
+      "from": "analyses/MD5SUMS",
+      "from_md5": "6d2ec5adc6364923a2b2de7d3009f25c",
+      "md5": "00a59b8870ff8195bbacdb5038a906aa"
+    },
+    "analyses/README.md": {
+      "from": "analyses/README.md",
+      "from_md5": "ad0989624b39b1c888b4dcad9d512cec",
+      "md5": "c529f6de84545efb3c563a10dcbc29bc"
+    },
+    "analyses/clustering/arg_methyl_multiscale_density_significant_regions.tsv": {
+      "from": "analyses/clustering/arg_methyl_multiscale_density_significant_regions.tsv",
+      "from_md5": "61c1f5efc826b84542ae11b9cd0f8e95",
+      "md5": "61c1f5efc826b84542ae11b9cd0f8e95"
+    },
+    "analyses/clustering/arg_methyl_multiscale_density_window_summary.tsv": {
+      "from": "analyses/clustering/arg_methyl_multiscale_density_window_summary.tsv",
+      "from_md5": "2145ed307ddc19f433f75321575029ba",
+      "md5": "2145ed307ddc19f433f75321575029ba"
+    },
+    "analyses/clustering/nearest_neighbor_curve_vs_null.tsv": {
+      "from": "analyses/clustering/nearest_neighbor_curve_vs_null.tsv",
+      "from_md5": "2394905c3998788fa92cf9c399064883",
+      "md5": "2394905c3998788fa92cf9c399064883"
+    },
+    "analyses/clustering/nearest_neighbor_summary_5_10_20.tsv": {
+      "from": "analyses/clustering/nearest_neighbor_summary_5_10_20.tsv",
+      "from_md5": "d58897d3516b1ff8fd7dbf5da01782d0",
+      "md5": "d58897d3516b1ff8fd7dbf5da01782d0"
+    },
+    "analyses/condensates/condensate_enrichment.tsv": {
+      "from": "analyses/condensates/condensate_enrichment.tsv",
+      "from_md5": "cef7dd5bbcf1f11a403cb0d7a63c0268",
+      "md5": "cef7dd5bbcf1f11a403cb0d7a63c0268"
+    },
+    "analyses/condensates/condensate_summary.tsv": {
+      "from": "analyses/condensates/condensate_summary.tsv",
+      "from_md5": "ab37583d1ed7df8eb34c5f98881d8717",
+      "md5": "ab37583d1ed7df8eb34c5f98881d8717"
+    },
+    "analyses/disease/disease_families.tsv": {
+      "from": "analyses/disease/disease_families.tsv",
+      "from_md5": "cb1b8d49397963db450e3c6265dc3dd7",
+      "md5": "cb1b8d49397963db450e3c6265dc3dd7"
+    },
+    "analyses/disease/disease_input_summary.tsv": {
+      "from": "analyses/disease/disease_input_summary.tsv",
+      "from_md5": "7d4212b8944d17a9690b4a65e24f4737",
+      "md5": "7d4212b8944d17a9690b4a65e24f4737"
+    },
+    "analyses/disease/disease_ontology.tsv": {
+      "from": "analyses/disease/disease_ontology.tsv",
+      "from_md5": "7b370a95a592374537815c372619fc31",
+      "md5": "7b370a95a592374537815c372619fc31"
+    },
+    "analyses/disease/disease_terms.tsv": {
+      "from": "analyses/disease/disease_terms.tsv",
+      "from_md5": "817b2d5b042019e374179121613e6f86",
+      "md5": "817b2d5b042019e374179121613e6f86"
+    },
+    "analyses/disorder/disorder_context_summary.tsv": {
+      "from": "analyses/disorder/disorder_context_summary.tsv",
+      "from_md5": "af3e6ce228ac5287456ed851beb3017b",
+      "md5": "af3e6ce228ac5287456ed851beb3017b"
+    },
+    "analyses/disorder/idr_edge_bin_enrichment_vs_all_disordered_arginines.tsv": {
+      "from": "analyses/disorder/idr_edge_bin_enrichment_vs_all_disordered_arginines.tsv",
+      "from_md5": "1ee54b9043f1fa188a99e8c45c6682cc",
+      "md5": "1ee54b9043f1fa188a99e8c45c6682cc"
+    },
+    "analyses/disorder/idr_enrichment_vs_all_arginines.tsv": {
+      "from": "analyses/disorder/idr_enrichment_vs_all_arginines.tsv",
+      "from_md5": "257340b9bd56036294d5cb09439fc4f0",
+      "md5": "257340b9bd56036294d5cb09439fc4f0"
+    },
+    "analyses/disorder/idr_enrichment_vs_arginines_in_methylated_proteins.tsv": {
+      "from": "analyses/disorder/idr_enrichment_vs_arginines_in_methylated_proteins.tsv",
+      "from_md5": "79e64d1d34a9a87edb5315f2c620716d",
+      "md5": "79e64d1d34a9a87edb5315f2c620716d"
+    },
+    "analyses/domains/domain_class_enrichment.tsv": {
+      "from": "analyses/domains/domain_class_enrichment.tsv",
+      "from_md5": "9915e080b05686b29dae01ed3a30d772",
+      "md5": "9915e080b05686b29dae01ed3a30d772"
+    },
+    "analyses/domains/domain_cluster_architecture_summary_ge3.tsv": {
+      "from": "analyses/domains/domain_cluster_architecture_summary_ge3.tsv",
+      "from_md5": "8a426005e389a6660443e88d6c22cd3c",
+      "md5": "8a426005e389a6660443e88d6c22cd3c"
+    },
+    "analyses/domains/domain_context_enrichment.tsv": {
+      "from": "analyses/domains/domain_context_enrichment.tsv",
+      "from_md5": "34135f09c00704f5ac0f52ed042dc2e0",
+      "md5": "34135f09c00704f5ac0f52ed042dc2e0"
+    },
+    "analyses/domains/domain_context_summary.tsv": {
+      "from": "analyses/domains/domain_context_summary.tsv",
+      "from_md5": "2fa5b11be38792cdc41a05a63090328e",
+      "md5": "2fa5b11be38792cdc41a05a63090328e"
+    },
+    "analyses/domains/domain_edge_distance_summary.tsv": {
+      "from": "analyses/domains/domain_edge_distance_summary.tsv",
+      "from_md5": "6e866de265d05597709e379ffb4fcf9b",
+      "md5": "6e866de265d05597709e379ffb4fcf9b"
+    },
+    "analyses/functional_classes/arg_methyl_functional_class_broad_enrichment.tsv": {
+      "from": "analyses/functional_classes/arg_methyl_functional_class_broad_enrichment.tsv",
+      "from_md5": "073b6726ea3018ca6e403cf17d2bcb07",
+      "md5": "073b6726ea3018ca6e403cf17d2bcb07"
+    },
+    "analyses/functional_classes/arg_methyl_functional_class_subclass_enrichment.tsv": {
+      "from": "analyses/functional_classes/arg_methyl_functional_class_subclass_enrichment.tsv",
+      "from_md5": "8d1c88ed4f8fd73b6fdc604f4b593333",
+      "md5": "8d1c88ed4f8fd73b6fdc604f4b593333"
+    },
+    "analyses/motifs/motif_family_enrichment_vs_all_proteome_arginines.tsv": {
+      "from": "analyses/motifs/motif_family_enrichment_vs_all_proteome_arginines.tsv",
+      "from_md5": "4757560db55dec0cb9f9c53ecd13de31",
+      "md5": "4757560db55dec0cb9f9c53ecd13de31"
+    },
+    "analyses/motifs/motif_family_enrichment_vs_methylated_protein_arginines.tsv": {
+      "from": "analyses/motifs/motif_family_enrichment_vs_methylated_protein_arginines.tsv",
+      "from_md5": "cf65868f1e1cf33af5faf139e364237f",
+      "md5": "cf65868f1e1cf33af5faf139e364237f"
+    },
+    "analyses/motifs/positional_amino_acid_enrichment.tsv": {
+      "from": "analyses/motifs/positional_amino_acid_enrichment.tsv",
+      "from_md5": "dbc5ef74f494e3346185348d0013ef07",
+      "md5": "dbc5ef74f494e3346185348d0013ef07"
+    },
+    "analyses/other_ptms/ptm_context_comparison.tsv": {
+      "from": "analyses/other_ptms/ptm_context_comparison.tsv",
+      "from_md5": "324914c595e0aa139cbfcc708054e5e8",
+      "md5": "324914c595e0aa139cbfcc708054e5e8"
+    },
+    "analyses/other_ptms/ptm_idr_binary_comparison.tsv": {
+      "from": "analyses/other_ptms/ptm_idr_binary_comparison.tsv",
+      "from_md5": "b339d930145ccd5e3753b36c2e576baa",
+      "md5": "b339d930145ccd5e3753b36c2e576baa"
+    },
+    "analyses/panther/panther_class_enrichment.tsv": {
+      "from": "analyses/panther/panther_class_enrichment.tsv",
+      "from_md5": "4c3fd9d1bf6ecf5b317fd2272fcd302a",
+      "md5": "4c3fd9d1bf6ecf5b317fd2272fcd302a"
+    },
+    "analyses/statistics_v1.5.0.tsv": {
+      "from": "analyses/statistics_v1.4.3.tsv",
+      "from_md5": "1d9e86eef4677fe1cb7dc6fca9fde767",
+      "md5": "1d9e86eef4677fe1cb7dc6fca9fde767"
+    },
+    "analyses_with_lower_confidence/MD5SUMS": {
+      "from": "analyses_with_lower_confidence/MD5SUMS",
+      "from_md5": "8195c1b6ad173907e2eaf07c8dbf2881",
+      "md5": "62f15a2c2df6e36e9ad8261c0b75019d"
+    },
+    "analyses_with_lower_confidence/README.md": {
+      "from": "analyses_with_lower_confidence/README.md",
+      "from_md5": "cba8d7737ddcbfae99320b7f80e64457",
+      "md5": "16e3ad8021dc0b3aee38572de7954d30"
+    },
+    "analyses_with_lower_confidence/clustering/arg_methyl_multiscale_density_significant_regions.tsv": {
+      "from": "analyses_with_lower_confidence/clustering/arg_methyl_multiscale_density_significant_regions.tsv",
+      "from_md5": "1fa9b3ff653b047a02ec1abf5dd07056",
+      "md5": "1fa9b3ff653b047a02ec1abf5dd07056"
+    },
+    "analyses_with_lower_confidence/clustering/arg_methyl_multiscale_density_window_summary.tsv": {
+      "from": "analyses_with_lower_confidence/clustering/arg_methyl_multiscale_density_window_summary.tsv",
+      "from_md5": "c4668613c3dd90dea0cd625057d29cba",
+      "md5": "c4668613c3dd90dea0cd625057d29cba"
+    },
+    "analyses_with_lower_confidence/clustering/nearest_neighbor_curve_vs_null.tsv": {
+      "from": "analyses_with_lower_confidence/clustering/nearest_neighbor_curve_vs_null.tsv",
+      "from_md5": "fa79434b32a98055d532a4af72819b28",
+      "md5": "fa79434b32a98055d532a4af72819b28"
+    },
+    "analyses_with_lower_confidence/clustering/nearest_neighbor_summary_5_10_20.tsv": {
+      "from": "analyses_with_lower_confidence/clustering/nearest_neighbor_summary_5_10_20.tsv",
+      "from_md5": "90fe7773b9e02fa1f1de62315e0da72a",
+      "md5": "90fe7773b9e02fa1f1de62315e0da72a"
+    },
+    "analyses_with_lower_confidence/condensates/condensate_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/condensates/condensate_enrichment.tsv",
+      "from_md5": "8644b6fddfd2ed08c9ab55e35cddf1ec",
+      "md5": "8644b6fddfd2ed08c9ab55e35cddf1ec"
+    },
+    "analyses_with_lower_confidence/condensates/condensate_summary.tsv": {
+      "from": "analyses_with_lower_confidence/condensates/condensate_summary.tsv",
+      "from_md5": "833fa6be0001fef1c5d85b6e519db58d",
+      "md5": "833fa6be0001fef1c5d85b6e519db58d"
+    },
+    "analyses_with_lower_confidence/disease/disease_families.tsv": {
+      "from": "analyses_with_lower_confidence/disease/disease_families.tsv",
+      "from_md5": "bb9fa8237390d21da56c1b45095ab604",
+      "md5": "bb9fa8237390d21da56c1b45095ab604"
+    },
+    "analyses_with_lower_confidence/disease/disease_input_summary.tsv": {
+      "from": "analyses_with_lower_confidence/disease/disease_input_summary.tsv",
+      "from_md5": "dd7a70f0c391c98035029343b74c6fb1",
+      "md5": "dd7a70f0c391c98035029343b74c6fb1"
+    },
+    "analyses_with_lower_confidence/disease/disease_ontology.tsv": {
+      "from": "analyses_with_lower_confidence/disease/disease_ontology.tsv",
+      "from_md5": "6f797a78b9ac5d00cf0f627733a93581",
+      "md5": "6f797a78b9ac5d00cf0f627733a93581"
+    },
+    "analyses_with_lower_confidence/disease/disease_terms.tsv": {
+      "from": "analyses_with_lower_confidence/disease/disease_terms.tsv",
+      "from_md5": "aea09b24e34256243d8c2c1438027a77",
+      "md5": "aea09b24e34256243d8c2c1438027a77"
+    },
+    "analyses_with_lower_confidence/disorder/disorder_context_summary.tsv": {
+      "from": "analyses_with_lower_confidence/disorder/disorder_context_summary.tsv",
+      "from_md5": "423ca6626719d370ca1cee181c88a951",
+      "md5": "423ca6626719d370ca1cee181c88a951"
+    },
+    "analyses_with_lower_confidence/disorder/idr_edge_bin_enrichment_vs_all_disordered_arginines.tsv": {
+      "from": "analyses_with_lower_confidence/disorder/idr_edge_bin_enrichment_vs_all_disordered_arginines.tsv",
+      "from_md5": "ac1baf54bcaffff6cb788d6948c7f3dc",
+      "md5": "ac1baf54bcaffff6cb788d6948c7f3dc"
+    },
+    "analyses_with_lower_confidence/disorder/idr_enrichment_vs_all_arginines.tsv": {
+      "from": "analyses_with_lower_confidence/disorder/idr_enrichment_vs_all_arginines.tsv",
+      "from_md5": "18433ed3d47568809b060e7cf69199cf",
+      "md5": "18433ed3d47568809b060e7cf69199cf"
+    },
+    "analyses_with_lower_confidence/disorder/idr_enrichment_vs_arginines_in_methylated_proteins.tsv": {
+      "from": "analyses_with_lower_confidence/disorder/idr_enrichment_vs_arginines_in_methylated_proteins.tsv",
+      "from_md5": "69400d536102139777b08ac4e3cfcf64",
+      "md5": "69400d536102139777b08ac4e3cfcf64"
+    },
+    "analyses_with_lower_confidence/domains/domain_class_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/domains/domain_class_enrichment.tsv",
+      "from_md5": "eff6fc09668f0edd7b820de005c86e8c",
+      "md5": "eff6fc09668f0edd7b820de005c86e8c"
+    },
+    "analyses_with_lower_confidence/domains/domain_cluster_architecture_summary_ge3.tsv": {
+      "from": "analyses_with_lower_confidence/domains/domain_cluster_architecture_summary_ge3.tsv",
+      "from_md5": "1ca006309cdb651b1e41b5ce8d214543",
+      "md5": "1ca006309cdb651b1e41b5ce8d214543"
+    },
+    "analyses_with_lower_confidence/domains/domain_context_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/domains/domain_context_enrichment.tsv",
+      "from_md5": "6373d0160e8aceaa7a011c47ebfe75db",
+      "md5": "6373d0160e8aceaa7a011c47ebfe75db"
+    },
+    "analyses_with_lower_confidence/domains/domain_context_summary.tsv": {
+      "from": "analyses_with_lower_confidence/domains/domain_context_summary.tsv",
+      "from_md5": "0f5957ff64c168732aeb434d4f94250e",
+      "md5": "0f5957ff64c168732aeb434d4f94250e"
+    },
+    "analyses_with_lower_confidence/domains/domain_edge_distance_summary.tsv": {
+      "from": "analyses_with_lower_confidence/domains/domain_edge_distance_summary.tsv",
+      "from_md5": "14abf4fdbfc886a7eee334c2cf2cef23",
+      "md5": "14abf4fdbfc886a7eee334c2cf2cef23"
+    },
+    "analyses_with_lower_confidence/functional_classes/arg_methyl_functional_class_broad_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/functional_classes/arg_methyl_functional_class_broad_enrichment.tsv",
+      "from_md5": "f78221d8a738f49be38e02034ee68b99",
+      "md5": "f78221d8a738f49be38e02034ee68b99"
+    },
+    "analyses_with_lower_confidence/functional_classes/arg_methyl_functional_class_subclass_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/functional_classes/arg_methyl_functional_class_subclass_enrichment.tsv",
+      "from_md5": "8326ec42097a17cc28daf6b935d70d6d",
+      "md5": "8326ec42097a17cc28daf6b935d70d6d"
+    },
+    "analyses_with_lower_confidence/motifs/motif_family_enrichment_vs_all_proteome_arginines.tsv": {
+      "from": "analyses_with_lower_confidence/motifs/motif_family_enrichment_vs_all_proteome_arginines.tsv",
+      "from_md5": "2cc483640e47a358a40df9a7fca8bd93",
+      "md5": "2cc483640e47a358a40df9a7fca8bd93"
+    },
+    "analyses_with_lower_confidence/motifs/motif_family_enrichment_vs_methylated_protein_arginines.tsv": {
+      "from": "analyses_with_lower_confidence/motifs/motif_family_enrichment_vs_methylated_protein_arginines.tsv",
+      "from_md5": "8f4f3ef89de247fbce7b19e56b65e2ca",
+      "md5": "8f4f3ef89de247fbce7b19e56b65e2ca"
+    },
+    "analyses_with_lower_confidence/motifs/positional_amino_acid_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/motifs/positional_amino_acid_enrichment.tsv",
+      "from_md5": "33174dad0efd596c827b9befeb569cbf",
+      "md5": "33174dad0efd596c827b9befeb569cbf"
+    },
+    "analyses_with_lower_confidence/other_ptms/ptm_context_comparison.tsv": {
+      "from": "analyses_with_lower_confidence/other_ptms/ptm_context_comparison.tsv",
+      "from_md5": "ed0652550dcabf98079e38b851bb1c6b",
+      "md5": "ed0652550dcabf98079e38b851bb1c6b"
+    },
+    "analyses_with_lower_confidence/other_ptms/ptm_idr_binary_comparison.tsv": {
+      "from": "analyses_with_lower_confidence/other_ptms/ptm_idr_binary_comparison.tsv",
+      "from_md5": "f2283b91ae43de2999770de4baba8cf7",
+      "md5": "f2283b91ae43de2999770de4baba8cf7"
+    },
+    "analyses_with_lower_confidence/panther/panther_class_enrichment.tsv": {
+      "from": "analyses_with_lower_confidence/panther/panther_class_enrichment.tsv",
+      "from_md5": "d7101c4b50ca7ee889196ff39af19c8e",
+      "md5": "d7101c4b50ca7ee889196ff39af19c8e"
+    },
+    "analyses_with_lower_confidence/statistics_v1.5.0.tsv": {
+      "from": "analyses_with_lower_confidence/statistics_v1.4.3.tsv",
+      "from_md5": "943dff2c27d23c73c39201ba1053a801",
+      "md5": "943dff2c27d23c73c39201ba1053a801"
+    },
+    "human_methylarginine_lower_confidence_sites_v1.5.0.tsv": {
+      "from": "human_methylarginine_lower_confidence_sites_v1.4.3.tsv",
+      "from_md5": "165074c4b977aa6ea8e0937ff6e92772",
+      "md5": "165074c4b977aa6ea8e0937ff6e92772"
+    },
+    "human_methylarginine_proteins_v1.5.0.tsv": {
+      "from": "human_methylarginine_proteins_v1.4.3.tsv",
+      "from_md5": "05bb44ce35959d5749b474a0c5c690eb",
+      "md5": "05bb44ce35959d5749b474a0c5c690eb"
+    },
+    "human_methylarginine_sites_v1.5.0.tsv": {
+      "from": "human_methylarginine_sites_v1.4.3.tsv",
+      "from_md5": "50dd293d1a3dd94ce7a0fb3168eae3bd",
+      "md5": "50dd293d1a3dd94ce7a0fb3168eae3bd"
+    },
+    "human_methylarginine_sites_v1.5.0.xlsx": {
+      "from": "human_methylarginine_sites_v1.4.3.xlsx",
+      "from_md5": "f04bea85b24607619bea92c22b2f2c61",
+      "md5": "0bfbff7a50ea663e4fb3372fc6d8e582"
+    },
+    "statistics_v1.5.0.tsv": {
+      "from": "statistics_v1.4.3.tsv",
+      "from_md5": "bdeb58f4dbbc713a3059930c363b074a",
+      "md5": "bdeb58f4dbbc713a3059930c363b074a"
+    },
+    "statistics_with_lower_confidence_v1.5.0.tsv": {
+      "from": "statistics_with_lower_confidence_v1.4.3.tsv",
+      "from_md5": "c62a97c257bd354b8f4a336d9d9e65e9",
+      "md5": "c62a97c257bd354b8f4a336d9d9e65e9"
+    },
+    "studies_v1.5.0.tsv": {
+      "from": "studies_v1.4.3.tsv",
+      "from_md5": "2132e4b6c309d92628360cddbccad3a9",
+      "md5": "2132e4b6c309d92628360cddbccad3a9"
+    },
+    "supporting/arginine_background_v1.5.0.tsv": {
+      "from": "supporting/arginine_background_v1.4.3.tsv",
+      "from_md5": "1632ace3df199a4d6263da727aff0e64",
+      "md5": "1632ace3df199a4d6263da727aff0e64"
+    },
+    "supporting/arginine_nucleic_acid_distances_v1.5.0.tsv": {
+      "from": "supporting/arginine_nucleic_acid_distances_v1.4.3.tsv",
+      "from_md5": "78f34a90f671ebdf75e8e1c19862d403",
+      "md5": "78f34a90f671ebdf75e8e1c19862d403"
+    },
+    "supporting/carm1_ko_v1.5.0.tsv": {
+      "from": "supporting/carm1_ko_v1.4.3.tsv",
+      "from_md5": "1421435d03bec729120fd941f11390d0",
+      "md5": "1421435d03bec729120fd941f11390d0"
+    },
+    "supporting/complexes_v1.5.0.tsv": {
+      "from": "supporting/complexes_v1.4.3.tsv",
+      "from_md5": "e7b088eed51884aa6cd45e277763bcab",
+      "md5": "e7b088eed51884aa6cd45e277763bcab"
+    },
+    "supporting/condensates_v1.5.0.tsv": {
+      "from": "supporting/condensates_v1.4.3.tsv",
+      "from_md5": "a5c0a4fba53cef8c778455562f76ac6f",
+      "md5": "a5c0a4fba53cef8c778455562f76ac6f"
+    },
+    "supporting/density_windows_v1.5.0.tsv": {
+      "from": "supporting/density_windows_v1.4.3.tsv",
+      "from_md5": "d707433811f76cd9659ff6c61e892c86",
+      "md5": "d707433811f76cd9659ff6c61e892c86"
+    },
+    "supporting/disease_families_v1.5.0.tsv": {
+      "from": "supporting/disease_families_v1.4.3.tsv",
+      "from_md5": "2512f4b5cdf6897913d08ed3035c34e5",
+      "md5": "2512f4b5cdf6897913d08ed3035c34e5"
+    },
+    "supporting/disease_ontology_v1.5.0.tsv": {
+      "from": "supporting/disease_ontology_v1.4.3.tsv",
+      "from_md5": "efe543b7019105127166e47d5030b233",
+      "md5": "efe543b7019105127166e47d5030b233"
+    },
+    "supporting/disease_terms_tested_v1.5.0.tsv": {
+      "from": "supporting/disease_terms_tested_v1.4.3.tsv",
+      "from_md5": "ed047e8b2ece3d24b8f2a6bcae6900e3",
+      "md5": "ed047e8b2ece3d24b8f2a6bcae6900e3"
+    },
+    "supporting/disease_terms_v1.5.0.tsv": {
+      "from": "supporting/disease_terms_v1.4.3.tsv",
+      "from_md5": "cc8ac3be3307a3e9d91b765435e3116f",
+      "md5": "cc8ac3be3307a3e9d91b765435e3116f"
+    },
+    "supporting/dna_motifs_v1.5.0.tsv": {
+      "from": "supporting/dna_motifs_v1.4.3.tsv",
+      "from_md5": "b5ee0ac01e31897bd36ca2b7bc3cef0b",
+      "md5": "b5ee0ac01e31897bd36ca2b7bc3cef0b"
+    },
+    "supporting/eclip_rna_compartments_v1.5.0.tsv": {
+      "from": "supporting/eclip_rna_compartments_v1.4.3.tsv",
+      "from_md5": "feaed0917ea9ed25898d6f179b12b608",
+      "md5": "feaed0917ea9ed25898d6f179b12b608"
+    },
+    "supporting/eclip_v1.5.0.tsv": {
+      "from": "supporting/eclip_v1.4.3.tsv",
+      "from_md5": "acfdad3a4a6f82f9d07866e3ced0a249",
+      "md5": "acfdad3a4a6f82f9d07866e3ced0a249"
+    },
+    "supporting/functional_experiments_v1.5.0.tsv": {
+      "from": "supporting/functional_experiments_v1.4.3.tsv",
+      "from_md5": "f8902195b280b87bb64f85860213ddec",
+      "md5": "f8902195b280b87bb64f85860213ddec"
+    },
+    "supporting/hpa_locations_v1.5.0.tsv": {
+      "from": "supporting/hpa_locations_v1.4.3.tsv",
+      "from_md5": "8ad0da59e7ee3cdad22eb9e2ba132ee1",
+      "md5": "8ad0da59e7ee3cdad22eb9e2ba132ee1"
+    },
+    "supporting/htr_selex_v1.5.0.tsv": {
+      "from": "supporting/htr_selex_v1.4.3.tsv",
+      "from_md5": "c89d0a813e1309bcb13fead0ca817229",
+      "md5": "c89d0a813e1309bcb13fead0ca817229"
+    },
+    "supporting/lower_confidence_evidence_v1.5.0.tsv": {
+      "from": "supporting/lower_confidence_evidence_v1.4.3.tsv",
+      "from_md5": "a0a3f43e62e06859f7f060e258cea85a",
+      "md5": "a0a3f43e62e06859f7f060e258cea85a"
+    },
+    "supporting/maron2021_detection_v1.5.0.tsv": {
+      "from": "supporting/maron2021_detection_v1.4.3.tsv",
+      "from_md5": "e3dd0ae6b9b40e1f59166f7edf6b44ca",
+      "md5": "e3dd0ae6b9b40e1f59166f7edf6b44ca"
+    },
+    "supporting/maron2021_inhibitors_v1.5.0.tsv": {
+      "from": "supporting/maron2021_inhibitors_v1.4.3.tsv",
+      "from_md5": "53261fec99cb1cbb731a525cdf3f8eed",
+      "md5": "53261fec99cb1cbb731a525cdf3f8eed"
+    },
+    "supporting/nucleic_acid_contacts_v1.5.0.tsv": {
+      "from": "supporting/nucleic_acid_contacts_v1.4.3.tsv",
+      "from_md5": "de303766f58bf0b40acf68f13058e540",
+      "md5": "de303766f58bf0b40acf68f13058e540"
+    },
+    "supporting/nucleic_acid_near_sites_v1.5.0.tsv": {
+      "from": "supporting/nucleic_acid_near_sites_v1.4.3.tsv",
+      "from_md5": "a9e94161866c6427fbd274e4af1c07df",
+      "md5": "a9e94161866c6427fbd274e4af1c07df"
+    },
+    "supporting/nucleic_acid_proximal_sites_v1.5.0.tsv": {
+      "from": "supporting/nucleic_acid_proximal_sites_v1.4.3.tsv",
+      "from_md5": "1f699ba5d969eb071969f49a6dfca92d",
+      "md5": "1f699ba5d969eb071969f49a6dfca92d"
+    },
+    "supporting/nucleic_acid_regions_v1.5.0.tsv": {
+      "from": "supporting/nucleic_acid_regions_v1.4.3.tsv",
+      "from_md5": "244126e0faf5b7fe803b66b01950c9d4",
+      "md5": "244126e0faf5b7fe803b66b01950c9d4"
+    },
+    "supporting/other_ptm_sites_v1.5.0.tsv": {
+      "from": "supporting/other_ptm_sites_v1.4.3.tsv",
+      "from_md5": "fb852bc28016e6c1e504ae67ca7e7a68",
+      "md5": "fb852bc28016e6c1e504ae67ca7e7a68"
+    },
+    "supporting/protein_partners_v1.5.0.tsv": {
+      "from": "supporting/protein_partners_v1.4.3.tsv",
+      "from_md5": "8631f3df370c2b0cef0a02b8e0cfe20a",
+      "md5": "8631f3df370c2b0cef0a02b8e0cfe20a"
+    },
+    "supporting/published_sites_v1.5.0.tsv": {
+      "from": "supporting/published_sites_v1.4.3.tsv",
+      "from_md5": "018a6846c4f0ce68e0908c6645414113",
+      "md5": "018a6846c4f0ce68e0908c6645414113"
+    },
+    "supporting/residue_evidence_v1.5.0.tsv": {
+      "from": "supporting/residue_evidence_v1.4.3.tsv",
+      "from_md5": "8a7764aa518675e594fdaffb4f8c3cc7",
+      "md5": "8a7764aa518675e594fdaffb4f8c3cc7"
+    },
+    "supporting/rna_bind_n_seq_v1.5.0.tsv": {
+      "from": "supporting/rna_bind_n_seq_v1.4.3.tsv",
+      "from_md5": "7d2bccc6ce1482943997613d3ef741c8",
+      "md5": "7d2bccc6ce1482943997613d3ef741c8"
+    },
+    "supporting/site_interaction_records_v1.5.0.tsv": {
+      "from": "supporting/site_interaction_records_v1.4.3.tsv",
+      "from_md5": "53c485e8980c6c8a3359837a507c5da1",
+      "md5": "53c485e8980c6c8a3359837a507c5da1"
+    },
+    "supporting/site_interactions_v1.5.0.tsv": {
+      "from": "supporting/site_interactions_v1.4.3.tsv",
+      "from_md5": "6bcf76c1ea443a8fa28a5a71d2d3b15d",
+      "md5": "6bcf76c1ea443a8fa28a5a71d2d3b15d"
+    },
+    "supporting/source_records_v1.5.0.tsv": {
+      "from": "supporting/source_records_v1.4.3.tsv",
+      "from_md5": "27a2e57f6e978fcba017c6e9c4b0240f",
+      "md5": "27a2e57f6e978fcba017c6e9c4b0240f"
+    },
+    "supporting/writer_perturbations_v1.5.0.tsv": {
+      "from": "supporting/writer_perturbations_v1.4.3.tsv",
+      "from_md5": "368e601f1752b6282ccff412cc0bc804",
+      "md5": "368e601f1752b6282ccff412cc0bc804"
+    }
   },
+  "carried_over_text_edited": [
+    "STUDIES.md",
+    "analyses/MD5SUMS",
+    "analyses/README.md",
+    "analyses_with_lower_confidence/MD5SUMS",
+    "analyses_with_lower_confidence/README.md",
+    "human_methylarginine_sites_v1.5.0.xlsx"
+  ],
   "context_marks": {
     "methylarginine_crosscheck": {
       "by_evidence_class": {
@@ -187,7 +594,7 @@
       "rows": 72134
     }
   },
-  "context_marks_code_commit": "d03f1db221d5388e14e286666d35115c2f26eff2",
+  "context_marks_code_commit": "d03f1db221d5388e14e286666d35115c2f26eff2 (scripts modified)",
   "inputs_md5": {
     "methylarginine": {
       "iptmnet_6_2_methylarginine_crosscheck.tsv": "e72a2c1936819bff406ba7a723d9fedf",
@@ -208,6 +615,7 @@
   "previous_version": "v1.4.3",
   "release_date": "2026-11-09",
   "repository": "https://github.com/Shechterlab/PTM_Pipeline",
+  "site_changes": "supporting/site_changes_v1.4.3_to_v1.5.0.tsv",
   "sources": {
     "UniProt": {
       "license": "CC BY 4.0"

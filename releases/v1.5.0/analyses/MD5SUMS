@@ -26,4 +26,4 @@ dbc5ef74f494e3346185348d0013ef07  motifs/positional_amino_acid_enrichment.tsv
 324914c595e0aa139cbfcc708054e5e8  other_ptms/ptm_context_comparison.tsv
 b339d930145ccd5e3753b36c2e576baa  other_ptms/ptm_idr_binary_comparison.tsv
 4c3fd9d1bf6ecf5b317fd2272fcd302a  panther/panther_class_enrichment.tsv
-1d9e86eef4677fe1cb7dc6fca9fde767  statistics_v1.4.3.tsv
+1d9e86eef4677fe1cb7dc6fca9fde767  statistics_v1.5.0.tsv

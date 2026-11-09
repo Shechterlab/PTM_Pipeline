@@ -1,4 +1,4 @@
-# Studies and databases behind the sites, v1.4.3
+# Studies and databases behind the sites, v1.5.0
 
 Every site rests on records: rows of the source tables, each crediting the study or database that reported the site. A record is placed on a reviewed UniProt entry by its own sequence evidence (a window centred on the site, or a peptide with or without the site marked), and only by its reported position when it gives no sequence; every placed record is then checked against that evidence, and every site is an arginine of the reference sequence. The records of a study read from its own table add a site only when the study localised the methyl group to one arginine and the peptide (or, without one, the window) names exactly one arginine in the whole reviewed proteome, in a protein the record names; the rows of the compiled tables (Maron et al. 2021 Table S5, the PTM master table) carry no localisation and add none.
 

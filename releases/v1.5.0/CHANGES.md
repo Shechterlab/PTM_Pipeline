@@ -1,6 +1,10 @@
 # Changes from v1.4.3 to v1.5.0
 
-v1.5.0 adds tables of context marks next to the methylarginine data. **The methylarginine data is unchanged from v1.4.3**: its 101 files are copied byte for byte (their MD5 are in `release.json`, `carried_over`), not rebuilt, because the build (`hpc/build_release.sh`) needs R with clusterProfiler and DOSE and the network, and no methylarginine input changed. Sites, proteins, records, statistics and layers are those of v1.4.3.
+v1.5.0 adds tables of context marks next to the methylarginine data. **The methylarginine data is unchanged from v1.4.3**: its 100 files are the v1.4.3 files under this release's names, with the data not rebuilt (`release.json`, `carried_over`, gives the v1.4.3 name and MD5 of each), because the build (`hpc/build_release.sh`) needs R with clusterProfiler and DOSE and the network, and no methylarginine input changed. Sites, proteins, records, statistics and layers are those of v1.4.3.
+
+### Files renamed
+
+Every file name carries its release's version, so each of the 100 carried files is renamed `_v1.4.3` to `_v1.5.0` (for example `human_methylarginine_sites_v1.4.3.tsv` is now `human_methylarginine_sites_v1.5.0.tsv`), its content unchanged except where it names its version: `STUDIES.md`, `analyses/MD5SUMS`, `analyses/README.md`, `analyses_with_lower_confidence/MD5SUMS`, `analyses_with_lower_confidence/README.md`, `human_methylarginine_sites_v1.5.0.xlsx`. `supporting/site_changes_v1.4.3_to_v1.5.0.tsv` replaces v1.4.3's (v1.4.2 to v1.4.3); it lists every one of the 11,632 sites as kept, none added or removed, with its records the same.
 
 | | v1.4.3 | v1.5.0 |
 |---|---:|---:|

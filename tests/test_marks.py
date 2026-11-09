@@ -26,6 +26,10 @@ stage = load('54_stage_uniprot_ptm_sites.py')
 iptm = load('55_stage_iptmnet_ptm_sites.py')
 build = load('56_build_context_marks.py')
 
+def context_files(folder):
+    return [folder / f'human_{m}_v1.5.0.tsv' for m in ('methyllysine_sites', 'phosphorylation_sites', 'methylarginine_crosscheck')]
+
+
 REFERENCE = {'P00001': 'MKKRSTYKR', 'P00002': 'MKAK'}
 
 
@@ -198,9 +202,22 @@ def test_release_v1_5_0_is_consistent():
     release = json.loads((folder / 'release.json').read_text())
     previous = ROOT / 'releases' / 'v1.4.3'
     assert len(release['carried_over']) > 90
-    for name, md5 in release['carried_over'].items():       # the methylarginine data: byte for byte as in v1.4.3
-        assert build.md5_file(previous / name) == md5 == build.md5_file(folder / name), name
-    for path in folder.glob('human_*_v1.5.0.tsv'):
+    edited = set(release['carried_over_text_edited'])
+    for name, info in release['carried_over'].items():       # the methylarginine data: as in v1.4.3, under this release's names
+        assert name == info['from'].replace('_v1.4.3', '_v1.5.0')
+        assert build.md5_file(previous / info['from']) == info['from_md5'] and build.md5_file(folder / name) == info['md5']
+        assert (info['md5'] != info['from_md5']) == (name in edited), name
+    assert len(edited) == 6 and 'human_methylarginine_sites_v1.5.0.xlsx' in edited      # strings that name the version
+    for path in folder.rglob('*'):                            # every file carries this release's version, none another's
+        if path.is_file() and re.search(r'_v\d+\.\d+\.\d+', path.name):
+            assert path.name.endswith('_v1.5.0.tsv') or path.name.endswith('_v1.5.0.xlsx') or path.name == 'site_changes_v1.4.3_to_v1.5.0.tsv', path
+    assert not list(folder.rglob('*_v1.4.3.*'))
+    import pandas as pd
+    changes = pd.read_csv(folder / 'supporting' / 'site_changes_v1.4.3_to_v1.5.0.tsv', sep='\t', dtype=str, keep_default_na=False)
+    sites = pd.read_csv(folder / 'human_methylarginine_sites_v1.5.0.tsv', sep='\t', dtype=str, keep_default_na=False, usecols=['site_id'])
+    assert set(changes['change']) == {'kept'} and set(changes['records_change']) == {'same'} and list(changes.columns) == build.CHANGE_COLUMNS
+    assert set(changes['site_id']) == set(sites['site_id']) and len(changes) == len(sites)
+    for path in context_files(folder):
         with open(path, encoding='utf-8') as fh:
             header = next(csv.reader(fh, delimiter='\t'))
         assert header[:11] == build.OUT_COLUMNS
@@ -221,7 +238,7 @@ def test_no_closed_source_is_referenced():
     banned = re.compile(r'cplm|phosphosite|dbptm|qptm|\bpsp\b', re.I)
     files = [ROOT / 'scripts' / n for n in ('54_stage_uniprot_ptm_sites.py', '55_stage_iptmnet_ptm_sites.py', '56_build_context_marks.py')]
     files += [p for p in (ROOT / 'inputs' / 'marks').iterdir() if p.suffix in ('.tsv', '.json') and p.name != 'raw_files.tsv']
-    files += list((ROOT / 'releases' / 'v1.5.0').glob('human_*_v1.5.0.tsv'))
+    files += list(context_files(ROOT / 'releases' / 'v1.5.0'))
     for path in files:
         text = path.read_text(encoding='utf-8')
         if path.suffix == '.py':    # only the statement of what is not used
@@ -230,7 +247,7 @@ def test_no_closed_source_is_referenced():
     rows = [r for r in csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t')
             if r['file'].startswith('marks/')]
     assert all(not banned.search(r['source'] + r['derived_from'] + r['how_made_or_checked']) for r in rows)
-    for path in (ROOT / 'releases' / 'v1.5.0').glob('human_*_v1.5.0.tsv'):
+    for path in context_files(ROOT / 'releases' / 'v1.5.0'):
         for r in csv.DictReader(open(path, encoding='utf-8'), delimiter='\t'):
             assert set(r['sources'].split('; ')) <= set(build.SOURCES)
             assert not (set(r['iptmnet_sources'].split(';')) - set(iptm_upstream()))
@@ -253,3 +270,13 @@ def test_scripts_use_american_spelling_and_no_banned_words(name):
     text = (ROOT / 'scripts' / name).read_text(encoding='utf-8')
     text = text.replace("'licence'", '')     # the MANIFEST column keeps its name
     assert not re.search(r'dtIDR|domain-tethered|domain flanks|licen[cs]e\b(?<!license)|colour|summaris|generalis', text, re.I)
+
+
+def test_site_changes_generator_reproduces_the_pipelines_v1_4_3_table():
+    import pandas as pd
+    prev = ROOT / 'releases' / 'v1.4.3'
+    old = (prev / 'supporting' / 'site_changes_v1.4.2_to_v1.4.3.tsv').read_text(encoding='utf-8')
+    sites = pd.read_csv(prev / 'human_methylarginine_sites_v1.4.3.tsv', sep='\t', dtype=str, keep_default_na=False,
+                        usecols=['site_id', 'gene', 'uniprot_accession', 'position'])
+    prior = pd.read_csv(prev / 'supporting' / 'site_changes_v1.4.2_to_v1.4.3.tsv', sep='\t', dtype=str, keep_default_na=False, usecols=['site_id', 'gene'])
+    assert build.site_changes(sites, prior).to_csv(sep='\t', index=False, lineterminator='\n') == old

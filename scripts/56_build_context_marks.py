@@ -3,8 +3,12 @@
 
     python scripts/56_build_context_marks.py --version v1.5.0 --release-date 2026-11-09
 
-The methylarginine tables of v1.5.0 are the v1.4.3 files, copied byte for byte under their own names (the build,
-hpc/build_release.sh, needs R and the network; this release changes no methylarginine data). Beside them, for each
+The methylarginine tables of v1.5.0 are the v1.4.3 files, copied under this release's own names (_v1.4.3 becomes
+_v1.5.0, as every release names all its files) with the data unchanged (the build, hpc/build_release.sh, needs R and the
+network; this release changes no methylarginine data). Only the strings that name the version inside a file change, as when
+v1.4.3 followed v1.4.2: the title and the statistics file name in the two analyses READMEs, the file names in their MD5SUMS,
+the title of STUDIES.md and the title and sheet name of the workbook. supporting/site_changes_v1.4.3_to_v1.5.0.tsv is written
+in the format of build_release.build_changes: every site kept, none added or removed. Beside them, for each
 context mark (methyllysine, phosphorylation), `human_<mark>_sites_<version>.tsv` merges the staged tables
 `inputs/marks/*_<mark>_sites.tsv` of every source (UniProt, iPTMnet), one row per residue and state, and
 `human_methylarginine_crosscheck_<version>.tsv` merges the sources' methylarginine records with a column that says whether
@@ -24,9 +28,11 @@ Merged columns:
 from __future__ import annotations
 
 import argparse
+import io
 import json
-import shutil
+import re
 import subprocess
+import zipfile
 from pathlib import Path
 
 import pandas as pd
@@ -37,6 +43,11 @@ MARKS = ['methyllysine', 'phosphorylation']
 SOURCE_ORDER = ['UniProt', 'iPTMnet']
 CARRIED_FROM = 'v1.4.3'
 NOT_CARRIED = {'README.md', 'CHANGES.md', 'MD5SUMS', 'data_dictionary.tsv', 'release.json'}
+# files that name their release inside, and whose naming strings change with the version
+VERSIONED_TEXT = {'analyses/README.md', 'analyses/MD5SUMS', 'analyses_with_lower_confidence/README.md',
+                  'analyses_with_lower_confidence/MD5SUMS', 'STUDIES.md'}
+CHANGE_COLUMNS = ['site_id', 'previous_site_id', 'gene', 'uniprot_accession', 'position', 'in_previous_version',
+                  'in_this_version', 'change', 'reason_codes', 'records_change', 'records_now_at_or_previously_at', 'record_ids']
 CLASS_RANK = ['experimental', 'text-mined', 'by-similarity', 'unspecified']
 OUT_COLUMNS = ['canonical_UniProtAC', 'position', 'residue', 'mark', 'state', 'sources', 'evidence_class', 'evidence',
                'iptmnet_sources', 'pmids', 'source_releases']
@@ -104,12 +115,12 @@ def merge(frames: list[pd.DataFrame]) -> pd.DataFrame:
     return out.sort_values(['canonical_UniProtAC', '_pos', 'state']).drop(columns='_pos').reset_index(drop=True)
 
 
-def crosscheck(merged: pd.DataFrame, release_dir: Path) -> pd.DataFrame:
+def crosscheck(merged: pd.DataFrame, release_dir: Path, version: str = CARRIED_FROM) -> pd.DataFrame:
     def keys(name: str) -> set[tuple[str, str]]:
         t = pd.read_csv(release_dir / name, sep='\t', dtype=str, keep_default_na=False, usecols=['uniprot_accession', 'position'])
         return set(zip(t['uniprot_accession'], t['position'], strict=True))
-    sites = keys(f'human_methylarginine_sites_{CARRIED_FROM}.tsv')
-    lower = keys(f'human_methylarginine_lower_confidence_sites_{CARRIED_FROM}.tsv')
+    sites = keys(f'human_methylarginine_sites_{version}.tsv')
+    lower = keys(f'human_methylarginine_lower_confidence_sites_{version}.tsv')
     out = merged.copy()
     out['in_methylarginine_release'] = ['site' if k in sites else 'lower_confidence' if k in lower else 'no'
                                         for k in zip(out['canonical_UniProtAC'], out['position'], strict=True)]
@@ -138,6 +149,38 @@ def counts_table(table: pd.DataFrame) -> list[str]:
         lines.append(line(state, grp))
     lines.append(line('all', table))
     return lines
+
+
+def renamed(name: str, version: str) -> str:
+    """A carried file's name with this release's version (the version in a name is the release's own)."""
+    return name.replace(f'_{CARRIED_FROM}', f'_{version}')
+
+
+def retitle_workbook(data: bytes, version: str) -> bytes:
+    """The workbook with its title and sheet name ('Sites v1.4.3') at this version; every other part as it was."""
+    out = io.BytesIO()
+    with zipfile.ZipFile(io.BytesIO(data)) as zin, zipfile.ZipFile(out, 'w') as zout:
+        for info in zin.infolist():
+            part = zin.read(info.filename)
+            if info.filename in ('docProps/core.xml', 'xl/workbook.xml'):
+                part = part.replace(f'Sites {CARRIED_FROM}'.encode(), f'Sites {version}'.encode())
+            zout.writestr(info, part, compress_type=info.compress_type)
+    return out.getvalue()
+
+
+def site_changes(sites: pd.DataFrame, previous_changes: pd.DataFrame) -> pd.DataFrame:
+    """supporting/site_changes_<previous>_to_<version>.tsv for a release whose sites are the previous release's: every
+    site kept, with its records the same (build_release.build_changes gives these rows when nothing changes). A gene the
+    entry lacks is the one the previous table took from the records."""
+    reported = dict(zip(previous_changes['site_id'], previous_changes['gene'], strict=True))
+    out = sites[['site_id', 'gene', 'uniprot_accession', 'position']].copy()
+    out['gene'] = [g or reported.get(sid, '') for sid, g in zip(out['site_id'], out['gene'], strict=True)]
+    out['previous_site_id'] = out['site_id']
+    out['in_previous_version'], out['in_this_version'], out['change'] = 'true', 'true', 'kept'
+    out['reason_codes'], out['records_change'], out['records_now_at_or_previously_at'], out['record_ids'] = '', 'same', '', ''
+    out['_p'] = out['position'].astype(int)
+    out = out.sort_values(['uniprot_accession', '_p'], kind='stable')
+    return out[CHANGE_COLUMNS].reset_index(drop=True)
 
 
 def code_commit() -> str:
@@ -171,8 +214,9 @@ def write_docs(out: Path, version, release_date, tables, cross, summaries, commi
     releases = {s: sorted(v) for s, v in releases.items()}
     old = (out / f'README_{CARRIED_FROM}.tmp').read_text(encoding='utf-8')
     L = [f'# Human methylarginine sites and context marks, {version}', '',
-         f'{version} keeps the methylarginine data of {CARRIED_FROM} unchanged (every file below under `human_methylarginine_*`, '
-         '`statistics_*`, `studies_*`, `supporting/` and `analyses*` is the v1.4.3 file, byte for byte, under its own name) and adds '
+         f'{version} keeps the methylarginine data of {CARRIED_FROM} unchanged (`human_methylarginine_*`, '
+         '`statistics_*`, `studies_*`, `supporting/` and `analyses*` are the v1.4.3 files, renamed `_v1.5.0` and otherwise unchanged apart from the '
+         'strings that name the version inside a few of them; see CHANGES.md) and adds '
          'tables of context marks: the lysine methylation and phosphorylation sites of the human reviewed proteome, and the '
          'arginine methylation records of UniProt and iPTMnet as a cross-check. Sites for each mark read their own table and show the '
          'others as context. Positions of the new tables are on UniProt release 2026_03, the reference of the methylarginine data.', '',
@@ -215,7 +259,10 @@ def write_docs(out: Path, version, release_date, tables, cross, summaries, commi
           '### Cite', '', 'The paper below, and the sources you use:', '']
     L += [f'- {s}: {SOURCES[s]["citation"]}' for s in SOURCE_ORDER]
     L += ['', f'## Methylarginine data (unchanged from {CARRIED_FROM})', '',
-          f'What follows is the README of {CARRIED_FROM}, with its headings one level down. The files it names are in this folder under those names.', '']
+          f'What follows is the README of {CARRIED_FROM}, with its headings one level down. The files it names are in this folder with `_v1.5.0` in place of `_v1.4.3`.', '']
+    old = re.sub(rf'_{CARRIED_FROM}_to_', f'_{version}_to_', old)
+    old = old.replace(f'_v1.4.2_to_{CARRIED_FROM}', f'_{CARRIED_FROM}_to_{version}')
+    old = re.sub(rf'_{re.escape(CARRIED_FROM)}(?=\.(?:tsv|xlsx))', f'_{version}', old)
     (out / 'README.md').write_text('\n'.join(L) + '\n' + demote(old), encoding='utf-8')
     return files
 
@@ -232,16 +279,33 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     version = args.version
 
-    carried = {}
+    carried, edited = {}, []
     for path in sorted(p for p in src.rglob('*') if p.is_file()):
         rel = path.relative_to(src)
         if len(rel.parts) == 1 and rel.name in NOT_CARRIED:
             continue
-        dest = out / rel
+        if rel.name.startswith('site_changes_'):
+            continue     # the changes since the release before are rewritten below
+        data = path.read_bytes()
+        if rel.as_posix() in VERSIONED_TEXT:
+            data = data.replace(CARRIED_FROM.encode(), version.encode())
+        elif rel.suffix == '.xlsx':
+            data = retitle_workbook(data, version)
+        new_rel = renamed(rel.as_posix(), version)
+        dest = out / new_rel
         dest.parent.mkdir(parents=True, exist_ok=True)
-        if not dest.exists() or md5_file(dest) != md5_file(path):
-            shutil.copyfile(path, dest)
-        carried[rel.as_posix()] = md5_file(dest)
+        if not dest.exists() or dest.read_bytes() != data:
+            dest.write_bytes(data)
+        carried[new_rel] = {'from': rel.as_posix(), 'from_md5': md5_file(path), 'md5': md5_file(dest)}
+        if carried[new_rel]['from_md5'] != carried[new_rel]['md5']:
+            edited.append(new_rel)
+    # every site is kept: the changes table in the format of the pipeline's
+    sites = pd.read_csv(src / f'human_methylarginine_sites_{CARRIED_FROM}.tsv', sep='\t', dtype=str, keep_default_na=False,
+                        usecols=['site_id', 'gene', 'uniprot_accession', 'position'])
+    prev_changes = pd.read_csv(src / 'supporting' / f'site_changes_v1.4.2_to_{CARRIED_FROM}.tsv', sep='\t', dtype=str,
+                               keep_default_na=False, usecols=['site_id', 'gene'])
+    changes_name = f'supporting/site_changes_{CARRIED_FROM}_to_{version}.tsv'
+    site_changes(sites, prev_changes).to_csv(out / changes_name, sep='\t', index=False, lineterminator='\n')
 
     tables, used = {}, {}
     for mark in MARKS + ['methylarginine']:
@@ -255,7 +319,7 @@ def main() -> None:
             raise SystemExit(f'source {sorted(unknown)} has no license entry in SOURCES: check its terms first')
         tables[mark] = merge(frames)
         used[mark] = {p.name: md5_file(p) for p in paths}
-    cross = crosscheck(tables.pop('methylarginine'), out)
+    cross = crosscheck(tables.pop('methylarginine'), out, version)
 
     summaries = {'uniprot': json.loads((inputs / 'uniprot_ptm_sites_summary.json').read_text(encoding='utf-8')),
                  'iptmnet': json.loads((inputs / 'iptmnet_ptm_sites_summary.json').read_text(encoding='utf-8'))}
@@ -265,7 +329,11 @@ def main() -> None:
 
     # data dictionary: v1.4.3's, then the new tables
     new = {**{m: f'human_{m}_sites_{version}.tsv' for m in MARKS}, 'methylarginine': f'human_methylarginine_crosscheck_{version}.tsv'}
-    lines = (src / 'data_dictionary.tsv').read_text(encoding='utf-8').rstrip('\n').split('\n')
+    lines = []
+    for line in (src / 'data_dictionary.tsv').read_text(encoding='utf-8').rstrip('\n').split('\n'):
+        name, rest = line.split('\t', 1)
+        name = name.replace(f'_v1.4.2_to_{CARRIED_FROM}', f'_{CARRIED_FROM}_to_{version}')
+        lines.append(renamed(name, version) + '\t' + rest)
     for name in new.values():
         for column, kind, description in DICTIONARY:
             if column == 'in_methylarginine_release' and 'crosscheck' not in name:
@@ -289,9 +357,14 @@ def main() -> None:
               for m, t in {**tables, 'methylarginine_crosscheck': cross}.items()}
     changes = [f'# Changes from {CARRIED_FROM} to {version}', '',
                f'{version} adds tables of context marks next to the methylarginine data. **The methylarginine data is unchanged from {CARRIED_FROM}**: '
-               f'its {len(carried)} files are copied byte for byte (their MD5 are in `release.json`, `carried_over`), not rebuilt, because the build '
+               f'its {len(carried)} files are the v1.4.3 files under this release\'s names, with the data not rebuilt (`release.json`, `carried_over`, gives the v1.4.3 name and MD5 of each), because the build '
                '(`hpc/build_release.sh`) needs R with clusterProfiler and DOSE and the network, and no methylarginine input changed. Sites, proteins, '
                'records, statistics and layers are those of v1.4.3.', '',
+               '### Files renamed', '',
+               f'Every file name carries its release\'s version, so each of the {len(carried)} carried files is renamed `_{CARRIED_FROM}` to `_{version}` (for example '
+               f'`human_methylarginine_sites_{CARRIED_FROM}.tsv` is now `human_methylarginine_sites_{version}.tsv`), its content unchanged except where it names its version: '
+               + ', '.join(f'`{n}`' for n in edited) + f'. `supporting/site_changes_{CARRIED_FROM}_to_{version}.tsv` replaces v1.4.3\'s (v1.4.2 to v1.4.3); it lists every one of the '
+               f'{len(sites):,} sites as kept, none added or removed, with its records the same.', '',
                '| | v1.4.3 | ' + version + ' |', '|---|---:|---:|']
     rel_prev = json.loads((src / 'release.json').read_text(encoding='utf-8'))['counts']
     for label, key in (('Sites', 'sites'), ('Proteins', 'proteins'), ('Sites kept pending', 'pending'), ('Source records', 'records'), ('Studies and databases', 'studies')):
@@ -316,7 +389,8 @@ def main() -> None:
                'license': 'CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv)',
                'methylarginine_data': f'unchanged from {CARRIED_FROM}: files carried over byte for byte, not rebuilt',
                'methylarginine_code_commit': json.loads((src / 'release.json').read_text(encoding='utf-8')).get('code_commit'),
-               'context_marks_code_commit': commit, 'carried_over': carried,
+               'context_marks_code_commit': commit, 'carried_over': carried, 'carried_over_text_edited': edited,
+               'site_changes': changes_name,
                'sources': {s: {'license': SOURCES[s]['license']} for s in SOURCE_ORDER},
                'inputs_md5': used, 'context_marks': counts}
     (out / 'release.json').write_text(json.dumps(release, indent=2, sort_keys=True) + '\n', encoding='utf-8')
