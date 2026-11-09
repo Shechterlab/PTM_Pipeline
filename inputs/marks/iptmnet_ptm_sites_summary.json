@@ -1,0 +1,89 @@
+{
+  "dropped": {
+    "not_human": 273145,
+    "not_in_reference": 281,
+    "on_an_isoform": 18636,
+    "other_ptm_type": 37929,
+    "other_residue": 6667,
+    "residue_mismatch": 470
+  },
+  "files": {
+    "methylarginine": "iptmnet_6_2_methylarginine_crosscheck.tsv",
+    "methyllysine": "iptmnet_6_2_methyllysine_sites.tsv",
+    "phosphorylation": "iptmnet_6_2_phosphorylation_sites.tsv"
+  },
+  "files_md5": {
+    "methylarginine": "e72a2c1936819bff406ba7a723d9fedf",
+    "methyllysine": "52eafbede475420ce5febefa02a6aef3",
+    "phosphorylation": "259d6fb0456e5451afffccd0d7af5c6b"
+  },
+  "human_records": 164926,
+  "iptmnet_release": "6.2",
+  "license": "CC BY-NC-SA 4.0 (iPTMnet license page and download readme; the readme also mentions CC BY 4.0, the stricter terms are followed)",
+  "raw_files": {
+    "ptm.txt": "iptmnet_ptm.txt",
+    "readme.txt": "iptmnet_readme.txt"
+  },
+  "raw_md5": {
+    "ptm.txt": "058d6619f5c6cb650107695a257e6fbf",
+    "readme.txt": "4245f99c2d9018944aad4939f97b31fe"
+  },
+  "records_in_download": 438071,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "methylarginine": 807,
+    "methyllysine": 234,
+    "phosphorylation": 64117
+  },
+  "rows_by_evidence_class": {
+    "methylarginine": {
+      "experimental": 84,
+      "unspecified": 723
+    },
+    "methyllysine": {
+      "experimental": 17,
+      "unspecified": 217
+    },
+    "phosphorylation": {
+      "experimental": 49389,
+      "text-mined": 3036,
+      "unspecified": 11692
+    }
+  },
+  "rows_by_state": {
+    "methylarginine": {
+      "me": 807
+    },
+    "methyllysine": {
+      "me": 234
+    },
+    "phosphorylation": {
+      "phospho": 64117
+    }
+  },
+  "rows_by_upstream_source": {
+    "methylarginine": {
+      "iedb": 84,
+      "unip": 739
+    },
+    "methyllysine": {
+      "iedb": 16,
+      "intact": 1,
+      "unip": 219
+    },
+    "phosphorylation": {
+      "hprd": 44067,
+      "iedb": 2426,
+      "intact": 464,
+      "npro": 3656,
+      "pro": 1364,
+      "rlim": 6977,
+      "rlim+": 356,
+      "sign": 3824,
+      "unip": 30455
+    }
+  },
+  "source": "iPTMnet ptm.txt (Protein Information Resource)",
+  "url": "https://research.bioinformatics.udel.edu/iptmnet_data/files/current/ptm.txt"
+}

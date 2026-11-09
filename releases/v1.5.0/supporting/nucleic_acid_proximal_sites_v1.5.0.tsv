@@ -1,0 +1,1520 @@
+site_id	nucleic_acid	nucleic_acid_type	distance_a	pdb_id	n_entries	chain	molecule_name	source_organism	sample_preparation	closest_nucleotide	window_start	window	window_marked
+O00567:R404	rna	other_ncrna	5.11	7mq9	1	L2	U3 snoRNA		Natural source	A163	155	CAUUGAUGAUCGUUCUU	CAU[U][G]AU[G][A][U]CGUUCUU
+O15037:R526	rna	rna_oligo	6.14	8wzc	1	D	RNA (5'-R(P*UP*UP*UP*AP*U)-3')	Homo sapiens	Synthetically obtained	U1	-7	--------UUUAU----	--------[U]UUAU----
+O43143:R670	rna	mrna	5.24	9ze0	1	R	pre-mRNA		Natural source	U42	34	UUUUUUUUU--------	UUUUUUUU[U]--------
+O43143:R670	rna	mrna	5.33	9ze3	1	R	Pre-mRNA		Natural source	U44	36	UUUUUUUUU--------	UUUUUUUU[U]--------
+O60264:R616	dna	nucleosomal_dna	4.81	9e1x	1	I	DNA (149-MER)		Genetically manipulated	T100	92	AGCGGTGCTAGAGCTGT	AGCGGTG[C][T][A]GAGCTGT
+O60814:R87	dna	nucleosomal_dna	4.24	7dbp	1	J	DNA (175-MER)		Synthetically obtained	G56	48	ACTAGGGAGTAATCCCC	ACTAGGG[A][G][T]AATCCCC
+O60814:R87	rna	other_ncrna	5.57	7v99	1	R	Telomerase RNA component		Natural source	C247	239	GAACCCCGCCUGGAGGC	GAACCCC[G][C]CUGGAGGC
+O60814:R93	dna	nucleosomal_dna	4.92	7v9c	2	J	DNA (275-mer)		Genetically manipulated	A38	30	TAACCCTAACCCTAACC	TAACCCT[A][A]CCCTAACC
+O60814:R93	dna	nucleosomal_dna	6.55	7va4	1	J	DNA (539-MER)		Genetically manipulated	A302	294	TAACCCTAACCCTAACC	TAACCCTA[A]CCCTAACC
+O60814:R93	dna	nucleosomal_dna	5.34	8grq	10	J	DNA (147-MER)		Genetically manipulated	A41	33	GGTCGTAGACAGCTCTA	GGTCGTA[G][A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	5.01	7pfw	1	I	DNA (167-MER)		Genetically manipulated	A51	43	GGTCGTAGACAGCTCTA	GGTCGTA[G][A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	5.53	7dbp	1	I	DNA (175-MER)		Synthetically obtained	G55	47	TGGTCGTAGACAGCTCT	TGGTCGT[A][G][A]CAGCTCT
+O60814:R93	dna	nucleosomal_dna	5.55	8q36	4	III	DNA (145-MER)		Genetically manipulated	A41	33	GTATTTGGAAACTGCTC	GTATTTG[G][A]AACTGCTC
+O60814:R93	dna	nucleosomal_dna	6.17	8w9e	2	j	3-DNA		Natural source	A41	33	GTATTTGGAAACTGCTC	GTATTTGG[A]AACTGCTC
+O60814:R93	dna	nucleosomal_dna	5.93	2cv5	1	I	DNA (146-MER)		Synthetically obtained	G40	32	TGTATTTGGAAACTGCT	TGTATTTG[G]AAACTGCT
+O60814:R93	dna	nucleosomal_dna	6.16	9ecp	1	J	DNA (145-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	5.98	7jzv	3	Y	Widom 601 153-bp		Genetically manipulated	A44	36	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	6.88	6le9	3	I	Human Telomeric DNA (145-MER)		Genetically manipulated	A40	32	TAACCCTAACCCTAACC	TAACCCTA[A]CCCTAACC
+O60814:R93	dna	nucleosomal_dna	6.01	8yv8	1	I	DNA (132-MER)		Genetically manipulated	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	6.23	7yqk	2	J	DNA (145-MER)		Synthetically obtained	G40	32	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+O60814:R93	dna	nucleosomal_dna	5.96	8zjr	2	J	DNA (147-MER)		Genetically manipulated	C55	47	TCACCAACCCACGCGTT	TCACCAAC[C]CACGCGTT
+O60814:R93	dna	nucleosomal_dna	6.14	8jhg	2	J	DNA (160-MER)		Genetically manipulated	G44	36	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+O60814:R93	dna	nucleosomal_dna	5.66	9gw2	1	T	Template DNA		Synthetically obtained	A77	69	GGTCGTAGACAGCTCTA	GGTCGTA[G][A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	6.71	9rze	1	T	Template DNA		Synthetically obtained	A77	69	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	6.81	9rzc	1	N	Non-template DNA		Synthetically obtained	G40	32	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+O60814:R93	dna	nucleosomal_dna	6.98	9s0u	1	N	Non-template DNA		Synthetically obtained	G40	32	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+O60814:R93	dna	nucleosomal_dna	6.69	7xcr	2	J	DNA (146-MER)		Synthetically obtained	G41	33	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+O60814:R93	dna	nucleosomal_dna	5.19	7pfc	1	I	DNA (788-MER)		Genetically manipulated	A66	58	GGTCGTAGACAGCTCTA	GGTCGTA[G][A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	5.4	7pfa	1	I	DNA (561-MER)		Genetically manipulated	A66	58	GGTCGTAGACAGCTCTA	GGTCGTA[G][A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	7.1	8hqy	1	I	DNA (137-MER)		Genetically manipulated	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	6.47	8x7k	1	J	DNA (143-MER)		Genetically manipulated	A38	30	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	6	8x7j	1	J	DNA (144-MER)		Genetically manipulated	A39	31	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	6.34	9ipu	1	J	DNA (171-MER)		Genetically manipulated	A55	47	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	6.57	7v9s	2	J	DNA (408-MER)		Genetically manipulated	A156	148	TAACCCTAACCCTAACC	TAACCCTA[A][C]CCTAACC
+O60814:R93	dna	nucleosomal_dna	6.16	9d3r	1	J	5S rDNA (coding strand)		Genetically manipulated	G40	32	GTGGTATGGCCGTAGGC	GTGGTATG[G]CCGTAGGC
+O60814:R93	dna	nucleosomal_dna	5.7	7pez	1	J	DNA (182-MER)		Genetically manipulated	G51	43	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+O60814:R93	dna	nucleosomal_dna	6.05	7v90	1	J	DNA (145-mer)		Genetically manipulated	A40	32	TAACCCTAACCCTAACC	TAACCCTA[A]CCCTAACC
+O60814:R93	dna	nucleosomal_dna	5.4	7pfd	1	I	DNA (172-MER)		Genetically manipulated	A51	43	GGTCGTAGACAGCTCTA	GGTCGTA[G][A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	6.18	7pfe	1	I	DNA (177-MER)		Genetically manipulated	A56	48	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+O60814:R93	dna	nucleosomal_dna	6.48	7pey	1	J	DNA (203-MER)		Genetically manipulated	G50	42	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+O60814:R93	dna	nucleosomal_dna	4.94	7pff	1	J	DNA (167-MER)		Genetically manipulated	G51	43	ACTAGGGAGTAATCCCC	ACTAGGG[A][G]TAATCCCC
+O60814:R93	dna	nucleosomal_dna	6.59	7xct	1	J	DNA (145-MER)		Synthetically obtained	G40	32	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+O60885:R181	dna	nucleosomal_dna	4.84	36iu	1	J	DNA (127-MER)		Genetically manipulated	C86	78	GGACAGCGCGTACGTGC	GGACAG[C][G][C][G]TACGTGC
+O60885:R183	dna	nucleosomal_dna	6.4	36iu	1	J	DNA (127-MER)		Genetically manipulated	C86	78	GGACAGCGCGTACGTGC	GGACAGC[G][C]GTACGTGC
+O60930:R52	rna	rna_oligo	4.4	3bsu	1	D	RNA (5'-R(*GP*AP*CP*AP*CP*CP*UP*GP*AP*UP*UP*C)-3')	Homo sapiens	Synthetically obtained	U10	2	ACACCUGAUUC------	ACACCUG[A][U][U]C------
+O60930:R179	rna	rna_oligo	3.66	6vrd	1	C	RNA (5'-R(*(OMC)P*(N7X)P*(T39)P*(C5L)P*(A2M))-D(P*(SC)P*(PST)P*(SC)P*(AS)P*(SC)P*(SC)P*(SC)P*(AS)P*(SC)P*(PST))-R(P*(6OO)P*(RFJ)P*(6OO)P*(6OO)P*(6NW))-3')	synthetic construct	Synthetically obtained	A9	1	CCTCACTCACCCACTCG	CCTCACT[C][A][C]CCACTCG
+O60942:R34	rna	rna_oligo	4.45	8p4a	1	P	RNA (5'-R(P*AP*AP*AP*AP*CP*CP*CP*AP*GP*GP*GP*AP*AP*CP*CP*CP*AP*CP*U)-3')		Synthetically obtained	A2	-6	-------AAAACCCAGG	-------A[A]A[A]CCCAGG
+O75531:R60	dna	nucleosomal_dna	6.11	9j8n	3	I	DNA (193-MER)		Genetically manipulated	T186	178	CGCGAAATTCATAGAT-	CGCGAAA[T][T]CATAGAT-
+O75531:R60	dna	other_dna	7.31	2bzf	1	B	5'-D(*GP*TP*GP*GP*AP*GP*GP)-3'	Homo sapiens	Synthetically obtained	G7	-1	--GTGGAGG--------	--GTGGAG[G]--------
+O75533:R517	rna	mrna	4.12	9k1o	1	H	22-nt histone H2a mRNA element		Genetically manipulated	C13	5	CAAGAAGACGCGCAUCA	CAAGAAG[A][C][G]CGCAUCA
+O75533:R558	rna	snrna	5.09	9ze2	4	2	U2 snRNA		Natural source	A7	-1	--AAGUGUAGUAUCUGU	--AAGUG[U][A][G]UAUCUGU
+O75533:R558	rna	snrna	5.77	9ze3	1	2	U2 snRNA		Natural source	A7	-1	--AAGUGUAGUAUCUGU	--AAGUG[U][A][G]UAUCUGU
+O75533:R558	rna	snrna	5.3	9k1y	3	H	U2 snRNA		Genetically manipulated	A5	-3	----GUGUAGUAUCUGU	----GUG[U][A][G]UAUCUGU
+O75533:R558	rna	mrna	4.55	9k1q	1	H	101-nt histone H2a mRNA element		Genetically manipulated	A29	21	ACAAGAAGACGCGCAUC	ACAAGAA[G][A][C]GCGCAUC
+O75533:R1180	rna	snrna	6.05	9ze0	4	2	U2 snRNA		Natural source	U11	3	GUGUAGUAUCUGUUCUC	GUGUAGU[A][U]CUGUUCUC
+O75533:R1180	rna	snrna	6.32	9ze3	1	2	U2 snRNA		Natural source	U11	3	GUGUAGUAUCUGUUCUC	GUGUAGU[A][U]CUGUUCUC
+O75533:R1180	rna	snrna	5.57	6ff4	1	2	U2 snRNA		Natural source	A38	30	AGUGUAGUAUCUGUUCU	AGUGUAGU[A][U]CUGUUCU
+O75533:R1180	rna	snrna	7.47	7qtt	2	f	U2snRNA		Natural source	U39	31	GUGUAGUAUCUGUUCUU	GUGUAGU[A][U]CUGUUCUU
+O75533:R1180	rna	snrna	7.58	7dvq	1	H	U12 snRNA		Natural source	A24	16	GAGUAAGGAAAAUAACG	GAGUAAGG[A]AAAUAACG
+O75533:R1180	rna	snrna	7.94	7vpx	1	H	U2 snRNA		Natural source	U39	31	GUGUAGUAUCUGUUCUU	GUGUAGUA[U]CUGUUCUU
+O75533:R1180	rna	snrna	6.45	7q4p	1	2	U2 snRNA		Natural source	A38	30	AGUGUAGUAUCUGUUCU	AGUGUAGU[A][U][C]UGUUCU
+O75533:R1180	rna	snrna	7.58	8y7e	1	H	U12 snRNA		Natural source	A24	16	GAGUAAGGAAAAUAACG	GAGUAAGG[A]AAAUAACG
+O94906:R31	rna	other_rna	5.52	8qpe	1	z1	oligo1		Natural source	A1	-7	--------AAGGUAAGU	--------[A][A]GGUAAGU
+O94906:R31	rna	mrna	5.41	8qoz	2	z	5'ss RNA oligo		Natural source	A1	-7	--------AAGGUAAGU	--------[A][A]GGUAAGU
+O94906:R31	rna	mrna	5	8qpa	1	z	5'ss oligo		Natural source	A1	-7	--------AAGGUAAGU	--------[A][A]GGUAAGU
+O94906:R31	rna	mrna	6.14	8qpb	1	z	5'ss oligo		Natural source	U3	-5	------AGUGGGUAAGA	------AG[U][G]GGUAAGA
+O94906:R31	rna	mrna	6.74	8q7n	1	Z	MINX pre-mRNA		Natural source	C80	72	CCUCCGAACGGUAAGAG	CCUCCGA[A][C]GGUAAGAG
+P04908:R21	dna	nucleosomal_dna	4.52	7v9k	1	I	DNA (539-mer)		Genetically manipulated	G163	155	TAGGGTTAGGGTTAGGG	TAGGGTT[A][G]GGTTAGGG
+P04908:R21	dna	nucleosomal_dna	4.49	9yly	1	J	DNA (165-MER)		Synthetically obtained	T52	44	CGCTCAATTGGTCGTAG	CGCTCAA[T][T][G]GTCGTAG
+P04908:R21	dna	nucleosomal_dna	7.41	9ge5	1	L	Hexasomal DNA strand 2		Synthetically obtained	G32	24	CTAGCACCGCTTAAACG	CTAGCACC[G]CTTAAACG
+P04908:R21	dna	nucleosomal_dna	4.2	8ots	1	I	DNA (127-MER)		Synthetically obtained	G25	17	GGGGTGGGGCGTCGTAG	GGGGTGG[G][G]CGTCGTAG
+P04908:R21	rna	other_ncrna	7.02	7v99	1	R	Telomerase RNA component		Natural source	C242	234	CCCCCGAACCCCGCCUG	CCCCCGAA[C]CCCGCCUG
+P04908:R30	dna	nucleosomal_dna	5	8jh2	1	N	DNA (218-MER)		Genetically manipulated	G204	196	CCAATTGAGCGGCCTCG	CCAATTGA[G][C]GGCCTCG
+P04908:R30	dna	nucleosomal_dna	4.08	7xsx	2	T	DNA (198-MER)		Synthetically obtained	A29	21	GCCGCTCAATTGGTCGT	GCCGCTC[A][A]TTGGTCGT
+P04908:R30	dna	nucleosomal_dna	4.38	6yov	1	I	DNA (142-MER)		Synthetically obtained	A33	25	GCCGCTCAATTGGTCGT	GCCGCTC[A][A]TTGGTCGT
+P04908:R82	dna	nucleosomal_dna	7.99	7dbp	1	J	DNA (175-MER)		Synthetically obtained	C149	141	CCTCGGCACCGGGATTC	CCTCGGCA[C]CGGGATTC
+P04908:R82	dna	nucleosomal_dna	6.14	9r04	1	J	DNA-rev		Synthetically obtained	A13	5	CAGGATGTATATATCTG	CAGGATG[T][A]TATATCTG
+P04908:R82	dna	nucleosomal_dna	7.29	9j0o	1	N	NON-TEMPLATE DNA (180-MER)		Synthetically obtained	A185	177	GCCTCGGCACCGGGATT	GCCTCGGC[A]CCGGGATT
+P04908:R82	dna	nucleosomal_dna	6.7	8xvs	1	N	DNA		Natural source	A150	142	GCCTCGGCACCGGGATT	GCCTCGGC[A]CCGGGATT
+P04908:R82	dna	nucleosomal_dna	7.66	9uxw	1	T	DNA (254-MER)		Synthetically obtained	A10	2	TCGGATGTATATATCTG	TCGGATGT[A]TATATCTG
+P04908:R82	dna	nucleosomal_dna	7.34	9rn2	2	Y	DNA (147-MER)		Genetically manipulated	T49	41	ACAGGATGTATTTGCAT	ACAGGATG[T]ATTTGCAT
+P04908:R82	dna	nucleosomal_dna	6.24	8grm	1	J	DNA (145-MER)		Genetically manipulated	A132	124	GCCTCGGCACCGGGATT	GCCTCGGC[A]CCGGGATT
+P04908:R89	rna	other_ncrna	5.05	7v99	1	R	Telomerase RNA component		Natural source	G310	302	AGAGUUGGGCUCUGUCA	AGAGUUGG[G]CUCUGUCA
+P06746:R258	dna	other_dna	6.76	3ogu	3	T	5'-D(*CP*AP*TP*CP*TP*G)-3'	Homo sapiens	Synthetically obtained	A2	-6	-------CATCTG----	-------[C][A]TCTG----
+P06746:R258	dna	other_dna	6.16	9icu	26	P	DNA (5'-D(*CP*AP*GP*AP*TP*G)-3')	Homo sapiens	Synthetically obtained	G6	-2	---CAGATG--------	---CAGAT[G]--------
+P06746:R258	dna	other_dna	4.31	9icy	1	P	DNA (5'-D(*TP*CP*TP*AP*AP*TP*G)-3')	Homo sapiens	Synthetically obtained	G7	-1	--TCTAATG--------	--TCTAA[T][G]--------
+P06746:R258	dna	other_dna	4.79	1tv9	1	P	5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*CP*C)-3'	Homo sapiens	Synthetically obtained	C10	2	CTGATGCGCC-------	CTGATGC[G][C][C]-------
+P06746:R258	dna	other_dna	5.16	2p66	1	C	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*CP*C)-3')	Homo sapiens	Synthetically obtained	C10	2	CTGATGCGCC-------	CTGATGC[G][C][C]-------
+P06746:R258	dna	other_dna	5.2	4o9m	1	C	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*CP*C)-3')	Homo sapiens	Synthetically obtained	C10	2	CTGATGCGCC-------	CTGATGC[G][C][C]-------
+P06746:R258	dna	other_dna	4.12	8vfb	2	T	DNA (5'-D(*CP*CP*GP*AP*CP*CP*(FAP)P*CP*GP*CP*AP*TP*CP*AP*GP*C)-3')	synthetic construct	Synthetically obtained	G9	1	CCGACCXCGCATCAGC-	CCGACC[X][C][G][C]ATCAGC-
+P06746:R258	dna	other_dna	5.14	7mz8	1	P	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*T)-3')	Homo sapiens	Synthetically obtained	T10	2	CTGATGCGT--------	CTGATGC[G][T]--------
+P06746:R258	dna	other_dna	4.74	6ph5	1	P	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*CP*C)-3')	Homo sapiens	Synthetically obtained	C10	2	CTGATGCGCC-------	CTGATGC[G][C][C]-------
+P06746:R258	dna	other_dna	5.59	5hhh	1	P	DNA (5'-D(P*CP*CP*TP*GP*CP*TP*CP*CP*TP*C)-3')	synthetic construct	Synthetically obtained	C10	2	CTGCTCCTC--------	CTGCTCC[T][C]--------
+P06746:R258	dna	other_dna	4.62	4nm2	1	P	5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*GP*C)-3'	Homo sapiens	Synthetically obtained	C11	3	TGATGCGGC--------	TGATGC[G][G][C]--------
+P06746:R258	dna	other_dna	4.73	7s9j	2	P	DNA (5'-D(*GP*CP*TP*CP*AP*TP*GP*CP*GP*C)-3')	synthetic construct	Synthetically obtained	C10	2	CTCATGCGC--------	CTCATGC[G][C]--------
+P06746:R258	dna	other_dna	4.68	5db8	2	P	DNA (5'-D(*GP*CP*TP*(FMG)P*AP*TP*GP*CP*GP*A)-3')	Homo sapiens	Synthetically obtained	A10	2	CTGATGCGA--------	CTGATGC[G][A]--------
+P06746:R258	dna	other_dna	5.09	4mf8	2	T	template	Homo sapiens	Synthetically obtained	G9	1	CCGACGTCGCATCAGC-	CCGACGT[C][G][C]ATCAGC-
+P06746:R258	dna	other_dna	4.38	4nlz	1	P	5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*AP*G)-3'	Homo sapiens	Synthetically obtained	A10	2	CTGATGCGAG-------	CTGATGC[G][A][G]-------
+P06746:R258	dna	other_dna	4.17	4mfa	1	P	up primer	Homo sapiens	Synthetically obtained	T11	3	TGATGCGAT--------	TGATGC[G][A][T]--------
+P06746:R258	dna	other_dna	5.28	5dbc	2	P	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*A)-3')	Homo sapiens	Synthetically obtained	A10	2	CTGATGCGA--------	CTGATGCG[A]--------
+P06746:R258	dna	other_dna	4.35	5dba	2	P	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*A)-3')	Homo sapiens	Synthetically obtained	A10	2	CTGATGCGA--------	CTGATGC[G][A]--------
+P06746:R258	dna	other_dna	4.13	3isd	2	T	5'-D(*CP*CP*GP*AP*CP*(3DR)P*GP*CP*GP*CP*AP*TP*CP*AP*GP*C)-3'	synthetic construct	Synthetically obtained	G9	1	CCGACNGCGCATCAGC-	CCGACN[G][C][G][C]ATCAGC-
+P06746:R258	dna	other_dna	5.1	1tva	1	P	5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*CP*C)-3'	Homo sapiens	Synthetically obtained	C10	2	CTGATGCGCC-------	CTGATGC[G][C][C]-------
+P06899:R87	dna	nucleosomal_dna	4.06	8jh2	1	T	DNA (218-MER)		Genetically manipulated	G39	31	TGGTCGTAGACAGCTCT	TGGTCGT[A][G][A]CAGCTCT
+P06899:R93	dna	nucleosomal_dna	7.17	9gmk	1	M	DNA (148-MER)		Synthetically obtained	G46	38	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.77	6t90	1	I	DNA (146-MER)		Synthetically obtained	A44	36	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.39	8guj	4	J	DNA (147-mer)		Synthetically obtained	G41	33	ACTAGGGAGTAATCCCC	ACTAGGG[A][G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	7.07	9gmr	1	I	DNA (149-MER)		Synthetically obtained	A37	29	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.76	8xrj	1	T	DNA		Natural source	C53	45	CGCACGAACGCGCAGAC	CGCACGAA[C]GCGCAGAC
+P06899:R93	dna	nucleosomal_dna	6.44	7nl0	1	J	DNA (131-MER)		Synthetically obtained	G51	43	TGAGTGATGGCAGCTCC	TGAGTGAT[G]GCAGCTCC
+P06899:R93	dna	nucleosomal_dna	6.29	6k1j	3	J	DNA (145-MER)		Genetically manipulated	G40	32	TGTATTTGGAAACTGCT	TGTATTTG[G]AAACTGCT
+P06899:R93	dna	nucleosomal_dna	6.37	5avc	6	I	DNA (147-MER)		Synthetically obtained	A41	33	GTATTTGGAAACTGCTC	GTATTTGG[A]AACTGCTC
+P06899:R93	dna	nucleosomal_dna	6.17	7yrd	1	I	DNA (146-MER)		Genetically manipulated	A41	33	GTATTTGGAAACTGCTC	GTATTTGG[A]AACTGCTC
+P06899:R93	dna	nucleosomal_dna	6.68	6o1d	1	J	DNA (145-MER)		Synthetically obtained	A40	32	GCATTCTCAGAATATTC	GCATTCTC[A]GAATATTC
+P06899:R93	dna	nucleosomal_dna	4.34	9j8w	1	I	Human alpha-satellite DNA (145-MER)		Synthetically obtained	G40	32	TGTATTTGGAAACTGCT	TGTATTT[G][G]AAACTGCT
+P06899:R93	dna	nucleosomal_dna	6.24	5jrg	1	I	DNA (145-MER)		Genetically manipulated	A41	33	GTATTTGGAAACTGCTC	GTATTTGG[A]AACTGCTC
+P06899:R93	dna	nucleosomal_dna	4.21	6r94	2	J	Human alpha-satellite DNA (145-MER) with abasic sites at positions 97-98		Synthetically obtained	G40	32	TGTATTTGGAAACTGCT	TGTATTT[G][G]AAACTGCT
+P06899:R93	dna	nucleosomal_dna	4.29	6r92	2	J	Human alpha-satellite DNA (145-MER) with abasic sites at positions 93-94		Synthetically obtained	G39	31	GTGTATTTGGAAACTGC	GTGTATT[T][G]GAAACTGC
+P06899:R93	dna	nucleosomal_dna	5.37	5b24	2	J	DNA (145-MER)		Genetically manipulated	A41	33	GTATTTGGAAACTGCTC	GTATTTG[G][A]AACTGCTC
+P06899:R93	dna	nucleosomal_dna	4.87	3azm	44	I	146-MER DNA		Synthetically obtained	G40	32	TGTATTTGGAAACTGCT	TGTATTT[G][G]AAACTGCT
+P06899:R93	dna	nucleosomal_dna	6.22	4ym5	1	J	144-mer DNA		Synthetically obtained	G39	31	TGTATTTGGAAACTGCT	TGTATTTG[G]AAACTGCT
+P06899:R93	dna	nucleosomal_dna	6.46	5b2i	2	I	DNA (146-MER)		Genetically manipulated	A41	33	GTATTTGGAAACTCCTA	GTATTTGG[A]AACTCCTA
+P06899:R93	dna	nucleosomal_dna	5.94	7zi4	1	X	DNA (158-MER)		Synthetically obtained	C54	46	CTTAAACGCACGTACGC	CTTAAACG[C]ACGTACGC
+P06899:R93	dna	nucleosomal_dna	5.38	9oh2	5	I	601L DNA (137-MER)		Genetically manipulated	A40	32	GGTCGTAGACAGCTCTA	GGTCGTA[G][A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.01	6t93	1	I	DNA (153-MER)		Synthetically obtained	A44	36	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.97	8osj	1	I	DNA (124-MER)		Synthetically obtained	A44	36	GGTCGTAGACAGCTCTA	GGTCGTA[G][A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.87	9r2q	2	I	DNA-for		Synthetically obtained	A44	36	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.72	8osk	1	I	DNA (124-MER)		Synthetically obtained	A44	36	GGTCGTAGACAGCTCTA	GGTCGTA[G][A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.67	9r2m	2	I	DNA-for		Synthetically obtained	C45	37	GTCGTAGACAGCTCTAG	GTCGTAG[A][C]AGCTCTAG
+P06899:R93	dna	nucleosomal_dna	6.31	36iv	2	J	DNA (130-MER)		Genetically manipulated	G50	42	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.61	6hkt	1	J	DNA (1122-MER)		Synthetically obtained	G247	239	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	4.18	8kd1	5	J	DNA (193-MER)		Genetically manipulated	A64	56	GGTCGTAGACAGCTCTA	GGTCGTA[G][A][C]AGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.37	9uz7	1	I	DNA (145-MER)		Synthetically obtained	G40	32	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	5.95	8jne	5	J	DNA (153-MER)		Genetically manipulated	G48	40	TCTTGGGTGTAATCCCC	TCTTGGGT[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	7.7	6inq	1	T	DNA (198-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	7.7	6a5u	1	T	DNA (198-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	7.7	6j50	1	T	DNA (198-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	7.7	6j4z	1	T	DNA (198-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	7.7	6a5l	1	T	DNA (198-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	7.7	6j51	1	T	DNA (198-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	7.24	9j0o	2	N	NON-TEMPLATE DNA (180-MER)		Synthetically obtained	G93	85	TCTTGGGTGTAATCCCC	TCTTGGGT[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	4.67	9j0n	1	T	Template DNA (168-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTA[G][A][C]AGCTCTA
+P06899:R93	dna	nucleosomal_dna	7.7	6j4x	2	T	DNA (198-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	7.7	6ir9	1	T	DNA (198-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	7.7	6a5t	1	T	DNA (198-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.93	8jh3	1	T	DNA (198-MER)		Genetically manipulated	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	7.4	8jh4	1	T	DNA (198-MER)		Genetically manipulated	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	7.56	6j4w	1	N	DNA (198-MER)		Synthetically obtained	G93	85	TCTTGGGTGTAATCCCC	TCTTGGGT[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.87	7xse	1	T	DNA (198-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	7.56	6a5p	1	N	DNA (198-MER)		Synthetically obtained	G93	85	TCTTGGGTGTAATCCCC	TCTTGGGT[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.51	7xtd	1	N	DNA (198-MER)		Synthetically obtained	T46	38	TTGGGTGGTGGCCGTTT	TTGGGTGG[T]GGCCGTTT
+P06899:R93	dna	nucleosomal_dna	7.09	6a5o	1	N	DNA (198-MER)		Synthetically obtained	G93	85	TCTTGGGTGTAATCCCC	TCTTGGGT[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	7.55	8jh2	1	T	DNA (218-MER)		Genetically manipulated	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.73	8xvs	1	T	DNA		Natural source	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.34	7wbw	2	N	DNA (198-MER)		Synthetically obtained	T94	86	CTTGGGTGTAATCCCCT	CTTGGGT[G][T]AATCCCCT
+P06899:R93	dna	nucleosomal_dna	5.95	7wbx	1	N	DNA (198-MER)		Synthetically obtained	G93	85	TCTTGGGTGTAATCCCC	TCTTGGGT[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	5.82	8jlb	19	J	DNA (145-MER)		Genetically manipulated	G40	32	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.38	6l49	2	I	DNA (485-MER)		Synthetically obtained	A210	202	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.87	7xsx	2	T	DNA (198-MER)		Synthetically obtained	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.53	7xsz	3	N	DNA (198-MER)		Synthetically obtained	T64	56	CGTTGTTTTTTTCTGTC	CGTTGTTT[T]TTTCTGTC
+P06899:R93	dna	nucleosomal_dna	6.95	9wmv	1	T	DNA (198-MER)		Synthetically obtained	C77	69	CGCGCAGACCCCCGCGA	CGCGCAGA[C]CCCCGCGA
+P06899:R93	dna	nucleosomal_dna	7.19	9wmu	1	T	DNA (198-MER)		Synthetically obtained	A85	77	CCCCCGCGAAAAAACCG	CCCCCGCG[A]AAAAACCG
+P06899:R93	dna	nucleosomal_dna	6.47	5cpi	2	I	DNA (146-MER)		Synthetically obtained	A40	32	GGAAATGAATGGAATCA	GGAAATGA[A]TGGAATCA
+P06899:R93	dna	nucleosomal_dna	6.21	9l1x	2	J	601 DNA (189-MER)		Genetically manipulated	A62	54	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.53	8vg2	1	J	DNA (196-MER)		Synthetically obtained	G65	57	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	5.22	9oh0	4	I	DNA (123-MER)		Genetically manipulated	A45	37	TACATTCGAATCCATTC	TACATTC[G][A]ATCCATTC
+P06899:R93	dna	nucleosomal_dna	6.21	5cpk	1	J	DNA (145-MER)		Synthetically obtained	A40	32	CATTCGAAAATGATTAC	CATTCGAA[A]ATGATTAC
+P06899:R93	dna	nucleosomal_dna	6.31	6usj	1	J	Widom 601 DNA (160-MER)		Genetically manipulated	A49	41	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.42	8vg0	4	J	DNA (159-MER)		Synthetically obtained	C40	32	GTATTGATCAGTCCAAA	GTATTGA[T][C]AGTCCAAA
+P06899:R93	dna	nucleosomal_dna	6.47	8hak	7	K	DNA (180-mer)		Genetically manipulated	A58	50	GTATTTGGAAACTGCTC	GTATTTGG[A]AACTGCTC
+P06899:R93	dna	nucleosomal_dna	6.82	9w6t	1	T	DNA (128-MER)		Natural source	A40	32	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	4.86	6yov	1	J	DNA (142-MER)		Synthetically obtained	G191	183	ACTAGGGAGTAATCCCC	ACTAGGG[A][G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.8	3an2	1	I	147 mer DNA		Synthetically obtained	C41	33	ATGCTAGACAGAAGAAT	ATGCTAGA[C]AGAAGAAT
+P06899:R93	dna	nucleosomal_dna	5.63	7lyb	22	I	DNA (147-MER)		Genetically manipulated	A41	33	GGTCGTAGACAGCTCTA	GGTCGTA[G][A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.42	8g57	1	J	DNA strand 2		Synthetically obtained	A41	33	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.02	8ihl	1	I	DNA (353-MER)		Genetically manipulated	C42	34	GTCGTAGACAGCTCTAG	GTCGTAGA[C]AGCTCTAG
+P06899:R93	dna	nucleosomal_dna	6.49	6l9z	1	I	DNA (338-MER)		Genetically manipulated	A52	44	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.9	7xzx	2	J	DNA (193-MER)		Synthetically obtained	G65	57	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.79	9j8m	3	J	DNA (193-MER)		Genetically manipulated	G65	57	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.19	9uz9	1	N	DNA (270-MER)		Synthetically obtained	A173	165	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.23	9uxw	1	T	DNA (254-MER)		Synthetically obtained	G41	33	ACTAGGGAGTAATCCCC	ACTAGGG[A][G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.18	9e09	1	I	DNA (156-MER)		Synthetically obtained	G40	32	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	5.74	9e3d	1	I	DNA (320-MER)		Synthetically obtained	G49	41	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.71	9e3r	2	J	DNA (319-MER)		Synthetically obtained	A206	198	GGTCGTAGACAGCTCTA	GGTCGTAG[A][C]AGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.91	8h0v	1	T	DNA (261-MER)		Synthetically obtained	G65	57	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.92	8h0w	1	T	DNA (261-MER)		Synthetically obtained	G65	57	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	5.93	7xzz	2	J	DNA (169-MER)		Synthetically obtained	G65	57	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.84	8ots	1	J	DNA (127-MER)		Synthetically obtained	G28	20	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.6	8qkt	1	III	DNA (167-MER)		Genetically manipulated	A51	43	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.35	9igw	1	J	DNA Chain 2		Synthetically obtained	G40	32	ACTAGGGAGTAATCCCC	ACTAGGG[A][G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.7	8ott	1	I	DNA (144-MER)		Synthetically obtained	A39	31	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.73	6jxd	2	I	DNA (147-MER)		Genetically manipulated	A39	31	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.78	6ler	2	J	DNA (169-MER)		Genetically manipulated	G50	42	ACTAGTAAGCGCTTCTA	ACTAGTAA[G]CGCTTCTA
+P06899:R93	dna	nucleosomal_dna	6.76	9rl4	1	X	DNA (148-MER)		Synthetically obtained	A81	73	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.94	9e49	1	I	DNA (314-MER)		Synthetically obtained	G48	40	ACTAGGGAGTAATCCCC	ACTAGGGA[G][T]AATCCCC
+P06899:R93	dna	nucleosomal_dna	6.98	7ea8	1	J	601-DNA		Synthetically obtained	G18	10	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.08	6la2	1	I	DNA (343-MER)		Genetically manipulated	A50	42	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.8	6m44	2	J	DNA (355-MER)		Genetically manipulated	G55	47	ACTAGTAAGCGCTTCTA	ACTAGTAA[G]CGCTTCTA
+P06899:R93	dna	nucleosomal_dna	6.16	7cow	1	J	DNA (353-MER)		Genetically manipulated	G54	46	ACTAGTAAGCGCTTCTA	ACTAGTAA[G]CGCTTCTA
+P06899:R93	dna	nucleosomal_dna	6.19	6la9	2	J	DNA (349-MER)		Genetically manipulated	G227	219	ACTAGTAAGCGCTTCTA	ACTAGTAA[G]CGCTTCTA
+P06899:R93	dna	nucleosomal_dna	6.03	6hts	1	X	DNA (150-MER)		Synthetically obtained	T94	86	CTAGGGAGTAATCCCCT	CTAGGGAG[T]AATCCCCT
+P06899:R93	dna	nucleosomal_dna	6.21	7e8d	1	I	DNA (185-MER)		Genetically manipulated	A60	52	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	6.32	7xx5	5	I	DNA (169-MER)		Genetically manipulated	A50	42	GGTCGTAGACAGCTCTA	GGTCGTAG[A]CAGCTCTA
+P06899:R93	dna	nucleosomal_dna	5.67	7k63	5	J	DNA (197-MER)		Genetically manipulated	G66	58	ACTAGGGAGTAATCCCC	ACTAGGGA[G]TAATCCCC
+P06899:R93	dna	nucleosomal_dna	6.55	7y7i	1	J	Chains: J		Genetically manipulated	A38	30	GACTAGGGAGTAATCCC	GACTAGGG[A]GTAATCCC
+P08621:R180	rna	snrna	6.83	7vpx	1	L	U1 snRNA		Natural source	C31	23	ACCAUGAUCACGAAGGU	ACCAUGAU[C]ACGAAGGU
+P08621:R182	rna	snrna	6.61	7vpx	1	L	U1 snRNA		Natural source	A32	24	CCAUGAUCACGAAGGUG	CCAUGAUC[A]CGAAGGUG
+P08621:R201	rna	snrna	6.6	9qeq	1	a	U1 snRNA		Natural source	A29	21	AUACCAUGAUCACGAAG	AUACCAUG[A][U]CACG[A][A][G]
+P08621:R201	rna	snrna	7.04	4pkd	1	V	U1 snRNA stem-loops 1 and 2 (55-MER)		Synthetically obtained	G44	36	AUCACGAAGGUGGUUUU	[A]UCACGAA[G]GUGGUUUU
+P09132:R14	rna	other_ncrna	5.7	1ry1	1	A	SRP S domain		Natural source	G37	29	CCUCCCGGGAGCGGGGG	CCUCCCGG[G]AGCGGGGG
+P09132:R14	rna	other_ncrna	5.7	2j37	1	A	SRP RNA		Natural source	G37	29	CCUCCCGGGAGCGGGGG	CCUCCCGG[G]AGCGGGGG
+P09132:R14	rna	other_ncrna	5.7	1mfq	1	A	7S RNA of human SRP		Genetically manipulated	G37	29	CCUCCCGGGAGCGGGGG	CCUCCCGG[G]AGCGGGGG
+P09651:R14	rna	rna_oligo	7.75	8x0n	1	B	RNA (5'-R(*UP*UP*AP*GP*GP*GP*UP*UP*AP*GP*GP*G)-3')	Homo sapiens	Synthetically obtained	G12	4	GGGUUAGGG--------	GGGUUAGG[G]--------
+P09651:R31	rna	rna_oligo	7.89	8x0n	1	B	RNA (5'-R(*UP*UP*AP*GP*GP*GP*UP*UP*AP*GP*GP*G)-3')	Homo sapiens	Synthetically obtained	G11	3	AGGGUUAGGG-------	AGGGUUAG[G]G-------
+P09874:R156	dna	other_dna	7.23	4av1	1	Y	5'-D(*TP*AP*AP*TP*GP*CP*AP*AP*CP*AP*CP*TP)-3'	synthetic construct	Synthetically obtained	T12	4	TGCAACACT--------	TGCAACAC[T]--------
+P09874:R156	dna	other_dna	7.6	3ode	1	C	5'-D(*CP*CP*CP*AP*AP*GP*CP*G)-3'	Homo sapiens	Synthetically obtained	G8	0	-CCCAAGCG--------	-CCCAAGC[G]--------
+P09874:R156	dna	other_dna	6.89	3odc	1	C	5'-D(*CP*CP*CP*AP*GP*AP*CP*G)-3'	Homo sapiens	Synthetically obtained	G8	0	-CCCAGACG--------	-CCCAGAC[G]--------
+P09874:R156	dna	other_dna	6.47	9mi8	1	B	DNA (48-MER)	Homo sapiens	Synthetically obtained	A48	40	CTGCCGCGA--------	CTGCCGCG[A]--------
+P09874:R156	dna	other_dna	6.76	2n8a	1	B	DNA (45-MER)	Homo sapiens	Synthetically obtained	G45	37	CTGACCGCG--------	CTGACCGC[G]--------
+P0C0S5:R23	dna	nucleosomal_dna	4.25	8t9f	2	J	DNA (122-MER)		Natural source	G32	24	TGCCTGGAGACTAGGGA	TGCCTGG[A][G][A]CTAGGGA
+P11387:R362	dna	other_dna	5.37	1k4t	4	D	5'-D(*AP*AP*AP*AP*AP*TP*TP*TP*TP*TP*CP*CP*AP*AP*GP*TP*CP*TP*TP*TP*TP*T)-3'	Homo sapiens	Synthetically obtained	A13	5	ATTTTTCCAAGTCTTTT	ATTTTTC[C][A][A]GTCTTTT
+P11387:R362	dna	other_dna	5.51	1tl8	1	D	5'-D(*AP*AP*AP*AP*AP*TP*TP*TP*TP*TP*CP*GP*AP*AP*GP*TP*CP*TP*TP*TP*TP*T)-3'	Homo sapiens	Synthetically obtained	A13	5	ATTTTTCGAAGTCTTTT	ATTTTTC[G][A][A]GTCTTTT
+P11387:R362	dna	other_dna	5.42	1rrj	2	C	5'-D(*AP*AP*AP*AP*AP*TP*TP*TP*TP*TP*CP*CP*AP*AP*GP*TP*CP*TP*TP*TP*TP*T)-3'	Homo sapiens	Synthetically obtained	A13	5	ATTTTTCCAAGTCTTTT	ATTTTTC[C][A][A]GTCTTTT
+P11387:R362	dna	other_dna	4.1	1a31	1	C	DNA (5'-D(*AP*AP*AP*AP*AP*GP*AP*CP*5IUP*5IU*TP*GP*AP*AP*AP*AP*AP*5IUP*5IUP*5IUP*5IUP*T)-3')	Homo sapiens	Synthetically obtained	A14	6	GACUUTGAAAAAUUUUT	GACUUTG[A][A][A]AAUUUUT
+P11387:R362	dna	other_dna	4.73	1ej9	1	C	DNA (5'-D(*C*AP*AP*AP*AP*AP*GP*AP*CP*TP*CP*AP*GP*AP*AP*AP*AP*AP*TP*TP*TP*TP*T)-3')	Homo sapiens	Synthetically obtained	A15	7	GACTCAGAAAAATTTTT	GACTCAG[A][A][A]AATTTTT
+P11387:R567	dna	other_dna	7.84	1tl8	1	B	5'-D(*AP*AP*AP*AP*AP*GP*AP*CP*TP*T)-3'	Homo sapiens	Synthetically obtained	A2	-6	-------AAAAAGACTT	-------A[A]AAAGACTT
+P11387:R567	dna	other_dna	7.34	1r49	1	B	5'-D(*AP*AP*AP*AP*AP*GP*AP*CP*TP*TP*AP*GP*AP*AP*AP*AP*AP*TP*TP*TP*TP*T)-3'	Homo sapiens	Synthetically obtained	A2	-6	-------AAAAAGACTT	-------A[A]AAAGACTT
+P11387:R567	dna	other_dna	7.71	1lpq	1	B	5'-D(*AP*AP*AP*AP*AP*GP*AP*CP*TP*TP*(8OG)P*GP*AP*AP*AP*AP*AP*TP*TP*TP*TP*T)-3'	Homo sapiens	Synthetically obtained	A2	-6	-------AAAAAGACTT	-------A[A]AAAGACTT
+P11940:R166	rna	rna_oligo	4.77	1cvj	2	M	5'-R(*AP*AP*AP*AP*AP*AP*AP*AP*AP*AP*A)-3'	Homo sapiens	Synthetically obtained	A2	-6	-------AAAAAAAAAA	-------[A][A]AAAAAAAA
+P12004:R146	dna	other_dna	4.86	8yju	1	J	upstream DNA		Natural source	T5	-3	----TTTTTTTTTTAAA	----TTT[T][T]TTTTTAAA
+P12004:R146	dna	other_dna	4.44	9sri	4	P	Primer DNA oligonucleotide		Genetically manipulated	C20	12	CCAACCCTCACCA----	CCAACCC[T][C]ACCA----
+P12004:R146	dna	other_dna	4.55	8yjv	1	E	parent strand DNA		Natural source	A30	22	TAAAAAAAAA-------	TAAAAA[A][A][A]A-------
+P12004:R146	dna	other_dna	4.06	8yjq	1	J	upstream DNA		Natural source	T2	-6	-------TTTTTTTTTA	-------[T][T]TTTTTTTA
+P12004:R146	dna	other_dna	7.99	6gis	1	E	DNA (5'-D(P*CP*CP*CP*AP*TP*CP*GP*TP*AP*T)-3')	synthetic construct	Synthetically obtained	T5	-3	----CCCATCGTAT---	----CCCA[T]CGTAT---
+P12004:R146	dna	other_dna	7.5	9cg4	1	A	DNA (5'-D(P*CP*GP*AP*AP*TP*TP*TP*CP*TP*AP*GP*AP*CP*TP*CP*GP*AP*GP*AP*TP*CP*AP*G)-3')		Synthetically obtained	T6	-2	---CGAATTTCTAGACT	---CGAAT[T]TCTAGACT
+P12004:R146	dna	other_dna	5.92	8yjl	1	J	upstream DNA		Natural source	T1	-7	--------TTTTAATTT	--------[T][T]TTAATTT
+P12004:R146	dna	other_dna	6.48	8yjz	1	E	parent strand DNA		Natural source	A30	22	AATTAAAAAT-------	AATTAAAA[A]T-------
+P12004:R146	dna	other_dna	5.12	8yjs	1	J	upstream DNA		Natural source	T3	-5	------TTTTTTTTTAA	------T[T][T][T]TTTTTAA
+P12004:R146	dna	other_dna	5.86	8un0	2	I	DNA (40-MER)		Synthetically obtained	C27	19	CGTAGTGTCTGCTTTTT	CGTAGTG[T][C]TGCTTTTT
+P12004:R146	dna	other_dna	5.63	7qnz	2	H	Oligo19ddC		Synthetically obtained	T4	-4	-----GCTTCTGTGCTG	-----GC[T][T]CTGTGCTG
+P12004:R210	dna	other_dna	5.89	8yjw	1	E	parent strand DNA		Natural source	A20	12	TTTTTAAAAAATAAATA	TTTTTAAA[A]AATAAATA
+P12004:R210	dna	other_dna	6.82	8yju	1	E	parent strand DNA		Natural source	T21	13	AAATTTTTTAAAAAAAA	AAATTTTT[T][A]AAAAAAA
+P12004:R210	dna	other_dna	6.28	8yjv	1	E	parent strand DNA		Natural source	T22	14	ATTTTTAATAAAAAAAA	ATTTTTA[A][T]AAAAAAAA
+P12004:R210	dna	other_dna	6.68	8yjq	1	E	parent strand		Natural source	A21	13	AATTATTAAAAAAAAA-	AATTATTA[A][A]AAAAAA-
+P12004:R210	dna	other_dna	6.92	6s1o	2	T	DNA template		Synthetically obtained	C32	24	ATCATGGTCATAGCT--	ATCATGGT[C]ATAGCT--
+P12004:R210	dna	other_dna	4.54	6eht	1	F	DNA (5'-D(P*AP*TP*AP*CP*GP*AP*TP*GP*GP*G)-3')		Synthetically obtained	C4	-4	-----ATACGATGGG--	-----AT[A][C]GATGGG--
+P12004:R210	dna	other_dna	4.57	9gy0	1	B	DNA (Continuous)		Synthetically obtained	C33	25	CTCGTGTCCAGCGTCG-	CTCGTGT[C][C]AGCGTCG-
+P12004:R210	dna	other_dna	7.42	7qo1	1	H	Oligo19ddC		Synthetically obtained	G9	1	GCTTCTGTGCTGATGCG	GCTTCTG[T][G]CTGATGCG
+P12004:R210	dna	other_dna	4.82	8yjh	1	E	parent strand chain E		Natural source	A17	9	AAAAATTTAAATTTTTA	AAAAATT[T][A][A]ATTTTTA
+P12004:R210	dna	other_dna	7.82	8yjr	1	J	upstream DNA		Natural source	T9	1	TATATTTTTTTTAAATT	TATATTTT[T]TTTAAATT
+P12956:R301	dna	other_dna	7.19	9ox8	1	N	DNA (34-MER)		Synthetically obtained	T14	6	CTGGAGTCTCTGTGGCA	CTGGAGTC[T]CTGTGGCA
+P12956:R301	dna	nucleosomal_dna	6.52	9q8x	1	I	DNA		Genetically manipulated	T148	140	ATACATCCTGTGAT---	ATACATC[C][T]GTGAT---
+P12956:R318	dna	other_dna	6.85	7k1j	4	F	DNA (5'-D(*GP*CP*AP*TP*GP*CP*TP*CP*TP*AP*CP*TP*GP*CP*TP*TP*CP*GP*AP*TP*AP*TP*CP*G)-3')		Synthetically obtained	T22	14	CTTCGATATCG------	CTTCGATA[T]CG------
+P12956:R318	dna	other_dna	7.44	7nfe	1	E	DNA (5'-D(P*TP*AP*AP*TP*AP*AP*TP*AP*GP*TP*TP*TP*TP*TP*AP*GP*TP*TP*TP*AP*TP*TP*AP*G)-3')		Synthetically obtained	T17	9	GTTTTTAGTTTATTAG-	GTTTTTAG[T]TTATTAG-
+P12956:R318	dna	other_dna	5.21	9g9l	1	E	DNA		Synthetically obtained	T16	8	GTTTTTAGTTTATTAG-	GTTTTTA[G][T][T]TATTAG-
+P12956:R318	dna	other_dna	5.69	7z88	2	E	DNA (26-MER)		Synthetically obtained	G10	2	ATGTTCCAGCGGAATCG	ATGTTCC[A][G]CGGAATCG
+P12956:R318	dna	other_dna	6.65	9ox8	1	Q	DNA (34-MER)		Synthetically obtained	C23	15	CACAGAGACTCCAGACA	CACAGAG[A][C]TCCAGACA
+P12956:R318	dna	other_dna	7.19	9n83	2	K	DNA (35-MER)		Synthetically obtained	A21	13	AGCAGTAGAGCATGCAT	AGCAGTAG[A]GCATGCAT
+P12956:R318	dna	other_dna	6.86	8bh3	2	d	DNA (26-MER)		Synthetically obtained	T17	9	GTTTTTAGTTTATTGGG	GTTTTTAG[T]TTATTGGG
+P12956:R318	dna	other_dna	7.09	8bhv	1	D	DNA (26-MER)		Synthetically obtained	T19	11	GTTTTTAGTTTATTGGG	GTTTTTAG[T]TTATTGGG
+P12956:R318	dna	nucleosomal_dna	4.26	9q8x	7	I	DNA		Genetically manipulated	T148	140	ATACATCCTGTGAT---	ATACATC[C][T]GTGAT---
+P12956:R318	dna	other_dna	6.28	7zyg	1	D	DNA		Synthetically obtained	A9	1	ATCCCTCTAGATATC--	ATCCCTC[T][A]GATATC--
+P12956:R318	dna	nucleosomal_dna	6.19	9zmm	1	I	DNA (154-mer)		Synthetically obtained	C10	2	ATCGCTATCGGATGTAT	ATCGCTAT[C]GGATGTAT
+P12956:R318	dna	other_dna	6.55	7lsy	1	N	DNA (26-MER)		Synthetically obtained	T18	10	GTTGTTCTTAGTATATA	GTTGTTC[T][T]AGTATATA
+P12956:R318	dna	other_dna	6.93	7nfc	1	J	DNA (27-MER)		Synthetically obtained	T19	11	GTTTTTAGTTTATTGGG	GTTTTTAG[T]TTATTGGG
+P12956:R318	dna	other_dna	5.85	7zvt	1	D	DNA (5'-D(P*CP*GP*AP*TP*AP*TP*CP*TP*AP*GP*AP*GP*GP*GP*AP*T)-3')		Synthetically obtained	G12	4	TATCTAGAGGGAT----	TATCTAG[A][G]GGAT----
+P12956:R318	dna	other_dna	5.53	6erg	5	M	DNA (34-MER)		Synthetically obtained	A30	22	ATAAACTAAAAAC----	ATAAACT[A][A]AAAC----
+P12956:R318	dna	other_dna	6.5	9n81	3	L	DNA (37-MER)		Synthetically obtained	G22	14	ACTCACGTGAACGAATG	ACTCACGT[G]AACGAATG
+P12956:R318	dna	other_dna	7.01	9iol	1	C	DNA (5'-D(P*CP*GP*CP*TP*GP*CP*CP*GP*AP*TP*TP*CP*GP*TP*CP*GP*AP*CP*CP*T)-3')		Synthetically obtained	A17	9	ATTCGTCGACCTCGC--	ATTCGTCG[A]CCTCGC--
+P12956:R318	dna	other_dna	5.8	8asc	1	D	DNA (5'-D(P*GP*GP*GP*CP*CP*CP*TP*CP*GP*AP*TP*CP*CP*G)-3')		Synthetically obtained	T12	4	GCCCTCGATCCG-----	GCCCTCG[A][T]CCG-----
+P12956:R318	dna	telomeric_dna	6.92	8rd4	1	X	DNA (41-MER)		Synthetically obtained	A83	75	TCAGTCTCACATAGATT	TCAGTCT[C][A]CATAGATT
+P12956:R318	dna	other_dna	6.58	9gd7	1	j	DNA		Synthetically obtained	T17	9	GTTTTTAGTTTATTGGG	GTTTTTAG[T]TTATTGGG
+P12956:R318	dna	other_dna	5.92	7zwa	2	E	DNA (5'-D(P*CP*GP*AP*TP*AP*TP*CP*TP*AP*GP*AP*GP*GP*GP*AP*TP*C)-3')		Synthetically obtained	G11	3	TATCTAGAGGGATC---	TATCTAG[A][G]GGATC---
+P12956:R318	dna	other_dna	7.23	9i04	1	D	DNA (5'-D(P*GP*GP*TP*GP*CP*AP*GP*CP*AP*CP*AP*GP*TP*G)-3')		Synthetically obtained	G4	-4	-----GGTGCAGCACAG	-----GGT[G]CAGCACAG
+P12956:R318	dna	other_dna	7.39	8ezb	1	E	DNA (30-MER)		Synthetically obtained	G20	12	TGACATCAGAGTTCTTA	TGACATCA[G]AGTTCTTA
+P12956:R318	dna	other_dna	4.13	6zha	1	E	DNA		Synthetically obtained	T17	9	GTTTTTAGTTTATTAG-	GTTTTTA[G][T]TTATTAG-
+P12956:R318	dna	other_dna	7.1	7sgl	1	E	Hairpin_1		Synthetically obtained	A9	1	TCAGAAGCAGTAGAGCA	TCAGAAGC[A]GTAGAGCA
+P15927:R133	dna	other_dna	4.26	9mj5	1	T	DNA template (35-mer)		Synthetically obtained	T18	10	ACATAGTATACATAGGC	ACATAGT[A][T][A]CATAGGC
+P16403:R54	dna	nucleosomal_dna	4.21	8h0v	1	N	DNA (261-MER)		Synthetically obtained	G87	79	TGTGTTTGGTGTGTTTG	TGTGTTT[G][G][T]GTGTTTG
+P16403:R54	dna	nucleosomal_dna	6.58	8h0w	1	N	DNA (261-MER)		Synthetically obtained	T88	80	GTGTTTGGTGTGTTTGG	GTGTTTG[G][T]GTGTTTGG
+P17096:R56	dna	other_dna	4.14	2ezd	2	B	DNA (5'-D(*GP*GP*GP*AP*AP*AP*TP*TP*CP*CP*TP*C)-3')	Homo sapiens	Synthetically obtained	T8	0	-GGGAAATTCCTC----	-GGGAAA[T][T][C]CTC----
+P18124:R134	rna	rrna	5.23	8fky	1	L3	28S ribosomal RNA		Natural source	U1727	1719	ACGCAGUUUUAUCCGGU	ACGCAGU[U][U]UAUCCGGU
+P18124:R134	rna	rrna	5.38	8fkx	10	L3	28S ribosomal RNA		Natural source	U1727	1719	ACGCAGUUUUAUCCGGU	ACGCAGU[U][U]UAUCCGGU
+P18124:R134	rna	rrna	5.02	8fl0	1	L3	28S ribosomal RNA		Natural source	U1727	1719	ACGCAGUUUUAUCCGGU	ACGCAGU[U][U]UAUCCGGU
+P22392:R58	dna	other_dna	3.37	3bbb	1	G	DNA (5'-D(*AP*G)-3')	synthetic construct	Synthetically obtained	G2	-6	-------AG--------	-------[A][G]--------
+P22392:R88	dna	other_dna	4.42	3bbb	1	G	DNA (5'-D(*AP*G)-3')	synthetic construct	Synthetically obtained	G2	-6	-------AG--------	-------A[G]--------
+P22392:R114	dna	other_dna	6.49	3bbb	1	G	DNA (5'-D(*AP*G)-3')	synthetic construct	Synthetically obtained	G2	-6	-------AG--------	-------A[G]--------
+P22626:R38	dna	telomeric_dna	6.25	8hni	1	M	DNA (5'-D(P*TP*AP*GP*GP*GP*TP*TP*AP*GP*GP*GP*T)-3')	Homo sapiens	Synthetically obtained	T12	4	GGTTAGGGT--------	GGTTAGGG[T]--------
+P22626:R38	rna	rna_oligo	7.65	5wwf	1	D	RNA	synthetic construct	Synthetically obtained	G3	-5	------AAGGACGAGC-	------AA[G]GACGAGC-
+P22626:R38	rna	rna_oligo	7.21	5wwg	1	B	RNA (5'-R(*AP*AP*GP*GP*AP*CP*UP*U)-3')	synthetic construct	Synthetically obtained	G4	-4	-----AAGGACUUGC--	-----AAG[G]ACUUGC--
+P22626:R38	rna	rna_oligo	7.37	5en1	1	B	RNA (5'-R(*AP*GP*GP*AP*CP*UP*G)-3')	Homo sapiens	Synthetically obtained	G3	-5	------AGGACUG----	------AG[G]ACUG----
+P22626:R38	rna	rna_oligo	7.66	5wwe	1	B	RNA (5'-R(*AP*GP*GP*GP*AP*CP*UP*AP*GP*A)-3')	synthetic construct	Synthetically obtained	G3	-5	------AGGGACUAGC-	------AG[G]GACUAGC-
+P22626:R147	dna	telomeric_dna	5.58	8hni	1	O	DNA (5'-D(P*TP*AP*GP*GP*GP*TP*TP*AP*GP*GP*GP*T)-3')	Homo sapiens	Synthetically obtained	G4	-4	-----TAGGGTTAGGGT	-----TA[G][G][G]T[T]AGGGT
+P23381:R381	rna	trna	6.9	2ake	1	B	transfer RNA-Trp	Bos taurus	Genetically manipulated	C33	25	GUCUGACUCCAGAUCAG	GUCUGACU[C][C]AGAUCAG
+P23381:R381	rna	rna_oligo	6.05	2azx	2	D	72-MER	Bos taurus	Synthetically obtained	C33	25	GUCUGACUCCAGAUCAG	GUCUGACU[C][C][A]GAUCAG
+P25205:R371	dna	other_dna	4.11	8w0e	1	S	DNA (25-MER)		Synthetically obtained	T22	14	TTTTTTTTTTTT-----	TTTTTTT[T][T][T]TT-----
+P25205:R371	dna	other_dna	4.41	9caq	1	S	DNA (44-MER)		Synthetically obtained	T41	33	TTTTTTTTTTTT-----	TTTTTTT[T][T][T]TT-----
+P25205:R371	dna	other_dna	6.75	9e2z	1	F	Leading strand DNA template		Genetically manipulated	G34	26	TGGGTTGAGGCAATA--	TGGGTTGA[G][G]CAATA--
+P25205:R371	dna	other_dna	7.26	7plo	1	M	Leading strand DNA		Synthetically obtained	T55	47	TTTTTTTTTTTTTTTTT	TTTTTTTT[T][T]TTTTTTT
+P25205:R371	dna	other_dna	5.15	8s0a	1	X	DNA (22-mer)		Synthetically obtained	T20	12	CGCATGCATGC------	CGCATGC[A][T]GC------
+P25205:R371	dna	other_dna	5.79	6xtx	1	M	DNA (5'-D(P*TP*TP*TP*TP*TP*TP*TP*TP*TP*TP*T)-3')		Synthetically obtained	T51	43	TTTTTTTTTTTTTTTTT	TTTTTTTT[T]TTTTTTTT
+P25205:R371	dna	other_dna	5.23	8s09	1	Y	DNA (45-mer)		Synthetically obtained	T43	35	CGCATGCATGC------	CGCATGC[A][T][G]C------
+P25205:R371	dna	other_dna	6.7	7pfo	1	M	Leading strand DNA		Synthetically obtained	T55	47	TTTTTTTTTTTTTTTTT	TTTTTTTT[T][T]TTTTTTT
+P25205:R371	dna	other_dna	7.34	8b9d	1	M	Leading strand DNA		Synthetically obtained	T54	46	TTTTTTTTTTTTTTTTT	TTTTTTTT[T][T]TTTTTTT
+P25398:R33	rna	rrna	4.7	9g8o	1	S2	18S Ribosomal RNA		Natural source	A1284	1276	ACACGGACAGGAUUGAC	ACACGGAC[A]G[G]AUUGAC
+P25398:R33	rna	rrna	4.03	28zv	1	S2	18S Ribosomal RNA		Natural source	A1284	1276	ACACGGACAGGAUUGAC	ACACGGAC[A]G[G]AUUGAC
+P25398:R33	rna	rrna	4.35	6zxf	1	2	pre-18S ribosomal RNA		Natural source	A1284	1276	ACACGGACAGGAUUGAC	ACACGGAC[A]G[G]AUUGAC
+P25398:R33	rna	rrna	4.25	6zxh	2	2	pre-18S ribosomal RNA		Natural source	A1284	1276	ACACGGACAGGAUUGAC	ACACGGAC[A]G[G]AUUGAC
+P25398:R36	rna	rrna	5.15	9g8o	1	S2	18S Ribosomal RNA		Natural source	C1311	1303	CUCUUUCUCGAUUCCGU	CUCUUU[C][U][C][G]AUUCCGU
+P25490:R381	dna	other_dna	7.54	1ubd	1	B	DNA (5'-D(*CP*GP*CP*TP*TP*CP*AP*AP*AP*AP*TP*GP*GP*AP*GP*AP*C P*CP*CP*T)-3')	Homo sapiens	Synthetically obtained	A7	-1	--CGCTTCAAAATGGAG	--CGCTTC[A]AAATGGAG
+P26373:R82	rna	rrna	4.29	7ow7	1	A	28S ribosomal RNA		Natural source	G160	152	UGGCGUACGGAAGACCC	UGGCGUA[C][G]GAAGACCC
+P26373:R82	rna	rrna	4.02	8ir3	2	2	28S ribosomal RNA		Natural source	G160	152	UGGCGUACGGAAGACCC	UGGCGUA[C][G]GAAGACCC
+P26373:R82	rna	rrna	4.03	8inf	1	2	28S ribosomal RNA		Natural source	G160	152	UGGCGUACGGAAGACCC	UGGCGUA[C][G]GAAGACCC
+P26373:R82	rna	rrna	5.15	6om0	1	t	28S ribosomal RNA		Natural source	U264	256	CGCCCGGGUCUUCCCGG	CGCCCGG[G][U][C]UUCCCGG
+P26373:R82	rna	rrna	4.57	9gmo	1	A	28S ribosomal RNA		Natural source	G160	152	UGGCGUACGGAAGACCC	UGGCGUA[C][G]GAAGACCC
+P27635:R32	rna	rrna	5.39	7f5s	1	L5	28S ribosomal RNA		Natural source	U1748	1740	CGAAUGAUUAGAGGUCU	CGAAUGA[U][U]AGAGGUCU
+P27635:R32	rna	trna	4.75	6om0	1	u	tRNA		Natural source	G52	44	GUGUCCUUGGUUCGAUU	GUGUCCU[U][G]GUUCGAUU
+P27635:R32	rna	rrna	5	9gmo	1	A	28S ribosomal RNA		Natural source	U1742	1734	CGAAUGAUUAGAGGUCU	CGAAUGA[U][U]AGAGGUCU
+P27635:R32	rna	rrna	5.57	8qfd	1	5	28S ribosomal RNA		Natural source	U1748	1740	CGAAUGAUUAGAGGUCU	CGAAUGA[U][U]AGAGGUCU
+P27635:R32	rna	rrna	5.36	8a3d	1	A	28S ribosomal RNA		Natural source	U1748	1740	CGAAUGAUUAGAGGUCU	CGAAUGA[U][U]AGAGGUCU
+P27635:R32	rna	rrna	7.32	8fld	1	L3	28S ribosomal RNA		Natural source	U1748	1740	CGAAUGAUUAGAGGUCU	CGAAUGAU[U]AGAGGUCU
+P27635:R32	rna	rrna	4.14	8fle	2	L3	28S ribosomal RNA		Natural source	U1748	1740	CGAAUGAUUAGAGGUCU	CGAAUGA[U][U][A]GAGGUCU
+P27635:R88	rna	rrna	3.95	7f5s	1	L5	28S ribosomal RNA		Natural source	U1782	1774	CAACCUAUUCUCAAACU	CAACCUAU[U][C][U]CAAACU
+P27635:R88	rna	rrna	4.05	6om0	1	t	28S ribosomal RNA		Natural source	U1356	1348	CAACCUAUUCUCAAACU	CAACCUAU[U][C][U]CAAACU
+P27635:R88	rna	rrna	3.52	9gmo	1	A	28S ribosomal RNA		Natural source	U1776	1768	CAACCUAUUCUCAAACU	CAACCUAU[U][C]UCAAACU
+P27635:R153	rna	rrna	4.2	7f5s	1	L5	28S ribosomal RNA		Natural source	G1945	1937	CCAGAAAAGGUGUUGGU	CCAGAAA[A][G]GUGUUGGU
+P27635:R153	rna	rrna	4.92	6om0	1	t	28S ribosomal RNA		Natural source	A3032	3024	UGGCGGCCAAGCGUUCA	UGGCGGC[C][A]AGCGUUCA
+P27635:R153	rna	rrna	4.42	8qfd	1	5	28S ribosomal RNA		Natural source	A4414	4406	UGGCGGCCAAGCGUUCA	UGGCGGC[C][A]AGCGUUCA
+P27635:R153	rna	rrna	4.39	8a3d	1	A	28S ribosomal RNA		Natural source	G1945	1937	CCAGAAAAGGUGUUGGU	CCAGAAA[A][G]GUGUUGGU
+P27635:R153	rna	rrna	4.5	8fld	1	L3	28S ribosomal RNA		Natural source	A2030	2022	CCGAAUCAACUAGCCCU	CCGAAUC[A][A][C]UAGCCCU
+P27635:R153	rna	rrna	4.23	8flf	2	L3	28S ribosomal RNA		Natural source	C2031	2023	CGAAUCAACUAGCCCUG	CGAAUCA[A][C]UAGCCCUG
+P27695:R156	dna	nucleosomal_dna	6.52	7u50	1	I	DNA (144-MER)		Synthetically obtained	T138	130	CAGATATATNCATCCGA	CAGATATA[T]NCATCCGA
+P27695:R156	dna	other_dna	4.6	9rqs	1	E	DNA (5'-D(P*CP*GP*GP*AP*CP*T*(LIG)P*(AS)P*CP*GP*GP*G)-3')	synthetic construct	Synthetically obtained	T6	-2	---CGGACTXACGGG--	---CGGA[C][T][X]ACGGG--
+P27695:R156	dna	other_dna	4.24	4iem	1	H	DNA (5'-D(*GP*CP*TP*AP*C)-3')	synthetic construct	Synthetically obtained	C5	-3	----GCTAC--------	----GCT[A][C]--------
+P27695:R156	dna	other_dna	4.42	9z4y	2	E	DNA (5'-D(*GP*CP*TP*AP*CP*(3DR)P*GP*AP*TP*CP*G)-3')	synthetic construct	Synthetically obtained	C5	-3	----GCTACNGATCG--	----GCT[A][C][N]GATCG--
+P27695:R156	dna	other_dna	4.46	1de9	1	U	5'-d(*CP*TP*AP*C)-3'	Homo sapiens	Synthetically obtained	C4	-4	-----CTAC--------	-----CT[A][C]--------
+P27695:R156	dna	other_dna	4.06	1dew	1	X	5'-D(*GP*CP*GP*TP*CP*CP*(3DR)P*CP*GP*AP*CP*GP*AP*CP*G)-3'	Homo sapiens	Synthetically obtained	C6	-2	---GCGTCCNCGACGAC	---GCGT[C][C][N]CGACGAC
+P27695:R156	dna	other_dna	4.01	5wn2	1	D	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*G)-3')	synthetic construct	Synthetically obtained	G9	1	GCTGATGCG--------	GCTGATG[C][G]--------
+P27695:R156	dna	other_dna	4.13	5wn1	1	D	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*G)-3')	synthetic construct	Synthetically obtained	G9	1	GCTGATGCG--------	GCTGATG[C][G]--------
+P27695:R156	dna	other_dna	4.82	6boq	1	D	21-mer DNA	synthetic construct	Synthetically obtained	A10	2	CTGATGCGAXCGACGGA	CTGATGC[G][A][X]CGACGGA
+P27695:R156	dna	other_dna	4.81	7lph	2	E	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*C)-3')	synthetic construct	Synthetically obtained	C10	2	CTGATGCGC--------	CTGATGC[G][C]--------
+P27695:R156	dna	other_dna	4.33	5wn0	1	D	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*C)-3')	synthetic construct	Synthetically obtained	C10	2	CTGATGCGC--------	CTGATGC[G][C]--------
+P27695:R156	dna	other_dna	4.27	6w3u	7	D	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*(C7R))-3')	synthetic construct	Synthetically obtained	G9	1	GCTGATGCGC-------	GCTGATG[C][G][C]-------
+P27695:R156	dna	other_dna	4.41	9dp1	1	D	DNA (5'-D(P*GP*CP*TP*GP*AP*TP*GP*CP*GP*CP*(3DR)P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	C10	2	CTGATGCGCNCGACGGA	CTGATGC[G][C]NCGACGGA
+P27695:R156	dna	other_dna	4.64	6bos	1	P	21-mer DNA	synthetic construct	Synthetically obtained	C10	2	CTGATGCGCXCGACGGA	CTGATGC[G][C][X]CGACGGA
+P27695:R156	dna	other_dna	4.73	6bot	1	P	21-mer DNA	synthetic construct	Synthetically obtained	C10	2	CTGATGCGCXCGACGGA	CTGATGC[G][C][X]CGACGGA
+P27695:R156	dna	other_dna	4.26	7lpj	2	E	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*C)-R(P*(YA4))-D(P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	C10	2	CTGATGCGCXCGACGGA	CTGATGC[G][C][X]CGACGGA
+P27695:R156	dna	other_dna	4.67	6bou	1	P	21-mer DNA	synthetic construct	Synthetically obtained	C10	2	CTGATGCGCXCGACGGA	CTGATGC[G][C][X]CGACGGA
+P27695:R156	dna	other_dna	4.52	5dfi	2	P	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*(OMC)P*(48Z)P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	C10	2	CTGATGCGCXCGACGGA	CTGATGC[G][C][X]CGACGGA
+P27695:R156	dna	other_dna	4.71	7suv	1	D	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*(8OG))-3')	synthetic construct	Synthetically obtained	G9	1	GCTGATGCGG-------	GCTGATG[C][G][G]-------
+P27695:R156	dna	other_dna	4.66	7svb	1	D	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*(8OG))-3')	synthetic construct	Synthetically obtained	G9	1	GCTGATGCGG-------	GCTGATG[C][G][G]-------
+P27695:R156	dna	other_dna	4.6	6bov	1	P	21-mer DNA	synthetic construct	Synthetically obtained	G10	2	CTGATGCGGNCGACGGA	CTGATGC[G][G][N]CGACGGA
+P27695:R156	dna	other_dna	5.09	5dfh	1	C	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*T)-3')	synthetic construct	Synthetically obtained	T10	2	CTGATGCGT--------	CTGATGC[G][T]--------
+P27695:R156	dna	other_dna	4.5	5dfj	1	P	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*TP*(3DR)P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	T10	2	CTGATGCGTNCGACGGA	CTGATGC[G][T][N]CGACGGA
+P27695:R156	dna	other_dna	4.84	6bow	1	P	21-mer DNA	synthetic construct	Synthetically obtained	T10	2	CTGATGCGTXCGACGGA	CTGATGC[G][T][X]CGACGGA
+P27695:R156	dna	other_dna	4.34	6w4t	1	C	DNA (5'-D(P*GP*CP*TP*GP*AP*TP*GP*CP*GP*TP*(48Z)P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	T10	2	CTGATGCGTXCGACGGA	CTGATGC[G][T][X]CGACGGA
+P27695:R156	dna	other_dna	6.74	7tr7	1	D	DNA (5'-D(P*(3DR)P*CP*GP*AP*TP*GP*C)-3')	synthetic construct	Synthetically obtained	N1	-7	--------NCGATGC--	--------[N]CGATGC--
+P27695:R221	dna	nucleosomal_dna	7.83	7u50	1	I	DNA (144-MER)		Synthetically obtained	T142	134	TATATNCATCCGAT---	TATATNCA[T]CCGAT---
+P27695:R221	dna	other_dna	6.74	9rqs	1	E	DNA (5'-D(P*CP*GP*GP*AP*CP*T*(LIG)P*(AS)P*CP*GP*GP*G)-3')	synthetic construct	Synthetically obtained	G10	2	GGACTXACGGG------	GGACTXAC[G]GG------
+P27695:R221	dna	other_dna	7.35	1de8	2	X	DNA (5'-D(*GP*CP*TP*AP*CP*(3DR)P*GP*AP*TP*CP*G)-3')	Homo sapiens	Synthetically obtained	T9	1	GCTACNGATCG------	GCTACNG[A][T]CG------
+P27695:R221	dna	other_dna	7.19	1de9	1	V	5'-d(P*(3DR)P*GP*AP*TP*C)-3'	Homo sapiens	Synthetically obtained	A3	-5	------NGATC------	------NG[A][T]C------
+P27695:R221	dna	other_dna	7.75	1dew	1	X	5'-D(*GP*CP*GP*TP*CP*CP*(3DR)P*CP*GP*AP*CP*GP*AP*CP*G)-3'	Homo sapiens	Synthetically obtained	A10	2	CGTCCNCGACGACG---	CGTCCNC[G][A]CGACG---
+P27695:R221	dna	other_dna	7.13	5wn2	1	C	DNA (5'-D(P*TP*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	C2	-6	-------TCGACGGATC	-------[T][C]GACGGATC
+P27695:R221	dna	other_dna	7.56	5wn1	1	C	DNA (5'-D(P*TP*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	T1	-7	--------TCGACGGAT	--------[T][C]GACGGAT
+P27695:R221	dna	other_dna	7.84	6boq	1	D	21-mer DNA	synthetic construct	Synthetically obtained	G13	5	ATGCGAXCGACGGATCC	ATGCGAXC[G][A]CGGATCC
+P27695:R221	dna	other_dna	7.93	7lph	1	A	DNA (5'-R(P*N)-D(P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	G3	-5	------NCGACGGATCC	------NC[G][A]CGGATCC
+P27695:R221	dna	other_dna	7.16	5wn0	1	C	DNA (5'-D(P*TP*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	G3	-5	------TCGACGGATCC	------TC[G]ACGGATCC
+P27695:R221	dna	other_dna	7.65	6w2p	1	D	DNA (5'-D(P*(3DR)P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	A4	-4	-----NCGACGGATCC-	-----NCG[A]CGGATCC-
+P27695:R221	dna	other_dna	7.48	6w3n	3	C	TCGACGGATCC	synthetic construct	Synthetically obtained	T1	-7	--------TCGACGGAT	--------[T][C]GACGGAT
+P27695:R221	dna	other_dna	7.58	9dp3	7	D	DNA (5'-D(P*(3DR)P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	A4	-4	-----NCGACGGATCC-	-----NC[G][A]CGGATCC-
+P27695:R221	dna	other_dna	7.94	9dp1	1	D	DNA (5'-D(P*GP*CP*TP*GP*AP*TP*GP*CP*GP*CP*(3DR)P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	G13	5	ATGCGCNCGACGGATCC	ATGCGCNC[G]ACGGATCC
+P27695:R221	dna	other_dna	7.32	6bos	1	P	21-mer DNA	synthetic construct	Synthetically obtained	A14	6	TGCGCXCGACGGATCC-	TGCGCXC[G][A]CGGATCC-
+P27695:R221	dna	other_dna	7.85	6bot	1	P	21-mer DNA	synthetic construct	Synthetically obtained	G13	5	ATGCGCXCGACGGATCC	ATGCGCXC[G][A]CGGATCC
+P27695:R221	dna	other_dna	7.49	7lpi	2	E	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*C)-R(P*(YA4))-D(P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	A14	6	TGCGCXCGACGGATCC-	TGCGCXC[G][A]CGGATCC-
+P27695:R221	dna	other_dna	7.69	6bou	1	P	21-mer DNA	synthetic construct	Synthetically obtained	G13	5	ATGCGCXCGACGGATCC	ATGCGCXC[G][A]CGGATCC
+P27695:R221	dna	other_dna	7.66	5dg0	2	P	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*(OMC)P*(48Z)P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	A14	6	TGCGCXCGACGGATCC-	TGCGCXC[G][A]CGGATCC-
+P27695:R221	dna	other_dna	7.26	7suv	1	C	DNA (5'-D(P*TP*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	C2	-6	-------TCGACGGATC	-------[T][C]GACGGATC
+P27695:R221	dna	other_dna	7.14	7svb	1	C	DNA (5'-D(P*TP*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	C2	-6	-------TCGACGGATC	-------[T][C]GACGGATC
+P27695:R221	dna	other_dna	7.78	6bov	1	P	21-mer DNA	synthetic construct	Synthetically obtained	A14	6	TGCGGNCGACGGATCC-	TGCGGNC[G][A]CGGATCC-
+P27695:R221	dna	other_dna	7.77	6bor	1	P	21-mer DNA	synthetic construct	Synthetically obtained	A14	6	TGCGGNCGACGGATCC-	TGCGGNC[G][A]CGGATCC-
+P27695:R221	dna	other_dna	7.72	5dfj	1	P	DNA (5'-D(*GP*CP*TP*GP*AP*TP*GP*CP*GP*TP*(3DR)P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	A14	6	TGCGTNCGACGGATCC-	TGCGTNC[G][A]CGGATCC-
+P27695:R221	dna	other_dna	7.77	6bow	1	P	21-mer DNA	synthetic construct	Synthetically obtained	A14	6	TGCGTXCGACGGATCC-	TGCGTXC[G][A]CGGATCC-
+P27695:R221	dna	other_dna	7.28	6w4t	1	C	DNA (5'-D(P*GP*CP*TP*GP*AP*TP*GP*CP*GP*TP*(48Z)P*CP*GP*AP*CP*GP*GP*AP*TP*CP*C)-3')	synthetic construct	Synthetically obtained	G13	5	ATGCGTXCGACGGATCC	ATGCGTXC[G][A]CGGATCC
+P27695:R221	dna	other_dna	7.72	7tr7	1	D	DNA (5'-D(P*(3DR)P*CP*GP*AP*TP*GP*C)-3')	synthetic construct	Synthetically obtained	A4	-4	-----NCGATGC-----	-----NCG[A]TGC-----
+P29372:R138	dna	nucleosomal_dna	7.83	7xfh	1	I	DNA (152-MER)		Genetically manipulated	A47	39	TAGGGAGTAXTCCCCTT	TAGGGAGT[A]XTCCCCTT
+P29372:R138	dna	nucleosomal_dna	6.85	7xfj	1	I	DNA (152-MER)		Genetically manipulated	G27	19	TCTGACACGXGCCTGGA	TCTGACA[C][G]XGCCTGGA
+P29372:R138	dna	nucleosomal_dna	6.39	7xfm	1	J	DNA (152-MER)		Genetically manipulated	A132	124	CACGCGTCAGATATATA	CACGCGTC[A][G]ATATATA
+P29372:R138	dna	other_dna	5.02	1ewn	1	E	DNA (5'-D(P*GP*CP*AP*AP*TP*CP*AP*TP*GP*TP*CP*A)-3')	Homo sapiens	Synthetically obtained	T10	2	CAATCATGTCA------	CAATCAT[G][T]CA------
+P29372:R138	dna	other_dna	5.49	1f4r	1	E	DNA (5'-D(*GP*GP*CP*AP*AP*TP*CP*AP*TP*GP*TP*CP*A)-3')	Homo sapiens	Synthetically obtained	T11	3	CAATCATGTCA------	CAATCAT[G][T]CA------
+P29372:R138	dna	other_dna	5.11	1bnk	2	D	DNA (5'-D(*GP*AP*CP*AP*TP*GP*YRRP*TP*TP*GP*CP*CP*T)-3')	Homo sapiens	Synthetically obtained	N7	-1	--GACATGNTTGCCT--	--GACA[T][G][N]TTGCCT--
+P29372:R138	dna	other_dna	6.36	3uby	1	D	DNA (5'-D(*GP*AP*CP*AP*TP*GP*(EDC)P*TP*TP*GP*CP*CP*T)-3')	Homo sapiens	Synthetically obtained	G6	-2	---GACATGXTTGCCT-	---GACAT[G][X]TTGCCT-
+P29372:R138	dna	other_dna	4.93	3qi5	1	C	DNA (5'-D(*GP*AP*CP*AP*TP*GP*(EDC)P*TP*TP*GP*CP*CP*T)-3')	Homo sapiens	Synthetically obtained	X7	-1	--GACATGXTTGCCT--	--GACA[T][G][X]TTGCCT--
+P32969:R36	rna	rrna	4.98	7bhp	1	L5	28S ribosomal RNA		Natural source	G4702	4694	GCCUCUAAGUCAGAAUC	GCCUCUA[A][G][U]CAGAAUC
+P32969:R36	rna	rrna	4.05	8ipd	2	2	28S ribosomal RNA		Natural source	G4702	4694	GCCUCUAAGUCAGAAUC	GCCUCUA[A][G][U]CAGAAUC
+P32969:R36	rna	rrna	4.15	8ipx	1	2	28S ribosomal RNA		Natural source	G4702	4694	GCCUCUAAGUCAGAAUC	GCCUCUA[A][G][U]CAGAAUC
+P32969:R36	rna	rrna	4.15	8ipy	1	2	28S ribosomal RNA		Natural source	G4702	4694	GCCUCUAAGUCAGAAUC	GCCUCUA[A][G][U]CAGAAUC
+P32969:R36	rna	rrna	4.29	9gmo	1	A	28S ribosomal RNA		Natural source	A4696	4688	CGCCUCUAAGUCAGAAU	CGCCUCUA[A][G][U]CAGAAU
+P32969:R36	rna	rrna	4.05	8fky	1	L3	28S ribosomal RNA		Natural source	G4702	4694	GCCUCUAAGUCAGAAUC	GCCUCUA[A][G][U]CAGAAUC
+P32969:R36	rna	rrna	4.06	8fl0	1	L3	28S ribosomal RNA		Natural source	G4702	4694	GCCUCUAAGUCAGAAUC	GCCUCUA[A][G][U]CAGAAUC
+P32969:R129	rna	rrna	4.6	7ow7	1	A	28S ribosomal RNA		Natural source	C4704	4696	CUCUAAGUCAGAAUCCC	CUCUAAG[U][C][A]GAAUCCC
+P32969:R129	rna	rrna	4.71	6om0	1	t	28S ribosomal RNA		Natural source	C3322	3314	CUCUAAGUCAGAAUCCC	CUCUAAG[U][C][A]GAAUCCC
+P33993:R407	dna	other_dna	5	8w0e	1	S	DNA (25-MER)		Synthetically obtained	T21	13	TTTTTTTTTTTTT----	TTTTTTT[T][T]TTTT----
+P33993:R407	dna	other_dna	4.05	7w1y	1	S	DNA (49-MER)		Natural source	T44	36	TTTTTTTTTTTTTT---	TTTTTTT[T][T][T]TTTT---
+P33993:R407	dna	other_dna	4.17	8s0a	1	X	DNA (22-mer)		Synthetically obtained	A19	11	GCGCATGCATGC-----	GCGCAT[G][C][A]TGC-----
+P33993:R407	dna	other_dna	7.37	6xtx	1	M	DNA (5'-D(P*TP*TP*TP*TP*TP*TP*TP*TP*TP*TP*T)-3')		Synthetically obtained	T50	42	TTTTTTTTTTTTTTTTT	TTTTTTTT[T][T]TTTTTTT
+P33993:R407	dna	other_dna	5.1	8s0b	1	X	DNA (45-mer)		Synthetically obtained	A34	26	GCGCATGCATGCATGCA	GCGCATG[C][A][T]GCATGCA
+P33993:R407	dna	other_dna	5.33	8s0d	1	X	DNA (58-mer)		Synthetically obtained	A47	39	GCGCATGCATGCATGCA	GCGCATG[C][A][T]GCATGCA
+P33993:R407	dna	other_dna	4.51	8s09	1	X	DNA (45-mer)		Synthetically obtained	A42	34	GCGCATGCATGC-----	GCGCAT[G][C][A][T]GC-----
+P35659:R107	dna	nucleosomal_dna	5.56	9l22	2	I	601 DNA_R (189-MER)		Genetically manipulated	G97	89	GGGACAGCGCGTACGTG	GGGACAG[C][G]CGTACGTG
+P36578:R71	rna	rrna	5.39	7bhp	1	L5	28S ribosomal RNA		Natural source	A3905	3897	GGGGAAAGAAGACCCUG	GGGGAAA[G][A][A]GACCCUG
+P36578:R71	rna	rrna	7.86	7ow7	1	A	28S ribosomal RNA		Natural source	A3906	3898	GGGAAAGAAGACCCUGU	GGGAAAGA[A]GACCCUGU
+P36578:R71	rna	rrna	7.33	6y6x	1	L5	28S ribosomal RNA		Natural source	A3905	3897	GGGGAAAGAAGACCCUG	GGGGAAAG[A][A]GACCCUG
+P36578:R71	rna	rrna	7.86	7f5s	1	L5	28S ribosomal RNA		Natural source	A3906	3898	GGGAAAGAAGACCCUGU	GGGAAAGA[A]GACCCUGU
+P36578:R71	rna	rrna	7.95	9p9j	2	L5	28S ribosomal RNA		Natural source	A2694	2686	GGGAAAGAAGACCCUGU	GGGAAAGA[A]GACCCUGU
+P36578:R71	rna	rrna	7.95	6om0	1	t	28S ribosomal RNA		Natural source	A2648	2640	GGGAAAGAAGACCCUGU	GGGAAAGA[A]GACCCUGU
+P36578:R71	rna	rrna	7.64	9gmo	1	A	28S ribosomal RNA		Natural source	A3901	3893	GGGAAAGAAGACCCUGU	GGGAAAGA[A]GACCCUGU
+P36578:R71	rna	rrna	7.57	8qfd	1	5	28S ribosomal RNA		Natural source	A3905	3897	GGGGAAAGAAGACCCUG	GGGGAAAG[A][A]GACCCUG
+P36578:R71	rna	rrna	7.65	8ohd	1	5	28S ribosomal RNA		Natural source	A1600	1592	GACGUGCAAAUCGGUCG	GACGUGCA[A]AUCGGUCG
+P36578:R71	rna	rrna	7.01	29iy	2	CA	28S ribosomal RNA		Natural source	A3905	3897	GGGGAAAGAAGACCCUG	GGGGAAAG[A][A]GACCCUG
+P36578:R71	rna	rrna	7.68	8a3d	1	A	28S ribosomal RNA		Natural source	A3906	3898	GGGAAAGAAGACCCUGU	GGGAAAGA[A]GACCCUGU
+P36578:R71	rna	rrna	7.66	8fkz	1	L3	28S ribosomal RNA		Natural source	U2350	2342	GGUGCAGAUCUUGGUGG	GGUGCAGA[U]CUUGGUGG
+P36578:R188	rna	rrna	4.01	7bhp	1	L5	28S ribosomal RNA		Natural source	G2299	2291	GCUGCGGUGAGCCUUGA	GCUGCG[G][U][G]A[G][C][C]UUGA
+P38935:R146	rna	rna_oligo	7.1	4b3g	1	G	RNA (5'-(AP*AP*AP*AP*AP*AP*AP*AP*AP)-3')	Homo sapiens	Synthetically obtained	A8	0	-AAAAAAAAA-------	-AAAAAAA[A][A]-------
+P39019:R56	rna	rrna	4.65	5oa3	1	2	18S Ribosomal RNA		Natural source	G1541	1533	ACUGACUGGCUCAGCGU	ACUGACU[G][G]CUCAGCGU
+P39019:R56	rna	rrna	4.23	5a2q	1	2	18S Ribosomal RNA		Natural source	G1541	1533	ACUGACUGGCUCAGCGU	ACUGACU[G][G]CUCAGCGU
+P39019:R56	rna	rrna	4.23	6g5i	1	2	18S Ribosomal RNA		Natural source	G1541	1533	ACUGACUGGCUCAGCGU	ACUGACU[G][G]CUCAGCGU
+P39019:R94	rna	rrna	4.51	7qp6	1	A	18S Ribosomal RNA		Natural source	A1561	1553	CCUACCCUACGCCGGCA	CCUACCC[U][A][C]GCCGGC[A]
+P39019:R94	rna	rrna	4.69	6zmw	1	A	18S Ribosomal RNA		Natural source	G1584	1576	GGUAACCCGUUGAACCC	GGUAACC[C][G]U[U][G]AACCC
+P39019:R94	rna	rrna	5.04	9g8o	1	S2	18S Ribosomal RNA		Natural source	A1561	1553	CCUACCCUACGCCGGCA	CCUACCC[U][A][C]GCCGGCA
+P39019:R94	rna	rrna	4.37	8oz0	1	W	18S Ribosomal RNA		Natural source	A1421	1413	CCUACCCUACGCCGGCA	CCUACCC[U][A][C]GCCGGC[A]
+P39019:R94	rna	rrna	4.07	5oa3	1	2	18S Ribosomal RNA		Natural source	A1561	1553	CCUACCCUACGCCGGCA	CCUACC[C][U][A][C]GCCGGC[A]
+P39019:R94	rna	rrna	4.07	5a2q	1	2	18S Ribosomal RNA		Natural source	A1561	1553	CCUACCCUACGCCGGCA	CCUACC[C][U][A][C]GCCGGC[A]
+P39019:R94	rna	rrna	5.04	5flx	1	1	18S Ribosomal RNA		Natural source	A1561	1553	CCUACCCUACGCCGGCA	CCUACC[C][U][A]CGCCGGC[A]
+P39019:R94	rna	rrna	4.56	7r4x	1	2	18S Ribosomal RNA		Natural source	A1561	1553	CCUACCCUACGCCGGCA	CCUACCC[U][A][C]GCCGGC[A]
+P39019:R94	rna	rrna	4.3	6zvh	1	2	18S Ribosomal RNA		Natural source	A1432	1424	CCUACCCUACGCCGGCA	CCUACCC[U][A][C]GCCGGC[A]
+P39019:R94	rna	rrna	4.31	6g5i	1	2	18S Ribosomal RNA		Natural source	A1561	1553	CCUACCCUACGCCGGCA	CCUACC[C][U][A]CGCCGGC[A]
+P39019:R94	rna	rrna	4.02	6zxg	2	2	pre-18S ribosomal RNA		Natural source	A1561	1553	CCUACCCUACGCCGGCA	CCUACCC[U][A][C]GCCGGC[A]
+P39019:R94	rna	rrna	4.39	6zvj	1	2	18S Ribosomal RNA		Natural source	A1421	1413	CCUACCCUACGCCGGCA	CCUACCC[U][A][C]GCCGGC[A]
+P39019:R94	rna	rrna	4.22	9bkd	2	A	18S Ribosomal RNA		Natural source	A1421	1413	CCUACCCUACGCCGGCA	CCUACCC[U][A][C]GCCGGC[A]
+P39019:R133	rna	rrna	4.12	9g8o	1	S2	18S Ribosomal RNA		Natural source	C1416	1408	UACGCGACCCCCGAGCG	UACGCGA[C][C][C]CCGAGCG
+P39019:R133	rna	rrna	5.1	8oz0	1	W	18S Ribosomal RNA		Natural source	C1277	1269	ACGCGACCCCCGAGCGG	ACGCGAC[C][C][C]CGAGCGG
+P39019:R133	rna	rrna	4.14	5oa3	1	2	18S Ribosomal RNA		Natural source	C1416	1408	UACGCGACCCCCGAGCG	UACGCGA[C][C]CCCGAGCG
+P39019:R133	rna	rrna	4.13	5a2q	1	2	18S Ribosomal RNA		Natural source	C1416	1408	UACGCGACCCCCGAGCG	UACGCGA[C][C]CCCGAGCG
+P39019:R133	rna	rrna	4.03	7r4x	1	2	18S Ribosomal RNA		Natural source	C1416	1408	UACGCGACCCCCGAGCG	UACGCGA[C][C][C]CCGAGCG
+P39019:R133	rna	rrna	4.54	9ed0	1	2	rRNA		Natural source	C1417	1409	UACGCGACCCCCGAGCG	UACGCGA[C][C][C]CCGAGCG
+P39019:R133	rna	rrna	5.2	6g5i	1	2	18S Ribosomal RNA		Natural source	C1416	1408	UACGCGACCCCCGAGCG	UACGCGA[C][C]CCCGAGCG
+P39019:R133	rna	rrna	4.3	8ppk	1	2	18S Ribosomal RNA		Natural source	C1416	1408	UACGCGACCCCCGAGCG	UACGCGA[C][C][C]CCGAGCG
+P39019:R133	rna	rrna	4.1	6ybs	1	A	18S Ribosomal RNA		Natural source	C1416	1408	UACGCGACCCCCGAGCG	UACGCGA[C][C][C]CCGAGCG
+P39023:R169	rna	rrna	7.59	6lu8	1	2	28S ribosomal RNA		Natural source	U4989	4981	GACCUGCUUCUGGGUCG	GACCUGCU[U]CUGGGUCG
+P39023:R169	rna	rrna	6.45	8ipd	2	2	28S ribosomal RNA		Natural source	C4974	4966	ACCUGCUUCUGGGUCGG	ACCUGCU[U][C]UGGGUCGG
+P39023:R169	rna	rrna	7.05	8ipx	1	2	28S ribosomal RNA		Natural source	U4973	4965	GACCUGCUUCUGGGUCG	GACCUGCU[U]CUGGGUCG
+P39023:R169	rna	rrna	7.05	8ipy	1	2	28S ribosomal RNA		Natural source	U4973	4965	GACCUGCUUCUGGGUCG	GACCUGCU[U]CUGGGUCG
+P39023:R169	rna	rrna	6.76	8ir1	4	2	28S ribosomal RNA		Natural source	U4973	4965	GACCUGCUUCUGGGUCG	GACCUGCU[U][C]UGGGUCG
+P39023:R169	rna	rrna	6.67	8ir3	2	2	28S ribosomal RNA		Natural source	U4973	4965	GACCUGCUUCUGGGUCG	GACCUGCU[U][C]UGGGUCG
+P39023:R169	rna	rrna	7.48	8inf	1	2	28S ribosomal RNA		Natural source	U4973	4965	GACCUGCUUCUGGGUCG	GACCUGCU[U][C]UGGGUCG
+P39023:R169	rna	rrna	4.57	6om0	1	t	28S ribosomal RNA		Natural source	U3528	3520	CCUGCUUCUGGGUCGGG	CCUGC[U]UC[U]GGGUCGGG
+P39023:R169	rna	rrna	4.98	8oj5	4	5	28S ribosomal RNA		Natural source	U4989	4981	GACCUGCUUCUGGGUCG	GACCUGCU[U]CUGGGUCG
+P39023:R169	rna	rrna	7.98	8fky	1	L3	28S ribosomal RNA		Natural source	U4989	4981	GACCUGCUUCUGGGUCG	GACCUGCU[U]CUGGGUCG
+P39023:R169	rna	rrna	6.39	29iy	2	CA	28S ribosomal RNA		Natural source	C4990	4982	ACCUGCUUCUGGGUCGG	ACCUGCUU[C]UGGGUCGG
+P39023:R169	rna	rrna	6.51	8a3d	1	A	28S ribosomal RNA		Natural source	U4988	4980	CGACCUGCUUCUGGGUC	CGACCUGC[U]UCUGGGUC
+P39023:R169	rna	rrna	6.02	8fkt	7	L3	28S ribosomal RNA		Natural source	U4989	4981	GACCUGCUUCUGGGUCG	GACCUGCU[U]CUGGGUCG
+P39023:R169	rna	rrna	5.35	8fl6	4	L3	28S ribosomal RNA		Natural source	U4989	4981	GACCUGCUUCUGGGUCG	GACCUGCU[U]CUGGGUCG
+P39023:R169	rna	rrna	5.81	8flf	9	L3	28S ribosomal RNA		Natural source	U4989	4981	GACCUGCUUCUGGGUCG	GACCUGCU[U]CUGGGUCG
+P39023:R169	rna	rrna	7.68	8fl0	1	L3	28S ribosomal RNA		Natural source	U4989	4981	GACCUGCUUCUGGGUCG	GACCUGCU[U]CUGGGUCG
+P39748:R104	dna	other_dna	4.49	8yjw	1	H	5 prime flap DNA		Natural source	T3	-5	------TTT--------	------T[T][T]--------
+P39748:R104	dna	other_dna	5.18	8yju	1	H	5 prime flap DNA		Natural source	T3	-5	------TTT--------	------T[T][T]--------
+P39748:R104	dna	other_dna	4.23	8yjq	1	H	5 prime flap DNA		Natural source	A3	-5	------TTAT-------	------[T][T][A][T]-------
+P39748:R104	dna	other_dna	5.77	5um9	1	E	DNA (5'-D(P*TP*CP*TP*TP*GP*AP*GP*GP*CP*AP*GP*AP*GP*T)-3')	synthetic construct	Synthetically obtained	C5	-3	----ATATCTTGAGGCA	----ATAT[C][T]TGAGGCA
+P39748:R104	dna	other_dna	5.96	3q8k	1	E	DNA (5'-D(P*TP*GP*AP*GP*GP*CP*AP*GP*AP*GP*T)-3')	Homo sapiens	Synthetically obtained	T1	-7	--------TGAGGCAGA	--------[T]GAGGCAGA
+P39748:R104	dna	other_dna	6.53	3q8m	2	E	DNA (5'-D(*TP*TP*GP*AP*GP*GP*CP*AP*GP*AP*GP*T)-3')	Homo sapiens	Synthetically obtained	T1	-7	--------TTGAGGCAG	--------[T]TGAGGCAG
+P39748:R192	dna	other_dna	4.18	5k97	1	E	DNA (5'-D(P*TP*GP*AP*GP*GP*CP*AP*GP*AP*GP*T)-3')	synthetic construct	Synthetically obtained	A3	-5	------TGAGGCAGAGT	------T[G][A][G]GCAGAGT
+P39748:R192	dna	other_dna	6.17	5zoe	1	D	DNA (5'-D(*AP*CP*TP*TP*TP*GP*AP*GP*GP*CP*AP*GP*AP*G)-3')	synthetic construct	Synthetically obtained	G8	0	-ACTTTGAGGCAGAG--	-ACTTTGA[G]GCAGAG--
+P41091:R68	rna	trna	4.19	28zv	1	G	initiator tRNA		Natural source	C73	65	CUCUGCUACCA------	CUCUGCUA[C][C][A]------
+P41091:R68	rna	trna	6.52	8oz0	1	y	tRNAiMet		Synthetically obtained	A75	67	CUGCUACCA--------	CUGCUACC[A]--------
+P41091:R68	rna	trna	4.26	8ppl	1	Iw	Met-tRNAi(Met)		Natural source	C74	66	UCUGCUACCA-------	UCUGCUA[C][C][A]-------
+P41250:R596	rna	trna	5.9	4qei	1	C	tRNA-Gly-CCC-2-2	Homo sapiens	Synthetically obtained	C35	27	AAGAUUCCCAUUCUUGC	AAGAUUCC[C]AUUCUUGC
+P41250:R596	rna	trna	5.69	4kr3	3	C	Gly-tRNA-CCC	Homo sapiens	Synthetically obtained	C35	27	AAGAUUCCCAUUCUUGC	AAGAUUCC[C]AUUCUUGC
+P42766:R32	rna	rrna	6.97	9fpz	1	8	5.8S rRNA (58-MER)		Natural source	A19	11	GCUGCGAGAAUUAAUGU	GCUGCGAG[A]AUUAAUGU
+P42766:R32	rna	rrna	6.3	7bhp	1	L8	5.8S ribosomal RNA		Natural source	G49	41	AGAACGCAGCUAGCUGC	AGAACG[C][A][G]CUAGCUGC
+P42766:R32	rna	rrna	5.06	7ow7	1	C	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	6.77	6y6x	1	L8	5.8S ribosomal RNA		Natural source	A61	53	GCUGCGAGAAUUAAUGU	GCUGCGAG[A]AUUAAUGU
+P42766:R32	rna	rrna	4.97	6lqm	4	8	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	6.03	8ink	2	8	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	5.97	8ipx	1	8	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	5.97	8ipy	1	8	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	5.74	8idt	3	8	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	5.46	8ine	2	8	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	5.86	8inf	1	8	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	6	7f5s	1	L8	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	5.38	9p9j	2	L8	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	6.68	6om0	1	D	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	6.26	9gmo	1	C	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	5.74	8qfd	1	8	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	5.64	8oj5	4	8	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	5.36	8qyx	2	C2	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	5.62	8a3d	1	C	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	6.6	8ony	2	8	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G]CUAGCUG
+P42766:R32	rna	rrna	4.79	8fl6	3	L1	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G][C]UAGCUG
+P42766:R32	rna	rrna	4.76	8fl9	7	L1	5.8S ribosomal RNA		Natural source	A48	40	AAGAACGCAGCUAGCUG	AAGAACG[C][A][G][C]UAGCUG
+P42766:R117	rna	rrna	5.36	7bhp	1	L5	28S ribosomal RNA		Natural source	C172	164	GACCCGCUCCCCGGCGC	GACCCGC[U][C][C]CCGGCGC
+P42766:R117	rna	rrna	6.62	6y6x	1	L5	28S ribosomal RNA		Natural source	C172	164	GACCCGCUCCCCGGCGC	GACCCGCU[C][C]CCGGCGC
+P42766:R117	rna	rrna	5.8	6lqm	4	2	28S ribosomal RNA		Natural source	C172	164	GACCCGCUCCCCGGCGC	GACCCGC[U][C]CCCGGCGC
+P42766:R117	rna	rrna	4.03	8ink	2	2	28S ribosomal RNA		Natural source	C172	164	GACCCGCUCCCCGGCGC	GACCCGC[U][C][C]CCGGCGC
+P42766:R117	rna	rrna	4.07	8ipx	1	2	28S ribosomal RNA		Natural source	C172	164	GACCCGCUCCCCGGCGC	GACCCGC[U][C][C]CCGGCGC
+P42766:R117	rna	rrna	4.07	8ipy	1	2	28S ribosomal RNA		Natural source	C172	164	GACCCGCUCCCCGGCGC	GACCCGC[U][C][C]CCGGCGC
+P42766:R117	rna	rrna	5.05	8ir1	4	2	28S ribosomal RNA		Natural source	C172	164	GACCCGCUCCCCGGCGC	GACCCGC[U][C][C]CCGGCGC
+P42766:R117	rna	rrna	4.77	8ir3	2	2	28S ribosomal RNA		Natural source	C172	164	GACCCGCUCCCCGGCGC	GACCCGC[U][C][C]CCGGCGC
+P42766:R117	rna	rrna	5.2	8inf	1	2	28S ribosomal RNA		Natural source	C172	164	GACCCGCUCCCCGGCGC	GACCCGC[U][C][C]CCGGCGC
+P42766:R117	rna	rrna	7.06	7f5s	1	L5	28S ribosomal RNA		Natural source	C172	164	GACCCGCUCCCCGGCGC	GACCCGCU[C][C]CCGGCGC
+P42766:R117	rna	rrna	5.43	9p9j	2	L5	28S ribosomal RNA		Natural source	C172	164	GACCCGCUCCCCGGCGC	GACCCGC[U][C][C]CCGGCGC
+P42766:R117	rna	rrna	7.29	6om0	1	t	28S ribosomal RNA		Natural source	C171	163	CCCGCUCCCCGGCGCCG	CCCGCUCC[C]CGGCGCCG
+P42766:R117	rna	rrna	6.24	9gmo	1	A	28S ribosomal RNA		Natural source	C173	165	ACCCGCUCCCCGGCGCC	ACCCGCUC[C]CCGGCGCC
+P42766:R117	rna	rrna	7.95	8oj5	2	5	28S ribosomal RNA		Natural source	C173	165	ACCCGCUCCCCGGCGCC	ACCCGCUC[C]CCGGCGCC
+P42766:R117	rna	rrna	6.77	29iy	2	CA	28S ribosomal RNA		Natural source	C173	165	ACCCGCUCCCCGGCGCC	ACCCGCUC[C]CCGGCGCC
+P42766:R117	rna	rrna	4.66	8a3d	1	A	28S ribosomal RNA		Natural source	G169	161	GAAGACCCGCUCCCCGG	GAAGACCC[G]CUCCCCGG
+P42766:R117	rna	rrna	7.28	8fkz	1	L3	28S ribosomal RNA		Natural source	C173	165	ACCCGCUCCCCGGCGCC	ACCCGCUC[C]CCGGCGCC
+P42766:R117	rna	rrna	5.11	8fl2	4	L3	28S ribosomal RNA		Natural source	C173	165	ACCCGCUCCCCGGCGCC	ACCCGCU[C][C]CCGGCGCC
+P42766:R117	rna	rrna	6.63	8fl3	5	L3	28S ribosomal RNA		Natural source	C173	165	ACCCGCUCCCCGGCGCC	ACCCGCUC[C]CCGGCGCC
+P46776:R65	rna	rrna	6.93	8fky	1	L3	28S ribosomal RNA		Natural source	C1501	1493	GUGGAGCACGAGCGCAC	GUGGAGCA[C]GAGCGCAC
+P46778:R17	rna	rrna	5.05	7bhp	1	L5	28S ribosomal RNA		Natural source	G4277	4269	GCAGAAGGGCAAAAGCU	GCAGAAG[G][G][C]AAAAGCU
+P46778:R17	rna	rrna	4.79	7ow7	1	A	28S ribosomal RNA		Natural source	C4278	4270	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAAAGCUC
+P46778:R17	rna	rrna	4.27	6y6x	1	L5	28S ribosomal RNA		Natural source	C4278	4270	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAAAGCUC
+P46778:R17	rna	rrna	4.4	8idt	3	2	28S ribosomal RNA		Natural source	C4278	4270	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAAAGCUC
+P46778:R17	rna	rrna	5.03	8ine	1	2	28S ribosomal RNA		Natural source	C4278	4270	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAAAGCUC
+P46778:R17	rna	rrna	5.09	8inf	1	2	28S ribosomal RNA		Natural source	C4278	4270	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAAAGCUC
+P46778:R17	rna	rrna	4.52	7f5s	1	L5	28S ribosomal RNA		Natural source	C4278	4270	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAAAGCUC
+P46778:R17	rna	rrna	4.38	9p9j	2	L5	28S ribosomal RNA		Natural source	C2965	2957	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAAAGCUC
+P46778:R17	rna	rrna	4.59	6om0	1	t	28S ribosomal RNA		Natural source	C2896	2888	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAA[A]GCUC
+P46778:R17	rna	rrna	4.4	9gmo	1	A	28S ribosomal RNA		Natural source	G4272	4264	GCAGAAGGGCAAAAGCU	GCAGAAG[G][G][C]AAA[A]GCU
+P46778:R17	rna	rrna	4.74	8qfd	1	5	28S ribosomal RNA		Natural source	C4278	4270	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAAAGCUC
+P46778:R17	rna	rrna	4.37	8oj5	4	5	28S ribosomal RNA		Natural source	C4278	4270	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAAAGCUC
+P46778:R17	rna	rrna	4.6	8a3d	1	A	28S ribosomal RNA		Natural source	C4278	4270	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAAAGCUC
+P46778:R17	rna	rrna	4.91	8fld	3	L3	28S ribosomal RNA		Natural source	C4278	4270	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAAAGCUC
+P46778:R17	rna	rrna	4.93	8fl9	6	L3	28S ribosomal RNA		Natural source	C4278	4270	CAGAAGGGCAAAAGCUC	CAGAAG[G][G][C]AAAAGCUC
+P46778:R32	rna	rrna	6.17	7bhp	1	L7	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	6.17	7ow7	1	B	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	6.2	6y6x	1	L7	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	5.7	6lqm	4	5	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	5.83	8ink	2	3	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C][C]AUACCAC
+P46778:R32	rna	rrna	6.57	8ipx	1	3	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	6.57	8ipy	1	3	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	5.8	8idy	3	5	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	6.51	8ine	1	5	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	5.93	8inf	1	5	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	5.74	7f5s	1	L7	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C][C]AUACCAC
+P46778:R32	rna	rrna	6.11	9p9j	2	L7	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	6.48	6om0	1	E	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	6.34	9gmo	1	B	5S ribosomal RNA		Natural source	C8	0	-UCUACGGCCAUACCAC	-UCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	6.4	8qfd	1	7	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	6.25	8ohd	4	7	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	5.67	29iy	2	CB	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C][C]AUACCAC
+P46778:R32	rna	rrna	6.04	8a3d	1	B	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	6.19	8fld	4	L4	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C]CAUACCAC
+P46778:R32	rna	rrna	6.15	8flf	8	L4	5S ribosomal RNA		Natural source	C9	1	GUCUACGGCCAUACCAC	GUCUACG[G][C][C]AUACCAC
+P46781:R79	rna	rrna	7.98	7mq9	1	L1	18S Ribosomal RNA		Natural source	G421	413	GAAUCAGGGUUCGAUUC	GAAUCAGG[G]UUCGAUUC
+P46781:R79	rna	rrna	4.65	8oz0	1	W	18S Ribosomal RNA		Natural source	G679	671	AAAUUAGAGUGUUCAAA	AAAUUAG[A][G]UGUUCAAA
+P46781:R79	rna	rrna	4.58	5flx	1	1	18S Ribosomal RNA		Natural source	G819	811	AAAUUAGAGUGUUCAAA	AAAUUAG[A][G][U]GUUCAAA
+P46781:R108	rna	rrna	6.73	7qp6	1	A	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.25	6zmw	1	A	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.5	6ybw	1	A	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.24	28zx	3	S2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.23	28zv	1	S2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.62	8oz0	1	W	18S Ribosomal RNA		Natural source	G681	673	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	6.79	7qp7	1	A	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	6.93	8pj3	6	A	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.59	8ppl	1	A2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.85	5oa3	1	2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.52	6om0	1	S2	18S Ribosomal RNA		Natural source	G692	684	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.73	5a2q	1	2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.48	5flx	1	1	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.23	7r4x	1	2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.56	9ed0	1	2	rRNA		Natural source	G822	814	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.7	8xp2	1	S2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	6.99	8zdd	2	2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.71	8xxl	2	S2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.18	6zvh	1	2	18S Ribosomal RNA		Natural source	G692	684	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.55	6zlw	4	2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	6.56	9kmx	11	2	18S Ribosomal RNA		Genetically manipulated	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.39	6zuo	1	2	pre-18S ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.12	7wu0	11	2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.5	6zxf	1	2	pre-18S ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.9	6g5i	1	2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.65	6zxh	2	2	pre-18S ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.65	8ppk	1	2	18S Ribosomal RNA		Natural source	G821	813	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.59	6zvj	1	2	18S Ribosomal RNA		Natural source	G699	691	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R108	rna	rrna	7.45	9bln	2	A	rRNA		Natural source	G681	673	AUUAGAGUGUUCAAAGC	AUUAGAGU[G]UUCAAAGC
+P46781:R162	rna	rrna	4.23	6om0	1	S2	18S Ribosomal RNA		Natural source	C521	513	AAAUCCUUCCGCGAGGA	AAAUCCU[U][C][C]GCGAGGA
+P46781:R162	rna	rrna	5.64	5flx	1	1	18S Ribosomal RNA		Natural source	U582	574	AAAUCCUUUAACGAGGA	AAAUCCU[U][U]AACGAGGA
+P46782:R55	rna	rrna	4.23	7qp6	1	A	18S Ribosomal RNA		Natural source	G1475	1467	CCACCCGAGAUUGAGCA	CCACCC[G][A][G][A]UUGAGCA
+P46782:R55	rna	rrna	4.21	6zmw	1	A	18S Ribosomal RNA		Natural source	G1475	1467	CCACCCGAGAUUGAGCA	CCACCC[G][A][G][A]UUGAGCA
+P46782:R55	rna	rrna	4.67	28zu	3	S2	18S Ribosomal RNA		Natural source	G1648	1640	AAUUCCCAGUAAGUGCG	AAUUCCC[A][G]UAAGUGCG
+P46782:R55	rna	rrna	5.13	8oz0	1	W	18S Ribosomal RNA		Natural source	A1336	1328	CACCCGAGAUUGAGCAA	CACCCG[A][G][A]UUGAGCAA
+P46782:R55	rna	rrna	4.15	8pj5	6	A	18S Ribosomal RNA		Natural source	G1648	1640	AAUUCCCAGUAAGUGCG	AAUUCCC[A][G]UAAGUGCG
+P46782:R55	rna	rrna	4.83	8ppl	1	A2	18S Ribosomal RNA		Natural source	G1475	1467	CCACCCGAGAUUGAGCA	CCACCC[G][A][G][A]UUGAGCA
+P46782:R55	rna	rrna	4.46	6om0	1	S2	18S Ribosomal RNA		Natural source	G1519	1511	AAUUCCCAGUAAGUGCG	AAUUCCC[A][G]UAAGUGCG
+P46782:R55	rna	rrna	5.36	5flx	1	1	18S Ribosomal RNA		Natural source	G1648	1640	AAUUCCCAGUAAGUGCG	AAUUCCC[A][G]UAAGUGCG
+P46782:R55	rna	rrna	4.52	9ed0	1	2	rRNA		Natural source	G1476	1468	CCACCCGAGAUUGAGCA	CCACCC[G][A][G][A]UUGAGCA
+P46782:R55	rna	rrna	5.06	8xp2	3	S2	18S Ribosomal RNA		Natural source	G1475	1467	CCACCCGAGAUUGAGCA	CCACCC[G][A][G][A]UUGAGCA
+P46782:R55	rna	rrna	4.1	8zdd	2	2	18S Ribosomal RNA		Natural source	G1475	1467	CCACCCGAGAUUGAGCA	CCACCC[G][A][G][A]UUGAGCA
+P46782:R55	rna	rrna	4.12	6zuo	1	2	pre-18S ribosomal RNA		Natural source	G1475	1467	CCACCCGAGAUUGAGCA	CCACCC[G][A][G][A]UUGAGCA
+P46782:R55	rna	rrna	4.26	6zxg	2	2	pre-18S ribosomal RNA		Natural source	G1475	1467	CCACCCGAGAUUGAGCA	CCACCC[G][A][G][A]UUGAGCA
+P46782:R55	rna	rrna	4.46	8ppk	1	2	18S Ribosomal RNA		Natural source	G1475	1467	CCACCCGAGAUUGAGCA	CCACCC[G][A][G][A]UUGAGCA
+P46782:R55	rna	rrna	4.15	6zvj	1	2	18S Ribosomal RNA		Natural source	G1335	1327	CCACCCGAGAUUGAGCA	CCACCC[G][A][G][A]UUGAGCA
+P46782:R55	rna	rrna	4.81	6ybs	1	A	18S Ribosomal RNA		Natural source	G1475	1467	CCACCCGAGAUUGAGCA	CCACCC[G][A][G][A]UUGAGCA
+P46782:R136	rna	rrna	7.42	7qp6	1	A	18S Ribosomal RNA		Natural source	G1221	1213	CACCACCAGGAGUGGAG	CACCACC[A][G]GAGUGGAG
+P46782:R136	rna	rrna	7.37	9g8o	1	S2	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A]GGAGUGGA
+P46782:R136	rna	rrna	6.09	28zu	3	S2	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A]GGAGUGGA
+P46782:R136	rna	rrna	6.66	28zv	1	S2	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A]GGAGUGGA
+P46782:R136	rna	rrna	7.41	7qp7	1	A	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A]GGAGUGGA
+P46782:R136	rna	rrna	5.59	8pj3	6	A	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCAC[C][A]GGAGUGGA
+P46782:R136	rna	rrna	6.94	8ppl	1	A2	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A]GGAGUGGA
+P46782:R136	rna	rrna	7.35	6om0	1	S2	18S Ribosomal RNA		Natural source	A833	825	UAGAGGUGAAAUUCUUG	UAGAGGU[G][A]AAUUCUUG
+P46782:R136	rna	viral_rna	5.14	5flx	1	z	HCV-IRES		Genetically manipulated	G87	79	CUAGCCAUGGCGUUAGU	CUAGCCAU[G][G]CGUUAGU
+P46782:R136	rna	rrna	7.45	7r4x	1	2	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A]GGAGUGGA
+P46782:R136	rna	rrna	7.54	9ed0	1	2	rRNA		Natural source	A1221	1213	GCACCACCAGGAGUGGA	GCACCACC[A]GGAGUGGA
+P46782:R136	rna	rrna	7.38	5vyc	1	i1	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A]GGAGUGGA
+P46782:R136	rna	trna	5.05	6zvh	1	x	E-site tRNA		Natural source	U33	25	CAUCACGCUUUCACCGU	CAUCACG[C][U]UUCACCGU
+P46782:R136	rna	rrna	5.98	6zn5	3	2	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A][G]GAGUGGA
+P46782:R136	rna	rrna	5.4	7wu0	8	2	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCAC[C][A][G]GAGUGGA
+P46782:R136	rna	rrna	7.79	6zxf	1	2	pre-18S ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A]GGAGUGGA
+P46782:R136	rna	rrna	7.96	6zxg	1	2	pre-18S ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A]GGAGUGGA
+P46782:R136	rna	rrna	7.5	8ppk	1	2	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A]GGAGUGGA
+P46782:R136	rna	rrna	7.69	6ybs	1	A	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A]GGAGUGGA
+P46782:R145	rna	rrna	4.02	9g8o	1	S2	18S Ribosomal RNA		Natural source	G1221	1213	CACCACCAGGAGUGGAG	CACCACC[A][G]GAGUGGAG
+P46782:R145	rna	rrna	4.31	5flx	1	1	18S Ribosomal RNA		Natural source	A1220	1212	GCACCACCAGGAGUGGA	GCACCACC[A][G]GAGUGGA
+P47813:R82	rna	rrna	6.85	6zmw	1	A	18S Ribosomal RNA		Natural source	C615	607	UCUGGUGCCAGCAGCCG	UCUGGUGC[C]AGCAGCCG
+P47813:R82	rna	rrna	6.67	6ybw	1	A	18S Ribosomal RNA		Natural source	C615	607	UCUGGUGCCAGCAGCCG	UCUGGUGC[C]AGCAGCCG
+P47813:R82	rna	rrna	6.71	28zy	1	S2	18S Ribosomal RNA		Natural source	A616	608	CUGGUGCCAGCAGCCGC	CUGGUGCC[A]GCAGCCGC
+P47813:R82	rna	rrna	7.14	28zv	1	S2	18S Ribosomal RNA		Natural source	A616	608	CUGGUGCCAGCAGCCGC	CUGGUGCC[A]GCAGCCGC
+P47813:R82	rna	rrna	6.57	4kzz	1	i	18S Ribosomal RNA		Natural source	A606	598	CUGGUCGCAGCAGCCGC	CUGGUCG[C][A]GCAGCCGC
+P47813:R82	rna	rrna	6.06	7sys	4	2	18S Ribosomal RNA		Natural source	A617	609	CUGGUGCCAGCAGCCGC	CUGGUGC[C][A]GCAGCCGC
+P47813:R82	rna	rrna	7.11	8oz0	1	W	18S Ribosomal RNA		Natural source	C549	541	UCUGGUGCCAGCAGCCG	UCUGGUGC[C]AGCAGCCG
+P47813:R82	rna	rrna	7.14	7qp7	1	A	18S Ribosomal RNA		Natural source	U1711	1703	CCCGUCGCUACUACCGA	CCCGUCGC[U][A]CUACCGA
+P47813:R82	rna	rrna	6.07	8pj3	6	A	18S Ribosomal RNA		Natural source	A616	608	CUGGUGCCAGCAGCCGC	CUGGUGC[C][A]GCAGCCGC
+P47813:R82	rna	rrna	7.33	8ppl	1	A2	18S Ribosomal RNA		Natural source	A616	608	CUGGUGCCAGCAGCCGC	CUGGUGCC[A]GCAGCCGC
+P47813:R82	rna	rrna	7.66	9h74	1	2	18S Ribosomal RNA		Natural source	A606	598	CUGGUCGCAGCAGCCGC	CUGGUCGC[A]GCAGCCGC
+P47813:R82	rna	rrna	6.72	7syq	1	2	18S Ribosomal RNA		Natural source	A617	609	CUGGUGCCAGCAGCCGC	CUGGUGCC[A]GCAGCCGC
+P47813:R82	rna	rrna	6.46	4kzy	1	i	18S Ribosomal RNA		Natural source	C605	597	UCUGGUCGCAGCAGCCG	UCUGGUCG[C][A]GCAGCCG
+P49207:R29	rna	rrna	3.02	8ipd	2	2	28S ribosomal RNA		Natural source	G2522	2514	GGGAGUCGGGUUCAGAU	GGGAGUC[G][G][G]UUCAGAU
+P49207:R29	rna	rrna	3.17	8ipx	1	2	28S ribosomal RNA		Natural source	G2522	2514	GGGAGUCGGGUUCAGAU	GGGAGUC[G][G][G]UUCAGAU
+P49207:R29	rna	rrna	3.17	8ipy	1	2	28S ribosomal RNA		Natural source	G2522	2514	GGGAGUCGGGUUCAGAU	GGGAGUC[G][G][G]UUCAGAU
+P49207:R52	rna	rrna	5.07	7bhp	1	L5	28S ribosomal RNA		Natural source	A2598	2590	GAUCCCGGAGAAGCCGG	GAUCCCG[G][A][G]A[A]GCCGG
+P49207:R88	rna	rrna	4.54	7bhp	1	L5	28S ribosomal RNA		Natural source	A2581	2573	AGUGCGGUAACGCGACC	AGUGCGGU[A][A][C]GCGACC
+P49207:R88	rna	rrna	4.89	6y6x	1	L5	28S ribosomal RNA		Natural source	C2654	2646	CAGGGCGCCCUGGAAUG	CAGGGCG[C][C][C]UGGAAUG
+P49207:R88	rna	rrna	4.32	8ink	2	2	28S ribosomal RNA		Natural source	C2654	2646	CAGGGCGCCCUGGAAUG	CAGGGCG[C][C][C]UGGAAUG
+P49207:R88	rna	rrna	5.15	8ipx	1	2	28S ribosomal RNA		Natural source	C2655	2647	AGGGCGCCCUGGAAUGG	AGGGCG[C][C][C]UGGAAUGG
+P49207:R88	rna	rrna	5.15	8ipy	1	2	28S ribosomal RNA		Natural source	C2655	2647	AGGGCGCCCUGGAAUGG	AGGGCG[C][C][C]UGGAAUGG
+P49207:R88	rna	rrna	4.45	8ie3	4	2	28S ribosomal RNA		Natural source	A2581	2573	AGUGCGGUAACGCGACC	AGUGCGGU[A][A][C]GCGACC
+P49207:R88	rna	rrna	4.64	8ir3	2	2	28S ribosomal RNA		Natural source	C2654	2646	CAGGGCGCCCUGGAAUG	CAGGGCG[C][C][C]UGGAAUG
+P49207:R88	rna	rrna	5.03	8inf	1	2	28S ribosomal RNA		Natural source	C2655	2647	AGGGCGCCCUGGAAUGG	AGGGCG[C][C][C]UGGAAUGG
+P49207:R88	rna	rrna	5.13	9p9j	2	L5	28S ribosomal RNA		Natural source	C2115	2107	CAGGGCGCCCUGGAAUG	CAGGGCG[C][C][C]UGGAAUG
+P49207:R88	rna	rrna	4.98	6om0	1	t	28S ribosomal RNA		Natural source	A2018	2010	AGUGCGGUAACGCGACC	AGUGCGGU[A][A]CGCGACC
+P49207:R88	rna	rrna	4.66	9gmo	1	A	28S ribosomal RNA		Natural source	C2650	2642	CAGGGCGCCCUGGAAUG	CAGGGCG[C][C][C]UGGAAUG
+P49207:R88	rna	rrna	5.3	8qfd	1	5	28S ribosomal RNA		Natural source	C2654	2646	CAGGGCGCCCUGGAAUG	CAGGGCG[C][C][C]UGGAAUG
+P49207:R88	rna	rrna	4.05	8oj0	4	5	28S ribosomal RNA		Natural source	A2581	2573	AGUGCGGUAACGCGACC	AGUGCGG[U][A][A][C]GCGACC
+P49207:R88	rna	rrna	4.41	8fky	1	L3	28S ribosomal RNA		Natural source	C2654	2646	CAGGGCGCCCUGGAAUG	CAGGGCG[C][C][C]UGGAAUG
+P49207:R88	rna	rrna	4.22	29iy	2	CA	28S ribosomal RNA		Natural source	C2654	2646	CAGGGCGCCCUGGAAUG	CAGGGCG[C][C][C]UGGAAUG
+P49207:R88	rna	rrna	4.85	8a3d	1	A	28S ribosomal RNA		Natural source	C2654	2646	CAGGGCGCCCUGGAAUG	CAGGGCG[C][C][C]UGGAAUG
+P49207:R88	rna	rrna	4.38	8fkz	1	L3	28S ribosomal RNA		Natural source	C2654	2646	CAGGGCGCCCUGGAAUG	CAGGGCG[C][C][C]UGGAAUG
+P49458:R71	rna	other_ncrna	3.08	4uyj	1	S	SRP RNA		Synthetically obtained	C79	71	GGGCGGUUCCCGUAAGG	GGGCGGU[U][C][C]CGUAAGG
+P51608:R115	dna	other_dna	4.46	3c2i	2	B	DNA (5'-D(*DTP*DCP*DTP*DGP*DGP*DAP*DAP*(5CM)P*DGP*DGP*DAP*DAP*DTP*DTP*DCP*DTP*DTP*DCP*DTP*DA)-3')	Homo sapiens	Synthetically obtained	G10	2	CTGGAACGGAATTCTTC	CTGGAAC[G][G]AATTCTTC
+P51608:R115	dna	other_dna	4.17	9rpq	3	C	DNA (5'-D(*AP*TP*AP*TP*AP*AP*TP*TP*GP*TP*GP*TP*GP*TP*GP*TP*GP*CP*AP*G)-3')	Homo sapiens	Genetically manipulated	G13	5	AATTGTGTGTGTGCAG-	AATTGTG[T][G][T]GTGCAG-
+P51608:R115	dna	other_dna	5.82	6c1y	1	E	12-mer DNA	synthetic construct	Synthetically obtained	G7	-1	--GCCACCGGTGGC---	--GCCACC[G][G]TGGC---
+P51608:R162	dna	other_dna	6.16	9rpq	2	B	DNA (5'-D(*TP*CP*TP*GP*CP*AP*CP*AP*(5HC)P*AP*CP*AP*CP*AP*AP*TP*TP*AP*TP*A)-3')	synthetic construct	Synthetically obtained	A8	0	-TCTGCACACACACAAT	-TCTGCA[C][A]CACACAAT
+P52597:R114	rna	rna_oligo	6.52	2kg0	1	B	5'-R(*AP*GP*GP*GP*AP*U)-3'	Homo sapiens	Synthetically obtained	U6	-2	---AGGGAU--------	---AGGGA[U]--------
+P60709:R290	dna	nucleosomal_dna	4.57	8x1c	2	X	DNA (147-MER)		Synthetically obtained	A117	109	TACGACCAATTGAGCGG	TACGACC[A][A]TTGAGCGG
+P60709:R290	dna	nucleosomal_dna	5.71	8x15	1	X	DNA (137-MER)		Synthetically obtained	A116	108	TACGACCAATTGAGCGG	TACGACC[A][A][T]TGAGCGG
+P60842:R316	rna	rna_oligo	2.42	9dts	1	W	RNA (5'-R(P*AP*GP*AP*GP*AP*GP*AP*G)-3')	Homo sapiens	Synthetically obtained	G8	0	-AGAGAGAGAG------	-AGAGAGA[G]AG------
+P60866:R19	rna	rrna	7.05	9g8o	1	S2	18S Ribosomal RNA		Natural source	C1435	1427	CGGCGUCCCCCAACUUC	CGGCGU[C]C[C]CCAACUUC
+P60866:R19	rna	rrna	5.97	28zv	1	S2	18S Ribosomal RNA		Natural source	U1404	1396	AUGCUAACUAGUUACGC	AUGCUAA[C][U]AGUUACGC
+P60866:R19	rna	rrna	5.31	6om0	1	S2	18S Ribosomal RNA		Natural source	C1306	1298	CGGCGUCCCCCAACUUC	CGGCGU[C][C][C]CCAACUUC
+P60866:R19	rna	rrna	4.22	6zvj	1	2	18S Ribosomal RNA		Natural source	C1275	1267	CAUGCUAACUAGUUACG	CAUGCUA[A][C][U]AGUUACG
+P60866:R41	rna	rrna	7.47	8pj1	1	A	18S Ribosomal RNA		Natural source	A1401	1393	GGCAUGCUAACUAGUUA	GGCAUGC[U][A]ACUAGUUA
+P60866:R79	rna	rrna	4.73	5flx	1	1	18S Ribosomal RNA		Natural source	G1669	1661	AUAAGCUUGCGUUGAUU	AUAAGCU[U][G][C]GUUGAUU
+P61247:R213	rna	rrna	5.24	7qp6	1	A	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.2	7mq9	1	L1	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.76	6zmw	1	A	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.35	6ybw	1	A	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.9	9g8o	1	S2	18S Ribosomal RNA		Natural source	A987	979	CAAGACGGACCAGAGCG	CAAGACG[G][A]CCAGAGCG
+P61247:R213	rna	rrna	4.11	28zu	3	S2	18S Ribosomal RNA		Natural source	U943	935	GGCAUUCGUAUUGCGCC	GGCAUU[C][G][U]AUUGCGCC
+P61247:R213	rna	rrna	4.61	28zv	1	S2	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.89	8oz0	1	W	18S Ribosomal RNA		Natural source	G802	794	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.41	7qp7	1	A	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.28	8pj5	6	A	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.24	8ppl	1	A2	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.07	7tql	1	2	18S Ribosomal RNA		Genetically manipulated	U757	749	GGCAUUCGUAUUGCGCC	GGCAUU[C][G][U]AUUGCGCC
+P61247:R213	rna	rrna	5.2	5oa3	1	2	18S Ribosomal RNA		Natural source	G986	978	GCAAGACGGACCAGAGC	GCAAGACG[G][A]CCAGAGC
+P61247:R213	rna	rrna	5.26	6om0	1	S2	18S Ribosomal RNA		Natural source	G813	805	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.14	5a2q	1	2	18S Ribosomal RNA		Natural source	A987	979	CAAGACGGACCAGAGCG	CAAGACG[G][A]CCAGAGCG
+P61247:R213	rna	rrna	6.03	5flx	1	1	18S Ribosomal RNA		Natural source	A987	979	CAAGACGGACCAGAGCG	CAAGACG[G][A]CCAGAGCG
+P61247:R213	rna	rrna	5.68	8rg0	1	A	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G]UAUUGCGC
+P61247:R213	rna	rrna	5.01	7r4x	1	2	18S Ribosomal RNA		Natural source	U943	935	GGCAUUCGUAUUGCGCC	GGCAUU[C][G][U]AUUGCGCC
+P61247:R213	rna	rrna	5.14	9ed0	1	2	rRNA		Natural source	G943	935	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	4.93	8zdc	2	2	18S Ribosomal RNA		Natural source	A987	979	CAAGACGGACCAGAGCG	CAAGACG[G][A]CCAGAGCG
+P61247:R213	rna	rrna	4.99	8xxl	2	S2	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.11	6zvh	1	2	18S Ribosomal RNA		Natural source	G813	805	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	4.33	6zn5	5	2	18S Ribosomal RNA		Natural source	A987	979	CAAGACGGACCAGAGCG	CAAGACG[G][A]CCAGAGCG
+P61247:R213	rna	rrna	4.72	8t4s	11	2	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	4.62	6zuo	1	2	pre-18S ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	4.67	6zxd	11	2	pre-18S ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.74	6zxf	1	2	pre-18S ribosomal RNA		Natural source	U943	935	GGCAUUCGUAUUGCGCC	GGCAUU[C][G][U]AUUGCGCC
+P61247:R213	rna	rrna	5.47	6g5i	1	2	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.43	6zxh	2	2	pre-18S ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.16	8ppk	1	2	18S Ribosomal RNA		Natural source	G942	934	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.59	6zvj	1	2	18S Ribosomal RNA		Natural source	G814	806	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61247:R213	rna	rrna	5.13	9bkd	2	A	18S Ribosomal RNA		Natural source	G802	794	GGGCAUUCGUAUUGCGC	GGGCAUU[C][G][U]AUUGCGC
+P61254:R17	rna	rrna	5.01	7bhp	1	L5	28S ribosomal RNA		Natural source	G346	338	ACCGGCACGAGACCGAU	ACCGGCA[C][G]AGACCGAU
+P61254:R17	rna	rrna	6.8	9gj5	1	1	28S ribosomal RNA		Genetically manipulated	C228	220	CCCGUGGACGGUGUGAG	CCCGUGGA[C][G]GUGUGAG
+P61254:R26	rna	rrna	5.82	9fpz	1	8	5.8S rRNA (58-MER)		Natural source	U31	23	AAUGUGAAUUGCAGGAC	AAUGUGAA[U][U]GCAGGAC
+P61254:R26	rna	rrna	5.63	7bhp	1	L8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61254:R26	rna	rrna	5.93	7ow7	1	C	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61254:R26	rna	rrna	5.9	6y6x	1	L8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGAA[U][U]GCAGGAC
+P61254:R26	rna	rrna	5.91	6lqm	4	8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61254:R26	rna	rrna	5.89	8ipd	2	8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61254:R26	rna	rrna	6.14	8ipx	1	8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGAA[U][U]GCAGGAC
+P61254:R26	rna	rrna	6.14	8ipy	1	8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGAA[U][U]GCAGGAC
+P61254:R26	rna	rrna	6.01	8idt	4	8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGAA[U][U]GCAGGAC
+P61254:R26	rna	rrna	6.11	8ine	2	8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGAA[U][U]GCAGGAC
+P61254:R26	rna	rrna	6.01	8inf	1	8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGAA[U][U]GCAGGAC
+P61254:R26	rna	rrna	5.99	7f5s	1	L8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGAA[U][U]GCAGGAC
+P61254:R26	rna	rrna	5.84	9p9j	2	L8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61254:R26	rna	rrna	5.79	6om0	1	D	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61254:R26	rna	rrna	6.26	9gmo	1	C	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGAA[U][U]GCAGGAC
+P61254:R26	rna	rrna	5.96	8qfd	1	8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGAA[U][U]GCAGGAC
+P61254:R26	rna	rrna	5.65	8oj5	4	8	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61254:R26	rna	rrna	5.69	8fky	1	L1	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61254:R26	rna	rrna	5.91	8qyx	2	C2	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGAA[U][U]GCAGGAC
+P61254:R26	rna	rrna	5.79	8a3d	1	C	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61254:R26	rna	rrna	4.47	9gj5	4	8	5.8S ribosomal RNA		Genetically manipulated	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61254:R26	rna	rrna	5.74	8fkw	10	L1	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61254:R26	rna	rrna	5.8	8fl2	4	L1	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61254:R26	rna	rrna	5.79	8fl4	11	L1	5.8S ribosomal RNA		Natural source	U73	65	AAUGUGAAUUGCAGGAC	AAUGUGA[A][U][U]GCAGGAC
+P61313:R63	rna	rrna	5.85	7ow7	1	A	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.26	6y6x	1	L5	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.12	6lu8	4	2	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.63	8ink	2	2	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.87	8ipx	1	2	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.87	8ipy	1	2	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.55	8idy	4	2	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.33	8ine	2	2	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.98	8inf	1	2	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.06	7f5s	1	L5	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.26	9p9j	2	L5	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	4.83	6om0	1	t	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	6.21	9gmo	1	A	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.99	8qfd	1	5	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	4.41	8ohd	4	5	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	6.04	8fky	1	L3	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.48	8qyx	1	A2	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.49	8a3d	1	A	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.58	8fkz	10	L3	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.35	8fld	4	L3	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P61313:R63	rna	rrna	5.33	8rl2	11	L5	28S ribosomal RNA		Natural source	C9	1	CGCGACCUCAGAUCAGA	CGCGACC[U][C]AGAUCAGA
+P62241:R110	rna	rrna	7.85	6om0	1	t	28S ribosomal RNA		Natural source	U3563	3555	CAGCUCCCUCGCUGCGA	CAGCUCCC[U]CGCUGCGA
+P62241:R200	rna	rrna	1.16	5vyc	1	i5	18S Ribosomal RNA		Natural source	G970	962	AAAUUCUUGGACCGGCG	AAAUUC[U][U][G][G]ACCGGCG
+P62249:R45	rna	rrna	5.96	7mq9	1	L1	18S Ribosomal RNA		Natural source	C1592	1584	GUUGAACCCCAUUCGUG	GUUGAACC[C][C]AUUCGUG
+P62249:R45	rna	rrna	5.64	9g8o	1	S2	18S Ribosomal RNA		Natural source	C1593	1585	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R45	rna	rrna	4.66	28zx	3	S2	18S Ribosomal RNA		Natural source	C1593	1585	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R45	rna	rrna	5.73	28zv	1	S2	18S Ribosomal RNA		Natural source	C1593	1585	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R45	rna	rrna	5.82	8oz0	1	W	18S Ribosomal RNA		Natural source	G1401	1393	ACUGACUGGCUCAGCGU	ACUGACU[G][G]CUCAGCGU
+P62249:R45	rna	rrna	4.75	8ppl	1	A2	18S Ribosomal RNA		Natural source	C1593	1585	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R45	rna	rrna	4.86	6om0	1	S2	18S Ribosomal RNA		Natural source	C1464	1456	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R45	rna	rrna	4.18	5a2q	1	2	18S Ribosomal RNA		Natural source	C1593	1585	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R45	rna	rrna	4.98	7r4x	1	2	18S Ribosomal RNA		Natural source	C1593	1585	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R45	rna	rrna	6.29	9ed0	1	2	rRNA		Natural source	C1594	1586	UUGAACCCCAUUCGUGA	UUGAACC[C][C]AUUCGUGA
+P62249:R45	rna	rrna	4.93	8xxl	2	S2	18S Ribosomal RNA		Natural source	C1593	1585	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R45	rna	rrna	4.61	6zvh	1	2	18S Ribosomal RNA		Natural source	C1464	1456	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R45	rna	rrna	6.87	6zuo	1	2	pre-18S ribosomal RNA		Natural source	C1593	1585	UUGAACCCCAUUCGUGA	UUGAACC[C][C]AUUCGUGA
+P62249:R45	rna	rrna	5.86	6g5i	1	2	18S Ribosomal RNA		Natural source	C1593	1585	UUGAACCCCAUUCGUGA	UUGAACC[C][C]AUUCGUGA
+P62249:R45	rna	rrna	4.39	6zxg	2	2	pre-18S ribosomal RNA		Natural source	C1593	1585	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R45	rna	rrna	4.29	8ppk	1	2	18S Ribosomal RNA		Natural source	C1593	1585	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R45	rna	rrna	6.11	6zvj	1	2	18S Ribosomal RNA		Natural source	C1453	1445	UUGAACCCCAUUCGUGA	UUGAACC[C][C]AUUCGUGA
+P62249:R45	rna	rrna	5.12	9bln	2	A	rRNA		Natural source	C1453	1445	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R45	rna	rrna	4.42	6ybs	1	A	18S Ribosomal RNA		Natural source	C1593	1585	UUGAACCCCAUUCGUGA	UUGAACC[C][C][A]UUCGUGA
+P62249:R69	rna	rrna	4.09	5flx	1	1	18S Ribosomal RNA		Natural source	U1408	1400	UAACUAGUUACGCGACC	UAACUAG[U][U][A]CGCGACC
+P62249:R117	rna	rrna	4.52	8oz0	1	W	18S Ribosomal RNA		Natural source	C1332	1324	CAGCCACCCGAGAUUGA	CAGCCAC[C][C][G][A][G]AUUGA
+P62263:R117	rna	mrna	5.09	5oa3	1	3	IRES mRNA		Synthetically obtained	C234	226	UCGUAGACCGUGCACCA	UCGUAGAC[C]GUGCACCA
+P62263:R117	rna	viral_rna	6.42	5a2q	1	3	HCV IRES		Synthetically obtained	C251	243	UCGUAGACCACCAUG--	UCGUAGAC[C]ACCAUG--
+P62263:R117	rna	viral_rna	4.39	5flx	1	z	HCV-IRES		Genetically manipulated	C333	325	CUCGUAGACCGUGCACC	CUCGUAGA[C][C]GUGCACC
+P62266:R107	rna	rrna	4.28	7mq9	1	L1	18S Ribosomal RNA		Natural source	U21	13	CCUGCCAGUAGCAUAUG	CCUGCCA[G][U]AGCAUAUG
+P62269:R23	rna	rrna	6.16	7qp6	1	A	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U][G]AUGGGGA
+P62269:R23	rna	rrna	6.88	6zmw	1	A	18S Ribosomal RNA		Natural source	G1600	1592	CCAUUCGUGAUGGGGAU	CCAUUCG[U][G]AUGGGGAU
+P62269:R23	rna	rrna	7.56	9g8o	1	S2	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U][G]AUGGGGA
+P62269:R23	rna	rrna	5.93	28zy	2	S2	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U][G]AUGGGGA
+P62269:R23	rna	rrna	7.72	28zv	1	S2	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U]GAUGGGGA
+P62269:R23	rna	rrna	7.06	8oz0	1	W	18S Ribosomal RNA		Natural source	U1459	1451	CCCAUUCGUGAUGGGGA	CCCAUUC[G][U][G]AUGGGGA
+P62269:R23	rna	rrna	6.64	7qp7	1	A	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U][G]AUGGGGA
+P62269:R23	rna	rrna	6.09	8pj4	6	A	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U][G]AUGGGGA
+P62269:R23	rna	rrna	7.21	8ppl	1	A2	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U][G]AUGGGGA
+P62269:R23	rna	rrna	6.81	5oa3	1	2	18S Ribosomal RNA		Natural source	G1600	1592	CCAUUCGUGAUGGGGAU	CCAUUCG[U][G]AUGGGGAU
+P62269:R23	rna	rrna	7.89	6om0	1	S2	18S Ribosomal RNA		Natural source	U1470	1462	CCCAUUCGUGAUGGGGA	CCCAUUCG[U]GAUGGGGA
+P62269:R23	rna	rrna	6.59	5a2q	1	2	18S Ribosomal RNA		Natural source	G1600	1592	CCAUUCGUGAUGGGGAU	CCAUUCG[U][G]AUGGGGAU
+P62269:R23	rna	rrna	7.6	5flx	1	1	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U][G]AUGGGGA
+P62269:R23	rna	rrna	7.94	7r4x	1	2	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U]GAUGGGGA
+P62269:R23	rna	rrna	6.15	9ed0	1	2	rRNA		Natural source	U1600	1592	CCCAUUCGUGAUGGGGA	CCCAUUCG[U]GAUGGGGA
+P62269:R23	rna	rrna	5.31	8xp2	3	S2	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUU[C][G][U][G]A[U][G]GGGA
+P62269:R23	rna	rrna	7.32	8zdc	2	2	18S Ribosomal RNA		Natural source	G1600	1592	CCAUUCGUGAUGGGGAU	CCAUUCG[U][G]AUGGGGAU
+P62269:R23	rna	rrna	7.07	8zdb	2	2	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U][G]AUGGGGA
+P62269:R23	rna	rrna	5.99	7k5i	3	2	40S ribosomal rRNA18S		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUC[G][U][G]AUGGGGA
+P62269:R23	rna	rrna	7.89	6zuo	1	2	pre-18S ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U]GAUGGGGA
+P62269:R23	rna	rrna	5.13	7wtw	9	2	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUC[G][U][G]AUGGGGA
+P62269:R23	rna	rrna	5.82	6zxf	1	2	pre-18S ribosomal RNA		Natural source	G1600	1592	CCAUUCGUGAUGGGGAU	CCAUUC[G][U][G]AUGGGGAU
+P62269:R23	rna	rrna	7.59	6g5i	1	2	18S Ribosomal RNA		Natural source	G1600	1592	CCAUUCGUGAUGGGGAU	CCAUUCG[U][G]AUGGGGAU
+P62269:R23	rna	rrna	6.81	6zxh	2	2	pre-18S ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U]GAUGGGGA
+P62269:R23	rna	rrna	7.08	8ppk	1	2	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUC[G][U][G]AUGGGGA
+P62269:R23	rna	rrna	6.51	6zvj	1	2	18S Ribosomal RNA		Natural source	U1459	1451	CCCAUUCGUGAUGGGGA	CCCAUUCG[U][G]AUGGGGA
+P62269:R23	rna	rrna	7.56	9bkd	2	A	18S Ribosomal RNA		Natural source	U1459	1451	CCCAUUCGUGAUGGGGA	CCCAUUCG[U][G]AUGGGGA
+P62269:R23	rna	rrna	7.11	6ybs	1	A	18S Ribosomal RNA		Natural source	U1599	1591	CCCAUUCGUGAUGGGGA	CCCAUUCG[U][G]AUGGGGA
+P62269:R46	rna	rrna	7.83	6zmw	1	A	18S Ribosomal RNA		Natural source	U1539	1531	ACACUGACUGGCUCAGC	ACACUGAC[U]GGCUCAGC
+P62269:R46	rna	rrna	7.53	7wu0	3	2	18S Ribosomal RNA		Natural source	U1539	1531	ACACUGACUGGCUCAGC	ACACUGAC[U]GGCUCAGC
+P62269:R55	rna	rrna	4.35	8oz0	1	W	18S Ribosomal RNA		Natural source	C1457	1449	ACCCCAUUCGUGAUGGG	ACCCCAU[U][C][G]UGAUGGG
+P62269:R113	rna	rrna	4	7qp6	1	A	18S Ribosomal RNA		Natural source	G1611	1603	GGGGAUCGGGGAUUGCA	GGGGAUC[G][G][G]GAUUGCA
+P62269:R113	rna	rrna	4.29	9g8o	1	S2	18S Ribosomal RNA		Natural source	G1611	1603	GGGGAUCGGGGAUUGCA	GGGGAUC[G][G][G]GAUUGCA
+P62269:R113	rna	rrna	5.31	8oz0	1	W	18S Ribosomal RNA		Natural source	G1471	1463	GGGGAUCGGGGAUUGCA	GGGGAUCG[G][G]GAUUGCA
+P62269:R113	rna	rrna	4.33	5flx	1	1	18S Ribosomal RNA		Natural source	G1611	1603	GGGGAUCGGGGAUUGCA	GGGGAUC[G][G][G]GAUUGCA
+P62269:R113	rna	rrna	4.18	6zvh	1	2	18S Ribosomal RNA		Natural source	G1482	1474	GGGGAUCGGGGAUUGCA	GGGGAUC[G][G][G]GAUUGCA
+P62269:R113	rna	rrna	5.35	6g5i	1	2	18S Ribosomal RNA		Natural source	G1610	1602	UGGGGAUCGGGGAUUGC	UGGGGAUC[G][G]GGAUUGC
+P62269:R113	rna	rrna	4.75	6zvj	1	2	18S Ribosomal RNA		Natural source	G1471	1463	GGGGAUCGGGGAUUGCA	GGGGAUC[G][G]GGAUUGCA
+P62269:R113	rna	rrna	4.3	9bkd	2	A	18S Ribosomal RNA		Natural source	G1471	1463	GGGGAUCGGGGAUUGCA	GGGGAUC[G][G][G]GAUUGCA
+P62277:R19	rna	rrna	6.45	7qp6	1	A	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	6.49	7mq9	1	L1	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.35	6zmw	1	A	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.76	6ybw	1	A	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.41	9g8o	1	S2	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	6.39	28zy	1	S2	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.83	28zv	1	S2	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.97	8oz0	1	W	18S Ribosomal RNA		Natural source	U876	868	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.4	7qp7	1	A	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	6.76	8pj4	6	A	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	6.82	8ppl	1	A2	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	6.2	6om0	1	S2	18S Ribosomal RNA		Natural source	U887	879	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.73	5a2q	1	2	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	5.97	5flx	1	1	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	6.97	9ed0	1	2	rRNA		Natural source	U1017	1009	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	6.94	6zvh	1	2	18S Ribosomal RNA		Natural source	U887	879	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.05	6zmt	4	2	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	6.46	6zuo	1	2	pre-18S ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	6.21	6zxe	7	2	pre-18S ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.03	6zxf	1	2	pre-18S ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.6	6g5i	1	2	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.62	6zxg	2	2	pre-18S ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.88	8ppk	1	2	18S Ribosomal RNA		Natural source	U1016	1008	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.05	6zvj	1	2	18S Ribosomal RNA		Natural source	U888	880	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62277:R19	rna	rrna	7.45	9bln	2	A	rRNA		Natural source	U876	868	AAGAAUGUUUUCAUUAA	AAGAAUGU[U]UUCAUUAA
+P62280:R69	rna	rrna	4.41	6om0	1	S2	18S Ribosomal RNA		Natural source	A231	223	CAGUGGUGACUCUAGAU	CAGUGG[U][G][A][C]UCUAGAU
+P62280:R97	rna	rrna	4.15	8ppk	1	2	18S Ribosomal RNA		Natural source	G421	413	GAAUCAGGGUUCGAUUC	GAAUCAG[G][G][U]UCGAUUC
+P62280:R97	rna	rrna	4.02	6zvj	1	2	18S Ribosomal RNA		Natural source	G724	716	UGGAUACCGCAGCUAGG	UGGAUAC[C][G][C]AGCUAGG
+P62424:R223	rna	rrna	6.74	8fkp	5	L2	ITS2 rRNA		Natural source	U94	86	CGUCCCCCUAAGCGCAG	CGUCCCCC[U]AAGCGCAG
+P62701:R145	rna	rrna	5.48	7qp6	1	A	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.43	7mq9	1	L1	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.03	6zmw	1	A	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.09	6ybw	1	A	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.9	9g8o	1	S2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.95	28zy	3	S2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.19	28zv	1	S2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.81	8oz0	1	W	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.66	7qp7	1	A	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.73	8pj4	6	A	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.68	8ppl	1	A2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.28	5oa3	1	2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.66	6om0	1	S2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.25	5a2q	1	2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.4	7r4x	1	2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.34	9ed0	1	2	rRNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.56	8zdd	2	2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.13	8xxl	2	S2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.19	6zvh	1	2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.29	6g5h	5	2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.24	9kmy	11	2	18S Ribosomal RNA		Genetically manipulated	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.99	6zuo	1	2	pre-18S ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.54	7wts	11	2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.5	6zxf	1	2	pre-18S ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.05	6g5i	1	2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.25	6zxh	2	2	pre-18S ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.9	8ppk	1	2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	4.42	6zvj	1	2	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R145	rna	rrna	5.67	9bkd	2	A	18S Ribosomal RNA		Natural source	G122	114	GUUCCUUUGGUCGCUCG	GUUCCUU[U][G][G]UCGCUCG
+P62701:R198	rna	rrna	6.17	7qp6	1	A	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	6.76	6zmw	1	A	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	6.52	6ybw	1	A	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	7.48	9g8o	1	S2	18S Ribosomal RNA		Natural source	A794	786	GGGGCCCGAAGCAUUUA	GGGGCCCG[A]AGCAUUUA
+P62701:R198	rna	rrna	5.24	28zy	3	S2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	5.76	28zv	1	S2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	7.07	8oz0	1	W	18S Ribosomal RNA		Natural source	G225	217	UCAGUGGUGACUCUAGA	UCAGUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	6.32	7qp7	1	A	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	5.48	8pj1	6	A	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	6.23	8ppl	1	A2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	7.07	5oa3	1	2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	7.06	6om0	1	S2	18S Ribosomal RNA		Natural source	U229	221	AUCAGUGGUGACUCUAG	AUCAGUGG[U][G]ACUCUAG
+P62701:R198	rna	rrna	7.48	5a2q	1	2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	6.27	7r4x	1	2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	6.33	9ed0	1	2	rRNA		Natural source	G292	284	CUUUUGGUGACUCUAGA	CUUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	6.37	8xp3	3	S2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGGU[G]ACUCUAGA
+P62701:R198	rna	rrna	7.61	8zdd	2	2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGGU[G]ACUCUAGA
+P62701:R198	rna	rrna	5.76	8xxl	1	S2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	6.25	6zvh	1	2	18S Ribosomal RNA		Natural source	G230	222	UCAGUGGUGACUCUAGA	UCAGUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	6.51	7k5i	5	2	40S ribosomal rRNA18S		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	5.75	9kn0	11	2	18S Ribosomal RNA		Genetically manipulated	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	7.61	6zuo	1	2	pre-18S ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGGU[G]ACUCUAGA
+P62701:R198	rna	rrna	5.66	7wtw	11	2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	6.21	6zxf	1	2	pre-18S ribosomal RNA		Natural source	U290	282	GGCUUUGGUGACUCUAG	GGCUUUGG[U][G]ACUCUAG
+P62701:R198	rna	rrna	6.34	6zxg	2	2	pre-18S ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	6.17	8ppk	1	2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R198	rna	rrna	6.42	6zvj	1	2	18S Ribosomal RNA		Natural source	U220	212	AUCAGUGGUGACUCUAG	AUCAGUGG[U][G]ACUCUAG
+P62701:R198	rna	rrna	6.76	9bln	2	A	rRNA		Natural source	G225	217	UCAGUGGUGACUCUAGA	UCAGUGG[U][G]ACUCUAGA
+P62701:R200	rna	rrna	7.79	7mq9	1	L1	18S Ribosomal RNA		Natural source	G289	281	CGGCUUUGGUGACUCUA	CGGCUUUG[G]UGACUCUA
+P62701:R200	rna	rrna	5.36	6zmw	1	A	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R200	rna	rrna	4.72	6ybw	1	A	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R200	rna	rrna	4.2	9g8o	1	S2	18S Ribosomal RNA		Natural source	A794	786	GGGGCCCGAAGCAUUUA	GGGGCCC[G][A][A]GCAUUUA
+P62701:R200	rna	rrna	5.69	28zu	3	S2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R200	rna	rrna	4.67	28zv	1	S2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R200	rna	rrna	5.68	8oz0	1	W	18S Ribosomal RNA		Natural source	A654	646	GCGGCCCGAAGCGUUUA	GCGGCCC[G][A][A]GCGUUUA
+P62701:R200	rna	rrna	4.4	7qp7	1	A	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R200	rna	rrna	4.34	8pj4	6	A	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R200	rna	rrna	5.57	5oa3	1	2	18S Ribosomal RNA		Natural source	A794	786	GGGGCCCGAAGCGUUUA	GGGGCCCG[A][A]GCGUUUA
+P62701:R200	rna	rrna	6.7	6om0	1	S2	18S Ribosomal RNA		Natural source	A665	657	GGGGCCCGAAGCAUUUA	GGGGCCCG[A]AGCAUUUA
+P62701:R200	rna	rrna	5.34	5a2q	1	2	18S Ribosomal RNA		Natural source	A795	787	GGGCCCGAAGCGUUUAC	GGGCCCG[A][A]GCGUUUAC
+P62701:R200	rna	rrna	5.45	7r4x	1	2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R200	rna	rrna	5.69	9ed0	1	2	rRNA		Natural source	G292	284	CUUUUGGUGACUCUAGA	CUUUUGG[U][G]ACUCUAGA
+P62701:R200	rna	rrna	4.94	8zdd	2	2	18S Ribosomal RNA		Natural source	A794	786	GGGGCCCGAAGCGUUUA	GGGGCCC[G][A][A]GCGUUUA
+P62701:R200	rna	rrna	4.85	6zvh	1	2	18S Ribosomal RNA		Natural source	G230	222	UCAGUGGUGACUCUAGA	UCAGUGG[U][G]ACUCUAGA
+P62701:R200	rna	rrna	4.51	6zn5	5	2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R200	rna	rrna	6.19	6zuo	1	2	pre-18S ribosomal RNA		Natural source	A795	787	GGGCCCGAAGCGUUUAC	GGGCCCG[A][A]GCGUUUAC
+P62701:R200	rna	rrna	4.39	7wts	11	2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUG[G][U][G][A]CUCUAGA
+P62701:R200	rna	rrna	4.97	6zxf	1	2	pre-18S ribosomal RNA		Natural source	A795	787	GGGCCCGAAGCGUUUAC	GGGCCCG[A][A]GCGUUUAC
+P62701:R200	rna	rrna	5.1	6g5i	1	2	18S Ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G][A]CUCUAGA
+P62701:R200	rna	rrna	5.94	6zxg	2	2	pre-18S ribosomal RNA		Natural source	G291	283	GCUUUGGUGACUCUAGA	GCUUUGG[U][G]ACUCUAGA
+P62701:R200	rna	rrna	4.82	6zvj	1	2	18S Ribosomal RNA		Natural source	A673	665	UCGGCCGAAGCGUUUAC	UCGGCCG[A][A]GCGUUUAC
+P62701:R200	rna	rrna	5.75	9bkd	2	A	18S Ribosomal RNA		Natural source	G225	217	UCAGUGGUGACUCUAGA	UCAGUGG[U][G]ACUCUAGA
+P62753:R72	rna	rrna	4.11	8oz0	1	W	18S Ribosomal RNA		Natural source	G400	392	ACAUCCAAGGAAGGCAG	ACAUCCAA[G][G][A]AGGCAG
+P62753:R131	rna	rrna	6.51	8ppl	1	A2	18S Ribosomal RNA		Natural source	C67	59	UAAGUACGCACGGCCGG	UAAGUA[C]G[C]ACGGCCGG
+P62753:R131	rna	rrna	7.04	7r4x	1	2	18S Ribosomal RNA		Natural source	C65	57	UCUAAGUACGCACGGCC	UCUAAGUA[C]GCACGGCC
+P62753:R131	rna	rrna	7.71	9ed0	1	2	rRNA		Natural source	C67	59	UAAGUACGCACGGCCGG	UAAGUACG[C]ACGGCCGG
+P62753:R131	rna	rrna	5.96	8ppk	1	2	18S Ribosomal RNA		Natural source	C67	59	UAAGUACGCACGGCCGG	UAAGUA[C][G][C]ACGGCCGG
+P62753:R131	rna	rrna	4.95	9bln	1	A	rRNA		Natural source	C65	57	UCUGAGUACGCACGGCC	UCUGAGUA[C]G[C]ACGGCC
+P62753:R154	rna	rrna	4.37	5oa3	1	2	18S Ribosomal RNA		Natural source	A77	69	CGGCCGGUACAGUGAAA	CGGCCG[G][U][A][C]AGUGAAA
+P62753:R154	rna	rrna	4.21	5a2q	1	2	18S Ribosomal RNA		Natural source	A77	69	CGGCCGGUACAGUGAAA	CGGCCG[G][U][A][C]AGUGAAA
+P62753:R154	rna	rrna	5.44	5flx	1	1	18S Ribosomal RNA		Natural source	U76	68	ACGGCCGGUACAGUGAA	ACGGCCGG[U][A]CAGUGAA
+P62753:R154	rna	rrna	4.08	6g5i	1	2	18S Ribosomal RNA		Natural source	A77	69	CGGCCGGUACAGUGAAA	CGGCCG[G][U][A][C]AGUGAAA
+P62805:R20	dna	nucleosomal_dna	6.43	7v96	1	I	DNA (275-mer)		Genetically manipulated	G183	175	GGGTTAGGGTTAGGGTT	GGGTTAGG[G]TTAGGGTT
+P62805:R20	dna	nucleosomal_dna	5.64	7v9k	1	J	DNA (539-mer)		Genetically manipulated	A445	437	CTAACCCTAACCCTAAC	CTAACCC[T][A]ACCCTAAC
+P62805:R20	dna	nucleosomal_dna	4.59	6r8y	1	J	Human alpha-satellite DNA (145-MER) with a 6-4PP at positions 95-96		Synthetically obtained	T89	81	AACATGCCTTTTGATGA	AACATGC[C][T]TTTGATGA
+P62805:R20	dna	nucleosomal_dna	4.61	6r8z	1	J	Human alpha-satellite DNA (145-MER) with abasic sites at positions 97-98		Synthetically obtained	T89	81	AACATGCCTTTTGANNG	AACATGC[C][T]TTTGANNG
+P62805:R20	dna	nucleosomal_dna	4.75	9j8w	1	J	Human alpha-satellite DNA (145-MER) with CPD at position 95		Synthetically obtained	T89	81	AACATGCCTTTTGATGA	AACATGC[C][T][T]TTGATGA
+P62805:R20	dna	nucleosomal_dna	4.01	5jrg	1	J	DNA (145-MER)		Genetically manipulated	T52	44	CTGCTCCATCAAAAGGC	CTGCTCC[A][T]CAAAAGGC
+P62805:R20	dna	nucleosomal_dna	5.37	4ym5	1	J	144-mer DNA		Synthetically obtained	A50	42	ACTGCTCCATCAAAAGG	ACTGCTC[C][A]TCAAAAGG
+P62805:R20	dna	nucleosomal_dna	6.91	8ke0	2	J	DNA (193-MER)		Genetically manipulated	G124	116	CGGTGCTAGAGCTGTCT	CGGTGCT[A][G]AGCTGTCT
+P62805:R20	dna	nucleosomal_dna	5.89	6se6	2	I	DNA (145-MER)		Genetically manipulated	A89	81	CGCGTTTTAACCGCCAA	CGCGTTT[T][A][A][C]CGCCAA
+P62805:R20	dna	nucleosomal_dna	4.78	5cpk	1	J	DNA (145-MER)		Synthetically obtained	T51	43	GATTACATTCGAATCCA	GATTACA[T][T]CGAATCCA
+P62805:R20	dna	nucleosomal_dna	4.58	9l06	1	I	DNA (207-MER)		Synthetically obtained	A121	113	CGCGTTTTAACCGCCAA	CGCGTT[T][T][A]ACCGCCAA
+P62805:R20	dna	nucleosomal_dna	7.63	9w6t	1	I	DNA (128-MER)		Natural source	G35	27	TCCCCTTGGCGGTTAAA	TCCCCTTG[G]CGGTTAAA
+P62805:R20	dna	nucleosomal_dna	7.63	9w6j	7	I	DNA (129-MER)		Natural source	G35	27	TCCCCTTGGCGGTTAAA	TCCCCTTG[G]CGGTTAAA
+P62805:R20	dna	nucleosomal_dna	7.34	9dwg	1	J	601 J strand (non-damaged strand)		Synthetically obtained	G52	44	ATCCCCTTGGCGGTTAA	ATCCCCTT[G]GCGGTTAA
+P62805:R20	dna	nucleosomal_dna	4.04	6l9z	1	J	DNA (338-MER)		Genetically manipulated	G233	225	TTCTAGTGGCGGTTAAA	TTCTAG[T][G][G]CGGTTAAA
+P62805:R20	dna	nucleosomal_dna	7.68	7bwd	1	J	DNA (146-MER)		Genetically manipulated	G52	44	ATCCCCTTGGCGGTTAA	ATCCCCTT[G]GCGGTTAA
+P62805:R20	dna	nucleosomal_dna	6.05	8hqy	1	J	DNA (136-MER)		Genetically manipulated	G42	34	ATCCCCTTGGCGGTTAA	ATCCCCT[T][G]GCGGTTAA
+P62805:R20	dna	nucleosomal_dna	4.64	6k1i	2	J	DNA (147-MER)		Genetically manipulated	G50	42	CTTCTAGTGGCGGTTAA	CTTCTAG[T][G]GCGGTTAA
+P62805:R20	dna	nucleosomal_dna	7.2	9ipu	1	N	DNA (171-MER)		Genetically manipulated	A62	54	GCTCTAGCACCGCTTAA	GCTCTAGC[A]CCGCTTAA
+P62805:R20	dna	nucleosomal_dna	5.82	7v9j	2	I	DNA (408-mer)		Genetically manipulated	G312	304	GGGTTAGGGTTAGGGTT	GGGTTAG[G][G]TTAGGGTT
+P62805:R20	dna	nucleosomal_dna	7.52	8grm	1	J	DNA (145-MER)		Genetically manipulated	G51	43	ATCCCCTTGGCGGTTAA	ATCCCCTT[G]GCGGTTAA
+P62805:R20	dna	nucleosomal_dna	5.34	6la2	1	I	DNA (343-MER)		Genetically manipulated	C62	54	CTCTAGCACCGCTTAAA	CTCTAGC[A][C]CGCTTAAA
+P62805:R20	dna	nucleosomal_dna	5.26	6hts	1	X	DNA (150-MER)		Synthetically obtained	G105	97	TCCCCTTGGCGGTTAAA	TCCCCTT[G][G]CGGTTAAA
+P62805:R24	dna	nucleosomal_dna	5.93	7pii	2	I	DNA (122-MER)		Synthetically obtained	C68	60	AATGCAATCATCACAAA	AATGCAAT[C]ATCACAAA
+P62805:R24	dna	nucleosomal_dna	6.78	8x1c	1	X	DNA (147-MER)		Synthetically obtained	A90	82	GTGCGTTTAAGCGGTGC	GTGCGTTT[A]AGCGGTGC
+P62805:R24	dna	nucleosomal_dna	7.5	9gfm	1	L	Nucleosomal DNA strand 2		Synthetically obtained	T98	90	TTACTCCCTAGTCTCCA	TTACTCCC[T]AGTCTCCA
+P62805:R24	dna	nucleosomal_dna	7.83	9d3q	1	I	5S rDNA (noncoding strand)		Genetically manipulated	T76	68	AGTCAGCCTTGTGCTCG	AGTCAGCC[T]TGTGCTCG
+P62805:R24	dna	nucleosomal_dna	4.35	6r8z	1	J	Human alpha-satellite DNA (145-MER) with abasic sites at positions 97-98		Synthetically obtained	A61	53	CAAAAGGCATGTTCAGC	CAAAAGG[C][A][T]GTTCAGC
+P62805:R24	dna	nucleosomal_dna	6.64	9j8w	1	I	Human alpha-satellite DNA (145-MER)		Synthetically obtained	T89	81	AACATGCCTTTTGATGG	AACATGCC[T]TTTGATGG
+P62805:R24	dna	nucleosomal_dna	4.39	6r92	1	I	Human alpha-satellite DNA (145-MER)		Synthetically obtained	T90	82	ACATGCCTTTTGATGGA	ACATGCC[T][T][T]TGATGGA
+P62805:R24	dna	nucleosomal_dna	5.68	7zi4	1	Y	DNA (158-MER)		Synthetically obtained	A61	53	GACTAGGGAGTAATCCC	GACTAGG[G][A]GTAATCCC
+P62805:R24	dna	nucleosomal_dna	7.68	6t93	1	I	DNA (153-MER)		Synthetically obtained	A93	85	CGCGTTTTAACCGCCAA	CGCGTTTT[A]ACCGCCAA
+P62805:R24	dna	nucleosomal_dna	7.48	9r04	1	I	DNA-for		Synthetically obtained	A93	85	CGCGTTTTAACCGCCAA	CGCGTTTT[A]ACCGCCAA
+P62805:R24	dna	nucleosomal_dna	5.91	8xbw	1	I	DNA (5'-D(P*AP*CP*CP*GP*CP*TP*TP*AP*AP*AP*CP*GP*CP*AP*CP*GP*TP*A)-3')		Genetically manipulated	C52	44	CTCTAGCACCGCTTAAA	CTCTAGC[A][C]CGCTTAAA
+P62805:R24	dna	nucleosomal_dna	5.99	9j0n	1	N	Non-template DNA (157-MER)		Synthetically obtained	A142	134	GTGCGTTTAAGCGGTGC	GTGCGTTT[A][A]GCGGTGC
+P62805:R24	dna	nucleosomal_dna	4.67	9ujt	1	N	DNA (198-MER)		Synthetically obtained	T141	133	CGTGCGTTTAAGCGGTG	CGTGCGT[T][T]AAGCGGTG
+P62805:R24	dna	nucleosomal_dna	7.15	9ujs	1	N	DNA (198-MER)		Synthetically obtained	G183	175	CGGCCTCGGCACCGGGA	CGGCCTCG[G]CACCGGGA
+P62805:R24	dna	nucleosomal_dna	5.04	7pev	2	I	DNA (520-MER)		Genetically manipulated	C378	370	GAGAATCCCGGTGCCGA	GAGAATC[C][C]GGTGCCGA
+P62805:R24	dna	nucleosomal_dna	5.02	7pfu	1	I	DNA (591-MER)		Genetically manipulated	C456	448	GAGAATCCCGGTGCCGA	GAGAATC[C][C][G]GTGCCGA
+P62805:R24	dna	nucleosomal_dna	6.28	6l9z	1	I	DNA (338-MER)		Genetically manipulated	A101	93	CGCGTTTTAACCGCCAC	CGCGTTTT[A][A]CCGCCAC
+P62805:R24	dna	nucleosomal_dna	7.6	6c0w	2	J	147 mer DNA		Synthetically obtained	A90	82	GTGCGTTTAAGCGGTGC	GTGCGTTT[A]AGCGGTGC
+P62805:R24	dna	nucleosomal_dna	5.88	7pfc	1	J	DNA (788-MER)		Genetically manipulated	T362	354	CACCGGGATTCTCCAGT	CACCGGG[A][T]TCTCCAGT
+P62805:R24	dna	nucleosomal_dna	5.01	7pfa	1	J	DNA (561-MER)		Genetically manipulated	T362	354	CACCGGGATTCTCCAGT	CACCGGG[A][T]TCTCCAGT
+P62805:R24	dna	nucleosomal_dna	5.27	7peu	1	I	DNA (522-MER)		Genetically manipulated	C378	370	GAGAATCCCGGTGCCGA	GAGAATC[C][C]GGTGCCGA
+P62805:R24	dna	nucleosomal_dna	6.25	6jxd	1	J	DNA (147-MER)		Genetically manipulated	A88	80	GTGCGTTTAAGCGGTGC	GTGCGTTT[A]AGCGGTGC
+P62805:R24	dna	nucleosomal_dna	4.28	7pft	1	I	DNA (591-MER)		Genetically manipulated	C441	433	GAGAATCCCGGTGCCGA	GAGAATC[C][C][G]GTGCCGA
+P62805:R24	dna	nucleosomal_dna	6.38	7xvl	1	I	DNA (169-MER)		Genetically manipulated	A99	91	CGCGTTTTAACCGCCAC	CGCGTTTT[A]ACCGCCAC
+P62805:R24	dna	nucleosomal_dna	7.71	7r5r	2	I	DNA (171-MER)		Synthetically obtained	C90	82	AATGCAAACATCACATA	AATGCAAA[C]ATCACATA
+P62805:R24	dna	nucleosomal_dna	5.69	6la2	1	J	DNA (343-MER)		Genetically manipulated	A273	265	GTGCGTTTAAGCGGTGC	GTGCGTTT[A][A]GCGGTGC
+P62805:R24	dna	nucleosomal_dna	5.93	7cow	1	I	DNA (353-MER)		Genetically manipulated	A279	271	CGCGTTTTAACCGCCAC	CGCGTTTT[A][A]CCGCCAC
+P62805:R24	dna	nucleosomal_dna	5.96	6la8	1	J	DNA (349-MER)		Genetically manipulated	A277	269	TGCGTTTAAGCGGTGCT	TGCGTTT[A][A]GCGGTGCT
+P62805:R24	dna	nucleosomal_dna	6.32	9v9p	1	J	DNA (252-MER)		Natural source	A88	80	GTGCGTTTAAGCGGTGC	GTGCGTTT[A]AGCGGTGC
+P62805:R24	dna	nucleosomal_dna	4.25	6hts	1	Y	DNA (150-MER)		Synthetically obtained	C91	83	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R24	dna	nucleosomal_dna	5.92	7xx6	3	I	DNA (169-MER)		Genetically manipulated	A99	91	GTGCGTTTAAGCGGTGC	GTGCGTTT[A][A]GCGGTGC
+P62805:R24	dna	nucleosomal_dna	7.27	8vlr	1	L	DNA (136-MER)		Natural source	T89	81	AACCTGCCTTTTGTTGG	AACCTGCC[T]TTTGTTGG
+P62805:R36	dna	nucleosomal_dna	4.6	7va4	1	J	DNA (539-MER)		Genetically manipulated	A343	335	CTAACCCTAACCCTAAC	CTAACCC[T][A][A]CCCTAAC
+P62805:R36	dna	nucleosomal_dna	4.36	6o1d	1	I	DNA (145-MER)		Synthetically obtained	A81	73	GTGAGTGAAACTCCATC	GTGAGTG[A][A][A][C]TCCATC
+P62805:R36	dna	nucleosomal_dna	4.72	6inq	1	N	DNA (198-MER)		Synthetically obtained	T135	127	CGCGTACGTGCGTTTAA	CGCGTA[C][G][T]GCGTTTAA
+P62805:R36	dna	nucleosomal_dna	4.72	6a5u	1	N	DNA (198-MER)		Synthetically obtained	T135	127	CGCGTACGTGCGTTTAA	CGCGTA[C][G][T]GCGTTTAA
+P62805:R36	dna	nucleosomal_dna	4.72	6j50	1	N	DNA (198-MER)		Synthetically obtained	T135	127	CGCGTACGTGCGTTTAA	CGCGTA[C][G][T]GCGTTTAA
+P62805:R36	dna	nucleosomal_dna	4.72	6j4z	1	N	DNA (198-MER)		Synthetically obtained	T135	127	CGCGTACGTGCGTTTAA	CGCGTA[C][G][T]GCGTTTAA
+P62805:R36	dna	nucleosomal_dna	4.72	6a5l	1	N	DNA (198-MER)		Synthetically obtained	T135	127	CGCGTACGTGCGTTTAA	CGCGTA[C][G][T]GCGTTTAA
+P62805:R36	dna	nucleosomal_dna	4.72	6j51	1	N	DNA (198-MER)		Synthetically obtained	T135	127	CGCGTACGTGCGTTTAA	CGCGTA[C][G][T]GCGTTTAA
+P62805:R36	dna	nucleosomal_dna	4.72	6j4x	2	N	DNA (198-MER)		Synthetically obtained	T135	127	CGCGTACGTGCGTTTAA	CGCGTA[C][G][T]GCGTTTAA
+P62805:R36	dna	nucleosomal_dna	4.72	6ir9	1	N	DNA (198-MER)		Synthetically obtained	T135	127	CGCGTACGTGCGTTTAA	CGCGTA[C][G][T]GCGTTTAA
+P62805:R36	dna	nucleosomal_dna	4.72	6a5t	1	N	DNA (198-MER)		Synthetically obtained	T135	127	CGCGTACGTGCGTTTAA	CGCGTA[C][G][T]GCGTTTAA
+P62805:R36	dna	nucleosomal_dna	4.85	9tax	1	Y	DNA (199-MER)		Genetically manipulated	G85	77	GCGCGTACGTGCGTTTA	GCGCGTA[C][G][T][G]CGTTTA
+P62805:R36	dna	nucleosomal_dna	4.36	8ots	1	I	DNA (127-MER)		Synthetically obtained	C75	67	CTGTCCCCCGCGTTTTA	CTGTCCC[C][C][G]CGTTTTA
+P62805:R36	dna	nucleosomal_dna	5.64	8ol1	1	I	DNA (145-MER)		Synthetically obtained	C81	73	CTGTCCCCCGCGTTTTA	CTGTCCC[C][C]GCGTTTTA
+P62805:R36	dna	nucleosomal_dna	5.25	6hts	1	X	DNA (150-MER)		Synthetically obtained	A113	105	GCGGTTAAAACGCGGGG	GCGGTTA[A][A]ACGCGGGG
+P62805:R56	dna	nucleosomal_dna	6.63	9gmk	1	L	DNA (148-MER)		Synthetically obtained	C58	50	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.06	8evg	1	J	DNA (162-MER)		Synthetically obtained	G72	64	TTTGTGAGGGGAATCGG	TTTGTGAG[G]GGAATCGG
+P62805:R56	dna	nucleosomal_dna	5.84	7v96	2	I	DNA (275-mer)		Genetically manipulated	G61	53	TAGGGTTAGGGTTAGGG	TAGGGTT[A][G]GGTTAGGG
+P62805:R56	dna	nucleosomal_dna	6.41	7v9k	1	I	DNA (539-mer)		Genetically manipulated	G193	185	TAGGGTTAGGGTTAGGG	TAGGGTTA[G]GGTTAGGG
+P62805:R56	dna	nucleosomal_dna	5.94	7yyh	2	i	DNA (171-MER)		Synthetically obtained	A40	32	CAAAAGGAATGTTCAAC	CAAAAGGA[A]TGTTCAAC
+P62805:R56	dna	nucleosomal_dna	7.06	6t90	1	J	DNA (146-MER)		Synthetically obtained	A62	54	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.7	8wg5	20	I	DNA (147-MER)		Genetically manipulated	A62	54	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.03	9yly	1	J	DNA (165-MER)		Synthetically obtained	C82	74	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.12	7a08	1	I	Nucleosomal DNA strand 1		Synthetically obtained	C62	54	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.23	7y5w	5	J	Widom 601 DNA (147-MER)		Synthetically obtained	A31	23	GTGCCTGGAGACTAGGG	GTGCCTG[G][A]GACTAGGG
+P62805:R56	dna	nucleosomal_dna	5.96	9gfm	1	L	Nucleosomal DNA strand 2		Synthetically obtained	C70	62	GTCCCCCGCGTTTTAAC	GTCCCCC[G][C]GTTTTAAC
+P62805:R56	dna	nucleosomal_dna	5.89	7pfw	1	J	DNA (167-MER)		Genetically manipulated	A72	64	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	7.78	7dbp	1	I	DNA (175-MER)		Synthetically obtained	A76	68	CCGCTTAAACGCACGTA	CCGCTTAA[A]CGCACGTA
+P62805:R56	dna	nucleosomal_dna	6.23	9d3q	1	I	5S rDNA (noncoding strand)		Genetically manipulated	A47	39	CCCCCAGAAGGCAGCAC	CCCCCAG[A][A]GGCAGCAC
+P62805:R56	dna	nucleosomal_dna	6.41	9d3p	2	I	5S rDNA (noncoding strand)		Genetically manipulated	A61	53	CCCCCAGAAGGCAGCAC	CCCCCAGA[A]GGCAGCAC
+P62805:R56	dna	nucleosomal_dna	6.52	9gmr	1	J	DNA (149-MER)		Synthetically obtained	A68	60	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.46	8xrj	1	T	DNA		Natural source	A74	66	GCGAAAAAACCGCCAAG	GCGAAAAA[A]CCGCCAAG
+P62805:R56	dna	nucleosomal_dna	6.04	10yc	2	I	601 I strand (non-damaged strand)		Synthetically obtained	C62	54	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.88	7u0g	2	I	DNA (162-MER)		Synthetically obtained	A72	64	CTGAATAAATGTAGTCT	CTGAATA[A][A]TGTAGTCT
+P62805:R56	dna	nucleosomal_dna	5.24	9ge5	1	K	Hexasomal DNA Strand 1		Synthetically obtained	A29	21	GACTAGGGAGTAATCCC	GACTAGG[G][A]GTAATCCC
+P62805:R56	dna	nucleosomal_dna	6.03	9gxa	3	I	147 bp human alpha-satellite DNA		Genetically manipulated	A31	23	CTACCAAAAGTGTATTT	CTACCAAA[A]GTGTATTT
+P62805:R56	dna	nucleosomal_dna	6.05	8q36	7	JJJ	DNA (145-MER)		Genetically manipulated	A61	53	CAAAAGGCATGTTCAGC	CAAAAGGC[A]TGTTCAGC
+P62805:R56	dna	nucleosomal_dna	6.15	5av9	10	I	DNA (147-MER)		Synthetically obtained	T62	54	AAAAGGCATGTTCAGCT	AAAAGGC[A][T]GTTCAGCT
+P62805:R56	dna	nucleosomal_dna	7.16	6r8y	1	I	Human alpha-satellite DNA (145-MER)		Synthetically obtained	A61	53	CAAAAGGCATGTTCAGC	CAAAAGGC[A]TGTTCAGC
+P62805:R56	dna	nucleosomal_dna	5.68	7yrd	1	J	DNA (146-MER)		Genetically manipulated	A61	53	CAAAAGGCATGTTCAGC	CAAAAGG[C][A]TGTTCAGC
+P62805:R56	dna	nucleosomal_dna	5.78	6o1d	1	J	DNA (145-MER)		Synthetically obtained	G61	53	TGATGATGGAGTTTCAC	TGATGATG[G]AGTTTCAC
+P62805:R56	dna	nucleosomal_dna	7	6r8z	1	J	Human alpha-satellite DNA (145-MER) with abasic sites at positions 97-98		Synthetically obtained	A61	53	CAAAAGGCATGTTCAGC	CAAAAGGC[A]TGTTCAGC
+P62805:R56	dna	nucleosomal_dna	6.44	9j8w	1	J	Human alpha-satellite DNA (145-MER) with CPD at position 95		Synthetically obtained	A61	53	CAAAAGGCATGTTCAGC	CAAAAGGC[A]TGTTCAGC
+P62805:R56	dna	nucleosomal_dna	6.44	5jrg	1	J	DNA (145-MER)		Genetically manipulated	A61	53	CAAAAGGCATGTTCAGC	CAAAAGGC[A]TGTTCAGC
+P62805:R56	dna	nucleosomal_dna	6.03	6r91	2	I	Human alpha-satellite DNA (145-MER)		Synthetically obtained	G58	50	CATCAAAAGGCATGTTC	CATCAAAA[G]GCATGTTC
+P62805:R56	dna	nucleosomal_dna	5.99	6r90	2	I	Human alpha-satellite DNA (145-MER)		Synthetically obtained	A61	53	CAAAAGGCATGTTCAGC	CAAAAGGC[A]TGTTCAGC
+P62805:R56	dna	nucleosomal_dna	6.13	5b24	2	J	DNA (145-MER)		Genetically manipulated	T62	54	AAAAGGCATGTTCAGCT	AAAAGGCA[T]GTTCAGCT
+P62805:R56	dna	nucleosomal_dna	5.55	3azm	52	J	146-MER DNA		Synthetically obtained	T62	54	AAAAGGCATGTTCAGCT	AAAAGGC[A][T]GTTCAGCT
+P62805:R56	dna	nucleosomal_dna	6.17	4ym5	1	J	144-mer DNA		Synthetically obtained	A60	52	CAAAAGGCATGTTCAGC	CAAAAGGC[A]TGTTCAGC
+P62805:R56	dna	nucleosomal_dna	6.18	5b2i	2	J	DNA (146-MER)		Genetically manipulated	T62	54	AAAAGGCATGTTCACGT	AAAAGGCA[T]GTTCACGT
+P62805:R56	dna	nucleosomal_dna	6.92	7zi4	1	Y	DNA (158-MER)		Synthetically obtained	A61	53	GACTAGGGAGTAATCCC	GACTAGGG[A]GTAATCCC
+P62805:R56	dna	nucleosomal_dna	6	9oh2	5	I	601L DNA (137-MER)		Genetically manipulated	C61	53	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.5	9ecp	1	I	DNA (145-MER)		Synthetically obtained	C61	53	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	7.04	6t93	1	I	DNA (153-MER)		Synthetically obtained	C65	57	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	4.39	9qcs	10	i	153 bp DNA		Genetically manipulated	A65	57	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.01	8osj	1	J	DNA (124-MER)		Synthetically obtained	A65	57	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.88	9r2q	2	J	DNA-rev		Synthetically obtained	A65	57	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.68	8osk	1	I	DNA (124-MER)		Synthetically obtained	C65	57	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.95	9r2m	2	I	DNA-for		Synthetically obtained	G66	58	GCTTAAACGCACGTACG	GCTTAAAC[G]CACGTACG
+P62805:R56	dna	nucleosomal_dna	5.96	6l9h	5	I	Human Telomeric DNA (145-MER) - G-strand		Genetically manipulated	G61	53	TAGGGTTAGGGTTAGGG	TAGGGTTA[G]GGTTAGGG
+P62805:R56	dna	nucleosomal_dna	6.58	6hkt	1	I	DNA (1122-MER)		Synthetically obtained	C83	75	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.11	7pf2	1	I	DNA (541-MER)		Genetically manipulated	C82	74	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.09	8kcy	5	J	DNA (193-MER)		Genetically manipulated	C85	77	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.94	6t79	3	J	DNA (147-MER)		Synthetically obtained	A64	56	AAGGAACAAAATAAACA	AAGGAACA[A]AATAAACA
+P62805:R56	dna	nucleosomal_dna	6.4	8yv8	1	J	DNA (132-MER)		Genetically manipulated	A61	53	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.36	9uz7	1	I	DNA (145-MER)		Synthetically obtained	A61	53	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.94	8jnf	6	I	DNA (156-MER)		Genetically manipulated	C61	53	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.65	6inq	1	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.65	6a5u	1	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.65	6j50	1	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.65	6j4z	1	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.65	6a5l	1	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.65	6j51	1	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.87	9j0p	2	N	NON-TEMPLATE DNA (180-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.2	9j0n	1	T	Template DNA (168-MER)		Synthetically obtained	C61	53	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.83	9ii7	1	N	DNA (198-MER)		Genetically manipulated	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.65	6j4x	2	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.65	6ir9	1	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.65	6a5t	1	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.69	8jh3	1	T	DNA (198-MER)		Genetically manipulated	C61	53	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.57	8jh4	1	N	DNA (198-MER)		Genetically manipulated	A114	106	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.57	6j4w	1	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.12	7xse	1	T	DNA (198-MER)		Synthetically obtained	C61	53	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.57	6a5p	1	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.86	7xtd	1	N	DNA (198-MER)		Synthetically obtained	T67	59	TGTTTTTTTCTGTCTCG	TGTTTTTT[T]CTGTCTCG
+P62805:R56	dna	nucleosomal_dna	5.92	6a5o	1	T	DNA (198-MER)		Synthetically obtained	C61	53	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.98	8jh2	1	T	DNA (218-MER)		Genetically manipulated	C61	53	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.17	8xvs	1	N	DNA		Natural source	A79	71	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.46	7wbw	2	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.95	7wbx	1	N	DNA (198-MER)		Synthetically obtained	A114	106	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.57	7yoz	30	I	Widom601 DNA FW (145-MER)		Genetically manipulated	A28	20	GGCCGCTCAATTGGTCG	GGCCGCT[C][A]ATTGGTCG
+P62805:R56	dna	nucleosomal_dna	5.67	6l49	2	I	DNA (485-MER)		Synthetically obtained	C231	223	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.45	9ujt	1	T	DNA (198-MER)		Synthetically obtained	T34	26	TCAATTGGTCGTAGACA	TCAATTG[G][T]CGTAGACA
+P62805:R56	dna	nucleosomal_dna	6.5	9ujs	1	T	DNA (198-MER)		Synthetically obtained	A96	88	TAACCGCCAAGGGGTAA	TAACCGCC[A]AGGGGTAA
+P62805:R56	dna	nucleosomal_dna	6.12	7xsx	2	T	DNA (198-MER)		Synthetically obtained	C61	53	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.7	9s3g	1	N	Non-template DNA		Synthetically obtained	G63	55	TGTCTCGTGCCTGGTGT	TGTCTCGT[G]CCTGGTGT
+P62805:R56	dna	nucleosomal_dna	6.05	7xsz	3	T	DNA (198-MER)		Synthetically obtained	A90	82	GCGAAAAAACCGCCAAG	GCGAAAA[A][A]CCGCCAAG
+P62805:R56	dna	nucleosomal_dna	6.44	9wmv	1	T	DNA (198-MER)		Synthetically obtained	G98	90	ACCGCCAAGGGGAAAAC	ACCGCCAA[G]GGGAAAAC
+P62805:R56	dna	nucleosomal_dna	6.37	9wmu	1	T	DNA (198-MER)		Synthetically obtained	C106	98	GGGGAAAACACCCAAGA	GGGGAAAA[C]ACCCAAGA
+P62805:R56	dna	nucleosomal_dna	6.09	5cpj	2	J	DNA (146-MER)		Synthetically obtained	T62	54	GATTCCATTTGAGCCTG	GATTCCAT[T]TGAGCCTG
+P62805:R56	dna	nucleosomal_dna	6.64	9l22	2	I	601 DNA_R (189-MER)		Genetically manipulated	A83	75	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.97	8vg2	1	J	DNA (196-MER)		Synthetically obtained	A86	78	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.46	9oh0	4	J	DNA (123-MER)		Genetically manipulated	A63	55	AAGATTCCATTTGAGCC	AAGATTCC[A]TTTGAGCC
+P62805:R56	dna	nucleosomal_dna	6.3	5cpk	1	I	DNA (145-MER)		Synthetically obtained	G61	53	GAATTTTCGAACAGGCT	GAATTTTC[G]AACAGGCT
+P62805:R56	dna	nucleosomal_dna	6.26	9l06	1	I	DNA (207-MER)		Synthetically obtained	C93	85	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.12	8h1t	1	I	DNA (187-MER)		Genetically manipulated	C79	71	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	4.94	6usj	1	J	Widom 601 DNA (160-MER)		Genetically manipulated	C70	62	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.82	8zjt	2	I	DNA (147-MER)		Genetically manipulated	A48	40	GTGCAAGCATGATCCCT	GTGCAAG[C][A]TGATCCCT
+P62805:R56	dna	nucleosomal_dna	5.93	7pet	2	I	DNA (702-MER)		Genetically manipulated	C74	66	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	7.12	9y46	2	I	Nucleosomal DNA - 185 bp		Synthetically obtained	A80	72	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.14	9nqu	2	I	DNA (185-MER)		Genetically manipulated	C81	73	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.47	8vfz	4	J	DNA (171-MER)		Synthetically obtained	T61	53	TTTCTGCATGTACATGG	TTTCTGC[A][T]GTACATGG
+P62805:R56	dna	nucleosomal_dna	7.03	8jhf	2	I	DNA (160-MER)		Genetically manipulated	C72	64	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.07	8hal	7	J	DNA (180-mer)		Genetically manipulated	T79	71	AAAAGGCATGTTCAGCT	AAAAGGCA[T]GTTCAGCT
+P62805:R56	dna	nucleosomal_dna	6.31	9w6t	1	I	DNA (128-MER)		Natural source	A44	36	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.31	9w6j	9	I	DNA (129-MER)		Natural source	A44	36	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.44	6yov	1	J	DNA (142-MER)		Synthetically obtained	A212	204	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.34	7pfu	1	J	DNA (591-MER)		Genetically manipulated	A713	705	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.6	3an2	1	J	147 mer DNA		Synthetically obtained	C62	54	AGTAACTTCTTTGTGCT	AGTAACT[T][C]TTTGTGCT
+P62805:R56	dna	nucleosomal_dna	5.94	9w6f	3	I	DNA (119-MER)		Natural source	A34	26	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.73	9dwj	1	I	601 I strand (damaged strand 1)		Synthetically obtained	C62	54	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6	9dwi	4	J	601 J strand (non-damaged strand)		Synthetically obtained	A62	54	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	7.32	9dwl	1	J	601 J strand (non-damaged strand)		Synthetically obtained	A62	54	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.07	10yd	3	I	601 I strand (non-damaged strand)		Synthetically obtained	C62	54	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.16	10yf	2	K	601 K strand (damaged strand 2)		Synthetically obtained	A6	-2	---TTAAAACGCGGGGG	---TTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.13	10ya	2	I	601 I strand (non-damaged strand)		Synthetically obtained	C62	54	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.42	7scy	39	I	DNA (147-MER)		Synthetically obtained	A62	54	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.74	7u52	1	J	DNA (145-MER)		Synthetically obtained	A62	54	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.02	7u51	2	I	DNA (145-MER)		Synthetically obtained	C62	54	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.11	8vws	1	I	601 I strand (non-damaged strand)		Synthetically obtained	C62	54	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.04	8y3f	5	I	DNA (250-MER)		Synthetically obtained	C63	55	GGTTAAAACGCGGGGGA	GGTTAAA[A][C]GCGGGGGA
+P62805:R56	dna	nucleosomal_dna	5.65	8ihl	1	I	DNA (353-MER)		Genetically manipulated	G63	55	GCTTAAACGCACGTACG	GCTTAAA[C][G]CACGTACG
+P62805:R56	dna	nucleosomal_dna	6.67	7u53	1	J	DNA (144-MER)		Synthetically obtained	A62	54	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.93	9gw2	1	N	Non-Template DNA		Synthetically obtained	A61	53	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.62	9rze	1	N	Non-template DNA		Synthetically obtained	A61	53	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.25	9rzc	1	N	Non-template DNA		Synthetically obtained	A61	53	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.92	9s0u	1	T	Template DNA		Synthetically obtained	C113	105	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.27	6l9z	1	J	DNA (338-MER)		Genetically manipulated	A242	234	CGGTTAAAACGCGGTAG	CGGTTAAA[A]CGCGGTAG
+P62805:R56	dna	nucleosomal_dna	5.09	7xzy	2	I	DNA (193-MER)		Synthetically obtained	C84	76	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.03	9j8m	3	J	DNA (193-MER)		Genetically manipulated	A86	78	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.91	6c0w	2	J	147 mer DNA		Synthetically obtained	A62	54	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.53	7xcr	3	J	DNA (146-MER)		Synthetically obtained	A62	54	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.77	9uz9	1	T	DNA (279-MER)		Synthetically obtained	A62	54	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.87	9uxw	1	T	DNA (254-MER)		Synthetically obtained	A62	54	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.75	9e09	1	J	DNA (156-MER)		Synthetically obtained	C72	64	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.34	9e3d	1	I	DNA (320-MER)		Synthetically obtained	A70	62	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.28	9e3r	3	I	DNA (320-MER)		Synthetically obtained	A71	63	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.04	7pfc	1	J	DNA (788-MER)		Genetically manipulated	A678	670	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.09	7pfa	1	J	DNA (561-MER)		Genetically manipulated	A678	670	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.81	8h0v	1	T	DNA (261-MER)		Synthetically obtained	A86	78	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.81	8h0w	1	T	DNA (261-MER)		Synthetically obtained	A86	78	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.91	8yny	1	I	DNA (175-mer)		Synthetically obtained	C66	58	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.8	7y00	2	I	DNA (169-MER)		Synthetically obtained	C60	52	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.89	9tax	1	V	DNA (199-MER)		Genetically manipulated	C124	116	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.46	8ots	1	I	DNA (127-MER)		Synthetically obtained	C55	47	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.76	9fgq	1	J	DNA (131-MER)		Genetically manipulated	A94	86	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.36	8hqy	1	J	DNA (136-MER)		Genetically manipulated	A52	44	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.93	7peu	1	I	DNA (522-MER)		Genetically manipulated	C74	66	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.34	6rny	1	I	DNA (128-MER)		Synthetically obtained	G45	37	TTTCACCAGCCAGGCCT	TTTCACC[A][G]CCAGGCCT
+P62805:R56	dna	nucleosomal_dna	6.23	43ie	4	I	DNA (143-MER)		Synthetically obtained	C89	81	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	4.4	9gel	6	L	Hexasomal DNA Strand 2		Synthetically obtained	C70	62	GTCCCCCGCGTTTTAAC	GTCCCCC[G][C]GTTTTAAC
+P62805:R56	dna	nucleosomal_dna	6.09	7pf0	1	J	DNA (563-MER)		Genetically manipulated	A446	438	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.07	7pf3	3	J	DNA (167-MER)		Genetically manipulated	A72	64	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.45	8x7k	1	I	DNA (143-MER)		Genetically manipulated	A61	53	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.25	8x7j	1	I	DNA (144-MER)		Genetically manipulated	A61	53	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	7.13	8ol1	1	I	DNA (145-MER)		Synthetically obtained	C61	53	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.03	9igw	1	J	DNA Chain 2		Synthetically obtained	A61	53	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.75	8vob	4	H	DNA (157-MER)		Synthetically obtained	C62	54	GGTTTAAACGCGGGGGA	GGTTTAA[A][C]GCGGGGGA
+P62805:R56	dna	nucleosomal_dna	6.18	8x15	1	X	DNA (137-MER)		Synthetically obtained	A61	53	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.21	8ott	1	J	DNA (144-MER)		Synthetically obtained	A61	53	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.14	6jxd	2	J	DNA (147-MER)		Genetically manipulated	A60	52	CGGTTAAAACGCGGTAG	CGGTTAAA[A]CGCGGTAG
+P62805:R56	dna	nucleosomal_dna	5.54	7pfv	2	J	DNA (177-MER)		Genetically manipulated	A77	69	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.54	7pft	1	J	DNA (591-MER)		Genetically manipulated	A491	483	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.46	6ler	2	J	DNA (169-MER)		Genetically manipulated	A71	63	CGGTTAAAACGCGGTAG	CGGTTAAA[A]CGCGGTAG
+P62805:R56	dna	nucleosomal_dna	6.42	9ipu	1	N	DNA (171-MER)		Genetically manipulated	C72	64	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.36	8rgm	1	I	Widom 603 DNA sequence		Synthetically obtained	C61	53	CGCTTAGGCCACGGTAG	CGCTTAGG[C]CACGGTAG
+P62805:R56	dna	nucleosomal_dna	5.29	7v9j	2	I	DNA (408-mer)		Genetically manipulated	G190	182	TAGGGTTAGGGTTAGGG	TAGGGTT[A][G]GGTTAGGG
+P62805:R56	dna	nucleosomal_dna	6.16	9d3o	2	I	DNA (noncoding strand)		Genetically manipulated	A61	53	CCCCCAGAAGGCAGCAC	CCCCCAG[A][A]GGCAGCAC
+P62805:R56	dna	nucleosomal_dna	5.47	9rmc	3	Y	DNA (148-MER)		Synthetically obtained	A102	94	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.22	9rl4	1	Y	DNA (148-MER)		Synthetically obtained	A102	94	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.3	9e49	1	I	DNA (314-MER)		Synthetically obtained	A69	61	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.85	7r5r	2	I	DNA (171-MER)		Synthetically obtained	A62	54	GAAAAGGAATGTTCAAC	GAAAAGGA[A]TGTTCAAC
+P62805:R56	dna	nucleosomal_dna	6.01	9v6q	3	I	DNA (144-MER)		Natural source	C60	52	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.41	6la2	1	J	DNA (343-MER)		Genetically manipulated	A245	237	CGGTTAAAACGCGGTAG	CGGTTAAA[A]CGCGGTAG
+P62805:R56	dna	nucleosomal_dna	5.97	6m44	2	J	DNA (355-MER)		Genetically manipulated	A76	68	CGGTTAAAACGCGGTAG	CGGTTAAA[A]CGCGGTAG
+P62805:R56	dna	nucleosomal_dna	6.4	7cow	1	J	DNA (353-MER)		Genetically manipulated	A75	67	CGGTTAAAACGCGGTAG	CGGTTAAA[A]CGCGGTAG
+P62805:R56	dna	nucleosomal_dna	6.41	6la8	2	I	DNA (349-MER)		Genetically manipulated	C74	66	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.78	9v9p	1	I	DNA (252-MER)		Natural source	C169	161	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.59	7pez	1	J	DNA (182-MER)		Genetically manipulated	A72	64	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.49	8ooa	1	L	DNA Strand 2		Synthetically obtained	A141	133	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.67	7v90	1	I	DNA (145-mer)		Genetically manipulated	G61	53	TAGGGTTAGGGTTAGGG	TAGGGTTA[G]GGTTAGGG
+P62805:R56	dna	nucleosomal_dna	6.25	9v8l	1	I	DNA (271-MER)		Natural source	C201	193	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.15	8atf	1	L	DNA (226-MER)		Synthetically obtained	A142	134	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.09	7pfd	1	J	DNA (172-MER)		Genetically manipulated	A77	69	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.24	7pfe	1	J	DNA (177-MER)		Genetically manipulated	A77	69	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.36	9d3t	1	I	5S rDNA (noncoding strand)		Genetically manipulated	A42	34	CCCCCAGAAGGCAGCAC	CCCCCAGA[A]GGCAGCAC
+P62805:R56	dna	nucleosomal_dna	5.75	6hts	1	Y	DNA (150-MER)		Synthetically obtained	C91	83	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.19	7e8d	1	J	DNA (185-MER)		Genetically manipulated	A81	73	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.62	9d3n	1	I	5S rDNA (noncoding strand)		Genetically manipulated	A37	29	CCCCCAGAAGGCAGCAC	CCCCCAGA[A]GGCAGCAC
+P62805:R56	dna	nucleosomal_dna	6.15	7pey	1	J	DNA (203-MER)		Genetically manipulated	A71	63	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.16	7pex	1	I	DNA (177-MER)		Genetically manipulated	C77	69	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.24	9e3u	1	I	DNA (165-MER)		Synthetically obtained	A71	63	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.93	7pew	1	I	DNA (176-MER)		Genetically manipulated	C72	64	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.35	7xx6	5	J	DNA (169-MER)		Genetically manipulated	C71	63	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.41	7pff	1	I	DNA (167-MER)		Genetically manipulated	C72	64	CGCTTAAACGCACGTAC	CGCTTAAA[C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.61	6r0c	1	I	DNA (142-MER)		Synthetically obtained	G63	55	TTTCACCAGCCAGGCCT	TTTCACCA[G]CCAGGCCT
+P62805:R56	dna	nucleosomal_dna	5.32	7k60	5	I	DNA (197-MER)		Genetically manipulated	C87	79	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.67	8qzm	1	I	DNA (145-MER)		Synthetically obtained	A111	103	CGGTTAAAACGCGGGGG	CGGTTAA[A][A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	5.88	9v6x	1	I	DNA (184-MER)		Natural source	C81	73	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	6.05	8evi	1	J	DNA (167-MER)		Synthetically obtained	T60	52	AGACAGACTGACCTATT	AGACAGAC[T]GACCTATT
+P62805:R56	dna	nucleosomal_dna	6.18	6upk	2	J	DNA (79-mer)		Synthetically obtained	A28	20	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62805:R56	dna	nucleosomal_dna	6.07	9v9h	1	I	DNA (276-MER)		Natural source	C192	184	CGCTTAAACGCACGTAC	CGCTTAA[A][C]GCACGTAC
+P62805:R56	dna	nucleosomal_dna	5.99	8vlr	1	L	DNA (136-MER)		Natural source	G61	53	AAAAGGCAGGTTCAGCT	AAAAGGC[A][G]GTTCAGCT
+P62805:R56	dna	nucleosomal_dna	6.65	7xct	1	J	DNA (145-MER)		Synthetically obtained	A61	53	CGGTTAAAACGCGGGGG	CGGTTAAA[A]CGCGGGGG
+P62829:R6	rna	rrna	4.63	8fl2	4	L3	28S ribosomal RNA		Natural source	U4594	4586	GGUAAUCCUGCUCAGUA	GGUAAUC[C][U][G]CUCAGUA
+P62857:R63	rna	mrna	6.05	8pj1	1	7	Messenger RNA		Genetically manipulated	A110	102	CAACAACAACAAGGAUC	CAACAAC[A][A]CAAGGAUC
+P62857:R63	rna	viral_rna	5.83	5flx	1	z	HCV-IRES		Genetically manipulated	C333	325	CUCGUAGACCGUGCACC	CUCGUAGA[C]CGUGCACC
+P62899:R14	rna	rrna	4.95	8ink	2	2	28S ribosomal RNA		Natural source	G5046	5038	CGACACAAGGGUUUGUC	CGACAC[A][A][G]GGUUUGUC
+P62899:R14	rna	rrna	5.67	8ipx	1	2	28S ribosomal RNA		Natural source	G5046	5038	CGACACAAGGGUUUGUC	CGACAC[A][A][G]GGUUUGUC
+P62899:R14	rna	rrna	5.67	8ipy	1	2	28S ribosomal RNA		Natural source	G5046	5038	CGACACAAGGGUUUGUC	CGACAC[A][A][G]GGUUUGUC
+P62899:R14	rna	rrna	4.7	8ie3	4	2	28S ribosomal RNA		Natural source	G5046	5038	CGACACAAGGGUUUGUC	CGACAC[A][A][G]GGUUUGUC
+P62899:R14	rna	rrna	6.03	8ine	2	2	28S ribosomal RNA		Natural source	G5046	5038	CGACACAAGGGUUUGUC	CGACAC[A][A][G]GGUUUGUC
+P62899:R14	rna	rrna	6.94	8inf	1	2	28S ribosomal RNA		Natural source	G5046	5038	CGACACAAGGGUUUGUC	CGACACA[A][G]GGUUUGUC
+P62899:R63	rna	rrna	4.01	7ow7	1	A	28S ribosomal RNA		Natural source	A2375	2367	AAUAUUCAAACGAGAAC	AAUAUU[C][A][A]ACGAGAAC
+P62899:R63	rna	rrna	4.17	8ipx	1	2	28S ribosomal RNA		Natural source	A2375	2367	AAUAUUCAAACGAGAAC	AAUAUU[C][A][A]ACGAGAAC
+P62899:R63	rna	rrna	4.17	8ipy	1	2	28S ribosomal RNA		Natural source	A2375	2367	AAUAUUCAAACGAGAAC	AAUAUU[C][A][A]ACGAGAAC
+P62899:R63	rna	rrna	4.31	8ine	2	2	28S ribosomal RNA		Natural source	A2375	2367	AAUAUUCAAACGAGAAC	AAUAUU[C][A][A]ACGAGAAC
+P62899:R63	rna	rrna	4.17	8inf	1	2	28S ribosomal RNA		Natural source	A2375	2367	AAUAUUCAAACGAGAAC	AAUAUU[C][A][A]ACGAGAAC
+P62899:R63	rna	rrna	4.47	7f5s	1	L5	28S ribosomal RNA		Natural source	A2375	2367	AAUAUUCAAACGAGAAC	AAUAUU[C][A][A][A]CGAGAAC
+P62899:R63	rna	rrna	4.14	9p9j	2	L5	28S ribosomal RNA		Natural source	A1836	1828	AAUAUUCAAACGAGAAC	AAUAUU[C][A][A][A]CGAGAAC
+P62899:R63	rna	rrna	4.61	6om0	1	t	28S ribosomal RNA		Natural source	A1812	1804	AAUAUUCAAACGAGAAC	AAUAUU[C][A][A][A]CGAGAAC
+P62899:R63	rna	rrna	4.29	9gmo	1	A	28S ribosomal RNA		Natural source	A2371	2363	AAUAUUCAAACGAGAAC	AAUAUUC[A][A]ACGAGAAC
+P62899:R63	rna	rrna	4.33	8qfd	1	5	28S ribosomal RNA		Natural source	A2375	2367	AAUAUUCAAACGAGAAC	AAUAUU[C][A][A]ACGAGAAC
+P62899:R63	rna	rrna	4.12	8oj0	4	5	28S ribosomal RNA		Natural source	A2375	2367	AAUAUUCAAACGAGAAC	AAUAUU[C][A][A]ACGAGAAC
+P62899:R63	rna	rrna	4.16	29iy	2	CA	28S ribosomal RNA		Natural source	A2375	2367	AAUAUUCAAACGAGAAC	AAUAUU[C][A][A]ACGAGAAC
+P62899:R63	rna	rrna	4.26	8a3d	1	A	28S ribosomal RNA		Natural source	A2375	2367	AAUAUUCAAACGAGAAC	AAUAUUC[A][A]ACGAGAAC
+P62899:R63	rna	rrna	4.24	8fkz	1	L3	28S ribosomal RNA		Natural source	A2375	2367	AAUAUUCAAACGAGAAC	AAUAUU[C][A][A]ACGAGAAC
+P62906:R215	rna	rrna	4.88	6y6x	1	L5	28S ribosomal RNA		Natural source	C4054	4046	AAAUACCACUACUCUGA	AAAUACCA[C][U]ACUCUGA
+P62906:R215	rna	rrna	5.92	8inf	1	2	28S ribosomal RNA		Natural source	U4055	4047	AAUACCACUACUCUGAU	AAUACCA[C][U]ACUCUGAU
+P62906:R215	rna	rrna	4.62	8oj5	4	5	28S ribosomal RNA		Natural source	U4055	4047	AAUACCACUACUCUGAU	AAUACCA[C][U]ACUCUGAU
+P62906:R215	rna	rrna	4.73	8fl2	1	L3	28S ribosomal RNA		Natural source	U4055	4047	AAUACCACUACUCUGAU	AAUACCA[C][U]ACUCUGAU
+P62906:R215	rna	rrna	5.21	8fl3	2	L3	28S ribosomal RNA		Natural source	U4055	4047	AAUACCACUACUCUGAU	AAUACCA[C][U]ACUCUGAU
+P62910:R27	rna	rrna	4.34	8ine	2	2	28S ribosomal RNA		Natural source	A434	426	AAGAGGUAAACGGGUGG	AAGAGGU[A][A][A][C]GGGUGG
+P62910:R27	rna	rrna	4.12	8inf	1	2	28S ribosomal RNA		Natural source	A434	426	AAGAGGUAAACGGGUGG	AAGAGGU[A][A][A][C]GGGUGG
+P62910:R75	rna	rrna	7.84	7bhp	1	L5	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62910:R75	rna	rrna	7.29	7ow7	1	A	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGG[C][G]CGGGCCCG
+P62910:R75	rna	rrna	7.37	6y6x	1	L5	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62910:R75	rna	rrna	7.23	6lss	4	2	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62910:R75	rna	rrna	7.39	8ipd	2	2	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62910:R75	rna	rrna	7.8	8ipx	1	2	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62910:R75	rna	rrna	7.8	8ipy	1	2	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62910:R75	rna	rrna	7.49	8ie3	4	2	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62910:R75	rna	rrna	7.73	8ine	1	2	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62910:R75	rna	rrna	7.64	8inf	1	2	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62910:R75	rna	rrna	7.46	7f5s	1	L5	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGG[C][G]CGGGCCCG
+P62910:R75	rna	rrna	7.26	9p9j	2	L5	28S ribosomal RNA		Natural source	G1779	1771	CCUAGGGCGCGGGCCCG	CCUAGGG[C][G]CGGGCCCG
+P62910:R75	rna	rrna	7.61	6om0	1	t	28S ribosomal RNA		Natural source	G1755	1747	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62910:R75	rna	rrna	7.68	9gmo	1	A	28S ribosomal RNA		Natural source	G2314	2306	CCUAGGGCGCGGGCCCG	CCUAGGG[C][G]CGGGCCCG
+P62910:R75	rna	rrna	7.26	8qfd	1	5	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGG[C][G]CGGGCCCG
+P62910:R75	rna	rrna	7.95	8oj0	2	5	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62910:R75	rna	rrna	7.5	8fky	1	L3	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62910:R75	rna	rrna	7.37	8qyx	2	A2	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGG[C][G]CGGGCCCG
+P62910:R75	rna	rrna	7.32	8a3d	1	A	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGG[C][G]CGGGCCCG
+P62910:R75	rna	rrna	7.38	8fkq	10	L3	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGG[C][G]CGGGCCCG
+P62910:R75	rna	rrna	7.21	8fld	4	L3	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGG[C][G]CGGGCCCG
+P62910:R75	rna	rrna	7.27	8rl2	11	L5	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGG[C][G]CGGGCCCG
+P62910:R75	rna	rrna	7.55	8fl0	1	L3	28S ribosomal RNA		Natural source	G2318	2310	CCUAGGGCGCGGGCCCG	CCUAGGGC[G]CGGGCCCG
+P62913:R32	rna	rrna	6.88	7bhp	1	L5	28S ribosomal RNA		Natural source	A4253	4245	GGGAGGACAGAAACCUC	GGGAGGA[C][A]GAAACCUC
+P62913:R32	rna	rrna	6.04	7ow7	1	A	28S ribosomal RNA		Natural source	C4252	4244	AGGGAGGACAGAAACCU	AGGGAGG[A][C][A]GAAACCU
+P62913:R32	rna	rrna	6.7	6y6x	1	L5	28S ribosomal RNA		Natural source	C4252	4244	AGGGAGGACAGAAACCU	AGGGAGG[A][C][A]GAAACCU
+P62913:R32	rna	rrna	7.17	6lqm	3	2	28S ribosomal RNA		Natural source	C4252	4244	AGGGAGGACAGAAACCU	AGGGAGGA[C]AGAAACCU
+P62913:R32	rna	rrna	6.41	8ipd	1	2	28S ribosomal RNA		Natural source	C4252	4244	AGGGAGGACAGAAACCU	AGGGAGG[A][C][A]GAA[A]CCU
+P62913:R32	rna	rrna	6.14	8ipx	1	2	28S ribosomal RNA		Natural source	C4252	4244	AGGGAGGACAGAAACCU	AGGGAGG[A][C][A]GAAACCU
+P62913:R32	rna	rrna	6.14	8ipy	1	2	28S ribosomal RNA		Natural source	C4252	4244	AGGGAGGACAGAAACCU	AGGGAGG[A][C][A]GAAACCU
+P62913:R32	rna	rrna	7.35	8idt	4	2	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAGG[A][C]AGAAACC
+P62913:R32	rna	rrna	7.5	8inf	1	2	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAGG[A][C]AGAAACC
+P62913:R32	rna	rrna	6.63	7f5s	1	L5	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAGG[A][C][A]GAAACC
+P62913:R32	rna	rrna	6.79	9p9j	2	L5	28S ribosomal RNA		Natural source	A2940	2932	GGGAGGACAGAAACCUC	GGGAGG[A][C][A]GAA[A]CCUC
+P62913:R32	rna	rrna	6.36	6om0	1	t	28S ribosomal RNA		Natural source	A2869	2861	CAGGGAGGACAGAAACC	CAGGGAGG[A][C]AGAAACC
+P62913:R32	rna	rrna	7.19	9gmo	1	A	28S ribosomal RNA		Natural source	C4247	4239	AGGGAGGACAGAAACCU	AGGGAGG[A][C]AGAAACCU
+P62913:R32	rna	rrna	6.85	8qfd	1	5	28S ribosomal RNA		Natural source	C4252	4244	AGGGAGGACAGAAACCU	AGGGAGG[A][C]AGAAACCU
+P62913:R32	rna	rrna	6.41	8oj8	4	5	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAGG[A][C]AGAAACC
+P62913:R32	rna	rrna	6.46	8qyx	1	A2	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAGG[A][C][A]GAAACC
+P62913:R32	rna	rrna	6.56	8a3d	1	A	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAGG[A][C][A]GAAACC
+P62913:R32	rna	rrna	6.75	8fl2	1	L3	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAGG[A][C]AGAAACC
+P62913:R32	rna	rrna	6.88	8fl4	5	L3	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAGG[A][C]AGAAACC
+P62913:R95	rna	rrna	4.73	7bhp	1	L5	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAG[G][A]CAGAAACC
+P62913:R95	rna	rrna	7.12	7ow7	1	A	28S ribosomal RNA		Natural source	G4250	4242	UCAGGGAGGACAGAAAC	UCAGGGAG[G][A]CAGAAAC
+P62913:R95	rna	rrna	4.36	6y6x	1	L5	28S ribosomal RNA		Natural source	G4250	4242	UCAGGGAGGACAGAAAC	UCAGGGA[G][G][A]CAGAAAC
+P62913:R95	rna	rrna	4.8	6lqm	2	2	28S ribosomal RNA		Natural source	G4250	4242	UCAGGGAGGACAGAAAC	UCAGGGA[G][G][A]CAGAAAC
+P62913:R95	rna	rrna	6.19	8ipd	2	2	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAG[G][A]CAGAAACC
+P62913:R95	rna	rrna	5.08	8ipx	1	2	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAG[G][A]CAGAAACC
+P62913:R95	rna	rrna	5.08	8ipy	1	2	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAG[G][A]CAGAAACC
+P62913:R95	rna	rrna	5.07	8ine	2	2	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAG[G][A]CAGAAACC
+P62913:R95	rna	rrna	5.24	8inf	1	2	28S ribosomal RNA		Natural source	A4251	4243	CAGGGAGGACAGAAACC	CAGGGAG[G][A][C]AGAAACC
+P62913:R95	rna	rrna	6.86	7f5s	1	L5	28S ribosomal RNA		Natural source	G4250	4242	UCAGGGAGGACAGAAAC	UCAGGGAG[G][A]CAGAAAC
+P62913:R95	rna	rrna	7.91	9p9j	2	L5	28S ribosomal RNA		Natural source	G2937	2929	UCAGGGAGGACAGAAAC	UCAGGGAG[G]ACAGAAAC
+P62913:R95	rna	rrna	5.14	6om0	1	t	28S ribosomal RNA		Natural source	G2868	2860	UCAGGGAGGACAGAAAC	UCAGGGA[G][G][A]CAGAAAC
+P62913:R95	rna	rrna	6.37	9gmo	1	A	28S ribosomal RNA		Natural source	G4245	4237	UCAGGGAGGACAGAAAC	UCAGGGAG[G][A]CAGAAAC
+P62913:R95	rna	rrna	6.2	8qfd	1	5	28S ribosomal RNA		Natural source	G4250	4242	UCAGGGAGGACAGAAAC	UCAGGGAG[G][A]CAGAAAC
+P62913:R95	rna	rrna	6.3	8oj0	4	5	28S ribosomal RNA		Natural source	G4250	4242	UCAGGGAGGACAGAAAC	UCAGGGAG[G][A]CAGAAAC
+P62913:R95	rna	rrna	6.61	8qyx	1	A2	28S ribosomal RNA		Natural source	G4250	4242	UCAGGGAGGACAGAAAC	UCAGGGAG[G][A]CAGAAAC
+P62913:R95	rna	rrna	6.84	8a3d	1	A	28S ribosomal RNA		Natural source	G4250	4242	UCAGGGAGGACAGAAAC	UCAGGGAG[G][A]CAGAAAC
+P62913:R95	rna	rrna	6.92	8fla	3	L3	28S ribosomal RNA		Natural source	G4250	4242	UCAGGGAGGACAGAAAC	UCAGGGAG[G][A]CAGAAAC
+P62913:R95	rna	rrna	5.92	9qet	11	L5	28S ribosomal RNA		Natural source	G4250	4242	UCAGGGAGGACAGAAAC	UCAGGGAG[G][A]CAGAAAC
+P62917:R54	rna	rrna	4.26	7bhp	1	L5	28S ribosomal RNA		Natural source	U3680	3672	GCGGGUGUUGACGCGAU	GCGGGUG[U][U][G]ACGCGAU
+P62917:R123	rna	rrna	3.21	8ipx	1	2	28S ribosomal RNA		Natural source	U4083	4075	UGACCCGGUGAGGCGGG	UGACCCG[G][U][G]AGGCGGG
+P62917:R123	rna	rrna	3.21	8ipy	1	2	28S ribosomal RNA		Natural source	U4083	4075	UGACCCGGUGAGGCGGG	UGACCCG[G][U][G]AGGCGGG
+P62979:R138	rna	rrna	4.71	7qp7	1	A	18S Ribosomal RNA		Natural source	A1293	1285	GGAUUGACAGAUUGAUA	GGAUUGA[C][A][G]AUUGAUA
+P68431:R18	dna	nucleosomal_dna	6.95	9ymf	1	J	DNA (145-MER)		Synthetically obtained	T140	132	CACCGGGATTCTCCAG-	CACCGGG[A][T]TCTCCAG-
+P68431:R41	dna	nucleosomal_dna	7.18	8vnv	1	H	DNA (26-mer)		Synthetically obtained	A11	3	GATTCTCCAGCCGCCGG	GATTCTCC[A]GCCGCCGG
+P68431:R43	dna	nucleosomal_dna	4.18	7v9k	1	J	DNA (539-mer)		Genetically manipulated	T330	322	CCTAACCCTAACCCTAA	CCTAACC[C][T][A]ACCCTAA
+P68431:R43	dna	nucleosomal_dna	4.08	6t90	1	J	DNA (146-MER)		Synthetically obtained	G69	61	AACGCGGGGGACAGCGC	AACGCGG[G][G]GACAGCGC
+P68431:R43	dna	nucleosomal_dna	6.56	9gfm	1	L	Nucleosomal DNA strand 2		Synthetically obtained	C78	70	CGTTTTAACCGCCAAGG	CGTTTTA[A][C]CGCCAAGG
+P68431:R43	dna	nucleosomal_dna	5.08	9ge5	1	K	Hexasomal DNA Strand 1		Synthetically obtained	A51	43	CGGTTAAAACGCGGGGG	CGGTTAA[A][A][C]GCGGGGG
+P68431:R43	dna	nucleosomal_dna	4.18	8xvs	1	N	DNA		Natural source	G161	153	GGGATTCTGAT------	GGGATTC[T][G][A][T]------
+P68431:R50	dna	nucleosomal_dna	5.33	7v9k	1	J	DNA (539-mer)		Genetically manipulated	A404	396	TAACCCTAACCCTAACC	TAACCCT[A][A][C]CCTAACC
+P68431:R50	dna	nucleosomal_dna	5.83	8osj	1	J	DNA (124-MER)		Synthetically obtained	G87	79	GCGTACGTGCGTTTAAG	GCGTACG[T][G]CGTTTAAG
+P68431:R50	dna	nucleosomal_dna	5.45	8osk	1	J	DNA (124-MER)		Synthetically obtained	G87	79	GCGTACGTGCGTTTAAG	GCGTACG[T][G]CGTTTAAG
+P68431:R50	dna	nucleosomal_dna	6.46	8yny	1	I	DNA (175-mer)		Synthetically obtained	G87	79	TGTCCCCCGCGTTTTAA	TGTCCCCC[G][C]GTTTTAA
+P68431:R50	dna	nucleosomal_dna	5.74	8ots	1	I	DNA (127-MER)		Synthetically obtained	C77	69	GTCCCCCGCGTTTTAAC	GTCCCCC[G][C]GTTTTAAC
+P68431:R50	dna	nucleosomal_dna	5.95	9igw	1	I	DNA Chain 1		Synthetically obtained	C85	77	GTCCCCCGCGTTTTAAC	GTCCCCC[G][C]GTTTTAAC
+P68431:R50	dna	nucleosomal_dna	5.88	9rl4	1	Y	DNA (148-MER)		Synthetically obtained	G124	116	GCGTACGTGCGTTTAAG	GCGTACG[T][G]CGTTTAAG
+P68431:R50	dna	nucleosomal_dna	5.26	6upk	1	I	DNA (79-mer)		Synthetically obtained	G49	41	TGTCCCCCGCGTTTTAA	TGTCCCC[C][G][C]GTTTTAA
+P83881:R57	rna	rrna	4.56	8ine	1	2	28S ribosomal RNA		Natural source	C3924	3916	GAGCUUGACUCUAGUCU	GAGCUUG[A][C][U]CUAGUCU
+P83881:R57	rna	rrna	4.71	8inf	1	2	28S ribosomal RNA		Natural source	U3925	3917	AGCUUGACUCUAGUCUG	AGCUUGA[C][U]CUAGUCUG
+P84098:R5	rna	rrna	4.32	7bhp	1	L5	28S ribosomal RNA		Natural source	U2385	2377	CGAGAACUUUGAAGGCC	CGAGAAC[U][U][U]GAAGGCC
+P84243:R43	dna	nucleosomal_dna	6.54	8jh3	1	T	DNA (198-MER)		Genetically manipulated	C159	151	CCACCACCCAAACACAC	CCACCACC[C]AAACACAC
+P84243:R43	dna	nucleosomal_dna	4.12	9wmv	1	N	DNA (198-MER)		Synthetically obtained	G84	76	TGCCTGGTGTCTTGGGT	TGCCTGG[T][G]TCTTGGGT
+P84243:R84	dna	nucleosomal_dna	6.41	9ii7	1	T	DNA (198-MER)		Genetically manipulated	G49	41	CAGCTCTAGCACCGCTT	CAGCTCTA[G][C]ACCGCTT
+P84243:R84	dna	nucleosomal_dna	4.19	8jh3	1	N	DNA (198-MER)		Genetically manipulated	A152	144	GCGGTGCTAGAGCTGTC	GCGGTGC[T][A][G][A]GCTGTC
+Q00059:R82	dna	other_dna	4.25	9gzm	1	N	Non-template strand DNA (56-MER)		Synthetically obtained	G23	15	GGGTGACTGTTAAAAGT	GGGTGAC[T][G]TTAAAAGT
+Q00059:R82	dna	other_dna	4.02	7lbw	1	F	DNA (5'-D(P*TP*AP*GP*CP*CP*TP*TP*TP*CP*TP*AP*TP*TP*AP*GP*CP*TP*CP*TP*TP*AP*G)-3')	synthetic construct	Synthetically obtained	G7	-1	--CTAAGAGCTAATAGA	--CTAAG[A][G]CTAATAGA
+Q01130:R47	rna	rna_oligo	6.98	2lec	1	B	RNA (5'-R(*UP*GP*GP*AP*GP*U)-3')	synthetic construct	Synthetically obtained	A4	-4	-----UGGAGU------	-----UGG[A]GU------
+Q02543:R8	rna	rrna	4.04	8ipx	1	2	28S ribosomal RNA		Natural source	G939	931	CAGCACUCGCCGAAUCC	CAGCACU[C][G][C]CGAAUCC
+Q02543:R8	rna	rrna	4.04	8ipy	1	2	28S ribosomal RNA		Natural source	G939	931	CAGCACUCGCCGAAUCC	CAGCACU[C][G][C]CGAAUCC
+Q02543:R31	rna	rrna	7.28	8ipd	2	2	28S ribosomal RNA		Natural source	G729	721	GGACGGCUGGGAAGGCC	GGACGGCU[G]GGAAGGCC
+Q02543:R31	rna	rrna	7.7	8ir1	1	2	28S ribosomal RNA		Natural source	G729	721	GGACGGCUGGGAAGGCC	GGACGGCU[G]GGAAGGCC
+Q02543:R31	rna	rrna	7.88	8ir3	1	2	28S ribosomal RNA		Natural source	G729	721	GGACGGCUGGGAAGGCC	GGACGGCU[G]GGAAGGCC
+Q02543:R31	rna	rrna	6.92	8fky	1	L3	28S ribosomal RNA		Natural source	G729	721	GGACGGCUGGGAAGGCC	GGACGGCU[G]GGAAGGCC
+Q02543:R31	rna	rrna	6.92	8fkv	6	L3	28S ribosomal RNA		Natural source	G729	721	GGACGGCUGGGAAGGCC	GGACGGCU[G]GGAAGGCC
+Q02543:R31	rna	rrna	6.89	8fl6	3	L3	28S ribosomal RNA		Natural source	G729	721	GGACGGCUGGGAAGGCC	GGACGGCU[G]GGAAGGCC
+Q02543:R31	rna	rrna	6.82	9qer	9	L5	28S ribosomal RNA		Natural source	G729	721	GGACGGCUGGGAAGGCC	GGACGGCU[G]GGAAGGCC
+Q02543:R31	rna	rrna	7.24	8fl0	1	L3	28S ribosomal RNA		Natural source	G729	721	GGACGGCUGGGAAGGCC	GGACGGCU[G]GGAAGGCC
+Q06787:R533	rna	rna_oligo	5.4	5dea	1	C	sc1	synthetic construct	Synthetically obtained	C30	22	CUGGGUUGCGCAGC---	CUGGGUU[G][C][G]CAGC---
+Q06787:R533	rna	rna_oligo	6.71	2la5	1	A	RNA (36-MER)	Homo sapiens	Synthetically obtained	U28	20	GGCUGGGUUGCGCAGCG	GGCUGGG[U][U][G]CGCAGCG
+Q07020:R6	rna	rrna	5.21	7bhp	1	L5	28S ribosomal RNA		Natural source	U1687	1679	AGGAUAGCUGGCGCUCU	AGGAUAG[C][U][G]GCGCUCU
+Q07020:R6	rna	rrna	4.04	7ow7	1	A	28S ribosomal RNA		Natural source	U1687	1679	AGGAUAGCUGGCGCUCU	AGGAUAG[C][U][G]GCGCUCU
+Q07020:R6	rna	rrna	4.95	8ipd	2	2	28S ribosomal RNA		Natural source	U1687	1679	AGGAUAGCUGGCGCUCU	AGGAUAG[C][U][G]GCGCUCU
+Q07020:R6	rna	rrna	4.87	8ipx	1	2	28S ribosomal RNA		Natural source	U1687	1679	AGGAUAGCUGGCGCUCU	AGGAUAG[C][U][G]GCGCUCU
+Q07020:R6	rna	rrna	4.87	8ipy	1	2	28S ribosomal RNA		Natural source	U1687	1679	AGGAUAGCUGGCGCUCU	AGGAUAG[C][U][G]GCGCUCU
+Q07020:R6	rna	rrna	4.46	8ie3	4	2	28S ribosomal RNA		Natural source	G1667	1659	UUCCCUCCGAAGUUUCC	UUCCCUC[C][G][A]AGUUUCC
+Q07020:R6	rna	rrna	4.79	8ine	2	2	28S ribosomal RNA		Natural source	U1687	1679	AGGAUAGCUGGCGCUCU	AGGAUAG[C][U][G]GCGCUCU
+Q07020:R6	rna	rrna	4.94	8inf	1	2	28S ribosomal RNA		Natural source	U1687	1679	AGGAUAGCUGGCGCUCU	AGGAUAG[C][U][G]GCGCUCU
+Q07020:R6	rna	rrna	4.01	9gmo	1	A	28S ribosomal RNA		Natural source	U1681	1673	AGGAUAGCUGGCGCUCU	AGGAUAG[C][U][G]GCGCUCU
+Q07020:R6	rna	rrna	4.31	8qfd	1	5	28S ribosomal RNA		Natural source	U1687	1679	AGGAUAGCUGGCGCUCU	AGGAUAG[C][U][G]GCGCUCU
+Q07020:R6	rna	rrna	4.08	8qyx	2	A2	28S ribosomal RNA		Natural source	U1687	1679	AGGAUAGCUGGCGCUCU	AGGAUAG[C][U][G]GCGCUCU
+Q07020:R6	rna	rrna	4.01	8a3d	1	A	28S ribosomal RNA		Natural source	U1687	1679	AGGAUAGCUGGCGCUCU	AGGAUAG[C][U][G]GCGCUCU
+Q07955:R111	rna	rna_oligo	7.83	2m8d	1	A	RNA (5'-R(*UP*GP*AP*AP*GP*GP*AP*C)-3')	Homo sapiens	Synthetically obtained	A4	-4	-----UGAAGGAC----	-----UGA[A][G]GAC----
+Q13435:R508	rna	mrna	7.24	7dvq	1	G	pre-mRNA		Synthetically obtained	G110	102	UUGAUGAUGUCAUAUCC	UUGAUGAU[G]UCAUAUCC
+Q13435:R515	rna	snrna	4.29	9ze2	4	2	U2 snRNA		Natural source	C12	4	UGUAGUAUCUGUUCUCA	UGUAGU[A][U][C]UGUUCUCA
+Q13435:R515	rna	snrna	4.72	9ze3	1	2	U2 snRNA		Natural source	C12	4	UGUAGUAUCUGUUCUCA	UGUAGU[A][U][C]UGUUCUCA
+Q13435:R515	rna	snrna	4.22	7vpx	1	H	U2 snRNA		Natural source	C40	32	UGUAGUAUCUGUUCUUA	UGUAGU[A][U][C]UGUUCUUA
+Q13435:R515	rna	snrna	2.86	7q4p	1	2	U2 snRNA		Natural source	C40	32	UGUAGUAUCUGUUCUUA	UGUAGU[A][U][C]UGUUCUUA
+Q13601:R235	rna	rrna	5.93	7mq9	1	L1	18S Ribosomal RNA		Natural source	A962	954	UAGAGGUGAAAUUCUUG	UAGAGGU[G][A]AAUUCUUG
+Q13823:R23	rna	rrna	7.35	8ipx	1	2	28S ribosomal RNA		Natural source	A4381	4373	GUCAGAAAAGUUACCAC	GUCAGAAA[A]GUUACCAC
+Q13823:R23	rna	rrna	7.35	8ipy	1	2	28S ribosomal RNA		Natural source	A4381	4373	GUCAGAAAAGUUACCAC	GUCAGAAA[A]GUUACCAC
+Q13823:R23	rna	rrna	5.48	8ir3	1	2	28S ribosomal RNA		Natural source	G3922	3914	UUGAGCUUGACUCUAGU	UUGAGCUU[G]ACUCUAGU
+Q14566:R282	dna	other_dna	4.27	7w1y	1	O	DNA (49-MER)		Natural source	A25	17	AAAAAAAAAAAAAAAAA	AAAAAAA[A][A][A]AAAAAAA
+Q14566:R282	dna	other_dna	5.93	9caq	1	O	DNA (44-MER)		Synthetically obtained	T24	16	AAAAAAAATTTTTTTTT	AAAAAAA[A][T][T]TTTTTTT
+Q14566:R282	dna	other_dna	6.84	7plo	1	N	Lagging strand DNA		Synthetically obtained	C6	-2	---ACACACACTCTCCA	---ACACA[C]ACTCTCCA
+Q14566:R282	dna	other_dna	7.64	7pfo	1	N	Lagging Strand DNA		Genetically manipulated	A18	10	GCAGGCACACACTCTCC	GCAGGCAC[A]CACTCTCC
+Q15046:R148	rna	trna	6.61	9dpl	3	C	tRNA-Lys3 (Cellular modified)		Natural source	A37	29	AGACUUUUAAUCUGAGG	AGACUUU[U][A][A]UCUGAGG
+Q15046:R553	rna	trna	5.84	9dpl	2	C	tRNA-Lys3 (Cellular modified)		Natural source	C75	67	UCGGGCGCCA-------	UCGGGCG[C][C]A-------
+Q15428:R26	rna	mrna	5.45	6ff4	1	Z	pre mRNA		Natural source	A390	382	AUGUAUUUACUGACCUG	AUGUAUU[U][A]CUGACCUG
+Q15428:R26	rna	snrna	4.67	8i0t	3	H	U2 snRNA		Natural source	A29	21	CUAAGAUCAAGUGUAGU	CUAAGAUC[A][A][G]UGUAGU
+Q15428:R26	rna	snrna	5.98	7qtt	2	f	U2snRNA		Natural source	G31	23	AAGAUCAAGUGUAGUAU	AAGAUC[A][A][G]UGUAGUAU
+Q16540:R3	rna	rrna	7	7qh7	1	A	16S ribosomal RNA		Natural source	C22	14	CCAAACCCCCACCUUAC	CCAAACCC[C]CACCUUAC
+Q16540:R3	rna	rrna	6.73	7oi8	3	A	16S ribosomal RNA		Natural source	C25	17	AACCCACUCCACCUUAC	AACCCACU[C]CACCUUAC
+Q16540:R3	rna	rrna	6.03	7oic	1	A	16S ribosomal RNA		Natural source	C25	17	AACCCACUCCACCUUAC	AACCCACU[C][C]ACCUUAC
+Q16540:R3	rna	rrna	6.65	7oi7	15	A	16S ribosomal RNA		Natural source	C25	17	AACCCACUCCACCUUAC	AACCCACU[C][C]ACCUUAC
+Q16540:R3	rna	rrna	6.39	7a5j	1	A	16S ribosomal RNA		Natural source	C25	17	AACCCACUCCACCUUAC	AACCCACU[C][C]ACCUUAC
+Q16540:R3	rna	rrna	6.23	7po4	1	A	16SrRNA		Natural source	C25	17	AACCCACUCCACCUUAC	AACCCACU[C]CACCUUAC
+Q16540:R3	rna	rrna	6.67	7ods	1	A	16S mitochondrial rRNA, DNA (30-MER),16S mitochondrial rRNA		Natural source	C25	17	AACCCACUCCACCUUAC	AACCCACU[C][C]ACCUUAC
+Q16540:R3	rna	rrna	6.78	7odr	1	A	16S mitochondrial rRNA, DNA (31-MER),16S mitochondrial rRNA		Natural source	C25	17	AACCCACUCCACCUUAC	AACCCACU[C][C]ACCUUAC
+Q16540:R3	rna	rrna	6.59	9pra	1	A	16S mitochondrial rRNA		Natural source	C25	17	AACCCACUCCACCUUAC	AACCCACU[C][C]ACCUUAC
+Q16540:R11	rna	rrna	6.14	7qh7	1	A	16S ribosomal RNA		Natural source	C34	26	CUUACUACCACAACUUA	CUUACUAC[C]ACAACUUA
+Q16540:R11	rna	rrna	6.09	7oi8	2	A	16S ribosomal RNA		Natural source	C37	29	CUUACUACCAGACAACC	CUUACUA[C][C]AGACAACC
+Q16540:R11	rna	rrna	6.94	7oic	1	A	16S ribosomal RNA		Natural source	C37	29	CUUACUACCAGACAACC	CUUACUAC[C]AGACAACC
+Q16540:R11	rna	rrna	5.03	7oi7	15	A	16S ribosomal RNA		Natural source	C37	29	CUUACUACCAGACAACC	CUUACUAC[C]AGACAACC
+Q16540:R11	rna	rrna	6.23	7a5j	1	A	16S ribosomal RNA		Natural source	C37	29	CUUACUACCAGACAACC	CUUACUAC[C]AGACAACC
+Q16540:R11	rna	rrna	6.6	7po4	1	A	16SrRNA		Natural source	C37	29	CUUACUACCAGACAACC	CUUACUAC[C]AGACAACC
+Q16540:R11	rna	rrna	6.75	7ods	1	A	16S mitochondrial rRNA, DNA (30-MER),16S mitochondrial rRNA		Natural source	C37	29	CUUACUACCAGACAACC	CUUACU[A][C][C]AGACAACC
+Q16540:R11	rna	rrna	7.27	7odr	1	A	16S mitochondrial rRNA, DNA (31-MER),16S mitochondrial rRNA		Natural source	C37	29	CUUACUACCAGACAACC	CUUACUAC[C]AGACAACC
+Q16540:R11	rna	rrna	6.02	9pra	1	A	16S mitochondrial rRNA		Natural source	C37	29	CUUACUACCAGACAACC	CUUACUA[C][C]AGACAACC
+Q16540:R54	rna	rrna	5.14	7qh7	1	A	16S ribosomal RNA		Natural source	A625	617	UUACCCUCACUGUCAAC	UUACCCU[C][A]CUGUCAAC
+Q16540:R54	rna	rrna	5.29	7oi8	3	A	16S ribosomal RNA		Natural source	A748	740	UUACCCUCACUGUCAAC	UUACCCU[C][A]CUGUCAAC
+Q16540:R54	rna	rrna	7.7	7oic	1	A	16S ribosomal RNA		Natural source	A748	740	UUACCCUCACUGUCAAC	UUACCCUC[A]CUGUCAAC
+Q16540:R54	rna	rrna	4.19	7qh6	14	A	16S ribosomal RNA		Natural source	A748	740	UUACCCUCACUGUCAAC	UUACCCU[C][A]CUGUCAAC
+Q16540:R54	rna	rrna	5.75	7a5j	1	A	16S ribosomal RNA		Natural source	A748	740	UUACCCUCACUGUCAAC	UUACCCU[C][A]CUGUCAAC
+Q16540:R54	rna	rrna	7.19	7po4	1	A	16SrRNA		Natural source	A748	740	UUACCCUCACUGUCAAC	UUACCCU[C][A]CUGUCAAC
+Q16540:R54	rna	rrna	6.64	7ods	1	A	16S mitochondrial rRNA, DNA (30-MER),16S mitochondrial rRNA		Natural source	A748	740	UUACCCUCACUGUCAAC	UUACCCU[C][A]CUGUCAAC
+Q16540:R54	rna	rrna	7.14	7odr	1	A	16S mitochondrial rRNA, DNA (31-MER),16S mitochondrial rRNA		Natural source	A748	740	UUACCCUCACUGUCAAC	UUACCCU[C][A]CUGUCAAC
+Q16540:R54	rna	rrna	6.59	9pra	1	A	16S mitochondrial rRNA		Natural source	A745	737	UUACCCUCACUGUCAAC	UUACCCU[C][A]CUGUCAAC
+Q2YD98:R684	dna	other_dna	7.35	8b3d	1	T	TS		Synthetically obtained	C15	7	GCTCTGCTCCTTCTCCC	GCTCTGCT[C]CTTCTCCC
+Q2YD98:R684	dna	other_dna	7.52	9bz0	1	T	DNA (49-MER)		Synthetically obtained	C53	45	GCTCTGCTCCTTCTCCC	GCTCTGCT[C]CTTCTCCC
+Q6FI13:R21	dna	nucleosomal_dna	4.42	9d3p	2	J	5S rDNA (coding strand)		Genetically manipulated	G9	1	ACTTTCAGGGTGGTATG	ACTTTCA[G][G]GTGGTATG
+Q6FI13:R21	dna	nucleosomal_dna	4.53	9d3t	1	J	5S rDNA (coding strand)		Genetically manipulated	G5	-3	----TCAGGGTGGTATG	----TC[A][G][G]GTGGTATG
+Q6FI13:R72	dna	nucleosomal_dna	7.07	9d3r	1	J	5S rDNA (coding strand)		Genetically manipulated	A131	123	TTTCCCCCAGGCAGGAA	TTTCCCCC[A]GGCAGGAA
+Q6P2Q9:R79	rna	other_rna	6.41	8qpe	1	z2	oligo2		Natural source	G4	-4	-----AAGG--------	-----AAG[G]--------
+Q6P2Q9:R79	rna	snrna	6.9	8qoz	1	6	U6 snRNA		Natural source	G33	25	CUAAAAUUGGAACGAUA	CUAAAAUU[G][G]AACGAUA
+Q6P2Q9:R79	rna	snrna	7.42	8qpb	1	6	U6 snRNA		Natural source	G33	25	CUAAAAUUGGAACGAUA	CUAAAAUU[G]GAACGAUA
+Q6P2Q9:R79	rna	mrna	4.66	8c6j	1	I	PM5 Intron		Synthetically obtained	U14	6	UAUCAAGCUUACAAGAC	UAUCAAG[C][U][U][A][C]AAGAC
+Q6P2Q9:R79	rna	snrna	4.24	8ro2	1	6	U6 snRNA		Natural source	U31	23	UACUAAAAUUGGAACGA	UACUAA[A][A][U][U]GGAACGA
+Q6P2Q9:R79	rna	mrna	6.67	9xtt	2	1	MSE-U12_Intron		Synthetically obtained	A16	8	UUUUAAGCAUGUAGAAC	UUUUA[A][G]C[A]UGUAGAAC
+Q6P2Q9:R79	rna	mrna	4.12	6icz	1	G	pre-mRNA		Natural source	U75	67	GCCUAGCAUGUAGAACU	GCCUAG[C][A][U][G]UAGAACU
+Q6P2Q9:R79	rna	snrna	4.38	7w59	3	F	U6 snRNA		Natural source	U31	23	UACUAAAAUUGGAACGA	UACUAA[A][A][U][U][G]GAACGA
+Q6P2Q9:R79	rna	mrna	4.8	5xjc	1	G	pre-mRNA		Synthetically obtained	U77	69	GCCUAGCAUGUAGAACU	GCCUAG[C][A][U][G]UAGAACU
+Q6P2Q9:R1401	rna	mrna	7.42	8c6j	1	I	PM5 Intron		Synthetically obtained	U184	176	UUCUUUUCUCCCCUUCC	UUCUUUUC[U]CCCCUUCC
+Q71DI3:R18	dna	nucleosomal_dna	7.79	9nqu	1	I	DNA (185-MER)		Genetically manipulated	C16	8	TACGCGGCCGCCCTGGA	TACGCGGC[C]GCCCTGGA
+Q7Z2W4:R179	rna	rna_oligo	5.07	6uej	1	B	RNA (5'-R(P*UP*CP*G)-3')	synthetic construct	Synthetically obtained	U1	-7	--------UCG------	--------[U]CG------
+Q7Z7F7:R45	rna	trna	4.83	7oic	1	B	mitochondrial Val tRNA		Natural source	U31	23	CACCCAACUUACACUUA	CACCCA[A][C][U][U][A]CACUUA
+Q7Z7F7:R45	rna	trna	7.01	7a5j	1	B	mt-tRNAVal		Natural source	U32	24	ACCCAACUUACACUUAG	ACCCAACU[U]ACACUUAG
+Q7Z7F7:R45	rna	trna	5.61	7po4	1	B	tRNAVal		Natural source	U32	24	ACCCAACUUACACUUAG	ACCCAACU[U][A]CACUUAG
+Q7Z7F7:R45	rna	trna	4.1	7odr	1	B	mitochondrial tRNAVal		Natural source	U32	24	ACCCAACUUACACUUAG	ACCCAAC[U][U][A]CACUUAG
+Q7Z7F7:R45	rna	trna	4.21	9pra	1	B	mitochondrial tRNAVal		Natural source	U32	24	ACCCAACUUACACUUAG	ACCCAAC[U][U][A]CACUUAG
+Q86T24:R491	dna	other_dna	5.92	5vmy	4	D	DNA (5'-D(*TP*GP*CP*TP*TP*CP*CP*(5CM)P*GP*(5CM)P*GP*AP*AP*TP*AP*AP*CP*G)-3')	synthetic construct	Synthetically obtained	C10	2	GCTTCCCGCGAATAACG	GCTTCCC[G][C]GAATAACG
+Q86T24:R491	dna	other_dna	7.87	6df8	1	D	DNA (5'-D(*TP*GP*CP*TP*TP*CP*CP*TP*GP*CP*CP*AP*AP*TP*AP*AP*CP*G)-3')	Homo sapiens	Synthetically obtained	C10	2	GCTTCCTGCCAATAACG	GCTTCCTG[C]CAATAACG
+Q86T24:R491	dna	other_dna	7.9	2lt7	1	D	DNA (5'-D(*GP*TP*GP*CP*TP*TP*CP*CP*TP*GP*CP*CP*AP*AP*TP*AP*AP*CP*G)-3')	Homo sapiens	Synthetically obtained	C11	3	GCTTCCTGCCAATAACG	GCTTCCTG[C]CAATAACG
+Q8N1G4:R424	rna	rrna	4.14	8xp3	1	S2	18S Ribosomal RNA		Natural source	C481	473	AGCAGGCGCGCAAAUUA	AGCAGGC[G][C][G]CAAAUUA
+Q8N9N5:R324	dna	other_dna	4.46	8yzt	1	F	CGCG-containing DNA	Homo sapiens	Synthetically obtained	G11	3	TCTCGCGAGAT------	TCTCGCG[A][G]AT------
+Q8N9N5:R324	dna	other_dna	5.34	8htx	2	D	DNA (5'-D(*CP*TP*CP*TP*(5CM)P*GP*CP*GP*AP*GP*AP*G)-3')	synthetic construct	Synthetically obtained	A9	1	CTCTCGCGAGAG-----	CTCTCGC[G][A][G]AG-----
+Q8TAE8:R55	rna	rrna	4.11	7oic	1	A	16S ribosomal RNA		Natural source	U89	81	AUAGAAAUUGAAACCUG	AUAGAAA[U][U][G]AAACCUG
+Q8TDN6:R82	rna	rrna	7.93	8fky	1	L3	28S ribosomal RNA		Natural source	U286	278	GAGUCGGGUUGCUUGGG	GAGUCGGG[U]UGCUUGGG
+Q8TDN6:R82	rna	rrna	7.71	8fkp	9	L3	28S ribosomal RNA		Natural source	U286	278	GAGUCGGGUUGCUUGGG	GAGUCGGG[U]UGCUUGGG
+Q8WUA4:R876	dna	other_dna	6.96	8clj	1	E	tDNA (35-MER)		Genetically manipulated	G3	-5	------AAGCGACTCTG	------A[A][G]CGACTCTG
+Q92945:R355	rna	rna_oligo	4.39	4b8t	1	B	5'-R(*AP*GP*GP*GP*UP)-3'	synthetic construct	Synthetically obtained	G4	-4	-----AGGGU-------	-----AGG[G][U]-------
+Q96A08:R94	dna	nucleosomal_dna	5.17	5gsu	2	I	DNA (146-MER)		Genetically manipulated	G40	32	TGTATTTGGAAACTGCT	TGTATTT[G][G]AAACTGCT
+Q96A08:R94	dna	nucleosomal_dna	5.92	8vlr	1	K	DNA (136-MER)		Natural source	G31	23	TGTATTTAGAAACTGCT	TGTATTTA[G]AAACTGCT
+Q96AE4:R308	dna	other_dna	4.81	1j4w	1	B	DNA (5'-D(*GP*TP*A*TP*AP*TP*TP*CP*CP*CP*TP*CP*GP*GP*G*AP*TP*TP*TP*TP*TP*TP*AP*TP*TP*TP*TP*GP*T)-3')	Homo sapiens	Synthetically obtained	T22	14	GGATTTTTTATTTTGT-	GGATTT[T][T][T]ATTTTGT-
+Q96BP2:R7	rna	rrna	5.05	7p2e	6	A	12S mitochondrial rRNA		Natural source	U374	366	AAAUAGACUACGAAAGU	AAAUAGA[C][U][A]CGAAAGU
+Q96BP2:R7	rna	rrna	5.42	8qrn	1	A	12S mitochondrial rRNA		Natural source	U374	366	AAAUAGACUACGAAAGU	AAAUAGA[C][U][A]CGAAAGU
+Q96BP2:R7	rna	rrna	4.85	9hfo	1	A	12S mitochondrial rRNA		Natural source	U374	366	AAAUAGACUACGAAAGU	AAAUAGA[C][U][A]CGAAAGU
+Q96BP2:R7	rna	rrna	4.84	7po2	1	A	12S mitochondrial rRNA		Natural source	U374	366	AAAUAGACUACGAAAGU	AAAUAGA[C][U][A]CGAAAGU
+Q96BP2:R7	rna	rrna	5.43	8ois	1	AA	12S rRNA		Natural source	U374	366	AAAUAGACUACGAAAGU	AAAUAGA[C][U][A]CGAAAGU
+Q96D46:R397	rna	rrna	6.84	6lqm	2	2	28S ribosomal RNA		Natural source	U3715	3707	UCUGAAUGUCAAAGUGA	UCUGAAU[G][U]CAAAGUGA
+Q96L21:R154	rna	rrna	4.28	8oj0	4	5	28S ribosomal RNA		Natural source	A4414	4406	UGGCGGCCAAGCGUUCA	UGGCGGC[C][A][A]GCGUUC[A]
+Q99575:R154	rna	other_ncrna	4.13	6ahu	1	A	H1 RNA		Natural source	G263	255	CGGCCAGCGAAGUGAGU	CGGCCAG[C][G]AAGUGAGU
+Q99613:R719	rna	mrna	4.6	8rg0	1	7	Messenger RNA		Genetically manipulated	C105	97	AACAACAACAACAACAA	AACAACA[A][C][A][A]CAACAA
+Q9BQ52:R781	rna	trna	5.02	8rr4	2	T	Human mitochondria tRNA-Tyr precursor with 3' trailer		Synthetically obtained	G1	-7	--------GGUAAAAUG	--------[G]GUAAAAUG
+Q9BQ52:R781	rna	trna	6.88	8cbl	1	T	Mitochondrial Precursor tRNA-His(0,Ser)		Genetically manipulated	G1	-7	--------GUAAAUAUA	--------[G]UAAAUAUA
+Q9BQ52:R781	rna	trna	4.27	9ey0	2	T	mt-tRNA-His		Synthetically obtained	C67	59	CUUAUUUACCCCA----	CUUAUU[U][A][C]CCCA----
+Q9BQ52:R781	rna	trna	4.28	8rr3	1	T	Human mitochondrial tRNA-Gln precursor with 3' trailer RNA		Synthetically obtained	U1	-7	--------UAGGAUGGG	--------[U]AGGAUGGG
+Q9BSV6:R38	rna	trna	7.8	8hmz	1	5	Pre-tRNA 5' END		Synthetically obtained	C43	35	AUGGAUAGCGCAUUGGA	AUGGAUAG[C]GCAUUGGA
+Q9BSV6:R38	rna	trna	7.66	7zrz	1	ZN1	pre-tRNA Arg TCT 3-2		Synthetically obtained	C23	15	AUGGAUAGCGCAUUGGA	AUGGAUAG[C]GCAUUGGA
+Q9BSV6:R38	rna	trna	7.58	8hmy	1	T	Pre-tRNA		Synthetically obtained	C43	35	AUGGAUAGCGCAUUGGA	AUGGAUAG[C]GCAUUGGA
+Q9BU76:R6	rna	mrna	5.28	9xtt	1	1	MSE-U12_Intron		Synthetically obtained	U195	187	UGAUGUUUUUCCUUAAC	UGAUGUU[U][U][U]CCUUAAC
+Q9BU76:R10	rna	mrna	6.99	9xtt	1	1	MSE-U12_Intron		Synthetically obtained	U195	187	UGAUGUUUUUCCUUAAC	UGAUGUUU[U]UCCUUAAC
+Q9BVW5:R126	dna	other_dna	4.96	8b9d	1	N	DNA Molecule		Synthetically obtained	T54	46	CTCTCCAATTCTCTAAT	CTCTCCA[A][T]TCTCTAAT
+Q9BZL1:R9	rna	mrna	4.08	8q7n	1	Z	MINX pre-mRNA		Natural source	C80	72	CCUCCGAACGGUAAGAG	CCUCCGA[A][C][G][G][U]AAGAG
+Q9H583:R10	rna	rrna	6.9	7mq9	1	L0	5'ETS rRNA		Natural source	C822	814	UUGCGGUGCUCCUGGAG	UUGCGGUG[C][U]CCUGGAG
+Q9H6E5:R13	rna	rna_oligo	6.35	8idf	1	B	RNA (53-MER)	Homo sapiens	Synthetically obtained	A22	14	GGAACGAUACAGAGUUC	GGAACGA[U][A]CAGAGUUC
+Q9HCS7:R479	rna	snrna	4.86	9xu3	1	6	U6atac snRNA		Natural source	G80	72	ACGCAUACGGUUAAGGC	ACGCAUA[C][G]GUUAAGGC
+Q9NP92:R230	rna	rrna	6.47	7qh7	1	A	16S ribosomal RNA		Natural source	A652	644	AUGCUCAUAAGGAAAGG	AUGCUCAU[A][A]GGAAAGG
+Q9NP92:R230	rna	rrna	6.48	7oid	3	A	16S ribosomal RNA		Natural source	C664	656	CUCCUCCGCAUAAGCCU	CUCCUCCG[C][A]UAAGCCU
+Q9NP92:R230	rna	rrna	6.77	7oic	1	A	16S ribosomal RNA		Natural source	C664	656	CUCCUCCGCAUAAGCCU	CUCCUCCG[C]AUAAGCCU
+Q9NP92:R230	rna	rrna	6.38	7oib	14	A	16S ribosomal RNA		Natural source	C664	656	CUCCUCCGCAUAAGCCU	CUCCUCCG[C][A]UAAGCCU
+Q9NP92:R230	rna	rrna	6.78	7a5j	1	A	16S ribosomal RNA		Natural source	C664	656	CUCCUCCGCAUAAGCCU	CUCCUCCG[C][A]UAAGCCU
+Q9NP92:R230	rna	rrna	6.77	7po4	1	A	16SrRNA		Natural source	C664	656	CUCCUCCGCAUAAGCCU	CUCCUCCG[C]AUAAGCCU
+Q9NP92:R230	rna	rrna	7.52	7ods	1	A	16S mitochondrial rRNA, DNA (30-MER),16S mitochondrial rRNA		Natural source	C664	656	CUCCUCCGCAUAAGCCU	CUCCUCCG[C]AUAAGCCU
+Q9NP92:R230	rna	rrna	7.32	7odr	1	A	16S mitochondrial rRNA, DNA (31-MER),16S mitochondrial rRNA		Natural source	A777	769	UGCUCAUAAGGAAAGGU	UGCUCAU[A][A]GGAAAGGU
+Q9NP92:R230	rna	rrna	7.03	9pra	1	A	16S mitochondrial rRNA		Natural source	A774	766	UGCUCAUAAGGAAAGGU	UGCUCAU[A][A]GGAAAGGU
+Q9NR30:R255	rna	rna_oligo	3.04	6l5n	1	D	poly(U)-15mer	Homo sapiens	Synthetically obtained	U7	-1	--UUUUUUUUUUUUUUU	--UUUUU[U][U]UUUUUUUU
+Q9NR30:R306	rna	rna_oligo	3.29	6l5n	1	D	poly(U)-15mer	Homo sapiens	Synthetically obtained	U1	-7	--------UUUUUUUUU	--------[U]UUUUUUUU
+Q9NVP1:R588	rna	rrna	4.97	8fky	1	L3	28S ribosomal RNA		Natural source	U273	265	CCGGGUCUUCCCGGAGU	CCGGGUC[U][U][C]CCGGAGU
+Q9NVP1:R588	rna	rrna	4.86	8fkr	9	L3	28S ribosomal RNA		Natural source	U273	265	CCGGGUCUUCCCGGAGU	CCGGGUC[U][U][C]CCGGAGU
+Q9NVU7:R310	rna	rrna	5.14	8ipy	1	2	28S ribosomal RNA		Natural source	U3758	3750	GGCGGGAGUAACUAUGA	GGCGGGAG[U]AACUAUGA
+Q9NW08:R195	dna	other_dna	7.11	7du2	1	X	DNA (5'-D(P*GP*TP*CP*TP*GP*AP*TP*CP*TP*CP*GP*GP*AP*A)-3')		Genetically manipulated	C3	-5	------GTCTGATCTCG	------GT[C]TGATCTCG
+Q9NY12:R55	rna	other_ncrna	5.21	7v9a	1	R	Telomerase RNA component		Natural source	C7	-1	--GGGUUGCGGAGGGUG	--GGGUU[G][C][G][G][A]GGGUG
+Q9NZM5:R204	rna	rrna	7.25	8ine	1	2	28S ribosomal RNA		Natural source	C129	121	AUCCCCGCCCCGCGGCG	AUCCCCG[C][C]CCGCGGCG
+Q9P013:R13	rna	snrna	7.12	6qdv	1	6	U6 snRNA		Natural source	G59	51	UUAGCAUGGCCCCUGCG	UUAGCAUG[G]CCCCUGCG
+Q9P013:R13	rna	snrna	7.33	8c6j	1	6	U6 snRNA		Natural source	G59	51	UUAGCAUGGCCCCUGCG	UUAGCAUG[G]CCCCUGCG
+Q9P013:R13	rna	snrna	6.3	6id1	2	F	U6snRNA		Natural source	G59	51	UUAGCAUGGCCCCUGCG	UUAGCAUG[G]CCCCUGCG
+Q9P013:R13	rna	snrna	7.15	6icz	1	F	U6snRNA		Natural source	G59	51	UUAGCAUGGCCCCUGCG	UUAGCAUG[G]CCCCUGCG
+Q9P013:R13	rna	snrna	7.91	7w59	3	F	U6 snRNA		Natural source	G59	51	UUAGCAUGGCCCCUGCG	UUAGCAUG[G]CCCCUGCG
+Q9P013:R13	rna	snrna	6.45	5xjc	1	F	U6 snRNA		Natural source	G59	51	UUAGCAUGGCCCCUGCG	UUAGCAUG[G]CCCCUGCG
+Q9P013:R16	rna	snrna	4.45	6qdv	1	6	U6 snRNA		Natural source	C60	52	UAGCAUGGCCCCUGCGC	UAGCAUG[G][C]CCCUGCGC
+Q9P013:R16	rna	snrna	5.49	8c6j	1	6	U6 snRNA		Natural source	C60	52	UAGCAUGGCCCCUGCGC	UAGCAUG[G][C]CCCUGCGC
+Q9P013:R16	rna	snrna	6.75	6id1	2	F	U6snRNA		Natural source	C60	52	UAGCAUGGCCCCUGCGC	UAGCAUGG[C]CCCUGCGC
+Q9P013:R16	rna	snrna	6.24	7w59	3	F	U6 snRNA		Natural source	C60	52	UAGCAUGGCCCCUGCGC	UAGCAUG[G][C]CCCUGCGC
+Q9UKD2:R31	rna	rrna	7.46	8ink	1	2	28S ribosomal RNA		Natural source	A1960	1952	GUUGAUAUAGACAGCAG	GUUGAUAU[A]GACAGCAG
+Q9UKD2:R31	rna	rrna	7.14	8ipx	1	2	28S ribosomal RNA		Natural source	A1960	1952	GUUGAUAUAGACAGCAG	GUUGAUAU[A]GACAGCAG
+Q9UKD2:R31	rna	rrna	7.14	8ipy	1	2	28S ribosomal RNA		Natural source	A1960	1952	GUUGAUAUAGACAGCAG	GUUGAUAU[A]GACAGCAG
+Q9UKD2:R31	rna	rrna	6.89	8ir1	1	2	28S ribosomal RNA		Natural source	A1960	1952	GUUGAUAUAGACAGCAG	GUUGAUAU[A]GACAGCAG
+Q9UKD2:R31	rna	rrna	7.25	8ir3	1	2	28S ribosomal RNA		Natural source	A1960	1952	GUUGAUAUAGACAGCAG	GUUGAUAU[A]GACAGCAG
+Q9UKD2:R31	rna	rrna	6.95	8fky	1	L3	28S ribosomal RNA		Natural source	A1960	1952	GUUGAUAUAGACAGCAG	GUUGAUAU[A]GACAGCAG
+Q9UKD2:R31	rna	rrna	6.89	8fkr	8	L3	28S ribosomal RNA		Natural source	A1960	1952	GUUGAUAUAGACAGCAG	GUUGAUAU[A]GACAGCAG
+Q9UKD2:R31	rna	rrna	7.01	8fl2	2	L3	28S ribosomal RNA		Natural source	A1960	1952	GUUGAUAUAGACAGCAG	GUUGAUAU[A]GACAGCAG
+Q9UKD2:R31	rna	rrna	6.77	8rl2	7	L5	28S ribosomal RNA		Natural source	A1960	1952	GUUGAUAUAGACAGCAG	GUUGAUAU[A]GACAGCAG
+Q9UKD2:R31	rna	rrna	7.07	8fl0	1	L3	28S ribosomal RNA		Natural source	A1960	1952	GUUGAUAUAGACAGCAG	GUUGAUAU[A]GACAGCAG
+Q9ULX3:R345	rna	rrna	5.98	8zdc	1	2	18S Ribosomal RNA		Natural source	U1377	1369	AAUCCCGAUAACGAACG	AAUCCCG[A][U]AACGAACG
+Q9ULX3:R350	rna	rrna	5.04	6zxf	1	2	pre-18S ribosomal RNA		Natural source	U1364	1356	GAUUUGUCUGGUUAAUU	GAUUUGUC[U][G][G]UUAAUU
+Q9UQ35:R21	rna	mrna	4.15	8c6j	1	E	PM5 5' Exon		Synthetically obtained	A231	223	CCGACGAGACCGCCGCC	CCGACG[A][G][A][C][C]GCCGCC
+Q9UQ35:R21	rna	mrna	7.29	6ff4	1	Z	pre mRNA		Natural source	C233	225	GACGAGACCGCCGCCAA	GACGAGAC[C]GCCGCCAA
+Q9UQ35:R27	rna	mrna	5.97	6zym	1	Z	pre-mRNA		Natural source	C46	38	AAACCCGUCGGCCUCCG	AAACCCGU[C][G]GCCUCCG
+Q9UQ80:R271	rna	rrna	5.04	9p9j	2	L5	28S ribosomal RNA		Natural source	U2168	2160	CGUCGCGGUUCCGGCGG	CGUCGCG[G][U]UCCGGCGG
+Q9Y221:R43	rna	rrna	4.71	8fky	1	L3	28S ribosomal RNA		Natural source	C3919	3911	CUGUUGAGCUUGACUCU	CUGUUG[A][G][C]UUGACUCU
+Q9Y2R9:R177	rna	rrna	4.71	9h51	1	A	RNA (969-MER)		Genetically manipulated	A815	807	AGUUGAACAGGGCCCUG	AGUUGAA[C][A][G]GGCCCUG
+Q9Y3D3:R72	rna	rrna	7.28	9rov	3	A	12S mitochondrial rRNA		Natural source	C96	88	ACCACGAUCAAAAGGGA	ACCACGA[U][C]AAAAGGGA
+Q9Y3D3:R72	rna	rrna	7.24	7pny	19	A	12S mitochondrial rRNA		Natural source	C96	88	ACCACGAUCAAAAGGGA	ACCACGA[U][C]AAAAGGGA
+Q9Y3D3:R72	rna	rrna	7.87	8qrn	1	A	12S mitochondrial rRNA		Natural source	C96	88	ACCACGAUCAAAAGGGA	ACCACGAU[C]AAAAGGGA
+Q9Y3D3:R72	rna	rrna	7.68	9hfo	1	A	12S mitochondrial rRNA		Natural source	U95	87	CACCACGAUCAAAAGGG	CACCACGA[U][C]AAAAGGG
+Q9Y3D3:R72	rna	rrna	7.4	7po2	1	A	12S mitochondrial rRNA		Natural source	C96	88	ACCACGAUCAAAAGGGA	ACCACGA[U][C]AAAAGGGA
+Q9Y3D3:R72	rna	rrna	7.45	8ois	1	AA	12S rRNA		Natural source	C96	88	ACCACGAUCAAAAGGGA	ACCACGA[U][C]AAAAGGGA
+Q9Y3D3:R72	rna	rrna	7.35	9h51	1	A	RNA (969-MER)		Genetically manipulated	C96	88	ACCACGAUCAAAAGGGA	ACCACGA[U][C]AAAAGGGA
+Q9Y3U8:R55	rna	rrna	7.03	7ow7	1	A	28S ribosomal RNA		Natural source	U4067	4059	CUGAUCGUUUUUUCACU	CUGAUCGU[U]UUUUCACU
+Q9Y3U8:R55	rna	rrna	5.87	8idt	1	2	28S ribosomal RNA		Natural source	U4067	4059	CUGAUCGUUUUUUCACU	CUGAUCG[U][U]UUUUCACU
+Q9Y3U8:R55	rna	rrna	6.2	8ine	1	2	28S ribosomal RNA		Natural source	U4067	4059	CUGAUCGUUUUUUCACU	CUGAUCG[U][U]UUUUCACU
+Q9Y3U8:R55	rna	rrna	6.68	7f5s	1	L5	28S ribosomal RNA		Natural source	U4067	4059	CUGAUCGUUUUUUCACU	CUGAUCGU[U]UUUUCACU
+Q9Y3U8:R55	rna	rrna	6.64	9gmo	1	A	28S ribosomal RNA		Natural source	U4062	4054	CUGAUCGUUUUUUCACU	CUGAUCGU[U]UUUUCACU
+Q9Y3U8:R55	rna	rrna	6.41	8qfd	1	5	28S ribosomal RNA		Natural source	U4067	4059	CUGAUCGUUUUUUCACU	CUGAUCG[U][U]UUUUCACU
+Q9Y3U8:R55	rna	rrna	6.03	8oj5	4	5	28S ribosomal RNA		Natural source	U4067	4059	CUGAUCGUUUUUUCACU	CUGAUCGU[U]UUUUCACU
+Q9Y3U8:R55	rna	rrna	5.38	8qyx	1	A2	28S ribosomal RNA		Natural source	U4066	4058	UCUGAUCGUUUUUUCAC	UCUGAUC[G][U]UUUUUCAC
+Q9Y3U8:R55	rna	rrna	6.05	8rl2	1	L5	28S ribosomal RNA		Natural source	U4067	4059	CUGAUCGUUUUUUCACU	CUGAUCG[U][U]UUUUCACU
+Q9Y3U8:R98	rna	rrna	6.46	8qyx	1	A2	28S ribosomal RNA		Natural source	A3949	3941	GAAGAGACAUGAGAGGU	GAAGAGAC[A]UGAGAGGU
