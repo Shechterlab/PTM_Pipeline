@@ -1,0 +1,32 @@
+file	column	type	values	description
+human_methyllysine_sites_v0.1.0.tsv	canonical_UniProtAC	string		reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+human_methyllysine_sites_v0.1.0.tsv	position	integer		residue number on that sequence, 1-based
+human_methyllysine_sites_v0.1.0.tsv	residue	string	K, S, T, Y, R	one-letter code of the residue; checked against the reference sequence
+human_methyllysine_sites_v0.1.0.tsv	mark	string	methyllysine, phosphorylation, methylarginine	the modification
+human_methyllysine_sites_v0.1.0.tsv	state	string	methyllysine: me1, me2, me3, me (degree not stated); phosphorylation: phospho; methylarginine: me1, me2a, me2s, me2 (type not stated), me (degree not stated)	the state reported for the residue; a residue with several states has one row per state
+human_methyllysine_sites_v0.1.0.tsv	evidence	string	ECO codes, ";"-separated	ECO evidence codes of the source record (UniProt: ECO:0000269 published experiment, ECO:0007744 combinatorial computational and experimental evidence, ECO:0000250 by similarity, ECO:0000255, ECO:0000303, ECO:0000305)
+human_methyllysine_sites_v0.1.0.tsv	evidence_class	string	experimental, by-similarity, high-throughput	experimental: ECO:0000269 or ECO:0007744 among the codes. by-similarity: UniProt records with no such code (ECO:0000250 and others). high-throughput: a proteomics study that is not a UniProt record (none in v0.1.0). A site can hide by-similarity rows by filtering on this column
+human_methyllysine_sites_v0.1.0.tsv	pmids	string	PubMed IDs, ";"-separated	PubMed IDs of the source record, when it gives them
+human_methyllysine_sites_v0.1.0.tsv	source	string	UniProt	database or study the row comes from
+human_methyllysine_sites_v0.1.0.tsv	source_release	string		release of the source (UniProt release)
+human_phosphorylation_sites_v0.1.0.tsv	canonical_UniProtAC	string		reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+human_phosphorylation_sites_v0.1.0.tsv	position	integer		residue number on that sequence, 1-based
+human_phosphorylation_sites_v0.1.0.tsv	residue	string	K, S, T, Y, R	one-letter code of the residue; checked against the reference sequence
+human_phosphorylation_sites_v0.1.0.tsv	mark	string	methyllysine, phosphorylation, methylarginine	the modification
+human_phosphorylation_sites_v0.1.0.tsv	state	string	methyllysine: me1, me2, me3, me (degree not stated); phosphorylation: phospho; methylarginine: me1, me2a, me2s, me2 (type not stated), me (degree not stated)	the state reported for the residue; a residue with several states has one row per state
+human_phosphorylation_sites_v0.1.0.tsv	evidence	string	ECO codes, ";"-separated	ECO evidence codes of the source record (UniProt: ECO:0000269 published experiment, ECO:0007744 combinatorial computational and experimental evidence, ECO:0000250 by similarity, ECO:0000255, ECO:0000303, ECO:0000305)
+human_phosphorylation_sites_v0.1.0.tsv	evidence_class	string	experimental, by-similarity, high-throughput	experimental: ECO:0000269 or ECO:0007744 among the codes. by-similarity: UniProt records with no such code (ECO:0000250 and others). high-throughput: a proteomics study that is not a UniProt record (none in v0.1.0). A site can hide by-similarity rows by filtering on this column
+human_phosphorylation_sites_v0.1.0.tsv	pmids	string	PubMed IDs, ";"-separated	PubMed IDs of the source record, when it gives them
+human_phosphorylation_sites_v0.1.0.tsv	source	string	UniProt	database or study the row comes from
+human_phosphorylation_sites_v0.1.0.tsv	source_release	string		release of the source (UniProt release)
+human_methylarginine_uniprot_crosscheck_v0.1.0.tsv	canonical_UniProtAC	string		reviewed UniProtKB accession of the canonical sequence in the reference proteome (UniProt 2026_03, UP000005640)
+human_methylarginine_uniprot_crosscheck_v0.1.0.tsv	position	integer		residue number on that sequence, 1-based
+human_methylarginine_uniprot_crosscheck_v0.1.0.tsv	residue	string	K, S, T, Y, R	one-letter code of the residue; checked against the reference sequence
+human_methylarginine_uniprot_crosscheck_v0.1.0.tsv	mark	string	methyllysine, phosphorylation, methylarginine	the modification
+human_methylarginine_uniprot_crosscheck_v0.1.0.tsv	state	string	methyllysine: me1, me2, me3, me (degree not stated); phosphorylation: phospho; methylarginine: me1, me2a, me2s, me2 (type not stated), me (degree not stated)	the state reported for the residue; a residue with several states has one row per state
+human_methylarginine_uniprot_crosscheck_v0.1.0.tsv	evidence	string	ECO codes, ";"-separated	ECO evidence codes of the source record (UniProt: ECO:0000269 published experiment, ECO:0007744 combinatorial computational and experimental evidence, ECO:0000250 by similarity, ECO:0000255, ECO:0000303, ECO:0000305)
+human_methylarginine_uniprot_crosscheck_v0.1.0.tsv	evidence_class	string	experimental, by-similarity, high-throughput	experimental: ECO:0000269 or ECO:0007744 among the codes. by-similarity: UniProt records with no such code (ECO:0000250 and others). high-throughput: a proteomics study that is not a UniProt record (none in v0.1.0). A site can hide by-similarity rows by filtering on this column
+human_methylarginine_uniprot_crosscheck_v0.1.0.tsv	pmids	string	PubMed IDs, ";"-separated	PubMed IDs of the source record, when it gives them
+human_methylarginine_uniprot_crosscheck_v0.1.0.tsv	source	string	UniProt	database or study the row comes from
+human_methylarginine_uniprot_crosscheck_v0.1.0.tsv	source_release	string		release of the source (UniProt release)
+human_methylarginine_uniprot_crosscheck_v0.1.0.tsv	in_methylarginine_release	string	site, lower_confidence, no	crosscheck table only: whether the methylarginine release v1.4.3 has the arginine as a site, as a lower-confidence site, or not at all

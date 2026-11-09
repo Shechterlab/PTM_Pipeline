@@ -1,0 +1,61 @@
+{
+  "dropped": {
+    "on_an_isoform": 641,
+    "residue_mismatch": 2
+  },
+  "entries_in_download": 20429,
+  "files": {
+    "methylarginine": "uniprot_2026_04_methylarginine_crosscheck.tsv",
+    "methyllysine": "uniprot_2026_04_methyllysine_sites.tsv",
+    "phosphorylation": "uniprot_2026_04_phosphorylation_sites.tsv"
+  },
+  "files_md5": {
+    "methylarginine": "550cfb04383326e0b552e52ed5cc6ba8",
+    "methyllysine": "0ba06223106ebf7cf39914712a9839dd",
+    "phosphorylation": "0b878fb4c25b80de8c3e0b5abb464ae6"
+  },
+  "raw_file": "uniprot_human_reviewed_mod_res_2026_04.json",
+  "raw_md5": "7ad925d06bce6bf8e40e0f1d18abb047",
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "methylarginine": 1669,
+    "methyllysine": 533,
+    "phosphorylation": 40928
+  },
+  "rows_by_evidence_class": {
+    "methylarginine": {
+      "by-similarity": 797,
+      "experimental": 872
+    },
+    "methyllysine": {
+      "by-similarity": 190,
+      "experimental": 343
+    },
+    "phosphorylation": {
+      "by-similarity": 10371,
+      "experimental": 30557
+    }
+  },
+  "rows_by_state": {
+    "methylarginine": {
+      "me": 5,
+      "me1": 985,
+      "me2": 71,
+      "me2a": 553,
+      "me2s": 55
+    },
+    "methyllysine": {
+      "me": 28,
+      "me1": 256,
+      "me2": 127,
+      "me3": 122
+    },
+    "phosphorylation": {
+      "phospho": 40928
+    }
+  },
+  "source": "UniProtKB/Swiss-Prot reviewed human, \"Modified residue\" features (UniProt REST API)",
+  "uniprot_release_served": "2026_04",
+  "url": "https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606&fields=accession,ft_mod_res,sequence&format=json"
+}
