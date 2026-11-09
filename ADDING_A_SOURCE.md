@@ -108,22 +108,27 @@ Test the way the other tests are done, so that a layer's numbers mean what the r
 5. Merge through `develop` as `CONTRIBUTING.md` says. A layer that adds columns or statistics to the release is a new
    version.
 
-## Marks releases (other modifications)
+## Context marks (other modifications)
 
-A source of another modification (lysine methylation, phosphorylation, ...) does not go through the steps above: it
-adds no methylarginine site and no layer. It goes into a **marks release**, a versioned, openly licensed table per mark
-that other sites read (`releases/marks/vX.Y.Z/`, built by `scripts/55_build_marks_release.py`).
+A source of another modification (lysine methylation, phosphorylation, ...) adds no methylarginine site and no layer. It goes
+into the **context-mark tables** of the next release (`releases/vX.Y.Z/human_<mark>_sites_<version>.tsv`), which sites
+for those marks read. Each version is a release of this repository (`CONTRIBUTING.md`): a new folder with its own
+`CHANGES.md`, and the methylarginine files either rebuilt (`hpc/build_release.sh`) or, when no methylarginine input
+changed and the build cannot run, carried over byte for byte and said to be unchanged (`scripts/56_build_context_marks.py`).
 
-1. Check the terms first. The marks release is CC BY 4.0, so a source must be CC BY 4.0 or as open. Share-alike,
-   non-commercial, "all rights reserved" and unstated terms keep a source out (CPLM, PhosphoSitePlus, iPTMnet, dbPTM and
-   qPTM are out). A journal supplement with no license notice of its own is unconfirmed until its terms are.
+1. Check the terms first. The release is CC BY-NC-SA 4.0, so a source must be CC BY, CC BY-NC-SA or as open. Terms that are
+   all rights reserved or unstated keep a source out (CPLM, PhosphoSitePlus, dbPTM and qPTM are out). A journal supplement with no
+   license notice of its own is unconfirmed until its terms are. When a database gives two licenses, follow the stricter one
+   and say so in the README (iPTMnet: its license page says CC BY-NC-SA 4.0, its download readme also mentions CC BY 4.0).
 2. Stage it with `scripts/NN_stage_<name>.py`, following the rules of section 1 (keys, residue check with
-   `common.residue_is`, summary JSON, `raw_files.tsv`, MANIFEST row, reproducible bytes). `scripts/54_stage_uniprot_ptm_sites.py`
-   is the model. It writes `inputs/marks/<source>_<mark>_sites.tsv` in the columns `canonical_UniProtAC, position, residue,
-   mark, state, evidence, evidence_class, pmids, source, source_release`, and its MANIFEST rows say `redistribution: git`.
-   `evidence_class` is `experimental`, `by-similarity` or `high-throughput`, so that a site can hide a class.
-3. Register its `source` name, license and citation in `SOURCES` of `scripts/55_build_marks_release.py` (the build stops on
-   a source it does not know). Any `*_<mark>_sites.tsv` of `inputs/marks/` is then combined into
-   `human_<mark>_sites_<version>.tsv`. A new mark is added to `MARKS` there.
-4. Build a new version (`--version v0.2.0`; a published folder is never rewritten) and run `python -m pytest -q tests`.
-   The release README counts every state and evidence class and names the license.
+   `common.residue_is`, summary JSON, `raw_files.tsv`, MANIFEST row, reproducible bytes). `scripts/54_stage_uniprot_ptm_sites.py` and
+   `scripts/55_stage_iptmnet_ptm_sites.py` are the models. They write `inputs/marks/<source>_<release>_<mark>_sites.tsv` in the columns
+   `canonical_UniProtAC, position, residue, mark, state, evidence, evidence_class, pmids, source, source_release`
+   (and `upstream_sources` where the source is an aggregator: keep each record's upstream database). `evidence_class` is
+   `experimental`, `text-mined`, `by-similarity` or `unspecified`, so that a site can hide a class. Large raw downloads stay out
+   of Git (`PTM_data/`, listed in `raw_files.tsv` as `release_asset`, kept in the release's Zenodo archive).
+3. Register its name, license and citation in `SOURCES` of `scripts/56_build_context_marks.py` (the build stops on a source it
+   does not know). Every `*_<mark>_sites.tsv` of `inputs/marks/` is merged there into one row per residue and state with a
+   `sources` list. A new mark is added to `MARKS`.
+4. Commit the scripts, then build the new version from that commit (`python scripts/56_build_context_marks.py --version vX.Y.Z
+   --release-date YYYY-MM-DD`) and run `python -m pytest -q tests` and `md5sum -c MD5SUMS` in the release folder.

@@ -1,6 +1,6 @@
 # Per-mark inputs
 
-One staged table per mark and source, for the marks releases (`releases/marks/`). Columns: `canonical_UniProtAC`,
+One staged table per mark and source, for the context marks of the release (`releases/v1.5.0/`). Columns: `canonical_UniProtAC`,
 `position`, `residue`, `mark`, `state`, `evidence`, `evidence_class`, `pmids`, `source`, `source_release`. Protein
 keys and positions are on the reference proteome (`inputs/reference/`, UniProt 2026_03).
 
@@ -9,10 +9,11 @@ keys and positions are on the reference proteome (`inputs/reference/`, UniProt 2
 | `uniprot_<release>_methyllysine_sites.tsv` | N6-methyllysine (me1), N6,N6-dimethyllysine (me2), N6,N6,N6-trimethyllysine (me3), N6-methylated lysine (me: degree not stated) | `scripts/54_stage_uniprot_ptm_sites.py` |
 | `uniprot_<release>_phosphorylation_sites.tsv` | phosphoserine, phosphothreonine, phosphotyrosine (state `phospho`) | the same |
 | `uniprot_<release>_methylarginine_crosscheck.tsv` | UniProt's arginine methylation, kept only to cross-check the methylarginine release | the same |
-| `uniprot_ptm_sites_summary.json` | release served, rows, drops, MD5 of the input and of each table | the same |
+| `iptmnet_<release>_methyllysine_sites.tsv`, `..._phosphorylation_sites.tsv`, `..._methylarginine_crosscheck.tsv` | iPTMnet 6.2 human records (CC BY-NC-SA 4.0), degree not stated (state `me`); `upstream_sources` keeps the upstream database of each record | `scripts/55_stage_iptmnet_ptm_sites.py` |
+| `uniprot_ptm_sites_summary.json`, `iptmnet_ptm_sites_summary.json` | release served, rows, drops, MD5 of the input and of each table | the same |
 | `raw_files.tsv` | URL, size, MD5, SHA-256, date of each raw download (kept in `PTM_data/marks/`, not in Git) | |
 
-UniProt is CC BY 4.0. Its API serves the current release only (2026_04 on 2026-11-09), newer than the reference
+UniProt is CC BY 4.0. iPTMnet's license page says CC BY-NC-SA 4.0 while its download readme also mentions CC BY 4.0; the stricter terms are followed, as the release is CC BY-NC-SA 4.0. Its API serves the current release only (2026_04 on 2026-11-09), newer than the reference
 (2026_03): an entry whose sequence differs from the reference is left out whole, so no position moves between
 sequences (none differed on this run).
 

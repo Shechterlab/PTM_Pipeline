@@ -204,7 +204,7 @@ def main() -> None:
     when = old['downloaded'].iloc[0] if len(old) else (args.downloaded or date.today().isoformat())
     upsert_tsv_rows(raw_list, [{'file': raw_path.name, 'url': URL, 'bytes': raw_path.stat().st_size, 'md5': raw_md5,
                                 'sha256': raw_sha, 'downloaded': when, 'version': f'UniProt release {release} (X-UniProt-Release header)',
-                                'kept': 'checksum_only (30 MB; re-download is the source of the tables, which are in Git)'}])
+                                'kept': 'release_asset (Zenodo archive of the release; 32 MB, not in Git)'}])
 
     command = (f'python scripts/54_stage_uniprot_ptm_sites.py --fasta {args.fasta} '
                f'--raw-dir PTM_data/marks --out-dir inputs/marks')

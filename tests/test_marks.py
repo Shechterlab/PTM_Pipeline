@@ -1,9 +1,10 @@
-"""Tests of the marks tables: scripts/54_stage_uniprot_ptm_sites.py and scripts/55_build_marks_release.py.
+"""Tests of the context-mark tables: scripts/54, 55 (staging) and 56 (releases/v1.5.0).
 
 Run from the repository root: python -m pytest -q tests
 """
 import csv
 import importlib.util
+import json
 import re
 import sys
 from pathlib import Path
@@ -22,7 +23,8 @@ def load(name):
 
 
 stage = load('54_stage_uniprot_ptm_sites.py')
-build = load('55_build_marks_release.py')
+iptm = load('55_stage_iptmnet_ptm_sites.py')
+build = load('56_build_context_marks.py')
 
 REFERENCE = {'P00001': 'MKKRSTYKR', 'P00002': 'MKAK'}
 
@@ -114,58 +116,128 @@ def test_staged_tables_and_release_agree_with_manifest():
     manifest = list(csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t'))
     rows = {r['file']: r for r in manifest if r['file'].startswith('marks/')}
     tables = [f for f in rows if f.endswith('_sites.tsv') or f.endswith('_crosscheck.tsv')]
-    assert len(tables) >= 3
-    for name in tables + ['marks/raw_files.tsv', 'marks/uniprot_ptm_sites_summary.json']:
-        row = rows[name]
-        assert row['redistribution'] == 'git'
-        assert build.md5_file(ROOT / 'inputs' / name) == row['md5']
+    assert len(tables) == 6
+    for name in tables + ['marks/raw_files.tsv', 'marks/uniprot_ptm_sites_summary.json', 'marks/iptmnet_ptm_sites_summary.json']:
+        assert rows[name]['redistribution'] == 'git'
+        assert build.md5_file(ROOT / 'inputs' / name) == rows[name]['md5']
     for name in tables:
         row = rows[name]
-        assert row['licence'] == 'CC BY 4.0' and 'UniProt' in row['citation'] and row['source'].startswith('https://rest.uniprot.org')
         with open(ROOT / 'inputs' / name, encoding='utf-8') as fh:
             assert sum(1 for _ in fh) - 1 == int(row['rows'])
             fh.seek(0)
-            assert next(csv.reader(fh, delimiter='\t')) == stage.COLUMNS
+            assert next(csv.reader(fh, delimiter='\t'))[:10] == stage.COLUMNS
+        if '/uniprot_' in name:
+            assert row['licence'] == 'CC BY 4.0' and row['source'].startswith('https://rest.uniprot.org')
+        else:
+            assert row['licence'].startswith('CC BY-NC-SA 4.0') and row['source'].startswith('https://research.bioinformatics.udel.edu/iptmnet_data/')
+            assert 'iPTMnet' in row['citation']
 
 
 def test_staged_residues_match_reference():
     reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
-    for path in (ROOT / 'inputs' / 'marks').glob('uniprot_*_methyllysine_sites.tsv'):
+    for path in (ROOT / 'inputs' / 'marks').glob('*_sites.tsv'):
         for r in csv.DictReader(open(path, encoding='utf-8'), delimiter='\t'):
-            assert r['residue'] == 'K' and reference[r['canonical_UniProtAC']][int(r['position']) - 1] == 'K'
+            assert reference[r['canonical_UniProtAC']][int(r['position']) - 1] == r['residue']
+            assert r['residue'] in {'methyllysine': 'K', 'phosphorylation': 'STY'}[r['mark']]
 
 
-def test_release_files_checksums_and_columns():
-    for folder in (ROOT / 'releases' / 'marks').iterdir():
-        sums = dict(line.split('  ', 1)[::-1] for line in (folder / 'MD5SUMS').read_text().splitlines())
-        for name, md5 in ((n.strip(), m) for n, m in sums.items()):
-            assert build.md5_file(folder / name) == md5
-        for path in folder.glob('human_*_sites_*.tsv'):
-            with open(path, encoding='utf-8') as fh:
-                assert next(csv.reader(fh, delimiter='\t')) == build.COLUMNS
-        assert 'CC BY 4.0' in (folder / 'README.md').read_text()
+def test_iptmnet_staging():
+    import pandas as pd
+    fields = iptm.FIELDS
+    def rec(ptm_type, source, acc, site, org='Homo sapiens (Human)', pmid=''):
+        return dict(zip(fields, [ptm_type, source, acc, 'G', org, site, '', '', '', pmid], strict=True))
+    records = pd.DataFrame([
+        rec('METHYLATION', 'unip', 'P00001', 'K2'),                   # K: methyllysine, state me, class unspecified
+        rec('METHYLATION', 'hprd', 'P00001-1', 'K2', pmid='11,5'),    # the -1 isoform is canonical; curated: experimental
+        rec('METHYLATION', 'iedb', 'P00001', 'C1'),                   # not K or R
+        rec('METHYLATION', 'unip', 'P00001', 'R9'),                   # methylarginine cross-check
+        rec('PHOSPHORYLATION', 'rlim', 'P00001', 'S5', pmid='7'),     # text-mined
+        rec('PHOSPHORYLATION', 'hprd', 'P00001', 'Y5'),               # residue mismatch (S)
+        rec('PHOSPHORYLATION', 'hprd', 'P00001-2', 'S5'),             # isoform
+        rec('PHOSPHORYLATION', 'hprd', 'Q99999', 'S5'),               # not in the reference
+        rec('PHOSPHORYLATION', 'hprd', 'P00001', 'S5', org='Mus musculus (Mouse)'),
+        rec('ACETYLATION', 'hprd', 'P00001', 'K2')])
+    tables, dropped = iptm.stage(records, REFERENCE, '6.2')
+    ml = tables['methyllysine']
+    assert list(ml['state']) == ['me'] and list(ml['upstream_sources']) == ['hprd;unip']
+    assert list(ml['evidence_class']) == ['experimental'] and list(ml['pmids']) == ['5;11']
+    assert list(tables['methylarginine']['position']) == [9]
+    assert list(tables['phosphorylation']['evidence_class']) == ['text-mined']
+    assert dropped == {'other_residue': 1, 'residue_mismatch': 1, 'on_an_isoform': 1, 'not_in_reference': 1, 'not_human': 1, 'other_ptm_type': 1}
+    assert iptm.evidence_class(['unip']) == 'unspecified' and iptm.evidence_class(['rlim', 'unip']) == 'text-mined'
+    assert iptm.evidence_class(['unip', 'sign']) == 'experimental'
 
 
-def test_release_licence_needs_every_source_open():
-    assert {s['license'] for s in build.SOURCES.values()} == {'CC BY 4.0'}
+def test_merge_of_sources_is_deterministic_and_keeps_attribution():
+    import pandas as pd
+    u = pd.DataFrame([{**dict.fromkeys(stage.COLUMNS, ''), 'canonical_UniProtAC': 'P00001', 'position': '2', 'residue': 'K',
+                       'mark': 'methyllysine', 'state': 'me1', 'evidence': 'ECO:0000250', 'evidence_class': 'by-similarity',
+                       'source': 'UniProt', 'source_release': '2026_04', 'upstream_sources': ''}])
+    i = pd.DataFrame([{**dict.fromkeys(stage.COLUMNS, ''), 'canonical_UniProtAC': 'P00001', 'position': '2', 'residue': 'K',
+                       'mark': 'methyllysine', 'state': 'me1', 'evidence_class': 'experimental', 'pmids': '5',
+                       'source': 'iPTMnet', 'source_release': '6.2', 'upstream_sources': 'hprd'},
+                      {**dict.fromkeys(stage.COLUMNS, ''), 'canonical_UniProtAC': 'P00001', 'position': '3', 'residue': 'K',
+                       'mark': 'methyllysine', 'state': 'me', 'evidence_class': 'unspecified', 'source': 'iPTMnet',
+                       'source_release': '6.2', 'upstream_sources': 'unip'}])
+    a, b = build.merge([u, i]), build.merge([i, u])
+    assert a.to_csv(sep='\t', index=False) == b.to_csv(sep='\t', index=False)
+    first = a.iloc[0]
+    assert first['sources'] == 'UniProt; iPTMnet' and first['evidence_class'] == 'experimental'
+    assert first['evidence'] == 'ECO:0000250' and first['iptmnet_sources'] == 'hprd' and first['source_releases'] == '2026_04; 6.2'
+    assert a.iloc[1]['sources'] == 'iPTMnet'
+    assert list(a.columns) == build.OUT_COLUMNS
+    ov = build.overlap(a)
+    assert ov['sites'] == {'both': 1, 'iPTMnet only': 1}
+
+
+def test_release_v1_5_0_is_consistent():
+    folder = ROOT / 'releases' / 'v1.5.0'
+    for line in (folder / 'MD5SUMS').read_text().splitlines():
+        md5, name = line.split('  ', 1)
+        assert build.md5_file(folder / name) == md5, name
+    release = json.loads((folder / 'release.json').read_text())
+    previous = ROOT / 'releases' / 'v1.4.3'
+    assert len(release['carried_over']) > 90
+    for name, md5 in release['carried_over'].items():       # the methylarginine data: byte for byte as in v1.4.3
+        assert build.md5_file(previous / name) == md5 == build.md5_file(folder / name), name
+    for path in folder.glob('human_*_v1.5.0.tsv'):
+        with open(path, encoding='utf-8') as fh:
+            header = next(csv.reader(fh, delimiter='\t'))
+        assert header[:11] == build.OUT_COLUMNS
+    text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
+    assert 'unchanged from v1.4.3' in text and 'CC BY-NC-SA 4.0' in text and 'CC BY 4.0' in text
+    assert release['license'].startswith('CC BY-NC-SA 4.0')
+    assert not (ROOT / 'releases' / 'marks').exists()
+    assert 'CC BY 4.0' not in (ROOT / 'LICENSE.md').read_text().split('## Code')[0].split('Data, figures')[-1]
+
+
+def test_release_license_covers_every_source():
+    # the release is CC BY-NC-SA 4.0: every source must be CC BY, CC BY-NC-SA or as open
+    assert {s['license'] for s in build.SOURCES.values()} <= {'CC BY 4.0', 'CC BY-NC-SA 4.0'}
+    assert set(build.SOURCES) == {'UniProt', 'iPTMnet'}
 
 
 def test_no_closed_source_is_referenced():
-    banned = re.compile(r'cplm|phosphosite|iptmnet|dbptm|qptm', re.I)
-    files = [ROOT / 'scripts' / '54_stage_uniprot_ptm_sites.py', ROOT / 'scripts' / '55_build_marks_release.py']
+    banned = re.compile(r'cplm|phosphosite|dbptm|qptm|\bpsp\b', re.I)
+    files = [ROOT / 'scripts' / n for n in ('54_stage_uniprot_ptm_sites.py', '55_stage_iptmnet_ptm_sites.py', '56_build_context_marks.py')]
     files += [p for p in (ROOT / 'inputs' / 'marks').iterdir() if p.suffix in ('.tsv', '.json') and p.name != 'raw_files.tsv']
+    files += list((ROOT / 'releases' / 'v1.5.0').glob('human_*_v1.5.0.tsv'))
     for path in files:
         text = path.read_text(encoding='utf-8')
-        if path.suffix == '.py':
-            # the only mentions are the statement of what is excluded
-            text = '\n'.join(ln for ln in text.splitlines() if not re.search(r'Excluded by design|PhosphoSitePlus, iPTMnet', ln))
+        if path.suffix == '.py':    # only the statement of what is not used
+            text = '\n'.join(ln for ln in text.splitlines() if not re.search(r'Not used|Berryhill2023 is added', ln))
         assert not banned.search(text), path
     rows = [r for r in csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t')
-            if r['file'].startswith('marks/') and r['file'].endswith('_sites.tsv')]
+            if r['file'].startswith('marks/')]
     assert all(not banned.search(r['source'] + r['derived_from'] + r['how_made_or_checked']) for r in rows)
-    for path in (ROOT / 'releases' / 'marks').glob('*/human_*.tsv'):
-        sources = {r['source'] for r in csv.DictReader(open(path, encoding='utf-8'), delimiter='\t')}
-        assert sources <= set(build.SOURCES), path
+    for path in (ROOT / 'releases' / 'v1.5.0').glob('human_*_v1.5.0.tsv'):
+        for r in csv.DictReader(open(path, encoding='utf-8'), delimiter='\t'):
+            assert set(r['sources'].split('; ')) <= set(build.SOURCES)
+            assert not (set(r['iptmnet_sources'].split(';')) - set(iptm_upstream()))
+
+
+def iptm_upstream():
+    return ['hprd', 'unip', 'rlim', 'rlim+', 'sign', 'npro', 'iedb', 'pro', 'intact', '']
 
 
 def test_crosscheck_column(tmp_path):
@@ -176,7 +248,7 @@ def test_crosscheck_column(tmp_path):
     assert list(build.crosscheck(frame, tmp_path)['in_methylarginine_release']) == ['site', 'lower_confidence', 'no']
 
 
-@pytest.mark.parametrize('name', ['54_stage_uniprot_ptm_sites.py', '55_build_marks_release.py'])
+@pytest.mark.parametrize('name', ['54_stage_uniprot_ptm_sites.py', '55_stage_iptmnet_ptm_sites.py', '56_build_context_marks.py'])
 def test_scripts_use_american_spelling_and_no_banned_words(name):
     text = (ROOT / 'scripts' / name).read_text(encoding='utf-8')
     text = text.replace("'licence'", '')     # the MANIFEST column keeps its name

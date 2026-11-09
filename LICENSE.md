@@ -8,7 +8,6 @@ This repository holds two kinds of material under two licences:
 |---|---|
 | Source code: `scripts/`, `hpc/`, `envs/`, `config/`, and the explorer's `docs/**/index.html`, `docs/**/assets/*.js` and `docs/**/assets/*.css` | [MIT](#code-mit-license) |
 | Data, figures and text: the releases in `releases/`, the explorer's data (`docs/**/data/`) and written content, and `provenance/` | [CC BY-NC-SA 4.0](#data-and-content-cc-by-nc-sa-40) |
-| The marks releases in `releases/marks/` (UniProt-derived tables for other modifications; every source is CC BY 4.0) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | The frozen inputs in `inputs/` | each its source's licence, listed in `inputs/MANIFEST.tsv` |
 
 Third-party data keep their own licences (see [below](#third-party-data)).

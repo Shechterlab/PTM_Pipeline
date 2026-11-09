@@ -62,13 +62,13 @@ Each step leaves the site working, checked by the same browser tests.
 4. **Make the pipeline profile-driven.** Replace the `'R'` literals with the profile's residue, and move the shared code into the package.
 5. **Pilot a second modification.** Lysine methylation is a good candidate, since CPLM4 is already staged by `scripts/39_stage_cplm4_lys_methylation.py`. The pilot will find the couplings this list misses.
 
-## Marks releases
+## Context marks
 
-The pipeline is also the shared data source for other modifications. Step 1 of the plan above is a versioned table per
-mark (`releases/marks/vX.Y.Z/human_<mark>_sites_<version>.tsv`, with a data dictionary and a README), built only from
-openly licensed sources and released under CC BY 4.0, apart from the methylarginine release, which keeps its own
-license. A site for a mark reads its own table, and the others as context. This needs no profile or package change:
-each source is staged into `inputs/marks/` in one fixed set of columns (residue, mark, state, evidence and its class,
-PMIDs, source and release) and `scripts/55_build_marks_release.py` combines them. Version 0.1.0 has methyllysine and
-phosphorylation from UniProt, and UniProt's methylarginine annotations as a cross-check against the methylarginine
-release. How to add a source or a mark: `ADDING_A_SOURCE.md`, "Marks releases".
+The pipeline is also the shared data source for other modifications. Step 1 of the plan above is a table per mark in each release
+(`releases/vX.Y.Z/human_<mark>_sites_<version>.tsv`, with the data dictionary and README of the release), merged from openly
+licensed sources and released under the release's own license, CC BY-NC-SA 4.0. A site for a mark reads its own table, and the
+others as context. This needs no profile or package change: each source is staged into `inputs/marks/` in one fixed set of
+columns (residue, mark, state, evidence and its class, PMIDs, source and release) and `scripts/56_build_context_marks.py` merges
+them. v1.5.0 has methyllysine and phosphorylation from UniProt and iPTMnet, and their methylarginine records as a cross-check
+against the methylarginine data, which it carries over unchanged from v1.4.3. How to add a source or a mark: `ADDING_A_SOURCE.md`,
+"Context marks".
