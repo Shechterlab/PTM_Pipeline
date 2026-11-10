@@ -255,7 +255,9 @@ def test_no_closed_source_is_referenced():
         assert not banned.search(text), path
     rows = [r for r in csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t')
             if r['file'].startswith('marks/')]
-    assert all(not banned.search(r['source'] + r['derived_from'] + r['how_made_or_checked']) for r in rows)
+    # the staging script's own file name (58_stage_ochoa_phosphosites.py) contains "phosphosite"; it is not the closed database
+    assert all(not banned.search((r['source'] + r['derived_from'] + r['how_made_or_checked']).replace('58_stage_ochoa_phosphosites.py', ''))
+               for r in rows)
     for path in context_files(ROOT / 'releases' / 'v1.5.0'):
         for r in csv.DictReader(open(path, encoding='utf-8'), delimiter='\t'):
             assert set(r['sources'].split('; ')) <= set(build.SOURCES)

@@ -1,0 +1,5 @@
+# Ochoa et al. 2020 (Nat Biotechnol): "© 2019 The Author(s), under exclusive licence to Springer Nature America, Inc.", not open
+# access, so the tables derived from its supplements are not redistributed (../MANIFEST.tsv redistribution = checksum_only).
+# Rebuild them with scripts/58_stage_ochoa_phosphosites.py.
+ochoa2020_phosphorylation_validated.tsv
+ochoa2020_phosphorylation_rejected.tsv

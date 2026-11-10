@@ -1,0 +1,77 @@
+{
+  "article_url": "https://www.nature.com/articles/s41587-019-0344-3",
+  "files": {
+    "rejected": "ochoa2020_phosphorylation_rejected.tsv",
+    "validated": "ochoa2020_phosphorylation_validated.tsv"
+  },
+  "files_md5": {
+    "rejected": "5ff5e85dbadf870da91724fc0c938b82",
+    "validated": "5d526a4cddcf94454f15475d858e498e"
+  },
+  "functional_score_ge_0.5": 10883,
+  "functional_score_ge_0.5_fraction": 0.09682,
+  "functional_score_quantiles": {
+    "0": 0.0,
+    "0.01": 0.045061,
+    "0.05": 0.071501,
+    "0.25": 0.146207,
+    "0.5": 0.25386,
+    "0.75": 0.37636,
+    "0.95": 0.579175,
+    "0.99": 0.782669,
+    "1": 1.0
+  },
+  "input_proteins": 10588,
+  "input_sites": 116258,
+  "input_sites_by_residue": {
+    "S": 85715,
+    "T": 24264,
+    "Y": 6279
+  },
+  "licence": "article page: \"\u00a9 2019 The Author(s), under exclusive licence to Springer Nature America, Inc.\"; not open access; supplements carry no separate notice; included by the owner's decision (2026-11-10)",
+  "raw": {
+    "features": {
+      "md5": "98d410753c2b4cc2f6df06ba498a6eaf",
+      "name": "41587_2019_344_MOESM4_ESM.xlsx",
+      "sha256": "bab244a8e48a5e52bf605efda9df6f1f5ef6df8b1cbfd9081e71e7de8ae32eb5"
+    },
+    "scores": {
+      "md5": "7feb4a89aaf1a7baaeb9f82028a900f2",
+      "name": "41587_2019_344_MOESM5_ESM.xlsx",
+      "sha256": "a0b5ac3b096094726ec633f8e9787dc053087e03b1286ebec2e3fdaabb8d9df7"
+    }
+  },
+  "redistribution": "checksum_only",
+  "reference_fasta": "../inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rejected_by_reason": {
+    "accession_not_in_reference": 1200,
+    "bad_position": 105,
+    "residue_mismatch": 2548
+  },
+  "relocated_sites": 0,
+  "relocation_note": "no peptide or window is given, so a site whose residue does not match the canonical sequence is rejected, not moved",
+  "row_status": {
+    "accession_not_in_reference": 1200,
+    "bad_position": 105,
+    "kept": 112405,
+    "residue_mismatch": 2548
+  },
+  "source": "Ochoa et al., Nat Biotechnol 38:365-373 (2020), doi:10.1038/s41587-019-0344-3; Supplementary Table 3 (functional scores) and Supplementary Table 2 (residue and evidence columns)",
+  "urls": {
+    "features": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41587-019-0344-3/MediaObjects/41587_2019_344_MOESM4_ESM.xlsx",
+    "scores": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41587-019-0344-3/MediaObjects/41587_2019_344_MOESM5_ESM.xlsx"
+  },
+  "validated_proteins": 10275,
+  "validated_proteins_by_residue": {
+    "S": 9746,
+    "T": 6225,
+    "Y": 2943
+  },
+  "validated_sites": 112405,
+  "validated_sites_by_residue": {
+    "S": 82813,
+    "T": 23492,
+    "Y": 6100
+  }
+}

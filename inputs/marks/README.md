@@ -48,3 +48,22 @@ kept, not filtered (the table's values are 90.1-100; PTMScan Rep 2 rows have non
 
 The validated table is not named `*_sites.tsv` on purpose: `scripts/56_build_context_marks.py` globs that pattern and has
 no `SOURCES` entry for Berryhill2023, so the merge into a release is a later, deliberate step.
+
+## Ochoa et al. 2020: staged, not yet in a release
+
+Nat Biotechnol 38:365-373, doi:10.1038/s41587-019-0344-3. Added by the owner's decision (2026-11-10). The article is
+not open access: its page says "© 2019 The Author(s), under exclusive licence to Springer Nature America, Inc.", and
+the supplements carry no separate notice. The staged tables are therefore `checksum_only` (not in Git, listed in
+`.gitignore`); `scripts/58_stage_ochoa_phosphosites.py` rebuilds them from the downloads (Supplementary Table 3,
+`..._MOESM5_ESM.xlsx`, for the functional score; Supplementary Table 2, `..._MOESM4_ESM.xlsx`, for the residue and
+the evidence columns). The counts file is in Git.
+
+| File | Holds |
+|---|---|
+| `ochoa2020_phosphorylation_validated.tsv` | phosphoserine, phosphothreonine and phosphotyrosine sites on the reference proteome, one row per residue: the ten columns above (source `Ochoa2020`, evidence class `high-throughput`) plus `functional_score`, `best_localization_prob`, `best_PEP`, `biological_samples`, `spectral_counts` |
+| `ochoa2020_phosphorylation_rejected.tsv` | sites that failed the check, with `reason` and `detail` |
+| `ochoa2020_phosphorylation_summary.json` | counts, drops by reason, score quantiles, MD5 and SHA-256 of the inputs |
+
+A site is kept when its accession is a canonical entry of the reference and the sequence has the table's residue at
+the position. Neither table gives a peptide or window, so nothing is relocated: a mismatch is rejected. The file
+names end in `_validated`, not `_sites`, so `scripts/56` does not read them until the release merge adds them.
