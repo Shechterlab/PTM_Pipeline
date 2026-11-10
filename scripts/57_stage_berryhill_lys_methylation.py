@@ -6,7 +6,7 @@
 
 Source: Berryhill CA, Hanquier JN, Doud EH, Cordeiro-Spinetti E, Dickson BM, Rothbart SB, Mosley AL. Global lysine
 methylome profiling using systematically characterized affinity reagents. Sci Rep 13:377 (2023),
-doi:10.1038/s41598-022-27175-x. Licence: article CC BY 4.0; the supplementary files carry no separate notice; included
+doi:10.1038/s41598-022-27175-x. License: article CC BY 4.0; the supplementary files carry no separate notice; included
 by the owner's decision (2026-11-10), without waiting for the authors' confirmation. Cite the paper wherever the data is
 described.
 

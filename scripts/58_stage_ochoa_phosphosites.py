@@ -9,7 +9,7 @@ Source: Ochoa D, Jarnuczak AF, Viéitez C, Gehre M, Soucheray M, Mateus A, Kleef
 Stein F, Krogan NJ, Savitski MM, Swaney DL, Vizcaíno JA, Noh KM, Beltrao P. The functional landscape of the human
 phosphoproteome. Nat Biotechnol 38:365-373 (2020), doi:10.1038/s41587-019-0344-3. Included by the owner's decision
 (2026-11-10). The article is NOT open access: its page says "© 2019 The Author(s), under exclusive licence to Springer
-Nature America, Inc." and gives the supplements no licence of their own. The owner decided to publish the table derived
+Nature America, Inc." and gives the supplements no license of their own. The owner decided to publish the table derived
 from them (accession, position, residue, functional score, best localisation probability, best PEP, biological samples,
 spectral counts) in the release, cited to the paper: MANIFEST redistribution = git. Cite the paper wherever the data is
 described. The two downloads stay out of Git (raw_files.tsv has their MD5 and SHA-256).

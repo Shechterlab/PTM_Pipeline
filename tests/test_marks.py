@@ -26,6 +26,7 @@ stage = load('54_stage_uniprot_ptm_sites.py')
 iptm = load('55_stage_iptmnet_ptm_sites.py')
 build = load('56_build_context_marks.py')
 cplm = load('39_stage_cplm4_lys_methylation.py')
+score = load('59_stage_iptmnet_scores.py')
 
 def context_files(folder):
     return [folder / f'human_{m}_v1.5.0.tsv' for m in ('methyllysine_sites', 'phosphorylation_sites', 'lysine_acylation_sites', 'acetylation_sites', 'methylarginine_crosscheck')]
@@ -121,7 +122,7 @@ def test_staged_tables_and_release_agree_with_manifest():
     manifest = list(csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t'))
     rows = {r['file']: r for r in manifest if r['file'].startswith('marks/')}
     tables = [f for f in rows if f.endswith('_sites.tsv') or f.endswith('_crosscheck.tsv')]
-    assert len(tables) == 9
+    assert len(tables) == 11
     for name in tables + ['marks/raw_files.tsv', 'marks/uniprot_ptm_sites_summary.json', 'marks/iptmnet_ptm_sites_summary.json',
                           'marks/cplm_ptm_sites_summary.json']:
         assert rows[name]['redistribution'] == 'git'
@@ -134,12 +135,55 @@ def test_staged_tables_and_release_agree_with_manifest():
             assert next(csv.reader(fh, delimiter='\t'))[:10] == stage.COLUMNS
         if '/uniprot_' in name:
             assert row['licence'] == 'CC BY 4.0' and row['source'].startswith('https://rest.uniprot.org')
+        elif '/berryhill2023_' in name:
+            assert 'CC BY 4.0' in row['licence'] and 'no separate notice' in row['licence'] and "owner's decision" in row['licence']
+            assert 'Berryhill' in row['citation'] and 'Sci Rep 13:377' in row['citation'] and '10.1038/s41598-022-27175-x' in row['citation']
+        elif '/ochoa2020_' in name:
+            assert 'not open access' in row['licence'] and 'exclusive licence to Springer Nature' in row['licence'] and "owner's decision" in row['licence']
+            assert 'Ochoa' in row['citation'] and 'Nat Biotechnol 38:365' in row['citation'] and '10.1038/s41587-019-0344-3' in row['citation']
+            assert row['redistribution'] == 'git'
         elif '/cplm_' in name:
             assert row['licence'].startswith('none stated') and 'pending the authors' in row['licence']
             assert row['source'].startswith('https://cplm.biocuckoo.cn/') and 'Zhang W' in row['citation'] and 'gkab849' in row['citation']
         else:
             assert row['licence'].startswith('CC BY-NC-SA 4.0') and row['source'].startswith('https://research.bioinformatics.udel.edu/iptmnet_data/')
             assert 'iPTMnet' in row['citation']
+
+
+def test_iptmnet_score_is_staged_with_its_readme_wording_and_checksums():
+    row = {r['file']: r for r in csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t')}['marks/iptmnet_6_2_score.tsv']
+    assert row['redistribution'] == 'git' and row['licence'].startswith('CC BY-NC-SA 4.0') and row['source'].endswith('/iptmnet_data/files/current/score.txt')
+    assert build.md5_file(ROOT / 'inputs' / 'marks' / 'iptmnet_6_2_score.tsv') == row['md5']
+    summary = json.loads((ROOT / 'inputs' / 'marks' / 'iptmnet_score_summary.json').read_text(encoding='utf-8'))
+    assert 'The score is calculated based on all the evidence sources as shown on the website' in summary['readme_says']
+    assert summary['raw_md5']['score.txt'] == '34d5a1be8f1150694f445d58245f2f30' and summary['score_range_in_download'] == [0, 4]
+    raw = {r['file']: r for r in csv.DictReader(open(ROOT / 'inputs' / 'marks' / 'raw_files.tsv', encoding='utf-8'), delimiter='\t')}
+    assert raw['iptmnet_score.txt']['md5'] == '34d5a1be8f1150694f445d58245f2f30' and len(raw['iptmnet_score.txt']['sha256']) == 64
+    assert raw['iptmnet_ptm.txt']['md5'] == '058d6619f5c6cb650107695a257e6fbf'
+    table = list(csv.DictReader(open(ROOT / 'inputs' / 'marks' / 'iptmnet_6_2_score.tsv', encoding='utf-8'), delimiter='\t'))
+    assert len(table) == int(row['rows']) == summary['rows'] and set(r['iptmnet_score'] for r in table) <= {'0', '1', '2', '3', '4'}
+    assert len({(r['canonical_UniProtAC'], r['position'], r['mark']) for r in table}) == len(table)
+    reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
+    for r in table:
+        assert reference[r['canonical_UniProtAC']][int(r['position']) - 1] == r['residue']
+
+
+def test_iptmnet_score_staging_toy():
+    import pandas as pd
+    def rec(acc, site, enzyme, ptm, value):
+        return dict(zip(score.FIELDS, [acc, site, enzyme, ptm, value], strict=True))
+    records = pd.DataFrame([rec('P00001', 'K2', '', 'Methylation', '2'), rec('P00001-1', 'K2', '', 'Methylation', '0'),   # plain accession wins
+                            rec('P00001-1', 'K3', '', 'Acetylation', '1'),                                              # only the -1 row: used
+                            rec('P00001', 'S5', 'P00002', 'Phosphorylation', '3'),                                      # enzyme row: not used
+                            rec('P00001', 'S5', '', 'Phosphorylation', '1'), rec('P00001', 'K2', '', 'Ubiquitination', '4'),
+                            rec('P00001-2', 'K2', '', 'Methylation', '1'), rec('P99999', 'K2', '', 'Methylation', '1'),
+                            rec('P00001', 'R2', '', 'Methylation', '1'), rec('P00001', 'S2', '', 'Phosphorylation', '1'),
+                            rec('P00001', 'S', '', 'Phosphorylation', '1')])
+    table, dropped = score.stage(records, {'P00001': 'MKKRSTYKR'}, '6.2')
+    assert dropped['_conflicts'] == 1
+    got = {(r.mark, r.position): r.iptmnet_score for r in table.itertuples()}
+    assert got == {('methyllysine', 2): '2', ('lysine_acylation', 3): '1', ('phosphorylation', 5): '1'}
+    assert list(table.columns) == score.COLUMNS and set(table['source']) == {'iPTMnet'}
 
 
 def test_staged_residues_match_reference():
@@ -165,7 +209,7 @@ def test_iptmnet_staging():
         rec('PHOSPHORYLATION', 'hprd', 'P00001-2', 'S5'),             # isoform
         rec('PHOSPHORYLATION', 'hprd', 'Q99999', 'S5'),               # not in the reference
         rec('PHOSPHORYLATION', 'hprd', 'P00001', 'S5', org='Mus musculus (Mouse)'),
-        rec('ACETYLATION', 'hprd', 'P00001', 'K2')])
+        rec('UBIQUITINATION', 'hprd', 'P00001', 'K2')])
     tables, dropped = iptm.stage(records, REFERENCE, '6.2')
     ml = tables['methyllysine']
     assert list(ml['state']) == ['me'] and list(ml['upstream_sources']) == ['hprd;unip']
@@ -227,7 +271,12 @@ def test_release_v1_5_0_is_consistent():
             header = next(csv.reader(fh, delimiter='\t'))
         expected = [c if c != 'state' else 'acyl_type' for c in build.OUT_COLUMNS] if 'acylation' in path.name or 'acetylation' in path.name else build.OUT_COLUMNS
         assert header[:11] == expected
-        assert header[11:12] == ([build.CPLM_COLUMN] if 'methyllysine' in path.name else ([] if 'phosph' in path.name or 'acyl' in path.name or 'acetyl' in path.name else ['in_methylarginine_release']))
+        if 'crosscheck' in path.name:
+            assert header[11:] == ['in_methylarginine_release']
+        else:       # the columns of the sources that contribute, then iPTMnet's score
+            own = {'methyllysine': ['cplm_evidence', 'berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment'],
+                   'phosphorylation': ['functional_score', 'best_localization_probability', 'best_pep', 'biological_samples', 'spectral_counts']}
+            assert header[11:] == next((v for k, v in own.items() if k in path.name), []) + ['iptmnet_score'], path.name
     text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
     assert 'unchanged from v1.4.3' in text and 'CC BY-NC-SA 4.0' in text and 'CC BY 4.0' in text
     assert release['license'].startswith('CC BY-NC-SA 4.0')
@@ -237,8 +286,13 @@ def test_release_v1_5_0_is_consistent():
 
 def test_release_license_covers_every_source():
     # the release is CC BY-NC-SA 4.0: every source must be CC BY, CC BY-NC-SA or as open
-    assert {s['license'] for s in build.SOURCES.values()} <= {'CC BY 4.0', 'CC BY-NC-SA 4.0', 'none stated; included pending the authors\' permission'}
-    assert set(build.SOURCES) == {'UniProt', 'iPTMnet', 'CPLM'}
+    # (CPLM, Berryhill 2023 and Ochoa 2020 are the exceptions, each by the owner's decision, and say so in their license entry)
+    exceptions = {'CPLM', 'Berryhill 2023', 'Ochoa 2020'}
+    assert {s['license'] for k, s in build.SOURCES.items() if k not in exceptions} <= {'CC BY 4.0', 'CC BY-NC-SA 4.0'}
+    assert all("owner's decision" in build.SOURCES[k]['license'] or 'pending the authors' in build.SOURCES[k]['license'] for k in exceptions)
+    assert set(build.SOURCES) == {'UniProt', 'iPTMnet', 'CPLM', 'Berryhill 2023', 'Ochoa 2020'} == set(build.SOURCE_ORDER)
+    assert 'CC BY 4.0' in build.SOURCES['Berryhill 2023']['license'] and 'supplements carry no separate notice' in build.SOURCES['Berryhill 2023']['license']
+    assert 'not open access' in build.SOURCES['Ochoa 2020']['license'] and "owner's decision" in build.SOURCES['Ochoa 2020']['license']
     # CPLM is the one source without a license: the owner's decision of 2026-11-09, said wherever it is described
     assert 'pending the authors' in build.SOURCES['CPLM']['citation'] and 'pending the authors' in build.SOURCES['CPLM']['license']
 
@@ -251,7 +305,8 @@ def test_no_closed_source_is_referenced():
     files += list(context_files(ROOT / 'releases' / 'v1.5.0'))
     for path in files:
         text = path.read_text(encoding='utf-8')
-        if path.suffix == '.py':    # only the statement of what is not used
+        if path.suffix == '.py':    # only the statement of what is not used; the script's own name is not the closed database
+            text = text.replace('58_stage_ochoa_phosphosites.py', '')
             text = '\n'.join(ln for ln in text.splitlines() if not re.search(r'Not used|Berryhill2023 is added', ln))
         assert not banned.search(text), path
     rows = [r for r in csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t')
@@ -262,7 +317,11 @@ def test_no_closed_source_is_referenced():
     for path in context_files(ROOT / 'releases' / 'v1.5.0'):
         for r in csv.DictReader(open(path, encoding='utf-8'), delimiter='\t'):
             assert set(r['sources'].split('; ')) <= set(build.SOURCES)
-            assert ('CPLM' in r['sources']) == bool(r.get('cplm_evidence', ''))
+            names = r['sources'].split('; ')
+            assert ('CPLM' in names) == bool(r.get('cplm_evidence', ''))
+            assert ('Ochoa 2020' in names) == bool(r.get('functional_score', ''))
+            assert ('Berryhill 2023' in names) == bool(r.get('berryhill_cell_lines', ''))
+            assert 'iPTMnet' in names or not r.get('iptmnet_score', '')
             assert not (set(r['iptmnet_sources'].split(';')) - set(iptm_upstream()))
 
 
@@ -278,10 +337,11 @@ def test_crosscheck_column(tmp_path):
     assert list(build.crosscheck(frame, tmp_path)['in_methylarginine_release']) == ['site', 'lower_confidence', 'no']
 
 
-@pytest.mark.parametrize('name', ['39_stage_cplm4_lys_methylation.py', '54_stage_uniprot_ptm_sites.py', '55_stage_iptmnet_ptm_sites.py', '56_build_context_marks.py'])
+@pytest.mark.parametrize('name', ['39_stage_cplm4_lys_methylation.py', '54_stage_uniprot_ptm_sites.py', '55_stage_iptmnet_ptm_sites.py', '56_build_context_marks.py',
+                                  '57_stage_berryhill_lys_methylation.py', '58_stage_ochoa_phosphosites.py', '59_stage_iptmnet_scores.py'])
 def test_scripts_use_american_spelling_and_no_banned_words(name):
     text = (ROOT / 'scripts' / name).read_text(encoding='utf-8')
-    text = text.replace("'licence'", '')     # the MANIFEST column keeps its name
+    text = text.replace("'licence'", '').replace('exclusive licence', '')     # the MANIFEST column keeps its name; the publisher's words
     assert not re.search(r'dtIDR|domain-tethered|domain flanks|licen[cs]e\b(?<!license)|colour|summaris|generalis', text, re.I)
 
 
@@ -378,3 +438,99 @@ def test_iptmnet_acetylation_and_acylation_table_of_the_release():
     assert 'state' not in acyl[0] and 'acyl_type' in acyl[0]
     assert [r for r in acyl if r['acyl_type'] == 'acetyl'] == acetyl
     assert len({(r['canonical_UniProtAC'], r['position'], r['acyl_type']) for r in acyl}) == len(acyl)
+
+
+def read_release(name):
+    import pandas as pd
+    return pd.read_csv(ROOT / 'releases' / 'v1.5.0' / name, sep='\t', dtype=str, keep_default_na=False)
+
+
+def read_staged(name):
+    import pandas as pd
+    return pd.read_csv(ROOT / 'inputs' / 'marks' / name, sep='\t', dtype=str, keep_default_na=False)
+
+
+def test_berryhill_rows_in_the_release():
+    reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
+    table = read_release('human_methyllysine_sites_v1.5.0.tsv')
+    staged = read_staged('berryhill2023_methyllysine_sites.tsv')
+    bh = table[table['sources'].str.split('; ').map(lambda x: 'Berryhill 2023' in x)]
+    assert len(staged) == len(bh) == 5072 and bh['canonical_UniProtAC'].nunique() == staged['canonical_UniProtAC'].nunique()
+    assert not table.duplicated(['canonical_UniProtAC', 'position', 'state']).any()
+    assert set(bh['state']) == {'me1', 'me2', 'me3'} and set(bh['residue']) == {'K'} and set(bh['mark']) == {'methyllysine'}
+    assert (bh['evidence_class'] == 'experimental').all()
+    for r in bh.itertuples():
+        assert reference[r.canonical_UniProtAC][int(r.position) - 1] == 'K'
+    merged = bh.set_index(['canonical_UniProtAC', 'position', 'state'])
+    for r in staged.itertuples():
+        row = merged.loc[(r.canonical_UniProtAC, r.position, r.state)]
+        assert (row['berryhill_site_probability'], row['berryhill_cell_lines'], row['berryhill_enrichment']) == (
+            r.berryhill_site_probability, r.berryhill_cell_lines, r.berryhill_enrichment)
+        assert 'Sci Rep 13:377 (2023)' in row['source_releases']
+    other = table[~table.index.isin(bh.index)]
+    assert set(other['berryhill_site_probability'] + other['berryhill_cell_lines'] + other['berryhill_enrichment']) == {''}
+    # a row no Berryhill row touches is what the other sources give: the merge without Berryhill has the same rows and values
+    base = build.merge([read_staged(f.name) for f in sorted((ROOT / 'inputs' / 'marks').glob('*_methyllysine_sites.tsv'))
+                        if not f.name.startswith('berryhill')]).set_index(['canonical_UniProtAC', 'position', 'state'])
+    untouched = table[~table.set_index(['canonical_UniProtAC', 'position', 'state']).index.isin(staged.set_index(['canonical_UniProtAC', 'position', 'state']).index)]
+    assert len(untouched) == len(base) - base.index.isin(staged.set_index(['canonical_UniProtAC', 'position', 'state']).index).sum()
+    cols = build.OUT_COLUMNS + ['cplm_evidence']
+    a = untouched[cols].set_index(['canonical_UniProtAC', 'position', 'state']).sort_index()
+    b = base.reset_index().set_index(['canonical_UniProtAC', 'position', 'state']).loc[a.index, [c for c in cols if c not in ('canonical_UniProtAC', 'position', 'state')]].sort_index()
+    assert a.equals(b)
+
+
+def test_ochoa_rows_in_the_release():
+    reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
+    table = read_release('human_phosphorylation_sites_v1.5.0.tsv')
+    staged = read_staged('ochoa2020_phosphorylation_sites.tsv')
+    oc = table[table['sources'].str.split('; ').map(lambda x: 'Ochoa 2020' in x)]
+    assert len(staged) == len(oc) == 112405 and oc['canonical_UniProtAC'].nunique() == 10275
+    assert not table.duplicated(['canonical_UniProtAC', 'position', 'state']).any() and set(table['state']) == {'phospho'}
+    assert set(oc['residue']) <= {'S', 'T', 'Y'} and (oc['evidence_class'] == 'experimental').all()
+    for r in oc.itertuples():
+        assert reference[r.canonical_UniProtAC][int(r.position) - 1] == r.residue
+    merged = oc.set_index(['canonical_UniProtAC', 'position'])
+    for r in staged.sample(2000, random_state=1).itertuples():
+        row = merged.loc[(r.canonical_UniProtAC, r.position)]
+        assert [row[c] for c in build.SOURCE_COLUMNS['Ochoa 2020']] == [getattr(r, c) for c in build.SOURCE_COLUMNS['Ochoa 2020']]
+    assert (oc['functional_score'] != '').all() and ((oc['functional_score'].astype(float) >= 0) & (oc['functional_score'].astype(float) <= 1)).all()
+    other = table[~table.index.isin(oc.index)]
+    assert set(other[build.SOURCE_COLUMNS['Ochoa 2020']].sum(axis=1)) == {''}
+    assert 'Ochoa 2020' in set(table['sources'].str.split('; ').explode())
+
+
+def test_iptmnet_score_in_the_release():
+    staged = read_staged('iptmnet_6_2_score.tsv')
+    for name, mark in (('human_methyllysine_sites_v1.5.0.tsv', 'methyllysine'), ('human_phosphorylation_sites_v1.5.0.tsv', 'phosphorylation'),
+                       ('human_lysine_acylation_sites_v1.5.0.tsv', 'lysine_acylation'), ('human_acetylation_sites_v1.5.0.tsv', 'lysine_acylation')):
+        table = read_release(name)
+        given = dict(zip(zip(staged['canonical_UniProtAC'][staged['mark'] == mark], staged['position'][staged['mark'] == mark], strict=True),
+                         staged['iptmnet_score'][staged['mark'] == mark], strict=True))
+        has_iptmnet = table['sources'].str.split('; ').map(lambda x: 'iPTMnet' in x)
+        assert set(table.loc[~has_iptmnet, 'iptmnet_score']) <= {''}, name
+        assert set(table['iptmnet_score']) <= {'', '0', '1', '2', '3', '4'}
+        scored = table[table['iptmnet_score'] != '']
+        assert len(scored) > 0.5 * has_iptmnet.sum(), name
+        for r in scored.itertuples():
+            assert given[(r.canonical_UniProtAC, r.position)] == r.iptmnet_score
+        assert 'iptmnet_score' in table.columns
+    ac, ph = read_release('human_acetylation_sites_v1.5.0.tsv'), read_release('human_lysine_acylation_sites_v1.5.0.tsv')
+    assert ac.equals(ph[ph['acyl_type'] == 'acetyl'].reset_index(drop=True))
+    # the score columns are in the data dictionary, and the methylarginine files have none
+    dictionary = (ROOT / 'releases' / 'v1.5.0' / 'data_dictionary.tsv').read_text(encoding='utf-8')
+    assert 'human_phosphorylation_sites_v1.5.0.tsv\tiptmnet_score' in dictionary and 'human_methylarginine_crosscheck_v1.5.0.tsv\tiptmnet_score' not in dictionary
+    for col in ('functional_score', 'best_pep', 'berryhill_cell_lines', 'cplm_evidence'):
+        assert col in dictionary
+
+
+def test_license_notes_of_the_new_sources_in_the_release_text():
+    folder = ROOT / 'releases' / 'v1.5.0'
+    for name in ('README.md', 'CHANGES.md'):
+        text = (folder / name).read_text(encoding='utf-8')
+        for needle in ('Sci Rep 13:377', '10.1038/s41598-022-27175-x', 'CC BY 4.0', 'supplements carry no separate', "owner's decision of 2026-11-10",
+                       'Nat Biotechnol 38:365', '10.1038/s41587-019-0344-3', 'not open access', 'exclusive licence to Springer Nature America',
+                       'The score is calculated based on all the evidence sources as shown on the website'):
+            assert needle in text, (name, needle)
+    release = json.loads((folder / 'release.json').read_text(encoding='utf-8'))
+    assert {'Berryhill 2023', 'Ochoa 2020'} <= set(release['sources']) and 'iptmnet_score' in release['inputs_md5']

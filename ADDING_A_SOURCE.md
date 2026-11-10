@@ -117,7 +117,7 @@ for those marks read. Each version is a release of this repository (`CONTRIBUTIN
 changed and the build cannot run, carried over byte for byte and said to be unchanged (`scripts/56_build_context_marks.py`).
 
 1. Check the terms first. The release is CC BY-NC-SA 4.0, so a source must be CC BY, CC BY-NC-SA or as open. Terms that are
-   all rights reserved or unstated keep a source out (PhosphoSitePlus, dbPTM and qPTM are out; CPLM 4.0 states no license and its human lysine methylation sites are in only by the owner's explicit decision of 2026-11-09, pending the authors' permission, which is not a precedent). A journal supplement with no
+   all rights reserved or unstated keep a source out (PhosphoSitePlus, dbPTM and qPTM are out; CPLM 4.0 states no license and its human lysine methylation sites are in only by the owner's explicit decision of 2026-11-09, pending the authors' permission, which is not a precedent; the supplement of Berryhill et al. 2023, whose article is CC BY 4.0, and the table derived from the supplements of Ochoa et al. 2020, whose article is not open access, are in only by the owner's explicit decision of 2026-11-10, also not precedents). A journal supplement with no
    license notice of its own is unconfirmed until its terms are. When a database gives two licenses, follow the stricter one
    and say so in the README (iPTMnet: its license page says CC BY-NC-SA 4.0, its download readme also mentions CC BY 4.0).
 2. Stage it with `scripts/NN_stage_<name>.py`, following the rules of section 1 (keys, residue check with
