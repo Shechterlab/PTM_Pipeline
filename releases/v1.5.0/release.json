@@ -681,27 +681,32 @@
     },
     "sumoylation": {
       "by_evidence_class": {
-        "by-similarity": 210,
-        "experimental": 5330
+        "by-similarity": 108,
+        "experimental": 37807,
+        "unspecified": 1718
       },
       "by_source": {
         "rows": {
-          "UniProt + iPTMnet": 24,
-          "UniProt only": 5507,
-          "iPTMnet only": 9
+          "CPLM only": 34093,
+          "UniProt + CPLM": 5367,
+          "UniProt + iPTMnet + CPLM": 24,
+          "UniProt only": 140,
+          "iPTMnet + CPLM": 9
         },
         "sites": {
-          "UniProt + iPTMnet": 24,
-          "UniProt only": 5507,
-          "iPTMnet only": 9
+          "CPLM only": 34093,
+          "UniProt + CPLM": 5367,
+          "UniProt + iPTMnet + CPLM": 24,
+          "UniProt only": 140,
+          "iPTMnet + CPLM": 9
         }
       },
       "by_state": {
-        "sumo": 5540
+        "sumo": 39633
       },
-      "proteins": 1519,
-      "residues": 5540,
-      "rows": 5540
+      "proteins": 6102,
+      "residues": 39633,
+      "rows": 39633
     },
     "ubiquitination": {
       "by_evidence_class": {
@@ -737,7 +742,7 @@
       "rows": 123932
     }
   },
-  "context_marks_code_commit": "7528317e18b804bbb2ece385784744c843dd9f18",
+  "context_marks_code_commit": "dafbfbc3566df79950d849ed445e5922d3288922",
   "inputs_md5": {
     "iptmnet_score": {
       "iptmnet_6_2_score.tsv": "ed097f2d5b773233dcdf1999ada1579d"
@@ -762,6 +767,7 @@
       "uniprot_2026_04_phosphorylation_sites.tsv": "0b878fb4c25b80de8c3e0b5abb464ae6"
     },
     "sumoylation": {
+      "cplm_4_0_sumoylation_sites.tsv": "f14d537f300e625bb03d7ffb0289c6f0",
       "iptmnet_6_2_sumoylation_sites.tsv": "971fe9cd985ee571f6b9dcd7242445f4",
       "uniprot_2026_04_sumoylation_sites.tsv": "8c7f7ceb6646ad94c18acad87f2a8f85"
     },
@@ -771,7 +777,7 @@
       "uniprot_2026_04_ubiquitination_sites.tsv": "0cc7c9e74519970def0374f1511848b8"
     }
   },
-  "license": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license and its methylation and ubiquitination sites are included pending the authors' permission; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access; both included by the owner's decision",
+  "license": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license and its methylation, ubiquitination and SUMOylation sites are included pending the authors' permission; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access; both included by the owner's decision",
   "methylarginine_code_commit": "52451320067f754d32574061b8653a2b5f03ec37",
   "methylarginine_data": "unchanged from v1.4.3: files carried over byte for byte, not rebuilt",
   "previous_version": "v1.4.3",
