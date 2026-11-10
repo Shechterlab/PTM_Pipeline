@@ -16,7 +16,8 @@ iPTMnet's own score and is carried as given: it is not a probability, and it is 
 score.txt has no header and five tab-separated fields; the enzyme field is empty on the rows that score the site itself
 (827,718 of 851,361 rows) and holds the kinase or enzyme on the rows that score an enzyme-site relation (those are not
 used). Site rows are kept for the marks of the release: Phosphorylation at S, T or Y (phosphorylation), Methylation at K
-(methyllysine) and Acetylation at K (lysine_acylation, the acetyl rows); other PTM types and residues are dropped, and
+(methyllysine), Acetylation at K (lysine_acylation, the acetyl rows), Ubiquitination at K (ubiquitination) and Sumoylation
+at K (sumoylation); other PTM types and residues are dropped, and
 counted in the summary JSON with: not_in_reference (the accession is not a canonical entry of --fasta), on_an_isoform
 (suffix -2 and up), residue_mismatch (the reference has another residue at the position: `common.residue_is`),
 unparsed_site. Accessions with the suffix -1 are the canonical entry, as in script 55. score.txt scores a site under
@@ -54,7 +55,7 @@ OUT_NAME = 'iptmnet_{rel}_score.tsv'
 OUT_SUMMARY = 'iptmnet_score_summary.json'
 README_SAYS = ('score.txt -- score information (substrate_UniProtAC, site, enzyme_UniProtAC, ptm_type, score). '
                'Note: The score is calculated based on all the evidence sources as shown on the website.')
-CONTENT = ("iPTMnet's own score of each human site of the phosphorylation, lysine methylation and lysine acetylation tables "
+CONTENT = ("iPTMnet's own score of each human site of the phosphorylation, lysine methylation, lysine acetylation, ubiquitination and SUMOylation tables "
            "(score.txt rows without an enzyme; integer 0-4; the readme says only that it is calculated from all the evidence sources shown on the website)")
 
 
@@ -65,6 +66,10 @@ def mark_of(ptm_type: str, letter: str):
         return 'methyllysine'
     if ptm_type == 'Acetylation' and letter == 'K':
         return 'lysine_acylation'
+    if ptm_type == 'Ubiquitination' and letter == 'K':
+        return 'ubiquitination'
+    if ptm_type == 'Sumoylation' and letter == 'K':
+        return 'sumoylation'
     return None
 
 

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Stage UniProt's methyllysine, phosphorylation and methylarginine annotations as one table per mark (inputs/marks/).
+"""Stage UniProt's methyllysine, phosphorylation, acylation, methylarginine, ubiquitination and SUMOylation annotations as one table per mark (inputs/marks/).
 
     python scripts/54_stage_uniprot_ptm_sites.py --fasta inputs/reference/uniprot_human_reviewed_2026_03.fasta \
         --raw-dir PTM_data/marks --out-dir inputs/marks
 
-Reads the "Modified residue" features of every reviewed human UniProtKB/Swiss-Prot entry (UniProt REST API, CC BY 4.0;
-the JSON stream of `reviewed:true AND organism_id:9606`, fields accession, ft_mod_res and sequence). With --raw it
-reads an earlier download instead of fetching. The API serves the current release only, which may be newer than the
+Reads the "Modified residue" and "Cross-link" features of every reviewed human UniProtKB/Swiss-Prot entry (UniProt REST
+API, CC BY 4.0; two JSON streams of `reviewed:true AND organism_id:9606`: fields accession, ft_mod_res and sequence, and
+fields accession, ft_crosslnk and sequence; both must be of the same release). With --raw and --raw-crosslnk it reads
+earlier downloads instead of fetching. The API serves the current release only, which may be newer than the
 reference proteome: the release served is recorded (`source_release`) and an entry whose sequence differs from the
 reference is left out whole, so a position is never moved between sequences.
 
@@ -20,6 +21,11 @@ Marks, terms and states (a term is the feature description before its first ';')
                    N6-(2-hydroxyisobutyryl)lysine, ...); state = the acyl type (acetyl, succinyl, 2-hydroxyisobutyryl, ...),
                    residue K. Not acylation: N6-methyl terms, N6-(ADP-ribosyl), N6-lipoyl, N6-biotinyl (cofactors and
                    ADP-ribose), N6-(pyridoxal phosphate), N6-(retinylidene), N6-carboxy and microbial-infection terms
+  ubiquitination   "Cross-link" features "Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in ubiquitin)": state ub, residue K.
+                   Not taken: ubiquitin on other residues (Cys-Gly thioester, Ser-Gly ester, Met-Gly peptide), the other
+                   ubiquitin-like modifiers (ISG15, NEDD8, UFM1, ATG12) and the features marked "(Microbial infection)"
+  sumoylation      the same isopeptide "... interchain with G-Cter in SUMO", SUMO1, SUMO2, SUMO3, SUMO1P1/SUMO5 and the
+                   combinations of them: state sumo (the paralog is not kept: iPTMnet and CPLM do not give it), residue K
   methylarginine   Omega-N-methylarginine me1; Asymmetric dimethylarginine me2a; Symmetric dimethylarginine me2s;
                    Dimethylated arginine me2; Omega-N-methylated arginine me                    residue R
                    (a cross-check only: the methylarginine release has its own table)
@@ -78,7 +84,11 @@ TERMS = {
     'Dimethylated arginine': ('methylarginine', 'me2', 'R'),
     'Omega-N-methylated arginine': ('methylarginine', 'me', 'R'),
 }
+CROSSLINK_MARKS = {'ubiquitination', 'sumoylation'}
 EXPERIMENTAL = {'ECO:0000269', 'ECO:0007744'}
+CROSSLINK = re.compile(r'Glycyl lysine isopeptide \(Lys-Gly\) \(interchain with G-Cter in ([^;)]+)')
+URL_CROSSLNK = ('https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606'
+                '&fields=accession,ft_crosslnk,sequence&format=json')
 COLUMNS = ['canonical_UniProtAC', 'position', 'residue', 'mark', 'state', 'evidence', 'evidence_class', 'pmids',
            'source', 'source_release']
 def acyl_type(term: str):
@@ -87,10 +97,26 @@ def acyl_type(term: str):
     return m.group(1) if m and m.group(1) not in NOT_ACYL and 'methyl' not in m.group(1) else None
 
 
+def crosslink_term(description: str):
+    """(mark, state, residue) of a "Cross-link" feature that is ubiquitin or SUMO on a lysine (see the module docstring), else None."""
+    m = CROSSLINK.match(description)
+    if not m:
+        return None
+    modifier = m.group(1).strip()
+    if modifier == 'ubiquitin':
+        return 'ubiquitination', 'ub', 'K'
+    if modifier.startswith('SUMO'):
+        return 'sumoylation', 'sumo', 'K'
+    return None
+
+
 OUT_NAME = {'methyllysine': 'uniprot_{rel}_methyllysine_sites.tsv', 'phosphorylation': 'uniprot_{rel}_phosphorylation_sites.tsv',
             'lysine_acylation': 'uniprot_{rel}_lysine_acylation_sites.tsv',
-            'methylarginine': 'uniprot_{rel}_methylarginine_crosscheck.tsv'}
+            'methylarginine': 'uniprot_{rel}_methylarginine_crosscheck.tsv',
+            'ubiquitination': 'uniprot_{rel}_ubiquitination_sites.tsv', 'sumoylation': 'uniprot_{rel}_sumoylation_sites.tsv'}
 CONTENT = {
+    'ubiquitination': 'UniProt lysine ubiquitination annotations (cross-link "Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in ubiquitin)") of the reviewed human entries, one row per residue, with ECO evidence codes, their class and PubMed IDs',
+    'sumoylation': 'UniProt lysine SUMOylation annotations (cross-link "Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in SUMO", any paralog, paralog not kept) of the reviewed human entries, one row per residue, with ECO evidence codes, their class and PubMed IDs',
     'lysine_acylation': 'UniProt N6-acyl lysine annotations (acetyl, succinyl, 2-hydroxyisobutyryl, beta-hydroxybutyryl, lactoyl, glutaryl, crotonyl, methacryl, isonicotinyl, benzoyl, butyryl, malonyl, propionyl: every N6-acyl term of the download) of the reviewed human entries, one row per residue and acyl type, with ECO evidence codes, their class and PubMed IDs',
     'methyllysine': 'UniProt N6-methyllysine, N6,N6-dimethyllysine and N6,N6,N6-trimethyllysine (and N6-methylated lysine, degree not stated) annotations of the reviewed human entries, one row per residue and state, with ECO evidence codes, their class (experimental or by-similarity) and PubMed IDs',
     'phosphorylation': 'UniProt phosphoserine, phosphothreonine and phosphotyrosine annotations of the reviewed human entries, one row per residue, with ECO evidence codes, their class (experimental or by-similarity) and PubMed IDs',
@@ -114,12 +140,16 @@ def stage(entries: list[dict], reference: dict[str, str], release: str) -> tuple
         acc = entry['primaryAccession']
         sequence = entry.get('sequence', {}).get('value', '')
         for feature in entry.get('features', []):
-            if feature.get('type') != 'Modified residue':
+            kind = feature.get('type')
+            if kind == 'Cross-link':
+                term = crosslink_term(feature.get('description', ''))
+            elif kind == 'Modified residue':
+                name = feature_term(feature.get('description', ''))
+                term = TERMS.get(name)
+                if term is None and acyl_type(name):
+                    term = ('lysine_acylation', acyl_type(name), 'K')
+            else:
                 continue
-            name = feature_term(feature.get('description', ''))
-            term = TERMS.get(name)
-            if term is None and acyl_type(name):
-                term = ('lysine_acylation', acyl_type(name), 'K')
             if term is None:
                 continue
             mark, state, residue = term
@@ -160,7 +190,9 @@ def stage(entries: list[dict], reference: dict[str, str], release: str) -> tuple
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--fasta', required=True, help='the reference proteome (canonical reviewed accessions)')
-    ap.add_argument('--raw', help='read this download (and its .release file) instead of fetching')
+    ap.add_argument('--raw', help='read this "Modified residue" download (and its .release file) instead of fetching')
+    ap.add_argument('--raw-crosslnk', help='read this "Cross-link" download (and its .release file) instead of fetching '
+                                           '(default with --raw: the --raw name with mod_res replaced by crosslnk)')
     ap.add_argument('--raw-dir', default='PTM_data/marks', help='where the download is kept (not in Git)')
     ap.add_argument('--out-dir', default='inputs/marks')
     ap.add_argument('--manifest', default='inputs/MANIFEST.tsv')
@@ -168,22 +200,31 @@ def main() -> None:
     args = ap.parse_args()
 
     out_dir = Path(args.out_dir)
+    downloads = {}    # stem -> (path, release, url)
     if args.raw:
-        raw_path = Path(args.raw)
-        release = raw_path.with_suffix('.release').read_text().strip()
+        raw_cross = Path(args.raw_crosslnk) if args.raw_crosslnk else Path(args.raw.replace('mod_res', 'crosslnk'))
+        for stem, path, url in (('mod_res', Path(args.raw), URL), ('crosslnk', raw_cross, URL_CROSSLNK)):
+            if not path.exists():
+                raise SystemExit(f'{path} not found (--raw gives the "Modified residue" download, --raw-crosslnk the "Cross-link" one)')
+            downloads[stem] = (path, path.with_suffix('.release').read_text().strip(), url)
     else:
-        with urlopen(Request(URL, headers={'User-Agent': 'PTM-pipeline-stager/1.0'}), timeout=1800) as response:
-            release = response.headers.get('X-UniProt-Release', '')
-            if not release:
-                raise SystemExit('the UniProt API gave no X-UniProt-Release header')
-            data = response.read()
-        raw_path = Path(args.raw_dir) / f'uniprot_human_reviewed_mod_res_{release}.json'
-        raw_path.parent.mkdir(parents=True, exist_ok=True)
-        raw_path.write_bytes(data)
-        raw_path.with_suffix('.release').write_text(release + '\n')
-    raw_md5 = md5_file(raw_path)
-    raw_sha = hashlib.sha256(raw_path.read_bytes()).hexdigest()
-    entries = json.loads(raw_path.read_text(encoding='utf-8'))['results']
+        for stem, url in (('mod_res', URL), ('crosslnk', URL_CROSSLNK)):
+            with urlopen(Request(url, headers={'User-Agent': 'PTM-pipeline-stager/1.0'}), timeout=1800) as response:
+                release = response.headers.get('X-UniProt-Release', '')
+                if not release:
+                    raise SystemExit('the UniProt API gave no X-UniProt-Release header')
+                data = response.read()
+            path = Path(args.raw_dir) / f'uniprot_human_reviewed_{stem}_{release}.json'
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+            path.with_suffix('.release').write_text(release + '\n')
+            downloads[stem] = (path, release, url)
+    release = downloads['mod_res'][1]
+    if downloads['crosslnk'][1] != release:
+        raise SystemExit(f'the two downloads are of different UniProt releases: {release} and {downloads["crosslnk"][1]}')
+    entries = []
+    for path, _, _ in downloads.values():
+        entries += json.loads(path.read_text(encoding='utf-8'))['results']
     reference = parse_fasta(args.fasta)
 
     tables, dropped = stage(entries, reference, release)
@@ -193,14 +234,19 @@ def main() -> None:
         name = OUT_NAME[mark].format(rel=release)
         table.to_csv(out_dir / name, sep='\t', index=False, lineterminator='\n')
         files[mark] = name
+    raws = {stem: {'path': path, 'md5': md5_file(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'url': url}
+            for stem, (path, _, url) in downloads.items()}
+    of_mark = {m: 'crosslnk' if m in CROSSLINK_MARKS else 'mod_res' for m in OUT_NAME}    # the download a mark's rows come from
     summary = {
-        'source': 'UniProtKB/Swiss-Prot reviewed human, "Modified residue" features (UniProt REST API)',
-        'url': URL,
+        'source': 'UniProtKB/Swiss-Prot reviewed human, "Modified residue" and "Cross-link" features (UniProt REST API)',
+        'url': URL, 'url_crosslnk': URL_CROSSLNK,
         'uniprot_release_served': release,
         'reference_fasta': args.fasta,
         'reference_fasta_md5': md5_file(args.fasta),
-        'raw_file': raw_path.name,
-        'raw_md5': raw_md5,
+        'raw_file': raws['mod_res']['path'].name,
+        'raw_md5': raws['mod_res']['md5'],
+        'raw_crosslnk_file': raws['crosslnk']['path'].name,
+        'raw_crosslnk_md5': raws['crosslnk']['md5'],
         'entries_in_download': len(entries),
         'dropped': dropped,
         'rows': {m: len(t) for m, t in tables.items()},
@@ -219,11 +265,14 @@ def main() -> None:
     if not raw_list.exists():
         raw_list.write_text(head + '\n', encoding='utf-8')
     old = pd.read_csv(raw_list, sep='\t', dtype=str, keep_default_na=False)
-    old = old[(old['file'] == raw_path.name) & (old['md5'] == raw_md5)]
-    when = old['downloaded'].iloc[0] if len(old) else (args.downloaded or date.today().isoformat())
-    upsert_tsv_rows(raw_list, [{'file': raw_path.name, 'url': URL, 'bytes': raw_path.stat().st_size, 'md5': raw_md5,
-                                'sha256': raw_sha, 'downloaded': when, 'version': f'UniProt release {release} (X-UniProt-Release header)',
-                                'kept': 'release_asset (Zenodo archive of the release; 32 MB, not in Git)'}])
+    raw_rows, when = [], {}
+    for stem, r in raws.items():
+        same = old[(old['file'] == r['path'].name) & (old['md5'] == r['md5'])]
+        when[stem] = same['downloaded'].iloc[0] if len(same) else (args.downloaded or date.today().isoformat())
+        raw_rows.append({'file': r['path'].name, 'url': r['url'], 'bytes': r['path'].stat().st_size, 'md5': r['md5'],
+                         'sha256': r['sha256'], 'downloaded': when[stem], 'version': f'UniProt release {release} (X-UniProt-Release header)',
+                         'kept': f'release_asset (Zenodo archive of the release; {round(r["path"].stat().st_size / 1e6)} MB, not in Git)'})
+    upsert_tsv_rows(raw_list, raw_rows)
 
     command = (f'python scripts/54_stage_uniprot_ptm_sites.py --fasta {args.fasta} '
                f'--raw-dir PTM_data/marks --out-dir inputs/marks')
@@ -232,8 +281,10 @@ def main() -> None:
         path = out_dir / name
         rows.append({'file': f'marks/{name}', 'bytes': path.stat().st_size, 'md5': md5_file(path), 'rows': len(tables[mark]),
                      'redistribution': 'git', 'content': CONTENT[mark] + f': {len(tables[mark]):,} rows',
-                     'source': URL, 'version_or_date': f'UniProt release {release} (X-UniProt-Release header); downloaded {when}',
-                     'citation': CITATION, 'licence': LICENSE, 'derived_from': f'{raw_path.name} (MD5 {raw_md5})',
+                     'source': raws[of_mark[mark]]['url'],
+                     'version_or_date': f'UniProt release {release} (X-UniProt-Release header); downloaded {when[of_mark[mark]]}',
+                     'citation': CITATION, 'licence': LICENSE,
+                     'derived_from': f'{raws[of_mark[mark]]["path"].name} (MD5 {raws[of_mark[mark]]["md5"]})',
                      'how_made_or_checked': command + '; residue checked on the reference sequence, entries whose sequence differs dropped; counts in marks/uniprot_ptm_sites_summary.json'})
     path = out_dir / summary_name
     rows.append({'file': f'marks/{summary_name}', 'bytes': path.stat().st_size, 'md5': md5_file(path),
