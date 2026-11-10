@@ -173,7 +173,7 @@ def write_marks(args, good: pd.DataFrame, summary: dict, rejected: pd.DataFrame,
     cfg = MODIFICATIONS[mod]
     marks_name, marks_summary, mark, state = cfg['table'], cfg['summary'], cfg['mark'], cfg['state']
     url = URL_BASE + f'{mod}.zip'
-    licence = LICENSE_UBIQUITINATION if mod == 'Ubiquitination' else LICENSE
+    terms = LICENSE_UBIQUITINATION if mod == 'Ubiquitination' else LICENSE
     marks = Path(args.marks_dir)
     stamp = re.search(r'\((\d{4}-\d{2}-\d{2})T', member)
     if not stamp:
@@ -187,7 +187,7 @@ def write_marks(args, good: pd.DataFrame, summary: dict, rejected: pd.DataFrame,
     raw_md5 = md5_file(raw)
     pm = table['pmids'].map(bool)
     out = {
-        'source': f'CPLM 4.0 {mod} download (cplm.biocuckoo.cn)', 'url': url, 'cplm_release': release, 'license': licence,
+        'source': f'CPLM 4.0 {mod} download (cplm.biocuckoo.cn)', 'url': url, 'cplm_release': release, 'license': terms,
         'reference_fasta': args.fasta, 'reference_fasta_md5': md5_file(args.fasta),
         'raw_files': {f'{mod}.zip': raw.name}, 'raw_md5': {f'{mod}.zip': raw_md5},
         'raw_sha256': {f'{mod}.zip': summary['input_sha256']}, 'raw_member': member,
@@ -218,7 +218,7 @@ def write_marks(args, good: pd.DataFrame, summary: dict, rejected: pd.DataFrame,
         {'file': f'marks/{marks_name}', 'bytes': (marks / marks_name).stat().st_size, 'md5': md5_file(marks / marks_name), 'rows': len(table),
          'redistribution': 'git',
          'content': f'CPLM 4.0 human {cfg["what"]}, one row per residue, with CPLM\'s evidence label (Exp., Exp./Dat., Dat.) and references: {len(table):,} rows',
-         'source': url, 'version_or_date': f'{release}; downloaded {when}', 'citation': CITATION, 'licence': licence,
+         'source': url, 'version_or_date': f'{release}; downloaded {when}', 'citation': CITATION, 'licence': terms,
          'derived_from': f'{raw.name} (MD5 {raw_md5})',
          'how_made_or_checked': command + '; sequence and residue checked on the reference sequence; counts in marks/' + marks_summary},
         {'file': f'marks/{marks_summary}', 'bytes': (marks / marks_summary).stat().st_size, 'md5': md5_file(marks / marks_summary),
