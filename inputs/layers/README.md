@@ -71,12 +71,14 @@ the best reliability and counts a location as main when any of the genes has it 
 - **`tcga_mc3_projects.tsv`** (33 rows): each TCGA project, with its tumour samples in the MAF (10,294 in all), those
   with a kept call, and the arginine changes extracted.
 
-## CPLM tables are not redistributed
+## CPLM tables
 
 CPLM 4.0 states "Copyright © 2010-2026 The CUCKOO Workgroup. All Rights Reserved" and gives no licence
-(cplm.biocuckoo.cn, checked 20 October 2026). For that reason:
+(cplm.biocuckoo.cn, checked 20 October 2026). For that reason, and because the validated sites reach the public only through the context-mark release
+(`../marks/cplm_4_0_methyllysine_sites.tsv`, by the owner's decision of 2026-11-09, cited, pending the authors'
+permission; see `../marks/README.md`):
 
-- the two CPLM tables stay out of Git (`.gitignore`), and are marked `checksum_only` in `../MANIFEST.tsv`, which
+- the two CPLM tables of this folder stay out of Git (`.gitignore`), and are marked `checksum_only` in `../MANIFEST.tsv`, which
   gives the MD5 of both;
 - the CPLM summary is in Git;
 - anyone who downloads `Methylation.zip` (MD5 in `raw_files.tsv`) can rebuild them with scripts/39.

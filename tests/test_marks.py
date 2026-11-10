@@ -25,6 +25,7 @@ def load(name):
 stage = load('54_stage_uniprot_ptm_sites.py')
 iptm = load('55_stage_iptmnet_ptm_sites.py')
 build = load('56_build_context_marks.py')
+cplm = load('39_stage_cplm4_lys_methylation.py')
 
 def context_files(folder):
     return [folder / f'human_{m}_v1.5.0.tsv' for m in ('methyllysine_sites', 'phosphorylation_sites', 'methylarginine_crosscheck')]
@@ -120,8 +121,9 @@ def test_staged_tables_and_release_agree_with_manifest():
     manifest = list(csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t'))
     rows = {r['file']: r for r in manifest if r['file'].startswith('marks/')}
     tables = [f for f in rows if f.endswith('_sites.tsv') or f.endswith('_crosscheck.tsv')]
-    assert len(tables) == 6
-    for name in tables + ['marks/raw_files.tsv', 'marks/uniprot_ptm_sites_summary.json', 'marks/iptmnet_ptm_sites_summary.json']:
+    assert len(tables) == 7
+    for name in tables + ['marks/raw_files.tsv', 'marks/uniprot_ptm_sites_summary.json', 'marks/iptmnet_ptm_sites_summary.json',
+                          'marks/cplm_ptm_sites_summary.json']:
         assert rows[name]['redistribution'] == 'git'
         assert build.md5_file(ROOT / 'inputs' / name) == rows[name]['md5']
     for name in tables:
@@ -132,6 +134,9 @@ def test_staged_tables_and_release_agree_with_manifest():
             assert next(csv.reader(fh, delimiter='\t'))[:10] == stage.COLUMNS
         if '/uniprot_' in name:
             assert row['licence'] == 'CC BY 4.0' and row['source'].startswith('https://rest.uniprot.org')
+        elif '/cplm_' in name:
+            assert row['licence'].startswith('none stated') and 'pending the authors' in row['licence']
+            assert row['source'].startswith('https://cplm.biocuckoo.cn/') and 'Zhang W' in row['citation'] and 'gkab849' in row['citation']
         else:
             assert row['licence'].startswith('CC BY-NC-SA 4.0') and row['source'].startswith('https://research.bioinformatics.udel.edu/iptmnet_data/')
             assert 'iPTMnet' in row['citation']
@@ -191,7 +196,7 @@ def test_merge_of_sources_is_deterministic_and_keeps_attribution():
     assert a.iloc[1]['sources'] == 'iPTMnet'
     assert list(a.columns) == build.OUT_COLUMNS
     ov = build.overlap(a)
-    assert ov['sites'] == {'both': 1, 'iPTMnet only': 1}
+    assert ov['sites'] == {'UniProt + iPTMnet': 1, 'iPTMnet only': 1}
 
 
 def test_release_v1_5_0_is_consistent():
@@ -221,6 +226,7 @@ def test_release_v1_5_0_is_consistent():
         with open(path, encoding='utf-8') as fh:
             header = next(csv.reader(fh, delimiter='\t'))
         assert header[:11] == build.OUT_COLUMNS
+        assert header[11:12] == ([build.CPLM_COLUMN] if 'methyllysine' in path.name else ([] if 'phosph' in path.name else ['in_methylarginine_release']))
     text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
     assert 'unchanged from v1.4.3' in text and 'CC BY-NC-SA 4.0' in text and 'CC BY 4.0' in text
     assert release['license'].startswith('CC BY-NC-SA 4.0')
@@ -230,13 +236,15 @@ def test_release_v1_5_0_is_consistent():
 
 def test_release_license_covers_every_source():
     # the release is CC BY-NC-SA 4.0: every source must be CC BY, CC BY-NC-SA or as open
-    assert {s['license'] for s in build.SOURCES.values()} <= {'CC BY 4.0', 'CC BY-NC-SA 4.0'}
-    assert set(build.SOURCES) == {'UniProt', 'iPTMnet'}
+    assert {s['license'] for s in build.SOURCES.values()} <= {'CC BY 4.0', 'CC BY-NC-SA 4.0', 'none stated; included pending the authors\' permission'}
+    assert set(build.SOURCES) == {'UniProt', 'iPTMnet', 'CPLM'}
+    # CPLM is the one source without a license: the owner's decision of 2026-11-09, said wherever it is described
+    assert 'pending the authors' in build.SOURCES['CPLM']['citation'] and 'pending the authors' in build.SOURCES['CPLM']['license']
 
 
 def test_no_closed_source_is_referenced():
-    banned = re.compile(r'cplm|phosphosite|dbptm|qptm|\bpsp\b', re.I)
-    files = [ROOT / 'scripts' / n for n in ('54_stage_uniprot_ptm_sites.py', '55_stage_iptmnet_ptm_sites.py', '56_build_context_marks.py')]
+    banned = re.compile(r'phosphosite|dbptm|qptm|\bpsp\b', re.I)
+    files = [ROOT / 'scripts' / n for n in ('39_stage_cplm4_lys_methylation.py', '54_stage_uniprot_ptm_sites.py', '55_stage_iptmnet_ptm_sites.py', '56_build_context_marks.py')]
     files += [p for p in (ROOT / 'inputs' / 'marks').iterdir() if p.suffix in ('.tsv', '.json') and p.name != 'raw_files.tsv']
     files += list(context_files(ROOT / 'releases' / 'v1.5.0'))
     for path in files:
@@ -250,6 +258,7 @@ def test_no_closed_source_is_referenced():
     for path in context_files(ROOT / 'releases' / 'v1.5.0'):
         for r in csv.DictReader(open(path, encoding='utf-8'), delimiter='\t'):
             assert set(r['sources'].split('; ')) <= set(build.SOURCES)
+            assert ('CPLM' in r['sources']) == bool(r.get('cplm_evidence', ''))
             assert not (set(r['iptmnet_sources'].split(';')) - set(iptm_upstream()))
 
 
@@ -265,7 +274,7 @@ def test_crosscheck_column(tmp_path):
     assert list(build.crosscheck(frame, tmp_path)['in_methylarginine_release']) == ['site', 'lower_confidence', 'no']
 
 
-@pytest.mark.parametrize('name', ['54_stage_uniprot_ptm_sites.py', '55_stage_iptmnet_ptm_sites.py', '56_build_context_marks.py'])
+@pytest.mark.parametrize('name', ['39_stage_cplm4_lys_methylation.py', '54_stage_uniprot_ptm_sites.py', '55_stage_iptmnet_ptm_sites.py', '56_build_context_marks.py'])
 def test_scripts_use_american_spelling_and_no_banned_words(name):
     text = (ROOT / 'scripts' / name).read_text(encoding='utf-8')
     text = text.replace("'licence'", '')     # the MANIFEST column keeps its name
@@ -280,3 +289,59 @@ def test_site_changes_generator_reproduces_the_pipelines_v1_4_3_table():
                         usecols=['site_id', 'gene', 'uniprot_accession', 'position'])
     prior = pd.read_csv(prev / 'supporting' / 'site_changes_v1.4.2_to_v1.4.3.tsv', sep='\t', dtype=str, keep_default_na=False, usecols=['site_id', 'gene'])
     assert build.site_changes(sites, prior).to_csv(sep='\t', index=False, lineterminator='\n') == old
+
+
+def test_cplm_staging_pubmed_ids_and_evidence_classes():
+    assert cplm.pubmed_ids('31072472;57987737;486334;2363903;31072472;abc;34300001;34300000') == ['2363903', '31072472', '34300000']
+    import pandas as pd
+    good = pd.DataFrame({'canonical_UniProtAC': ['P00002', 'P00001', 'P00001'], 'position': [3, 2, 4], 'evidence': ['Dat.', 'Exp.', 'Exp./Dat.'],
+                         'references': ['57987737', '31072472;1', '']})
+    table = cplm.stage_marks(good, 'CPLM 4.0 (2021-06-13)')
+    assert list(table.columns) == cplm.MARKS_COLUMNS and list(table.columns[:10]) == stage.COLUMNS[:10]
+    assert list(table['canonical_UniProtAC']) == ['P00001', 'P00001', 'P00002'] and set(table['state']) == {'me'}
+    assert list(table['evidence_class']) == ['experimental', 'experimental', 'unspecified']
+    assert list(table['pmids']) == ['31072472', '', ''] and list(table['cplm_evidence']) == ['Exp.', 'Exp./Dat.', 'Dat.']
+    with pytest.raises(SystemExit):
+        cplm.stage_marks(good.assign(evidence=['Exp.', 'Exp.', 'Other']), 'x')
+
+
+def test_cplm_rows_in_the_release_and_the_merge():
+    import pandas as pd
+    folder = ROOT / 'releases' / 'v1.5.0'
+    table = pd.read_csv(folder / 'human_methyllysine_sites_v1.5.0.tsv', sep='\t', dtype=str, keep_default_na=False)
+    cp = table[table['sources'].str.contains('CPLM')]
+    staged = pd.read_csv(ROOT / 'inputs' / 'marks' / 'cplm_4_0_methyllysine_sites.tsv', sep='\t', dtype=str, keep_default_na=False)
+    assert len(staged) == len(cp) == 5356 and cp['canonical_UniProtAC'].nunique() == 2939
+    assert not table.duplicated(['canonical_UniProtAC', 'position', 'state']).any()
+    assert set(cp['cplm_evidence']) == {'Exp.', 'Exp./Dat.', 'Dat.'} and set(table.loc[~table['sources'].str.contains('CPLM'), 'cplm_evidence']) == {''}
+    assert set(cp['state']) <= {'me'} and 'CPLM 4.0 (2021-06-13)' in set(cp['source_releases'].str.split('; ').str[-1])
+    reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
+    for r in cp.itertuples():
+        assert r.residue == 'K' and reference[r.canonical_UniProtAC][int(r.position) - 1] == 'K'
+    # every CPLM Exp. or Exp./Dat. row is experimental, whatever else reports it
+    assert set(cp.loc[cp['cplm_evidence'] != 'Dat.', 'evidence_class']) == {'experimental'}
+    # the rows of the other sources are as they were: UniProt and iPTMnet rows without CPLM keep their class
+    others = table[~table['sources'].str.contains('CPLM')]
+    assert len(others) + len(cp[cp['sources'] != 'CPLM']) >= 756
+    text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
+    assert 'CPLM states no license' in text and "pending the authors' permission" in text and 'Zhang et al., Nucleic Acids Res 50:D451' in text
+
+
+def test_merge_adds_cplm_to_sources_without_changing_other_rows():
+    import pandas as pd
+    base = dict.fromkeys(stage.COLUMNS, '')
+    u = pd.DataFrame([{**base, 'canonical_UniProtAC': 'P00001', 'position': '2', 'residue': 'K', 'mark': 'methyllysine', 'state': 'me',
+                       'evidence_class': 'by-similarity', 'evidence': 'ECO:0000250', 'source': 'UniProt', 'source_release': '2026_04'}])
+    c = pd.DataFrame([{**base, 'canonical_UniProtAC': 'P00001', 'position': '2', 'residue': 'K', 'mark': 'methyllysine', 'state': 'me',
+                       'evidence_class': 'experimental', 'pmids': '9;3', 'source': 'CPLM', 'source_release': 'CPLM 4.0 (2021-06-13)',
+                       'cplm_evidence': 'Exp.'},
+                      {**base, 'canonical_UniProtAC': 'P00002', 'position': '3', 'residue': 'K', 'mark': 'methyllysine', 'state': 'me',
+                       'evidence_class': 'unspecified', 'source': 'CPLM', 'source_release': 'CPLM 4.0 (2021-06-13)', 'cplm_evidence': 'Dat.'}])
+    out = build.merge([u.assign(upstream_sources='', cplm_evidence=''), c.assign(upstream_sources='')])
+    assert list(out.columns) == build.OUT_COLUMNS + ['cplm_evidence']
+    first = out.iloc[0]
+    assert first['sources'] == 'UniProt; CPLM' and first['evidence_class'] == 'experimental' and first['evidence'] == 'ECO:0000250'
+    assert first['pmids'] == '3;9' and first['source_releases'] == '2026_04; CPLM 4.0 (2021-06-13)' and first['cplm_evidence'] == 'Exp.'
+    assert out.iloc[1]['sources'] == 'CPLM' and out.iloc[1]['evidence_class'] == 'unspecified'
+    assert build.overlap(out)['sites'] == {'UniProt + CPLM': 1, 'CPLM only': 1}
+    assert 'cplm_evidence' not in build.merge([u.assign(upstream_sources='', cplm_evidence='')]).columns

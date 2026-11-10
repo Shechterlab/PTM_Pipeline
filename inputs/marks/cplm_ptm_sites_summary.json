@@ -1,0 +1,60 @@
+{
+  "checks": {
+    "accession_not_in_canonical_fasta": 494,
+    "canonical_not_K": 60,
+    "identical_sequence": 5292,
+    "window_match": 64,
+    "window_mismatch": 5
+  },
+  "cplm_release": "CPLM 4.0 (2021-06-13)",
+  "dropped": {
+    "accession_not_in_canonical_fasta": 494,
+    "canonical_not_K": 60,
+    "window_mismatch": 5
+  },
+  "files": {
+    "methyllysine": "cplm_4_0_methyllysine_sites.tsv"
+  },
+  "files_md5": {
+    "methyllysine": "5ddf927c52e2e91f55b4bb809b87c8d3"
+  },
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\"); included by the owner's decision of 2026-11-09, cited, pending the authors' permission",
+  "proteins": 2939,
+  "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
+  "raw_files": {
+    "Methylation.zip": "Methylation.zip"
+  },
+  "raw_md5": {
+    "Methylation.zip": "fb1acb78e6f256dff31ebf3928181fa8"
+  },
+  "raw_member": "Methylation.txt (2021-06-13T21:24:18)",
+  "raw_sha256": {
+    "Methylation.zip": "80160a4a8a9aff1a98cbb2de2b1d22be063e9bdb2da6aefe09716c3cf724b47c"
+  },
+  "records_in_download": 10914,
+  "records_in_scope": 5915,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "methyllysine": 5356
+  },
+  "rows_by_cplm_evidence": {
+    "Dat.": 2858,
+    "Exp.": 618,
+    "Exp./Dat.": 1880
+  },
+  "rows_by_evidence_class": {
+    "methyllysine": {
+      "experimental": 2498,
+      "unspecified": 2858
+    }
+  },
+  "rows_by_state": {
+    "methyllysine": {
+      "me": 5356
+    }
+  },
+  "rows_with_pubmed_ids": 2919,
+  "source": "CPLM 4.0 Methylation download (cplm.biocuckoo.cn)",
+  "url": "https://cplm.biocuckoo.cn/Download/Methylation.zip"
+}
