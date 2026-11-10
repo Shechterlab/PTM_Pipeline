@@ -1,5 +1,5 @@
-1e2e94037492a822a917b34f3dae48dd  CHANGES.md
-1ecbc758bb403c327abd1cb247b71c5b  README.md
+5248110c649c0da380f7a9cf1ad59a7f  CHANGES.md
+2e27756558a7a573b028ad886d730d15  README.md
 880b429971eda2531d3477e71b350194  STUDIES.md
 c529f6de84545efb3c563a10dcbc29bc  analyses/README.md
 61c1f5efc826b84542ae11b9cd0f8e95  analyses/clustering/arg_methyl_multiscale_density_significant_regions.tsv
@@ -59,15 +59,15 @@ ed0652550dcabf98079e38b851bb1c6b  analyses_with_lower_confidence/other_ptms/ptm_
 f2283b91ae43de2999770de4baba8cf7  analyses_with_lower_confidence/other_ptms/ptm_idr_binary_comparison.tsv
 d7101c4b50ca7ee889196ff39af19c8e  analyses_with_lower_confidence/panther/panther_class_enrichment.tsv
 943dff2c27d23c73c39201ba1053a801  analyses_with_lower_confidence/statistics_v1.5.0.tsv
-0541d6ccaaeface16f840ca0ecf60c19  data_dictionary.tsv
+d25935616588068c041ed7313988d226  data_dictionary.tsv
 fb9f5aeaddc1520e1c260c127b05b5ab  human_methylarginine_crosscheck_v1.5.0.tsv
 165074c4b977aa6ea8e0937ff6e92772  human_methylarginine_lower_confidence_sites_v1.5.0.tsv
 05bb44ce35959d5749b474a0c5c690eb  human_methylarginine_proteins_v1.5.0.tsv
 50dd293d1a3dd94ce7a0fb3168eae3bd  human_methylarginine_sites_v1.5.0.tsv
 0bfbff7a50ea663e4fb3372fc6d8e582  human_methylarginine_sites_v1.5.0.xlsx
-2403b652d71ad1d5996468065810383a  human_methyllysine_sites_v1.5.0.tsv
+2fbdbee2ed9ef212a67d8c10d408e257  human_methyllysine_sites_v1.5.0.tsv
 937931b37ff8a0e3fb9bc23f9c5834e5  human_phosphorylation_sites_v1.5.0.tsv
-6114c6b57052b61474f1eb37b0a89580  release.json
+2f5eb5cde897e10d3fa5819c16907b7d  release.json
 bdeb58f4dbbc713a3059930c363b074a  statistics_v1.5.0.tsv
 c62a97c257bd354b8f4a336d9d9e65e9  statistics_with_lower_confidence_v1.5.0.tsv
 2132e4b6c309d92628360cddbccad3a9  studies_v1.5.0.tsv

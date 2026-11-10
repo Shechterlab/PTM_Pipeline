@@ -1,16 +1,16 @@
 # Human methylarginine sites and context marks, v1.5.0
 
-v1.5.0 keeps the methylarginine data of v1.4.3 unchanged (`human_methylarginine_*`, `statistics_*`, `studies_*`, `supporting/` and `analyses*` are the v1.4.3 files, renamed `_v1.5.0` and otherwise unchanged apart from the strings that name the version inside a few of them; see CHANGES.md) and adds tables of context marks: the lysine methylation and phosphorylation sites of the human reviewed proteome, and the arginine methylation records of UniProt and iPTMnet as a cross-check. Sites for each mark read their own table and show the others as context. Positions of the new tables are on UniProt release 2026_03, the reference of the methylarginine data.
+v1.5.0 keeps the methylarginine data of v1.4.3 unchanged (`human_methylarginine_*`, `statistics_*`, `studies_*`, `supporting/` and `analyses*` are the v1.4.3 files, renamed `_v1.5.0` and otherwise unchanged apart from the strings that name the version inside a few of them; see CHANGES.md) and adds tables of context marks: the lysine methylation sites (UniProt, iPTMnet and CPLM 4.0) and phosphorylation sites (UniProt and iPTMnet) of the human reviewed proteome, and the arginine methylation records of UniProt and iPTMnet as a cross-check. Sites for each mark read their own table and show the others as context. Positions of the new tables are on UniProt release 2026_03, the reference of the methylarginine data.
 
 ## Context marks
 
 | File | One row per |
 |---|---|
-| `human_methyllysine_sites_v1.5.0.tsv` | methyllysine residue and state (756 rows on 412 residues of 190 proteins) |
+| `human_methyllysine_sites_v1.5.0.tsv` | methyllysine residue and state (5,899 rows on 5,481 residues of 2,967 proteins) |
 | `human_phosphorylation_sites_v1.5.0.tsv` | phosphorylation residue and state (72,134 rows on 72,134 residues of 10,525 proteins) |
 | `human_methylarginine_crosscheck_v1.5.0.tsv` | arginine methylation record of UniProt or iPTMnet (2,471 rows), with whether the methylarginine data has the arginine. A cross-check, not a second methylarginine table |
 
-Columns are in `data_dictionary.tsv`. Each row says which sources report it (`sources`), the best `evidence_class`, UniProt's ECO codes, iPTMnet's upstream databases (`iptmnet_sources`) and the PubMed IDs. A site can hide `by-similarity` (UniProt ECO:0000250 and other non-experimental records) and `unspecified` rows by filtering on `evidence_class`.
+Columns are in `data_dictionary.tsv`. Each row says which sources report it (`sources`), the best `evidence_class`, UniProt's ECO codes, iPTMnet's upstream databases (`iptmnet_sources`), the PubMed IDs and, in the methyllysine table, CPLM's own evidence label (`cplm_evidence`: Exp., Exp./Dat., Dat.). A site can hide `by-similarity` (UniProt ECO:0000250 and other non-experimental records) and `unspecified` rows by filtering on `evidence_class`.
 
 ### Sources and licenses
 
@@ -18,33 +18,36 @@ Columns are in `data_dictionary.tsv`. Each row says which sources report it (`so
 |---|---|---|---|
 | UniProt | 2026_04 | CC BY 4.0 | https://www.uniprot.org/help/license |
 | iPTMnet | 6.2 | CC BY-NC-SA 4.0 | https://research.bioinformatics.udel.edu/iptmnet/license |
+| CPLM | CPLM 4.0 (2021-06-13) | none stated; included pending the authors' permission | https://cplm.biocuckoo.cn/ |
 
-The release is CC BY-NC-SA 4.0 ([LICENSE.md](../../LICENSE.md)). UniProt (CC BY 4.0) is compatible with it. iPTMnet's license page says CC BY-NC-SA 4.0; its download readme also mentions CC BY 4.0 in its last line. The release follows the stricter terms: share-alike and non-commercial. iPTMnet asks that the upstream databases of its `source` column are cited when its data are redistributed: each row keeps them (`iptmnet_sources`), and they are HPRD, UniProt, RLIMS-P text mining, SIGNOR, neXtProt, IEDB, Protein Ontology and IntAct (terms are theirs). Not used: CPLM (all rights reserved), PhosphoSitePlus, dbPTM and qPTM. The supplements of Berryhill et al. 2023 are not used: they state no license of their own.
+The release is CC BY-NC-SA 4.0 ([LICENSE.md](../../LICENSE.md)). UniProt (CC BY 4.0) is compatible with it. iPTMnet's license page says CC BY-NC-SA 4.0; its download readme also mentions CC BY 4.0 in its last line. The release follows the stricter terms: share-alike and non-commercial. iPTMnet asks that the upstream databases of its `source` column are cited when its data are redistributed: each row keeps them (`iptmnet_sources`), and they are HPRD, UniProt, RLIMS-P text mining, SIGNOR, neXtProt, IEDB, Protein Ontology and IntAct (terms are theirs). Not used: PhosphoSitePlus, dbPTM and qPTM. The supplements of Berryhill et al. 2023 are not used: they state no license of their own.
+
+**CPLM 4.0 states no license** (cplm.biocuckoo.cn carries a copyright notice, "All Rights Reserved"). Its human lysine methylation sites are included by the owner's decision of 2026-11-09, cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, doi:10.1093/nar/gkab849), **pending the authors' permission**; the terms the authors give, when they answer, are followed. The CC BY-NC-SA 4.0 of this release does not grant rights in CPLM's records beyond what the authors allow. CPLM contributes only to the methyllysine table, as the rows whose `sources` name CPLM (state `me`, with `cplm_evidence`); a reader who needs the table without CPLM removes that source from `sources`, and the rows that only CPLM reports.
 
 ### Counts
 
-Rows by state, evidence class and source (rows reported by UniProt only, iPTMnet only, or both; iPTMnet 6.2 gives no methylation degree, so its rows are state `me` and do not meet UniProt's `me1`, `me2` and `me3` rows).
+Rows by state, evidence class and the sources that report them (iPTMnet 6.2 and CPLM give no methylation degree, so their rows are state `me` and do not meet UniProt's `me1`, `me2` and `me3` rows).
 
-**methyllysine** (756 rows). Residues by source, any state: UniProt only 178, both 219, iPTMnet only 15.
+**methyllysine** (5,899 rows). Residues by source, any state: CPLM only 5,069, UniProt + CPLM 75, UniProt + iPTMnet 8, UniProt + iPTMnet + CPLM 211, UniProt only 103, iPTMnet + CPLM 1, iPTMnet only 14.
 
-| State | experimental | by-similarity | unspecified | UniProt only | iPTMnet only | both | Rows |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| me | 27 | 18 | 206 | 17 | 223 | 11 | 251 |
-| me1 | 181 | 75 | 0 | 256 | 0 | 0 | 256 |
-| me2 | 88 | 39 | 0 | 127 | 0 | 0 | 127 |
-| me3 | 64 | 58 | 0 | 122 | 0 | 0 | 122 |
-| all | 360 | 190 | 206 | 522 | 223 | 11 | 756 |
+| State | experimental | by-similarity | unspecified | UniProt only | iPTMnet only | CPLM only | UniProt + iPTMnet | UniProt + CPLM | iPTMnet + CPLM | UniProt + iPTMnet + CPLM | Rows |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| me | 2,516 | 18 | 2,860 | 16 | 19 | 5,143 | 3 | 1 | 204 | 8 | 5,394 |
+| me1 | 181 | 75 | 0 | 256 | 0 | 0 | 0 | 0 | 0 | 0 | 256 |
+| me2 | 88 | 39 | 0 | 127 | 0 | 0 | 0 | 0 | 0 | 0 | 127 |
+| me3 | 64 | 58 | 0 | 122 | 0 | 0 | 0 | 0 | 0 | 0 | 122 |
+| all | 2,849 | 190 | 2,860 | 521 | 19 | 5,143 | 3 | 1 | 204 | 8 | 5,899 |
 
-**phosphorylation** (72,134 rows). Residues by source, any state: UniProt only 8,017, both 32,911, iPTMnet only 31,206.
+**phosphorylation** (72,134 rows). Residues by source, any state: UniProt + iPTMnet 32,911, UniProt only 8,017, iPTMnet only 31,206.
 
-| State | experimental | text-mined | by-similarity | unspecified | UniProt only | iPTMnet only | both | Rows |
+| State | experimental | text-mined | by-similarity | unspecified | UniProt only | iPTMnet only | UniProt + iPTMnet | Rows |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | phospho | 61,719 | 2,526 | 7,802 | 87 | 8,017 | 31,206 | 32,911 | 72,134 |
 | all | 61,719 | 2,526 | 7,802 | 87 | 8,017 | 31,206 | 32,911 | 72,134 |
 
-**methylarginine cross-check** (2,471 rows). Residues by source, any state: UniProt only 740, both 742, iPTMnet only 65.
+**methylarginine cross-check** (2,471 rows). Residues by source, any state: UniProt + iPTMnet 742, UniProt only 740, iPTMnet only 65.
 
-| State | experimental | by-similarity | unspecified | UniProt only | iPTMnet only | both | Rows |
+| State | experimental | by-similarity | unspecified | UniProt only | iPTMnet only | UniProt + iPTMnet | Rows |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | me | 87 | 1 | 719 | 0 | 802 | 5 | 807 |
 | me1 | 502 | 483 | 0 | 985 | 0 | 0 | 985 |
@@ -55,15 +58,17 @@ Rows by state, evidence class and source (rows reported by UniProt only, iPTMnet
 
 Arginines of the cross-check in the methylarginine data: lower_confidence 63, no 308, site 1,176.
 
-iPTMnet carries a copy of UniProt: 217 methyllysine and 11,692 phosphorylation rows have `unip` as their only upstream database, so "both" counts them as agreement of two sources when they are one.
+iPTMnet carries a copy of UniProt: 217 methyllysine and 11,692 phosphorylation rows have `unip` as their only upstream database, so "UniProt + iPTMnet" counts them as agreement of two sources when they are one.
+
+CPLM 4.0 evidence of the 5,356 methyllysine rows it reports (`cplm_evidence`): Dat. 2,858, Exp. 618, Exp./Dat. 1,880. CPLM compiles records from other databases too (`Dat.`), so a residue that CPLM and UniProt or iPTMnet both report may rest on the same original record; the tables only record that the residue is shared.
 
 ### Dropped in staging
 
-Each count is of source records. UniProt: 641 on an isoform, 2 residue mismatch; the entries' sequences were compared with the reference (UniProt 2026_04 against 2026_03). iPTMnet: 273,145 not human, 281 not in reference, 18,636 on an isoform, 37,929 other ptm type, 6,667 other residue, 470 residue mismatch.
+Each count is of source records. UniProt: 641 on an isoform, 2 residue mismatch; the entries' sequences were compared with the reference (UniProt 2026_04 against 2026_03). iPTMnet: 273,145 not human, 281 not in reference, 18,636 on an isoform, 37,929 other ptm type, 6,667 other residue, 470 residue mismatch. CPLM: 10,914 rows in the download, 5,915 human methylation rows, of which 494 accession not in canonical fasta, 60 canonical not K, 5 window mismatch (nothing remapped).
 
 ### How the context marks were made
 
-`python scripts/54_stage_uniprot_ptm_sites.py` and `python scripts/55_stage_iptmnet_ptm_sites.py` (inputs in `inputs/marks/`, downloads listed in `inputs/marks/raw_files.tsv`), then `python scripts/56_build_context_marks.py --version v1.5.0 --release-date 2026-11-09` at commit `d03f1db221d5388e14e286666d35115c2f26eff2 (scripts modified)` of https://github.com/Shechterlab/PTM_Pipeline.
+`python scripts/54_stage_uniprot_ptm_sites.py`, `python scripts/55_stage_iptmnet_ptm_sites.py` and `python scripts/39_stage_cplm4_lys_methylation.py --marks-dir inputs/marks` (inputs in `inputs/marks/`, downloads listed in `inputs/marks/raw_files.tsv`), then `python scripts/56_build_context_marks.py --version v1.5.0 --release-date 2026-11-10` at commit `b77a323b8d28e82007a62cac19b193c6592fff77` of https://github.com/Shechterlab/PTM_Pipeline.
 
 ### Cite
 
@@ -71,6 +76,7 @@ The paper below, and the sources you use:
 
 - UniProt: UniProt Consortium. UniProt: the Universal Protein Knowledgebase in 2025. Nucleic Acids Res 53:D609-D617 (2025). doi:10.1093/nar/gkae1010
 - iPTMnet: Huang H, Arighi CN, Ross KE, et al. iPTMnet: an integrated resource for protein post-translational modification network discovery. Nucleic Acids Res 46:D542-D550 (2018). doi:10.1093/nar/gkx1104
+- CPLM: Zhang W, Tan X, Lin S, et al. CPLM 4.0: an updated database with rich annotations for protein lysine modifications. Nucleic Acids Res 50:D451-D459 (2022). doi:10.1093/nar/gkab849 (included pending the authors' permission)
 
 ## Methylarginine data (unchanged from v1.4.3)
 
