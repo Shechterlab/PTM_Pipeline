@@ -1,0 +1,60 @@
+{
+  "checks": {
+    "accession_not_in_canonical_fasta": 13280,
+    "canonical_not_K": 263,
+    "identical_sequence": 38994,
+    "window_match": 499,
+    "window_mismatch": 18
+  },
+  "cplm_release": "CPLM 4.0 (2021-06-13)",
+  "dropped": {
+    "accession_not_in_canonical_fasta": 13280,
+    "canonical_not_K": 263,
+    "window_mismatch": 18
+  },
+  "files": {
+    "sumoylation": "cplm_4_0_sumoylation_sites.tsv"
+  },
+  "files_md5": {
+    "sumoylation": "f14d537f300e625bb03d7ffb0289c6f0"
+  },
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\"); included by the owner's decision of 2026-11-10, on the same terms as the methylation sites (decision of 2026-11-09): cited, pending the authors' permission",
+  "proteins": 6065,
+  "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
+  "raw_files": {
+    "Sumoylation.zip": "Sumoylation.zip"
+  },
+  "raw_md5": {
+    "Sumoylation.zip": "2704000995960e6f3afff1e12c85aef7"
+  },
+  "raw_member": "Sumoylation.txt (2021-06-13T21:24:18)",
+  "raw_sha256": {
+    "Sumoylation.zip": "d8afb82e0afb57fe70a7517ab9b20625a3341f873943d7668fca11465de3d736"
+  },
+  "records_in_download": 53483,
+  "records_in_scope": 53054,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "sumoylation": 39493
+  },
+  "rows_by_cplm_evidence": {
+    "Dat.": 2227,
+    "Exp.": 29670,
+    "Exp./Dat.": 7596
+  },
+  "rows_by_evidence_class": {
+    "sumoylation": {
+      "experimental": 37266,
+      "unspecified": 2227
+    }
+  },
+  "rows_by_state": {
+    "sumoylation": {
+      "sumo": 39493
+    }
+  },
+  "rows_with_pubmed_ids": 37854,
+  "source": "CPLM 4.0 Sumoylation download (cplm.biocuckoo.cn)",
+  "url": "https://cplm.biocuckoo.cn/Download/Sumoylation.zip"
+}
