@@ -257,7 +257,7 @@ def site_changes(sites: pd.DataFrame, previous_changes: pd.DataFrame) -> pd.Data
 
 def code_commit() -> str:
     paths = ['scripts/39_stage_cplm4_lys_methylation.py', 'scripts/54_stage_uniprot_ptm_sites.py', 'scripts/55_stage_iptmnet_ptm_sites.py',
-             'scripts/57_stage_berryhill_lys_methylation.py', 'scripts/58_stage_ochoa_phosphorylation sites.py', 'scripts/59_stage_iptmnet_scores.py',
+             'scripts/57_stage_berryhill_lys_methylation.py', 'scripts/58_stage_ochoa_phosphosites.py', 'scripts/59_stage_iptmnet_scores.py',
              'scripts/56_build_context_marks.py']
     try:
         dirty = subprocess.run(['git', 'status', '--porcelain', '--', *paths], capture_output=True, text=True, check=True).stdout
@@ -379,7 +379,7 @@ def write_docs(out: Path, version, release_date, tables, cross, summaries, commi
           f' (and {summaries["berryhill"]["relocated_sites"]:,} sites relocated by their peptide). Ochoa 2020: {summaries["ochoa"]["input_sites"]:,} sites, ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(summaries['ochoa']['rejected_by_reason'].items())) +
           f' (nothing relocated). iPTMnet scores: {summaries["score"]["records_in_download"]:,} rows of score.txt, ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(summaries['score']['dropped'].items())) + '.', '',
           '### How the context marks were made', '',
-          f'`python scripts/54_stage_uniprot_ptm_sites.py`, `python scripts/55_stage_iptmnet_ptm_sites.py` and `python scripts/39_stage_cplm4_lys_methylation.py --marks-dir inputs/marks`, `python scripts/57_stage_berryhill_lys_methylation.py`, `python scripts/58_stage_ochoa_phosphorylation sites.py` and `python scripts/59_stage_iptmnet_scores.py` (inputs in `inputs/marks/`, downloads listed in `inputs/marks/raw_files.tsv`), then '
+          f'`python scripts/54_stage_uniprot_ptm_sites.py`, `python scripts/55_stage_iptmnet_ptm_sites.py` and `python scripts/39_stage_cplm4_lys_methylation.py --marks-dir inputs/marks`, `python scripts/57_stage_berryhill_lys_methylation.py`, `python scripts/58_stage_ochoa_phosphosites.py` and `python scripts/59_stage_iptmnet_scores.py` (inputs in `inputs/marks/`, downloads listed in `inputs/marks/raw_files.tsv`), then '
           f'`python scripts/56_build_context_marks.py --version {version} --release-date {release_date}` at commit `{commit}` of https://github.com/Shechterlab/PTM_Pipeline.', '',
           '### Cite', '', 'The paper below, and the sources you use:', '']
     L += [f'- {s}: {SOURCES[s]["citation"]}' for s in SOURCE_ORDER]
@@ -537,7 +537,7 @@ def main() -> None:
                 '### Lysine acylation', '',
                 'The two acylation tables hold the lysine acylation (13 acyl types of UniProt\'s N6-acyl lysine terms, and iPTMnet\'s acetylation) of UniProt and iPTMnet, with `acyl_type` in place of `state`; '
                 '`human_acetylation_sites_' + version + '.tsv` repeats the acetyl rows because they are over half of them. Both sources are openly licensed (UniProt CC BY 4.0, iPTMnet CC BY-NC-SA 4.0).', '',
-                'Code: `scripts/39_stage_cplm4_lys_methylation.py`, `scripts/54_stage_uniprot_ptm_sites.py`, `scripts/55_stage_iptmnet_ptm_sites.py`, `scripts/57_stage_berryhill_lys_methylation.py`, `scripts/58_stage_ochoa_phosphorylation sites.py`, `scripts/59_stage_iptmnet_scores.py`, `scripts/56_build_context_marks.py`; staged tables in `inputs/marks/`.']
+                'Code: `scripts/39_stage_cplm4_lys_methylation.py`, `scripts/54_stage_uniprot_ptm_sites.py`, `scripts/55_stage_iptmnet_ptm_sites.py`, `scripts/57_stage_berryhill_lys_methylation.py`, `scripts/58_stage_ochoa_phosphosites.py`, `scripts/59_stage_iptmnet_scores.py`, `scripts/56_build_context_marks.py`; staged tables in `inputs/marks/`.']
     (out / 'CHANGES.md').write_text('\n'.join(changes) + '\n', encoding='utf-8')
 
     release = {'title': 'Human methylarginine sites and context marks', 'version': version, 'previous_version': CARRIED_FROM,
