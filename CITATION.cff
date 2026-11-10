@@ -4,7 +4,7 @@ message: >-
   sites you use (each release's studies table lists them).
 title: "PTM_Pipeline: human methylarginine sites, context marks and the Methylarginine Site Explorer"
 version: v1.5.0
-date-released: "2026-11-09"
+date-released: "2026-11-10"
 authors:
   - family-names: DeAngelo
     given-names: J. D.
