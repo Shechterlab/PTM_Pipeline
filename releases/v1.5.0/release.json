@@ -678,12 +678,69 @@
       "proteins": 12588,
       "residues": 142415,
       "rows": 142415
+    },
+    "sumoylation": {
+      "by_evidence_class": {
+        "by-similarity": 210,
+        "experimental": 5330
+      },
+      "by_source": {
+        "rows": {
+          "UniProt + iPTMnet": 24,
+          "UniProt only": 5507,
+          "iPTMnet only": 9
+        },
+        "sites": {
+          "UniProt + iPTMnet": 24,
+          "UniProt only": 5507,
+          "iPTMnet only": 9
+        }
+      },
+      "by_state": {
+        "sumo": 5540
+      },
+      "proteins": 1519,
+      "residues": 5540,
+      "rows": 5540
+    },
+    "ubiquitination": {
+      "by_evidence_class": {
+        "by-similarity": 141,
+        "experimental": 75900,
+        "unspecified": 47891
+      },
+      "by_source": {
+        "rows": {
+          "CPLM only": 122974,
+          "UniProt + CPLM": 211,
+          "UniProt + iPTMnet": 41,
+          "UniProt + iPTMnet + CPLM": 562,
+          "UniProt only": 137,
+          "iPTMnet + CPLM": 6,
+          "iPTMnet only": 1
+        },
+        "sites": {
+          "CPLM only": 122974,
+          "UniProt + CPLM": 211,
+          "UniProt + iPTMnet": 41,
+          "UniProt + iPTMnet + CPLM": 562,
+          "UniProt only": 137,
+          "iPTMnet + CPLM": 6,
+          "iPTMnet only": 1
+        }
+      },
+      "by_state": {
+        "ub": 123932
+      },
+      "proteins": 11862,
+      "residues": 123932,
+      "rows": 123932
     }
   },
-  "context_marks_code_commit": "ed5b4955940ccc1f9cef7a801f038a519ead1504",
+  "context_marks_code_commit": "7528317e18b804bbb2ece385784744c843dd9f18",
   "inputs_md5": {
     "iptmnet_score": {
-      "iptmnet_6_2_score.tsv": "926635c7f4f50ba447fc0ecd952010e9"
+      "iptmnet_6_2_score.tsv": "ed097f2d5b773233dcdf1999ada1579d"
     },
     "lysine_acylation": {
       "iptmnet_6_2_lysine_acylation_sites.tsv": "35ab50913b2d59418691d6b38218ad7c",
@@ -703,9 +760,18 @@
       "iptmnet_6_2_phosphorylation_sites.tsv": "259d6fb0456e5451afffccd0d7af5c6b",
       "ochoa2020_phosphorylation_sites.tsv": "fa269a1032879622b01193e793ff5484",
       "uniprot_2026_04_phosphorylation_sites.tsv": "0b878fb4c25b80de8c3e0b5abb464ae6"
+    },
+    "sumoylation": {
+      "iptmnet_6_2_sumoylation_sites.tsv": "971fe9cd985ee571f6b9dcd7242445f4",
+      "uniprot_2026_04_sumoylation_sites.tsv": "8c7f7ceb6646ad94c18acad87f2a8f85"
+    },
+    "ubiquitination": {
+      "cplm_4_0_ubiquitination_sites.tsv": "3f7f41e7b4fff0d9024fe3318a403469",
+      "iptmnet_6_2_ubiquitination_sites.tsv": "b77231d3c02dd876e8c34b7a90200fe0",
+      "uniprot_2026_04_ubiquitination_sites.tsv": "0cc7c9e74519970def0374f1511848b8"
     }
   },
-  "license": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license and is included pending the authors' permission; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access; both included by the owner's decision",
+  "license": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license and its methylation and ubiquitination sites are included pending the authors' permission; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access; both included by the owner's decision",
   "methylarginine_code_commit": "52451320067f754d32574061b8653a2b5f03ec37",
   "methylarginine_data": "unchanged from v1.4.3: files carried over byte for byte, not rebuilt",
   "previous_version": "v1.4.3",

@@ -1,21 +1,27 @@
 {
   "dropped": {
-    "on_an_isoform": 667,
+    "on_an_isoform": 763,
     "residue_mismatch": 2
   },
-  "entries_in_download": 20429,
+  "entries_in_download": 40858,
   "files": {
     "lysine_acylation": "uniprot_2026_04_lysine_acylation_sites.tsv",
     "methylarginine": "uniprot_2026_04_methylarginine_crosscheck.tsv",
     "methyllysine": "uniprot_2026_04_methyllysine_sites.tsv",
-    "phosphorylation": "uniprot_2026_04_phosphorylation_sites.tsv"
+    "phosphorylation": "uniprot_2026_04_phosphorylation_sites.tsv",
+    "sumoylation": "uniprot_2026_04_sumoylation_sites.tsv",
+    "ubiquitination": "uniprot_2026_04_ubiquitination_sites.tsv"
   },
   "files_md5": {
     "lysine_acylation": "ce1c5ceb4942f0a9295c1ef97189ad79",
     "methylarginine": "550cfb04383326e0b552e52ed5cc6ba8",
     "methyllysine": "0ba06223106ebf7cf39914712a9839dd",
-    "phosphorylation": "0b878fb4c25b80de8c3e0b5abb464ae6"
+    "phosphorylation": "0b878fb4c25b80de8c3e0b5abb464ae6",
+    "sumoylation": "8c7f7ceb6646ad94c18acad87f2a8f85",
+    "ubiquitination": "0cc7c9e74519970def0374f1511848b8"
   },
+  "raw_crosslnk_file": "uniprot_human_reviewed_crosslnk_2026_04.json",
+  "raw_crosslnk_md5": "89ce4ce18a9b4d2d25b0725452a361e4",
   "raw_file": "uniprot_human_reviewed_mod_res_2026_04.json",
   "raw_md5": "7ad925d06bce6bf8e40e0f1d18abb047",
   "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
@@ -24,7 +30,9 @@
     "lysine_acylation": 7766,
     "methylarginine": 1669,
     "methyllysine": 533,
-    "phosphorylation": 40928
+    "phosphorylation": 40928,
+    "sumoylation": 5531,
+    "ubiquitination": 951
   },
   "rows_by_evidence_class": {
     "lysine_acylation": {
@@ -42,6 +50,14 @@
     "phosphorylation": {
       "by-similarity": 10371,
       "experimental": 30557
+    },
+    "sumoylation": {
+      "by-similarity": 212,
+      "experimental": 5319
+    },
+    "ubiquitination": {
+      "by-similarity": 245,
+      "experimental": 706
     }
   },
   "rows_by_state": {
@@ -75,9 +91,16 @@
     },
     "phosphorylation": {
       "phospho": 40928
+    },
+    "sumoylation": {
+      "sumo": 5531
+    },
+    "ubiquitination": {
+      "ub": 951
     }
   },
-  "source": "UniProtKB/Swiss-Prot reviewed human, \"Modified residue\" features (UniProt REST API)",
+  "source": "UniProtKB/Swiss-Prot reviewed human, \"Modified residue\" and \"Cross-link\" features (UniProt REST API)",
   "uniprot_release_served": "2026_04",
-  "url": "https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606&fields=accession,ft_mod_res,sequence&format=json"
+  "url": "https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606&fields=accession,ft_mod_res,sequence&format=json",
+  "url_crosslnk": "https://rest.uniprot.org/uniprotkb/stream?query=reviewed:true+AND+organism_id:9606&fields=accession,ft_crosslnk,sequence&format=json"
 }

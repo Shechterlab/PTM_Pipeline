@@ -29,7 +29,8 @@ cplm = load('39_stage_cplm4_lys_methylation.py')
 score = load('59_stage_iptmnet_scores.py')
 
 def context_files(folder):
-    return [folder / f'human_{m}_v1.5.0.tsv' for m in ('methyllysine_sites', 'phosphorylation_sites', 'lysine_acylation_sites', 'acetylation_sites', 'methylarginine_crosscheck')]
+    return [folder / f'human_{m}_v1.5.0.tsv' for m in ('methyllysine_sites', 'phosphorylation_sites', 'lysine_acylation_sites', 'acetylation_sites', 'ubiquitination_sites',
+                                                                       'sumoylation_sites', 'methylarginine_crosscheck')]
 
 
 REFERENCE = {'P00001': 'MKKRSTYKR', 'P00002': 'MKAK'}
@@ -122,9 +123,9 @@ def test_staged_tables_and_release_agree_with_manifest():
     manifest = list(csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t'))
     rows = {r['file']: r for r in manifest if r['file'].startswith('marks/')}
     tables = [f for f in rows if f.endswith('_sites.tsv') or f.endswith('_crosscheck.tsv')]
-    assert len(tables) == 11
+    assert len(tables) == 16
     for name in tables + ['marks/raw_files.tsv', 'marks/uniprot_ptm_sites_summary.json', 'marks/iptmnet_ptm_sites_summary.json',
-                          'marks/cplm_ptm_sites_summary.json']:
+                          'marks/cplm_ptm_sites_summary.json', 'marks/cplm_ubiquitination_summary.json']:
         assert rows[name]['redistribution'] == 'git'
         assert build.md5_file(ROOT / 'inputs' / name) == rows[name]['md5']
     for name in tables:
@@ -175,7 +176,7 @@ def test_iptmnet_score_staging_toy():
     records = pd.DataFrame([rec('P00001', 'K2', '', 'Methylation', '2'), rec('P00001-1', 'K2', '', 'Methylation', '0'),   # plain accession wins
                             rec('P00001-1', 'K3', '', 'Acetylation', '1'),                                              # only the -1 row: used
                             rec('P00001', 'S5', 'P00002', 'Phosphorylation', '3'),                                      # enzyme row: not used
-                            rec('P00001', 'S5', '', 'Phosphorylation', '1'), rec('P00001', 'K2', '', 'Ubiquitination', '4'),
+                            rec('P00001', 'S5', '', 'Phosphorylation', '1'), rec('P00001', 'K2', '', 'S-Nitrosylation', '4'),
                             rec('P00001-2', 'K2', '', 'Methylation', '1'), rec('P99999', 'K2', '', 'Methylation', '1'),
                             rec('P00001', 'R2', '', 'Methylation', '1'), rec('P00001', 'S2', '', 'Phosphorylation', '1'),
                             rec('P00001', 'S', '', 'Phosphorylation', '1')])
@@ -191,7 +192,7 @@ def test_staged_residues_match_reference():
     for path in (ROOT / 'inputs' / 'marks').glob('*_sites.tsv'):
         for r in csv.DictReader(open(path, encoding='utf-8'), delimiter='\t'):
             assert reference[r['canonical_UniProtAC']][int(r['position']) - 1] == r['residue']
-            assert r['residue'] in {'methyllysine': 'K', 'phosphorylation': 'STY', 'lysine_acylation': 'K'}[r['mark']]
+            assert r['residue'] in {'methyllysine': 'K', 'phosphorylation': 'STY', 'lysine_acylation': 'K', 'ubiquitination': 'K', 'sumoylation': 'K'}[r['mark']]
 
 
 def test_iptmnet_staging():
@@ -209,7 +210,7 @@ def test_iptmnet_staging():
         rec('PHOSPHORYLATION', 'hprd', 'P00001-2', 'S5'),             # isoform
         rec('PHOSPHORYLATION', 'hprd', 'Q99999', 'S5'),               # not in the reference
         rec('PHOSPHORYLATION', 'hprd', 'P00001', 'S5', org='Mus musculus (Mouse)'),
-        rec('UBIQUITINATION', 'hprd', 'P00001', 'K2')])
+        rec('N-GLYCOSYLATION', 'hprd', 'P00001', 'K2')])
     tables, dropped = iptm.stage(records, REFERENCE, '6.2')
     ml = tables['methyllysine']
     assert list(ml['state']) == ['me'] and list(ml['upstream_sources']) == ['hprd;unip']
@@ -274,7 +275,7 @@ def test_release_v1_5_0_is_consistent():
         if 'crosscheck' in path.name:
             assert header[11:] == ['in_methylarginine_release']
         else:       # the columns of the sources that contribute, then iPTMnet's score
-            own = {'methyllysine': ['cplm_evidence', 'berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment'],
+            own = {'ubiquitination': ['cplm_evidence'], 'methyllysine': ['cplm_evidence', 'berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment'],
                    'phosphorylation': ['functional_score', 'best_localization_probability', 'best_pep', 'biological_samples', 'spectral_counts']}
             assert header[11:] == next((v for k, v in own.items() if k in path.name), []) + ['iptmnet_score'], path.name
     text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
@@ -503,7 +504,8 @@ def test_ochoa_rows_in_the_release():
 def test_iptmnet_score_in_the_release():
     staged = read_staged('iptmnet_6_2_score.tsv')
     for name, mark in (('human_methyllysine_sites_v1.5.0.tsv', 'methyllysine'), ('human_phosphorylation_sites_v1.5.0.tsv', 'phosphorylation'),
-                       ('human_lysine_acylation_sites_v1.5.0.tsv', 'lysine_acylation'), ('human_acetylation_sites_v1.5.0.tsv', 'lysine_acylation')):
+                       ('human_lysine_acylation_sites_v1.5.0.tsv', 'lysine_acylation'), ('human_acetylation_sites_v1.5.0.tsv', 'lysine_acylation'),
+                       ('human_ubiquitination_sites_v1.5.0.tsv', 'ubiquitination'), ('human_sumoylation_sites_v1.5.0.tsv', 'sumoylation')):
         table = read_release(name)
         given = dict(zip(zip(staged['canonical_UniProtAC'][staged['mark'] == mark], staged['position'][staged['mark'] == mark], strict=True),
                          staged['iptmnet_score'][staged['mark'] == mark], strict=True))
@@ -534,3 +536,85 @@ def test_license_notes_of_the_new_sources_in_the_release_text():
             assert needle in text, (name, needle)
     release = json.loads((folder / 'release.json').read_text(encoding='utf-8'))
     assert {'Berryhill 2023', 'Ochoa 2020'} <= set(release['sources']) and 'iptmnet_score' in release['inputs_md5']
+
+
+def crosslink(term, pos, **kw):
+    return {**feature(term, pos, **kw), 'type': 'Cross-link'}
+
+
+def test_uniprot_crosslink_terms_ubiquitin_and_sumo_on_lysine():
+    ub, sumo = 'Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in ubiquitin)', 'Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in SUMO2)'
+    assert stage.crosslink_term(ub) == ('ubiquitination', 'ub', 'K') and stage.crosslink_term(ub + '; alternate') == ('ubiquitination', 'ub', 'K')
+    for modifier in ('SUMO', 'SUMO1', 'SUMO3', 'SUMO1P1/SUMO5', 'SUMO2 and SUMO3'):
+        assert stage.crosslink_term(sumo.replace('SUMO2', modifier)) == ('sumoylation', 'sumo', 'K'), modifier
+    for term in ('Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in ISG15)', 'Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in NEDD8)',
+                 '(Microbial infection) ' + ub, 'Glycyl cysteine thioester (Cys-Gly) (interchain with G-Cter in ubiquitin)',
+                 'Peptide (Met-Gly) (interchain with G-Cter in ubiquitin)', 'Isoglutamyl lysine isopeptide (Lys-Gln) (interchain with Q-?)'):
+        assert stage.crosslink_term(term) is None, term
+    entries = [entry('P00001', REFERENCE['P00001'], crosslink(ub, 2, pmid='11'), crosslink(sumo, 2, codes=('ECO:0000250',)), crosslink(sumo, 2, pmid='12'),
+                     crosslink(ub, 4), crosslink(sumo.replace('SUMO2', 'NEDD8'), 3), crosslink(ub, 5)),
+               entry('P00002', 'MKAKX', crosslink(ub, 2))]
+    tables, dropped = run(entries)
+    u, m = tables['ubiquitination'], tables['sumoylation']
+    assert list(zip(u['canonical_UniProtAC'], u['position'], u['state'], u['pmids'])) == [('P00001', 2, 'ub', '11')]
+    assert dropped == {'residue_mismatch': 2, 'sequence_differs': 1}      # position 4 is R, position 5 is S, P00002's sequence is not the reference's
+    assert list(m['state']) == ['sumo'] and list(m['evidence_class']) == ['experimental'] and m.loc[0, 'evidence'] == 'ECO:0000250;ECO:0000269'
+    assert not tables['methyllysine'].shape[0] and tables['ubiquitination']['residue'].eq('K').all()
+
+
+def test_iptmnet_ubiquitination_and_sumoylation_records():
+    import pandas as pd
+    human = 'Homo sapiens (Human)'
+    rows = [('UBIQUITINATION', 'hprd', 'P00001', 'G', human, 'K2', '', '', '', '5'), ('UBIQUITINATION', 'unip', 'P00001', 'G', human, 'K2', '', '', '', ''),
+            ('SUMOYLATION', 'sign', 'P00001-1', 'G', human, 'K3', '', '', '', '7'),
+            ('UBIQUITINATION', 'hprd', 'P00001', 'G', human, 'S5', '', '', '', '5'), ('UBIQUITINATION', 'hprd', 'P00001', 'G', human, 'K4', '', '', '', '5'),
+            ('UBIQUITINATION', 'hprd', 'P00001', 'G', 'Mus musculus (Mouse)', 'K2', '', '', '', '5')]
+    tables, dropped = iptm.stage(pd.DataFrame(rows, columns=iptm.FIELDS), REFERENCE, '6.2')
+    u, m = tables['ubiquitination'], tables['sumoylation']
+    assert list(zip(u['position'], u['state'], u['upstream_sources'], u['evidence_class'], u['pmids'])) == [(2, 'ub', 'hprd;unip', 'experimental', '5')]
+    assert list(zip(m['position'], m['state'], m['upstream_sources'])) == [(3, 'sumo', 'sign')]
+    assert dropped == {'other_residue': 1, 'residue_mismatch': 1, 'not_human': 1}
+
+
+def test_iptmnet_score_marks_ubiquitination_and_sumoylation():
+    assert score.mark_of('Ubiquitination', 'K') == 'ubiquitination' and score.mark_of('Sumoylation', 'K') == 'sumoylation'
+    assert score.mark_of('Ubiquitination', 'S') is None and score.mark_of('Sumoylation', 'R') is None
+
+
+def test_cplm_modification_option_keeps_methylation_names_and_gives_others_their_own():
+    assert cplm.DEFAULT_MODIFICATION == 'Methylation' and set(cplm.MODIFICATIONS) == {'Methylation', 'Ubiquitination', 'Sumoylation'}
+    me, ub = cplm.MODIFICATIONS['Methylation'], cplm.MODIFICATIONS['Ubiquitination']
+    assert (me['table'], me['summary'], me['mark'], me['state'], me['tag']) == ('cplm_4_0_methyllysine_sites.tsv', 'cplm_ptm_sites_summary.json', 'methyllysine', 'me', 'methyl')
+    assert (ub['table'], ub['mark'], ub['state']) == ('cplm_4_0_ubiquitination_sites.tsv', 'ubiquitination', 'ub')
+    import pandas as pd
+    good = pd.DataFrame({'canonical_UniProtAC': ['P00001'], 'position': [2], 'evidence': ['Exp.'], 'references': ['31072472']})
+    table = cplm.stage_marks(good, 'CPLM 4.0 (2021-06-13)', ub)
+    assert (table.loc[0, 'mark'], table.loc[0, 'state'], table.loc[0, 'residue']) == ('ubiquitination', 'ub', 'K')
+    assert cplm.stage_marks(good, 'CPLM 4.0 (2021-06-13)').loc[0, 'mark'] == 'methyllysine'
+
+
+def test_ubiquitination_and_sumoylation_tables_of_the_release():
+    import pandas as pd
+    folder = ROOT / 'releases' / 'v1.5.0'
+    reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
+    for mark, state, sources in (('ubiquitination', 'ub', {'UniProt', 'iPTMnet', 'CPLM'}), ('sumoylation', 'sumo', {'UniProt', 'iPTMnet'})):
+        table = pd.read_csv(folder / f'human_{mark}_sites_v1.5.0.tsv', sep='\t', dtype=str, keep_default_na=False)
+        assert set(table['state']) == {state} and set(table['mark']) == {mark} and set(table['residue']) == {'K'}
+        assert not table.duplicated(['canonical_UniProtAC', 'position', 'state']).any()
+        assert {x for v in table['sources'] for x in v.split('; ')} == sources          # CPLM SUMOylation is not in the release
+        for r in table.itertuples():
+            assert reference[r.canonical_UniProtAC][int(r.position) - 1] == 'K'
+        by_source = {s: table[table['sources'].str.contains(s)] for s in sources}
+        staged = {'UniProt': f'uniprot_2026_04_{mark}_sites.tsv', 'iPTMnet': f'iptmnet_6_2_{mark}_sites.tsv', 'CPLM': f'cplm_4_0_{mark}_sites.tsv'}
+        for s in sources:
+            n = len(pd.read_csv(ROOT / 'inputs' / 'marks' / staged[s], sep='\t', dtype=str, keep_default_na=False))
+            assert len(by_source[s]) == n, (mark, s)
+    assert not (ROOT / 'inputs' / 'marks' / 'cplm_4_0_sumoylation_sites.tsv').exists()
+    text = (folder / 'README.md').read_text(encoding='utf-8') + (folder / 'CHANGES.md').read_text(encoding='utf-8')
+    for needle in ("owner's decision of 2026-11-10", "pending the authors' permission", 'Zhang et al., Nucleic Acids Res 50:D451',
+                   'CPLM states no license', "SUMOylation sites are not included"):
+        assert needle in text, needle
+    dictionary = (folder / 'data_dictionary.tsv').read_text(encoding='utf-8')
+    for name in ('human_ubiquitination_sites_v1.5.0.tsv', 'human_sumoylation_sites_v1.5.0.tsv'):
+        assert f'{name}\tiptmnet_score' in dictionary
+    assert 'human_ubiquitination_sites_v1.5.0.tsv\tcplm_evidence' in dictionary and 'human_sumoylation_sites_v1.5.0.tsv\tcplm_evidence' not in dictionary

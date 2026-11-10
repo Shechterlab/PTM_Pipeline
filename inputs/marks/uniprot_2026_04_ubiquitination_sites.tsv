@@ -1,0 +1,952 @@
+canonical_UniProtAC	position	residue	mark	state	evidence	evidence_class	pmids	source	source_release
+A0A2R8Y619	31	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+A0A2R8Y619	117	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+A1Z1Q3	170	K	ubiquitination	ub	ECO:0000269	experimental	18655026	UniProt	2026_04
+A8K0Z3	220	K	ubiquitination	ub	ECO:0000269	experimental	23452853	UniProt	2026_04
+C4AMC7	218	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+C9JQL5	24	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+C9JQL5	83	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+C9JQL5	88	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+C9JQL5	104	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+O00144	440	K	ubiquitination	ub	ECO:0000269	experimental	41098776	UniProt	2026_04
+O00463	318	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+O00548	613	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+O14508	173	K	ubiquitination	ub	ECO:0000269	experimental	31578312	UniProt	2026_04
+O14602	88	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+O14618	76	K	ubiquitination	ub	ECO:0000269	experimental	20154138	UniProt	2026_04
+O14618	189	K	ubiquitination	ub	ECO:0000269	experimental	20154138	UniProt	2026_04
+O14618	216	K	ubiquitination	ub	ECO:0000269	experimental	20154138	UniProt	2026_04
+O14618	241	K	ubiquitination	ub	ECO:0000269	experimental	20154138	UniProt	2026_04
+O14757	132	K	ubiquitination	ub	ECO:0000269	experimental	32357935	UniProt	2026_04
+O14757	436	K	ubiquitination	ub	ECO:0000269	experimental	19716789	UniProt	2026_04
+O14813	178	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+O14920	163	K	ubiquitination	ub	ECO:0000269	experimental	16267042	UniProt	2026_04
+O15105	64	K	ubiquitination	ub	ECO:0000269	experimental	12408818	UniProt	2026_04
+O15105	70	K	ubiquitination	ub	ECO:0000269	experimental	12408818	UniProt	2026_04
+O15156	206	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+O15156	212	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+O15156	335	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+O15455	765	K	ubiquitination	ub	ECO:0000269	experimental	37158982	UniProt	2026_04
+O15455	812	K	ubiquitination	ub	ECO:0000269	experimental	37158982	UniProt	2026_04
+O15455	831	K	ubiquitination	ub	ECO:0000269	experimental	32878999	UniProt	2026_04
+O15503	156	K	ubiquitination	ub	ECO:0000269	experimental	16399501	UniProt	2026_04
+O15503	158	K	ubiquitination	ub	ECO:0000269	experimental	16399501	UniProt	2026_04
+O43151	994	K	ubiquitination	ub	ECO:0000269	experimental	25557551	UniProt	2026_04
+O43318	72	K	ubiquitination	ub	ECO:0000269	experimental	22406003	UniProt	2026_04
+O43318	158	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+O43318	209	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+O43353	209	K	ubiquitination	ub	ECO:0000269	experimental	18079694	UniProt	2026_04
+O43353	410	K	ubiquitination	ub	ECO:0000269	experimental	29452636	UniProt	2026_04
+O43353	503	K	ubiquitination	ub	ECO:0000269	experimental	28656966	UniProt	2026_04
+O43353	538	K	ubiquitination	ub	ECO:0000269	experimental	29452636	UniProt	2026_04
+O43463	138	K	ubiquitination	ub	ECO:0000269	experimental	40440427	UniProt	2026_04
+O43474	32	K	ubiquitination	ub	ECO:0000269	experimental	18655026	UniProt	2026_04
+O43541	173	K	ubiquitination	ub	ECO:0000269	experimental	23455153	UniProt	2026_04
+O43684	216	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+O60291	101	K	ubiquitination	ub	ECO:0000269	experimental	28475871	UniProt	2026_04
+O60291	362	K	ubiquitination	ub	ECO:0000269	experimental	28475871	UniProt	2026_04
+O60341	503	K	ubiquitination	ub	ECO:0000305	by-similarity	25018020	UniProt	2026_04
+O60443	120	K	ubiquitination	ub	ECO:0000269	experimental	36607699	UniProt	2026_04
+O60443	189	K	ubiquitination	ub	ECO:0000269	experimental	36607699	UniProt	2026_04
+O60603	754	K	ubiquitination	ub	ECO:0000269	experimental	27805901	UniProt	2026_04
+O60814	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+O60814	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16627869;16713563	UniProt	2026_04
+O60934	435	K	ubiquitination	ub	ECO:0000269	experimental	23115235	UniProt	2026_04
+O60934	686	K	ubiquitination	ub	ECO:0000269	experimental	30952868	UniProt	2026_04
+O60934	690	K	ubiquitination	ub	ECO:0000269	experimental	30952868	UniProt	2026_04
+O60934	735	K	ubiquitination	ub	ECO:0000269	experimental	22464731	UniProt	2026_04
+O75367	116	K	ubiquitination	ub	ECO:0000269	experimental	16129414	UniProt	2026_04
+O75367	117	K	ubiquitination	ub	ECO:0000269	experimental	16129414	UniProt	2026_04
+O75581	1403	K	ubiquitination	ub	ECO:0000269	experimental	18378904	UniProt	2026_04
+O94888	99	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+O94979	647	K	ubiquitination	ub	ECO:0000269	experimental	22358839	UniProt	2026_04
+O94979	1217	K	ubiquitination	ub	ECO:0000269	experimental	22358839	UniProt	2026_04
+O95251	338	K	ubiquitination	ub	ECO:0000269	experimental	23319590	UniProt	2026_04
+O95352	45	K	ubiquitination	ub	ECO:0000269	experimental	37943659	UniProt	2026_04
+O95786	48	K	ubiquitination	ub	ECO:0000305	by-similarity	28469175	UniProt	2026_04
+O95786	96	K	ubiquitination	ub	ECO:0000305	by-similarity	28469175	UniProt	2026_04
+O95786	154	K	ubiquitination	ub	ECO:0000269	experimental	19484123;24755855	UniProt	2026_04
+O95786	164	K	ubiquitination	ub	ECO:0000269	experimental	19484123;24755855	UniProt	2026_04
+O95786	172	K	ubiquitination	ub	ECO:0000269	experimental	19484123;24755855;28469175	UniProt	2026_04
+O95786	181	K	ubiquitination	ub	ECO:0000269	experimental	26471729	UniProt	2026_04
+O95786	193	K	ubiquitination	ub	ECO:0000269	experimental	31881323	UniProt	2026_04
+O95786	203	K	ubiquitination	ub	ECO:0000269	experimental	31881323	UniProt	2026_04
+O95786	812	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+O95831	255	K	ubiquitination	ub	ECO:0000269	experimental	22103349	UniProt	2026_04
+O95863	98	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+O95863	137	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+O95863	146	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+O95999	17	K	ubiquitination	ub	ECO:0000269	experimental	27777308	UniProt	2026_04
+O95999	31	K	ubiquitination	ub	ECO:0000269	experimental	18287044;27777308	UniProt	2026_04
+O95999	63	K	ubiquitination	ub	ECO:0000269	experimental	18287044;27777308	UniProt	2026_04
+P00533	716	K	ubiquitination	ub	ECO:0000269	experimental	16543144;33996800	UniProt	2026_04
+P00533	737	K	ubiquitination	ub	ECO:0000269	experimental	16543144;33996800	UniProt	2026_04
+P00533	754	K	ubiquitination	ub	ECO:0000269	experimental	16543144;33996800	UniProt	2026_04
+P00533	757	K	ubiquitination	ub	ECO:0000269	experimental	33996800	UniProt	2026_04
+P00533	867	K	ubiquitination	ub	ECO:0000269	experimental	16543144;33996800	UniProt	2026_04
+P00533	929	K	ubiquitination	ub	ECO:0000269	experimental	16543144	UniProt	2026_04
+P00533	960	K	ubiquitination	ub	ECO:0000269	experimental	33996800	UniProt	2026_04
+P00533	970	K	ubiquitination	ub	ECO:0000269	experimental	16543144	UniProt	2026_04
+P01111	170	K	ubiquitination	ub	ECO:0000305	by-similarity	30442762	UniProt	2026_04
+P01112	170	K	ubiquitination	ub	ECO:0000269	experimental	30442762	UniProt	2026_04
+P01116	170	K	ubiquitination	ub	ECO:0000305	by-similarity	30442762	UniProt	2026_04
+P01903	244	K	ubiquitination	ub	ECO:0000269	experimental	19117940	UniProt	2026_04
+P01911	254	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P02786	39	K	ubiquitination	ub	ECO:0000269	experimental	41772062	UniProt	2026_04
+P04035	89	K	ubiquitination	ub	ECO:0000269	experimental	19458199	UniProt	2026_04
+P04035	248	K	ubiquitination	ub	ECO:0000269	experimental	19458199	UniProt	2026_04
+P04150	419	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P04637	24	K	ubiquitination	ub	ECO:0000269	experimental	21597459	UniProt	2026_04
+P04637	291	K	ubiquitination	ub	ECO:0000269	experimental	19536131	UniProt	2026_04
+P04637	292	K	ubiquitination	ub	ECO:0000269	experimental	19536131	UniProt	2026_04
+P04637	351	K	ubiquitination	ub	ECO:0000269	experimental	19033443	UniProt	2026_04
+P04637	357	K	ubiquitination	ub	ECO:0000269	experimental	19033443	UniProt	2026_04
+P04839	161	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P04839	255	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P04839	294	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P04839	299	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P04839	306	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P04839	328	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P04839	334	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P04839	381	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P04839	506	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P04839	567	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P04844	154	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P04908	14	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+P04908	16	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+P04908	120	K	ubiquitination	ub	ECO:0000269	experimental	15386022;16359901;16702407;25470042	UniProt	2026_04
+P05067	763	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P05386	92	K	ubiquitination	ub	ECO:0000269	experimental	36638793	UniProt	2026_04
+P05386	93	K	ubiquitination	ub	ECO:0000269	experimental	36638793	UniProt	2026_04
+P05388	264	K	ubiquitination	ub	ECO:0000269	experimental	36638793	UniProt	2026_04
+P06213	1079	K	ubiquitination	ub	ECO:0000269	experimental	27577745	UniProt	2026_04
+P06239	99	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+P06239	276	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+P06401	388	K	ubiquitination	ub	ECO:0000269	experimental	17347654	UniProt	2026_04
+P06746	41	K	ubiquitination	ub	ECO:0000269	experimental	19713937;21362556	UniProt	2026_04
+P06746	61	K	ubiquitination	ub	ECO:0000269	experimental	19713937;21362556	UniProt	2026_04
+P06746	81	K	ubiquitination	ub	ECO:0000269	experimental	19713937;21362556	UniProt	2026_04
+P06899	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+P06899	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16627869;16713563	UniProt	2026_04
+P07384	398	K	ubiquitination	ub	ECO:0000269	experimental	36964131	UniProt	2026_04
+P07437	58	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P07437	324	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P07737	54	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P07737	116	K	ubiquitination	ub	ECO:0000269	experimental	42260986	UniProt	2026_04
+P08069	1168	K	ubiquitination	ub	ECO:0000269	experimental	21994939	UniProt	2026_04
+P08069	1171	K	ubiquitination	ub	ECO:0000269	experimental	21994939	UniProt	2026_04
+P08195	46	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P08651	65	K	ubiquitination	ub	ECO:0000269	experimental	35198878	UniProt	2026_04
+P08651	99	K	ubiquitination	ub	ECO:0000269	experimental	35198878	UniProt	2026_04
+P09211	55	K	ubiquitination	ub	ECO:0000269	experimental	38016474	UniProt	2026_04
+P09211	121	K	ubiquitination	ub	ECO:0000269	experimental	38016474	UniProt	2026_04
+P09211	191	K	ubiquitination	ub	ECO:0000269	experimental	38016474	UniProt	2026_04
+P0C0S5	122	K	ubiquitination	ub	ECO:0000269	experimental	11835281	UniProt	2026_04
+P0C0S8	14	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+P0C0S8	16	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+P0C0S8	120	K	ubiquitination	ub	ECO:0000269	experimental	15386022;16359901;16702407;25470042	UniProt	2026_04
+P0CG47	6	K	ubiquitination	ub	ECO:0000269	experimental	16443603	UniProt	2026_04
+P0CG47	11	K	ubiquitination	ub	ECO:0000269	experimental	16443603;16543144	UniProt	2026_04
+P0CG47	27	K	ubiquitination	ub	ECO:0000305	by-similarity	15466860	UniProt	2026_04
+P0CG47	29	K	ubiquitination	ub	ECO:0000269	experimental	16543144;25752573;25752577;34239127	UniProt	2026_04
+P0CG47	33	K	ubiquitination	ub	ECO:0000269	experimental	25752577	UniProt	2026_04
+P0CG47	48	K	ubiquitination	ub	ECO:0000269	experimental	16443603;16543144	UniProt	2026_04
+P0CG47	63	K	ubiquitination	ub	ECO:0000269	experimental	16543144;18719106	UniProt	2026_04
+P0CG48	6	K	ubiquitination	ub	ECO:0000269	experimental	16443603	UniProt	2026_04
+P0CG48	11	K	ubiquitination	ub	ECO:0000269	experimental	16443603;16543144	UniProt	2026_04
+P0CG48	27	K	ubiquitination	ub	ECO:0000305	by-similarity	15466860	UniProt	2026_04
+P0CG48	29	K	ubiquitination	ub	ECO:0000269	experimental	16543144;25752573;25752577;34239127	UniProt	2026_04
+P0CG48	33	K	ubiquitination	ub	ECO:0000269	experimental	25752577	UniProt	2026_04
+P0CG48	48	K	ubiquitination	ub	ECO:0000269	experimental	16443603;16543144	UniProt	2026_04
+P0CG48	63	K	ubiquitination	ub	ECO:0000269	experimental	16543144;18719106	UniProt	2026_04
+P0DP23	22	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P0DP24	22	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P0DP25	22	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	19	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK2	24	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	19	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P0DPK5	24	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10071	773	K	ubiquitination	ub	ECO:0000269	experimental	16705181	UniProt	2026_04
+P10071	779	K	ubiquitination	ub	ECO:0000269	experimental	16705181	UniProt	2026_04
+P10071	784	K	ubiquitination	ub	ECO:0000269	experimental	16705181	UniProt	2026_04
+P10071	800	K	ubiquitination	ub	ECO:0000269	experimental	16705181	UniProt	2026_04
+P10275	846	K	ubiquitination	ub	ECO:0000269	experimental	19345326	UniProt	2026_04
+P10275	848	K	ubiquitination	ub	ECO:0000269	experimental	19345326	UniProt	2026_04
+P10636	44	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	571	K	ubiquitination	ub	ECO:0000269	experimental	16443603	UniProt	2026_04
+P10636	576	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	584	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	598	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	615	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	628	K	ubiquitination	ub	ECO:0000269	experimental	16443603	UniProt	2026_04
+P10636	634	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	638	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	648	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	660	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	664	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	670	K	ubiquitination	ub	ECO:0000269	experimental	16443603	UniProt	2026_04
+P10636	686	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	692	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P10636	702	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P11441	48	K	ubiquitination	ub	ECO:0000269	experimental	24424410	UniProt	2026_04
+P12004	164	K	ubiquitination	ub	ECO:0000269	experimental	17108083;17130289	UniProt	2026_04
+P12277	45	K	ubiquitination	ub	ECO:0000269	experimental	33268465	UniProt	2026_04
+P12277	101	K	ubiquitination	ub	ECO:0000269	experimental	33268465	UniProt	2026_04
+P12277	107	K	ubiquitination	ub	ECO:0000269	experimental	33268465	UniProt	2026_04
+P12277	381	K	ubiquitination	ub	ECO:0000269	experimental	33268465	UniProt	2026_04
+P13498	149	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P13569	688	K	ubiquitination	ub	ECO:0000269	experimental	22119790	UniProt	2026_04
+P13762	254	K	ubiquitination	ub	ECO:0000269	experimental	19117940	UniProt	2026_04
+P15056	578	K	ubiquitination	ub	ECO:0000269	experimental	23907581	UniProt	2026_04
+P15531	85	K	ubiquitination	ub	ECO:0000269	experimental	25582197	UniProt	2026_04
+P15531	100	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P15880	54	K	ubiquitination	ub	ECO:0000269	experimental	32011234;34469731	UniProt	2026_04
+P15880	58	K	ubiquitination	ub	ECO:0000269	experimental	28132843;32011234;34469731	UniProt	2026_04
+P15880	275	K	ubiquitination	ub	ECO:0000269	experimental	28132843	UniProt	2026_04
+P15918	234	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P15927	37	K	ubiquitination	ub	ECO:0000305	by-similarity	26474068	UniProt	2026_04
+P15927	38	K	ubiquitination	ub	ECO:0000305	by-similarity	26474068	UniProt	2026_04
+P16104	14	K	ubiquitination	ub	ECO:0000269	experimental	22980979	UniProt	2026_04
+P16104	16	K	ubiquitination	ub	ECO:0000269	experimental	22980979	UniProt	2026_04
+P16104	120	K	ubiquitination	ub	ECO:0000269	experimental	17709392	UniProt	2026_04
+P16671	469	K	ubiquitination	ub	ECO:0000305	by-similarity	18353783;21610069	UniProt	2026_04
+P16671	472	K	ubiquitination	ub	ECO:0000305	by-similarity	18353783;21610069	UniProt	2026_04
+P17181	501	K	ubiquitination	ub	ECO:0000305	by-similarity	15337770	UniProt	2026_04
+P17181	525	K	ubiquitination	ub	ECO:0000305	by-similarity	15337770	UniProt	2026_04
+P17181	526	K	ubiquitination	ub	ECO:0000305	by-similarity	15337770	UniProt	2026_04
+P17655	280	K	ubiquitination	ub	ECO:0000269	experimental	36964131	UniProt	2026_04
+P17655	674	K	ubiquitination	ub	ECO:0000269	experimental	36964131	UniProt	2026_04
+P18627	498	K	ubiquitination	ub	ECO:0000269	experimental	40101708	UniProt	2026_04
+P18850	152	K	ubiquitination	ub	ECO:0000269	experimental	34623328	UniProt	2026_04
+P19235	281	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P19235	453	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P20671	14	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+P20671	16	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+P20671	120	K	ubiquitination	ub	ECO:0000269	experimental	15386022;16359901;16702407;25470042	UniProt	2026_04
+P20823	117	K	ubiquitination	ub	ECO:0000269	experimental	38018242	UniProt	2026_04
+P21333	42	K	ubiquitination	ub	ECO:0000269	experimental	24052262	UniProt	2026_04
+P21333	43	K	ubiquitination	ub	ECO:0000269	experimental	24052262	UniProt	2026_04
+P21333	135	K	ubiquitination	ub	ECO:0000269	experimental	24052262	UniProt	2026_04
+P21796	12	K	ubiquitination	ub	ECO:0000269	experimental	32047033	UniProt	2026_04
+P21796	20	K	ubiquitination	ub	ECO:0000269	experimental	32047033	UniProt	2026_04
+P21796	53	K	ubiquitination	ub	ECO:0000269	experimental	25621951;32047033	UniProt	2026_04
+P21796	61	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+P21796	109	K	ubiquitination	ub	ECO:0000269	experimental	25621951;32047033	UniProt	2026_04
+P21796	110	K	ubiquitination	ub	ECO:0000269	experimental	25621951;32047033	UniProt	2026_04
+P21796	161	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+P21796	266	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+P21796	274	K	ubiquitination	ub	ECO:0000269	experimental	25621951;32047033	UniProt	2026_04
+P23193	55	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P23396	90	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P23396	202	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P23396	214	K	ubiquitination	ub	ECO:0000269	experimental	28065601;28132843;31981475;32011234;34348161;34469731;39609413;39947182	UniProt	2026_04
+P23527	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+P23527	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16627869;16713563	UniProt	2026_04
+P24385	58	K	ubiquitination	ub	ECO:0000269	experimental	40307251	UniProt	2026_04
+P24385	269	K	ubiquitination	ub	ECO:0000269	experimental	33854235	UniProt	2026_04
+P24864	377	K	ubiquitination	ub	ECO:0000269	experimental	37870100	UniProt	2026_04
+P24928	1268	K	ubiquitination	ub	ECO:0000269;ECO:0000305	experimental	32142649;32142654	UniProt	2026_04
+P25208	140	K	ubiquitination	ub	ECO:0000269	experimental	23332751	UniProt	2026_04
+P25786	115	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P25786	208	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P25963	21	K	ubiquitination	ub	ECO:0000269	experimental	7479976;10574930;20347421	UniProt	2026_04
+P25963	22	K	ubiquitination	ub	ECO:0000269	experimental	7479976;10574930;20347421	UniProt	2026_04
+P27635	188	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P27694	22	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	88	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	163	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	167	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	183	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	220	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	244	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	259	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	267	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	331	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	410	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	431	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	458	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P27694	553	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P29323	891	K	ubiquitination	ub	ECO:0000269	experimental	33280498	UniProt	2026_04
+P29350	308	K	ubiquitination	ub	ECO:0000269	experimental	29925997	UniProt	2026_04
+P29466	134	K	ubiquitination	ub	ECO:0000269	experimental	30065070	UniProt	2026_04
+P29590	380	K	ubiquitination	ub	ECO:0000269	experimental	18408734	UniProt	2026_04
+P29590	400	K	ubiquitination	ub	ECO:0000269	experimental	18408734	UniProt	2026_04
+P29590	401	K	ubiquitination	ub	ECO:0000269	experimental	18408734	UniProt	2026_04
+P29590	476	K	ubiquitination	ub	ECO:0000269	experimental	18408734	UniProt	2026_04
+P30050	48	K	ubiquitination	ub	ECO:0000269	experimental	36638793	UniProt	2026_04
+P30050	83	K	ubiquitination	ub	ECO:0000269	experimental	36638793	UniProt	2026_04
+P31644	355	K	ubiquitination	ub	ECO:0000269	experimental	17370265	UniProt	2026_04
+P31749	284	K	ubiquitination	ub	ECO:0000269	experimental	22410793	UniProt	2026_04
+P33778	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+P33778	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16713563	UniProt	2026_04
+P34896	39	K	ubiquitination	ub	ECO:0000269	experimental	22194612	UniProt	2026_04
+P35244	23	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P35244	39	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P35244	88	K	ubiquitination	ub	ECO:0000269	experimental	26474068	UniProt	2026_04
+P35568	1186	K	ubiquitination	ub	ECO:0000269	experimental	33991522	UniProt	2026_04
+P35568	1189	K	ubiquitination	ub	ECO:0000269	experimental	33991522	UniProt	2026_04
+P36404	71	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P36897	268	K	ubiquitination	ub	ECO:0000269	experimental	33914044	UniProt	2026_04
+P37231	252	K	ubiquitination	ub	ECO:0000269	experimental	36737649	UniProt	2026_04
+P40238	553	K	ubiquitination	ub	ECO:0000269	experimental	19880496	UniProt	2026_04
+P40238	573	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P40305	69	K	ubiquitination	ub	ECO:0000269	experimental	36426955	UniProt	2026_04
+P40763	615	K	ubiquitination	ub	ECO:0000269	experimental	41219491	UniProt	2026_04
+P40763	626	K	ubiquitination	ub	ECO:0000269	experimental	41219491	UniProt	2026_04
+P40763	631	K	ubiquitination	ub	ECO:0000269	experimental	41219491	UniProt	2026_04
+P40763	642	K	ubiquitination	ub	ECO:0000269	experimental	41219491	UniProt	2026_04
+P41220	200	K	ubiquitination	ub	ECO:0000269	experimental	33008920	UniProt	2026_04
+P41235	234	K	ubiquitination	ub	ECO:0000269	experimental	21708125	UniProt	2026_04
+P41235	307	K	ubiquitination	ub	ECO:0000269	experimental	21708125	UniProt	2026_04
+P42224	110	K	ubiquitination	ub	ECO:0000269	experimental	32814877	UniProt	2026_04
+P42345	2066	K	ubiquitination	ub	ECO:0000269	experimental	37979583	UniProt	2026_04
+P43246	845	K	ubiquitination	ub	ECO:0000269	experimental	24882211	UniProt	2026_04
+P43246	847	K	ubiquitination	ub	ECO:0000269	experimental	24882211	UniProt	2026_04
+P43246	871	K	ubiquitination	ub	ECO:0000269	experimental	24882211	UniProt	2026_04
+P43246	892	K	ubiquitination	ub	ECO:0000269	experimental	24882211	UniProt	2026_04
+P43403	544	K	ubiquitination	ub	ECO:0000269	experimental	26903241	UniProt	2026_04
+P45880	31	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+P45880	64	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+P45880	72	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+P45880	120	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+P45880	121	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+P45880	124	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+P45880	172	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P45880	277	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+P45880	285	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+P46531	1759	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P46783	138	K	ubiquitination	ub	ECO:0000269	experimental	28065601;28132843;28685749;32011234;36302773	UniProt	2026_04
+P46783	139	K	ubiquitination	ub	ECO:0000269	experimental	28065601;28132843;28685749;32011234;36302773	UniProt	2026_04
+P46934	1279	K	ubiquitination	ub	ECO:0000269	experimental	32101753	UniProt	2026_04
+P48436	398	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P49959	339	K	ubiquitination	ub	ECO:0000269	experimental	36563124	UniProt	2026_04
+P49959	480	K	ubiquitination	ub	ECO:0000269	experimental	36563124	UniProt	2026_04
+P50542	209	K	ubiquitination	ub	ECO:0000269	experimental	26344566	UniProt	2026_04
+P50542	472	K	ubiquitination	ub	ECO:0000269	experimental	28724525	UniProt	2026_04
+P50542	527	K	ubiquitination	ub	ECO:0000269	experimental	24662292	UniProt	2026_04
+P51149	191	K	ubiquitination	ub	ECO:0000269	experimental	36476874	UniProt	2026_04
+P51149	194	K	ubiquitination	ub	ECO:0000269	experimental	36476874	UniProt	2026_04
+P51153	46	K	ubiquitination	ub	ECO:0000269	experimental	35343654	UniProt	2026_04
+P51153	58	K	ubiquitination	ub	ECO:0000269	experimental	35343654	UniProt	2026_04
+P51571	73	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P51610	105	K	ubiquitination	ub	ECO:0000269	experimental	19815555	UniProt	2026_04
+P51610	163	K	ubiquitination	ub	ECO:0000269	experimental	19815555	UniProt	2026_04
+P51610	244	K	ubiquitination	ub	ECO:0000269	experimental	19815555	UniProt	2026_04
+P51610	363	K	ubiquitination	ub	ECO:0000269	experimental	19815555	UniProt	2026_04
+P51610	1807	K	ubiquitination	ub	ECO:0000269	experimental	19188440	UniProt	2026_04
+P51610	1808	K	ubiquitination	ub	ECO:0000269	experimental	19188440	UniProt	2026_04
+P51617	134	K	ubiquitination	ub	ECO:0000269	experimental	18347055	UniProt	2026_04
+P51617	180	K	ubiquitination	ub	ECO:0000269	experimental	18347055	UniProt	2026_04
+P51665	180	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P52732	1034	K	ubiquitination	ub	ECO:0000269	experimental	37728657	UniProt	2026_04
+P52815	150	K	ubiquitination	ub	ECO:0000269	experimental	37526061	UniProt	2026_04
+P53350	19	K	ubiquitination	ub	ECO:0000269	experimental	18662541	UniProt	2026_04
+P53350	492	K	ubiquitination	ub	ECO:0000269	experimental	23455478	UniProt	2026_04
+P53396	540	K	ubiquitination	ub	ECO:0000269;ECO:0000305	experimental	23932781;27664236	UniProt	2026_04
+P53396	546	K	ubiquitination	ub	ECO:0000269;ECO:0000305	experimental	23932781;27664236	UniProt	2026_04
+P53396	554	K	ubiquitination	ub	ECO:0000269;ECO:0000305	experimental	23932781;27664236	UniProt	2026_04
+P54252	200	K	ubiquitination	ub	ECO:0000269	experimental	23696636	UniProt	2026_04
+P54725	122	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P55061	7	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P56817	501	K	ubiquitination	ub	ECO:0000269	experimental	20484053;27302062	UniProt	2026_04
+P57053	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+P57053	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16627869;16713563	UniProt	2026_04
+P57078	51	K	ubiquitination	ub	ECO:0000269	experimental	21931591	UniProt	2026_04
+P57078	145	K	ubiquitination	ub	ECO:0000269	experimental	21931591	UniProt	2026_04
+P57737	472	K	ubiquitination	ub	ECO:0000269	experimental	24768539	UniProt	2026_04
+P57737	680	K	ubiquitination	ub	ECO:0000269	experimental	24768539	UniProt	2026_04
+P57764	236	K	ubiquitination	ub	ECO:0000269	experimental	40097387	UniProt	2026_04
+P58004	175	K	ubiquitination	ub	ECO:0000269	experimental	35114100	UniProt	2026_04
+P58876	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+P58876	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16627869;16713563	UniProt	2026_04
+P60484	13	K	ubiquitination	ub	ECO:0000269	experimental	18716620	UniProt	2026_04
+P60484	289	K	ubiquitination	ub	ECO:0000269	experimental	18716620	UniProt	2026_04
+P60763	166	K	ubiquitination	ub	ECO:0000269	experimental	24684802	UniProt	2026_04
+P60866	4	K	ubiquitination	ub	ECO:0000269	experimental	28065601;28132843;28685749;32011234;36302773	UniProt	2026_04
+P60866	8	K	ubiquitination	ub	ECO:0000269	experimental	28065601;28132843;28685749;32011234;36302773	UniProt	2026_04
+P61026	102	K	ubiquitination	ub	ECO:0000269	experimental	31540829	UniProt	2026_04
+P61026	136	K	ubiquitination	ub	ECO:0000269	experimental	31540829	UniProt	2026_04
+P61026	154	K	ubiquitination	ub	ECO:0000269	experimental	31540829	UniProt	2026_04
+P61073	331	K	ubiquitination	ub	ECO:0000305	by-similarity	28978524	UniProt	2026_04
+P61221	20	K	ubiquitination	ub	ECO:0000269	experimental	29861391	UniProt	2026_04
+P61586	135	K	ubiquitination	ub	ECO:0000269	experimental	23871831	UniProt	2026_04
+P61956	11	K	ubiquitination	ub	ECO:0000269	experimental	18408734	UniProt	2026_04
+P62191	237	K	ubiquitination	ub	ECO:0000269	experimental	17370265	UniProt	2026_04
+P62277	27	K	ubiquitination	ub	ECO:0000269	experimental	36638793	UniProt	2026_04
+P62495	279	K	ubiquitination	ub	ECO:0000269	experimental	37651229	UniProt	2026_04
+P62745	162	K	ubiquitination	ub	ECO:0000269	experimental	29358211	UniProt	2026_04
+P62745	181	K	ubiquitination	ub	ECO:0000269	experimental	29358211	UniProt	2026_04
+P62805	92	K	ubiquitination	ub	ECO:0000269	experimental	19818714	UniProt	2026_04
+P62807	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+P62807	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16627869;16713563;22121020	UniProt	2026_04
+P62820	49	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P62820	61	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+P62826	71	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P62937	28	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P62979	6	K	ubiquitination	ub	ECO:0000269	experimental	16443603	UniProt	2026_04
+P62979	11	K	ubiquitination	ub	ECO:0000269	experimental	16443603;16543144	UniProt	2026_04
+P62979	27	K	ubiquitination	ub	ECO:0000305	by-similarity	15466860	UniProt	2026_04
+P62979	29	K	ubiquitination	ub	ECO:0000269	experimental	16543144;25752573;25752577;34239127	UniProt	2026_04
+P62979	33	K	ubiquitination	ub	ECO:0000269	experimental	25752577	UniProt	2026_04
+P62979	48	K	ubiquitination	ub	ECO:0000269	experimental	16443603;16543144	UniProt	2026_04
+P62979	63	K	ubiquitination	ub	ECO:0000269	experimental	16543144;18719106	UniProt	2026_04
+P62979	107	K	ubiquitination	ub	ECO:0000269	experimental	36638793	UniProt	2026_04
+P62979	113	K	ubiquitination	ub	ECO:0000269	experimental	32129764;36638793	UniProt	2026_04
+P62987	6	K	ubiquitination	ub	ECO:0000269	experimental	16443603	UniProt	2026_04
+P62987	11	K	ubiquitination	ub	ECO:0000269	experimental	16443603;16543144	UniProt	2026_04
+P62987	27	K	ubiquitination	ub	ECO:0000305	by-similarity	15466860	UniProt	2026_04
+P62987	29	K	ubiquitination	ub	ECO:0000269	experimental	16543144;25752573;25752577;34239127	UniProt	2026_04
+P62987	33	K	ubiquitination	ub	ECO:0000269	experimental	25752577	UniProt	2026_04
+P62987	48	K	ubiquitination	ub	ECO:0000269	experimental	16443603;16543144	UniProt	2026_04
+P62987	63	K	ubiquitination	ub	ECO:0000269	experimental	16543144;18719106	UniProt	2026_04
+P62993	109	K	ubiquitination	ub	ECO:0000269	experimental	34348893	UniProt	2026_04
+P63000	147	K	ubiquitination	ub	ECO:0000269	experimental	18093184;38332367	UniProt	2026_04
+P63000	166	K	ubiquitination	ub	ECO:0000269	experimental	23512198	UniProt	2026_04
+P63092	300	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P63279	18	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P67809	137	K	ubiquitination	ub	ECO:0000269	experimental	18851979	UniProt	2026_04
+P68104	385	K	ubiquitination	ub	ECO:0000269	experimental	36638793	UniProt	2026_04
+P68363	326	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P68363	370	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+P68431	15	K	ubiquitination	ub	ECO:0000269	experimental	27595565;41094145	UniProt	2026_04
+P68431	19	K	ubiquitination	ub	ECO:0000269	experimental	27595565;29053958	UniProt	2026_04
+P68431	24	K	ubiquitination	ub	ECO:0000269	experimental	27595565;29053958	UniProt	2026_04
+P84022	33	K	ubiquitination	ub	ECO:0000305	by-similarity	21947082	UniProt	2026_04
+P84022	81	K	ubiquitination	ub	ECO:0000305	by-similarity	21947082	UniProt	2026_04
+P84243	15	K	ubiquitination	ub	ECO:0000269	experimental	27595565;41094145	UniProt	2026_04
+P84243	19	K	ubiquitination	ub	ECO:0000269	experimental	27595565;29053958	UniProt	2026_04
+P84243	24	K	ubiquitination	ub	ECO:0000269	experimental	27595565;29053958	UniProt	2026_04
+P98155	839	K	ubiquitination	ub	ECO:0000269	experimental	20427281	UniProt	2026_04
+P98170	322	K	ubiquitination	ub	ECO:0000269	experimental	12747801	UniProt	2026_04
+P98170	328	K	ubiquitination	ub	ECO:0000269	experimental	12747801	UniProt	2026_04
+Q00653	855	K	ubiquitination	ub	ECO:0000269	experimental	14676825	UniProt	2026_04
+Q01105	154	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q01628	24	K	ubiquitination	ub	ECO:0000269	experimental	22511783	UniProt	2026_04
+Q01628	83	K	ubiquitination	ub	ECO:0000269	experimental	22511783	UniProt	2026_04
+Q01628	88	K	ubiquitination	ub	ECO:0000269	experimental	22511783	UniProt	2026_04
+Q01628	104	K	ubiquitination	ub	ECO:0000269	experimental	22511783	UniProt	2026_04
+Q01638	321	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q01650	19	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q01650	30	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q02218	534	K	ubiquitination	ub	ECO:0000269	experimental	17370265	UniProt	2026_04
+Q03001	5470	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q03135	5	K	ubiquitination	ub	ECO:0000269	experimental	23335559	UniProt	2026_04
+Q03135	26	K	ubiquitination	ub	ECO:0000269	experimental	23335559	UniProt	2026_04
+Q03135	30	K	ubiquitination	ub	ECO:0000269	experimental	23335559	UniProt	2026_04
+Q03135	39	K	ubiquitination	ub	ECO:0000269	experimental	23335559;28593998	UniProt	2026_04
+Q03135	47	K	ubiquitination	ub	ECO:0000269	experimental	23335559	UniProt	2026_04
+Q03135	57	K	ubiquitination	ub	ECO:0000269	experimental	23335559	UniProt	2026_04
+Q03989	85	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q03989	94	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q04726	720	K	ubiquitination	ub	ECO:0000269	experimental	28689657	UniProt	2026_04
+Q05586	860	K	ubiquitination	ub	ECO:0000269	experimental	37142655	UniProt	2026_04
+Q06330	175	K	ubiquitination	ub	ECO:0000269	experimental	36129980	UniProt	2026_04
+Q06609	57	K	ubiquitination	ub	ECO:0000305	by-similarity	27941124	UniProt	2026_04
+Q06609	58	K	ubiquitination	ub	ECO:0000269;ECO:0000305	experimental	23393192;27941124	UniProt	2026_04
+Q06609	64	K	ubiquitination	ub	ECO:0000269;ECO:0000305	experimental	23393192;27941124	UniProt	2026_04
+Q07812	128	K	ubiquitination	ub	ECO:0000269	experimental	36361894	UniProt	2026_04
+Q07812	190	K	ubiquitination	ub	ECO:0000269	experimental	36361894	UniProt	2026_04
+Q07820	5	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q07820	40	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q07820	136	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q07820	194	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q07820	197	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q09028	4	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q10589	18	K	ubiquitination	ub	ECO:0000269	experimental	20419159	UniProt	2026_04
+Q12770	454	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q12770	466	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q12834	485	K	ubiquitination	ub	ECO:0000269	experimental	21926987	UniProt	2026_04
+Q12834	490	K	ubiquitination	ub	ECO:0000269	experimental	21926987	UniProt	2026_04
+Q12888	1685	K	ubiquitination	ub	ECO:0000269	experimental	23874665	UniProt	2026_04
+Q12905	45	K	ubiquitination	ub	ECO:0000269	experimental	33009960	UniProt	2026_04
+Q12906	297	K	ubiquitination	ub	ECO:0000269	experimental	34110282	UniProt	2026_04
+Q12933	31	K	ubiquitination	ub	ECO:0000269	experimental	19150425	UniProt	2026_04
+Q12933	320	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q13007	122	K	ubiquitination	ub	ECO:0000269	experimental	23078624	UniProt	2026_04
+Q13009	1404	K	ubiquitination	ub	ECO:0000269	experimental	25684205	UniProt	2026_04
+Q13009	1420	K	ubiquitination	ub	ECO:0000269	experimental	25684205	UniProt	2026_04
+Q13077	185	K	ubiquitination	ub	ECO:0000269	experimental	15468071	UniProt	2026_04
+Q13077	193	K	ubiquitination	ub	ECO:0000269	experimental	15468071	UniProt	2026_04
+Q13105	397	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q13105	481	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q13114	168	K	ubiquitination	ub	ECO:0000269	experimental	27438768	UniProt	2026_04
+Q13114	329	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q13144	61	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q13144	103	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q13144	141	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q13144	217	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q13283	36	K	ubiquitination	ub	ECO:0000269	experimental	34739333	UniProt	2026_04
+Q13283	50	K	ubiquitination	ub	ECO:0000269	experimental	34739333	UniProt	2026_04
+Q13283	59	K	ubiquitination	ub	ECO:0000269	experimental	34739333	UniProt	2026_04
+Q13283	64	K	ubiquitination	ub	ECO:0000269	experimental	34739333	UniProt	2026_04
+Q13283	76	K	ubiquitination	ub	ECO:0000305	by-similarity	34739333	UniProt	2026_04
+Q13283	123	K	ubiquitination	ub	ECO:0000305	by-similarity	34739333	UniProt	2026_04
+Q13283	353	K	ubiquitination	ub	ECO:0000305	by-similarity	34739333	UniProt	2026_04
+Q13283	357	K	ubiquitination	ub	ECO:0000305	by-similarity	34739333	UniProt	2026_04
+Q13283	376	K	ubiquitination	ub	ECO:0000305	by-similarity	34739333	UniProt	2026_04
+Q13283	393	K	ubiquitination	ub	ECO:0000305	by-similarity	34739333	UniProt	2026_04
+Q13287	22	K	ubiquitination	ub	ECO:0000269	experimental	26342464	UniProt	2026_04
+Q13330	182	K	ubiquitination	ub	ECO:0000269	experimental	19805145	UniProt	2026_04
+Q13330	626	K	ubiquitination	ub	ECO:0000269	experimental	19805145	UniProt	2026_04
+Q13347	282	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q13426	296	K	ubiquitination	ub	ECO:0000269	experimental	26774286	UniProt	2026_04
+Q13485	519	K	ubiquitination	ub	ECO:0000269	experimental	19135894	UniProt	2026_04
+Q13501	7	K	ubiquitination	ub	ECO:0000269	experimental	40542578	UniProt	2026_04
+Q13501	91	K	ubiquitination	ub	ECO:0000269	experimental	27880896	UniProt	2026_04
+Q13501	189	K	ubiquitination	ub	ECO:0000269	experimental	27880896;40542578	UniProt	2026_04
+Q13501	420	K	ubiquitination	ub	ECO:0000269	experimental	28380357	UniProt	2026_04
+Q13505	187	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q13505	190	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q13505	227	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q13505	317	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q13541	57	K	ubiquitination	ub	ECO:0000305	by-similarity	22578813	UniProt	2026_04
+Q13546	377	K	ubiquitination	ub	ECO:0000269	experimental	16603398;21737329	UniProt	2026_04
+Q13546	571	K	ubiquitination	ub	ECO:0000269	experimental	26900751	UniProt	2026_04
+Q13546	604	K	ubiquitination	ub	ECO:0000269	experimental	26900751	UniProt	2026_04
+Q13546	627	K	ubiquitination	ub	ECO:0000269	experimental	26900751;33311474	UniProt	2026_04
+Q13568	411	K	ubiquitination	ub	ECO:0000269	experimental	18824541	UniProt	2026_04
+Q13568	412	K	ubiquitination	ub	ECO:0000269	experimental	18824541	UniProt	2026_04
+Q13619	33	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q13620	190	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q13635	1426	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q13885	58	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q13885	324	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q14012	59	K	ubiquitination	ub	ECO:0000305	by-similarity	23707388	UniProt	2026_04
+Q14164	30	K	ubiquitination	ub	ECO:0000269	experimental	23453969	UniProt	2026_04
+Q14164	401	K	ubiquitination	ub	ECO:0000269	experimental	23453969	UniProt	2026_04
+Q14318	249	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q14318	271	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q14318	273	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q14318	284	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q14318	307	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q14318	314	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q14318	334	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q14318	340	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q14318	348	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q14318	351	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q14318	352	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q14457	402	K	ubiquitination	ub	ECO:0000269	experimental	28445460	UniProt	2026_04
+Q14457	437	K	ubiquitination	ub	ECO:0000269	experimental	23974797	UniProt	2026_04
+Q14643	917	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q14643	972	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q14643	1581	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q14643	1780	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q14643	1893	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q14643	1894	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q14643	1895	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q14643	1910	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q14643	1933	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q14643	2127	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q14643	2266	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q15004	15	K	ubiquitination	ub	ECO:0000269	experimental	23000965	UniProt	2026_04
+Q15004	24	K	ubiquitination	ub	ECO:0000269	experimental	23000965	UniProt	2026_04
+Q15047	182	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q15047	867	K	ubiquitination	ub	ECO:0000269	experimental	27237050	UniProt	2026_04
+Q15116	233	K	ubiquitination	ub	ECO:0000269	experimental	30487606	UniProt	2026_04
+Q15382	8	K	ubiquitination	ub	ECO:0000269	experimental	30514904	UniProt	2026_04
+Q15386	903	K	ubiquitination	ub	ECO:0000269	experimental	32039437	UniProt	2026_04
+Q15388	35	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q15388	56	K	ubiquitination	ub	ECO:0000269	experimental	24896179;25621951	UniProt	2026_04
+Q15388	61	K	ubiquitination	ub	ECO:0000269	experimental	24896179;25621951	UniProt	2026_04
+Q15388	68	K	ubiquitination	ub	ECO:0000269	experimental	24896179	UniProt	2026_04
+Q15560	58	K	ubiquitination	ub	ECO:0000269	experimental	18655026	UniProt	2026_04
+Q15560	184	K	ubiquitination	ub	ECO:0000269	experimental	41062692	UniProt	2026_04
+Q15836	66	K	ubiquitination	ub	ECO:0000269	experimental	23353890	UniProt	2026_04
+Q15836	68	K	ubiquitination	ub	ECO:0000269	experimental	23353890	UniProt	2026_04
+Q15836	77	K	ubiquitination	ub	ECO:0000269	experimental	23353890	UniProt	2026_04
+Q15884	274	K	ubiquitination	ub	ECO:0000269	experimental	34927784	UniProt	2026_04
+Q15884	329	K	ubiquitination	ub	ECO:0000269	experimental	34927784	UniProt	2026_04
+Q15884	365	K	ubiquitination	ub	ECO:0000269	experimental	34927784	UniProt	2026_04
+Q16186	34	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q16526	11	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q16526	107	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q16526	159	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q16526	329	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q16526	485	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q16526	565	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q16576	4	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q16665	532	K	ubiquitination	ub	ECO:0000305	by-similarity	16862177	UniProt	2026_04
+Q16665	538	K	ubiquitination	ub	ECO:0000305	by-similarity	16862177	UniProt	2026_04
+Q16665	547	K	ubiquitination	ub	ECO:0000305	by-similarity	16862177	UniProt	2026_04
+Q16695	15	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	19	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q16695	24	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q16777	14	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q16777	16	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q16777	120	K	ubiquitination	ub	ECO:0000269	experimental	15386022;16359901;16702407;25470042	UniProt	2026_04
+Q16778	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+Q16778	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16627869;16713563	UniProt	2026_04
+Q2YD98	414	K	ubiquitination	ub	ECO:0000305	by-similarity	32142649	UniProt	2026_04
+Q49AN0	30	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q49AN0	126	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q49AN0	242	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q49AN0	348	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q49AN0	475	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q49AN0	504	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q5QNW6	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+Q5QNW6	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16713563	UniProt	2026_04
+Q5T848	774	K	ubiquitination	ub	ECO:0000269	experimental	18655026	UniProt	2026_04
+Q5TA31	195	K	ubiquitination	ub	ECO:0000305	by-similarity	20852630	UniProt	2026_04
+Q5TA31	223	K	ubiquitination	ub	ECO:0000305	by-similarity	20852630	UniProt	2026_04
+Q5TA31	224	K	ubiquitination	ub	ECO:0000305	by-similarity	20852630	UniProt	2026_04
+Q5TEC6	15	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	19	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q5TEC6	24	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q5VZM2	203	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q5VZM2	281	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q5VZM2	291	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q5VZM2	305	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q68CJ9	294	K	ubiquitination	ub	ECO:0000305	by-similarity	30389664	UniProt	2026_04
+Q6DN03	35	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q6DRA6	35	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q6FI13	14	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q6FI13	16	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q6FI13	120	K	ubiquitination	ub	ECO:0000269	experimental	15386022;16359901;16457589;16702407;25470042	UniProt	2026_04
+Q6IAA8	20	K	ubiquitination	ub	ECO:0000269	experimental	36476874	UniProt	2026_04
+Q6IAA8	31	K	ubiquitination	ub	ECO:0000269	experimental	36476874	UniProt	2026_04
+Q6IAA8	60	K	ubiquitination	ub	ECO:0000269	experimental	36476874	UniProt	2026_04
+Q6IAA8	103	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q6IAA8	104	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q6N021	1299	K	ubiquitination	ub	ECO:0000269	experimental	25557551	UniProt	2026_04
+Q6NXT2	15	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	19	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q6NXT2	24	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q6P6C2	57	K	ubiquitination	ub	ECO:0000269	experimental	37454738	UniProt	2026_04
+Q6PI48	153	K	ubiquitination	ub	ECO:0000269	experimental	39039092	UniProt	2026_04
+Q6PI48	558	K	ubiquitination	ub	ECO:0000269	experimental	39039092	UniProt	2026_04
+Q6PI48	640	K	ubiquitination	ub	ECO:0000269	experimental	39039092	UniProt	2026_04
+Q6R327	274	K	ubiquitination	ub	ECO:0000269	experimental	33378666	UniProt	2026_04
+Q6VEQ5	220	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q70CQ3	235	K	ubiquitination	ub	ECO:0000269	experimental	24896179	UniProt	2026_04
+Q70CQ3	289	K	ubiquitination	ub	ECO:0000269	experimental	24896179	UniProt	2026_04
+Q71DI3	15	K	ubiquitination	ub	ECO:0000269	experimental	27595565;41094145	UniProt	2026_04
+Q71DI3	19	K	ubiquitination	ub	ECO:0000269	experimental	27595565;29053958	UniProt	2026_04
+Q71DI3	24	K	ubiquitination	ub	ECO:0000269	experimental	27595565;29053958	UniProt	2026_04
+Q7L0Q8	177	K	ubiquitination	ub	ECO:0000269	experimental	26598620	UniProt	2026_04
+Q7L0Q8	248	K	ubiquitination	ub	ECO:0000269	experimental	26598620	UniProt	2026_04
+Q7L523	142	K	ubiquitination	ub	ECO:0000269	experimental	25936802	UniProt	2026_04
+Q7L523	220	K	ubiquitination	ub	ECO:0000269	experimental	25936802	UniProt	2026_04
+Q7L523	230	K	ubiquitination	ub	ECO:0000269	experimental	25936802	UniProt	2026_04
+Q7L523	244	K	ubiquitination	ub	ECO:0000269	experimental	25936802	UniProt	2026_04
+Q7L7L0	14	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q7L7L0	16	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q7L7L0	120	K	ubiquitination	ub	ECO:0000269	experimental	15386022;16359901;16702407;25470042	UniProt	2026_04
+Q7LC44	268	K	ubiquitination	ub	ECO:0000269	experimental	24945773	UniProt	2026_04
+Q7LC44	269	K	ubiquitination	ub	ECO:0000269	experimental	24945773	UniProt	2026_04
+Q7Z434	7	K	ubiquitination	ub	ECO:0000269	experimental	26246171	UniProt	2026_04
+Q7Z434	10	K	ubiquitination	ub	ECO:0000269	experimental	27992402	UniProt	2026_04
+Q7Z434	311	K	ubiquitination	ub	ECO:0000269	experimental	27992402	UniProt	2026_04
+Q7Z434	325	K	ubiquitination	ub	ECO:0000269	experimental	29743353	UniProt	2026_04
+Q7Z434	461	K	ubiquitination	ub	ECO:0000269	experimental	27992402	UniProt	2026_04
+Q7Z434	500	K	ubiquitination	ub	ECO:0000269	experimental	26246171	UniProt	2026_04
+Q7Z5B4	202	K	ubiquitination	ub	ECO:0000269	experimental	17370265	UniProt	2026_04
+Q86TG7	311	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q86TG7	314	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q86WV6	20	K	ubiquitination	ub	ECO:0000269	experimental	31968013	UniProt	2026_04
+Q86WV6	150	K	ubiquitination	ub	ECO:0000269	experimental	19285439;21074459	UniProt	2026_04
+Q86WV6	224	K	ubiquitination	ub	ECO:0000269	experimental	28763789	UniProt	2026_04
+Q86WV6	236	K	ubiquitination	ub	ECO:0000269	experimental	31968013	UniProt	2026_04
+Q86WV6	289	K	ubiquitination	ub	ECO:0000269	experimental	36972172	UniProt	2026_04
+Q86WV6	370	K	ubiquitination	ub	ECO:0000269	experimental	36972172	UniProt	2026_04
+Q86X29	638	K	ubiquitination	ub	ECO:0000269	experimental	39587316	UniProt	2026_04
+Q86X55	227	K	ubiquitination	ub	ECO:0000269	experimental	34480022	UniProt	2026_04
+Q8IUC6	229	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q8IUC6	523	K	ubiquitination	ub	ECO:0000269	experimental	31511519	UniProt	2026_04
+Q8IUE6	14	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q8IUE6	16	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q8IUE6	120	K	ubiquitination	ub	ECO:0000269	experimental	15386022;16359901;16702407;25470042	UniProt	2026_04
+Q8IVP5	119	K	ubiquitination	ub	ECO:0000269	experimental	33978709	UniProt	2026_04
+Q8IWT3	87	K	ubiquitination	ub	ECO:0000269	experimental	38605244	UniProt	2026_04
+Q8IWV8	94	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IWV8	158	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IWV8	165	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IWV8	248	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IWV8	255	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IWV8	470	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IWV8	488	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IWV8	568	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IWV8	779	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IWV8	789	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IWV8	1496	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IWV8	1599	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IWV8	1689	K	ubiquitination	ub	ECO:0000269	experimental	38225265	UniProt	2026_04
+Q8IX12	637	K	ubiquitination	ub	ECO:0000269	experimental	18655026	UniProt	2026_04
+Q8IXI1	96	K	ubiquitination	ub	ECO:0000269	experimental	27605430	UniProt	2026_04
+Q8IXI1	119	K	ubiquitination	ub	ECO:0000269	experimental	27605430	UniProt	2026_04
+Q8IXI1	164	K	ubiquitination	ub	ECO:0000269	experimental	27605430	UniProt	2026_04
+Q8IXI2	153	K	ubiquitination	ub	ECO:0000269	experimental	27605430	UniProt	2026_04
+Q8IXI2	235	K	ubiquitination	ub	ECO:0000269	experimental	27605430	UniProt	2026_04
+Q8IXI2	572	K	ubiquitination	ub	ECO:0000269	experimental	27605430	UniProt	2026_04
+Q8N0X7	362	K	ubiquitination	ub	ECO:0000269	experimental	19580544	UniProt	2026_04
+Q8N122	932	K	ubiquitination	ub	ECO:0000305	by-similarity	35927303	UniProt	2026_04
+Q8N122	948	K	ubiquitination	ub	ECO:0000305	by-similarity	35927303	UniProt	2026_04
+Q8N257	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+Q8N257	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16627869;16713563	UniProt	2026_04
+Q8N4S9	412	K	ubiquitination	ub	ECO:0000269	experimental	39587316	UniProt	2026_04
+Q8N5C8	649	K	ubiquitination	ub	ECO:0000269	experimental	36593296	UniProt	2026_04
+Q8N6T7	170	K	ubiquitination	ub	ECO:0000269	experimental	24043303	UniProt	2026_04
+Q8N884	173	K	ubiquitination	ub	ECO:0000269	experimental	28273161	UniProt	2026_04
+Q8N884	285	K	ubiquitination	ub	ECO:0000269	experimental	27637147	UniProt	2026_04
+Q8N884	347	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q8N884	384	K	ubiquitination	ub	ECO:0000269	experimental	28273161	UniProt	2026_04
+Q8N884	411	K	ubiquitination	ub	ECO:0000269	experimental	35503863	UniProt	2026_04
+Q8N884	414	K	ubiquitination	ub	ECO:0000269	experimental	27666593	UniProt	2026_04
+Q8N884	427	K	ubiquitination	ub	ECO:0000269	experimental	38418882	UniProt	2026_04
+Q8N884	428	K	ubiquitination	ub	ECO:0000269	experimental	38418882	UniProt	2026_04
+Q8N884	479	K	ubiquitination	ub	ECO:0000269	experimental	27637147	UniProt	2026_04
+Q8NB16	50	K	ubiquitination	ub	ECO:0000269	experimental	34999730	UniProt	2026_04
+Q8NB16	66	K	ubiquitination	ub	ECO:0000269	experimental	34999730	UniProt	2026_04
+Q8NB16	78	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q8NB16	183	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q8NB16	230	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q8NB16	331	K	ubiquitination	ub	ECO:0000269	experimental	34999730	UniProt	2026_04
+Q8NCM2	785	K	ubiquitination	ub	ECO:0000269	experimental	18655026	UniProt	2026_04
+Q8NFC6	2981	K	ubiquitination	ub	ECO:0000269	experimental	17370265	UniProt	2026_04
+Q8NFC6	2982	K	ubiquitination	ub	ECO:0000269	experimental	17370265	UniProt	2026_04
+Q8NFU7	1589	K	ubiquitination	ub	ECO:0000269	experimental	36056023	UniProt	2026_04
+Q8TB36	50	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q8TB36	172	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q8TB36	173	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q8TB36	188	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q8TB36	190	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q8TB36	203	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q8TB36	206	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q8TB36	207	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q8TB36	214	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q8TDD2	58	K	ubiquitination	ub	ECO:0000269	experimental	23457570	UniProt	2026_04
+Q8TDD2	230	K	ubiquitination	ub	ECO:0000269	experimental	23457570	UniProt	2026_04
+Q8TF40	1119	K	ubiquitination	ub	ECO:0000269	experimental	30699359	UniProt	2026_04
+Q8WTW4	158	K	ubiquitination	ub	ECO:0000269	experimental	36528027	UniProt	2026_04
+Q8WTW4	357	K	ubiquitination	ub	ECO:0000269	experimental	36528027	UniProt	2026_04
+Q8WXG1	206	K	ubiquitination	ub	ECO:0000269	experimental	31812350	UniProt	2026_04
+Q92574	30	K	ubiquitination	ub	ECO:0000269	experimental	33215753	UniProt	2026_04
+Q92581	475	K	ubiquitination	ub	ECO:0000269	experimental	17370265	UniProt	2026_04
+Q92819	190	K	ubiquitination	ub	ECO:0000269	experimental	20507985	UniProt	2026_04
+Q92985	375	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q93009	869	K	ubiquitination	ub	ECO:0000269	experimental	17651432	UniProt	2026_04
+Q93077	14	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q93077	16	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q93077	120	K	ubiquitination	ub	ECO:0000269	experimental	15386022;16359901;16702407;25470042	UniProt	2026_04
+Q93079	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+Q93079	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16627869;16713563	UniProt	2026_04
+Q969V5	52	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q969V5	273	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q969V5	299	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q969Z3	59	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q969Z3	138	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q969Z3	144	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q969Z3	156	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q969Z3	166	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q969Z3	173	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q969Z3	187	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q969Z3	287	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q969Z3	294	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q96A08	36	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q96A08	122	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16713563	UniProt	2026_04
+Q96AD5	92	K	ubiquitination	ub	ECO:0000269	experimental	34903883	UniProt	2026_04
+Q96B01	251	K	ubiquitination	ub	ECO:0000305	by-similarity	31400850	UniProt	2026_04
+Q96D42	338	K	ubiquitination	ub	ECO:0000269	experimental	29742433	UniProt	2026_04
+Q96D42	346	K	ubiquitination	ub	ECO:0000269	experimental	29742433	UniProt	2026_04
+Q96F44	458	K	ubiquitination	ub	ECO:0000269	experimental	27498865	UniProt	2026_04
+Q96J92	157	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	175	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	186	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	226	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	241	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	328	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	387	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	393	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	450	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	454	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	1010	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	1144	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	1157	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96J92	1158	K	ubiquitination	ub	ECO:0000269	experimental	23576762	UniProt	2026_04
+Q96KK5	14	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q96KK5	16	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q96KK5	120	K	ubiquitination	ub	ECO:0000269	experimental	15386022;16359901;16702407;25470042	UniProt	2026_04
+Q96LA8	369	K	ubiquitination	ub	ECO:0000269	experimental	32828318	UniProt	2026_04
+Q96MM3	231	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q96MM3	233	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q96P20	324	K	ubiquitination	ub	ECO:0000269	experimental	37575012	UniProt	2026_04
+Q96P20	430	K	ubiquitination	ub	ECO:0000269	experimental	37575012	UniProt	2026_04
+Q96P20	689	K	ubiquitination	ub	ECO:0000269	experimental	26037928	UniProt	2026_04
+Q96P20	878	K	ubiquitination	ub	ECO:0000269	experimental	34615873	UniProt	2026_04
+Q96P20	927	K	ubiquitination	ub	ECO:0000269	experimental	34615873	UniProt	2026_04
+Q96P20	973	K	ubiquitination	ub	ECO:0000269	experimental	34615873	UniProt	2026_04
+Q96QV6	14	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q96QV6	16	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q96QV6	120	K	ubiquitination	ub	ECO:0000269	experimental	15386022;16359901;16702407;25470042	UniProt	2026_04
+Q96S55	81	K	ubiquitination	ub	ECO:0000269	experimental	17550899	UniProt	2026_04
+Q96S55	141	K	ubiquitination	ub	ECO:0000269	experimental	17550899	UniProt	2026_04
+Q96S55	225	K	ubiquitination	ub	ECO:0000269	experimental	17550899	UniProt	2026_04
+Q96S55	301	K	ubiquitination	ub	ECO:0000269	experimental	17550899	UniProt	2026_04
+Q96S55	310	K	ubiquitination	ub	ECO:0000269	experimental	17550899	UniProt	2026_04
+Q96S55	316	K	ubiquitination	ub	ECO:0000269	experimental	17550899	UniProt	2026_04
+Q96S55	322	K	ubiquitination	ub	ECO:0000269	experimental	17550899	UniProt	2026_04
+Q96S55	335	K	ubiquitination	ub	ECO:0000269	experimental	17550899	UniProt	2026_04
+Q96S55	482	K	ubiquitination	ub	ECO:0000269	experimental	17550899	UniProt	2026_04
+Q96S55	627	K	ubiquitination	ub	ECO:0000269	experimental	17550899	UniProt	2026_04
+Q96S55	633	K	ubiquitination	ub	ECO:0000269	experimental	17550899	UniProt	2026_04
+Q96S55	636	K	ubiquitination	ub	ECO:0000269	experimental	17550899	UniProt	2026_04
+Q99453	185	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q99496	112	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q99550	784	K	ubiquitination	ub	ECO:0000269	experimental	30375385	UniProt	2026_04
+Q99755	103	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q99835	440	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q99835	444	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q99873	145	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q99877	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+Q99877	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16627869;16713563	UniProt	2026_04
+Q99878	14	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q99878	16	K	ubiquitination	ub	ECO:0000269	experimental	22713238;22980979	UniProt	2026_04
+Q99878	120	K	ubiquitination	ub	ECO:0000269	experimental	15386022;16359901;16702407;25470042	UniProt	2026_04
+Q99879	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+Q99879	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16713563	UniProt	2026_04
+Q99880	35	K	ubiquitination	ub	ECO:0000269	experimental	21726816	UniProt	2026_04
+Q99880	121	K	ubiquitination	ub	ECO:0000269	experimental	16307923;16627869;16713563	UniProt	2026_04
+Q9BQ95	372	K	ubiquitination	ub	ECO:0000269	experimental	25355951	UniProt	2026_04
+Q9BRJ7	10	K	ubiquitination	ub	ECO:0000269	experimental	28241136	UniProt	2026_04
+Q9BRJ7	151	K	ubiquitination	ub	ECO:0000269	experimental	28241136	UniProt	2026_04
+Q9BT92	50	K	ubiquitination	ub	ECO:0000305	by-similarity	25270598	UniProt	2026_04
+Q9BT92	57	K	ubiquitination	ub	ECO:0000305	by-similarity	25270598	UniProt	2026_04
+Q9BUZ4	263	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9BVA1	58	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9BVA1	324	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9BVC4	305	K	ubiquitination	ub	ECO:0000269	experimental	28489822	UniProt	2026_04
+Q9BVC4	313	K	ubiquitination	ub	ECO:0000269	experimental	28489822	UniProt	2026_04
+Q9BXW9	561	K	ubiquitination	ub	ECO:0000269	experimental	11239454;19111657;20603015;20603016;20603073;36385258	UniProt	2026_04
+Q9BYF1	788	K	ubiquitination	ub	ECO:0000269	experimental	36876523	UniProt	2026_04
+Q9BZS1	250	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9BZS1	252	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9BZS1	263	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9BZS1	268	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9BZS1	393	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9C0B1	162	K	ubiquitination	ub	ECO:0000269	experimental	39661064	UniProt	2026_04
+Q9C0C7	45	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9GZV5	46	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9H040	341	K	ubiquitination	ub	ECO:0000269	experimental	27871365	UniProt	2026_04
+Q9H040	376	K	ubiquitination	ub	ECO:0000269	experimental	27871365	UniProt	2026_04
+Q9H040	414	K	ubiquitination	ub	ECO:0000269	experimental	27871365	UniProt	2026_04
+Q9H040	435	K	ubiquitination	ub	ECO:0000269	experimental	27871365	UniProt	2026_04
+Q9H257	125	K	ubiquitination	ub	ECO:0000269	experimental	26488816;31296852;33093067	UniProt	2026_04
+Q9H3M7	212	K	ubiquitination	ub	ECO:0000269	experimental	20068034	UniProt	2026_04
+Q9HAU4	119	K	ubiquitination	ub	ECO:0000269	experimental	31076633	UniProt	2026_04
+Q9HAZ2	122	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9HAZ2	321	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9HAZ2	578	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9HAZ2	778	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9HAZ2	790	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9HAZ2	832	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9HCC9	87	K	ubiquitination	ub	ECO:0000269	experimental	19460345	UniProt	2026_04
+Q9HCE7	381	K	ubiquitination	ub	ECO:0000269	experimental	21572392	UniProt	2026_04
+Q9HCE7	383	K	ubiquitination	ub	ECO:0000269	experimental	21572392	UniProt	2026_04
+Q9HD36	119	K	ubiquitination	ub	ECO:0000269	experimental	23563182	UniProt	2026_04
+Q9HD36	120	K	ubiquitination	ub	ECO:0000269	experimental	23563182	UniProt	2026_04
+Q9HD36	128	K	ubiquitination	ub	ECO:0000269	experimental	23563182	UniProt	2026_04
+Q9NPD8	91	K	ubiquitination	ub	ECO:0000269	experimental	16916645;19111657	UniProt	2026_04
+Q9NPD8	182	K	ubiquitination	ub	ECO:0000269	experimental	19111657	UniProt	2026_04
+Q9NRI5	372	K	ubiquitination	ub	ECO:0000269	experimental	28727686	UniProt	2026_04
+Q9NTX7	85	K	ubiquitination	ub	ECO:0000269	experimental	21825151	UniProt	2026_04
+Q9NTX7	95	K	ubiquitination	ub	ECO:0000269	experimental	21825151	UniProt	2026_04
+Q9NTX7	131	K	ubiquitination	ub	ECO:0000269	experimental	21825151	UniProt	2026_04
+Q9NTX7	176	K	ubiquitination	ub	ECO:0000269	experimental	21825151	UniProt	2026_04
+Q9NUQ9	74	K	ubiquitination	ub	ECO:0000269	experimental	31285585	UniProt	2026_04
+Q9NVI1	523	K	ubiquitination	ub	ECO:0000269	experimental	17412408;17460694;19589784;36385258	UniProt	2026_04
+Q9NVJ2	141	K	ubiquitination	ub	ECO:0000269	experimental	27808481	UniProt	2026_04
+Q9NYJ8	611	K	ubiquitination	ub	ECO:0000269	experimental	36681779	UniProt	2026_04
+Q9NZ45	42	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9NZ45	55	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9NZ45	68	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9NZ45	78	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9NZ45	79	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9NZ45	89	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9NZ45	104	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9NZ45	105	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9NZ45	106	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9UBV8	137	K	ubiquitination	ub	ECO:0000305	by-similarity	27716508	UniProt	2026_04
+Q9UBZ4	371	K	ubiquitination	ub	ECO:0000269	experimental	38705397	UniProt	2026_04
+Q9UHD2	30	K	ubiquitination	ub	ECO:0000269	experimental	23453971	UniProt	2026_04
+Q9UHD2	401	K	ubiquitination	ub	ECO:0000269	experimental	23453971	UniProt	2026_04
+Q9UHD2	670	K	ubiquitination	ub	ECO:0000269	experimental	22388039;27692986	UniProt	2026_04
+Q9UHP3	99	K	ubiquitination	ub	ECO:0000269	experimental	19440361	UniProt	2026_04
+Q9UHW5	216	K	ubiquitination	ub	ECO:0000269	experimental	29029378	UniProt	2026_04
+Q9UJV9	9	K	ubiquitination	ub	ECO:0000269	experimental	23222971	UniProt	2026_04
+Q9UJV9	115	K	ubiquitination	ub	ECO:0000269	experimental	23222971	UniProt	2026_04
+Q9UKC9	201	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9UL17	314	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9ULZ3	55	K	ubiquitination	ub	ECO:0000269	experimental	34706239	UniProt	2026_04
+Q9ULZ3	174	K	ubiquitination	ub	ECO:0000269	experimental	25847972	UniProt	2026_04
+Q9UMX1	257	K	ubiquitination	ub	ECO:0000269	experimental	27234298	UniProt	2026_04
+Q9UMX3	25	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9UMX3	32	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9UMX3	159	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9UMX3	176	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9UNE7	2	K	ubiquitination	ub	ECO:0000269	experimental	23560854	UniProt	2026_04
+Q9UNE7	22	K	ubiquitination	ub	ECO:0000269	experimental	18042044	UniProt	2026_04
+Q9UNE7	221	K	ubiquitination	ub	ECO:0000269	experimental	18042044	UniProt	2026_04
+Q9UNE7	255	K	ubiquitination	ub	ECO:0000269	experimental	18042044	UniProt	2026_04
+Q9Y253	682	K	ubiquitination	ub	ECO:0000269	experimental	20159558	UniProt	2026_04
+Q9Y253	686	K	ubiquitination	ub	ECO:0000269	experimental	20159558	UniProt	2026_04
+Q9Y253	694	K	ubiquitination	ub	ECO:0000269	experimental	20159558	UniProt	2026_04
+Q9Y253	709	K	ubiquitination	ub	ECO:0000269	experimental	20159558	UniProt	2026_04
+Q9Y277	53	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y277	61	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y277	109	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y277	110	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y277	163	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y277	266	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y277	274	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2J4	347	K	ubiquitination	ub	ECO:0000269	experimental	26598551;34404733	UniProt	2026_04
+Q9Y2J4	408	K	ubiquitination	ub	ECO:0000269	experimental	26598551;34404733	UniProt	2026_04
+Q9Y2N7	467	K	ubiquitination	ub	ECO:0000269	experimental	12538644	UniProt	2026_04
+Q9Y2N7	570	K	ubiquitination	ub	ECO:0000269	experimental	12538644	UniProt	2026_04
+Q9Y2W6	65	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	76	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	110	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	112	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	152	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	175	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	181	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	187	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	193	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	256	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	267	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	479	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	510	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y2W6	529	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y3E5	47	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y3E5	76	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y3E5	81	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y3E5	95	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y3E5	106	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y3E5	115	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y3E5	171	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y3E5	177	K	ubiquitination	ub	ECO:0000269	experimental	25621951	UniProt	2026_04
+Q9Y3E7	179	K	ubiquitination	ub		by-similarity		UniProt	2026_04
+Q9Y467	911	K	ubiquitination	ub	ECO:0000269	experimental	18655026	UniProt	2026_04
+Q9Y4H2	1331	K	ubiquitination	ub	ECO:0000269	experimental	25879670	UniProt	2026_04
+Q9Y4K3	124	K	ubiquitination	ub	ECO:0000269	experimental	17135271;19825828	UniProt	2026_04
+Q9Y4K3	319	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9Y572	42	K	ubiquitination	ub	ECO:0000269	experimental	33369872	UniProt	2026_04
+Q9Y572	55	K	ubiquitination	ub	ECO:0000269	experimental	26900751	UniProt	2026_04
+Q9Y572	89	K	ubiquitination	ub	ECO:0000269	experimental	26900751	UniProt	2026_04
+Q9Y572	351	K	ubiquitination	ub	ECO:0000269	experimental	33369872	UniProt	2026_04
+Q9Y572	363	K	ubiquitination	ub	ECO:0000269	experimental	26900751;29883609	UniProt	2026_04
+Q9Y572	501	K	ubiquitination	ub	ECO:0000269	experimental	26900751	UniProt	2026_04
+Q9Y572	518	K	ubiquitination	ub	ECO:0000269	experimental	33369872	UniProt	2026_04
+Q9Y6K9	111	K	ubiquitination	ub	ECO:0000269	experimental	21455181	UniProt	2026_04
+Q9Y6K9	139	K	ubiquitination	ub	ECO:0000269	experimental	21455181	UniProt	2026_04
+Q9Y6K9	143	K	ubiquitination	ub	ECO:0000269	experimental	21455181	UniProt	2026_04
+Q9Y6K9	226	K	ubiquitination	ub	ECO:0000269	experimental	21455181	UniProt	2026_04
+Q9Y6K9	246	K	ubiquitination	ub	ECO:0000269	experimental	21455181	UniProt	2026_04
+Q9Y6K9	264	K	ubiquitination	ub	ECO:0000269	experimental	21455181	UniProt	2026_04
+Q9Y6K9	277	K	ubiquitination	ub	ECO:0000269	experimental	14651848;21455181	UniProt	2026_04
+Q9Y6K9	283	K	ubiquitination	ub	ECO:0000269	experimental	21455181	UniProt	2026_04
+Q9Y6K9	285	K	ubiquitination	ub	ECO:0000269	experimental	15620648;17562858;19136968;21455181	UniProt	2026_04
+Q9Y6K9	292	K	ubiquitination	ub	ECO:0000269	experimental	21455181	UniProt	2026_04
+Q9Y6K9	302	K	ubiquitination	ub	ECO:0000269	experimental	21455181	UniProt	2026_04
+Q9Y6K9	309	K	ubiquitination	ub	ECO:0000269	experimental	14651848;19136968;20010814;21455181	UniProt	2026_04
+Q9Y6K9	321	K	ubiquitination	ub	ECO:0000269	experimental	20010814	UniProt	2026_04
+Q9Y6K9	325	K	ubiquitination	ub	ECO:0000250	by-similarity		UniProt	2026_04
+Q9Y6K9	399	K	ubiquitination	ub	ECO:0000269	experimental	14695475	UniProt	2026_04

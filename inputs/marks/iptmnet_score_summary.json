@@ -1,17 +1,17 @@
 {
   "dropped": {
     "enzyme_row": 23643,
-    "not_in_reference": 286809,
-    "on_an_isoform": 26116,
-    "other_ptm_type_or_residue": 221244,
-    "residue_mismatch": 1806,
+    "not_in_reference": 331220,
+    "on_an_isoform": 27456,
+    "other_ptm_type_or_residue": 70695,
+    "residue_mismatch": 2177,
     "unparsed_site": 517
   },
   "file": "iptmnet_6_2_score.tsv",
-  "file_md5": "926635c7f4f50ba447fc0ecd952010e9",
+  "file_md5": "ed097f2d5b773233dcdf1999ada1579d",
   "iptmnet_release": "6.2",
   "license": "CC BY-NC-SA 4.0 (iPTMnet license page and download readme; the readme also mentions CC BY 4.0, the stricter terms are followed)",
-  "plain_and_suffix_1_accession_conflicts": 25435,
+  "plain_and_suffix_1_accession_conflicts": 25444,
   "raw_files": {
     "readme.txt": "iptmnet_readme.txt",
     "score.txt": "iptmnet_score.txt"
@@ -24,11 +24,13 @@
   "records_in_download": 851361,
   "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
   "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
-  "rows": 265460,
+  "rows": 369861,
   "rows_by_mark": {
     "lysine_acylation": 22537,
     "methyllysine": 4943,
-    "phosphorylation": 237980
+    "phosphorylation": 237980,
+    "sumoylation": 8262,
+    "ubiquitination": 96139
   },
   "rows_by_score": {
     "lysine_acylation": {
@@ -49,6 +51,16 @@
       "2": 37892,
       "3": 4337,
       "4": 5205
+    },
+    "sumoylation": {
+      "1": 8236,
+      "2": 26
+    },
+    "ubiquitination": {
+      "1": 95594,
+      "2": 183,
+      "3": 298,
+      "4": 64
     }
   },
   "score_range_in_download": [

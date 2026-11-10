@@ -3,21 +3,25 @@
     "not_human": 273145,
     "not_in_reference": 283,
     "on_an_isoform": 18652,
-    "other_ptm_type": 32805,
-    "other_residue": 8888,
+    "other_ptm_type": 32107,
+    "other_residue": 8890,
     "residue_mismatch": 483
   },
   "files": {
     "lysine_acylation": "iptmnet_6_2_lysine_acylation_sites.tsv",
     "methylarginine": "iptmnet_6_2_methylarginine_crosscheck.tsv",
     "methyllysine": "iptmnet_6_2_methyllysine_sites.tsv",
-    "phosphorylation": "iptmnet_6_2_phosphorylation_sites.tsv"
+    "phosphorylation": "iptmnet_6_2_phosphorylation_sites.tsv",
+    "sumoylation": "iptmnet_6_2_sumoylation_sites.tsv",
+    "ubiquitination": "iptmnet_6_2_ubiquitination_sites.tsv"
   },
   "files_md5": {
     "lysine_acylation": "35ab50913b2d59418691d6b38218ad7c",
     "methylarginine": "e72a2c1936819bff406ba7a723d9fedf",
     "methyllysine": "52eafbede475420ce5febefa02a6aef3",
-    "phosphorylation": "259d6fb0456e5451afffccd0d7af5c6b"
+    "phosphorylation": "259d6fb0456e5451afffccd0d7af5c6b",
+    "sumoylation": "971fe9cd985ee571f6b9dcd7242445f4",
+    "ubiquitination": "b77231d3c02dd876e8c34b7a90200fe0"
   },
   "human_records": 164926,
   "iptmnet_release": "6.2",
@@ -37,7 +41,9 @@
     "lysine_acylation": 2672,
     "methylarginine": 807,
     "methyllysine": 234,
-    "phosphorylation": 64117
+    "phosphorylation": 64117,
+    "sumoylation": 33,
+    "ubiquitination": 610
   },
   "rows_by_evidence_class": {
     "lysine_acylation": {
@@ -56,6 +62,13 @@
       "experimental": 49389,
       "text-mined": 3036,
       "unspecified": 11692
+    },
+    "sumoylation": {
+      "experimental": 33
+    },
+    "ubiquitination": {
+      "experimental": 61,
+      "unspecified": 549
     }
   },
   "rows_by_state": {
@@ -70,6 +83,12 @@
     },
     "phosphorylation": {
       "phospho": 64117
+    },
+    "sumoylation": {
+      "sumo": 33
+    },
+    "ubiquitination": {
+      "ub": 610
     }
   },
   "rows_by_upstream_source": {
@@ -97,6 +116,14 @@
       "rlim+": 356,
       "sign": 3824,
       "unip": 30455
+    },
+    "sumoylation": {
+      "pro": 33
+    },
+    "ubiquitination": {
+      "iedb": 1,
+      "pro": 60,
+      "unip": 600
     }
   },
   "source": "iPTMnet ptm.txt (Protein Information Resource)",

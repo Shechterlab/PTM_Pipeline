@@ -1,0 +1,60 @@
+{
+  "checks": {
+    "accession_not_in_canonical_fasta": 14522,
+    "canonical_not_K": 906,
+    "identical_sequence": 121856,
+    "window_match": 1897,
+    "window_mismatch": 86
+  },
+  "cplm_release": "CPLM 4.0 (2021-06-13)",
+  "dropped": {
+    "accession_not_in_canonical_fasta": 14522,
+    "canonical_not_K": 906,
+    "window_mismatch": 86
+  },
+  "files": {
+    "ubiquitination": "cplm_4_0_ubiquitination_sites.tsv"
+  },
+  "files_md5": {
+    "ubiquitination": "3f7f41e7b4fff0d9024fe3318a403469"
+  },
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\"); included by the owner's decision of 2026-11-10, on the same terms as the methylation sites (decision of 2026-11-09): cited, pending the authors' permission",
+  "proteins": 11839,
+  "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
+  "raw_files": {
+    "Ubiquitination.zip": "Ubiquitination.zip"
+  },
+  "raw_md5": {
+    "Ubiquitination.zip": "840b08f08e6b27062cdba60e43bef70c"
+  },
+  "raw_member": "Ubiquitination.txt (2021-06-13T21:24:18)",
+  "raw_sha256": {
+    "Ubiquitination.zip": "6fbaffc110b5e233c143b38c344beafef0ea019df84fa26a2e07780fe8c79cb3"
+  },
+  "records_in_download": 235888,
+  "records_in_scope": 139267,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "ubiquitination": 123753
+  },
+  "rows_by_cplm_evidence": {
+    "Dat.": 48150,
+    "Exp.": 18409,
+    "Exp./Dat.": 57194
+  },
+  "rows_by_evidence_class": {
+    "ubiquitination": {
+      "experimental": 75603,
+      "unspecified": 48150
+    }
+  },
+  "rows_by_state": {
+    "ubiquitination": {
+      "ub": 123753
+    }
+  },
+  "rows_with_pubmed_ids": 123008,
+  "source": "CPLM 4.0 Ubiquitination download (cplm.biocuckoo.cn)",
+  "url": "https://cplm.biocuckoo.cn/Download/Ubiquitination.zip"
+}
