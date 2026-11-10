@@ -42,4 +42,4 @@ The methyllysine table includes all 5,356 validated human lysine methylation sit
 
 The two acylation tables hold the lysine acylation (13 acyl types of UniProt's N6-acyl lysine terms, and iPTMnet's acetylation) of UniProt and iPTMnet, with `acyl_type` in place of `state`; `human_acetylation_sites_v1.5.0.tsv` repeats the acetyl rows because they are over half of them. Both sources are openly licensed (UniProt CC BY 4.0, iPTMnet CC BY-NC-SA 4.0).
 
-Code: `scripts/39_stage_cplm4_lys_methylation.py`, `scripts/54_stage_uniprot_ptm_sites.py`, `scripts/55_stage_iptmnet_ptm_sites.py`, `scripts/57_stage_berryhill_lys_methylation.py`, `scripts/58_stage_ochoa_phosphorylation sites.py`, `scripts/59_stage_iptmnet_scores.py`, `scripts/56_build_context_marks.py`; staged tables in `inputs/marks/`.
+Code: `scripts/39_stage_cplm4_lys_methylation.py`, `scripts/54_stage_uniprot_ptm_sites.py`, `scripts/55_stage_iptmnet_ptm_sites.py`, `scripts/57_stage_berryhill_lys_methylation.py`, `scripts/58_stage_ochoa_phosphosites.py`, `scripts/59_stage_iptmnet_scores.py`, `scripts/56_build_context_marks.py`; staged tables in `inputs/marks/`.

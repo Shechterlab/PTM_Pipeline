@@ -97,7 +97,7 @@ Each count is of source records. UniProt: 667 on an isoform, 2 residue mismatch;
 
 ### How the context marks were made
 
-`python scripts/54_stage_uniprot_ptm_sites.py`, `python scripts/55_stage_iptmnet_ptm_sites.py` and `python scripts/39_stage_cplm4_lys_methylation.py --marks-dir inputs/marks`, `python scripts/57_stage_berryhill_lys_methylation.py`, `python scripts/58_stage_ochoa_phosphorylation sites.py` and `python scripts/59_stage_iptmnet_scores.py` (inputs in `inputs/marks/`, downloads listed in `inputs/marks/raw_files.tsv`), then `python scripts/56_build_context_marks.py --version v1.5.0 --release-date 2026-11-10` at commit `bdc0ed4f4b641747db45abceba7f5ab5077de1ce` of https://github.com/Shechterlab/PTM_Pipeline.
+`python scripts/54_stage_uniprot_ptm_sites.py`, `python scripts/55_stage_iptmnet_ptm_sites.py` and `python scripts/39_stage_cplm4_lys_methylation.py --marks-dir inputs/marks`, `python scripts/57_stage_berryhill_lys_methylation.py`, `python scripts/58_stage_ochoa_phosphosites.py` and `python scripts/59_stage_iptmnet_scores.py` (inputs in `inputs/marks/`, downloads listed in `inputs/marks/raw_files.tsv`), then `python scripts/56_build_context_marks.py --version v1.5.0 --release-date 2026-11-10` at commit `ed5b4955940ccc1f9cef7a801f038a519ead1504` of https://github.com/Shechterlab/PTM_Pipeline.
 
 ### Cite
 
