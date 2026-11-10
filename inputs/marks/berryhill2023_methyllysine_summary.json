@@ -1,0 +1,58 @@
+{
+  "article_url": "https://www.nature.com/articles/s41598-022-27175-x",
+  "files": {
+    "rejected": "berryhill2023_methyllysine_rejected.tsv",
+    "validated": "berryhill2023_methyllysine_sites.tsv"
+  },
+  "files_md5": {
+    "rejected": "2f805713fe1a2fd6bca28b10177bc4a6",
+    "validated": "d74ae742d754efbf6de477c4d0d9c543"
+  },
+  "input_rows": 6576,
+  "input_rows_by_state": {
+    "m1": 2680,
+    "m2": 1746,
+    "m3": 2150
+  },
+  "licence": "article CC BY 4.0; supplementary files carry no separate notice; included by the owner's decision (2026-11-10)",
+  "raw_file": "berryhill2023_41598_2022_27175_MOESM2_ESM.xlsx",
+  "raw_md5": "40ae31144ffe942281ad796f62b16261",
+  "raw_sha256": "cf4061c0d65c7bf972e9b391d209d75aaa5db86b832fcc468f218fe0922ac957",
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rejected_by_reason": {
+    "accession_not_in_reference": 8,
+    "peptide_not_in_canonical": 3,
+    "peptide_not_unique": 6
+  },
+  "relocated_sites": 84,
+  "row_status": {
+    "accession_not_in_reference": 8,
+    "kept": 6457,
+    "peptide_not_in_canonical": 3,
+    "peptide_not_unique": 6,
+    "relocated": 102
+  },
+  "site_probability_note": "the paper filters on \"high confidence identification and modification site probability\" without a number in the text; the column is kept, not filtered. Site.Probability is NA in 1480 input rows (all PTMScan Rep 2 rows); the others range 90.1-100",
+  "sites_by_cell_lines": {
+    "HEK293T": 2765,
+    "HEK293T;U2OS": 421,
+    "U2OS": 1886
+  },
+  "sites_with_probability": 4018,
+  "source": "Berryhill et al., Sci Rep 13:377 (2023), doi:10.1038/s41598-022-27175-x; Sup Table 5 of Supplementary Information 2",
+  "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41598-022-27175-x/MediaObjects/41598_2022_27175_MOESM2_ESM.xlsx",
+  "validated_proteins": 2743,
+  "validated_proteins_by_state": {
+    "me1": 1463,
+    "me2": 994,
+    "me3": 1276
+  },
+  "validated_residues": 4825,
+  "validated_sites": 5072,
+  "validated_sites_by_state": {
+    "me1": 2084,
+    "me2": 1282,
+    "me3": 1706
+  }
+}

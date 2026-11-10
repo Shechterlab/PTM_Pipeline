@@ -11,7 +11,8 @@ last line also mentions CC BY 4.0, and this repository follows the stricter term
 ptm.txt has one record per upstream database and site, without a header: ptm_type, source, substrate_UniProtAC,
 substrate_genename, organism, site (residue letter and position), enzyme_UniProtAC, enzyme_genename, note, pmid. Kept:
 organism Homo sapiens; PHOSPHORYLATION at S, T or Y (mark phosphorylation, state phospho); METHYLATION at K (methyllysine)
-or R (methylarginine, a cross-check only). iPTMnet gives no methylation degree: state is `me`.
+or R (methylarginine, a cross-check only); ACETYLATION at K (mark lysine_acylation, state acetyl; the only acyl type
+iPTMnet holds for human, besides ones of other residues that are left out). iPTMnet gives no methylation degree: state is `me`.
 
 Keys: `canonical_UniProtAC` of --fasta and `position` on its sequence. An accession with the isoform suffix -1 is the
 canonical entry. Dropped and counted in the summary JSON: not_human; other_ptm_type; other_residue (a methylation at C, Q,
@@ -60,8 +61,10 @@ HUMAN = 'Homo sapiens (Human)'
 CURATED = {'hprd', 'sign', 'npro', 'pro', 'intact', 'iedb'}
 TEXT_MINED = {'rlim', 'rlim+'}
 OUT_NAME = {'methyllysine': 'iptmnet_{rel}_methyllysine_sites.tsv', 'phosphorylation': 'iptmnet_{rel}_phosphorylation_sites.tsv',
+            'lysine_acylation': 'iptmnet_{rel}_lysine_acylation_sites.tsv',
             'methylarginine': 'iptmnet_{rel}_methylarginine_crosscheck.tsv'}
 CONTENT = {
+    'lysine_acylation': 'iPTMnet human lysine acetylation records, one row per residue, with the upstream database and PubMed IDs of each',
     'methyllysine': 'iPTMnet human lysine methylation records (degree not stated), one row per residue, with the upstream database and PubMed IDs of each',
     'phosphorylation': 'iPTMnet human phosphoserine, phosphothreonine and phosphotyrosine records, one row per residue, with the upstream database and PubMed IDs of each',
     'methylarginine': 'iPTMnet human arginine methylation records (degree not stated): a cross-check only, the methylarginine release has its own table',
@@ -85,6 +88,8 @@ def mark_of(ptm_type: str, letter: str):
         return 'methyllysine', 'me'
     if ptm_type == 'METHYLATION' and letter == 'R':
         return 'methylarginine', 'me'
+    if ptm_type == 'ACETYLATION' and letter == 'K':
+        return 'lysine_acylation', 'acetyl'
     return None
 
 
@@ -95,7 +100,7 @@ def stage(records: pd.DataFrame, reference: dict[str, str], release: str) -> tup
         if r.organism != HUMAN:
             dropped['not_human'] += 1
             continue
-        if r.ptm_type not in ('PHOSPHORYLATION', 'METHYLATION'):
+        if r.ptm_type not in ('PHOSPHORYLATION', 'METHYLATION', 'ACETYLATION'):
             dropped['other_ptm_type'] += 1
             continue
         m = re.fullmatch(r'([A-Z])(\d+)', r.site)

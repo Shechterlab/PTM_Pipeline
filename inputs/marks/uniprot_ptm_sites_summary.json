@@ -1,15 +1,17 @@
 {
   "dropped": {
-    "on_an_isoform": 641,
+    "on_an_isoform": 667,
     "residue_mismatch": 2
   },
   "entries_in_download": 20429,
   "files": {
+    "lysine_acylation": "uniprot_2026_04_lysine_acylation_sites.tsv",
     "methylarginine": "uniprot_2026_04_methylarginine_crosscheck.tsv",
     "methyllysine": "uniprot_2026_04_methyllysine_sites.tsv",
     "phosphorylation": "uniprot_2026_04_phosphorylation_sites.tsv"
   },
   "files_md5": {
+    "lysine_acylation": "ce1c5ceb4942f0a9295c1ef97189ad79",
     "methylarginine": "550cfb04383326e0b552e52ed5cc6ba8",
     "methyllysine": "0ba06223106ebf7cf39914712a9839dd",
     "phosphorylation": "0b878fb4c25b80de8c3e0b5abb464ae6"
@@ -19,11 +21,16 @@
   "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
   "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
   "rows": {
+    "lysine_acylation": 7766,
     "methylarginine": 1669,
     "methyllysine": 533,
     "phosphorylation": 40928
   },
   "rows_by_evidence_class": {
+    "lysine_acylation": {
+      "by-similarity": 3478,
+      "experimental": 4288
+    },
     "methylarginine": {
       "by-similarity": 797,
       "experimental": 872
@@ -38,6 +45,21 @@
     }
   },
   "rows_by_state": {
+    "lysine_acylation": {
+      "2-hydroxyisobutyryl": 419,
+      "acetyl": 4355,
+      "benzoyl": 160,
+      "beta-hydroxybutyryl": 278,
+      "butyryl": 62,
+      "crotonyl": 224,
+      "glutaryl": 264,
+      "isonicotinyl": 189,
+      "lactoyl": 272,
+      "malonyl": 45,
+      "methacryl": 215,
+      "propionyl": 19,
+      "succinyl": 1264
+    },
     "methylarginine": {
       "me": 5,
       "me1": 985,

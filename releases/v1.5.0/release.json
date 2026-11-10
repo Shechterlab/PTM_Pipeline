@@ -510,6 +510,68 @@
     "human_methylarginine_sites_v1.5.0.xlsx"
   ],
   "context_marks": {
+    "acetylation": {
+      "by_evidence_class": {
+        "by-similarity": 1882,
+        "experimental": 2710,
+        "unspecified": 5
+      },
+      "by_source": {
+        "rows": {
+          "UniProt + iPTMnet": 2430,
+          "UniProt only": 1925,
+          "iPTMnet only": 242
+        },
+        "sites": {
+          "UniProt + iPTMnet": 2430,
+          "UniProt only": 1925,
+          "iPTMnet only": 242
+        }
+      },
+      "by_state": {
+        "acetyl": 4597
+      },
+      "proteins": 1834,
+      "residues": 4597,
+      "rows": 4597
+    },
+    "lysine_acylation": {
+      "by_evidence_class": {
+        "by-similarity": 3470,
+        "experimental": 4533,
+        "unspecified": 5
+      },
+      "by_source": {
+        "rows": {
+          "UniProt + iPTMnet": 2430,
+          "UniProt only": 5336,
+          "iPTMnet only": 242
+        },
+        "sites": {
+          "UniProt + iPTMnet": 2475,
+          "UniProt only": 2832,
+          "iPTMnet only": 197
+        }
+      },
+      "by_state": {
+        "2-hydroxyisobutyryl": 419,
+        "acetyl": 4597,
+        "benzoyl": 160,
+        "beta-hydroxybutyryl": 278,
+        "butyryl": 62,
+        "crotonyl": 224,
+        "glutaryl": 264,
+        "isonicotinyl": 189,
+        "lactoyl": 272,
+        "malonyl": 45,
+        "methacryl": 215,
+        "propionyl": 19,
+        "succinyl": 1264
+      },
+      "proteins": 1945,
+      "residues": 5504,
+      "rows": 8008
+    },
     "methylarginine_crosscheck": {
       "by_evidence_class": {
         "by-similarity": 796,
@@ -518,13 +580,13 @@
       },
       "by_source": {
         "rows": {
+          "UniProt + iPTMnet": 5,
           "UniProt only": 1664,
-          "both": 5,
           "iPTMnet only": 802
         },
         "sites": {
+          "UniProt + iPTMnet": 742,
           "UniProt only": 740,
-          "both": 742,
           "iPTMnet only": 65
         }
       },
@@ -541,82 +603,125 @@
     },
     "methyllysine": {
       "by_evidence_class": {
-        "by-similarity": 190,
-        "experimental": 360,
-        "unspecified": 206
+        "by-similarity": 181,
+        "experimental": 7848,
+        "unspecified": 2860
       },
       "by_source": {
         "rows": {
-          "UniProt only": 522,
-          "both": 11,
-          "iPTMnet only": 223
+          "Berryhill 2023 only": 4990,
+          "CPLM only": 5143,
+          "UniProt + Berryhill 2023": 82,
+          "UniProt + CPLM": 1,
+          "UniProt + iPTMnet": 3,
+          "UniProt + iPTMnet + CPLM": 8,
+          "UniProt only": 439,
+          "iPTMnet + CPLM": 204,
+          "iPTMnet only": 19
         },
         "sites": {
-          "UniProt only": 178,
-          "both": 219,
-          "iPTMnet only": 15
+          "Berryhill 2023 only": 4559,
+          "CPLM + Berryhill 2023": 207,
+          "CPLM only": 4862,
+          "UniProt + Berryhill 2023": 1,
+          "UniProt + CPLM": 61,
+          "UniProt + CPLM + Berryhill 2023": 14,
+          "UniProt + iPTMnet": 7,
+          "UniProt + iPTMnet + Berryhill 2023": 1,
+          "UniProt + iPTMnet + CPLM": 168,
+          "UniProt + iPTMnet + CPLM + Berryhill 2023": 43,
+          "UniProt only": 102,
+          "iPTMnet + CPLM": 1,
+          "iPTMnet only": 14
         }
       },
       "by_state": {
-        "me": 251,
-        "me1": 256,
-        "me2": 127,
-        "me3": 122
+        "me": 5394,
+        "me1": 2302,
+        "me2": 1384,
+        "me3": 1809
       },
-      "proteins": 190,
-      "residues": 412,
-      "rows": 756
+      "proteins": 4781,
+      "residues": 10040,
+      "rows": 10889
     },
     "phosphorylation": {
       "by_evidence_class": {
-        "by-similarity": 7802,
-        "experimental": 61719,
-        "text-mined": 2526,
-        "unspecified": 87
+        "by-similarity": 4393,
+        "experimental": 135936,
+        "text-mined": 2018,
+        "unspecified": 68
       },
       "by_source": {
         "rows": {
-          "UniProt only": 8017,
-          "both": 32911,
-          "iPTMnet only": 31206
+          "Ochoa 2020 only": 70281,
+          "UniProt + Ochoa 2020": 3461,
+          "UniProt + iPTMnet": 7279,
+          "UniProt + iPTMnet + Ochoa 2020": 25632,
+          "UniProt only": 4556,
+          "iPTMnet + Ochoa 2020": 13031,
+          "iPTMnet only": 18175
         },
         "sites": {
-          "UniProt only": 8017,
-          "both": 32911,
-          "iPTMnet only": 31206
+          "Ochoa 2020 only": 70281,
+          "UniProt + Ochoa 2020": 3461,
+          "UniProt + iPTMnet": 7279,
+          "UniProt + iPTMnet + Ochoa 2020": 25632,
+          "UniProt only": 4556,
+          "iPTMnet + Ochoa 2020": 13031,
+          "iPTMnet only": 18175
         }
       },
       "by_state": {
-        "phospho": 72134
+        "phospho": 142415
       },
-      "proteins": 10525,
-      "residues": 72134,
-      "rows": 72134
+      "proteins": 12588,
+      "residues": 142415,
+      "rows": 142415
     }
   },
-  "context_marks_code_commit": "d03f1db221d5388e14e286666d35115c2f26eff2 (scripts modified)",
+  "context_marks_code_commit": "ed5b4955940ccc1f9cef7a801f038a519ead1504",
   "inputs_md5": {
+    "iptmnet_score": {
+      "iptmnet_6_2_score.tsv": "926635c7f4f50ba447fc0ecd952010e9"
+    },
+    "lysine_acylation": {
+      "iptmnet_6_2_lysine_acylation_sites.tsv": "35ab50913b2d59418691d6b38218ad7c",
+      "uniprot_2026_04_lysine_acylation_sites.tsv": "ce1c5ceb4942f0a9295c1ef97189ad79"
+    },
     "methylarginine": {
       "iptmnet_6_2_methylarginine_crosscheck.tsv": "e72a2c1936819bff406ba7a723d9fedf",
       "uniprot_2026_04_methylarginine_crosscheck.tsv": "550cfb04383326e0b552e52ed5cc6ba8"
     },
     "methyllysine": {
+      "berryhill2023_methyllysine_sites.tsv": "d74ae742d754efbf6de477c4d0d9c543",
+      "cplm_4_0_methyllysine_sites.tsv": "5ddf927c52e2e91f55b4bb809b87c8d3",
       "iptmnet_6_2_methyllysine_sites.tsv": "52eafbede475420ce5febefa02a6aef3",
       "uniprot_2026_04_methyllysine_sites.tsv": "0ba06223106ebf7cf39914712a9839dd"
     },
     "phosphorylation": {
       "iptmnet_6_2_phosphorylation_sites.tsv": "259d6fb0456e5451afffccd0d7af5c6b",
+      "ochoa2020_phosphorylation_sites.tsv": "fa269a1032879622b01193e793ff5484",
       "uniprot_2026_04_phosphorylation_sites.tsv": "0b878fb4c25b80de8c3e0b5abb464ae6"
     }
   },
-  "license": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv)",
+  "license": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license and is included pending the authors' permission; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access; both included by the owner's decision",
   "methylarginine_code_commit": "52451320067f754d32574061b8653a2b5f03ec37",
   "methylarginine_data": "unchanged from v1.4.3: files carried over byte for byte, not rebuilt",
   "previous_version": "v1.4.3",
-  "release_date": "2026-11-09",
+  "release_date": "2026-11-10",
   "repository": "https://github.com/Shechterlab/PTM_Pipeline",
   "site_changes": "supporting/site_changes_v1.4.3_to_v1.5.0.tsv",
   "sources": {
+    "Berryhill 2023": {
+      "license": "article CC BY 4.0; supplements carry no separate notice; included by the owner's decision"
+    },
+    "CPLM": {
+      "license": "none stated; included pending the authors' permission"
+    },
+    "Ochoa 2020": {
+      "license": "article not open access (exclusive license to Springer Nature America); supplements carry no license; included by the owner's decision"
+    },
     "UniProt": {
       "license": "CC BY 4.0"
     },
