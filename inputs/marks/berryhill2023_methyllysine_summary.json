@@ -2,11 +2,11 @@
   "article_url": "https://www.nature.com/articles/s41598-022-27175-x",
   "files": {
     "rejected": "berryhill2023_methyllysine_rejected.tsv",
-    "validated": "berryhill2023_methyllysine_validated.tsv"
+    "validated": "berryhill2023_methyllysine_sites.tsv"
   },
   "files_md5": {
     "rejected": "2f805713fe1a2fd6bca28b10177bc4a6",
-    "validated": "4dbfc72a18690c3799977fda1c4d7925"
+    "validated": "d74ae742d754efbf6de477c4d0d9c543"
   },
   "input_rows": 6576,
   "input_rows_by_state": {

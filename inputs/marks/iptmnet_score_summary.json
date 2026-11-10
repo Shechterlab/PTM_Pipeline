@@ -1,0 +1,61 @@
+{
+  "dropped": {
+    "enzyme_row": 23643,
+    "not_in_reference": 286809,
+    "on_an_isoform": 26116,
+    "other_ptm_type_or_residue": 221244,
+    "residue_mismatch": 1806,
+    "unparsed_site": 517
+  },
+  "file": "iptmnet_6_2_score.tsv",
+  "file_md5": "926635c7f4f50ba447fc0ecd952010e9",
+  "iptmnet_release": "6.2",
+  "license": "CC BY-NC-SA 4.0 (iPTMnet license page and download readme; the readme also mentions CC BY 4.0, the stricter terms are followed)",
+  "plain_and_suffix_1_accession_conflicts": 25435,
+  "raw_files": {
+    "readme.txt": "iptmnet_readme.txt",
+    "score.txt": "iptmnet_score.txt"
+  },
+  "raw_md5": {
+    "readme.txt": "4245f99c2d9018944aad4939f97b31fe",
+    "score.txt": "34d5a1be8f1150694f445d58245f2f30"
+  },
+  "readme_says": "score.txt -- score information (substrate_UniProtAC, site, enzyme_UniProtAC, ptm_type, score). Note: The score is calculated based on all the evidence sources as shown on the website.",
+  "records_in_download": 851361,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": 265460,
+  "rows_by_mark": {
+    "lysine_acylation": 22537,
+    "methyllysine": 4943,
+    "phosphorylation": 237980
+  },
+  "rows_by_score": {
+    "lysine_acylation": {
+      "1": 20128,
+      "2": 2060,
+      "3": 261,
+      "4": 88
+    },
+    "methyllysine": {
+      "1": 4762,
+      "2": 105,
+      "3": 66,
+      "4": 10
+    },
+    "phosphorylation": {
+      "0": 5380,
+      "1": 185166,
+      "2": 37892,
+      "3": 4337,
+      "4": 5205
+    }
+  },
+  "score_range_in_download": [
+    0,
+    4
+  ],
+  "site_records_without_enzyme": 827718,
+  "source": "iPTMnet score.txt (Protein Information Resource)",
+  "url": "https://research.bioinformatics.udel.edu/iptmnet_data/files/current/score.txt"
+}

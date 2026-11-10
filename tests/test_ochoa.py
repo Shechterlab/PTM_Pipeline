@@ -1,5 +1,4 @@
-"""Tests of the Ochoa 2020 phosphosite staging (scripts/58). The checks on the staged tables run only where they have
-been built (they are checksum_only, not in Git); the toy checks always run."""
+"""Tests of the Ochoa 2020 phosphosite staging (scripts/58). The staged table is in Git (the owner decided to publish it)."""
 import csv
 import importlib.util
 import json
@@ -53,8 +52,6 @@ def test_merge_stops_on_different_sites():
 
 def test_staged_table_matches_reference_and_summary():
     path = MARKS / stage58.OUT_SITES
-    if not path.exists():
-        pytest.skip('checksum_only table not built here')
     reference = stage58.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
     rows = list(csv.DictReader(open(path, encoding='utf-8'), delimiter='\t'))
     assert list(rows[0].keys()) == stage58.COLUMNS
@@ -62,7 +59,8 @@ def test_staged_table_matches_reference_and_summary():
     assert len(keys) == len(set(keys))
     for r in rows:
         assert r['residue'] in 'STY' and reference[r['canonical_UniProtAC']][int(r['position']) - 1] == r['residue']
-        assert 0 <= float(r['functional_score']) <= 1
+        assert 0 <= float(r['functional_score']) <= 1 and r['source'] == 'Ochoa 2020' and r['evidence_class'] == 'experimental'
+        assert r['mark'] == 'phosphorylation' and r['state'] == 'phospho' and 0 <= float(r['best_localization_probability']) <= 1
     summary = json.loads((MARKS / stage58.OUT_SUMMARY).read_text())
     assert summary['validated_sites'] == len(rows) == sum(summary['validated_sites_by_residue'].values())
     assert summary['validated_proteins'] == len({r['canonical_UniProtAC'] for r in rows})
@@ -74,11 +72,13 @@ def test_staged_table_matches_reference_and_summary():
 
 def test_summary_and_manifest_in_git():
     summary = json.loads((MARKS / stage58.OUT_SUMMARY).read_text())
-    assert summary['redistribution'] == 'checksum_only' and summary['relocated_sites'] == 0
+    assert summary['redistribution'] == 'git' and summary['relocated_sites'] == 0
     manifest = {r['file']: r for r in csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t')}
     for name in (stage58.OUT_SITES, stage58.OUT_REJECTED):
-        assert manifest['marks/' + name]['redistribution'] == 'checksum_only'
-        assert manifest['marks/' + name]['md5'] == summary['files_md5']['validated' if 'validated' in name else 'rejected']
+        assert manifest['marks/' + name]['redistribution'] == 'git'
+        assert 'exclusive licence to Springer Nature' in manifest['marks/' + name]['licence'] and "owner's decision" in manifest['marks/' + name]['licence']
+        assert 'Nat Biotechnol 38:365' in manifest['marks/' + name]['citation']
+        assert manifest['marks/' + name]['md5'] == summary['files_md5']['rejected' if 'rejected' in name else 'validated']
     assert manifest['marks/' + stage58.OUT_SUMMARY]['redistribution'] == 'git'
     raw = {r['file']: r for r in csv.DictReader(open(MARKS / 'raw_files.tsv', encoding='utf-8'), delimiter='\t')}
     assert raw[stage58.RAW_SCORES]['sha256'] == summary['raw']['scores']['sha256']

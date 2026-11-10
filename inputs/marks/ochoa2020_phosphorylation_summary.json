@@ -2,11 +2,11 @@
   "article_url": "https://www.nature.com/articles/s41587-019-0344-3",
   "files": {
     "rejected": "ochoa2020_phosphorylation_rejected.tsv",
-    "validated": "ochoa2020_phosphorylation_validated.tsv"
+    "validated": "ochoa2020_phosphorylation_sites.tsv"
   },
   "files_md5": {
     "rejected": "5ff5e85dbadf870da91724fc0c938b82",
-    "validated": "5d526a4cddcf94454f15475d858e498e"
+    "validated": "fa269a1032879622b01193e793ff5484"
   },
   "functional_score_ge_0.5": 10883,
   "functional_score_ge_0.5_fraction": 0.09682,
@@ -41,8 +41,8 @@
       "sha256": "a0b5ac3b096094726ec633f8e9787dc053087e03b1286ebec2e3fdaabb8d9df7"
     }
   },
-  "redistribution": "checksum_only",
-  "reference_fasta": "../inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "redistribution": "git",
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
   "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
   "rejected_by_reason": {
     "accession_not_in_reference": 1200,

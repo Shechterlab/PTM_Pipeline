@@ -16,7 +16,7 @@ Position.in.Protein, Modification (m1, m2, m3), Cell.Type and Enrichment. The ot
 description) and the other sheets are not used; Sup Tables 4 and 7 carry PhosphoSitePlus information and are left out.
 The paper filters peptides "for high confidence identification and modification site probability" but gives no number
 in the text; the table's own Site.Probability is 90.1-100, with "NA" for the PTMScan Rep 2 rows, which carry no
-localisation probability. The column is kept (site_probability_max, the highest value
+localisation probability. The column is kept (berryhill_site_probability, the highest value
 over the rows of a site; empty when every row is NA), not filtered on.
 
 Each row is checked on the reference proteome (--fasta, canonical reviewed accessions):
@@ -28,11 +28,13 @@ Each row is checked on the reference proteome (--fasta, canonical reviewed acces
   rejected   everything else, with a reason: accession_not_in_reference, isoform_accession, bad_position, bad_state,
              peptide_position_not_K, peptide_not_unique, peptide_not_in_canonical
 States: m1 me1, m2 me2, m3 me3. Rows of one site (accession, position, state) from several cell lines and enrichments
-are one validated row, with cell_lines, enrichments and peptides ';'-joined. Columns: the ten of the other mark tables
-(evidence empty, evidence_class high-throughput, pmids empty, source Berryhill2023) and site_probability_max,
-cell_lines, enrichments, peptides, relocated (yes/no), source_position.
-The validated table is named `..._validated.tsv`, not `..._sites.tsv`, so that scripts/56's glob
-`inputs/marks/*_methyllysine_sites.tsv` does not pick it up before the release merge step adds it deliberately.
+are one row, with berryhill_cell_lines, berryhill_enrichment and peptides ';'-joined. Columns: the ten of the other mark tables
+(evidence empty, evidence_class experimental (mass spectrometry), pmids empty, source 'Berryhill 2023') and
+berryhill_site_probability (the highest Site.Probability over the rows of the site), berryhill_cell_lines,
+berryhill_enrichment, peptides, relocated (yes/no), source_position. The release (scripts/56) takes the first three; the
+peptides and the relocation flags stay in inputs/marks/.
+The staged table is named `..._sites.tsv`, so that scripts/56's glob `inputs/marks/*_methyllysine_sites.tsv` picks it up:
+the release merges it with the other sources.
 Outputs are sorted, so running again gives the same bytes. The download and the staged files have rows in
 inputs/marks/raw_files.tsv and inputs/MANIFEST.tsv (the download itself stays out of Git).
 """
@@ -55,16 +57,16 @@ ARTICLE_URL = 'https://www.nature.com/articles/s41598-022-27175-x'
 SHEET = 'Sup Table 5'
 CITATION = 'Berryhill et al., Sci Rep 13:377 (2023), doi:10.1038/s41598-022-27175-x'
 LICENSE = "article CC BY 4.0; supplementary files carry no separate notice; included by the owner's decision (2026-11-10)"
-SOURCE = 'Berryhill2023'
+SOURCE = 'Berryhill 2023'
 SOURCE_RELEASE = 'Sci Rep 13:377 (2023)'
 STATES = {'m1': 'me1', 'm2': 'me2', 'm3': 'me3'}
 NEEDED = ['Kme_Site', 'Site.Probability', 'Peptide.Sequence', 'Position.in.Peptide', 'Modification', 'Protein.Accession',
           'Position.in.Protein', 'Cell.Type', 'Enrichment']
 COLUMNS = ['canonical_UniProtAC', 'position', 'residue', 'mark', 'state', 'evidence', 'evidence_class', 'pmids', 'source',
-           'source_release', 'site_probability_max', 'cell_lines', 'enrichments', 'peptides', 'relocated', 'source_position']
+           'source_release', 'berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment', 'peptides', 'relocated', 'source_position']
 REJECTED_COLUMNS = ['Kme_Site', 'Protein.Accession', 'Position.in.Protein', 'Modification', 'Peptide.Sequence',
                     'Position.in.Peptide', 'Site.Probability', 'Cell.Type', 'Enrichment', 'reason', 'detail']
-OUT_SITES = 'berryhill2023_methyllysine_validated.tsv'
+OUT_SITES = 'berryhill2023_methyllysine_sites.tsv'
 OUT_REJECTED = 'berryhill2023_methyllysine_rejected.tsv'
 OUT_SUMMARY = 'berryhill2023_methyllysine_summary.json'
 CONTENT = ('Berryhill et al. 2023 (Sci Rep 13:377, doi:10.1038/s41598-022-27175-x) human lysine methylation sites '
@@ -143,11 +145,13 @@ def stage(rows: list[dict], reference: dict[str, str]) -> tuple[pd.DataFrame, pd
                   peptides=('peptide', joined), relocated=('relocated', 'any'),
                   source_position=('source_position', lambda v: joined(v))))
     sites['residue'], sites['mark'] = 'K', 'methyllysine'
-    sites['evidence'], sites['evidence_class'], sites['pmids'] = '', 'high-throughput', ''
+    sites['evidence'], sites['evidence_class'], sites['pmids'] = '', 'experimental', ''
     sites['source'], sites['source_release'] = SOURCE, SOURCE_RELEASE
     sites['site_probability_max'] = [f'{p:g}' if pd.notna(p) else '' for p in sites['site_probability_max']]
     sites['source_position'] = [sp if rel else '' for sp, rel in zip(sites['source_position'], sites['relocated'])]
     sites['relocated'] = ['yes' if r else 'no' for r in sites['relocated']]
+    sites = sites.rename(columns={'site_probability_max': 'berryhill_site_probability', 'cell_lines': 'berryhill_cell_lines',
+                                  'enrichments': 'berryhill_enrichment'})
     sites = sites[COLUMNS].sort_values(['canonical_UniProtAC', 'position', 'state']).reset_index(drop=True)
     bad = pd.DataFrame(rejected, columns=REJECTED_COLUMNS)
     if len(bad):
@@ -211,8 +215,8 @@ def main() -> None:
         'validated_sites_by_state': {k: int(v) for k, v in sites['state'].value_counts().sort_index().items()},
         'validated_proteins_by_state': {k: int(v) for k, v in sites.groupby('state')['canonical_UniProtAC'].nunique().sort_index().items()},
         'relocated_sites': int((sites['relocated'] == 'yes').sum()),
-        'sites_with_probability': int((sites['site_probability_max'] != '').sum()),
-        'sites_by_cell_lines': {k: int(v) for k, v in sites['cell_lines'].value_counts().sort_index().items()},
+        'sites_with_probability': int((sites['berryhill_site_probability'] != '').sum()),
+        'sites_by_cell_lines': {k: int(v) for k, v in sites['berryhill_cell_lines'].value_counts().sort_index().items()},
         'files': {'validated': OUT_SITES, 'rejected': OUT_REJECTED},
         'files_md5': {'validated': md5_file(out_dir / OUT_SITES), 'rejected': md5_file(out_dir / OUT_REJECTED)},
     }
@@ -248,7 +252,7 @@ def main() -> None:
     refresh_manifest_row(args.manifest, raw_list, 'marks/raw_files.tsv', redistribution='git',
                          content='URL, size, MD5, SHA-256 and date of every raw download behind inputs/marks/',
                          source='the URLs it lists', derived_from='',
-                         how_made_or_checked='written by the scripts/54, 55 and 57 staging runs')
+                         how_made_or_checked='written by the scripts/54, 55, 57, 58 and 59 staging runs')
     print(json.dumps({k: summary[k] for k in ('input_rows', 'row_status', 'validated_sites', 'validated_proteins',
                                                'validated_sites_by_state', 'validated_proteins_by_state', 'relocated_sites')}, indent=1))
 

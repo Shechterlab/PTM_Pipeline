@@ -9,9 +9,10 @@ Source: Ochoa D, Jarnuczak AF, Viéitez C, Gehre M, Soucheray M, Mateus A, Kleef
 Stein F, Krogan NJ, Savitski MM, Swaney DL, Vizcaíno JA, Noh KM, Beltrao P. The functional landscape of the human
 phosphoproteome. Nat Biotechnol 38:365-373 (2020), doi:10.1038/s41587-019-0344-3. Included by the owner's decision
 (2026-11-10). The article is NOT open access: its page says "© 2019 The Author(s), under exclusive licence to Springer
-Nature America, Inc." and gives the supplements no licence of their own. The staged tables are therefore not
-redistributed: MANIFEST redistribution = checksum_only, and inputs/marks/.gitignore lists them. This script rebuilds them
-from the two downloads (same bytes). The counts file (summary JSON) is in Git. Cite the paper wherever the data is described.
+Nature America, Inc." and gives the supplements no licence of their own. The owner decided to publish the table derived
+from them (accession, position, residue, functional score, best localisation probability, best PEP, biological samples,
+spectral counts) in the release, cited to the paper: MANIFEST redistribution = git. Cite the paper wherever the data is
+described. The two downloads stay out of Git (raw_files.tsv has their MD5 and SHA-256).
 
 Reads two sheets, each with one row per site (116,258 sites), keyed by `uniprot` and `position`:
   Supplementary Table 3 (MOESM5_ESM.xlsx, sheet functional_score): functional_score (0-1). It has no residue and no
@@ -28,15 +29,15 @@ Each site is checked on the reference proteome (--fasta, canonical reviewed acce
             bad_position, residue_mismatch
 Relocation by sequence window is not possible: neither table gives a peptide or window around the site, so a site
 whose residue does not match is rejected, never moved.
-Columns of the validated table: the ten of the other mark tables (state phospho, evidence empty, evidence_class
-high-throughput, pmids empty, source Ochoa2020, source_release 'Nat Biotechnol 38:365 (2020)') and
+Columns of the staged table: the ten of the other mark tables (state phospho, evidence empty, evidence_class
+experimental (mass spectrometry), pmids empty, source 'Ochoa 2020', source_release 'Nat Biotechnol 38:365 (2020)') and
   functional_score          Supplementary Table 3, 0-1, higher means more likely functional
-  best_localization_prob    the best localisation probability over the observations of the site (MaxQuant)
-  best_PEP                  the best posterior error probability of a peptide carrying the site
+  best_localization_probability  the best localisation probability over the observations of the site (MaxQuant)
+  best_pep                  the best posterior error probability of a peptide carrying the site
   biological_samples        the number of biological samples (experimental conditions) that observed the site
   spectral_counts           the total spectral counts of the site
-The validated table is named `..._validated.tsv`, not `..._sites.tsv`, so that scripts/56's glob
-`inputs/marks/*_phosphorylation_sites.tsv` does not pick it up before the release merge step adds it deliberately.
+The staged table is named `ochoa2020_phosphorylation_sites.tsv`, which scripts/56's glob `inputs/marks/*_phosphorylation_sites.tsv`
+picks up: the release merges it with the other sources.
 Outputs are sorted, so running again gives the same bytes.
 """
 from __future__ import annotations
@@ -62,15 +63,15 @@ SHEET_SCORES, SHEET_FEATURES = 'functional_score', 'annotated_phosphoproteome'
 CITATION = 'Ochoa et al., Nat Biotechnol 38:365-373 (2020), doi:10.1038/s41587-019-0344-3'
 LICENSE = ('article page: "© 2019 The Author(s), under exclusive licence to Springer Nature America, Inc."; not open access; '
            "supplements carry no separate notice; included by the owner's decision (2026-11-10)")
-SOURCE = 'Ochoa2020'
+SOURCE = 'Ochoa 2020'
 SOURCE_RELEASE = 'Nat Biotechnol 38:365 (2020)'
 RESIDUES = 'STY'
 NEEDED_SCORES = ['uniprot', 'position', 'functional_score']
 NEEDED_FEATURES = ['uniprot', 'position', 'residue', 'best_PEP', 'best_localization_prob', 'biological_samples', 'spectralcounts']
 COLUMNS = ['canonical_UniProtAC', 'position', 'residue', 'mark', 'state', 'evidence', 'evidence_class', 'pmids', 'source',
-           'source_release', 'functional_score', 'best_localization_prob', 'best_PEP', 'biological_samples', 'spectral_counts']
+           'source_release', 'functional_score', 'best_localization_probability', 'best_pep', 'biological_samples', 'spectral_counts']
 REJECTED_COLUMNS = ['uniprot', 'position', 'residue', 'functional_score', 'reason', 'detail']
-OUT_SITES = 'ochoa2020_phosphorylation_validated.tsv'
+OUT_SITES = 'ochoa2020_phosphorylation_sites.tsv'
 OUT_REJECTED = 'ochoa2020_phosphorylation_rejected.tsv'
 OUT_SUMMARY = 'ochoa2020_phosphorylation_summary.json'
 CONTENT = ('Ochoa et al. 2020 (Nat Biotechnol 38:365, doi:10.1038/s41587-019-0344-3) human phosphoserine, phosphothreonine and '
@@ -115,10 +116,10 @@ def stage(table: pd.DataFrame, reference: dict[str, str]) -> tuple[pd.DataFrame,
                              'functional_score': num(r.functional_score), 'reason': status, 'detail': detail})
             continue
         kept.append({'canonical_UniProtAC': str(r.uniprot).strip(), 'position': int(r.position), 'residue': r.residue,
-                     'mark': 'phosphorylation', 'state': 'phospho', 'evidence': '', 'evidence_class': 'high-throughput',
+                     'mark': 'phosphorylation', 'state': 'phospho', 'evidence': '', 'evidence_class': 'experimental',
                      'pmids': '', 'source': SOURCE, 'source_release': SOURCE_RELEASE,
-                     'functional_score': num(r.functional_score), 'best_localization_prob': num(r.best_localization_prob),
-                     'best_PEP': num(r.best_PEP), 'biological_samples': num(r.biological_samples, '.0f'),
+                     'functional_score': num(r.functional_score), 'best_localization_probability': num(r.best_localization_prob),
+                     'best_pep': num(r.best_PEP), 'biological_samples': num(r.biological_samples, '.0f'),
                      'spectral_counts': num(r.spectralcounts, '.0f')})
     sites = pd.DataFrame(kept, columns=COLUMNS)
     sites = sites.sort_values(['canonical_UniProtAC', 'position']).reset_index(drop=True)
@@ -184,7 +185,7 @@ def main() -> None:
         'article_url': ARTICLE_URL,
         'urls': {'scores': URL_SCORES, 'features': URL_FEATURES},
         'licence': LICENSE,
-        'redistribution': 'checksum_only',
+        'redistribution': 'git',
         'reference_fasta': args.fasta,
         'reference_fasta_md5': md5_file(args.fasta),
         'raw': {k: {f: v[f] for f in ('name', 'md5', 'sha256')} for k, v in raws.items()},
@@ -212,7 +213,7 @@ def main() -> None:
     upsert_tsv_rows(raw_list, [
         {'file': raws[k]['name'], 'url': u, 'bytes': raws[k]['bytes'], 'md5': raws[k]['md5'], 'sha256': raws[k]['sha256'],
          'downloaded': when, 'version': f'{CITATION}; {what}',
-         'kept': f"not in Git; staged as marks/{OUT_SITES} (checksum_only: {LICENSE})"}
+         'kept': f"not in Git; staged as marks/{OUT_SITES} ({LICENSE})"}
         for k, u, what in (('scores', URL_SCORES, 'Supplementary Table 3 (functional scores)'),
                            ('features', URL_FEATURES, 'Supplementary Table 2 (annotated features); only residue and evidence columns are used'))])
 
@@ -225,9 +226,9 @@ def main() -> None:
                      'licence': LICENSE, 'derived_from': derived, 'how_made_or_checked': command + check}
     update_manifest(args.manifest, [
         {'file': f'marks/{OUT_SITES}', 'bytes': (out_dir / OUT_SITES).stat().st_size, 'md5': md5_file(out_dir / OUT_SITES),
-         'rows': len(sites), 'redistribution': 'checksum_only', 'content': CONTENT + f': {len(sites):,} rows', **common_fields},
+         'rows': len(sites), 'redistribution': 'git', 'content': CONTENT + f': {len(sites):,} rows', **common_fields},
         {'file': f'marks/{OUT_REJECTED}', 'bytes': (out_dir / OUT_REJECTED).stat().st_size, 'md5': md5_file(out_dir / OUT_REJECTED),
-         'rows': len(rejected), 'redistribution': 'checksum_only',
+         'rows': len(rejected), 'redistribution': 'git',
          'content': f'Sites of Ochoa et al. 2020 Supplementary Table 3 that failed the reference check, with the reason: {len(rejected):,} rows',
          **common_fields},
         {'file': f'marks/{OUT_SUMMARY}', 'bytes': (out_dir / OUT_SUMMARY).stat().st_size, 'md5': md5_file(out_dir / OUT_SUMMARY),
@@ -237,7 +238,7 @@ def main() -> None:
     refresh_manifest_row(args.manifest, raw_list, 'marks/raw_files.tsv', redistribution='git',
                          content='URL, size, MD5, SHA-256 and date of every raw download behind inputs/marks/',
                          source='the URLs it lists', derived_from='',
-                         how_made_or_checked='written by the scripts/54, 55 and 58 staging runs')
+                         how_made_or_checked='written by the scripts/54, 55, 57, 58 and 59 staging runs')
     print(json.dumps({k: summary[k] for k in ('input_sites', 'input_proteins', 'row_status', 'validated_sites', 'validated_proteins',
                                                'validated_sites_by_residue', 'validated_proteins_by_residue',
                                                'functional_score_quantiles', 'functional_score_ge_0.5_fraction')}, indent=1))

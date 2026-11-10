@@ -42,16 +42,16 @@ def test_toy_staging_kept_relocated_rejected_and_merged_rows():
     key = sites.set_index(['canonical_UniProtAC', 'position', 'state'])
     assert len(sites) == len(key) == 4
     merged = key.loc[('P00001', 3, 'me1')]
-    assert merged['cell_lines'] == 'HEK293T;U2OS' and merged['site_probability_max'] == '99' and merged['relocated'] == 'no'
+    assert merged['berryhill_cell_lines'] == 'HEK293T;U2OS' and merged['berryhill_site_probability'] == '99' and merged['relocated'] == 'no'
     moved = key.loc[('P00001', 20, 'me1')]
     assert moved['relocated'] == 'yes' and moved['source_position'] == '10'
-    assert list(sites.columns) == stage.COLUMNS and set(sites['evidence_class']) == {'high-throughput'}
+    assert list(sites.columns) == stage.COLUMNS and set(sites['evidence_class']) == {'experimental'} and set(sites['source']) == {'Berryhill 2023'}
     assert len(rejected) == 7 and list(rejected.columns) == stage.REJECTED_COLUMNS
 
 
 def test_probability_is_empty_when_every_row_is_na():
     sites, _, _ = stage.stage([row('P00001', 3, 'MAKK', 3, prob='NA')], REFERENCE)
-    assert list(sites['site_probability_max']) == ['']
+    assert list(sites['berryhill_site_probability']) == ['']
 
 
 def read_table(name):
@@ -61,22 +61,22 @@ def read_table(name):
 
 def test_staged_table_columns_residue_and_no_duplicates():
     reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
-    rows = read_table('berryhill2023_methyllysine_validated.tsv')
-    with open(MARKS / 'berryhill2023_methyllysine_validated.tsv', encoding='utf-8') as fh:
+    rows = read_table('berryhill2023_methyllysine_sites.tsv')
+    with open(MARKS / 'berryhill2023_methyllysine_sites.tsv', encoding='utf-8') as fh:
         assert next(csv.reader(fh, delimiter='\t')) == stage.COLUMNS
     assert rows
     keys = [(r['canonical_UniProtAC'], r['position'], r['state']) for r in rows]
     assert len(keys) == len(set(keys))
     for r in rows:
         assert reference[r['canonical_UniProtAC']][int(r['position']) - 1] == 'K' and r['residue'] == 'K'
-        assert r['mark'] == 'methyllysine' and r['state'] in {'me1', 'me2', 'me3'} and r['source'] == 'Berryhill2023'
+        assert r['mark'] == 'methyllysine' and r['state'] in {'me1', 'me2', 'me3'} and r['source'] == 'Berryhill 2023' and r['evidence_class'] == 'experimental'
         assert (r['relocated'] == 'yes') == bool(r['source_position'])
-        assert r['site_probability_max'] == '' or 90 <= float(r['site_probability_max']) <= 100
+        assert r['berryhill_site_probability'] == '' or 90 <= float(r['berryhill_site_probability']) <= 100
 
 
 def test_summary_counts_match_tables_and_manifest():
     summary = json.loads((MARKS / 'berryhill2023_methyllysine_summary.json').read_text(encoding='utf-8'))
-    rows, rejected = read_table('berryhill2023_methyllysine_validated.tsv'), read_table('berryhill2023_methyllysine_rejected.tsv')
+    rows, rejected = read_table('berryhill2023_methyllysine_sites.tsv'), read_table('berryhill2023_methyllysine_rejected.tsv')
     assert summary['validated_sites'] == len(rows)
     assert summary['validated_proteins'] == len({r['canonical_UniProtAC'] for r in rows})
     assert summary['validated_residues'] == len({(r['canonical_UniProtAC'], r['position']) for r in rows})
@@ -89,8 +89,8 @@ def test_summary_counts_match_tables_and_manifest():
     assert summary['row_status']['kept'] + summary['row_status']['relocated'] + len(rejected) == summary['input_rows']
     assert {r['reason'] for r in rejected} == set(summary['rejected_by_reason'])
     manifest = {r['file']: r for r in csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t')}
-    for name in ('validated', 'rejected'):
+    for name, kind in (('sites', 'validated'), ('rejected', 'rejected')):
         entry = manifest[f'marks/berryhill2023_methyllysine_{name}.tsv']
-        assert entry['md5'] == stage.md5_file(MARKS / f'berryhill2023_methyllysine_{name}.tsv') == summary['files_md5'][name]
+        assert entry['md5'] == stage.md5_file(MARKS / f'berryhill2023_methyllysine_{name}.tsv') == summary['files_md5'][kind]
         assert 'CC BY 4.0' in entry['licence'] and "owner's decision" in entry['licence'] and 'Sci Rep 13:377' in entry['citation']
-    assert manifest['marks/berryhill2023_methyllysine_validated.tsv']['rows'] == str(len(rows))
+    assert manifest['marks/berryhill2023_methyllysine_sites.tsv']['rows'] == str(len(rows))
