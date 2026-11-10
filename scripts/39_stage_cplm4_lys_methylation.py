@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Stage and validate CPLM 4.0 lysine methylation sites against the canonical human proteome.
+"""Stage and validate CPLM 4.0 lysine methylation (or ubiquitination, SUMOylation) sites against the canonical human proteome.
 
 CPLM 4.0 (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, doi:10.1093/nar/gkab849; cplm.biocuckoo.cn)
-compiles lysine modification sites. Its Methylation download (Download/Methylation.zip, one headerless
+compiles lysine modification sites. Each modification has its own download (--modification Methylation, the default,
+Ubiquitination or Sumoylation: Download/<Modification>.zip, one headerless tab-separated <Modification>.txt of the same
+nine columns); what follows says "Methylation" for all three. Its Methylation download (Download/Methylation.zip, one headerless
 tab-separated Methylation.txt) has nine columns:
 
   CPLM id, UniProt accession, position, modification, gene, organism, protein sequence, evidence, references
@@ -18,6 +20,12 @@ Outputs (in --outdir, default $PTM_RESULTS_ROOT/cplm4)
   cplm4_human_lys_methyl_validated.tsv   one row per canonical accession and position
   cplm4_human_lys_methyl_rejected.tsv    input rows that failed a check, with the reason
   cplm4_summary.json                     input checksum, counts per check, sites and proteins kept
+
+With --modification Ubiquitination or Sumoylation the same checks and outputs apply under other names: cplm4_human_lys_ubiquitination_validated.tsv
+(and _rejected.tsv, cplm4_summary.json), and with --marks-dir cplm_4_0_ubiquitination_sites.tsv (mark ubiquitination, state ub) and
+cplm_ubiquitination_summary.json, or cplm_4_0_sumoylation_sites.tsv (mark sumoylation, state sumo) and cplm_sumoylation_summary.json.
+The Methylation outputs are unchanged by the option. Stage Sumoylation with --marks-dir only for a release that is to include it:
+script 56 reads every inputs/marks/*_sumoylation_sites.tsv.
 
 With --marks-dir the validated sites are also staged for the context-mark release (inputs/marks/, read by
 56_build_context_marks.py) in the format of the other marks:
@@ -40,7 +48,7 @@ With --marks-dir the validated sites are also staged for the context-mark releas
                   stay in cplm_references only.
 
 CPLM 4.0 states no license (its page has a copyright notice, "All Rights Reserved"). The owner decided on 2026-11-09 to
-include its human lysine methylation sites in the release, cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022,
+include its human lysine methylation sites in the release, and on 2026-11-10 its ubiquitination sites on the same terms, cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022,
 doi:10.1093/nar/gkab849), pending the authors' permission. Any terms the authors give are followed.
 """
 from __future__ import annotations
@@ -65,27 +73,39 @@ CPLM4_COLUMNS = ['cplm_id', 'source_UniProtAC', 'position', 'modification', 'gen
 WINDOW_FLANK = 7
 MARKS_COLUMNS = ['canonical_UniProtAC', 'position', 'residue', 'mark', 'state', 'evidence', 'evidence_class', 'pmids', 'source',
                  'source_release', 'cplm_evidence', 'cplm_references']
-MARKS_NAME = 'cplm_4_0_methyllysine_sites.tsv'
-MARKS_SUMMARY = 'cplm_ptm_sites_summary.json'
-URL = 'https://cplm.biocuckoo.cn/Download/Methylation.zip'
+URL_BASE = 'https://cplm.biocuckoo.cn/Download/'
+DEFAULT_MODIFICATION = 'Methylation'
+# per CPLM download: the tag of the validated/rejected tables, the staged mark and state, the staged table and summary names,
+# the environment variable of --cplm, and what the manifest calls the sites
+MODIFICATIONS = {
+    'Methylation': {'tag': 'methyl', 'mark': 'methyllysine', 'state': 'me', 'table': 'cplm_4_0_methyllysine_sites.tsv',
+                    'summary': 'cplm_ptm_sites_summary.json', 'env': 'PTM_CPLM4_METHYL',
+                    'what': 'lysine methylation sites (degree not stated)'},
+    'Ubiquitination': {'tag': 'ubiquitination', 'mark': 'ubiquitination', 'state': 'ub', 'table': 'cplm_4_0_ubiquitination_sites.tsv',
+                       'summary': 'cplm_ubiquitination_summary.json', 'env': 'PTM_CPLM4_UBIQUITINATION', 'what': 'lysine ubiquitination sites'},
+    'Sumoylation': {'tag': 'sumoylation', 'mark': 'sumoylation', 'state': 'sumo', 'table': 'cplm_4_0_sumoylation_sites.tsv',
+                    'summary': 'cplm_sumoylation_summary.json', 'env': 'PTM_CPLM4_SUMOYLATION', 'what': 'lysine SUMOylation sites'},
+}
 CITATION = ('Zhang W, Tan X, Lin S, et al. CPLM 4.0: an updated database with rich annotations for protein lysine modifications. '
             'Nucleic Acids Res 50:D451-D459 (2022), doi:10.1093/nar/gkab849')
 LICENSE = ('none stated (cplm.biocuckoo.cn carries a copyright notice, "All Rights Reserved"); included by the owner\'s decision of '
            '2026-11-09, cited, pending the authors\' permission')
+LICENSE_UBIQUITINATION = ('none stated (cplm.biocuckoo.cn carries a copyright notice, "All Rights Reserved"); included by the owner\'s decision of '
+                          '2026-11-10, on the same terms as the methylation sites (decision of 2026-11-09): cited, pending the authors\' permission')
 MAX_PMID = 34_300_000    # the highest PubMed ID assigned by the date of Methylation.txt (2021-06-13)
 MIN_PMID = 1_000_000
 EVIDENCE_CLASS = {'Exp.': 'experimental', 'Exp./Dat.': 'experimental', 'Dat.': 'unspecified'}
 
 
-def read_cplm(path: Path) -> tuple[pd.DataFrame, str, str]:
+def read_cplm(path: Path, modification: str = DEFAULT_MODIFICATION) -> tuple[pd.DataFrame, str, str]:
     """Read a CPLM download given as the zip, the extracted text file, or a directory holding either."""
     if path.is_dir():
-        for name in ('Methylation.txt', 'Methylation.zip'):
+        for name in (f'{modification}.txt', f'{modification}.zip'):
             if (path / name).exists():
                 path = path / name
                 break
         else:
-            raise SystemExit(f'no Methylation.txt or Methylation.zip in {path}')
+            raise SystemExit(f'no {modification}.txt or {modification}.zip in {path}')
     raw = path.read_bytes()
     digest = hashlib.sha256(raw).hexdigest()
     member = ''
@@ -110,11 +130,11 @@ def pubmed_ids(references: str) -> list[str]:
     return [str(i) for i in sorted(ids)]
 
 
-def stage_marks(good: pd.DataFrame, release: str) -> pd.DataFrame:
-    """The validated sites as a staged table of inputs/marks/ (one row per residue, state me)."""
+def stage_marks(good: pd.DataFrame, release: str, cfg: dict = MODIFICATIONS[DEFAULT_MODIFICATION]) -> pd.DataFrame:
+    """The validated sites as a staged table of inputs/marks/ (one row per residue, one state)."""
     out = pd.DataFrame({
         'canonical_UniProtAC': good['canonical_UniProtAC'], 'position': good['position'].astype(int), 'residue': 'K',
-        'mark': 'methyllysine', 'state': 'me', 'evidence': '',
+        'mark': cfg['mark'], 'state': cfg['state'], 'evidence': '',
         'evidence_class': good['evidence'].map(EVIDENCE_CLASS),
         'pmids': [';'.join(pubmed_ids(r)) for r in good['references']], 'source': 'CPLM', 'source_release': release,
         'cplm_evidence': good['evidence'], 'cplm_references': good['references']})
@@ -149,54 +169,59 @@ def check_row(row, canonical: dict[str, str]) -> tuple[str, str]:
 
 def write_marks(args, good: pd.DataFrame, summary: dict, rejected: pd.DataFrame, raw: Path, member: str) -> None:
     """The staged table, its summary, the download's row in raw_files.tsv and the MANIFEST rows."""
+    mod = args.modification
+    cfg = MODIFICATIONS[mod]
+    marks_name, marks_summary, mark, state = cfg['table'], cfg['summary'], cfg['mark'], cfg['state']
+    url = URL_BASE + f'{mod}.zip'
+    licence = LICENSE_UBIQUITINATION if mod == 'Ubiquitination' else LICENSE
     marks = Path(args.marks_dir)
     stamp = re.search(r'\((\d{4}-\d{2}-\d{2})T', member)
     if not stamp:
         raise SystemExit(f'no date in the member of the download: {member!r}')
     release = f'CPLM 4.0 ({stamp.group(1)})'
-    table = stage_marks(good, release)
+    table = stage_marks(good, release, cfg)
     marks.mkdir(parents=True, exist_ok=True)
-    table.to_csv(marks / MARKS_NAME, sep='\t', index=False, lineterminator='\n')
+    table.to_csv(marks / marks_name, sep='\t', index=False, lineterminator='\n')
     if raw.is_dir():
-        raw = raw / ('Methylation.zip' if (raw / 'Methylation.zip').exists() else 'Methylation.txt')
+        raw = raw / (f'{mod}.zip' if (raw / f'{mod}.zip').exists() else f'{mod}.txt')
     raw_md5 = md5_file(raw)
     pm = table['pmids'].map(bool)
     out = {
-        'source': 'CPLM 4.0 Methylation download (cplm.biocuckoo.cn)', 'url': URL, 'cplm_release': release, 'license': LICENSE,
+        'source': f'CPLM 4.0 {mod} download (cplm.biocuckoo.cn)', 'url': url, 'cplm_release': release, 'license': licence,
         'reference_fasta': args.fasta, 'reference_fasta_md5': md5_file(args.fasta),
-        'raw_files': {'Methylation.zip': raw.name}, 'raw_md5': {'Methylation.zip': raw_md5},
-        'raw_sha256': {'Methylation.zip': summary['input_sha256']}, 'raw_member': member,
+        'raw_files': {f'{mod}.zip': raw.name}, 'raw_md5': {f'{mod}.zip': raw_md5},
+        'raw_sha256': {f'{mod}.zip': summary['input_sha256']}, 'raw_member': member,
         'records_in_download': summary['input_rows'], 'records_in_scope': summary['rows_in_scope'],
         'dropped': {k: v for k, v in sorted(summary['checks'].items()) if k not in ('identical_sequence', 'window_match')},
         'checks': dict(sorted(summary['checks'].items())),
-        'rows': {'methyllysine': len(table)}, 'proteins': int(table['canonical_UniProtAC'].nunique()),
-        'rows_by_state': {'methyllysine': {'me': len(table)}},
-        'rows_by_evidence_class': {'methyllysine': {k: int(v) for k, v in table['evidence_class'].value_counts().sort_index().items()}},
+        'rows': {mark: len(table)}, 'proteins': int(table['canonical_UniProtAC'].nunique()),
+        'rows_by_state': {mark: {state: len(table)}},
+        'rows_by_evidence_class': {mark: {k: int(v) for k, v in table['evidence_class'].value_counts().sort_index().items()}},
         'rows_by_cplm_evidence': {k: int(v) for k, v in table['cplm_evidence'].value_counts().sort_index().items()},
         'rows_with_pubmed_ids': int(pm.sum()), 'pubmed_id_rule': f'{len(str(MIN_PMID))}-8 digits, {MIN_PMID:,} to {MAX_PMID:,}',
-        'files': {'methyllysine': MARKS_NAME}, 'files_md5': {'methyllysine': md5_file(marks / MARKS_NAME)},
+        'files': {mark: marks_name}, 'files_md5': {mark: md5_file(marks / marks_name)},
     }
-    (marks / MARKS_SUMMARY).write_text(json.dumps(out, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+    (marks / marks_summary).write_text(json.dumps(out, indent=2, sort_keys=True) + '\n', encoding='utf-8')
 
     raw_list = marks / 'raw_files.tsv'
     old = pd.read_csv(raw_list, sep='\t', dtype=str, keep_default_na=False)
     same = old[(old['file'] == raw.name) & (old['md5'] == raw_md5)]
     when = same['downloaded'].iloc[0] if len(same) else (args.downloaded or dt.date.today().isoformat())
     upsert_tsv_rows(raw_list, [{
-        'file': raw.name, 'url': URL, 'bytes': raw.stat().st_size, 'md5': raw_md5, 'sha256': summary['input_sha256'],
+        'file': raw.name, 'url': url, 'bytes': raw.stat().st_size, 'md5': raw_md5, 'sha256': summary['input_sha256'],
         'downloaded': when, 'version': f'CPLM 4.0; member {member}',
-        'kept': 'not in Git, not redistributed (2.5 MB; download it again from the URL and check the SHA-256); the staged table is in Git'}])
+        'kept': f'not in Git, not redistributed ({raw.stat().st_size / 1e6:.1f} MB; download it again from the URL and check the SHA-256); the staged table is in Git'}])
 
     command = (f'python scripts/39_stage_cplm4_lys_methylation.py --cplm PTM_data/marks/{raw.name} --fasta {args.fasta} '
-               f'--marks-dir inputs/marks')
+               f'--marks-dir inputs/marks' + ('' if mod == DEFAULT_MODIFICATION else f' --modification {mod}'))
     manifest_rows = [
-        {'file': f'marks/{MARKS_NAME}', 'bytes': (marks / MARKS_NAME).stat().st_size, 'md5': md5_file(marks / MARKS_NAME), 'rows': len(table),
+        {'file': f'marks/{marks_name}', 'bytes': (marks / marks_name).stat().st_size, 'md5': md5_file(marks / marks_name), 'rows': len(table),
          'redistribution': 'git',
-         'content': f'CPLM 4.0 human lysine methylation sites (degree not stated), one row per residue, with CPLM\'s evidence label (Exp., Exp./Dat., Dat.) and references: {len(table):,} rows',
-         'source': URL, 'version_or_date': f'{release}; downloaded {when}', 'citation': CITATION, 'licence': LICENSE,
+         'content': f'CPLM 4.0 human {cfg["what"]}, one row per residue, with CPLM\'s evidence label (Exp., Exp./Dat., Dat.) and references: {len(table):,} rows',
+         'source': url, 'version_or_date': f'{release}; downloaded {when}', 'citation': CITATION, 'licence': licence,
          'derived_from': f'{raw.name} (MD5 {raw_md5})',
-         'how_made_or_checked': command + '; sequence and residue checked on the reference sequence; counts in marks/' + MARKS_SUMMARY},
-        {'file': f'marks/{MARKS_SUMMARY}', 'bytes': (marks / MARKS_SUMMARY).stat().st_size, 'md5': md5_file(marks / MARKS_SUMMARY),
+         'how_made_or_checked': command + '; sequence and residue checked on the reference sequence; counts in marks/' + marks_summary},
+        {'file': f'marks/{marks_summary}', 'bytes': (marks / marks_summary).stat().st_size, 'md5': md5_file(marks / marks_summary),
          'redistribution': 'git', 'content': 'Counts, release, drops and the MD5 of the input and of the table of the CPLM staging',
          'source': 'the table above', 'version_or_date': release, 'derived_from': 'marks/raw_files.tsv', 'how_made_or_checked': command}]
     update_manifest(args.manifest, manifest_rows)
@@ -206,8 +231,11 @@ def write_marks(args, good: pd.DataFrame, summary: dict, rejected: pd.DataFrame,
 def main() -> None:
     results_root = Path(os.environ.get('PTM_RESULTS_ROOT', 'PTM_results'))
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('--cplm', default=os.environ.get('PTM_CPLM4_METHYL', ''),
-                    help='CPLM 4.0 Methylation.zip, Methylation.txt, or a directory holding one (PTM_CPLM4_METHYL).')
+    ap.add_argument('--modification', default=DEFAULT_MODIFICATION, choices=sorted(MODIFICATIONS),
+                    help='which CPLM download: Methylation (default), Ubiquitination or Sumoylation')
+    ap.add_argument('--cplm', default='',
+                    help='CPLM 4.0 <Modification>.zip, <Modification>.txt, or a directory holding one '
+                         '(default: the environment variable PTM_CPLM4_METHYL, PTM_CPLM4_UBIQUITINATION or PTM_CPLM4_SUMOYLATION).')
     ap.add_argument('--fasta', default=os.environ.get('PTM_CANONICAL_FASTA', ''),
                     help='UniProt reviewed canonical FASTA (PTM_CANONICAL_FASTA).')
     ap.add_argument('--organism', default='Homo sapiens')
@@ -216,13 +244,15 @@ def main() -> None:
     ap.add_argument('--manifest', default='inputs/MANIFEST.tsv')
     ap.add_argument('--downloaded', default='', help='date of the download for raw_files.tsv (default: today)')
     args = ap.parse_args()
+    cfg = MODIFICATIONS[args.modification]
+    args.cplm = args.cplm or os.environ.get(cfg['env'], '')
     if not args.cplm or not args.fasta:
-        raise SystemExit('--cplm and --fasta are required (or set PTM_CPLM4_METHYL and PTM_CANONICAL_FASTA)')
+        raise SystemExit(f'--cplm and --fasta are required (or set {cfg["env"]} and PTM_CANONICAL_FASTA)')
 
-    df, digest, member = read_cplm(Path(args.cplm))
+    df, digest, member = read_cplm(Path(args.cplm), args.modification)
     canonical = parse_fasta(args.fasta)
     n_input = len(df)
-    df = df[df['organism'].eq(args.organism) & df['modification'].str.contains('Methylation', case=False)].copy()
+    df = df[df['organism'].eq(args.organism) & df['modification'].str.contains(args.modification, case=False)].copy()
     n_scope = len(df)
     df['position_int'] = [int(p) if p.strip().isdigit() else None for p in df['position']]
     checks = [check_row(row, canonical) for row in df.itertuples(index=False)]
@@ -247,8 +277,8 @@ def main() -> None:
     )
 
     outdir = Path(args.outdir)
-    save_table(good, outdir / 'cplm4_human_lys_methyl_validated.tsv')
-    save_table(rejected, outdir / 'cplm4_human_lys_methyl_rejected.tsv')
+    save_table(good, outdir / f'cplm4_human_lys_{cfg["tag"]}_validated.tsv')
+    save_table(rejected, outdir / f'cplm4_human_lys_{cfg["tag"]}_rejected.tsv')
     summary = {
         'generated': dt.date.today().isoformat(),
         'input': str(Path(args.cplm)),
