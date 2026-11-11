@@ -24,8 +24,8 @@ Outputs (in --outdir, default $PTM_RESULTS_ROOT/cplm4)
 With --modification Ubiquitination or Sumoylation the same checks and outputs apply under other names: cplm4_human_lys_ubiquitination_validated.tsv
 (and _rejected.tsv, cplm4_summary.json), and with --marks-dir cplm_4_0_ubiquitination_sites.tsv (mark ubiquitination, state ub) and
 cplm_ubiquitination_summary.json, or cplm_4_0_sumoylation_sites.tsv (mark sumoylation, state sumo) and cplm_sumoylation_summary.json.
-The Methylation outputs are unchanged by the option. Stage Sumoylation with --marks-dir only for a release that is to include it:
-script 56 reads every inputs/marks/*_sumoylation_sites.tsv.
+The Methylation outputs are unchanged by the option. The owner included Sumoylation in release v1.5.0 (2026-11-10); script 56 reads every
+inputs/marks/*_sumoylation_sites.tsv.
 
 With --marks-dir the validated sites are also staged for the context-mark release (inputs/marks/, read by
 56_build_context_marks.py) in the format of the other marks:
@@ -48,7 +48,7 @@ With --marks-dir the validated sites are also staged for the context-mark releas
                   stay in cplm_references only.
 
 CPLM 4.0 states no license (its page has a copyright notice, "All Rights Reserved"). The owner decided on 2026-11-09 to
-include its human lysine methylation sites in the release, and on 2026-11-10 its ubiquitination sites on the same terms, cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022,
+include its human lysine methylation sites in the release, and on 2026-11-10 its ubiquitination and SUMOylation sites on the same terms, cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022,
 doi:10.1093/nar/gkab849), pending the authors' permission. Any terms the authors give are followed.
 """
 from __future__ import annotations
@@ -92,6 +92,7 @@ LICENSE = ('none stated (cplm.biocuckoo.cn carries a copyright notice, "All Righ
            '2026-11-09, cited, pending the authors\' permission')
 LICENSE_UBIQUITINATION = ('none stated (cplm.biocuckoo.cn carries a copyright notice, "All Rights Reserved"); included by the owner\'s decision of '
                           '2026-11-10, on the same terms as the methylation sites (decision of 2026-11-09): cited, pending the authors\' permission')
+LICENSE_SUMOYLATION = LICENSE_UBIQUITINATION    # the decision of 2026-11-10 covers both, on the same terms
 MAX_PMID = 34_300_000    # the highest PubMed ID assigned by the date of Methylation.txt (2021-06-13)
 MIN_PMID = 1_000_000
 EVIDENCE_CLASS = {'Exp.': 'experimental', 'Exp./Dat.': 'experimental', 'Dat.': 'unspecified'}
@@ -173,7 +174,7 @@ def write_marks(args, good: pd.DataFrame, summary: dict, rejected: pd.DataFrame,
     cfg = MODIFICATIONS[mod]
     marks_name, marks_summary, mark, state = cfg['table'], cfg['summary'], cfg['mark'], cfg['state']
     url = URL_BASE + f'{mod}.zip'
-    terms = LICENSE_UBIQUITINATION if mod == 'Ubiquitination' else LICENSE
+    terms = {'Ubiquitination': LICENSE_UBIQUITINATION, 'Sumoylation': LICENSE_SUMOYLATION}.get(mod, LICENSE)
     marks = Path(args.marks_dir)
     stamp = re.search(r'\((\d{4}-\d{2}-\d{2})T', member)
     if not stamp:

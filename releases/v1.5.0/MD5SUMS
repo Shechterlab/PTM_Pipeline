@@ -1,5 +1,5 @@
-c0a0b877a00371b6cd4c04e14086f990  CHANGES.md
-a35ef7039c2fe295b12b0d1b875aca2e  README.md
+dbd62f434ce3ef992fb01afed621fd03  CHANGES.md
+00fe595c1ff456f4ec306e7ef536a585  README.md
 880b429971eda2531d3477e71b350194  STUDIES.md
 c529f6de84545efb3c563a10dcbc29bc  analyses/README.md
 61c1f5efc826b84542ae11b9cd0f8e95  analyses/clustering/arg_methyl_multiscale_density_significant_regions.tsv
@@ -59,7 +59,7 @@ ed0652550dcabf98079e38b851bb1c6b  analyses_with_lower_confidence/other_ptms/ptm_
 f2283b91ae43de2999770de4baba8cf7  analyses_with_lower_confidence/other_ptms/ptm_idr_binary_comparison.tsv
 d7101c4b50ca7ee889196ff39af19c8e  analyses_with_lower_confidence/panther/panther_class_enrichment.tsv
 943dff2c27d23c73c39201ba1053a801  analyses_with_lower_confidence/statistics_v1.5.0.tsv
-d5942186f2de3357928121d231f83120  data_dictionary.tsv
+f2ea80c2a9399efab013b7595d1271a0  data_dictionary.tsv
 079ce9e22305fcb01fb9f035fca778f7  human_acetylation_sites_v1.5.0.tsv
 4164819cece8710a79904b9901cfa2bf  human_lysine_acylation_sites_v1.5.0.tsv
 fb9f5aeaddc1520e1c260c127b05b5ab  human_methylarginine_crosscheck_v1.5.0.tsv
@@ -69,9 +69,9 @@ fb9f5aeaddc1520e1c260c127b05b5ab  human_methylarginine_crosscheck_v1.5.0.tsv
 0bfbff7a50ea663e4fb3372fc6d8e582  human_methylarginine_sites_v1.5.0.xlsx
 1b3e1ebcf56327eeded54b2486aac856  human_methyllysine_sites_v1.5.0.tsv
 2b4cacbbedf48862d8c2816b9157c8fe  human_phosphorylation_sites_v1.5.0.tsv
-5812e5a51fd35f197436939990b6071e  human_sumoylation_sites_v1.5.0.tsv
+3a3d021bf7a2a352ba9807d425c65973  human_sumoylation_sites_v1.5.0.tsv
 1c870912a219afa4329fc79d9a813983  human_ubiquitination_sites_v1.5.0.tsv
-439082353e2572dcd27636689f6cebef  release.json
+200e2a68cc76dbf483c8807f3c74200c  release.json
 bdeb58f4dbbc713a3059930c363b074a  statistics_v1.5.0.tsv
 c62a97c257bd354b8f4a336d9d9e65e9  statistics_with_lower_confidence_v1.5.0.tsv
 2132e4b6c309d92628360cddbccad3a9  studies_v1.5.0.tsv

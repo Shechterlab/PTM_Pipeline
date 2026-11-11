@@ -123,9 +123,9 @@ def test_staged_tables_and_release_agree_with_manifest():
     manifest = list(csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t'))
     rows = {r['file']: r for r in manifest if r['file'].startswith('marks/')}
     tables = [f for f in rows if f.endswith('_sites.tsv') or f.endswith('_crosscheck.tsv')]
-    assert len(tables) == 16
+    assert len(tables) == 17
     for name in tables + ['marks/raw_files.tsv', 'marks/uniprot_ptm_sites_summary.json', 'marks/iptmnet_ptm_sites_summary.json',
-                          'marks/cplm_ptm_sites_summary.json', 'marks/cplm_ubiquitination_summary.json']:
+                          'marks/cplm_ptm_sites_summary.json', 'marks/cplm_ubiquitination_summary.json', 'marks/cplm_sumoylation_summary.json']:
         assert rows[name]['redistribution'] == 'git'
         assert build.md5_file(ROOT / 'inputs' / name) == rows[name]['md5']
     for name in tables:
@@ -275,7 +275,7 @@ def test_release_v1_5_0_is_consistent():
         if 'crosscheck' in path.name:
             assert header[11:] == ['in_methylarginine_release']
         else:       # the columns of the sources that contribute, then iPTMnet's score
-            own = {'ubiquitination': ['cplm_evidence'], 'methyllysine': ['cplm_evidence', 'berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment'],
+            own = {'ubiquitination': ['cplm_evidence'], 'sumoylation': ['cplm_evidence'], 'methyllysine': ['cplm_evidence', 'berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment'],
                    'phosphorylation': ['functional_score', 'best_localization_probability', 'best_pep', 'biological_samples', 'spectral_counts']}
             assert header[11:] == next((v for k, v in own.items() if k in path.name), []) + ['iptmnet_score'], path.name
     text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
@@ -597,11 +597,11 @@ def test_ubiquitination_and_sumoylation_tables_of_the_release():
     import pandas as pd
     folder = ROOT / 'releases' / 'v1.5.0'
     reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
-    for mark, state, sources in (('ubiquitination', 'ub', {'UniProt', 'iPTMnet', 'CPLM'}), ('sumoylation', 'sumo', {'UniProt', 'iPTMnet'})):
+    for mark, state, sources in (('ubiquitination', 'ub', {'UniProt', 'iPTMnet', 'CPLM'}), ('sumoylation', 'sumo', {'UniProt', 'iPTMnet', 'CPLM'})):
         table = pd.read_csv(folder / f'human_{mark}_sites_v1.5.0.tsv', sep='\t', dtype=str, keep_default_na=False)
         assert set(table['state']) == {state} and set(table['mark']) == {mark} and set(table['residue']) == {'K'}
         assert not table.duplicated(['canonical_UniProtAC', 'position', 'state']).any()
-        assert {x for v in table['sources'] for x in v.split('; ')} == sources          # CPLM SUMOylation is not in the release
+        assert {x for v in table['sources'] for x in v.split('; ')} == sources
         for r in table.itertuples():
             assert reference[r.canonical_UniProtAC][int(r.position) - 1] == 'K'
         by_source = {s: table[table['sources'].str.contains(s)] for s in sources}
@@ -609,12 +609,12 @@ def test_ubiquitination_and_sumoylation_tables_of_the_release():
         for s in sources:
             n = len(pd.read_csv(ROOT / 'inputs' / 'marks' / staged[s], sep='\t', dtype=str, keep_default_na=False))
             assert len(by_source[s]) == n, (mark, s)
-    assert not (ROOT / 'inputs' / 'marks' / 'cplm_4_0_sumoylation_sites.tsv').exists()
     text = (folder / 'README.md').read_text(encoding='utf-8') + (folder / 'CHANGES.md').read_text(encoding='utf-8')
     for needle in ("owner's decision of 2026-11-10", "pending the authors' permission", 'Zhang et al., Nucleic Acids Res 50:D451',
-                   'CPLM states no license', "SUMOylation sites are not included"):
+                   'CPLM states no license', 'The sumoylation table likewise includes'):
         assert needle in text, needle
     dictionary = (folder / 'data_dictionary.tsv').read_text(encoding='utf-8')
     for name in ('human_ubiquitination_sites_v1.5.0.tsv', 'human_sumoylation_sites_v1.5.0.tsv'):
         assert f'{name}\tiptmnet_score' in dictionary
-    assert 'human_ubiquitination_sites_v1.5.0.tsv\tcplm_evidence' in dictionary and 'human_sumoylation_sites_v1.5.0.tsv\tcplm_evidence' not in dictionary
+    assert 'human_ubiquitination_sites_v1.5.0.tsv\tcplm_evidence' in dictionary and 'human_sumoylation_sites_v1.5.0.tsv\tcplm_evidence' in dictionary
+    assert 'SUMOylation sites are not included' not in text
