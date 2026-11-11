@@ -137,14 +137,14 @@ def test_staged_tables_and_release_agree_with_manifest():
         if '/uniprot_' in name:
             assert row['licence'] == 'CC BY 4.0' and row['source'].startswith('https://rest.uniprot.org')
         elif '/berryhill2023_' in name:
-            assert 'CC BY 4.0' in row['licence'] and 'no separate notice' in row['licence'] and "owner's decision" in row['licence']
+            assert 'CC BY 4.0' in row['licence'] and 'no separate notice' in row['licence'] and 'owner' not in row['licence']
             assert 'Berryhill' in row['citation'] and 'Sci Rep 13:377' in row['citation'] and '10.1038/s41598-022-27175-x' in row['citation']
         elif '/ochoa2020_' in name:
-            assert 'not open access' in row['licence'] and 'exclusive licence to Springer Nature' in row['licence'] and "owner's decision" in row['licence']
+            assert 'not open access' in row['licence'] and 'exclusive licence to Springer Nature' in row['licence'] and 'owner' not in row['licence']
             assert 'Ochoa' in row['citation'] and 'Nat Biotechnol 38:365' in row['citation'] and '10.1038/s41587-019-0344-3' in row['citation']
             assert row['redistribution'] == 'git'
         elif '/cplm_' in name:
-            assert row['licence'].startswith('none stated') and 'pending the authors' in row['licence']
+            assert row['licence'].startswith('none stated') and 'All Rights Reserved' in row['licence'] and 'pending' not in row['licence']
             assert row['source'].startswith('https://cplm.biocuckoo.cn/') and 'Zhang W' in row['citation'] and 'gkab849' in row['citation']
         else:
             assert row['licence'].startswith('CC BY-NC-SA 4.0') and row['source'].startswith('https://research.bioinformatics.udel.edu/iptmnet_data/')
@@ -287,15 +287,15 @@ def test_release_v1_5_0_is_consistent():
 
 def test_release_license_covers_every_source():
     # the release is CC BY-NC-SA 4.0: every source must be CC BY, CC BY-NC-SA or as open
-    # (CPLM, Berryhill 2023 and Ochoa 2020 are the exceptions, each by the owner's decision, and say so in their license entry)
+    # (CPLM, Berryhill 2023 and Ochoa 2020 are the exceptions, each stating its own terms in its license entry, with no word on how the decision was taken)
     exceptions = {'CPLM', 'Berryhill 2023', 'Ochoa 2020'}
     assert {s['license'] for k, s in build.SOURCES.items() if k not in exceptions} <= {'CC BY 4.0', 'CC BY-NC-SA 4.0'}
-    assert all("owner's decision" in build.SOURCES[k]['license'] or 'pending the authors' in build.SOURCES[k]['license'] for k in exceptions)
+    assert all('owner' not in build.SOURCES[k]['license'] and 'pending' not in build.SOURCES[k]['license'] for k in exceptions)
     assert set(build.SOURCES) == {'UniProt', 'iPTMnet', 'CPLM', 'Berryhill 2023', 'Ochoa 2020'} == set(build.SOURCE_ORDER)
     assert 'CC BY 4.0' in build.SOURCES['Berryhill 2023']['license'] and 'supplements carry no separate notice' in build.SOURCES['Berryhill 2023']['license']
-    assert 'not open access' in build.SOURCES['Ochoa 2020']['license'] and "owner's decision" in build.SOURCES['Ochoa 2020']['license']
-    # CPLM is the one source without a license: the owner's decision of 2026-11-09, said wherever it is described
-    assert 'pending the authors' in build.SOURCES['CPLM']['citation'] and 'pending the authors' in build.SOURCES['CPLM']['license']
+    assert 'not open access' in build.SOURCES['Ochoa 2020']['license'] and 'supplements carry no license' in build.SOURCES['Ochoa 2020']['license']
+    # CPLM is the one source without a license: no license is stated
+    assert build.SOURCES['CPLM']['license'] == 'none stated' and 'pending' not in build.SOURCES['CPLM']['citation']
 
 
 def test_no_closed_source_is_referenced():
@@ -389,7 +389,7 @@ def test_cplm_rows_in_the_release_and_the_merge():
     others = table[~table['sources'].str.contains('CPLM')]
     assert len(others) + len(cp[cp['sources'] != 'CPLM']) >= 756
     text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
-    assert 'CPLM states no license' in text and "pending the authors' permission" in text and 'Zhang et al., Nucleic Acids Res 50:D451' in text
+    assert 'CPLM states no license' in text and 'All Rights Reserved' in text and 'Zhang et al., Nucleic Acids Res 50:D451' in text
 
 
 def test_merge_adds_cplm_to_sources_without_changing_other_rows():
@@ -530,10 +530,12 @@ def test_license_notes_of_the_new_sources_in_the_release_text():
     folder = ROOT / 'releases' / 'v1.5.0'
     for name in ('README.md', 'CHANGES.md'):
         text = (folder / name).read_text(encoding='utf-8')
-        for needle in ('Sci Rep 13:377', '10.1038/s41598-022-27175-x', 'CC BY 4.0', 'supplements carry no separate', "owner's decision of 2026-11-10",
+        for needle in ('Sci Rep 13:377', '10.1038/s41598-022-27175-x', 'CC BY 4.0', 'supplements carry no separate',
                        'Nat Biotechnol 38:365', '10.1038/s41587-019-0344-3', 'not open access', 'exclusive licence to Springer Nature America',
                        'The score is calculated based on all the evidence sources as shown on the website'):
             assert needle in text, (name, needle)
+        for phrase in ("owner's decision", "authors' permission", "authors' confirmation", 'when they answer'):
+            assert phrase not in text, (name, phrase)
     release = json.loads((folder / 'release.json').read_text(encoding='utf-8'))
     assert {'Berryhill 2023', 'Ochoa 2020'} <= set(release['sources']) and 'iptmnet_score' in release['inputs_md5']
 
@@ -610,7 +612,7 @@ def test_ubiquitination_and_sumoylation_tables_of_the_release():
             n = len(pd.read_csv(ROOT / 'inputs' / 'marks' / staged[s], sep='\t', dtype=str, keep_default_na=False))
             assert len(by_source[s]) == n, (mark, s)
     text = (folder / 'README.md').read_text(encoding='utf-8') + (folder / 'CHANGES.md').read_text(encoding='utf-8')
-    for needle in ("owner's decision of 2026-11-10", "pending the authors' permission", 'Zhang et al., Nucleic Acids Res 50:D451',
+    for needle in ('All Rights Reserved', 'Zhang et al., Nucleic Acids Res 50:D451',
                    'CPLM states no license', 'The sumoylation table likewise includes'):
         assert needle in text, needle
     dictionary = (folder / 'data_dictionary.tsv').read_text(encoding='utf-8')

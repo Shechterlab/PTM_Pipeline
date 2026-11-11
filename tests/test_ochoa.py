@@ -1,4 +1,4 @@
-"""Tests of the Ochoa 2020 phosphosite staging (scripts/58). The staged table is in Git (the owner decided to publish it)."""
+"""Tests of the Ochoa 2020 phosphosite staging (scripts/58). The staged table is in Git (published, cited)."""
 import csv
 import importlib.util
 import json
@@ -76,7 +76,7 @@ def test_summary_and_manifest_in_git():
     manifest = {r['file']: r for r in csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t')}
     for name in (stage58.OUT_SITES, stage58.OUT_REJECTED):
         assert manifest['marks/' + name]['redistribution'] == 'git'
-        assert 'exclusive licence to Springer Nature' in manifest['marks/' + name]['licence'] and "owner's decision" in manifest['marks/' + name]['licence']
+        assert 'exclusive licence to Springer Nature' in manifest['marks/' + name]['licence'] and "owner" not in manifest['marks/' + name]['licence']
         assert 'Nat Biotechnol 38:365' in manifest['marks/' + name]['citation']
         assert manifest['marks/' + name]['md5'] == summary['files_md5']['rejected' if 'rejected' in name else 'validated']
     assert manifest['marks/' + stage58.OUT_SUMMARY]['redistribution'] == 'git'

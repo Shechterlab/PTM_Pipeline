@@ -742,7 +742,7 @@
       "rows": 123932
     }
   },
-  "context_marks_code_commit": "dafbfbc3566df79950d849ed445e5922d3288922",
+  "context_marks_code_commit": "dafbfbc3566df79950d849ed445e5922d3288922 (scripts modified)",
   "inputs_md5": {
     "iptmnet_score": {
       "iptmnet_6_2_score.tsv": "ed097f2d5b773233dcdf1999ada1579d"
@@ -777,7 +777,7 @@
       "uniprot_2026_04_ubiquitination_sites.tsv": "0cc7c9e74519970def0374f1511848b8"
     }
   },
-  "license": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license and its methylation, ubiquitination and SUMOylation sites are included pending the authors' permission; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access; both included by the owner's decision",
+  "license": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access and its supplements carry no license",
   "methylarginine_code_commit": "52451320067f754d32574061b8653a2b5f03ec37",
   "methylarginine_data": "unchanged from v1.4.3: files carried over byte for byte, not rebuilt",
   "previous_version": "v1.4.3",
@@ -786,13 +786,13 @@
   "site_changes": "supporting/site_changes_v1.4.3_to_v1.5.0.tsv",
   "sources": {
     "Berryhill 2023": {
-      "license": "article CC BY 4.0; supplements carry no separate notice; included by the owner's decision"
+      "license": "article CC BY 4.0; supplements carry no separate notice"
     },
     "CPLM": {
-      "license": "none stated; included pending the authors' permission"
+      "license": "none stated"
     },
     "Ochoa 2020": {
-      "license": "article not open access (exclusive license to Springer Nature America); supplements carry no license; included by the owner's decision"
+      "license": "article not open access (exclusive license to Springer Nature America); supplements carry no license"
     },
     "UniProt": {
       "license": "CC BY 4.0"

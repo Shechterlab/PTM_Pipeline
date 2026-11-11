@@ -24,7 +24,7 @@ Outputs (in --outdir, default $PTM_RESULTS_ROOT/cplm4)
 With --modification Ubiquitination or Sumoylation the same checks and outputs apply under other names: cplm4_human_lys_ubiquitination_validated.tsv
 (and _rejected.tsv, cplm4_summary.json), and with --marks-dir cplm_4_0_ubiquitination_sites.tsv (mark ubiquitination, state ub) and
 cplm_ubiquitination_summary.json, or cplm_4_0_sumoylation_sites.tsv (mark sumoylation, state sumo) and cplm_sumoylation_summary.json.
-The Methylation outputs are unchanged by the option. The owner included Sumoylation in release v1.5.0 (2026-11-10); script 56 reads every
+The Methylation outputs are unchanged by the option. Sumoylation is included in release v1.5.0; script 56 reads every
 inputs/marks/*_sumoylation_sites.tsv.
 
 With --marks-dir the validated sites are also staged for the context-mark release (inputs/marks/, read by
@@ -47,9 +47,8 @@ With --marks-dir the validated sites are also staged for the context-mark releas
                   34,300,000, the PubMed IDs assigned when Methylation.txt was made (2021-06-13). Shorter and larger numbers
                   stay in cplm_references only.
 
-CPLM 4.0 states no license (its page has a copyright notice, "All Rights Reserved"). The owner decided on 2026-11-09 to
-include its human lysine methylation sites in the release, and on 2026-11-10 its ubiquitination and SUMOylation sites on the same terms, cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022,
-doi:10.1093/nar/gkab849), pending the authors' permission. Any terms the authors give are followed.
+CPLM 4.0 states no license (its page has a copyright notice, "All Rights Reserved"). Its human lysine methylation, ubiquitination and SUMOylation sites are
+included in the release, cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, doi:10.1093/nar/gkab849).
 """
 from __future__ import annotations
 
@@ -88,11 +87,9 @@ MODIFICATIONS = {
 }
 CITATION = ('Zhang W, Tan X, Lin S, et al. CPLM 4.0: an updated database with rich annotations for protein lysine modifications. '
             'Nucleic Acids Res 50:D451-D459 (2022), doi:10.1093/nar/gkab849')
-LICENSE = ('none stated (cplm.biocuckoo.cn carries a copyright notice, "All Rights Reserved"); included by the owner\'s decision of '
-           '2026-11-09, cited, pending the authors\' permission')
-LICENSE_UBIQUITINATION = ('none stated (cplm.biocuckoo.cn carries a copyright notice, "All Rights Reserved"); included by the owner\'s decision of '
-                          '2026-11-10, on the same terms as the methylation sites (decision of 2026-11-09): cited, pending the authors\' permission')
-LICENSE_SUMOYLATION = LICENSE_UBIQUITINATION    # the decision of 2026-11-10 covers both, on the same terms
+LICENSE = 'none stated (cplm.biocuckoo.cn carries a copyright notice, "All Rights Reserved")'
+LICENSE_UBIQUITINATION = LICENSE
+LICENSE_SUMOYLATION = LICENSE
 MAX_PMID = 34_300_000    # the highest PubMed ID assigned by the date of Methylation.txt (2021-06-13)
 MIN_PMID = 1_000_000
 EVIDENCE_CLASS = {'Exp.': 'experimental', 'Exp./Dat.': 'experimental', 'Dat.': 'unspecified'}

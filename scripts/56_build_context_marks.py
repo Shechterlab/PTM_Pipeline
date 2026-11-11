@@ -33,13 +33,13 @@ Merged columns:
   iptmnet_score    (methyllysine, phosphorylation, acylation, ubiquitination, sumoylation) iPTMnet's own score of the residue, 0 to 4 (scripts/59), on the rows whose
                    sources include iPTMnet and that score.txt has; '' otherwise
 
-CPLM 4.0 states no license. The owner decided on 2026-11-09 to include its human lysine methylation sites, and on 2026-11-10 its
-ubiquitination and SUMOylation sites on the same terms, cited, pending the authors' permission; their terms, when given, are followed. CPLM gives no
+CPLM 4.0 states no license (its site carries only a copyright notice, "All Rights Reserved"). Its human lysine methylation, ubiquitination and
+SUMOylation sites are included, cited. CPLM gives no
 methylation degree (its methylation rows are state `me`); its ubiquitination rows are state `ub` and its SUMOylation rows state `sumo`.
 Ubiquitination and sumoylation tables: states `ub` and `sumo`, from UniProt's cross-links to ubiquitin and to any SUMO paralog (the paralog is not kept), iPTMnet's
 UBIQUITINATION and SUMOYLATION records and CPLM's ubiquitination and SUMOylation, all on lysine.
-Berryhill 2023: article CC BY 4.0, supplements without a separate notice, included by the owner's decision of 2026-11-10. Ochoa 2020: article
-not open access, supplements without a license, the derived table published by the owner's decision of 2026-11-10.
+Berryhill 2023: article CC BY 4.0, supplements without a separate notice. Ochoa 2020: article
+not open access, supplements without a license; the derived table is published, cited.
 """
 from __future__ import annotations
 
@@ -83,15 +83,15 @@ SOURCES = {
     'iPTMnet': {'license': 'CC BY-NC-SA 4.0', 'url': 'https://research.bioinformatics.udel.edu/iptmnet/license',
                 'citation': 'Huang H, Arighi CN, Ross KE, et al. iPTMnet: an integrated resource for protein post-translational '
                             'modification network discovery. Nucleic Acids Res 46:D542-D550 (2018). doi:10.1093/nar/gkx1104'},
-    'CPLM': {'license': 'none stated; included pending the authors\' permission', 'url': 'https://cplm.biocuckoo.cn/',
+    'CPLM': {'license': 'none stated', 'url': 'https://cplm.biocuckoo.cn/',
              'citation': 'Zhang W, Tan X, Lin S, et al. CPLM 4.0: an updated database with rich annotations for protein lysine '
-                         'modifications. Nucleic Acids Res 50:D451-D459 (2022). doi:10.1093/nar/gkab849 (included pending the authors\' permission)'},
-    'Berryhill 2023': {'license': 'article CC BY 4.0; supplements carry no separate notice; included by the owner\'s decision',
+                         'modifications. Nucleic Acids Res 50:D451-D459 (2022). doi:10.1093/nar/gkab849'},
+    'Berryhill 2023': {'license': 'article CC BY 4.0; supplements carry no separate notice',
                        'url': 'https://www.nature.com/articles/s41598-022-27175-x',
                        'citation': 'Berryhill CA, Hanquier JN, Doud EH, Cordeiro-Spinetti E, Dickson BM, Rothbart SB, Mosley AL. Global lysine '
                                    'methylome profiling using systematically characterized affinity reagents. Sci Rep 13:377 (2023). '
                                    'doi:10.1038/s41598-022-27175-x'},
-    'Ochoa 2020': {'license': 'article not open access (exclusive license to Springer Nature America); supplements carry no license; included by the owner\'s decision',
+    'Ochoa 2020': {'license': 'article not open access (exclusive license to Springer Nature America); supplements carry no license',
                    'url': 'https://www.nature.com/articles/s41587-019-0344-3',
                    'citation': 'Ochoa D, Jarnuczak AF, Viéitez C, et al. The functional landscape of the human phosphoproteome. '
                                'Nat Biotechnol 38:365-373 (2020). doi:10.1038/s41587-019-0344-3'},
@@ -118,7 +118,7 @@ DICTIONARY = [
     ('iptmnet_sources', 'list<code>', 'the upstream databases behind the iPTMnet record, separated by ";": hprd (HPRD), unip (UniProt), rlim and rlim+ (RLIMS-P text mining), sign (SIGNOR), npro (neXtProt), iedb (IEDB), pro (Protein Ontology), intact (IntAct); iPTMnet asks that they are cited'),
     ('pmids', 'list<string>', 'PubMed IDs of the records, separated by ";", when given. CPLM\'s reference field also holds identifiers that are not PubMed IDs; only seven- and eight-digit numbers up to 34,300,000 (the PubMed IDs assigned by the date of CPLM\'s file) are taken as PubMed IDs'),
     ('source_releases', 'list<string>', 'the release of each source in sources, same order (UniProt release, iPTMnet release, CPLM release and the date of its file)'),
-    ('cplm_evidence', 'code', 'methyllysine, ubiquitination and sumoylation tables only: CPLM\'s own evidence label for the residue, as CPLM gives it. Exp.: from an experimental paper; Exp./Dat.: both an experimental paper and another database; Dat.: another database only. Empty where CPLM does not report the residue. CPLM 4.0 states no license; its methylation sites (owner\'s decision of 2026-11-09) and ubiquitination and SUMOylation sites (2026-11-10) are included pending the authors\' permission, cited to Zhang et al., Nucleic Acids Res 50:D451 (2022)'),
+    ('cplm_evidence', 'code', 'methyllysine, ubiquitination and sumoylation tables only: CPLM\'s own evidence label for the residue, as CPLM gives it. Exp.: from an experimental paper; Exp./Dat.: both an experimental paper and another database; Dat.: another database only. Empty where CPLM does not report the residue. CPLM 4.0 states no license; its methylation, ubiquitination and SUMOylation sites are cited to Zhang et al., Nucleic Acids Res 50:D451 (2022)'),
     ('berryhill_site_probability', 'number', 'methyllysine table only: the highest site-localization probability (percent; 90.1 to 100 in Supplementary Table 5 of Berryhill et al., Sci Rep 13:377, 2023) over the cell lines and enrichments that identified the residue and state; empty where the residue is not a Berryhill 2023 row, and where the paper gives none (its PTMScan Rep 2 rows)'),
     ('berryhill_cell_lines', 'list<string>', 'methyllysine table only: the cell lines (HEK293T, U2OS) in which Berryhill et al. 2023 identified the residue and state, separated by ";"; empty for other sources'),
     ('berryhill_enrichment', 'list<string>', 'methyllysine table only: the enrichments (the antibody or PTMScan reagents of Berryhill et al. 2023, or none for global proteomics) that identified the residue and state, separated by ";"; empty for other sources'),
@@ -297,14 +297,14 @@ def source_notes(tables: dict, summaries: dict) -> list[str]:
     return [
         '**Berryhill 2023** (Berryhill CA, Hanquier JN, Doud EH, Cordeiro-Spinetti E, Dickson BM, Rothbart SB, Mosley AL. "Global lysine methylome profiling '
         'using systematically characterized affinity reagents", Sci Rep 13:377, 2023, doi:10.1038/s41598-022-27175-x). The article is CC BY 4.0; its supplements carry no separate '
-        'license notice. Its Supplementary Table 5 is included by the owner\'s decision of 2026-11-10, without waiting for the authors\' confirmation, cited. '
+        'license notice. Its Supplementary Table 5 is included, cited. '
         f'It contributes {int(bh_rows.sum()):,} methyllysine rows (states me1, me2, me3 kept; `evidence_class` experimental, as the sites are identified by mass spectrometry in HEK293T or U2OS cells; '
         f'{int(ml.loc[bh_rows, "berryhill_site_probability"].ne("").sum()):,} with a site probability) on {ml.loc[bh_rows, "canonical_UniProtAC"].nunique():,} proteins. Of the {b["input_rows"]:,} rows of the table, '
         f'{b["relocated_sites"]:,} sites were moved to the lysine of their peptide on the canonical sequence and {sum(b["rejected_by_reason"].values()):,} rows were rejected '
         f'(' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(b['rejected_by_reason'].items())) + '). The other sheets of the supplements, which carry third-party information, are not used.', '',
         '**Ochoa 2020** (Ochoa D, Jarnuczak AF, Viéitez C, et al. "The functional landscape of the human phosphoproteome", Nat Biotechnol 38:365-373, 2020, doi:10.1038/s41587-019-0344-3). '
         'The article is **not open access** ("© 2019 The Author(s), under exclusive licence to Springer Nature America, Inc."), and its supplements carry no license of their own. '
-        'The derived table (accession, position, residue, functional score, best localization probability, best PEP, biological samples, spectral counts) is published here by the owner\'s decision of 2026-11-10, cited. '
+        'The derived table (accession, position, residue, functional score, best localization probability, best PEP, biological samples, spectral counts) is published here, cited. '
         'The CC BY-NC-SA 4.0 of this release does not grant rights in Ochoa et al.\'s data beyond what Springer Nature and the authors allow; a reader who needs the phosphorylation table without it removes that source from `sources`, '
         f'and the rows that only it reports. It contributes {int(oc_rows.sum()):,} phosphorylation rows (state `phospho`; `evidence_class` experimental, mass spectrometry) on {ph.loc[oc_rows, "canonical_UniProtAC"].nunique():,} proteins; '
         f'of its {o["input_sites"]:,} sites {sum(o["rejected_by_reason"].values()):,} were rejected on the reference check (' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(o['rejected_by_reason'].items())) +
@@ -350,9 +350,8 @@ def write_docs(out: Path, version, release_date, tables, cross, summaries, commi
           'non-commercial. iPTMnet asks that the upstream databases of its `source` column are cited when its data are redistributed: each row keeps them '
           '(`iptmnet_sources`), and they are HPRD, UniProt, RLIMS-P text mining, SIGNOR, neXtProt, IEDB, Protein Ontology and IntAct (terms are theirs). '
           'Not used: PhosphoSitePlus, dbPTM and qPTM. ', '',
-          '**CPLM 4.0 states no license** (cplm.biocuckoo.cn carries a copyright notice, "All Rights Reserved"). Its human lysine methylation sites are included by the '
-          'owner\'s decision of 2026-11-09, and its human lysine ubiquitination and SUMOylation sites by the owner\'s decision of 2026-11-10 on the same terms, cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, doi:10.1093/nar/gkab849), **pending the authors\' permission**; '
-          'the terms the authors give, when they answer, are followed. The CC BY-NC-SA 4.0 of this release does not grant rights in CPLM\'s records beyond what the authors allow. '
+          '**CPLM 4.0 states no license** (cplm.biocuckoo.cn carries a copyright notice, "All Rights Reserved"). Its human lysine methylation, ubiquitination and SUMOylation sites are included, '
+          'cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, doi:10.1093/nar/gkab849). The CC BY-NC-SA 4.0 of this release does not grant rights in CPLM\'s records beyond what the authors allow. '
           'CPLM contributes only to the methyllysine, ubiquitination and sumoylation tables, as the rows whose `sources` name CPLM (state `me`, `ub` or `sumo`, with `cplm_evidence`); a reader who needs a table without CPLM removes that source from `sources`, '
           'and the rows that only CPLM reports.', '',
           *source_notes(tables, summaries), '',
@@ -541,17 +540,17 @@ def main() -> None:
                 '### CPLM 4.0: license note', '',
                 f'The methyllysine table includes all {cc["rows"]["methyllysine"]:,} validated human lysine methylation sites of CPLM 4.0 ({cc["proteins"]:,} proteins; Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, '
                 f'doi:10.1093/nar/gkab849; `Methylation.txt` of {cc["cplm_release"].split("(")[1].rstrip(")")}). **CPLM states no license**: cplm.biocuckoo.cn carries only a copyright notice ("All Rights Reserved"). '
-                'The sites are included by the owner\'s decision of 2026-11-09 (confirmed 2026-11-10), cited, **pending the authors\' permission**; the terms the authors give, when they answer, are followed. The CC BY-NC-SA 4.0 of the release does not grant rights in CPLM\'s records beyond what the authors allow. '
+                'The sites are included, cited. The CC BY-NC-SA 4.0 of the release does not grant rights in CPLM\'s records beyond what the authors allow. '
                 'Each CPLM row has `CPLM` in `sources` and CPLM\'s own evidence label in `cplm_evidence` (' + ', '.join(f'{k} {v:,}' for k, v in cc['rows_by_cplm_evidence'].items()) +
                 '), so a reader can filter on it or leave CPLM out. CPLM rows are state `me` (CPLM gives no degree); `evidence_class` is experimental for Exp. and Exp./Dat., and unspecified for Dat. '
                 f'(a record CPLM took from another database). `pmids` holds the references that are PubMed IDs ({cc["rows_with_pubmed_ids"]:,} rows; the rest of CPLM\'s reference field is identifiers of other databases). '
                 f'Dropped on validation, nothing remapped: ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(cc['dropped'].items())) + '. '
                 f'The ubiquitination table likewise includes all {cu["rows"]["ubiquitination"]:,} validated human lysine ubiquitination sites of CPLM 4.0 ({cu["proteins"]:,} proteins; `Ubiquitination.txt` of {cu["cplm_release"].split("(")[1].rstrip(")")}), '
-                'by the owner\'s decision of 2026-11-10 on the same terms as the methylation sites: cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, doi:10.1093/nar/gkab849), **pending the authors\' permission**, the authors\' terms followed when given. '
+                'cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, doi:10.1093/nar/gkab849). '
                 'Its rows have `CPLM` in `sources`, state `ub`, and CPLM\'s evidence label in `cplm_evidence` (' + ', '.join(f'{k} {v:,}' for k, v in cu['rows_by_cplm_evidence'].items()) + '); '
                 f'`pmids` holds the PubMed IDs among CPLM\'s references ({cu["rows_with_pubmed_ids"]:,} rows). Dropped on validation, nothing remapped: ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(cu['dropped'].items())) + '. '
                 f'The sumoylation table likewise includes all {cs["rows"]["sumoylation"]:,} validated human lysine SUMOylation sites of CPLM 4.0 ({cs["proteins"]:,} proteins; `Sumoylation.txt` of {cs["cplm_release"].split("(")[1].rstrip(")")}), '
-                'by the owner\'s decision of 2026-11-10 on the same terms: cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, doi:10.1093/nar/gkab849), **pending the authors\' permission**, the authors\' terms followed when given. '
+                'cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, doi:10.1093/nar/gkab849). '
                 'Its rows have `CPLM` in `sources`, state `sumo`, and CPLM\'s evidence label in `cplm_evidence` (' + ', '.join(f'{k} {v:,}' for k, v in cs['rows_by_cplm_evidence'].items()) + '); '
                 f'`pmids` holds the PubMed IDs among CPLM\'s references ({cs["rows_with_pubmed_ids"]:,} rows). Dropped on validation, nothing remapped: ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(cs['dropped'].items())) + '. '
                 'CPLM contributes no lysine acylation.', '',
@@ -567,7 +566,7 @@ def main() -> None:
 
     release = {'title': 'Human methylarginine sites and context marks', 'version': version, 'previous_version': CARRIED_FROM,
                'release_date': args.release_date, 'repository': 'https://github.com/Shechterlab/PTM_Pipeline',
-               'license': 'CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license and its methylation, ubiquitination and SUMOylation sites are included pending the authors\' permission; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access; both included by the owner\'s decision',
+               'license': 'CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access and its supplements carry no license',
                'methylarginine_data': f'unchanged from {CARRIED_FROM}: files carried over byte for byte, not rebuilt',
                'methylarginine_code_commit': json.loads((src / 'release.json').read_text(encoding='utf-8')).get('code_commit'),
                'context_marks_code_commit': commit, 'carried_over': carried, 'carried_over_text_edited': edited,

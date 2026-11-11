@@ -6,8 +6,7 @@
 
 Source: Berryhill CA, Hanquier JN, Doud EH, Cordeiro-Spinetti E, Dickson BM, Rothbart SB, Mosley AL. Global lysine
 methylome profiling using systematically characterized affinity reagents. Sci Rep 13:377 (2023),
-doi:10.1038/s41598-022-27175-x. License: article CC BY 4.0; the supplementary files carry no separate notice; included
-by the owner's decision (2026-11-10), without waiting for the authors' confirmation. Cite the paper wherever the data is
+doi:10.1038/s41598-022-27175-x. License: article CC BY 4.0; the supplementary files carry no separate notice. Cite the paper wherever the data is
 described.
 
 Reads only Supplementary Table 5 (sheet "Sup Table 5" of Supplementary Information 2, MOESM2_ESM.xlsx): one row per
@@ -56,7 +55,7 @@ URL = 'https://static-content.springer.com/esm/art%3A10.1038%2Fs41598-022-27175-
 ARTICLE_URL = 'https://www.nature.com/articles/s41598-022-27175-x'
 SHEET = 'Sup Table 5'
 CITATION = 'Berryhill et al., Sci Rep 13:377 (2023), doi:10.1038/s41598-022-27175-x'
-LICENSE = "article CC BY 4.0; supplementary files carry no separate notice; included by the owner's decision (2026-11-10)"
+LICENSE = "article CC BY 4.0; supplementary files carry no separate notice"
 SOURCE = 'Berryhill 2023'
 SOURCE_RELEASE = 'Sci Rep 13:377 (2023)'
 STATES = {'m1': 'me1', 'm2': 'me2', 'm3': 'me3'}

@@ -7,11 +7,10 @@
 
 Source: Ochoa D, Jarnuczak AF, Viéitez C, Gehre M, Soucheray M, Mateus A, Kleefeldt AA, Hill A, Garcia-Alonso L,
 Stein F, Krogan NJ, Savitski MM, Swaney DL, Vizcaíno JA, Noh KM, Beltrao P. The functional landscape of the human
-phosphoproteome. Nat Biotechnol 38:365-373 (2020), doi:10.1038/s41587-019-0344-3. Included by the owner's decision
-(2026-11-10). The article is NOT open access: its page says "© 2019 The Author(s), under exclusive licence to Springer
-Nature America, Inc." and gives the supplements no license of their own. The owner decided to publish the table derived
+phosphoproteome. Nat Biotechnol 38:365-373 (2020), doi:10.1038/s41587-019-0344-3. The article is NOT open access: its page says "© 2019 The Author(s), under exclusive licence to Springer
+Nature America, Inc." and gives the supplements no license of their own. The table derived
 from them (accession, position, residue, functional score, best localisation probability, best PEP, biological samples,
-spectral counts) in the release, cited to the paper: MANIFEST redistribution = git. Cite the paper wherever the data is
+spectral counts) is published in the release, cited to the paper: MANIFEST redistribution = git. Cite the paper wherever the data is
 described. The two downloads stay out of Git (raw_files.tsv has their MD5 and SHA-256).
 
 Reads two sheets, each with one row per site (116,258 sites), keyed by `uniprot` and `position`:
@@ -62,7 +61,7 @@ RAW_SCORES, RAW_FEATURES = '41587_2019_344_MOESM5_ESM.xlsx', '41587_2019_344_MOE
 SHEET_SCORES, SHEET_FEATURES = 'functional_score', 'annotated_phosphoproteome'
 CITATION = 'Ochoa et al., Nat Biotechnol 38:365-373 (2020), doi:10.1038/s41587-019-0344-3'
 LICENSE = ('article page: "© 2019 The Author(s), under exclusive licence to Springer Nature America, Inc."; not open access; '
-           "supplements carry no separate notice; included by the owner's decision (2026-11-10)")
+           "supplements carry no separate notice")
 SOURCE = 'Ochoa 2020'
 SOURCE_RELEASE = 'Nat Biotechnol 38:365 (2020)'
 RESIDUES = 'STY'
