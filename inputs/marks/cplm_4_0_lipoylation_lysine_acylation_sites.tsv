@@ -1,0 +1,6 @@
+canonical_UniProtAC	position	residue	mark	state	evidence	evidence_class	pmids	source	source_release	cplm_evidence	cplm_references
+O00330	97	K	lysine_acylation	lipoyl		experimental	25525879	CPLM	CPLM 4.0 (2021-06-13)	Exp./Dat.	25525879
+P10515	132	K	lysine_acylation	lipoyl		experimental	3191998;25525879	CPLM	CPLM 4.0 (2021-06-13)	Exp./Dat.	25525879,3191998;25525879;3191998
+P10515	259	K	lysine_acylation	lipoyl		experimental	3191998;25525879	CPLM	CPLM 4.0 (2021-06-13)	Exp./Dat.	25525879,3191998;25525879;3191998
+P11498	1144	K	lysine_acylation	lipoyl		experimental	6548474;7918683	CPLM	CPLM 4.0 (2021-06-13)	Exp./Dat.	6548474,7918683;6548474;7918683
+P23434	107	K	lysine_acylation	lipoyl		experimental	1671321	CPLM	CPLM 4.0 (2021-06-13)	Exp./Dat.	1671321

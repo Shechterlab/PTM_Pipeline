@@ -18,7 +18,7 @@
   "files_md5": {
     "ubiquitination": "3f7f41e7b4fff0d9024fe3318a403469"
   },
-  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\"); included by the owner's decision of 2026-11-10, on the same terms as the methylation sites (decision of 2026-11-09): cited, pending the authors' permission",
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\")",
   "proteins": 11839,
   "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
   "raw_files": {

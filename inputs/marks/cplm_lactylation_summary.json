@@ -1,0 +1,52 @@
+{
+  "checks": {
+    "accession_not_in_canonical_fasta": 9,
+    "identical_sequence": 71
+  },
+  "cplm_release": "CPLM 4.0 (2021-06-13)",
+  "dropped": {
+    "accession_not_in_canonical_fasta": 9
+  },
+  "files": {
+    "lysine_acylation": "cplm_4_0_lactylation_lysine_acylation_sites.tsv"
+  },
+  "files_md5": {
+    "lysine_acylation": "6fddc291492f0a717f6abbe427e8e6ab"
+  },
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\")",
+  "proteins": 18,
+  "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
+  "raw_files": {
+    "Lactylation.zip": "Lactylation.zip"
+  },
+  "raw_md5": {
+    "Lactylation.zip": "637fb54349ec190f212332ff13bd3b2c"
+  },
+  "raw_member": "Lactylation.txt (2021-06-13T21:24:16)",
+  "raw_sha256": {
+    "Lactylation.zip": "f24e79b285c31189eb7018e2a52e77731359a70dc526a1bfb504ec5f30aaac07"
+  },
+  "records_in_download": 364,
+  "records_in_scope": 80,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "lysine_acylation": 71
+  },
+  "rows_by_cplm_evidence": {
+    "Exp.": 71
+  },
+  "rows_by_evidence_class": {
+    "lysine_acylation": {
+      "experimental": 71
+    }
+  },
+  "rows_by_state": {
+    "lysine_acylation": {
+      "lactoyl": 71
+    }
+  },
+  "rows_with_pubmed_ids": 71,
+  "source": "CPLM 4.0 Lactylation download (cplm.biocuckoo.cn)",
+  "url": "https://cplm.biocuckoo.cn/Download/Lactylation.zip"
+}

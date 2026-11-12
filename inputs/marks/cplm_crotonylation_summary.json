@@ -1,0 +1,58 @@
+{
+  "checks": {
+    "accession_not_in_canonical_fasta": 781,
+    "canonical_not_K": 58,
+    "identical_sequence": 11903,
+    "window_match": 118,
+    "window_mismatch": 5
+  },
+  "cplm_release": "CPLM 4.0 (2021-06-13)",
+  "dropped": {
+    "accession_not_in_canonical_fasta": 781,
+    "canonical_not_K": 58,
+    "window_mismatch": 5
+  },
+  "files": {
+    "lysine_acylation": "cplm_4_0_crotonylation_lysine_acylation_sites.tsv"
+  },
+  "files_md5": {
+    "lysine_acylation": "2cb5461173d3e0048dcebb8497ffa5a4"
+  },
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\")",
+  "proteins": 2747,
+  "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
+  "raw_files": {
+    "Crotonylation.zip": "Crotonylation.zip"
+  },
+  "raw_md5": {
+    "Crotonylation.zip": "a59d28465542c757d55ff15358839d5b"
+  },
+  "raw_member": "Crotonylation.txt (2021-06-13T21:24:18)",
+  "raw_sha256": {
+    "Crotonylation.zip": "9a2c41f9bf6a5e20beceefd125a53602487ee71f4eaed27dfee211e5c9cfa7c5"
+  },
+  "records_in_download": 19782,
+  "records_in_scope": 12865,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "lysine_acylation": 12021
+  },
+  "rows_by_cplm_evidence": {
+    "Exp.": 11842,
+    "Exp./Dat.": 179
+  },
+  "rows_by_evidence_class": {
+    "lysine_acylation": {
+      "experimental": 12021
+    }
+  },
+  "rows_by_state": {
+    "lysine_acylation": {
+      "crotonyl": 12021
+    }
+  },
+  "rows_with_pubmed_ids": 12021,
+  "source": "CPLM 4.0 Crotonylation download (cplm.biocuckoo.cn)",
+  "url": "https://cplm.biocuckoo.cn/Download/Crotonylation.zip"
+}

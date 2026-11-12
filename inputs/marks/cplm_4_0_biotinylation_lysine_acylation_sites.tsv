@@ -1,0 +1,10 @@
+canonical_UniProtAC	position	residue	mark	state	evidence	evidence_class	pmids	source	source_release	cplm_evidence	cplm_references
+P01137	291	K	lysine_acylation	biotinyl		experimental	26306634	CPLM	CPLM 4.0 (2021-06-13)	Exp.	26306634
+P01137	304	K	lysine_acylation	biotinyl		experimental	26306634	CPLM	CPLM 4.0 (2021-06-13)	Exp.	26306634
+P01137	309	K	lysine_acylation	biotinyl		experimental	26306634	CPLM	CPLM 4.0 (2021-06-13)	Exp.	26306634
+P01137	315	K	lysine_acylation	biotinyl		experimental	26306634	CPLM	CPLM 4.0 (2021-06-13)	Exp.	26306634
+P01137	338	K	lysine_acylation	biotinyl		experimental	26306634	CPLM	CPLM 4.0 (2021-06-13)	Exp.	26306634
+P01137	373	K	lysine_acylation	biotinyl		experimental	26306634	CPLM	CPLM 4.0 (2021-06-13)	Exp.	26306634
+P01137	375	K	lysine_acylation	biotinyl		experimental	26306634	CPLM	CPLM 4.0 (2021-06-13)	Exp.	26306634
+P01137	388	K	lysine_acylation	biotinyl		experimental	26306634	CPLM	CPLM 4.0 (2021-06-13)	Exp.	26306634
+P11498	1144	K	lysine_acylation	biotinyl		experimental		CPLM	CPLM 4.0 (2021-06-13)	Exp.	6548474,7918683

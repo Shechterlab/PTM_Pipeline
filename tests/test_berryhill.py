@@ -92,5 +92,5 @@ def test_summary_counts_match_tables_and_manifest():
     for name, kind in (('sites', 'validated'), ('rejected', 'rejected')):
         entry = manifest[f'marks/berryhill2023_methyllysine_{name}.tsv']
         assert entry['md5'] == stage.md5_file(MARKS / f'berryhill2023_methyllysine_{name}.tsv') == summary['files_md5'][kind]
-        assert 'CC BY 4.0' in entry['licence'] and "owner's decision" in entry['licence'] and 'Sci Rep 13:377' in entry['citation']
+        assert 'CC BY 4.0' in entry['licence'] and 'owner' not in entry['licence'] and 'Sci Rep 13:377' in entry['citation']
     assert manifest['marks/berryhill2023_methyllysine_sites.tsv']['rows'] == str(len(rows))

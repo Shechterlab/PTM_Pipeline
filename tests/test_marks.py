@@ -123,9 +123,10 @@ def test_staged_tables_and_release_agree_with_manifest():
     manifest = list(csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t'))
     rows = {r['file']: r for r in manifest if r['file'].startswith('marks/')}
     tables = [f for f in rows if f.endswith('_sites.tsv') or f.endswith('_crosscheck.tsv')]
-    assert len(tables) == 17
+    assert len(tables) == 17 + len(cplm.ACYL_TYPES)
     for name in tables + ['marks/raw_files.tsv', 'marks/uniprot_ptm_sites_summary.json', 'marks/iptmnet_ptm_sites_summary.json',
-                          'marks/cplm_ptm_sites_summary.json', 'marks/cplm_ubiquitination_summary.json', 'marks/cplm_sumoylation_summary.json']:
+                          'marks/cplm_ptm_sites_summary.json', 'marks/cplm_ubiquitination_summary.json', 'marks/cplm_sumoylation_summary.json',
+                          *[f'marks/{c["summary"]}' for c in cplm.MODIFICATIONS.values() if c['mark'] == 'lysine_acylation']]:
         assert rows[name]['redistribution'] == 'git'
         assert build.md5_file(ROOT / 'inputs' / name) == rows[name]['md5']
     for name in tables:
@@ -137,14 +138,14 @@ def test_staged_tables_and_release_agree_with_manifest():
         if '/uniprot_' in name:
             assert row['licence'] == 'CC BY 4.0' and row['source'].startswith('https://rest.uniprot.org')
         elif '/berryhill2023_' in name:
-            assert 'CC BY 4.0' in row['licence'] and 'no separate notice' in row['licence'] and "owner's decision" in row['licence']
+            assert 'CC BY 4.0' in row['licence'] and 'no separate notice' in row['licence'] and 'owner' not in row['licence']
             assert 'Berryhill' in row['citation'] and 'Sci Rep 13:377' in row['citation'] and '10.1038/s41598-022-27175-x' in row['citation']
         elif '/ochoa2020_' in name:
-            assert 'not open access' in row['licence'] and 'exclusive licence to Springer Nature' in row['licence'] and "owner's decision" in row['licence']
+            assert 'not open access' in row['licence'] and 'exclusive licence to Springer Nature' in row['licence'] and 'owner' not in row['licence']
             assert 'Ochoa' in row['citation'] and 'Nat Biotechnol 38:365' in row['citation'] and '10.1038/s41587-019-0344-3' in row['citation']
             assert row['redistribution'] == 'git'
         elif '/cplm_' in name:
-            assert row['licence'].startswith('none stated') and 'pending the authors' in row['licence']
+            assert row['licence'].startswith('none stated') and 'All Rights Reserved' in row['licence'] and 'pending' not in row['licence']
             assert row['source'].startswith('https://cplm.biocuckoo.cn/') and 'Zhang W' in row['citation'] and 'gkab849' in row['citation']
         else:
             assert row['licence'].startswith('CC BY-NC-SA 4.0') and row['source'].startswith('https://research.bioinformatics.udel.edu/iptmnet_data/')
@@ -275,7 +276,7 @@ def test_release_v1_5_0_is_consistent():
         if 'crosscheck' in path.name:
             assert header[11:] == ['in_methylarginine_release']
         else:       # the columns of the sources that contribute, then iPTMnet's score
-            own = {'ubiquitination': ['cplm_evidence'], 'sumoylation': ['cplm_evidence'], 'methyllysine': ['cplm_evidence', 'berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment'],
+            own = {'acylation': ['cplm_evidence'], 'acetylation': ['cplm_evidence'], 'ubiquitination': ['cplm_evidence'], 'sumoylation': ['cplm_evidence'], 'methyllysine': ['cplm_evidence', 'berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment'],
                    'phosphorylation': ['functional_score', 'best_localization_probability', 'best_pep', 'biological_samples', 'spectral_counts']}
             assert header[11:] == next((v for k, v in own.items() if k in path.name), []) + ['iptmnet_score'], path.name
     text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
@@ -287,15 +288,15 @@ def test_release_v1_5_0_is_consistent():
 
 def test_release_license_covers_every_source():
     # the release is CC BY-NC-SA 4.0: every source must be CC BY, CC BY-NC-SA or as open
-    # (CPLM, Berryhill 2023 and Ochoa 2020 are the exceptions, each by the owner's decision, and say so in their license entry)
+    # (CPLM, Berryhill 2023 and Ochoa 2020 are the exceptions, each stating its own terms in its license entry, with no word on how the decision was taken)
     exceptions = {'CPLM', 'Berryhill 2023', 'Ochoa 2020'}
     assert {s['license'] for k, s in build.SOURCES.items() if k not in exceptions} <= {'CC BY 4.0', 'CC BY-NC-SA 4.0'}
-    assert all("owner's decision" in build.SOURCES[k]['license'] or 'pending the authors' in build.SOURCES[k]['license'] for k in exceptions)
+    assert all('owner' not in build.SOURCES[k]['license'] and 'pending' not in build.SOURCES[k]['license'] for k in exceptions)
     assert set(build.SOURCES) == {'UniProt', 'iPTMnet', 'CPLM', 'Berryhill 2023', 'Ochoa 2020'} == set(build.SOURCE_ORDER)
     assert 'CC BY 4.0' in build.SOURCES['Berryhill 2023']['license'] and 'supplements carry no separate notice' in build.SOURCES['Berryhill 2023']['license']
-    assert 'not open access' in build.SOURCES['Ochoa 2020']['license'] and "owner's decision" in build.SOURCES['Ochoa 2020']['license']
-    # CPLM is the one source without a license: the owner's decision of 2026-11-09, said wherever it is described
-    assert 'pending the authors' in build.SOURCES['CPLM']['citation'] and 'pending the authors' in build.SOURCES['CPLM']['license']
+    assert 'not open access' in build.SOURCES['Ochoa 2020']['license'] and 'supplements carry no license' in build.SOURCES['Ochoa 2020']['license']
+    # CPLM is the one source without a license: no license is stated
+    assert build.SOURCES['CPLM']['license'] == 'none stated' and 'pending' not in build.SOURCES['CPLM']['citation']
 
 
 def test_no_closed_source_is_referenced():
@@ -389,7 +390,7 @@ def test_cplm_rows_in_the_release_and_the_merge():
     others = table[~table['sources'].str.contains('CPLM')]
     assert len(others) + len(cp[cp['sources'] != 'CPLM']) >= 756
     text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
-    assert 'CPLM states no license' in text and "pending the authors' permission" in text and 'Zhang et al., Nucleic Acids Res 50:D451' in text
+    assert 'CPLM states no license' in text and 'All Rights Reserved' in text and 'Zhang et al., Nucleic Acids Res 50:D451' in text
 
 
 def test_merge_adds_cplm_to_sources_without_changing_other_rows():
@@ -530,10 +531,12 @@ def test_license_notes_of_the_new_sources_in_the_release_text():
     folder = ROOT / 'releases' / 'v1.5.0'
     for name in ('README.md', 'CHANGES.md'):
         text = (folder / name).read_text(encoding='utf-8')
-        for needle in ('Sci Rep 13:377', '10.1038/s41598-022-27175-x', 'CC BY 4.0', 'supplements carry no separate', "owner's decision of 2026-11-10",
+        for needle in ('Sci Rep 13:377', '10.1038/s41598-022-27175-x', 'CC BY 4.0', 'supplements carry no separate',
                        'Nat Biotechnol 38:365', '10.1038/s41587-019-0344-3', 'not open access', 'exclusive licence to Springer Nature America',
                        'The score is calculated based on all the evidence sources as shown on the website'):
             assert needle in text, (name, needle)
+        for phrase in ("owner's decision", "authors' permission", "authors' confirmation", 'when they answer'):
+            assert phrase not in text, (name, phrase)
     release = json.loads((folder / 'release.json').read_text(encoding='utf-8'))
     assert {'Berryhill 2023', 'Ochoa 2020'} <= set(release['sources']) and 'iptmnet_score' in release['inputs_md5']
 
@@ -582,7 +585,7 @@ def test_iptmnet_score_marks_ubiquitination_and_sumoylation():
 
 
 def test_cplm_modification_option_keeps_methylation_names_and_gives_others_their_own():
-    assert cplm.DEFAULT_MODIFICATION == 'Methylation' and set(cplm.MODIFICATIONS) == {'Methylation', 'Ubiquitination', 'Sumoylation'}
+    assert cplm.DEFAULT_MODIFICATION == 'Methylation' and set(cplm.MODIFICATIONS) == {'Methylation', 'Ubiquitination', 'Sumoylation'} | set(cplm.ACYL_TYPES)
     me, ub = cplm.MODIFICATIONS['Methylation'], cplm.MODIFICATIONS['Ubiquitination']
     assert (me['table'], me['summary'], me['mark'], me['state'], me['tag']) == ('cplm_4_0_methyllysine_sites.tsv', 'cplm_ptm_sites_summary.json', 'methyllysine', 'me', 'methyl')
     assert (ub['table'], ub['mark'], ub['state']) == ('cplm_4_0_ubiquitination_sites.tsv', 'ubiquitination', 'ub')
@@ -610,7 +613,7 @@ def test_ubiquitination_and_sumoylation_tables_of_the_release():
             n = len(pd.read_csv(ROOT / 'inputs' / 'marks' / staged[s], sep='\t', dtype=str, keep_default_na=False))
             assert len(by_source[s]) == n, (mark, s)
     text = (folder / 'README.md').read_text(encoding='utf-8') + (folder / 'CHANGES.md').read_text(encoding='utf-8')
-    for needle in ("owner's decision of 2026-11-10", "pending the authors' permission", 'Zhang et al., Nucleic Acids Res 50:D451',
+    for needle in ('All Rights Reserved', 'Zhang et al., Nucleic Acids Res 50:D451',
                    'CPLM states no license', 'The sumoylation table likewise includes'):
         assert needle in text, needle
     dictionary = (folder / 'data_dictionary.tsv').read_text(encoding='utf-8')
@@ -618,3 +621,54 @@ def test_ubiquitination_and_sumoylation_tables_of_the_release():
         assert f'{name}\tiptmnet_score' in dictionary
     assert 'human_ubiquitination_sites_v1.5.0.tsv\tcplm_evidence' in dictionary and 'human_sumoylation_sites_v1.5.0.tsv\tcplm_evidence' in dictionary
     assert 'SUMOylation sites are not included' not in text
+
+
+ACYL_COUNTS = {   # CPLM 4.0 acylation downloads: acyl type -> sites that passed validation (human lysines on the reference sequence)
+    'acetyl': 52493, 'succinyl': 4130, 'crotonyl': 12021, 'malonyl': 4978, 'glutaryl': 49, '2-hydroxyisobutyryl': 8760,
+    'beta-hydroxybutyryl': 2932, 'lactoyl': 71, 'propionyl': 44, 'butyryl': 192, 'benzoyl': 22, 'biotinyl': 9, 'lipoyl': 5, 'phosphoglyceryl': 38}
+
+
+def test_cplm_acylation_staging_maps_every_download_to_one_acyl_type():
+    acyl = {n: c for n, c in cplm.MODIFICATIONS.items() if c['mark'] == 'lysine_acylation'}
+    assert set(acyl) == set(cplm.ACYL_TYPES) and {c['state'] for c in acyl.values()} == set(ACYL_COUNTS) and len(acyl) == 14
+    assert len({c['table'] for c in acyl.values()}) == len({c['summary'] for c in acyl.values()}) == 14
+    assert all(c['table'].endswith('_lysine_acylation_sites.tsv') for c in acyl.values())
+    # the methylation, ubiquitination and sumoylation downloads keep their names and states
+    assert [cplm.MODIFICATIONS[m]['table'] for m in ('Methylation', 'Ubiquitination', 'Sumoylation')] == [
+        'cplm_4_0_methyllysine_sites.tsv', 'cplm_4_0_ubiquitination_sites.tsv', 'cplm_4_0_sumoylation_sites.tsv']
+    # UniProt's names for the types that both have
+    uniprot_types = {'acetyl', 'succinyl', '2-hydroxyisobutyryl', 'beta-hydroxybutyryl', 'lactoyl', 'glutaryl', 'crotonyl', 'benzoyl', 'butyryl', 'malonyl', 'propionyl'}
+    assert uniprot_types <= set(ACYL_COUNTS)
+
+
+def test_cplm_acylation_rows_in_the_release_by_type():
+    import json
+
+    import pandas as pd
+    folder = ROOT / 'releases' / 'v1.5.0'
+    table = read_release('human_lysine_acylation_sites_v1.5.0.tsv')
+    acetyl = read_release('human_acetylation_sites_v1.5.0.tsv')
+    reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
+    assert 'cplm_evidence' in table.columns and 'cplm_evidence' in acetyl.columns and list(table.columns)[-2:] == ['cplm_evidence', 'iptmnet_score']
+    assert not table.duplicated(['canonical_UniProtAC', 'position', 'acyl_type']).any()
+    assert set(table['acyl_type']) == set(ACYL_COUNTS) | {'methacryl', 'isonicotinyl'}
+    cp = table[table['sources'].str.split('; ').map(lambda x: 'CPLM' in x)]
+    assert set(cp['acyl_type']) == set(ACYL_COUNTS) and set(cp['cplm_evidence']) <= {'Exp.', 'Exp./Dat.', 'Dat.'} and '' not in set(cp['cplm_evidence'])
+    assert set(table.loc[~table.index.isin(cp.index), 'cplm_evidence']) == {''}
+    for r in table.itertuples():     # a lysine at the position, on the reference sequence
+        assert r.residue == 'K' and reference[r.canonical_UniProtAC][int(r.position) - 1] == 'K'
+    for name, c in cplm.MODIFICATIONS.items():
+        if c['mark'] != 'lysine_acylation':
+            continue
+        staged = read_staged(c['table'])
+        summary = json.loads((ROOT / 'inputs' / 'marks' / c['summary']).read_text(encoding='utf-8'))
+        kind = cp[cp['acyl_type'] == c['state']]
+        assert set(staged['state']) == {c['state']} and set(staged['source']) == {'CPLM'} and set(staged['mark']) == {'lysine_acylation'}
+        assert len(staged) == len(kind) == summary['rows']['lysine_acylation'] and kind['canonical_UniProtAC'].nunique() == summary['proteins']
+        assert summary['records_in_scope'] == len(staged) + sum(summary['dropped'].values()), name
+        assert not kind.duplicated(['canonical_UniProtAC', 'position']).any() and len(staged) == ACYL_COUNTS[c['state']]
+    assert acetyl.equals(table[table['acyl_type'] == 'acetyl'].reset_index(drop=True))
+    assert 'CPLM states no license' in (folder / 'CHANGES.md').read_text() or 'CPLM states no license' in (folder / 'README.md').read_text()
+    release = json.loads((folder / 'release.json').read_text(encoding='utf-8'))
+    assert release['context_marks']['lysine_acylation']['rows'] == len(table)
+    assert len(pd.read_csv(folder / 'human_acetylation_sites_v1.5.0.tsv', sep='\t', dtype=str, keep_default_na=False)) == len(acetyl)

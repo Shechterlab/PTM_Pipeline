@@ -1,0 +1,49 @@
+{
+  "checks": {
+    "identical_sequence": 5
+  },
+  "cplm_release": "CPLM 4.0 (2021-06-13)",
+  "dropped": {},
+  "files": {
+    "lysine_acylation": "cplm_4_0_lipoylation_lysine_acylation_sites.tsv"
+  },
+  "files_md5": {
+    "lysine_acylation": "cbdaf0be69b1a784018bfbd2cfe33489"
+  },
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\")",
+  "proteins": 4,
+  "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
+  "raw_files": {
+    "Lipoylation.zip": "Lipoylation.zip"
+  },
+  "raw_md5": {
+    "Lipoylation.zip": "7c2882f2c51d78a4650ee301fd445755"
+  },
+  "raw_member": "Lipoylation.txt (2021-06-13T21:22:46)",
+  "raw_sha256": {
+    "Lipoylation.zip": "f069970bc6f6acb3dc6be5fab69dc7fc8f5a43f9bed53de07096b26f2babe9f0"
+  },
+  "records_in_download": 44,
+  "records_in_scope": 5,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "lysine_acylation": 5
+  },
+  "rows_by_cplm_evidence": {
+    "Exp./Dat.": 5
+  },
+  "rows_by_evidence_class": {
+    "lysine_acylation": {
+      "experimental": 5
+    }
+  },
+  "rows_by_state": {
+    "lysine_acylation": {
+      "lipoyl": 5
+    }
+  },
+  "rows_with_pubmed_ids": 5,
+  "source": "CPLM 4.0 Lipoylation download (cplm.biocuckoo.cn)",
+  "url": "https://cplm.biocuckoo.cn/Download/Lipoylation.zip"
+}

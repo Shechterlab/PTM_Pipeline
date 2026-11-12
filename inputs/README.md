@@ -39,7 +39,7 @@ One row per file: path, size, MD5, rows, `redistribution`, content, source URL, 
 
 - `git`: in this repository;
 - `zenodo`: in the Zenodo archive, not in Git (the raw downloads, and the inputs only release v1.0.0 used);
-- `checksum_only`: not redistributed, because the licence does not allow it (PhosphoSitePlus; CPLM 4.0's download, whose sites are in `marks/` by the owner's decision, pending the authors' permission) or
+- `checksum_only`: not redistributed, because the licence does not allow it (PhosphoSitePlus; CPLM 4.0's download, whose sites are in `marks/`, cited) or
   because the file stays at a permanent public URL (InterPro 108.0's 17 GB `protein2ipr.dat.gz`); the MD5 lets
   anyone check their own copy.
 

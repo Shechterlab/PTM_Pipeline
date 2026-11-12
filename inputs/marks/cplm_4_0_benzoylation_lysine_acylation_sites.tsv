@@ -1,0 +1,23 @@
+canonical_UniProtAC	position	residue	mark	state	evidence	evidence_class	pmids	source	source_release	cplm_evidence	cplm_references
+P10412	26	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P10412	34	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P10412	106	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P10412	148	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P10412	192	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P62805	6	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P62805	9	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P62805	13	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P62805	17	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P62807	6	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P62807	12	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P62807	17	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P62807	21	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P68431	5	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P68431	10	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P68431	15	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P68431	19	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P68431	24	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+P68431	28	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+Q96QV6	10	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+Q96QV6	14	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
+Q96QV6	37	K	lysine_acylation	benzoyl		experimental	30154464	CPLM	CPLM 4.0 (2021-06-13)	Exp.	30154464
