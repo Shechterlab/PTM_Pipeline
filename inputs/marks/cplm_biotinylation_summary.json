@@ -11,7 +11,7 @@
   "files_md5": {
     "lysine_acylation": "367aeffc66cc833a6276d2d7956f7047"
   },
-  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\"); included, cited",
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\")",
   "proteins": 2,
   "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
   "raw_files": {
