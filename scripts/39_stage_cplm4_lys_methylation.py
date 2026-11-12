@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stage and validate CPLM 4.0 lysine methylation (or ubiquitination, SUMOylation) sites against the canonical human proteome.
+"""Stage and validate CPLM 4.0 lysine methylation (or ubiquitination, SUMOylation, or one of the lysine acylations) sites against the canonical human proteome.
 
 CPLM 4.0 (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, doi:10.1093/nar/gkab849; cplm.biocuckoo.cn)
 compiles lysine modification sites. Each modification has its own download (--modification Methylation, the default,
@@ -24,8 +24,15 @@ Outputs (in --outdir, default $PTM_RESULTS_ROOT/cplm4)
 With --modification Ubiquitination or Sumoylation the same checks and outputs apply under other names: cplm4_human_lys_ubiquitination_validated.tsv
 (and _rejected.tsv, cplm4_summary.json), and with --marks-dir cplm_4_0_ubiquitination_sites.tsv (mark ubiquitination, state ub) and
 cplm_ubiquitination_summary.json, or cplm_4_0_sumoylation_sites.tsv (mark sumoylation, state sumo) and cplm_sumoylation_summary.json.
-The Methylation outputs are unchanged by the option. Sumoylation is included in release v1.5.0; script 56 reads every
-inputs/marks/*_sumoylation_sites.tsv.
+The Methylation outputs are unchanged by the option. Script 56 reads every inputs/marks/*_sumoylation_sites.tsv.
+
+Lysine acylations: --modification takes each acylation download of CPLM too (Acetylation, Succinylation, Crotonylation, Malonylation,
+Glutarylation, 2-Hydroxyisobutyrylation, beta-Hydroxybutyrylation, Lactylation, Propionylation, Butyrylation, Benzoylation, Biotinylation,
+Lipoylation, Phosphoglycerylation; beta-Hydroxybutyrylation is CPLM's beta-Hydroxybutyrylation.zip, with the Greek letter). Each is validated
+and staged on its own, as inputs/marks/cplm_4_0_<type>_lysine_acylation_sites.tsv (mark lysine_acylation, state the acyl type in the
+vocabulary of UniProt's N6-acyl lysine terms, see ACYL_TYPES; for example acetyl, lactoyl, beta-hydroxybutyryl) with cplm_<type>_summary.json,
+and validated/rejected tables cplm4_human_lys_<type>_validated.tsv / _rejected.tsv, where <type> is the lower-case download name with
+"-" as "_". CPLM's Formylation, HMGylation, MGcylation and MGylation downloads hold no human rows and are not staged.
 
 With --marks-dir the validated sites are also staged for the context-mark release (inputs/marks/, read by
 56_build_context_marks.py) in the format of the other marks:
@@ -47,8 +54,9 @@ With --marks-dir the validated sites are also staged for the context-mark releas
                   34,300,000, the PubMed IDs assigned when Methylation.txt was made (2021-06-13). Shorter and larger numbers
                   stay in cplm_references only.
 
-CPLM 4.0 states no license (its page has a copyright notice, "All Rights Reserved"). Its human lysine methylation, ubiquitination and SUMOylation sites are
-included in the release, cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, doi:10.1093/nar/gkab849).
+CPLM 4.0 states no license (its page has a copyright notice, "All Rights Reserved"). Its human lysine methylation,
+ubiquitination, SUMOylation and acylation sites are included in the release, cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022,
+doi:10.1093/nar/gkab849). Any terms the authors give are followed.
 """
 from __future__ import annotations
 
@@ -59,6 +67,7 @@ import io
 import json
 import os
 import re
+import urllib.parse
 import zipfile
 from collections import Counter
 from pathlib import Path
@@ -85,11 +94,25 @@ MODIFICATIONS = {
     'Sumoylation': {'tag': 'sumoylation', 'mark': 'sumoylation', 'state': 'sumo', 'table': 'cplm_4_0_sumoylation_sites.tsv',
                     'summary': 'cplm_sumoylation_summary.json', 'env': 'PTM_CPLM4_SUMOYLATION', 'what': 'lysine SUMOylation sites'},
 }
+# CPLM acylation downloads: the acyl type in UniProt's vocabulary (N6-<acyl>lysine terms; biotinyl, lipoyl and phosphoglyceryl are not
+# among UniProt's thirteen) and CPLM's label of the modification as it is in the modification column (the Greek letter of beta)
+ACYL_TYPES = {'Acetylation': 'acetyl', 'Succinylation': 'succinyl', 'Crotonylation': 'crotonyl', 'Malonylation': 'malonyl',
+              'Glutarylation': 'glutaryl', '2-Hydroxyisobutyrylation': '2-hydroxyisobutyryl',
+              'beta-Hydroxybutyrylation': 'beta-hydroxybutyryl', 'Lactylation': 'lactoyl', 'Propionylation': 'propionyl',
+              'Butyrylation': 'butyryl', 'Benzoylation': 'benzoyl', 'Biotinylation': 'biotinyl', 'Lipoylation': 'lipoyl',
+              'Phosphoglycerylation': 'phosphoglyceryl'}
+CPLM_LABELS = {'beta-Hydroxybutyrylation': '\u03b2-Hydroxybutyrylation'}
+for _name, _acyl in ACYL_TYPES.items():
+    _tag = _name.lower().replace('-', '_')
+    MODIFICATIONS[_name] = {'tag': _tag, 'mark': 'lysine_acylation', 'state': _acyl, 'table': f'cplm_4_0_{_tag}_lysine_acylation_sites.tsv',
+                            'summary': f'cplm_{_tag}_summary.json', 'env': f'PTM_CPLM4_{_tag.upper()}',
+                            'what': f'lysine {_acyl} acylation sites (acyl type {_acyl})', 'label': CPLM_LABELS.get(_name, _name)}
 CITATION = ('Zhang W, Tan X, Lin S, et al. CPLM 4.0: an updated database with rich annotations for protein lysine modifications. '
             'Nucleic Acids Res 50:D451-D459 (2022), doi:10.1093/nar/gkab849')
 LICENSE = 'none stated (cplm.biocuckoo.cn carries a copyright notice, "All Rights Reserved")'
 LICENSE_UBIQUITINATION = LICENSE
 LICENSE_SUMOYLATION = LICENSE
+LICENSE_ACYLATION = LICENSE
 MAX_PMID = 34_300_000    # the highest PubMed ID assigned by the date of Methylation.txt (2021-06-13)
 MIN_PMID = 1_000_000
 EVIDENCE_CLASS = {'Exp.': 'experimental', 'Exp./Dat.': 'experimental', 'Dat.': 'unspecified'}
@@ -170,8 +193,8 @@ def write_marks(args, good: pd.DataFrame, summary: dict, rejected: pd.DataFrame,
     mod = args.modification
     cfg = MODIFICATIONS[mod]
     marks_name, marks_summary, mark, state = cfg['table'], cfg['summary'], cfg['mark'], cfg['state']
-    url = URL_BASE + f'{mod}.zip'
-    terms = {'Ubiquitination': LICENSE_UBIQUITINATION, 'Sumoylation': LICENSE_SUMOYLATION}.get(mod, LICENSE)
+    url = URL_BASE + urllib.parse.quote(cfg.get('label', mod)) + '.zip'
+    terms = {'Ubiquitination': LICENSE_UBIQUITINATION, 'Sumoylation': LICENSE_SUMOYLATION}.get(mod, LICENSE_ACYLATION if mod in ACYL_TYPES else LICENSE)
     marks = Path(args.marks_dir)
     stamp = re.search(r'\((\d{4}-\d{2}-\d{2})T', member)
     if not stamp:
@@ -230,7 +253,7 @@ def main() -> None:
     results_root = Path(os.environ.get('PTM_RESULTS_ROOT', 'PTM_results'))
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--modification', default=DEFAULT_MODIFICATION, choices=sorted(MODIFICATIONS),
-                    help='which CPLM download: Methylation (default), Ubiquitination or Sumoylation')
+                    help='which CPLM download: Methylation (default), Ubiquitination, Sumoylation or an acylation (see the module docstring)')
     ap.add_argument('--cplm', default='',
                     help='CPLM 4.0 <Modification>.zip, <Modification>.txt, or a directory holding one '
                          '(default: the environment variable PTM_CPLM4_METHYL, PTM_CPLM4_UBIQUITINATION or PTM_CPLM4_SUMOYLATION).')
@@ -250,7 +273,7 @@ def main() -> None:
     df, digest, member = read_cplm(Path(args.cplm), args.modification)
     canonical = parse_fasta(args.fasta)
     n_input = len(df)
-    df = df[df['organism'].eq(args.organism) & df['modification'].str.contains(args.modification, case=False)].copy()
+    df = df[df['organism'].eq(args.organism) & df['modification'].str.contains(cfg.get('label', args.modification), case=False, regex=False)].copy()
     n_scope = len(df)
     df['position_int'] = [int(p) if p.strip().isdigit() else None for p in df['position']]
     checks = [check_row(row, canonical) for row in df.itertuples(index=False)]

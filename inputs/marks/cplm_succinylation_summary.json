@@ -1,0 +1,59 @@
+{
+  "checks": {
+    "accession_not_in_canonical_fasta": 38,
+    "canonical_not_K": 36,
+    "identical_sequence": 4077,
+    "window_match": 53,
+    "window_mismatch": 1
+  },
+  "cplm_release": "CPLM 4.0 (2021-06-13)",
+  "dropped": {
+    "accession_not_in_canonical_fasta": 38,
+    "canonical_not_K": 36,
+    "window_mismatch": 1
+  },
+  "files": {
+    "lysine_acylation": "cplm_4_0_succinylation_lysine_acylation_sites.tsv"
+  },
+  "files_md5": {
+    "lysine_acylation": "489de8be594647a140eb54b099fa8486"
+  },
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\"); included, cited",
+  "proteins": 1769,
+  "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
+  "raw_files": {
+    "Succinylation.zip": "Succinylation.zip"
+  },
+  "raw_md5": {
+    "Succinylation.zip": "91519d4f9759431b928635e2cf6bec03"
+  },
+  "raw_member": "Succinylation.txt (2021-06-13T21:24:18)",
+  "raw_sha256": {
+    "Succinylation.zip": "fcdcdf8ce173b8149d38c83acf365e922307d65d442044a90c57b6d0e1564989"
+  },
+  "records_in_download": 29585,
+  "records_in_scope": 4205,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "lysine_acylation": 4130
+  },
+  "rows_by_cplm_evidence": {
+    "Dat.": 8,
+    "Exp.": 4122
+  },
+  "rows_by_evidence_class": {
+    "lysine_acylation": {
+      "experimental": 4122,
+      "unspecified": 8
+    }
+  },
+  "rows_by_state": {
+    "lysine_acylation": {
+      "succinyl": 4130
+    }
+  },
+  "rows_with_pubmed_ids": 4130,
+  "source": "CPLM 4.0 Succinylation download (cplm.biocuckoo.cn)",
+  "url": "https://cplm.biocuckoo.cn/Download/Succinylation.zip"
+}

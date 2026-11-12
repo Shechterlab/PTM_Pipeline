@@ -1,0 +1,60 @@
+{
+  "checks": {
+    "accession_not_in_canonical_fasta": 5,
+    "canonical_not_K": 29,
+    "identical_sequence": 4917,
+    "window_match": 61,
+    "window_mismatch": 3
+  },
+  "cplm_release": "CPLM 4.0 (2021-06-13)",
+  "dropped": {
+    "accession_not_in_canonical_fasta": 5,
+    "canonical_not_K": 29,
+    "window_mismatch": 3
+  },
+  "files": {
+    "lysine_acylation": "cplm_4_0_malonylation_lysine_acylation_sites.tsv"
+  },
+  "files_md5": {
+    "lysine_acylation": "f64e1abc1301d76b47821c9971763146"
+  },
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\"); included, cited",
+  "proteins": 1826,
+  "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
+  "raw_files": {
+    "Malonylation.zip": "Malonylation.zip"
+  },
+  "raw_md5": {
+    "Malonylation.zip": "701fdc315465560b9f98d56637bf58ca"
+  },
+  "raw_member": "Malonylation.txt (2021-06-13T21:24:08)",
+  "raw_sha256": {
+    "Malonylation.zip": "acb5e2dbd9c76aa9f456c6588b58e5574916f8f6123b66f4f58ff98c0572a357"
+  },
+  "records_in_download": 10154,
+  "records_in_scope": 5015,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "lysine_acylation": 4978
+  },
+  "rows_by_cplm_evidence": {
+    "Dat.": 3,
+    "Exp.": 4971,
+    "Exp./Dat.": 4
+  },
+  "rows_by_evidence_class": {
+    "lysine_acylation": {
+      "experimental": 4975,
+      "unspecified": 3
+    }
+  },
+  "rows_by_state": {
+    "lysine_acylation": {
+      "malonyl": 4978
+    }
+  },
+  "rows_with_pubmed_ids": 4978,
+  "source": "CPLM 4.0 Malonylation download (cplm.biocuckoo.cn)",
+  "url": "https://cplm.biocuckoo.cn/Download/Malonylation.zip"
+}

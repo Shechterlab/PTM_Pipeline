@@ -1,0 +1,60 @@
+{
+  "checks": {
+    "accession_not_in_canonical_fasta": 3,
+    "canonical_not_K": 50,
+    "identical_sequence": 8671,
+    "window_match": 89,
+    "window_mismatch": 4
+  },
+  "cplm_release": "CPLM 4.0 (2021-06-13)",
+  "dropped": {
+    "accession_not_in_canonical_fasta": 3,
+    "canonical_not_K": 50,
+    "window_mismatch": 4
+  },
+  "files": {
+    "lysine_acylation": "cplm_4_0_2_hydroxyisobutyrylation_lysine_acylation_sites.tsv"
+  },
+  "files_md5": {
+    "lysine_acylation": "7839808d76f3bf60cf5f8083e2201083"
+  },
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\"); included, cited",
+  "proteins": 2477,
+  "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
+  "raw_files": {
+    "2-Hydroxyisobutyrylation.zip": "2-Hydroxyisobutyrylation.zip"
+  },
+  "raw_md5": {
+    "2-Hydroxyisobutyrylation.zip": "637313861492183bb65faa8599d2d28d"
+  },
+  "raw_member": "2-Hydroxyisobutyrylation.txt (2021-06-13T21:23:00)",
+  "raw_sha256": {
+    "2-Hydroxyisobutyrylation.zip": "55ef9c2365ec5543feefebf0d7d3244b258d6afee0ea1a910828e5e86de37f02"
+  },
+  "records_in_download": 8928,
+  "records_in_scope": 8817,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "lysine_acylation": 8760
+  },
+  "rows_by_cplm_evidence": {
+    "Dat.": 63,
+    "Exp.": 8687,
+    "Exp./Dat.": 10
+  },
+  "rows_by_evidence_class": {
+    "lysine_acylation": {
+      "experimental": 8697,
+      "unspecified": 63
+    }
+  },
+  "rows_by_state": {
+    "lysine_acylation": {
+      "2-hydroxyisobutyryl": 8760
+    }
+  },
+  "rows_with_pubmed_ids": 8760,
+  "source": "CPLM 4.0 2-Hydroxyisobutyrylation download (cplm.biocuckoo.cn)",
+  "url": "https://cplm.biocuckoo.cn/Download/2-Hydroxyisobutyrylation.zip"
+}

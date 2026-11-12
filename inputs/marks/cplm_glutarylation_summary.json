@@ -1,0 +1,49 @@
+{
+  "checks": {
+    "identical_sequence": 49
+  },
+  "cplm_release": "CPLM 4.0 (2021-06-13)",
+  "dropped": {},
+  "files": {
+    "lysine_acylation": "cplm_4_0_glutarylation_lysine_acylation_sites.tsv"
+  },
+  "files_md5": {
+    "lysine_acylation": "06fbd88c0f1935fe156646ac841f2226"
+  },
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\"); included, cited",
+  "proteins": 7,
+  "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
+  "raw_files": {
+    "Glutarylation.zip": "Glutarylation.zip"
+  },
+  "raw_md5": {
+    "Glutarylation.zip": "4e124ebb6727c350ed5eadfe7666859a"
+  },
+  "raw_member": "Glutarylation.txt (2021-06-13T21:24:18)",
+  "raw_sha256": {
+    "Glutarylation.zip": "4b51df8efdc911d6e9c64da00e6e8a0aca96fd211be67d897315d8d923cfcf74"
+  },
+  "records_in_download": 1074,
+  "records_in_scope": 49,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "lysine_acylation": 49
+  },
+  "rows_by_cplm_evidence": {
+    "Dat.": 49
+  },
+  "rows_by_evidence_class": {
+    "lysine_acylation": {
+      "unspecified": 49
+    }
+  },
+  "rows_by_state": {
+    "lysine_acylation": {
+      "glutaryl": 49
+    }
+  },
+  "rows_with_pubmed_ids": 49,
+  "source": "CPLM 4.0 Glutarylation download (cplm.biocuckoo.cn)",
+  "url": "https://cplm.biocuckoo.cn/Download/Glutarylation.zip"
+}

@@ -1,0 +1,49 @@
+{
+  "checks": {
+    "identical_sequence": 22
+  },
+  "cplm_release": "CPLM 4.0 (2021-06-13)",
+  "dropped": {},
+  "files": {
+    "lysine_acylation": "cplm_4_0_benzoylation_lysine_acylation_sites.tsv"
+  },
+  "files_md5": {
+    "lysine_acylation": "400e14958feb73df831233cb83d67e12"
+  },
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\"); included, cited",
+  "proteins": 5,
+  "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
+  "raw_files": {
+    "Benzoylation.zip": "Benzoylation.zip"
+  },
+  "raw_md5": {
+    "Benzoylation.zip": "c66bb711c3bcea50e3240d20cf7bdb7b"
+  },
+  "raw_member": "Benzoylation.txt (2021-06-13T21:17:42)",
+  "raw_sha256": {
+    "Benzoylation.zip": "bd58c238644c3edda9290623b0bcc37c78bb9040f7efa50f9ccce2160454f9a8"
+  },
+  "records_in_download": 22,
+  "records_in_scope": 22,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "lysine_acylation": 22
+  },
+  "rows_by_cplm_evidence": {
+    "Exp.": 22
+  },
+  "rows_by_evidence_class": {
+    "lysine_acylation": {
+      "experimental": 22
+    }
+  },
+  "rows_by_state": {
+    "lysine_acylation": {
+      "benzoyl": 22
+    }
+  },
+  "rows_with_pubmed_ids": 22,
+  "source": "CPLM 4.0 Benzoylation download (cplm.biocuckoo.cn)",
+  "url": "https://cplm.biocuckoo.cn/Download/Benzoylation.zip"
+}

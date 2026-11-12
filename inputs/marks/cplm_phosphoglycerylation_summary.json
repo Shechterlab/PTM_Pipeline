@@ -1,0 +1,54 @@
+{
+  "checks": {
+    "accession_not_in_canonical_fasta": 16,
+    "canonical_not_K": 1,
+    "identical_sequence": 38
+  },
+  "cplm_release": "CPLM 4.0 (2021-06-13)",
+  "dropped": {
+    "accession_not_in_canonical_fasta": 16,
+    "canonical_not_K": 1
+  },
+  "files": {
+    "lysine_acylation": "cplm_4_0_phosphoglycerylation_lysine_acylation_sites.tsv"
+  },
+  "files_md5": {
+    "lysine_acylation": "0ad2a04aa1e458e3d87423d98b8f420e"
+  },
+  "license": "none stated (cplm.biocuckoo.cn carries a copyright notice, \"All Rights Reserved\"); included, cited",
+  "proteins": 25,
+  "pubmed_id_rule": "7-8 digits, 1,000,000 to 34,300,000",
+  "raw_files": {
+    "Phosphoglycerylation.zip": "Phosphoglycerylation.zip"
+  },
+  "raw_md5": {
+    "Phosphoglycerylation.zip": "bdb3c7d9d6a0712cc158d1b1fefffdd5"
+  },
+  "raw_member": "Phosphoglycerylation.txt (2021-06-13T21:24:08)",
+  "raw_sha256": {
+    "Phosphoglycerylation.zip": "ea3e153bf8f94692a16cabd51f12b2d386e76b54382d675db6ca490cbe55ec21"
+  },
+  "records_in_download": 184,
+  "records_in_scope": 55,
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rows": {
+    "lysine_acylation": 38
+  },
+  "rows_by_cplm_evidence": {
+    "Exp.": 38
+  },
+  "rows_by_evidence_class": {
+    "lysine_acylation": {
+      "experimental": 38
+    }
+  },
+  "rows_by_state": {
+    "lysine_acylation": {
+      "phosphoglyceryl": 38
+    }
+  },
+  "rows_with_pubmed_ids": 38,
+  "source": "CPLM 4.0 Phosphoglycerylation download (cplm.biocuckoo.cn)",
+  "url": "https://cplm.biocuckoo.cn/Download/Phosphoglycerylation.zip"
+}
