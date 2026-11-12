@@ -600,7 +600,7 @@ def main() -> None:
                 'cited (Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, doi:10.1093/nar/gkab849). '
                 'Its rows have `CPLM` in `sources`, state `sumo`, and CPLM\'s evidence label in `cplm_evidence` (' + ', '.join(f'{k} {v:,}' for k, v in cs['rows_by_cplm_evidence'].items()) + '); '
                 f'`pmids` holds the PubMed IDs among CPLM\'s references ({cs["rows_with_pubmed_ids"]:,} rows). Dropped on validation, nothing remapped: ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(cs['dropped'].items())) + '. '
-                *cplm_acyl_changes(tables, summaries), '',
+                '', *cplm_acyl_changes(tables, summaries), '',
                 '### Berryhill 2023, Ochoa 2020 and the iPTMnet score: license notes', '', *source_notes(tables, summaries), '',
                 '### Ubiquitination and SUMOylation', '',
                 'The two tables hold lysine sites (state `ub` and `sumo`) of UniProt (its cross-link features: the Lys-Gly isopeptide to ubiquitin, or to any SUMO paralog, the paralog not kept), iPTMnet (UBIQUITINATION and SUMOYLATION at K) and CPLM 4.0 (above). '
