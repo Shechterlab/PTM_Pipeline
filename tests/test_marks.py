@@ -610,7 +610,7 @@ def test_ubiquitination_and_sumoylation_tables_of_the_release():
     import pandas as pd
     folder = ROOT / 'releases' / 'v1.5.0'
     reference = stage.parse_fasta(ROOT / 'inputs' / 'reference' / 'uniprot_human_reviewed_2026_03.fasta')
-    for mark, state, sources in (('ubiquitination', 'ub', {'UniProt', 'iPTMnet', 'CPLM'}), ('sumoylation', 'sumo', {'UniProt', 'iPTMnet', 'CPLM'})):
+    for mark, state, sources in (('ubiquitination', 'ub', {'UniProt', 'iPTMnet', 'CPLM', 'Akimov 2018'}), ('sumoylation', 'sumo', {'UniProt', 'iPTMnet', 'CPLM', 'Hendriks 2017'})):
         table = pd.read_csv(folder / f'human_{mark}_sites_v1.5.0.tsv', sep='\t', dtype=str, keep_default_na=False)
         assert set(table['state']) == {state} and set(table['mark']) == {mark} and set(table['residue']) == {'K'}
         assert not table.duplicated(['canonical_UniProtAC', 'position', 'state']).any()
@@ -618,7 +618,8 @@ def test_ubiquitination_and_sumoylation_tables_of_the_release():
         for r in table.itertuples():
             assert reference[r.canonical_UniProtAC][int(r.position) - 1] == 'K'
         by_source = {s: table[table['sources'].str.contains(s)] for s in sources}
-        staged = {'UniProt': f'uniprot_2026_04_{mark}_sites.tsv', 'iPTMnet': f'iptmnet_6_2_{mark}_sites.tsv', 'CPLM': f'cplm_4_0_{mark}_sites.tsv'}
+        staged = {'UniProt': f'uniprot_2026_04_{mark}_sites.tsv', 'iPTMnet': f'iptmnet_6_2_{mark}_sites.tsv', 'CPLM': f'cplm_4_0_{mark}_sites.tsv',
+                  'Akimov 2018': 'akimov2018_ubiquitination_sites.tsv', 'Hendriks 2017': 'hendriks2017_sumoylation_sites.tsv'}
         for s in sources:
             n = len(pd.read_csv(ROOT / 'inputs' / 'marks' / staged[s], sep='\t', dtype=str, keep_default_na=False))
             assert len(by_source[s]) == n, (mark, s)
@@ -630,6 +631,7 @@ def test_ubiquitination_and_sumoylation_tables_of_the_release():
     for name in ('human_ubiquitination_sites_v1.5.0.tsv', 'human_sumoylation_sites_v1.5.0.tsv'):
         assert f'{name}\tiptmnet_score' in dictionary
     assert 'human_ubiquitination_sites_v1.5.0.tsv\tcplm_evidence' in dictionary and 'human_sumoylation_sites_v1.5.0.tsv\tcplm_evidence' in dictionary
+    assert 'human_ubiquitination_sites_v1.5.0.tsv\takimov_localization_probability' in dictionary and 'human_sumoylation_sites_v1.5.0.tsv\thendriks_cell_lines' in dictionary
     assert 'SUMOylation sites are not included' not in text
 
 
