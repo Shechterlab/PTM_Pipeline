@@ -10,18 +10,20 @@ v1.4.3 followed v1.4.2: the title and the statistics file name in the two analys
 the title of STUDIES.md and the title and sheet name of the workbook. supporting/site_changes_v1.4.3_to_v1.5.0.tsv is written
 in the format of build_release.build_changes: every site kept, none added or removed. Beside them, for each
 context mark (methyllysine, phosphorylation, lysine_acylation, and acetylation, the acetyl rows of the last; ubiquitination; sumoylation), `human_<mark>_sites_<version>.tsv` merges the staged tables
-`inputs/marks/*_<mark>_sites.tsv` of every source (UniProt, iPTMnet, CPLM 4.0 and Berryhill 2023 for methyllysine, Ochoa 2020 for phosphorylation, UniProt, iPTMnet and CPLM 4.0 for ubiquitination, sumoylation and lysine acylation), one row per residue and state
+`inputs/marks/*_<mark>_sites.tsv` of every source (UniProt, iPTMnet, CPLM 4.0 and Berryhill 2023 for methyllysine, Ochoa 2020 for phosphorylation, UniProt, iPTMnet and CPLM 4.0 for ubiquitination, sumoylation and lysine acylation, with Akimov 2018 for ubiquitination and Hendriks 2017 for sumoylation), one row per residue and state
 (acylation: acyl type, in `acyl_type` in place of `state`), and
 `human_methylarginine_crosscheck_<version>.tsv` merges the sources' methylarginine records with a column that says whether
 the arginine is in the methylarginine data. Also written: data_dictionary.tsv (v1.4.3's, with the new tables), README.md,
 CHANGES.md, release.json and MD5SUMS. Nothing in the output depends on the date but --release-date, and the commit named
-is the last one that changed scripts 39, 54, 55, 56, 57, 58 or 59, so a second run gives the same bytes.
+is the last one that changed scripts 39, 54, 55, 56, 57, 58, 59, 60, 61 or window_sites.py, so a second run gives the same bytes.
 
 Merged columns:
   canonical_UniProtAC, position, residue, mark, state
-  sources          the sources that report the residue and state, in order: UniProt; iPTMnet; CPLM; Berryhill 2023; Ochoa 2020
+  sources          the sources that report the residue and state, in order: UniProt; iPTMnet; CPLM; Berryhill 2023; Ochoa 2020;
+                   Hendriks 2017; Akimov 2018
   evidence_class   the best class of any source: experimental, then text-mined, then by-similarity, then unspecified
-                   (CPLM: its labels Exp. and Exp./Dat. are experimental, Dat. is unspecified; Berryhill 2023 and Ochoa 2020: experimental, mass spectrometry)
+                   (CPLM: its labels Exp. and Exp./Dat. are experimental, Dat. is unspecified; Berryhill 2023, Ochoa 2020, Hendriks 2017
+                   and Akimov 2018: experimental, mass spectrometry)
   evidence         UniProt's ECO codes ('' where only iPTMnet reports it)
   iptmnet_sources  iPTMnet's upstream databases for the residue (hprd, unip, rlim, rlim+, sign, npro, iedb, pro, intact)
   pmids            the PubMed IDs of all sources
@@ -30,6 +32,8 @@ Merged columns:
   berryhill_site_probability, berryhill_cell_lines, berryhill_enrichment   (methyllysine only) from Berryhill 2023; '' on other rows
   functional_score, best_localization_probability, best_pep, biological_samples, spectral_counts   (phosphorylation only) from
                    Ochoa 2020; '' on other rows
+  hendriks_localization_probability, hendriks_cell_lines   (sumoylation only) from Hendriks 2017; '' on other rows
+  akimov_localization_probability, akimov_cell_lines       (ubiquitination only) from Akimov 2018; '' on other rows
   iptmnet_score    (methyllysine, phosphorylation, acylation, ubiquitination, sumoylation) iPTMnet's own score of the residue, 0 to 4 (scripts/59), on the rows whose
                    sources include iPTMnet and that score.txt has; '' otherwise
 
@@ -40,7 +44,9 @@ each of its acylation downloads gives rows of its own acyl type (acyl_type in th
 Ubiquitination and sumoylation tables: states `ub` and `sumo`, from UniProt's cross-links to ubiquitin and to any SUMO paralog (the paralog is not kept), iPTMnet's
 UBIQUITINATION and SUMOYLATION records and CPLM's ubiquitination and SUMOylation, all on lysine.
 Berryhill 2023: article CC BY 4.0, supplements without a separate notice. Ochoa 2020: article
-not open access, supplements without a license; the derived table is published, cited.
+not open access, supplements without a license; the derived table is published, cited. Hendriks 2017 (SUMO-2 sites, Nat
+Struct Mol Biol 24:325) and Akimov 2018 (UbiSite lysine ubiquitination sites, Nat Struct Mol Biol 25:631): articles not
+open access, supplements without a notice; the derived tables are published, cited.
 """
 from __future__ import annotations
 
@@ -60,11 +66,13 @@ MARKS = ['methyllysine', 'phosphorylation', 'lysine_acylation', 'ubiquitination'
 ACYL = {'lysine_acylation', 'acetylation'}          # their `state` column is written as `acyl_type`
 # acetylation: the acetyl rows of lysine_acylation, as a table of its own
 FILE_MARKS = ['methyllysine', 'phosphorylation', 'lysine_acylation', 'acetylation', 'ubiquitination', 'sumoylation']
-SOURCE_ORDER = ['UniProt', 'iPTMnet', 'CPLM', 'Berryhill 2023', 'Ochoa 2020']
+SOURCE_ORDER = ['UniProt', 'iPTMnet', 'CPLM', 'Berryhill 2023', 'Ochoa 2020', 'Hendriks 2017', 'Akimov 2018']
 # columns a source adds to the tables it contributes to (empty on the rows of other sources), in this order after OUT_COLUMNS
 SOURCE_COLUMNS = {'CPLM': ['cplm_evidence'],
                   'Berryhill 2023': ['berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment'],
-                  'Ochoa 2020': ['functional_score', 'best_localization_probability', 'best_pep', 'biological_samples', 'spectral_counts']}
+                  'Ochoa 2020': ['functional_score', 'best_localization_probability', 'best_pep', 'biological_samples', 'spectral_counts'],
+                  'Hendriks 2017': ['hendriks_localization_probability', 'hendriks_cell_lines'],
+                  'Akimov 2018': ['akimov_localization_probability', 'akimov_cell_lines']}
 EXTRA_COLUMNS = [c for cols in SOURCE_COLUMNS.values() for c in cols]
 SCORE_COLUMN = 'iptmnet_score'    # last column of the context-mark tables, filled for the rows iPTMnet reports (scripts/59)
 CARRIED_FROM = 'v1.4.3'
@@ -96,6 +104,14 @@ SOURCES = {
                    'url': 'https://www.nature.com/articles/s41587-019-0344-3',
                    'citation': 'Ochoa D, Jarnuczak AF, Viéitez C, et al. The functional landscape of the human phosphoproteome. '
                                'Nat Biotechnol 38:365-373 (2020). doi:10.1038/s41587-019-0344-3'},
+    'Hendriks 2017': {'license': 'article not open access (copyright 2017 Springer Nature America); supplements carry no notice',
+                      'url': 'https://www.nature.com/articles/nsmb.3366',
+                      'citation': 'Hendriks IA, Lyon D, Young C, Jensen LJ, Vertegaal ACO, Nielsen ML. Site-specific mapping of the human SUMO '
+                                  'proteome reveals co-modification with phosphorylation. Nat Struct Mol Biol 24:325-336 (2017). doi:10.1038/nsmb.3366'},
+    'Akimov 2018': {'license': 'article not open access (copyright 2018 The Author(s)); supplements carry no notice',
+                    'url': 'https://www.nature.com/articles/s41594-018-0084-y',
+                    'citation': 'Akimov V, Barrio-Hernandez I, Hansen SVF, et al. UbiSite approach for comprehensive mapping of lysine and '
+                                'N-terminal ubiquitination sites. Nat Struct Mol Biol 25:631-640 (2018). doi:10.1038/s41594-018-0084-y'},
 }
 UPSTREAM = {'hprd': 'HPRD', 'unip': 'UniProt', 'rlim': 'RLIMS-P text mining', 'rlim+': 'RLIMS-P text mining', 'sign': 'SIGNOR',
             'npro': 'neXtProt', 'iedb': 'IEDB', 'pro': 'Protein Ontology', 'intact': 'IntAct'}
@@ -114,7 +130,7 @@ DICTIONARY = [
     ('acyl_type', 'code', 'acylation tables only, in place of state: the acyl group on the lysine, as UniProt names it in its N6-<acyl>lysine terms (acetyl, succinyl, 2-hydroxyisobutyryl, beta-hydroxybutyryl, lactoyl, glutaryl, crotonyl, methacryl, isonicotinyl, benzoyl, butyryl, malonyl, propionyl; CPLM 4.0 adds biotinyl, lipoyl and phosphoglyceryl, and its lactylation is lactoyl); iPTMnet gives acetyl only; CPLM gives each acyl type from its own download. A residue with several acyl types has one row per type'),
     ('state', 'code', 'the state reported for the residue; a residue with several states has one row per state. iPTMnet and CPLM do not give a methylation degree (state me); UniProt and Berryhill 2023 give me1, me2 and me3. Ubiquitination rows are state ub and sumoylation rows state sumo (UniProt\'s SUMO paralog is not kept)'),
     ('sources', 'list<code>', 'the sources that report the residue and state, separated by "; "'),
-    ('evidence_class', 'code', 'the best class of any source. experimental: UniProt ECO:0000269 or ECO:0007744, an iPTMnet record curated from an experiment (upstream hprd, sign, npro, pro, intact, iedb), a CPLM record labelled Exp. or Exp./Dat. (CPLM curates these from experimental papers), a Berryhill 2023 site (identified by mass spectrometry in HEK293T or U2OS cells) or an Ochoa 2020 site (identified by mass spectrometry). text-mined: only RLIMS-P reports it. by-similarity: UniProt records with no experimental code (mainly ECO:0000250). unspecified: only iPTMnet\'s copy of UniProt (upstream unip), which has no ECO code, or only a CPLM record labelled Dat. (taken from another database; CPLM names no experiment). A site can hide by-similarity and unspecified rows by filtering on this column'),
+    ('evidence_class', 'code', 'the best class of any source. experimental: UniProt ECO:0000269 or ECO:0007744, an iPTMnet record curated from an experiment (upstream hprd, sign, npro, pro, intact, iedb), a CPLM record labelled Exp. or Exp./Dat. (CPLM curates these from experimental papers), a Berryhill 2023 site (identified by mass spectrometry in HEK293T or U2OS cells), an Ochoa 2020 site (identified by mass spectrometry), a Hendriks 2017 SUMO-2 site (mass spectrometry, HeLa and U2OS cells) or an Akimov 2018 ubiquitination site (UbiSite mass spectrometry, Hep2 and Jurkat cells). text-mined: only RLIMS-P reports it. by-similarity: UniProt records with no experimental code (mainly ECO:0000250). unspecified: only iPTMnet\'s copy of UniProt (upstream unip), which has no ECO code, or only a CPLM record labelled Dat. (taken from another database; CPLM names no experiment). A site can hide by-similarity and unspecified rows by filtering on this column'),
     ('evidence', 'list<string>', 'UniProt ECO evidence codes, separated by ";" (empty where only iPTMnet reports the residue)'),
     ('iptmnet_sources', 'list<code>', 'the upstream databases behind the iPTMnet record, separated by ";": hprd (HPRD), unip (UniProt), rlim and rlim+ (RLIMS-P text mining), sign (SIGNOR), npro (neXtProt), iedb (IEDB), pro (Protein Ontology), intact (IntAct); iPTMnet asks that they are cited'),
     ('pmids', 'list<string>', 'PubMed IDs of the records, separated by ";", when given. CPLM\'s reference field also holds identifiers that are not PubMed IDs; only seven- and eight-digit numbers up to 34,300,000 (the PubMed IDs assigned by the date of CPLM\'s file) are taken as PubMed IDs'),
@@ -128,6 +144,10 @@ DICTIONARY = [
     ('best_pep', 'number', 'phosphorylation table only: the best posterior error probability of a peptide that carries the phosphorylation site (Ochoa et al. 2020; lower is better); empty for other sources'),
     ('biological_samples', 'integer', 'phosphorylation table only: the number of biological samples (experimental conditions) in which Ochoa et al. 2020 observed the phosphorylation site; empty for other sources'),
     ('spectral_counts', 'integer', 'phosphorylation table only: the total spectral counts of the phosphorylation site in the data of Ochoa et al. 2020; empty for other sources'),
+    ('hendriks_localization_probability', 'number', 'sumoylation table only: the highest localization probability (MaxQuant, 0 to 1) of the SUMO-2 site in Supplementary Table 1 of Hendriks et al., Nat Struct Mol Biol 24:325 (2017), which lists its sites as filtered by the paper; empty where the residue is not a Hendriks 2017 row'),
+    ('hendriks_cell_lines', 'list<string>', 'sumoylation table only: the cell lines (HeLa, U2OS) with an MS/MS detection of the SUMO-2 site in Hendriks et al. 2017 (any of control, BTZ, heat shock and MG132), separated by ";"; empty for other sources'),
+    ('akimov_localization_probability', 'number', 'ubiquitination table only: the highest localization probability (MaxQuant, 0 to 1) of the lysine ubiquitination site over the LysC+trypsin and LysC-only digests of Akimov et al., Nat Struct Mol Biol 25:631 (2018), Supplementary Table 1, which lists its sites as filtered by the paper; empty where the residue is not an Akimov 2018 row'),
+    ('akimov_cell_lines', 'list<string>', 'ubiquitination table only: the cell lines (Hep2, Jurkat) in which the site has an intensity value in Akimov et al. 2018 (the HEP2* and JURK* columns), separated by ";"; empty for other sources and for Akimov 2018 sites with no intensity value'),
     ('iptmnet_score', 'integer', 'methyllysine, phosphorylation, acylation, ubiquitination and sumoylation tables: iPTMnet 6.2\'s own score of the residue (score.txt, rows without an enzyme; 0 to 4). The iPTMnet readme says only that the score is calculated from all the evidence sources shown on its website. Given only on rows whose sources include iPTMnet, and empty where its score file has no row for the residue; it is iPTMnet\'s and does not take the other sources of this table into account'),
     ('in_methylarginine_release', 'code', f'crosscheck table only: whether the arginine is a site, or a lower-confidence site, in the methylarginine data of this release (unchanged from {CARRIED_FROM}), or not at all. Codes: site, lower_confidence, no'),
 ]
@@ -263,6 +283,7 @@ def site_changes(sites: pd.DataFrame, previous_changes: pd.DataFrame) -> pd.Data
 def code_commit() -> str:
     paths = ['scripts/39_stage_cplm4_lys_methylation.py', 'scripts/54_stage_uniprot_ptm_sites.py', 'scripts/55_stage_iptmnet_ptm_sites.py',
              'scripts/57_stage_berryhill_lys_methylation.py', 'scripts/58_stage_ochoa_phosphosites.py', 'scripts/59_stage_iptmnet_scores.py',
+             'scripts/60_stage_hendriks2017_sumo_sites.py', 'scripts/61_stage_akimov2018_ubiquitination_sites.py', 'scripts/window_sites.py',
              'scripts/56_build_context_marks.py']
     try:
         dirty = subprocess.run(['git', 'status', '--porcelain', '--', *paths], capture_output=True, text=True, check=True).stdout
@@ -330,6 +351,47 @@ def pct(n, d) -> str:
     return f'{n:,} of {d:,}'
 
 
+def study_notes(tables: dict, summaries: dict) -> list[str]:
+    """The paragraphs on Hendriks 2017 (sumoylation) and Akimov 2018 (ubiquitination): license, citation, what was read,
+    how the rows were placed, and the residues they add or share with the other sources."""
+    out = []
+    for name, mark, key, pmid, text in (
+            ('Hendriks 2017', 'sumoylation', 'hendriks', '28112733',
+             '(Hendriks IA, Lyon D, Young C, Jensen LJ, Vertegaal ACO, Nielsen ML. "Site-specific mapping of the human SUMO proteome reveals co-modification with phosphorylation", '
+             'Nat Struct Mol Biol 24:325-336, 2017, doi:10.1038/nsmb.3366; PRIDE PXD005296). The article is not open access (copyright "2017 Springer Nature America, Inc."), and its supplementary table carries no notice of its own. '
+             'Its Supplementary Table 1 (all SUMO-2 acceptor lysines identified in HeLa and U2OS cells, as filtered by the paper) is included, cited, with the localization probability (`hendriks_localization_probability`) and the cell lines with an MS/MS detection (`hendriks_cell_lines`).'),
+            ('Akimov 2018', 'ubiquitination', 'akimov', '29967540',
+             '(Akimov V, Barrio-Hernandez I, Hansen SVF, et al. "UbiSite approach for comprehensive mapping of lysine and N-terminal ubiquitination sites", '
+             'Nat Struct Mol Biol 25:631-640, 2018, doi:10.1038/s41594-018-0084-y). The article is not open access (copyright "2018 The Author(s)"), and its supplementary table carries no notice of its own. '
+             'Its Supplementary Table 1 (the lysine ubiquitination sites of the UbiSite-enriched ubiquitinomes of Hep2 and Jurkat cells, both digests combined, as filtered by the paper) is included, cited, with the best localization probability (`akimov_localization_probability`) and the cell lines in which the site has an intensity value (`akimov_cell_lines`). '
+             'The N-terminal ubiquitination sites of the paper (its Supplementary Table 6) are not included: the table holds lysine sites only.')):
+        s, t = summaries[key], tables[mark]
+        names = t['sources'].str.split('; ')
+        own = names.map(lambda x, n=name: n in x)
+        alone = names.map(lambda x, n=name: x == [n])
+        placed = {k: v for k, v in s['row_status'].items() if k not in s['rejected_by_reason']}
+        with_cplm = own & names.map(lambda x: 'CPLM' in x)
+        shared = int(with_cplm.sum())
+        cited = int((with_cplm & t['pmids'].str.split(';').map(lambda x, p=pmid: p in x)).sum())
+        out += [f'**{name}** {text} '
+                f'Of the {s["input_rows"]:,} sites of the table, {s["rows_placed"]:,} were placed on the canonical sequence of the reference ('
+                + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(placed.items()))
+                + '; kept: a protein of the site\'s protein group is a canonical entry with the lysine at the given position and the +/-7 residue window agreeing; secondary accession: the same after the current accession replaces a merged one; '
+                'relocated: the window occurs once in the canonical sequence of a protein of the group, mostly sites given on an isoform) and '
+                f'{sum(s["rejected_by_reason"].values()):,} were left out (' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(s['rejected_by_reason'].items()))
+                + f'); {s["rows_merged_into_another_site"]:,} placed sites fell on a lysine another of its sites also gives. '
+                f'It contributes {int(own.sum()):,} {mark} rows (state `{"sumo" if mark == "sumoylation" else "ub"}`; `evidence_class` experimental, mass spectrometry) on {t.loc[own, "canonical_UniProtAC"].nunique():,} proteins: '
+                f'{int((own & ~alone).sum()):,} residues that other sources also report and {int(alone.sum()):,} that only it reports. '
+                + (f'Of the {shared:,} it shares with CPLM, {cited:,} have the paper\'s PubMed ID ({pmid}) in `pmids`, so they may rest on the same experiment.'
+                   if cited else f'None of the {shared:,} it shares with CPLM has the paper\'s PubMed ID ({pmid}) in `pmids`.'), '']
+    counts = []
+    for mark in ('ubiquitination', 'sumoylation'):
+        names = tables[mark]['sources'].str.split('; ')
+        counts.append(f'{mark} {len(names):,} rows, of which {int(names.map(lambda x: x == ["CPLM"]).sum()):,} are reported by CPLM alone and '
+                      f'{int(names.map(lambda x: any(n != "CPLM" for n in x)).sum()):,} by at least one other source')
+    return out + ['Rows reported by CPLM alone and by other sources: ' + '; '.join(counts) + '.']
+
+
 def source_notes(tables: dict, summaries: dict) -> list[str]:
     """The paragraphs on Berryhill 2023, Ochoa 2020 and the iPTMnet score: license, citation, what the columns hold, counts."""
     b, o, sc = summaries['berryhill'], summaries['ochoa'], summaries['score']
@@ -355,6 +417,7 @@ def source_notes(tables: dict, summaries: dict) -> list[str]:
         f'and the rows that only it reports. It contributes {int(oc_rows.sum()):,} phosphorylation rows (state `phospho`; `evidence_class` experimental, mass spectrometry) on {ph.loc[oc_rows, "canonical_UniProtAC"].nunique():,} proteins; '
         f'of its {o["input_sites"]:,} sites {sum(o["rejected_by_reason"].values()):,} were rejected on the reference check (' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(o['rejected_by_reason'].items())) +
         '; no window is given, so none was relocated).', '',
+        *study_notes(tables, summaries), '',
         f'**iPTMnet score** (`iptmnet_score`). iPTMnet\'s download has a `score.txt` (iPTMnet {sc["iptmnet_release"]}, {sc["url"]}); its readme says only "The score is calculated based on all the evidence sources as shown on the website". '
         f'It is an integer from 0 to 4 and is iPTMnet\'s own: this release carries it unchanged and does not explain it. `score.txt` scores the site (the rows without an enzyme) under the plain accession and, less often, the accession with the suffix -1 (its isoform 1); '
         'the plain accession\'s score is used. A row has the score when its `sources` include iPTMnet and `score.txt` has a row for the residue: ' + '; '.join(lines) + '.',
@@ -376,7 +439,7 @@ def write_docs(out: Path, version, release_date, tables, cross, summaries, commi
          f'{version} keeps the methylarginine data of {CARRIED_FROM} unchanged (`human_methylarginine_*`, '
          '`statistics_*`, `studies_*`, `supporting/` and `analyses*` are the v1.4.3 files, renamed `_v1.5.0` and otherwise unchanged apart from the '
          'strings that name the version inside a few of them; see CHANGES.md) and adds '
-         'tables of context marks: the lysine methylation sites (UniProt, iPTMnet, CPLM 4.0 and Berryhill 2023), phosphorylation sites (UniProt, iPTMnet and Ochoa 2020) lysine acylation sites (UniProt, iPTMnet and CPLM 4.0; acetylation also as a table of its own), lysine ubiquitination sites and lysine SUMOylation sites (each UniProt, iPTMnet and CPLM 4.0) of the human reviewed proteome, and the '
+         'tables of context marks: the lysine methylation sites (UniProt, iPTMnet, CPLM 4.0 and Berryhill 2023), phosphorylation sites (UniProt, iPTMnet and Ochoa 2020) lysine acylation sites (UniProt, iPTMnet and CPLM 4.0; acetylation also as a table of its own), lysine ubiquitination sites (UniProt, iPTMnet, CPLM 4.0 and Akimov 2018) and lysine SUMOylation sites (UniProt, iPTMnet, CPLM 4.0 and Hendriks 2017) of the human reviewed proteome, and the '
          'arginine methylation records of UniProt and iPTMnet as a cross-check. Sites for each mark read their own table and show the '
          'others as context. Positions of the new tables are on UniProt release 2026_03, the reference of the methylarginine data.', '',
          '## Context marks', '', '| File | One row per |', '|---|---|']
@@ -386,7 +449,7 @@ def write_docs(out: Path, version, release_date, tables, cross, summaries, commi
                  f'residues of {t["canonical_UniProtAC"].nunique():,} proteins) |')
     L += [f'| `{files["methylarginine"]}` | arginine methylation record of UniProt or iPTMnet ({len(cross):,} rows), with whether the methylarginine data has the arginine. A cross-check, not a second methylarginine table |', '',
           'Columns are in `data_dictionary.tsv`. Each row says which sources report it (`sources`), the best `evidence_class`, UniProt\'s ECO codes, '
-          'iPTMnet\'s upstream databases (`iptmnet_sources`), the PubMed IDs and, in the methyllysine, acylation, ubiquitination and sumoylation tables, CPLM\'s own evidence label (`cplm_evidence`: Exp., Exp./Dat., Dat.), in its own columns the figures of Berryhill 2023 (`berryhill_*`) and of Ochoa 2020 (`functional_score`, `best_localization_probability`, `best_pep`, `biological_samples`, `spectral_counts`) and, in the methyllysine, phosphorylation, acylation, ubiquitination and sumoylation tables, iPTMnet\'s own score (`iptmnet_score`); each of these is empty on the rows of other sources. A site can hide `by-similarity` (UniProt ECO:0000250 and other '
+          'iPTMnet\'s upstream databases (`iptmnet_sources`), the PubMed IDs and, in the methyllysine, acylation, ubiquitination and sumoylation tables, CPLM\'s own evidence label (`cplm_evidence`: Exp., Exp./Dat., Dat.), in its own columns the figures of Berryhill 2023 (`berryhill_*`), of Ochoa 2020 (`functional_score`, `best_localization_probability`, `best_pep`, `biological_samples`, `spectral_counts`), of Hendriks 2017 (`hendriks_*`, sumoylation) and of Akimov 2018 (`akimov_*`, ubiquitination) and, in the methyllysine, phosphorylation, acylation, ubiquitination and sumoylation tables, iPTMnet\'s own score (`iptmnet_score`); each of these is empty on the rows of other sources. A site can hide `by-similarity` (UniProt ECO:0000250 and other '
           'non-experimental records) and `unspecified` rows by filtering on `evidence_class`.', '',
           '### Sources and licenses', '', '| Source | Release | License | Terms |', '|---|---|---|---|']
     for s in SOURCE_ORDER:
@@ -434,9 +497,11 @@ def write_docs(out: Path, version, release_date, tables, cross, summaries, commi
           ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(summaries['cplm_su']['dropped'].items())) + ' (nothing remapped); ' + cplm_acyl_counts(summaries) + ' '
           f'Berryhill 2023: {summaries["berryhill"]["input_rows"]:,} rows of Supplementary Table 5, ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(summaries['berryhill']['rejected_by_reason'].items())) +
           f' (and {summaries["berryhill"]["relocated_sites"]:,} sites relocated by their peptide). Ochoa 2020: {summaries["ochoa"]["input_sites"]:,} sites, ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(summaries['ochoa']['rejected_by_reason'].items())) +
-          f' (nothing relocated). iPTMnet scores: {summaries["score"]["records_in_download"]:,} rows of score.txt, ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(summaries['score']['dropped'].items())) + '.', '',
+          f' (nothing relocated). Hendriks 2017: {summaries["hendriks"]["input_rows"]:,} sites of Supplementary Table 1, ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(summaries['hendriks']['rejected_by_reason'].items())) +
+          f' (and {summaries["hendriks"]["row_status"].get("relocated", 0):,} relocated by their window). Akimov 2018: {summaries["akimov"]["input_rows"]:,} sites of Supplementary Table 1, ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(summaries['akimov']['rejected_by_reason'].items())) +
+          f' (and {summaries["akimov"]["row_status"].get("relocated", 0):,} relocated by their window). iPTMnet scores: {summaries["score"]["records_in_download"]:,} rows of score.txt, ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(summaries['score']['dropped'].items())) + '.', '',
           '### How the context marks were made', '',
-          f'`python scripts/54_stage_uniprot_ptm_sites.py`, `python scripts/55_stage_iptmnet_ptm_sites.py` and `python scripts/39_stage_cplm4_lys_methylation.py --marks-dir inputs/marks` (also with `--modification Ubiquitination`, `--modification Sumoylation` and one for each CPLM acylation download, `--modification Acetylation` and so on), `python scripts/57_stage_berryhill_lys_methylation.py`, `python scripts/58_stage_ochoa_phosphosites.py` and `python scripts/59_stage_iptmnet_scores.py` (inputs in `inputs/marks/`, downloads listed in `inputs/marks/raw_files.tsv`), then '
+          f'`python scripts/54_stage_uniprot_ptm_sites.py`, `python scripts/55_stage_iptmnet_ptm_sites.py` and `python scripts/39_stage_cplm4_lys_methylation.py --marks-dir inputs/marks` (also with `--modification Ubiquitination`, `--modification Sumoylation` and one for each CPLM acylation download, `--modification Acetylation` and so on), `python scripts/57_stage_berryhill_lys_methylation.py`, `python scripts/58_stage_ochoa_phosphosites.py`, `python scripts/59_stage_iptmnet_scores.py`, `python scripts/60_stage_hendriks2017_sumo_sites.py` and `python scripts/61_stage_akimov2018_ubiquitination_sites.py` (inputs in `inputs/marks/`, downloads listed in `inputs/marks/raw_files.tsv`), then '
           f'`python scripts/56_build_context_marks.py --version {version} --release-date {release_date}` at commit `{commit}` of https://github.com/Shechterlab/PTM_Pipeline.', '',
           '### Cite', '', 'The paper below, and the sources you use:', '']
     L += [f'- {s}: {SOURCES[s]["citation"]}' for s in SOURCE_ORDER]
@@ -518,6 +583,8 @@ def main() -> None:
                  'cplm_acyl': cplm_acyl_summaries(inputs),
                  'berryhill': json.loads((inputs / 'berryhill2023_methyllysine_summary.json').read_text(encoding='utf-8')),
                  'ochoa': json.loads((inputs / 'ochoa2020_phosphorylation_summary.json').read_text(encoding='utf-8')),
+                 'hendriks': json.loads((inputs / 'hendriks2017_sumoylation_summary.json').read_text(encoding='utf-8')),
+                 'akimov': json.loads((inputs / 'akimov2018_ubiquitination_summary.json').read_text(encoding='utf-8')),
                  'score': json.loads((inputs / 'iptmnet_score_summary.json').read_text(encoding='utf-8'))}
     tables['acetylation'] = tables['lysine_acylation'][tables['lysine_acylation']['state'] == 'acetyl'].reset_index(drop=True)
     for m in FILE_MARKS:
@@ -572,7 +639,7 @@ def main() -> None:
     changes += ['', '## New: context marks', '',
                 'Versioned tables of other marks, for sites of those marks to read (`README.md` has the sources, licenses, counts and how to cite). '
                 'The sources are UniProt and iPTMnet, which are openly licensed; CPLM 4.0 (methyllysine, lysine acylation, ubiquitination and sumoylation), which states no license; Berryhill 2023 (methyllysine), whose article is CC BY 4.0 and whose supplements carry no notice; '
-                'and Ochoa 2020 (phosphorylation), whose article is not open access (all below, with the iptmnet_score column).', '']
+                'Ochoa 2020 (phosphorylation), Hendriks 2017 (sumoylation) and Akimov 2018 (ubiquitination), whose articles are not open access (all below, with the iptmnet_score column).', '']
     for m in FILE_MARKS:
         c = counts[m]
         changes.append(f'- `human_{m}_sites_{version}.tsv`: {c["rows"]:,} rows on {c["residues"]:,} residues of {c["proteins"]:,} proteins; by {"acyl type" if m in ACYL else "state"} '
@@ -583,7 +650,7 @@ def main() -> None:
                    + ', '.join(f'{k} {v:,}' for k, v in sorted(c['by_source']['sites'].items())) + '.')
     cc, cu, cs = summaries['cplm'], summaries['cplm_ub'], summaries['cplm_su']
     changes += ['', 'Sources: UniProt (release ' + ', '.join(sorted({summaries["uniprot"]["uniprot_release_served"]})) + ', CC BY 4.0), iPTMnet (release ' + summaries['iptmnet']['iptmnet_release'] +
-                ', CC BY-NC-SA 4.0) and CPLM 4.0, Berryhill 2023 and Ochoa 2020 (below). The release stays CC BY-NC-SA 4.0. iPTMnet\'s download readme also mentions CC BY 4.0; the stricter terms are followed.', '',
+                ', CC BY-NC-SA 4.0) and CPLM 4.0, Berryhill 2023, Ochoa 2020, Hendriks 2017 and Akimov 2018 (below). The release stays CC BY-NC-SA 4.0. iPTMnet\'s download readme also mentions CC BY 4.0; the stricter terms are followed.', '',
                 '### CPLM 4.0: license note', '',
                 f'The methyllysine table includes all {cc["rows"]["methyllysine"]:,} validated human lysine methylation sites of CPLM 4.0 ({cc["proteins"]:,} proteins; Zhang et al., Nucleic Acids Res 50:D451-D459, 2022, '
                 f'doi:10.1093/nar/gkab849; `Methylation.txt` of {cc["cplm_release"].split("(")[1].rstrip(")")}). **CPLM states no license**: cplm.biocuckoo.cn carries only a copyright notice ("All Rights Reserved"). '
@@ -601,19 +668,20 @@ def main() -> None:
                 'Its rows have `CPLM` in `sources`, state `sumo`, and CPLM\'s evidence label in `cplm_evidence` (' + ', '.join(f'{k} {v:,}' for k, v in cs['rows_by_cplm_evidence'].items()) + '); '
                 f'`pmids` holds the PubMed IDs among CPLM\'s references ({cs["rows_with_pubmed_ids"]:,} rows). Dropped on validation, nothing remapped: ' + ', '.join(f'{v:,} {k.replace("_", " ")}' for k, v in sorted(cs['dropped'].items())) + '. '
                 '', *cplm_acyl_changes(tables, summaries), '',
-                '### Berryhill 2023, Ochoa 2020 and the iPTMnet score: license notes', '', *source_notes(tables, summaries), '',
+                '### Berryhill 2023, Ochoa 2020, Hendriks 2017, Akimov 2018 and the iPTMnet score: license notes', '', *source_notes(tables, summaries), '',
                 '### Ubiquitination and SUMOylation', '',
-                'The two tables hold lysine sites (state `ub` and `sumo`) of UniProt (its cross-link features: the Lys-Gly isopeptide to ubiquitin, or to any SUMO paralog, the paralog not kept), iPTMnet (UBIQUITINATION and SUMOYLATION at K) and CPLM 4.0 (above). '
+                'The two tables hold lysine sites (state `ub` and `sumo`) of UniProt (its cross-link features: the Lys-Gly isopeptide to ubiquitin, or to any SUMO paralog, the paralog not kept), iPTMnet (UBIQUITINATION and SUMOYLATION at K) and CPLM 4.0 (above), '
+                'with two primary mass-spectrometry studies as sources of their own: Akimov 2018 (UbiSite, ubiquitination) and Hendriks 2017 (SUMO-2, sumoylation), above. A residue that one of these studies and CPLM both report keeps both in `sources`. '
                 'UniProt and iPTMnet are openly licensed (CC BY 4.0, CC BY-NC-SA 4.0). iPTMnet carries a copy of UniProt, so a residue reported by both may be one record.', '',
                 '### Lysine acylation', '',
                 'The two acylation tables hold the lysine acylation (13 acyl types of UniProt\'s N6-acyl lysine terms, iPTMnet\'s acetylation, and the 14 acylation downloads of CPLM 4.0 with human sites: 11 of the 13 types of UniProt and iPTMnet, which have the same acyl-type names, and biotinyl, lipoyl and phosphoglyceryl) with `acyl_type` in place of `state`; '
                 '`human_acetylation_sites_' + version + '.tsv` repeats the acetyl rows because they are over half of them. UniProt (CC BY 4.0) and iPTMnet (CC BY-NC-SA 4.0) are openly licensed; CPLM states no license (above). Each acyl type is its own set of rows; CPLM\'s types are validated and counted type by type.', '',
-                'Code: `scripts/39_stage_cplm4_lys_methylation.py`, `scripts/54_stage_uniprot_ptm_sites.py`, `scripts/55_stage_iptmnet_ptm_sites.py`, `scripts/57_stage_berryhill_lys_methylation.py`, `scripts/58_stage_ochoa_phosphosites.py`, `scripts/59_stage_iptmnet_scores.py`, `scripts/56_build_context_marks.py`; staged tables in `inputs/marks/`.']
+                'Code: `scripts/39_stage_cplm4_lys_methylation.py`, `scripts/54_stage_uniprot_ptm_sites.py`, `scripts/55_stage_iptmnet_ptm_sites.py`, `scripts/57_stage_berryhill_lys_methylation.py`, `scripts/58_stage_ochoa_phosphosites.py`, `scripts/59_stage_iptmnet_scores.py`, `scripts/60_stage_hendriks2017_sumo_sites.py`, `scripts/61_stage_akimov2018_ubiquitination_sites.py` (with `scripts/window_sites.py`), `scripts/56_build_context_marks.py`; staged tables in `inputs/marks/`.']
     (out / 'CHANGES.md').write_text('\n'.join(changes) + '\n', encoding='utf-8')
 
     release = {'title': 'Human methylarginine sites and context marks', 'version': version, 'previous_version': CARRIED_FROM,
                'release_date': args.release_date, 'repository': 'https://github.com/Shechterlab/PTM_Pipeline',
-               'license': 'CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access and its supplements carry no license',
+               'license': 'CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access and its supplements carry no license; Hendriks 2017 and Akimov 2018 are not open access and their supplements carry no notice',
                'methylarginine_data': f'unchanged from {CARRIED_FROM}: files carried over byte for byte, not rebuilt',
                'methylarginine_code_commit': json.loads((src / 'release.json').read_text(encoding='utf-8')).get('code_commit'),
                'context_marks_code_commit': commit, 'carried_over': carried, 'carried_over_text_edited': edited,

@@ -123,7 +123,7 @@ def test_staged_tables_and_release_agree_with_manifest():
     manifest = list(csv.DictReader(open(ROOT / 'inputs' / 'MANIFEST.tsv', encoding='utf-8'), delimiter='\t'))
     rows = {r['file']: r for r in manifest if r['file'].startswith('marks/')}
     tables = [f for f in rows if f.endswith('_sites.tsv') or f.endswith('_crosscheck.tsv')]
-    assert len(tables) == 17 + len(cplm.ACYL_TYPES)
+    assert len(tables) == 19 + len(cplm.ACYL_TYPES)
     for name in tables + ['marks/raw_files.tsv', 'marks/uniprot_ptm_sites_summary.json', 'marks/iptmnet_ptm_sites_summary.json',
                           'marks/cplm_ptm_sites_summary.json', 'marks/cplm_ubiquitination_summary.json', 'marks/cplm_sumoylation_summary.json',
                           *[f'marks/{c["summary"]}' for c in cplm.MODIFICATIONS.values() if c['mark'] == 'lysine_acylation']]:
@@ -143,6 +143,11 @@ def test_staged_tables_and_release_agree_with_manifest():
         elif '/ochoa2020_' in name:
             assert 'not open access' in row['licence'] and 'exclusive licence to Springer Nature' in row['licence'] and 'owner' not in row['licence']
             assert 'Ochoa' in row['citation'] and 'Nat Biotechnol 38:365' in row['citation'] and '10.1038/s41587-019-0344-3' in row['citation']
+            assert row['redistribution'] == 'git'
+        elif '/hendriks2017_' in name or '/akimov2018_' in name:
+            assert 'not open access' in row['licence'] and 'no separate notice' in row['licence'] and 'owner' not in row['licence']
+            assert ('Nat Struct Mol Biol 24:325' in row['citation'] and '10.1038/nsmb.3366' in row['citation']) if 'hendriks' in name else (
+                'Nat Struct Mol Biol 25:631' in row['citation'] and '10.1038/s41594-018-0084-y' in row['citation'])
             assert row['redistribution'] == 'git'
         elif '/cplm_' in name:
             assert row['licence'].startswith('none stated') and 'All Rights Reserved' in row['licence'] and 'pending' not in row['licence']
@@ -276,7 +281,7 @@ def test_release_v1_5_0_is_consistent():
         if 'crosscheck' in path.name:
             assert header[11:] == ['in_methylarginine_release']
         else:       # the columns of the sources that contribute, then iPTMnet's score
-            own = {'acylation': ['cplm_evidence'], 'acetylation': ['cplm_evidence'], 'ubiquitination': ['cplm_evidence'], 'sumoylation': ['cplm_evidence'], 'methyllysine': ['cplm_evidence', 'berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment'],
+            own = {'acylation': ['cplm_evidence'], 'acetylation': ['cplm_evidence'], 'ubiquitination': ['cplm_evidence', 'akimov_localization_probability', 'akimov_cell_lines'], 'sumoylation': ['cplm_evidence', 'hendriks_localization_probability', 'hendriks_cell_lines'], 'methyllysine': ['cplm_evidence', 'berryhill_site_probability', 'berryhill_cell_lines', 'berryhill_enrichment'],
                    'phosphorylation': ['functional_score', 'best_localization_probability', 'best_pep', 'biological_samples', 'spectral_counts']}
             assert header[11:] == next((v for k, v in own.items() if k in path.name), []) + ['iptmnet_score'], path.name
     text = (folder / 'README.md').read_text() + (folder / 'CHANGES.md').read_text()
@@ -288,11 +293,12 @@ def test_release_v1_5_0_is_consistent():
 
 def test_release_license_covers_every_source():
     # the release is CC BY-NC-SA 4.0: every source must be CC BY, CC BY-NC-SA or as open
-    # (CPLM, Berryhill 2023 and Ochoa 2020 are the exceptions, each stating its own terms in its license entry, with no word on how the decision was taken)
-    exceptions = {'CPLM', 'Berryhill 2023', 'Ochoa 2020'}
+    # (CPLM, Berryhill 2023, Ochoa 2020, Hendriks 2017 and Akimov 2018 are the exceptions, each stating its own terms in its license entry, with no word on how the decision was taken)
+    exceptions = {'CPLM', 'Berryhill 2023', 'Ochoa 2020', 'Hendriks 2017', 'Akimov 2018'}
     assert {s['license'] for k, s in build.SOURCES.items() if k not in exceptions} <= {'CC BY 4.0', 'CC BY-NC-SA 4.0'}
     assert all('owner' not in build.SOURCES[k]['license'] and 'pending' not in build.SOURCES[k]['license'] for k in exceptions)
-    assert set(build.SOURCES) == {'UniProt', 'iPTMnet', 'CPLM', 'Berryhill 2023', 'Ochoa 2020'} == set(build.SOURCE_ORDER)
+    assert set(build.SOURCES) == {'UniProt', 'iPTMnet', 'CPLM', 'Berryhill 2023', 'Ochoa 2020', 'Hendriks 2017', 'Akimov 2018'} == set(build.SOURCE_ORDER)
+    assert all('not open access' in build.SOURCES[s]['license'] and 'supplements carry no notice' in build.SOURCES[s]['license'] for s in ('Hendriks 2017', 'Akimov 2018'))
     assert 'CC BY 4.0' in build.SOURCES['Berryhill 2023']['license'] and 'supplements carry no separate notice' in build.SOURCES['Berryhill 2023']['license']
     assert 'not open access' in build.SOURCES['Ochoa 2020']['license'] and 'supplements carry no license' in build.SOURCES['Ochoa 2020']['license']
     # CPLM is the one source without a license: no license is stated
@@ -323,6 +329,8 @@ def test_no_closed_source_is_referenced():
             assert ('CPLM' in names) == bool(r.get('cplm_evidence', ''))
             assert ('Ochoa 2020' in names) == bool(r.get('functional_score', ''))
             assert ('Berryhill 2023' in names) == bool(r.get('berryhill_cell_lines', ''))
+            assert ('Hendriks 2017' in names) == bool(r.get('hendriks_localization_probability', ''))
+            assert ('Akimov 2018' in names) == bool(r.get('akimov_localization_probability', ''))
             assert 'iPTMnet' in names or not r.get('iptmnet_score', '')
             assert not (set(r['iptmnet_sources'].split(';')) - set(iptm_upstream()))
 
@@ -340,7 +348,8 @@ def test_crosscheck_column(tmp_path):
 
 
 @pytest.mark.parametrize('name', ['39_stage_cplm4_lys_methylation.py', '54_stage_uniprot_ptm_sites.py', '55_stage_iptmnet_ptm_sites.py', '56_build_context_marks.py',
-                                  '57_stage_berryhill_lys_methylation.py', '58_stage_ochoa_phosphosites.py', '59_stage_iptmnet_scores.py'])
+                                  '57_stage_berryhill_lys_methylation.py', '58_stage_ochoa_phosphosites.py', '59_stage_iptmnet_scores.py',
+                                  '60_stage_hendriks2017_sumo_sites.py', '61_stage_akimov2018_ubiquitination_sites.py', 'window_sites.py'])
 def test_scripts_use_american_spelling_and_no_banned_words(name):
     text = (ROOT / 'scripts' / name).read_text(encoding='utf-8')
     text = text.replace("'licence'", '').replace('exclusive licence', '')     # the MANIFEST column keeps its name; the publisher's words
@@ -533,12 +542,13 @@ def test_license_notes_of_the_new_sources_in_the_release_text():
         text = (folder / name).read_text(encoding='utf-8')
         for needle in ('Sci Rep 13:377', '10.1038/s41598-022-27175-x', 'CC BY 4.0', 'supplements carry no separate',
                        'Nat Biotechnol 38:365', '10.1038/s41587-019-0344-3', 'not open access', 'exclusive licence to Springer Nature America',
-                       'The score is calculated based on all the evidence sources as shown on the website'):
+                       'The score is calculated based on all the evidence sources as shown on the website',
+                       'Nat Struct Mol Biol 24:325-336', '10.1038/nsmb.3366', 'Nat Struct Mol Biol 25:631-640', '10.1038/s41594-018-0084-y'):
             assert needle in text, (name, needle)
-        for phrase in ("owner's decision", "authors' permission", "authors' confirmation", 'when they answer'):
+        for phrase in ('pending permission', 'permission from', "owner's decision", "authors' permission", "authors' confirmation", 'when they answer'):
             assert phrase not in text, (name, phrase)
     release = json.loads((folder / 'release.json').read_text(encoding='utf-8'))
-    assert {'Berryhill 2023', 'Ochoa 2020'} <= set(release['sources']) and 'iptmnet_score' in release['inputs_md5']
+    assert {'Berryhill 2023', 'Ochoa 2020', 'Hendriks 2017', 'Akimov 2018'} <= set(release['sources']) and 'iptmnet_score' in release['inputs_md5']
 
 
 def crosslink(term, pos, **kw):
