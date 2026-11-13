@@ -1,0 +1,66 @@
+{
+  "accession_history": "inputs/reference/uniprot_accession_history_2026_03.tsv",
+  "accession_history_md5": "c285be55ba2541822f068f8ec891dfb6",
+  "article_url": "https://www.nature.com/articles/s41594-018-0084-y",
+  "digest_sheet_rows": {
+    "LysC only Ubi sites": 8233,
+    "LysC+Trypsin Ubi sites": 61977
+  },
+  "files": {
+    "rejected": "akimov2018_ubiquitination_rejected.tsv",
+    "validated": "akimov2018_ubiquitination_sites.tsv"
+  },
+  "files_md5": {
+    "rejected": "7b65cdbc584ee8a3b906200ae48feb61",
+    "validated": "95a64ec331fc9dc73c6a252a00e00e92"
+  },
+  "input_rows": 63489,
+  "input_rows_by_digest": {
+    "LysC only": 1512,
+    "LysC+trypsin only": 55222,
+    "both": 6755
+  },
+  "license": "article page: copyright \"2018 The Author(s)\"; not open access; the supplementary file carries no separate notice",
+  "localization_probability_note": "the table is used as published (the paper filters its sites itself); the best localization probability of a site ranges 0.333333-1, 638 sites below 0.75",
+  "n_terminal_sites": "not included: Supplementary Table 6 (peptides of N-terminally ubiquitinated proteins) is not used; lysine sites only",
+  "raw_file": "41594_2018_84_MOESM3_ESM.xlsx",
+  "raw_md5": "42a5d3d5a69fa0963f591de2ee30ca00",
+  "raw_sha256": "6198b27dc1e21f181a89ac151d17eaab9e55e980f3cb4e9b28b5f36bfab4e4bc",
+  "redistribution": "git",
+  "reference_fasta": "inputs/reference/uniprot_human_reviewed_2026_03.fasta",
+  "reference_fasta_md5": "c75aad9d197cbba00f51063f65a96ac4",
+  "rejected_by_reason": {
+    "bad_window": 3,
+    "no_canonical_accession": 36,
+    "window_not_in_canonical": 495,
+    "window_not_unique": 4
+  },
+  "row_status": {
+    "bad_window": 3,
+    "kept": 61611,
+    "no_canonical_accession": 36,
+    "relocated": 1332,
+    "secondary_accession": 8,
+    "window_not_in_canonical": 495,
+    "window_not_unique": 4
+  },
+  "rows_merged_into_another_site": 80,
+  "rows_placed": 62951,
+  "sites_by_cell_lines": {
+    "Hep2": 13749,
+    "Hep2;Jurkat": 38562,
+    "Jurkat": 10230,
+    "none": 330
+  },
+  "sites_by_placement": {
+    "kept": 61534,
+    "kept;relocated": 72,
+    "kept;secondary_accession": 2,
+    "relocated": 1257,
+    "secondary_accession": 6
+  },
+  "source": "Akimov et al., Nat Struct Mol Biol 25:631-640 (2018), doi:10.1038/s41594-018-0084-y; Supplementary Table 1 (sheet Combined Ubi sites; protein groups from the sheets LysC+Trypsin Ubi sites, LysC only Ubi sites)",
+  "url": "https://static-content.springer.com/esm/art%3A10.1038%2Fs41594-018-0084-y/MediaObjects/41594_2018_84_MOESM3_ESM.xlsx",
+  "validated_proteins": 8927,
+  "validated_sites": 62871
+}

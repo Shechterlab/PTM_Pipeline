@@ -700,68 +700,92 @@
     },
     "sumoylation": {
       "by_evidence_class": {
-        "by-similarity": 108,
-        "experimental": 37807,
-        "unspecified": 1718
+        "by-similarity": 100,
+        "experimental": 46889,
+        "unspecified": 1604
       },
       "by_source": {
         "rows": {
-          "CPLM only": 34093,
-          "UniProt + CPLM": 5367,
-          "UniProt + iPTMnet + CPLM": 24,
-          "UniProt only": 140,
-          "iPTMnet + CPLM": 9
+          "CPLM + Hendriks 2017": 25749,
+          "CPLM only": 8344,
+          "Hendriks 2017 only": 8960,
+          "UniProt + CPLM": 279,
+          "UniProt + CPLM + Hendriks 2017": 5088,
+          "UniProt + Hendriks 2017": 40,
+          "UniProt + iPTMnet + CPLM": 6,
+          "UniProt + iPTMnet + CPLM + Hendriks 2017": 18,
+          "UniProt only": 100,
+          "iPTMnet + CPLM": 6,
+          "iPTMnet + CPLM + Hendriks 2017": 3
         },
         "sites": {
-          "CPLM only": 34093,
-          "UniProt + CPLM": 5367,
-          "UniProt + iPTMnet + CPLM": 24,
-          "UniProt only": 140,
-          "iPTMnet + CPLM": 9
+          "CPLM + Hendriks 2017": 25749,
+          "CPLM only": 8344,
+          "Hendriks 2017 only": 8960,
+          "UniProt + CPLM": 279,
+          "UniProt + CPLM + Hendriks 2017": 5088,
+          "UniProt + Hendriks 2017": 40,
+          "UniProt + iPTMnet + CPLM": 6,
+          "UniProt + iPTMnet + CPLM + Hendriks 2017": 18,
+          "UniProt only": 100,
+          "iPTMnet + CPLM": 6,
+          "iPTMnet + CPLM + Hendriks 2017": 3
         }
       },
       "by_state": {
-        "sumo": 39633
+        "sumo": 48593
       },
-      "proteins": 6102,
-      "residues": 39633,
-      "rows": 39633
+      "proteins": 7424,
+      "residues": 48593,
+      "rows": 48593
     },
     "ubiquitination": {
       "by_evidence_class": {
-        "by-similarity": 141,
-        "experimental": 75900,
-        "unspecified": 47891
+        "by-similarity": 128,
+        "experimental": 104484,
+        "unspecified": 21159
       },
       "by_source": {
         "rows": {
-          "CPLM only": 122974,
-          "UniProt + CPLM": 211,
+          "Akimov 2018 only": 1839,
+          "CPLM + Akimov 2018": 60683,
+          "CPLM only": 62291,
+          "UniProt + Akimov 2018": 4,
+          "UniProt + CPLM": 112,
+          "UniProt + CPLM + Akimov 2018": 99,
           "UniProt + iPTMnet": 41,
-          "UniProt + iPTMnet + CPLM": 562,
-          "UniProt only": 137,
-          "iPTMnet + CPLM": 6,
+          "UniProt + iPTMnet + CPLM": 317,
+          "UniProt + iPTMnet + CPLM + Akimov 2018": 245,
+          "UniProt only": 133,
+          "iPTMnet + CPLM": 5,
+          "iPTMnet + CPLM + Akimov 2018": 1,
           "iPTMnet only": 1
         },
         "sites": {
-          "CPLM only": 122974,
-          "UniProt + CPLM": 211,
+          "Akimov 2018 only": 1839,
+          "CPLM + Akimov 2018": 60683,
+          "CPLM only": 62291,
+          "UniProt + Akimov 2018": 4,
+          "UniProt + CPLM": 112,
+          "UniProt + CPLM + Akimov 2018": 99,
           "UniProt + iPTMnet": 41,
-          "UniProt + iPTMnet + CPLM": 562,
-          "UniProt only": 137,
-          "iPTMnet + CPLM": 6,
+          "UniProt + iPTMnet + CPLM": 317,
+          "UniProt + iPTMnet + CPLM + Akimov 2018": 245,
+          "UniProt only": 133,
+          "iPTMnet + CPLM": 5,
+          "iPTMnet + CPLM + Akimov 2018": 1,
           "iPTMnet only": 1
         }
       },
       "by_state": {
-        "ub": 123932
+        "ub": 125771
       },
-      "proteins": 11862,
-      "residues": 123932,
-      "rows": 123932
+      "proteins": 12011,
+      "residues": 125771,
+      "rows": 125771
     }
   },
-  "context_marks_code_commit": "ce1905a22ea5fd2a71ad657fc9687fa73511cf9c",
+  "context_marks_code_commit": "e646e3f6a5540677c493d838c5c928a5148852e2",
   "inputs_md5": {
     "iptmnet_score": {
       "iptmnet_6_2_score.tsv": "ed097f2d5b773233dcdf1999ada1579d"
@@ -801,16 +825,18 @@
     },
     "sumoylation": {
       "cplm_4_0_sumoylation_sites.tsv": "f14d537f300e625bb03d7ffb0289c6f0",
+      "hendriks2017_sumoylation_sites.tsv": "0a39c67564304b541f61c1aa224ed7c0",
       "iptmnet_6_2_sumoylation_sites.tsv": "971fe9cd985ee571f6b9dcd7242445f4",
       "uniprot_2026_04_sumoylation_sites.tsv": "8c7f7ceb6646ad94c18acad87f2a8f85"
     },
     "ubiquitination": {
+      "akimov2018_ubiquitination_sites.tsv": "95a64ec331fc9dc73c6a252a00e00e92",
       "cplm_4_0_ubiquitination_sites.tsv": "3f7f41e7b4fff0d9024fe3318a403469",
       "iptmnet_6_2_ubiquitination_sites.tsv": "b77231d3c02dd876e8c34b7a90200fe0",
       "uniprot_2026_04_ubiquitination_sites.tsv": "0cc7c9e74519970def0374f1511848b8"
     }
   },
-  "license": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access and its supplements carry no license",
+  "license": "CC BY-NC-SA 4.0 (LICENSE.md); sources keep their own terms (inputs/MANIFEST.tsv); CPLM 4.0 states no license; Berryhill 2023 supplements carry no notice (article CC BY 4.0); Ochoa 2020 is not open access and its supplements carry no license; Hendriks 2017 and Akimov 2018 are not open access and their supplements carry no notice",
   "methylarginine_code_commit": "52451320067f754d32574061b8653a2b5f03ec37",
   "methylarginine_data": "unchanged from v1.4.3: files carried over byte for byte, not rebuilt",
   "previous_version": "v1.4.3",
@@ -818,11 +844,17 @@
   "repository": "https://github.com/Shechterlab/PTM_Pipeline",
   "site_changes": "supporting/site_changes_v1.4.3_to_v1.5.0.tsv",
   "sources": {
+    "Akimov 2018": {
+      "license": "article not open access (copyright 2018 The Author(s)); supplements carry no notice"
+    },
     "Berryhill 2023": {
       "license": "article CC BY 4.0; supplements carry no separate notice"
     },
     "CPLM": {
       "license": "none stated"
+    },
+    "Hendriks 2017": {
+      "license": "article not open access (copyright 2017 Springer Nature America); supplements carry no notice"
     },
     "Ochoa 2020": {
       "license": "article not open access (exclusive license to Springer Nature America); supplements carry no license"
