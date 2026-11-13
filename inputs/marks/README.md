@@ -20,6 +20,8 @@ keys and positions are on the reference proteome (`inputs/reference/`, UniProt 2
 | `cplm_4_0_ubiquitination_sites.tsv`, `cplm_ubiquitination_summary.json` | CPLM 4.0 human lysine ubiquitination sites that match the reference sequence (state `ub`), with `cplm_evidence` and the references verbatim, as for methylation | `scripts/39 --modification Ubiquitination` |
 | `cplm_4_0_sumoylation_sites.tsv`, `cplm_sumoylation_summary.json` | CPLM 4.0 human lysine SUMOylation sites that match the reference sequence (state `sumo`), with `cplm_evidence` and the references verbatim, as for methylation | `scripts/39 --modification Sumoylation` |
 | `cplm_4_0_<type>_lysine_acylation_sites.tsv`, `cplm_<type>_summary.json` (14 types: acetylation, succinylation, crotonylation, malonylation, glutarylation, 2_hydroxyisobutyrylation, beta_hydroxybutyrylation, lactylation, propionylation, butyrylation, benzoylation, biotinylation, lipoylation, phosphoglycerylation) | CPLM 4.0 human lysine acylation sites that match the reference sequence, one file per CPLM download (`<Type>.zip`, URL pattern as above; beta-Hydroxybutyrylation is `%CE%B2-Hydroxybutyrylation.zip`), mark `lysine_acylation`, state the acyl type in UniProt's vocabulary (acetyl, succinyl, crotonyl, malonyl, glutaryl, 2-hydroxyisobutyryl, beta-hydroxybutyryl, lactoyl, propionyl, butyryl, benzoyl; biotinyl, lipoyl and phosphoglyceryl are CPLM's own), with `cplm_evidence` and the references verbatim. CPLM's Formylation, HMGylation, MGcylation and MGylation downloads have no human rows and are not staged | `scripts/39 --modification <Type>` |
+| `hendriks2017_sumoylation_sites.tsv`, `..._rejected.tsv`, `..._summary.json` | Hendriks et al. 2017 human SUMO-2 acceptor lysines (state `sumo`; HeLa, U2OS), placed on the reference proteome; `evidence_class` experimental; `hendriks_localization_probability`, `hendriks_cell_lines`, `source_accession`, `source_position`, `placement` after the ten columns; see its section | `scripts/60_stage_hendriks2017_sumo_sites.py` |
+| `akimov2018_ubiquitination_sites.tsv`, `..._rejected.tsv`, `..._summary.json` | Akimov et al. 2018 (UbiSite) human lysine ubiquitination sites (state `ub`; Hep2, Jurkat), placed on the reference proteome; `evidence_class` experimental; `akimov_localization_probability`, `akimov_cell_lines`, `source_accession`, `source_position`, `placement` after the ten columns; N-terminal sites not included; see its section | `scripts/61_stage_akimov2018_ubiquitination_sites.py` |
 | `uniprot_ptm_sites_summary.json`, `iptmnet_ptm_sites_summary.json`, `cplm_ptm_sites_summary.json` | release served, rows, drops, MD5 of the input and of each table | the same |
 | `raw_files.tsv` | URL, size, MD5, SHA-256, date of each raw download (kept in `PTM_data/marks/`, not in Git) | |
 
@@ -72,6 +74,29 @@ the evidence columns).
 
 A site is kept when its accession is a canonical entry of the reference and the sequence has the table's residue at
 the position. Neither table gives a peptide or window, so nothing is relocated: a mismatch is rejected.
+
+## Hendriks et al. 2017 and Akimov et al. 2018
+
+Hendriks IA, Lyon D, Young C, Jensen LJ, Vertegaal ACO, Nielsen ML. Site-specific mapping of the human SUMO proteome
+reveals co-modification with phosphorylation. Nat Struct Mol Biol 24:325-336 (2017), doi:10.1038/nsmb.3366 (PubMed
+28112733; PRIDE PXD005296). Akimov V, Barrio-Hernandez I, Hansen SVF, et al. UbiSite approach for comprehensive mapping
+of lysine and N-terminal ubiquitination sites. Nat Struct Mol Biol 25:631-640 (2018), doi:10.1038/s41594-018-0084-y
+(PubMed 29967540). Neither article is open access (the article pages give the copyright as "2017 Springer Nature
+America, Inc." and "2018 The Author(s)"), neither is in PMC, and the supplementary files carry no notice of their own.
+The derived tables (accession, position, localization probability, cell lines) are published here and in the release,
+cited, as sources `Hendriks 2017` (sumoylation) and `Akimov 2018` (ubiquitination); the downloads stay out of Git
+(`raw_files.tsv` has their URL, MD5 and SHA-256).
+
+`scripts/60_stage_hendriks2017_sumo_sites.py` reads Supplementary Table 1 (`41594_2017_BFnsmb3366_MOESM30_ESM.xlsx`,
+all 40,765 SUMO-2 sites, as filtered by the paper). `scripts/61_stage_akimov2018_ubiquitination_sites.py` reads the
+sheet "Combined Ubi sites" of Supplementary Table 1 (`41594_2018_84_MOESM3_ESM.xlsx`, the lysine sites of both digests,
+as filtered by the paper), with the protein groups from the two digest sheets; the ISG15 and NEDD8 sites listed below
+the LysC-only sites and the comparison with Udeshi 2013 are not used, and the paper's N-terminal sites (Supplementary
+Table 6) are not included. Both place a site with `scripts/window_sites.py`: kept where a protein of its group is a
+canonical entry with K at the given position and the +/-7 residue window agreeing, `secondary_accession` where that
+needs the current accession of a merged one (`../reference/uniprot_accession_history_2026_03.tsv`), relocated where
+the window occurs once in the canonical sequence of a protein of the group (mostly sites given on an isoform);
+otherwise the row is rejected with a reason (`..._rejected.tsv`). Counts are in the two `_summary.json` files.
 
 ## iPTMnet score
 
